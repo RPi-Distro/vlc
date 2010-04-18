@@ -1,8 +1,8 @@
 /*****************************************************************************
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: d444d176fdb29af7604d2e01dac18f87c3ca34b4 $
+ * Copyright (C) 2002-2003 the VideoLAN team
+ * $Id: 7eb5831bb995b9b57284241f6604bed1778ffb88 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -11,7 +11,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -28,12 +28,8 @@
 #include <stdlib.h>                                      /* malloc(), free() */
 #include <string.h>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_keys.h>
+#include <vlc/vlc.h>
+#include "vlc_keys.h"
 
 #include "intf.h"
 #include "prefs_widgets.h"
@@ -42,7 +38,7 @@
 #define OFFSET_RIGHT 20
 #define OFFSET_BETWEEN 2
 
-#define UPWARDS_WHITE_ARROW                 "\xE2\x87\xA7"
+#define UPWARDS_WHITE_ARROW                 "\xE2\x87\xA7" 
 #define OPTION_KEY                          "\xE2\x8C\xA5"
 #define UP_ARROWHEAD                        "\xE2\x8C\x83"
 #define PLACE_OF_INTEREST_SIGN              "\xE2\x8C\x98"
@@ -55,10 +51,13 @@
         action:nil keyEquivalent:@""];                                      \
     [o_mi setKeyEquivalentModifierMask:                                     \
         0];                                                                 \
+if( MACOS_VERSION >= 10.3 )                                                 \
     [o_mi setAlternate: NO];                                                \
     [o_mi setTag:                                                           \
         ( value )];                                                         \
     [o_menu addItem: o_mi];                                                 \
+if( MACOS_VERSION >= 10.3 )                                                 \
+{                                                                           \
 /*  Ctrl */                                                                 \
     o_mi = [[NSMenuItem alloc] initWithTitle:                               \
         [[NSString stringWithUTF8String:                                    \
@@ -246,10 +245,10 @@
     [o_mi setTag:                                                           \
         KEY_MODIFIER_COMMAND | ( value )];                                  \
     [o_menu addItem: o_mi];                                                 \
+}                                                                           \
 }
 
-#define ADD_LABEL( o_label, superFrame, x_offset, my_y_offset, label,       \
-    tooltip )                                                               \
+#define ADD_LABEL( o_label, superFrame, x_offset, my_y_offset, label )      \
 {                                                                           \
     NSRect s_rc = superFrame;                                               \
     s_rc.size.height = 17;                                                  \
@@ -261,7 +260,6 @@
     [o_label setEditable: NO];                                              \
     [o_label setSelectable: NO];                                            \
     [o_label setStringValue: label];                                        \
-    [o_label setToolTip: tooltip];                                          \
     [o_label setFont:[NSFont systemFontOfSize:0]];                          \
     [o_label sizeToFit];                                                    \
 }
@@ -278,20 +276,6 @@
     [o_textfield setFont:[NSFont systemFontOfSize:0]];                      \
     [o_textfield setToolTip: tooltip];                                      \
     [o_textfield setStringValue: init_value];                               \
-}
-
-#define ADD_SECURETEXTFIELD( o_textfield, superFrame, x_offset, my_y_offset,      \
-my_width, tooltip, init_value )                                         \
-{                                                                           \
-NSRect s_rc = superFrame;                                               \
-s_rc.origin.x = x_offset;                                               \
-s_rc.origin.y = my_y_offset;                                            \
-s_rc.size.height = 22;                                                  \
-s_rc.size.width = my_width;                                             \
-o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
-[o_textfield setFont:[NSFont systemFontOfSize:0]];                      \
-[o_textfield setToolTip: tooltip];                                      \
-[o_textfield setStringValue: init_value];                               \
 }
 
 #define ADD_COMBO( o_combo, superFrame, x_offset, my_y_offset, x2_offset,   \
@@ -412,7 +396,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     if( self != nil )
     {
         p_item = _p_item;
-        psz_name = p_item->psz_name;
+        psz_name = strdup( p_item->psz_name );
         o_label = NULL;
         i_type = p_item->i_type;
         i_view_type = 0;
@@ -432,7 +416,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 - (void)dealloc
 {
     if( o_label ) [o_label release];
-    free( psz_name );
+    if( psz_name ) free( psz_name );
     [super dealloc];
 }
 
@@ -442,11 +426,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     switch( i_curItem )
     {
     case CONFIG_ITEM_STRING:
-    case CONFIG_ITEM_PASSWORD:
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -465,6 +447,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 5;
             break;
         case CONFIG_ITEM_BOOL:
+            i_margin = 7;
+            break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -482,7 +467,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -503,6 +487,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         case CONFIG_ITEM_BOOL:
             i_margin = 7;
             break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
+            i_margin = 7;
+            break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
             i_margin = 6;
             break;
@@ -518,7 +505,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 13;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -539,6 +525,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         case CONFIG_ITEM_BOOL:
             i_margin = 10;
             break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
+            i_margin = 10;
+            break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
             i_margin = 9;
             break;
@@ -554,7 +543,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -573,6 +561,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 6;
             break;
         case CONFIG_ITEM_BOOL:
+            i_margin = 8;
+            break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 8;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -590,7 +581,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -609,6 +599,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 5;
             break;
         case CONFIG_ITEM_BOOL:
+            i_margin = 7;
+            break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -626,7 +619,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -647,6 +639,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         case CONFIG_ITEM_BOOL:
             i_margin = 7;
             break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
+            i_margin = 7;
+            break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
             i_margin = 6;
             break;
@@ -662,7 +657,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 10;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -681,6 +675,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 7;
             break;
         case CONFIG_ITEM_BOOL:
+            i_margin = 7;
+            break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -694,11 +691,48 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             break;
         }
         break;
+    case CONFIG_ITEM_KEY_BEFORE_10_3:
+        switch( i_lastItem )
+        {
+        case CONFIG_ITEM_STRING:
+            i_margin = 6;
+            break;
+        case CONFIG_ITEM_STRING_LIST:
+            i_margin = 5;
+            break;
+        case CONFIG_ITEM_FILE:
+            i_margin = 4;
+            break;
+        case CONFIG_ITEM_MODULE:
+            i_margin = 2;
+            break;
+        case CONFIG_ITEM_INTEGER:
+            i_margin = 5;
+            break;
+        case CONFIG_ITEM_RANGED_INTEGER:
+            i_margin = 3;
+            break;
+        case CONFIG_ITEM_BOOL:
+            i_margin = 3;
+            break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
+            i_margin = 10;
+            break;
+        case CONFIG_ITEM_KEY_AFTER_10_3:
+            i_margin = 6;
+            break;
+        case CONFIG_ITEM_MODULE_LIST:
+            i_margin = 6;
+            break;
+        default:
+            i_margin = 18;
+            break;
+        }
+        break;
     case CONFIG_ITEM_KEY_AFTER_10_3:
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -717,6 +751,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 5;
             break;
         case CONFIG_ITEM_BOOL:
+            i_margin = 7;
+            break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -734,7 +771,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
             i_margin = 10;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -753,6 +789,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 5;
             break;
         case CONFIG_ITEM_BOOL:
+            i_margin = 7;
+            break;
+        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -777,11 +816,15 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                       withView: (NSView *)o_parent_view
 {
     VLCConfigControl *p_control = NULL;
+    /* Skip depracated options */
+    if( _p_item->psz_current )
+    {
+        return NULL;
+    }
 
     switch( _p_item->i_type )
     {
     case CONFIG_ITEM_STRING:
-    case CONFIG_ITEM_PASSWORD:
         if( !_p_item->i_list )
         {
             p_control = [[StringConfigControl alloc]
@@ -814,7 +857,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                         initWithItem: _p_item
                         withView: o_parent_view];
         }
-        else if( _p_item->min.i != 0 || _p_item->max.i != 0 )
+        else if( _p_item->i_min != 0 || _p_item->i_max != 0 )
         {
             p_control = [[RangedIntegerConfigControl alloc]
                         initWithItem: _p_item
@@ -833,7 +876,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                     withView: o_parent_view];
         break;
     case CONFIG_ITEM_FLOAT:
-        if( _p_item->min.f != 0 || _p_item->max.f != 0 )
+        if( _p_item->f_min != 0 || _p_item->f_max != 0 )
         {
             p_control = [[RangedFloatConfigControl alloc]
                         initWithItem: _p_item
@@ -847,9 +890,18 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         }
         break;
     case CONFIG_ITEM_KEY:
-        p_control = [[KeyConfigControl alloc]
+        if( MACOS_VERSION < 10.3 )
+        {
+            p_control = [[KeyConfigControlBefore103 alloc]
                         initWithItem: _p_item
                         withView: o_parent_view];
+        }
+        else
+        {
+            p_control = [[KeyConfigControlAfter103 alloc]
+                        initWithItem: _p_item
+                        withView: o_parent_view];
+        }
         break;
     case CONFIG_ITEM_MODULE_LIST:
     case CONFIG_ITEM_MODULE_LIST_CAT:
@@ -863,17 +915,17 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     return p_control;
 }
 
-- (NSString *)name
+- (NSString *)getName
 {
     return [[VLCMain sharedInstance] localizedString: psz_name];
 }
 
-- (int)type
+- (int)getType
 {
     return i_type;
 }
 
-- (int)viewType
+- (int)getViewType
 {
     return i_view_type;
 }
@@ -904,7 +956,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     switch( p_item->i_type )
     {
     case CONFIG_ITEM_STRING:
-    case CONFIG_ITEM_PASSWORD:
     case CONFIG_ITEM_FILE:
     case CONFIG_ITEM_DIRECTORY:
     case CONFIG_ITEM_MODULE:
@@ -915,7 +966,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     case CONFIG_ITEM_KEY:
         /* So you don't need to restart to have the changes take effect */
         val.i_int = [self intValue];
-        var_Set( VLCIntf->p_libvlc, psz_name, val );
+        var_Set( VLCIntf->p_vlc, psz_name, val );
     case CONFIG_ITEM_INTEGER:
     case CONFIG_ITEM_BOOL:
         config_PutInt( VLCIntf, psz_name, [self intValue] );
@@ -926,11 +977,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     }
 }
 
-- (void)resetValues
-{
-}
-
-- (int)labelSize
+- (int)getLabelSize
 {
     return [o_label frame].size.width;
 }
@@ -955,45 +1002,30 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 
     if( [super initWithFrame: mainFrame item: _p_item] != nil )
     {
-        if( p_item->i_type == CONFIG_ITEM_PASSWORD )
-            i_view_type = CONFIG_ITEM_PASSWORD;
-        else
-            i_view_type = CONFIG_ITEM_STRING;
-
-        o_textfieldTooltip = [[VLCMain sharedInstance] wrapString:
-                              [[VLCMain sharedInstance] localizedString: (char *)p_item->psz_longtext]
-                                                          toWidth: PREFS_WRAP];
-
+        i_view_type = CONFIG_ITEM_STRING;
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString, o_textfieldTooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the textfield */
-        if( p_item->value.psz )
+        o_textfieldTooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance] localizedString: p_item->psz_longtext]
+                                         toWidth: PREFS_WRAP];
+        if( p_item->psz_value )
             o_textfieldString = [[VLCMain sharedInstance]
-                                    localizedString: (char *)p_item->value.psz];
+                                    localizedString: p_item->psz_value];
         else
             o_textfieldString = [NSString stringWithString: @""];
-        if( p_item->i_type == CONFIG_ITEM_PASSWORD )
-        {
-            ADD_SECURETEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
-                          0, mainFrame.size.width - [o_label frame].size.width -
-                          2, o_textfieldTooltip, o_textfieldString )
-        }
-        else
-        {
-            ADD_TEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
-                            0, mainFrame.size.width - [o_label frame].size.width -
-                            2, o_textfieldTooltip, o_textfieldString )
-        }
+        ADD_TEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
+                        0, mainFrame.size.width - [o_label frame].size.width -
+                        2, o_textfieldTooltip, o_textfieldString )
         [o_textfield setAutoresizingMask:NSViewWidthSizable ];
-
         [self addSubview: o_textfield];
     }
     return self;
@@ -1021,21 +1053,8 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 
 - (char *)stringValue
 {
-    return [[VLCMain sharedInstance] delocalizeString:
-                        [o_textfield stringValue]];
-}
-
-- (void)resetValues
-{
-    NSString *o_textfieldString;
-    char *psz_value = config_GetPsz( VLCIntf, p_item->psz_name );
-    if( psz_value )
-        o_textfieldString = [[VLCMain sharedInstance]
-                                localizedString: psz_value];
-    else
-        o_textfieldString = [NSString stringWithString: @""];
-    free( psz_value );
-    [super resetValues];
+    return strdup( [[VLCMain sharedInstance] delocalizeString:
+                        [o_textfield stringValue]] );
 }
 @end
 
@@ -1054,33 +1073,27 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     {
         int i_index;
         i_view_type = CONFIG_ITEM_STRING_LIST;
-
-        o_textfieldTooltip = [[VLCMain sharedInstance] wrapString:
-                              [[VLCMain sharedInstance]
-                               localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
-
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString, o_textfieldTooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the textfield */
+        o_textfieldTooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
         ADD_COMBO( o_combo, mainFrame, [o_label frame].size.width,
             -2, 0, o_textfieldTooltip )
         [o_combo setAutoresizingMask:NSViewWidthSizable ];
         for( i_index = 0; i_index < p_item->i_list; i_index++ )
-        {
-            if( !p_item->value.psz && !p_item->ppsz_list[i_index] )
+            if( p_item->psz_value &&
+                !strcmp( p_item->psz_value, p_item->ppsz_list[i_index] ) )
                 [o_combo selectItemAtIndex: i_index];
-            else if( p_item->value.psz && p_item->ppsz_list[i_index] &&
-                !strcmp( p_item->value.psz, p_item->ppsz_list[i_index] ) )
-                [o_combo selectItemAtIndex: i_index];
-       }
         [self addSubview: o_combo];
     }
     return self;
@@ -1114,41 +1127,22 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         return strdup( [[VLCMain sharedInstance]
                             delocalizeString: [o_combo stringValue]] );
 }
-
-- (void)resetValues
-{
-    int i_index;
-    [o_combo reloadData];
-    char *psz_value = config_GetPsz( VLCIntf, p_item->psz_name );
-
-    for( i_index = 0; i_index < p_item->i_list; i_index++ )
-    {
-        if( !psz_value && !p_item->ppsz_list[i_index] )
-            [o_combo selectItemAtIndex: i_index];
-        else if( psz_value && p_item->ppsz_list[i_index] &&
-            !strcmp( psz_value, p_item->ppsz_list[i_index] ) )
-            [o_combo selectItemAtIndex: i_index];
-    }
-
-    free( psz_value );
-    [super resetValues];
-}
 @end
 
 @implementation StringListConfigControl (NSComboBoxDataSource)
-- (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (int)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
         return p_item->i_list;
 }
 
-- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)i_index
+- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)i_index
 {
     if( p_item->ppsz_list_text && p_item->ppsz_list_text[i_index] )
     {
         return [[VLCMain sharedInstance]
-                    localizedString: (char *)p_item->ppsz_list_text[i_index]];
+                    localizedString: p_item->ppsz_list_text[i_index]];
     } else return [[VLCMain sharedInstance]
-                    localizedString: (char *)p_item->ppsz_list[i_index]];
+                    localizedString: p_item->ppsz_list[i_index]];
 }
 @end
 
@@ -1157,7 +1151,8 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
            withView: (NSView *)o_parent_view
 {
     NSRect mainFrame = [o_parent_view frame];
-    NSString *o_labelString, *o_itemTooltip, *o_textfieldString;
+    NSString *o_labelString, *o_buttonTooltip, *o_textfieldString;
+    NSString *o_textfieldTooltip;
     mainFrame.size.height = 46;
     mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN;
     mainFrame.origin.x = LEFTMARGIN;
@@ -1167,37 +1162,40 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     {
         i_view_type = CONFIG_ITEM_FILE;
 
-        o_itemTooltip = [[VLCMain sharedInstance]
-                           wrapString: [[VLCMain sharedInstance]
-                                        localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
-
         /* is it a directory */
-        b_directory = ( [self type] == CONFIG_ITEM_DIRECTORY ) ? YES : NO;
+        b_directory = ( [self getType] == CONFIG_ITEM_DIRECTORY ) ? YES : NO;
 
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, 3, o_labelString, o_itemTooltip )
+        ADD_LABEL( o_label, mainFrame, 0, 3, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the button */
-        ADD_RIGHT_BUTTON( o_button, mainFrame, 0, 0, o_itemTooltip,
+        o_buttonTooltip = [[VLCMain sharedInstance]
+                wrapString: [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
+        ADD_RIGHT_BUTTON( o_button, mainFrame, 0, 0, o_buttonTooltip,
                             _NS("Browse...") )
         [o_button setAutoresizingMask:NSViewMinXMargin ];
         [self addSubview: o_button];
 
         /* build the textfield */
-        if( p_item->value.psz )
-            o_textfieldString = [NSString stringWithFormat: @"%s", (char *)p_item->value.psz];
+        o_textfieldTooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
+        if( p_item->psz_value )
+            o_textfieldString = [[VLCMain sharedInstance]
+                                    localizedString: p_item->psz_value];
         else
             o_textfieldString = [NSString stringWithString: @""];
         ADD_TEXTFIELD( o_textfield, mainFrame, 12, 2, mainFrame.size.width -
                         8 - [o_button frame].size.width,
-                        o_itemTooltip, o_textfieldString )
+                        o_textfieldTooltip, o_textfieldString )
         [o_textfield setAutoresizingMask:NSViewWidthSizable ];
         [self addSubview: o_textfield];
     }
@@ -1231,7 +1229,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         types:nil
         modalForWindow:[sender window]
         modalDelegate: self
-        didEndSelector: @selector(pathChosenInPanel:
+        didEndSelector: @selector(pathChosenInPanel: 
                         withReturn:
                         contextInfo:)
         contextInfo: nil];
@@ -1254,19 +1252,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     else
         return NULL;
 }
-
--(void)resetValues
-{
-    NSString *o_textfieldString;
-    char *psz_value = config_GetPsz( VLCIntf, p_item->psz_name );
-    if( psz_value )
-        o_textfieldString = [NSString stringWithFormat: @"%s", psz_value];
-    else
-        o_textfieldString = [NSString stringWithString: @""];
-
-    free(psz_value);
-    [super resetValues];
-}
 @end
 
 @implementation ModuleConfigControl
@@ -1282,23 +1267,25 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 
     if( [super initWithFrame: mainFrame item: _p_item] != nil )
     {
+        int i_index;
+        vlc_list_t *p_list;
+        module_t *p_parser;
         i_view_type = CONFIG_ITEM_MODULE;
-
-        o_popupTooltip = [[VLCMain sharedInstance] wrapString:
-                          [[VLCMain sharedInstance]
-                           localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
 
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -1, o_labelString, o_popupTooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -1, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the popup */
+        o_popupTooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
         ADD_POPUP( o_popup, mainFrame, [o_label frame].size.width,
             -2, 0, o_popupTooltip )
         [o_popup setAutoresizingMask:NSViewWidthSizable ];
@@ -1306,7 +1293,50 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         [[o_popup lastItem] setTag: -1];
         [o_popup selectItem: [o_popup lastItem]];
 
-        [self resetValues];
+        /* build a list of available modules */
+        p_list = vlc_list_find( VLCIntf, VLC_OBJECT_MODULE, FIND_ANYWHERE );
+        for( i_index = 0; i_index < p_list->i_count; i_index++ )
+        {
+            p_parser = (module_t *)p_list->p_values[i_index].p_object ;
+            if( p_item->i_type == CONFIG_ITEM_MODULE )
+            {
+                if( !strcmp( p_parser->psz_capability,
+                            p_item->psz_type ) )
+                {
+                    NSString *o_description = [[VLCMain sharedInstance]
+                        localizedString: p_parser->psz_longname];
+                    [o_popup addItemWithTitle: o_description];
+
+                    if( p_item->psz_value &&
+                !strcmp( p_item->psz_value, p_parser->psz_object_name ) )
+                        [o_popup selectItem:[o_popup lastItem]];
+                }
+            }
+            else
+            {
+                module_config_t *p_config;
+                if( !strcmp( p_parser->psz_object_name, "main" ) )
+                      continue;
+
+                p_config = p_parser->p_config;
+                if( p_config ) do
+                {
+                    /* Hack: required subcategory is stored in i_min */
+                    if( p_config->i_type == CONFIG_SUBCATEGORY &&
+                        p_config->i_value == p_item->i_min )
+                    {
+                        NSString *o_description = [[VLCMain sharedInstance]
+                            localizedString: p_parser->psz_longname];
+                        [o_popup addItemWithTitle: o_description];
+
+                        if( p_item->psz_value && !strcmp(p_item->psz_value,
+                                                p_parser->psz_object_name) )
+                            [o_popup selectItem:[o_popup lastItem]];
+                    }
+                } while( p_config->i_type != CONFIG_HINT_END && p_config++ );
+            }
+        }
+        vlc_list_release( p_list );
         [self addSubview: o_popup];
     }
     return self;
@@ -1336,117 +1366,54 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 {
     NSString *newval = [o_popup titleOfSelectedItem];
     char *returnval = NULL;
-    size_t i_module_index;
-    module_t *p_parser, **p_list;
+    int i_index;
+    vlc_list_t *p_list;
+    module_t *p_parser;
 
-    p_list = module_list_get( NULL );
-    for( i_module_index = 0; p_list[i_module_index]; i_module_index++ )
+    p_list = vlc_list_find( VLCIntf, VLC_OBJECT_MODULE, FIND_ANYWHERE );
+    for( i_index = 0; i_index < p_list->i_count; i_index++ )
     {
-        p_parser = p_list[i_module_index];
-
+        p_parser = (module_t *)p_list->p_values[i_index].p_object ;
         if( p_item->i_type == CONFIG_ITEM_MODULE )
         {
-            if( module_provides( p_parser, p_item->psz_type ) )
+            if( !strcmp( p_parser->psz_capability,
+                    p_item->psz_type ) )
             {
                 NSString *o_description = [[VLCMain sharedInstance]
-                    localizedString: module_GetLongName( p_parser )];
+                    localizedString: p_parser->psz_longname];
                 if( [newval isEqualToString: o_description] )
                 {
-                    returnval = strdup( module_get_object( p_parser ));
+                    returnval = strdup(p_parser->psz_object_name);
                     break;
                 }
             }
         }
         else
         {
-            int i;
+            module_config_t *p_config;
+            if( !strcmp( p_parser->psz_object_name, "main" ) )
+                  continue;
 
-            if( module_is_main( p_parser) )
-                continue;
-            unsigned int confsize, unused;
-            module_config_get( p_parser, &confsize );
-            for ( i = 0; i < confsize; i++ )
+            p_config = p_parser->p_config;
+            if( p_config ) do
             {
-                module_config_t *p_config = module_config_get( p_parser, &unused ) + i;
                 /* Hack: required subcategory is stored in i_min */
                 if( p_config->i_type == CONFIG_SUBCATEGORY &&
-                    p_config->value.i == p_item->min.i )
+                    p_config->i_value == p_item->i_min )
                 {
                     NSString *o_description = [[VLCMain sharedInstance]
-                        localizedString: module_GetLongName( p_parser )];
+                        localizedString: p_parser->psz_longname];
                     if( [newval isEqualToString: o_description] )
                     {
-                        returnval = strdup(module_get_object( p_parser ));
+                        returnval = strdup(p_parser->psz_object_name);
                         break;
                     }
                 }
-            }
+            } while( p_config->i_type != CONFIG_HINT_END && p_config++ );
         }
     }
-    module_list_free( p_list );
+    vlc_list_release( p_list );
     return returnval;
-}
-
--(void)resetValues
-{
-    /* build a list of available modules */
-    size_t i_index;
-    module_t *p_parser, **p_list;
-
-    p_list = module_list_get( NULL );
-    for( i_index = 0; p_list[i_index]; i_index++ )
-    {
-        p_parser = p_list[i_index];
-
-        if( p_item->i_type == CONFIG_ITEM_MODULE )
-        {
-            if( module_provides( p_parser, p_item->psz_type ) )
-            {
-                NSString *o_description = [[VLCMain sharedInstance]
-                    localizedString: module_GetLongName( p_parser )];
-                [o_popup addItemWithTitle: o_description];
-                char *psz_value = config_GetPsz( VLCIntf, p_item->psz_name );
-
-                if( psz_value &&
-                    !strcmp( psz_value, module_get_object( p_parser ) ) )
-                    [o_popup selectItem:[o_popup lastItem]];
-
-                free(psz_value);
-            }
-        }
-        else
-        {
-            int i;
-
-            if( module_is_main( p_parser ) )
-                continue;
-            unsigned int confsize;
-            unsigned int unused;
-            module_config_t *p_configlist = module_config_get( p_parser, &confsize );
-            for ( i = 0; i < confsize; i++ )
-            {
-                module_config_t *p_config = &p_configlist[i];
-                /* Hack: required subcategory is stored in i_min */
-                if( p_config->i_type == CONFIG_SUBCATEGORY &&
-                    config_GetInt( VLCIntf, p_item->psz_name) == p_item->min.i )
-                {
-                    NSString *o_description = [[VLCMain sharedInstance]
-                        localizedString: module_GetLongName( p_parser )];
-                    [o_popup addItemWithTitle: o_description];
-                    char *psz_value = config_GetPsz( VLCIntf, p_item->psz_name );
-
-                    if( psz_value && !strcmp(psz_value,
-                                            module_get_object( p_parser )) )
-                        [o_popup selectItem:[o_popup lastItem]];
-
-                    free( psz_value );
-                }
-            }
-            module_config_free( p_configlist );
-        }
-    }
-    module_list_free( p_list );
-    [super resetValues];
 }
 @end
 
@@ -1455,7 +1422,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
            withView: (NSView *)o_parent_view
 {
     NSRect mainFrame = [o_parent_view frame];
-    NSString *o_labelString, *o_tooltip;
+    NSString *o_labelString, *o_tooltip, *o_textfieldString;
     mainFrame.size.height = 23;
     mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN + 1;
     mainFrame.origin.x = LEFTMARGIN;
@@ -1467,28 +1434,34 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 
         o_tooltip = [[VLCMain sharedInstance] wrapString:
             [[VLCMain sharedInstance]
-                localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
 
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString, o_tooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the stepper */
         ADD_STEPPER( o_stepper, mainFrame, mainFrame.size.width - 19,
-            0, o_tooltip, -100000, 100000)
-        [o_stepper setIntValue: p_item->value.i];
+            0, o_tooltip, -1600, 1600)
+        [o_stepper setIntValue: p_item->i_value];
         [o_stepper setAutoresizingMask:NSViewMaxXMargin ];
         [self addSubview: o_stepper];
 
+        /* build the textfield */
+        if( p_item->psz_value )
+            o_textfieldString = [[VLCMain sharedInstance]
+                                    localizedString: p_item->psz_value];
+        else
+            o_textfieldString = [NSString stringWithString: @""];
         ADD_TEXTFIELD( o_textfield, mainFrame, mainFrame.size.width - 19 - 52,
             1, 49, o_tooltip, @"" )
-        [o_textfield setIntValue: p_item->value.i];
+        [o_textfield setIntValue: p_item->i_value];
         [o_textfield setDelegate: self];
         [[NSNotificationCenter defaultCenter] addObserver: self
             selector: @selector(textfieldChanged:)
@@ -1538,12 +1511,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     return [o_textfield intValue];
 }
 
--(void)resetValues
-{
-    [o_textfield setIntValue: config_GetInt(VLCIntf, p_item->psz_name)];
-    [super resetValues];
-}
-
 @end
 
 @implementation IntegerListConfigControl
@@ -1563,27 +1530,26 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         int i_index;
         i_view_type = CONFIG_ITEM_STRING_LIST;
 
-        o_textfieldTooltip = [[VLCMain sharedInstance] wrapString:
-                              [[VLCMain sharedInstance]
-                               localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];        
-
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                localizedString: (char *)p_item->psz_text];
+                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString, o_textfieldTooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the textfield */
+        o_textfieldTooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
         ADD_COMBO( o_combo, mainFrame, [o_label frame].size.width,
             -2, 0, o_textfieldTooltip )
         [o_combo setAutoresizingMask:NSViewWidthSizable ];
         for( i_index = 0; i_index < p_item->i_list; i_index++ )
         {
-            if( p_item->value.i == p_item->pi_list[i_index] )
+            if( p_item->i_value == p_item->pi_list[i_index] )
             {
                 [o_combo selectItemAtIndex: i_index];
             }
@@ -1620,33 +1586,19 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     else
         return [o_combo intValue];
 }
-
--(void)resetValues
-{
-    int i_index;
-    [o_combo reloadData];
-    for( i_index = 0; i_index < p_item->i_list; i_index++ )
-    {
-        if( config_GetInt( VLCIntf, p_item->psz_name) == p_item->pi_list[i_index] )
-        {
-            [o_combo selectItemAtIndex: i_index];
-        }
-    }
-
-}
 @end
 
 @implementation IntegerListConfigControl (NSComboBoxDataSource)
-- (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (int)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
     return p_item->i_list;
 }
 
-- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)i_index
+- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)i_index
 {
     if( p_item->ppsz_list_text && p_item->ppsz_list_text[i_index] )
         return [[VLCMain sharedInstance]
-                    localizedString: (char *)p_item->ppsz_list_text[i_index]];
+                    localizedString: p_item->ppsz_list_text[i_index]];
     else
         return [NSString stringWithFormat: @"%i", p_item->pi_list[i_index]];
 }
@@ -1667,24 +1619,23 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     {
         i_view_type = CONFIG_ITEM_RANGED_INTEGER;
 
-        o_tooltip = [[VLCMain sharedInstance] wrapString:
-                     [[VLCMain sharedInstance]
-                      localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
-
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString, o_tooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the textfield */
+        o_tooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
         ADD_TEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
             28, 49, o_tooltip, @"" )
-        [o_textfield setIntValue: p_item->value.i];
+        [o_textfield setIntValue: p_item->i_value];
         [o_textfield setAutoresizingMask:NSViewMaxXMargin ];
         [o_textfield setDelegate: self];
         [[NSNotificationCenter defaultCenter] addObserver: self
@@ -1694,16 +1645,16 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         [self addSubview: o_textfield];
 
         /* build the mintextfield */
-        ADD_LABEL( o_textfield_min, mainFrame, 12, -30, @"-8888", @"" )
-        [o_textfield_min setIntValue: p_item->min.i];
+        ADD_LABEL( o_textfield_min, mainFrame, 12, -30, @"-8888" )
+        [o_textfield_min setIntValue: p_item->i_min];
         [o_textfield_min setAutoresizingMask:NSViewMaxXMargin ];
         [o_textfield_min setAlignment:NSRightTextAlignment];
         [self addSubview: o_textfield_min];
 
         /* build the maxtextfield */
         ADD_LABEL( o_textfield_max, mainFrame,
-                    mainFrame.size.width - 31, -30, @"8888", @"" )
-        [o_textfield_max setIntValue: p_item->max.i];
+                    mainFrame.size.width - 31, -30, @"8888" )
+        [o_textfield_max setIntValue: p_item->i_max];
         [o_textfield_max setAutoresizingMask:NSViewMinXMargin ];
         [self addSubview: o_textfield_max];
 
@@ -1713,8 +1664,8 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             [o_textfield_max frame].size.width -
             [o_textfield_max frame].size.width - 14 -
             [o_textfield_min frame].origin.x, o_tooltip,
-            p_item->min.i, p_item->max.i )
-        [o_slider setIntValue: p_item->value.i];
+            p_item->i_min, p_item->i_max )
+        [o_slider setIntValue: p_item->i_value];
         [o_slider setAutoresizingMask:NSViewWidthSizable ];
         [o_slider setTarget: self];
         [o_slider setAction: @selector(sliderChanged:)];
@@ -1761,14 +1712,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 {
     return [o_slider intValue];
 }
-
-- (void)resetValues
-{
-    int value = config_GetInt( VLCIntf, p_item->psz_name );
-    [o_textfield setIntValue:value];
-    [o_slider setIntValue:value];
-    [super resetValues];
-}
 @end
 
 @implementation FloatConfigControl
@@ -1776,7 +1719,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
            withView: (NSView *)o_parent_view
 {
     NSRect mainFrame = [o_parent_view frame];
-    NSString *o_labelString, *o_tooltip;
+    NSString *o_labelString, *o_tooltip, *o_textfieldString;
     mainFrame.size.height = 23;
     mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN + 1;
     mainFrame.origin.x = LEFTMARGIN;
@@ -1788,29 +1731,34 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 
         o_tooltip = [[VLCMain sharedInstance] wrapString:
             [[VLCMain sharedInstance]
-                localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
 
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -2, o_labelString, o_tooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -2, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the stepper */
         ADD_STEPPER( o_stepper, mainFrame, mainFrame.size.width - 19,
-            0, o_tooltip, -100000, 100000)
-        [o_stepper setFloatValue: p_item->value.f];
+            0, o_tooltip, -1600, 1600)
+        [o_stepper setFloatValue: p_item->f_value];
         [o_stepper setAutoresizingMask:NSViewMaxXMargin ];
         [self addSubview: o_stepper];
 
         /* build the textfield */
+        if( p_item->psz_value )
+            o_textfieldString = [[VLCMain sharedInstance]
+                                    localizedString: p_item->psz_value];
+        else
+            o_textfieldString = [NSString stringWithString: @""];
         ADD_TEXTFIELD( o_textfield, mainFrame, mainFrame.size.width - 19 - 52,
             1, 49, o_tooltip, @"" )
-        [o_textfield setFloatValue: p_item->value.f];
+        [o_textfield setFloatValue: p_item->f_value];
         [o_textfield setDelegate: self];
         [[NSNotificationCenter defaultCenter] addObserver: self
             selector: @selector(textfieldChanged:)
@@ -1859,12 +1807,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 {
     return [o_stepper floatValue];
 }
-
-- (void)resetValues
-{
-    [o_textfield setFloatValue: config_GetFloat( VLCIntf, p_item->psz_name)];
-    [super resetValues];
-}
 @end
 
 @implementation RangedFloatConfigControl
@@ -1882,24 +1824,23 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     {
         i_view_type = CONFIG_ITEM_RANGED_INTEGER;
 
-        o_tooltip = [[VLCMain sharedInstance] wrapString:
-                     [[VLCMain sharedInstance]
-                      localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];        
-
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString, o_tooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the textfield */
+        o_tooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
         ADD_TEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
             28, 49, o_tooltip, @"" )
-        [o_textfield setFloatValue: p_item->value.f];
+        [o_textfield setFloatValue: p_item->f_value];
         [o_textfield setAutoresizingMask:NSViewMaxXMargin ];
         [o_textfield setDelegate: self];
         [[NSNotificationCenter defaultCenter] addObserver: self
@@ -1909,16 +1850,16 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         [self addSubview: o_textfield];
 
         /* build the mintextfield */
-        ADD_LABEL( o_textfield_min, mainFrame, 12, -30, @"-8888", @"" )
-        [o_textfield_min setFloatValue: p_item->min.f];
+        ADD_LABEL( o_textfield_min, mainFrame, 12, -30, @"-8888" )
+        [o_textfield_min setFloatValue: p_item->f_min];
         [o_textfield_min setAutoresizingMask:NSViewMaxXMargin ];
         [o_textfield_min setAlignment:NSRightTextAlignment];
         [self addSubview: o_textfield_min];
 
         /* build the maxtextfield */
         ADD_LABEL( o_textfield_max, mainFrame, mainFrame.size.width - 31,
-            -30, @"8888", @"" )
-        [o_textfield_max setFloatValue: p_item->max.f];
+            -30, @"8888" )
+        [o_textfield_max setFloatValue: p_item->f_max];
         [o_textfield_max setAutoresizingMask:NSViewMinXMargin ];
         [self addSubview: o_textfield_max];
 
@@ -1927,9 +1868,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             [o_textfield_min frame].size.width + 6, -1, mainFrame.size.width -
             [o_textfield_max frame].size.width -
             [o_textfield_max frame].size.width - 14 -
-            [o_textfield_min frame].origin.x, o_tooltip, p_item->min.f,
-            p_item->max.f )
-        [o_slider setFloatValue: p_item->value.f];
+            [o_textfield_min frame].origin.x, o_tooltip, p_item->f_min,
+            p_item->f_max )
+        [o_slider setFloatValue: p_item->f_value];
         [o_slider setAutoresizingMask:NSViewWidthSizable ];
         [o_slider setTarget: self];
         [o_slider setAction: @selector(sliderChanged:)];
@@ -1977,12 +1918,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     return [o_slider floatValue];
 }
 
-- (void)resetValues
-{
-    [o_textfield setFloatValue: config_GetFloat(VLCIntf, p_item->psz_name)];
-    [o_slider setFloatValue: config_GetFloat(VLCIntf, p_item->psz_name)];
-    [super resetValues];
-}
 @end
 
 @implementation BoolConfigControl
@@ -2004,18 +1939,18 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         /* add the checkbox */
         o_tooltip = [[VLCMain sharedInstance]
             wrapString: [[VLCMain sharedInstance]
-            localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
+            localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
         ADD_CHECKBOX( o_checkbox, mainFrame, 0,
-                        0, @"", o_tooltip, p_item->value.i, NSImageLeft)
+                        0, @"", o_tooltip, p_item->i_value, NSImageLeft)
         [o_checkbox setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_checkbox];
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, [o_checkbox frame].size.width, 0, o_labelString, o_tooltip )
+        ADD_LABEL( o_label, mainFrame, [o_checkbox frame].size.width, 0, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
     }
@@ -2033,14 +1968,157 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     return [o_checkbox intValue];
 }
 
-- (void)resetValues
+@end
+
+@implementation KeyConfigControlBefore103
+
+- (id) initWithItem: (module_config_t *)_p_item
+           withView: (NSView *)o_parent_view
 {
-    [o_checkbox setState: config_GetInt( VLCIntf, p_item->psz_name)];
-    [super resetValues];
+    NSRect mainFrame = [o_parent_view frame];
+    NSString *o_labelString, *o_tooltip;
+    mainFrame.size.height = 37;
+    mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN + 1;
+    mainFrame.origin.x = LEFTMARGIN;
+    mainFrame.origin.y = 0;
+
+    if( [super initWithFrame: mainFrame item: _p_item] != nil )
+    {
+        i_view_type = CONFIG_ITEM_KEY_BEFORE_10_3;
+
+        /* add the label */
+        if( p_item->psz_text )
+            o_labelString = [[VLCMain sharedInstance]
+                                localizedString: p_item->psz_text];
+        else
+            o_labelString = [NSString stringWithString:@""];
+        ADD_LABEL( o_label, mainFrame, 0, -10, o_labelString )
+        [o_label setAutoresizingMask:NSViewNotSizable ];
+        [self addSubview: o_label];
+
+        /* add the checkboxes */
+        o_tooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
+        ADD_CHECKBOX( o_cmd_checkbox, mainFrame,
+            [o_label frame].size.width + 2, 0,
+            [NSString stringWithUTF8String:PLACE_OF_INTEREST_SIGN], o_tooltip,
+            ((((unsigned int)p_item->i_value) & KEY_MODIFIER_COMMAND)?YES:NO),
+            NSImageLeft )
+        [o_cmd_checkbox setState: p_item->i_value & KEY_MODIFIER_COMMAND];
+        ADD_CHECKBOX( o_ctrl_checkbox, mainFrame,
+            [o_cmd_checkbox frame].size.width +
+            [o_cmd_checkbox frame].origin.x + 6, 0,
+            [NSString stringWithUTF8String:UP_ARROWHEAD], o_tooltip,
+            ((((unsigned int)p_item->i_value) & KEY_MODIFIER_CTRL)?YES:NO),
+            NSImageLeft )
+        [o_ctrl_checkbox setState: p_item->i_value & KEY_MODIFIER_CTRL];
+        ADD_CHECKBOX( o_alt_checkbox, mainFrame, [o_label frame].size.width +
+            2, -2 - [o_cmd_checkbox frame].size.height,
+            [NSString stringWithUTF8String:OPTION_KEY], o_tooltip,
+            ((((unsigned int)p_item->i_value) & KEY_MODIFIER_ALT)?YES:NO),
+            NSImageLeft )
+        [o_alt_checkbox setState: p_item->i_value & KEY_MODIFIER_ALT];
+        ADD_CHECKBOX( o_shift_checkbox, mainFrame,
+            [o_cmd_checkbox frame].size.width +
+            [o_cmd_checkbox frame].origin.x + 6, -2 -
+            [o_cmd_checkbox frame].size.height,
+            [NSString stringWithUTF8String:UPWARDS_WHITE_ARROW], o_tooltip,
+            ((((unsigned int)p_item->i_value) & KEY_MODIFIER_SHIFT)?YES:NO),
+            NSImageLeft )
+        [o_shift_checkbox setState: p_item->i_value & KEY_MODIFIER_SHIFT];
+        [self addSubview: o_cmd_checkbox];
+        [self addSubview: o_ctrl_checkbox];
+        [self addSubview: o_alt_checkbox];
+        [self addSubview: o_shift_checkbox];
+
+        /* build the popup */
+        ADD_POPUP( o_popup, mainFrame, [o_shift_checkbox frame].origin.x +
+            [o_shift_checkbox frame].size.width + 4,
+            4, 0, o_tooltip )
+        [o_popup setAutoresizingMask:NSViewWidthSizable ];
+
+        if( o_keys_menu == nil )
+        {
+            unsigned int i;
+            o_keys_menu = [[NSMenu alloc] initWithTitle: @"Keys Menu"];
+            for ( i = 0; i < sizeof(vlc_keys) / sizeof(key_descriptor_t); i++)
+                if( vlc_keys[i].psz_key_string && *vlc_keys[i].psz_key_string )
+                    POPULATE_A_KEY( o_keys_menu,
+                        [NSString stringWithCString:vlc_keys[i].psz_key_string]
+                        , vlc_keys[i].i_key_code)
+        }
+        [o_popup setMenu:[o_keys_menu copyWithZone:nil]];
+        [o_popup selectItemWithTitle: [[VLCMain sharedInstance]
+            localizedString:KeyToString(
+            (((unsigned int)p_item->i_value) & ~KEY_MODIFIER ))]];
+        [self addSubview: o_popup];
+    }
+    return self;
+}
+
+- (void) alignWithXPosition:(int)i_xPos
+{
+    NSRect frame;
+    NSRect superFrame = [self frame];
+    frame = [o_label frame];
+    frame.origin.x = i_xPos - frame.size.width - 3;
+    [o_label setFrame:frame];
+
+    frame = [o_cmd_checkbox frame];
+    frame.origin.x = i_xPos;
+    [o_cmd_checkbox setFrame:frame];
+
+    frame = [o_ctrl_checkbox frame];
+    frame.origin.x = [o_cmd_checkbox frame].size.width +
+                        [o_cmd_checkbox frame].origin.x + 4;
+    [o_ctrl_checkbox setFrame:frame];
+
+    frame = [o_alt_checkbox frame];
+    frame.origin.x = i_xPos;
+    [o_alt_checkbox setFrame:frame];
+
+    frame = [o_shift_checkbox frame];
+    frame.origin.x = [o_cmd_checkbox frame].size.width +
+                        [o_cmd_checkbox frame].origin.x + 4;
+    [o_shift_checkbox setFrame:frame];
+
+    frame = [o_popup frame];
+    frame.origin.x = [o_shift_checkbox frame].origin.x +
+                        [o_shift_checkbox frame].size.width + 3;
+    frame.size.width = superFrame.size.width - frame.origin.x + 2;
+    [o_popup setFrame:frame];
+}
+
+- (void)dealloc
+{
+    [o_cmd_checkbox release];
+    [o_ctrl_checkbox release];
+    [o_alt_checkbox release];
+    [o_shift_checkbox release];
+    [o_popup release];
+    [super dealloc];
+}
+
+- (int)intValue
+{
+    unsigned int i_new_key = 0;
+
+    i_new_key |= ([o_cmd_checkbox state] == NSOnState) ?
+        KEY_MODIFIER_COMMAND : 0;
+    i_new_key |= ([o_ctrl_checkbox state] == NSOnState) ?
+        KEY_MODIFIER_CTRL : 0;
+    i_new_key |= ([o_alt_checkbox state] == NSOnState) ?
+        KEY_MODIFIER_ALT : 0;
+    i_new_key |= ([o_shift_checkbox state] == NSOnState) ?
+        KEY_MODIFIER_SHIFT : 0;
+
+    i_new_key |= StringToKey((char *)[[[o_popup selectedItem] title] cString]);
+    return i_new_key;
 }
 @end
 
-@implementation KeyConfigControl
+@implementation KeyConfigControlAfter103
 - (id) initWithItem: (module_config_t *)_p_item
            withView: (NSView *)o_parent_view
 {
@@ -2055,21 +2133,20 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     {
         i_view_type = CONFIG_ITEM_KEY_AFTER_10_3;
 
-        o_tooltip = [[VLCMain sharedInstance] wrapString:
-                     [[VLCMain sharedInstance]
-                      localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
-
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                localizedString: (char *)p_item->psz_text];
+                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -1, o_labelString, o_tooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -1, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the popup */
+        o_tooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
         ADD_POPUP( o_popup, mainFrame, [o_label frame].origin.x +
             [o_label frame].size.width + 3,
             -2, 0, o_tooltip )
@@ -2079,17 +2156,14 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         {
             unsigned int i;
             o_keys_menu = [[NSMenu alloc] initWithTitle: @"Keys Menu"];
-#warning This does not work anymore. FIXME.
-#if 0
             for ( i = 0; i < sizeof(vlc_keys) / sizeof(key_descriptor_t); i++)
-                if( vlc_keys[i].psz_key_string )
+                if( vlc_keys[i].psz_key_string && *vlc_keys[i].psz_key_string )
                     POPULATE_A_KEY( o_keys_menu,
-                        [NSString stringWithUTF8String:vlc_keys[i].psz_key_string]
+                        [NSString stringWithCString:vlc_keys[i].psz_key_string]
                         , vlc_keys[i].i_key_code)
-#endif
         }
         [o_popup setMenu:[o_keys_menu copyWithZone:nil]];
-        [o_popup selectItem:[[o_popup menu] itemWithTag:p_item->value.i]];
+        [o_popup selectItem:[[o_popup menu] itemWithTag:p_item->i_value]];
         [self addSubview: o_popup];
 
     }
@@ -2120,60 +2194,49 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 {
     return [o_popup selectedTag];
 }
-
-- (void)resetValues
-{
-    [o_popup selectItem:[[o_popup menu] itemWithTag:config_GetInt( VLCIntf, p_item->psz_name )]];
-    [super resetValues];
-}
 @end
 
 @implementation ModuleListConfigControl
 - (id) initWithItem: (module_config_t *)_p_item
            withView: (NSView *)o_parent_view
 {
-    if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
+if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
 //TODO....
         return nil;
 
 //Fill our array to know how may items we have...
-    module_t *p_parser, **p_list;
-    size_t i_module_index;
+    vlc_list_t *p_list;
+    module_t *p_parser;
+    int i_index;
     NSRect mainFrame = [o_parent_view frame];
     NSString *o_labelString, *o_textfieldString, *o_tooltip;
 
     o_modulearray = [[NSMutableArray alloc] initWithCapacity:10];
     /* build a list of available modules */
-    p_list = module_list_get( NULL );
-    for( i_module_index = 0; p_list[i_module_index]; i_module_index++ )
+    p_list = vlc_list_find( VLCIntf, VLC_OBJECT_MODULE, FIND_ANYWHERE );
+    for( i_index = 0; i_index < p_list->i_count; i_index++ )
     {
-        int i;
-        p_parser = p_list[i_module_index];
+        p_parser = (module_t *)p_list->p_values[i_index].p_object ;
 
-        if( module_is_main( p_parser ) )
+        if( !strcmp( p_parser->psz_object_name, "main" ) )
             continue;
 
-        unsigned int confsize;
-        module_config_t *p_configlist = module_config_get( p_parser, &confsize );
-
-        for ( i = 0; i < confsize; i++ )
+        module_config_t *p_config = p_parser->p_config;
+        if( p_config ) do
         {
-            unsigned int unused;
-            module_config_t *p_config = &p_configlist[i];
             NSString *o_modulelongname, *o_modulename;
             NSNumber *o_moduleenabled = nil;
-
             /* Hack: required subcategory is stored in i_min */
             if( p_config->i_type == CONFIG_SUBCATEGORY &&
-                p_config->value.i == _p_item->min.i )
+                p_config->i_value == _p_item->i_min )
             {
                 o_modulelongname = [NSString stringWithUTF8String:
-                                        module_GetLongName( p_parser )];
+                                        p_parser->psz_longname];
                 o_modulename = [NSString stringWithUTF8String:
-                                        module_get_object( p_parser )];
+                                        p_parser->psz_object_name];
 
-                if( _p_item->value.psz &&
-                    strstr( _p_item->value.psz, module_get_object( p_parser ) ) )
+                if( _p_item->psz_value &&
+                    strstr( _p_item->psz_value, p_parser->psz_object_name ) )
                     o_moduleenabled = [NSNumber numberWithBool:YES];
                 else
                     o_moduleenabled = [NSNumber numberWithBool:NO];
@@ -2182,10 +2245,9 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                     arrayWithObjects: o_modulename, o_modulelongname,
                     o_moduleenabled, nil]];
             }
-        }
-        module_config_free( p_configlist );
+        } while( p_config->i_type != CONFIG_HINT_END && p_config++ );
     }
-    module_list_free( p_list );
+    vlc_list_release( p_list );
 
     mainFrame.size.height = 30 + 18 * [o_modulearray count];
     mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN;
@@ -2195,24 +2257,23 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     {
         i_view_type = CONFIG_ITEM_MODULE_LIST;
 
-        o_tooltip = [[VLCMain sharedInstance] wrapString:
-                     [[VLCMain sharedInstance]
-                      localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
-
         /* add the label */
         if( p_item->psz_text )
             o_labelString = [[VLCMain sharedInstance]
-                                localizedString: (char *)p_item->psz_text];
+                                localizedString: p_item->psz_text];
         else
             o_labelString = [NSString stringWithString:@""];
-        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString, o_tooltip )
+        ADD_LABEL( o_label, mainFrame, 0, -3, o_labelString )
         [o_label setAutoresizingMask:NSViewNotSizable ];
         [self addSubview: o_label];
 
         /* build the textfield */
-        if( p_item->value.psz )
+        o_tooltip = [[VLCMain sharedInstance] wrapString:
+            [[VLCMain sharedInstance]
+                localizedString: p_item->psz_longtext ] toWidth: PREFS_WRAP];
+        if( p_item->psz_value )
             o_textfieldString = [[VLCMain sharedInstance]
-                localizedString: (char *)p_item->value.psz];
+                localizedString: p_item->psz_value];
         else
             o_textfieldString = [NSString stringWithString: @""];
         ADD_TEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
@@ -2231,11 +2292,13 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     o_scrollview = [[[NSScrollView alloc] initWithFrame: s_rc] retain];
     [o_scrollview setDrawsBackground: NO];
     [o_scrollview setBorderType: NSBezelBorder];
-    [o_scrollview setAutohidesScrollers:YES];
+    if( MACOS_VERSION >= 10.3 )
+        [o_scrollview setAutohidesScrollers:YES];
 
     NSTableView *o_tableview;
     o_tableview = [[NSTableView alloc] initWithFrame : s_rc];
-    [o_tableview setUsesAlternatingRowBackgroundColors:YES];
+    if( MACOS_VERSION >= 10.3 )
+        [o_tableview setUsesAlternatingRowBackgroundColors:YES];
     [o_tableview setHeaderView:nil];
 /* TODO: find a good way to fix the row height and text size*/
 /* FIXME: support for multiple selection... */
@@ -2247,7 +2310,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     [o_dataCell setTitle:@""];
     [o_dataCell setFont:[NSFont systemFontOfSize:0]];
     NSTableColumn *o_tableColumn = [[NSTableColumn alloc]
-        initWithIdentifier:@"Enabled"];
+        initWithIdentifier:[NSString stringWithCString: "Enabled"]];
     [o_tableColumn setHeaderCell: o_headerCell];
     [o_tableColumn setDataCell: o_dataCell];
     [o_tableColumn setWidth:17];
@@ -2257,7 +2320,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     o_dataCell = [[NSTextFieldCell alloc] init];
     [o_dataCell setFont:[NSFont systemFontOfSize:12]];
     o_tableColumn = [[NSTableColumn alloc]
-        initWithIdentifier:@"Module"];
+        initWithIdentifier:[NSString stringWithCString: "Module"]];
     [o_tableColumn setHeaderCell: o_headerCell];
     [o_tableColumn setDataCell: o_dataCell];
     [o_tableColumn setWidth:388 - 17];
@@ -2311,14 +2374,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 
 - (char *)stringValue
 {
-    return strdup( [[o_textfield stringValue] UTF8String] );
-}
-
--(void)resetValues
-{
-#warning Reset prefs of the module selector is broken atm. 
-    NSLog( @"don't forget about modulelistconfig" );
-    [super resetValues];
+    return strdup( [[o_textfield stringValue] cString] );
 }
 
 @end
@@ -2344,7 +2400,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 }
 
 - (NSDragOperation)tableView:(NSTableView*)table
-    validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row
+    validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row
     proposedDropOperation:(NSTableViewDropOperation)op
 {
     // Make drops at the end of the table go to the end.
@@ -2362,7 +2418,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 }
 
 - (BOOL)tableView:(NSTableView*)table acceptDrop:(id <NSDraggingInfo>)info
-    row:(NSInteger)dropRow dropOperation:(NSTableViewDropOperation)op;
+    row:(int)dropRow dropOperation:(NSTableViewDropOperation)op;
 {
     NSPasteboard    *pb = [info draggingPasteboard];
     NSDragOperation srcMask = [info draggingSourceOperationMask];
@@ -2416,24 +2472,26 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     return accepted;
 }
 
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
+- (int)numberOfRowsInTableView:(NSTableView *)aTableView
 {
     return [o_modulearray count];
 }
 
 - (id)tableView:(NSTableView *)aTableView
-    objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+    objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
-    if( [[aTableColumn identifier] isEqualToString: @"Enabled"] )
+    if( [[aTableColumn identifier] isEqualToString:
+        [NSString stringWithCString:"Enabled"]] )
         return [[o_modulearray objectAtIndex:rowIndex] objectAtIndex:2];
-    if( [[aTableColumn identifier] isEqualToString: @"Module"] )
+    if( [[aTableColumn identifier] isEqualToString:
+        [NSString stringWithCString:"Module"]] )
         return [[o_modulearray objectAtIndex:rowIndex] objectAtIndex:1];
 
     return nil;
 }
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject
-    forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+    forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
     [[o_modulearray objectAtIndex:rowIndex] replaceObjectAtIndex:2
         withObject: anObject];

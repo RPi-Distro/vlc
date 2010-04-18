@@ -2,7 +2,7 @@
  * hd1000a.cpp : Roku HD1000 audio output
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 29481707c72ed01bf51b26ad13ce0d51c96d39ce $
+ * $Id: d71742f55fb6e5759d77294b19ddaf8579edcf41 $
  *
  * Author: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -26,13 +26,12 @@
  *****************************************************************************/
 extern "C"
 {
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <string.h>
+#include <stdlib.h>
+#include <errno.h>
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_aout.h>
+#include <vlc/vlc.h>
+#include <vlc/aout.h>
 
 #include "aout_internal.h"
 }
@@ -65,21 +64,21 @@ static int     Open        ( vlc_object_t * );
 static void    Close       ( vlc_object_t * );
 
 static void    Play        ( aout_instance_t * );
-static void*   Thread      ( vlc_object_t * );
+static int     Thread      ( aout_instance_t * );
 
 static void    InterleaveS16( int16_t *, int16_t * );
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin ()
-    set_shortname( "Roku HD1000" )
-    set_description( N_("Roku HD1000 audio output") )
-    set_capability( "audio output", 100 )
-    set_category( CAT_AUDIO )
-    set_subcategory( SUBCAT_AUDIO_AOUT )
-    set_callbacks( Open, Close )
-vlc_module_end ()
+vlc_module_begin();
+    set_shortname( "Roku HD1000" );
+    set_description( _("Roku HD1000 audio output") );
+    set_capability( "audio output", 100 );
+    set_category( CAT_AUDIO );
+    set_subcategory( SUBCAT_AUDIO_AOUT );
+    set_callbacks( Open, Close );
+vlc_module_end();
 
 /*****************************************************************************
  * Open: open a dummy audio device
@@ -95,14 +94,18 @@ static int Open( vlc_object_t * p_this )
     p_aout->output.p_sys = p_sys =
         (aout_sys_t *)malloc( sizeof( aout_sys_t ) );
     if( p_aout->output.p_sys == NULL )
-        return VLC_ENOMEM;
+    {
+        msg_Err( p_aout, "out of memory" );
+        return VLC_EGENERIC;
+    }
 
     /* New PCMAudioPlayer */
     p_sys->pPlayer = pPlayer = new PCMAudioPlayer();
     if( p_sys->pPlayer == NULL )
     {
+        msg_Err( p_aout, "out of memory" );
         free( p_sys );
-        return VLC_ENOMEM;
+        return VLC_EGENERIC;
     }
 
     /* Get Buffer Requirements */
@@ -114,16 +117,17 @@ static int Open( vlc_object_t * p_this )
         delete pPlayer;
         free( p_sys );
         return VLC_EGENERIC;
-    }
+    } 
 
     p_sys->nBuffers = __MIN( p_sys->nBuffers, 4 );
 
     p_sys->ppBuffers = (void **)malloc( p_sys->nBuffers * sizeof( void * ) );
     if( p_sys->ppBuffers == NULL )
     {
+        msg_Err( p_aout, "out of memory" );
         delete pPlayer;
         free( p_sys );
-        return VLC_ENOMEM;
+        return VLC_EGENERIC;
     }
 
     /* Open PCMAudioPlayer */
@@ -154,26 +158,26 @@ static int Open( vlc_object_t * p_this )
         }
     }
 
-    p_aout->output.output.i_format = VLC_CODEC_S16N;
+    p_aout->output.output.i_format = AOUT_FMT_S16_NE;
     p_aout->output.i_nb_samples = FRAME_SIZE;
     p_aout->output.output.i_physical_channels
             = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
     p_aout->output.pf_play = Play;
     aout_VolumeSoftInit( p_aout );
 
-    i_volume = config_GetInt( p_aout->p_libvlc, "volume" );
+    i_volume = config_GetInt( p_aout->p_vlc, "volume" );
     pPlayer->SetVolume( (u32)__MIN( i_volume * 64, 0xFFFF ) );
 
     /* Create thread and wait for its readiness. */
     if( vlc_thread_create( p_aout, "aout", Thread,
-                           VLC_THREAD_PRIORITY_OUTPUT ) )
+                           VLC_THREAD_PRIORITY_OUTPUT, VLC_FALSE ) )
     {
-        msg_Err( p_aout, "cannot create OSS thread (%m)" );
+        msg_Err( p_aout, "cannot create OSS thread (%s)", strerror(errno) );
         pPlayer->Close();
         delete pPlayer;
         free( p_sys->ppBuffers );
         free( p_sys );
-        return VLC_ENOMEM;
+        return VLC_ETHREAD;
     }
 
     return VLC_SUCCESS;
@@ -188,9 +192,9 @@ static void Close( vlc_object_t * p_this )
     aout_instance_t * p_aout = (aout_instance_t *)p_this;
     struct aout_sys_t * p_sys = p_aout->output.p_sys;
 
-    vlc_object_kill( p_aout );
+    p_aout->b_die = VLC_TRUE;
     vlc_thread_join( p_aout );
-    p_aout->b_die = false;
+    p_aout->b_die = VLC_FALSE;
 
     do
     {
@@ -214,15 +218,13 @@ static void Play( aout_instance_t * p_aout )
 /*****************************************************************************
  * Thread: thread used to DMA the data to the device
  *****************************************************************************/
-static void* Thread( vlc_object_t *p_this )
+static int Thread( aout_instance_t * p_aout )
 {
-    aout_instance_t * p_aout = (aout_instance_t*)p_this;
     aout_buffer_t * p_buffer;
     struct aout_sys_t * p_sys = p_aout->output.p_sys;
     PCMAudioPlayer * pPlayer = p_sys->pPlayer;
-    int canc = vlc_savecancel ();
 
-    while( vlc_object_alive (p_aout) )
+    while( !p_aout->b_die )
     {
         pPlayer->WaitForBuffer();
 
@@ -233,8 +235,8 @@ static void* Thread( vlc_object_t *p_this )
 #define i p_sys->nNextBufferIndex
         if( p_buffer == NULL )
         {
-            vlc_memset( p_aout, p_sys->ppBuffers[ i ], 0,
-                                      p_sys->nBufferSize );
+            p_aout->p_vlc->pf_memset( p_sys->ppBuffers[ i ], 0,
+                                      p_sys->nBufferSize ); 
         }
         else
         {
@@ -247,14 +249,13 @@ static void* Thread( vlc_object_t *p_this )
                                    p_sys->nBufferSize / 2 ) )
         {
             msg_Err( p_aout, "QueueBuffer failed" );
-        }
+        } 
 
         i = (i + 1) % p_sys->nBuffers;
 #undef i
     }
 
-    vlc_restorecancel (canc);
-    return NULL;
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************

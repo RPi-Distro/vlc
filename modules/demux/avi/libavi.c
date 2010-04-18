@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 45d20e2b43d20c451b1f6abcd54ad8787c65b92a $
+ * $Id: 6133741243d516776b418f601914c8aaa81deae4 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,25 +20,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <stdlib.h>                                      /* malloc(), free() */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_demux.h>
-#include <vlc_codecs.h>                                /* BITMAPINFOHEADER */
+#include <vlc/vlc.h>
+#include <vlc/input.h>
+#include "codecs.h"                                      /* BITMAPINFOHEADER */
 
 #include "libavi.h"
 
 #define AVI_DEBUG 1
 
-#define __EVEN( x ) (((x) + 1) & ~1)
+#define FREE( p ) \
+    if( p ) {free( p ); p = NULL; }
 
-static vlc_fourcc_t GetFOURCC( const uint8_t *p_buff )
+#define __EVEN( x ) ( (x)&0x01 ? (x)+1 : (x) )
+
+static vlc_fourcc_t GetFOURCC( byte_t *p_buff )
 {
     return VLC_FOURCC( p_buff[0], p_buff[1], p_buff[2], p_buff[3] );
 }
+
+#define AVI_ChunkFree( a, b ) _AVI_ChunkFree( (a), (avi_chunk_t*)(b) )
+void    _AVI_ChunkFree( stream_t *, avi_chunk_t *p_chk );
 
 /****************************************************************************
  *
@@ -47,7 +50,7 @@ static vlc_fourcc_t GetFOURCC( const uint8_t *p_buff )
  ****************************************************************************/
 static int AVI_ChunkReadCommon( stream_t *s, avi_chunk_t *p_chk )
 {
-    const uint8_t *p_peek;
+    uint8_t  *p_peek;
     int i_peek;
 
     memset( p_chk, 0, sizeof( avi_chunk_t ) );
@@ -68,7 +71,7 @@ static int AVI_ChunkReadCommon( stream_t *s, avi_chunk_t *p_chk )
 
 #ifdef AVI_DEBUG
     msg_Dbg( (vlc_object_t*)s,
-             "found Chunk fourcc:%8.8x (%4.4s) size:%"PRId64" pos:%"PRId64,
+             "found Chunk fourcc:%8.8x (%4.4s) size:"I64Fd" pos:"I64Fd,
              p_chk->common.i_chunk_fourcc,
              (char*)&p_chk->common.i_chunk_fourcc,
              p_chk->common.i_chunk_size,
@@ -112,8 +115,8 @@ static int AVI_NextChunk( stream_t *s, avi_chunk_t *p_chk )
 static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
 {
     avi_chunk_t *p_chk;
-    const uint8_t *p_peek;
-    bool b_seekable;
+    uint8_t *p_peek;
+    vlc_bool_t b_seekable;
 
     if( p_container->common.i_chunk_size > 0 && p_container->common.i_chunk_size < 8 )
     {
@@ -130,13 +133,6 @@ static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
     stream_Control( s, STREAM_CAN_FASTSEEK, &b_seekable );
 
     p_container->list.i_type = GetFOURCC( p_peek + 8 );
-
-    /* XXX fixed for on2 hack */
-    if( p_container->common.i_chunk_fourcc == AVIFOURCC_ON2 && p_container->list.i_type == AVIFOURCC_ON2f )
-    {
-        p_container->common.i_chunk_fourcc = AVIFOURCC_RIFF;
-        p_container->list.i_type = AVIFOURCC_AVI;
-    }
 
     if( p_container->common.i_chunk_fourcc == AVIFOURCC_LIST &&
         p_container->list.i_type == AVIFOURCC_movi )
@@ -203,11 +199,6 @@ static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
 
 #define AVI_READCHUNK_ENTER \
     int64_t i_read = __EVEN(p_chk->common.i_chunk_size ) + 8; \
-    if( i_read > 100000000 ) \
-    { \
-        msg_Err( s, "Big chunk ignored" ); \
-        return VLC_EGENERIC; \
-    } \
     uint8_t  *p_read, *p_buff;    \
     if( !( p_read = p_buff = malloc(i_read ) ) ) \
     { \
@@ -259,7 +250,6 @@ static int AVI_ChunkRead_avih( stream_t *s, avi_chunk_t *p_chk )
 {
     AVI_READCHUNK_ENTER;
 
-    p_chk->common.i_chunk_fourcc = AVIFOURCC_avih;
     AVI_READ4BYTES( p_chk->avih.i_microsecperframe);
     AVI_READ4BYTES( p_chk->avih.i_maxbytespersec );
     AVI_READ4BYTES( p_chk->avih.i_reserved1 );
@@ -400,7 +390,7 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
             {
                 p_chk->strf.vids.p_bih->biSize = p_chk->common.i_chunk_size;
             }
-            if( p_chk->common.i_chunk_size - sizeof(BITMAPINFOHEADER) > 0 )
+            if( p_chk->strf.vids.p_bih->biSize - sizeof(BITMAPINFOHEADER) > 0 )
             {
                 memcpy( &p_chk->strf.vids.p_bih[1],
                         p_buff + 8 + sizeof(BITMAPINFOHEADER), /* 8=fourrc+size */
@@ -408,10 +398,10 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
             }
 #ifdef AVI_DEBUG
             msg_Dbg( (vlc_object_t*)s,
-                     "strf: video:%4.4s %"PRIu32"x%"PRIu32" planes:%d %dbpp",
+                     "strf: video:%4.4s %dx%d planes:%d %dbpp",
                      (char*)&p_chk->strf.vids.p_bih->biCompression,
-                     (uint32_t)p_chk->strf.vids.p_bih->biWidth,
-                     (uint32_t)p_chk->strf.vids.p_bih->biHeight,
+                     p_chk->strf.vids.p_bih->biWidth,
+                     p_chk->strf.vids.p_bih->biHeight,
                      p_chk->strf.vids.p_bih->biPlanes,
                      p_chk->strf.vids.p_bih->biBitCount );
 #endif
@@ -428,11 +418,11 @@ static void AVI_ChunkFree_strf( avi_chunk_t *p_chk )
     avi_chunk_strf_t *p_strf = (avi_chunk_strf_t*)p_chk;
     if( p_strf->common.i_cat == AUDIO_ES )
     {
-        FREENULL( p_strf->auds.p_wf );
+        FREE( p_strf->auds.p_wf );
     }
     else if( p_strf->common.i_cat == VIDEO_ES )
     {
-        FREENULL( p_strf->vids.p_bih );
+        FREE( p_strf->vids.p_bih );
     }
 }
 
@@ -446,7 +436,7 @@ static int AVI_ChunkRead_strd( stream_t *s, avi_chunk_t *p_chk )
 
 static void AVI_ChunkFree_strd( avi_chunk_t *p_chk )
 {
-    free( p_chk->strd.p_data );
+    if( p_chk->strd.p_data ) free( p_chk->strd.p_data );
 }
 
 static int AVI_ChunkRead_idx1( stream_t *s, avi_chunk_t *p_chk )
@@ -485,7 +475,7 @@ static void AVI_ChunkFree_idx1( avi_chunk_t *p_chk )
 {
     p_chk->idx1.i_entry_count = 0;
     p_chk->idx1.i_entry_max   = 0;
-    FREENULL( p_chk->idx1.entry );
+    FREE( p_chk->idx1.entry )
 }
 
 
@@ -515,7 +505,7 @@ static int AVI_ChunkRead_indx( stream_t *s, avi_chunk_t *p_chk )
 
         i_count = __MIN( p_indx->i_entriesinuse, i_read / 8 );
         p_indx->i_entriesinuse = i_count;
-        p_indx->idx.std = calloc( i_count, sizeof( indx_std_entry_t ) );
+        p_indx->idx.std = calloc( sizeof( indx_std_entry_t ), i_count );
 
         for( i = 0; i < i_count; i++ )
         {
@@ -530,7 +520,7 @@ static int AVI_ChunkRead_indx( stream_t *s, avi_chunk_t *p_chk )
 
         i_count = __MIN( p_indx->i_entriesinuse, i_read / 12 );
         p_indx->i_entriesinuse = i_count;
-        p_indx->idx.field = calloc( i_count, sizeof( indx_field_entry_t ) );
+        p_indx->idx.field = calloc( sizeof( indx_field_entry_t ), i_count );
         for( i = 0; i < i_count; i++ )
         {
             AVI_READ4BYTES( p_indx->idx.field[i].i_offset );
@@ -547,7 +537,7 @@ static int AVI_ChunkRead_indx( stream_t *s, avi_chunk_t *p_chk )
 
         i_count = __MIN( p_indx->i_entriesinuse, i_read / 16 );
         p_indx->i_entriesinuse = i_count;
-        p_indx->idx.super = calloc( i_count, sizeof( indx_super_entry_t ) );
+        p_indx->idx.super = calloc( sizeof( indx_super_entry_t ), i_count );
 
         for( i = 0; i < i_count; i++ )
         {
@@ -570,17 +560,17 @@ static void AVI_ChunkFree_indx( avi_chunk_t *p_chk )
 {
     avi_chunk_indx_t *p_indx = (avi_chunk_indx_t*)p_chk;
 
-    FREENULL( p_indx->idx.std );
-    FREENULL( p_indx->idx.field );
-    FREENULL( p_indx->idx.super );
+    FREE( p_indx->idx.std );
+    FREE( p_indx->idx.field );
+    FREE( p_indx->idx.super );
 }
 
 
 
-static const struct
+static struct
 {
     vlc_fourcc_t i_fourcc;
-    const char *psz_type;
+    char *psz_type;
 } AVI_strz_type[] =
 {
     { AVIFOURCC_IARL, "archive location" },
@@ -643,8 +633,8 @@ static int AVI_ChunkRead_strz( stream_t *s, avi_chunk_t *p_chk )
 static void AVI_ChunkFree_strz( avi_chunk_t *p_chk )
 {
     avi_chunk_STRING_t *p_strz = (avi_chunk_STRING_t*)p_chk;
-    FREENULL( p_strz->p_type );
-    FREENULL( p_strz->p_str );
+    FREE( p_strz->p_type );
+    FREE( p_strz->p_str );
 }
 
 static int AVI_ChunkRead_nothing( stream_t *s, avi_chunk_t *p_chk )
@@ -653,10 +643,10 @@ static int AVI_ChunkRead_nothing( stream_t *s, avi_chunk_t *p_chk )
 }
 static void AVI_ChunkFree_nothing( avi_chunk_t *p_chk )
 {
-    VLC_UNUSED( p_chk );
+
 }
 
-static const struct
+static struct
 {
     vlc_fourcc_t i_fourcc;
     int   (*AVI_ChunkRead_function)( stream_t *s, avi_chunk_t *p_chk );
@@ -664,10 +654,8 @@ static const struct
 } AVI_Chunk_Function [] =
 {
     { AVIFOURCC_RIFF, AVI_ChunkRead_list, AVI_ChunkFree_nothing },
-    { AVIFOURCC_ON2,  AVI_ChunkRead_list, AVI_ChunkFree_nothing },
     { AVIFOURCC_LIST, AVI_ChunkRead_list, AVI_ChunkFree_nothing },
     { AVIFOURCC_avih, AVI_ChunkRead_avih, AVI_ChunkFree_nothing },
-    { AVIFOURCC_ON2h, AVI_ChunkRead_avih, AVI_ChunkFree_nothing },
     { AVIFOURCC_strh, AVI_ChunkRead_strh, AVI_ChunkFree_nothing },
     { AVIFOURCC_strf, AVI_ChunkRead_strf, AVI_ChunkFree_strf },
     { AVIFOURCC_strd, AVI_ChunkRead_strd, AVI_ChunkFree_strd },
@@ -745,7 +733,7 @@ int  _AVI_ChunkRead( stream_t *s, avi_chunk_t *p_chk, avi_chunk_t *p_father )
         return AVI_Chunk_Function[i_index].AVI_ChunkRead_function( s, p_chk );
     }
     else if( ( ((char*)&p_chk->common.i_chunk_fourcc)[0] == 'i' &&
-               ((char*)&p_chk->common.i_chunk_fourcc)[1] == 'x' ) ||
+               ((char*)&p_chk->common.i_chunk_fourcc)[1] == 'x' ) || 
              ( ((char*)&p_chk->common.i_chunk_fourcc)[2] == 'i' &&
                ((char*)&p_chk->common.i_chunk_fourcc)[3] == 'x' ) )
     {
@@ -797,26 +785,22 @@ void _AVI_ChunkFree( stream_t *s,
 }
 
 static void AVI_ChunkDumpDebug_level( vlc_object_t *p_obj,
-                                      avi_chunk_t  *p_chk, unsigned i_level )
+                                      avi_chunk_t  *p_chk, int i_level )
 {
-    unsigned i;
+    char str[1024];
+    int i;
     avi_chunk_t *p_child;
-
-    char str[512];
-    if( i_level >= (sizeof(str) - 1)/5 )
-        return;
 
     memset( str, ' ', sizeof( str ) );
     for( i = 1; i < i_level; i++ )
     {
         str[i * 5] = '|';
     }
-    if( p_chk->common.i_chunk_fourcc == AVIFOURCC_RIFF ||
-        p_chk->common.i_chunk_fourcc == AVIFOURCC_ON2  ||
+    if( p_chk->common.i_chunk_fourcc == AVIFOURCC_RIFF||
         p_chk->common.i_chunk_fourcc == AVIFOURCC_LIST )
     {
-        snprintf( &str[i_level * 5], sizeof(str) - 5*i_level,
-                 "%c %4.4s-%4.4s size:%"PRIu64" pos:%"PRIu64,
+        sprintf( str + i_level * 5,
+                 "%c %4.4s-%4.4s size:"I64Fu" pos:"I64Fu,
                  i_level ? '+' : '*',
                  (char*)&p_chk->common.i_chunk_fourcc,
                  (char*)&p_chk->list.i_type,
@@ -825,8 +809,8 @@ static void AVI_ChunkDumpDebug_level( vlc_object_t *p_obj,
     }
     else
     {
-        snprintf( &str[i_level * 5], sizeof(str) - 5*i_level,
-                 "+ %4.4s size:%"PRIu64" pos:%"PRIu64,
+        sprintf( str + i_level * 5,
+                 "+ %4.4s size:"I64Fu" pos:"I64Fu,
                  (char*)&p_chk->common.i_chunk_fourcc,
                  p_chk->common.i_chunk_size,
                  p_chk->common.i_chunk_pos );
@@ -845,7 +829,7 @@ int AVI_ChunkReadRoot( stream_t *s, avi_chunk_t *p_root )
 {
     avi_chunk_list_t *p_list = (avi_chunk_list_t*)p_root;
     avi_chunk_t      *p_chk;
-    bool b_seekable;
+    vlc_bool_t b_seekable;
 
     stream_Control( s, STREAM_CAN_FASTSEEK, &b_seekable );
 

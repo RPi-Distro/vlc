@@ -2,7 +2,7 @@
  * win32_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d71c74c6e359c4342aaca94401be01cc80bc06a1 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -46,38 +46,26 @@
 Win32Window::Win32Window( intf_thread_t *pIntf, GenericWindow &rWindow,
                           HINSTANCE hInst, HWND hParentWindow,
                           bool dragDrop, bool playOnDrop,
-                          Win32Window *pParentWindow,
-                          GenericWindow::WindowType_t type ):
+                          Win32Window *pParentWindow ):
     OSWindow( pIntf ), m_dragDrop( dragDrop ), m_isLayered( false ),
-    m_pParent( pParentWindow ), m_type ( type )
+    m_pParent( pParentWindow )
 {
-    Win32Factory *pFactory = (Win32Factory*)Win32Factory::instance( getIntf() );
-
     // Create the window
-    if( type == GenericWindow::VoutWindow )
+    if( pParentWindow )
     {
         // Child window (for vout)
-        m_hWnd_parent = pParentWindow->getHandle();
-        m_hWnd = CreateWindowEx( WS_EX_TOOLWINDOW | WS_EX_NOPARENTNOTIFY,
-                     "SkinWindowClass", "default name",
-                     WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
-                     0, 0, 0, 0, m_hWnd_parent, 0, hInst, NULL );
+        HWND hParent = pParentWindow->getHandle();
+        m_hWnd = CreateWindowEx( WS_EX_TOOLWINDOW, "SkinWindowClass",
+            "default name", WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
+            CW_USEDEFAULT, CW_USEDEFAULT, hParent, 0, hInst, NULL );
     }
-    else if( type == GenericWindow::FullscreenWindow )
-    {
-        // top-level window
-        m_hWnd = CreateWindowEx( WS_EX_APPWINDOW, "SkinWindowClass",
-            "default name", WS_POPUP | WS_CLIPCHILDREN,
-            0, 0, 0, 0, NULL, 0, hInst, NULL );
-    }
-
     else
     {
-        // top-level window (owned by the root window)
-        HWND hWnd_owner = pFactory->getParentWindow();
+        // Normal window
         m_hWnd = CreateWindowEx( WS_EX_TOOLWINDOW, "SkinWindowClass",
             "default name", WS_POPUP | WS_CLIPCHILDREN,
-            0, 0, 0, 0, hWnd_owner, 0, hInst, NULL );
+            CW_USEDEFAULT, CW_USEDEFAULT,
+            CW_USEDEFAULT, CW_USEDEFAULT, hParentWindow, 0, hInst, NULL );
     }
 
     if( !m_hWnd )
@@ -87,6 +75,7 @@ Win32Window::Win32Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     }
 
     // Store a pointer to the GenericWindow in a map
+    Win32Factory *pFactory = (Win32Factory*)Win32Factory::instance( getIntf() );
     pFactory->m_windowMap[m_hWnd] = &rWindow;
 
     // Drag & drop
@@ -97,11 +86,22 @@ Win32Window::Win32Window( intf_thread_t *pIntf, GenericWindow &rWindow,
         // Register the window as a drop target
         RegisterDragDrop( m_hWnd, m_pDropTarget );
     }
+
+    // Set this window as a vout
+    if( m_pParent )
+    {
+        VlcProc::instance( getIntf() )->registerVoutWindow( (void*)m_hWnd );
+    }
 }
 
 
 Win32Window::~Win32Window()
 {
+    if( m_pParent )
+    {
+        VlcProc::instance( getIntf() )->unregisterVoutWindow( (void*)m_hWnd );
+    }
+
     Win32Factory *pFactory = (Win32Factory*)Win32Factory::instance( getIntf() );
     pFactory->m_windowMap[m_hWnd] = NULL;
 
@@ -119,35 +119,8 @@ Win32Window::~Win32Window()
 }
 
 
-void Win32Window::reparent( void* OSHandle, int x, int y, int w, int h )
+void Win32Window::show( int left, int top ) const
 {
-    // Reparent the window
-
-    if( m_type == GenericWindow::TopWindow )
-    {
-       // fullscreen controller
-       SetWindowLongPtr( m_hWnd, GWL_STYLE, WS_CHILD );
-    }
-
-    SetParent( m_hWnd, (HWND)OSHandle );
-    MoveWindow( m_hWnd, x, y, w, h, true );
-}
-
-
-void Win32Window::show() const
-{
-
-    if( m_type == GenericWindow::VoutWindow )
-    {
-        SetWindowPos( m_hWnd, HWND_BOTTOM, 0, 0, 0, 0,
-                              SWP_NOMOVE | SWP_NOSIZE );
-    }
-    else if( m_type == GenericWindow::FullscreenWindow )
-    {
-        SetWindowPos( m_hWnd, HWND_TOPMOST, 0, 0, 0, 0,
-                              SWP_NOMOVE | SWP_NOSIZE );
-    }
-
     ShowWindow( m_hWnd, SW_SHOW );
 }
 
@@ -182,7 +155,7 @@ void Win32Window::setOpacity( uint8_t value ) const
         if( m_isLayered )
         {
             SetWindowLongPtr( m_hWnd, GWL_EXSTYLE,
-                GetWindowLongPtr( m_hWnd, GWL_EXSTYLE ) & ~WS_EX_LAYERED );
+                GetWindowLong( m_hWnd, GWL_EXSTYLE ) & ~WS_EX_LAYERED );
 
             // Redraw the window, otherwise we may end up with a grey rectangle
             // for some strange reason
@@ -201,7 +174,7 @@ void Win32Window::setOpacity( uint8_t value ) const
                 // (Re)Add the WS_EX_LAYERED attribute.
                 // Resizing will be very slow, now :)
                 SetWindowLongPtr( m_hWnd, GWL_EXSTYLE,
-                    GetWindowLongPtr( m_hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
+                    GetWindowLong( m_hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
 
                 // Redraw the window, otherwise we may end up with a grey
                 // rectangle for some strange reason
@@ -221,8 +194,18 @@ void Win32Window::setOpacity( uint8_t value ) const
 
 void Win32Window::toggleOnTop( bool onTop ) const
 {
-    SetWindowPos( m_hWnd, onTop ? HWND_TOPMOST : HWND_NOTOPMOST,
-                  0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE );
+    if( onTop )
+    {
+        // Set the window on top
+        SetWindowPos( m_hWnd, HWND_TOPMOST, 0, 0, 0, 0,
+                      SWP_NOSIZE | SWP_NOMOVE );
+    }
+    else
+    {
+        // Set the window not on top
+        SetWindowPos( m_hWnd, HWND_NOTOPMOST, 0, 0, 0, 0,
+                      SWP_NOSIZE | SWP_NOMOVE );
+    }
 }
 
 

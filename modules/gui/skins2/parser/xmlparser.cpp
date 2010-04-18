@@ -2,7 +2,7 @@
  * xmlparser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: dd7279b9b00017680c11ad84d3c6dc9d80a7b919 $
+ * $Id: dcfc2cde9df85feed98d2bb3caba4f2c9a2b0719 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -45,14 +45,12 @@ XMLParser::XMLParser( intf_thread_t *pIntf, const string &rFileName,
         return;
     }
 
-    // Avoid duplicate initialization (mutex needed ?) -> doesn't work
-    // Reinitialization required for a new XMLParser
-    // if( !m_initialized )
-    // {
-    //    LoadCatalog();
-    //    m_initialized = true;
-    // }
-    LoadCatalog();
+    // Avoid duplicate initialization (mutex needed ?)
+    if( !m_initialized )
+    {
+        LoadCatalog();
+        m_initialized = true;
+    }
 
     m_pStream = stream_UrlNew( pIntf, rFileName.c_str() );
     if( !m_pStream )
@@ -69,7 +67,8 @@ XMLParser::XMLParser( intf_thread_t *pIntf, const string &rFileName,
         return;
     }
 
-    xml_ReaderUseDTD( m_pReader, useDTD );
+    xml_ReaderUseDTD( m_pReader, useDTD ? VLC_TRUE : VLC_FALSE );
+
 }
 
 
@@ -164,12 +163,7 @@ bool XMLParser::parse()
                 {
                     char *name = xml_ReaderName( m_pReader );
                     char *value = xml_ReaderValue( m_pReader );
-                    if( !name || !value )
-                    {
-                        free( name );
-                        free( value );
-                        return false;
-                    }
+                    if( !name || !value ) return false;
                     attributes[name] = value;
                 }
 

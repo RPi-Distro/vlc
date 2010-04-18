@@ -2,7 +2,7 @@
  * MacOSX_loop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 54b4d1de8e66674c0c55efa9c004d5c507be816d $
+ * $Id: 49eed8f356233cc9b945481bf825f791a30d5655 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -16,16 +16,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef MACOSX_LOOP_HPP
 #define MACOSX_LOOP_HPP
 
 #include "../src/os_loop.hpp"
-#include <Carbon/Carbon.h>
 
 class MacOSXDisplay;
 class GenericWindow;
@@ -33,28 +32,28 @@ class GenericWindow;
 /// Main event loop for MacOSX (singleton)
 class MacOSXLoop: public OSLoop
 {
-public:
-    /// Get the instance of MacOSXLoop
-    static OSLoop *instance( intf_thread_t *pIntf );
+    public:
+        /// Get the instance of MacOSXLoop
+        static OSLoop *instance( intf_thread_t *pIntf );
 
-    /// Destroy the instance of MacOSXLoop
-    static void destroy( intf_thread_t *pIntf );
+        /// Destroy the instance of MacOSXLoop
+        static void destroy( intf_thread_t *pIntf );
 
-    /// Enter the event loop
-    virtual void run();
+        /// Enter the event loop
+        virtual void run();
 
-    /// Exit the main loop
-    virtual void exit();
+        /// Exit the main loop
+        virtual void exit();
 
-    // Handle a window event
-    void registerWindow( GenericWindow &rGenWin, WindowRef win );
+    private:
+        // Private because it's a singleton
+        MacOSXLoop( intf_thread_t *pIntf );
+        virtual ~MacOSXLoop();
+        // Flag set to exit the loop
+        bool m_exit;
 
-private:
-    // Private because it's a singleton
-    MacOSXLoop( intf_thread_t *pIntf );
-    virtual ~MacOSXLoop();
-    // Flag set to exit the loop
-    bool m_exit;
+        // Handle a window event
+        void handleWindowEvent( EventRef pEvent );
 };
 
 #endif

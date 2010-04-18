@@ -2,7 +2,7 @@
  * asf.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 049328c9244b34f783f7d986ad69b63180a7f526 $
+ * $Id: 57c7513d75d404e0be55f041d70d2d661c784bb3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,12 +24,9 @@
 /****************************************************************************
  * XXX:
  *  Definitions and data duplicated from asf demuxers but I want access
- * and demux plugins to be independent
+ * and demux plugins to be independant
  *
  ****************************************************************************/
-
-#ifndef _ASF_H_
-#define _ASF_H_ 1
 
 #define ASF_STREAM_VIDEO    0x0001
 #define ASF_STREAM_AUDIO    0x0002
@@ -52,6 +49,7 @@ typedef struct
 
 } asf_header_t;
 
+
 typedef struct guid_s
 {
     uint32_t v1; /* le */
@@ -61,11 +59,12 @@ typedef struct guid_s
 } guid_t;
 
 
-void  GenerateGuid      ( guid_t * );
-void  asf_HeaderParse   ( asf_header_t *, uint8_t *, int );
-void  asf_StreamSelect  ( asf_header_t *,
-                              int i_bitrate_max, bool b_all, bool b_audio,
-                              bool b_video );
+void E_( GenerateGuid )     ( guid_t * );
+void E_( asf_HeaderParse )  ( asf_header_t *, uint8_t *, int );
+void E_( asf_StreamSelect ) ( asf_header_t *,
+                              int i_bitrate_max, vlc_bool_t b_all, vlc_bool_t b_audio,
+                              vlc_bool_t b_video );
+
 
 #define GUID_FMT "%8.8x-%4.4x-%4.4x-%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x"
 #define GUID_PRINT( guid )  \
@@ -146,5 +145,3 @@ static const guid_t asf_object_header_extension_guid =
     0x11CF,
     { 0x8E, 0xE3, 0x00, 0xC0, 0x0C, 0x20, 0x53, 0x65 }
 };
-
-#endif

@@ -2,7 +2,7 @@
  * xml.c: XML parser wrapper for XML modules
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 0d2625f8b3c6ece215b7ff0c3db0d4be1fbfbeef $
+ * $Id: 5b9d1c334fafea4699970f693b86e521248ecdc9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -21,33 +21,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <stdlib.h>
+#include <vlc/vlc.h>
 
-#include <vlc_common.h>
 #include "vlc_xml.h"
-#include "../libvlc.h"
 
-#undef xml_Create
 /*****************************************************************************
  * xml_Create:
  *****************************************************************************
  * Create an instance of an XML parser.
  * Returns NULL on error.
  *****************************************************************************/
-xml_t *xml_Create( vlc_object_t *p_this )
+xml_t *__xml_Create( vlc_object_t *p_this )
 {
     xml_t *p_xml;
 
-    p_xml = vlc_custom_create( p_this, sizeof( *p_xml ), VLC_OBJECT_GENERIC,
-                               "xml" );
+    p_xml = vlc_object_create( p_this, VLC_OBJECT_XML );
     vlc_object_attach( p_xml, p_this );
 
-    p_xml->p_module = module_need( p_xml, "xml", NULL, false );
+    p_xml->p_module = module_Need( p_xml, "xml", 0, 0 );
     if( !p_xml->p_module )
     {
-        vlc_object_release( p_xml );
+        vlc_object_detach( p_xml );
+        vlc_object_destroy( p_xml );
         msg_Err( p_this, "XML provider not found" );
         return NULL;
     }
@@ -60,6 +56,7 @@ xml_t *xml_Create( vlc_object_t *p_this )
  *****************************************************************************/
 void xml_Delete( xml_t *p_xml )
 {
-    module_unneed( p_xml, p_xml->p_module );
-    vlc_object_release( p_xml );
+    module_Unneed( p_xml, p_xml->p_module );
+    vlc_object_detach( p_xml );
+    vlc_object_destroy( p_xml );
 }

@@ -2,7 +2,7 @@
  * ctrl_radialslider.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6aece647d9d86db9777c178fba071aa020185998 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -44,8 +44,9 @@ CtrlRadialSlider::CtrlRadialSlider( intf_thread_t *pIntf,
     m_cmdMove( this )
 {
     // Build the images of the sequence
-    m_pImgSeq = OSFactory::instance( getIntf() )->createOSGraphics(
-                                     rBmpSeq.getWidth(), rBmpSeq.getHeight() );
+    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+    m_pImgSeq = pOsFactory->createOSGraphics( rBmpSeq.getWidth(),
+                                              rBmpSeq.getHeight() );
     m_pImgSeq->drawBitmap( rBmpSeq, 0, 0 );
 
     m_width = rBmpSeq.getWidth();
@@ -71,7 +72,7 @@ CtrlRadialSlider::CtrlRadialSlider( intf_thread_t *pIntf,
 CtrlRadialSlider::~CtrlRadialSlider()
 {
     m_rVariable.delObserver( this );
-    delete m_pImgSeq;
+    SKINS_DELETE( m_pImgSeq );
 }
 
 
@@ -124,7 +125,7 @@ void CtrlRadialSlider::CmdDownUp::execute()
 
 void CtrlRadialSlider::CmdMove::execute()
 {
-    EvtMouse *pEvtMouse = static_cast<EvtMouse*>(m_pParent->m_pEvt);
+    EvtMouse *pEvtMouse = (EvtMouse*)m_pParent->m_pEvt;
 
     // Change the position of the cursor, in blocking mode
     m_pParent->setCursor( pEvtMouse->getXPos(), pEvtMouse->getYPos(), true );

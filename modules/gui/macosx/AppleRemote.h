@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.h
  * AppleRemote
- * $Id: 12e8ca3bd01e21dc22a7b8cc7e85fcbb04f3ee74 $
+ * $Id$
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -73,9 +73,7 @@ enum AppleRemoteEventIdentifier
     kRemoteButtonPlay_Sleep         =1<<10,
     kRemoteControl_Switched         =1<<11,
     kRemoteButtonVolume_Plus_Hold   =1<<12,
-    kRemoteButtonVolume_Minus_Hold  =1<<13,
-    k2009RemoteButtonPlay			=1<<14,
-    k2009RemoteButtonFullscreen		=1<<15
+    kRemoteButtonVolume_Minus_Hold  =1<<13
 };
 typedef enum AppleRemoteEventIdentifier AppleRemoteEventIdentifier;
 
@@ -88,7 +86,6 @@ The class is not thread safe
     IOHIDQueueInterface**  queue;
     NSMutableArray*        allCookies;
     NSMutableDictionary*   cookieToButtonMapping;
-    CFRunLoopSourceRef     eventSource;
 
     BOOL openInExclusiveMode;
     BOOL simulatePlusMinusHold;

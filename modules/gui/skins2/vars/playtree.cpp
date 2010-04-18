@@ -1,11 +1,10 @@
 /*****************************************************************************
  * playtree.cpp
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 2407e385cf3be21e502931f94768bd0a2b33ddd4 $
+ * Copyright (C) 2005 VideoLAN
+ * $Id: 944a2e7c04af530ca595f8b3367f5a6a1fb78698 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
- *          Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,35 +21,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
+#include <vlc/vlc.h>
 
 #include "playtree.hpp"
-#include <vlc_playlist.h>
 #include "../utils/ustring.hpp"
 
-Playtree::Playtree( intf_thread_t *pIntf ):
-    VarTree( pIntf ), m_currentItem( NULL )
+#include "charset.h"
+
+
+Playtree::Playtree( intf_thread_t *pIntf ): VarTree( pIntf )
 {
     // Get the VLC playlist object
     m_pPlaylist = pIntf->p_sys->p_playlist;
 
     i_items_to_append = 0;
 
+    // Try to guess the current charset
+    char *pCharset;
+    vlc_current_charset( &pCharset );
+    iconvHandle = vlc_iconv_open( "UTF-8", pCharset );
+    msg_Dbg( pIntf, "using character encoding: %s", pCharset );
+    free( pCharset );
+
+    if( iconvHandle == (vlc_iconv_t) - 1 )
+    {
+        msg_Warn( pIntf, "unable to do requested conversion" );
+    }
+
     buildTree();
 }
 
 Playtree::~Playtree()
 {
+    if( iconvHandle != (vlc_iconv_t) - 1 ) vlc_iconv_close( iconvHandle );
 }
 
 void Playtree::delSelected()
 {
     Iterator it = begin();
-    playlist_Lock( getIntf()->p_sys->p_playlist );
+    vlc_mutex_lock( &getIntf()->p_sys->p_playlist->object_lock );
     for( it = begin(); it != end(); it = getNextVisibleItem( it ) )
     {
         if( (*it).m_selected && !(*it).isReadonly() )
@@ -71,8 +80,8 @@ void Playtree::delSelected()
             playlist_item_t *p_item = (playlist_item_t *)(it->m_pData);
             if( p_item->i_children == -1 )
             {
-                playlist_DeleteFromInput( getIntf()->p_sys->p_playlist,
-                                          p_item->p_input, pl_Locked );
+                playlist_Delete( getIntf()->p_sys->p_playlist,
+                                     p_item->input.i_id );
                 it2 = getNextVisibleItem( it ) ;
                 it->parent()->removeChild( it );
                 it = it2;
@@ -80,7 +89,7 @@ void Playtree::delSelected()
             else
             {
                 playlist_NodeDelete( getIntf()->p_sys->p_playlist, p_item,
-                                     true, false );
+                                     VLC_TRUE, VLC_FALSE );
                 it2 = getNextSibling( it );
                 it->parent()->removeChild( it );
                 it = it2;
@@ -91,28 +100,29 @@ void Playtree::delSelected()
             it = getNextVisibleItem( it );
         }
     }
-    playlist_Unlock( getIntf()->p_sys->p_playlist );
+    vlc_mutex_unlock( &getIntf()->p_sys->p_playlist->object_lock );
 }
 
 void Playtree::action( VarTree *pItem )
 {
-    playlist_Lock( m_pPlaylist );
+    vlc_mutex_lock( &m_pPlaylist->object_lock );
     VarTree::Iterator it;
-
-    playlist_item_t *p_item = (playlist_item_t *)pItem->m_pData;
-    playlist_item_t *p_parent = p_item;
-    while( p_parent )
+    if( pItem->size() )
     {
-        if( p_parent == m_pPlaylist->p_root_category )
-            break;
-        p_parent = p_parent->p_parent;
+        it = pItem->begin();
+        while( it->size() ) it = it->begin();
     }
-
-    if( p_parent )
-    {
-        playlist_Control( m_pPlaylist, PLAYLIST_VIEWPLAY, pl_Locked, p_parent, p_item );
-    }
-    playlist_Unlock( m_pPlaylist );
+    playlist_Control( m_pPlaylist,
+                      PLAYLIST_VIEWPLAY,
+                      m_pPlaylist->status.i_view,
+                      pItem->size()
+                          ? (playlist_item_t *)pItem->m_pData
+                          : (playlist_item_t *)pItem->parent()->m_pData,
+                      pItem->size()
+                          ? (playlist_item_t *)it->m_pData
+                          : (playlist_item_t *)pItem->m_pData
+                    );
+    vlc_mutex_unlock( &m_pPlaylist->object_lock );
 }
 
 void Playtree::onChange()
@@ -132,8 +142,10 @@ void Playtree::onUpdateItem( int id )
     {
         // Update the item
         playlist_item_t* pNode = (playlist_item_t*)(it->m_pData);
-        UString *pName = new UString( getIntf(), pNode->p_input->psz_name );
+        UString *pName = new UString( getIntf(), pNode->input.psz_name );
         it->m_cString = UStringPtr( pName );
+        it->m_playing = m_pPlaylist->status.p_item == pNode;
+        if( it->m_playing ) descr.b_active_item = true;
     }
     else
     {
@@ -142,43 +154,6 @@ void Playtree::onUpdateItem( int id )
     descr.i_type = 0;
     notify( &descr );
 }
-
-
-void Playtree::onUpdateCurrent( bool b_active )
-{
-    if( !b_active )
-    {
-        if( !m_currentItem )
-            return;
-
-        Iterator it = findById( m_currentItem->i_id );
-        it->m_playing = false;
-        m_currentItem = NULL;
-    }
-    else
-    {
-        playlist_Lock( m_pPlaylist );
-
-        playlist_item_t* current = playlist_CurrentPlayingItem( m_pPlaylist );
-        if( !current )
-        {
-            playlist_Unlock( m_pPlaylist );
-            return;
-        }
-
-        Iterator it = findById( current->i_id );
-        it->m_playing = true;
-        m_currentItem = current;
-
-        playlist_Unlock( m_pPlaylist );
-    }
-
-    tree_update descr;
-    descr.b_active_item = true;
-    descr.i_type = 0;
-    notify( &descr );
-}
-
 
 /// \todo keep a list of "recently removed" to avoid looking up if we
 //  already removed it
@@ -192,7 +167,7 @@ void Playtree::onDelete( int i_id )
     {
         if( item->parent() )
             item->parent()->removeChild( item );
-        descr.b_visible = item->parent() ? item->parent()->m_expanded : true;
+        descr.b_visible = item->parent() ? true : item->parent()->m_expanded;
         notify( &descr );
     }
 }
@@ -207,20 +182,13 @@ void Playtree::onAppend( playlist_add_t *p_add )
         Iterator item =  findById( p_add->i_item );
         if( item == end() )
         {
-            playlist_Lock( m_pPlaylist );
             playlist_item_t *p_item = playlist_ItemGetById(
                                         m_pPlaylist, p_add->i_item );
-            if( !p_item )
-            {
-                playlist_Unlock( m_pPlaylist );
-                return;
-            }
-            UString *pName = new UString( getIntf(),
-                                          p_item->p_input->psz_name );
+            if( !p_item ) return;
+            UString *pName = new UString( getIntf(), p_item->input.psz_name );
             node->add( p_add->i_item, UStringPtr( pName ),
                       false,false, false, p_item->i_flags & PLAYLIST_RO_FLAG,
                       p_item );
-            playlist_Unlock( m_pPlaylist );
         }
     }
     tree_update descr;
@@ -236,10 +204,10 @@ void Playtree::buildNode( playlist_item_t *pNode, VarTree &rTree )
     for( int i = 0; i < pNode->i_children; i++ )
     {
         UString *pName = new UString( getIntf(),
-                                   pNode->pp_children[i]->p_input->psz_name );
-        rTree.add( pNode->pp_children[i]->i_id, UStringPtr( pName ),
+                                      pNode->pp_children[i]->input.psz_name );
+        rTree.add( pNode->pp_children[i]->input.i_id, UStringPtr( pName ),
                      false,
-                     playlist_CurrentPlayingItem(m_pPlaylist) == pNode->pp_children[i],
+                     m_pPlaylist->status.p_item == pNode->pp_children[i],
                      false, pNode->pp_children[i]->i_flags & PLAYLIST_RO_FLAG,
                      pNode->pp_children[i] );
         if( pNode->pp_children[i]->i_children )
@@ -252,22 +220,23 @@ void Playtree::buildNode( playlist_item_t *pNode, VarTree &rTree )
 void Playtree::buildTree()
 {
     clear();
-    playlist_Lock( m_pPlaylist );
+    vlc_mutex_lock( &m_pPlaylist->object_lock );
 
     i_items_to_append = 0;
 
+    playlist_view_t *p_view;
+    p_view = playlist_ViewFind( m_pPlaylist, VIEW_CATEGORY );
+    /// \todo let the user chose the view
+
     clear();
 
-    /* TODO: Let user choose view - Stick with category ATM */
-
     /* Set the root's name */
-    UString *pName = new UString( getIntf(),
-                             m_pPlaylist->p_root_category->p_input->psz_name );
+    UString *pName = new UString( getIntf(), p_view->p_root->input.psz_name );
     m_cString = UStringPtr( pName );
 
-    buildNode( m_pPlaylist->p_root_category, *this );
+    buildNode( p_view->p_root, *this );
 
-    playlist_Unlock( m_pPlaylist );
+    vlc_mutex_unlock( &m_pPlaylist->object_lock );
 //  What is it ?
 //    checkParents( NULL );
 }

@@ -1,24 +1,15 @@
 SOURCES_playlist = \
-	asx.c \
-	b4s.c \
-	dvb.c \
-	gvp.c \
-	ifo.c \
-	itml.c \
-	itml.h \
-	m3u.c \
 	playlist.c \
 	playlist.h \
+	old.c \
+	m3u.c \
+	b4s.c \
 	pls.c \
+	dvb.c \
 	podcast.c \
-	qtl.c \
-	ram.c \
-	sgimb.c \
-	shoutcast.c \
-	wpl.c \
 	xspf.c \
 	xspf.h \
-	zpl.c \
+	shoutcast.c \
 	$(NULL)
 
-libvlc_LTLIBRARIES += libplaylist_plugin.la
+

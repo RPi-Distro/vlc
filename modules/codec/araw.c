@@ -2,7 +2,7 @@
  * araw.c: Pseudo audio decoder; for raw pcm data
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: c441e82964bc0883666971a86f10a310fdf240e2 $
+ * $Id: dec1eeff0e41543d6caa8ea02e04e065f521bf28 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,14 +24,8 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_aout.h>
-#include <vlc_codec.h>
+#include <vlc/vlc.h>
+#include <vlc/decoder.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -44,22 +38,22 @@ static int  EncoderOpen ( vlc_object_t * );
 static void EncoderClose( vlc_object_t * );
 #endif
 
-vlc_module_begin ()
+vlc_module_begin();
     /* audio decoder module */
-    set_description( N_("Raw/Log Audio decoder") )
-    set_capability( "decoder", 100 )
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_ACODEC )
-    set_callbacks( DecoderOpen, DecoderClose )
+    set_description( _("Raw/Log Audio decoder") );
+    set_capability( "decoder", 100 );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_ACODEC );
+    set_callbacks( DecoderOpen, DecoderClose );
 
 #ifdef ENABLE_SOUT
     /* audio encoder submodule */
-    add_submodule ()
-    set_description( N_("Raw audio encoder") )
-    set_capability( "encoder", 150 )
-    set_callbacks( EncoderOpen, EncoderClose )
+    add_submodule();
+    set_description( _("Raw audio encoder") );
+    set_capability( "encoder", 150 );
+    set_callbacks( EncoderOpen, EncoderClose );
 #endif
-vlc_module_end ()
+vlc_module_end();
 
 /*****************************************************************************
  * Local prototypes
@@ -71,13 +65,12 @@ static block_t *EncoderEncode( encoder_t *, aout_buffer_t * );
 
 struct decoder_sys_t
 {
-    const int16_t *p_logtos16;  /* used with m/alaw to int16_t */
-    int i_bytespersample;
+    int16_t *p_logtos16;  /* used with m/alaw to int16_t */
 
-    date_t end_date;
+    audio_date_t end_date;
 };
 
-static const int pi_channels_maps[] =
+static int pi_channels_maps[] =
 {
     0,
     AOUT_CHAN_CENTER,
@@ -97,7 +90,7 @@ static const int pi_channels_maps[] =
      | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT | AOUT_CHAN_LFE
 };
 
-static const int16_t ulawtos16[256] =
+static int16_t ulawtos16[256] =
 {
     -32124, -31100, -30076, -29052, -28028, -27004, -25980, -24956,
     -23932, -22908, -21884, -20860, -19836, -18812, -17788, -16764,
@@ -133,7 +126,7 @@ static const int16_t ulawtos16[256] =
         56,     48,     40,     32,     24,     16,      8,      0
 };
 
-static const int16_t alawtos16[256] =
+static int16_t alawtos16[256] =
 {
      -5504,  -5248,  -6016,  -5760,  -4480,  -4224,  -4992,  -4736,
      -7552,  -7296,  -8064,  -7808,  -6528,  -6272,  -7040,  -6784,
@@ -188,21 +181,20 @@ static int DecoderOpen( vlc_object_t *p_this )
     /* _signed_ little endian samples (mov)*/
     case VLC_FOURCC('s','o','w','t'):
 
-    case VLC_CODEC_ALAW:
-    case VLC_CODEC_MULAW:
+    case VLC_FOURCC('a','l','a','w'):
+    case VLC_FOURCC('u','l','a','w'):
+    case VLC_FOURCC('m','l','a','w'):
 
-    case VLC_CODEC_F64L:
-    case VLC_CODEC_F64B:
-    case VLC_CODEC_F32L:
-    case VLC_CODEC_F32B:
-    case VLC_CODEC_S32L:
-    case VLC_CODEC_S32B:
-    case VLC_CODEC_S24L:
-    case VLC_CODEC_S24B:
-    case VLC_CODEC_S16L:
-    case VLC_CODEC_S16B:
-    case VLC_CODEC_S8:
-    case VLC_CODEC_U8:
+    case VLC_FOURCC('f','l','6','4'):
+    case VLC_FOURCC('f','l','3','2'):
+    case VLC_FOURCC('s','3','2','l'):
+    case VLC_FOURCC('s','3','2','b'):
+    case VLC_FOURCC('s','2','4','l'):
+    case VLC_FOURCC('s','2','4','b'):
+    case VLC_FOURCC('s','1','6','l'):
+    case VLC_FOURCC('s','1','6','b'):
+    case VLC_FOURCC('s','8',' ',' '):
+    case VLC_FOURCC('u','8',' ',' '):
         break;
 
     default:
@@ -226,7 +218,10 @@ static int DecoderOpen( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-        return VLC_ENOMEM;
+    {
+        msg_Err( p_dec, "out of memory" );
+        return VLC_EGENERIC;
+    }
 
     p_sys->p_logtos16 = NULL;
 
@@ -234,65 +229,133 @@ static int DecoderOpen( vlc_object_t *p_this )
              p_dec->fmt_in.audio.i_rate, p_dec->fmt_in.audio.i_channels,
              p_dec->fmt_in.audio.i_bitspersample );
 
-    if( p_dec->fmt_in.i_codec == VLC_CODEC_F64L ||
-        p_dec->fmt_in.i_codec == VLC_CODEC_F64B )
+    if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'f', 'l', '6', '4' ) )
     {
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 64;
     }
-    else if( p_dec->fmt_in.i_codec == VLC_CODEC_F32L ||
-             p_dec->fmt_in.i_codec == VLC_CODEC_F32B )
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'f', 'l', '3', '2' ) )
     {
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 32;
     }
-    else if( p_dec->fmt_in.i_codec == VLC_CODEC_S32L ||
-             p_dec->fmt_in.i_codec == VLC_CODEC_S32B )
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '3', '2', 'l' ) ||
+             p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '3', '2', 'b' ) )
     {
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 32;
     }
-    else if( p_dec->fmt_in.i_codec == VLC_CODEC_S24L ||
-             p_dec->fmt_in.i_codec == VLC_CODEC_S24B )
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '2', '4', 'l' ) ||
+             p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '2', '4', 'b' ) )
     {
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 24;
     }
-    else if( p_dec->fmt_in.i_codec == VLC_CODEC_S16L ||
-             p_dec->fmt_in.i_codec == VLC_CODEC_S16B )
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '1', '6', 'l' ) ||
+             p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '1', '6', 'b' ) )
     {
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 16;
     }
-    else if( p_dec->fmt_in.i_codec == VLC_CODEC_S8 ||
-             p_dec->fmt_in.i_codec == VLC_CODEC_U8 )
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '8', ' ', ' ' ) ||
+             p_dec->fmt_in.i_codec == VLC_FOURCC( 'u', '8', ' ', ' ' ) )
     {
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 8;
     }
-    else if( p_dec->fmt_in.i_codec == VLC_CODEC_ALAW )
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'a', 'f', 'l', 't' ) )
     {
-        p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
-        p_sys->p_logtos16  = alawtos16;
-        p_dec->fmt_in.audio.i_bitspersample = 8;
-    }
-    else if( p_dec->fmt_in.i_codec == VLC_CODEC_MULAW )
-    {
-        p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
-        p_sys->p_logtos16  = ulawtos16;
-        p_dec->fmt_in.audio.i_bitspersample = 8;
-    }
-    else
-    {
-        p_dec->fmt_out.i_codec =
-            vlc_fourcc_GetCodecAudio( p_dec->fmt_in.i_codec,
-                                      p_dec->fmt_in.audio.i_bitspersample );
-        if( !p_dec->fmt_out.i_codec )
+        switch( ( p_dec->fmt_in.audio.i_bitspersample + 7 ) / 8 )
         {
+        case 4:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('f','l','3','2');
+            break;
+        case 8:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('f','l','6','4');
+            break;
+        default:
             msg_Err( p_dec, "bad parameters(bits/sample)" );
             return VLC_EGENERIC;
         }
     }
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'a', 'r', 'a', 'w' ) ||
+             p_dec->fmt_in.i_codec == VLC_FOURCC( 'p', 'c', 'm', ' ' ) )
+    {
+        switch( ( p_dec->fmt_in.audio.i_bitspersample + 7 ) / 8 )
+        {
+        case 1:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('u','8',' ',' ');
+            break;
+        case 2:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','1','6','l');
+            break;
+        case 3:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','2','4','l');
+            break;
+        case 4:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','3','2','l');
+            break;
+        default:
+            msg_Err( p_dec, "bad parameters(bits/sample)" );
+            return VLC_EGENERIC;
+        }
+    }
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 't', 'w', 'o', 's' ) )
+    {
+        switch( ( p_dec->fmt_in.audio.i_bitspersample + 7 ) / 8 )
+        {
+        case 1:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','8',' ',' ');
+            break;
+        case 2:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','1','6','b');
+            break;
+        case 3:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','2','4','b');
+            break;
+        case 4:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','3','2','b');
+            break;
+        default:
+            msg_Err( p_dec, "bad parameters(bits/sample)" );
+            return VLC_EGENERIC;
+        }
+    }
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 's', 'o', 'w', 't' ) )
+    {
+        switch( ( p_dec->fmt_in.audio.i_bitspersample + 7 ) / 8 )
+        {
+        case 1:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','8',' ',' ');
+            break;
+        case 2:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','1','6','l');
+            break;
+        case 3:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','2','4','l');
+            break;
+        case 4:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','3','2','l');
+            break;
+        default:
+            msg_Err( p_dec, "bad parameters(bits/sample)" );
+            return VLC_EGENERIC;
+        }
+    }
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'a', 'l', 'a', 'w' ) )
+    {
+        p_dec->fmt_out.i_codec = AOUT_FMT_S16_NE;
+        p_sys->p_logtos16  = alawtos16;
+        p_dec->fmt_in.audio.i_bitspersample = 8;
+    }
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'u', 'l', 'a', 'w' ) ||
+             p_dec->fmt_in.i_codec == VLC_FOURCC( 'm', 'l', 'a', 'w' ) )
+    {
+        p_dec->fmt_out.i_codec = AOUT_FMT_S16_NE;
+        p_sys->p_logtos16  = ulawtos16;
+        p_dec->fmt_in.audio.i_bitspersample = 8;
+    }
+    else return VLC_EGENERIC;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
@@ -309,15 +372,15 @@ static int DecoderOpen( vlc_object_t *p_this )
         p_dec->fmt_out.audio.i_original_channels =
             p_dec->fmt_in.audio.i_original_channels;
 
-    if( p_dec->fmt_in.i_codec == VLC_CODEC_ALAW ||
-        p_dec->fmt_in.i_codec == VLC_CODEC_MULAW )
+    if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'a', 'l', 'a', 'w' ) ||
+        p_dec->fmt_in.i_codec == VLC_FOURCC( 'u', 'l', 'a', 'w' ) ||
+        p_dec->fmt_in.i_codec == VLC_FOURCC( 'm', 'l', 'a', 'w' ) )
     {
         p_dec->fmt_out.audio.i_bitspersample = 16;
     }
 
-    date_Init( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
-    date_Set( &p_sys->end_date, 0 );
-    p_sys->i_bytespersample = ( p_dec->fmt_in.audio.i_bitspersample + 7 ) / 8;
+    aout_DateInit( &p_sys->end_date, p_dec->fmt_out.audio.i_rate );
+    aout_DateSet( &p_sys->end_date, 0 );
 
     p_dec->pf_decode_audio = DecodeBlock;
 
@@ -340,12 +403,12 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
     p_block = *pp_block;
 
-    if( p_block->i_pts > VLC_TS_INVALID &&
-        p_block->i_pts != date_Get( &p_sys->end_date ) )
+    if( p_block->i_pts != 0 &&
+        p_block->i_pts != aout_DateGet( &p_sys->end_date ) )
     {
-        date_Set( &p_sys->end_date, p_block->i_pts );
+        aout_DateSet( &p_sys->end_date, p_block->i_pts );
     }
-    else if( !date_Get( &p_sys->end_date ) )
+    else if( !aout_DateGet( &p_sys->end_date ) )
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( p_block );
@@ -353,9 +416,9 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Don't re-use the same pts twice */
-    p_block->i_pts = VLC_TS_INVALID;
+    p_block->i_pts = 0;
 
-    i_samples = p_block->i_buffer / p_sys->i_bytespersample /
+    i_samples = p_block->i_buffer * 8 / p_dec->fmt_in.audio.i_bitspersample /
         p_dec->fmt_in.audio.i_channels;
 
     if( i_samples <= 0 )
@@ -367,23 +430,22 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     /* Create chunks of max 1024 samples */
     i_samples = __MIN( i_samples, 1024 );
 
-    p_out = decoder_NewAudioBuffer( p_dec, i_samples );
+    p_out = p_dec->pf_aout_buffer_new( p_dec, i_samples );
     if( p_out == NULL )
     {
         block_Release( p_block );
         return NULL;
     }
 
-    p_out->i_pts = date_Get( &p_sys->end_date );
-    p_out->i_length = date_Increment( &p_sys->end_date, i_samples )
-                      - p_out->i_pts;
+    p_out->start_date = aout_DateGet( &p_sys->end_date );
+    p_out->end_date   = aout_DateIncrement( &p_sys->end_date, i_samples );
 
     if( p_sys->p_logtos16 )
     {
         int16_t *s = (int16_t*)p_out->p_buffer;
         unsigned int i;
 
-        for( i = 0; i < p_out->i_buffer / 2; i++ )
+        for( i = 0; i < p_out->i_nb_bytes / 2; i++ )
         {
             *s++ = p_sys->p_logtos16[*p_block->p_buffer++];
             p_block->i_buffer--;
@@ -391,9 +453,9 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
     else
     {
-        memcpy( p_out->p_buffer, p_block->p_buffer, p_out->i_buffer );
-        p_block->p_buffer += p_out->i_buffer;
-        p_block->i_buffer -= p_out->i_buffer;
+        memcpy( p_out->p_buffer, p_block->p_buffer, p_out->i_nb_bytes );
+        p_block->p_buffer += p_out->i_nb_bytes;
+        p_block->i_buffer -= p_out->i_nb_bytes;
     }
 
     return p_out;
@@ -421,7 +483,7 @@ struct encoder_sys_t
     int i_s16tolog;  /* used with int16_t to m/alaw */
 };
 
-static const int8_t alaw_encode[2049] =
+static int8_t alaw_encode[2049] =
 {
     0xD5, 0xD4, 0xD7, 0xD6, 0xD1, 0xD0, 0xD3, 0xD2, 0xDD, 0xDC, 0xDF, 0xDE,
     0xD9, 0xD8, 0xDB, 0xDA, 0xC5, 0xC4, 0xC7, 0xC6, 0xC1, 0xC0, 0xC3, 0xC2,
@@ -596,7 +658,7 @@ static const int8_t alaw_encode[2049] =
     0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0x2A
 }; /* alaw_encode */
 
-static const int8_t ulaw_encode[8193] =
+static int8_t ulaw_encode[8193] =
 {
     0xFF, 0xFE, 0xFE, 0xFD, 0xFD, 0xFC, 0xFC, 0xFB, 0xFB, 0xFA, 0xFA, 0xF9,
     0xF9, 0xF8, 0xF8, 0xF7, 0xF7, 0xF6, 0xF6, 0xF5, 0xF5, 0xF4, 0xF4, 0xF3,
@@ -1291,37 +1353,38 @@ static int EncoderOpen( vlc_object_t *p_this )
     encoder_t *p_enc = (encoder_t *)p_this;
     encoder_sys_t *p_sys;
 
-    if( p_enc->fmt_out.i_codec == VLC_CODEC_U8 ||
-        p_enc->fmt_out.i_codec == VLC_CODEC_S8 ||
-        p_enc->fmt_out.i_codec == VLC_CODEC_ALAW ||
-        p_enc->fmt_out.i_codec == VLC_CODEC_MULAW)
+    if( p_enc->fmt_out.i_codec == VLC_FOURCC('u','8',' ',' ') ||
+        p_enc->fmt_out.i_codec == VLC_FOURCC('s','8',' ',' ') ||
+        p_enc->fmt_out.i_codec == VLC_FOURCC('a','l','a','w') ||
+        p_enc->fmt_out.i_codec == VLC_FOURCC('u','l','a','w') ||
+        p_enc->fmt_out.i_codec == VLC_FOURCC('m','l','a','w'))
     {
         p_enc->fmt_out.audio.i_bitspersample = 8;
     }
-    else if( p_enc->fmt_out.i_codec == VLC_CODEC_U16L ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_U16B ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_S16L ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_S16B )
+    else if( p_enc->fmt_out.i_codec == VLC_FOURCC('u','1','6','l') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('u','1','6','b') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('s','1','6','l') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('s','1','6','b') )
     {
         p_enc->fmt_out.audio.i_bitspersample = 16;
     }
-    else if( p_enc->fmt_out.i_codec == VLC_CODEC_U24L ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_U24B ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_S24L ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_S24B )
+    else if( p_enc->fmt_out.i_codec == VLC_FOURCC('u','2','4','l') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('u','2','4','b') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('s','2','4','l') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('s','2','4','b') )
     {
         p_enc->fmt_out.audio.i_bitspersample = 24;
     }
-    else if( p_enc->fmt_out.i_codec == VLC_CODEC_U32L ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_U32B ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_S32L ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_S32B ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_FI32 ||
-             p_enc->fmt_out.i_codec == VLC_CODEC_FL32 )
+    else if( p_enc->fmt_out.i_codec == VLC_FOURCC('u','3','2','l') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('u','3','2','b') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('s','3','2','l') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('s','3','2','b') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('f','i','3','2') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('f','l','3','2') )
     {
         p_enc->fmt_out.audio.i_bitspersample = 32;
     }
-    else if( p_enc->fmt_out.i_codec == VLC_CODEC_FL64 )
+    else if( p_enc->fmt_out.i_codec == VLC_FOURCC('f','l','6','4') )
     {
         p_enc->fmt_out.audio.i_bitspersample = 64;
     }
@@ -1333,29 +1396,28 @@ static int EncoderOpen( vlc_object_t *p_this )
     /* Allocate the memory needed to store the encoder's structure */
     if( ( p_enc->p_sys = p_sys =
           (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
-        return VLC_ENOMEM;
+    {
+        msg_Err( p_enc, "out of memory" );
+        return VLC_EGENERIC;
+    }
 
     p_enc->pf_encode_audio = EncoderEncode;
     p_enc->fmt_in.i_codec = p_enc->fmt_out.i_codec;
     p_sys->i_s16tolog = 0;
 
-    if( p_enc->fmt_out.i_codec == VLC_CODEC_ALAW)
+    if( p_enc->fmt_out.i_codec == VLC_FOURCC( 'a', 'l', 'a', 'w' ))
     {
         p_enc->fmt_in.audio.i_bitspersample = 16;
-        p_enc->fmt_in.i_codec = VLC_CODEC_S16N;
+        p_enc->fmt_in.i_codec = AOUT_FMT_S16_NE;
         p_sys->i_s16tolog = ALAW;
     }
-    else if( p_enc->fmt_out.i_codec == VLC_CODEC_MULAW )
+    else if( p_enc->fmt_out.i_codec == VLC_FOURCC( 'u', 'l', 'a', 'w' ) ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC( 'm', 'l', 'a', 'w' ) )
     {
         p_enc->fmt_in.audio.i_bitspersample = 16;
-        p_enc->fmt_in.i_codec = VLC_CODEC_S16N;
+        p_enc->fmt_in.i_codec = AOUT_FMT_S16_NE;
         p_sys->i_s16tolog = ULAW;
     }
-
-    p_enc->fmt_out.i_bitrate =
-        p_enc->fmt_in.audio.i_channels *
-        p_enc->fmt_in.audio.i_rate *
-        p_enc->fmt_in.audio.i_bitspersample;
 
     msg_Dbg( p_enc, "samplerate:%dHz channels:%d bits/sample:%d",
              p_enc->fmt_out.audio.i_rate, p_enc->fmt_out.audio.i_channels,
@@ -1369,7 +1431,7 @@ static int EncoderOpen( vlc_object_t *p_this )
  *****************************************************************************/
 static void EncoderClose ( vlc_object_t *p_this )
 {
-    VLC_UNUSED(p_this);
+    return;
 }
 
 /*****************************************************************************
@@ -1380,11 +1442,11 @@ static block_t *EncoderEncode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_block = NULL;
 
-    if( !p_aout_buf || !p_aout_buf->i_buffer ) return NULL;
+    if( !p_aout_buf || !p_aout_buf->i_nb_bytes ) return NULL;
 
     if( p_sys->i_s16tolog )
     {
-        if( ( p_block = block_New( p_enc, p_aout_buf->i_buffer / 2 ) ) )
+        if( ( p_block = block_New( p_enc, p_aout_buf->i_nb_bytes / 2 ) ) )
         {
             int8_t *s = (int8_t*)p_block->p_buffer; // sink
             int16_t *aout = (int16_t*)p_aout_buf->p_buffer; // source
@@ -1392,7 +1454,7 @@ static block_t *EncoderEncode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
 
             if( p_sys->i_s16tolog == ALAW )
             {
-                for( i = 0; i < p_aout_buf->i_buffer / 2; i++ )
+                for( i = 0; i < p_aout_buf->i_nb_bytes / 2; i++ )
                 {
                     if( *aout >= 0)
                         *s++ = alaw_encode[*aout / 16];
@@ -1404,7 +1466,7 @@ static block_t *EncoderEncode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
             }
             else /* ULAW */
             {
-                for( i = 0; i < p_aout_buf->i_buffer / 2; i++ )
+                for( i = 0; i < p_aout_buf->i_nb_bytes / 2; i++ )
                 {
                     if( *aout >= 0)
                         *s++ = ulaw_encode[*aout / 4];
@@ -1416,15 +1478,15 @@ static block_t *EncoderEncode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
             }
         }
     }
-    else if( ( p_block = block_New( p_enc, p_aout_buf->i_buffer ) ) )
+    else if( ( p_block = block_New( p_enc, p_aout_buf->i_nb_bytes ) ) )
     {
         memcpy( p_block->p_buffer, p_aout_buf->p_buffer,
-                p_aout_buf->i_buffer );
+                p_aout_buf->i_nb_bytes );
     }
 
     if( p_block )
     {
-        p_block->i_dts = p_block->i_pts = p_aout_buf->i_pts;
+        p_block->i_dts = p_block->i_pts = p_aout_buf->start_date;
         p_block->i_length = (int64_t)p_aout_buf->i_nb_samples *
             (int64_t)1000000 / p_enc->fmt_in.audio.i_rate;
     }

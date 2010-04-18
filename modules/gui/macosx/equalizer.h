@@ -1,8 +1,8 @@
 /*****************************************************************************
  * equalizer.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 2d5967003cb0420df2660d882b0df1a7ced9cebc $
+ * Copyright (C) 2004 the VideoLAN team
+ * $Id: a1fc3669ac735082c553521141dd4d24f50e5b06 $
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,12 +22,11 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * VLCEqualizer interface
+ * VLCEqualizer interface 
  *****************************************************************************/
 @interface VLCEqualizer : NSObject
 {
     IBOutlet id o_btn_equalizer;
-    IBOutlet id o_btn_equalizer_embedded;
     IBOutlet id o_ckb_2pass;
     IBOutlet id o_ckb_enable;
     IBOutlet id o_fld_preamp;
@@ -56,9 +55,10 @@
 - (void)windowWillClose:(NSNotification *)aNotification;
 - (void)awakeFromNib;
 
-- (void)setValue: (float)value forSlider: (int)index;
-- (id)sliderByIndex: (int)index;
-- (void)setBandSlidersValues: (float *)values;
+- (void)setValue:(float)value forSlider:(int)index;
+- (id)getSliderByIndex:(int)index;
+- (void)setBandSlidersValues:(float *)values;
 - (void)initBandSliders;
+
 
 @end

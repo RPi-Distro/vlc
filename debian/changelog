@@ -1,3 +1,11 @@
+vlc (0.8.6.h-4+lenny2.3) stable-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Fix integer underflow in RTSP streaming (410-rtsp-integer-
+    underflow.diff)
+
+ -- Devin Carraway <devin@debian.org>  Sun, 18 Apr 2010 09:25:53 +0000
+
 vlc (0.8.6.h-4+lenny2) testing-security; urgency=high
 
   * Non-maintainer upload by the Security Team.

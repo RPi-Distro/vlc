@@ -1,8 +1,8 @@
 /*****************************************************************************
  * export.c :  Playlist export module
  *****************************************************************************
- * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: da7fa0128e1f45d5e4b60fec460381f8b7fc59fa $
+ * Copyright (C) 2004 the VideoLAN team
+ * $Id: af49869575f622687e1f3efb070850058168cb57 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -24,50 +24,38 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
+#include <vlc/vlc.h>
 
 /***************************************************************************
  * Prototypes
  ***************************************************************************/
 int Export_M3U    ( vlc_object_t *p_intf );
-int Export_M3U8   ( vlc_object_t *p_intf );
-int Export_HTML   ( vlc_object_t *p_intf );
-int xspf_export_playlist( vlc_object_t *p_intf );
+int Export_Old    ( vlc_object_t *p_intf );
+int E_(xspf_export_playlist)( vlc_object_t *p_intf );
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin ()
+vlc_module_begin();
 
-    set_category( CAT_PLAYLIST )
-    set_subcategory( SUBCAT_PLAYLIST_EXPORT )
-    add_submodule ()
-        set_description( N_("M3U playlist export") )
-        add_shortcut( "export-m3u" )
-        set_capability( "playlist export" , 0 )
-        set_callbacks( Export_M3U , NULL )
+    set_category( CAT_PLAYLIST );
+    set_subcategory( SUBCAT_PLAYLIST_EXPORT );
+    add_submodule();
+        set_description( _("M3U playlist exporter") );
+        add_shortcut( "export-m3u" );
+        set_capability( "playlist export" , 0);
+        set_callbacks( Export_M3U , NULL );
 
-    add_submodule ()
-        set_description( N_("M3U8 playlist export") )
-        add_shortcut( "export-m3u8" )
-        set_capability( "playlist export" , 0 )
-        set_callbacks( Export_M3U , NULL )
+    add_submodule();
+        set_description( _("Old playlist exporter") );
+        add_shortcut( "export-old" );
+        set_capability( "playlist export" , 0);
+        set_callbacks( Export_Old , NULL );
 
-    add_submodule ()
-        set_description( N_("XSPF playlist export") )
-        add_shortcut( "export-xspf" )
-        set_capability( "playlist export" , 0 )
-        set_callbacks( xspf_export_playlist , NULL )
+    add_submodule();
+        set_description( _("XSPF playlist export") );
+        add_shortcut( "export-xspf" );
+        set_capability( "playlist export" , 0);
+        set_callbacks( E_(xspf_export_playlist) , NULL );
 
-    add_submodule ()
-        set_description( N_("HTML playlist export") )
-        add_shortcut( "export-html" )
-        set_capability( "playlist export", 0 )
-        set_callbacks( Export_HTML, NULL )
-
-vlc_module_end ()
+vlc_module_end();

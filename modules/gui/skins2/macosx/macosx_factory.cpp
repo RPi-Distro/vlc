@@ -2,7 +2,7 @@
  * macosx_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 3efac86e7b69037ca9f108a60d9b23ade1738bd8 $
+ * $Id: be00008591b887338f5801267b3836ebdc7ceb36 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -99,9 +99,9 @@ void MacOSXFactory::removeFromTaskBar()
     // TODO
 }
 
-OSTimer *MacOSXFactory::createOSTimer( CmdGeneric &rCmd )
+OSTimer *MacOSXFactory::createOSTimer( const Callback &rCallback )
 {
-    return new MacOSXTimer( getIntf(), rCmd );
+    return new MacOSXTimer( getIntf(), rCallback );
 }
 
 
@@ -139,10 +139,10 @@ int MacOSXFactory::getScreenHeight() const
 }
 
 
-SkinsRect MacOSXFactory::getWorkArea() const
+Rect MacOSXFactory::getWorkArea() const
 {
     // XXX
-    return SkinsRect( 0, 0, getScreenWidth(), getScreenHeight() );
+    return Rect( 0, 0, getScreenWidth(), getScreenHeight() );
 }
 
 

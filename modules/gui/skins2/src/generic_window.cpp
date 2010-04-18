@@ -2,7 +2,7 @@
  * generic_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 609f1e337013a44a6e1911dfacb801c943244455 $
+ * $Id: 2324185b309fb3ecab139adebfbfeb7c90510b8b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -31,7 +31,7 @@
 
 GenericWindow::GenericWindow( intf_thread_t *pIntf, int left, int top,
                               bool dragDrop, bool playOnDrop,
-                              GenericWindow *pParent, WindowType_t type ):
+                              GenericWindow *pParent ):
     SkinObject( pIntf ), m_left( left ), m_top( top ), m_width( 0 ),
     m_height( 0 ), m_pVarVisible( NULL )
 {
@@ -47,7 +47,7 @@ GenericWindow::GenericWindow( intf_thread_t *pIntf, int left, int top,
 
     // Create an OSWindow to handle OS specific processing
     m_pOsWindow = pOsFactory->createOSWindow( *this, dragDrop, playOnDrop,
-                                              pOSParent, type );
+                                              pOSParent );
 
     // Create the visibility variable and register it in the manager
     m_pVarVisible = new VarBoolImpl( pIntf );
@@ -62,7 +62,10 @@ GenericWindow::~GenericWindow()
 {
     m_pVarVisible->delObserver( this );
 
-    delete m_pOsWindow;
+    if( m_pOsWindow )
+    {
+        delete m_pOsWindow;
+    }
 }
 
 
@@ -98,10 +101,6 @@ void GenericWindow::move( int left, int top )
 
 void GenericWindow::resize( int width, int height )
 {
-    // don't try when value is 0 (may crash)
-    if( !width || ! height )
-        return;
-
     // Update the window size
     m_width = width;
     m_height = height;
@@ -130,16 +129,13 @@ void GenericWindow::toggleOnTop( bool onTop ) const
 
 void GenericWindow::onUpdate( Subject<VarBool> &rVariable, void*arg )
 {
-    if (&rVariable == m_pVarVisible )
+    if( m_pVarVisible->get() )
     {
-        if( m_pVarVisible->get() )
-        {
-            innerShow();
-        }
-        else
-        {
-            innerHide();
-        }
+        innerShow();
+    }
+    else
+    {
+        innerHide();
     }
 }
 
@@ -148,7 +144,7 @@ void GenericWindow::innerShow()
 {
     if( m_pOsWindow )
     {
-        m_pOsWindow->show();
+        m_pOsWindow->show( m_left, m_top );
     }
 }
 
@@ -161,21 +157,3 @@ void GenericWindow::innerHide()
     }
 }
 
-
-void* GenericWindow::getOSHandle() const
-{
-    return m_pOsWindow->getOSHandle();
-}
-
-
-void GenericWindow::setParent( GenericWindow* pParent, int x, int y, int w, int h )
-{
-    // Update the window size and position
-    m_left = x;
-    m_top = y;
-    m_width  = ( w > 0 ) ? w : m_width;
-    m_height = ( h > 0 ) ? h : m_height;
-
-    void* handle = pParent ? pParent->getOSHandle() : NULL;
-    m_pOsWindow->reparent( handle, m_left, m_top, m_width, m_height );
-}

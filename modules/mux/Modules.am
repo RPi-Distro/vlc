@@ -1,4 +1,3 @@
-SUBDIRS = mpeg
 SOURCES_mux_dummy = dummy.c
 SOURCES_mux_avi = avi.c
 SOURCES_mux_ogg = ogg.c
@@ -6,12 +5,3 @@ SOURCES_mux_mp4 = mp4.c
 SOURCES_mux_asf = asf.c
 SOURCES_mux_wav = wav.c
 SOURCES_mux_mpjpeg = mpjpeg.c
-
-libvlc_LTLIBRARIES += \
-	libmux_dummy_plugin.la \
-	libmux_avi_plugin.la \
-	libmux_mp4_plugin.la \
-	libmux_asf_plugin.la \
-	libmux_wav_plugin.la \
-	libmux_mpjpeg_plugin.la \
-	$(NULL)

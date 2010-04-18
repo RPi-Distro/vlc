@@ -1,8 +1,8 @@
 /*****************************************************************************
  * rawdv.c : raw DV input module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 9b9611d85d70e89389d689f78c4bc3072b680ea9 $
+ * Copyright (C) 2001-2004 the VideoLAN team
+ * $Id: 6e9fe57e34dd82ba82e0fdaebac12589e567ca17 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Paul Corke <paul dot corke at datatote dot co dot uk>
@@ -25,14 +25,10 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>                                      /* malloc(), free() */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_demux.h>
+#include <vlc/vlc.h>
+#include <vlc/input.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -44,16 +40,16 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin ()
-    set_shortname( "DV" )
-    set_description( N_("DV (Digital Video) demuxer") )
-    set_capability( "demux", 3 )
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_DEMUX )
-    add_bool( "rawdv-hurry-up", false, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT, false )
-    set_callbacks( Open, Close )
-    add_shortcut( "rawdv" )
-vlc_module_end ()
+vlc_module_begin();
+    set_shortname( "DV" );
+    set_description( _("DV (Digital Video) demuxer") );
+    set_capability( "demux2", 2 );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_DEMUX );
+    add_bool( "rawdv-hurry-up", 0, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT, VLC_FALSE );
+    set_callbacks( Open, Close );
+    add_shortcut( "rawdv" );
+vlc_module_end();
 
 
 /*****************************************************************************
@@ -114,7 +110,7 @@ struct demux_sys_t
 
     /* program clock reference (in units of 90kHz) */
     mtime_t i_pcr;
-    bool b_hurry_up;
+    vlc_bool_t b_hurry_up;
 };
 
 /*****************************************************************************
@@ -134,11 +130,12 @@ static int Open( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
 
-    const uint8_t *p_peek, *p_peek_backup;
+    byte_t      *p_peek, *p_peek_backup;
 
     uint32_t    i_dword;
     dv_header_t dv_header;
     dv_id_t     dv_id;
+    char        *psz_ext;
 
     /* It isn't easy to recognize a raw DV stream. The chances that we'll
      * mistake a stream from another type for a raw DV stream are too high, so
@@ -146,8 +143,12 @@ static int Open( vlc_object_t * p_this )
      * it is possible to force this demux. */
 
     /* Check for DV file extension */
-    if( !demux_IsPathExtension( p_demux, ".dv" ) && !p_demux->b_force )
+    psz_ext = strrchr( p_demux->psz_path, '.' );
+    if( ( !psz_ext || strcasecmp( psz_ext, ".dv") ) &&
+        strcmp(p_demux->psz_demux, "rawdv") )
+    {
         return VLC_EGENERIC;
+    }
 
     if( stream_Peek( p_demux->s, &p_peek, DV_PAL_FRAME_SIZE ) <
         DV_NTSC_FRAME_SIZE )
@@ -216,13 +217,13 @@ static int Open( vlc_object_t * p_this )
     p_sys->frame_size = dv_header.dsf ? 12 * 150 * 80 : 10 * 150 * 80;
     p_sys->f_rate = dv_header.dsf ? 25 : 29.97;
 
-    p_sys->i_pcr = 0;
+    p_sys->i_pcr = 1;
     p_sys->p_es_video = NULL;
     p_sys->p_es_audio = NULL;
 
     p_sys->i_bitrate = 0;
 
-    es_format_Init( &p_sys->fmt_video, VIDEO_ES, VLC_CODEC_DV );
+    es_format_Init( &p_sys->fmt_video, VIDEO_ES, VLC_FOURCC('d','v','s','d') );
     p_sys->fmt_video.video.i_width = 720;
     p_sys->fmt_video.video.i_height= dv_header.dsf ? 576 : 480;;
 
@@ -239,10 +240,9 @@ static int Open( vlc_object_t * p_this )
     p_peek = p_peek_backup + 80*6+80*16*3 + 3; /* beginning of AAUX pack */
     if( *p_peek == 0x50 )
     {
-        /* 12 bits non-linear will be converted to 16 bits linear */
-        es_format_Init( &p_sys->fmt_audio, AUDIO_ES, VLC_CODEC_S16L );
+        es_format_Init( &p_sys->fmt_audio, AUDIO_ES,
+                        VLC_FOURCC('a','r','a','w') );
 
-        p_sys->fmt_audio.audio.i_bitspersample = 16;
         p_sys->fmt_audio.audio.i_channels = 2;
         switch( (p_peek[4] >> 3) & 0x07 )
         {
@@ -257,6 +257,9 @@ static int Open( vlc_object_t * p_this )
             p_sys->fmt_audio.audio.i_rate = 32000;
             break;
         }
+
+        /* 12 bits non-linear will be converted to 16 bits linear */
+        p_sys->fmt_audio.audio.i_bitspersample = 16;
 
         p_sys->p_es_audio = es_out_Add( p_demux->out, &p_sys->fmt_audio );
     }
@@ -285,7 +288,7 @@ static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys  = p_demux->p_sys;
     block_t     *p_block;
-    bool  b_audio = false;
+    vlc_bool_t  b_audio = VLC_FALSE;
 
     if( p_sys->b_hurry_up )
     {
@@ -294,7 +297,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Call the pace control */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_pcr );
+    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pcr );
     p_block = stream_Block( p_demux->s, p_sys->frame_size );
     if( p_block == NULL )
     {
@@ -309,7 +312,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = VLC_TS_0 + p_sys->i_pcr;
+    p_block->i_pts = p_sys->i_pcr;
 
     if( b_audio )
     {
@@ -317,7 +320,7 @@ static int Demux( demux_t *p_demux )
         if( p_audio_block )
         {
             p_audio_block->i_pts =
-            p_audio_block->i_dts = VLC_TS_0 + p_sys->i_pcr;
+            p_audio_block->i_dts = p_sys->i_pcr;
             es_out_Send( p_demux->out, p_sys->p_es_audio, p_audio_block );
         }
     }
@@ -326,7 +329,7 @@ static int Demux( demux_t *p_demux )
 
     if( !p_sys->b_hurry_up )
     {
-        p_sys->i_pcr += ( INT64_C(1000000) / p_sys->f_rate );
+        p_sys->i_pcr += ( I64C(1000000) / p_sys->f_rate );
     }
 
     return 1;
@@ -340,7 +343,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     demux_sys_t *p_sys  = p_demux->p_sys;
 
     /* XXX: DEMUX_SET_TIME is precise here */
-    return demux_vaControlHelper( p_demux->s,
+    return demux2_vaControlHelper( p_demux->s,
                                    0, -1,
                                    p_sys->frame_size * p_sys->f_rate * 8,
                                    p_sys->frame_size, i_query, args );

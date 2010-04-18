@@ -2,7 +2,7 @@
  * dummy.c: dummy muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 51e11adaa2b2f243ebc53002b31d446da9e7e3c8 $
+ * $Id: c38539b031aabacb8410f3e33fef1bc1f95f98f2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -25,15 +25,11 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <vlc/vlc.h>
+#include <vlc/sout.h>
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_sout.h>
-#include <vlc_block.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -41,16 +37,16 @@
 static int  Open   ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
-vlc_module_begin ()
-    set_description( N_("Dummy/Raw muxer") )
-    set_capability( "sout mux", 5 )
-    set_category( CAT_SOUT )
-    set_subcategory( SUBCAT_SOUT_MUX )
-    add_shortcut( "dummy" )
-    add_shortcut( "raw" )
-    add_shortcut( "es" )
-    set_callbacks( Open, Close )
-vlc_module_end ()
+vlc_module_begin();
+    set_description( _("Dummy/Raw muxer") );
+    set_capability( "sout mux", 5 );
+    set_category( CAT_SOUT );
+    set_subcategory( SUBCAT_SOUT_MUX );
+    add_shortcut( "dummy" );
+    add_shortcut( "raw" );
+    add_shortcut( "es" );
+    set_callbacks( Open, Close );
+vlc_module_end();
 
 /*****************************************************************************
  * Exported prototypes
@@ -64,7 +60,7 @@ struct sout_mux_sys_t
 {
     /* Some streams have special initialization data, we'll output this
      * data as an header in the stream. */
-    bool b_header;
+    vlc_bool_t b_header;
 };
 
 /*****************************************************************************
@@ -84,9 +80,7 @@ static int Open( vlc_object_t *p_this )
     p_mux->pf_mux       = Mux;
 
     p_mux->p_sys = p_sys = malloc( sizeof( sout_mux_sys_t ) );
-    if( !p_sys )
-        return VLC_ENOMEM;
-    p_sys->b_header      = true;
+    p_sys->b_header      = VLC_TRUE;
 
     return VLC_SUCCESS;
 }
@@ -106,22 +100,21 @@ static void Close( vlc_object_t * p_this )
 
 static int Control( sout_mux_t *p_mux, int i_query, va_list args )
 {
-    VLC_UNUSED(p_mux);
-    bool *pb_bool;
+    vlc_bool_t *pb_bool;
 
-    switch( i_query )
-    {
-        case MUX_CAN_ADD_STREAM_WHILE_MUXING:
-            pb_bool = (bool*)va_arg( args, bool * );
-            *pb_bool = true;
-            return VLC_SUCCESS;
+   switch( i_query )
+   {
+       case MUX_CAN_ADD_STREAM_WHILE_MUXING:
+           pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
+           *pb_bool = VLC_TRUE;
+           return VLC_SUCCESS;
 
-        case MUX_GET_ADD_STREAM_WAIT:
-            pb_bool = (bool*)va_arg( args, bool * );
-            *pb_bool = false;
-            return VLC_SUCCESS;
+       case MUX_GET_ADD_STREAM_WAIT:
+           pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
+           *pb_bool = VLC_FALSE;
+           return VLC_SUCCESS;
 
-        case MUX_GET_MIME:   /* Unknown */
+       case MUX_GET_MIME:   /* Unknown */
         default:
             return VLC_EGENERIC;
    }
@@ -129,14 +122,12 @@ static int Control( sout_mux_t *p_mux, int i_query, va_list args )
 
 static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
-    VLC_UNUSED(p_input);
     msg_Dbg( p_mux, "adding input" );
     return VLC_SUCCESS;
 }
 
 static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
-    VLC_UNUSED(p_input);
     msg_Dbg( p_mux, "removing input" );
     return VLC_SUCCESS;
 }
@@ -165,7 +156,7 @@ static int Mux( sout_mux_t *p_mux )
         }
 
         p_fifo = p_mux->pp_inputs[i]->p_fifo;
-        i_count = block_FifoCount( p_fifo );
+        i_count = p_fifo->i_depth;
         while( i_count > 0 )
         {
             block_t *p_data = block_FifoGet( p_fifo );
@@ -175,7 +166,7 @@ static int Mux( sout_mux_t *p_mux )
             i_count--;
         }
     }
-    p_sys->b_header = false;
+    p_sys->b_header = VLC_FALSE;
 
     return VLC_SUCCESS;
 }

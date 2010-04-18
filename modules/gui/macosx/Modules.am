@@ -1,8 +1,3 @@
-# Automake forgets to add a proper tag to libtool with Objective-C files.
-# Moreovcer Libtool should default tag to CC when none is specified but
-# obviously does not. Here is a fix for that.
-LIBTOOL=@LIBTOOL@ --tag=CC
-
 SOURCES_macosx = \
 	AppleRemote.h \
 	AppleRemote.m \
@@ -14,8 +9,8 @@ SOURCES_macosx = \
 	controls.m \
 	equalizer.m \
 	equalizer.h \
-	coredialogs.m \
-	coredialogs.h \
+	interaction.m \
+	interaction.h \
 	intf.m \
 	intf.h \
 	macosx.m \
@@ -31,11 +26,10 @@ SOURCES_macosx = \
 	prefs.h \
 	prefs_widgets.h \
 	prefs_widgets.m \
-	simple_prefs.h \
-	simple_prefs.m \
 	output.h \
 	output.m \
 	vout.m \
+	voutqt.m \
 	voutgl.m \
 	vout.h \
 	wizard.h \
@@ -46,13 +40,7 @@ SOURCES_macosx = \
 	bookmarks.m \
 	embeddedwindow.h \
 	embeddedwindow.m \
-	sidebarview.h \
-	sidebarview.m \
-	sidestatusview.h \
-	sidestatusview.m \
-	fspanel.m \
 	fspanel.h \
-	eyetv.h \
-	eyetv.m \
+	fspanel.m \
 	$(NULL)
 

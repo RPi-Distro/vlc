@@ -1,11 +1,10 @@
 /*****************************************************************************
  * cmd_playtree.hpp
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 97d6fa1e329f6a25426fe174ca8096823ff4ad25 $
+ * Copyright (C) 2005 VideoLAN
+ * $Id: 2afb795cedc468d71ef3274b0a6658399f9cacdf $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
- *          Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef CMD_PLAYTREE_HPP
@@ -33,16 +32,20 @@
 /// Command to delete the selected items from a tree
 class CmdPlaytreeDel: public CmdGeneric
 {
-public:
-    CmdPlaytreeDel( intf_thread_t *pIntf, VarTree &rTree )
-                  : CmdGeneric( pIntf ), m_rTree( rTree ) { }
-    virtual ~CmdPlaytreeDel() { }
-    virtual void execute();
-    virtual string getType() const { return "playtree del"; }
+    public:
+        CmdPlaytreeDel( intf_thread_t *pIntf, VarTree &rTree ):
+            CmdGeneric( pIntf ), m_rTree( rTree ) {}
+        virtual ~CmdPlaytreeDel() {}
 
-private:
-    /// Tree
-    VarTree &m_rTree;
+        /// This method does the real job of the command
+        virtual void execute();
+
+        /// Return the type of the command
+        virtual string getType() const { return "playtree del"; }
+
+    private:
+        /// Tree
+        VarTree &m_rTree;
 };
 
 /// Command to sort the playtree

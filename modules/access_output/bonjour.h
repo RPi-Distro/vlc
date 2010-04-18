@@ -2,7 +2,7 @@
  * bonjour.h
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: fe63c0896f1d8f922d67bbbbb03912d1be0d6ff6 $
+ * $Id: 3d899fc0c41e09a1b33a100a83dcd263973c7832 $
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *
@@ -21,6 +21,5 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-void *bonjour_start_service( vlc_object_t *, const char*, const char *, int,
-                             char * );
+void *bonjour_start_service( vlc_object_t *, char*, char *, int, char * );
 void bonjour_stop_service( void * );

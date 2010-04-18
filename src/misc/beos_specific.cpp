@@ -2,7 +2,7 @@
  * beos_init.cpp: Initialization for BeOS specific features
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 51c70cf8a8182b9caeb871e1b55dab9c037c16f0 $
+ * $Id: 7e0e74c29d598aeb4f3f78dd29cc6f04b94cd2e2 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *
@@ -33,12 +33,7 @@
 
 extern "C"
 {
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include "../libvlc.h"
+#include <vlc/vlc.h>
 }
 
 /*****************************************************************************
@@ -71,48 +66,46 @@ private:
 #include "../../modules/gui/beos/MsgVals.h"
 #define REALLY_QUIT 'requ'
 
-static vlc_object_t *p_appthread;
-
 extern "C"
 {
 
 /*****************************************************************************
  * Local prototypes.
  *****************************************************************************/
-static void* AppThread( vlc_object_t *p_appthread );
+static void AppThread( vlc_object_t *p_appthread );
 
 /*****************************************************************************
  * system_Init: create a BApplication object and fill in program path.
  *****************************************************************************/
-void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
+void system_Init( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
 {
-    p_appthread =
+    p_this->p_libvlc->p_appthread =
             (vlc_object_t *)vlc_object_create( p_this, sizeof(vlc_object_t) );
 
     /* Create the BApplication thread and wait for initialization */
-    vlc_thread_create( p_appthread, "app thread", AppThread,
-                       VLC_THREAD_PRIORITY_LOW, true );
+    vlc_thread_create( p_this->p_libvlc->p_appthread, "app thread", AppThread,
+                       VLC_THREAD_PRIORITY_LOW, VLC_TRUE );
 }
 
 /*****************************************************************************
  * system_Configure: check for system specific configuration options.
  *****************************************************************************/
-void system_Configure( libvlc_int_t *, int *pi_argc, const char *ppsz_argv[] )
+void system_Configure( vlc_t *, int *pi_argc, char *ppsz_argv[] )
 {
 }
 
 /*****************************************************************************
  * system_End: destroy the BApplication object.
  *****************************************************************************/
-void system_End( libvlc_int_t *p_this )
+void system_End( vlc_t *p_this )
 {
     /* Tell the BApplication to die */
     be_app->PostMessage( REALLY_QUIT );
 
-    vlc_thread_join( p_appthread );
-    vlc_object_release( p_appthread );
+    vlc_thread_join( p_this->p_libvlc->p_appthread );
+    vlc_object_destroy( p_this->p_libvlc->p_appthread );
 
-    free( psz_vlcpath );
+    free( p_this->p_libvlc->psz_vlcpath );
 }
 
 /* following functions are local */
@@ -120,18 +113,15 @@ void system_End( libvlc_int_t *p_this )
 /*****************************************************************************
  * AppThread: the BApplication thread.
  *****************************************************************************/
-static void* AppThread( vlc_object_t * p_this )
+static void AppThread( vlc_object_t * p_this )
 {
-    int canc = vlc_savecancel ();
     VlcApplication * BeApp =
         new VlcApplication("application/x-vnd.videolan-vlc");
-    vlc_object_attach( p_this, p_this->p_libvlc );
+    vlc_object_attach( p_this, p_this->p_vlc );
     BeApp->p_this = p_this;
     BeApp->Run();
     vlc_object_detach( p_this );
     delete BeApp;
-    vlc_restorecancel (canc);
-    return NULL;
 }
 
 } /* extern "C" */
@@ -182,7 +172,7 @@ void VlcApplication::ReadyToRun( )
     BEntry entry( &info.ref );
     entry.GetPath( &path );
     path.GetParent( &path );
-    psz_vlcpath = strdup( path.Path() );
+    p_this->p_libvlc->psz_vlcpath = strdup( path.Path() );
 
     /* Tell the main thread we are finished initializing the BApplication */
     vlc_thread_ready( p_this );
@@ -243,7 +233,7 @@ bool VlcApplication::QuitRequested()
 {
     if( !fReadyToQuit )
     {
-        libvlc_Quit( p_this->p_libvlc );
+        p_this->p_vlc->b_die = 1;
         return false;
     }
 

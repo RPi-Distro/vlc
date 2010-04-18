@@ -2,7 +2,7 @@
  * evt_key.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9cf34675e5a49ffbed5191e2c4ca66abc719fe3e $
+ * $Id: 621276667499b7dade67f4c90d513bf16e3ff379 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -23,7 +23,7 @@
  *****************************************************************************/
 
 #include "evt_key.hpp"
-#include <vlc_keys.h>
+#include "vlc_keys.h"
 
 
 const string EvtKey::getAsString() const
@@ -41,10 +41,7 @@ const string EvtKey::getAsString() const
     // Add the key
     char *keyName = KeyToString( m_key );
     if( keyName )
-    {
         event += (string)":" + keyName;
-        free( keyName );
-    }
     else
         msg_Warn( getIntf(), "Unknown key: %d", m_key );
 
@@ -53,3 +50,4 @@ const string EvtKey::getAsString() const
 
     return event;
 }
+

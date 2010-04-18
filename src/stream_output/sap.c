@@ -1,8 +1,8 @@
 /*****************************************************************************
  * sap.c : SAP announce handler
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: f4d9a08d40936b53e02a109e62a92d9fe6d9c07c $
+ * Copyright (C) 2002-2005 the VideoLAN team
+ * $Id: 64a4554ab03174e2e56b6816111d3882604ca8a4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -25,145 +25,152 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-
 #include <stdlib.h>                                                /* free() */
 #include <stdio.h>                                              /* sprintf() */
-#include <string.h>
-#include <assert.h>
+#include <string.h>                                            /* strerror() */
+#include <ctype.h>                                  /* tolower(), isxdigit() */
 
-#include <vlc_sout.h>
-#include <vlc_network.h>
+#include <vlc/vlc.h>
+#include <vlc/sout.h>
 
-#include "stream_output.h"
-#include "libvlc.h"
+#include "network.h"
+#include "charset.h"
 
 /* SAP is always on that port */
-#define IPPORT_SAP 9875
+#define SAP_PORT 9875
 
-/* A SAP session descriptor, enqueued in the SAP handler queue */
-typedef struct sap_session_t
-{
-    struct sap_session_t *next;
-    const session_descriptor_t *p_sd;
-    size_t                length;
-    uint8_t               data[];
-} sap_session_t;
+#define DEFAULT_PORT "1234"
 
-/* A SAP announce address. For each of these, we run the
- * control flow algorithm */
-typedef struct sap_address_t
-{
-    struct sap_address_t   *next;
+#undef EXTRA_DEBUG
 
-    vlc_thread_t            thread;
-    vlc_mutex_t             lock;
-    vlc_cond_t              wait;
+/* SAP Specific structures */
 
-    char                    group[NI_MAXNUMERICHOST];
-    struct sockaddr_storage orig;
-    socklen_t               origlen;
-    int                     fd;
-    unsigned                interval;
-
-    unsigned                session_count;
-    sap_session_t          *first;
-} sap_address_t;
-
-/* The SAP handler, running in a separate thread */
-struct sap_handler_t
-{
-    VLC_COMMON_MEMBERS
-
-    vlc_mutex_t    lock;
-    sap_address_t *first;
-};
-
+/* 100ms */
+#define SAP_IDLE ((mtime_t)(0.100*CLOCK_FREQ))
 #define SAP_MAX_BUFFER 65534
 #define MIN_INTERVAL 2
 #define MAX_INTERVAL 300
 
+/* A SAP announce address. For each of these, we run the
+ * control flow algorithm */
+struct sap_address_t
+{
+    char *psz_address;
+    char psz_machine[NI_MAXNUMERICHOST];
+    int i_rfd; /* Read socket */
+    int i_wfd; /* Write socket */
+
+    /* Used for flow control */
+    mtime_t t1;
+    vlc_bool_t b_enabled;
+    vlc_bool_t b_ready;
+    int i_interval;
+    int i_buff;
+    int i_limit;
+};
+
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static void *RunThread (void *);
+static void RunThread( vlc_object_t *p_this);
+static int CalculateRate( sap_handler_t *p_sap, sap_address_t *p_address );
+static char *SDPGenerate( sap_handler_t *p_sap,
+                          const session_descriptor_t *p_session,
+                          const sap_address_t *p_addr, vlc_bool_t b_ssm );
+
+static int announce_SendSAPAnnounce( sap_handler_t *p_sap,
+                                     sap_session_t *p_session );
+
+
+static int announce_SAPAnnounceAdd( sap_handler_t *p_sap,
+                             session_descriptor_t *p_session );
+
+static int announce_SAPAnnounceDel( sap_handler_t *p_sap,
+                             session_descriptor_t *p_session );
+
+#define FREE( p ) if( p ) { free( p ); (p) = NULL; }
+
 
 /**
  * Create the SAP handler
  *
- * \param p_announce a VLC object
+ * \param p_announce the parent announce_handler
  * \return the newly created SAP handler or NULL on error
  */
-sap_handler_t *SAP_Create (vlc_object_t *p_announce)
+sap_handler_t *announce_SAPHandlerCreate( announce_handler_t *p_announce )
 {
     sap_handler_t *p_sap;
 
-    p_sap = vlc_custom_create (p_announce, sizeof (*p_sap),
-                               VLC_OBJECT_GENERIC, "sap sender");
-    if (p_sap == NULL)
-        return NULL;
+    p_sap = vlc_object_create( p_announce, sizeof( sap_handler_t ) );
 
-    vlc_mutex_init (&p_sap->lock);
-    p_sap->first = NULL;
+    if( !p_sap )
+    {
+        msg_Err( p_announce, "out of memory" );
+        return NULL;
+    }
+
+    vlc_mutex_init( p_sap, &p_sap->object_lock );
+
+    p_sap->pf_add = announce_SAPAnnounceAdd;
+    p_sap->pf_del = announce_SAPAnnounceDel;
+
+    p_sap->i_sessions = 0;
+    p_sap->i_addresses = 0;
+    p_sap->i_current_session = 0;
+
+    p_sap->b_control = config_GetInt( p_sap, "sap-flow-control");
+
+    if( vlc_thread_create( p_sap, "sap handler", RunThread,
+                       VLC_THREAD_PRIORITY_LOW, VLC_FALSE ) )
+    {
+        msg_Dbg( p_announce, "unable to spawn SAP handler thread");
+        free( p_sap );
+        return NULL;
+    };
+    msg_Dbg( p_announce, "thread created, %i sessions", p_sap->i_sessions);
     return p_sap;
 }
 
-void SAP_Destroy (sap_handler_t *p_sap)
+/**
+ *  Destroy the SAP handler
+ *  \param p_this the SAP Handler to destroy
+ *  \return nothing
+ */
+void announce_SAPHandlerDestroy( sap_handler_t *p_sap )
 {
-    assert (p_sap->first == NULL);
-    vlc_mutex_destroy (&p_sap->lock);
-    vlc_object_release (p_sap);
-}
+    int i;
 
-static sap_address_t *AddressCreate (vlc_object_t *obj, const char *group)
-{
-    int fd = net_ConnectUDP (obj, group, IPPORT_SAP, 255);
-    if (fd == -1)
-        return NULL;
+    vlc_mutex_destroy( &p_sap->object_lock );
 
-    sap_address_t *addr = malloc (sizeof (*addr));
-    if (addr == NULL)
+    /* Free the remaining sessions */
+    for( i = 0 ; i< p_sap->i_sessions ; i++)
     {
-        net_Close (fd);
-        return NULL;
+        sap_session_t *p_session = p_sap->pp_sessions[i];
+        FREE( p_session->psz_sdp );
+        FREE( p_session->psz_data );
+        REMOVE_ELEM( p_sap->pp_sessions, p_sap->i_sessions , i );
+        FREE( p_session );
     }
 
-    strlcpy (addr->group, group, sizeof (addr->group));
-    addr->fd = fd;
-    addr->origlen = sizeof (addr->orig);
-    getsockname (fd, (struct sockaddr *)&addr->orig, &addr->origlen);
-
-    addr->interval = var_CreateGetInteger (obj, "sap-interval");
-    vlc_mutex_init (&addr->lock);
-    vlc_cond_init (&addr->wait);
-    addr->session_count = 0;
-    addr->first = NULL;
-
-    if (vlc_clone (&addr->thread, RunThread, addr, VLC_THREAD_PRIORITY_LOW))
+    /* Free the remaining addresses */
+    for( i = 0 ; i< p_sap->i_addresses ; i++)
     {
-        msg_Err (obj, "unable to spawn SAP announce thread");
-        net_Close (fd);
-        free (addr);
-        return NULL;
+        sap_address_t *p_address = p_sap->pp_addresses[i];
+        FREE( p_address->psz_address );
+        if( p_address->i_rfd > -1 )
+        {
+            net_Close( p_address->i_rfd );
+        }
+        if( p_address->i_wfd > -1 && p_sap->b_control )
+        {
+            net_Close( p_address->i_wfd );
+        }
+        REMOVE_ELEM( p_sap->pp_addresses, p_sap->i_addresses, i );
+        FREE( p_address );
     }
-    return addr;
-}
 
-static void AddressDestroy (sap_address_t *addr)
-{
-    assert (addr->first == NULL);
-
-    vlc_cancel (addr->thread);
-    vlc_join (addr->thread, NULL);
-    vlc_cond_destroy (&addr->wait);
-    vlc_mutex_destroy (&addr->lock);
-    net_Close (addr->fd);
-    free (addr);
+    /* Free the structure */
+    vlc_object_destroy( p_sap );
 }
 
 /**
@@ -171,73 +178,112 @@ static void AddressDestroy (sap_address_t *addr)
  * \param p_this the SAP Handler object
  * \return nothing
  */
-static void *RunThread (void *self)
+static void RunThread( vlc_object_t *p_this)
 {
-    sap_address_t *addr = self;
+    sap_handler_t *p_sap = (sap_handler_t*)p_this;
+    sap_session_t *p_session;
 
-    vlc_mutex_lock (&addr->lock);
-    mutex_cleanup_push (&addr->lock);
-
-    for (;;)
+    while( !p_sap->b_die )
     {
-        sap_session_t *p_session;
-        mtime_t deadline;
+        int i;
 
-        while (addr->first == NULL)
-            vlc_cond_wait (&addr->wait, &addr->lock);
-
-        assert (addr->session_count > 0);
-
-        deadline = mdate ();
-        for (p_session = addr->first; p_session; p_session = p_session->next)
+        /* If needed, get the rate info */
+        if( p_sap->b_control == VLC_TRUE )
         {
-            send (addr->fd, p_session->data, p_session->length, 0);
-            deadline += addr->interval * CLOCK_FREQ / addr->session_count;
-
-            if (vlc_cond_timedwait (&addr->wait, &addr->lock, deadline) == 0)
-                break; /* list may have changed! */
+            for( i = 0 ; i< p_sap->i_addresses ; i++)
+            {
+                if( p_sap->pp_addresses[i]->b_enabled == VLC_TRUE )
+                {
+                    CalculateRate( p_sap, p_sap->pp_addresses[i] );
+                }
+            }
         }
-    }
 
-    vlc_cleanup_pop ();
-    assert (0);
+        /* Find the session to announce */
+        vlc_mutex_lock( &p_sap->object_lock );
+        if( p_sap->i_sessions > p_sap->i_current_session + 1)
+        {
+            p_sap->i_current_session++;
+        }
+        else if( p_sap->i_sessions > 0)
+        {
+            p_sap->i_current_session = 0;
+        }
+        else
+        {
+            vlc_mutex_unlock( &p_sap->object_lock );
+            msleep( SAP_IDLE );
+            continue;
+        }
+        p_session = p_sap->pp_sessions[p_sap->i_current_session];
+        vlc_mutex_unlock( &p_sap->object_lock );
+
+        /* And announce it */
+        if( p_session->p_address->b_enabled == VLC_TRUE &&
+            p_session->p_address->b_ready == VLC_TRUE )
+        {
+            announce_SendSAPAnnounce( p_sap, p_session );
+        }
+
+        msleep( SAP_IDLE );
+    }
 }
 
-/**
- * Add a SAP announce
- */
-int SAP_Add (sap_handler_t *p_sap, session_descriptor_t *p_session)
+/* Add a SAP announce */
+static int announce_SAPAnnounceAdd( sap_handler_t *p_sap,
+                             session_descriptor_t *p_session )
 {
-    int i;
-    char psz_addr[NI_MAXNUMERICHOST];
-    bool b_ipv6 = false, b_ssm = false;
+    int i_header_size, i;
+    char *psz_head, psz_addr[NI_MAXNUMERICHOST];
+    vlc_bool_t b_ipv6 = VLC_FALSE, b_ssm = VLC_FALSE;
     sap_session_t *p_sap_session;
     mtime_t i_hash;
-    union
-    {
-        struct sockaddr     a;
-        struct sockaddr_in  in;
-        struct sockaddr_in6 in6;
-    } addr;
-    socklen_t addrlen;
+    struct addrinfo hints, *res;
+    struct sockaddr_storage addr;
 
-    addrlen = p_session->addrlen;
-    if ((addrlen == 0) || (addrlen > sizeof (addr)))
+    vlc_mutex_lock( &p_sap->object_lock );
+
+    if( p_session->psz_uri == NULL )
     {
-        msg_Err( p_sap, "No/invalid address specified for SAP announce" );
+        vlc_mutex_unlock( &p_sap->object_lock );
+        msg_Err( p_sap, "*FIXME* unexpected NULL URI for SAP announce" );
+        msg_Err( p_sap, "This should not happen. VLC needs fixing." );
         return VLC_EGENERIC;
     }
 
     /* Determine SAP multicast address automatically */
-    memcpy (&addr, &p_session->addr, addrlen);
+    memset( &hints, 0, sizeof( hints ) );
+    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_flags = AI_NUMERICHOST;
 
-    switch (addr.a.sa_family)
+    i = vlc_getaddrinfo( (vlc_object_t *)p_sap, p_session->psz_uri, 0,
+                         &hints, &res );
+    if( i )
+    {
+        vlc_mutex_unlock( &p_sap->object_lock );
+        msg_Err( p_sap, "Invalid URI for SAP announce: %s: %s",
+                 p_session->psz_uri, vlc_gai_strerror( i ) );
+        return VLC_EGENERIC;
+    }
+
+    if( (unsigned)res->ai_addrlen > sizeof( addr ) )
+    {
+        vlc_mutex_unlock( &p_sap->object_lock );
+        vlc_freeaddrinfo( res );
+        msg_Err( p_sap, "Unsupported address family of size %d > %u",
+                 res->ai_addrlen, (unsigned) sizeof( addr ) );
+        return VLC_EGENERIC;
+    }
+
+    memcpy( &addr, res->ai_addr, res->ai_addrlen );
+
+    switch( addr.ss_family )
     {
 #if defined (HAVE_INET_PTON) || defined (WIN32)
         case AF_INET6:
         {
             /* See RFC3513 for list of valid IPv6 scopes */
-            struct in6_addr *a6 = &addr.in6.sin6_addr;
+            struct in6_addr *a6 = &((struct sockaddr_in6 *)&addr)->sin6_addr;
 
             memcpy( a6->s6_addr + 2, "\x00\x00\x00\x00\x00\x00"
                    "\x00\x00\x00\x00\x00\x02\x7f\xfe", 14 );
@@ -253,7 +299,7 @@ int SAP_Add (sap_handler_t *p_sap, session_descriptor_t *p_session)
                 /* Unicast IPv6 - assume global scope */
                 memcpy( a6->s6_addr, "\xff\x0e", 2 );
 
-            b_ipv6 = true;
+            b_ipv6 = VLC_TRUE;
             break;
         }
 #endif
@@ -261,207 +307,417 @@ int SAP_Add (sap_handler_t *p_sap, session_descriptor_t *p_session)
         case AF_INET:
         {
             /* See RFC2365 for IPv4 scopes */
-            uint32_t ipv4 = addr.in.sin_addr.s_addr;
+            uint32_t ipv4;
 
+            ipv4 = ntohl( ((struct sockaddr_in *)&addr)->sin_addr.s_addr );
             /* 224.0.0.0/24 => 224.0.0.255 */
-            if ((ipv4 & htonl (0xffffff00)) == htonl (0xe0000000))
-                ipv4 =  htonl (0xe00000ff);
+            if ((ipv4 & 0xffffff00) == 0xe0000000)
+                ipv4 =  0xe00000ff;
             else
             /* 239.255.0.0/16 => 239.255.255.255 */
-            if ((ipv4 & htonl (0xffff0000)) == htonl (0xefff0000))
-                ipv4 =  htonl (0xefffffff);
+            if ((ipv4 & 0xffff0000) == 0xefff0000)
+                ipv4 =  0xefffffff;
             else
             /* 239.192.0.0/14 => 239.195.255.255 */
-            if ((ipv4 & htonl (0xfffc0000)) == htonl (0xefc00000))
-                ipv4 =  htonl (0xefc3ffff);
+            if ((ipv4 & 0xfffc0000) == 0xefc00000)
+                ipv4 =  0xefc3ffff;
             else
-            if ((ipv4 & htonl (0xff000000)) == htonl (0xef000000))
+            if ((ipv4 & 0xff000000) == 0xef000000)
                 ipv4 = 0;
             else
             /* other addresses => 224.2.127.254 */
             {
                 /* SSM: 232.0.0.0/8 */
-                b_ssm = (ipv4 & htonl (255 << 24)) == htonl (232 << 24);
-                ipv4 = htonl (0xe0027ffe);
+                b_ssm = (ipv4 >> 24) == 232;
+                ipv4 = 0xe0027ffe;
             }
 
             if( ipv4 == 0 )
             {
                 msg_Err( p_sap, "Out-of-scope multicast address "
-                         "not supported by SAP" );
+                        "not supported by SAP: %s", p_session->psz_uri );
+                vlc_mutex_unlock( &p_sap->object_lock );
+                vlc_freeaddrinfo( res );
                 return VLC_EGENERIC;
             }
 
-            addr.in.sin_addr.s_addr = ipv4;
+            ((struct sockaddr_in *)&addr)->sin_addr.s_addr = htonl( ipv4 );
             break;
         }
 
         default:
+            vlc_mutex_unlock( &p_sap->object_lock );
+            vlc_freeaddrinfo( res );
             msg_Err( p_sap, "Address family %d not supported by SAP",
-                     addr.a.sa_family );
+                     addr.ss_family );
             return VLC_EGENERIC;
     }
 
-    i = vlc_getnameinfo( &addr.a, addrlen,
+    i = vlc_getnameinfo( (struct sockaddr *)&addr, res->ai_addrlen,
                          psz_addr, sizeof( psz_addr ), NULL, NI_NUMERICHOST );
+    vlc_freeaddrinfo( res );
 
     if( i )
     {
+        vlc_mutex_unlock( &p_sap->object_lock );
         msg_Err( p_sap, "%s", vlc_gai_strerror( i ) );
         return VLC_EGENERIC;
     }
 
-    /* Find/create SAP address thread */
     msg_Dbg( p_sap, "using SAP address: %s", psz_addr);
 
-    vlc_mutex_lock (&p_sap->lock);
-    sap_address_t *sap_addr;
-    for (sap_addr = p_sap->first; sap_addr; sap_addr = sap_addr->next)
-        if (!strcmp (psz_addr, sap_addr->group))
-            break;
-
-    if (sap_addr == NULL)
-    {
-        sap_addr = AddressCreate (VLC_OBJECT(p_sap), psz_addr);
-        if (sap_addr == NULL)
-        {
-            vlc_mutex_unlock (&p_sap->lock);
-            return VLC_EGENERIC;
-        }
-        sap_addr->next = p_sap->first;
-        p_sap->first = sap_addr;
-    }
-    /* Switch locks.
-     * NEVER take the global SAP lock when holding a SAP thread lock! */
-    vlc_mutex_lock (&sap_addr->lock);
-    vlc_mutex_unlock (&p_sap->lock);
-
-    memcpy (&p_session->orig, &sap_addr->orig, sap_addr->origlen);
-    p_session->origlen = sap_addr->origlen;
-
-    size_t headsize = 20, length;
-    switch (p_session->orig.ss_family)
-    {
-#ifdef AF_INET6
-        case AF_INET6:
-            headsize += 16;
-            break;
-#endif
-        case AF_INET:
-            headsize += 4;
-            break;
-        default:
-            assert (0);
-    }
-
     /* XXX: Check for dupes */
-    length = headsize + strlen (p_session->psz_sdp);
-    p_sap_session = malloc (sizeof (*p_sap_session) + length + 1);
-    if (p_sap_session == NULL)
+    p_sap_session = (sap_session_t*)malloc(sizeof(sap_session_t));
+    p_sap_session->p_address = NULL;
+
+    /* Add the address to the buffer */
+    for( i = 0; i < p_sap->i_addresses; i++)
     {
-        vlc_mutex_unlock (&sap_addr->lock);
-        return VLC_EGENERIC; /* NOTE: we should destroy the thread if left unused */
+        if( !strcmp( psz_addr, p_sap->pp_addresses[i]->psz_address ) )
+        {
+            p_sap_session->p_address = p_sap->pp_addresses[i];
+            break;
+        }
     }
-    p_sap_session->next = sap_addr->first;
-    sap_addr->first = p_sap_session;
-    p_sap_session->p_sd = p_session;
-    p_sap_session->length = length;
+
+    if( p_sap_session->p_address == NULL )
+    {
+        sap_address_t *p_address = (sap_address_t *)
+                                    malloc( sizeof(sap_address_t) );
+        if( !p_address )
+        {
+            msg_Err( p_sap, "out of memory" );
+            return VLC_ENOMEM;
+        }
+        p_address->psz_address = strdup( psz_addr );
+        p_address->i_wfd = net_ConnectUDP( p_sap, psz_addr, SAP_PORT, 255 );
+        if( p_address->i_wfd != -1 )
+        {
+            char *ptr;
+
+            net_StopRecv( p_address->i_wfd );
+            net_GetSockAddress( p_address->i_wfd, p_address->psz_machine,
+                                NULL );
+
+            /* removes scope if present */
+            ptr = strchr( p_address->psz_machine, '%' );
+            if( ptr != NULL )
+                *ptr = '\0';
+        }
+
+        if( p_sap->b_control == VLC_TRUE )
+        {
+            p_address->i_rfd = net_OpenUDP( p_sap, psz_addr, SAP_PORT, "", 0 );
+            if( p_address->i_rfd != -1 )
+                net_StopSend( p_address->i_rfd );
+            p_address->i_buff = 0;
+            p_address->b_enabled = VLC_TRUE;
+            p_address->b_ready = VLC_FALSE;
+            p_address->i_limit = 10000; /* 10000 bps */
+            p_address->t1 = 0;
+        }
+        else
+        {
+            p_address->b_enabled = VLC_TRUE;
+            p_address->b_ready = VLC_TRUE;
+            p_address->i_interval = config_GetInt( p_sap,"sap-interval");
+            p_address->i_rfd = -1;
+        }
+
+        if( p_address->i_wfd == -1 || (p_address->i_rfd == -1
+                                        && p_sap->b_control ) )
+        {
+            msg_Warn( p_sap, "disabling address" );
+            p_address->b_enabled = VLC_FALSE;
+        }
+
+        INSERT_ELEM( p_sap->pp_addresses,
+                     p_sap->i_addresses,
+                     p_sap->i_addresses,
+                     p_address );
+        p_sap_session->p_address = p_address;
+    }
+
 
     /* Build the SAP Headers */
-    uint8_t *psz_head = p_sap_session->data;
-
-    /* SAPv1, not encrypted, not compressed */
-    psz_head[0] = 0x20;
-    psz_head[1] = 0x00; /* No authentication length */
-
-    i_hash = mdate();
-    psz_head[2] = i_hash >> 8; /* Msg id hash */
-    psz_head[3] = i_hash;      /* Msg id hash 2 */
-
-    headsize = 4;
-    switch (p_session->orig.ss_family)
+    i_header_size = ( b_ipv6 ? 16 : 4 ) + 20;
+    psz_head = (char *) malloc( i_header_size * sizeof( char ) );
+    if( psz_head == NULL )
     {
-#ifdef AF_INET6
-        case AF_INET6:
-        {
-            struct in6_addr *a6 =
-                &((struct sockaddr_in6 *)&p_session->orig)->sin6_addr;
-            memcpy (psz_head + headsize, a6, 16);
-            psz_head[0] |= 0x10; /* IPv6 flag */
-            headsize += 16;
-            break;
-        }
-#endif
-        case AF_INET:
-        {
-            uint32_t ipv4 =
-                (((struct sockaddr_in *)&p_session->orig)->sin_addr.s_addr);
-            memcpy (psz_head + headsize, &ipv4, 4);
-            headsize += 4;
-            break;
-        }
-
+        msg_Err( p_sap, "out of memory" );
+        return VLC_ENOMEM;
     }
 
-    memcpy (psz_head + headsize, "application/sdp", 16);
-    headsize += 16;
+    /* SAPv1, not encrypted, not compressed */
+    psz_head[0] = b_ipv6 ? 0x30 : 0x20;
+    psz_head[1] = 0x00; /* No authentification length */
+
+    i_hash = mdate();
+    psz_head[2] = (i_hash & 0xFF00) >> 8; /* Msg id hash */
+    psz_head[3] = (i_hash & 0xFF);        /* Msg id hash 2 */
+
+#if defined (HAVE_INET_PTON) || defined (WIN32)
+    if( b_ipv6 )
+    {
+        inet_pton( AF_INET6, /* can't fail */
+                   p_sap_session->p_address->psz_machine,
+                   psz_head + 4 );
+    }
+    else
+#endif
+    {
+        inet_pton( AF_INET, /* can't fail */
+                   p_sap_session->p_address->psz_machine,
+                   psz_head + 4 );
+    }
+
+    memcpy( psz_head + (b_ipv6 ? 20 : 8), "application/sdp", 15 );
+
+    /* If needed, build the SDP */
+    if( p_session->psz_sdp == NULL )
+    {
+        p_session->psz_sdp = SDPGenerate( p_sap, p_session,
+                                          p_sap_session->p_address, b_ssm );
+        if( p_session->psz_sdp == NULL )
+        {
+            vlc_mutex_unlock( &p_sap->object_lock );
+            return VLC_ENOMEM;
+        }
+    }
+
+    p_sap_session->psz_sdp = strdup( p_session->psz_sdp );
+    p_sap_session->i_last = 0;
+
+    psz_head[ i_header_size-1 ] = '\0';
+    p_sap_session->i_length = i_header_size + strlen( p_sap_session->psz_sdp);
+
+    p_sap_session->psz_data = (uint8_t *)malloc( sizeof(char)*
+                                                 p_sap_session->i_length );
 
     /* Build the final message */
-    strcpy( (char *)psz_head + headsize, p_session->psz_sdp);
+    memcpy( p_sap_session->psz_data, psz_head, i_header_size );
+    memcpy( p_sap_session->psz_data+i_header_size, p_sap_session->psz_sdp,
+            strlen( p_sap_session->psz_sdp) );
 
-    sap_addr->session_count++;
-    vlc_cond_signal (&sap_addr->wait);
-    vlc_mutex_unlock (&sap_addr->lock);
+    free( psz_head );
+
+    /* Enqueue the announce */
+    INSERT_ELEM( p_sap->pp_sessions,
+                 p_sap->i_sessions,
+                 p_sap->i_sessions,
+                 p_sap_session );
+    msg_Dbg( p_sap,"%i addresses, %i sessions",
+                   p_sap->i_addresses,p_sap->i_sessions);
+
+    /* Remember the SAP session for later deletion */
+    p_session->p_sap = p_sap_session;
+
+    vlc_mutex_unlock( &p_sap->object_lock );
+
     return VLC_SUCCESS;
 }
 
-/**
- * Remove a SAP Announce
- */
-void SAP_Del (sap_handler_t *p_sap, const session_descriptor_t *p_session)
+/* Remove a SAP Announce */
+static int announce_SAPAnnounceDel( sap_handler_t *p_sap,
+                             session_descriptor_t *p_session )
 {
-    vlc_mutex_lock (&p_sap->lock);
+    int i;
+    vlc_mutex_lock( &p_sap->object_lock );
 
-    /* TODO: give a handle back in SAP_Add, and use that... */
-    sap_address_t *addr, **paddr;
-    sap_session_t *session, **psession;
+    msg_Dbg( p_sap,"removing SAP announce %p",p_session->p_sap);
 
-    paddr = &p_sap->first;
-    for (addr = p_sap->first; addr; addr = addr->next)
+    /* Dequeue the announce */
+    for( i = 0; i< p_sap->i_sessions; i++)
     {
-        psession = &addr->first;
-        vlc_mutex_lock (&addr->lock);
-        for (session = addr->first; session; session = session->next)
+        if( p_session->p_sap == p_sap->pp_sessions[i] )
         {
-            if (session->p_sd == p_session)
-                goto found;
-            psession = &session->next;
+            REMOVE_ELEM( p_sap->pp_sessions,
+                         p_sap->i_sessions,
+                         i );
+
+            FREE( p_session->p_sap->psz_sdp );
+            FREE( p_session->p_sap->psz_data );
+            free( p_session->p_sap );
+            break;
         }
-        vlc_mutex_unlock (&addr->lock);
-        paddr = &addr->next;
     }
-    assert (0);
 
-found:
-    *psession = session->next;
+    /* XXX: Dequeue the address too if it is not used anymore
+     * TODO: - address refcount
+             - send a SAP deletion packet */
 
-    if (addr->first == NULL)
-        /* Last session for this address -> unlink the address */
-        *paddr = addr->next;
-    vlc_mutex_unlock (&p_sap->lock);
+    msg_Dbg( p_sap,"%i announcements remaining", p_sap->i_sessions );
 
-    if (addr->first == NULL)
+    vlc_mutex_unlock( &p_sap->object_lock );
+
+    return VLC_SUCCESS;
+}
+
+static int announce_SendSAPAnnounce( sap_handler_t *p_sap,
+                                     sap_session_t *p_session )
+{
+    int i_ret;
+
+    /* This announce has never been sent yet */
+    if( p_session->i_last == 0 )
     {
-        /* Last session for this address -> unlink the address */
-        vlc_mutex_unlock (&addr->lock);
-        AddressDestroy (addr);
+        p_session->i_next = mdate()+ p_session->p_address->i_interval*1000000;
+        p_session->i_last = 1;
+        return VLC_SUCCESS;
+    }
+
+    if( p_session->i_next < mdate() )
+    {
+#ifdef EXTRA_DEBUG
+        msg_Dbg( p_sap, "sending announce");
+#endif
+        i_ret = net_Write( p_sap, p_session->p_address->i_wfd, NULL,
+                           p_session->psz_data,
+                           p_session->i_length );
+        if( i_ret != (int)p_session->i_length )
+        {
+            msg_Warn( p_sap, "SAP send failed on address %s (%i %i)",
+                      p_session->p_address->psz_address,
+                      i_ret, p_session->i_length );
+        }
+        p_session->i_last = p_session->i_next;
+        p_session->i_next = p_session->i_last
+                            + p_session->p_address->i_interval*1000000;
     }
     else
     {
-        addr->session_count--;
-        vlc_cond_signal (&addr->wait);
-        vlc_mutex_unlock (&addr->lock);
+        return VLC_SUCCESS;
+    }
+    return VLC_SUCCESS;
+}
+
+static char *SDPGenerate( sap_handler_t *p_sap,
+                          const session_descriptor_t *p_session,
+                          const sap_address_t *p_addr, vlc_bool_t b_ssm )
+{
+    int64_t i_sdp_id = mdate();
+    int     i_sdp_version = 1 + p_sap->i_sessions + (rand()&0xfff);
+    char *psz_group, *psz_name, psz_uribuf[NI_MAXNUMERICHOST], *psz_uri,
+         *psz_sdp;
+    char ipv;
+    char *sfilter = NULL;
+    int res;
+
+    psz_group = p_session->psz_group;
+    psz_name = p_session->psz_name;
+
+    /* FIXME: really check that psz_uri is a real IP address
+     * FIXME: make a common function to obtain a canonical IP address */
+    ipv = ( strchr( p_session->psz_uri, ':' )  != NULL) ? '6' : '4';
+    if( *p_session->psz_uri == '[' )
+    {
+        char *ptr;
+
+        strlcpy( psz_uribuf, p_session->psz_uri + 1, sizeof( psz_uribuf ) );
+        ptr = strchr( psz_uribuf, '%' );
+        if( ptr != NULL)
+            *ptr = '\0';
+        ptr = strchr( psz_uribuf, ']' );
+        if( ptr != NULL)
+            *ptr = '\0';
+        psz_uri = psz_uribuf;
+    }
+    else
+        psz_uri = p_session->psz_uri;
+
+    if (b_ssm)
+    {
+        if (asprintf (&sfilter, "a=source-filter: incl IN IP%c * %s\r\n",
+                      ipv, p_addr->psz_machine) == -1)
+            return NULL;
     }
 
-    free (session);
+    /* see the lists in modules/stream_out/rtp.c for compliance stuff */
+    res = asprintf (&psz_sdp,
+                        "v=0\r\n"
+                        "o=- "I64Fd" %d IN IP%c %s\r\n"
+                        "s=%s\r\n"
+                        "c=IN IP%c %s%s\r\n"
+                        "t=0 0\r\n"
+                        "a=tool:"PACKAGE_STRING"\r\n"
+                        "a=recvonly\r\n"
+                        "a=type:broadcast\r\n"
+                        "%s"
+                        "%s%s%s"
+                        "m=video %d %s %d\r\n",
+                        i_sdp_id, i_sdp_version,
+                        ipv, p_addr->psz_machine,
+                        psz_name, ipv, psz_uri,
+                        (ipv == 4) ? "/255" : "",
+                        (sfilter != NULL) ? sfilter : "",
+                        psz_group ? "a=x-plgroup:" : "",
+                        psz_group ? psz_group : "", psz_group ? "\r\n" : "",
+                        p_session->i_port,
+                        p_session->b_rtp ? "RTP/AVP" : "udp",
+                        p_session->i_payload);
+    if (sfilter != NULL)
+        free (sfilter);
+
+    if (res == -1)
+        return NULL;
+
+    msg_Dbg( p_sap, "Generated SDP (%i bytes):\n%s", strlen(psz_sdp),
+             psz_sdp );
+    return psz_sdp;
+}
+
+static int CalculateRate( sap_handler_t *p_sap, sap_address_t *p_address )
+{
+    int i_read;
+    uint8_t buffer[SAP_MAX_BUFFER];
+    int i_tot = 0;
+    mtime_t i_temp;
+    int i_rate;
+
+    if( p_address->t1 == 0 )
+    {
+        p_address->t1 = mdate();
+        return VLC_SUCCESS;
+    }
+    do
+    {
+        /* Might be too slow if we have huge data */
+        i_read = net_ReadNonBlock( p_sap, p_address->i_rfd, NULL, buffer,
+                                   SAP_MAX_BUFFER, 0 );
+        i_tot += i_read;
+    } while( i_read > 0 && i_tot < SAP_MAX_BUFFER );
+
+    i_temp = mdate();
+
+    /* We calculate the rate every 5 seconds */
+    if( i_temp - p_address->t1 < 5000000 )
+    {
+        p_address->i_buff += i_tot;
+        return VLC_SUCCESS;
+    }
+
+    /* Bits/second */
+    i_rate = (int)(8*1000000*((mtime_t)p_address->i_buff + (mtime_t)i_tot ) /
+                        (i_temp - p_address->t1 ));
+
+    p_address->i_limit = 10000;
+
+    p_address->i_interval = ((1000*i_rate / p_address->i_limit) *
+                            (MAX_INTERVAL - MIN_INTERVAL))/1000 + MIN_INTERVAL;
+
+    if( p_address->i_interval > MAX_INTERVAL || p_address->i_interval < 0 )
+    {
+        p_address->i_interval = MAX_INTERVAL;
+    }
+#ifdef EXTRA_DEBUG
+    msg_Dbg( p_sap,"%s:%i: rate=%i, interval = %i s",
+             p_address->psz_address,SAP_PORT, i_rate, p_address->i_interval );
+#endif
+
+    p_address->b_ready = VLC_TRUE;
+
+    p_address->t1 = i_temp;
+    p_address->i_buff = 0;
+
+    return VLC_SUCCESS;
 }

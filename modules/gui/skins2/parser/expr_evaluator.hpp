@@ -2,7 +2,7 @@
  * expr_evaluator.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: f5c4ac525b1eb60a954a2784fe185495e978d3db $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef EXPR_EVALUATOR_HPP
@@ -31,23 +31,26 @@
 /// Expression evaluator using Reverse Polish Notation
 class ExprEvaluator: public SkinObject
 {
-public:
-    ExprEvaluator( intf_thread_t *pIntf ): SkinObject( pIntf ) { }
-    ~ExprEvaluator() { }
+    public:
+        /// Constructor
+        ExprEvaluator( intf_thread_t *pIntf ): SkinObject( pIntf ) {}
 
-    /// Clear the RPN stack and parse an expression
-    void parse( const string &rExpr );
+        /// Destructor
+        ~ExprEvaluator() {}
 
-    /// Pop the first token from the RPN stack.
-    /// Return NULL when the stack is empty.
-    string getToken();
+        /// Clear the RPN stack and parse an expression
+        void parse( const string &rExpr );
 
-private:
-    /// RPN stack
-    list<string> m_stack;
+        /// Pop the first token from the RPN stack.
+        /// Return NULL when the stack is empty.
+        string getToken();
 
-    /// Returns true if op1 has precedency over op2
-    bool hasPrecedency( const string &op1, const string &op2 ) const;
+    private:
+        /// RPN stack
+        list<string> m_stack;
+
+        /// Returns true if op1 has precedency over op2
+        bool hasPrecedency( const string &op1, const string &op2 ) const;
 };
 
 #endif

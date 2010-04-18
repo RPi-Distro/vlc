@@ -28,7 +28,6 @@
         alphacolor  CDATA   #REQUIRED
         nbframes    CDATA   "1"
         fps         CDATA   "0"
-        loop        CDATA   "0"
     >
 <!ELEMENT SubBitmap EMPTY>
     <!ATTLIST SubBitmap
@@ -39,7 +38,6 @@
         height      CDATA   #REQUIRED
         nbframes    CDATA   "1"
         fps         CDATA   "0"
-        loop        CDATA   "0"
     >
 <!ELEMENT Font EMPTY>
     <!ATTLIST Font
@@ -79,8 +77,7 @@
         dragdrop    CDATA   "true"
         playondrop  CDATA   "true"
     >
-<!ELEMENT Layout (Group|Image|Button|Playlist|Slider|RadialSlider|Text|Checkbox|
-                  Anchor|Video|Playtree|Panel)+>
+<!ELEMENT Layout (Group)+>
     <!ATTLIST Layout
         id          CDATA   "none"
         width       CDATA   #REQUIRED
@@ -90,32 +87,16 @@
         minheight   CDATA   "-1"
         maxheight   CDATA   "-1"
     >
-<!-- Grouping elements -->
 <!ELEMENT Group (Group|Image|Button|Playlist|Slider|RadialSlider|Text|Checkbox|
-                 Anchor|Video|Playtree|Panel)+>
+                 Anchor|Video|Playtree)+>
     <!ATTLIST Group
-        id          CDATA   "none"
         x           CDATA   "0"
         y           CDATA   "0"
-    >
-<!ELEMENT Panel (Group|Image|Button|Playlist|Slider|RadialSlider|Text|Checkbox|
-                 Anchor|Video|Playtree|Panel)+>
-    <!ATTLIST Panel
-        id          CDATA   "none"
-        x           CDATA   "0"
-        y           CDATA   "0"
-        lefttop     CDATA   "lefttop"
-        rightbottom CDATA   "lefttop"
-        xkeepratio  CDATA   "false"
-        ykeepratio  CDATA   "false"
-        width       CDATA   #REQUIRED
-        height      CDATA   #REQUIRED
     >
 
 <!-- Anchors -->
 <!ELEMENT Anchor EMPTY>
     <!ATTLIST Anchor
-        id          CDATA   "none"
         x           CDATA   "0"
         y           CDATA   "0"
         lefttop     CDATA   "lefttop"

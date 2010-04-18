@@ -2,7 +2,7 @@
  * libmp4.h : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 6792a862f4472fd615824e47e5eda2e95cb11050 $
+ * $Id: a0d4186ecc9858a9d7b61c09909b663d1843a83d $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -118,11 +118,6 @@
 #define FOURCC_sawb VLC_FOURCC( 's', 'a', 'w', 'b' )
 #define FOURCC_OggS VLC_FOURCC( 'O', 'g', 'g', 'S' )
 #define FOURCC_alac VLC_FOURCC( 'a', 'l', 'a', 'c' )
-#define FOURCC_dac3 VLC_FOURCC( 'd', 'a', 'c', '3' )
-#define FOURCC_dec3 VLC_FOURCC( 'd', 'e', 'c', '3' )
-#define FOURCC_enda VLC_FOURCC( 'e', 'n', 'd', 'a' )
-#define FOURCC_gnre VLC_FOURCC( 'g', 'n', 'r', 'e' )
-#define FOURCC_trkn VLC_FOURCC( 't', 'r', 'k', 'n' )
 
 #define FOURCC_zlib VLC_FOURCC( 'z', 'l', 'i', 'b' )
 #define FOURCC_SVQ1 VLC_FOURCC( 'S', 'V', 'Q', '1' )
@@ -156,14 +151,10 @@
 
 #define FOURCC_dvc  VLC_FOURCC( 'd', 'v', 'c', ' ' )
 #define FOURCC_dvp  VLC_FOURCC( 'd', 'v', 'p', ' ' )
-#define FOURCC_dv5n VLC_FOURCC( 'd', 'v', '5', 'n' )
-#define FOURCC_dv5p VLC_FOURCC( 'd', 'v', '5', 'p' )
 #define FOURCC_raw  VLC_FOURCC( 'r', 'a', 'w', ' ' )
 
 #define FOURCC_jpeg VLC_FOURCC( 'j', 'p', 'e', 'g' )
 
-#define FOURCC_yv12 VLC_FOURCC( 'y', 'v', '1', '2' )
-#define FOURCC_yuv2 VLC_FOURCC( 'y', 'u', 'v', '2' )
 
 #define FOURCC_rmra VLC_FOURCC( 'r', 'm', 'r', 'a' )
 #define FOURCC_rmda VLC_FOURCC( 'r', 'm', 'd', 'a' )
@@ -185,14 +176,10 @@
 #define FOURCC_iviv VLC_FOURCC( 'i', 'v', 'i', 'v' )
 #define FOURCC_name VLC_FOURCC( 'n', 'a', 'm', 'e' )
 #define FOURCC_priv VLC_FOURCC( 'p', 'r', 'i', 'v' )
-#define FOURCC_drmi VLC_FOURCC( 'd', 'r', 'm', 'i' )
-#define FOURCC_frma VLC_FOURCC( 'f', 'r', 'm', 'a' )
-#define FOURCC_skcr VLC_FOURCC( 's', 'k', 'c', 'r' )
 
 #define FOURCC_text VLC_FOURCC( 't', 'e', 'x', 't' )
 #define FOURCC_tx3g VLC_FOURCC( 't', 'x', '3', 'g' )
 #define FOURCC_subp VLC_FOURCC( 's', 'u', 'b', 'p' )
-#define FOURCC_sbtl VLC_FOURCC( 's', 'b', 't', 'l' )
 
 #define FOURCC_0xa9nam VLC_FOURCC( 0xa9, 'n', 'a', 'm' )
 #define FOURCC_0xa9aut VLC_FOURCC( 0xa9, 'a', 'u', 't' )
@@ -220,13 +207,7 @@
 #define FOURCC_0xa9wrt VLC_FOURCC( 0xa9, 'w', 'r', 't' )
 #define FOURCC_0xa9com VLC_FOURCC( 0xa9, 'c', 'o', 'm' )
 #define FOURCC_0xa9gen VLC_FOURCC( 0xa9, 'g', 'e', 'n' )
-#define FOURCC_chpl VLC_FOURCC( 'c', 'h', 'p', 'l' )
 #define FOURCC_WLOC VLC_FOURCC( 'W', 'L', 'O', 'C' )
-
-#define FOURCC_meta VLC_FOURCC( 'm', 'e', 't', 'a' )
-#define FOURCC_ilst VLC_FOURCC( 'i', 'l', 's', 't' )
-
-#define FOURCC_chap VLC_FOURCC( 'c', 'h', 'a', 'p' )
 
 /* Do you want some debug information on all read boxes ? */
 #define MP4_VERBOSE  1
@@ -310,7 +291,6 @@ typedef struct MP4_Box_data_mdhd_s
     uint64_t i_duration;
 
     /* one bit for pad */
-    uint16_t      i_language_code;
     /* unsigned int(5)[3] language difference with 0x60*/
     unsigned char i_language[3];
     uint16_t i_predefined;
@@ -369,7 +349,7 @@ typedef struct MP4_Box_data_url_s
     uint8_t  i_version;
     uint32_t i_flags;
 
-    char *psz_location;
+    unsigned char *psz_location;
 
 } MP4_Box_data_url_t;
 
@@ -378,8 +358,8 @@ typedef struct MP4_Box_data_urn_s
     uint8_t  i_version;
     uint32_t i_flags;
 
-    char *psz_name;
-    char *psz_location;
+    unsigned char *psz_name;
+    unsigned char *psz_location;
 
 } MP4_Box_data_urn_t;
 
@@ -476,8 +456,6 @@ typedef struct MP4_Box_data_sample_vide_s
     /* XXX hack ImageDescription */
     int     i_qt_image_description;
     uint8_t *p_qt_image_description;
-
-    void    *p_drms;
 
 } MP4_Box_data_sample_vide_t;
 
@@ -673,7 +651,7 @@ typedef struct MP4_Box_data_cprt_s
     /* 1 pad bit */
     unsigned char i_language[3];
 
-    char *psz_notice;
+    unsigned char *psz_notice;
 } MP4_Box_data_cprt_t;
 
 
@@ -757,18 +735,6 @@ typedef struct MP4_Box_data_cmov_s
 
 typedef struct
 {
-    uint32_t i_type;
-} MP4_Box_data_frma_t;
-
-typedef struct
-{
-    uint32_t i_init;
-    uint32_t i_encr;
-    uint32_t i_decr;
-} MP4_Box_data_skcr_t;
-
-typedef struct
-{
     uint8_t  i_version;
     uint32_t i_flags;
 
@@ -821,26 +787,6 @@ typedef struct
 
 typedef struct
 {
-    uint32_t i_entry_count;
-    uint32_t *i_track_ID;
-
-} MP4_Box_data_tref_generic_t;
-
-typedef struct
-{
-    uint8_t  i_version;
-    uint32_t i_flags;
-
-    uint8_t i_chapter;
-    struct
-    {
-        char    *psz_name;
-        int64_t  i_start;
-    } chapter[256];
-} MP4_Box_data_chpl_t;
-
-typedef struct
-{
     uint8_t i_version;
     uint8_t i_profile;
     uint8_t i_profile_compatibility;
@@ -863,36 +809,6 @@ typedef struct
     uint8_t *p_avcC;
 
 } MP4_Box_data_avcC_t;
-
-typedef struct
-{
-    uint8_t i_fscod;
-    uint8_t i_bsid;
-    uint8_t i_bsmod;
-    uint8_t i_acmod;
-    uint8_t i_lfeon;
-    uint8_t i_bitrate_code;
-
-} MP4_Box_data_dac3_t;
-
-typedef struct
-{
-    uint16_t i_little_endian;
-
-} MP4_Box_data_enda_t;
-
-typedef struct
-{
-    uint16_t i_genre;
-
-} MP4_Box_data_gnre_t;
-
-typedef struct
-{
-    uint32_t i_track_number;
-    uint32_t i_track_total;
-
-} MP4_Box_data_trkn_t;
 
 /*
 typedef struct MP4_Box_data__s
@@ -920,17 +836,13 @@ typedef union MP4_Box_data_s
     MP4_Box_data_stts_t *p_stts;
     MP4_Box_data_ctts_t *p_ctts;
     MP4_Box_data_stsd_t *p_stsd;
-    MP4_Box_data_sample_vide_t *p_sample_vide;
-    MP4_Box_data_sample_soun_t *p_sample_soun;
-    MP4_Box_data_sample_text_t *p_sample_text;
-    MP4_Box_data_sample_hint_t *p_sample_hint;
+        MP4_Box_data_sample_vide_t *p_sample_vide;
+        MP4_Box_data_sample_soun_t *p_sample_soun;
+        MP4_Box_data_sample_text_t *p_sample_text;
+        MP4_Box_data_sample_hint_t *p_sample_hint;
 
-    MP4_Box_data_esds_t *p_esds;
-    MP4_Box_data_avcC_t *p_avcC;
-    MP4_Box_data_dac3_t *p_dac3;
-    MP4_Box_data_enda_t *p_enda;
-    MP4_Box_data_gnre_t *p_gnre;
-    MP4_Box_data_trkn_t *p_trkn;
+        MP4_Box_data_esds_t *p_esds;
+        MP4_Box_data_avcC_t *p_avcC;
 
     MP4_Box_data_stsz_t *p_stsz;
     MP4_Box_data_stz2_t *p_stz2;
@@ -949,17 +861,12 @@ typedef union MP4_Box_data_s
 
     MP4_Box_data_moviehintinformation_rtp_t p_moviehintinformation_rtp;
 
-    MP4_Box_data_frma_t *p_frma;
-    MP4_Box_data_skcr_t *p_skcr;
-
     MP4_Box_data_rdrf_t *p_rdrf;
     MP4_Box_data_rmdr_t *p_rmdr;
     MP4_Box_data_rmqu_t *p_rmqu;
     MP4_Box_data_rmvc_t *p_rmvc;
 
     MP4_Box_data_0xa9xxx_t *p_0xa9xxx;
-    MP4_Box_data_chpl_t *p_chpl;
-    MP4_Box_data_tref_generic_t *p_tref_generic;
 
     void                *p_data; /* for unknow type */
 } MP4_Box_data_t;
@@ -1025,7 +932,7 @@ void MP4_BoxDumpStructure( stream_t *p_input, MP4_Box_t *p_box );
  * ex: /moov/trak[12]
  *     ../mdia
  *****************************************************************************/
-MP4_Box_t *MP4_BoxGet( MP4_Box_t *p_box, const char *psz_fmt, ... );
+MP4_Box_t *MP4_BoxGet( MP4_Box_t *p_box, char *psz_fmt, ... );
 
 /*****************************************************************************
  * MP4_BoxCount: find number of box given a path relative to p_box
@@ -1036,7 +943,7 @@ MP4_Box_t *MP4_BoxGet( MP4_Box_t *p_box, const char *psz_fmt, ... );
  * ex: /moov/trak
  *     ../mdia
  *****************************************************************************/
-int MP4_BoxCount( MP4_Box_t *p_box, const char *psz_fmt, ... );
+int MP4_BoxCount( MP4_Box_t *p_box, char *psz_fmt, ... );
 
 int MP4_ReadBoxCommon( stream_t *p_stream, MP4_Box_t *p_box );
 int MP4_ReadBox_sample_vide( stream_t *p_stream, MP4_Box_t *p_box );

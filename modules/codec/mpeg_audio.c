@@ -2,7 +2,7 @@
  * mpeg_audio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 4267f0916922a214c3cbbb2fb3e9e67dc1928e58 $
+ * $Id: fc4edf060720ba137df72ca94002c4fc284ca363 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -27,17 +27,11 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <vlc/vlc.h>
+#include <vlc/decoder.h>
+#include <vlc/aout.h>
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_codec.h>
-#include <vlc_aout.h>
-#include <assert.h>
-
-#include <vlc_block_helper.h>
+#include "vlc_block_helper.h"
 
 /*****************************************************************************
  * decoder_sys_t : decoder descriptor
@@ -45,7 +39,7 @@
 struct decoder_sys_t
 {
     /* Module mode */
-    bool b_packetizer;
+    vlc_bool_t b_packetizer;
 
     /*
      * Input properties
@@ -57,8 +51,8 @@ struct decoder_sys_t
     /*
      * Common properties
      */
-    date_t          end_date;
-    unsigned int    i_current_layer;
+    audio_date_t          end_date;
+    unsigned int          i_current_layer;
 
     mtime_t i_pts;
 
@@ -66,8 +60,6 @@ struct decoder_sys_t
     unsigned int i_channels_conf, i_channels;
     unsigned int i_rate, i_max_frame_size, i_frame_length;
     unsigned int i_layer, i_bit_rate;
-
-    bool   b_discontinuity;
 };
 
 enum {
@@ -96,7 +88,7 @@ static int  OpenPacketizer( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
 static void *DecodeBlock  ( decoder_t *, block_t ** );
 
-static uint8_t       *GetOutBuffer ( decoder_t *, block_t ** );
+static uint8_t       *GetOutBuffer ( decoder_t *, void ** );
 static aout_buffer_t *GetAoutBuffer( decoder_t * );
 static block_t       *GetSoutBuffer( decoder_t * );
 
@@ -110,32 +102,39 @@ static int SyncInfo( uint32_t i_header, unsigned int * pi_channels,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin ()
-    set_description( N_("MPEG audio layer I/II/III decoder") )
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_ACODEC )
+vlc_module_begin();
+    set_description( _("MPEG audio layer I/II/III decoder") );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_ACODEC );
 #if defined(UNDER_CE)
-   set_capability( "decoder", 5 )
+   set_capability( "decoder", 5 );
 #else
-    set_capability( "decoder", 100 )
+    set_capability( "decoder", 100 );
 #endif
-    set_callbacks( OpenDecoder, CloseDecoder )
+    set_callbacks( OpenDecoder, CloseDecoder );
 
-    add_submodule ()
-    set_description( N_("MPEG audio layer I/II/III packetizer") )
-    set_capability( "packetizer", 10 )
-    set_callbacks( OpenPacketizer, CloseDecoder )
-vlc_module_end ()
+    add_submodule();
+    set_description( _("MPEG audio layer I/II/III packetizer") );
+    set_capability( "packetizer", 10 );
+    set_callbacks( OpenPacketizer, CloseDecoder );
+vlc_module_end();
 
 /*****************************************************************************
- * Open: probe the decoder and return score
+ * OpenDecoder: probe the decoder and return score
  *****************************************************************************/
-static int Open( vlc_object_t *p_this )
+static int OpenDecoder( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_CODEC_MPGA )
+    if( p_dec->fmt_in.i_codec != VLC_FOURCC('m','p','g','a') )
+    {
+        return VLC_EGENERIC;
+    }
+
+    /* HACK: Don't use this codec if we don't have an mpga audio filter */
+    if( p_dec->i_object_type == VLC_OBJECT_DECODER &&
+        !config_FindModule( p_this, "mpgatofixed32" ) )
     {
         return VLC_EGENERIC;
     }
@@ -143,19 +142,20 @@ static int Open( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-        return VLC_ENOMEM;
+    {
+        msg_Err( p_dec, "out of memory" );
+        return VLC_EGENERIC;
+    }
 
     /* Misc init */
-    p_sys->b_packetizer = false;
+    p_sys->b_packetizer = VLC_FALSE;
     p_sys->i_state = STATE_NOSYNC;
-    date_Set( &p_sys->end_date, 0 );
-    p_sys->bytestream = block_BytestreamInit();
-    p_sys->i_pts = VLC_TS_INVALID;
-    p_sys->b_discontinuity = false;
+    aout_DateSet( &p_sys->end_date, 0 );
+    p_sys->bytestream = block_BytestreamInit( p_dec );
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
-    p_dec->fmt_out.i_codec = VLC_CODEC_MPGA;
+    p_dec->fmt_out.i_codec = VLC_FOURCC('m','p','g','a');
     p_dec->fmt_out.audio.i_rate = 0; /* So end_date gets initialized */
 
     /* Set callback */
@@ -170,22 +170,13 @@ static int Open( vlc_object_t *p_this )
     return VLC_SUCCESS;
 }
 
-static int OpenDecoder( vlc_object_t *p_this )
-{
-    /* HACK: Don't use this codec if we don't have an mpga audio filter */
-    if( !module_exists( "mpgatofixed32" ) )
-        return VLC_EGENERIC;
-
-    return Open( p_this );
-}
-
 static int OpenPacketizer( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
 
-    int i_ret = Open( p_this );
+    int i_ret = OpenDecoder( p_this );
 
-    if( i_ret == VLC_SUCCESS ) p_dec->p_sys->b_packetizer = true;
+    if( i_ret == VLC_SUCCESS ) p_dec->p_sys->b_packetizer = VLC_TRUE;
 
     return i_ret;
 }
@@ -201,29 +192,20 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     uint8_t p_header[MAD_BUFFER_GUARD];
     uint32_t i_header;
     uint8_t *p_buf;
-    block_t *p_out_buffer;
+    void *p_out_buffer;
 
     if( !pp_block || !*pp_block ) return NULL;
 
-    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    if( !aout_DateGet( &p_sys->end_date ) && !(*pp_block)->i_pts )
     {
-        if( (*pp_block)->i_flags&BLOCK_FLAG_CORRUPTED )
-        {
-            p_sys->i_state = STATE_NOSYNC;
-            block_BytestreamEmpty( &p_sys->bytestream );
-        }
-        date_Set( &p_sys->end_date, 0 );
+        /* We've just started the stream, wait for the first PTS. */
         block_Release( *pp_block );
-        p_sys->b_discontinuity = true;
         return NULL;
     }
 
-    if( !date_Get( &p_sys->end_date ) && (*pp_block)->i_pts <= VLC_TS_INVALID )
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
     {
-        /* We've just started the stream, wait for the first PTS. */
-        msg_Dbg( p_dec, "waiting for PTS" );
-        block_Release( *pp_block );
-        return NULL;
+        p_sys->i_state = STATE_NOSYNC;
     }
 
     block_BytestreamPush( &p_sys->bytestream, *pp_block );
@@ -256,10 +238,10 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         case STATE_SYNC:
             /* New frame, set the Presentation Time Stamp */
             p_sys->i_pts = p_sys->bytestream.p_block->i_pts;
-            if( p_sys->i_pts > VLC_TS_INVALID &&
-                p_sys->i_pts != date_Get( &p_sys->end_date ) )
+            if( p_sys->i_pts != 0 &&
+                p_sys->i_pts != aout_DateGet( &p_sys->end_date ) )
             {
-                date_Set( &p_sys->end_date, p_sys->i_pts );
+                aout_DateSet( &p_sys->end_date, p_sys->i_pts );
             }
             p_sys->i_state = STATE_HEADER;
 
@@ -286,26 +268,22 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                                             &p_sys->i_max_frame_size,
                                             &p_sys->i_layer );
 
-            p_dec->fmt_in.i_profile = p_sys->i_layer;
-
             if( p_sys->i_frame_size == -1 )
             {
                 msg_Dbg( p_dec, "emulated startcode" );
                 block_SkipByte( &p_sys->bytestream );
                 p_sys->i_state = STATE_NOSYNC;
-                p_sys->b_discontinuity = true;
                 break;
             }
 
             if( p_sys->i_bit_rate == 0 )
             {
-                /* Free bitrate, but 99% emulated startcode :( */
+                /* Free birate, but 99% emulated startcode :( */
                 if( p_dec->p_sys->i_free_frame_size == MPGA_HEADER_SIZE )
                 {
                     msg_Dbg( p_dec, "free bitrate mode");
                 }
-                /* The -1 below is to account for the frame padding */
-                p_sys->i_frame_size = p_sys->i_free_frame_size - 1;
+                p_sys->i_frame_size = p_sys->i_free_frame_size;
             }
 
             p_sys->i_state = STATE_NEXT_SYNC;
@@ -369,7 +347,6 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                     msg_Dbg( p_dec, "emulated startcode on next frame" );
                     block_SkipByte( &p_sys->bytestream );
                     p_sys->i_state = STATE_NOSYNC;
-                    p_sys->b_discontinuity = true;
                     break;
                 }
 
@@ -449,7 +426,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         case STATE_SEND_DATA:
             if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer )) )
             {
-                //p_dec->b_error = true;
+                //p_dec->b_error = VLC_TRUE;
                 return NULL;
             }
 
@@ -461,13 +438,11 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             /* Copy the whole frame into the buffer. When we reach this point
              * we already know we have enough data available. */
-            block_GetBytes( &p_sys->bytestream,
-                            p_buf, __MIN( (unsigned)p_sys->i_frame_size, p_out_buffer->i_buffer ) );
+            block_GetBytes( &p_sys->bytestream, p_buf, p_sys->i_frame_size );
 
             /* Get beginning of next frame for libmad */
             if( !p_sys->b_packetizer )
             {
-                assert( p_out_buffer->i_buffer >= (unsigned)p_sys->i_frame_size + MAD_BUFFER_GUARD );
                 memcpy( p_buf + p_sys->i_frame_size,
                         p_header, MAD_BUFFER_GUARD );
             }
@@ -476,7 +451,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             /* Make sure we don't reuse the same pts twice */
             if( p_sys->i_pts == p_sys->bytestream.p_block->i_pts )
-                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = VLC_TS_INVALID;
+                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = 0;
 
             /* So p_block doesn't get re-added several times */
             *pp_block = block_BytestreamPop( &p_sys->bytestream );
@@ -491,7 +466,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 /*****************************************************************************
  * GetOutBuffer:
  *****************************************************************************/
-static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
+static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p_buf;
@@ -501,8 +476,8 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
         msg_Dbg( p_dec, "MPGA channels:%d samplerate:%d bitrate:%d",
                   p_sys->i_channels, p_sys->i_rate, p_sys->i_bit_rate );
 
-        date_Init( &p_sys->end_date, p_sys->i_rate, 1 );
-        date_Set( &p_sys->end_date, p_sys->i_pts );
+        aout_DateInit( &p_sys->end_date, p_sys->i_rate );
+        aout_DateSet( &p_sys->end_date, p_sys->i_pts );
     }
 
     p_dec->fmt_out.audio.i_rate     = p_sys->i_rate;
@@ -541,18 +516,15 @@ static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
     aout_buffer_t *p_buf;
 
-    p_buf = decoder_NewAudioBuffer( p_dec, p_sys->i_frame_length );
+    p_buf = p_dec->pf_aout_buffer_new( p_dec, p_sys->i_frame_length );
     if( p_buf == NULL ) return NULL;
 
-    p_buf->i_pts = date_Get( &p_sys->end_date );
-    p_buf->i_length = date_Increment( &p_sys->end_date, p_sys->i_frame_length )
-                      - p_buf->i_pts;
-    if( p_sys->b_discontinuity )
-        p_buf->i_flags |= BLOCK_FLAG_DISCONTINUITY;
-    p_sys->b_discontinuity = false;
+    p_buf->start_date = aout_DateGet( &p_sys->end_date );
+    p_buf->end_date =
+        aout_DateIncrement( &p_sys->end_date, p_sys->i_frame_length );
 
     /* Hack for libmad filter */
-    p_buf = block_Realloc( p_buf, 0, p_sys->i_frame_size + MAD_BUFFER_GUARD );
+    p_buf->i_nb_bytes = p_sys->i_frame_size + MAD_BUFFER_GUARD;
 
     return p_buf;
 }
@@ -568,10 +540,11 @@ static block_t *GetSoutBuffer( decoder_t *p_dec )
     p_block = block_New( p_dec, p_sys->i_frame_size );
     if( p_block == NULL ) return NULL;
 
-    p_block->i_pts = p_block->i_dts = date_Get( &p_sys->end_date );
+    p_block->i_pts = p_block->i_dts = aout_DateGet( &p_sys->end_date );
 
     p_block->i_length =
-        date_Increment( &p_sys->end_date, p_sys->i_frame_length ) - p_block->i_pts;
+        aout_DateIncrement( &p_sys->end_date, p_sys->i_frame_length ) -
+            p_block->i_pts;
 
     return p_block;
 }
@@ -632,7 +605,7 @@ static int SyncInfo( uint32_t i_header, unsigned int * pi_channels,
     };
 
     int i_version, i_mode, i_emphasis;
-    bool b_padding, b_mpeg_2_5, b_crc;
+    vlc_bool_t b_padding, b_mpeg_2_5, b_crc;
     int i_frame_size = 0;
     int i_bitrate_index, i_samplerate_index;
     int i_max_bit_rate;
@@ -707,9 +680,6 @@ static int SyncInfo( uint32_t i_header, unsigned int * pi_channels,
         default:
             break;
         }
-
-        /* Free bitrate mode can support higher bitrates */
-        if( !*pi_bit_rate ) *pi_max_frame_size *= 2;
     }
     else
     {

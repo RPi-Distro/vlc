@@ -2,7 +2,7 @@
  * skin_parser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 8cae5c512f6cdb27cd15cc81786e942f67de57f7 $
+ * $Id: 65c2997ab75f900762460c72b7436e4998a65687 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -36,11 +36,6 @@ SkinParser::SkinParser( intf_thread_t *pIntf, const string &rFileName,
     {
         m_pData = new BuilderData();
     }
-
-    // Special id, we don't want any control to have the same one
-    m_idSet.insert( "none" );
-    // At the beginning, there is no Panel
-    m_panelStack.push_back( "none" );
 }
 
 
@@ -52,26 +47,22 @@ SkinParser::~SkinParser()
     }
 }
 
-inline bool SkinParser::MissingAttr( AttrList_t &attr, const string &name,
-                                     const char *a )
-{
-    if( attr.find(a) == attr.end() )
-    {
-        msg_Err( getIntf(), "bad theme (element: %s, missing attribute: %s)",
-                 name.c_str(), a );
-        m_errors = true; return true;
-    }
-    return false;
-}
 
 void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 {
-#define RequireAttr( attr, name, a ) \
-    if( MissingAttr( attr, name, a ) ) return;
+#define CheckDefault( a, b ) \
+    if( attr.find(a) == attr.end() ) attr[strdup(a)] = strdup(b);
+#define RequireDefault( a ) \
+    if( attr.find(a) == attr.end() ) \
+    { \
+        msg_Err( getIntf(), "bad theme (element: %s, missing attribute: %s)", \
+                 rName.c_str(), a ); \
+        m_errors = true; return; \
+    }
 
     if( rName == "Include" )
     {
-        RequireAttr( attr, rName, "file" );
+        RequireDefault( "file" );
 
         OSFactory *pFactory = OSFactory::instance( getIntf() );
         string fullPath = m_path + pFactory->getDirSeparator() + attr["file"];
@@ -84,8 +75,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "IniFile" )
     {
-        RequireAttr( attr, rName, "id" );
-        RequireAttr( attr, rName, "file" );
+        RequireDefault( "id" );
+        RequireDefault( "file" );
 
         const BuilderData::IniFile iniFile( uniqueId( attr["id"] ),
                 attr["file"] );
@@ -94,12 +85,12 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "Anchor" )
     {
-        RequireAttr( attr, rName, "priority" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "points", "(0,0)" );
-        DefaultAttr( attr, "range", "10" );
+        RequireDefault( "priority" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "points", "(0,0)" );
+        CheckDefault( "range", "10" );
 
         const BuilderData::Anchor anchor( atoi( attr["x"] ) + m_xOffset,
                 atoi( attr["y"] ) + m_yOffset, attr["lefttop"],
@@ -110,45 +101,41 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "Bitmap" )
     {
-        RequireAttr( attr, rName, "id" );
-        RequireAttr( attr, rName, "file" );
-        RequireAttr( attr, rName, "alphacolor" );
-        DefaultAttr( attr, "nbframes", "1" );
-        DefaultAttr( attr, "fps", "4" );
-        DefaultAttr( attr, "loop", "0" );
+        RequireDefault( "id" );
+        RequireDefault( "file" );
+        RequireDefault( "alphacolor" );
+        CheckDefault( "nbframes", "1" );
+        CheckDefault( "fps", "4" );
 
         m_curBitmapId = uniqueId( attr["id"] );
         const BuilderData::Bitmap bitmap( m_curBitmapId,
                 attr["file"], convertColor( attr["alphacolor"] ),
-                atoi( attr["nbframes"] ), atoi( attr["fps"] ),
-                atoi( attr["loop"] ) );
+                atoi( attr["nbframes"] ), atoi( attr["fps"] ) );
         m_pData->m_listBitmap.push_back( bitmap );
     }
 
     else if( rName == "SubBitmap" )
     {
-        RequireAttr( attr, rName, "id" );
-        RequireAttr( attr, rName, "x" );
-        RequireAttr( attr, rName, "y" );
-        RequireAttr( attr, rName, "width" );
-        RequireAttr( attr, rName, "height" );
-        DefaultAttr( attr, "nbframes", "1" );
-        DefaultAttr( attr, "fps", "4" );
-        DefaultAttr( attr, "loop", "0" );
+        RequireDefault( "id" );
+        RequireDefault( "x" );
+        RequireDefault( "y" );
+        RequireDefault( "width" );
+        RequireDefault( "height" );
+        CheckDefault( "nbframes", "1" );
+        CheckDefault( "fps", "4" );
 
         const BuilderData::SubBitmap bitmap( uniqueId( attr["id"] ),
                 m_curBitmapId, atoi( attr["x"] ), atoi( attr["y"] ),
                 atoi( attr["width"] ), atoi( attr["height"] ),
-                atoi( attr["nbframes"] ), atoi( attr["fps"] ),
-                atoi( attr["loop"] ) );
+                atoi( attr["nbframes"] ), atoi( attr["fps"] ) );
         m_pData->m_listSubBitmap.push_back( bitmap );
     }
 
     else if( rName == "BitmapFont" )
     {
-        RequireAttr( attr, rName, "id" );
-        RequireAttr( attr, rName, "file" );
-        DefaultAttr( attr, "type", "digits" );
+        RequireDefault( "id" );
+        RequireDefault( "file" );
+        CheckDefault( "type", "digits" );
 
         const BuilderData::BitmapFont font( uniqueId( attr["id"] ),
                 attr["file"], attr["type"] );
@@ -157,7 +144,7 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "PopupMenu" )
     {
-        RequireAttr( attr, rName, "id" );
+        RequireDefault( "id" );
 
         m_popupPosList.push_back(0);
         m_curPopupId = uniqueId( attr["id"] );
@@ -167,8 +154,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "MenuItem" )
     {
-        RequireAttr( attr, rName, "label" );
-        DefaultAttr( attr, "action", "none" );
+        RequireDefault( "label" );
+        CheckDefault( "action", "none" );
 
         const BuilderData::MenuItem item( attr["label"], attr["action"],
                                           m_popupPosList.back(),
@@ -187,20 +174,20 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "Button" )
     {
-        RequireAttr( attr, rName, "up" );
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "down", "none" );
-        DefaultAttr( attr, "over", "none" );
-        DefaultAttr( attr, "action", "none" );
-        DefaultAttr( attr, "tooltiptext", "" );
-        DefaultAttr( attr, "help", "" );
+        RequireDefault( "up" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "down", "none" );
+        CheckDefault( "over", "none" );
+        CheckDefault( "action", "none" );
+        CheckDefault( "tooltiptext", "" );
+        CheckDefault( "help", "" );
 
         const BuilderData::Button button( uniqueId( attr["id"] ),
                 atoi( attr["x"] ) + m_xOffset, atoi( attr["y"] ) + m_yOffset,
@@ -209,33 +196,33 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 convertBoolean( attr["ykeepratio"] ), attr["visible"],
                 attr["up"], attr["down"], attr["over"], attr["action"],
                 attr["tooltiptext"], attr["help"],
-                m_curLayer, m_curWindowId, m_curLayoutId, m_panelStack.back() );
+                m_curLayer, m_curWindowId, m_curLayoutId );
         m_curLayer++;
         m_pData->m_listButton.push_back( button );
     }
 
     else if( rName == "Checkbox" )
     {
-        RequireAttr( attr, rName, "up1" );
-        RequireAttr( attr, rName, "up2" );
-        RequireAttr( attr, rName, "state" );
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "down1", "none" );
-        DefaultAttr( attr, "over1", "none" );
-        DefaultAttr( attr, "down2", "none" );
-        DefaultAttr( attr, "over2", "none" );
-        DefaultAttr( attr, "action1", "none" );
-        DefaultAttr( attr, "action2", "none" );
-        DefaultAttr( attr, "tooltiptext1", "" );
-        DefaultAttr( attr, "tooltiptext2", "" );
-        DefaultAttr( attr, "help", "" );
+        RequireDefault( "up1" );
+        RequireDefault( "up2" );
+        RequireDefault( "state" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "down1", "none" );
+        CheckDefault( "over1", "none" );
+        CheckDefault( "down2", "none" );
+        CheckDefault( "over2", "none" );
+        CheckDefault( "action1", "none" );
+        CheckDefault( "action2", "none" );
+        CheckDefault( "tooltiptext1", "" );
+        CheckDefault( "tooltiptext2", "" );
+        CheckDefault( "help", "" );
 
         const BuilderData::Checkbox checkbox( uniqueId( attr["id"] ),
                 atoi( attr["x"] ) + m_xOffset, atoi( attr["y"] ) + m_yOffset,
@@ -246,16 +233,16 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 attr["up2"], attr["down2"], attr["over2"], attr["state"],
                 attr["action1"], attr["action2"], attr["tooltiptext1"],
                 attr["tooltiptext2"], attr["help"], m_curLayer, m_curWindowId,
-                m_curLayoutId, m_panelStack.back() );
+                m_curLayoutId );
         m_curLayer++;
         m_pData->m_listCheckbox.push_back( checkbox );
     }
 
     else if( rName == "Font" )
     {
-        RequireAttr( attr, rName, "id" );
-        RequireAttr( attr, rName, "file" );
-        DefaultAttr( attr, "size", "12" );
+        RequireDefault( "id" );
+        RequireDefault( "file" );
+        CheckDefault( "size", "12" );
 
         const BuilderData::Font fontData( uniqueId( attr["id"] ),
                 attr["file"], atoi( attr["size"] ) );
@@ -264,8 +251,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "Group" )
     {
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
 
         m_xOffset += atoi( attr["x"] );
         m_yOffset += atoi( attr["y"] );
@@ -275,19 +262,19 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "Image" )
     {
-        RequireAttr( attr, rName, "image" );
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "action", "none" );
-        DefaultAttr( attr, "action2", "none" );
-        DefaultAttr( attr, "resize", "mosaic" );
-        DefaultAttr( attr, "help", "" );
+        RequireDefault( "image" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "action", "none" );
+        CheckDefault( "action2", "none" );
+        CheckDefault( "resize", "mosaic" );
+        CheckDefault( "help", "" );
 
         const BuilderData::Image imageData( uniqueId( attr["id"] ),
                 atoi( attr["x"] ) + m_xOffset, atoi( attr["y"] ) + m_yOffset,
@@ -295,21 +282,20 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 convertBoolean( attr["xkeepratio"] ),
                 convertBoolean( attr["ykeepratio"] ), attr["visible"],
                 attr["image"], attr["action"], attr["action2"], attr["resize"],
-                attr["help"], m_curLayer, m_curWindowId, m_curLayoutId,
-                m_panelStack.back() );
+                attr["help"], m_curLayer, m_curWindowId, m_curLayoutId );
         m_curLayer++;
         m_pData->m_listImage.push_back( imageData );
     }
 
     else if( rName == "Layout" )
     {
-        RequireAttr( attr, rName, "width" );
-        RequireAttr( attr, rName, "height" );
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "minwidth", "-1" );
-        DefaultAttr( attr, "maxwidth", "-1" );
-        DefaultAttr( attr, "minheight", "-1" );
-        DefaultAttr( attr, "maxheight", "-1" );
+        RequireDefault( "width" );
+        RequireDefault( "height" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "minwidth", "-1" );
+        CheckDefault( "maxwidth", "-1" );
+        CheckDefault( "minheight", "-1" );
+        CheckDefault( "maxheight", "-1" );
 
         m_curLayoutId = uniqueId( attr["id"] );
         const BuilderData::Layout layout( m_curLayoutId, atoi( attr["width"] ),
@@ -320,58 +306,33 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         m_curLayer = 0;
     }
 
-    else if( rName == "Panel" )
-    {
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        RequireAttr( attr, rName, "width" );
-        RequireAttr( attr, rName, "height" );
-
-        string panelId = uniqueId( "none" );
-        const BuilderData::Panel panel( panelId,
-                atoi( attr["x"] ) + m_xOffset, atoi( attr["y"] ) + m_yOffset,
-                attr["lefttop"], attr["rightbottom"],
-                convertBoolean( attr["xkeepratio"] ),
-                convertBoolean( attr["ykeepratio"] ),
-                atoi( attr["width"] ), atoi( attr["height" ] ),
-                m_curLayer, m_curWindowId, m_curLayoutId, m_panelStack.back() );
-        m_curLayer++;
-        m_pData->m_listPanel.push_back( panel );
-        // Add the panel to the stack
-        m_panelStack.push_back( panelId );
-    }
-
     else if( rName == "Playlist" )
     {
-        RequireAttr( attr, rName, "id" );
-        RequireAttr( attr, rName, "font" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "flat", "true" ); // Only difference here
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "width", "0" );
-        DefaultAttr( attr, "height", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "bgimage", "none" );
-        DefaultAttr( attr, "itemimage", "none" );
-        DefaultAttr( attr, "openimage", "none" );
-        DefaultAttr( attr, "closedimage", "none" );
-        DefaultAttr( attr, "fgcolor", "#000000" );
-        DefaultAttr( attr, "playcolor", "#FF0000" );
-        DefaultAttr( attr, "bgcolor1", "#FFFFFF" );
-        DefaultAttr( attr, "bgcolor2", "#FFFFFF" );
-        DefaultAttr( attr, "selcolor", "#0000FF" );
-        DefaultAttr( attr, "help", "" );
+        RequireDefault( "id" );
+        RequireDefault( "font" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "flat", "true" ); // only difference here
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "width", "0" );
+        CheckDefault( "height", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "bgimage", "none" );
+        CheckDefault( "itemimage", "none" );
+        CheckDefault( "openimage", "none" );
+        CheckDefault( "closedimage", "none" );
+        CheckDefault( "fgcolor", "#000000" );
+        CheckDefault( "playcolor", "#FF0000" );
+        CheckDefault( "bgcolor1", "#FFFFFF" );
+        CheckDefault( "bgcolor2", "#FFFFFF" );
+        CheckDefault( "selcolor", "#0000FF" );
+        CheckDefault( "help", "" );
 
-        m_curTreeId = uniqueId( attr["id"] );
-        const BuilderData::Tree treeData( m_curTreeId, atoi( attr["x"] ) +
+        m_curListId = uniqueId( attr["id"] );
+        const BuilderData::Tree treeData( m_curListId, atoi( attr["x"] ) +
                 m_xOffset, atoi( attr["y"] ) + m_yOffset, attr["visible"],
                 attr["flat"],
                 atoi( attr["width"]), atoi( attr["height"] ),
@@ -386,34 +347,35 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 attr["bgcolor1"],
                 attr["bgcolor2"],
                 attr["selcolor"], attr["help"],
-                m_curLayer, m_curWindowId, m_curLayoutId, m_panelStack.back() );
+                m_curLayer, m_curWindowId, m_curLayoutId );
         m_curLayer++;
         m_pData->m_listTree.push_back( treeData );
     }
+
     else if( rName == "Playtree" )
     {
-        RequireAttr( attr, rName, "id" );
-        RequireAttr( attr, rName, "font" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "flat", "false" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "width", "0" );
-        DefaultAttr( attr, "height", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "bgimage", "none" );
-        DefaultAttr( attr, "itemimage", "none" );
-        DefaultAttr( attr, "openimage", "none" );
-        DefaultAttr( attr, "closedimage", "none" );
-        DefaultAttr( attr, "fgcolor", "#000000" );
-        DefaultAttr( attr, "playcolor", "#FF0000" );
-        DefaultAttr( attr, "bgcolor1", "#FFFFFF" );
-        DefaultAttr( attr, "bgcolor2", "#FFFFFF" );
-        DefaultAttr( attr, "selcolor", "#0000FF" );
-        DefaultAttr( attr, "help", "" );
+        RequireDefault( "id" );
+        RequireDefault( "font" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "flat", "false" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "width", "0" );
+        CheckDefault( "height", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "bgimage", "none" );
+        CheckDefault( "itemimage", "none" );
+        CheckDefault( "openimage", "none" );
+        CheckDefault( "closedimage", "none" );
+        CheckDefault( "fgcolor", "#000000" );
+        CheckDefault( "playcolor", "#FF0000" );
+        CheckDefault( "bgcolor1", "#FFFFFF" );
+        CheckDefault( "bgcolor2", "#FFFFFF" );
+        CheckDefault( "selcolor", "#0000FF" );
+        CheckDefault( "help", "" );
 
         m_curTreeId = uniqueId( attr["id"] );
         const BuilderData::Tree treeData( m_curTreeId, atoi( attr["x"] ) +
@@ -429,28 +391,28 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 attr["fgcolor"], attr["playcolor"],
                 attr["bgcolor1"], attr["bgcolor2"],
                 attr["selcolor"], attr["help"],
-                m_curLayer, m_curWindowId, m_curLayoutId, m_panelStack.back() );
+                m_curLayer, m_curWindowId, m_curLayoutId );
         m_curLayer++;
         m_pData->m_listTree.push_back( treeData );
     }
 
     else if( rName == "RadialSlider" )
     {
-        RequireAttr( attr, rName, "sequence" );
-        RequireAttr( attr, rName, "nbimages" );
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "minangle", "0" );
-        DefaultAttr( attr, "maxangle", "360" );
-        DefaultAttr( attr, "value", "none" );
-        DefaultAttr( attr, "tooltiptext", "" );
-        DefaultAttr( attr, "help", "" );
+        RequireDefault( "sequence" );
+        RequireDefault( "nbimages" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "minangle", "0" );
+        CheckDefault( "maxangle", "360" );
+        CheckDefault( "value", "none" );
+        CheckDefault( "tooltiptext", "" );
+        CheckDefault( "help", "" );
 
         const BuilderData::RadialSlider radial( uniqueId( attr["id"] ),
                 attr["visible"],
@@ -461,32 +423,39 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 atoi( attr["nbImages"] ), atof( attr["minAngle"] ) * M_PI /180,
                 atof( attr["maxAngle"] ) * M_PI / 180, attr["value"],
                 attr["tooltiptext"], attr["help"], m_curLayer, m_curWindowId,
-                m_curLayoutId, m_panelStack.back() );
+                m_curLayoutId );
         m_curLayer++;
         m_pData->m_listRadialSlider.push_back( radial );
     }
 
     else if( rName == "Slider" )
     {
-        RequireAttr( attr, rName, "up" );
-        RequireAttr( attr, rName, "points" );
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "down", "none" );
-        DefaultAttr( attr, "over", "none" );
-        DefaultAttr( attr, "thickness", "10" );
-        DefaultAttr( attr, "value", "none" );
-        DefaultAttr( attr, "tooltiptext", "" );
-        DefaultAttr( attr, "help", "" );
+        RequireDefault( "up" );
+        RequireDefault( "points" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "width", "0" );
+        CheckDefault( "height", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "down", "none" );
+        CheckDefault( "over", "none" );
+        CheckDefault( "thickness", "10" );
+        CheckDefault( "value", "none" );
+        CheckDefault( "tooltiptext", "" );
+        CheckDefault( "help", "" );
 
         string newValue = attr["value"];
-        if( m_curTreeId != "" )
+        if( m_curListId != "" )
+        {
+            // Slider associated to a list
+            newValue = "playlist.slider";
+        }
+        else if( m_curTreeId != "" )
         {
             // Slider associated to a tree
             newValue = "playtree.slider";
@@ -498,19 +467,18 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 convertBoolean( attr["ykeepratio"] ), attr["up"], attr["down"],
                 attr["over"], attr["points"], atoi( attr["thickness"] ),
                 newValue, "none", 0, 0, 0, 0, attr["tooltiptext"],
-                attr["help"], m_curLayer, m_curWindowId, m_curLayoutId,
-                m_panelStack.back() );
+                attr["help"], m_curLayer, m_curWindowId, m_curLayoutId );
         m_curLayer++;
         m_pData->m_listSlider.push_back( slider );
     }
 
     else if( rName == "SliderBackground" )
     {
-        RequireAttr( attr, rName, "image" );
-        DefaultAttr( attr, "nbhoriz", "1" );
-        DefaultAttr( attr, "nbvert", "1" );
-        DefaultAttr( attr, "padhoriz", "0" );
-        DefaultAttr( attr, "padvert", "0" );
+        RequireDefault( "image" );
+        CheckDefault( "nbhoriz", "1" );
+        CheckDefault( "nbvert", "1" );
+        CheckDefault( "padhoriz", "0" );
+        CheckDefault( "padvert", "0" );
 
         // Retrieve the current slider data
         BuilderData::Slider &slider = m_pData->m_listSlider.back();
@@ -524,21 +492,21 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "Text" )
     {
-        RequireAttr( attr, rName, "font" );
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "text", "" );
-        DefaultAttr( attr, "color", "#000000" );
-        DefaultAttr( attr, "scrolling", "auto" );
-        DefaultAttr( attr, "alignment", "left" );
-        DefaultAttr( attr, "width", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "help", "" );
+        RequireDefault( "font" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "text", "" );
+        CheckDefault( "color", "#000000" );
+        CheckDefault( "scrolling", "auto" );
+        CheckDefault( "alignment", "left" );
+        CheckDefault( "width", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "help", "" );
 
         const BuilderData::Text textData( uniqueId( attr["id"] ),
                 atoi( attr["x"] ) + m_xOffset, atoi( attr["y"] ) + m_yOffset,
@@ -549,19 +517,18 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 convertBoolean( attr["ykeepratio"] ),
                 convertColor( attr["color"] ),
                 attr["scrolling"], attr["alignment"],
-                attr["help"], m_curLayer, m_curWindowId, m_curLayoutId,
-                m_panelStack.back() );
+                attr["help"], m_curLayer, m_curWindowId, m_curLayoutId );
         m_curLayer++;
         m_pData->m_listText.push_back( textData );
     }
 
     else if( rName == "Theme" )
     {
-        RequireAttr( attr, rName, "version" );
-        DefaultAttr( attr, "tooltipfont", "defaultfont" );
-        DefaultAttr( attr, "magnet", "15" );
-        DefaultAttr( attr, "alpha", "255" );
-        DefaultAttr( attr, "movealpha", "255" );
+        RequireDefault( "version" );
+        CheckDefault( "tooltipfont", "defaultfont" );
+        CheckDefault( "magnet", "15" );
+        CheckDefault( "alpha", "255" );
+        CheckDefault( "movealpha", "255" );
 
         // Check the version
         if( strcmp( attr["version"], SKINS_DTD_VERSION ) )
@@ -580,28 +547,28 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "ThemeInfo" )
     {
-        DefaultAttr( attr, "name", "" );
-        DefaultAttr( attr, "author", "" );
-        DefaultAttr( attr, "email", "" );
-        DefaultAttr( attr, "website", "" );
+        CheckDefault( "name", "" );
+        CheckDefault( "author", "" );
+        CheckDefault( "email", "" );
+        CheckDefault( "website", "" );
         msg_Info( getIntf(), "skin: %s  author: %s", attr["name"],
                   attr["author"] );
     }
 
     else if( rName == "Video" )
     {
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "width", "0" );
-        DefaultAttr( attr, "height", "0" );
-        DefaultAttr( attr, "lefttop", "lefttop" );
-        DefaultAttr( attr, "rightbottom", "lefttop" );
-        DefaultAttr( attr, "xkeepratio", "false" );
-        DefaultAttr( attr, "ykeepratio", "false" );
-        DefaultAttr( attr, "autoresize", "false" );
-        DefaultAttr( attr, "help", "" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "width", "0" );
+        CheckDefault( "height", "0" );
+        CheckDefault( "lefttop", "lefttop" );
+        CheckDefault( "rightbottom", "lefttop" );
+        CheckDefault( "xkeepratio", "false" );
+        CheckDefault( "ykeepratio", "false" );
+        CheckDefault( "autoresize", "false" );
+        CheckDefault( "help", "" );
 
         const BuilderData::Video videoData( uniqueId( attr["id"] ),
                 atoi( attr["x"] ) + m_xOffset, atoi( attr["y"] ) + m_yOffset,
@@ -610,20 +577,19 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 convertBoolean( attr["xkeepratio"] ),
                 convertBoolean( attr["ykeepratio"] ),
                 attr["visible"], convertBoolean( attr["autoresize"] ),
-                attr["help"], m_curLayer, m_curWindowId, m_curLayoutId,
-                m_panelStack.back() );
+                attr["help"], m_curLayer, m_curWindowId, m_curLayoutId );
         m_curLayer++;
         m_pData->m_listVideo.push_back( videoData );
     }
 
     else if( rName == "Window" )
     {
-        DefaultAttr( attr, "id", "none" );
-        DefaultAttr( attr, "visible", "true" );
-        DefaultAttr( attr, "x", "0" );
-        DefaultAttr( attr, "y", "0" );
-        DefaultAttr( attr, "dragdrop", "true" );
-        DefaultAttr( attr, "playondrop", "true" );
+        CheckDefault( "id", "none" );
+        CheckDefault( "visible", "true" );
+        CheckDefault( "x", "0" );
+        CheckDefault( "y", "0" );
+        CheckDefault( "dragdrop", "true" );
+        CheckDefault( "playondrop", "true" );
 
         m_curWindowId = uniqueId( attr["id"] );
         const BuilderData::Window window( m_curWindowId,
@@ -633,7 +599,6 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 convertBoolean( attr["playondrop"] ) );
         m_pData->m_listWindow.push_back( window );
     }
-#undef  RequireAttr
 }
 
 
@@ -646,7 +611,11 @@ void SkinParser::handleEndElement( const string &rName )
         m_xOffsetList.pop_back();
         m_yOffsetList.pop_back();
     }
-    else if( rName == "Playtree" || rName == "Playlist" )
+    else if( rName == "Playlist" )
+    {
+        m_curListId = "";
+    }
+    else if( rName == "Playtree" )
     {
         m_curTreeId = "";
     }
@@ -654,10 +623,6 @@ void SkinParser::handleEndElement( const string &rName )
     {
         m_curPopupId = "";
         m_popupPosList.pop_back();
-    }
-    else if( rName == "Panel" )
-    {
-        m_panelStack.pop_back();
     }
 }
 

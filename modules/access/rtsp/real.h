@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 51392e5ff6a27507e62a1e730fae97d2e963804d $
+ * $Id: e72125dc22afe5ca0680e2666e89eec1c8bc3e98 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -25,15 +25,11 @@
 #ifndef HAVE_REAL_H
 #define HAVE_REAL_H
 
-#ifdef HAVE_CONFIG_H 
-# include "config.h" 
-#endif
-
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
 
-#include <vlc_common.h>
+#include <vlc/vlc.h>
 #include "rtsp.h"
 #include "real_rmff.h"
 #include "real_sdpplin.h"
@@ -41,13 +37,13 @@
 #ifdef REALDEBUG
 #   define lprintf printf
 #else
-    static inline void lprintf( const char *dummy, ... ) { (void)dummy; }
+    static inline void lprintf( char *dummy, ... ){}
 #endif
 
 int real_get_rdt_chunk_header(rtsp_client_t *, rmff_pheader_t *);
 int real_get_rdt_chunk(rtsp_client_t *, rmff_pheader_t *, unsigned char **);
 rmff_header_t *real_setup_and_get_header(rtsp_client_t *, int bandwidth);
 
-int asmrp_match(const char *rules, int bandwidth, int *matches, int matchsize) ;
+int asmrp_match(const char *rules, int bandwidth, int *matches) ;
 
 #endif

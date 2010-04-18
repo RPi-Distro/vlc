@@ -1,8 +1,11 @@
 NULL =
 
+docdir = $(datadir)/doc/@PACKAGE@
+
 doc_DATA = \
 	bugreport-howto.txt \
 	fortunes.txt \
+	intf-cdda.txt \
 	intf-vcd.txt \
 	$(NULL)
 
@@ -17,23 +20,19 @@ CHANGELOGS = \
 	ChangeLog-2006 \
 	ChangeLog-2007 \
 	ChangeLog-2008 \
-	ChangeLog-2009 \
-	ChangeLog-2010 \
 	$(NULL)
-
-man1_MANS = \
-	   vlc.1 \
-	   vlc-wrapper.1 \
-	   vlc-config.1
 
 EXTRA_DIST = \
 	$(CHANGELOGS) \
-        $(man1_MANS) \
-        bugreport-howto.txt \
+	vlc.1 \
+	vlc-config.1 \
+	bugreport-howto.txt \
 	fortunes.txt \
+	intf-cdda.txt \
 	intf-vcd.txt \
 	release-howto.txt \
-	Doxyfile.in \
+	arm-crosscompile-howto.sgml \
+	Configure.help \
 	lirc/example.lircrc \
 	skins/skins-howto.txt \
 	skins/events-howto.txt \
@@ -44,21 +43,15 @@ EXTRA_DIST = \
 	skins/curve_maker/Bezier.vbw \
 	strings.txt \
 	translations.txt \
+	win32/Cross-Compile-Howto.txt \
 	demo.sh \
 	$(NULL)
 
-DISTCLEANFILES = Doxyfile
-MAINTAINERCLEANFILES = $(CHANGELOGS)
-
-Doxyfile: Doxyfile.in $(top_builddir)/config.status
-	cd $(top_builddir) && $(SHELL) ./config.status --file=$(subdir)/$@
-
-doc: Doxyfile
-	doxygen
+DISTCLEANFILES = $(CHANGELOGS)
 
 $(CHANGELOGS): Makefile.am
 	if test -d "$(top_srcdir)/.git"; then \
-		y="$@"; y="$${y##ChangeLog-}" ; \
+		y="$$(echo "$@" | sed -e 's,ChangeLog-,,')" ; \
 		git --git-dir="$(top_srcdir)/.git" log \
 			--since="$$y-01-01" \
 			--until="$$y-12-31 23:00:00 -0100" \
@@ -66,9 +59,7 @@ $(CHANGELOGS): Makefile.am
 	fi
 
 # This one needs to be rebuilt all the time :)
-.PHONY: ChangeLog-2010 changelogs doc
-
-changelogs: $(CHANGELOGS)
-
+.PHONY: ChangeLog-2008
+#
 #distclean-hook:
 #	test "$(srcdir)" = "$(builddir)" || rm -f -- $(CHANGELOGS)

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * au.c : au file input module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 1efd2d0a3647454b88090c74e9be13302c3608fa $
+ * Copyright (C) 2001-2003 the VideoLAN team
+ * $Id: cc40dcc88328cedb89225f63698f8c3d94df5301 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,14 +24,10 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>                                      /* malloc(), free() */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_demux.h>
+#include <vlc/vlc.h>
+#include <vlc/input.h>
 
 /* TODO:
  *  - all adpcm things (I _NEED_ samples)
@@ -44,14 +40,14 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin ()
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_DEMUX )
-    set_description( N_("AU demuxer") )
-    set_capability( "demux", 10 )
-    set_callbacks( Open, Close )
-    add_shortcut( "au" )
-vlc_module_end ()
+vlc_module_begin();
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_DEMUX );
+    set_description( _("AU demuxer") );
+    set_capability( "demux2", 10 );
+    set_callbacks( Open, Close );
+    add_shortcut( "au" );
+vlc_module_end();
 
 /*****************************************************************************
  * Local prototypes
@@ -93,7 +89,7 @@ struct demux_sys_t
     int             i_header_size;
 };
 
-static int Demux( demux_t * );
+static int DemuxPCM( demux_t * );
 static int Control ( demux_t *, int i_query, va_list args );
 
 /*****************************************************************************
@@ -105,15 +101,16 @@ static int Open( vlc_object_t *p_this )
     demux_sys_t *p_sys;
 
     uint8_t      hdr[20];
-    const uint8_t *p_peek;
+    uint8_t     *p_peek;
     int          i_cat;
     int          i_samples, i_modulo;
 
-    if( stream_Peek( p_demux->s , &p_peek, 4 ) < 4 )
-        return VLC_EGENERIC;
+    if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 ) return VLC_EGENERIC;
 
     if( memcmp( p_peek, ".snd", 4 ) )
+    {
         return VLC_EGENERIC;
+    }
 
     /* skip signature */
     stream_Read( p_demux->s, NULL, 4 );   /* cannot fail */
@@ -131,8 +128,8 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    DEMUX_INIT_COMMON(); p_sys = p_demux->p_sys;
-    p_sys->i_time = 0;
+    p_sys = p_demux->p_sys = malloc( sizeof( demux_sys_t ) );
+    p_sys->i_time = 1;
     p_sys->i_header_size = GetDWBE( &hdr[0] );
 
     /* skip extra header data */
@@ -156,14 +153,14 @@ static int Open( vlc_object_t *p_this )
     switch( GetDWBE( &hdr[8] ) )
     {
         case AU_ALAW_8:        /* 8-bit ISDN A-law */
-            p_sys->fmt.i_codec               = VLC_CODEC_ALAW;
+            p_sys->fmt.i_codec               = VLC_FOURCC( 'a','l','a','w' );
             p_sys->fmt.audio.i_bitspersample = 8;
             p_sys->fmt.audio.i_blockalign    = 1 * p_sys->fmt.audio.i_channels;
             i_cat                    = AU_CAT_PCM;
             break;
 
         case AU_MULAW_8:       /* 8-bit ISDN u-law */
-            p_sys->fmt.i_codec               = VLC_CODEC_MULAW;
+            p_sys->fmt.i_codec               = VLC_FOURCC( 'u','l','a','w' );
             p_sys->fmt.audio.i_bitspersample = 8;
             p_sys->fmt.audio.i_blockalign    = 1 * p_sys->fmt.audio.i_channels;
             i_cat                    = AU_CAT_PCM;
@@ -279,21 +276,25 @@ static int Open( vlc_object_t *p_this )
                             (mtime_t)i_samples /
                             (mtime_t)p_sys->fmt.audio.i_rate;
 
+    /* finish to set up p_demux */
+    p_demux->pf_demux   = DemuxPCM;
+    p_demux->pf_control = Control;
+
     return VLC_SUCCESS;
 }
 
 /*****************************************************************************
- * Demux: read packet and send them to decoders
+ * DemuxPCM: read packet and send them to decoders
  *****************************************************************************
  * Returns -1 in case of error, 0 in case of EOF, 1 otherwise
  *****************************************************************************/
-static int Demux( demux_t *p_demux )
+static int DemuxPCM( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t     *p_block;
 
     /* set PCR */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_time );
+    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_time );
 
     if( ( p_block = stream_Block( p_demux->s, p_sys->i_frame_size ) ) == NULL )
     {
@@ -302,7 +303,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = VLC_TS_0 + p_sys->i_time;
+    p_block->i_pts = p_sys->i_time;
 
     es_out_Send( p_demux->out, p_sys->es, p_block );
 
@@ -329,7 +330,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    return demux_vaControlHelper( p_demux->s, p_sys->i_header_size, -1,
+    return demux2_vaControlHelper( p_demux->s, p_sys->i_header_size, -1,
                                    p_sys->fmt.i_bitrate, p_sys->fmt.audio.i_blockalign,
                                    i_query, args );
 }

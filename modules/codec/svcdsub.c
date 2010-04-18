@@ -2,7 +2,7 @@
  * svcdsub.c : Overlay Graphics Text (SVCD subtitles) decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: 78dcd3c152ba1c46bcf2c6b1bc9abcafb42d1100 $
+ * $Id: ab14cc1099cde7ddace3dd025c569f854b50b53a $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -27,15 +27,10 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <vlc/vlc.h>
+#include <vlc/decoder.h>
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_codec.h>
-#include <vlc_osd.h>
-#include <vlc_bits.h>
+#include "vlc_bits.h"
 
 /*****************************************************************************
  * Module descriptor.
@@ -51,22 +46,22 @@ static void DecoderClose  ( vlc_object_t * );
     "calls                 1\n" \
     "packet assembly info  2\n" )
 
-vlc_module_begin ()
-    set_description( N_("Philips OGT (SVCD subtitle) decoder") )
-    set_shortname( N_("SVCD subtitles") )
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_SCODEC )
-    set_capability( "decoder", 50 )
-    set_callbacks( DecoderOpen, DecoderClose )
+vlc_module_begin();
+    set_description( _("Philips OGT (SVCD subtitle) decoder") );
+    set_shortname( _("SVCD subtitles") );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_SCODEC );
+    set_capability( "decoder", 50 );
+    set_callbacks( DecoderOpen, DecoderClose );
 
     add_integer ( MODULE_STRING "-debug", 0, NULL,
-                  DEBUG_TEXT, DEBUG_LONGTEXT, true )
+                  DEBUG_TEXT, DEBUG_LONGTEXT, VLC_TRUE );
 
-    add_submodule ()
-    set_description( N_("Philips OGT (SVCD subtitle) packetizer") )
-    set_capability( "packetizer", 50 )
-    set_callbacks( PacketizerOpen, DecoderClose )
-vlc_module_end ()
+    add_submodule();
+    set_description( _("Philips OGT (SVCD subtitle) packetizer") );
+    set_capability( "packetizer", 50 );
+    set_callbacks( PacketizerOpen, DecoderClose );
+vlc_module_end();
 
 /*****************************************************************************
  * Local prototypes
@@ -114,15 +109,15 @@ struct decoder_sys_t
   uint16_t i_image;       /* image number in the subtitle stream */
   uint8_t  i_packet;      /* packet number for above image number */
 
-  size_t   i_spu_size;     /* goal for subtitle_data_pos while gathering,
+  int     i_spu_size;     /* goal for subtitle_data_pos while gathering,
                              size of used subtitle_data later */
 
   uint16_t i_image_offset;      /* offset from subtitle_data to compressed
                                    image data */
-  size_t i_image_length;           /* size of the compressed image data */
-  size_t second_field_offset;      /* offset of odd raster lines */
-  size_t metadata_offset;          /* offset to data describing the image */
-  size_t metadata_length;          /* length of metadata */
+  int i_image_length;           /* size of the compressed image data */
+  int second_field_offset;      /* offset of odd raster lines */
+  int metadata_offset;          /* offset to data describing the image */
+  int metadata_length;          /* length of metadata */
 
   mtime_t i_duration;   /* how long to display the image, 0 stands
                            for "until next subtitle" */
@@ -142,21 +137,20 @@ static int DecoderOpen( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_CODEC_OGT )
+    if( p_dec->fmt_in.i_codec != VLC_FOURCC( 'o','g','t',' ' ) )
+    {
         return VLC_EGENERIC;
+    }
 
     p_dec->p_sys = p_sys = calloc( 1, sizeof( decoder_sys_t ) );
-    if( p_sys == NULL )
-        return VLC_ENOMEM;
+    p_sys->i_debug       = config_GetInt( p_this, MODULE_STRING "-debug" );
 
-    p_sys->i_debug = var_InheritInteger( p_this, MODULE_STRING "-debug" );
-
-    p_sys->i_image = -1;
+    p_sys->i_image       = -1;
 
     p_sys->i_state = SUBTITLE_BLOCK_EMPTY;
     p_sys->p_spu   = NULL;
 
-    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_CODEC_OGT );
+    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_FOURCC( 'o','g','t',' ' ) );
 
     p_dec->pf_decode_sub = Decode;
     p_dec->pf_packetize  = Packetize;
@@ -262,7 +256,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
 
     if( p_block->i_buffer < SPU_HEADER_LEN )
     {
-        msg_Dbg( p_dec, "invalid packet header (size %zu < %u)" ,
+        msg_Dbg( p_dec, "invalid packet header (size %d < %d)" ,
                  p_block->i_buffer, SPU_HEADER_LEN );
         block_Release( p_block );
         return NULL;
@@ -351,12 +345,12 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
 
         if( p_spu->i_buffer != p_sys->i_spu_size )
         {
-            msg_Warn( p_dec, "subtitle packets size=%zu should be %zu",
+            msg_Warn( p_dec, "subtitle packets size=%d should be %d",
                       p_spu->i_buffer, p_sys->i_spu_size );
         }
 
-    dbg_print( (DECODE_DBG_PACKET),
-                 "subtitle packet complete, size=%zu", p_spu->i_buffer );
+	dbg_print( (DECODE_DBG_PACKET),
+                 "subtitle packet complete, size=%d", p_spu->i_buffer );
 
         p_sys->i_state = SUBTITLE_BLOCK_EMPTY;
         p_sys->p_spu = 0;
@@ -371,14 +365,14 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
  
    size     description
    -------------------------------------------
-   byte     subtitle channel (0..7) in bits 0-3
+   byte     subtitle channel (0..7) in bits 0-3 
    byte     subtitle packet number of this subtitle image 0-N,
             if the subtitle packet is complete, the top bit of the byte is 1.
    u_int16  subtitle image number
    u_int16  length in bytes of the rest
    byte     option flags, unknown meaning except bit 3 (0x08) indicates
             presence of the duration field
-   byte     unknown
+   byte     unknown 
    u_int32  duration in 1/90000ths of a second (optional), start time
             is as indicated by the PTS in the PES header
    u_int32  xpos
@@ -391,7 +385,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
             cmd>>6==1 indicates shift
             (cmd>>4)&3 is direction from, (0=top,1=left,2=right,3=bottom)
    u_int32  shift duration in 1/90000ths of a second
-   u_int16  offset of odd-numbered scanlines - subtitle images are
+   u_int16  offset of odd-numbered scanlines - subtitle images are 
             given in interlace order
    byte[]   limited RLE image data in interlace order (0,2,4... 1,3,5) with
             2-bits per palette number
@@ -435,20 +429,20 @@ static void ParseHeader( decoder_t *p_dec, block_t *p_block )
     p_sys->i_image_length  = p_sys->i_spu_size - p_sys->i_image_offset;
     p_sys->metadata_length = p_sys->i_image_offset;
 
-  if( p_sys->i_debug & DECODE_DBG_PACKET )
+  if (p_sys && p_sys->i_debug & DECODE_DBG_PACKET) 
   {
       msg_Dbg( p_dec, "x-start: %d, y-start: %d, width: %d, height %d, "
-           "spu size: %zu, duration: %"PRIu64" (d:%zu p:%"PRIu16")",
-           p_sys->i_x_start, p_sys->i_y_start,
-           p_sys->i_width, p_sys->i_height,
-           p_sys->i_spu_size, p_sys->i_duration,
-           p_sys->i_image_length, p_sys->i_image_offset);
-
+	       "spu size: %d, duration: %lu (d:%d p:%d)",
+	       p_sys->i_x_start, p_sys->i_y_start, 
+	       p_sys->i_width, p_sys->i_height, 
+	       p_sys->i_spu_size, (long unsigned int) p_sys->i_duration,
+	       p_sys->i_image_length, p_sys->i_image_offset);
+      
       for( i = 0; i < 4; i++ )
       {
           msg_Dbg( p_dec, "palette[%d]= T: %2x, Y: %2x, u: %2x, v: %2x", i,
-           p_sys->p_palette[i][3], p_sys->p_palette[i][0],
-           p_sys->p_palette[i][1], p_sys->p_palette[i][2] );
+		   p_sys->p_palette[i][3], p_sys->p_palette[i][0], 
+		   p_sys->p_palette[i][1], p_sys->p_palette[i][2] );
       }
   }
 }
@@ -465,20 +459,23 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     subpicture_t  *p_spu;
     subpicture_region_t *p_region;
     video_format_t fmt;
-    video_palette_t palette;
     int i;
 
     /* Allocate the subpicture internal data. */
-    p_spu = decoder_NewSubpicture( p_dec );
+    p_spu = p_dec->pf_spu_buffer_new( p_dec );
     if( !p_spu ) return NULL;
 
+    p_spu->b_pausable = VLC_TRUE;
+
+    p_spu->i_x = p_sys->i_x_start;
+    p_spu->i_y = p_sys->i_y_start;
     p_spu->i_start = p_data->i_pts;
     p_spu->i_stop  = p_data->i_pts + p_sys->i_duration;
-    p_spu->b_ephemer = true;
+    p_spu->b_ephemer = VLC_TRUE;
 
     /* Create new subtitle region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_CODEC_YUVP;
+    fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
 
     /**
        The video on which the subtitle sits, is scaled, probably
@@ -488,13 +485,24 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
        Two candidates are the video and the other possibility would be
        the access module.
     */
-    fmt.i_sar_num = p_sys->i_height;
-    fmt.i_sar_den = p_sys->i_width;
+    fmt.i_aspect = VOUT_ASPECT_FACTOR;
 
     fmt.i_width = fmt.i_visible_width = p_sys->i_width;
     fmt.i_height = fmt.i_visible_height = p_sys->i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    fmt.p_palette = &palette;
+    p_region = p_spu->pf_create_region( VLC_OBJECT(p_dec), &fmt );
+    if( !p_region )
+    {
+        msg_Err( p_dec, "cannot allocate SVCD subtitle region" );
+        //goto error;
+    }
+
+    p_region->fmt.i_aspect = VOUT_ASPECT_FACTOR;
+    
+    p_spu->p_region = p_region;
+    p_region->i_x = p_region->i_y = 0;
+
+    /* Build palette */
     fmt.p_palette->i_entries = 4;
     for( i = 0; i < fmt.p_palette->i_entries; i++ )
     {
@@ -503,18 +511,6 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
         fmt.p_palette->palette[i][2] = p_sys->p_palette[i][2];
         fmt.p_palette->palette[i][3] = p_sys->p_palette[i][3];
     }
-
-    p_region = subpicture_region_New( &fmt );
-    if( !p_region )
-    {
-        msg_Err( p_dec, "cannot allocate SVCD subtitle region" );
-        decoder_DeleteSubpicture( p_dec, p_spu );
-        return NULL;
-    }
-
-    p_spu->p_region = p_region;
-    p_region->i_x = p_sys->i_x_start;
-    p_region->i_y = p_sys->i_y_start;
 
     SVCDSubRenderImage( p_dec, p_data, p_region );
 
@@ -540,10 +536,10 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
  interlacing will also be removed.
  *****************************************************************************/
 static void SVCDSubRenderImage( decoder_t *p_dec, block_t *p_data,
-                subpicture_region_t *p_region )
+				subpicture_region_t *p_region )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    uint8_t *p_dest = p_region->p_picture->Y_PIXELS;
+    uint8_t *p_dest = p_region->picture.Y_PIXELS;
     int i_field;            /* The subtitles are interlaced */
     int i_row, i_column;    /* scanline row/column number */
     uint8_t i_color, i_count;
@@ -562,13 +558,13 @@ static void SVCDSubRenderImage( decoder_t *p_dec, block_t *p_data,
                 if( i_color == 0 && (i_count = bs_read( &bs, 2 )) )
                 {
                     i_count = __MIN( i_count, p_sys->i_width - i_column );
-                    memset( &p_dest[i_row * p_region->p_picture->Y_PITCH +
+                    memset( &p_dest[i_row * p_region->picture.Y_PITCH +
                                     i_column], 0, i_count + 1 );
                     i_column += i_count;
                     continue;
                 }
 
-                p_dest[i_row * p_region->p_picture->Y_PITCH + i_column] = i_color;
+                p_dest[i_row * p_region->picture.Y_PITCH + i_column] = i_color;
             }
 
             bs_align( &bs );

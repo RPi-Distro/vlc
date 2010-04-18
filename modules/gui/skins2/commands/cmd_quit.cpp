@@ -2,7 +2,7 @@
  * cmd_quit.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 356c00a092be88613916c09894dc2c159df0a053 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,13 +22,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-#   include "config.h"
-#endif
-
-#include <vlc_osd.h>
-#include <vlc_playlist.h>
-
 #include "cmd_quit.hpp"
 #include "../src/os_factory.hpp"
 #include "../src/os_loop.hpp"
@@ -36,9 +29,9 @@
 
 void CmdQuit::execute()
 {
-    // Stop the playlist
-    vout_OSDMessage( getIntf(), DEFAULT_CHAN, "%s", _( "Quit" ) );
+    // Get the instance of OSFactory
+    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
 
-    // Kill libvlc
-    libvlc_Quit( getIntf()->p_libvlc );
+    // Exit the main OS loop
+    pOsFactory->getOSLoop()->exit();
 }

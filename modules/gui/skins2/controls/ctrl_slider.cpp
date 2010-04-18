@@ -2,7 +2,7 @@
  * ctrl_slider.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 995cf7521ad7c4c490f14cd2364bcb58a1d7aca2 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "ctrl_slider.hpp"
@@ -37,11 +37,6 @@
 
 #define RANGE 40
 #define SCROLL_STEP 0.05f
-
-static inline float scroll( bool up, float pct )
-{
-    return pct + (up? SCROLL_STEP : -SCROLL_STEP);
-}
 
 
 CtrlSliderCursor::CtrlSliderCursor( intf_thread_t *pIntf,
@@ -104,9 +99,9 @@ CtrlSliderCursor::CtrlSliderCursor( intf_thread_t *pIntf,
 CtrlSliderCursor::~CtrlSliderCursor()
 {
     m_rVariable.delObserver( this );
-    delete m_pImgUp;
-    delete m_pImgDown;
-    delete m_pImgOver;
+    SKINS_DELETE( m_pImgUp );
+    SKINS_DELETE( m_pImgDown );
+    SKINS_DELETE( m_pImgOver );
 }
 
 
@@ -175,7 +170,7 @@ void CtrlSliderCursor::onUpdate( Subject<VarPercent> &rVariable,
 
 void CtrlSliderCursor::CmdOverDown::execute()
 {
-    EvtMouse *pEvtMouse = static_cast<EvtMouse*>(m_pParent->m_pEvt);
+    EvtMouse *pEvtMouse = (EvtMouse*)m_pParent->m_pEvt;
 
     // Compute the resize factors
     float factorX, factorY;
@@ -225,7 +220,7 @@ void CtrlSliderCursor::CmdOverUp::execute()
 
 void CtrlSliderCursor::CmdMove::execute()
 {
-    EvtMouse *pEvtMouse = static_cast<EvtMouse*>(m_pParent->m_pEvt);
+    EvtMouse *pEvtMouse = (EvtMouse*)m_pParent->m_pEvt;
 
     // Get the position of the control
     const Position *pPos = m_pParent->getPosition();
@@ -256,10 +251,21 @@ void CtrlSliderCursor::CmdMove::execute()
 
 void CtrlSliderCursor::CmdScroll::execute()
 {
-    // XXX Two of these in this file, figure out where it really belongs.
-    int dir = static_cast<EvtScroll*>(m_pParent->m_pEvt)->getDirection();
-    m_pParent->m_rVariable.set( scroll( EvtScroll::kUp == dir,
-                                        m_pParent->m_rVariable.get() ) );
+    EvtScroll *pEvtScroll = (EvtScroll*)m_pParent->m_pEvt;
+
+    int direction = pEvtScroll->getDirection();
+
+    float percentage = m_pParent->m_rVariable.get();
+    if( direction == EvtScroll::kUp )
+    {
+        percentage += SCROLL_STEP;
+    }
+    else
+    {
+        percentage -= SCROLL_STEP;
+    }
+
+    m_pParent->m_rVariable.set( percentage );
 }
 
 
@@ -274,17 +280,19 @@ void CtrlSliderCursor::getResizeFactors( float &rFactorX,
 
     // Compute the resize factors
     if( m_width > 0 )
+    {
         rFactorX = (float)pPos->getWidth() / (float)m_width;
+    }
     if( m_height > 0 )
+    {
         rFactorY = (float)pPos->getHeight() / (float)m_height;
+    }
 }
 
 
 void CtrlSliderCursor::refreshLayout()
 {
-    if( !m_pImg )
-        notifyLayout();
-    else
+    if( m_pImg )
     {
         // Compute the resize factors
         float factorX, factorY;
@@ -295,6 +303,8 @@ void CtrlSliderCursor::refreshLayout()
                       - m_pImg->getWidth() / 2,
                       - m_pImg->getHeight() / 2 );
     }
+    else
+        notifyLayout();
 }
 
 
@@ -349,25 +359,28 @@ bool CtrlSliderBg::mouseOver( int x, int y ) const
 
 void CtrlSliderBg::draw( OSGraphics &rImage, int xDest, int yDest )
 {
-    if( !m_pImgSeq || m_bgWidth <=0 || m_bgHeight <= 0 )
-        return;
+    if( m_pImgSeq )
+    {
+        if( m_bgWidth > 0 && m_bgHeight > 0 )
+        {
+            // Compute the resize factors
+            float factorX, factorY;
+            getResizeFactors( factorX, factorY );
 
-    // Compute the resize factors
-    float factorX, factorY;
-    getResizeFactors( factorX, factorY );
+            // Rescale the image with the actual size of the control
+            ScaledBitmap bmp( getIntf(), *m_pImgSeq,
+                 m_bgWidth * m_nbHoriz - (int)(m_padHoriz * factorX),
+                 m_bgHeight * m_nbVert - (int)(m_padVert * factorY) );
 
-    // Rescale the image with the actual size of the control
-    ScaledBitmap bmp( getIntf(), *m_pImgSeq,
-         m_bgWidth * m_nbHoriz - (int)(m_padHoriz * factorX),
-         m_bgHeight * m_nbVert - (int)(m_padVert * factorY) );
-
-    // Locate the right image in the background bitmap
-    int x = m_bgWidth * ( m_position % m_nbHoriz );
-    int y = m_bgHeight * ( m_position / m_nbHoriz );
-    // Draw the background image
-    rImage.drawBitmap( bmp, x, y, xDest, yDest,
-                       m_bgWidth - (int)(m_padHoriz * factorX),
-                       m_bgHeight - (int)(m_padVert * factorY) );
+            // Locate the right image in the background bitmap
+            int x = m_bgWidth * ( m_position % m_nbHoriz );
+            int y = m_bgHeight * ( m_position / m_nbHoriz );
+            // Draw the background image
+            rImage.drawBitmap( bmp, x, y, xDest, yDest,
+                               m_bgWidth - (int)(m_padHoriz * factorX),
+                               m_bgHeight - (int)(m_padVert * factorY) );
+        }
+    }
 }
 
 
@@ -403,9 +416,19 @@ void CtrlSliderBg::handleEvent( EvtGeneric &rEvent )
     }
     else if( rEvent.getAsString().find( "scroll" ) != string::npos )
     {
-        // XXX Two of these in this file, figure out where it really belongs.
-        int dir = static_cast<EvtScroll*>(&rEvent)->getDirection();
-        m_rVariable.set( scroll( EvtScroll::kUp == dir, m_rVariable.get() ) );
+        int direction = ((EvtScroll&)rEvent).getDirection();
+
+        float percentage = m_rVariable.get();
+        if( direction == EvtScroll::kUp )
+        {
+            percentage += SCROLL_STEP;
+        }
+        else
+        {
+            percentage -= SCROLL_STEP;
+        }
+
+        m_rVariable.set( percentage );
     }
 }
 
@@ -451,8 +474,12 @@ void CtrlSliderBg::getResizeFactors( float &rFactorX, float &rFactorY ) const
 
     // Compute the resize factors
     if( m_width > 0 )
+    {
         rFactorX = (float)pPos->getWidth() / (float)m_width;
+    }
     if( m_height > 0 )
+    {
         rFactorY = (float)pPos->getHeight() / (float)m_height;
+    }
 }
 

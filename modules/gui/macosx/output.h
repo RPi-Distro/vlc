@@ -1,8 +1,8 @@
 /*****************************************************************************
  * output.h: MacOS X Output Dialog
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 56aca1539cab01f83cfbf891606f315266b3980b $
+ * Copyright (C) 2002-2003 the VideoLAN team
+ * $Id: a58d4ddb68733bc9d2509a4de489af78e1cf6091 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -12,7 +12,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -84,7 +84,7 @@
 }
 
 - (void)setMRL:(NSArray *)o_mrl_string;
-- (NSArray *)mrl;
+- (NSArray *)getMRL;
 - (void)setTranscode:(NSString *)o_transcode_string;
 
 - (void)initStrings;

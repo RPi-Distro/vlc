@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: e4fd2d2e719067eb3e499af05fd6cbb84bbaf4e4 $
+ * $Id$
  *
  * some functions for real media file headers
  * adopted from joschkas real tools

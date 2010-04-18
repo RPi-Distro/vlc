@@ -1,8 +1,8 @@
 /*****************************************************************************
  * cmd_snapshot.cpp
  *****************************************************************************
- * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 33107c5690f24548ce56354c75456bff63237221 $
+ * Copyright (C) 2006 the VideoLAN team
+ * $Id: 8bf7d613319adc4396eda007f34e6c16fed841d0 $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -16,43 +16,31 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "cmd_snapshot.hpp"
-#include <vlc_input.h>
-#include <vlc_vout.h>
+#include <vlc/vout.h>
+
 
 void CmdSnapshot::execute()
 {
-    if( getIntf()->p_sys->p_input == NULL )
-        return;
+    vout_thread_t *pVout;
 
-    vout_thread_t *pVout = input_GetVout( getIntf()->p_sys->p_input );
+    if( getIntf()->p_sys->p_input == NULL )
+    {
+        return;
+    }
+
+    pVout = (vout_thread_t *)vlc_object_find( getIntf()->p_sys->p_input,
+                                              VLC_OBJECT_VOUT, FIND_CHILD );
     if( pVout )
     {
         // Take a snapshot
-        var_TriggerCallback( pVout, "video-snapshot" );
+        vout_Control( pVout, VOUT_SNAPSHOT );
         vlc_object_release( pVout );
     }
 }
-
-
-void CmdToggleRecord::execute()
-{
-    input_thread_t* pInput = getIntf()->p_sys->p_input;
-    if( pInput )
-        var_ToggleBool( pInput, "record" );
-}
-
-
-void CmdNextFrame::execute()
-{
-    input_thread_t* pInput = getIntf()->p_sys->p_input;
-    if( pInput )
-        var_TriggerCallback( pInput, "frame-next" );
-}
-
 

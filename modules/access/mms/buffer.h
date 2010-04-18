@@ -2,7 +2,7 @@
  * buffer.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: e969fe37a7b9490b97e87bf68b8782e3fc908e05 $
+ * $Id: 949eb59da9d96c7d90d2dc47cf5c86c1f51c12f1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,9 +21,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _MMS_BUFFER_H_
-#define _MMS_BUFFER_H_ 1
-
 typedef struct
 {
     uint8_t *p_data;    // pointer on data
@@ -33,8 +30,9 @@ typedef struct
     int    i_size;     // size of p_data memory allocated
 } var_buffer_t;
 
+
 /*****************************************************************************
- * Macro/Function to create/manipulate buffer
+ * Macro/Function to create/manipulate buffer 
  *****************************************************************************/
 int  var_buffer_initwrite( var_buffer_t *p_buf, int i_default_size );
 int  var_buffer_reinitwrite( var_buffer_t *p_buf, int i_default_size );
@@ -43,7 +41,7 @@ void var_buffer_add16( var_buffer_t *p_buf, uint16_t i_word );
 void var_buffer_add32( var_buffer_t *p_buf, uint32_t i_word );
 void var_buffer_add64( var_buffer_t *p_buf, uint64_t i_word );
 void var_buffer_addmemory( var_buffer_t *p_buf, void *p_mem, int i_mem );
-void var_buffer_addUTF16( var_buffer_t *p_buf, const char *p_str );
+void var_buffer_addUTF16( var_buffer_t *p_buf, char *p_str );
 void var_buffer_free( var_buffer_t *p_buf );
 
 
@@ -56,4 +54,3 @@ int       var_buffer_getmemory ( var_buffer_t *p_buf, void *p_mem, int64_t i_mem
 int       var_buffer_readempty( var_buffer_t *p_buf );
 void      var_buffer_getguid( var_buffer_t *p_buf, guid_t *p_guid );
 
-#endif

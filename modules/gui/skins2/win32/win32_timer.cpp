@@ -2,7 +2,7 @@
  * win32_timer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 93411da17b171886b9ffc11f9612a45236ed3678 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -70,9 +70,11 @@ void Win32Timer::execute()
     // Execute the callback
     m_rCommand.execute();
 
-    // Stop the timer if requested
-    if( m_oneShot )
-        stop();
+    // Restart the timer if needed
+    if( ! m_oneShot )
+    {
+        start( m_interval, m_oneShot );
+    }
 }
 
 #endif

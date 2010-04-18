@@ -1,3 +1,5 @@
+$Id$
+
 Hacking vlc
 ===========
 
@@ -6,26 +8,29 @@ First
 
  - Read this file
 
- - Read the information present on http://www.videolan.org/developers/
+ - Read the information present on http://developers.videolan.org/vlc/
 
 
 Requirements
 ____________
 
-You will need the following tools if you plan to use the GIT version of vlc:
+You will need the following tools if you plan to use the SVN version of vlc:
 
- - Autoconf version 2.60 or later
- - Automake version 1.9 or later
- - gettext version 0.16.1 or later
- - pkg-config
+ - autoconf version 2.50 or later
 
-After retrieving the GIT tree, you need to run the bootstrap script to
+ - automake version 1.5 (but 1.6 or later is recommended)
+
+ - gettext version 0.10.40 (but 0.11.3 or later is recommended)
+
+ - perl version 5.005 or later
+
+After retrieving the SVN tree, you need to run the bootstrap script to
 generate all the files needed to build vlc. You can then run configure.
 Run ./configure --help for a description of the available options.
 
 If you do not have the correct version of these tools, or if they are
 simply not available for the operating system you plan to develop on,
-you can check out a GIT tree on an OS that provides these tools (such
+you can check out a SVN tree on an OS that provides these tools (such
 as a recent Linux distribution), run bootstrap, and then copy the whole
 tree to your retarded OS.
 
@@ -46,13 +51,17 @@ The bootstrap script does the following actions:
    Modules.am file. A module "foo" exists if there is a Modules.am file in
    the modules/ directory which defines SOURCES_foo.
 
+ - create a top-level Modules.am file (which will be included by Makefile.am)
+   which contains additional build rules for modules, and includes all the
+   Modules.am files that were found in modules/
+
  - create an m4/private.m4 from configure.ac, generating m4 macros that will
    be needed by configure.ac.
 
  - create a Makefile.am file for each Modules.am file found in modules/ .
 
- - run autopoint (previously gettextize) to provide build system support
-   for internationalization.
+ - run autopoint (previously gettextize) to create an intl/ directory,
+   needed when libgettext is not available.
 
  - run the usual aclocal, autoheader, automake and autoconf, which create
    the various Makefile.in files from the corresponding Makefile.am and the
@@ -69,14 +78,13 @@ file. If you add a new directory you will need to create a new Modules.am,
 inside that directory. Do not forget to add a corresponding
 Makefile line at the end of configure.ac for this new Modules.am file.
 
-To have the module built, you need to add a call to VLC_ADD_PLUGIN or
+To have the module built, you need to add a call to VLC_ADD_PLUGINS or
 VLC_ADD_BUILTINS to configure.ac with your new module name as argument.
 Look at other modules for guidelines on how to add build and linkage options.
 
 After changing configure.ac you will always need to rerun bootstrap and 
 configure.
 
-VLC keeps a cache of its modules (in ~/.cache/vlc/ on Linux), so you'll have to
-delete it (or use vlc --reset-plugins-cache). Then use vlc -vvv --color --list
-to check that your plugin is seen by VLC.
+VLC keeps a cache of its module (in ~/.vlc/cache on Linux), so you'll have to delete it. (or use vlc --reset-plugins-cache)
+Then use vlc -vvv --color --list to check that your plugin is seen by VLC.
 

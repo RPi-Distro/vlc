@@ -2,7 +2,7 @@
  * pva.c: PVA demuxer
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: b02f8ddff17820d5a8e270ce64eef2f9ff9d9505 $
+ * $Id: 17de985b58265e571110a940a2fbeda9c0dc22de $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,14 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>                                      /* malloc(), free() */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <vlc/vlc.h>
+#include <vlc/input.h>
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_demux.h>
+/* TODO:
+ *  - ...
+ */
 
 /*****************************************************************************
  * Module descriptor
@@ -39,14 +39,14 @@
 static int  Open    ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
-vlc_module_begin ()
-    set_description( N_("PVA demuxer" ) )
-    set_capability( "demux", 10 )
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_DEMUX )
-    set_callbacks( Open, Close )
-    add_shortcut( "pva" )
-vlc_module_end ()
+vlc_module_begin();
+    set_description( _("PVA demuxer" ) );
+    set_capability( "demux2", 10 );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_DEMUX );
+    set_callbacks( Open, Close );
+    add_shortcut( "pva" );
+vlc_module_end();
 
 /*****************************************************************************
  * Local prototypes
@@ -82,14 +82,16 @@ static int Open( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
     es_format_t  fmt;
-    const uint8_t *p_peek;
+    uint8_t     *p_peek;
 
     if( stream_Peek( p_demux->s, &p_peek, 5 ) < 5 ) return VLC_EGENERIC;
     if( p_peek[0] != 'A' || p_peek[1] != 'V' || p_peek[4] != 0x55 )
     {
         /* In case we had forced this demuxer we try to resynch */
-        if( !p_demux->b_force || ReSynch( p_demux ) )
+        if( strcasecmp( p_demux->psz_demux, "pva" ) || ReSynch( p_demux ) )
+        {
             return VLC_EGENERIC;
+        }
     }
 
     /* Fill p_demux field */
@@ -98,12 +100,10 @@ static int Open( vlc_object_t *p_this )
     p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
 
     /* Register one audio and one video stream */
-    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_MPGA );
-    fmt.b_packetized = false;
+    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 'm', 'p', 'g', 'a' ) );
     p_sys->p_audio = es_out_Add( p_demux->out, &fmt );
 
-    es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_MPGV );
-    fmt.b_packetized = false;
+    es_format_Init( &fmt, VIDEO_ES, VLC_FOURCC( 'm', 'p', 'g', 'v' ) );
     p_sys->p_video = es_out_Add( p_demux->out, &fmt );
 
     p_sys->i_vc    = -1;
@@ -111,7 +111,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->p_pes   = NULL;
     p_sys->p_es    = NULL;
 
-    p_sys->b_pcr_audio = false;
+    p_sys->b_pcr_audio = VLC_FALSE;
 
     return VLC_SUCCESS;
 }
@@ -138,7 +138,7 @@ static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    const uint8_t *p_peek;
+    uint8_t     *p_peek;
     int         i_size;
     block_t     *p_frame;
     int64_t     i_pts;
@@ -209,7 +209,7 @@ static int Demux( demux_t *p_demux )
                 if( ( p_frame = p_sys->p_es ) )
                 {
 
-                    if( p_frame->i_pts > VLC_TS_INVALID && !p_sys->b_pcr_audio )
+                    if( p_frame->i_pts > 0 && !p_sys->b_pcr_audio )
                     {
                         es_out_Control( p_demux->out, ES_OUT_SET_PCR, (int64_t)p_frame->i_pts);
                     }
@@ -223,8 +223,7 @@ static int Demux( demux_t *p_demux )
             {
                 p_frame->p_buffer += i_skip;
                 p_frame->i_buffer -= i_skip;
-                if( i_pts >= 0 )
-                    p_frame->i_pts = VLC_TS_0 + i_pts * 100 / 9;
+                if( i_pts > 0 ) p_frame->i_pts = i_pts * 100 / 9;
                 block_ChainAppend( &p_sys->p_es, p_frame );
             }
             break;
@@ -288,8 +287,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if( ( i64 = stream_Size( p_demux->s ) ) > 0 )
             {
                 pf = (double*) va_arg( args, double* );
-                double current = stream_Tell( p_demux->s );
-                *pf = current / (double)i64;
+                *pf = (double)stream_Tell( p_demux->s ) / (double)i64;
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
@@ -298,6 +296,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             f = (double) va_arg( args, double );
             i64 = stream_Size( p_demux->s );
 
+            es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
             if( stream_Seek( p_demux->s, (int64_t)(i64 * f) ) || ReSynch( p_demux ) )
             {
                 return VLC_EGENERIC;
@@ -343,11 +342,11 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
  *****************************************************************************/
 static int ReSynch( demux_t *p_demux )
 {
-    const uint8_t *p_peek;
+    uint8_t *p_peek;
     int      i_skip;
     int      i_peek;
 
-    while( vlc_object_alive (p_demux) )
+    while( !p_demux->b_die )
     {
         if( ( i_peek = stream_Peek( p_demux->s, &p_peek, 1024 ) ) < 8 )
         {
@@ -382,7 +381,7 @@ static void ParsePES( demux_t *p_demux )
     uint8_t     hdr[30];
     int         i_pes_size;
 
-    unsigned    i_skip;
+    int         i_skip;
     mtime_t     i_dts = -1;
     mtime_t     i_pts = -1;
 
@@ -430,16 +429,14 @@ static void ParsePES( demux_t *p_demux )
     p_pes->i_buffer -= i_skip;
     p_pes->p_buffer += i_skip;
 
-    if( i_dts >= 0 )
-        p_pes->i_dts = VLC_TS_0 + i_dts * 100 / 9;
-    if( i_pts >= 0 )
-        p_pes->i_pts = VLC_TS_0 + i_pts * 100 / 9;
+    if( i_dts >= 0 ) p_pes->i_dts = i_dts * 100 / 9;
+    if( i_pts >= 0 ) p_pes->i_pts = i_pts * 100 / 9;
 
     /* Set PCR */
     if( p_pes->i_pts > 0 )
     {
         es_out_Control( p_demux->out, ES_OUT_SET_PCR, (int64_t)p_pes->i_pts);
-        p_sys->b_pcr_audio = true;
+        p_sys->b_pcr_audio = VLC_TRUE;
     }
     es_out_Send( p_demux->out, p_sys->p_audio, p_pes );
 }

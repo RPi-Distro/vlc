@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0d9cfd5b9ee7fede21f097417049b9b057588139 $
+ * $Id: a611f8713c8c4a39d9ff8c8ac6e0ccb53721b0b7 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -30,6 +30,8 @@
 #include "../src/vlcproc.hpp"
 #include "../src/window_manager.hpp"
 
+#include <cctype>
+
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
 #endif
@@ -50,7 +52,7 @@
 #if defined( HAVE_ZLIB_H )
 #   include <zlib.h>
 #   include <errno.h>
-int gzopen_frontend ( const char *pathname, int oflags, int mode );
+int gzopen_frontend ( char *pathname, int oflags, int mode );
 int gzclose_frontend( int );
 int gzread_frontend ( int, void *, size_t );
 int gzwrite_frontend( int, const void *, size_t );
@@ -73,16 +75,9 @@ int makedir( const char *newdir );
 
 bool ThemeLoader::load( const string &fileName )
 {
-    string path = getFilePath( fileName );
-
-    //Before all, let's see if the file is present
-    struct stat p_stat;
-    if( vlc_stat( path.c_str(), &p_stat ) )
-        return false;
-
     // First, we try to un-targz the file, and if it fails we hope it's a XML
     // file...
-
+    string path = getFilePath( fileName );
 #if defined( HAVE_ZLIB_H )
     if( ! extract( sToLocale( fileName ) ) && ! parse( path, fileName ) )
         return false;
@@ -112,7 +107,10 @@ bool ThemeLoader::load( const string &fileName )
         // Show the windows
         pNewTheme->getWindowManager().showAll( true );
     }
-    free( skin_last );
+    if( skin_last ) free( skin_last );
+
+    // The new theme cannot embed a video output yet
+    VlcProc::instance( getIntf() )->dropVout();
 
     return true;
 }
@@ -202,8 +200,6 @@ bool ThemeLoader::extractFileInZip( unzFile file, const string &rootDir )
         return false;
     }
 
-#ifdef WIN32
-
     // Convert the file name to lower case, because some winamp skins
     // use the wrong case...
     for( size_t i=0; i< strlen( filenameInZip ); i++)
@@ -211,12 +207,13 @@ bool ThemeLoader::extractFileInZip( unzFile file, const string &rootDir )
         filenameInZip[i] = tolower( filenameInZip[i] );
     }
 
-#endif
-
     // Allocate the buffer
     void *pBuffer = malloc( ZIP_BUFFER_SIZE );
     if( !pBuffer )
+    {
+        msg_Err( getIntf(), "failed to allocate memory" );
         return false;
+    }
 
     // Get the path of the file
     OSFactory *pOsFactory = OSFactory::instance( getIntf() );
@@ -283,7 +280,7 @@ bool ThemeLoader::extract( const string &fileName )
 {
     bool result = true;
     char *tmpdir = tempnam( NULL, "vlt" );
-    string tempPath = sFromLocale( tmpdir );
+    string tempPath = tmpdir;
     free( tmpdir );
 
     // Extract the file in a temporary directory
@@ -316,7 +313,7 @@ bool ThemeLoader::extract( const string &fileName )
             list<string>::const_iterator it;
             for( it = resPath.begin(); it != resPath.end(); it++ )
             {
-                if( findFile( *it, WINAMP2_XML_FILE, xmlFile ) )
+                if( findFile( sToLocale( *it ), WINAMP2_XML_FILE, xmlFile ) )
                     break;
             }
         }
@@ -358,7 +355,10 @@ bool ThemeLoader::parse( const string &path, const string &xmlFile )
     // Start the parser
     SkinParser parser( getIntf(), xmlFile, path );
     if( ! parser.parse() )
+    {
+        msg_Err( getIntf(), "failed to parse %s", xmlFile.c_str() );
         return false;
+    }
 
     // Build and store the theme
     Builder builder( getIntf(), parser.getData(), path );
@@ -412,10 +412,10 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
     const string &sep = OSFactory::instance( getIntf() )->getDirSeparator();
 
     DIR *pCurrDir;
-    char *pszDirContent;
+    struct dirent *pDirContent;
 
     // Open the dir
-    pCurrDir = vlc_opendir( rootDir.c_str() );
+    pCurrDir = opendir( rootDir.c_str() );
 
     if( pCurrDir == NULL )
     {
@@ -424,20 +424,22 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
         return false;
     }
 
+    // Get the first directory entry
+    pDirContent = (dirent*)readdir( pCurrDir );
+
     // While we still have entries in the directory
-    while( ( pszDirContent = vlc_readdir( pCurrDir ) ) != NULL )
+    while( pDirContent != NULL )
     {
-        string newURI = rootDir + sep + pszDirContent;
+        string newURI = rootDir + sep + pDirContent->d_name;
 
         // Skip . and ..
-        if( string( pszDirContent ) != "." &&
-            string( pszDirContent ) != ".." )
+        if( string( pDirContent->d_name ) != "." &&
+            string( pDirContent->d_name ) != ".." )
         {
 #if defined( S_ISDIR )
             struct stat stat_data;
-
-            if( ( vlc_stat( newURI.c_str(), &stat_data ) == 0 )
-             && S_ISDIR(stat_data.st_mode) )
+            stat( newURI.c_str(), &stat_data );
+            if( S_ISDIR(stat_data.st_mode) )
 #elif defined( DT_DIR )
             if( pDirContent->d_type & DT_DIR )
 #else
@@ -447,7 +449,6 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
                 // Can we find the file in this subdirectory?
                 if( findFile( newURI, rFileName, themeFilePath ) )
                 {
-                    free( pszDirContent );
                     closedir( pCurrDir );
                     return true;
                 }
@@ -455,17 +456,16 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
             else
             {
                 // Found the theme file?
-                if( rFileName == string( pszDirContent ) )
+                if( rFileName == string( pDirContent->d_name ) )
                 {
-                    themeFilePath = newURI;
-                    free( pszDirContent );
+                    themeFilePath = sFromLocale( newURI );
                     closedir( pCurrDir );
                     return true;
                 }
             }
         }
 
-        free( pszDirContent );
+        pDirContent = (dirent*)readdir( pCurrDir );
     }
 
     closedir( pCurrDir );
@@ -577,33 +577,34 @@ int tar_extract_all( TAR *t, char *prefix )
 
             switch( buffer.header.typeflag )
             {
-            case DIRTYPE:
-                makedir( fname );
-                break;
-            case REGTYPE:
-            case AREGTYPE:
-                remaining = getoct( buffer.header.size, 12 );
-                if( !remaining ) outfile = NULL; else
-                {
-                    outfile = fopen( fname, "wb" );
-                    if( outfile == NULL )
+                case DIRTYPE:
+                    makedir( fname );
+                    break;
+                case REGTYPE:
+                case AREGTYPE:
+                    remaining = getoct( buffer.header.size, 12 );
+                    if( remaining )
                     {
-                        /* try creating directory */
-                        char *p = strrchr( fname, '/' );
-                        if( p != NULL )
+                        outfile = fopen( fname, "wb" );
+                        if( outfile == NULL )
                         {
-                            *p = '\0';
-                            makedir( fname );
-                            *p = '/';
-                            outfile = fopen( fname, "wb" );
-                            if( !outfile )
+                            /* try creating directory */
+                            char *p = strrchr( fname, '/' );
+                            if( p != NULL )
                             {
-                                fprintf( stderr, "tar couldn't create %s\n",
-                                         fname );
+                                *p = '\0';
+                                makedir( fname );
+                                *p = '/';
+                                outfile = fopen( fname, "wb" );
+                                if( !outfile )
+                                {
+                                    fprintf( stderr, "tar couldn't create %s\n",
+                                             fname );
+                                }
                             }
                         }
                     }
-                }
+                    else outfile = NULL;
 
                 /*
                  * could have no contents
@@ -624,7 +625,6 @@ int tar_extract_all( TAR *t, char *prefix )
                 {
                     fprintf( stderr, "error writing %s skipping...\n", fname );
                     fclose( outfile );
-                    outfile = NULL;
                     unlink( fname );
                 }
             }
@@ -731,23 +731,23 @@ int makedir( const char *newdir )
 static int currentGzFd = -1;
 static void * currentGzVp = NULL;
 
-int gzopen_frontend( const char *pathname, int oflags, int mode )
+int gzopen_frontend( char *pathname, int oflags, int mode )
 {
-    const char *gzflags;
+    char *gzflags;
     gzFile gzf;
 
     switch( oflags )
     {
-    case O_WRONLY:
-        gzflags = "wb";
-        break;
-    case O_RDONLY:
-        gzflags = "rb";
-        break;
-    case O_RDWR:
-    default:
-        errno = EINVAL;
-        return -1;
+        case O_WRONLY:
+            gzflags = "wb";
+            break;
+        case O_RDONLY:
+            gzflags = "rb";
+            break;
+        case O_RDWR:
+        default:
+            errno = EINVAL;
+            return -1;
     }
 
     gzf = gzopen( pathname, gzflags );

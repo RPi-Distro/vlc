@@ -2,7 +2,7 @@
  * macosx_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ab46ae913c9e329127a90026ed7f4098a7620cc3 $
+ * $Id: 194067b0bfd68df83c0a3a2d5b52fe57f9f224a1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -23,29 +23,8 @@
 
 #ifdef MACOSX_SKINS
 
+#include <Carbon/Carbon.h>
 #include "macosx_loop.hpp"
-#include "macosx_window.hpp"
-#include "../src/generic_window.hpp"
-#include "../events/evt_refresh.hpp"
-
-static pascal OSStatus WinEventHandler( EventHandlerCallRef handler,
-                                        EventRef event, void *data )
-{
-    GenericWindow *pWin = (GenericWindow*)data;
-    intf_thread_t *pIntf = pWin->getIntf();
-
-    //fprintf(stderr, "event\n" );
-    UInt32 evclass = GetEventClass( event );
-    UInt32 evkind = GetEventKind( event );
-
-    switch( evclass )
-    {
-    case kEventClassWindow:
-        EvtRefresh evt( pIntf, 0, 0, -1, -1);
-        pWin->processEvent( evt );
-        break;
-    }
-}
 
 
 MacOSXLoop::MacOSXLoop( intf_thread_t *pIntf ):
@@ -72,8 +51,11 @@ OSLoop *MacOSXLoop::instance( intf_thread_t *pIntf )
 
 void MacOSXLoop::destroy( intf_thread_t *pIntf )
 {
-    delete pIntf->p_sys->p_osLoop;
-    pIntf->p_sys->p_osLoop = NULL;
+    if( pIntf->p_sys->p_osLoop )
+    {
+        delete pIntf->p_sys->p_osLoop;
+        pIntf->p_sys->p_osLoop = NULL;
+    }
 }
 
 
@@ -82,7 +64,41 @@ void MacOSXLoop::run()
     // Main event loop
     while( !m_exit )
     {
-        sleep(1);
+        EventRef pEvent;
+        OSStatus err = ReceiveNextEvent( 0, NULL, kEventDurationForever, true,
+                                         &pEvent );
+        if( err != noErr )
+        {
+            // Get the event type
+            UInt32 evClass = GetEventClass( pEvent );
+
+            switch( evClass )
+            {
+                case kEventClassMouse:
+                {
+                    break;
+                }
+
+                case kEventClassKeyboard:
+                {
+                    break;
+                }
+
+                case kEventClassWindow:
+                {
+                    handleWindowEvent( pEvent );
+                    break;
+                }
+
+                default:
+                {
+                    EventTargetRef pTarget;
+                    pTarget = GetEventDispatcherTarget();
+                    SendEventToEventTarget( pEvent, pTarget );
+                    ReleaseEvent( pEvent );
+                }
+            }
+        }
     }
 }
 
@@ -93,16 +109,11 @@ void MacOSXLoop::exit()
 }
 
 
-void MacOSXLoop::registerWindow( GenericWindow &rGenWin, WindowRef win )
+void MacOSXLoop::handleWindowEvent( EventRef pEvent )
 {
-    // Create the event handler
-    EventTypeSpec evList[] = {
-        { kEventClassWindow, kEventWindowUpdate },
-        { kEventClassMouse, kEventMouseMoved }
-    };
-    EventHandlerUPP handler = NewEventHandlerUPP( WinEventHandler );
-    InstallWindowEventHandler( win, handler, GetEventTypeCount( evList ),
-                               evList, &rGenWin, NULL );
+    UInt32 evKind = GetEventKind( pEvent );
+
 }
+
 
 #endif

@@ -2,7 +2,7 @@
  * xml.h: XML abstraction layer
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 497fc7f9334d62a7f4f19983f6ca362a3665fa8e $
+ * $Id: 4b6d4d12a83f35e7f45035909ee2d4c18fe74fe6 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -21,14 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VLC_XML_H
-#define VLC_XML_H
-
-/**
- * \file
- * This file defines functions and structures to handle xml tags in vlc
- *
- */
+#ifndef _VLC_XML_H
+#define _VLC_XML_H
 
 # ifdef __cplusplus
 extern "C" {
@@ -50,8 +44,8 @@ struct xml_t
                                const char * );
 };
 
-VLC_EXPORT( xml_t *, xml_Create, ( vlc_object_t * ) );
-#define xml_Create( a ) xml_Create( VLC_OBJECT(a) )
+#define xml_Create( a ) __xml_Create( VLC_OBJECT(a) )
+VLC_EXPORT( xml_t *, __xml_Create, ( vlc_object_t * ) );
 VLC_EXPORT( void, xml_Delete, ( xml_t * ) );
 
 #define xml_ReaderCreate( a, b ) a->pf_reader_create( a, b )
@@ -70,7 +64,7 @@ struct xml_reader_t
     char * (*pf_value) ( xml_reader_t * );
     int (*pf_next_attr) ( xml_reader_t * );
 
-    int (*pf_use_dtd) ( xml_reader_t *, bool );
+    int (*pf_use_dtd) ( xml_reader_t *, vlc_bool_t );
 };
 
 #define xml_ReaderRead( a ) a->pf_read( a )

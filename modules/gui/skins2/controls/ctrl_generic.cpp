@@ -2,7 +2,7 @@
  * ctrl_generic.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 81465feebf03da90ec843597fd3d80d61c02f0dc $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,8 +29,6 @@
 #include "../utils/position.hpp"
 #include "../utils/var_bool.hpp"
 
-#include <assert.h>
-
 
 CtrlGeneric::CtrlGeneric( intf_thread_t *pIntf, const UString &rHelp,
                           VarBool *pVisible):
@@ -47,6 +45,10 @@ CtrlGeneric::CtrlGeneric( intf_thread_t *pIntf, const UString &rHelp,
 
 CtrlGeneric::~CtrlGeneric()
 {
+    if( m_pPosition )
+    {
+        delete m_pPosition;
+    }
     if( m_pVisible )
     {
         m_pVisible->delObserver( this );
@@ -57,21 +59,15 @@ CtrlGeneric::~CtrlGeneric()
 void CtrlGeneric::setLayout( GenericLayout *pLayout,
                              const Position &rPosition )
 {
-    assert( !m_pLayout && pLayout);
-
     m_pLayout = pLayout;
+    if( m_pPosition )
+    {
+        delete m_pPosition;
+    }
     m_pPosition = new Position( rPosition );
     onPositionChange();
 }
 
-void CtrlGeneric::unsetLayout()
-{
-    assert( m_pLayout );
-
-    delete m_pPosition;
-    m_pPosition = NULL;
-    m_pLayout = NULL;
-}
 
 void CtrlGeneric::notifyLayout( int width, int height,
                                 int xOffSet, int yOffSet ) const

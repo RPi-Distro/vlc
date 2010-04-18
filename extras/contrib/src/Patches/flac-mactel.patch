@@ -1,0 +1,15 @@
+diff -puriN flac/src/libFLAC/ia32/nasm.h flac-patched/src/libFLAC/ia32/nasm.h
+--- flac/src/libFLAC/ia32/nasm.h	2005-01-25 05:14:22.000000000 +0100
++++ flac-patched/src/libFLAC/ia32/nasm.h	2006-01-26 22:38:54.000000000 +0100
+@@ -45,6 +45,11 @@
+ 	%idefine code_section section .text
+ 	%idefine data_section section .data
+ 	%idefine bss_section  section .bss
++%elifdef OBJ_FORMAT_macho
++	%define FLAC__PUBLIC_NEEDS_UNDERSCORE
++	%idefine code_section section .text
++	%idefine data_section section .data
++	%idefine bss_section  section .bss
+ %elifdef OBJ_FORMAT_elf
+ 	%idefine code_section section .text align=16
+ 	%idefine data_section section .data align=32

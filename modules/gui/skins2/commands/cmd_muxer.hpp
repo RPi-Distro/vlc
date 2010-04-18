@@ -2,7 +2,7 @@
  * cmd_muxer.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: f7f4397fa74110163d202d53fb625a88615cc16c $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef CMD_MUXER_HPP
@@ -31,17 +31,20 @@
 /// This command only contains other commands (composite pattern)
 class CmdMuxer: public CmdGeneric
 {
-public:
-    CmdMuxer( intf_thread_t *pIntf, const list<CmdGeneric*> &rList )
-        : CmdGeneric( pIntf ), m_list( rList ) { }
-    virtual ~CmdMuxer() { }
-    virtual void execute();
-    virtual string getType() const { return "muxer"; }
+    public:
+        CmdMuxer( intf_thread_t *pIntf, const list<CmdGeneric*> &rList ):
+            CmdGeneric( pIntf ), m_list( rList ) {}
+        virtual ~CmdMuxer() {}
 
-private:
-    /// List of commands we will execute sequentially
-    typedef std::list<CmdGeneric*> cmdList_t;
-    cmdList_t m_list;
+        /// This method does the real job of the command
+        virtual void execute();
+
+        /// Return the type of the command
+        virtual string getType() const { return "muxer"; }
+
+    private:
+        /// List of commands we will execute sequentially
+        list<CmdGeneric*> m_list;
 };
 
 #endif

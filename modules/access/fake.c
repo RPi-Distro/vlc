@@ -2,7 +2,7 @@
  * fake.c : Fake video input for VLC
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 77ee197708d60a0125d69560730adbcf5618518f $
+ * $Id: d24bdb2161448420b719bc6b39c74a6c5e45a200 $
  *
  * Author: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,16 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_access.h>
-#include <vlc_demux.h>
-#include <vlc_image.h>
+#include <vlc/vlc.h>
+#include <vlc/input.h>
 
 /*****************************************************************************
  * Module descriptior
@@ -55,27 +51,25 @@ static void Close( vlc_object_t * );
 #define DURATION_TEXT N_("Duration in ms")
 #define DURATION_LONGTEXT N_( \
     "Duration of the fake streaming before faking an " \
-    "end-of-file (default is -1 meaning that the stream is unlimited when " \
-    "fake is forced, or lasts for 10 seconds otherwise. 0, means that the " \
-    "stream is unlimited).")
+    "end-of-file (default is 0, meaning that the stream is unlimited).")
 
-vlc_module_begin ()
-    set_shortname( N_("Fake") )
-    set_description( N_("Fake video input") )
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_ACCESS )
+vlc_module_begin();
+    set_shortname( _("Fake") );
+    set_description( _("Fake input") );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_ACCESS );
 
     add_integer( "fake-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, true )
-    add_float( "fake-fps", 25.0, NULL, FPS_TEXT, FPS_LONGTEXT, true )
-    add_integer( "fake-id", 0, NULL, ID_TEXT, ID_LONGTEXT, true )
-    add_integer( "fake-duration", -1, NULL, DURATION_TEXT, DURATION_LONGTEXT,
-                 true )
+                 CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
+    add_float( "fake-fps", 25.0, NULL, FPS_TEXT, FPS_LONGTEXT, VLC_TRUE );
+    add_integer( "fake-id", 0, NULL, ID_TEXT, ID_LONGTEXT, VLC_TRUE );
+    add_integer( "fake-duration", 0, NULL, DURATION_TEXT, DURATION_LONGTEXT,
+                 VLC_TRUE );
 
-    add_shortcut( "fake" )
-    set_capability( "access_demux", 10 )
-    set_callbacks( Open, Close )
-vlc_module_end ()
+    add_shortcut( "fake" );
+    set_capability( "access_demux", 0 );
+    set_callbacks( Open, Close );
+vlc_module_end();
 
 /*****************************************************************************
  * Access: local prototypes
@@ -98,60 +92,35 @@ static int Open( vlc_object_t *p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
+    vlc_value_t val;
     es_format_t fmt;
 
-    if( *p_demux->psz_access != '\0' )
-    {
-        /* if an access is provided, then it has to be "fake" */
-        if( strcmp( p_demux->psz_access, "fake" ) )
-            return VLC_EGENERIC;
-
-        msg_Dbg( p_demux, "fake:// access_demux detected" );
-    }
-    else
-    {
-       /**
-        * access is not provided,
-        * then let's see if path could be an image
-        **/
-
-        if( !p_demux->psz_path || !*p_demux->psz_path )
-            return VLC_EGENERIC;
-
-        vlc_fourcc_t i_codec = image_Ext2Fourcc( p_demux->psz_path );
-        if( !i_codec )
-            return VLC_EGENERIC;
-        msg_Dbg( p_demux, "still image detected with codec format %4.4s",
-                 (const char*)&i_codec );
-    }
-
-    if( p_demux->psz_path && *p_demux->psz_path )
-    {
-        /* set up fake-file on the fly */
-        var_Create( p_demux->p_parent, "fake-file", VLC_VAR_STRING );
-        var_SetString( p_demux->p_parent, "fake-file", p_demux->psz_path );
-    }
+    /* Only when selected */
+    if( *p_demux->psz_access == '\0' )
+        return VLC_EGENERIC;
 
     /* Set up p_demux */
-    DEMUX_INIT_COMMON(); p_sys = p_demux->p_sys;
+    p_demux->pf_demux = Demux;
+    p_demux->pf_control = Control;
     p_demux->info.i_update = 0;
     p_demux->info.i_title = 0;
     p_demux->info.i_seekpoint = 0;
+    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
+    memset( p_sys, 0, sizeof( demux_sys_t ) );
 
-    p_sys->i_duration =
-        (mtime_t)var_CreateGetInteger( p_demux, "fake-duration" ) * 1000;
-    if( p_sys->i_duration < 0 )
-    {
-        if( !strcmp( p_demux->psz_access, "fake" ) )
-            p_sys->i_duration = 0;
-        else
-            p_sys->i_duration = 10000*1000;
-    }
-    p_sys->f_fps = var_CreateGetFloat( p_demux, "fake-fps" );
+    var_Create( p_demux, "fake-duration", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
+    var_Get( p_demux, "fake-duration", &val );
+    p_sys->i_duration = val.i_int * 1000;
+
+    var_Create( p_demux, "fake-fps", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT );
+    var_Get( p_demux, "fake-fps", &val );
+    p_sys->f_fps = val.f_float;
 
     /* Declare the elementary stream */
     es_format_Init( &fmt, VIDEO_ES, VLC_FOURCC('f','a','k','e') );
-    fmt.i_id = var_CreateGetInteger( p_demux, "fake-id" );
+    var_Create( p_demux, "fake-id", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
+    var_Get( p_demux, "fake-id", &val );
+    fmt.i_id = val.i_int;
     p_sys->p_es_video = es_out_Add( p_demux->out, &fmt );
 
     /* Update default_pts to a suitable value for access */
@@ -177,7 +146,7 @@ static void Close( vlc_object_t *p_this )
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    bool *pb, b;
+    vlc_bool_t *pb, b;
     int64_t    *pi64, i64;
     double     *pf, f;
 
@@ -185,14 +154,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     {
         /* Special for access_demux */
         case DEMUX_CAN_PAUSE:
-        case DEMUX_CAN_SEEK:
         case DEMUX_CAN_CONTROL_PACE:
-            pb = (bool *)va_arg( args, bool * );
-            *pb = true;
+            pb = (vlc_bool_t *)va_arg( args, vlc_bool_t * );
+            *pb = VLC_TRUE;
             return VLC_SUCCESS;
 
         case DEMUX_SET_PAUSE_STATE:
-            b = (bool)va_arg( args, int );
+            b = (vlc_bool_t)va_arg( args, vlc_bool_t );
             if ( b )
             {
                 p_sys->i_pause_pts = mdate();
@@ -214,16 +182,19 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_GET_POSITION:
-            if( p_sys->i_duration <= 0 )
-                return VLC_EGENERIC;
             pf = (double*)va_arg( args, double* );
-            *pf = (double)( p_sys->i_last_pts - p_sys->i_first_pts )
-                            / (double)(p_sys->i_duration);
+            if( p_sys->i_duration > 0 )
+            {
+                *pf = (double)( p_sys->i_last_pts - p_sys->i_first_pts )
+                                / (double)(p_sys->i_duration);
+            }
+            else
+            {
+                *pf = 0;
+            }
             return VLC_SUCCESS;
 
         case DEMUX_SET_POSITION:
-            if( p_sys->i_duration <= 0 )
-                return VLC_EGENERIC;
             f = (double)va_arg( args, double );
             i64 = f * (double)p_sys->i_duration;
             p_sys->i_first_pts = p_sys->i_last_pts - i64;
@@ -232,12 +203,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_GET_TIME:
             pi64 = (int64_t *)va_arg( args, int64_t * );
-            *pi64 = p_sys->i_last_pts - p_sys->i_first_pts;
+            if ( p_sys->i_duration )
+                *pi64 = p_sys->i_last_pts - p_sys->i_first_pts;
+            else
+                *pi64 = p_sys->i_last_pts;
             return VLC_SUCCESS;
 
         case DEMUX_GET_LENGTH:
-            if( p_sys->i_duration <= 0 )
-                return VLC_EGENERIC;
             pi64 = (int64_t*)va_arg( args, int64_t * );
             *pi64 = p_sys->i_duration;
             return VLC_SUCCESS;
@@ -262,6 +234,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
+    block_t *p_block = block_New( p_demux, 1 );
 
     if ( !p_sys->i_last_pts )
     {
@@ -277,7 +250,6 @@ static int Demux( demux_t *p_demux )
         mwait( p_sys->i_last_pts );
     }
 
-    block_t *p_block = block_New( p_demux, 1 );
     p_block->i_flags |= BLOCK_FLAG_TYPE_I;
     p_block->i_dts = p_block->i_pts = p_sys->i_last_pts;
 
@@ -286,3 +258,4 @@ static int Demux( demux_t *p_demux )
 
     return 1;
 }
+

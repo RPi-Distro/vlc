@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.m
  * AppleRemote
- * $Id: 6f41baef9bd686a7aa2dff9ff3c5030edf18670c $
+ * $Id: 780e8223d4e4efb34030517849f5b2565511201d $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -32,7 +32,7 @@
  * or (at your option) any later version.
  * Thus, the following statements apply to our changes:
  *
- * Copyright (C) 2006-2009 the VideoLAN team
+ * Copyright (C) 2006-2007 the VideoLAN team
  * Authors: Eric Petit <titer@m0k.org>
  *          Felix Kühne <fkuehne at videolan dot org>
  *
@@ -66,16 +66,30 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 #pragma public interface
 
 - (id) init {
-    if(( self = [super init])) {
+    if ( self = [super init] ) {
         openInExclusiveMode = YES;
         queue = NULL;
         hidDeviceInterface = NULL;
         cookieToButtonMapping = [[NSMutableDictionary alloc] init];
 
-        if( NSAppKitVersionNumber < 1038.13 )
+        if( MACOS_VERSION < 10.5f )
         {
-            /* Leopard and early Snow Leopard Cookies */
-            msg_Dbg( VLCIntf, "using Leopard AR cookies" );
+            /* use the traditional cookies for Tiger (and Panther, if it is supported by the frame app) */
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]  forKey:@"14_12_11_6_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Minus] forKey:@"14_13_11_6_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu]         forKey:@"14_7_6_14_7_6_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay]         forKey:@"14_8_6_14_8_6_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight]        forKey:@"14_9_6_14_9_6_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft]         forKey:@"14_10_6_14_10_6_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight_Hold]   forKey:@"14_6_4_2_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft_Hold]    forKey:@"14_6_3_2_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu_Hold]    forKey:@"14_6_14_6_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]   forKey:@"18_14_6_18_14_6_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]   forKey:@"19_"];
+        }
+        else
+        {
+            /* we're on Leopard and need to use a new set of cookies */
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]  forKey:@"31_29_28_18_"];
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Minus] forKey:@"31_30_28_18_"];
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu]         forKey:@"31_20_18_31_20_18_"];
@@ -88,29 +102,11 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]   forKey:@"35_31_18_35_31_18_"];
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]   forKey:@"19_"];
         }
-        else
-        {
-            /* current Snow Leopard cookies */
-            msg_Dbg( VLCIntf, "using Snow Leopard AR cookies" );
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Plus]    forKey:@"33_31_30_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonVolume_Minus]   forKey:@"33_32_30_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu]           forKey:@"33_22_21_20_2_33_22_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay]           forKey:@"33_23_21_20_2_33_23_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight]          forKey:@"33_24_21_20_2_33_24_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft]           forKey:@"33_25_21_20_2_33_25_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight_Hold]     forKey:@"33_21_20_14_12_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft_Hold]      forKey:@"33_21_20_13_12_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu_Hold]      forKey:@"33_21_20_2_33_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]     forKey:@"37_33_21_20_2_37_33_21_20_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]     forKey:@"19_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonPlay]       forKey:@"33_21_20_8_2_33_21_20_8_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonFullscreen] forKey:@"33_21_20_3_2_33_21_20_3_2_"];
-        }
-    }
 
-    /* defaults */
-    [self setSimulatesPlusMinusHold: YES];
-    maxClickTimeDifference = DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE;
+        /* defaults */
+        [self setSimulatesPlusMinusHold: YES];
+        maxClickTimeDifference = DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE;
+    }
 
     return self;
 }
@@ -120,6 +116,15 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
     [cookieToButtonMapping release];
     [super dealloc];
 }
+
+/* this was added by the VideoLAN team to ensure Leopard-compatibility and is VLC-only */
+#if GC_ENABLED
+- (void)finalize
+{
+    [self stopListening: self];
+    [super finalize];
+}
+#endif
 
 - (int) remoteId {
     return remoteId;
@@ -173,7 +178,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 }
 - (void) setClickCountingEnabled: (BOOL) value {
     if (value) {
-        [self setClickCountEnabledButtons: kRemoteButtonVolume_Plus | kRemoteButtonVolume_Minus | kRemoteButtonPlay | kRemoteButtonLeft | kRemoteButtonRight | kRemoteButtonMenu | k2009RemoteButtonPlay | k2009RemoteButtonFullscreen];
+        [self setClickCountEnabledButtons: kRemoteButtonVolume_Plus | kRemoteButtonVolume_Minus | kRemoteButtonPlay | kRemoteButtonLeft | kRemoteButtonRight | kRemoteButtonMenu];
     } else {
         [self setClickCountEnabledButtons: 0];
     }
@@ -253,11 +258,6 @@ cleanup:
 }
 
 - (IBAction) stopListening: (id) sender {
-    if (eventSource != NULL) {
-        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), eventSource, kCFRunLoopDefaultMode);
-        CFRelease(eventSource);
-        eventSource = NULL;
-    }
     if (queue != NULL) {
         (*queue)->stop(queue);
 
@@ -314,7 +314,7 @@ static AppleRemote* sharedInstance=nil;
 - (id)retain {
     return self;
 }
-- (NSUInteger)retainCount {
+- (unsigned)retainCount {
     return UINT_MAX;  //denotes an object that cannot be released
 }
 - (void)release {
@@ -349,7 +349,7 @@ static AppleRemote* sharedInstance=nil;
     if (cookieString == nil || [cookieString length] == 0) return nil;
     NSEnumerator* keyEnum = [[self cookieToButtonMapping] keyEnumerator];
     NSString* key;
-    while((key = [keyEnum nextObject])) {
+    while(key = [keyEnum nextObject]) {
         NSRange range = [cookieString rangeOfString:key];
         if (range.location == 0) return key;
     }
@@ -450,7 +450,7 @@ static AppleRemote* sharedInstance=nil;
         cookieString = [previousRemainingCookieString stringByAppendingString: cookieString];
         NSLog(@"New cookie string is %@", cookieString);
         [previousRemainingCookieString release], previousRemainingCookieString=nil;
-	}*/
+    }*/
     if (cookieString == nil || [cookieString length] == 0) return;
     NSNumber* buttonId = [[self cookieToButtonMapping] objectForKey: cookieString];
     if (buttonId != nil) {
@@ -460,7 +460,7 @@ static AppleRemote* sharedInstance=nil;
         // happen when the main thread is too busy to handle all incoming events in time.
         NSString* subCookieString;
         NSString* lastSubCookieString=nil;
-        while((subCookieString = [self validCookieSubstring: cookieString])) {
+        while(subCookieString = [self validCookieSubstring: cookieString]) {
             cookieString = [cookieString substringFromIndex: [subCookieString length]];
             lastSubCookieString = subCookieString;
             if (processesBacklog) [self handleEventWithCookieString: subCookieString sumOfValues:sumOfValues];
@@ -473,7 +473,7 @@ static AppleRemote* sharedInstance=nil;
             [self handleEventWithCookieString: lastSubCookieString sumOfValues:0];
         }
         if ([cookieString length] > 0) {
-            msg_Warn( VLCIntf, "Unknown AR button for cookiestring %s", [cookieString UTF8String]);
+            NSLog(@"Unknown button for cookiestring %@", cookieString);
         }
     }
 }
@@ -526,7 +526,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
     ioReturnValue = IOObjectGetClass(hidDevice, className);
 
     if (ioReturnValue != kIOReturnSuccess) {
-        msg_Err( VLCIntf, "Failed to get IOKit class name.");
+        NSLog(@"Error: Failed to get class name.");
         return NULL;
     }
 
@@ -541,7 +541,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
         plugInResult = (*plugInInterface)->QueryInterface(plugInInterface, CFUUIDGetUUIDBytes(kIOHIDDeviceInterfaceID), (LPVOID) &hidDeviceInterface);
 
         if (plugInResult != S_OK) {
-            msg_Err( VLCIntf, "Couldn't create HID class device interface");
+            NSLog(@"Error: Couldn't create HID class device interface");
         }
         // Release
         if (plugInInterface) (*plugInInterface)->Release(plugInInterface);
@@ -598,7 +598,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
         memset(cookies, 0, sizeof(IOHIDElementCookie) * NUMBER_OF_APPLE_REMOTE_ACTIONS);
         */
         allCookies = [[NSMutableArray alloc] init];
-        unsigned int i;
+        int i;
         for (i=0; i< [elements count]; i++) {
             element = [elements objectAtIndex:i];
 
@@ -639,13 +639,14 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
         if (queue) {
             result = (*queue)->create(queue, 0, 12);    //depth: maximum number of elements in queue before oldest elements in queue begin to be lost.
 
-            unsigned int i=0;
+            int i=0;
             for(i=0; i<[allCookies count]; i++) {
                 IOHIDElementCookie cookie = (IOHIDElementCookie)[[allCookies objectAtIndex:i] intValue];
                 (*queue)->addElement(queue, cookie, 0);
             }
 
             // add callback for async events
+            CFRunLoopSourceRef eventSource;
             ioReturnValue = (*queue)->createAsyncEventSource(queue, &eventSource);
             if (ioReturnValue == KERN_SUCCESS) {
                 ioReturnValue = (*queue)->setEventCallout(queue,QueueCallbackFunction, self, NULL);
@@ -655,13 +656,13 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
                     (*queue)->start(queue);
                     return YES;
                 } else {
-                    msg_Err( VLCIntf, "Error when setting event callout");
+                    NSLog(@"Error when setting event callout");
                 }
             } else {
-                msg_Err( VLCIntf, "Error when creating async event source");
+                NSLog(@"Error when creating async event source");
             }
         } else {
-            msg_Err( VLCIntf, "Error when opening HUD device");
+            NSLog(@"Error when opening device");
         }
     }
     return NO;
@@ -672,12 +673,14 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 @implementation AppleRemoteApplicationDelegate
 
 - (id) initWithApplicationDelegate: (id) delegate {
-    if((self = [super init]))
+    if (self = [super init]) {
         applicationDelegate = [delegate retain];
+    }
     return self;
 }
 
 - (void) dealloc {
+    NSLog(@"Dealloc");
     [applicationDelegate release];
     [super dealloc];
 }

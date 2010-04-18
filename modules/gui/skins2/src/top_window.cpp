@@ -2,7 +2,7 @@
  * top_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d45a2d481be549680376eef33b8f71d754763df5 $
+ * $Id: a0c55aa0cd8ecd3c86591dca4c2b333c2982156e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -58,10 +58,6 @@ TopWindow::TopWindow( intf_thread_t *pIntf, int left, int top,
 {
     // Register as a moving window
     m_rWindowManager.registerWindow( *this );
-
-    // Create the "maximized" variable and register it in the manager
-    m_pVarMaximized = new VarBoolImpl( pIntf );
-    VarManager::instance( pIntf )->registerVar( VariablePtr( m_pVarMaximized ) );
 }
 
 
@@ -69,6 +65,24 @@ TopWindow::~TopWindow()
 {
     // Unregister from the window manager
     m_rWindowManager.unregisterWindow( *this );
+}
+
+
+void TopWindow::processEvent( EvtRefresh &rEvtRefresh )
+{
+    // We override the behaviour defined in GenericWindow, because we don't
+    // want to draw on a video control!
+    if( m_pActiveLayout == NULL )
+    {
+        GenericWindow::processEvent( rEvtRefresh );
+    }
+    else
+    {
+        m_pActiveLayout->refreshRect( rEvtRefresh.getXStart(),
+                                      rEvtRefresh.getYStart(),
+                                      rEvtRefresh.getWidth(),
+                                      rEvtRefresh.getHeight() );
+    }
 }
 
 
@@ -163,7 +177,7 @@ void TopWindow::processEvent( EvtMouse &rEvtMouse )
             if( pNewHitControl != m_pFocusControl )
             {
                 m_pFocusControl = pNewHitControl;
-                EvtFocus evt( getIntf(), true );
+                EvtFocus evt( getIntf(), false );
                 pNewHitControl->handleEvent( evt );
             }
         }
@@ -200,7 +214,7 @@ void TopWindow::processEvent( EvtKey &rEvtKey )
     }
 
     // Only do the action when the key is down
-    if( rEvtKey.getKeyState() == EvtKey::kDown )
+    if( rEvtKey.getAsString().find( "key:down") != string::npos )
     {
         //XXX not to be hardcoded!
         // Ctrl-S = Change skin
@@ -222,13 +236,30 @@ void TopWindow::processEvent( EvtKey &rEvtKey )
             return;
         }
 
-        var_SetInteger( getIntf()->p_libvlc, "key-pressed",
-                        rEvtKey.getModKey() );
+        vlc_value_t val;
+        // Set the key
+        val.i_int = rEvtKey.getKey();
+        // Set the modifiers
+        if( rEvtKey.getMod() & EvtInput::kModAlt )
+        {
+            val.i_int |= KEY_MODIFIER_ALT;
+        }
+        if( rEvtKey.getMod() & EvtInput::kModCtrl )
+        {
+            val.i_int |= KEY_MODIFIER_CTRL;
+        }
+        if( rEvtKey.getMod() & EvtInput::kModShift )
+        {
+            val.i_int |= KEY_MODIFIER_SHIFT;
+        }
+
+        var_Set( getIntf()->p_vlc, "key-pressed", val );
     }
 
-    // Always store the modifier, which can be needed for scroll events.
+    // Always store the modifier, which can be needed for scroll events
     m_currModifier = rEvtKey.getMod();
 }
+
 
 void TopWindow::processEvent( EvtScroll &rEvtScroll )
 {
@@ -254,11 +285,20 @@ void TopWindow::processEvent( EvtScroll &rEvtScroll )
     }
     else
     {
-        // Treat the scroll event as a hotkey plus current modifiers
-        int i = (rEvtScroll.getDirection() == EvtScroll::kUp ?
-                 KEY_MOUSEWHEELUP : KEY_MOUSEWHEELDOWN) | m_currModifier;
+        // Treat the scroll event as a hotkey
+        vlc_value_t val;
+        if( rEvtScroll.getDirection() == EvtScroll::kUp )
+        {
+            val.i_int = KEY_MOUSEWHEELUP;
+        }
+        else
+        {
+            val.i_int = KEY_MOUSEWHEELDOWN;
+        }
+        // Add the modifiers
+        val.i_int |= m_currModifier;
 
-        var_SetInteger( getIntf()->p_libvlc, "key-pressed", i );
+        var_Set( getIntf()->p_vlc, "key-pressed", val );
     }
 }
 
@@ -298,6 +338,7 @@ void TopWindow::setActiveLayout( GenericLayout *pLayout )
     // Get the size of the layout and resize the window
     resize( pLayout->getWidth(), pLayout->getHeight() );
 
+    updateShape();
     if( isVisible )
     {
         pLayout->onShow();
@@ -316,17 +357,14 @@ const GenericLayout& TopWindow::getActiveLayout() const
 
 void TopWindow::innerShow()
 {
-    // First, refresh the layout
+    // First, refresh the layout and update the shape of the window
     if( m_pActiveLayout )
     {
+        updateShape();
         m_pActiveLayout->onShow();
     }
-
     // Show the window
     GenericWindow::innerShow();
-
-    // place the top window on the screen (after show!)
-    move( getLeft(), getTop() );
 }
 
 

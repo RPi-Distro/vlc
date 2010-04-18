@@ -2,7 +2,7 @@
  * vlc_image.h : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 06d484d9e05156f2ffbe1e072f828038ca9526f3 $
+ * $Id: 6b27b730b266b5ef860f7dfd42cc1337b8d28c48 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -21,15 +21,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VLC_IMAGE_H
-#define VLC_IMAGE_H 1
+#ifndef _VLC_IMAGE_H
+#define _VLC_IMAGE_H 1
 
-/**
- * \file
- * This file defines functions and structures for image conversions in vlc
- */
-
-#include <vlc_vout.h>
+#include "vlc_video.h"
 
 # ifdef __cplusplus
 extern "C" {
@@ -59,8 +54,8 @@ struct image_handler_t
     filter_t  *p_filter;
 };
 
-VLC_EXPORT( image_handler_t *, image_HandlerCreate, ( vlc_object_t * ) );
-#define image_HandlerCreate( a ) image_HandlerCreate( VLC_OBJECT(a) )
+VLC_EXPORT( image_handler_t *, __image_HandlerCreate, ( vlc_object_t * ) );
+#define image_HandlerCreate( a ) __image_HandlerCreate( VLC_OBJECT(a) )
 VLC_EXPORT( void, image_HandlerDelete, ( image_handler_t * ) );
 
 #define image_Read( a, b, c, d ) a->pf_read( a, b, c, d )
@@ -69,10 +64,6 @@ VLC_EXPORT( void, image_HandlerDelete, ( image_handler_t * ) );
 #define image_WriteUrl( a, b, c, d, e ) a->pf_write_url( a, b, c, d, e )
 #define image_Convert( a, b, c, d ) a->pf_convert( a, b, c, d )
 #define image_Filter( a, b, c, d ) a->pf_filter( a, b, c, d )
-
-VLC_EXPORT( vlc_fourcc_t, image_Type2Fourcc, ( const char *psz_name ) );
-VLC_EXPORT( vlc_fourcc_t, image_Ext2Fourcc, ( const char *psz_name ) );
-VLC_EXPORT( vlc_fourcc_t, image_Mime2Fourcc, ( const char *psz_mime ) );
 
 # ifdef __cplusplus
 }

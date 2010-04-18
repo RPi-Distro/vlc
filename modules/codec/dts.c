@@ -1,8 +1,8 @@
 /*****************************************************************************
  * dts.c: parse DTS audio sync info and packetize the stream
  *****************************************************************************
- * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: a2325546e615528892799e5501ac789f0af8688d $
+ * Copyright (C) 2003-2005 the VideoLAN team
+ * $Id: 52be777650faf81b67db072a148980faf62a04d5 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -25,36 +25,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <vlc/vlc.h>
+#include <vlc/decoder.h>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-#include <assert.h>
+#include "vlc_block_helper.h"
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_codec.h>
-#include <vlc_aout.h>
-#include <vlc_block_helper.h>
-#include <vlc_bits.h>
-
-/*****************************************************************************
- * Module descriptor
- *****************************************************************************/
-static int  OpenDecoder   ( vlc_object_t * );
-static int  OpenPacketizer( vlc_object_t * );
-static void CloseCommon   ( vlc_object_t * );
-
-vlc_module_begin ()
-    set_description( N_("DTS parser") )
-    set_capability( "decoder", 100 )
-    set_callbacks( OpenDecoder, CloseCommon )
-
-    add_submodule ()
-    set_description( N_("DTS audio packetizer") )
-    set_capability( "packetizer", 10 )
-    set_callbacks( OpenPacketizer, CloseCommon )
-vlc_module_end ()
+#define DTS_HEADER_SIZE 14
 
 /*****************************************************************************
  * decoder_sys_t : decoder descriptor
@@ -62,7 +38,7 @@ vlc_module_end ()
 struct decoder_sys_t
 {
     /* Module mode */
-    bool b_packetizer;
+    vlc_bool_t b_packetizer;
 
     /*
      * Input properties
@@ -74,11 +50,10 @@ struct decoder_sys_t
     /*
      * Common properties
      */
-    date_t  end_date;
+    audio_date_t   end_date;
 
     mtime_t i_pts;
 
-    bool         b_dts_hd;  /* Is the current frame a DTS HD one */
     unsigned int i_bit_rate;
     unsigned int i_frame_size;
     unsigned int i_frame_length;
@@ -97,69 +72,68 @@ enum {
     STATE_SEND_DATA
 };
 
-#define DTS_HEADER_SIZE 14
-
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
-static int OpenCommon( vlc_object_t *, bool b_packetizer );
-static void *DecodeBlock( decoder_t *, block_t ** );
+static int  OpenDecoder   ( vlc_object_t * );
+static int  OpenPacketizer( vlc_object_t * );
+static void CloseDecoder  ( vlc_object_t * );
+static void *DecodeBlock  ( decoder_t *, block_t ** );
 
 static inline int SyncCode( const uint8_t * );
-static int  SyncInfo( const uint8_t *, bool *, unsigned int *, unsigned int *,
-                      unsigned int *, unsigned int *, unsigned int * );
+static int  SyncInfo      ( const uint8_t *, unsigned int *, unsigned int *,
+                            unsigned int *, unsigned int *, unsigned int * );
 
-static uint8_t       *GetOutBuffer ( decoder_t *, block_t ** );
+static uint8_t       *GetOutBuffer ( decoder_t *, void ** );
 static aout_buffer_t *GetAoutBuffer( decoder_t * );
 static block_t       *GetSoutBuffer( decoder_t * );
 
 /*****************************************************************************
- * OpenDecoder: probe the decoder
+ * Module descriptor
+ *****************************************************************************/
+vlc_module_begin();
+    set_description( _("DTS parser") );
+    set_capability( "decoder", 100 );
+    set_callbacks( OpenDecoder, CloseDecoder );
+
+    add_submodule();
+    set_description( _("DTS audio packetizer") );
+    set_capability( "packetizer", 10 );
+    set_callbacks( OpenPacketizer, CloseDecoder );
+vlc_module_end();
+
+/*****************************************************************************
+ * OpenDecoder: probe the decoder and return score
  *****************************************************************************/
 static int OpenDecoder( vlc_object_t *p_this )
-{
-    /* HACK: Don't use this codec if we don't have an dts audio filter */
-    if( !module_exists( "dtstofloat32" ) )
-        return VLC_EGENERIC;
-
-    return OpenCommon( p_this, false );
-}
-
-/*****************************************************************************
- * OpenPacketizer: probe the packetizer
- *****************************************************************************/
-static int OpenPacketizer( vlc_object_t *p_this )
-{
-    return OpenCommon( p_this, true );
-}
-
-/*****************************************************************************
- * OpenCommon:
- *****************************************************************************/
-static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_CODEC_DTS )
+    if( p_dec->fmt_in.i_codec != VLC_FOURCC('d','t','s',' ')
+         && p_dec->fmt_in.i_codec != VLC_FOURCC('d','t','s','b') )
+    {
         return VLC_EGENERIC;
+    }
 
     /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_dec->p_sys = p_sys = malloc(sizeof(*p_sys)) ) == NULL )
-        return VLC_ENOMEM;
+    if( ( p_dec->p_sys = p_sys =
+          (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
+    {
+        msg_Err( p_dec, "out of memory" );
+        return VLC_EGENERIC;
+    }
 
     /* Misc init */
-    p_sys->b_packetizer = b_packetizer;
+    p_sys->b_packetizer = VLC_FALSE;
     p_sys->i_state = STATE_NOSYNC;
-    date_Set( &p_sys->end_date, 0 );
-    p_sys->b_dts_hd = false;
-    p_sys->i_pts = VLC_TS_INVALID;
+    aout_DateSet( &p_sys->end_date, 0 );
 
-    p_sys->bytestream = block_BytestreamInit();
+    p_sys->bytestream = block_BytestreamInit( p_dec );
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
-    p_dec->fmt_out.i_codec = VLC_CODEC_DTS;
+    p_dec->fmt_out.i_codec = VLC_FOURCC('d','t','s',' ');
     p_dec->fmt_out.audio.i_rate = 0; /* So end_date gets initialized */
 
     /* Set callback */
@@ -171,36 +145,41 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
     return VLC_SUCCESS;
 }
 
+static int OpenPacketizer( vlc_object_t *p_this )
+{
+    decoder_t *p_dec = (decoder_t*)p_this;
+
+    int i_ret = OpenDecoder( p_this );
+
+    if( i_ret == VLC_SUCCESS ) p_dec->p_sys->b_packetizer = VLC_TRUE;
+
+    return i_ret;
+}
+
 /****************************************************************************
  * DecodeBlock: the whole thing
+ ****************************************************************************
+ * This function is called just after the thread is launched.
  ****************************************************************************/
 static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t p_header[DTS_HEADER_SIZE];
     uint8_t *p_buf;
-    block_t *p_out_buffer;
+    void *p_out_buffer;
 
-    if( !pp_block || !*pp_block )
-        return NULL;
+    if( !pp_block || !*pp_block ) return NULL;
 
-    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
-    {
-        if( (*pp_block)->i_flags&BLOCK_FLAG_CORRUPTED )
-        {
-            p_sys->i_state = STATE_NOSYNC;
-            block_BytestreamEmpty( &p_sys->bytestream );
-        }
-        date_Set( &p_sys->end_date, 0 );
-        block_Release( *pp_block );
-        return NULL;
-    }
-
-    if( !date_Get( &p_sys->end_date ) && (*pp_block)->i_pts <= VLC_TS_INVALID )
+    if( !aout_DateGet( &p_sys->end_date ) && !(*pp_block)->i_pts )
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( *pp_block );
         return NULL;
+    }
+
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    {
+        p_sys->i_state = STATE_NOSYNC;
     }
 
     block_BytestreamPush( &p_sys->bytestream, *pp_block );
@@ -232,10 +211,10 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         case STATE_SYNC:
             /* New frame, set the Presentation Time Stamp */
             p_sys->i_pts = p_sys->bytestream.p_block->i_pts;
-            if( p_sys->i_pts > VLC_TS_INVALID &&
-                p_sys->i_pts != date_Get( &p_sys->end_date ) )
+            if( p_sys->i_pts != 0 &&
+                p_sys->i_pts != aout_DateGet( &p_sys->end_date ) )
             {
-                date_Set( &p_sys->end_date, p_sys->i_pts );
+                aout_DateSet( &p_sys->end_date, p_sys->i_pts );
             }
             p_sys->i_state = STATE_HEADER;
 
@@ -250,7 +229,6 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             /* Check if frame is valid and get frame info */
             p_sys->i_frame_size = SyncInfo( p_header,
-                                            &p_sys->b_dts_hd,
                                             &p_sys->i_channels,
                                             &p_sys->i_channels_conf,
                                             &p_sys->i_rate,
@@ -278,14 +256,6 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 return NULL;
             }
 
-            if( p_sys->b_packetizer &&
-                p_header[0] == 0 && p_header[1] == 0 )
-            {
-                /* DTS wav files and audio CD's use stuffing */
-                p_sys->i_state = STATE_SEND_DATA;
-                break;
-            }
-
             if( SyncCode( p_header ) != VLC_SUCCESS )
             {
                 msg_Dbg( p_dec, "emulated sync word "
@@ -311,28 +281,19 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_SEND_DATA;
 
         case STATE_SEND_DATA:
-            if( p_sys->b_dts_hd  )
-            {
-                /* Ignore DTS-HD */
-                block_SkipBytes( &p_sys->bytestream, p_sys->i_frame_size );
-                p_sys->i_state = STATE_NOSYNC;
-                break;
-            }
-
             if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer )) )
             {
-                //p_dec->b_error = true;
+                //p_dec->b_error = VLC_TRUE;
                 return NULL;
             }
 
             /* Copy the whole frame into the buffer. When we reach this point
              * we already know we have enough data available. */
-            block_GetBytes( &p_sys->bytestream,
-                            p_buf, __MIN( p_sys->i_frame_size, p_out_buffer->i_buffer ) );
+            block_GetBytes( &p_sys->bytestream, p_buf, p_sys->i_frame_size );
 
             /* Make sure we don't reuse the same pts twice */
             if( p_sys->i_pts == p_sys->bytestream.p_block->i_pts )
-                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = VLC_TS_INVALID;
+                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = 0;
 
             p_sys->i_state = STATE_NOSYNC;
 
@@ -347,9 +308,9 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 }
 
 /*****************************************************************************
- * CloseCommon: clean up the decoder
+ * CloseDecoder: clean up the decoder
  *****************************************************************************/
-static void CloseCommon( vlc_object_t *p_this )
+static void CloseDecoder( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;
@@ -362,7 +323,7 @@ static void CloseCommon( vlc_object_t *p_this )
 /*****************************************************************************
  * GetOutBuffer:
  *****************************************************************************/
-static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
+static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p_buf;
@@ -372,8 +333,8 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
         msg_Info( p_dec, "DTS channels:%d samplerate:%d bitrate:%d",
                   p_sys->i_channels, p_sys->i_rate, p_sys->i_bit_rate );
 
-        date_Init( &p_sys->end_date, p_sys->i_rate, 1 );
-        date_Set( &p_sys->end_date, p_sys->i_pts );
+        aout_DateInit( &p_sys->end_date, p_sys->i_rate );
+        aout_DateSet( &p_sys->end_date, p_sys->i_pts );
     }
 
     p_dec->fmt_out.audio.i_rate     = p_sys->i_rate;
@@ -415,14 +376,14 @@ static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
 
     /* Hack for DTS S/PDIF filter which needs to send 3 frames at a time
      * (plus a few header bytes) */
-    p_buf = decoder_NewAudioBuffer( p_dec, p_sys->i_frame_length * 4 );
+    p_buf = p_dec->pf_aout_buffer_new( p_dec, p_sys->i_frame_length * 4 );
     if( p_buf == NULL ) return NULL;
     p_buf->i_nb_samples = p_sys->i_frame_length;
-    p_buf->i_buffer = p_sys->i_frame_size;
+    p_buf->i_nb_bytes = p_sys->i_frame_size;
 
-    p_buf->i_pts = date_Get( &p_sys->end_date );
-    p_buf->i_length = date_Increment( &p_sys->end_date, p_sys->i_frame_length )
-                      - p_buf->i_pts;
+    p_buf->start_date = aout_DateGet( &p_sys->end_date );
+    p_buf->end_date =
+        aout_DateIncrement( &p_sys->end_date, p_sys->i_frame_length );
 
     return p_buf;
 }
@@ -438,9 +399,9 @@ static block_t *GetSoutBuffer( decoder_t *p_dec )
     p_block = block_New( p_dec, p_sys->i_frame_size );
     if( p_block == NULL ) return NULL;
 
-    p_block->i_pts = p_block->i_dts = date_Get( &p_sys->end_date );
+    p_block->i_pts = p_block->i_dts = aout_DateGet( &p_sys->end_date );
 
-    p_block->i_length = date_Increment( &p_sys->end_date,
+    p_block->i_length = aout_DateIncrement( &p_sys->end_date,
         p_sys->i_frame_length ) - p_block->i_pts;
 
     return p_block;
@@ -573,18 +534,10 @@ static inline int SyncCode( const uint8_t *p_buf )
     {
         return VLC_SUCCESS;
     }
-    /* DTS-HD */
-    else if( p_buf[0] == 0x64 && p_buf[1] ==  0x58 &&
-             p_buf[2] == 0x20 && p_buf[3] ==  0x25 )
-    {
-        return VLC_SUCCESS;
-    }
-
-    return VLC_EGENERIC;
+    else return VLC_EGENERIC;
 }
 
 static int SyncInfo( const uint8_t *p_buf,
-                     bool *pb_dts_hd,
                      unsigned int *pi_channels,
                      unsigned int *pi_channels_conf,
                      unsigned int *pi_sample_rate,
@@ -632,55 +585,16 @@ static int SyncInfo( const uint8_t *p_buf,
         i_frame_size = SyncInfo16be( p_buf, &i_audio_mode, pi_sample_rate,
                                      pi_bit_rate, pi_frame_length );
     }
-    /* DTS-HD */
-    else
-    {
-        assert( p_buf[0] == 0x64 && p_buf[1] ==  0x58 &&
-                p_buf[2] == 0x20 && p_buf[3] ==  0x25 );
-
-        int i_dts_hd_size;
-        bs_t s;
-        bs_init( &s, &p_buf[4], DTS_HEADER_SIZE - 4 );
-
-        bs_skip( &s, 8 + 2 );
-
-        if( bs_read1( &s ) )
-        {
-            bs_skip( &s, 12 );
-            i_dts_hd_size = bs_read( &s, 20 ) + 1;
-        }
-        else
-        {
-            bs_skip( &s, 8 );
-            i_dts_hd_size = bs_read( &s, 16 ) + 1;
-        }
-        //uint16_t s0 = bs_read( &s, 16 );
-        //uint16_t s1 = bs_read( &s, 16 );
-        //fprintf( stderr, "DTS HD=%d : %x %x\n", i_dts_hd_size, s0, s1 );
-
-        *pb_dts_hd = true;
-        /* As we ignore the stream, do not modify those variables:
-        *pi_channels = ;
-        *pi_channels_conf = ;
-        *pi_sample_rate = ;
-        *pi_bit_rate = ;
-        *pi_frame_length = ;
-        */
-        return i_dts_hd_size;
-    }
-
-    *pb_dts_hd = false;
+    else return 0;
 
     switch( i_audio_mode & 0xFFFF )
     {
         case 0x0:
             /* Mono */
-            *pi_channels = 1;
             *pi_channels_conf = AOUT_CHAN_CENTER;
             break;
         case 0x1:
             /* Dual-mono = stereo + dual-mono */
-            *pi_channels = 2;
             *pi_channels_conf = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT |
                            AOUT_CHAN_DUALMONO;
             break;

@@ -2,7 +2,7 @@
  * bezier.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ea4d8c370cff5141bde67ec53f27ce15f5935da4 $
+ * $Id: 12c870448b113639d7b0d96ded696ef9bbdbd7c6 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,11 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
+#include <vlc/vlc.h>
 #include "bezier.hpp"
 #include <math.h>
 
@@ -35,12 +31,12 @@
 #   ifdef HAVE_LRINT
 #       define lrintf( x ) (int)rint( x )
 #   elif defined WIN32
-        __inline long int lrintf( float x )
-        {
+	    __inline long int lrintf( float x )
+	    {
             int i;
             _asm fld x __asm fistp i
-            return i;
-        }
+		    return i;
+    	}
 #   endif
 #endif
 
@@ -194,23 +190,6 @@ int Bezier::findNearestPoint( int x, int y ) const
 }
 
 
-inline float Bezier::power( float x, int n )
-{
-#if 0
-    return n <= 0 ? 1 : x * power( x, n - 1 );
-#else
-    return powf( x, n );
-#endif
-}
-
-
-inline float Bezier::computeCoeff( int i, int n, float t ) const
-{
-    return (power( t, i ) * power( 1 - t, (n - i) ) *
-        (m_ft[n] / m_ft[i] / m_ft[n - i]));
-}
-
-
 void Bezier::computePoint( float t, int &x, int &y ) const
 {
     // See http://astronomy.swin.edu.au/~pbourke/curves/bezier/ for a simple
@@ -229,3 +208,18 @@ void Bezier::computePoint( float t, int &x, int &y ) const
     y = lrintf(yPos);
 }
 
+
+inline float Bezier::computeCoeff( int i, int n, float t ) const
+{
+    return (power( t, i ) * power( 1 - t, (n - i) ) *
+        (m_ft[n] / m_ft[i] / m_ft[n - i]));
+}
+
+
+inline float Bezier::power( float x, int n ) const
+{
+    if( n > 0 )
+        return x * power( x, n - 1);
+    else
+        return 1;
+}

@@ -2,7 +2,7 @@
  * mms.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: f924209d507ac89a04d4bf84570c00edb7d4f1ca $
+ * $Id: bf842072474e9e733d468a0a17d2cf4b626ddf77 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,39 +21,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _MMSTU_H_
-#define _MMSTU_H_ 1
-
 #define MMS_PACKET_ANY          0
 #define MMS_PACKET_CMD          1
 #define MMS_PACKET_HEADER       2
 #define MMS_PACKET_MEDIA        3
 #define MMS_PACKET_UDP_TIMING   4
 
+
 #define MMS_CMD_HEADERSIZE  48
 
 #define MMS_BUFFER_SIZE 100000
-
 struct access_sys_t
 {
-    int         i_proto;        /* MMS_PROTO_TCP, MMS_PROTO_UDP */
-    int         i_handle_tcp;   /* TCP socket for communication with server */
-    int         i_handle_udp;   /* Optional UDP socket for data(media/header packet) */
-                                /* send by server */
-    char        sz_bind_addr[NI_MAXNUMERICHOST]; /* used by udp */
+    int                 i_proto;        /* MMS_PROTO_TCP, MMS_PROTO_UDP */
+    int                 i_handle_tcp;   /* TCP socket for communication with server */
+    int                 i_handle_udp;   /* Optional UDP socket for data(media/header packet) */
+                                        /* send by server */
+    char                sz_bind_addr[NI_MAXNUMERICHOST]; /* used by udp */
 
-    vlc_url_t   url;
+    vlc_url_t           url;
 
-    asf_header_t    asfh;
+    asf_header_t        asfh;
 
     unsigned    i_timeout;
 
     /* */
-    uint8_t     buffer_tcp[MMS_BUFFER_SIZE];
-    int         i_buffer_tcp;
+    uint8_t             buffer_tcp[MMS_BUFFER_SIZE];
+    int                 i_buffer_tcp;
 
-    uint8_t     buffer_udp[MMS_BUFFER_SIZE];
-    int         i_buffer_udp;
+    uint8_t             buffer_udp[MMS_BUFFER_SIZE];
+    int                 i_buffer_udp;
 
     /* data necessary to send data to server */
     guid_t      guid;
@@ -65,10 +62,10 @@ struct access_sys_t
     int         i_packet_seq_num;
 
     uint8_t     *p_cmd;     /* latest command read */
-    size_t      i_cmd;      /* allocated at the begining */
+    int         i_cmd;      /* allocated at the begining */
 
     uint8_t     *p_header;  /* allocated by mms_ReadPacket */
-    size_t      i_header;
+    int         i_header;
 
     uint8_t     *p_media;   /* allocated by mms_ReadPacket */
     size_t      i_media;
@@ -89,14 +86,9 @@ struct access_sys_t
     size_t      i_packet_length;
     uint32_t    i_packet_count;
     int         i_max_bit_rate;
-    size_t      i_header_size;
+    int         i_header_size;
 
-    /* misc */
-    bool  b_seekable;
-
-    vlc_mutex_t  lock_netwrite;
-    bool         b_keep_alive;
-    vlc_thread_t keep_alive;
+    /* */
+    vlc_bool_t  b_seekable;
 };
 
-#endif

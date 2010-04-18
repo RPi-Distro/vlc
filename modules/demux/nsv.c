@@ -1,8 +1,8 @@
 /*****************************************************************************
  * nsv.c: NullSoft Video demuxer.
  *****************************************************************************
- * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: d81251d23f74e334869f35edfb9434b9393b995d $
+ * Copyright (C) 2004 the VideoLAN team
+ * $Id: c2544b41f93f50efded241c53a8e30f8c9e6ce69 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,14 +24,10 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>                                      /* malloc(), free() */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_demux.h>
+#include <vlc/vlc.h>
+#include <vlc/input.h>
 
 /* TODO:
  *  - implement NSVf parsing (to get meta data)
@@ -45,14 +41,14 @@
 static int  Open    ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
-vlc_module_begin ()
-    set_description( N_("NullSoft demuxer" ) )
-    set_capability( "demux", 10 )
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_DEMUX )
-    set_callbacks( Open, Close )
-    add_shortcut( "nsv" )
-vlc_module_end ()
+vlc_module_begin();
+    set_description( _("NullSoft demuxer" ) );
+    set_capability( "demux2", 10 );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_DEMUX );
+    set_callbacks( Open, Close );
+    add_shortcut( "nsv" );
+vlc_module_end();
 
 /*****************************************************************************
  * Local prototypes
@@ -72,8 +68,6 @@ struct demux_sys_t
     int64_t     i_pcr;
     int64_t     i_time;
     int64_t     i_pcr_inc;
-
-    bool b_start_record;
 };
 
 static int Demux  ( demux_t *p_demux );
@@ -92,16 +86,19 @@ static int Open( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
 
-    const uint8_t *p_peek;
+    uint8_t     *p_peek;
 
     if( stream_Peek( p_demux->s, &p_peek, 8 ) < 8 )
         return VLC_EGENERIC;
 
-    if( memcmp( p_peek, "NSVf", 4 ) && memcmp( p_peek, "NSVs", 4 ) )
+    if( strncmp( (char *)p_peek, "NSVf", 4 )
+            && strncmp( (char *)p_peek, "NSVs", 4 ))
     {
        /* In case we had force this demuxer we try to resynch */
-        if( !p_demux->b_force || ReSynch( p_demux ) )
+        if( strcmp( p_demux->psz_demux, "nsv" ) || ReSynch( p_demux ) )
+        {
             return VLC_EGENERIC;
+        }
     }
 
     /* Fill p_demux field */
@@ -118,11 +115,9 @@ static int Open( vlc_object_t *p_this )
     es_format_Init( &p_sys->fmt_sub, SPU_ES, 0 );
     p_sys->p_sub = NULL;
 
-    p_sys->i_pcr   = 0;
+    p_sys->i_pcr   = 1;
     p_sys->i_time  = 0;
     p_sys->i_pcr_inc = 0;
-
-    p_sys->b_start_record = false;
 
     return VLC_SUCCESS;
 }
@@ -147,7 +142,7 @@ static int Demux( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
 
     uint8_t     header[5];
-    const uint8_t *p_peek;
+    uint8_t     *p_peek;
 
     int         i_size;
     block_t     *p_frame;
@@ -160,22 +155,19 @@ static int Demux( demux_t *p_demux )
             return 0;
         }
 
-        if( !memcmp( p_peek, "NSVf", 4 ) )
+        if( !strncmp( (char *)p_peek, "NSVf", 4 ) )
         {
             if( ReadNSVf( p_demux ) )
-                return -1;
-        }
-        else if( !memcmp( p_peek, "NSVs", 4 ) )
-        {
-            if( p_sys->b_start_record )
             {
-                /* Enable recording once synchronized */
-                stream_Control( p_demux->s, STREAM_SET_RECORD_STATE, true, "nsv" );
-                p_sys->b_start_record = false;
-            }
-
-            if( ReadNSVs( p_demux ) )
                 return -1;
+            }
+        }
+        else if( !strncmp( (char *)p_peek, "NSVs", 4 ) )
+        {
+            if( ReadNSVs( p_demux ) )
+            {
+                return -1;
+            }
             break;
         }
         else if( GetWLE( p_peek ) == 0xbeef )
@@ -190,9 +182,11 @@ static int Demux( demux_t *p_demux )
         }
         else
         {
-            msg_Err( p_demux, "invalid signature 0x%x (%4.4s)", GetDWLE( p_peek ), (const char*)p_peek );
+            msg_Err( p_demux, "invalid signature 0x%x (%4.4s)", *(uint32_t*)p_peek, (char*)p_peek );
             if( ReSynch( p_demux ) )
+            {
                 return -1;
+            }
         }
     }
 
@@ -203,7 +197,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Set PCR */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_pcr );
+    es_out_Control( p_demux->out, ES_OUT_SET_PCR, (int64_t)p_sys->i_pcr );
 
     /* Read video */
     i_size = ( header[0] >> 4 ) | ( header[1] << 4 ) | ( header[2] << 12 );
@@ -251,8 +245,8 @@ static int Demux( demux_t *p_demux )
                     }
 
                     /* Skip the first part (it is the language name) */
-                    p_frame->i_pts = VLC_TS_0 + p_sys->i_pcr;
-                    p_frame->i_dts = VLC_TS_0 + p_sys->i_pcr + 4000000;    /* 4s */
+                    p_frame->i_pts = p_sys->i_pcr;
+                    p_frame->i_dts = p_sys->i_pcr + 4000000;    /* 4s */
 
                     es_out_Send( p_demux->out, p_sys->p_sub, p_frame );
                 }
@@ -272,7 +266,7 @@ static int Demux( demux_t *p_demux )
         /* msg_Dbg( p_demux, "frame video size=%d", i_size ); */
         if( i_size > 0 && ( p_frame = stream_Block( p_demux->s, i_size ) ) )
         {
-            p_frame->i_dts = VLC_TS_0 + p_sys->i_pcr;
+            p_frame->i_dts = p_sys->i_pcr;
             es_out_Send( p_demux->out, p_sys->p_video, p_frame );
         }
     }
@@ -300,7 +294,7 @@ static int Demux( demux_t *p_demux )
         if( ( p_frame = stream_Block( p_demux->s, i_size ) ) )
         {
             p_frame->i_dts =
-            p_frame->i_pts = VLC_TS_0 + p_sys->i_pcr;
+            p_frame->i_pts = p_sys->i_pcr;
             es_out_Send( p_demux->out, p_sys->p_audio, p_frame );
         }
     }
@@ -321,7 +315,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     double f, *pf;
-    bool b_bool, *pb_bool;
     int64_t i64, *pi64;
 
     switch( i_query )
@@ -331,8 +324,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             i64 = stream_Size( p_demux->s );
             if( i64 > 0 )
             {
-                double current = stream_Tell( p_demux->s );
-                *pf = current / (double)i64;
+                *pf = (double)stream_Tell( p_demux->s ) / (double)i64;
             }
             else
             {
@@ -344,9 +336,11 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             f = (double) va_arg( args, double );
             i64 = stream_Size( p_demux->s );
 
+            es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
             if( stream_Seek( p_demux->s, (int64_t)(i64 * f) ) || ReSynch( p_demux ) )
+            {
                 return VLC_EGENERIC;
-
+            }
             p_sys->i_time = -1; /* Invalidate time display */
             return VLC_SUCCESS;
 
@@ -377,20 +371,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             *pf = (double)1000000.0 / (double)p_sys->i_pcr_inc;
             return VLC_SUCCESS;
 
-        case DEMUX_CAN_RECORD:
-            pb_bool = (bool*)va_arg( args, bool * );
-            *pb_bool = true;
-            return VLC_SUCCESS;
-
-        case DEMUX_SET_RECORD_STATE:
-            b_bool = (bool)va_arg( args, int );
-
-            if( !b_bool )
-                stream_Control( p_demux->s, STREAM_SET_RECORD_STATE, false );
-            p_sys->b_start_record = b_bool;
-            return VLC_SUCCESS;
-
-
         case DEMUX_SET_TIME:
         default:
             return VLC_EGENERIC;
@@ -402,11 +382,11 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
  *****************************************************************************/
 static int ReSynch( demux_t *p_demux )
 {
-    const uint8_t *p_peek;
+    uint8_t  *p_peek;
     int      i_skip;
     int      i_peek;
 
-    while( vlc_object_alive (p_demux) )
+    while( !p_demux->b_die )
     {
         if( ( i_peek = stream_Peek( p_demux->s, &p_peek, 1024 ) ) < 8 )
         {
@@ -416,8 +396,8 @@ static int ReSynch( demux_t *p_demux )
 
         while( i_skip < i_peek - 4 )
         {
-            if( !memcmp( p_peek, "NSVf", 4 )
-             || !memcmp( p_peek, "NSVs", 4 ) )
+            if( !strncmp( (char *)p_peek, "NSVf", 4 )
+                    || !strncmp( (char *)p_peek, "NSVs", 4 ) )
             {
                 if( i_skip > 0 )
                 {
@@ -440,7 +420,7 @@ static int ReSynch( demux_t *p_demux )
 static int ReadNSVf( demux_t *p_demux )
 {
     /* demux_sys_t *p_sys = p_demux->p_sys; */
-    const uint8_t     *p;
+    uint8_t     *p;
     int         i_size;
 
     msg_Dbg( p_demux, "new NSVf chunk" );
@@ -455,7 +435,7 @@ static int ReadNSVf( demux_t *p_demux )
     return stream_Read( p_demux->s, NULL, i_size ) == i_size ? VLC_SUCCESS : VLC_EGENERIC;
 }
 /*****************************************************************************
- * ReadNSVs:
+ * ReadNSVf:
  *****************************************************************************/
 static int ReadNSVs( demux_t *p_demux )
 {
@@ -473,22 +453,12 @@ static int ReadNSVs( demux_t *p_demux )
     switch( ( fcc = VLC_FOURCC( header[4], header[5], header[6], header[7] ) ) )
     {
         case VLC_FOURCC( 'V', 'P', '3', ' ' ):
-        case VLC_FOURCC( 'V', 'P', '3', '0' ):
-            fcc = VLC_FOURCC( 'V', 'P', '3', '0' );
-            break;
-
         case VLC_FOURCC( 'V', 'P', '3', '1' ):
             fcc = VLC_FOURCC( 'V', 'P', '3', '1' );
-            break;
-
-        case VLC_FOURCC( 'V', 'P', '5', ' ' ):
-        case VLC_FOURCC( 'V', 'P', '5', '0' ):
-            fcc = VLC_FOURCC( 'V', 'P', '5', '0' );
             break;
         case VLC_FOURCC( 'V', 'P', '6', '0' ):
         case VLC_FOURCC( 'V', 'P', '6', '1' ):
         case VLC_FOURCC( 'V', 'P', '6', '2' ):
-        case VLC_FOURCC( 'H', '2', '6', '4' ):
         case VLC_FOURCC( 'N', 'O', 'N', 'E' ):
             break;
         default:
@@ -524,9 +494,6 @@ static int ReadNSVs( demux_t *p_demux )
         case VLC_FOURCC( 'A', 'A', 'C', ' ' ):
         case VLC_FOURCC( 'A', 'A', 'C', 'P' ):
             fcc = VLC_FOURCC( 'm', 'p', '4', 'a' );
-            break;
-        case VLC_FOURCC( 'S', 'P', 'X', ' ' ):
-            fcc = VLC_FOURCC( 's', 'p', 'x', ' ' );
             break;
         case VLC_FOURCC( 'N', 'O', 'N', 'E' ):
             break;

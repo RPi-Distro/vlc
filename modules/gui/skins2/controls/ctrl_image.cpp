@@ -2,7 +2,7 @@
  * ctrl_image.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 66ad5928a6ff76b4358a7c07a3f9a19e204a7032 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,16 +37,17 @@ CtrlImage::CtrlImage( intf_thread_t *pIntf, const GenericBitmap &rBitmap,
     CtrlFlat( pIntf, rHelp, pVisible ), m_rBitmap( rBitmap ),
     m_rCommand( rCommand ), m_resizeMethod( resizeMethod )
 {
+    OSFactory *pOsFactory = OSFactory::instance( pIntf );
     // Create an initial unscaled image in the buffer
-    m_pImage = OSFactory::instance( pIntf )->createOSGraphics(
-                                    rBitmap.getWidth(), rBitmap.getHeight() );
+    m_pImage = pOsFactory->createOSGraphics( rBitmap.getWidth(),
+                                             rBitmap.getHeight() );
     m_pImage->drawBitmap( m_rBitmap );
 }
 
 
 CtrlImage::~CtrlImage()
 {
-    delete m_pImage;
+    SKINS_DELETE( m_pImage );
 }
 
 
@@ -55,14 +56,13 @@ void CtrlImage::handleEvent( EvtGeneric &rEvent )
     // No FSM for this simple transition
     if( rEvent.getAsString() == "mouse:right:up:none" )
     {
-        CmdDlgShowPopupMenu( getIntf() ).execute();
+        CmdDlgShowPopupMenu cmd( getIntf() );
+        cmd.execute();
     }
     else if( rEvent.getAsString() == "mouse:left:up:none" )
     {
-        CmdDlgHidePopupMenu( getIntf() ).execute();
-        CmdDlgHideVideoPopupMenu( getIntf() ).execute();
-        CmdDlgHideAudioPopupMenu( getIntf() ).execute();
-        CmdDlgHideMiscPopupMenu( getIntf() ).execute();
+        CmdDlgHidePopupMenu cmd( getIntf() );
+        cmd.execute();
     }
     else if( rEvent.getAsString() == "mouse:left:dblclick:none" )
     {
@@ -79,10 +79,13 @@ bool CtrlImage::mouseOver( int x, int y ) const
     {
         // In mosaic mode, convert the coordinates to make them fit to the
         // size of the original image
-        x %= m_pImage->getWidth();
-        y %= m_pImage->getHeight();
+        return m_pImage->hit( x % m_pImage->getWidth(),
+                              y % m_pImage->getHeight() );
     }
-    return m_pImage->hit( x, y );
+    else
+    {
+        return m_pImage->hit( x, y );
+    }
 }
 
 
@@ -105,7 +108,7 @@ void CtrlImage::draw( OSGraphics &rImage, int xDest, int yDest )
                     OSFactory *pOsFactory = OSFactory::instance( getIntf() );
                     // Rescale the image with the actual size of the control
                     ScaledBitmap bmp( getIntf(), m_rBitmap, width, height );
-                    delete m_pImage;
+                    SKINS_DELETE( m_pImage );
                     m_pImage = pOsFactory->createOSGraphics( width, height );
                     m_pImage->drawBitmap( bmp, 0, 0 );
                 }

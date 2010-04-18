@@ -1,19 +1,18 @@
 /*****************************************************************************
- * open.h: Open dialogues for VLC's MacOS X port
+ * open.h: MacOS X module for vlc
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: c7f4ddcd8d410c4887a433edc692d63daa7253aa $
+ * Copyright (C) 2002-2005 the VideoLAN team
+ * $Id: 09794603f1ae9ae898b2e034fea0581de44d9854 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Derk-Jan Hartman <thedj@users.sourceforge.net>
- *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -37,26 +36,15 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
 
     IBOutlet id o_mrl;
     IBOutlet id o_mrl_lbl;
-    IBOutlet id o_mrl_view;
-    IBOutlet id o_mrl_btn;
     IBOutlet id o_tabview;
 
     IBOutlet id o_btn_ok;
     IBOutlet id o_btn_cancel;
 
-    /* bottom-line items */
-    IBOutlet id o_output_ckbox;
-    IBOutlet id o_sout_options;
-
-    /* open file */
     IBOutlet id o_file_path;
     IBOutlet id o_file_btn_browse;
     IBOutlet id o_file_stream;
-    IBOutlet id o_file_slave_ckbox;
-    IBOutlet id o_file_slave_select_btn;
-    IBOutlet id o_file_slave_filename_txt;
 
-    /* open disc */
     IBOutlet id o_disc_type;
     IBOutlet id o_disc_device;
     IBOutlet id o_disc_device_lbl;
@@ -70,22 +58,7 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
     IBOutlet id o_disc_videots_btn_browse;
     IBOutlet id o_disc_dvd_menus;
 
-    /* open network */
-    IBOutlet id o_net_http_url;
-    IBOutlet id o_net_http_url_lbl;
-    IBOutlet id o_net_help_lbl;
-
-    /* open UDP stuff panel */
-    IBOutlet id o_net_help_udp_lbl;
-    IBOutlet id o_net_udp_protocol_mat;
-    IBOutlet id o_net_udp_protocol_lbl;
-    IBOutlet id o_net_udp_address_lbl;
-    IBOutlet id o_net_udp_mode_lbl;
     IBOutlet id o_net_mode;
-    IBOutlet id o_net_openUDP_btn;
-    IBOutlet id o_net_udp_cancel_btn;
-    IBOutlet id o_net_udp_ok_btn;
-    IBOutlet id o_net_udp_panel;
     IBOutlet id o_net_udp_port;
     IBOutlet id o_net_udp_port_lbl;
     IBOutlet id o_net_udp_port_stp;
@@ -94,8 +67,10 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
     IBOutlet id o_net_udpm_port;
     IBOutlet id o_net_udpm_port_lbl;
     IBOutlet id o_net_udpm_port_stp;
+    IBOutlet id o_net_http_url;
+    IBOutlet id o_net_http_url_lbl;
+    IBOutlet id o_net_timeshift_ckbox;
 
-    /* open subtitle file */
     IBOutlet id o_file_sub_ckbox;
     IBOutlet id o_file_sub_btn_settings;
     IBOutlet id o_file_sub_sheet;
@@ -118,51 +93,8 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
     IBOutlet id o_file_sub_font_box;
     IBOutlet id o_file_sub_file_box;
 
-    /* generic capturing stuff */
-    IBOutlet id o_capture_lbl;
-    IBOutlet id o_capture_long_lbl;
-    IBOutlet id o_capture_mode_pop;
-    IBOutlet id o_capture_label_view;
-
-    /* eyetv support */
-    IBOutlet id o_eyetv_notLaunched_view;
-    IBOutlet id o_eyetv_running_view;
-    IBOutlet id o_eyetv_channels_pop;
-    IBOutlet id o_eyetv_currentChannel_lbl;
-    IBOutlet id o_eyetv_chn_status_txt;
-    IBOutlet id o_eyetv_chn_bgbar;
-    IBOutlet id o_eyetv_launchEyeTV_btn;
-    IBOutlet id o_eyetv_getPlugin_btn;
-    IBOutlet id o_eyetv_nextProgram_btn;
-    IBOutlet id o_eyetv_noInstance_lbl;
-    IBOutlet id o_eyetv_noInstanceLong_lbl;
-    IBOutlet id o_eyetv_previousProgram_btn;
-
-    /* screen support */
-    IBOutlet id o_screen_view;
-    IBOutlet id o_screen_lbl;
-    IBOutlet id o_screen_long_lbl;
-    IBOutlet id o_screen_fps_fld;
-    IBOutlet id o_screen_fps_lbl;
-    IBOutlet id o_screen_fps_stp;
-    IBOutlet id o_screen_left_fld;
-    IBOutlet id o_screen_left_lbl;
-    IBOutlet id o_screen_left_stp;
-    IBOutlet id o_screen_top_fld;
-    IBOutlet id o_screen_top_lbl;
-    IBOutlet id o_screen_top_stp;
-    IBOutlet id o_screen_width_fld;
-    IBOutlet id o_screen_width_lbl;
-    IBOutlet id o_screen_width_stp;
-    IBOutlet id o_screen_height_fld;
-    IBOutlet id o_screen_height_lbl;
-    IBOutlet id o_screen_height_stp;
-    IBOutlet id o_screen_follow_mouse_ckb;
-
-    BOOL b_autoplay;
-    id o_currentCaptureView;
-    NSString *o_file_slave_path;
-    intf_thread_t * p_intf;
+    IBOutlet id o_output_ckbox;
+    IBOutlet id o_sout_options;
 }
 
 + (VLCOpen *)sharedInstance;
@@ -170,14 +102,11 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
 - (void)setSubPanel;
 - (void)openTarget:(int)i_type;
 - (void)tabView:(NSTabView *)o_tv didSelectTabViewItem:(NSTabViewItem *)o_tvi;
-- (void)textFieldWasClicked:(NSNotification *)o_notification;
-- (IBAction)expandMRLfieldAction:(id)sender;
-- (IBAction)inputSlaveAction:(id)sender;
 
 - (void)openFileGeneric;
 - (void)openFilePathChanged:(NSNotification *)o_notification;
 - (IBAction)openFileBrowse:(id)sender;
-- (void)pathChosenInPanel: (NSOpenPanel *)sheet withReturn:(int)returnCode contextInfo:(void *)contextInfo;
+- (void) pathChosenInPanel: (NSOpenPanel *) sheet withReturn:(int)returnCode contextInfo:(void  *)contextInfo;
 - (IBAction)openFileStreamChanged:(id)sender;
 
 - (void)openDisc;
@@ -191,18 +120,6 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
 - (IBAction)openNetModeChanged:(id)sender;
 - (IBAction)openNetStepperChanged:(id)sender;
 - (void)openNetInfoChanged:(NSNotification *)o_notification;
-- (IBAction)openNetUDPButtonAction:(id)sender;
-
-- (void)openCapture;
-- (void)showCaptureView: theView;
-- (IBAction)openCaptureModeChanged:(id)sender;
-- (IBAction)eyetvSwitchChannel:(id)sender;
-- (IBAction)eyetvLaunch:(id)sender;
-- (IBAction)eyetvGetPlugin:(id)sender;
-- (void)eyetvChanged:(NSNotification *)o_notification;
-- (void)setupChannelInfo;
-- (IBAction)screenStepperChanged:(id)sender;
-- (void)screenFPSfieldChanged:(NSNotification *)o_notification;
 
 - (IBAction)subsChanged:(id)sender;
 - (IBAction)subSettings:(id)sender;
@@ -216,10 +133,4 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
 - (IBAction)panelOk:(id)sender;
 
 - (void)openFile;
-@end
-
-@interface VLCOpenTextField : NSTextField
-{
-}
-- (void)mouseDown:(NSEvent *)theEvent;
 @end

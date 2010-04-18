@@ -2,7 +2,7 @@
  * file_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bcefa7bae8553e0b26b3dcd9105f262e4e0256aa $
+ * $Id: b41a79650fc8e90754fc31ad4e1e8f931a11c684 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,24 +22,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_image.h>
+#include <vlc/vlc.h>
+#include "vlc_image.h"
 #include "file_bitmap.hpp"
 
 FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
                         string fileName, uint32_t aColor, int nbFrames,
-                        int fps, int nbLoops ):
-    GenericBitmap( pIntf, nbFrames, fps, nbLoops ), m_width( 0 ), m_height( 0 ),
+                        int fps ):
+    GenericBitmap( pIntf, nbFrames, fps ), m_width( 0 ), m_height( 0 ),
     m_pData( NULL )
 {
     video_format_t fmt_in = {0}, fmt_out = {0};
     picture_t *pPic;
 
-    fmt_out.i_chroma = VLC_CODEC_RGBA;
+    fmt_out.i_chroma = VLC_FOURCC('R','V','3','2');
 
     pPic = image_ReadUrl( pImageHandler, fileName.c_str(), &fmt_in, &fmt_out );
     if( !pPic ) return;
@@ -55,14 +51,13 @@ FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
     {
         for( int x = 0; x < m_width; x++ )
         {
-            uint32_t r = *pSrc++;
-            uint32_t g = *pSrc++;
-            uint32_t b = *pSrc++;
-            uint8_t  a = *pSrc++;
-
-            *(pData++) = b * a / 255;
-            *(pData++) = g * a / 255;
-            *(pData++) = r * a / 255;
+            uint32_t b = *(pSrc++);
+            uint32_t g = *(pSrc++);
+            uint32_t r = *(pSrc++);
+            uint8_t a = *(pSrc++);
+            *(pData++) = (b * a) >> 8;
+            *(pData++) = (g * a) >> 8;
+            *(pData++) = (r * a) >> 8;
 
             // Transparent pixel ?
             if( aColor == (r<<16 | g<<8 | b) )
@@ -78,14 +73,15 @@ FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
         pSrc += pPic->p->i_pitch - m_width * 4;
     }
 
-    picture_Release( pPic );
+    if( pPic->pf_release )
+        pPic->pf_release( pPic );
     return;
 }
 
 
 FileBitmap::~FileBitmap()
 {
-    delete[] m_pData;
+    if( m_pData ) delete[] m_pData;
 }
 
 

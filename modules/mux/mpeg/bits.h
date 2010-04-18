@@ -2,7 +2,7 @@
  * bits.h
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 0a14e904ca20fbd37ed0de088549ee3f914b4dac $
+ * $Id: 2db836bd49b79a7a82d44860161bde3c836e6c9d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -11,7 +11,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -39,12 +39,12 @@ static inline int bits_initwrite( bits_buffer_t *p_buffer,
     p_buffer->i_data = 0;
     p_buffer->i_mask = 0x80;
     p_buffer->p_data = p_data;
+    p_buffer->p_data[0] = 0;
     if( !p_buffer->p_data )
     {
         if( !( p_buffer->p_data = malloc( i_size ) ) )
             return -1;
     }
-    p_buffer->p_data[0] = 0;
     return 0;
 }
 

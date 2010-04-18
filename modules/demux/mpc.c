@@ -2,7 +2,7 @@
  * mpc.c : MPC stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 649a93e72ef8b95c0911edec1c4eb1f72c5b1210 $
+ * $Id: ccedc8e4937fbfc4796e5dba6dd7fb925dd6d647 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr.com>
  *
@@ -24,22 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_demux.h>
-#include <vlc_input.h>
+#include <vlc/vlc.h>
+#include <vlc/input.h>
 #include <vlc_codec.h>
 #include <math.h>
 
-#ifdef HAVE_MPC_MPCDEC_H
-#include <mpc/mpcdec.h>
-#else
 #include <mpcdec/mpcdec.h>
-#endif
 
 /* TODO:
  *  - test stream version 4..6
@@ -53,18 +43,31 @@
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
+#define REPLAYGAIN_TYPE_TEXT N_("Replay Gain type" )
+#define REPLAYGAIN_TYPE_LONGTEXT N_( "Musepack can have a title-specific " \
+              "replay gain (volume control) or an album-specific one. "  \
+              "Choose which type you want to use" )
+
 static int  Open  ( vlc_object_t * );
 static void Close ( vlc_object_t * );
 
-vlc_module_begin ()
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_DEMUX )
-    set_description( N_("MusePack demuxer") )
-    set_capability( "demux", 145 )
+static int  pi_replaygain_type[] = { 0, 1, 2 };
+static char *ppsz_replaygain_type[] = { N_("None"), N_("Title"), N_("Album") };
 
-    set_callbacks( Open, Close )
-    add_shortcut( "mpc" )
-vlc_module_end ()
+vlc_module_begin();
+    set_shortname( "MPC" );
+    set_description( _("MusePack demuxer") );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_DEMUX );
+    set_capability( "demux2", 145 );
+
+    add_integer( "mpc-replaygain-type", 2, NULL,
+                REPLAYGAIN_TYPE_TEXT, REPLAYGAIN_TYPE_LONGTEXT, VLC_FALSE );
+        change_integer_list( pi_replaygain_type, ppsz_replaygain_type, 0 );
+
+    set_callbacks( Open, Close );
+    add_shortcut( "mpc" );
+vlc_module_end();
 
 /*****************************************************************************
  * Local prototypes
@@ -75,34 +78,23 @@ static int Control( demux_t *, int, va_list );
 struct demux_sys_t
 {
     /* */
-    es_out_id_t   *p_es;
+    es_out_id_t *p_es;
 
     /* */
-#ifndef HAVE_MPC_MPCDEC_H
     mpc_decoder    decoder;
-#else
-    mpc_demux     *decoder;
-#endif
     mpc_reader     reader;
     mpc_streaminfo info;
 
     /* */
+    vlc_meta_t     *p_meta;
     int64_t        i_position;
 };
 
-#ifndef HAVE_MPC_MPCDEC_H
-static mpc_int32_t ReaderRead( void *p_private, void *dst, mpc_int32_t i_size );
-static mpc_bool_t  ReaderSeek( void *p_private, mpc_int32_t i_offset );
-static mpc_int32_t ReaderTell( void *p_private);
-static mpc_int32_t ReaderGetSize( void *p_private );
-static mpc_bool_t  ReaderCanSeek( void *p_private );
-#else
-static mpc_int32_t ReaderRead( mpc_reader *p_private, void *dst, mpc_int32_t i_size );
-static mpc_bool_t  ReaderSeek( mpc_reader *p_private, mpc_int32_t i_offset );
-static mpc_int32_t ReaderTell( mpc_reader *p_private);
-static mpc_int32_t ReaderGetSize( mpc_reader *p_private );
-static mpc_bool_t  ReaderCanSeek( mpc_reader *p_private );
-#endif
+mpc_int32_t ReaderRead( void *p_private, void *dst, mpc_int32_t i_size );
+mpc_bool_t  ReaderSeek( void *p_private, mpc_int32_t i_offset );
+mpc_int32_t ReaderTell( void *p_private);
+mpc_int32_t ReaderGetSize( void *p_private );
+mpc_bool_t  ReaderCanSeek( void *p_private );
 
 /*****************************************************************************
  * Open: initializes ES structures
@@ -111,38 +103,41 @@ static int Open( vlc_object_t * p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
+    char        psz_info[4096];
     es_format_t fmt;
-    const uint8_t *p_peek;
+    uint8_t     *p_peek;
+    module_t    *p_id3;
 
     if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
         return VLC_EGENERIC;
 
-    if( memcmp( p_peek, "MP+", 3 )
-#ifdef HAVE_MPC_MPCDEC_H
-        /* SV8 format */
-        && memcmp( p_peek, "MPCK", 4 )
-#endif
-      )
+    if( memcmp( p_peek, "MP+", 3 ) )
     {
         /* for v4..6 we check extension file */
         const int i_version = (GetDWLE( p_peek ) >> 11)&0x3ff;
+
         if( i_version  < 4 || i_version > 6 )
             return VLC_EGENERIC;
 
-        if( !p_demux->b_force )
+        if( !p_demux->psz_demux || strcmp( p_demux->psz_demux, "mpc" ) )
         {
             /* Check file name extension */
-            if( !demux_IsPathExtension( p_demux, ".mpc" ) &&
-                !demux_IsPathExtension( p_demux, ".mp+" ) &&
-                !demux_IsPathExtension( p_demux, ".mpp" ) )
+            int i_len;
+            if( !p_demux->psz_path )
+                return VLC_EGENERIC;
+
+            i_len = strlen( p_demux->psz_path );
+            if( i_len < 4 ||
+                ( strcasecmp( &p_demux->psz_path[i_len-4], ".mpc" ) &&
+                  strcasecmp( &p_demux->psz_path[i_len-4], ".mp+" ) &&
+                  strcasecmp( &p_demux->psz_path[i_len-4], ".mpp" ) ) )
                 return VLC_EGENERIC;
         }
     }
 
     /* */
-    p_sys = calloc( 1, sizeof( *p_sys ) );
-    if( !p_sys )
-        return VLC_ENOMEM;
+    p_sys = malloc( sizeof( demux_sys_t ) );
+    memset( p_sys, 0, sizeof(demux_sys_t) );
 
     p_sys->i_position = 0;
 
@@ -153,23 +148,58 @@ static int Open( vlc_object_t * p_this )
     p_sys->reader.canseek = ReaderCanSeek;
     p_sys->reader.data = p_demux;
 
-#ifndef HAVE_MPC_MPCDEC_H
     /* Load info */
     mpc_streaminfo_init( &p_sys->info );
     if( mpc_streaminfo_read( &p_sys->info, &p_sys->reader ) != ERROR_CODE_OK )
-        goto error;
+    {
+        /* invalid file */
+        free( p_sys );
+        return VLC_EGENERIC;
+    }
 
     /* */
     mpc_decoder_setup( &p_sys->decoder, &p_sys->reader );
     if( !mpc_decoder_initialize( &p_sys->decoder, &p_sys->info ) )
-        goto error;
-#else
-    p_sys->decoder = mpc_demux_init( &p_sys->reader );
-    if( !p_sys->decoder )
-        goto error;
+    {
+        /* */
+        free( p_sys );
+        return VLC_EGENERIC;
+    }
 
-    mpc_demux_get_info( p_sys->decoder, &p_sys->info );
-#endif
+    /* Handle reaply gain */
+    if( p_sys->info.peak_title != 32767 )
+    {
+        int i_type = var_CreateGetInteger( p_demux, "mpc-replaygain-type" );
+        int gain;
+        int peak;
+
+        if( i_type == 2 )       // album
+        {
+            gain = p_sys->info.gain_album;
+            peak = p_sys->info.peak_album;
+        }
+        else if( i_type == 1 )  // title
+        {
+            gain = p_sys->info.gain_title;
+            peak = p_sys->info.peak_title;
+        }
+        else
+        {
+            gain = 0;
+            peak = 0;
+        }
+
+        if( gain )
+        {
+            double g = pow( 10, (double)gain / 2000.0 );
+            double gmax = (double)32767.0 / (peak+1);
+            if( g > gmax )
+                g = gmax;
+
+            msg_Dbg( p_demux, "Using reaply gain factor %f", g );
+            mpc_decoder_scale_output( &p_sys->decoder, g );
+        }
+    }
 
     /* Fill p_demux fields */
     p_demux->pf_demux = Demux;
@@ -178,12 +208,12 @@ static int Open( vlc_object_t * p_this )
 
     /* */
 #ifndef MPC_FIXED_POINT
-    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_FL32 );
+    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 'f', 'l', '3', '2' ) );
 #else
 #   ifdef WORDS_BIGENDIAN
-    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_S32B );
+    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 's', '3', '2', 'b' ) );
 #   else
-    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_S32L );
+    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 's', '3', '2', 'l' ) );
 #   endif
 #endif
     fmt.audio.i_channels = p_sys->info.channels;
@@ -192,30 +222,24 @@ static int Open( vlc_object_t * p_this )
     fmt.audio.i_bitspersample = 32;
     fmt.i_bitrate = fmt.i_bitrate * fmt.audio.i_channels *
                     fmt.audio.i_bitspersample;
-    if( p_sys->info.peak_title > 0 )
+    p_sys->p_es = es_out_Add( p_demux->out, &fmt );
+
+
+    /* Parse possible id3 header */
+    if( ( p_id3 = module_Need( p_demux, "id3", NULL, 0 ) ) )
     {
-        fmt.audio_replay_gain.pb_peak[AUDIO_REPLAY_GAIN_TRACK] = true;
-        fmt.audio_replay_gain.pf_peak[AUDIO_REPLAY_GAIN_TRACK] = (float)p_sys->info.peak_title / 32767.0;
-        fmt.audio_replay_gain.pb_gain[AUDIO_REPLAY_GAIN_TRACK] = true;
-        fmt.audio_replay_gain.pf_gain[AUDIO_REPLAY_GAIN_TRACK] = (float)p_sys->info.gain_title / 100.0;
-    }
-    if( p_sys->info.peak_album > 0 )
-    {
-        fmt.audio_replay_gain.pb_peak[AUDIO_REPLAY_GAIN_ALBUM] = true;
-        fmt.audio_replay_gain.pf_peak[AUDIO_REPLAY_GAIN_ALBUM] = (float)p_sys->info.peak_album / 32767.0;
-        fmt.audio_replay_gain.pb_gain[AUDIO_REPLAY_GAIN_ALBUM] = true;
-        fmt.audio_replay_gain.pf_gain[AUDIO_REPLAY_GAIN_ALBUM] = (float)p_sys->info.gain_album / 100.0;
+        p_sys->p_meta = (vlc_meta_t *)p_demux->p_private;
+        p_demux->p_private = NULL;
+        module_Unneed( p_demux, p_id3 );
     }
 
-    p_sys->p_es = es_out_Add( p_demux->out, &fmt );
-    if( !p_sys->p_es )
-        goto error;
+    if( !p_sys->p_meta )
+        p_sys->p_meta = vlc_meta_New();
+
+    sprintf( psz_info, "Musepack v%d", p_sys->info.stream_version );
+    vlc_meta_Add( p_sys->p_meta, VLC_META_CODEC_NAME, psz_info );
 
     return VLC_SUCCESS;
-
-error:
-    free( p_sys );
-    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -226,10 +250,6 @@ static void Close( vlc_object_t * p_this )
     demux_t        *p_demux = (demux_t*)p_this;
     demux_sys_t    *p_sys = p_demux->p_sys;
 
-#ifdef HAVE_MPC_MPCDEC_H
-    if( p_sys->decoder )
-    mpc_demux_exit( p_sys->decoder );
-#endif
     free( p_sys );
 }
 
@@ -243,45 +263,22 @@ static int Demux( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t     *p_data;
     int i_ret;
-#ifdef HAVE_MPC_MPCDEC_H
-    mpc_frame_info frame;
-    mpc_status err;
-#endif
+
     p_data = block_New( p_demux,
                         MPC_DECODER_BUFFER_LENGTH*sizeof(MPC_SAMPLE_FORMAT) );
-    if( !p_data )
-        return -1;
-
-#ifndef HAVE_MPC_MPCDEC_H
     i_ret = mpc_decoder_decode( &p_sys->decoder,
-                                (MPC_SAMPLE_FORMAT*)p_data->p_buffer,
-                                NULL, NULL );
+                               (MPC_SAMPLE_FORMAT*)p_data->p_buffer,
+                               NULL, NULL );
     if( i_ret <= 0 )
     {
         block_Release( p_data );
         return i_ret < 0 ? -1 : 0;
     }
-#else
-    frame.buffer = (MPC_SAMPLE_FORMAT*)p_data->p_buffer;
-    err = mpc_demux_decode( p_sys->decoder, &frame );
-    if( err != MPC_STATUS_OK )
-    {
-        block_Release( p_data );
-        return -1;
-    }
-    else if( frame.bits == -1 )
-    {
-        block_Release( p_data );
-        return 0;
-    }
-
-    i_ret = frame.samples;
-#endif
 
     /* */
     p_data->i_buffer = i_ret * sizeof(MPC_SAMPLE_FORMAT) * p_sys->info.channels;
     p_data->i_dts = p_data->i_pts =
-            VLC_TS_0 + INT64_C(1000000) * p_sys->i_position / p_sys->info.sample_freq;
+            1 + I64C(1000000) * p_sys->i_position / p_sys->info.sample_freq;
 
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_data->i_dts );
 
@@ -301,58 +298,43 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     demux_sys_t *p_sys = p_demux->p_sys;
     double   f, *pf;
     int64_t i64, *pi64;
-    bool *pb_bool;
+    vlc_meta_t **pp_meta;
 
     switch( i_query )
     {
-        case DEMUX_HAS_UNSUPPORTED_META:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = true;
+        case DEMUX_GET_META:
+            pp_meta = (vlc_meta_t **)va_arg( args, vlc_meta_t** );
+            if( p_sys->p_meta )
+                *pp_meta = vlc_meta_Duplicate( p_sys->p_meta );
+            else
+                *pp_meta = NULL;
             return VLC_SUCCESS;
 
         case DEMUX_GET_LENGTH:
             pi64 = (int64_t*)va_arg( args, int64_t * );
-#ifndef HAVE_MPC_MPCDEC_H
-            *pi64 = INT64_C(1000000) * p_sys->info.pcm_samples /
+            *pi64 = I64C(1000000) * p_sys->info.pcm_samples /
                         p_sys->info.sample_freq;
-#else
-            *pi64 = INT64_C(1000000) * (p_sys->info.samples -
-                                        p_sys->info.beg_silence) /
-                p_sys->info.sample_freq;
-#endif
             return VLC_SUCCESS;
 
         case DEMUX_GET_POSITION:
             pf = (double*)va_arg( args, double * );
-#ifndef HAVE_MPC_MPCDEC_H
             if( p_sys->info.pcm_samples > 0 )
                 *pf = (double) p_sys->i_position /
                       (double)p_sys->info.pcm_samples;
-#else
-            if( p_sys->info.samples - p_sys->info.beg_silence > 0)
-                *pf = (double) p_sys->i_position /
-                      (double)(p_sys->info.samples - p_sys->info.beg_silence);
-#endif
             else
                 *pf = 0.0;
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
             pi64 = (int64_t*)va_arg( args, int64_t * );
-            *pi64 = INT64_C(1000000) * p_sys->i_position /
+            *pi64 = I64C(1000000) * p_sys->i_position /
                         p_sys->info.sample_freq;
             return VLC_SUCCESS;
 
         case DEMUX_SET_POSITION:
             f = (double)va_arg( args, double );
-#ifndef HAVE_MPC_MPCDEC_H
             i64 = (int64_t)(f * p_sys->info.pcm_samples);
             if( mpc_decoder_seek_sample( &p_sys->decoder, i64 ) )
-#else
-            i64 = (int64_t)(f * (p_sys->info.samples -
-                                 p_sys->info.beg_silence));
-            if( mpc_demux_seek_sample( p_sys->decoder, i64 ) == MPC_STATUS_OK )
-#endif
             {
                 p_sys->i_position = i64;
                 return VLC_SUCCESS;
@@ -361,11 +343,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_SET_TIME:
             i64 = (int64_t)va_arg( args, int64_t );
-#ifndef HAVE_MPC_MPCDEC_H
             if( mpc_decoder_seek_sample( &p_sys->decoder, i64 ) )
-#else
-             if( mpc_demux_seek_sample( p_sys->decoder, i64 ) == MPC_STATUS_OK )
-#endif
             {
                 p_sys->i_position = i64;
                 return VLC_SUCCESS;
@@ -377,64 +355,34 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     }
 }
 
-#ifndef HAVE_MPC_MPCDEC_H
-static mpc_int32_t ReaderRead( void *p_private, void *dst, mpc_int32_t i_size )
+mpc_int32_t ReaderRead( void *p_private, void *dst, mpc_int32_t i_size )
 {
     demux_t *p_demux = (demux_t*)p_private;
-#else
-static mpc_int32_t ReaderRead( mpc_reader *p_private, void *dst, mpc_int32_t i_size )
-{
-    demux_t *p_demux = (demux_t*)p_private->data;
-#endif
     return stream_Read( p_demux->s, dst, i_size );
 }
 
-#ifndef HAVE_MPC_MPCDEC_H
-static mpc_bool_t ReaderSeek( void *p_private, mpc_int32_t i_offset )
+mpc_bool_t ReaderSeek( void *p_private, mpc_int32_t i_offset )
 {
     demux_t *p_demux = (demux_t*)p_private;
-#else
-static mpc_bool_t ReaderSeek( mpc_reader *p_private, mpc_int32_t i_offset )
-{
-    demux_t *p_demux = (demux_t*)p_private->data;
-#endif
     return !stream_Seek( p_demux->s, i_offset );
 }
 
-#ifndef HAVE_MPC_MPCDEC_H
-static mpc_int32_t ReaderTell( void *p_private)
+mpc_int32_t ReaderTell( void *p_private)
 {
     demux_t *p_demux = (demux_t*)p_private;
-#else
-static mpc_int32_t ReaderTell( mpc_reader *p_private)
-{
-    demux_t *p_demux = (demux_t*)p_private->data;
-#endif
     return stream_Tell( p_demux->s );
 }
 
-#ifndef HAVE_MPC_MPCDEC_H
-static mpc_int32_t ReaderGetSize( void *p_private )
+mpc_int32_t ReaderGetSize( void *p_private )
 {
     demux_t *p_demux = (demux_t*)p_private;
-#else
-static mpc_int32_t ReaderGetSize( mpc_reader *p_private )
-{
-    demux_t *p_demux = (demux_t*)p_private->data;
-#endif
     return stream_Size( p_demux->s );
 }
 
-#ifndef HAVE_MPC_MPCDEC_H
-static mpc_bool_t ReaderCanSeek( void *p_private )
+mpc_bool_t ReaderCanSeek( void *p_private )
 {
     demux_t *p_demux = (demux_t*)p_private;
-#else
-static mpc_bool_t ReaderCanSeek( mpc_reader *p_private )
-{
-    demux_t *p_demux = (demux_t*)p_private->data;
-#endif
-    bool b_canseek;
+    vlc_bool_t b_canseek;
 
     stream_Control( p_demux->s, STREAM_CAN_SEEK, &b_canseek );
     return b_canseek;

@@ -2,7 +2,7 @@
  * os_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 297485c2b0fa9514f5ce58cc9675c630a5f00b42 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -64,7 +64,10 @@ OSFactory *OSFactory::instance( intf_thread_t *pIntf )
 
 void OSFactory::destroy( intf_thread_t *pIntf )
 {
-    delete pIntf->p_sys->p_osFactory;
-    pIntf->p_sys->p_osFactory = NULL;
+    if( pIntf->p_sys->p_osFactory )
+    {
+        delete pIntf->p_sys->p_osFactory;
+        pIntf->p_sys->p_osFactory = NULL;
+    }
 }
 

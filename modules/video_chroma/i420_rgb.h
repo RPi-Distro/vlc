@@ -2,7 +2,7 @@
  * i420_rgb.h : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2004 the VideoLAN team
- * $Id: 66171fbeee5ad0e40355391250d0c691739100b9 $
+ * $Id: 9ff6243f8e77c826644ba3cb87015f68c685f377 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,12 +25,12 @@
 #define CMAP_RGB2_SIZE 256
 
 /**
- * filter_sys_t: chroma method descriptor
+ * chroma_sys_t: chroma method descriptor
 
  * This structure is part of the chroma transformation descriptor, it
  * describes the yuv2rgb specific properties.
  */
-struct filter_sys_t
+struct chroma_sys_t
 {
     uint8_t  *p_buffer;
     int *p_offset;
@@ -56,18 +56,11 @@ struct filter_sys_t
  * Prototypes
  *****************************************************************************/
 #ifdef MODULE_NAME_IS_i420_rgb
-void I420_RGB8         ( filter_t *, picture_t *, picture_t * );
-void I420_RGB16_dither ( filter_t *, picture_t *, picture_t * );
-void I420_RGB16        ( filter_t *, picture_t *, picture_t * );
-void I420_RGB32        ( filter_t *, picture_t *, picture_t * );
-#else // if defined(MODULE_NAME_IS_i420_rgb_mmx)
-void I420_R5G5B5       ( filter_t *, picture_t *, picture_t * );
-void I420_R5G6B5       ( filter_t *, picture_t *, picture_t * );
-void I420_A8R8G8B8     ( filter_t *, picture_t *, picture_t * );
-void I420_R8G8B8A8     ( filter_t *, picture_t *, picture_t * );
-void I420_B8G8R8A8     ( filter_t *, picture_t *, picture_t * );
-void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
+void E_(I420_RGB8)         ( vout_thread_t *, picture_t *, picture_t * );
+void E_(I420_RGB16_dither) ( vout_thread_t *, picture_t *, picture_t * );
 #endif
+void E_(I420_RGB16)        ( vout_thread_t *, picture_t *, picture_t * );
+void E_(I420_RGB32)        ( vout_thread_t *, picture_t *, picture_t * );
 
 /*****************************************************************************
  * CONVERT_*_PIXEL: pixel conversion macros
@@ -170,7 +163,7 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
          * Rewind buffer and offset, then copy and scale line */              \
         p_buffer = p_buffer_start;                                            \
         p_offset = p_offset_start;                                            \
-        for( i_x = p_filter->fmt_out.video.i_width / 16; i_x--; )             \
+        for( i_x = p_vout->output.i_width / 16; i_x--; )                      \
         {                                                                     \
             *p_pic++ = *p_buffer;   p_buffer += *p_offset++;                  \
             *p_pic++ = *p_buffer;   p_buffer += *p_offset++;                  \
@@ -189,7 +182,7 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
             *p_pic++ = *p_buffer;   p_buffer += *p_offset++;                  \
             *p_pic++ = *p_buffer;   p_buffer += *p_offset++;                  \
         }                                                                     \
-        for( i_x = p_filter->fmt_out.video.i_width & 15; i_x--; )             \
+        for( i_x = p_vout->output.i_width & 15; i_x--; )                      \
         {                                                                     \
             *p_pic++ = *p_buffer;   p_buffer += *p_offset++;                  \
         }                                                                     \
@@ -212,7 +205,7 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
     {                                                                         \
         /* Horizontal scaling - we can't use a buffer due to dithering */     \
         p_offset = p_offset_start;                                            \
-        for( i_x = p_filter->fmt_out.video.i_width / 16; i_x--; )             \
+        for( i_x = p_vout->output.i_width / 16; i_x--; )                      \
         {                                                                     \
             CONVERT_4YUV_PIXEL_SCALE( CHROMA )                                \
             CONVERT_4YUV_PIXEL_SCALE( CHROMA )                                \
@@ -222,7 +215,7 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
     }                                                                         \
     else                                                                      \
     {                                                                         \
-        for( i_x = p_filter->fmt_in.video.i_width / 16; i_x--;  )             \
+        for( i_x = p_vout->render.i_width / 16; i_x--;  )                     \
         {                                                                     \
             CONVERT_4YUV_PIXEL( CHROMA )                                      \
             CONVERT_4YUV_PIXEL( CHROMA )                                      \
@@ -258,10 +251,10 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
     switch( i_vscale )                                                        \
     {                                                                         \
     case -1:                             /* vertical scaling factor is < 1 */ \
-        while( (i_scale_count -= p_filter->fmt_out.video.i_height) > 0 )      \
+        while( (i_scale_count -= p_vout->output.i_height) > 0 )               \
         {                                                                     \
             /* Height reduction: skip next source line */                     \
-            p_y += p_filter->fmt_in.video.i_width;                            \
+            p_y += p_vout->render.i_width;                                    \
             i_y++;                                                            \
             if( (CHROMA == 420) || (CHROMA == 422) )                          \
             {                                                                 \
@@ -273,20 +266,21 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
             }                                                                 \
             else if( CHROMA == 444 )                                          \
             {                                                                 \
-                p_u += p_filter->fmt_in.video.i_width;                        \
-                p_v += p_filter->fmt_in.video.i_width;                        \
+                p_u += p_vout->render.i_width;                                \
+                p_v += p_vout->render.i_width;                                \
             }                                                                 \
         }                                                                     \
-        i_scale_count += p_filter->fmt_in.video.i_height;                     \
+        i_scale_count += p_vout->render.i_height;                             \
         break;                                                                \
     case 1:                              /* vertical scaling factor is > 1 */ \
-        while( (i_scale_count -= p_filter->fmt_in.video.i_height) > 0 )       \
+        while( (i_scale_count -= p_vout->render.i_height) > 0 )               \
         {                                                                     \
             /* Height increment: copy previous picture line */                \
-            vlc_memcpy( p_pic, p_pic_start, p_filter->fmt_out.video.i_width * BPP ); \
+            p_vout->p_vlc->pf_memcpy( p_pic, p_pic_start,                     \
+                                      p_vout->output.i_width * BPP );         \
             p_pic = (void*)((uint8_t*)p_pic + p_dest->p->i_pitch );           \
         }                                                                     \
-        i_scale_count += p_filter->fmt_out.video.i_height;                    \
+        i_scale_count += p_vout->output.i_height;                             \
         break;                                                                \
     }                                                                         \
 
@@ -313,10 +307,10 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
     switch( i_vscale )                                                        \
     {                                                                         \
     case -1:                             /* vertical scaling factor is < 1 */ \
-        while( (i_scale_count -= p_filter->fmt_out.video.i_height) > 0 )      \
+        while( (i_scale_count -= p_vout->output.i_height) > 0 )               \
         {                                                                     \
             /* Height reduction: skip next source line */                     \
-            p_y += p_filter->fmt_in.video.i_width;                            \
+            p_y += p_vout->render.i_width;                                    \
             i_y++;                                                            \
             if( (CHROMA == 420) || (CHROMA == 422) )                          \
             {                                                                 \
@@ -328,21 +322,21 @@ void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
             }                                                                 \
             else if( CHROMA == 444 )                                          \
             {                                                                 \
-                p_u += p_filter->fmt_in.video.i_width;                        \
-                p_v += p_filter->fmt_in.video.i_width;                        \
+                p_u += p_vout->render.i_width;                                \
+                p_v += p_vout->render.i_width;                                \
             }                                                                 \
         }                                                                     \
-        i_scale_count += p_filter->fmt_in.video.i_height;                     \
+        i_scale_count += p_vout->render.i_height;                             \
         break;                                                                \
     case 1:                              /* vertical scaling factor is > 1 */ \
-        while( (i_scale_count -= p_filter->fmt_in.video.i_height) > 0 )       \
+        while( (i_scale_count -= p_vout->render.i_height) > 0 )               \
         {                                                                     \
-            p_y -= p_filter->fmt_in.video.i_width;                            \
+            p_y -= p_vout->render.i_width;                                    \
             p_u -= i_chroma_width;                                            \
             p_v -= i_chroma_width;                                            \
             SCALE_WIDTH_DITHER( CHROMA );                                     \
         }                                                                     \
-        i_scale_count += p_filter->fmt_out.video.i_height;                    \
+        i_scale_count += p_vout->output.i_height;                             \
         break;                                                                \
     }                                                                         \
 

@@ -1,11 +1,10 @@
 /*****************************************************************************
  * win32text.c : Text drawing routines using the TextOut win32 API
  *****************************************************************************
- * Copyright (C) 2002 - 2009 the VideoLAN team
- * $Id: e3464674ed26ea50961fd1afe1b8455918d1fc0e $
+ * Copyright (C) 2002 - 2005 the VideoLAN team
+ * $Id: 9c6d2204eee0399536e1777ab75d535e70cf019c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
- *          Pierre Ynard
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,17 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>                                      /* malloc(), free() */
+#include <string.h>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_vout.h>
-#include <vlc_osd.h>
-#include <vlc_block.h>
-#include <vlc_filter.h>
+#include <vlc/vlc.h>
+#include <vlc/vout.h>
+#include "vlc_osd.h"
+#include "vlc_block.h"
+#include "vlc_filter.h"
 
 #include <math.h>
 
@@ -58,10 +54,11 @@ static int SetFont( filter_t *, int );
 #define FONT_TEXT N_("Font")
 #define FONT_LONGTEXT N_("Filename for the font you want to use")
 #define FONTSIZE_TEXT N_("Font size in pixels")
+/// \bug [String] extra space
 #define FONTSIZE_LONGTEXT N_("This is the default size of the fonts " \
      "that will be rendered on the video. " \
      "If set to something different than 0 this option will override the " \
-     "relative font size." )
+     "relative font size. " )
 #define OPACITY_TEXT N_("Opacity")
 #define OPACITY_LONGTEXT N_("The opacity (inverse of transparency) of the " \
      "text that will be rendered on the video. 0 = transparent, " \
@@ -76,45 +73,45 @@ static int SetFont( filter_t *, int );
   "fonts that will be rendered on the video. If absolute font size is set, "\
    "relative size will be overriden." )
 
-static int const pi_sizes[] = { 20, 18, 16, 12, 6 };
-static char *const ppsz_sizes_text[] = {
-    N_("Smaller"), N_("Small"), N_("Normal"), N_("Large"), N_("Larger") };
-static const int pi_color_values[] = {
+static int   pi_sizes[] = { 20, 18, 16, 12, 6 };
+static char *ppsz_sizes_text[] = { N_("Smaller"), N_("Small"), N_("Normal"),
+                                   N_("Large"), N_("Larger") };
+static int pi_color_values[] = {
   0x00000000, 0x00808080, 0x00C0C0C0, 0x00FFFFFF, 0x00800000,
   0x00FF0000, 0x00FF00FF, 0x00FFFF00, 0x00808000, 0x00008000, 0x00008080,
   0x0000FF00, 0x00800080, 0x00000080, 0x000000FF, 0x0000FFFF };
 
-static const char *const ppsz_color_descriptions[] = {
+static char *ppsz_color_descriptions[] = {
   N_("Black"), N_("Gray"), N_("Silver"), N_("White"), N_("Maroon"),
   N_("Red"), N_("Fuchsia"), N_("Yellow"), N_("Olive"), N_("Green"), N_("Teal"),
   N_("Lime"), N_("Purple"), N_("Navy"), N_("Blue"), N_("Aqua") };
 
-vlc_module_begin ()
-    set_shortname( N_("Text renderer"))
-    set_description( N_("Win32 font renderer") )
-    set_category( CAT_VIDEO )
-    set_subcategory( SUBCAT_VIDEO_SUBPIC )
+vlc_module_begin();
+    set_shortname( _("Text renderer"));
+    set_description( _("Win32 font renderer") );
+    set_category( CAT_VIDEO );
+    set_subcategory( SUBCAT_VIDEO_SUBPIC );
 
     add_integer( "win32text-fontsize", 0, NULL, FONTSIZE_TEXT,
-                 FONTSIZE_LONGTEXT, true )
+                 FONTSIZE_LONGTEXT, VLC_TRUE );
 
     /* opacity valid on 0..255, with default 255 = fully opaque */
     add_integer_with_range( "win32-opacity", 255, 0, 255, NULL,
-        OPACITY_TEXT, OPACITY_LONGTEXT, false )
+        OPACITY_TEXT, OPACITY_LONGTEXT, VLC_FALSE );
 
     /* hook to the color values list, with default 0x00ffffff = white */
     add_integer( "win32text-color", 0x00FFFFFF, NULL, COLOR_TEXT,
-                 COLOR_LONGTEXT, true )
-        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL );
+                 COLOR_LONGTEXT, VLC_TRUE );
+        change_integer_list( pi_color_values, ppsz_color_descriptions, 0 );
 
     add_integer( "win32text-rel-fontsize", 16, NULL, FONTSIZER_TEXT,
-                 FONTSIZER_LONGTEXT, false )
-        change_integer_list( pi_sizes, ppsz_sizes_text, NULL );
+                 FONTSIZER_LONGTEXT, VLC_FALSE );
+        change_integer_list( pi_sizes, ppsz_sizes_text, 0 );
 
-    set_capability( "text renderer", 50 )
-    add_shortcut( "text" )
-    set_callbacks( Create, Destroy )
-vlc_module_end ()
+    set_capability( "text renderer", 50 );
+    add_shortcut( "text" );
+    set_callbacks( Create, Destroy );
+vlc_module_end();
 
 /*****************************************************************************
  * filter_sys_t: win32text local data
@@ -134,7 +131,7 @@ struct filter_sys_t
     int i_logpy;
 };
 
-static const uint8_t pi_gamma[16] =
+static uint8_t pi_gamma[16] =
   {0x00, 0x41, 0x52, 0x63, 0x84, 0x85, 0x96, 0xa7, 0xb8, 0xc9,
    0xca, 0xdb, 0xdc, 0xed, 0xee, 0xff};
 
@@ -152,7 +149,10 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_filter->p_sys = p_sys = malloc( sizeof( filter_sys_t ) );
     if( !p_sys )
+    {
+        msg_Err( p_filter, "out of memory" );
         return VLC_ENOMEM;
+    }
     p_sys->i_font_size = 0;
     p_sys->i_display_height = 0;
 
@@ -182,13 +182,12 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_default_font_size = val.i_int;
     if( SetFont( p_filter, 0 ) != VLC_SUCCESS ) goto error;
 
-    free( psz_fontfile );
+    if( psz_fontfile ) free( psz_fontfile );
     p_filter->pf_render_text = RenderText;
-    p_filter->pf_render_html = NULL;
     return VLC_SUCCESS;
 
  error:
-    free( psz_fontfile );
+    if( psz_fontfile ) free( psz_fontfile );
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -218,19 +217,23 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     uint8_t *p_dst;
     video_format_t fmt;
     int i, i_pitch;
-    bool b_outline = true;
+    subpicture_region_t *p_region_tmp;
+    vlc_bool_t b_outline = VLC_TRUE;
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_CODEC_YUVP;
+    fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
     fmt.i_width = fmt.i_visible_width = i_width + (b_outline ? 4 : 0);
     fmt.i_height = fmt.i_visible_height = i_height + (b_outline ? 4 : 0);
     fmt.i_x_offset = fmt.i_y_offset = 0;
+    p_region_tmp = spu_CreateRegion( p_filter, &fmt );
+    if( !p_region_tmp )
+    {
+        msg_Err( p_filter, "cannot allocate SPU region" );
+        return VLC_EGENERIC;
+    }
 
     /* Build palette */
-    fmt.p_palette = calloc( 1, sizeof(*fmt.p_palette) );
-    if( !fmt.p_palette )
-        return VLC_EGENERIC;
     fmt.p_palette->i_entries = 16;
     for( i = 0; i < fmt.p_palette->i_entries; i++ )
     {
@@ -240,21 +243,17 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
         fmt.p_palette->palette[i][3] = pi_gamma[i];
     }
 
-    p_region->p_picture = picture_NewFromFormat( &fmt );
-    if( !p_region->p_picture )
-    {
-        free( fmt.p_palette );
-        return VLC_EGENERIC;
-    }
-    p_region->fmt = fmt;
+    p_region->fmt = p_region_tmp->fmt;
+    p_region->picture = p_region_tmp->picture;
+    free( p_region_tmp );
 
-    p_dst = p_region->p_picture->Y_PIXELS;
-    i_pitch = p_region->p_picture->Y_PITCH;
+    p_dst = p_region->picture.Y_PIXELS;
+    i_pitch = p_region->picture.Y_PITCH;
 
     if( b_outline )
     {
         memset( p_dst, 0, i_pitch * fmt.i_height );
-        p_dst += p_region->p_picture->Y_PITCH * 2 + 2;
+        p_dst += p_region->picture.Y_PITCH * 2 + 2;
     }
 
     for( i = 0; i < i_height; i++ )
@@ -271,7 +270,7 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
         uint8_t left, current;
         int x, y;
 
-        p_dst = p_region->p_picture->Y_PIXELS;
+        p_dst = p_region->picture.Y_PIXELS;
 
         for( y = 1; y < (int)fmt.i_height - 1; y++ )
         {
@@ -303,17 +302,13 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
     int i, i_width, i_height;
     HBITMAP bitmap, bitmap_bak;
     BITMAPINFO *p_bmi;
-    RECT rect = { 0, 0, 0, 0 };
+    RECT rect = {0};
+    SIZE size;
 
     /* Sanity check */
     if( !p_region_in || !p_region_out ) return VLC_EGENERIC;
-    if( !p_region_in->psz_text || !*p_region_in->psz_text )
-        return VLC_EGENERIC;
-
-    psz_string = malloc( (strlen( p_region_in->psz_text )+1) * sizeof(TCHAR) );
-    if( !psz_string )
-        return VLC_ENOMEM;
 #ifdef UNICODE
+    psz_string = malloc( (strlen( p_region_in->psz_text )+1) * sizeof(TCHAR) );
     if( mbstowcs( psz_string, p_region_in->psz_text,
                   strlen( p_region_in->psz_text ) * sizeof(TCHAR) ) < 0 )
     {
@@ -321,13 +316,9 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
         return VLC_EGENERIC;
     }
 #else
-    strcpy( psz_string, p_region_in->psz_text );
+    psz_string = strdup( p_region_in->psz_text );
 #endif
-    if( !*psz_string )
-    {
-        free( psz_string );
-        return VLC_EGENERIC;
-    }
+    if( !psz_string || !*psz_string ) return VLC_EGENERIC;
 
     if( p_region_in->p_style )
     {
@@ -347,9 +338,9 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
     SetTextColor( p_sys->hcdc, RGB( (i_font_color >> 16) & 0xff,
                   (i_font_color >> 8) & 0xff, i_font_color & 0xff) );
 
-    DrawText( p_sys->hcdc, psz_string, -1, &rect,
-              DT_CALCRECT | DT_CENTER | DT_NOPREFIX );
-    i_width = rect.right; i_height = rect.bottom;
+    GetTextExtentExPoint( p_sys->hcdc, psz_string, _tcslen(psz_string),
+                          0, 0, 0, &size );
+    i_width = rect.right = size.cx; i_height = rect.bottom = size.cy;
 
     p_bmi = malloc(sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD)*16);
     memset( p_bmi, 0, sizeof(BITMAPINFOHEADER) );
@@ -373,15 +364,14 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
     if( !bitmap )
     {
         msg_Err( p_filter, "could not create bitmap" );
-        free( psz_string );
         return VLC_EGENERIC;
     }
 
     bitmap_bak = SelectObject( p_sys->hcdc, bitmap );
     FillRect( p_sys->hcdc, &rect, (HBRUSH)GetStockObject(BLACK_BRUSH) );
 
-    if( !DrawText( p_sys->hcdc, psz_string, -1, &rect,
-                   DT_CENTER | DT_NOPREFIX ) )
+    //TextOut( p_sys->hcdc, 0, 0, psz_string, strlen(psz_string) );
+    if( !DrawText( p_sys->hcdc, psz_string, -1, &rect, 0 ) )
     {
         msg_Err( p_filter, "could not draw text" );
     }
@@ -392,7 +382,6 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
 
     SelectObject( p_sys->hcdc, bitmap_bak );
     DeleteObject( bitmap );
-    free( psz_string );
     return VLC_SUCCESS;
 }
 

@@ -1,0 +1,12 @@
+Index: vlc-0.8.6.h/modules/access/rtsp/real.c
+===================================================================
+--- vlc-0.8.6.h.orig/modules/access/rtsp/real.c	2008-05-25 18:28:57.000000000 +0000
++++ vlc-0.8.6.h/modules/access/rtsp/real.c	2010-04-18 09:24:19.000000000 +0000
+@@ -597,6 +597,7 @@
+                        unsigned char **buffer) {
+ 
+   int n;
++  if (pf->length<12) return 0;
+   rmff_dump_pheader(ph, *buffer);
+   n=rtsp_read_data(rtsp_session, *buffer + 12, ph->length - 12);
+   return (n <= 0) ? 0 : n+12;

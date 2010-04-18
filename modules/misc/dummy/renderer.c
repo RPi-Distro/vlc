@@ -2,7 +2,7 @@
  * renderer.c : dummy text rendering functions
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: a9d727382283af42f0a134c96238fc9695c7474b $
+ * $Id: e3a774e2c8c6efc97b9820dd41da6fd36d42522c $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -21,31 +21,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_vout.h>
-#include <vlc_block.h>
-#include <vlc_filter.h>
-
-#include "dummy.h"
+#include <vlc/vlc.h>
+#include <vlc/vout.h>
+#include "vlc_block.h"
+#include "vlc_filter.h"
 
 static int RenderText( filter_t *, subpicture_region_t *,
                        subpicture_region_t * );
 
-int OpenRenderer( vlc_object_t *p_this )
+int E_(OpenRenderer)( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     p_filter->pf_render_text = RenderText;
-    p_filter->pf_render_html = NULL;
     return VLC_SUCCESS;
 }
 
 static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
                        subpicture_region_t *p_region_in )
 {
-    VLC_UNUSED(p_filter); VLC_UNUSED(p_region_out); VLC_UNUSED(p_region_in);
     return VLC_EGENERIC;
 }

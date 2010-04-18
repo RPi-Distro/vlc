@@ -2,7 +2,7 @@
  * win32_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7e0b5f96e989ad8387ea9828c370dc5fafdab636 $
+ * $Id: e4885b31e2af1b6698891d161b10ff705c48c80c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -33,7 +33,6 @@
 #include "win32_loop.hpp"
 #include "../src/theme.hpp"
 #include "../src/window_manager.hpp"
-#include "../src/generic_window.hpp"
 #include "../commands/cmd_dialogs.hpp"
 #include "../commands/cmd_minimize.hpp"
 
@@ -53,26 +52,23 @@ LRESULT CALLBACK Win32Proc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
         return DefWindowProc( hwnd, uMsg, wParam, lParam );
     }
 
-    Win32Factory *pFactory = (Win32Factory*)Win32Factory::instance( p_intf );
+    // Here we know we are getting a message for the parent window, since it is
+    // the only one to store p_intf...
+    // Yes, it is a kludge :)
 
-    if( hwnd == pFactory->getParentWindow() )
+//Win32Factory *pFactory = (Win32Factory*)Win32Factory::instance( p_intf );
+//msg_Err( p_intf, "Parent window %p %p %u %i\n", pFactory->m_hParentWindow, hwnd, uMsg, wParam );
+    // If Window is parent window
+    // XXX: this test isn't needed, see the kludge above...
+//    if( hwnd == pFactory->m_hParentWindow )
     {
         if( uMsg == WM_SYSCOMMAND )
         {
             // If closing parent window
             if( wParam == SC_CLOSE )
             {
-                libvlc_Quit( p_intf->p_libvlc );
-                return 0;
-            }
-            else if( wParam == SC_MINIMIZE )
-            {
-                pFactory->minimize();
-                return 0;
-            }
-            else if( wParam == SC_RESTORE )
-            {
-                pFactory->restore();
+                Win32Loop *pLoop = (Win32Loop*)Win32Loop::instance( p_intf );
+                pLoop->exit();
                 return 0;
             }
             else
@@ -86,8 +82,6 @@ LRESULT CALLBACK Win32Proc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
             if( (UINT)lParam == WM_LBUTTONDOWN )
             {
                 p_intf->p_sys->p_theme->getWindowManager().raiseAll();
-                CmdDlgHidePopupMenu aCmdPopup( p_intf );
-                aCmdPopup.execute();
             }
             else if( (UINT)lParam == WM_RBUTTONDOWN )
             {
@@ -127,14 +121,14 @@ bool Win32Factory::init()
 
     // Create window class
     WNDCLASS skinWindowClass;
-    skinWindowClass.style = CS_DBLCLKS;
+    skinWindowClass.style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
     skinWindowClass.lpfnWndProc = (WNDPROC) Win32Proc;
     skinWindowClass.lpszClassName = _T("SkinWindowClass");
     skinWindowClass.lpszMenuName = NULL;
     skinWindowClass.cbClsExtra = 0;
     skinWindowClass.cbWndExtra = 0;
     skinWindowClass.hbrBackground = NULL;
-    skinWindowClass.hCursor = LoadCursor( NULL, IDC_ARROW );
+    skinWindowClass.hCursor = LoadCursor( NULL , IDC_ARROW );
     skinWindowClass.hIcon = LoadIcon( m_hInst, _T("VLC_ICON") );
     skinWindowClass.hInstance = m_hInst;
 
@@ -154,7 +148,7 @@ bool Win32Factory::init()
 
     // Create Window
     m_hParentWindow = CreateWindowEx( WS_EX_TOOLWINDOW, _T("SkinWindowClass"),
-        _T("VLC media player"), WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX,
+        _T("VLC media player"), WS_SYSMENU|WS_POPUP,
         -200, -200, 0, 0, 0, 0, m_hInst, 0 );
     if( m_hParentWindow == NULL )
     {
@@ -168,7 +162,7 @@ bool Win32Factory::init()
     // We do it this way otherwise CreateWindowEx will fail
     // if WS_EX_LAYERED is not supported
     SetWindowLongPtr( m_hParentWindow, GWL_EXSTYLE,
-                      GetWindowLongPtr( m_hParentWindow, GWL_EXSTYLE ) |
+                      GetWindowLong( m_hParentWindow, GWL_EXSTYLE ) |
                       WS_EX_LAYERED );
 
     ShowWindow( m_hParentWindow, SW_SHOW );
@@ -183,13 +177,13 @@ bool Win32Factory::init()
     strcpy( m_trayIcon.szTip, "VLC media player" );
 
     // Show the systray icon if needed
-    if( var_InheritBool( getIntf(), "skins2-systray" ) )
+    if( config_GetInt( getIntf(), "skins2-systray" ) )
     {
         addInTray();
     }
 
     // Show the task in the task bar if needed
-    if( var_InheritBool( getIntf(), "skins2-taskbar" ) )
+    if( config_GetInt( getIntf(), "skins2-taskbar" ) )
     {
         addInTaskBar();
     }
@@ -231,15 +225,16 @@ bool Win32Factory::init()
     }
 
     // Initialize the resource path
-    char *datadir = config_GetUserDir( VLC_DATA_DIR );
-    m_resourcePath.push_back( (string)datadir + "\\skins" );
-    free( datadir );
-    datadir = config_GetDataDir( getIntf() );
-    m_resourcePath.push_back( (string)datadir + "\\skins" );
-    m_resourcePath.push_back( (string)datadir + "\\skins2" );
-    m_resourcePath.push_back( (string)datadir + "\\share\\skins" );
-    m_resourcePath.push_back( (string)datadir + "\\share\\skins2" );
-    free( datadir );
+    m_resourcePath.push_back( (string)getIntf()->p_vlc->psz_homedir +
+                               "\\" + CONFIG_DIR + "\\skins" );
+    m_resourcePath.push_back( (string)getIntf()->p_libvlc->psz_vlcpath +
+                              "\\skins" );
+    m_resourcePath.push_back( (string)getIntf()->p_libvlc->psz_vlcpath +
+                              "\\skins2" );
+    m_resourcePath.push_back( (string)getIntf()->p_libvlc->psz_vlcpath +
+                              "\\share\\skins" );
+    m_resourcePath.push_back( (string)getIntf()->p_libvlc->psz_vlcpath +
+                              "\\share\\skins2" );
 
     // All went well
     return true;
@@ -327,11 +322,10 @@ OSTimer *Win32Factory::createOSTimer( CmdGeneric &rCmd )
 
 
 OSWindow *Win32Factory::createOSWindow( GenericWindow &rWindow, bool dragDrop,
-                                        bool playOnDrop, OSWindow *pParent,
-                                        GenericWindow::WindowType_t type )
+                                        bool playOnDrop, OSWindow *pParent )
 {
     return new Win32Window( getIntf(), rWindow, m_hInst, m_hParentWindow,
-                            dragDrop, playOnDrop, (Win32Window*)pParent, type );
+                            dragDrop, playOnDrop, (Win32Window*)pParent );
 }
 
 
@@ -371,12 +365,13 @@ int Win32Factory::getScreenHeight() const
 }
 
 
-SkinsRect Win32Factory::getWorkArea() const
+Rect Win32Factory::getWorkArea() const
 {
     RECT r;
     SystemParametersInfo( SPI_GETWORKAREA, 0, &r, 0 );
     // Fill a Rect object
-    return  SkinsRect( r.left, r.top, r.right, r.bottom );
+    Rect rect( r.left, r.top, r.right, r.bottom );
+    return rect;
 }
 
 
@@ -394,12 +389,24 @@ void Win32Factory::changeCursor( CursorType_t type ) const
     LPCTSTR id;
     switch( type )
     {
-    default:
-    case kDefaultArrow: id = IDC_ARROW;    break;
-    case kResizeNWSE:   id = IDC_SIZENWSE; break;
-    case kResizeNS:     id = IDC_SIZENS;   break;
-    case kResizeWE:     id = IDC_SIZEWE;   break;
-    case kResizeNESW:   id = IDC_SIZENESW; break;
+        case kDefaultArrow:
+            id = IDC_ARROW;
+            break;
+        case kResizeNWSE:
+            id = IDC_SIZENWSE;
+            break;
+        case kResizeNS:
+            id = IDC_SIZENS;
+            break;
+        case kResizeWE:
+            id = IDC_SIZEWE;
+            break;
+        case kResizeNESW:
+            id = IDC_SIZENESW;
+            break;
+        default:
+            id = IDC_ARROW;
+            break;
     }
 
     HCURSOR hCurs = LoadCursor( NULL, id );

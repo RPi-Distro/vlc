@@ -2,7 +2,7 @@
  * svgalib.c : SVGAlib plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: d66bc947c9d0f8facee7bf72b134073f3924ba07 $
+ * $Id: 0f9d405f5fbef645525c194a32bc27daa773695f $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -24,15 +24,10 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_vout.h>
-#include <vlc_interface.h>
+#include <vlc/vlc.h>
+#include <vlc/vout.h>
 
 #include <vga.h>
 #include <vgagl.h>
@@ -54,15 +49,15 @@ static void SetPalette( vout_thread_t *, uint16_t *, uint16_t *, uint16_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin ()
-    set_shortname( "SVGAlib" )
-    set_category( CAT_VIDEO )
-    set_subcategory( SUBCAT_VIDEO_VOUT )
-    set_description( N_("SVGAlib video output") )
-    set_capability( "video output", 0 )
-    set_callbacks( Create, Destroy )
-    cannot_unload_broken_library () /* SVGAlib uses atexit() */
-vlc_module_end ()
+vlc_module_begin();
+    set_shortname( "SVGAlib" );
+    set_category( CAT_VIDEO );
+    set_subcategory( SUBCAT_VIDEO_VOUT );
+    set_description( _("SVGAlib video output") );
+    set_capability( "video output", 0 );
+    set_callbacks( Create, Destroy );
+    linked_with_a_crap_library_which_uses_atexit();
+vlc_module_end();
 
 /*****************************************************************************
  * vout_sys_t: video output descriptor
@@ -155,7 +150,7 @@ static int Init( vout_thread_t *p_vout )
 
     /* Initialize the output structure: RGB with square pixels, whatever
      * the input format is, since it's the only format we know */
-    p_vout->output.i_chroma = VLC_CODEC_RGB8;
+    p_vout->output.i_chroma = VLC_FOURCC('R','G','B','2');
     p_vout->output.pf_setpalette = SetPalette;
     p_vout->output.i_width = vga_getxdim();
     p_vout->output.i_height = vga_getydim();
@@ -183,8 +178,7 @@ static int Init( vout_thread_t *p_vout )
 
     vout_AllocatePicture( p_vout, p_pic, p_vout->output.i_chroma,
                           p_vout->output.i_width, p_vout->output.i_height,
-                          p_vout->output.i_aspect * p_vout->output.i_height,
-                          VOUT_ASPECT_FACTOR      * p_vout->output.i_width );
+                          p_vout->output.i_aspect );
 
     if( p_pic->i_planes == 0 )
     {
@@ -237,7 +231,7 @@ static int Manage( vout_thread_t *p_vout )
     if( keyboard_keypressed(SCANCODE_ESCAPE)
          || keyboard_keypressed(SCANCODE_Q ) )
     {
-        libvlc_Quit( p_vout->p_libvlc );
+        p_vout->p_vlc->b_die = VLC_TRUE;
     }
 
     return VLC_SUCCESS;

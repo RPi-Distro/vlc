@@ -2,7 +2,7 @@
  * libxml.c: XML parser using libxml2
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 540579318fddb932b6ff8c2d43765f7867135bd2 $
+ * $Id: 84ef82de2445fed8ede9e40be14e0aae5d5f7be5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -21,16 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <stdlib.h>
+#include <vlc/vlc.h>
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-
-#include <vlc_block.h>
-#include <vlc_stream.h>
-#include <vlc_xml.h>
+#include "vlc_block.h"
+#include "vlc_stream.h"
+#include "vlc_xml.h"
 
 #include <libxml/xmlreader.h>
 #include <libxml/catalog.h>
@@ -41,16 +37,11 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin ()
-    set_description( N_("XML Parser (using libxml2)") )
-    set_capability( "xml", 10 )
-    set_callbacks( Open, Close )
-
-#ifdef WIN32
-    cannot_unload_broken_library()
-#endif
-
-vlc_module_end ()
+vlc_module_begin();
+    set_description( _("XML Parser (using libxml2)") );
+    set_capability( "xml", 10 );
+    set_callbacks( Open, Close );
+vlc_module_end();
 
 struct xml_reader_sys_t
 {
@@ -66,13 +57,11 @@ static char *ReaderName( xml_reader_t * );
 static char *ReaderValue( xml_reader_t * );
 static int ReaderNextAttr( xml_reader_t * );
 
-static int ReaderUseDTD ( xml_reader_t *, bool );
+static int ReaderUseDTD ( xml_reader_t *, vlc_bool_t );
 
 static void CatalogLoad( xml_t *, const char * );
 static void CatalogAdd( xml_t *, const char *, const char *, const char * );
 static int StreamRead( void *p_context, char *p_buffer, int i_buffer );
-
-static vlc_mutex_t lock = VLC_STATIC_MUTEX;
 
 /*****************************************************************************
  * Module initialization
@@ -80,13 +69,6 @@ static vlc_mutex_t lock = VLC_STATIC_MUTEX;
 static int Open( vlc_object_t *p_this )
 {
     xml_t *p_xml = (xml_t *)p_this;
-
-    if( !xmlHasFeature( XML_WITH_THREAD ) )
-        return VLC_EGENERIC;
-
-    vlc_mutex_lock( &lock );
-    xmlInitParser();
-    vlc_mutex_unlock( &lock );
 
     p_xml->pf_reader_create = ReaderCreate;
     p_xml->pf_reader_delete = ReaderDelete;
@@ -102,12 +84,6 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-#ifdef LIBXML_GETS_A_CLUE_ABOUT_REENTRANCY_AND_MEMORY_LEAKS
-    vlc_mutex_lock( &lock );
-    xmlCleanupParser();
-    vlc_mutex_unlock( &lock );
-#endif
-    VLC_UNUSED(p_this);
     return;
 }
 
@@ -116,7 +92,6 @@ static void Close( vlc_object_t *p_this )
  *****************************************************************************/
 static void CatalogLoad( xml_t *p_xml, const char *psz_filename )
 {
-    VLC_UNUSED(p_xml);
     if( !psz_filename ) xmlInitializeCatalog();
     else xmlLoadCatalog( psz_filename );
 }
@@ -124,8 +99,7 @@ static void CatalogLoad( xml_t *p_xml, const char *psz_filename )
 static void CatalogAdd( xml_t *p_xml, const char *psz_arg1,
                           const char *psz_arg2, const char *psz_filename )
 {
-    VLC_UNUSED(p_xml);
-    xmlCatalogAdd( (unsigned char*)psz_arg1, (unsigned char*)psz_arg2,
+    xmlCatalogAdd( (unsigned char*)psz_arg1, (unsigned char*)psz_arg2, 
         (unsigned char*)psz_filename );
 }
 
@@ -136,7 +110,6 @@ static void ReaderErrorHandler( void *p_arg, const char *p_msg,
                                 xmlParserSeverities severity,
                                 xmlTextReaderLocatorPtr locator)
 {
-    VLC_UNUSED(severity);
     xml_reader_t *p_reader = (xml_reader_t *)p_arg;
     int line = xmlTextReaderLocatorLineNumber( locator );
     msg_Err( p_reader->p_xml, "XML parser error (line %d) : %s", line, p_msg );
@@ -153,22 +126,11 @@ static xml_reader_t *ReaderCreate( xml_t *p_xml, stream_t *p_stream )
     if( !p_libxml_reader )
     {
         msg_Err( p_xml, "failed to create XML parser" );
-        return NULL;
+        return 0;
     }
 
     p_reader = malloc( sizeof(xml_reader_t) );
-    if( !p_reader )
-    {
-        xmlFreeTextReader( p_libxml_reader );
-        return NULL;
-    }
     p_reader->p_sys = p_sys = malloc( sizeof(xml_reader_sys_t) );
-    if( !p_sys )
-    {
-        xmlFreeTextReader( p_libxml_reader );
-        free( p_reader );
-        return NULL;
-    }
     p_reader->p_sys->p_reader = p_libxml_reader;
     p_reader->p_xml = p_xml;
 
@@ -194,7 +156,7 @@ static void ReaderDelete( xml_reader_t *p_reader )
     free( p_reader );
 }
 
-static int ReaderUseDTD ( xml_reader_t *p_reader, bool b_use )
+static int ReaderUseDTD ( xml_reader_t *p_reader, vlc_bool_t b_use )
 {
     /* Activate DTD validation */
     xmlTextReaderSetParserProp( p_reader->p_sys->p_reader,
@@ -251,7 +213,8 @@ static char *ReaderName( xml_reader_t *p_reader )
     const xmlChar *psz_name =
         xmlTextReaderConstName( p_reader->p_sys->p_reader );
 
-    return psz_name ? strdup( (const char *)psz_name ) : NULL;
+    if( psz_name ) return strdup( (const char *)psz_name );
+    else return 0;
 }
 
 static char *ReaderValue( xml_reader_t *p_reader )
@@ -259,7 +222,8 @@ static char *ReaderValue( xml_reader_t *p_reader )
     const xmlChar *psz_value =
         xmlTextReaderConstValue( p_reader->p_sys->p_reader );
 
-    return psz_value ? strdup( (const char *)psz_value ) : NULL;
+    if( psz_value ) return strdup( (const char *)psz_value );
+    else return 0;
 }
 
 static int ReaderNextAttr( xml_reader_t *p_reader )
@@ -271,5 +235,5 @@ static int ReaderNextAttr( xml_reader_t *p_reader )
 static int StreamRead( void *p_context, char *p_buffer, int i_buffer )
 {
     stream_t *s = (stream_t*)p_context;
-    return stream_Read( s, p_buffer, i_buffer );
+    return stream_Read( s, p_buffer, i_buffer );    
 }

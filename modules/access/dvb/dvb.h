@@ -24,8 +24,6 @@
  *****************************************************************************/
 
 
-#include "scan.h"
-
 /*****************************************************************************
  * Devices location
  *****************************************************************************/
@@ -45,19 +43,6 @@ typedef struct demux_handle_t
 } demux_handle_t;
 
 typedef struct frontend_t frontend_t;
-typedef struct
-{
-    int i_snr;              /**< Signal Noise ratio */
-    int i_ber;              /**< Bitrate error ratio */
-    int i_signal_strenth;   /**< Signal strength */
-} frontend_statistic_t;
-
-typedef struct
-{
-    bool b_has_signal;
-    bool b_has_carrier;
-    bool b_has_lock;
-} frontend_status_t;
 
 typedef struct en50221_session_t
 {
@@ -84,13 +69,13 @@ typedef struct en50221_mmi_object_t
     {
         struct
         {
-            bool b_blind;
+            vlc_bool_t b_blind;
             char *psz_text;
         } enq;
 
         struct
         {
-            bool b_ok;
+            vlc_bool_t b_ok;
             char *psz_answ;
         } answ;
 
@@ -112,34 +97,39 @@ static __inline__ void en50221_MMIFree( en50221_mmi_object_t *p_object )
 {
     int i;
 
+#define FREE( x )                                                           \
+    if ( x != NULL )                                                        \
+        free( x );
+
     switch ( p_object->i_object_type )
     {
     case EN50221_MMI_ENQ:
-        FREENULL( p_object->u.enq.psz_text );
+        FREE( p_object->u.enq.psz_text );
         break;
 
     case EN50221_MMI_ANSW:
         if ( p_object->u.answ.b_ok )
         {
-            FREENULL( p_object->u.answ.psz_answ );
+            FREE( p_object->u.answ.psz_answ );
         }
         break;
 
     case EN50221_MMI_MENU:
     case EN50221_MMI_LIST:
-        FREENULL( p_object->u.menu.psz_title );
-        FREENULL( p_object->u.menu.psz_subtitle );
-        FREENULL( p_object->u.menu.psz_bottom );
+        FREE( p_object->u.menu.psz_title );
+        FREE( p_object->u.menu.psz_subtitle );
+        FREE( p_object->u.menu.psz_bottom );
         for ( i = 0; i < p_object->u.menu.i_choices; i++ )
         {
-            free( p_object->u.menu.ppsz_choices[i] );
+            FREE( p_object->u.menu.ppsz_choices[i] );
         }
-        FREENULL( p_object->u.menu.ppsz_choices );
+        FREE( p_object->u.menu.ppsz_choices );
         break;
 
     default:
         break;
     }
+#undef FREE
 }
 
 #define MAX_DEMUX 256
@@ -152,17 +142,16 @@ struct access_sys_t
     int i_handle, i_frontend_handle;
     demux_handle_t p_demux_handles[MAX_DEMUX];
     frontend_t *p_frontend;
-    bool b_budget_mode;
-    bool b_scan_mode;
+    vlc_bool_t b_budget_mode;
 
     /* CA management */
     int i_ca_handle;
     int i_ca_type;
     int i_nb_slots;
-    bool pb_active_slot[MAX_CI_SLOTS];
-    bool pb_tc_has_data[MAX_CI_SLOTS];
-    bool pb_slot_mmi_expected[MAX_CI_SLOTS];
-    bool pb_slot_mmi_undisplayed[MAX_CI_SLOTS];
+    vlc_bool_t pb_active_slot[MAX_CI_SLOTS];
+    vlc_bool_t pb_tc_has_data[MAX_CI_SLOTS];
+    vlc_bool_t pb_slot_mmi_expected[MAX_CI_SLOTS];
+    vlc_bool_t pb_slot_mmi_undisplayed[MAX_CI_SLOTS];
     en50221_session_t p_sessions[MAX_SESSIONS];
     mtime_t i_ca_timeout, i_ca_next_event, i_frontend_timeout;
     dvbpsi_pmt_t *pp_selected_programs[MAX_PROGRAMS];
@@ -170,8 +159,6 @@ struct access_sys_t
 
     /* */
     int i_read_once;
-
-    int i_stat_counter;
 
 #ifdef ENABLE_HTTPD
     /* Local HTTP server */
@@ -182,13 +169,10 @@ struct access_sys_t
     vlc_mutex_t         httpd_mutex;
     vlc_cond_t          httpd_cond;
     mtime_t             i_httpd_timeout;
-    bool          b_request_frontend_info, b_request_mmi_info;
+    vlc_bool_t          b_request_frontend_info, b_request_mmi_info;
     char                *psz_frontend_info, *psz_mmi_info;
     char                *psz_request;
 #endif
-
-    /* Scan */
-    scan_t scan;
 };
 
 #define VIDEO0_TYPE     1
@@ -202,55 +186,43 @@ struct access_sys_t
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-
-int  FrontendOpen( access_t * );
-void FrontendPoll( access_t *p_access );
-int  FrontendSet( access_t * );
-void FrontendClose( access_t * );
+int  E_(FrontendOpen)( access_t * );
+void E_(FrontendPoll)( access_t *p_access );
+int  E_(FrontendSet)( access_t * );
+void E_(FrontendClose)( access_t * );
 #ifdef ENABLE_HTTPD
-void FrontendStatus( access_t * );
+void E_(FrontendStatus)( access_t * );
 #endif
 
-int  FrontendGetStatistic( access_t *, frontend_statistic_t * );
-void FrontendGetStatus( access_t *, frontend_status_t * );
-int  FrontendGetScanParameter( access_t *, scan_parameter_t * );
+int E_(DMXSetFilter)( access_t *, int i_pid, int * pi_fd, int i_type );
+int E_(DMXUnsetFilter)( access_t *, int i_fd );
 
-int DMXSetFilter( access_t *, int i_pid, int * pi_fd, int i_type );
-int DMXUnsetFilter( access_t *, int i_fd );
+int  E_(DVROpen)( access_t * );
+void E_(DVRClose)( access_t * );
 
-int  DVROpen( access_t * );
-void DVRClose( access_t * );
-
-int  CAMOpen( access_t * );
-int  CAMPoll( access_t * );
-int  CAMSet( access_t *, dvbpsi_pmt_t * );
-void CAMClose( access_t * );
+int  E_(CAMOpen)( access_t * );
+int  E_(CAMPoll)( access_t * );
+int  E_(CAMSet)( access_t *, dvbpsi_pmt_t * );
+void E_(CAMClose)( access_t * );
 #ifdef ENABLE_HTTPD
-void CAMStatus( access_t * );
+void E_(CAMStatus)( access_t * );
 #endif
 
-int en50221_Init( access_t * );
-int en50221_Poll( access_t * );
-int en50221_SetCAPMT( access_t *, dvbpsi_pmt_t * );
-int en50221_OpenMMI( access_t * p_access, int i_slot );
-int en50221_CloseMMI( access_t * p_access, int i_slot );
-en50221_mmi_object_t *en50221_GetMMIObject( access_t * p_access,
+int E_(en50221_Init)( access_t * );
+int E_(en50221_Poll)( access_t * );
+int E_(en50221_SetCAPMT)( access_t *, dvbpsi_pmt_t * );
+int E_(en50221_OpenMMI)( access_t * p_access, int i_slot );
+int E_(en50221_CloseMMI)( access_t * p_access, int i_slot );
+en50221_mmi_object_t *E_(en50221_GetMMIObject)( access_t * p_access,
                                                 int i_slot );
-void en50221_SendMMIObject( access_t * p_access, int i_slot,
+void E_(en50221_SendMMIObject)( access_t * p_access, int i_slot,
                                 en50221_mmi_object_t *p_object );
-void en50221_End( access_t * );
-
-char *dvbsi_to_utf8( const char *psz_instring, size_t i_length );
+void E_(en50221_End)( access_t * );
 
 #ifdef ENABLE_HTTPD
-int HTTPOpen( access_t *p_access );
-void HTTPClose( access_t *p_access );
-const char *HTTPExtractValue( const char *psz_uri, const char *psz_name,
-                              char *psz_value, int i_value_max );
+int E_(HTTPOpen)( access_t *p_access );
+void E_(HTTPClose)( access_t *p_access );
+char *E_(HTTPExtractValue)( char *psz_uri, const char *psz_name,
+                            char *psz_value, int i_value_max );
 #endif
-/*****************************************************************************
- * Hacks
- *****************************************************************************/
-#define STRINGIFY( z )   UGLY_KLUDGE( z )
-#define UGLY_KLUDGE( z ) #z
 

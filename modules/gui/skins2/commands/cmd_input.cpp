@@ -2,7 +2,7 @@
  * cmd_input.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9262c0d36a9e013a983d61405b65b8344d082806 $
+ * $Id: fb0be613c47c35bd58c13d7d4ae8ce153efde916 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,38 +22,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <vlc/aout.h>
 #include "cmd_input.hpp"
 #include "cmd_dialogs.hpp"
-#include <vlc_aout.h>
-#include <vlc_input.h>
-#include <vlc_playlist.h>
+
 
 void CmdPlay::execute()
 {
     playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
     if( pPlaylist == NULL )
-        return;
-
-    // if already playing an input, reset rate to normal speed
-    input_thread_t *pInput = playlist_CurrentInput( pPlaylist );
-    if( pInput )
     {
-        var_SetFloat( pInput, "rate", 1.0 );
-        vlc_object_release( pInput );
+        return;
     }
 
-    playlist_Lock( pPlaylist );
-    const bool b_empty = playlist_IsEmpty( pPlaylist );
-    playlist_Unlock( pPlaylist );
-
-    if( !b_empty )
+    if( pPlaylist->i_size )
     {
         playlist_Play( pPlaylist );
     }
     else
     {
         // If the playlist is empty, open a file requester instead
-        CmdDlgFile( getIntf() ).execute();
+        CmdDlgFile cmd( getIntf() );
+        cmd.execute();
     }
 }
 
@@ -61,27 +51,38 @@ void CmdPlay::execute()
 void CmdPause::execute()
 {
     playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    if( pPlaylist != NULL )
-        playlist_Pause( pPlaylist );
+    if( pPlaylist == NULL )
+    {
+        return;
+    }
+
+    playlist_Pause( pPlaylist );
 }
 
 
 void CmdStop::execute()
 {
     playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    if( pPlaylist != NULL )
-        playlist_Stop( pPlaylist );
+    if( pPlaylist == NULL )
+    {
+        return;
+    }
+
+    playlist_Stop( pPlaylist );
 }
 
 
 void CmdSlower::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *pInput = playlist_CurrentInput( pPlaylist );
-
+    input_thread_t *pInput =
+        (input_thread_t *)vlc_object_find( getIntf(), VLC_OBJECT_INPUT,
+                                           FIND_ANYWHERE );
     if( pInput )
     {
-        var_TriggerCallback( pInput, "rate-slower" );
+        vlc_value_t val;
+        val.b_bool = VLC_TRUE;
+
+        var_Set( pInput, "rate-slower", val );
         vlc_object_release( pInput );
     }
 }
@@ -89,12 +90,15 @@ void CmdSlower::execute()
 
 void CmdFaster::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *pInput = playlist_CurrentInput( pPlaylist );
-
+    input_thread_t *pInput =
+        (input_thread_t *)vlc_object_find( getIntf(), VLC_OBJECT_INPUT,
+                                           FIND_ANYWHERE );
     if( pInput )
     {
-        var_TriggerCallback( pInput, "rate-faster" );
+        vlc_value_t val;
+        val.b_bool = VLC_TRUE;
+
+        var_Set( pInput, "rate-faster", val );
         vlc_object_release( pInput );
     }
 }
@@ -102,18 +106,18 @@ void CmdFaster::execute()
 
 void CmdMute::execute()
 {
-    aout_ToggleMute( getIntf()->p_sys->p_playlist, NULL );
+    aout_VolumeMute( getIntf(), NULL );
 }
 
 
 void CmdVolumeUp::execute()
 {
-    aout_VolumeUp( getIntf()->p_sys->p_playlist, 1, NULL );
+    aout_VolumeUp( getIntf(), 1, NULL );
 }
 
 
 void CmdVolumeDown::execute()
 {
-    aout_VolumeDown( getIntf()->p_sys->p_playlist, 1, NULL );
+    aout_VolumeDown( getIntf(), 1, NULL );
 }
 

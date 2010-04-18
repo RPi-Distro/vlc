@@ -1,7 +1,5 @@
 SOURCES_dvb = \
 	access.c \
-	scan.c \
-	scan.h \
 	linux_dvb.c \
 	en50221.c \
 	http.c \

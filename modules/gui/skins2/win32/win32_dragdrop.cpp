@@ -2,7 +2,7 @@
  * win32_dragdrop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9a9c3abb7075729c0aa2b8fbad61f9425ed41724 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -146,22 +146,43 @@ STDMETHODIMP Win32DragDrop::Drop( LPDATAOBJECT pDataObj, DWORD grfKeyState,
 
 void Win32DragDrop::HandleDrop( HDROP HDrop )
 {
-    // Get the number of dropped files
-    int nbFiles = DragQueryFileW( HDrop, 0xFFFFFFFF, NULL, 0 );
-
-    // For each dropped file
-    for( int i = 0; i < nbFiles; i++ )
+    if( GetVersion() < 0x80000000 )
     {
-        // Get the name of the file
-        int nameLength = DragQueryFileW( HDrop, i, NULL, 0 ) + 1;
-        wchar_t *psz_fileName = new WCHAR[nameLength];
-        DragQueryFileW( HDrop, i, psz_fileName, nameLength );
+        // Use Unicode for Windows NT and above
 
-        // Add the file
-        CmdAddItem cmd(getIntf(),sFromWide(psz_fileName),m_playOnDrop);
-        cmd.execute();
+        // Get the number of dropped files
+        int nbFiles = DragQueryFileW( HDrop, 0xFFFFFFFF, NULL, 0 );
 
-        delete[] psz_fileName;
+        // For each dropped file
+        for( int i = 0; i < nbFiles; i++ )
+        {
+            // Get the name of the file
+            int nameLength = DragQueryFileW( HDrop, i, NULL, 0 ) + 1;
+            wchar_t *psz_fileName = new WCHAR[nameLength];
+            DragQueryFileW( HDrop, i, psz_fileName, nameLength );
+
+            // Add the file
+            CmdAddItem cmd(getIntf(),sFromWide(psz_fileName),m_playOnDrop);
+            cmd.execute();
+
+            delete[] psz_fileName;
+        }
+    }
+    else
+    {
+        int nbFiles = DragQueryFile( HDrop, 0xFFFFFFFF, NULL, 0 );
+
+        for( int i = 0; i < nbFiles; i++ )
+        {
+            int nameLength = DragQueryFile( HDrop, i, NULL, 0 ) + 1;
+            char *psz_fileName = new char[nameLength];
+            DragQueryFile( HDrop, i, psz_fileName, nameLength );
+
+            CmdAddItem cmd(getIntf(),sFromLocale(psz_fileName),m_playOnDrop);
+            cmd.execute();
+
+            delete[] psz_fileName;
+        }
     }
 
     DragFinish( HDrop );

@@ -2,7 +2,7 @@
  * cmd_snapshot.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c8c5cb43d5c1a73d0586b5a145ddd5fd4cfd01be $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -29,7 +29,5 @@
 
 /// Command to snapshot VLC
 DEFINE_COMMAND(Snapshot, "snapshot" )
-DEFINE_COMMAND(ToggleRecord, "togglerecord" )
-DEFINE_COMMAND(NextFrame, "nextframe" )
 
 #endif

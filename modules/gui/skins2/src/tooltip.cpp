@@ -2,7 +2,7 @@
  * tooltip.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 644ef7950d14590bff8bdbbbfad0249e37149810 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -49,9 +49,12 @@ Tooltip::Tooltip( intf_thread_t *pIntf, const GenericFont &rFont, int delay ):
 Tooltip::~Tooltip()
 {
     VarManager::instance( getIntf() )->getTooltipText().delObserver( this );
-    delete m_pTimer;
-    delete m_pOsTooltip;
-    delete m_pImage;
+    SKINS_DELETE( m_pTimer );
+    SKINS_DELETE( m_pOsTooltip );
+    if( m_pImage )
+    {
+        delete m_pImage;
+    }
 }
 
 
@@ -103,7 +106,10 @@ void Tooltip::makeImage( const UString &rText )
     int h = m_rFont.getSize() + 8;
 
     // Create the image of the tooltip
-    delete m_pImage;
+    if( m_pImage )
+    {
+        delete m_pImage;
+    }
     m_pImage = OSFactory::instance( getIntf() )->createOSGraphics( w, h );
     m_pImage->fillRect( 0, 0, w, h, 0xffffd0 );
     m_pImage->drawRect( 0, 0, w, h, 0x000000 );

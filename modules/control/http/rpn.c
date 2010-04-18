@@ -2,7 +2,7 @@
  * rpn.c : RPN evaluator for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 7d316229f72d89295aee619410da2f3ceb440484 $
+ * $Id: 8a4af19cfbc8437359576d3812d39147e994ae40 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -22,50 +22,55 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
 
 #include "http.h"
-#include <vlc_url.h>
-#include <vlc_meta.h>
-#include <vlc_strings.h>
+#include "vlc_url.h"
+#include "vlc_meta.h"
+#include "vlc_strings.h"
 
 static vlc_object_t *GetVLCObject( intf_thread_t *p_intf,
                                    const char *psz_object,
-                                   bool *pb_need_release )
+                                   vlc_bool_t *pb_need_release )
 {
     intf_sys_t    *p_sys = p_intf->p_sys;
+    int i_object_type = 0;
     vlc_object_t *p_object = NULL;
-    *pb_need_release = false;
+    *pb_need_release = VLC_FALSE;
 
-    if( !strcmp( psz_object, "VLC_OBJECT_LIBVLC" ) )
-        p_object = VLC_OBJECT(p_intf->p_libvlc);
+    if( !strcmp( psz_object, "VLC_OBJECT_ROOT" ) )
+        i_object_type = VLC_OBJECT_ROOT;
+    else if( !strcmp( psz_object, "VLC_OBJECT_VLC" ) )
+        p_object = VLC_OBJECT(p_intf->p_vlc);
+    else if( !strcmp( psz_object, "VLC_OBJECT_INTF" ) )
+        p_object = VLC_OBJECT(p_intf);
     else if( !strcmp( psz_object, "VLC_OBJECT_PLAYLIST" ) )
         p_object = VLC_OBJECT(p_sys->p_playlist);
     else if( !strcmp( psz_object, "VLC_OBJECT_INPUT" ) )
         p_object = VLC_OBJECT(p_sys->p_input);
-    else if( p_sys->p_input )
-    {
-        if( !strcmp( psz_object, "VLC_OBJECT_VOUT" ) )
-            p_object = VLC_OBJECT( input_GetVout( p_sys->p_input ) );
-        else if( !strcmp( psz_object, "VLC_OBJECT_AOUT" ) )
-            p_object = VLC_OBJECT( input_GetAout( p_sys->p_input ) );
-        if( p_object )
-            *pb_need_release = true;
-    }
+    else if( !strcmp( psz_object, "VLC_OBJECT_VOUT" ) )
+        i_object_type = VLC_OBJECT_VOUT;
+    else if( !strcmp( psz_object, "VLC_OBJECT_AOUT" ) )
+        i_object_type = VLC_OBJECT_AOUT;
+    else if( !strcmp( psz_object, "VLC_OBJECT_SOUT" ) )
+        i_object_type = VLC_OBJECT_SOUT;
     else
         msg_Warn( p_intf, "unknown object type (%s)", psz_object );
+
+    if( p_object == NULL && i_object_type )
+    {
+        *pb_need_release = VLC_TRUE;
+        p_object = vlc_object_find( p_intf, i_object_type, FIND_ANYWHERE );
+    }
 
     return p_object;
 }
 
-void SSInit( rpn_stack_t *st )
+void E_(SSInit)( rpn_stack_t *st )
 {
     st->i_stack = 0;
 }
 
-void SSClean( rpn_stack_t *st )
+void E_(SSClean)( rpn_stack_t *st )
 {
     while( st->i_stack > 0 )
     {
@@ -73,7 +78,7 @@ void SSClean( rpn_stack_t *st )
     }
 }
 
-void SSPush( rpn_stack_t *st, const char *s )
+void E_(SSPush)( rpn_stack_t *st, const char *s )
 {
     if( st->i_stack < STACK_MAX )
     {
@@ -81,7 +86,7 @@ void SSPush( rpn_stack_t *st, const char *s )
     }
 }
 
-char *SSPop( rpn_stack_t *st )
+char *E_(SSPop)( rpn_stack_t *st )
 {
     if( st->i_stack <= 0 )
     {
@@ -93,18 +98,19 @@ char *SSPop( rpn_stack_t *st )
     }
 }
 
-int SSPopN( rpn_stack_t *st, mvar_t  *vars )
+int E_(SSPopN)( rpn_stack_t *st, mvar_t  *vars )
 {
     char *name;
+    char *value;
 
     char *end;
     int  i;
 
-    name = SSPop( st );
+    name = E_(SSPop)( st );
     i = strtol( name, &end, 0 );
     if( end == name )
     {
-        const char *value = mvar_GetValue( vars, name );
+        value = E_(mvar_GetValue)( vars, name );
         i = atoi( value );
     }
     free( name );
@@ -112,15 +118,15 @@ int SSPopN( rpn_stack_t *st, mvar_t  *vars )
     return( i );
 }
 
-void SSPushN( rpn_stack_t *st, int i )
+void E_(SSPushN)( rpn_stack_t *st, int i )
 {
     char v[12];
 
     snprintf( v, sizeof (v), "%d", i );
-    SSPush( st, v );
+    E_(SSPush)( st, v );
 }
 
-void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
+void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
                       rpn_stack_t *st, char *exp )
 {
     intf_sys_t    *p_sys = p_intf->p_sys;
@@ -138,14 +144,14 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         if( *exp == '\'' )
         {
             /* extract string */
-            p = FirstWord( exp, exp );
-            SSPush( st, exp );
+            p = E_(FirstWord)( exp, exp );
+            E_(SSPush)( st, exp );
             exp = p;
             continue;
         }
 
         /* extract token */
-        p = FirstWord( exp, exp );
+        p = E_(FirstWord)( exp, exp );
         s = exp;
         if( p == NULL )
         {
@@ -164,129 +170,129 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         /* 1. Integer function */
         if( !strcmp( s, "!" ) )
         {
-            SSPushN( st, ~SSPopN( st, vars ) );
+            E_(SSPushN)( st, ~E_(SSPopN)( st, vars ) );
         }
         else if( !strcmp( s, "^" ) )
         {
-            SSPushN( st, SSPopN( st, vars ) ^ SSPopN( st, vars ) );
+            E_(SSPushN)( st, E_(SSPopN)( st, vars ) ^ E_(SSPopN)( st, vars ) );
         }
         else if( !strcmp( s, "&" ) )
         {
-            SSPushN( st, SSPopN( st, vars ) & SSPopN( st, vars ) );
+            E_(SSPushN)( st, E_(SSPopN)( st, vars ) & E_(SSPopN)( st, vars ) );
         }
         else if( !strcmp( s, "|" ) )
         {
-            SSPushN( st, SSPopN( st, vars ) | SSPopN( st, vars ) );
+            E_(SSPushN)( st, E_(SSPopN)( st, vars ) | E_(SSPopN)( st, vars ) );
         }
         else if( !strcmp( s, "+" ) )
         {
-            SSPushN( st, SSPopN( st, vars ) + SSPopN( st, vars ) );
+            E_(SSPushN)( st, E_(SSPopN)( st, vars ) + E_(SSPopN)( st, vars ) );
         }
         else if( !strcmp( s, "-" ) )
         {
-            int j = SSPopN( st, vars );
-            int i = SSPopN( st, vars );
-            SSPushN( st, i - j );
+            int j = E_(SSPopN)( st, vars );
+            int i = E_(SSPopN)( st, vars );
+            E_(SSPushN)( st, i - j );
         }
         else if( !strcmp( s, "*" ) )
         {
-            SSPushN( st, SSPopN( st, vars ) * SSPopN( st, vars ) );
+            E_(SSPushN)( st, E_(SSPopN)( st, vars ) * E_(SSPopN)( st, vars ) );
         }
         else if( !strcmp( s, "/" ) )
         {
             int i, j;
 
-            j = SSPopN( st, vars );
-            i = SSPopN( st, vars );
+            j = E_(SSPopN)( st, vars );
+            i = E_(SSPopN)( st, vars );
 
-            SSPushN( st, j != 0 ? i / j : 0 );
+            E_(SSPushN)( st, j != 0 ? i / j : 0 );
         }
         else if( !strcmp( s, "%" ) )
         {
             int i, j;
 
-            j = SSPopN( st, vars );
-            i = SSPopN( st, vars );
+            j = E_(SSPopN)( st, vars );
+            i = E_(SSPopN)( st, vars );
 
-            SSPushN( st, j != 0 ? i % j : 0 );
+            E_(SSPushN)( st, j != 0 ? i % j : 0 );
         }
         /* 2. integer tests */
         else if( !strcmp( s, "=" ) )
         {
-            SSPushN( st, SSPopN( st, vars ) == SSPopN( st, vars ) ? -1 : 0 );
+            E_(SSPushN)( st, E_(SSPopN)( st, vars ) == E_(SSPopN)( st, vars ) ? -1 : 0 );
         }
         else if( !strcmp( s, "!=" ) )
         {
-            SSPushN( st, SSPopN( st, vars ) != SSPopN( st, vars ) ? -1 : 0 );
+            E_(SSPushN)( st, E_(SSPopN)( st, vars ) != E_(SSPopN)( st, vars ) ? -1 : 0 );
         }
         else if( !strcmp( s, "<" ) )
         {
-            int j = SSPopN( st, vars );
-            int i = SSPopN( st, vars );
+            int j = E_(SSPopN)( st, vars );
+            int i = E_(SSPopN)( st, vars );
 
-            SSPushN( st, i < j ? -1 : 0 );
+            E_(SSPushN)( st, i < j ? -1 : 0 );
         }
         else if( !strcmp( s, ">" ) )
         {
-            int j = SSPopN( st, vars );
-            int i = SSPopN( st, vars );
+            int j = E_(SSPopN)( st, vars );
+            int i = E_(SSPopN)( st, vars );
 
-            SSPushN( st, i > j ? -1 : 0 );
+            E_(SSPushN)( st, i > j ? -1 : 0 );
         }
         else if( !strcmp( s, "<=" ) )
         {
-            int j = SSPopN( st, vars );
-            int i = SSPopN( st, vars );
+            int j = E_(SSPopN)( st, vars );
+            int i = E_(SSPopN)( st, vars );
 
-            SSPushN( st, i <= j ? -1 : 0 );
+            E_(SSPushN)( st, i <= j ? -1 : 0 );
         }
         else if( !strcmp( s, ">=" ) )
         {
-            int j = SSPopN( st, vars );
-            int i = SSPopN( st, vars );
+            int j = E_(SSPopN)( st, vars );
+            int i = E_(SSPopN)( st, vars );
 
-            SSPushN( st, i >= j ? -1 : 0 );
+            E_(SSPushN)( st, i >= j ? -1 : 0 );
         }
         /* 3. string functions */
         else if( !strcmp( s, "strcat" ) )
         {
-            char *s2 = SSPop( st );
-            char *s1 = SSPop( st );
+            char *s2 = E_(SSPop)( st );
+            char *s1 = E_(SSPop)( st );
             char *str = malloc( strlen( s1 ) + strlen( s2 ) + 1 );
 
             strcpy( str, s1 );
             strcat( str, s2 );
 
-            SSPush( st, str );
+            E_(SSPush)( st, str );
             free( s1 );
             free( s2 );
             free( str );
         }
         else if( !strcmp( s, "strcmp" ) )
         {
-            char *s2 = SSPop( st );
-            char *s1 = SSPop( st );
+            char *s2 = E_(SSPop)( st );
+            char *s1 = E_(SSPop)( st );
 
-            SSPushN( st, strcmp( s1, s2 ) );
+            E_(SSPushN)( st, strcmp( s1, s2 ) );
             free( s1 );
             free( s2 );
         }
         else if( !strcmp( s, "strncmp" ) )
         {
-            int n = SSPopN( st, vars );
-            char *s2 = SSPop( st );
-            char *s1 = SSPop( st );
+            int n = E_(SSPopN)( st, vars );
+            char *s2 = E_(SSPop)( st );
+            char *s1 = E_(SSPop)( st );
 
-            SSPushN( st, strncmp( s1, s2 , n ) );
+            E_(SSPushN)( st, strncmp( s1, s2 , n ) );
             free( s1 );
             free( s2 );
         }
         else if( !strcmp( s, "strsub" ) )
         {
-            int n = SSPopN( st, vars );
-            int m = SSPopN( st, vars );
+            int n = E_(SSPopN)( st, vars );
+            int m = E_(SSPopN)( st, vars );
             int i_len;
-            char *s = SSPop( st );
+            char *s = E_(SSPop)( st );
             char *str;
 
             if( n >= m )
@@ -303,22 +309,22 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             memcpy( str, s + m - 1, i_len );
             str[ i_len ] = '\0';
 
-            SSPush( st, str );
+            E_(SSPush)( st, str );
             free( s );
             free( str );
         }
         else if( !strcmp( s, "strlen" ) )
         {
-            char *str = SSPop( st );
+            char *str = E_(SSPop)( st );
 
-            SSPushN( st, strlen( str ) );
+            E_(SSPushN)( st, strlen( str ) );
             free( str );
         }
         else if( !strcmp( s, "str_replace" ) )
         {
-            char *psz_to = SSPop( st );
-            char *psz_from = SSPop( st );
-            char *psz_in = SSPop( st );
+            char *psz_to = E_(SSPop)( st );
+            char *psz_from = E_(SSPop)( st );
+            char *psz_in = E_(SSPop)( st );
             char *psz_in_current = psz_in;
             char *psz_out = malloc( strlen(psz_in) * strlen(psz_to) + 1 );
             char *psz_out_current = psz_out;
@@ -335,7 +341,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             psz_out_current += strlen(psz_in_current);
             *psz_out_current = '\0';
 
-            SSPush( st, psz_out );
+            E_(SSPush)( st, psz_out );
             free( psz_to );
             free( psz_from );
             free( psz_in );
@@ -343,40 +349,34 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         }
         else if( !strcmp( s, "url_extract" ) )
         {
-            const char *url = mvar_GetValue( vars, "url_value" );
-            char *name = SSPop( st );
-            char *value = ExtractURIString( url, name );
-            if( value != NULL )
-            {
-                decode_URI( value );
-                SSPush( st, value );
-                free( value );
-            }
-            else
-                SSPush( st, "" );
+            char *url = E_(mvar_GetValue)( vars, "url_value" );
+            char *name = E_(SSPop)( st );
+            char value[512];
+            char *tmp;
 
+            E_(ExtractURIValue)( url, name, value, 512 );
+            decode_URI( value );
+            tmp = E_(FromUTF8)( p_intf, value );
+            E_(SSPush)( st, tmp );
+            free( tmp );
             free( name );
         }
         else if( !strcmp( s, "url_encode" ) )
         {
-            char *url = SSPop( st );
-            char *value = encode_URI_component( url );
+            char *url = E_(SSPop)( st );
+            char *value;
+
+            value = E_(ToUTF8)( p_intf, url );
             free( url );
-            SSPush( st, value );
-            free( value );
-        }
-        else if( !strcmp( s, "xml_encode" )
-              || !strcmp( s, "htmlspecialchars" ) )
-        {
-            char *url = SSPop( st );
-            char *value = convert_xml_special_chars( url );
+            url = value;
+            value = vlc_UrlEncode( url );
             free( url );
-            SSPush( st, value );
+            E_(SSPush)( st, value );
             free( value );
         }
         else if( !strcmp( s, "addslashes" ) )
         {
-            char *psz_src = SSPop( st );
+            char *psz_src = E_(SSPop)( st );
             char *psz_dest;
             char *str = psz_src;
 
@@ -393,13 +393,13 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             }
             *p = '\0';
 
-            SSPush( st, psz_dest );
+            E_(SSPush)( st, psz_dest );
             free( psz_src );
             free( psz_dest );
         }
         else if( !strcmp( s, "stripslashes" ) )
         {
-            char *psz_src = SSPop( st );
+            char *psz_src = E_(SSPop)( st );
             char *psz_dest;
             char *str = psz_src;
 
@@ -415,104 +415,112 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             }
             *p = '\0';
 
-            SSPush( st, psz_dest );
+            E_(SSPush)( st, psz_dest );
+            free( psz_src );
+            free( psz_dest );
+        }
+        else if( !strcmp( s, "htmlspecialchars" ) )
+        {
+            char *psz_src = E_(SSPop)( st );
+            char *psz_dest;
+
+            psz_dest = convert_xml_special_chars( psz_src );
+
+            E_(SSPush)( st, psz_dest );
             free( psz_src );
             free( psz_dest );
         }
         else if( !strcmp( s, "realpath" ) )
         {
-            char *psz_src = SSPop( st );
-            char *psz_dir = RealPath( psz_src );
+            char *psz_src = E_(SSPop)( st );
+            char *psz_dir = E_(RealPath)( p_intf, psz_src );
 
-            SSPush( st, psz_dir );
+            E_(SSPush)( st, psz_dir );
             free( psz_src );
             free( psz_dir );
         }
         /* 4. stack functions */
         else if( !strcmp( s, "dup" ) )
         {
-            char *str = SSPop( st );
-            SSPush( st, str );
-            SSPush( st, str );
+            char *str = E_(SSPop)( st );
+            E_(SSPush)( st, str );
+            E_(SSPush)( st, str );
             free( str );
         }
         else if( !strcmp( s, "drop" ) )
         {
-            char *str = SSPop( st );
+            char *str = E_(SSPop)( st );
             free( str );
         }
         else if( !strcmp( s, "swap" ) )
         {
-            char *s1 = SSPop( st );
-            char *s2 = SSPop( st );
+            char *s1 = E_(SSPop)( st );
+            char *s2 = E_(SSPop)( st );
 
-            SSPush( st, s1 );
-            SSPush( st, s2 );
+            E_(SSPush)( st, s1 );
+            E_(SSPush)( st, s2 );
             free( s1 );
             free( s2 );
         }
         else if( !strcmp( s, "flush" ) )
         {
-            SSClean( st );
-            SSInit( st );
+            E_(SSClean)( st );
+            E_(SSInit)( st );
         }
         else if( !strcmp( s, "store" ) )
         {
-            char *value = SSPop( st );
-            char *name  = SSPop( st );
+            char *value = E_(SSPop)( st );
+            char *name  = E_(SSPop)( st );
 
-            mvar_PushNewVar( vars, name, value );
+            E_(mvar_PushNewVar)( vars, name, value );
             free( name );
             free( value );
         }
         else if( !strcmp( s, "value" ) )
         {
-            char *name  = SSPop( st );
-            const char *value = mvar_GetValue( vars, name );
+            char *name  = E_(SSPop)( st );
+            char *value = E_(mvar_GetValue)( vars, name );
 
-            SSPush( st, value );
+            E_(SSPush)( st, value );
 
             free( name );
         }
         /* 5. player control */
         else if( !strcmp( s, "vlc_play" ) )
         {
-            int i_id = SSPopN( st, vars );
+            int i_id = E_(SSPopN)( st, vars );
             int i_ret;
 
-            playlist_Lock( p_sys->p_playlist );
-            i_ret = playlist_Control( p_sys->p_playlist, PLAYLIST_VIEWPLAY,
-                                      pl_Locked, NULL,
+            i_ret = playlist_Control( p_sys->p_playlist, PLAYLIST_ITEMPLAY,
                                       playlist_ItemGetById( p_sys->p_playlist,
                                       i_id ) );
-            playlist_Unlock( p_sys->p_playlist );
             msg_Dbg( p_intf, "requested playlist item: %i", i_id );
-            SSPushN( st, i_ret );
+            E_(SSPushN)( st, i_ret );
         }
         else if( !strcmp( s, "vlc_stop" ) )
         {
-            playlist_Control( p_sys->p_playlist, PLAYLIST_STOP, pl_Unlocked );
+            playlist_Control( p_sys->p_playlist, PLAYLIST_STOP );
             msg_Dbg( p_intf, "requested playlist stop" );
         }
         else if( !strcmp( s, "vlc_pause" ) )
         {
-            playlist_Control( p_sys->p_playlist, PLAYLIST_PAUSE, pl_Unlocked );
+            playlist_Control( p_sys->p_playlist, PLAYLIST_PAUSE );
             msg_Dbg( p_intf, "requested playlist pause" );
         }
         else if( !strcmp( s, "vlc_next" ) )
         {
-            playlist_Control( p_sys->p_playlist, PLAYLIST_SKIP, pl_Unlocked, 1 );
+            playlist_Control( p_sys->p_playlist, PLAYLIST_SKIP, 1 );
             msg_Dbg( p_intf, "requested playlist next" );
         }
         else if( !strcmp( s, "vlc_previous" ) )
         {
-            playlist_Control( p_sys->p_playlist, PLAYLIST_SKIP, pl_Unlocked, -1 );
+            playlist_Control( p_sys->p_playlist, PLAYLIST_SKIP, -1 );
             msg_Dbg( p_intf, "requested playlist previous" );
         }
         else if( !strcmp( s, "vlc_seek" ) )
         {
-            char *psz_value = SSPop( st );
-            HandleSeek( p_intf, psz_value );
+            char *psz_value = E_(SSPop)( st );
+            E_(HandleSeek)( p_intf, psz_value );
             msg_Dbg( p_intf, "requested playlist seek: %s", psz_value );
             free( psz_value );
         }
@@ -525,9 +533,9 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
 
             if( !strcmp( s, "vlc_var_type" ) )
             {
-                char *psz_object = SSPop( st );
-                char *psz_variable = SSPop( st );
-                bool b_need_release;
+                char *psz_object = E_(SSPop)( st );
+                char *psz_variable = E_(SSPop)( st );
+                vlc_bool_t b_need_release;
 
                 p_object = GetVLCObject( p_intf, psz_object, &b_need_release );
 
@@ -540,7 +548,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             }
             else
             {
-                char *psz_variable = SSPop( st );
+                char *psz_variable = E_(SSPop)( st );
                 p_object = VLC_OBJECT(p_intf);
                 i_type = config_GetType( p_object, psz_variable );
                 free( psz_variable );
@@ -584,20 +592,20 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             else
                 psz_type = "INVALID";
 
-            SSPush( st, psz_type );
+            E_(SSPush)( st, psz_type );
         }
         else if( !strcmp( s, "vlc_var_set" ) )
         {
-            char *psz_object = SSPop( st );
-            char *psz_variable = SSPop( st );
-            bool b_need_release;
+            char *psz_object = E_(SSPop)( st );
+            char *psz_variable = E_(SSPop)( st );
+            vlc_bool_t b_need_release;
 
             vlc_object_t *p_object = GetVLCObject( p_intf, psz_object,
                                                    &b_need_release );
 
             if( p_object != NULL )
             {
-                bool b_error = false;
+                vlc_bool_t b_error = VLC_FALSE;
                 char *psz_value = NULL;
                 vlc_value_t val;
                 int i_type;
@@ -607,13 +615,13 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 switch( i_type & VLC_VAR_TYPE )
                 {
                 case VLC_VAR_BOOL:
-                    val.b_bool = SSPopN( st, vars );
+                    val.b_bool = E_(SSPopN)( st, vars );
                     msg_Dbg( p_intf, "requested %s var change: %s->%d",
                              psz_object, psz_variable, val.b_bool );
                     break;
                 case VLC_VAR_INTEGER:
                 case VLC_VAR_HOTKEY:
-                    val.i_int = SSPopN( st, vars );
+                    val.i_int = E_(SSPopN)( st, vars );
                     msg_Dbg( p_intf, "requested %s var change: %s->%d",
                              psz_object, psz_variable, val.i_int );
                     break;
@@ -622,26 +630,27 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 case VLC_VAR_FILE:
                 case VLC_VAR_DIRECTORY:
                 case VLC_VAR_VARIABLE:
-                    val.psz_string = psz_value = SSPop( st );
+                    val.psz_string = psz_value = E_(SSPop)( st );
                     msg_Dbg( p_intf, "requested %s var change: %s->%s",
                              psz_object, psz_variable, psz_value );
                     break;
                 case VLC_VAR_FLOAT:
-                    psz_value = SSPop( st );
+                    psz_value = E_(SSPop)( st );
                     val.f_float = atof( psz_value );
                     msg_Dbg( p_intf, "requested %s var change: %s->%f",
                              psz_object, psz_variable, val.f_float );
                     break;
                 default:
-                    SSPopN( st, vars );
+                    E_(SSPopN)( st, vars );
                     msg_Warn( p_intf, "invalid %s variable type %d (%s)",
                               psz_object, i_type & VLC_VAR_TYPE, psz_variable );
-                    b_error = true;
+                    b_error = VLC_TRUE;
                 }
 
                 if( !b_error )
                     var_Set( p_object, psz_variable, val );
-                free( psz_value );
+                if( psz_value != NULL )
+                    free( psz_value );
             }
             else
                 msg_Warn( p_intf, "vlc_var_set called without an object" );
@@ -653,9 +662,9 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         }
         else if( !strcmp( s, "vlc_var_get" ) )
         {
-            char *psz_object = SSPop( st );
-            char *psz_variable = SSPop( st );
-            bool b_need_release;
+            char *psz_object = E_(SSPop)( st );
+            char *psz_variable = E_(SSPop)( st );
+            vlc_bool_t b_need_release;
 
             vlc_object_t *p_object = GetVLCObject( p_intf, psz_object,
                                                    &b_need_release );
@@ -671,39 +680,39 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 switch( i_type & VLC_VAR_TYPE )
                 {
                 case VLC_VAR_BOOL:
-                    SSPushN( st, val.b_bool );
+                    E_(SSPushN)( st, val.b_bool );
                     break;
                 case VLC_VAR_INTEGER:
                 case VLC_VAR_HOTKEY:
-                    SSPushN( st, val.i_int );
+                    E_(SSPushN)( st, val.i_int );
                     break;
                 case VLC_VAR_STRING:
                 case VLC_VAR_MODULE:
                 case VLC_VAR_FILE:
                 case VLC_VAR_DIRECTORY:
                 case VLC_VAR_VARIABLE:
-                    SSPush( st, val.psz_string );
+                    E_(SSPush)( st, val.psz_string );
                     free( val.psz_string );
                     break;
                 case VLC_VAR_FLOAT:
                 {
                     char psz_value[20];
                     lldiv_t value = lldiv( val.f_float * 1000000, 1000000 );
-                    snprintf( psz_value, sizeof(psz_value), "%lld.%06u",
+                    snprintf( psz_value, sizeof(psz_value), I64Fd".%06u",
                                     value.quot, (unsigned int)value.rem );
-                    SSPush( st, psz_value );
+                    E_(SSPush)( st, psz_value );
                     break;
                 }
                 default:
                     msg_Warn( p_intf, "invalid %s variable type %d (%s)",
                               psz_object, i_type & VLC_VAR_TYPE, psz_variable );
-                    SSPush( st, "" );
+                    E_(SSPush)( st, "" );
                 }
             }
             else
             {
                 msg_Warn( p_intf, "vlc_var_get called without an object" );
-                SSPush( st, "" );
+                E_(SSPush)( st, "" );
             }
             free( psz_variable );
             free( psz_object );
@@ -713,8 +722,8 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         }
         else if( !strcmp( s, "vlc_object_exists" ) )
         {
-            char *psz_object = SSPop( st );
-            bool b_need_release;
+            char *psz_object = E_(SSPop)( st );
+            vlc_bool_t b_need_release;
 
             vlc_object_t *p_object = GetVLCObject( p_intf, psz_object,
                                                    &b_need_release );
@@ -722,34 +731,34 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 vlc_object_release( p_object );
 
             if( p_object != NULL )
-                SSPush( st, "1" );
+                E_(SSPush)( st, "1" );
             else
-                SSPush( st, "0" );
+                E_(SSPush)( st, "0" );
         }
         else if( !strcmp( s, "vlc_config_set" ) )
         {
-            char *psz_variable = SSPop( st );
+            char *psz_variable = E_(SSPop)( st );
             int i_type = config_GetType( p_intf, psz_variable );
 
             switch( i_type & VLC_VAR_TYPE )
             {
             case VLC_VAR_BOOL:
             case VLC_VAR_INTEGER:
-                config_PutInt( p_intf, psz_variable, SSPopN( st, vars ) );
+                config_PutInt( p_intf, psz_variable, E_(SSPopN)( st, vars ) );
                 break;
             case VLC_VAR_STRING:
             case VLC_VAR_MODULE:
             case VLC_VAR_FILE:
             case VLC_VAR_DIRECTORY:
             {
-                char *psz_string = SSPop( st );
+                char *psz_string = E_(SSPop)( st );
                 config_PutPsz( p_intf, psz_variable, psz_string );
                 free( psz_string );
                 break;
             }
             case VLC_VAR_FLOAT:
             {
-                char *psz_string = SSPop( st );
+                char *psz_string = E_(SSPop)( st );
                 config_PutFloat( p_intf, psz_variable, atof(psz_string) );
                 free( psz_string );
                 break;
@@ -762,14 +771,14 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         }
         else if( !strcmp( s, "vlc_config_get" ) )
         {
-            char *psz_variable = SSPop( st );
+            char *psz_variable = E_(SSPop)( st );
             int i_type = config_GetType( p_intf, psz_variable );
 
             switch( i_type & VLC_VAR_TYPE )
             {
             case VLC_VAR_BOOL:
             case VLC_VAR_INTEGER:
-                SSPushN( st, config_GetInt( p_intf, psz_variable ) );
+                E_(SSPushN)( st, config_GetInt( p_intf, psz_variable ) );
                 break;
             case VLC_VAR_STRING:
             case VLC_VAR_MODULE:
@@ -777,7 +786,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             case VLC_VAR_DIRECTORY:
             {
                 char *psz_string = config_GetPsz( p_intf, psz_variable );
-                SSPush( st, psz_string );
+                E_(SSPush)( st, psz_string );
                 free( psz_string );
                 break;
             }
@@ -786,21 +795,20 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 char psz_string[20];
                 lldiv_t value = lldiv( config_GetFloat( p_intf, psz_variable )
                                        * 1000000, 1000000 );
-                snprintf( psz_string, sizeof(psz_string), "%lld.%06u",
+                snprintf( psz_string, sizeof(psz_string), I64Fd".%06u",
                           value.quot, (unsigned int)value.rem );
-                SSPush( st, psz_string );
+                E_(SSPush)( st, psz_string );
                 break;
             }
             default:
                 msg_Warn( p_intf, "vlc_config_get called on unknown var (%s)",
                           psz_variable );
-                SSPush( st, "" );
             }
             free( psz_variable );
         }
         else if( !strcmp( s, "vlc_config_save" ) )
         {
-            char *psz_module = SSPop( st );
+            char *psz_module = E_(SSPop)( st );
             int i_result;
 
             if( !*psz_module )
@@ -810,8 +818,9 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             }
             i_result = config_SaveConfigFile( p_intf, psz_module );
 
-            free( psz_module );
-            SSPushN( st, i_result );
+            if( psz_module != NULL )
+                free( psz_module );
+            E_(SSPushN)( st, i_result );
         }
         else if( !strcmp( s, "vlc_config_reset" ) )
         {
@@ -820,75 +829,60 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         /* 6. playlist functions */
         else if( !strcmp( s, "playlist_add" ) )
         {
-            char *psz_name = SSPop( st );
-            char *mrl = SSPop( st );
-            input_item_t *p_input;
-            int i_ret;
+            char *psz_name = E_(SSPop)( st );
+            char *mrl = E_(SSPop)( st );
+            char *tmp;
+            playlist_item_t *p_item;
+            int i_id;
 
-            p_input = MRLParse( p_intf, mrl, psz_name );
+            tmp = E_(ToUTF8)( p_intf, psz_name );
+            free( psz_name );
+            psz_name = tmp;
+            tmp = E_(ToUTF8)( p_intf, mrl );
+            free( mrl );
+            mrl = tmp;
 
-            char *psz_uri = input_item_GetURI( p_input );
-            if( !p_input || !psz_uri || !*psz_uri )
+            if( !*psz_name )
             {
-                i_ret = VLC_EGENERIC;
+                p_item = E_(MRLParse)( p_intf, mrl, mrl );
+            }
+            else
+            {
+                p_item = E_(MRLParse)( p_intf, mrl, psz_name );
+            }
+
+            if( p_item == NULL || p_item->input.psz_uri == NULL ||
+                 !*p_item->input.psz_uri )
+            {
+                i_id = VLC_EGENERIC;
                 msg_Dbg( p_intf, "invalid requested mrl: %s", mrl );
             }
             else
             {
-                i_ret = playlist_AddInput( p_sys->p_playlist, p_input,
-                                   PLAYLIST_APPEND, PLAYLIST_END, true,
-                                   pl_Unlocked );
-                if( i_ret == VLC_SUCCESS )
-                {
-                    playlist_item_t *p_item;
-                    msg_Dbg( p_intf, "requested mrl add: %s", mrl );
-                    playlist_Lock( p_sys->p_playlist );
-                    p_item = playlist_ItemGetByInput( p_sys->p_playlist,
-                                                      p_input );
-                    if( p_item )
-                        i_ret = p_item->i_id;
-                    playlist_Unlock( p_sys->p_playlist );
-                }
-                else
-                    msg_Warn( p_intf, "adding mrl %s failed", mrl );
-                vlc_gc_decref( p_input );
+                i_id = playlist_AddItem( p_sys->p_playlist, p_item,
+                                         PLAYLIST_APPEND, PLAYLIST_END );
+                msg_Dbg( p_intf, "requested mrl add: %s", mrl );
             }
-            free( psz_uri );
-            SSPushN( st, i_ret );
+            E_(SSPushN)( st, i_id );
 
             free( mrl );
             free( psz_name );
         }
         else if( !strcmp( s, "playlist_empty" ) )
         {
-            playlist_Clear( p_sys->p_playlist, pl_Unlocked );
+            playlist_LockClear( p_sys->p_playlist );
             msg_Dbg( p_intf, "requested playlist empty" );
         }
         else if( !strcmp( s, "playlist_delete" ) )
         {
-            int i_id = SSPopN( st, vars );
-            playlist_Lock( p_sys->p_playlist );
-            playlist_item_t *p_item = playlist_ItemGetById( p_sys->p_playlist,
-                                                            i_id );
-            if( p_item )
-            {
-                playlist_DeleteFromInput( p_sys->p_playlist,
-                                          p_item->p_input, pl_Locked );
-                msg_Dbg( p_intf, "requested playlist delete: %d", i_id );
-            }
-            else
-            {
-                msg_Dbg( p_intf, "couldn't find playlist item to delete (%d)",
-                         i_id );
-            }
-            playlist_Unlock( p_sys->p_playlist );
+            int i_id = E_(SSPopN)( st, vars );
+            playlist_LockDelete( p_sys->p_playlist, i_id );
+            msg_Dbg( p_intf, "requested playlist delete: %d", i_id );
         }
         else if( !strcmp( s, "playlist_move" ) )
         {
-            /*int i_newpos =*/ SSPopN( st, vars );
-            /*int i_pos =*/ SSPopN( st, vars );
-            /* FIXME FIXME TODO TODO XXX XXX
-            do not release before fixing this
+            int i_newpos = E_(SSPopN)( st, vars );
+            int i_pos = E_(SSPopN)( st, vars );
             if ( i_pos < i_newpos )
             {
                 playlist_Move( p_sys->p_playlist, i_pos, i_newpos + 1 );
@@ -899,164 +893,118 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             }
             msg_Dbg( p_intf, "requested to move playlist item %d to %d",
                      i_pos, i_newpos);
-               FIXME FIXME TODO TODO XXX XXX */
-            msg_Err( p_intf, "moving using indexes is obsolete. We need to update this function" );
         }
         else if( !strcmp( s, "playlist_sort" ) )
         {
-            int i_order = SSPopN( st, vars );
-            int i_sort = SSPopN( st, vars );
+            int i_order = E_(SSPopN)( st, vars );
+            int i_sort = E_(SSPopN)( st, vars );
             i_order = i_order % 2;
             i_sort = i_sort % 9;
-            /* FIXME FIXME TODO TODO XXX XXX
-            do not release before fixing this
             playlist_RecursiveNodeSort(  p_sys->p_playlist,
                                          p_sys->p_playlist->p_general,
                                          i_sort, i_order );
             msg_Dbg( p_intf, "requested sort playlist by : %d in order : %d",
                      i_sort, i_order );
-               FIXME FIXME TODO TODO XXX XXX */
-            msg_Err( p_intf, "this needs to be fixed to use the new playlist framework" );
         }
         else if( !strcmp( s, "services_discovery_add" ) )
         {
-            char *psz_sd = SSPop( st );
+            char *psz_sd = E_(SSPop)( st );
             playlist_ServicesDiscoveryAdd( p_sys->p_playlist, psz_sd );
             free( psz_sd );
         }
         else if( !strcmp( s, "services_discovery_remove" ) )
         {
-            char *psz_sd = SSPop( st );
+            char *psz_sd = E_(SSPop)( st );
             playlist_ServicesDiscoveryRemove( p_sys->p_playlist, psz_sd );
             free( psz_sd );
         }
         else if( !strcmp( s, "services_discovery_is_loaded" ) )
         {
-            char *psz_sd = SSPop( st );
-            SSPushN( st,
+            char *psz_sd = E_(SSPop)( st );
+            E_(SSPushN)( st,
             playlist_IsServicesDiscoveryLoaded( p_sys->p_playlist, psz_sd ) );
             free( psz_sd );
         }
         else if( !strcmp( s, "vlc_volume_set" ) )
         {
-            char *psz_vol = SSPop( st );
+            char *psz_vol = E_(SSPop)( st );
             int i_value;
             audio_volume_t i_volume;
-            aout_VolumeGet( p_sys->p_playlist, &i_volume );
+            aout_VolumeGet( p_intf, &i_volume );
             if( psz_vol[0] == '+' )
             {
                 i_value = atoi( psz_vol );
                 if( (i_volume + i_value) > AOUT_VOLUME_MAX )
-                    aout_VolumeSet( p_sys->p_playlist, AOUT_VOLUME_MAX );
+                    aout_VolumeSet( p_intf, AOUT_VOLUME_MAX );
                 else
-                    aout_VolumeSet( p_sys->p_playlist, i_volume + i_value );
+                    aout_VolumeSet( p_intf, i_volume + i_value );
             }
             else if( psz_vol[0] == '-' )
             {
                 i_value = atoi( psz_vol );
                 if( (i_volume + i_value) < AOUT_VOLUME_MIN )
-                    aout_VolumeSet( p_sys->p_playlist, AOUT_VOLUME_MIN );
+                    aout_VolumeSet( p_intf, AOUT_VOLUME_MIN );
                 else
-                    aout_VolumeSet( p_sys->p_playlist, i_volume + i_value );
+                    aout_VolumeSet( p_intf, i_volume + i_value );
             }
             else if( strstr( psz_vol, "%") != NULL )
             {
                 i_value = atoi( psz_vol );
                 if( i_value < 0 ) i_value = 0;
                 if( i_value > 400 ) i_value = 400;
-                aout_VolumeSet( p_sys->p_playlist, (i_value * (AOUT_VOLUME_MAX - AOUT_VOLUME_MIN))/400+AOUT_VOLUME_MIN);
+                aout_VolumeSet( p_intf, (i_value * (AOUT_VOLUME_MAX - AOUT_VOLUME_MIN))/400+AOUT_VOLUME_MIN);
             }
             else
             {
                 i_value = atoi( psz_vol );
                 if( i_value > AOUT_VOLUME_MAX ) i_value = AOUT_VOLUME_MAX;
                 if( i_value < AOUT_VOLUME_MIN ) i_value = AOUT_VOLUME_MIN;
-                aout_VolumeSet( p_sys->p_playlist, i_value );
+                aout_VolumeSet( p_intf, i_value );
             }
-            aout_VolumeGet( p_sys->p_playlist, &i_volume );
+            aout_VolumeGet( p_intf, &i_volume );
             free( psz_vol );
         }
         else if( !strcmp( s, "vlc_get_meta" ) )
         {
-            char *psz_meta = SSPop( st );
+            char *psz_meta = E_(SSPop)( st );
             char *psz_val = NULL;
-            if( p_sys->p_input && input_GetItem(p_sys->p_input) )
+            if( p_sys->p_input && p_sys->p_input->input.p_item )
             {
-#define p_item input_GetItem( p_sys->p_input )
+#define p_item  p_sys->p_input->input.p_item
                 if( !strcmp( psz_meta, "ARTIST" ) )
                 {
-                    psz_val = input_item_GetArtist( p_item );
+                    psz_val = vlc_input_item_GetInfo( p_item,
+                                _(VLC_META_INFO_CAT), _(VLC_META_ARTIST) );
                 }
                 else if( !strcmp( psz_meta, "TITLE" ) )
                 {
-                    psz_val = input_item_GetTitle( p_item );
-                    if( !psz_val )
-                        psz_val = input_item_GetName( p_item );
+                    psz_val = vlc_input_item_GetInfo( p_item,
+                                _(VLC_META_INFO_CAT), _(VLC_META_TITLE) );
+                    if( psz_val == NULL )
+                        psz_val == strdup( p_item->psz_name );
                 }
                 else if( !strcmp( psz_meta, "ALBUM" ) )
                 {
-                    psz_val = input_item_GetAlbum( p_item );
+                    psz_val = vlc_input_item_GetInfo( p_item,
+                                _(VLC_META_INFO_CAT), _(VLC_META_COLLECTION) );
                 }
                 else if( !strcmp( psz_meta, "GENRE" ) )
                 {
-                    psz_val = input_item_GetGenre( p_item );
+                    psz_val = vlc_input_item_GetInfo( p_item,
+                                _(VLC_META_INFO_CAT), _(VLC_META_GENRE) );
                 }
-                else if( !strcmp( psz_meta, "COPYRIGHT" ) )
+                else
                 {
-                     psz_val = input_item_GetCopyright( p_item );
-                }
-                else if( !strcmp( psz_meta, "TRACK_NUMBER" ) )
-                {
-                    psz_val = input_item_GetTrackNum( p_item );
-                }
-                else if( !strcmp( psz_meta, "DESCRIPTION" ) )
-                {
-                    psz_val = input_item_GetDescription( p_item );
-                }
-                else if( !strcmp( psz_meta, "RATING" ) )
-                {
-                    psz_val = input_item_GetRating( p_item );
-                }
-                else if( !strcmp( psz_meta, "DATE" ) )
-                {
-                    psz_val = input_item_GetDate( p_item );
-                }
-                else if( !strcmp( psz_meta, "URL" ) )
-                {
-                    psz_val = input_item_GetURL( p_item );
-                }
-                else if( !strcmp( psz_meta, "LANGUAGE" ) )
-                {
-                    psz_val = input_item_GetLanguage( p_item );
-                }
-                else if( !strcmp( psz_meta, "NOW_PLAYING" ) )
-                {
-                    psz_val = input_item_GetNowPlaying( p_item );
-                }
-                else if( !strcmp( psz_meta, "PUBLISHER" ) )
-                {
-                    psz_val = input_item_GetPublisher( p_item );
-                }
-                else if( !strcmp( psz_meta, "ENCODED_BY" ) )
-                {
-                    psz_val = input_item_GetEncodedBy( p_item );
-                }
-                else if( !strcmp( psz_meta, "ART_URL" ) )
-                {
-                    psz_val = input_item_GetEncodedBy( p_item );
-                }
-                else if( !strcmp( psz_meta, "TRACK_ID" ) )
-                {
-                    psz_val = input_item_GetTrackID( p_item );
+                    psz_val = vlc_input_item_GetInfo( p_item,
+                                            _(VLC_META_INFO_CAT), psz_meta );
                 }
 #undef p_item
             }
             if( psz_val == NULL ) psz_val = strdup( "" );
-            SSPush( st, psz_val );
+            E_(SSPush)( st, psz_val );
             free( psz_meta );
             free( psz_val );
         }
-#ifdef ENABLE_VLM
         else if( !strcmp( s, "vlm_command" ) || !strcmp( s, "vlm_cmd" ) )
         {
             char *psz_elt;
@@ -1071,12 +1019,12 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
 
             /* vlm command uses the ';' delimiter
              * (else we can't know when to stop) */
-            while( strcmp( psz_elt = SSPop( st ), "" )
+            while( strcmp( psz_elt = E_(SSPop)( st ), "" )
                    && strcmp( psz_elt, ";" ) )
             {
-                char* psz_buf;
-                if( asprintf( &psz_buf, "%s %s", psz_cmd, psz_elt ) == -1 )
-                    psz_buf = NULL;
+                char *psz_buf =
+                    (char *)malloc( strlen( psz_cmd ) + strlen( psz_elt ) + 2 );
+                sprintf( psz_buf, "%s %s", psz_cmd, psz_elt );
                 free( psz_cmd );
                 free( psz_elt );
                 psz_cmd = psz_buf;
@@ -1091,29 +1039,33 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             }
             else
             {
-                if( asprintf( &psz_error , "%s : %s" , vlm_answer->psz_name,
-                              vlm_answer->psz_value ) == -1 )
-                    psz_error = NULL;
+                psz_error = malloc( strlen(vlm_answer->psz_name) +
+                                    strlen(vlm_answer->psz_value) +
+                                    strlen( " : ") + 1 );
+                sprintf( psz_error , "%s : %s" , vlm_answer->psz_name,
+                                                 vlm_answer->psz_value );
             }
 
-            mvar_AppendNewVar( vars, "vlm_error", psz_error );
+            E_(mvar_AppendNewVar)( vars, "vlm_error", psz_error );
             /* this is kind of a duplicate but we need to have the message
              * without the command name for the "export" command */
-            mvar_AppendNewVar( vars, "vlm_value", vlm_answer->psz_value );
+            E_(mvar_AppendNewVar)( vars, "vlm_value", vlm_answer->psz_value );
             vlm_MessageDelete( vlm_answer );
 
             free( psz_cmd );
             free( psz_error );
         }
-#endif /* ENABLE_VLM */
         else if( !strcmp( s, "snapshot" ) )
         {
             if( p_sys->p_input )
             {
-                vout_thread_t *p_vout = input_GetVout( p_sys->p_input );
+                vout_thread_t *p_vout;
+                p_vout = vlc_object_find( p_sys->p_input,
+                                          VLC_OBJECT_VOUT, FIND_CHILD );
+
                 if( p_vout )
                 {
-                    var_TriggerCallback( p_vout, "video-snapshot" );
+                    vout_Control( p_vout, VOUT_SNAPSHOT );
                     vlc_object_release( p_vout );
                     msg_Dbg( p_intf, "requested snapshot" );
                 }
@@ -1123,7 +1075,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         }
         else
         {
-            SSPush( st, s );
+            E_(SSPush)( st, s );
         }
     }
 }

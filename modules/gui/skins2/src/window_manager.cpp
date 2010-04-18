@@ -2,7 +2,7 @@
  * window_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1081e1a61e62ad3193c52bb1a6d2d4c9fe70e046 $
+ * $Id: ccc42ff3bd5917d82f73bbf4444a1291e132c602 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,11 +29,11 @@
 #include "anchor.hpp"
 #include "tooltip.hpp"
 #include "var_manager.hpp"
+#include "../utils/position.hpp"
 
 
 WindowManager::WindowManager( intf_thread_t *pIntf ):
     SkinObject( pIntf ), m_magnet( 0 ), m_direction( kNone ),
-    m_maximizeRect(0, 0, 50, 50),
     m_pTooltip( NULL ), m_pPopup( NULL )
 {
     // Create and register a variable for the "on top" status
@@ -71,7 +71,8 @@ void WindowManager::startMove( TopWindow &rWindow )
     m_movingWindows.clear();
     buildDependSet( m_movingWindows, &rWindow );
 
-    if( var_InheritBool( getIntf(), "skins2-transparency" ) )
+#ifdef WIN32
+    if( config_GetInt( getIntf(), "skins2-transparency" ) )
     {
         // Change the opacity of the moving windows
         WinSet_t::const_iterator it;
@@ -88,6 +89,7 @@ void WindowManager::startMove( TopWindow &rWindow )
             (*it)->refresh( 0, 0, (*it)->getWidth(), (*it)->getHeight() );
         }
     }
+#endif
 }
 
 
@@ -96,7 +98,8 @@ void WindowManager::stopMove()
     WinSet_t::const_iterator itWin1, itWin2;
     AncList_t::const_iterator itAnc1, itAnc2;
 
-    if( var_InheritBool( getIntf(), "skins2-transparency" ) )
+#ifdef WIN32
+    if( config_GetInt( getIntf(), "skins2-transparency" ) )
     {
         // Restore the opacity of the moving windows
         WinSet_t::const_iterator it;
@@ -105,6 +108,7 @@ void WindowManager::stopMove()
             (*it)->setOpacity( m_alpha );
         }
     }
+#endif
 
     // Delete the dependencies
     m_dependencies.clear();
@@ -313,50 +317,6 @@ void WindowManager::resize( GenericLayout &rLayout,
 }
 
 
-void WindowManager::maximize( TopWindow &rWindow )
-{
-    // Save the current position/size of the window, to be able to restore it
-    m_maximizeRect = SkinsRect( rWindow.getLeft(), rWindow.getTop(),
-                               rWindow.getLeft() + rWindow.getWidth(),
-                               rWindow.getTop() + rWindow.getHeight() );
-
-    SkinsRect workArea = OSFactory::instance( getIntf() )->getWorkArea();
-    // Move the window
-    startMove( rWindow );
-    move( rWindow, workArea.getLeft(), workArea.getTop() );
-    stopMove();
-    // Now resize it
-    // FIXME: Ugly const_cast
-    GenericLayout &rLayout = (GenericLayout&)rWindow.getActiveLayout();
-    startResize( rLayout, kResizeSE );
-    resize( rLayout, workArea.getWidth(), workArea.getHeight() );
-    stopResize();
-    rWindow.m_pVarMaximized->set( true );
-
-    // Make the window unmovable by unregistering it
-//     unregisterWindow( rWindow );
-}
-
-
-void WindowManager::unmaximize( TopWindow &rWindow )
-{
-    // Register the window to allow moving it
-//     registerWindow( rWindow );
-
-    // Resize the window
-    // FIXME: Ugly const_cast
-    GenericLayout &rLayout = (GenericLayout&)rWindow.getActiveLayout();
-    startResize( rLayout, kResizeSE );
-    resize( rLayout, m_maximizeRect.getWidth(), m_maximizeRect.getHeight() );
-    stopResize();
-    // Now move it
-    startMove( rWindow );
-    move( rWindow, m_maximizeRect.getLeft(), m_maximizeRect.getTop() );
-    stopMove();
-    rWindow.m_pVarMaximized->set( false );
-}
-
-
 void WindowManager::synchVisibility() const
 {
     WinSet_t::const_iterator it;
@@ -425,6 +385,7 @@ void WindowManager::showAll( bool firstTime ) const
         {
             (*it)->show();
         }
+        (*it)->setOpacity( m_alpha );
     }
 }
 
@@ -439,26 +400,18 @@ void WindowManager::hideAll() const
 }
 
 
-void WindowManager::setOnTop( bool b_ontop )
+void WindowManager::toggleOnTop()
 {
     // Update the boolean variable
     VarBoolImpl *pVarOnTop = (VarBoolImpl*)m_cVarOnTop.get();
-    pVarOnTop->set( b_ontop );
+    pVarOnTop->set( !pVarOnTop->get() );
 
-    // set/unset the "on top" status
+    // Toggle the "on top" status
     WinSet_t::const_iterator it;
     for( it = m_allWindows.begin(); it != m_allWindows.end(); it++ )
     {
-        (*it)->toggleOnTop( b_ontop );
+        (*it)->toggleOnTop( pVarOnTop->get() );
     }
-}
-
-
-void WindowManager::toggleOnTop()
-{
-    VarBoolImpl *pVarOnTop = (VarBoolImpl*)m_cVarOnTop.get();
-
-    setOnTop( !pVarOnTop->get() );
 }
 
 
@@ -489,7 +442,7 @@ void WindowManager::checkAnchors( TopWindow *pWindow,
     AncList_t::const_iterator itAncMov, itAncSta;
 
     // Check magnetism with screen edges first (actually it is the work area)
-    SkinsRect workArea = OSFactory::instance( getIntf() )->getWorkArea();
+    Rect workArea = OSFactory::instance( getIntf() )->getWorkArea();
     // Iterate through the moving windows
     for( itMov = m_movingWindows.begin();
          itMov != m_movingWindows.end(); itMov++ )
@@ -512,17 +465,17 @@ void WindowManager::checkAnchors( TopWindow *pWindow,
         {
             yOffset = workArea.getTop() - (*itMov)->getTop();
         }
-        int right = workArea.getLeft() + workArea.getWidth();
-        if( newLeft + (*itMov)->getWidth() > right - m_magnet &&
-            newLeft + (*itMov)->getWidth() < right + m_magnet )
+        if( newLeft + (*itMov)->getWidth() > workArea.getRight() - m_magnet &&
+            newLeft + (*itMov)->getWidth() < workArea.getRight() + m_magnet )
         {
-            xOffset = right - (*itMov)->getLeft() - (*itMov)->getWidth();
+            xOffset = workArea.getRight() - (*itMov)->getLeft()
+                      - (*itMov)->getWidth();
         }
-        int bottom = workArea.getTop() + workArea.getHeight();
-        if( newTop + (*itMov)->getHeight() > bottom - m_magnet &&
-            newTop + (*itMov)->getHeight() <  bottom + m_magnet )
+        if( newTop + (*itMov)->getHeight() > workArea.getBottom() - m_magnet &&
+            newTop + (*itMov)->getHeight() <  workArea.getBottom() + m_magnet )
         {
-            yOffset =  bottom - (*itMov)->getTop() - (*itMov)->getHeight();
+            yOffset =  workArea.getBottom() - (*itMov)->getTop()
+                       - (*itMov)->getHeight();
         }
     }
 
@@ -642,4 +595,3 @@ void WindowManager::setActiveLayout( TopWindow &rWindow,
     // Rebuild the dependencies
     stopMove();
 }
-

@@ -2,7 +2,7 @@
  * dummy.c: dummy stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: fbf7a2ed59585132f5f0a12cf0b28de318b58e6b $
+ * $Id: 12a4b096095eefb1e8ab1497cf373e6c76ee276a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,15 +24,11 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>
+#include <string.h>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_block.h>
-#include <vlc_sout.h>
+#include <vlc/vlc.h>
+#include <vlc/sout.h>
 
 /*****************************************************************************
  * Exported prototypes
@@ -47,13 +43,12 @@ static int               Send( sout_stream_t *, sout_stream_id_t *, block_t* );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin ()
-    set_description( N_("Dummy stream output") )
-    set_capability( "sout stream", 50 )
-    add_shortcut( "dummy" )
-    add_shortcut( "drop" )
-    set_callbacks( Open, Close )
-vlc_module_end ()
+vlc_module_begin();
+    set_description( _("Dummy stream output") );
+    set_capability( "sout stream", 50 );
+    add_shortcut( "dummy" );
+    set_callbacks( Open, Close );
+vlc_module_end();
 
 /*****************************************************************************
  * Open:
@@ -76,18 +71,28 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t * p_this )
 {
-    (void)p_this;
+#if 0
+    sout_stream_t   *p_stream = (sout_stream_t*)p_this;
+#endif
 }
+
+struct sout_stream_id_t
+{
+    int i_d_u_m_m_y;
+};
 
 static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 {
-    VLC_UNUSED(p_stream); VLC_UNUSED(p_fmt);
-    return malloc( 1 );
+    sout_stream_id_t *id;
+
+    id = malloc( sizeof( sout_stream_id_t ) );
+    id->i_d_u_m_m_y = 0;
+
+    return id;
 }
 
 static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
 {
-    VLC_UNUSED(p_stream);
     free( id );
 
     return VLC_SUCCESS;
@@ -96,7 +101,6 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
 static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
                  block_t *p_buffer )
 {
-    (void)p_stream; (void)id;
     block_ChainRelease( p_buffer );
     return VLC_SUCCESS;
 }

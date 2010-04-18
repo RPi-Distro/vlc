@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vlc_keys.h: keycode defines
  *****************************************************************************
- * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: b647b56c61e8568a881cf3397cdeb12b035760a5 $
+ * Copyright (C) 2003 the VideoLAN team
+ * $Id: 151930ab161b05633fb087c0bb6d128d4187b5cd $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -21,14 +21,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VLC_KEYS_H
-#define VLC_KEYS_H 1
-
-/**
- * \file
- * This file defines keys and functions
- */
-
 #define KEY_MODIFIER         0xFF000000
 #define KEY_MODIFIER_ALT     0x01000000
 #define KEY_MODIFIER_SHIFT   0x02000000
@@ -36,184 +28,274 @@
 #define KEY_MODIFIER_META    0x08000000
 #define KEY_MODIFIER_COMMAND 0x10000000
 
-#define KEY_UNSET            0x00000000
-#define KEY_BACKSPACE              0x08
-#define KEY_TAB                    0x09
-#define KEY_ENTER                  0x0D
-#define KEY_ESC                    0x1B
-/* End of Unicode range:     0x0010FFFF */
-#define KEY_LEFT             0x00210000
-#define KEY_RIGHT            0x00220000
-#define KEY_UP               0x00230000
-#define KEY_DOWN             0x00240000
-#define KEY_F1               0x00270000
-#define KEY_F2               0x00280000
-#define KEY_F3               0x00290000
-#define KEY_F4               0x002A0000
-#define KEY_F5               0x002B0000
-#define KEY_F6               0x002C0000
-#define KEY_F7               0x002D0000
-#define KEY_F8               0x002E0000
-#define KEY_F9               0x002F0000
-#define KEY_F10              0x00300000
-#define KEY_F11              0x00310000
-#define KEY_F12              0x00320000
-#define KEY_HOME             0x00330000
-#define KEY_END              0x00340000
-#define KEY_INSERT           0x00350000
-#define KEY_DELETE           0x00360000
-#define KEY_MENU             0x00370000
-#define KEY_PAGEUP           0x00390000
-#define KEY_PAGEDOWN         0x003A0000
+#define KEY_SPECIAL          0x00FF0000
+#define KEY_LEFT             0x00010000
+#define KEY_RIGHT            0x00020000
+#define KEY_UP               0x00030000
+#define KEY_DOWN             0x00040000
+#define KEY_SPACE            0x00050000
+#define KEY_ENTER            0x00060000
+#define KEY_F1               0x00070000
+#define KEY_F2               0x00080000
+#define KEY_F3               0x00090000
+#define KEY_F4               0x000A0000
+#define KEY_F5               0x000B0000
+#define KEY_F6               0x000C0000
+#define KEY_F7               0x000D0000
+#define KEY_F8               0x000E0000
+#define KEY_F9               0x000F0000
+#define KEY_F10              0x00100000
+#define KEY_F11              0x00110000
+#define KEY_F12              0x00120000
+#define KEY_HOME             0x00130000
+#define KEY_END              0x00140000
+#define KEY_INSERT           0x00150000
+#define KEY_DELETE           0x00160000
+#define KEY_MENU             0x00170000
+#define KEY_ESC              0x00180000
+#define KEY_PAGEUP           0x00190000
+#define KEY_PAGEDOWN         0x001A0000
+#define KEY_TAB              0x001B0000
+#define KEY_BACKSPACE        0x001C0000
+#define KEY_MOUSEWHEELUP     0x001D0000
+#define KEY_MOUSEWHEELDOWN   0x001E0000
 
-#define KEY_BROWSER_BACK     0x003F0000
-#define KEY_BROWSER_FORWARD  0x00400000
-#define KEY_BROWSER_REFRESH  0x00410000
-#define KEY_BROWSER_STOP     0x00420000
-#define KEY_BROWSER_SEARCH   0x00430000
-#define KEY_BROWSER_FAVORITES 0x00440000
-#define KEY_BROWSER_HOME     0x00450000
-#define KEY_VOLUME_MUTE      0x00460000
-#define KEY_VOLUME_DOWN      0x00470000
-#define KEY_VOLUME_UP        0x00480000
-#define KEY_MEDIA_NEXT_TRACK 0x00490000
-#define KEY_MEDIA_PREV_TRACK 0x004A0000
-#define KEY_MEDIA_STOP       0x004B0000
-#define KEY_MEDIA_PLAY_PAUSE 0x004C0000
+/* TODO:
+ * The media keys are only used in win32. Support for other OSes needs to
+ * be added */
+#define KEY_BROWSER_BACK     0x001F0000
+#define KEY_BROWSER_FORWARD  0x00200000
+#define KEY_BROWSER_REFRESH  0x00210000
+#define KEY_BROWSER_STOP     0x00220000
+#define KEY_BROWSER_SEARCH   0x00230000
+#define KEY_BROWSER_FAVORITES 0x00240000
+#define KEY_BROWSER_HOME     0x00250000
+#define KEY_VOLUME_MUTE      0x00260000
+#define KEY_VOLUME_DOWN      0x00270000
+#define KEY_VOLUME_UP        0x00280000
+#define KEY_MEDIA_NEXT_TRACK 0x00290000
+#define KEY_MEDIA_PREV_TRACK 0x002a0000
+#define KEY_MEDIA_STOP       0x002b0000
+#define KEY_MEDIA_PLAY_PAUSE 0x002c0000
 
-#define KEY_MOUSEWHEELUP     0x00F00000
-#define KEY_MOUSEWHEELDOWN   0x00F10000
-#define KEY_MOUSEWHEELLEFT   0x00F20000
-#define KEY_MOUSEWHEELRIGHT  0x00F30000
+#define KEY_ASCII            0x0000007F
+#define KEY_UNSET            0
 
-VLC_EXPORT( char *, KeyToString, (uint_fast32_t i_key) ) LIBVLC_USED;
-VLC_EXPORT( uint_fast32_t, StringToKey,  (char *psz_key) ) LIBVLC_USED;
-
-typedef enum vlc_key {
-    ACTIONID_NONE = 0,
-    ACTIONID_QUIT,
-    ACTIONID_PLAY_PAUSE,
-    ACTIONID_PLAY,
-    ACTIONID_PAUSE,
-    ACTIONID_STOP,
-    ACTIONID_PREV,
-    ACTIONID_NEXT,
-    ACTIONID_SLOWER,
-    ACTIONID_FASTER,
-    ACTIONID_TOGGLE_FULLSCREEN,
-    ACTIONID_VOL_UP,
-    ACTIONID_VOL_DOWN,
-    ACTIONID_NAV_ACTIVATE,
-    ACTIONID_NAV_UP,
-    ACTIONID_NAV_DOWN,
-    ACTIONID_NAV_LEFT,
-    ACTIONID_NAV_RIGHT,
-    ACTIONID_JUMP_BACKWARD_EXTRASHORT,
-    ACTIONID_JUMP_FORWARD_EXTRASHORT,
-    ACTIONID_JUMP_BACKWARD_SHORT,
-    ACTIONID_JUMP_FORWARD_SHORT,
-    ACTIONID_JUMP_BACKWARD_MEDIUM,
-    ACTIONID_JUMP_FORWARD_MEDIUM,
-    ACTIONID_JUMP_BACKWARD_LONG,
-    ACTIONID_JUMP_FORWARD_LONG,
-    ACTIONID_FRAME_NEXT,
-    ACTIONID_POSITION,
-    ACTIONID_VOL_MUTE,
-/* let ACTIONID_SET_BOOMARK* and ACTIONID_PLAY_BOOKMARK* be contiguous */
-    ACTIONID_SET_BOOKMARK1,
-    ACTIONID_SET_BOOKMARK2,
-    ACTIONID_SET_BOOKMARK3,
-    ACTIONID_SET_BOOKMARK4,
-    ACTIONID_SET_BOOKMARK5,
-    ACTIONID_SET_BOOKMARK6,
-    ACTIONID_SET_BOOKMARK7,
-    ACTIONID_SET_BOOKMARK8,
-    ACTIONID_SET_BOOKMARK9,
-    ACTIONID_SET_BOOKMARK10,
-    ACTIONID_PLAY_BOOKMARK1,
-    ACTIONID_PLAY_BOOKMARK2,
-    ACTIONID_PLAY_BOOKMARK3,
-    ACTIONID_PLAY_BOOKMARK4,
-    ACTIONID_PLAY_BOOKMARK5,
-    ACTIONID_PLAY_BOOKMARK6,
-    ACTIONID_PLAY_BOOKMARK7,
-    ACTIONID_PLAY_BOOKMARK8,
-    ACTIONID_PLAY_BOOKMARK9,
-    ACTIONID_PLAY_BOOKMARK10,
-    /* end of contiguous zone */
-    ACTIONID_SUBDELAY_UP,
-    ACTIONID_SUBDELAY_DOWN,
-    ACTIONID_SUBPOS_UP,
-    ACTIONID_SUBPOS_DOWN,
-    ACTIONID_HISTORY_BACK,
-    ACTIONID_HISTORY_FORWARD,
-    ACTIONID_AUDIO_TRACK,
-    ACTIONID_SUBTITLE_TRACK,
-    ACTIONID_CUBESPEED_UP,
-    ACTIONID_CUBESPEED_DOWN,
-    ACTIONID_INTF_SHOW,
-    ACTIONID_INTF_HIDE,
-    /* chapter and title navigation */
-    ACTIONID_TITLE_PREV,
-    ACTIONID_TITLE_NEXT,
-    ACTIONID_CHAPTER_PREV,
-    ACTIONID_CHAPTER_NEXT,
-    /* end of chapter and title navigation */
-    ACTIONID_AUDIODELAY_UP,
-    ACTIONID_AUDIODELAY_DOWN,
-    ACTIONID_SNAPSHOT,
-    ACTIONID_RECORD,
-    ACTIONID_DISC_MENU,
-    ACTIONID_ASPECT_RATIO,
-    ACTIONID_CROP,
-    ACTIONID_DEINTERLACE,
-    ACTIONID_ZOOM,
-    ACTIONID_UNZOOM,
-    ACTIONID_CROP_TOP,
-    ACTIONID_UNCROP_TOP,
-    ACTIONID_CROP_LEFT,
-    ACTIONID_UNCROP_LEFT,
-    ACTIONID_CROP_BOTTOM,
-    ACTIONID_UNCROP_BOTTOM,
-    ACTIONID_CROP_RIGHT,
-    ACTIONID_UNCROP_RIGHT,
-    ACTIONID_DUMP,
-    ACTIONID_RANDOM,
-    ACTIONID_LOOP,
-    ACTIONID_WALLPAPER,
-    ACTIONID_LEAVE_FULLSCREEN,
-    ACTIONID_MENU_ON,
-    ACTIONID_MENU_OFF,
-    ACTIONID_MENU_RIGHT,
-    ACTIONID_MENU_LEFT,
-    ACTIONID_MENU_UP,
-    ACTIONID_MENU_DOWN,
-    ACTIONID_MENU_SELECT,
-    /* Zoom */
-    ACTIONID_ZOOM_QUARTER,
-    ACTIONID_ZOOM_HALF,
-    ACTIONID_ZOOM_ORIGINAL,
-    ACTIONID_ZOOM_DOUBLE,
-    /* Cycle Through Audio Devices */
-    ACTIONID_AUDIODEVICE_CYCLE,
-    /* scaling */
-    ACTIONID_TOGGLE_AUTOSCALE,
-    ACTIONID_SCALE_UP,
-    ACTIONID_SCALE_DOWN,
-    /* */
-    ACTIONID_RATE_NORMAL,
-    ACTIONID_RATE_SLOWER_FINE,
-    ACTIONID_RATE_FASTER_FINE,
-
-} vlc_key_t;
-
-VLC_EXPORT( vlc_key_t, vlc_GetActionId, (const char *psz_key) ) LIBVLC_USED;
-
-struct hotkey
+typedef struct key_descriptor_s
 {
-    const char *psz_action;
-    vlc_key_t i_action;
-    uint_fast32_t i_key;
+    char *psz_key_string;
+    int i_key_code;
+} key_descriptor_t;
+
+#define ADD_KEY(a) { a, *a }
+
+static const struct key_descriptor_s vlc_modifiers[] =
+{
+    { "Alt", KEY_MODIFIER_ALT },
+    { "Shift", KEY_MODIFIER_SHIFT },
+    { "Ctrl", KEY_MODIFIER_CTRL },
+    { "Meta", KEY_MODIFIER_META },
+    { "Command", KEY_MODIFIER_COMMAND }
 };
 
-#endif
+static const struct key_descriptor_s vlc_keys[] =
+{
+    { "Unset", KEY_UNSET },
+    { "Left", KEY_LEFT },
+    { "Right", KEY_RIGHT },
+    { "Up", KEY_UP },
+    { "Down", KEY_DOWN },
+    { "Space", KEY_SPACE },
+    { "Enter", KEY_ENTER },
+    { "F1", KEY_F1 },
+    { "F2", KEY_F2 },
+    { "F3", KEY_F3 },
+    { "F4", KEY_F4 },
+    { "F5", KEY_F5 },
+    { "F6", KEY_F6 },
+    { "F7", KEY_F7 },
+    { "F8", KEY_F8 },
+    { "F9", KEY_F9 },
+    { "F10", KEY_F10 },
+    { "F11", KEY_F11 },
+    { "F12", KEY_F12 },
+    { "Home", KEY_HOME },
+    { "End", KEY_END },
+    { "Insert", KEY_INSERT },
+    { "Delete", KEY_DELETE },
+    { "Menu", KEY_MENU },
+    { "Esc", KEY_ESC },
+    { "Page Up", KEY_PAGEUP },
+    { "Page Down", KEY_PAGEDOWN },
+    { "Tab", KEY_TAB },
+    { "Backspace", KEY_BACKSPACE },
+    { "Mouse Wheel Up", KEY_MOUSEWHEELUP },
+    { "Mouse Wheel Down", KEY_MOUSEWHEELDOWN },
+    { "a", 'a' },
+    { "b", 'b' },
+    { "c", 'c' },
+    { "d", 'd' },
+    { "e", 'e' },
+    { "f", 'f' },
+    { "g", 'g' },
+    { "h", 'h' },
+    { "i", 'i' },
+    { "j", 'j' },
+    { "k", 'k' },
+    { "l", 'l' },
+    { "m", 'm' },
+    { "n", 'n' },
+    { "o", 'o' },
+    { "p", 'p' },
+    { "q", 'q' },
+    { "r", 'r' },
+    { "s", 's' },
+    { "t", 't' },
+    { "u", 'u' },
+    { "v", 'v' },
+    { "w", 'w' },
+    { "x", 'x' },
+    { "y", 'y' },
+    { "z", 'z' },
+    { "+", '+' },
+    { "=", '=' },
+    { "-", '-' },
+    { ",", ',' },
+    { ".", '.' },
+    { "<", '<' },
+    { ">", '>' },
+    { "`", '`' },
+    { "/", '/' },
+    { ";", ';' },
+    { "'", '\'' },
+    { "\\", '\\' },
+    { "[", '[' },
+    { "]", ']' },
+    { "*", '*' },
+    { "Browser Back", KEY_BROWSER_BACK },
+    { "Browser Forward", KEY_BROWSER_FORWARD },
+    { "Browser Refresh", KEY_BROWSER_REFRESH },
+    { "Browser Stop", KEY_BROWSER_STOP },
+    { "Browser Search", KEY_BROWSER_SEARCH },
+    { "Browser Favorites", KEY_BROWSER_FAVORITES },
+    { "Browser Home", KEY_BROWSER_HOME },
+    { "Volume Mute", KEY_VOLUME_MUTE },
+    { "Volume Down", KEY_VOLUME_DOWN },
+    { "Volume Up", KEY_VOLUME_UP },
+    { "Media Next Track", KEY_MEDIA_NEXT_TRACK },
+    { "Media Prev Track", KEY_MEDIA_PREV_TRACK },
+    { "Media Stop", KEY_MEDIA_STOP },
+    { "Media Play Pause", KEY_MEDIA_PLAY_PAUSE }
+};
+
+static inline char *KeyToString( int i_key )
+{
+    unsigned int i = 0;
+    for ( i = 0; i < sizeof(vlc_keys) / sizeof(key_descriptor_t); i++ )
+    {
+        if ( vlc_keys[i].i_key_code == i_key )
+        {
+            return vlc_keys[i].psz_key_string;
+        }
+    }
+    return NULL;
+}
+
+static inline int StringToKey( char *psz_key )
+{
+    unsigned int i = 0;
+    for ( i = 0; i < sizeof(vlc_keys) / sizeof(key_descriptor_t); i++ )
+    {
+        if ( !strcmp( vlc_keys[i].psz_key_string, psz_key ))
+        {
+            return vlc_keys[i].i_key_code;
+        }
+    }
+    return 0;
+}
+
+
+#define ACTIONID_QUIT                  1
+#define ACTIONID_PLAY_PAUSE            2
+#define ACTIONID_PLAY                  3
+#define ACTIONID_PAUSE                 4
+#define ACTIONID_STOP                  5
+#define ACTIONID_PREV                  6
+#define ACTIONID_NEXT                  7
+#define ACTIONID_SLOWER                8
+#define ACTIONID_FASTER                9
+#define ACTIONID_FULLSCREEN            10
+#define ACTIONID_VOL_UP                11
+#define ACTIONID_VOL_DOWN              12
+#define ACTIONID_NAV_ACTIVATE          13
+#define ACTIONID_NAV_UP                14
+#define ACTIONID_NAV_DOWN              15
+#define ACTIONID_NAV_LEFT              16
+#define ACTIONID_NAV_RIGHT             17
+#define ACTIONID_JUMP_BACKWARD_EXTRASHORT 18
+#define ACTIONID_JUMP_FORWARD_EXTRASHORT  19
+#define ACTIONID_JUMP_BACKWARD_SHORT   20
+#define ACTIONID_JUMP_FORWARD_SHORT    21
+#define ACTIONID_JUMP_BACKWARD_MEDIUM  22
+#define ACTIONID_JUMP_FORWARD_MEDIUM   23
+#define ACTIONID_JUMP_BACKWARD_LONG    24
+#define ACTIONID_JUMP_FORWARD_LONG     25
+#define ACTIONID_POSITION              26
+#define ACTIONID_VOL_MUTE              27
+/* let ACTIONID_SET_BOOMARK* and ACTIONID_PLAY_BOOKMARK* be contiguous */
+#define ACTIONID_SET_BOOKMARK1         28
+#define ACTIONID_SET_BOOKMARK2         29
+#define ACTIONID_SET_BOOKMARK3         39
+#define ACTIONID_SET_BOOKMARK4         31
+#define ACTIONID_SET_BOOKMARK5         32
+#define ACTIONID_SET_BOOKMARK6         33
+#define ACTIONID_SET_BOOKMARK7         34
+#define ACTIONID_SET_BOOKMARK8         35
+#define ACTIONID_SET_BOOKMARK9         36
+#define ACTIONID_SET_BOOKMARK10        37
+#define ACTIONID_PLAY_BOOKMARK1        38
+#define ACTIONID_PLAY_BOOKMARK2        39
+#define ACTIONID_PLAY_BOOKMARK3        40
+#define ACTIONID_PLAY_BOOKMARK4        41
+#define ACTIONID_PLAY_BOOKMARK5        42
+#define ACTIONID_PLAY_BOOKMARK6        43
+#define ACTIONID_PLAY_BOOKMARK7        44
+#define ACTIONID_PLAY_BOOKMARK8        45
+#define ACTIONID_PLAY_BOOKMARK9        46
+#define ACTIONID_PLAY_BOOKMARK10       47
+/* end of contiguous zone */
+#define ACTIONID_SUBDELAY_UP           48
+#define ACTIONID_SUBDELAY_DOWN         49
+#define ACTIONID_HISTORY_BACK          50
+#define ACTIONID_HISTORY_FORWARD       51
+#define ACTIONID_AUDIO_TRACK           52
+#define ACTIONID_SUBTITLE_TRACK        53
+#define ACTIONID_CUBESPEED_UP          54
+#define ACTIONID_CUBESPEED_DOWN        55
+#define ACTIONID_INTF_SHOW             56
+#define ACTIONID_INTF_HIDE             57
+/* chapter and title navigation */
+#define ACTIONID_TITLE_PREV            58
+#define ACTIONID_TITLE_NEXT            59
+#define ACTIONID_CHAPTER_PREV          60
+#define ACTIONID_CHAPTER_NEXT          61
+/* end of chapter and title navigation */
+#define ACTIONID_AUDIODELAY_UP         62
+#define ACTIONID_AUDIODELAY_DOWN       63
+#define ACTIONID_SNAPSHOT              64
+#define ACTIONID_RECORD                65
+#define ACTIONID_DISC_MENU             66
+#define ACTIONID_ASPECT_RATIO          67
+#define ACTIONID_CROP                  68
+#define ACTIONID_DEINTERLACE           69
+#define ACTIONID_ZOOM                  70
+#define ACTIONID_UNZOOM                71
+#define ACTIONID_CROP_TOP              72
+#define ACTIONID_UNCROP_TOP            73
+#define ACTIONID_CROP_LEFT             74
+#define ACTIONID_UNCROP_LEFT           75
+#define ACTIONID_CROP_BOTTOM           76
+#define ACTIONID_UNCROP_BOTTOM         77
+#define ACTIONID_CROP_RIGHT            78
+#define ACTIONID_UNCROP_RIGHT          79
+#define ACTIONID_DUMP                  80

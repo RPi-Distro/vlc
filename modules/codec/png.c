@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: acd569481013008c063b7054009e9f721979eafb $
+ * $Id: 2c13d0219771eaf7e477e90bffc154176c50b06a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,13 +24,9 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <vlc/vlc.h>
+#include <vlc/decoder.h>
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_codec.h>
 #include <png.h>
 
 /*****************************************************************************
@@ -38,7 +34,7 @@
  *****************************************************************************/
 struct decoder_sys_t
 {
-    bool b_error;
+    vlc_bool_t b_error;
 };
 
 /*****************************************************************************
@@ -52,14 +48,14 @@ static picture_t *DecodeBlock  ( decoder_t *, block_t ** );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin ()
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_VCODEC )
-    set_description( N_("PNG video decoder") )
-    set_capability( "decoder", 1000 )
-    set_callbacks( OpenDecoder, CloseDecoder )
-    add_shortcut( "png" )
-vlc_module_end ()
+vlc_module_begin();
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_VCODEC );
+    set_description( _("PNG video decoder") );
+    set_capability( "decoder", 1000 );
+    set_callbacks( OpenDecoder, CloseDecoder );
+    add_shortcut( "png" );
+vlc_module_end();
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -67,20 +63,25 @@ vlc_module_end ()
 static int OpenDecoder( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
+    decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_CODEC_PNG &&
+    if( p_dec->fmt_in.i_codec != VLC_FOURCC('p','n','g',' ') &&
         p_dec->fmt_in.i_codec != VLC_FOURCC('M','P','N','G') )
     {
         return VLC_EGENERIC;
     }
 
     /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_dec->p_sys = malloc(sizeof(decoder_sys_t)) ) == NULL )
-        return VLC_ENOMEM;
+    if( ( p_dec->p_sys = p_sys =
+          (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
+    {
+        msg_Err( p_dec, "out of memory" );
+        return VLC_EGENERIC;
+    }
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = VIDEO_ES;
-    p_dec->fmt_out.i_codec = VLC_CODEC_RGBA;
+    p_dec->fmt_out.i_codec = VLC_FOURCC('R','V','3','2');
 
     /* Set callbacks */
     p_dec->pf_decode_video = DecodeBlock;
@@ -91,7 +92,7 @@ static int OpenDecoder( vlc_object_t *p_this )
 static void user_read( png_structp p_png, png_bytep data, png_size_t i_length )
 {
     block_t *p_block = (block_t *)png_get_io_ptr( p_png );
-    png_size_t i_read = __MIN( p_block->i_buffer, i_length );
+    png_size_t i_read = __MIN( p_block->i_buffer, (int)i_length );
     memcpy( data, p_block->p_buffer, i_length );
     p_block->p_buffer += i_length;
     p_block->i_buffer -= i_length;
@@ -102,14 +103,14 @@ static void user_read( png_structp p_png, png_bytep data, png_size_t i_length )
 static void user_error( png_structp p_png, png_const_charp error_msg )
 {
     decoder_t *p_dec = (decoder_t *)png_get_error_ptr( p_png );
-    p_dec->p_sys->b_error = true;
-    msg_Err( p_dec, "%s", error_msg );
+    p_dec->p_sys->b_error = VLC_TRUE;
+    msg_Err( p_dec, error_msg );
 }
 
 static void user_warning( png_structp p_png, png_const_charp warning_msg )
 {
     decoder_t *p_dec = (decoder_t *)png_get_error_ptr( p_png );
-    msg_Warn( p_dec, "%s", warning_msg );
+    msg_Warn( p_dec, warning_msg );
 }
 
 /****************************************************************************
@@ -134,13 +135,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     if( !pp_block || !*pp_block ) return NULL;
 
     p_block = *pp_block;
-    p_sys->b_error = false;
-
-    if( p_block->i_flags & BLOCK_FLAG_DISCONTINUITY )
-    {
-        block_Release( p_block ); *pp_block = NULL;
-        return NULL;
-    }
+    p_sys->b_error = VLC_FALSE;
 
     p_png = png_create_read_struct( PNG_LIBPNG_VER_STRING, 0, 0, 0 );
     if( p_png == NULL )
@@ -148,11 +143,11 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         block_Release( p_block ); *pp_block = NULL;
         return NULL;
     }
-
+    
     p_info = png_create_info_struct( p_png );
     if( p_info == NULL )
     {
-        png_destroy_read_struct( &p_png, NULL, NULL );
+        png_destroy_read_struct( &p_png, png_infopp_NULL, png_infopp_NULL );
         block_Release( p_block ); *pp_block = NULL;
         return NULL;
     }
@@ -160,11 +155,11 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     p_end_info = png_create_info_struct( p_png );
     if( p_end_info == NULL )
     {
-        png_destroy_read_struct( &p_png, &p_info, NULL );
+        png_destroy_read_struct( &p_png, &p_info, png_infopp_NULL );
         block_Release( p_block ); *pp_block = NULL;
         return NULL;
     }
-
+ 
     /* libpng longjmp's there in case of error */
     if( setjmp( png_jmpbuf( p_png ) ) )
         goto error;
@@ -181,14 +176,10 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     if( p_sys->b_error ) goto error;
 
     /* Set output properties */
-    p_dec->fmt_out.i_codec = VLC_CODEC_RGBA;
+    p_dec->fmt_out.i_codec = VLC_FOURCC('R','V','3','2');
     p_dec->fmt_out.video.i_width = i_width;
     p_dec->fmt_out.video.i_height = i_height;
-    p_dec->fmt_out.video.i_sar_num = 1;
-    p_dec->fmt_out.video.i_sar_den = 1;
-    p_dec->fmt_out.video.i_rmask = 0x000000ff;
-    p_dec->fmt_out.video.i_gmask = 0x0000ff00;
-    p_dec->fmt_out.video.i_bmask = 0x00ff0000;
+    p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR * i_width / i_height;
 
     if( i_color_type == PNG_COLOR_TYPE_PALETTE )
         png_set_palette_to_rgb( p_png );
@@ -206,17 +197,21 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
     else if( !(i_color_type & PNG_COLOR_MASK_ALPHA) )
     {
-        p_dec->fmt_out.i_codec = VLC_CODEC_RGB24;
+        p_dec->fmt_out.i_codec = VLC_FOURCC('R','V','2','4');
+    }
+    if( i_color_type & PNG_COLOR_MASK_COLOR &&
+        p_dec->fmt_out.i_codec != VLC_FOURCC('R','V','2','4') )
+    {
+        /* Invert colors */
+        png_set_bgr( p_png );
     }
 
     /* Get a new picture */
-    p_pic = decoder_NewPicture( p_dec );
+    p_pic = p_dec->pf_vout_buffer_new( p_dec );
     if( !p_pic ) goto error;
 
     /* Decode picture */
     p_row_pointers = malloc( sizeof(png_bytep) * i_height );
-    if( !p_row_pointers )
-        goto error;
     for( i = 0; i < (int)i_height; i++ )
         p_row_pointers[i] = p_pic->p->p_pixels + p_pic->p->i_pitch * i;
 
@@ -228,14 +223,14 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     png_destroy_read_struct( &p_png, &p_info, &p_end_info );
     free( p_row_pointers );
 
-    p_pic->date = p_block->i_pts > VLC_TS_INVALID ? p_block->i_pts : p_block->i_dts;
+    p_pic->date = p_block->i_pts > 0 ? p_block->i_pts : p_block->i_dts;
 
     block_Release( p_block ); *pp_block = NULL;
     return p_pic;
 
  error:
 
-    free( p_row_pointers );
+    if( p_row_pointers ) free( p_row_pointers );
     png_destroy_read_struct( &p_png, &p_info, &p_end_info );
     block_Release( p_block ); *pp_block = NULL;
     return NULL;

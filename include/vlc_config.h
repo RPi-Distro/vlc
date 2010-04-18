@@ -22,11 +22,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-/**
- * \file
- * This file defines of values used in interface, vout, aout and vlc core functions.
- */
-
 /* Conventions regarding names of symbols and variables
  * ----------------------------------------------------
  *
@@ -38,19 +33,36 @@
  * General configuration
  *****************************************************************************/
 
-/* All timestamp below or equal to this define are invalid/unset
- * XXX the numerical value is 0 because of historical reason and will change.*/
-#define VLC_TS_INVALID (0)
-#define VLC_TS_0 (1)
+#define CLOCK_FREQ 1000000
 
-#define CLOCK_FREQ INT64_C(1000000)
+
+/* When creating or destroying threads in blocking mode, delay to poll thread
+ * status */
+#define THREAD_SLEEP                    ((mtime_t)(0.010*CLOCK_FREQ))
+
+/* When a thread waits on a condition in debug mode, delay to wait before
+ * outputting an error message (in second) */
+#define THREAD_COND_TIMEOUT             1
+
+/* The configuration file and directory */
+#ifdef SYS_BEOS
+#  define CONFIG_DIR                    "config/settings/VideoLAN Client"
+#elif __APPLE__
+#  define CONFIG_DIR                    "Library/Preferences/VLC"
+#elif defined( WIN32 ) || defined( UNDER_CE )
+#  define CONFIG_DIR                    "vlc"
+#else
+#  define CONFIG_DIR                    ".vlc"
+#endif
+#define CONFIG_FILE                     "vlcrc"
+#define PLUGINSCACHE_DIR                "cache"
 
 /*****************************************************************************
  * Interface configuration
  *****************************************************************************/
 
 /* Base delay in micro second for interface sleeps */
-#define INTF_IDLE_SLEEP                 (CLOCK_FREQ/20)
+#define INTF_IDLE_SLEEP                 ((mtime_t)(0.050*CLOCK_FREQ))
 
 /* Step for changing gamma, and minimum and maximum values */
 #define INTF_GAMMA_STEP                 .1
@@ -60,15 +72,15 @@
  * Input thread configuration
  *****************************************************************************/
 
-#define DEFAULT_INPUT_ACTIVITY 1
-#define TRANSCODE_ACTIVITY 10
-
 /* Used in ErrorThread */
-#define INPUT_IDLE_SLEEP                (CLOCK_FREQ/10)
+#define INPUT_IDLE_SLEEP                ((mtime_t)(0.100*CLOCK_FREQ))
+
+/* Time to wait in case of read error */
+#define INPUT_ERROR_SLEEP               ((mtime_t)(0.10*CLOCK_FREQ))
 
 /* Number of read() calls needed until we check the file size through
  * fstat() */
-#define INPUT_FSTAT_NB_READS            16
+#define INPUT_FSTAT_NB_READS            10
 
 /*
  * General limitations
@@ -76,25 +88,22 @@
 
 /* Duration between the time we receive the data packet, and the time we will
  * mark it to be presented */
-#define DEFAULT_PTS_DELAY               (3*CLOCK_FREQ/10)
+#define DEFAULT_PTS_DELAY               (mtime_t)(.3*CLOCK_FREQ)
 
 /* DVD and VCD devices */
 #if !defined( WIN32 ) && !defined( UNDER_CE )
-#   define CD_DEVICE      "/dev/cdrom"
-#   define DVD_DEVICE     "/dev/dvd"
+#   define VCD_DEVICE "/dev/cdrom"
+#   define CDAUDIO_DEVICE "/dev/cdrom"
 #else
-#   define CD_DEVICE      "D:"
-#   define DVD_DEVICE     NULL
+#   define VCD_DEVICE "D:"
+#   define CDAUDIO_DEVICE "D:"
 #endif
-#define VCD_DEVICE        CD_DEVICE
-#define CDAUDIO_DEVICE    CD_DEVICE
 
 /*****************************************************************************
  * Audio configuration
  *****************************************************************************/
 
 /* Volume */
-/* If you are coding an interface, please see src/audio_output/intf.c */
 #define AOUT_VOLUME_DEFAULT             256
 #define AOUT_VOLUME_STEP                32
 #define AOUT_VOLUME_MAX                 1024
@@ -108,30 +117,22 @@
 
 /* Buffers which arrive in advance of more than AOUT_MAX_ADVANCE_TIME
  * will be considered as bogus and be trashed */
-#define AOUT_MAX_ADVANCE_TIME           (DEFAULT_PTS_DELAY * 5)
+#define AOUT_MAX_ADVANCE_TIME           (mtime_t)(DEFAULT_PTS_DELAY * 5)
 
 /* Buffers which arrive in advance of more than AOUT_MAX_PREPARE_TIME
  * will cause the calling thread to sleep */
-#define AOUT_MAX_PREPARE_TIME           (CLOCK_FREQ/2)
+#define AOUT_MAX_PREPARE_TIME           (mtime_t)(.5*CLOCK_FREQ)
 
 /* Buffers which arrive after pts - AOUT_MIN_PREPARE_TIME will be trashed
  * to avoid too heavy resampling */
-#define AOUT_MIN_PREPARE_TIME           (CLOCK_FREQ/25)
+#define AOUT_MIN_PREPARE_TIME           (mtime_t)(.04*CLOCK_FREQ)
 
 /* Max acceptable delay between the coded PTS and the actual presentation
  * time, without resampling */
-#define AOUT_PTS_TOLERANCE              (CLOCK_FREQ/25)
+#define AOUT_PTS_TOLERANCE              (mtime_t)(.04*CLOCK_FREQ)
 
 /* Max acceptable resampling (in %) */
 #define AOUT_MAX_RESAMPLING             10
-
-/*****************************************************************************
- * SPU configuration
- *****************************************************************************/
-
-/* Buffer must avoid arriving more than SPU_MAX_PREPARE_TIME in advanced to
- * the SPU */
-#define SPU_MAX_PREPARE_TIME            (CLOCK_FREQ/2)
 
 /*****************************************************************************
  * Video configuration
@@ -153,17 +154,55 @@
 
 /* Video heap size - remember that a decompressed picture is big
  * (~1 Mbyte) before using huge values */
-#define VOUT_MAX_PICTURES              25
+#ifdef OPTIMIZE_MEMORY
+#   define VOUT_MAX_PICTURES               5
+#else
+#   define VOUT_MAX_PICTURES               8
+#endif
+
+/* Minimum number of direct pictures the video output will accept without
+ * creating additional pictures in system memory */
+#define VOUT_MIN_DIRECT_PICTURES        6
+
+/* Number of simultaneous subpictures */
+#define VOUT_MAX_SUBPICTURES            8
+
+/* Statistics are displayed every n loops (=~ pictures) */
+#define VOUT_STATS_NB_LOOPS             100
 
 /*
  * Time settings
  */
 
+/* Time during which the thread will sleep if it has nothing to
+ * display (in micro-seconds) */
+#define VOUT_IDLE_SLEEP                 ((int)(0.020*CLOCK_FREQ))
+
+/* Maximum lap of time allowed between the beginning of rendering and
+ * display. If, compared to the current date, the next image is too
+ * late, the thread will perform an idle loop. This time should be
+ * at least VOUT_IDLE_SLEEP plus the time required to render a few
+ * images, to avoid trashing of decoded images */
+#define VOUT_DISPLAY_DELAY              ((int)(0.200*CLOCK_FREQ))
+
+/* Pictures which are VOUT_BOGUS_DELAY or more in advance probably have
+ * a bogus PTS and won't be displayed */
+#define VOUT_BOGUS_DELAY                ((mtime_t)(DEFAULT_PTS_DELAY * 30))
+
+/* Delay (in microseconds) before an idle screen is displayed */
+#define VOUT_IDLE_DELAY                 (5*CLOCK_FREQ)
+
+/* Number of pictures required to computes the FPS rate */
+#define VOUT_FPS_SAMPLES                20
+
+/* Better be in advance when awakening than late... */
+#define VOUT_MWAIT_TOLERANCE            ((mtime_t)(0.020*CLOCK_FREQ))
+
 /* Time to sleep when waiting for a buffer (from vout or the video fifo).
  * It should be approximately the time needed to perform a complete picture
  * loop. Since it only happens when the video heap is full, it does not need
  * to be too low, even if it blocks the decoder. */
-#define VOUT_OUTMEM_SLEEP               (CLOCK_FREQ/50)
+#define VOUT_OUTMEM_SLEEP               ((mtime_t)(0.020*CLOCK_FREQ))
 
 /* The default video output window title */
 #define VOUT_TITLE                      "VLC"

@@ -2,7 +2,7 @@
  * bits.h : Bit handling helpers
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0f9cbfe93686319fc2285767b8c4019555451f4c $
+ * $Id: 1a6bab607140a0b5527f0de87a6ff4b80b6cee0a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,13 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VLC_BITS_H
-#define VLC_BITS_H 1
-
-/**
- * \file
- * This file defines functions, structures for handling streams of bits in vlc
- */
+#ifndef _VLC_BITS_H
+#define _VLC_BITS_H 1
 
 typedef struct bs_s
 {
@@ -35,30 +30,27 @@ typedef struct bs_s
     uint8_t *p;
     uint8_t *p_end;
 
-    ssize_t  i_left;    /* i_count number of available bits */
+    int     i_left;    /* i_count number of available bits */
 } bs_t;
 
-static inline void bs_init( bs_t *s, const void *p_data, size_t i_data )
+static inline void bs_init( bs_t *s, void *p_data, int i_data )
 {
-    s->p_start = (void *)p_data;
-    s->p       = s->p_start;
-    s->p_end   = s->p_start + i_data;
+    s->p_start = p_data;
+    s->p       = p_data;
+    s->p_end   = s->p + i_data;
     s->i_left  = 8;
 }
-
-static inline int bs_pos( const bs_t *s )
+static inline int bs_pos( bs_t *s )
 {
     return( 8 * ( s->p - s->p_start ) + 8 - s->i_left );
 }
-
-static inline int bs_eof( const bs_t *s )
+static inline int bs_eof( bs_t *s )
 {
     return( s->p >= s->p_end ? 1: 0 );
 }
-
 static inline uint32_t bs_read( bs_t *s, int i_count )
 {
-     static const uint32_t i_mask[33] =
+     static uint32_t i_mask[33] =
      {  0x00,
         0x01,      0x03,      0x07,      0x0f,
         0x1f,      0x3f,      0x7f,      0xff,
@@ -128,16 +120,14 @@ static inline uint32_t bs_show( bs_t *s, int i_count )
     return bs_read( &s_tmp, i_count );
 }
 
-static inline void bs_skip( bs_t *s, ssize_t i_count )
+static inline void bs_skip( bs_t *s, int i_count )
 {
     s->i_left -= i_count;
 
-    if( s->i_left <= 0 )
+    while( s->i_left <= 0 )
     {
-        const int i_bytes = ( -s->i_left + 8 ) / 8;
-
-        s->p += i_bytes;
-        s->i_left += 8 * i_bytes;
+        s->p++;
+        s->i_left += 8;
     }
 }
 
@@ -177,7 +167,6 @@ static inline void bs_align( bs_t *s )
         s->p++;
     }
 }
-
 static inline void bs_align_0( bs_t *s )
 {
     if( s->i_left != 8 )
@@ -185,7 +174,6 @@ static inline void bs_align_0( bs_t *s )
         bs_write( s, s->i_left, 0 );
     }
 }
-
 static inline void bs_align_1( bs_t *s )
 {
     while( s->i_left != 8 )

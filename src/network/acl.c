@@ -1,8 +1,8 @@
 /*****************************************************************************
  * acl.c:
  *****************************************************************************
- * Copyright © 2005-2007 Rémi Denis-Courmont
- * $Id: f10ec64152e87ec3a959825cd497a865a828d00a $
+ * Copyright (C) 2005 Rémi Denis-Courmont
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -24,17 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-
+#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
-#include <vlc_acl.h>
+#include <vlc/vlc.h>
 
-#include <vlc_network.h>
-#include <vlc_fs.h>
+#include "vlc_acl.h"
+
+#include <errno.h>
+
+#include "network.h"
+#include "charset.h"
 
 /* FIXME: rwlock on acl, but libvlc doesn't implement rwlock */
 typedef struct vlc_acl_entry_t
@@ -42,7 +42,7 @@ typedef struct vlc_acl_entry_t
     uint8_t    host[17];
     uint8_t    i_bytes_match;
     uint8_t    i_bits_mask;
-    bool b_allow;
+    vlc_bool_t b_allow;
 } vlc_acl_entry_t;
 
 struct vlc_acl_t
@@ -50,7 +50,7 @@ struct vlc_acl_t
     vlc_object_t    *p_owner;
     unsigned         i_size;
     vlc_acl_entry_t *p_entries;
-    bool       b_allow_default;
+    vlc_bool_t       b_allow_default;
 };
 
 static int ACL_Resolve( vlc_object_t *p_this, uint8_t *p_bytes,
@@ -152,7 +152,7 @@ int ACL_Check( vlc_acl_t *p_acl, const char *psz_ip )
  * Items are always matched in the same order as they are added.
  */
 int ACL_AddNet( vlc_acl_t *p_acl, const char *psz_ip, int i_len,
-                bool b_allow )
+                vlc_bool_t b_allow )
 {
     vlc_acl_entry_t *p_ent;
     unsigned i_size;
@@ -199,16 +199,16 @@ int ACL_AddNet( vlc_acl_t *p_acl, const char *psz_ip, int i_len,
     return 0;
 }
 
-#undef ACL_Create
+
 /**
  * Creates an empty ACL.
  *
- * @param b_allow whether to grant (true) or deny (false) access
+ * @param b_allow whether to grant (VLC_TRUE) or deny (VLC_FALSE) access
  * by default (ie if none of the ACL entries matched).
  *
  * @return an ACL object. NULL in case of error.
  */
-vlc_acl_t *ACL_Create( vlc_object_t *p_this, bool b_allow )
+vlc_acl_t *__ACL_Create( vlc_object_t *p_this, vlc_bool_t b_allow )
 {
     vlc_acl_t *p_acl;
 
@@ -216,7 +216,7 @@ vlc_acl_t *ACL_Create( vlc_object_t *p_this, bool b_allow )
     if( p_acl == NULL )
         return NULL;
 
-    vlc_object_hold( p_this );
+    vlc_object_yield( p_this );
     p_acl->p_owner = p_this;
     p_acl->i_size = 0;
     p_acl->p_entries = NULL;
@@ -225,7 +225,7 @@ vlc_acl_t *ACL_Create( vlc_object_t *p_this, bool b_allow )
     return p_acl;
 }
 
-#undef ACL_Duplicate
+
 /**
  * Perform a deep copy of an existing ACL.
  *
@@ -234,7 +234,7 @@ vlc_acl_t *ACL_Create( vlc_object_t *p_this, bool b_allow )
  *
  * @return a new ACL object, or NULL on error.
  */
-vlc_acl_t *ACL_Duplicate( vlc_object_t *p_this, const vlc_acl_t *p_acl )
+vlc_acl_t *__ACL_Duplicate( vlc_object_t *p_this, const vlc_acl_t *p_acl )
 {
     vlc_acl_t *p_dupacl;
 
@@ -262,7 +262,7 @@ vlc_acl_t *ACL_Duplicate( vlc_object_t *p_this, const vlc_acl_t *p_acl )
     else
         p_dupacl->p_entries = NULL;
 
-    vlc_object_hold( p_this );
+    vlc_object_yield( p_this );
     p_dupacl->p_owner = p_this;
     p_dupacl->i_size = p_acl->i_size;
     p_dupacl->b_allow_default = p_acl->b_allow_default;
@@ -278,12 +278,17 @@ void ACL_Destroy( vlc_acl_t *p_acl )
 {
     if( p_acl != NULL )
     {
-        free( p_acl->p_entries );
+        if( p_acl->p_entries != NULL )
+            free( p_acl->p_entries );
+
         vlc_object_release( p_acl->p_owner );
         free( p_acl );
     }
 }
 
+#ifndef isblank 
+#   define isblank(c) ((c) == ' ' || (c) == '\t')
+#endif
 
 /**
  * Reads ACL entries from a file.
@@ -300,7 +305,7 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
     if( p_acl == NULL )
         return -1;
 
-    file = vlc_fopen( psz_path, "r" );
+    file = utf8_fopen( psz_path, "r" );
     if( file == NULL )
         return -1;
 
@@ -314,7 +319,8 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
         {
             if( ferror( file ) )
             {
-                msg_Err( p_acl->p_owner, "error reading %s : %m", psz_path );
+                msg_Err( p_acl->p_owner, "error reading %s : %s\n", psz_path,
+                        strerror( errno ) );
                 goto error;
             }
             continue;
@@ -331,20 +337,18 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
             continue;
 
         ptr = strchr( psz_ip, '\n' );
-        if( ptr == NULL && !feof(file) )
+        if( ptr == NULL )
         {
-            msg_Warn( p_acl->p_owner, "skipping overly long line in %s",
+            msg_Warn( p_acl->p_owner, "skipping overly long line in %s\n",
                       psz_path);
             do
             {
-                if( fgets( line, sizeof( line ), file ) == NULL )
+                fgets( line, sizeof( line ), file );
+                if( ferror( file ) || feof( file ) )
                 {
-                     if( ferror( file ) )
-                     {
-                         msg_Err( p_acl->p_owner, "error reading %s : %m",
-                                  psz_path );
-                     }
-                     goto error;
+                    msg_Err( p_acl->p_owner, "error reading %s : %s\n",
+                             psz_path, strerror( errno ) );
+                    goto error;
                 }
             }
             while( strchr( line, '\n' ) == NULL);
@@ -352,14 +356,15 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
             continue; /* skip unusable line */
         }
 
-        /* look for first space, CR, LF, etc. or comment character */
-        for( ptr = psz_ip; ( *ptr!='#' ) && !isspace( *ptr ) && *ptr; ++ptr );
+        /* skips comment-only line */
+        if( *psz_ip == '#' )
+            continue;
+
+        /* looks for first space, CR, LF, etc. or end-of-line comment */
+        /* (there is at least a linefeed) */
+        for( ptr = psz_ip; ( *ptr != '#' ) && !isspace( *ptr ); ptr++ );
 
         *ptr = '\0';
-
-        /* skip lines without usable information */
-        if( ptr == psz_ip )
-            continue;
 
         msg_Dbg( p_acl->p_owner, "restricted to %s", psz_ip );
 
@@ -368,11 +373,11 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
             *ptr++ = '\0'; /* separate address from mask length */
 
         if( (ptr != NULL)
-            ? ACL_AddNet( p_acl, psz_ip, atoi( ptr ), true )
-            : ACL_AddHost( p_acl, psz_ip, true ) )
+            ? ACL_AddNet( p_acl, psz_ip, atoi( ptr ), VLC_TRUE ) 
+            : ACL_AddHost( p_acl, psz_ip, VLC_TRUE ) )
         {
             msg_Err( p_acl->p_owner, "cannot add ACL from %s", psz_path );
-            continue;
+            goto error;
         }
     }
 

@@ -1,4 +1,4 @@
-SOURCES_oldhttp = \
+SOURCES_http = \
 	http.c \
 	http.h \
 	rpn.c \

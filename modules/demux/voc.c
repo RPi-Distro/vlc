@@ -2,7 +2,7 @@
  * voc.c : Creative Voice File (.VOC) demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: 3cf8887d44aa26bc0edd1ba31771d221662054c0 $
+ * $Id: 15029da5ea076d53e3e34a3cf1e8f07888603049 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -24,17 +24,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>                                      /* malloc(), free() */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <vlc/vlc.h>
+#include <vlc/input.h>
+#include <vlc/aout.h>
 
-#include <vlc_common.h>
-#include <vlc_plugin.h>
-#include <vlc_demux.h>
-#include <vlc_aout.h>
-
-#include <vlc_codecs.h>
+#include <codecs.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -42,13 +38,13 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin ()
-    set_description( N_("VOC demuxer") )
-    set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_DEMUX )
-    set_capability( "demux", 10 )
-    set_callbacks( Open, Close )
-vlc_module_end ()
+vlc_module_begin();
+    set_description( _("VOC demuxer") );
+    set_category( CAT_INPUT );
+    set_subcategory( SUBCAT_INPUT_DEMUX );
+    set_capability( "demux2", 10 );
+    set_callbacks( Open, Close );
+vlc_module_end();
 
 /*****************************************************************************
  * Local prototypes
@@ -80,7 +76,7 @@ static int Open( vlc_object_t * p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
-    const uint8_t *p_buf;
+    uint8_t     *p_buf;
     uint16_t    i_data_offset, i_version;
 
     if( stream_Peek( p_demux->s, &p_buf, 26 ) < 26 )
@@ -196,7 +192,7 @@ static int ReadBlockHeader( demux_t *p_demux )
                 return VLC_EGENERIC;
             }
 
-            new_fmt.i_codec = VLC_CODEC_U8;
+            new_fmt.i_codec = VLC_FOURCC('u','8',' ',' ');
             new_fmt.audio.i_rate = fix_voc_sr( 1000000L / (256L - buf[0]) );
             new_fmt.audio.i_bytes_per_frame = 1;
             new_fmt.audio.i_frame_length = 1;
@@ -221,7 +217,7 @@ static int ReadBlockHeader( demux_t *p_demux )
             i_block_size = 0;
             p_sys->i_silence_countdown = GetWLE( buf );
 
-            new_fmt.i_codec = VLC_CODEC_U8;
+            new_fmt.i_codec = VLC_FOURCC('u','8',' ',' ');
             new_fmt.audio.i_rate = fix_voc_sr( 1000000L / (256L - buf[0]) );
             new_fmt.audio.i_bytes_per_frame = 1;
             new_fmt.audio.i_frame_length = 1;
@@ -254,8 +250,8 @@ static int ReadBlockHeader( demux_t *p_demux )
             }
             break;
 
-        case 8:
-            /*
+        case 8: 
+            /* 
              * Block 8 is a big kludge to add stereo support to block 1 :
              * A block of type 8 is always followed by a block of type 1
              * and specifies the number of channels in that 1-block
@@ -272,7 +268,7 @@ static int ReadBlockHeader( demux_t *p_demux )
                 return VLC_EGENERIC;
             }
 
-            new_fmt.i_codec = VLC_CODEC_U8;
+            new_fmt.i_codec = VLC_FOURCC('u','8',' ',' ');
             new_fmt.audio.i_channels = buf[3] + 1; /* can't be nul */
             new_fmt.audio.i_rate = 256000000L /
                           ((65536L - GetWLE(buf)) * new_fmt.audio.i_channels);
@@ -285,7 +281,7 @@ static int ReadBlockHeader( demux_t *p_demux )
             /* read subsequent block 1 */
             if( stream_Read( p_demux->s, buf, 4 ) < 4 )
                 return VLC_EGENERIC; /* EOF */
- 
+        
             i_block_size = GetDWLE( buf ) >> 8;
             msg_Dbg( p_demux, "new block: type: %u, size: %u",
                     (unsigned)*buf, i_block_size );
@@ -323,11 +319,11 @@ static int ReadBlockHeader( demux_t *p_demux )
                     switch( new_fmt.audio.i_bitspersample )
                     {
                         case 8:
-                            new_fmt.i_codec = VLC_CODEC_U8;
+                            new_fmt.i_codec = VLC_FOURCC('u','8',' ',' ');
                             break;
 
                         case 16:
-                            new_fmt.i_codec = VLC_CODEC_U16L;
+                            new_fmt.i_codec = VLC_FOURCC('u','1','6','l');
                             break;
 
                         default:
@@ -341,11 +337,11 @@ static int ReadBlockHeader( demux_t *p_demux )
                     switch( new_fmt.audio.i_bitspersample )
                     {
                         case 8:
-                            new_fmt.i_codec = VLC_CODEC_S8;
+                            new_fmt.i_codec = VLC_FOURCC('s','8',' ',' ');
                             break;
 
                         case 16:
-                            new_fmt.i_codec = VLC_CODEC_S16L;
+                            new_fmt.i_codec = VLC_FOURCC('s','1','6','l');
                             break;
 
                         default:
@@ -355,7 +351,7 @@ static int ReadBlockHeader( demux_t *p_demux )
                     }
                     break;
 
-                default:
+                default: 
                     msg_Err( p_demux, "unsupported compression" );
                     return VLC_EGENERIC;
             }
@@ -462,13 +458,12 @@ static int Demux( demux_t *p_demux )
         p_sys->i_silence_countdown -= i;
     }
 
-    p_block->i_dts = p_block->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
+    p_block->i_dts = p_block->i_pts =
+        date_Increment( &p_sys->pts, p_sys->fmt.audio.i_frame_length * i );
 
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
 
     es_out_Send( p_demux->out, p_sys->p_es, p_block );
-
-    date_Increment( &p_sys->pts, p_sys->fmt.audio.i_frame_length * i );
 
     return 1;
 }
@@ -490,7 +485,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     demux_sys_t *p_sys  = p_demux->p_sys;
 
-    return demux_vaControlHelper( p_demux->s, p_sys->i_block_start,
+    return demux2_vaControlHelper( p_demux->s, p_sys->i_block_start,
                                    p_sys->i_block_end,
                                    p_sys->fmt.i_bitrate,
                                    p_sys->fmt.audio.i_blockalign,

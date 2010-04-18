@@ -1,8 +1,8 @@
 /*****************************************************************************
  * osd_text.c : text manipulation functions
  *****************************************************************************
- * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 8b73c4c67240dcf2f2ee4eaa355380264b7d7d90 $
+ * Copyright (C) 1999-2005 the VideoLAN team
+ * $Id: 39cf6d1d5bb59ca4960c0f8663d4b36fb9f946e5 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -20,12 +20,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_vout.h>
+ 
+#include <vlc/vout.h>
 #include <vlc_block.h>
 #include <vlc_filter.h>
 #include <vlc_osd.h>
@@ -35,14 +31,14 @@
  * \param p_spu pointer to the subpicture queue the text is to be showed on
  * \param i_channel Subpicture channel
  * \param psz_string The text to be shown
- * \param p_style Pointer to a struct with text style info (it is duplicated)
+ * \param p_style Pointer to a struct with text style info
  * \param i_flags flags for alignment and such
  * \param i_hmargin horizontal margin in pixels
  * \param i_vmargin vertical margin in pixels
  * \param i_duration Amount of time the text is to be shown.
  */
 int osd_ShowTextRelative( spu_t *p_spu, int i_channel,
-                           const char *psz_string, const text_style_t *p_style,
+                           char *psz_string, text_style_t *p_style,
                            int i_flags, int i_hmargin, int i_vmargin,
                            mtime_t i_duration )
 {
@@ -58,7 +54,7 @@ int osd_ShowTextRelative( spu_t *p_spu, int i_channel,
  * \param p_spu pointer to the subpicture queue the text is to be showed on
  * \param i_channel Subpicture channel
  * \param psz_string The text to be shown
- * \param p_style Pointer to a struct with text style info (it is duplicated)
+ * \param p_style Pointer to a struct with text style info
  * \param i_flags flags for alignment and such
  * \param i_hmargin horizontal margin in pixels
  * \param i_vmargin vertical margin in pixels
@@ -68,43 +64,42 @@ int osd_ShowTextRelative( spu_t *p_spu, int i_channel,
  *               is about to be shown
  */
 int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
-                           const char *psz_string, const text_style_t *p_style,
+                           char *psz_string, text_style_t *p_style,
                            int i_flags, int i_hmargin, int i_vmargin,
                            mtime_t i_start, mtime_t i_stop )
 {
     subpicture_t *p_spu;
     video_format_t fmt;
-    (void)p_style;
 
     if( !psz_string ) return VLC_EGENERIC;
 
-    p_spu = subpicture_New();
-    if( !p_spu )
-        return VLC_EGENERIC;
-
-    p_spu->i_channel = i_channel;
-    p_spu->i_start = i_start;
-    p_spu->i_stop = i_stop;
-    p_spu->b_ephemer = true;
-    p_spu->b_absolute = false;
+    p_spu = spu_CreateSubpicture( p_spu_channel );
+    if( !p_spu ) return VLC_EGENERIC;
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_CODEC_TEXT;
+    fmt.i_chroma = VLC_FOURCC('T','E','X','T');
+    fmt.i_aspect = 0;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = subpicture_region_New( &fmt );
+    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_spu_channel), &fmt );
     if( !p_spu->p_region )
     {
         msg_Err( p_spu_channel, "cannot allocate SPU region" );
-        subpicture_Delete( p_spu );
+        spu_DestroySubpicture( p_spu_channel, p_spu );
         return VLC_EGENERIC;
     }
 
     p_spu->p_region->psz_text = strdup( psz_string );
-    p_spu->p_region->i_align = i_flags & SUBPICTURE_ALIGN_MASK;
-    p_spu->p_region->i_x = i_hmargin;
-    p_spu->p_region->i_y = i_vmargin;
+    p_spu->i_start = i_start;
+    p_spu->i_stop = i_stop;
+    p_spu->b_ephemer = VLC_TRUE;
+    p_spu->b_absolute = VLC_FALSE;
+
+    p_spu->i_x = i_hmargin;
+    p_spu->i_y = i_vmargin;
+    p_spu->i_flags = i_flags;
+    p_spu->i_channel = i_channel;
 
     spu_DisplaySubpicture( p_spu_channel, p_spu );
 
@@ -122,19 +117,18 @@ int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
 void osd_Message( spu_t *p_spu, int i_channel,
                         char *psz_format, ... )
 {
+    char *psz_string;
     va_list args;
 
     if( p_spu )
     {
-        char *psz_string;
         va_start( args, psz_format );
-        if( vasprintf( &psz_string, psz_format, args ) != -1 )
-        {
-            osd_ShowTextRelative( p_spu, i_channel, psz_string, NULL,
-                    OSD_ALIGN_TOP|OSD_ALIGN_RIGHT, 30,20,1000000 );
+        vasprintf( &psz_string, psz_format, args );
 
-            free( psz_string );
-        }
+        osd_ShowTextRelative( p_spu, i_channel, psz_string, NULL,
+                               OSD_ALIGN_TOP|OSD_ALIGN_RIGHT, 30,20,1000000 );
+
+        free( psz_string );
         va_end( args );
     }
 }

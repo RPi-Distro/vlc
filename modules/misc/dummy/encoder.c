@@ -2,7 +2,7 @@
  * encoder.c: dummy encoder plugin for vlc.
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: ed8fee0c78d36e00dab59e69c2a9c1ffeec2f935 $
+ * $Id: ec7bf70fe577dbac3b661e8a702fa3ced1db098f $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -24,13 +24,8 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_codec.h>
-#include "dummy.h"
+#include <vlc/vlc.h>
+#include <vlc/decoder.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -41,7 +36,7 @@ static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_buf );
 /*****************************************************************************
  * OpenDecoder: open the dummy encoder.
  *****************************************************************************/
-int OpenEncoder ( vlc_object_t *p_this )
+int E_(OpenEncoder) ( vlc_object_t *p_this )
 {
     encoder_t *p_enc = (encoder_t *)p_this;
 
@@ -56,7 +51,6 @@ int OpenEncoder ( vlc_object_t *p_this )
  ****************************************************************************/
 static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
 {
-    VLC_UNUSED(p_enc); VLC_UNUSED(p_pict);
     return NULL;
 }
 
@@ -65,14 +59,12 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
  ****************************************************************************/
 static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_buf )
 {
-    VLC_UNUSED(p_enc); VLC_UNUSED(p_buf);
     return NULL;
 }
 
 /*****************************************************************************
  * CloseDecoder: decoder destruction
  *****************************************************************************/
-void CloseEncoder ( vlc_object_t *p_this )
+void E_(CloseEncoder) ( vlc_object_t *p_this )
 {
-    VLC_UNUSED(p_this);
 }

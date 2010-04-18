@@ -2,7 +2,7 @@
  * ustring.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 3f1f869210948d34ce865210959487b7f8d1da7c $
+ * $Id: 5513fe4344d089f8f98e097c98bd4c2722d15683 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,6 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <string.h>
 #include <sstream>
 #include "ustring.hpp"
 
@@ -130,7 +131,10 @@ UString::UString( intf_thread_t *pIntf, const char *pString ):
 
 UString::~UString()
 {
-    delete[] m_pString;
+    if( m_pString )
+    {
+        delete[] m_pString;
+    }
 }
 
 
@@ -196,11 +200,8 @@ bool UString::operator >=( const UString &rOther ) const
 }
 
 
-UString& UString::operator =( const UString &rOther )
+void UString::operator =( const UString &rOther )
 {
-    if( this == &rOther )
-        return *this;
-
     m_length = rOther.m_length;
     delete[] m_pString;
     m_pString = new uint32_t[size() + 1];
@@ -208,20 +209,15 @@ UString& UString::operator =( const UString &rOther )
     {
         m_pString[i] = rOther.m_pString[i];
     }
-
-    return *this;
 }
 
 
-UString& UString::operator +=( const UString &rOther )
+void UString::operator +=( const UString &rOther )
 {
-    if( this == &rOther )
-        return *this;
-
     int tempLength = this->length() + rOther.length();
     uint32_t *pTempString = new uint32_t[tempLength + 1];
     // Copy the first string
-    memcpy( pTempString, this->m_pString, sizeof(uint32_t) * this->size() );
+    memcpy( pTempString, this->m_pString, 4 * this->size() );
     // Append the second string
 //     memcpy( pTempString + 4 * size(), rOther.m_pString,
 //             4 * rOther.size() );
@@ -235,8 +231,6 @@ UString& UString::operator +=( const UString &rOther )
     delete[] m_pString;
     m_pString = pTempString;
     m_length = tempLength;
-
-    return *this;
 }
 
 
@@ -253,6 +247,19 @@ const UString UString::operator +( const char *pString ) const
 {
     UString temp( getIntf(), pString );
     return (*this + temp );
+}
+
+
+void UString::debug() const
+{
+    char *s = new char[size() + 1];
+    for( uint32_t i = 0; i < size(); i++ )
+    {
+        s[i] = (char)m_pString[i];
+    }
+    s[size()] = '\0';
+    msg_Err( getIntf(), "%s", s );
+    delete[] s;
 }
 
 

@@ -2,7 +2,7 @@
  * vlc_url.h: URL related macros
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 35bea922fdccb977d479e16bd4a2a50117fd4179 $
+ * $Id: d7e40d06d53523df601723442becf604e79dcb0f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -22,15 +22,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VLC_URL_H
-# define VLC_URL_H
+#ifndef __VLC_URL_H
+# define __VLC_URL_H
 
-/**
- * \file
- * This file defines functions for manipulating URL in vlc
- */
-
-struct vlc_url_t
+typedef struct
 {
     char *psz_protocol;
     char *psz_username;
@@ -43,13 +38,7 @@ struct vlc_url_t
     char *psz_option;
 
     char *psz_buffer; /* to be freed */
-};
-
-VLC_EXPORT( char *, decode_URI_duplicate, ( const char *psz ) );
-VLC_EXPORT( char *, decode_URI, ( char *psz ) );
-VLC_EXPORT( char *, encode_URI_component, ( const char *psz ) );
-VLC_EXPORT( char *, make_URI, ( const char *path ) );
-VLC_EXPORT( char *, make_path, ( const char *url ) );
+} vlc_url_t;
 
 /*****************************************************************************
  * vlc_UrlParse:
@@ -64,7 +53,6 @@ static inline void vlc_UrlParse( vlc_url_t *url, const char *psz_url,
     char *psz_dup;
     char *psz_parse;
     char *p;
-    char *p2;
 
     url->psz_protocol = NULL;
     url->psz_username = NULL;
@@ -81,22 +69,7 @@ static inline void vlc_UrlParse( vlc_url_t *url, const char *psz_url,
     }
     url->psz_buffer = psz_parse = psz_dup = strdup( psz_url );
 
-    /* Search a valid protocol */
     p  = strstr( psz_parse, ":/" );
-    if( p != NULL )
-    {
-        for( p2 = psz_parse; p2 < p; p2++ )
-        {
-#define I(i,a,b) ( (a) <= (i) && (i) <= (b) )
-            if( !I(*p2, 'a', 'z' ) && !I(*p2, 'A', 'Z') && !I(*p2, '0', '9') && *p2 != '+' && *p2 != '-' && *p2 != '.' )
-            {
-                p = NULL;
-                break;
-            }
-#undef I
-        }
-    }
-
     if( p != NULL )
     {
         /* we have a protocol */
@@ -109,8 +82,7 @@ static inline void vlc_UrlParse( vlc_url_t *url, const char *psz_url,
         psz_parse = p;
     }
     p = strchr( psz_parse, '@' );
-    p2 = strchr( psz_parse, '/' );
-    if( p != NULL && ( p2 != NULL ? p < p2 : 1 ) )
+    if( p != NULL )
     {
         /* We have a login */
         url->psz_username = psz_parse;
@@ -122,15 +94,16 @@ static inline void vlc_UrlParse( vlc_url_t *url, const char *psz_url,
             /* We have a password */
             *psz_parse++ = '\0';
             url->psz_password = psz_parse;
-            decode_URI( url->psz_password );
         }
-        decode_URI( url->psz_username );
+
         psz_parse = p;
     }
 
     p = strchr( psz_parse, '/' );
     if( !p || psz_parse < p )
     {
+        char *p2;
+
         /* We have a host[:port] */
         url->psz_host = strdup( psz_parse );
         if( p )
@@ -177,11 +150,13 @@ static inline void vlc_UrlParse( vlc_url_t *url, const char *psz_url,
 
 /*****************************************************************************
  * vlc_UrlClean:
+ *****************************************************************************
+ *
  *****************************************************************************/
 static inline void vlc_UrlClean( vlc_url_t *url )
 {
-    free( url->psz_buffer );
-    free( url->psz_host );
+    if( url->psz_buffer ) free( url->psz_buffer );
+    if( url->psz_host )   free( url->psz_host );
 
     url->psz_protocol = NULL;
     url->psz_username = NULL;
@@ -194,10 +169,25 @@ static inline void vlc_UrlClean( vlc_url_t *url )
     url->psz_buffer   = NULL;
 }
 
+VLC_EXPORT( char *, unescape_URI_duplicate, ( const char *psz ) );
+VLC_EXPORT( void, unescape_URI, ( char *psz ) );
+VLC_EXPORT( char *, decode_URI_duplicate, ( const char *psz ) );
+VLC_EXPORT( void, decode_URI, ( char *psz ) );
+VLC_EXPORT( char *, encode_URI_component, ( const char *psz ) );
+
+static inline char *vlc_UrlEncode( const char *psz_url )
+{
+    /* FIXME: do not encode / : ? and & _when_ not needed */
+    return encode_URI_component( psz_url );
+}
+
+/*****************************************************************************
+ * vlc_UrlIsNotEncoded:
+ *****************************************************************************
+ * check if given string is not a valid URL and must hence be encoded
+ *****************************************************************************/
 #include <ctype.h>
 
-/** Check whether a given string is not a valid URL and must hence be
- *  encoded */
 static inline int vlc_UrlIsNotEncoded( const char *psz_url )
 {
     const char *ptr;
@@ -222,4 +212,55 @@ static inline int vlc_UrlIsNotEncoded( const char *psz_url )
     return 0; /* looks fine - but maybe it is not encoded */
 }
 
+/*****************************************************************************
+ * vlc_b64_encode:
+ *****************************************************************************
+ *
+ *****************************************************************************/
+static inline char *vlc_b64_encode( const char *src )
+{
+    static const char b64[] =
+           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    size_t len = strlen( src );
+    const uint8_t *in = (const uint8_t *)src;
+
+    char *ret;
+    char *dst = (char *)malloc( ( len + 4 ) * 4 / 3 );
+    if( dst == NULL )
+        return NULL;
+
+    ret = dst;
+
+    while( len > 0 )
+    {
+        /* pops (up to) 3 bytes of input, push 4 bytes */
+        uint32_t v = *in++ << 24; // 1/3
+        *dst++ = b64[v >> 26]; // 1/4
+        v = v << 6;
+
+        if( len >= 2 )
+            v |= *in++ << 22; // 2/3
+        *dst++ = b64[v >> 26]; // 2/4
+        v = v << 6;
+
+        if( len >= 3 )
+            v |= *in++ << 20; // 3/3
+        *dst++ = ( len >= 2 ) ? b64[v >> 26] : '='; // 3/4
+        v = v << 6;
+
+        *dst++ = ( len >= 3 ) ? b64[v >> 26] : '='; // 4/4
+
+        len--;
+        if( len > 0 )
+        {
+            len--;
+            if( len > 0 )
+                len--;
+        }
+    }
+
+    *dst = '\0';
+
+    return ret;
+}
 #endif
