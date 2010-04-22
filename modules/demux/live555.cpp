@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 80a59a33d3fb8716e5c1ecc9c844143613629856 $
+ * $Id: 08f40dd8b4ff39e093c6d15908cfb5ec422e3ab1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -1494,6 +1494,7 @@ static int RollOverTcp( demux_t *p_demux )
     p_sys->i_track = 0;
     p_sys->b_no_data = true;
     p_sys->i_no_data_ti = 0;
+    p_sys->p_out_asf = NULL;
 
     /* Reopen rtsp client */
     if( ( i_return = Connect( p_demux ) ) != VLC_SUCCESS )

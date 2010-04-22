@@ -1,16 +1,16 @@
 # translation of ja.po to Japanese
 # Japanese translation for VLC
 # Copyright (C) 2002, 2004-2010 the VideoLAN team
-# Fumio Nakayama <fumio.n6a@gmail.com>, 2002,2009.
+# Fumio Nakayama <fumio.n6a@gmail.com>, 2002,2009-2010.
 # Tadashi Jokagi <elf@elf.no-ip.org>, 2004-2009.
 # $Id$
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 1.0.4\n"
+"Project-Id-Version: vlc 1.0.5\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-01-28 17:44+0100\n"
-"PO-Revision-Date: 2009-12-31 10:29+0900\n"
+"POT-Creation-Date: 2010-04-21 19:32+0300\n"
+"PO-Revision-Date: 2010-02-17 01:40+0900\n"
 "Last-Translator: Fumio Nakayama <fumio.n6a@gmail.com>\n"
 "Language-Team: VideoLAN's Translators <translators@videolan.org>\n"
 "MIME-Version: 1.0\n"
@@ -4601,7 +4601,7 @@ msgid "Downloading ..."
 msgstr "ダウンロードしています..."
 
 #: src/misc/update.c:1592 modules/access/dvb/scan.c:330
-#: modules/demux/avi/avi.c:705 modules/demux/avi/avi.c:2426
+#: modules/demux/avi/avi.c:706 modules/demux/avi/avi.c:2426
 #: modules/gui/beos/InterfaceWindow.cpp:161 modules/gui/macosx/bookmarks.m:102
 #: modules/gui/macosx/controls.m:84 modules/gui/macosx/coredialogs.m:66
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
@@ -7882,8 +7882,8 @@ msgid ""
 "Dolby Surround encoded streams won't be decoded before being processed by "
 "this filter. Enabling this setting is not recommended."
 msgstr ""
-"このフィルターによって処理されるまではドルビーサラウンドでエンコードコードさ"
-"れたストリームはデコードされません。この設定は推奨されません。"
+"このフィルターによって処理されるまではドルビーサラウンドでエンコードされたス"
+"トリームはデコードされません。この設定は推奨されません。"
 
 #: modules/audio_filter/channel_mixer/headphone.c:82
 #: modules/audio_filter/channel_mixer/headphone.c:101
@@ -8572,7 +8572,7 @@ msgstr "出力デバイスのPortaudio識別子を指定します。"
 msgid "PORTAUDIO audio output"
 msgstr "PORTAUDIOオーディオ出力"
 
-#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
+#: modules/audio_output/pulse.c:64 modules/gui/macosx/intf.m:589
 #: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1971
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:943
@@ -8587,7 +8587,7 @@ msgstr "PORTAUDIOオーディオ出力"
 msgid "VLC media player"
 msgstr "VLCメディアプレイヤー"
 
-#: modules/audio_output/pulse.c:99
+#: modules/audio_output/pulse.c:102
 msgid "Pulseaudio audio output"
 msgstr "Pulseaudioオーディオ出力"
 
@@ -9004,7 +9004,7 @@ msgstr "ビデオの量子化係数の最小値"
 
 #: modules/codec/avcodec/avcodec.h:196
 msgid "Minimum video quantizer scale."
-msgstr "ビデオの量子化け0数の最小値を指定します。"
+msgstr "ビデオの量子化係数の最小値を指定します。"
 
 #: modules/codec/avcodec/avcodec.h:199
 msgid "Maximum video quantizer scale"
@@ -9945,11 +9945,11 @@ msgstr "リニアPCMオーディオのパケッタイザー"
 msgid "Video decoder using openmash"
 msgstr "openmashを使用したビデオデコーダー"
 
-#: modules/codec/mpeg_audio.c:113
+#: modules/codec/mpeg_audio.c:114
 msgid "MPEG audio layer I/II/III decoder"
 msgstr "MPEGオーディオ レイヤーI/II/III デコーダー"
 
-#: modules/codec/mpeg_audio.c:124
+#: modules/codec/mpeg_audio.c:125
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "MPEGオーディオ レイヤーI/II/IIIのパケッタイザー"
 
@@ -10092,7 +10092,7 @@ msgstr "DVD字幕デコーダー"
 
 #: modules/codec/spudec/spudec.c:53
 msgid "DVD subtitles packetizer"
-msgstr "DVD 字幕字幕のパケッタイザー"
+msgstr "DVD 字幕のパケッタイザー"
 
 #: modules/codec/subtitles/subsdec.c:98
 msgid "Universal (UTF-8)"
@@ -12114,7 +12114,7 @@ msgstr "| @name mosaic-order id(,id)*  . . . . . . . . . . . 画像の順番"
 
 #: modules/control/rc.c:933
 msgid "| @name mosaic-keep-aspect-ratio {0,1} . . .aspect ratio"
-msgstr "| @name mosaic-keep-aspect-ratio {0,1} . . . . . アスケペクト比"
+msgstr "| @name mosaic-keep-aspect-ratio {0,1} . . . . . アスペクト比"
 
 #: modules/control/rc.c:936
 msgid "| help . . . . . . . . . . . . . . . this help message"
@@ -12381,11 +12381,11 @@ msgstr "常に修正しない"
 msgid "AVI demuxer"
 msgstr "AVIデマルチプレクサ"
 
-#: modules/demux/avi/avi.c:701
+#: modules/demux/avi/avi.c:702
 msgid "AVI Index"
 msgstr "AVIインデックス"
 
-#: modules/demux/avi/avi.c:702
+#: modules/demux/avi/avi.c:703
 msgid ""
 "This AVI file is broken. Seeking will not work correctly.\n"
 "Do you want to try to fix it?\n"
@@ -12397,11 +12397,11 @@ msgstr ""
 "\n"
 "修正を行うにはおそらく時間がかかります。"
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Repair"
 msgstr "修復する"
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Don't repair"
 msgstr "修復しない"
 
@@ -13382,7 +13382,7 @@ msgstr "VLCメディアプレイヤー: 字幕ファイルを開く"
 
 #: modules/gui/beos/MediaControlView.cpp:70
 msgid "Drop files to play"
-msgstr "再生するファイルをファイルをドロップ"
+msgstr "再生するファイルをドロップ"
 
 #: modules/gui/beos/PlayListWindow.cpp:79
 msgid "playlist"
@@ -14255,9 +14255,9 @@ msgid ""
 msgstr ""
 "VLCの開発チームにクラッシュの詳細情報を送信してもよいですか?\n"
 "\n"
-"もしよろしければ、VLCがクラッシュする直前に行った操作や、ンプルファイルのダウ"
-"ンロード先のリンク、ネットワークストリームのURLなど数行で記入してくださると解"
-"析に役に立ちます。"
+"もしよろしければ、VLCがクラッシュする直前に行った操作や、サンプルファイルのダ"
+"ウンロード先のリンク、ネットワークストリームのURLなど数行で記入してくださると"
+"解析に役に立ちます。"
 
 #: modules/gui/macosx/intf.m:751
 msgid "I agree to be possibly contacted about this bugreport."
@@ -14670,7 +14670,7 @@ msgstr "FPS"
 
 #: modules/gui/macosx/open.m:314
 msgid "Subtitles encoding"
-msgstr "字幕のエンコンコード"
+msgstr "字幕のエンコード"
 
 #: modules/gui/macosx/open.m:316 modules/gui/qt4/ui/sprefs_subtitles.h:217
 msgid "Font size"
@@ -15538,7 +15538,7 @@ msgid ""
 "address beginning with 239.255."
 msgstr ""
 "ストリームを行うマルチキャストアドレスを入力します。値は224.0.0.0〜"
-"239.255.255.255の範囲のIPアドレスでなけれなばりません。プライベートの利用で"
+"239.255.255.255の範囲のIPアドレスでなければなりません。プライベートの利用で"
 "は、239.255で始まるアドレスを使用します。"
 
 #: modules/gui/macosx/wizard.m:279
@@ -15842,7 +15842,7 @@ msgid ""
 "\n"
 "Correct your selection and try again."
 msgstr ""
-"選択されたコーデックはお互いに互換性がありません。例えば、比圧縮のオーディオ"
+"選択されたコーデックはお互いに互換性がありません。例えば、非圧縮のオーディオ"
 "とビデオのコーデックを合成することはできません。\n"
 "\n"
 "設定を見直し、やり直してください。"
@@ -17071,11 +17071,11 @@ msgstr "ダブルクリックでメディア情報を表示"
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:131
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:132
 msgid "Click to toggle between loop one, loop all"
 msgstr "ループ再生モードの切り替え(1項目のみ, すべて)"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:155
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:156
 msgid "Show the current item"
 msgstr "現在の項目を表示"
 
@@ -17427,8 +17427,8 @@ msgid ""
 "\n"
 msgstr ""
 "VLCメディアプレイヤーはフリーのメディアプレイヤーです。エンコーダーとストリー"
-"マーは、ファイル、CDs、DVD、ネットワークストリーム、キャプチャーカードなどか"
-"ら読み込みを行うことができます！\n"
+"マーは、ファイル、CD、DVD、ネットワークストリーム、キャプチャーカードなどから"
+"読み込みを行うことができます！\n"
 "VLCは、内部コーデックを使用し、必要なすべてのポピュラーなプラットフォームで動"
 "作します。\n"
 "\n"
@@ -17919,7 +17919,7 @@ msgstr "M3Uプレイリスト(*.m3u)"
 
 #: modules/gui/qt4/dialogs_provider.cpp:537
 msgid "HTML playlist (*.html)"
-msgstr "HTMLプレイリスト(+.html)"
+msgstr "HTMLプレイリスト(*.html)"
 
 #: modules/gui/qt4/dialogs_provider.cpp:549
 msgid "Save playlist as..."
@@ -18427,7 +18427,7 @@ msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:150
 msgid "Selection of the starting mode and look "
-msgstr "起動時のモードと概観の選択"
+msgstr "起動時のモードと外観の選択"
 
 #: modules/gui/qt4/qt4.cpp:151
 msgid ""
@@ -18443,11 +18443,11 @@ msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:157
 msgid "Classic look"
-msgstr "クラッシックな概観"
+msgstr "クラッシックな外観"
 
 #: modules/gui/qt4/qt4.cpp:158
 msgid "Complete look with information area"
-msgstr "情報エリアと完全な概観"
+msgstr "情報エリアと完全な外観"
 
 #: modules/gui/qt4/qt4.cpp:159
 msgid "Minimal look with no menus"
@@ -18669,7 +18669,7 @@ msgstr "MPEG 1"
 
 #: modules/gui/qt4/ui/profiles.h:463
 msgid "FLV"
-msgstr "FLW"
+msgstr "FLV"
 
 #: modules/gui/qt4/ui/profiles.h:465
 msgid "MP4/MOV"
@@ -18877,7 +18877,7 @@ msgstr "ネイティブ"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:331
 msgid "This is VLC's default interface, with a native look and feel."
-msgstr "これはネイティブの概観でデフォルトのインターフェースです。"
+msgstr "これはネイティブの外観でデフォルトのインターフェースです。"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:332
 msgid "Display mode"
@@ -19020,8 +19020,7 @@ msgstr "再表示"
 #: modules/gui/qt4/ui/v4l2.h:60
 msgid "No v4l2 instance found. Press the refresh button to try again."
 msgstr ""
-"v4l2インスタンスが見つかりませんでした。リフレッシュボタンを押すと再試行しま"
-"す。"
+"v4l2インスタンスが見つかりませんでした。再表示ボタンを押すと再試行します。"
 
 #: modules/gui/qt4/ui/video_effects.h:872
 msgid "Transform"
@@ -20101,7 +20100,7 @@ msgstr "AltiVec memcpy"
 msgid "Growl Notification Plugin"
 msgstr "Growl通知プラグイン"
 
-#: modules/misc/notify/growl.m:273
+#: modules/misc/notify/growl.m:272
 msgid "Now playing"
 msgstr "再生中"
 
@@ -20626,7 +20625,7 @@ msgid ""
 "might save some bandwidth but introduce incompatibilities."
 msgstr ""
 "PES境界のすべてのアクセスユニットのアライメントを強制します。これを無効にする"
-"とバンド幅を削減することができるかも知れませんが、比互換を生じる可能性があり"
+"とバンド幅を削減することができるかも知れませんが、非互換を生じる可能性があり"
 "ます。"
 
 #: modules/mux/mpeg/ts.c:132
@@ -21673,7 +21672,7 @@ msgstr "送信先のオーディオコーデック"
 
 #: modules/stream_out/transcode.c:100
 msgid "This is the audio codec that will be used."
-msgstr "使用するオーディオ子ーディックを指定します。"
+msgstr "使用するオーディオコーデックを指定します。"
 
 #: modules/stream_out/transcode.c:101
 msgid "Audio bitrate"
@@ -24121,7 +24120,7 @@ msgstr "変換タイプ"
 #: modules/video_filter/transform.c:66
 msgid "One of '90', '180', '270', 'hflip' and 'vflip'"
 msgstr ""
-"'90度', '180度', '270度', '水平方向反転', '寸直方向反転'の中から一つ選択す"
+"'90度', '180度', '270度', '水平方向反転', '垂直方向反転'の中から一つ選択す"
 "る。"
 
 #: modules/video_filter/transform.c:69
@@ -24313,7 +24312,7 @@ msgid ""
 "doesn't have any effect when using overlays."
 msgstr ""
 "ビデオメモリーのかわりにシステムメモリー中にビデオバッファーを作成します。ビ"
-"デオメモリを使った(再スケーリングやYUVからRGBへの返還のような)ハードウェアア"
+"デオメモリを使った(再スケーリングやYUVからRGBへの変換のような)ハードウェアア"
 "クセラレーションの効果を有効にするため、このオプションは推奨しません。このオ"
 "プションは、オーバレイを使用する場合には何の効果もありません。"
 

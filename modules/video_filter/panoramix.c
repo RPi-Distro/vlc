@@ -565,6 +565,7 @@ static int AdjustHeight( vout_thread_t *p_vout )
 #else
         char *psz_display = var_CreateGetNonEmptyString( p_vout,
                                                         "x11-display" );
+        XInitThreads(); /* XXX: should check return value */
         Display *p_display = XOpenDisplay( psz_display );
         free( psz_display );
         if (p_vout->p_sys->b_xinerama)

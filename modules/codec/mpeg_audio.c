@@ -2,7 +2,7 @@
  * mpeg_audio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 306bf0737b9ac343dbe1c2ecb1ff40ab26579e5a $
+ * $Id: b8bf3e511184ac5791cf83aac262df0140f20962 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -35,6 +35,7 @@
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_aout.h>
+#include <assert.h>
 
 #include <vlc_block_helper.h>
 
@@ -95,7 +96,7 @@ static int  OpenPacketizer( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
 static void *DecodeBlock  ( decoder_t *, block_t ** );
 
-static uint8_t       *GetOutBuffer ( decoder_t *, void ** );
+static uint8_t       *GetOutBuffer ( decoder_t *, void **, size_t * );
 static aout_buffer_t *GetAoutBuffer( decoder_t * );
 static block_t       *GetSoutBuffer( decoder_t * );
 
@@ -443,7 +444,10 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_SEND_DATA;
 
         case STATE_SEND_DATA:
-            if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer )) )
+        {
+            size_t i_len;
+
+            if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer, &i_len )) )
             {
                 //p_dec->b_error = true;
                 return NULL;
@@ -457,11 +461,14 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             /* Copy the whole frame into the buffer. When we reach this point
              * we already know we have enough data available. */
-            block_GetBytes( &p_sys->bytestream, p_buf, p_sys->i_frame_size );
+            block_GetBytes( &p_sys->bytestream,
+                        p_buf, __MIN( (unsigned)p_sys->i_frame_size, i_len ) );
 
             /* Get beginning of next frame for libmad */
             if( !p_sys->b_packetizer )
             {
+                assert( ((aout_buffer_t *)p_out_buffer)->i_size
+                        >= (size_t)p_sys->i_frame_size + MAD_BUFFER_GUARD );
                 memcpy( p_buf + p_sys->i_frame_size,
                         p_header, MAD_BUFFER_GUARD );
             }
@@ -477,6 +484,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             return p_out_buffer;
         }
+        }
     }
 
     return NULL;
@@ -485,7 +493,8 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 /*****************************************************************************
  * GetOutBuffer:
  *****************************************************************************/
-static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer )
+static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer,
+                              size_t *pi_len )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p_buf;
@@ -514,13 +523,25 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer )
     if( p_sys->b_packetizer )
     {
         block_t *p_sout_buffer = GetSoutBuffer( p_dec );
-        p_buf = p_sout_buffer ? p_sout_buffer->p_buffer : NULL;
+        if( p_sout_buffer )
+        {
+            p_buf = p_sout_buffer->p_buffer;
+            *pi_len = p_sout_buffer->i_buffer;
+        }
+        else
+            p_buf = NULL;
         *pp_out_buffer = p_sout_buffer;
     }
     else
     {
         aout_buffer_t *p_aout_buffer = GetAoutBuffer( p_dec );
-        p_buf = p_aout_buffer ? p_aout_buffer->p_buffer : NULL;
+        if( p_aout_buffer )
+        {
+            p_buf = p_aout_buffer->p_buffer;
+            *pi_len = p_aout_buffer->i_size;
+        }
+        else
+            p_buf = NULL;
         *pp_out_buffer = p_aout_buffer;
     }
 
@@ -545,6 +566,11 @@ static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
     p_sys->b_discontinuity = false;
 
     /* Hack for libmad filter */
+    if( p_buf->i_size < p_sys->i_frame_size + MAD_BUFFER_GUARD )
+    {
+        decoder_DeleteAudioBuffer( p_dec, p_buf );
+        return NULL;
+    }
     p_buf->i_nb_bytes = p_sys->i_frame_size + MAD_BUFFER_GUARD;
 
     return p_buf;

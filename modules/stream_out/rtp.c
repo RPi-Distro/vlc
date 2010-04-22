@@ -686,10 +686,10 @@ out:
  * SDPGenerate
  *****************************************************************************/
 /*static*/
-char *SDPGenerate( const sout_stream_t *p_stream, const char *rtsp_url )
+char *SDPGenerate( sout_stream_t *p_stream, const char *rtsp_url )
 {
-    const sout_stream_sys_t *p_sys = p_stream->p_sys;
-    char *psz_sdp;
+    sout_stream_sys_t *p_sys = p_stream->p_sys;
+    char *psz_sdp = NULL;
     struct sockaddr_storage dst;
     socklen_t dstlen;
     int i;
@@ -710,11 +710,15 @@ char *SDPGenerate( const sout_stream_t *p_stream, const char *rtsp_url )
      */
     int inclport;
 
+    vlc_mutex_lock( &p_sys->lock_es );
+    if( p_sys->i_es == 0 )
+        goto out; /* hmm... */
+
     if( p_sys->psz_destination != NULL )
     {
         inclport = 1;
 
-        /* Oh boy, this is really ugly! (+ race condition on lock_es) */
+        /* Oh boy, this is really ugly! */
         dstlen = sizeof( dst );
         if( p_sys->es[0]->listen_fd != NULL )
             getsockname( p_sys->es[0]->listen_fd[0],
@@ -739,7 +743,7 @@ char *SDPGenerate( const sout_stream_t *p_stream, const char *rtsp_url )
     psz_sdp = vlc_sdp_Start( VLC_OBJECT( p_stream ), SOUT_CFG_PREFIX,
                              NULL, 0, (struct sockaddr *)&dst, dstlen );
     if( psz_sdp == NULL )
-        return NULL;
+        goto out;
 
     /* TODO: a=source-filter */
     if( p_sys->rtcp_mux )
@@ -748,7 +752,6 @@ char *SDPGenerate( const sout_stream_t *p_stream, const char *rtsp_url )
     if( rtsp_url != NULL )
         sdp_AddAttribute ( &psz_sdp, "control", "%s", rtsp_url );
 
-    /* FIXME: locking?! */
     for( i = 0; i < p_sys->i_es; i++ )
     {
         sout_stream_id_t *id = p_sys->es[i];
@@ -812,7 +815,8 @@ char *SDPGenerate( const sout_stream_t *p_stream, const char *rtsp_url )
                                   "SC:RTP%c", toupper( mime_major[0] ) );
         }
     }
-
+out:
+    vlc_mutex_unlock( &p_sys->lock_es );
     return psz_sdp;
 }
 
@@ -1330,10 +1334,12 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
 
     if( id->rtsp_id )
         RtspDelId( p_sys->rtsp, id->rtsp_id );
-    if( id->sinkc > 0 )
-        rtp_del_sink( id, id->sinkv[0].rtp_fd ); /* sink for explicit dst= */
     if( id->listen_fd != NULL )
         net_ListenClose( id->listen_fd );
+    /* Delete remaining sinks (incoming connections or explicit
+     * outgoing dst=) */
+    while( id->sinkc > 0 )
+        rtp_del_sink( id, id->sinkv[0].rtp_fd );
     if( id->srtp != NULL )
         srtp_destroy( id->srtp );
 

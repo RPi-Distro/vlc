@@ -2,7 +2,7 @@
  * a52.c: parse A/52 audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2002 the VideoLAN team
- * $Id: 474a1d0063f6498f8001ea0b3067785b34ab6c64 $
+ * $Id: ac1207814c99a0316efacd22ad0d3a565d8f2dd3 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -99,7 +99,7 @@ enum {
  ****************************************************************************/
 static void *DecodeBlock  ( decoder_t *, block_t ** );
 
-static uint8_t       *GetOutBuffer ( decoder_t *, void ** );
+static uint8_t       *GetOutBuffer ( decoder_t *, void **, size_t * );
 static aout_buffer_t *GetAoutBuffer( decoder_t * );
 static block_t       *GetSoutBuffer( decoder_t * );
 
@@ -159,6 +159,9 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
 
 static int OpenDecoder( vlc_object_t *p_this )
 {
+    /* HACK: Don't use this codec if we don't have an dts audio filter */
+    if( !module_exists( "a52tofloat32" ) )
+        return VLC_EGENERIC;
     return OpenCommon( p_this, false );
 }
 
@@ -299,7 +302,10 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_SEND_DATA;
 
         case STATE_SEND_DATA:
-            if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer )) )
+        {
+            size_t i_len;
+
+            if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer, &i_len )) )
             {
                 //p_dec->b_error = true;
                 return NULL;
@@ -307,7 +313,8 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             /* Copy the whole frame into the buffer. When we reach this point
              * we already know we have enough data available. */
-            block_GetBytes( &p_sys->bytestream, p_buf, p_sys->frame.i_size );
+            block_GetBytes( &p_sys->bytestream,
+                            p_buf, __MIN( p_sys->frame.i_size, i_len ) );
 
             /* Make sure we don't reuse the same pts twice */
             if( p_sys->i_pts == p_sys->bytestream.p_block->i_pts )
@@ -319,6 +326,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_NOSYNC;
 
             return p_out_buffer;
+        }
         }
     }
 
@@ -341,7 +349,8 @@ static void CloseCommon( vlc_object_t *p_this )
 /*****************************************************************************
  * GetOutBuffer:
  *****************************************************************************/
-static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer )
+static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer,
+                              size_t *p_len )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p_buf;
@@ -370,13 +379,25 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer )
     if( p_sys->b_packetizer )
     {
         block_t *p_sout_buffer = GetSoutBuffer( p_dec );
-        p_buf = p_sout_buffer ? p_sout_buffer->p_buffer : NULL;
+        if( p_sout_buffer )
+        {
+            p_buf = p_sout_buffer->p_buffer;
+            *p_len = p_sout_buffer->i_buffer;
+        }
+        else
+            p_buf = NULL;
         *pp_out_buffer = p_sout_buffer;
     }
     else
     {
         aout_buffer_t *p_aout_buffer = GetAoutBuffer( p_dec );
-        p_buf = p_aout_buffer ? p_aout_buffer->p_buffer : NULL;
+        if( p_aout_buffer )
+        {
+            p_buf = p_aout_buffer->p_buffer;
+            *p_len = p_aout_buffer->i_size;
+        }
+        else
+            p_buf = NULL;
         *pp_out_buffer = p_aout_buffer;
     }
 

@@ -1,7 +1,7 @@
 # ***************************************************************************
 # Makefile : Build vlc-contrib files
 # ***************************************************************************
-# Copyright (C) 2003-2009 the VideoLAN team
+# Copyright (C) 2003-2010 the VideoLAN team
 # $Id$
 # 
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
@@ -47,7 +47,7 @@ src: using-src
 
 ifdef HAVE_DARWIN_OS
 
-CONTRIBREV=1.0.3
+CONTRIBREV=27
 
 contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2:
 	$(WGET) http://downloads.videolan.org/pub/videolan/testing/contrib/$@
@@ -63,6 +63,8 @@ using-bin: contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
 	(cd tmp && find . -type d) | while read dir; do mkdir -p -- "$$dir"; done
 	(cd tmp && find . -not -type d) | while read i; do mv -f -- tmp/"$$i" "$$i"; done
 	rm -rf tmp
+    # install the gecko-sdk, which isn't part of the package for size and speed reasons
+	(cd src && rm -rf *gecko* && $(MAKE) .gecko)
     # libiconv.la is no longer present on Snow Leopard, so fix possible references to it, which would
     # result in linking issues
 ifdef HAVE_DARWIN_10
@@ -91,12 +93,13 @@ package-macosx:
 		exit 1 ; \
 	fi
 	mkdir tmp
-	tar cf - bin sbin include lib share/aclocal* share/autoconf* \
-		share/automake* share/gettext* share/libtool* gecko-sdk \
-		| (cd tmp; tar xf -)
+	tar cf - Sparkle bin sbin include lib share/aclocal* share/autoconf* \
+		share/automake* share/gettext* share/libtool* | (cd tmp; tar xf -)
 	./change_prefix.sh tmp $(PREFIX) @@CONTRIB_PREFIX@@
 	(cd tmp; tar cf - .) | bzip2 -c > contrib-macosx.tar.bz2
 	rm -rf tmp
+	rm -f contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
+	mv contrib-macosx.tar.bz2 contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
 
 DISTDIR = usr/win32
 

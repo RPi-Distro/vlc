@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-01-28 17:44+0100\n"
+"POT-Creation-Date: 2010-04-21 19:32+0300\n"
 "PO-Revision-Date: 2009-12-31 14:29+0200\n"
 "Last-Translator: Oleksandr Natalenko <pfactum@gmail.com>\n"
 "Language-Team: uk <kde-i18n-doc@kde.org>\n"
@@ -4641,7 +4641,7 @@ msgid "Downloading ..."
 msgstr "Завантаження…"
 
 #: src/misc/update.c:1592 modules/access/dvb/scan.c:330
-#: modules/demux/avi/avi.c:705 modules/demux/avi/avi.c:2426
+#: modules/demux/avi/avi.c:706 modules/demux/avi/avi.c:2426
 #: modules/gui/beos/InterfaceWindow.cpp:161 modules/gui/macosx/bookmarks.m:102
 #: modules/gui/macosx/controls.m:84 modules/gui/macosx/coredialogs.m:66
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
@@ -8609,7 +8609,7 @@ msgstr "Ідентифікатор Portaudio для пристрою вивод�
 msgid "PORTAUDIO audio output"
 msgstr "Вивід звуку через PORTAUDIO"
 
-#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
+#: modules/audio_output/pulse.c:64 modules/gui/macosx/intf.m:589
 #: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1971
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:943
@@ -8624,7 +8624,7 @@ msgstr "Вивід звуку через PORTAUDIO"
 msgid "VLC media player"
 msgstr "Медіаплеєр VLC"
 
-#: modules/audio_output/pulse.c:99
+#: modules/audio_output/pulse.c:102
 msgid "Pulseaudio audio output"
 msgstr "Вивід звуку через Pulseaudio"
 
@@ -9997,11 +9997,11 @@ msgstr "Лінійний аудіопакетувальник PCM"
 msgid "Video decoder using openmash"
 msgstr "Відеодекодер через openmash"
 
-#: modules/codec/mpeg_audio.c:113
+#: modules/codec/mpeg_audio.c:114
 msgid "MPEG audio layer I/II/III decoder"
 msgstr "Аудіодекодер MPEG layer I/II/III"
 
-#: modules/codec/mpeg_audio.c:124
+#: modules/codec/mpeg_audio.c:125
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "Аудіопакетувальник MPEG layer I/II/III"
 
@@ -12450,11 +12450,11 @@ msgstr "Ніколи не виправляти"
 msgid "AVI demuxer"
 msgstr "Демультиплексор AVI"
 
-#: modules/demux/avi/avi.c:701
+#: modules/demux/avi/avi.c:702
 msgid "AVI Index"
 msgstr "Індексація AVI"
 
-#: modules/demux/avi/avi.c:702
+#: modules/demux/avi/avi.c:703
 msgid ""
 "This AVI file is broken. Seeking will not work correctly.\n"
 "Do you want to try to fix it?\n"
@@ -12466,11 +12466,11 @@ msgstr ""
 "\n"
 "Це може тривати досить довго."
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Repair"
 msgstr "Виправити"
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Don't repair"
 msgstr "Не виправляти"
 
@@ -17143,11 +17143,11 @@ msgstr "Двічі клацніть для отримання медіаінфо
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:131
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:132
 msgid "Click to toggle between loop one, loop all"
 msgstr "Клацніть для перемикання між повторенням одного та повторенням всього"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:155
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:156
 msgid "Show the current item"
 msgstr "Показати поточний елемент"
 
@@ -20168,7 +20168,7 @@ msgstr "AltiVec memcpy"
 msgid "Growl Notification Plugin"
 msgstr "Плагін оповіщення Growl"
 
-#: modules/misc/notify/growl.m:273
+#: modules/misc/notify/growl.m:272
 msgid "Now playing"
 msgstr "Зараз відтворюється"
 

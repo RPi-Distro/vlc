@@ -1,9 +1,9 @@
 # French translation for VLC.
-# Copyright (C) 2001-2009 the VideoLAN team
+# Copyright (C) 2001-2010 the VideoLAN team
 # $Id$
 #
 # Translation updated by
-#  Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} net> - December 2009
+#  Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} net> - March 2010
 # Previous Translators
 #  Samuel Hocevar <sam@zoy.org>
 #  Jean-Pierre Kuypers <Kuypers@sri.ucl.ac.be>
@@ -13,10 +13,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-01-28 17:44+0100\n"
-"PO-Revision-Date: 2009-12-02 13:27+0100\n"
-"Last-Translator: Éric lassauge <lassauge {AT} users {dot} sourceforge {dot} "
-"net>\n"
+"POT-Creation-Date: 2010-04-21 19:32+0300\n"
+"PO-Revision-Date: 2010-03-01 15:44+0100\n"
+"Last-Translator: Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} "
+"com>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2103,8 +2103,7 @@ msgid ""
 "instance deinterlacing, or distort the video."
 msgstr ""
 "Ajouter des filtres de post-traitement pour améliorer la qualité de l’image, "
-"par exemple du désentrelacement, ou pour dupliquer ou déformer la fenêtre "
-"vidéo."
+"par exemple du désentrelacement, ou pour déformer la vidéo."
 
 #: src/libvlc-module.c:490
 msgid "Video snapshot directory (or filename)"
@@ -3024,7 +3023,7 @@ msgid ""
 msgstr ""
 "Vous pouvez entrer ici une chaîne de flux de sortie par défaut. Veuillez "
 "vous référer à la documentation pour savoir comment construire ces chaînes. "
-"Attention: cette chaîne sera activée pour tous les flux."
+"Attention : cette chaîne sera activée pour tous les flux."
 
 #: src/libvlc-module.c:934
 msgid "Enable streaming of all ES"
@@ -4722,7 +4721,7 @@ msgid "Downloading ..."
 msgstr "Téléchargement…"
 
 #: src/misc/update.c:1592 modules/access/dvb/scan.c:330
-#: modules/demux/avi/avi.c:705 modules/demux/avi/avi.c:2426
+#: modules/demux/avi/avi.c:706 modules/demux/avi/avi.c:2426
 #: modules/gui/beos/InterfaceWindow.cpp:161 modules/gui/macosx/bookmarks.m:102
 #: modules/gui/macosx/controls.m:84 modules/gui/macosx/coredialogs.m:66
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
@@ -8720,7 +8719,7 @@ msgstr "Identifiant Portaudio du périphérique"
 msgid "PORTAUDIO audio output"
 msgstr "Sortie audio Portaudio"
 
-#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
+#: modules/audio_output/pulse.c:64 modules/gui/macosx/intf.m:589
 #: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1971
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:943
@@ -8735,7 +8734,7 @@ msgstr "Sortie audio Portaudio"
 msgid "VLC media player"
 msgstr "Lecteur multimédia VLC"
 
-#: modules/audio_output/pulse.c:99
+#: modules/audio_output/pulse.c:102
 msgid "Pulseaudio audio output"
 msgstr "Sortie audio Pulseaudio"
 
@@ -10083,11 +10082,11 @@ msgstr "Empaqueteur audio pour PCM linéaire"
 msgid "Video decoder using openmash"
 msgstr "Décodeur vidéo utilisant openmash"
 
-#: modules/codec/mpeg_audio.c:113
+#: modules/codec/mpeg_audio.c:114
 msgid "MPEG audio layer I/II/III decoder"
 msgstr "Parseur MPEG audio couches I/II/III"
 
-#: modules/codec/mpeg_audio.c:124
+#: modules/codec/mpeg_audio.c:125
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "Empaqueteur MPEG audio couches I/II/III"
 
@@ -11081,9 +11080,8 @@ msgid "Weighted prediction for B-frames."
 msgstr "Prédiction pondérée pour les images B."
 
 #: modules/codec/x264.c:258
-#, fuzzy
 msgid "Weighted prediction for P-frames"
-msgstr "Prédiction pondérée pour les images B"
+msgstr "Prédiction pondérée pour les images P"
 
 #: modules/codec/x264.c:259
 msgid ""
@@ -12531,11 +12529,11 @@ msgstr "Ne Jamais réparer"
 msgid "AVI demuxer"
 msgstr "Démultiplexeur AVI"
 
-#: modules/demux/avi/avi.c:701
+#: modules/demux/avi/avi.c:702
 msgid "AVI Index"
 msgstr "Index AVI"
 
-#: modules/demux/avi/avi.c:702
+#: modules/demux/avi/avi.c:703
 msgid ""
 "This AVI file is broken. Seeking will not work correctly.\n"
 "Do you want to try to fix it?\n"
@@ -12548,11 +12546,11 @@ msgstr ""
 "\n"
 "Cette opération peut être longue."
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Repair"
 msgstr "Réparer"
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Don't repair"
 msgstr "Ne pas réparer"
 
@@ -17246,11 +17244,11 @@ msgstr "Double-cliquez pour avoir les informations sur le média"
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:131
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:132
 msgid "Click to toggle between loop one, loop all"
 msgstr "Basculer entre répéter un média, répéter tout"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:155
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:156
 msgid "Show the current item"
 msgstr "Montrer l'élément actuel"
 
@@ -17628,7 +17626,7 @@ msgstr "Copyright ©"
 msgid " by the VideoLAN Team.\n"
 msgstr ""
 " par l'équipe VideoLAN.\n"
-"Traductions © 2008-2009 Éric Lassauge.\n"
+"Traductions © 2008-2010 Éric Lassauge.\n"
 
 #: modules/gui/qt4/dialogs/help.cpp:146
 msgid ""
@@ -20286,7 +20284,7 @@ msgstr "Module de memcpy optimisé AltiVec"
 msgid "Growl Notification Plugin"
 msgstr "Plugin d’annonce Growl"
 
-#: modules/misc/notify/growl.m:273
+#: modules/misc/notify/growl.m:272
 msgid "Now playing"
 msgstr "Joue actuellement"
 
@@ -25053,3 +25051,59 @@ msgstr "Filtre de visualisation"
 #: modules/visualization/visual/visual.c:123
 msgid "Spectrum analyser"
 msgstr "Analyseur de spectre"
+
+#~ msgid "Value to adjust dts by"
+#~ msgstr "Valeur d'ajustement du DTS"
+
+#~ msgid "Dirac video demuxer"
+#~ msgstr "Démultiplexeur vidéo Dirac"
+
+#~ msgid "Audio samplerate (Hz)"
+#~ msgstr "Fréquence d’échantillonnage audio"
+
+#~ msgid "Audio sample rate in Hertz. Default is 48000 Hz."
+#~ msgstr "Fréquence d'échantillonnage audio en Hertz. 48000 Hz par défaut."
+
+#~ msgid "Audio channels in input stream. Numeric value >0. Default is 2."
+#~ msgstr ""
+#~ "Canaux audio dans le flux d'entrée. Valeur numérique positive. 2 par "
+#~ "défaut."
+
+#~ msgid "FOURCC code of raw input format"
+#~ msgstr "Code FOURCC du flux d'entrée brut"
+
+#~ msgid ""
+#~ "FOURCC code of the raw input format. This is a four character string."
+#~ msgstr ""
+#~ "Code FOURCC du flux d'entrée brut. Ceci est une chaîne de 4 caractères."
+
+#~ msgid "Forces the audio language."
+#~ msgstr "Langue audio préférée"
+
+#~ msgid ""
+#~ "Forces the audio language for the output mux. Three letter ISO639 code. "
+#~ "Default is 'eng'. "
+#~ msgstr ""
+#~ "Forcer la langue audio du multiplexeur de sortie. Le code à 3 lettres "
+#~ "ISO639. « eng » par défaut."
+
+#~ msgid "Raw audio demuxer"
+#~ msgstr "Démultiplexeur audio Raw"
+
+#~ msgid "Dirac packetizer"
+#~ msgstr "Empaqueteur Dirac"
+
+#~ msgid "Devices"
+#~ msgstr "Périphériques"
+
+#~ msgid "Capture devices"
+#~ msgstr "Périphériques de capture"
+
+#~ msgid "Discs"
+#~ msgstr "Disques"
+
+#~ msgid "XVideo"
+#~ msgstr "XVidéo"
+
+#~ msgid "(Experimental) XVideo output"
+#~ msgstr "Sortie vidéo « Xvideo (expérimental) »"

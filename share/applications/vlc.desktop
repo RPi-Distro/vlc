@@ -1,8 +1,10 @@
 [Desktop Entry]
 Version=1.0
 Name=VLC media player
-Name[fr]=Lecteur multimédia VLC
 Comment=Read, capture, broadcast your multimedia streams
+Name[es]=Reproductor multimedia VLC
+Comment[es]=Lea, capture y emita sus contenidos multimedia
+Name[fr]=Lecteur multimédia VLC
 Comment[fr]=Lire, capturer, diffuser vos flux multimedia
 Name[sv]=Mediaspelaren VLC
 Comment[sv]=Allmän uppspelare av film och musik
@@ -12,6 +14,8 @@ Name[pl]=Odtwarzacz multimediów VLC
 Comment[pl]=Odczytywanie, przechwytywanie i nadawanie strumieni multimedialnych
 Name[lt]=VLC grotuvas
 Comment[lt]=Groti, įrašyti, siųsti daugialypės terpės kūrinius
+Name[ja]=VLCメディアプレイヤー
+Comment[ja]=マルチメディアストリームの読み込み、キャプチャー、ブロードキャスト
 Exec=vlc %U
 Icon=vlc
 Terminal=false

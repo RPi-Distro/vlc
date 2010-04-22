@@ -1,17 +1,18 @@
 # Translation to Simplified Chinese.
-# Copyright (C) 2009 the VideoLAN team
+# Copyright (C) 2008-2010 the VideoLAN team
 # This file is distributed under the same license as the VLC package.
 #
 # Yoyo <admin@wisestudio.org>, 2008.
 # Wei Mingzhi <whistler@openoffice.org>, 2009.
+# Dean Lee <xslidian@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 0.9.8a\n"
+"Project-Id-Version: vlc 1.0.x\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-01-28 17:44+0100\n"
+"POT-Creation-Date: 2010-04-21 19:32+0300\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Wei Mingzhi <whistler@openoffice.org>\n"
+"Last-Translator: Dean Lee <xslidian@lidian.info>\n"
 "Language-Team: Simplified Chinese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -190,7 +191,7 @@ msgstr "串流滤镜"
 msgid ""
 "Stream filters are special modules that allow advanced operations on the "
 "input side of VLC. Use with care..."
-msgstr ""
+msgstr "流滤镜是允许对 VLC 输入层进行高级操作的特殊模块。请小心使用..."
 
 #: include/vlc_config_cat.h:108
 msgid "Demuxers"
@@ -1668,7 +1669,7 @@ msgstr "启用时间拉抻音频"
 msgid ""
 "This allows to play audio at lower or higher speed without affecting the "
 "audio pitch"
-msgstr ""
+msgstr "这允许以稍低或稍高的速度播放音频且不影响音频的音调"
 
 #: src/libvlc-module.c:360 src/libvlc-module.c:592
 #: modules/access/dshow/dshow.cpp:82 modules/access/dshow/dshow.cpp:84
@@ -2168,6 +2169,8 @@ msgid ""
 "handling only for fullscreen) or 3 (No event handling). Full event handling "
 "support is the default value."
 msgstr ""
+"此参数接受的值: 1 (全事件处理支持), 2 (仅全屏时处理事件) 或 3 (不处理事件)。"
+"默认为全事件处理支持。"
 
 #: src/libvlc-module.c:592
 msgid "Full support"
@@ -2460,7 +2463,7 @@ msgstr "偏好原生串流录制"
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
-msgstr ""
+msgstr "如果可能，输入流将被录制而不是使用流输出模块"
 
 #: src/libvlc-module.c:744
 msgid "Timeshift directory"
@@ -3195,6 +3198,10 @@ msgid ""
 "instance or enqueue it. This option requires the D-Bus session daemon to be "
 "active and the running instance of VLC to use D-Bus control interface."
 msgstr ""
+"只允许一个运行中的 VLC 实例有时会很有用，例如当您将 VLC 与一些媒体文件类型关"
+"联且不希望每次在文件管理器中打开文件后就打开新的 VLC 实例时。此选项将允许您使"
+"用已经打开的实例播放文件或者加入队列。此选项需要 D-Bus 会话常驻进程处于活动状"
+"态且已运行的 VLC 实例正在使用 D-Bus 控制接口。"
 
 #: src/libvlc-module.c:1134
 msgid "VLC is started from file association"
@@ -3330,7 +3337,7 @@ msgstr "使用媒体库"
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
-msgstr "媒体库将被自动保存并在每次宁启动 VLC 时重新载入。"
+msgstr "媒体库将被自动保存并在每次您启动 VLC 时重新载入。"
 
 #: src/libvlc-module.c:1214
 msgid "Display playlist tree"
@@ -4378,7 +4385,7 @@ msgid "Downloading ..."
 msgstr "正在下载..."
 
 #: src/misc/update.c:1592 modules/access/dvb/scan.c:330
-#: modules/demux/avi/avi.c:705 modules/demux/avi/avi.c:2426
+#: modules/demux/avi/avi.c:706 modules/demux/avi/avi.c:2426
 #: modules/gui/beos/InterfaceWindow.cpp:161 modules/gui/macosx/bookmarks.m:102
 #: modules/gui/macosx/controls.m:84 modules/gui/macosx/coredialogs.m:66
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
@@ -5869,6 +5876,8 @@ msgid ""
 "meaning that the stream is unlimited when fake is forced, or lasts for 10 "
 "seconds otherwise. 0, means that the stream is unlimited)."
 msgstr ""
+"伪造 end-of-file 标记前伪装流化的时长 (默认为 -1 即强制伪装时进行无限的流式处"
+"理，其他情况则持续 10 秒钟。0 即进行无限的流式处理)。"
 
 #: modules/access/fake.c:63 modules/codec/fake.c:89
 msgid "Fake"
@@ -6386,7 +6395,7 @@ msgstr "RTCP (本地) 端口"
 msgid ""
 "RTCP packets will be received on this transport protocol port. If zero, "
 "multiplexed RTP/RTCP is used."
-msgstr ""
+msgstr "RTCP 包将由此传输协议端口接收。如果为零，将使用多路 RTP/RTCP。"
 
 #: modules/access/rtp/rtp.c:50 modules/stream_out/rtp.c:134
 msgid "SRTP key (hexadecimal)"
@@ -6721,6 +6730,8 @@ msgid ""
 "Alsa or OSS audio capture in the v4l access is deprecated. please use "
 "'v4l:// :input-slave=alsa://' or 'v4l:// :input-slave=oss://' instead."
 msgstr ""
+"不建议通过 v4l 捕获 Alsa 或 OSS 音频。请改用 'v4l:// :input-slave=alsa://' "
+"或 'v4l:// :input-slave=oss://'。"
 
 #: modules/access/v4l.c:142
 msgid "Video4Linux"
@@ -7016,6 +7027,8 @@ msgid ""
 "Alsa or OSS audio capture in the v4l2 access is deprecated. please use "
 "'v4l2:// :input-slave=alsa://' or 'v4l2:// :input-slave=oss://' instead."
 msgstr ""
+"不建议通过 v4l2 捕获 Alsa 或 OSS 音频。请改用 'v4l2:// :input-slave=alsa://' "
+"或 'v4l2:// :input-slave=oss://'。"
 
 #: modules/access/v4l2.c:207
 msgid "Picture aspect-ratio n:m"
@@ -7926,7 +7939,7 @@ msgstr "室内大小"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:49
 msgid "Defines the virtual surface of the roomemulated by the filter."
-msgstr ""
+msgstr "定义滤镜模拟空间的虚拟表面。"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:52
 msgid "Room width"
@@ -8096,6 +8109,8 @@ msgid ""
 "Select speaker configuration you want to use. This option doesn't upmix! So "
 "NO e.g. Stereo -> 5.1 conversion."
 msgstr ""
+"选择您想用的扬声器配置。此选项不支持上混! 所以请 *不要* 做类似 立体声 -> 5.1 "
+"的转换。"
 
 #: modules/audio_output/directx.c:238
 msgid "DirectX audio output"
@@ -8204,7 +8219,7 @@ msgstr "用于输出设备的 Portaudio 定义器"
 msgid "PORTAUDIO audio output"
 msgstr "PORTAUDIO 音频输出"
 
-#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
+#: modules/audio_output/pulse.c:64 modules/gui/macosx/intf.m:589
 #: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1971
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:943
@@ -8219,7 +8234,7 @@ msgstr "PORTAUDIO 音频输出"
 msgid "VLC media player"
 msgstr "VLC media player"
 
-#: modules/audio_output/pulse.c:99
+#: modules/audio_output/pulse.c:102
 msgid "Pulseaudio audio output"
 msgstr "Pulseaudio 音频输出"
 
@@ -8813,7 +8828,7 @@ msgstr "启用无损编码"
 msgid ""
 "Lossless coding ignores bitrate and quality settings, allowing for perfect "
 "reproduction of the original"
-msgstr ""
+msgstr "无损编码将忽略码率和质量设置，以完美再现原始质量"
 
 #: modules/codec/dirac.c:75
 msgid "Prefilter"
@@ -8850,7 +8865,7 @@ msgstr "色度格式"
 #: modules/codec/dirac.c:89
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
-msgstr ""
+msgstr "选择色度格式将强行将视频转换为所选格式"
 
 #: modules/codec/dirac.c:94
 msgid "4:2:0"
@@ -8880,7 +8895,7 @@ msgstr "图片编码模式"
 msgid ""
 "Field coding is where interlaced fields are coded seperately as opposed to a "
 "pseudo-progressive frame"
-msgstr ""
+msgstr "分场编码即隔行扫描的场将被分别编码，而不是伪逐行扫描帧"
 
 #: modules/codec/dirac.c:111
 msgid "auto - let encoder decide based upon input (Best)"
@@ -8888,19 +8903,19 @@ msgstr "音频 - 由编码器基于输入内容决定 (最佳)"
 
 #: modules/codec/dirac.c:112
 msgid "force coding frame as single picture"
-msgstr ""
+msgstr "强制编码的帧为单一画面"
 
 #: modules/codec/dirac.c:113
 msgid "force coding frame as seperate interlaced fields"
-msgstr ""
+msgstr "强制编码的帧为复合的隔行扫描段"
 
 #: modules/codec/dirac.c:117
 msgid "Width of motion compensation blocks"
-msgstr ""
+msgstr "运动补偿块宽度"
 
 #: modules/codec/dirac.c:121
 msgid "Height of motion compensation blocks"
-msgstr ""
+msgstr "运动补偿块高度"
 
 #: modules/codec/dirac.c:126
 msgid "Block overlap (%)"
@@ -8908,23 +8923,23 @@ msgstr "块重叠 (%)"
 
 #: modules/codec/dirac.c:127
 msgid "Amount that each motion block should be overlapped by its neighbours"
-msgstr ""
+msgstr "各移动块与附近块重叠的量"
 
 #: modules/codec/dirac.c:132
 msgid "xblen"
-msgstr "xblen"
+msgstr "横向块长"
 
 #: modules/codec/dirac.c:133
 msgid "Total horizontal block length including overlaps"
-msgstr ""
+msgstr "总水平块长（含重叠部分）"
 
 #: modules/codec/dirac.c:137
 msgid "yblen"
-msgstr "yblen"
+msgstr "纵向块长"
 
 #: modules/codec/dirac.c:138
 msgid "Total vertical block length including overlaps"
-msgstr ""
+msgstr "总垂直块长（含重叠部分）"
 
 #: modules/codec/dirac.c:141
 msgid "Motion vector precision"
@@ -8932,7 +8947,7 @@ msgstr "动作向量精确度"
 
 #: modules/codec/dirac.c:142
 msgid "Motion vector precision in pels."
-msgstr ""
+msgstr "运动矢量的精度（单位为像素）。"
 
 #: modules/codec/dirac.c:147
 msgid "Simple ME search area x:y"
@@ -8951,7 +8966,7 @@ msgstr "三原色动作估计"
 
 #: modules/codec/dirac.c:154
 msgid "Use chroma as part of the motion estimation process"
-msgstr ""
+msgstr "将色度用作运动估算过程的一部分"
 
 #: modules/codec/dirac.c:157
 msgid "Intra picture DWT filter"
@@ -8975,7 +8990,7 @@ msgstr "启用多个量化器"
 
 #: modules/codec/dirac.c:171
 msgid "Enable multiple quantizers per subband (one per codeblock)"
-msgstr ""
+msgstr "启用多重子带量化 (每个码块一次)"
 
 #: modules/codec/dirac.c:175
 msgid "Enable spatial partitioning"
@@ -8987,7 +9002,7 @@ msgstr "禁用算术编码"
 
 #: modules/codec/dirac.c:180
 msgid "Use variable length codes instead, useful for very high bitrates"
-msgstr ""
+msgstr "改用可变长码，码率非常高时很有用"
 
 #: modules/codec/dirac.c:185
 msgid "cycles per degree"
@@ -8995,7 +9010,7 @@ msgstr "每 cycle 角度值"
 
 #: modules/codec/dirac.c:207
 msgid "Dirac video encoder using dirac-research library"
-msgstr ""
+msgstr "Dirac 视频编码器使用 dirac-research 库"
 
 #: modules/codec/dmo/dmo.c:102
 msgid "DirectMedia Object decoder"
@@ -9220,6 +9235,10 @@ msgid ""
 "libvlc_media_new(libvlc, \"fake://\", &ex);. Besides is simillar to vmem "
 "video output module."
 msgstr ""
+"此模块可根据使用 libvlc 的渲染程序创建 (到内存中) 的 raw 图像制作视频流。要使"
+"用 libvlc 中的此模块，请设置 --codec 为 invmem，设置 vlc_argv 中的所有 --"
+"invmem-* 选项并使用 libvlc_media_new(libvlc, \"fake://\", &ex);。其余的与 "
+"vmem 视频输出模块类似。"
 
 #: modules/codec/invmem.c:79 modules/codec/invmem.c:80
 msgid "Memory video decoder"
@@ -9235,6 +9254,8 @@ msgid ""
 "can choose to disable all formatting.Note that this has no effect is "
 "rendering via Tiger is enabled."
 msgstr ""
+"Kate 流 允许文本格式化。VLC 部分支持此功能，但您可以选择禁用所有格式。注意："
+"如果启用了“通过 Tiger 渲染”，本选项将不起作用。"
 
 #: modules/codec/kate.c:204
 msgid "Shadow"
@@ -9369,6 +9390,7 @@ msgid ""
 "Kate streams can be rendered using the Tiger library. Disabling this will "
 "only render static text and bitmap based streams."
 msgstr ""
+"Kate 流可以使用 Tiger 库渲染。禁用此选项将只渲染静态文本及基于位图的流。"
 
 #: modules/codec/kate.c:221
 msgid "Rendering quality"
@@ -9378,7 +9400,7 @@ msgstr "渲染质量"
 msgid ""
 "Select rendering quality, at the expense of speed. 0 is fastest, 1 is "
 "highest quality."
-msgstr ""
+msgstr "选择渲染质量，将影响速度。0 最快，1 质量最高。"
 
 #: modules/codec/kate.c:226
 msgid "Default font effect"
@@ -9388,7 +9410,7 @@ msgstr "默认字体效果"
 msgid ""
 "Add a font effect to text to improve readability against different "
 "backgrounds."
-msgstr ""
+msgstr "为文本添加字体外观以提升在不同背景下的可读性。"
 
 #: modules/codec/kate.c:231
 msgid "Default font effect strength"
@@ -9396,7 +9418,7 @@ msgstr "默认字体效果强度"
 
 #: modules/codec/kate.c:232
 msgid "How pronounced to make the chosen font effect (effect dependent)."
-msgstr ""
+msgstr "发音如何影响字体外观 (需要外观支持)。"
 
 #: modules/codec/kate.c:236
 msgid "Default font description"
@@ -9408,6 +9430,8 @@ msgid ""
 "font parameters (name, size, etc) to use. A blank name will let Tiger choose "
 "font parameters where appropriate."
 msgstr ""
+"Kate 流未指定要使用的字体参数 (名称、大小等) 时要使用的字体描述。如果名称留"
+"空，Tiger 将自动选取适当的字体参数。"
 
 #: modules/codec/kate.c:242
 msgid "Default font color"
@@ -9417,7 +9441,7 @@ msgstr "默认字体颜色"
 msgid ""
 "Default font color to use if the Kate stream does not specify a particular "
 "font color to use."
-msgstr ""
+msgstr "Kate 流未指定要使用的字体颜色时要使用的默认字体颜色。"
 
 #: modules/codec/kate.c:247
 msgid "Default font alpha"
@@ -9427,7 +9451,7 @@ msgstr "默认字体透明度"
 msgid ""
 "Transparency of the default font color if the Kate stream does not specify a "
 "particular font color to use."
-msgstr ""
+msgstr "Kate 流未指定要使用的字体颜色时要使用的默认字体颜色透明度。"
 
 #: modules/codec/kate.c:252
 msgid "Default background color"
@@ -9437,7 +9461,7 @@ msgstr "默认背景颜色"
 msgid ""
 "Default background color if the Kate stream does not specify a background "
 "color to use."
-msgstr ""
+msgstr "Kate 流未指定要使用的背景颜色时要使用的默认背景色。"
 
 #: modules/codec/kate.c:257
 msgid "Default background alpha"
@@ -9447,7 +9471,7 @@ msgstr "默认背景透明度"
 msgid ""
 "Transparency of the default background color if the Kate stream does not "
 "specify a particular background color to use."
-msgstr ""
+msgstr "Kate 流未指定要使用的背景颜色时要使用的默认背景色透明度。"
 
 #: modules/codec/kate.c:264
 msgid ""
@@ -9458,6 +9482,10 @@ msgid ""
 "Note that changing settings below will not take effect until a new stream is "
 "played. This will hopefully be fixed soon."
 msgstr ""
+"Kate 是一款文本与图像覆盖层编解码器。\n"
+"要渲染复杂的 Kate 流需要 Tiger 渲染库，但即使没有，VLC 也能渲染静态文本和基于"
+"图像的字幕。\n"
+"注意，在播放新流之前对以下设置的更改将不会生效。有望尽早修复。"
 
 #: modules/codec/kate.c:273
 msgid "Kate"
@@ -9488,6 +9516,8 @@ msgid ""
 "Please wait while your font cache is rebuild.\n"
 "This should take less than a minute."
 msgstr ""
+"正在重建字体缓存，请稍候。\n"
+"这应该能在一分钟内完成。"
 
 #: modules/codec/libmpeg2.c:127
 msgid "MPEG I/II video decoder (using libmpeg2)"
@@ -9505,11 +9535,11 @@ msgstr "线性 PCM 音频分包器"
 msgid "Video decoder using openmash"
 msgstr "使用 openmash 视频解码器"
 
-#: modules/codec/mpeg_audio.c:113
+#: modules/codec/mpeg_audio.c:114
 msgid "MPEG audio layer I/II/III decoder"
 msgstr "MPEG 音频层 I/II/III 解码器"
 
-#: modules/codec/mpeg_audio.c:124
+#: modules/codec/mpeg_audio.c:125
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "MPEG 音频层 I/II/III 分包器"
 
@@ -9595,7 +9625,7 @@ msgstr "CBR 编码"
 msgid ""
 "Enforce a constant bitrate encoding (CBR) instead of default variable "
 "bitrate encoding (VBR)."
-msgstr ""
+msgstr "强制进行恒定码率编码 (CBR) 而不是默认的动态码率编码 (VBR)。"
 
 #: modules/codec/speex.c:77
 msgid "Voice activity detection"
@@ -10107,7 +10137,7 @@ msgstr "适应 B 帧检测"
 msgid ""
 "Force the specified number of consecutive B-frames to be used, except "
 "possibly before an I-frame.Range 0 to 2."
-msgstr ""
+msgstr "强制使用指定数量的连续 B 帧，除非可能是 I 帧前的 B 帧。范围由 0 到 2。"
 
 #: modules/codec/x264.c:95
 msgid ""
@@ -10138,6 +10168,11 @@ msgid ""
 " - strict: Strictly hierarchical pyramid\n"
 " - normal: Non-strict (not Blu-ray compatible)\n"
 msgstr ""
+"允许将 B 用作预测其他帧的参考。保留连续超过 2 个 B 帧的中间部分作为参考，并适"
+"当重排帧。\n"
+" - none: 禁用\n"
+" - strict: 严格的等级椎\n"
+" - normal: 不严格 (与 Blu-ray 不兼容)\n"
 
 #: modules/codec/x264.c:114
 msgid ""
@@ -10211,7 +10246,7 @@ msgstr "H.264 档案"
 
 #: modules/codec/x264.c:145
 msgid "Specify H.264 profile which limits are enforced overother settings"
-msgstr ""
+msgstr "指定 H.264 profile，将对已有设置强加限制"
 
 #: modules/codec/x264.c:152
 msgid "Interlaced mode"
@@ -10449,9 +10484,8 @@ msgid "Weighted prediction for B-frames."
 msgstr "用于 B 帧的有利预计。"
 
 #: modules/codec/x264.c:258
-#, fuzzy
 msgid "Weighted prediction for P-frames"
-msgstr "用于 B 帧的有利预计"
+msgstr "P 帧加权预测"
 
 #: modules/codec/x264.c:259
 msgid ""
@@ -10459,6 +10493,9 @@ msgid ""
 " - 1: Blind offset\n"
 " - 2: Smart analysis\n"
 msgstr ""
+" P 帧加权预测:  - 0: 禁用\n"
+" - 1: 隐性补偿\n"
+" - 2: 智能分析\n"
 
 #: modules/codec/x264.c:264
 msgid "Integer pixel motion estimation method"
@@ -10763,7 +10800,7 @@ msgstr "esa"
 
 #: modules/codec/x264.c:415
 msgid "Framecount to use on frametype lookahead"
-msgstr ""
+msgstr "统计帧数以供帧类预测"
 
 #: modules/codec/x264.c:416
 msgid ""
@@ -10771,6 +10808,8 @@ msgid ""
 "x264 default because unmuxable outputdoesn't handle larger values that well "
 "yet"
 msgstr ""
+"统计帧数以供帧类预测。目前默认低于 x264 的默认设置，因为不可混流的输出仍然无"
+"法很好处理更大的值"
 
 #: modules/codec/x264.c:424
 msgid "tesa"
@@ -10941,7 +10980,7 @@ msgstr "鼠标轮 X 轴控制"
 msgid ""
 "MouseWheel x-axis can control volume, position or mousewheel event can be "
 "ignored"
-msgstr ""
+msgstr "鼠标滚轮的 x 轴可控制音量或位置，也可以忽略滚轮事件"
 
 #: modules/control/hotkeys.c:381
 #, c-format
@@ -11849,11 +11888,11 @@ msgstr "不修复"
 msgid "AVI demuxer"
 msgstr "AVI 去复用器"
 
-#: modules/demux/avi/avi.c:701
+#: modules/demux/avi/avi.c:702
 msgid "AVI Index"
 msgstr "AVI 缩影"
 
-#: modules/demux/avi/avi.c:702
+#: modules/demux/avi/avi.c:703
 msgid ""
 "This AVI file is broken. Seeking will not work correctly.\n"
 "Do you want to try to fix it?\n"
@@ -11865,11 +11904,11 @@ msgstr ""
 "\n"
 "这可能需要很长的时间。"
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Repair"
 msgstr "修复"
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Don't repair"
 msgstr "不修复"
 
@@ -12414,7 +12453,7 @@ msgstr "DV (数字视频) 去复用器"
 msgid ""
 "This is the desired frame rate when playing raw video streams.  In the form "
 "30000/1001 or 29.97"
-msgstr ""
+msgstr "播放 raw 视频流时所需的帧率。格式为 30000/1001 或 29.97"
 
 #: modules/demux/rawvid.c:50
 msgid "This specifies the width in pixels of the raw video stream."
@@ -13817,30 +13856,30 @@ msgstr ""
 
 #: modules/gui/macosx/macosx.m:90 modules/gui/macosx/simple_prefs.m:266
 msgid "Control playback with the Apple Remote"
-msgstr ""
+msgstr "使用 Apple Remote 控制回放"
 
 #: modules/gui/macosx/macosx.m:91
 msgid "By default, VLC can be remotely controlled with the Apple Remote."
-msgstr ""
+msgstr "默认情况下，VLC 可以使用 Apple Remote 远程操控。"
 
 #: modules/gui/macosx/macosx.m:93 modules/gui/macosx/simple_prefs.m:267
 msgid "Control playback with media keys"
-msgstr ""
+msgstr "使用媒体键控制回放"
 
 #: modules/gui/macosx/macosx.m:94
 msgid ""
 "By default, VLC can be controlled using the media keys on modern Apple "
 "keyboards."
-msgstr ""
+msgstr "默认情况下，VLC 可以使用现代 Apple 键盘的媒体按键操控。"
 
 #: modules/gui/macosx/macosx.m:97
 msgid "Use media key control when VLC is in background"
-msgstr ""
+msgstr "当 VLC 在后台运行时使用媒体键操控"
 
 #: modules/gui/macosx/macosx.m:98
 msgid ""
 "By default, VLC will accept media key events also when being in background."
-msgstr ""
+msgstr "默认情况下，VLC 在后台运行时也接受媒体键击键事件。"
 
 #: modules/gui/macosx/macosx.m:102
 msgid "Mac OS X interface"
@@ -16388,7 +16427,7 @@ msgstr "电台设备名"
 
 #: modules/gui/qt4/components/open_panels.cpp:1078
 msgid "Your display will be opened and played in order to stream or save it."
-msgstr ""
+msgstr "您计算机上显示的内容将被打开播放以进行流化处理或储存。"
 
 #: modules/gui/qt4/components/open_panels.cpp:1299
 msgid "Advanced Options"
@@ -16402,11 +16441,11 @@ msgstr "双击获取媒体信息"
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:131
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:132
 msgid "Click to toggle between loop one, loop all"
 msgstr "单击可切换循环单首/循环全部"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:155
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:156
 msgid "Show the current item"
 msgstr "显示当前的项目"
 
@@ -16592,7 +16631,7 @@ msgstr "此模块可将一个转码后的串流通过 HTTP 协议输出到网络
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:182
 msgid ""
 "This module outputs the transcoded stream to a network  via the mms protocol."
-msgstr ""
+msgstr "此模块通过 mms 协议向网络输出转码生成的流。"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:227
 msgid "This module outputs the transcoded stream to a network via UDP."
@@ -16612,7 +16651,7 @@ msgstr "视频端口"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:349
 msgid "This module outputs the transcoded stream to an Icecast server."
-msgstr ""
+msgstr "此模块向 Icecast 服务器输出转码生成的流。"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:370
 msgid "Mount Point"
@@ -16676,7 +16715,7 @@ msgstr "显示输出"
 
 #: modules/gui/qt4/dialogs/convert.cpp:71
 msgid "This display the resulting media, but can slow things down."
-msgstr ""
+msgstr "这将显示生成的媒体，但可能会减慢速度。"
 
 #: modules/gui/qt4/dialogs/convert.cpp:79
 msgid "Settings"
@@ -16968,6 +17007,9 @@ msgid ""
 "or the path to a file on your computer,\n"
 "it will be automatically selected."
 msgstr ""
+"如果您的剪贴板包含有效的 URL\n"
+"或计算机中的文件路径，\n"
+"它将被自动选中。"
 
 #: modules/gui/qt4/dialogs/plugins.cpp:45
 msgid "Plugins and extensions"
@@ -17032,6 +17074,8 @@ msgid ""
 "You should start by checking that source matches what you want your input to "
 "be and then press the \"Next\" button to continue.\n"
 msgstr ""
+"此对话框将允许您流化或转换媒体以供在本地、私有网络或 Internet 上使用。\n"
+"要开始，请先检查源是否与您所希望的输入相符，然后点击 \"下一步\" 按钮继续。\n"
 
 #: modules/gui/qt4/dialogs/sout.cpp:54
 msgid ""
@@ -17704,7 +17748,7 @@ msgstr "要过滤的单词列表，以 | 符号分隔"
 
 #: modules/gui/qt4/qt4.cpp:141
 msgid "Regular expression used to filter the recent items played in the player"
-msgstr ""
+msgstr "用于过滤播放器最近播放过的项目的正则表达式"
 
 #: modules/gui/qt4/qt4.cpp:144
 msgid "Define the colors of the volume slider "
@@ -17995,6 +18039,7 @@ msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
+"您只需填写下列三个参数中的任意一个，VLC 将使用原始宽高比自动确定其他两项"
 
 #: modules/gui/qt4/ui/profiles.h:480 modules/gui/qt4/ui/profiles.h:483
 msgid "00000; "
@@ -18037,6 +18082,8 @@ msgid ""
 "Add destinations following the streaming methods you need. Be sure to check "
 "with transcoding that the format is compatible with the method used."
 msgstr ""
+"根据您需要的流化方式添加目的地。一定要检查转码器所设的格式是否与所用方式兼"
+"容。"
 
 #: modules/gui/qt4/ui/sout.h:339
 msgid "Display locally"
@@ -18609,13 +18656,14 @@ msgstr "使用一个外观化的播放列表"
 
 #: modules/gui/skins2/src/skin_main.cpp:528
 msgid "Display video in a skinned window if any"
-msgstr ""
+msgstr "如果有外观可用，则在外观化的窗口中显示视频"
 
 #: modules/gui/skins2/src/skin_main.cpp:530
 msgid ""
 "When set to 'no', this parameter is intended to give old skins a chance to "
 "play back video even though no video tag is implemented"
 msgstr ""
+"当设为 '否' 时，此参数意在为旧的外观创造回放视频的条件，即使无可用的视频标签"
 
 #: modules/gui/skins2/src/skin_main.cpp:557
 msgid "Skinnable Interface"
@@ -19001,7 +19049,7 @@ msgstr "Scrobbler 网址"
 
 #: modules/misc/audioscrobbler.c:138
 msgid "The URL set for an alternative scrobbler engine"
-msgstr ""
+msgstr "设置可选 scrobbler 引擎的 URL"
 
 #: modules/misc/audioscrobbler.c:162
 msgid "Audioscrobbler"
@@ -19364,7 +19412,7 @@ msgstr "AltiVec 内存复制字符串"
 msgid "Growl Notification Plugin"
 msgstr "Growl 提示插件按"
 
-#: modules/misc/notify/growl.m:273
+#: modules/misc/notify/growl.m:272
 msgid "Now playing"
 msgstr "现在正在播放"
 
@@ -20214,13 +20262,13 @@ msgstr "用于此通量流的整数标识符。这将在稍后被用作 \"发现
 
 #: modules/stream_out/bridge.c:46
 msgid "Destination bridge-in name"
-msgstr "目标 bridge-in 名称"
+msgstr "目标连入桥名称"
 
 #: modules/stream_out/bridge.c:48
 msgid ""
 "Name of the destination bridge-in. If you do not need more than one bridge-"
 "in at a time, you can discard this option."
-msgstr ""
+msgstr "目标连入桥的名称。如果您不需要同时使用多个连入桥，可以忽略此选项。"
 
 #: modules/stream_out/bridge.c:52
 msgid ""
@@ -20249,11 +20297,11 @@ msgstr "当前实例名称"
 msgid ""
 "Name of this bridge-in instance. If you do not need more than one bridge-in "
 "at a time, you can discard this option."
-msgstr ""
+msgstr "此连入桥实例的名称。如果您不需要同时使用多个连入桥，可以忽略此选项。"
 
 #: modules/stream_out/bridge.c:65
 msgid "Fallback to placeholder stream when out of data"
-msgstr ""
+msgstr "缺数据时退回到占位流"
 
 #: modules/stream_out/bridge.c:67
 msgid ""
@@ -20262,6 +20310,8 @@ msgid ""
 "configure a place holder stream when the real source breaks. Source and "
 "placeholder streams should have the same format. "
 msgstr ""
+"如果设为 true，桥没有从其他连入桥接收到数据时将忽略所有的输入基本流。这可在真"
+"实源中断时用于配置占位流。源与占位流的格式应该相同。"
 
 #: modules/stream_out/bridge.c:72
 msgid "Placeholder delay"
@@ -20269,11 +20319,11 @@ msgstr "占位延迟"
 
 #: modules/stream_out/bridge.c:74
 msgid "Delay (in ms) before the placeholder kicks in."
-msgstr ""
+msgstr "占位流生效前的延时 (毫秒)。"
 
 #: modules/stream_out/bridge.c:76
 msgid "Wait for I frame before toggling placholder"
-msgstr ""
+msgstr "等出现 I 帧后再切换占位流"
 
 #: modules/stream_out/bridge.c:78
 msgid ""
@@ -20282,6 +20332,8 @@ msgid ""
 "the expense of a slightly longer delay, depending on the frequence of I "
 "frames in the streams."
 msgstr ""
+"如果启用，在占位流和正常流之间的切换将只在 I 帧进行。这将以稍微长些的延时（取"
+"决于流中 I 帧出现的频率）为代价避免流切换时的花屏。"
 
 #: modules/stream_out/bridge.c:92
 msgid "Bridge"
@@ -20481,7 +20533,7 @@ msgstr "目标设备的主机名或 IP 地址"
 msgid ""
 "Output volume for analog output: 0 for silence, 1..255 from almost silent to "
 "very loud."
-msgstr ""
+msgstr "模拟输出的输出音量: 0 为静音，1..255 由几乎听不见到非常响亮。"
 
 #: modules/stream_out/raop.c:148
 msgid "RAOP"
@@ -20497,7 +20549,7 @@ msgstr "目标前缀"
 
 #: modules/stream_out/record.c:52
 msgid "Prefix of the destination file automatically generated"
-msgstr ""
+msgstr "自动创建的目标文件的前缀"
 
 #: modules/stream_out/record.c:57
 msgid "Record stream output"
@@ -21477,7 +21529,7 @@ msgstr "更改信道分配 (修正错误的布线)"
 
 #: modules/video_filter/atmo/atmo.cpp:422
 msgid "Adjust the white light to your LED stripes"
-msgstr "为您的 LED 快调节白色照明"
+msgstr "为您的 LED 块调节白色照明"
 
 #: modules/video_filter/atmo/atmo.cpp:444
 msgid "Change gradients"
@@ -21619,7 +21671,7 @@ msgstr "输出宽度"
 
 #: modules/video_filter/canvas.c:86
 msgid "Output (canvas) image width"
-msgstr "输出 (画布) 图像宽度"
+msgstr "输出 (canvas) 图像宽度"
 
 #: modules/video_filter/canvas.c:87
 msgid "Output height"
@@ -21627,7 +21679,7 @@ msgstr "输出高度"
 
 #: modules/video_filter/canvas.c:89
 msgid "Output (canvas) image height"
-msgstr "输出 (画布) 图像高度"
+msgstr "输出 (canvas) 图像高度"
 
 #: modules/video_filter/canvas.c:90
 msgid "Output picture aspect ratio"
@@ -21638,20 +21690,23 @@ msgid ""
 "Set the canvas' picture aspect ratio. If omitted, the canvas is assumed to "
 "have the same SAR as the input."
 msgstr ""
+"设置 canvas 的画面宽高比。如果留空，canvas 将假定 SAR 与输入画面的相同。"
 
 #: modules/video_filter/canvas.c:94
 msgid "Pad video"
-msgstr "Pad 视频"
+msgstr "视频加边"
 
 #: modules/video_filter/canvas.c:96
 msgid ""
 "If enabled, video will be padded to fit in canvas after scaling. Otherwise, "
 "video will be cropped to fix in canvas after scaling."
 msgstr ""
+"如果启用，视频将经度量加边以适应 canvas。否则，视频将经度量裁剪以适应 "
+"canvas。"
 
 #: modules/video_filter/canvas.c:105
 msgid "Canvas"
-msgstr "画布"
+msgstr "Canvas"
 
 #: modules/video_filter/canvas.c:106
 msgid "Automatically resize and pad a video"
@@ -21870,7 +21925,7 @@ msgstr "在裁剪后要添加到右侧的像素数量。"
 
 #: modules/video_filter/croppadd.c:79
 msgid "Cropadd"
-msgstr ""
+msgstr "裁剪/加边"
 
 #: modules/video_filter/croppadd.c:80 modules/video_filter/scale.c:59
 #: modules/video_filter/swscale.c:68 modules/video_filter/swscale_maemo.c:52
@@ -23100,7 +23155,7 @@ msgstr "目录路径前缀"
 msgid ""
 "Directory path where images files should be saved.If not set, then images "
 "will be automatically saved in users homedir."
-msgstr ""
+msgstr "图片文件存储路径。如果未设置，将自动将图片存放到用户主目录中。"
 
 #: modules/video_filter/scene.c:84
 msgid "Always write to the same file"
@@ -23756,6 +23811,8 @@ msgid ""
 "YV12/I420 fourcc. By default vlc writes the fourcc of the picture frame into "
 "the output destination."
 msgstr ""
+"mplayer yuv 视频输出兼容 YUV4MPEG2 头，要求 fourcc 为 YV12/I420。vlc 默认将帧"
+"的 fourcc 写入输出处。"
 
 #: modules/video_output/yuv.c:66
 msgid "YUV output"
@@ -23796,7 +23853,7 @@ msgstr "这允许您设置动画的速度 (在 1 到 10 之间，默认为 6)."
 
 #: modules/visualization/goom.c:73
 msgid "Goom"
-msgstr ""
+msgstr "Goom"
 
 #: modules/visualization/goom.c:74
 msgid "Goom effect"

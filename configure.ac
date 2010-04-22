@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2010 the VideoLAN team])
 
-AC_INIT(vlc, 1.0.5)
+AC_INIT(vlc, 1.0.6)
 VERSION_MAJOR="1"
 VERSION_MINOR="0"
-VERSION_REVISION="5"
+VERSION_REVISION="6"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -4752,7 +4752,7 @@ AC_ARG_ENABLE(pulse,
      PKG_CHECK_MODULES(PULSE, libpulse >= 0.9.11,
        [ VLC_ADD_PLUGIN([pulse])
         VLC_ADD_CFLAGS([pulse],[${PULSE_CFLAGS}])
-        VLC_ADD_LDFLAGS([pulse],[${PULSE_LIBS}])],
+        VLC_ADD_LDFLAGS([pulse],[${PULSE_LIBS} ${X_LIBS} ${X_PRE_LIBS} -lX11])],
        [AC_MSG_WARN(pulseaudio library not found)])
    fi
 

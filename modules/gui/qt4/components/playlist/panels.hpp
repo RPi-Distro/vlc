@@ -2,7 +2,7 @@
  * panels.hpp : Panels for the playlist
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 6876f0c03598b09e4e4686d77292d7f68aaaecd0 $
+ * $Id: 3ad2128d7cba5502e2efeadd482ccc26b133e574 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -67,8 +67,6 @@ public:
                      playlist_t *,playlist_item_t * );
     virtual ~StandardPLPanel();
 protected:
-    virtual void keyPressEvent( QKeyEvent *e );
-protected:
     PLModel *model;
     friend class PlaylistWidget;
 private:
@@ -76,6 +74,7 @@ private:
     QPushButton *repeatButton, *randomButton, *addButton, *gotoPlayingButton;
     int currentRootId;
     QSignalMapper *ContextUpdateMapper;
+    bool eventFilter ( QObject * watched, QEvent * event );
 public slots:
     void removeItem( int );
     virtual void setRoot( int );

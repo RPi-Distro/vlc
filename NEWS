@@ -1,3 +1,36 @@
+Changes between 1.0.5 and 1.0.6:
+--------------------------------
+
+Access:
+ * Fix crash on FTP URI with no file path
+
+Decoders/Packetizers:
+ * Fix overflows in A/52, DTS, MPEG Audio and subtitles support
+
+Demuxers:
+ * Update LUA script for Youtube pages
+ * Fix crashes in AVI, ASF and Matroska files
+ * Fix crashes on malformatted ZIP archives
+ * Fix crashes and leaks in the FFmpeg/avformat plugin
+ * Fix crash on invalid XSPF playlist
+
+X11 port:
+ * Partial Xlib threading fixes
+   More complete fixes are available in VLC 1.1.0. Please update!
+
+Interfaces:
+ * Fix crash (use after free) in Qt4 bookmarks
+ * Fix a few crashes in Qt4 playlist
+
+Translations:
+ * Simplified Chinese, Estonian, French, Japanese, Korean, Spanish, Swedish
+   and Walloon translations updated
+ * Sinhala translation started
+
+Removed modules:
+ * RTMP input and output are removed due to security problems. Please update
+   to VLC 1.1.0 which provides an FFmpeg-based RTMP input if needed.
+
 Changes between 1.0.4 and 1.0.5:
 --------------------------------
 

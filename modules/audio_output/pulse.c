@@ -33,6 +33,9 @@
 #include <vlc_aout.h>
 
 #include <pulse/pulseaudio.h>
+#ifdef HAVE_X11_XLIB_H
+# include <X11/Xlib.h>
+#endif
 
 #include <assert.h>
 
@@ -118,6 +121,10 @@ static int Open ( vlc_object_t *p_this )
     struct pa_buffer_attr a;
     struct pa_channel_map map;
 
+#ifdef HAVE_X11_XLIB_H
+    if( !XInitThreads() )
+        return VLC_EGENERIC;
+#endif
     /* Allocate structures */
     p_aout->output.p_sys = p_sys = calloc( 1, sizeof( aout_sys_t ) );
     if( p_sys == NULL )

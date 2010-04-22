@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 the VideoLAN team
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: 313e0e8a9494ce83aa46d4ca5ba638d060e0832c $
+ * $Id: 75001f5477666961156a46ee1564e26667d8c13b $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -362,6 +362,7 @@ __net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
             switch (WSAGetLastError ())
             {
                 case WSAEWOULDBLOCK:
+                case WSAEINTR:
                 /* only happens with vs != NULL (TLS) - not really an error */
                     continue;
 
