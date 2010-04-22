@@ -190,6 +190,9 @@ static int Create( vlc_object_t *p_this )
         p_vout->fmt_in.i_chroma != VLC_FOURCC('Y','V','1','2') )
         return VLC_EGENERIC;
 
+    if( !XInitThreads() )
+        return VLC_EGENERIC;
+
     /* Allocate instance and initialize some members */
     p_vout->p_sys = p_sys = calloc( 1, sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )

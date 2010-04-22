@@ -1,8 +1,8 @@
 /*****************************************************************************
  * growl_udp.c : growl UDP notification plugin
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 72dfc9c9520b336479cb252656636e1e796d1e83 $
+ * Copyright (C) 2006 - 2010 the VideoLAN team
+ * $Id: 94b8a6b87790ca67d2022c0cd3d929b398c58a91 $
  *
  * Authors: Jérôme Decoodt <djc -at- videolan -dot- org>
  *
@@ -49,7 +49,7 @@ static int ItemChange( vlc_object_t *, const char *,
 
 static int RegisterToGrowl( vlc_object_t *p_this );
 static int NotifyToGrowl( vlc_object_t *p_this, const char *psz_desc );
-static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset );
+static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset, size_t is_ze );
 #define GROWL_MAX_LENGTH 256
 
 /*****************************************************************************
@@ -88,11 +88,9 @@ vlc_module_end ()
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    intf_thread_t *p_intf = (intf_thread_t *)p_this;
-
-    playlist_t *p_playlist = pl_Hold( p_intf );
-    var_AddCallback( p_playlist, "item-current", ItemChange, p_intf );
-    pl_Release( p_intf );
+    playlist_t *p_playlist = pl_Hold( p_this );
+    var_AddCallback( p_playlist, "item-current", ItemChange, p_this );
+    pl_Release( p_this );
 
     RegisterToGrowl( p_this );
     return VLC_SUCCESS;
@@ -116,12 +114,12 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
 {
     VLC_UNUSED(psz_var); VLC_UNUSED(oldval); VLC_UNUSED(newval);
     VLC_UNUSED(param);
+
     char psz_tmp[GROWL_MAX_LENGTH];
-    char *psz_title = NULL;
-    char *psz_artist = NULL;
-    char *psz_album = NULL;
-    input_thread_t *p_input;
-    p_input = playlist_CurrentInput( (playlist_t*)p_this );
+    char *psz_title;
+    char *psz_artist;
+    char *psz_album;
+    input_thread_t *p_input = playlist_CurrentInput( (playlist_t*)p_this );
 
     if( !p_input ) return VLC_SUCCESS;
 
@@ -188,7 +186,7 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
  *****************************************************************************/
 static int RegisterToGrowl( vlc_object_t *p_this )
 {
-    uint8_t *psz_encoded = malloc(100);
+    uint8_t *psz_encoded = calloc( 100, 1 );
     uint8_t i_defaults = 0;
     static const char *psz_notifications[] = {"Now Playing", NULL};
     bool pb_defaults[] = {true, false};
@@ -196,7 +194,6 @@ static int RegisterToGrowl( vlc_object_t *p_this )
     if( psz_encoded == NULL )
         return false;
 
-    memset( psz_encoded, 0, sizeof(psz_encoded) );
     psz_encoded[i++] = GROWL_PROTOCOL_VERSION;
     psz_encoded[i++] = GROWL_TYPE_REGISTRATION;
     insertstrlen(APPLICATION_NAME);
@@ -211,14 +208,16 @@ static int RegisterToGrowl( vlc_object_t *p_this )
     }
     psz_encoded[4] = j;
     for( j = 0 ; psz_notifications[j] != NULL ; j++)
+    {
         if(pb_defaults[j] == true)
         {
             psz_encoded[i++] = (uint8_t)j;
             i_defaults++;
         }
+    }
     psz_encoded[5] = i_defaults;
 
-    CheckAndSend(p_this, psz_encoded, i);
+    CheckAndSend(p_this, psz_encoded, i, 100);
     free( psz_encoded );
     return VLC_SUCCESS;
 }
@@ -226,13 +225,23 @@ static int RegisterToGrowl( vlc_object_t *p_this )
 static int NotifyToGrowl( vlc_object_t *p_this, const char *psz_desc )
 {
     const char *psz_type = "Now Playing", *psz_title = "Now Playing";
-    uint8_t *psz_encoded = malloc(GROWL_MAX_LENGTH + 42);
+    uint8_t *psz_encoded = calloc(GROWL_MAX_LENGTH + 42, 1);
     uint16_t flags;
     int i = 0;
     if( psz_encoded == NULL )
         return false;
 
-    memset( psz_encoded, 0, sizeof(psz_encoded) );
+    // Check the size of the data
+    size_t i_type = strlen( psz_type );
+    size_t i_title = strlen( psz_title );
+    size_t i_app = strlen( APPLICATION_NAME );
+    size_t i_desc = strlen( psz_desc );
+    if( 12 + i_type + i_title + i_desc + i_app >= GROWL_MAX_LENGTH + 42 )
+    {
+        free( psz_encoded );
+        return false;
+    }
+
     psz_encoded[i++] = GROWL_PROTOCOL_VERSION;
     psz_encoded[i++] = GROWL_TYPE_NOTIFICATION;
     flags = 0;
@@ -242,38 +251,45 @@ static int NotifyToGrowl( vlc_object_t *p_this, const char *psz_desc )
     insertstrlen(psz_title);
     insertstrlen(psz_desc);
     insertstrlen(APPLICATION_NAME);
-    strcpy( (char*)(psz_encoded+i), psz_type );
-    i += strlen(psz_type);
-    strcpy( (char*)(psz_encoded+i), psz_title );
-    i += strlen(psz_title);
-    strcpy( (char*)(psz_encoded+i), psz_desc );
-    i += strlen(psz_desc);
-    strcpy( (char*)(psz_encoded+i), APPLICATION_NAME );
-    i += strlen(APPLICATION_NAME);
 
-    CheckAndSend(p_this, psz_encoded, i);
+    strcpy( (char*)(psz_encoded+i), psz_type );
+    i += i_type;
+    strcpy( (char*)(psz_encoded+i), psz_title );
+    i += i_title;
+    strcpy( (char*)(psz_encoded+i), psz_desc );
+    i += i_desc;
+    strcpy( (char*)(psz_encoded+i), APPLICATION_NAME );
+    i += i_app;
+
+    CheckAndSend(p_this, psz_encoded, i, GROWL_MAX_LENGTH + 42);
     free( psz_encoded );
     return VLC_SUCCESS;
 }
 
-static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset )
+static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset, size_t i_size )
 {
-    int i, i_handle;
+    int i_handle;
     struct md5_s md5;
-    intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    char *psz_password = config_GetPsz( p_intf, "growl-password" );
-    char *psz_server = config_GetPsz( p_intf, "growl-server" );
-    int i_port = config_GetInt( p_intf, "growl-port" );
+    char *psz_password = config_GetPsz( p_this, "growl-password" );
+    char *psz_server = config_GetPsz( p_this, "growl-server" );
+    int i_port = config_GetInt( p_this, "growl-port" );
+
+    if(!psz_password || !psz_server)
+        goto error;
+
+    int i_password_length = strlen( psz_password );
+    // Check that the buffer is larger enought for the string and the md5
+    if( i_offset + i_password_length + 4*4 >= i_size )
+        goto error;
+
     strcpy( (char*)(p_data+i_offset), psz_password );
-    i = i_offset + strlen(psz_password);
 
     InitMD5( &md5 );
-    AddMD5( &md5, p_data, i );
+    AddMD5( &md5, p_data, i_offset + i_password_length );
     EndMD5( &md5 );
 
-    for( i = 0 ; i < 4 ; i++ )
+    for( int i = 0 ; i < 4 ; i++ )
     {
-        md5.p_digest[i] = md5.p_digest[i];
         p_data[i_offset++] =  md5.p_digest[i]     &0xFF;
         p_data[i_offset++] = (md5.p_digest[i]>> 8)&0xFF;
         p_data[i_offset++] = (md5.p_digest[i]>>16)&0xFF;
@@ -283,15 +299,12 @@ static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset )
     i_handle = net_ConnectUDP( p_this, psz_server, i_port, -1 );
     if( i_handle == -1 )
     {
-         msg_Err( p_this, "failed to open a connection (udp)" );
-         free( psz_password);
-         free( psz_server);
-         return VLC_EGENERIC;
+        msg_Err( p_this, "failed to open a connection (udp)" );
+        goto error;
     }
 
     shutdown( i_handle, SHUT_RD );
-    if( send( i_handle, p_data, i_offset, 0 )
-          == -1 )
+    if( send( i_handle, p_data, i_offset, 0 ) == -1 )
     {
         msg_Warn( p_this, "send error: %m" );
     }
@@ -300,6 +313,11 @@ static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset )
     free( psz_password);
     free( psz_server);
     return VLC_SUCCESS;
+
+error:
+    free( psz_password );
+    free( psz_server );
+    return VLC_EGENERIC;
 }
 
 #undef GROWL_PROTOCOL_VERSION

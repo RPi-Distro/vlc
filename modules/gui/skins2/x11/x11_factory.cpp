@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fe80a7b768876803fdf63ae4679058e555824e87 $
+ * $Id: 774c3a86b781bf7809e9a3e8b7909f1e0ce9862b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -197,6 +197,11 @@ void X11Factory::getMousePos( int &rXPos, int &rYPos ) const
 
 void X11Factory::rmDir( const string &rPath )
 {
+    struct
+    {
+        struct dirent ent;
+        char buf[NAME_MAX + 1];
+    } buf;
     struct dirent *file;
     DIR *dir;
 
@@ -204,7 +209,7 @@ void X11Factory::rmDir( const string &rPath )
     if( !dir ) return;
 
     // Parse the directory and remove everything it contains
-    while( (file = readdir( dir )) )
+    while( readdir_r( dir, &buf.ent, &file ) == 0 && file != NULL )
     {
         struct stat statbuf;
         string filename = file->d_name;
@@ -217,7 +222,7 @@ void X11Factory::rmDir( const string &rPath )
 
         filename = rPath + "/" + filename;
 
-        if( !stat( filename.c_str(), &statbuf ) && statbuf.st_mode & S_IFDIR )
+        if( !stat( filename.c_str(), &statbuf ) && S_ISDIR(statbuf.st_mode) )
         {
             rmDir( filename );
         }

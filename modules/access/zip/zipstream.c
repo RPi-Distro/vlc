@@ -2,7 +2,7 @@
  * zipstream.c: stream_filter that creates a XSPF playlist from a Zip archive
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 03a7dfdd023d1ee5013a7bd101f2e41e21692f1a $
+ * $Id: 923e6c37180fbf2f7db6277735336d8ab7aade03 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -67,6 +67,7 @@ static int Control( stream_t *, int i_query, va_list );
 typedef struct node node;
 typedef struct item item;
 
+static int Fill( stream_t * );
 static int CreatePlaylist( stream_t *s, char **pp_buffer );
 static int GetFilesInZip( stream_t*, unzFile, vlc_array_t*, vlc_array_t* );
 static node* findOrCreateParentNode( node *root, const char *fullpath );
@@ -232,6 +233,9 @@ void StreamClose( vlc_object_t *p_this )
     stream_t *s = (stream_t*)p_this;
     stream_sys_t *p_sys = s->p_sys;
 
+    if( p_sys->zipFile )
+        unzClose( p_sys->zipFile );
+
     free( p_sys->fileFunctions );
     free( p_sys->psz_xspf );
     free( p_sys->psz_path );
@@ -249,21 +253,14 @@ static int Read( stream_t *s, void *p_read, unsigned int i_read )
 {
     stream_sys_t *p_sys = s->p_sys;
 
-    if( !p_read ) return 0;
-
     /* Fill the buffer */
-    if( p_sys->psz_xspf == NULL )
-    {
-        int i_ret = CreatePlaylist( s, &p_sys->psz_xspf );
-        if( i_ret < 0 )
-            return -1;
-        p_sys->i_len = strlen( p_sys->psz_xspf );
-        p_sys->i_pos = 0;
-    }
+    if( Fill( s ) )
+        return -1;
 
     /* Read the buffer */
-    int i_len = __MIN( i_read, p_sys->i_len - p_sys->i_pos );
-    memcpy( p_read, p_sys->psz_xspf + p_sys->i_pos, i_len );
+    unsigned i_len = __MIN( i_read, p_sys->i_len - p_sys->i_pos );
+    if( p_read )
+        memcpy( p_read, p_sys->psz_xspf + p_sys->i_pos, i_len );
     p_sys->i_pos += i_len;
 
     return i_len;
@@ -277,15 +274,8 @@ static int Peek( stream_t *s, const uint8_t **pp_peek, unsigned int i_peek )
     stream_sys_t *p_sys = s->p_sys;
 
     /* Fill the buffer */
-    if( p_sys->psz_xspf == NULL )
-    {
-        int i_ret = CreatePlaylist( s, &p_sys->psz_xspf );
-        if( i_ret < 0 )
-            return -1;
-        p_sys->i_len = strlen( p_sys->psz_xspf );
-        p_sys->i_pos = 0;
-    }
-
+    if( Fill( s ) )
+        return -1;
 
     /* Point to the buffer */
     int i_len = __MIN( i_peek, p_sys->i_len - p_sys->i_pos );
@@ -344,34 +334,53 @@ static int Control( stream_t *s, int i_query, va_list args )
     }
 }
 
+static int Fill( stream_t *s )
+{
+    stream_sys_t *p_sys = s->p_sys;
+
+    if( p_sys->psz_xspf )
+        return VLC_SUCCESS;
+
+    if( CreatePlaylist( s, &p_sys->psz_xspf ) < 0 )
+        return VLC_EGENERIC;
+
+    p_sys->i_len = strlen( p_sys->psz_xspf );
+    p_sys->i_pos = 0;
+    return VLC_SUCCESS;
+}
+
 static int CreatePlaylist( stream_t *s, char **pp_buffer )
 {
+    stream_sys_t *p_sys = s->p_sys;
+
+    unzFile file = p_sys->zipFile;
+    if( !file )
+        return -1;
+
     /* Get some infos about zip archive */
     int i_ret = 0;
-    unzFile file = s->p_sys->zipFile;
     vlc_array_t *p_filenames = vlc_array_new(); /* Will contain char* */
 
     /* List all file names in Zip archive */
     i_ret = GetFilesInZip( s, file, p_filenames, NULL );
     if( i_ret < 0 )
     {
-        unzClose( file );
         i_ret = -1;
         goto exit;
     }
 
-    /* Close archive */
-    unzClose( file );
-    s->p_sys->zipFile = NULL;
-
     /* Construct the xspf playlist */
-    i_ret = WriteXSPF( pp_buffer, p_filenames, s->p_sys->psz_path );
+    i_ret = WriteXSPF( pp_buffer, p_filenames, p_sys->psz_path );
     if( i_ret > 0 )
         i_ret = 1;
     else if( i_ret < 0 )
         i_ret = -1;
 
 exit:
+    /* Close archive */
+    unzClose( file );
+    p_sys->zipFile = NULL;
+
     for( int i = 0; i < vlc_array_count( p_filenames ); i++ )
     {
         free( vlc_array_item_at_index( p_filenames, i ) );

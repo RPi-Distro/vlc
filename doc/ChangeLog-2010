@@ -1,0 +1,1208 @@
+commit 3e7d1bbda8aa1ef38678b0f60934d1c273ba1107
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 21:51:40 2010 +0300
+
+    Avoid warnings
+
+commit 8ab9066cf44f06afd8dca32e9aa9460393b0ad8e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 21:51:20 2010 +0300
+
+    Fixed potential segfault with corrupted streams (audio codecs).
+    
+    (cherry picked from commit b51e492c3da42a569b9b6715c97fe858a0c96a15)
+    
+    Conflicts:
+    
+    	modules/codec/mpeg_audio.c
+
+commit e9424c8c59ba09bf539ff5745c958f4962172f81
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 21:43:03 2010 +0300
+
+    News for 1.0.6
+
+commit 4ae4621a3ba903086a7fee8b53bdeb5f9d66bd02
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 21:22:13 2010 +0300
+
+    Disable A52, DTS and MPEG Audio dummy decoder plugins
+    
+    As a consequence, the avcodec decoder plugin will be used instead.
+    Note that this will break SPDIF output. It also makes liba52, libdca
+    and libmad totally redumdant (though they arguably are anyway).
+    
+    To fix the dummy decoders, we need to resize aout_buffer_t. That is
+    already implemented in VLC 1.1.x, so use that if you want SPDIF.
+    
+    Alternatively, to restore liba52/libdca/libmad use (but not SPDIF),
+    we would need to convert their plugins from audio filters to decoders.
+    But this would be a waste of time considering avcodec already works.
+
+commit 0b0cefa3be9fcc04c6a53fa2bbfedd462437c2ed
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Mar 7 21:26:56 2010 +0200
+
+    RTMP: totally broken, disabled for the time being
+
+commit e0675a7cfc3bfecb8df4259f72e0a192d0a314a7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 20:35:41 2010 +0300
+
+    Call XInitThreads in non-1.1 Xlib-dependent plugins
+
+commit b01b9c59aa5d0529a5022dc456b1bc29dbad1e7d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 20:17:11 2010 +0300
+
+    Pulse: uses Xlib, needs XInitThreads()
+    
+    (cherry picked from commit b64885ef2fadbc5360d0ff839cd0793cb194dc54)
+    
+    Conflicts:
+    
+    	configure.ac
+
+commit 82f9d0b042c332d2f647fa560683b91792360e8a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 20:14:50 2010 +0300
+
+    On the way to 1.0.6
+
+commit 12d8ff82aa494111f7d5ddbb244e49b29f2faf79
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sun Feb 28 12:48:10 2010 +0100
+
+    Prevent a potential integer overflow (mkv).
+    
+    (cherry picked from commit add8534f31b7c7ff20503169437d7d47ec3ac156)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 4e66cf7dc1481b6f702e244351dbe4856ed97ef3
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sun Feb 28 12:35:18 2010 +0100
+
+    Fixed segfault with incomplete mkv files.
+    
+    (cherry picked from commit 059a5785363ecf61de81ebf0e3628b5638b93d43)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit ca13e21cc5c948908f618cc4a76443bd30e5658c
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Feb 27 22:57:50 2010 +0100
+
+    Fixed segfault with corrupted mkv files with compressed data.
+    
+    (cherry picked from commit 34500c14bf7d9e58a62ff0f0d6a98ec4a9cf4e91)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 73899189ad345c08cfcfd855c7fb3d99d66b5982
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Feb 27 10:45:43 2010 +0100
+
+    Fixed segfault when seeking in ASF with broken index.
+    
+    It closes #2272 and #3350.
+    (cherry picked from commit fffce3a3c7213de213ee5b52b961a1561d54f0ba)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 405e9936fe290847ac045e36083e87cd2a94a176
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Feb 27 10:27:14 2010 +0100
+
+    Cosmetics.
+    
+    (cherry picked from commit b4f08e46d879bdfedd784e002399598e1405e51e)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit fd55d8a489be7739e756396856a5cadacbfbdf63
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Feb 27 10:21:58 2010 +0100
+
+    Fixed invalid read in ASF_ReadObject_Index (asf).
+    
+    (cherry picked from commit df3997deea7782189d100a4c2270d95ef37a2bce)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 431748eebcc5e79490324ea61b40f2565e1613ed
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 19:49:20 2010 +0300
+
+    Fixed potential memleaks in avformat wrapper.
+    
+    (cherry picked from commit bee1e640081f8013f058fd147d6d4d80d20f47b0)
+    
+    Conflicts:
+    
+    	modules/demux/avformat/demux.c
+
+commit df8f8ed2b9a6ee43a3db447603bddba5802cb03a
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Thu Apr 15 19:47:55 2010 +0300
+
+    Fixed division by 0 with invalid files in avformat wrapper.
+    
+    (cherry picked from commit db449895e90d2fd0dbedd7620d174cf70e00ea40)
+    
+    Conflicts:
+    
+    	modules/demux/avformat/demux.c
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 5b3d322580cb6dfd3259a9017606b4024290d30b
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Tue Feb 23 22:43:20 2010 +0100
+
+    Fixed signed integer overflow when loading AVI ODML index.
+    
+    (cherry picked from commit 8e16fb45f4e4b8b745b180e3b84ba2a8b9ffff76)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit f063a0e51940d11c2c5940c60cd3ff07fc4d38b6
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Tue Feb 23 22:36:52 2010 +0100
+
+    Fixed segfault with corrupted AVI ODML  index.
+    
+    (cherry picked from commit 07f608d11eade6b1bbf5b7a41176e6fb90f1d7e9)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 0b800963af8efc21c7653477eb2ae5e4fc5501e3
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Thu Apr 15 19:43:43 2010 +0300
+
+    Fixed a few memleaks in AVI demuxer.
+    
+    (cherry picked from commit 8fe4cd208a50a8a7b2abad17a1eff83e1675fd1f)
+    
+    Conflicts:
+    
+    	modules/demux/avi/avi.c
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 48e361aa510e29a4321d6427491fed5297ce88e9
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Tue Feb 16 13:07:10 2010 +0100
+
+    demux(avi): fix crash occuring when trying to open some avi files
+    
+    fmt.p_extra should only reference malloc'ed memory, since it is cleaned
+    with free() in es_format_Clean.
+    
+    This patch reuses the same logic for p_vids as that of p_auds.
+    (cherry picked from commit 97b484a832fa5846a69c538047c7761e749e939d)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 098859ba140988d7cf3cebdc094627a45e201c55
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 15 19:34:17 2010 +0300
+
+    dvdnav: fix race between still image timeout and other interaction
+    
+    This fixes the same issue as b28c362339ac8ef7f3b9b1715631f304e7563418
+    in master.
+
+commit ed4b6fbfc2d797bb7450758fe82e1f6c02fa9893
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sun Feb 21 23:27:00 2010 +0100
+
+    Fixed an assert with still frame in dvdnav.
+    
+    We can come out of still mode by user actions, and so
+    the timer need to be reset in DVDNAV_BLOCK_OK.
+    (cherry picked from commit 24ae7ed55e206a37571d0d39a3d21353936f9a64)
+
+commit 69a59a3513bde2f4b7a504b577d155fcb4c6d725
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sun Feb 14 16:04:39 2010 +0100
+
+    Simplified and fixed mmst/u pausing (close #2673).
+    
+    (cherry picked from commit 7c7ad3b0759079c63f0fd0fbc3118cadaf05619f)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 227c137bb8a72c9857a3e2a712ce51ae6bd7467b
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Feb 27 22:11:37 2010 +0100
+
+    Fixed segfault with corrupted zip file.
+    
+    (cherry picked from commit fe82dccc31a3a311f54cf8078127ba132679e54d)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 2aa30d4a8f522c579c413937595cfca7a0e2a009
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Feb 27 22:09:09 2010 +0100
+
+    Fixed read(NULL, size) in zipstream.
+    
+    (cherry picked from commit 08813ee6f8eb0faf83790bd4247c0a97af75a1cf)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit e779277381d0a29e6b87768c3941a33789c94b64
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Feb 27 22:06:54 2010 +0100
+
+    Cosmetics (zip).
+    
+    (cherry picked from commit 356372b2c187407de84e0d4fc33263ccb303b336)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit d4ae6a43cfb5dbd5b81bdd8494bfb09cf00aad85
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Feb 27 22:01:02 2010 +0100
+
+    Fixed memleak if no data are read or poke (zip).
+    
+    (cherry picked from commit 7bbc2ae8270ebf737660b25b226bddbab55b70c5)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 97e73c5d445f8180287e59e7f1051012f42e380c
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Tue Feb 23 23:31:57 2010 +0100
+
+    Fixed invalid accesses in decoder with corrupted subtitles streams.
+    
+    (cherry picked from commit 4602023991ab63c6b47f091795cd6fa393b41c2c)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 808bfd591f68a2800d7f6c636e212caaed4c1bee
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Apr 7 23:07:10 2010 +0200
+
+    lua: update the youtube script to the new version of their website
+    (cherry picked from commit eda3dd800526984cd54024f72a0c69a3446eb333)
+
+commit 0d6c8bab625aa1c3c135a5636eb5247afabaa1b4
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Wed Mar 24 21:08:25 2010 +0200
+
+    x264.c: compile fix
+
+commit cd5730996b6d065e1d3f24184616831eb5436053
+Author: Ilkka Ollakka <ileoo@iki.fi>
+Date:   Fri Jan 15 16:45:37 2010 +0200
+
+    x264.c: handle dts/pts from libx264 on X264_BUILD >= 83 onward
+    
+    libx264 gives dts-value, but we need to calculate initial delay, so dts doesn't
+    go < VLC_TS_0.
+    
+    Tell how many frames are still left on libx264 buffer when we close encoder
+    
+    Only set BLOCK_FLAG_TYPE_I on IDR-frames on X264_BUILD < 83 and only those
+    which have b_keyframe on X264_BUILD >= 83.
+    
+    (cherry picked from commit e3e7caad7c386d8e54db9a61529b769131cf5ba8)
+
+commit 6ab1db1b7c88ea011ff9b478387798f7bdde98d0
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Mon Mar 22 21:29:00 2010 +0000
+
+    l10n: Walloon update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 4fb4c208ffbd69c1e501ad2ded13b50e845d5a4c
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Fri Mar 19 17:27:01 2010 +0000
+
+    Avoid integer overflow
+    
+    (cherry picked from commit 6eedf20f375a3cfe4ab475ec3a31fd7f83a5dd19)
+
+commit eba68323d339bc5551dec2bdc4a8f9ffbc8fbc4d
+Author: David González <pico.dev@gmail.com>
+Date:   Sat Mar 20 00:36:48 2010 +0000
+
+    l10n: nsis spanish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 9426fbf85287f7a8f84f3dc0cdccff80b0498718
+Author: David González <pico.dev@gmail.com>
+Date:   Sat Mar 20 00:36:17 2010 +0000
+
+    l10n: Spanish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit c19f8fbd035469fd7a63c46ec193700d55e97136
+Author: Éric Lassauge <lassauge@users.sourceforge.net>
+Date:   Fri Mar 19 23:25:14 2010 +0000
+
+    l10n: French update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit e3943d274dcf526bdf81e603a5297640057256f7
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Mar 15 13:57:00 2010 +0100
+
+    contribs: updated to latest binary package for OS X
+
+commit 13702f12a6e8f3cc912051ee362bf0b117bc3ba0
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Mar 15 11:52:49 2010 +0100
+
+    French l10n: fixed typo
+
+commit d3afa3912f23c6bf513650d6f47c25c9f288dc39
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Mar 13 19:45:33 2010 +0100
+
+    Updated Swedish translation by Daniel Nylander
+
+commit cda4e6df4a00396893d9a817796175885567e7e8
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Mar 7 17:39:50 2010 +0200
+
+    Qt4: bookmarks: don't give an anonymous temporary object to qtu
+    
+    There may be similar bugs in other places
+    (cherry picked from commit c83ddc49d39f35257dd27cbfbf835350f9bb6d84)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c40f79caa3cd3c846df2cd0503d83d03073e04fd
+Author: Ricardo Pérez López <ricardo@ubuntu.com>
+Date:   Mon Mar 8 21:27:41 2010 +0200
+
+    .desktop Spanish translation
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 3a9a03f9e583e1feb3e054f7291071d76118273d)
+
+commit a2fe2d868ae1026619167a210183f5b20880de7a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Mar 8 21:26:27 2010 +0200
+
+    Cosmetic
+    
+    (cherry picked from commit b5f299eebb6b61600225edd8bb2ec79a93f42bf4)
+
+commit dc0a9675b5b45ff4a825e85fb10710e51b828359
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Mar 7 20:41:39 2010 +0200
+
+    MSN: fix assertion (fixes #2930)
+    
+    (cherry picked from commit 438bc9c60012609fc2872235709950c219f49b7b)
+    
+    Conflicts:
+    
+    	modules/misc/notify/msn.c
+
+commit 3d030141035e54bf1ecf592d7057a48ff0f08722
+Author: airplanez <airplanez@gmail.com>
+Date:   Sat Mar 6 23:23:43 2010 +0000
+
+    l10n: Korean update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 9c17f3f360b41dda9f0d80c01a312bd3c1c2a6a0
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Sat Mar 6 23:21:13 2010 +0000
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit f19803e07c459e0f5730a3d8bade6c431f334f35
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Mar 2 21:30:08 2010 +0200
+
+    XSPF: fix NULL dereference on empty <location>
+    
+    (cherry picked from commit 8902488ba529c0cf4c903a8a84ff20b5737cc753)
+
+commit 9c3e768de8e22e8bf1a2f221d9ae3c2ce4b6dc4e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Mar 2 21:17:15 2010 +0200
+
+    Typo, use after free (fixes: #3372)
+    
+    Regression from 4343976eae1037397ea9f6df61f86e2983344fa3
+
+commit b2aafe0f436262a26e862e68b6539c45be9157f6
+Author: Jakob Leben <jakob.leben@gmail.com>
+Date:   Tue Mar 2 18:24:36 2010 +0100
+
+    Playlist: fix faulty duration sorting due to integer overflow
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 22ef8877c1a7df6a034febb2775be09a9a424bbf
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Wed Feb 10 23:31:56 2010 +0000
+
+    RTMP: Don't trust the length given by the stream
+    
+    and fix a null-dereference
+    
+    Test url: rtmp://cp31335.live.edgefcs.net/live/ (no longer crash but doesn't work)
+    (cherry picked from commit d7474341857cf8482e3037648afbe4831590fa8e)
+
+commit 4eae7755498cc56d56b5703907717054cbe805e3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Feb 28 18:53:52 2010 +0200
+
+    FTP: handle ftp://HOST correctly
+    
+    This should fix LP#465560 - segmentation fault in strstr()
+    (cherry picked from commit 7056f7113ecf94d1a87a0ee22840f25537ff66ab)
+
+commit 40728fede4f8e15c10a142e4c4efff8f218e059c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Feb 25 18:49:24 2010 +0200
+
+    Distribute and install the CUE parser
+    
+    (cherry picked from commit 960f708ef919a822db9664052a855ea515338873)
+    
+    Conflicts:
+    
+    	share/Makefile.am
+
+commit 7d1f9bab6d4e62b84c49df355c339f84fb02746d
+Author: Mihkel <turakas@gmail.com>
+Date:   Tue Feb 23 23:01:10 2010 +0000
+
+    l10n: Estonian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 7c7d3ea606709f3778ba493e12d6f5a29c3ba30e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Feb 21 21:32:21 2010 +0200
+
+    ParseExecute: robustify and cleanup
+    
+    This should fix LP#525278.
+    (cherry picked from commit 56bdcd25b9641c953067a14baf70cea7d346173b)
+    
+    Conflicts:
+    
+    	modules/control/http/http.c
+
+commit 6c7b7c4ea4e0161a197ad0ec897fef582be39b52
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Feb 21 11:19:17 2010 +0200
+
+    UIs: call XInitThreads if using X11
+    
+    This is needed to protect the Xlib internal state. Xlib may still be
+    used by user interface thread, the GLX video output thread(s) and
+    PulseAudio -audio thread- while it initializes.
+    
+    Fortunately, we do not need to lock X11 displays as every thread uses
+    its own. Hopefully Xlib is not buggy in that respect, but I am not so
+    sure :(
+    
+    This should fix LP #419915.
+    (cherry picked from commit e056b5805aabed93d484dd92131463b760261b89)
+    
+    Conflicts:
+    
+    	modules/gui/hildon/maemo.c
+    	modules/gui/qt4/qt4.cpp
+
+commit 930e120f2314d8c756701c29858ce9f4a9f35c1b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Feb 17 18:58:56 2010 +0200
+
+    Missing initializer
+    (cherry picked from commit 5c89f557dd29eb3d2c268edbd29ec718de989e12)
+
+commit 34c0e337fd5ebf79d505ef94168092909fe7da3c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Feb 17 18:42:08 2010 +0200
+
+    RTP out: fix race condition in SDP generation from RTSP DESCRIBE
+    
+    (cherry picked from commit b8ef158dad5705cd3aa74c5b703c8d6c2a128bc3)
+    
+    Conflicts:
+    
+    	modules/stream_out/rtp.c
+    	modules/stream_out/rtp.h
+
+commit b1c7b746f2a58e44828a5696a395863f9e390446
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Feb 16 22:57:54 2010 +0100
+
+    contribs: updated contrib package for Mac OS X including the recent x264, libdvdcss and ffmpeg changes
+
+commit 51a43d7af073b3356585e21754e1e0d57cb51010
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Tue Feb 16 19:56:23 2010 +0000
+
+    l10n: Japanese translation for .desktop
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 18c97a5b0d36c3d63a70a61c24518d7e2fcf6e71
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Tue Feb 16 19:57:22 2010 +0000
+
+    l10n: Japanese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit f3475186fe529e90e7a14f6b21be0fa6abc4fde2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Feb 14 23:56:34 2010 +0200
+
+    fr: improve translation of "dump"
+
+commit 34447939f2afc254c1262e1573842dcda7243d3f
+Author: Jakob Leben <jleben@videolan.org>
+Date:   Sat Feb 13 10:49:32 2010 +0100
+
+    Qt: fix deleting playlist items by key press
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a48ef7665d5551c8a370c803a828157ace1eafb9
+Author: H.Shalitha Vikum <HSVIKUM@sinhalaya.com>
+Date:   Sat Feb 6 14:41:12 2010 +0000
+
+    l10n: Initial Sinhala translation
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 60cfca44da3c4b9ab7d6d97cf25f9e3e510f321e
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Feb 4 16:22:26 2010 +0100
+
+    contribs: updated binary package with proper libass
+
+commit 4343976eae1037397ea9f6df61f86e2983344fa3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Feb 2 21:48:49 2010 +0200
+
+    XSPF export: XML-encode the location
+
+commit 11f457ee8030276daeb8ec6af1855cf1c0ff9ab7
+Author: David González <pico.dev@gmail.com>
+Date:   Tue Feb 2 22:13:59 2010 +0000
+
+    l10n: Spanish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit cedc72998d1dfa7a29faac418ccb599604bc5c03
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Sun Jan 31 16:30:48 2010 +0000
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit c2f3eeff223278a3f986512a7fd418eebbf38252
+Author: airplanez <airplanez@gmail.com>
+Date:   Sun Jan 31 16:27:47 2010 +0000
+
+    l10n: Korean update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 06ac36b17e079e4e502d8887961ea0eced193d3e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 31 14:39:52 2010 +0100
+
+    Fix typo copy-pasting
+
+commit e97dba5ecd702ffb3cb411ed7b2d8ddccc4981c1
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 31 14:31:10 2010 +0100
+
+    On the road again to 1.0.6
+
+commit 4d83d7d5092c110d66259ec42cdf8f86979cdf04
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Jan 31 00:44:51 2010 +0100
+
+    contribs: use package 23 for the 1.0.5 release on OS X
+
+commit adf7726e1c2137ad9faf9d6afd9d973ba65b07f9
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Fri Jan 29 00:23:47 2010 +0100
+
+    rtp sout: fix DCCP socket leak
+    
+    We need to actually delete the sinks for incoming connections...
+    (cherry picked from commit 4c04f0b498d66494e976b3d6d2069ce0614b1015)
+    
+    Conflicts:
+    
+    	modules/stream_out/rtp.c
+
+commit a43621954070403bda6c2751d814cd1a0de73cd4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jan 28 17:58:30 2010 +0100
+
+    Update Po
+
+commit ca7c743fa6a7b8a290c8cc25b49ddb30e4dc92e8
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Jan 28 03:27:05 2010 +0100
+
+    rtp sout: build fix
+
+commit 5ac77083f50cdd1bed3d8fa7b4c2bf32cd9b2f45
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Jan 28 01:59:43 2010 +0100
+
+    rtp sout: fix another race condition in RTSP
+    
+    When RTSP is shut down, the server destroys sessions (with no locking)
+    while clients are still able to concurrently access them, potentially
+    leading to a crash. Make sure we unregister the RTSP URL before
+    cleaning up (then indeed no locking is needed).
+    (cherry picked from commit 69ec164abb756871a3b7421493d28da1288a6bad)
+
+commit 2958da23068e1fd766279d848a5493408c577538
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Jan 28 00:55:00 2010 +0100
+
+    rtp sout: fix race condition in RTSP
+    
+    When an ES is removed, it is possible to set up a track that won't be
+    cleaned up and will remain dangling, causing a crash later. Make sure
+    we unregister the RTSP URL before cleaning up.
+    (cherry picked from commit 1dc6a868e2fc711565160e0fa5889d1ebda9cf27)
+
+commit 957742b701bf07b1376870b9f12349956abff2c8
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Wed Jan 27 20:35:21 2010 +0000
+
+    Activate Nynorsk on Win32 and MacOS
+
+commit c0008e2d55b605fb72348dc3821d1da6c8b11e47
+Author: Eirik U. Birkeland <eirbir@gmail.com>
+Date:   Wed Jan 27 20:25:57 2010 +0000
+
+    l10n: Norwegian Nynorsk update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit b3dcfec0f04e5dbd94695809e2b9d02f18754444
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Jan 27 18:44:33 2010 +0100
+
+    rtp sout: fix socket leak
+    
+    RTCP sockets of RTSP sessions are not closed when the input is stopped.
+    (cherry picked from commit 0a60c851ed9b94975be82050d94d1af42ff763d1)
+
+commit 628ea8a2fee44c7f8616f438180e6d5e200c84b8
+Author: Mindaugas Baranauskas <embar@users.berlios.de>
+Date:   Tue Jan 26 22:27:21 2010 +0000
+
+    l10n: very small Lithuanian translation update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit d89f27e042170508c7741dfc3c3db02d80c10f1e
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Jan 26 20:37:31 2010 +0000
+
+    New release signing key. Take 2.
+    
+    pub   1024D/7144D485 2010-01-26 [expires: 2011-01-26]
+          Key fingerprint = 5C3C 8244 E40E BB95 86FD  92B5 7772 A59D 7144 D485
+    uid                  VideoLAN Release Signing Key (2010)
+    (cherry picked from commit cb9ee6880e56f1727d20d858a3b5e5ae3e6e6809)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 9e645481698c076bdbb2c808c5652762ec294049
+Author: Alexis Ballier <aballier@gentoo.org>
+Date:   Mon Jan 25 22:42:31 2010 +0100
+
+    Fix segfault when freetype-yuvp is set to 1 in vlcrc.
+    
+    Allocate a palette for the format/region and reuse it. subpicture_region_Delete should take care of freeing it, but please someone double checks this to be sure.
+    
+    Reported by: Alexander Stein
+    References: https://bugs.gentoo.org/show_bug.cgi?id=300406
+    (cherry picked from commit a99b43de32abc4aa1d9cf9e046b6ba6753dd2fc1)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f49dd4c42975b38086b7cb3d7f707b77fc6eaeff
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Jan 24 21:09:26 2010 +0000
+
+    2010 VideoLAN signing key.
+    
+    pub   4096R/E79997B5 2010-01-24 [expires: 2011-01-24]
+          Key fingerprint = 8B41 4B3D 9A40 7A79 23AC  6B1E 13E9 5EDB E799 97B5
+    uid                  VideoLAN Release Signing Key (2010)
+    (cherry picked from commit a466be03998b9b25da77b35c0a9ba717006ce40a)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit f1dfea487207e0d74b6a23979dfdfc391765996d
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 24 22:24:39 2010 +0100
+
+    NEWS about 1.0.5 and Version set to 1.0.5
+
+commit a6ee6ff5a17ec638c3172791ed8617449a29d1ba
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 24 13:15:04 2010 +0200
+
+    Fix up previous typos in PO files
+
+commit 33c44c0045f839246a3e06f265a813ce2d488c0f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 24 13:07:55 2010 +0200
+
+    Missing white spaces
+    
+    (cherry picked from commit dbdbf98ea70bf6b1b257f6be21e8d283780ee67b)
+
+commit a00c5b9d71973a06bdd0a43864f9f9b154920f60
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 24 12:31:47 2010 +0200
+
+    test_block requires threads lib too
+    
+    (cherry picked from commit ec7e1f822910742d3fd221e6b4d26b3d394c0a25)
+    
+    Conflicts:
+    
+    	src/test/Makefile.am
+
+commit cd5bf114d570edfb4378e427e84c3fcf9441c39a
+Author: Matej Urbančič <matej.urban@gmail.com>
+Date:   Sat Jan 23 20:35:39 2010 +0000
+
+    l10n: Slovenian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 80714c39b7edcc734932091577fe7cdc694b5815
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Jan 23 21:25:38 2010 +0100
+
+    Workaround for demuxers seeking with a negative position.
+    
+    It happens on broken files with demuxers that do not check for overflows.
+
+commit 9103890a917ecce92be7355a23ff54f9a9b796e5
+Author: Sidney Doria <sidney@dsc.ufcg.edu.br>
+Date:   Sat Jan 23 19:14:25 2010 +0000
+
+    l10n: Brazilian Portuguese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 93e85a884910a2666a8de2df4e83f1bc91563476
+Author: Eirik U. Birkeland <eirbir@gmail.com>
+Date:   Sat Jan 23 19:02:37 2010 +0000
+
+    l10n: Norwegian Nynorsk update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 44f32c776da5e4e3e071e3adaf388d16946da9fa
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Jan 20 19:02:28 2010 +0100
+
+    live555: remove broken obsolete work-around
+    
+    This can't be useful anymore, otherwise connections would always
+    fail... and it was preventing VLC from prompting the user for
+    authentication credentials (untested).
+    (cherry picked from commit 403cd9fb823efca711d6313585dd07347aefb9da)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit b59e927eecab2ca135c268234df5914e175d59b7
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon Jan 18 20:26:49 2010 +0100
+
+    live555: fix typo in comment
+    (cherry picked from commit 0c6e1732609327e9819c43cad2541271f9d2a19a)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit c658af28ee715789126223f040e69ecaefe2b9ee
+Author: Cristian Secară <orice@secarica.ro>
+Date:   Sat Jan 23 16:56:06 2010 +0200
+
+    Romanian translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit fa866959ef32755cf5a382ac6e9c82096c00b270
+Author: Niels Fanøe <niels.f@noee.dk>
+Date:   Fri Jan 22 23:13:05 2010 +0000
+
+    l10n: Danish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 9a9ca6b8544a2217a8c91a5a11731c29619efba2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jan 21 20:12:59 2010 +0200
+
+    VLC needs pthread
+    
+    (cherry picked from commit 1f673a2a4866dfd5a0ff68adc9fddb772fa73ca6)
+
+commit ca38641253ae826a471e5b49d50707b2db9cc031
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jan 21 20:11:09 2010 +0200
+
+    vlc needs libvlccore for FromLocale()
+    
+    (cherry picked from commit abf060c1ccc54e78156c496e598dd17296cbf368)
+
+commit f08e26a4c0685696da8f14b964cc3920e608575a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jan 20 18:36:21 2010 +0200
+
+    Win32: fix sockets leak
+    
+    (cherry picked from commit 15569018d349a41cf9b9362918e196e08cbd95a2)
+    
+    Conflicts:
+    
+    	src/misc/objects.c
+
+commit 87359f333d925d1c7ba06e983353337bc7c37be6
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Jan 19 22:32:56 2010 +0000
+
+    Fix vi.po headers
+
+commit ab7801951bf8f1135f62091702f18bddf9834814
+Author: Goce Manevski <Goce92@live.com>
+Date:   Tue Jan 19 21:35:10 2010 +0000
+
+    l10n: Initial Macedonian translation
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 90643bc5bb36fc6b473cba0cb544c24d7d544788
+Author: anh phan <ppanhh@gmail.com>
+Date:   Tue Jan 19 21:26:27 2010 +0000
+
+    l10n: Vietnamese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit baa80c3879ab617a572617e00a302d072394224e
+Author: Tero Pelander <tpeland@tkukoulu.fi>
+Date:   Tue Jan 19 18:30:17 2010 +0200
+
+    Finnish translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit a60c7f40737eef31ddd4533f424c44b78141650c
+Author: Roustam Ghizdatov <rustahm@gmail.com>
+Date:   Sun Jan 17 19:31:56 2010 +0000
+
+    l10n: Russian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 9682204d7bd83635c799e0e20287599b53650fb6
+Author: Marián Hikaník <podnety@mojepreklady.net>
+Date:   Sun Jan 17 19:27:12 2010 +0000
+
+    l10n: Slovak update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 7bfc09431b6cc76bc9a54f3cb9d2de022d1f8b9d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 17 21:27:08 2010 +0200
+
+    Qt4: don't show unsaveable playlist-enqueue option in the simple prefs
+    
+    This is silly. This option cannot be set from the configuration, so it
+    does not beling in the preferences.
+    (cherry picked from commit f2564c1124551c1e05098c9c756e17c0a83846b6)
+    
+    Conflicts:
+    
+    	modules/gui/qt4/components/simple_preferences.cpp
+
+commit f29e4444ad9234f8887f50814fb43089e95f0bce
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Sun Jan 17 12:44:10 2010 +0100
+
+    svg: fix possible NULL dereference.
+    (cherry picked from commit 8bee22608a8459b2373edd1abb7f0049f7a73374)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 21f3fd543139737129d57df9eaa26bc8ed67f963
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Jan 14 09:30:08 2010 +0100
+
+    qt4: build fix
+    (cherry picked from commit 9bec486d7355d63ffbdba50570b73383cc364175)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6d395cc8656254020d1c33ca8a39bafbd71f8268
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Jan 12 00:30:18 2010 +0100
+
+    Qt: Compile fix for gcc 4.5
+    (cherry picked from commit 4812448c8665707559b81c11ca6c15cd3628a0d4)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 09b364adaa692e7a79638d0e25e3de5116781122
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jan 14 18:53:22 2010 +0200
+
+    HTTP: zlib only supports deflate and gzip
+    
+    Don't try to handle other codings with it. As of today, IANA lists
+    compress, exi and pack200-gzip as other legal values.
+    (cherry picked from commit aceca996f66ad1269633fa38371c8f11d82f12a9)
+
+commit 9bdc55ca22745fd6842e2ec07d73efeb9b189249
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jan 14 01:44:24 2010 +0100
+
+    Mention new translation in NEWS
+
+commit 2346a43d146923486f6bdba8055ffc7c42f30323
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Mon Jan 11 21:36:43 2010 +0100
+
+    Added support for \N \n and \h in subtitles.
+    (cherry picked from commit 5fd8aa306ebd4ebaf6a8678d4dd8c6dcd79d31d9)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 826ddbe410aafb8ef0a674ea0b93f02e2c77fe73
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jan 14 01:38:32 2010 +0100
+
+    Integrate .tta in interface and installer
+
+commit 277c61c394262eac36218d000a303d77ad91403e
+Author: Grigori Goronzy <greg@chown.ath.cx>
+Date:   Tue Jan 12 01:29:54 2010 +0100
+
+    libass: avoid crash on ASS_Images which have width or height == 0
+    (cherry picked from commit 1a974cea523b6fcc055f4bb35e66c9fbcd3a713d)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1c22dc21bd4b583d70cc0ea6c10a5d85735a6815
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Jan 10 22:38:03 2010 +0000
+
+    l10n: Initial Malayalam translation
+
+commit cf7b9330d250ad98f59682120b6c0c55628bcd9f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jan 9 20:01:08 2010 +0200
+
+    Mark --sub-file option safe - should fix #3224
+    
+    (cherry picked from commit d6d69ae15bc3446871ea400e9dce3e7f03d27270)
+
+commit 45cd7fd58ef554f5fd8ae06341fab3319c51eab4
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Jan 10 01:10:17 2010 +0000
+
+    Wrap to 80 chars
+    
+    And allow to run make dist-check
+    
+    And test buildbot hook
+
+commit 01619fbe2a702380c430b2b41d1eadcc76bb27cd
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 10 00:17:23 2010 +0100
+
+    Qt: fix a sticking slider issue.
+    
+    Manual backport of the idea of d14bb18c4a794844b52c746a02b721f852855ccb
+    In fact, that should fix #2889 and #3105
+
+commit 12ff7d656c4be63d13e2642a852e1975bb1415b8
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jan 9 16:28:50 2010 +0100
+
+    NEWS: correctly synchronise the whole file with master
+
+commit a0304ab293486081d9ffa239d2293f0e45bdf009
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jan 9 16:15:10 2010 +0100
+
+    NEWS: Be consistent on naming of languages
+
+commit b5a3ce25d240ac66d66e59a6a962551f2c45b41f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jan 9 16:10:03 2010 +0100
+
+    More NEWS about 1.0.5
+
+commit 3add9f6cc1914066d2c5985a97ef59e96bec18cc
+Author: Paul Corke <paul.corke@datatote.co.uk>
+Date:   Thu Dec 17 17:30:18 2009 +0000
+
+    Fix compilation under MinGW/MSYS on WinXP Remove an error about a missing symbol WSA_QOS_EUNKNOWNPSOBJ
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit c192372d70547e81c4da314e9b4e5ad887c9985a)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 945231f4b4d884b55b83ec8996992abb2f328e15
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jan 9 13:57:17 2010 +0100
+
+    Win32: be compatible with GCC version bigger than 4.x
+    (cherry picked from commit e68c09ae281ec4f58354a56183c43867654d96fd)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 96e676d19031839a47032747f296e7c5c98c9ca2
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Dec 28 01:02:14 2009 +0100
+
+    Support for mingw32 gcc 4.4.0
+    
+    This is meant to fix the *printf format strings.
+    This is compatible with mingw 4.2.1 and 4.3.0
+    I haven't find a better place where to put this code...
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    Cherry-picked manually from bdfe782fe0a349b45e155140662eecadc9e8eaa3
+
+commit c9eb9929c8c3b8ae5738b1339ada35326098d36e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 31 00:42:33 2009 +0100
+
+    Subtitles: hide {Y:xxx } like tags
+    (cherry picked from commit 6c9ba4dcbca107db0063dc6720819ca31e8760f7)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bd2ab71a340d84f30d2387e41a7800c60346d738
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jan 4 23:36:25 2010 +0100
+
+    Mono is an audio filter, put it in the SUBCAT_AUDIO_AFILTER cat
+    (cherry picked from commit 6523ce4ac3ef5ef21d22a72619d5cc7d6b439e1c)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8fe64d126afe4b64a5c67fa164113352248890ff
+Author: Sidney Doria <ssdoria@gmail.com>
+Date:   Sat Jan 9 12:45:16 2010 +0000
+
+    l10n: Brazilian Portuguese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 592b2332126d5acc8f6a5b2fc67c2ddcd4babf9b
+Author: Mindaugas Baranauskas <embar@super.lt>
+Date:   Sat Jan 9 12:32:58 2010 +0000
+
+    l10n: Lithuanian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 246e45f7e9324a57c857ad4331eb5e4e598dab5d
+Author: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Date:   Mon Jun 8 18:05:29 2009 +0200
+
+    JACK input support for jack2
+    
+    When you try to capture from JACK, this is only possible with the
+    "oldstyle" jackd-0.x. If you want to use the newer, SMP-capable jack2,
+    the VLC inputs cannot be connected:
+    
+    Cannot connect ports owned by inactive clients: "vlc-input-26611" is not
+    active
+    Cannot connect ports owned by inactive clients: "vlc-input-26611" is not
+    active
+    
+    Unlike jack1, jack2 expects the process callback function to return 0.
+    
+    The attached patch fixes this problem. It's been already fixed the same
+    way in the jack output plugin (see modules/audio_output/jack.c:290).
+    
+    Taken from Debian bug #532339
+    (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=532339)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+    (cherry picked from commit 59113a3ae815ce6c1599d058170624ed1519397b)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit d09092c061a6bc57d4d4911b2297996b11a5e76f
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Mon Jan 4 20:57:33 2010 +0000
+
+    Happy new year
+    
+    Tweaked cherry-pick of a3a7708c78cd3e008d8d21f9301c0d5a31a3e286
+
+commit 95ac4eb1d2ec30315182686fdb5240a1242e43fb
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Fri Jan 8 19:26:20 2010 +0000
+
+    Typo
+    (cherry picked from commit 7016eda04d895cbd6cd9fafcb2f7b61339334bfe)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 6d5c3bad57ed507de286e183b8915205e800c6d9
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Fri Jan 8 23:34:56 2010 +0000
+
+    It's no longer 1.0.4
+
+commit da4b11f2a422e2d3b8be3af653c5c7414f24ad78
+Author: Cristian Secara <cristi@secarica.ro>
+Date:   Fri Jan 8 23:32:36 2010 +0000
+
+    l10n: Romanian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 388ab4b0509b2540f9704a04b6f13b724a97bb56
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Sat Jan 2 23:34:52 2010 +0100
+
+    l10n: Japanese update (100%)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit eecd03c3e2378f9237e1290be66412b7039e1ee4
+Author: Oleksandr Natalenko <pfactum@gmail.com>
+Date:   Sat Jan 2 23:28:02 2010 +0100
+
+    l10n: Ukrainian update (100%)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 10b967c023da50b116d6539cf55453508d01411a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jan 2 00:05:58 2010 +0100
+
+    Qt: Fix audio options in SPref
+    
+    Directx device. Manual backport of bc8ee31f30c51821529af6403e7929f2df2f5487

@@ -2,7 +2,7 @@
 * maemo.c : Maemo plugin for VLC
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id: 4d2234c2cf232d6dea11f58730ebb6fa3727d15d $
+* $Id: 30f6a4ebbba426185570322f75426a02621d0000 $
 *
 * Authors: Antoine Lejeune <phytos@videolan.org>
 *
@@ -80,6 +80,9 @@ vlc_module_end();
 static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
+
+    if( !XInitThreads() )
+        return VLC_EGENERIC;
 
     /* Allocate instance and initialize some members */
     p_intf->p_sys = malloc( sizeof( intf_sys_t ) );

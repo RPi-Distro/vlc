@@ -2,7 +2,7 @@
  * msn.c : msn title plugin
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: f177f1d0fd8e97e65aa9052db8744c3f381b5ebf $
+ * $Id: 8ba75ec90969b402456a13eeafd9ffb93237357d $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -162,7 +162,7 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     if( !psz_artist ) psz_artist = strdup( "" );
     if( !psz_album ) psz_album = strdup( "" );
 
-    psz_buf = str_format_meta( p_this, p_intf->p_sys->psz_format );
+    psz_buf = str_format_meta( p_intf, p_intf->p_sys->psz_format );
 
     snprintf( psz_tmp,
               MSN_MAX_LENGTH,

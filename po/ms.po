@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ms\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-01-28 17:44+0100\n"
+"POT-Creation-Date: 2010-04-21 19:32+0300\n"
 "PO-Revision-Date: 2009-05-24 22:14+0730\n"
 "Last-Translator: Mahrazi Mohd Kamal <mahrazi@gmail.com>\n"
 "Language-Team: Malay <ms@li.org>\n"
@@ -4538,7 +4538,7 @@ msgid "Downloading ..."
 msgstr "Muaturun ..."
 
 #: src/misc/update.c:1592 modules/access/dvb/scan.c:330
-#: modules/demux/avi/avi.c:705 modules/demux/avi/avi.c:2426
+#: modules/demux/avi/avi.c:706 modules/demux/avi/avi.c:2426
 #: modules/gui/beos/InterfaceWindow.cpp:161 modules/gui/macosx/bookmarks.m:102
 #: modules/gui/macosx/controls.m:84 modules/gui/macosx/coredialogs.m:66
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
@@ -8495,7 +8495,7 @@ msgstr "Pengenal portaudio untuk peranti output"
 msgid "PORTAUDIO audio output"
 msgstr "Output audio PORTAUUDIO"
 
-#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
+#: modules/audio_output/pulse.c:64 modules/gui/macosx/intf.m:589
 #: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1971
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:943
@@ -8510,7 +8510,7 @@ msgstr "Output audio PORTAUUDIO"
 msgid "VLC media player"
 msgstr "Pemain media VLC"
 
-#: modules/audio_output/pulse.c:99
+#: modules/audio_output/pulse.c:102
 msgid "Pulseaudio audio output"
 msgstr "Output audio pulseaudio"
 
@@ -9829,11 +9829,11 @@ msgstr "Packetizer audio PCM linear"
 msgid "Video decoder using openmash"
 msgstr "Dekoder video menggunakan openmash"
 
-#: modules/codec/mpeg_audio.c:113
+#: modules/codec/mpeg_audio.c:114
 msgid "MPEG audio layer I/II/III decoder"
 msgstr "Dekoder MPEG audio lapisan I/II/III"
 
-#: modules/codec/mpeg_audio.c:124
+#: modules/codec/mpeg_audio.c:125
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr "Packetizer MPEG audio lapisan I/II/III"
 
@@ -12278,11 +12278,11 @@ msgstr "Jangan baiki"
 msgid "AVI demuxer"
 msgstr "Demuxer AVI"
 
-#: modules/demux/avi/avi.c:701
+#: modules/demux/avi/avi.c:702
 msgid "AVI Index"
 msgstr "Indeks AVI"
 
-#: modules/demux/avi/avi.c:702
+#: modules/demux/avi/avi.c:703
 #, fuzzy
 msgid ""
 "This AVI file is broken. Seeking will not work correctly.\n"
@@ -12293,11 +12293,11 @@ msgstr ""
 "Fail AVI ini rosak. Mencari tidak akan berfungsi dengan betul.\n"
 "?Adalah anda ingin cuba membaikinya (ini akan mengambil masa yang panjang)?"
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Repair"
 msgstr "Baiki"
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Don't repair"
 msgstr "Jangan baiki"
 
@@ -17100,11 +17100,11 @@ msgstr "Pilih koden video anda. Klik satu untuk dapatkan maklumat lanjut."
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:131
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:132
 msgid "Click to toggle between loop one, loop all"
 msgstr ""
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:155
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:156
 #, fuzzy
 msgid "Show the current item"
 msgstr "Ulang item semasa"
@@ -20202,7 +20202,7 @@ msgstr "AltiVec memcpy"
 msgid "Growl Notification Plugin"
 msgstr "Plugin Pemberitahuan Growl"
 
-#: modules/misc/notify/growl.m:273
+#: modules/misc/notify/growl.m:272
 #, fuzzy
 msgid "Now playing"
 msgstr "Sekarang sedang dimainkan"

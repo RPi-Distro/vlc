@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 717f9d97b9ee24ea4dc4e58da3951c912277c5bb $
+ * $Id: ef7957c0fe1e0f037133d1e2c80977cf2213120d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -385,9 +385,16 @@ static int Demux( demux_t *p_demux )
         return 1;
     }
     const AVStream *p_stream = p_sys->ic->streams[pkt.stream_index];
+    if( p_stream->time_base.den <= 0 )
+    {
+        msg_Warn( p_demux, "Invalid time base for the stream %d", pkt.stream_index );
+        av_free_packet( &pkt );
+        return 1;
+    }
 
     if( ( p_frame = block_New( p_demux, pkt.size ) ) == NULL )
     {
+        av_free_packet( &pkt );
         return 0;
     }
 

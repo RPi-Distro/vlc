@@ -2,7 +2,7 @@
  * dts.c: parse DTS audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 9b4ac47f8d2a92ecf1fe9c414570e584a99bfa5a $
+ * $Id: f8f64eb123c49ec55074bc6aedaa3cf5f5271dea $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -108,7 +108,7 @@ static inline int SyncCode( const uint8_t * );
 static int  SyncInfo( const uint8_t *, bool *, unsigned int *, unsigned int *,
                       unsigned int *, unsigned int *, unsigned int * );
 
-static uint8_t       *GetOutBuffer ( decoder_t *, void ** );
+static uint8_t       *GetOutBuffer ( decoder_t *, void **, size_t * );
 static aout_buffer_t *GetAoutBuffer( decoder_t * );
 static block_t       *GetSoutBuffer( decoder_t * );
 
@@ -304,6 +304,8 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_SEND_DATA;
 
         case STATE_SEND_DATA:
+        {
+            size_t i_len;
             if( p_sys->b_dts_hd  )
             {
                 /* Ignore DTS-HD */
@@ -312,7 +314,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 break;
             }
 
-            if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer )) )
+            if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer, &i_len )) )
             {
                 //p_dec->b_error = true;
                 return NULL;
@@ -320,7 +322,8 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             /* Copy the whole frame into the buffer. When we reach this point
              * we already know we have enough data available. */
-            block_GetBytes( &p_sys->bytestream, p_buf, p_sys->i_frame_size );
+            block_GetBytes( &p_sys->bytestream,
+                            p_buf, __MIN( p_sys->i_frame_size, i_len ) );
 
             /* Make sure we don't reuse the same pts twice */
             if( p_sys->i_pts == p_sys->bytestream.p_block->i_pts )
@@ -332,6 +335,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             *pp_block = block_BytestreamPop( &p_sys->bytestream );
 
             return p_out_buffer;
+        }
         }
     }
 
@@ -354,7 +358,8 @@ static void CloseCommon( vlc_object_t *p_this )
 /*****************************************************************************
  * GetOutBuffer:
  *****************************************************************************/
-static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer )
+static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer,
+                              size_t *pi_len )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p_buf;
@@ -384,13 +389,25 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer )
     if( p_sys->b_packetizer )
     {
         block_t *p_sout_buffer = GetSoutBuffer( p_dec );
-        p_buf = p_sout_buffer ? p_sout_buffer->p_buffer : NULL;
+        if( p_sout_buffer )
+        {
+            p_buf = p_sout_buffer->p_buffer;
+            *pi_len = p_sout_buffer->i_buffer;
+        }
+        else
+            p_buf = NULL;
         *pp_out_buffer = p_sout_buffer;
     }
     else
     {
         aout_buffer_t *p_aout_buffer = GetAoutBuffer( p_dec );
-        p_buf = p_aout_buffer ? p_aout_buffer->p_buffer : NULL;
+        if( p_aout_buffer )
+        {
+            p_buf = p_aout_buffer->p_buffer;
+            *pi_len = p_aout_buffer->i_size;
+        }
+        else
+            p_buf = NULL;
         *pp_out_buffer = p_aout_buffer;
     }
 

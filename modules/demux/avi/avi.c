@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 47a97e4c57c9c35a2115f09e1dbebd326902a788 $
+ * $Id: 6d2e304efa9b95bfae173f7cfb15783c92feac44 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -131,9 +131,6 @@ typedef struct
 
     unsigned int    i_idxposc;  /* numero of chunk */
     unsigned int    i_idxposb;  /* byte in the current chunk */
-
-    /* extra information given to the decoder */
-    void            *p_extra;
 
     /* For VBR audio only */
     unsigned int    i_blockno;
@@ -427,7 +424,7 @@ static int Open( vlc_object_t * p_this )
 
                 fmt.i_extra = __MIN( p_auds->p_wf->cbSize,
                     p_auds->i_chunk_size - sizeof(WAVEFORMATEX) );
-                fmt.p_extra = tk->p_extra = malloc( fmt.i_extra );
+                fmt.p_extra = malloc( fmt.i_extra );
                 if( !fmt.p_extra ) goto error;
                 memcpy( fmt.p_extra, &p_auds->p_wf[1], fmt.i_extra );
 
@@ -483,7 +480,7 @@ static int Open( vlc_object_t * p_this )
                     uint8_t *p_out = malloc( i_headers_size );
                     if( !p_out ) goto error;
                     free( fmt.p_extra );
-                    fmt.p_extra = tk->p_extra = p_out;
+                    fmt.p_extra = p_out;
                     fmt.i_extra = i_headers_size;
                     #define copy_packet( len ) \
                         *p_out++ = len >> 8; \
@@ -567,7 +564,10 @@ static int Open( vlc_object_t * p_this )
                 fmt.i_extra =
                     __MIN( p_vids->p_bih->biSize - sizeof( BITMAPINFOHEADER ),
                            p_vids->i_chunk_size - sizeof(BITMAPINFOHEADER) );
-                fmt.p_extra = &p_vids->p_bih[1];
+                fmt.p_extra = malloc( fmt.i_extra );
+                if( !fmt.p_extra ) goto error;
+                memcpy( fmt.p_extra, &p_vids->p_bih[1], fmt.i_extra );
+
                 msg_Dbg( p_demux, "stream[%d] video(%4.4s) %"PRIu32"x%"PRIu32" %dbpp %ffps",
                          i, (char*)&p_vids->p_bih->biCompression,
                          (uint32_t)p_vids->p_bih->biWidth,
@@ -643,6 +643,7 @@ static int Open( vlc_object_t * p_this )
         if( tk->p_out_muxed == NULL )
             tk->p_es = es_out_Add( p_demux->out, &fmt );
         TAB_APPEND( p_sys->i_track, p_sys->track, tk );
+        es_format_Clean( &fmt );
     }
 
     if( p_sys->i_track <= 0 )
@@ -795,7 +796,6 @@ static void Close ( vlc_object_t * p_this )
             if( p_sys->track[i]->p_out_muxed )
                 stream_Delete( p_sys->track[i]->p_out_muxed );
             free( p_sys->track[i]->p_index );
-            free( p_sys->track[i]->p_extra );
             free( p_sys->track[i] );
         }
     }
@@ -2269,12 +2269,11 @@ static void __Parse_indx( demux_t    *p_demux,
 {
     demux_sys_t         *p_sys    = p_demux->p_sys;
     avi_entry_t     index;
-    int32_t             i;
 
     msg_Dbg( p_demux, "loading subindex(0x%x) %d entries", p_indx->i_indextype, p_indx->i_entriesinuse );
     if( p_indx->i_indexsubtype == 0 )
     {
-        for( i = 0; i < p_indx->i_entriesinuse; i++ )
+        for( unsigned i = 0; i < p_indx->i_entriesinuse; i++ )
         {
             index.i_id      = p_indx->i_id;
             index.i_flags   = p_indx->idx.std[i].i_size & 0x80000000 ? 0 : AVIIF_KEYFRAME;
@@ -2286,7 +2285,7 @@ static void __Parse_indx( demux_t    *p_demux,
     }
     else if( p_indx->i_indexsubtype == AVI_INDEX_2FIELD )
     {
-        for( i = 0; i < p_indx->i_entriesinuse; i++ )
+        for( unsigned i = 0; i < p_indx->i_entriesinuse; i++ )
         {
             index.i_id      = p_indx->i_id;
             index.i_flags   = p_indx->idx.field[i].i_size & 0x80000000 ? 0 : AVIIF_KEYFRAME;
@@ -2306,7 +2305,6 @@ static void AVI_IndexLoad_indx( demux_t *p_demux )
 {
     demux_sys_t         *p_sys = p_demux->p_sys;
     unsigned int        i_stream;
-    int32_t             i;
 
     avi_chunk_list_t    *p_riff;
     avi_chunk_list_t    *p_hdrl;
@@ -2337,14 +2335,16 @@ static void AVI_IndexLoad_indx( demux_t *p_demux )
         else if( p_indx->i_indextype == AVI_INDEX_OF_INDEXES )
         {
             avi_chunk_t    ck_sub;
-            for( i = 0; i < p_indx->i_entriesinuse; i++ )
+            for( unsigned i = 0; i < p_indx->i_entriesinuse; i++ )
             {
                 if( stream_Seek( p_demux->s, p_indx->idx.super[i].i_offset )||
                     AVI_ChunkRead( p_demux->s, &ck_sub, NULL  ) )
                 {
                     break;
                 }
-                __Parse_indx( p_demux, i_stream, &ck_sub.indx );
+                if( ck_sub.indx.i_indextype == AVI_INDEX_OF_CHUNKS )
+                    __Parse_indx( p_demux, i_stream, &ck_sub.indx );
+                AVI_ChunkFree( p_demux->s, &ck_sub );
             }
         }
         else

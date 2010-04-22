@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc-translate\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-01-28 17:44+0100\n"
+"POT-Creation-Date: 2010-04-21 19:32+0300\n"
 "PO-Revision-Date: 2006-02-24 06:09+0000\n"
 "Last-Translator: viyyer <viyyer@sarai.net>\n"
 "Language-Team: Hindi\n"
@@ -4242,7 +4242,7 @@ msgid "Downloading ..."
 msgstr ""
 
 #: src/misc/update.c:1592 modules/access/dvb/scan.c:330
-#: modules/demux/avi/avi.c:705 modules/demux/avi/avi.c:2426
+#: modules/demux/avi/avi.c:706 modules/demux/avi/avi.c:2426
 #: modules/gui/beos/InterfaceWindow.cpp:161 modules/gui/macosx/bookmarks.m:102
 #: modules/gui/macosx/controls.m:84 modules/gui/macosx/coredialogs.m:66
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
@@ -8101,7 +8101,7 @@ msgstr ""
 msgid "PORTAUDIO audio output"
 msgstr ""
 
-#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
+#: modules/audio_output/pulse.c:64 modules/gui/macosx/intf.m:589
 #: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1971
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:943
@@ -8116,7 +8116,7 @@ msgstr ""
 msgid "VLC media player"
 msgstr ""
 
-#: modules/audio_output/pulse.c:99
+#: modules/audio_output/pulse.c:102
 #, fuzzy
 msgid "Pulseaudio audio output"
 msgstr "ऑडियो फिल्टेर"
@@ -9411,11 +9411,11 @@ msgstr ""
 msgid "Video decoder using openmash"
 msgstr ""
 
-#: modules/codec/mpeg_audio.c:113
+#: modules/codec/mpeg_audio.c:114
 msgid "MPEG audio layer I/II/III decoder"
 msgstr ""
 
-#: modules/codec/mpeg_audio.c:124
+#: modules/codec/mpeg_audio.c:125
 msgid "MPEG audio layer I/II/III packetizer"
 msgstr ""
 
@@ -11735,11 +11735,11 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:701
+#: modules/demux/avi/avi.c:702
 msgid "AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:702
+#: modules/demux/avi/avi.c:703
 msgid ""
 "This AVI file is broken. Seeking will not work correctly.\n"
 "Do you want to try to fix it?\n"
@@ -11747,11 +11747,11 @@ msgid ""
 "This might take a long time."
 msgstr ""
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Repair"
 msgstr ""
 
-#: modules/demux/avi/avi.c:705
+#: modules/demux/avi/avi.c:706
 msgid "Don't repair"
 msgstr ""
 
@@ -16507,11 +16507,11 @@ msgstr ""
 msgid "URI"
 msgstr "यूआरएल"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:131
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:132
 msgid "Click to toggle between loop one, loop all"
 msgstr ""
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:155
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:156
 #, fuzzy
 msgid "Show the current item"
 msgstr "ऑडियो फिल्टेर"
@@ -19756,7 +19756,7 @@ msgstr ""
 msgid "Growl Notification Plugin"
 msgstr ""
 
-#: modules/misc/notify/growl.m:273
+#: modules/misc/notify/growl.m:272
 #, fuzzy
 msgid "Now playing"
 msgstr "अभि बज"

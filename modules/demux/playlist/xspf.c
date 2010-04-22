@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist import functions
  *******************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 007b966928a8924d9647b492dab59ce92c0d8704 $
+ * $Id: 4da4befd802771c03ae9c28da534802f04e72b69 $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -555,6 +555,9 @@ static bool parse_track_node COMPLEX_INTERFACE
                 /* special case: location */
                 if( !strcmp( p_handler->name, "location" ) )
                 {
+                    if( psz_value == NULL )
+                        input_item_SetURI( p_new_input, "vlc://nop" );
+                    else
                     /* FIXME: This is broken. Scheme-relative (//...) locations
                      * and anchors (#...) are not resolved correctly. Also,
                      * host-relative (/...) and directory-relative locations

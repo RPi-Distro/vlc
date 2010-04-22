@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: e5101880fa115e40139e107211f377624257cc40 $
+ * $Id: 6fb4e8225b9330a40269c00e65719d45bb1f09e1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -635,7 +635,7 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
         mkv_track_t *p_tk = tracks[i_track];
         es_format_t *p_fmt = &p_tk->fmt;
 
-        if( tracks[i_track]->fmt.i_cat == UNKNOWN_ES )
+        if( p_fmt->i_cat == UNKNOWN_ES || !p_tk->psz_codec )
         {
             msg_Warn( &sys.demuxer, "invalid track[%d, n=%d]", (int)i_track, tracks[i_track]->i_number );
             tracks[i_track]->p_es = NULL;

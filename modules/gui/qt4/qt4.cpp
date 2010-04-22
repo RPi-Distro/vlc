@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 25978af096d6276f8a006dc8c113b4f7555f39b6 $
+ * $Id: 2793f5e36b05cf091c0b003822709797e7ff6190 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -273,6 +273,8 @@ static int Open( vlc_object_t *p_this )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
 #ifdef Q_WS_X11
+    if( !XInitThreads() )
+        return VLC_EGENERIC;
     char *psz_display = var_CreateGetNonEmptyString( p_intf, "x11-display" );
     Display *p_display = XOpenDisplay( psz_display );
     free( psz_display );

@@ -2,7 +2,7 @@
  * libasf.c : asf stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 2b719990dec53415a6e7cbec2d0afa48d79ecf1d $
+ * $Id: 4ffabcba06ffdeddf7786e27f6b0a0e8a2774075 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -319,7 +319,7 @@ static int ASF_ReadObject_Index( stream_t *s, asf_object_t *p_obj )
     for( i = 0, p_peek += 56; i < p_index->i_index_entry_count; i++, p_peek += 6 )
     {
         p_index->index_entry[i].i_packet_number = GetDWLE( p_peek );
-        p_index->index_entry[i].i_packet_count = GetDWLE( p_peek + 4 );
+        p_index->index_entry[i].i_packet_count = GetWLE( p_peek + 4 );
     }
 
     return VLC_SUCCESS;
@@ -1487,7 +1487,7 @@ static void ASF_ObjectDumpDebug( vlc_object_t *p_obj,
     psz_name = ASF_ObjectDumpDebugInfo[i].psz_name;
 
     char str[512];
-    if( i_level * 5 + 1 >= sizeof(str) )
+    if( i_level >= (sizeof(str) - 1)/5 )
         return;
 
     memset( str, ' ', sizeof( str ) );

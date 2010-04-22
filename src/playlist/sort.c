@@ -2,7 +2,7 @@
  * sort.c : Playlist sorting functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: dd477fbdf3a5ff6f0d077565fe335e12ad67db3e $
+ * $Id: 9eb940fb1d32dd9344138c135769caad316c801b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -209,8 +209,10 @@ static int playlist_cmp(const void *first, const void *second)
     }
     else if( sort_mode == SORT_DURATION )
     {
-        i_test = input_item_GetDuration( (*(playlist_item_t **)first)->p_input ) -
-                 input_item_GetDuration( (*(playlist_item_t **)second)->p_input );
+        mtime_t time1 = input_item_GetDuration( (*(playlist_item_t **)first)->p_input );
+        mtime_t time2 = input_item_GetDuration( (*(playlist_item_t **)second)->p_input );
+        i_test = time1 > time2 ? 1 :
+                    ( time1 == time2 ? 0 : -1 );
     }
     else if( sort_mode == SORT_ARTIST )
     {
