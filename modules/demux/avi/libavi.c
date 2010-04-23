@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: ffbb3f9b16a66c295799a31d9d793c1549a9ef40 $
+ * $Id: 75483331fd224400955112c0fa9c6ef8628896e0 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -39,9 +39,6 @@ static vlc_fourcc_t GetFOURCC( const uint8_t *p_buff )
 {
     return VLC_FOURCC( p_buff[0], p_buff[1], p_buff[2], p_buff[3] );
 }
-
-#define AVI_ChunkFree( a, b ) _AVI_ChunkFree( (a), (avi_chunk_t*)(b) )
-void    _AVI_ChunkFree( stream_t *, avi_chunk_t *p_chk );
 
 /****************************************************************************
  *
@@ -801,7 +798,7 @@ static void AVI_ChunkDumpDebug_level( vlc_object_t *p_obj,
     avi_chunk_t *p_child;
 
     char str[512];
-    if( i_level * 5 + 1 >= sizeof(str) )
+    if( i_level >= (sizeof(str) - 1)/5 )
         return;
 
     memset( str, ' ', sizeof( str ) );

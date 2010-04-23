@@ -183,6 +183,9 @@ int Activate ( vlc_object_t *p_this )
     bool   b_chroma = 0;
 #endif
 
+    if( !XInitThreads() )
+        return VLC_EGENERIC;
+
     p_vout->pf_init = InitVideo;
     p_vout->pf_end = EndVideo;
     p_vout->pf_manage = ManageVideo;

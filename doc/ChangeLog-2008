@@ -53613,33 +53613,3 @@ Author: Pierre d'Herbemont <pdherbemont@videolan.org>
 Date:   Tue Jan 1 19:24:58 2008 +0000
 
     extras/MacOSX: Dead code removal. Not working code removal.
-
-commit b92ad8fc4b6c67a3a57859aee10525c2b705304d
-Author: Pierre d'Herbemont <pdherbemont@videolan.org>
-Date:   Tue Jan 1 19:16:38 2008 +0000
-
-    VLCController.m: Remove unneeded code.
-
-commit 0a73fb583e66d2c9e4ef0917ffe8353c812871d8
-Author: Damien Fouilleul <damienf@videolan.org>
-Date:   Tue Jan 1 18:48:24 2008 +0000
-
-    configure: reworked MacOS X SDK options, now use --with-macosx-sdk=DIR and --with-macosx-version-min=VERSION
-
-commit a4b0c7d0ff346bb1c9fc3e94e26928864816a9e5
-Author: Felix Paul Kühne <fkuehne@videolan.org>
-Date:   Tue Jan 1 18:26:08 2008 +0000
-
-    macosx: fixed on-the-fly-changing of the adjust filter. code cleanup. Thanks to Antoine for pointing in the correct direction
-
-commit 99f6722d6c42bd408e50c43e7ab397cbb0b33667
-Author: Pierre d'Herbemont <pdherbemont@videolan.org>
-Date:   Tue Jan 1 18:03:56 2008 +0000
-
-    Revert [23949].
-
-commit 054a2b0615657a039bd8bbf257a68df1b59ed43e
-Author: Pierre d'Herbemont <pdherbemont@videolan.org>
-Date:   Tue Jan 1 17:06:40 2008 +0000
-
-    svn:keywords.

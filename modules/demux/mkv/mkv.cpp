@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 102a807476bf03ef2a8836475b691aad191db9db $
+ * $Id: c405fa1f2508059946fb90518d662ec552942292 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -456,7 +456,7 @@ static void Seek( demux_t *p_demux, mtime_t i_date, double f_percent, chapter_it
 }
 
 /* Utility function for BlockDecode */
-static block_t *MemToBlock( demux_t *p_demux, uint8_t *p_mem, int i_mem, size_t offset)
+static block_t *MemToBlock( demux_t *p_demux, uint8_t *p_mem, size_t i_mem, size_t offset)
 {
     block_t *p_block;
     if( !(p_block = block_New( p_demux, i_mem + offset ) ) ) return NULL;
@@ -534,6 +534,8 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
         {
             data = &block->GetBuffer(i);
         }
+        if( !data->Buffer() || data->Size() > SIZE_MAX )
+            break;
 
         if( tk->i_compression_type == MATROSKA_COMPRESSION_HEADER && tk->p_compression_data != NULL )
             p_block = MemToBlock( p_demux, data->Buffer(), data->Size(), tk->p_compression_data->GetSize() );
@@ -549,6 +551,8 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
         if( tk->i_compression_type == MATROSKA_COMPRESSION_ZLIB )
         {
             p_block = block_zlib_decompress( VLC_OBJECT(p_demux), p_block );
+            if( p_block == NULL )
+                break;
         }
         else
 #endif

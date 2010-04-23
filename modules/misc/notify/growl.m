@@ -4,7 +4,7 @@
  * VLC specific code:
  * 
  * Copyright © 2008 the VideoLAN team
- * $Id: 68e27541b2039fe216f988254571ff47047bf76f $
+ * $Id: 9a410fe440eaf6802bd88cc61e69602a090affaf $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -135,15 +135,14 @@ static void Close( vlc_object_t *p_this )
 {
     intf_sys_t *p_sys = ((intf_thread_t*)p_this)->p_sys;
 
+    playlist_t *p_playlist = pl_Hold( p_this );
+    var_DelCallback( p_playlist, "item-current", ItemChange, p_this );
+    pl_Release( p_this );
+
     CFRelease( p_sys->default_icon );
     CFRelease( p_sys->app_name );
     CFRelease( p_sys->notification_type );
     [p_sys->p_pool release];
-    free( p_sys );
-
-    playlist_t *p_playlist = pl_Hold( p_this );
-    var_DelCallback( p_playlist, "item-current", ItemChange, p_this );
-    pl_Release( p_this );
 }
 
 /*****************************************************************************

@@ -2,7 +2,7 @@
  * preparse.c: Preparser thread.
  *****************************************************************************
  * Copyright © 1999-2009 the VideoLAN team
- * $Id: 74b3961f475a75e0e3dd8c345d1e81815c058c76 $
+ * $Id: 47049328d218c4295ef85985e94f1d866783fe0b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -160,13 +160,15 @@ static void Art( playlist_preparser_t *p_preparser, input_item_t *p_item )
         if( p_preparser->i_art_policy == ALBUM_ART_ALL &&
             ( !psz_arturl || strncmp( psz_arturl, "file://", 7 ) ) )
         {
-            msg_Dbg( p_playlist, "meta ok for %s, need to fetch art", psz_name );
+            msg_Dbg( p_playlist, "meta ok for %s, need to fetch art",
+                     psz_name ? psz_name : "(null)" );
             b_fetch = true;
         }
         else
         {
             msg_Dbg( p_playlist, "no fetch required for %s (art currently %s)",
-                     psz_name, psz_arturl );
+                     psz_name ? psz_name : "(null)",
+                     psz_arturl ? psz_arturl : "(null)" );
         }
     }
     vlc_mutex_unlock( &p_item->lock );

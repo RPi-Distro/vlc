@@ -747,9 +747,9 @@ mods = access_output_dummy access_output_file access_output_http access_output_s
 libvlc_LTLIBRARIES = $(LTLIBaccess_output_shout) \
 	libaccess_output_dummy_plugin.la \
 	libaccess_output_file_plugin.la libaccess_output_udp_plugin.la \
-	libaccess_output_http_plugin.la \
+	libaccess_output_http_plugin.la $(NULL)
+EXTRA_LTLIBRARIES = libaccess_output_shout_plugin.la \
 	libaccess_output_rtmp_plugin.la $(NULL)
-EXTRA_LTLIBRARIES = libaccess_output_shout_plugin.la
 NULL = 
 SUFFIXES = 
 libvlcdir = $(vlclibdir)/$(basedir)
@@ -913,7 +913,7 @@ libaccess_output_file_plugin.la: $(libaccess_output_file_plugin_la_OBJECTS) $(li
 libaccess_output_http_plugin.la: $(libaccess_output_http_plugin_la_OBJECTS) $(libaccess_output_http_plugin_la_DEPENDENCIES) 
 	$(libaccess_output_http_plugin_la_LINK) -rpath $(libvlcdir) $(libaccess_output_http_plugin_la_OBJECTS) $(libaccess_output_http_plugin_la_LIBADD) $(LIBS)
 libaccess_output_rtmp_plugin.la: $(libaccess_output_rtmp_plugin_la_OBJECTS) $(libaccess_output_rtmp_plugin_la_DEPENDENCIES) 
-	$(libaccess_output_rtmp_plugin_la_LINK) -rpath $(libvlcdir) $(libaccess_output_rtmp_plugin_la_OBJECTS) $(libaccess_output_rtmp_plugin_la_LIBADD) $(LIBS)
+	$(libaccess_output_rtmp_plugin_la_LINK)  $(libaccess_output_rtmp_plugin_la_OBJECTS) $(libaccess_output_rtmp_plugin_la_LIBADD) $(LIBS)
 libaccess_output_shout_plugin.la: $(libaccess_output_shout_plugin_la_OBJECTS) $(libaccess_output_shout_plugin_la_DEPENDENCIES) 
 	$(libaccess_output_shout_plugin_la_LINK)  $(libaccess_output_shout_plugin_la_OBJECTS) $(libaccess_output_shout_plugin_la_LIBADD) $(LIBS)
 libaccess_output_udp_plugin.la: $(libaccess_output_udp_plugin_la_OBJECTS) $(libaccess_output_udp_plugin_la_DEPENDENCIES) 

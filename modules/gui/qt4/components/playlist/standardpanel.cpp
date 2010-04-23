@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: ca421c61e252d3c35340a1936c814095c341685c $
+ * $Id: 50344ced99b898291c15b7be5b968f6da6234ac8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -103,6 +103,7 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
              this, handleExpansion( const QModelIndex& ) );
     CONNECT( model, columnsChanged( int ),
             this, checkSortingIndicator( int ) );
+    view->installEventFilter( this );
 
     currentRootId = -1;
     CONNECT( parent, rootChanged( int ), this, setCurrentRootId( int ) );
@@ -360,18 +361,20 @@ void StandardPLPanel::removeItem( int i_id )
     model->removeItem( i_id );
 }
 
-/* Delete and Suppr key remove the selection
-   FilterKey function and code function */
-void StandardPLPanel::keyPressEvent( QKeyEvent *e )
+bool StandardPLPanel::eventFilter ( QObject * watched, QEvent * event )
 {
-    switch( e->key() )
+    if (event->type() == QEvent::KeyPress)
     {
-    case Qt::Key_Back:
-    case Qt::Key_Delete:
-        deleteSelection();
-        break;
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        if( keyEvent->key() == Qt::Key_Delete ||
+            keyEvent->key() == Qt::Key_Backspace )
+        {
+            deleteSelection();
+            return true;
+        }
     }
-}
+    return false;
+ }
 
 void StandardPLPanel::deleteSelection()
 {

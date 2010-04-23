@@ -1,3 +1,9 @@
+vlc (1.0.6-1) unstable; urgency=low
+
+  The rtmp access module has been removed by upstream as it is deemed too buggy.
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Fri, 23 Apr 2010 11:49:18 +0200
+
 vlc (1.0.0~rc2-1) experimental; urgency=low
 
   Important changes which migh affect your command lines and scripts

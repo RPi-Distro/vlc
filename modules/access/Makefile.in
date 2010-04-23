@@ -1035,8 +1035,15 @@ libvlc_LTLIBRARIES = $(LTLIBaccess_alsa) $(LTLIBaccess_dv) \
 	libaccess_file_plugin.la libaccess_directory_plugin.la \
 	libaccess_udp_plugin.la libaccess_tcp_plugin.la \
 	libaccess_http_plugin.la libaccess_ftp_plugin.la \
-	libaccess_fake_plugin.la libaccess_rtmp_plugin.la $(NULL)
-EXTRA_LTLIBRARIES = libaccess_alsa_plugin.la libaccess_dv_plugin.la libaccess_eyetv_plugin.la libaccess_gnomevfs_plugin.la libaccess_jack_plugin.la libaccess_mmap_plugin.la libaccess_mtp_plugin.la libaccess_oss_plugin.la libaccess_smb_plugin.la libcdda_plugin.la libdc1394_plugin.la libdvdnav_plugin.la libdvdread_plugin.la libpvr_plugin.la libqtcapture_plugin.la libv4l_plugin.la libv4l2_plugin.la
+	libaccess_fake_plugin.la $(NULL)
+EXTRA_LTLIBRARIES = libaccess_alsa_plugin.la libaccess_dv_plugin.la \
+	libaccess_eyetv_plugin.la libaccess_gnomevfs_plugin.la \
+	libaccess_jack_plugin.la libaccess_mmap_plugin.la \
+	libaccess_mtp_plugin.la libaccess_oss_plugin.la \
+	libaccess_smb_plugin.la libcdda_plugin.la libdc1394_plugin.la \
+	libdvdnav_plugin.la libdvdread_plugin.la libpvr_plugin.la \
+	libqtcapture_plugin.la libv4l_plugin.la libv4l2_plugin.la \
+	libaccess_rtmp_plugin.la
 NULL = 
 SUFFIXES = 
 libvlcdir = $(vlclibdir)/$(basedir)
@@ -1459,7 +1466,7 @@ libaccess_mtp_plugin.la: $(libaccess_mtp_plugin_la_OBJECTS) $(libaccess_mtp_plug
 libaccess_oss_plugin.la: $(libaccess_oss_plugin_la_OBJECTS) $(libaccess_oss_plugin_la_DEPENDENCIES) 
 	$(libaccess_oss_plugin_la_LINK)  $(libaccess_oss_plugin_la_OBJECTS) $(libaccess_oss_plugin_la_LIBADD) $(LIBS)
 libaccess_rtmp_plugin.la: $(libaccess_rtmp_plugin_la_OBJECTS) $(libaccess_rtmp_plugin_la_DEPENDENCIES) 
-	$(libaccess_rtmp_plugin_la_LINK) -rpath $(libvlcdir) $(libaccess_rtmp_plugin_la_OBJECTS) $(libaccess_rtmp_plugin_la_LIBADD) $(LIBS)
+	$(libaccess_rtmp_plugin_la_LINK)  $(libaccess_rtmp_plugin_la_OBJECTS) $(libaccess_rtmp_plugin_la_LIBADD) $(LIBS)
 libaccess_smb_plugin.la: $(libaccess_smb_plugin_la_OBJECTS) $(libaccess_smb_plugin_la_DEPENDENCIES) 
 	$(libaccess_smb_plugin_la_LINK)  $(libaccess_smb_plugin_la_OBJECTS) $(libaccess_smb_plugin_la_LIBADD) $(LIBS)
 libaccess_tcp_plugin.la: $(libaccess_tcp_plugin_la_OBJECTS) $(libaccess_tcp_plugin_la_DEPENDENCIES) 

@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: b38852cf44c3fa2a2ef1fd0fdd1b116e3957b733 $
+ * $Id: e7049047efdbef9c48bbe3de5c6cdc8c24fb306e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -644,6 +644,7 @@ static int Demux( demux_t *p_demux )
     {
     case DVDNAV_BLOCK_OK:   /* mpeg block */
         vlc_mutex_lock( &p_sys->still.lock );
+        vlc_cond_signal( &p_sys->still.wait );
         p_sys->still.b_enabled = false;
         vlc_mutex_unlock( &p_sys->still.lock );
         if( p_sys->b_reset_pcr )
@@ -1323,19 +1324,21 @@ static void* StillThread( void *p_data )
     mutex_cleanup_push( &p_sys->still.lock );
     for( ;; )
     {
-        if( p_sys->still.b_enabled && p_sys->still.i_end )
-        {
-            if( vlc_cond_timedwait( &p_sys->still.wait, &p_sys->still.lock,
-                                    p_sys->still.i_end ) )
-            {   /* Still image time out */
-                int canc = vlc_savecancel();
-                p_sys->still.b_enabled = false;
-                dvdnav_still_skip( p_sys->dvdnav );
-                vlc_restorecancel( canc );
-            }
-        }
-        else
+	while( !p_sys->still.b_enabled || !p_sys->still.i_end )
             vlc_cond_wait( &p_sys->still.wait, &p_sys->still.lock );
+
+        assert( p_sys->still.b_enabled );
+        assert( p_sys->still.i_end );
+        /* wait until i_end then check b_enabled again */
+        if( vlc_cond_timedwait( &p_sys->still.wait, &p_sys->still.lock,
+                                p_sys->still.i_end )
+         && p_sys->still.b_enabled )
+        {   /* Still image time out */
+            int canc = vlc_savecancel();
+            p_sys->still.b_enabled = false;
+            dvdnav_still_skip( p_sys->dvdnav );
+            vlc_restorecancel( canc );
+        }
     }
     vlc_cleanup_pop(  );
 

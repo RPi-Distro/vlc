@@ -1,3 +1,14 @@
+vlc (1.0.6-1) unstable; urgency=low
+
+  * New upstream version 1.0.6
+    + VideoLAN-SA-1003
+    + Closes: #578799
+    + LP: #408719, #464715, #465560, #502637, #525278, #542943, #568859
+  * RTMP access module has been removed (vlc-nox.install, NEWS.Debian)
+  * Remove patches merged upstream
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Fri, 23 Apr 2010 11:49:18 +0200
+
 vlc (1.0.5-2ubuntu3) lucid; urgency=low
 
   * debian/patches/527-spanish-desktop.patch: Add Spanish translation,

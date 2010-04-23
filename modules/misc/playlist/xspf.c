@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist export functions
  ******************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 923d57b5ac42bdc778839f7b627e4b94fb0e2ac1 $
+ * $Id: daaac86c5b1d8eb0e64ae09155ef43a4077dbae3 $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -139,12 +139,14 @@ static void xspf_export_item( playlist_item_t *p_item, FILE *p_file,
     /* -> the location */
 
     char *psz_uri = input_item_GetURI( p_item->p_input );
-
-    if( psz_uri && *psz_uri )
+    if( psz_uri )
     {
         psz = make_URI( psz_uri );
-        fprintf( p_file, "\t\t\t<location>%s</location>\n", psz );
+        psz_temp = convert_xml_special_chars( psz );
         free( psz );
+        if( *psz_temp )
+            fprintf( p_file, "\t\t\t<location>%s</location>\n", psz_temp );
+        free( psz_temp );
     }
 
     /* -> the name/title (only if different from uri)*/

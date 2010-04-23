@@ -45,6 +45,9 @@ int screen_InitCapture( demux_t *p_demux )
     XWindowAttributes win_info;
     int i_chroma;
 
+    if( !XInitThreads() )
+        return VLC_EGENERIC;
+
     /* Open the display */
     p_display = XOpenDisplay( psz_display );
     free( psz_display );

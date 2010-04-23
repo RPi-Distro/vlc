@@ -2,7 +2,7 @@
  * mms.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 7252665548a6bbc19b4c2988f111a5338420062a $
+ * $Id: f924209d507ac89a04d4bf84570c00edb7d4f1ca $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -94,17 +94,9 @@ struct access_sys_t
     /* misc */
     bool  b_seekable;
 
-    vlc_mutex_t lock_netwrite;
-    struct mmstu_keepalive_t *p_keepalive;
+    vlc_mutex_t  lock_netwrite;
+    bool         b_keep_alive;
+    vlc_thread_t keep_alive;
 };
-
-typedef struct mmstu_keepalive_t
-{
-    access_t    *p_access;
-    vlc_mutex_t  lock;
-    vlc_cond_t   wait;
-    vlc_thread_t handle;
-    bool         b_paused;
-} mmstu_keepalive_t;
 
 #endif
