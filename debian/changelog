@@ -1,3 +1,17 @@
+vlc (1.0.6-1ubuntu1) lucid; urgency=low
+
+  * Merge from Debian unstable, remaining changes:
+    - build and install the libx264 plugin
+    - add Xb-Npp header to vlc package
+    - Add patches 519-526 to fix FTBFS with xulruner-1.9.2 from upstream
+    - Add 600-drop-OJI-xul-192.patch to drop OJI support as xulrunner-1.9.2 on
+      Linux doesn't support it
+    - Add apport hook to include more vlc dependencies in bug reports
+    - Drop --sourcedir=debian/tmp from dh_install to install apport hook
+  * Drop 527-spanish-desktop.patch (merged upstream).
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Fri, 23 Apr 2010 12:16:15 +0200
+
 vlc (1.0.6-1) unstable; urgency=low
 
   * New upstream version 1.0.6
