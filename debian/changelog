@@ -1,6 +1,4 @@
-vlc (1.0.6-1~2.gbp2a1662) UNRELEASED; urgency=low
-
-  ** SNAPSHOT build @2a1662656d0deed9e23c2d844dbb457093810f4f **
+vlc (1.0.6-1) unstable; urgency=low
 
   * New upstream version 1.0.6
     + VideoLAN-SA-1003
@@ -9,7 +7,7 @@ vlc (1.0.6-1~2.gbp2a1662) UNRELEASED; urgency=low
   * RTMP access module has been removed (vlc-nox.install, NEWS.Debian)
   * Remove patches merged upstream
 
- -- Christophe Mutricy <xtophe@videolan.org>  Thu, 22 Apr 2010 22:06:50 +0200
+ -- Christophe Mutricy <xtophe@videolan.org>  Fri, 23 Apr 2010 11:49:18 +0200
 
 vlc (1.0.5-2) unstable; urgency=medium
 
