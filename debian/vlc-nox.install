@@ -67,6 +67,7 @@ usr/lib/vlc/codec/libtelx_plugin.so
 usr/lib/vlc/codec/libtheora_plugin.so
 usr/lib/vlc/codec/libtwolame_plugin.so
 usr/lib/vlc/codec/libvorbis_plugin.so
+usr/lib/vlc/codec/libx264_plugin.so
 usr/lib/vlc/control/libdbus_plugin.so
 usr/lib/vlc/control/libgestures_plugin.so
 usr/lib/vlc/control/libhotkeys_plugin.so
