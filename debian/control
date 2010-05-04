@@ -136,7 +136,7 @@ Package: vlc-nox
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Replaces: vlc (<< 1.0.4-2)
+Replaces: vlc (<= 1.0.6-1ubuntu1)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
