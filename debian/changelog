@@ -1,3 +1,12 @@
+vlc (1.0.6-1ubuntu1.1) lucid-proposed; urgency=low
+
+  * debian/vlc{,-nox}.install:
+    - Move libx264 plugin from vlc to vlc-nox (LP: #575054).
+  * debian/control:
+    - Adjust vlc-nox Replaces field properly.
+
+ -- Alessio Treglia <quadrispro@ubuntu.com>  Tue, 04 May 2010 14:17:27 +0200
+
 vlc (1.0.6-1ubuntu1) lucid; urgency=low
 
   * Merge from Debian unstable, remaining changes:
