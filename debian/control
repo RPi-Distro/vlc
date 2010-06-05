@@ -156,7 +156,7 @@ Description: multimedia player and streamer (without X support)
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
 
-Package: libvlccore2
+Package: libvlccore4
 Section: libs
 Architecture: any
 Depends: vlc-data (= ${source:Version}),
@@ -169,7 +169,7 @@ Description: base library for VLC and its modules
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
-Package: libvlc2
+Package: libvlc5
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
@@ -186,7 +186,7 @@ Description: multimedia player and streamer library
 Package: libvlccore-dev
 Section: libdevel
 Architecture: any
-Depends: libvlccore2 (= ${binary:Version}), pkg-config,
+Depends: libvlccore4 (= ${binary:Version}), pkg-config,
          ${shlibs:Depends}, ${misc:Depends}
 Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
@@ -199,7 +199,7 @@ Description: development files for libvlccore
 Package: libvlc-dev
 Section: libdevel
 Architecture: any
-Depends: libvlc2 (= ${binary:Version}), libvlccore-dev, pkg-config,
+Depends: libvlc5 (= ${binary:Version}), libvlccore-dev, pkg-config,
          ${shlibs:Depends}, ${misc:Depends}
 Replaces: libvlc0-dev
 Description: development files for libvlc
