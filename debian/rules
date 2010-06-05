@@ -82,6 +82,7 @@ confflags += \
 	--enable-notify \
 	--enable-ogg \
 	--enable-pulse \
+	--disable-projectm \
 	--enable-qt4 \
 	--enable-realrtsp \
 	--enable-sdl \
