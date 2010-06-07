@@ -32,7 +32,6 @@ Build-Depends: debhelper (>= 7),
                libflac-dev (>= 1.1.2-3),
                libfreetype6-dev,
                libfribidi-dev,
-               libggi2-dev,
                libgl1-mesa-dev,
                libglib2.0-0,
                libgnutls-dev (>= 1.2.8),
@@ -113,8 +112,8 @@ Description: multimedia player and streamer
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
  by installing additional audio plugins (vlc-plugin-pulse, vlc-plugin-sdl)
- or video plugins (vlc-plugin-sdl, vlc-plugin-ggi, vlc-plugin-svgalib). There
- is also a web browser plugin in the mozilla-plugin-vlc package.
+ or video plugins (vlc-plugin-sdl). There is also a web browser plugin in the
+ mozilla-plugin-vlc package.
 
 Package: vlc-dbg
 Section: debug
@@ -149,9 +148,8 @@ Description: multimedia player and streamer (without X support)
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
  by installing additional audio plugins (vlc-plugin-pulse, vlc-plugin-sdl,
- vlc-plugin-jack) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
- vlc-plugin-svgalib). There is also a web browser plugin in  the
- mozilla-plugin-vlc package.
+ vlc-plugin-jack) or video plugins (vlc-plugin-sdl). There is also a web
+ browser plugin in the mozilla-plugin-vlc package.
  .
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
@@ -218,18 +216,6 @@ Description: SDL video and audio output plugin for VLC
  the VLC media player. To activate it, use the `--vout sdl' or
  `--aout sdl' flags or select the `sdl' video or audio output plugin
  from the preferences menu.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
-Package: vlc-plugin-ggi
-Architecture: any
-Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
-Description: GGI video output plugin for VLC
- This is a GGI plugin for the VLC media player.  To activate it, use
- the `--vout ggi' flag or select the `ggi' video output plugin from the
- preferences menu.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
