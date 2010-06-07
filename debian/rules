@@ -182,18 +182,6 @@ install: build
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	rm -rf debian/tmp/usr/share/man/man1
-	# Move icons around
-	mkdir -p debian/tmp/usr/share/icons/hicolor/16x16/apps
-	mv debian/tmp/$(VIDDIR)/vlc16x16.png debian/tmp/usr/share/icons/hicolor/16x16/apps/vlc.png
-	mkdir -p debian/tmp/usr/share/icons/hicolor/32x32/apps
-	mv debian/tmp/$(VIDDIR)/vlc32x32.png debian/tmp/usr/share/icons/hicolor/32x32/apps/vlc.png
-	mkdir -p debian/tmp/usr/share/icons/hicolor/48x48/apps
-	mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/usr/share/icons/hicolor/48x48/apps/vlc.png
-	mv debian/tmp/$(VIDDIR)/vlc48x48-christmas.png debian/tmp/usr/share/icons/hicolor/48x48/apps/vlc-christmas.png
-	mkdir -p debian/tmp/usr/share/icons/hicolor/128x128/apps
-	mv debian/tmp/$(VIDDIR)/vlc128x128.png debian/tmp/usr/share/icons/hicolor/128x128/apps/vlc.png
-	mv debian/tmp/$(VIDDIR)/vlc128x128-christmas.png debian/tmp/usr/share/icons/hicolor/128x128/apps/vlc-christmas.png
-	mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
 	# Install stuff
 	dh_install -si --fail-missing --sourcedir=debian/tmp
 	# move .hosts
