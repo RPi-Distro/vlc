@@ -2,7 +2,7 @@
  * decoder_synchro.c : frame dropping routines
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: 9652d2e1ecb60da2ee66897df01acdc0de125c89 $
+ * $Id: 8bb9d73ad84e0c80020c8e8614e18597ba485794 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -166,8 +166,8 @@ decoder_synchro_t * decoder_SynchroInit( decoder_t *p_dec, int i_frame_rate )
         return NULL;
 
     p_synchro->p_dec = p_dec;
-    p_synchro->b_no_skip = !config_GetInt( p_dec, "skip-frames" );
-    p_synchro->b_quiet = config_GetInt( p_dec, "quiet-synchro" );
+    p_synchro->b_no_skip = !var_InheritBool( p_dec, "skip-frames" );
+    p_synchro->b_quiet = var_InheritBool( p_dec, "quiet-synchro" );
 
     /* We use a fake stream pattern, which is often right. */
     p_synchro->i_n_p = p_synchro->i_eta_p = DEFAULT_NB_P;
@@ -215,7 +215,7 @@ bool decoder_SynchroChoose( decoder_synchro_t * p_synchro, int i_coding_type,
                                     + p_synchro->i_render_time)
 #define S (*p_synchro)
     mtime_t         now, period;
-    mtime_t         pts = 0;
+    mtime_t         pts;
     bool      b_decode = 0;
     int       i_current_rate;
 

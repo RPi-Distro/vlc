@@ -2,7 +2,7 @@
  * win32_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1ddc580b362cefec91f0c5d534cff0f7a74b3c7e $
+ * $Id: 557565c6ef8644c0b6bcfa149548aa6168460a61 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -34,7 +34,7 @@
 #include "../events/evt_mouse.hpp"
 #include "../events/evt_refresh.hpp"
 #include "../events/evt_scroll.hpp"
-#include "vlc_keys.h"
+#include <vlc_keys.h>
 
 
 // XXX: Cygwin (at least) doesn't define these macros. Too bad...
@@ -60,7 +60,7 @@ Win32Loop::Win32Loop( intf_thread_t *pIntf ): OSLoop( pIntf )
     virtKeyToVlcKey[VK_F11] = KEY_F11;
     virtKeyToVlcKey[VK_F12] = KEY_F12;
     virtKeyToVlcKey[VK_RETURN] = KEY_ENTER;
-    virtKeyToVlcKey[VK_SPACE] = KEY_SPACE;
+    virtKeyToVlcKey[VK_SPACE] = ' ';
     virtKeyToVlcKey[VK_ESCAPE] = KEY_ESC;
     virtKeyToVlcKey[VK_LEFT] = KEY_LEFT;
     virtKeyToVlcKey[VK_RIGHT] = KEY_RIGHT;
@@ -107,11 +107,8 @@ OSLoop *Win32Loop::instance( intf_thread_t *pIntf )
 
 void Win32Loop::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_osLoop )
-    {
-        delete pIntf->p_sys->p_osLoop;
-        pIntf->p_sys->p_osLoop = NULL;
-    }
+    delete pIntf->p_sys->p_osLoop;
+    pIntf->p_sys->p_osLoop = NULL;
 }
 
 

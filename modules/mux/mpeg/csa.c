@@ -2,7 +2,7 @@
  * libcsa.c: CSA scrambler/descrambler
  *****************************************************************************
  * Copyright (C) 2004-2005 Laurent Aimar
- * $Id: 99ae905b57c1e9efb7744c45a78fec4c0f95582c $
+ * $Id: 453140eb1e238c9ca623d7a4b5f987db8a3d2865 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -99,11 +99,7 @@ int csa_SetCW( vlc_object_t *p_caller, csa_t *c, char *psz_ck, bool set_odd )
     }
     else
     {
-#ifndef UNDER_CE
         uint64_t i_ck = strtoull( psz_ck, NULL, 16 );
-#else
-        uint64_t i_ck = strtoll( psz_ck, NULL, 16 );
-#endif
         uint8_t  ck[8];
         int      i;
 

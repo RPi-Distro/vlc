@@ -2,7 +2,7 @@
  * text_renderer.h: common text renderer code
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: d8835b053f579b268875c54a7adca5eafc3278b8 $
+ * $Id: 319f82246b1e0ab1aa5a48711669d7cbe4c095bf $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *          Laurent Aimar < fenrir AT videolan DOT org >
@@ -22,6 +22,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <vlc_memory.h>
+
 typedef struct font_stack_t font_stack_t;
 struct font_stack_t
 {
@@ -40,7 +42,7 @@ static void SetupLine( filter_t *p_filter, const char *psz_text_in,
 
 static TR_FONT_STYLE_PTR GetStyleFromFontStack( filter_sys_t *p_sys,
                                           font_stack_t **p_fonts, bool b_bold, bool b_italic,
-                                          bool b_uline );
+                                          bool b_uline, bool b_through );
 
 static int PushFont( font_stack_t **p_font, const char *psz_name, int i_size,
                      uint32_t i_color, uint32_t i_karaoke_bg_color )
@@ -442,8 +444,7 @@ static void SetupKaraoke( xml_reader_t *p_xml_reader, uint32_t *pi_k_runs,
 
                 if( *ppi_k_durations )
                 {
-                    *ppi_k_durations = (uint32_t *)
-                        realloc( *ppi_k_durations,
+                    *ppi_k_durations = realloc_or_free( *ppi_k_durations,
                                  *pi_k_runs * sizeof( uint32_t ) );
                 }
                 else if( *pi_k_runs == 1 )
@@ -454,8 +455,7 @@ static void SetupKaraoke( xml_reader_t *p_xml_reader, uint32_t *pi_k_runs,
 
                 if( *ppi_k_run_lengths )
                 {
-                    *ppi_k_run_lengths = (uint32_t *)
-                        realloc( *ppi_k_run_lengths,
+                    *ppi_k_run_lengths = realloc_or_free( *ppi_k_run_lengths,
                                  *pi_k_runs * sizeof( uint32_t ) );
                 }
                 else if( *pi_k_runs == 1 )
@@ -521,6 +521,7 @@ static int ProcessNodes( filter_t *p_filter,
     bool b_italic = false;
     bool b_bold   = false;
     bool b_uline  = false;
+    bool b_through = false;
 
     if( VLC_SUCCESS == var_Get( p_filter, "scale", &val ))
         i_scale = val.i_int;
@@ -541,7 +542,10 @@ static int ProcessNodes( filter_t *p_filter,
             b_italic = true;
         if( p_font_style->i_style_flags & STYLE_UNDERLINE )
             b_uline = true;
+        if( p_font_style->i_style_flags & STYLE_STRIKEOUT )
+            b_through = true;
     }
+#ifdef HAVE_FONTCONFIG
     else
     {
         rv = PushFont( &p_fonts,
@@ -551,6 +555,8 @@ static int ProcessNodes( filter_t *p_filter,
                           (((255-p_sys->i_font_opacity) & 0xff) << 24),
                        0x00ffffff );
     }
+#endif
+
     if( rv != VLC_SUCCESS )
         return rv;
 
@@ -572,6 +578,8 @@ static int ProcessNodes( filter_t *p_filter,
                         b_italic = false;
                     else if( !strcasecmp( "u", psz_node ) )
                         b_uline  = false;
+                    else if( !strcasecmp( "s", psz_node ) )
+                        b_through = false;
 
                     free( psz_node );
                 }
@@ -588,6 +596,9 @@ static int ProcessNodes( filter_t *p_filter,
                         b_italic = true;
                     else if( !strcasecmp( "u", psz_node ) )
                         b_uline = true;
+                    else if( !strcasecmp( "s", psz_node ) )
+                        b_through = true;
+
                     else if( !strcasecmp( "br", psz_node ) )
                     {
                         SetupLine( p_filter, "\n", &psz_text,
@@ -596,7 +607,8 @@ static int ProcessNodes( filter_t *p_filter,
                                                           &p_fonts,
                                                           b_bold,
                                                           b_italic,
-                                                          b_uline ) );
+                                                          b_uline,
+                                                          b_through) );
                     }
                     else if( !strcasecmp( "k", psz_node ) )
                     {
@@ -630,7 +642,8 @@ static int ProcessNodes( filter_t *p_filter,
                                                       &p_fonts,
                                                       b_bold,
                                                       b_italic,
-                                                      b_uline ) );
+                                                      b_uline,
+                                                      b_through) );
                     free( psz_node );
                 }
                 break;

@@ -36,14 +36,15 @@ int  config_AutoSaveConfigFile( vlc_object_t * );
 
 void config_Free( module_t * );
 
-void config_SetCallbacks( module_config_t *, module_config_t *, size_t );
-void config_UnsetCallbacks( module_config_t *, size_t );
+int config_LoadCmdLine   ( vlc_object_t *, int, const char *[], int * );
+int config_LoadConfigFile( vlc_object_t *, const char * );
+#define config_LoadCmdLine(a,b,c,d) config_LoadCmdLine(VLC_OBJECT(a),b,c,d)
+#define config_LoadConfigFile(a,b) config_LoadConfigFile(VLC_OBJECT(a),b)
 
-#define config_LoadCmdLine(a,b,c,d) __config_LoadCmdLine(VLC_OBJECT(a),b,c,d)
-#define config_LoadConfigFile(a,b) __config_LoadConfigFile(VLC_OBJECT(a),b)
+int config_SortConfig (void);
+void config_UnsortConfig (void);
 
-int __config_LoadCmdLine   ( vlc_object_t *, int *, const char *[], bool );
-int __config_LoadConfigFile( vlc_object_t *, const char * );
+char *config_GetDataDirDefault( void );
 
 int IsConfigStringType( int type );
 int IsConfigIntegerType (int type);
@@ -52,18 +53,12 @@ static inline int IsConfigFloatType (int type)
     return type == CONFIG_ITEM_FLOAT;
 }
 
-int ConfigStringToKey( const char * );
+uint_fast32_t ConfigStringToKey( const char * );
+char *ConfigKeyToString( uint_fast32_t );
 
-/* The configuration file and directory */
-#if defined (SYS_BEOS)
-#  define CONFIG_DIR                    "config/settings/VideoLAN Client"
-#elif defined (__APPLE__)
-#  define CONFIG_DIR                    "Library/Preferences/VLC"
-#elif defined( WIN32 ) || defined( UNDER_CE )
-#  define CONFIG_DIR                    "vlc"
-#else
-#  define CONFIG_DIR                    ".vlc"
-#endif
+extern vlc_rwlock_t config_lock;
+
+/* The configuration file */
 #define CONFIG_FILE                     "vlcrc"
 
 # ifdef __cplusplus

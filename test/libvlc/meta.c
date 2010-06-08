@@ -1,7 +1,7 @@
 /*
  * meta.c - libvlc smoke test
  *
- * $Id: f2e5963d9291a18eaac06ebd64d4a0f098227bd7 $
+ * $Id: aa29c98406f8444de7a3c6d3a59b621fd9e4ed1a $
  */
 
 /**********************************************************************
@@ -22,6 +22,8 @@
  *  http://www.gnu.org/copyleft/gpl.html                              *
  **********************************************************************/
 
+#include <string.h>
+
 #include "test.h"
 
 static void test_meta (const char ** argv, int argc)
@@ -32,30 +34,15 @@ static void test_meta (const char ** argv, int argc)
 
     log ("Testing meta\n");
 
-    libvlc_exception_init (&ex);
-    vlc = libvlc_new (argc, argv, &ex);
-    catch ();
+    vlc = libvlc_new (argc, argv);
+    assert (vlc != NULL);
 
-    media = libvlc_media_new (vlc, "samples/meta.sample", &ex);
-    catch ();
+    media = libvlc_media_new_path (vlc, "samples/meta.sample");
+    assert( media );
 
-    /* Tell that we are interested in this precise meta data
-     * This is needed to trigger meta data reading
-     * (the first calls return NULL) */
-    artist = libvlc_media_get_meta (media, libvlc_meta_Artist, &ex);
-    catch ();
+    libvlc_media_parse (media);
 
-    free (artist);
-
-    /* Wait for the meta */
-    while (!libvlc_media_is_preparsed (media, &ex))
-    {
-        catch ();
-        msleep (10000);
-    }
-
-    artist = libvlc_media_get_meta (media, libvlc_meta_Artist, &ex);
-    catch ();
+    artist = libvlc_media_get_meta (media, libvlc_meta_Artist);
 
     const char *expected_artist = "mike";
 

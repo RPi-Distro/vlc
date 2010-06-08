@@ -2,7 +2,7 @@
  * preferences_tree.hpp : Tree of modules for preferences
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 29105e863833b57b53def05801f55b10e4c0e9ea $
+ * $Id: 32ad1896b8e0c5ed91449ef802a0c51ff4ad3a3c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -64,7 +64,7 @@ Q_DECLARE_METATYPE( PrefsItemData* );
 
 class PrefsTree : public QTreeWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     PrefsTree( intf_thread_t *, QWidget * );
     virtual ~PrefsTree();

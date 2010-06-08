@@ -2,7 +2,7 @@
  * macosx_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f36bad33411366079b7b561fdd24c27d60245f64 $
+ * $Id: ab46ae913c9e329127a90026ed7f4098a7620cc3 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -72,11 +72,8 @@ OSLoop *MacOSXLoop::instance( intf_thread_t *pIntf )
 
 void MacOSXLoop::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_osLoop )
-    {
-        delete pIntf->p_sys->p_osLoop;
-        pIntf->p_sys->p_osLoop = NULL;
-    }
+    delete pIntf->p_sys->p_osLoop;
+    pIntf->p_sys->p_osLoop = NULL;
 }
 
 

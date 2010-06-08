@@ -4,8 +4,8 @@
 basedir = meta_engine
 dir = meta_engine
 mods = folder id3tag taglib
-libvlc_LTLIBRARIES =  $(LTLIBfolder) $(LTLIBid3tag) $(LTLIBtaglib)
-EXTRA_LTLIBRARIES =  libfolder_plugin.la libid3tag_plugin.la libtaglib_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBid3tag) $(LTLIBtaglib)
+EXTRA_LTLIBRARIES =  libid3tag_plugin.la libtaglib_plugin.la
 
 include $(top_srcdir)/modules/common.am
 

@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 75483331fd224400955112c0fa9c6ef8628896e0 $
+ * $Id: 45d20e2b43d20c451b1f6abcd54ad8787c65b92a $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -203,6 +203,11 @@ static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
 
 #define AVI_READCHUNK_ENTER \
     int64_t i_read = __EVEN(p_chk->common.i_chunk_size ) + 8; \
+    if( i_read > 100000000 ) \
+    { \
+        msg_Err( s, "Big chunk ignored" ); \
+        return VLC_EGENERIC; \
+    } \
     uint8_t  *p_read, *p_buff;    \
     if( !( p_read = p_buff = malloc(i_read ) ) ) \
     { \

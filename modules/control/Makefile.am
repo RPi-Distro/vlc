@@ -3,9 +3,9 @@
 
 basedir = control
 dir = control
-mods = dbus gestures hotkeys lirc motion netsync ntservice rc showintf signals telnet
-libvlc_LTLIBRARIES =  $(LTLIBdbus) $(LTLIBgestures) $(LTLIBhotkeys) $(LTLIBlirc) $(LTLIBmotion) $(LTLIBnetsync) $(LTLIBntservice) $(LTLIBrc) $(LTLIBshowintf) $(LTLIBsignals) $(LTLIBtelnet)
-EXTRA_LTLIBRARIES =  libdbus_plugin.la libgestures_plugin.la libhotkeys_plugin.la liblirc_plugin.la libmotion_plugin.la libnetsync_plugin.la libntservice_plugin.la librc_plugin.la libshowintf_plugin.la libsignals_plugin.la libtelnet_plugin.la
+mods = dbus gestures hotkeys lirc motion netsync ntservice oldrc oldtelnet signals
+libvlc_LTLIBRARIES =  $(LTLIBdbus) $(LTLIBlirc) $(LTLIBoldtelnet)
+EXTRA_LTLIBRARIES =  libdbus_plugin.la liblirc_plugin.la liboldtelnet_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -86,27 +86,27 @@ libntservice_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libntservice_plugin_la_LIBADD = $(AM_LIBADD)
 libntservice_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The rc plugin
-librc_plugin_la_SOURCES = $(SOURCES_rc)
-nodist_librc_plugin_la_SOURCES = $(nodist_SOURCES_rc)
+# The oldrc plugin
+liboldrc_plugin_la_SOURCES = $(SOURCES_oldrc)
+nodist_liboldrc_plugin_la_SOURCES = $(nodist_SOURCES_oldrc)
 # Force per-target objects:
-librc_plugin_la_CFLAGS = $(AM_CFLAGS)
-librc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-librc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liboldrc_plugin_la_CFLAGS = $(AM_CFLAGS)
+liboldrc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+liboldrc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-librc_plugin_la_LIBADD = $(AM_LIBADD)
-librc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liboldrc_plugin_la_LIBADD = $(AM_LIBADD)
+liboldrc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The showintf plugin
-libshowintf_plugin_la_SOURCES = $(SOURCES_showintf)
-nodist_libshowintf_plugin_la_SOURCES = $(nodist_SOURCES_showintf)
+# The oldtelnet plugin
+liboldtelnet_plugin_la_SOURCES = $(SOURCES_oldtelnet)
+nodist_liboldtelnet_plugin_la_SOURCES = $(nodist_SOURCES_oldtelnet)
 # Force per-target objects:
-libshowintf_plugin_la_CFLAGS = $(AM_CFLAGS)
-libshowintf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libshowintf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liboldtelnet_plugin_la_CFLAGS = $(AM_CFLAGS)
+liboldtelnet_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+liboldtelnet_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libshowintf_plugin_la_LIBADD = $(AM_LIBADD)
-libshowintf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liboldtelnet_plugin_la_LIBADD = $(AM_LIBADD)
+liboldtelnet_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The signals plugin
 libsignals_plugin_la_SOURCES = $(SOURCES_signals)
@@ -118,15 +118,4 @@ libsignals_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsignals_plugin_la_LIBADD = $(AM_LIBADD)
 libsignals_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The telnet plugin
-libtelnet_plugin_la_SOURCES = $(SOURCES_telnet)
-nodist_libtelnet_plugin_la_SOURCES = $(nodist_SOURCES_telnet)
-# Force per-target objects:
-libtelnet_plugin_la_CFLAGS = $(AM_CFLAGS)
-libtelnet_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libtelnet_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libtelnet_plugin_la_LIBADD = $(AM_LIBADD)
-libtelnet_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

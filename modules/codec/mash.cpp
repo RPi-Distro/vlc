@@ -2,7 +2,7 @@
  * mash.c: Video decoder using openmash codec implementations
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 88533cb4796230bc183ea3fe6473c73ca3625648 $
+ * $Id: 86245790fae8a825ba15199775934d749bf7841e $
  *
  * Authors: Sigmund Augdal <sigmunau@idi.ntnu.no>
  *
@@ -31,7 +31,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
-#include <vlc_vout.h>
 #include <vlc_block.h>
 
 #include <p64/p64.h>
@@ -86,8 +85,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     switch( p_dec->fmt_in.i_codec )
     {
         /* Planar YUV */
-        case VLC_FOURCC('h','2','6','1'):
-        case VLC_FOURCC('H','2','6','1'):
+        case VLC_CODEC_H261:
             break;
 
         default:
@@ -99,13 +97,13 @@ static int OpenDecoder( vlc_object_t *p_this )
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
         return VLC_ENOMEM;
     /* Misc init */
-    p_sys->i_pts = 0;
+    p_sys->i_pts = VLC_TS_INVALID;
     p_sys->b_inited = false;
     p_sys->i_counter = 0;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = VIDEO_ES;
-    p_dec->fmt_out.i_codec = VLC_FOURCC('I','4','2','0');
+    p_dec->fmt_out.i_codec = VLC_CODEC_I420;
 
     /* Set callbacks */
     p_dec->pf_decode_video = (picture_t *(*)(decoder_t *, block_t **))
@@ -145,7 +143,8 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
     p_block = *pp_block;
 
-    if( !p_sys->i_pts && !p_block->i_pts && !p_block->i_dts )
+    if( p_sys->i_pts <= VLC_TS_INVALID && p_block->i_pts <= VLC_TS_INVALID &&
+        p_block->i_dts <= VLC_TS_INVALID )
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( p_block );
@@ -154,11 +153,10 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
 
     /* Date management */
-    if( p_block->i_pts > 0 || p_block->i_dts > 0 )
-    {
-        if( p_block->i_pts > 0 ) p_sys->i_pts = p_block->i_pts;
-        else if( p_block->i_dts > 0 ) p_sys->i_pts = p_block->i_dts;
-    }
+    if( p_block->i_pts > VLC_TS_INVALID )
+        p_sys->i_pts = p_block->i_pts;
+    else if( p_block->i_dts > VLC_TS_INVALID )
+        p_sys->i_pts = p_block->i_dts;
 
     i_video_header = *(uint32_t*)p_block->p_buffer; /* yes, it is native endian */
     sbit = i_video_header >> 29; /* start bit position */
@@ -175,7 +173,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     mvdv = i_video_header & 0x1f; /* vertical motion vector data */
     cc = p_block->i_buffer - 4;
     msg_Dbg( p_dec, "packet size %d", cc );
- 
+
     /* Find out p_vdec->i_raw_size */
     p_sys->p_decoder->decode( p_block->p_buffer + 4 /*bp?*/,
                               cc /*cc?*/,
@@ -192,9 +190,9 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     {
         msg_Dbg( p_dec, "video size is perhaps %dx%d", i_width,
                   i_height);
-        vout_InitFormat( &p_dec->fmt_out.video, VLC_FOURCC('I','4','2','0'),
-                         i_width, i_height,
-                         VOUT_ASPECT_FACTOR * i_width / i_height );
+        video_format_Setup( &p_dec->fmt_out.video, VLC_CODEC_I420,
+                            i_width, i_height,
+                            1, 1 );
         p_sys->b_inited = true;
     }
     p_pic = NULL;

@@ -2,7 +2,7 @@
  * evt_menu.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f439be53e9825abea8e863d2699f0dc377c910b0 $
+ * $Id: b960549ee4d3ac8fa014ae9f3f122dd7db0ef003 $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef EVT_MENU_HPP
@@ -30,20 +30,17 @@
 /// Mouse move event
 class EvtMenu: public EvtGeneric
 {
-    public:
-        EvtMenu( intf_thread_t *pIntf, int itemId ):
-            EvtGeneric( pIntf ), m_itemId( itemId ) {}
-        virtual ~EvtMenu() {}
+public:
+    EvtMenu( intf_thread_t *pIntf, int itemId )
+           : EvtGeneric( pIntf ), m_itemId( itemId ) { }
+    virtual ~EvtMenu() { }
+    virtual const string getAsString() const { return "menu"; }
 
-        /// Return the type of event
-        virtual const string getAsString() const { return "menu"; }
+    int getItemId() const { return m_itemId; }
 
-        // Getter
-        int getItemId() const { return m_itemId; }
-
-    private:
-        /// Coordinates of the mouse (absolute or relative)
-        int m_itemId;
+private:
+    /// Coordinates of the mouse (absolute or relative)
+    int m_itemId;
 };
 
 

@@ -7,7 +7,7 @@
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2.0
+ * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
+ * You should have received a copy of the GNU General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  ****************************************************************************/
@@ -46,27 +46,30 @@ void rtp_queue (demux_t *, rtp_session_t *, block_t *);
 bool rtp_dequeue (demux_t *, const rtp_session_t *, mtime_t *);
 int rtp_add_type (demux_t *demux, rtp_session_t *ses, const rtp_pt_t *pt);
 
-int rtp_process (demux_t *demux);
 void *rtp_thread (void *data);
 
 /* Global data */
 struct demux_sys_t
 {
     rtp_session_t *session;
+#ifdef HAVE_SRTP
     struct srtp_session_t *srtp;
+#endif
     int           fd;
     int           rtcp_fd;
     vlc_thread_t  thread;
+    vlc_timer_t   timer;
     vlc_mutex_t   lock;
-    vlc_cond_t    wait;
-    bool thread_ready;
 
+    mtime_t       timeout;
     unsigned      caching;
-    unsigned      timeout;
     uint16_t      max_dropout; /**< Max packet forward misordering */
     uint16_t      max_misorder; /**< Max packet backward misordering */
     uint8_t       max_src; /**< Max simultaneous RTP sources */
     bool          framed_rtp; /**< Framed RTP packets over TCP */
+    bool          thread_ready;
+#if 0
     bool          dead; /**< End of stream */
+#endif
 };
 

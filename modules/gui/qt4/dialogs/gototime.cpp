@@ -2,7 +2,7 @@
  * GotoTime.cpp : GotoTime and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 78ecbc1e84e4e7b55dbed804648ba2abe775c442 $
+ * $Id: b51e670ab0f917a8f0d6b4c6d633892ccbd76f2e $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -33,14 +33,14 @@
 #include <QTimeEdit>
 #include <QGroupBox>
 #include <QDialogButtonBox>
+#include <QPushButton>
 
-GotoTimeDialog *GotoTimeDialog::instance = NULL;
-
-GotoTimeDialog::GotoTimeDialog( QWidget *parent, intf_thread_t *_p_intf)
-               : QVLCDialog( parent, _p_intf )
+GotoTimeDialog::GotoTimeDialog( intf_thread_t *_p_intf)
+               : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
 {
     setWindowFlags( Qt::Tool );
     setWindowTitle( qtr( "Go to Time" ) );
+    setWindowRole( "vlc-goto-time" );
 
     QGridLayout *mainLayout = new QGridLayout( this );
     mainLayout->setSizeConstraint( QLayout::SetFixedSize );

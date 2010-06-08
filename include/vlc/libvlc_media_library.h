@@ -2,7 +2,7 @@
  * libvlc.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: d2192bc788e8bce7b33a2f1f05826b5e95d21676 $
+ * $Id: 76b5b161e6853479324ff23e86fa3b4a39f0036b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -31,20 +31,25 @@
 #ifndef VLC_LIBVLC_MEDIA_LIBRARY_H
 #define VLC_LIBVLC_MEDIA_LIBRARY_H 1
 
-/*****************************************************************************
- * Media Library
- *****************************************************************************/
-/** \defgroup libvlc_media_library libvlc_media_library
+# ifdef __cplusplus
+extern "C" {
+# endif
+
+/** \defgroup libvlc_media_library LibVLC media library
  * \ingroup libvlc
- * LibVLC Media Library
  * @{
  */
 
 typedef struct libvlc_media_library_t libvlc_media_library_t;
 
+/**
+ * Create an new Media Library object
+ *
+ * \param p_instance the libvlc instance
+ * \return a new object or NULL on error
+ */
 VLC_PUBLIC_API libvlc_media_library_t *
-    libvlc_media_library_new( libvlc_instance_t * p_inst,
-                              libvlc_exception_t * p_e );
+    libvlc_media_library_new( libvlc_instance_t * p_instance );
 
 /**
  * Release media library object. This functions decrements the
@@ -70,34 +75,25 @@ VLC_PUBLIC_API void
  * Load media library.
  *
  * \param p_mlib media library object
- * \param p_e an initialized exception object.
+ * \return 0 on success, -1 on error
  */
-VLC_PUBLIC_API void
-    libvlc_media_library_load( libvlc_media_library_t * p_mlib,
-                               libvlc_exception_t * p_e );
-
-/**
- * Save media library.
- *
- * \param p_mlib media library object
- * \param p_e an initialized exception object.
- */
-VLC_PUBLIC_API void
-    libvlc_media_library_save( libvlc_media_library_t * p_mlib,
-                               libvlc_exception_t * p_e );
+VLC_PUBLIC_API int
+    libvlc_media_library_load( libvlc_media_library_t * p_mlib );
 
 /**
  * Get media library subitems.
  *
  * \param p_mlib media library object
- * \param p_e an initialized exception object.
  * \return media list subitems
  */
 VLC_PUBLIC_API libvlc_media_list_t *
-    libvlc_media_library_media_list( libvlc_media_library_t * p_mlib,
-                                     libvlc_exception_t * p_e );
+    libvlc_media_library_media_list( libvlc_media_library_t * p_mlib );
 
 
 /** @} */
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* VLC_LIBVLC_MEDIA_LIBRARY_H */

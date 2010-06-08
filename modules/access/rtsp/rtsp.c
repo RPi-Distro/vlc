@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 9587cea4c5e035e363fdf858f6a191c109105076 $
+ * $Id: 3793c23e5b51f3396d7621a43d50588dd72537ad $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -128,6 +128,7 @@ static int rtsp_put( rtsp_client_t *rtsp, const char *psz_string )
 
 static int rtsp_get_status_code( rtsp_client_t *rtsp, const char *psz_string )
 {
+    VLC_UNUSED(rtsp);
     char psz_buffer[4];
     int i_code = 0;
 

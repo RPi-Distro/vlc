@@ -3,9 +3,9 @@
 
 basedir = video_chroma
 dir = video_chroma
-mods = grey_yuv i420_rgb i420_rgb_mmx i420_rgb_sse2 i420_ymga i420_ymga_mmx i420_yuy2 i420_yuy2_altivec i420_yuy2_mmx i420_yuy2_sse2 i422_i420 i422_yuy2 i422_yuy2_mmx i422_yuy2_sse2 yuy2_i420 yuy2_i422
-libvlc_LTLIBRARIES =  $(LTLIBi420_rgb_mmx) $(LTLIBi420_rgb_sse2) $(LTLIBi420_ymga) $(LTLIBi420_ymga_mmx) $(LTLIBi420_yuy2) $(LTLIBi420_yuy2_altivec) $(LTLIBi420_yuy2_mmx) $(LTLIBi420_yuy2_sse2) $(LTLIBi422_i420) $(LTLIBi422_yuy2) $(LTLIBi422_yuy2_mmx) $(LTLIBi422_yuy2_sse2) $(LTLIByuy2_i420) $(LTLIByuy2_i422)
-EXTRA_LTLIBRARIES =  libi420_rgb_mmx_plugin.la libi420_rgb_sse2_plugin.la libi420_ymga_plugin.la libi420_ymga_mmx_plugin.la libi420_yuy2_plugin.la libi420_yuy2_altivec_plugin.la libi420_yuy2_mmx_plugin.la libi420_yuy2_sse2_plugin.la libi422_i420_plugin.la libi422_yuy2_plugin.la libi422_yuy2_mmx_plugin.la libi422_yuy2_sse2_plugin.la libyuy2_i420_plugin.la libyuy2_i422_plugin.la
+mods = grey_yuv i420_rgb i420_yuy2 i422_i420 i422_yuy2 yuy2_i420 yuy2_i422
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -31,50 +31,6 @@ libi420_rgb_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libi420_rgb_plugin_la_LIBADD = $(AM_LIBADD)
 libi420_rgb_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The i420_rgb_mmx plugin
-libi420_rgb_mmx_plugin_la_SOURCES = $(SOURCES_i420_rgb_mmx)
-nodist_libi420_rgb_mmx_plugin_la_SOURCES = $(nodist_SOURCES_i420_rgb_mmx)
-# Force per-target objects:
-libi420_rgb_mmx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi420_rgb_mmx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi420_rgb_mmx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi420_rgb_mmx_plugin_la_LIBADD = $(AM_LIBADD)
-libi420_rgb_mmx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The i420_rgb_sse2 plugin
-libi420_rgb_sse2_plugin_la_SOURCES = $(SOURCES_i420_rgb_sse2)
-nodist_libi420_rgb_sse2_plugin_la_SOURCES = $(nodist_SOURCES_i420_rgb_sse2)
-# Force per-target objects:
-libi420_rgb_sse2_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi420_rgb_sse2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi420_rgb_sse2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi420_rgb_sse2_plugin_la_LIBADD = $(AM_LIBADD)
-libi420_rgb_sse2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The i420_ymga plugin
-libi420_ymga_plugin_la_SOURCES = $(SOURCES_i420_ymga)
-nodist_libi420_ymga_plugin_la_SOURCES = $(nodist_SOURCES_i420_ymga)
-# Force per-target objects:
-libi420_ymga_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi420_ymga_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi420_ymga_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi420_ymga_plugin_la_LIBADD = $(AM_LIBADD)
-libi420_ymga_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The i420_ymga_mmx plugin
-libi420_ymga_mmx_plugin_la_SOURCES = $(SOURCES_i420_ymga_mmx)
-nodist_libi420_ymga_mmx_plugin_la_SOURCES = $(nodist_SOURCES_i420_ymga_mmx)
-# Force per-target objects:
-libi420_ymga_mmx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi420_ymga_mmx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi420_ymga_mmx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi420_ymga_mmx_plugin_la_LIBADD = $(AM_LIBADD)
-libi420_ymga_mmx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
 # The i420_yuy2 plugin
 libi420_yuy2_plugin_la_SOURCES = $(SOURCES_i420_yuy2)
 nodist_libi420_yuy2_plugin_la_SOURCES = $(nodist_SOURCES_i420_yuy2)
@@ -85,39 +41,6 @@ libi420_yuy2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libi420_yuy2_plugin_la_LIBADD = $(AM_LIBADD)
 libi420_yuy2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The i420_yuy2_altivec plugin
-libi420_yuy2_altivec_plugin_la_SOURCES = $(SOURCES_i420_yuy2_altivec)
-nodist_libi420_yuy2_altivec_plugin_la_SOURCES = $(nodist_SOURCES_i420_yuy2_altivec)
-# Force per-target objects:
-libi420_yuy2_altivec_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi420_yuy2_altivec_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi420_yuy2_altivec_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi420_yuy2_altivec_plugin_la_LIBADD = $(AM_LIBADD)
-libi420_yuy2_altivec_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The i420_yuy2_mmx plugin
-libi420_yuy2_mmx_plugin_la_SOURCES = $(SOURCES_i420_yuy2_mmx)
-nodist_libi420_yuy2_mmx_plugin_la_SOURCES = $(nodist_SOURCES_i420_yuy2_mmx)
-# Force per-target objects:
-libi420_yuy2_mmx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi420_yuy2_mmx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi420_yuy2_mmx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi420_yuy2_mmx_plugin_la_LIBADD = $(AM_LIBADD)
-libi420_yuy2_mmx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The i420_yuy2_sse2 plugin
-libi420_yuy2_sse2_plugin_la_SOURCES = $(SOURCES_i420_yuy2_sse2)
-nodist_libi420_yuy2_sse2_plugin_la_SOURCES = $(nodist_SOURCES_i420_yuy2_sse2)
-# Force per-target objects:
-libi420_yuy2_sse2_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi420_yuy2_sse2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi420_yuy2_sse2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi420_yuy2_sse2_plugin_la_LIBADD = $(AM_LIBADD)
-libi420_yuy2_sse2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The i422_i420 plugin
 libi422_i420_plugin_la_SOURCES = $(SOURCES_i422_i420)
@@ -140,28 +63,6 @@ libi422_yuy2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libi422_yuy2_plugin_la_LIBADD = $(AM_LIBADD)
 libi422_yuy2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The i422_yuy2_mmx plugin
-libi422_yuy2_mmx_plugin_la_SOURCES = $(SOURCES_i422_yuy2_mmx)
-nodist_libi422_yuy2_mmx_plugin_la_SOURCES = $(nodist_SOURCES_i422_yuy2_mmx)
-# Force per-target objects:
-libi422_yuy2_mmx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi422_yuy2_mmx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi422_yuy2_mmx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi422_yuy2_mmx_plugin_la_LIBADD = $(AM_LIBADD)
-libi422_yuy2_mmx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The i422_yuy2_sse2 plugin
-libi422_yuy2_sse2_plugin_la_SOURCES = $(SOURCES_i422_yuy2_sse2)
-nodist_libi422_yuy2_sse2_plugin_la_SOURCES = $(nodist_SOURCES_i422_yuy2_sse2)
-# Force per-target objects:
-libi422_yuy2_sse2_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi422_yuy2_sse2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libi422_yuy2_sse2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libi422_yuy2_sse2_plugin_la_LIBADD = $(AM_LIBADD)
-libi422_yuy2_sse2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The yuy2_i420 plugin
 libyuy2_i420_plugin_la_SOURCES = $(SOURCES_yuy2_i420)

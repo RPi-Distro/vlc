@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: c91583cbd8cba66dee41f8de7a6a4f14e129dd13 $
+ * $Id: d3f22a72428d3eaf402dc6071e145e6c76ee6d96 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -35,27 +35,49 @@
 #include <vlc_dialog.h>
 #include <vlc_aout.h>
 
+// By pass part of header which compile with some warnings,
+// and that we don't require.
+#define __MACHINEEXCEPTIONS__
+
 #include <CoreAudio/CoreAudio.h>
+#include <AudioUnit/AudioUnit.h>
 #include <AudioUnit/AudioUnitProperties.h>
 #include <AudioUnit/AudioUnitParameters.h>
 #include <AudioUnit/AudioOutputUnit.h>
 #include <AudioToolbox/AudioFormat.h>
 
+#ifndef verify_noerr
+#define verify_noerr(a) assert((a) == noErr)
+#endif
+
+#if AUDIO_UNIT_VERSION < 1060
+#define AudioComponent Component
+#define AudioComponentDescription ComponentDescription
+#define AudioComponentFindNext FindNextComponent
+#define AudioComponentInstanceNew OpenAComponent
+#define AudioComponentInstanceDispose CloseComponent
+#define AudioComponentInstanceNew OpenAComponent
+#define AudioComponentInstanceNew OpenAComponent
+#else
+#include <AudioUnit/AudioComponent.h>
+#endif
+
 #define STREAM_FORMAT_MSG( pre, sfm ) \
-    pre "[%ld][%4.4s][%ld][%ld][%ld][%ld][%ld][%ld]", \
+    pre "[%u][%4.4s][%u][%u][%u][%u][%u][%u]", \
     (UInt32)sfm.mSampleRate, (char *)&sfm.mFormatID, \
     sfm.mFormatFlags, sfm.mBytesPerPacket, \
     sfm.mFramesPerPacket, sfm.mBytesPerFrame, \
     sfm.mChannelsPerFrame, sfm.mBitsPerChannel
 
 #define STREAM_FORMAT_MSG_FULL( pre, sfm ) \
-    pre ":\nsamplerate: [%ld]\nFormatID: [%4.4s]\nFormatFlags: [%ld]\nBypesPerPacket: [%ld]\nFramesPerPacket: [%ld]\nBytesPerFrame: [%ld]\nChannelsPerFrame: [%ld]\nBitsPerChannel[%ld]", \
+    pre ":\nsamplerate: [%u]\nFormatID: [%4.4s]\nFormatFlags: [%u]\nBypesPerPacket: [%u]\nFramesPerPacket: [%u]\nBytesPerFrame: [%u]\nChannelsPerFrame: [%u]\nBitsPerChannel[%u]", \
     (UInt32)sfm.mSampleRate, (char *)&sfm.mFormatID, \
     sfm.mFormatFlags, sfm.mBytesPerPacket, \
     sfm.mFramesPerPacket, sfm.mBytesPerFrame, \
     sfm.mChannelsPerFrame, sfm.mBitsPerChannel
 
-#define BUFSIZE 0xffffff
+#define FRAMESIZE 2048
+#define BUFSIZE (FRAMESIZE * 8)
 #define AOUT_VAR_SPDIF_FLAG 0xf00000
 
 /*
@@ -82,7 +104,7 @@ struct aout_sys_t
     mtime_t                     clock_diff;     /* Difference between VLC clock and Device clock */
 
     /* AUHAL specific */
-    Component                   au_component;   /* The Audiocomponent we use */
+    AudioComponent              au_component;   /* The Audiocomponent we use */
     AudioUnit                   au_unit;        /* The AudioUnit we use */
     uint8_t                     p_remainder_buffer[BUFSIZE];
     uint32_t                    i_read_bytes;
@@ -123,6 +145,7 @@ static OSStatus StreamListener          ( AudioStreamID, UInt32,
                                           AudioDevicePropertyID, void * );
 static int      AudioDeviceCallback     ( vlc_object_t *, const char *,
                                           vlc_value_t, vlc_value_t, void * );
+
 
 
 /*****************************************************************************
@@ -243,7 +266,7 @@ static int Open( vlc_object_t * p_this )
     if( p_sys->i_hog_pid != -1 && p_sys->i_hog_pid != getpid() )
     {
         msg_Err( p_aout, "Selected audio device is exclusively in use by another program." );
-        dialog_Fatal( p_aout, _("Audio output failed"),
+        dialog_Fatal( p_aout, _("Audio output failed"), "%s",
                         _("The selected audio output device is exclusively in "
                           "use by another program.") );
         goto error;
@@ -277,7 +300,7 @@ static int OpenAnalog( aout_instance_t *p_aout )
     OSStatus                    err = noErr;
     UInt32                      i_param_size = 0, i = 0;
     int                         i_original;
-    ComponentDescription        desc;
+    AudioComponentDescription   desc;
     AudioStreamBasicDescription DeviceFormat;
     AudioChannelLayout          *layout;
     AudioChannelLayout          new_layout;
@@ -290,14 +313,14 @@ static int OpenAnalog( aout_instance_t *p_aout )
     desc.componentFlags = 0;
     desc.componentFlagsMask = 0;
 
-    p_sys->au_component = FindNextComponent( NULL, &desc );
+    p_sys->au_component = AudioComponentFindNext( NULL, &desc );
     if( p_sys->au_component == NULL )
     {
         msg_Warn( p_aout, "we cannot find our HAL component" );
         return false;
     }
 
-    err = OpenAComponent( p_sys->au_component, &p_sys->au_unit );
+    err = AudioComponentInstanceNew( p_sys->au_component, &p_sys->au_unit );
     if( err != noErr )
     {
         msg_Warn( p_aout, "we cannot open our HAL component" );
@@ -428,7 +451,7 @@ static int OpenAnalog( aout_instance_t *p_aout )
             {
                 p_aout->output.output.i_physical_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
                 msg_Err( p_aout, "You should configure your speaker layout with Audio Midi Setup Utility in /Applications/Utilities. Now using Stereo mode." );
-                dialog_Fatal( p_aout, _("Audio device is not configured"),
+                dialog_Fatal( p_aout, _("Audio device is not configured"), "%s",
                                 _("You should configure your speaker layout with "
                                   "the \"Audio Midi Setup\" utility in /Applications/"
                                   "Utilities. Stereo mode is being used now.") );
@@ -513,7 +536,7 @@ static int OpenAnalog( aout_instance_t *p_aout )
     DeviceFormat.mFormatID = kAudioFormatLinearPCM;
 
     /* We use float 32. It's the best supported format by both VLC and Coreaudio */
-    p_aout->output.output.i_format = VLC_FOURCC( 'f','l','3','2');
+    p_aout->output.output.i_format = VLC_CODEC_FL32;
     DeviceFormat.mFormatFlags = kAudioFormatFlagsNativeFloatPacked;
     DeviceFormat.mBitsPerChannel = 32;
     DeviceFormat.mChannelsPerFrame = aout_FormatNbChannels( &p_aout->output.output );
@@ -522,7 +545,7 @@ static int OpenAnalog( aout_instance_t *p_aout )
     DeviceFormat.mFramesPerPacket = 1;
     DeviceFormat.mBytesPerFrame = DeviceFormat.mBitsPerChannel * DeviceFormat.mChannelsPerFrame / 8;
     DeviceFormat.mBytesPerPacket = DeviceFormat.mBytesPerFrame * DeviceFormat.mFramesPerPacket;
- 
+
     /* Set the desired format */
     i_param_size = sizeof(AudioStreamBasicDescription);
     verify_noerr( AudioUnitSetProperty( p_sys->au_unit,
@@ -546,7 +569,7 @@ static int OpenAnalog( aout_instance_t *p_aout )
 
     /* Do the last VLC aout setups */
     aout_FormatPrepare( &p_aout->output.output );
-    p_aout->output.i_nb_samples = 2048;
+    p_aout->output.i_nb_samples = FRAMESIZE;
     aout_VolumeSoftInit( p_aout );
 
     /* set the IOproc callback */
@@ -768,9 +791,9 @@ static int OpenSPDIF( aout_instance_t * p_aout )
 
     /* Set the format flags */
     if( p_sys->stream_format.mFormatFlags & kAudioFormatFlagIsBigEndian )
-        p_aout->output.output.i_format = VLC_FOURCC('s','p','d','b');
+        p_aout->output.output.i_format = VLC_CODEC_SPDIFB;
     else
-        p_aout->output.output.i_format = VLC_FOURCC('s','p','d','i');
+        p_aout->output.output.i_format = VLC_CODEC_SPDIFL;
     p_aout->output.output.i_bytes_per_frame = AOUT_SPDIF_SIZE;
     p_aout->output.output.i_frame_length = A52_FRAME_NB;
     p_aout->output.i_nb_samples = p_aout->output.output.i_frame_length;
@@ -827,7 +850,7 @@ static void Close( vlc_object_t * p_this )
     {
         verify_noerr( AudioOutputUnitStop( p_sys->au_unit ) );
         verify_noerr( AudioUnitUninitialize( p_sys->au_unit ) );
-        verify_noerr( CloseComponent( p_sys->au_unit ) );
+        verify_noerr( AudioComponentInstanceDispose( p_sys->au_unit ) );
     }
  
     if( p_sys->b_digital )
@@ -938,7 +961,7 @@ static void Probe( aout_instance_t * p_aout )
         goto error;
     }
 
-    msg_Dbg( p_aout, "system has [%ld] device(s)", p_sys->i_devices );
+    msg_Dbg( p_aout, "system has [%u] device(s)", p_sys->i_devices );
 
     /* Allocate DeviceID array */
     p_devices = (AudioDeviceID*)malloc( sizeof(AudioDeviceID) * p_sys->i_devices );
@@ -989,7 +1012,7 @@ static void Probe( aout_instance_t * p_aout )
                     &i_param_size, psz_name);
         if( err ) goto error;
 
-        msg_Dbg( p_aout, "DevID: %#lx DevName: %s", p_devices[i], psz_name );
+        msg_Dbg( p_aout, "DevID: %u DevName: %s", p_devices[i], psz_name );
 
         if( !AudioDeviceHasOutput( p_devices[i]) )
         {
@@ -1017,7 +1040,8 @@ static void Probe( aout_instance_t * p_aout )
             {
                 var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
                 free( text.psz_string );
-                if( p_sys->i_default_dev == p_devices[i] && config_GetInt( p_aout, "spdif" ) )
+                if( p_sys->i_default_dev == p_devices[i]
+                 && var_InheritBool( p_aout, "spdif" ) )
                 {
                     /* We selected to prefer SPDIF output if available
                      * then this "dummy" entry should be selected */
@@ -1321,10 +1345,10 @@ static OSStatus RenderCallbackAnalog( vlc_object_t *_p_aout,
         /* We don't have enough data yet */
         aout_buffer_t * p_buffer;
         p_buffer = aout_OutputNextBuffer( p_aout, current_date , false );
- 
+
         if( p_buffer != NULL )
         {
-            uint32_t i_second_mData_bytes = __MIN( p_buffer->i_nb_bytes, ioData->mBuffers[0].mDataByteSize - i_mData_bytes );
+            uint32_t i_second_mData_bytes = __MIN( p_buffer->i_buffer, ioData->mBuffers[0].mDataByteSize - i_mData_bytes );
  
             vlc_memcpy( (uint8_t *)ioData->mBuffers[0].mData + i_mData_bytes,
                         p_buffer->p_buffer, i_second_mData_bytes );
@@ -1332,10 +1356,12 @@ static OSStatus RenderCallbackAnalog( vlc_object_t *_p_aout,
 
             if( i_mData_bytes >= ioData->mBuffers[0].mDataByteSize )
             {
-                p_sys->i_total_bytes = p_buffer->i_nb_bytes - i_second_mData_bytes;
+                p_sys->i_total_bytes = p_buffer->i_buffer - i_second_mData_bytes;
                 vlc_memcpy( p_sys->p_remainder_buffer,
                             &p_buffer->p_buffer[i_second_mData_bytes],
                             p_sys->i_total_bytes );
+                aout_BufferFree( p_buffer );
+                break;
             }
             else
             {
@@ -1390,11 +1416,11 @@ static OSStatus RenderCallbackSPDIF( AudioDeviceID inDevice,
 #define BUFFER outOutputData->mBuffers[p_sys->i_stream_index]
     if( p_buffer != NULL )
     {
-        if( (int)BUFFER.mDataByteSize != (int)p_buffer->i_nb_bytes)
-            msg_Warn( p_aout, "bytesize: %d nb_bytes: %d", (int)BUFFER.mDataByteSize, (int)p_buffer->i_nb_bytes );
+        if( (int)BUFFER.mDataByteSize != (int)p_buffer->i_buffer)
+            msg_Warn( p_aout, "bytesize: %d nb_bytes: %d", (int)BUFFER.mDataByteSize, (int)p_buffer->i_buffer );
  
         /* move data into output data buffer */
-        vlc_memcpy( BUFFER.mData, p_buffer->p_buffer, p_buffer->i_nb_bytes );
+        vlc_memcpy( BUFFER.mData, p_buffer->p_buffer, p_buffer->i_buffer );
         aout_BufferFree( p_buffer );
     }
     else

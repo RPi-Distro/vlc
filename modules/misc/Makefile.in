@@ -47,7 +47,9 @@ host_triplet = @host@
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/Modules.am $(top_srcdir)/modules/common.am
 @BUILD_LUA_TRUE@am__append_1 = lua
-@ENABLE_SOUT_TRUE@am__append_2 = \
+@HAVE_WINCE_TRUE@am__append_2 = libwin32text_plugin.la
+@HAVE_DARWIN_TRUE@am__append_3 = libquartztext_plugin.la
+@ENABLE_SOUT_TRUE@am__append_4 = \
 @ENABLE_SOUT_TRUE@	libvod_rtsp_plugin.la \
 @ENABLE_SOUT_TRUE@	$(NULL)
 
@@ -61,7 +63,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/m4/with_pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -99,7 +102,10 @@ nodist_libaudioscrobbler_plugin_la_OBJECTS =
 libaudioscrobbler_plugin_la_OBJECTS =  \
 	$(am_libaudioscrobbler_plugin_la_OBJECTS) \
 	$(nodist_libaudioscrobbler_plugin_la_OBJECTS)
-libaudioscrobbler_plugin_la_LINK = $(LIBTOOL) --tag=CC \
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+libaudioscrobbler_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libaudioscrobbler_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -108,130 +114,116 @@ am_libfreetype_plugin_la_OBJECTS = $(am__objects_2)
 nodist_libfreetype_plugin_la_OBJECTS =
 libfreetype_plugin_la_OBJECTS = $(am_libfreetype_plugin_la_OBJECTS) \
 	$(nodist_libfreetype_plugin_la_OBJECTS)
-libfreetype_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libfreetype_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libfreetype_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_3 = libgnome2_main_plugin_la-gtk_main.lo
-am_libgnome2_main_plugin_la_OBJECTS = $(am__objects_3)
-nodist_libgnome2_main_plugin_la_OBJECTS =
-libgnome2_main_plugin_la_OBJECTS =  \
-	$(am_libgnome2_main_plugin_la_OBJECTS) \
-	$(nodist_libgnome2_main_plugin_la_OBJECTS)
-libgnome2_main_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libgnome2_main_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am__objects_4 = libgnome_main_plugin_la-gtk_main.lo
-am_libgnome_main_plugin_la_OBJECTS = $(am__objects_4)
-nodist_libgnome_main_plugin_la_OBJECTS =
-libgnome_main_plugin_la_OBJECTS =  \
-	$(am_libgnome_main_plugin_la_OBJECTS) \
-	$(nodist_libgnome_main_plugin_la_OBJECTS)
-libgnome_main_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libgnome_main_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am__objects_5 = libgnutls_plugin_la-gnutls.lo
-am_libgnutls_plugin_la_OBJECTS = $(am__objects_5)
+am__objects_3 = libgnutls_plugin_la-gnutls.lo
+am_libgnutls_plugin_la_OBJECTS = $(am__objects_3)
 nodist_libgnutls_plugin_la_OBJECTS =
 libgnutls_plugin_la_OBJECTS = $(am_libgnutls_plugin_la_OBJECTS) \
 	$(nodist_libgnutls_plugin_la_OBJECTS)
-libgnutls_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libgnutls_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libgnutls_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_6 = libgtk2_main_plugin_la-gtk_main.lo
-am_libgtk2_main_plugin_la_OBJECTS = $(am__objects_6)
-nodist_libgtk2_main_plugin_la_OBJECTS =
-libgtk2_main_plugin_la_OBJECTS = $(am_libgtk2_main_plugin_la_OBJECTS) \
-	$(nodist_libgtk2_main_plugin_la_OBJECTS)
-libgtk2_main_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libgtk2_main_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am__objects_7 = libgtk_main_plugin_la-gtk_main.lo
-am_libgtk_main_plugin_la_OBJECTS = $(am__objects_7)
-nodist_libgtk_main_plugin_la_OBJECTS =
-libgtk_main_plugin_la_OBJECTS = $(am_libgtk_main_plugin_la_OBJECTS) \
-	$(nodist_libgtk_main_plugin_la_OBJECTS)
-libgtk_main_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libgtk_main_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am__objects_8 = libinhibit_plugin_la-inhibit.lo
-am_libinhibit_plugin_la_OBJECTS = $(am__objects_8)
+am__objects_4 = libinhibit_plugin_la-inhibit.lo
+am_libinhibit_plugin_la_OBJECTS = $(am__objects_4)
 nodist_libinhibit_plugin_la_OBJECTS =
 libinhibit_plugin_la_OBJECTS = $(am_libinhibit_plugin_la_OBJECTS) \
 	$(nodist_libinhibit_plugin_la_OBJECTS)
-libinhibit_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libinhibit_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libinhibit_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_9 = liblogger_plugin_la-logger.lo
-am_liblogger_plugin_la_OBJECTS = $(am__objects_9)
+am__objects_5 = liblogger_plugin_la-logger.lo
+am_liblogger_plugin_la_OBJECTS = $(am__objects_5)
 nodist_liblogger_plugin_la_OBJECTS =
 liblogger_plugin_la_OBJECTS = $(am_liblogger_plugin_la_OBJECTS) \
 	$(nodist_liblogger_plugin_la_OBJECTS)
-liblogger_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+liblogger_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(liblogger_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_10 = libqte_main_plugin_la-qte_main.lo
-am_libqte_main_plugin_la_OBJECTS = $(am__objects_10)
-nodist_libqte_main_plugin_la_OBJECTS =
-libqte_main_plugin_la_OBJECTS = $(am_libqte_main_plugin_la_OBJECTS) \
-	$(nodist_libqte_main_plugin_la_OBJECTS)
-libqte_main_plugin_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(libqte_main_plugin_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am__objects_11 = libquartztext_plugin_la-quartztext.lo
-am_libquartztext_plugin_la_OBJECTS = $(am__objects_11)
+am__objects_6 = libosso_screensaver_plugin_la-osso.lo
+am_libosso_screensaver_plugin_la_OBJECTS = $(am__objects_6)
+nodist_libosso_screensaver_plugin_la_OBJECTS =
+libosso_screensaver_plugin_la_OBJECTS =  \
+	$(am_libosso_screensaver_plugin_la_OBJECTS) \
+	$(nodist_libosso_screensaver_plugin_la_OBJECTS)
+libosso_screensaver_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libosso_screensaver_plugin_la_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__objects_7 = libquartztext_plugin_la-quartztext.lo
+am_libquartztext_plugin_la_OBJECTS = $(am__objects_7)
 nodist_libquartztext_plugin_la_OBJECTS =
 libquartztext_plugin_la_OBJECTS =  \
 	$(am_libquartztext_plugin_la_OBJECTS) \
 	$(nodist_libquartztext_plugin_la_OBJECTS)
-libquartztext_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libquartztext_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libquartztext_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_12 = libscreensaver_plugin_la-screensaver.lo
-am_libscreensaver_plugin_la_OBJECTS = $(am__objects_12)
-nodist_libscreensaver_plugin_la_OBJECTS =
-libscreensaver_plugin_la_OBJECTS =  \
-	$(am_libscreensaver_plugin_la_OBJECTS) \
-	$(nodist_libscreensaver_plugin_la_OBJECTS)
-libscreensaver_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libscreensaver_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+@HAVE_DARWIN_TRUE@am_libquartztext_plugin_la_rpath = -rpath \
+@HAVE_DARWIN_TRUE@	$(libvlcdir)
+am__objects_8 = libsqlite_plugin_la-sqlite.lo
+am_libsqlite_plugin_la_OBJECTS = $(am__objects_8)
+nodist_libsqlite_plugin_la_OBJECTS =
+libsqlite_plugin_la_OBJECTS = $(am_libsqlite_plugin_la_OBJECTS) \
+	$(nodist_libsqlite_plugin_la_OBJECTS)
+libsqlite_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libsqlite_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_13 = libsvg_plugin_la-svg.lo
-am_libsvg_plugin_la_OBJECTS = $(am__objects_13)
+am__objects_9 = libsvg_plugin_la-svg.lo
+am_libsvg_plugin_la_OBJECTS = $(am__objects_9)
 nodist_libsvg_plugin_la_OBJECTS =
 libsvg_plugin_la_OBJECTS = $(am_libsvg_plugin_la_OBJECTS) \
 	$(nodist_libsvg_plugin_la_OBJECTS)
-libsvg_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libsvg_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_14 = libvod_rtsp_plugin_la-rtsp.lo
-am_libvod_rtsp_plugin_la_OBJECTS = $(am__objects_14)
+libsvg_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libsvg_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
+am__objects_10 = libvod_rtsp_plugin_la-rtsp.lo
+am_libvod_rtsp_plugin_la_OBJECTS = $(am__objects_10)
 nodist_libvod_rtsp_plugin_la_OBJECTS =
 libvod_rtsp_plugin_la_OBJECTS = $(am_libvod_rtsp_plugin_la_OBJECTS) \
 	$(nodist_libvod_rtsp_plugin_la_OBJECTS)
-libvod_rtsp_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libvod_rtsp_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libvod_rtsp_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @ENABLE_SOUT_TRUE@am_libvod_rtsp_plugin_la_rpath = -rpath $(libvlcdir)
-am__objects_15 = libwin32text_plugin_la-win32text.lo
-am_libwin32text_plugin_la_OBJECTS = $(am__objects_15)
+am__objects_11 = libwin32text_plugin_la-win32text.lo
+am_libwin32text_plugin_la_OBJECTS = $(am__objects_11)
 nodist_libwin32text_plugin_la_OBJECTS =
 libwin32text_plugin_la_OBJECTS = $(am_libwin32text_plugin_la_OBJECTS) \
 	$(nodist_libwin32text_plugin_la_OBJECTS)
-libwin32text_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libwin32text_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libwin32text_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+@HAVE_WINCE_TRUE@am_libwin32text_plugin_la_rpath = -rpath $(libvlcdir)
+am__objects_12 = libxdg_screensaver_plugin_la-xdg.lo
+am_libxdg_screensaver_plugin_la_OBJECTS = $(am__objects_12)
+nodist_libxdg_screensaver_plugin_la_OBJECTS =
+libxdg_screensaver_plugin_la_OBJECTS =  \
+	$(am_libxdg_screensaver_plugin_la_OBJECTS) \
+	$(nodist_libxdg_screensaver_plugin_la_OBJECTS)
+libxdg_screensaver_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libxdg_screensaver_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__objects_13 = libxscreensaver_plugin_la-xscreensaver.lo
+am_libxscreensaver_plugin_la_OBJECTS = $(am__objects_13)
+nodist_libxscreensaver_plugin_la_OBJECTS =
+libxscreensaver_plugin_la_OBJECTS =  \
+	$(am_libxscreensaver_plugin_la_OBJECTS) \
+	$(nodist_libxscreensaver_plugin_la_OBJECTS)
+libxscreensaver_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libxscreensaver_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
@@ -239,64 +231,62 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-LTCXXCOMPILE = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libaudioscrobbler_plugin_la_SOURCES) \
 	$(nodist_libaudioscrobbler_plugin_la_SOURCES) \
 	$(libfreetype_plugin_la_SOURCES) \
 	$(nodist_libfreetype_plugin_la_SOURCES) \
-	$(libgnome2_main_plugin_la_SOURCES) \
-	$(nodist_libgnome2_main_plugin_la_SOURCES) \
-	$(libgnome_main_plugin_la_SOURCES) \
-	$(nodist_libgnome_main_plugin_la_SOURCES) \
 	$(libgnutls_plugin_la_SOURCES) \
 	$(nodist_libgnutls_plugin_la_SOURCES) \
-	$(libgtk2_main_plugin_la_SOURCES) \
-	$(nodist_libgtk2_main_plugin_la_SOURCES) \
-	$(libgtk_main_plugin_la_SOURCES) \
-	$(nodist_libgtk_main_plugin_la_SOURCES) \
 	$(libinhibit_plugin_la_SOURCES) \
 	$(nodist_libinhibit_plugin_la_SOURCES) \
 	$(liblogger_plugin_la_SOURCES) \
 	$(nodist_liblogger_plugin_la_SOURCES) \
-	$(libqte_main_plugin_la_SOURCES) \
-	$(nodist_libqte_main_plugin_la_SOURCES) \
+	$(libosso_screensaver_plugin_la_SOURCES) \
+	$(nodist_libosso_screensaver_plugin_la_SOURCES) \
 	$(libquartztext_plugin_la_SOURCES) \
 	$(nodist_libquartztext_plugin_la_SOURCES) \
-	$(libscreensaver_plugin_la_SOURCES) \
-	$(nodist_libscreensaver_plugin_la_SOURCES) \
+	$(libsqlite_plugin_la_SOURCES) \
+	$(nodist_libsqlite_plugin_la_SOURCES) \
 	$(libsvg_plugin_la_SOURCES) $(nodist_libsvg_plugin_la_SOURCES) \
 	$(libvod_rtsp_plugin_la_SOURCES) \
 	$(nodist_libvod_rtsp_plugin_la_SOURCES) \
 	$(libwin32text_plugin_la_SOURCES) \
-	$(nodist_libwin32text_plugin_la_SOURCES)
+	$(nodist_libwin32text_plugin_la_SOURCES) \
+	$(libxdg_screensaver_plugin_la_SOURCES) \
+	$(nodist_libxdg_screensaver_plugin_la_SOURCES) \
+	$(libxscreensaver_plugin_la_SOURCES) \
+	$(nodist_libxscreensaver_plugin_la_SOURCES)
 DIST_SOURCES = $(libaudioscrobbler_plugin_la_SOURCES) \
 	$(libfreetype_plugin_la_SOURCES) \
-	$(libgnome2_main_plugin_la_SOURCES) \
-	$(libgnome_main_plugin_la_SOURCES) \
-	$(libgnutls_plugin_la_SOURCES) \
-	$(libgtk2_main_plugin_la_SOURCES) \
-	$(libgtk_main_plugin_la_SOURCES) \
-	$(libinhibit_plugin_la_SOURCES) $(liblogger_plugin_la_SOURCES) \
-	$(libqte_main_plugin_la_SOURCES) \
+	$(libgnutls_plugin_la_SOURCES) $(libinhibit_plugin_la_SOURCES) \
+	$(liblogger_plugin_la_SOURCES) \
+	$(libosso_screensaver_plugin_la_SOURCES) \
 	$(libquartztext_plugin_la_SOURCES) \
-	$(libscreensaver_plugin_la_SOURCES) \
-	$(libsvg_plugin_la_SOURCES) $(libvod_rtsp_plugin_la_SOURCES) \
-	$(libwin32text_plugin_la_SOURCES)
+	$(libsqlite_plugin_la_SOURCES) $(libsvg_plugin_la_SOURCES) \
+	$(libvod_rtsp_plugin_la_SOURCES) \
+	$(libwin32text_plugin_la_SOURCES) \
+	$(libxdg_screensaver_plugin_la_SOURCES) \
+	$(libxscreensaver_plugin_la_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -339,11 +329,14 @@ am__relativize = \
   reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
-ALLOCA = @ALLOCA@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = @AM_CPPFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
+ARM_NEON_CFLAGS = @ARM_NEON_CFLAGS@
 AS = @AS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
@@ -369,8 +362,6 @@ COPYRIGHT_MESSAGE = @COPYRIGHT_MESSAGE@
 COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CSRI_CFLAGS = @CSRI_CFLAGS@
-CSRI_LIBS = @CSRI_LIBS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -379,6 +370,8 @@ CYGPATH = @CYGPATH@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
+DC1394_CFLAGS = @DC1394_CFLAGS@
+DC1394_LIBS = @DC1394_LIBS@
 DCA_CFLAGS = @DCA_CFLAGS@
 DCA_LIBS = @DCA_LIBS@
 DEFS = @DEFS@
@@ -393,6 +386,8 @@ DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DV_CFLAGS = @DV_CFLAGS@
+DV_LIBS = @DV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -401,27 +396,32 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FLAC_CFLAGS = @FLAC_CFLAGS@
+FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
 FRIBIDI_LIBS = @FRIBIDI_LIBS@
+GCRYPT_CFLAGS = @GCRYPT_CFLAGS@
+GCRYPT_LIBS = @GCRYPT_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GLIB2_CFLAGS = @GLIB2_CFLAGS@
-GLIB2_LIBS = @GLIB2_LIBS@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
 GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
+GOOM_CFLAGS = @GOOM_CFLAGS@
+GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-HAL_CFLAGS = @HAL_CFLAGS@
-HAL_LIBS = @HAL_LIBS@
 HILDON_CFLAGS = @HILDON_CFLAGS@
+HILDON_FM_CFLAGS = @HILDON_FM_CFLAGS@
+HILDON_FM_LIBS = @HILDON_FM_LIBS@
 HILDON_LIBS = @HILDON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -430,8 +430,11 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+JACK_CFLAGS = @JACK_CFLAGS@
+JACK_LIBS = @JACK_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
+KDE4_CONFIG = @KDE4_CONFIG@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -440,14 +443,12 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBCDIO_CFLAGS = @LIBCDIO_CFLAGS@
 LIBCDIO_LIBS = @LIBCDIO_LIBS@
-LIBCDIO_PARANOIA_CFLAGS = @LIBCDIO_PARANOIA_CFLAGS@
-LIBCDIO_PARANOIA_LIBS = @LIBCDIO_PARANOIA_LIBS@
+LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
-LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
-LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
+LIBMODPLUG_CFLAGS = @LIBMODPLUG_CFLAGS@
+LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -457,15 +458,23 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIBV4L_CFLAGS = @LIBV4L_CFLAGS@
+LIBV4L_LIBS = @LIBV4L_LIBS@
+LIBVA_CFLAGS = @LIBVA_CFLAGS@
+LIBVA_LIBS = @LIBVA_LIBS@
+LIBVCDINFO_CFLAGS = @LIBVCDINFO_CFLAGS@
+LIBVCDINFO_LIBS = @LIBVCDINFO_LIBS@
+LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
+LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
-LTLIBa52tospdif = @LTLIBa52tospdif@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_alsa = @LTLIBaccess_alsa@
+LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_dv = @LTLIBaccess_dv@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
@@ -475,212 +484,114 @@ LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_oss = @LTLIBaccess_oss@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
+LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
-LTLIBadjust = @LTLIBadjust@
-LTLIBalphamask = @LTLIBalphamask@
 LTLIBalsa = @LTLIBalsa@
 LTLIBaout_directx = @LTLIBaout_directx@
-LTLIBaout_file = @LTLIBaout_file@
 LTLIBaout_sdl = @LTLIBaout_sdl@
 LTLIBasademux = @LTLIBasademux@
 LTLIBatmo = @LTLIBatmo@
-LTLIBaudio_format = @LTLIBaudio_format@
-LTLIBaudioscrobbler = @LTLIBaudioscrobbler@
 LTLIBauhal = @LTLIBauhal@
 LTLIBavcodec = @LTLIBavcodec@
 LTLIBavformat = @LTLIBavformat@
-LTLIBbandlimited_resampler = @LTLIBbandlimited_resampler@
 LTLIBbda = @LTLIBbda@
-LTLIBbeos = @LTLIBbeos@
-LTLIBblend = @LTLIBblend@
-LTLIBblendbench = @LTLIBblendbench@
-LTLIBbluescreen = @LTLIBbluescreen@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
-LTLIBcanvas = @LTLIBcanvas@
 LTLIBcdda = @LTLIBcdda@
-LTLIBcddax = @LTLIBcddax@
-LTLIBchain = @LTLIBchain@
-LTLIBclone = @LTLIBclone@
-LTLIBcmml = @LTLIBcmml@
-LTLIBcolorthres = @LTLIBcolorthres@
-LTLIBconverter_float = @LTLIBconverter_float@
-LTLIBcrop = @LTLIBcrop@
-LTLIBcroppadd = @LTLIBcroppadd@
-LTLIBcsri = @LTLIBcsri@
 LTLIBdbus = @LTLIBdbus@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdeinterlace = @LTLIBdeinterlace@
 LTLIBdirac = @LTLIBdirac@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
+LTLIBdirectx = @LTLIBdirectx@
 LTLIBdmo = @LTLIBdmo@
-LTLIBdolby_surround_decoder = @LTLIBdolby_surround_decoder@
 LTLIBdshow = @LTLIBdshow@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
-LTLIBdtstospdif = @LTLIBdtstospdif@
 LTLIBdvb = @LTLIBdvb@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
 LTLIBdynamicoverlay = @LTLIBdynamicoverlay@
-LTLIBequalizer = @LTLIBequalizer@
-LTLIBerase = @LTLIBerase@
-LTLIBextract = @LTLIBextract@
 LTLIBfaad = @LTLIBfaad@
-LTLIBfake = @LTLIBfake@
 LTLIBfb = @LTLIBfb@
 LTLIBfbosd = @LTLIBfbosd@
-LTLIBfloat32_mixer = @LTLIBfloat32_mixer@
+LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
-LTLIBfolder = @LTLIBfolder@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgalaktos = @LTLIBgalaktos@
-LTLIBgaussianblur = @LTLIBgaussianblur@
-LTLIBgestures = @LTLIBgestures@
 LTLIBggi = @LTLIBggi@
 LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
-LTLIBgnome2_main = @LTLIBgnome2_main@
-LTLIBgnome_main = @LTLIBgnome_main@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
-LTLIBgradient = @LTLIBgradient@
-LTLIBgrain = @LTLIBgrain@
 LTLIBgrowl = @LTLIBgrowl@
 LTLIBgrowl_udp = @LTLIBgrowl_udp@
-LTLIBgtk2_main = @LTLIBgtk2_main@
-LTLIBgtk_main = @LTLIBgtk_main@
-LTLIBhal = @LTLIBhal@
 LTLIBhd1000a = @LTLIBhd1000a@
 LTLIBhd1000v = @LTLIBhd1000v@
-LTLIBheadphone_channel_mixer = @LTLIBheadphone_channel_mixer@
-LTLIBhotkeys = @LTLIBhotkeys@
-LTLIBhttp = @LTLIBhttp@
-LTLIBi420_rgb_mmx = @LTLIBi420_rgb_mmx@
-LTLIBi420_rgb_sse2 = @LTLIBi420_rgb_sse2@
-LTLIBi420_ymga = @LTLIBi420_ymga@
-LTLIBi420_ymga_mmx = @LTLIBi420_ymga_mmx@
-LTLIBi420_yuy2 = @LTLIBi420_yuy2@
-LTLIBi420_yuy2_altivec = @LTLIBi420_yuy2_altivec@
-LTLIBi420_yuy2_mmx = @LTLIBi420_yuy2_mmx@
-LTLIBi420_yuy2_sse2 = @LTLIBi420_yuy2_sse2@
-LTLIBi422_i420 = @LTLIBi422_i420@
-LTLIBi422_yuy2 = @LTLIBi422_yuy2@
-LTLIBi422_yuy2_mmx = @LTLIBi422_yuy2_mmx@
-LTLIBi422_yuy2_sse2 = @LTLIBi422_yuy2_sse2@
+LTLIBhildon = @LTLIBhildon@
 LTLIBid3tag = @LTLIBid3tag@
 LTLIBinhibit = @LTLIBinhibit@
-LTLIBinvert = @LTLIBinvert@
 LTLIBjack = @LTLIBjack@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlinear_resampler = @LTLIBlinear_resampler@
 LTLIBlirc = @LTLIBlirc@
 LTLIBlive555 = @LTLIBlive555@
-LTLIBlogo = @LTLIBlogo@
 LTLIBmacosx = @LTLIBmacosx@
-LTLIBmaemo = @LTLIBmaemo@
-LTLIBmagnify = @LTLIBmagnify@
-LTLIBmarq = @LTLIBmarq@
-LTLIBmemcpy3dn = @LTLIBmemcpy3dn@
-LTLIBmemcpyaltivec = @LTLIBmemcpyaltivec@
-LTLIBmemcpymmx = @LTLIBmemcpymmx@
-LTLIBmemcpymmxext = @LTLIBmemcpymmxext@
-LTLIBmga = @LTLIBmga@
+LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
 LTLIBmod = @LTLIBmod@
-LTLIBmosaic = @LTLIBmosaic@
-LTLIBmotion = @LTLIBmotion@
-LTLIBmotionblur = @LTLIBmotionblur@
-LTLIBmotiondetect = @LTLIBmotiondetect@
 LTLIBmozilla = @LTLIBmozilla@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
-LTLIBmsn = @LTLIBmsn@
 LTLIBmtp = @LTLIBmtp@
 LTLIBmux_ogg = @LTLIBmux_ogg@
 LTLIBmux_ts = @LTLIBmux_ts@
 LTLIBncurses = @LTLIBncurses@
-LTLIBnoise = @LTLIBnoise@
-LTLIBnormvol = @LTLIBnormvol@
 LTLIBnotify = @LTLIBnotify@
-LTLIBntservice = @LTLIBntservice@
 LTLIBogg = @LTLIBogg@
+LTLIBoldhttp = @LTLIBoldhttp@
+LTLIBoldtelnet = @LTLIBoldtelnet@
 LTLIBomapfb = @LTLIBomapfb@
+LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopengl = @LTLIBopengl@
-LTLIBopengllayer = @LTLIBopengllayer@
-LTLIBopie = @LTLIBopie@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBoss = @LTLIBoss@
+LTLIBosso_screensaver = @LTLIBosso_screensaver@
 LTLIBpanoramix = @LTLIBpanoramix@
-LTLIBparam_eq = @LTLIBparam_eq@
-LTLIBpda = @LTLIBpda@
 LTLIBpng = @LTLIBpng@
-LTLIBpodcast = @LTLIBpodcast@
 LTLIBportaudio = @LTLIBportaudio@
 LTLIBpostproc = @LTLIBpostproc@
-LTLIBprobe_hal = @LTLIBprobe_hal@
-LTLIBpsychedelic = @LTLIBpsychedelic@
+LTLIBprojectm = @LTLIBprojectm@
 LTLIBpulse = @LTLIBpulse@
-LTLIBpuzzle = @LTLIBpuzzle@
 LTLIBpvr = @LTLIBpvr@
-LTLIBqnx = @LTLIBqnx@
 LTLIBqt4 = @LTLIBqt4@
 LTLIBqtcapture = @LTLIBqtcapture@
-LTLIBqte = @LTLIBqte@
-LTLIBqte_main = @LTLIBqte_main@
-LTLIBquartztext = @LTLIBquartztext@
 LTLIBquicktime = @LTLIBquicktime@
-LTLIBrc = @LTLIBrc@
-LTLIBrealaudio = @LTLIBrealaudio@
 LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
-LTLIBripple = @LTLIBripple@
-LTLIBrotate = @LTLIBrotate@
-LTLIBrss = @LTLIBrss@
-LTLIBrv32 = @LTLIBrv32@
-LTLIBsap = @LTLIBsap@
-LTLIBscale = @LTLIBscale@
-LTLIBscaletempo = @LTLIBscaletempo@
-LTLIBscene = @LTLIBscene@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
-LTLIBsharpen = @LTLIBsharpen@
 LTLIBshine = @LTLIBshine@
-LTLIBshout = @LTLIBshout@
-LTLIBshowintf = @LTLIBshowintf@
-LTLIBsignals = @LTLIBsignals@
-LTLIBsimple_channel_mixer = @LTLIBsimple_channel_mixer@
 LTLIBskins2 = @LTLIBskins2@
 LTLIBsnapshot = @LTLIBsnapshot@
-LTLIBspatializer = @LTLIBspatializer@
-LTLIBspdif_mixer = @LTLIBspdif_mixer@
 LTLIBspeex = @LTLIBspeex@
+LTLIBsqlite = @LTLIBsqlite@
 LTLIBstream_out_raop = @LTLIBstream_out_raop@
+LTLIBstream_out_switcher = @LTLIBstream_out_switcher@
 LTLIBsvg = @LTLIBsvg@
 LTLIBsvgalib = @LTLIBsvgalib@
 LTLIBswscale = @LTLIBswscale@
-LTLIBswscale_maemo = @LTLIBswscale_maemo@
+LTLIBswscale_omap = @LTLIBswscale_omap@
 LTLIBtaglib = @LTLIBtaglib@
-LTLIBtarkin = @LTLIBtarkin@
 LTLIBtelepathy = @LTLIBtelepathy@
-LTLIBtelnet = @LTLIBtelnet@
 LTLIBtelx = @LTLIBtelx@
-LTLIBtest1 = @LTLIBtest1@
-LTLIBtest2 = @LTLIBtest2@
-LTLIBtest3 = @LTLIBtest3@
-LTLIBtest4 = @LTLIBtest4@
 LTLIBtheora = @LTLIBtheora@
-LTLIBtransform = @LTLIBtransform@
 LTLIBtremor = @LTLIBtremor@
 LTLIBts = @LTLIBts@
 LTLIBtwolame = @LTLIBtwolame@
@@ -693,34 +604,26 @@ LTLIBv4l2 = @LTLIBv4l2@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
 LTLIBvisual = @LTLIBvisual@
-LTLIBvmem = @LTLIBvmem@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_directx = @LTLIBvout_directx@
+LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
-LTLIBwall = @LTLIBwall@
-LTLIBwave = @LTLIBwave@
 LTLIBwaveout = @LTLIBwaveout@
-LTLIBwin32text = @LTLIBwin32text@
-LTLIBwince = @LTLIBwince@
 LTLIBwingapi = @LTLIBwingapi@
 LTLIBwingdi = @LTLIBwingdi@
 LTLIBwma_fixed = @LTLIBwma_fixed@
-LTLIBx11 = @LTLIBx11@
-LTLIBx11_screen = @LTLIBx11_screen@
 LTLIBx264 = @LTLIBx264@
-LTLIBxcb = @LTLIBxcb@
+LTLIBxcb_apps = @LTLIBxcb_apps@
+LTLIBxcb_glx = @LTLIBxcb_glx@
+LTLIBxcb_screen = @LTLIBxcb_screen@
 LTLIBxcb_window = @LTLIBxcb_window@
+LTLIBxcb_x11 = @LTLIBxcb_x11@
 LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
-LTLIBxvideo = @LTLIBxvideo@
-LTLIBxvmc = @LTLIBxvmc@
-LTLIByuv = @LTLIByuv@
-LTLIByuvp = @LTLIByuvp@
-LTLIByuy2_i420 = @LTLIByuy2_i420@
-LTLIByuy2_i422 = @LTLIByuy2_i422@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
+LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
 MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
@@ -730,6 +633,7 @@ MIDL = @MIDL@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
+MMX_CFLAGS = @MMX_CFLAGS@
 MOC = @MOC@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
@@ -740,6 +644,8 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
+MUX_OGG_LIBS = @MUX_OGG_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
@@ -750,8 +656,12 @@ OBJCFLAGS = @OBJCFLAGS@
 OBJCOPY = @OBJCOPY@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OGG_CFLAGS = @OGG_CFLAGS@
+OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OSSO_SCREENSAVER_CFLAGS = @OSSO_SCREENSAVER_CFLAGS@
+OSSO_SCREENSAVER_LIBS = @OSSO_SCREENSAVER_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -764,12 +674,20 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CFLAGS = @PCRE_CFLAGS@
 PCRE_LIBS = @PCRE_LIBS@
+PEFLAGS = @PEFLAGS@
 PKGDIR = @PKGDIR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PORTAUDIO_CFLAGS = @PORTAUDIO_CFLAGS@
+PORTAUDIO_LIBS = @PORTAUDIO_LIBS@
 POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
+PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
+PROJECTM2_LIBS = @PROJECTM2_LIBS@
+PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
+PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
 QT4LOCALEDIR = @QT4LOCALEDIR@
@@ -779,15 +697,21 @@ RANLIB = @RANLIB@
 RCC = @RCC@
 SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
 SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
-SDL11_CONFIG = @SDL11_CONFIG@
-SDL12_CONFIG = @SDL12_CONFIG@
-SDL_CONFIG = @SDL_CONFIG@
+SDL_CFLAGS = @SDL_CFLAGS@
+SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
+SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
+SDL_LIBS = @SDL_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
+SPEEX_CFLAGS = @SPEEX_CFLAGS@
+SPEEX_LIBS = @SPEEX_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
+SSE2_CFLAGS = @SSE2_CFLAGS@
 STRIP = @STRIP@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
@@ -796,14 +720,19 @@ SWSCALE_LIBS = @SWSCALE_LIBS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
+THEORA_CFLAGS = @THEORA_CFLAGS@
+THEORA_LIBS = @THEORA_LIBS@
 TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
+U2D = @U2D@
 UDEV_CFLAGS = @UDEV_CFLAGS@
 UDEV_LIBS = @UDEV_LIBS@
 UIC = @UIC@
+UPNP_CFLAGS = @UPNP_CFLAGS@
+UPNP_LIBS = @UPNP_LIBS@
 USE_NLS = @USE_NLS@
-VCDINFO_CFLAGS = @VCDINFO_CFLAGS@
-VCDINFO_LIBS = @VCDINFO_LIBS@
 VERSION = @VERSION@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_EXTRA_RC = @VERSION_EXTRA_RC@
@@ -812,6 +741,8 @@ VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
+VORBIS_CFLAGS = @VORBIS_CFLAGS@
+VORBIS_LIBS = @VORBIS_LIBS@
 WIDL = @WIDL@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
@@ -821,6 +752,8 @@ XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
 XCB_LIBS = @XCB_LIBS@
+XCB_RANDR_CFLAGS = @XCB_RANDR_CFLAGS@
+XCB_RANDR_LIBS = @XCB_RANDR_LIBS@
 XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
@@ -828,9 +761,9 @@ XCB_XV_LIBS = @XCB_XV_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
+XLIB_XCB_CFLAGS = @XLIB_XCB_CFLAGS@
+XLIB_XCB_LIBS = @XLIB_XCB_LIBS@
 XMKMF = @XMKMF@
-XML2_CFLAGS = @XML2_CFLAGS@
-XML2_LIBS = @XML2_LIBS@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
 XPROTO_CFLAGS = @XPROTO_CFLAGS@
@@ -889,6 +822,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+soliddatadir = @soliddatadir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -899,17 +833,16 @@ vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 basedir = misc
 dir = misc
-mods = audioscrobbler freetype gnome2_main gnome_main gnutls gtk2_main gtk_main inhibit logger qte_main quartztext screensaver svg vod_rtsp win32text
-libvlc_LTLIBRARIES = $(LTLIBaudioscrobbler) $(LTLIBfreetype) \
-	$(LTLIBgnome2_main) $(LTLIBgnome_main) $(LTLIBgnutls) \
-	$(LTLIBgtk2_main) $(LTLIBgtk_main) $(LTLIBinhibit) \
-	$(LTLIBqte_main) $(LTLIBquartztext) $(LTLIBscreensaver) \
-	$(LTLIBsvg) $(LTLIBwin32text) liblogger_plugin.la \
-	$(am__append_2)
-EXTRA_LTLIBRARIES = libaudioscrobbler_plugin.la libfreetype_plugin.la libgnome2_main_plugin.la libgnome_main_plugin.la libgnutls_plugin.la libgtk2_main_plugin.la libgtk_main_plugin.la libinhibit_plugin.la libqte_main_plugin.la libquartztext_plugin.la libscreensaver_plugin.la libsvg_plugin.la libwin32text_plugin.la
+mods = audioscrobbler freetype gnutls inhibit logger osso_screensaver quartztext sqlite svg vod_rtsp win32text xdg_screensaver xscreensaver
+libvlc_LTLIBRARIES = $(LTLIBfreetype) $(LTLIBgnutls) $(LTLIBinhibit) \
+	$(LTLIBosso_screensaver) $(LTLIBsqlite) $(LTLIBsvg) \
+	$(LTLIBxdg_screensaver) $(LTLIBxscreensaver) \
+	libaudioscrobbler_plugin.la liblogger_plugin.la \
+	$(am__append_2) $(am__append_3) $(am__append_4)
+EXTRA_LTLIBRARIES = libfreetype_plugin.la libgnutls_plugin.la libinhibit_plugin.la libosso_screensaver_plugin.la libsqlite_plugin.la libsvg_plugin.la libxdg_screensaver_plugin.la libxscreensaver_plugin.la
 NULL = 
 SUFFIXES = 
-libvlcdir = $(vlclibdir)/$(basedir)
+libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
 BUILT_SOURCES = 
 CLEANFILES = $(BUILT_SOURCES)
@@ -921,22 +854,17 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
 	-export-symbol-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
+	-rpath "$(libvlcdir)" \
 	-no-undefined \
 	 `$(VLC_CONFIG) --ldflags plugin $@`
 
 AM_LIBADD = `$(VLC_CONFIG) -libs plugin $@` \
 	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
 
-BASE_SUBDIRS = dummy memcpy notify testsuite playlist stats osd xml probe
+BASE_SUBDIRS = dummy notify playlist stats osd xml
 EXTRA_SUBDIRS = lua
 SUBDIRS = $(BASE_SUBDIRS) $(am__append_1)
 DIST_SUBDIRS = $(BASE_SUBDIRS) $(EXTRA_SUBDIRS)
-SOURCES_gtk_main = gtk_main.c
-SOURCES_gnome_main = gtk_main.c
-SOURCES_gtk2_main = gtk_main.c
-SOURCES_gnome2_main = gtk_main.c
-SOURCES_screensaver = screensaver.c
-SOURCES_qte_main = qte_main.cpp
 SOURCES_freetype = freetype.c text_renderer.h
 SOURCES_win32text = win32text.c
 SOURCES_quartztext = quartztext.c text_renderer.h
@@ -946,6 +874,10 @@ SOURCES_gnutls = gnutls.c dhparams.h
 SOURCES_svg = svg.c
 SOURCES_audioscrobbler = audioscrobbler.c
 SOURCES_inhibit = inhibit.c
+SOURCES_sqlite = sqlite.c
+SOURCES_xscreensaver = inhibit/xscreensaver.c
+SOURCES_xdg_screensaver = inhibit/xdg.c
+SOURCES_osso_screensaver = inhibit/osso.c
 
 # The audioscrobbler plugin
 libaudioscrobbler_plugin_la_SOURCES = $(SOURCES_audioscrobbler)
@@ -969,28 +901,6 @@ libfreetype_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libfreetype_plugin_la_LIBADD = $(AM_LIBADD)
 libfreetype_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The gnome2_main plugin
-libgnome2_main_plugin_la_SOURCES = $(SOURCES_gnome2_main)
-nodist_libgnome2_main_plugin_la_SOURCES = $(nodist_SOURCES_gnome2_main)
-# Force per-target objects:
-libgnome2_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgnome2_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgnome2_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgnome2_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgnome2_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The gnome_main plugin
-libgnome_main_plugin_la_SOURCES = $(SOURCES_gnome_main)
-nodist_libgnome_main_plugin_la_SOURCES = $(nodist_SOURCES_gnome_main)
-# Force per-target objects:
-libgnome_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgnome_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgnome_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgnome_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgnome_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
 # The gnutls plugin
 libgnutls_plugin_la_SOURCES = $(SOURCES_gnutls)
 nodist_libgnutls_plugin_la_SOURCES = $(nodist_SOURCES_gnutls)
@@ -1001,28 +911,6 @@ libgnutls_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgnutls_plugin_la_LIBADD = $(AM_LIBADD)
 libgnutls_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The gtk2_main plugin
-libgtk2_main_plugin_la_SOURCES = $(SOURCES_gtk2_main)
-nodist_libgtk2_main_plugin_la_SOURCES = $(nodist_SOURCES_gtk2_main)
-# Force per-target objects:
-libgtk2_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgtk2_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgtk2_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgtk2_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgtk2_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The gtk_main plugin
-libgtk_main_plugin_la_SOURCES = $(SOURCES_gtk_main)
-nodist_libgtk_main_plugin_la_SOURCES = $(nodist_SOURCES_gtk_main)
-# Force per-target objects:
-libgtk_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgtk_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgtk_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgtk_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgtk_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The inhibit plugin
 libinhibit_plugin_la_SOURCES = $(SOURCES_inhibit)
@@ -1046,16 +934,16 @@ liblogger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 liblogger_plugin_la_LIBADD = $(AM_LIBADD)
 liblogger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The qte_main plugin
-libqte_main_plugin_la_SOURCES = $(SOURCES_qte_main)
-nodist_libqte_main_plugin_la_SOURCES = $(nodist_SOURCES_qte_main)
+# The osso_screensaver plugin
+libosso_screensaver_plugin_la_SOURCES = $(SOURCES_osso_screensaver)
+nodist_libosso_screensaver_plugin_la_SOURCES = $(nodist_SOURCES_osso_screensaver)
 # Force per-target objects:
-libqte_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libqte_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libqte_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libosso_screensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
+libosso_screensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libosso_screensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libqte_main_plugin_la_LIBADD = $(AM_LIBADD)
-libqte_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libosso_screensaver_plugin_la_LIBADD = $(AM_LIBADD)
+libosso_screensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The quartztext plugin
 libquartztext_plugin_la_SOURCES = $(SOURCES_quartztext)
@@ -1068,16 +956,16 @@ libquartztext_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libquartztext_plugin_la_LIBADD = $(AM_LIBADD)
 libquartztext_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The screensaver plugin
-libscreensaver_plugin_la_SOURCES = $(SOURCES_screensaver)
-nodist_libscreensaver_plugin_la_SOURCES = $(nodist_SOURCES_screensaver)
+# The sqlite plugin
+libsqlite_plugin_la_SOURCES = $(SOURCES_sqlite)
+nodist_libsqlite_plugin_la_SOURCES = $(nodist_SOURCES_sqlite)
 # Force per-target objects:
-libscreensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
-libscreensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libscreensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libsqlite_plugin_la_CFLAGS = $(AM_CFLAGS)
+libsqlite_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libsqlite_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libscreensaver_plugin_la_LIBADD = $(AM_LIBADD)
-libscreensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libsqlite_plugin_la_LIBADD = $(AM_LIBADD)
+libsqlite_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The svg plugin
 libsvg_plugin_la_SOURCES = $(SOURCES_svg)
@@ -1111,11 +999,33 @@ libwin32text_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwin32text_plugin_la_LIBADD = $(AM_LIBADD)
 libwin32text_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The xdg_screensaver plugin
+libxdg_screensaver_plugin_la_SOURCES = $(SOURCES_xdg_screensaver)
+nodist_libxdg_screensaver_plugin_la_SOURCES = $(nodist_SOURCES_xdg_screensaver)
+# Force per-target objects:
+libxdg_screensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
+libxdg_screensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libxdg_screensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libxdg_screensaver_plugin_la_LIBADD = $(AM_LIBADD)
+libxdg_screensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The xscreensaver plugin
+libxscreensaver_plugin_la_SOURCES = $(SOURCES_xscreensaver)
+nodist_libxscreensaver_plugin_la_SOURCES = $(nodist_SOURCES_xscreensaver)
+# Force per-target objects:
+libxscreensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
+libxscreensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libxscreensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libxscreensaver_plugin_la_LIBADD = $(AM_LIBADD)
+libxscreensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .lo .o .obj
+.SUFFIXES: .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/modules/common.am $(srcdir)/Modules.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -1178,35 +1088,31 @@ clean-libvlcLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libaudioscrobbler_plugin.la: $(libaudioscrobbler_plugin_la_OBJECTS) $(libaudioscrobbler_plugin_la_DEPENDENCIES) 
-	$(libaudioscrobbler_plugin_la_LINK)  $(libaudioscrobbler_plugin_la_OBJECTS) $(libaudioscrobbler_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libaudioscrobbler_plugin_la_LINK) -rpath $(libvlcdir) $(libaudioscrobbler_plugin_la_OBJECTS) $(libaudioscrobbler_plugin_la_LIBADD) $(LIBS)
 libfreetype_plugin.la: $(libfreetype_plugin_la_OBJECTS) $(libfreetype_plugin_la_DEPENDENCIES) 
-	$(libfreetype_plugin_la_LINK)  $(libfreetype_plugin_la_OBJECTS) $(libfreetype_plugin_la_LIBADD) $(LIBS)
-libgnome2_main_plugin.la: $(libgnome2_main_plugin_la_OBJECTS) $(libgnome2_main_plugin_la_DEPENDENCIES) 
-	$(libgnome2_main_plugin_la_LINK)  $(libgnome2_main_plugin_la_OBJECTS) $(libgnome2_main_plugin_la_LIBADD) $(LIBS)
-libgnome_main_plugin.la: $(libgnome_main_plugin_la_OBJECTS) $(libgnome_main_plugin_la_DEPENDENCIES) 
-	$(libgnome_main_plugin_la_LINK)  $(libgnome_main_plugin_la_OBJECTS) $(libgnome_main_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libfreetype_plugin_la_LINK)  $(libfreetype_plugin_la_OBJECTS) $(libfreetype_plugin_la_LIBADD) $(LIBS)
 libgnutls_plugin.la: $(libgnutls_plugin_la_OBJECTS) $(libgnutls_plugin_la_DEPENDENCIES) 
-	$(libgnutls_plugin_la_LINK)  $(libgnutls_plugin_la_OBJECTS) $(libgnutls_plugin_la_LIBADD) $(LIBS)
-libgtk2_main_plugin.la: $(libgtk2_main_plugin_la_OBJECTS) $(libgtk2_main_plugin_la_DEPENDENCIES) 
-	$(libgtk2_main_plugin_la_LINK)  $(libgtk2_main_plugin_la_OBJECTS) $(libgtk2_main_plugin_la_LIBADD) $(LIBS)
-libgtk_main_plugin.la: $(libgtk_main_plugin_la_OBJECTS) $(libgtk_main_plugin_la_DEPENDENCIES) 
-	$(libgtk_main_plugin_la_LINK)  $(libgtk_main_plugin_la_OBJECTS) $(libgtk_main_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libgnutls_plugin_la_LINK)  $(libgnutls_plugin_la_OBJECTS) $(libgnutls_plugin_la_LIBADD) $(LIBS)
 libinhibit_plugin.la: $(libinhibit_plugin_la_OBJECTS) $(libinhibit_plugin_la_DEPENDENCIES) 
-	$(libinhibit_plugin_la_LINK)  $(libinhibit_plugin_la_OBJECTS) $(libinhibit_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libinhibit_plugin_la_LINK)  $(libinhibit_plugin_la_OBJECTS) $(libinhibit_plugin_la_LIBADD) $(LIBS)
 liblogger_plugin.la: $(liblogger_plugin_la_OBJECTS) $(liblogger_plugin_la_DEPENDENCIES) 
-	$(liblogger_plugin_la_LINK) -rpath $(libvlcdir) $(liblogger_plugin_la_OBJECTS) $(liblogger_plugin_la_LIBADD) $(LIBS)
-libqte_main_plugin.la: $(libqte_main_plugin_la_OBJECTS) $(libqte_main_plugin_la_DEPENDENCIES) 
-	$(libqte_main_plugin_la_LINK)  $(libqte_main_plugin_la_OBJECTS) $(libqte_main_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(liblogger_plugin_la_LINK) -rpath $(libvlcdir) $(liblogger_plugin_la_OBJECTS) $(liblogger_plugin_la_LIBADD) $(LIBS)
+libosso_screensaver_plugin.la: $(libosso_screensaver_plugin_la_OBJECTS) $(libosso_screensaver_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libosso_screensaver_plugin_la_LINK)  $(libosso_screensaver_plugin_la_OBJECTS) $(libosso_screensaver_plugin_la_LIBADD) $(LIBS)
 libquartztext_plugin.la: $(libquartztext_plugin_la_OBJECTS) $(libquartztext_plugin_la_DEPENDENCIES) 
-	$(libquartztext_plugin_la_LINK)  $(libquartztext_plugin_la_OBJECTS) $(libquartztext_plugin_la_LIBADD) $(LIBS)
-libscreensaver_plugin.la: $(libscreensaver_plugin_la_OBJECTS) $(libscreensaver_plugin_la_DEPENDENCIES) 
-	$(libscreensaver_plugin_la_LINK)  $(libscreensaver_plugin_la_OBJECTS) $(libscreensaver_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libquartztext_plugin_la_LINK) $(am_libquartztext_plugin_la_rpath) $(libquartztext_plugin_la_OBJECTS) $(libquartztext_plugin_la_LIBADD) $(LIBS)
+libsqlite_plugin.la: $(libsqlite_plugin_la_OBJECTS) $(libsqlite_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libsqlite_plugin_la_LINK)  $(libsqlite_plugin_la_OBJECTS) $(libsqlite_plugin_la_LIBADD) $(LIBS)
 libsvg_plugin.la: $(libsvg_plugin_la_OBJECTS) $(libsvg_plugin_la_DEPENDENCIES) 
-	$(libsvg_plugin_la_LINK)  $(libsvg_plugin_la_OBJECTS) $(libsvg_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libsvg_plugin_la_LINK)  $(libsvg_plugin_la_OBJECTS) $(libsvg_plugin_la_LIBADD) $(LIBS)
 libvod_rtsp_plugin.la: $(libvod_rtsp_plugin_la_OBJECTS) $(libvod_rtsp_plugin_la_DEPENDENCIES) 
-	$(libvod_rtsp_plugin_la_LINK) $(am_libvod_rtsp_plugin_la_rpath) $(libvod_rtsp_plugin_la_OBJECTS) $(libvod_rtsp_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libvod_rtsp_plugin_la_LINK) $(am_libvod_rtsp_plugin_la_rpath) $(libvod_rtsp_plugin_la_OBJECTS) $(libvod_rtsp_plugin_la_LIBADD) $(LIBS)
 libwin32text_plugin.la: $(libwin32text_plugin_la_OBJECTS) $(libwin32text_plugin_la_DEPENDENCIES) 
-	$(libwin32text_plugin_la_LINK)  $(libwin32text_plugin_la_OBJECTS) $(libwin32text_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libwin32text_plugin_la_LINK) $(am_libwin32text_plugin_la_rpath) $(libwin32text_plugin_la_OBJECTS) $(libwin32text_plugin_la_LIBADD) $(LIBS)
+libxdg_screensaver_plugin.la: $(libxdg_screensaver_plugin_la_OBJECTS) $(libxdg_screensaver_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libxdg_screensaver_plugin_la_LINK)  $(libxdg_screensaver_plugin_la_OBJECTS) $(libxdg_screensaver_plugin_la_LIBADD) $(LIBS)
+libxscreensaver_plugin.la: $(libxscreensaver_plugin_la_OBJECTS) $(libxscreensaver_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libxscreensaver_plugin_la_LINK)  $(libxscreensaver_plugin_la_OBJECTS) $(libxscreensaver_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1216,166 +1122,145 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaudioscrobbler_plugin_la-audioscrobbler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libfreetype_plugin_la-freetype.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnome2_main_plugin_la-gtk_main.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnome_main_plugin_la-gtk_main.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgnutls_plugin_la-gnutls.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgtk2_main_plugin_la-gtk_main.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgtk_main_plugin_la-gtk_main.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libinhibit_plugin_la-inhibit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblogger_plugin_la-logger.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libqte_main_plugin_la-qte_main.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libosso_screensaver_plugin_la-osso.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libquartztext_plugin_la-quartztext.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscreensaver_plugin_la-screensaver.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsqlite_plugin_la-sqlite.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsvg_plugin_la-svg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvod_rtsp_plugin_la-rtsp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwin32text_plugin_la-win32text.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxdg_screensaver_plugin_la-xdg.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxscreensaver_plugin_la-xscreensaver.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 libaudioscrobbler_plugin_la-audioscrobbler.lo: audioscrobbler.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudioscrobbler_plugin_la_CFLAGS) $(CFLAGS) -MT libaudioscrobbler_plugin_la-audioscrobbler.lo -MD -MP -MF $(DEPDIR)/libaudioscrobbler_plugin_la-audioscrobbler.Tpo -c -o libaudioscrobbler_plugin_la-audioscrobbler.lo `test -f 'audioscrobbler.c' || echo '$(srcdir)/'`audioscrobbler.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libaudioscrobbler_plugin_la-audioscrobbler.Tpo $(DEPDIR)/libaudioscrobbler_plugin_la-audioscrobbler.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudioscrobbler_plugin_la_CFLAGS) $(CFLAGS) -MT libaudioscrobbler_plugin_la-audioscrobbler.lo -MD -MP -MF $(DEPDIR)/libaudioscrobbler_plugin_la-audioscrobbler.Tpo -c -o libaudioscrobbler_plugin_la-audioscrobbler.lo `test -f 'audioscrobbler.c' || echo '$(srcdir)/'`audioscrobbler.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libaudioscrobbler_plugin_la-audioscrobbler.Tpo $(DEPDIR)/libaudioscrobbler_plugin_la-audioscrobbler.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='audioscrobbler.c' object='libaudioscrobbler_plugin_la-audioscrobbler.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudioscrobbler_plugin_la_CFLAGS) $(CFLAGS) -c -o libaudioscrobbler_plugin_la-audioscrobbler.lo `test -f 'audioscrobbler.c' || echo '$(srcdir)/'`audioscrobbler.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudioscrobbler_plugin_la_CFLAGS) $(CFLAGS) -c -o libaudioscrobbler_plugin_la-audioscrobbler.lo `test -f 'audioscrobbler.c' || echo '$(srcdir)/'`audioscrobbler.c
 
 libfreetype_plugin_la-freetype.lo: freetype.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libfreetype_plugin_la_CFLAGS) $(CFLAGS) -MT libfreetype_plugin_la-freetype.lo -MD -MP -MF $(DEPDIR)/libfreetype_plugin_la-freetype.Tpo -c -o libfreetype_plugin_la-freetype.lo `test -f 'freetype.c' || echo '$(srcdir)/'`freetype.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libfreetype_plugin_la-freetype.Tpo $(DEPDIR)/libfreetype_plugin_la-freetype.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libfreetype_plugin_la_CFLAGS) $(CFLAGS) -MT libfreetype_plugin_la-freetype.lo -MD -MP -MF $(DEPDIR)/libfreetype_plugin_la-freetype.Tpo -c -o libfreetype_plugin_la-freetype.lo `test -f 'freetype.c' || echo '$(srcdir)/'`freetype.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libfreetype_plugin_la-freetype.Tpo $(DEPDIR)/libfreetype_plugin_la-freetype.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='freetype.c' object='libfreetype_plugin_la-freetype.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libfreetype_plugin_la_CFLAGS) $(CFLAGS) -c -o libfreetype_plugin_la-freetype.lo `test -f 'freetype.c' || echo '$(srcdir)/'`freetype.c
-
-libgnome2_main_plugin_la-gtk_main.lo: gtk_main.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnome2_main_plugin_la_CFLAGS) $(CFLAGS) -MT libgnome2_main_plugin_la-gtk_main.lo -MD -MP -MF $(DEPDIR)/libgnome2_main_plugin_la-gtk_main.Tpo -c -o libgnome2_main_plugin_la-gtk_main.lo `test -f 'gtk_main.c' || echo '$(srcdir)/'`gtk_main.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libgnome2_main_plugin_la-gtk_main.Tpo $(DEPDIR)/libgnome2_main_plugin_la-gtk_main.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk_main.c' object='libgnome2_main_plugin_la-gtk_main.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnome2_main_plugin_la_CFLAGS) $(CFLAGS) -c -o libgnome2_main_plugin_la-gtk_main.lo `test -f 'gtk_main.c' || echo '$(srcdir)/'`gtk_main.c
-
-libgnome_main_plugin_la-gtk_main.lo: gtk_main.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnome_main_plugin_la_CFLAGS) $(CFLAGS) -MT libgnome_main_plugin_la-gtk_main.lo -MD -MP -MF $(DEPDIR)/libgnome_main_plugin_la-gtk_main.Tpo -c -o libgnome_main_plugin_la-gtk_main.lo `test -f 'gtk_main.c' || echo '$(srcdir)/'`gtk_main.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libgnome_main_plugin_la-gtk_main.Tpo $(DEPDIR)/libgnome_main_plugin_la-gtk_main.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk_main.c' object='libgnome_main_plugin_la-gtk_main.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnome_main_plugin_la_CFLAGS) $(CFLAGS) -c -o libgnome_main_plugin_la-gtk_main.lo `test -f 'gtk_main.c' || echo '$(srcdir)/'`gtk_main.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libfreetype_plugin_la_CFLAGS) $(CFLAGS) -c -o libfreetype_plugin_la-freetype.lo `test -f 'freetype.c' || echo '$(srcdir)/'`freetype.c
 
 libgnutls_plugin_la-gnutls.lo: gnutls.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnutls_plugin_la_CFLAGS) $(CFLAGS) -MT libgnutls_plugin_la-gnutls.lo -MD -MP -MF $(DEPDIR)/libgnutls_plugin_la-gnutls.Tpo -c -o libgnutls_plugin_la-gnutls.lo `test -f 'gnutls.c' || echo '$(srcdir)/'`gnutls.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libgnutls_plugin_la-gnutls.Tpo $(DEPDIR)/libgnutls_plugin_la-gnutls.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnutls_plugin_la_CFLAGS) $(CFLAGS) -MT libgnutls_plugin_la-gnutls.lo -MD -MP -MF $(DEPDIR)/libgnutls_plugin_la-gnutls.Tpo -c -o libgnutls_plugin_la-gnutls.lo `test -f 'gnutls.c' || echo '$(srcdir)/'`gnutls.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgnutls_plugin_la-gnutls.Tpo $(DEPDIR)/libgnutls_plugin_la-gnutls.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gnutls.c' object='libgnutls_plugin_la-gnutls.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnutls_plugin_la_CFLAGS) $(CFLAGS) -c -o libgnutls_plugin_la-gnutls.lo `test -f 'gnutls.c' || echo '$(srcdir)/'`gnutls.c
-
-libgtk2_main_plugin_la-gtk_main.lo: gtk_main.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgtk2_main_plugin_la_CFLAGS) $(CFLAGS) -MT libgtk2_main_plugin_la-gtk_main.lo -MD -MP -MF $(DEPDIR)/libgtk2_main_plugin_la-gtk_main.Tpo -c -o libgtk2_main_plugin_la-gtk_main.lo `test -f 'gtk_main.c' || echo '$(srcdir)/'`gtk_main.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libgtk2_main_plugin_la-gtk_main.Tpo $(DEPDIR)/libgtk2_main_plugin_la-gtk_main.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk_main.c' object='libgtk2_main_plugin_la-gtk_main.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgtk2_main_plugin_la_CFLAGS) $(CFLAGS) -c -o libgtk2_main_plugin_la-gtk_main.lo `test -f 'gtk_main.c' || echo '$(srcdir)/'`gtk_main.c
-
-libgtk_main_plugin_la-gtk_main.lo: gtk_main.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgtk_main_plugin_la_CFLAGS) $(CFLAGS) -MT libgtk_main_plugin_la-gtk_main.lo -MD -MP -MF $(DEPDIR)/libgtk_main_plugin_la-gtk_main.Tpo -c -o libgtk_main_plugin_la-gtk_main.lo `test -f 'gtk_main.c' || echo '$(srcdir)/'`gtk_main.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libgtk_main_plugin_la-gtk_main.Tpo $(DEPDIR)/libgtk_main_plugin_la-gtk_main.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gtk_main.c' object='libgtk_main_plugin_la-gtk_main.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgtk_main_plugin_la_CFLAGS) $(CFLAGS) -c -o libgtk_main_plugin_la-gtk_main.lo `test -f 'gtk_main.c' || echo '$(srcdir)/'`gtk_main.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgnutls_plugin_la_CFLAGS) $(CFLAGS) -c -o libgnutls_plugin_la-gnutls.lo `test -f 'gnutls.c' || echo '$(srcdir)/'`gnutls.c
 
 libinhibit_plugin_la-inhibit.lo: inhibit.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libinhibit_plugin_la_CFLAGS) $(CFLAGS) -MT libinhibit_plugin_la-inhibit.lo -MD -MP -MF $(DEPDIR)/libinhibit_plugin_la-inhibit.Tpo -c -o libinhibit_plugin_la-inhibit.lo `test -f 'inhibit.c' || echo '$(srcdir)/'`inhibit.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libinhibit_plugin_la-inhibit.Tpo $(DEPDIR)/libinhibit_plugin_la-inhibit.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libinhibit_plugin_la_CFLAGS) $(CFLAGS) -MT libinhibit_plugin_la-inhibit.lo -MD -MP -MF $(DEPDIR)/libinhibit_plugin_la-inhibit.Tpo -c -o libinhibit_plugin_la-inhibit.lo `test -f 'inhibit.c' || echo '$(srcdir)/'`inhibit.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libinhibit_plugin_la-inhibit.Tpo $(DEPDIR)/libinhibit_plugin_la-inhibit.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='inhibit.c' object='libinhibit_plugin_la-inhibit.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libinhibit_plugin_la_CFLAGS) $(CFLAGS) -c -o libinhibit_plugin_la-inhibit.lo `test -f 'inhibit.c' || echo '$(srcdir)/'`inhibit.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libinhibit_plugin_la_CFLAGS) $(CFLAGS) -c -o libinhibit_plugin_la-inhibit.lo `test -f 'inhibit.c' || echo '$(srcdir)/'`inhibit.c
 
 liblogger_plugin_la-logger.lo: logger.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblogger_plugin_la_CFLAGS) $(CFLAGS) -MT liblogger_plugin_la-logger.lo -MD -MP -MF $(DEPDIR)/liblogger_plugin_la-logger.Tpo -c -o liblogger_plugin_la-logger.lo `test -f 'logger.c' || echo '$(srcdir)/'`logger.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblogger_plugin_la-logger.Tpo $(DEPDIR)/liblogger_plugin_la-logger.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblogger_plugin_la_CFLAGS) $(CFLAGS) -MT liblogger_plugin_la-logger.lo -MD -MP -MF $(DEPDIR)/liblogger_plugin_la-logger.Tpo -c -o liblogger_plugin_la-logger.lo `test -f 'logger.c' || echo '$(srcdir)/'`logger.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblogger_plugin_la-logger.Tpo $(DEPDIR)/liblogger_plugin_la-logger.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logger.c' object='liblogger_plugin_la-logger.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblogger_plugin_la_CFLAGS) $(CFLAGS) -c -o liblogger_plugin_la-logger.lo `test -f 'logger.c' || echo '$(srcdir)/'`logger.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblogger_plugin_la_CFLAGS) $(CFLAGS) -c -o liblogger_plugin_la-logger.lo `test -f 'logger.c' || echo '$(srcdir)/'`logger.c
+
+libosso_screensaver_plugin_la-osso.lo: inhibit/osso.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libosso_screensaver_plugin_la_CFLAGS) $(CFLAGS) -MT libosso_screensaver_plugin_la-osso.lo -MD -MP -MF $(DEPDIR)/libosso_screensaver_plugin_la-osso.Tpo -c -o libosso_screensaver_plugin_la-osso.lo `test -f 'inhibit/osso.c' || echo '$(srcdir)/'`inhibit/osso.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libosso_screensaver_plugin_la-osso.Tpo $(DEPDIR)/libosso_screensaver_plugin_la-osso.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='inhibit/osso.c' object='libosso_screensaver_plugin_la-osso.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libosso_screensaver_plugin_la_CFLAGS) $(CFLAGS) -c -o libosso_screensaver_plugin_la-osso.lo `test -f 'inhibit/osso.c' || echo '$(srcdir)/'`inhibit/osso.c
 
 libquartztext_plugin_la-quartztext.lo: quartztext.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libquartztext_plugin_la_CFLAGS) $(CFLAGS) -MT libquartztext_plugin_la-quartztext.lo -MD -MP -MF $(DEPDIR)/libquartztext_plugin_la-quartztext.Tpo -c -o libquartztext_plugin_la-quartztext.lo `test -f 'quartztext.c' || echo '$(srcdir)/'`quartztext.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libquartztext_plugin_la-quartztext.Tpo $(DEPDIR)/libquartztext_plugin_la-quartztext.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libquartztext_plugin_la_CFLAGS) $(CFLAGS) -MT libquartztext_plugin_la-quartztext.lo -MD -MP -MF $(DEPDIR)/libquartztext_plugin_la-quartztext.Tpo -c -o libquartztext_plugin_la-quartztext.lo `test -f 'quartztext.c' || echo '$(srcdir)/'`quartztext.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libquartztext_plugin_la-quartztext.Tpo $(DEPDIR)/libquartztext_plugin_la-quartztext.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='quartztext.c' object='libquartztext_plugin_la-quartztext.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libquartztext_plugin_la_CFLAGS) $(CFLAGS) -c -o libquartztext_plugin_la-quartztext.lo `test -f 'quartztext.c' || echo '$(srcdir)/'`quartztext.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libquartztext_plugin_la_CFLAGS) $(CFLAGS) -c -o libquartztext_plugin_la-quartztext.lo `test -f 'quartztext.c' || echo '$(srcdir)/'`quartztext.c
 
-libscreensaver_plugin_la-screensaver.lo: screensaver.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscreensaver_plugin_la_CFLAGS) $(CFLAGS) -MT libscreensaver_plugin_la-screensaver.lo -MD -MP -MF $(DEPDIR)/libscreensaver_plugin_la-screensaver.Tpo -c -o libscreensaver_plugin_la-screensaver.lo `test -f 'screensaver.c' || echo '$(srcdir)/'`screensaver.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libscreensaver_plugin_la-screensaver.Tpo $(DEPDIR)/libscreensaver_plugin_la-screensaver.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='screensaver.c' object='libscreensaver_plugin_la-screensaver.lo' libtool=yes @AMDEPBACKSLASH@
+libsqlite_plugin_la-sqlite.lo: sqlite.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsqlite_plugin_la_CFLAGS) $(CFLAGS) -MT libsqlite_plugin_la-sqlite.lo -MD -MP -MF $(DEPDIR)/libsqlite_plugin_la-sqlite.Tpo -c -o libsqlite_plugin_la-sqlite.lo `test -f 'sqlite.c' || echo '$(srcdir)/'`sqlite.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsqlite_plugin_la-sqlite.Tpo $(DEPDIR)/libsqlite_plugin_la-sqlite.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sqlite.c' object='libsqlite_plugin_la-sqlite.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscreensaver_plugin_la_CFLAGS) $(CFLAGS) -c -o libscreensaver_plugin_la-screensaver.lo `test -f 'screensaver.c' || echo '$(srcdir)/'`screensaver.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsqlite_plugin_la_CFLAGS) $(CFLAGS) -c -o libsqlite_plugin_la-sqlite.lo `test -f 'sqlite.c' || echo '$(srcdir)/'`sqlite.c
 
 libsvg_plugin_la-svg.lo: svg.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsvg_plugin_la_CFLAGS) $(CFLAGS) -MT libsvg_plugin_la-svg.lo -MD -MP -MF $(DEPDIR)/libsvg_plugin_la-svg.Tpo -c -o libsvg_plugin_la-svg.lo `test -f 'svg.c' || echo '$(srcdir)/'`svg.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libsvg_plugin_la-svg.Tpo $(DEPDIR)/libsvg_plugin_la-svg.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsvg_plugin_la_CFLAGS) $(CFLAGS) -MT libsvg_plugin_la-svg.lo -MD -MP -MF $(DEPDIR)/libsvg_plugin_la-svg.Tpo -c -o libsvg_plugin_la-svg.lo `test -f 'svg.c' || echo '$(srcdir)/'`svg.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsvg_plugin_la-svg.Tpo $(DEPDIR)/libsvg_plugin_la-svg.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='svg.c' object='libsvg_plugin_la-svg.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsvg_plugin_la_CFLAGS) $(CFLAGS) -c -o libsvg_plugin_la-svg.lo `test -f 'svg.c' || echo '$(srcdir)/'`svg.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsvg_plugin_la_CFLAGS) $(CFLAGS) -c -o libsvg_plugin_la-svg.lo `test -f 'svg.c' || echo '$(srcdir)/'`svg.c
 
 libvod_rtsp_plugin_la-rtsp.lo: rtsp.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvod_rtsp_plugin_la_CFLAGS) $(CFLAGS) -MT libvod_rtsp_plugin_la-rtsp.lo -MD -MP -MF $(DEPDIR)/libvod_rtsp_plugin_la-rtsp.Tpo -c -o libvod_rtsp_plugin_la-rtsp.lo `test -f 'rtsp.c' || echo '$(srcdir)/'`rtsp.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libvod_rtsp_plugin_la-rtsp.Tpo $(DEPDIR)/libvod_rtsp_plugin_la-rtsp.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvod_rtsp_plugin_la_CFLAGS) $(CFLAGS) -MT libvod_rtsp_plugin_la-rtsp.lo -MD -MP -MF $(DEPDIR)/libvod_rtsp_plugin_la-rtsp.Tpo -c -o libvod_rtsp_plugin_la-rtsp.lo `test -f 'rtsp.c' || echo '$(srcdir)/'`rtsp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvod_rtsp_plugin_la-rtsp.Tpo $(DEPDIR)/libvod_rtsp_plugin_la-rtsp.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rtsp.c' object='libvod_rtsp_plugin_la-rtsp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvod_rtsp_plugin_la_CFLAGS) $(CFLAGS) -c -o libvod_rtsp_plugin_la-rtsp.lo `test -f 'rtsp.c' || echo '$(srcdir)/'`rtsp.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvod_rtsp_plugin_la_CFLAGS) $(CFLAGS) -c -o libvod_rtsp_plugin_la-rtsp.lo `test -f 'rtsp.c' || echo '$(srcdir)/'`rtsp.c
 
 libwin32text_plugin_la-win32text.lo: win32text.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwin32text_plugin_la_CFLAGS) $(CFLAGS) -MT libwin32text_plugin_la-win32text.lo -MD -MP -MF $(DEPDIR)/libwin32text_plugin_la-win32text.Tpo -c -o libwin32text_plugin_la-win32text.lo `test -f 'win32text.c' || echo '$(srcdir)/'`win32text.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libwin32text_plugin_la-win32text.Tpo $(DEPDIR)/libwin32text_plugin_la-win32text.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwin32text_plugin_la_CFLAGS) $(CFLAGS) -MT libwin32text_plugin_la-win32text.lo -MD -MP -MF $(DEPDIR)/libwin32text_plugin_la-win32text.Tpo -c -o libwin32text_plugin_la-win32text.lo `test -f 'win32text.c' || echo '$(srcdir)/'`win32text.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwin32text_plugin_la-win32text.Tpo $(DEPDIR)/libwin32text_plugin_la-win32text.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='win32text.c' object='libwin32text_plugin_la-win32text.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwin32text_plugin_la_CFLAGS) $(CFLAGS) -c -o libwin32text_plugin_la-win32text.lo `test -f 'win32text.c' || echo '$(srcdir)/'`win32text.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwin32text_plugin_la_CFLAGS) $(CFLAGS) -c -o libwin32text_plugin_la-win32text.lo `test -f 'win32text.c' || echo '$(srcdir)/'`win32text.c
 
-.cpp.o:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
+libxdg_screensaver_plugin_la-xdg.lo: inhibit/xdg.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxdg_screensaver_plugin_la_CFLAGS) $(CFLAGS) -MT libxdg_screensaver_plugin_la-xdg.lo -MD -MP -MF $(DEPDIR)/libxdg_screensaver_plugin_la-xdg.Tpo -c -o libxdg_screensaver_plugin_la-xdg.lo `test -f 'inhibit/xdg.c' || echo '$(srcdir)/'`inhibit/xdg.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libxdg_screensaver_plugin_la-xdg.Tpo $(DEPDIR)/libxdg_screensaver_plugin_la-xdg.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='inhibit/xdg.c' object='libxdg_screensaver_plugin_la-xdg.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxdg_screensaver_plugin_la_CFLAGS) $(CFLAGS) -c -o libxdg_screensaver_plugin_la-xdg.lo `test -f 'inhibit/xdg.c' || echo '$(srcdir)/'`inhibit/xdg.c
 
-.cpp.obj:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-.cpp.lo:
-@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
-
-libqte_main_plugin_la-qte_main.lo: qte_main.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqte_main_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libqte_main_plugin_la-qte_main.lo -MD -MP -MF $(DEPDIR)/libqte_main_plugin_la-qte_main.Tpo -c -o libqte_main_plugin_la-qte_main.lo `test -f 'qte_main.cpp' || echo '$(srcdir)/'`qte_main.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libqte_main_plugin_la-qte_main.Tpo $(DEPDIR)/libqte_main_plugin_la-qte_main.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='qte_main.cpp' object='libqte_main_plugin_la-qte_main.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqte_main_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libqte_main_plugin_la-qte_main.lo `test -f 'qte_main.cpp' || echo '$(srcdir)/'`qte_main.cpp
+libxscreensaver_plugin_la-xscreensaver.lo: inhibit/xscreensaver.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxscreensaver_plugin_la_CFLAGS) $(CFLAGS) -MT libxscreensaver_plugin_la-xscreensaver.lo -MD -MP -MF $(DEPDIR)/libxscreensaver_plugin_la-xscreensaver.Tpo -c -o libxscreensaver_plugin_la-xscreensaver.lo `test -f 'inhibit/xscreensaver.c' || echo '$(srcdir)/'`inhibit/xscreensaver.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libxscreensaver_plugin_la-xscreensaver.Tpo $(DEPDIR)/libxscreensaver_plugin_la-xscreensaver.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='inhibit/xscreensaver.c' object='libxscreensaver_plugin_la-xscreensaver.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxscreensaver_plugin_la_CFLAGS) $(CFLAGS) -c -o libxscreensaver_plugin_la-xscreensaver.lo `test -f 'inhibit/xscreensaver.c' || echo '$(srcdir)/'`inhibit/xscreensaver.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1706,12 +1591,7 @@ uninstall-am: uninstall-libvlcLTLIBRARIES
 
 
 @MAINTAINER_MODE_TRUE@$(srcdir)/Makefile.am: $(srcdir)/Modules.am $(top_srcdir)/modules/genmf
-@MAINTAINER_MODE_TRUE@	cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
-
-nice:
-	$(top_builddir)/compile
-
-.PHONY: nice
+@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

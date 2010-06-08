@@ -2,7 +2,7 @@
  * dynamicoverlay.c : dynamic overlay plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 6d9f4556d848332114284867907047bf4af905bb $
+ * $Id: 0c7c68a44bca8af5e43f97566a277f71e71cdcaf $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
@@ -34,9 +34,11 @@
 #include <vlc_vout.h>
 #include <vlc_filter.h>
 #include <vlc_osd.h>
+#include <vlc_fs.h>
 
 #include <ctype.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #include "dynamicoverlay.h"
 
@@ -169,11 +171,11 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     vlc_mutex_lock( &p_sys->lock );
     if( p_sys->i_inputfd == -1 )
     {
-        p_sys->i_inputfd = open( p_sys->psz_inputfile, O_RDONLY | O_NONBLOCK );
+        p_sys->i_inputfd = vlc_open( p_sys->psz_inputfile, O_RDONLY | O_NONBLOCK );
         if( p_sys->i_inputfd == -1 )
         {
-            msg_Warn( p_filter, "Failed to grab input file: %s (%s)",
-                      p_sys->psz_inputfile, strerror( errno ) );
+            msg_Warn( p_filter, "Failed to grab input file: %s (%m)",
+                      p_sys->psz_inputfile );
         }
         else
         {
@@ -184,14 +186,14 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
 
     if( p_sys->i_outputfd == -1 )
     {
-        p_sys->i_outputfd = open( p_sys->psz_outputfile,
+        p_sys->i_outputfd = vlc_open( p_sys->psz_outputfile,
                                   O_WRONLY | O_NONBLOCK );
         if( p_sys->i_outputfd == -1 )
         {
             if( errno != ENXIO )
             {
-                msg_Warn( p_filter, "Failed to grab output file: %s (%s)",
-                          p_sys->psz_outputfile, strerror( errno ) );
+                msg_Warn( p_filter, "Failed to grab output file: %s (%m)",
+                          p_sys->psz_outputfile );
             }
         }
         else
@@ -212,8 +214,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             /* We hit an error */
             if( errno != EAGAIN )
             {
-                msg_Warn( p_filter, "Error on input file: %s",
-                          strerror( errno ) );
+                msg_Warn( p_filter, "Error on input file: %m" );
                 close( p_sys->i_inputfd );
                 p_sys->i_inputfd = -1;
             }
@@ -320,8 +321,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             /* We hit an error */
             if( errno != EAGAIN )
             {
-                msg_Warn( p_filter, "Error on output file: %s",
-                          strerror( errno ) );
+                msg_Warn( p_filter, "Error on output file: %m" );
                 close( p_sys->i_outputfd );
                 p_sys->i_outputfd = -1;
             }
@@ -363,12 +363,10 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
                  (char*)&p_overlay->format.i_chroma, p_overlay->i_x, p_overlay->i_y,
                  p_overlay->i_alpha );
 
-        if( p_overlay->format.i_chroma == VLC_FOURCC('T','E','X','T') )
+        if( p_overlay->format.i_chroma == VLC_CODEC_TEXT )
         {
             p_region->psz_text = strdup( p_overlay->data.p_text );
-            p_region->p_style = malloc( sizeof(struct text_style_t) );
-            if( p_region->p_style )
-                *p_region->p_style = p_overlay->fontstyle;
+            p_region->p_style = text_style_Duplicate( p_overlay->p_fontstyle );
         }
         else
         {

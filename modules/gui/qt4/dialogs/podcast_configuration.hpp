@@ -2,7 +2,7 @@
  * podcast_configuration.hpp: Podcast configuration dialog
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 2779c564ea97b052fdc4806ad7a579b635de9fe6 $
+ * $Id: b06ff12167147212658a8b1032dda02814921fd0 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -26,28 +26,23 @@
 
 #include "util/qvlcframe.hpp"
 #include "ui/podcast_configuration.h"
+#include "util/singleton.hpp"
 
-class PodcastConfigDialog : public QVLCDialog
+class PodcastConfigDialog : public QVLCDialog, public Singleton<PodcastConfigDialog>
 {
-    Q_OBJECT;
-public:
-    static PodcastConfigDialog * getInstance( intf_thread_t *p_intf )
-    {
-        if( !instance )
-            instance = new PodcastConfigDialog( (QWidget *)p_intf->p_sys->p_mi,
-                                                p_intf );
-        return instance;
-    }
-    virtual ~PodcastConfigDialog();
+    Q_OBJECT
 
 private:
-    PodcastConfigDialog( QWidget *, intf_thread_t * );
-    static PodcastConfigDialog *instance;
+    PodcastConfigDialog( intf_thread_t * );
+    virtual ~PodcastConfigDialog();
+
     Ui::PodcastConfiguration ui;
 public slots:
     void accept();
     void add();
     void remove();
+
+    friend class    Singleton<PodcastConfigDialog>;
 };
 
 #endif

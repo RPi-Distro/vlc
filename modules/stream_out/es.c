@@ -2,7 +2,7 @@
  * es.c: Elementary stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: eade0592a9b28d5baea8687b3d2d023c7b4d49c7 $
+ * $Id: 1a20113ee2f9c5e9fa98ff090264ae487074f7a4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -149,7 +149,6 @@ static int Open( vlc_object_t *p_this )
 {
     sout_stream_t       *p_stream = (sout_stream_t*)p_this;
     sout_stream_sys_t   *p_sys;
-    vlc_value_t         val;
 
     config_ChainParse( p_stream, SOUT_CFG_PREFIX, ppsz_sout_options, p_stream->p_cfg );
     p_sys                   = malloc( sizeof( sout_stream_sys_t ) );
@@ -158,26 +157,17 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_count_audio    = 0;
     p_sys->i_count_video    = 0;
 
-    var_Get( p_stream, SOUT_CFG_PREFIX "access", &val );
-    p_sys->psz_access       = val.psz_string;
-    var_Get( p_stream, SOUT_CFG_PREFIX "access-audio", &val );
-    p_sys->psz_access_audio = val.psz_string;
-    var_Get( p_stream, SOUT_CFG_PREFIX "access-video", &val );
-    p_sys->psz_access_video = val.psz_string;
+    p_sys->psz_access = var_GetString( p_stream, SOUT_CFG_PREFIX "access" );
+    p_sys->psz_access_audio = var_GetString( p_stream, SOUT_CFG_PREFIX "access-audio" );
+    p_sys->psz_access_video = var_GetString( p_stream, SOUT_CFG_PREFIX "access-video" );
 
-    var_Get( p_stream, SOUT_CFG_PREFIX "mux", &val );
-    p_sys->psz_mux       = val.psz_string;
-    var_Get( p_stream, SOUT_CFG_PREFIX "mux-audio", &val );
-    p_sys->psz_mux_audio = val.psz_string;
-    var_Get( p_stream, SOUT_CFG_PREFIX "mux-video", &val );
-    p_sys->psz_mux_video = val.psz_string;
+    p_sys->psz_mux = var_GetString( p_stream, SOUT_CFG_PREFIX "mux" );
+    p_sys->psz_mux_audio = var_GetString( p_stream, SOUT_CFG_PREFIX "mux-audio" );
+    p_sys->psz_mux_video = var_GetString( p_stream, SOUT_CFG_PREFIX "mux-video" );
 
-    var_Get( p_stream, SOUT_CFG_PREFIX "dst", &val );
-    p_sys->psz_dst       = val.psz_string;
-    var_Get( p_stream, SOUT_CFG_PREFIX "dst-audio", &val );
-    p_sys->psz_dst_audio = val.psz_string;
-    var_Get( p_stream, SOUT_CFG_PREFIX "dst-video", &val );
-    p_sys->psz_dst_video = val.psz_string;
+    p_sys->psz_dst       = var_GetString( p_stream, SOUT_CFG_PREFIX "dst" );
+    p_sys->psz_dst_audio = var_GetString( p_stream, SOUT_CFG_PREFIX "dst-audio" );
+    p_sys->psz_dst_video = var_GetString( p_stream, SOUT_CFG_PREFIX "dst-video" );
 
     p_stream->pf_add    = Add;
     p_stream->pf_del    = Del;
@@ -218,8 +208,8 @@ struct sout_stream_id_t
     sout_mux_t   *p_mux;
 };
 
-static char * es_print_url( char *psz_fmt, vlc_fourcc_t i_fourcc, int i_count,
-                            char *psz_access, char *psz_mux )
+static char * es_print_url( const char *psz_fmt, vlc_fourcc_t i_fourcc, int i_count,
+                            const char *psz_access, const char *psz_mux )
 {
     char *psz_dst, *p;
 
@@ -285,8 +275,8 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     sout_instance_t   *p_sout = p_stream->p_sout;
     sout_stream_id_t  *id;
 
-    char              *psz_access;
-    char              *psz_mux;
+    const char        *psz_access;
+    const char        *psz_mux;
     char              *psz_dst;
 
     sout_access_out_t *p_access;

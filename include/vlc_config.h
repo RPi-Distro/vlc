@@ -41,19 +41,16 @@
 /* All timestamp below or equal to this define are invalid/unset
  * XXX the numerical value is 0 because of historical reason and will change.*/
 #define VLC_TS_INVALID (0)
+#define VLC_TS_0 (1)
 
-#define CLOCK_FREQ 1000000
-
-/* When creating or destroying threads in blocking mode, delay to poll thread
- * status */
-#define THREAD_SLEEP                    ((mtime_t)(0.010*CLOCK_FREQ))
+#define CLOCK_FREQ INT64_C(1000000)
 
 /*****************************************************************************
  * Interface configuration
  *****************************************************************************/
 
 /* Base delay in micro second for interface sleeps */
-#define INTF_IDLE_SLEEP                 ((mtime_t)(0.050*CLOCK_FREQ))
+#define INTF_IDLE_SLEEP                 (CLOCK_FREQ/20)
 
 /* Step for changing gamma, and minimum and maximum values */
 #define INTF_GAMMA_STEP                 .1
@@ -67,14 +64,11 @@
 #define TRANSCODE_ACTIVITY 10
 
 /* Used in ErrorThread */
-#define INPUT_IDLE_SLEEP                ((mtime_t)(0.100*CLOCK_FREQ))
-
-/* Time to wait in case of read error */
-#define INPUT_ERROR_SLEEP               ((mtime_t)(0.10*CLOCK_FREQ))
+#define INPUT_IDLE_SLEEP                (CLOCK_FREQ/10)
 
 /* Number of read() calls needed until we check the file size through
  * fstat() */
-#define INPUT_FSTAT_NB_READS            10
+#define INPUT_FSTAT_NB_READS            16
 
 /*
  * General limitations
@@ -82,7 +76,7 @@
 
 /* Duration between the time we receive the data packet, and the time we will
  * mark it to be presented */
-#define DEFAULT_PTS_DELAY               (mtime_t)(.3*CLOCK_FREQ)
+#define DEFAULT_PTS_DELAY               (3*CLOCK_FREQ/10)
 
 /* DVD and VCD devices */
 #if !defined( WIN32 ) && !defined( UNDER_CE )
@@ -114,19 +108,19 @@
 
 /* Buffers which arrive in advance of more than AOUT_MAX_ADVANCE_TIME
  * will be considered as bogus and be trashed */
-#define AOUT_MAX_ADVANCE_TIME           (mtime_t)(DEFAULT_PTS_DELAY * 5)
+#define AOUT_MAX_ADVANCE_TIME           (DEFAULT_PTS_DELAY * 5)
 
 /* Buffers which arrive in advance of more than AOUT_MAX_PREPARE_TIME
  * will cause the calling thread to sleep */
-#define AOUT_MAX_PREPARE_TIME           (mtime_t)(.5*CLOCK_FREQ)
+#define AOUT_MAX_PREPARE_TIME           (CLOCK_FREQ/2)
 
 /* Buffers which arrive after pts - AOUT_MIN_PREPARE_TIME will be trashed
  * to avoid too heavy resampling */
-#define AOUT_MIN_PREPARE_TIME           (mtime_t)(.04*CLOCK_FREQ)
+#define AOUT_MIN_PREPARE_TIME           (CLOCK_FREQ/25)
 
 /* Max acceptable delay between the coded PTS and the actual presentation
  * time, without resampling */
-#define AOUT_PTS_TOLERANCE              (mtime_t)(.04*CLOCK_FREQ)
+#define AOUT_PTS_TOLERANCE              (CLOCK_FREQ/25)
 
 /* Max acceptable resampling (in %) */
 #define AOUT_MAX_RESAMPLING             10
@@ -137,7 +131,7 @@
 
 /* Buffer must avoid arriving more than SPU_MAX_PREPARE_TIME in advanced to
  * the SPU */
-#define SPU_MAX_PREPARE_TIME ((mtime_t)(0.5*CLOCK_FREQ))
+#define SPU_MAX_PREPARE_TIME            (CLOCK_FREQ/2)
 
 /*****************************************************************************
  * Video configuration
@@ -159,10 +153,7 @@
 
 /* Video heap size - remember that a decompressed picture is big
  * (~1 Mbyte) before using huge values */
-#define VOUT_MAX_PICTURES              16
-
-/* Statistics are displayed every n loops (=~ pictures) */
-#define VOUT_STATS_NB_LOOPS             100
+#define VOUT_MAX_PICTURES              25
 
 /*
  * Time settings
@@ -172,7 +163,7 @@
  * It should be approximately the time needed to perform a complete picture
  * loop. Since it only happens when the video heap is full, it does not need
  * to be too low, even if it blocks the decoder. */
-#define VOUT_OUTMEM_SLEEP               ((mtime_t)(0.020*CLOCK_FREQ))
+#define VOUT_OUTMEM_SLEEP               (CLOCK_FREQ/50)
 
 /* The default video output window title */
 #define VOUT_TITLE                      "VLC"

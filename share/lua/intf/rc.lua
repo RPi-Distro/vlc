@@ -28,18 +28,20 @@ description=
  This is a modules/control/rc.c look alike (with a bunch of new features)
 
  Use on local term:
-    vlc -I luarc
+    vlc -I rc
  Use on tcp connection:
-    vlc -I luarc --lua-config "rc={host='localhost:4212'}"
+    vlc -I rc --lua-config "rc={host='localhost:4212'}"
  Use on multiple hosts (term + 2 tcp ports):
-    vlc -I luarc --lua-config "rc={hosts={'*console','localhost:4212','localhost:5678'}}"
+    vlc -I rc --lua-config "rc={hosts={'*console','localhost:4212','localhost:5678'}}"
 
  Note:
-    -I luarc is an alias for -I lua --lua-intf rc
+    -I rc and -I luarc are aliases for -I lua --lua-intf rc
 
  Configuration options setable throught the --lua-config option are:
     * hosts: A list of hosts to listen on.
     * host: A host to listen on. (won't be used if `hosts' is set)
+    * eval: Add eval command to evaluate lua expressions. Set to any value to
+            enable.
  The following can be set using the --lua-config option or in the interface
  itself using the `set' command:
     * prompt: The prompt.
@@ -59,12 +61,15 @@ skip2 = function(foo) return skip(skip(foo)) end
 setarg = common.setarg
 strip = common.strip
 
+_ = vlc.gettext._
+N_ = vlc.gettext.N_
+
 --[[ Setup default environement ]]
 env = { prompt = "> ";
         width = 70;
         autocompletion = 1;
         autoalias = 1;
-        welcome = "Remote control interface initialized. Type `help' for help.";
+        welcome = _("Remote control interface initialized. Type `help' for help.");
         flatplaylist = 0;
       }
 
@@ -85,7 +90,7 @@ function set_env(name,client,value)
     if value then
         local var,val = split_input(value)
         if val then
-            s = string.gsub(val,"\"(.*)\"","%1")
+            local s = string.gsub(val,"\"(.*)\"","%1")
             if type(client.env[var])==type(1) then
                 client.env[var] = tonumber(s)
             else
@@ -155,7 +160,7 @@ function quit(name,client)
 end
 
 function add(name,client,arg)
-    -- TODO: par single and double quotes properly
+    -- TODO: parse single and double quotes properly
     local f
     if name == "enqueue" then
         f = vlc.playlist.enqueue
@@ -308,7 +313,9 @@ function help(name,client,arg)
 end
 
 function input_info(name,client)
-    local categories = vlc.input_info()
+    local item = vlc.input.item()
+    if(item == nil) then return end
+    local categories = item:info()
     for cat, infos in pairs(categories) do
         client:append("+----[ "..cat.." ]")
         client:append("|")
@@ -320,15 +327,57 @@ function input_info(name,client)
     client:append("+----[ end of stream info ]")
 end
 
+function stats(name,client)
+    local item = vlc.input.item()
+    if(item == nil) then return end
+    local stats_tab = item:stats()
+
+    client:append("+----[ begin of statistical info")
+    client:append("+-[Incoming]")
+    client:append("| input bytes read : "..string.format("%8.0f KiB",stats_tab["read_bytes"]/1024))
+    client:append("| input bitrate    :   "..string.format("%6.0f kb/s",stats_tab["input_bitrate"]*8000))
+    client:append("| demux bytes read : "..string.format("%8.0f KiB",stats_tab["demux_read_bytes"]/1024))
+    client:append("| demux bitrate    :   "..string.format("%6.0f kb/s",stats_tab["demux_bitrate"]*8000))
+    client:append("| demux corrupted  :    "..string.format("%5i",stats_tab["demux_corrupted"]))
+    client:append("| discontinuities  :    "..string.format("%5i",stats_tab["demux_discontinuity"]))
+    client:append("|")
+    client:append("+-[Video Decoding]")
+    client:append("| video decoded    :    "..string.format("%5i",stats_tab["decoded_video"]))
+    client:append("| frames displayed :    "..string.format("%5i",stats_tab["displayed_pictures"]))
+    client:append("| frames lost      :    "..string.format("%5i",stats_tab["lost_pictures"]))
+    client:append("|")
+    client:append("+-[Audio Decoding]")
+    client:append("| audio decoded    :    "..string.format("%5i",stats_tab["decoded_audio"]))
+    client:append("| buffers played   :    "..string.format("%5i",stats_tab["played_abuffers"]))
+    client:append("| buffers lost     :    "..string.format("%5i",stats_tab["lost_abuffers"]))
+    client:append("|")
+    client:append("+-[Streaming]")
+    client:append("| packets sent     :    "..string.format("%5i",stats_tab["sent_packets"]))
+    client:append("| bytes sent       : "..string.format("%8.0f KiB",stats_tab["sent_bytes"]/1024))
+    client:append("| sending bitrate  :   "..string.format("%6.0f kb/s",stats_tab["send_bitrate"]*8000))
+    client:append("+----[ end of statistical info ]")
+end
+
 function playlist_status(name,client)
-    local a,b,c = vlc.playlist.status()
-    client:append( "( new input: " .. tostring(a) .. " )" )
-    client:append( "( audio volume: " .. tostring(b) .. " )")
-    client:append( "( state " .. tostring(c) .. " )")
+    local item = vlc.input.item()
+    if(item ~= nil) then
+        client:append( "( new input: " .. vlc.strings.decode_uri(item:uri()) .. " )" )
+    end
+    client:append( "( audio volume: " .. tostring(vlc.volume.get()) .. " )")
+    client:append( "( state " .. vlc.playlist.status() .. " )")
 end
 
 function is_playing(name,client)
     if vlc.input.is_playing() then client:append "1" else client:append "0" end
+end
+
+function get_title(name,client)
+    local item = vlc.input.item()
+    if item then
+        client:append(item:name())
+    else
+        client:append("")
+    end
 end
 
 function ret_print(foo,start,stop)
@@ -369,19 +418,25 @@ end
 
 function volume(name,client,value)
     if value then
-        vlc.volume.set(value)
+        common.volume(value)
     else
         client:append(tostring(vlc.volume.get()))
     end
 end
 
-function rate(name,client)
+function rate(name,client,value)
     local input = vlc.object.input()
-    if name == "normal" then
-        vlc.var.set(input,"rate",1000) -- FIXME: INPUT_RATE_DEFAULT
+    if name == "rate" then
+        vlc.var.set(input, "rate", tonumber(value))
+    elseif name == "normal" then
+        vlc.var.set(input,"rate",1)
     else
         vlc.var.set(input,"rate-"..name,nil)
     end
+end
+
+function frame(name,client)
+    vlc.var.trigger_callback(vlc.object.input(),"frame-next");
 end
 
 function listvalue(obj,var)
@@ -403,8 +458,25 @@ function listvalue(obj,var)
     end
 end
 
+function menu(name,client,value)
+    local map = { on='show', off='hide', up='up', down='down', left='prev', right='next', ['select']='activate' }
+    if map[value] and vlc.osd.menu[map[value]] then
+        vlc.osd.menu[map[value]]()
+    else
+        client:append("Unknown menu command '"..tostring(value).."'")
+    end
+end
+
+function hotkey(name, client, value)
+    if not value then
+        client:append("Please specify a hotkey (ie key-quit or quit)")
+    elseif not common.hotkey(value) and not common.hotkey("key-"..value) then
+        client:append("Unknown hotkey '"..value.."'")
+    end
+end
+
 function eval(client,val)
-    client:append(loadstring("return "..val)())
+    client:append(tostring(loadstring("return "..val)()))
 end
 
 --[[ Declare commands, register their callback functions and provide
@@ -437,17 +509,20 @@ commands_ordered = {
     { "chapter_p"; { func = titlechap_offset(-1); help = "previous chapter in current item" } };
     { "" };
     { "seek"; { func = seek; args = "X"; help = "seek in seconds, for instance `seek 12'" } };
-    { "pause"; { func = setarg(common.hotkey,"key-play-pause"); help = "toggle pause" } };
+    { "pause"; { func = skip2(vlc.playlist.pause); help = "toggle pause" } };
     { "fastforward"; { func = setarg(common.hotkey,"key-jump+extrashort"); help = "set to maximum rate" } };
     { "rewind"; { func = setarg(common.hotkey,"key-jump-extrashort"); help = "set to minimum rate" } };
     { "faster"; { func = rate; help = "faster playing of stream" } };
     { "slower"; { func = rate; help = "slower playing of stream" } };
     { "normal"; { func = rate; help = "normal playing of stream" } };
+    { "rate"; { func = rate; args = "[playback rate]"; help = "set playback rate to value" } };
+    { "frame"; { func = frame; help = "play frame by frame" } };
     { "fullscreen"; { func = skip2(vlc.video.fullscreen); args = "[on|off]"; help = "toggle fullscreen"; aliases = { "f", "F" } } };
     { "info"; { func = input_info; help = "information about the current stream" } };
+    { "stats"; { func = stats; help = "show statistical information" } };
     { "get_time"; { func = get_time("time"); help = "seconds elapsed since stream's beginning" } };
     { "is_playing"; { func = is_playing; help = "1 if a stream plays, 0 otherwise" } };
-    { "get_title"; { func = ret_print(vlc.input.get_title); help = "the title of the current stream" } };
+    { "get_title"; { func = get_title; help = "the title of the current stream" } };
     { "get_length"; { func = get_time("length"); help = "the length of the current stream" } };
     { "" };
     { "volume"; { func = volume; args = "[X]"; help = "set/get audio volume" } };
@@ -462,13 +537,12 @@ commands_ordered = {
     { "vzoom"; { func = skip(listvalue("vout","zoom")); args = "[X]"; help = "set/get video zoom"; aliases = { "zoom" } } };
     { "snapshot"; { func = common.snapshot; help = "take video snapshot" } };
     { "strack"; { func = skip(listvalue("input","spu-es")); args = "[X]"; help = "set/get subtitles track" } };
-    { "hotkey"; { func = skip(common.hotkey); args = "[hotkey name]"; help = "simulate hotkey press"; adv = true; aliases = { "key" } } };
-    { "menu"; { func = fixme; args = "[on|off|up|down|left|right|select]"; help = "use menu"; adv = true } };
+    { "hotkey"; { func = hotkey; args = "[hotkey name]"; help = "simulate hotkey press"; adv = true; aliases = { "key" } } };
+    { "menu"; { func = menu; args = "[on|off|up|down|left|right|select]"; help = "use menu"; adv = true } };
     { "" };
     { "set"; { func = set_env; args = "[var [value]]"; help = "set/get env var"; adv = true } };
     { "save_env"; { func = save_env; help = "save env vars (for future clients)"; adv = true } };
     { "alias"; { func = skip(alias); args = "[cmd]"; help = "set/get command aliases"; adv = true } };
-    { "eval"; { func = skip(eval); help = "eval some lua (*debug*)"; adv =true } }; -- FIXME: comment out if you're not debugging
     { "description"; { func = print_text("Description",description); help = "describe this module" } };
     { "license"; { func = print_text("License message",vlc.misc.license()); help = "print VLC's license message"; adv = true } };
     { "help"; { func = help; args = "[pattern]"; help = "a help message"; aliases = { "?" } } };
@@ -477,6 +551,11 @@ commands_ordered = {
     { "quit"; { func = quit; help = "quit VLC (or logout if in a socket connection)" } };
     { "shutdown"; { func = shutdown; help = "shutdown VLC" } };
     }
+
+if config.eval then
+    commands_ordered[#commands_ordered] = { "eval"; { func = skip(eval); help = "eval some lua (*debug*)"; adv =true } }
+end
+
 commands = {}
 for i, cmd in ipairs( commands_ordered ) do
     if #cmd == 2 then
@@ -513,7 +592,7 @@ do
         end
     end
     list = list..")"
-    if count ~= 0 and env.welcome then
+    if count ~= 0 and env.welcome and env.welcome ~= "" then
         env.welcome = env.welcome .. "\r\nWarning: "..count.." functions are still unimplemented "..list.."."
     end
 end
@@ -574,7 +653,9 @@ h = host.host()
 -- No auth
 h.status_callbacks[host.status.password] = function(client)
     client.env = common.table_copy( env )
-    client:send( client.env.welcome .. "\r\n")
+    if client.env.welcome ~= "" then
+        client:send( client.env.welcome .. "\r\n")
+    end
     client:switch_status(host.status.read)
 end
 -- Print prompt when switching a client's status to `read'
@@ -586,8 +667,7 @@ h:listen( config.hosts or config.host or "*console" )
 
 --[[ The main loop ]]
 while not vlc.misc.should_die() do
-    h:accept()
-    local write, read = h:select(0.1)
+    local write, read = h:accept_and_select()
 
     for _, client in pairs(write) do
         local len = client:send()

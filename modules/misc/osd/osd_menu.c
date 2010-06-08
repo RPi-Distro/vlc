@@ -2,7 +2,7 @@
  * parser.c : OSD import module
  *****************************************************************************
  * Copyright (C) 2007-2008 M2X
- * $Id: f5d8704f050253abf496438ab47844fee79f7bc8 $
+ * $Id: 57cd24ecab51e5e1a61827c33f42367e216461cd $
  *
  * Authors: Jean-Paul Saman
  *
@@ -36,6 +36,8 @@
 #include "osd_menu.h"
 
 #undef OSD_MENU_DEBUG
+
+const char * const ppsz_button_states[] = { "unselect", "select", "pressed" };
 
 /*****************************************************************************
  * Local prototypes
@@ -199,7 +201,7 @@ osd_state_t *osd_StateNew( osd_menu_t *p_menu, const char *psz_file,
     memset( &fmt_in, 0, sizeof(video_format_t) );
     memset( &fmt_out, 0, sizeof(video_format_t) );
 
-    fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');
+    fmt_out.i_chroma = VLC_CODEC_YUVA;
     if( p_menu->p_image )
     {
         p_state->p_pic = image_ReadUrl( p_menu->p_image, psz_file,

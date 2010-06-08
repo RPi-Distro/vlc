@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: cf4d0cc28ce925a97a3d3ef7a27bb2a3bef801aa $
+ * $Id: 77e96b5d09e8a700939991c084820c72d5606396 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -203,7 +203,24 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     SETUP_VFILTER_OPTION( logoFileText, editingFinished() )
     SETUP_VFILTER_OPTION( logoYSpin, valueChanged( int ) )
     SETUP_VFILTER_OPTION( logoXSpin, valueChanged( int ) )
-    SETUP_VFILTER_OPTION( logoTransparencySlider, valueChanged( int ) )
+    SETUP_VFILTER_OPTION( logoOpacitySlider, valueChanged( int ) )
+
+    if( module_exists( "atmo" ) )
+    {
+        SETUP_VFILTER( atmo )
+        SETUP_VFILTER_OPTION( atmoEdgeweightningSlider, valueChanged( int ) )
+        SETUP_VFILTER_OPTION( atmoBrightnessSlider, valueChanged( int ) )
+        SETUP_VFILTER_OPTION( atmoDarknesslimitSlider, valueChanged( int ) )
+        SETUP_VFILTER_OPTION( atmoMeanlengthSlider, valueChanged( int ) )
+        SETUP_VFILTER_OPTION( atmoMeanthresholdSlider, valueChanged( int ) )
+        SETUP_VFILTER_OPTION( atmoPercentnewSlider, valueChanged( int ) )
+        SETUP_VFILTER_OPTION( atmoFiltermodeCombo, currentIndexChanged( int ) )
+        SETUP_VFILTER_OPTION( atmoShowdotsCheck, stateChanged( int ) )
+    }
+    else
+    {
+        _parent->removeTab( _parent->indexOf( ui.tab_atmo ) );
+    }
 
 #undef SETUP_VFILTER
 #undef SETUP_VFILTER_OPTION
@@ -255,20 +272,30 @@ void ExtVideo::ChangeVFiltersString( const char *psz_name, bool b_add )
     char *psz_parser, *psz_string;
     const char *psz_filter_type;
 
-    module_t *p_obj = module_find( psz_name );
+    /* FIXME temporary hack */
+    const char *psz_module_name = psz_name;
+    if( !strcmp( psz_name, "magnify" ) ||
+        !strcmp( psz_name, "puzzle" ) ||
+        !strcmp( psz_name, "logo" ) ||
+        !strcmp( psz_name, "wall" ) ||
+        !strcmp( psz_name, "panoramix" ) ||
+        !strcmp( psz_name, "clone" ) )
+        psz_module_name = "video_filter_wrapper";
+
+    module_t *p_obj = module_find( psz_module_name );
     if( !p_obj )
     {
         msg_Err( p_intf, "Unable to find filter module \"%s\".", psz_name );
         return;
     }
 
-    if( module_provides( p_obj, "video filter2" ) )
-    {
-        psz_filter_type = "video-filter";
-    }
-    else if( module_provides( p_obj, "video filter" ) )
+    if( module_provides( p_obj, "video filter" ) )
     {
         psz_filter_type = "vout-filter";
+    }
+    else if( module_provides( p_obj, "video filter2" ) )
+    {
+        psz_filter_type = "video-filter";
     }
     else if( module_provides( p_obj, "sub filter" ) )
     {
@@ -347,7 +374,7 @@ void ExtVideo::ChangeVFiltersString( const char *psz_name, bool b_add )
     if( p_vout )
     {
         if( !strcmp( psz_filter_type, "sub-filter" ) )
-            var_SetString( p_vout->p_spu, psz_filter_type, psz_string );
+            var_SetString( vout_GetSpu( p_vout ), psz_filter_type, psz_string );
         else
             var_SetString( p_vout, psz_filter_type, psz_string );
         vlc_object_release( p_vout );
@@ -382,10 +409,10 @@ void ExtVideo::initComboBoxItems( QObject *widget )
         {
             if( i_type == CONFIG_ITEM_INTEGER
              || i_type == CONFIG_ITEM_BOOL )
-                combobox->addItem( qfu( p_item->ppsz_list_text[i_index] ),
+                combobox->addItem( qtr( p_item->ppsz_list_text[i_index] ),
                                    p_item->pi_list[i_index] );
             else if( i_type == CONFIG_ITEM_STRING )
-                combobox->addItem( qfu( p_item->ppsz_list_text[i_index] ),
+                combobox->addItem( qtr( p_item->ppsz_list_text[i_index] ),
                                    p_item->ppsz_list[i_index] );
         }
     }
@@ -417,7 +444,7 @@ void ExtVideo::setWidgetValue( QObject *widget )
                  "Module instance %s not found, looking in config values.",
                  qtu( module ) );
 #endif
-        i_type = config_GetType( p_intf, qtu( option ) ) & 0xf0;
+        i_type = config_GetType( p_intf, qtu( option ) ) & VLC_VAR_CLASS;
         switch( i_type )
         {
             case VLC_VAR_INTEGER:
@@ -434,7 +461,7 @@ void ExtVideo::setWidgetValue( QObject *widget )
     }
     else
     {
-        i_type = var_Type( p_obj, qtu( option ) ) & 0xf0;
+        i_type = var_Type( p_obj, qtu( option ) ) & VLC_VAR_CLASS;
         var_Get( p_obj, qtu( option ), &val );
         vlc_object_release( p_obj );
     }
@@ -531,7 +558,7 @@ void ExtVideo::updateFilterOptions()
     QLineEdit      *lineedit      = qobject_cast<QLineEdit*>     ( sender() );
     QComboBox      *combobox      = qobject_cast<QComboBox*>     ( sender() );
 
-    i_type &= 0xf0;
+    i_type &= VLC_VAR_CLASS;
     if( i_type == VLC_VAR_INTEGER || i_type == VLC_VAR_BOOL )
     {
         int i_int = 0;
@@ -692,8 +719,7 @@ void ExtV4l2::Refresh( void )
                             if( i_val == val2.p_list->p_values[j].i_int )
                                 combobox->setCurrentIndex( j );
                         }
-                        var_Change( p_obj, psz_var, VLC_VAR_FREELIST,
-                                    &val2, &text2 );
+                        var_FreeList( &val2, &text2 );
 
                         CONNECT( combobox, currentIndexChanged( int ), this,
                                  ValueChange( int ) );
@@ -758,7 +784,7 @@ void ExtV4l2::Refresh( void )
             }
             free( name.psz_string );
         }
-        var_Change( p_obj, "controls", VLC_VAR_FREELIST, &val, &text );
+        var_FreeList( &val, &text );
         vlc_object_release( p_obj );
     }
     else
@@ -795,7 +821,7 @@ void ExtV4l2::ValueChange( int value )
                 var_SetBool( p_obj, psz_var, value );
                 break;
             case VLC_VAR_VOID:
-                var_SetVoid( p_obj, psz_var );
+                var_TriggerCallback( p_obj, psz_var );
                 break;
         }
         free( psz_var );
@@ -829,8 +855,6 @@ Equalizer::Equalizer( intf_thread_t *_p_intf, QWidget *_parent ) :
 
     /* Setup of presetsComboBox */
     presetsComboBox = ui.presetsCombo;
-    CONNECT( presetsComboBox, currentIndexChanged( int ),
-             this, updateUISliderValues( int ) );
     CONNECT( presetsComboBox, activated( int ), this, setCorePreset( int ) );
 
     /* Add the sliders for the Bands */
@@ -877,7 +901,7 @@ void Equalizer::clean()
 /* Write down initial values */
 void Equalizer::updateUIFromCore()
 {
-    char *psz_af, *psz_pres;
+    char *psz_af, *psz_pres, *psz_bands;
     float f_preamp;
     int i_preset;
 
@@ -889,6 +913,7 @@ void Equalizer::updateUIFromCore()
         if( var_GetBool( p_aout, "equalizer-2pass" ) )
             ui.eq2PassCheck->setChecked( true );
         f_preamp = var_GetFloat( p_aout, "equalizer-preamp" );
+        psz_bands = var_GetNonEmptyString( p_aout, "equalizer-bands" );
         i_preset = presetsComboBox->findData( QVariant( psz_pres ) );
         vlc_object_release( p_aout );
     }
@@ -899,6 +924,7 @@ void Equalizer::updateUIFromCore()
         if( config_GetInt( p_intf, "equalizer-2pass" ) )
             ui.eq2PassCheck->setChecked( true );
         f_preamp = config_GetFloat( p_intf, "equalizer-preamp" );
+        psz_bands = config_GetPsz( p_intf, "equalizer-bands" );
         i_preset = presetsComboBox->findData( QVariant( psz_pres ) );
     }
     if( psz_af && strstr( psz_af, "equalizer" ) != NULL )
@@ -906,6 +932,23 @@ void Equalizer::updateUIFromCore()
     enable( ui.enableCheck->isChecked() );
 
     presetsComboBox->setCurrentIndex( i_preset );
+
+    ui.preampSlider->setValue( (int)( ( f_preamp + 20 ) * 10 ) );
+
+    if( psz_bands && strlen( psz_bands ) > 1 )
+    {
+    	char *psz_bands_orig = psz_bands;
+        for( int i = 0; i < BANDS; i++ )
+        {
+            const float f = us_strtod(psz_bands, &psz_bands );
+            bands[i]->setValue( (int)( ( f + 20 ) * 10 )  );
+            if( psz_bands == NULL || *psz_bands == '\0' ) break;
+            psz_bands++;
+            if( *psz_bands == '\0' ) break;
+        }
+        free( psz_bands_orig );
+    }
+    else free( psz_bands );
 
     free( psz_af );
     free( psz_pres );
@@ -915,12 +958,9 @@ void Equalizer::updateUIFromCore()
 void Equalizer::enable()
 {
     bool en = ui.enableCheck->isChecked();
-    aout_EnableFilter( VLC_OBJECT( p_intf ), "equalizer",
-                       en ? true : false );
-//    aout_EnableFilter( VLC_OBJECT( p_intf ), "upmixer",
-//                       en ? true : false );
-//     aout_EnableFilter( VLC_OBJECT( p_intf ), "vsurround",
-//                       en ? true : false );
+    aout_EnableFilter( THEPL, "equalizer", en );
+//    aout_EnableFilter( THEPL, "upmixer", en );
+//     aout_EnableFilter( THEPL, "vsurround", en );
     enable( en );
 
     if( presetsComboBox->currentIndex() < 0 )
@@ -947,18 +987,12 @@ void Equalizer::set2Pass()
     aout_instance_t *p_aout= THEMIM->getAout();
     bool b_2p = ui.eq2PassCheck->isChecked();
 
-    if( p_aout == NULL )
-        config_PutInt( p_intf, "equalizer-2pass", b_2p );
-    else
+    if( p_aout )
     {
         var_SetBool( p_aout, "equalizer-2pass", b_2p );
-        config_PutInt( p_intf, "equalizer-2pass", b_2p );
-        for( int i = 0; i < p_aout->i_nb_inputs; i++ )
-        {
-            p_aout->pp_inputs[i]->b_restart = true;
-        }
         vlc_object_release( p_aout );
     }
+    config_PutInt( p_intf, "equalizer-2pass", b_2p );
 }
 
 /* Function called when the preamp slider is moved */
@@ -1004,40 +1038,8 @@ void Equalizer::setCoreBands()
     }
 }
 
-void Equalizer::updateUISliderValues( int i_preset )
-{
-    if( i_preset < 0 ) return;
-
-    char *p = createValuesFromPreset( i_preset );
-    char *psz = p;
-    float f_preamp = eqz_preset_10b[i_preset]->f_preamp;
-
-    if ( p )
-    {
-        for( int i = 0; i < BANDS; i++ )
-        {
-            const float f = us_strtod(p, &p );
-
-            bands[i]->setValue( (int)( ( f + 20 ) * 10 )  );
-
-            band_texts[i]->setText( band_frequencies[i] + "\n"
-                                  + QString("%1").arg( f, 5, 'f', 1 ) + "dB" );
-            if( p == NULL || *p == '\0' )
-                break;
-            p++;
-            if( *p == '\0' )
-                break;
-        }
-        free( psz );
-    }
-    ui.preampSlider->setValue( (int)( ( f_preamp + 20 ) * 10 ) );
-    ui.preampLabel->setText( qtr( "Preamp\n" )
-                   + QString::number( f_preamp, 'f', 1 ) + qtr( "dB" ) );
-}
-
 char * Equalizer::createValuesFromPreset( int i_preset )
 {
-    char *psz_values;
     QString values;
 
     /* Create the QString in Qt */
@@ -1045,27 +1047,44 @@ char * Equalizer::createValuesFromPreset( int i_preset )
         values += QString( " %1" ).arg( eqz_preset_10b[i_preset]->f_amp[i] );
 
     /* Convert it to char * */
-    if( !asprintf( &psz_values, "%s", values.toAscii().constData() ) )
-        return NULL;
-
-    return psz_values;
+    return strdup( values.toAscii().constData() );
 }
 
 void Equalizer::setCorePreset( int i_preset )
 {
+    if( i_preset < 0 )
+        return;
+
+    /* Update pre-amplification in the UI */
+    float f_preamp = eqz_preset_10b[i_preset]->f_preamp;
+    ui.preampSlider->setValue( (int)( ( f_preamp + 20 ) * 10 ) );
+    ui.preampLabel->setText( qtr( "Preamp\n" )
+                   + QString::number( f_preamp, 'f', 1 ) + qtr( "dB" ) );
+
     char *psz_values = createValuesFromPreset( i_preset );
     if( !psz_values ) return ;
 
+    char *p = psz_values;
+    for( int i = 0; i < BANDS && *p; i++ )
+    {
+        const float f = us_strtod( p, &p );
+
+        bands[i]->setValue( (int)( ( f + 20 ) * 10 )  );
+        band_texts[i]->setText( band_frequencies[i] + "\n"
+                              + QString("%1").arg( f, 5, 'f', 1 ) + "dB" );
+        if( *p )
+            p++; /* skip separator */
+    }
+
+    /* Apply presets to audio output */
     aout_instance_t *p_aout= THEMIM->getAout();
     if( p_aout )
     {
-        delCallbacks( p_aout );
         var_SetString( p_aout , "equalizer-preset" , preset_list[i_preset] );
 
         var_SetString( p_aout, "equalizer-bands", psz_values );
         var_SetFloat( p_aout, "equalizer-preamp",
                       eqz_preset_10b[i_preset]->f_preamp );
-        addCallbacks( p_aout );
         vlc_object_release( p_aout );
     }
     config_PutPsz( p_intf, "equalizer-bands", psz_values );

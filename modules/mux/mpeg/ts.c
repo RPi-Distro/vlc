@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: dccd56043fd4333c3c36da94df7bd59066101586 $
+ * $Id: 34e4e3e902611dd49454308d777526fb88571113 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -39,6 +39,7 @@
 #include <vlc_sout.h>
 #include <vlc_codecs.h>
 #include <vlc_block.h>
+#include <vlc_rand.h>
 
 #include <vlc_iso_lang.h>
 
@@ -143,7 +144,7 @@ static void    Close  ( vlc_object_t * );
   "of the shaping algorithm, since I frames are usually the biggest " \
   "frames in the stream.")
 
-#define PCR_TEXT N_("PCR delay (ms)")
+#define PCR_TEXT N_("PCR interval (ms)")
 #define PCR_LONGTEXT N_("Set at which interval " \
   "PCRs (Program Clock Reference) will be sent (in milliseconds). " \
   "This value should be below 100ms. (default is 70ms).")
@@ -210,7 +211,7 @@ vlc_module_begin ()
 #endif
     add_string( SOUT_CFG_PREFIX "program-pmt", NULL, NULL, PMTPROG_TEXT,
                 PMTPROG_LONGTEXT, true )
-    add_bool( SOUT_CFG_PREFIX "es-id-pid", 0, NULL, PID_TEXT, PID_LONGTEXT,
+    add_bool( SOUT_CFG_PREFIX "es-id-pid", false, NULL, PID_TEXT, PID_LONGTEXT,
               true )
     add_string( SOUT_CFG_PREFIX "muxpmt", NULL, NULL, MUXPMT_TEXT, MUXPMT_LONGTEXT, true )
 #ifdef HAVE_DVBPSI_SDT
@@ -520,7 +521,6 @@ static int Open( vlc_object_t *p_this )
     p_mux->pf_mux       = Mux;
     p_mux->p_sys        = p_sys;
 
-    srand( (uint32_t)mdate() );
     for ( i = 0; i < MAX_PMT; i++ )
         p_sys->sdt_descriptors[i].psz_service_name
             = p_sys->sdt_descriptors[i].psz_provider = NULL;
@@ -529,8 +529,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_audio_bound = 0;
     p_sys->i_video_bound = 0;
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "es-id-pid", &val );
-    p_sys->b_es_id_pid = val.b_bool;
+    p_sys->b_es_id_pid = var_GetBool( p_mux, SOUT_CFG_PREFIX "es-id-pid" );
 
     var_Get( p_mux, SOUT_CFG_PREFIX "muxpmt", &val );
     /*
@@ -583,7 +582,9 @@ static int Open( vlc_object_t *p_this )
     }
     free( val.psz_string );
 
-    p_sys->i_pat_version_number = rand() % 32;
+    unsigned short subi[3];
+    vlc_rand_bytes(subi, sizeof(subi));
+    p_sys->i_pat_version_number = nrand48(subi) & 0x1f;
     p_sys->pat.i_pid = 0;
     p_sys->pat.i_continuity_counter = 0;
     p_sys->pat.b_discontinuity = false;
@@ -592,16 +593,16 @@ static int Open( vlc_object_t *p_this )
     if ( val.i_int )
         p_sys->i_tsid = val.i_int;
     else
-        p_sys->i_tsid = rand() % 65536;
+        p_sys->i_tsid = nrand48(subi) & 0xffff;
 
-    p_sys->i_netid = rand() % 65536;
+    p_sys->i_netid = nrand48(subi) & 0xffff;
 #ifdef HAVE_DVBPSI_SDT
     var_Get( p_mux, SOUT_CFG_PREFIX "netid", &val );
     if ( val.i_int )
         p_sys->i_netid = val.i_int;
 #endif
 
-    p_sys->i_pmt_version_number = rand() % 32;
+    p_sys->i_pmt_version_number = nrand48(subi) & 0x1f;
     for( i = 0; i < p_sys->i_num_pmt; i++ )
     {
         p_sys->pmt[i].i_continuity_counter = 0;
@@ -651,8 +652,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->b_sdt = false;
 #endif
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "alignment", &val );
-    p_sys->b_data_alignment = val.b_bool;
+    p_sys->b_data_alignment = var_GetBool( p_mux, SOUT_CFG_PREFIX "alignment" );
 
     var_Get( p_mux, SOUT_CFG_PREFIX "program-pmt", &val );
     if( val.psz_string && *val.psz_string )
@@ -706,22 +706,19 @@ static int Open( vlc_object_t *p_this )
 
     p_sys->i_pid_free = p_sys->pmt[p_sys->i_num_pmt - 1].i_pid + 1;
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "pid-video", &val );
-    p_sys->i_pid_video = val.i_int;
+    p_sys->i_pid_video = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-video" );
     if ( p_sys->i_pid_video > p_sys->i_pid_free )
     {
         p_sys->i_pid_free = p_sys->i_pid_video + 1;
     }
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "pid-audio", &val );
-    p_sys->i_pid_audio = val.i_int;
+    p_sys->i_pid_audio = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-audio" );
     if ( p_sys->i_pid_audio > p_sys->i_pid_free )
     {
         p_sys->i_pid_free = p_sys->i_pid_audio + 1;
     }
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "pid-spu", &val );
-    p_sys->i_pid_spu = val.i_int;
+    p_sys->i_pid_spu = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-spu" );
     if ( p_sys->i_pid_spu > p_sys->i_pid_free )
     {
         p_sys->i_pid_free = p_sys->i_pid_spu + 1;
@@ -735,11 +732,9 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_null_continuity_counter = 0;
 
     /* Allow to create constrained stream */
-    var_Get( p_mux, SOUT_CFG_PREFIX "bmin", &val );
-    p_sys->i_bitrate_min = val.i_int;
+    p_sys->i_bitrate_min = var_GetInteger( p_mux, SOUT_CFG_PREFIX "bmin" );
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "bmax", &val );
-    p_sys->i_bitrate_max = val.i_int;
+    p_sys->i_bitrate_max = var_GetInteger( p_mux, SOUT_CFG_PREFIX "bmax" );
 
     if( p_sys->i_bitrate_min > 0 && p_sys->i_bitrate_max > 0 &&
         p_sys->i_bitrate_min > p_sys->i_bitrate_max )
@@ -782,8 +777,7 @@ static int Open( vlc_object_t *p_this )
     msg_Dbg( p_mux, "shaping=%"PRId64" pcr=%"PRId64" dts_delay=%"PRId64,
              p_sys->i_shaping_delay, p_sys->i_pcr_delay, p_sys->i_dts_delay );
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "use-key-frames", &val );
-    p_sys->b_use_key_frames = val.b_bool;
+    p_sys->b_use_key_frames = var_GetBool( p_mux, SOUT_CFG_PREFIX "use-key-frames" );
 
     /* for TS generation */
     p_sys->i_pcr    = 0;
@@ -848,11 +842,9 @@ static int Open( vlc_object_t *p_this )
     }
     free( val.psz_string );
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "crypt-audio", &val );
-    p_sys->b_crypt_audio = val.b_bool;
+    p_sys->b_crypt_audio = var_GetBool( p_mux, SOUT_CFG_PREFIX "crypt-audio" );
 
-    var_Get( p_mux, SOUT_CFG_PREFIX "crypt-video", &val );
-    p_sys->b_crypt_video = val.b_bool;
+    p_sys->b_crypt_video = var_GetBool( p_mux, SOUT_CFG_PREFIX "crypt-video" );
 
     return VLC_SUCCESS;
 }
@@ -866,16 +858,13 @@ static void Close( vlc_object_t * p_this )
     sout_mux_sys_t      *p_sys = p_mux->p_sys;
     int i;
 
-    vlc_mutex_lock( &p_sys->csa_lock );
     if( p_sys->csa )
     {
         var_DelCallback( p_mux, SOUT_CFG_PREFIX "csa-ck", ChangeKeyCallback, NULL );
         var_DelCallback( p_mux, SOUT_CFG_PREFIX "csa2-ck", ChangeKeyCallback, NULL );
         var_DelCallback( p_mux, SOUT_CFG_PREFIX "csa-use", ActiveKeyCallback, NULL );
         csa_Delete( p_sys->csa );
-        p_sys->csa = NULL;
     }
-    vlc_mutex_unlock( &p_sys->csa_lock );
 
     for( i = 0; i < MAX_PMT; i++ )
     {
@@ -998,39 +987,39 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         case VIDEO_ES:
             switch( p_input->p_fmt->i_codec )
             {
-                case VLC_FOURCC( 'm', 'p','g', 'v' ):
+                case VLC_CODEC_MPGV:
                     /* TODO: do we need to check MPEG-I/II ? */
                     p_stream->i_stream_type = 0x02;
                     p_stream->i_stream_id = 0xe0;
                     break;
-                case VLC_FOURCC( 'm', 'p','4', 'v' ):
+                case VLC_CODEC_MP4V:
                     p_stream->i_stream_type = 0x10;
                     p_stream->i_stream_id = 0xe0;
                     p_stream->i_es_id = p_stream->i_pid;
                     break;
-                case VLC_FOURCC( 'h', '2','6', '4' ):
+                case VLC_CODEC_H264:
                     p_stream->i_stream_type = 0x1b;
                     p_stream->i_stream_id = 0xe0;
                     break;
                 /* XXX dirty dirty but somebody want that:
                  *     using crapy MS-codec XXX */
                 /* I didn't want to do that :P */
-                case VLC_FOURCC( 'H', '2', '6', '3' ):
-                case VLC_FOURCC( 'I', '2', '6', '3' ):
-                case VLC_FOURCC( 'W', 'M', 'V', '3' ):
-                case VLC_FOURCC( 'W', 'M', 'V', '2' ):
-                case VLC_FOURCC( 'W', 'M', 'V', '1' ):
-                case VLC_FOURCC( 'D', 'I', 'V', '3' ):
-                case VLC_FOURCC( 'D', 'I', 'V', '2' ):
-                case VLC_FOURCC( 'D', 'I', 'V', '1' ):
-                case VLC_FOURCC( 'M', 'J', 'P', 'G' ):
+                case VLC_CODEC_H263I:
+                case VLC_CODEC_H263:
+                case VLC_CODEC_WMV3:
+                case VLC_CODEC_WMV2:
+                case VLC_CODEC_WMV1:
+                case VLC_CODEC_DIV3:
+                case VLC_CODEC_DIV2:
+                case VLC_CODEC_DIV1:
+                case VLC_CODEC_MJPG:
                     p_stream->i_stream_type = 0xa0; /* private */
                     p_stream->i_stream_id = 0xa0;   /* beurk */
                     p_stream->i_bih_codec  = p_input->p_fmt->i_codec;
                     p_stream->i_bih_width  = p_input->p_fmt->video.i_width;
                     p_stream->i_bih_height = p_input->p_fmt->video.i_height;
                     break;
-                case VLC_FOURCC( 'd', 'r', 'a', 'c' ):
+                case VLC_CODEC_DIRAC:
                     /* stream_id makes use of stream_id_extension */
                     p_stream->i_stream_id = (PES_EXTENDED_STREAM_ID << 8) | 0x60;
                     p_stream->i_stream_type = 0xd1;
@@ -1045,25 +1034,28 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         case AUDIO_ES:
             switch( p_input->p_fmt->i_codec )
             {
-                case VLC_FOURCC( 'm', 'p','g', 'a' ):
-                case VLC_FOURCC( 'm', 'p', '3', ' ' ):
+                case VLC_CODEC_MPGA:
                     p_stream->i_stream_type =
                         p_input->p_fmt->audio.i_rate >= 32000 ? 0x03 : 0x04;
                     p_stream->i_stream_id = 0xc0;
                     break;
-                case VLC_FOURCC( 'a', '5','2', ' ' ):
+                case VLC_CODEC_A52:
                     p_stream->i_stream_type = 0x81;
                     p_stream->i_stream_id = 0xbd;
                     break;
-                case VLC_FOURCC( 'l', 'p','c', 'm' ):
-                    p_stream->i_stream_type = 0x83;
-                    p_stream->i_stream_id = 0xbd;
-                    break;
-                case VLC_FOURCC( 'd', 't','s', ' ' ):
+                case VLC_CODEC_EAC3:
                     p_stream->i_stream_type = 0x06;
                     p_stream->i_stream_id = 0xbd;
                     break;
-                case VLC_FOURCC( 'm', 'p','4', 'a' ):
+                case VLC_CODEC_DVD_LPCM:
+                    p_stream->i_stream_type = 0x83;
+                    p_stream->i_stream_id = 0xbd;
+                    break;
+                case VLC_CODEC_DTS:
+                    p_stream->i_stream_type = 0x06;
+                    p_stream->i_stream_id = 0xbd;
+                    break;
+                case VLC_CODEC_MP4A:
                     /* XXX: make that configurable in some way when LOAS
                      * is implemented for AAC in TS */
                     //p_stream->i_stream_type = 0x11; /* LOAS/LATM */
@@ -1082,22 +1074,22 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         case SPU_ES:
             switch( p_input->p_fmt->i_codec )
             {
-                case VLC_FOURCC( 's', 'p','u', ' ' ):
+                case VLC_CODEC_SPU:
                     p_stream->i_stream_type = 0x82;
                     p_stream->i_stream_id = 0xbd;
                     break;
-                case VLC_FOURCC( 's', 'u','b', 't' ):
+                case VLC_CODEC_SUBT:
                     p_stream->i_stream_type = 0x12;
                     p_stream->i_stream_id = 0xfa;
                     p_sys->i_mpeg4_streams++;
                     p_stream->i_es_id = p_stream->i_pid;
                     break;
-                case VLC_FOURCC('d','v','b','s'):
+                case VLC_CODEC_DVBS:
                     p_stream->i_stream_type = 0x06;
                     p_stream->i_es_id = p_input->p_fmt->subs.dvb.i_id;
                     p_stream->i_stream_id = 0xbd;
                     break;
-                case VLC_FOURCC('t','e','l','x'):
+                case VLC_CODEC_TELETEXT:
                     p_stream->i_stream_type = 0x06;
                     p_stream->i_stream_id = 0xbd; /* FIXME */
                     break;
@@ -1185,7 +1177,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     }
 
     /* Create decoder specific info for subt */
-    if( p_stream->i_codec == VLC_FOURCC( 's', 'u','b', 't' ) )
+    if( p_stream->i_codec == VLC_CODEC_SUBT )
     {
         uint8_t *p;
 
@@ -1397,7 +1389,6 @@ static int Mux( sout_mux_t *p_mux )
             block_FifoEmpty( p_mux->pp_inputs[i]->p_fifo );
         }
         msg_Dbg( p_mux, "waiting for PCR streams" );
-        msleep( 1000 );
         return VLC_SUCCESS;
     }
     p_pcr_stream = (ts_stream_t*)p_sys->p_pcr_input->p_sys;
@@ -1489,12 +1480,12 @@ static int Mux( sout_mux_t *p_mux )
 
                     if( p_stream == p_pcr_stream || p_sys->b_data_alignment
                          || p_input->p_fmt->i_codec !=
-                             VLC_FOURCC('m', 'p', 'g', 'a') )
+                             VLC_CODEC_MPGA )
                     {
                         p_data = block_FifoGet( p_input->p_fifo );
 
                         if( p_input->p_fmt->i_codec ==
-                                VLC_FOURCC('m', 'p', '4', 'a' ) )
+                                VLC_CODEC_MP4A )
                             p_data = Add_ADTS( p_data, p_input->p_fmt );
                     }
                     else
@@ -1507,7 +1498,7 @@ static int Mux( sout_mux_t *p_mux )
                         p_data->i_length = p_next->i_dts - p_data->i_dts;
                     }
                     else if( p_input->p_fmt->i_codec !=
-                               VLC_FOURCC('s', 'u', 'b', 't' ) )
+                               VLC_CODEC_SUBT )
                         p_data->i_length = 1000;
 
                     if( ( p_pcr_stream->i_pes_dts > 0 &&
@@ -1546,7 +1537,7 @@ static int Mux( sout_mux_t *p_mux )
                         if( p_input->p_fmt->i_cat == SPU_ES )
                         {
                             if( p_input->p_fmt->i_codec ==
-                                VLC_FOURCC('s','u','b','t') )
+                                VLC_CODEC_SUBT )
                             {
                                 /* Prepend header */
                                 p_data = block_Realloc( p_data, 2,
@@ -1585,14 +1576,14 @@ static int Mux( sout_mux_t *p_mux )
                                 }
                             }
                             else if( p_input->p_fmt->i_codec ==
-                                       VLC_FOURCC('t','e','l','x') )
+                                       VLC_CODEC_TELETEXT )
                             {
                                 /* EN 300 472 */
                                 i_header_size = 0x24;
                                 b_data_alignment = 1;
                             }
                             else if( p_input->p_fmt->i_codec ==
-                                       VLC_FOURCC('d','v','b','s') )
+                                       VLC_CODEC_DVBS )
                             {
                                 /* EN 300 743 */
                                 b_data_alignment = 1;
@@ -1622,7 +1613,7 @@ static int Mux( sout_mux_t *p_mux )
                         }
 
                         if( p_input->p_fmt->i_codec ==
-                                   VLC_FOURCC('d','r','a','c') )
+                                   VLC_CODEC_DIRAC )
                         {
                             b_data_alignment = 1;
                             /* dirac pes packets should be unbounded in
@@ -1766,6 +1757,7 @@ static int Mux( sout_mux_t *p_mux )
 #define STD_PES_PAYLOAD 170
 static block_t *FixPES( sout_mux_t *p_mux, block_fifo_t *p_fifo )
 {
+    VLC_UNUSED(p_mux);
     block_t *p_data;
     size_t i_size;
 
@@ -2004,6 +1996,7 @@ static void TSDate( sout_mux_t *p_mux, sout_buffer_chain_t *p_chain_ts,
 static block_t *TSNew( sout_mux_t *p_mux, ts_stream_t *p_stream,
                        bool b_pcr )
 {
+    VLC_UNUSED(p_mux);
     block_t *p_pes = p_stream->chain_pes.p_first;
     block_t *p_ts;
 
@@ -2223,6 +2216,7 @@ static void PEStoTS( sout_instance_t *p_sout,
                      sout_buffer_chain_t *c, block_t *p_pes,
                      ts_stream_t *p_stream )
 {
+    VLC_UNUSED(p_sout);
     uint8_t *p_data;
     int     i_size;
     int     b_new_pes;
@@ -2314,6 +2308,7 @@ static void PEStoTS( sout_instance_t *p_sout,
 static block_t *WritePSISection( sout_instance_t *p_sout,
                                        dvbpsi_psi_section_t* p_section )
 {
+    VLC_UNUSED(p_sout);
     block_t   *p_psi, *p_first = NULL;
 
     while( p_section )
@@ -2545,7 +2540,7 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
                     bits_write( &bits, 6, 0x05 );   /* AudioStream */
                 }
                 else if( p_stream->i_stream_type == 0x12 &&
-                         p_stream->i_codec == VLC_FOURCC('s','u','b','t') )
+                         p_stream->i_codec == VLC_CODEC_SUBT )
                 {
                     bits_write( &bits, 8, 0x0B );   /* Text Stream */
                     bits_write( &bits, 6, 0x04 );   /* VisualStream */
@@ -2680,14 +2675,14 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
             /* "registration" descriptor : "AC-3" */
             dvbpsi_PMTESAddDescriptor( p_es, 0x05, 4, format );
         }
-        else if( p_stream->i_codec == VLC_FOURCC('d','r','a','c') )
+        else if( p_stream->i_codec == VLC_CODEC_DIRAC )
         {
             /* Dirac registration descriptor */
 
             uint8_t data[4] = { 'd', 'r', 'a', 'c' };
             dvbpsi_PMTESAddDescriptor( p_es, 0x05, 4, data );
         }
-        else if( p_stream->i_codec == VLC_FOURCC('d','t','s',' ') )
+        else if( p_stream->i_codec == VLC_CODEC_DTS )
         {
             /* DTS registration descriptor (ETSI TS 101 154 Annex F) */
 
@@ -2695,7 +2690,12 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
             uint8_t data[4] = { 0x44, 0x54, 0x53, 0x32 };
             dvbpsi_PMTESAddDescriptor( p_es, 0x05, 4, data );
         }
-        else if( p_stream->i_codec == VLC_FOURCC('t','e','l','x') )
+        else if( p_stream->i_codec == VLC_CODEC_EAC3 )
+        {
+            uint8_t data[1] = { 0x00 };
+            dvbpsi_PMTESAddDescriptor( p_es, 0x7a, 1, data );
+        }
+        else if( p_stream->i_codec == VLC_CODEC_TELETEXT )
         {
             if( p_stream->i_decoder_specific_info )
             {
@@ -2705,7 +2705,7 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
             }
             continue;
         }
-        else if( p_stream->i_codec == VLC_FOURCC('d','v','b','s') )
+        else if( p_stream->i_codec == VLC_CODEC_DVBS )
         {
             /* DVB subtitles */
             if( p_stream->i_decoder_specific_info )

@@ -2,7 +2,7 @@
  * cvd.c : CVD Subtitle decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: dbd59164dc718ef19ce7bc339ed0386a40b5ebb4 $
+ * $Id: 90635d7498ff9671e6d4f353c7e6b4b958977748 $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -33,10 +33,9 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 #include <vlc_codec.h>
 
-#include "vlc_bits.h"
+#include <vlc_bits.h>
 
 #define DEBUG_CVDSUB 1
 
@@ -111,10 +110,8 @@ static int DecoderOpen( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC( 'c','v','d',' ' ) )
-    {
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_CVD )
         return VLC_EGENERIC;
-    }
 
     p_dec->p_sys = p_sys = malloc( sizeof( decoder_sys_t ) );
     if( !p_sys )
@@ -129,7 +126,7 @@ static int DecoderOpen( vlc_object_t *p_this )
     p_dec->pf_packetize  = Packetize;
 
     p_dec->fmt_out.i_cat = SPU_ES;
-    p_dec->fmt_out.i_codec = VLC_FOURCC('Y','U','V','P');
+    p_dec->fmt_out.i_codec = VLC_CODEC_YUVP;
 
     return VLC_SUCCESS;
 }
@@ -233,7 +230,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
      * to detect the first packet in a subtitle.  The first packet
      * seems to have a valid PTS while later packets for the same
      * image don't. */
-    if( p_sys->i_state == SUBTITLE_BLOCK_EMPTY && p_block->i_pts == 0 )
+    if( p_sys->i_state == SUBTITLE_BLOCK_EMPTY && p_block->i_pts <= VLC_TS_INVALID )
     {
         msg_Warn( p_dec, "first packet expected but no PTS present");
         return NULL;
@@ -512,8 +509,9 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
 
     /* Create new SPU region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
-    fmt.i_aspect = VOUT_ASPECT_FACTOR;
+    fmt.i_chroma = VLC_CODEC_YUVP;
+    fmt.i_sar_num = 1;
+    fmt.i_sar_den = 1;
     fmt.i_width = fmt.i_visible_width = p_sys->i_width;
     fmt.i_height = fmt.i_visible_height = p_sys->i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;

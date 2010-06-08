@@ -2,7 +2,7 @@
  * gradient.c : Gradient and edge detection video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: 948cb4a04d318256b720203ed6ea0e8b54698f02 $
+ * $Id: b0585dcdb2a39a5b81f2fe29b116ce55787c8d4b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -35,9 +35,8 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
-#include <vlc_vout.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_picture.h"
 
 enum { GRADIENT, EDGE, HOUGH };
@@ -71,6 +70,8 @@ static void FilterHough   ( filter_t *, picture_t *, picture_t * );
 #define CARTOON_LONGTEXT N_("Apply cartoon effect. It is only used by " \
     "\"gradient\" and \"edge\".")
 
+#define GRADIENT_HELP N_("Apply color gradient or edge detection effects")
+
 static const char *const mode_list[] = { "gradient", "edge", "hough" };
 static const char *const mode_list_text[] = { N_("Gradient"), N_("Edge"), N_("Hough") };
 
@@ -79,6 +80,7 @@ static const char *const mode_list_text[] = { N_("Gradient"), N_("Edge"), N_("Ho
 vlc_module_begin ()
     set_description( N_("Gradient video filter") )
     set_shortname( N_( "Gradient" ))
+    set_help(GRADIENT_HELP)
     set_capability( "video filter2", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
@@ -89,7 +91,7 @@ vlc_module_begin ()
 
     add_integer_with_range( FILTER_PREFIX "type", 0, 0, 1, NULL,
                 GRADIENT_TEXT, GRADIENT_LONGTEXT, false )
-    add_bool( FILTER_PREFIX "cartoon", 1, NULL,
+    add_bool( FILTER_PREFIX "cartoon", true, NULL,
                 CARTOON_TEXT, CARTOON_LONGTEXT, false )
 
     add_shortcut( "gradient" )
@@ -139,7 +141,7 @@ static int Create( vlc_object_t *p_this )
             break;
 
         default:
-             msg_Err( p_filter, "Unsupported input chroma (%4s)",
+             msg_Err( p_filter, "Unsupported input chroma (%4.4s)",
                       (char*)&(p_filter->fmt_in.video.i_chroma) );
             return VLC_EGENERIC;
     }

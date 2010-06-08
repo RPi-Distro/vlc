@@ -2,7 +2,7 @@
  * input_slider.hpp : A slider that controls an input
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 1e6ec6ae9ef0d3acc09554dd0f31157b76856257 $
+ * $Id: 08800f1ded9f986890322bee77405fe1fd6816ef $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -31,6 +31,7 @@
 
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QTimer>
 
 /* Input Slider derived from QSlider */
 class InputSlider : public QSlider
@@ -49,11 +50,14 @@ private:
     bool b_isSliding; /* Whether we are currently sliding by user action */
     int inputLength;  /* InputLength that can change */
     char psz_length[MSTRTIME_MAX_SIZE]; /* Used for the ToolTip */
+    int lastSeeked;
+    QTimer *timer;
 
 public slots:
-    void setPosition( float, int, int );
+    void setPosition( float, int64_t, int );
 private slots:
     void userDrag( int );
+    void seekTick();
 
 signals:
     void sliderDragged( float );
@@ -69,6 +73,7 @@ class SoundSlider : public QAbstractSlider
 public:
     SoundSlider( QWidget *_parent, int _i_step, bool b_softamp, char * );
     virtual ~SoundSlider() {};
+    void setMuted( bool ); /* Set Mute status */
 
 protected:
     const static int paddingL = 3;
@@ -85,8 +90,10 @@ private:
     bool b_mouseOutside; /* Whether the mouse is outside or inside the Widget */
     int i_oldvalue; /* Store the old Value before changing */
     float f_step; /* How much do we increase each time we wheel */
+    bool b_isMuted;
 
     QPixmap pixGradient; /* Gradient pix storage */
+    QPixmap pixGradient2; /* Muted Gradient pix storage */
     QPixmap pixOutside; /* OutLine pix storage */
 
     void changeValue( int x ); /* Function to modify the value from pixel x() */

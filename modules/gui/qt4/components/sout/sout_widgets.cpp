@@ -1,10 +1,10 @@
 /*****************************************************************************
- * profile_selector.cpp : A small profile selector and editor
+ * sout_widgets.cpp : Widgets for stream output destination boxes
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 7961c49b7b061074d1392094ccd2d8a770faf4ec $
+ * $Id: 3be195cedb0b6ccaa098f9bd639b68a654fb5e5e $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin@savoirfairelinux.com>
@@ -27,12 +27,16 @@
 #include "components/sout/sout_widgets.hpp"
 #include "dialogs/sout.hpp"
 #include "util/qt_dirs.hpp"
+#include <vlc_intf_strings.h>
 
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QFileDialog>
+
+#define I_FILE_SLASH_DIR \
+    I_DIR_OR_FOLDER( N_("File/Directory"), N_("File/Folder") )
 
 SoutInputBox::SoutInputBox( QWidget *_parent, const QString& mrl ) : QGroupBox( _parent )
 {
@@ -72,7 +76,7 @@ void SoutInputBox::setMRL( const QString& mrl )
         type = mrl.left( i );
     }
     else
-        type = qtr( "File/Directory" );
+        type = qtr( I_FILE_SLASH_DIR );
     sourceValueLabel->setText( type );
 }
 
@@ -138,13 +142,13 @@ HTTPDestBox::HTTPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
         this );
     layout->addWidget(httpOutput, 0, 0, 1, -1);
 
-    QLabel *HTTPLabel = new QLabel( qtr("Address"), this );
+    QLabel *HTTPLabel = new QLabel( qtr("Path"), this );
     QLabel *HTTPPortLabel = new QLabel( qtr("Port"), this );
-    layout->addWidget(HTTPLabel, 1, 0, 1, 1);
-    layout->addWidget(HTTPPortLabel, 2, 0, 1, 1);
+    layout->addWidget(HTTPLabel, 2, 0, 1, 1);
+    layout->addWidget(HTTPPortLabel, 1, 0, 1, 1);
 
     HTTPEdit = new QLineEdit(this);
-    HTTPEdit->setText( "0.0.0.0" );
+    HTTPEdit->setText( "/" );
 
     HTTPPort = new QSpinBox(this);
     HTTPPort->setMaximumSize(QSize(90, 16777215));
@@ -153,8 +157,8 @@ HTTPDestBox::HTTPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     HTTPPort->setMaximum(65535);
     HTTPPort->setValue(8080);
 
-    layout->addWidget(HTTPEdit, 1, 1, 1, 1);
-    layout->addWidget(HTTPPort, 2, 1, 1, 1);
+    layout->addWidget(HTTPEdit, 2, 1, 1, 1);
+    layout->addWidget(HTTPPort, 1, 1, 1, 1);
     CS( HTTPPort );
     CT( HTTPEdit );
 }
@@ -163,12 +167,19 @@ QString HTTPDestBox::getMRL( const QString& mux )
 {
     if( HTTPEdit->text().isEmpty() ) return "";
 
+    QString path = HTTPEdit->text();
+    if( path[0] != '/' )
+        path.prepend( qfu("/") );
+    QString port;
+    port.setNum( HTTPPort->value() );
+    QString dst = ":" + port + path;
+
     SoutMrl m;
     m.begin( "std" );
     m.option(  "access", "http" );
     if( !mux.isEmpty() )
         m.option( "mux", mux );
-    m.option( "dst", HTTPEdit->text(), HTTPPort->value() );
+    m.option( "dst", dst );
     m.end();
 
     return m.getMrl();
@@ -213,6 +224,56 @@ QString MMSHDestBox::getMRL( const QString& mux )
     m.option(  "access", "mmsh" );
     m.option( "mux", "asfh" );
     m.option( "dst", MMSHEdit->text(), MMSHPort->value() );
+    m.end();
+
+    return m.getMrl();
+}
+
+
+RTSPDestBox::RTSPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
+{
+    QGridLayout *layout = new QGridLayout( this );
+
+    QLabel *rtspOutput = new QLabel(
+        qtr( "This module outputs the transcoded stream to a network via "
+             "RTSP." ), this );
+    layout->addWidget( rtspOutput, 0, 0, 1, -1 );
+
+    QLabel *RTSPLabel = new QLabel( qtr("Path"), this );
+    QLabel *RTSPPortLabel = new QLabel( qtr("Port"), this );
+    layout->addWidget( RTSPLabel, 2, 0, 1, 1 );
+    layout->addWidget( RTSPPortLabel, 1, 0, 1, 1 );
+
+    RTSPEdit = new QLineEdit( this );
+    RTSPEdit->setText( "/" );
+
+    RTSPPort = new QSpinBox( this );
+    RTSPPort->setMaximumSize( QSize( 90, 16777215 ) );
+    RTSPPort->setAlignment( Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter );
+    RTSPPort->setMinimum( 1 );
+    RTSPPort->setMaximum( 65535 );
+    RTSPPort->setValue( 5544 );
+
+    layout->addWidget( RTSPEdit, 2, 1, 1, 1 );
+    layout->addWidget( RTSPPort, 1, 1, 1, 1 );
+    CS( RTSPPort );
+    CT( RTSPEdit );
+}
+
+QString RTSPDestBox::getMRL( const QString& mux )
+{
+    if( RTSPEdit->text().isEmpty() ) return "";
+
+    QString path = RTSPEdit->text();
+    if( path[0] != '/' )
+        path.prepend( qfu("/") );
+    QString port;
+    port.setNum( RTSPPort->value() );
+    QString sdp = "rtsp://:" + port + path;
+
+    SoutMrl m;
+    m.begin( "rtp" );
+    m.option( "sdp", sdp );
     m.end();
 
     return m.getMrl();
@@ -265,7 +326,8 @@ QString UDPDestBox::getMRL( const QString& mux )
 
 
 
-RTPDestBox::RTPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
+RTPDestBox::RTPDestBox( QWidget *_parent, const char *_mux )
+    : VirtualDestBox( _parent ), mux( _mux )
 {
     QGridLayout *layout = new QGridLayout( this );
 
@@ -275,7 +337,7 @@ RTPDestBox::RTPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     layout->addWidget(rtpOutput, 0, 0, 1, -1);
 
     QLabel *RTPLabel = new QLabel( qtr("Address"), this );
-    QLabel *RTPPortLabel = new QLabel( qtr("Port"), this );
+    QLabel *RTPPortLabel = new QLabel( qtr("Base port"), this );
     layout->addWidget(RTPLabel, 1, 0, 1, 1);
     layout->addWidget(RTPPortLabel, 2, 0, 1, 1);
 
@@ -288,38 +350,14 @@ RTPDestBox::RTPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     RTPPort->setMaximum(65535);
     RTPPort->setValue(5004);
 
-    RTPPortAudio = new QSpinBox(this);
-    RTPPortAudio->setMaximumSize(QSize(90, 16777215));
-    RTPPortAudio->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-    RTPPortAudio->setMinimum(-1);
-    RTPPortAudio->setMaximum(65535);
-    RTPPortAudio->setValue(-1);
-
-    RTPPortVideo = new QSpinBox(this);
-    RTPPortVideo->setMaximumSize(QSize(90, 16777215));
-    RTPPortVideo->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-    RTPPortVideo->setMinimum(-1);
-    RTPPortVideo->setMaximum(65535);
-    RTPPortVideo->setValue(-1);
-
     layout->addWidget(RTPEdit, 1, 1, 1, 1);
     layout->addWidget(RTPPort, 2, 1, 1, 1);
 
-    QLabel *RTPPortAudioLabel = new QLabel( qtr("Audio Port"), this );
-    QLabel *RTPPortVideoLabel = new QLabel( qtr("Video Port"), this );
-    layout->addWidget(RTPPortAudioLabel, 3, 0, 1, 1);
-    layout->addWidget(RTPPortAudio, 3, 1, 1, 1);
-    layout->addWidget(RTPPortVideoLabel, 3, 2, 1, 1);
-    layout->addWidget(RTPPortVideo, 3, 3, 1, 1);
-
-
     CS( RTPPort );
-    CS( RTPPortAudio );
-    CS( RTPPortVideo );
     CT( RTPEdit );
 }
 
-QString RTPDestBox::getMRL( const QString& mux )
+QString RTPDestBox::getMRL( const QString& )
 {
     if( RTPEdit->text().isEmpty() ) return "";
 
@@ -327,14 +365,8 @@ QString RTPDestBox::getMRL( const QString& mux )
     m.begin( "rtp" );
     m.option( "dst", RTPEdit->text() );
     m.option( "port", RTPPort->value() );
-    if( !mux.isEmpty() )
-        m.option( "mux", mux );
-    if( mux.isEmpty() || mux.compare( "ts", Qt::CaseInsensitive ) )
-    {
-
-        m.option( "port-audio", RTPPortAudio->value() );
-        m.option( "port-video", RTPPortVideo->value() );
-    }
+    if( mux != NULL )
+        m.option( "mux", qfu( mux ) );
     m.end();
 
     return m.getMrl();

@@ -2,7 +2,7 @@
  * image.c : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: b0a808f82de35fa62dc996f15bfc905d42a5aaeb $
+ * $Id: 497ed2bed947d8081c3c33f06ada7435c02a1dfb $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -34,7 +34,6 @@
 # include "config.h"
 #endif
 
-#include <ctype.h>
 #include <errno.h>
 
 #include <vlc_common.h>
@@ -44,7 +43,7 @@
 #include <vlc_es.h>
 #include <vlc_image.h>
 #include <vlc_stream.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_sout.h>
 #include <libvlc.h>
 
@@ -75,11 +74,12 @@ vlc_fourcc_t image_Type2Fourcc( const char * );
 vlc_fourcc_t image_Ext2Fourcc( const char * );
 /*static const char *Fourcc2Ext( vlc_fourcc_t );*/
 
+#undef image_HandlerCreate
 /**
  * Create an image_handler_t instance
  *
  */
-image_handler_t *__image_HandlerCreate( vlc_object_t *p_this )
+image_handler_t *image_HandlerCreate( vlc_object_t *p_this )
 {
     image_handler_t *p_image = calloc( 1, sizeof(image_handler_t) );
     if( !p_image )
@@ -157,12 +157,18 @@ static picture_t *ImageRead( image_handler_t *p_image, block_t *p_block,
     if( !p_fmt_out->i_chroma )
         p_fmt_out->i_chroma = p_image->p_dec->fmt_out.video.i_chroma;
     if( !p_fmt_out->i_width && p_fmt_out->i_height )
-        p_fmt_out->i_width = p_fmt_out->i_height
-                              * p_image->p_dec->fmt_out.video.i_aspect
-                              / VOUT_ASPECT_FACTOR;
+        p_fmt_out->i_width = (int64_t)p_image->p_dec->fmt_out.video.i_width *
+                             p_image->p_dec->fmt_out.video.i_sar_num *
+                             p_fmt_out->i_height /
+                             p_image->p_dec->fmt_out.video.i_height /
+                             p_image->p_dec->fmt_out.video.i_sar_den;
+
     if( !p_fmt_out->i_height && p_fmt_out->i_width )
-        p_fmt_out->i_height = p_fmt_out->i_width * VOUT_ASPECT_FACTOR
-                               / p_image->p_dec->fmt_out.video.i_aspect;
+        p_fmt_out->i_height = (int64_t)p_image->p_dec->fmt_out.video.i_height *
+                              p_image->p_dec->fmt_out.video.i_sar_den *
+                              p_fmt_out->i_width /
+                              p_image->p_dec->fmt_out.video.i_width /
+                              p_image->p_dec->fmt_out.video.i_sar_num;
     if( !p_fmt_out->i_width )
         p_fmt_out->i_width = p_image->p_dec->fmt_out.video.i_width;
     if( !p_fmt_out->i_height )
@@ -334,9 +340,15 @@ static block_t *ImageWrite( image_handler_t *p_image, picture_t *p_pic,
         p_tmp_pic =
             p_image->p_filter->pf_video_filter( p_image->p_filter, p_pic );
 
-        p_block = p_image->p_enc->pf_encode_video( p_image->p_enc, p_tmp_pic );
-
-        p_image->p_filter->pf_vout_buffer_del( p_image->p_filter, p_tmp_pic );
+        if( likely(p_tmp_pic != NULL) )
+        {
+            p_block = p_image->p_enc->pf_encode_video( p_image->p_enc,
+                                                       p_tmp_pic );
+            p_image->p_filter->pf_video_buffer_del( p_image->p_filter,
+                                                    p_tmp_pic );
+        }
+        else
+            p_block = NULL;
     }
     else
     {
@@ -365,7 +377,7 @@ static int ImageWriteUrl( image_handler_t *p_image, picture_t *p_pic,
         p_fmt_out->i_chroma = image_Ext2Fourcc( psz_url );
     }
 
-    file = utf8_fopen( psz_url, "wb" );
+    file = vlc_fopen( psz_url, "wb" );
     if( !file )
     {
         msg_Err( p_image->p_parent, "%s: %m", psz_url );
@@ -426,7 +438,6 @@ static picture_t *ImageConvert( image_handler_t *p_image, picture_t *p_pic,
         p_fmt_out->i_height = p_fmt_out->i_visible_height = p_fmt_in->i_height;
     if( !p_fmt_out->i_sar_num ) p_fmt_out->i_sar_num = p_fmt_in->i_sar_num;
     if( !p_fmt_out->i_sar_den ) p_fmt_out->i_sar_den = p_fmt_in->i_sar_den;
-    if( !p_fmt_out->i_aspect ) p_fmt_out->i_aspect = p_fmt_in->i_aspect;
 
     if( p_image->p_filter )
     if( p_image->p_filter->fmt_in.video.i_chroma != p_fmt_in->i_chroma ||
@@ -469,7 +480,7 @@ static picture_t *ImageConvert( image_handler_t *p_image, picture_t *p_pic,
     {
         /* Duplicate image */
         picture_Release( p_pif ); /* XXX: Better fix must be possible */
-        p_pif = p_image->p_filter->pf_vout_buffer_new( p_image->p_filter );
+        p_pif = p_image->p_filter->pf_video_buffer_new( p_image->p_filter );
         if( p_pif )
             picture_Copy( p_pif, p_pic );
     }
@@ -523,24 +534,25 @@ static const struct
 
 } ext_table[] =
 {
-    { VLC_FOURCC('j','p','e','g'), "jpeg" },
-    { VLC_FOURCC('j','p','e','g'), "jpg"  },
-    { VLC_FOURCC('l','j','p','g'), "ljpg" },
-    { VLC_FOURCC('p','n','g',' '), "png" },
-    { VLC_FOURCC('p','g','m',' '), "pgm" },
-    { VLC_FOURCC('p','g','m','y'), "pgmyuv" },
+    { VLC_CODEC_JPEG,              "jpeg" },
+    { VLC_CODEC_JPEG,              "jpg"  },
+    { VLC_CODEC_JPEGLS,            "ljpg" },
+    { VLC_CODEC_PNG,               "png" },
+    { VLC_CODEC_PGM,               "pgm" },
+    { VLC_CODEC_PGMYUV,            "pgmyuv" },
     { VLC_FOURCC('p','b','m',' '), "pbm" },
     { VLC_FOURCC('p','a','m',' '), "pam" },
-    { VLC_FOURCC('t','g','a',' '), "tga" },
-    { VLC_FOURCC('b','m','p',' '), "bmp" },
-    { VLC_FOURCC('p','n','m',' '), "pnm" },
+    { VLC_CODEC_TARGA,             "tga" },
+    { VLC_CODEC_BMP,               "bmp" },
+    { VLC_CODEC_PNM,               "pnm" },
     { VLC_FOURCC('x','p','m',' '), "xpm" },
     { VLC_FOURCC('x','c','f',' '), "xcf" },
-    { VLC_FOURCC('p','c','x',' '), "pcx" },
-    { VLC_FOURCC('g','i','f',' '), "gif" },
-    { VLC_FOURCC('t','i','f','f'), "tif" },
-    { VLC_FOURCC('t','i','f','f'), "tiff" },
+    { VLC_CODEC_PCX,               "pcx" },
+    { VLC_CODEC_GIF,               "gif" },
+    { VLC_CODEC_TIFF,              "tif" },
+    { VLC_CODEC_TIFF,              "tiff" },
     { VLC_FOURCC('l','b','m',' '), "lbm" },
+    { VLC_CODEC_PPM,               "ppm" },
     { 0, NULL }
 };
 
@@ -584,20 +596,20 @@ static const struct
     const char *psz_mime;
 } mime_table[] =
 {
-    { VLC_FOURCC('b','m','p',' '), "image/bmp" },
-    { VLC_FOURCC('b','m','p',' '), "image/x-bmp" },
-    { VLC_FOURCC('b','m','p',' '), "image/x-bitmap" },
-    { VLC_FOURCC('b','m','p',' '), "image/x-ms-bmp" },
-    { VLC_FOURCC('p','n','m',' '), "image/x-portable-anymap" },
-    { VLC_FOURCC('p','n','m',' '), "image/x-portable-bitmap" },
-    { VLC_FOURCC('p','n','m',' '), "image/x-portable-graymap" },
-    { VLC_FOURCC('p','n','m',' '), "image/x-portable-pixmap" },
-    { VLC_FOURCC('g','i','f',' '), "image/gif" },
-    { VLC_FOURCC('j','p','e','g'), "image/jpeg" },
-    { VLC_FOURCC('p','c','x',' '), "image/pcx" },
-    { VLC_FOURCC('p','n','g',' '), "image/png" },
-    { VLC_FOURCC('t','i','f','f'), "image/tiff" },
-    { VLC_FOURCC('t','g','a',' '), "iamge/x-tga" },
+    { VLC_CODEC_BMP,               "image/bmp" },
+    { VLC_CODEC_BMP,               "image/x-bmp" },
+    { VLC_CODEC_BMP,               "image/x-bitmap" },
+    { VLC_CODEC_BMP,               "image/x-ms-bmp" },
+    { VLC_CODEC_PNM,               "image/x-portable-anymap" },
+    { VLC_CODEC_PNM,               "image/x-portable-bitmap" },
+    { VLC_CODEC_PNM,               "image/x-portable-graymap" },
+    { VLC_CODEC_PNM,               "image/x-portable-pixmap" },
+    { VLC_CODEC_GIF,               "image/gif" },
+    { VLC_CODEC_JPEG,              "image/jpeg" },
+    { VLC_CODEC_PCX,               "image/pcx" },
+    { VLC_CODEC_PNG,               "image/png" },
+    { VLC_CODEC_TIFF,              "image/tiff" },
+    { VLC_CODEC_TARGA,             "iamge/x-tga" },
     { VLC_FOURCC('x','p','m',' '), "image/x-xpixmap" },
     { 0, NULL }
 };
@@ -615,10 +627,7 @@ vlc_fourcc_t image_Mime2Fourcc( const char *psz_mime )
 static picture_t *video_new_buffer( decoder_t *p_dec )
 {
     p_dec->fmt_out.video.i_chroma = p_dec->fmt_out.i_codec;
-    return picture_New( p_dec->fmt_out.video.i_chroma,
-                        p_dec->fmt_out.video.i_width,
-                        p_dec->fmt_out.video.i_height,
-                        p_dec->fmt_out.video.i_aspect );
+    return picture_NewFromFormat( &p_dec->fmt_out.video );
 }
 
 static void video_del_buffer( decoder_t *p_dec, picture_t *p_pic )
@@ -646,7 +655,8 @@ static decoder_t *CreateDecoder( vlc_object_t *p_this, video_format_t *fmt )
 {
     decoder_t *p_dec;
 
-    p_dec = vlc_object_create( p_this, VLC_OBJECT_DECODER );
+    p_dec = vlc_custom_create( p_this, sizeof( *p_dec ), VLC_OBJECT_GENERIC,
+                               "image decoder" );
     if( p_dec == NULL )
         return NULL;
 
@@ -667,7 +677,7 @@ static decoder_t *CreateDecoder( vlc_object_t *p_this, video_format_t *fmt )
     p_dec->p_module = module_need( p_dec, "decoder", "$codec", false );
     if( !p_dec->p_module )
     {
-        msg_Err( p_dec, "no suitable decoder module for fourcc `%4.4s'.\n"
+        msg_Err( p_dec, "no suitable decoder module for fourcc `%4.4s'. "
                  "VLC probably does not support this image format.",
                  (char*)&p_dec->fmt_in.i_codec );
 
@@ -680,8 +690,6 @@ static decoder_t *CreateDecoder( vlc_object_t *p_this, video_format_t *fmt )
 
 static void DeleteDecoder( decoder_t * p_dec )
 {
-    vlc_object_detach( p_dec );
-
     if( p_dec->p_module ) module_unneed( p_dec, p_dec->p_module );
 
     es_format_Clean( &p_dec->fmt_in );
@@ -763,8 +771,6 @@ static encoder_t *CreateEncoder( vlc_object_t *p_this, video_format_t *fmt_in,
 
 static void DeleteEncoder( encoder_t * p_enc )
 {
-    vlc_object_detach( p_enc );
-
     if( p_enc->p_module ) module_unneed( p_enc, p_enc->p_module );
 
     es_format_Clean( &p_enc->fmt_in );
@@ -785,9 +791,9 @@ static filter_t *CreateFilter( vlc_object_t *p_this, es_format_t *p_fmt_in,
                                   VLC_OBJECT_GENERIC, typename );
     vlc_object_attach( p_filter, p_this );
 
-    p_filter->pf_vout_buffer_new =
+    p_filter->pf_video_buffer_new =
         (picture_t *(*)(filter_t *))video_new_buffer;
-    p_filter->pf_vout_buffer_del =
+    p_filter->pf_video_buffer_del =
         (void (*)(filter_t *, picture_t *))video_del_buffer;
 
     p_filter->fmt_in = *p_fmt_in;
@@ -809,8 +815,6 @@ static filter_t *CreateFilter( vlc_object_t *p_this, es_format_t *p_fmt_in,
 
 static void DeleteFilter( filter_t * p_filter )
 {
-    vlc_object_detach( p_filter );
-
     if( p_filter->p_module ) module_unneed( p_filter, p_filter->p_module );
 
     es_format_Clean( &p_filter->fmt_in );

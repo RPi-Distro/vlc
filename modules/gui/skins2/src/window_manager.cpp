@@ -2,7 +2,7 @@
  * window_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 01385b5682af2d34042e11638a5c429b18bee4c4 $
+ * $Id: 1081e1a61e62ad3193c52bb1a6d2d4c9fe70e046 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -71,8 +71,7 @@ void WindowManager::startMove( TopWindow &rWindow )
     m_movingWindows.clear();
     buildDependSet( m_movingWindows, &rWindow );
 
-#ifdef WIN32
-    if( config_GetInt( getIntf(), "skins2-transparency" ) )
+    if( var_InheritBool( getIntf(), "skins2-transparency" ) )
     {
         // Change the opacity of the moving windows
         WinSet_t::const_iterator it;
@@ -89,7 +88,6 @@ void WindowManager::startMove( TopWindow &rWindow )
             (*it)->refresh( 0, 0, (*it)->getWidth(), (*it)->getHeight() );
         }
     }
-#endif
 }
 
 
@@ -98,8 +96,7 @@ void WindowManager::stopMove()
     WinSet_t::const_iterator itWin1, itWin2;
     AncList_t::const_iterator itAnc1, itAnc2;
 
-#ifdef WIN32
-    if( config_GetInt( getIntf(), "skins2-transparency" ) )
+    if( var_InheritBool( getIntf(), "skins2-transparency" ) )
     {
         // Restore the opacity of the moving windows
         WinSet_t::const_iterator it;
@@ -108,7 +105,6 @@ void WindowManager::stopMove()
             (*it)->setOpacity( m_alpha );
         }
     }
-#endif
 
     // Delete the dependencies
     m_dependencies.clear();
@@ -429,7 +425,6 @@ void WindowManager::showAll( bool firstTime ) const
         {
             (*it)->show();
         }
-        (*it)->setOpacity( m_alpha );
     }
 }
 
@@ -444,18 +439,26 @@ void WindowManager::hideAll() const
 }
 
 
-void WindowManager::toggleOnTop()
+void WindowManager::setOnTop( bool b_ontop )
 {
     // Update the boolean variable
     VarBoolImpl *pVarOnTop = (VarBoolImpl*)m_cVarOnTop.get();
-    pVarOnTop->set( !pVarOnTop->get() );
+    pVarOnTop->set( b_ontop );
 
-    // Toggle the "on top" status
+    // set/unset the "on top" status
     WinSet_t::const_iterator it;
     for( it = m_allWindows.begin(); it != m_allWindows.end(); it++ )
     {
-        (*it)->toggleOnTop( pVarOnTop->get() );
+        (*it)->toggleOnTop( b_ontop );
     }
+}
+
+
+void WindowManager::toggleOnTop()
+{
+    VarBoolImpl *pVarOnTop = (VarBoolImpl*)m_cVarOnTop.get();
+
+    setOnTop( !pVarOnTop->get() );
 }
 
 

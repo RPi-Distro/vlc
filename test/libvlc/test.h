@@ -1,7 +1,7 @@
 /*
  * test.h - libvlc smoke test common definitions
  *
- * $Id: 1015d25376fbb02b0a105b2142506d0c94119b99 $
+ * $Id: 2a6c84b6e85b6fa48dcca730075998b4ddf9727e $
  */
 
 /**********************************************************************
@@ -46,10 +46,9 @@
 /*********************************************************************
  * Some useful global var
  */
-static libvlc_exception_t ex;
 
 static const char * test_defaults_args[] = {
-    "-vvv",
+    "-v",
     "--ignore-config",
     "-I",
     "dummy",
@@ -71,31 +70,6 @@ static const char test_default_sample[] = SRCDIR"/samples/empty.voc";
  */
 
 #define log( ... ) printf( "testapi: " __VA_ARGS__ );
-
-/* test if we have exception */
-static inline bool have_exception (void)
-{
-    if (libvlc_exception_raised (&ex))
-    {
-        libvlc_exception_clear (&ex);
-        return true;
-    }
-    else
-        return false;
-}
-
-static inline void catch (void)
-{
-    if (libvlc_exception_raised (&ex))
-    {
-         fprintf (stderr, "Exception: %s\n",
-                  libvlc_exception_get_message (&ex));
-         abort ();
-    }
-
-    assert (libvlc_exception_get_message (&ex) == NULL);
-    libvlc_exception_clear (&ex);
-}
 
 static inline void test_init (void)
 {

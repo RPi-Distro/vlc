@@ -2,7 +2,7 @@
  * osd_text.c : text manipulation functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 2c7a1c557939d6ec570e9623e339a8fd3d3dcd60 $
+ * $Id: 8b73c4c67240dcf2f2ee4eaa355380264b7d7d90 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -35,14 +35,14 @@
  * \param p_spu pointer to the subpicture queue the text is to be showed on
  * \param i_channel Subpicture channel
  * \param psz_string The text to be shown
- * \param p_style Pointer to a struct with text style info
+ * \param p_style Pointer to a struct with text style info (it is duplicated)
  * \param i_flags flags for alignment and such
  * \param i_hmargin horizontal margin in pixels
  * \param i_vmargin vertical margin in pixels
  * \param i_duration Amount of time the text is to be shown.
  */
 int osd_ShowTextRelative( spu_t *p_spu, int i_channel,
-                           const char *psz_string, text_style_t *p_style,
+                           const char *psz_string, const text_style_t *p_style,
                            int i_flags, int i_hmargin, int i_vmargin,
                            mtime_t i_duration )
 {
@@ -58,7 +58,7 @@ int osd_ShowTextRelative( spu_t *p_spu, int i_channel,
  * \param p_spu pointer to the subpicture queue the text is to be showed on
  * \param i_channel Subpicture channel
  * \param psz_string The text to be shown
- * \param p_style Pointer to a struct with text style info
+ * \param p_style Pointer to a struct with text style info (it is duplicated)
  * \param i_flags flags for alignment and such
  * \param i_hmargin horizontal margin in pixels
  * \param i_vmargin vertical margin in pixels
@@ -68,7 +68,7 @@ int osd_ShowTextRelative( spu_t *p_spu, int i_channel,
  *               is about to be shown
  */
 int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
-                           const char *psz_string, text_style_t *p_style,
+                           const char *psz_string, const text_style_t *p_style,
                            int i_flags, int i_hmargin, int i_vmargin,
                            mtime_t i_start, mtime_t i_stop )
 {
@@ -90,8 +90,7 @@ int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('T','E','X','T');
-    fmt.i_aspect = 0;
+    fmt.i_chroma = VLC_CODEC_TEXT;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
     p_spu->p_region = subpicture_region_New( &fmt );

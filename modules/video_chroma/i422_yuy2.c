@@ -2,7 +2,7 @@
  * i422_yuy2.c : Planar YUV 4:2:2 to Packed YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 53dd4fd20089be3f7f9d1ba2fc4779af3acfb963 $
+ * $Id: fc426ffbc714bec0542c1fd78ba22b8f531488c2 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -33,7 +33,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
-#include <vlc_vout.h>
 
 #include "i422_yuy2.h"
 
@@ -74,11 +73,9 @@ vlc_module_begin ()
 #elif defined (MODULE_NAME_IS_i422_yuy2_mmx)
     set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 100 )
-    add_requirement( MMX )
 #elif defined (MODULE_NAME_IS_i422_yuy2_sse2)
     set_description( N_("SSE2 conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 120 )
-    add_requirement( SSE2 )
 #endif
     set_callbacks( Activate, NULL )
 vlc_module_end ()
@@ -100,34 +97,30 @@ static int Activate( vlc_object_t *p_this )
 
     switch( p_filter->fmt_in.video.i_chroma )
     {
-        case VLC_FOURCC('I','4','2','2'):
+        case VLC_CODEC_I422:
             switch( p_filter->fmt_out.video.i_chroma )
             {
-                case VLC_FOURCC('Y','U','Y','2'):
-                case VLC_FOURCC('Y','U','N','V'):
+                case VLC_CODEC_YUYV:
                     p_filter->pf_video_filter = I422_YUY2_Filter;
                     break;
 
-                case VLC_FOURCC('Y','V','Y','U'):
+                case VLC_CODEC_YVYU:
                     p_filter->pf_video_filter = I422_YVYU_Filter;
                     break;
 
-                case VLC_FOURCC('U','Y','V','Y'):
-                case VLC_FOURCC('U','Y','N','V'):
-                case VLC_FOURCC('Y','4','2','2'):
+                case VLC_CODEC_UYVY:
                     p_filter->pf_video_filter = I422_UYVY_Filter;
                     break;
 
-                case VLC_FOURCC('I','U','Y','V'):
                     p_filter->pf_video_filter = I422_IUYV_Filter;
                     break;
 
-                case VLC_FOURCC('c','y','u','v'):
+                case VLC_CODEC_CYUV:
                     p_filter->pf_video_filter = I422_cyuv_Filter;
                     break;
 
 #if defined (MODULE_NAME_IS_i422_yuy2)
-                case VLC_FOURCC('Y','2','1','1'):
+                case VLC_CODEC_Y211:
                     p_filter->pf_video_filter = I422_Y211_Filter;
                     break;
 #endif

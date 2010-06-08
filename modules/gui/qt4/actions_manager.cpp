@@ -2,7 +2,7 @@
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: ed5cd71cd8eafde3c6e5dd24f520fe871d073aae $
+ * $Id: c3d8423d36acf259e469e5fa5eef85b7f0275200 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -89,6 +89,10 @@ void ActionsManager::doAction( int id_action )
             break;
         case QUIT_ACTION:
             THEDP->quit();  break;
+        case RANDOM_ACTION:
+            THEMIM->toggleRandom(); break;
+        case INFO_ACTION:
+            THEDP->mediaInfoDialog(); break;
         default:
             msg_Dbg( p_intf, "Action: %i", id_action );
             break;
@@ -114,10 +118,11 @@ void ActionsManager::play()
  */
 void ActionsManager::fullscreen()
 {
+    bool fs = var_ToggleBool( THEPL, "fullscreen" );
     vout_thread_t *p_vout = THEMIM->getVout();
     if( p_vout)
     {
-        var_SetBool( p_vout, "fullscreen", !var_GetBool( p_vout, "fullscreen" ) );
+        var_SetBool( p_vout, "fullscreen", fs );
         vlc_object_release( p_vout );
     }
 }
@@ -143,8 +148,7 @@ void ActionsManager::record()
     if( p_input )
     {
         /* This method won't work fine if the stream can't be cut anywhere */
-        const bool b_recording = var_GetBool( p_input, "record" );
-        var_SetBool( p_input, "record", !b_recording );
+        var_ToggleBool( p_input, "record" );
 #if 0
         else
         {
@@ -165,21 +169,21 @@ void ActionsManager::frame()
 {
     input_thread_t *p_input = THEMIM->getInput();
     if( p_input )
-        var_SetVoid( p_input, "frame-next" );
+        var_TriggerCallback( p_input, "frame-next" );
 }
 
 void ActionsManager::toggleMuteAudio()
 {
-     aout_VolumeMute( p_intf, NULL );
+     aout_ToggleMute( THEPL, NULL );
 }
 
 void ActionsManager::AudioUp()
 {
-    aout_VolumeUp( p_intf, 1, NULL );
+    aout_VolumeUp( THEPL, 1, NULL );
 }
 
 void ActionsManager::AudioDown()
 {
-    aout_VolumeDown( p_intf, 1, NULL );
+    aout_VolumeDown( THEPL, 1, NULL );
 }
 

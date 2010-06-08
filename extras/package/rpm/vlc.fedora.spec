@@ -417,7 +417,6 @@ export JAVA_HOME=%{_prefix}/lib/jvm/java
 	--enable-jack				\
 	--enable-ncurses			\
 	--enable-xosd				\
-	--enable-galaktos			\
 %if %rpmfusion
 	--enable-goom				\
 	--enable-ggi				\
@@ -537,7 +536,7 @@ rm -rf $RPM_BUILD_ROOT __doc
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc AUTHORS COPYING ChangeLog MAINTAINERS NEWS README THANKS __doc/*
+%doc AUTHORS COPYING ChangeLog NEWS README THANKS __doc/*
 %{_bindir}/vlc
 %{_bindir}/svlc
 %{_datadir}/vlc/
@@ -811,7 +810,6 @@ rm -rf $RPM_BUILD_ROOT __doc
 - Enabled --enable-snapshot
 - Enabled --enable-portaudio
 - Enabled --enable-jack
-- Enabled --enable-galaktos
 -   waiting --enable-mediacontrol-python-bindings (default install error)
 -   waiting --enable-cddax (new version of libcdio 0.78.2)
 -   waiting --enable-vcdx (new version of libcdio 0.78.2)

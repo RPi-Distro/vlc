@@ -2,7 +2,7 @@
  * vlm.hpp : VLM Management
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 3a13b7ac88b3e277c58435f76c7949b619e58a38 $
+ * $Id: bcb89dc53ea857d8aebe51f782ec6e8c24373e9a $
  *
  * Authors: Jean-François Massol <jf.massol@gmail.com>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -35,6 +35,7 @@
 
 #include "ui/vlm.h"
 #include "util/qvlcframe.hpp"
+#include "util/singleton.hpp"
 #include <QDateTime>
 
 enum{
@@ -67,24 +68,19 @@ class VLMAWidget;
 class VLMWrapper;
 
 
-class VLMDialog : public QVLCDialog
+class VLMDialog : public QVLCDialog, public Singleton<VLMDialog>
 {
-    Q_OBJECT;
+    Q_OBJECT
+
 public:
-    static VLMDialog * getInstance( intf_thread_t *p_intf )
-    {
-        if( !instance)
-             instance = new VLMDialog( (QWidget *)p_intf->p_sys->p_mi, p_intf );
-        return instance;
-    };
-    virtual ~VLMDialog();
     void toggleVisible();
 
     VLMWrapper *vlmWrapper;
     vlm_t *p_vlm;
 private:
-    VLMDialog( QWidget *, intf_thread_t * );
-    static VLMDialog *instance;
+    VLMDialog( intf_thread_t * );
+    virtual ~VLMDialog();
+
     Ui::Vlm ui;
 
     QList<VLMAWidget *> vlmItems;
@@ -111,6 +107,8 @@ private slots:
     void selectOutput();
     bool exportVLMConf();
     bool importVLMConf();
+
+    friend class    Singleton<VLMDialog>;
 };
 
 class VLMWrapper

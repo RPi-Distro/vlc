@@ -2,7 +2,7 @@
  * libvlc.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: dabf51a3bb1f2075e0a799a53a588fc58b6405fb $
+ * $Id: 2552d6b39b311a3d35d72b7eebf0e180ff3d54aa $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -31,12 +31,17 @@
 #ifndef VLC_LIBVLC_MEDIA_DISCOVERER_H
 #define VLC_LIBVLC_MEDIA_DISCOVERER_H 1
 
-/*****************************************************************************
- * Services/Media Discovery
- *****************************************************************************/
-/** \defgroup libvlc_media_discoverer libvlc_media_discoverer
+# ifdef __cplusplus
+extern "C" {
+# endif
+
+/** \defgroup libvlc_media_discoverer LibVLC media discovery
  * \ingroup libvlc
- * LibVLC Media Discoverer
+ * LibVLC media discovery finds available media via various means.
+ * This corresponds to the service discovery functionality in VLC media player.
+ * Different plugins find potential medias locally (e.g. user media directory),
+ * from peripherals (e.g. video capture device), on the local network
+ * (e.g. SAP) or on the Internet (e.g. Internet radios).
  * @{
  */
 
@@ -47,13 +52,11 @@ typedef struct libvlc_media_discoverer_t libvlc_media_discoverer_t;
  *
  * \param p_inst libvlc instance
  * \param psz_name service name
- * \param p_e an initialized exception object
- * \return media discover object
+ * \return media discover object or NULL in case of error
  */
 VLC_PUBLIC_API libvlc_media_discoverer_t *
 libvlc_media_discoverer_new_from_name( libvlc_instance_t * p_inst,
-                                       const char * psz_name,
-                                       libvlc_exception_t * p_e );
+                                       const char * psz_name );
 
 /**
  * Release media discover object. If the reference count reaches 0, then
@@ -66,7 +69,7 @@ VLC_PUBLIC_API void   libvlc_media_discoverer_release( libvlc_media_discoverer_t
 /**
  * Get media service discover object its localized name.
  *
- * \param media discover object
+ * \param p_mdis media discover object
  * \return localized name
  */
 VLC_PUBLIC_API char * libvlc_media_discoverer_localized_name( libvlc_media_discoverer_t * p_mdis );
@@ -98,5 +101,9 @@ VLC_PUBLIC_API int
         libvlc_media_discoverer_is_running( libvlc_media_discoverer_t * p_mdis );
 
 /**@} */
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif /* <vlc/libvlc.h> */

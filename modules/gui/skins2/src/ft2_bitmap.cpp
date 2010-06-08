@@ -2,7 +2,7 @@
  * ft2_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7cc8a84f45b561fceebe7951cb6abb5be17e0a86 $
+ * $Id: e7437551add64a0409a16ec8721878d4028e9a70 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -36,10 +36,7 @@ FT2Bitmap::FT2Bitmap( intf_thread_t *pIntf, int width, int height ):
 
 FT2Bitmap::~FT2Bitmap()
 {
-    if( m_pData )
-    {
-        delete[] m_pData;
-    }
+    delete[] m_pData;
 }
 
 

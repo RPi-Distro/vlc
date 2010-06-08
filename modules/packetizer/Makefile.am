@@ -3,7 +3,7 @@
 
 basedir = packetizer
 dir = packetizer
-mods = packetizer_copy packetizer_dirac packetizer_h264 packetizer_mlp packetizer_mpeg4audio packetizer_mpeg4video packetizer_mpegvideo packetizer_vc1
+mods = packetizer_copy packetizer_dirac packetizer_flac packetizer_h264 packetizer_mlp packetizer_mpeg4audio packetizer_mpeg4video packetizer_mpegvideo packetizer_vc1
 libvlc_LTLIBRARIES = 
 EXTRA_LTLIBRARIES = 
 
@@ -30,6 +30,17 @@ libpacketizer_dirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpacketizer_dirac_plugin_la_LIBADD = $(AM_LIBADD)
 libpacketizer_dirac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The packetizer_flac plugin
+libpacketizer_flac_plugin_la_SOURCES = $(SOURCES_packetizer_flac)
+nodist_libpacketizer_flac_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_flac)
+# Force per-target objects:
+libpacketizer_flac_plugin_la_CFLAGS = $(AM_CFLAGS)
+libpacketizer_flac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libpacketizer_flac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libpacketizer_flac_plugin_la_LIBADD = $(AM_LIBADD)
+libpacketizer_flac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The packetizer_h264 plugin
 libpacketizer_h264_plugin_la_SOURCES = $(SOURCES_packetizer_h264)

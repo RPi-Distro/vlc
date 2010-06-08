@@ -2,7 +2,7 @@
  * svcdsub.c : Overlay Graphics Text (SVCD subtitles) decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: c6d9ee922994a75a407b306bfa63f081ea637010 $
+ * $Id: 78dcd3c152ba1c46bcf2c6b1bc9abcafb42d1100 $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -35,7 +35,7 @@
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_osd.h>
-#include "vlc_bits.h"
+#include <vlc_bits.h>
 
 /*****************************************************************************
  * Module descriptor.
@@ -142,23 +142,21 @@ static int DecoderOpen( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC( 'o','g','t',' ' ) )
-    {
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_OGT )
         return VLC_EGENERIC;
-    }
 
     p_dec->p_sys = p_sys = calloc( 1, sizeof( decoder_sys_t ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
-    p_sys->i_debug       = config_GetInt( p_this, MODULE_STRING "-debug" );
+    p_sys->i_debug = var_InheritInteger( p_this, MODULE_STRING "-debug" );
 
-    p_sys->i_image       = -1;
+    p_sys->i_image = -1;
 
     p_sys->i_state = SUBTITLE_BLOCK_EMPTY;
     p_sys->p_spu   = NULL;
 
-    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_FOURCC( 'o','g','t',' ' ) );
+    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_CODEC_OGT );
 
     p_dec->pf_decode_sub = Decode;
     p_dec->pf_packetize  = Packetize;
@@ -480,7 +478,7 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
 
     /* Create new subtitle region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
+    fmt.i_chroma = VLC_CODEC_YUVP;
 
     /**
        The video on which the subtitle sits, is scaled, probably
@@ -490,7 +488,8 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
        Two candidates are the video and the other possibility would be
        the access module.
     */
-    fmt.i_aspect = VOUT_ASPECT_FACTOR;
+    fmt.i_sar_num = p_sys->i_height;
+    fmt.i_sar_den = p_sys->i_width;
 
     fmt.i_width = fmt.i_visible_width = p_sys->i_width;
     fmt.i_height = fmt.i_visible_height = p_sys->i_height;

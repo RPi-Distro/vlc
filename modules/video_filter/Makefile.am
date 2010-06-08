@@ -3,9 +3,9 @@
 
 basedir = video_filter
 dir = video_filter
-mods = adjust alphamask blend blendbench bluescreen canvas chain clone colorthres crop croppadd deinterlace erase extract gaussianblur gradient grain invert logo magnify marq mosaic motionblur motiondetect noise opencv_example opencv_wrapper osdmenu panoramix postproc psychedelic puzzle remoteosd ripple rotate rss rv32 scale scene sharpen swscale swscale_maemo transform wall wave yuvp
-libvlc_LTLIBRARIES =  $(LTLIBadjust) $(LTLIBalphamask) $(LTLIBblend) $(LTLIBblendbench) $(LTLIBbluescreen) $(LTLIBcanvas) $(LTLIBchain) $(LTLIBclone) $(LTLIBcolorthres) $(LTLIBcrop) $(LTLIBcroppadd) $(LTLIBdeinterlace) $(LTLIBerase) $(LTLIBextract) $(LTLIBgaussianblur) $(LTLIBgradient) $(LTLIBgrain) $(LTLIBinvert) $(LTLIBlogo) $(LTLIBmagnify) $(LTLIBmarq) $(LTLIBmosaic) $(LTLIBmotionblur) $(LTLIBmotiondetect) $(LTLIBnoise) $(LTLIBopencv_example) $(LTLIBopencv_wrapper) $(LTLIBosdmenu) $(LTLIBpanoramix) $(LTLIBpostproc) $(LTLIBpsychedelic) $(LTLIBpuzzle) $(LTLIBremoteosd) $(LTLIBripple) $(LTLIBrotate) $(LTLIBrss) $(LTLIBrv32) $(LTLIBscale) $(LTLIBscene) $(LTLIBsharpen) $(LTLIBswscale) $(LTLIBswscale_maemo) $(LTLIBtransform) $(LTLIBwall) $(LTLIBwave) $(LTLIByuvp)
-EXTRA_LTLIBRARIES =  libadjust_plugin.la libalphamask_plugin.la libblend_plugin.la libblendbench_plugin.la libbluescreen_plugin.la libcanvas_plugin.la libchain_plugin.la libclone_plugin.la libcolorthres_plugin.la libcrop_plugin.la libcroppadd_plugin.la libdeinterlace_plugin.la liberase_plugin.la libextract_plugin.la libgaussianblur_plugin.la libgradient_plugin.la libgrain_plugin.la libinvert_plugin.la liblogo_plugin.la libmagnify_plugin.la libmarq_plugin.la libmosaic_plugin.la libmotionblur_plugin.la libmotiondetect_plugin.la libnoise_plugin.la libopencv_example_plugin.la libopencv_wrapper_plugin.la libosdmenu_plugin.la libpanoramix_plugin.la libpostproc_plugin.la libpsychedelic_plugin.la libpuzzle_plugin.la libremoteosd_plugin.la libripple_plugin.la librotate_plugin.la librss_plugin.la librv32_plugin.la libscale_plugin.la libscene_plugin.la libsharpen_plugin.la libswscale_plugin.la libswscale_maemo_plugin.la libtransform_plugin.la libwall_plugin.la libwave_plugin.la libyuvp_plugin.la
+mods = adjust alphamask atmo audiobargraph_v ball blend blendbench bluescreen canvas chain clone colorthres crop croppadd deinterlace erase extract gaussianblur gradient grain invert logo magnify marq mirror mosaic motionblur motiondetect noise opencv_example opencv_wrapper osdmenu panoramix postproc psychedelic puzzle remoteosd ripple rotate rss rv32 scale scene sharpen swscale swscale_omap transform video_filter_wrapper wall wave yuvp
+libvlc_LTLIBRARIES =  $(LTLIBatmo) $(LTLIBopencv_example) $(LTLIBopencv_wrapper) $(LTLIBosdmenu) $(LTLIBpanoramix) $(LTLIBpostproc) $(LTLIBremoteosd) $(LTLIBswscale) $(LTLIBswscale_omap)
+EXTRA_LTLIBRARIES =  libatmo_plugin.la libopencv_example_plugin.la libopencv_wrapper_plugin.la libosdmenu_plugin.la libpanoramix_plugin.la libpostproc_plugin.la libremoteosd_plugin.la libswscale_plugin.la libswscale_omap_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -30,6 +30,39 @@ libalphamask_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libalphamask_plugin_la_LIBADD = $(AM_LIBADD)
 libalphamask_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The atmo plugin
+libatmo_plugin_la_SOURCES = $(SOURCES_atmo)
+nodist_libatmo_plugin_la_SOURCES = $(nodist_SOURCES_atmo)
+# Force per-target objects:
+libatmo_plugin_la_CFLAGS = $(AM_CFLAGS)
+libatmo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libatmo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libatmo_plugin_la_LIBADD = $(AM_LIBADD)
+libatmo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The audiobargraph_v plugin
+libaudiobargraph_v_plugin_la_SOURCES = $(SOURCES_audiobargraph_v)
+nodist_libaudiobargraph_v_plugin_la_SOURCES = $(nodist_SOURCES_audiobargraph_v)
+# Force per-target objects:
+libaudiobargraph_v_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaudiobargraph_v_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaudiobargraph_v_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libaudiobargraph_v_plugin_la_LIBADD = $(AM_LIBADD)
+libaudiobargraph_v_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The ball plugin
+libball_plugin_la_SOURCES = $(SOURCES_ball)
+nodist_libball_plugin_la_SOURCES = $(nodist_SOURCES_ball)
+# Force per-target objects:
+libball_plugin_la_CFLAGS = $(AM_CFLAGS)
+libball_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libball_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libball_plugin_la_LIBADD = $(AM_LIBADD)
+libball_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The blend plugin
 libblend_plugin_la_SOURCES = $(SOURCES_blend)
@@ -239,6 +272,17 @@ libmarq_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmarq_plugin_la_LIBADD = $(AM_LIBADD)
 libmarq_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The mirror plugin
+libmirror_plugin_la_SOURCES = $(SOURCES_mirror)
+nodist_libmirror_plugin_la_SOURCES = $(nodist_SOURCES_mirror)
+# Force per-target objects:
+libmirror_plugin_la_CFLAGS = $(AM_CFLAGS)
+libmirror_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libmirror_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libmirror_plugin_la_LIBADD = $(AM_LIBADD)
+libmirror_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mosaic plugin
 libmosaic_plugin_la_SOURCES = $(SOURCES_mosaic)
@@ -460,16 +504,16 @@ libswscale_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libswscale_plugin_la_LIBADD = $(AM_LIBADD)
 libswscale_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The swscale_maemo plugin
-libswscale_maemo_plugin_la_SOURCES = $(SOURCES_swscale_maemo)
-nodist_libswscale_maemo_plugin_la_SOURCES = $(nodist_SOURCES_swscale_maemo)
+# The swscale_omap plugin
+libswscale_omap_plugin_la_SOURCES = $(SOURCES_swscale_omap)
+nodist_libswscale_omap_plugin_la_SOURCES = $(nodist_SOURCES_swscale_omap)
 # Force per-target objects:
-libswscale_maemo_plugin_la_CFLAGS = $(AM_CFLAGS)
-libswscale_maemo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libswscale_maemo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libswscale_omap_plugin_la_CFLAGS = $(AM_CFLAGS)
+libswscale_omap_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libswscale_omap_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libswscale_maemo_plugin_la_LIBADD = $(AM_LIBADD)
-libswscale_maemo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libswscale_omap_plugin_la_LIBADD = $(AM_LIBADD)
+libswscale_omap_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The transform plugin
 libtransform_plugin_la_SOURCES = $(SOURCES_transform)
@@ -481,6 +525,17 @@ libtransform_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtransform_plugin_la_LIBADD = $(AM_LIBADD)
 libtransform_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The video_filter_wrapper plugin
+libvideo_filter_wrapper_plugin_la_SOURCES = $(SOURCES_video_filter_wrapper)
+nodist_libvideo_filter_wrapper_plugin_la_SOURCES = $(nodist_SOURCES_video_filter_wrapper)
+# Force per-target objects:
+libvideo_filter_wrapper_plugin_la_CFLAGS = $(AM_CFLAGS)
+libvideo_filter_wrapper_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libvideo_filter_wrapper_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libvideo_filter_wrapper_plugin_la_LIBADD = $(AM_LIBADD)
+libvideo_filter_wrapper_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The wall plugin
 libwall_plugin_la_SOURCES = $(SOURCES_wall)

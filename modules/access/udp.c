@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
  * Copyright (C) 2007 Remi Denis-Courmont
- * $Id: 433ccfb98e822b13217c07391cfaaea885f89ecb $
+ * $Id: 765c2d03eae42cad937c42384dd46247a8007296 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>
@@ -23,9 +23,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -205,7 +205,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = var_GetInteger( p_access, "udp-caching" ) * 1000;
+            *pi_64 = (int64_t)var_GetInteger(p_access,"udp-caching") * 1000;
             break;
 
         /* */

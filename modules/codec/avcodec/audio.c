@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: 819157c8d83ac86c0eb7fe542aa9ad265a7ef509 $
+ * $Id: 7eb4decbd2ed378ab901e58591426028c72b80ee $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -60,7 +60,7 @@ struct decoder_sys_t
      * Output properties
      */
     audio_sample_format_t aout_format;
-    audio_date_t          end_date;
+    date_t                end_date;
 
     /*
      *
@@ -98,6 +98,9 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
         return VLC_ENOMEM;
     }
 
+    p_codec->type = CODEC_TYPE_AUDIO;
+    p_context->codec_type = CODEC_TYPE_AUDIO;
+    p_context->codec_id = i_codec_id;
     p_sys->p_context = p_context;
     p_sys->p_codec = p_codec;
     p_sys->i_codec_id = i_codec_id;
@@ -110,7 +113,7 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
 
     p_sys->p_context->block_align = p_dec->fmt_in.audio.i_blockalign;
     p_sys->p_context->bit_rate = p_dec->fmt_in.i_bitrate;
-#if LIBAVCODEC_VERSION_INT < ((52<<16)+(0<<8)+0)
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 52, 0, 0 )
     p_sys->p_context->bits_per_sample = p_dec->fmt_in.audio.i_bitspersample;
 #else
     p_sys->p_context->bits_per_coded_sample = p_dec->fmt_in.audio.i_bitspersample;
@@ -122,12 +125,12 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
         int i_offset;
         int i_size;
 
-        if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'f', 'l', 'a', 'c' ) )
+        if( p_dec->fmt_in.i_codec == VLC_CODEC_FLAC )
         {
             i_offset = 8;
             i_size = p_dec->fmt_in.i_extra - 8;
         }
-        else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'a', 'l', 'a', 'c' ) )
+        else if( p_dec->fmt_in.i_codec == VLC_CODEC_ALAC )
         {
             static const uint8_t p_pattern[] = { 0, 0, 0, 36, 'a', 'l', 'a', 'c' };
             /* Find alac atom XXX it is a bit ugly */
@@ -184,16 +187,12 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
 
     switch( i_codec_id )
     {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 16, 0 )
     case CODEC_ID_WAVPACK:
         p_sys->i_output_max = 8 * sizeof(int32_t) * 131072;
         break;
-#endif
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 4, 0 )
     case CODEC_ID_TTA:
         p_sys->i_output_max = p_sys->p_context->channels * sizeof(int32_t) * p_sys->p_context->sample_rate * 2;
         break;
-#endif
     case CODEC_ID_FLAC:
         p_sys->i_output_max = 8 * sizeof(int32_t) * 65535;
         break;
@@ -218,14 +217,16 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
     p_sys->i_previous_channels = 0;
     p_sys->i_previous_layout = 0;
 
-    aout_DateSet( &p_sys->end_date, 0 );
-    if( p_dec->fmt_in.audio.i_rate )
-        aout_DateInit( &p_sys->end_date, p_dec->fmt_in.audio.i_rate );
-
     /* */
     p_dec->fmt_out.i_cat = AUDIO_ES;
     /* Try to set as much informations as possible but do not trust it */
     SetupOutputFormat( p_dec, false );
+
+    date_Set( &p_sys->end_date, 0 );
+    if( p_dec->fmt_out.audio.i_rate )
+        date_Init( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
+    else if( p_dec->fmt_in.audio.i_rate )
+        date_Init( &p_sys->end_date, p_dec->fmt_in.audio.i_rate, 1 );
 
     return VLC_SUCCESS;
 }
@@ -245,15 +246,16 @@ static aout_buffer_t *SplitBuffer( decoder_t *p_dec )
     if( ( p_buffer = decoder_NewAudioBuffer( p_dec, i_samples ) ) == NULL )
         return NULL;
 
-    p_buffer->start_date = aout_DateGet( &p_sys->end_date );
-    p_buffer->end_date = aout_DateIncrement( &p_sys->end_date, i_samples );
+    p_buffer->i_pts = date_Get( &p_sys->end_date );
+    p_buffer->i_length = date_Increment( &p_sys->end_date, i_samples )
+                         - p_buffer->i_pts;
 
     if( p_sys->b_extract )
         aout_ChannelExtract( p_buffer->p_buffer, p_dec->fmt_out.audio.i_channels,
                              p_sys->p_samples, p_sys->p_context->channels, i_samples,
                              p_sys->pi_extraction, p_dec->fmt_out.audio.i_bitspersample );
     else
-        memcpy( p_buffer->p_buffer, p_sys->p_samples, p_buffer->i_nb_bytes );
+        memcpy( p_buffer->p_buffer, p_sys->p_samples, p_buffer->i_buffer );
 
     p_sys->p_samples += i_samples * p_sys->p_context->channels * ( p_dec->fmt_out.audio.i_bitspersample / 8 );
     p_sys->i_samples -= i_samples;
@@ -280,7 +282,7 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         block_Release( p_block );
         avcodec_flush_buffers( p_sys->p_context );
         p_sys->i_samples = 0;
-        aout_DateSet( &p_sys->end_date, 0 );
+        date_Set( &p_sys->end_date, 0 );
 
         if( p_sys->i_codec_id == CODEC_ID_MP2 || p_sys->i_codec_id == CODEC_ID_MP3 )
             p_sys->i_reject_count = 3;
@@ -295,7 +297,7 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         return p_buffer;
     }
 
-    if( !aout_DateGet( &p_sys->end_date ) && !p_block->i_pts )
+    if( !date_Get( &p_sys->end_date ) && !p_block->i_pts )
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( p_block );
@@ -368,17 +370,17 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
 
     if( p_dec->fmt_out.audio.i_rate != (unsigned int)p_sys->p_context->sample_rate )
     {
-        aout_DateInit( &p_sys->end_date, p_sys->p_context->sample_rate );
-        aout_DateSet( &p_sys->end_date, p_block->i_pts );
+        date_Init( &p_sys->end_date, p_sys->p_context->sample_rate, 1 );
+        date_Set( &p_sys->end_date, p_block->i_pts );
     }
 
     /* **** Set audio output parameters **** */
     SetupOutputFormat( p_dec, true );
 
     if( p_block->i_pts != 0 &&
-        p_block->i_pts != aout_DateGet( &p_sys->end_date ) )
+        p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
-        aout_DateSet( &p_sys->end_date, p_block->i_pts );
+        date_Set( &p_sys->end_date, p_block->i_pts );
     }
     p_block->i_pts = 0;
 
@@ -467,41 +469,47 @@ static const uint64_t pi_channels_map[][2] =
 };
 #endif
 
+void GetVlcAudioFormat( vlc_fourcc_t *pi_codec, unsigned *pi_bits, int i_sample_fmt )
+{
+    switch( i_sample_fmt )
+    {
+    case SAMPLE_FMT_U8:
+        *pi_codec = VLC_CODEC_U8;
+        *pi_bits = 8;
+        break;
+    case SAMPLE_FMT_S32:
+        *pi_codec = VLC_CODEC_S32N;
+        *pi_bits = 32;
+        break;
+    case SAMPLE_FMT_FLT:
+        *pi_codec = VLC_CODEC_FL32;
+        *pi_bits = 32;
+        break;
+    case SAMPLE_FMT_DBL:
+        *pi_codec = VLC_CODEC_FL64;
+        *pi_bits = 64;
+        break;
+
+    case SAMPLE_FMT_S16:
+    default:
+        *pi_codec = VLC_CODEC_S16N;
+        *pi_bits = 16;
+        break;
+    }
+}
 static void SetupOutputFormat( decoder_t *p_dec, bool b_trust )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 65, 0 )
-    switch( p_sys->p_context->sample_fmt )
-    {
-    case SAMPLE_FMT_U8:
-        p_dec->fmt_out.i_codec = VLC_FOURCC('u','8',' ',' ');
-        p_dec->fmt_out.audio.i_bitspersample = 8;
-        break;
-    case SAMPLE_FMT_S32:
-        p_dec->fmt_out.i_codec = AOUT_FMT_S32_NE;
-        p_dec->fmt_out.audio.i_bitspersample = 32;
-        break;
-    case SAMPLE_FMT_FLT:
-        p_dec->fmt_out.i_codec = VLC_FOURCC('f','l','3','2');
-        p_dec->fmt_out.audio.i_bitspersample = 32;
-        break;
-    case SAMPLE_FMT_DBL:
-        p_dec->fmt_out.i_codec = VLC_FOURCC('f','l','6','4');
-        p_dec->fmt_out.audio.i_bitspersample = 64;
-        break;
-
-    case SAMPLE_FMT_S16:
-    default:
-        p_dec->fmt_out.i_codec = AOUT_FMT_S16_NE;
-        p_dec->fmt_out.audio.i_bitspersample = 16;
-        break;
-    }
+    GetVlcAudioFormat( &p_dec->fmt_out.i_codec,
+                       &p_dec->fmt_out.audio.i_bitspersample,
+                       p_sys->p_context->sample_fmt );
 #else
-    p_dec->fmt_out.i_codec = AOUT_FMT_S16_NE;
+    p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
     p_dec->fmt_out.audio.i_bitspersample = 16;
 #endif
-    p_dec->fmt_out.audio.i_rate     = p_sys->p_context->sample_rate;
+    p_dec->fmt_out.audio.i_rate = p_sys->p_context->sample_rate;
 
     /* */
 #if defined(LIBAVCODEC_AUDIO_LAYOUT)

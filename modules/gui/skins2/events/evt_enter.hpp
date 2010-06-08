@@ -2,7 +2,7 @@
  * evt_enter.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1ba8b18ac868f9e5a32281ced4b5b720db43da6c $
+ * $Id: 45532eadb7dd879f7035826427836c44b721f9c3 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef EVT_ENTER_HPP
@@ -31,12 +31,10 @@
 /// Mouse enter event
 class EvtEnter: public EvtInput
 {
-    public:
-        EvtEnter( intf_thread_t *pIntf ): EvtInput( pIntf ) {}
-        virtual ~EvtEnter() {}
-
-        /// Return the type of event
-        virtual const string getAsString() const { return "enter"; }
+public:
+    EvtEnter( intf_thread_t *pIntf ): EvtInput( pIntf ) { }
+    virtual ~EvtEnter() { }
+    virtual const string getAsString() const { return "enter"; }
 };
 
 

@@ -2,7 +2,7 @@
  * libasf.c : asf stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 4ffabcba06ffdeddf7786e27f6b0a0e8a2774075 $
+ * $Id: 803c849b18a4c43967ffd1bb9f9fd7465916a208 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -108,7 +108,7 @@ static char *AsfObjectHelperReadString( const uint8_t *p_peek, int i_peek, uint8
             int i;
             for( i = 0; i < i_size/2; i++ )
                 psz_string[i] = GetWLE( &p_data[2*i] );
-            psz_string[i_size/2] = '\0'; \
+            psz_string[i_size/2] = '\0';
         }
     }
     else
@@ -434,7 +434,7 @@ static int ASF_ReadObject_metadata( stream_t *s, asf_object_t *p_obj )
         /* Read data */
         if( p_record->i_type == ASF_METADATA_TYPE_STRING )
         {
-            p_record->p_data = ASF_READS( i_data );
+            p_record->p_data = (uint8_t *)ASF_READS( i_data );
             p_record->i_data = i_data/2; /* FIXME Is that needed ? */
         }
         else if( p_record->i_type == ASF_METADATA_TYPE_BYTE )

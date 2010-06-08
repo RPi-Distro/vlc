@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 7639a0be8119b6193dcea0e5cfe7c6e821e499b8 $
+ * $Id: 36abb60b6033a8d8e6b9c4e3fccaea3053eef5ff $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -31,7 +31,6 @@
 #endif
 
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <time.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -40,8 +39,8 @@
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
 #include <vlc_block.h>
-#include <vlc_charset.h>
-#include "vlc_strings.h"
+#include <vlc_fs.h>
+#include <vlc_strings.h>
 
 #if defined( WIN32 ) && !defined( UNDER_CE )
 #   include <io.h>
@@ -73,7 +72,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_SOUT_ACO )
     add_shortcut( "file" )
     add_shortcut( "stream" )
-    add_bool( SOUT_CFG_PREFIX "append", 0, NULL, APPEND_TEXT,APPEND_LONGTEXT,
+    add_bool( SOUT_CFG_PREFIX "append", false, NULL, APPEND_TEXT,APPEND_LONGTEXT,
               true )
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -120,7 +119,7 @@ static int Open( vlc_object_t *p_this )
 #ifdef WIN32
         setmode (fileno (stdout), O_BINARY);
 #endif
-        fd = dup (fileno (stdout));
+        fd = vlc_dup (fileno (stdout));
         msg_Dbg( p_access, "using stdout" );
 #else
 #warning stdout is not supported on Windows Mobile, but may be used on Windows CE
@@ -132,7 +131,7 @@ static int Open( vlc_object_t *p_this )
         char *psz_tmp = str_format( p_access, p_access->psz_path );
         path_sanitize( psz_tmp );
 
-        fd = utf8_open( psz_tmp, O_RDWR | O_CREAT | O_LARGEFILE |
+        fd = vlc_open( psz_tmp, O_RDWR | O_CREAT | O_LARGEFILE |
                         (append ? 0 : O_TRUNC), 0666 );
         free( psz_tmp );
     }

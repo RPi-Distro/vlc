@@ -2,7 +2,7 @@
  * dialogs_provider.hpp : Dialogs provider
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 105697cb5b247a6932ee84dc77746c0d0119e283 $
+ * $Id: 75f5e595d702b5a3b9d6afa3442a7481752a77d4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -33,7 +33,9 @@
 
 #include "qt4.hpp"
 
+#include "dialogs/open.hpp"
 #include <QObject>
+#include <QStringList>
 
 #define ADD_FILTER_MEDIA( string )     \
     string += qtr( "Media Files" );    \
@@ -82,11 +84,10 @@ enum {
 class QEvent;
 class QSignalMapper;
 class QVLCMenu;
-#include <QStringList>
 
 class DialogsProvider : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
     friend class QVLCMenu;
 
 public:
@@ -111,11 +112,11 @@ public:
         return ( instance != NULL );
     }
 
-    QStringList showSimpleOpen( QString help = QString(),
+    QStringList showSimpleOpen( const QString& help = QString(),
                                 int filters = EXT_FILTER_MEDIA |
                                 EXT_FILTER_VIDEO | EXT_FILTER_AUDIO |
                                 EXT_FILTER_PLAYLIST,
-                                QString path = QString() );
+                                const QString& path = QString() );
     bool isDying() { return b_isDying; }
 protected:
     QSignalMapper *menusMapper;
@@ -129,6 +130,7 @@ private:
     static DialogsProvider *instance;
 
     intf_thread_t *p_intf;
+    QWidget* root;
     bool b_isDying;
 
     void openDialog( int );
@@ -157,6 +159,7 @@ public slots:
     void podcastConfigureDialog();
     void toolbarDialog();
     void pluginDialog();
+    void epgDialog();
 
     void openFileGenericDialog( intf_dialog_args_t * );
 
@@ -171,14 +174,14 @@ public slots:
     void openNetDialog();
     void openCaptureDialog();
 
-    void PLAppendDialog();
-    void MLAppendDialog();
+    void PLAppendDialog( int tab = OPEN_FILE_TAB );
+    void MLAppendDialog( int tab = OPEN_FILE_TAB );
 
     void PLOpenDir();
     void PLAppendDir();
     void MLAppendDir();
 
-    void streamingDialog( QWidget *parent, QString mrl, bool b_stream = true,
+    void streamingDialog( QWidget *parent, const QString& mrl, bool b_stream = true,
                           QStringList options = QStringList("") );
     void openAndStreamingDialogs();
     void openAndTranscodingDialogs();
@@ -192,7 +195,7 @@ public slots:
 private slots:
     void menuAction( QObject *);
     void menuUpdateAction( QObject * );
-    void SDMenuAction( QString );
+    void SDMenuAction( const QString& );
 signals:
     void  toolBarConfUpdated();
 };

@@ -2,7 +2,7 @@
  * duplicate.c: duplicate stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 6a50fdc9a4b76c2a631616a2087f430ae9855cc6 $
+ * $Id: 26cfeffd6e75ff88bc12b53a7d1cb7ad30ca83ad $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -64,6 +64,9 @@ struct sout_stream_sys_t
     int             i_nb_streams;
     sout_stream_t   **pp_streams;
 
+    int             i_nb_last_streams;
+    sout_stream_t   **pp_last_streams;
+
     int             i_nb_select;
     char            **ppsz_select;
 };
@@ -92,20 +95,24 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     TAB_INIT( p_sys->i_nb_streams, p_sys->pp_streams );
+    TAB_INIT( p_sys->i_nb_last_streams, p_sys->pp_last_streams );
     TAB_INIT( p_sys->i_nb_select, p_sys->ppsz_select );
 
     for( p_cfg = p_stream->p_cfg; p_cfg != NULL; p_cfg = p_cfg->p_next )
     {
         if( !strncmp( p_cfg->psz_name, "dst", strlen( "dst" ) ) )
         {
-            sout_stream_t *s;
+            sout_stream_t *s, *p_last;
 
             msg_Dbg( p_stream, " * adding `%s'", p_cfg->psz_value );
-            s = sout_StreamNew( p_stream->p_sout, p_cfg->psz_value );
+            s = sout_StreamChainNew( p_stream->p_sout, p_cfg->psz_value,
+                p_stream->p_next, &p_last );
 
             if( s )
             {
                 TAB_APPEND( p_sys->i_nb_streams, p_sys->pp_streams, s );
+                TAB_APPEND( p_sys->i_nb_last_streams, p_sys->pp_last_streams,
+                    p_last );
                 TAB_APPEND( p_sys->i_nb_select,  p_sys->ppsz_select, NULL );
             }
         }
@@ -164,10 +171,11 @@ static void Close( vlc_object_t * p_this )
     msg_Dbg( p_stream, "closing a duplication" );
     for( i = 0; i < p_sys->i_nb_streams; i++ )
     {
-        sout_StreamDelete( p_sys->pp_streams[i] );
+        sout_StreamChainDelete(p_sys->pp_streams[i], p_sys->pp_last_streams[i]);
         free( p_sys->ppsz_select[i] );
     }
     free( p_sys->pp_streams );
+    free( p_sys->pp_last_streams );
     free( p_sys->ppsz_select );
 
     free( p_sys );
@@ -299,26 +307,27 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
 /*****************************************************************************
  * Divers
  *****************************************************************************/
-static bool NumInRange( char *psz_range, int i_num )
+static bool NumInRange( const char *psz_range, int i_num )
 {
-    char *psz = strchr( psz_range, '-' );
+    const char *psz = strchr( psz_range, '-' );
     char *end;
     int  i_start, i_stop;
 
+    i_start = strtol( psz_range, &end, 0 );
+    if( end == psz_range )
+        i_start = i_num;
+
     if( psz )
     {
-        i_start = strtol( psz_range, &end, 0 );
-        if( end == psz_range ) i_start = i_num;
-
-        i_stop  = strtol( psz+1,       &end, 0 );
-        if( end == psz_range ) i_stop = i_num;
+        psz++;
+        i_stop = strtol( psz, &end, 0 );
+        if( end == psz )
+            i_stop = i_num;
     }
     else
-    {
-        i_start = i_stop = strtol( psz_range, NULL, 0 );
-    }
+        i_stop = i_start;
 
-    return i_start <= i_num && i_num <= i_stop ? true : false;
+    return i_start <= i_num && i_num <= i_stop;
 }
 
 static bool ESSelected( es_format_t *fmt, char *psz_select )

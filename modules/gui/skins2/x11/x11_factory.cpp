@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 774c3a86b781bf7809e9a3e8b7909f1e0ce9862b $
+ * $Id: fa54582c1a609b7e3a58992dc605a847925249fe $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,6 +38,7 @@
 #include "x11_window.hpp"
 #include "x11_tooltip.hpp"
 
+#include "../src/generic_window.hpp"
 
 X11Factory::X11Factory( intf_thread_t *pIntf ): OSFactory( pIntf ),
     m_pDisplay( NULL ), m_pTimerLoop( NULL ), m_dirSep( "/" )
@@ -75,11 +76,13 @@ bool X11Factory::init()
                                      ConnectionNumber( pDisplay ) );
 
     // Initialize the resource path
-    char *datadir = config_GetUserDataDir();
+    char *datadir = config_GetUserDir( VLC_DATA_DIR );
     m_resourcePath.push_back( (string)datadir + "/skins2" );
     free( datadir );
     m_resourcePath.push_back( (string)"share/skins2" );
-    m_resourcePath.push_back( (string)config_GetDataDir () + "/skins2" );
+    datadir = config_GetDataDir( getIntf() );
+    m_resourcePath.push_back( (string)datadir + "/skins2" );
+    free( datadir );
 
     return true;
 }
@@ -140,10 +143,11 @@ OSTimer *X11Factory::createOSTimer( CmdGeneric &rCmd )
 
 
 OSWindow *X11Factory::createOSWindow( GenericWindow &rWindow, bool dragDrop,
-                                      bool playOnDrop, OSWindow *pParent )
+                                      bool playOnDrop, OSWindow *pParent,
+                                      GenericWindow::WindowType_t type )
 {
     return new X11Window( getIntf(), rWindow, *m_pDisplay, dragDrop,
-                          playOnDrop, (X11Window*)pParent );
+                          playOnDrop, (X11Window*)pParent, type );
 }
 
 

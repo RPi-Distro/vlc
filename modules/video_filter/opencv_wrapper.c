@@ -24,10 +24,6 @@
  * Preamble
  *****************************************************************************/
 
-#include <cxcore.h>
-#include <cv.h>
-#include <highgui.h>
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -39,12 +35,14 @@
 #include <math.h>
 #include <time.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_common.h"
-#include <vlc_charset.h>
-#include "vlc_image.h"
-#include "vlc_input.h"
-#include "vlc_playlist.h"
+#include <vlc_image.h>
+#include <vlc_input.h>
+#include <vlc_playlist.h>
+
+#include <cxcore.h>
+#include <cv.h>
 
 
 /*****************************************************************************
@@ -207,7 +205,8 @@ static int Create( vlc_object_t *p_this )
     p_vout->pf_control = Control;
 
     /* Retrieve and apply config */
-    if( !(psz_chroma = config_GetPsz( p_vout, "opencv-chroma" )) )
+    psz_chroma = var_InheritString( p_vout, "opencv-chroma" );
+    if( psz_chroma == NULL )
     {
         msg_Err( p_vout, "configuration variable %s empty, using 'grey'",
                          "opencv-chroma" );
@@ -229,7 +228,8 @@ static int Create( vlc_object_t *p_this )
     }
     free( psz_chroma);
 
-    if( !(psz_output = config_GetPsz( p_vout, "opencv-output" )) )
+    psz_output = var_InheritString( p_vout, "opencv-output" );
+    if( psz_output == NULL )
     {
         msg_Err( p_vout, "configuration variable %s empty, using 'input'",
                          "opencv-output" );
@@ -251,7 +251,8 @@ static int Create( vlc_object_t *p_this )
     }
     free( psz_output);
 
-    if( !(psz_verbosity = config_GetPsz( p_vout, "opencv-verbosity" )) )
+    psz_verbosity = var_InheritString( p_vout, "opencv-verbosity" );
+    if( psz_verbosity == NULL )
     {
         msg_Err( p_vout, "configuration variable %s empty, using 'input'",
                          "opencv-verbosity" );
@@ -273,10 +274,10 @@ static int Create( vlc_object_t *p_this )
     }
     free( psz_verbosity);
 
-    p_vout->p_sys->psz_inner_name = config_GetPsz( p_vout, "opencv-filter-name" );
-
+    p_vout->p_sys->psz_inner_name =
+        var_InheritString( p_vout, "opencv-filter-name" );
     p_vout->p_sys->f_scale =
-        config_GetFloat( p_vout, "opencv-scale" );
+        var_InheritFloat( p_vout, "opencv-scale" );
 
     if (p_vout->p_sys->i_verbosity > VERB_WARN)
         msg_Info(p_vout, "Configuration: opencv-scale: %f, opencv-chroma: %d, "
@@ -318,9 +319,9 @@ static int Init( vout_thread_t *p_vout )
         fmt.i_y_offset = fmt.i_y_offset * p_sys->f_scale;
 
         if (p_sys->i_internal_chroma == GREY)
-            fmt.i_chroma = VLC_FOURCC('I','4','2','0');
+            fmt.i_chroma = VLC_CODEC_I420;
         else if (p_sys->i_internal_chroma == RGB)
-            fmt.i_chroma = VLC_FOURCC('R','V','3','2');
+            fmt.i_chroma = VLC_CODEC_RGB32;
     }
 
     /* Load the internal opencv filter */
@@ -336,7 +337,6 @@ static int Init( vout_thread_t *p_vout )
     {
         msg_Err( p_vout, "can't open internal opencv filter: %s", p_vout->p_sys->psz_inner_name );
         p_vout->p_sys->psz_inner_name = NULL;
-        vlc_object_detach( p_sys->p_opencv );
         vlc_object_release( p_sys->p_opencv );
         p_sys->p_opencv = NULL;
     }
@@ -378,7 +378,6 @@ static void End( vout_thread_t *p_vout )
         //release the internal opencv filter
         if( p_sys->p_opencv->p_module )
             module_unneed( p_sys->p_opencv, p_sys->p_opencv->p_module );
-        vlc_object_detach( p_sys->p_opencv );
         vlc_object_release( p_sys->p_opencv );
         p_sys->p_opencv = NULL;
     }
@@ -463,13 +462,13 @@ static void VlcPictureToIplImage( vout_thread_t *p_vout, picture_t *p_in )
             //rgb2 gives 3 separate planes, this gives 1 interleaved plane
             //rv24 gives is about 20% faster but gives r&b the wrong way round
             //and I cant think of an easy way to fix this
-            fmt_out.i_chroma = VLC_FOURCC('R','V','3','2');
+            fmt_out.i_chroma = VLC_CODEC_RGB32;
         }
         else if (p_sys->i_internal_chroma == GREY)
         {
             //take the I (gray) plane (video seems to commonly be in this fmt so usually the
             //conversion does nothing)
-            fmt_out.i_chroma = VLC_FOURCC('I','4','2','0');
+            fmt_out.i_chroma = VLC_CODEC_I420;
         }
 
         //convert from the input image

@@ -2,7 +2,7 @@
  * vlcshell.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 4399b5470a163d868fac691099016f3ac3eaf209 $
+ * $Id: 883205b5311dc9de343e7e94592ab28ddba5519d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -31,11 +31,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* Mozilla stuff */
-#ifdef HAVE_MOZILLA_CONFIG_H
-#   include <mozilla-config.h>
-#endif
-
 /* This is from mozilla java, do we really need it? */
 #if 0
 #include <jri.h>
@@ -46,8 +41,6 @@
 
 /* Enable/disable debugging printf's for X11 resizing */
 #undef X11_RESIZE_DEBUG
-
-#define WINDOW_TEXT "Waiting for video"
 
 /*****************************************************************************
  * Unix-only declarations
@@ -156,12 +149,9 @@ NPError NPP_SetValue( NPP instance, NPNVariable variable, void *value )
  * Mac-only API calls
  *****************************************************************************/
 #ifdef XP_MACOSX
-int16 NPP_HandleEvent( NPP instance, void * event )
+int16_t NPP_HandleEvent( NPP instance, void * event )
 {
     static UInt32 lastMouseUp = 0;
-    libvlc_exception_t ex;
-    libvlc_exception_init(&ex);
-
     if( instance == NULL )
     {
         return false;
@@ -173,6 +163,7 @@ int16 NPP_HandleEvent( NPP instance, void * event )
         return false;
     }
 
+#ifndef __x86_64__  
     EventRecord *myEvent = (EventRecord*)event;
 
     switch( myEvent->what )
@@ -184,8 +175,7 @@ int16 NPP_HandleEvent( NPP instance, void * event )
             if( (myEvent->when - lastMouseUp) < GetDblTime() )
             {
                 /* double click */
-                p_plugin->toggle_fullscreen(&ex);
-                libvlc_exception_clear(&ex);
+                p_plugin->toggle_fullscreen();
             }
             return true;
         }
@@ -203,11 +193,23 @@ int16 NPP_HandleEvent( NPP instance, void * event )
             {
                 bool hasVout = false;
 
-                if( p_plugin->playlist_isplaying(&ex) )
+                if( p_plugin->playlist_isplaying() )
                 {
-                    hasVout = p_plugin->player_has_vout(NULL);
+                    hasVout = p_plugin->player_has_vout();
+#if 0
+                    if( hasVout )
+                    {
+                        libvlc_rectangle_t area;
+                        area.left = 0;
+                        area.top = 0;
+                        area.right = npwindow.width;
+                        area.bottom = npwindow.height;
+                        libvlc_video_redraw_rectangle(p_plugin->getMD(), &area, NULL);
+                    }
+#else
+#warning disabled code
+#endif
                 }
-                libvlc_exception_clear(&ex);
 
                 if( ! hasVout )
                 {
@@ -230,7 +232,8 @@ int16 NPP_HandleEvent( NPP instance, void * event )
 
                     ForeColor(whiteColor);
                     MoveTo( (npwindow.width-80)/ 2  , npwindow.height / 2 );
-                    DrawText( WINDOW_TEXT , 0 , strlen(WINDOW_TEXT) );
+                    if( p_plugin->psz_text )
+                        DrawText( p_plugin->psz_text, 0, strlen(p_plugin->psz_text) );
                 }
             }
             return true;
@@ -253,6 +256,7 @@ int16 NPP_HandleEvent( NPP instance, void * event )
         default:
             ;
     }
+#endif // __x86_64__
     return false;
 }
 #endif /* XP_MACOSX */
@@ -265,17 +269,24 @@ NPError NPP_Initialize( void )
     return NPERR_NO_ERROR;
 }
 
+#ifdef OJI
 jref NPP_GetJavaClass( void )
 {
     return NULL;
 }
+#endif
 
 void NPP_Shutdown( void )
 {
     ;
 }
 
-NPError NPP_New( NPMIMEType pluginType, NPP instance, uint16 mode, int16 argc,
+NPError NPP_New( NPMIMEType pluginType, NPP instance,
+#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+                 uint16 mode, int16 argc,
+#else
+                 uint16_t mode, int16_t argc,
+#endif
                  char* argn[], char* argv[], NPSavedData* saved )
 {
     NPError status;
@@ -318,7 +329,7 @@ NPError NPP_Destroy( NPP instance, NPSavedData** save )
 
     instance->pdata = NULL;
 
-#if XP_WIN
+#if defined(XP_WIN)
     HWND win = (HWND)p_plugin->getWindow().window;
     WNDPROC winproc = p_plugin->getWindowProc();
     if( winproc )
@@ -328,15 +339,8 @@ NPError NPP_Destroy( NPP instance, NPSavedData** save )
     }
 #endif
 
-    libvlc_exception_t ex;
-    libvlc_exception_init(&ex);
-    int val = p_plugin->playlist_isplaying(&ex);
-    libvlc_exception_clear(&ex);
-    if(val)
-    {
-        p_plugin->playlist_stop(&ex);
-        libvlc_exception_clear(&ex);
-    }
+    if( p_plugin->playlist_isplaying() )
+        p_plugin->playlist_stop();
 
     delete p_plugin;
 
@@ -367,9 +371,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
     control = p_plugin->getControlWindow();
 #endif
 
-    libvlc_exception_t ex;
-    libvlc_exception_init(&ex);
-
     libvlc_instance_t *p_vlc = p_plugin->getVLC();
 
     /*
@@ -388,12 +389,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
     {
         /* check if plugin has a new parent window */
         CGrafPtr drawable = (((NP_Port*) (window->window))->port);
-        if( !curwin.window || drawable != (((NP_Port*) (curwin.window))->port) )
-        {
-            /* set/change parent window */
-            libvlc_video_set_parent(p_vlc, (libvlc_drawable_t)drawable, &ex);
-            libvlc_exception_clear(&ex);
-        }
 
         /* as MacOS X video output is windowless, set viewport */
         libvlc_rectangle_t view, clip;
@@ -413,19 +408,17 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
         clip.left    = window->clipRect.left;
         clip.bottom  = window->clipRect.bottom;
         clip.right   = window->clipRect.right;
-
-        libvlc_video_set_viewport(p_vlc, p_plugin->getMD(&ex), &view, &clip, &ex);
-        libvlc_exception_clear(&ex);
-
+#ifdef NOT_WORKING
+        libvlc_video_set_viewport(p_vlc, p_plugin->getMD(), &view, &clip);
+#else
+#warning disabled code
+#endif
         /* remember new window */
         p_plugin->setWindow(*window);
     }
     else if( curwin.window )
     {
         /* change/set parent */
-        libvlc_video_set_parent(p_vlc, 0, &ex);
-        libvlc_exception_clear(&ex);
-
         curwin.window = NULL;
     }
 #endif /* XP_MACOSX */
@@ -458,10 +451,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
             style |= WS_CLIPCHILDREN|WS_CLIPSIBLINGS;
             SetWindowLong((HWND)drawable, GWL_STYLE, style);
 
-            /* change/set parent */
-            libvlc_video_set_parent(p_vlc, (libvlc_drawable_t)drawable, &ex);
-            libvlc_exception_clear(&ex);
-
             /* remember new window */
             p_plugin->setWindow(*window);
 
@@ -476,10 +465,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
         HWND oldwin = (HWND)curwin.window;
         SetWindowLong( oldwin, GWL_WNDPROC, (LONG)(p_plugin->getWindowProc()) );
         p_plugin->setWindowProc(NULL);
-
-        /* change/set parent */
-        libvlc_video_set_parent(p_vlc, 0, &ex);
-        libvlc_exception_clear(&ex);
 
         curwin.window = NULL;
     }
@@ -530,10 +515,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
             XtAddEventHandler( w, ButtonReleaseMask, FALSE,
                                (XtEventHandler)ControlHandler, p_plugin );
 
-            /* set/change parent window */
-            libvlc_video_set_parent( p_vlc, (libvlc_drawable_t) video, &ex );
-            libvlc_exception_clear(&ex);
-
             /* remember window */
             p_plugin->setWindow( *window );
             p_plugin->setVideoWindow( video );
@@ -554,9 +535,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
     }
     else if( curwin.window )
     {
-        /* change/set parent */
-        libvlc_video_set_parent(p_vlc, 0, &ex);
-        libvlc_exception_clear(&ex);
         curwin.window = NULL;
     }
 #endif /* XP_UNIX */
@@ -565,11 +543,11 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
     {
         if( p_plugin->psz_target )
         {
-            if( p_plugin->playlist_add( p_plugin->psz_target, NULL ) != -1 )
+            if( p_plugin->playlist_add( p_plugin->psz_target ) != -1 )
             {
                 if( p_plugin->b_autoplay )
                 {
-                    p_plugin->playlist_play(NULL);
+                    p_plugin->playlist_play();
                 }
             }
             p_plugin->b_stream = true;
@@ -579,7 +557,11 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
 }
 
 NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
+#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
                        NPBool seekable, uint16 *stype )
+#else
+                       NPBool seekable, uint16_t *stype )
+#endif
 {
     if( NULL == instance  )
     {
@@ -608,14 +590,23 @@ NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
     return NPERR_GENERIC_ERROR;
 }
 
+#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
 int32 NPP_WriteReady( NPP instance, NPStream *stream )
+#else
+int32_t NPP_WriteReady( NPP instance, NPStream *stream )
+#endif
 {
     /* TODO */
     return 8*1024;
 }
 
+#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
 int32 NPP_Write( NPP instance, NPStream *stream, int32 offset,
                  int32 len, void *buffer )
+#else
+int32_t NPP_Write( NPP instance, NPStream *stream, int32_t offset,
+                 int32_t len, void *buffer )
+#endif
 {
     /* TODO */
     return len;
@@ -643,11 +634,11 @@ void NPP_StreamAsFile( NPP instance, NPStream *stream, const char* fname )
         return;
     }
 
-    if( p_plugin->playlist_add( stream->url, NULL ) != -1 )
+    if( p_plugin->playlist_add( stream->url ) != -1 )
     {
         if( p_plugin->b_autoplay )
         {
-            p_plugin->playlist_play(NULL);
+            p_plugin->playlist_play();
         }
     }
 }
@@ -732,7 +723,7 @@ void NPP_Print( NPP instance, NPPrint* printInfo )
 /******************************************************************************
  * Windows-only methods
  *****************************************************************************/
-#if XP_WIN
+#if defined(XP_WIN)
 static LRESULT CALLBACK Manage( HWND p_hwnd, UINT i_msg, WPARAM wpar, LPARAM lpar )
 {
     VlcPlugin* p_plugin = reinterpret_cast<VlcPlugin*>(GetWindowLongPtr(p_hwnd, GWLP_USERDATA));
@@ -755,8 +746,9 @@ static LRESULT CALLBACK Manage( HWND p_hwnd, UINT i_msg, WPARAM wpar, LPARAM lpa
             FillRect( hdc, &rect, (HBRUSH)GetStockObject(BLACK_BRUSH) );
             SetTextColor(hdc, RGB(255, 255, 255));
             SetBkColor(hdc, RGB(0, 0, 0));
-            DrawText( hdc, WINDOW_TEXT, strlen(WINDOW_TEXT), &rect,
-                      DT_CENTER|DT_VCENTER|DT_SINGLELINE);
+            if( p_plugin->psz_text )
+                DrawText( hdc, p_plugin->psz_text, strlen(p_plugin->psz_text), &rect,
+                          DT_CENTER|DT_VCENTER|DT_SINGLELINE);
 
             EndPaint( p_hwnd, &paintstruct );
             return 0L;
@@ -799,9 +791,10 @@ static void Redraw( Widget w, XtPointer closure, XEvent *event )
     gcv.foreground = WhitePixel( p_display, 0 );
     XChangeGC( p_display, gc, GCForeground, &gcv );
 
-    XDrawString( p_display, video, gc,
-                 window.width / 2 - 40, (window.height - i_control_height) / 2,
-                 WINDOW_TEXT, strlen(WINDOW_TEXT) );
+    if( p_plugin->psz_text )
+        XDrawString( p_display, video, gc,
+                     window.width / 2 - 40, (window.height - i_control_height) / 2,
+                     p_plugin->psz_text, strlen(p_plugin->psz_text) );
     XFreeGC( p_display, gc );
 
     p_plugin->redrawToolbar();
@@ -820,14 +813,10 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
     if( p_plugin && p_plugin->b_toolbar )
     {
         int i_playing;
-        libvlc_exception_t ex;
 
-        libvlc_exception_init( &ex );
-        libvlc_media_player_t *p_md = p_plugin->getMD(&ex);
-        libvlc_exception_clear( &ex );
+        libvlc_media_player_t *p_md = p_plugin->getMD();
 
-        i_playing = p_plugin->playlist_isplaying( &ex );
-        libvlc_exception_clear( &ex );
+        i_playing = p_plugin->playlist_isplaying();
 
         vlc_toolbar_clicked_t clicked;
         clicked = p_plugin->getToolbarButtonClicked( i_xPos, i_yPos );
@@ -837,33 +826,29 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
             case clicked_Pause:
             {
                 if( i_playing == 1 )
-                    p_plugin->playlist_pause( &ex );
+                    p_plugin->playlist_pause();
                 else
-                    p_plugin->playlist_play( &ex );
-
-                libvlc_exception_clear( &ex );
+                    p_plugin->playlist_play();
             }
             break;
 
             case clicked_Stop:
             {
-                p_plugin->playlist_stop(&ex);
-                libvlc_exception_clear( &ex );
+                p_plugin->playlist_stop();
             }
             break;
 
             case clicked_Fullscreen:
             {
-                p_plugin->set_fullscreen( 1, &ex );
-                libvlc_exception_clear( &ex );
+                p_plugin->set_fullscreen( 1 );
             }
             break;
 
             case clicked_Mute:
             case clicked_Unmute:
             {
-                libvlc_audio_toggle_mute( p_plugin->getVLC(), &ex );
-                libvlc_exception_clear( &ex );
+                if( p_md )
+                    libvlc_audio_toggle_mute( p_md );
             }
             break;
 
@@ -873,14 +858,12 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
                 if( p_md )
                 {
                     int64_t f_length;
-                    f_length = libvlc_media_player_get_length( p_md, &ex ) / 100;
-                    libvlc_exception_clear( &ex );
+                    f_length = libvlc_media_player_get_length( p_md ) / 100;
 
                     f_length = (float)f_length *
                             ( ((float)i_xPos-4.0 ) / ( ((float)i_width-8.0)/100) );
 
-                    libvlc_media_player_set_time( p_md, f_length, &ex );
-                    libvlc_exception_clear( &ex );
+                    libvlc_media_player_set_time( p_md, f_length );
                 }
             }
             break;

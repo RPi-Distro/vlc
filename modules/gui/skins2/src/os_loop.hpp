@@ -2,7 +2,7 @@
  * os_loop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f616a64f715a8e307a8011cf752c892ec0302584 $
+ * $Id: 44ef940b544ee7c36a3a7d96d602fa506553a80d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef OS_LOOP_HPP
@@ -31,17 +31,17 @@
 /// Abstract class for the main event loop
 class OSLoop: public SkinObject
 {
-    public:
-        virtual ~OSLoop() {}
+public:
+    virtual ~OSLoop() { }
 
-        /// Enter the main loop
-        virtual void run() = 0;
+    /// Enter the main loop
+    virtual void run() = 0;
 
-        /// Exit the main loop
-        virtual void exit() = 0;
+    /// Exit the main loop
+    virtual void exit() = 0;
 
-    protected:
-        OSLoop( intf_thread_t *pIntf ): SkinObject( pIntf ) {}
+protected:
+    OSLoop( intf_thread_t *pIntf ): SkinObject( pIntf ) { }
 };
 
 

@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 0d4026e275fb4cc9ae49a0dae44f61818d4cbce0 $
+ * $Id: 7313a9b503291939af63bb02bd9eb16b2560841b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -33,6 +33,7 @@
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_avcodec.h>
+#include <vlc_cpu.h>
 
 /* ffmpeg header */
 #define HAVE_MMX 1
@@ -44,12 +45,14 @@
 #   include <avcodec.h>
 #endif
 
-#if LIBAVCODEC_BUILD < 5000
-#   error You must have a libavcodec >= 5000 (get svn)
-#endif
-
 #include "avcodec.h"
 #include "avutil.h"
+
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 51, 48, 0 )
+#   error You must update libavcodec to a version >= 51.48.0
+#elif LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 52, 25, 0 )
+#   warning You should update libavcodec to get subtitle support
+#endif
 
 /*****************************************************************************
  * decoder_sys_t: decoder descriptor
@@ -76,10 +79,15 @@ static const char *const enc_hq_list_text[] = {
     N_("rd"), N_("bits"), N_("simple") };
 #endif
 
+#ifdef MERGE_FFMPEG
+# include "../../demux/avformat/avformat.h"
+# include "../../access/avio.h"
+#endif
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define MODULE_DESCRIPTION N_( "Various audio and video decoders/encoders" \
+#define MODULE_DESCRIPTION N_( "Various audio and video decoders/encoders " \
         "delivered by the FFmpeg library. This includes (MS)MPEG4, DivX, SV1,"\
         "H261, H263, H264, WMV, WMA, AAC, AMR, DV, MJPEG and other codecs")
 
@@ -87,7 +95,7 @@ vlc_module_begin ()
     set_shortname( "FFmpeg")
     add_shortcut( "ffmpeg" )
     set_category( CAT_INPUT )
-    set_subcategory( SUBCAT_INPUT_SCODEC )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
     /* decoder main module */
 #if defined(MODULE_NAME_is_ffmpegaltivec) \
      || (defined(CAN_COMPILE_ALTIVEC) && !defined(NO_ALTIVEC_IN_FFMPEG))
@@ -103,12 +111,12 @@ vlc_module_begin ()
     set_callbacks( OpenDecoder, CloseDecoder )
 
 
-    add_bool( "ffmpeg-dr", 1, NULL, DR_TEXT, DR_TEXT, true )
+    add_bool( "ffmpeg-dr", true, NULL, DR_TEXT, DR_TEXT, true )
     add_integer ( "ffmpeg-error-resilience", 1, NULL, ERROR_TEXT,
         ERROR_LONGTEXT, true )
     add_integer ( "ffmpeg-workaround-bugs", 1, NULL, BUGS_TEXT, BUGS_LONGTEXT,
         false )
-    add_bool( "ffmpeg-hurry-up", 1, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT,
+    add_bool( "ffmpeg-hurry-up", true, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT,
         false )
     add_integer( "ffmpeg-skip-frame", 0, NULL, SKIP_FRAME_TEXT,
         SKIP_FRAME_LONGTEXT, true )
@@ -121,7 +129,7 @@ vlc_module_begin ()
     add_integer ( "ffmpeg-lowres", 0, NULL, LOWRES_TEXT, LOWRES_LONGTEXT,
         true )
         change_integer_range( 0, 2 )
-    add_bool( "ffmpeg-fast", 0, NULL, FAST_TEXT, FAST_LONGTEXT, true )
+    add_bool( "ffmpeg-fast", false, NULL, FAST_TEXT, FAST_LONGTEXT, true )
     add_integer ( "ffmpeg-skiploopfilter", 0, NULL, SKIPLOOPF_TEXT,
                   SKIPLOOPF_LONGTEXT, true )
         change_safe ()
@@ -129,6 +137,9 @@ vlc_module_begin ()
 
     add_integer( "ffmpeg-debug", 0, NULL, DEBUG_TEXT, DEBUG_LONGTEXT,
                  true )
+#if defined(HAVE_AVCODEC_VAAPI) || defined(HAVE_AVCODEC_DXVA2)
+    add_bool( "ffmpeg-hw", false, NULL, HW_TEXT, HW_LONGTEXT, true )
+#endif
 
 #ifdef ENABLE_SOUT
     /* encoder submodule */
@@ -146,15 +157,15 @@ vlc_module_begin ()
                  ENC_KEYINT_LONGTEXT, false )
     add_integer( ENC_CFG_PREFIX "bframes", 0, NULL, ENC_BFRAMES_TEXT,
                  ENC_BFRAMES_LONGTEXT, false )
-    add_bool( ENC_CFG_PREFIX "hurry-up", 0, NULL, ENC_HURRYUP_TEXT,
+    add_bool( ENC_CFG_PREFIX "hurry-up", false, NULL, ENC_HURRYUP_TEXT,
               ENC_HURRYUP_LONGTEXT, false )
-    add_bool( ENC_CFG_PREFIX "interlace", 0, NULL, ENC_INTERLACE_TEXT,
+    add_bool( ENC_CFG_PREFIX "interlace", false, NULL, ENC_INTERLACE_TEXT,
               ENC_INTERLACE_LONGTEXT, true )
-    add_bool( ENC_CFG_PREFIX "interlace-me", 1, NULL, ENC_INTERLACE_ME_TEXT,
+    add_bool( ENC_CFG_PREFIX "interlace-me", true, NULL, ENC_INTERLACE_ME_TEXT,
               ENC_INTERLACE_ME_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "vt", 0, NULL, ENC_VT_TEXT,
                  ENC_VT_LONGTEXT, true )
-    add_bool( ENC_CFG_PREFIX "pre-me", 0, NULL, ENC_PRE_ME_TEXT,
+    add_bool( ENC_CFG_PREFIX "pre-me", false, NULL, ENC_PRE_ME_TEXT,
               ENC_PRE_ME_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "rc-buffer-size", 224*1024*8, NULL,
                  ENC_RC_BUF_TEXT, ENC_RC_BUF_LONGTEXT, true )
@@ -164,13 +175,13 @@ vlc_module_begin ()
                ENC_IQUANT_FACTOR_TEXT, ENC_IQUANT_FACTOR_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "noise-reduction", 0, NULL,
                  ENC_NOISE_RED_TEXT, ENC_NOISE_RED_LONGTEXT, true )
-    add_bool( ENC_CFG_PREFIX "mpeg4-matrix", 0, NULL,
+    add_bool( ENC_CFG_PREFIX "mpeg4-matrix", false, NULL,
               ENC_MPEG4_MATRIX_TEXT, ENC_MPEG4_MATRIX_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "qmin", 0, NULL,
                  ENC_QMIN_TEXT, ENC_QMIN_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "qmax", 0, NULL,
                  ENC_QMAX_TEXT, ENC_QMAX_LONGTEXT, true )
-    add_bool( ENC_CFG_PREFIX "trellis", 0, NULL,
+    add_bool( ENC_CFG_PREFIX "trellis", false, NULL,
               ENC_TRELLIS_TEXT, ENC_TRELLIS_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "qscale", 0, NULL,
                ENC_QSCALE_TEXT, ENC_QSCALE_LONGTEXT, true )
@@ -189,11 +200,9 @@ vlc_module_begin ()
     add_integer( ENC_CFG_PREFIX "chroma-elim-threshold", 0, NULL,
                  ENC_CHROMA_ELIM_TEXT, ENC_CHROMA_ELIM_LONGTEXT, true )
 
-#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(40<<8)+4)
     /* Audio AAC encoder profile */
     add_string( ENC_CFG_PREFIX "aac-profile", "low", NULL,
                 ENC_PROFILE_TEXT, ENC_PROFILE_LONGTEXT, true )
-#endif
 #endif /* ENABLE_SOUT */
 
     /* video filter submodule */
@@ -203,6 +212,12 @@ vlc_module_begin ()
     set_description( N_("FFmpeg deinterlace video filter") )
     add_shortcut( "ffmpeg-deinterlace" )
 
+#ifdef MERGE_FFMPEG
+    add_submodule ()
+#   include "../../demux/avformat/avformat.c"
+    add_submodule ()
+        AVIO_MODULE
+#endif
 vlc_module_end ()
 
 /*****************************************************************************
@@ -239,7 +254,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_context = avcodec_alloc_context();
     if( !p_context )
         return VLC_ENOMEM;
-    p_context->debug = config_GetInt( p_dec, "ffmpeg-debug" );
+    p_context->debug = var_InheritInteger( p_dec, "ffmpeg-debug" );
     p_context->opaque = (void *)p_this;
 
     /* Set CPU capabilities */
@@ -265,6 +280,22 @@ static int OpenDecoder( vlc_object_t *p_this )
     {
         p_context->dsp_mask |= FF_MM_SSE2;
     }
+#ifdef FF_MM_SSE3
+    if( !(i_cpu & CPU_CAPABILITY_SSE3) )
+        p_context->dsp_mask |= FF_MM_SSE3;
+#endif
+#ifdef FF_MM_SSSE3
+    if( !(i_cpu & CPU_CAPABILITY_SSSE3) )
+        p_context->dsp_mask |= FF_MM_SSSE3;
+#endif
+#ifdef FF_MM_SSE4
+    if( !(i_cpu & CPU_CAPABILITY_SSE4_1) )
+        p_context->dsp_mask |= FF_MM_SSE4;
+#endif
+#ifdef FF_MM_SSE42
+    if( !(i_cpu & CPU_CAPABILITY_SSE4_2) )
+        p_context->dsp_mask |= FF_MM_SSE42;
+#endif
 
     p_dec->b_need_packetized = true;
     switch( i_cat )
@@ -279,11 +310,25 @@ static int OpenDecoder( vlc_object_t *p_this )
         i_result =  InitAudioDec ( p_dec, p_context, p_codec,
                                        i_codec_id, psz_namecodec );
         break;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 25, 0 )
+    case SPU_ES:
+        p_dec->pf_decode_sub = DecodeSubtitle;
+        i_result =  InitSubtitleDec( p_dec, p_context, p_codec,
+                                     i_codec_id, psz_namecodec );
+        break;
+#endif
     default:
         i_result = VLC_EGENERIC;
     }
 
-    if( i_result == VLC_SUCCESS ) p_dec->p_sys->i_cat = i_cat;
+    if( i_result == VLC_SUCCESS )
+    {
+        p_dec->p_sys->i_cat = i_cat;
+        if( p_context->profile != FF_PROFILE_UNKNOWN)
+            p_dec->fmt_in.i_profile = p_context->profile;
+        if( p_context->level != FF_LEVEL_UNKNOWN)
+            p_dec->fmt_in.i_level = p_context->level;
+    }
 
     return i_result;
 }
@@ -304,6 +349,11 @@ static void CloseDecoder( vlc_object_t *p_this )
     case VIDEO_ES:
          EndVideoDec ( p_dec );
         break;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 25, 0 )
+    case SPU_ES:
+         EndSubtitleDec( p_dec );
+        break;
+#endif
     }
 
     if( p_sys->p_context )

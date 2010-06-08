@@ -2,7 +2,7 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: e085f0378b432ed56392241bc3017a57c6f81c85 $
+ * $Id: 390c1b6d9df4d275619b9c62945d352e063b4229 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -30,6 +30,13 @@
  * This file defines functions, structures and macros for handling arrays in vlc
  */
 
+/* realloc() that never fails *if* downsizing */
+static inline void *realloc_down( void *ptr, size_t size )
+{
+    void *ret = realloc( ptr, size );
+    return ret ? ret : ptr;
+}
+
 /**
  * Simple dynamic array handling. Array is realloced at each insert/removal
  */
@@ -43,6 +50,7 @@
     {                                                                         \
         if( !i_oldsize ) (p_ar) = NULL;                                       \
         (p_ar) = VLCCVP realloc( p_ar, ((i_oldsize) + 1) * sizeof(*(p_ar)) ); \
+        if( !(p_ar) ) abort();                                                \
         if( (i_oldsize) - (i_pos) )                                           \
         {                                                                     \
             memmove( (p_ar) + (i_pos) + 1, (p_ar) + (i_pos),                  \
@@ -53,25 +61,23 @@
     }                                                                         \
     while( 0 )
 
-#define REMOVE_ELEM( p_ar, i_oldsize, i_pos )                                 \
+#define REMOVE_ELEM( p_ar, i_size, i_pos )                                    \
     do                                                                        \
     {                                                                         \
-        if( (i_oldsize) - (i_pos) - 1 )                                       \
+        if( (i_size) - (i_pos) - 1 )                                          \
         {                                                                     \
             memmove( (p_ar) + (i_pos),                                        \
                      (p_ar) + (i_pos) + 1,                                    \
-                     ((i_oldsize) - (i_pos) - 1) * sizeof( *(p_ar) ) );       \
+                     ((i_size) - (i_pos) - 1) * sizeof( *(p_ar) ) );          \
         }                                                                     \
-        if( i_oldsize > 1 )                                                   \
-        {                                                                     \
-            (p_ar) = realloc( p_ar, ((i_oldsize) - 1) * sizeof( *(p_ar) ) );  \
-        }                                                                     \
+        if( i_size > 1 )                                                      \
+            (p_ar) = realloc_down( p_ar, ((i_size) - 1) * sizeof( *(p_ar) ) );\
         else                                                                  \
         {                                                                     \
             free( p_ar );                                                     \
             (p_ar) = NULL;                                                    \
         }                                                                     \
-        (i_oldsize)--;                                                        \
+        (i_size)--;                                                           \
     }                                                                         \
     while( 0 )
 
@@ -94,6 +100,7 @@
         (tab) = cast realloc( tab, sizeof( void ** ) * ( (count) + 1 ) ); \
     else                                        \
         (tab) = cast malloc( sizeof( void ** ) );    \
+    if( !(tab) ) abort();                       \
     (tab)[count] = (p);                         \
     (count)++;                                  \
   } while(0)
@@ -144,6 +151,7 @@
         (tab) = cast realloc( tab, sizeof( void ** ) * ( (count) + 1 ) ); \
     else                                        \
         (tab) = cast malloc( sizeof( void ** ) );       \
+    if( !(tab) ) abort();                       \
     if( (count) - (index) > 0 )                 \
         memmove( (void**)(tab) + (index) + 1,   \
                  (void**)(tab) + (index),       \
@@ -192,6 +200,7 @@
     (array).i_alloc = newsize;                                              \
     (array).p_elems = VLCCVP realloc( (array).p_elems, (array).i_alloc *    \
                                     sizeof(*(array).p_elems) );             \
+    if( !(array).p_elems ) abort();                                         \
 }
 
 #define _ARRAY_GROW1(array) {                                               \

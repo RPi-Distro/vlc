@@ -3,7 +3,7 @@
 
 basedir = stream_out
 dir = stream_out
-mods = stream_out_autodel stream_out_bridge stream_out_description stream_out_display stream_out_dummy stream_out_duplicate stream_out_es stream_out_gather stream_out_mosaic_bridge stream_out_raop stream_out_record stream_out_standard stream_out_switcher stream_out_transcode
+mods = stream_out_autodel stream_out_bridge stream_out_description stream_out_display stream_out_dummy stream_out_duplicate stream_out_es stream_out_gather stream_out_mosaic_bridge stream_out_raop stream_out_record stream_out_smem stream_out_standard stream_out_switcher
 libvlc_LTLIBRARIES =  $(LTLIBstream_out_raop) $(LTLIBstream_out_switcher)
 EXTRA_LTLIBRARIES =  libstream_out_raop_plugin.la libstream_out_switcher_plugin.la
 
@@ -130,6 +130,17 @@ libstream_out_record_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libstream_out_record_plugin_la_LIBADD = $(AM_LIBADD)
 libstream_out_record_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
+# The stream_out_smem plugin
+libstream_out_smem_plugin_la_SOURCES = $(SOURCES_stream_out_smem)
+nodist_libstream_out_smem_plugin_la_SOURCES = $(nodist_SOURCES_stream_out_smem)
+# Force per-target objects:
+libstream_out_smem_plugin_la_CFLAGS = $(AM_CFLAGS)
+libstream_out_smem_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libstream_out_smem_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libstream_out_smem_plugin_la_LIBADD = $(AM_LIBADD)
+libstream_out_smem_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
 # The stream_out_standard plugin
 libstream_out_standard_plugin_la_SOURCES = $(SOURCES_stream_out_standard)
 nodist_libstream_out_standard_plugin_la_SOURCES = $(nodist_SOURCES_stream_out_standard)
@@ -151,15 +162,4 @@ libstream_out_switcher_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_switcher_plugin_la_LIBADD = $(AM_LIBADD)
 libstream_out_switcher_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The stream_out_transcode plugin
-libstream_out_transcode_plugin_la_SOURCES = $(SOURCES_stream_out_transcode)
-nodist_libstream_out_transcode_plugin_la_SOURCES = $(nodist_SOURCES_stream_out_transcode)
-# Force per-target objects:
-libstream_out_transcode_plugin_la_CFLAGS = $(AM_CFLAGS)
-libstream_out_transcode_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libstream_out_transcode_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libstream_out_transcode_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_transcode_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

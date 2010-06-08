@@ -2,7 +2,7 @@
  * vlc_image.h : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 352ec978cb1f827e3d78d7c9cbdfd960b4c62153 $
+ * $Id: 06d484d9e05156f2ffbe1e072f828038ca9526f3 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -59,8 +59,8 @@ struct image_handler_t
     filter_t  *p_filter;
 };
 
-VLC_EXPORT( image_handler_t *, __image_HandlerCreate, ( vlc_object_t * ) );
-#define image_HandlerCreate( a ) __image_HandlerCreate( VLC_OBJECT(a) )
+VLC_EXPORT( image_handler_t *, image_HandlerCreate, ( vlc_object_t * ) );
+#define image_HandlerCreate( a ) image_HandlerCreate( VLC_OBJECT(a) )
 VLC_EXPORT( void, image_HandlerDelete, ( image_handler_t * ) );
 
 #define image_Read( a, b, c, d ) a->pf_read( a, b, c, d )

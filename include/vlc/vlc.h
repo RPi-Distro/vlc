@@ -2,7 +2,7 @@
  * vlc.h: global header for libvlc
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 0f34b57f3f53f2bfdaad3fdc544752c902d37461 $
+ * $Id: 73b4922a757242cf954b153516768000a9e5db9f $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -42,7 +42,6 @@ extern "C" {
 #include <vlc/libvlc_media.h>
 #include <vlc/libvlc_media_player.h>
 #include <vlc/libvlc_media_list.h>
-#include <vlc/libvlc_media_list_view.h>
 #include <vlc/libvlc_media_list_player.h>
 #include <vlc/libvlc_media_library.h>
 #include <vlc/libvlc_media_discoverer.h>

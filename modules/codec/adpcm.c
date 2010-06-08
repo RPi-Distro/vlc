@@ -2,7 +2,7 @@
  * adpcm.c : adpcm variant audio decoder
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: d62cdaa5bffc305d03fbdf33994821f577ba1a4c $
+ * $Id: 62fab84804b85f2c24c76935fc930beb24542380 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -72,7 +72,7 @@ struct decoder_sys_t
     size_t              i_block;
     size_t              i_samplesperblock;
 
-    audio_date_t        end_date;
+    date_t              end_date;
 };
 
 static void DecodeAdpcmMs    ( decoder_t *, int16_t *, uint8_t * );
@@ -174,10 +174,10 @@ static int OpenDecoder( vlc_object_t *p_this )
         case VLC_FOURCC('i','m','a', '4'): /* IMA ADPCM */
             p_sys->codec = ADPCM_IMA_QT;
             break;
-        case VLC_FOURCC('m','s',0x00,0x11): /* IMA ADPCM */
+        case VLC_CODEC_ADPCM_IMA_WAV: /* IMA ADPCM */
             p_sys->codec = ADPCM_IMA_WAV;
             break;
-        case VLC_FOURCC('m','s',0x00,0x02): /* MS ADPCM */
+        case VLC_CODEC_ADPCM_MS: /* MS ADPCM */
             p_sys->codec = ADPCM_MS;
             break;
         case VLC_FOURCC('m','s',0x00,0x61): /* Duck DK4 ADPCM */
@@ -247,15 +247,15 @@ static int OpenDecoder( vlc_object_t *p_this )
              p_sys->i_samplesperblock );
 
     p_dec->fmt_out.i_cat = AUDIO_ES;
-    p_dec->fmt_out.i_codec = AOUT_FMT_S16_NE;
+    p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
     p_dec->fmt_out.audio.i_rate = p_dec->fmt_in.audio.i_rate;
     p_dec->fmt_out.audio.i_channels = p_dec->fmt_in.audio.i_channels;
     p_dec->fmt_out.audio.i_physical_channels =
         p_dec->fmt_out.audio.i_original_channels =
             pi_channels_maps[p_dec->fmt_in.audio.i_channels];
 
-    aout_DateInit( &p_sys->end_date, p_dec->fmt_out.audio.i_rate );
-    aout_DateSet( &p_sys->end_date, 0 );
+    date_Init( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
+    date_Set( &p_sys->end_date, 0 );
 
     p_dec->pf_decode_audio = DecodeBlock;
 
@@ -274,12 +274,12 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
     p_block = *pp_block;
 
-    if( p_block->i_pts != 0 &&
-        p_block->i_pts != aout_DateGet( &p_sys->end_date ) )
+    if( p_block->i_pts > VLC_TS_INVALID &&
+        p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
-        aout_DateSet( &p_sys->end_date, p_block->i_pts );
+        date_Set( &p_sys->end_date, p_block->i_pts );
     }
-    else if( !aout_DateGet( &p_sys->end_date ) )
+    else if( !date_Get( &p_sys->end_date ) )
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( p_block );
@@ -287,7 +287,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Don't re-use the same pts twice */
-    p_block->i_pts = 0;
+    p_block->i_pts = VLC_TS_INVALID;
 
     if( p_block->i_buffer >= p_sys->i_block )
     {
@@ -300,9 +300,9 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             return NULL;
         }
 
-        p_out->start_date = aout_DateGet( &p_sys->end_date );
-        p_out->end_date =
-            aout_DateIncrement( &p_sys->end_date, p_sys->i_samplesperblock );
+        p_out->i_pts = date_Get( &p_sys->end_date );
+        p_out->i_length = date_Increment( &p_sys->end_date,
+                                     p_sys->i_samplesperblock ) - p_out->i_pts;
 
         switch( p_sys->codec )
         {

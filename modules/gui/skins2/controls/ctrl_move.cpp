@@ -2,7 +2,7 @@
  * ctrl_move.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e890d16e47a5cea427fce8a805807d687d3776d9 $
+ * $Id: f4cf8880fdb7b3c07d27183357d41fe728ac133a $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -77,6 +77,13 @@ void CtrlMove::setLayout( GenericLayout *pLayout, const Position &rPosition )
     CtrlGeneric::setLayout( pLayout, rPosition );
     // Set the layout of the decorated control as well
     m_rCtrl.setLayout( pLayout, rPosition );
+}
+
+
+void CtrlMove::unsetLayout( )
+{
+    m_rCtrl.unsetLayout();
+    CtrlGeneric::unsetLayout();
 }
 
 

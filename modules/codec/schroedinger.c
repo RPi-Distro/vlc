@@ -4,7 +4,7 @@
  *          (http://diracvideo.org)
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 8b7abb5f3711be814299f83a35d2c45638df8f0f $
+ * $Id: fceae03c05831d93d3468b1ca42fab86d7e08a88 $
  *
  * Authors: Jonathan Rosser <jonathan.rosser@gmail.com>
  *          David Flynn <davidf at rd dot bbc.co.uk>
@@ -35,7 +35,6 @@
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_sout.h>
-#include <vlc_vout.h>
 
 #include <schroedinger/schro.h>
 
@@ -88,7 +87,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     decoder_sys_t *p_sys;
     SchroDecoder *p_schro;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC('d','r','a','c') )
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_DIRAC )
     {
         return VLC_EGENERIC;
     }
@@ -112,12 +111,12 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_dec->p_sys = p_sys;
     p_sys->p_schro = p_schro;
     p_sys->p_format = NULL;
-    p_sys->i_lastpts = -1;
+    p_sys->i_lastpts = VLC_TS_INVALID;
     p_sys->i_frame_pts_delta = 0;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = VIDEO_ES;
-    p_dec->fmt_out.i_codec = VLC_FOURCC('I','4','2','0');
+    p_dec->fmt_out.i_codec = VLC_CODEC_I420;
 
     /* Set callbacks */
     p_dec->pf_decode_video = DecodeBlock;
@@ -131,7 +130,6 @@ static int OpenDecoder( vlc_object_t *p_this )
 static void SetVideoFormat( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    double f_aspect;
 
     p_sys->p_format = schro_decoder_get_video_format(p_sys->p_schro);
     if( p_sys->p_format == NULL ) return;
@@ -142,9 +140,9 @@ static void SetVideoFormat( decoder_t *p_dec )
 
     switch( p_sys->p_format->chroma_format )
     {
-    case SCHRO_CHROMA_420: p_dec->fmt_out.i_codec = VLC_FOURCC('I','4','2','0'); break;
-    case SCHRO_CHROMA_422: p_dec->fmt_out.i_codec = VLC_FOURCC('I','4','2','2'); break;
-    case SCHRO_CHROMA_444: p_dec->fmt_out.i_codec = VLC_FOURCC('I','4','4','4'); break;
+    case SCHRO_CHROMA_420: p_dec->fmt_out.i_codec = VLC_CODEC_I420; break;
+    case SCHRO_CHROMA_422: p_dec->fmt_out.i_codec = VLC_CODEC_I422; break;
+    case SCHRO_CHROMA_444: p_dec->fmt_out.i_codec = VLC_CODEC_I444; break;
     default:
         p_dec->fmt_out.i_codec = 0;
         break;
@@ -159,11 +157,8 @@ static void SetVideoFormat( decoder_t *p_dec )
     p_dec->fmt_out.video.i_height = p_sys->p_format->height;
 
     /* aspect_ratio_[numerator|denominator] describes the pixel aspect ratio */
-    f_aspect = (double)
-        ( p_sys->p_format->aspect_ratio_numerator * p_sys->p_format->width ) /
-        ( p_sys->p_format->aspect_ratio_denominator * p_sys->p_format->height);
-
-    p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR * f_aspect;
+    p_dec->fmt_out.video.i_sar_num = p_sys->p_format->aspect_ratio_numerator;
+    p_dec->fmt_out.video.i_sar_den = p_sys->p_format->aspect_ratio_denominator;
 
     p_dec->fmt_out.video.i_frame_rate =
         p_sys->p_format->frame_rate_numerator;
@@ -300,7 +295,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         if( p_block->i_flags & BLOCK_FLAG_DISCONTINUITY ) {
             schro_decoder_reset( p_sys->p_schro );
 
-            p_sys->i_lastpts = -1;
+            p_sys->i_lastpts = VLC_TS_INVALID;
             block_Release( p_block );
             *pp_block = NULL;
             return NULL;
@@ -310,7 +305,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         p_schrobuffer = schro_buffer_new_with_data( p_block->p_buffer, p_block->i_buffer );
         p_schrobuffer->free = SchroBufferFree;
         p_schrobuffer->priv = p_block;
-        if( p_block->i_pts != VLC_TS_INVALID ) {
+        if( p_block->i_pts > VLC_TS_INVALID ) {
             mtime_t *p_pts = malloc( sizeof(*p_pts) );
             if( p_pts ) {
                 *p_pts = p_block->i_pts;
@@ -373,7 +368,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 p_pic->date = *(mtime_t*) p_tag->value;
                 schro_tag_free( p_tag );
             }
-            else if( p_sys->i_lastpts >= 0 )
+            else if( p_sys->i_lastpts > VLC_TS_INVALID )
             {
                 /* NB, this shouldn't happen since the packetizer does a
                  * very thorough job of inventing timestamps.  The

@@ -2,7 +2,7 @@
  * vlc_services_discovery.h : Services Discover functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: d647b61543c515f125304d7ef3a57a20187d90e2 $
+ * $Id: 956b77b65f943f9660858ebc07d51a9e27daea36 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -24,6 +24,10 @@
 #ifndef VLC_SERVICES_DISCOVERY_H_
 #define VLC_SERVICES_DISCOVERY_H_
 
+#include <vlc_input.h>
+#include <vlc_events.h>
+#include <vlc_probe.h>
+
 /**
  * \file
  * This file functions and structures for service discovery in vlc
@@ -37,9 +41,6 @@ extern "C" {
  * @{
  */
 
-#include <vlc_input.h>
-#include <vlc_events.h>
-
 struct services_discovery_t
 {
     VLC_COMMON_MEMBERS
@@ -47,7 +48,18 @@ struct services_discovery_t
 
     vlc_event_manager_t event_manager;      /* Accessed through Setters for non class function */
 
+    char *psz_name;
+    config_chain_t *p_cfg;
+
     services_discovery_sys_t *p_sys;
+};
+
+enum services_discovery_category_e
+{
+    SD_CAT_DEVICES = 1,
+    SD_CAT_LAN,
+    SD_CAT_INTERNET,
+    SD_CAT_MYCOMPUTER
 };
 
 /***********************************************************************
@@ -56,17 +68,15 @@ struct services_discovery_t
 
 /* Get the services discovery modules names to use in Create(), in a null
  * terminated string array. Array and string must be freed after use. */
-VLC_EXPORT( char **, vlc_sd_GetNames, ( char ***pppsz_longnames ) );
+VLC_EXPORT( char **, vlc_sd_GetNames, ( vlc_object_t *, char ***, int ** ) );
+#define vlc_sd_GetNames(obj, pln, pcat ) \
+        vlc_sd_GetNames(VLC_OBJECT(obj), pln, pcat)
 
 /* Creation of a service_discovery object */
-VLC_EXPORT( services_discovery_t *, vlc_sd_Create, ( vlc_object_t * ) );
-VLC_EXPORT( bool, vlc_sd_Start, ( services_discovery_t *, const char * ) );
+VLC_EXPORT( services_discovery_t *, vlc_sd_Create, ( vlc_object_t *, const char * ) );
+VLC_EXPORT( bool, vlc_sd_Start, ( services_discovery_t * ) );
 VLC_EXPORT( void, vlc_sd_Stop, ( services_discovery_t * ) );
-
-static inline void vlc_sd_Destroy( services_discovery_t *p_sd )
-{
-    vlc_object_release( VLC_OBJECT(p_sd) );
-}
+VLC_EXPORT( void, vlc_sd_Destroy, ( services_discovery_t * ) );
 
 static inline void vlc_sd_StopAndDestroy( services_discovery_t * p_this )
 {
@@ -85,6 +95,24 @@ VLC_EXPORT( vlc_event_manager_t *,  services_discovery_EventManager, ( services_
      * for more options, directly set the (meta) data on the input item */
 VLC_EXPORT( void,                   services_discovery_AddItem, ( services_discovery_t * p_this, input_item_t * p_item, const char * psz_category ) );
 VLC_EXPORT( void,                   services_discovery_RemoveItem, ( services_discovery_t * p_this, input_item_t * p_item ) );
+
+
+/* SD probing */
+
+VLC_EXPORT(int, vlc_sd_probe_Add, (vlc_probe_t *, const char *, const char *, int category));
+
+#define VLC_SD_PROBE_SUBMODULE \
+    add_submodule() \
+        set_capability( "services probe", 100 ) \
+        set_callbacks( vlc_sd_probe_Open, NULL )
+
+#define VLC_SD_PROBE_HELPER(name, longname, cat) \
+static int vlc_sd_probe_Open (vlc_object_t *obj) \
+{ \
+    return vlc_sd_probe_Add ((struct vlc_probe_t *)obj, \
+                             name "{longname=\"" longname "\"}", \
+                             longname, cat); \
+}
 
 /** @} */
 # ifdef __cplusplus

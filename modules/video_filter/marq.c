@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: b98b824c9c3d3d584721675cd5d8db019a0f9b4a $
+ * $Id: f90dafa48ec6e6b060c99962ede1eafad3b4a58e $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -33,13 +33,12 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 
-#include "vlc_filter.h"
-#include "vlc_block.h"
-#include "vlc_osd.h"
+#include <vlc_filter.h>
+#include <vlc_block.h>
+#include <vlc_osd.h>
 
-#include "vlc_strings.h"
+#include <vlc_strings.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -112,7 +111,7 @@ struct filter_sys_t
                             "0 (remains forever).")
 #define REFRESH_TEXT N_("Refresh period in ms")
 #define REFRESH_LONGTEXT N_("Number of milliseconds between string updates. " \
-                            "This is mainly usefull when using meta data " \
+                            "This is mainly useful when using meta data " \
                             "or time format string sequences.")
 #define OPACITY_TEXT N_("Opacity")
 #define OPACITY_LONGTEXT N_("Opacity (inverse of transparency) of " \
@@ -140,12 +139,16 @@ static const char *const ppsz_pos_descriptions[] =
 
 #define CFG_PREFIX "marq-"
 
+#define MARQUEE_HELP N_("Display text above the video")
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
     set_capability( "sub filter", 0 )
     set_shortname( N_("Marquee" ))
+    set_description( N_("Marquee display") )
+    set_help(MARQUEE_HELP)
     set_callbacks( CreateFilter, DestroyFilter )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_SUBPIC )
@@ -174,7 +177,6 @@ vlc_module_begin ()
     add_integer( CFG_PREFIX "refresh", 1000, NULL, REFRESH_TEXT,
                  REFRESH_LONGTEXT, false )
 
-    set_description( N_("Marquee display") )
     add_shortcut( "time" )
     add_obsolete_string( "time-format" )
     add_obsolete_string( "time-x" )
@@ -204,8 +206,7 @@ static int CreateFilter( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     vlc_mutex_init( &p_sys->lock );
-    p_sys->p_style = malloc( sizeof( text_style_t ) );
-    memcpy( p_sys->p_style, &default_text_style, sizeof( text_style_t ) );
+    p_sys->p_style = text_style_New();
 
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
@@ -259,7 +260,7 @@ static void DestroyFilter( vlc_object_t *p_this )
     DEL_VAR( "marq-size" );
 
     vlc_mutex_destroy( &p_sys->lock );
-    free( p_sys->p_style );
+    text_style_Delete( p_sys->p_style );
     free( p_sys->psz_marquee );
     free( p_sys );
 }
@@ -286,8 +287,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         goto out;
 
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('T','E','X','T');
-    fmt.i_aspect = 0;
+    fmt.i_chroma = VLC_CODEC_TEXT;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = 0;
     fmt.i_y_offset = 0;
@@ -325,7 +325,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     p_spu->p_region->i_x = p_sys->i_xoff;
     p_spu->p_region->i_y = p_sys->i_yoff;
 
-    p_spu->p_region->p_style = p_sys->p_style;
+    p_spu->p_region->p_style = text_style_Duplicate( p_sys->p_style );
 
 out:
     vlc_mutex_unlock( &p_sys->lock );

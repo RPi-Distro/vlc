@@ -2,7 +2,7 @@
  * vlc_filter.h: filter related structures and functions
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: a7404a74cee114d1ee4363977e7e5de4dc47ec0e $
+ * $Id: cdc69237498f64d36d9050f46136563cba893a33 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -26,6 +26,9 @@
 #define VLC_FILTER_H 1
 
 #include <vlc_es.h>
+#include <vlc_picture.h>
+#include <vlc_subpicture.h>
+#include <vlc_mouse.h>
 
 /**
  * \file
@@ -57,35 +60,66 @@ struct filter_t
     /* Filter configuration */
     config_chain_t *    p_cfg;
 
-    picture_t *         ( * pf_video_filter ) ( filter_t *, picture_t * );
-    block_t *           ( * pf_audio_filter ) ( filter_t *, block_t * );
-    void                ( * pf_video_blend )  ( filter_t *,
-                                                picture_t *, picture_t *,
-                                                int, int, int );
+    union
+    {
+        struct
+        {
+            picture_t * (*pf_filter) ( filter_t *, picture_t * );
+            picture_t * (*pf_buffer_new) ( filter_t * );
+            void        (*pf_buffer_del) ( filter_t *, picture_t * );
+            /* Filter mouse state.
+             *
+             * If non-NULL, you must convert from output to input formats:
+             * - If VLC_SUCCESS is returned, the mouse state is propagated.
+             * - Otherwise, the mouse change is not propagated.
+             * If NULL, the mouse state is considered unchanged and will be
+             * propagated.
+             */
+            int         (*pf_mouse)( filter_t *, vlc_mouse_t *,
+                                     const vlc_mouse_t *p_old,
+                                     const vlc_mouse_t *p_new );
+        } video;
+#define pf_video_filter     u.video.pf_filter
+#define pf_video_mouse      u.video.pf_mouse
+#define pf_video_buffer_new u.video.pf_buffer_new
+#define pf_video_buffer_del u.video.pf_buffer_del
 
-    subpicture_t *      ( *pf_sub_filter ) ( filter_t *, mtime_t );
-    int                 ( *pf_render_text ) ( filter_t *, subpicture_region_t *,
-                                              subpicture_region_t * );
-    int                 ( *pf_render_html ) ( filter_t *, subpicture_region_t *,
-                                              subpicture_region_t * );
+        struct
+        {
+            block_t *   (*pf_filter) ( filter_t *, block_t * );
+            block_t *   (*pf_buffer_new) ( filter_t *, int );
+        } audio;
+#define pf_audio_filter     u.audio.pf_filter
+#define pf_audio_buffer_new u.audio.pf_buffer_new
 
-    /*
-     * Buffers allocation
-     */
+        struct
+        {
+            void        (*pf_blend) ( filter_t *,  picture_t *,
+                                      const picture_t *, int, int, int );
+        } blend;
+#define pf_video_blend     u.blend.pf_blend
 
-    /* Audio output callbacks */
-    block_t *       ( * pf_audio_buffer_new) ( filter_t *, int );
+        struct
+        {
+            subpicture_t * (*pf_filter) ( filter_t *, mtime_t );
+            subpicture_t * (*pf_buffer_new) ( filter_t * );
+            void        (*pf_buffer_del) ( filter_t *, subpicture_t * );
+        } sub;
+#define pf_sub_filter      u.sub.pf_filter
+#define pf_sub_buffer_new  u.sub.pf_buffer_new
+#define pf_sub_buffer_del  u.sub.pf_buffer_del
 
-    /* Video output callbacks */
-    picture_t     * ( * pf_vout_buffer_new) ( filter_t * );
-    void            ( * pf_vout_buffer_del) ( filter_t *, picture_t * );
-    /* void            ( * pf_picture_link)    ( picture_t * );
-    void            ( * pf_picture_unlink)  ( picture_t * ); */
+        struct
+        {
+            int         (*pf_text) ( filter_t *, subpicture_region_t *,
+                                     subpicture_region_t * );
+            int         (*pf_html) ( filter_t *, subpicture_region_t *,
+                                     subpicture_region_t * );
+        } render;
+#define pf_render_text     u.render.pf_text
+#define pf_render_html     u.render.pf_html
 
-    /* SPU output callbacks */
-    subpicture_t *  ( * pf_sub_buffer_new) ( filter_t * );
-    void            ( * pf_sub_buffer_del) ( filter_t *, subpicture_t * );
-
+    } u;
     /* Private structure for the owner of the decoder */
     filter_owner_sys_t *p_owner;
 };
@@ -101,7 +135,7 @@ struct filter_t
  */
 static inline picture_t *filter_NewPicture( filter_t *p_filter )
 {
-    picture_t *p_picture = p_filter->pf_vout_buffer_new( p_filter );
+    picture_t *p_picture = p_filter->pf_video_buffer_new( p_filter );
     if( !p_picture )
         msg_Warn( p_filter, "can't get output picture" );
     return p_picture;
@@ -116,7 +150,7 @@ static inline picture_t *filter_NewPicture( filter_t *p_filter )
  */
 static inline void filter_DeletePicture( filter_t *p_filter, picture_t *p_picture )
 {
-    p_filter->pf_vout_buffer_del( p_filter, p_picture );
+    p_filter->pf_video_buffer_del( p_filter, p_picture );
 }
 
 /**
@@ -167,6 +201,32 @@ static inline block_t *filter_NewAudioBuffer( filter_t *p_filter, int i_size )
 }
 
 /**
+ * It creates a blend filter.
+ *
+ * Only the chroma properties of the dest format is used (chroma
+ * type, rgb masks and shifts)
+ */
+VLC_EXPORT( filter_t *, filter_NewBlend, ( vlc_object_t *, const video_format_t *p_dst_chroma ) );
+
+/**
+ * It configures blend filter parameters that are allowed to changed
+ * after the creation.
+ */
+VLC_EXPORT( int, filter_ConfigureBlend, ( filter_t *, int i_dst_width, int i_dst_height, const video_format_t *p_src ) );
+
+/**
+ * It blends a picture into another one.
+ *
+ * The input picture is not modified and not released.
+ */
+VLC_EXPORT( int, filter_Blend, ( filter_t *, picture_t *p_dst, int i_dst_x, int i_dst_y, const picture_t *p_src, int i_alpha ) );
+
+/**
+ * It destroys a blend filter created by filter_NewBlend.
+ */
+VLC_EXPORT( void, filter_DeleteBlend, ( filter_t * ) );
+
+/**
  * Create a picture_t *(*)( filter_t *, picture_t * ) compatible wrapper
  * using a void (*)( filter_t *, picture_t *, picture_t * ) function
  *
@@ -205,8 +265,8 @@ typedef struct filter_chain_t filter_chain_t;
  * \param p_buffer_allocation_data pointer to private allocation data
  * \return pointer to a filter chain
  */
-VLC_EXPORT( filter_chain_t *, __filter_chain_New, ( vlc_object_t *, const char *, bool, int (*)( filter_t *, void * ), void (*)( filter_t * ), void *  ) );
-#define filter_chain_New( a, b, c, d, e, f ) __filter_chain_New( VLC_OBJECT( a ), b, c, d, e, f )
+VLC_EXPORT( filter_chain_t *, filter_chain_New, ( vlc_object_t *, const char *, bool, int (*)( filter_t *, void * ), void (*)( filter_t * ), void *  ) );
+#define filter_chain_New( a, b, c, d, e, f ) filter_chain_New( VLC_OBJECT( a ), b, c, d, e, f )
 
 /**
  * Delete filter chain will delete all filters in the chain and free all
@@ -259,16 +319,6 @@ VLC_EXPORT( int, filter_chain_AppendFromString, ( filter_chain_t *, const char *
 VLC_EXPORT( int, filter_chain_DeleteFilter, ( filter_chain_t *, filter_t * ) );
 
 /**
- * Get filter by name of position in the filter chain.
- *
- * \param p_chain pointer to filter chain
- * \param i_position position of filter in filter chain
- * \param psz_name name of filter to get
- * \return filter object based on position or name provided
- */
-VLC_EXPORT( filter_t *, filter_chain_GetFilter, ( filter_chain_t *, int, const char * ) );
-
-/**
  * Get the number of filters in the filter chain.
  *
  * \param p_chain pointer to filter chain
@@ -309,6 +359,16 @@ VLC_EXPORT( block_t *, filter_chain_AudioFilter, ( filter_chain_t *, block_t * )
  * \param display_date of subpictures
  */
 VLC_EXPORT( void, filter_chain_SubFilter, ( filter_chain_t *, mtime_t ) );
+
+/**
+ * Apply the filter chain to a mouse state.
+ *
+ * It will be applied from the output to the input. It makes sense only
+ * for a video filter chain.
+ *
+ * The vlc_mouse_t* pointers may be the same.
+ */
+VLC_EXPORT( int, filter_chain_MouseFilter, ( filter_chain_t *, vlc_mouse_t *, const vlc_mouse_t * ) );
 
 #endif /* _VLC_FILTER_H */
 

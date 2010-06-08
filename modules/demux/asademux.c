@@ -44,10 +44,14 @@
 #define MAXDELTA	4	/**< nr of times kept for delta backref */
 #define MAXGROUP	24	/**< maximum number of regex match groups */
 
-#define xmalloc malloc
-#define xrealloc realloc
 #define xfree free
-#define xstrdup strdup
+static inline char *xstrdup(const char *str)
+{
+    char *ret = strdup (str);
+    if (unlikely(ret == NULL))
+        abort();
+    return ret;
+}
 
 /** state of a running import */
 struct asa_import_state {

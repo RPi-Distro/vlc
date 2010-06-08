@@ -2,7 +2,7 @@
  * variables.h: object variables typedefs
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: dde10ae654e2ecba9b70755df9b5f8d77170aafc $
+ * $Id: b0de92de2d943e2149f58713bfa59d41a9c4022f $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -25,8 +25,8 @@
 # error This header file can only be included from LibVLC.
 #endif
 
-#ifndef __LIBVLC_VARIABLES_H
-# define __LIBVLC_VARIABLES_H 1
+#ifndef LIBVLC_VARIABLES_H
+# define LIBVLC_VARIABLES_H 1
 
 typedef struct callback_entry_t callback_entry_t;
 
@@ -43,20 +43,18 @@ typedef struct variable_ops_t
  */
 struct variable_t
 {
+    char *       psz_name; /**< The variable unique name (must be first) */
+
     /** The variable's exported value */
     vlc_value_t  val;
-
-    char *       psz_name; /**< The variable unique name */
-    uint32_t     i_hash;   /**< (almost) unique hashed value */
-    int          i_type;   /**< The type of the variable */
 
     /** The variable display name, mainly for use by the interfaces */
     char *       psz_text;
 
     const variable_ops_t *ops;
 
-    /** Creation count: we only destroy the variable if it reaches 0 */
-    int          i_usage;
+    int          i_type;   /**< The type of the variable */
+    unsigned     i_usage;  /**< Reference count */
 
     /** If the variable has min/max/step values */
     vlc_value_t  min, max, step;
@@ -77,4 +75,7 @@ struct variable_t
     /** Array of registered callbacks */
     callback_entry_t * p_entries;
 };
+
+extern void var_DestroyAll( vlc_object_t * );
+
 #endif

@@ -2,7 +2,7 @@
  * infopanels.hpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: f5d8de8ede673319468ef321d5f9977779ce3b72 $
+ * $Id: ec58f29cfb5acdd8c1c87bb1bd9342f230078fcb $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -52,9 +52,9 @@ class CoverArtLabel;
 
 class MetaPanel: public QWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
-    MetaPanel( QWidget *, intf_thread_t * );
+    MetaPanel( QWidget *, struct intf_thread_t * );
     void saveMeta();
 
     bool isInEditMode();
@@ -62,7 +62,7 @@ public:
 
 private:
     input_item_t *p_input;
-    intf_thread_t *p_intf;
+    struct intf_thread_t *p_intf;
     bool b_inEditMode;
 
     QLineEdit *title_text;
@@ -95,11 +95,11 @@ signals:
 
 class ExtraMetaPanel: public QWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
-    ExtraMetaPanel( QWidget *, intf_thread_t * );
+    ExtraMetaPanel( QWidget *, struct intf_thread_t * );
 private:
-    intf_thread_t *p_intf;
+    struct intf_thread_t *p_intf;
     QTreeWidget *extraMetaTree;
 public slots:
     void update( input_item_t * );
@@ -108,11 +108,11 @@ public slots:
 
 class InputStatsPanel: public QWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
-    InputStatsPanel( QWidget *, intf_thread_t * );
+    InputStatsPanel( QWidget *, struct intf_thread_t * );
 private:
-    intf_thread_t *p_intf;
+    struct intf_thread_t *p_intf;
 
     QTreeWidget *StatsTree;
     QTreeWidgetItem *input;
@@ -146,11 +146,11 @@ public slots:
 
 class InfoPanel: public QWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
-    InfoPanel( QWidget *, intf_thread_t * );
+    InfoPanel( QWidget *, struct intf_thread_t * );
 private:
-    intf_thread_t *p_intf;
+    struct intf_thread_t *p_intf;
     QTreeWidget *InfoTree;
 public slots:
     void update( input_item_t * );

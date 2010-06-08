@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 9e632344d7f534723e9da0e83a4bc3eb5acd89cd $
+ * $Id: 4d94ed0d3ac687de2fec3177eb3fda32c92102e4 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -35,25 +35,9 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_charset.h>
 
-/*****************************************************************************
- * Exported prototypes
- *****************************************************************************/
-int  VCDOpen       ( vlc_object_t * );
-void VCDClose      ( vlc_object_t * );
-int  VCDOpenIntf   ( vlc_object_t * );
-void VCDCloseIntf  ( vlc_object_t * );
-int  VCDInit   ( vlc_object_t * );
-void VCDEnd    ( vlc_object_t * );
-
-int  DebugCallback ( vlc_object_t *p_this, const char *psz_name,
-                         vlc_value_t oldval, vlc_value_t val,
-                         void *p_data );
-
-int  BlocksPerReadCallback ( vlc_object_t *p_this, const char *psz_name,
-                 vlc_value_t oldval, vlc_value_t val,
-                 void *p_data );
+#include "vcd.h"
+#include "access.h"
 
 /*****************************************************************************
  * Option help text
@@ -118,7 +102,7 @@ vlc_module_begin ()
                   N_("Number of CD blocks to get in a single read."),
           true )
 
-    add_bool( MODULE_STRING "-PBC", 0, NULL,
+    add_bool( MODULE_STRING "-PBC", false, NULL,
               N_("Use playback control?"),
               N_("If VCD is authored with playback control, use it. "
                  "Otherwise we play by tracks."),
@@ -131,7 +115,7 @@ vlc_module_begin ()
          "the length of an entry."),
               false )
 
-    add_bool( MODULE_STRING "-extended-info", 0, NULL,
+    add_bool( MODULE_STRING "-extended-info", false, NULL,
               N_("Show extended VCD info?"),
               N_("Show the maximum amount of information under Stream and "
                  "Media Info. Shows for example playback control navigation."),

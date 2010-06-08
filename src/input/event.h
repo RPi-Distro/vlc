@@ -2,7 +2,7 @@
  * event.h: Input event functions
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: b6ed2bfc607af1652b0f7645278da43af2526bc5 $
+ * $Id: 4b56cfeed75698047bab1dee90cb43af610936c8 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ fr>
  *
@@ -35,7 +35,8 @@
  *****************************************************************************/
 void input_SendEventDead( input_thread_t *p_input );
 void input_SendEventAbort( input_thread_t *p_input );
-void input_SendEventTimes( input_thread_t *p_input, double f_position, mtime_t i_time, mtime_t i_length );
+void input_SendEventPosition( input_thread_t *p_input, double f_position, mtime_t i_time );
+void input_SendEventLength( input_thread_t *p_input, mtime_t i_length );
 void input_SendEventStatistics( input_thread_t *p_input );
 void input_SendEventRate( input_thread_t *p_input, int i_rate );
 void input_SendEventAudioDelay( input_thread_t *p_input, mtime_t i_delay );
@@ -51,6 +52,7 @@ void input_SendEventCache( input_thread_t *p_input, double f_level );
 void input_SendEventMeta( input_thread_t *p_input );
 void input_SendEventMetaInfo( input_thread_t *p_input );
 void input_SendEventMetaName( input_thread_t *p_input, const char *psz_name );
+void input_SendEventMetaEpg( input_thread_t *p_input );
 
 /*****************************************************************************
  * Event for es_out.c

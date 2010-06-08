@@ -2,7 +2,7 @@
  * i420_rgb16.c : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000 the VideoLAN team
- * $Id: 3f0c6734f5d3a20d09399c397a27a860edc1ce45 $
+ * $Id: b61f9e1b17512fb09eda408ed927c12b75574da0 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -30,17 +30,16 @@
 # include "config.h"
 #endif
 
-#include <vlc/vlc.h>
+#include <vlc_common.h>
 #include <vlc_filter.h>
-#include <vlc_vout.h>
 
 #include "i420_rgb.h"
 #if defined (MODULE_NAME_IS_i420_rgb)
 #   include "i420_rgb_c.h"
 #elif defined (MODULE_NAME_IS_i420_rgb_mmx)
-#   include "i420_rgb_mmx.h"
+#   include "../mmx/i420_rgb_mmx.h"
 #elif defined (MODULE_NAME_IS_i420_rgb_sse2)
-#   include "i420_rgb_mmx.h"
+#   include "../mmx/i420_rgb_mmx.h"
 #endif
 
 static void SetOffset( int, int, int, int, bool *,

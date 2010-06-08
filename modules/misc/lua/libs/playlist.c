@@ -2,7 +2,7 @@
  * playlist.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: f442fe2ed3829b7cb4a95cd4e52feca94213566d $
+ * $Id: df0f15c2b038c23c0f7cf105d0c9e0838e0777ac $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -51,19 +51,13 @@
 playlist_t *vlclua_get_playlist_internal( lua_State *L )
 {
     vlc_object_t *p_this = vlclua_get_this( L );
-    return pl_Hold( p_this );
-}
-
-void vlclua_release_playlist_internal( playlist_t *p_playlist )
-{
-    vlc_object_release( p_playlist );
+    return pl_Get( p_this );
 }
 
 static int vlclua_playlist_prev( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     playlist_Prev( p_playlist );
-    vlclua_release_playlist_internal( p_playlist );
     return 0;
 }
 
@@ -71,7 +65,6 @@ static int vlclua_playlist_next( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     playlist_Next( p_playlist );
-    vlclua_release_playlist_internal( p_playlist );
     return 0;
 }
 
@@ -80,7 +73,6 @@ static int vlclua_playlist_skip( lua_State * L )
     int i_skip = luaL_checkint( L, 1 );
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     playlist_Skip( p_playlist, i_skip );
-    vlclua_release_playlist_internal( p_playlist );
     return 0;
 }
 
@@ -88,7 +80,6 @@ static int vlclua_playlist_play( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     playlist_Play( p_playlist );
-    vlclua_release_playlist_internal( p_playlist );
     return 0;
 }
 
@@ -96,7 +87,6 @@ static int vlclua_playlist_pause( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     playlist_Pause( p_playlist );
-    vlclua_release_playlist_internal( p_playlist );
     return 0;
 }
 
@@ -104,7 +94,6 @@ static int vlclua_playlist_stop( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     playlist_Stop( p_playlist );
-    vlclua_release_playlist_internal( p_playlist );
     return 0;
 }
 
@@ -113,7 +102,6 @@ static int vlclua_playlist_clear( lua_State * L )
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     playlist_Stop( p_playlist ); /* Isn't this already implied by Clear? */
     playlist_Clear( p_playlist, pl_Unlocked );
-    vlclua_release_playlist_internal( p_playlist );
     return 0;
 }
 
@@ -121,7 +109,6 @@ static int vlclua_playlist_repeat( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     int i_ret = vlclua_var_toggle_or_set( L, p_playlist, "repeat" );
-    vlclua_release_playlist_internal( p_playlist );
     return i_ret;
 }
 
@@ -129,7 +116,6 @@ static int vlclua_playlist_loop( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     int i_ret = vlclua_var_toggle_or_set( L, p_playlist, "loop" );
-    vlclua_release_playlist_internal( p_playlist );
     return i_ret;
 }
 
@@ -137,7 +123,6 @@ static int vlclua_playlist_random( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     int i_ret = vlclua_var_toggle_or_set( L, p_playlist, "random" );
-    vlclua_release_playlist_internal( p_playlist );
     return i_ret;
 }
 
@@ -150,7 +135,6 @@ static int vlclua_playlist_goto( lua_State * L )
                                   true, NULL,
                                   playlist_ItemGetById( p_playlist, i_id ) );
     PL_UNLOCK;
-    vlclua_release_playlist_internal( p_playlist );
     return vlclua_push_ret( L, i_ret );
 }
 
@@ -161,7 +145,6 @@ static int vlclua_playlist_add( lua_State *L )
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     i_count = vlclua_playlist_add_internal( p_this, L, p_playlist,
                                             NULL, true );
-    vlclua_release_playlist_internal( p_playlist );
     lua_pushinteger( L, i_count );
     return 1;
 }
@@ -173,12 +156,10 @@ static int vlclua_playlist_enqueue( lua_State *L )
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     i_count = vlclua_playlist_add_internal( p_this, L, p_playlist,
                                             NULL, false );
-    vlclua_release_playlist_internal( p_playlist );
     lua_pushinteger( L, i_count );
     return 1;
 }
 
-static void push_playlist_item( lua_State *L, playlist_item_t *p_item );
 static void push_playlist_item( lua_State *L, playlist_item_t *p_item )
 {
     input_item_t *p_input = p_item->p_input;
@@ -204,7 +185,9 @@ static void push_playlist_item( lua_State *L, playlist_item_t *p_item )
     lua_setfield( L, -2, "flags" );
     if( p_input )
     {
-        lua_pushstring( L, p_input->psz_name );
+        char *psz_name = input_item_GetTitleFbName( p_input );
+        lua_pushstring( L, psz_name );
+        free( psz_name );
         lua_setfield( L, -2, "name" );
         lua_pushstring( L, p_input->psz_uri );
         lua_setfield( L, -2, "path" );
@@ -234,7 +217,6 @@ static int vlclua_playlist_get( lua_State *L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     PL_LOCK;
-    int b_category = luaL_optboolean( L, 2, 1 ); /* Default to tree playlist (discared when 1st argument is a playlist_item's id) */
     playlist_item_t *p_item = NULL;
 
     if( lua_isnumber( L, 1 ) )
@@ -244,7 +226,6 @@ static int vlclua_playlist_get( lua_State *L )
         if( !p_item )
         {
             PL_UNLOCK;
-            vlclua_release_playlist_internal( p_playlist );
             return 0; /* Should we return an error instead? */
         }
     }
@@ -253,48 +234,30 @@ static int vlclua_playlist_get( lua_State *L )
         const char *psz_what = lua_tostring( L, 1 );
         if( !strcasecmp( psz_what, "normal" )
          || !strcasecmp( psz_what, "playlist" ) )
-            p_item = b_category ? p_playlist->p_local_category
-                                : p_playlist->p_local_onelevel;
+            p_item = p_playlist->p_playing;
         else if( !strcasecmp( psz_what, "ml" )
               || !strcasecmp( psz_what, "media library" ) )
-            p_item = b_category ? p_playlist->p_ml_category
-                                : p_playlist->p_ml_onelevel;
+            p_item = p_playlist->p_media_library;
         else if( !strcasecmp( psz_what, "root" ) )
-            p_item = b_category ? p_playlist->p_root_category
-                                : p_playlist->p_root_onelevel;
+            p_item = p_playlist->p_root;
         else
         {
-#ifdef FIX_THAT_CODE_NOT_TO_MESS_WITH_PLAYLIST_INTERNALS
-            for( int i = 0; i < p_playlist->i_sds; i++ )
-            {
-                if( !strcasecmp( psz_what,
-                                 p_playlist->pp_sds[i]->p_sd->psz_module ) )
-                {
-                    p_item = b_category ? p_playlist->pp_sds[i]->p_cat
-                                        : p_playlist->pp_sds[i]->p_one;
-                    break;
-                }
-            }
-#else
-# warning "Don't access playlist iternal, broken code here."
-            abort();
-#endif
+            /* currently, psz_what must be SD module's longname! */
+            p_item = playlist_ChildSearchName( p_playlist->p_root, psz_what );
+
             if( !p_item )
             {
                 PL_UNLOCK;
-                vlclua_release_playlist_internal( p_playlist );
                 return 0; /* Should we return an error instead? */
             }
         }
     }
     else
     {
-        p_item = b_category ? p_playlist->p_root_category
-                            : p_playlist->p_root_onelevel;
+        p_item = p_playlist->p_root;
     }
     push_playlist_item( L, p_item );
     PL_UNLOCK;
-    vlclua_release_playlist_internal( p_playlist );
     return 1;
 }
 
@@ -302,22 +265,29 @@ static int vlclua_playlist_search( lua_State *L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     const char *psz_string = luaL_optstring( L, 1, "" );
-    int b_category = luaL_optboolean( L, 2, 1 ); /* default to category */
-    playlist_item_t *p_item = b_category ? p_playlist->p_root_category
-                                         : p_playlist->p_root_onelevel;
     PL_LOCK;
-    playlist_LiveSearchUpdate( p_playlist, p_item, psz_string );
+    playlist_LiveSearchUpdate( p_playlist, p_playlist->p_root, psz_string, true );
     PL_UNLOCK;
-    push_playlist_item( L, p_item );
-    vlclua_release_playlist_internal( p_playlist );
+    push_playlist_item( L, p_playlist->p_root );
     return 1;
 }
 
 static int vlclua_playlist_current( lua_State *L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
-    lua_pushinteger( L, var_GetInteger( p_playlist, "item-current" ) );
-    vlclua_release_playlist_internal( p_playlist );
+    input_thread_t *p_input = playlist_CurrentInput( p_playlist );
+    int id = -1;
+
+    if( p_input )
+    {
+        input_item_t *p_item = input_GetItem( p_input );
+        if( p_item )
+            id = p_item->i_id;
+        vlc_object_release( p_input );
+    }
+
+#warning Indexing input items by ID is unsafe,
+    lua_pushinteger( L, id );
     return 1;
 }
 
@@ -354,58 +324,34 @@ static int vlclua_playlist_sort( lua_State *L )
     if( i_mode == -1 )
         return luaL_error( L, "Invalid search key." );
     int i_type = luaL_optboolean( L, 2, 0 ) ? ORDER_REVERSE : ORDER_NORMAL;
-    int b_category = luaL_optboolean( L, 3, 1 ); /* default to category */
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
     PL_LOCK;
-    playlist_item_t *p_root = b_category ? p_playlist->p_local_category
-                                         : p_playlist->p_local_onelevel;
-    int i_ret = playlist_RecursiveNodeSort( p_playlist, p_root, i_mode,
-                                            i_type );
+    int i_ret = playlist_RecursiveNodeSort( p_playlist, p_playlist->p_playing,
+                                            i_mode, i_type );
     PL_UNLOCK;
-    vlclua_release_playlist_internal( p_playlist );
     return vlclua_push_ret( L, i_ret );
 }
 
-/* FIXME: split this in 3 different functions? */
 static int vlclua_playlist_status( lua_State *L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
-    /*
-    int i_count = 0;
-    lua_settop( L, 0 );*/
-    input_thread_t * p_input = playlist_CurrentInput( p_playlist );
-    if( p_input )
+    PL_LOCK;
+    switch( playlist_Status( p_playlist ) )
     {
-        /*char *psz_uri =
-            input_item_GetURI( input_GetItem( p_playlist->p_input ) );
-        lua_pushstring( L, psz_uri );
-        free( psz_uri );
-        lua_pushnumber( L, config_GetInt( p_intf, "volume" ) );*/
-        PL_LOCK;
-        switch( playlist_Status( p_playlist ) )
-        {
-            case PLAYLIST_STOPPED:
-                lua_pushstring( L, "stopped" );
-                break;
-            case PLAYLIST_RUNNING:
-                lua_pushstring( L, "playing" );
-                break;
-            case PLAYLIST_PAUSED:
-                lua_pushstring( L, "paused" );
-                break;
-            default:
-                lua_pushstring( L, "unknown" );
-                break;
-        }
-        PL_UNLOCK;
-        /*i_count += 3;*/
-        vlc_object_release( p_input );
+        case PLAYLIST_STOPPED:
+            lua_pushliteral( L, "stopped" );
+            break;
+        case PLAYLIST_RUNNING:
+            lua_pushliteral( L, "playing" );
+            break;
+        case PLAYLIST_PAUSED:
+            lua_pushliteral( L, "paused" );
+            break;
+        default:
+            lua_pushliteral( L, "unknown" );
+            break;
     }
-    else
-    {
-        lua_pushstring( L, "stopped" );
-    }
-    vlclua_release_playlist_internal( p_playlist );
+    PL_UNLOCK;
     return 1;
 }
 
@@ -420,7 +366,8 @@ static const luaL_Reg vlclua_playlist_reg[] = {
     { "pause", vlclua_playlist_pause },
     { "stop", vlclua_playlist_stop },
     { "clear", vlclua_playlist_clear },
-    { "repeat", vlclua_playlist_repeat },
+    { "repeat", vlclua_playlist_repeat }, // repeat is a reserved lua keyword...
+    { "repeat_", vlclua_playlist_repeat }, // ... provide repeat_ too.
     { "loop", vlclua_playlist_loop },
     { "random", vlclua_playlist_random },
     { "goto", vlclua_playlist_goto },

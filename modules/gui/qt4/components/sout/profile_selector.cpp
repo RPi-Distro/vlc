@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 064cd8db32080d18d7aa1655e3191c3bbf9eb799 $
+ * $Id: ef8d1d3c79baeef984b8252a6769d5c8cfcf1409 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -45,12 +45,12 @@ VLCProfileSelector::VLCProfileSelector( QWidget *_parent ): QWidget( _parent )
     layout->addWidget( profileBox );
 
     QToolButton *editButton = new QToolButton( this );
-    editButton->setIcon( QIcon( ":/preferences" ) );
+    editButton->setIcon( QIcon( ":/menu/preferences" ) );
     editButton->setToolTip( qtr( "Edit selected profile" ) );
     layout->addWidget( editButton );
 
     QToolButton *deleteButton = new QToolButton( this );
-    deleteButton->setIcon( QIcon( ":/clear" ) );
+    deleteButton->setIcon( QIcon( ":/toolbar/clear" ) );
     deleteButton->setToolTip( qtr( "Delete selected profile" ) );
     layout->addWidget( deleteButton );
 
@@ -91,7 +91,7 @@ inline void VLCProfileSelector::fillProfilesCombo()
     }
     if( i_size == 0 )
     {
-        for( int i = 0; i < NB_PROFILE; i++ )
+        for( size_t i = 0; i < NB_PROFILE; i++ )
         {
             profileBox->addItem( video_profile_name_list[i],
                                  video_profile_value_list[i] );
@@ -300,8 +300,9 @@ inline void VLCProfileEditor::registerCodecs()
 #undef ADD_SCALING
 
 #define ADD_SAMPLERATE( sample ) ui.aSampleBox->addItem( sample );
-    ADD_SAMPLERATE( "11250" )
-    ADD_SAMPLERATE( "22500" )
+    ADD_SAMPLERATE( "8000" )
+    ADD_SAMPLERATE( "11025" )
+    ADD_SAMPLERATE( "22050" )
     ADD_SAMPLERATE( "44100" )
     ADD_SAMPLERATE( "48000" )
 #undef ADD_SAMPLERATE

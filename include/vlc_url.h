@@ -2,7 +2,7 @@
  * vlc_url.h: URL related macros
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: e5b29eba2364921cd6491800d40fea7115431a46 $
+ * $Id: 35bea922fdccb977d479e16bd4a2a50117fd4179 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -49,6 +49,7 @@ VLC_EXPORT( char *, decode_URI_duplicate, ( const char *psz ) );
 VLC_EXPORT( char *, decode_URI, ( char *psz ) );
 VLC_EXPORT( char *, encode_URI_component, ( const char *psz ) );
 VLC_EXPORT( char *, make_URI, ( const char *path ) );
+VLC_EXPORT( char *, make_path, ( const char *url ) );
 
 /*****************************************************************************
  * vlc_UrlParse:
@@ -191,12 +192,6 @@ static inline void vlc_UrlClean( vlc_url_t *url )
     url->psz_option   = NULL;
 
     url->psz_buffer   = NULL;
-}
-
-static inline char *vlc_UrlEncode( const char *psz_url )
-{
-    /* FIXME: do not encode / : ? and & _when_ not needed */
-    return encode_URI_component( psz_url );
 }
 
 #include <ctype.h>

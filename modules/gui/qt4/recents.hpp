@@ -2,7 +2,7 @@
  * recents.cpp : Recents MRL (menu)
  *****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: 48171782ba01625ecfd7b97b8a0733debfcda110 $
+ * $Id: 88531ff1e28e1119a17adbc49779cd0d56524d21 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -27,10 +27,9 @@
 #include "qt4.hpp"
 
 #include <QObject>
-#include <QList>
-#include <QString>
-#include <QRegExp>
-#include <QSignalMapper>
+class QStringList;
+class QRegExp;
+class QSignalMapper;
 
 #define RECENTS_LIST_SIZE 10
 
@@ -52,7 +51,8 @@ public:
     }
 
     void addRecent( const QString & );
-    QList<QString> recents();
+    QStringList recents();
+
     QSignalMapper *signalMapper;
 
 private:
@@ -61,13 +61,13 @@ private:
 
     static RecentsMRL *instance;
 
+    intf_thread_t *p_intf;
+    QStringList   *stack;
+    QRegExp       *filter;
+    bool          isActive;
+
     void load();
     void save();
-    intf_thread_t* p_intf;
-    QList<QString> *stack;
-    bool isActive;
-    QRegExp *filter;
-
 public slots:
     void clear();
 };

@@ -2,7 +2,7 @@
  * mvar.c : Variables handling for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: c25dd34d29cd6b2c9ae17b55d7003ffdcafd4a27 $
+ * $Id: 0e723e018276d0372edaae538d509a71b10f128a $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -28,8 +28,14 @@
 
 #include "http.h"
 #include <limits.h>
-
-#include <assert.h>
+#include <errno.h>
+#include <ctype.h>
+#include <fcntl.h>
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+#include <vlc_fs.h>
+#include <vlc_services_discovery.h>
 
 /* Utility function for scandir */
 static int Filter( const char *foo )
@@ -54,7 +60,7 @@ mvar_t *mvar_New( const char *name, const char *value )
     v->value = strdup( value ? value : "" );
 
     v->i_field = 0;
-    v->field = malloc( sizeof( mvar_t * ) );
+    v->field = xmalloc( sizeof( mvar_t * ) );
     v->field[0] = NULL;
 
     return v;
@@ -77,7 +83,7 @@ void mvar_Delete( mvar_t *v )
 
 void mvar_AppendVar( mvar_t *v, mvar_t *f )
 {
-    v->field = realloc( v->field, sizeof( mvar_t * ) * ( v->i_field + 2 ) );
+    v->field = xrealloc( v->field, sizeof( mvar_t * ) * ( v->i_field + 2 ) );
     v->field[v->i_field] = f;
     v->i_field++;
 }
@@ -98,7 +104,7 @@ mvar_t *mvar_Duplicate( const mvar_t *v )
 
 void mvar_PushVar( mvar_t *v, mvar_t *f )
 {
-    v->field = realloc( v->field, sizeof( mvar_t * ) * ( v->i_field + 2 ) );
+    v->field = xrealloc( v->field, sizeof( mvar_t * ) * ( v->i_field + 2 ) );
     if( v->i_field > 0 )
     {
         memmove( &v->field[1], &v->field[0], sizeof( mvar_t * ) * v->i_field );
@@ -332,28 +338,26 @@ mvar_t *mvar_InfoSetNew( char *name, input_thread_t *p_input )
     return s;
 }
 
-mvar_t *mvar_ObjectSetNew( intf_thread_t *p_intf, char *psz_name,
-                               const char *psz_capability )
+mvar_t *mvar_ServicesSetNew( intf_thread_t *p_intf, char *psz_name )
 {
     mvar_t *s = mvar_New( psz_name, "set" );
-    size_t i;
+    char **longnames;
+    char **names = vlc_sd_GetNames( p_intf, &longnames, NULL );
+    if( names == NULL )
+        goto out;
 
-    module_t **p_list = module_list_get( NULL );
-
-    for( i = 0; p_list[i]; i++ )
+    for( size_t i = 0; names[i]; i++ )
     {
-        module_t *p_parser = p_list[i];
-        if( module_provides( p_parser, psz_capability ) )
-        {
-            mvar_t *sd = mvar_New( "sd", module_get_object( p_parser ) );
-            mvar_AppendNewVar( sd, "name",
-                                   module_get_name( p_parser, true ) );
-            mvar_AppendVar( s, sd );
-        }
+        mvar_t *sd = mvar_New( "sd", names[i] );
+        mvar_AppendNewVar( sd, "name", longnames[i] );
+        mvar_AppendVar( s, sd );
+        free( names[i] );
+        free( longnames[i] );
     }
 
-    module_list_free( p_list );
-
+    free( longnames );
+    free( names );
+out:
     return s;
 }
 
@@ -450,8 +454,7 @@ mvar_t *mvar_InputVarSetNew( intf_thread_t *p_intf, char *name,
     }
     /* clean up everything */
     if( (i_type & VLC_VAR_TYPE) == VLC_VAR_STRING ) free( val.psz_string );
-    var_Change( p_sys->p_input, psz_variable, VLC_VAR_FREELIST, &val_list,
-                &text_list );
+    var_FreeList( &val_list, &text_list );
     return s;
 }
 
@@ -506,7 +509,7 @@ mvar_t *mvar_FileSetNew( intf_thread_t *p_intf, char *name,
     psz_dir = RealPath( psz_dir );
 
     /* parse psz_src dir */
-    if( ( i_dir_content = utf8_scandir( psz_dir, &ppsz_dir_content, Filter,
+    if( ( i_dir_content = vlc_scandir( psz_dir, &ppsz_dir_content, Filter,
                                         InsensitiveAlphasort ) ) == -1 )
     {
         if( errno != ENOENT && errno != ENOTDIR )
@@ -535,7 +538,7 @@ mvar_t *mvar_FileSetNew( intf_thread_t *p_intf, char *name,
             sprintf( psz_tmp, "%s"DIR_SEP"%s", psz_dir, psz_name );
 
 #ifdef HAVE_SYS_STAT_H
-            if( utf8_stat( psz_tmp, &stat_info ) == -1 )
+            if( vlc_stat( psz_tmp, &stat_info ) == -1 )
             {
                 free( psz_name );
                 continue;

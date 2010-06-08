@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: c3cc983469e3d785983fc0d4512ff725c5678a0e $
+ * $Id: 075562561a9cc39da7f6d8a3bea587eefe4a729f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -77,44 +77,50 @@ struct msghdr
 #   define net_errno errno
 #endif
 
+int vlc_socket (int, int, int, bool nonblock) LIBVLC_USED;
+
+struct sockaddr;
+VLC_EXPORT( int, vlc_accept, ( int, struct sockaddr *, socklen_t *, bool ) LIBVLC_USED );
+
 # ifdef __cplusplus
 extern "C" {
 # endif
 
 /* Portable networking layer communication */
 int net_Socket (vlc_object_t *obj, int family, int socktype, int proto);
-int net_SetupSocket (int fd);
 
-#define net_Connect(a, b, c, d, e) __net_Connect(VLC_OBJECT(a), b, c, d, e)
-VLC_EXPORT( int, __net_Connect, (vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol) );
+VLC_EXPORT( int, net_Connect, (vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol) );
+#define net_Connect(a, b, c, d, e) net_Connect(VLC_OBJECT(a), b, c, d, e)
 
-VLC_EXPORT( int *, net_Listen, (vlc_object_t *p_this, const char *psz_host, int i_port, int protocol) );
+VLC_EXPORT( int *, net_Listen, (vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol) );
 
-#define net_ListenTCP(a, b, c) net_Listen(VLC_OBJECT(a), b, c, IPPROTO_TCP)
-#define net_ConnectTCP(a, b, c) __net_ConnectTCP(VLC_OBJECT(a), b, c)
+#define net_ListenTCP(a, b, c) net_Listen(VLC_OBJECT(a), b, c, \
+                                          SOCK_STREAM, IPPROTO_TCP)
 
-static inline int __net_ConnectTCP (vlc_object_t *obj, const char *host, int port)
+static inline int net_ConnectTCP (vlc_object_t *obj, const char *host, int port)
 {
-    return __net_Connect (obj, host, port, SOCK_STREAM, IPPROTO_TCP);
+    return net_Connect (obj, host, port, SOCK_STREAM, IPPROTO_TCP);
 }
-
+#define net_ConnectTCP(a, b, c) net_ConnectTCP(VLC_OBJECT(a), b, c)
 
 VLC_EXPORT( int, net_AcceptSingle, (vlc_object_t *obj, int lfd) );
 
-VLC_EXPORT( int, __net_Accept, ( vlc_object_t *, int *, mtime_t ) );
-#define net_Accept(a, b, c) \
-      __net_Accept(VLC_OBJECT(a), b, (c == -1) ? -1 : (c ? check_delay(c) : 0))
+VLC_EXPORT( int, net_Accept, ( vlc_object_t *, int * ) );
+#define net_Accept(a, b) \
+        net_Accept(VLC_OBJECT(a), b)
 
-#define net_ConnectDgram(a, b, c, d, e ) __net_ConnectDgram(VLC_OBJECT(a), b, c, d, e)
-VLC_EXPORT( int, __net_ConnectDgram, ( vlc_object_t *p_this, const char *psz_host, int i_port, int hlim, int proto ) );
+VLC_EXPORT( int, net_ConnectDgram, ( vlc_object_t *p_this, const char *psz_host, int i_port, int hlim, int proto ) );
+#define net_ConnectDgram(a, b, c, d, e ) \
+        net_ConnectDgram(VLC_OBJECT(a), b, c, d, e)
 
 static inline int net_ConnectUDP (vlc_object_t *obj, const char *host, int port, int hlim)
 {
     return net_ConnectDgram (obj, host, port, hlim, IPPROTO_UDP);
 }
 
-#define net_OpenDgram( a, b, c, d, e, g, h ) __net_OpenDgram(VLC_OBJECT(a), b, c, d, e, g, h)
-VLC_EXPORT( int, __net_OpenDgram, ( vlc_object_t *p_this, const char *psz_bind, int i_bind, const char *psz_server, int i_server, int family, int proto ) );
+VLC_EXPORT( int, net_OpenDgram, ( vlc_object_t *p_this, const char *psz_bind, int i_bind, const char *psz_server, int i_server, int family, int proto ) );
+#define net_OpenDgram( a, b, c, d, e, g, h ) \
+        net_OpenDgram(VLC_OBJECT(a), b, c, d, e, g, h)
 
 static inline int net_ListenUDP1 (vlc_object_t *obj, const char *host, int port)
 {
@@ -136,52 +142,22 @@ struct virtual_socket_t
     int (*pf_send) ( void *, const void *, int );
 };
 
-#define net_Read(a,b,c,d,e,f) __net_Read(VLC_OBJECT(a),b,c,d,e,f)
-VLC_EXPORT( ssize_t, __net_Read, ( vlc_object_t *p_this, int fd, const v_socket_t *, void *p_data, size_t i_data, bool b_retry ) );
+VLC_EXPORT( ssize_t, net_Read, ( vlc_object_t *p_this, int fd, const v_socket_t *, void *p_data, size_t i_data, bool b_retry ) );
+#define net_Read(a,b,c,d,e,f) net_Read(VLC_OBJECT(a),b,c,d,e,f)
+VLC_EXPORT( ssize_t, net_Write, ( vlc_object_t *p_this, int fd, const v_socket_t *, const void *p_data, size_t i_data ) );
+#define net_Write(a,b,c,d,e) net_Write(VLC_OBJECT(a),b,c,d,e)
+VLC_EXPORT( char *, net_Gets, ( vlc_object_t *p_this, int fd, const v_socket_t * ) );
+#define net_Gets(a,b,c) net_Gets(VLC_OBJECT(a),b,c)
 
-#define net_Write(a,b,c,d,e) __net_Write(VLC_OBJECT(a),b,c,d,e)
-VLC_EXPORT( ssize_t, __net_Write, ( vlc_object_t *p_this, int fd, const v_socket_t *, const void *p_data, size_t i_data ) );
-
-#define net_Gets(a,b,c) __net_Gets(VLC_OBJECT(a),b,c)
-VLC_EXPORT( char *, __net_Gets, ( vlc_object_t *p_this, int fd, const v_socket_t * ) );
 
 VLC_EXPORT( ssize_t, net_Printf, ( vlc_object_t *p_this, int fd, const v_socket_t *, const char *psz_fmt, ... ) LIBVLC_FORMAT( 4, 5 ) );
-
-#define net_vaPrintf(a,b,c,d,e) __net_vaPrintf(VLC_OBJECT(a),b,c,d,e)
-VLC_EXPORT( ssize_t, __net_vaPrintf, ( vlc_object_t *p_this, int fd, const v_socket_t *, const char *psz_fmt, va_list args ) );
-
-
-/* Don't go to an extra call layer if we have the symbol */
-#ifndef HAVE_INET_PTON
-#define inet_pton vlc_inet_pton
-#endif
-#ifndef HAVE_INET_NTOP
-#define inet_ntop vlc_inet_ntop
-#endif
+#define net_Printf(o,fd,vs,...) net_Printf(VLC_OBJECT(o),fd,vs, __VA_ARGS__)
+VLC_EXPORT( ssize_t, net_vaPrintf, ( vlc_object_t *p_this, int fd, const v_socket_t *, const char *psz_fmt, va_list args ) );
+#define net_vaPrintf(a,b,c,d,e) net_vaPrintf(VLC_OBJECT(a),b,c,d,e)
 
 VLC_EXPORT (int, vlc_inet_pton, (int af, const char *src, void *dst) );
 VLC_EXPORT (const char *, vlc_inet_ntop, (int af, const void *src,
                                           char *dst, socklen_t cnt) );
-
-#ifndef HAVE_POLL
-enum
-{
-    POLLIN=1,
-    POLLOUT=2,
-    POLLPRI=4,
-    POLLERR=8,  // unsupported stub
-    POLLHUP=16, // unsupported stub
-    POLLNVAL=32 // unsupported stub
-};
-
-struct pollfd
-{
-    int fd;
-    int events;
-    int revents;
-};
-# define poll(a, b, c) vlc_poll(a, b, c)
-#endif
 struct pollfd;
 VLC_EXPORT (int, vlc_poll, (struct pollfd *fds, unsigned nfds, int timeout));
 

@@ -2,7 +2,7 @@
  * libmp4.h : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: a4e786d4477c41181182b3ded605f43e2fad5aca $
+ * $Id: 6792a862f4472fd615824e47e5eda2e95cb11050 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -120,6 +120,9 @@
 #define FOURCC_alac VLC_FOURCC( 'a', 'l', 'a', 'c' )
 #define FOURCC_dac3 VLC_FOURCC( 'd', 'a', 'c', '3' )
 #define FOURCC_dec3 VLC_FOURCC( 'd', 'e', 'c', '3' )
+#define FOURCC_enda VLC_FOURCC( 'e', 'n', 'd', 'a' )
+#define FOURCC_gnre VLC_FOURCC( 'g', 'n', 'r', 'e' )
+#define FOURCC_trkn VLC_FOURCC( 't', 'r', 'k', 'n' )
 
 #define FOURCC_zlib VLC_FOURCC( 'z', 'l', 'i', 'b' )
 #define FOURCC_SVQ1 VLC_FOURCC( 'S', 'V', 'Q', '1' )
@@ -872,6 +875,25 @@ typedef struct
 
 } MP4_Box_data_dac3_t;
 
+typedef struct
+{
+    uint16_t i_little_endian;
+
+} MP4_Box_data_enda_t;
+
+typedef struct
+{
+    uint16_t i_genre;
+
+} MP4_Box_data_gnre_t;
+
+typedef struct
+{
+    uint32_t i_track_number;
+    uint32_t i_track_total;
+
+} MP4_Box_data_trkn_t;
+
 /*
 typedef struct MP4_Box_data__s
 {
@@ -898,14 +920,17 @@ typedef union MP4_Box_data_s
     MP4_Box_data_stts_t *p_stts;
     MP4_Box_data_ctts_t *p_ctts;
     MP4_Box_data_stsd_t *p_stsd;
-        MP4_Box_data_sample_vide_t *p_sample_vide;
-        MP4_Box_data_sample_soun_t *p_sample_soun;
-        MP4_Box_data_sample_text_t *p_sample_text;
-        MP4_Box_data_sample_hint_t *p_sample_hint;
+    MP4_Box_data_sample_vide_t *p_sample_vide;
+    MP4_Box_data_sample_soun_t *p_sample_soun;
+    MP4_Box_data_sample_text_t *p_sample_text;
+    MP4_Box_data_sample_hint_t *p_sample_hint;
 
-        MP4_Box_data_esds_t *p_esds;
-        MP4_Box_data_avcC_t *p_avcC;
-        MP4_Box_data_dac3_t *p_dac3;
+    MP4_Box_data_esds_t *p_esds;
+    MP4_Box_data_avcC_t *p_avcC;
+    MP4_Box_data_dac3_t *p_dac3;
+    MP4_Box_data_enda_t *p_enda;
+    MP4_Box_data_gnre_t *p_gnre;
+    MP4_Box_data_trkn_t *p_trkn;
 
     MP4_Box_data_stsz_t *p_stsz;
     MP4_Box_data_stz2_t *p_stz2;

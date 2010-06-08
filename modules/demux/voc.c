@@ -2,7 +2,7 @@
  * voc.c : Creative Voice File (.VOC) demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: 13d86d1b28feb78de8bae83fa220bb5d273703fe $
+ * $Id: 3cf8887d44aa26bc0edd1ba31771d221662054c0 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -196,7 +196,7 @@ static int ReadBlockHeader( demux_t *p_demux )
                 return VLC_EGENERIC;
             }
 
-            new_fmt.i_codec = VLC_FOURCC('u','8',' ',' ');
+            new_fmt.i_codec = VLC_CODEC_U8;
             new_fmt.audio.i_rate = fix_voc_sr( 1000000L / (256L - buf[0]) );
             new_fmt.audio.i_bytes_per_frame = 1;
             new_fmt.audio.i_frame_length = 1;
@@ -221,7 +221,7 @@ static int ReadBlockHeader( demux_t *p_demux )
             i_block_size = 0;
             p_sys->i_silence_countdown = GetWLE( buf );
 
-            new_fmt.i_codec = VLC_FOURCC('u','8',' ',' ');
+            new_fmt.i_codec = VLC_CODEC_U8;
             new_fmt.audio.i_rate = fix_voc_sr( 1000000L / (256L - buf[0]) );
             new_fmt.audio.i_bytes_per_frame = 1;
             new_fmt.audio.i_frame_length = 1;
@@ -272,7 +272,7 @@ static int ReadBlockHeader( demux_t *p_demux )
                 return VLC_EGENERIC;
             }
 
-            new_fmt.i_codec = VLC_FOURCC('u','8',' ',' ');
+            new_fmt.i_codec = VLC_CODEC_U8;
             new_fmt.audio.i_channels = buf[3] + 1; /* can't be nul */
             new_fmt.audio.i_rate = 256000000L /
                           ((65536L - GetWLE(buf)) * new_fmt.audio.i_channels);
@@ -323,11 +323,11 @@ static int ReadBlockHeader( demux_t *p_demux )
                     switch( new_fmt.audio.i_bitspersample )
                     {
                         case 8:
-                            new_fmt.i_codec = VLC_FOURCC('u','8',' ',' ');
+                            new_fmt.i_codec = VLC_CODEC_U8;
                             break;
 
                         case 16:
-                            new_fmt.i_codec = VLC_FOURCC('u','1','6','l');
+                            new_fmt.i_codec = VLC_CODEC_U16L;
                             break;
 
                         default:
@@ -341,11 +341,11 @@ static int ReadBlockHeader( demux_t *p_demux )
                     switch( new_fmt.audio.i_bitspersample )
                     {
                         case 8:
-                            new_fmt.i_codec = VLC_FOURCC('s','8',' ',' ');
+                            new_fmt.i_codec = VLC_CODEC_S8;
                             break;
 
                         case 16:
-                            new_fmt.i_codec = VLC_FOURCC('s','1','6','l');
+                            new_fmt.i_codec = VLC_CODEC_S16L;
                             break;
 
                         default:
@@ -462,12 +462,13 @@ static int Demux( demux_t *p_demux )
         p_sys->i_silence_countdown -= i;
     }
 
-    p_block->i_dts = p_block->i_pts =
-        date_Increment( &p_sys->pts, p_sys->fmt.audio.i_frame_length * i );
+    p_block->i_dts = p_block->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
 
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
 
     es_out_Send( p_demux->out, p_sys->p_es, p_block );
+
+    date_Increment( &p_sys->pts, p_sys->fmt.audio.i_frame_length * i );
 
     return 1;
 }

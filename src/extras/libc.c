@@ -2,7 +2,7 @@
  * libc.c: Extra libc function for some systems.
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: ada9f6e2ed1b717e3009b9e0db50ca55e141d33d $
+ * $Id: 1be7fe81c84a4d3c2490142d4254f6f46e37d852 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Samuel Hocevar <sam@zoy.org>
@@ -31,8 +31,7 @@
 
 #include <vlc_common.h>
 
-#include <ctype.h>
-
+#include <errno.h>
 
 #undef iconv_t
 #undef iconv_open
@@ -49,11 +48,8 @@
 
 #ifdef HAVE_FORK
 #   include <signal.h>
-#   include <sys/time.h>
 #   include <unistd.h>
-#   include <errno.h>
 #   include <sys/wait.h>
-#   include <fcntl.h>
 #   include <sys/socket.h>
 #   include <sys/poll.h>
 #   ifndef PF_LOCAL
@@ -586,14 +582,15 @@ bool vlc_ureduce( unsigned *pi_dst_nom, unsigned *pi_dst_den,
     return b_exact;
 }
 
+#undef vlc_execve
 /*************************************************************************
  * vlc_execve: Execute an external program with a given environment,
  * wait until it finishes and return its standard output
  *************************************************************************/
-int __vlc_execve( vlc_object_t *p_object, int i_argc, char *const *ppsz_argv,
-                  char *const *ppsz_env, const char *psz_cwd,
-                  const char *p_in, size_t i_in,
-                  char **pp_data, size_t *pi_data )
+int vlc_execve( vlc_object_t *p_object, int i_argc, char *const *ppsz_argv,
+                char *const *ppsz_env, const char *psz_cwd,
+                const char *p_in, size_t i_in,
+                char **pp_data, size_t *pi_data )
 {
     (void)i_argc; // <-- hmph
 #ifdef HAVE_FORK
@@ -624,13 +621,11 @@ int __vlc_execve( vlc_object_t *p_object, int i_argc, char *const *ppsz_argv,
             /* NOTE:
              * Like it or not, close can fail (and not only with EBADF)
              */
-            if ((close (0) == 0) && (close (1) == 0) && (close (2) == 0)
-             && (dup (fds[1]) == 0) && (dup (fds[1]) == 1)
-             && (open ("/dev/null", O_RDONLY) == 2)
+            if ((dup2 (fds[1], 0) == 0) && (dup2 (fds[1], 1) == 1)
              && ((psz_cwd == NULL) || (chdir (psz_cwd) == 0)))
                 execve (ppsz_argv[0], ppsz_argv, ppsz_env);
 
-            exit (EXIT_FAILURE);
+            _exit (EXIT_FAILURE);
         }
     }
 
@@ -865,7 +860,7 @@ int __vlc_execve( vlc_object_t *p_object, int i_argc, char *const *ppsz_argv,
               || i_read == 0 )
             break;
         *pi_data += i_read;
-        *pp_data = realloc( *pp_data, *pi_data + 1025 );
+        *pp_data = xrealloc( *pp_data, *pi_data + 1025 );
     }
 
     while ( !p_object->b_die

@@ -3,7 +3,7 @@
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 03678f656a4ff47b3867cc34e4664754b3d881f3 $
+ * $Id: 5b12ff79a67ce4816f72b05e9ea2638a4fa218ae $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -32,36 +32,34 @@
 #include <vlc/vlc.h>
 #include <vlc/libvlc_structures.h>
 #include <vlc/libvlc_media.h>
+#include <vlc_input.h>
 
 struct libvlc_media_player_t
 {
+    VLC_COMMON_MEMBERS
+
     int                i_refcount;
     vlc_mutex_t        object_lock;
-    input_thread_t *   p_input_thread;
+
+    struct
+    {
+        input_thread_t   *p_thread;
+        input_resource_t *p_resource;
+        vlc_mutex_t       lock;
+    } input;
+
     struct libvlc_instance_t * p_libvlc_instance; /* Parent instance */
     libvlc_media_t * p_md; /* current media descriptor */
     libvlc_event_manager_t * p_event_manager;
-    struct
-    {
-        void *hwnd;
-        void *nsobject;
-        uint32_t xid;
-        uint32_t agl;
-    } drawable;
-    bool b_own_its_input_thread;
+    libvlc_state_t state;
 };
 
 /* Media player - audio, video */
-input_thread_t *libvlc_get_input_thread(libvlc_media_player_t *, libvlc_exception_t * );
+input_thread_t *libvlc_get_input_thread(libvlc_media_player_t * );
 
-libvlc_media_player_t * libvlc_media_player_new_from_input_thread(
-                                                                  struct libvlc_instance_t *p_libvlc_instance,
-                                                                  input_thread_t *p_input,
-                                                                  libvlc_exception_t *p_e );
 
 libvlc_track_description_t * libvlc_get_track_description(
         libvlc_media_player_t *p_mi,
-        const char *psz_variable,
-        libvlc_exception_t *p_e );
+        const char *psz_variable );
 
 #endif

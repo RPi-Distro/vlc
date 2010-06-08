@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d42519e1726776e8d460280251e45df242006918 $
+ * $Id: fb05481e0dc62d74c37a19329e17c2006632dfac $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -51,6 +51,9 @@ typedef enum actionType_e
     SKIP_BACK_ACTION,
     SKIP_FW_ACTION,
     QUIT_ACTION,
+    RANDOM_ACTION,
+    LOOP_ACTION,
+    INFO_ACTION,
 } actionType_e;
 
 class ActionsManager : public QObject

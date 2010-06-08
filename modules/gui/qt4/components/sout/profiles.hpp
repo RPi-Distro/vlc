@@ -1,7 +1,7 @@
-/* Increase this value if you add a new profile */
-#define NB_PROFILE 12
+#define NB_PROFILE \
+    (sizeof(video_profile_value_list)/sizeof(video_profile_value_list[0]))
 
-static const char *const video_profile_name_list[] = {
+static const char video_profile_name_list[][32] = {
     "Video - H.264 + AAC (TS)",
     "Video - Dirac + AAC (TS)",
     "Video - Theora + Vorbis (OGG)",
@@ -14,9 +14,10 @@ static const char *const video_profile_name_list[] = {
     "Audio - MP3",
     "Audio - AAC (MP4)",
     "Audio - FLAC",
+    "Audio - CD",
 };
 
-static const char *const video_profile_value_list[] = {
+static const char video_profile_value_list[][48] = {
     /* Container(string), transcode video(bool), transcode audio(bool), */
     /* use subtitles(bool), video codec(string), video bitrate(integer), */
     /* scale(float), fps(float), width(integer, height(integer), */
@@ -34,6 +35,7 @@ static const char *const video_profile_value_list[] = {
     "raw;0;1;0;0;800;1;0;0;0;mp3;128;2;44100;0;0",
     "mp4;0;1;0;0;800;1;0;0;0;mp4a;128;2;44100;0;0",
     "raw;0;1;0;0;800;1;0;0;0;flac;128;2;44100;0;0",
+    "wav;0;1;0;0;800;1;0;0;0;s16l;128;2;44100;0;0",
 };
 
 

@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 3037efa6488421389fcda04deeeb40f183670411 $
+ * $Id: 13e685f22063e95ba416a84490972f2d2597d7cf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -28,6 +28,9 @@
 #define _CUSTOMWIDGETS_H_
 
 #include <QLineEdit>
+#include <QPushButton>
+#include <QLabel>
+#include <QStackedWidget>
 
 /**
   This class provides a QLineEdit which contains a greyed-out hinting
@@ -56,73 +59,66 @@ private:
     bool mDrawClickMsg;
 };
 
-class QToolButton;
-class SearchLineEdit : public QFrame
+class QVLCFramelessButton : public QPushButton
 {
     Q_OBJECT
 public:
-    SearchLineEdit( QWidget *parent );
+    QVLCFramelessButton( QWidget *parent = NULL );
+    QSize sizeHint() const;
+protected:
+    virtual void paintEvent( QPaintEvent * event );
+};
+
+class SearchLineEdit : public QLineEdit
+{
+    Q_OBJECT
+public:
+    SearchLineEdit( QWidget *parent = NULL );
 
 private:
-    ClickLineEdit *searchLine;
-    QToolButton   *clearButton;
+    void resizeEvent ( QResizeEvent * event );
+    void focusInEvent( QFocusEvent *event );
+    void focusOutEvent( QFocusEvent *event );
+    void paintEvent( QPaintEvent *event );
+    void setMessageVisible( bool on );
+    QVLCFramelessButton   *clearButton;
+    bool message;
+    QLabel *msg;
+
+public slots:
+    void clear();
 
 private slots:
     void updateText( const QString& );
-
-signals:
-    void textChanged( const QString& );
 };
 
-/*****************************************************************
- * Custom views
- *****************************************************************/
-#include <QMouseEvent>
-#include <QTreeView>
-#include <QCursor>
-#include <QPoint>
-#include <QModelIndex>
-
-/**
-  Special QTreeView that can emit rightClicked()
-  */
-class QVLCTreeView : public QTreeView
+class QVLCElidingLabel : public QLabel
 {
-    Q_OBJECT;
 public:
-    void mouseReleaseEvent( QMouseEvent* e )
-    {
-        if( e->button() & Qt::RightButton )
-            return; /* Do NOT forward to QTreeView!! */
-        QTreeView::mouseReleaseEvent( e );
-    }
+    QVLCElidingLabel( const QString &s = QString(),
+                      Qt::TextElideMode mode = Qt::ElideRight,
+                      QWidget * parent = NULL );
+    void setElideMode( Qt::TextElideMode );
+private:
+    void paintEvent( QPaintEvent * event );
+    Qt::TextElideMode elideMode;
+};
 
-    void mousePressEvent( QMouseEvent* e )
+class QVLCStackedWidget : public QStackedWidget
+{
+public:
+    QVLCStackedWidget( QWidget *parent ) : QStackedWidget( parent ) { }
+    QSize minimumSizeHint () const
     {
-        if( e->button() & Qt::RightButton )
-        {
-            QModelIndex index = indexAt( QPoint( e->x(), e->y() ) );
-            if( index.isValid() )
-                setSelection( visualRect( index ), QItemSelectionModel::ClearAndSelect );
-            emit rightClicked( index, QCursor::pos() );
-            return;
-        }
-        if( e->button() & Qt::LeftButton )
-        {
-            if( !indexAt( QPoint( e->x(), e->y() ) ).isValid() )
-                clearSelection();
-        }
-        QTreeView::mousePressEvent( e );
+        return currentWidget() ? currentWidget()->minimumSizeHint() : QSize();
     }
-
-signals:
-    void rightClicked( QModelIndex, QPoint  );
 };
 
 /* VLC Key/Wheel hotkeys interactions */
 
 class QKeyEvent;
 class QWheelEvent;
+class QInputEvent;
 
 int qtKeyModifiersToVLC( QInputEvent* e );
 int qtEventToVLCKey( QKeyEvent *e );

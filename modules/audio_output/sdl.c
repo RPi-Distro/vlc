@@ -2,7 +2,7 @@
  * sdl.c : SDL audio output plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: 10d6eb7f7257c894ce639814072625b9a7f82799 $
+ * $Id: 89bbfb1eb0d24dffa666f92b0849c89e5d75b464 $
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -37,7 +37,7 @@
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
 
-#include SDL_INCLUDE_FILE
+#include <SDL.h>
 
 #define FRAME_SIZE 2048
 
@@ -91,10 +91,7 @@ static int Open ( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-#ifndef WIN32
-    /* Win32 SDL implementation doesn't support SDL_INIT_EVENTTHREAD yet */
     i_flags |= SDL_INIT_EVENTTHREAD;
-#endif
 #ifndef NDEBUG
     /* In debug mode you may want vlc to dump a core instead of staying
      * stuck */
@@ -108,11 +105,9 @@ static int Open ( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if ( var_Type( p_aout, "audio-device" ) != 0 )
+    if( var_Get( p_aout, "audio-device", &val ) != VLC_ENOVAR )
     {
         /* The user has selected an audio device. */
-        vlc_value_t val;
-        var_Get( p_aout, "audio-device", &val );
         if ( val.i_int == AOUT_VAR_STEREO )
         {
             p_aout->output.output.i_physical_channels
@@ -151,17 +146,17 @@ static int Open ( vlc_object_t *p_this )
     switch ( obtained.format )
     {
     case AUDIO_S16LSB:
-        p_aout->output.output.i_format = VLC_FOURCC('s','1','6','l'); break;
+        p_aout->output.output.i_format = VLC_CODEC_S16L; break;
     case AUDIO_S16MSB:
-        p_aout->output.output.i_format = VLC_FOURCC('s','1','6','b'); break;
+        p_aout->output.output.i_format = VLC_CODEC_S16B; break;
     case AUDIO_U16LSB:
-        p_aout->output.output.i_format = VLC_FOURCC('u','1','6','l'); break;
+        p_aout->output.output.i_format = VLC_CODEC_U16L; break;
     case AUDIO_U16MSB:
-        p_aout->output.output.i_format = VLC_FOURCC('u','1','6','b'); break;
+        p_aout->output.output.i_format = VLC_CODEC_U16B; break;
     case AUDIO_S8:
-        p_aout->output.output.i_format = VLC_FOURCC('s','8',' ',' '); break;
+        p_aout->output.output.i_format = VLC_CODEC_S8; break;
     case AUDIO_U8:
-        p_aout->output.output.i_format = VLC_FOURCC('u','8',' ',' '); break;
+        p_aout->output.output.i_format = VLC_CODEC_U8; break;
     }
     /* Volume is entirely done in software. */
     aout_VolumeSoftInit( p_aout );

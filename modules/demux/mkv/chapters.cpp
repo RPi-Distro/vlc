@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: eb359baf78b4f67a1ce476edfaf09785c598396a $
+ * $Id: f92143315f597dea8607fe2c18ba5dc90900bed4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -62,7 +62,8 @@ int chapter_item_c::PublishChapters( input_title_t & title, int & i_user_chapter
 
         // A start time of '0' is ok. A missing ChapterTime element is ok, too, because '0' is its default value.
         title.i_seekpoint++;
-        title.seekpoint = (seekpoint_t**)realloc( title.seekpoint, title.i_seekpoint * sizeof( seekpoint_t* ) );
+        title.seekpoint = (seekpoint_t**)xrealloc( title.seekpoint,
+                                 title.i_seekpoint * sizeof( seekpoint_t* ) );
         title.seekpoint[title.i_seekpoint-1] = sk;
 
         if ( b_user_display )

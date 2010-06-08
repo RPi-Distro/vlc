@@ -1,9 +1,9 @@
 /*****************************************************************************
  * video.c: libvlc new API video functions
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
+ * Copyright (C) 2005-2010 the VideoLAN team
  *
- * $Id: 7a45d688a28d65d470d5cd4c2565626485c86ac8 $
+ * $Id: 171a3b56938d3a57b28be6ec6dc423808eb84a8e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -25,6 +25,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <vlc/libvlc.h>
 #include <vlc/libvlc_media.h>
 #include <vlc/libvlc_media_player.h>
@@ -34,26 +38,47 @@
 #include <vlc_vout.h>
 
 #include "media_player_internal.h"
-#include "libvlc_internal.h"
+#include <vlc_osd.h>
+#include <assert.h>
 
 /*
  * Remember to release the returned vout_thread_t.
  */
-static vout_thread_t *GetVout( libvlc_media_player_t *p_mi,
-                               libvlc_exception_t *p_exception )
+static vout_thread_t **GetVouts( libvlc_media_player_t *p_mi, size_t *n )
 {
-    input_thread_t *p_input = libvlc_get_input_thread( p_mi, p_exception );
-    vout_thread_t *p_vout = NULL;
+    input_thread_t *p_input = libvlc_get_input_thread( p_mi );
+    if( !p_input )
+        return NULL;
 
-    if( p_input )
+    vout_thread_t **pp_vouts;
+    if (input_Control( p_input, INPUT_GET_VOUTS, &pp_vouts, n))
     {
-        p_vout = input_GetVout( p_input );
-        if( !p_vout )
-        {
-            libvlc_exception_raise( p_exception, "No active video output" );
-        }
-        vlc_object_release( p_input );
+        *n = 0;
+        pp_vouts = NULL;
     }
+    vlc_object_release (p_input);
+    return pp_vouts;
+}
+
+static vout_thread_t *GetVout (libvlc_media_player_t *mp, size_t num)
+{
+    vout_thread_t *p_vout = NULL;
+    size_t n;
+    vout_thread_t **pp_vouts = GetVouts (mp, &n);
+    if (pp_vouts == NULL)
+        goto err;
+
+    if (num < n)
+        p_vout = pp_vouts[num];
+
+    for (size_t i = 0; i < n; i++)
+        if (i != num)
+            vlc_object_release (pp_vouts[i]);
+    free (pp_vouts);
+
+    if (p_vout == NULL)
+err:
+        libvlc_printerr ("Video output not active");
     return p_vout;
 }
 
@@ -61,362 +86,203 @@ static vout_thread_t *GetVout( libvlc_media_player_t *p_mi,
  * Exported functions
  **********************************************************************/
 
-void libvlc_set_fullscreen( libvlc_media_player_t *p_mi, int b_fullscreen,
-                            libvlc_exception_t *p_e )
+void libvlc_set_fullscreen( libvlc_media_player_t *p_mi, int b_fullscreen )
 {
-    /* We only work on the first vout */
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
+    /* This will work even if the video is not currently active */
+    var_SetBool (p_mi, "fullscreen", !!b_fullscreen);
 
-    /* GetVout will raise the exception for us */
-    if( !p_vout ) return;
-
-    var_SetBool( p_vout, "fullscreen", b_fullscreen );
-
-    vlc_object_release( p_vout );
-}
-
-int libvlc_get_fullscreen( libvlc_media_player_t *p_mi,
-                            libvlc_exception_t *p_e )
-{
-    /* We only work on the first vout */
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    int i_ret;
-
-    /* GetVout will raise the exception for us */
-    if( !p_vout ) return 0;
-
-    i_ret = var_GetBool( p_vout, "fullscreen" );
-
-    vlc_object_release( p_vout );
-
-    return i_ret;
-}
-
-void libvlc_toggle_fullscreen( libvlc_media_player_t *p_mi,
-                               libvlc_exception_t *p_e )
-{
-    /* We only work on the first vout */
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    bool ret;
-
-    /* GetVout will raise the exception for us */
-    if( !p_vout ) return;
-
-    ret = var_GetBool( p_vout, "fullscreen" );
-    var_SetBool( p_vout, "fullscreen", !ret );
-
-    vlc_object_release( p_vout );
-}
-
-void
-libvlc_video_take_snapshot( libvlc_media_player_t *p_mi, const char *psz_filepath,
-        unsigned int i_width, unsigned int i_height, libvlc_exception_t *p_e )
-{
-    vout_thread_t *p_vout;
-
-    /* The filepath must be not NULL */
-    if( !psz_filepath )
+    /* Apply to current video outputs (if any) */
+    size_t n;
+    vout_thread_t **pp_vouts = GetVouts (p_mi, &n);
+    for (size_t i = 0; i < n; i++)
     {
-        libvlc_exception_raise( p_e, "filepath is null" );
-        return;
+        var_SetBool (pp_vouts[i], "fullscreen", b_fullscreen);
+        vlc_object_release (pp_vouts[i]);
     }
-    /* We must have an input */
-    if( !p_mi->p_input_thread )
+    free (pp_vouts);
+}
+
+int libvlc_get_fullscreen( libvlc_media_player_t *p_mi )
+{
+    return var_GetBool (p_mi, "fullscreen");
+}
+
+void libvlc_toggle_fullscreen( libvlc_media_player_t *p_mi )
+{
+    bool b_fullscreen = var_ToggleBool (p_mi, "fullscreen");
+
+    /* Apply to current video outputs (if any) */
+    size_t n;
+    vout_thread_t **pp_vouts = GetVouts (p_mi, &n);
+    for (size_t i = 0; i < n; i++)
     {
-        libvlc_exception_raise( p_e, "Input does not exist" );
-        return;
+        vout_thread_t *p_vout = pp_vouts[i];
+
+        var_SetBool (p_vout, "fullscreen", b_fullscreen);
+        vlc_object_release (p_vout);
     }
+    free (pp_vouts);
+}
 
-    /* GetVout will raise the exception for us */
-    p_vout = GetVout( p_mi, p_e );
-    if( !p_vout ) return;
+void libvlc_video_set_key_input( libvlc_media_player_t *p_mi, unsigned on )
+{
+    var_SetBool (p_mi, "keyboard-events", !!on);
+}
 
-    var_SetInteger( p_vout, "snapshot-width", i_width );
+void libvlc_video_set_mouse_input( libvlc_media_player_t *p_mi, unsigned on )
+{
+    var_SetBool (p_mi, "mouse-events", !!on);
+}
+
+int
+libvlc_video_take_snapshot( libvlc_media_player_t *p_mi, unsigned num,
+                            const char *psz_filepath,
+                            unsigned int i_width, unsigned int i_height )
+{
+    assert( psz_filepath );
+
+    vout_thread_t *p_vout = GetVout (p_mi, num);
+    if (p_vout == NULL)
+        return -1;
+
+    /* FIXME: This is not atomic. Someone else could change the values,
+     * at least in theory. */
+    var_SetInteger( p_vout, "snapshot-width", i_width);
     var_SetInteger( p_vout, "snapshot-height", i_height );
-
     var_SetString( p_vout, "snapshot-path", psz_filepath );
     var_SetString( p_vout, "snapshot-format", "png" );
-
-    var_TriggerCallback( p_vout, "video-snapshot" );
-    vlc_object_release( p_vout );
+    var_TriggerCallback (p_vout, "video-snapshot" );
+    return 0;
 }
 
-int libvlc_video_get_height( libvlc_media_player_t *p_mi,
-                             libvlc_exception_t *p_e )
+int libvlc_video_get_size( libvlc_media_player_t *p_mi, unsigned num,
+                           unsigned *restrict px, unsigned *restrict py )
 {
-    int height;
+    vout_thread_t *p_vout = GetVout (p_mi, num);
+    if (p_vout == NULL)
+        return -1;
 
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    if( !p_vout ) return 0;
+#warning Not thread-safe!
+    *px = p_vout->i_window_width;
+    *py = p_vout->i_window_height;
+    vlc_object_release (p_vout);
+    return 0;
+}
 
-    height = p_vout->i_window_height;
+int libvlc_video_get_height( libvlc_media_player_t *p_mi )
+{
+    unsigned height, width;
 
-    vlc_object_release( p_vout );
-
+    if (libvlc_video_get_size (p_mi, 0, &height, &width))
+        return 0;
     return height;
 }
 
-int libvlc_video_get_width( libvlc_media_player_t *p_mi,
-                            libvlc_exception_t *p_e )
+int libvlc_video_get_width( libvlc_media_player_t *p_mi )
 {
-    int width;
+    unsigned height, width;
 
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    if( !p_vout ) return 0;
-
-    width = p_vout->i_window_width;
-
-    vlc_object_release( p_vout );
-
+    if (libvlc_video_get_size (p_mi, 0, &height, &width))
+        return 0;
     return width;
 }
 
-int libvlc_media_player_has_vout( libvlc_media_player_t *p_mi,
-                                     libvlc_exception_t *p_e )
+int libvlc_video_get_cursor( libvlc_media_player_t *mp, unsigned num,
+                             int *restrict px, int *restrict py )
 {
-    input_thread_t *p_input_thread = libvlc_get_input_thread(p_mi, p_e);
-    bool has_vout = false;
+    vout_thread_t *p_vout = GetVout (mp, num);
+    if (p_vout == NULL)
+        return -1;
 
-    if( p_input_thread )
-    {
-        vout_thread_t *p_vout;
-
-        p_vout = input_GetVout( p_input_thread );
-        if( p_vout )
-        {
-            has_vout = true;
-            vlc_object_release( p_vout );
-        }
-        vlc_object_release( p_input_thread );
-    }
-    return has_vout;
+    var_GetCoords (p_vout, "mouse-moved", px, py);
+    vlc_object_release (p_vout);
+    return 0;
 }
 
-int libvlc_video_reparent( libvlc_media_player_t *p_mi, libvlc_drawable_t d,
-                           libvlc_exception_t *p_e )
+unsigned libvlc_media_player_has_vout( libvlc_media_player_t *p_mi )
 {
-    (void) p_mi; (void) d;
-    libvlc_exception_raise(p_e, "Reparenting not supported");
-    return -1;
+    size_t n;
+    vout_thread_t **pp_vouts = GetVouts (p_mi, &n);
+    for (size_t i = 0; i < n; i++)
+        vlc_object_release (pp_vouts[i]);
+    free (pp_vouts);
+    return n;
 }
 
-void libvlc_video_resize( libvlc_media_player_t *p_mi, int width, int height, libvlc_exception_t *p_e )
+float libvlc_video_get_scale( libvlc_media_player_t *mp )
 {
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    if( p_vout )
-    {
-        vout_Control( p_vout, VOUT_SET_SIZE, width, height );
-        vlc_object_release( p_vout );
-    }
-}
-
-void libvlc_video_redraw_rectangle( libvlc_media_player_t *p_mi,
-                           const libvlc_rectangle_t *area,
-                           libvlc_exception_t *p_e )
-{
-#ifdef __APPLE__
-    if( (NULL != area)
-     && ((area->bottom - area->top) > 0)
-     && ((area->right - area->left) > 0) )
-    {
-        vout_thread_t *p_vout = GetVout( p_mi, p_e );
-        if( p_vout )
-        {
-            /* tell running vout to redraw area */
-            vout_Control( p_vout , VOUT_REDRAW_RECT,
-                               area->top, area->left, area->bottom, area->right );
-            vlc_object_release( p_vout );
-        }
-    }
-#else
-    (void) p_mi; (void) area; (void) p_e;
-#endif
-}
-
-/* global video settings */
-
-/* Deprecated use libvlc_media_player_set_drawable() */
-void libvlc_video_set_parent( libvlc_instance_t *p_instance, libvlc_drawable_t d,
-                              libvlc_exception_t *p_e )
-{
-    /* set as default for future vout instances */
-#ifdef WIN32
-    vlc_value_t val;
-
-    if( sizeof(HWND) > sizeof(libvlc_drawable_t) )
-        return; /* BOOM! we told you not to use this function! */
-    val.p_address = (void *)(uintptr_t)d;
-    var_Set( p_instance->p_libvlc_int, "drawable-hwnd", val );
-#elif defined(__APPLE__)
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-agl", d );
-#else
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-xid", d );
-#endif
-
-    libvlc_media_player_t *p_mi = libvlc_playlist_get_media_player(p_instance, p_e);
-    if( p_mi )
-    {
-        libvlc_media_player_set_drawable( p_mi, d, p_e );
-        libvlc_media_player_release(p_mi);
-    }
-}
-
-/* Deprecated use libvlc_media_player_get_drawable() */
-libvlc_drawable_t libvlc_video_get_parent( libvlc_instance_t *p_instance, libvlc_exception_t *p_e )
-{
-    VLC_UNUSED(p_e);
-
-#ifdef WIN32
-    vlc_value_t val;
-
-    if( sizeof(HWND) > sizeof(libvlc_drawable_t) )
-        return 0;
-    var_Get( p_instance->p_libvlc_int, "drawable-hwnd", &val );
-    return (uintptr_t)val.p_address;
-#elif defined(__APPLE__)
-    return var_GetInteger( p_instance->p_libvlc_int, "drawable-agl" );
-#else
-    return var_GetInteger( p_instance->p_libvlc_int, "drawable-xid" );
-#endif
-}
-
-void libvlc_video_set_size( libvlc_instance_t *p_instance, int width, int height,
-                           libvlc_exception_t *p_e )
-{
-    /* set as default for future vout instances */
-    config_PutInt(p_instance->p_libvlc_int, "width", width);
-    config_PutInt(p_instance->p_libvlc_int, "height", height);
-
-    libvlc_media_player_t *p_mi = libvlc_playlist_get_media_player(p_instance, p_e);
-    if( p_mi )
-    {
-        vout_thread_t *p_vout = GetVout( p_mi, p_e );
-        if( p_vout )
-        {
-            /* tell running vout to re-size */
-            vout_Control( p_vout , VOUT_SET_SIZE, width, height);
-            vlc_object_release( p_vout );
-        }
-        libvlc_media_player_release(p_mi);
-    }
-}
-
-void libvlc_video_set_viewport( libvlc_instance_t *p_instance, libvlc_media_player_t *p_mi,
-                            const libvlc_rectangle_t *view, const libvlc_rectangle_t *clip,
-                           libvlc_exception_t *p_e )
-{
-#ifdef __APPLE__
-    if( !view )
-    {
-        libvlc_exception_raise( p_e, "viewport is NULL" );
-        return;
-    }
-
-    /* if clip is NULL, then use view rectangle as clip */
-    if( !clip )
-        clip = view;
-
-    /* set as default for future vout instances */
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-view-top", view->top );
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-view-left", view->left );
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-view-bottom", view->bottom );
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-view-right", view->right );
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-clip-top", clip->top );
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-clip-left", clip->left );
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-clip-bottom", clip->bottom );
-    var_SetInteger( p_instance->p_libvlc_int, "drawable-clip-right", clip->right );
-
-    if( p_mi )
-    {
-        vout_thread_t *p_vout = GetVout( p_mi, p_e );
-        if( p_vout )
-        {
-            /* change viewport for running vout */
-            vout_Control( p_vout, VOUT_SET_VIEWPORT,
-                               view->top, view->left, view->bottom, view->right,
-                               clip->top, clip->left, clip->bottom, clip->right );
-            vlc_object_release( p_vout );
-        }
-    }
-#else
-    (void) p_instance; (void) p_mi; (void) view; (void) clip; (void) p_e;
-#endif
-}
-
-float libvlc_video_get_scale( libvlc_media_player_t *p_mp,
-                              libvlc_exception_t *p_e )
-{
-    vout_thread_t *p_vout = GetVout( p_mp, p_e );
-    if( !p_vout )
-        return 0.;
-
-    float f_scale = var_GetFloat( p_vout, "scale" );
-    if( var_GetBool( p_vout, "autoscale" ) )
+    float f_scale = var_GetFloat (mp, "scale");
+    if (var_GetBool (mp, "autoscale"))
         f_scale = 0.;
-    vlc_object_release( p_vout );
     return f_scale;
 }
 
-void libvlc_video_set_scale( libvlc_media_player_t *p_mp, float f_scale,
-                             libvlc_exception_t *p_e )
+void libvlc_video_set_scale( libvlc_media_player_t *p_mp, float f_scale )
 {
-    vout_thread_t *p_vout = GetVout( p_mp, p_e );
-    if( !p_vout )
-        return;
+    if (f_scale != 0.)
+        var_SetFloat (p_mp, "scale", f_scale);
+    var_SetBool (p_mp, "autoscale", f_scale != 0.);
 
-    if( f_scale != 0. )
-        var_SetFloat( p_vout, "scale", f_scale );
-    var_SetBool( p_vout, "autoscale", f_scale != 0. );
-    vlc_object_release( p_vout );
+    /* Apply to current video outputs (if any) */
+    size_t n;
+    vout_thread_t **pp_vouts = GetVouts (p_mp, &n);
+    for (size_t i = 0; i < n; i++)
+    {
+        vout_thread_t *p_vout = pp_vouts[i];
+
+        if (f_scale != 0.)
+            var_SetFloat (p_vout, "scale", f_scale);
+        var_SetBool (p_mp, "autoscale", f_scale != 0.);
+        vlc_object_release (p_vout);
+    }
+    free (pp_vouts);
 }
 
-char *libvlc_video_get_aspect_ratio( libvlc_media_player_t *p_mi,
-                                     libvlc_exception_t *p_e )
+char *libvlc_video_get_aspect_ratio( libvlc_media_player_t *p_mi )
 {
-    char *psz_aspect = 0;
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-
-    if( !p_vout ) return 0;
-
-    psz_aspect = var_GetNonEmptyString( p_vout, "aspect-ratio" );
-    vlc_object_release( p_vout );
-    return psz_aspect ? psz_aspect : strdup("");
+    return var_GetNonEmptyString (p_mi, "aspect-ratio");
 }
 
 void libvlc_video_set_aspect_ratio( libvlc_media_player_t *p_mi,
-                                    char *psz_aspect, libvlc_exception_t *p_e )
+                                    const char *psz_aspect )
 {
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    int i_ret = -1;
+    if (psz_aspect == NULL)
+        psz_aspect = "";
+    var_SetString (p_mi, "aspect-ratio", psz_aspect);
 
-    if( !p_vout ) return;
+    size_t n;
+    vout_thread_t **pp_vouts = GetVouts (p_mi, &n);
+    for (size_t i = 0; i < n; i++)
+    {
+        vout_thread_t *p_vout = pp_vouts[i];
 
-    i_ret = var_SetString( p_vout, "aspect-ratio", psz_aspect );
-    if( i_ret )
-        libvlc_exception_raise( p_e,
-                        "Unexpected error while setting aspect-ratio value" );
-
-    vlc_object_release( p_vout );
+        var_SetString (p_vout, "aspect-ratio", psz_aspect);
+        vlc_object_release (p_vout);
+    }
+    free (pp_vouts);
 }
 
-int libvlc_video_get_spu( libvlc_media_player_t *p_mi,
-                          libvlc_exception_t *p_e )
+int libvlc_video_get_spu( libvlc_media_player_t *p_mi )
 {
-    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi, p_e );
+    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
     vlc_value_t val_list;
     vlc_value_t val;
     int i_spu = -1;
     int i_ret = -1;
     int i;
 
-    if( !p_input_thread ) return -1;
+    if( !p_input_thread )
+    {
+        libvlc_printerr( "No active input" );
+        return -1;
+    }
 
     i_ret = var_Get( p_input_thread, "spu-es", &val );
     if( i_ret < 0 )
     {
-        libvlc_exception_raise( p_e, "Getting subtitle information failed" );
         vlc_object_release( p_input_thread );
-        return i_ret;
+        libvlc_printerr( "Subtitle informations not found" );
+        return -1;
     }
 
     var_Change( p_input_thread, "spu-es", VLC_VAR_GETCHOICES, &val_list, NULL );
@@ -428,77 +294,60 @@ int libvlc_video_get_spu( libvlc_media_player_t *p_mi,
             break;
         }
     }
-    var_Change( p_input_thread, "spu-es", VLC_VAR_FREELIST, &val_list, NULL );
+    var_FreeList( &val_list, NULL );
     vlc_object_release( p_input_thread );
     return i_spu;
 }
 
-int libvlc_video_get_spu_count( libvlc_media_player_t *p_mi,
-                                libvlc_exception_t *p_e )
+int libvlc_video_get_spu_count( libvlc_media_player_t *p_mi )
 {
-    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi, p_e );
-    vlc_value_t val_list;
+    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
     int i_spu_count;
 
     if( !p_input_thread )
-        return -1;
+        return 0;
 
-    var_Change( p_input_thread, "spu-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    i_spu_count = val_list.p_list->i_count;
-    var_Change( p_input_thread, "spu-es", VLC_VAR_FREELIST, &val_list, NULL );
-
+    i_spu_count = var_CountChoices( p_input_thread, "spu-es" );
     vlc_object_release( p_input_thread );
     return i_spu_count;
 }
 
 libvlc_track_description_t *
-        libvlc_video_get_spu_description( libvlc_media_player_t *p_mi,
-                                          libvlc_exception_t *p_e )
+        libvlc_video_get_spu_description( libvlc_media_player_t *p_mi )
 {
-    return libvlc_get_track_description( p_mi, "spu-es", p_e);
+    return libvlc_get_track_description( p_mi, "spu-es" );
 }
 
-void libvlc_video_set_spu( libvlc_media_player_t *p_mi, int i_spu,
-                           libvlc_exception_t *p_e )
+int libvlc_video_set_spu( libvlc_media_player_t *p_mi, unsigned i_spu )
 {
-    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi, p_e );
-    vlc_value_t val_list;
-    vlc_value_t newval;
-    int i_ret = -1;
+    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
+    vlc_value_t list;
+    int i_ret = 0;
 
-    if( !p_input_thread ) return;
+    if( !p_input_thread )
+        return -1;
 
-    var_Change( p_input_thread, "spu-es", VLC_VAR_GETCHOICES, &val_list, NULL );
+    var_Change (p_input_thread, "spu-es", VLC_VAR_GETCHOICES, &list, NULL);
 
-    if( val_list.p_list->i_count == 0 )
+    if (i_spu > (unsigned)list.p_list->i_count)
     {
-        libvlc_exception_raise( p_e, "Subtitle value out of range" );
+        libvlc_printerr( "Subtitle number out of range (%u/%u)",
+                         i_spu, list.p_list->i_count );
+        i_ret = -1;
         goto end;
     }
-
-    if( (i_spu < 0) || (i_spu > val_list.p_list->i_count) )
-    {
-        libvlc_exception_raise( p_e, "Subtitle value out of range" );
-        goto end;
-    }
-
-    newval = val_list.p_list->p_values[i_spu];
-    i_ret = var_Set( p_input_thread, "spu-es", newval );
-    if( i_ret < 0 )
-    {
-        libvlc_exception_raise( p_e, "Setting subtitle value failed" );
-    }
-
+    var_SetInteger (p_input_thread, "spu-es",
+                    list.p_list->p_values[i_spu].i_int);
 end:
-    var_Change( p_input_thread, "spu-es", VLC_VAR_FREELIST, &val_list, NULL );
-    vlc_object_release( p_input_thread );
+    vlc_object_release (p_input_thread);
+    var_FreeList (&list, NULL);
+    return i_ret;
 }
 
 int libvlc_video_set_subtitle_file( libvlc_media_player_t *p_mi,
-                                    char *psz_subtitle,
-                                    libvlc_exception_t *p_e )
+                                    const char *psz_subtitle )
 {
-    input_thread_t *p_input_thread = libvlc_get_input_thread ( p_mi, p_e );
+    input_thread_t *p_input_thread = libvlc_get_input_thread ( p_mi );
     bool b_ret = false;
 
     if( p_input_thread )
@@ -511,102 +360,83 @@ int libvlc_video_set_subtitle_file( libvlc_media_player_t *p_mi,
 }
 
 libvlc_track_description_t *
-        libvlc_video_get_title_description( libvlc_media_player_t *p_mi,
-                                            libvlc_exception_t * p_e )
+        libvlc_video_get_title_description( libvlc_media_player_t *p_mi )
 {
-    return libvlc_get_track_description( p_mi, "title", p_e);
+    return libvlc_get_track_description( p_mi, "title" );
 }
 
 libvlc_track_description_t *
         libvlc_video_get_chapter_description( libvlc_media_player_t *p_mi,
-                                              int i_title,
-                                              libvlc_exception_t *p_e )
+                                              int i_title )
 {
     char psz_title[12];
     sprintf( psz_title,  "title %2i", i_title );
-    return libvlc_get_track_description( p_mi, psz_title, p_e);
+    return libvlc_get_track_description( p_mi, psz_title );
 }
 
-char *libvlc_video_get_crop_geometry( libvlc_media_player_t *p_mi,
-                                   libvlc_exception_t *p_e )
+char *libvlc_video_get_crop_geometry (libvlc_media_player_t *p_mi)
 {
-    char *psz_geometry = 0;
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-
-    if( !p_vout ) return 0;
-
-    psz_geometry = var_GetNonEmptyString( p_vout, "crop" );
-    vlc_object_release( p_vout );
-    return psz_geometry ? psz_geometry : strdup("");
+    return var_GetNonEmptyString (p_mi, "crop");
 }
 
 void libvlc_video_set_crop_geometry( libvlc_media_player_t *p_mi,
-                                    char *psz_geometry, libvlc_exception_t *p_e )
+                                     const char *psz_geometry )
 {
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    int i_ret = -1;
+    if (psz_geometry == NULL)
+        psz_geometry = "";
 
-    if( !p_vout ) return;
+    var_SetString (p_mi, "crop", psz_geometry);
 
-    i_ret = var_SetString( p_vout, "crop", psz_geometry );
-    if( i_ret )
-        libvlc_exception_raise( p_e,
-                        "Unexpected error while setting crop geometry" );
+    size_t n;
+    vout_thread_t **pp_vouts = GetVouts (p_mi, &n);
 
-    vlc_object_release( p_vout );
-}
-
-int libvlc_video_get_teletext( libvlc_media_player_t *p_mi,
-                               libvlc_exception_t *p_e )
-{
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    vlc_object_t *p_vbi;
-    int i_ret = -1;
-
-    if( !p_vout ) return i_ret;
-
-    p_vbi = (vlc_object_t *) vlc_object_find_name( p_vout, "zvbi",
-                                                   FIND_CHILD );
-    if( p_vbi )
+    for (size_t i = 0; i < n; i++)
     {
-        i_ret = var_GetInteger( p_vbi, "vbi-page" );
-        vlc_object_release( p_vbi );
-    }
+        vout_thread_t *p_vout = pp_vouts[i];
 
-    vlc_object_release( p_vout );
-    return i_ret;
+        var_SetString (p_vout, "crop", psz_geometry);
+        vlc_object_release (p_vout);
+    }
+    free (pp_vouts);
 }
 
-void libvlc_video_set_teletext( libvlc_media_player_t *p_mi, int i_page,
-                                libvlc_exception_t *p_e )
+int libvlc_video_get_teletext( libvlc_media_player_t *p_mi )
 {
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    vlc_object_t *p_vbi;
-    int i_ret = -1;
-
-    if( !p_vout ) return;
-
-    p_vbi = (vlc_object_t *) vlc_object_find_name( p_vout, "zvbi",
-                                                   FIND_CHILD );
-    if( p_vbi )
-    {
-        i_ret = var_SetInteger( p_vbi, "vbi-page", i_page );
-        vlc_object_release( p_vbi );
-        if( i_ret )
-            libvlc_exception_raise( p_e,
-                            "Unexpected error while setting teletext page" );
-    }
-    vlc_object_release( p_vout );
+    return var_GetInteger (p_mi, "vbi-page");
 }
 
-void libvlc_toggle_teletext( libvlc_media_player_t *p_mi,
-                             libvlc_exception_t *p_e )
+void libvlc_video_set_teletext( libvlc_media_player_t *p_mi, int i_page )
 {
     input_thread_t *p_input_thread;
-    vlc_object_t *p_vbi;
-    int i_ret;
+    vlc_object_t *p_zvbi = NULL;
+    int telx;
 
-    p_input_thread = libvlc_get_input_thread(p_mi, p_e);
+    var_SetInteger (p_mi, "vbi-page", i_page);
+
+    p_input_thread = libvlc_get_input_thread( p_mi );
+    if( !p_input_thread ) return;
+
+    if( var_CountChoices( p_input_thread, "teletext-es" ) <= 0 )
+    {
+        vlc_object_release( p_input_thread );
+        return;
+    }
+
+    telx = var_GetInteger( p_input_thread, "teletext-es" );
+    if( input_GetEsObjects( p_input_thread, telx, &p_zvbi, NULL, NULL )
+        == VLC_SUCCESS )
+    {
+        var_SetInteger( p_zvbi, "vbi-page", i_page );
+        vlc_object_release( p_zvbi );
+    }
+    vlc_object_release( p_input_thread );
+}
+
+void libvlc_toggle_teletext( libvlc_media_player_t *p_mi )
+{
+    input_thread_t *p_input_thread;
+
+    p_input_thread = libvlc_get_input_thread(p_mi);
     if( !p_input_thread ) return;
 
     if( var_CountChoices( p_input_thread, "teletext-es" ) <= 0 )
@@ -615,32 +445,7 @@ void libvlc_toggle_teletext( libvlc_media_player_t *p_mi,
         return;
     }
     const bool b_selected = var_GetInteger( p_input_thread, "teletext-es" ) >= 0;
-
-    p_vbi = (vlc_object_t *)vlc_object_find_name( p_input_thread, "zvbi",
-                                                  FIND_CHILD );
-    if( p_vbi )
-    {
-        if( b_selected )
-        {
-            /* FIXME Gni, why that ? */
-            i_ret = var_SetInteger( p_vbi, "vbi-page",
-                                    var_GetInteger( p_vbi, "vbi-page" ) );
-            if( i_ret )
-                libvlc_exception_raise( p_e,
-                                "Unexpected error while setting teletext page" );
-        }
-        else
-        {
-            /* FIXME Gni^2 */
-            i_ret = var_SetBool( p_vbi, "vbi-opaque",
-                                 !var_GetBool( p_vbi, "vbi-opaque" ) );
-            if( i_ret )
-                libvlc_exception_raise( p_e,
-                                "Unexpected error while setting teletext transparency" );
-        }
-        vlc_object_release( p_vbi );
-    }
-    else if( b_selected )
+    if( b_selected )
     {
         var_SetInteger( p_input_thread, "spu-es", -1 );
     }
@@ -652,60 +457,51 @@ void libvlc_toggle_teletext( libvlc_media_player_t *p_mi,
             if( list.p_list->i_count > 0 )
                 var_SetInteger( p_input_thread, "spu-es", list.p_list->p_values[0].i_int );
 
-            var_Change( p_input_thread, "teletext-es", VLC_VAR_FREELIST, &list, NULL );
+            var_FreeList( &list, NULL );
         }
     }
     vlc_object_release( p_input_thread );
 }
 
-int libvlc_video_get_track_count( libvlc_media_player_t *p_mi,
-                                  libvlc_exception_t *p_e )
+int libvlc_video_get_track_count( libvlc_media_player_t *p_mi )
 {
-    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi, p_e );
-    vlc_value_t val_list;
+    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
     int i_track_count;
 
     if( !p_input_thread )
         return -1;
 
-    var_Change( p_input_thread, "video-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    i_track_count = val_list.p_list->i_count;
-    var_Change( p_input_thread, "video-es", VLC_VAR_FREELIST, &val_list, NULL );
+    i_track_count = var_CountChoices( p_input_thread, "video-es" );
 
     vlc_object_release( p_input_thread );
     return i_track_count;
 }
 
 libvlc_track_description_t *
-        libvlc_video_get_track_description( libvlc_media_player_t *p_mi,
-                                            libvlc_exception_t *p_e )
+        libvlc_video_get_track_description( libvlc_media_player_t *p_mi )
 {
-    return libvlc_get_track_description( p_mi, "video-es", p_e);
+    return libvlc_get_track_description( p_mi, "video-es" );
 }
 
-int libvlc_video_get_track( libvlc_media_player_t *p_mi,
-                            libvlc_exception_t *p_e )
+int libvlc_video_get_track( libvlc_media_player_t *p_mi )
 {
-    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi, p_e );
+    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
     vlc_value_t val_list;
     vlc_value_t val;
     int i_track = -1;
-    int i_ret = -1;
-    int i;
 
     if( !p_input_thread )
         return -1;
 
-    i_ret = var_Get( p_input_thread, "video-es", &val );
-    if( i_ret < 0 )
+    if( var_Get( p_input_thread, "video-es", &val ) < 0 )
     {
-        libvlc_exception_raise( p_e, "Getting Video track information failed" );
+        libvlc_printerr( "Video track information not found" );
         vlc_object_release( p_input_thread );
-        return i_ret;
+        return -1;
     }
 
     var_Change( p_input_thread, "video-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    for( i = 0; i < val_list.p_list->i_count; i++ )
+    for( int i = 0; i < val_list.p_list->i_count; i++ )
     {
         if( val_list.p_list->p_values[i].i_int == val.i_int )
         {
@@ -713,48 +509,313 @@ int libvlc_video_get_track( libvlc_media_player_t *p_mi,
             break;
         }
     }
-    var_Change( p_input_thread, "video-es", VLC_VAR_FREELIST, &val_list, NULL );
+    var_FreeList( &val_list, NULL );
     vlc_object_release( p_input_thread );
     return i_track;
 }
 
-void libvlc_video_set_track( libvlc_media_player_t *p_mi, int i_track,
-                             libvlc_exception_t *p_e )
+int libvlc_video_set_track( libvlc_media_player_t *p_mi, int i_track )
 {
-    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi, p_e );
+    input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi );
     vlc_value_t val_list;
     int i_ret = -1;
-    int i;
 
     if( !p_input_thread )
-        return;
+        return -1;
 
     var_Change( p_input_thread, "video-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    for( i = 0; i < val_list.p_list->i_count; i++ )
+    for( int i = 0; i < val_list.p_list->i_count; i++ )
     {
-        vlc_value_t val = val_list.p_list->p_values[i];
-        if( i_track == val.i_int )
+        if( i_track == val_list.p_list->p_values[i].i_int )
         {
-            i_ret = var_Set( p_input_thread, "video-es", val );
-            if( i_ret < 0 )
-                libvlc_exception_raise( p_e, "Setting video track failed" );
+            if( var_SetInteger( p_input_thread, "video-es", i_track ) < 0 )
+                break;
+            i_ret = 0;
             goto end;
         }
     }
-    libvlc_exception_raise( p_e, "Video track out of range" );
-
+    libvlc_printerr( "Video track number out of range" );
 end:
-    var_Change( p_input_thread, "video-es", VLC_VAR_FREELIST, &val_list, NULL );
+    var_FreeList( &val_list, NULL );
     vlc_object_release( p_input_thread );
+    return i_ret;
 }
 
-int libvlc_video_destroy( libvlc_media_player_t *p_mi,
-                          libvlc_exception_t *p_e )
+/******************************************************************************
+ * libvlc_video_set_deinterlace : enable deinterlace
+ *****************************************************************************/
+void libvlc_video_set_deinterlace( libvlc_media_player_t *p_mi,
+                                   const char *psz_mode )
 {
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    vlc_object_detach( p_vout );
-    vlc_object_release( p_vout );
-    vlc_object_release( p_vout );
+    if (psz_mode == NULL)
+        psz_mode = "";
+    if (*psz_mode
+     && strcmp (psz_mode, "blend")   && strcmp (psz_mode, "bob")
+     && strcmp (psz_mode, "discard") && strcmp (psz_mode, "linear")
+     && strcmp (psz_mode, "mean")    && strcmp (psz_mode, "x")
+     && strcmp (psz_mode, "yadif")   && strcmp (psz_mode, "yadif2x"))
+        return;
 
-    return 0;
+    if (*psz_mode)
+    {
+        var_SetString (p_mi, "deinterlace-mode", psz_mode);
+        var_SetInteger (p_mi, "deinterlace", 1);
+    }
+    else
+        var_SetInteger (p_mi, "deinterlace", 0);
+
+    size_t n;
+    vout_thread_t **pp_vouts = GetVouts (p_mi, &n);
+    for (size_t i = 0; i < n; i++)
+    {
+        vout_thread_t *p_vout = pp_vouts[i];
+
+        if (*psz_mode)
+        {
+            var_SetString (p_vout, "deinterlace-mode", psz_mode);
+            var_SetInteger (p_vout, "deinterlace", 1);
+        }
+        else
+            var_SetInteger (p_vout, "deinterlace", 0);
+        vlc_object_release (p_vout);
+    }
+    free (pp_vouts);
 }
+
+/* ************** */
+/* module helpers */
+/* ************** */
+
+
+static vlc_object_t *get_object( libvlc_media_player_t * p_mi,
+                                 const char *name )
+{
+    vlc_object_t *object;
+    vout_thread_t *vout = GetVout( p_mi, 0 );
+
+    if( vout )
+    {
+        object = vlc_object_find_name( vout, name, FIND_CHILD );
+        vlc_object_release(vout);
+    }
+    else
+        object = NULL;
+
+    if( !object )
+        libvlc_printerr( "%s not enabled", name );
+    return object;
+}
+
+
+typedef const struct {
+    const char name[20];
+    unsigned type;
+} opt_t;
+
+
+static void
+set_int( libvlc_media_player_t *p_mi, const char *restrict name,
+         const opt_t *restrict opt, int value )
+{
+    if( !opt ) return;
+
+    if( !opt->type ) /* the enabler */
+    {
+        vout_thread_t *vout = GetVout( p_mi, 0 );
+        if (vout)
+        {
+            vout_EnableFilter( vout, opt->name, value, false );
+            vlc_object_release( vout );
+        }
+        return;
+    }
+
+    if( opt->type != VLC_VAR_INTEGER )
+    {
+        libvlc_printerr( "Invalid argument to %s in %s", name, "set int" );
+        return;
+    }
+
+    var_SetInteger(p_mi, opt->name, value);
+    vlc_object_t *object = get_object( p_mi, name );
+    if( object )
+    {
+        var_SetInteger(object, opt->name, value);
+        vlc_object_release( object );
+    }
+}
+
+
+static int
+get_int( libvlc_media_player_t *p_mi, const char *restrict name,
+         const opt_t *restrict opt )
+{
+    if( !opt ) return 0;
+
+    switch( opt->type )
+    {
+        case 0: /* the enabler */
+        {
+            vlc_object_t *object = get_object( p_mi, name );
+            vlc_object_release( object );
+            return object != NULL;
+        }
+    case VLC_VAR_INTEGER:
+        return var_GetInteger(p_mi, opt->name);
+    default:
+        libvlc_printerr( "Invalid argument to %s in %s", name, "get int" );
+        return 0;
+    }
+}
+
+
+static void
+set_string( libvlc_media_player_t *p_mi, const char *restrict name,
+            const opt_t *restrict opt, const char *restrict psz_value )
+{
+    if( !opt ) return;
+
+    if( opt->type != VLC_VAR_STRING )
+    {
+        libvlc_printerr( "Invalid argument to %s in %s", name, "set string" );
+        return;
+    }
+
+    var_SetString( p_mi, opt->name, psz_value );
+
+    vlc_object_t *object = get_object( p_mi, name );
+    if( object )
+    {
+        var_SetString(object, opt->name, psz_value );
+        vlc_object_release( object );
+    }
+}
+
+
+static char *
+get_string( libvlc_media_player_t *p_mi, const char *restrict name,
+            const opt_t *restrict opt )
+{
+    if( !opt ) return NULL;
+
+    if( opt->type != VLC_VAR_STRING )
+    {
+        libvlc_printerr( "Invalid argument to %s in %s", name, "get string" );
+        return NULL;
+    }
+
+    return var_GetString( p_mi, opt->name );
+}
+
+
+static const opt_t *
+marq_option_bynumber(unsigned option)
+{
+    static const opt_t optlist[] =
+    {
+        { "marq",          0 },
+        { "marq-marquee",  VLC_VAR_STRING },
+        { "marq-color",    VLC_VAR_INTEGER },
+        { "marq-opacity",  VLC_VAR_INTEGER },
+        { "marq-position", VLC_VAR_INTEGER },
+        { "marq-refresh",  VLC_VAR_INTEGER },
+        { "marq-size",     VLC_VAR_INTEGER },
+        { "marq-timeout",  VLC_VAR_INTEGER },
+        { "marq-x",        VLC_VAR_INTEGER },
+        { "marq-y",        VLC_VAR_INTEGER },
+    };
+    enum { num_opts = sizeof(optlist) / sizeof(*optlist) };
+
+    opt_t *r = option < num_opts ? optlist+option : NULL;
+    if( !r )
+        libvlc_printerr( "Unknown marquee option" );
+    return r;
+}
+
+static vlc_object_t *get_object( libvlc_media_player_t *, const char *);
+
+/*****************************************************************************
+ * libvlc_video_get_marquee_int : get a marq option value
+ *****************************************************************************/
+int libvlc_video_get_marquee_int( libvlc_media_player_t *p_mi,
+                                  unsigned option )
+{
+    return get_int( p_mi, "marq", marq_option_bynumber(option) );
+}
+
+/*****************************************************************************
+ * libvlc_video_get_marquee_string : get a marq option value
+ *****************************************************************************/
+char * libvlc_video_get_marquee_string( libvlc_media_player_t *p_mi,
+                                        unsigned option )
+{
+    return get_string( p_mi, "marq", marq_option_bynumber(option) );
+}
+
+/*****************************************************************************
+ * libvlc_video_set_marquee_int: enable, disable or set an int option
+ *****************************************************************************/
+void libvlc_video_set_marquee_int( libvlc_media_player_t *p_mi,
+                         unsigned option, int value )
+{
+    set_int( p_mi, "marq", marq_option_bynumber(option), value );
+}
+
+/*****************************************************************************
+ * libvlc_video_set_marquee_string: set a string option
+ *****************************************************************************/
+void libvlc_video_set_marquee_string( libvlc_media_player_t *p_mi,
+                unsigned option, const char * value )
+{
+    set_string( p_mi, "marq", marq_option_bynumber(option), value );
+}
+
+
+/* logo module support */
+
+
+static opt_t *
+logo_option_bynumber( unsigned option )
+{
+    static const opt_t vlogo_optlist[] =
+    /* depends on libvlc_video_logo_option_t */
+    {
+        { "logo",          0 },
+        { "logo-file",     VLC_VAR_STRING },
+        { "logo-x",        VLC_VAR_INTEGER },
+        { "logo-y",        VLC_VAR_INTEGER },
+        { "logo-delay",    VLC_VAR_INTEGER },
+        { "logo-repeat",   VLC_VAR_INTEGER },
+        { "logo-opacity",  VLC_VAR_INTEGER },
+        { "logo-position", VLC_VAR_INTEGER },
+    };
+    enum { num_vlogo_opts = sizeof(vlogo_optlist) / sizeof(*vlogo_optlist) };
+
+    opt_t *r = option < num_vlogo_opts ? vlogo_optlist+option : NULL;
+    if( !r )
+        libvlc_printerr( "Unknown logo option" );
+    return r;
+}
+
+
+void libvlc_video_set_logo_string( libvlc_media_player_t *p_mi,
+                                   unsigned option, const char *psz_value )
+{
+    set_string( p_mi,"logo",logo_option_bynumber(option),psz_value );
+}
+
+
+void libvlc_video_set_logo_int( libvlc_media_player_t *p_mi,
+                                unsigned option, int value )
+{
+    set_int( p_mi, "logo", logo_option_bynumber(option), value );
+}
+
+
+int libvlc_video_get_logo_int( libvlc_media_player_t *p_mi,
+                               unsigned option )
+{
+    return get_int( p_mi, "logo", logo_option_bynumber(option) );
+}
+
+

@@ -2,7 +2,7 @@
  * display.c: display stream output module
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 5fa81ba84d3dd1f90245abb489b1f3f88792b26b $
+ * $Id: a7cf827d71177cdbb7b6b82dd63b76cd7730f854 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -57,9 +57,9 @@ vlc_module_begin ()
     add_shortcut( "display" )
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_STREAM )
-    add_bool( SOUT_CFG_PREFIX "audio", 1, NULL, AUDIO_TEXT,
+    add_bool( SOUT_CFG_PREFIX "audio", true, NULL, AUDIO_TEXT,
               AUDIO_LONGTEXT, true )
-    add_bool( SOUT_CFG_PREFIX "video", 1, NULL, VIDEO_TEXT,
+    add_bool( SOUT_CFG_PREFIX "video", true, NULL, VIDEO_TEXT,
               VIDEO_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "delay", 100, NULL, DELAY_TEXT,
                  DELAY_LONGTEXT, true )
@@ -206,13 +206,13 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
 
         if( id->p_dec && p_buffer->i_buffer > 0 )
         {
-            if( p_buffer->i_dts <= 0 )
-                p_buffer->i_dts= 0;
+            if( p_buffer->i_dts <= VLC_TS_INVALID )
+                p_buffer->i_dts = 0;
             else
                 p_buffer->i_dts += p_sys->i_delay;
 
-            if( p_buffer->i_pts <= 0 )
-                p_buffer->i_pts= 0;
+            if( p_buffer->i_pts <= VLC_TS_INVALID )
+                p_buffer->i_pts = 0;
             else
                 p_buffer->i_pts += p_sys->i_delay;
 

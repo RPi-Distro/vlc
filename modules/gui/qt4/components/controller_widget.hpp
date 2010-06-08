@@ -2,7 +2,7 @@
  * Controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 44e5deefa2bba5688cff69c65096f53e8767f0a0 $
+ * $Id: 5727da3cb1d03161e58855b17332ca57be33149a $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -53,6 +53,13 @@ private slots:
     void updateButton( bool );
 };
 
+class LoopButton : public QToolButton
+{
+    Q_OBJECT
+public slots:
+    void updateIcons( int );
+};
+
 class AtoB_Button : public QToolButton
 {
     Q_OBJECT
@@ -69,18 +76,22 @@ public:
     SoundWidget( QWidget *parent, intf_thread_t  *_p_i, bool,
                  bool b_special = false );
     virtual ~SoundWidget();
+    void setMuted( bool );
 
 private:
     intf_thread_t       *p_intf;
     QLabel              *volMuteLabel;
     QAbstractSlider     *volumeSlider;
     QFrame              *volumeControlWidget;
-    bool                 b_my_volume;
     QMenu               *volumeMenu;
     virtual bool eventFilter( QObject *obj, QEvent *e );
+    bool                b_is_muted;
+
 protected slots:
-    void updateVolume( int );
-    void updateVolume( void );
+    void userUpdateVolume( int );
+    void libUpdateVolume( void );
+    void updateMuteStatus( void );
+    void refreshLabels( void );
     void showVolumeMenu( QPoint pos );
 };
 

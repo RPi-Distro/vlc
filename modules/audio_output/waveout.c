@@ -1,10 +1,11 @@
 /*****************************************************************************
  * waveout.c : Windows waveOut plugin for vlc
  *****************************************************************************
- * Copyright (C) 2001 the VideoLAN team
- * $Id: 8bea3e34959b44a42524d3466b5b99a04fec0439 $
+ * Copyright (C) 2001-2009 the VideoLAN team
+ * $Id: 514f04dfe8f6fbb8d8347a868e822dfcd6df6813 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
+ *          André Weber
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,74 +35,9 @@
 #include <vlc_aout.h>
 #include <vlc_charset.h>
 
-#include <windows.h>
-#include <mmsystem.h>
+#include "windows_audio_common.h"
 
 #define FRAME_SIZE 4096              /* The size is in samples, not in bytes */
-#define FRAMES_NUM 8
-
-/*****************************************************************************
- * Useful macros
- *****************************************************************************/
-#ifdef UNDER_CE
-#   define DWORD_PTR DWORD
-#   ifdef waveOutGetDevCaps
-#       undef waveOutGetDevCaps
-        MMRESULT WINAPI waveOutGetDevCaps(UINT, LPWAVEOUTCAPS, UINT);
-#   endif
-#endif
-
-#ifndef WAVE_FORMAT_IEEE_FLOAT
-#   define WAVE_FORMAT_IEEE_FLOAT 0x0003
-#endif
-
-#ifndef WAVE_FORMAT_DOLBY_AC3_SPDIF
-#   define WAVE_FORMAT_DOLBY_AC3_SPDIF 0x0092
-#endif
-
-#ifndef WAVE_FORMAT_EXTENSIBLE
-#define  WAVE_FORMAT_EXTENSIBLE   0xFFFE
-#endif
-
-#ifndef SPEAKER_FRONT_LEFT
-#   define SPEAKER_FRONT_LEFT             0x1
-#   define SPEAKER_FRONT_RIGHT            0x2
-#   define SPEAKER_FRONT_CENTER           0x4
-#   define SPEAKER_LOW_FREQUENCY          0x8
-#   define SPEAKER_BACK_LEFT              0x10
-#   define SPEAKER_BACK_RIGHT             0x20
-#   define SPEAKER_FRONT_LEFT_OF_CENTER   0x40
-#   define SPEAKER_FRONT_RIGHT_OF_CENTER  0x80
-#   define SPEAKER_BACK_CENTER            0x100
-#   define SPEAKER_SIDE_LEFT              0x200
-#   define SPEAKER_SIDE_RIGHT             0x400
-#   define SPEAKER_TOP_CENTER             0x800
-#   define SPEAKER_TOP_FRONT_LEFT         0x1000
-#   define SPEAKER_TOP_FRONT_CENTER       0x2000
-#   define SPEAKER_TOP_FRONT_RIGHT        0x4000
-#   define SPEAKER_TOP_BACK_LEFT          0x8000
-#   define SPEAKER_TOP_BACK_CENTER        0x10000
-#   define SPEAKER_TOP_BACK_RIGHT         0x20000
-#   define SPEAKER_RESERVED               0x80000000
-#endif
-
-#ifndef _WAVEFORMATEXTENSIBLE_
-typedef struct {
-    WAVEFORMATEX    Format;
-    union {
-        WORD wValidBitsPerSample;       /* bits of precision  */
-        WORD wSamplesPerBlock;          /* valid if wBitsPerSample==0 */
-        WORD wReserved;                 /* If neither applies, set to zero. */
-    } Samples;
-    DWORD           dwChannelMask;      /* which channels are */
-                                        /* present in stream  */
-    GUID            SubFormat;
-} WAVEFORMATEXTENSIBLE, *PWAVEFORMATEXTENSIBLE;
-#endif
-
-static const GUID __KSDATAFORMAT_SUBTYPE_IEEE_FLOAT = {WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
-static const GUID __KSDATAFORMAT_SUBTYPE_PCM = {WAVE_FORMAT_PCM, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
-static const GUID __KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF = {WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
 
 /*****************************************************************************
  * Local prototypes
@@ -125,14 +61,13 @@ static void Probe        ( aout_instance_t * );
 static int OpenWaveOut   ( aout_instance_t *, uint32_t,
                            int, int, int, int, bool );
 static int OpenWaveOutPCM( aout_instance_t *, uint32_t,
-                           int*, int, int, int, bool );
+                           vlc_fourcc_t*, int, int, int, bool );
 static int PlayWaveOut   ( aout_instance_t *, HWAVEOUT, WAVEHDR *,
                            aout_buffer_t *, bool );
 
 static void CALLBACK WaveOutCallback ( HWAVEOUT, UINT, DWORD, DWORD, DWORD );
 static void* WaveOutThread( vlc_object_t * );
 
-static int VolumeInfos( aout_instance_t *, audio_volume_t * );
 static int VolumeGet( aout_instance_t *, audio_volume_t * );
 static int VolumeSet( aout_instance_t *, audio_volume_t );
 
@@ -152,10 +87,6 @@ static const char *const ppsz_adev_text[] = { N_("Microsoft Soundmapper") };
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define FLOAT_TEXT N_("Use float32 output")
-#define FLOAT_LONGTEXT N_( \
-    "The option allows you to enable or disable the high-quality float32 " \
-    "audio output mode (which is not well supported by some soundcards)." )
 #define DEVICE_TEXT N_("Select Audio Device")
 #define DEVICE_LONG N_("Select special Audio device, or let windows "\
                        "decide (default), change needs VLC restart "\
@@ -168,7 +99,7 @@ vlc_module_begin ()
     set_capability( "audio output", 50 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AOUT )
-    add_bool( "waveout-float32", 1, 0, FLOAT_TEXT, FLOAT_LONGTEXT, true )
+    add_bool( "waveout-float32", true, NULL, FLOAT_TEXT, FLOAT_LONGTEXT, true )
 
     add_string( "waveout-audio-device", "wavemapper", NULL,
                  DEVICE_TEXT, DEVICE_LONG, false )
@@ -215,23 +146,6 @@ struct aout_sys_t
     int pi_chan_table[AOUT_CHAN_MAX];
 };
 
-static const uint32_t pi_channels_src[] =
-    { AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
-      AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT,
-      AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_REARCENTER,
-      AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0 };
-static const uint32_t pi_channels_in[] =
-    { SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT,
-      SPEAKER_SIDE_LEFT, SPEAKER_SIDE_RIGHT,
-      SPEAKER_BACK_LEFT, SPEAKER_BACK_RIGHT, SPEAKER_BACK_CENTER,
-      SPEAKER_FRONT_CENTER, SPEAKER_LOW_FREQUENCY, 0 };
-static const uint32_t pi_channels_out[] =
-    { SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT,
-      SPEAKER_FRONT_CENTER, SPEAKER_LOW_FREQUENCY,
-      SPEAKER_BACK_LEFT, SPEAKER_BACK_RIGHT,
-      SPEAKER_BACK_CENTER,
-      SPEAKER_SIDE_LEFT, SPEAKER_SIDE_RIGHT, 0 };
-
 /*****************************************************************************
  * Open: open the audio device
  *****************************************************************************
@@ -241,7 +155,6 @@ static int Open( vlc_object_t *p_this )
 {
     aout_instance_t *p_aout = (aout_instance_t *)p_this;
     vlc_value_t val;
-    int i;
 
     /* Allocate structure */
     p_aout->output.p_sys = malloc( sizeof( aout_sys_t ) );
@@ -313,11 +226,11 @@ static int Open( vlc_object_t *p_this )
     /* Open the device */
     if( val.i_int == AOUT_VAR_SPDIF )
     {
-        p_aout->output.output.i_format = VLC_FOURCC('s','p','d','i');
+        p_aout->output.output.i_format = VLC_CODEC_SPDIFL;
 
         if( OpenWaveOut( p_aout,
                          p_aout->output.p_sys->i_wave_device_id,
-                         VLC_FOURCC('s','p','d','i'),
+                         VLC_CODEC_SPDIFL,
                          p_aout->output.output.i_physical_channels,
                          aout_FormatNbChannels( &p_aout->output.output ),
                          p_aout->output.output.i_rate, false )
@@ -392,7 +305,6 @@ static int Open( vlc_object_t *p_this )
             if( waveOutGetVolume( p_aout->output.p_sys->h_waveout, &i_dummy )
                 == MMSYSERR_NOERROR )
             {
-                p_aout->output.pf_volume_infos = VolumeInfos;
                 p_aout->output.pf_volume_get = VolumeGet;
                 p_aout->output.pf_volume_set = VolumeSet;
             }
@@ -440,7 +352,7 @@ static int Open( vlc_object_t *p_this )
 
     /* We need to kick off the playback in order to have the callback properly
      * working */
-    for( i = 0; i < FRAMES_NUM; i++ )
+    for( int i = 0; i < FRAMES_NUM; i++ )
     {
         p_aout->output.p_sys->waveheader[i].dwFlags = WHDR_DONE;
         p_aout->output.p_sys->waveheader[i].dwUser = 0;
@@ -455,7 +367,7 @@ static int Open( vlc_object_t *p_this )
 static void Probe( aout_instance_t * p_aout )
 {
     vlc_value_t val, text;
-    int i_format;
+    vlc_fourcc_t i_format;
     unsigned int i_physical_channels;
 
     var_Create( p_aout, "audio-device", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
@@ -539,7 +451,7 @@ static void Probe( aout_instance_t * p_aout )
     {
         if( OpenWaveOut( p_aout,
                          p_aout->output.p_sys->i_wave_device_id,
-                         VLC_FOURCC('s','p','d','i'),
+                         VLC_CODEC_SPDIFL,
                          p_aout->output.output.i_physical_channels,
                          aout_FormatNbChannels( &p_aout->output.output ),
                          p_aout->output.output.i_rate, true )
@@ -550,7 +462,7 @@ static void Probe( aout_instance_t * p_aout )
             text.psz_string = (char *)_("A/52 over S/PDIF");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
-            if( config_GetInt( p_aout, "spdif" ) )
+            if( var_InheritBool( p_aout, "spdif" ) )
                 var_Set( p_aout, "audio-device", val );
         }
     }
@@ -692,7 +604,7 @@ static int OpenWaveOut( aout_instance_t *p_aout, uint32_t i_device_id, int i_for
 
     switch( i_format )
     {
-    case VLC_FOURCC('s','p','d','i'):
+    case VLC_CODEC_SPDIFL:
         i_nb_channels = 2;
         /* To prevent channel re-ordering */
         waveformat.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
@@ -703,7 +615,7 @@ static int OpenWaveOut( aout_instance_t *p_aout, uint32_t i_device_id, int i_for
         waveformat.SubFormat = __KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF;
         break;
 
-    case VLC_FOURCC('f','l','3','2'):
+    case VLC_CODEC_FL32:
         waveformat.Format.wBitsPerSample = sizeof(float) * 8;
         waveformat.Samples.wValidBitsPerSample =
             waveformat.Format.wBitsPerSample;
@@ -711,7 +623,7 @@ static int OpenWaveOut( aout_instance_t *p_aout, uint32_t i_device_id, int i_for
         waveformat.SubFormat = __KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
         break;
 
-    case VLC_FOURCC('s','1','6','l'):
+    case VLC_CODEC_S16L:
         waveformat.Format.wBitsPerSample = 16;
         waveformat.Samples.wValidBitsPerSample =
             waveformat.Format.wBitsPerSample;
@@ -803,17 +715,18 @@ static int OpenWaveOut( aout_instance_t *p_aout, uint32_t i_device_id, int i_for
 /*****************************************************************************
  * OpenWaveOutPCM: open a PCM waveout sound device
  ****************************************************************************/
-static int OpenWaveOutPCM( aout_instance_t *p_aout, uint32_t i_device_id, int *i_format,
+static int OpenWaveOutPCM( aout_instance_t *p_aout, uint32_t i_device_id,
+                           vlc_fourcc_t *i_format,
                            int i_channels, int i_nb_channels, int i_rate,
                            bool b_probe )
 {
     bool b_use_float32 = var_CreateGetBool( p_aout, "waveout-float32");
 
-    if( !b_use_float32 || OpenWaveOut( p_aout, i_device_id, VLC_FOURCC('f','l','3','2'),
+    if( !b_use_float32 || OpenWaveOut( p_aout, i_device_id, VLC_CODEC_FL32,
                                    i_channels, i_nb_channels, i_rate, b_probe )
         != VLC_SUCCESS )
     {
-        if ( OpenWaveOut( p_aout, i_device_id, VLC_FOURCC('s','1','6','l'),
+        if ( OpenWaveOut( p_aout, i_device_id, VLC_CODEC_S16L,
                           i_channels, i_nb_channels, i_rate, b_probe )
              != VLC_SUCCESS )
         {
@@ -821,13 +734,13 @@ static int OpenWaveOutPCM( aout_instance_t *p_aout, uint32_t i_device_id, int *i
         }
         else
         {
-            *i_format = VLC_FOURCC('s','1','6','l');
+            *i_format = VLC_CODEC_S16L;
             return VLC_SUCCESS;
         }
     }
     else
     {
-        *i_format = VLC_FOURCC('f','l','3','2');
+        *i_format = VLC_CODEC_FL32;
         return VLC_SUCCESS;
     }
 }
@@ -982,7 +895,7 @@ static void* WaveOutThread( vlc_object_t *p_this )
     int canc = vlc_savecancel ();
 
     /* We don't want any resampling when using S/PDIF */
-    b_sleek = p_aout->output.output.i_format == VLC_FOURCC('s','p','d','i');
+    b_sleek = p_aout->output.output.i_format == VLC_CODEC_SPDIFL;
 
     // wait for first call to "play()"
     while( !p_sys->start_date && vlc_object_alive (p_aout) )
@@ -1062,8 +975,7 @@ static void* WaveOutThread( vlc_object_t *p_this )
 
                 if( p_buffer )
                 {
-                    mtime_t buffer_length = (p_buffer->end_date
-                                             - p_buffer->start_date);
+                    mtime_t buffer_length = p_buffer->i_length;
                     next_date = next_date + buffer_length;
                     i_buffer_length = buffer_length/1000;
                 }
@@ -1072,7 +984,7 @@ static void* WaveOutThread( vlc_object_t *p_this )
                 if( p_buffer && p_sys->b_chan_reorder )
                 {
                     aout_ChannelReorder( p_buffer->p_buffer,
-                        p_buffer->i_nb_bytes,
+                        p_buffer->i_buffer,
                         p_sys->waveformat.Format.nChannels,
                         p_sys->pi_chan_table,
                         p_sys->waveformat.Format.wBitsPerSample );
@@ -1108,12 +1020,6 @@ static void* WaveOutThread( vlc_object_t *p_this )
 #undef waveout_warn
     vlc_restorecancel (canc);
     return NULL;
-}
-
-static int VolumeInfos( aout_instance_t * p_aout, audio_volume_t * pi_soft )
-{
-    *pi_soft = AOUT_VOLUME_MAX / 2;
-    return 0;
 }
 
 static int VolumeGet( aout_instance_t * p_aout, audio_volume_t * pi_volume )
@@ -1154,7 +1060,7 @@ static int VolumeSet( aout_instance_t * p_aout, audio_volume_t i_volume )
 static int ReloadWaveoutDevices( vlc_object_t *p_this, char const *psz_name,
                                  vlc_value_t newval, vlc_value_t oldval, void *data )
 {
-    int i;
+    VLC_UNUSED( newval ); VLC_UNUSED( oldval ); VLC_UNUSED( data );
 
     module_config_t *p_item = config_FindConfig( p_this, psz_name );
     if( !p_item ) return VLC_SUCCESS;
@@ -1162,6 +1068,8 @@ static int ReloadWaveoutDevices( vlc_object_t *p_this, char const *psz_name,
     /* Clear-up the current list */
     if( p_item->i_list )
     {
+        int i;
+
         /* Keep the first entry */
         for( i = 1; i < p_item->i_list; i++ )
         {
@@ -1176,11 +1084,9 @@ static int ReloadWaveoutDevices( vlc_object_t *p_this, char const *psz_name,
 
     int wave_devices = waveOutGetNumDevs();
 
-    p_item->ppsz_list =
-        (char **)realloc( p_item->ppsz_list,
+    p_item->ppsz_list = xrealloc( p_item->ppsz_list,
                           (wave_devices+2) * sizeof(char *) );
-    p_item->ppsz_list_text =
-        (char **)realloc( p_item->ppsz_list_text,
+    p_item->ppsz_list_text = xrealloc( p_item->ppsz_list_text,
                           (wave_devices+2) * sizeof(char *) );
 
     WAVEOUTCAPS caps;

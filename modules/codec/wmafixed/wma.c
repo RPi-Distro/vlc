@@ -43,7 +43,7 @@
  *****************************************************************************/
 struct decoder_sys_t
 {
-    audio_date_t end_date; /* To set the PTS */
+    date_t end_date; /* To set the PTS */
     WMADecodeContext wmadec; /* name is self explanative */
 
     int32_t *p_output; /* buffer where the frames are rendered */
@@ -81,7 +81,7 @@ vlc_module_begin();
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
     set_description( _("WMA v1/v2 fixed point audio decoder") );
-    set_capability( "decoder", 50 );
+    set_capability( "decoder", 80 );
     add_shortcut( "wmafixed" )
     set_callbacks( OpenDecoder, CloseDecoder );
 vlc_module_end();
@@ -101,11 +101,12 @@ static aout_buffer_t *SplitBuffer( decoder_t *p_dec )
     if( !( p_buffer = p_dec->pf_aout_buffer_new( p_dec, i_samples ) ) )
         return NULL;
 
-    p_buffer->start_date = aout_DateGet( &p_sys->end_date );
-    p_buffer->end_date = aout_DateIncrement( &p_sys->end_date, i_samples );
+    p_buffer->i_pts = date_Get( &p_sys->end_date );
+    p_buffer->i_length = date_Increment( &p_sys->end_date, i_samples )
+                         - p_buffer->i_pts;
 
-    memcpy( p_buffer->p_buffer, p_sys->p_samples, p_buffer->i_nb_bytes );
-    p_sys->p_samples += p_buffer->i_nb_bytes;
+    memcpy( p_buffer->p_buffer, p_sys->p_samples, p_buffer->i_buffer );
+    p_sys->p_samples += p_buffer->i_buffer;
     p_sys->i_samples -= i_samples;
 
     return p_buffer;
@@ -119,10 +120,8 @@ static int OpenDecoder( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC('w','m','a','1') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC('W','M','A','1') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC('w','m','a','2') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC('W','M','A','2') )
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_WMA1 &&
+        p_dec->fmt_in.i_codec != VLC_CODEC_WMA2 )
     {
         return VLC_EGENERIC;
     }
@@ -135,11 +134,11 @@ static int OpenDecoder( vlc_object_t *p_this )
     memset( p_sys, 0, sizeof( decoder_sys_t ) );
 
     /* Date */
-    aout_DateInit( &p_sys->end_date, p_dec->fmt_in.audio.i_rate );
+    date_Init( &p_sys->end_date, p_dec->fmt_in.audio.i_rate, 1 );
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
-    p_dec->fmt_out.i_codec = VLC_FOURCC('f','i','3','2');
+    p_dec->fmt_out.i_codec = VLC_CODEC_FI32;
     p_dec->fmt_out.audio.i_bitspersample = p_dec->fmt_in.audio.i_bitspersample;
     p_dec->fmt_out.audio.i_rate = p_dec->fmt_in.audio.i_rate;
 
@@ -166,11 +165,9 @@ static int OpenDecoder( vlc_object_t *p_this )
         wfx.rate, wfx.bitrate, wfx.channels, wfx.blockalign,
         wfx.bitspersample );
 
-    if( p_dec->fmt_in.i_codec == VLC_FOURCC('w','m','a','1')
-        || p_dec->fmt_in.i_codec == VLC_FOURCC('W','M','A','1') )
+    if( p_dec->fmt_in.i_codec == VLC_CODEC_WMA1 )
         wfx.codec_id = ASF_CODEC_ID_WMAV1;
-    else if( p_dec->fmt_in.i_codec == VLC_FOURCC('W','M','A','2')
-        || p_dec->fmt_in.i_codec == VLC_FOURCC('w','m','a','2') )
+    else if( p_dec->fmt_in.i_codec == VLC_CODEC_WMA2 )
         wfx.codec_id = ASF_CODEC_ID_WMAV2;
 
     wfx.datalen = p_dec->fmt_in.i_extra;
@@ -210,7 +207,7 @@ static aout_buffer_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
 
     if( p_block->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
     {
-        aout_DateSet( &p_sys->end_date, 0 );
+        date_Set( &p_sys->end_date, 0 );
         block_Release( p_block );
         *pp_block = NULL;
         return NULL;
@@ -232,14 +229,14 @@ static aout_buffer_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Date management */
-    if( p_block->i_pts > 0 &&
-        p_block->i_pts != aout_DateGet( &p_sys->end_date ) )
+    if( p_block->i_pts > VLC_TS_INVALID &&
+        p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
-        aout_DateSet( &p_sys->end_date, p_block->i_pts );
+        date_Set( &p_sys->end_date, p_block->i_pts );
         /* don't reuse the same pts */
-        p_block->i_pts = 0;
+        p_block->i_pts = VLC_TS_INVALID;
     }
-    else if( !aout_DateGet( &p_sys->end_date ) )
+    else if( !date_Get( &p_sys->end_date ) )
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( p_block );
@@ -265,8 +262,7 @@ static aout_buffer_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
 
     /* worst case */
     size_t i_buffer = BLOCK_MAX_SIZE * MAX_CHANNELS * p_sys->wmadec.nb_frames;
-    if( p_sys->p_output )
-        free( p_sys->p_output );
+    free( p_sys->p_output );
     p_sys->p_output = malloc(i_buffer * sizeof(int32_t) );
     p_sys->p_samples = (int8_t*)p_sys->p_output;
 

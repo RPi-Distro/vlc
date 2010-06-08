@@ -2,7 +2,7 @@
  * quicktime.c: a quicktime decoder that uses the QT library/dll
  *****************************************************************************
  * Copyright (C) 2003, 2008 - 2009 the VideoLAN team
- * $Id: e5b5778160a776e1dc439c7b07cc61e4efbc4f25 $
+ * $Id: ae154fa3c04a46d93b586335652d760544c32e1f $
  *
  * Authors: Laurent Aimar <fenrir at via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan.org>>
@@ -33,7 +33,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
-#include <vlc_vout.h>
 #include <vlc_codec.h>
 
 #if !defined (__APPLE__) && !defined(WIN32)
@@ -81,7 +80,9 @@ static int           OpenAudio( decoder_t * );
 static int           OpenVideo( decoder_t * );
 
 static aout_buffer_t *DecodeAudio( decoder_t *, block_t ** );
+#ifndef WIN32
 static picture_t     *DecodeVideo( decoder_t *, block_t ** );
+#endif
 
 #define FCC( a, b , c, d ) \
     ((uint32_t)( ((a)<<24)|((b)<<16)|((c)<<8)|(d)))
@@ -188,7 +189,7 @@ struct decoder_sys_t
     /* Output properties */
     uint8_t *           plane;
     mtime_t             pts;
-    audio_date_t        date;
+    date_t              date;
 
     int                 i_late; /* video */
 
@@ -215,7 +216,9 @@ static const int pi_channels_maps[6] =
 };
 
 static int QTAudioInit( decoder_t * );
+#ifndef WIN32
 static int QTVideoInit( decoder_t * );
+#endif
 
 /*****************************************************************************
  * Open: probe the decoder and return score
@@ -230,7 +233,7 @@ static int Open( vlc_object_t *p_this )
 #ifdef __APPLE__
     OSErr err;
     SInt32 qtVersion, macosversion;
-    
+
     err = Gestalt(gestaltQuickTimeVersion, &qtVersion);
     err = Gestalt(gestaltSystemVersion, &macosversion);
 #ifndef NDEBUG
@@ -245,27 +248,21 @@ static int Open( vlc_object_t *p_this )
 
     switch( p_dec->fmt_in.i_codec )
     {
-        case VLC_FOURCC('h','2','6','4'): /* H.264 */
-        case VLC_FOURCC('c','v','i','d'): /* Cinepak */
+        case VLC_CODEC_H264:
+        case VLC_CODEC_CINEPAK:
         case VLC_FOURCC('I','V','4','1'): /* Indeo Video IV */
         case VLC_FOURCC('i','v','4','1'): /* dto. */
 #ifdef __APPLE__
         case VLC_FOURCC('p','x','l','t'): /* Pixlet */
 #endif
-        case VLC_FOURCC('d','v','1','n'): /* DVC Pro 100 NTSC */
-        case VLC_FOURCC('d','v','1','p'): /* DVC Pro 100 PAL */
-        case VLC_FOURCC('d','v','h','p'): /* DVC PRO HD 720p */
-        case VLC_FOURCC('d','v','h','6'): /* DVC PRO HD 1080i 60 */
-        case VLC_FOURCC('d','v','h','5'): /* DVC PRO HD 1080i 50 */
-
-        case VLC_FOURCC('S','V','Q','3'): /* Sorenson v3 */
-    /*    case VLC_FOURCC('S','V','Q','1'):  Sorenson v1
+        case VLC_CODEC_DV:
+        case VLC_CODEC_SVQ3: /* Sorenson v3 */
+    /*    case VLC_CODEC_SVQ1:  Sorenson v1
         case VLC_FOURCC('Z','y','G','o'):
         case VLC_FOURCC('V','P','3','1'):
         case VLC_FOURCC('3','I','V','1'): */
-        case VLC_FOURCC('r','l','e',' '): /* QuickTime animation (RLE) */
-        case VLC_FOURCC('r','p','z','a'): /* QuickTime Apple Video */
-        case VLC_FOURCC('a','z','p','r'): /* QuickTime animation (RLE) */
+        case VLC_CODEC_QTRLE:
+        case VLC_CODEC_RPZA:
 #ifdef LOADER
         p_dec->p_sys = NULL;
         p_dec->pf_decode_video = DecodeVideo;
@@ -283,23 +280,23 @@ static int Open( vlc_object_t *p_this )
             if ((err != noErr) || (qtVersion < 0x07500000)) 
                 return VLC_EGENERIC;
 #endif
-        case VLC_FOURCC('s','a','m','r'): /* 3GPP AMR audio */
+        case VLC_CODEC_AMR_NB: /* 3GPP AMR audio */
         case VLC_FOURCC('s','a','m','b'): /* 3GPP AMR-WB audio */
-        case VLC_FOURCC('m','p','4','a'): /* MPEG-4 audio */
+        case VLC_CODEC_MP4A: /* MPEG-4 audio */
         case VLC_FOURCC('Q','D','M','C'): /* QDesign */
-        case VLC_FOURCC('Q','D','M','2'): /* QDesign* 2 */
-        case VLC_FOURCC('Q','c','l','p'): /* Qualcomm Purevoice Codec */
+        case VLC_CODEC_QDM2: /* QDesign* 2 */
+        case VLC_CODEC_QCELP: /* Qualcomm Purevoice Codec */
         case VLC_FOURCC('Q','C','L','P'): /* Qualcomm Purevoice Codec */
-        case VLC_FOURCC('M','A','C','3'): /* MACE3 audio decoder */
-        case VLC_FOURCC('M','A','C','6'): /* MACE6 audio decoder */
+        case VLC_CODEC_MACE3: /* MACE3 audio decoder */
+        case VLC_CODEC_MACE6: /* MACE6 audio decoder */
         case VLC_FOURCC('d','v','c','a'): /* DV Audio */
         case VLC_FOURCC('s','o','w','t'): /* 16-bit Little Endian */
         case VLC_FOURCC('t','w','o','s'): /* 16-bit Big Endian */
-        case VLC_FOURCC('a','l','a','w'): /* ALaw 2:1 */
+        case VLC_CODEC_ALAW: /* ALaw 2:1 */
         case VLC_FOURCC('u','l','a','w'): /* mu-Law 2:1 */
         case VLC_FOURCC('r','a','w',' '): /* 8-bit offset binaries */
-        case VLC_FOURCC('f','l','3','2'): /* 32-bit Floating Point */
-        case VLC_FOURCC('f','l','6','4'): /* 64-bit Floating Point */
+        case VLC_CODEC_FL32: /* 32-bit Floating Point */
+        case VLC_CODEC_FL64: /* 64-bit Floating Point */
         case VLC_FOURCC('i','n','2','4'): /* 24-bit Interger */
         case VLC_FOURCC('i','n','3','2'): /* 32-bit Integer */
         case 0x0011:                            /* DVI IMA */
@@ -394,7 +391,10 @@ static int OpenAudio( decoder_t *p_dec )
     p_dec->p_sys = p_sys;
     p_dec->pf_decode_audio = DecodeAudio;
 
-    memcpy( fcc, &p_dec->fmt_in.i_codec, 4 );
+    if( p_dec->fmt_in.i_original_fourcc )
+        memcpy( fcc, &p_dec->fmt_in.i_original_fourcc, 4 );
+    else
+        memcpy( fcc, &p_dec->fmt_in.i_codec, 4 );
 
 #ifdef __APPLE__
     EnterMovies();
@@ -489,14 +489,14 @@ static int OpenAudio( decoder_t *p_dec )
     }
 
 
-    es_format_Init( &p_dec->fmt_out, AUDIO_ES, AOUT_FMT_S16_NE );
+    es_format_Init( &p_dec->fmt_out, AUDIO_ES, VLC_CODEC_S16N );
     p_dec->fmt_out.audio.i_rate = p_sys->OutputFormatInfo.sampleRate;
     p_dec->fmt_out.audio.i_channels = p_sys->OutputFormatInfo.numChannels;
     p_dec->fmt_out.audio.i_physical_channels =
     p_dec->fmt_out.audio.i_original_channels =
         pi_channels_maps[p_sys->OutputFormatInfo.numChannels];
 
-    aout_DateInit( &p_sys->date, p_dec->fmt_out.audio.i_rate );
+    date_Init( &p_sys->date, p_dec->fmt_out.audio.i_rate, 1 );
 
     p_sys->i_buffer      = 0;
     p_sys->i_buffer_size = 100*1000;
@@ -582,7 +582,7 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
         if( p_sys->i_buffer_size < p_sys->i_buffer + p_block->i_buffer )
         {
             p_sys->i_buffer_size = p_sys->i_buffer + p_block->i_buffer + 1024;
-            p_sys->p_buffer = realloc( p_sys->p_buffer, p_sys->i_buffer_size );
+            p_sys->p_buffer = xrealloc( p_sys->p_buffer, p_sys->i_buffer_size );
         }
         memcpy( &p_sys->p_buffer[p_sys->i_buffer], p_block->p_buffer,
                 p_block->i_buffer );
@@ -618,12 +618,12 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
                          p_sys->i_buffer );
             }
 
-            if( p_sys->pts != 0 &&
-                p_sys->pts != aout_DateGet( &p_sys->date ) )
+            if( p_sys->pts > VLC_TS_INVALID &&
+                p_sys->pts != date_Get( &p_sys->date ) )
             {
-                aout_DateSet( &p_sys->date, p_sys->pts );
+                date_Set( &p_sys->date, p_sys->pts );
             }
-            else if( !aout_DateGet( &p_sys->date ) )
+            else if( !date_Get( &p_sys->date ) )
             {
                 return NULL;
             }
@@ -646,12 +646,13 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
 
         if( p_out )
         {
-            p_out->start_date = aout_DateGet( &p_sys->date );
-            p_out->end_date = aout_DateIncrement( &p_sys->date, i_frames );
+            p_out->i_pts = date_Get( &p_sys->date );
+            p_out->i_length = date_Increment( &p_sys->date, i_frames )
+                              - p_out->i_pts;
 
             memcpy( p_out->p_buffer,
                     &p_sys->out_buffer[2 * p_sys->i_out * p_dec->fmt_out.audio.i_channels],
-                    p_out->i_nb_bytes );
+                    p_out->i_buffer );
 
             p_sys->i_out += i_frames;
         }
@@ -694,7 +695,11 @@ static int OpenVideo( decoder_t *p_dec )
         return VLC_EGENERIC;
     }
 
-    memcpy( fcc, &p_dec->fmt_in.i_codec, 4 );
+    if( p_dec->fmt_in.i_original_fourcc )
+        memcpy( fcc, &p_dec->fmt_in.i_original_fourcc, 4 );
+    else
+        memcpy( fcc, &p_dec->fmt_in.i_codec, 4 );
+
     msg_Dbg( p_dec, "quicktime_video %4.4s %dx%d",
              fcc, p_dec->fmt_in.video.i_width, p_dec->fmt_in.video.i_height );
 
@@ -836,11 +841,12 @@ static int OpenVideo( decoder_t *p_dec )
     msg_Dbg( p_dec, "quicktime_video: ImageCodecPreDecompress cres=0x%X",
              (int)cres );
 
-    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_FOURCC( 'Y', 'U', 'Y', '2' ));
+    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_CODEC_YUYV);
     p_dec->fmt_out.video.i_width = p_dec->fmt_in.video.i_width;
     p_dec->fmt_out.video.i_height= p_dec->fmt_in.video.i_height;
-    p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR * p_dec->fmt_in.video.i_width / p_dec->fmt_in.video.i_height;
- 
+    p_dec->fmt_out.video.i_sar_num = 1;
+    p_dec->fmt_out.video.i_sar_den = 1;
+
     vlc_mutex_unlock( &qt_mutex );
     return VLC_SUCCESS;
 
@@ -850,6 +856,8 @@ exit_error:
 #endif
     vlc_mutex_unlock( &qt_mutex );
 
+#else
+    VLC_UNUSED( p_dec );
 #endif /* !WIN32 */
 
     return VLC_EGENERIC;
@@ -890,7 +898,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
     p_block = *pp_block;
     *pp_block = NULL;
  
-    i_pts = p_block->i_pts ? p_block->i_pts : p_block->i_dts;
+    i_pts = p_block->i_pts > VLC_TS_INVALID ? p_block->i_pts : p_block->i_dts;
 
     mtime_t i_display_date = 0;
     if( !(p_block->i_flags & BLOCK_FLAG_PREROLL) )

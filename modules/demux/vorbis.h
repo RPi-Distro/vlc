@@ -2,7 +2,7 @@
  * vorbis.h: Vorbis Comment parser
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 6a96fa1bb6b196073809d7cb5098877fd73cf986 $
+ * $Id: 21fbb353b98df72b0029c047f94490fb8a6787c4 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -20,6 +20,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#include <vlc_charset.h>
 
 static inline void vorbis_ParseComment( vlc_meta_t **pp_meta, const uint8_t *p_data, int i_data )
 {

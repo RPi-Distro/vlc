@@ -2,7 +2,7 @@
  * dynamicoverlay_buffer.h : dynamic overlay buffer
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: b454ebf5b8db04c9279b534fd61f04616c882f9a $
+ * $Id: 3893bc067aab66b88a6166c8cbec82e47a193a5b $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
@@ -49,10 +49,7 @@ int BufferInit( buffer_t *p_buffer )
 
 int BufferDestroy( buffer_t *p_buffer )
 {
-    if( p_buffer->p_memory != NULL )
-    {
-        free( p_buffer->p_memory );
-    }
+    free( p_buffer->p_memory );
     p_buffer->p_memory = NULL;
     p_buffer->p_begin = NULL;
 

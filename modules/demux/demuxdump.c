@@ -2,7 +2,7 @@
  * demuxdump.c : Pseudo demux module for vlc (dump raw stream)
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 8eeb91e6190b6683e344dca2584bcac1283d0c14 $
+ * $Id: 2a642929978885abb6d00e8544a6c0d011d968ed $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -29,12 +29,10 @@
 # include "config.h"
 #endif
 
-#include <errno.h>
-
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -57,7 +55,7 @@ vlc_module_begin ()
     set_capability( "demux", 0 )
     add_file( "demuxdump-file", "stream-demux.dump", NULL, FILE_TEXT,
               FILE_LONGTEXT, false )
-    add_bool( "demuxdump-append", 0, NULL, APPEND_TEXT, APPEND_LONGTEXT,
+    add_bool( "demuxdump-append", false, NULL, APPEND_TEXT, APPEND_LONGTEXT,
               false )
     set_callbacks( Open, Close )
     add_shortcut( "dump" )
@@ -93,7 +91,6 @@ static int Open( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
     const char  *psz_mode;
-    vlc_value_t val;
     bool  b_append;
 
     /* Accept only if forced */
@@ -104,9 +101,7 @@ static int Open( vlc_object_t * p_this )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    var_Create( p_demux, "demuxdump-append", VLC_VAR_BOOL|VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "demuxdump-append", &val );
-    b_append = val.b_bool;
+    b_append = var_CreateGetBool( p_demux, "demuxdump-append" );
     if ( b_append )
         psz_mode = "ab";
     else
@@ -131,7 +126,7 @@ static int Open( vlc_object_t * p_this )
         msg_Info( p_demux, "dumping raw stream to standard output" );
         p_sys->p_file = stdout;
     }
-    else if( ( p_sys->p_file = utf8_fopen( p_sys->psz_file, psz_mode ) ) == NULL )
+    else if( ( p_sys->p_file = vlc_fopen( p_sys->psz_file, psz_mode ) ) == NULL )
     {
         msg_Err( p_demux, "cannot create `%s' for writing", p_sys->psz_file );
         free( p_sys->psz_file );
@@ -153,7 +148,7 @@ static void Close( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    msg_Info( p_demux ,"closing %s (%"PRId64" Kbytes dumped)", p_sys->psz_file,
+    msg_Info( p_demux ,"closing %s (%"PRId64" KiB dumped)", p_sys->psz_file,
               p_sys->i_write / 1024 );
 
     if( p_sys->p_file != stdout )
@@ -175,7 +170,6 @@ static int Demux( demux_t *p_demux )
 
     int i_data;
 
-    /* I'm pretty sure that stream_Peek,stream_Read( , NULL ) would be faster*/
     i_data = stream_Read( p_demux->s, p_sys->buffer, DUMP_BLOCKSIZE );
     if ( i_data <= 0 )
         return i_data;

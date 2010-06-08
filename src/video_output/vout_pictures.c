@@ -2,7 +2,7 @@
  * vout_pictures.c : picture management functions
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: ba384c04d69caaa0da5b8182f448ec86f4f23388 $
+ * $Id: 9327a4b28b7a4db306ab9545de98ed01017034e0 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -38,6 +38,8 @@
 #include <vlc_filter.h>
 #include <vlc_image.h>
 #include <vlc_block.h>
+#include <vlc_picture_fifo.h>
+#include <vlc_picture_pool.h>
 
 #include "vout_pictures.h"
 #include "vout_internal.h"
@@ -63,6 +65,7 @@ void vout_DisplayPicture( vout_thread_t *p_vout, picture_t *p_pic )
                          p_pic, p_pic->i_status );
     }
     p_vout->p->i_picture_qtype = p_pic->i_qtype;
+    p_vout->p->b_picture_interlaced = !p_pic->b_progressive;
 
     vlc_mutex_unlock( &p_vout->picture_lock );
 }
@@ -167,7 +170,8 @@ picture_t *vout_CreatePicture( vout_thread_t *p_vout,
         vout_AllocatePicture( VLC_OBJECT(p_vout),
                               p_freepic, p_vout->render.i_chroma,
                               p_vout->render.i_width, p_vout->render.i_height,
-                              p_vout->render.i_aspect );
+                              p_vout->render.i_aspect * p_vout->render.i_height,
+                              VOUT_ASPECT_FACTOR      * p_vout->render.i_width);
 
         if( p_freepic->i_planes )
         {
@@ -307,22 +311,11 @@ void vout_UnlinkPicture( vout_thread_t *p_vout, picture_t *p_pic )
         msg_Err( p_vout, "Invalid picture reference count (%p, %d)",
                  p_pic, p_pic->i_refcount );
 
-    if( p_pic->i_refcount == 0 && p_pic->i_status == DISPLAYED_PICTURE )
+    if( p_pic->i_refcount == 0 &&
+        ( p_pic->i_status == DISPLAYED_PICTURE || p_pic->i_status == RESERVED_PICTURE ) )
         DestroyPicture( p_vout, p_pic );
 
     vlc_mutex_unlock( &p_vout->picture_lock );
-}
-
-static int vout_LockPicture( vout_thread_t *p_vout, picture_t *p_picture )
-{
-    if( p_picture->pf_lock )
-        return p_picture->pf_lock( p_vout, p_picture );
-    return VLC_SUCCESS;
-}
-static void vout_UnlockPicture( vout_thread_t *p_vout, picture_t *p_picture )
-{
-    if( p_picture->pf_unlock )
-        p_picture->pf_unlock( p_vout, p_picture );
 }
 
 /**
@@ -338,112 +331,63 @@ picture_t *vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
     if( p_pic == NULL )
         return NULL;
 
-    if( p_pic->i_type == DIRECT_PICTURE )
+    if( p_pic->i_type == DIRECT_PICTURE && !p_subpic )
     {
-        /* Picture is in a direct buffer. */
-
-        if( p_subpic != NULL )
-        {
-            /* We have subtitles. First copy the picture to
-             * the spare direct buffer, then render the
-             * subtitles. */
-            if( vout_LockPicture( p_vout, PP_OUTPUTPICTURE[0] ) )
-                return NULL;
-
-            picture_Copy( PP_OUTPUTPICTURE[0], p_pic );
-
-            spu_RenderSubpicturesNew( p_vout->p_spu,
-                                      PP_OUTPUTPICTURE[0], &p_vout->fmt_out,
-                                      p_subpic, &p_vout->fmt_in, render_date );
-
-            vout_UnlockPicture( p_vout, PP_OUTPUTPICTURE[0] );
-
-            return PP_OUTPUTPICTURE[0];
-        }
-
         /* No subtitles, picture is in a directbuffer so
          * we can display it directly (even if it is still
          * in use or not). */
         return p_pic;
     }
 
-    /* Not a direct buffer. We either need to copy it to a direct buffer,
-     * or render it if the chroma isn't the same. */
-    if( p_vout->p->b_direct )
-    {
-        /* Picture is not in a direct buffer, but is exactly the
-         * same size as the direct buffers. A memcpy() is enough,
-         * then render the subtitles. */
-
-        if( vout_LockPicture( p_vout, PP_OUTPUTPICTURE[0] ) )
-            return NULL;
-
-        picture_Copy( PP_OUTPUTPICTURE[0], p_pic );
-        spu_RenderSubpicturesNew( p_vout->p_spu,
-                                  PP_OUTPUTPICTURE[0], &p_vout->fmt_out,
-                                  p_subpic, &p_vout->fmt_in, render_date );
-
-        vout_UnlockPicture( p_vout, PP_OUTPUTPICTURE[0] );
-
-        return PP_OUTPUTPICTURE[0];
-    }
-
-    /* Picture is not in a direct buffer, and needs to be converted to
-     * another size/chroma. Then the subtitles need to be rendered as
-     * well. This usually means software YUV, or hardware YUV with a
-     * different chroma. */
-
-    if( p_subpic != NULL && p_vout->p_picture[0].b_slow )
+    /* It is either because:
+     *  - the picture is not a direct buffer
+     *  - we have to render subtitles (we can never do it on the given
+     *  picture even if not referenced).
+     */
+    picture_t *p_render;
+    if( p_subpic != NULL && PP_OUTPUTPICTURE[0]->b_slow )
     {
         /* The picture buffer is in slow memory. We'll use
          * the "2 * VOUT_MAX_PICTURES + 1" picture as a temporary
          * one for subpictures rendering. */
-        picture_t *p_tmp_pic = &p_vout->p_picture[2 * VOUT_MAX_PICTURES];
-        if( p_tmp_pic->i_status == FREE_PICTURE )
+        p_render = &p_vout->p_picture[2 * VOUT_MAX_PICTURES];
+        if( p_render->i_status == FREE_PICTURE )
         {
             vout_AllocatePicture( VLC_OBJECT(p_vout),
-                                  p_tmp_pic, p_vout->fmt_out.i_chroma,
+                                  p_render, p_vout->fmt_out.i_chroma,
                                   p_vout->fmt_out.i_width,
                                   p_vout->fmt_out.i_height,
-                                  p_vout->fmt_out.i_aspect );
-            p_tmp_pic->i_type = MEMORY_PICTURE;
-            p_tmp_pic->i_status = RESERVED_PICTURE;
-            /* some modules (such as blend)  needs to know the extra information in picture heap */
-            p_tmp_pic->p_heap = &p_vout->output;
+                                  p_vout->fmt_out.i_sar_num,
+                                  p_vout->fmt_out.i_sar_den );
+            p_render->i_type = MEMORY_PICTURE;
+            p_render->i_status = RESERVED_PICTURE;
         }
-
-        /* Convert image to the first direct buffer */
-        p_vout->p->p_chroma->p_owner = (filter_owner_sys_t *)p_tmp_pic;
-        p_vout->p->p_chroma->pf_video_filter( p_vout->p->p_chroma, p_pic );
-
-        /* Render subpictures on the first direct buffer */
-        spu_RenderSubpicturesNew( p_vout->p_spu,
-                                  p_tmp_pic, &p_vout->fmt_out,
-                                  p_subpic, &p_vout->fmt_in, render_date );
-
-        if( vout_LockPicture( p_vout, &p_vout->p_picture[0] ) )
-            return NULL;
-
-        picture_Copy( &p_vout->p_picture[0], p_tmp_pic );
     }
     else
     {
-        if( vout_LockPicture( p_vout, &p_vout->p_picture[0] ) )
-            return NULL;
-
-        /* Convert image to the first direct buffer */
-        p_vout->p->p_chroma->p_owner = (filter_owner_sys_t *)&p_vout->p_picture[0];
-        p_vout->p->p_chroma->pf_video_filter( p_vout->p->p_chroma, p_pic );
-
-        /* Render subpictures on the first direct buffer */
-        spu_RenderSubpicturesNew( p_vout->p_spu,
-                                  &p_vout->p_picture[0], &p_vout->fmt_out,
-                                  p_subpic, &p_vout->fmt_in, render_date );
+        /* We can directly render into a direct buffer */
+        p_render = PP_OUTPUTPICTURE[0];
     }
+    /* Copy or convert */
+    if( p_vout->p->b_direct )
+    {
+        picture_Copy( p_render, p_pic );
+    }
+    else
+    {
+        p_vout->p->p_chroma->p_owner = (filter_owner_sys_t *)p_render;
+        p_vout->p->p_chroma->pf_video_filter( p_vout->p->p_chroma, p_pic );
+    }
+    /* Render the subtitles if present */
+    if( p_subpic )
+        spu_RenderSubpictures( p_vout->p_spu,
+                               p_render, &p_vout->fmt_out,
+                               p_subpic, &p_vout->fmt_in, render_date );
+    /* Copy in case we used a temporary fast buffer */
+    if( p_render != PP_OUTPUTPICTURE[0] )
+        picture_Copy( PP_OUTPUTPICTURE[0], p_render );
 
-    vout_UnlockPicture( p_vout, &p_vout->p_picture[0] );
-
-    return &p_vout->p_picture[0];
+    return PP_OUTPUTPICTURE[0];
 }
 
 /**
@@ -543,6 +487,7 @@ void vout_PlacePicture( const vout_thread_t *p_vout,
     }
 }
 
+#undef vout_AllocatePicture
 /**
  * Allocate a new picture in the heap.
  *
@@ -550,29 +495,34 @@ void vout_PlacePicture( const vout_thread_t *p_vout,
  * used exactly like a video buffer. The video output thread then manages
  * how it gets displayed.
  */
-int __vout_AllocatePicture( vlc_object_t *p_this, picture_t *p_pic,
-                            vlc_fourcc_t i_chroma,
-                            int i_width, int i_height, int i_aspect )
+int vout_AllocatePicture( vlc_object_t *p_this, picture_t *p_pic,
+                          vlc_fourcc_t i_chroma,
+                          int i_width, int i_height,
+                          int i_sar_num, int i_sar_den )
 {
-    int i_bytes, i_index, i_width_aligned, i_height_aligned;
+    VLC_UNUSED(p_this);
 
     /* Make sure the real dimensions are a multiple of 16 */
-    i_width_aligned = (i_width + 15) >> 4 << 4;
-    i_height_aligned = (i_height + 15) >> 4 << 4;
-
-    if( vout_InitPicture( p_this, p_pic, i_chroma,
-                          i_width, i_height, i_aspect ) != VLC_SUCCESS )
-    {
-        p_pic->i_planes = 0;
+    if( picture_Setup( p_pic, i_chroma, i_width, i_height,
+                       i_sar_num, i_sar_den ) != VLC_SUCCESS )
         return VLC_EGENERIC;
-    }
 
     /* Calculate how big the new image should be */
-    i_bytes = p_pic->format.i_bits_per_pixel *
-        i_width_aligned * i_height_aligned / 8;
+    size_t i_bytes = 0;
+    for( int i = 0; i < p_pic->i_planes; i++ )
+    {
+        const plane_t *p = &p_pic->p[i];
+
+        if( p->i_pitch <= 0 || p->i_lines <= 0 ||
+            p->i_pitch > (SIZE_MAX - i_bytes)/p->i_lines )
+        {
+            p_pic->i_planes = 0;
+            return VLC_ENOMEM;
+        }
+        i_bytes += p->i_pitch * p->i_lines;
+    }
 
     p_pic->p_data = vlc_memalign( &p_pic->p_data_orig, 16, i_bytes );
-
     if( p_pic->p_data == NULL )
     {
         p_pic->i_planes = 0;
@@ -580,368 +530,11 @@ int __vout_AllocatePicture( vlc_object_t *p_this, picture_t *p_pic,
     }
 
     /* Fill the p_pixels field for each plane */
-    p_pic->p[ 0 ].p_pixels = p_pic->p_data;
-
-    for( i_index = 1; i_index < p_pic->i_planes; i_index++ )
+    p_pic->p[0].p_pixels = p_pic->p_data;
+    for( int i = 1; i < p_pic->i_planes; i++ )
     {
-        p_pic->p[i_index].p_pixels = p_pic->p[i_index-1].p_pixels +
-            p_pic->p[i_index-1].i_lines * p_pic->p[i_index-1].i_pitch;
-    }
-
-    return VLC_SUCCESS;
-}
-
-/**
- * Initialise the video format fields given chroma/size.
- *
- * This function initializes all the video_frame_format_t fields given the
- * static properties of a picture (chroma and size).
- * \param p_format Pointer to the format structure to initialize
- * \param i_chroma Chroma to set
- * \param i_width Width to set
- * \param i_height Height to set
- * \param i_aspect Aspect ratio
- */
-void vout_InitFormat( video_frame_format_t *p_format, vlc_fourcc_t i_chroma,
-                      int i_width, int i_height, int i_aspect )
-{
-    p_format->i_chroma   = i_chroma;
-    p_format->i_width    = p_format->i_visible_width  = i_width;
-    p_format->i_height   = p_format->i_visible_height = i_height;
-    p_format->i_x_offset = p_format->i_y_offset = 0;
-    p_format->i_aspect   = i_aspect;
-
-#if 0
-    /* Assume we have square pixels */
-    if( i_width && i_height )
-        p_format->i_aspect = i_width * VOUT_ASPECT_FACTOR / i_height;
-    else
-        p_format->i_aspect = 0;
-#endif
-
-    switch( i_chroma )
-    {
-        case FOURCC_YUVA:
-            p_format->i_bits_per_pixel = 32;
-            break;
-        case FOURCC_I444:
-        case FOURCC_J444:
-            p_format->i_bits_per_pixel = 24;
-            break;
-        case FOURCC_I422:
-        case FOURCC_YUY2:
-        case FOURCC_UYVY:
-        case FOURCC_J422:
-            p_format->i_bits_per_pixel = 16;
-            break;
-        case FOURCC_I440:
-        case FOURCC_J440:
-            p_format->i_bits_per_pixel = 16;
-            break;
-        case FOURCC_I411:
-        case FOURCC_YV12:
-        case FOURCC_I420:
-        case FOURCC_J420:
-        case FOURCC_IYUV:
-            p_format->i_bits_per_pixel = 12;
-            break;
-        case FOURCC_I410:
-        case FOURCC_YVU9:
-            p_format->i_bits_per_pixel = 9;
-            break;
-        case FOURCC_Y211:
-            p_format->i_bits_per_pixel = 8;
-            break;
-        case FOURCC_YUVP:
-            p_format->i_bits_per_pixel = 8;
-            break;
-
-        case FOURCC_RV32:
-        case FOURCC_RGBA:
-            p_format->i_bits_per_pixel = 32;
-            break;
-        case FOURCC_RV24:
-            p_format->i_bits_per_pixel = 24;
-            break;
-        case FOURCC_RV15:
-        case FOURCC_RV16:
-            p_format->i_bits_per_pixel = 16;
-            break;
-        case FOURCC_RGB2:
-            p_format->i_bits_per_pixel = 8;
-            break;
-
-        case FOURCC_GREY:
-        case FOURCC_Y800:
-        case FOURCC_Y8:
-        case FOURCC_RGBP:
-            p_format->i_bits_per_pixel = 8;
-            break;
-
-        default:
-            p_format->i_bits_per_pixel = 0;
-            break;
-    }
-}
-
-/**
- * Initialise the picture_t fields given chroma/size.
- *
- * This function initializes most of the picture_t fields given a chroma and
- * size. It makes the assumption that stride == width.
- * \param p_this The calling object
- * \param p_pic Pointer to the picture to initialize
- * \param i_chroma The chroma fourcc to set
- * \param i_width The width of the picture
- * \param i_height The height of the picture
- * \param i_aspect The aspect ratio of the picture
- */
-int __vout_InitPicture( vlc_object_t *p_this, picture_t *p_pic,
-                        vlc_fourcc_t i_chroma,
-                        int i_width, int i_height, int i_aspect )
-{
-    int i_index, i_width_aligned, i_height_aligned;
-
-    /* Store default values */
-    for( i_index = 0; i_index < VOUT_MAX_PLANES; i_index++ )
-    {
-        p_pic->p[i_index].p_pixels = NULL;
-        p_pic->p[i_index].i_pixel_pitch = 1;
-    }
-
-    p_pic->pf_release = NULL;
-    p_pic->pf_lock = NULL;
-    p_pic->pf_unlock = NULL;
-    p_pic->i_refcount = 0;
-
-    p_pic->i_qtype = QTYPE_NONE;
-    p_pic->i_qstride = 0;
-    p_pic->p_q = NULL;
-
-    vout_InitFormat( &p_pic->format, i_chroma, i_width, i_height, i_aspect );
-
-    /* Make sure the real dimensions are a multiple of 16 */
-    i_width_aligned = (i_width + 15) >> 4 << 4;
-    i_height_aligned = (i_height + 15) >> 4 << 4;
-
-    /* Calculate coordinates */
-    switch( i_chroma )
-    {
-        case FOURCC_I411:
-            p_pic->p[ Y_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ Y_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ U_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ U_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ U_PLANE ].i_pitch = i_width_aligned / 4;
-            p_pic->p[ U_PLANE ].i_visible_pitch = i_width / 4;
-            p_pic->p[ V_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ V_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ V_PLANE ].i_pitch = i_width_aligned / 4;
-            p_pic->p[ V_PLANE ].i_visible_pitch = i_width / 4;
-            p_pic->i_planes = 3;
-            break;
-
-        case FOURCC_I410:
-        case FOURCC_YVU9:
-            p_pic->p[ Y_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ Y_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ U_PLANE ].i_lines = i_height_aligned / 4;
-            p_pic->p[ U_PLANE ].i_visible_lines = i_height / 4;
-            p_pic->p[ U_PLANE ].i_pitch = i_width_aligned / 4;
-            p_pic->p[ U_PLANE ].i_visible_pitch = i_width / 4;
-            p_pic->p[ V_PLANE ].i_lines = i_height_aligned / 4;
-            p_pic->p[ V_PLANE ].i_visible_lines = i_height / 4;
-            p_pic->p[ V_PLANE ].i_pitch = i_width_aligned / 4;
-            p_pic->p[ V_PLANE ].i_visible_pitch = i_width / 4;
-            p_pic->i_planes = 3;
-            break;
-
-        case FOURCC_YV12:
-        case FOURCC_I420:
-        case FOURCC_IYUV:
-        case FOURCC_J420:
-            p_pic->p[ Y_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ Y_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ U_PLANE ].i_lines = i_height_aligned / 2;
-            p_pic->p[ U_PLANE ].i_visible_lines = i_height / 2;
-            p_pic->p[ U_PLANE ].i_pitch = i_width_aligned / 2;
-            p_pic->p[ U_PLANE ].i_visible_pitch = i_width / 2;
-            p_pic->p[ V_PLANE ].i_lines = i_height_aligned / 2;
-            p_pic->p[ V_PLANE ].i_visible_lines = i_height / 2;
-            p_pic->p[ V_PLANE ].i_pitch = i_width_aligned / 2;
-            p_pic->p[ V_PLANE ].i_visible_pitch = i_width / 2;
-            p_pic->i_planes = 3;
-            break;
-
-        case FOURCC_I422:
-        case FOURCC_J422:
-            p_pic->p[ Y_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ Y_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ U_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ U_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ U_PLANE ].i_pitch = i_width_aligned / 2;
-            p_pic->p[ U_PLANE ].i_visible_pitch = i_width / 2;
-            p_pic->p[ V_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ V_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ V_PLANE ].i_pitch = i_width_aligned / 2;
-            p_pic->p[ V_PLANE ].i_visible_pitch = i_width / 2;
-            p_pic->i_planes = 3;
-            break;
-
-        case FOURCC_I440:
-        case FOURCC_J440:
-            p_pic->p[ Y_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ Y_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ U_PLANE ].i_lines = i_height_aligned / 2;
-            p_pic->p[ U_PLANE ].i_visible_lines = i_height / 2;
-            p_pic->p[ U_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ U_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ V_PLANE ].i_lines = i_height_aligned / 2;
-            p_pic->p[ V_PLANE ].i_visible_lines = i_height / 2;
-            p_pic->p[ V_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ V_PLANE ].i_visible_pitch = i_width;
-            p_pic->i_planes = 3;
-            break;
-
-        case FOURCC_I444:
-        case FOURCC_J444:
-            p_pic->p[ Y_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ Y_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ U_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ U_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ U_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ U_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ V_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ V_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ V_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ V_PLANE ].i_visible_pitch = i_width;
-            p_pic->i_planes = 3;
-            break;
-
-        case FOURCC_YUVA:
-            p_pic->p[ Y_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ Y_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ Y_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ U_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ U_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ U_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ U_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ V_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ V_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ V_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ V_PLANE ].i_visible_pitch = i_width;
-            p_pic->p[ A_PLANE ].i_lines = i_height_aligned;
-            p_pic->p[ A_PLANE ].i_visible_lines = i_height;
-            p_pic->p[ A_PLANE ].i_pitch = i_width_aligned;
-            p_pic->p[ A_PLANE ].i_visible_pitch = i_width;
-            p_pic->i_planes = 4;
-            break;
-
-        case FOURCC_YUVP:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned;
-            p_pic->p->i_visible_pitch = i_width;
-            p_pic->p->i_pixel_pitch = 8;
-            p_pic->i_planes = 1;
-            break;
-
-        case FOURCC_Y211:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned;
-            p_pic->p->i_visible_pitch = i_width;
-            p_pic->p->i_pixel_pitch = 4;
-            p_pic->i_planes = 1;
-            break;
-
-        case FOURCC_UYVY:
-        case FOURCC_YUY2:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned * 2;
-            p_pic->p->i_visible_pitch = i_width * 2;
-            p_pic->p->i_pixel_pitch = 4;
-            p_pic->i_planes = 1;
-            break;
-
-        case FOURCC_RGB2:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned;
-            p_pic->p->i_visible_pitch = i_width;
-            p_pic->p->i_pixel_pitch = 1;
-            p_pic->i_planes = 1;
-            break;
-
-        case FOURCC_RV15:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned * 2;
-            p_pic->p->i_visible_pitch = i_width * 2;
-            p_pic->p->i_pixel_pitch = 2;
-            p_pic->i_planes = 1;
-            break;
-
-        case FOURCC_RV16:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned * 2;
-            p_pic->p->i_visible_pitch = i_width * 2;
-            p_pic->p->i_pixel_pitch = 2;
-            p_pic->i_planes = 1;
-            break;
-
-        case FOURCC_RV24:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned * 3;
-            p_pic->p->i_visible_pitch = i_width * 3;
-            p_pic->p->i_pixel_pitch = 3;
-            p_pic->i_planes = 1;
-            break;
-
-        case FOURCC_RV32:
-        case FOURCC_RGBA:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned * 4;
-            p_pic->p->i_visible_pitch = i_width * 4;
-            p_pic->p->i_pixel_pitch = 4;
-            p_pic->i_planes = 1;
-            break;
-
-        case FOURCC_GREY:
-        case FOURCC_Y800:
-        case FOURCC_Y8:
-        case FOURCC_RGBP:
-            p_pic->p->i_lines = i_height_aligned;
-            p_pic->p->i_visible_lines = i_height;
-            p_pic->p->i_pitch = i_width_aligned;
-            p_pic->p->i_visible_pitch = i_width;
-            p_pic->p->i_pixel_pitch = 1;
-            p_pic->i_planes = 1;
-            break;
-
-        default:
-            if( p_this )
-                msg_Err( p_this, "unknown chroma type 0x%.8x (%4.4s)",
-                                 i_chroma, (char*)&i_chroma );
-            p_pic->i_planes = 0;
-            return VLC_EGENERIC;
+        p_pic->p[i].p_pixels = &p_pic->p[i-1].p_pixels[ p_pic->p[i-1].i_lines *
+                                                        p_pic->p[i-1].i_pitch ];
     }
 
     return VLC_SUCCESS;
@@ -956,29 +549,24 @@ int __vout_InitPicture( vlc_object_t *p_this, picture_t *p_pic,
 int vout_ChromaCmp( vlc_fourcc_t i_chroma, vlc_fourcc_t i_amorhc )
 {
     static const vlc_fourcc_t p_I420[] = {
-        FOURCC_I420, FOURCC_IYUV, FOURCC_YV12, FOURCC_J420, 0
+        VLC_CODEC_I420, VLC_CODEC_YV12, VLC_CODEC_J420, 0
     };
     static const vlc_fourcc_t p_I422[] = {
-        FOURCC_I422, FOURCC_J422, 0
+        VLC_CODEC_I422, VLC_CODEC_J422, 0
     };
     static const vlc_fourcc_t p_I440[] = {
-        FOURCC_I440, FOURCC_J440, 0
+        VLC_CODEC_I440, VLC_CODEC_J440, 0
     };
     static const vlc_fourcc_t p_I444[] = {
-        FOURCC_I444, FOURCC_J444, 0
-    };
-    static const vlc_fourcc_t p_UYVY[] = {
-        FOURCC_UYVY, FOURCC_UYNV, FOURCC_Y422, 0
-    };
-    static const vlc_fourcc_t p_YUYV[] = {
-        FOURCC_YUY2, FOURCC_YUNV, 0
-    };
-    static const vlc_fourcc_t p_GREY[] = {
-        FOURCC_GREY, FOURCC_Y800, FOURCC_Y8, 0
+        VLC_CODEC_I444, VLC_CODEC_J444, 0
     };
     static const vlc_fourcc_t *pp_fcc[] = {
-        p_I420, p_I422, p_I440, p_I444, p_UYVY, p_YUYV, p_GREY, NULL
+        p_I420, p_I422, p_I440, p_I444, NULL
     };
+
+    /* */
+    i_chroma = vlc_fourcc_GetCodec( VIDEO_ES, i_chroma );
+    i_amorhc = vlc_fourcc_GetCodec( VIDEO_ES, i_amorhc );
 
     /* If they are the same, they are the same ! */
     if( i_chroma == i_amorhc )
@@ -1011,27 +599,225 @@ static void PictureReleaseCallback( picture_t *p_picture )
         return;
     picture_Delete( p_picture );
 }
+
 /*****************************************************************************
  *
  *****************************************************************************/
-picture_t *picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_aspect )
+void picture_Reset( picture_t *p_picture )
 {
+    /* */
+    p_picture->date = VLC_TS_INVALID;
+    p_picture->b_force = false;
+    p_picture->b_progressive = false;
+    p_picture->i_nb_fields = 0;
+    p_picture->b_top_field_first = false;
+    picture_CleanupQuant( p_picture );
+}
+
+/*****************************************************************************
+ *
+ *****************************************************************************/
+typedef struct
+{
+    unsigned     i_plane_count;
+    struct
+    {
+        struct
+        {
+            unsigned i_num;
+            unsigned i_den;
+        } w;
+        struct
+        {
+            unsigned i_num;
+            unsigned i_den;
+        } h;
+    } p[VOUT_MAX_PLANES];
+    unsigned i_pixel_size;
+
+} chroma_description_t;
+
+#define PLANAR(n, w_den, h_den) \
+    { n, { {{1,1}, {1,1}}, {{1,w_den}, {1,h_den}}, {{1,w_den}, {1,h_den}}, {{1,1}, {1,1}} }, 1 }
+#define PACKED(size) \
+    { 1, { {{1,1}, {1,1}} }, size }
+
+static const struct
+{
+    vlc_fourcc_t            p_fourcc[5];
+    chroma_description_t    description;
+} p_chromas[] = {
+    { { VLC_CODEC_I411, 0 },                                 PLANAR(3, 4, 1) },
+    { { VLC_CODEC_I410, VLC_CODEC_YV9, 0 },                  PLANAR(3, 4, 4) },
+    { { VLC_CODEC_YV12, VLC_CODEC_I420, VLC_CODEC_J420, 0 }, PLANAR(3, 2, 2) },
+    { { VLC_CODEC_I422, VLC_CODEC_J422, 0 },                 PLANAR(3, 2, 1) },
+    { { VLC_CODEC_I440, VLC_CODEC_J440, 0 },                 PLANAR(3, 1, 2) },
+    { { VLC_CODEC_I444, VLC_CODEC_J444, 0 },                 PLANAR(3, 1, 1) },
+    { { VLC_CODEC_YUVA, 0 },                                 PLANAR(4, 1, 1) },
+
+    { { VLC_CODEC_UYVY, VLC_CODEC_VYUY, VLC_CODEC_YUYV, VLC_CODEC_YVYU, 0 }, PACKED(2) },
+    { { VLC_CODEC_RGB8, VLC_CODEC_GREY, VLC_CODEC_YUVP, VLC_CODEC_RGBP, 0 }, PACKED(1) },
+    { { VLC_CODEC_RGB16, VLC_CODEC_RGB15, 0 },                               PACKED(2) },
+    { { VLC_CODEC_RGB24, 0 },                                                PACKED(3) },
+    { { VLC_CODEC_RGB32, VLC_CODEC_RGBA, 0 },                                PACKED(4) },
+
+    { { VLC_CODEC_Y211, 0 }, { 1, { {{1,4}, {1,1}} }, 4 } },
+
+    { {0}, { 0, {}, 0 } }
+};
+
+#undef PACKED
+#undef PLANAR
+
+static const chroma_description_t *vlc_fourcc_GetChromaDescription( vlc_fourcc_t i_fourcc )
+{
+    for( unsigned i = 0; p_chromas[i].p_fourcc[0]; i++ )
+    {
+        const vlc_fourcc_t *p_fourcc = p_chromas[i].p_fourcc;
+        for( unsigned j = 0; p_fourcc[j]; j++ )
+        {
+            if( p_fourcc[j] == i_fourcc )
+                return &p_chromas[i].description;
+        }
+    }
+    return NULL;
+}
+
+static int LCM( int a, int b )
+{
+    return a * b / GCD( a, b );
+}
+
+int picture_Setup( picture_t *p_picture, vlc_fourcc_t i_chroma,
+                   int i_width, int i_height, int i_sar_num, int i_sar_den )
+{
+    /* Store default values */
+    p_picture->i_planes = 0;
+    for( unsigned i = 0; i < VOUT_MAX_PLANES; i++ )
+    {
+        plane_t *p = &p_picture->p[i];
+        p->p_pixels = NULL;
+        p->i_pixel_pitch = 0;
+    }
+
+    p_picture->pf_release = NULL;
+    p_picture->p_release_sys = NULL;
+    p_picture->i_refcount = 0;
+
+    p_picture->i_qtype = QTYPE_NONE;
+    p_picture->i_qstride = 0;
+    p_picture->p_q = NULL;
+
+    video_format_Setup( &p_picture->format, i_chroma, i_width, i_height,
+                        i_sar_num, i_sar_den );
+
+    const chroma_description_t *p_dsc =
+        vlc_fourcc_GetChromaDescription( p_picture->format.i_chroma );
+    if( !p_dsc )
+        return VLC_EGENERIC;
+
+    /* We want V (width/height) to respect:
+        (V * p_dsc->p[i].w.i_num) % p_dsc->p[i].w.i_den == 0
+        (V * p_dsc->p[i].w.i_num/p_dsc->p[i].w.i_den * p_dsc->i_pixel_size) % 16 == 0
+       Which is respected if you have
+       V % lcm( p_dsc->p[0..planes].w.i_den * 16) == 0
+    */
+    int i_modulo_w = 1;
+    int i_modulo_h = 1;
+    int i_ratio_h  = 1;
+    for( unsigned i = 0; i < p_dsc->i_plane_count; i++ )
+    {
+        i_modulo_w = LCM( i_modulo_w, 16 * p_dsc->p[i].w.i_den );
+        i_modulo_h = LCM( i_modulo_h, 16 * p_dsc->p[i].h.i_den );
+        if( i_ratio_h < p_dsc->p[i].h.i_den )
+            i_ratio_h = p_dsc->p[i].h.i_den;
+    }
+
+    const int i_width_aligned  = ( i_width  + i_modulo_w - 1 ) / i_modulo_w * i_modulo_w;
+    const int i_height_aligned = ( i_height + i_modulo_h - 1 ) / i_modulo_h * i_modulo_h;
+    const int i_height_extra   = 2 * i_ratio_h; /* This one is a hack for some ASM functions */
+    for( unsigned i = 0; i < p_dsc->i_plane_count; i++ )
+    {
+        plane_t *p = &p_picture->p[i];
+
+        p->i_lines         = (i_height_aligned + i_height_extra ) * p_dsc->p[i].h.i_num / p_dsc->p[i].h.i_den;
+        p->i_visible_lines = i_height * p_dsc->p[i].h.i_num / p_dsc->p[i].h.i_den;
+        p->i_pitch         = i_width_aligned * p_dsc->p[i].w.i_num / p_dsc->p[i].w.i_den * p_dsc->i_pixel_size;
+        p->i_visible_pitch = i_width * p_dsc->p[i].w.i_num / p_dsc->p[i].w.i_den * p_dsc->i_pixel_size;
+        p->i_pixel_pitch   = p_dsc->i_pixel_size;
+
+        assert( (p->i_pitch % 16) == 0 );
+    }
+    p_picture->i_planes  = p_dsc->i_plane_count;
+
+    return VLC_SUCCESS;
+}
+
+/*****************************************************************************
+ *
+ *****************************************************************************/
+picture_t *picture_NewFromResource( const video_format_t *p_fmt, const picture_resource_t *p_resource )
+{
+    video_format_t fmt = *p_fmt;
+
+    /* It is needed to be sure all informations are filled */
+    video_format_Setup( &fmt, p_fmt->i_chroma,
+                              p_fmt->i_width, p_fmt->i_height,
+                              p_fmt->i_sar_num, p_fmt->i_sar_den );
+
+    /* */
     picture_t *p_picture = calloc( 1, sizeof(*p_picture) );
     if( !p_picture )
         return NULL;
 
-    if( __vout_AllocatePicture( NULL, p_picture,
-                                i_chroma, i_width, i_height, i_aspect ) )
+    if( p_resource )
     {
-        free( p_picture );
-        return NULL;
-    }
+        if( picture_Setup( p_picture, fmt.i_chroma, fmt.i_width, fmt.i_height,
+                           fmt.i_sar_num, fmt.i_sar_den ) )
+        {
+            free( p_picture );
+            return NULL;
+        }
+        p_picture->p_sys = p_resource->p_sys;
 
+        for( int i = 0; i < p_picture->i_planes; i++ )
+        {
+            p_picture->p[i].p_pixels = p_resource->p[i].p_pixels;
+            p_picture->p[i].i_lines  = p_resource->p[i].i_lines;
+            p_picture->p[i].i_pitch  = p_resource->p[i].i_pitch;
+        }
+    }
+    else
+    {
+        if( vout_AllocatePicture( (vlc_object_t *)NULL, p_picture,
+                                  fmt.i_chroma, fmt.i_width, fmt.i_height,
+                                  fmt.i_sar_num, fmt.i_sar_den ) )
+        {
+            free( p_picture );
+            return NULL;
+        }
+    }
+    /* */
+    p_picture->format = fmt;
     p_picture->i_refcount = 1;
     p_picture->pf_release = PictureReleaseCallback;
     p_picture->i_status = RESERVED_PICTURE;
 
     return p_picture;
+}
+picture_t *picture_NewFromFormat( const video_format_t *p_fmt )
+{
+    return picture_NewFromResource( p_fmt, NULL );
+}
+picture_t *picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den )
+{
+    video_format_t fmt;
+
+    memset( &fmt, 0, sizeof(fmt) );
+    video_format_Setup( &fmt, i_chroma, i_width, i_height,
+                        i_sar_num, i_sar_den );
+
+    return picture_NewFromFormat( &fmt );
 }
 
 /*****************************************************************************
@@ -1040,6 +826,7 @@ picture_t *picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_
 void picture_Delete( picture_t *p_picture )
 {
     assert( p_picture && p_picture->i_refcount == 0 );
+    assert( p_picture->p_release_sys == NULL );
 
     free( p_picture->p_q );
     free( p_picture->p_data_orig );
@@ -1165,8 +952,4 @@ int picture_Export( vlc_object_t *p_obj,
 
     return VLC_SUCCESS;
 }
-
-/*****************************************************************************
- *
- *****************************************************************************/
 

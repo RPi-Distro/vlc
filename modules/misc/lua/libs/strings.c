@@ -2,7 +2,7 @@
  * strings.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b9a56a48414e5870ecfcbfcd0ddae296041e5aa4 $
+ * $Id: 5511af181acf08fee2d48330bbae75af2ad41771 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -36,7 +36,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_meta.h>
-#include <vlc_charset.h>
 #include <vlc_aout.h>
 
 #include <lua.h>        /* Low level lua C API */

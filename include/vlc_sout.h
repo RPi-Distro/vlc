@@ -2,7 +2,7 @@
  * stream_output.h : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: f74fe9fd95f4301799af07bf687eec97b9a6923d $
+ * $Id: 03740c076b130faa66a0b08b3967c5a350bbf6ef $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -45,7 +45,6 @@ struct sout_instance_t
     VLC_COMMON_MEMBERS
 
     char *psz_sout;
-    char *psz_chain;
 
     /* meta data (Read only) XXX it won't be set before the first packet received */
     vlc_meta_t          *p_meta;
@@ -178,11 +177,12 @@ struct sout_input_t
 };
 
 
-VLC_EXPORT( sout_mux_t *,   sout_MuxNew,          ( sout_instance_t*, char *, sout_access_out_t * ) );
+VLC_EXPORT( sout_mux_t *,   sout_MuxNew,          ( sout_instance_t*, const char *, sout_access_out_t * ) );
 VLC_EXPORT( sout_input_t *, sout_MuxAddStream,    ( sout_mux_t *, es_format_t * ) );
 VLC_EXPORT( void,           sout_MuxDeleteStream, ( sout_mux_t *, sout_input_t * ) );
 VLC_EXPORT( void,           sout_MuxDelete,       ( sout_mux_t * ) );
 VLC_EXPORT( void,           sout_MuxSendBuffer, ( sout_mux_t *, sout_input_t  *, block_t * ) );
+VLC_EXPORT( int,            sout_MuxGetStream, (sout_mux_t *, int , mtime_t *));
 
 static inline int sout_MuxControl( sout_mux_t *p_mux, int i_query, ... )
 {
@@ -207,7 +207,7 @@ struct sout_stream_t
 
     char              *psz_name;
     config_chain_t        *p_cfg;
-    char              *psz_next;
+    sout_stream_t     *p_next;
 
     /* Subpicture unit */
     spu_t             *p_spu;
@@ -222,8 +222,9 @@ struct sout_stream_t
     sout_stream_sys_t *p_sys;
 };
 
-VLC_EXPORT( sout_stream_t *, sout_StreamNew, ( sout_instance_t *, char *psz_chain ) );
-VLC_EXPORT( void,            sout_StreamDelete, ( sout_stream_t * ) );
+VLC_EXPORT( void, sout_StreamChainDelete, (sout_stream_t *p_first, sout_stream_t *p_last ) );
+VLC_EXPORT( sout_stream_t *, sout_StreamChainNew, (sout_instance_t *p_sout,
+        char *psz_chain, sout_stream_t *p_next, sout_stream_t **p_last) );
 
 static inline sout_stream_id_t *sout_StreamIdAdd( sout_stream_t *s, es_format_t *fmt )
 {

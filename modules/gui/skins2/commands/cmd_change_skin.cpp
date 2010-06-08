@@ -2,7 +2,7 @@
  * cmd_change_skin.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 27d28d58cbe898ece88886a960eba7a5de741b76 $
+ * $Id: da59ec89eafe9a55618f072a809633d976d5bda2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,6 +28,7 @@
 #include "../src/os_loop.hpp"
 #include "../src/theme.hpp"
 #include "../src/theme_loader.hpp"
+#include "../src/theme_repository.hpp"
 #include "../src/window_manager.hpp"
 #include "../src/vout_manager.hpp"
 #include "../src/vlcproc.hpp"
@@ -44,7 +45,6 @@ void CmdChangeSkin::execute()
         pOldTheme->getWindowManager().hideAll();
     }
 
-    VoutManager::instance( getIntf() )->lockVout();
     VoutManager::instance( getIntf() )->saveVoutConfig();
 
     ThemeLoader loader( getIntf() );
@@ -57,7 +57,6 @@ void CmdChangeSkin::execute()
 
         // restore vout config
         VoutManager::instance( getIntf() )->restoreVoutConfig( true );
-        VoutManager::instance( getIntf() )->unlockVout();
     }
     else if( pOldTheme )
     {
@@ -65,16 +64,17 @@ void CmdChangeSkin::execute()
                   " restoring the previous one" );
         getIntf()->p_sys->p_theme = pOldTheme;
         VoutManager::instance( getIntf() )->restoreVoutConfig( false );
-        VoutManager::instance( getIntf() )->unlockVout();
         pOldTheme->getWindowManager().restoreVisibility();
     }
     else
     {
-        VoutManager::instance( getIntf() )->unlockVout();
         msg_Err( getIntf(), "cannot load the theme, aborting" );
         // Quit
         CmdQuit cmd( getIntf() );
         cmd.execute();
     }
+
+   // update the repository
+   ThemeRepository::instance( getIntf() )->updateRepository();
 }
 

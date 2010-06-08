@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 0536932a0dd836b9b6002fbda99976bfa9a61321 $
+ * $Id: e232f5df9ee5ae009ec6acf8f65412b362b41c48 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -38,6 +38,7 @@
 #include "util/customwidgets.hpp"
 #include "util/qt_dirs.hpp"
 #include <vlc_keys.h>
+#include <vlc_intf_strings.h>
 
 #include <QString>
 #include <QVariant>
@@ -48,6 +49,7 @@
 #include <QTreeWidgetItem>
 #include <QSignalMapper>
 #include <QDialogButtonBox>
+#include <QKeyEvent>
 
 #define MINWIDTH_BOX 90
 #define LAST_COLUMN 10
@@ -98,9 +100,6 @@ ConfigControl *ConfigControl::createControl( vlc_object_t *p_this,
     case CONFIG_ITEM_MODULE_LIST_CAT:
         p_control = new ModuleListConfigControl( p_this, p_item, parent, true,
                                              l, line );
-        /* Special Hack for a bug in video-filter */
-        if( qobject_cast<ModuleListConfigControl *>( p_control )->groupBox == NULL )
-            return NULL;
         break;
     case CONFIG_ITEM_STRING:
         if( !p_item->i_list )
@@ -136,12 +135,10 @@ ConfigControl *ConfigControl::createControl( vlc_object_t *p_this,
         p_control = new DirectoryConfigControl( p_this, p_item, parent, l,
                                                 line );
         break;
-#if 0
     case CONFIG_ITEM_FONT:
         p_control = new FontConfigControl( p_this, p_item, parent, l,
-                                           line, false );
+                                           line);
         break;
-#endif
     case CONFIG_ITEM_KEY:
         p_control = new KeySelectorControl( p_this, p_item, parent, l, line );
         break;
@@ -198,6 +195,44 @@ void ConfigControl::doApply( intf_thread_t *p_intf )
         }
     }
 }
+
+/*******************************************************
+ * Simple widgets
+ *******************************************************/
+InterfacePreviewWidget::InterfacePreviewWidget ( QWidget *parent ) : QLabel( parent )
+{
+    setGeometry( 0, 0, 128, 100 );
+    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+}
+
+void InterfacePreviewWidget::setNormalPreview( bool b_minimal )
+{
+    setPreview( ( b_minimal )?MINIMAL:COMPLETE );
+}
+
+void InterfacePreviewWidget::setPreview( enum_style e_style )
+{
+    QString pixmapLocationString(":/prefsmenu/");
+
+    switch( e_style )
+    {
+    default:
+    case COMPLETE:
+        pixmapLocationString += "sample_complete";
+        break;
+    case MINIMAL:
+        pixmapLocationString += "sample_minimal";
+        break;
+    case SKINS:
+        pixmapLocationString += "sample_skins";
+        break;
+    }
+
+    setPixmap( QPixmap( pixmapLocationString ) );
+    update();
+}
+
+
 
 /**************************************************************************
  * String-based controls
@@ -306,7 +341,7 @@ FileConfigControl::FileConfigControl( vlc_object_t *_p_this,
 void FileConfigControl::updateField()
 {
     QString file = QFileDialog::getOpenFileName( NULL,
-                  qtr( "Select File" ), qfu( config_GetHomeDir() ) );
+                  qtr( "Select File" ), QVLCUserDir( VLC_HOME_DIR ) );
     if( file.isNull() ) return;
     text->setText( toNativeSeparators( file ) );
 }
@@ -338,39 +373,47 @@ DirectoryConfigControl::DirectoryConfigControl( vlc_object_t *_p_this,
 void DirectoryConfigControl::updateField()
 {
     QString dir = QFileDialog::getExistingDirectory( NULL,
-                      qtr( "Select Directory" ),
+                      qtr( I_OP_SEL_DIR ),
                       text->text().isEmpty() ?
-                        qfu( config_GetHomeDir() ) : text->text(),
+                        QVLCUserDir( VLC_HOME_DIR ) : text->text(),
                   QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks );
 
     if( dir.isNull() ) return;
     text->setText( toNativeSepNoSlash( dir ) );
 }
 
-#if 0
-#include <QFontDialog>
-
 /********* String / Font **********/
 FontConfigControl::FontConfigControl( vlc_object_t *_p_this,
-                        module_config_t *_p_item, QWidget *_p_widget,
-                        QGridLayout *_p_layout, int& _int, bool _pwd ) :
-     FileConfigControl( _p_this, _p_item, _p_widget, _p_layout, _int, _pwd)
-{}
+                        module_config_t *_p_item, QWidget *_parent,
+                        QGridLayout *_p_layout, int& line) :
+     VStringConfigControl( _p_this, _p_item, _parent )
+{
+    label = new QLabel( qtr(p_item->psz_text) );
+    font = new QFontComboBox( _parent );
+    font->setCurrentFont( QFont( qfu( p_item->value.psz) ) );
+    if( !_p_layout )
+    {
+        QHBoxLayout *layout = new QHBoxLayout();
+        layout->addWidget( label, 0 );
+        layout->addWidget( font, 1 );
+        widget->setLayout( layout );
+    }
+    else
+    {
+        _p_layout->addWidget( label, line, 0 );
+        _p_layout->addWidget( font, line, 1, 1, -1 );
+    }
+}
 
 FontConfigControl::FontConfigControl( vlc_object_t *_p_this,
                         module_config_t *_p_item, QLabel *_p_label,
-                        QLineEdit *_p_line, QPushButton *_p_button, bool _pwd ):
-     FileConfigControl( _p_this, _p_item, _p_label, _p_line, _p_button, _pwd)
-{}
-
-void FontConfigControl::updateField()
+                        QFontComboBox *_p_font):
+     VStringConfigControl( _p_this, _p_item)
 {
-    bool ok;
-    QFont font = QFontDialog::getFont( &ok, QFont( text->text() ), NULL );
-    if( !ok ) return;
-    text->setText( font.family() );
+    label = _p_label;
+    font = _p_font;
+    font->setCurrentFont( QFont( qfu( p_item->value.psz) ) );
 }
-#endif
 
 /********* String / choice list **********/
 StringListConfigControl::StringListConfigControl( vlc_object_t *_p_this,
@@ -384,20 +427,6 @@ StringListConfigControl::StringListConfigControl( vlc_object_t *_p_this,
     combo->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
 
     module_config_t *p_module_config = config_FindConfig( p_this, p_item->psz_name );
-    if(p_module_config && p_module_config->pf_update_list)
-    {
-       vlc_value_t val;
-       val.psz_string = strdup(p_module_config->value.psz);
-
-       p_module_config->pf_update_list(p_this, p_item->psz_name, val, val, NULL);
-
-       // assume in any case that dirty was set to true
-       // because lazy programmes will use the same callback for
-       // this, like the one behind the refresh push button?
-       p_module_config->b_dirty = false;
-
-       free( val.psz_string );
-    }
 
     finish( p_module_config, bycat );
     if( !l )
@@ -420,7 +449,7 @@ StringListConfigControl::StringListConfigControl( vlc_object_t *_p_this,
         for( int i = 0; i < p_item->i_action; i++ )
         {
             QPushButton *button =
-                new QPushButton( qfu( p_item->ppsz_action_text[i] ));
+                new QPushButton( qtr( p_item->ppsz_action_text[i] ));
             CONNECT( button, clicked(), signalMapper, map() );
             signalMapper->setMapping( button, i );
             l->addWidget( button, line, LAST_COLUMN - p_item->i_action + i,
@@ -470,8 +499,30 @@ void StringListConfigControl::finish(module_config_t *p_module_config, bool byca
 
     if(!p_module_config) return;
 
+    if( p_module_config->pf_update_list )
+    {
+       vlc_value_t val;
+       val.psz_string = strdup(p_module_config->value.psz);
+
+       p_module_config->pf_update_list(p_this, p_item->psz_name, val, val, NULL);
+
+       // assume in any case that dirty was set to true
+       // because lazy programmes will use the same callback for
+       // this, like the one behind the refresh push button?
+       p_module_config->b_dirty = false;
+
+       free( val.psz_string );
+    }
+
     for( int i_index = 0; i_index < p_module_config->i_list; i_index++ )
     {
+        if( !p_module_config->ppsz_list[i_index] )
+        {
+              combo->addItem( "", QVariant(""));
+              if( !p_item->value.psz )
+                 combo->setCurrentIndex( combo->count() - 1 );
+              continue;
+        }
         combo->addItem( qfu((p_module_config->ppsz_list_text &&
                             p_module_config->ppsz_list_text[i_index])?
                             p_module_config->ppsz_list_text[i_index] :
@@ -884,19 +935,6 @@ IntegerListConfigControl::IntegerListConfigControl( vlc_object_t *_p_this,
     combo->setMinimumWidth( MINWIDTH_BOX );
 
     module_config_t *p_module_config = config_FindConfig( p_this, p_item->psz_name );
-    if(p_module_config && p_module_config->pf_update_list)
-    {
-       vlc_value_t val;
-       val.i_int = p_module_config->value.i;
-
-       p_module_config->pf_update_list(p_this, p_item->psz_name, val, val, NULL);
-
-       // assume in any case that dirty was set to true
-       // because lazy programmes will use the same callback for
-       // this, like the one behind the refresh push button?
-       p_module_config->b_dirty = false;
-    }
-
 
     finish( p_module_config, bycat );
     if( !l )
@@ -947,6 +985,19 @@ void IntegerListConfigControl::finish(module_config_t *p_module_config, bool byc
     combo->setEditable( false );
 
     if(!p_module_config) return;
+
+    if( p_module_config->pf_update_list )
+    {
+       vlc_value_t val;
+       val.i_int = p_module_config->value.i;
+
+       p_module_config->pf_update_list(p_this, p_item->psz_name, val, val, NULL);
+
+       // assume in any case that dirty was set to true
+       // because lazy programmes will use the same callback for
+       // this, like the one behind the refresh push button?
+       p_module_config->b_dirty = false;
+    }
 
     for( int i_index = 0; i_index < p_module_config->i_list; i_index++ )
     {
@@ -1011,10 +1062,11 @@ BoolConfigControl::BoolConfigControl( vlc_object_t *_p_this,
         l->addWidget( checkbox, line, 0 );
     }
 }
+
 BoolConfigControl::BoolConfigControl( vlc_object_t *_p_this,
                                       module_config_t *_p_item,
                                       QLabel *_label,
-                                      QCheckBox *_checkbox,
+                                      QAbstractButton *_checkbox,
                                       bool bycat ) :
                    VIntConfigControl( _p_this, _p_item )
 {
@@ -1025,14 +1077,13 @@ BoolConfigControl::BoolConfigControl( vlc_object_t *_p_this,
 
 void BoolConfigControl::finish()
 {
-    checkbox->setCheckState( p_item->value.i == true ? Qt::Checked
-                                                        : Qt::Unchecked );
+    checkbox->setChecked( p_item->value.i == true );
     checkbox->setToolTip( formatTooltip(qtr(p_item->psz_longtext)) );
 }
 
 int BoolConfigControl::getValue()
 {
-    return checkbox->checkState() == Qt::Checked ? true : false;
+    return checkbox->isChecked();
 }
 
 /**************************************************************************
@@ -1147,12 +1198,13 @@ KeySelectorControl::KeySelectorControl( vlc_object_t *_p_this,
     table->headerItem()->setText( 1, qtr( "Hotkey" ) );
     table->headerItem()->setText( 2, qtr( "Global" ) );
     table->setAlternatingRowColors( true );
+    table->setSelectionBehavior( QAbstractItemView::SelectItems );
 
     shortcutValue = new KeyShortcutEdit;
     shortcutValue->setReadOnly(true);
 
     QPushButton *clearButton = new QPushButton( qtr( "Clear" ) );
-    QPushButton *setButton = new QPushButton( qtr( "Set" ) );
+    QPushButton *setButton = new QPushButton( qtr( "Apply" ) );
     setButton->setDefault( true );
     finish();
 
@@ -1240,6 +1292,8 @@ void KeySelectorControl::finish()
 
     CONNECT( table, itemDoubleClicked( QTreeWidgetItem *, int ),
              this, selectKey( QTreeWidgetItem *, int ) );
+    CONNECT( table, itemClicked( QTreeWidgetItem *, int ),
+             this, select( QTreeWidgetItem *, int) );
     CONNECT( table, itemSelectionChanged(),
              this, select1Key() );
 
@@ -1255,6 +1309,11 @@ void KeySelectorControl::filter( const QString &qs_search )
         table->topLevelItem( i )->setHidden(
                 !resultList.contains( table->topLevelItem( i ) ) );
     }
+}
+
+void KeySelectorControl::select( QTreeWidgetItem *keyItem, int column )
+{
+    shortcutValue->setGlobal( column == 2 );
 }
 
 /* Show the key selected from the table in the keySelector */
@@ -1353,6 +1412,7 @@ KeyInputDialog::KeyInputDialog( QTreeWidget *_table,
     table = _table;
     setWindowTitle( b_global ? qtr( "Global" ): ""
                     + qtr( "Hotkey for " ) + keyToChange );
+    setWindowRole( "vlc-key-input" );
 
     vLayout = new QVBoxLayout( this );
     selected = new QLabel( qtr( "Press the new keys for " ) + keyToChange );

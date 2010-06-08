@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 33fffa5023799f8dc33774c9cb31935f51f37086 $
+ * $Id: 034905445aad5a6a13fedb76255fa134bc137140 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -150,7 +150,7 @@ static void MkvTree( demux_t & demuxer, int i_level, const char *psz_format, ...
     psz_foo2[ 4 * i_level ] = '+';
     psz_foo2[ 4 * i_level + 1 ] = ' ';
     strcpy( &psz_foo2[ 4 * i_level + 2 ], psz_format );
-    __msg_GenericVa( VLC_OBJECT(&demuxer),VLC_MSG_DBG, "mkv", psz_foo2, args );
+    msg_GenericVa( &demuxer,VLC_MSG_DBG, "mkv", psz_foo2, args );
     free( psz_foo2 );
     va_end( args );
 }
@@ -306,8 +306,7 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
         {
             KaxTrackLanguage &lang = *(KaxTrackLanguage*)l;
 
-            if ( tk->fmt.psz_language != NULL )
-                free( tk->fmt.psz_language );
+            free( tk->fmt.psz_language );
             tk->fmt.psz_language = strdup( string( lang ).c_str() );
             msg_Dbg( &sys.demuxer,
                      "|   |   |   + Track Language=`%s'", tk->fmt.psz_language );
@@ -564,7 +563,10 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
                 }
             }
             if( i_display_height && i_display_width )
-                tk->fmt.video.i_aspect = VOUT_ASPECT_FACTOR * i_display_width / i_display_height;
+            {
+                tk->fmt.video.i_sar_num = i_display_width  * tk->fmt.video.i_height;
+                tk->fmt.video.i_sar_den = i_display_height * tk->fmt.video.i_width;
+            }
             if( i_crop_left || i_crop_right || i_crop_top || i_crop_bottom )
             {
                 tk->fmt.video.i_visible_width = tk->fmt.video.i_width;
@@ -835,7 +837,7 @@ void matroska_segment_c::ParseChapterAtom( int i_level, KaxChapterAtom *ca, chap
         if( MKV_IS_ID( l, KaxChapterUID ) )
         {
             chapters.i_uid = uint64_t(*(KaxChapterUID*)l);
-            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterUID: %lld", chapters.i_uid );
+            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterUID: %"PRId64"", chapters.i_uid );
         }
         else if( MKV_IS_ID( l, KaxChapterFlagHidden ) )
         {
@@ -849,14 +851,14 @@ void matroska_segment_c::ParseChapterAtom( int i_level, KaxChapterAtom *ca, chap
             KaxChapterTimeStart &start =*(KaxChapterTimeStart*)l;
             chapters.i_start_time = uint64( start ) / INT64_C(1000);
 
-            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterTimeStart: %lld", chapters.i_start_time );
+            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterTimeStart: %"PRId64"", chapters.i_start_time );
         }
         else if( MKV_IS_ID( l, KaxChapterTimeEnd ) )
         {
             KaxChapterTimeEnd &end =*(KaxChapterTimeEnd*)l;
             chapters.i_end_time = uint64( end ) / INT64_C(1000);
 
-            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterTimeEnd: %lld", chapters.i_end_time );
+            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterTimeEnd: %"PRId64"", chapters.i_end_time );
         }
         else if( MKV_IS_ID( l, KaxChapterDisplay ) )
         {
@@ -1031,7 +1033,7 @@ void matroska_segment_c::ParseChapters( KaxChapters *chapters )
                 }
                 else if( MKV_IS_ID( l, KaxEditionFlagOrdered ) )
                 {
-                    p_edition->b_ordered = config_GetInt( &sys.demuxer, "mkv-use-ordered-chapters" ) ? (uint8(*static_cast<KaxEditionFlagOrdered *>( l )) != 0) : 0;
+                    p_edition->b_ordered = var_InheritInteger( &sys.demuxer, "mkv-use-ordered-chapters" ) ? (uint8(*static_cast<KaxEditionFlagOrdered *>( l )) != 0) : 0;
                 }
                 else if( MKV_IS_ID( l, KaxEditionFlagDefault ) )
                 {

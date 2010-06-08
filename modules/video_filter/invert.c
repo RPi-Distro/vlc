@@ -2,7 +2,7 @@
  * invert.c : Invert video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 1f1cd71aaed3c61335d2edae82fd85c7605ab436 $
+ * $Id: 33b2884e08b8495d788fff7e0d49de624d70d09a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -31,9 +31,8 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -58,16 +57,6 @@ vlc_module_begin ()
 vlc_module_end ()
 
 /*****************************************************************************
- * vout_sys_t: Invert video output method descriptor
- *****************************************************************************
- * This structure is part of the video output thread descriptor.
- * It describes the Invert specific properties of an output thread.
- *****************************************************************************/
-struct filter_sys_t
-{
-};
-
-/*****************************************************************************
  * Create: allocates Invert video thread output method
  *****************************************************************************
  * This function allocates and initializes a Invert vout method.
@@ -75,11 +64,6 @@ struct filter_sys_t
 static int Create( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
-
-    /* Allocate structure */
-    p_filter->p_sys = malloc( sizeof( filter_sys_t ) );
-    if( p_filter->p_sys == NULL )
-        return VLC_ENOMEM;
 
     p_filter->pf_video_filter = Filter;
 
@@ -93,9 +77,7 @@ static int Create( vlc_object_t *p_this )
  *****************************************************************************/
 static void Destroy( vlc_object_t *p_this )
 {
-    filter_t *p_filter = (filter_t *)p_this;
-
-    free( p_filter->p_sys );
+    (void)p_this;
 }
 
 /*****************************************************************************
@@ -121,7 +103,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         return NULL;
     }
 
-    if( p_pic->format.i_chroma == VLC_FOURCC('Y','U','V','A') )
+    if( p_pic->format.i_chroma == VLC_CODEC_YUVA )
     {
         /* We don't want to invert the alpha plane */
         i_planes = p_pic->i_planes - 1;

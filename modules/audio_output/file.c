@@ -2,7 +2,7 @@
  * file.c : audio output which writes the samples to a file
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: f6f851aa436c976444c80f1d8ed5e6adf7f536ad $
+ * $Id: 3bee0ebd7136c6f529b67396f9c880d391111d05 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -30,13 +30,11 @@
 # include "config.h"
 #endif
 
-#include <errno.h>
-
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
 #include <vlc_codecs.h> /* WAVEHEADER */
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 
 #define FRAME_SIZE 2048
 #define A52_FRAME_NB 1536
@@ -95,16 +93,16 @@ static void    Play        ( aout_instance_t * );
 static const char *const format_list[] = { "u8", "s8", "u16", "s16", "u16_le",
                                      "s16_le", "u16_be", "s16_be", "fixed32",
                                      "float32", "spdif" };
-static const int format_int[] = { VLC_FOURCC('u','8',' ',' '),
-                                  VLC_FOURCC('s','8',' ',' '),
-                                  AOUT_FMT_U16_NE, AOUT_FMT_S16_NE,
-                                  VLC_FOURCC('u','1','6','l'),
-                                  VLC_FOURCC('s','1','6','l'),
-                                  VLC_FOURCC('u','1','6','b'),
-                                  VLC_FOURCC('s','1','6','b'),
-                                  VLC_FOURCC('f','i','3','2'),
-                                  VLC_FOURCC('f','l','3','2'),
-                                  VLC_FOURCC('s','p','i','f') };
+static const int format_int[] = { VLC_CODEC_U8,
+                                  VLC_CODEC_S8,
+                                  VLC_CODEC_U16N, VLC_CODEC_S16N,
+                                  VLC_CODEC_U16L,
+                                  VLC_CODEC_S16L,
+                                  VLC_CODEC_U16B,
+                                  VLC_CODEC_S16B,
+                                  VLC_CODEC_FI32,
+                                  VLC_CODEC_FL32,
+                                  VLC_CODEC_SPDIFL };
 
 #define FILE_TEXT N_("Output file")
 #define FILE_LONGTEXT N_("File to which the audio samples will be written to. (\"-\" for stdout")
@@ -122,7 +120,7 @@ vlc_module_begin ()
                  CHANNELS_TEXT, CHANNELS_LONGTEXT, true )
     add_file( "audiofile-file", "audiofile.wav", NULL, FILE_TEXT,
               FILE_LONGTEXT, false )
-    add_bool( "audiofile-wav", 1, NULL, WAV_TEXT, WAV_LONGTEXT, true )
+    add_bool( "audiofile-wav", true, NULL, WAV_TEXT, WAV_LONGTEXT, true )
 
     set_capability( "audio output", 0 )
     add_shortcut( "file" )
@@ -156,7 +154,7 @@ static int Open( vlc_object_t * p_this )
     if( !strcmp( psz_name, "-" ) )
         p_aout->output.p_sys->p_file = stdout;
     else
-        p_aout->output.p_sys->p_file = utf8_fopen( psz_name, "wb" );
+        p_aout->output.p_sys->p_file = vlc_fopen( psz_name, "wb" );
 
     free( psz_name );
     if ( p_aout->output.p_sys->p_file == NULL )
@@ -223,19 +221,19 @@ static int Open( vlc_object_t * p_this )
         /* Write wave header */
         WAVEHEADER *wh = &p_aout->output.p_sys->waveh;
 
-        memset( wh, 0, sizeof(wh) );
+        memset( wh, 0, sizeof(*wh) );
 
         switch( p_aout->output.output.i_format )
         {
-        case VLC_FOURCC('f','l','3','2'):
+        case VLC_CODEC_FL32:
             wh->Format     = WAVE_FORMAT_IEEE_FLOAT;
             wh->BitsPerSample = sizeof(float) * 8;
             break;
-        case VLC_FOURCC('u','8',' ',' '):
+        case VLC_CODEC_U8:
             wh->Format     = WAVE_FORMAT_PCM;
             wh->BitsPerSample = 8;
             break;
-        case VLC_FOURCC('s','1','6','l'):
+        case VLC_CODEC_S16L:
         default:
             wh->Format     = WAVE_FORMAT_PCM;
             wh->BitsPerSample = 16;
@@ -323,7 +321,7 @@ static void Play( aout_instance_t * p_aout )
 
     p_buffer = aout_FifoPop( p_aout, &p_aout->output.fifo );
 
-    if( fwrite( p_buffer->p_buffer, p_buffer->i_nb_bytes, 1,
+    if( fwrite( p_buffer->p_buffer, p_buffer->i_buffer, 1,
                 p_aout->output.p_sys->p_file ) != 1 )
     {
         msg_Err( p_aout, "write error (%m)" );
@@ -332,7 +330,7 @@ static void Play( aout_instance_t * p_aout )
     if( p_aout->output.p_sys->b_add_wav_header )
     {
         /* Update Wave Header */
-        p_aout->output.p_sys->waveh.DataLength += p_buffer->i_nb_bytes;
+        p_aout->output.p_sys->waveh.DataLength += p_buffer->i_buffer;
     }
 
     aout_BufferFree( p_buffer );

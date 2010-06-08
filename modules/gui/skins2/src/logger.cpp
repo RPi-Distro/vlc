@@ -2,7 +2,7 @@
  * logger.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b0b0b2210e56efbabc0429e30fc64ce762107f8d $
+ * $Id: 606a4422895ccfe18721ff6eed14133cc610436b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -52,11 +52,8 @@ Logger *Logger::instance( intf_thread_t *pIntf )
 
 void Logger::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_logger )
-    {
-        delete pIntf->p_sys->p_logger;
-        pIntf->p_sys->p_logger = NULL;
-    }
+    delete pIntf->p_sys->p_logger;
+    pIntf->p_sys->p_logger = NULL;
 }
 
 

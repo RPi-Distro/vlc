@@ -2,7 +2,7 @@
  * vlc_stream.h: Stream (between access and demux) descriptor and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: e5cd0e0130b1702455042323b449b69204023763 $
+ * $Id: 1d499890c3f69355966afccc066f5bbd74065d30 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -52,6 +52,7 @@ typedef struct stream_text_t stream_text_t;
 struct stream_t
 {
     VLC_COMMON_MEMBERS
+    bool        b_error;
 
     /* Module properties for stream filter */
     module_t    *p_module;
@@ -75,6 +76,9 @@ struct stream_t
 
     /* Text reader state */
     stream_text_t *p_text;
+
+    /* Weak link to parent input */
+    input_thread_t *p_input;
 };
 
 /**
@@ -87,10 +91,10 @@ enum stream_query_e
     STREAM_CAN_FASTSEEK,        /**< arg1= bool *   res=cannot fail*/
 
     /* */
-    STREAM_SET_POSITION,        /**< arg1= int64_t        res=can fail  */
-    STREAM_GET_POSITION,        /**< arg1= int64_t *      res=cannot fail*/
+    STREAM_SET_POSITION,        /**< arg1= uint64_t       res=can fail  */
+    STREAM_GET_POSITION,        /**< arg1= uint64_t *     res=cannot fail*/
 
-    STREAM_GET_SIZE,            /**< arg1= int64_t *      res=cannot fail (0 if no sense)*/
+    STREAM_GET_SIZE,            /**< arg1= uint64_t *     res=cannot fail (0 if no sense)*/
 
     /* Special for direct access control from demuxer.
      * XXX: avoid using it by all means */
@@ -121,8 +125,10 @@ VLC_EXPORT( char *, stream_ReadLine, ( stream_t * ) );
  */
 static inline int64_t stream_Tell( stream_t *s )
 {
-    int64_t i_pos;
+    uint64_t i_pos;
     stream_Control( s, STREAM_GET_POSITION, &i_pos );
+    if( i_pos >> 62 )
+        return (int64_t)1 << 62;
     return i_pos;
 }
 
@@ -131,12 +137,14 @@ static inline int64_t stream_Tell( stream_t *s )
  */
 static inline int64_t stream_Size( stream_t *s )
 {
-    int64_t i_pos;
+    uint64_t i_pos;
     stream_Control( s, STREAM_GET_SIZE, &i_pos );
+    if( i_pos >> 62 )
+        return (int64_t)1 << 62;
     return i_pos;
 }
 
-static inline int stream_Seek( stream_t *s, int64_t i_pos )
+static inline int stream_Seek( stream_t *s, uint64_t i_pos )
 {
     return stream_Control( s, STREAM_SET_POSITION, i_pos );
 }
@@ -157,8 +165,8 @@ static inline char *stream_ContentType( stream_t *s )
  * Create a special stream and a demuxer, this allows chaining demuxers
  * You must delete it using stream_Delete.
  */
-#define stream_DemuxNew( a, b, c ) __stream_DemuxNew( VLC_OBJECT(a), b, c)
-VLC_EXPORT( stream_t *,__stream_DemuxNew, ( vlc_object_t *p_obj, const char *psz_demux, es_out_t *out ) );
+VLC_EXPORT( stream_t *, stream_DemuxNew, ( demux_t *p_demux, const char *psz_demux, es_out_t *out ) );
+
 /**
  * Send data to a stream_t handle created by stream_DemuxNew.
  */
@@ -168,16 +176,22 @@ VLC_EXPORT( void,      stream_DemuxSend,  ( stream_t *s, block_t *p_block ) );
  * Create a stream_t reading from memory.
  * You must delete it using stream_Delete.
  */
-#define stream_MemoryNew( a, b, c, d ) __stream_MemoryNew( VLC_OBJECT(a), b, c, d )
-VLC_EXPORT( stream_t *,__stream_MemoryNew, (vlc_object_t *p_obj, uint8_t *p_buffer, int64_t i_size, bool b_preserve_memory ) );
+VLC_EXPORT( stream_t *, stream_MemoryNew, (vlc_object_t *p_obj, uint8_t *p_buffer, uint64_t i_size, bool b_preserve_memory ) );
+#define stream_MemoryNew( a, b, c, d ) stream_MemoryNew( VLC_OBJECT(a), b, c, d )
 
 /**
  * Create a stream_t reading from an URL.
  * You must delete it using stream_Delete.
  */
-#define stream_UrlNew( a, b ) __stream_UrlNew( VLC_OBJECT(a), b )
-VLC_EXPORT( stream_t *,__stream_UrlNew, (vlc_object_t *p_this, const char *psz_url ) );
+VLC_EXPORT( stream_t *, stream_UrlNew, (vlc_object_t *p_this, const char *psz_url ) );
+#define stream_UrlNew( a, b ) stream_UrlNew( VLC_OBJECT(a), b )
 
+
+/**
+ * Try to add a stream filter to an open stream.
+ * @return New stream to use, or NULL if the filter could not be added.
+ **/
+VLC_EXPORT( stream_t*, stream_FilterNew, ( stream_t *p_source, const char *psz_stream_filter ) );
 /**
  * @}
  */

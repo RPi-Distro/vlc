@@ -2,7 +2,7 @@
  * control.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 8cf6addf5fee5f334718bcb2502bd55f1e10038d $
+ * $Id: e1cd747e5caca03d2ad87fe5a4b8b3be5ef74454 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -29,10 +29,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "input_internal.h"
 #include "event.h"
 #include "resource.h"
+#include "es_out.h"
 
 
 static void UpdateBookmarksOption( input_thread_t * );
@@ -99,12 +101,13 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
 
         case INPUT_GET_RATE:
             pi_int = (int*)va_arg( args, int * );
-            *pi_int = var_GetInteger( p_input, "rate" );
+            *pi_int = INPUT_RATE_DEFAULT / var_GetFloat( p_input, "rate" );
             return VLC_SUCCESS;
 
         case INPUT_SET_RATE:
             i_int = (int)va_arg( args, int );
-            return var_SetInteger( p_input, "rate", i_int );
+            return var_SetFloat( p_input, "rate",
+                                 (float)INPUT_RATE_DEFAULT / (float)i_int );
 
         case INPUT_GET_STATE:
             pi_int = (int*)va_arg( args, int * );
@@ -140,7 +143,7 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
             char *psz_format = (char *)va_arg( args, char * );
 
             char *psz_value;
-            
+
             if( vasprintf( &psz_value, psz_format, args ) == -1 )
                 return VLC_EGENERIC;
 
@@ -151,6 +154,20 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
             if( !p_input->b_preparsing && !i_ret )
                 input_SendEventMetaInfo( p_input );
             return i_ret;
+        }
+        case INPUT_REPLACE_INFOS:
+        case INPUT_MERGE_INFOS:
+        {
+            info_category_t *p_cat = va_arg( args, info_category_t * );
+
+            if( i_query == INPUT_REPLACE_INFOS )
+                input_item_ReplaceInfos( p_input->p->p_item, p_cat );
+            else
+                input_item_MergeInfos( p_input->p->p_item, p_cat );
+
+            if( !p_input->b_preparsing )
+                input_SendEventMetaInfo( p_input );
+            return VLC_SUCCESS;
         }
         case INPUT_DEL_INFO:
         {
@@ -427,12 +444,37 @@ int input_vaControl( input_thread_t *p_input, int i_query, va_list args )
         case INPUT_GET_VOUTS:
         {
             vout_thread_t ***ppp_vout = (vout_thread_t***)va_arg( args, vout_thread_t*** );
-            int           *pi_vout = (int*)va_arg( args, int* );
+            size_t        *pi_vout = va_arg( args, size_t * );
 
             input_resource_HoldVouts( p_input->p->p_resource, ppp_vout, pi_vout );
             if( *pi_vout <= 0 )
                 return VLC_EGENERIC;
             return VLC_SUCCESS;
+        }
+
+        case INPUT_GET_ES_OBJECTS:
+        {
+            const int i_id = va_arg( args, int );
+            vlc_object_t    **pp_decoder = va_arg( args, vlc_object_t ** );
+            vout_thread_t   **pp_vout    = va_arg( args, vout_thread_t ** );
+            aout_instance_t **pp_aout    = va_arg( args, aout_instance_t ** );
+
+            return es_out_Control( p_input->p->p_es_out_display, ES_OUT_GET_ES_OBJECTS_BY_ID, i_id,
+                                   pp_decoder, pp_vout, pp_aout );
+        }
+
+        case INPUT_GET_PCR_SYSTEM:
+        {
+            mtime_t *pi_system = va_arg( args, mtime_t * );
+            mtime_t *pi_delay  = va_arg( args, mtime_t * );
+            return es_out_ControlGetPcrSystem( p_input->p->p_es_out_display, pi_system, pi_delay );
+        }
+
+        case INPUT_MODIFY_PCR_SYSTEM:
+        {
+            bool b_absolute = va_arg( args, int );
+            mtime_t i_system = va_arg( args, mtime_t );
+            return es_out_ControlModifyPcrSystem( p_input->p->p_es_out_display, b_absolute, i_system );
         }
 
         default:

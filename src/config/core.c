@@ -2,7 +2,7 @@
  * core.c management of the modules configuration
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 721c2b58d560239022bf49abd91339cdf390b423 $
+ * $Id: e54df62248c1ccc614016e51feea4d808ee7be9d $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -27,13 +27,14 @@
 
 #include <vlc_common.h>
 #include "vlc_keys.h"
-#include "vlc_charset.h"
 #include "vlc_configuration.h"
 
 #include <assert.h>
 
 #include "configuration.h"
 #include "modules/modules.h"
+
+vlc_rwlock_t config_lock;
 
 static inline char *strdupnull (const char *src)
 {
@@ -47,7 +48,7 @@ int IsConfigStringType (int type)
     {
         CONFIG_ITEM_STRING, CONFIG_ITEM_FILE, CONFIG_ITEM_MODULE,
         CONFIG_ITEM_DIRECTORY, CONFIG_ITEM_MODULE_CAT, CONFIG_ITEM_PASSWORD,
-        CONFIG_ITEM_MODULE_LIST, CONFIG_ITEM_MODULE_LIST_CAT
+        CONFIG_ITEM_MODULE_LIST, CONFIG_ITEM_MODULE_LIST_CAT, CONFIG_ITEM_FONT
     };
 
     /* NOTE: this needs to be changed if we ever get more than 255 types */
@@ -66,14 +67,14 @@ int IsConfigIntegerType (int type)
     return memchr (config_types, type, sizeof (config_types)) != NULL;
 }
 
-
+#undef config_GetType
 /*****************************************************************************
  * config_GetType: get the type of a variable (bool, int, float, string)
  *****************************************************************************
  * This function is used to get the type of a variable from its name.
  * Beware, this is quite slow.
  *****************************************************************************/
-int __config_GetType( vlc_object_t *p_this, const char *psz_name )
+int config_GetType( vlc_object_t *p_this, const char *psz_name )
 {
     module_config_t *p_config;
     int i_type;
@@ -132,6 +133,7 @@ int __config_GetType( vlc_object_t *p_this, const char *psz_name )
     return i_type;
 }
 
+#undef config_GetInt
 /*****************************************************************************
  * config_GetInt: get the value of an int variable
  *****************************************************************************
@@ -139,7 +141,7 @@ int __config_GetType( vlc_object_t *p_this, const char *psz_name )
  * represented by an integer (CONFIG_ITEM_INTEGER and
  * CONFIG_ITEM_BOOL).
  *****************************************************************************/
-int __config_GetInt( vlc_object_t *p_this, const char *psz_name )
+int config_GetInt( vlc_object_t *p_this, const char *psz_name )
 {
     module_config_t *p_config;
 
@@ -158,16 +160,22 @@ int __config_GetInt( vlc_object_t *p_this, const char *psz_name )
         return -1;
     }
 
-    return p_config->value.i;
+    int val;
+
+    vlc_rwlock_rdlock (&config_lock);
+    val = p_config->value.i;
+    vlc_rwlock_unlock (&config_lock);
+    return val;
 }
 
+#undef config_GetFloat
 /*****************************************************************************
  * config_GetFloat: get the value of a float variable
  *****************************************************************************
  * This function is used to get the value of variables which are internally
  * represented by a float (CONFIG_ITEM_FLOAT).
  *****************************************************************************/
-float __config_GetFloat( vlc_object_t *p_this, const char *psz_name )
+float config_GetFloat( vlc_object_t *p_this, const char *psz_name )
 {
     module_config_t *p_config;
 
@@ -186,9 +194,15 @@ float __config_GetFloat( vlc_object_t *p_this, const char *psz_name )
         return -1;
     }
 
-    return p_config->value.f;
+    float val;
+
+    vlc_rwlock_rdlock (&config_lock);
+    val = p_config->value.f;
+    vlc_rwlock_unlock (&config_lock);
+    return val;
 }
 
+#undef config_GetPsz
 /*****************************************************************************
  * config_GetPsz: get the string value of a string variable
  *****************************************************************************
@@ -200,7 +214,7 @@ float __config_GetFloat( vlc_object_t *p_this, const char *psz_name )
  *   duplicate of the actual value. It isn't safe to return a pointer to the
  *   actual value as it can be modified at any time.
  *****************************************************************************/
-char * __config_GetPsz( vlc_object_t *p_this, const char *psz_name )
+char * config_GetPsz( vlc_object_t *p_this, const char *psz_name )
 {
     module_config_t *p_config;
 
@@ -220,13 +234,14 @@ char * __config_GetPsz( vlc_object_t *p_this, const char *psz_name )
     }
 
     /* return a copy of the string */
-    vlc_mutex_lock( p_config->p_lock );
+    vlc_rwlock_rdlock (&config_lock);
     char *psz_value = strdupnull (p_config->value.psz);
-    vlc_mutex_unlock( p_config->p_lock );
+    vlc_rwlock_unlock (&config_lock);
 
     return psz_value;
 }
 
+#undef config_PutPsz
 /*****************************************************************************
  * config_PutPsz: set the string value of a string variable
  *****************************************************************************
@@ -234,11 +249,11 @@ char * __config_GetPsz( vlc_object_t *p_this, const char *psz_name )
  * represented by a string (CONFIG_ITEM_STRING, CONFIG_ITEM_FILE,
  * CONFIG_ITEM_DIRECTORY, CONFIG_ITEM_PASSWORD, and CONFIG_ITEM_MODULE).
  *****************************************************************************/
-void __config_PutPsz( vlc_object_t *p_this,
+void config_PutPsz( vlc_object_t *p_this,
                       const char *psz_name, const char *psz_value )
 {
     module_config_t *p_config;
-    vlc_value_t oldval, val;
+    vlc_value_t oldval;
 
     p_config = config_FindConfig( p_this, psz_name );
 
@@ -256,7 +271,7 @@ void __config_PutPsz( vlc_object_t *p_this,
         return;
     }
 
-    vlc_mutex_lock( p_config->p_lock );
+    vlc_rwlock_wrlock (&config_lock);
 
     /* backup old value */
     oldval.psz_string = (char *)p_config->value.psz;
@@ -267,13 +282,13 @@ void __config_PutPsz( vlc_object_t *p_this,
         p_config->value.psz = NULL;
 
     p_config->b_dirty = true;
-
-    val.psz_string = (char *)p_config->value.psz;
-
-    vlc_mutex_unlock( p_config->p_lock );
+    vlc_rwlock_unlock (&config_lock);
 
     if( p_config->pf_callback )
     {
+        vlc_value_t val;
+
+        val.psz_string = (char *)psz_value;
         p_config->pf_callback( p_this, psz_name, oldval, val,
                                p_config->p_callback_data );
     }
@@ -282,6 +297,7 @@ void __config_PutPsz( vlc_object_t *p_this,
     free( oldval.psz_string );
 }
 
+#undef config_PutInt
 /*****************************************************************************
  * config_PutInt: set the integer value of an int variable
  *****************************************************************************
@@ -289,10 +305,10 @@ void __config_PutPsz( vlc_object_t *p_this,
  * represented by an integer (CONFIG_ITEM_INTEGER and
  * CONFIG_ITEM_BOOL).
  *****************************************************************************/
-void __config_PutInt( vlc_object_t *p_this, const char *psz_name, int i_value )
+void config_PutInt( vlc_object_t *p_this, const char *psz_name, int i_value )
 {
     module_config_t *p_config;
-    vlc_value_t oldval, val;
+    vlc_value_t oldval;
 
     p_config = config_FindConfig( p_this, psz_name );
 
@@ -309,49 +325,44 @@ void __config_PutInt( vlc_object_t *p_this, const char *psz_name, int i_value )
         return;
     }
 
+    /* if i_min == i_max == 0, then do not use them */
+    if ((p_config->min.i == 0) && (p_config->max.i == 0))
+        ;
+    else if (i_value < p_config->min.i)
+        i_value = p_config->min.i;
+    else if (i_value > p_config->max.i)
+        i_value = p_config->max.i;
+
+    vlc_rwlock_wrlock (&config_lock);
     /* backup old value */
     oldval.i_int = p_config->value.i;
 
-    /* if i_min == i_max == 0, then do not use them */
-    if ((p_config->min.i == 0) && (p_config->max.i == 0))
-    {
-        p_config->value.i = i_value;
-    }
-    else if (i_value < p_config->min.i)
-    {
-        p_config->value.i = p_config->min.i;
-    }
-    else if (i_value > p_config->max.i)
-    {
-        p_config->value.i = p_config->max.i;
-    }
-    else
-    {
-        p_config->value.i = i_value;
-    }
-
+    p_config->value.i = i_value;
     p_config->b_dirty = true;
-
-    val.i_int = p_config->value.i;
+    vlc_rwlock_unlock (&config_lock);
 
     if( p_config->pf_callback )
     {
+        vlc_value_t val;
+
+        val.i_int = i_value;
         p_config->pf_callback( p_this, psz_name, oldval, val,
                                p_config->p_callback_data );
     }
 }
 
+#undef config_PutFloat
 /*****************************************************************************
  * config_PutFloat: set the value of a float variable
  *****************************************************************************
  * This function is used to set the value of variables which are internally
  * represented by a float (CONFIG_ITEM_FLOAT).
  *****************************************************************************/
-void __config_PutFloat( vlc_object_t *p_this,
-                        const char *psz_name, float f_value )
+void config_PutFloat( vlc_object_t *p_this,
+                      const char *psz_name, float f_value )
 {
     module_config_t *p_config;
-    vlc_value_t oldval, val;
+    vlc_value_t oldval;
 
     p_config = config_FindConfig( p_this, psz_name );
 
@@ -368,81 +379,123 @@ void __config_PutFloat( vlc_object_t *p_this,
         return;
     }
 
+    /* if f_min == f_max == 0, then do not use them */
+    if ((p_config->min.f == 0) && (p_config->max.f == 0))
+        ;
+    else if (f_value < p_config->min.f)
+        f_value = p_config->min.f;
+    else if (f_value > p_config->max.f)
+        f_value = p_config->max.f;
+
+    vlc_rwlock_wrlock (&config_lock);
     /* backup old value */
     oldval.f_float = p_config->value.f;
 
-    /* if f_min == f_max == 0, then do not use them */
-    if ((p_config->min.f == 0) && (p_config->max.f == 0))
-    {
-        p_config->value.f = f_value;
-    }
-    else if (f_value < p_config->min.f)
-    {
-        p_config->value.f = p_config->min.f;
-    }
-    else if (f_value > p_config->max.f)
-    {
-        p_config->value.f = p_config->max.f;
-    }
-    else
-    {
-        p_config->value.f = f_value;
-    }
-
+    p_config->value.f = f_value;
     p_config->b_dirty = true;
-
-    val.f_float = p_config->value.f;
+    vlc_rwlock_unlock (&config_lock);
 
     if( p_config->pf_callback )
     {
+        vlc_value_t val;
+
+        val.f_float = f_value;
         p_config->pf_callback( p_this, psz_name, oldval, val,
                                p_config->p_callback_data );
     }
 }
 
+static int confcmp (const void *a, const void *b)
+{
+    const module_config_t *const *ca = a, *const *cb = b;
+
+    return strcmp ((*ca)->psz_name, (*cb)->psz_name);
+}
+
+static int confnamecmp (const void *key, const void *elem)
+{
+    const module_config_t *const *conf = elem;
+
+    return strcmp (key, (*conf)->psz_name);
+}
+
+static struct
+{
+    module_config_t **list;
+    size_t count;
+} config = { NULL, 0 };
+
+/**
+ * Index the configuration items by name for faster lookups.
+ */
+int config_SortConfig (void)
+{
+    size_t nmod;
+    module_t **mlist = module_list_get (&nmod);
+    if (unlikely(mlist == NULL))
+        return VLC_ENOMEM;
+
+    size_t nconf = 0;
+    for (size_t i = 0; i < nmod; i++)
+         nconf  += mlist[i]->confsize;
+
+    module_config_t **clist = malloc (sizeof (*clist) * nconf);
+    if (unlikely(clist == NULL))
+    {
+        module_list_free (mlist);
+        return VLC_ENOMEM;
+    }
+
+    nconf = 0;
+    for (size_t i = 0; i < nmod; i++)
+    {
+        module_t *parser = mlist[i];
+        module_config_t *item, *end;
+
+        for (item = parser->p_config, end = item + parser->confsize;
+             item < end;
+             item++)
+        {
+            if (item->i_type & CONFIG_HINT)
+                continue; /* ignore hints */
+            clist[nconf++] = item;
+        }
+    }
+    module_list_free (mlist);
+
+    qsort (clist, nconf, sizeof (*clist), confcmp);
+
+    config.list = clist;
+    config.count = nconf;
+    return VLC_SUCCESS;
+}
+
+void config_UnsortConfig (void)
+{
+    module_config_t **clist;
+
+    clist = config.list;
+    config.list = NULL;
+    config.count = 0;
+
+    free (clist);
+}
+
 /*****************************************************************************
  * config_FindConfig: find the config structure associated with an option.
  *****************************************************************************
- * FIXME: This function really needs to be optimized.
- * FIXME: And now even more.
  * FIXME: remove p_this pointer parameter (or use it)
  *****************************************************************************/
-module_config_t *config_FindConfig( vlc_object_t *p_this, const char *psz_name )
+module_config_t *config_FindConfig (vlc_object_t *p_this, const char *name)
 {
-    module_t *p_parser;
+    VLC_UNUSED(p_this);
 
-    if( !psz_name ) return NULL;
-
-    module_t **list = module_list_get (NULL);
-    if (list == NULL)
+    if (unlikely(name == NULL))
         return NULL;
 
-    for (size_t i = 0; (p_parser = list[i]) != NULL; i++)
-    {
-        module_config_t *p_item, *p_end;
-
-        if( !p_parser->i_config_items )
-            continue;
-
-        for( p_item = p_parser->p_config, p_end = p_item + p_parser->confsize;
-             p_item < p_end;
-             p_item++ )
-        {
-            if( p_item->i_type & CONFIG_HINT )
-                /* ignore hints */
-                continue;
-            if( !strcmp( psz_name, p_item->psz_name )
-             || ( p_item->psz_oldname
-              && !strcmp( psz_name, p_item->psz_oldname ) ) )
-            {
-                module_list_free (list);
-                return p_item;
-            }
-        }
-    }
-
-    module_list_free (list);
-    return NULL;
+    module_config_t *const *p;
+    p = bsearch (name, config.list, config.count, sizeof (*p), confnamecmp);
+    return p ? *p : NULL;
 }
 
 /*****************************************************************************
@@ -496,46 +549,17 @@ void config_Free( module_t *p_module )
     p_module->p_config = NULL;
 }
 
-/*****************************************************************************
- * config_SetCallbacks: sets callback functions in the duplicate p_config.
- *****************************************************************************
- * Unfortunatly we cannot work directly with the module's config data as
- * this module might be unloaded from memory at any time (remember HideModule).
- * This is why we need to duplicate callbacks each time we reload the module.
- *****************************************************************************/
-void config_SetCallbacks( module_config_t *p_new, module_config_t *p_orig,
-                          size_t n )
-{
-    for (size_t i = 0; i < n; i++)
-    {
-        p_new->pf_callback = p_orig->pf_callback;
-        p_new++;
-        p_orig++;
-    }
-}
-
-/*****************************************************************************
- * config_UnsetCallbacks: unsets callback functions in the duplicate p_config.
- *****************************************************************************
- * We simply undo what we did in config_SetCallbacks.
- *****************************************************************************/
-void config_UnsetCallbacks( module_config_t *p_new, size_t n )
-{
-    for (size_t i = 0; i < n; i++)
-    {
-        p_new->pf_callback = NULL;
-        p_new++;
-    }
-}
-
+#undef config_ResetAll
 /*****************************************************************************
  * config_ResetAll: reset the configuration data for all the modules.
  *****************************************************************************/
-void __config_ResetAll( vlc_object_t *p_this )
+void config_ResetAll( vlc_object_t *p_this )
 {
+    VLC_UNUSED(p_this);
     module_t *p_module;
     module_t **list = module_list_get (NULL);
 
+    vlc_rwlock_wrlock (&config_lock);
     for (size_t j = 0; (p_module = list[j]) != NULL; j++)
     {
         if( p_module->b_submodule ) continue;
@@ -544,7 +568,6 @@ void __config_ResetAll( vlc_object_t *p_this )
         {
             module_config_t *p_config = p_module->p_config + i;
 
-            vlc_mutex_lock (p_config->p_lock);
             if (IsConfigIntegerType (p_config->i_type))
                 p_config->value.i = p_config->orig.i;
             else
@@ -557,9 +580,9 @@ void __config_ResetAll( vlc_object_t *p_this )
                 p_config->value.psz =
                         strdupnull (p_config->orig.psz);
             }
-            vlc_mutex_unlock (p_config->p_lock);
         }
     }
+    vlc_rwlock_unlock (&config_lock);
 
     module_list_free (list);
 }

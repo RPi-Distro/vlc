@@ -2,7 +2,7 @@
  * smf.c : Standard MIDI File (.mid) demux module for vlc
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: fb7eb892b6d3ea37a754c6a39c0a8440a59b83d5 $
+ * $Id: 6b21157dd335de0e1aa715d48aa45a1f9952094d $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -187,7 +187,7 @@ static int Open (vlc_object_t * p_this)
 
     /* Default SMF tempo is 120BPM, i.e. half a second per quarter note */
     date_Init (&p_sys->pts, ppqn * 2, 1);
-    date_Set (&p_sys->pts, 1);
+    date_Set (&p_sys->pts, 0);
     p_sys->pulse        = 0;
     p_sys->ppqn         = ppqn;
 
@@ -230,7 +230,7 @@ static int Open (vlc_object_t * p_this)
     }
 
     es_format_t  fmt;
-    es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC('M', 'I', 'D', 'I'));
+    es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_MIDI);
     fmt.audio.i_channels = 2;
     fmt.audio.i_original_channels = fmt.audio.i_physical_channels =
         AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
@@ -473,19 +473,22 @@ int HandleMessage (demux_t *p_demux, mtrk_t *tr)
         case 0xF0: /* System Exclusive */
             switch (event)
             {
-                case 0xF0: /* System Specific */
+                case 0xF0: /* System Specific start */
+                case 0xF7: /* System Specific continuation */
                 {
-                    /* TODO: don't skip these */
-                    stream_Read (s, NULL, 1); /* Manuf ID */
-                    for (;;)
-                    {
-                        uint8_t c;
-                        if (stream_Read (s, &c, 1) != 1)
-                            return -1;
-                        if (c == 0xF7)
-                            goto skip;
-                    }
-                    /* never reached */
+                    /* Variable length followed by SysEx event data */
+                    int32_t len = ReadVarInt (s);
+                    if (len == -1)
+                        return -1;
+
+                    block = stream_Block (s, len);
+                    if (block == NULL)
+                        return -1;
+                    block = block_Realloc (block, 1, len);
+                    if (block == NULL)
+                        return -1;
+                    block->p_buffer[0] = event;
+                    goto send;
                 }
                 case 0xFF: /* SMF Meta Event */
                     if (HandleMeta (p_demux, tr))
@@ -505,9 +508,6 @@ int HandleMessage (demux_t *p_demux, mtrk_t *tr)
                     /* We cannot handle undefined "common" (non-real-time)
                      * events inside SMF, as we cannot differentiate a
                      * one byte delta-time (< 0x80) from event data. */
-                case 0xF7: /* End of sysex -> should never happen(?) */
-                    msg_Err (p_demux, "unknown MIDI event 0x%02X", event);
-                    return -1; /* undefined events */
                 default:
                     datalen = 0;
                     break;
@@ -545,7 +545,8 @@ int HandleMessage (demux_t *p_demux, mtrk_t *tr)
             stream_Read (s, block->p_buffer + 2, datalen - 1);
     }
 
-    block->i_dts = block->i_pts = date_Get (&p_demux->p_sys->pts);
+send:
+    block->i_dts = block->i_pts = VLC_TS_0 + date_Get (&p_demux->p_sys->pts);
     es_out_Send (p_demux->out, p_demux->p_sys->es, block);
 
 skip:
@@ -571,7 +572,7 @@ static int Demux (demux_t *p_demux)
     if (pulse == UINT64_MAX)
         return 0; /* all tracks are done */
 
-    es_out_Control (p_demux->out, ES_OUT_SET_PCR, date_Get (&p_sys->pts));
+    es_out_Control (p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + date_Get (&p_sys->pts));
 
     for (unsigned i = 0; i < p_sys->trackc; i++)
     {
@@ -605,7 +606,7 @@ static int Demux (demux_t *p_demux)
             break;
 
         tick->p_buffer[0] = 0xF9;
-        tick->i_dts = tick->i_pts = cur_tick++ * 10000;
+        tick->i_dts = tick->i_pts = VLC_TS_0 + cur_tick++ * 10000;
         es_out_Send (p_demux->out, p_sys->es, tick);
     }
 

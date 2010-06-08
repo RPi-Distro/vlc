@@ -2,7 +2,7 @@
  * intf_eject.c: CD/DVD-ROM ejection handling functions
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 87b9f7c5089fff2bb5625d947c7032e99216c6ff $
+ * $Id: 4031d99d75e5116501973499be4e00426257ceb4 $
  *
  * Authors: Julien Blache <jb@technologeek.org> for the Linux part
  *                with code taken from the Linux "eject" command
@@ -55,7 +55,6 @@
 #   endif
 
 #   include <sys/types.h>
-#   include <sys/stat.h>
 #   include <sys/ioctl.h>
 
 #   include <sys/ioctl.h>
@@ -84,13 +83,7 @@
 static int EjectSCSI ( int i_fd );
 #endif
 
-/*****************************************************************************
- * intf_Eject: eject the CDRom
- *****************************************************************************
- * returns 0 on success
- * returns 1 on failure
- * returns -1 if not implemented
- *****************************************************************************/
+#undef intf_Eject
 /**
  * \brief Ejects the CD /DVD
  * \ingroup vlc_interface
@@ -98,7 +91,7 @@ static int EjectSCSI ( int i_fd );
  * \param psz_device the CD/DVD to eject
  * \return 0 on success, 1 on failure, -1 if not implemented
  */
-int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
+int intf_Eject( vlc_object_t *p_this, const char *psz_device )
 {
     VLC_UNUSED(p_this);
     int i_ret = VLC_SUCCESS;
@@ -167,7 +160,7 @@ int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
     i_flags = MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID |
               MCI_OPEN_ELEMENT | MCI_OPEN_SHAREABLE;
 
-    if( !mciSendCommand( 0, MCI_OPEN, i_flags, (unsigned long)&op ) )
+    if( !mciSendCommand( 0, MCI_OPEN, i_flags, (uintptr_t)&op ) )
     {
         st.dwItem = MCI_STATUS_READY;
         /* Eject disc */

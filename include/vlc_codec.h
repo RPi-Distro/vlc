@@ -2,7 +2,7 @@
  * vlc_codec.h: Definition of the decoder and encoder structures
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: 291581c4731f74af61b310b4fe8cb3b673f310ba $
+ * $Id: e4fd665d37d18016bd02a6566043566e7a16b65e $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -26,6 +26,8 @@
 
 #include <vlc_block.h>
 #include <vlc_es.h>
+#include <vlc_picture.h>
+#include <vlc_subpicture.h>
 
 /**
  * \file
@@ -124,6 +126,8 @@ struct decoder_t
 
     /* Private structure for the owner of the decoder */
     decoder_owner_sys_t *p_owner;
+
+    bool                b_error;
 };
 
 /**
@@ -131,7 +135,7 @@ struct decoder_t
  */
 
 /**
- * \defgroup decoder Encoder
+ * \defgroup encoder Encoder
  *
  * The structure describing a Encoder
  *
@@ -176,7 +180,7 @@ struct encoder_t
  * buffer. You have to release it using decoder_DeletePicture or by returning
  * it to the caller as a pf_decode_video return value.
  */
-VLC_EXPORT( picture_t *, decoder_NewPicture, ( decoder_t * ) );
+VLC_EXPORT( picture_t *, decoder_NewPicture, ( decoder_t * ) LIBVLC_USED );
 
 /**
  * This function will release a picture create by decoder_NewPicture.
@@ -200,7 +204,7 @@ VLC_EXPORT( void, decoder_UnlinkPicture, ( decoder_t *, picture_t * ) );
  * output buffer. You have to release it using decoder_DeleteAudioBuffer
  * or by returning it to the caller as a pf_decode_audio return value.
  */
-VLC_EXPORT( aout_buffer_t *, decoder_NewAudioBuffer, ( decoder_t *, int i_size ) );
+VLC_EXPORT( aout_buffer_t *, decoder_NewAudioBuffer, ( decoder_t *, int i_size ) LIBVLC_USED );
 
 /**
  * This function will release a audio buffer created by decoder_NewAudioBuffer.
@@ -212,7 +216,7 @@ VLC_EXPORT( void, decoder_DeleteAudioBuffer, ( decoder_t *, aout_buffer_t *p_buf
  * buffer. You have to release it using decoder_DeleteSubpicture or by returning
  * it to the caller as a pf_decode_sub return value.
  */
-VLC_EXPORT( subpicture_t *, decoder_NewSubpicture, ( decoder_t * ) );
+VLC_EXPORT( subpicture_t *, decoder_NewSubpicture, ( decoder_t * ) LIBVLC_USED );
 
 /**
  * This function will release a subpicture created by decoder_NewSubicture.
@@ -237,6 +241,6 @@ VLC_EXPORT( mtime_t, decoder_GetDisplayDate, ( decoder_t *, mtime_t ) LIBVLC_USE
  * This function returns the current input rate.
  * You MUST use it *only* for gathering statistics about speed.
  */
-VLC_EXPORT( int, decoder_GetDisplayRate, ( decoder_t * ) );
+VLC_EXPORT( int, decoder_GetDisplayRate, ( decoder_t * ) LIBVLC_USED );
 
 #endif /* _VLC_CODEC_H */

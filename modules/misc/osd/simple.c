@@ -2,7 +2,7 @@
  * simple.c - The OSD Menu simple parser code.
  *****************************************************************************
  * Copyright (C) 2005-2008 M2X
- * $Id: 992efe90fb94b534a7019567fd713cd105d7a1a8 $
+ * $Id: f76924217dc9fdb24e1fd655586180ab820c6523 $
  *
  * Authors: Jean-Paul Saman
  *
@@ -31,7 +31,7 @@
 
 #include <vlc_common.h>
 #include <vlc_osd.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 
 #include <limits.h>
 
@@ -54,7 +54,7 @@ int osd_parser_simpleOpen( vlc_object_t *p_this )
     if( !p_menu ) return VLC_ENOOBJ;
 
     msg_Dbg( p_this, "opening osdmenu definition file %s", p_menu->psz_file );
-    fd = utf8_fopen( p_menu->psz_file, "r" );
+    fd = vlc_fopen( p_menu->psz_file, "r" );
     if( !fd )
     {
         msg_Err( p_this, "failed to open osdmenu definition file %s",
@@ -75,7 +75,7 @@ int osd_parser_simpleOpen( vlc_object_t *p_this )
         result = fscanf(fd, "%24s %255s", action, path );
 
         /* override images path ? */
-        psz_path = config_GetPsz( p_this, "osdmenu-file-path" );
+        psz_path = var_InheritString( p_this, "osdmenu-file-path" );
         if( psz_path )
         {
             /* psz_path is not null and therefor path cannot be NULL

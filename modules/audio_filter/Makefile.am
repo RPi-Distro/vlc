@@ -3,22 +3,33 @@
 
 basedir = audio_filter
 dir = audio_filter
-mods = audio_format equalizer normvol param_eq scaletempo
-libvlc_LTLIBRARIES =  $(LTLIBaudio_format) $(LTLIBequalizer) $(LTLIBnormvol) $(LTLIBparam_eq) $(LTLIBscaletempo)
-EXTRA_LTLIBRARIES =  libaudio_format_plugin.la libequalizer_plugin.la libnormvol_plugin.la libparam_eq_plugin.la libscaletempo_plugin.la
+mods = audiobargraph_a chorus_flanger equalizer normvol param_eq scaletempo
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
-# The audio_format plugin
-libaudio_format_plugin_la_SOURCES = $(SOURCES_audio_format)
-nodist_libaudio_format_plugin_la_SOURCES = $(nodist_SOURCES_audio_format)
+# The audiobargraph_a plugin
+libaudiobargraph_a_plugin_la_SOURCES = $(SOURCES_audiobargraph_a)
+nodist_libaudiobargraph_a_plugin_la_SOURCES = $(nodist_SOURCES_audiobargraph_a)
 # Force per-target objects:
-libaudio_format_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaudio_format_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaudio_format_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaudiobargraph_a_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaudiobargraph_a_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaudiobargraph_a_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libaudio_format_plugin_la_LIBADD = $(AM_LIBADD)
-libaudio_format_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaudiobargraph_a_plugin_la_LIBADD = $(AM_LIBADD)
+libaudiobargraph_a_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The chorus_flanger plugin
+libchorus_flanger_plugin_la_SOURCES = $(SOURCES_chorus_flanger)
+nodist_libchorus_flanger_plugin_la_SOURCES = $(nodist_SOURCES_chorus_flanger)
+# Force per-target objects:
+libchorus_flanger_plugin_la_CFLAGS = $(AM_CFLAGS)
+libchorus_flanger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libchorus_flanger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libchorus_flanger_plugin_la_LIBADD = $(AM_LIBADD)
+libchorus_flanger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The equalizer plugin
 libequalizer_plugin_la_SOURCES = $(SOURCES_equalizer)

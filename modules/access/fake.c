@@ -2,7 +2,7 @@
  * fake.c : Fake video input for VLC
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 0cd8b09c1e1213b51c28e4e63d3b680fc176e9f7 $
+ * $Id: 77ee197708d60a0125d69560730adbcf5618518f $
  *
  * Author: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -61,7 +61,7 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin ()
     set_shortname( N_("Fake") )
-    set_description( N_("Fake input") )
+    set_description( N_("Fake video input") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
 

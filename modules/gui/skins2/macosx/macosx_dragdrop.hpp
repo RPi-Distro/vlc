@@ -2,7 +2,7 @@
  * macosx_dragdrop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c66461ae6a826b01993a0a027c28464e35c5a033 $
+ * $Id: 1fd5b03a83f34d4bb13edfa6e6c12ea6e2953d3d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef MACOSX_DRAGDROP_HPP
@@ -28,15 +28,15 @@
 
 class MacOSXDragDrop: public SkinObject
 {
-    public:
-        typedef long ldata_t[5];
+public:
+    typedef long ldata_t[5];
 
-        MacOSXDragDrop( intf_thread_t *pIntf, bool playOnDrop );
-        virtual ~MacOSXDragDrop() {}
+    MacOSXDragDrop( intf_thread_t *pIntf, bool playOnDrop );
+    virtual ~MacOSXDragDrop() { }
 
-    private:
-        /// Indicates whether the file(s) must be played immediately
-        bool m_playOnDrop;
+private:
+    /// Indicates whether the file(s) must be played immediately
+    bool m_playOnDrop;
 };
 
 

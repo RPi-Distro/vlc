@@ -2,7 +2,7 @@
  * file_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1724b49844ff19b00cf25b3ee242c09c8c86dd68 $
+ * $Id: bcefa7bae8553e0b26b3dcd9105f262e4e0256aa $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -27,19 +27,19 @@
 #endif
 
 #include <vlc_common.h>
-#include "vlc_image.h"
+#include <vlc_image.h>
 #include "file_bitmap.hpp"
 
 FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
                         string fileName, uint32_t aColor, int nbFrames,
-                        int fps ):
-    GenericBitmap( pIntf, nbFrames, fps ), m_width( 0 ), m_height( 0 ),
+                        int fps, int nbLoops ):
+    GenericBitmap( pIntf, nbFrames, fps, nbLoops ), m_width( 0 ), m_height( 0 ),
     m_pData( NULL )
 {
     video_format_t fmt_in = {0}, fmt_out = {0};
     picture_t *pPic;
 
-    fmt_out.i_chroma = VLC_FOURCC('R','G','B','A');
+    fmt_out.i_chroma = VLC_CODEC_RGBA;
 
     pPic = image_ReadUrl( pImageHandler, fileName.c_str(), &fmt_in, &fmt_out );
     if( !pPic ) return;
@@ -85,7 +85,7 @@ FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
 
 FileBitmap::~FileBitmap()
 {
-    if( m_pData ) delete[] m_pData;
+    delete[] m_pData;
 }
 
 

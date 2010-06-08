@@ -2,7 +2,7 @@
  * dummy.c : dummy plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 547c84bf7634b790cb7b897c0d7a1aaf0499912a $
+ * $Id: 3f61dd9ab9b02ae934c3ee96ebfa01451865f6a9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -33,6 +33,8 @@
 #include <vlc_plugin.h>
 
 #include "dummy.h"
+
+static int OpenDummy(vlc_object_t *);
 
 /*****************************************************************************
  * Module descriptor
@@ -65,16 +67,11 @@ vlc_module_begin ()
 #ifdef WIN32
     set_section( N_( "Dummy Interface" ), NULL )
     add_category_hint( N_("Interface"), NULL, false )
-    add_bool( "dummy-quiet", 0, NULL, QUIET_TEXT, QUIET_LONGTEXT, false )
+    add_bool( "dummy-quiet", false, NULL, QUIET_TEXT, QUIET_LONGTEXT, false )
 #endif
     add_submodule ()
-        set_description( N_("Dummy access function") )
-        set_capability( "access", 0 )
-        set_callbacks( OpenAccess, NULL )
-        add_shortcut( "vlc" )
-    add_submodule ()
         set_description( N_("Dummy demux function") )
-        set_capability( "demux", 0 )
+        set_capability( "access_demux", 0 )
         set_callbacks( OpenDemux, CloseDemux )
         add_shortcut( "vlc" )
     add_submodule ()
@@ -84,7 +81,7 @@ vlc_module_begin ()
         set_callbacks( OpenDecoder, CloseDecoder )
         set_category( CAT_INPUT )
         set_subcategory( SUBCAT_INPUT_SCODEC )
-        add_bool( "dummy-save-es", 0, NULL, SAVE_TEXT, SAVE_LONGTEXT, true )
+        add_bool( "dummy-save-es", false, NULL, SAVE_TEXT, SAVE_LONGTEXT, true )
     add_submodule ()
         set_section( N_( "Dump decoder" ), NULL )
         set_description( N_("Dump decoder function") )
@@ -102,15 +99,32 @@ vlc_module_begin ()
     add_submodule ()
         set_description( N_("Dummy video output function") )
         set_section( N_( "Dummy Video output" ), NULL )
-        set_capability( "video output", 1 )
-        set_callbacks( OpenVideo, NULL )
+        set_capability( "vout display", 1 )
+        set_callbacks( OpenVideo, CloseVideo )
         set_category( CAT_VIDEO )
         set_subcategory( SUBCAT_VIDEO_VOUT )
         add_category_hint( N_("Video"), NULL, false )
         add_string( "dummy-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true )
     add_submodule ()
+        set_section( N_( "Stats video output" ), NULL )
+        set_description( N_("Stats video output function") )
+        set_capability( "vout display", 0 )
+        add_shortcut( "stats" )
+        set_callbacks( OpenVideoStat, CloseVideo )
+    add_submodule ()
         set_description( N_("Dummy font renderer function") )
         set_capability( "text renderer", 1 )
         set_callbacks( OpenRenderer, NULL )
+    add_submodule ()
+        set_description( N_("libc memcpy") )
+        set_capability( "memcpy", 50 )
+        set_callbacks( OpenDummy, NULL )
+        add_shortcut( "c" )
+        add_shortcut( "libc" )
 vlc_module_end ()
 
+static int OpenDummy( vlc_object_t *obj )
+{
+    (void) obj;
+    return VLC_SUCCESS;
+}
