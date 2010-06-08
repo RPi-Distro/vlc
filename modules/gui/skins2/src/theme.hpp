@@ -2,7 +2,7 @@
  * theme.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bcad169a2e01771be071f261ead32150caefd972 $
+ * $Id: 67eb601381e3097d8a42275090f3079155cfe15b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef THEME_HPP
@@ -45,50 +45,65 @@ class Interpreter;
 /// Class storing the data of the current theme
 class Theme: public SkinObject
 {
+private:
+    friend class Builder;
+    friend class Interpreter;
+public:
+    Theme( intf_thread_t *pIntf ): SkinObject( pIntf ),
+        m_windowManager( getIntf() ) { }
+    virtual ~Theme();
+
+    void loadConfig();
+    void saveConfig();
+
+    GenericBitmap *getBitmapById( const string &id ) const;
+    GenericFont *getFontById( const string &id ) const;
+
+#   define ObjByID( var ) ( const string &id ) const \
+        { return var.find_object( id ); }
+    Popup         *getPopupById    ObjByID( m_popups    )
+    TopWindow     *getWindowById   ObjByID( m_windows   )
+    GenericLayout *getLayoutById   ObjByID( m_layouts   )
+    CtrlGeneric   *getControlById  ObjByID( m_controls  )
+    Position      *getPositionById ObjByID( m_positions )
+#   undef  ObjById
+
+    WindowManager &getWindowManager() { return m_windowManager; }
+
+private:
+    template<class T> class IDmap: public std::map<string, T> {
     private:
-        friend class Builder;
-        friend class Interpreter;
+        typedef typename std::map<string, T> parent;
     public:
-        Theme( intf_thread_t *pIntf ): SkinObject( pIntf ),
-            m_windowManager( getIntf() ) {}
-        virtual ~Theme();
+        typename T::pointer find_object(const string &id) const
+        {
+            typename parent::const_iterator it = parent::find( id );
+            return it!=parent::end() ? it->second.get() : NULL;
+        }
+        typename T::pointer find_first_object(const string &id) const;
+    };
+    /// Store the bitmaps by ID
+    IDmap<GenericBitmapPtr> m_bitmaps;
+    /// Store the fonts by ID
+    IDmap<GenericFontPtr> m_fonts;
+    /// Store the popups by ID
+    IDmap<PopupPtr> m_popups;
+    /// Store the windows by ID
+    IDmap<TopWindowPtr> m_windows;
+    /// Store the layouts by ID
+    IDmap<GenericLayoutPtr> m_layouts;
+    /// Store the controls by ID
+    IDmap<CtrlGenericPtr> m_controls;
+    /// Store the panel positions by ID
+    IDmap<PositionPtr> m_positions;
+    /// Store the commands
+    list<CmdGenericPtr> m_commands;
+    /// Store the Bezier curves
+    list<BezierPtr> m_curves;
+    /// Store the variables
+    list<VariablePtr> m_vars;
 
-        void loadConfig();
-        void saveConfig();
-
-        GenericBitmap *getBitmapById( const string &id ) const;
-        GenericFont *getFontById( const string &id ) const;
-        Popup *getPopupById( const string &id ) const;
-        TopWindow *getWindowById( const string &id ) const;
-        GenericLayout *getLayoutById( const string &id ) const;
-        CtrlGeneric *getControlById( const string &id ) const;
-        Position *getPositionById( const string &id ) const;
-
-        WindowManager &getWindowManager() { return m_windowManager; }
-
-    private:
-        /// Store the bitmaps by ID
-        map<string, GenericBitmapPtr> m_bitmaps;
-        /// Store the fonts by ID
-        map<string, GenericFontPtr> m_fonts;
-        /// Store the popups by ID
-        map<string, PopupPtr> m_popups;
-        /// Store the windows by ID
-        map<string, TopWindowPtr> m_windows;
-        /// Store the layouts by ID
-        map<string, GenericLayoutPtr> m_layouts;
-        /// Store the controls by ID
-        map<string, CtrlGenericPtr> m_controls;
-        /// Store the panel positions by ID
-        map<string, PositionPtr> m_positions;
-        /// Store the commands
-        list<CmdGenericPtr> m_commands;
-        /// Store the Bezier curves
-        list<BezierPtr> m_curves;
-        /// Store the variables
-        list<VariablePtr> m_vars;
-
-        WindowManager m_windowManager;
+    WindowManager m_windowManager;
 };
 
 

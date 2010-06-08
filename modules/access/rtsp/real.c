@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: c74bdf427858c70216e4fc089aa793286f2a13c4 $
+ * $Id: 9bd4c87d65ea9a52a0a3073a437ace8b49f48388 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -18,9 +18,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -28,6 +28,7 @@
 #endif
 
 #include <vlc_common.h>
+#include <vlc_memory.h>
 
 #include "rtsp.h"
 #include "real.h"
@@ -48,7 +49,6 @@ static const unsigned char xor_table[] = {
 #define BE_32C(x,y) do {uint32_t in=y; *(uint32_t *)(x)=GetDWBE(&in);} while(0)
 #define LE_32C(x,y) do {uint32_t in=y; *(uint32_t *)(x)=GetDWLE(&in);} while(0)
 #define MAX(x,y) ((x>y) ? x : y)
-
 
 static void hash(char *field, char *param)
 {
@@ -301,7 +301,7 @@ static void calc_response_string (char *result, char *challenge) {
   }
 }
 
-void real_calc_response_and_checksum (char *response, char *chksum, char *challenge) {
+static void real_calc_response_and_checksum (char *response, char *chksum, char *challenge) {
 
   int   ch_len, resp_len;
   int   i;
@@ -413,7 +413,7 @@ static int select_mlti_data(const char *mlti_chunk, int mlti_size, int selection
  * looking at stream description.
  */
 
-rmff_header_t *real_parse_sdp(char *data, char **stream_rules, uint32_t bandwidth) {
+static rmff_header_t *real_parse_sdp(char *data, char **stream_rules, uint32_t bandwidth) {
 
   sdpplin_t *desc = NULL;
   rmff_header_t *header = NULL;
@@ -519,13 +519,13 @@ rmff_header_t *real_parse_sdp(char *data, char **stream_rules, uint32_t bandwidt
 
   rmff_fix_header(header);
 
-  if( desc ) sdpplin_free( desc );
+  sdpplin_free( desc );
   free( buf );
   return header;
 
 error:
-  if( desc ) sdpplin_free( desc );
-  if( header ) rmff_free_header( header );
+  sdpplin_free( desc );
+  rmff_free_header( header );
   free( buf );
   return NULL;
 }
@@ -690,23 +690,28 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
 
   /* setup our streams */
   real_calc_response_and_checksum (challenge2, checksum, challenge1);
-  buf = realloc(buf, strlen(challenge2) + strlen(checksum) + 32);
+  buf = realloc_or_free(buf, strlen(challenge2) + strlen(checksum) + 32);
+  if( !buf ) goto error;
   sprintf(buf, "RealChallenge2: %s, sd=%s", challenge2, checksum);
   rtsp_schedule_field(rtsp_session, buf);
-  buf = realloc(buf, strlen(session_id) + 32);
+  buf = realloc_or_free(buf, strlen(session_id) + 32);
+  if( !buf ) goto error;
   sprintf(buf, "If-Match: %s", session_id);
   rtsp_schedule_field(rtsp_session, buf);
   rtsp_schedule_field(rtsp_session, "Transport: x-pn-tng/tcp;mode=play,rtp/avp/tcp;unicast;mode=play");
-  buf = realloc(buf, strlen(mrl) + 32);
+  buf = realloc_or_free(buf, strlen(mrl) + 32);
+  if( !buf ) goto error;
   sprintf(buf, "%s/streamid=0", mrl);
   rtsp_request_setup(rtsp_session,buf);
 
   if (h->prop->num_streams > 1) {
     rtsp_schedule_field(rtsp_session, "Transport: x-pn-tng/tcp;mode=play,rtp/avp/tcp;unicast;mode=play");
-    buf = realloc(buf, strlen(session_id) + 32);
+    buf = realloc_or_free(buf, strlen(session_id) + 32);
+    if( !buf ) goto error;
     sprintf(buf, "If-Match: %s", session_id);
     rtsp_schedule_field(rtsp_session, buf);
-    buf = realloc(buf, strlen(mrl) + 32);
+    buf = realloc_or_free(buf, strlen(mrl) + 32);
+    if( !buf ) goto error;
     sprintf(buf, "%s/streamid=1", mrl);
     rtsp_request_setup(rtsp_session,buf);
   }
@@ -726,7 +731,7 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
   return h;
 
 error:
-  if( h ) rmff_free_header( h );
+  rmff_free_header( h );
   free( challenge1 );
   free( session_id );
   free( description );

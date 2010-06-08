@@ -2,7 +2,7 @@
  * vc1.c : VC1 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 8c3af591962a6efe26fcc7bc1bd0a0f4b8ae88d4 $
+ * $Id: f01ffa3d8fc0839ff960e36c0ee4418c5621c72e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -32,7 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
-#include "vlc_codec.h"
+#include <vlc_codec.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -100,13 +100,13 @@ static int Open( vlc_object_t * p_this )
     p_demux->pf_control= Control;
     p_demux->p_sys     = p_sys = malloc( sizeof( demux_sys_t ) );
     p_sys->p_es        = NULL;
-    p_sys->i_dts       = 1;
+    p_sys->i_dts       = 0;
     p_sys->f_fps = var_CreateGetFloat( p_demux, "vc1-fps" );
     if( p_sys->f_fps < 0.001 )
         p_sys->f_fps = 0.0;
 
     /* Load the packetizer */
-    es_format_Init( &fmt, VIDEO_ES, VLC_FOURCC( 'W', 'V', 'C', '1' ) );
+    es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_VC1 );
     p_sys->p_packetizer = demux_PacketizerNew( p_demux, &fmt, "VC-1" );
     if( !p_sys->p_packetizer )
     {
@@ -142,8 +142,8 @@ static int Demux( demux_t *p_demux)
         return 0;
 
     /*  */
-    p_block_in->i_dts = 1;
-    p_block_in->i_pts = 1;
+    p_block_in->i_dts = VLC_TS_0;
+    p_block_in->i_pts = VLC_TS_0;
 
     while( (p_block_out = p_sys->p_packetizer->pf_packetize( p_sys->p_packetizer, &p_block_in )) )
     {
@@ -159,9 +159,9 @@ static int Demux( demux_t *p_demux)
                 p_sys->p_es = es_out_Add( p_demux->out, &p_sys->p_packetizer->fmt_out);
             }
 
-            es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_dts );
-            p_block_out->i_dts = p_sys->i_dts;
-            p_block_out->i_pts = p_sys->i_dts;
+            es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_dts );
+            p_block_out->i_dts = VLC_TS_0 + p_sys->i_dts;
+            p_block_out->i_pts = VLC_TS_0 + p_sys->i_dts;
 
             es_out_Send( p_demux->out, p_sys->p_es, p_block_out );
 

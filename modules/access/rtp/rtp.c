@@ -8,7 +8,7 @@
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2.0
+ * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
@@ -16,7 +16,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
+ * You should have received a copy of the GNU General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  ****************************************************************************/
@@ -26,6 +26,7 @@
 #endif
 #include <stdarg.h>
 #include <assert.h>
+#include <errno.h>
 
 #include <vlc_common.h>
 #include <vlc_demux.h>
@@ -36,7 +37,9 @@
 #include <vlc_codecs.h>
 
 #include "rtp.h"
-#include <srtp.h>
+#ifdef HAVE_SRTP
+# include <srtp.h>
+#endif
 
 #define RTP_CACHING_TEXT N_("RTP de-jitter buffer length (msec)")
 #define RTP_CACHING_LONGTEXT N_( \
@@ -96,10 +99,12 @@ vlc_module_begin ()
                  RTCP_PORT_LONGTEXT, false)
         change_integer_range (0, 65535)
         change_safe ()
+#ifdef HAVE_SRTP
     add_string ("srtp-key", "", NULL,
                 SRTP_KEY_TEXT, SRTP_KEY_LONGTEXT, false)
     add_string ("srtp-salt", "", NULL,
                 SRTP_SALT_TEXT, SRTP_SALT_LONGTEXT, false)
+#endif
     add_integer ("rtp-max-src", 1, NULL, RTP_MAX_SRC_TEXT,
                  RTP_MAX_SRC_LONGTEXT, true)
         change_integer_range (1, 255)
@@ -139,7 +144,6 @@ vlc_module_end ()
 /*
  * Local prototypes
  */
-static int Demux (demux_t *);
 static int Control (demux_t *, int i_query, va_list args);
 static int extract_port (char **phost);
 
@@ -166,17 +170,26 @@ static int Open (vlc_object_t *obj)
         return VLC_EGENERIC;
 
     char *tmp = strdup (demux->psz_path);
-    char *shost = tmp;
-    if (shost == NULL)
+    if (tmp == NULL)
         return VLC_ENOMEM;
 
-    char *dhost = strchr (shost, '@');
-    if (dhost)
-        *dhost++ = '\0';
+    char *shost;
+    char *dhost = strchr (tmp, '@');
+    if (dhost != NULL)
+    {
+        *(dhost++) = '\0';
+        shost = tmp;
+    }
+    else
+    {
+        dhost = tmp;
+        shost = NULL;
+    }
 
     /* Parses the port numbers */
     int sport = 0, dport = 0;
-    sport = extract_port (&shost);
+    if (shost != NULL)
+        sport = extract_port (&shost);
     if (dhost != NULL)
         dport = extract_port (&dhost);
     if (dport == 0)
@@ -209,14 +222,14 @@ static int Open (vlc_object_t *obj)
 #ifdef SOCK_DCCP
             var_Create (obj, "dccp-service", VLC_VAR_STRING);
             var_SetString (obj, "dccp-service", "RTPV"); /* FIXME: RTPA? */
-            fd = net_Connect (obj, shost, sport, SOCK_DCCP, tp);
+            fd = net_Connect (obj, dhost, dport, SOCK_DCCP, tp);
 #else
             msg_Err (obj, "DCCP support not included");
 #endif
             break;
 
         case IPPROTO_TCP:
-            fd = net_Connect (obj, shost, sport, SOCK_STREAM, tp);
+            fd = net_Connect (obj, dhost, dport, SOCK_STREAM, tp);
             break;
     }
 
@@ -236,19 +249,20 @@ static int Open (vlc_object_t *obj)
     }
 
     vlc_mutex_init (&p_sys->lock);
-    vlc_cond_init (&p_sys->wait);
+#ifdef HAVE_SRTP
     p_sys->srtp         = NULL;
+#endif
     p_sys->fd           = fd;
     p_sys->rtcp_fd      = rtcp_fd;
     p_sys->caching      = var_CreateGetInteger (obj, "rtp-caching");
     p_sys->max_src      = var_CreateGetInteger (obj, "rtp-max-src");
-    p_sys->timeout      = var_CreateGetInteger (obj, "rtp-timeout");
+    p_sys->timeout      = var_CreateGetInteger (obj, "rtp-timeout")
+                        * CLOCK_FREQ;
     p_sys->max_dropout  = var_CreateGetInteger (obj, "rtp-max-dropout");
     p_sys->max_misorder = var_CreateGetInteger (obj, "rtp-max-misorder");
     p_sys->framed_rtp   = (tp == IPPROTO_TCP);
-    p_sys->dead         = false;
 
-    demux->pf_demux   = Demux;
+    demux->pf_demux   = NULL;
     demux->pf_control = Control;
     demux->p_sys      = p_sys;
 
@@ -256,6 +270,7 @@ static int Open (vlc_object_t *obj)
     if (p_sys->session == NULL)
         goto error;
 
+#ifdef HAVE_SRTP
     char *key = var_CreateGetNonEmptyString (demux, "srtp-key");
     if (key)
     {
@@ -277,6 +292,7 @@ static int Open (vlc_object_t *obj)
             goto error;
         }
     }
+#endif
 
     if (vlc_clone (&p_sys->thread, rtp_thread, demux,
                    VLC_THREAD_PRIORITY_INPUT))
@@ -303,11 +319,12 @@ static void Close (vlc_object_t *obj)
         vlc_cancel (p_sys->thread);
         vlc_join (p_sys->thread, NULL);
     }
-    vlc_cond_destroy (&p_sys->wait);
     vlc_mutex_destroy (&p_sys->lock);
 
+#ifdef HAVE_SRTP
     if (p_sys->srtp)
         srtp_destroy (p_sys->srtp);
+#endif
     if (p_sys->session)
         rtp_session_destroy (demux, p_sys->session);
     if (p_sys->rtcp_fd != -1)
@@ -372,7 +389,7 @@ static int Control (demux_t *demux, int i_query, va_list args)
         case DEMUX_GET_PTS_DELAY:
         {
             int64_t *v = va_arg (args, int64_t *);
-            *v = p_sys->caching * 1000;
+            *v = (int64_t)p_sys->caching * 1000;
             return VLC_SUCCESS;
         }
 
@@ -452,7 +469,7 @@ static void *pcmu_init (demux_t *demux)
 {
     es_format_t fmt;
 
-    es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC ('u', 'l', 'a', 'w'));
+    es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_MULAW);
     fmt.audio.i_rate = 8000;
     fmt.audio.i_channels = 1;
     return codec_init (demux, &fmt);
@@ -465,7 +482,7 @@ static void *gsm_init (demux_t *demux)
 {
     es_format_t fmt;
 
-    es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC ('g', 's', 'm', ' '));
+    es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_GSM);
     fmt.audio.i_rate = 8000;
     fmt.audio.i_channels = 1;
     return codec_init (demux, &fmt);
@@ -478,7 +495,7 @@ static void *pcma_init (demux_t *demux)
 {
     es_format_t fmt;
 
-    es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC ('a', 'l', 'a', 'w'));
+    es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_ALAW);
     fmt.audio.i_rate = 8000;
     fmt.audio.i_channels = 1;
     return codec_init (demux, &fmt);
@@ -491,7 +508,7 @@ static void *l16s_init (demux_t *demux)
 {
     es_format_t fmt;
 
-    es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC ('s', '1', '6', 'b'));
+    es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_S16B);
     fmt.audio.i_rate = 44100;
     fmt.audio.i_channels = 2;
     return codec_init (demux, &fmt);
@@ -501,7 +518,7 @@ static void *l16m_init (demux_t *demux)
 {
     es_format_t fmt;
 
-    es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC ('s', '1', '6', 'b'));
+    es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_S16B);
     fmt.audio.i_rate = 44100;
     fmt.audio.i_channels = 1;
     return codec_init (demux, &fmt);
@@ -514,7 +531,7 @@ static void *qcelp_init (demux_t *demux)
 {
     es_format_t fmt;
 
-    es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC ('Q', 'c', 'l', 'p'));
+    es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_QCELP);
     fmt.audio.i_rate = 8000;
     fmt.audio.i_channels = 1;
     return codec_init (demux, &fmt);
@@ -527,7 +544,7 @@ static void *mpa_init (demux_t *demux)
 {
     es_format_t fmt;
 
-    es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC ('m', 'p', 'g', 'a'));
+    es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_MPGA);
     fmt.audio.i_channels = 2;
     fmt.b_packetized = false;
     return codec_init (demux, &fmt);
@@ -555,7 +572,7 @@ static void *mpv_init (demux_t *demux)
 {
     es_format_t fmt;
 
-    es_format_Init (&fmt, VIDEO_ES, VLC_FOURCC ('m', 'p', 'g', 'v'));
+    es_format_Init (&fmt, VIDEO_ES, VLC_CODEC_MPGV);
     fmt.b_packetized = false;
     return codec_init (demux, &fmt);
 }
@@ -676,11 +693,3 @@ int rtp_autodetect (demux_t *demux, rtp_session_t *session,
  * Dynamic payload type handlers
  * Hmm, none implemented yet.
  */
-
-/**
- * Processing callback
- */
-static int Demux (demux_t *demux)
-{
-    return rtp_process (demux) ? 0 : 1;
-}

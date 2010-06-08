@@ -2,7 +2,7 @@
  * cc608.c : CC 608/708 subtitles decoder
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: 419d576626823f8374ed551d73c73be5bb465683 $
+ * $Id: 0d1ab2e1bc98e523c96c8f0ea55c9a5a0019584a $
  *
  * Authors: Laurent Aimar < fenrir # via.ecp.fr>
  *
@@ -39,7 +39,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 #include <vlc_codec.h>
 #include <vlc_input.h>
 
@@ -49,7 +48,6 @@
 #include <vlc_charset.h>
 #include <vlc_stream.h>
 #include <vlc_xml.h>
-#include <errno.h>
 #include <string.h>
 
 #include <assert.h>
@@ -210,7 +208,7 @@ static int Open( vlc_object_t *p_this )
     Eia608Init( &p_sys->eia608 );
 
     p_dec->fmt_out.i_cat = SPU_ES;
-    p_dec->fmt_out.i_codec = VLC_FOURCC('T','E','X','T');
+    p_dec->fmt_out.i_codec = VLC_CODEC_TEXT;
 
     return VLC_SUCCESS;
 }
@@ -295,11 +293,11 @@ static block_t *Pop( decoder_t *p_dec )
         return NULL;
 
     p_block = p_sys->pp_block[i_index = 0];
-    if( p_block->i_pts > 0 )
+    if( p_block->i_pts > VLC_TS_INVALID )
     {
         for( i = 1; i < p_sys->i_block-1; i++ )
         {
-            if( p_sys->pp_block[i]->i_pts > 0 && p_block->i_pts > 0 &&
+            if( p_sys->pp_block[i]->i_pts > VLC_TS_INVALID && p_block->i_pts > VLC_TS_INVALID &&
                 p_sys->pp_block[i]->i_pts < p_block->i_pts )
                 p_block = p_sys->pp_block[i_index = i];
         }
@@ -318,7 +316,7 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
     video_format_t fmt;
 
     /* We cannot display a subpicture with no date */
-    if( i_pts == 0 )
+    if( i_pts <= VLC_TS_INVALID )
     {
         msg_Warn( p_dec, "subtitle without a date" );
         return NULL;
@@ -340,8 +338,7 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('T','E','X','T');
-    fmt.i_aspect = 0;
+    fmt.i_chroma = VLC_CODEC_TEXT;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
     p_spu->p_region = subpicture_region_New( &fmt );
@@ -566,6 +563,9 @@ static void Eia608EraseToEndOfRow( eia608_t *h )
 
 static void Eia608RollUp( eia608_t *h )
 {
+    if( h->mode == EIA608_MODE_TEXT )
+        return;
+
     const int i_screen = Eia608GetWritingScreenIndex( h );
     eia608_screen *screen = &h->screen[i_screen];
 
@@ -604,7 +604,7 @@ static void Eia608RollUp( eia608_t *h )
     /* Reset current row */
     Eia608ClearScreenRow( h, i_screen, h->cursor.i_row );
 }
-static void Eia608ParseChannel( eia608_t *h, uint8_t d[2] )
+static void Eia608ParseChannel( eia608_t *h, const uint8_t d[2] )
 {
     /* Check odd parity */
     static const int p4[16] = {
@@ -619,15 +619,10 @@ static void Eia608ParseChannel( eia608_t *h, uint8_t d[2] )
 
     /* */
     const int d1 = d[0] & 0x7f;
-    const int d2 = d[1] & 0x7f;
-    if( d1 == 0x14 )
-        h->i_channel = 1;
-    else if( d1 == 0x1c )
-        h->i_channel = 2;
-    else if( d1 == 0x15 )
+    if( d1 >= 0x10 && d1 <= 0x1f )
+        h->i_channel = 1 + ((d1 & 0x08) != 0);
+    else if( d1 < 0x10 )
         h->i_channel = 3;
-    else if( d1 == 0x1d )
-        h->i_channel = 4;
 }
 static bool Eia608ParseTextAttribute( eia608_t *h, uint8_t d2 )
 {
@@ -1144,5 +1139,6 @@ static char *Eia608Text( eia608_t *h, bool b_html )
 
 static void Eia608Exit( eia608_t *h )
 {
+    VLC_UNUSED( h );
 }
 

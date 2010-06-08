@@ -2,7 +2,7 @@
  * cmd_on_top.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7783426a5c17c569d88a19aafd14f90bc1e5c21c $
+ * $Id: 54cc640129563cbe7416f900e6ecd068580ab487 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -30,4 +30,9 @@
 void CmdOnTop::execute()
 {
     getIntf()->p_sys->p_theme->getWindowManager().toggleOnTop();
+}
+
+void CmdSetOnTop::execute()
+{
+    getIntf()->p_sys->p_theme->getWindowManager().setOnTop( m_ontop );
 }

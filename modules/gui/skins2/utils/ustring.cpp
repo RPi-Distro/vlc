@@ -2,7 +2,7 @@
  * ustring.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 76fb03cfd7acf52cfea348212f0f9942da9a9922 $
+ * $Id: 3f1f869210948d34ce865210959487b7f8d1da7c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -130,10 +130,7 @@ UString::UString( intf_thread_t *pIntf, const char *pString ):
 
 UString::~UString()
 {
-    if( m_pString )
-    {
-        delete[] m_pString;
-    }
+    delete[] m_pString;
 }
 
 

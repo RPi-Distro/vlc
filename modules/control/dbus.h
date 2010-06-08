@@ -2,7 +2,7 @@
  * dbus.h : D-Bus control interface
  *****************************************************************************
  * Copyright (C) 2006 Rafaël Carré
- * $Id: 929588b8a54e62ad75e85e0b12a04f4cffa2fb35 $
+ * $Id: 43ec891b1401eca27f4565de1e7d78cc6a4c2ed4 $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal ENNAIME <mirsal dot ennaime at gmail dot com>
@@ -56,8 +56,8 @@
     dbus_message_unref( p_msg ); \
     return DBUS_HANDLER_RESULT_HANDLED
 
-#define SIGNAL_INIT( signal ) \
-    DBusMessage *p_msg = dbus_message_new_signal( MPRIS_DBUS_PLAYER_PATH, \
+#define SIGNAL_INIT( path, signal ) \
+    DBusMessage *p_msg = dbus_message_new_signal( path, \
         MPRIS_DBUS_INTERFACE, signal ); \
     if( !p_msg ) return DBUS_HANDLER_RESULT_NEED_MEMORY; \
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: fed3ab0ac93a33ed4380d333ce14ca16136df08a $
+ * Copyright (C) 2004-2009 the VideoLAN team
+ * $Id: ae778d6914c26e15352cedea03a71a271a4a33a7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,13 +21,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc_demux.h>
 #include <assert.h>
+#include <vlc_demux.h>
+#include <vlc_memory.h>
 
-/* 256-0xC0 for normal stream, 256 for 0xbd stream, 256 for 0xfd stream */
-#define PS_TK_COUNT (768 - 0xc0)
+/* 256-0xC0 for normal stream, 256 for 0xbd stream, 256 for 0xfd stream, 8 for 0xa0 AOB stream */
+#define PS_TK_COUNT (256+256+256+8 - 0xc0)
+#if 0
 #define PS_ID_TO_TK( id ) ((id) <= 0xff ? (id) - 0xc0 : \
             ((id)&0xff) + (((id)&0xff00) == 0xbd00 ? 256-0xC0 : 512-0xc0) )
+#else
+static inline int ps_id_to_tk( unsigned i_id )
+{
+    if( i_id <= 0xff )
+        return i_id - 0xc0;
+    else if( (i_id & 0xff00) == 0xbd00 )
+        return 256-0xC0 + (i_id & 0xff);
+    else if( (i_id & 0xff00) == 0xfd00 )
+        return 512-0xc0 + (i_id & 0xff);
+    else
+        return 768-0xc0 + (i_id & 0x07);
+}
+#define PS_ID_TO_TK( id ) ps_id_to_tk( id )
+#endif
 
 typedef struct ps_psm_t ps_psm_t;
 static inline int ps_id_to_type( const ps_psm_t *, int );
@@ -70,28 +86,28 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm, int i_id )
     {
         if( ( i_id&0xf8 ) == 0x88 || (i_id&0xf8) == 0x98 )
         {
-            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('d','t','s',' ') );
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_DTS );
             tk->i_skip = 4;
         }
         else if( ( i_id&0xf0 ) == 0x80
                ||  (i_id&0xf0) == 0xc0 ) /* AC-3, Can also be used for DD+/E-AC-3 */
         {
-            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('a','5','2',' ') );
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_A52 );
             tk->i_skip = 4;
         }
         else if( (i_id&0xf0) == 0xb0 )
         {
-            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('m','l','p',' ') );
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_MLP );
             /* FIXME / untested ... no known decoder (at least not in VLC/ffmpeg) */
         }
         else if( ( i_id&0xe0 ) == 0x20 )
         {
-            es_format_Init( &tk->fmt, SPU_ES, VLC_FOURCC('s','p','u',' ') );
+            es_format_Init( &tk->fmt, SPU_ES, VLC_CODEC_SPU );
             tk->i_skip = 1;
         }
         else if( ( i_id&0xf0 ) == 0xa0 )
         {
-            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('l','p','c','m') );
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_DVD_LPCM );
             tk->i_skip = 1;
         }
         else if( ( i_id&0xff ) == 0x70 )
@@ -104,7 +120,7 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm, int i_id )
         }
         else if( ( i_id&0xff ) == 0x10 )
         {
-            es_format_Init( &tk->fmt, SPU_ES, VLC_FOURCC('t','e','l','x') );
+            es_format_Init( &tk->fmt, SPU_ES, VLC_CODEC_TELETEXT );
         }
         else
         {
@@ -117,7 +133,26 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm, int i_id )
         uint8_t i_sub_id = i_id & 0xff;
         if( i_sub_id >= 0x55 && i_sub_id <= 0x5f )
         {
-            es_format_Init( &tk->fmt, VIDEO_ES, VLC_FOURCC('W','V','C','1') );
+            es_format_Init( &tk->fmt, VIDEO_ES, VLC_CODEC_VC1 );
+        }
+        else
+        {
+            es_format_Init( &tk->fmt, UNKNOWN_ES, 0 );
+            return VLC_EGENERIC;
+        }
+    }
+    else if( (i_id&0xff00) == 0xa000 )
+    {
+        uint8_t i_sub_id = i_id & 0x07;
+        if( i_sub_id == 0 )
+        {
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_DVDA_LPCM );
+            tk->i_skip = 1;
+        }
+        else if( i_sub_id == 1 )
+        {
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_MLP );
+            tk->i_skip = -1; /* It's a hack for variable skip value */
         }
         else
         {
@@ -133,36 +168,36 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm, int i_id )
 
         if( (i_id&0xf0) == 0xe0 && i_type == 0x1b )
         {
-            es_format_Init( &tk->fmt, VIDEO_ES, VLC_FOURCC('h','2','6','4') );
+            es_format_Init( &tk->fmt, VIDEO_ES, VLC_CODEC_H264 );
         }
         else if( (i_id&0xf0) == 0xe0 && i_type == 0x10 )
         {
-            es_format_Init( &tk->fmt, VIDEO_ES, VLC_FOURCC('m','p','4','v') );
+            es_format_Init( &tk->fmt, VIDEO_ES, VLC_CODEC_MP4V );
         }
         else if( (i_id&0xf0) == 0xe0 && i_type == 0x02 )
         {
-            es_format_Init( &tk->fmt, VIDEO_ES, VLC_FOURCC('m','p','g','v') );
+            es_format_Init( &tk->fmt, VIDEO_ES, VLC_CODEC_MPGV );
         }
         else if( ( i_id&0xe0 ) == 0xc0 && i_type == 0x0f )
         {
-            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('m','p','4','a') );
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_MP4A );
         }
         else if( ( i_id&0xe0 ) == 0xc0 && i_type == 0x11 )
         {
-            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('m','p','4','a') );
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_MP4A );
         }
         else if( ( i_id&0xe0 ) == 0xc0 && i_type == 0x03 )
         {
-            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('m','p','g','a') );
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_MPGA );
         }
 
         if( tk->fmt.i_cat == UNKNOWN_ES && ( i_id&0xf0 ) == 0xe0 )
         {
-            es_format_Init( &tk->fmt, VIDEO_ES, VLC_FOURCC('m','p','g','v') );
+            es_format_Init( &tk->fmt, VIDEO_ES, VLC_CODEC_MPGV );
         }
         else if( tk->fmt.i_cat == UNKNOWN_ES && ( i_id&0xe0 ) == 0xc0 )
         {
-            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('m','p','g','a') );
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_CODEC_MPGA );
         }
         else if( tk->fmt.i_cat == UNKNOWN_ES ) return VLC_EGENERIC;
     }
@@ -190,8 +225,22 @@ static inline int ps_pkt_id( block_t *p_pkt )
         p_pkt->i_buffer >= 9 &&
         p_pkt->i_buffer >= 9 + (size_t)p_pkt->p_buffer[8] )
     {
+        const unsigned i_start = 9 + p_pkt->p_buffer[8];
+        const uint8_t i_sub_id = p_pkt->p_buffer[i_start];
+
+        if( (i_sub_id & 0xfe) == 0xa0 &&
+            p_pkt->i_buffer >= i_start + 7 &&
+            ( p_pkt->p_buffer[i_start + 5] >=  0xc0 ||
+              p_pkt->p_buffer[i_start + 6] != 0x80 ) )
+        {
+            /* AOB LPCM/MLP extension
+             * XXX for MLP I think that the !=0x80 test is not good and
+             * will fail for some valid files */
+            return 0xa000 | (i_sub_id & 0x01);
+        }
+
         /* VOB extension */
-        return 0xbd00 | p_pkt->p_buffer[9+p_pkt->p_buffer[8]];
+        return 0xbd00 | i_sub_id;
     }
     else if( p_pkt->p_buffer[3] == 0xfd &&
              p_pkt->i_buffer >= 9 &&
@@ -350,6 +399,8 @@ static inline int ps_pkt_parse_pes( block_t *p_pes, int i_skip_extra )
 {
     uint8_t header[34];
     unsigned int i_skip  = 0;
+    int64_t i_pts = -1;
+    int64_t i_dts = -1;
 
     memcpy( header, p_pes->p_buffer, __MIN( p_pes->i_buffer, 34 ) );
 
@@ -374,19 +425,19 @@ static inline int ps_pkt_parse_pes( block_t *p_pes, int i_skip_extra )
 
                 if( header[7]&0x80 )    /* has pts */
                 {
-                    p_pes->i_pts = ((mtime_t)(header[ 9]&0x0e ) << 29)|
-                                    (mtime_t)(header[10] << 22)|
-                                   ((mtime_t)(header[11]&0xfe) << 14)|
-                                    (mtime_t)(header[12] << 7)|
-                                    (mtime_t)(header[13] >> 1);
+                    i_pts = ((mtime_t)(header[ 9]&0x0e ) << 29)|
+                             (mtime_t)(header[10] << 22)|
+                            ((mtime_t)(header[11]&0xfe) << 14)|
+                             (mtime_t)(header[12] << 7)|
+                             (mtime_t)(header[13] >> 1);
 
                     if( header[7]&0x40 )    /* has dts */
                     {
-                         p_pes->i_dts = ((mtime_t)(header[14]&0x0e ) << 29)|
-                                         (mtime_t)(header[15] << 22)|
-                                        ((mtime_t)(header[16]&0xfe) << 14)|
-                                         (mtime_t)(header[17] << 7)|
-                                         (mtime_t)(header[18] >> 1);
+                         i_dts = ((mtime_t)(header[14]&0x0e ) << 29)|
+                                  (mtime_t)(header[15] << 22)|
+                                 ((mtime_t)(header[16]&0xfe) << 14)|
+                                  (mtime_t)(header[17] << 7)|
+                                  (mtime_t)(header[18] >> 1);
                     }
                 }
             }
@@ -409,19 +460,19 @@ static inline int ps_pkt_parse_pes( block_t *p_pes, int i_skip_extra )
 
                 if(  header[i_skip]&0x20 )
                 {
-                     p_pes->i_pts = ((mtime_t)(header[i_skip]&0x0e ) << 29)|
-                                     (mtime_t)(header[i_skip+1] << 22)|
-                                    ((mtime_t)(header[i_skip+2]&0xfe) << 14)|
-                                     (mtime_t)(header[i_skip+3] << 7)|
-                                     (mtime_t)(header[i_skip+4] >> 1);
+                     i_pts = ((mtime_t)(header[i_skip]&0x0e ) << 29)|
+                              (mtime_t)(header[i_skip+1] << 22)|
+                             ((mtime_t)(header[i_skip+2]&0xfe) << 14)|
+                              (mtime_t)(header[i_skip+3] << 7)|
+                              (mtime_t)(header[i_skip+4] >> 1);
 
                     if( header[i_skip]&0x10 )    /* has dts */
                     {
-                         p_pes->i_dts = ((mtime_t)(header[i_skip+5]&0x0e ) << 29)|
-                                         (mtime_t)(header[i_skip+6] << 22)|
-                                        ((mtime_t)(header[i_skip+7]&0xfe) << 14)|
-                                         (mtime_t)(header[i_skip+8] << 7)|
-                                         (mtime_t)(header[i_skip+9] >> 1);
+                         i_dts = ((mtime_t)(header[i_skip+5]&0x0e ) << 29)|
+                                  (mtime_t)(header[i_skip+6] << 22)|
+                                 ((mtime_t)(header[i_skip+7]&0xfe) << 14)|
+                                  (mtime_t)(header[i_skip+8] << 7)|
+                                  (mtime_t)(header[i_skip+9] >> 1);
                          i_skip += 10;
                     }
                     else
@@ -436,7 +487,11 @@ static inline int ps_pkt_parse_pes( block_t *p_pes, int i_skip_extra )
             }
     }
 
-    i_skip += i_skip_extra;
+    if( i_skip_extra >= 0 )
+        i_skip += i_skip_extra;
+    else if( p_pes->i_buffer > i_skip + 3 &&
+             ( ps_pkt_id( p_pes ) == 0xa001 || ps_pkt_id( p_pes ) == 0xbda1 ) )
+        i_skip += 4 + p_pes->p_buffer[i_skip+3];
 
     if( p_pes->i_buffer <= i_skip )
     {
@@ -446,8 +501,10 @@ static inline int ps_pkt_parse_pes( block_t *p_pes, int i_skip_extra )
     p_pes->p_buffer += i_skip;
     p_pes->i_buffer -= i_skip;
 
-    p_pes->i_dts = 100 * p_pes->i_dts / 9;
-    p_pes->i_pts = 100 * p_pes->i_pts / 9;
+    if( i_dts >= 0 )
+        p_pes->i_dts = VLC_TS_0 + 100 * i_dts / 9;
+    if( i_pts >= 0 )
+        p_pes->i_pts = VLC_TS_0 + 100 * i_pts / 9;
 
     return VLC_SUCCESS;
 }
@@ -590,7 +647,7 @@ static inline int ps_psm_fill( ps_psm_t *p_psm, block_t *p_pkt,
             }
         }
 
-        tmp_es = realloc( p_psm->es, sizeof(ps_es_t *) * (p_psm->i_es+1) );
+        tmp_es = realloc_or_free( p_psm->es, sizeof(ps_es_t *) * (p_psm->i_es+1) );
         if( tmp_es )
         {
             p_psm->es = tmp_es;
@@ -617,9 +674,15 @@ static inline int ps_psm_fill( ps_psm_t *p_psm, block_t *p_pkt,
         if( ps_track_fill( &tk_tmp, p_psm, tk[i].i_id ) != VLC_SUCCESS )
             continue;
 
-        if( tk_tmp.fmt.i_codec == tk[i].fmt.i_codec ) continue;
+        if( tk_tmp.fmt.i_codec == tk[i].fmt.i_codec )
+        {
+            es_format_Clean( &tk_tmp.fmt );
+            continue;
+        }
 
         es_out_Del( out, tk[i].es );
+        es_format_Clean( &tk[i].fmt );
+
         tk[i] = tk_tmp;
         tk[i].b_seen = true;
         tk[i].es = es_out_Add( out, &tk[i].fmt );

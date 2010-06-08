@@ -3,9 +3,9 @@
 
 basedir = video_output
 dir = video_output/msw
-mods = direct3d glwin32 vout_directx wingapi wingdi
-libvlc_LTLIBRARIES =  $(LTLIBdirect3d) $(LTLIBglwin32) $(LTLIBvout_directx) $(LTLIBwingapi) $(LTLIBwingdi)
-EXTRA_LTLIBRARIES =  libdirect3d_plugin.la libglwin32_plugin.la libvout_directx_plugin.la libwingapi_plugin.la libwingdi_plugin.la
+mods = direct3d directx glwin32 wingapi wingdi
+libvlc_LTLIBRARIES =  $(LTLIBdirect3d) $(LTLIBdirectx) $(LTLIBglwin32) $(LTLIBwingapi) $(LTLIBwingdi)
+EXTRA_LTLIBRARIES =  libdirect3d_plugin.la libdirectx_plugin.la libglwin32_plugin.la libwingapi_plugin.la libwingdi_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -20,6 +20,17 @@ libdirect3d_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libdirect3d_plugin_la_LIBADD = $(AM_LIBADD)
 libdirect3d_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
+# The directx plugin
+libdirectx_plugin_la_SOURCES = $(SOURCES_directx)
+nodist_libdirectx_plugin_la_SOURCES = $(nodist_SOURCES_directx)
+# Force per-target objects:
+libdirectx_plugin_la_CFLAGS = $(AM_CFLAGS)
+libdirectx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libdirectx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libdirectx_plugin_la_LIBADD = $(AM_LIBADD)
+libdirectx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
 # The glwin32 plugin
 libglwin32_plugin_la_SOURCES = $(SOURCES_glwin32)
 nodist_libglwin32_plugin_la_SOURCES = $(nodist_SOURCES_glwin32)
@@ -30,17 +41,6 @@ libglwin32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libglwin32_plugin_la_LIBADD = $(AM_LIBADD)
 libglwin32_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The vout_directx plugin
-libvout_directx_plugin_la_SOURCES = $(SOURCES_vout_directx)
-nodist_libvout_directx_plugin_la_SOURCES = $(nodist_SOURCES_vout_directx)
-# Force per-target objects:
-libvout_directx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libvout_directx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libvout_directx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libvout_directx_plugin_la_LIBADD = $(AM_LIBADD)
-libvout_directx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The wingapi plugin
 libwingapi_plugin_la_SOURCES = $(SOURCES_wingapi)

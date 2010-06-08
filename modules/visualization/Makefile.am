@@ -3,9 +3,9 @@
 
 basedir = visualization
 dir = visualization
-mods = goom
-libvlc_LTLIBRARIES =  $(LTLIBgoom)
-EXTRA_LTLIBRARIES =  libgoom_plugin.la
+mods = goom projectm
+libvlc_LTLIBRARIES =  $(LTLIBgoom) $(LTLIBprojectm)
+EXTRA_LTLIBRARIES =  libgoom_plugin.la libprojectm_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -19,4 +19,15 @@ libgoom_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgoom_plugin_la_LIBADD = $(AM_LIBADD)
 libgoom_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The projectm plugin
+libprojectm_plugin_la_SOURCES = $(SOURCES_projectm)
+nodist_libprojectm_plugin_la_SOURCES = $(nodist_SOURCES_projectm)
+# Force per-target objects:
+libprojectm_plugin_la_CFLAGS = $(AM_CFLAGS)
+libprojectm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libprojectm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libprojectm_plugin_la_LIBADD = $(AM_LIBADD)
+libprojectm_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

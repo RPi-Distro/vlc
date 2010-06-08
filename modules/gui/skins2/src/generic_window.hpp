@@ -2,7 +2,7 @@
  * generic_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e75b733b7fda3ab91e12375263596ea5d900be59 $
+ * $Id: 4f6523981181c5aa7edae28201cce1e93ceaa2b0 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef GENERIC_WINDOW_HPP
@@ -44,93 +44,103 @@ class WindowManager;
 /// Generic window class
 class GenericWindow: public SkinObject, public Observer<VarBool>
 {
-    private:
-        friend class WindowManager;
-        friend class VoutManager;
-        friend class CtrlVideo;
-    public:
-        GenericWindow( intf_thread_t *pIntf, int xPos, int yPos,
-                       bool dragDrop, bool playOnDrop,
-                       GenericWindow *pParent = NULL );
-        virtual ~GenericWindow();
+private:
+    friend class WindowManager;
+    friend class VoutManager;
+    friend class CtrlVideo;
+public:
 
-        /// Methods to process OS events.
-        virtual void processEvent( EvtFocus &rEvtFocus ) {}
-        virtual void processEvent( EvtMenu &rEvtMenu ) {}
-        virtual void processEvent( EvtMotion &rEvtMotion ) {}
-        virtual void processEvent( EvtMouse &rEvtMouse ) {}
-        virtual void processEvent( EvtLeave &rEvtLeave ) {}
-        virtual void processEvent( EvtKey &rEvtKey ) {}
-        virtual void processEvent( EvtScroll &rEvtScroll ) {}
+    enum WindowType_t
+    {
+        TopWindow,
+        VoutWindow,
+        FullscreenWindow,
+    };
 
-        virtual void processEvent( EvtRefresh &rEvtRefresh );
+    GenericWindow( intf_thread_t *pIntf, int xPos, int yPos,
+                   bool dragDrop, bool playOnDrop,
+                   GenericWindow *pParent = NULL,
+                   WindowType_t type = TopWindow );
+    virtual ~GenericWindow();
 
-        /// Resize the window
-        virtual void resize( int width, int height );
+    /// Methods to process OS events.
+    virtual void processEvent( EvtFocus &rEvtFocus ) { }
+    virtual void processEvent( EvtMenu &rEvtMenu ) { }
+    virtual void processEvent( EvtMotion &rEvtMotion ) { }
+    virtual void processEvent( EvtMouse &rEvtMouse ) { }
+    virtual void processEvent( EvtLeave &rEvtLeave ) { }
+    virtual void processEvent( EvtKey &rEvtKey ) { }
+    virtual void processEvent( EvtScroll &rEvtScroll ) { }
 
-        /// Refresh an area of the window
-        virtual void refresh( int left, int top, int width, int height ) {}
+    virtual void processEvent( EvtRefresh &rEvtRefresh );
 
-        /// Get the coordinates of the window
-        int getLeft() const { return m_left; }
-        int getTop() const { return m_top; }
-        int getWidth() const { return m_width; }
-        int getHeight() const { return m_height; }
+    /// Resize the window
+    virtual void resize( int width, int height );
 
-        /// Give access to the visibility variable
-        VarBool &getVisibleVar() { return *m_pVarVisible; }
+    /// Refresh an area of the window
+    virtual void refresh( int left, int top, int width, int height ) { }
 
-        /// Window type, mainly useful when overloaded (for VoutWindow)
-        virtual string getType() const { return "Generic"; }
+    /// Get the coordinates of the window
+    int getLeft() const { return m_left; }
+    int getTop() const { return m_top; }
+    int getWidth() const { return m_width; }
+    int getHeight() const { return m_height; }
 
-        /// windows handle
-        void* getOSHandle() const;
+    /// Give access to the visibility variable
+    VarBool &getVisibleVar() { return *m_pVarVisible; }
 
-        /// reparent
-        void setParent( GenericWindow* pParent, int x, int y, int w, int h );
+    /// Window type, mainly useful when overloaded (for VoutWindow)
+    virtual string getType() const { return "Generic"; }
 
-    protected:
-        /// Get the OS window
-        OSWindow *getOSWindow() const { return m_pOsWindow; }
+    /// windows handle
+    void* getOSHandle() const;
 
-        /// These methods do not need to be public since they are accessed
-        /// only by the window manager or by inheritant classes.
-        //@{
-        /// Show the window
-        virtual void show() const;
+    /// reparent
+    void setParent( GenericWindow* pParent,
+                    int x = 0, int y = 0, int w = -1, int h = -1 );
 
-        /// Hide the window
-        virtual void hide() const;
+protected:
+    /// Get the OS window
+    OSWindow *getOSWindow() const { return m_pOsWindow; }
 
-        /// Move the window
-        virtual void move( int left, int top );
+    /// These methods do not need to be public since they are accessed
+    /// only by the window manager or by inheritant classes.
+    //@{
+    /// Show the window
+    virtual void show() const;
 
-        /// Bring the window on top
-        virtual void raise() const;
+    /// Hide the window
+    virtual void hide() const;
 
-        /// Set the opacity of the window (0 = transparent, 255 = opaque)
-        virtual void setOpacity( uint8_t value );
+    /// Move the window
+    virtual void move( int left, int top );
 
-        /// Toggle the window on top
-        virtual void toggleOnTop( bool onTop ) const;
-        //@}
+    /// Bring the window on top
+    virtual void raise() const;
 
-        /// Actually show the window
-        virtual void innerShow();
+    /// Set the opacity of the window (0 = transparent, 255 = opaque)
+    virtual void setOpacity( uint8_t value );
 
-        /// Actually hide the window
-        virtual void innerHide();
+    /// Toggle the window on top
+    virtual void toggleOnTop( bool onTop ) const;
+    //@}
 
-    private:
-        /// Window position and size
-        int m_left, m_top, m_width, m_height;
-        /// OS specific implementation
-        OSWindow *m_pOsWindow;
-        /// Variable for the visibility of the window
-        mutable VarBoolImpl *m_pVarVisible;
+    /// Actually show the window
+    virtual void innerShow();
 
-        /// Method called when the observed variable is modified
-        virtual void onUpdate( Subject<VarBool> &rVariable , void*);
+    /// Actually hide the window
+    virtual void innerHide();
+
+private:
+    /// Window position and size
+    int m_left, m_top, m_width, m_height;
+    /// OS specific implementation
+    OSWindow *m_pOsWindow;
+    /// Variable for the visibility of the window
+    mutable VarBoolImpl *m_pVarVisible;
+
+    /// Method called when the observed variable is modified
+    virtual void onUpdate( Subject<VarBool> &rVariable , void*);
 };
 
 

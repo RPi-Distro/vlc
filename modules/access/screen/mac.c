@@ -2,7 +2,7 @@
  * mac.c: Screen capture module for the Mac.
  *****************************************************************************
  * Copyright (C) 2004, 2008 the VideoLAN team
- * $Id: 5b14fdd610773963176644ee76abcd8d5e1d8590 $
+ * $Id: 3e31e8968ee3a3e29591a748444b38607e2ba802 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          arai <arai_a@mac.com>
@@ -32,7 +32,12 @@
 
 #import <vlc_common.h>
 
+// Fix ourselves ColorSync headers that gets included in ApplicationServices.
+#define DisposeCMProfileIterateUPP(a) DisposeCMProfileIterateUPP(CMProfileIterateUPP userUPP __attribute__((unused)))
+#define DisposeCMMIterateUPP(a) DisposeCMMIterateUPP(CMProfileIterateUPP userUPP __attribute__((unused)))
+#define __MACHINEEXCEPTIONS__
 #import <ApplicationServices/ApplicationServices.h>
+
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
 #import <stdlib.h>
@@ -129,7 +134,7 @@ int screen_InitCapture( demux_t *p_demux )
     CGLSetOffScreen( p_data->scaled, p_data->dest_width, p_data->dest_height,
                      p_data->dest_width * 4, p_data->scaled_image );
     
-    es_format_Init( &p_sys->fmt, VIDEO_ES, VLC_FOURCC( 'R','V','3','2' ) );
+    es_format_Init( &p_sys->fmt, VIDEO_ES, VLC_CODEC_RGB32 );
     
     /* p_sys->fmt.video.i_* must set to screen size, not subscreen size */
     p_sys->fmt.video.i_width = p_data->screen_width;

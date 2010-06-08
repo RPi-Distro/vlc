@@ -1,9 +1,10 @@
 /*****************************************************************************
  * plugin.h: ActiveX control for VLC
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
+ * Copyright (C) 2005-2010 the VideoLAN team
  *
  * Authors: Damien Fouilleul <Damien.Fouilleul@laposte.net>
+ *          Jean-Paul Saman <jpsaman@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,7 +163,7 @@ public:
         if( NULL != _p_pict )
             _p_pict->Release();
         if( NULL != pict )
-            _p_pict->AddRef();
+            pict->AddRef();
         _p_pict = pict;
     };
 
@@ -199,12 +200,12 @@ public:
         if( !isRunning() )
             initVLC();
         *pp_libvlc = _p_libvlc;
-        return _p_libvlc?S_OK:E_FAIL;
+        return _p_libvlc ? S_OK : E_FAIL;
     }
     HRESULT getMD(libvlc_media_player_t **pp_md)
     {
         *pp_md = _p_mplayer;
-        return _p_mplayer?S_OK:E_FAIL;
+        return _p_mplayer ? S_OK : E_FAIL;
     }
 
     void setErrorInfo(REFIID riid, const char *description);
@@ -237,74 +238,91 @@ public:
     void fireOnPauseEvent(void);
     void fireOnStopEvent(void);
 
+    // async events;
+    void fireOnMediaPlayerNothingSpecialEvent();
+    void fireOnMediaPlayerOpeningEvent();
+    void fireOnMediaPlayerBufferingEvent();
+    void fireOnMediaPlayerPlayingEvent();
+    void fireOnMediaPlayerPausedEvent();
+    void fireOnMediaPlayerForwardEvent();
+    void fireOnMediaPlayerBackwardEvent();
+    void fireOnMediaPlayerEncounteredErrorEvent();
+    void fireOnMediaPlayerEndReachedEvent();
+    void fireOnMediaPlayerStoppedEvent();
+
+    void fireOnMediaPlayerTimeChangedEvent(long time);
+    void fireOnMediaPlayerPositionChangedEvent(long position);
+    void fireOnMediaPlayerSeekableChangedEvent(VARIANT_BOOL seekable);
+    void fireOnMediaPlayerPausableChangedEvent(VARIANT_BOOL pausable);
+
     // controlling IUnknown interface
     LPUNKNOWN pUnkOuter;
 
     /*
     ** libvlc interface
     */
-    bool isPlaying(libvlc_exception_t *ex)
+    bool isPlaying()
     {
-        return _p_mplayer && libvlc_media_player_is_playing(_p_mplayer,ex);
+        return _p_mplayer && libvlc_media_player_is_playing(_p_mplayer);
     }
-    int  playlist_get_current_index(libvlc_exception_t *) { return _i_midx; }
-    int  playlist_add_extended_untrusted(const char *, int, const char **, libvlc_exception_t *);
-    void playlist_delete_item(int idx, libvlc_exception_t *ex)
+    int  playlist_get_current_index() { return _i_midx; }
+    int  playlist_add_extended_untrusted(const char *, int, const char **);
+    void playlist_delete_item(int idx)
     {
         if( _p_mlist )
-            libvlc_media_list_remove_index(_p_mlist,idx,ex);
+        {
+            libvlc_media_list_lock(_p_mlist);
+            libvlc_media_list_remove_index(_p_mlist,idx);
+            libvlc_media_list_unlock(_p_mlist);
+        }
     }
-    void playlist_clear(libvlc_exception_t *ex)
+    void playlist_clear()
     {
         if( !_p_libvlc )
             return;
         if( _p_mlist )
             libvlc_media_list_release(_p_mlist);
-        _p_mlist = libvlc_media_list_new(_p_libvlc,ex);
+        _p_mlist = libvlc_media_list_new(_p_libvlc);
     }
-    int  playlist_count(libvlc_exception_t *ex)
+    int  playlist_count()
     {
          int r = 0;
          if( !_p_mlist )
              return 0;
          libvlc_media_list_lock(_p_mlist);
-         r = libvlc_media_list_count(_p_mlist,ex);
+         r = libvlc_media_list_count(_p_mlist);
          libvlc_media_list_unlock(_p_mlist);
          return r;
     }
-    void playlist_pause(libvlc_exception_t *ex)
+    void playlist_pause()
     {
-        if( isPlaying(ex) )
-            libvlc_media_player_pause(_p_mplayer,ex);
+        if( isPlaying() )
+            libvlc_media_player_pause(_p_mplayer);
     }
-    void playlist_play(libvlc_exception_t *ex)
+    void playlist_play()
     {
-        if( !_p_libvlc )
-            initVLC();
-        if( _p_mplayer||playlist_select(0,ex) )
-            libvlc_media_player_play(_p_mplayer,ex);
+        if( _p_mplayer || playlist_select(0) )
+            libvlc_media_player_play(_p_mplayer);
     }
-    void playlist_play_item(int idx,libvlc_exception_t *ex)
+    void playlist_play_item(int idx)
     {
-        if( !_p_libvlc )
-            initVLC();
-        if( playlist_select(idx,ex) )
-            libvlc_media_player_play(_p_mplayer,ex);
+        if( playlist_select(idx) )
+            libvlc_media_player_play(_p_mplayer);
     }
-    void playlist_stop(libvlc_exception_t *ex)
+    void playlist_stop()
     {
         if( _p_mplayer )
-            libvlc_media_player_stop(_p_mplayer,ex);
+            libvlc_media_player_stop(_p_mplayer);
     }
-    void playlist_next(libvlc_exception_t *ex)
+    void playlist_next()
     {
-        if( playlist_select( _i_midx+1, ex) )
-            libvlc_media_player_play(_p_mplayer,ex);
+        if( playlist_select( _i_midx+1 ) )
+            libvlc_media_player_play(_p_mplayer);
     }
-    void playlist_prev(libvlc_exception_t *ex)
+    void playlist_prev()
     {
-        if( playlist_select( _i_midx-1, ex) )
-            libvlc_media_player_play(_p_mplayer,ex);
+        if( playlist_select( _i_midx-1 ) )
+            libvlc_media_player_play(_p_mplayer);
     }
 
 protected:
@@ -313,8 +331,10 @@ protected:
 
 private:
     void initVLC();
-    bool playlist_select(int i,libvlc_exception_t *);
-    void set_player_window(libvlc_exception_t *);
+    bool playlist_select(int i);
+    void set_player_window();
+    void player_register_events();
+    void player_unregister_events();
 
     //implemented interfaces
     class VLCOleObject *vlcOleObject;

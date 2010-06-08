@@ -2,7 +2,7 @@
  * x11_timer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1719748c03c7d5b8eb44a7ca974d07e2389a76f9 $
+ * $Id: 3e0a55309bca417e6c593eabce168d28385f8141 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -25,7 +25,6 @@
 #ifdef X11_SKINS
 
 #include <unistd.h>
-#include <fcntl.h>
 #include <poll.h>
 
 #include "x11_timer.hpp"

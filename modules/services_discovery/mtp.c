@@ -27,14 +27,8 @@
 #include <vlc_common.h>
 #include <vlc_playlist.h>
 #include <vlc_plugin.h>
-#include <errno.h>
-#include <vlc_charset.h>
 #include <vlc_interface.h>
 #include <vlc_services_discovery.h>
-
-#ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
-#endif
 
 #include "libmtp.h"
 
@@ -44,6 +38,8 @@
 static int Open( vlc_object_t * );
 static void Close( vlc_object_t * );
 
+VLC_SD_PROBE_HELPER("mtp", "MTP devices", SD_CAT_DEVICES)
+
 vlc_module_begin()
     set_shortname( "MTP" )
     set_description( N_( "MTP devices" ) )
@@ -51,7 +47,9 @@ vlc_module_begin()
     set_subcategory( SUBCAT_PLAYLIST_SD )
     set_capability( "services_discovery", 0 )
     set_callbacks( Open, Close )
-    linked_with_a_crap_library_which_uses_atexit()
+    cannot_unload_broken_library()
+
+    VLC_SD_PROBE_SUBMODULE
 vlc_module_end()
 
 
@@ -149,6 +147,8 @@ static void *Run( void *data )
             msg_Dbg( p_sd, "New device found" );
             if( AddDevice( p_sd, &p_rawdevices[0] ) == VLC_SUCCESS )
                 i_status = 1;
+            else
+                i_status = 2;
         }
         else
         {
@@ -163,7 +163,13 @@ static void *Run( void *data )
         }
         free( p_rawdevices );
         vlc_restorecancel(canc);
-        msleep( 500000 );
+        if( i_status == 2 )
+        {
+            msleep( 5000000 );
+            i_status = 0;
+        }
+        else
+            msleep( 500000 );
     }
     return NULL;
 }
@@ -218,7 +224,7 @@ static int AddDevice( services_discovery_t *p_sd,
     }
     else
     {
-        msg_Warn( p_sd, "No device found, after all" );
+        msg_Info( p_sd, "The device seems to be mounted, unmount it first" );
         return VLC_EGENERIC;
     }
 }

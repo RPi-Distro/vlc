@@ -2,7 +2,7 @@
  * generic_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cbad909af458d7a4e5ee652cb35cfe19d7e0d948 $
+ * $Id: 609f1e337013a44a6e1911dfacb801c943244455 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -31,7 +31,7 @@
 
 GenericWindow::GenericWindow( intf_thread_t *pIntf, int left, int top,
                               bool dragDrop, bool playOnDrop,
-                              GenericWindow *pParent ):
+                              GenericWindow *pParent, WindowType_t type ):
     SkinObject( pIntf ), m_left( left ), m_top( top ), m_width( 0 ),
     m_height( 0 ), m_pVarVisible( NULL )
 {
@@ -47,7 +47,7 @@ GenericWindow::GenericWindow( intf_thread_t *pIntf, int left, int top,
 
     // Create an OSWindow to handle OS specific processing
     m_pOsWindow = pOsFactory->createOSWindow( *this, dragDrop, playOnDrop,
-                                              pOSParent );
+                                              pOSParent, type );
 
     // Create the visibility variable and register it in the manager
     m_pVarVisible = new VarBoolImpl( pIntf );
@@ -148,7 +148,7 @@ void GenericWindow::innerShow()
 {
     if( m_pOsWindow )
     {
-        m_pOsWindow->show( m_left, m_top );
+        m_pOsWindow->show();
     }
 }
 
@@ -170,6 +170,12 @@ void* GenericWindow::getOSHandle() const
 
 void GenericWindow::setParent( GenericWindow* pParent, int x, int y, int w, int h )
 {
+    // Update the window size and position
+    m_left = x;
+    m_top = y;
+    m_width  = ( w > 0 ) ? w : m_width;
+    m_height = ( h > 0 ) ? h : m_height;
+
     void* handle = pParent ? pParent->getOSHandle() : NULL;
-    m_pOsWindow->reparent( handle, x, y, w, h );
+    m_pOsWindow->reparent( handle, m_left, m_top, m_width, m_height );
 }

@@ -2,9 +2,9 @@
  * wizard.h: MacOS X Streaming Wizard
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: af67ea097ce939afd5ac3625fcc8be835ca398be $
+ * $Id: 534875188de14ebcbdf6499746cbe6e9923a6319 $
  *
- * Authors: Felix Kühne <fkuehne@users.sf.net>
+ * Authors: Felix Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

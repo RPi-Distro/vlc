@@ -2,7 +2,7 @@
  * observer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fa3023a7d25c5c528e1b084f3c9aba91f48a9218 $
+ * $Id: 54f1755420abd8eb943c570b57ea8cc77253e5f2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef OBSERVER_HPP
@@ -34,69 +34,65 @@ template <class S, class ARG> class Observer;
 /// Template for subjects in the Observer design pattern
 template <class S, class ARG = void> class Subject
 {
-    public:
-        virtual ~Subject() {}
+private:
+    typedef std::set<Observer<S, ARG>*> observers_t;
 
-        /// Remove all observers; should only be used for debugging purposes
-        virtual void clearObservers()
-        {
-            m_observers.clear();
-        }
+public:
+    ~Subject() { }
 
-        /// Add an observer to this subject
-        /// Note: adding twice the same observer is not harmful
-        virtual void addObserver( Observer<S, ARG>* pObserver )
-        {
-            m_observers.insert( pObserver );
-        }
+#if 0
+    /// Remove all observers; should only be used for debugging purposes
+    void clearObservers()
+    {
+        m_observers.clear();
+    }
+#endif
 
-        /// Remove an observer from this subject
-        /// Note: removing twice the same observer is not harmful
-        virtual void delObserver( Observer<S, ARG>* pObserver )
-        {
-            m_observers.erase( pObserver );
-        }
+    /// Add an observer to this subject. Ignore NULL observers.
+    /// Note: adding the same observer twice is not harmful.
+    void addObserver( Observer<S, ARG>* pObserver )
+    {
+        if( pObserver ) m_observers.insert( pObserver );
+    }
 
-        /// Notify the observers when the status has changed
-        virtual void notify( ARG *arg )
-        {
-            // This stupid gcc 3.2 needs "typename"
-            typename set<Observer<S, ARG>*>::const_iterator iter;
-            for( iter = m_observers.begin(); iter != m_observers.end();
-                 iter++ )
-            {
-                if( *iter == NULL )
-                {
-                    fprintf( stderr, "iter NULL !\n" );
-                    return;
-                }
-                (*iter)->onUpdate( *this , arg );
-            }
-        }
+    /// Remove an observer from this subject. Ignore NULL observers.
+    /// Note: removing the same observer twice is not harmful.
+    void delObserver( Observer<S, ARG>* pObserver )
+    {
+        if( pObserver ) m_observers.erase( pObserver );
+    }
 
-        /// Notify without any argument
-        virtual void notify() { notify( NULL ); }
+    /// Notify the observers when the status has changed
+    void notify( ARG *arg )
+    {
+        typename observers_t::const_iterator iter;
+        for( iter = m_observers.begin(); iter != m_observers.end(); ++iter )
+            (*iter)->onUpdate( *this , arg );
+    }
 
-    protected:
-        Subject() {}
+    /// Notify without any argument
+    void notify() { notify( NULL ); }
 
-    private:
-        /// Set of observers for this subject
-        set<Observer<S, ARG>*> m_observers;
+protected:
+    Subject() { }
+
+private:
+    /// Set of observers for this subject
+    observers_t m_observers;
 };
 
 
 /// Template for observers in the Observer design pattern
 template <class S, class ARG = void> class Observer
 {
-    public:
-        virtual ~Observer() {}
+public:
+    virtual ~Observer() { }
 
-        /// Method called when the subject is modified
-        virtual void onUpdate( Subject<S, ARG> &rSubject, ARG *arg) = 0;
+    /// Method called when the subject is modified
+    virtual void onUpdate( Subject<S, ARG> &rSubject, ARG *arg) = 0;
 
-    protected:
-        Observer() {}
+protected:
+    Observer() { }
 };
 
 

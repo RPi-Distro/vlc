@@ -2,7 +2,7 @@
  * vlc_vlm.h: VLM core structures
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 0f16f4d6aa3d386ba98a7f59bdfb0c7383884df1 $
+ * $Id: c9f68f257177cd835f18bd81005455fe62fa61f7 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -102,13 +102,16 @@ enum vlm_event_type_e
     /* */
     VLM_EVENT_MEDIA_INSTANCE_STARTED    = 0x200,
     VLM_EVENT_MEDIA_INSTANCE_STOPPED,
+    VLM_EVENT_MEDIA_INSTANCE_STATE,
 };
 
 typedef struct
 {
-    int         i_type;     /* a vlm_event_type_e value */
-    int64_t     id;         /* Media ID */
-    const char *psz_name;   /* Media name */
+    int            i_type;            /* a vlm_event_type_e value */
+    int64_t        id;                /* Media ID */
+    const char    *psz_name;          /* Media name */
+    const char    *psz_instance_name; /* Instance name or NULL */
+    input_state_e  input_state;       /* Input instance event type */
 } vlm_event_t;
 
 /** VLM control query */
@@ -181,8 +184,8 @@ struct vlm_message_t
 extern "C" {
 #endif
 
-#define vlm_New( a ) __vlm_New( VLC_OBJECT(a) )
-VLC_EXPORT( vlm_t *, __vlm_New, ( vlc_object_t * ) );
+VLC_EXPORT( vlm_t *, vlm_New, ( vlc_object_t * ) );
+#define vlm_New( a ) vlm_New( VLC_OBJECT(a) )
 VLC_EXPORT( void,      vlm_Delete, ( vlm_t * ) );
 VLC_EXPORT( int,       vlm_ExecuteCommand, ( vlm_t *, const char *, vlm_message_t ** ) );
 VLC_EXPORT( int,       vlm_Control, ( vlm_t *p_vlm, int i_query, ... ) );
@@ -217,7 +220,12 @@ static inline void vlm_media_Init( vlm_media_t *p_media )
  * \param p_dst vlm_media_t instance to copy to
  * \param p_src vlm_media_t instance to copy from
  */
-static inline void vlm_media_Copy( vlm_media_t *p_dst, vlm_media_t *p_src )
+static inline void
+#ifndef __cplusplus
+vlm_media_Copy( vlm_media_t *restrict p_dst, const vlm_media_t *restrict p_src )
+#else
+vlm_media_Copy( vlm_media_t *p_dst, const vlm_media_t *p_src )
+#endif
 {
     int i;
 

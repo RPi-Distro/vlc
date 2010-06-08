@@ -2,7 +2,7 @@
  * win32text.c : Text drawing routines using the TextOut win32 API
  *****************************************************************************
  * Copyright (C) 2002 - 2009 the VideoLAN team
- * $Id: 27e12f875d464adaa4b2196c600f9f44d35f6bae $
+ * $Id: e3464674ed26ea50961fd1afe1b8455918d1fc0e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Pierre Ynard
@@ -222,7 +222,7 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
+    fmt.i_chroma = VLC_CODEC_YUVP;
     fmt.i_width = fmt.i_visible_width = i_width + (b_outline ? 4 : 0);
     fmt.i_height = fmt.i_visible_height = i_height + (b_outline ? 4 : 0);
     fmt.i_x_offset = fmt.i_y_offset = 0;
@@ -240,7 +240,7 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
         fmt.p_palette->palette[i][3] = pi_gamma[i];
     }
 
-    p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
+    p_region->p_picture = picture_NewFromFormat( &fmt );
     if( !p_region->p_picture )
     {
         free( fmt.p_palette );

@@ -2,7 +2,7 @@
  * buffer.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 321709df219adb552a9ec4c0ce392b698c022a55 $
+ * $Id: 5f66b58a811803b5543b2d9fc2891d03601f91a7 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -31,7 +31,6 @@
 
 #include <vlc_common.h>
 #include <vlc_codec.h>
-#include <vlc_vout.h>
 
 #ifndef WIN32
 #    define LOADER

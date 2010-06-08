@@ -3,7 +3,7 @@
 
 basedir = demux
 dir = demux/mpeg
-mods = es h264 m4v mpgv
+mods = es h264 mpgv
 libvlc_LTLIBRARIES = 
 EXTRA_LTLIBRARIES = 
 
@@ -30,17 +30,6 @@ libh264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libh264_plugin_la_LIBADD = $(AM_LIBADD)
 libh264_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The m4v plugin
-libm4v_plugin_la_SOURCES = $(SOURCES_m4v)
-nodist_libm4v_plugin_la_SOURCES = $(nodist_SOURCES_m4v)
-# Force per-target objects:
-libm4v_plugin_la_CFLAGS = $(AM_CFLAGS)
-libm4v_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libm4v_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libm4v_plugin_la_LIBADD = $(AM_LIBADD)
-libm4v_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mpgv plugin
 libmpgv_plugin_la_SOURCES = $(SOURCES_mpgv)

@@ -2,7 +2,7 @@
  * vlc_block_helper.h: Helper functions for data blocks management.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 654d26bc10c434b31f681a75bb462daf85929e8a $
+ * $Id: 7aa1989af0042ff8127b219ba3e24951367f4a4d $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -37,6 +37,7 @@ typedef struct block_bytestream_t
 /*****************************************************************************
  * block_bytestream_t management
  *****************************************************************************/
+LIBVLC_USED
 static inline block_bytestream_t block_BytestreamInit( void )
 {
     block_bytestream_t bytestream;

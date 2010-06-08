@@ -2,7 +2,7 @@
  * v4l.c : Video4Linux input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: c15e4de49bc3863892100fb5ec1710a5fdc43df7 $
+ * $Id: 28c1a008425cd7a76b16905eab6fca362e6faa4a $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *         Paul Forgey <paulf at aphrodite dot com>
@@ -37,13 +37,15 @@
 #include <vlc_input.h>
 #include <vlc_demux.h>
 #include <vlc_access.h>
-#include <vlc_vout.h>
+#include <vlc_picture.h>
 #include <vlc_charset.h>
+#include <vlc_fs.h>
 
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 /* From GStreamer's v4l plugin:
  * Because of some really cool feature in video4linux1, also known as
@@ -63,6 +65,9 @@
 #include <linux/videodev.h>
 #include "videodev_mjpeg.h"
 
+#ifdef HAVE_LIBV4L1
+#include <libv4l1.h>
+#endif
 /*****************************************************************************
  * Module descriptior
  *****************************************************************************/
@@ -213,27 +218,25 @@ struct quicktime_mjpeg_app1
 static const struct
 {
     int i_v4l;
-    int i_fourcc;
+    vlc_fourcc_t i_fourcc;
 
 } v4lchroma_to_fourcc[] =
 {
-    { VIDEO_PALETTE_GREY, VLC_FOURCC( 'G', 'R', 'E', 'Y' ) },
+    { VIDEO_PALETTE_GREY, VLC_CODEC_GREY },
     { VIDEO_PALETTE_HI240, VLC_FOURCC( 'I', '2', '4', '0' ) },
-    { VIDEO_PALETTE_RGB565, VLC_FOURCC( 'R', 'V', '1', '6' ) },
-    { VIDEO_PALETTE_RGB555, VLC_FOURCC( 'R', 'V', '1', '5' ) },
-    { VIDEO_PALETTE_RGB24, VLC_FOURCC( 'R', 'V', '2', '4' ) },
-    { VIDEO_PALETTE_RGB32, VLC_FOURCC( 'R', 'V', '3', '2' ) },
-    { VIDEO_PALETTE_YUV422, VLC_FOURCC( 'Y', 'U', 'Y', '2' ) },
-    { VIDEO_PALETTE_YUV422, VLC_FOURCC( 'Y', 'U', 'Y', 'V' ) },
-    { VIDEO_PALETTE_YUYV, VLC_FOURCC( 'Y', 'U', 'Y', '2' ) },
-    { VIDEO_PALETTE_YUYV, VLC_FOURCC( 'Y', 'U', 'Y', 'V' ) },
-    { VIDEO_PALETTE_UYVY, VLC_FOURCC( 'U', 'Y', 'V', 'Y' ) },
+    { VIDEO_PALETTE_RGB565, VLC_CODEC_RGB16 },
+    { VIDEO_PALETTE_RGB555, VLC_CODEC_RGB15 },
+    { VIDEO_PALETTE_RGB24, VLC_CODEC_RGB24 },
+    { VIDEO_PALETTE_RGB32, VLC_CODEC_RGB32 },
+    { VIDEO_PALETTE_YUV422, VLC_CODEC_YUYV },
+    { VIDEO_PALETTE_YUYV, VLC_CODEC_YUYV },
+    { VIDEO_PALETTE_UYVY, VLC_CODEC_UYVY },
     { VIDEO_PALETTE_YUV420, VLC_FOURCC( 'I', '4', '2', 'N' ) },
     { VIDEO_PALETTE_YUV411, VLC_FOURCC( 'I', '4', '1', 'N' ) },
     { VIDEO_PALETTE_RAW, VLC_FOURCC( 'G', 'R', 'A', 'W' ) },
-    { VIDEO_PALETTE_YUV422P, VLC_FOURCC( 'I', '4', '2', '2' ) },
-    { VIDEO_PALETTE_YUV420P, VLC_FOURCC( 'I', '4', '2', '0' ) },
-    { VIDEO_PALETTE_YUV411P, VLC_FOURCC( 'I', '4', '1', '1' ) },
+    { VIDEO_PALETTE_YUV422P, VLC_CODEC_I422 },
+    { VIDEO_PALETTE_YUV420P, VLC_CODEC_I420 },
+    { VIDEO_PALETTE_YUV411P, VLC_CODEC_I411 },
     { 0, 0 }
 };
 
@@ -280,6 +283,14 @@ struct demux_sys_t
     int          i_video_frame_size;
     es_out_id_t  *p_es;
 };
+
+#ifndef HAVE_LIBV4L1
+#   define v4l1_close close
+#   define v4l1_ioctl ioctl
+#   define v4l1_mmap mmap
+#   define v4l1_munmap munmap
+#   define v4l1_open vlc_open
+#endif
 
 /*****************************************************************************
  * Open: opens v4l device
@@ -350,23 +361,24 @@ static int Open( vlc_object_t *p_this )
     es_format_Init( &fmt, VIDEO_ES, p_sys->i_fourcc );
     fmt.video.i_width  = p_sys->i_width;
     fmt.video.i_height = p_sys->i_height;
-    fmt.video.i_aspect = 4 * VOUT_ASPECT_FACTOR / 3;
+    fmt.video.i_sar_num = 4 * fmt.video.i_height;
+    fmt.video.i_sar_den = 3 * fmt.video.i_width;
 
     /* Setup rgb mask for RGB formats */
     switch( p_sys->i_fourcc )
     {
-        case VLC_FOURCC('R','V','1','5'):
+        case VLC_CODEC_RGB15:
             fmt.video.i_rmask = 0x001f;
             fmt.video.i_gmask = 0x03e0;
             fmt.video.i_bmask = 0x7c00;
             break;
-        case VLC_FOURCC('R','V','1','6'):
+        case VLC_CODEC_RGB16:
             fmt.video.i_rmask = 0x001f;
             fmt.video.i_gmask = 0x07e0;
             fmt.video.i_bmask = 0xf800;
             break;
-        case VLC_FOURCC('R','V','2','4'):
-        case VLC_FOURCC('R','V','3','2'):
+        case VLC_CODEC_RGB24:
+        case VLC_CODEC_RGB32:
             fmt.video.i_rmask = 0x00ff0000;
             fmt.video.i_gmask = 0x0000ff00;
             fmt.video.i_bmask = 0x000000ff;
@@ -392,21 +404,21 @@ static void Close( vlc_object_t *p_this )
     demux_sys_t *p_sys   = p_demux->p_sys;
 
     free( p_sys->psz_device );
-    if( p_sys->i_fd >= 0 ) close( p_sys->i_fd );
+    if( p_sys->i_fd >= 0 ) v4l1_close( p_sys->i_fd );
 
     if( p_sys->b_mjpeg )
     {
         int i_noframe = -1;
-        ioctl( p_sys->i_fd, MJPIOC_QBUF_CAPT, &i_noframe );
+        v4l1_ioctl( p_sys->i_fd, MJPIOC_QBUF_CAPT, &i_noframe );
     }
 
     if( p_sys->p_video_mmap && p_sys->p_video_mmap != MAP_FAILED )
     {
         if( p_sys->b_mjpeg )
-            munmap( p_sys->p_video_mmap, p_sys->mjpeg_buffers.size *
+            v4l1_munmap( p_sys->p_video_mmap, p_sys->mjpeg_buffers.size *
                     p_sys->mjpeg_buffers.count );
         else
-            munmap( p_sys->p_video_mmap, p_sys->vid_mbuf.size );
+            v4l1_munmap( p_sys->p_video_mmap, p_sys->vid_mbuf.size );
     }
 
     free( p_sys );
@@ -425,7 +437,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         /* Special for access_demux */
         case DEMUX_CAN_PAUSE:
         case DEMUX_CAN_SEEK:
-        case DEMUX_SET_PAUSE_STATE:
         case DEMUX_CAN_CONTROL_PACE:
             pb = (bool*)va_arg( args, bool * );
             *pb = false;
@@ -684,13 +695,13 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
     struct mjpeg_params mjpeg;
     int i;
 
-    if( ( i_fd = open( psz_device, O_RDWR ) ) < 0 )
+    if( ( i_fd = v4l1_open( psz_device, O_RDWR ) ) < 0 )
     {
         msg_Err( p_demux, "cannot open device (%m)" );
         goto vdev_failed;
     }
 
-    if( ioctl( i_fd, VIDIOCGCAP, &p_sys->vid_cap ) < 0 )
+    if( v4l1_ioctl( i_fd, VIDIOCGCAP, &p_sys->vid_cap ) < 0 )
     {
         msg_Err( p_demux, "cannot get capabilities (%m)" );
         goto vdev_failed;
@@ -735,7 +746,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
     }
 
     vid_channel.channel = p_sys->i_channel;
-    if( ioctl( i_fd, VIDIOCGCHAN, &vid_channel ) < 0 )
+    if( v4l1_ioctl( i_fd, VIDIOCGCHAN, &vid_channel ) < 0 )
     {
         msg_Err( p_demux, "cannot get channel infos (%m)" );
         goto vdev_failed;
@@ -752,7 +763,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
     }
 
     vid_channel.norm = p_sys->i_norm;
-    if( ioctl( i_fd, VIDIOCSCHAN, &vid_channel ) < 0 )
+    if( v4l1_ioctl( i_fd, VIDIOCSCHAN, &vid_channel ) < 0 )
     {
         msg_Err( p_demux, "cannot set channel (%m)" );
         goto vdev_failed;
@@ -767,7 +778,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
         if( p_sys->i_tuner >= 0 )
         {
             vid_tuner.tuner = p_sys->i_tuner;
-            if( ioctl( i_fd, VIDIOCGTUNER, &vid_tuner ) < 0 )
+            if( v4l1_ioctl( i_fd, VIDIOCGTUNER, &vid_tuner ) < 0 )
             {
                 msg_Err( p_demux, "cannot get tuner (%m)" );
                 goto vdev_failed;
@@ -782,7 +793,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
 
             /* FIXME FIXME to be checked FIXME FIXME */
             //vid_tuner.mode = p_sys->i_norm;
-            if( ioctl( i_fd, VIDIOCSTUNER, &vid_tuner ) < 0 )
+            if( v4l1_ioctl( i_fd, VIDIOCSTUNER, &vid_tuner ) < 0 )
             {
                 msg_Err( p_demux, "cannot set tuner (%m)" );
                 goto vdev_failed;
@@ -798,7 +809,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
         if( p_sys->i_frequency >= 0 )
         {
             int driver_frequency = p_sys->i_frequency * 16 /1000;
-            if( ioctl( i_fd, VIDIOCSFREQ, &driver_frequency ) < 0 )
+            if( v4l1_ioctl( i_fd, VIDIOCSFREQ, &driver_frequency ) < 0 )
             {
                 msg_Err( p_demux, "cannot set frequency (%m)" );
                 goto vdev_failed;
@@ -817,7 +828,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
         if( p_sys->i_audio >= 0 )
         {
             vid_audio.audio = p_sys->i_audio;
-            if( ioctl( i_fd, VIDIOCGAUDIO, &vid_audio ) < 0 )
+            if( v4l1_ioctl( i_fd, VIDIOCGAUDIO, &vid_audio ) < 0 )
             {
                 msg_Err( p_demux, "cannot get audio (%m)" );
                 goto vdev_failed;
@@ -826,7 +837,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
             /* unmute audio */
             vid_audio.flags &= ~VIDEO_AUDIO_MUTE;
 
-            if( ioctl( i_fd, VIDIOCSAUDIO, &vid_audio ) < 0 )
+            if( v4l1_ioctl( i_fd, VIDIOCSAUDIO, &vid_audio ) < 0 )
             {
                 msg_Err( p_demux, "cannot set audio (%m)" );
                 goto vdev_failed;
@@ -839,10 +850,10 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
      * or height */
     if( p_sys->b_mjpeg )
     {
-        struct quicktime_mjpeg_app1 *p_app1;
+        struct quicktime_mjpeg_app1 p_app1;
         int32_t i_offset;
 
-        if( ioctl( i_fd, MJPIOC_G_PARAMS, &mjpeg ) < 0 )
+        if( v4l1_ioctl( i_fd, MJPIOC_G_PARAMS, &mjpeg ) < 0 )
         {
             msg_Err( p_demux, "cannot get mjpeg params (%m)" );
             goto vdev_failed;
@@ -861,12 +872,11 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
         mjpeg.APP_len = 40;
 
         /* aligned */
-        p_app1 = (struct quicktime_mjpeg_app1 *)mjpeg.APP_data;
-        p_app1->i_reserved = 0;
-        p_app1->i_tag = VLC_FOURCC( 'm','j','p','g' );
-        p_app1->i_field_size = 0;
-        p_app1->i_padded_field_size = 0;
-        p_app1->i_next_field = 0;
+        p_app1.i_reserved = 0;
+        p_app1.i_tag = VLC_FOURCC( 'm','j','p','g' );
+        p_app1.i_field_size = 0;
+        p_app1.i_padded_field_size = 0;
+        p_app1.i_next_field = 0;
         /* XXX WARNING XXX */
         /* these's nothing magic about these values.  We are dangerously
          * assuming the encoder card is encoding mjpeg-a and is not throwing
@@ -878,21 +888,22 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
          * does conform to standards outside of Apple Quicktime.
          */
         i_offset = 0x2e;
-        p_app1->i_DQT_offset = hton32( i_offset );
+        p_app1.i_DQT_offset = hton32( i_offset );
         i_offset = 0xb4;
-        p_app1->i_DHT_offset = hton32( i_offset );
+        p_app1.i_DHT_offset = hton32( i_offset );
         i_offset = 0x258;
-        p_app1->i_SOF_offset = hton32( i_offset );
+        p_app1.i_SOF_offset = hton32( i_offset );
         i_offset = 0x26b;
-        p_app1->i_SOS_offset = hton32( i_offset );
+        p_app1.i_SOS_offset = hton32( i_offset );
         i_offset = 0x279;
-        p_app1->i_data_offset = hton32( i_offset );
+        p_app1.i_data_offset = hton32( i_offset );
+        memcpy(mjpeg.APP_data, &p_app1, sizeof(struct quicktime_mjpeg_app1));
 
         /* SOF and SOS aren't specified by the mjpeg API because they aren't
          * optional.  They will be present in the output. */
         mjpeg.jpeg_markers = JPEG_MARKER_DHT | JPEG_MARKER_DQT;
 
-        if( ioctl( i_fd, MJPIOC_S_PARAMS, &mjpeg ) < 0 )
+        if( v4l1_ioctl( i_fd, MJPIOC_S_PARAMS, &mjpeg ) < 0 )
         {
             msg_Err( p_demux, "cannot set mjpeg params (%m)" );
             goto vdev_failed;
@@ -908,7 +919,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
     {
         struct video_window vid_win;
 
-        if( ioctl( i_fd, VIDIOCGWIN, &vid_win ) < 0 )
+        if( v4l1_ioctl( i_fd, VIDIOCGWIN, &vid_win ) < 0 )
         {
             msg_Err( p_demux, "cannot get win (%m)" );
             goto vdev_failed;
@@ -935,7 +946,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
     if( !p_sys->b_mjpeg )
     {
         /* set hue/color/.. */
-        if( ioctl( i_fd, VIDIOCGPICT, &p_sys->vid_picture ) == 0 )
+        if( v4l1_ioctl( i_fd, VIDIOCGPICT, &p_sys->vid_picture ) == 0 )
         {
             struct video_picture vid_picture = p_sys->vid_picture;
 
@@ -955,7 +966,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
             {
                 vid_picture.contrast = p_sys->i_contrast;
             }
-            if( ioctl( i_fd, VIDIOCSPICT, &vid_picture ) == 0 )
+            if( v4l1_ioctl( i_fd, VIDIOCSPICT, &vid_picture ) == 0 )
             {
                 msg_Dbg( p_demux, "v4l device uses brightness: %d",
                          vid_picture.brightness );
@@ -969,7 +980,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
         }
 
         /* Find out video format used by device */
-        if( ioctl( i_fd, VIDIOCGPICT, &p_sys->vid_picture ) == 0 )
+        if( v4l1_ioctl( i_fd, VIDIOCGPICT, &p_sys->vid_picture ) == 0 )
         {
             struct video_picture vid_picture = p_sys->vid_picture;
             char *psz;
@@ -978,10 +989,12 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
             p_sys->i_fourcc = 0;
 
             psz = var_CreateGetString( p_demux, "v4l-chroma" );
-            if( strlen( psz ) >= 4 )
+
+            const vlc_fourcc_t i_chroma =
+                vlc_fourcc_GetCodecFromString( VIDEO_ES, psz );
+            if( i_chroma )
             {
                 vid_picture.palette = 0;
-                int i_chroma = VLC_FOURCC( psz[0], psz[1], psz[2], psz[3] );
 
                 /* Find out v4l chroma code */
                 for( i = 0; v4lchroma_to_fourcc[i].i_v4l != 0; i++ )
@@ -996,7 +1009,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
             free( psz );
 
             if( vid_picture.palette &&
-                !ioctl( i_fd, VIDIOCSPICT, &vid_picture ) )
+                !v4l1_ioctl( i_fd, VIDIOCSPICT, &vid_picture ) )
             {
                 p_sys->vid_picture = vid_picture;
             }
@@ -1004,14 +1017,14 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
             {
                 /* Try to set the format to something easy to encode */
                 vid_picture.palette = VIDEO_PALETTE_YUV420P;
-                if( ioctl( i_fd, VIDIOCSPICT, &vid_picture ) == 0 )
+                if( v4l1_ioctl( i_fd, VIDIOCSPICT, &vid_picture ) == 0 )
                 {
                     p_sys->vid_picture = vid_picture;
                 }
                 else
                 {
                     vid_picture.palette = VIDEO_PALETTE_YUV422P;
-                    if( ioctl( i_fd, VIDIOCSPICT, &vid_picture ) == 0 )
+                    if( v4l1_ioctl( i_fd, VIDIOCSPICT, &vid_picture ) == 0 )
                     {
                         p_sys->vid_picture = vid_picture;
                     }
@@ -1042,13 +1055,13 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
         p_sys->mjpeg_buffers.count = 8;
         p_sys->mjpeg_buffers.size = MJPEG_BUFFER_SIZE;
 
-        if( ioctl( i_fd, MJPIOC_REQBUFS, &p_sys->mjpeg_buffers ) < 0 )
+        if( v4l1_ioctl( i_fd, MJPIOC_REQBUFS, &p_sys->mjpeg_buffers ) < 0 )
         {
             msg_Err( p_demux, "mmap unsupported" );
             goto vdev_failed;
         }
 
-        p_sys->p_video_mmap = mmap( 0,
+        p_sys->p_video_mmap = v4l1_mmap( 0,
                 p_sys->mjpeg_buffers.size * p_sys->mjpeg_buffers.count,
                 PROT_READ | PROT_WRITE, MAP_SHARED, i_fd, 0 );
         if( p_sys->p_video_mmap == MAP_FAILED )
@@ -1057,13 +1070,13 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
             goto vdev_failed;
         }
 
-        p_sys->i_fourcc  = VLC_FOURCC( 'm','j','p','g' );
+        p_sys->i_fourcc  = VLC_CODEC_MJPG;
         p_sys->i_frame_pos = -1;
 
         /* queue up all the frames */
         for( i = 0; i < (int)p_sys->mjpeg_buffers.count; i++ )
         {
-            if( ioctl( i_fd, MJPIOC_QBUF_CAPT, &i ) < 0 )
+            if( v4l1_ioctl( i_fd, MJPIOC_QBUF_CAPT, &i ) < 0 )
             {
                 msg_Err( p_demux, "unable to queue frame" );
                 goto vdev_failed;
@@ -1073,10 +1086,9 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
     else
     {
         /* Fill in picture_t fields */
-        vout_InitPicture( VLC_OBJECT(p_demux), &p_sys->pic, p_sys->i_fourcc,
-                          p_sys->i_width, p_sys->i_height, p_sys->i_width *
-                          VOUT_ASPECT_FACTOR / p_sys->i_height );
-        if( !p_sys->pic.i_planes )
+        if( picture_Setup( &p_sys->pic, p_sys->i_fourcc,
+                           p_sys->i_width, p_sys->i_height,
+                           1, 1 ) )
         {
             msg_Err( p_demux, "unsupported chroma" );
             goto vdev_failed;
@@ -1094,13 +1106,13 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
                 (char*)&p_sys->i_fourcc );
 
         /* Allocate mmap buffer */
-        if( ioctl( i_fd, VIDIOCGMBUF, &p_sys->vid_mbuf ) < 0 )
+        if( v4l1_ioctl( i_fd, VIDIOCGMBUF, &p_sys->vid_mbuf ) < 0 )
         {
             msg_Err( p_demux, "mmap unsupported" );
             goto vdev_failed;
         }
 
-        p_sys->p_video_mmap = mmap( 0, p_sys->vid_mbuf.size,
+        p_sys->p_video_mmap = v4l1_mmap( 0, p_sys->vid_mbuf.size,
                                     PROT_READ|PROT_WRITE, MAP_SHARED,
                                     i_fd, 0 );
         if( p_sys->p_video_mmap == MAP_FAILED )
@@ -1115,7 +1127,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
         p_sys->vid_mmap.width  = p_sys->i_width;
         p_sys->vid_mmap.height = p_sys->i_height;
         p_sys->vid_mmap.format = p_sys->vid_picture.palette;
-        if( ioctl( i_fd, VIDIOCMCAPTURE, &p_sys->vid_mmap ) < 0 )
+        if( v4l1_ioctl( i_fd, VIDIOCMCAPTURE, &p_sys->vid_mmap ) < 0 )
         {
             msg_Warn( p_demux, "%4.4s refused", (char*)&p_sys->i_fourcc );
             msg_Err( p_demux, "chroma selection failed" );
@@ -1126,7 +1138,7 @@ static int OpenVideoDev( demux_t *p_demux, char *psz_device )
 
 vdev_failed:
 
-    if( i_fd >= 0 ) close( i_fd );
+    if( i_fd >= 0 ) v4l1_close( i_fd );
     return -1;
 }
 
@@ -1140,7 +1152,7 @@ static uint8_t *GrabCapture( demux_t *p_demux )
 
     p_sys->vid_mmap.frame = (p_sys->i_frame_pos + 1) % p_sys->vid_mbuf.frames;
 
-    while( ioctl( p_sys->i_fd, VIDIOCMCAPTURE, &p_sys->vid_mmap ) < 0 )
+    while( v4l1_ioctl( p_sys->i_fd, VIDIOCMCAPTURE, &p_sys->vid_mmap ) < 0 )
     {
         if( errno != EAGAIN )
         {
@@ -1156,7 +1168,7 @@ static uint8_t *GrabCapture( demux_t *p_demux )
         msg_Dbg( p_demux, "grab failed, trying again" );
     }
 
-    while( ioctl(p_sys->i_fd, VIDIOCSYNC, &p_sys->i_frame_pos) < 0 )
+    while( v4l1_ioctl(p_sys->i_fd, VIDIOCSYNC, &p_sys->i_frame_pos) < 0 )
     {
         if( errno != EAGAIN && errno != EINTR )
         {
@@ -1182,7 +1194,7 @@ static uint8_t *GrabMJPEG( demux_t *p_demux )
     /* re-queue the last frame we sync'd */
     if( p_sys->i_frame_pos != -1 )
     {
-        while( ioctl( p_sys->i_fd, MJPIOC_QBUF_CAPT,
+        while( v4l1_ioctl( p_sys->i_fd, MJPIOC_QBUF_CAPT,
                                        &p_sys->i_frame_pos ) < 0 )
         {
             if( errno != EAGAIN && errno != EINTR )
@@ -1194,7 +1206,7 @@ static uint8_t *GrabMJPEG( demux_t *p_demux )
     }
 
     /* sync on the next frame */
-    while( ioctl( p_sys->i_fd, MJPIOC_SYNC, &sync ) < 0 )
+    while( v4l1_ioctl( p_sys->i_fd, MJPIOC_SYNC, &sync ) < 0 )
     {
         if( errno != EAGAIN && errno != EINTR )
         {

@@ -2,9 +2,9 @@
  * bookmarks.m: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005 - 2007 the VideoLAN team
- * $Id: 554fe8f92bfa693a334b57d9e0f6755d258f8590 $
+ * $Id: 7d0f9efbae2350e7927c3ef528c145cd383670a3 $
  *
- * Authors: Felix Kühne <fkuehne@users.sf.net>
+ * Authors: Felix Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

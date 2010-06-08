@@ -2,7 +2,7 @@
  * resource.h
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 15bc377b2414702afa3bbca2f18344396c18d49a $
+ * $Id: fa20611a92a39c9f50daa4aacd65c210f5906c55 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -81,7 +81,7 @@ vout_thread_t *input_resource_HoldVout( input_resource_t * );
  *
  * You must call vlc_object_release on all values returned (if non NULL).
  */
-void input_resource_HoldVouts( input_resource_t *, vout_thread_t ***, int * );
+void input_resource_HoldVouts( input_resource_t *, vout_thread_t ***, size_t * );
 
 #endif
 

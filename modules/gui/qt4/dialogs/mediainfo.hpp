@@ -2,7 +2,7 @@
  * mediainfo.hpp : Information about a stream
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 8b591c793201cdf2a77933e53fa19a493359fdf5 $
+ * $Id: 49c1f18ed53625a469b99b3f13df189baab52ebe $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -27,27 +27,16 @@
 
 #include "util/qvlcframe.hpp"
 #include "components/info_panels.hpp"
+#include "util/singleton.hpp"
 
 class QTabWidget;
 
-class MediaInfoDialog : public QVLCFrame
+class MediaInfoDialog : public QVLCFrame, public Singleton<MediaInfoDialog>
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     MediaInfoDialog( intf_thread_t *,
-                     input_item_t * );
-
-    static MediaInfoDialog * getInstance( intf_thread_t *p_intf )
-    {
-        if( !instance) instance = new MediaInfoDialog( p_intf, NULL );
-        return instance;
-    }
-
-    static void killInstance()
-    {
-        delete instance;
-        instance = NULL;
-    }
+                     input_item_t * input = NULL );
 
     void showTab( int );
 #if 0
@@ -57,7 +46,6 @@ public:
 private:
     virtual ~MediaInfoDialog();
 
-    static MediaInfoDialog *instance;
     bool isMainInputInfo;
 
     QTabWidget *infoTabW;
@@ -68,6 +56,7 @@ private:
     ExtraMetaPanel *EMP;
 
     QPushButton *saveMetaButton;
+    QLineEdit   *uriLine;
 
 private slots:
     void updateAllTabs( input_item_t * );
@@ -77,6 +66,9 @@ private slots:
 
     void saveMeta();
     void updateButtons( int i_tab );
+    void updateURI( const QString& );
+
+    friend class    Singleton<MediaInfoDialog>;
 };
 
 #endif

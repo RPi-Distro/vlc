@@ -4,8 +4,8 @@
 basedir = audio_filter
 dir = audio_filter/spatializer
 mods = spatializer
-libvlc_LTLIBRARIES =  $(LTLIBspatializer)
-EXTRA_LTLIBRARIES =  libspatializer_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 

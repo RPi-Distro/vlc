@@ -52,6 +52,7 @@ enum vlc_module_properties
     VLC_MODULE_SHORTNAME,
     VLC_MODULE_DESCRIPTION,
     VLC_MODULE_HELP,
+    VLC_MODULE_TEXTDOMAIN,
     /* Insert new VLC_MODULE_* here */
 
     /* DO NOT EVER REMOVE, INSERT OR REPLACE ANY ITEM! It would break the ABI!
@@ -119,8 +120,8 @@ enum vlc_module_properties
 /**
  * Current plugin ABI version
  */
-# define MODULE_SYMBOL 1_0_0e
-# define MODULE_SUFFIX "__1_0_0e"
+# define MODULE_SYMBOL 1_1_0g
+# define MODULE_SUFFIX "__1_1_0g"
 
 /*****************************************************************************
  * Add a few defines. You do not want to read this section. Really.
@@ -174,7 +175,6 @@ enum vlc_module_properties
     __VLC_SYMBOL(vlc_entry) ( module_t *p_module )                            \
     {                                                                         \
         module_config_t *p_config = NULL;                                     \
-        const char *domain = NULL;                                            \
         if (vlc_module_set (p_module, VLC_MODULE_NAME,                        \
                             (const char *)(MODULE_STRING)))                   \
             goto error;                                                       \
@@ -195,28 +195,23 @@ enum vlc_module_properties
     if (vlc_plugin_set (p_module, NULL, VLC_SUBMODULE_CREATE, &p_submodule)) \
         goto error;
 
-#define add_requirement( cap ) \
-    if (vlc_module_set (p_module, VLC_MODULE_CPU_REQUIREMENT, \
-                        (int)(CPU_CAPABILITY_##cap))) \
-        goto error;
-
 #define add_shortcut( shortcut ) \
     if (vlc_module_set (p_submodule, VLC_MODULE_SHORTCUT, \
         (const char *)(shortcut))) \
         goto error;
 
 #define set_shortname( shortname ) \
-    if (vlc_module_set (p_submodule, VLC_MODULE_SHORTNAME, domain, \
+    if (vlc_module_set (p_submodule, VLC_MODULE_SHORTNAME, \
                         (const char *)(shortname))) \
         goto error;
 
 #define set_description( desc ) \
-    if (vlc_module_set (p_submodule, VLC_MODULE_DESCRIPTION, domain, \
+    if (vlc_module_set (p_submodule, VLC_MODULE_DESCRIPTION, \
                         (const char *)(desc))) \
         goto error;
 
 #define set_help( help ) \
-    if (vlc_module_set (p_submodule, VLC_MODULE_HELP, domain, \
+    if (vlc_module_set (p_submodule, VLC_MODULE_HELP, \
                         (const char *)(help))) \
         goto error;
 
@@ -231,11 +226,13 @@ enum vlc_module_properties
      || vlc_module_set (p_submodule, VLC_MODULE_CB_CLOSE, deactivate)) \
         goto error;
 
-#define linked_with_a_crap_library_which_uses_atexit( ) \
+#define cannot_unload_broken_library( ) \
     if (vlc_module_set (p_submodule, VLC_MODULE_NO_UNLOAD)) \
         goto error;
 
-#define set_text_domain( dom ) domain = (dom);
+#define set_text_domain( dom ) \
+    if (vlc_module_set (p_module, VLC_MODULE_TEXTDOMAIN, (dom))) \
+        goto error;
 
 /*****************************************************************************
  * Macros used to build the configuration structure.
@@ -255,7 +252,7 @@ enum vlc_module_properties
 
 #define add_typedesc_inner( type, text, longtext ) \
     add_type_inner( type ) \
-    vlc_config_set (p_config, VLC_CONFIG_DESC, domain, \
+    vlc_config_set (p_config, VLC_CONFIG_DESC, \
                     (const char *)(text), (const char *)(longtext));
 
 #define add_typeadv_inner( type, text, longtext, advc ) \
@@ -315,6 +312,10 @@ enum vlc_module_properties
     add_string_inner( CONFIG_ITEM_DIRECTORY, name, text, longtext, advc, \
                       p_callback, value )
 
+#define add_font( name, value, p_callback, text, longtext, advc )\
+    add_string_inner( CONFIG_ITEM_FONT, name, text, longtext, advc, \
+                      p_callback, value )
+
 #define add_module( name, psz_caps, value, p_callback, text, longtext, advc ) \
     add_string_inner( CONFIG_ITEM_MODULE, name, text, longtext, advc, \
                       p_callback, value ) \
@@ -341,17 +342,11 @@ enum vlc_module_properties
     add_int_inner( CONFIG_ITEM_INTEGER, name, text, longtext, advc, \
                    p_callback, value )
 
-#if !defined(WIN32) && !defined(SYS_LINUX)
-#define add_key( name, value, p_callback, text, longtext, advc ) \
-    add_int_inner( CONFIG_ITEM_KEY, name, text, longtext, advc, p_callback, \
-                   value )
-#else
 #define add_key( name, value, p_callback, text, longtext, advc ) \
     add_int_inner( CONFIG_ITEM_KEY, name, text, longtext, advc, \
                    p_callback, value ) \
     add_int_inner( CONFIG_ITEM_KEY, "global-" name, text, longtext, advc, \
                    p_callback, KEY_UNSET )
-#endif
 
 #define add_integer_with_range( name, value, i_min, i_max, p_callback, text, longtext, advc ) \
     add_integer( name, value, p_callback, text, longtext, advc ) \
@@ -398,14 +393,14 @@ enum vlc_module_properties
     vlc_config_set (p_config, VLC_CONFIG_SHORTCUT, (int)(ch));
 
 #define change_string_list( list, list_text, list_update_func ) \
-    vlc_config_set (p_config, VLC_CONFIG_LIST, domain, \
+    vlc_config_set (p_config, VLC_CONFIG_LIST, \
                     (size_t)(sizeof (list) / sizeof (char *)), \
                     (const char *const *)(list), \
                     (const char *const *)(list_text), \
                     (vlc_callback_t)(list_update_func));
 
 #define change_integer_list( list, list_text, list_update_func ) \
-    vlc_config_set (p_config, VLC_CONFIG_LIST, domain, \
+    vlc_config_set (p_config, VLC_CONFIG_LIST, \
                     (size_t)(sizeof (list) / sizeof (int)), \
                     (const int *)(list), \
                     (const char *const *)(list_text), \
@@ -419,11 +414,8 @@ enum vlc_module_properties
                     (double)(minv), (double)(maxv));
 
 #define change_action_add( pf_action, text ) \
-    vlc_config_set (p_config, VLC_CONFIG_ADD_ACTION, domain, \
+    vlc_config_set (p_config, VLC_CONFIG_ADD_ACTION, \
                     (vlc_callback_t)(pf_action), (const char *)(text));
-
-#define change_internal() \
-    vlc_config_set (p_config, VLC_CONFIG_PRIVATE);
 
 #define change_need_restart() \
     vlc_config_set (p_config, VLC_CONFIG_RESTART);
@@ -431,7 +423,13 @@ enum vlc_module_properties
 #define change_autosave() \
     vlc_config_set (p_config, VLC_CONFIG_PERSISTENT);
 
-#define change_unsaveable() \
+/* For options that are saved but hidden from the preferences panel */
+#define change_private() \
+    vlc_config_set (p_config, VLC_CONFIG_PRIVATE);
+
+/* For options that cannot be saved in the configuration */
+#define change_volatile() \
+    change_private() \
     vlc_config_set (p_config, VLC_CONFIG_VOLATILE);
 
 #define change_safe() \

@@ -2,7 +2,7 @@
  * playlist.h:  Playlist import module common functions
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 13803f6bb580d1c4017006295a5342a16e5bda8f $
+ * $Id: 3c3c80719dd54534fa42e2ce15e26248fa3e08bb $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -22,8 +22,9 @@
  *****************************************************************************/
 
 #include <vlc_input.h>
+#include <vlc_playlist.h>
 
-char *ProcessMRL( char *, char * );
+char *ProcessMRL( const char *, const char * );
 char *FindPrefix( demux_t * );
 
 int Import_Old ( vlc_object_t * );
@@ -76,13 +77,13 @@ void Close_VideoPortal ( vlc_object_t * );
 int Import_iTML ( vlc_object_t * );
 void Close_iTML ( vlc_object_t * );
 
-#define INIT_PLAYLIST_STUFF \
-    input_thread_t *p_input_thread = (input_thread_t *)vlc_object_find( p_demux, VLC_OBJECT_INPUT, FIND_PARENT ); \
-    input_item_t *p_current_input = input_GetItem( p_input_thread );
+int Import_WPL ( vlc_object_t * );
+void Close_WPL ( vlc_object_t * );
 
-#define HANDLE_PLAY_AND_RELEASE \
-    vlc_object_release( p_input_thread );
+int Import_ZPL ( vlc_object_t * );
+void Close_ZPL ( vlc_object_t * );
 
+extern input_item_t * GetCurrentItem(demux_t *p_demux);
 
 #define STANDARD_DEMUX_INIT_MSG( msg ) do { \
     DEMUX_INIT_COMMON();                    \

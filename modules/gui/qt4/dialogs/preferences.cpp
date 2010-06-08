@@ -2,7 +2,7 @@
  * preferences.cpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 89864d7a1649fe137020fff8a4592b07039ae227 $
+ * $Id: 32b6704fbbc81e95be1f8779d2e10fd62bef26fb $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -44,6 +44,8 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
 {
     QGridLayout *main_layout = new QGridLayout( this );
     setWindowTitle( qtr( "Preferences" ) );
+    setWindowRole( "vlc-preferences" );
+    setWindowModality( Qt::WindowModal );
 
     /* Whether we want it or not, we need to destroy on close to get
        consistency when reset */
@@ -106,14 +108,15 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
 
     /* Margins */
     tree_panel_l->setMargin( 1 );
-    main_panel_l->setLayoutMargins( 6, 0, 0, 3, 3 );
+    main_panel_l->setContentsMargins( 6, 0, 0, 3 );
 
     b_small = (p_intf->p_sys->i_screenHeight < 750);
     if( b_small ) msg_Dbg( p_intf, "Small");
     setMaximumHeight( p_intf->p_sys->i_screenHeight );
     for( int i = 0; i < SPrefsMax ; i++ ) simple_panels[i] = NULL;
 
-    if( config_GetInt( p_intf, "qt-advanced-pref" ) || config_GetInt( p_intf, "advanced" ) )
+    if( var_InheritBool( p_intf, "qt-advanced-pref" )
+     || var_InheritBool( p_intf, "advanced" ) )
         setAdvanced();
     else
         setSmall();

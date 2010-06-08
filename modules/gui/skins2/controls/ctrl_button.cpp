@@ -2,7 +2,7 @@
  * ctrl_button.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f379c40ac69b4152e45b3af42b16899c07b9fff4 $
+ * $Id: a1eb12559a6f0f576e57cebc775b68c91e100f43 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -25,6 +25,7 @@
 #include "ctrl_button.hpp"
 #include "../events/evt_generic.hpp"
 #include "../src/generic_bitmap.hpp"
+#include "../src/generic_layout.hpp"
 #include "../src/os_factory.hpp"
 #include "../src/os_graphics.hpp"
 #include "../commands/cmd_generic.hpp"
@@ -80,6 +81,19 @@ CtrlButton::~CtrlButton()
 {
 }
 
+void CtrlButton::setLayout( GenericLayout *pLayout,
+                           const Position &rPosition )
+{
+    CtrlGeneric::setLayout( pLayout, rPosition );
+    m_pLayout->getActiveVar().addObserver( this );
+}
+
+
+void CtrlButton::unsetLayout()
+{
+    m_pLayout->getActiveVar().delObserver( this );
+    CtrlGeneric::unsetLayout();
+}
 
 void CtrlButton::handleEvent( EvtGeneric &rEvent )
 {
@@ -192,5 +206,21 @@ void CtrlButton::CmdUpHidden::execute()
 void CtrlButton::CmdHiddenUp::execute()
 {
     m_pParent->setImage( &m_pParent->m_imgUp );
+}
+
+void CtrlButton::onUpdate( Subject<VarBool> &rVariable, void *arg  )
+{
+    // restart animation
+    if(     &rVariable == m_pVisible
+        ||  &rVariable == &m_pLayout->getActiveVar()
+      )
+    {
+        if( m_pImg )
+        {
+            m_pImg->stopAnim();
+            m_pImg->startAnim();
+        }
+    }
+    CtrlGeneric::onUpdate( rVariable, arg );
 }
 

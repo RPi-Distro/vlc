@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 534ee7bcbe6f58954dea56a0eba722a09b851456 $
+ * $Id: 37eb01194ee03617e5904c6bac39d2e399df8c0a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -31,6 +31,7 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -38,8 +39,8 @@
 #include <vlc_codec.h>
 #include <vlc_block.h>
 
-#include "vlc_block_helper.h"
-#include "vlc_bits.h"
+#include <vlc_block_helper.h>
+#include <vlc_bits.h>
 #include "../codec/cc.h"
 #include "packetizer_helper.h"
 
@@ -92,6 +93,8 @@ struct decoder_sys_t
     /* */
     bool    b_slice;
     block_t *p_frame;
+    bool    b_frame_sps;
+    bool    b_frame_pps;
 
     bool   b_header;
     bool   b_sps;
@@ -151,6 +154,8 @@ enum nal_priority_e
     NAL_PRIORITY_HIGHEST    = 3,
 };
 
+#define BLOCK_FLAG_PRIVATE_AUD (1 << BLOCK_FLAG_PRIVATE_SHIFT)
+
 static block_t *Packetize( decoder_t *, block_t ** );
 static block_t *PacketizeAVC1( decoder_t *, block_t ** );
 static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] );
@@ -183,18 +188,11 @@ static int Open( vlc_object_t *p_this )
     decoder_sys_t *p_sys;
     int i;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC( 'h', '2', '6', '4') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC( 'H', '2', '6', '4') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC( 'V', 'S', 'S', 'H') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC( 'v', 's', 's', 'h') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC( 'D', 'A', 'V', 'C') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC( 'x', '2', '6', '4') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC( 'X', '2', '6', '4') &&
-        ( p_dec->fmt_in.i_codec != VLC_FOURCC( 'a', 'v', 'c', '1') ||
-          p_dec->fmt_in.i_extra < 7 ) )
-    {
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_H264 )
         return VLC_EGENERIC;
-    }
+    if( p_dec->fmt_in.i_original_fourcc == VLC_FOURCC( 'a', 'v', 'c', '1') &&
+        p_dec->fmt_in.i_extra < 7 )
+        return VLC_EGENERIC;
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys = malloc( sizeof(decoder_sys_t) ) ) == NULL )
@@ -204,11 +202,14 @@ static int Open( vlc_object_t *p_this )
 
     packetizer_Init( &p_sys->packetizer,
                      p_h264_startcode, sizeof(p_h264_startcode),
-                     p_h264_startcode, 1,
+                     p_h264_startcode, 1, 5,
                      PacketizeReset, PacketizeParse, PacketizeValidate, p_dec );
 
     p_sys->b_slice = false;
     p_sys->p_frame = NULL;
+    p_sys->b_frame_sps = false;
+    p_sys->b_frame_pps = false;
+
     p_sys->b_header= false;
     p_sys->b_sps   = false;
     p_sys->b_pps   = false;
@@ -228,14 +229,14 @@ static int Open( vlc_object_t *p_this )
     p_sys->slice.i_pic_order_cnt_lsb = -1;
     p_sys->slice.i_delta_pic_order_cnt_bottom = -1;
 
-    p_sys->i_frame_dts = -1;
-    p_sys->i_frame_pts = -1;
+    p_sys->i_frame_dts = VLC_TS_INVALID;
+    p_sys->i_frame_pts = VLC_TS_INVALID;
 
     /* Setup properties */
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
-    p_dec->fmt_out.i_codec = VLC_FOURCC( 'h', '2', '6', '4' );
+    p_dec->fmt_out.i_codec = VLC_CODEC_H264;
 
-    if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'a', 'v', 'c', '1' ) )
+    if( p_dec->fmt_in.i_original_fourcc == VLC_FOURCC( 'a', 'v', 'c', '1' ) )
     {
         /* This type of stream is produced by mp4 and matroska
          * when we want to store it in another streamformat, you need to convert
@@ -347,8 +348,8 @@ static int Open( vlc_object_t *p_this )
         p_dec->pf_get_cc = GetCc;
 
         /* */
-        p_sys->i_cc_pts = 0;
-        p_sys->i_cc_dts = 0;
+        p_sys->i_cc_pts = VLC_TS_INVALID;
+        p_sys->i_cc_dts = VLC_TS_INVALID;
         p_sys->i_cc_flags = 0;
         cc_Init( &p_sys->cc );
         cc_Init( &p_sys->cc_next );
@@ -506,18 +507,20 @@ static void PacketizeReset( void *p_private, bool b_broken )
         if( p_sys->p_frame )
             block_ChainRelease( p_sys->p_frame );
         p_sys->p_frame = NULL;
+        p_sys->b_frame_sps = false;
+        p_sys->b_frame_pps = false;
         p_sys->slice.i_frame_type = 0;
         p_sys->b_slice = false;
     }
-    p_sys->i_frame_pts = -1;
-    p_sys->i_frame_dts = -1;
+    p_sys->i_frame_pts = VLC_TS_INVALID;
+    p_sys->i_frame_dts = VLC_TS_INVALID;
 }
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t *p_block )
 {
     decoder_t *p_dec = p_private;
 
     /* Remove trailing 0 bytes */
-    while( p_block->i_buffer && p_block->p_buffer[p_block->i_buffer-1] == 0x00 )
+    while( p_block->i_buffer > 5 && p_block->p_buffer[p_block->i_buffer-1] == 0x00 )
         p_block->i_buffer--;
 
     return ParseNALBlock( p_dec, pb_ts_used, p_block );
@@ -616,6 +619,8 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_used_ts, block_t *p_fr
         /* Reset context */
         p_sys->slice.i_frame_type = 0;
         p_sys->p_frame = NULL;
+        p_sys->b_frame_sps = false;
+        p_sys->b_frame_pps = false;
         p_sys->b_slice = false;
         cc_Flush( &p_sys->cc_next );
     }
@@ -645,6 +650,7 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_used_ts, block_t *p_fr
     {
         if( p_sys->b_slice )
             p_pic = OutputPicture( p_dec );
+        p_sys->b_frame_sps = true;
 
         PutSPS( p_dec, p_frag );
 
@@ -655,6 +661,7 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_used_ts, block_t *p_fr
     {
         if( p_sys->b_slice )
             p_pic = OutputPicture( p_dec );
+        p_sys->b_frame_pps = true;
 
         PutPPS( p_dec, p_frag );
 
@@ -670,7 +677,21 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_used_ts, block_t *p_fr
 
         /* Parse SEI for CC support */
         if( i_nal_type == NAL_SEI )
+        {
             ParseSei( p_dec, p_frag );
+        }
+        else if( i_nal_type == NAL_AU_DELIMITER )
+        {
+            if( p_sys->p_frame && (p_sys->p_frame->i_flags & BLOCK_FLAG_PRIVATE_AUD) )
+            {
+                block_Release( p_frag );
+                p_frag = NULL;
+            }
+            else
+            {
+                p_frag->i_flags |= BLOCK_FLAG_PRIVATE_AUD;
+            }
+        }
     }
 
     /* Append the block */
@@ -678,7 +699,8 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_used_ts, block_t *p_fr
         block_ChainAppend( &p_sys->p_frame, p_frag );
 
     *pb_used_ts = false;
-    if( p_sys->i_frame_dts < 0 && p_sys->i_frame_pts < 0 )
+    if( p_sys->i_frame_dts <= VLC_TS_INVALID && 
+        p_sys->i_frame_pts <= VLC_TS_INVALID )
     {
         p_sys->i_frame_dts = i_frag_dts;
         p_sys->i_frame_pts = i_frag_pts;
@@ -695,26 +717,39 @@ static block_t *OutputPicture( decoder_t *p_dec )
     if( !p_sys->b_header && p_sys->slice.i_frame_type != BLOCK_FLAG_TYPE_I)
         return NULL;
 
-    if( p_sys->slice.i_frame_type == BLOCK_FLAG_TYPE_I && p_sys->b_sps && p_sys->b_pps )
+    const bool b_sps_pps_i = p_sys->slice.i_frame_type == BLOCK_FLAG_TYPE_I &&
+                             p_sys->b_sps &&
+                             p_sys->b_pps;
+    if( b_sps_pps_i || p_sys->b_frame_sps || p_sys->b_frame_pps )
     {
-        block_t *p_list = NULL;
-        int i;
+        block_t *p_head = NULL;
+        if( p_sys->p_frame->i_flags & BLOCK_FLAG_PRIVATE_AUD )
+        {
+            p_head = p_sys->p_frame;
+            p_sys->p_frame = p_sys->p_frame->p_next;
+        }
 
-        for( i = 0; i < SPS_MAX; i++ )
+        block_t *p_list = NULL;
+        for( int i = 0; i < SPS_MAX && (b_sps_pps_i || p_sys->b_frame_sps); i++ )
         {
             if( p_sys->pp_sps[i] )
                 block_ChainAppend( &p_list, block_Duplicate( p_sys->pp_sps[i] ) );
         }
-        for( i = 0; i < PPS_MAX; i++ )
+        for( int i = 0; i < PPS_MAX && (b_sps_pps_i || p_sys->b_frame_pps); i++ )
         {
             if( p_sys->pp_pps[i] )
                 block_ChainAppend( &p_list, block_Duplicate( p_sys->pp_pps[i] ) );
         }
-        if( p_list )
+        if( b_sps_pps_i && p_list )
             p_sys->b_header = true;
 
-        block_ChainAppend( &p_list, p_sys->p_frame );
-        p_pic = block_ChainGather( p_list );
+        if( p_head )
+            p_head->p_next = p_list;
+        else
+            p_head = p_list;
+        block_ChainAppend( &p_head, p_sys->p_frame );
+
+        p_pic = block_ChainGather( p_head );
     }
     else
     {
@@ -724,11 +759,14 @@ static block_t *OutputPicture( decoder_t *p_dec )
     p_pic->i_pts = p_sys->i_frame_pts;
     p_pic->i_length = 0;    /* FIXME */
     p_pic->i_flags |= p_sys->slice.i_frame_type;
+    p_pic->i_flags &= ~BLOCK_FLAG_PRIVATE_AUD;
 
     p_sys->slice.i_frame_type = 0;
     p_sys->p_frame = NULL;
-    p_sys->i_frame_dts = -1;
-    p_sys->i_frame_pts = -1;
+    p_sys->i_frame_dts = VLC_TS_INVALID;
+    p_sys->i_frame_pts = VLC_TS_INVALID;
+    p_sys->b_frame_sps = false;
+    p_sys->b_frame_pps = false;
     p_sys->b_slice = false;
 
     /* CC */
@@ -761,8 +799,10 @@ static void PutSPS( decoder_t *p_dec, block_t *p_frag )
 
     bs_init( &s, pb_dec, i_dec );
     int i_profile_idc = bs_read( &s, 8 );
-    /* Skip constraint_set0123, reserved(4), level(8) */
-    bs_skip( &s, 1+1+1+1 + 4 + 8 );
+    p_dec->fmt_out.i_profile = i_profile_idc;
+    /* Skip constraint_set0123, reserved(4) */
+    bs_skip( &s, 1+1+1+1 + 4 );
+    p_dec->fmt_out.i_level = bs_read( &s, 8 );
     /* sps id */
     i_sps_id = bs_read_ue( &s );
     if( i_sps_id >= SPS_MAX )
@@ -807,7 +847,7 @@ static void PutSPS( decoder_t *p_dec, block_t *p_frag )
                     if( i_nextscale != 0 )
                     {
                         /* delta_scale */
-                        i_tmp = bs_read( &s, 1 );
+                        i_tmp = bs_read_se( &s );
                         i_nextscale = ( i_lastscale + i_tmp + 256 ) % 256;
                         /* useDefaultScalingMatrixFlag = ... */
                     }
@@ -917,12 +957,16 @@ static void PutSPS( decoder_t *p_dec, block_t *p_frag )
                 h = 0;
             }
 
-            if( h != 0 )
-                p_dec->fmt_out.video.i_aspect = (int64_t)VOUT_ASPECT_FACTOR *
-                        ( w * p_dec->fmt_out.video.i_width ) /
-                        ( h * p_dec->fmt_out.video.i_height);
+            if( w != 0 && h != 0 )
+            {
+                p_dec->fmt_out.video.i_sar_num = w;
+                p_dec->fmt_out.video.i_sar_den = h;
+            }
             else
-                p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR;
+            {
+                p_dec->fmt_out.video.i_sar_num = 1;
+                p_dec->fmt_out.video.i_sar_den = 1;
+            }
         }
     }
 
@@ -1129,7 +1173,7 @@ static void ParseSei( decoder_t *p_dec, block_t *p_frag )
             if( i_t35 >= 5 &&
                 !memcmp( p_t35, p_dvb1_data_start_code, sizeof(p_dvb1_data_start_code) ) )
             {
-                cc_Extract( &p_sys->cc_next, &p_t35[3], i_t35 - 3 );
+                cc_Extract( &p_sys->cc_next, true, &p_t35[3], i_t35 - 3 );
             }
         }
         i_used += i_size;

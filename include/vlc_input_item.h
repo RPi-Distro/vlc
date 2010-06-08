@@ -2,7 +2,7 @@
  * vlc_input_item.h: Core input item
  *****************************************************************************
  * Copyright (C) 1999-2009 the VideoLAN team
- * $Id: 4d6a83cd3f79ab921853db712cb0b9bed4af3a19 $
+ * $Id: ca11d0910920a44c620a14077b7d2a2892a5bdc9 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -22,8 +22,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef VLC__INPUT_ITEM_H
-#define VLC__INPUT_ITEM_H 1
+#ifndef VLC_INPUT_ITEM_H
+#define VLC_INPUT_ITEM_H 1
 
 /**
  * \file
@@ -31,6 +31,7 @@
  */
 
 #include <vlc_meta.h>
+#include <vlc_epg.h>
 
 #include <string.h>
 
@@ -57,17 +58,14 @@ struct input_item_t
 
     char       *psz_name;            /**< text describing this item */
     char       *psz_uri;             /**< mrl of this item */
-    bool       b_fixed_name;        /**< Can the interface change the name ?*/
 
     int        i_options;            /**< Number of input options */
     char       **ppsz_options;       /**< Array of input options */
     uint8_t    *optflagv;            /**< Some flags of input options */
     unsigned   optflagc;
 
-    mtime_t    i_duration;           /**< Duration in milliseconds*/
+    mtime_t    i_duration;           /**< Duration in microseconds */
 
-    uint8_t    i_type;               /**< Type (file, disc, ... see input_item_type_e) */
-    bool b_prefers_tree;             /**< Do we prefer being displayed as tree*/
 
     int        i_categories;         /**< Number of info categories */
     info_category_t **pp_categories; /**< Pointer to the first info category */
@@ -78,13 +76,18 @@ struct input_item_t
     input_stats_t *p_stats;          /**< Statistics */
     int           i_nb_played;       /**< Number of times played */
 
-    bool          b_error_when_reading;       /**< Error When Reading */
-
     vlc_meta_t *p_meta;
+
+    int         i_epg;               /**< Number of EPG entries */
+    vlc_epg_t   **pp_epg;            /**< EPG entries */
 
     vlc_event_manager_t event_manager;
 
     vlc_mutex_t lock;                 /**< Lock for the item */
+
+    uint8_t     i_type;              /**< Type (file, disc, ... see input_item_type_e) */
+    bool        b_fixed_name;        /**< Can the interface change the name ?*/
+    bool        b_error_when_reading;/**< Error When Reading */
 };
 
 enum input_item_type_e
@@ -103,14 +106,63 @@ enum input_item_type_e
     ITEM_TYPE_NUMBER
 };
 
+struct input_item_node_t
+{
+    input_item_t *         p_item;
+    int                    i_children;
+    input_item_node_t      **pp_children;
+    input_item_node_t      *p_parent;
+};
+
 VLC_EXPORT( void, input_item_CopyOptions, ( input_item_t *p_parent, input_item_t *p_child ) );
 VLC_EXPORT( void, input_item_SetName, ( input_item_t *p_item, const char *psz_name ) );
 
-/* This won't hold the item, but can tell to interested third parties
+/**
+ * Add one subitem to this item
+ *
+ * This won't hold the item, but can tell to interested third parties
  * Like the playlist, that there is a new sub item. With this design
  * It is not the input item's responsability to keep all the ref of
- * the input item children. */
-VLC_EXPORT( void, input_item_AddSubItem, ( input_item_t *p_parent, input_item_t *p_child ) );
+ * the input item children.
+ *
+ * Sends a vlc_InputItemSubItemTreeAdded and a vlc_InputItemSubItemAdded event
+ */
+VLC_EXPORT( void, input_item_PostSubItem, ( input_item_t *p_parent, input_item_t *p_child ) );
+
+/**
+ * Start adding multiple subitems.
+ *
+ * Create a root node to hold a tree of subitems for given item
+ */
+VLC_EXPORT( input_item_node_t *, input_item_node_Create, ( input_item_t *p_input ) );
+
+/**
+ * Add a new child node to this parent node that will point to this subitem.
+ */
+VLC_EXPORT( input_item_node_t *, input_item_node_AppendItem, ( input_item_node_t *p_node, input_item_t *p_item ) );
+
+/**
+ * Add an already created node to children of this parent node.
+ */
+VLC_EXPORT( void, input_item_node_AppendNode, ( input_item_node_t *p_parent, input_item_node_t *p_child ) );
+
+/**
+ * Delete a node created with input_item_node_Create() and all its children.
+ */
+VLC_EXPORT( void, input_item_node_Delete, ( input_item_node_t *p_node ) );
+
+/**
+ * End adding multiple subitems.
+ *
+ * Sends a vlc_InputItemSubItemTreeAdded event to notify that the item pointed to
+ * by the given root node has created new subitems that are pointed to by all the
+ * children of the node.
+ *
+ * Also sends vlc_InputItemSubItemAdded event for every child under the given root node;
+ *
+ * In the end deletes the node and all its children nodes.
+ */
+VLC_EXPORT( void, input_item_node_PostAndDelete, ( input_item_node_t *p_node ) );
 
 
 /**
@@ -146,47 +198,46 @@ VLC_EXPORT( void,   input_item_SetDuration, ( input_item_t * p_i, mtime_t i_dura
 VLC_EXPORT( bool,   input_item_IsPreparsed, ( input_item_t *p_i ));
 VLC_EXPORT( bool,   input_item_IsArtFetched, ( input_item_t *p_i ));
 
+#define INPUT_META( name ) \
+static inline \
+void input_item_Set ## name (input_item_t *p_input, const char *val) \
+{ \
+    input_item_SetMeta (p_input, vlc_meta_ ## name, val); \
+} \
+static inline \
+char *input_item_Get ## name (input_item_t *p_input) \
+{ \
+    return input_item_GetMeta (p_input, vlc_meta_ ## name); \
+}
 
-#define input_item_SetTitle( item, b )       input_item_SetMeta( item, vlc_meta_Title, b )
-#define input_item_SetArtist( item, b )      input_item_SetMeta( item, vlc_meta_Artist, b )
-#define input_item_SetGenre( item, b )       input_item_SetMeta( item, vlc_meta_Genre, b )
-#define input_item_SetCopyright( item, b )   input_item_SetMeta( item, vlc_meta_Copyright, b )
-#define input_item_SetAlbum( item, b )       input_item_SetMeta( item, vlc_meta_Album, b )
-#define input_item_SetTrackNum( item, b )    input_item_SetMeta( item, vlc_meta_TrackNumber, b )
-#define input_item_SetDescription( item, b ) input_item_SetMeta( item, vlc_meta_Description, b )
-#define input_item_SetRating( item, b )      input_item_SetMeta( item, vlc_meta_Rating, b )
-#define input_item_SetDate( item, b )        input_item_SetMeta( item, vlc_meta_Date, b )
-#define input_item_SetSetting( item, b )     input_item_SetMeta( item, vlc_meta_Setting, b )
-#define input_item_SetURL( item, b )         input_item_SetMeta( item, vlc_meta_URL, b )
-#define input_item_SetLanguage( item, b )    input_item_SetMeta( item, vlc_meta_Language, b )
-#define input_item_SetNowPlaying( item, b )  input_item_SetMeta( item, vlc_meta_NowPlaying, b )
-#define input_item_SetPublisher( item, b )   input_item_SetMeta( item, vlc_meta_Publisher, b )
-#define input_item_SetEncodedBy( item, b )   input_item_SetMeta( item, vlc_meta_EncodedBy, b )
-#define input_item_SetArtURL( item, b )      input_item_SetMeta( item, vlc_meta_ArtworkURL, b )
-#define input_item_SetTrackID( item, b )     input_item_SetMeta( item, vlc_meta_TrackID, b )
+INPUT_META(Title)
+INPUT_META(Artist)
+INPUT_META(Genre)
+INPUT_META(Copyright)
+INPUT_META(Album)
+INPUT_META(TrackNumber)
+INPUT_META(Description)
+INPUT_META(Rating)
+INPUT_META(Date)
+INPUT_META(Setting)
+INPUT_META(URL)
+INPUT_META(Language)
+INPUT_META(NowPlaying)
+INPUT_META(Publisher)
+INPUT_META(EncodedBy)
+INPUT_META(ArtworkURL)
+INPUT_META(TrackID)
 
-#define input_item_GetTitle( item )          input_item_GetMeta( item, vlc_meta_Title )
-#define input_item_GetArtist( item )         input_item_GetMeta( item, vlc_meta_Artist )
-#define input_item_GetGenre( item )          input_item_GetMeta( item, vlc_meta_Genre )
-#define input_item_GetCopyright( item )      input_item_GetMeta( item, vlc_meta_Copyright )
-#define input_item_GetAlbum( item )          input_item_GetMeta( item, vlc_meta_Album )
-#define input_item_GetTrackNum( item )       input_item_GetMeta( item, vlc_meta_TrackNumber )
-#define input_item_GetDescription( item )    input_item_GetMeta( item, vlc_meta_Description )
-#define input_item_GetRating( item )         input_item_GetMeta( item, vlc_meta_Rating )
-#define input_item_GetDate( item )           input_item_GetMeta( item, vlc_meta_Date )
-#define input_item_GetGetting( item )        input_item_GetMeta( item, vlc_meta_Getting )
-#define input_item_GetURL( item )            input_item_GetMeta( item, vlc_meta_URL )
-#define input_item_GetLanguage( item )       input_item_GetMeta( item, vlc_meta_Language )
-#define input_item_GetNowPlaying( item )     input_item_GetMeta( item, vlc_meta_NowPlaying )
-#define input_item_GetPublisher( item )      input_item_GetMeta( item, vlc_meta_Publisher )
-#define input_item_GetEncodedBy( item )      input_item_GetMeta( item, vlc_meta_EncodedBy )
-#define input_item_GetArtURL( item )         input_item_GetMeta( item, vlc_meta_ArtworkURL )
-#define input_item_GetTrackID( item )        input_item_GetMeta( item, vlc_meta_TrackID )
-#define input_item_GetSetting( item )        input_item_GetMeta( item, vlc_meta_Setting )
+#define input_item_SetTrackNum input_item_SetTrackNumber
+#define input_item_GetTrackNum input_item_GetTrackNumber
+#define input_item_SetArtURL   input_item_SetArtworkURL
+#define input_item_GetArtURL   input_item_GetArtworkURL
 
 VLC_EXPORT( char *, input_item_GetInfo, ( input_item_t *p_i, const char *psz_cat,const char *psz_name ) );
 VLC_EXPORT( int, input_item_AddInfo, ( input_item_t *p_i, const char *psz_cat, const char *psz_name, const char *psz_format, ... ) LIBVLC_FORMAT( 4, 5 ) );
 VLC_EXPORT( int, input_item_DelInfo, ( input_item_t *p_i, const char *psz_cat, const char *psz_name ) );
+VLC_EXPORT( void, input_item_ReplaceInfos, ( input_item_t *, info_category_t * ) );
+VLC_EXPORT( void, input_item_MergeInfos, ( input_item_t *, info_category_t * ) );
 
 /**
  * This function creates a new input_item_t with the provided informations.
@@ -201,8 +252,8 @@ VLC_EXPORT( input_item_t *, input_item_NewWithType, ( vlc_object_t *, const char
  *
  * Provided for convenience.
  */
-#define input_item_NewExt(a,b,c,d,e,f,g) __input_item_NewExt( VLC_OBJECT(a),b,c,d,e,f,g)
-VLC_EXPORT( input_item_t *, __input_item_NewExt, (vlc_object_t *, const char *psz_uri, const char *psz_name, int i_options, const char *const *ppsz_options, unsigned i_option_flags, mtime_t i_duration ) );
+VLC_EXPORT( input_item_t *, input_item_NewExt, (vlc_object_t *, const char *psz_uri, const char *psz_name, int i_options, const char *const *ppsz_options, unsigned i_option_flags, mtime_t i_duration ) );
+#define input_item_NewExt(a,b,c,d,e,f,g) input_item_NewExt( VLC_OBJECT(a),b,c,d,e,f,g)
 
 /**
  * This function creates a new input_item_t with the provided informations.
@@ -210,6 +261,12 @@ VLC_EXPORT( input_item_t *, __input_item_NewExt, (vlc_object_t *, const char *ps
  * Provided for convenience.
  */
 #define input_item_New( a,b,c ) input_item_NewExt( a, b, c, 0, NULL, 0, -1 )
+
+/**
+ * This function creates a new input_item_t as a copy of another.
+ */
+VLC_EXPORT( input_item_t *, input_item_Copy, (vlc_object_t *, input_item_t * ) );
+
 
 /******************
  * Input stats

@@ -2,7 +2,7 @@
  * generic_font.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 93f92735de8c2567f1c26beb082b4d97388f4d53 $
+ * $Id: cffcef5a1e70bde7a4d798a4404ef886cfb1d5a2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef GENERIC_FONT_HPP
@@ -34,22 +34,22 @@ class UString;
 /// Base class for fonts
 class GenericFont: public SkinObject
 {
-    public:
-        virtual ~GenericFont() {}
+public:
+    virtual ~GenericFont() { }
 
-        virtual bool init() = 0;
+    virtual bool init() = 0;
 
-        /// Render a string on a bitmap.
-        /// If maxWidth != -1, the text is truncated with '...'
-        /// The Bitmap is _not_ owned by this object
-        virtual GenericBitmap *drawString( const UString &rString,
-            uint32_t color, int maxWidth = -1 ) const = 0;
+    /// Render a string on a bitmap.
+    /// If maxWidth != -1, the text is truncated with '...'
+    /// The Bitmap is _not_ owned by this object
+    virtual GenericBitmap *drawString( const UString &rString,
+        uint32_t color, int maxWidth = -1 ) const = 0;
 
-        /// Get the font size
-        virtual int getSize() const = 0;
+    /// Get the font size
+    virtual int getSize() const = 0;
 
-    protected:
-        GenericFont( intf_thread_t *pIntf ): SkinObject( pIntf ) {}
+protected:
+    GenericFont( intf_thread_t *pIntf ): SkinObject( pIntf ) { }
 };
 
 typedef CountedPtr<GenericFont> GenericFontPtr;

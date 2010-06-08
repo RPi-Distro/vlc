@@ -28,6 +28,7 @@
 #include <vlc_network.h>
 #include <assert.h>
 #include <unistd.h>
+#include <errno.h>
 #ifndef _POSIX_SPAWN
 # define _POSIX_SPAWN (-1)
 #endif
@@ -94,7 +95,7 @@ static void *Thread (void *data)
     stream_t *stream = data;
     stream_sys_t *p_sys = stream->p_sys;
 #ifdef HAVE_VMSPLICE
-    ssize_t page_mask = sysconf (_SC_PAGE_SIZE) - 1;
+    const ssize_t page_mask = sysconf (_SC_PAGE_SIZE) - 1;
 #endif
     int fd = p_sys->write_fd;
     bool error = false;
@@ -106,9 +107,14 @@ static void *Thread (void *data)
 #ifdef HAVE_VMSPLICE
         unsigned char *buf = mmap (NULL, bufsize, PROT_READ|PROT_WRITE,
                                    MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+        if (unlikely(buf == MAP_FAILED))
+            break;
         vlc_cleanup_push (cleanup_mmap, buf);
 #else
-        unsigned char buf[bufsize];
+        unsigned char *buf = malloc (bufsize);
+        if (unlikely(buf == NULL))
+            break;
+        vlc_cleanup_push (free, buf);
 #endif
 
         len = stream_Read (stream->p_source, buf, bufsize);
@@ -137,13 +143,14 @@ static void *Thread (void *data)
                 break;
             }
         }
-#ifdef HAVE_VMSPLICE
-        vlc_cleanup_run (); /* munmap (buf, bufsize) */
-#endif
+        vlc_cleanup_run (); /* free (buf) */
     }
     while (!error);
 
     msg_Dbg (stream, "compressed stream at EOF");
+    /* Let child process know about EOF */
+    p_sys->write_fd = -1;
+    close (fd);
     return NULL;
 }
 
@@ -242,10 +249,10 @@ static int Control (stream_t *stream, int query, va_list args)
             *(va_arg (args, bool *)) = false;
             break;
         case STREAM_GET_POSITION:
-            *(va_arg (args, int64_t *)) = p_sys->offset;
+            *(va_arg (args, uint64_t *)) = p_sys->offset;
             break;
         case STREAM_GET_SIZE:
-            *(va_arg (args, int64_t *)) = 0;
+            *(va_arg (args, uint64_t *)) = 0;
             break;
         default:
             return VLC_EGENERIC;
@@ -360,7 +367,9 @@ static void Close (vlc_object_t *obj)
     vlc_cancel (p_sys->thread);
     close (p_sys->read_fd);
     vlc_join (p_sys->thread, NULL);
-    close (p_sys->write_fd);
+    if (p_sys->write_fd != -1)
+        /* Killed before EOF? */
+        close (p_sys->write_fd);
 
     msg_Dbg (obj, "waiting for PID %u", (unsigned)p_sys->pid);
     while (waitpid (p_sys->pid, &status, 0) == -1);

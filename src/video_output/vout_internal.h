@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 773008ee9e98b903e407a5ad7c6cfda91885175f $
+ * $Id: ffbe222366cb2acb43803783ea0f865405438896 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -31,6 +31,8 @@
 #define _VOUT_INTERNAL_H 1
 
 #include "vout_control.h"
+#include "snapshot.h"
+#include "statistic.h"
 
 /* Number of pictures required to computes the FPS rate */
 #define VOUT_FPS_SAMPLES                20
@@ -38,6 +40,10 @@
 /* */
 struct vout_thread_sys_t
 {
+    /* module */
+    const char *psz_module_type;
+    char       *psz_module_name;
+
     /* Thread & synchronization */
     vlc_thread_t    thread;
     vlc_cond_t      change_wait;
@@ -50,6 +56,7 @@ struct vout_thread_sys_t
     mtime_t         i_picture_displayed_date;
     picture_t       *p_picture_displayed;
     int             i_picture_qtype;
+    bool            b_picture_interlaced;
     vlc_cond_t      picture_wait;
 
     /* */
@@ -71,8 +78,7 @@ struct vout_thread_sys_t
     mtime_t         p_fps_sample[VOUT_FPS_SAMPLES];     /**< FPS samples dates */
 
     /* Statistics */
-    int             i_picture_lost;
-    int             i_picture_displayed;
+    vout_statistic_t statistic;
 
     /* Pause */
     bool            b_paused;
@@ -88,14 +94,7 @@ struct vout_thread_sys_t
     char           *psz_vf2;
 
     /* Snapshot interface */
-    struct
-    {
-        bool        b_available;
-        int         i_request;
-        picture_t   *p_picture;
-        vlc_mutex_t lock;
-        vlc_cond_t  wait;
-    } snapshot;
+    vout_snapshot_t snapshot;
 
     /* Show media title on videoutput */
     bool            b_title_show;
@@ -103,6 +102,9 @@ struct vout_thread_sys_t
     int             i_title_position;
 
     char            *psz_title;
+
+    /* */
+    vlc_mouse_t     mouse;
 };
 
 /* DO NOT use vout_RenderPicture unless you are in src/video_ouput */

@@ -2,7 +2,7 @@
  * Help.cpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: f3b40779f323d4eb0d3624f0723502c5c20c59c9 $
+ * $Id: d19cc93fa5ed3493aa37f766c63fd831fbc9264a $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Rémi Duraffort <ivoire (at) via.ecp.fr>
@@ -44,15 +44,15 @@
 #include <QEvent>
 #include <QFileDialog>
 #include <QDate>
+#include <QPushButton>
 
 #include <assert.h>
-
-HelpDialog *HelpDialog::instance = NULL;
 
 HelpDialog::HelpDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 
 {
     setWindowTitle( qtr( "Help" ) );
+    setWindowRole( "vlc-help" );
     setMinimumSize( 350, 300 );
 
     QGridLayout *layout = new QGridLayout( this );
@@ -79,14 +79,14 @@ void HelpDialog::close()
     toggleVisible();
 }
 
-AboutDialog *AboutDialog::instance = NULL;
-
-AboutDialog::AboutDialog( QWidget *parent, intf_thread_t *_p_intf)
-            : QVLCDialog( parent, _p_intf )
+AboutDialog::AboutDialog( intf_thread_t *_p_intf)
+            : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
 {
     setWindowTitle( qtr( "About" ) );
+    setWindowRole( "vlc-about" );
     resize( 600, 500 );
     setMinimumSize( 600, 500 );
+    setWindowModality( Qt::WindowModal );
 
     QGridLayout *layout = new QGridLayout( this );
     QTabWidget *tab = new QTabWidget( this );
@@ -99,9 +99,9 @@ AboutDialog::AboutDialog( QWidget *parent, intf_thread_t *_p_intf)
             qtr( "VLC media player" ) + qfu( " " VERSION_MESSAGE ) );
     QLabel *iconVLC = new QLabel;
     if( QDate::currentDate().dayOfYear() >= 354 )
-        iconVLC->setPixmap( QPixmap( ":/vlc48-christmas.png" ) );
+        iconVLC->setPixmap( QPixmap( ":/logo/vlc48-christmas.png" ) );
     else
-        iconVLC->setPixmap( QPixmap( ":/vlc48.png" ) );
+        iconVLC->setPixmap( QPixmap( ":/logo/vlc48.png" ) );
     layout->addWidget( iconVLC, 0, 0, 1, 1 );
     layout->addWidget( introduction, 0, 1, 1, 7 );
     layout->addWidget( tab, 1, 0, 1, 8 );
@@ -117,8 +117,8 @@ AboutDialog::AboutDialog( QWidget *parent, intf_thread_t *_p_intf)
                 "VLC uses its internal codecs and works on essentially every "
                 "popular platform.\n\n" )
             + qtr( "This version of VLC was compiled by:\n " )
-            + qfu( VLC_CompileBy() )+ "@" + qfu( VLC_CompileHost() ) + "."
-            + qfu( VLC_CompileDomain() ) + ".\n"
+            + qfu( VLC_CompileBy() )+ " on " + qfu( VLC_CompileHost() ) +
+            + " ("__DATE__" "__TIME__").\n"
             + qtr( "Compiler: " ) + qfu( VLC_Compiler() ) + ".\n"
             + qtr( "You are using the Qt4 Interface.\n\n" )
             + qtr( "Copyright (C) " ) + COPYRIGHT_YEARS
@@ -128,9 +128,9 @@ AboutDialog::AboutDialog( QWidget *parent, intf_thread_t *_p_intf)
 
     QLabel *iconVLC2 = new QLabel;
     if( QDate::currentDate().dayOfYear() >= 354 )
-        iconVLC2->setPixmap( QPixmap( ":/vlc128-christmas.png" ) );
+        iconVLC2->setPixmap( QPixmap( ":/logo/vlc128-christmas.png" ) );
     else
-        iconVLC2->setPixmap( QPixmap( ":/vlc128.png" ) );
+        iconVLC2->setPixmap( QPixmap( ":/logo/vlc128.png" ) );
     infoLayout->addWidget( iconVLC2 );
     infoLayout->addWidget( infoLabel );
 
@@ -196,11 +196,10 @@ static void UpdateCallback( void *data, bool b_ret )
     QApplication::postEvent( UDialog, event );
 }
 
-UpdateDialog *UpdateDialog::instance = NULL;
-
 UpdateDialog::UpdateDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 {
     setWindowTitle( qtr( "VLC media player updates" ) );
+    setWindowRole( "vlc-update" );
 
     QGridLayout *layout = new QGridLayout( this );
 
@@ -270,8 +269,8 @@ void UpdateDialog::UpdateOrDownload()
     else
     {
         QString dest_dir = QFileDialog::getExistingDirectory( this,
-                                 qtr( "Select a directory..." ),
-                                 qfu( config_GetHomeDir() ) );
+                                 qtr( I_OP_SEL_DIR ),
+                                 QVLCUserDir( VLC_DOWNLOAD_DIR ) );
 
         if( !dest_dir.isEmpty() )
         {

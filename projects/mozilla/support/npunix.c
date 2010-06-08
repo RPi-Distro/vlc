@@ -46,13 +46,12 @@
 #include "config.h"
 
 #define XP_UNIX 1
-#define OJI 1
 
 #include <npapi.h>
-#ifdef HAVE_NPFUNCTIONS_H
-#include <npfunctions.h>
+#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+#include "npupp.h" 
 #else
-#include <npupp.h>
+#include "npfunctions.h"
 #endif
 
 #include "../vlcshell.h"
@@ -98,6 +97,16 @@ NPN_Version(int* plugin_major, int* plugin_minor,
     *netscape_major = gNetscapeFuncs.version >> 8;
     /* Minor version is in low byte */
     *netscape_minor = gNetscapeFuncs.version & 0xFF;
+}
+
+void
+NPN_PluginThreadAsyncCall(NPP plugin,
+                          void (*func)(void *),
+                          void *userData)
+{
+#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) >= 20)
+    return (*gNetscapeFuncs.pluginthreadasynccall)(plugin, func, userData);
+#endif
 }
 
 NPError
@@ -846,6 +855,10 @@ NP_Initialize(NPNetscapeFuncs* nsTable, NPPluginFuncs* pluginFuncs)
         gNetscapeFuncs.memfree       = nsTable->memfree;
         gNetscapeFuncs.memflush      = nsTable->memflush;
         gNetscapeFuncs.reloadplugins = nsTable->reloadplugins;
+#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) >= 20)
+        gNetscapeFuncs.pluginthreadasynccall =
+            nsTable->pluginthreadasynccall;
+#endif
 #ifdef OJI
         if( minor >= NPVERS_HAS_LIVECONNECT )
         {

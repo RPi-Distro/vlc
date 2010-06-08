@@ -1,8 +1,8 @@
 /*****************************************************************************
  * ToolbarEdit.hpp : ToolbarEdit dialogs
  ****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: 1238d0de79a8f86d26907676812f76bdbb2ce6f2 $
+ * Copyright (C) 2008-2009 the VideoLAN team
+ * $Id: 6a436d806c2d60c9f39f38a21bdfef2110f835cf $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -32,7 +32,7 @@
 #include <QCheckBox>
 
 #define PROFILE_NAME_1 "Modern Style"
-#define VALUE_1 "0|64;39;64;38;65;|0-2;64;3;1;4;64;7;10;9;64-4;37;65;35-4;|12;11;13;14;|5-1;33;6-1;|0-2;64;3;1;4;64;37;64;38;64;8;65;35-4;34;"
+#define VALUE_1 "0|64;39;64;38;65;|0-2;64;3;1;4;64;7;10;9;64-4;20;19;64-4;37;65;35-4;|12;11;13;14;|5-1;33;6-1;|0-2;64;3;1;4;64;37;64;38;64;8;65;35-4;34;"
 #define PROFILE_NAME_2 "Classic Style"
 #define VALUE_2 "1|64;39-1;64;38;|2-1;32-4;0-5;1-5;32-5;3-5;5-5;6-5;4-5;32-5;10-1;64-1;35-1;65;|12-1;11-1;13-1;14-1;|33;37-4;|0-5;1-5;32-1;1-5;5-1;6-1;4-5;32-1;12-5;11-1;65;34-4;35-1;"
 #define PROFILE_NAME_3 "Minimalist Style"
@@ -49,7 +49,7 @@ class QComboBox;
 
 class WidgetListing : public QListWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     WidgetListing( intf_thread_t *, QWidget *_parent = 0 );
 protected:
@@ -60,7 +60,7 @@ private:
 
 class ToolbarEditDialog : public QVLCDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     ToolbarEditDialog( QWidget *, intf_thread_t * );
     int getOptions() { return flatBox->isChecked() * WIDGET_FLAT +
@@ -86,7 +86,7 @@ private slots:
 
 class DroppingController: public AbstractController
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     DroppingController( intf_thread_t *, const QString& line, QWidget *parent = 0 );
     QString getValue();

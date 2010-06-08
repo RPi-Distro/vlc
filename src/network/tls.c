@@ -2,7 +2,7 @@
  * tls.c
  *****************************************************************************
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: b3ca2fe680caa1909b25ed8d0011d4073f4f0b84 $
+ * $Id: 1b11bde0387a50062d613be692d5a981461c9ac7 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -69,6 +69,7 @@ tls_ServerCreate (vlc_object_t *obj, const char *cert_path,
         var_SetString (srv, "tls-x509-key", key_path);
     }
 
+    vlc_object_attach (srv, obj);
     srv->p_module = module_need (srv, "tls server", NULL, false );
     if (srv->p_module == NULL)
     {
@@ -77,7 +78,6 @@ tls_ServerCreate (vlc_object_t *obj, const char *cert_path,
         return NULL;
     }
 
-    vlc_object_attach (srv, obj);
     msg_Dbg (srv, "TLS server plugin initialized");
     return srv;
 }
@@ -93,7 +93,6 @@ void tls_ServerDelete (tls_server_t *srv)
         return;
 
     module_unneed (srv, srv->p_module);
-    vlc_object_detach (srv);
     vlc_object_release (srv);
 }
 
@@ -185,6 +184,7 @@ tls_ClientCreate (vlc_object_t *obj, int fd, const char *psz_hostname)
     else
         msg_Dbg (cl, "requested anonymous server");
 
+    vlc_object_attach (cl, obj);
     cl->p_module = module_need (cl, "tls client", NULL, false );
     if (cl->p_module == NULL)
     {
@@ -202,7 +202,6 @@ tls_ClientCreate (vlc_object_t *obj, int fd, const char *psz_hostname)
     if (val == 0)
     {
         msg_Dbg (cl, "TLS client session initialized");
-        vlc_object_attach (cl, obj);
         return cl;
     }
     msg_Err (cl, "TLS client session handshake error");
@@ -223,6 +222,5 @@ void tls_ClientDelete (tls_session_t *cl)
         return;
 
     module_unneed (cl, cl->p_module);
-    vlc_object_detach (cl);
     vlc_object_release (cl);
 }

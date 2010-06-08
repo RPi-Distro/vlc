@@ -3,7 +3,7 @@
  *       multiplexer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: f2ec618a204dc27af8763fd969c2f37ef9495506 $
+ * $Id: b80c287349aabc81ddd407893961cdc44837e6de $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -89,7 +89,6 @@ static int Mux      ( sout_mux_t * );
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int  MuxGetStream        ( sout_mux_t *, int *, mtime_t * );
 
 static void MuxWritePackHeader  ( sout_mux_t *, block_t **, mtime_t );
 static void MuxWriteSystemHeader( sout_mux_t *, block_t **, mtime_t );
@@ -276,51 +275,44 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     /* Init this new stream */
     switch( p_input->p_fmt->i_codec )
     {
-        case VLC_FOURCC( 'm', 'p', '1', 'v' ):
-            p_stream->i_stream_id =
-                StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
-            p_stream->i_stream_type = 0x01; /* ISO/IEC 11172 Video */
-            break;
-        case VLC_FOURCC( 'm', 'p', '2', 'v' ):
-        case VLC_FOURCC( 'm', 'p', 'g', 'v' ):
+        case VLC_CODEC_MPGV:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
             p_stream->i_stream_type = 0x02; /* ISO/IEC 13818 Video */
             break;
-        case VLC_FOURCC( 'm', 'p', '4', 'v' ):
+        case VLC_CODEC_MP4V:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
             p_stream->i_stream_type = 0x10;
             break;
-        case VLC_FOURCC( 'h', '2', '6', '4' ):
+        case VLC_CODEC_H264:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
             p_stream->i_stream_type = 0x1b;
             break;
-        case VLC_FOURCC( 'l', 'p', 'c', 'm' ):
+        case VLC_CODEC_DVD_LPCM:
             p_stream->i_stream_id =
                 0xbd00 | StreamIdGet( p_sys->stream_id_lpcm, 0xa0, 0xaf );
             break;
-        case VLC_FOURCC( 'd', 't', 's', ' ' ):
+        case VLC_CODEC_DTS:
             p_stream->i_stream_id =
                 0xbd00 | StreamIdGet( p_sys->stream_id_dts, 0x88, 0x8f );
             break;
-        case VLC_FOURCC( 'a', '5', '2', ' ' ):
+        case VLC_CODEC_A52:
             p_stream->i_stream_id =
                 0xbd00 | StreamIdGet( p_sys->stream_id_a52, 0x80, 0x87 );
             break;
-        case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
-        case VLC_FOURCC( 'm', 'p', '3', ' ' ):
+        case VLC_CODEC_MPGA:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpga, 0xc0, 0xcf );
             p_stream->i_stream_type = 0x03; /* ISO/IEC 11172 Audio */
             break;
-        case VLC_FOURCC( 'm', 'p', '4', 'a' ):
+        case VLC_CODEC_MP4A:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpga, 0xc0, 0xcf );
             p_stream->i_stream_type = 0x0f;
             break;
-        case VLC_FOURCC( 's', 'p', 'u', ' ' ):
+        case VLC_CODEC_SPU:
             p_stream->i_stream_id =
                 0xbd00 | StreamIdGet( p_sys->stream_id_spu, 0x20, 0x3f );
             break;
@@ -400,27 +392,27 @@ static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
     msg_Dbg( p_mux, "removing input" );
     switch( p_input->p_fmt->i_codec )
     {
-        case VLC_FOURCC( 'm', 'p', 'g', 'v' ):
+        case VLC_CODEC_MPGV:
             StreamIdRelease( p_sys->stream_id_mpgv, 0xe0,
                              p_stream->i_stream_id );
             break;
-        case VLC_FOURCC( 'l', 'p', 'c', 'm' ):
+        case VLC_CODEC_DVD_LPCM:
             StreamIdRelease( p_sys->stream_id_lpcm, 0xa0,
                              p_stream->i_stream_id&0xff );
             break;
-        case VLC_FOURCC( 'd', 't', 's', ' ' ):
+        case VLC_CODEC_DTS:
             StreamIdRelease( p_sys->stream_id_dts, 0x88,
                              p_stream->i_stream_id&0xff );
             break;
-        case VLC_FOURCC( 'a', '5', '2', ' ' ):
+        case VLC_CODEC_A52:
             StreamIdRelease( p_sys->stream_id_a52, 0x80,
                              p_stream->i_stream_id&0xff );
             break;
-        case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
+        case VLC_CODEC_MPGA:
             StreamIdRelease( p_sys->stream_id_mpga, 0xc0,
                              p_stream->i_stream_id  );
             break;
-        case VLC_FOURCC( 's', 'p', 'u', ' ' ):
+        case VLC_CODEC_SPU:
             StreamIdRelease( p_sys->stream_id_spu, 0x20,
                              p_stream->i_stream_id&0xff );
             break;
@@ -464,10 +456,10 @@ static int Mux( sout_mux_t *p_mux )
         block_t *p_ps, *p_data;
 
         mtime_t        i_dts;
-        int            i_stream;
 
         /* Choose which stream to mux */
-        if( MuxGetStream( p_mux, &i_stream, &i_dts ) )
+        int i_stream = sout_MuxGetStream( p_mux, 1, &i_dts );
+        if( i_stream < 0 )
         {
             return VLC_SUCCESS;
         }
@@ -805,44 +797,4 @@ static void MuxWritePSM( sout_mux_t *p_mux, block_t **p_buf, mtime_t i_dts )
     }
 
     block_ChainAppend( p_buf, p_hdr );
-}
-
-/*
- * Find stream to be muxed.
- */
-static int MuxGetStream( sout_mux_t *p_mux, int *pi_stream, mtime_t *pi_dts )
-{
-    mtime_t i_dts;
-    int     i_stream, i;
-
-    for( i = 0, i_dts = 0, i_stream = -1; i < p_mux->i_nb_inputs; i++ )
-    {
-        sout_input_t *p_input = p_mux->pp_inputs[i];
-        block_t *p_data;
-
-        if( block_FifoCount( p_input->p_fifo ) <= 0 )
-        {
-            if( p_input->p_fmt->i_cat == AUDIO_ES ||
-                p_input->p_fmt->i_cat == VIDEO_ES )
-            {
-                /* We need that audio+video fifo contain at least 1 packet */
-                return VLC_EGENERIC;
-            }
-
-            /* SPU */
-            continue;
-        }
-
-        p_data = block_FifoShow( p_input->p_fifo );
-        if( i_stream == -1 || p_data->i_dts < i_dts )
-        {
-            i_stream = i;
-            i_dts    = p_data->i_dts;
-        }
-    }
-
-    *pi_stream = i_stream;
-    *pi_dts = i_dts;
-
-    return VLC_SUCCESS;
 }

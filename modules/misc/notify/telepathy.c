@@ -2,7 +2,7 @@
  * telepathy.c : changes Telepathy Presence information using MissionControl
  *****************************************************************************
  * Copyright © 2007-2009 the VideoLAN team
- * $Id: 7b55a8a49ca5015f19179c3c394eb190c8f446c6 $
+ * $Id: 4f538c858116f34c24b455d1b13d5364d389473b $
  *
  * Author: Rafaël Carré <funman@videoanorg>
  *
@@ -112,7 +112,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    p_intf->p_sys->psz_format = config_GetPsz( p_intf, "telepathy-format" );
+    p_intf->p_sys->psz_format = var_InheritString( p_intf, "telepathy-format" );
     if( !p_intf->p_sys->psz_format )
     {
         msg_Dbg( p_intf, "no format provided" );
@@ -122,10 +122,9 @@ static int Open( vlc_object_t *p_this )
 
     p_intf->p_sys->i_id = -1;
 
-    p_playlist = pl_Hold( p_intf );
+    p_playlist = pl_Get( p_intf );
     var_AddCallback( p_playlist, "item-change", ItemChange, p_intf );
     var_AddCallback( p_playlist, "item-current", ItemChange, p_intf );
-    pl_Release( p_intf );
 
     return VLC_SUCCESS;
 }
@@ -136,7 +135,7 @@ static int Open( vlc_object_t *p_this )
 static void Close( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    playlist_t *p_playlist = pl_Hold( p_this );
+    playlist_t *p_playlist = pl_Get( p_this );
     input_thread_t *p_input = NULL;
 
     var_DelCallback( p_playlist, "item-change", ItemChange, p_intf );
@@ -146,7 +145,6 @@ static void Close( vlc_object_t *p_this )
         var_DelCallback( p_input, "state", StateChange, p_intf );
         vlc_object_release( p_input );
     }
-    pl_Release( p_this );
 
     /* Clears the Presence message ... else it looks like we're still playing
      * something although VLC (or the Telepathy plugin) is closed */
@@ -173,17 +171,19 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     playlist_t* p_playlist = (playlist_t*) p_this;
     char *psz_buf = NULL;
     input_thread_t *p_input;
+    input_item_t *p_item = newval.p_address;
     bool b_is_item_current = !strcmp( "item-current", psz_var );
 
     /* Don't update Telepathy presence each time an item has been preparsed */
     if( b_is_item_current )
     { /* stores the current input item id */
-        p_intf->p_sys->i_id = newval.i_int;
+        p_intf->p_sys->i_id = p_item->i_id;
         p_intf->p_sys->i_item_changes = 0;
     }
     else
     {
-        if( newval.i_int != p_intf->p_sys->i_id ) /* "item-change" */
+
+        if( p_item->i_id != p_intf->p_sys->i_id ) /* "item-change" */
             return VLC_SUCCESS;
         /* Some variable bitrate inputs call "item-change callbacks each time
          * their length is updated, that is several times per second.

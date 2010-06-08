@@ -4,8 +4,8 @@
 basedir = misc
 dir = misc/notify
 mods = growl growl_udp msn notify telepathy xosd
-libvlc_LTLIBRARIES =  $(LTLIBgrowl) $(LTLIBgrowl_udp) $(LTLIBmsn) $(LTLIBnotify) $(LTLIBtelepathy) $(LTLIBxosd)
-EXTRA_LTLIBRARIES =  libgrowl_plugin.la libgrowl_udp_plugin.la libmsn_plugin.la libnotify_plugin.la libtelepathy_plugin.la libxosd_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBgrowl) $(LTLIBgrowl_udp) $(LTLIBnotify) $(LTLIBtelepathy) $(LTLIBxosd)
+EXTRA_LTLIBRARIES =  libgrowl_plugin.la libgrowl_udp_plugin.la libnotify_plugin.la libtelepathy_plugin.la libxosd_plugin.la
 
 include $(top_srcdir)/modules/common.am
 

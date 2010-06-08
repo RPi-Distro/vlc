@@ -3,7 +3,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 3670d54f24590b9c526a67d3e5aaa5f1c4b571f5 $
+ * $Id: 5aea76706326c9a56a063bd20a10f4da571aa952 $
  */
 #include "AtmoThread.h"
 
@@ -11,7 +11,7 @@
 
 CThread::CThread(vlc_object_t *pOwner)
 {
-    int err;
+    m_bTerminated  = ATMO_FALSE;
     m_pAtmoThread = (atmo_thread_t *)vlc_object_create( pOwner,
                                                         sizeof(atmo_thread_t) );
     if(m_pAtmoThread)
@@ -22,10 +22,7 @@ CThread::CThread(vlc_object_t *pOwner)
         vlc_object_attach( m_pAtmoThread, m_pOwner);
 
         vlc_mutex_init( &m_TerminateLock );
-        err = vlc_cond_init( &m_TerminateCond );
-        if(err) {
-           msg_Err( m_pAtmoThread, "vlc_cond_init failed %d",err);
-        }
+        vlc_cond_init( &m_TerminateCond );
     }
 }
 
@@ -33,9 +30,12 @@ CThread::CThread(vlc_object_t *pOwner)
 
 CThread::CThread(void)
 {
+  m_bTerminated  = ATMO_FALSE;
+
   m_hThread = CreateThread(NULL, 0, CThread::ThreadProc ,
                            this, CREATE_SUSPENDED, &m_dwThreadID);
-  m_hTerminateEvent = CreateEvent(NULL,ATMO_FALSE,ATMO_FALSE,NULL);
+
+  m_hTerminateEvent = CreateEvent(NULL,0,0,NULL);
 }
 
 #endif
@@ -50,7 +50,6 @@ CThread::~CThread(void)
   {
       vlc_mutex_destroy( &m_TerminateLock );
       vlc_cond_destroy( &m_TerminateCond );
-      vlc_object_detach(m_pAtmoThread);
       vlc_object_release(m_pAtmoThread);
   }
 }
@@ -85,9 +84,9 @@ void *CThread::ThreadProc(vlc_object_t *obj)
 
 DWORD WINAPI CThread::ThreadProc(LPVOID lpParameter)
 {
-	   CThread *aThread = (CThread *)lpParameter;
-	   if(aThread)
-	      return aThread->Execute();
+	   CThread *pThread = (CThread *)lpParameter;
+	   if(pThread)
+	      return pThread->Execute();
 	   else
 		  return (DWORD)-1;
 }
@@ -111,19 +110,20 @@ void CThread::Terminate(void)
 {
    // Set Termination Flag and EventObject!
    // and wait for Termination
-   m_bTerminated = ATMO_TRUE;
 
 #if defined(_ATMO_VLC_PLUGIN_)
    if(m_pAtmoThread)
    {
       vlc_mutex_lock( &m_TerminateLock );
+      m_bTerminated = ATMO_TRUE;
       vlc_cond_signal( &m_TerminateCond  );
       vlc_mutex_unlock( &m_TerminateLock );
-      vlc_object_kill( m_pAtmoThread );
 
+      vlc_object_kill( m_pAtmoThread );
       vlc_thread_join( m_pAtmoThread );
    }
 #else
+   m_bTerminated = ATMO_TRUE;
    SetEvent(m_hTerminateEvent);
    WaitForSingleObject(m_hThread,INFINITE);
 #endif
@@ -158,12 +158,14 @@ void CThread::Run()
 ATMO_BOOL CThread::ThreadSleep(DWORD millisekunden)
 {
 #if defined(_ATMO_VLC_PLUGIN_)
+     ATMO_BOOL temp;
      vlc_mutex_lock( &m_TerminateLock );
-     int value = vlc_cond_timedwait(&m_TerminateCond,
-                                    &m_TerminateLock,
-                                    mdate() + (mtime_t)(millisekunden * 1000));
+     vlc_cond_timedwait(&m_TerminateCond,
+                        &m_TerminateLock,
+                        mdate() + (mtime_t)(millisekunden * 1000));
+     temp = m_bTerminated;
      vlc_mutex_unlock( &m_TerminateLock );
-     return (value != 0);
+     return !temp;
 
 #else
      DWORD res = WaitForSingleObject(m_hTerminateEvent,millisekunden);

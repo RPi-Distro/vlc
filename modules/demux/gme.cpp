@@ -2,7 +2,7 @@
  * gme.cpp: Game Music files demuxer (using Game_Music_Emu)
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: e24f04b9d059b8134d3ffea83ecc0a39f1c08bf1 $
+ * $Id: f5efb043b1d72f98b0b9cd1abea1227c1f382374 $
  *
  * Authors: Jean Sreng <fox@videolan.org>
  *
@@ -115,7 +115,7 @@ static int Open( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
     char        *ext;
-    int         i;
+    int         i = 0;
     vlc_value_t val;
  
     /* We accept file based on extention match */
@@ -148,10 +148,17 @@ static int Open( vlc_object_t *p_this )
     p_demux->pf_demux = Demux;
     p_demux->pf_control = Control;
     p_demux->p_sys = p_sys = (demux_sys_t *)malloc( sizeof( demux_sys_t ) );
+    if( unlikely( !p_sys ) )
+        return VLC_ENOMEM;
 
     msg_Dbg( p_demux, "loading complete file (could be long)" );
     p_sys->i_data = stream_Size( p_demux->s );
     p_sys->p_data = (uint8_t *)malloc( p_sys->i_data );
+    if( unlikely( !p_sys->p_data ) )
+    {
+        free( p_sys );
+        return VLC_ENOMEM;
+    }
     p_sys->i_data = stream_Read( p_demux->s, p_sys->p_data, p_sys->i_data );
     if( p_sys->i_data <= 0 )
     {
@@ -302,7 +309,7 @@ static int Open( vlc_object_t *p_this )
     }
 
    /* init time */
-    p_sys->i_time  = 1;
+    p_sys->i_time  = 0;
     p_sys->i_length = 314 * (int64_t)1000;
 
     msg_Dbg( p_demux, "GME loaded type=%s title=%s tracks=%i", type_str[p_sys->i_type],
@@ -370,13 +377,13 @@ static int Demux( demux_t *p_demux )
     for (int i = 0; i<i_buf; i++) p_frame->p_buffer[i] = ((uint8_t *)p_emubuf)[i];
 
     /* Set PCR */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, (int64_t)p_sys->i_time );
+    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_time );
+    p_frame->i_dts = p_frame->i_pts = VLC_TS_0 + p_sys->i_time;
 
     /* We should use p_frame->i_buffer */
     p_sys->i_time += (int64_t)1000000 * p_frame->i_buffer / i_bk / p_sys->fmt.audio.i_rate;
 
     /* Send data */
-    p_frame->i_dts = p_frame->i_pts = p_sys->i_time;
     es_out_Send( p_demux->out, p_sys->es, p_frame );
 
     return 1;
@@ -419,7 +426,7 @@ switch( i_query )
             if( i64 >= 0 && i64 <= p_sys->i_length )
             {
                 ModPlug_Seek( p_sys->f, i64 / 1000 );
-                p_sys->i_time = i64 + 1;
+                p_sys->i_time = i64;
 
                 return VLC_SUCCESS;
             }
@@ -441,7 +448,7 @@ switch( i_query )
             if( i64 >= 0 && i64 <= p_sys->i_length )
             {
                 ModPlug_Seek( p_sys->f, i64 / 1000 );
-                p_sys->i_time = i64 + 1;
+                p_sys->i_time = i64;
 
                 return VLC_SUCCESS;
             }
@@ -454,7 +461,7 @@ switch( i_query )
                 int *pi_int    = (int*)va_arg( args, int* );
 
                 *pi_int = p_sys->i_tracks;
-                *ppp_title = (input_title_t**)malloc( sizeof( input_title_t**) * p_sys->i_tracks );
+                *ppp_title = (input_title_t**)xmalloc( sizeof( input_title_t**) * p_sys->i_tracks );
 
                 for( int i = 0; i < p_sys->i_tracks; i++ )
                 {
@@ -498,7 +505,7 @@ static void inflate_gzbuf(uint8_t * p_buffer, size_t i_size, uint8_t ** pp_obuff
     memset(&z_str, 0, sizeof(z_str));
 
     out_size = i_size * 2;
-    out_buffer = (uint8_t*)malloc(out_size);
+    out_buffer = (uint8_t*)xmalloc(out_size);
 
     z_str.next_in   = (unsigned char*)p_buffer;
     z_str.avail_in  = i_size;
@@ -520,7 +527,7 @@ static void inflate_gzbuf(uint8_t * p_buffer, size_t i_size, uint8_t ** pp_obuff
         case Z_BUF_ERROR:
             offset = z_str.next_out - out_buffer;
             out_size *= 2;
-            out_buffer = (uint8_t *)realloc(out_buffer, out_size);
+            out_buffer = (uint8_t *)xrealloc(out_buffer, out_size);
             z_str.next_out  = out_buffer + offset;
             z_str.avail_out = out_size - offset;
             break;
@@ -535,7 +542,7 @@ static void inflate_gzbuf(uint8_t * p_buffer, size_t i_size, uint8_t ** pp_obuff
 
     inflateEnd(&z_str);
  
-    out_buffer = (uint8_t *)realloc(out_buffer, *pi_osize);
+    out_buffer = (uint8_t *)xrealloc(out_buffer, *pi_osize);
     (*pp_obuffer) = out_buffer;
 }
 #endif

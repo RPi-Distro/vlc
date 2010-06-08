@@ -2,7 +2,7 @@
  * standard.c: standard stream output module
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 6f43cc673b7a53bc5dc0b4039223adc0bf996321 $
+ * $Id: bf2a0dd16d0fd2aef5d34d5a9034d0cf46368b8f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -37,7 +37,7 @@
 #include <vlc_sout.h>
 
 #include <vlc_network.h>
-#include "vlc_url.h"
+#include <vlc_url.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -102,6 +102,9 @@ vlc_module_begin ()
     set_capability( "sout stream", 50 )
     add_shortcut( "standard" )
     add_shortcut( "std" )
+    add_shortcut( "file" )
+    add_shortcut( "http" )
+    add_shortcut( "udp" )
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_STREAM )
 
@@ -182,32 +185,41 @@ static int Open( vlc_object_t *p_this )
     config_ChainParse( p_stream, SOUT_CFG_PREFIX, ppsz_sout_options,
                    p_stream->p_cfg );
 
-    var_Get( p_stream, SOUT_CFG_PREFIX "access", &val );
-    psz_access = *val.psz_string ? val.psz_string : NULL;
-    if( !*val.psz_string ) free( val.psz_string );
-
-    var_Get( p_stream, SOUT_CFG_PREFIX "mux", &val );
-    psz_mux = *val.psz_string ? val.psz_string : NULL;
-    if( !*val.psz_string ) free( val.psz_string );
-
-    var_Get( p_stream, SOUT_CFG_PREFIX "bind", &val );
-    psz_bind = *val.psz_string ? val.psz_string : NULL;
-    if( !*val.psz_string ) free( val.psz_string);
-
-    var_Get( p_stream, SOUT_CFG_PREFIX "path", &val );
-    psz_path = *val.psz_string ? val.psz_string : NULL;
-    if( !*val.psz_string ) free( val.psz_string);
-
-    if( psz_bind ) psz_url = psz_bind;
-    if( psz_url && psz_path ) 
+    psz_access = var_GetString( p_stream, SOUT_CFG_PREFIX "access" );
+    if( EMPTY_STR(psz_access) )
     {
-        if( asprintf( &psz_url,"%s/%s",psz_url,psz_path ) == -1 )
-            psz_url = NULL;
-        free( psz_path );
+        if( !strcmp( p_stream->psz_name, "http" ) )
+        {
+            psz_access = strdup("http");
+        }
+        else if (!strcmp (p_stream->psz_name, "udp"))
+        {
+            psz_access = strdup("udp");
+        }
+        else if (!strcmp (p_stream->psz_name, "file"))
+        {
+            psz_access = strdup("file");
+        }
     }
 
+    psz_mux = var_GetNonEmptyString( p_stream, SOUT_CFG_PREFIX "mux" );
+    psz_bind = var_GetNonEmptyString( p_stream, SOUT_CFG_PREFIX "bind" );
+    psz_path = var_GetNonEmptyString( p_stream, SOUT_CFG_PREFIX "path" );
+
+    if( psz_bind && psz_path )
+    {
+        if( asprintf( &psz_url, "%s/%s", psz_bind, psz_path ) == -1 )
+            psz_url = NULL;
+    }
+    else if( psz_bind )
+    {
+        psz_url = psz_bind;
+        psz_bind = NULL;
+    }
+    free( psz_path );
+
     var_Get( p_stream, SOUT_CFG_PREFIX "dst", &val );
-    if( *val.psz_string ) 
+    if( *val.psz_string )
     {
         free( psz_url);
         psz_url = val.psz_string;
@@ -218,6 +230,9 @@ static int Open( vlc_object_t *p_this )
     p_sys = p_stream->p_sys = malloc( sizeof( sout_stream_sys_t) );
     if( !p_sys )
     {
+        free( psz_access );
+        free( psz_mux );
+        free( psz_bind );
         free( psz_url );
         return VLC_ENOMEM;
     }
@@ -249,6 +264,7 @@ static int Open( vlc_object_t *p_this )
             { "wav", "wav" },
             { "flv", "ffmpeg{mux=flv}" },
             { "mkv", "ffmpeg{mux=matroska}"},
+            { "webm", "ffmpeg{mux=webm}"},
             { "",    "" }
         };
         const char *psz_ext = strrchr( psz_url, '.' ) + 1;
@@ -281,6 +297,7 @@ static int Open( vlc_object_t *p_this )
         else
         {
             msg_Err( p_stream, "no access _and_ no muxer (fatal error)" );
+            free( psz_bind );
             free( psz_url );
             free( p_sys );
             return VLC_EGENERIC;
@@ -305,6 +322,9 @@ static int Open( vlc_object_t *p_this )
         else
         {
             msg_Err( p_stream, "no mux specified or found by extension" );
+            free( psz_access );
+            free( psz_bind );
+            free( psz_url );
             free( p_sys );
             return VLC_EGENERIC;
         }
@@ -374,6 +394,7 @@ static int Open( vlc_object_t *p_this )
                  psz_access, psz_mux, psz_url );
         free( psz_access );
         free( psz_mux );
+        free( psz_bind );
         free( psz_url );
         free( p_sys );
         return VLC_EGENERIC;
@@ -390,6 +411,7 @@ static int Open( vlc_object_t *p_this )
         sout_AccessOutDelete( p_access );
         free( psz_access );
         free( psz_mux );
+        free( psz_bind );
         free( psz_url );
         free( p_sys );
         return VLC_EGENERIC;
@@ -462,6 +484,7 @@ static int Open( vlc_object_t *p_this )
 
     free( psz_access );
     free( psz_mux );
+    free( psz_bind );
     free( psz_url );
 
     if( !sout_AccessOutCanControlPace( p_access ) )

@@ -45,7 +45,7 @@ fi
 cd $top_dir
 pwd
 files=`find . -type f`
-for file in $files; do 
+for file in $files; do
  if test ".`file $file | grep Mach-O`" != "." ; then
     echo "Changing prefixes of '$file'"
     islib=n
@@ -58,20 +58,19 @@ for file in $files; do
       if ! test -z $i; then
         if test $islib = y -a $first = y; then
             install_name_tool -id `echo $i | sed -e "s,$prefix,$new_prefix,"` $file
-            command="install_name_tool -id `echo $i | sed -e "s,$prefix,$new_prefix,"` $file"
             first=n
         else
             install_name_tool -change $i `echo $i | sed -e "s,$prefix,$new_prefix,"` $file
-            command="install_name_tool -change $i `echo $i | sed -e "s,$prefix,$new_prefix,"` $file"
         fi
-        echo "executing '$command'"
       fi
     done
-  elif test ".`file $file | grep \"text\|shell\"`" != "." ; then
-   echo "Fixing up shell/text file "$file""
+  elif test ".`file $file | grep \"text\|shell\"`" != "." -o ".`echo $file | grep pc$`" != "."; then
+   echo "Fixing up shell/text/pc file "$file""
     cp $file $file.tmp
     sed -e "s,$prefix,$new_prefix,g" < $file > $file.tmp
     mv -f $file.tmp $file
+  else
+    echo "Not doing anything with $file"
   fi
 done
 

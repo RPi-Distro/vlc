@@ -2,7 +2,7 @@
  * adjust.c : Contrast/Hue/Saturation/Brightness video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: fa671dc2127d58b5e3f26fd91cee72961f1af140 $
+ * $Id: 35f7e1d824df73a3ab0a7a8f7c6014633df899c2 $
  *
  * Authors: Simon Latapie <garf@via.ecp.fr>
  *          Antoine Cellerier <dionoea -at- videolan d0t org>
@@ -30,15 +30,13 @@
 # include "config.h"
 #endif
 
-#include <errno.h>
 #include <math.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
-#include <vlc_vout.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_picture.h"
 
 #ifndef M_PI
@@ -96,7 +94,7 @@ vlc_module_begin ()
     add_float_with_range( "gamma", 1.0, 0.01, 10.0, NULL,
                           GAMMA_TEXT, GAMMA_LONGTEXT, false )
 
-    add_bool( "brightness-threshold", 0, NULL,
+    add_bool( "brightness-threshold", false, NULL,
               THRES_TEXT, THRES_LONGTEXT, false )
 
     add_shortcut( "adjust" )
@@ -143,7 +141,7 @@ static int Create( vlc_object_t *p_this )
             break;
 
         default:
-            msg_Err( p_filter, "Unsupported input chroma (%4s)",
+            msg_Err( p_filter, "Unsupported input chroma (%4.4s)",
                      (char*)&(p_filter->fmt_in.video.i_chroma) );
             return VLC_EGENERIC;
     }
@@ -458,14 +456,14 @@ static picture_t *FilterPacked( filter_t *p_filter, picture_t *p_pic )
     if( GetPackedYuvOffsets( p_pic->format.i_chroma, &i_y_offset,
                              &i_u_offset, &i_v_offset ) != VLC_SUCCESS )
     {
-        msg_Warn( p_filter, "Unsupported input chroma (%4s)",
+        msg_Warn( p_filter, "Unsupported input chroma (%4.4s)",
                   (char*)&(p_pic->format.i_chroma) );
 
         picture_Release( p_pic );
         return NULL;
     }
 
-    p_outpic = p_filter->pf_vout_buffer_new( p_filter );
+    p_outpic = filter_NewPicture( p_filter );
     if( !p_outpic )
     {
         msg_Warn( p_filter, "can't get output picture" );

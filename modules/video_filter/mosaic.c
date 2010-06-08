@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 57bbff925d834928d508fb8846b911937368846a $
+ * $Id: 41b3a645f4f22749a8f4a2b286b080a2d438818a $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -31,7 +31,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 
 #include <math.h>
 #include <limits.h> /* INT_MAX */
@@ -214,9 +213,9 @@ vlc_module_begin ()
     add_integer( CFG_PREFIX "cols", 2, NULL,
                  COLS_TEXT, COLS_LONGTEXT, false )
 
-    add_bool( CFG_PREFIX "keep-aspect-ratio", 0, NULL,
+    add_bool( CFG_PREFIX "keep-aspect-ratio", false, NULL,
               AR_TEXT, AR_LONGTEXT, false )
-    add_bool( CFG_PREFIX "keep-picture", 0, NULL,
+    add_bool( CFG_PREFIX "keep-picture", false, NULL,
               KEEP_TEXT, KEEP_LONGTEXT, false )
 
     add_string( CFG_PREFIX "order", "", NULL,
@@ -255,14 +254,14 @@ static void __mosaic_ParseSetOffsets( vlc_object_t *p_this,
         {
             i_index++;
 
-            p_sys->pi_x_offsets =
-                realloc( p_sys->pi_x_offsets, i_index * sizeof(int) );
+            p_sys->pi_x_offsets = xrealloc( p_sys->pi_x_offsets,
+                                                   i_index * sizeof(int) );
             p_sys->pi_x_offsets[i_index - 1] = atoi( psz_offsets );
             psz_end = strchr( psz_offsets, ',' );
             psz_offsets = psz_end + 1;
 
-            p_sys->pi_y_offsets =
-                realloc( p_sys->pi_y_offsets, i_index * sizeof(int) );
+            p_sys->pi_y_offsets = xrealloc( p_sys->pi_y_offsets,
+                                                   i_index * sizeof(int) );
             p_sys->pi_y_offsets[i_index - 1] = atoi( psz_offsets );
             psz_end = strchr( psz_offsets, ',' );
             psz_offsets = psz_end + 1;
@@ -322,7 +321,7 @@ static int CreateFilter( vlc_object_t *p_this )
 
     GET_VAR( align, 0, 10 );
     if( p_sys->i_align == 3 || p_sys->i_align == 7 )
-        p_sys->i_align = 5; /* FIXME: NOT THREAD SAFE w.r.t. callback */
+        p_sys->i_align = 5;
 
     GET_VAR( borderw, 0, INT_MAX );
     GET_VAR( borderh, 0, INT_MAX );
@@ -332,7 +331,7 @@ static int CreateFilter( vlc_object_t *p_this )
     GET_VAR( position, 0, 2 );
     GET_VAR( delay, 100, INT_MAX );
 #undef GET_VAR
-    p_sys->i_delay *= 1000; /* FIXME: NOT THREAD SAFE w.r.t. callback */
+    p_sys->i_delay *= 1000;
 
     p_sys->b_ar = var_CreateGetBoolCommand( p_filter,
                                             CFG_PREFIX "keep-aspect-ratio" );
@@ -360,8 +359,8 @@ static int CreateFilter( vlc_object_t *p_this )
         {
             psz_end = strchr( psz_order, ',' );
             i_index++;
-            p_sys->ppsz_order = realloc( p_sys->ppsz_order,
-                                         i_index * sizeof(char *) );
+            p_sys->ppsz_order = xrealloc( p_sys->ppsz_order,
+                                                 i_index * sizeof(char *) );
             p_sys->ppsz_order[i_index - 1] = strndup( psz_order,
                                            psz_end - psz_order );
             psz_order = psz_end+1;
@@ -436,16 +435,6 @@ static void DestroyFilter( vlc_object_t *p_this )
 
     vlc_mutex_destroy( &p_sys->lock );
     free( p_sys );
-}
-
-/*****************************************************************************
- * MosaicReleasePicture : Hack to avoid picture duplication
- *****************************************************************************/
-static void MosaicReleasePicture( picture_t *p_picture )
-{
-    picture_t *p_original_pic = (picture_t *)p_picture->p_sys;
-
-    picture_Release( p_original_pic );
 }
 
 /*****************************************************************************
@@ -615,11 +604,11 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             fmt_in.i_height = p_es->p_picture->format.i_height;
             fmt_in.i_width = p_es->p_picture->format.i_width;
 
-            if( fmt_in.i_chroma == VLC_FOURCC('Y','U','V','A') ||
-                fmt_in.i_chroma == VLC_FOURCC('R','G','B','A') )
-                fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');
+            if( fmt_in.i_chroma == VLC_CODEC_YUVA ||
+                fmt_in.i_chroma == VLC_CODEC_RGBA )
+                fmt_out.i_chroma = VLC_CODEC_YUVA;
             else
-                fmt_out.i_chroma = VLC_FOURCC('I','4','2','0');
+                fmt_out.i_chroma = VLC_CODEC_I420;
             fmt_out.i_width = col_inner_width;
             fmt_out.i_height = row_inner_height;
 
@@ -887,8 +876,8 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
             {
                 psz_end = strchr( psz_order, ',' );
                 i_index++;
-                p_sys->ppsz_order = realloc( p_sys->ppsz_order,
-                                    i_index * sizeof(char *) );
+                p_sys->ppsz_order = xrealloc( p_sys->ppsz_order,
+                                                   i_index * sizeof(char *) );
                 p_sys->ppsz_order[i_index - 1] = strndup( psz_order,
                                            psz_end - psz_order );
                 psz_order = psz_end+1;

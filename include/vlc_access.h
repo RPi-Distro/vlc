@@ -2,7 +2,7 @@
  * vlc_access.h: Access descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: 92044ebb6d5992aa025bbe7863df9fc0f07f5a09 $
+ * $Id: cc7a9c6b8dffcbdb72d19b48c1e60fb361164fe9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -95,7 +95,7 @@ struct access_t
 
     /* Called for each seek.
      * XXX can be null */
-    int         (*pf_seek) ( access_t *, int64_t );         /* can be null if can't seek */
+    int         (*pf_seek) ( access_t *, uint64_t );         /* can be null if can't seek */
 
     /* Used to retreive and configure the access
      * XXX mandatory. look at access_query_e to know what query you *have to* support */
@@ -107,14 +107,17 @@ struct access_t
         unsigned int i_update;  /* Access sets them on change,
                                    Input removes them once take into account*/
 
-        int64_t      i_size;    /* Write only for access, read only for input */
-        int64_t      i_pos;     /* idem */
+        uint64_t     i_size;    /* Write only for access, read only for input */
+        uint64_t     i_pos;     /* idem */
         bool         b_eof;     /* idem */
 
         int          i_title;    /* idem, start from 0 (could be menu) */
         int          i_seekpoint;/* idem, start from 0 */
     } info;
     access_sys_t *p_sys;
+
+    /* Weak link to parent input */
+    input_thread_t *p_input;
 };
 
 static inline int access_vaControl( access_t *p_access, int i_query, va_list args )
@@ -144,6 +147,12 @@ static inline void access_InitFields( access_t *p_a )
     p_a->info.i_seekpoint = 0;
 }
 
+/**
+ * This function will return the parent input of this access.
+ * It is retained. It can return NULL.
+ */
+VLC_EXPORT( input_thread_t *, access_GetParentInput, ( access_t *p_access ) );
+
 #define ACCESS_SET_CALLBACKS( read, block, control, seek )              \
     p_access->pf_read = read;                                           \
     p_access->pf_block = block;                                         \
@@ -161,5 +170,9 @@ static inline void access_InitFields( access_t *p_a )
     ACCESS_SET_CALLBACKS( NULL, Block, Control, Seek );                 \
     p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) );      \
     if( !p_sys ) return VLC_ENOMEM;
+
+/**
+ * @}
+ */
 
 #endif

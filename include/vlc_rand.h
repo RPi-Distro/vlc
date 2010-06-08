@@ -2,7 +2,7 @@
  * vlc_rand.h: RNG
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 56e07affa8179e4fd54966b63e717f96e37b8fc4 $
+ * $Id: 0023d7cdaf6869e0de68a1e6412906d08a21f8f4 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,5 +28,10 @@
  */
 
 VLC_EXPORT( void, vlc_rand_bytes, (void *buf, size_t len) );
+
+/* Interlocked (but not reproducible) functions for the POSIX PRNG */
+VLC_EXPORT( double, vlc_drand48, (void) LIBVLC_USED );
+VLC_EXPORT( long, vlc_lrand48, (void) LIBVLC_USED );
+VLC_EXPORT( long, vlc_mrand48, (void) LIBVLC_USED );
 
 #endif

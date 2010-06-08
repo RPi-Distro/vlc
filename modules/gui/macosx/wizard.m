@@ -2,9 +2,9 @@
  * wizard.m: MacOS X Streaming Wizard
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 932bc6e686574ece9e096548458ffb91e48c47f1 $
+ * $Id: 37dc0f06e9082f5462c330721565d035361be044 $
  *
- * Authors: Felix Kühne <fkuehne@users.sf.net>
+ * Authors: Felix Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,7 +168,7 @@ static VLCWizard *_o_sharedInstance = nil;
 
     NSArray * o_mpga;
     NSArray * o_mp3;
-//    NSArray * o_mp4a;
+    NSArray * o_mp4a;
     NSArray * o_a52;
     NSArray * o_vorb;
     NSArray * o_flac;
@@ -184,9 +184,9 @@ static VLCWizard *_o_sharedInstance = nil;
         _NS("MPEG Audio Layer 3 (useable with MPEG PS, MPEG TS, MPEG1, ASF, OGG "
         "and RAW)"), @"MUX_PS", @"MUX_TS", @"MUX_MPEG", @"MUX_ASF", @"MUX_OGG",
         @"MUX_RAW", @"-1", @"-1", @"-1", nil];
-/*    o_mp4a = [NSArray arrayWithObjects: @"MPEG 4 Audio", @"mp4a",
+    o_mp4a = [NSArray arrayWithObjects: @"MPEG 4 Audio", @"mp4a",
         _NS("Audio format for MPEG4 (useable with MPEG TS and MPEG4)"), @"MUX_TS",
-        @"MUX_MP4", @"-1", @"-1", @"-1", @"-1", @"-1", @"-1", @"-1", nil]; */
+        @"MUX_MP4", @"-1", @"-1", @"-1", @"-1", @"-1", @"-1", @"-1", nil];
     o_a52 = [NSArray arrayWithObjects: @"A/52", @"a52",
         _NS("DVD audio format (useable with MPEG PS, MPEG TS, MPEG1, ASF, OGG "
         "and RAW)"), @"MUX_PS", @"MUX_TS", @"MUX_MPEG", @"MUX_ASF", @"MUX_OGG",
@@ -212,7 +212,7 @@ static VLCWizard *_o_sharedInstance = nil;
         _NS("Dummy codec (do not transcode, useable with all encapsulation "
         "formats)"), @"MUX_PS", @"MUX_TS", @"MUX_MPEG", @"MUX_ASF", @"MUX_MP4",
         @"MUX_OGG", @"MUX_RAW", @"MUX_MOV", @"MUX_WAV", nil];
-    o_audioCodecs = [[NSArray alloc] initWithObjects: o_mpga, o_mp3, //o_mp4a,
+    o_audioCodecs = [[NSArray alloc] initWithObjects: o_mpga, o_mp3, o_mp4a,
         o_a52, o_vorb, o_flac, o_spx, o_s16l, o_fl32, o_dummyAud, nil];
 
 
@@ -1176,8 +1176,11 @@ static VLCWizard *_o_sharedInstance = nil;
                 {
                     NSString * fileNameToUse;
                     /* check whether the extension is hidden or not.
-                     * if not, remove it */
-                    if( [[[NSFileManager defaultManager] attributesOfItemAtPath: [[o_userSelections objectForKey:@"pathToStrm"] objectAtIndex: x] error: nil] objectForKey:
+                     * if not, remove it
+                     * we need the casting to make GCC4 happy */
+                    if( [[[NSFileManager defaultManager] fileAttributesAtPath:
+                        [[o_userSelections objectForKey:@"pathToStrm"]
+                        objectAtIndex: x] traverseLink: NO] objectForKey:
                         NSFileExtensionHidden] )
                         fileNameToUse = [NSString stringWithString:
                             [[NSFileManager defaultManager] displayNameAtPath:
@@ -1259,7 +1262,7 @@ static VLCWizard *_o_sharedInstance = nil;
     {
         intf_thread_t * p_intf = VLCIntf;
 
-        playlist_t * p_playlist = pl_Hold( p_intf );
+        playlist_t * p_playlist = pl_Get( p_intf );
 
         int x = 0;
         int y = [[o_userSelections objectForKey:@"pathToStrm"] count];
@@ -1317,8 +1320,6 @@ static VLCWizard *_o_sharedInstance = nil;
             vlc_gc_decref( p_input );
             x += 1;
         }
-
-        pl_Release( p_intf );
 
         /* close the window, since we are done */
         [o_wizard_window close];
@@ -1591,8 +1592,8 @@ static VLCWizard *_o_sharedInstance = nil;
         }
  
         /* add subtitles to the video if desired */
-        [o_opts_string appendFormat: @":sout-transcode-soverlay=%@",
-                [o_userSelections objectForKey:@"soverlay"]];
+        if ([[o_userSelections objectForKey:@"soverlay"] intValue] > 0)
+            [o_opts_string appendString: @" --sout-transcode-soverlay"];
 
         [tempArray addObject: o_opts_string];
 

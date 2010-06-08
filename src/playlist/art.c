@@ -2,7 +2,7 @@
  * art.c : Art metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 8b65121b48f777ff5c081875bd6bc5531931342b $
+ * $Id: 315fd4e62b19ca5ed6678b132f25b52b6f101b65 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org
@@ -29,10 +29,11 @@
 #include <assert.h>
 #include <vlc_common.h>
 #include <vlc_playlist.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_strings.h>
 #include <vlc_stream.h>
 #include <vlc_url.h>
+#include <vlc_md5.h>
 
 #include <limits.h>                                             /* PATH_MAX */
 
@@ -56,72 +57,79 @@ static void ArtCacheCreateDir( const char *psz_dir )
         if( !*psz ) break;
         *psz = 0;
         if( !EMPTY_STR( psz_newdir ) )
-            utf8_mkdir( psz_newdir, 0700 );
+            vlc_mkdir( psz_newdir, 0700 );
         *psz = DIR_SEP_CHAR;
         psz++;
     }
-    utf8_mkdir( psz_dir, 0700 );
+    vlc_mkdir( psz_dir, 0700 );
 }
 
-static void ArtCacheGetDirPath( char *psz_dir,
-                                const char *psz_title,
-                                const char *psz_artist, const char *psz_album )
+static char* ArtCacheGetDirPath( const char *psz_arturl, const char *psz_artist,
+                                 const char *psz_album )
 {
-    char *psz_cachedir = config_GetCacheDir();
+    char *psz_dir;
+    char *psz_cachedir = config_GetUserDir(VLC_CACHE_DIR);
 
     if( !EMPTY_STR(psz_artist) && !EMPTY_STR(psz_album) )
     {
-        char *psz_album_sanitized = filename_sanitize( psz_album );
-        char *psz_artist_sanitized = filename_sanitize( psz_artist );
-        snprintf( psz_dir, PATH_MAX, "%s" DIR_SEP
-                  "art" DIR_SEP "artistalbum" DIR_SEP "%s" DIR_SEP "%s",
-                  psz_cachedir, psz_artist_sanitized, psz_album_sanitized );
+        char *psz_album_sanitized = strdup( psz_album );
+        filename_sanitize( psz_album_sanitized );
+        char *psz_artist_sanitized = strdup( psz_artist );
+        filename_sanitize( psz_artist_sanitized );
+        if( asprintf( &psz_dir, "%s" DIR_SEP "art" DIR_SEP "artistalbum"
+                      DIR_SEP "%s" DIR_SEP "%s", psz_cachedir,
+                      psz_artist_sanitized, psz_album_sanitized ) == -1 )
+            psz_dir = NULL;
         free( psz_album_sanitized );
         free( psz_artist_sanitized );
     }
     else
     {
-        char * psz_title_sanitized = filename_sanitize( psz_title );
-        snprintf( psz_dir, PATH_MAX, "%s" DIR_SEP
-                  "art" DIR_SEP "title" DIR_SEP "%s",
-                  psz_cachedir, psz_title_sanitized );
-        free( psz_title_sanitized );
+        /* If artist or album missing cache by art download URL. The download
+           URL will be md5 hashed to form a valid cache filename. We assume that
+           psz_arturl is always the download URL and not the already hashed filename.
+           (We should never need to call this function if art has already been
+           downloaded anyway). */
+        struct md5_s md5;
+        InitMD5( &md5 );
+        AddMD5( &md5, psz_arturl, strlen( psz_arturl ) );
+        EndMD5( &md5 );
+        char * psz_arturl_sanitized = psz_md5_hash( &md5 );
+        if( asprintf( &psz_dir, "%s" DIR_SEP "art" DIR_SEP "arturl" DIR_SEP
+                      "%s", psz_cachedir, psz_arturl_sanitized ) == -1 )
+            psz_dir = NULL;
+        free( psz_arturl_sanitized );
     }
     free( psz_cachedir );
+    return psz_dir;
 }
 
 static char *ArtCachePath( input_item_t *p_item )
 {
-    char psz_path[PATH_MAX+1]; /* FIXME */
+    char* psz_path = NULL;
+    const char *psz_artist;
+    const char *psz_album;
+    const char *psz_arturl;
 
     vlc_mutex_lock( &p_item->lock );
 
     if( !p_item->p_meta )
         p_item->p_meta = vlc_meta_New();
     if( !p_item->p_meta )
-    {
-        vlc_mutex_unlock( &p_item->lock );
-        return NULL;
-    }
+        goto end;
 
-    const char *psz_artist = vlc_meta_Get( p_item->p_meta, vlc_meta_Artist );
-    const char *psz_album = vlc_meta_Get( p_item->p_meta, vlc_meta_Album );
-    const char *psz_title = vlc_meta_Get( p_item->p_meta, vlc_meta_Title );
+    psz_artist = vlc_meta_Get( p_item->p_meta, vlc_meta_Artist );
+    psz_album = vlc_meta_Get( p_item->p_meta, vlc_meta_Album );
+    psz_arturl = vlc_meta_Get( p_item->p_meta, vlc_meta_ArtworkURL );
 
-    if( !psz_title )
-        psz_title = p_item->psz_name;
+    if( (!psz_artist || !psz_album ) && !psz_arturl )
+        goto end;
 
-    if( (!psz_artist || !psz_album ) && !psz_title )
-    {
-        vlc_mutex_unlock( &p_item->lock );
-        return NULL;
-    }
+    psz_path = ArtCacheGetDirPath( psz_arturl, psz_artist, psz_album );
 
-    ArtCacheGetDirPath( psz_path, psz_title, psz_artist, psz_album );
-
+end:
     vlc_mutex_unlock( &p_item->lock );
-
-    return strdup( psz_path );
+    return psz_path;
 }
 
 static char *ArtCacheName( input_item_t *p_item, const char *psz_type )
@@ -132,7 +140,8 @@ static char *ArtCacheName( input_item_t *p_item, const char *psz_type )
 
     ArtCacheCreateDir( psz_path );
 
-    char *psz_ext = filename_sanitize( psz_type ? psz_type : "" );
+    char *psz_ext = strdup( psz_type ? psz_type : "" );
+    filename_sanitize( psz_ext );
     char *psz_filename;
     if( asprintf( &psz_filename, "%s" DIR_SEP "art%s", psz_path, psz_ext ) < 0 )
         psz_filename = NULL;
@@ -152,7 +161,7 @@ int playlist_FindArtInCache( input_item_t *p_item )
         return VLC_EGENERIC;
 
     /* Check if file exists */
-    DIR *p_dir = utf8_opendir( psz_path );
+    DIR *p_dir = vlc_opendir( psz_path );
     if( !p_dir )
     {
         free( psz_path );
@@ -161,15 +170,13 @@ int playlist_FindArtInCache( input_item_t *p_item )
 
     bool b_found = false;
     char *psz_filename;
-    while( !b_found && (psz_filename = utf8_readdir( p_dir )) )
+    while( !b_found && (psz_filename = vlc_readdir( p_dir )) )
     {
         if( !strncmp( psz_filename, "art", 3 ) )
         {
             char *psz_file;
             if( asprintf( &psz_file, "%s" DIR_SEP "%s",
-                          psz_path, psz_filename ) < 0 )
-                psz_file = NULL;
-            if( psz_file )
+                          psz_path, psz_filename ) != -1 )
             {
                 char *psz_uri = make_URI( psz_file );
                 if( psz_uri )
@@ -210,7 +217,7 @@ int playlist_SaveArt( playlist_t *p_playlist, input_item_t *p_item,
 
     /* Check if we already dumped it */
     struct stat s;
-    if( !utf8_stat( psz_filename, &s ) )
+    if( !vlc_stat( psz_filename, &s ) )
     {
         input_item_SetArtURL( p_item, psz_uri );
         free( psz_filename );
@@ -219,7 +226,7 @@ int playlist_SaveArt( playlist_t *p_playlist, input_item_t *p_item,
     }
 
     /* Dump it otherwise */
-    FILE *f = utf8_fopen( psz_filename, "wb" );
+    FILE *f = vlc_fopen( psz_filename, "wb" );
     if( f )
     {
         if( fwrite( p_buffer, i_buffer, 1, f ) != 1 )

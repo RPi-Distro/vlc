@@ -1,15 +1,22 @@
 SOURCES_lua = \
+	extension.c \
+	extension.h \
+	extension_thread.c \
 	intf.c \
 	meta.c \
 	demux.c \
+	services_discovery.c \
 	vlc.c \
 	vlc.h \
 	libs.h \
 	libs/acl.c \
 	libs/configuration.c \
+	libs/gettext.c \
+	libs/dialog.c \
 	libs/httpd.c \
 	libs/input.c \
 	libs/input.h \
+	libs/md5.c \
 	libs/messages.c \
 	libs/misc.c \
 	libs/misc.h \
@@ -27,6 +34,7 @@ SOURCES_lua = \
 	libs/video.c \
 	libs/vlm.c \
 	libs/volume.c \
+	libs/xml.c \
 	$(NULL)
 
 libvlc_LTLIBRARIES += liblua_plugin.la

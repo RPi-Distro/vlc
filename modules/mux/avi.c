@@ -1,8 +1,8 @@
 /*****************************************************************************
  * avi.c
  *****************************************************************************
- * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 2e7cb9f5389c622920c2bc58a53189424ccbf2c9 $
+ * Copyright (C) 2001-2009 the VideoLAN team
+ * $Id: 0d2c4b6f4b3fbe80ad78780f55ac0f4aa5c12746 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -138,7 +138,7 @@ static void SetFCC( uint8_t *p, char *fcc )
 static int Open( vlc_object_t *p_this )
 {
     sout_mux_t      *p_mux = (sout_mux_t*)p_this;
-    sout_mux_sys_t  *p_sys = p_mux->p_sys;
+    sout_mux_sys_t  *p_sys;
 
     msg_Dbg( p_mux, "AVI muxer opened" );
 
@@ -211,7 +211,7 @@ static void Close( vlc_object_t * p_this )
                     (uint64_t)p_stream->i_duration;
         }
         msg_Info( p_mux, "stream[%d] duration:%"PRId64" totalsize:%"PRId64
-                  " frames:%d fps:%f kb/s:%d",
+                  " frames:%d fps:%f KiB/s:%d",
                   i_stream,
                   (int64_t)p_stream->i_duration / (int64_t)1000000,
                   p_stream->i_totalsize,
@@ -305,43 +305,41 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 
             switch( p_input->p_fmt->i_codec )
             {
-                case VLC_FOURCC( 'a', '5', '2', ' ' ):
+                case VLC_CODEC_A52:
                     p_wf->wFormatTag = WAVE_FORMAT_A52;
                     break;
-                case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
-                case VLC_FOURCC( 'm', 'p', '3', ' ' ):
+                case VLC_CODEC_MPGA:
                     p_wf->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
                     break;
-                case VLC_FOURCC( 'w', 'm', 'a', '1' ):
+                case VLC_CODEC_WMA1:
                     p_wf->wFormatTag = WAVE_FORMAT_WMA1;
                     break;
-                case VLC_FOURCC( 'w', 'm', 'a', ' ' ):
-                case VLC_FOURCC( 'w', 'm', 'a', '2' ):
+                case VLC_CODEC_WMA2:
                     p_wf->wFormatTag = WAVE_FORMAT_WMA2;
                     break;
-                case VLC_FOURCC( 'w', 'm', 'a', 'p' ):
+                case VLC_CODEC_WMAP:
                     p_wf->wFormatTag = WAVE_FORMAT_WMAP;
                     break;
-                case VLC_FOURCC( 'w', 'm', 'a', 'l' ):
+                case VLC_CODEC_WMAL:
                     p_wf->wFormatTag = WAVE_FORMAT_WMAL;
                     break;
                     /* raw codec */
-                case VLC_FOURCC( 'u', '8', ' ', ' ' ):
+                case VLC_CODEC_U8:
                     p_wf->wFormatTag = WAVE_FORMAT_PCM;
                     p_wf->nBlockAlign= p_wf->nChannels;
                     p_wf->wBitsPerSample = 8;
                     break;
-                case VLC_FOURCC( 's', '1', '6', 'l' ):
+                case VLC_CODEC_S16L:
                     p_wf->wFormatTag = WAVE_FORMAT_PCM;
                     p_wf->nBlockAlign= 2 * p_wf->nChannels;
                     p_wf->wBitsPerSample = 16;
                     break;
-                case VLC_FOURCC( 's', '2', '4', 'l' ):
+                case VLC_CODEC_S24L:
                     p_wf->wFormatTag = WAVE_FORMAT_PCM;
                     p_wf->nBlockAlign= 3 * p_wf->nChannels;
                     p_wf->wBitsPerSample = 24;
                     break;
-                case VLC_FOURCC( 's', '3', '2', 'l' ):
+                case VLC_CODEC_S32L:
                     p_wf->wFormatTag = WAVE_FORMAT_PCM;
                     p_wf->nBlockAlign= 4 * p_wf->nChannels;
                     p_wf->wBitsPerSample = 32;
@@ -389,11 +387,11 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             p_bih->biClrImportant   = 0;
             switch( p_input->p_fmt->i_codec )
             {
-                case VLC_FOURCC( 'm', 'p', '4', 'v' ):
+                case VLC_CODEC_MP4V:
                     p_bih->biCompression = VLC_FOURCC( 'X', 'V', 'I', 'D' );
                     break;
                 default:
-                    p_bih->biCompression = p_input->p_fmt->i_codec;
+                    p_bih->biCompression = p_input->p_fmt->i_original_fourcc ?: p_input->p_fmt->i_codec;
                     break;
             }
 #undef p_bih
@@ -484,8 +482,8 @@ static int Mux      ( sout_mux_t *p_mux )
             if( p_sys->idx1.i_entry_count >= p_sys->idx1.i_entry_max )
             {
                 p_sys->idx1.i_entry_max += 10000;
-                p_sys->idx1.entry = realloc( p_sys->idx1.entry,
-                                             p_sys->idx1.i_entry_max * sizeof( avi_idx1_entry_t ) );
+                p_sys->idx1.entry = xrealloc( p_sys->idx1.entry,
+                       p_sys->idx1.i_entry_max * sizeof( avi_idx1_entry_t ) );
             }
 
             p_data = block_Realloc( p_data, 8, p_data->i_buffer );
@@ -808,7 +806,6 @@ static block_t *avi_HeaderCreateRIFF( sout_mux_t *p_mux )
     sout_mux_sys_t      *p_sys = p_mux->p_sys;
     block_t       *p_hdr;
     int                 i_stream;
-    int                 i_maxbytespersec;
     int                 i_junk;
     buffer_out_t        bo;
 
@@ -826,7 +823,7 @@ static block_t *avi_HeaderCreateRIFF( sout_mux_t *p_mux )
     bo_AddFCC( &bo, "hdrl" );
 
     avi_HeaderAdd_avih( p_mux, &bo );
-    for( i_stream = 0,i_maxbytespersec = 0; i_stream < p_sys->i_streams; i_stream++ )
+    for( i_stream = 0; i_stream < p_sys->i_streams; i_stream++ )
     {
         avi_HeaderAdd_strl( &bo, &p_sys->stream[i_stream] );
     }

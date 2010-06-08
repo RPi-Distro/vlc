@@ -1,11 +1,10 @@
-#!/bin/sh
+#!@SHELL@
 
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 exec_prefix_set=no
 datarootdir="@datarootdir@"
 
-release="@release@"
 debug="@debug@"
 gprof="@gprof@"
 cprof="@cprof@"
@@ -50,6 +49,7 @@ Modules:
         builtin                   flags for built-in modules
         pic                       flags for PIC code
         MODULE                    any available module (dummy, gtk, avi, etc.)
+        libs                      flags for external libs
 BLAH
         exit $1
 }
@@ -67,13 +67,6 @@ if test $# -eq 0; then
         usage 1 1>&2
 fi
 
-#
-#  No need to include the default @*FLAGS@ values here because they are
-#  automatically added when using $(COMPILE), $(CXXCOMPILE) or $(OBJCCOMPILE)
-#
-if test "@includedir@" != "/usr/include"; then
-  includes="-I@includedir@"
-fi
 if test "${top_builddir}" != ""; then
   top_builddir="${top_builddir}/"
 elif test "${TOP_BUILDDIR}" != ""; then
@@ -87,33 +80,27 @@ linkage="c"
 #
 #  On Linux and Solaris, activate 64-bit off_t (by default under BSD)
 #
-cppflags="${cppflags} -D_FILE_OFFSET_BITS=64 -D__USE_UNIX98 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE"
+cppflags="${cppflags} -D_FILE_OFFSET_BITS=64 -D__USE_UNIX98 -D_REENTRANT -D_THREAD_SAFE"
 
 #
 #  Various additional defines
 #
 if [ "${debug}" = yes ]; then
-  cppflags="${cppflags} -DDEBUG"
   cflags="${cflags} -g"
   cxxflags="${cxxflags} -g"
   objcflags="${objcflags} -g"
   ldflags="${ldflags} -g"
 fi
 if [ "${cprof}" = yes ]; then
-  cppflags="${cppflags} -DCPROF"
   cflags="${cflags} -finstrument-functions"
   cxxflags="${cxxflags} -finstrument-functions"
   objcflags="${objcflags} -finstrument-functions"
 fi
 if [ "${gprof}" = yes ]; then
-  cppflags="${cppflags} -DGPROF"
   cflags="${cflags} -pg"
   cxxflags="${cxxflags} -pg"
   objcflags="${objcflags} -pg"
   ldflags="${ldflags} -pg"
-fi
-if [ "${release}" = yes ]; then
-  cppflags="${cppflags} -DHAVE_RELEASE"
 fi
 if [ "${optim}" = size ]; then
   cflags="${cflags} ${cflags_optim_size} ${cflags_tuning}"

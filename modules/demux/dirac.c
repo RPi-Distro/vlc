@@ -2,7 +2,7 @@
  * dirac.c : Dirac Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 253454e5212b9b718ec18d2dae2fb4fe9f2ffa29 $
+ * $Id: 01d923dacf6e675aaac3b9ebed074115839d1bde $
  *
  * Authors: David Flynn <davidf@rd.bbc.co.uk>
  * Based on vc1.c by: Laurent Aimar <fenrir@via.ecp.fr>
@@ -33,7 +33,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
-#include "vlc_codec.h"
+#include <vlc_codec.h>
 
 #define DEMUX_CFG_PREFIX "dirac-"
 
@@ -115,7 +115,7 @@ static int Open( vlc_object_t * p_this )
     p_sys->i_dtsoffset = var_CreateGetInteger( p_demux, DEMUX_CFG_PREFIX DEMUX_DTSOFFSET );
 
     /* Load the packetizer */
-    es_format_Init( &fmt, VIDEO_ES, VLC_FOURCC( 'd','r','a','c' ) );
+    es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_DIRAC );
     p_sys->p_packetizer = demux_PacketizerNew( p_demux, &fmt, "dirac" );
     if( !p_sys->p_packetizer )
     {
@@ -176,12 +176,7 @@ static int Demux( demux_t *p_demux)
             p_sys->i_state++;
             /* by default, timestamps are invalid.
              * Except when we need an anchor point */
-#if VLC_TS_INVALID == 0
-            /* xxx: to be removed in 1.1 */
-            p_block_in->i_dts = 1;
-#else
-            p_block_in->i_dts = 0;
-#endif
+            p_block_in->i_dts = VLC_TS_0;
         }
     }
 

@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: e70b168e28e73de7807a70069f1f642b720f6b1d $
+ * $Id: 95c493fdc35736dbc79d66e93b15ecaa48e78cfd $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -77,7 +77,7 @@
 #ifdef SCREEN_MOUSE
 #define MOUSE_TEXT N_( "Mouse pointer image" )
 #define MOUSE_LONGTEXT N_( \
-    "If specifed, will use the image to draw the mouse pointer on the " \
+    "If specified, will use the image to draw the mouse pointer on the " \
     "capture." )
 #endif
 
@@ -212,7 +212,7 @@ static int Open( vlc_object_t *p_this )
         msg_Dbg( p_demux, "Using %s for the mouse pointer image", psz_mouse );
         memset( &fmt_in, 0, sizeof( fmt_in ) );
         memset( &fmt_out, 0, sizeof( fmt_out ) );
-        fmt_out.i_chroma = VLC_FOURCC('R','G','B','A');
+        fmt_out.i_chroma = VLC_CODEC_RGBA;
         p_image = image_HandlerCreate( p_demux );
         if( p_image )
         {
@@ -336,18 +336,19 @@ void RenderCursor( demux_t *p_demux, int i_x, int i_y,
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     if( !p_sys->dst.i_planes )
-        vout_InitPicture( p_demux, &p_sys->dst,
-                          p_sys->fmt.video.i_chroma,
-                          p_sys->fmt.video.i_width,
-                          p_sys->fmt.video.i_height,
-                          p_sys->fmt.video.i_aspect );
+        picture_Setup( &p_sys->dst,
+                       p_sys->fmt.video.i_chroma,
+                       p_sys->fmt.video.i_width,
+                       p_sys->fmt.video.i_height,
+                       p_sys->fmt.video.i_sar_num,
+                       p_sys->fmt.video.i_sar_den );
     if( !p_sys->p_blend )
     {
         p_sys->p_blend = vlc_object_create( p_demux, sizeof(filter_t) );
         if( p_sys->p_blend )
         {
             es_format_Init( &p_sys->p_blend->fmt_in, VIDEO_ES,
-                            VLC_FOURCC('R','G','B','A') );
+                            VLC_CODEC_RGBA );
             p_sys->p_blend->fmt_in.video = p_sys->p_mouse->format;
             p_sys->p_blend->fmt_out = p_sys->fmt;
             p_sys->p_blend->p_module =
@@ -355,7 +356,6 @@ void RenderCursor( demux_t *p_demux, int i_x, int i_y,
             if( !p_sys->p_blend->p_module )
             {
                 msg_Err( p_demux, "Could not load video blending module" );
-                vlc_object_detach( p_sys->p_blend );
                 vlc_object_release( p_sys->p_blend );
                 p_sys->p_blend = NULL;
             }

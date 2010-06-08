@@ -2,7 +2,7 @@
  * playlist.h
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: c0fdc73d80ad2e034571b06f07a985d8309f81a6 $
+ * $Id: 5015c4c4ad2fcf7fd6f7b62c2f222df5584789fa $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -25,7 +25,6 @@
 #define VLC_LUA_PLAYLIST_H
 
 playlist_t *vlclua_get_playlist_internal( lua_State * );
-void vlclua_release_playlist_internal( playlist_t * );
 
 #endif
 

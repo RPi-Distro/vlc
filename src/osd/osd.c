@@ -2,7 +2,7 @@
  * osd.c - The OSD Menu core code.
  *****************************************************************************
  * Copyright (C) 2005-2008 M2X
- * $Id: 9102c12999d7bac50bb66e1d865d44e0000f29af $
+ * $Id: 4041c6ef8a8fc64c078abd323d2891938aaf9d5e $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -45,16 +45,12 @@
 static void osd_UpdateState( osd_menu_state_t *, int, int, int, int, picture_t * );
 static inline osd_state_t *osd_VolumeStateChange( osd_state_t *, int );
 static int osd_VolumeStep( vlc_object_t *, int, int );
-static bool osd_isVisible( osd_menu_t *p_osd );
 static bool osd_ParserLoad( osd_menu_t *, const char * );
 static void osd_ParserUnload( osd_menu_t * );
 
-static bool osd_isVisible( osd_menu_t *p_osd )
+static inline bool osd_isVisible( osd_menu_t *p_osd )
 {
-    vlc_value_t val;
-
-    var_Get( p_osd, "osd-menu-visible", &val );
-    return val.b_bool;
+    return var_GetBool( p_osd, "osd-menu-visible" );
 }
 
 static vlc_mutex_t *osd_GetMutex( vlc_object_t *p_this )
@@ -77,17 +73,17 @@ static bool osd_ParserLoad( osd_menu_t *p_menu, const char *psz_file )
     if( !p_menu->p_image || !p_menu->psz_file )
     {
         msg_Err( p_menu, "unable to load images, aborting .." );
-        return true;
+        return false;
     }
     else
     {
-        char *psz_type;
-        char *psz_ext = strrchr( p_menu->psz_file, '.' );
+        const char *psz_type;
+        const char *psz_ext = strrchr( p_menu->psz_file, '.' );
 
         if( psz_ext && !strcmp( psz_ext, ".cfg") )
-            psz_type = (char*)"import-osd";
+            psz_type = "import-osd";
         else
-            psz_type = (char*)"import-osd-xml";
+            psz_type = "import-osd-xml";
 
         p_menu->p_parser = module_need( p_menu, "osd parser",
                                         psz_type, true );
@@ -113,8 +109,8 @@ static void osd_ParserUnload( osd_menu_t *p_menu )
 /**
  * Change state on an osd_button_t.
  *
- * This function selects the specified state and returns a pointer vlc_custom_createto it. The
- * following states are currently supported:
+ * This function selects the specified state and returns a pointer
+ * vlc_custom_create to it. The following states are currently supported:
  * \see OSD_BUTTON_UNSELECT
  * \see OSD_BUTTON_SELECT
  * \see OSD_BUTTON_PRESSED
@@ -125,7 +121,7 @@ static osd_state_t *osd_StateChange( osd_button_t *p_button, const int i_state )
     osd_state_t *p_temp = NULL;
     int i = 0;
 
-    for( i=0; p_current != NULL; i++ )
+    for( i= 0; p_current != NULL; i++ )
     {
         if( p_current->i_state == i_state )
         {
@@ -141,10 +137,11 @@ static osd_state_t *osd_StateChange( osd_button_t *p_button, const int i_state )
     return p_button->p_states;
 }
 
+#undef osd_MenuCreate
 /*****************************************************************************
  * OSD menu Funtions
  *****************************************************************************/
-osd_menu_t *__osd_MenuCreate( vlc_object_t *p_this, const char *psz_file )
+osd_menu_t *osd_MenuCreate( vlc_object_t *p_this, const char *psz_file )
 {
     osd_menu_t  *p_osd = NULL;
     vlc_value_t val;
@@ -213,11 +210,12 @@ osd_menu_t *__osd_MenuCreate( vlc_object_t *p_this, const char *psz_file )
 
 error:
     vlc_mutex_unlock( p_lock );
-    __osd_MenuDelete( p_this, p_osd );
+    osd_MenuDelete( p_this, p_osd );
     return NULL;
 }
 
-void __osd_MenuDelete( vlc_object_t *p_this, osd_menu_t *p_osd )
+#undef osd_MenuDelete
+void osd_MenuDelete( vlc_object_t *p_this, osd_menu_t *p_osd )
 {
     vlc_mutex_t *p_lock;
 
@@ -281,7 +279,8 @@ static void osd_UpdateState( osd_menu_state_t *p_state, int i_x, int i_y,
     p_state->p_pic = p_pic;
 }
 
-void __osd_MenuShow( vlc_object_t *p_this )
+#undef osd_MenuShow
+void osd_MenuShow( vlc_object_t *p_this )
 {
     osd_menu_t *p_osd;
     osd_button_t *p_button = NULL;
@@ -322,7 +321,8 @@ void __osd_MenuShow( vlc_object_t *p_this )
     vlc_mutex_unlock( p_lock );
 }
 
-void __osd_MenuHide( vlc_object_t *p_this )
+#undef osd_MenuHide
+void osd_MenuHide( vlc_object_t *p_this )
 {
     osd_menu_t *p_osd;
     vlc_mutex_t *p_lock = osd_GetMutex( p_this );
@@ -348,7 +348,8 @@ void __osd_MenuHide( vlc_object_t *p_this )
     vlc_mutex_unlock( p_lock );
 }
 
-void __osd_MenuActivate( vlc_object_t *p_this )
+#undef osd_MenuActivate
+void osd_MenuActivate( vlc_object_t *p_this )
 {
     osd_menu_t *p_osd;
     osd_button_t *p_button = NULL;
@@ -374,13 +375,13 @@ void __osd_MenuActivate( vlc_object_t *p_this )
     if( p_button && p_button->p_up )
     {
         vlc_mutex_unlock( p_lock );
-        __osd_MenuUp( p_this );   /* "menu select" means go to menu item above. */
+        osd_MenuUp( p_this );   /* "menu select" means go to menu item above. */
         return;
     }
     if( p_button && p_button->p_down )
     {
         vlc_mutex_unlock( p_lock );
-        __osd_MenuDown( p_this ); /* "menu select" means go to menu item below. */
+        osd_MenuDown( p_this ); /* "menu select" means go to menu item below. */
         return;
     }
 
@@ -394,15 +395,19 @@ void __osd_MenuActivate( vlc_object_t *p_this )
                 p_button->p_current_state->p_pic );
         osd_SetMenuUpdate( p_osd, true );
         osd_SetMenuVisible( p_osd, true );
-        osd_SetKeyPressed( VLC_OBJECT(p_osd->p_libvlc), config_GetInt( p_osd, p_button->psz_action ) );
+        osd_SetKeyPressed( VLC_OBJECT(p_osd->p_libvlc),
+                           var_InheritInteger( p_osd, p_button->psz_action ) );
 #if defined(OSD_MENU_DEBUG)
-        msg_Dbg( p_osd, "select (%d, %s)", config_GetInt( p_osd, p_button->psz_action ), p_button->psz_action );
+        msg_Dbg( p_osd, "select (%d, %s)",
+                 var_InheritInteger( p_osd, p_button->psz_action ),
+                 p_button->psz_action );
 #endif
     }
     vlc_mutex_unlock( p_lock );
 }
 
-void __osd_MenuNext( vlc_object_t *p_this )
+#undef osd_MenuNext
+void osd_MenuNext( vlc_object_t *p_this )
 {
     osd_menu_t *p_osd;
     osd_button_t *p_button = NULL;
@@ -446,7 +451,8 @@ void __osd_MenuNext( vlc_object_t *p_this )
     vlc_mutex_unlock( p_lock );
 }
 
-void __osd_MenuPrev( vlc_object_t *p_this )
+#undef osd_MenuPrev
+void osd_MenuPrev( vlc_object_t *p_this )
 {
     osd_menu_t *p_osd;
     osd_button_t *p_button = NULL;
@@ -489,7 +495,8 @@ void __osd_MenuPrev( vlc_object_t *p_this )
     vlc_mutex_unlock( p_lock );
 }
 
-void __osd_MenuUp( vlc_object_t *p_this )
+#undef osd_MenuUp
+void osd_MenuUp( vlc_object_t *p_this )
 {
     osd_menu_t *p_osd;
     osd_button_t *p_button = NULL;
@@ -540,7 +547,8 @@ void __osd_MenuUp( vlc_object_t *p_this )
             */
         if( p_button->b_range )
         {
-            osd_SetKeyPressed( VLC_OBJECT(p_osd->p_libvlc), config_GetInt(p_osd, p_button->psz_action) );
+            osd_SetKeyPressed( VLC_OBJECT(p_osd->p_libvlc),
+                               var_InheritInteger(p_osd, p_button->psz_action) );
 #if defined(OSD_MENU_DEBUG)
             msg_Dbg( p_osd, "select (%d, %s)", val.i_int, p_button->psz_action );
 #endif
@@ -553,7 +561,8 @@ void __osd_MenuUp( vlc_object_t *p_this )
     vlc_mutex_unlock( p_lock );
 }
 
-void __osd_MenuDown( vlc_object_t *p_this )
+#undef osd_MenuDown
+void osd_MenuDown( vlc_object_t *p_this )
 {
     osd_menu_t *p_osd;
     osd_button_t *p_button = NULL;
@@ -605,7 +614,8 @@ void __osd_MenuDown( vlc_object_t *p_this )
          */
         if( p_button->b_range )
         {
-            osd_SetKeyPressed( VLC_OBJECT(p_osd->p_libvlc), config_GetInt(p_osd, p_button->psz_action_down) );
+            osd_SetKeyPressed( VLC_OBJECT(p_osd->p_libvlc),
+                               var_InheritInteger(p_osd, p_button->psz_action_down) );
 #if defined(OSD_MENU_DEBUG)
             msg_Dbg( p_osd, "select (%d, %s)", val.i_int, p_button->psz_action_down );
 #endif
@@ -627,13 +637,14 @@ static int osd_VolumeStep( vlc_object_t *p_this, int i_volume, int i_steps )
     return (i_volume/i_volume_step);
 }
 
+#undef osd_Volume
 /**
  * Display current audio volume bitmap
  *
  * The OSD Menu audio volume bar is updated to reflect the new audio volume. Call this function
  * when the audio volume is updated outside the OSD menu command "menu up", "menu down" or "menu select".
  */
-void __osd_Volume( vlc_object_t *p_this )
+void osd_Volume( vlc_object_t *p_this )
 {
     osd_menu_t *p_osd;
     osd_button_t *p_button = NULL;
@@ -676,7 +687,8 @@ void __osd_Volume( vlc_object_t *p_this )
     vlc_mutex_unlock( p_lock );
 }
 
-osd_button_t *__osd_ButtonFind( vlc_object_t *p_this, int i_x, int i_y,
+#undef osd_ButtonFind
+osd_button_t *osd_ButtonFind( vlc_object_t *p_this, int i_x, int i_y,
     int i_window_height, int i_window_width,
     int i_scale_width, int i_scale_height )
 {
@@ -749,10 +761,11 @@ osd_button_t *__osd_ButtonFind( vlc_object_t *p_this, int i_x, int i_y,
     return NULL;
 }
 
+#undef osd_ButtonSelect
 /**
  * Select the button provided as the new active button
  */
-void __osd_ButtonSelect( vlc_object_t *p_this, osd_button_t *p_button )
+void osd_ButtonSelect( vlc_object_t *p_this, osd_button_t *p_button )
 {
     osd_menu_t *p_osd;
     osd_button_t *p_old;

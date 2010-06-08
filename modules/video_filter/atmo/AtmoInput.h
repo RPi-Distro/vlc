@@ -5,23 +5,27 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: aecbd0638c0688b19554d04829d09e0519e11a7a $
+ * $Id: 0425eb1bbc4ee267415a744cc67abef151314a5b $
  */
 #ifndef _AtmoInput_h_
 #define _AtmoInput_h_
 
 #include "AtmoDefs.h"
+#include "AtmoCalculations.h"
+#include "AtmoPacketQueue.h"
+#include "AtmoThread.h"
 #include "AtmoDynData.h"
+
+class CAtmoDynData;
 
 /*
   basic definition of an AtmoLight data/image source ...
 */
-class CAtmoInput {
+class CAtmoInput : public CThread {
 
 protected:
-    tColorPacket m_ColorPacket;
-    volatile ATMO_BOOL m_FrameArrived;
-    CAtmoDynData *m_pAtmoDynData;
+    CAtmoDynData         *m_pAtmoDynData;
+    CAtmoColorCalculator *m_pAtmoColorCalculator;
 
 public:
     CAtmoInput(CAtmoDynData *pAtmoDynData);
@@ -35,11 +39,6 @@ public:
     // Returns true if the input-device was closed successfully.
     virtual ATMO_BOOL Close(void) { return ATMO_FALSE; }
 
-    // Returns the calculated tColorPacket for further processing (e.g. filtering).
-    virtual tColorPacket GetColorPacket(void) { return m_ColorPacket; }
-
-    // wait for the arrival of the next frame...(to come in sync again)
-    virtual void WaitForNextFrame(DWORD timeout);
 };
 
 #endif

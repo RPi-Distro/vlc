@@ -56,7 +56,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/m4/with_pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -88,51 +89,64 @@ am__installdirs = "$(DESTDIR)$(libvlcdir)"
 LTLIBRARIES = $(libvlc_LTLIBRARIES)
 am__DEPENDENCIES_1 = `$(VLC_CONFIG) plugin $@` $(LTLIBVLCCORE) \
 	$(top_builddir)/compat/libcompat.la
-am__objects_1 = libaudio_format_plugin_la-format.lo
-am_libaudio_format_plugin_la_OBJECTS = $(am__objects_1)
-nodist_libaudio_format_plugin_la_OBJECTS =
-libaudio_format_plugin_la_OBJECTS =  \
-	$(am_libaudio_format_plugin_la_OBJECTS) \
-	$(nodist_libaudio_format_plugin_la_OBJECTS)
-libaudio_format_plugin_la_LINK = $(LIBTOOL) --tag=CC \
+am__objects_1 = libaudiobargraph_a_plugin_la-audiobargraph_a.lo
+am_libaudiobargraph_a_plugin_la_OBJECTS = $(am__objects_1)
+nodist_libaudiobargraph_a_plugin_la_OBJECTS =
+libaudiobargraph_a_plugin_la_OBJECTS =  \
+	$(am_libaudiobargraph_a_plugin_la_OBJECTS) \
+	$(nodist_libaudiobargraph_a_plugin_la_OBJECTS)
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+libaudiobargraph_a_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libaudio_format_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(libaudiobargraph_a_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_2 = libequalizer_plugin_la-equalizer.lo
-am_libequalizer_plugin_la_OBJECTS = $(am__objects_2)
+am__objects_2 = libchorus_flanger_plugin_la-chorus_flanger.lo
+am_libchorus_flanger_plugin_la_OBJECTS = $(am__objects_2)
+nodist_libchorus_flanger_plugin_la_OBJECTS =
+libchorus_flanger_plugin_la_OBJECTS =  \
+	$(am_libchorus_flanger_plugin_la_OBJECTS) \
+	$(nodist_libchorus_flanger_plugin_la_OBJECTS)
+libchorus_flanger_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libchorus_flanger_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__objects_3 = libequalizer_plugin_la-equalizer.lo
+am_libequalizer_plugin_la_OBJECTS = $(am__objects_3)
 nodist_libequalizer_plugin_la_OBJECTS =
 libequalizer_plugin_la_OBJECTS = $(am_libequalizer_plugin_la_OBJECTS) \
 	$(nodist_libequalizer_plugin_la_OBJECTS)
-libequalizer_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libequalizer_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libequalizer_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_3 = libnormvol_plugin_la-normvol.lo
-am_libnormvol_plugin_la_OBJECTS = $(am__objects_3)
+am__objects_4 = libnormvol_plugin_la-normvol.lo
+am_libnormvol_plugin_la_OBJECTS = $(am__objects_4)
 nodist_libnormvol_plugin_la_OBJECTS =
 libnormvol_plugin_la_OBJECTS = $(am_libnormvol_plugin_la_OBJECTS) \
 	$(nodist_libnormvol_plugin_la_OBJECTS)
-libnormvol_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libnormvol_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libnormvol_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_4 = libparam_eq_plugin_la-param_eq.lo
-am_libparam_eq_plugin_la_OBJECTS = $(am__objects_4)
+am__objects_5 = libparam_eq_plugin_la-param_eq.lo
+am_libparam_eq_plugin_la_OBJECTS = $(am__objects_5)
 nodist_libparam_eq_plugin_la_OBJECTS =
 libparam_eq_plugin_la_OBJECTS = $(am_libparam_eq_plugin_la_OBJECTS) \
 	$(nodist_libparam_eq_plugin_la_OBJECTS)
-libparam_eq_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libparam_eq_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libparam_eq_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_5 = libscaletempo_plugin_la-scaletempo.lo
-am_libscaletempo_plugin_la_OBJECTS = $(am__objects_5)
+am__objects_6 = libscaletempo_plugin_la-scaletempo.lo
+am_libscaletempo_plugin_la_OBJECTS = $(am__objects_6)
 nodist_libscaletempo_plugin_la_OBJECTS =
 libscaletempo_plugin_la_OBJECTS =  \
 	$(am_libscaletempo_plugin_la_OBJECTS) \
 	$(nodist_libscaletempo_plugin_la_OBJECTS)
-libscaletempo_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libscaletempo_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libscaletempo_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -141,15 +155,30 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-SOURCES = $(libaudio_format_plugin_la_SOURCES) \
-	$(nodist_libaudio_format_plugin_la_SOURCES) \
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
+SOURCES = $(libaudiobargraph_a_plugin_la_SOURCES) \
+	$(nodist_libaudiobargraph_a_plugin_la_SOURCES) \
+	$(libchorus_flanger_plugin_la_SOURCES) \
+	$(nodist_libchorus_flanger_plugin_la_SOURCES) \
 	$(libequalizer_plugin_la_SOURCES) \
 	$(nodist_libequalizer_plugin_la_SOURCES) \
 	$(libnormvol_plugin_la_SOURCES) \
@@ -158,7 +187,8 @@ SOURCES = $(libaudio_format_plugin_la_SOURCES) \
 	$(nodist_libparam_eq_plugin_la_SOURCES) \
 	$(libscaletempo_plugin_la_SOURCES) \
 	$(nodist_libscaletempo_plugin_la_SOURCES)
-DIST_SOURCES = $(libaudio_format_plugin_la_SOURCES) \
+DIST_SOURCES = $(libaudiobargraph_a_plugin_la_SOURCES) \
+	$(libchorus_flanger_plugin_la_SOURCES) \
 	$(libequalizer_plugin_la_SOURCES) \
 	$(libnormvol_plugin_la_SOURCES) \
 	$(libparam_eq_plugin_la_SOURCES) \
@@ -206,11 +236,14 @@ am__relativize = \
   reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
-ALLOCA = @ALLOCA@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = @AM_CPPFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
+ARM_NEON_CFLAGS = @ARM_NEON_CFLAGS@
 AS = @AS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
@@ -236,8 +269,6 @@ COPYRIGHT_MESSAGE = @COPYRIGHT_MESSAGE@
 COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CSRI_CFLAGS = @CSRI_CFLAGS@
-CSRI_LIBS = @CSRI_LIBS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -246,6 +277,8 @@ CYGPATH = @CYGPATH@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
+DC1394_CFLAGS = @DC1394_CFLAGS@
+DC1394_LIBS = @DC1394_LIBS@
 DCA_CFLAGS = @DCA_CFLAGS@
 DCA_LIBS = @DCA_LIBS@
 DEFS = @DEFS@
@@ -260,6 +293,8 @@ DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DV_CFLAGS = @DV_CFLAGS@
+DV_LIBS = @DV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -268,27 +303,32 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FLAC_CFLAGS = @FLAC_CFLAGS@
+FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
 FRIBIDI_LIBS = @FRIBIDI_LIBS@
+GCRYPT_CFLAGS = @GCRYPT_CFLAGS@
+GCRYPT_LIBS = @GCRYPT_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GLIB2_CFLAGS = @GLIB2_CFLAGS@
-GLIB2_LIBS = @GLIB2_LIBS@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
 GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
+GOOM_CFLAGS = @GOOM_CFLAGS@
+GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-HAL_CFLAGS = @HAL_CFLAGS@
-HAL_LIBS = @HAL_LIBS@
 HILDON_CFLAGS = @HILDON_CFLAGS@
+HILDON_FM_CFLAGS = @HILDON_FM_CFLAGS@
+HILDON_FM_LIBS = @HILDON_FM_LIBS@
 HILDON_LIBS = @HILDON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -297,8 +337,11 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+JACK_CFLAGS = @JACK_CFLAGS@
+JACK_LIBS = @JACK_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
+KDE4_CONFIG = @KDE4_CONFIG@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -307,14 +350,12 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBCDIO_CFLAGS = @LIBCDIO_CFLAGS@
 LIBCDIO_LIBS = @LIBCDIO_LIBS@
-LIBCDIO_PARANOIA_CFLAGS = @LIBCDIO_PARANOIA_CFLAGS@
-LIBCDIO_PARANOIA_LIBS = @LIBCDIO_PARANOIA_LIBS@
+LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
-LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
-LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
+LIBMODPLUG_CFLAGS = @LIBMODPLUG_CFLAGS@
+LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -324,15 +365,23 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIBV4L_CFLAGS = @LIBV4L_CFLAGS@
+LIBV4L_LIBS = @LIBV4L_LIBS@
+LIBVA_CFLAGS = @LIBVA_CFLAGS@
+LIBVA_LIBS = @LIBVA_LIBS@
+LIBVCDINFO_CFLAGS = @LIBVCDINFO_CFLAGS@
+LIBVCDINFO_LIBS = @LIBVCDINFO_LIBS@
+LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
+LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
-LTLIBa52tospdif = @LTLIBa52tospdif@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_alsa = @LTLIBaccess_alsa@
+LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_dv = @LTLIBaccess_dv@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
@@ -342,212 +391,114 @@ LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_oss = @LTLIBaccess_oss@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
+LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
-LTLIBadjust = @LTLIBadjust@
-LTLIBalphamask = @LTLIBalphamask@
 LTLIBalsa = @LTLIBalsa@
 LTLIBaout_directx = @LTLIBaout_directx@
-LTLIBaout_file = @LTLIBaout_file@
 LTLIBaout_sdl = @LTLIBaout_sdl@
 LTLIBasademux = @LTLIBasademux@
 LTLIBatmo = @LTLIBatmo@
-LTLIBaudio_format = @LTLIBaudio_format@
-LTLIBaudioscrobbler = @LTLIBaudioscrobbler@
 LTLIBauhal = @LTLIBauhal@
 LTLIBavcodec = @LTLIBavcodec@
 LTLIBavformat = @LTLIBavformat@
-LTLIBbandlimited_resampler = @LTLIBbandlimited_resampler@
 LTLIBbda = @LTLIBbda@
-LTLIBbeos = @LTLIBbeos@
-LTLIBblend = @LTLIBblend@
-LTLIBblendbench = @LTLIBblendbench@
-LTLIBbluescreen = @LTLIBbluescreen@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
-LTLIBcanvas = @LTLIBcanvas@
 LTLIBcdda = @LTLIBcdda@
-LTLIBcddax = @LTLIBcddax@
-LTLIBchain = @LTLIBchain@
-LTLIBclone = @LTLIBclone@
-LTLIBcmml = @LTLIBcmml@
-LTLIBcolorthres = @LTLIBcolorthres@
-LTLIBconverter_float = @LTLIBconverter_float@
-LTLIBcrop = @LTLIBcrop@
-LTLIBcroppadd = @LTLIBcroppadd@
-LTLIBcsri = @LTLIBcsri@
 LTLIBdbus = @LTLIBdbus@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdeinterlace = @LTLIBdeinterlace@
 LTLIBdirac = @LTLIBdirac@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
+LTLIBdirectx = @LTLIBdirectx@
 LTLIBdmo = @LTLIBdmo@
-LTLIBdolby_surround_decoder = @LTLIBdolby_surround_decoder@
 LTLIBdshow = @LTLIBdshow@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
-LTLIBdtstospdif = @LTLIBdtstospdif@
 LTLIBdvb = @LTLIBdvb@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
 LTLIBdynamicoverlay = @LTLIBdynamicoverlay@
-LTLIBequalizer = @LTLIBequalizer@
-LTLIBerase = @LTLIBerase@
-LTLIBextract = @LTLIBextract@
 LTLIBfaad = @LTLIBfaad@
-LTLIBfake = @LTLIBfake@
 LTLIBfb = @LTLIBfb@
 LTLIBfbosd = @LTLIBfbosd@
-LTLIBfloat32_mixer = @LTLIBfloat32_mixer@
+LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
-LTLIBfolder = @LTLIBfolder@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgalaktos = @LTLIBgalaktos@
-LTLIBgaussianblur = @LTLIBgaussianblur@
-LTLIBgestures = @LTLIBgestures@
 LTLIBggi = @LTLIBggi@
 LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
-LTLIBgnome2_main = @LTLIBgnome2_main@
-LTLIBgnome_main = @LTLIBgnome_main@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
-LTLIBgradient = @LTLIBgradient@
-LTLIBgrain = @LTLIBgrain@
 LTLIBgrowl = @LTLIBgrowl@
 LTLIBgrowl_udp = @LTLIBgrowl_udp@
-LTLIBgtk2_main = @LTLIBgtk2_main@
-LTLIBgtk_main = @LTLIBgtk_main@
-LTLIBhal = @LTLIBhal@
 LTLIBhd1000a = @LTLIBhd1000a@
 LTLIBhd1000v = @LTLIBhd1000v@
-LTLIBheadphone_channel_mixer = @LTLIBheadphone_channel_mixer@
-LTLIBhotkeys = @LTLIBhotkeys@
-LTLIBhttp = @LTLIBhttp@
-LTLIBi420_rgb_mmx = @LTLIBi420_rgb_mmx@
-LTLIBi420_rgb_sse2 = @LTLIBi420_rgb_sse2@
-LTLIBi420_ymga = @LTLIBi420_ymga@
-LTLIBi420_ymga_mmx = @LTLIBi420_ymga_mmx@
-LTLIBi420_yuy2 = @LTLIBi420_yuy2@
-LTLIBi420_yuy2_altivec = @LTLIBi420_yuy2_altivec@
-LTLIBi420_yuy2_mmx = @LTLIBi420_yuy2_mmx@
-LTLIBi420_yuy2_sse2 = @LTLIBi420_yuy2_sse2@
-LTLIBi422_i420 = @LTLIBi422_i420@
-LTLIBi422_yuy2 = @LTLIBi422_yuy2@
-LTLIBi422_yuy2_mmx = @LTLIBi422_yuy2_mmx@
-LTLIBi422_yuy2_sse2 = @LTLIBi422_yuy2_sse2@
+LTLIBhildon = @LTLIBhildon@
 LTLIBid3tag = @LTLIBid3tag@
 LTLIBinhibit = @LTLIBinhibit@
-LTLIBinvert = @LTLIBinvert@
 LTLIBjack = @LTLIBjack@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlinear_resampler = @LTLIBlinear_resampler@
 LTLIBlirc = @LTLIBlirc@
 LTLIBlive555 = @LTLIBlive555@
-LTLIBlogo = @LTLIBlogo@
 LTLIBmacosx = @LTLIBmacosx@
-LTLIBmaemo = @LTLIBmaemo@
-LTLIBmagnify = @LTLIBmagnify@
-LTLIBmarq = @LTLIBmarq@
-LTLIBmemcpy3dn = @LTLIBmemcpy3dn@
-LTLIBmemcpyaltivec = @LTLIBmemcpyaltivec@
-LTLIBmemcpymmx = @LTLIBmemcpymmx@
-LTLIBmemcpymmxext = @LTLIBmemcpymmxext@
-LTLIBmga = @LTLIBmga@
+LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
 LTLIBmod = @LTLIBmod@
-LTLIBmosaic = @LTLIBmosaic@
-LTLIBmotion = @LTLIBmotion@
-LTLIBmotionblur = @LTLIBmotionblur@
-LTLIBmotiondetect = @LTLIBmotiondetect@
 LTLIBmozilla = @LTLIBmozilla@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
-LTLIBmsn = @LTLIBmsn@
 LTLIBmtp = @LTLIBmtp@
 LTLIBmux_ogg = @LTLIBmux_ogg@
 LTLIBmux_ts = @LTLIBmux_ts@
 LTLIBncurses = @LTLIBncurses@
-LTLIBnoise = @LTLIBnoise@
-LTLIBnormvol = @LTLIBnormvol@
 LTLIBnotify = @LTLIBnotify@
-LTLIBntservice = @LTLIBntservice@
 LTLIBogg = @LTLIBogg@
+LTLIBoldhttp = @LTLIBoldhttp@
+LTLIBoldtelnet = @LTLIBoldtelnet@
 LTLIBomapfb = @LTLIBomapfb@
+LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopengl = @LTLIBopengl@
-LTLIBopengllayer = @LTLIBopengllayer@
-LTLIBopie = @LTLIBopie@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBoss = @LTLIBoss@
+LTLIBosso_screensaver = @LTLIBosso_screensaver@
 LTLIBpanoramix = @LTLIBpanoramix@
-LTLIBparam_eq = @LTLIBparam_eq@
-LTLIBpda = @LTLIBpda@
 LTLIBpng = @LTLIBpng@
-LTLIBpodcast = @LTLIBpodcast@
 LTLIBportaudio = @LTLIBportaudio@
 LTLIBpostproc = @LTLIBpostproc@
-LTLIBprobe_hal = @LTLIBprobe_hal@
-LTLIBpsychedelic = @LTLIBpsychedelic@
+LTLIBprojectm = @LTLIBprojectm@
 LTLIBpulse = @LTLIBpulse@
-LTLIBpuzzle = @LTLIBpuzzle@
 LTLIBpvr = @LTLIBpvr@
-LTLIBqnx = @LTLIBqnx@
 LTLIBqt4 = @LTLIBqt4@
 LTLIBqtcapture = @LTLIBqtcapture@
-LTLIBqte = @LTLIBqte@
-LTLIBqte_main = @LTLIBqte_main@
-LTLIBquartztext = @LTLIBquartztext@
 LTLIBquicktime = @LTLIBquicktime@
-LTLIBrc = @LTLIBrc@
-LTLIBrealaudio = @LTLIBrealaudio@
 LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
-LTLIBripple = @LTLIBripple@
-LTLIBrotate = @LTLIBrotate@
-LTLIBrss = @LTLIBrss@
-LTLIBrv32 = @LTLIBrv32@
-LTLIBsap = @LTLIBsap@
-LTLIBscale = @LTLIBscale@
-LTLIBscaletempo = @LTLIBscaletempo@
-LTLIBscene = @LTLIBscene@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
-LTLIBsharpen = @LTLIBsharpen@
 LTLIBshine = @LTLIBshine@
-LTLIBshout = @LTLIBshout@
-LTLIBshowintf = @LTLIBshowintf@
-LTLIBsignals = @LTLIBsignals@
-LTLIBsimple_channel_mixer = @LTLIBsimple_channel_mixer@
 LTLIBskins2 = @LTLIBskins2@
 LTLIBsnapshot = @LTLIBsnapshot@
-LTLIBspatializer = @LTLIBspatializer@
-LTLIBspdif_mixer = @LTLIBspdif_mixer@
 LTLIBspeex = @LTLIBspeex@
+LTLIBsqlite = @LTLIBsqlite@
 LTLIBstream_out_raop = @LTLIBstream_out_raop@
+LTLIBstream_out_switcher = @LTLIBstream_out_switcher@
 LTLIBsvg = @LTLIBsvg@
 LTLIBsvgalib = @LTLIBsvgalib@
 LTLIBswscale = @LTLIBswscale@
-LTLIBswscale_maemo = @LTLIBswscale_maemo@
+LTLIBswscale_omap = @LTLIBswscale_omap@
 LTLIBtaglib = @LTLIBtaglib@
-LTLIBtarkin = @LTLIBtarkin@
 LTLIBtelepathy = @LTLIBtelepathy@
-LTLIBtelnet = @LTLIBtelnet@
 LTLIBtelx = @LTLIBtelx@
-LTLIBtest1 = @LTLIBtest1@
-LTLIBtest2 = @LTLIBtest2@
-LTLIBtest3 = @LTLIBtest3@
-LTLIBtest4 = @LTLIBtest4@
 LTLIBtheora = @LTLIBtheora@
-LTLIBtransform = @LTLIBtransform@
 LTLIBtremor = @LTLIBtremor@
 LTLIBts = @LTLIBts@
 LTLIBtwolame = @LTLIBtwolame@
@@ -560,34 +511,26 @@ LTLIBv4l2 = @LTLIBv4l2@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
 LTLIBvisual = @LTLIBvisual@
-LTLIBvmem = @LTLIBvmem@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_directx = @LTLIBvout_directx@
+LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
-LTLIBwall = @LTLIBwall@
-LTLIBwave = @LTLIBwave@
 LTLIBwaveout = @LTLIBwaveout@
-LTLIBwin32text = @LTLIBwin32text@
-LTLIBwince = @LTLIBwince@
 LTLIBwingapi = @LTLIBwingapi@
 LTLIBwingdi = @LTLIBwingdi@
 LTLIBwma_fixed = @LTLIBwma_fixed@
-LTLIBx11 = @LTLIBx11@
-LTLIBx11_screen = @LTLIBx11_screen@
 LTLIBx264 = @LTLIBx264@
-LTLIBxcb = @LTLIBxcb@
+LTLIBxcb_apps = @LTLIBxcb_apps@
+LTLIBxcb_glx = @LTLIBxcb_glx@
+LTLIBxcb_screen = @LTLIBxcb_screen@
 LTLIBxcb_window = @LTLIBxcb_window@
+LTLIBxcb_x11 = @LTLIBxcb_x11@
 LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
-LTLIBxvideo = @LTLIBxvideo@
-LTLIBxvmc = @LTLIBxvmc@
-LTLIByuv = @LTLIByuv@
-LTLIByuvp = @LTLIByuvp@
-LTLIByuy2_i420 = @LTLIByuy2_i420@
-LTLIByuy2_i422 = @LTLIByuy2_i422@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
+LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
 MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
@@ -597,6 +540,7 @@ MIDL = @MIDL@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
+MMX_CFLAGS = @MMX_CFLAGS@
 MOC = @MOC@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
@@ -607,6 +551,8 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
+MUX_OGG_LIBS = @MUX_OGG_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
@@ -617,8 +563,12 @@ OBJCFLAGS = @OBJCFLAGS@
 OBJCOPY = @OBJCOPY@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OGG_CFLAGS = @OGG_CFLAGS@
+OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OSSO_SCREENSAVER_CFLAGS = @OSSO_SCREENSAVER_CFLAGS@
+OSSO_SCREENSAVER_LIBS = @OSSO_SCREENSAVER_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -631,12 +581,20 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CFLAGS = @PCRE_CFLAGS@
 PCRE_LIBS = @PCRE_LIBS@
+PEFLAGS = @PEFLAGS@
 PKGDIR = @PKGDIR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PORTAUDIO_CFLAGS = @PORTAUDIO_CFLAGS@
+PORTAUDIO_LIBS = @PORTAUDIO_LIBS@
 POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
+PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
+PROJECTM2_LIBS = @PROJECTM2_LIBS@
+PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
+PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
 QT4LOCALEDIR = @QT4LOCALEDIR@
@@ -646,15 +604,21 @@ RANLIB = @RANLIB@
 RCC = @RCC@
 SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
 SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
-SDL11_CONFIG = @SDL11_CONFIG@
-SDL12_CONFIG = @SDL12_CONFIG@
-SDL_CONFIG = @SDL_CONFIG@
+SDL_CFLAGS = @SDL_CFLAGS@
+SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
+SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
+SDL_LIBS = @SDL_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
+SPEEX_CFLAGS = @SPEEX_CFLAGS@
+SPEEX_LIBS = @SPEEX_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
+SSE2_CFLAGS = @SSE2_CFLAGS@
 STRIP = @STRIP@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
@@ -663,14 +627,19 @@ SWSCALE_LIBS = @SWSCALE_LIBS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
+THEORA_CFLAGS = @THEORA_CFLAGS@
+THEORA_LIBS = @THEORA_LIBS@
 TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
+U2D = @U2D@
 UDEV_CFLAGS = @UDEV_CFLAGS@
 UDEV_LIBS = @UDEV_LIBS@
 UIC = @UIC@
+UPNP_CFLAGS = @UPNP_CFLAGS@
+UPNP_LIBS = @UPNP_LIBS@
 USE_NLS = @USE_NLS@
-VCDINFO_CFLAGS = @VCDINFO_CFLAGS@
-VCDINFO_LIBS = @VCDINFO_LIBS@
 VERSION = @VERSION@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_EXTRA_RC = @VERSION_EXTRA_RC@
@@ -679,6 +648,8 @@ VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
+VORBIS_CFLAGS = @VORBIS_CFLAGS@
+VORBIS_LIBS = @VORBIS_LIBS@
 WIDL = @WIDL@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
@@ -688,6 +659,8 @@ XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
 XCB_LIBS = @XCB_LIBS@
+XCB_RANDR_CFLAGS = @XCB_RANDR_CFLAGS@
+XCB_RANDR_LIBS = @XCB_RANDR_LIBS@
 XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
@@ -695,9 +668,9 @@ XCB_XV_LIBS = @XCB_XV_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
+XLIB_XCB_CFLAGS = @XLIB_XCB_CFLAGS@
+XLIB_XCB_LIBS = @XLIB_XCB_LIBS@
 XMKMF = @XMKMF@
-XML2_CFLAGS = @XML2_CFLAGS@
-XML2_LIBS = @XML2_LIBS@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
 XPROTO_CFLAGS = @XPROTO_CFLAGS@
@@ -756,6 +729,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+soliddatadir = @soliddatadir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -766,12 +740,15 @@ vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 basedir = audio_filter
 dir = audio_filter
-mods = audio_format equalizer normvol param_eq scaletempo
-libvlc_LTLIBRARIES = $(LTLIBaudio_format) $(LTLIBequalizer) $(LTLIBnormvol) $(LTLIBparam_eq) $(LTLIBscaletempo)
-EXTRA_LTLIBRARIES = libaudio_format_plugin.la libequalizer_plugin.la libnormvol_plugin.la libparam_eq_plugin.la libscaletempo_plugin.la
+mods = audiobargraph_a chorus_flanger equalizer normvol param_eq scaletempo
+libvlc_LTLIBRARIES = libaudiobargraph_a_plugin.la \
+	libchorus_flanger_plugin.la libequalizer_plugin.la \
+	libnormvol_plugin.la libparam_eq_plugin.la \
+	libscaletempo_plugin.la $(NULL)
+EXTRA_LTLIBRARIES = 
 NULL = 
 SUFFIXES = 
-libvlcdir = $(vlclibdir)/$(basedir)
+libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
 BUILT_SOURCES = 
 CLEANFILES = $(BUILT_SOURCES)
@@ -783,6 +760,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
 	-export-symbol-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
+	-rpath "$(libvlcdir)" \
 	-no-undefined \
 	 `$(VLC_CONFIG) --ldflags plugin $@`
 
@@ -792,20 +770,32 @@ AM_LIBADD = `$(VLC_CONFIG) -libs plugin $@` \
 SUBDIRS = channel_mixer converter resampler spatializer
 SOURCES_equalizer = equalizer.c equalizer_presets.h
 SOURCES_normvol = normvol.c
-SOURCES_audio_format = format.c
+SOURCES_audiobargraph_a = audiobargraph_a.c
 SOURCES_param_eq = param_eq.c
 SOURCES_scaletempo = scaletempo.c
+SOURCES_chorus_flanger = chorus_flanger.c
 
-# The audio_format plugin
-libaudio_format_plugin_la_SOURCES = $(SOURCES_audio_format)
-nodist_libaudio_format_plugin_la_SOURCES = $(nodist_SOURCES_audio_format)
+# The audiobargraph_a plugin
+libaudiobargraph_a_plugin_la_SOURCES = $(SOURCES_audiobargraph_a)
+nodist_libaudiobargraph_a_plugin_la_SOURCES = $(nodist_SOURCES_audiobargraph_a)
 # Force per-target objects:
-libaudio_format_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaudio_format_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaudio_format_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaudiobargraph_a_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaudiobargraph_a_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaudiobargraph_a_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libaudio_format_plugin_la_LIBADD = $(AM_LIBADD)
-libaudio_format_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaudiobargraph_a_plugin_la_LIBADD = $(AM_LIBADD)
+libaudiobargraph_a_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The chorus_flanger plugin
+libchorus_flanger_plugin_la_SOURCES = $(SOURCES_chorus_flanger)
+nodist_libchorus_flanger_plugin_la_SOURCES = $(nodist_SOURCES_chorus_flanger)
+# Force per-target objects:
+libchorus_flanger_plugin_la_CFLAGS = $(AM_CFLAGS)
+libchorus_flanger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libchorus_flanger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libchorus_flanger_plugin_la_LIBADD = $(AM_LIBADD)
+libchorus_flanger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The equalizer plugin
 libequalizer_plugin_la_SOURCES = $(SOURCES_equalizer)
@@ -916,16 +906,18 @@ clean-libvlcLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libaudio_format_plugin.la: $(libaudio_format_plugin_la_OBJECTS) $(libaudio_format_plugin_la_DEPENDENCIES) 
-	$(libaudio_format_plugin_la_LINK)  $(libaudio_format_plugin_la_OBJECTS) $(libaudio_format_plugin_la_LIBADD) $(LIBS)
+libaudiobargraph_a_plugin.la: $(libaudiobargraph_a_plugin_la_OBJECTS) $(libaudiobargraph_a_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libaudiobargraph_a_plugin_la_LINK) -rpath $(libvlcdir) $(libaudiobargraph_a_plugin_la_OBJECTS) $(libaudiobargraph_a_plugin_la_LIBADD) $(LIBS)
+libchorus_flanger_plugin.la: $(libchorus_flanger_plugin_la_OBJECTS) $(libchorus_flanger_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libchorus_flanger_plugin_la_LINK) -rpath $(libvlcdir) $(libchorus_flanger_plugin_la_OBJECTS) $(libchorus_flanger_plugin_la_LIBADD) $(LIBS)
 libequalizer_plugin.la: $(libequalizer_plugin_la_OBJECTS) $(libequalizer_plugin_la_DEPENDENCIES) 
-	$(libequalizer_plugin_la_LINK)  $(libequalizer_plugin_la_OBJECTS) $(libequalizer_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libequalizer_plugin_la_LINK) -rpath $(libvlcdir) $(libequalizer_plugin_la_OBJECTS) $(libequalizer_plugin_la_LIBADD) $(LIBS)
 libnormvol_plugin.la: $(libnormvol_plugin_la_OBJECTS) $(libnormvol_plugin_la_DEPENDENCIES) 
-	$(libnormvol_plugin_la_LINK)  $(libnormvol_plugin_la_OBJECTS) $(libnormvol_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnormvol_plugin_la_LINK) -rpath $(libvlcdir) $(libnormvol_plugin_la_OBJECTS) $(libnormvol_plugin_la_LIBADD) $(LIBS)
 libparam_eq_plugin.la: $(libparam_eq_plugin_la_OBJECTS) $(libparam_eq_plugin_la_DEPENDENCIES) 
-	$(libparam_eq_plugin_la_LINK)  $(libparam_eq_plugin_la_OBJECTS) $(libparam_eq_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libparam_eq_plugin_la_LINK) -rpath $(libvlcdir) $(libparam_eq_plugin_la_OBJECTS) $(libparam_eq_plugin_la_LIBADD) $(LIBS)
 libscaletempo_plugin.la: $(libscaletempo_plugin_la_OBJECTS) $(libscaletempo_plugin_la_DEPENDENCIES) 
-	$(libscaletempo_plugin_la_LINK)  $(libscaletempo_plugin_la_OBJECTS) $(libscaletempo_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libscaletempo_plugin_la_LINK) -rpath $(libvlcdir) $(libscaletempo_plugin_la_OBJECTS) $(libscaletempo_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -933,67 +925,84 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaudio_format_plugin_la-format.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaudiobargraph_a_plugin_la-audiobargraph_a.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libchorus_flanger_plugin_la-chorus_flanger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libequalizer_plugin_la-equalizer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnormvol_plugin_la-normvol.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libparam_eq_plugin_la-param_eq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libscaletempo_plugin_la-scaletempo.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libaudio_format_plugin_la-format.lo: format.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudio_format_plugin_la_CFLAGS) $(CFLAGS) -MT libaudio_format_plugin_la-format.lo -MD -MP -MF $(DEPDIR)/libaudio_format_plugin_la-format.Tpo -c -o libaudio_format_plugin_la-format.lo `test -f 'format.c' || echo '$(srcdir)/'`format.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libaudio_format_plugin_la-format.Tpo $(DEPDIR)/libaudio_format_plugin_la-format.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='format.c' object='libaudio_format_plugin_la-format.lo' libtool=yes @AMDEPBACKSLASH@
+libaudiobargraph_a_plugin_la-audiobargraph_a.lo: audiobargraph_a.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudiobargraph_a_plugin_la_CFLAGS) $(CFLAGS) -MT libaudiobargraph_a_plugin_la-audiobargraph_a.lo -MD -MP -MF $(DEPDIR)/libaudiobargraph_a_plugin_la-audiobargraph_a.Tpo -c -o libaudiobargraph_a_plugin_la-audiobargraph_a.lo `test -f 'audiobargraph_a.c' || echo '$(srcdir)/'`audiobargraph_a.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libaudiobargraph_a_plugin_la-audiobargraph_a.Tpo $(DEPDIR)/libaudiobargraph_a_plugin_la-audiobargraph_a.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='audiobargraph_a.c' object='libaudiobargraph_a_plugin_la-audiobargraph_a.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudio_format_plugin_la_CFLAGS) $(CFLAGS) -c -o libaudio_format_plugin_la-format.lo `test -f 'format.c' || echo '$(srcdir)/'`format.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudiobargraph_a_plugin_la_CFLAGS) $(CFLAGS) -c -o libaudiobargraph_a_plugin_la-audiobargraph_a.lo `test -f 'audiobargraph_a.c' || echo '$(srcdir)/'`audiobargraph_a.c
+
+libchorus_flanger_plugin_la-chorus_flanger.lo: chorus_flanger.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libchorus_flanger_plugin_la_CFLAGS) $(CFLAGS) -MT libchorus_flanger_plugin_la-chorus_flanger.lo -MD -MP -MF $(DEPDIR)/libchorus_flanger_plugin_la-chorus_flanger.Tpo -c -o libchorus_flanger_plugin_la-chorus_flanger.lo `test -f 'chorus_flanger.c' || echo '$(srcdir)/'`chorus_flanger.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libchorus_flanger_plugin_la-chorus_flanger.Tpo $(DEPDIR)/libchorus_flanger_plugin_la-chorus_flanger.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='chorus_flanger.c' object='libchorus_flanger_plugin_la-chorus_flanger.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libchorus_flanger_plugin_la_CFLAGS) $(CFLAGS) -c -o libchorus_flanger_plugin_la-chorus_flanger.lo `test -f 'chorus_flanger.c' || echo '$(srcdir)/'`chorus_flanger.c
 
 libequalizer_plugin_la-equalizer.lo: equalizer.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libequalizer_plugin_la_CFLAGS) $(CFLAGS) -MT libequalizer_plugin_la-equalizer.lo -MD -MP -MF $(DEPDIR)/libequalizer_plugin_la-equalizer.Tpo -c -o libequalizer_plugin_la-equalizer.lo `test -f 'equalizer.c' || echo '$(srcdir)/'`equalizer.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libequalizer_plugin_la-equalizer.Tpo $(DEPDIR)/libequalizer_plugin_la-equalizer.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libequalizer_plugin_la_CFLAGS) $(CFLAGS) -MT libequalizer_plugin_la-equalizer.lo -MD -MP -MF $(DEPDIR)/libequalizer_plugin_la-equalizer.Tpo -c -o libequalizer_plugin_la-equalizer.lo `test -f 'equalizer.c' || echo '$(srcdir)/'`equalizer.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libequalizer_plugin_la-equalizer.Tpo $(DEPDIR)/libequalizer_plugin_la-equalizer.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='equalizer.c' object='libequalizer_plugin_la-equalizer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libequalizer_plugin_la_CFLAGS) $(CFLAGS) -c -o libequalizer_plugin_la-equalizer.lo `test -f 'equalizer.c' || echo '$(srcdir)/'`equalizer.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libequalizer_plugin_la_CFLAGS) $(CFLAGS) -c -o libequalizer_plugin_la-equalizer.lo `test -f 'equalizer.c' || echo '$(srcdir)/'`equalizer.c
 
 libnormvol_plugin_la-normvol.lo: normvol.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnormvol_plugin_la_CFLAGS) $(CFLAGS) -MT libnormvol_plugin_la-normvol.lo -MD -MP -MF $(DEPDIR)/libnormvol_plugin_la-normvol.Tpo -c -o libnormvol_plugin_la-normvol.lo `test -f 'normvol.c' || echo '$(srcdir)/'`normvol.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libnormvol_plugin_la-normvol.Tpo $(DEPDIR)/libnormvol_plugin_la-normvol.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnormvol_plugin_la_CFLAGS) $(CFLAGS) -MT libnormvol_plugin_la-normvol.lo -MD -MP -MF $(DEPDIR)/libnormvol_plugin_la-normvol.Tpo -c -o libnormvol_plugin_la-normvol.lo `test -f 'normvol.c' || echo '$(srcdir)/'`normvol.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libnormvol_plugin_la-normvol.Tpo $(DEPDIR)/libnormvol_plugin_la-normvol.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='normvol.c' object='libnormvol_plugin_la-normvol.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnormvol_plugin_la_CFLAGS) $(CFLAGS) -c -o libnormvol_plugin_la-normvol.lo `test -f 'normvol.c' || echo '$(srcdir)/'`normvol.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnormvol_plugin_la_CFLAGS) $(CFLAGS) -c -o libnormvol_plugin_la-normvol.lo `test -f 'normvol.c' || echo '$(srcdir)/'`normvol.c
 
 libparam_eq_plugin_la-param_eq.lo: param_eq.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libparam_eq_plugin_la_CFLAGS) $(CFLAGS) -MT libparam_eq_plugin_la-param_eq.lo -MD -MP -MF $(DEPDIR)/libparam_eq_plugin_la-param_eq.Tpo -c -o libparam_eq_plugin_la-param_eq.lo `test -f 'param_eq.c' || echo '$(srcdir)/'`param_eq.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libparam_eq_plugin_la-param_eq.Tpo $(DEPDIR)/libparam_eq_plugin_la-param_eq.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libparam_eq_plugin_la_CFLAGS) $(CFLAGS) -MT libparam_eq_plugin_la-param_eq.lo -MD -MP -MF $(DEPDIR)/libparam_eq_plugin_la-param_eq.Tpo -c -o libparam_eq_plugin_la-param_eq.lo `test -f 'param_eq.c' || echo '$(srcdir)/'`param_eq.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libparam_eq_plugin_la-param_eq.Tpo $(DEPDIR)/libparam_eq_plugin_la-param_eq.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='param_eq.c' object='libparam_eq_plugin_la-param_eq.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libparam_eq_plugin_la_CFLAGS) $(CFLAGS) -c -o libparam_eq_plugin_la-param_eq.lo `test -f 'param_eq.c' || echo '$(srcdir)/'`param_eq.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libparam_eq_plugin_la_CFLAGS) $(CFLAGS) -c -o libparam_eq_plugin_la-param_eq.lo `test -f 'param_eq.c' || echo '$(srcdir)/'`param_eq.c
 
 libscaletempo_plugin_la-scaletempo.lo: scaletempo.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscaletempo_plugin_la_CFLAGS) $(CFLAGS) -MT libscaletempo_plugin_la-scaletempo.lo -MD -MP -MF $(DEPDIR)/libscaletempo_plugin_la-scaletempo.Tpo -c -o libscaletempo_plugin_la-scaletempo.lo `test -f 'scaletempo.c' || echo '$(srcdir)/'`scaletempo.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libscaletempo_plugin_la-scaletempo.Tpo $(DEPDIR)/libscaletempo_plugin_la-scaletempo.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscaletempo_plugin_la_CFLAGS) $(CFLAGS) -MT libscaletempo_plugin_la-scaletempo.lo -MD -MP -MF $(DEPDIR)/libscaletempo_plugin_la-scaletempo.Tpo -c -o libscaletempo_plugin_la-scaletempo.lo `test -f 'scaletempo.c' || echo '$(srcdir)/'`scaletempo.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libscaletempo_plugin_la-scaletempo.Tpo $(DEPDIR)/libscaletempo_plugin_la-scaletempo.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='scaletempo.c' object='libscaletempo_plugin_la-scaletempo.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscaletempo_plugin_la_CFLAGS) $(CFLAGS) -c -o libscaletempo_plugin_la-scaletempo.lo `test -f 'scaletempo.c' || echo '$(srcdir)/'`scaletempo.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libscaletempo_plugin_la_CFLAGS) $(CFLAGS) -c -o libscaletempo_plugin_la-scaletempo.lo `test -f 'scaletempo.c' || echo '$(srcdir)/'`scaletempo.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1324,12 +1333,7 @@ uninstall-am: uninstall-libvlcLTLIBRARIES
 
 
 @MAINTAINER_MODE_TRUE@$(srcdir)/Makefile.am: $(srcdir)/Modules.am $(top_srcdir)/modules/genmf
-@MAINTAINER_MODE_TRUE@	cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
-
-nice:
-	$(top_builddir)/compile
-
-.PHONY: nice
+@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -2,7 +2,7 @@
  * evt_input.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: dd8f7ea30a6d3fe61a0cec585f70dcd62a64dc3f $
+ * $Id: 2ae83d61515617ade4b24bd53e5ca2c0ff9ca15c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef EVT_INPUT_HPP
@@ -27,31 +27,28 @@
 
 #include "evt_generic.hpp"
 
-
 /// Base class for mouse and key events
 class EvtInput: public EvtGeneric
 {
-    public:
-        virtual ~EvtInput() {}
+public:
+    virtual ~EvtInput() { }
 
-        /// Masks for modifier keys
-        static const int kModNone;
-        static const int kModAlt;
-        static const int kModCtrl;
-        static const int kModShift;
+    /// Masks for modifier keys
+    static const int
+        kModNone, kModAlt, kModShift, kModCtrl, kModMeta, kModCmd;
 
-        /// Get the modifiers
-        virtual int getMod() const { return m_mod; }
+    /// Get the modifiers
+    int getMod() const { return m_mod; }
 
-    protected:
-        EvtInput( intf_thread_t *pIntf, int mod = kModNone );
+protected:
+    EvtInput( intf_thread_t *pIntf, int mod = kModNone );
 
-        /// Add the modifier to the event string
-        virtual void addModifier( string &rEvtString ) const;
+    /// Add the modifier to the event string
+    void addModifier( string &rEvtString ) const;
 
-    private:
-        /// Modifiers (special key(s) pressed during the mouse event)
-        int m_mod;
+private:
+    /// Modifiers (special key(s) pressed during the mouse event)
+    int m_mod;
 };
 
 #endif

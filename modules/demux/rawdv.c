@@ -2,7 +2,7 @@
  * rawdv.c : raw DV input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 611be06aece1b9e0a638e3be4cf70c9617a1b105 $
+ * $Id: 9b9611d85d70e89389d689f78c4bc3072b680ea9 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Paul Corke <paul dot corke at datatote dot co dot uk>
@@ -50,7 +50,7 @@ vlc_module_begin ()
     set_capability( "demux", 3 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
-    add_bool( "rawdv-hurry-up", 0, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT, false )
+    add_bool( "rawdv-hurry-up", false, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT, false )
     set_callbacks( Open, Close )
     add_shortcut( "rawdv" )
 vlc_module_end ()
@@ -216,13 +216,13 @@ static int Open( vlc_object_t * p_this )
     p_sys->frame_size = dv_header.dsf ? 12 * 150 * 80 : 10 * 150 * 80;
     p_sys->f_rate = dv_header.dsf ? 25 : 29.97;
 
-    p_sys->i_pcr = 1;
+    p_sys->i_pcr = 0;
     p_sys->p_es_video = NULL;
     p_sys->p_es_audio = NULL;
 
     p_sys->i_bitrate = 0;
 
-    es_format_Init( &p_sys->fmt_video, VIDEO_ES, VLC_FOURCC('d','v','s','d') );
+    es_format_Init( &p_sys->fmt_video, VIDEO_ES, VLC_CODEC_DV );
     p_sys->fmt_video.video.i_width = 720;
     p_sys->fmt_video.video.i_height= dv_header.dsf ? 576 : 480;;
 
@@ -239,9 +239,10 @@ static int Open( vlc_object_t * p_this )
     p_peek = p_peek_backup + 80*6+80*16*3 + 3; /* beginning of AAUX pack */
     if( *p_peek == 0x50 )
     {
-        es_format_Init( &p_sys->fmt_audio, AUDIO_ES,
-                        VLC_FOURCC('a','r','a','w') );
+        /* 12 bits non-linear will be converted to 16 bits linear */
+        es_format_Init( &p_sys->fmt_audio, AUDIO_ES, VLC_CODEC_S16L );
 
+        p_sys->fmt_audio.audio.i_bitspersample = 16;
         p_sys->fmt_audio.audio.i_channels = 2;
         switch( (p_peek[4] >> 3) & 0x07 )
         {
@@ -256,9 +257,6 @@ static int Open( vlc_object_t * p_this )
             p_sys->fmt_audio.audio.i_rate = 32000;
             break;
         }
-
-        /* 12 bits non-linear will be converted to 16 bits linear */
-        p_sys->fmt_audio.audio.i_bitspersample = 16;
 
         p_sys->p_es_audio = es_out_Add( p_demux->out, &p_sys->fmt_audio );
     }
@@ -296,7 +294,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Call the pace control */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pcr );
+    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_pcr );
     p_block = stream_Block( p_demux->s, p_sys->frame_size );
     if( p_block == NULL )
     {
@@ -311,7 +309,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = p_sys->i_pcr;
+    p_block->i_pts = VLC_TS_0 + p_sys->i_pcr;
 
     if( b_audio )
     {
@@ -319,7 +317,7 @@ static int Demux( demux_t *p_demux )
         if( p_audio_block )
         {
             p_audio_block->i_pts =
-            p_audio_block->i_dts = p_sys->i_pcr;
+            p_audio_block->i_dts = VLC_TS_0 + p_sys->i_pcr;
             es_out_Send( p_demux->out, p_sys->p_es_audio, p_audio_block );
         }
     }

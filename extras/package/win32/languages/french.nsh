@@ -6,17 +6,17 @@ StrCpy $Name_Section04 "Plugin ActiveX"
 StrCpy $Name_Section05 "Lecture de disques"
 StrCpy $Name_Section06 "Types de fichiers"
 StrCpy $Name_SectionGroupAudio "Fichiers Audio"
-StrCpy $Name_SectionGroupVideo "Fichiers Vidéo"
+StrCpy $Name_SectionGroupVideo "Fichiers Video"
 StrCpy $Name_SectionGroupOther "Autres"
 StrCpy $Name_Section07 "Menus contextuels"
-StrCpy $Name_Section08 "Effacer les préférences et le cache"
+StrCpy $Name_Section08 "Effacer les preferences et le cache"
 
 StrCpy $Desc_Section01 \
     "Le lecteur multimédia"
 StrCpy $Desc_Section02a \
     "Ajoute des icônes au menu Démarrer pour un accès facile"
 StrCpy $Desc_Section02b \
-    "Place un icône sur le bureau pour un accès facile"
+    "Place une icône sur le bureau pour un accès facile"
 StrCpy $Desc_Section03 \
     "Le plugin VLC Mozilla et Mozilla Firefox"
 StrCpy $Desc_Section04 \
@@ -26,21 +26,21 @@ StrCpy $Desc_Section05 \
 StrCpy $Desc_Section06 \
 	"Définit le lecteur média VLC comme application par défaut pour les fichiers du type spécifié"
 StrCpy $Desc_Section07 \
-	"Ajoute des entrées de menu contextuel (« Lire avec VLC » et « Ajouter à la liste de lecture de VLC »)"
+	"Ajoute des entrées de menu contextuel ('Lire avec VLC' et 'Ajouter à la liste de lecture de VLC')"
 StrCpy $Desc_Section08 \
-	"Efface les préférences de VLC et les fichiers caches laissés par une précédente installation"
+	"Efface les préférences de VLC et les fichiers cache laissés par une précédente installation"
 
 StrCpy $Message_AlreadyInstalled  \
 "Le lecteur multimédia VLC est déjà installé. $\nSouhaitez-vous désinstaller \
-l'ancienne version avant d'installer $(^Name) ?"
+l'ancienne version avant d'installer $(^Name) ?"
 
 StrCpy $Name_Section91 "Désinstaller"
-StrCpy $Name_Section92 "Effacer les préférences et les fichiers caches"
+StrCpy $Name_Section92 "Effacer les préférences et les fichiers cache"
 
 StrCpy $Desc_Section91 \
 "Désinstalle VLC et tous ses composants"
 StrCpy $Desc_Section92 \
-"Efface les préférences de VLC et les fichiers caches"
+"Efface les préférences de VLC et les fichiers cache"
 
 StrCpy $ShellAssociation_Play "Lire"
 StrCpy $ContextMenuEntry_PlayWith "Lire avec VLC"

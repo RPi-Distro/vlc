@@ -1,8 +1,8 @@
 /*****************************************************************************
  * fake.c: decoder reading from a fake stream, outputting a fixed image
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 773dd9242a70e5d8c1ffdb7012d97c6c7b78486c $
+ * Copyright (C) 2005-2009 the VideoLAN team
+ * $Id: 63d05ee6f3bc14bbe5cf36de2a7050b54ab411e7 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -35,7 +35,6 @@
 
 #include <vlc_image.h>
 #include <vlc_filter.h>
-#include <vlc_charset.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -74,7 +73,7 @@ static int FakeCallback( vlc_object_t *, char const *,
 #define DEINTERLACE_MODULE_TEXT N_("Deinterlace module")
 #define DEINTERLACE_MODULE_LONGTEXT N_( \
     "Deinterlace module to use." )
-#define CHROMA_TEXT N_("Chroma used.")
+#define CHROMA_TEXT N_("Chroma used")
 #define CHROMA_LONGTEXT N_( \
     "Force use of a specific chroma for output. Default is I420." )
 
@@ -100,11 +99,11 @@ vlc_module_begin ()
                  WIDTH_LONGTEXT, true )
     add_integer( "fake-height", 0, NULL, HEIGHT_TEXT,
                  HEIGHT_LONGTEXT, true )
-    add_bool( "fake-keep-ar", 0, NULL, KEEP_AR_TEXT, KEEP_AR_LONGTEXT,
+    add_bool( "fake-keep-ar", false, NULL, KEEP_AR_TEXT, KEEP_AR_LONGTEXT,
               true )
     add_string( "fake-aspect-ratio", "", NULL,
                 ASPECT_RATIO_TEXT, ASPECT_RATIO_LONGTEXT, true )
-    add_bool( "fake-deinterlace", 0, NULL, DEINTERLACE_TEXT,
+    add_bool( "fake-deinterlace", false, NULL, DEINTERLACE_TEXT,
               DEINTERLACE_LONGTEXT, false )
     add_string( "fake-deinterlace-module", "deinterlace", NULL,
                 DEINTERLACE_MODULE_TEXT, DEINTERLACE_MODULE_LONGTEXT,
@@ -130,13 +129,13 @@ struct decoder_sys_t
 static int OpenDecoder( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
-    vlc_value_t val;
     image_handler_t *p_handler;
     video_format_t fmt_in, fmt_out;
     picture_t *p_image;
-    char *psz_file, *psz_chroma;
+    char *psz_file, *psz_chroma, *psz_string;
     bool b_keep_ar;
     int i_aspect = 0;
+    int i_int;
 
     if( p_dec->fmt_in.i_codec != VLC_FOURCC('f','a','k','e') )
     {
@@ -158,58 +157,46 @@ static int OpenDecoder( vlc_object_t *p_this )
     memset( &fmt_in, 0, sizeof(fmt_in) );
     memset( &fmt_out, 0, sizeof(fmt_out) );
 
-    val.i_int = var_CreateGetIntegerCommand( p_dec, "fake-file-reload" );
-    if( val.i_int > 0)
+    i_int = var_CreateGetIntegerCommand( p_dec, "fake-file-reload" );
+    if( i_int > 0)
     {
         p_dec->p_sys->b_reload = true;
-        p_dec->p_sys->i_reload = (mtime_t)(val.i_int * 1000000);
+        p_dec->p_sys->i_reload = (mtime_t)(i_int * 1000000);
         p_dec->p_sys->i_next   = (mtime_t)(p_dec->p_sys->i_reload + mdate());
     }
 
     psz_chroma = var_CreateGetString( p_dec, "fake-chroma" );
-    if( strlen( psz_chroma ) != 4 )
+    fmt_out.i_chroma = vlc_fourcc_GetCodecFromString( VIDEO_ES, psz_chroma );
+    if( !fmt_out.i_chroma )
     {
         msg_Warn( p_dec, "Invalid chroma (%s). Using I420.", psz_chroma );
-        fmt_out.i_chroma = VLC_FOURCC('I','4','2','0');
-    }
-    else
-    {
-        fmt_out.i_chroma = VLC_FOURCC( psz_chroma[0],
-                                       psz_chroma[1],
-                                       psz_chroma[2],
-                                       psz_chroma[3] );
+        fmt_out.i_chroma = VLC_CODEC_I420;
     }
     free( psz_chroma );
 
-    var_Create( p_dec, "fake-keep-ar", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Get( p_dec, "fake-keep-ar", &val );
-    b_keep_ar = val.b_bool;
-
     var_Create( p_dec, "fake-width", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     var_Create( p_dec, "fake-height", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Create( p_dec, "fake-aspect-ratio",
-                VLC_VAR_STRING | VLC_VAR_DOINHERIT );
+    psz_string = var_CreateGetString( p_dec, "fake-aspect-ratio" );
 
-    var_Get( p_dec, "fake-aspect-ratio", &val );
-    if ( val.psz_string )
+    if( psz_string )
     {
-        char *psz_parser = strchr( val.psz_string, ':' );
+        char *psz_parser = strchr( psz_string, ':' );
 
         if( psz_parser )
         {
             *psz_parser++ = '\0';
-            i_aspect = atoi( val.psz_string )
+            i_aspect = atoi( psz_string )
                                    * VOUT_ASPECT_FACTOR / atoi( psz_parser );
         }
-        free( val.psz_string );
+        free( psz_string );
     }
 
-    if ( !b_keep_ar )
+    b_keep_ar = var_CreateGetBool( p_dec, "fake-keep-ar" );
+
+    if( !b_keep_ar )
     {
-        var_Get( p_dec, "fake-width", &val );
-        fmt_out.i_width = val.i_int;
-        var_Get( p_dec, "fake-height", &val );
-        fmt_out.i_height = val.i_int;
+        fmt_out.i_width = var_GetInteger( p_dec, "fake-width" );
+        fmt_out.i_height = var_GetInteger( p_dec, "fake-height" );
     }
 
     p_handler = image_HandlerCreate( p_dec );
@@ -232,10 +219,8 @@ static int OpenDecoder( vlc_object_t *p_this )
         picture_t *p_old = p_image;
         int i_width, i_height;
 
-        var_Get( p_dec, "fake-width", &val );
-        i_width = val.i_int;
-        var_Get( p_dec, "fake-height", &val );
-        i_height = val.i_int;
+        i_width = var_GetInteger( p_dec, "fake-width" );
+        i_height = var_GetInteger( p_dec, "fake-height" );
 
         if ( i_width && i_height )
         {
@@ -283,28 +268,25 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     if ( i_aspect )
     {
-        fmt_out.i_aspect = i_aspect;
+        fmt_out.i_sar_num = i_aspect           * fmt_out.i_height;
+        fmt_out.i_sar_den = VOUT_ASPECT_FACTOR * fmt_out.i_width;
     }
     else
     {
-        fmt_out.i_aspect = fmt_out.i_width
-                            * VOUT_ASPECT_FACTOR / fmt_out.i_height;
+        fmt_out.i_sar_num = 1;
+        fmt_out.i_sar_den = 1;
     }
 
-    var_Create( p_dec, "fake-deinterlace", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Get( p_dec, "fake-deinterlace", &val );
-    if ( val.b_bool )
+    if( var_CreateGetBool( p_dec, "fake-deinterlace" ) )
     {
         picture_t *p_old = p_image;
 
-        var_Create( p_dec, "fake-deinterlace-module",
-                    VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-        var_Get( p_dec, "fake-deinterlace-module", &val );
+        psz_string = var_CreateGetString( p_dec, "fake-deinterlace-module" );
 
         p_handler = image_HandlerCreate( p_dec );
-        p_image = image_Filter( p_handler, p_old, &fmt_out, val.psz_string );
+        p_image = image_Filter( p_handler, p_old, &fmt_out, psz_string );
         image_HandlerDelete( p_handler );
-        free( val.psz_string );
+        free( psz_string );
 
         if ( p_image == NULL )
         {

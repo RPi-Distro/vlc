@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 3d1f899191869397ee288755eb63da8d7b0a8d30 $
+ * $Id: 56d293b268bb3d0d96d4d3efcb0b52e60c96c5e4 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -54,6 +54,12 @@ unsigned int CocoaKeyToVLC( unichar i_key );
             @"/System/Library/CoreServices/SystemVersion.plist"] \
             objectForKey: @"ProductVersion"] floatValue]
 
+
+// You need to release those objects after use
+input_thread_t *getInput(void);
+vout_thread_t *getVout(void);
+aout_instance_t *getAout(void);
+
 /*****************************************************************************
  * intf_sys_t: description and status of the interface
  *****************************************************************************/
@@ -102,10 +108,7 @@ struct intf_sys_t
     id o_bookmarks;             /* VLCBookmarks   */
     id o_embedded_list;         /* VLCEmbeddedList*/
     id o_coredialogs;           /* VLCCoreDialogProvider */
-    VLCInformation * o_info;                  /* VLCInformation */
-#ifdef UPDATE_CHECK
-    id o_update;                /* VLCUpdate      */
-#endif
+    VLCInformation * o_info;    /* VLCInformation */
     id o_eyetv;                 /* VLCEyeTVController */
     BOOL nib_main_loaded;       /* main nibfile */
     BOOL nib_open_loaded;       /* open nibfile */
@@ -114,7 +117,6 @@ struct intf_sys_t
     BOOL nib_extended_loaded;   /* extended nibfile */
     BOOL nib_bookmarks_loaded;  /* bookmarks nibfile */
     BOOL nib_prefs_loaded;      /* preferences nibfile */
-    BOOL nib_update_loaded;     /* update nibfile */
     BOOL nib_info_loaded;       /* information panel nibfile */
     BOOL nib_coredialogs_loaded; /* CoreDialogs nibfile */
 
@@ -157,7 +159,7 @@ struct intf_sys_t
     BOOL b_msg_arr_changed;                     /* did the array change? */
     IBOutlet NSButton * o_msgs_crashlog_btn;    /* messages open crashlog */
     IBOutlet NSButton * o_msgs_save_btn;        /* save the log as rtf */
-    
+
     /* CrashReporter panel */
     IBOutlet NSButton * o_crashrep_dontSend_btn;
     IBOutlet NSButton * o_crashrep_send_btn;
@@ -204,6 +206,7 @@ struct intf_sys_t
     IBOutlet NSMenuItem * o_mi_stop;
     IBOutlet NSMenuItem * o_mi_faster;
     IBOutlet NSMenuItem * o_mi_slower;
+    IBOutlet NSMenuItem * o_mi_normalSpeed;
     IBOutlet NSMenuItem * o_mi_previous;
     IBOutlet NSMenuItem * o_mi_next;
     IBOutlet NSMenuItem * o_mi_random;
@@ -270,6 +273,7 @@ struct intf_sys_t
     IBOutlet NSMenu * o_mu_window;
     IBOutlet NSMenuItem * o_mi_minimize;
     IBOutlet NSMenuItem * o_mi_close_window;
+    IBOutlet NSMenuItem * o_mi_player;
     IBOutlet NSMenuItem * o_mi_controller;
     IBOutlet NSMenuItem * o_mi_equalizer;
     IBOutlet NSMenuItem * o_mi_extended;
@@ -393,7 +397,6 @@ struct intf_sys_t
 - (IBAction)viewAbout:(id)sender;
 - (IBAction)showLicense:(id)sender;
 - (IBAction)viewPreferences:(id)sender;
-- (IBAction)checkForUpdate:(id)sender;
 - (IBAction)viewHelp:(id)sender;
 - (IBAction)openReadMe:(id)sender;
 - (IBAction)openDocumentation:(id)sender;
@@ -426,13 +429,13 @@ struct intf_sys_t
 @interface VLCApplication : NSApplication
 {
     BOOL b_justJumped;
-    BOOL b_mediaKeySupport;
+	BOOL b_mediaKeySupport;
     BOOL b_activeInBackground;
     BOOL b_active;
 }
 
 - (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification;
-//- (void)sendEvent: (NSEvent*)event;
+- (void)sendEvent: (NSEvent*)event;
 - (void)resetJump;
 
 @end

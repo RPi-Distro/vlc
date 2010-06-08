@@ -2,7 +2,7 @@
  * transform.c : transform image module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 0409cf1acb126d2dd18f6c027694f55e707e65c6 $
+ * $Id: f745d7ee6aadef819ed065033cce213fe4a4c436 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -70,11 +70,13 @@ static const char *const type_list_text[] = { N_("Rotate by 90 degrees"),
   N_("Rotate by 180 degrees"), N_("Rotate by 270 degrees"),
   N_("Flip horizontally"), N_("Flip vertically") };
 
+#define TRANSFORM_HELP N_("Rotate or flip the video")
 #define CFG_PREFIX "transform-"
 
 vlc_module_begin ()
     set_description( N_("Video transformation filter") )
     set_shortname( N_("Transformation"))
+    set_help(TRANSFORM_HELP)
     set_capability( "video filter", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
@@ -145,12 +147,12 @@ static int Create( vlc_object_t *p_this )
     switch( p_vout->fmt_in.i_chroma )
     {
         CASE_PLANAR_YUV_SQUARE
-        case VLC_FOURCC('G','R','E','Y'):
+        case VLC_CODEC_GREY:
             p_vout->p_sys->pf_filter = FilterPlanar;
             break;
 
-        case VLC_FOURCC('I','4','2','2'):
-        case VLC_FOURCC('J','4','2','2'):
+        case VLC_CODEC_I422:
+        case VLC_CODEC_J422:
             p_vout->p_sys->pf_filter = FilterI422;
             break;
 
@@ -242,9 +244,6 @@ static int Init( vout_thread_t *p_vout )
         fmt.i_visible_height = p_vout->fmt_out.i_visible_width;
         fmt.i_y_offset = p_vout->fmt_out.i_x_offset;
 
-        fmt.i_aspect = VOUT_ASPECT_FACTOR *
-            (uint64_t)VOUT_ASPECT_FACTOR / fmt.i_aspect;
-
         fmt.i_sar_num = p_vout->fmt_out.i_sar_den;
         fmt.i_sar_den = p_vout->fmt_out.i_sar_num;
     }
@@ -313,11 +312,8 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
     }
 
     p_outpic->date = p_pic->date;
-    vout_LinkPicture( p_vout->p_sys->p_vout, p_outpic );
 
     p_vout->p_sys->pf_filter( p_vout, p_pic, p_outpic );
-
-    vout_UnlinkPicture( p_vout->p_sys->p_vout, p_outpic );
 
     vout_DisplayPicture( p_vout->p_sys->p_vout, p_outpic );
 }
@@ -326,59 +322,47 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
  * Forward mouse event with proper conversion.
  */
 static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
+                       vlc_value_t oldval, vlc_value_t val, void *p_data )
 {
     vout_thread_t *p_vout = p_data;
     VLC_UNUSED(p_this); VLC_UNUSED(oldval);
 
     /* Translate the mouse coordinates
      * FIXME missing lock */
-    if( !strcmp( psz_var, "mouse-x" ) )
+    if( !strcmp( psz_var, "mouse-button-down" ) )
+        return var_SetChecked( p_vout, psz_var, VLC_VAR_INTEGER, val );
+
+    int x = val.coords.x, y = val.coords.y;
+
+    switch( p_vout->p_sys->i_mode )
     {
-        switch( p_vout->p_sys->i_mode )
-        {
-        case TRANSFORM_MODE_270:
-            newval.i_int = p_vout->p_sys->p_vout->output.i_width
-                             - newval.i_int;
         case TRANSFORM_MODE_90:
-            psz_var = "mouse-y";
+            x = p_vout->p_sys->p_vout->output.i_height - val.coords.y;
+            y = val.coords.x;
             break;
 
         case TRANSFORM_MODE_180:
-        case TRANSFORM_MODE_HFLIP:
-            newval.i_int = p_vout->p_sys->p_vout->output.i_width
-                             - newval.i_int;
+            x = p_vout->p_sys->p_vout->output.i_width - val.coords.x;
+            y = p_vout->p_sys->p_vout->output.i_height - val.coords.y;
             break;
 
-        case TRANSFORM_MODE_VFLIP:
-        default:
-            break;
-        }
-    }
-    else if( !strcmp( psz_var, "mouse-y" ) )
-    {
-        switch( p_vout->p_sys->i_mode )
-        {
-        case TRANSFORM_MODE_90:
-            newval.i_int = p_vout->p_sys->p_vout->output.i_height
-                             - newval.i_int;
         case TRANSFORM_MODE_270:
-            psz_var = "mouse-x";
-            break;
-
-        case TRANSFORM_MODE_180:
-        case TRANSFORM_MODE_VFLIP:
-            newval.i_int = p_vout->p_sys->p_vout->output.i_height
-                             - newval.i_int;
+            x = val.coords.y;
+            y = p_vout->p_sys->p_vout->output.i_width - val.coords.x;
             break;
 
         case TRANSFORM_MODE_HFLIP:
+            x = p_vout->p_sys->p_vout->output.i_width - val.coords.x;
+            break;
+
+        case TRANSFORM_MODE_VFLIP:
+            y = p_vout->p_sys->p_vout->output.i_height - val.coords.y;
+            break;
+
         default:
             break;
-        }
     }
-
-    return var_Set( p_vout, psz_var, newval );
+    return var_SetCoords( p_vout, psz_var, x, y );
 }
 
 static void FilterPlanar( vout_thread_t *p_vout,
@@ -478,7 +462,7 @@ static void FilterPlanar( vout_thread_t *p_vout,
             }
             break;
 
-        case TRANSFORM_MODE_HFLIP:
+        case TRANSFORM_MODE_VFLIP:
             for( i_index = 0 ; i_index < p_pic->i_planes ; i_index++ )
             {
                 uint8_t *p_in = p_pic->p[i_index].p_pixels;
@@ -492,12 +476,12 @@ static void FilterPlanar( vout_thread_t *p_vout,
                     p_in_end -= p_pic->p[i_index].i_pitch;
                     vlc_memcpy( p_out, p_in_end,
                                 p_pic->p[i_index].i_visible_pitch );
-                    p_out += p_pic->p[i_index].i_pitch;
+                    p_out += p_outpic->p[i_index].i_pitch;
                 }
             }
             break;
 
-        case TRANSFORM_MODE_VFLIP:
+        case TRANSFORM_MODE_HFLIP:
             for( i_index = 0 ; i_index < p_pic->i_planes ; i_index++ )
             {
                 uint8_t *p_in = p_pic->p[i_index].p_pixels;
@@ -517,6 +501,8 @@ static void FilterPlanar( vout_thread_t *p_vout,
                     }
 
                     p_in += p_pic->p[i_index].i_pitch;
+                    p_out += p_outpic->p[i_index].i_pitch
+                                - p_outpic->p[i_index].i_visible_pitch;
                 }
             }
             break;
@@ -687,7 +673,7 @@ static void FilterYUYV( vout_thread_t *p_vout,
 
     switch( p_vout->p_sys->i_mode )
     {
-        case TRANSFORM_MODE_HFLIP:
+        case TRANSFORM_MODE_VFLIP:
             /* Fall back on the default implementation */
             FilterPlanar( p_vout, p_pic, p_outpic );
             return;
@@ -814,7 +800,7 @@ static void FilterYUYV( vout_thread_t *p_vout,
             }
             break;
 
-        case TRANSFORM_MODE_VFLIP:
+        case TRANSFORM_MODE_HFLIP:
             for( i_index = 0 ; i_index < p_pic->i_planes ; i_index++ )
             {
                 uint8_t *p_in = p_pic->p[i_index].p_pixels;
@@ -839,6 +825,8 @@ static void FilterYUYV( vout_thread_t *p_vout,
                     }
 
                     p_in += p_pic->p[i_index].i_pitch;
+                    p_out += p_outpic->p[i_index].i_pitch
+                                - p_outpic->p[i_index].i_visible_pitch;
                 }
             }
             break;

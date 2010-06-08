@@ -2,7 +2,7 @@
  * sharpen.c: Sharpen video filter
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 135f21b49ceff5558de68c10a849d636c5f49dac $
+ * $Id: 463a32251996fc20c457c60e0e46ebce2a071b7c $
  *
  * Author: Jérémy DEMEULE <dj_mulder at djduron dot no-ip dot org>
  *         Jean-Baptiste Kempf <jb at videolan dot org>
@@ -39,9 +39,8 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_picture.h"
 
 #define SIG_TEXT N_("Sharpen strength (0-2)")
@@ -57,14 +56,16 @@ static picture_t *Filter( filter_t *, picture_t * );
 static int SharpenCallback( vlc_object_t *, char const *,
                             vlc_value_t, vlc_value_t, void * );
 
+#define SHARPEN_HELP N_("Augment contrast between contours.")
 #define FILTER_PREFIX "sharpen-"
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-    set_description( N_("Augment contrast between contours.") )
-    set_shortname( N_("Sharpen video filter") )
+    set_description( N_("Sharpen video filter") )
+    set_shortname( N_("Sharpen") )
+    set_help(SHARPEN_HELP)
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
     set_capability( "video filter2", 0 )
@@ -166,6 +167,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     uint8_t *p_src = NULL;
     uint8_t *p_out = NULL;
     int i_src_pitch;
+    int i_out_pitch;
     int pix;
     const int v1 = -1;
     const int v2 = 3; /* 2^3 = 8 */
@@ -183,6 +185,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     p_src = p_pic->p[Y_PLANE].p_pixels;
     p_out = p_outpic->p[Y_PLANE].p_pixels;
     i_src_pitch = p_pic->p[Y_PLANE].i_visible_pitch;
+    i_out_pitch = p_outpic->p[Y_PLANE].i_visible_pitch;
 
     /* perform convolution only on Y plane. Avoid border line. */
     vlc_mutex_lock( &p_filter->p_sys->lock );
@@ -191,14 +194,14 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         if( (i == 0) || (i == p_pic->p[Y_PLANE].i_visible_lines - 1) )
         {
             for( j = 0; j < p_pic->p[Y_PLANE].i_visible_pitch; j++ )
-                p_out[i * i_src_pitch + j] = clip( p_src[i * i_src_pitch + j] );
+                p_out[i * i_out_pitch + j] = clip( p_src[i * i_src_pitch + j] );
             continue ;
         }
         for( j = 0; j < p_pic->p[Y_PLANE].i_visible_pitch; j++ )
         {
             if( (j == 0) || (j == p_pic->p[Y_PLANE].i_visible_pitch - 1) )
             {
-                p_out[i * i_src_pitch + j] = p_src[i * i_src_pitch + j];
+                p_out[i * i_out_pitch + j] = p_src[i * i_src_pitch + j];
                 continue ;
             }
 
@@ -213,18 +216,14 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
                   (p_src[(i + 1) * i_src_pitch + j + 1] * v1);
 
            pix = pix >= 0 ? clip(pix) : -clip(pix * -1);
-           p_out[i * i_src_pitch + j] = clip( p_src[i * i_src_pitch + j] +
+           p_out[i * i_out_pitch + j] = clip( p_src[i * i_src_pitch + j] +
                p_filter->p_sys->tab_precalc[pix + 256] );
         }
     }
     vlc_mutex_unlock( &p_filter->p_sys->lock );
 
-    vlc_memcpy( p_outpic->p[U_PLANE].p_pixels, p_pic->p[U_PLANE].p_pixels,
-                p_outpic->p[U_PLANE].i_lines * p_outpic->p[U_PLANE].i_pitch );
-
-    vlc_memcpy( p_outpic->p[V_PLANE].p_pixels, p_pic->p[V_PLANE].p_pixels,
-                p_outpic->p[V_PLANE].i_lines * p_outpic->p[V_PLANE].i_pitch );
-
+    plane_CopyPixels( &p_outpic->p[U_PLANE], &p_pic->p[U_PLANE] );
+    plane_CopyPixels( &p_outpic->p[V_PLANE], &p_pic->p[V_PLANE] );
 
     return CopyInfoAndRelease( p_outpic, p_pic );
 }

@@ -2,7 +2,7 @@
  * asx.c : ASX playlist format import
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: 030c3410cd6d40b848021df56d32bd323b5b1d7f $
+ * $Id: 02e445b3bf31cc1dd367339538f550ec2a965d18 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -37,7 +37,7 @@
 #include <ctype.h>
 #include <vlc_charset.h>
 #include "playlist.h"
-#include "vlc_meta.h"
+#include <vlc_meta.h>
 
 struct demux_sys_t
 {
@@ -89,7 +89,9 @@ static int StoreString( demux_t *p_demux, char **ppsz_string,
         }
         *buf++ = '\0';
 
-        buf = *ppsz_string = realloc (*ppsz_string, buf - *ppsz_string);
+        buf = realloc (*ppsz_string, buf - *ppsz_string);
+        if( buf )
+            *ppsz_string = buf;
     }
     return VLC_SUCCESS;
 }
@@ -208,7 +210,8 @@ int Import_ASX( vlc_object_t *p_this )
     p_demux->p_sys->psz_data = NULL;
     p_demux->p_sys->i_data_len = -1;
     p_demux->p_sys->b_utf8 = false;
-    p_demux->p_sys->b_skip_ads = config_GetInt( p_demux, "playlist-skip-ads" );
+    p_demux->p_sys->b_skip_ads =
+        var_InheritBool( p_demux, "playlist-skip-ads" );
 
     return VLC_SUCCESS;
 }
@@ -232,15 +235,15 @@ static int Demux( demux_t *p_demux )
     char        *psz_parse = NULL;
     char        *psz_backup = NULL;
     bool  b_entry = false;
-    INIT_PLAYLIST_STUFF;
+    input_item_t *p_current_input = GetCurrentItem(p_demux);
 
     /* init txt */
     if( p_sys->i_data_len < 0 )
     {
         int64_t i_pos = 0;
-        p_sys->i_data_len = stream_Size( p_demux->s ) +1; /* This is a cheat to prevent unnecessary realloc */
-        if( p_sys->i_data_len <= 0 && p_sys->i_data_len < 16384 ) p_sys->i_data_len = 1024;
-        p_sys->psz_data = malloc( p_sys->i_data_len +1);
+        p_sys->i_data_len = stream_Size( p_demux->s ) + 1; /* This is a cheat to prevent unnecessary realloc */
+        if( p_sys->i_data_len <= 0 || p_sys->i_data_len > 16384 ) p_sys->i_data_len = 1024;
+        p_sys->psz_data = xmalloc( p_sys->i_data_len +1);
 
         /* load the complete file */
         for( ;; )
@@ -251,11 +254,14 @@ static int Demux( demux_t *p_demux )
             if( i_read < p_sys->i_data_len - i_pos ) break; /* Done */
 
             i_pos += i_read;
-            p_sys->i_data_len += 1024;
-            p_sys->psz_data = realloc( p_sys->psz_data, p_sys->i_data_len * sizeof( char * ) +1 );
+            p_sys->i_data_len <<= 1 ;
+            p_sys->psz_data = xrealloc( p_sys->psz_data,
+                                   p_sys->i_data_len * sizeof( char * ) + 1 );
         }
         if( p_sys->i_data_len <= 0 ) return -1;
     }
+
+    input_item_node_t *p_subitems = input_item_node_Create( p_current_input );
 
     psz_parse = p_sys->psz_data;
     /* Find first element */
@@ -287,6 +293,10 @@ static int Demux( demux_t *p_demux )
 
         psz_parse = strcasestr( psz_parse, ">" );
 
+        /* counter for single ad item */
+        input_item_t *uniq_entry_ad_backup = NULL;
+        int i_inserted_entries = 0;
+
         while( psz_parse && ( psz_parse = strcasestr( psz_parse, "<" ) ) )
         {
             if( !strncasecmp( psz_parse, "<!--", 4 ) )
@@ -310,7 +320,7 @@ static int Demux( demux_t *p_demux )
                             i_strlen = psz_parse-psz_backup;
                             if( i_strlen < 1 ) continue;
                             msg_Dbg( p_demux, "param name strlen: %d", i_strlen);
-                            psz_string = malloc( i_strlen + 1);
+                            psz_string = xmalloc( i_strlen + 1);
                             memcpy( psz_string, psz_backup, i_strlen );
                             psz_string[i_strlen] = '\0';
                             msg_Dbg( p_demux, "param name: %s", psz_string);
@@ -332,7 +342,7 @@ static int Demux( demux_t *p_demux )
                             i_strlen = psz_parse-psz_backup;
                             if( i_strlen < 1 ) continue;
                             msg_Dbg( p_demux, "param value strlen: %d", i_strlen);
-                            psz_string = malloc( i_strlen +1);
+                            psz_string = xmalloc( i_strlen +1);
                             memcpy( psz_string, psz_backup, i_strlen );
                             psz_string[i_strlen] = '\0';
                             msg_Dbg( p_demux, "param value: %s", psz_string);
@@ -431,6 +441,8 @@ static int Demux( demux_t *p_demux )
                 }
                 if( ( psz_parse = strcasestr( psz_parse, "/>" ) ) )
                     psz_parse += 2;
+                else if( ( psz_parse = strcasestr( psz_parse, "</MoreInfo>") ) )
+                    psz_parse += 11;
                 else continue;
             }
             else if( !strncasecmp( psz_parse, "<ABSTRACT>", 10 ) )
@@ -455,13 +467,13 @@ static int Demux( demux_t *p_demux )
                         {
                             i_strlen = psz_parse-psz_backup;
                             if( i_strlen < 1 ) continue;
-                            psz_string = malloc( i_strlen +1);
+                            psz_string = xmalloc( i_strlen +1);
                             memcpy( psz_string, psz_backup, i_strlen );
                             psz_string[i_strlen] = '\0';
                             input_item_t *p_input;
                             p_input = input_item_New( p_demux, psz_string, psz_title_asx );
                             input_item_CopyOptions( p_current_input, p_input );
-                            input_item_AddSubItem( p_current_input, p_input );
+                            input_item_node_AppendItem( p_subitems, p_input );
                             vlc_gc_decref( p_input );
                             free( psz_string );
                         }
@@ -494,11 +506,10 @@ static int Demux( demux_t *p_demux )
                     msg_Err( p_demux, "entry without href?" );
                     continue;
                 }
-
-                if( p_sys->b_skip_ads && b_skip_entry )
+                /* An skip entry is an ad only if other entries exist without skip */
+                if( p_sys->b_skip_ads && b_skip_entry && i_inserted_entries != 0 )
                 {
                     char *psz_current_input_name = input_item_GetName( p_current_input );
-
                     msg_Dbg( p_demux, "skipped entry %d %s (%s)",
                              i_entry_count,
                              ( psz_title_entry ? psz_title_entry : psz_current_input_name ), psz_href );
@@ -528,9 +539,11 @@ static int Demux( demux_t *p_demux )
                     char *psz_current_input_name = input_item_GetName( p_current_input );
                     if( asprintf( &psz_name, "%d %s", i_entry_count, ( psz_title_entry ? psz_title_entry : psz_current_input_name ) ) != -1 )
                     {
-                        p_entry = input_item_NewExt( p_demux, psz_href, psz_name,
+                        char *psz_mrl = ProcessMRL( psz_href, p_demux->p_sys->psz_prefix );
+                        p_entry = input_item_NewExt( p_demux, psz_mrl, psz_name,
                                                      i_options, (const char * const *)ppsz_options, VLC_INPUT_OPTION_TRUSTED, -1 );
                         free( psz_name );
+                        free( psz_mrl );
                         input_item_CopyOptions( p_current_input, p_entry );
                         while( i_options )
                         {
@@ -544,8 +557,23 @@ static int Demux( demux_t *p_demux )
                         if( psz_copyright_entry ) input_item_SetCopyright( p_entry, psz_copyright_entry );
                         if( psz_moreinfo_entry ) input_item_SetURL( p_entry, psz_moreinfo_entry );
                         if( psz_abstract_entry ) input_item_SetDescription( p_entry, psz_abstract_entry );
-                        input_item_AddSubItem( p_current_input, p_entry );
-                        vlc_gc_decref( p_entry );
+
+                        i_inserted_entries++;
+                        if( p_sys->b_skip_ads && b_skip_entry )
+                        {
+                            // We put the entry as a backup for unique ad case
+                            uniq_entry_ad_backup = p_entry;
+                        }
+                        else
+                        {
+                            if( uniq_entry_ad_backup != NULL )
+                            {
+                                vlc_gc_decref( uniq_entry_ad_backup );
+                                uniq_entry_ad_backup = NULL;
+                            }
+                            input_item_node_AppendItem( p_subitems, p_entry );
+                            vlc_gc_decref( p_entry );
+                        }
                     }
                     free( psz_current_input_name );
                 }
@@ -603,8 +631,29 @@ static int Demux( demux_t *p_demux )
                             i_strlen = psz_parse-psz_backup;
                             if( i_strlen < 1 ) continue;
 
+                            if( psz_href )
+                            {
+                                /* we have allready one href in this entry, lets make new input from it and
+                                continue with new href, don't free meta/options*/
+                                input_item_t *p_entry = NULL;
+                                char *psz_name = input_item_GetName( p_current_input );
+
+                                char *psz_mrl = ProcessMRL( psz_href, p_demux->p_sys->psz_prefix );
+                                p_entry = input_item_NewExt( p_demux, psz_mrl, psz_name,
+                                                     0, NULL, VLC_INPUT_OPTION_TRUSTED, -1 );
+                                free( psz_mrl );
+                                input_item_CopyOptions( p_current_input, p_entry );
+                                if( psz_title_entry ) input_item_SetTitle( p_entry, psz_title_entry );
+                                if( psz_artist_entry ) input_item_SetArtist( p_entry, psz_artist_entry );
+                                if( psz_copyright_entry ) input_item_SetCopyright( p_entry, psz_copyright_entry );
+                                if( psz_moreinfo_entry ) input_item_SetURL( p_entry, psz_moreinfo_entry );
+                                if( psz_abstract_entry ) input_item_SetDescription( p_entry, psz_abstract_entry );
+                                input_item_node_AppendItem( p_subitems, p_entry );
+                                vlc_gc_decref( p_entry );
+                            }
+
                             free( psz_href );
-                            psz_href = malloc( i_strlen +1);
+                            psz_href = xmalloc( i_strlen +1);
                             memcpy( psz_href, psz_backup, i_strlen );
                             psz_href[i_strlen] = '\0';
                             psz_tmp = psz_href + (i_strlen-1);
@@ -698,6 +747,13 @@ static int Demux( demux_t *p_demux )
             }
             else psz_parse++;
         }
+        if ( uniq_entry_ad_backup != NULL )
+        {
+            msg_Dbg( p_demux, "added unique entry even if ad");
+            /* If ASX contains a unique entry, we add it, it is probably not an ad */
+            input_item_node_AppendItem( p_subitems, uniq_entry_ad_backup );
+            vlc_gc_decref( uniq_entry_ad_backup);
+        }
 #if 0
 /* FIXME Unsupported elements */
             PARAM
@@ -707,7 +763,10 @@ static int Demux( demux_t *p_demux )
             STARTMARK
 #endif
     }
-    HANDLE_PLAY_AND_RELEASE;
+
+    input_item_node_PostAndDelete( p_subitems );
+
+    vlc_gc_decref(p_current_input);
     return 0; /* Needed for correct operation of go back */
 }
 

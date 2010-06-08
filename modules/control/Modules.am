@@ -1,12 +1,11 @@
 SUBDIRS = http globalhotkeys
 SOURCES_gestures = gestures.c
-SOURCES_showintf = showintf.c
-SOURCES_telnet = telnet.c
+SOURCES_oldtelnet = telnet.c
 SOURCES_netsync = netsync.c
 SOURCES_ntservice = ntservice.c
 SOURCES_hotkeys = hotkeys.c
 SOURCES_lirc = lirc.c
-SOURCES_rc = rc.c
+SOURCES_oldrc = rc.c
 SOURCES_dbus = dbus.c dbus.h
 SOURCES_signals = signals.c
 if HAVE_DARWIN
@@ -18,3 +17,20 @@ SOURCES_motion = \
         motion.c \
         $(motion_extra) \
         $(NULL)
+
+libvlc_LTLIBRARIES += \
+	libgestures_plugin.la \
+	libnetsync_plugin.la \
+	libhotkeys_plugin.la
+if !HAVE_WINCE
+libvlc_LTLIBRARIES += \
+	liboldrc_plugin.la
+if !HAVE_WIN32
+libvlc_LTLIBRARIES += \
+	libsignals_plugin.la \
+	libmotion_plugin.la
+else
+libvlc_LTLIBRARIES += \
+	libntservice_plugin.la
+endif
+endif	

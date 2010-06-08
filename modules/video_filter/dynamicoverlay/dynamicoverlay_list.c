@@ -2,7 +2,7 @@
  * dynamicoverlay_list.h : dynamic overlay list
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 985d3c415fedf04141b9333574e976c069d12b05 $
+ * $Id: 66ad130a1b4c644c2dea294adce25256609b852b $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
@@ -28,8 +28,8 @@
 
 #include <vlc_common.h>
 #include <vlc_osd.h>
+#include <vlc_memory.h>
 
-#include <fcntl.h>
 #include "dynamicoverlay.h"
 
 /*****************************************************************************
@@ -38,13 +38,11 @@
 
 int ListInit( list_t *p_list )
 {
-    p_list->pp_head = malloc( 16 * sizeof( overlay_t * ) );
+    p_list->pp_head = calloc( 16, sizeof( overlay_t * ) );
     if( p_list->pp_head == NULL )
         return VLC_ENOMEM;
 
     p_list->pp_tail = p_list->pp_head + 16;
-    memset( p_list->pp_head, 0, 16 * sizeof( overlay_t * ) );
-
     return VLC_SUCCESS;
 }
 
@@ -82,8 +80,8 @@ ssize_t ListAdd( list_t *p_list, overlay_t *p_new )
     /* Have to expand */
     size_t i_size = p_list->pp_tail - p_list->pp_head;
     size_t i_newsize = i_size * 2;
-    p_list->pp_head = realloc( p_list->pp_head,
-                               i_newsize * sizeof( overlay_t * ) );
+    p_list->pp_head = realloc_or_free( p_list->pp_head,
+                                       i_newsize * sizeof( overlay_t * ) );
     if( p_list->pp_head == NULL )
         return VLC_ENOMEM;
 

@@ -2,7 +2,7 @@
  * sgimb.c: a meta demux to parse sgimb referrer files
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: f2d83a3baa6f43bb039fc7aae1e8cb0e07a0ed2f $
+ * $Id: 07065db66422adb511421c0774cadb912b7463ea $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -169,7 +169,7 @@ int Import_SGIMB( vlc_object_t * p_this )
             p_demux->p_sys->i_sid = 0;
             p_demux->p_sys->b_rtsp_kasenna = false;
             p_demux->p_sys->b_concert = false;
- 
+
             return VLC_SUCCESS;
         }
     }
@@ -324,7 +324,7 @@ static int Demux ( demux_t *p_demux )
     input_item_t    *p_child = NULL;
     char            *psz_line;
 
-    INIT_PLAYLIST_STUFF;
+    input_item_t *p_current_input = GetCurrentItem(p_demux);
 
     while( ( psz_line = stream_ReadLine( p_demux->s ) ) )
     {
@@ -379,7 +379,7 @@ static int Demux ( demux_t *p_demux )
     p_child = input_item_NewWithType( VLC_OBJECT(p_demux), p_sys->psz_uri,
                       p_sys->psz_name ? p_sys->psz_name : p_sys->psz_uri,
                       0, NULL, 0, p_sys->i_duration, ITEM_TYPE_NET );
- 
+
     if( !p_child )
     {
         msg_Err( p_demux, "A valid playlistitem could not be created" );
@@ -402,9 +402,9 @@ static int Demux ( demux_t *p_demux )
     if( !p_sys->psz_mcast_ip && p_sys->b_rtsp_kasenna )
         input_item_AddOption( p_child, "rtsp-kasenna", VLC_INPUT_OPTION_TRUSTED );
 
-    input_item_AddSubItem( p_current_input, p_child );
+    input_item_PostSubItem( p_current_input, p_child );
     vlc_gc_decref( p_child );
-    HANDLE_PLAY_AND_RELEASE
+    vlc_gc_decref(p_current_input);
     return 0; /* Needed for correct operation of go back */
 }
 

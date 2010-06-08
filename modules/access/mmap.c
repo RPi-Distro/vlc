@@ -2,7 +2,7 @@
  * mmap.c: memory-mapped file input
  *****************************************************************************
  * Copyright © 2007-2008 Rémi Denis-Courmont
- * $Id: 8a36040aad316eb673e62d5e9efda5c65f322080 $
+ * $Id: 2a591558a96e76a8cb3264f945df5a1dd6216ae7 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,12 +27,11 @@
 #include <vlc_plugin.h>
 #include <vlc_access.h>
 #include <vlc_input.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_dialog.h>
 
 #include <assert.h>
 
-#include <errno.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -58,12 +57,17 @@ vlc_module_begin ()
     set_capability ("access", 52)
     add_shortcut ("file")
     set_callbacks (Open, Close)
+#ifdef __APPLE__
+    add_bool ("file-mmap", true, NULL,
+              FILE_MMAP_TEXT, FILE_MMAP_LONGTEXT, true)
+#else
     add_bool ("file-mmap", false, NULL,
               FILE_MMAP_TEXT, FILE_MMAP_LONGTEXT, true)
+#endif
 vlc_module_end ()
 
 static block_t *Block (access_t *);
-static int Seek (access_t *, int64_t);
+static int Seek (access_t *, uint64_t);
 static int Control (access_t *, int, va_list);
 
 struct access_sys_t
@@ -89,13 +93,8 @@ static int Open (vlc_object_t *p_this)
 
     STANDARD_BLOCK_ACCESS_INIT;
 
-    if (!strcmp (p_access->psz_path, "-"))
-        fd = dup (0);
-    else
-    {
-        msg_Dbg (p_access, "opening file %s", path);
-        fd = utf8_open (path, O_RDONLY | O_NOCTTY, 0666);
-    }
+    msg_Dbg (p_access, "opening file %s", path);
+    fd = vlc_open (path, O_RDONLY | O_NOCTTY);
 
     if (fd == -1)
     {
@@ -185,7 +184,7 @@ static block_t *Block (access_t *p_access)
         p_access->info.i_update |= INPUT_UPDATE_SIZE;
     }
 
-    if ((uint64_t)p_access->info.i_pos >= (uint64_t)p_access->info.i_size)
+    if (p_access->info.i_pos >= p_access->info.i_size)
     {
         /* We are at end of file */
         p_access->info.b_eof = true;
@@ -194,7 +193,7 @@ static block_t *Block (access_t *p_access)
     }
 
 #ifdef MMAP_DEBUG
-    int64_t dbgpos = lseek (p_sys->fd, 0, SEEK_CUR);
+    uint64_t dbgpos = lseek (p_sys->fd, 0, SEEK_CUR);
     if (dbgpos != p_access->info.i_pos)
         msg_Err (p_access, "position: 0x%016"PRIx64" instead of 0x%016"PRIx64,
                  p_access->info.i_pos, dbgpos);
@@ -266,7 +265,7 @@ fatal:
 }
 
 
-static int Seek (access_t *p_access, int64_t i_pos)
+static int Seek (access_t *p_access, uint64_t i_pos)
 {
 #ifdef MMAP_DEBUG
     lseek (p_access->p_sys->fd, i_pos, SEEK_SET);
@@ -286,13 +285,13 @@ static int Control (access_t *p_access, int query, va_list args)
         case ACCESS_CAN_FASTSEEK:
         case ACCESS_CAN_PAUSE:
         case ACCESS_CAN_CONTROL_PACE:
-            *((bool *)va_arg (args, bool *)) = true;
+            *va_arg(args, bool *) = true;
             return VLC_SUCCESS;
 
         case ACCESS_GET_PTS_DELAY:
         {
             int delay_ms = var_CreateGetInteger (p_access, "file-caching");
-            *((int64_t *)va_arg (args, int64_t *)) = delay_ms * INT64_C (1000);
+            *va_arg(args, int64_t *) = delay_ms * INT64_C (1000);
             return VLC_SUCCESS;
         }
 

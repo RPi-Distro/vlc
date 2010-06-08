@@ -15,9 +15,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -33,6 +33,7 @@
 #include <vlc_network.h> /* DOWN: #include <network.h> */
 #include <vlc_url.h>
 #include <vlc_block.h>
+#include <vlc_rand.h>
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -227,13 +228,6 @@ const uint8_t FLV_VIDEO_FRAME_TYPE_DISPOSABLE_INTER_FRAME = 0x30;
 /*****************************************************************************
  * static RTMP functions:
  ******************************************************************************/
-static void rtmp_handler_null       ( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet );
-static void rtmp_handler_chunk_size ( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet );
-static void rtmp_handler_invoke     ( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet );
-static void rtmp_handler_audio_data ( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet );
-static void rtmp_handler_video_data ( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet );
-static void rtmp_handler_notify     ( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet );
-
 static rtmp_packet_t *rtmp_new_packet( rtmp_control_thread_t *p_thread, uint8_t stream_index, uint32_t timestamp, uint8_t content_type, uint32_t src_dst, rtmp_body_t *body );
 static block_t *rtmp_new_block( rtmp_control_thread_t *p_thread, uint8_t *buffer, int32_t length_buffer );
 
@@ -338,18 +332,14 @@ rtmp_handshake_active( vlc_object_t *p_this, int fd )
     int i;
 
     p_write[0] = RTMP_HANDSHAKE;
-    for( i = 0; i < RTMP_HANDSHAKE_BODY_SIZE; i++ )
-    {
-        if (i < 8)
-        {
-            p_write[i + 1] = 0x00;
-        } else {
-            p_write[i + 1] = rand() & 0xFF;
-        }
-    }
+
+    for( i = 0; i < 8; i++ )
+        p_write[i + 1] = 0x00;
+
+    vlc_rand_bytes( p_write+1+8, RTMP_HANDSHAKE_BODY_SIZE-8 );
 
     /* Send handshake*/
-    i_ret = net_Write( p_this, fd, NULL, p_write, RTMP_HANDSHAKE_BODY_SIZE + 1 );
+    i_ret = net_Write( p_this, fd, NULL, p_write, RTMP_HANDSHAKE_BODY_SIZE+1 );
     if( i_ret != RTMP_HANDSHAKE_BODY_SIZE + 1 )
     {
         msg_Err( p_this, "failed to send handshake" );
@@ -389,6 +379,24 @@ rtmp_handshake_active( vlc_object_t *p_this, int fd )
     return 0;
 }
 
+static int
+write_rtmp( rtmp_control_thread_t *p_thread, uint8_t *buf,
+            rtmp_packet_t *pkt, const char *errmsg )
+{
+    int32_t enclen = pkt->length_encoded;
+    int ret = net_Write( p_thread, p_thread->fd, NULL, buf, enclen );
+    free( pkt->body->body );
+    free( pkt->body );
+    free( pkt );
+    free( buf );
+    if( ret != enclen )
+    {
+        msg_Err( p_thread, "%s", errmsg );
+        return 0;
+    }
+    return 1;
+}
+
 int
 rtmp_connect_active( rtmp_control_thread_t *p_thread )
 {
@@ -396,7 +404,6 @@ rtmp_connect_active( rtmp_control_thread_t *p_thread )
     rtmp_body_t *rtmp_body;
     uint8_t *tmp_buffer;
     char *tmp_url;
-    ssize_t i_ret;
 
     /* Build NetConnection.connect call */
     rtmp_body = rtmp_body_new( -1 );
@@ -430,10 +437,10 @@ rtmp_connect_active( rtmp_control_thread_t *p_thread )
     free( tmp_buffer );
 
     tmp_buffer = amf_encode_object_variable( "swfUrl",
-         AMF_DATATYPE_STRING, "file:///mac.flv" );
+         AMF_DATATYPE_STRING, p_thread->psz_swf_url );
     rtmp_body_append( rtmp_body, tmp_buffer,
         AMF_DATATYPE_SIZE_OBJECT_VARIABLE + strlen( "swfUrl" ) +
-        AMF_DATATYPE_SIZE_STRING + strlen( "file:///mac.flv" ) );
+        AMF_DATATYPE_SIZE_STRING + strlen( p_thread->psz_swf_url ) );
     free( tmp_buffer );
 
     if( asprintf( &tmp_url, "rtmp://%s", p_thread->url.psz_buffer ) == -1 )
@@ -479,10 +486,10 @@ rtmp_connect_active( rtmp_control_thread_t *p_thread )
     free( tmp_buffer );
 
     tmp_buffer = amf_encode_object_variable( "pageUrl",
-        AMF_DATATYPE_STRING, "file:///mac.html" );
+        AMF_DATATYPE_STRING, p_thread->psz_page_url );
     rtmp_body_append( rtmp_body, tmp_buffer,
         AMF_DATATYPE_SIZE_OBJECT_VARIABLE + strlen( "pageUrl" ) +
-        AMF_DATATYPE_SIZE_STRING + strlen( "file:///mac.html" ) );
+        AMF_DATATYPE_SIZE_STRING + strlen( p_thread->psz_page_url ) );
     free( tmp_buffer );
 
     tmp_buffer = amf_encode_object_variable( "objectEncoding",
@@ -504,20 +511,9 @@ rtmp_connect_active( rtmp_control_thread_t *p_thread )
     tmp_buffer = rtmp_encode_packet( p_thread, rtmp_packet );
 
     /* Call NetConnection.connect */
-    i_ret = net_Write( p_thread, p_thread->fd, NULL, tmp_buffer, rtmp_packet->length_encoded );
-    if( i_ret != rtmp_packet->length_encoded )
-    {
-        free( rtmp_packet->body->body );
-        free( rtmp_packet->body );
-        free( rtmp_packet );
-        free( tmp_buffer );
-        msg_Err( p_thread, "failed send call NetConnection.connect" );
+    if( !write_rtmp( p_thread, tmp_buffer, rtmp_packet,
+                     "failed send call NetConnection.connect" ) )
         return -1;
-    }
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
-    free( tmp_buffer );
 
     /* Wait for NetConnection.connect result */
     vlc_mutex_lock( &p_thread->lock );
@@ -560,20 +556,10 @@ rtmp_connect_active( rtmp_control_thread_t *p_thread )
     tmp_buffer = rtmp_encode_packet( p_thread, rtmp_packet );
 
     /* Call NetStream.createStream */
-    i_ret = net_Write( p_thread, p_thread->fd, NULL, tmp_buffer, rtmp_packet->length_encoded );
-    if( i_ret != rtmp_packet->length_encoded )
-    {
-        free( rtmp_packet->body->body );
-        free( rtmp_packet->body );
-        free( rtmp_packet );
-        free( tmp_buffer );
-        msg_Err( p_thread, "failed send call NetStream.createStream" );
+    if( !write_rtmp( p_thread, tmp_buffer, rtmp_packet,
+                     "failed send call NetStream.createStream" ) )
         return -1;
-    }
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
-    free( tmp_buffer );
+
 /*TODO: read server stream number*/
     /* Build ping packet */
     rtmp_body = rtmp_body_new( -1 );
@@ -590,20 +576,9 @@ rtmp_connect_active( rtmp_control_thread_t *p_thread )
     tmp_buffer = rtmp_encode_packet( p_thread, rtmp_packet );
 
     /* Send ping packet */
-    i_ret = net_Write( p_thread, p_thread->fd, NULL, tmp_buffer, rtmp_packet->length_encoded );
-    if( i_ret != rtmp_packet->length_encoded )
-    {
-        free( rtmp_packet->body->body );
-        free( rtmp_packet->body );
-        free( rtmp_packet );
-        free( tmp_buffer );
-        msg_Err( p_thread, "failed send ping BUFFER_TIME_CLIENT" );
+    if( !write_rtmp( p_thread, tmp_buffer, rtmp_packet,
+                     "failed send ping BUFFER_TIME_CLIENT" ) )
         return -1;
-    }
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
-    free( tmp_buffer );
 
     /* Build NetStream.play call */
     rtmp_body = rtmp_body_new( -1 );
@@ -635,20 +610,10 @@ rtmp_connect_active( rtmp_control_thread_t *p_thread )
     tmp_buffer = rtmp_encode_packet( p_thread, rtmp_packet );
 
     /* Call NetStream.play */
-    i_ret = net_Write( p_thread, p_thread->fd, NULL, tmp_buffer, rtmp_packet->length_encoded );
-    if( i_ret != rtmp_packet->length_encoded )
-    {
-        free( rtmp_packet->body->body );
-        free( rtmp_packet->body );
-        free( rtmp_packet );
-        free( tmp_buffer );
-        msg_Err( p_thread, "failed send call NetStream.play" );
+    if( !write_rtmp( p_thread, tmp_buffer, rtmp_packet,
+                     "failed send call NetStream.play" ) )
         return -1;
-    }
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
-    free( tmp_buffer );
+
 
     /* Build ping packet */
     rtmp_body = rtmp_body_new( -1 );
@@ -665,20 +630,9 @@ rtmp_connect_active( rtmp_control_thread_t *p_thread )
     tmp_buffer = rtmp_encode_packet( p_thread, rtmp_packet );
 
     /* Send ping packet */
-    i_ret = net_Write( p_thread, p_thread->fd, NULL, tmp_buffer, rtmp_packet->length_encoded );
-    if( i_ret != rtmp_packet->length_encoded )
-    {
-        free( rtmp_packet->body->body );
-        free( rtmp_packet->body );
-        free( rtmp_packet );
-        free( tmp_buffer );
-        msg_Err( p_thread, "failed send ping BUFFER_TIME_CLIENT" );
+    if( !write_rtmp( p_thread, tmp_buffer, rtmp_packet,
+                     "failed send ping BUFFER_TIME_CLIENT" ) )
         return -1;
-    }
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
-    free( tmp_buffer );
 
     /* Wait for NetStream.play.start result */
     vlc_cond_wait( &p_thread->wait, &p_thread->lock );
@@ -713,6 +667,14 @@ rtmp_connect_passive( rtmp_control_thread_t *p_thread )
     }
 
     return 0;
+}
+
+static void
+rtmp_packet_free( rtmp_packet_t *pkt )
+{
+    free( pkt->body->body );
+    free( pkt->body );
+    free( pkt );
 }
 
 /* TODO
@@ -757,26 +719,13 @@ msg_Warn(p_access, "i_pos %lld", i_pos);
     tmp_buffer = rtmp_encode_packet( p_access, rtmp_packet ); 
 
     // Call NetStream.seek //
-    i_ret = net_Write( p_access, p_sys->fd, NULL, tmp_buffer, rtmp_packet->length_encoded );
-    if( i_ret < rtmp_packet->length_encoded )
-    {
-        free( rtmp_packet->body->body );
-        free( rtmp_packet->body );
-        free( rtmp_packet );
-        free( tmp_buffer );
-        msg_Err( p_access, "failed call NetStream.seek" );
+    if( !write_rtmp( p_thread, tmp_buffer, rtmp_packet,
+                     "failed call NetStream.seek" ) )
         return -1;
-    }
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
-    free( tmp_buffer );
 
     // Receive TODO: see what //
     rtmp_packet = rtmp_read_net_packet( p_access, p_sys->fd );
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
+    rtmp_packet_free( rtmp_packet );
 
     return 0;
 }
@@ -792,7 +741,7 @@ rtmp_build_bytes_read( rtmp_control_thread_t *p_thread, uint32_t reply )
     /* Build bytes read packet */
     rtmp_body = rtmp_body_new( -1 );
 
-    tmp_buffer = (uint8_t *) malloc( sizeof( uint32_t ) * sizeof( uint8_t ) );
+    tmp_buffer = (uint8_t *) malloc( sizeof( uint32_t ) );
     if( !tmp_buffer ) return NULL;
 
     reply = hton32( reply );
@@ -929,16 +878,16 @@ rtmp_build_flv_over_rtmp( rtmp_control_thread_t *p_thread, block_t *p_buffer )
     return rtmp_packet;
 }
 
+/* This function must be cancellation-safe! */
 rtmp_packet_t *
 rtmp_read_net_packet( rtmp_control_thread_t *p_thread )
 {
     int length_header;
     int stream_index;
-    int bytes_left;
+    size_t bytes_left;
     uint8_t p_read[12];
-    rtmp_packet_t *rtmp_packet;
+    rtmp_packet_t *header;
     ssize_t i_ret;
-
 
     for(;;)
     {
@@ -946,18 +895,19 @@ rtmp_read_net_packet( rtmp_control_thread_t *p_thread )
         if( i_ret != 1 )
             goto error;
 
-        length_header = rtmp_decode_header_size( (vlc_object_t *) p_thread, p_read[0] & RTMP_HEADER_SIZE_MASK );
+        length_header = rtmp_decode_header_size( VLC_OBJECT(p_thread),
+                                          p_read[0] & RTMP_HEADER_SIZE_MASK );
         stream_index = p_read[0] & RTMP_HEADER_STREAM_INDEX_MASK;
+        header = p_thread->rtmp_headers_recv+stream_index;
 
         i_ret = net_Read( p_thread, p_thread->fd, NULL, p_read + 1, length_header - 1, true );
         if( i_ret != length_header - 1 )
             goto error;
 
         /* Update timestamp if not is an interchunk packet */
-        if( length_header == 1 && p_thread->rtmp_headers_recv[stream_index].body == NULL )
+        if( length_header == 1 && header->body == NULL )
         {
-            p_thread->rtmp_headers_recv[stream_index].timestamp +=
-                p_thread->rtmp_headers_recv[stream_index].timestamp_relative;
+            header->timestamp += header->timestamp_relative;
         }
 
         /* Length 4 and 8 headers have relative timestamp */
@@ -965,17 +915,16 @@ rtmp_read_net_packet( rtmp_control_thread_t *p_thread )
         {
             p_read[0] = 0;
 
-            p_thread->rtmp_headers_recv[stream_index].timestamp_relative = ntoh32( *(uint32_t *) p_read );
-            p_thread->rtmp_headers_recv[stream_index].timestamp +=
-                p_thread->rtmp_headers_recv[stream_index].timestamp_relative;
+            header->timestamp_relative = ntoh32( *(uint32_t *) p_read );
+            header->timestamp += header->timestamp_relative;
         }
 
         if( length_header >= 8 )
         {
             p_read[3] = 0;
 
-            p_thread->rtmp_headers_recv[stream_index].length_body = ntoh32( *(uint32_t *) (p_read + 3) );
-            p_thread->rtmp_headers_recv[stream_index].content_type = p_read[7];
+            header->length_body = ntoh32( *(uint32_t *) (p_read + 3) );
+            header->content_type = p_read[7];
         }
 
         /* Length 12 headers have absolute timestamp */
@@ -983,47 +932,44 @@ rtmp_read_net_packet( rtmp_control_thread_t *p_thread )
         {
             p_read[0] = 0;
 
-            p_thread->rtmp_headers_recv[stream_index].timestamp = ntoh32( *(uint32_t *) p_read );
-            p_thread->rtmp_headers_recv[stream_index].src_dst = ntoh32( *(uint32_t *) (p_read + 8) );
+            header->timestamp = ntoh32( *(uint32_t *) p_read );
+            header->src_dst = ntoh32( *(uint32_t *) (p_read + 8) );
         }
 
-        if( p_thread->rtmp_headers_recv[stream_index].body == NULL )
+        if( header->body == NULL )
         {
-            p_thread->rtmp_headers_recv[stream_index].body =
-                rtmp_body_new( p_thread->rtmp_headers_recv[stream_index].length_body );
+            header->body = rtmp_body_new( header->length_body );
         }
 
-        bytes_left = p_thread->rtmp_headers_recv[stream_index].body->length_buffer -
-            p_thread->rtmp_headers_recv[stream_index].body->length_body;
+        bytes_left = header->body->length_buffer - header->body->length_body;
 
         if( bytes_left > p_thread->chunk_size_recv )
             bytes_left = p_thread->chunk_size_recv;
 
         i_ret = net_Read( p_thread, p_thread->fd, NULL,
-            p_thread->rtmp_headers_recv[stream_index].body->body +
-            p_thread->rtmp_headers_recv[stream_index].body->length_body,
-            bytes_left, true );
-        if( i_ret != bytes_left )
+            header->body->body + header->body->length_body, bytes_left, true );
+
+        if( i_ret != (ssize_t)bytes_left )
             goto error;
 
-        p_thread->rtmp_headers_recv[stream_index].body->length_body += bytes_left;
+        header->body->length_body += bytes_left;
 
-        if( p_thread->rtmp_headers_recv[stream_index].length_body == p_thread->rtmp_headers_recv[stream_index].body->length_body )
+        if( header->length_body == header->body->length_body )
         {
-            rtmp_packet = (rtmp_packet_t *) malloc( sizeof( rtmp_packet_t ) );
-            if( !rtmp_packet ) goto error;
+            rtmp_packet_t *rpkt = (rtmp_packet_t*)malloc(sizeof(rtmp_packet_t));
+            if( !rpkt ) return NULL;
 
-            rtmp_packet->stream_index = stream_index;
-            rtmp_packet->timestamp = p_thread->rtmp_headers_recv[stream_index].timestamp;
-            rtmp_packet->timestamp_relative = p_thread->rtmp_headers_recv[stream_index].timestamp_relative;
-            rtmp_packet->content_type = p_thread->rtmp_headers_recv[stream_index].content_type;
-            rtmp_packet->src_dst = p_thread->rtmp_headers_recv[stream_index].src_dst;
-            rtmp_packet->length_body = p_thread->rtmp_headers_recv[stream_index].length_body;
-            rtmp_packet->body = p_thread->rtmp_headers_recv[stream_index].body;
+            rpkt->stream_index       = stream_index;
+            rpkt->timestamp          = header->timestamp;
+            rpkt->timestamp_relative = header->timestamp_relative;
+            rpkt->content_type       = header->content_type;
+            rpkt->src_dst            = header->src_dst;
+            rpkt->length_body        = header->length_body;
+            rpkt->body               = header->body;
 
-            p_thread->rtmp_headers_recv[stream_index].body = NULL;
+            header->body = NULL;
 
-            return rtmp_packet;
+            return rpkt;
         }
     }
 
@@ -1032,44 +978,21 @@ error:
     return NULL;
 }
 
-void
-rtmp_init_handler( rtmp_handler_t *rtmp_handler )
-{
-    rtmp_handler[RTMP_CONTENT_TYPE_CHUNK_SIZE] = rtmp_handler_chunk_size;
-    rtmp_handler[RTMP_CONTENT_TYPE_UNKNOWN_02] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_BYTES_READ] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_PING] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_SERVER_BW] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_CLIENT_BW] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_UNKNOWN_07] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_AUDIO_DATA] = rtmp_handler_audio_data;
-    rtmp_handler[RTMP_CONTENT_TYPE_VIDEO_DATA] = rtmp_handler_video_data;
-    rtmp_handler[RTMP_CONTENT_TYPE_UNKNOWN_0A_0E] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_FLEX_STREAM] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_FLEX_SHARED_OBJECT] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_MESSAGE] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_NOTIFY] = rtmp_handler_notify;
-    rtmp_handler[RTMP_CONTENT_TYPE_SHARED_OBJECT] = rtmp_handler_null;
-    rtmp_handler[RTMP_CONTENT_TYPE_INVOKE] = rtmp_handler_invoke;
-}
 
 static void
 rtmp_handler_null( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet )
 {
     VLC_UNUSED(p_thread);
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
+    rtmp_packet_free( rtmp_packet );
 }
 
 static void
-rtmp_handler_chunk_size( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet )
+rtmp_handler_chunk_size( rtmp_control_thread_t *p_thread,
+                         rtmp_packet_t *rtmp_packet )
 {
-    p_thread->chunk_size_recv = ntoh32( *(uint32_t *) (rtmp_packet->body->body) );
-
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
+    p_thread->chunk_size_recv =
+                            ntoh32( *(uint32_t *) (rtmp_packet->body->body) );
+    rtmp_packet_free( rtmp_packet );
 }
 
 static void
@@ -1090,9 +1013,7 @@ rtmp_handler_audio_data( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_pa
     p_buffer = rtmp_new_block( p_thread, rtmp_packet->body->body, rtmp_packet->body->length_body );
     block_FifoPut( p_thread->p_fifo_input, p_buffer );
 
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
+    rtmp_packet_free( rtmp_packet );
 }
 
 static void
@@ -1112,9 +1033,7 @@ rtmp_handler_video_data( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_pa
     p_buffer = rtmp_new_block( p_thread, rtmp_packet->body->body, rtmp_packet->body->length_body );
     block_FifoPut( p_thread->p_fifo_input, p_buffer );
 
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
+    rtmp_packet_free( rtmp_packet );
 }
 
 static void
@@ -1128,9 +1047,7 @@ rtmp_handler_notify( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
     p_buffer = rtmp_new_block( p_thread, rtmp_packet->body->body, rtmp_packet->body->length_body );
     block_FifoPut( p_thread->p_fifo_input, p_buffer );
 
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
+    rtmp_packet_free( rtmp_packet );
 }
 
 static void
@@ -1171,9 +1088,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send connection bandwith" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
 
         /* Server bandwith */
@@ -1187,9 +1102,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send server bandwith" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
 
         /* Clear stream */
@@ -1203,9 +1116,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send clear stream" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
 
         /* Reply NetConnection.connect */
@@ -1219,9 +1130,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send reply NetConnection.connect" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
     }
     else if( strcmp( "createStream", string ) == 0 )
@@ -1240,9 +1149,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send reply createStream" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
 
         /* Reset stream */
@@ -1256,9 +1163,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send reset stream" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
 
         /* Clear stream */
@@ -1272,9 +1177,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send clear stream" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
     }
     else if( strcmp( "publish", string ) == 0 )
@@ -1310,9 +1213,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send reply NetStream.play.reset" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
 
         /* Reply NetStream.play.start */
@@ -1326,9 +1227,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
             msg_Err( p_thread, "failed send reply NetStream.play.start" );
             goto error;
         }
-        free( tmp_rtmp_packet->body->body );
-        free( tmp_rtmp_packet->body );
-        free( tmp_rtmp_packet );
+        rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
 
         free( string2 );
@@ -1384,6 +1283,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
                     msg_Dbg( p_thread, "key: %s value: %s", string, string2 );
                     if( strcmp( "code", string ) == 0 )
                     {
+#warning Locking bugs here.
                         if( strcmp( "NetConnection.Connect.Success", string2 ) == 0 )
                         {
                             p_thread->result_connect = 0;
@@ -1394,8 +1294,6 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
                         }
                         else if( strcmp( "NetConnection.Connect.InvalidApp", string2 ) == 0 )
                         {
-                            p_thread->b_die = 1; 
-
                             vlc_mutex_lock( &p_thread->lock );
                             vlc_cond_signal( &p_thread->wait );
                             vlc_mutex_unlock( &p_thread->lock );
@@ -1453,27 +1351,25 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
         }
     }
     
-    free( rtmp_packet->body->body );
-    free( rtmp_packet->body );
-    free( rtmp_packet );
-
+    rtmp_packet_free( rtmp_packet );
     return;
 
 error:
     free( string );
-    free( tmp_rtmp_packet->body->body );
-    free( tmp_rtmp_packet->body );
-    free( tmp_rtmp_packet );
+    rtmp_packet_free( rtmp_packet );
     free( tmp_buffer );
 }
 
 /* length header calculated automatically based on last packet in the same channel */
 /* timestamps passed are always absolute */
 static rtmp_packet_t *
-rtmp_new_packet( rtmp_control_thread_t *p_thread, uint8_t stream_index, uint32_t timestamp, uint8_t content_type, uint32_t src_dst, rtmp_body_t *body )
+rtmp_new_packet( rtmp_control_thread_t *p_thread, uint8_t stream_index,
+                 uint32_t timestamp, uint8_t content_type,
+                 uint32_t src_dst, rtmp_body_t *body )
 {
     int interchunk_headers;
     rtmp_packet_t *rtmp_packet;
+    rtmp_packet_t *rtmp_send = p_thread->rtmp_headers_send+stream_index;
 
     rtmp_packet = (rtmp_packet_t *) malloc( sizeof( rtmp_packet_t ) );
     if( !rtmp_packet ) return NULL;
@@ -1482,31 +1378,31 @@ rtmp_new_packet( rtmp_control_thread_t *p_thread, uint8_t stream_index, uint32_t
     if( body->length_body % p_thread->chunk_size_send == 0 )
         interchunk_headers--;
 
-    if( src_dst != p_thread->rtmp_headers_send[stream_index].src_dst )
+    if( src_dst != rtmp_send->src_dst )
     {
-        p_thread->rtmp_headers_send[stream_index].timestamp = timestamp;
-        p_thread->rtmp_headers_send[stream_index].length_body = body->length_body;
-        p_thread->rtmp_headers_send[stream_index].content_type = content_type;
-        p_thread->rtmp_headers_send[stream_index].src_dst = src_dst;
+        rtmp_send->timestamp = timestamp;
+        rtmp_send->length_body = body->length_body;
+        rtmp_send->content_type = content_type;
+        rtmp_send->src_dst = src_dst;
         
         rtmp_packet->length_header = 12;
     }
-    else if( content_type != p_thread->rtmp_headers_send[stream_index].content_type
-        || body->length_body != p_thread->rtmp_headers_send[stream_index].length_body )
+    else if( content_type != rtmp_send->content_type
+        || body->length_body != rtmp_send->length_body )
     {
-        p_thread->rtmp_headers_send[stream_index].timestamp_relative = 
-            timestamp - p_thread->rtmp_headers_send[stream_index].timestamp;
-        p_thread->rtmp_headers_send[stream_index].timestamp = timestamp;
-        p_thread->rtmp_headers_send[stream_index].length_body = body->length_body;
-        p_thread->rtmp_headers_send[stream_index].content_type = content_type;
+        rtmp_send->timestamp_relative =
+            timestamp - rtmp_send->timestamp;
+        rtmp_send->timestamp = timestamp;
+        rtmp_send->length_body = body->length_body;
+        rtmp_send->content_type = content_type;
 
         rtmp_packet->length_header = 8;
     }
-    else if( timestamp != p_thread->rtmp_headers_send[stream_index].timestamp )
+    else if( timestamp != rtmp_send->timestamp )
     {
-        p_thread->rtmp_headers_send[stream_index].timestamp_relative = 
-            timestamp - p_thread->rtmp_headers_send[stream_index].timestamp;
-        p_thread->rtmp_headers_send[stream_index].timestamp = timestamp;
+        rtmp_send->timestamp_relative =
+            timestamp - rtmp_send->timestamp;
+        rtmp_send->timestamp = timestamp;
 
         rtmp_packet->length_header = 4;
     }
@@ -1524,9 +1420,11 @@ rtmp_new_packet( rtmp_control_thread_t *p_thread, uint8_t stream_index, uint32_t
     else
     {
         rtmp_packet->timestamp = timestamp;
-        rtmp_packet->timestamp_relative = p_thread->rtmp_headers_send[stream_index].timestamp_relative;
+        rtmp_packet->timestamp_relative = rtmp_send->timestamp_relative;
     }
-    rtmp_packet->length_encoded = rtmp_packet->length_header + body->length_body + interchunk_headers;
+
+    rtmp_packet->length_encoded = rtmp_packet->length_header
+                                + body->length_body + interchunk_headers;
     rtmp_packet->length_body = body->length_body;
     rtmp_packet->content_type = content_type;
     rtmp_packet->src_dst = src_dst;
@@ -1580,8 +1478,10 @@ rtmp_new_block( rtmp_control_thread_t *p_thread, uint8_t *buffer, int32_t length
     return p_buffer;
 }
 
-/* call sequence for each packet rtmp_new_packet -> rtmp_encode_packet -> send */
-/* no parallelism allowed because of optimization in header length */
+/* Call sequence for each packet:
+ * rtmp_new_packet -> rtmp_encode_packet -> send .
+ * No parallelism allowed because of optimization in header length. */
+
 uint8_t *
 rtmp_encode_packet( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet )
 {
@@ -1678,7 +1578,7 @@ rtmp_encode_server_bw( rtmp_control_thread_t *p_thread, uint32_t number )
     rtmp_body_append( rtmp_body, (uint8_t *) &number, sizeof( uint32_t ) );
 
     rtmp_packet = rtmp_new_packet( p_thread, RTMP_DEFAULT_STREAM_INDEX_CONTROL,
-        0, RTMP_CONTENT_TYPE_SERVER_BW, RTMP_SRC_DST_CONNECT_OBJECT, rtmp_body );
+      0, RTMP_CONTENT_TYPE_SERVER_BW, RTMP_SRC_DST_CONNECT_OBJECT, rtmp_body );
     free( rtmp_body->body );
     free( rtmp_body );
 
@@ -2076,7 +1976,7 @@ rtmp_body_reset( rtmp_body_t *rtmp_body )
 static void
 rtmp_body_append( rtmp_body_t *rtmp_body, uint8_t *buffer, uint32_t length )
 {
-    if( rtmp_body->length_body + length > rtmp_body->length_buffer )
+    if( (rtmp_body->length_body + length) > rtmp_body->length_buffer )
     {
         uint8_t *tmp;
         rtmp_body->length_buffer = rtmp_body->length_body + length;
@@ -2518,7 +2418,8 @@ flv_build_onMetaData( access_t *p_access, uint64_t duration, uint8_t stereo, uin
     rtmp_body_append( rtmp_body, tmp_buffer, AMF_DATATYPE_SIZE_END_OF_OBJECT );
     free( tmp_buffer );
 
-    rtmp_packet = rtmp_new_packet( p_access->p_sys->p_thread, RTMP_DEFAULT_STREAM_INDEX_INVOKE,
+    rtmp_packet = rtmp_new_packet( p_access->p_sys->p_thread,
+        RTMP_DEFAULT_STREAM_INDEX_INVOKE,
         0, RTMP_CONTENT_TYPE_NOTIFY, 0, rtmp_body );
     free( rtmp_body->body );
     free( rtmp_body );
@@ -2529,21 +2430,22 @@ flv_build_onMetaData( access_t *p_access, uint64_t duration, uint8_t stereo, uin
 block_t *
 flv_get_metadata( access_t *p_access )
 {
-    access_sys_t *p_sys = p_access->p_sys;
-    rtmp_packet_t *flv_metadata_packet;
-    block_t *p_buffer;
+    rtmp_control_thread_t *p_thread=p_access->p_sys->p_thread;
+    block_t *p_buf;
 
-    flv_metadata_packet = flv_build_onMetaData( p_access, 0, p_sys->p_thread->metadata_stereo,
-        p_sys->p_thread->metadata_samplesize, p_sys->p_thread->metadata_samplerate,
-        p_sys->p_thread->metadata_audiocodecid, p_sys->p_thread->metadata_videocodecid );
-    flv_rebuild( p_sys->p_thread, flv_metadata_packet );
-    p_buffer = rtmp_new_block( p_sys->p_thread, flv_metadata_packet->body->body, flv_metadata_packet->body->length_buffer );
+    rtmp_packet_t *p_md = flv_build_onMetaData( p_access, 0,
+        p_thread->metadata_stereo,
+        p_thread->metadata_samplesize,
+        p_thread->metadata_samplerate,
+        p_thread->metadata_audiocodecid,
+        p_thread->metadata_videocodecid );
 
-    free( flv_metadata_packet->body->body );
-    free( flv_metadata_packet->body );
-    free( flv_metadata_packet );
+    flv_rebuild( p_thread, p_md );
+    p_buf = rtmp_new_block( p_thread,
+                            p_md->body->body, p_md->body->length_buffer );
 
-    return p_buffer;
+    rtmp_packet_free( p_md );
+    return p_buf;
 }
 
 block_t *
@@ -2572,4 +2474,25 @@ flv_insert_header( access_t *p_access, block_t *first_packet )
     memcpy( first_packet->p_buffer + 5, &tmp_number, sizeof( uint32_t ) );
 
     return first_packet;
+}
+
+void
+rtmp_init_handler( rtmp_handler_t *rtmp_handler )
+{
+    rtmp_handler[RTMP_CONTENT_TYPE_CHUNK_SIZE] = rtmp_handler_chunk_size;
+    rtmp_handler[RTMP_CONTENT_TYPE_UNKNOWN_02] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_BYTES_READ] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_PING] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_SERVER_BW] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_CLIENT_BW] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_UNKNOWN_07] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_AUDIO_DATA] = rtmp_handler_audio_data;
+    rtmp_handler[RTMP_CONTENT_TYPE_VIDEO_DATA] = rtmp_handler_video_data;
+    rtmp_handler[RTMP_CONTENT_TYPE_UNKNOWN_0A_0E] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_FLEX_STREAM] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_FLEX_SHARED_OBJECT] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_MESSAGE] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_NOTIFY] = rtmp_handler_notify;
+    rtmp_handler[RTMP_CONTENT_TYPE_SHARED_OBJECT] = rtmp_handler_null;
+    rtmp_handler[RTMP_CONTENT_TYPE_INVOKE] = rtmp_handler_invoke;
 }

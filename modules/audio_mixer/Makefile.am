@@ -4,8 +4,8 @@
 basedir = audio_mixer
 dir = audio_mixer
 mods = float32_mixer spdif_mixer trivial_mixer
-libvlc_LTLIBRARIES =  $(LTLIBfloat32_mixer) $(LTLIBspdif_mixer)
-EXTRA_LTLIBRARIES =  libfloat32_mixer_plugin.la libspdif_mixer_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 

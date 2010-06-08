@@ -17,10 +17,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <assert.h>
 
@@ -36,13 +40,16 @@ struct queue_elmt {
 };
 
 struct libvlc_event_async_queue {
-    struct queue_elmt * elements;
+    struct queue_elmt *first_elmt, *last_elmt;
     vlc_mutex_t lock;
     vlc_cond_t signal;
     vlc_thread_t thread;
     bool is_idle;
     vlc_cond_t signal_idle;
     vlc_threadvar_t is_asynch_dispatch_thread_var;
+#ifndef NDEBUG
+    long count;
+#endif
 };
 
 /*
@@ -67,37 +74,29 @@ static inline bool current_thread_is_asynch_thread(libvlc_event_manager_t * p_em
 }
 
 /* Lock must be held */
-static void push(libvlc_event_manager_t * p_em, libvlc_event_listener_t * listener, libvlc_event_t * event)
+static void push(libvlc_event_manager_t * p_em,
+                 libvlc_event_listener_t * listener, libvlc_event_t * event)
 {
-#ifndef NDEBUG
-    static const long MaxQueuedItem = 300000;
-    long count = 0;
-#endif
-    
     struct queue_elmt * elmt = malloc(sizeof(struct queue_elmt));
     elmt->listener = *listener;
     elmt->event = *event;
     elmt->next = NULL;
-    
-    /* Append to the end of the queue */
-    struct queue_elmt * iter = queue(p_em)->elements;
-    if(!iter)
-    {
-        queue(p_em)->elements = elmt;
-        return;
-    }
 
-    while (iter->next) {
-        iter = iter->next;
+    /* Append to the end of the queue */
+    if(!queue(p_em)->first_elmt)
+        queue(p_em)->first_elmt = elmt;
+    else
+        queue(p_em)->last_elmt->next = elmt;
+    queue(p_em)->last_elmt = elmt;
+
 #ifndef NDEBUG
-        if(count++ > MaxQueuedItem)
-        {
-            fprintf(stderr, "Warning: libvlc event overflow.\n");
-            abort();
-        }
-#endif
+    enum { MaxQueueSize = 300000 };
+    if(queue(p_em)->count++ > MaxQueueSize)
+    {
+        fprintf(stderr, "Warning: libvlc event overflow.\n");
+        abort();
     }
-    iter->next = elmt;
+#endif
 }
 
 static inline void queue_lock(libvlc_event_manager_t * p_em)
@@ -111,16 +110,23 @@ static inline void queue_unlock(libvlc_event_manager_t * p_em)
 }
 
 /* Lock must be held */
-static bool pop(libvlc_event_manager_t * p_em, libvlc_event_listener_t * listener, libvlc_event_t * event)
+static bool pop(libvlc_event_manager_t * p_em,
+                libvlc_event_listener_t * listener, libvlc_event_t * event)
 {
-    if(!queue(p_em)->elements)
-        return false; /* No elements */
+    if(!queue(p_em)->first_elmt)
+        return false; /* No first_elmt */
 
-    *listener = queue(p_em)->elements->listener;
-    *event = queue(p_em)->elements->event;
-    
-    struct queue_elmt * elmt = queue(p_em)->elements;
-    queue(p_em)->elements = elmt->next;
+    struct queue_elmt * elmt = queue(p_em)->first_elmt;
+    *listener = elmt->listener;
+    *event = elmt->event;
+
+    queue(p_em)->first_elmt = elmt->next;
+    if( !elmt->next ) queue(p_em)->last_elmt=NULL;
+
+#ifndef NDEBUG
+    queue(p_em)->count--;
+#endif
+
     free(elmt);
     return true;
 }
@@ -128,24 +134,28 @@ static bool pop(libvlc_event_manager_t * p_em, libvlc_event_listener_t * listene
 /* Lock must be held */
 static void pop_listener(libvlc_event_manager_t * p_em, libvlc_event_listener_t * listener)
 {
-    struct queue_elmt * iter = queue(p_em)->elements;
+    struct queue_elmt * iter = queue(p_em)->first_elmt;
     struct queue_elmt * prev = NULL;
     while (iter) {
         if(listeners_are_equal(&iter->listener, listener))
         {
             struct queue_elmt * to_delete = iter;
             if(!prev)
-                queue(p_em)->elements = to_delete->next;
+                queue(p_em)->first_elmt = to_delete->next;
             else
                 prev->next = to_delete->next;
             iter = to_delete->next;
             free(to_delete);
+#ifndef NDEBUG
+            queue(p_em)->count--;
+#endif
         }
         else {
             prev = iter;
             iter = iter->next;
         }
     }
+    queue(p_em)->last_elmt=prev;
 }
 
 /**************************************************************************
@@ -155,7 +165,7 @@ static void pop_listener(libvlc_event_manager_t * p_em, libvlc_event_listener_t 
  **************************************************************************/
 void
 libvlc_event_async_fini(libvlc_event_manager_t * p_em)
-{    
+{
     if(!is_queue_initialized(p_em)) return;
 
     if(current_thread_is_asynch_thread(p_em))
@@ -163,7 +173,7 @@ libvlc_event_async_fini(libvlc_event_manager_t * p_em)
         fprintf(stderr, "*** Error: releasing the last reference of the observed object from its callback thread is not (yet!) supported\n");
         abort();
     }
-    
+
     vlc_thread_t thread = queue(p_em)->thread;
     if(thread)
     {
@@ -176,13 +186,13 @@ libvlc_event_async_fini(libvlc_event_manager_t * p_em)
     vlc_cond_destroy(&queue(p_em)->signal_idle);
     vlc_threadvar_delete(&queue(p_em)->is_asynch_dispatch_thread_var);
 
-    struct queue_elmt * iter = queue(p_em)->elements;
+    struct queue_elmt * iter = queue(p_em)->first_elmt;
     while (iter) {
         struct queue_elmt * elemt_to_delete = iter;
         iter = iter->next;
         free(elemt_to_delete);
     }
-    
+
     free(queue(p_em));
 }
 
@@ -202,7 +212,7 @@ libvlc_event_async_init(libvlc_event_manager_t * p_em)
     vlc_mutex_init(&queue(p_em)->lock);
     vlc_cond_init(&queue(p_em)->signal);
     vlc_cond_init(&queue(p_em)->signal_idle);
-    
+
     error = vlc_clone (&queue(p_em)->thread, event_async_loop, p_em, VLC_THREAD_PRIORITY_LOW);
     if(error)
     {
@@ -225,7 +235,7 @@ libvlc_event_async_ensure_listener_removal(libvlc_event_manager_t * p_em, libvlc
 
     queue_lock(p_em);
     pop_listener(p_em, listener);
-    
+
     // Wait for the asynch_loop to have processed all events.
     if(!current_thread_is_asynch_thread(p_em))
     {
@@ -266,7 +276,7 @@ static void * event_async_loop(void * arg)
     libvlc_event_listener_t listener;
     libvlc_event_t event;
 
-    vlc_threadvar_set(queue(p_em)->is_asynch_dispatch_thread_var, (void*)true);
+    vlc_threadvar_set(queue(p_em)->is_asynch_dispatch_thread_var, p_em);
 
     queue_lock(p_em);
     while (true) {
@@ -286,7 +296,7 @@ static void * event_async_loop(void * arg)
             vlc_cond_broadcast(&queue(p_em)->signal_idle); // We'll be idle
             vlc_cond_wait(&queue(p_em)->signal, &queue(p_em)->lock);
             vlc_cleanup_pop();
-            
+
             queue(p_em)->is_idle = false;
         }
     }

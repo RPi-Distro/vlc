@@ -2,9 +2,9 @@
  * bookmarks.h: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005, 2007 the VideoLAN team
- * $Id: 7388ef93f47b43258ec726f9712681024ce0e0ce $
+ * $Id: 2b255fc2db3732987f578d5befcd047743286880 $
  *
- * Authors: Felix Kühne <fkuehne@users.sf.net>
+ * Authors: Felix Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

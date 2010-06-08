@@ -2,7 +2,7 @@
  * VLCOpenGLVoutView.h: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 406887af3dcbd1c066ab5063af0cb21bc8e2c759 $
+ * $Id: 3045843c6e7bf44bdb9550938259679aed7e8a6f $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -44,7 +44,7 @@ int  cocoaglvoutviewLock( vout_thread_t * p_vout );
 void cocoaglvoutviewUnlock( vout_thread_t * p_vout );
 
 /* To commmunicate with the VLC.framework */
-@protocol VLCOpenGLVoutEmbedding
+@protocol VLCOpenGLVoutEmbedding <NSObject>
 - (void)addVoutSubview:(NSView *)view;
 - (void)removeVoutSubview:(NSView *)view;
 

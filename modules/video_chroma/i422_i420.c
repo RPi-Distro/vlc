@@ -2,7 +2,7 @@
  * i422_i420.c : Planar YUV 4:2:2 to Planar YUV 4:2:0 conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 - 2007 the VideoLAN team
- * $Id: 7cb40e3b90ade7db445468696c89cc151869a197 $
+ * $Id: c9291679b600b3ea07d63deebbf79115f78d271d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -33,7 +33,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
-#include <vlc_vout.h>
 
 #define SRC_FOURCC  "I422,J422"
 #define DEST_FOURCC "I420,IYUV,J420,YV12,YUVA"
@@ -80,21 +79,20 @@ static int Activate( vlc_object_t *p_this )
 
     switch( p_filter->fmt_in.video.i_chroma )
     {
-        case VLC_FOURCC('I','4','2','2'):
-        case VLC_FOURCC('J','4','2','2'):
+        case VLC_CODEC_I422:
+        case VLC_CODEC_J422:
             switch( p_filter->fmt_out.video.i_chroma )
             {
-                case VLC_FOURCC('I','4','2','0'):
-                case VLC_FOURCC('I','Y','U','V'):
-                case VLC_FOURCC('J','4','2','0'):
+                case VLC_CODEC_I420:
+                case VLC_CODEC_J420:
                     p_filter->pf_video_filter = I422_I420_Filter;
                     break;
 
-                case VLC_FOURCC('Y','V','1','2'):
+                case VLC_CODEC_YV12:
                     p_filter->pf_video_filter = I422_YV12_Filter;
                     break;
 
-                case VLC_FOURCC('Y','U','V','A'):
+                case VLC_CODEC_YUVA:
                     p_filter->pf_video_filter = I422_YUVA_Filter;
                     break;
 

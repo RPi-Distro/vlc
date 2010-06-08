@@ -2,7 +2,7 @@
  * wav.c: wav muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id: 7a8968f08fa78b657a10657e4dc893476e0af4d7 $
+ * $Id: f2f4091d78f7d7334659ed5d49875f33a214af03 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -204,7 +204,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                  p_sys->i_channel_mask, (int)p_sys->b_chan_reorder );
     }
 
-    i_format = p_input->p_fmt->i_codec == VLC_FOURCC('f', 'l', '3', '2') ?
+    i_format = p_input->p_fmt->i_codec == VLC_CODEC_FL32 ?
         WAVE_FORMAT_IEEE_FLOAT : WAVE_FORMAT_PCM;
     b_ext = p_sys->b_ext = p_input->p_fmt->audio.i_channels > 2;
 

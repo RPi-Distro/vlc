@@ -2,7 +2,7 @@
  * gestures.c: control vlc with mouse gestures
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 5c117905c54891aaebadda02d98432b0b7584a4b $
+ * $Id: 9305cce64e12aec49895a70a16fdde4d7a65ac65 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -86,6 +86,12 @@ static void RunIntf        ( intf_thread_t *p_intf );
 #define BUTTON_LONGTEXT N_( \
     "Trigger button for mouse gestures." )
 
+#if defined (HAVE_MAEMO)
+# define BUTTON_DEFAULT "left"
+#else
+# define BUTTON_DEFAULT "right"
+#endif
+
 static const char *const button_list[] = { "left", "middle", "right" };
 static const char *const button_list_text[] =
                                    { N_("Left"), N_("Middle"), N_("Right") };
@@ -96,7 +102,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INTERFACE_CONTROL )
     add_integer( "gestures-threshold", 30, NULL,
                  THRESHOLD_TEXT, THRESHOLD_LONGTEXT, true )
-    add_string( "gestures-button", "right", NULL,
+    add_string( "gestures-button", BUTTON_DEFAULT, NULL,
                 BUTTON_TEXT, BUTTON_LONGTEXT, false )
         change_string_list( button_list, button_list_text, 0 )
     set_description( N_("Mouse gestures control interface") )
@@ -124,13 +130,13 @@ int Open ( vlc_object_t *p_this )
     p_sys->p_vout = NULL;
     p_sys->b_got_gesture = false;
     p_sys->b_button_pressed = false;
-    p_sys->i_threshold = config_GetInt( p_intf, "gestures-threshold" );
+    p_sys->i_threshold = var_InheritInteger( p_intf, "gestures-threshold" );
 
     // Choose the tight button to use
-    char *psz_button = config_GetPsz( p_intf, "gestures-button" );
-    if( !strcmp( psz_button, "left" ) )
+    char *psz_button = var_InheritString( p_intf, "gestures-button" );
+    if( psz_button && !strcmp( psz_button, "left" ) )
         p_sys->i_button_mask = 1;
-    else if( !strcmp( psz_button, "middle" ) )
+    else if( psz_button && !strcmp( psz_button, "middle" ) )
         p_sys->i_button_mask = 2;
     else // psz_button == "right"
         p_sys->i_button_mask = 4;
@@ -179,7 +185,6 @@ void Close ( vlc_object_t *p_this )
 static void RunIntf( intf_thread_t *p_intf )
 {
     intf_sys_t *p_sys = p_intf->p_sys;
-    playlist_t * p_playlist = NULL;
     int canc = vlc_savecancel();
     input_thread_t *p_input;
 
@@ -193,26 +198,24 @@ static void RunIntf( intf_thread_t *p_intf )
          */
         if( p_sys->b_got_gesture )
         {
-            vlc_value_t val;
             int i_interval = 0;
             /* Do something */
             /* If you modify this, please try to follow this convention:
                Start with LEFT, RIGHT for playback related commands
                and UP, DOWN, for other commands */
+            playlist_t * p_playlist = pl_Get( p_intf );
             switch( p_sys->i_pattern )
             {
             case LEFT:
                 msg_Dbg( p_intf, "Go backward in the movie!" );
-                p_playlist = pl_Hold( p_intf );
                 p_input = playlist_CurrentInput( p_playlist );
-                pl_Release( p_intf );
                 if( p_input )
                 {
-                    i_interval = config_GetInt( p_intf , "short-jump-size" );
+                    i_interval = var_InheritInteger( p_intf , "short-jump-size" );
                     if ( i_interval > 0 )
                     {
-                        val.i_time = ( (mtime_t)( -i_interval ) * 1000000L);
-                        var_Set( p_input, "time-offset", val );
+                        mtime_t i_time = ( (mtime_t)( -i_interval ) * 1000000L);
+                        var_SetTime( p_input, "time-offset", i_time );
                     }
                     vlc_object_release( p_input );
                 }
@@ -220,17 +223,14 @@ static void RunIntf( intf_thread_t *p_intf )
 
             case RIGHT:
                 msg_Dbg( p_intf, "Go forward in the movie!" );
-                p_playlist = pl_Hold( p_intf );
                 p_input = playlist_CurrentInput( p_playlist );
-                pl_Release( p_intf );
-
                 if( p_input )
                 {
-                    i_interval = config_GetInt( p_intf , "short-jump-size" );
+                    i_interval = var_InheritInteger( p_intf , "short-jump-size" );
                     if ( i_interval > 0 )
                     {
-                        val.i_time = ( (mtime_t)( i_interval ) * 1000000L);
-                        var_Set( p_input, "time-offset", val );
+                        mtime_t i_time = ( (mtime_t)( i_interval ) * 1000000L);
+                        var_SetTime( p_input, "time-offset", i_time );
                     }
                     vlc_object_release( p_input );
                 }
@@ -238,24 +238,20 @@ static void RunIntf( intf_thread_t *p_intf )
 
             case GESTURE(LEFT,UP,NONE,NONE):
                 msg_Dbg( p_intf, "Going slower." );
-                p_playlist = pl_Hold( p_intf );
                 p_input = playlist_CurrentInput( p_playlist );
-                pl_Release( p_intf );
                 if( p_input )
                 {
-                    var_SetVoid( p_input, "rate-slower" );
+                    var_TriggerCallback( p_input, "rate-slower" );
                     vlc_object_release( p_input );
                 }
                 break;
 
             case GESTURE(RIGHT,UP,NONE,NONE):
                 msg_Dbg( p_intf, "Going faster." );
-                p_playlist = pl_Hold( p_intf );
                 p_input = playlist_CurrentInput( p_playlist );
-                pl_Release( p_intf );
                 if( p_input )
                 {
-                    var_SetVoid( p_input, "rate-faster" );
+                    var_TriggerCallback( p_input, "rate-faster" );
                     vlc_object_release( p_input );
                 }
                 break;
@@ -263,73 +259,63 @@ static void RunIntf( intf_thread_t *p_intf )
             case GESTURE(LEFT,RIGHT,NONE,NONE):
             case GESTURE(RIGHT,LEFT,NONE,NONE):
                 msg_Dbg( p_intf, "Play/Pause" );
-                p_playlist = pl_Hold( p_intf );
                 p_input = playlist_CurrentInput( p_playlist );
-                pl_Release( p_intf );
  
                 if( p_input )
                 {
-                    var_Get( p_input, "state", &val);
-                    val.i_int = ( val.i_int != PLAYING_S ) ? PLAYING_S : PAUSE_S;
-                    var_Set( p_input, "state", val);
+                    int i_state = var_GetInteger( p_input, "state" );
+                    var_SetInteger( p_input, "state", ( i_state != PLAYING_S )
+                                                      ? PLAYING_S : PAUSE_S );
                     vlc_object_release( p_input );
                 }
                 break;
 
             case GESTURE(LEFT,DOWN,NONE,NONE):
-                p_playlist = pl_Hold( p_intf );
                 playlist_Prev( p_playlist );
-                pl_Release( p_intf );
                 break;
 
             case GESTURE(RIGHT,DOWN,NONE,NONE):
-                p_playlist = pl_Hold( p_intf );
                 playlist_Next( p_playlist );
-                pl_Release( p_intf );
                 break;
 
             case UP:
                 msg_Dbg(p_intf, "Louder");
-                aout_VolumeUp( p_intf, 1, NULL );
+                aout_VolumeUp( p_playlist, 1, NULL );
                 break;
 
             case DOWN:
                 msg_Dbg(p_intf, "Quieter");
-                aout_VolumeDown( p_intf, 1, NULL );
+                aout_VolumeDown( p_playlist, 1, NULL );
                 break;
 
             case GESTURE(UP,DOWN,NONE,NONE):
             case GESTURE(DOWN,UP,NONE,NONE):
                 msg_Dbg( p_intf, "Mute sound" );
-                aout_VolumeMute( p_intf, NULL );
+                aout_ToggleMute( p_playlist, NULL );
                 break;
 
             case GESTURE(UP,RIGHT,NONE,NONE):
                 {
-                    vlc_value_t val, list, list2;
-                    int i_count, i;
+                    vlc_value_t list, list2;
+                    int i_count, i, i_audio_es;
 
-                    p_playlist = pl_Hold( p_intf );
                     p_input = playlist_CurrentInput( p_playlist );
-                    pl_Release( p_intf );
-
                     if( !p_input )
                         break;
 
-                    var_Get( p_input, "audio-es", &val );
+                    i_audio_es = var_GetInteger( p_input, "audio-es" );
                     var_Change( p_input, "audio-es", VLC_VAR_GETCHOICES,
                                 &list, &list2 );
                     i_count = list.p_list->i_count;
                     if( i_count <= 1 )
                     {
-                        var_Change( p_input, "audio-es", VLC_VAR_FREELIST, &list,
-                                    &list2 );
+                        var_FreeList( &list, &list2 );
                         vlc_object_release( p_input );
                         break;
                     }
                     for( i = 0; i < i_count; i++ )
                     {
-                        if( val.i_int == list.p_list->p_values[i].i_int )
+                        if( i_audio_es == list.p_list->p_values[i].i_int )
                             break;
                     }
                     /* value of audio-es was not in choices list */
@@ -343,25 +329,21 @@ static void RunIntf( intf_thread_t *p_intf )
                         i = 1;
                     else
                         i++;
-                    var_Set( p_input, "audio-es", list.p_list->p_values[i] );
-                    var_Change( p_input, "audio-es", VLC_VAR_FREELIST, &list,
-                                &list2 );
+                    var_SetInteger( p_input, "audio-es", list.p_list->p_values[i].i_int );
+                    var_FreeList( &list, &list2 );
                     vlc_object_release( p_input );
                 }
                 break;
             case GESTURE(DOWN,RIGHT,NONE,NONE):
                 {
-                    vlc_value_t val, list, list2;
-                    int i_count, i;
+                    vlc_value_t list, list2;
+                    int i_count, i, i_spu_es;
 
-                    p_playlist = pl_Hold( p_intf );
                     p_input = playlist_CurrentInput( p_playlist );
-                    pl_Release( p_intf );
-
                     if( !p_input )
                         break;
 
-                    var_Get( p_input, "spu-es", &val );
+                    i_spu_es = var_GetInteger( p_input, "spu-es" );
 
                     var_Change( p_input, "spu-es", VLC_VAR_GETCHOICES,
                             &list, &list2 );
@@ -369,13 +351,12 @@ static void RunIntf( intf_thread_t *p_intf )
                     if( i_count <= 1 )
                     {
                         vlc_object_release( p_input );
-                        var_Change( p_input, "spu-es", VLC_VAR_FREELIST,
-                                    &list, &list2 );
+                        var_FreeList( &list, &list2 );
                         break;
                     }
                     for( i = 0; i < i_count; i++ )
                     {
-                        if( val.i_int == list.p_list->p_values[i].i_int )
+                        if( i_spu_es == list.p_list->p_values[i].i_int )
                         {
                             break;
                         }
@@ -391,21 +372,19 @@ static void RunIntf( intf_thread_t *p_intf )
                         i = 0;
                     else
                         i++;
-                    var_Set( p_input, "spu-es", list.p_list->p_values[i] );
-                    var_Change( p_input, "spu-es", VLC_VAR_FREELIST,
-                                &list, &list2 );
+                    var_SetInteger( p_input, "spu-es", list.p_list->p_values[i].i_int);
+                    var_FreeList( &list, &list2 );
                     vlc_object_release( p_input );
                 }
                 break;
 
             case GESTURE(UP,LEFT,NONE,NONE):
+            {
+                bool val = var_ToggleBool( pl_Get( p_intf ), "fullscreen" );
                 if( p_sys->p_vout )
-                {
-                    var_Get( p_sys->p_vout, "fullscreen", &val );
-                    val.b_bool = !val.b_bool;
-                    var_Set( p_sys->p_vout, "fullscreen", val );
-                }
+                    var_SetBool( p_sys->p_vout, "fullscreen", val );
                 break;
+           }
 
             case GESTURE(DOWN,LEFT,NONE,NONE):
                 /* FIXME: Should close the vout!"*/
@@ -438,9 +417,7 @@ static void RunIntf( intf_thread_t *p_intf )
 
         if( p_sys->p_vout == NULL )
         {
-            p_playlist = pl_Hold( p_intf );
-            p_input = playlist_CurrentInput( p_playlist );
-            pl_Release( p_intf );
+            p_input = playlist_CurrentInput( pl_Get( p_intf ) );
             if( p_input )
             {
                 p_sys->p_vout = input_GetVout( p_input );
@@ -488,8 +465,8 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
 
     if( !strcmp( psz_var, "mouse-moved" ) && p_sys->b_button_pressed )
     {
-        p_sys->i_mouse_x = var_GetInteger( p_sys->p_vout, "mouse-x" );
-        p_sys->i_mouse_y = var_GetInteger( p_sys->p_vout, "mouse-y" );
+        p_sys->i_mouse_x = newval.coords.x;
+        p_sys->i_mouse_y = newval.coords.y;
         i_horizontal = p_sys->i_mouse_x - p_sys->i_last_x;
         i_horizontal = i_horizontal / p_sys->i_threshold;
         i_vertical = p_sys->i_mouse_y - p_sys->i_last_y;
@@ -533,8 +510,8 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
         if( (newval.i_int & p_sys->i_button_mask) && !p_sys->b_button_pressed )
         {
             p_sys->b_button_pressed = true;
-            p_sys->i_last_x = var_GetInteger( p_sys->p_vout, "mouse-x" );
-            p_sys->i_last_y = var_GetInteger( p_sys->p_vout, "mouse-y" );
+            var_GetCoords( p_sys->p_vout, "mouse-moved",
+                           &p_sys->i_last_x, &p_sys->i_last_y );
         }
         else if( !( newval.i_int & p_sys->i_button_mask ) && p_sys->b_button_pressed )
         {

@@ -2,7 +2,7 @@
  * variable.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ac4b568f0cce987a493b0d1a22d775a595e03a0e $
+ * $Id: 857e9e2521f17004edda68a561233fc9bffdf994 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VARIABLE_HPP
@@ -33,14 +33,14 @@
 /// Base class for variable objects
 class Variable: public SkinObject
 {
-    public:
-        virtual ~Variable() {}
+public:
+    virtual ~Variable() { }
 
-        /// Get the variable type
-        virtual const string &getType() const = 0;
+    /// Get the variable type
+    virtual const string &getType() const = 0;
 
-    protected:
-        Variable( intf_thread_t *pIntf ): SkinObject( pIntf ) {}
+protected:
+    Variable( intf_thread_t *pIntf ): SkinObject( pIntf ) { }
 };
 
 

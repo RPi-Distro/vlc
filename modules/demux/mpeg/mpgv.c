@@ -2,7 +2,7 @@
  * mpgv.c : MPEG-I/II Video demuxer
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 946739aa3c07e190e96ea08907b8bfc08122d6c5 $
+ * $Id: d27c5a5feff6a4a7efea64a8f0ca86fea9192126 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -44,7 +44,7 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
     set_description( N_("MPEG-I/II video demuxer" ) )
-    set_capability( "demux", 100 )
+    set_capability( "demux", 5 )
     set_callbacks( Open, Close )
     add_shortcut( "mpgv" )
 vlc_module_end ()
@@ -108,7 +108,7 @@ static int Open( vlc_object_t * p_this )
     p_sys->p_es        = NULL;
 
     /* Load the mpegvideo packetizer */
-    es_format_Init( &fmt, VIDEO_ES, VLC_FOURCC( 'm', 'p', 'g', 'v' ) );
+    es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_MPGV );
     p_sys->p_packetizer = demux_PacketizerNew( p_demux, &fmt, "mpeg video" );
     if( !p_sys->p_packetizer )
     {
@@ -117,7 +117,7 @@ static int Open( vlc_object_t * p_this )
     }
 
     /* create the output */
-    es_format_Init( &fmt, VIDEO_ES, VLC_FOURCC( 'm', 'p', 'g', 'v' ) );
+    es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_MPGV );
     p_sys->p_es = es_out_Add( p_demux->out, &fmt );
 
     return VLC_SUCCESS;
@@ -153,12 +153,12 @@ static int Demux( demux_t *p_demux )
     if( p_sys->b_start )
     {
         p_block_in->i_pts =
-        p_block_in->i_dts = 1;
+        p_block_in->i_dts = VLC_TS_0;
     }
     else
     {
         p_block_in->i_pts =
-        p_block_in->i_dts = 0;
+        p_block_in->i_dts = VLC_TS_INVALID;
     }
 
     while( (p_block_out = p_sys->p_packetizer->pf_packetize( p_sys->p_packetizer, &p_block_in )) )

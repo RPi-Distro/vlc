@@ -2,7 +2,7 @@
  * evt_input.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b8f2a3f9d877cf41d868dad80304f75b804d5bde $
+ * $Id: 8b947762c51b4d2f397bf8de98739d0fcf3bc082 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -23,17 +23,18 @@
  *****************************************************************************/
 
 #include "evt_input.hpp"
+#include "vlc_keys.h"
 
-const int EvtInput::kModNone  = 0;
-const int EvtInput::kModAlt   = 1;
-const int EvtInput::kModCtrl  = 2;
-const int EvtInput::kModShift = 4;
+const int
+    EvtInput::kModNone=0,
+    EvtInput::kModAlt=KEY_MODIFIER_ALT,
+    EvtInput::kModShift=KEY_MODIFIER_SHIFT,
+    EvtInput::kModCtrl=KEY_MODIFIER_CTRL,
+    EvtInput::kModMeta=KEY_MODIFIER_META,
+    EvtInput::kModCmd=KEY_MODIFIER_COMMAND;
 
-
-EvtInput::EvtInput( intf_thread_t *pIntf, int mod ):
-    EvtGeneric( pIntf), m_mod( mod )
-{
-}
+EvtInput::EvtInput( intf_thread_t *pIntf, int mod )
+    : EvtGeneric( pIntf), m_mod( mod ) { }
 
 
 void EvtInput::addModifier( string &rEvtString ) const
@@ -44,21 +45,18 @@ void EvtInput::addModifier( string &rEvtString ) const
     }
     else
     {
-        string modList = ":";
+        string m = ":";
         if( m_mod & kModAlt )
-        {
-            modList += "alt,";
-        }
+            m += "alt,";
         if( m_mod & kModCtrl )
-        {
-            modList += "ctrl,";
-        }
+            m += "ctrl,";
         if( m_mod & kModShift )
-        {
-            modList += "shift,";
-        }
-        // Remove the last ','
-        modList = modList.substr( 0, modList.size() - 1 );
-        rEvtString += modList;
+            m += "shift,";
+        if( m_mod & kModMeta )
+            m += "meta,";
+        if( m_mod & kModCmd )
+            m += "cmd,";
+        // Append the result except the last ','
+        rEvtString.insert( rEvtString.end(), m.begin(), m.end()-1 );
     }
 }

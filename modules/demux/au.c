@@ -2,7 +2,7 @@
  * au.c : au file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 08f7e986417f0d84d2dd2f418d98a09742dcc6b2 $
+ * $Id: 1efd2d0a3647454b88090c74e9be13302c3608fa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -132,7 +132,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     DEMUX_INIT_COMMON(); p_sys = p_demux->p_sys;
-    p_sys->i_time = 1;
+    p_sys->i_time = 0;
     p_sys->i_header_size = GetDWBE( &hdr[0] );
 
     /* skip extra header data */
@@ -156,14 +156,14 @@ static int Open( vlc_object_t *p_this )
     switch( GetDWBE( &hdr[8] ) )
     {
         case AU_ALAW_8:        /* 8-bit ISDN A-law */
-            p_sys->fmt.i_codec               = VLC_FOURCC( 'a','l','a','w' );
+            p_sys->fmt.i_codec               = VLC_CODEC_ALAW;
             p_sys->fmt.audio.i_bitspersample = 8;
             p_sys->fmt.audio.i_blockalign    = 1 * p_sys->fmt.audio.i_channels;
             i_cat                    = AU_CAT_PCM;
             break;
 
         case AU_MULAW_8:       /* 8-bit ISDN u-law */
-            p_sys->fmt.i_codec               = VLC_FOURCC( 'u','l','a','w' );
+            p_sys->fmt.i_codec               = VLC_CODEC_MULAW;
             p_sys->fmt.audio.i_bitspersample = 8;
             p_sys->fmt.audio.i_blockalign    = 1 * p_sys->fmt.audio.i_channels;
             i_cat                    = AU_CAT_PCM;
@@ -293,7 +293,7 @@ static int Demux( demux_t *p_demux )
     block_t     *p_block;
 
     /* set PCR */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_time );
+    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_time );
 
     if( ( p_block = stream_Block( p_demux->s, p_sys->i_frame_size ) ) == NULL )
     {
@@ -302,7 +302,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = p_sys->i_time;
+    p_block->i_pts = VLC_TS_0 + p_sys->i_time;
 
     es_out_Send( p_demux->out, p_sys->es, p_block );
 

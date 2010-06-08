@@ -2,7 +2,7 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: 665f83335ce3f919de4471b9a019131a5e6bf000 $
+ * $Id: 16d28af49d72a11929d00da5e646ad3414a64d30 $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -33,19 +33,7 @@
 #include <vlc_access.h>
 
 #include <errno.h>
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_TIME_H
-#   include <sys/time.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
-
+#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #elif defined( WIN32 ) && !defined( UNDER_CE )
@@ -246,7 +234,7 @@ static int Open( vlc_object_t *p_this )
         free( psz_name );
         return VLC_EGENERIC;
     }
- 
+
     p_sys->p_ev->p_frame = NULL;
     p_sys->p_ev->pp_last = &p_sys->p_ev->p_frame;
     p_sys->p_ev->p_access = p_access;
@@ -303,33 +291,27 @@ static void Close( vlc_object_t *p_this )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    access_sys_t *p_sys = p_access->p_sys;
-    bool   *pb_bool;
-    int64_t      *pi_64;
-
     switch( i_query )
     {
         /* */
         case ACCESS_CAN_PAUSE:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = true;
+            *va_arg( args, bool* ) = true;
             break;
 
        case ACCESS_CAN_SEEK:
        case ACCESS_CAN_FASTSEEK:
        case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = false;
+            *va_arg( args, bool* ) = false;
             break;
 
         case ACCESS_GET_PTS_DELAY:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = var_GetInteger( p_access, "dv-caching" ) * 1000;
+            *va_arg( args, int64_t * )
+                   = (int64_t)var_GetInteger( p_access, "dv-caching" ) * 1000;
             break;
 
         /* */
         case ACCESS_SET_PAUSE_STATE:
-            AVCPause( p_access, p_sys->i_node );
+            AVCPause( p_access, p_access->p_sys->i_node );
             break;
 
         case ACCESS_GET_TITLE_INFO:
@@ -351,14 +333,6 @@ static block_t *Block( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     block_t *p_block = NULL;
-
-#if 0
-    if( !p_access->psz_demux )
-    {
-        free( p_access->psz_demux );
-        p_access->psz_demux = strdup( "rawdv" );
-    }
-#endif
 
     vlc_mutex_lock( &p_sys->lock );
     p_block = p_sys->p_frame;
@@ -419,7 +393,7 @@ Raw1394Handler(raw1394handle_t handle, unsigned char *data,
     p_sys = p_access->p_sys;
 
     /* skip empty packets */
-    if ( length > 16 )
+    if( length > 16 )
     {
         unsigned char * p = data + 8;
         int section_type = p[ 0 ] >> 5;           /* section type is in bits 5 - 7 */
@@ -495,13 +469,13 @@ static int Raw1394GetNumPorts( access_t *p_access )
     raw1394handle_t handle;
 
     /* get a raw1394 handle */
-    if ( !( handle = raw1394_new_handle() ) )
+    if( !( handle = raw1394_new_handle() ) )
     {
         msg_Err( p_access, "raw1394 - failed to get handle: %m." );
         return VLC_EGENERIC;
     }
 
-    if ( ( n_ports = raw1394_get_port_info( handle, pinf, 16 ) ) < 0 )
+    if( ( n_ports = raw1394_get_port_info( handle, pinf, 16 ) ) < 0 )
     {
         msg_Err( p_access, "raw1394 - failed to get port info: %m." );
         raw1394_destroy_handle( handle );
@@ -519,21 +493,14 @@ static raw1394handle_t Raw1394Open( access_t *p_access, int port )
     raw1394handle_t handle;
 
     /* get a raw1394 handle */
-#ifdef RAW1394_V_0_8
-
-    handle = raw1394_get_handle();
-#else
-
     handle = raw1394_new_handle();
-#endif
-
-    if ( !handle )
+    if( !handle )
     {
         msg_Err( p_access, "raw1394 - failed to get handle: %m." );
         return NULL;
     }
 
-    if ( ( n_ports = raw1394_get_port_info( handle, pinf, 16 ) ) < 0 )
+    if( ( n_ports = raw1394_get_port_info( handle, pinf, 16 ) ) < 0 )
     {
         msg_Err( p_access, "raw1394 - failed to get port info: %m." );
         raw1394_destroy_handle( handle );
@@ -541,7 +508,7 @@ static raw1394handle_t Raw1394Open( access_t *p_access, int port )
     }
 
     /* tell raw1394 which host adapter to use */
-    if ( raw1394_set_port( handle, port ) < 0 )
+    if( raw1394_set_port( handle, port ) < 0 )
     {
         msg_Err( p_access, "raw1394 - failed to set set port: %m." );
         return NULL;
@@ -617,8 +584,8 @@ static int DiscoverAVC( access_t *p_access, int* port, uint64_t guid )
 static raw1394handle_t AVCOpen( access_t *p_access, int port )
 {
     access_sys_t *p_sys = p_access->p_sys;
-    int numcards;
     struct raw1394_portinfo pinf[ 16 ];
+    int numcards;
 
     p_sys->p_avc1394 = raw1394_new_handle();
     if( !p_sys->p_avc1394 )
@@ -646,7 +613,6 @@ static void AVCClose( access_t *p_access )
     }
 }
 
-
 static int AVCResetHandler( raw1394handle_t handle, unsigned int generation )
 {
     raw1394_update_generation( handle, generation );
@@ -658,10 +624,8 @@ static int AVCPlay( access_t *p_access, int phyID )
     access_sys_t *p_sys = p_access->p_sys;
 
     msg_Dbg( p_access, "send play command over Digital Video control channel" );
-    if( !p_sys->p_avc1394 )
-        return 0;
 
-    if( phyID >= 0 )
+    if( p_sys->p_avc1394 && phyID >= 0 )
     {
         if( !avc1394_vcr_is_recording( p_sys->p_avc1394, phyID ) &&
             avc1394_vcr_is_playing( p_sys->p_avc1394, phyID ) != AVC1394_VCR_OPERAND_PLAY_FORWARD )
@@ -674,10 +638,7 @@ static int AVCPause( access_t *p_access, int phyID )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
-    if( !p_sys->p_avc1394 )
-        return 0;
-
-    if( phyID >= 0 )
+    if( p_sys->p_avc1394 && phyID >= 0 )
     {
         if( !avc1394_vcr_is_recording( p_sys->p_avc1394, phyID ) &&
             ( avc1394_vcr_is_playing( p_sys->p_avc1394, phyID ) != AVC1394_VCR_OPERAND_PLAY_FORWARD_PAUSE ) )
@@ -692,10 +653,8 @@ static int AVCStop( access_t *p_access, int phyID )
     access_sys_t *p_sys = p_access->p_sys;
 
     msg_Dbg( p_access, "closing Digital Video control channel" );
-    if( !p_sys->p_avc1394 )
-        return 0;
 
-    if ( phyID >= 0 )
+    if ( p_sys->p_avc1394 && phyID >= 0 )
         avc1394_vcr_stop( p_sys->p_avc1394, phyID );
 
     return 0;

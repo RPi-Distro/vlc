@@ -2,7 +2,7 @@
  * dynamicoverlay.h : dynamic overlay plugin for vlc
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 20ce46352dd88fff3d2e590ce8d3c4206a935734 $
+ * $Id: e9058381fa4c33cc505a0959c3597be6522dc68b $
  *
  * Author: Jean-Paul Saman <jpsaman@videolan.org>
  *
@@ -71,17 +71,28 @@ typedef struct commandparams_t
     bool b_visible; /*< visibility flag of overlay */
 } commandparams_t;
 
+typedef int (*parser_func_t)(char *psz_command, char *psz_end, commandparams_t *p_params );
+typedef int (*execute_func_t)( filter_t *p_filter, const commandparams_t *p_params, commandparams_t *p_results );
+typedef int (*unparse_func_t)( const commandparams_t *p_results, buffer_t *p_output );
+
 typedef struct commanddesc_t
+{
+    char *psz_command;
+    bool b_atomic;
+    parser_func_t pf_parser;
+    execute_func_t pf_execute;
+    unparse_func_t pf_unparse;
+} commanddesc_t;
+
+typedef struct commanddesc_static_t
 {
     const char *psz_command;
     bool b_atomic;
-    int ( *pf_parser ) ( char *psz_command, char *psz_end,
-                         commandparams_t *p_params );
-    int ( *pf_execute ) ( filter_t *p_filter, const commandparams_t *p_params,
-                          commandparams_t *p_results );
-    int ( *pf_unparse ) ( const commandparams_t *p_results,
-                          buffer_t *p_output );
-} commanddesc_t;
+    parser_func_t pf_parser;
+    execute_func_t pf_execute;
+    unparse_func_t pf_unparse;
+} commanddesc_static_t;
+
 
 typedef struct command_t
 {
@@ -122,7 +133,7 @@ typedef struct overlay_t
     bool b_active;
 
     video_format_t format;
-    struct text_style_t fontstyle;
+    struct text_style_t *p_fontstyle;
     union {
         picture_t *p_pic;
         char *p_text;

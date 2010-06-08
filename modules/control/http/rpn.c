@@ -2,7 +2,7 @@
  * rpn.c : RPN evaluator for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 05c30cf4fec935c37eb780621302b20ed0549074 $
+ * $Id: 7d316229f72d89295aee619410da2f3ceb440484 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -27,9 +27,9 @@
 #endif
 
 #include "http.h"
-#include "vlc_url.h"
-#include "vlc_meta.h"
-#include "vlc_strings.h"
+#include <vlc_url.h>
+#include <vlc_meta.h>
+#include <vlc_strings.h>
 
 static vlc_object_t *GetVLCObject( intf_thread_t *p_intf,
                                    const char *psz_object,
@@ -360,7 +360,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         else if( !strcmp( s, "url_encode" ) )
         {
             char *url = SSPop( st );
-            char *value = vlc_UrlEncode( url );
+            char *value = encode_URI_component( url );
             free( url );
             SSPush( st, value );
             free( value );
@@ -641,8 +641,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
 
                 if( !b_error )
                     var_Set( p_object, psz_variable, val );
-                if( psz_value != NULL )
-                    free( psz_value );
+                free( psz_value );
             }
             else
                 msg_Warn( p_intf, "vlc_var_set called without an object" );
@@ -811,8 +810,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             }
             i_result = config_SaveConfigFile( p_intf, psz_module );
 
-            if( psz_module != NULL )
-                free( psz_module );
+            free( psz_module );
             SSPushN( st, i_result );
         }
         else if( !strcmp( s, "vlc_config_reset" ) )
@@ -875,7 +873,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             if( p_item )
             {
                 playlist_DeleteFromInput( p_sys->p_playlist,
-                                          p_item->p_input->i_id, pl_Locked );
+                                          p_item->p_input, pl_Locked );
                 msg_Dbg( p_intf, "requested playlist delete: %d", i_id );
             }
             else
@@ -944,38 +942,38 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             char *psz_vol = SSPop( st );
             int i_value;
             audio_volume_t i_volume;
-            aout_VolumeGet( p_intf, &i_volume );
+            aout_VolumeGet( p_sys->p_playlist, &i_volume );
             if( psz_vol[0] == '+' )
             {
                 i_value = atoi( psz_vol );
                 if( (i_volume + i_value) > AOUT_VOLUME_MAX )
-                    aout_VolumeSet( p_intf, AOUT_VOLUME_MAX );
+                    aout_VolumeSet( p_sys->p_playlist, AOUT_VOLUME_MAX );
                 else
-                    aout_VolumeSet( p_intf, i_volume + i_value );
+                    aout_VolumeSet( p_sys->p_playlist, i_volume + i_value );
             }
             else if( psz_vol[0] == '-' )
             {
                 i_value = atoi( psz_vol );
                 if( (i_volume + i_value) < AOUT_VOLUME_MIN )
-                    aout_VolumeSet( p_intf, AOUT_VOLUME_MIN );
+                    aout_VolumeSet( p_sys->p_playlist, AOUT_VOLUME_MIN );
                 else
-                    aout_VolumeSet( p_intf, i_volume + i_value );
+                    aout_VolumeSet( p_sys->p_playlist, i_volume + i_value );
             }
             else if( strstr( psz_vol, "%") != NULL )
             {
                 i_value = atoi( psz_vol );
                 if( i_value < 0 ) i_value = 0;
                 if( i_value > 400 ) i_value = 400;
-                aout_VolumeSet( p_intf, (i_value * (AOUT_VOLUME_MAX - AOUT_VOLUME_MIN))/400+AOUT_VOLUME_MIN);
+                aout_VolumeSet( p_sys->p_playlist, (i_value * (AOUT_VOLUME_MAX - AOUT_VOLUME_MIN))/400+AOUT_VOLUME_MIN);
             }
             else
             {
                 i_value = atoi( psz_vol );
                 if( i_value > AOUT_VOLUME_MAX ) i_value = AOUT_VOLUME_MAX;
                 if( i_value < AOUT_VOLUME_MIN ) i_value = AOUT_VOLUME_MIN;
-                aout_VolumeSet( p_intf, i_value );
+                aout_VolumeSet( p_sys->p_playlist, i_value );
             }
-            aout_VolumeGet( p_intf, &i_volume );
+            aout_VolumeGet( p_sys->p_playlist, &i_volume );
             free( psz_vol );
         }
         else if( !strcmp( s, "vlc_get_meta" ) )

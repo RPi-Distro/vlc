@@ -2,7 +2,7 @@
  * macro.c : Custom <vlc> macro handling
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 22e323177a4ac9e3ab9db8d0f4a946040e24f916 $
+ * $Id: b4887762a55ad12620194656a056a0d1ca21079a $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -28,7 +28,7 @@
 
 #include "http.h"
 #include "macros.h"
-#include "vlc_url.h"
+#include <vlc_url.h>
 
 static int MacroParse( macro_t *m, char *psz_src )
 {
@@ -149,7 +149,7 @@ static void MacroDo( httpd_file_sys_t *p_args,
     {               \
         int __i__ = *pp_dst - *pp_data; \
         *pi_data += (l);                  \
-        *pp_data = realloc( *pp_data, *pi_data );   \
+        *pp_data = xrealloc( *pp_data, *pi_data );   \
         *pp_dst = (*pp_data) + __i__;   \
     }
 #define PRINT( str ) \
@@ -230,12 +230,12 @@ static void MacroDo( httpd_file_sys_t *p_args,
                 case MVLC_FULLSCREEN:
                     if( p_sys->p_input )
                     {
-                        vout_thread_t *p_vout;
-
-                        p_vout = input_GetVout( p_sys->p_input );
+                        bool fs = var_ToggleBool( p_sys->p_playlist,
+                                                  "fullscreen" );
+                        vout_thread_t *p_vout = input_GetVout( p_sys->p_input );
                         if( p_vout )
                         {
-                            var_SetBool( p_vout, "fullscreen", !var_GetBool( p_vout, "fullscreen" ) );
+                            var_SetBool( p_vout, "fullscreen", fs );
                             vlc_object_release( p_vout );
                             msg_Dbg( p_intf, "requested fullscreen toggle" );
                         }
@@ -256,7 +256,7 @@ static void MacroDo( httpd_file_sys_t *p_args,
                     int i_value;
 
                     ExtractURIValue( p_request, "value", vol, 8 );
-                    aout_VolumeGet( p_intf, &i_volume );
+                    aout_VolumeGet( p_sys->p_playlist, &i_volume );
                     decode_URI( vol );
 
                     if( vol[0] == '+' )
@@ -264,12 +264,12 @@ static void MacroDo( httpd_file_sys_t *p_args,
                         i_value = atoi( vol + 1 );
                         if( (i_volume + i_value) > AOUT_VOLUME_MAX )
                         {
-                            aout_VolumeSet( p_intf , AOUT_VOLUME_MAX );
+                            aout_VolumeSet( p_sys->p_playlist, AOUT_VOLUME_MAX );
                             msg_Dbg( p_intf, "requested volume set: max" );
                         }
                         else
                         {
-                            aout_VolumeSet( p_intf , (i_volume + i_value) );
+                            aout_VolumeSet( p_sys->p_playlist, (i_volume + i_value) );
                             msg_Dbg( p_intf, "requested volume set: +%i", (i_volume + i_value) );
                         }
                     }
@@ -278,12 +278,12 @@ static void MacroDo( httpd_file_sys_t *p_args,
                         i_value = atoi( vol + 1 );
                         if( (i_volume - i_value) < AOUT_VOLUME_MIN )
                         {
-                            aout_VolumeSet( p_intf , AOUT_VOLUME_MIN );
+                            aout_VolumeSet( p_sys->p_playlist, AOUT_VOLUME_MIN );
                             msg_Dbg( p_intf, "requested volume set: min" );
                         }
                         else
                         {
-                            aout_VolumeSet( p_intf , (i_volume - i_value) );
+                            aout_VolumeSet( p_sys->p_playlist, (i_volume - i_value) );
                             msg_Dbg( p_intf, "requested volume set: -%i", (i_volume - i_value) );
                         }
                     }
@@ -291,7 +291,7 @@ static void MacroDo( httpd_file_sys_t *p_args,
                     {
                         i_value = atoi( vol );
                         if( (i_value <= 400) && (i_value>=0) ){
-                            aout_VolumeSet( p_intf, (i_value * (AOUT_VOLUME_MAX - AOUT_VOLUME_MIN))/400+AOUT_VOLUME_MIN);
+                            aout_VolumeSet( p_sys->p_playlist, (i_value * (AOUT_VOLUME_MAX - AOUT_VOLUME_MIN))/400+AOUT_VOLUME_MIN);
                             msg_Dbg( p_intf, "requested volume set: %i%%", atoi( vol ));
                         }
                     }
@@ -300,7 +300,7 @@ static void MacroDo( httpd_file_sys_t *p_args,
                         i_value = atoi( vol );
                         if( ( i_value <= AOUT_VOLUME_MAX ) && ( i_value >= AOUT_VOLUME_MIN ) )
                         {
-                            aout_VolumeSet( p_intf , atoi( vol ) );
+                            aout_VolumeSet( p_sys->p_playlist, atoi( vol ) );
                             msg_Dbg( p_intf, "requested volume set: %i", atoi( vol ) );
                         }
                     }
@@ -353,7 +353,8 @@ static void MacroDo( httpd_file_sys_t *p_args,
                 }
                 case MVLC_DEL:
                 {
-                    int i_item, *p_items = NULL, i_nb_items = 0;
+                    int *p_items = NULL;
+                    size_t i_nb_items = 0;
                     char item[512];
                     const char *p_parser = p_request;
 
@@ -363,24 +364,25 @@ static void MacroDo( httpd_file_sys_t *p_args,
                     {
                         if( !*item ) continue;
 
-                        i_item = atoi( item );
-                        p_items = realloc( p_items, (i_nb_items + 1) *
-                                           sizeof(int) );
+                        int i_item = atoi( item );
+                        p_items = xrealloc( p_items,
+                                        (i_nb_items + 1) * sizeof(*p_items) );
                         p_items[i_nb_items] = i_item;
                         i_nb_items++;
                     }
 
-                    if( i_nb_items )
+                    for( size_t i = 0; i < i_nb_items; i++ )
                     {
-                        int i;
-                        for( i = 0; i < i_nb_items; i++ )
-                        {
+                        playlist_item_t *p_item;
+
+                        msg_Dbg( p_intf, "requested playlist delete: %d",
+                                 p_items[i] );
+                        p_item = playlist_ItemGetById( p_sys->p_playlist,
+                                                       p_items[i] );
+                        if( p_item )
                             playlist_DeleteFromInput( p_sys->p_playlist,
-                                                      p_items[i], false );
-                            msg_Dbg( p_intf, "requested playlist delete: %d",
-                                     p_items[i] );
-                            p_items[i] = -1;
-                        }
+                                                      p_item->p_input,
+                                                      false );
                     }
 
                     free( p_items );
@@ -388,10 +390,10 @@ static void MacroDo( httpd_file_sys_t *p_args,
                 }
                 case MVLC_KEEP:
                 {
-                    int i_item, *p_items = NULL, i_nb_items = 0;
+                    int *p_items = NULL;
+                    size_t i_nb_items = 0, i;
                     char item[512];
                     const char *p_parser = p_request;
-                    int i,j;
 
                     /* Get the list of items to keep */
                     while( (p_parser =
@@ -399,30 +401,32 @@ static void MacroDo( httpd_file_sys_t *p_args,
                     {
                         if( !*item ) continue;
 
-                        i_item = atoi( item );
-                        p_items = realloc( p_items, (i_nb_items + 1) *
-                                           sizeof(int) );
+                        int i_item = atoi( item );
+                        p_items = xrealloc( p_items,
+                                        (i_nb_items + 1) * sizeof(*p_items) );
                         p_items[i_nb_items] = i_item;
                         i_nb_items++;
                     }
 
-                    for( i = p_sys->p_playlist->items.i_size - 1 ; i >= 0; i-- )
+                    size_t size = p_sys->p_playlist->items.i_size;
+                    for( i = 0; i < size; i++ )
                     {
+                        size_t j;
+
                         /* Check if the item is in the keep list */
                         for( j = 0 ; j < i_nb_items ; j++ )
                         {
                             if( p_items[j] ==
-                                 ARRAY_VAL(p_sys->p_playlist->items,i)
-                                                ->i_id)
+                                ARRAY_VAL(p_sys->p_playlist->items,i)->i_id)
                                 break;
                         }
                         if( j == i_nb_items )
                         {
-                            playlist_DeleteFromInput( p_sys->p_playlist,
-                                     p_sys->p_playlist->items.p_elems[i]->i_id,
-                                                      false );
                             msg_Dbg( p_intf, "requested playlist delete: %d",
-                                     i );
+                                   p_sys->p_playlist->items.p_elems[i]->i_id );
+                            playlist_DeleteFromInput( p_sys->p_playlist,
+                                p_sys->p_playlist->items.p_elems[i]->p_input,
+                                                      false );
                         }
                     }
 
@@ -539,7 +543,7 @@ static void MacroDo( httpd_file_sys_t *p_args,
                     };
                     vlm_message_t *vlm_answer;
                     char name[512];
-                    char *psz = malloc( strlen( p_request ) + 1000 );
+                    char *psz = xmalloc( strlen( p_request ) + 1000 );
                     char *p = psz;
                     char *vlm_error;
                     int i;
@@ -866,14 +870,14 @@ void Execute( httpd_file_sys_t *p_args,
                      char *p_request, int i_request,
                      char **pp_data, int *pi_data,
                      char **pp_dst,
-                     char *_src, char *_end )
+                     const char *_src, const char *_end )
 {
     intf_thread_t  *p_intf = p_args->p_intf;
 
     char *src, *dup, *end;
     char *dst = *pp_dst;
 
-    src = dup = malloc( _end - _src + 1 );
+    src = dup = xmalloc( _end - _src + 1 );
     end = src +( _end - _src );
 
     memcpy( src, _src, _end - _src );
@@ -885,7 +889,7 @@ void Execute( httpd_file_sys_t *p_args,
         char *p;
         int i_copy;
 
-        p = (char *)strstr( (char *)src, "<vlc" );
+        p = strstr( src, "<vlc" );
         if( p < end && p == src )
         {
             macro_t m;
@@ -1015,11 +1019,9 @@ void Execute( httpd_file_sys_t *p_args,
                             index = mvar_FileSetNew( p_intf, m.param1, arg );
                             free( arg );
                         }
-                        else if( !strcmp( m.param2, "object" ) )
+                        else if( !strcmp( m.param2, "services" ) )
                         {
-                            char *arg = SSPop( &p_args->stack );
-                            index = mvar_ObjectSetNew( p_intf, m.param1, arg );
-                            free( arg );
+                            index = mvar_ServicesSetNew( p_intf, m.param1 );
                         }
                         else if( !strcmp( m.param2, "playlist" ) )
                         {
@@ -1114,7 +1116,7 @@ void Execute( httpd_file_sys_t *p_args,
             int i_index = dst - *pp_data;
 
             *pi_data += i_copy;
-            *pp_data = realloc( *pp_data, *pi_data );
+            *pp_data = xrealloc( *pp_data, *pi_data );
             dst = (*pp_data) + i_index;
 
             memcpy( dst, src, i_copy );

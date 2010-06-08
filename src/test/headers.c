@@ -2,7 +2,7 @@
  * headers.c: Test for public headers usability
  *****************************************************************************
  * Copyright (C) 2007 Rémi Denis-Courmont
- * $Id: cf2413695f38d7b6681b1d658de32d536571c39a $
+ * $Id: 900f47d8c52c0bec9c48992bc4a31ddf2fde4293 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,11 +42,8 @@
 #include <vlc/libvlc_media_library.h>
 #include <vlc/libvlc_media_list.h>
 #include <vlc/libvlc_media_list_player.h>
-#include <vlc/libvlc_media_list_view.h>
 #include <vlc/libvlc_media_player.h>
 #include <vlc/libvlc_vlm.h>
-#include <vlc/mediacontrol.h>
-#include <vlc/mediacontrol_structures.h>
 
 #include <stdio.h>
 

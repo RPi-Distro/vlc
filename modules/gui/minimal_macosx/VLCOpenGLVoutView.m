@@ -2,7 +2,7 @@
  * VLCOpenGLVoutView.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: bb3b1c529f470ae6c7443aa8b04004cb6c7b215d $
+ * $Id: 4fa69c12fa0202e03584b490e844767a1017b6e0 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -54,7 +54,9 @@ int cocoaglvoutviewInit( vout_thread_t * p_vout )
 
     p_vout->p_sys->o_pool = [[NSAutoreleasePool alloc] init];
 
-    o_cocoaglview_container = (id) value_drawable.p_address;
+    /* This will be released in cocoaglvoutviewEnd(), on
+     * main thread, after we are done using it. */
+    o_cocoaglview_container = [(id) value_drawable.p_address retain];
     if (!o_cocoaglview_container)
     {
         msg_Warn( p_vout, "No drawable!, spawing a window" );
@@ -80,6 +82,9 @@ void cocoaglvoutviewEnd( vout_thread_t * p_vout )
 {
     id <VLCOpenGLVoutEmbedding> o_cocoaglview_container;
 
+    if (!p_vout->p_sys->o_glview)
+        return;
+
     msg_Dbg( p_vout, "Mac OS X Vout is closing" );
     var_Destroy( p_vout, "drawable-nsobject" );
 
@@ -89,15 +94,18 @@ void cocoaglvoutviewEnd( vout_thread_t * p_vout )
     [p_vout->p_sys->o_glview detachFromVout];
     msg_Dbg( p_vout, "Mac OS X Vout is closing" );
 
-    /* Let the view go, _without_blocking_ */
-    [p_vout->p_sys->o_glview performSelectorOnMainThread:@selector(removeFromSuperview) withObject:NULL waitUntilDone:NO];
-
     if( [(id)o_cocoaglview_container respondsToSelector:@selector(removeVoutSubview:)] )
-        [o_cocoaglview_container removeVoutSubview: p_vout->p_sys->o_glview];
+        [o_cocoaglview_container performSelectorOnMainThread:@selector(removeVoutSubview:) withObject:p_vout->p_sys->o_glview waitUntilDone:NO];
 
-    [p_vout->p_sys->o_glview release];
+    /* Let the view go and release it, _without_blocking_ */
+    [p_vout->p_sys->o_glview performSelectorOnMainThread:@selector(removeFromSuperviewAndRelease) withObject:nil waitUntilDone:NO];
+    p_vout->p_sys->o_glview = nil;
+
+    /* Release the container now that we don't use it */
+    [o_cocoaglview_container performSelectorOnMainThread:@selector(release) withObject:nil waitUntilDone:NO];
 
     [p_vout->p_sys->o_pool release];
+    p_vout->p_sys->o_pool = nil;
  
 }
 
@@ -219,11 +227,11 @@ void cocoaglvoutviewUnlock( vout_thread_t * p_vout )
     [super dealloc];
 }
 
-- (void)removeFromSuperview
+- (void)removeFromSuperviewAndRelease
 {
-    [super removeFromSuperview];
+    [self removeFromSuperview];
+    [self release];
 }
-
 
 - (id) initWithVout: (vout_thread_t *) vout container: (id <VLCOpenGLVoutEmbedding>) aContainer
 {
@@ -286,7 +294,6 @@ void cocoaglvoutviewUnlock( vout_thread_t * p_vout )
     [objectLock lock];
     if( p_vout )
     {
-        vlc_object_detach( p_vout );
         vlc_object_release( p_vout );
         vlc_object_release( p_vout );
     }
@@ -357,6 +364,8 @@ void cocoaglvoutviewUnlock( vout_thread_t * p_vout )
 
 - (void) update
 {
+    if (!p_vout)
+        return;
     if( kCGLNoError != CGLLockContext([[self openGLContext] CGLContextObj]) )
         return;
     [super update];
@@ -365,6 +374,8 @@ void cocoaglvoutviewUnlock( vout_thread_t * p_vout )
 
 - (void) drawRect: (NSRect) rect
 {
+    if (!p_vout)
+        return;
     if( kCGLNoError != CGLLockContext([[self openGLContext] CGLContextObj]) )
         return;
     [[self openGLContext] flushBuffer];

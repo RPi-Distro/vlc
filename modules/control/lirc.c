@@ -2,7 +2,7 @@
  * lirc.c : lirc module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: 8b3325768ce4dab32bc3baede2949c9e4939c461 $
+ * $Id: 5688c97ab106c2e64038f3d05faf42d113b62ff3 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -35,6 +35,7 @@
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 #include <vlc_osd.h>
+#include <vlc_keys.h>
 
 #ifdef HAVE_POLL
 # include <poll.h>
@@ -42,7 +43,7 @@
 
 #include <lirc/lirc_client.h>
 
-#define LIRC_TEXT N_("Change the lirc configuration file.")
+#define LIRC_TEXT N_("Change the lirc configuration file")
 #define LIRC_LONGTEXT N_( \
     "Tell lirc to read this configuration file. By default it " \
     "searches in the users home directory." )
@@ -70,7 +71,6 @@ vlc_module_end ()
  *****************************************************************************/
 struct intf_sys_t
 {
-    char *psz_file;
     struct lirc_config *config;
 
     int i_fd;
@@ -81,7 +81,7 @@ struct intf_sys_t
  *****************************************************************************/
 static void Run( intf_thread_t * );
 
-static int  Process( intf_thread_t * );
+static void Process( intf_thread_t * );
 
 /*****************************************************************************
  * Open: initialize interface
@@ -90,6 +90,7 @@ static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     intf_sys_t *p_sys;
+    char *psz_file;
 
     /* Allocate instance and initialize some members */
     p_intf->p_sys = p_sys = malloc( sizeof( intf_sys_t ) );
@@ -98,7 +99,6 @@ static int Open( vlc_object_t *p_this )
 
     p_intf->pf_run = Run;
 
-    p_sys->psz_file = var_CreateGetNonEmptyString( p_intf, "lirc-file" );
     p_sys->i_fd = lirc_init( "vlc", 1 );
     if( p_sys->i_fd == -1 )
     {
@@ -109,19 +109,21 @@ static int Open( vlc_object_t *p_this )
     /* We want polling */
     fcntl( p_sys->i_fd, F_SETFL, fcntl( p_sys->i_fd, F_GETFL ) | O_NONBLOCK );
 
-    /* */
-    if( lirc_readconfig( p_sys->psz_file, &p_sys->config, NULL ) != 0 )
+    /* Read the configuration file */
+    psz_file = var_CreateGetNonEmptyString( p_intf, "lirc-file" );
+    if( lirc_readconfig( psz_file, &p_sys->config, NULL ) != 0 )
     {
         msg_Err( p_intf, "failure while reading lirc config" );
+        free( psz_file );
         goto exit;
     }
+    free( psz_file );
 
     return VLC_SUCCESS;
 
 exit:
     if( p_sys->i_fd != -1 )
         lirc_deinit();
-    free( p_sys->psz_file );
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -137,7 +139,6 @@ static void Close( vlc_object_t *p_this )
     /* Destroy structure */
     lirc_freeconfig( p_sys->config );
     lirc_deinit();
-    free( p_sys->psz_file );
     free( p_sys );
 }
 
@@ -162,29 +163,28 @@ static void Run( intf_thread_t *p_intf )
     }
 }
 
-static int Process( intf_thread_t *p_intf )
+static void Process( intf_thread_t *p_intf )
 {
     for( ;; )
     {
         char *code, *c;
-        int i_ret = lirc_nextcode( &code );
-
-        if( i_ret )
-            return i_ret;
+        if( lirc_nextcode( &code ) )
+            return;
 
         if( code == NULL )
-            return 0;
+            return;
 
         while( vlc_object_alive( p_intf )
                 && (lirc_code2char( p_intf->p_sys->config, code, &c ) == 0)
                 && (c != NULL) )
         {
-            vlc_value_t keyval;
-
             if( !strncmp( "key-", c, 4 ) )
             {
-                keyval.i_int = config_GetInt( p_intf, c );
-                var_Set( p_intf->p_libvlc, "key-pressed", keyval );
+                vlc_key_t i_key = vlc_GetActionId( c );
+                if( i_key )
+                    var_SetInteger( p_intf->p_libvlc, "key-action", i_key );
+                else
+                    msg_Err( p_intf, "Unknown hotkey '%s'", c );
             }
             else if( !strncmp( "menu ", c, 5)  )
             {
@@ -213,7 +213,9 @@ static int Process( intf_thread_t *p_intf )
             }
             else
             {
-                msg_Err( p_intf, "this doesn't appear to be a valid keycombo lirc sent us. Please look at the doc/lirc/example.lirc file in VLC" );
+                msg_Err( p_intf, "this doesn't appear to be a valid keycombo "
+                                 "lirc sent us. Please look at the "
+                                 "doc/lirc/example.lirc file in VLC" );
                 break;
             }
         }

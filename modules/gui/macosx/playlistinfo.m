@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 151bda9f0d8d4de88422a584785bcf73a292b80c $
+ * $Id: e7cb6d889106a740df5f98fbe24dded937a0ceea $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -195,9 +195,9 @@ static VLCInfo *_o_sharedInstance = nil;
 - (void)initMediaPanelStats
 {
     //Initializing Input Variables
-    [o_read_bytes_txt setStringValue: [NSString stringWithFormat:@"%8.0f kB", (float)0]];
+    [o_read_bytes_txt setStringValue: [NSString stringWithFormat:@"%8.0f KiB", (float)0]];
     [o_input_bitrate_txt setStringValue: [NSString stringWithFormat:@"%6.0f kb/s", (float)0]];
-    [o_demux_bytes_txt setStringValue: [NSString stringWithFormat:@"%8.0f kB", (float)0]];
+    [o_demux_bytes_txt setStringValue: [NSString stringWithFormat:@"%8.0f KiB", (float)0]];
     [o_demux_bitrate_txt setStringValue: [NSString stringWithFormat:@"%6.0f kb/s", (float)0]];
     
     //Initializing Video Variables
@@ -208,7 +208,7 @@ static VLCInfo *_o_sharedInstance = nil;
 
     //Initializing Output Variables
     [o_sent_packets_txt setIntValue: 0];
-    [o_sent_bytes_txt setStringValue: [NSString stringWithFormat:@"%8.0f kB", (float)0]];
+    [o_sent_bytes_txt setStringValue: [NSString stringWithFormat:@"%8.0f KiB", (float)0]];
     [o_sent_bitrate_txt setStringValue: [NSString stringWithFormat:@"%6.0f kb/s", (float)0]];
 
     //Initializing Audio Variables
@@ -252,11 +252,7 @@ static VLCInfo *_o_sharedInstance = nil;
     {
         if( !input_item_IsPreparsed( p_item ) )
         {
-            playlist_t * p_playlist = pl_Hold( VLCIntf );
-            PL_LOCK;
-            playlist_PreparseEnqueue( p_playlist, p_item, pl_Locked );
-            PL_UNLOCK;
-            pl_Release( VLCIntf );
+            playlist_PreparseEnqueue( pl_Get( VLCIntf ), p_item );
         }
 
         /* fill uri info */
@@ -293,8 +289,10 @@ static VLCInfo *_o_sharedInstance = nil;
         char *psz_meta;
         NSImage *o_image;
         psz_meta = input_item_GetArtURL( p_item );
-        if( psz_meta && !strncmp( psz_meta, "file://", 7 ) && decode_URI( psz_meta + 7 ) )
-            o_image = [[NSImage alloc] initWithContentsOfFile: [NSString stringWithUTF8String: psz_meta+7]];
+
+        /* FIXME Can also be attachment:// */
+        if( psz_meta && strncmp( psz_meta, "attachment://", 13 ) )
+            o_image = [[NSImage alloc] initWithContentsOfURL: [NSURL URLWithString:[NSString stringWithUTF8String: psz_meta]]];
         else
             o_image = [[NSImage imageNamed: @"noart.png"] retain];
         [o_image_well setImage: o_image];
@@ -330,11 +328,11 @@ static VLCInfo *_o_sharedInstance = nil;
 
     /* input */
     [o_read_bytes_txt setStringValue: [NSString stringWithFormat:
-        @"%8.0f kB", (float)(p_item->p_stats->i_read_bytes)/1000]];
+        @"%8.0f KiB", (float)(p_item->p_stats->i_read_bytes)/1024]];
     [o_input_bitrate_txt setStringValue: [NSString stringWithFormat:
         @"%6.0f kb/s", (float)(p_item->p_stats->f_input_bitrate)*8000]];
     [o_demux_bytes_txt setStringValue: [NSString stringWithFormat:
-        @"%8.0f kB", (float)(p_item->p_stats->i_demux_read_bytes)/1000]];
+        @"%8.0f KiB", (float)(p_item->p_stats->i_demux_read_bytes)/1024]];
     [o_demux_bitrate_txt setStringValue: [NSString stringWithFormat:
         @"%6.0f kb/s", (float)(p_item->p_stats->f_demux_bitrate)*8000]];
 
@@ -348,8 +346,8 @@ static VLCInfo *_o_sharedInstance = nil;
 
     /* Sout */
     [o_sent_packets_txt setIntValue: p_item->p_stats->i_sent_packets];
-    [o_sent_bytes_txt setStringValue: [NSString stringWithFormat: @"%8.0f kB",
-        (float)(p_item->p_stats->i_sent_bytes)/1000]];
+    [o_sent_bytes_txt setStringValue: [NSString stringWithFormat: @"%8.0f KiB",
+        (float)(p_item->p_stats->i_sent_bytes)/1024]];
     [o_sent_bitrate_txt setStringValue: [NSString stringWithFormat:
         @"%6.0f kb/s", (float)(p_item->p_stats->f_send_bitrate*8)*1000]];
 
@@ -368,29 +366,7 @@ static VLCInfo *_o_sharedInstance = nil;
 
 - (IBAction)saveMetaData:(id)sender
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
-    vlc_value_t val;
-
     if( !p_item ) goto error;
-
-    meta_export_t p_export;
-    p_export.p_item = p_item;
-
-    /* we can write meta data only in a file */
-    vlc_mutex_lock( &p_item->lock );
-    int i_type = p_item->i_type;
-    vlc_mutex_unlock( &p_item->lock );
-
-    if( i_type != ITEM_TYPE_FILE )
-        goto error;
-
-    char *psz_uri_orig = input_item_GetURI( p_item );
-    char *psz_uri = psz_uri_orig;
-    if( !strncmp( psz_uri, "file://", 7 ) )
-        psz_uri += 7; /* strlen("file://") = 7 */
-
-    p_export.psz_file = strndup( psz_uri, PATH_MAX );
-    free( psz_uri_orig );
 
     #define utf8( o_blub ) \
         [[o_blub stringValue] UTF8String]
@@ -407,24 +383,16 @@ static VLCInfo *_o_sharedInstance = nil;
     input_item_SetDescription( p_item, utf8( o_description_txt ) );
     input_item_SetLanguage( p_item, utf8( o_language_txt ) );
 
-    PL_LOCK;
-    p_playlist->p_private = &p_export;
+    playlist_t * p_playlist = pl_Get( VLCIntf );
+    input_item_WriteMeta( VLC_OBJECT(p_playlist), p_item );
 
-    module_t *p_mod = module_need( p_playlist, "meta writer", NULL, false );
-    if( p_mod )
-        module_unneed( p_playlist, p_mod );
-    PL_UNLOCK;
-
-    val.b_bool = true;
-    var_Set( p_playlist, "intf-change", val );
+    var_SetBool( p_playlist, "intf-change", true );
     [self updatePanelWithItem: p_item];
 
-    pl_Release( VLCIntf );
     [o_saveMetaData_btn setEnabled: NO];
     return;
 
 error:
-    pl_Release( VLCIntf );
     NSRunAlertPanel(_NS("Error while saving meta"),
         _NS("VLC was unable to save the meta data."),
         _NS("OK"), nil, nil);
@@ -432,9 +400,8 @@ error:
 
 - (IBAction)downloadCoverArt:(id)sender
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
-    if( p_item) playlist_AskForArtEnqueue( p_playlist, p_item, pl_Unlocked );
-    pl_Release( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
+    if( p_item) playlist_AskForArtEnqueue( p_playlist, p_item );
 }
 
 - (input_item_t *)item
@@ -596,7 +563,7 @@ error:
     return [[self children] objectAtIndex:i_index];
 }
 
-- (NSInteger)numberOfChildren {
+- (int)numberOfChildren {
 
     id i_tmp = [self children];
     return ( i_tmp == IsALeafNode ) ? (-1) : (int)[i_tmp count];

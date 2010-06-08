@@ -2,7 +2,7 @@
  * recents.cpp : Recents MRL (menu)
  *****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: 83317afd9532bbc4f86e293bce4454fe6deed013 $
+ * $Id: 99fb82749607a237ad16cc7bc6b6abb8fcd8a7b5 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -26,8 +26,7 @@
 #include "dialogs_provider.hpp"
 #include "menus.hpp"
 
-#include <QList>
-#include <QString>
+#include <QStringList>
 #include <QAction>
 #include <QSettings>
 #include <QRegExp>
@@ -41,15 +40,16 @@ RecentsMRL* RecentsMRL::instance = NULL;
 
 RecentsMRL::RecentsMRL( intf_thread_t *_p_intf ) : p_intf( _p_intf )
 {
-    stack = new QList<QString>;
-    signalMapper = new QSignalMapper(this);
+    stack = new QStringList;
+
+    signalMapper = new QSignalMapper( this );
     CONNECT( signalMapper,
             mapped(const QString & ),
             DialogsProvider::getInstance( p_intf ),
             playMRL( const QString & ) );
 
-    isActive = config_GetInt( p_intf, "qt-recentplay" );
-    char* psz_tmp = config_GetPsz( p_intf, "qt-recentplay-filter" );
+    /* Load the filter psz */
+    char* psz_tmp = var_InheritString( p_intf, "qt-recentplay-filter" );
     if( psz_tmp && *psz_tmp )
         filter = new QRegExp( psz_tmp, Qt::CaseInsensitive );
     else
@@ -57,6 +57,7 @@ RecentsMRL::RecentsMRL( intf_thread_t *_p_intf ) : p_intf( _p_intf )
     free( psz_tmp );
 
     load();
+    isActive = var_InheritBool( p_intf, "qt-recentplay" );
     if( !isActive ) clear();
 }
 
@@ -98,20 +99,23 @@ void RecentsMRL::clear()
 {
     if ( stack->isEmpty() )
         return;
+
     stack->clear();
     if( isActive ) QVLCMenu::updateRecents( p_intf );
     save();
 }
 
-QList<QString> RecentsMRL::recents()
+QStringList RecentsMRL::recents()
 {
-    return QList<QString>(*stack);
+    return *stack;
 }
 
 void RecentsMRL::load()
 {
+    /* Load from the settings */
     QStringList list = getSettings()->value( "RecentsMRL/list" ).toStringList();
 
+    /* And filter the regexp on the list */
     for( int i = 0; i < list.size(); ++i )
     {
         if ( !filter || filter->indexIn( list.at(i) ) == -1 )
@@ -121,11 +125,6 @@ void RecentsMRL::load()
 
 void RecentsMRL::save()
 {
-    QStringList list;
-
-    for( int i = 0; i < stack->size(); ++i )
-        list << stack->at(i);
-
-    getSettings()->setValue( "RecentsMRL/list", list );
+    getSettings()->setValue( "RecentsMRL/list", *stack );
 }
 

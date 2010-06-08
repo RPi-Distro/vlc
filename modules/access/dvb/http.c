@@ -35,10 +35,7 @@
 #   include <unistd.h>
 #endif
 
-#include <fcntl.h>
 #include <sys/types.h>
-
-#include <errno.h>
 
 /* Include dvbpsi headers */
 #ifdef HAVE_DVBPSI_DR_H
@@ -62,8 +59,8 @@
 #endif
 
 #ifdef ENABLE_HTTPD
-#   include "vlc_httpd.h"
-#   include "vlc_acl.h"
+#   include <vlc_httpd.h>
+#   include <vlc_acl.h>
 #endif
 
 #include "dvb.h"
@@ -113,14 +110,14 @@ int HTTPOpen( access_t *p_access )
         return VLC_SUCCESS;
 
     /* determine SSL configuration */
-    psz_cert = var_GetNonEmptyString( p_access, "dvb-http-intf-cert" );
+    psz_cert = var_InheritString( p_access, "dvb-http-intf-cert" );
     if ( psz_cert != NULL )
     {
         msg_Dbg( p_access, "enabling TLS for HTTP interface (cert file: %s)",
                  psz_cert );
-        psz_key = config_GetPsz( p_access, "dvb-http-intf-key" );
-        psz_ca = config_GetPsz( p_access, "dvb-http-intf-ca" );
-        psz_crl = config_GetPsz( p_access, "dvb-http-intf-crl" );
+        psz_key = var_InheritString( p_access, "dvb-http-intf-key" );
+        psz_ca = var_InheritString( p_access, "dvb-http-intf-ca" );
+        psz_crl = var_InheritString( p_access, "dvb-http-intf-crl" );
 
         if ( i_port <= 0 )
             i_port = 8443;
@@ -253,6 +250,7 @@ static int HttpCallback( httpd_file_sys_t *p_args,
                          uint8_t *_psz_request,
                          uint8_t **_pp_data, int *pi_data )
 {
+    VLC_UNUSED(p_file);
     access_sys_t *p_sys = p_args->p_access->p_sys;
     char *psz_request = (char *)_psz_request;
     char **pp_data = (char **)_pp_data;
@@ -299,10 +297,10 @@ static int HttpCallback( httpd_file_sys_t *p_args,
 /****************************************************************************
  * HTTPExtractValue: Extract a GET variable from psz_request
  ****************************************************************************/
-char *HTTPExtractValue( char *psz_uri, const char *psz_name,
-                            char *psz_value, int i_value_max )
+const char *HTTPExtractValue( const char *psz_uri, const char *psz_name,
+                        char *psz_value, int i_value_max )
 {
-    char *p = psz_uri;
+    const char *p = psz_uri;
 
     while( (p = strstr( p, psz_name )) )
     {

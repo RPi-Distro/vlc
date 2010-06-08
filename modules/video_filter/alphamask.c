@@ -2,7 +2,7 @@
  * alphamask.c : Alpha layer mask video filter for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: f6b969c075c39d0f3b731a5a1722ac99ea862ae0 $
+ * $Id: c2b11c43aa1e3f4ca5d7642bc52e7df0a15662d6 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -31,7 +31,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 
 #include <vlc_image.h>
 #include <vlc_filter.h>
@@ -90,10 +89,10 @@ static int Create( vlc_object_t *p_this )
     filter_sys_t *p_sys;
     char *psz_string;
 
-    if( p_filter->fmt_in.video.i_chroma != VLC_FOURCC('Y','U','V','A') )
+    if( p_filter->fmt_in.video.i_chroma != VLC_CODEC_YUVA )
     {
         msg_Err( p_filter,
-                 "Unsupported input chroma \"%4s\". "
+                 "Unsupported input chroma \"%4.4s\". "
                  "Alphamask can only use \"YUVA\".",
                  (char*)&p_filter->fmt_in.video.i_chroma );
         return VLC_EGENERIC;
@@ -179,7 +178,7 @@ static void LoadMask( filter_t *p_filter, const char *psz_filename )
     video_format_t fmt_in, fmt_out;
     memset( &fmt_in, 0, sizeof( video_format_t ) );
     memset( &fmt_out, 0, sizeof( video_format_t ) );
-    fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');
+    fmt_out.i_chroma = VLC_CODEC_YUVA;
     if( p_filter->p_sys->p_mask )
         picture_Release( p_filter->p_sys->p_mask );
     p_image = image_HandlerCreate( p_filter );

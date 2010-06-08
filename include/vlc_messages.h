@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
- * $Id: a9f03d712a593c285574651b5419275172e8547a $
+ * $Id: 80fc1b3e2002b26b4b65a0841400dc9a52debec4 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -87,21 +87,21 @@ typedef struct msg_subscription_t msg_subscription_t;
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-VLC_EXPORT( void, __msg_Generic, ( vlc_object_t *, int, const char *, const char *, ... ) LIBVLC_FORMAT( 4, 5 ) );
-VLC_EXPORT( void, __msg_GenericVa, ( vlc_object_t *, int, const char *, const char *, va_list args ) );
-#define msg_GenericVa(a, b, c, d, e) __msg_GenericVa(VLC_OBJECT(a), b, c, d, e)
+VLC_EXPORT( void, msg_Generic, ( vlc_object_t *, int, const char *, const char *, ... ) LIBVLC_FORMAT( 4, 5 ) );
+VLC_EXPORT( void, msg_GenericVa, ( vlc_object_t *, int, const char *, const char *, va_list args ) );
+#define msg_GenericVa(a, b, c, d, e) msg_GenericVa(VLC_OBJECT(a), b, c, d, e)
 
 #define msg_Info( p_this, ... ) \
-      __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_INFO, \
+        msg_Generic( VLC_OBJECT(p_this), VLC_MSG_INFO, \
                      MODULE_STRING, __VA_ARGS__ )
 #define msg_Err( p_this, ... ) \
-      __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_ERR, \
+        msg_Generic( VLC_OBJECT(p_this), VLC_MSG_ERR, \
                      MODULE_STRING, __VA_ARGS__ )
 #define msg_Warn( p_this, ... ) \
-      __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_WARN, \
+        msg_Generic( VLC_OBJECT(p_this), VLC_MSG_WARN, \
                      MODULE_STRING, __VA_ARGS__ )
 #define msg_Dbg( p_this, ... ) \
-      __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_DBG, \
+        msg_Generic( VLC_OBJECT(p_this), VLC_MSG_DBG, \
                      MODULE_STRING, __VA_ARGS__ )
 
 typedef struct msg_cb_data_t msg_cb_data_t;
@@ -116,10 +116,11 @@ VLC_EXPORT( msg_subscription_t*, msg_Subscribe, ( libvlc_int_t *, msg_callback_t
 VLC_EXPORT( void, msg_Unsubscribe, ( msg_subscription_t * ) );
 
 /* Enable or disable a certain object debug messages */
-#define msg_EnableObjectPrinting(a,b) __msg_EnableObjectPrinting(VLC_OBJECT(a),b)
-#define msg_DisableObjectPrinting(a,b) __msg_DisableObjectPrinting(VLC_OBJECT(a),b)
-VLC_EXPORT( void, __msg_EnableObjectPrinting, ( vlc_object_t *, char * psz_object ) );
-VLC_EXPORT( void, __msg_DisableObjectPrinting, ( vlc_object_t *, char * psz_object ) );
+VLC_EXPORT( void, msg_EnableObjectPrinting, ( vlc_object_t *, const char * psz_object ) );
+#define msg_EnableObjectPrinting(a,b) msg_EnableObjectPrinting(VLC_OBJECT(a),b)
+VLC_EXPORT( void, msg_DisableObjectPrinting, ( vlc_object_t *, const char * psz_object ) );
+#define msg_DisableObjectPrinting(a,b) msg_DisableObjectPrinting(VLC_OBJECT(a),b)
+
 
 /**
  * @}
@@ -202,18 +203,22 @@ enum
 /*********
  * Timing
  ********/
-#define stats_TimerStart(a,b,c) __stats_TimerStart( VLC_OBJECT(a), b,c )
-#define stats_TimerStop(a,b) __stats_TimerStop( VLC_OBJECT(a), b )
-#define stats_TimerDump(a,b) __stats_TimerDump( VLC_OBJECT(a), b )
-#define stats_TimersDumpAll(a) __stats_TimersDumpAll( VLC_OBJECT(a) )
-VLC_EXPORT( void,__stats_TimerStart, (vlc_object_t*, const char *, unsigned int ) );
-VLC_EXPORT( void,__stats_TimerStop, (vlc_object_t*, unsigned int) );
-VLC_EXPORT( void,__stats_TimerDump, (vlc_object_t*, unsigned int) );
-VLC_EXPORT( void,__stats_TimersDumpAll, (vlc_object_t*) );
-#define stats_TimersCleanAll(a) __stats_TimersCleanAll( VLC_OBJECT(a) )
-VLC_EXPORT( void, __stats_TimersCleanAll, (vlc_object_t * ) );
+VLC_EXPORT( void, stats_TimerStart, (vlc_object_t*, const char *, unsigned int ) );
+VLC_EXPORT( void, stats_TimerStop, (vlc_object_t*, unsigned int) );
+VLC_EXPORT( void, stats_TimerDump, (vlc_object_t*, unsigned int) );
+VLC_EXPORT( void, stats_TimersDumpAll, (vlc_object_t*) );
+#define stats_TimerStart(a,b,c) stats_TimerStart( VLC_OBJECT(a), b,c )
+#define stats_TimerStop(a,b) stats_TimerStop( VLC_OBJECT(a), b )
+#define stats_TimerDump(a,b) stats_TimerDump( VLC_OBJECT(a), b )
+#define stats_TimersDumpAll(a) stats_TimersDumpAll( VLC_OBJECT(a) )
 
-#define stats_TimerClean(a,b) __stats_TimerClean( VLC_OBJECT(a), b )
-VLC_EXPORT( void, __stats_TimerClean, (vlc_object_t *, unsigned int ) );
+VLC_EXPORT( void, stats_TimersCleanAll, (vlc_object_t * ) );
+#define stats_TimersCleanAll(a) stats_TimersCleanAll( VLC_OBJECT(a) )
 
+VLC_EXPORT( void, stats_TimerClean, (vlc_object_t *, unsigned int ) );
+#define stats_TimerClean(a,b) stats_TimerClean( VLC_OBJECT(a), b )
+
+/**
+ * @}
+ */
 #endif

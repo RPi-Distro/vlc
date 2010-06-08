@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 the VideoLAN team
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: 75001f5477666961156a46ee1564e26667d8c13b $
+ * $Id: 2e939db3c4f32f7c32b4117a5dd2ff1bdf4cdbdd $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -44,9 +44,6 @@
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
 #endif
-#ifdef HAVE_SYS_TIME_H
-#    include <sys/time.h>
-#endif
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
@@ -79,24 +76,10 @@
 extern int rootwrap_bind (int family, int socktype, int protocol,
                           const struct sockaddr *addr, size_t alen);
 
-int net_SetupSocket (int fd)
-{
-#if defined (WIN32) || defined (UNDER_CE)
-    ioctlsocket (fd, FIONBIO, &(unsigned long){ 1 });
-#else
-    fcntl (fd, F_SETFD, FD_CLOEXEC);
-    fcntl (fd, F_SETFL, fcntl (fd, F_GETFL, 0) | O_NONBLOCK);
-#endif
-
-    setsockopt (fd, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof (int));
-    return 0;
-}
-
-
 int net_Socket (vlc_object_t *p_this, int family, int socktype,
                 int protocol)
 {
-    int fd = socket (family, socktype, protocol);
+    int fd = vlc_socket (family, socktype, protocol, true);
     if (fd == -1)
     {
         if (net_errno != EAFNOSUPPORT)
@@ -104,7 +87,7 @@ int net_Socket (vlc_object_t *p_this, int family, int socktype,
         return -1;
     }
 
-    net_SetupSocket (fd);
+    setsockopt (fd, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof (int));
 
 #ifdef IPV6_V6ONLY
     /*
@@ -144,30 +127,13 @@ int net_Socket (vlc_object_t *p_this, int family, int socktype,
 
 
 int *net_Listen (vlc_object_t *p_this, const char *psz_host,
-                 int i_port, int protocol)
+                 int i_port, int type, int protocol)
 {
     struct addrinfo hints, *res;
-    int socktype = SOCK_DGRAM;
-
-    switch( protocol )
-    {
-        case IPPROTO_TCP:
-            socktype = SOCK_STREAM;
-            break;
-        case 33: /* DCCP */
-#ifdef __linux__
-# ifndef SOCK_DCCP
-#  define SOCK_DCCP 6
-# endif
-            socktype = SOCK_DCCP;
-#endif
-            break;
-    }
 
     memset (&hints, 0, sizeof( hints ));
-    /* Since we use port numbers rather than service names, the socket type
-     * does not really matter. */
-    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_socktype = type;
+    hints.ai_protocol = protocol;
     hints.ai_flags = AI_PASSIVE;
 
     msg_Dbg (p_this, "net: listening to %s port %d", psz_host, i_port);
@@ -185,7 +151,8 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
 
     for (struct addrinfo *ptr = res; ptr != NULL; ptr = ptr->ai_next)
     {
-        int fd = net_Socket (p_this, ptr->ai_family, socktype, protocol);
+        int fd = net_Socket (p_this, ptr->ai_family, ptr->ai_socktype,
+                             ptr->ai_protocol);
         if (fd == -1)
         {
             msg_Dbg (p_this, "socket error: %m");
@@ -218,8 +185,8 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
         {
             net_Close (fd);
 #if !defined(WIN32) && !defined(UNDER_CE)
-            fd = rootwrap_bind (ptr->ai_family, socktype,
-                                protocol ? protocol : ptr->ai_protocol,
+            fd = rootwrap_bind (ptr->ai_family, ptr->ai_socktype,
+                                ptr->ai_protocol,
                                 ptr->ai_addr, ptr->ai_addrlen);
             if (fd != -1)
             {
@@ -243,7 +210,7 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
         }
 
         /* Listen */
-        switch (socktype)
+        switch (ptr->ai_socktype)
         {
             case SOCK_STREAM:
             case SOCK_RDM:
@@ -277,9 +244,9 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
     return sockv;
 }
 
-
+#undef net_Read
 /*****************************************************************************
- * __net_Read:
+ * net_Read:
  *****************************************************************************
  * Reads from a network socket. Cancellation point.
  * If waitall is true, then we repeat until we have read the right amount of
@@ -287,8 +254,8 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
  * object has been signaled.
  *****************************************************************************/
 ssize_t
-__net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
-            void *restrict p_buf, size_t i_buflen, bool waitall)
+net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
+          void *restrict p_buf, size_t i_buflen, bool waitall)
 {
     size_t i_total = 0;
     struct pollfd ufd[2] = {
@@ -415,10 +382,19 @@ silent:
     return -1;
 }
 
-
-/* Write exact amount requested */
-ssize_t __net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
-                     const void *restrict p_data, size_t i_data )
+#undef net_Write
+/**
+ * Writes data to a file descriptor.
+ * This blocks until all data is written or an error occurs.
+ *
+ * This function is a cancellation point if p_vs is NULL.
+ * This function is not cancellation-safe if p_vs is not NULL.
+ *
+ * @return the total number of bytes written, or -1 if an error occurs
+ * before any data is written.
+ */
+ssize_t net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
+                   const void *restrict p_data, size_t i_data )
 {
     size_t i_total = 0;
     struct pollfd ufd[2] = {
@@ -426,8 +402,11 @@ ssize_t __net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
         { .fd = vlc_object_waitpipe (p_this), .events = POLLIN  },
     };
 
-    if (ufd[1].fd == -1)
+    if (unlikely(ufd[1].fd == -1))
+    {
+        vlc_testcancel ();
         return -1;
+    }
 
     while( i_data > 0 )
     {
@@ -484,6 +463,9 @@ ssize_t __net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
         i_total += val;
     }
 
+    if (unlikely(i_data == 0))
+        vlc_testcancel (); /* corner case */
+
     if ((i_total > 0) || (i_data == 0))
         return i_total;
 
@@ -491,14 +473,15 @@ error:
     return -1;
 }
 
+#undef net_Gets
 /**
  * Reads a line from a file descriptor.
- * This function is not thread-safe; the same file descriptor cI/O annot be read
- * by another thread at the same time (although it can be written to).
+ * This function is not thread-safe; the same file descriptor I/O cannot be
+ * read by another thread at the same time (although it can be written to).
  *
  * @return nul-terminated heap-allocated string, or NULL on I/O error.
  */
-char *__net_Gets( vlc_object_t *p_this, int fd, const v_socket_t *p_vs )
+char *net_Gets( vlc_object_t *p_this, int fd, const v_socket_t *p_vs )
 {
     char *psz_line = NULL, *ptr = NULL;
     size_t  i_line = 0, i_max = 0;
@@ -509,7 +492,7 @@ char *__net_Gets( vlc_object_t *p_this, int fd, const v_socket_t *p_vs )
         if( i_line == i_max )
         {
             i_max += 1024;
-            psz_line = realloc( psz_line, i_max );
+            psz_line = xrealloc( psz_line, i_max );
             ptr = psz_line + i_line;
         }
 
@@ -538,6 +521,7 @@ char *__net_Gets( vlc_object_t *p_this, int fd, const v_socket_t *p_vs )
     return psz_line;
 }
 
+#undef net_Printf
 ssize_t net_Printf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
                     const char *psz_fmt, ... )
 {
@@ -550,8 +534,9 @@ ssize_t net_Printf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
     return i_ret;
 }
 
-ssize_t __net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
-                        const char *psz_fmt, va_list args )
+#undef net_vaPrintf
+ssize_t net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
+                      const char *psz_fmt, va_list args )
 {
     char    *psz;
     int      i_ret;
@@ -559,7 +544,7 @@ ssize_t __net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
     int i_size = vasprintf( &psz, psz_fmt, args );
     if( i_size == -1 )
         return -1;
-    i_ret = __net_Write( p_this, fd, p_vs, psz, i_size ) < i_size
+    i_ret = net_Write( p_this, fd, p_vs, psz, i_size ) < i_size
         ? -1 : i_size;
     free( psz );
 

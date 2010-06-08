@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: ff50c8233d223db6f1a201d60f266c74ba8b38c4 $
+ * $Id: 99c0af557718afb4692359e685d4edf63dd40ce6 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -84,11 +84,18 @@ void    input_clock_ChangeRate( input_clock_t *, int i_rate );
 void    input_clock_ChangePause( input_clock_t *, bool b_paused, mtime_t i_date );
 
 /**
- * This function allows to rebase the original system value date.
- * It can be called only imediatly after a input_clock_Update call.
- * FIXME ugly
+ * This function returns the original system value date and the delay for the current
+ * reference point (a valid reference point must have been set).
  */
-void    input_clock_ChangeSystemOrigin( input_clock_t *, mtime_t i_system );
+void    input_clock_GetSystemOrigin( input_clock_t *, mtime_t *pi_system, mtime_t *pi_delay );
+
+/**
+ * This function allows to rebase the original system value date (a valid
+ * reference point must have been set).
+ * When using the absolute mode, it will create a discontinuity unless
+ * called imediatly after a input_clock_Update.
+ */
+void    input_clock_ChangeSystemOrigin( input_clock_t *, bool b_absolute, mtime_t i_system );
 
 /**
  * This function converts a pair of timestamp from stream clock to system clock.

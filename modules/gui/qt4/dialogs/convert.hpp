@@ -2,7 +2,7 @@
  * GotoTime.hpp : GotoTime dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 227aba20565d381150aa07315dd6a6fad7ac7e82 $
+ * $Id: 1df5186dd1ddf70eb8acd9239601062c507ef3a7 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -32,7 +32,7 @@ class VLCProfileSelector;
 
 class ConvertDialog : public QVLCDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     ConvertDialog( QWidget *, intf_thread_t *, const QString& );
     virtual ~ConvertDialog(){}

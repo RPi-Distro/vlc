@@ -3,9 +3,9 @@
 
 basedir = services_discovery
 dir = services_discovery
-mods = bonjour hal mtp podcast sap shout udev upnp_cc upnp_intel
-libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBhal) $(LTLIBmtp) $(LTLIBpodcast) $(LTLIBsap) $(LTLIBshout) $(LTLIBudev) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
-EXTRA_LTLIBRARIES =  libbonjour_plugin.la libhal_plugin.la libmtp_plugin.la libpodcast_plugin.la libsap_plugin.la libshout_plugin.la libudev_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
+mods = bonjour mediadirs mtp podcast sap udev upnp_cc upnp_intel
+libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBmtp) $(LTLIBudev) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
+EXTRA_LTLIBRARIES =  libbonjour_plugin.la libmtp_plugin.la libudev_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -20,16 +20,16 @@ libbonjour_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libbonjour_plugin_la_LIBADD = $(AM_LIBADD)
 libbonjour_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The hal plugin
-libhal_plugin_la_SOURCES = $(SOURCES_hal)
-nodist_libhal_plugin_la_SOURCES = $(nodist_SOURCES_hal)
+# The mediadirs plugin
+libmediadirs_plugin_la_SOURCES = $(SOURCES_mediadirs)
+nodist_libmediadirs_plugin_la_SOURCES = $(nodist_SOURCES_mediadirs)
 # Force per-target objects:
-libhal_plugin_la_CFLAGS = $(AM_CFLAGS)
-libhal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libhal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmediadirs_plugin_la_CFLAGS = $(AM_CFLAGS)
+libmediadirs_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libmediadirs_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libhal_plugin_la_LIBADD = $(AM_LIBADD)
-libhal_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmediadirs_plugin_la_LIBADD = $(AM_LIBADD)
+libmediadirs_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mtp plugin
 libmtp_plugin_la_SOURCES = $(SOURCES_mtp)
@@ -63,17 +63,6 @@ libsap_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsap_plugin_la_LIBADD = $(AM_LIBADD)
 libsap_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The shout plugin
-libshout_plugin_la_SOURCES = $(SOURCES_shout)
-nodist_libshout_plugin_la_SOURCES = $(nodist_SOURCES_shout)
-# Force per-target objects:
-libshout_plugin_la_CFLAGS = $(AM_CFLAGS)
-libshout_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libshout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libshout_plugin_la_LIBADD = $(AM_LIBADD)
-libshout_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The udev plugin
 libudev_plugin_la_SOURCES = $(SOURCES_udev)

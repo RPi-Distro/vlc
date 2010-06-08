@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: bec4d4badb20700e7a73091c3976be5de3d34922 $
+ * $Id: c3fcd3a39ebb2d3edc0918ca7f2ffe6a0d179055 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -36,35 +36,31 @@
 #include "components/controller.hpp"
 #include "components/controller_widget.hpp"
 
-//#include <vlc_aout.h> Visualizer
-
 #include <QWidget>
 #include <QFrame>
 #include <QLabel>
 #include <QMouseEvent>
 
 class ResizeEvent;
-class QPalette;
 class QPixmap;
 class QHBoxLayout;
 class QMenu;
+class QSlider;
+class ReparentableWidget;
 
 /******************** Video Widget ****************/
 class VideoWidget : public QFrame
 {
     Q_OBJECT
-friend class MainInterface;
+friend class ReparentableWidget;
 
 public:
     VideoWidget( intf_thread_t * );
     virtual ~VideoWidget();
 
-    WId request( vout_thread_t *, int *, int *,
-                 unsigned int *, unsigned int *, bool );
+    WId request( int *, int *, unsigned int *, unsigned int *, bool );
     void  release( void );
     int   control( void *, int, va_list );
-
-    virtual QSize sizeHint() const;
 
 protected:
     virtual QPaintEngine *paintEngine() const
@@ -72,17 +68,19 @@ protected:
         return NULL;
     }
 
-    virtual void paintEvent(QPaintEvent *);
-
 private:
     intf_thread_t *p_intf;
-    vout_thread_t *p_vout;
 
-    QSize videoSize;
+    QWidget *reparentable;
+    QLayout *layout;
+    virtual bool eventFilter ( QObject * watched, QEvent * event );
+signals:
+    void keyPressed( QKeyEvent * );
+    void sizeChanged( int, int );
 
 public slots:
     void SetSizing( unsigned int, unsigned int );
-
+    void SetFullScreen( bool );
 };
 
 /******************** Background Widget ****************/
@@ -91,15 +89,15 @@ class BackgroundWidget : public QWidget
     Q_OBJECT
 public:
     BackgroundWidget( intf_thread_t * );
-    virtual ~BackgroundWidget();
-
+    void setExpandstoHeight( bool b_expand ) { b_expandPixmap = b_expand; }
 private:
-    QPalette plt;
-    QLabel *label;
+    QString pixmapUrl;
+    bool b_expandPixmap;
     virtual void contextMenuEvent( QContextMenuEvent *event );
     intf_thread_t *p_intf;
-    virtual void resizeEvent( QResizeEvent * event );
-
+protected:
+    void paintEvent( QPaintEvent *e );
+    static const int MARGIN = 5;
 public slots:
     void toggle(){ TOGGLEV( this ); }
     void updateArt( const QString& );
@@ -141,19 +139,29 @@ protected:
 private:
     intf_thread_t *p_intf;
     bool b_remainingTime;
+    int cachedLength;
+    QTimer *bufTimer;
+    float bufVal;
+    bool buffering;
+    bool showBuffering;
+    char psz_length[MSTRTIME_MAX_SIZE];
+    char psz_time[MSTRTIME_MAX_SIZE];
     void toggleTimeDisplay();
+    void paintEvent( QPaintEvent* );
 signals:
     void timeLabelDoubleClicked();
 private slots:
-    void setDisplayPosition( float pos, int time, int length );
-    void setCaching( float );
+    void setDisplayPosition( float pos, int64_t time, int length );
+    void setDisplayPosition( float pos );
+    void updateBuffering( float );
+    void updateBuffering();
 };
 
 class SpeedLabel : public QLabel
 {
     Q_OBJECT
 public:
-    SpeedLabel( intf_thread_t *, const QString&, QWidget * );
+    SpeedLabel( intf_thread_t *, QWidget * );
     virtual ~SpeedLabel();
 
 protected:
@@ -163,10 +171,11 @@ protected:
     }
 private slots:
     void showSpeedMenu( QPoint );
-    void setRate( int );
+    void setRate( float );
 private:
     intf_thread_t *p_intf;
     QMenu *speedControlMenu;
+    QString tooltipStringPattern;
     SpeedControlWidget *speedControl;
 };
 
@@ -176,10 +185,11 @@ class SpeedControlWidget : public QFrame
     Q_OBJECT
 public:
     SpeedControlWidget( intf_thread_t *, QWidget * );
-    void updateControls( int );
+    void updateControls( float );
 private:
     intf_thread_t *p_intf;
     QSlider *speedSlider;
+    int lastValue;
 
 public slots:
     void activateOnState();
@@ -200,15 +210,15 @@ private:
     intf_thread_t *p_intf;
 
 public slots:
-    void requestUpdate() { emit updateRequested(); };
+    void requestUpdate() { emit updateRequested(); }
     void update( )
     {
         requestUpdate();
     }
+    void showArtUpdate( const QString& );
 
 private slots:
-    void doUpdate();
-    void doUpdate( const QString& );
+    void askForUpdate();
 
 signals:
     void updateRequested();

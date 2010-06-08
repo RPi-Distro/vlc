@@ -2,7 +2,7 @@
  * preferences.cpp : "Normal preferences"
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 76bf1d059bf95c52dd01f69bdec8a744d95ddedb $
+ * $Id: f8dd3d80c0d636c68ed327b52303e624860d0b69 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -61,14 +61,14 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent ) :
     setTextElideMode( Qt::ElideNone );
 
     /* Nice icons */
-#define BI( a,b) QIcon a##_icon = QIcon( QPixmap( b ))
-    BI( audio, ":/advprefs_audio" );
-    BI( video, ":/advprefs_video" );
-    BI( input, ":/advprefs_codec" );
-    BI( sout, ":/advprefs_sout" );
-    BI( advanced, ":/advprefs_extended" );
-    BI( playlist, ":/advprefs_playlist" );
-    BI( interface, ":/advprefs_intf" );
+#define BI( a,b) QIcon a##_icon = QIcon( b )
+    BI( audio, ":/prefsmenu/advanced/audio" );
+    BI( video, ":/prefsmenu/advanced/video" );
+    BI( input, ":/prefsmenu/advanced/codec" );
+    BI( sout, ":/prefsmenu/advanced/sout" );
+    BI( advanced, ":/prefsmenu/advanced/extended" );
+    BI( playlist, ":/prefsmenu/advanced/playlist" );
+    BI( interface, ":/prefsmenu/advanced/intf" );
 #undef BI
 
     /* Build the tree for the main module */

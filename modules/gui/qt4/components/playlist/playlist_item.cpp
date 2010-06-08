@@ -2,7 +2,7 @@
  * playlist_item.cpp : Manage playlist item
  ****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: 0edde6a5f91c338b4de5c1333dd0fb0bfc70b3e1 $
+ * $Id: aab77281d6666a16b4d0296f78b7fefd50c418f0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -29,10 +29,8 @@
 #include <assert.h>
 
 #include "qt4.hpp"
-#include "components/playlist/playlist_model.hpp"
+#include "playlist_item.hpp"
 #include <vlc_intf_strings.h>
-
-#include <QSettings>
 
 #include "sorting.h"
 
@@ -48,82 +46,34 @@
 */
 
 
-void PLItem::init( int _i_id, int _i_input_id, PLItem *parent, PLModel *m, QSettings *settings )
+void PLItem::init( playlist_item_t *_playlist_item, PLItem *parent )
 {
     parentItem = parent;          /* Can be NULL, but only for the rootItem */
-    i_id       = _i_id;           /* Playlist item specific id */
-    i_input_id = _i_input_id;     /* Identifier of the input */
-    model      = m;               /* PLModel (QAbsmodel) */
-    i_type     = -1;              /* Item type - Avoid segfault */
-    b_current  = false;           /* Is the item the current Item or not */
+    i_id       = _playlist_item->i_id;           /* Playlist item specific id */
+    p_input    = _playlist_item->p_input;
+    vlc_gc_incref( p_input );
 
-    assert( model );              /* We need a model */
-
-    /* No parent, should be the 2 main ones */
-    if( parentItem == NULL )
-    {
-        if( model->i_depth == DEPTH_SEL )  /* Selector Panel */
-        {
-            i_showflags = 0;
-            item_col_strings.append( "" );
-        }
-        else
-        {
-            i_showflags = settings->value( "qt-pl-showflags", COLUMN_DEFAULT ).toInt();
-            if( i_showflags < 1)
-                i_showflags = COLUMN_DEFAULT; /* reasonable default to show something; */
-            else if ( i_showflags >= COLUMN_END )
-                i_showflags = COLUMN_END - 1; /* show everything */
-
-            updateColumnHeaders();
-        }
-    }
-    else
-    {
-        i_showflags = parentItem->i_showflags;
-        //Add empty string and update() handles data appending
-        item_col_strings.append( "" );
-    }
 }
 
 /*
    Constructors
    Call the above function init
-   So far the first constructor isn't used...
    */
-PLItem::PLItem( int _i_id, int _i_input_id, PLItem *parent, PLModel *m )
+PLItem::PLItem( playlist_item_t *p_item, PLItem *parent )
 {
-    init( _i_id, _i_input_id, parent, m, NULL );
+    init( p_item, parent );
 }
 
-PLItem::PLItem( playlist_item_t * p_item, PLItem *parent, PLModel *m )
+PLItem::PLItem( playlist_item_t * p_item )
 {
-    init( p_item->i_id, p_item->p_input->i_id, parent, m, NULL );
-}
-
-PLItem::PLItem( playlist_item_t * p_item, QSettings *settings, PLModel *m )
-{
-    init( p_item->i_id, p_item->p_input->i_id, NULL, m, settings );
+    init( p_item, NULL );
 }
 
 PLItem::~PLItem()
 {
+    vlc_gc_decref( p_input );
     qDeleteAll( children );
     children.clear();
-}
-
-/* Column manager */
-void PLItem::updateColumnHeaders()
-{
-    item_col_strings.clear();
-
-    assert( i_showflags < COLUMN_END );
-
-    for( uint32_t i_index=1; i_index < COLUMN_END; i_index <<= 1 )
-    {
-        if( i_showflags & i_index )
-            item_col_strings.append( qfu( psz_column_title( i_index ) ) );
-    }
 }
 
 /* So far signal is always true.
@@ -131,23 +81,26 @@ void PLItem::updateColumnHeaders()
  */
 void PLItem::insertChild( PLItem *item, int i_pos, bool signal )
 {
-    if( signal )
-        model->beginInsertRows( model->index( this , 0 ), i_pos, i_pos );
     children.insert( i_pos, item );
-    if( signal )
-        model->endInsertRows();
 }
 
-void PLItem::remove( PLItem *removed )
+void PLItem::removeChild( PLItem *item )
 {
-    if( model->i_depth == DEPTH_SEL || parentItem )
-    {
-        int i_index = parentItem->children.indexOf( removed );
-        model->beginRemoveRows( model->index( parentItem, 0 ),
-                                i_index, i_index );
-        parentItem->children.removeAt( i_index );
-        model->endRemoveRows();
-    }
+    children.removeOne( item );
+    delete item;
+}
+
+void PLItem::removeChildren()
+{
+    qDeleteAll( children );
+    children.clear();
+}
+
+void PLItem::takeChildAt( int index )
+{
+    PLItem *child = children[index];
+    child->parentItem = NULL;
+    children.removeAt( index );
 }
 
 /* This function is used to get one's parent's row number in the model */
@@ -159,47 +112,22 @@ int PLItem::row() const
     return 0;
 }
 
-/* update the PL Item, get the good names and so on */
-/* This function may not be the best way to do it
-   It destroys everything and gets everything again instead of just
-   building the necessary columns.
-   This does extra work if you re-display the same column. Slower...
-   On the other hand, this way saves memory.
-   There must be a more clever way.
-   */
-void PLItem::update( playlist_item_t *p_item, bool iscurrent )
+bool PLItem::operator< ( PLItem& other )
 {
-    assert( p_item->p_input->i_id == i_input_id );
-
-    /* Useful for the model */
-    i_type = p_item->p_input->i_type;
-    b_current = iscurrent;
-
-    item_col_strings.clear();
-
-    if( model->i_depth == 1 )  /* Selector Panel */
+    PLItem *item1 = this;
+    while( item1->parentItem )
     {
-        item_col_strings.append( qfu( p_item->p_input->psz_name ) );
-        return;
-    }
-
-    i_showflags = parentItem ? parentItem->i_showflags : i_showflags;
-
-    /* Meta: ID */
-    if( i_showflags & COLUMN_NUMBER )
-    {
-        QModelIndex idx = model->index( this, 0 );
-        item_col_strings.append( QString::number( idx.row() + 1 ) );
-    }
-    /* Other meta informations */
-    for( uint32_t i_index=2; i_index < COLUMN_END; i_index <<= 1 )
-    {
-        if( i_showflags & i_index )
+        PLItem *item2 = &other;
+        while( item2->parentItem )
         {
-            char *psz = psz_column_meta( p_item->p_input, i_index );
-            item_col_strings.append( qfu( psz ) );
-            free( psz );
+            if( item1 == item2->parentItem ) return true;
+            if( item2 == item1->parentItem ) return false;
+            if( item1->parentItem == item2->parentItem )
+                return item1->parentItem->children.indexOf( item1 ) <
+                       item1->parentItem->children.indexOf( item2 );
+            item2 = item2->parentItem;
         }
+        item1 = item1->parentItem;
     }
+    return false;
 }
-

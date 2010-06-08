@@ -2,7 +2,7 @@
  * ggi.c : GGI plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2009 the VideoLAN team
- * $Id: a5a0e6c39802ecdfc2f277d1679d33283394ab93 $
+ * $Id: 3ec10a7459693bef6b38671d9afd0d08ba9b7aeb $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -25,13 +25,11 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <errno.h>                                                 /* ENOMEM */
-
-#include <ggi/ggi.h>
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <ggi/ggi.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -145,17 +143,17 @@ static int Init( vout_thread_t *p_vout )
     switch( p_vout->p_sys->i_bits_per_pixel )
     {
         case 8:
-            p_vout->output.i_chroma = VLC_FOURCC('R','G','B','2');
+            p_vout->output.i_chroma = VLC_CODEC_RGB8;
             p_vout->output.pf_setpalette = SetPalette;
             break;
         case 15:
-            p_vout->output.i_chroma = VLC_FOURCC('R','V','1','5'); break;
+            p_vout->output.i_chroma = VLC_CODEC_RGB15; break;
         case 16:
-            p_vout->output.i_chroma = VLC_FOURCC('R','V','1','6'); break;
+            p_vout->output.i_chroma = VLC_CODEC_RGB16; break;
         case 24:
-            p_vout->output.i_chroma = VLC_FOURCC('R','V','2','4'); break;
+            p_vout->output.i_chroma = VLC_CODEC_RGB24; break;
         case 32:
-            p_vout->output.i_chroma = VLC_FOURCC('R','V','3','2'); break;
+            p_vout->output.i_chroma = VLC_CODEC_RGB32; break;
         default:
             msg_Err( p_vout, "unknown screen depth %i",
                      p_vout->p_sys->i_bits_per_pixel );
@@ -305,7 +303,8 @@ static int Manage( vout_thread_t *p_vout )
                 switch( event.pbutton.button )
                 {
                     case GII_PBUTTON_LEFT:
-                        var_SetBool( p_vout, "mouse-clicked", true );
+                        /*FIXME
+                        var_SetCoords( p_vout, "mouse-clicked", x, y );*/
                         break;
 
                     case GII_PBUTTON_RIGHT:
@@ -379,7 +378,7 @@ static int OpenDisplay( vout_thread_t *p_vout )
     }
 
     /* Open display */
-    psz_display = config_GetPsz( p_vout, "ggi-display" );
+    psz_display = var_InheritString( p_vout, "ggi-display" );
 
     p_vout->p_sys->p_display = ggiOpen( psz_display, NULL );
     free( psz_display );
@@ -393,8 +392,8 @@ static int OpenDisplay( vout_thread_t *p_vout )
 
     /* Find most appropriate mode */
     p_vout->p_sys->mode.frames =    2;                          /* 2 buffers */
-    p_vout->p_sys->mode.visible.x = config_GetInt( p_vout, "width" );
-    p_vout->p_sys->mode.visible.y = config_GetInt( p_vout, "height" );
+    p_vout->p_sys->mode.visible.x = var_InheritInteger( p_vout, "width" );
+    p_vout->p_sys->mode.visible.y = var_InheritInteger( p_vout, "height" );
     p_vout->p_sys->mode.virt.x =    GGI_AUTO;
     p_vout->p_sys->mode.virt.y =    GGI_AUTO;
     p_vout->p_sys->mode.size.x =    GGI_AUTO;

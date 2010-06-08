@@ -2,7 +2,7 @@
  * Convert.cpp : Convertion dialogs
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 332aa85eade2f2917ff6f854dc89965c824b8d3e $
+ * $Id: cd2c8a8ab59466955bcc29668c1e838ba451fe42 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -42,6 +42,7 @@ ConvertDialog::ConvertDialog( QWidget *parent, intf_thread_t *_p_intf,
               : QVLCDialog( parent, _p_intf )
 {
     setWindowTitle( qtr( "Convert" ) );
+    setWindowRole( "vlc-convert" );
 
     QGridLayout *mainLayout = new QGridLayout( this );
     SoutInputBox *inputBox = new SoutInputBox( this );

@@ -2,7 +2,7 @@
  * var_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 91f65fef838df636287dac75f2d1fa57ac186301 $
+ * $Id: 053ac95026414f99f7b215e47798e26f13723e78 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -74,11 +74,8 @@ VarManager *VarManager::instance( intf_thread_t *pIntf )
 
 void VarManager::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_varManager )
-    {
-        delete pIntf->p_sys->p_varManager;
-        pIntf->p_sys->p_varManager = NULL;
-    }
+    delete pIntf->p_sys->p_varManager;
+    pIntf->p_sys->p_varManager = NULL;
 }
 
 

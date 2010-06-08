@@ -2,7 +2,7 @@
  * podcast_configuration.cpp: Podcast configuration dialog
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: bd10c0087535a6710e84558f090f2229dce9d25b $
+ * $Id: 1ec44d2a872c39649b98d4932a18a827fdde8220 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -26,10 +26,8 @@
 
 #include "podcast_configuration.hpp"
 
-PodcastConfigDialog *PodcastConfigDialog::instance = NULL;
-
-PodcastConfigDialog::PodcastConfigDialog( QWidget *parent, intf_thread_t *_p_intf)
-                    : QVLCDialog( parent, _p_intf )
+PodcastConfigDialog::PodcastConfigDialog( intf_thread_t *_p_intf)
+                    : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
 
 {
     ui.setupUi( this );

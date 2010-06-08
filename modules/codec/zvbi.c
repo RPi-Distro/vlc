@@ -2,7 +2,7 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: 8d5509a6b4294f153ba961ffc1d35b9a27ac548f $
+ * $Id: 2efa7bc4b29e3a98691ee9c175b2aeeb29e77b43 $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -46,7 +46,6 @@
 #include <assert.h>
 #include <libzvbi.h>
 
-#include <vlc_vout.h>
 #include <vlc_codec.h>
 #include <vlc_osd.h>
 
@@ -203,14 +202,13 @@ static int Open( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t *) p_this;
     decoder_sys_t *p_sys = NULL;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC('t','e','l','x') )
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_TELETEXT )
         return VLC_EGENERIC;
 
     p_dec->pf_decode_sub = Decode;
-    p_sys = p_dec->p_sys = malloc( sizeof(decoder_sys_t) );
+    p_sys = p_dec->p_sys = calloc( 1, sizeof(decoder_sys_t) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
-    memset( p_sys, 0, sizeof(decoder_sys_t) );
 
     p_sys->i_key[0] = p_sys->i_key[1] = p_sys->i_key[2] = '*' - '0';
     p_sys->b_update = false;
@@ -247,8 +245,7 @@ static int Open( vlc_object_t *p_this )
 
     /* Create the var on vlc_global. */
     p_sys->i_wanted_page = var_CreateGetInteger( p_dec, "vbi-page" );
-    var_AddCallback( p_dec, "vbi-page",
-                     RequestPage, p_sys );
+    var_AddCallback( p_dec, "vbi-page", RequestPage, p_sys );
 
     /* Check if the Teletext track has a known "initial page". */
     if( p_sys->i_wanted_page == 100 && p_dec->fmt_in.subs.teletext.i_magazine != -1 )
@@ -271,11 +268,11 @@ static int Open( vlc_object_t *p_this )
     /* Listen for keys */
     var_AddCallback( p_dec->p_libvlc, "key-pressed", EventKey, p_dec );
 
-    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_FOURCC( 's','p','u',' ' ) );
+    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_CODEC_SPU );
     if( p_sys->b_text )
-        p_dec->fmt_out.video.i_chroma = VLC_FOURCC('T','E','X','T');
+        p_dec->fmt_out.video.i_chroma = VLC_CODEC_TEXT;
     else
-        p_dec->fmt_out.video.i_chroma = VLC_FOURCC('R','G','B','A');
+        p_dec->fmt_out.video.i_chroma = VLC_CODEC_RGBA;
     return VLC_SUCCESS;
 }
 
@@ -466,16 +463,18 @@ static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
     }
 
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = b_text ? VLC_FOURCC('T','E','X','T') :
-                                   VLC_FOURCC('R','G','B','A');
-    fmt.i_aspect = b_text ? 0 : VOUT_ASPECT_FACTOR;
+    fmt.i_chroma = b_text ? VLC_CODEC_TEXT :
+                                   VLC_CODEC_RGBA;
     if( b_text )
     {
         fmt.i_bits_per_pixel = 0;
+        fmt.i_sar_num = 0;
+        fmt.i_sar_den = 0;
     }
     else
     {
-        fmt.i_sar_num = fmt.i_sar_den = 1;
+        fmt.i_sar_num = 1;
+        fmt.i_sar_den = 1;
         fmt.i_width = fmt.i_visible_width = i_columns * 12;
         fmt.i_height = fmt.i_visible_height = i_rows * 10;
         fmt.i_bits_per_pixel = 32;
@@ -556,7 +555,7 @@ static int OpaquePage( picture_t *p_src, const vbi_page p_page,
 {
     unsigned int    x, y;
 
-    assert( fmt.i_chroma == VLC_FOURCC('R','G','B','A' ) );
+    assert( fmt.i_chroma == VLC_CODEC_RGBA );
 
     /* Kludge since zvbi doesn't provide an option to specify opacity. */
     for( y = 0; y < fmt.i_height; y++ )

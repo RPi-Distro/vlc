@@ -28,7 +28,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 #include <vlc_codec.h>
 
 #ifdef LOADER
@@ -214,8 +213,10 @@ static int InitVideo(decoder_t *p_dec)
 
     int  i_vide = p_dec->fmt_in.i_extra;
     unsigned int *p_vide = p_dec->fmt_in.p_extra;
-    decoder_sys_t *p_sys = malloc( sizeof( decoder_sys_t ) );
-    memset(p_sys,0,sizeof( decoder_sys_t ) );
+    decoder_sys_t *p_sys = calloc( 1, sizeof( decoder_sys_t ) );
+
+    if( !p_sys )
+        return VLC_ENOMEM;
 
     if( i_vide < 8 )
     {
@@ -223,7 +224,7 @@ static int InitVideo(decoder_t *p_dec)
             free( p_sys );
             return VLC_EGENERIC;
     }
-    if (p_sys->plane) free(p_sys->plane);
+    free( p_sys->plane );
     p_sys->plane = malloc (p_dec->fmt_in.video.i_width*p_dec->fmt_in.video.i_height*3/2 + 1024 );
     if (NULL == p_sys->plane)
     {
@@ -327,7 +328,7 @@ static int InitVideo(decoder_t *p_dec)
     }
 
     /* setup rv30 codec (codec sub-type and image dimensions): */
-    /*if ( p_dec->fmt_in.i_codec == VLC_FOURCC('R','V','3','0') )*/
+    /*if ( p_dec->fmt_in.i_codec == VLC_CODEC_RV30 )*/
     if (p_vide[1]>=0x20200002)
     {
         int i, cmsg_cnt;
@@ -347,14 +348,15 @@ static int InitVideo(decoder_t *p_dec)
             (*rvyuv_custom_message)(&cmsg_data,p_sys->handle);
     }
     /*
-    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_FOURCC( 'Y','V','1','2' ));
-    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_FOURCC( 'Y','U','Y','2' ));
+    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_CODEC_YV12);
+    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_CODEC_YUYV);
      */
-    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_FOURCC( 'I', '4', '2', '0'));
+    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_CODEC_I420);
      
     p_dec->fmt_out.video.i_width = p_dec->fmt_in.video.i_width;
     p_dec->fmt_out.video.i_height= p_dec->fmt_in.video.i_height;
-    p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR * p_dec->fmt_in.video.i_width / p_dec->fmt_in.video.i_height;
+    p_dec->fmt_out.video.i_sar_num = 1;
+    p_dec->fmt_out.video.i_sar_den = 1;
     p_sys->inited = 0;
 
     vlc_mutex_unlock( &rm_mutex );
@@ -371,15 +373,12 @@ static int Open( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
 
-    /* create a mutex */
-    var_Create( p_this->p_libvlc, "rm_mutex", VLC_VAR_MUTEX );
-
     switch ( p_dec->fmt_in.i_codec )
     {
-    case VLC_FOURCC('R','V','1','0'): 
-    case VLC_FOURCC('R','V','2','0'): 
-    case VLC_FOURCC('R','V','3','0'):
-    case VLC_FOURCC('R','V','4','0'): 
+    case VLC_CODEC_RV10: 
+    case VLC_CODEC_RV20: 
+    case VLC_CODEC_RV30:
+    case VLC_CODEC_RV40: 
         p_dec->p_sys = NULL;
         p_dec->pf_decode_video = DecodeVideo;
         return InitVideo(p_dec);
@@ -420,11 +419,8 @@ static void Close( vlc_object_t *p_this )
 #endif
         p_sys->rv_handle=NULL;
 
-    if (p_sys->plane)
-    {
-        free(p_sys->plane);
-        p_sys->plane = NULL;
-    }
+    free( p_sys->plane );
+    p_sys->plane = NULL;
 
     msg_Dbg( p_dec, "FreeLibrary ok." );
 #ifdef LOADER
@@ -458,7 +454,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
     p_block = *pp_block;
     *pp_block = NULL;
 
-    i_pts = p_block->i_pts ? p_block->i_pts : p_block->i_dts;
+    i_pts = (p_block->i_pts > VLC_TS_INVALID) ? p_block->i_pts : p_block->i_dts;
 
     vlc_mutex_lock( &rm_mutex );
 
@@ -529,7 +525,8 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
                     p_dec->fmt_out.video.i_visible_height = 
                     p_dec->fmt_in.video.i_height= transform_out[4];
 
-                    p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR * p_dec->fmt_in.video.i_width / p_dec->fmt_in.video.i_height;
+                    p_dec->fmt_out.video.i_sar_num = 1;
+                    p_dec->fmt_out.video.i_sar_den = 1;
                 }
                 else
                 {

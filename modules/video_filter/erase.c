@@ -2,7 +2,7 @@
  * erase.c : logo erase video filter
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 982858473b4652d2d77cd478aa6ed5c35e27b46a $
+ * $Id: d69d92cf47f749170d11d1e0c623ba0992be3656 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -32,10 +32,9 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
-#include <vlc_vout.h>
-#include "vlc_image.h"
+#include <vlc_image.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -60,12 +59,15 @@ static int EraseCallback( vlc_object_t *, char const *,
 #define POSY_TEXT N_("Y coordinate")
 #define POSY_LONGTEXT N_("Y coordinate of the mask.")
 
+#define ERASE_HELP N_("Remove zones of the video using a picture as mask")
+
 #define CFG_PREFIX "erase-"
 
 vlc_module_begin ()
     set_description( N_("Erase video filter") )
     set_shortname( N_( "Erase" ))
     set_capability( "video filter2", 0 )
+    set_help(ERASE_HELP)
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
@@ -100,7 +102,7 @@ static void LoadMask( filter_t *p_filter, const char *psz_filename )
     picture_t *p_old_mask = p_filter->p_sys->p_mask;
     memset( &fmt_in, 0, sizeof( video_format_t ) );
     memset( &fmt_out, 0, sizeof( video_format_t ) );
-    fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');
+    fmt_out.i_chroma = VLC_CODEC_YUVA;
     p_image = image_HandlerCreate( p_filter );
     p_filter->p_sys->p_mask =
         image_ReadUrl( p_image, psz_filename, &fmt_in, &fmt_out );
@@ -131,17 +133,16 @@ static int Create( vlc_object_t *p_this )
 
     switch( p_filter->fmt_in.video.i_chroma )
     {
-        case VLC_FOURCC('I','4','2','0'):
-        case VLC_FOURCC('I','Y','U','V'):
-        case VLC_FOURCC('J','4','2','0'):
-        case VLC_FOURCC('Y','V','1','2'):
+        case VLC_CODEC_I420:
+        case VLC_CODEC_J420:
+        case VLC_CODEC_YV12:
 
-        case VLC_FOURCC('I','4','2','2'):
-        case VLC_FOURCC('J','4','2','2'):
+        case VLC_CODEC_I422:
+        case VLC_CODEC_J422:
             break;
 
         default:
-            msg_Err( p_filter, "Unsupported input chroma (%4s)",
+            msg_Err( p_filter, "Unsupported input chroma (%4.4s)",
                      (char*)&(p_filter->fmt_in.video.i_chroma) );
             return VLC_EGENERIC;
     }
@@ -258,8 +259,8 @@ static void FilterErase( filter_t *p_filter, picture_t *p_inpic,
         int i_width  = i_mask_visible_pitch;
 
         const bool b_line_factor = ( i_plane /* U_PLANE or V_PLANE */ &&
-            !( p_inpic->format.i_chroma == VLC_FOURCC('I','4','2','2')
-            || p_inpic->format.i_chroma == VLC_FOURCC('J','4','2','2') ) );
+            !( p_inpic->format.i_chroma == VLC_CODEC_I422
+            || p_inpic->format.i_chroma == VLC_CODEC_J422 ) );
 
         if( i_plane ) /* U_PLANE or V_PLANE */
         {

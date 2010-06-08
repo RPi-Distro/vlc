@@ -2,7 +2,7 @@
  * dirs.hpp : String Directory helpers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 5abb7d02e9e3f89a721f2e1b6201cc21868795a5 $
+ * $Id: 08cad1cae7c9d9900bf2f31599268db12cd0250e $
  *
  * Authors:       Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -25,18 +25,9 @@
 #define _QT_DIR_H_
 
 #include <QString>
-/* Replace separators on Windows because Qt is always using / */
-static inline QString toNativeSeparators( QString s )
-{
-#ifdef WIN32
-    for (int i=0; i<(int)s.length(); i++)
-    {
-        if (s[i] == QLatin1Char('/'))
-            s[i] = QLatin1Char('\\');
-    }
-#endif
-    return s;
-}
+#include <QDir>
+
+#define toNativeSeparators( s ) QDir::toNativeSeparators ( s )
 
 static inline QString removeTrailingSlash( QString s )
 {

@@ -2,7 +2,7 @@
  * ctrl_list.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c4c4cff50b308bb69b5722e46e05c947ac41650a $
+ * $Id: 4bf7d1e757115cd5a8df703bfbc933c48e7b2751 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -34,7 +34,7 @@
 #include "../events/evt_key.hpp"
 #include "../events/evt_mouse.hpp"
 #include "../events/evt_scroll.hpp"
-#include "vlc_keys.h"
+#include <vlc_keys.h>
 
 #define SCROLL_STEP 0.05f
 #define LINE_INTERVAL 1  // Number of pixels inserted between 2 lines
@@ -62,10 +62,7 @@ CtrlList::~CtrlList()
 {
     m_rList.getPositionVar().delObserver( this );
     m_rList.delObserver( this );
-    if( m_pImage )
-    {
-        delete m_pImage;
-    }
+    delete m_pImage;
 }
 
 
@@ -81,9 +78,8 @@ void CtrlList::onUpdate( Subject<VarPercent> &rPercent, void *arg  )
     // Get the size of the control
     const Position *pPos = getPosition();
     if( !pPos )
-    {
         return;
-    }
+
     int height = pPos->getHeight();
 
     // How many lines can be displayed ?
@@ -117,9 +113,8 @@ void CtrlList::onResize()
     // Get the size of the control
     const Position *pPos = getPosition();
     if( !pPos )
-    {
         return;
-    }
+
     int height = pPos->getHeight();
 
     // How many lines can be displayed ?
@@ -145,14 +140,12 @@ void CtrlList::onResize()
     }
 
     makeImage();
-    notifyLayout();
 }
 
 
 void CtrlList::onPositionChange()
 {
     makeImage();
-    notifyLayout();
 }
 
 
@@ -408,10 +401,7 @@ void CtrlList::autoScroll()
 
 void CtrlList::makeImage()
 {
-    if( m_pImage )
-    {
-        delete m_pImage;
-    }
+    delete m_pImage;
 
     // Get the size of the control
     const Position *pPos = getPosition();

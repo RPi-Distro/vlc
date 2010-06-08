@@ -2,7 +2,7 @@
  * subsdec.h : text/ASS-SSA/USF subtitles headers
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 2c221ca95dc09e18dd64f6b2435888604ef56e6d $
+ * $Id: 11db067373f8c809864efcf0c38166461d9d25a8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -28,7 +28,6 @@
 #define SUBSDEC_HEADER_H
 
 #include <vlc_common.h>
-#include <vlc_vout.h>
 #include <vlc_codec.h>
 #include <vlc_input.h>
 
@@ -38,7 +37,6 @@
 #include <vlc_charset.h>
 #include <vlc_stream.h>
 #include <vlc_xml.h>
-#include <errno.h>
 #include <string.h>
 
 
@@ -77,12 +75,14 @@ typedef struct
  *****************************************************************************/
 struct decoder_sys_t
 {
-    bool          b_ass;                           /* The subs are ASS */
+    bool                b_ass;                           /* The subs are ASS */
+
     int                 i_original_height;
     int                 i_original_width;
     int                 i_align;          /* Subtitles alignment on the vout */
+
     vlc_iconv_t         iconv_handle;            /* handle to iconv instance */
-    bool          b_autodetect_utf8;
+    bool                b_autodetect_utf8;
 
     ssa_style_t         **pp_ssa_styles;
     int                 i_ssa_styles;

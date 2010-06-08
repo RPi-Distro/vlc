@@ -2,7 +2,7 @@
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 2fd0f41a545b721cfeccab49df4740218576cde4 $
+ * $Id: 6daabe3644284994a24cb16a17d5f9f594914899 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -98,6 +98,7 @@ int OpenVideoGL  ( vlc_object_t * p_this )
 void CloseVideoGL ( vlc_object_t * p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *) p_this;
+    cocoaglvoutviewEnd( p_vout );
     /* Clean up */
     free( p_vout->p_sys );
 }

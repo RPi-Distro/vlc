@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: ff26fee6e260a7778a54c44733882cdf8da877e7 $
+ * $Id: 96d032577c8e882b687df17d1e16f92a6793bff3 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -53,10 +53,15 @@ static int vlclua_fullscreen( lua_State *L )
     input_thread_t * p_input = vlclua_get_input_internal( L );
     if( !p_input ) return vlclua_error( L );
 
-    p_vout = vlc_object_find( p_input, VLC_OBJECT_VOUT, FIND_CHILD );
-    if( !p_vout ) return vlclua_error( L );
+    p_vout = input_GetVout( p_input );
+    if( !p_vout )
+    {
+        vlc_object_release( p_input );
+        return vlclua_error( L );
+    }
 
     i_ret = vlclua_var_toggle_or_set( L, p_vout, "fullscreen" );
+
     vlc_object_release( p_vout );
     vlc_object_release( p_input );
     return i_ret;

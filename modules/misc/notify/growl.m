@@ -4,7 +4,7 @@
  * VLC specific code:
  * 
  * Copyright © 2008 the VideoLAN team
- * $Id: 9a410fe440eaf6802bd88cc61e69602a090affaf $
+ * $Id: 71ecdd1033e078797f4c26102bf55b7b56210358 $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -115,14 +115,13 @@ static int Open( vlc_object_t *p_this )
     p_sys->app_name = CFSTR( "VLC media player" );
     p_sys->notification_type = CFSTR( "New input playing" );
 
-    const char *data_path = config_GetDataDir ();
+    char *data_path = config_GetDataDir ( p_this );
     char buf[strlen (data_path) + sizeof ("/vlc48x48.png")];
     snprintf (buf, sizeof (buf), "%s/vlc48x48.png", data_path);
+    free( data_path );
     p_sys->default_icon = (CFDataRef) readFile( buf );
 
-    playlist_t *p_playlist = pl_Hold( p_intf );
-    var_AddCallback( p_playlist, "item-current", ItemChange, p_intf );
-    pl_Release( p_intf );
+    var_AddCallback( pl_Get( p_intf ), "item-current", ItemChange, p_intf );
 
     RegisterToGrowl( p_this );
     return VLC_SUCCESS;
@@ -135,14 +134,13 @@ static void Close( vlc_object_t *p_this )
 {
     intf_sys_t *p_sys = ((intf_thread_t*)p_this)->p_sys;
 
-    playlist_t *p_playlist = pl_Hold( p_this );
-    var_DelCallback( p_playlist, "item-current", ItemChange, p_this );
-    pl_Release( p_this );
+    var_DelCallback( pl_Get( p_this ), "item-current", ItemChange, p_this );
 
     CFRelease( p_sys->default_icon );
     CFRelease( p_sys->app_name );
     CFRelease( p_sys->notification_type );
     [p_sys->p_pool release];
+    free( p_sys );
 }
 
 /*****************************************************************************
@@ -196,7 +194,11 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     else if( psz_artist )
         i_ret = asprintf( &psz_tmp, "%s\n%s", psz_title, psz_artist );
     else
-        i_ret = asprintf( &psz_tmp, "%s", psz_title );
+    {
+        psz_tmp = strdup( psz_title );
+        if( psz_tmp == NULL )
+           i_ret = -1;
+    }
 
     if( i_ret == -1 )
     {
@@ -208,10 +210,15 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     }
 
     char *psz_arturl = input_item_GetArtURL( p_item );
+    if( psz_arturl )
+    {
+        char *psz = make_path( psz_arturl );
+        free( psz_arturl );
+        psz_arturl = psz;
+    }
     CFDataRef art = NULL;
-    if( psz_arturl && !strncmp( psz_arturl, "file://", 7 ) &&
-                    decode_URI( psz_arturl + 7 ) )
-        art = (CFDataRef) readFile( psz_arturl + 7 );
+    if( psz_arturl )
+        art = (CFDataRef) readFile( psz_arturl );
 
     free( psz_title );
     free( psz_artist );

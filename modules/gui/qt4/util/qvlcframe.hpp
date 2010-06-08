@@ -2,7 +2,7 @@
  * qvlcframe.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 39d6e55207be700c51d1a6b9938cae0d33b31d37 $
+ * $Id: 6bb960fccce5f7ffb98a734aca0c72b57bc90f3d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -26,14 +26,13 @@
 
 #include <QWidget>
 #include <QDialog>
-#include <QSpacerItem>
 #include <QHBoxLayout>
 #include <QApplication>
 #include <QMainWindow>
-#include <QPushButton>
 #include <QKeyEvent>
 #include <QDesktopWidget>
 #include <QSettings>
+#include <QStyle>
 
 #include "qt4.hpp"
 
@@ -76,7 +75,7 @@ class QVLCTools
             widget->resize(defSize);
 
             if(defPos.x() == 0 && defPos.y()==0)
-               centerWidgetOnScreen(widget);
+               widget->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, widget->size(), qApp->desktop()->availableGeometry()));
             return true;
           }
           return false;
@@ -97,19 +96,6 @@ class QVLCTools
 
          return defaultUsed;
        }
-
-      /*
-        call this method for a window or dialog to show it centred on
-        current screen
-      */
-      static void centerWidgetOnScreen(QWidget *widget)
-      {
-         QDesktopWidget * const desktop = QApplication::desktop();
-         QRect screenRect = desktop->availableGeometry(widget);
-         QPoint p1 = widget->frameGeometry().center();
-
-         widget->move ( screenRect.center() - p1 );
-      }
 };
 
 class QVLCFrame : public QWidget

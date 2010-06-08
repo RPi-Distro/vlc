@@ -2,7 +2,7 @@
  * record.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 2ab138fd452b81f52ffb4bc8a26c515c69b5e905 $
+ * $Id: 9ce1c60bd90456b95db8cae56fce1a8d1d1ad3e2 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -34,7 +34,7 @@
 #include <assert.h>
 #include <vlc_stream.h>
 #include <vlc_input.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 
 
 /*****************************************************************************
@@ -56,8 +56,6 @@ vlc_module_end()
  *****************************************************************************/
 struct stream_sys_t
 {
-    bool b_active;
-
     FILE *f;        /* TODO it could be replaced by access_output_t one day */
     bool b_error;
 };
@@ -87,7 +85,7 @@ static int Open ( vlc_object_t *p_this )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    p_sys->b_active = false;
+    p_sys->f = NULL;
 
     /* */
     s->pf_read = Read;
@@ -105,7 +103,7 @@ static void Close( vlc_object_t *p_this )
     stream_t *s = (stream_t*)p_this;
     stream_sys_t *p_sys = s->p_sys;
 
-    if( p_sys->b_active )
+    if( p_sys->f )
         Stop( s );
 
     free( p_sys );
@@ -120,14 +118,14 @@ static int Read( stream_t *s, void *p_read, unsigned int i_read )
     void *p_record = p_read;
 
     /* Allocate a temporary buffer for record when no p_read */
-    if( p_sys->b_active && !p_record )
+    if( p_sys->f && !p_record )
         p_record = malloc( i_read );
 
     /* */
     const int i_record = stream_Read( s->p_source, p_record, i_read );
 
     /* Dump read data */
-    if( p_sys->b_active )
+    if( p_sys->f )
     {
         if( p_record && i_record > 0 )
             Write( s, p_record, i_record );
@@ -153,7 +151,7 @@ static int Control( stream_t *s, int i_query, va_list args )
     if( b_active )
         psz_extension = (const char*)va_arg( args, const char* );
 
-    if( !s->p_sys->b_active == !b_active )
+    if( !s->p_sys->f == !b_active )
         return VLC_SUCCESS;
 
     if( b_active )
@@ -177,12 +175,9 @@ static int Start( stream_t *s, const char *psz_extension )
         psz_extension = "dat";
 
     /* Retreive path */
-    char *psz_path = var_CreateGetString( s, "input-record-path" );
-    if( !psz_path || *psz_path == '\0' )
-    {
-        free( psz_path );
-        psz_path = strdup( config_GetHomeDir() );
-    }
+    char *psz_path = var_CreateGetNonEmptyString( s, "input-record-path" );
+    if( !psz_path )
+        psz_path = config_GetUserDir( VLC_DOWNLOAD_DIR );
 
     if( !psz_path )
         return VLC_ENOMEM;
@@ -196,18 +191,21 @@ static int Start( stream_t *s, const char *psz_extension )
     if( !psz_file )
         return VLC_ENOMEM;
 
-    f = utf8_fopen( psz_file, "wb" );
+    f = vlc_fopen( psz_file, "wb" );
     if( !f )
     {
         free( psz_file );
         return VLC_EGENERIC;
     }
+
+    /* signal new record file */
+    var_SetString( s->p_libvlc, "record-file", psz_file );
+
     msg_Dbg( s, "Recording into %s", psz_file );
     free( psz_file );
 
     /* */
     p_sys->f = f;
-    p_sys->b_active = true;
     p_sys->b_error = false;
     return VLC_SUCCESS;
 }
@@ -215,11 +213,11 @@ static int Stop( stream_t *s )
 {
     stream_sys_t *p_sys = s->p_sys;
 
-    assert( p_sys->b_active );
+    assert( p_sys->f );
 
     msg_Dbg( s, "Recording completed" );
     fclose( p_sys->f );
-    p_sys->b_active = false;
+    p_sys->f = NULL;
     return VLC_SUCCESS;
 }
 
@@ -227,7 +225,7 @@ static void Write( stream_t *s, const uint8_t *p_buffer, size_t i_buffer )
 {
     stream_sys_t *p_sys = s->p_sys;
 
-    assert( p_sys->b_active );
+    assert( p_sys->f );
 
     if( i_buffer > 0 )
     {

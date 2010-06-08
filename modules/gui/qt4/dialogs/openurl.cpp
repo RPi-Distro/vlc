@@ -2,7 +2,7 @@
  * openurl.cpp: Open a MRL or clipboard content
  *****************************************************************************
  * Copyright © 2009 the VideoLAN team
- * $Id: 49a791b15478af2d230952ea36390064eb001b7b $
+ * $Id: e9a549cb80d785cea3343d2b70a9feae2d08997e $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -40,37 +40,24 @@
 
 #include <assert.h>
 
-OpenUrlDialog *OpenUrlDialog::instance = NULL;
-
-OpenUrlDialog* OpenUrlDialog::getInstance( QWidget *parent,
-                                           intf_thread_t *p_intf,
-                                           bool bClipboard )
-{
-    /* Creation */
-    if( !instance )
-        instance = new OpenUrlDialog( parent, p_intf, bClipboard );
-    else
-        instance->bClipboard = bClipboard;
-    return instance;
-}
-
-OpenUrlDialog::OpenUrlDialog( QWidget *parent,
-                              intf_thread_t *_p_intf,
+OpenUrlDialog::OpenUrlDialog( intf_thread_t *_p_intf,
                               bool _bClipboard ) :
-        QVLCDialog( parent, _p_intf ), bClipboard( _bClipboard )
+        QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf ), bClipboard( _bClipboard )
 {
     setWindowTitle( qtr( "Open URL" ) );
+    setWindowRole( "vlc-open-url" );
 
     /* Buttons */
     QPushButton *but;
 
     QDialogButtonBox *box = new QDialogButtonBox( this );
-    but = box->addButton( QDialogButtonBox::Ok );
+    but = box->addButton( qtr( "&Play" ), QDialogButtonBox::AcceptRole );
     CONNECT( but, clicked(), this, play() );
-    but = box->addButton( QDialogButtonBox::Cancel );
+
     but = box->addButton( qtr( "&Enqueue" ), QDialogButtonBox::AcceptRole );
     CONNECT( but, clicked(), this, enqueue() );
 
+    but = box->addButton( qtr( "&Cancel" ) , QDialogButtonBox::RejectRole );
     CONNECT( box, rejected(), this, reject() );
 
     /* Info label and line edit */

@@ -2,7 +2,7 @@
  * iso_lang.h: languages codes and abbreviations
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: f3511c36b43242491801e4dfb5a9f5daa7998d58 $
+ * $Id: ac90dc39cf4a6ddafbdb1428a5ae31d59bd5fb9f $
  *
  * This is used in iso_lang.cpp and is taken from the GNU glibc 2.2.5
  * tarball. It has been partially completed with native language names.
@@ -201,6 +201,8 @@ static const iso639_lang_t p_languages[] =
     { N_( "Yoruba" ),           "",            "yo", "yor", "yor" },
     { N_( "Zhuang" ),           "",            "za", "zha", "zha" },
     { N_( "Zulu" ),             "",            "zu", "zul", "zul" },
-    { NULL, NULL, NULL, NULL, NULL }
+
+    /* XXX psz_eng_name MUST be NULL on the last item as it is the stop condition */
+    { NULL,                   NULL,            "",   "",    "" }
 };
 

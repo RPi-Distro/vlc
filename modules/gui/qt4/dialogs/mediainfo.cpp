@@ -2,7 +2,7 @@
  * mediainfo.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 41a5ef34050cd8250814f045e798cbebd65e2664 $
+ * $Id: d0062c935bbc764f98df3d6855b84178dc470fbd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -29,12 +29,13 @@
 #include "dialogs/mediainfo.hpp"
 #include "input_manager.hpp"
 
+#include <vlc_url.h>
+
 #include <QTabWidget>
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QLabel>
-
-MediaInfoDialog *MediaInfoDialog::instance = NULL;
+#include <QPushButton>
 
 /* This Dialog has two main modes:
     - General Mode that shows the current Played item, and the stats
@@ -48,6 +49,7 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
     isMainInputInfo = ( p_item == NULL );
 
     setWindowTitle( qtr( "Media Information" ) );
+    setWindowRole( "vlc-media-info" );
 
     /* TabWidgets and Tabs creation */
     infoTabW = new QTabWidget;
@@ -73,7 +75,7 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
     closeButton->setDefault( true );
 
     QLabel *uriLabel = new QLabel( qtr( "Location:" ) );
-    QLineEdit *uriLine = new QLineEdit;
+    uriLine = new QLineEdit;
 
     layout->addWidget( infoTabW, 0, 0, 1, 8 );
     layout->addWidget( uriLabel, 1, 0, 1, 1 );
@@ -87,7 +89,7 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
     BUTTONACT( saveMetaButton, saveMeta() );
 
     /* Let the MetaData Panel update the URI */
-    CONNECT( MP, uriSet( const QString& ), uriLine, setText( const QString& ) );
+    CONNECT( MP, uriSet( const QString& ), this, updateURI( const QString& ) );
     CONNECT( MP, editing(), saveMetaButton, show() );
 
     /* Display the buttonBar according to the Tab selected */
@@ -101,14 +103,14 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
          * Connects on the various signals of input_Manager
          * For the currently playing element
          **/
-        CONNECT( THEMIM->getIM(), infoChanged( input_item_t* ),
-                 IP, update( input_item_t* ) );
-        CONNECT( THEMIM->getIM(), metaChanged( input_item_t* ),
-                 MP, update( input_item_t* ) );
-        CONNECT( THEMIM->getIM(), metaChanged( input_item_t* ),
-                 EMP, update( input_item_t* ) );
-        CONNECT( THEMIM->getIM(), statisticsUpdated( input_item_t* ),
-                 ISP, update( input_item_t* ) );
+        DCONNECT( THEMIM->getIM(), infoChanged( input_item_t* ),
+                  IP, update( input_item_t* ) );
+        DCONNECT( THEMIM->getIM(), currentMetaChanged( input_item_t* ),
+                  MP, update( input_item_t* ) );
+        DCONNECT( THEMIM->getIM(), currentMetaChanged( input_item_t* ),
+                  EMP, update( input_item_t* ) );
+        DCONNECT( THEMIM->getIM(), statisticsUpdated( input_item_t* ),
+                  ISP, update( input_item_t* ) );
 
         if( THEMIM->getInput() )
             p_item = input_GetItem( THEMIM->getInput() );
@@ -181,3 +183,19 @@ void MediaInfoDialog::updateButtons( int i_tab )
         saveMetaButton->hide();
 }
 
+void MediaInfoDialog::updateURI( const QString& uri )
+{
+    QString location;
+
+    /* If URI points to a local file, show the path instead of the URI */
+    char *path = make_path( qtu( uri ) );
+    if( path != NULL )
+    {
+        location = qfu( path );
+        free( path );
+    }
+    else
+        location = uri;
+
+    uriLine->setText( location );
+}

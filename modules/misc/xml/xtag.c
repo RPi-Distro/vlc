@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id: 681be12be1eb3b24b22a475aaf6732469c68ca3d $
+ * $Id: 779fd40ae7da2efa47af60ccc74c36c084d87126 $
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -33,14 +33,13 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
-#include "vlc_xml.h"
-#include "vlc_block.h"
-#include "vlc_stream.h"
+#include <vlc_xml.h>
+#include <vlc_block.h>
+#include <vlc_stream.h>
+#include <vlc_memory.h>
 
 #include <ctype.h>
 #include <stdarg.h>
-
-#include <assert.h>
 
 #undef XTAG_DEBUG
 
@@ -174,7 +173,7 @@ static void CatalogAdd( xml_t *p_xml, const char *psz_arg1,
 static xml_reader_t *ReaderCreate( xml_t *p_xml, stream_t *s )
 {
     xml_reader_t *p_reader;
-    char *p_buffer, *p_new;
+    char *p_buffer;
     int i_size, i_pos = 0, i_buffer = 2048;
     XTag *p_root;
 
@@ -187,13 +186,9 @@ static xml_reader_t *ReaderCreate( xml_t *p_xml, stream_t *s )
     {
         i_pos += i_size;
         i_buffer += i_size;
-        p_new = realloc( p_buffer, i_buffer );
-        if( !p_new )
-        {
-            free( p_buffer );
+        p_buffer = realloc_or_free( p_buffer, i_buffer );
+        if( !p_buffer )
             return NULL;
-        }
-        p_buffer = p_new;
     }
     if( i_pos + i_size == 0 )
     {
@@ -354,20 +349,19 @@ static XList *xlist_append( XList *list, void *data )
 {
     XList *l, *last;
 
-    l = (XList *)malloc( sizeof(XList) );
+    l = (XList *)xmalloc( sizeof(XList) );
     l->prev = l->next = NULL;
     l->data = data;
 
     if( !list )
         return l;
 
-    for( last = list; last; last = last->next )
-    {
-        if( !last->next )
-            break;
-    }
+    /* Find the last element */
+    last = list;
+    while( last->next )
+        last = last->next;
 
-    if( last ) last->next = l;
+    last->next = l;
     l->prev = last;
     return list;
 }
@@ -460,7 +454,7 @@ static char *xtag_slurp_to( XTagParser *parser, int good_end, int bad_end )
 
     if( xi > 0 && xtag_cin (s[xi], good_end) )
     {
-        ret = malloc( xi+1 );
+        ret = xmalloc( xi+1 );
         strncpy( ret, s, xi );
         ret[xi] = '\0';
         parser->start = &s[xi];
@@ -513,7 +507,7 @@ static char *xtag_slurp_quoted( XTagParser *parser )
         }
     }
 
-    ret = malloc( xi+1 );
+    ret = xmalloc( xi+1 );
     strncpy( ret, s, xi );
     ret[xi] = '\0';
     parser->start = &s[xi];
@@ -565,7 +559,7 @@ static XAttribute *xtag_parse_attribute( XTagParser *parser )
         goto err_free_name;
     }
 
-    attr = malloc( sizeof (*attr) );
+    attr = xmalloc( sizeof (*attr) );
     attr->name = name;
     attr->value = value;
     return attr;
@@ -628,7 +622,7 @@ static XTag *xtag_parse_tag( XTagParser *parser )
             !strncmp( s, "<!DOCTYPE", 9 ) ) {
         xi = xtag_index( parser, X_CLOSETAG );
         if ( xi > 0 ) {
-            parser->start = s = &s[xi+1];
+            parser->start = &s[xi+1];
             xtag_skip_whitespace( parser );
             return xtag_parse_tag( parser );
         }
@@ -639,7 +633,7 @@ static XTag *xtag_parse_tag( XTagParser *parser )
 
     if( (pcdata = xtag_slurp_to( parser, X_OPENTAG, X_NONE )) != NULL )
     {
-        tag = malloc( sizeof(*tag) );
+        tag = xmalloc( sizeof(*tag) );
         tag->name = NULL;
         tag->pcdata = pcdata;
         tag->parent = parser->current_tag;
@@ -668,7 +662,7 @@ static XTag *xtag_parse_tag( XTagParser *parser )
                 }
                 strncpy( pcdata, parser->start, s - parser->start );
                 pcdata[s - parser->start]='\0';
-                parser->start = s = &s[3];
+                parser->start = &s[3];
                 tag->name = NULL;
                 tag->pcdata = pcdata;
                 tag->parent = parser->current_tag;
@@ -693,7 +687,7 @@ static XTag *xtag_parse_tag( XTagParser *parser )
     fprintf (stderr, "<%s ...\n", name);
 #endif
 
-    tag = malloc( sizeof(*tag) );
+    tag = xmalloc( sizeof(*tag) );
     tag->name = name;
     tag->pcdata = NULL;
     tag->parent = parser->current_tag;
@@ -832,7 +826,7 @@ static XTag *xtag_new_parse( const char *s, int n )
             return tag;
         }
 
-        wrapper = malloc( sizeof(XTag) );
+        wrapper = xmalloc( sizeof(XTag) );
         wrapper->name = NULL;
         wrapper->pcdata = NULL;
         wrapper->parent = NULL;
