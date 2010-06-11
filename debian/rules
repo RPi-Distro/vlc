@@ -112,6 +112,11 @@ confflags += \
 	$(NULL)
 endif
 
+# svgalib is only for x86 and x86-64 on Linux
+ifneq ($(filter $(DEB_HOST_ARCH), amd64 i386),)
+confflags += --enable-svgalib
+endif
+
 # A few shortcuts
 VIDDIR := usr/share/vlc
 

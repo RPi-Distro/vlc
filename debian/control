@@ -62,6 +62,7 @@ Build-Depends: debhelper (>= 7),
                libshout3-dev,
                libsmbclient-dev,
                libspeex-dev,
+               libsvga1-dev [amd64 i386],
                libswscale-dev,
                libsysfs-dev,
                libtag1-dev,
@@ -230,6 +231,19 @@ Description: multimedia plugin for web browsers based on VLC
  decoding process is done by VLC and the output window is embedded in a
  webpage or directly in the browser window. There is also support for
  fullscreen display and javascript control.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: vlc-plugin-svgalib
+Architecture: amd64 i386
+Depends: vlc-nox (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: SVGAlib video output plugin for VLC
+ This plugin adds support for SVGAlib to the VLC media player. To
+ activate it, use the `--vout svgalib' flag or select the `svgalib' video
+ output plugin from the preferences menu. Note that you will need root
+ permissions to use SVGAlib.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
