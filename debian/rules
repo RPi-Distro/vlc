@@ -66,6 +66,7 @@ confflags += \
 	--enable-flac \
 	--enable-freetype \
 	--enable-fribidi \
+	--enable-ggi \
 	--enable-gnutls \
 	--enable-jack \
 	--enable-libass \
