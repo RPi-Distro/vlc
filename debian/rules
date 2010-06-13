@@ -40,6 +40,7 @@ confflags += \
 	--config-cache \
 	--disable-maintainer-mode \
 	--disable-update-check \
+        --disable-silent-rules \
 	--enable-fast-install \
 	--enable-release \
 	--prefix=/usr \
