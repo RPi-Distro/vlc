@@ -100,6 +100,7 @@ confflags += \
 	--enable-vcd \
 	--enable-vcdx \
 	--enable-vorbis \
+        --with-kde-solid=/usr/share/kde4/apps/ \
 	--with-mozilla-pkg=libxul \
 	$(NULL)
 
