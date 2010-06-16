@@ -155,6 +155,8 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
+	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak \
+        debian/vlc-nox.install
 	rm -f debian/vlc-nox.install.kfreebsd
 	rm -f debian/vlc-nox.install.hurd
 	# Clean VLC
@@ -175,12 +177,20 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
+	dh_installdirs
+# Add the optimization dirs only if present
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
+	cp debian/vlc-nox.install debian/vlc-nox.install.bak
+	for dir in sse2 3dnow altivec arm_neon mmx mmxext ; do \
+	        if test -d debian/tmp/usr/lib/vlc/plugins/$${dir}; then \
+	                echo usr/lib/vlc/plugins/$${dir} >> debian/vlc-nox.install ; \
+	        fi ; \
+	done
+# Remove some modules on non-linux arch
 	sed -e '/\(lib\|libaccess_\)\(alsa\|dv\|dvb\|fb\|v4l\|v4l2\|pvr\)_/d' \
 	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
 	sed -e '/\(lib\|libaccess_\)\(probe_hal\)_/d' \
 	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd
-	dh_installdirs
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
 	cp tmp/libvlc.a debian/tmp/usr/lib
 	cp tmp/libvlccore.a debian/tmp/usr/lib
 	# Clean up libtool crap

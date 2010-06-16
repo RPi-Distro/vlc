@@ -4,7 +4,6 @@ usr/bin/rvlc
 usr/bin/vlc
 usr/bin/vlc-wrapper
 usr/lib/vlc/lua/
-usr/lib/vlc/plugins/3dnow
 usr/lib/vlc/plugins/access/libaccess_alsa_plugin.so
 usr/lib/vlc/plugins/access/libaccess_attachment_plugin.so
 usr/lib/vlc/plugins/access/libaccess_avio_plugin.so
@@ -99,8 +98,6 @@ usr/lib/vlc/plugins/misc/libtelepathy_plugin.so
 usr/lib/vlc/plugins/misc/libvod_rtsp_plugin.so
 usr/lib/vlc/plugins/misc/libxml_plugin.so
 usr/lib/vlc/plugins/misc/libxtag_plugin.so
-usr/lib/vlc/plugins/mmx
-usr/lib/vlc/plugins/mmxext
 usr/lib/vlc/plugins/mux
 usr/lib/vlc/plugins/packetizer
 usr/lib/vlc/plugins/services_discovery
