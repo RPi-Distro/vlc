@@ -1,21 +1,24 @@
-vlc (1.1.0~rc2-1~2.gbp5e5033) UNRELEASED; urgency=low
+vlc (1.1.0~rc4-1) experimental; urgency=low
 
-  ** SNAPSHOT build @5e50338b691fbad30c457821a2b024c423c1c00c **
-
-  * New upstream version 1.1.0~rc2
-  * SONAME changes
-  * Update symbols files
-  * Disable projectm
-  * Refresh patch
-  * Remove patches merged upstream
-  * Remove vlc-plugin-ggi as the module has been removed upstream
-  * Remove vlc-plugin-svgalib as it has been removed upstream
+  * New upstream version 1.1.0~rc4
+    * SONAME changes
+    * Update symbols files
+    * Refresh patches and remove the ones merged upstream
+    * Remove patches merged upstream
+  * rules:
+    * Disable projectm and sqlite
+    * Upstream Makefile install icons at the good place, simplify debian/rules
+    * Specify where to install solids files
+    * Install the optim only if present
+    * Make sure we have useful build log
   * *.install: reflect new modules path and add new files
   * Add a trigger to generate the modules' cache as root.
   * Update the doc which get installed
-  * Upstream Makefile install icons at the good place, simplify debian/rules
-  * Prefer a recent libdvbpsi
-  * add lua5.1 to have luac
+  * control:
+    * Prefer a recent libdvbpsi
+    * add lua5.1 to have luac
+    * Add more build-dep: xcb*, dirac, dc1394 
+  * Patch to allow compilation with xul 1.9.1
 
  -- Christophe Mutricy <xtophe@videolan.org>  Tue, 08 Jun 2010 23:46:13 +0100
 
