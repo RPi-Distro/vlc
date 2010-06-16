@@ -2,7 +2,7 @@
  * mono.c : stereo2mono downmixsimple channel mixer plug-in
  *****************************************************************************
  * Copyright (C) 2006 M2X
- * $Id: 0cfd26c3c05754b70c2c5dc562c0e836e26d55c2 $
+ * $Id: 19b3969d4b27a4c50bd0685a97611edf3d76904c $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -213,7 +213,7 @@ static int Init( vlc_object_t *p_this, struct filter_sys_t * p_data,
     int i_source_channel_offset;
     unsigned int i;
 
-    if( var_InheritInteger( p_this, "headphone-compensate" ) )
+    if( var_InheritBool( p_this, "headphone-compensate" ) )
     {
         /* minimal distance to any speaker */
         if( i_physical_channels & AOUT_CHAN_REARCENTER )

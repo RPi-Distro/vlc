@@ -1114,7 +1114,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-vlclibPROGRAMS
 	$(SHELL) ./config.status --file="bin/$@"
 
 vlc_win32_rc.$(OBJEXT): vlc_win32_rc.rc
-	$(WINDRES) --include-dir $(top_srcdir)/share -i $< -o $@
+	$(WINDRES) --include-dir $(top_srcdir)/share/icons -i $< -o $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

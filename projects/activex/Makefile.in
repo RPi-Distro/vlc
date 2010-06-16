@@ -90,7 +90,7 @@ am__axvlc_la_SOURCES_DIST = main.cpp utils.cpp utils.h olecontrol.cpp \
 	oleinplaceobject.h oleobject.cpp oleobject.h \
 	persistpropbag.cpp persistpropbag.h persiststorage.cpp \
 	persiststorage.h persiststreaminit.cpp persiststreaminit.h \
-	provideclassinfo.cpp provideclassinfo.h \
+	position.h provideclassinfo.cpp provideclassinfo.h \
 	connectioncontainer.cpp connectioncontainer.h objectsafety.cpp \
 	objectsafety.h dataobject.cpp dataobject.h viewobject.cpp \
 	viewobject.h supporterrorinfo.cpp supporterrorinfo.h \
@@ -688,6 +688,7 @@ SOURCES_activex = \
     persiststorage.h \
     persiststreaminit.cpp \
     persiststreaminit.h \
+    position.h \
     provideclassinfo.cpp \
     provideclassinfo.h \
     connectioncontainer.cpp \

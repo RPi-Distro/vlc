@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 43e9bef772161f49589b6df25f662e5d17624df7 $
+ * $Id: efaccbcd3d3ce7e9d8a9394e05d521270cc9a194 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1640,6 +1640,9 @@ vlc_module_begin ()
     add_string( "x11-display", NULL, NULL,
                 DISPLAY_TEXT, DISPLAY_LONGTEXT, true )
         add_deprecated_alias( "xvideo-display" ) /* deprecated since 1.1.0 */
+        add_deprecated_alias( "glx-display" )
+    add_bool( "xlib", true, NULL, "", "", true )
+        change_private ()
     add_bool( "drop-late-frames", 1, NULL, DROP_LATE_FRAMES_TEXT,
               DROP_LATE_FRAMES_LONGTEXT, true )
     /* Used in vout_synchro */
@@ -2052,7 +2055,7 @@ vlc_module_begin ()
                    DATA_PATH_LONGTEXT, true )
         change_need_restart ()
 
-    add_string( "user-agent", "(LibVLC "VERSION")", NULL, "", "", true )
+    add_string( "user-agent", "(LibVLC "VERSION")", NULL, NULL, NULL, true )
         change_safe ()
         change_private ()
 

@@ -2,7 +2,7 @@
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2010 the VideoLAN team
- * $Id: 2a15a2a127929237bf325a0131e490d946649703 $
+ * $Id: dea87e6a8ef98256f1c131057f1afab7d7220b66 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -361,6 +361,7 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     ppsz_argv[ppsz_argc++] = "--no-media-library";
     ppsz_argv[ppsz_argc++] = "--intf=dummy";
     ppsz_argv[ppsz_argc++] = "--no-video-title-show";
+    ppsz_argv[ppsz_argc++] = "--no-xlib";
 
     const char *progid = NULL;
 

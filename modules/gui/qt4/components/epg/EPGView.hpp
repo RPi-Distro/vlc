@@ -2,7 +2,7 @@
  * EPGView.h : EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: ef8d76debd831a33f370fbc1b16024466af08a14 $
+ * $Id: 8cad5bdf860d5dca1452700a2d2e169b53870b65 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -49,26 +49,21 @@ public:
     void            delEvent( EPGEvent* event );
     void            updateDuration();
 
+    QList<QString>  getChannelList();
+
 signals:
     void            startTimeChanged( const QDateTime& startTime );
     void            durationChanged( int seconds );
     void            eventFocusedChanged( EPGEvent * );
 protected:
-    virtual void    drawBackground( QPainter *painter, const QRectF &rect );
 
     QList<QString>  m_channels;
     QDateTime       m_startTime;
     int             m_scaleFactor;
     int             m_duration;
 
-private:
-    QGraphicsRectItem* m_overlay;
-
 public slots:
     void eventFocused( EPGEvent * );
-private slots:
-    void updateOverlayPosition( int value );
-    void sceneRectChanged( const QRectF& rect );
 };
 
 #endif // EPGVIEW_H

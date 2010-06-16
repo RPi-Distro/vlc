@@ -2,7 +2,7 @@
  * var.c: object variables for input thread
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 93b967a348f361914bc369925086b76720279cd5 $
+ * $Id: 5fca34ba8f0602acdc33f5ab54829528acf72617 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -178,7 +178,7 @@ void input_ControlVarInit ( input_thread_t *p_input )
     var_Change( p_input, "program", VLC_VAR_SETTEXT, &text, NULL );
 
     /* Programs */
-    var_Create( p_input, "programs", VLC_VAR_LIST | VLC_VAR_DOINHERIT );
+    var_Create( p_input, "programs", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
     text.psz_string = _("Programs");
     var_Change( p_input, "programs", VLC_VAR_SETTEXT, &text, NULL );
 

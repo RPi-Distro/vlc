@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 1e75a0866bea667ff3fdcc3b7fedcdeeea6d8ad6 $
+ * $Id: 387681d1f16223a73d8deaf4bfdcf65e75323f6a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -39,11 +39,11 @@
 #include "util/qvlcapp.hpp"     /* QVLCApplication definition */
 
 #ifdef Q_WS_X11
- #include <X11/Xlib.h>
+ #include <vlc_xlib.h>
 #endif
 
-#include "../../../share/vlc32x32.xpm"
-#include "../../../share/vlc32x32-christmas.xpm"
+#include "../../../share/icons/32x32/vlc.xpm"
+#include "../../../share/icons/32x32/vlc-christmas.xpm"
 #include <vlc_plugin.h>
 
 #ifdef WIN32 /* For static builds */
@@ -283,7 +283,7 @@ static int Open( vlc_object_t *p_this, bool isDialogProvider )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
 #ifdef Q_WS_X11
-    if( !XInitThreads() )
+    if( !vlc_xlib_init( p_this ) )
         return VLC_EGENERIC;
 
     char *display = var_CreateGetNonEmptyString( p_intf, "x11-display" );

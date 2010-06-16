@@ -2,7 +2,7 @@
  * v4l2.c : Video4Linux2 input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 9ad9edc1c95e0a48e6e4321c6fdb78fd4ffe92f3 $
+ * $Id: 4f1ee508af677458638bec9a4a538d687bb63832 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -679,7 +679,7 @@ static int DemuxOpen( vlc_object_t *p_this )
     ParseMRL( p_sys, p_demux->psz_path, (vlc_object_t *) p_demux );
 
 #ifdef HAVE_LIBV4L2
-    if( !var_InheritInteger( p_this, CFG_PREFIX "use-libv4l2" ) )
+    if( !var_InheritBool( p_this, CFG_PREFIX "use-libv4l2" ) )
     {
         msg_Dbg( p_this, "Trying direct kernel v4l2" );
         use_kernel_v4l2( p_sys );
@@ -1134,7 +1134,7 @@ static int AccessOpen( vlc_object_t * p_this )
     ParseMRL( p_sys, p_access->psz_path, (vlc_object_t *) p_access );
 
 #ifdef HAVE_LIBV4L2
-    if( !var_InheritInteger( p_this, CFG_PREFIX "use-libv4l2" ) )
+    if( !var_InheritBool( p_this, CFG_PREFIX "use-libv4l2" ) )
     {
         msg_Dbg( p_this, "Trying direct kernel v4l2" );
         use_kernel_v4l2( p_sys );

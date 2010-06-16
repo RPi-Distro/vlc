@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 53ab716c40fdb9110bab1266a07c8c326128ed2c $
+ * $Id: 09e2458b3c852dce1cda9fdd127c7da70d29111f $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -707,7 +707,7 @@
     [self isItem:p_item inNode:p_node checkItemExistence:b_check locked:NO];
 }
 
-/* This method is usefull for instance to remove the selected children of an
+/* This method is useful for instance to remove the selected children of an
    already selected node */
 - (void)removeItemsFrom:(id)o_items ifChildrenOf:(id)o_nodes
 {

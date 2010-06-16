@@ -2,7 +2,7 @@
  * bandlimited.c : band-limited interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 91a2085d2c560efa59cc544e5e111ebf56686415 $
+ * $Id: a71aa8ff459b27ed0d35482734990797bf384fdc $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -296,7 +296,7 @@ static int OpenFilter( vlc_object_t *p_this )
     }
 
 #if !defined( SYS_DARWIN )
-    if( !var_InheritInteger( p_this, "hq-resampling" ) )
+    if( !var_InheritBool( p_this, "hq-resampling" ) )
     {
         return VLC_EGENERIC;
     }

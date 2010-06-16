@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fa54582c1a609b7e3a58992dc605a847925249fe $
+ * $Id: 97ab4c92f8091120930b1045e4fd907a3c7cd81b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -40,6 +40,9 @@
 
 #include "../src/generic_window.hpp"
 
+#include <vlc_common.h>
+#include <vlc_xlib.h>
+
 X11Factory::X11Factory( intf_thread_t *pIntf ): OSFactory( pIntf ),
     m_pDisplay( NULL ), m_pTimerLoop( NULL ), m_dirSep( "/" )
 {
@@ -57,8 +60,11 @@ X11Factory::~X11Factory()
 bool X11Factory::init()
 {
     // make sure xlib is safe-thread
-    if( !XInitThreads() )
+    if( !vlc_xlib_init( VLC_OBJECT(getIntf()) ) )
+    {
         msg_Err( getIntf(), "initializing xlib for multi-threading failed" );
+        return false;
+    }
 
     // Create the X11 display
     m_pDisplay = new X11Display( getIntf() );

@@ -2,7 +2,7 @@
  * vlc_picture_pool.h: picture pool definitions
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 2a01d522f698b6be85fb836bb6d4c0d843a0c462 $
+ * $Id: 1c9049cb875f78560f918555cbd42c3a23aa2e7e $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -53,7 +53,7 @@ typedef struct {
 /**
  * It creates a picture_pool_t wrapping the given configuration.
  *
- * It is usefull to avoid useless picture creations/destructions.
+ * It avoids useless picture creations/destructions.
  * The given picture must not have a reference count greater than 1.
  * The pool takes ownership of the picture and MUST not be used directly.
  * When deleted, the pool will release the pictures using picture_Release.

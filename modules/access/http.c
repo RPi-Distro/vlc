@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 707ac168d5c2b054988fc0b1056316bfa7350ee9 $
+ * $Id: f1f67b4a11797d1133bd9034262039b45837e252 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -426,7 +426,7 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
                         {
                             /* Get the proxy URL :
                             Proxy server value in the registry can be something like "address:port"
-                            or "ftp=adress1:port1;http=adress2:port2 ..." depending of the
+                            or "ftp=address1:port1;http=address2:port2 ..." depending of the
                             confirguration. */
                             char *psz_proxy;
                             psz_proxy = strstr( psz_key, "http=" );

@@ -2,7 +2,7 @@
  * maemo.c : Maemo plugin for VLC
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 14c51f628225f08d7948c55c9fc9756ecf0025b8 $
+ * $Id: 401860f8453a743410b7da4b16031e53c9ef9797 $
  *
  * Authors: Antoine Lejeune <phytos@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -30,6 +30,7 @@
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 #include <vlc_vout_window.h>
+#include <vlc_xlib.h>
 
 #include <hildon/hildon-program.h>
 #include <hildon/hildon-banner.h>
@@ -80,7 +81,7 @@ static int Open( vlc_object_t *p_this )
     intf_sys_t *p_sys;
     vlc_value_t val;
 
-    if( !XInitThreads() )
+    if( !vlc_xlib_init( p_this ) )
         return VLC_EGENERIC;
 
     /* Allocate instance and initialize some members */

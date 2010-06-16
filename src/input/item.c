@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: 8bca6f6321472c2eca1d2b10bce1e8d71feb8029 $
+ * $Id: df4e15967ef345a891f4ca769b4f7ee43a8e4a30 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -216,7 +216,7 @@ void input_item_SetMeta( input_item_t *p_i, vlc_meta_type_t meta_type, const cha
 }
 
 /* FIXME GRRRRRRRRRR args should be in the reverse order to be
- * consistant with (nearly?) all or copy funcs */
+ * consistent with (nearly?) all or copy funcs */
 void input_item_CopyOptions( input_item_t *p_parent,
                              input_item_t *p_child )
 {

@@ -2,7 +2,7 @@
  * EPGWidget.h : EPGWidget
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 41bcba7bae1ad5f93dc658227ebe3858d8caf9e6 $
+ * $Id: ad03eac465e2cadb942a9b8fc53473f2d7e8b92d $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -27,6 +27,7 @@
 #include "EPGView.hpp"
 #include "EPGEvent.hpp"
 #include "EPGRuler.hpp"
+#include "EPGChannels.hpp"
 
 #include <vlc_common.h>
 #include <vlc_epg.h>
@@ -49,6 +50,7 @@ public slots:
 private:
     EPGRuler* m_rulerWidget;
     EPGView* m_epgView;
+    EPGChannels *m_channelsWidget;
 
     QMultiMap<QString, EPGEvent*> m_events;
 

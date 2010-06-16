@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 034905445aad5a6a13fedb76255fa134bc137140 $
+ * $Id: 7ce6bd10eb5d17fdd418cbb128ce0e529f15e049 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -375,6 +375,8 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
                         {
                             EbmlMaster *compr = static_cast<EbmlMaster*>(l3);
                             MkvTree( sys.demuxer, 5, "Content Compression" );
+                            //Default compression type is 0 (Zlib)
+                            tk->i_compression_type = MATROSKA_COMPRESSION_ZLIB;
                             for( n = 0; n < compr->ListSize(); n++ )
                             {
                                 EbmlElement *l4 = (*compr)[n];
@@ -1033,7 +1035,7 @@ void matroska_segment_c::ParseChapters( KaxChapters *chapters )
                 }
                 else if( MKV_IS_ID( l, KaxEditionFlagOrdered ) )
                 {
-                    p_edition->b_ordered = var_InheritInteger( &sys.demuxer, "mkv-use-ordered-chapters" ) ? (uint8(*static_cast<KaxEditionFlagOrdered *>( l )) != 0) : 0;
+                    p_edition->b_ordered = var_InheritBool( &sys.demuxer, "mkv-use-ordered-chapters" ) ? (uint8(*static_cast<KaxEditionFlagOrdered *>( l )) != 0) : 0;
                 }
                 else if( MKV_IS_ID( l, KaxEditionFlagDefault ) )
                 {

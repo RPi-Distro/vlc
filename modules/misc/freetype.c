@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2007 the VideoLAN team
- * $Id: e83e721bb2deb9044ecf3c4e91c9e3827ab8f089 $
+ * $Id: cff07a6b10eb9042e926a57d3f539da05b5f6db8 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -359,8 +359,8 @@ static int Create( vlc_object_t *p_this )
             _("Please wait while your font cache is rebuilt.\n"
                 "This should take less than a few minutes."), NULL );
 
-    if( p_dialog )
-        dialog_ProgressSet( p_dialog, NULL, 0.5 );
+/*    if( p_dialog )
+        dialog_ProgressSet( p_dialog, NULL, 0.5 ); */
 
     FcConfigBuildFonts( fcConfig );
     t2 = mdate();
@@ -368,7 +368,7 @@ static int Create( vlc_object_t *p_this )
 
     if( p_dialog )
     {
-        dialog_ProgressSet( p_dialog, NULL, 1.0 );
+//        dialog_ProgressSet( p_dialog, NULL, 1.0 );
         dialog_ProgressDestroy( p_dialog );
         p_dialog = NULL;
     }

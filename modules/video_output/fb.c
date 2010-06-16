@@ -2,7 +2,7 @@
  * fb.c : framebuffer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2009 the VideoLAN team
- * $Id: 1426ad9babaa69eea8f0842656ceb7cb6c7dcfa6 $
+ * $Id: 079f499e9a6a6ebe3acd0154d34431e454a61e07 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman
@@ -144,7 +144,7 @@ struct vout_display_sys_t {
     int      bytes_per_pixel;
 
     /* Video memory */
-    uint8_t     *video_ptr;                                  /* base adress */
+    uint8_t     *video_ptr;                                 /* base address */
     size_t      video_size;                                    /* page size */
 
     picture_t       *picture;

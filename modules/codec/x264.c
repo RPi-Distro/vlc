@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: 5af518e18a1c5e1958f6f77d0cf9a4879594ed32 $
+ * $Id: 66fa49f018f202bb8c2ffc2577b065459981e49f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Ilkka Ollakka <ileoo (at)videolan org>
@@ -714,7 +714,7 @@ struct encoder_sys_t
     x264_param_t    param;
 
 #if X264_BUILD >= 83
-    int  i_initial_delay;
+    int64_t  i_initial_delay;
 #else
     mtime_t         i_interpolated_dts;
 #endif
@@ -1263,6 +1263,9 @@ static int  Open ( vlc_object_t *p_this )
      * difference that well yet*/
     p_sys->param.rc.i_lookahead= var_GetInteger( p_enc, SOUT_CFG_PREFIX "lookahead" );
 
+    /* We don't want repeated headers, we repeat p_extra ourself if needed */
+    p_sys->param.b_repeat_headers = 0;
+
     /* Open the encoder */
     p_sys->h = x264_encoder_open( &p_sys->param );
 
@@ -1306,7 +1309,11 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
     int i_nal, i_out, i;
 
     /* init pic */
+#if X264_BUILD >= 98
+    x264_picture_init( &pic );
+#else
     memset( &pic, 0, sizeof( x264_picture_t ) );
+#endif
     pic.i_pts = p_pict->date;
     pic.img.i_csp = X264_CSP_I420;
     pic.img.i_plane = p_pict->i_planes;

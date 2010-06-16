@@ -2,7 +2,7 @@
  * vaapi.c: VAAPI helpers for the ffmpeg decoder
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: c7a4f94c9f046416460c92d767a85d50d3e0f0a7 $
+ * $Id: cd891d17269cde589b25e69a6932b4ab38f4443d $
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *
@@ -461,7 +461,12 @@ static void Delete( vlc_va_t *p_external )
 /* */
 vlc_va_t *vlc_va_NewVaapi( int i_codec_id )
 {
-    if( !XInitThreads() )
+    bool fail;
+
+    vlc_global_lock( VLC_XLIB_MUTEX );
+    fail = !XInitThreads();
+    vlc_global_unlock( VLC_XLIB_MUTEX );
+    if( unlikely(fail) )
         return NULL;
 
     vlc_va_vaapi_t *p_va = calloc( 1, sizeof(*p_va) );

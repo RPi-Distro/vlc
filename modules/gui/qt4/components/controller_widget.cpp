@@ -2,7 +2,7 @@
  * Controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: cb77d316c012557fa8137dc971a9aa2ef779f64a $
+ * $Id: 328ec14242ffb1d0a135dab129a405da72ae4c11 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -87,7 +87,7 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
     {
         volumeSlider = new SoundSlider( this,
             config_GetInt( p_intf, "volume-step" ),
-            var_InheritInteger( p_intf, "qt-volume-complete" ),
+            var_InheritBool( p_intf, "qt-volume-complete" ),
             var_InheritString( p_intf, "qt-slider-colours" ) );
     }
     else

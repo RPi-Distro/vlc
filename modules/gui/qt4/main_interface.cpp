@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 87e2c3f684b17e56aa6312bd5c5b7f2af714f4c9 $
+ * $Id: 6c4ce9810fe28a9acfa3cdf27919cd362f1a3003 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -110,7 +110,7 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     b_autoresize = var_InheritBool( p_intf, "qt-video-autoresize" );
 
     /* Are we in the enhanced always-video mode or not ? */
-    i_visualmode = var_InheritInteger( p_intf, "qt-minimal-view" );
+    b_minimalView = var_InheritBool( p_intf, "qt-minimal-view" );
 
     /* Do we want anoying popups or not */
     b_notificationEnabled = var_InheritBool( p_intf, "qt-notification" );
@@ -198,26 +198,27 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     /* END CONNECTS ON IM */
 
     /* VideoWidget connects for asynchronous calls */
+    b_videoFullScreen = false;
+    b_videoOnTop = false;
     connect( this, SIGNAL(askGetVideo(WId*,int*,int*,unsigned*,unsigned *)),
              this, SLOT(getVideoSlot(WId*,int*,int*,unsigned*,unsigned*)),
              Qt::BlockingQueuedConnection );
     connect( this, SIGNAL(askReleaseVideo( void )),
              this, SLOT(releaseVideoSlot( void )),
              Qt::BlockingQueuedConnection );
+    CONNECT( this, askVideoOnTop(bool), this, setVideoOnTop(bool));
 
     if( videoWidget )
     {
         if( b_autoresize )
         {
             CONNECT( this, askVideoToResize( unsigned int, unsigned int ),
-                     videoWidget, SetSizing( unsigned int, unsigned int ) );
+                     this, setVideoSize( unsigned int, unsigned int ) );
             CONNECT( videoWidget, sizeChanged( int, int ),
                      this, resizeStack( int,  int ) );
         }
         CONNECT( this, askVideoSetFullScreen( bool ),
-                 videoWidget, SetFullScreen( bool ) );
-        CONNECT( videoWidget, keyPressed( QKeyEvent * ),
-                 this, handleKeyPress( QKeyEvent * ) );
+                 this, setVideoFullScreen( bool ) );
     }
 
     CONNECT( THEDP, toolBarConfUpdated(), this, recreateToolbars() );
@@ -243,6 +244,8 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     QVLCTools::restoreWidgetPosition( settings, this, QSize(400, 100) );
     settings->endGroup();
 
+    b_interfaceFullScreen = isFullScreen();
+
     /* Final sizing and showing */
     setVisible( !b_hideAfterCreation );
 
@@ -250,7 +253,7 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
                             menuBar()->sizeHint().width() ) + 30 );
 
     /* Switch to minimal view if needed, must be called after the show() */
-    if( i_visualmode )
+    if( b_minimalView )
         toggleMinimalView( true );
 }
 
@@ -531,21 +534,6 @@ void MainInterface::toggleFSC()
  * Video Handling
  ****************************************************************************/
 
-/* This event is used to deal with the fullscreen and always on top
-   issue conflict (bug in wx) */
-class SetVideoOnTopQtEvent : public QEvent
-{
-public:
-    SetVideoOnTopQtEvent( bool _onTop ) :
-      QEvent( (QEvent::Type)SetVideoOnTopEvent_Type ), onTop( _onTop)
-    {}
-
-    bool OnTop() const { return onTop; }
-
-private:
-    bool onTop;
-};
-
 /**
  * NOTE:
  * You must not change the state of this object or other Qt4 UI objects,
@@ -588,19 +576,80 @@ void MainInterface::getVideoSlot( WId *p_id, int *pi_x, int *pi_y,
 void MainInterface::releaseVideo( void )
 {
     emit askReleaseVideo();
-    QApplication::postEvent( this, new SetVideoOnTopQtEvent( false ) );
 }
 
 /* Function that is CONNECTED to the previous emit */
 void MainInterface::releaseVideoSlot( void )
 {
     videoWidget->release();
+    setVideoOnTop( false );
+    setVideoFullScreen( false );
 
     if( stackCentralW->currentWidget() == videoWidget )
         restoreStackOldWidget();
 
     /* We don't want to have a blank video to popup */
     stackCentralOldWidget = bgWidget;
+}
+
+void MainInterface::setVideoSize( unsigned int w, unsigned int h )
+{
+    if( !isFullScreen() && !isMaximized() )
+        videoWidget->SetSizing( w, h );
+}
+
+void MainInterface::setVideoFullScreen( bool fs )
+{
+    b_videoFullScreen = fs;
+    if( fs )
+    {
+        int numscreen = var_InheritInteger( p_intf, "qt-fullscreen-screennumber" );
+        /* if user hasn't defined screennumber, or screennumber that is bigger
+         * than current number of screens, take screennumber where current interface
+         * is
+         */
+        if( numscreen == -1 || numscreen > QApplication::desktop()->numScreens() )
+            numscreen = QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
+
+        QRect screenres = QApplication::desktop()->screenGeometry( numscreen );
+
+        /* To be sure window is on proper-screen in xinerama */
+        if( !screenres.contains( pos() ) )
+        {
+            msg_Dbg( p_intf, "Moving video to correct screen");
+            move( QPoint( screenres.x(), screenres.y() ) );
+        }
+        setMinimalView( true );
+        setInterfaceFullScreen( true );
+    }
+    else
+    {
+        /* TODO do we want to restore screen and position ? (when
+         * qt-fullscreen-screennumber is forced) */
+        setMinimalView( b_minimalView );
+        setInterfaceFullScreen( b_interfaceFullScreen );
+    }
+    videoWidget->sync();
+}
+
+/* Slot to change the video always-on-top flag.
+ * Emit askVideoOnTop() to invoke this from other thread. */
+void MainInterface::setVideoOnTop( bool on_top )
+{
+    b_videoOnTop = on_top;
+
+    Qt::WindowFlags oldflags = windowFlags(), newflags;
+
+    if( b_videoOnTop )
+        newflags = oldflags | Qt::WindowStaysOnTopHint;
+    else
+        newflags = oldflags & ~Qt::WindowStaysOnTopHint;
+
+    if( newflags != oldflags )
+    {
+        setWindowFlags( newflags );
+        show(); /* necessary to apply window flags */
+    }
 }
 
 /* Asynchronous call from WindowControl function */
@@ -612,8 +661,7 @@ int MainInterface::controlVideo( int i_query, va_list args )
     {
         unsigned int i_width  = va_arg( args, unsigned int );
         unsigned int i_height = va_arg( args, unsigned int );
-        if( isFullScreen() || isMaximized() )
-            showNormal();
+
         emit askVideoToResize( i_width, i_height );
         return VLC_SUCCESS;
     }
@@ -621,12 +669,14 @@ int MainInterface::controlVideo( int i_query, va_list args )
     {
         unsigned i_arg = va_arg( args, unsigned );
         unsigned on_top = i_arg & VOUT_WINDOW_STATE_ABOVE;
-        QApplication::postEvent( this, new SetVideoOnTopQtEvent( on_top ) );
+
+        emit askVideoOnTop( on_top != 0 );
         return VLC_SUCCESS;
     }
     case VOUT_WINDOW_SET_FULLSCREEN:
     {
         bool b_fs = va_arg( args, int );
+
         emit askVideoSetFullScreen( b_fs );
         return VLC_SUCCESS;
     }
@@ -726,12 +776,20 @@ void MainInterface::dockPlaylist( bool p_docked )
     playlistVisible = true;
 }
 
-/*
-  If b_switch is false, then we are normalView
- */
-void MainInterface::toggleMinimalView( bool b_switch )
+void MainInterface::setMinimalView( bool b_minimal )
 {
-    if( i_visualmode == 0 && b_autoresize ) /* Normal mode */
+    menuBar()->setVisible( !b_minimal );
+    controls->setVisible( !b_minimal );
+    statusBar()->setVisible( !b_minimal );
+    inputC->setVisible( !b_minimal );
+}
+
+/*
+  If b_minimal is false, then we are normalView
+ */
+void MainInterface::toggleMinimalView( bool b_minimal )
+{
+    if( !b_minimalView && b_autoresize ) /* Normal mode */
     {
         if( stackCentralW->currentWidget() == bgWidget )
         {
@@ -741,13 +799,11 @@ void MainInterface::toggleMinimalView( bool b_switch )
             }
         }
     }
+    b_minimalView = b_minimal;
+    if( !b_videoFullScreen )
+        setMinimalView( b_minimalView );
 
-    menuBar()->setVisible( !b_switch );
-    controls->setVisible( !b_switch );
-    statusBar()->setVisible( !b_switch );
-    inputC->setVisible( !b_switch );
-
-    emit minimalViewToggled( b_switch );
+    emit minimalViewToggled( b_minimalView );
 }
 
 /* toggling advanced controls buttons */
@@ -1035,19 +1091,6 @@ void MainInterface::dragLeaveEvent(QDragLeaveEvent *event)
 /************************************************************************
  * Events stuff
  ************************************************************************/
-void MainInterface::customEvent( QEvent *event )
-{
-    if ( event->type() == (int)SetVideoOnTopEvent_Type )
-    {
-        SetVideoOnTopQtEvent* p_event = (SetVideoOnTopQtEvent*)event;
-        if( p_event->OnTop() )
-            setWindowFlags( windowFlags() | Qt::WindowStaysOnTopHint );
-        else
-            setWindowFlags( windowFlags() & ~Qt::WindowStaysOnTopHint );
-        show(); /* necessary to apply window flags */
-    }
-}
-
 void MainInterface::keyPressEvent( QKeyEvent *e )
 {
     handleKeyPress( e );
@@ -1055,10 +1098,9 @@ void MainInterface::keyPressEvent( QKeyEvent *e )
 
 void MainInterface::handleKeyPress( QKeyEvent *e )
 {
-    if( ( e->modifiers() &  Qt::ControlModifier ) && ( e->key() == Qt::Key_H )
-          && !menuBar()->isVisible() )
+    if( ( e->modifiers() &  Qt::ControlModifier ) && ( e->key() == Qt::Key_H ) )
     {
-        toggleMinimalView( false );
+        toggleMinimalView( !b_minimalView );
         e->accept();
     }
 
@@ -1086,18 +1128,19 @@ void MainInterface::closeEvent( QCloseEvent *e )
     THEDP->quit();
 }
 
-void MainInterface::toggleFullScreen()
+void MainInterface::setInterfaceFullScreen( bool fs )
 {
-    if( isFullScreen() )
-    {
-        showNormal();
-        emit fullscreenInterfaceToggled( false );
-    }
+    if( fs )
+        setWindowState( windowState() | Qt::WindowFullScreen );
     else
-    {
-        showFullScreen();
-        emit fullscreenInterfaceToggled( true );
-    }
+        setWindowState( windowState() & ~Qt::WindowFullScreen );
+}
+void MainInterface::toggleInterfaceFullScreen()
+{
+    b_interfaceFullScreen = !b_interfaceFullScreen;
+    if( !b_videoFullScreen )
+        setInterfaceFullScreen( b_interfaceFullScreen );
+    emit fullscreenInterfaceToggled( b_interfaceFullScreen );
 }
 
 /*****************************************************************************

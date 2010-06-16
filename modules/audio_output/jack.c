@@ -2,7 +2,7 @@
  * jack : JACK audio output module
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 8e57baff3c29b4826aee27b0753bd27d498309d8 $
+ * $Id: 538e7d950698e781b74ff0da99d22eccaaec6452 $
  *
  * Authors: Cyril Deguet <asmax _at_ videolan.org>
  *          Jon Griffiths <jon_p_griffiths _At_ yahoo _DOT_ com>
@@ -186,7 +186,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* Auto connect ports if we were asked to */
-    if( var_InheritInteger( p_aout, AUTO_CONNECT_OPTION ) )
+    if( var_InheritBool( p_aout, AUTO_CONNECT_OPTION ) )
     {
         unsigned int i_in_ports;
         char *psz_regex = var_InheritString( p_aout, CONNECT_REGEX_OPTION );

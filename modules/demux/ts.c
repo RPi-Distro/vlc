@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 2f1293a9826b64dd31c06211c776a3d99854fc69 $
+ * $Id: d6b26f6bdcf0bf91180e43f67b82d64f85776e79 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -157,8 +157,8 @@ static void Close ( vlc_object_t * );
 
 #define SPLIT_ES_TEXT N_("Separate sub-streams")
 #define SPLIT_ES_LONGTEXT N_( \
-    "Separate teletex/dvbs pages into independant ES. " \
-    "It can be usefull to turn off this option when using stream output." )
+    "Separate teletex/dvbs pages into independent ES. " \
+    "It can be useful to turn off this option when using stream output." )
 
 vlc_module_begin ()
     set_description( N_("MPEG Transport Stream demuxer") )
@@ -3656,7 +3656,7 @@ static void PMTSetupEs0x06( demux_t *p_demux, ts_pid_t *pid,
     }
 
 #ifdef _DVBPSI_DR_52_H_
-    /* FIXME is it usefull ? */
+    /* FIXME is it useful ? */
     if( PMTEsFindDescriptor( p_es, 0x52 ) )
     {
         dvbpsi_descriptor_t *p_dr = PMTEsFindDescriptor( p_es, 0x52 );

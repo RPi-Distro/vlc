@@ -2,7 +2,7 @@
  * http.c
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 79c57f4e61c70afe47b14575810de9682dd09ee8 $
+ * $Id: f65c7146768264fe6a8e00bc77ceab1ec2596872 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jon Lech Johansen <jon@nanocrew.net>
@@ -279,7 +279,7 @@ static int Open( vlc_object_t *p_this )
     }
 
 #if 0 //def HAVE_AVAHI_CLIENT
-    if( var_InheritInteger(p_this, SOUT_CFG_PREFIX "bonjour") )
+    if( var_InheritBool(p_this, SOUT_CFG_PREFIX "bonjour") )
     {
         char                *psz_txt, *psz_name;
         playlist_t          *p_playlist = pl_Get( p_access );

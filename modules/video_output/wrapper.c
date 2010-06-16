@@ -2,7 +2,7 @@
  * vout_display.c: "vout display" -> "video output" wrapper
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 558db233cb21a95136354330f52024872fa305d1 $
+ * $Id: b8db199946138c64eecd0bff608741c098c99485 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -450,9 +450,9 @@ static void VoutGetDisplayCfg(vout_thread_t *vout, vout_display_cfg_t *cfg, cons
     else if (align_mask & 0x2)
         cfg->align.horizontal = VOUT_DISPLAY_ALIGN_RIGHT;
     if (align_mask & 0x4)
-        cfg->align.horizontal = VOUT_DISPLAY_ALIGN_TOP;
+        cfg->align.vertical = VOUT_DISPLAY_ALIGN_TOP;
     else if (align_mask & 0x8)
-        cfg->align.horizontal = VOUT_DISPLAY_ALIGN_BOTTOM;
+        cfg->align.vertical = VOUT_DISPLAY_ALIGN_BOTTOM;
 }
 
 #ifdef WIN32

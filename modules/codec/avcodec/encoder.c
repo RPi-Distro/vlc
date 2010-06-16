@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 0ba4ffbd0d2398f0b2f08c942500943fc75d00a6 $
+ * $Id: a96f0fc4e307052b7e09a069c88d038d9444d3d1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -586,33 +586,35 @@ int OpenEncoder( vlc_object_t *p_this )
     {
         /* Lets give bitrate tolerance */
         p_context->bit_rate_tolerance = __MAX(2 * p_enc->fmt_out.i_bitrate, p_sys->i_vtolerance );
+        /* default to 120 frames between keyframe */
+        if( !var_GetInteger( p_enc, ENC_CFG_PREFIX "keyint" ) )
+           p_context->gop_size = 120;
+        /* Don't set rc-values atm, they were from time before
+           libvpx was officially in ffmpeg */
+        //p_context->rc_max_rate = 24 * 1000 * 1000; //24M
+        //p_context->rc_min_rate = 40 * 1000; // 40k
         /* seems that ffmpeg presets have 720p as divider for buffers */
-        if( p_enc->fmt_out.video.i_width >= 720 )
+        if( p_enc->fmt_out.video.i_height >= 720 )
         {
            /* Check that we don't overrun users qmin/qmax values */
            if( !var_GetInteger( p_enc, ENC_CFG_PREFIX "qmin" ) )
            {
-              p_context->mb_qmin = p_context->qmin = 10 * FF_QP2LAMBDA;
+              p_context->mb_qmin = p_context->qmin = 10;
               p_context->mb_lmin = p_context->lmin = 10 * FF_QP2LAMBDA;
            }
 
            if( !var_GetInteger( p_enc, ENC_CFG_PREFIX "qmax" ) )
            {
-              p_context->mb_qmax = p_context->qmax = 42 * FF_QP2LAMBDA;
+              p_context->mb_qmax = p_context->qmax = 42;
               p_context->mb_lmax = p_context->lmax = 42 * FF_QP2LAMBDA;
            }
 
-           p_context->rc_max_rate = 24 * 1000 * 1000; //24M
-           p_context->rc_min_rate = 100 * 1000; // 100k
         } else {
            if( !var_GetInteger( p_enc, ENC_CFG_PREFIX "qmin" ) )
            {
-              p_context->mb_qmin = p_context->qmin = FF_QP2LAMBDA;
+              p_context->mb_qmin = p_context->qmin = 1;
               p_context->mb_lmin = p_context->lmin = FF_QP2LAMBDA;
            }
-
-           p_context->rc_max_rate = 1.5 * 1000 * 1000; //1.5M
-           p_context->rc_min_rate = 40 * 1000; // 40k
         }
 
 
