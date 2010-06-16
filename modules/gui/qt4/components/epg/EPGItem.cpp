@@ -2,7 +2,7 @@
  * EPGItem.cpp: EPGItem
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 13580b5e4e44ab9e19b62fbac03968f9e22cd362 $
+ * $Id: 39dbea5153f799f3ae3081f6b59842170ed3cbff $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -62,9 +62,9 @@ void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
     painter->setPen( QPen( Qt::black ) );
 
     if ( m_current )
-        painter->setBrush( QBrush( Qt::red ) );
+        painter->setBrush( QBrush( QColor( 100, 100, 100 ) ) );
     else
-        painter->setBrush( QBrush( Qt::blue ) );
+        painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
 
     painter->drawRect( mapped );
 
@@ -73,32 +73,28 @@ void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
 
     // Setup the font
     QFont f = painter->font();
-    f.setPointSize( 9 );
-    f.setBold( true );
-    painter->setFont( f );
 
     // Get the font metrics
     QFontMetrics fm = painter->fontMetrics();
 
     // Adjust the drawing rect
-    mapped.adjust( 2, 2, -2, -2 );
+    mapped.adjust( 6, 6, -6, -6 );
 
     painter->setPen( Qt::white );
+    /* Draw the title. */
     painter->drawText( mapped, Qt::AlignTop | Qt::AlignLeft, fm.elidedText( m_name, Qt::ElideRight, mapped.width() ) );
 
-
-    f.setBold( false );
+    mapped.adjust( 0, 20, 0, 0 );
+    QDateTime m_end = m_start.addSecs( m_duration );
+    f.setPixelSize( 10 );
     f.setItalic( true );
-    f.setPointSize( 8 );
     painter->setFont( f );
 
-    QTextOption textoption;
-    textoption.setWrapMode( QTextOption::WordWrap );
-    textoption.setAlignment( Qt::AlignTop | Qt::AlignLeft );
-
-    painter->drawText( mapped.adjusted( 0, 20, 0, 0 ),
-                       m_shortDescription,
-                       textoption );
+    /* Draw the hours. */
+    painter->drawText( mapped, Qt::AlignTop | Qt::AlignLeft,
+                       fm.elidedText( m_start.toString( "hh:mm" ) + " - " +
+                                      m_end.toString( "hh:mm" ),
+                                      Qt::ElideRight, mapped.width() ) );
 }
 
 const QDateTime& EPGItem::start() const

@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: c8b70874e08d0489253005e1fa5bf8a20b55b295 $
+ * $Id: 7717cd2185c03c7b20fe50a5e92f9c1844bfc43f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -257,6 +257,9 @@ void InputManager::customEvent( QEvent *event )
     case ProgramChanged_Type:
         UpdateProgramEvent();
         break;
+    case EPGEvent_Type:
+        UpdateEPG();
+        break;
     default:
         msg_Warn( p_intf, "This shouldn't happen: %i", i_type );
         assert(0);
@@ -359,6 +362,11 @@ static int InputEvent( vlc_object_t *p_this, const char *,
     case INPUT_EVENT_PROGRAM:
         /* This is for PID changes */
         event = new IMEvent( ProgramChanged_Type );
+        break;
+
+    case INPUT_EVENT_ITEM_EPG:
+        /* EPG data changed */
+        event = new IMEvent( EPGEvent_Type );
         break;
 
     case INPUT_EVENT_SIGNAL:
@@ -544,6 +552,14 @@ void InputManager::UpdateTeletext()
     {
         emit teletextActivated( false );
         emit teletextPossible( false );
+    }
+}
+
+void InputManager::UpdateEPG()
+{
+    if( hasInput() )
+    {
+       emit epgChanged();
     }
 }
 

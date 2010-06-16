@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: afa54fb22201b4ce47ebac4bb5bfb1a7bff534bd $
+ * $Id: 2b2e4a67a1741448c6b5a1a2460f26f2a63e3048 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -137,6 +137,7 @@ vlc_module_begin ()
             change_safe()
         add_bool(   "rtsp-kasenna", false, NULL, KASENNA_TEXT,
                     KASENNA_LONGTEXT, true )
+            change_safe()
         add_bool(   "rtsp-wmserver", false, NULL, WMSERVER_TEXT,
                     WMSERVER_LONGTEXT, true)
             change_safe()

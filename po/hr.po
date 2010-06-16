@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.0.0\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-06-03 15:23+0200\n"
+"POT-Creation-Date: 2010-06-16 03:39+0200\n"
 "PO-Revision-Date: 2009-09-19 16:53+0100\n"
 "Last-Translator: Dominko Aždajić <domazd@mail.ru>\n"
 "Language-Team: Croatian\n"
@@ -77,7 +77,7 @@ msgstr "Postavke upravljačkih sučelja VLC-a"
 msgid "Hotkeys settings"
 msgstr "Postavke tipkovnih prečica"
 
-#: include/vlc_config_cat.h:52 src/input/es_out.c:2845 src/input/es_out.c:2885
+#: include/vlc_config_cat.h:52 src/input/es_out.c:2850 src/input/es_out.c:2890
 #: src/libvlc-module.c:1567 modules/gui/macosx/intf.m:667
 #: modules/gui/macosx/output.m:170 modules/gui/macosx/playlistinfo.m:114
 #: modules/gui/macosx/simple_prefs.m:184 modules/gui/macosx/wizard.m:380
@@ -85,6 +85,7 @@ msgstr "Postavke tipkovnih prečica"
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:192
+#: modules/gui/qt4/ui/profiles.h:487
 msgid "Audio"
 msgstr "Zvuk"
 
@@ -122,7 +123,7 @@ msgstr "Izlazni moduli"
 msgid "General settings for audio output modules."
 msgstr "Opće postavke modula za razdvajanja zvuka."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2039
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2042
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Razno"
@@ -131,7 +132,7 @@ msgstr "Razno"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Razne zvukovne postavke i moduli."
 
-#: include/vlc_config_cat.h:70 src/input/es_out.c:2848 src/input/es_out.c:2932
+#: include/vlc_config_cat.h:70 src/input/es_out.c:2853 src/input/es_out.c:2937
 #: src/libvlc-module.c:1620 modules/gui/macosx/intf.m:680
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:103
 #: modules/gui/macosx/simple_prefs.m:188 modules/gui/macosx/wizard.m:381
@@ -139,6 +140,7 @@ msgstr "Razne zvukovne postavke i moduli."
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:101 modules/stream_out/transcode/transcode.c:161
+#: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Video"
 msgstr "Slika"
 
@@ -247,7 +249,7 @@ msgstr "Ulaz općenito"
 msgid "General input settings. Use with care..."
 msgstr "Opće postavke"
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1959
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1962
 msgid "Stream output"
 msgstr "Izlaz strujanja"
 
@@ -356,7 +358,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "VLC-ova implementacija službi Video po zahtjevu"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2105
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2108
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:608 modules/gui/qt4/components/controller.hpp:106
@@ -391,7 +393,7 @@ msgstr ""
 "Moduli otkrivanja službi su pomagala koja samostalno dodaju stavke na "
 "spiskove za izvođenje."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1906
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1909
 msgid "Advanced"
 msgstr "Napredno"
 
@@ -416,6 +418,7 @@ msgstr "Napredne mogućnosti"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:180
 #: modules/gui/macosx/open.m:459 modules/gui/macosx/simple_prefs.m:259
+#: modules/gui/qt4/ui/sprefs_input.h:318
 msgid "Network"
 msgstr "Mrežne veze"
 
@@ -547,6 +550,7 @@ msgstr "&O programu..."
 #: modules/gui/macosx/intf.m:2013 modules/gui/macosx/intf.m:2014
 #: modules/gui/macosx/intf.m:2015 modules/gui/macosx/playlist.m:464
 #: modules/gui/qt4/components/controller.hpp:104 modules/gui/qt4/menus.cpp:790
+#: modules/gui/qt4/ui/open.h:256
 msgid "Play"
 msgstr "Izvedba"
 
@@ -700,7 +704,7 @@ msgstr ""
 "Uvećavanje dijela video slike. Možete izabrati dio slike koji bi trebao biti "
 "uvećan."
 
-#: include/vlc_intf_strings.h:117
+#: include/vlc_intf_strings.h:117 modules/gui/qt4/ui/video_effects.h:1141
 msgid "Waves"
 msgstr "Valovi"
 
@@ -874,7 +878,9 @@ msgstr "Stereo"
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
-#: modules/video_filter/rss.c:174
+#: modules/video_filter/rss.c:174 modules/gui/qt4/ui/video_effects.h:1114
+#: modules/gui/qt4/ui/video_effects.h:1177
+#: modules/gui/qt4/ui/video_effects.h:1182
 msgid "Left"
 msgstr "Lijevo"
 
@@ -885,7 +891,7 @@ msgstr "Lijevo"
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
-#: modules/video_filter/rss.c:174
+#: modules/video_filter/rss.c:174 modules/gui/qt4/ui/video_effects.h:1116
 msgid "Right"
 msgstr "Desno"
 
@@ -939,8 +945,8 @@ msgstr "Dekôderi"
 
 #: src/input/decoder.c:278 src/input/decoder.c:430
 #: modules/codec/avcodec/encoder.c:224 modules/codec/avcodec/encoder.c:232
-#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:704
-#: modules/codec/avcodec/encoder.c:713 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:706
+#: modules/codec/avcodec/encoder.c:715 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr "Strujanje / prekodiranje nije uspjelo"
@@ -992,114 +998,117 @@ msgstr "Ispremiješano"
 msgid "Yes"
 msgstr "Da"
 
-#: src/input/es_out.c:2007
+#: src/input/es_out.c:2012
 #, c-format
 msgid "Closed captions %u"
 msgstr "Zatvoreni natpisi %u"
 
-#: src/input/es_out.c:2835
+#: src/input/es_out.c:2840
 #, c-format
 msgid "Stream %d"
 msgstr "Strujanje %d"
 
-#: src/input/es_out.c:2851 src/input/es_out.c:2959
+#: src/input/es_out.c:2856 src/input/es_out.c:2964
 msgid "Subtitle"
 msgstr "Podnaslov"
 
-#: src/input/es_out.c:2859 src/input/es_out.c:2885 src/input/es_out.c:2932
-#: src/input/es_out.c:2959 modules/gui/macosx/output.m:153
+#: src/input/es_out.c:2864 src/input/es_out.c:2890 src/input/es_out.c:2937
+#: src/input/es_out.c:2964 modules/gui/macosx/output.m:153
 msgid "Type"
 msgstr "Vrsta"
 
-#: src/input/es_out.c:2862
+#: src/input/es_out.c:2867
 msgid "Original ID"
 msgstr "Izvorni ID"
 
-#: src/input/es_out.c:2869 src/input/es_out.c:2872
-#: modules/gui/macosx/wizard.m:385
+#: src/input/es_out.c:2874 src/input/es_out.c:2877
+#: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
+#: modules/gui/qt4/ui/profiles.h:489
 msgid "Codec"
 msgstr "Kôdek"
 
-#: src/input/es_out.c:2876 src/input/meta.c:62 src/libvlc-module.c:212
+#: src/input/es_out.c:2881 src/input/meta.c:62 src/libvlc-module.c:212
 #: modules/gui/macosx/simple_prefs.m:269
+#: modules/gui/qt4/ui/sprefs_interface.h:386
 msgid "Language"
 msgstr "Jezik"
 
-#: src/input/es_out.c:2879 src/input/meta.c:57
+#: src/input/es_out.c:2884 src/input/meta.c:57
 #: modules/gui/macosx/bookmarks.m:94 modules/gui/qt4/dialogs/bookmarks.cpp:65
 msgid "Description"
 msgstr "Opis"
 
-#: src/input/es_out.c:2888 src/input/es_out.c:2891
-#: modules/gui/macosx/output.m:176
+#: src/input/es_out.c:2893 src/input/es_out.c:2896
+#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
 msgid "Channels"
 msgstr "Kanali"
 
-#: src/input/es_out.c:2896
+#: src/input/es_out.c:2901
 msgid "Sample rate"
 msgstr "Stopa uzorkovanja"
 
-#: src/input/es_out.c:2896
+#: src/input/es_out.c:2901
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:2906
+#: src/input/es_out.c:2911
 msgid "Bits per sample"
 msgstr "Bita po uzorku"
 
-#: src/input/es_out.c:2911 modules/access/pvr.c:96
+#: src/input/es_out.c:2916 modules/access/pvr.c:96
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:413
 #: modules/gui/qt4/components/open_panels.cpp:901
+#: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
 msgid "Bitrate"
 msgstr "Stopa protoka"
 
-#: src/input/es_out.c:2911
+#: src/input/es_out.c:2916
 #, c-format
 msgid "%u kb/s"
 msgstr "%u kb/s"
 
-#: src/input/es_out.c:2923
+#: src/input/es_out.c:2928
 msgid "Track replay gain"
 msgstr "Pojačavanje opetovanog izvođenja traga"
 
-#: src/input/es_out.c:2925
+#: src/input/es_out.c:2930
 msgid "Album replay gain"
 msgstr "Pojačavanje opetovanog izvođenja albuma"
 
-#: src/input/es_out.c:2926
+#: src/input/es_out.c:2931
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2935
+#: src/input/es_out.c:2940 modules/gui/qt4/ui/profiles.h:476
 msgid "Resolution"
 msgstr "Razlučivost"
 
-#: src/input/es_out.c:2940
+#: src/input/es_out.c:2945
 msgid "Display resolution"
 msgstr "Razlučivost prikaza."
 
-#: src/input/es_out.c:2950 src/input/es_out.c:2953
+#: src/input/es_out.c:2955 src/input/es_out.c:2958
 #: modules/access/screen/screen.c:44 modules/access/screen/xcb.c:38
 msgid "Frame rate"
 msgstr "Stopa protoka kadrova."
 
-#: src/input/input.c:2478
+#: src/input/input.c:2488
 msgid "Your input can't be opened"
 msgstr "Vaš ulazni sadržaj ne može biti otvoren."
 
-#: src/input/input.c:2479
+#: src/input/input.c:2489
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 "VLC nije u stanju otvoriti MRL '%s'. Za pojedinosti pogledajte zapisnik."
 
-#: src/input/input.c:2598
+#: src/input/input.c:2608
 msgid "VLC can't recognize the input's format"
 msgstr "VLC ne može prepoznati ulazni format."
 
-#: src/input/input.c:2599
+#: src/input/input.c:2609
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -1109,6 +1118,7 @@ msgstr "Ne može se prepoznati format '%s'. Za pojedinosti pogledajte zapisnik."
 #: modules/gui/macosx/intf.m:663 modules/gui/macosx/open.m:190
 #: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
 #: modules/gui/qt4/components/open_panels.cpp:372 modules/mux/asf.c:56
+#: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
 msgstr "Naslov"
 
@@ -1146,6 +1156,7 @@ msgid "Setting"
 msgstr "Postavka"
 
 #: src/input/meta.c:61 modules/gui/macosx/open.m:203
+#: modules/gui/qt4/ui/podcast_configuration.h:103
 msgid "URL"
 msgstr "Mrežna adresa"
 
@@ -1179,6 +1190,7 @@ msgstr "Programi"
 
 #: src/input/var.c:192 modules/gui/macosx/intf.m:664
 #: modules/gui/macosx/intf.m:665 modules/gui/macosx/open.m:191
+#: modules/gui/qt4/ui/open_disk.h:303
 msgid "Chapter"
 msgstr "Poglavlje"
 
@@ -1411,7 +1423,7 @@ msgstr ""
 "Za nastaviti stisnite tipku RETURN...\n"
 
 #: src/libvlc.h:175 src/libvlc-module.c:1462 src/libvlc-module.c:1463
-#: src/libvlc-module.c:2639 src/video_output/vout_intf.c:195
+#: src/libvlc-module.c:2642 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Povećavanje"
 
@@ -1599,6 +1611,7 @@ msgstr ""
 "automatski odabrati najbolju raspoloživu metodu."
 
 #: src/libvlc-module.c:252 modules/stream_out/display.c:41
+#: modules/gui/qt4/ui/sprefs_audio.h:404
 msgid "Enable audio"
 msgstr "Uključiti zvuk"
 
@@ -1707,6 +1720,7 @@ msgstr ""
 "tako i strujanje zvuka koje se izvodi)."
 
 #: src/libvlc-module.c:301 modules/gui/macosx/simple_prefs.m:237
+#: modules/gui/qt4/ui/sprefs_audio.h:413
 msgid "Use S/PDIF when available"
 msgstr "Koristiti S/PDIF ukoliko je dostupan"
 
@@ -1808,7 +1822,7 @@ msgstr ""
 #: src/libvlc-module.c:356 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/codec/avcodec/avcodec.c:74
 #: modules/codec/kate.c:203
-#: modules/gui/qt4/components/interface_widgets.cpp:388
+#: modules/gui/qt4/components/interface_widgets.cpp:295
 msgid "None"
 msgstr "Nikakav"
 
@@ -1839,6 +1853,7 @@ msgstr ""
 "automatski odabrati najbolju raspoloživu metodu."
 
 #: src/libvlc-module.c:375 modules/stream_out/display.c:43
+#: modules/gui/qt4/ui/sprefs_video.h:309
 msgid "Enable video"
 msgstr "Omogućiti prikaz video slike"
 
@@ -1946,7 +1961,9 @@ msgstr "Sredina"
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
-#: modules/video_filter/rss.c:174
+#: modules/video_filter/rss.c:174 modules/gui/qt4/ui/video_effects.h:1112
+#: modules/gui/qt4/ui/video_effects.h:1178
+#: modules/gui/qt4/ui/video_effects.h:1181
 msgid "Top"
 msgstr "Gore"
 
@@ -1954,7 +1971,7 @@ msgstr "Gore"
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
-#: modules/video_filter/rss.c:174
+#: modules/video_filter/rss.c:174 modules/gui/qt4/ui/video_effects.h:1118
 msgid "Bottom"
 msgstr "Dolje"
 
@@ -2052,7 +2069,7 @@ msgstr ""
 "polazno pokušava koristiti tu mogućnost."
 
 #: src/libvlc-module.c:442 src/video_output/vout_intf.c:344
-#: modules/gui/macosx/simple_prefs.m:295
+#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "Uvijek u prvom planu"
 
@@ -2171,7 +2188,7 @@ msgstr ""
 "Tijekom izvođenja spriječava službu za upravljanje energijom, kako bi se "
 "izbjeglo da računalo zbog nedjelatnosti bude umirovljeno."
 
-#: src/libvlc-module.c:503
+#: src/libvlc-module.c:503 modules/gui/qt4/ui/sprefs_video.h:316
 msgid "Window decorations"
 msgstr "Ukrasiti okna"
 
@@ -2380,6 +2397,7 @@ msgstr ""
 "to morati izmijeniti u poredak 4:3 kako bi ste zadržali proporcije."
 
 #: src/libvlc-module.c:597 modules/gui/macosx/simple_prefs.m:297
+#: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "Preskakati kadrove"
 
@@ -2505,6 +2523,7 @@ msgstr "Polazno"
 
 #: src/libvlc-module.c:653 modules/gui/macosx/equalizer.m:149
 #: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
+#: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Uključiti"
 
@@ -2599,7 +2618,7 @@ msgstr ""
 "ukoliko želite učitavati neki višeprogramski protok strujanja (primjerice "
 "strujanja DVB-a)."
 
-#: src/libvlc-module.c:700
+#: src/libvlc-module.c:700 modules/gui/qt4/ui/open_disk.h:305
 msgid "Audio track"
 msgstr "Trag zvuka"
 
@@ -2607,7 +2626,7 @@ msgstr "Trag zvuka"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Broj strujanja zvučnog traga koji će biti korišten (od 0 do n)."
 
-#: src/libvlc-module.c:705
+#: src/libvlc-module.c:705 modules/gui/qt4/ui/open_disk.h:306
 msgid "Subtitles track"
 msgstr "Podnaslovni zapis"
 
@@ -2747,7 +2766,7 @@ msgstr ""
 "\"{naziv=naziv-straničnika,vrijeme=možebitni-vremenski-odstup,"
 "bajti=možebitni-bajtovski-odstup},{...}\""
 
-#: src/libvlc-module.c:770
+#: src/libvlc-module.c:770 modules/gui/qt4/ui/sprefs_input.h:316
 msgid "Record directory or filename"
 msgstr "Imenik ili naziv datoteke snimke"
 
@@ -2800,7 +2819,7 @@ msgstr ""
 "te filtre ovdje, a prilagodite ih u odsjeku modula \"filtri podslîka\". Isto "
 "tako možete postaviti više različitih mogućnosti podslîka."
 
-#: src/libvlc-module.c:796
+#: src/libvlc-module.c:796 modules/gui/qt4/ui/sprefs_subtitles.h:213
 msgid "Force subtitle position"
 msgstr "Nametnuti položaj podnaslova"
 
@@ -2820,9 +2839,10 @@ msgstr "Uključiti podslike"
 msgid "You can completely disable the sub-picture processing."
 msgstr "Vi možete potpuno isključiti obrađivanje podslîka."
 
-#: src/libvlc-module.c:805 src/libvlc-module.c:1758
+#: src/libvlc-module.c:805 src/libvlc-module.c:1761
 #: modules/gui/macosx/simple_prefs.m:286
 #: modules/stream_out/transcode/transcode.c:222
+#: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
 msgstr "Prikaz u tekućem prikazu (OSD)"
 
@@ -3823,6 +3843,7 @@ msgstr ""
 #: modules/gui/macosx/intf.m:685 modules/gui/macosx/intf.m:750
 #: modules/gui/macosx/simple_prefs.m:294
 #: modules/gui/qt4/components/controller.hpp:105
+#: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
 msgstr "Cjelozaslonski prikaz"
 
@@ -3912,7 +3933,8 @@ msgstr "Sporije (istančano)"
 #: modules/gui/macosx/intf.m:746 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:321
+#: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
+#: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Slijedeće"
 
@@ -3927,7 +3949,8 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:599
 #: modules/gui/macosx/intf.m:651 modules/gui/macosx/intf.m:739
 #: modules/gui/macosx/intf.m:745 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:319
+#: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
+#: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Prethodno"
 
@@ -3941,7 +3964,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:602
 #: modules/gui/macosx/intf.m:647 modules/gui/macosx/intf.m:737
 #: modules/gui/macosx/intf.m:744 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231
+#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr "Zaustaviti"
 
@@ -3953,6 +3976,7 @@ msgstr "Odaberite vrelu tipku za zaustavljanje izvedbe."
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:70 modules/gui/macosx/intf.m:607
 #: modules/video_filter/marq.c:158 modules/video_filter/rss.c:201
+#: modules/gui/qt4/ui/video_effects.h:1167
 msgid "Position"
 msgstr "Položaj"
 
@@ -4621,7 +4645,7 @@ msgstr "Kružiti kroz uređaje zvuka"
 msgid "Cycle through available audio devices"
 msgstr "Kruženje kroz raspoložive uređaje zvuka."
 
-#: src/libvlc-module.c:1683 src/video_output/vout_intf.c:363
+#: src/libvlc-module.c:1686 src/video_output/vout_intf.c:363
 #: modules/gui/macosx/controls.m:494 modules/gui/macosx/controls.m:1086
 #: modules/gui/macosx/intf.m:687 modules/gui/macosx/intf.m:751
 #: modules/gui/qt4/components/controller.hpp:106
@@ -4629,94 +4653,95 @@ msgstr "Kruženje kroz raspoložive uređaje zvuka."
 msgid "Snapshot"
 msgstr "Trenutačna snimka"
 
-#: src/libvlc-module.c:1700
+#: src/libvlc-module.c:1703
 msgid "Window properties"
 msgstr "Svojstva okna"
 
-#: src/libvlc-module.c:1759
+#: src/libvlc-module.c:1762
 msgid "Subpictures"
 msgstr "Podslike"
 
-#: src/libvlc-module.c:1767 modules/codec/subtitles/subsdec.c:202
+#: src/libvlc-module.c:1770 modules/codec/subtitles/subsdec.c:202
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
-#: modules/demux/subtitle.c:73
+#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
+#: modules/gui/qt4/ui/profiles.h:497
 msgid "Subtitles"
 msgstr "Podnaslovi"
 
-#: src/libvlc-module.c:1785 modules/stream_out/transcode/transcode.c:115
+#: src/libvlc-module.c:1788 modules/stream_out/transcode/transcode.c:115
 msgid "Overlays"
 msgstr "Prekrivanja"
 
-#: src/libvlc-module.c:1793
+#: src/libvlc-module.c:1796
 msgid "Track settings"
 msgstr "Postavke tragova"
 
-#: src/libvlc-module.c:1823
+#: src/libvlc-module.c:1826
 msgid "Playback control"
 msgstr "Upravljanje izvođenjima"
 
-#: src/libvlc-module.c:1850
+#: src/libvlc-module.c:1853
 msgid "Default devices"
 msgstr "Polazni uređaji"
 
-#: src/libvlc-module.c:1859
+#: src/libvlc-module.c:1862
 msgid "Network settings"
 msgstr "Postavke mrežnih veza"
 
-#: src/libvlc-module.c:1871
+#: src/libvlc-module.c:1874
 msgid "Socks proxy"
 msgstr "Posrednički poslužitelj SOCKS"
 
-#: src/libvlc-module.c:1880 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1883 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Metapodatci"
 
-#: src/libvlc-module.c:1931
+#: src/libvlc-module.c:1934
 msgid "Decoders"
 msgstr "Dekôderi"
 
-#: src/libvlc-module.c:1938 modules/access/v4l2.c:80
+#: src/libvlc-module.c:1941 modules/access/v4l2.c:80
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Ulazni sadržaj"
 
-#: src/libvlc-module.c:1977
+#: src/libvlc-module.c:1980
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2009
+#: src/libvlc-module.c:2012
 msgid "CPU"
 msgstr "Procesor"
 
-#: src/libvlc-module.c:2038
+#: src/libvlc-module.c:2041
 msgid "Special modules"
 msgstr "Posebni moduli"
 
-#: src/libvlc-module.c:2044 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2047 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Priključci"
 
-#: src/libvlc-module.c:2059
+#: src/libvlc-module.c:2062
 msgid "Performance options"
 msgstr "Mogućnosti programskog učinka"
 
-#: src/libvlc-module.c:2207
+#: src/libvlc-module.c:2210
 msgid "Hot keys"
 msgstr "Vruće tipke"
 
-#: src/libvlc-module.c:2649
+#: src/libvlc-module.c:2652
 msgid "Jump sizes"
 msgstr "Veličine skokova"
 
-#: src/libvlc-module.c:2726
+#: src/libvlc-module.c:2729
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr "ispis pomoći za VLC (može se spojiti s --advanced i --help-verbose)"
 
-#: src/libvlc-module.c:2729
+#: src/libvlc-module.c:2732
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Iscrpna pomoć za VLC i njegove module"
 
-#: src/libvlc-module.c:2731
+#: src/libvlc-module.c:2734
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4724,19 +4749,19 @@ msgstr ""
 "ispis pomoći za VLC i sve njegove module (može se spojiti s --advanced i --"
 "help-verbose)"
 
-#: src/libvlc-module.c:2734
+#: src/libvlc-module.c:2737
 msgid "ask for extra verbosity when displaying help"
 msgstr "zatražiti dodatnu opširnost kod prikaza pomoći"
 
-#: src/libvlc-module.c:2736
+#: src/libvlc-module.c:2739
 msgid "print a list of available modules"
 msgstr "ispis spiska raspoloživih modula"
 
-#: src/libvlc-module.c:2738
+#: src/libvlc-module.c:2741
 msgid "print a list of available modules with extra detail"
 msgstr "ispis spiska raspoloživih modula s dodatnim pojedinostima"
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2743
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -4744,29 +4769,29 @@ msgstr ""
 "ispis pomoći za neki određeni modul (može se spojiti s --advanced i --help-"
 "verbose). Ispred naziva modula stavite znak = zbog točnije shodnosti."
 
-#: src/libvlc-module.c:2744
+#: src/libvlc-module.c:2747
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 "ni jedna prilagodbena mogućnost neće biti učitana ni pohranjena u datoteku "
 "postavki"
 
-#: src/libvlc-module.c:2746
+#: src/libvlc-module.c:2749
 msgid "reset the current config to the default values"
 msgstr "tekuće postavke vratiti na početne vrijednosti"
 
-#: src/libvlc-module.c:2748
+#: src/libvlc-module.c:2751
 msgid "use alternate config file"
 msgstr "datoteku postavki koristiti naizmjence"
 
-#: src/libvlc-module.c:2750
+#: src/libvlc-module.c:2753
 msgid "resets the current plugins cache"
 msgstr "vraća tekući međuspremnik priključaka na početno"
 
-#: src/libvlc-module.c:2752
+#: src/libvlc-module.c:2755
 msgid "print version information"
 msgstr "ispis informacija o inačici"
 
-#: src/libvlc-module.c:2790
+#: src/libvlc-module.c:2793
 msgid "main program"
 msgstr "glavni program"
 
@@ -4924,7 +4949,7 @@ msgstr "Završna obrada"
 
 #: src/video_output/vout_intf.c:228 modules/gui/macosx/intf.m:692
 #: modules/gui/macosx/intf.m:693 modules/video_filter/crop.c:107
-#: modules/video_filter/croppadd.c:86
+#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1122
 msgid "Crop"
 msgstr "Obrezivanje"
 
@@ -5321,7 +5346,7 @@ msgstr "Način terestričke hijerarhije"
 msgid "Hierarchy alpha value [Undefined,1,2,4]"
 msgstr "Hierarhijska vrijednost alfa [Neodređeno,1,2,4]"
 
-#: modules/access/bda/bda.c:169
+#: modules/access/bda/bda.c:169 modules/gui/qt4/ui/streampanel.h:170
 msgid "1"
 msgstr "1"
 
@@ -5428,6 +5453,7 @@ msgstr ""
 
 #: modules/access/cdda.c:67 modules/gui/macosx/open.m:198
 #: modules/gui/macosx/open.m:643 modules/gui/macosx/open.m:731
+#: modules/gui/qt4/ui/open_disk.h:293
 msgid "Audio CD"
 msgstr "Audio CD"
 
@@ -6395,6 +6421,7 @@ msgstr "Norma strujanja (Samostalno, SECAM, PAL ili NTSC)."
 #: modules/access/pvr.c:74 modules/access/v4l.c:102 modules/access/v4l2.c:89
 #: modules/codec/invmem.c:53 modules/demux/rawvid.c:48
 #: modules/video_filter/mosaic.c:95 modules/video_output/vmem.c:42
+#: modules/gui/qt4/ui/profiles.h:479
 msgid "Width"
 msgstr "Širina"
 
@@ -6406,6 +6433,7 @@ msgstr ""
 #: modules/access/pvr.c:78 modules/access/v4l.c:105 modules/access/v4l2.c:92
 #: modules/codec/invmem.c:56 modules/demux/rawvid.c:52
 #: modules/video_filter/mosaic.c:93 modules/video_output/vmem.c:45
+#: modules/gui/qt4/ui/profiles.h:482
 msgid "Height"
 msgstr "Visina"
 
@@ -6480,7 +6508,7 @@ msgstr "Bitska maska koju će koristiti zvukovni dio kartice."
 #: modules/access/pvr.c:109 modules/access/v4l2.c:163
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/embeddedwindow.m:74
 #: modules/gui/macosx/intf.m:606 modules/gui/qt4/dialogs/toolbar.cpp:347
-#: modules/stream_out/raop.c:150
+#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:405
 msgid "Volume"
 msgstr "Jakost zvuka"
 
@@ -6870,7 +6898,7 @@ msgstr "Ulaz putem FTP-a"
 
 #: modules/access/sftp.c:137
 #, fuzzy
-msgid "SFTP authentification"
+msgid "SFTP authentication"
 msgstr "Ovjeravanje HTTP-poslužitelja"
 
 #: modules/access/sftp.c:138
@@ -6986,7 +7014,8 @@ msgid "Height of the stream to capture (-1 for autodetect)."
 msgstr "Visina strujanja za zahvatiti (-1 za autom. prepoznavanje)."
 
 #: modules/access/v4l.c:108 modules/access/v4l2.c:108
-#: modules/gui/macosx/extended.m:98 modules/video_filter/atmo/atmo.cpp:257
+#: modules/gui/macosx/extended.m:98 modules/video_filter/atmo/atmo.cpp:264
+#: modules/gui/qt4/ui/video_effects.h:1107
 msgid "Brightness"
 msgstr "Svjetloća"
 
@@ -6995,7 +7024,7 @@ msgid "Brightness of the video input."
 msgstr "Svjetloća ulaznog sadržaja video slike."
 
 #: modules/access/v4l.c:111 modules/access/v4l2.c:117
-#: modules/gui/macosx/extended.m:101
+#: modules/gui/macosx/extended.m:101 modules/gui/qt4/ui/video_effects.h:1109
 msgid "Hue"
 msgstr "Ton boje"
 
@@ -7006,6 +7035,9 @@ msgstr "Ton boje ulaznog sadržaja video slike."
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
 #: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
+#: modules/gui/qt4/ui/video_effects.h:1132
+#: modules/gui/qt4/ui/video_effects.h:1138
+#: modules/gui/qt4/ui/video_effects.h:1150
 msgid "Color"
 msgstr "Boja"
 
@@ -7014,7 +7046,7 @@ msgid "Color of the video input."
 msgstr "Boja ulaznog sadržaja video slike."
 
 #: modules/access/v4l.c:117 modules/access/v4l2.c:111
-#: modules/gui/macosx/extended.m:99
+#: modules/gui/macosx/extended.m:99 modules/gui/qt4/ui/video_effects.h:1106
 msgid "Contrast"
 msgstr "Kontrast"
 
@@ -7030,7 +7062,7 @@ msgstr "Prijemnik"
 msgid "Tuner to use, if there are several ones."
 msgstr "Prijemnik koji će se koristiti, ukoliko ih ima više."
 
-#: modules/access/v4l.c:122
+#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:466
 msgid "MJPEG"
 msgstr "MJPEG"
 
@@ -7153,6 +7185,8 @@ msgid "Contrast of the video input (if supported by the v4l2 driver)."
 msgstr "Kontrast ulazne video slike (ako to podržava upravljač v4l2)."
 
 #: modules/access/v4l2.c:114 modules/gui/macosx/extended.m:102
+#: modules/gui/qt4/ui/video_effects.h:1108
+#: modules/gui/qt4/ui/video_effects.h:1137
 msgid "Saturation"
 msgstr "Zasićenost"
 
@@ -7215,6 +7249,7 @@ msgstr ""
 "Ravnoteža plave boje ulazne video slike (ako to podržava upravljač v4l2)"
 
 #: modules/access/v4l2.c:137 modules/gui/macosx/extended.m:100
+#: modules/gui/qt4/ui/video_effects.h:1105
 msgid "Gamma"
 msgstr "Gama"
 
@@ -7530,7 +7565,7 @@ msgstr "ID sustava"
 msgid "Entries"
 msgstr "Unosi"
 
-#: modules/access/vcdx/info.c:75
+#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:421
 msgid "Tracks"
 msgstr "Tragovi"
 
@@ -7698,7 +7733,7 @@ msgstr "Korisničko ime koje će se iziskivati za pristup protoku strujanja."
 
 #: modules/access_output/http.c:68 modules/control/telnet.c:81
 #: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:234
-#: modules/gui/qt4/dialogs/external.cpp:124 modules/misc/audioscrobbler.c:136
+#: modules/gui/qt4/dialogs/external.cpp:125 modules/misc/audioscrobbler.c:136
 #: modules/misc/notify/growl_udp.c:73 modules/stream_out/raop.c:154
 msgid "Password"
 msgstr "Lozinka"
@@ -8692,22 +8727,22 @@ msgstr "Izlaz zvuka PortAudio"
 msgid "5.1"
 msgstr "5.1"
 
-#: modules/audio_output/pulse.c:65 modules/gui/macosx/embeddedwindow.m:76
+#: modules/audio_output/pulse.c:66 modules/gui/macosx/embeddedwindow.m:76
 #: modules/gui/macosx/intf.m:595 modules/gui/macosx/intf.m:596
 #: modules/gui/macosx/intf.m:1992 modules/gui/qt4/dialogs/help.cpp:99
-#: modules/gui/qt4/main_interface.cpp:809
-#: modules/gui/qt4/main_interface.cpp:813
-#: modules/gui/qt4/main_interface.cpp:853
-#: modules/gui/qt4/main_interface.cpp:855
-#: modules/gui/qt4/main_interface.cpp:923
-#: modules/gui/qt4/main_interface.cpp:940
-#: modules/gui/qt4/main_interface.cpp:947
-#: modules/gui/qt4/main_interface.cpp:970
+#: modules/gui/qt4/main_interface.cpp:865
+#: modules/gui/qt4/main_interface.cpp:869
+#: modules/gui/qt4/main_interface.cpp:909
+#: modules/gui/qt4/main_interface.cpp:911
+#: modules/gui/qt4/main_interface.cpp:979
+#: modules/gui/qt4/main_interface.cpp:996
+#: modules/gui/qt4/main_interface.cpp:1003
+#: modules/gui/qt4/main_interface.cpp:1026
 #: modules/video_output/xcb/window.c:319
 msgid "VLC media player"
 msgstr "Medijski izvođač VLC"
 
-#: modules/audio_output/pulse.c:103
+#: modules/audio_output/pulse.c:104
 msgid "Pulseaudio audio output"
 msgstr "Izlaz zvuka za Pulseaudio"
 
@@ -9295,7 +9330,7 @@ msgstr ""
 "Ovdje se ne radi o nekakvoj pogrešci unutar medijskog izvođača VLC.\n"
 "Stoga se u svezi s ovim pitanjem nemojte obraćati projektu The VideoLAN.\n"
 
-#: modules/codec/avcodec/encoder.c:705 modules/codec/avcodec/encoder.c:714
+#: modules/codec/avcodec/encoder.c:707 modules/codec/avcodec/encoder.c:716
 msgid "VLC could not open the encoder."
 msgstr "VLC nije mogao otvoriti kôder."
 
@@ -10160,7 +10195,8 @@ msgid "MP3 fixed point audio encoder"
 msgstr "Kôder zvuka MP3 s uglavljenim zarezom"
 
 #: modules/codec/speex.c:57 modules/codec/speex.c:800
-#: modules/gui/macosx/open.m:209
+#: modules/gui/macosx/open.m:209 modules/gui/qt4/ui/sprefs_video.h:324
+#: modules/gui/qt4/ui/video_effects.h:1149
 msgid "Mode"
 msgstr "Način"
 
@@ -11429,6 +11465,7 @@ msgid "Quiet mode."
 msgstr "Tihi način rada."
 
 #: modules/codec/x264.c:370 modules/gui/macosx/playlistinfo.m:82
+#: modules/gui/qt4/ui/streampanel.h:171
 msgid "Statistics"
 msgstr "Statistike"
 
@@ -12538,11 +12575,11 @@ msgstr ""
 
 #: modules/control/telnet.c:77 modules/gui/macosx/open.m:200
 #: modules/gui/macosx/open.m:202 modules/gui/macosx/output.m:147
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:146
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:198
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:243
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:293
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:386
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:156
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:215
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:260
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:310
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:404
 #: modules/stream_out/rtp.c:112
 msgid "Port"
 msgstr "Port"
@@ -12861,11 +12898,11 @@ msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr ""
 "Port koji će se koristiti za tunelski prolaz RTSP-a i RTP-a putem HTTP-a."
 
-#: modules/demux/live555.cpp:602
+#: modules/demux/live555.cpp:603
 msgid "RTSP authentication"
 msgstr "Ovjeravanje RTSP-a"
 
-#: modules/demux/live555.cpp:603
+#: modules/demux/live555.cpp:604
 msgid "Please enter a valid login name and a password."
 msgstr "Unesite molim valjano prijavno ime i zaporku."
 
@@ -13542,7 +13579,7 @@ msgstr ""
 
 #: modules/demux/ts.c:160
 msgid ""
-"Separate teletex/dvbs pages into independant ES. It can be usefull to turn "
+"Separate teletex/dvbs pages into independent ES. It can be useful to turn "
 "off this option when using stream output."
 msgstr ""
 
@@ -13677,7 +13714,7 @@ msgstr ""
 "potpuno neprozirno)"
 
 #: modules/gui/fbosd.c:118 modules/misc/logger.c:112
-#: modules/video_filter/marq.c:87
+#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1168
 msgid "Text"
 msgstr "Tekst"
 
@@ -13788,6 +13825,7 @@ msgstr ""
 #: modules/misc/freetype.c:92 modules/misc/notify/xosd.c:80
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
+#: modules/gui/qt4/ui/sprefs_subtitles.h:211
 msgid "Font"
 msgstr "Font"
 
@@ -13831,13 +13869,15 @@ msgid "Bookmarks"
 msgstr "Straničnici"
 
 #: modules/gui/macosx/bookmarks.m:88
+#: modules/gui/qt4/ui/podcast_configuration.h:104
+#: modules/gui/qt4/ui/sout.h:331 modules/gui/qt4/ui/vlm.h:300
 msgid "Add"
 msgstr "Dodati"
 
 #: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:642
 #: modules/gui/macosx/simple_prefs.m:246
 #: modules/gui/qt4/components/preferences_widgets.cpp:1206
-#: modules/gui/qt4/dialogs/bookmarks.cpp:47
+#: modules/gui/qt4/dialogs/bookmarks.cpp:47 modules/gui/qt4/ui/vlm.h:301
 msgid "Clear"
 msgstr "Očistiti"
 
@@ -13850,7 +13890,7 @@ msgstr "Uređivanje"
 msgid "Extract"
 msgstr "Izdvajanje"
 
-#: modules/gui/macosx/bookmarks.m:92
+#: modules/gui/macosx/bookmarks.m:92 modules/gui/qt4/ui/open_file.h:224
 msgid "Remove"
 msgstr "Ukloniti"
 
@@ -13996,7 +14036,7 @@ msgid "Step Backward"
 msgstr "Korak natrag"
 
 #: modules/gui/macosx/coredialogs.m:64 modules/gui/macosx/simple_prefs.m:235
-#: modules/gui/qt4/dialogs/external.cpp:119
+#: modules/gui/qt4/dialogs/external.cpp:120
 msgid "User name"
 msgstr "Korisničko ime"
 
@@ -14020,7 +14060,7 @@ msgstr "Premotavanje"
 msgid "Fast Forward"
 msgstr "Brzo naprijed"
 
-#: modules/gui/macosx/equalizer.m:146
+#: modules/gui/macosx/equalizer.m:146 modules/gui/qt4/ui/equalizer.h:128
 msgid "2 Pass"
 msgstr "2 prolaza"
 
@@ -14034,7 +14074,7 @@ msgstr ""
 "Uključivanje ujednačivača. Pojasevi mogu biti postavljeni ručno ili pomoću "
 "prethodno zadanih profila."
 
-#: modules/gui/macosx/equalizer.m:152
+#: modules/gui/macosx/equalizer.m:152 modules/gui/qt4/ui/equalizer.h:130
 msgid "Preamp"
 msgstr "Pretpojačalo"
 
@@ -14056,11 +14096,12 @@ msgstr "Kovrčati"
 
 #: modules/gui/macosx/extended.m:72 modules/meta_engine/id3genres.h:95
 #: modules/video_filter/psychedelic.c:55
+#: modules/gui/qt4/ui/video_effects.h:1143
 msgid "Psychedelic"
 msgstr "Psihodeličnost"
 
 #: modules/gui/macosx/extended.m:73 modules/video_filter/gradient.c:76
-#: modules/video_filter/gradient.c:82
+#: modules/video_filter/gradient.c:82 modules/gui/qt4/ui/video_effects.h:1148
 msgid "Gradient"
 msgstr "Prijelaz bôja"
 
@@ -14092,7 +14133,7 @@ msgstr "Obrezivanje slike"
 msgid "Crops a defined part of the image"
 msgstr "Obrezuje određeni dio slike"
 
-#: modules/gui/macosx/extended.m:83
+#: modules/gui/macosx/extended.m:83 modules/gui/qt4/ui/video_effects.h:1134
 msgid "Invert colors"
 msgstr "Izokrenuti boje"
 
@@ -14633,6 +14674,10 @@ msgstr "Zahvatiti"
 #: modules/gui/qt4/components/preferences_widgets.cpp:299
 #: modules/gui/qt4/components/simple_preferences.cpp:276
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
+#: modules/gui/qt4/ui/open.h:246 modules/gui/qt4/ui/open_disk.h:300
+#: modules/gui/qt4/ui/open_file.h:232 modules/gui/qt4/ui/sprefs_audio.h:412
+#: modules/gui/qt4/ui/sprefs_input.h:308 modules/gui/qt4/ui/sprefs_input.h:317
+#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Browse..."
 msgstr "Pregledati..."
 
@@ -14646,6 +14691,7 @@ msgstr "Istovremeno izvoditi i druge medije"
 
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/macosx/wizard.m:346 modules/gui/macosx/wizard.m:414
+#: modules/gui/qt4/ui/sprefs_interface.h:394
 msgid "Choose..."
 msgstr "Birati..."
 
@@ -14654,7 +14700,7 @@ msgstr "Birati..."
 msgid "Device name"
 msgstr "Naziv uređaja"
 
-#: modules/gui/macosx/open.m:193
+#: modules/gui/macosx/open.m:193 modules/gui/qt4/ui/open_disk.h:298
 msgid "No DVD menus"
 msgstr "Ne koristiti izbornike DVD-a"
 
@@ -14663,7 +14709,7 @@ msgid "VIDEO_TS folder"
 msgstr "Mapa VIDEO_TS"
 
 #: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:739
-#: modules/services_discovery/udev.c:587
+#: modules/services_discovery/udev.c:587 modules/gui/qt4/ui/open_disk.h:292
 msgid "DVD"
 msgstr "DVD"
 
@@ -14706,10 +14752,10 @@ msgid "Protocol"
 msgstr "Protokol"
 
 #: modules/gui/macosx/open.m:211 modules/gui/macosx/output.m:146
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:197
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:292
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:339
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:385
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:214
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:309
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:356
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:403
 msgid "Address"
 msgstr "Adresa"
 
@@ -14807,7 +14853,7 @@ msgstr "FPS"
 msgid "Subtitles encoding"
 msgstr "Kodiranje podnaslova"
 
-#: modules/gui/macosx/open.m:316
+#: modules/gui/macosx/open.m:316 modules/gui/qt4/ui/sprefs_subtitles.h:210
 msgid "Font size"
 msgstr "Veličina fonta"
 
@@ -14824,7 +14870,7 @@ msgid "Subtitle File"
 msgstr "Datoteka podnaslova"
 
 #: modules/gui/macosx/open.m:587 modules/gui/macosx/open.m:953
-#: modules/gui/macosx/open.m:1189
+#: modules/gui/macosx/open.m:1189 modules/gui/qt4/ui/open_file.h:217
 msgid "Open File"
 msgstr "Otvoriti datoteku"
 
@@ -14890,7 +14936,7 @@ msgstr "Odlagalište ulazne slike raw"
 msgid "Encapsulation Method"
 msgstr "Način učahurivanja"
 
-#: modules/gui/macosx/output.m:159
+#: modules/gui/macosx/output.m:159 modules/gui/qt4/ui/sout.h:335
 msgid "Transcoding options"
 msgstr "Mogućnosti prekodiranja"
 
@@ -14899,7 +14945,7 @@ msgstr "Mogućnosti prekodiranja"
 msgid "Bitrate (kb/s)"
 msgstr "Stopa protoka (kb/s)"
 
-#: modules/gui/macosx/output.m:166
+#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:478
 msgid "Scale"
 msgstr "Stupnjevanje"
 
@@ -14907,7 +14953,7 @@ msgstr "Stupnjevanje"
 msgid "Stream Announcing"
 msgstr "Objavljivanje strujanja"
 
-#: modules/gui/macosx/output.m:181
+#: modules/gui/macosx/output.m:181 modules/gui/qt4/ui/sout.h:342
 msgid "SAP announce"
 msgstr "Objava SAP-a"
 
@@ -14938,6 +14984,7 @@ msgstr "Pohraniti datoteku"
 #: modules/gui/macosx/output.m:526 modules/gui/macosx/playlist.m:745
 #: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:310
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
+#: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "Pohraniti"
 
@@ -14958,6 +15005,8 @@ msgid "Save Playlist..."
 msgstr "Pohraniti spisak izvođenja..."
 
 #: modules/gui/macosx/playlist.m:465 modules/gui/qt4/dialogs/bookmarks.cpp:45
+#: modules/gui/qt4/ui/podcast_configuration.h:105
+#: modules/gui/qt4/ui/streampanel.h:173
 msgid "Delete"
 msgstr "Izbrisati"
 
@@ -15140,6 +15189,7 @@ msgid "Reset All"
 msgstr "Vratiti sve na polazno"
 
 #: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:306
+#: modules/gui/qt4/ui/video_effects.h:1111
 msgid "Basic"
 msgstr "Osnovno"
 
@@ -15202,7 +15252,7 @@ msgstr "Ulaz i kôdeki"
 msgid "Input & Codec settings"
 msgstr "Postavke ulaza i kôdeka"
 
-#: modules/gui/macosx/simple_prefs.m:228
+#: modules/gui/macosx/simple_prefs.m:228 modules/gui/qt4/ui/sprefs_audio.h:414
 msgid "Effects"
 msgstr "Učinci"
 
@@ -15214,7 +15264,7 @@ msgstr "Omogućiti zvuk"
 msgid "General Audio"
 msgstr "Opće postavke zvuka"
 
-#: modules/gui/macosx/simple_prefs.m:231
+#: modules/gui/macosx/simple_prefs.m:231 modules/gui/qt4/ui/sprefs_audio.h:419
 msgid "Headphone surround effect"
 msgstr "Učinak surround slušalica"
 
@@ -15263,7 +15313,7 @@ msgstr "Popravak datoteka AVI"
 msgid "Default Caching Level"
 msgstr "Polazna razina međupohrane"
 
-#: modules/gui/macosx/simple_prefs.m:254
+#: modules/gui/macosx/simple_prefs.m:254 modules/gui/qt4/ui/open.h:235
 msgid "Caching"
 msgstr "Međupohranjivanje"
 
@@ -15308,6 +15358,7 @@ msgid "Show Fullscreen Controller"
 msgstr "Prikazati nadzornik cjelozaslonskog prikaza"
 
 #: modules/gui/macosx/simple_prefs.m:270
+#: modules/gui/qt4/ui/sprefs_interface.h:376
 msgid "Privacy / Network Interaction"
 msgstr "Privatnost / Mrežna interakcija"
 
@@ -15324,6 +15375,7 @@ msgid "Default Encoding"
 msgstr "Polazno kodiranje"
 
 #: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/qt4/ui/sprefs_subtitles.h:207
 msgid "Display Settings"
 msgstr "Postavke prikaza"
 
@@ -15353,6 +15405,7 @@ msgstr "Crni zasloni u načinu prikaza preko cijelog zaslona"
 
 #: modules/gui/macosx/simple_prefs.m:292 modules/stream_out/display.c:54
 #: modules/video_filter/deinterlace.c:138
+#: modules/gui/qt4/ui/sprefs_video.h:310
 msgid "Display"
 msgstr "Prikaz"
 
@@ -15364,7 +15417,7 @@ msgstr "Omogućiti video sliku"
 msgid "Output module"
 msgstr "Modul izlaza"
 
-#: modules/gui/macosx/simple_prefs.m:298
+#: modules/gui/macosx/simple_prefs.m:298 modules/gui/qt4/ui/sprefs_video.h:325
 msgid "Video snapshots"
 msgstr "Trenutačne snimke video slike"
 
@@ -15372,15 +15425,15 @@ msgstr "Trenutačne snimke video slike"
 msgid "Folder"
 msgstr "Mapa"
 
-#: modules/gui/macosx/simple_prefs.m:301
+#: modules/gui/macosx/simple_prefs.m:301 modules/gui/qt4/ui/sprefs_video.h:330
 msgid "Format"
 msgstr "Format"
 
-#: modules/gui/macosx/simple_prefs.m:302
+#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Prefix"
 msgstr "Predmetak"
 
-#: modules/gui/macosx/simple_prefs.m:303
+#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:331
 msgid "Sequential numbering"
 msgstr "Slijedno znamenkovanje"
 
@@ -15873,6 +15926,7 @@ msgstr ""
 "Na ovoj stranici može biti zadano još nekoliko dodatnih parametara strujanja."
 
 #: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
+#: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr "Vrijeme opstanka (TTL)"
 
@@ -16122,7 +16176,7 @@ msgid ""
 "panel)."
 msgstr ""
 
-#: modules/gui/hildon/maemo.c:62
+#: modules/gui/hildon/maemo.c:63
 msgid "Maemo hildon interface"
 msgstr "Sučelje Maemo hildon"
 
@@ -16782,11 +16836,11 @@ msgstr "Izvedba"
 msgid "buffers"
 msgstr "Izgubljeno blokova"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:386
+#: modules/gui/qt4/components/interface_widgets.cpp:293
 msgid "Current visualization"
 msgstr "Tekuća vizualizacija"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:425
+#: modules/gui/qt4/components/interface_widgets.cpp:332
 #, fuzzy
 msgid ""
 "Current playback speed: %1\n"
@@ -16795,20 +16849,20 @@ msgstr ""
 "Tekuća brzina izvođenja.\n"
 "Kliknite za podešavanje"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:496
+#: modules/gui/qt4/components/interface_widgets.cpp:403
 msgid "Revert to normal play speed"
 msgstr "Povratak na uobičajenu brzinu izvođenja"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:570
+#: modules/gui/qt4/components/interface_widgets.cpp:477
 msgid "Download cover art"
 msgstr "Preuzeti omotne slike albuma"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:613
+#: modules/gui/qt4/components/interface_widgets.cpp:520
 #, fuzzy
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "Sklopka između proteklog i preostalog vremena"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:615
+#: modules/gui/qt4/components/interface_widgets.cpp:522
 #, fuzzy
 msgid "Double click to jump to a chosen time position"
 msgstr "Dvoklik za dobivanje podataka o mediju"
@@ -16833,6 +16887,7 @@ msgid "File names:"
 msgstr "Nazivi datoteka:"
 
 #: modules/gui/qt4/components/open_panels.cpp:149
+#: modules/gui/qt4/ui/sprefs_interface.h:382
 msgid "Filter:"
 msgstr "Filtar:"
 
@@ -17139,11 +17194,11 @@ msgstr "Izbrisati odabrani profil"
 msgid "Create a new profile"
 msgstr "Stvoriti novi profil"
 
-#: modules/gui/qt4/components/sout/profile_selector.cpp:400
+#: modules/gui/qt4/components/sout/profile_selector.cpp:402
 msgid " Profile Name Missing"
 msgstr "Nedostaje naziv profila"
 
-#: modules/gui/qt4/components/sout/profile_selector.cpp:401
+#: modules/gui/qt4/components/sout/profile_selector.cpp:403
 msgid "You must set a name for the profile."
 msgstr "Morate zadati naziv za taj profil."
 
@@ -17157,6 +17212,7 @@ msgid "File/Folder"
 msgstr "Mapa"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:46
+#: modules/gui/qt4/ui/sout.h:328
 msgid "Source"
 msgstr "Izvor"
 
@@ -17176,58 +17232,60 @@ msgstr "Taj modul prekodirano strujanje upisuje u datoteku."
 msgid "Filename"
 msgstr "Naziv datoteke"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:128
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:138
 #: modules/gui/qt4/dialogs/convert.cpp:111
 msgid "Save file..."
 msgstr "Pohraniti datoteku..."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:129
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:139
 #: modules/gui/qt4/dialogs/convert.cpp:113
-msgid "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
+#, fuzzy
+msgid ""
+"Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 msgstr "Spremnici (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:141
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:151
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr "Taj modul putem HTTP-a prekodirano strujanje odvodi u mrežu."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:145
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:242
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:155
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:259
 msgid "Path"
 msgstr "Putanja"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:193
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:210
 msgid ""
 "This module outputs the transcoded stream to a network  via the mms protocol."
 msgstr "Taj modul prekodirano strujanje putem protokola MMS odvodi u mrežu."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:238
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:255
 #, fuzzy
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr "Taj modul prekodirano strujanje putem RTP-a  odvodi u mrežu."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:288
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:305
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr "Taj modul prekodirano strujanje putem UDP-a odvodi u mrežu."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:335
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:352
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr "Taj modul prekodirano strujanje putem RTP-a  odvodi u mrežu."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:340
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:357
 #, fuzzy
 msgid "Base port"
 msgstr "Port CDDB-a"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:381
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:399
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr ""
 "Taj modul prekodirano strujanje odvodi na neki od poslužitelja Icecasta."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:402
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:420
 msgid "Mount Point"
 msgstr "Točka pripajanja"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:403
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:421
 msgid "Login:pass"
 msgstr "Prijava:lozinka"
 
@@ -17273,6 +17331,7 @@ msgid "Convert"
 msgstr "Pretvoriti"
 
 #: modules/gui/qt4/dialogs/convert.cpp:58
+#: modules/gui/qt4/ui/sprefs_audio.h:411
 msgid "Destination file:"
 msgstr "Odredišna datoteka:"
 
@@ -17363,6 +17422,7 @@ msgstr ""
 "skoro nikada ne pristupa mreži.</p>\n"
 
 #: modules/gui/qt4/dialogs/firstrun.cpp:83
+#: modules/gui/qt4/ui/open_capture.h:103 modules/gui/qt4/ui/sout.h:347
 msgid "Options"
 msgstr "Mogućnosti"
 
@@ -17716,7 +17776,7 @@ msgstr ""
 "Jeste li sigurni da želite vratiti Vaše polazne prilagodbe medijskog "
 "izvođača VLC?"
 
-#: modules/gui/qt4/dialogs/sout.cpp:42
+#: modules/gui/qt4/dialogs/sout.cpp:42 modules/gui/qt4/ui/sout.h:326
 msgid "Stream Output"
 msgstr "Izlazni sadržaj strujanja"
 
@@ -17816,7 +17876,7 @@ msgstr "Izbrisati tekući profil"
 msgid "Cl&ose"
 msgstr "Za&tvoriti"
 
-#: modules/gui/qt4/dialogs/toolbar.cpp:217
+#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:455
 msgid "Profile Name"
 msgstr "Naziv profila"
 
@@ -17881,6 +17941,7 @@ msgid "Repeat delay:"
 msgstr "Odgoda opetovanja:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:112
+#: modules/gui/qt4/ui/sprefs_interface.h:379
 msgid " days"
 msgstr "dana"
 
@@ -17967,11 +18028,11 @@ msgstr "Datoteke podnaslova"
 msgid "All Files"
 msgstr "Sve datoteke"
 
-#: modules/gui/qt4/main_interface.cpp:924
+#: modules/gui/qt4/main_interface.cpp:980
 msgid "Control menu for the player"
 msgstr "Izbornik upravljanja za izvođački program"
 
-#: modules/gui/qt4/main_interface.cpp:967
+#: modules/gui/qt4/main_interface.cpp:1023
 msgid "Paused"
 msgstr "Stanka"
 
@@ -18746,6 +18807,7 @@ msgid "Gospel"
 msgstr "Gospel"
 
 #: modules/meta_engine/id3genres.h:67 modules/video_filter/noise.c:52
+#: modules/gui/qt4/ui/video_effects.h:1144
 msgid "Noise"
 msgstr "Šum"
 
@@ -20132,6 +20194,7 @@ msgid "My Pictures"
 msgstr "Podslike"
 
 #: modules/services_discovery/podcast.c:58
+#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "Podcast URLs list"
 msgstr "Spisak adresa podcasta"
 
@@ -20585,6 +20648,7 @@ msgstr ""
 "kanite primijeniti filtar video slike Alphamask ili Bluescreen."
 
 #: modules/stream_out/mosaic_bridge.c:128 modules/video_filter/mosaic.c:88
+#: modules/gui/qt4/ui/video_effects.h:1176
 msgid "Transparency"
 msgstr "Prozirnost"
 
@@ -20992,7 +21056,7 @@ msgstr ""
 msgid "Standard stream output"
 msgstr "Standardni izlaz strujanja"
 
-#: modules/stream_out/switcher.c:90
+#: modules/stream_out/switcher.c:90 modules/gui/qt4/ui/sprefs_input.h:314
 msgid "Files"
 msgstr "Datoteke"
 
@@ -21319,7 +21383,7 @@ msgstr "Pretvaranja SSE2 iz"
 msgid "AltiVec conversions from "
 msgstr "Pretvaranja AltiVec iz"
 
-#: modules/video_filter/adjust.c:64
+#: modules/video_filter/adjust.c:64 modules/gui/qt4/ui/video_effects.h:1110
 msgid "Brightness threshold"
 msgstr "Prag svjetloće"
 
@@ -21375,7 +21439,7 @@ msgstr "Zadajte gama slike između 0.01 i 10. Polazno je na 1."
 msgid "Image properties filter"
 msgstr "Filtar svojstava slike"
 
-#: modules/video_filter/adjust.c:81
+#: modules/video_filter/adjust.c:81 modules/gui/qt4/ui/video_effects.h:1104
 msgid "Image adjust"
 msgstr "Podešavanje slike"
 
@@ -21441,102 +21505,115 @@ msgid ""
 "delegate processing to the external process - with more options"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:152
+#: modules/video_filter/atmo/atmo.cpp:153
 msgid "AtmoWin Software"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:154
+#: modules/video_filter/atmo/atmo.cpp:155
 #, fuzzy
 msgid "Classic AtmoLight"
 msgstr "AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:155
+#: modules/video_filter/atmo/atmo.cpp:156
 #, fuzzy
 msgid "Quattro AtmoLight"
 msgstr "AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:156
+#: modules/video_filter/atmo/atmo.cpp:157
 msgid "DMX"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:157
+#: modules/video_filter/atmo/atmo.cpp:158
 #, fuzzy
 msgid "MoMoLight"
 msgstr "AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:160
+#: modules/video_filter/atmo/atmo.cpp:159
+msgid "fnordlicht"
+msgstr ""
+
+#: modules/video_filter/atmo/atmo.cpp:162
 #, fuzzy
 msgid "Count of AtmoLight channels"
 msgstr "Broj izlaznih kanala"
 
-#: modules/video_filter/atmo/atmo.cpp:161
+#: modules/video_filter/atmo/atmo.cpp:163
 msgid "How many AtmoLight channels, should be emulated with that DMX device"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:163
+#: modules/video_filter/atmo/atmo.cpp:165
 msgid "DMX address for each channel"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:164
+#: modules/video_filter/atmo/atmo.cpp:166
 msgid ""
 "Define here the DMX base address for each channel use , or ; to seperate the "
 "values"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:167
+#: modules/video_filter/atmo/atmo.cpp:169
 #, fuzzy
 msgid "Count of channels"
 msgstr "Broj kanala"
 
-#: modules/video_filter/atmo/atmo.cpp:168
+#: modules/video_filter/atmo/atmo.cpp:170
 msgid "Depending on your MoMoLight hardware choose 3 or 4 channels"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:178
+#: modules/video_filter/atmo/atmo.cpp:173
+#, fuzzy
+msgid "Count of fnordlicht's"
+msgstr "Broj kanala"
+
+#: modules/video_filter/atmo/atmo.cpp:174
+msgid "Depending on the amount your fnordlicht hardware choose 1 to 4 channels"
+msgstr ""
+
+#: modules/video_filter/atmo/atmo.cpp:185
 msgid "Save Debug Frames"
 msgstr "Pohraniti kadrove debuga"
 
-#: modules/video_filter/atmo/atmo.cpp:179
+#: modules/video_filter/atmo/atmo.cpp:186
 msgid "Write every 128th miniframe to a folder."
 msgstr "Pohrana svakog 128-og minijaturnog kadra u mapu."
 
-#: modules/video_filter/atmo/atmo.cpp:180
+#: modules/video_filter/atmo/atmo.cpp:187
 msgid "Debug Frame Folder"
 msgstr "Mapa debuga kadrova"
 
-#: modules/video_filter/atmo/atmo.cpp:181
+#: modules/video_filter/atmo/atmo.cpp:188
 msgid "The path where the debugframes should be saved"
 msgstr "Putanja kamo kadrovi debuga trebaju biti pohranjivani"
 
-#: modules/video_filter/atmo/atmo.cpp:185
+#: modules/video_filter/atmo/atmo.cpp:192
 msgid "Extracted Image Width"
 msgstr "Širina izdvojenih slîka"
 
-#: modules/video_filter/atmo/atmo.cpp:186
+#: modules/video_filter/atmo/atmo.cpp:193
 msgid "The width of the mini image for further processing (64 is default)"
 msgstr "Širina izdvojene minijaturne slike za daljnju obradu (polazno je 48)"
 
-#: modules/video_filter/atmo/atmo.cpp:189
+#: modules/video_filter/atmo/atmo.cpp:196
 msgid "Extracted Image Height"
 msgstr "Visina izdvojenih slîka"
 
-#: modules/video_filter/atmo/atmo.cpp:190
+#: modules/video_filter/atmo/atmo.cpp:197
 msgid "The height of the mini image for further processing (48 is default)"
 msgstr "Visina izdvojene minijaturne slike za daljnju obradu (polazno je 48)"
 
-#: modules/video_filter/atmo/atmo.cpp:193
+#: modules/video_filter/atmo/atmo.cpp:200
 msgid "Mark analyzed pixels"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:194
+#: modules/video_filter/atmo/atmo.cpp:201
 msgid "makes the sample grid visible on screen as white pixels"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:197
+#: modules/video_filter/atmo/atmo.cpp:204
 msgid "Color when paused"
 msgstr "Boja tijekom stanke"
 
-#: modules/video_filter/atmo/atmo.cpp:198
+#: modules/video_filter/atmo/atmo.cpp:205
 msgid ""
 "Set the color to show if the user pauses the video. (Have light to get "
 "another beer?)"
@@ -21544,70 +21621,70 @@ msgstr ""
 "Postavljanje boje koja će se prikazivati ukoliko korisnik napravi stanku "
 "video prikaza. (Ima li svjetla za donijeti još jedno pivo?)"
 
-#: modules/video_filter/atmo/atmo.cpp:201
+#: modules/video_filter/atmo/atmo.cpp:208
 msgid "Pause-Red"
 msgstr "Stanka - crvena"
 
-#: modules/video_filter/atmo/atmo.cpp:202
+#: modules/video_filter/atmo/atmo.cpp:209
 msgid "Red component of the pause color"
 msgstr "Crvena sastavnica boje stanke"
 
-#: modules/video_filter/atmo/atmo.cpp:203
+#: modules/video_filter/atmo/atmo.cpp:210
 msgid "Pause-Green"
 msgstr "Stanka - zelena"
 
-#: modules/video_filter/atmo/atmo.cpp:204
+#: modules/video_filter/atmo/atmo.cpp:211
 msgid "Green component of the pause color"
 msgstr "Zelena sastavnica boje stanke"
 
-#: modules/video_filter/atmo/atmo.cpp:205
+#: modules/video_filter/atmo/atmo.cpp:212
 msgid "Pause-Blue"
 msgstr "Stanka - plava"
 
-#: modules/video_filter/atmo/atmo.cpp:206
+#: modules/video_filter/atmo/atmo.cpp:213
 msgid "Blue component of the pause color"
 msgstr "Plava sastavnica boje stanke"
 
-#: modules/video_filter/atmo/atmo.cpp:207
+#: modules/video_filter/atmo/atmo.cpp:214
 msgid "Pause-Fadesteps"
 msgstr "Stanka - Prijelazni koraci prigušivanja"
 
-#: modules/video_filter/atmo/atmo.cpp:208
+#: modules/video_filter/atmo/atmo.cpp:215
 msgid ""
 "Number of steps to change current color to pause color (each step takes 40ms)"
 msgstr ""
 "Broj prijelaznih koraka za promjenu tekuće boje u boju stanke (svaki korak "
 "traje 40 ms)"
 
-#: modules/video_filter/atmo/atmo.cpp:211
+#: modules/video_filter/atmo/atmo.cpp:218
 msgid "End-Red"
 msgstr "Svršetak - crvena"
 
-#: modules/video_filter/atmo/atmo.cpp:212
+#: modules/video_filter/atmo/atmo.cpp:219
 msgid "Red component of the shutdown color"
 msgstr "Crvena sastavnica boje spuštanja programa"
 
-#: modules/video_filter/atmo/atmo.cpp:213
+#: modules/video_filter/atmo/atmo.cpp:220
 msgid "End-Green"
 msgstr "Svršetak - zelena"
 
-#: modules/video_filter/atmo/atmo.cpp:214
+#: modules/video_filter/atmo/atmo.cpp:221
 msgid "Green component of the shutdown color"
 msgstr "Zelena sastavnica boje spuštanja programa"
 
-#: modules/video_filter/atmo/atmo.cpp:215
+#: modules/video_filter/atmo/atmo.cpp:222
 msgid "End-Blue"
 msgstr "Svršetak - plava"
 
-#: modules/video_filter/atmo/atmo.cpp:216
+#: modules/video_filter/atmo/atmo.cpp:223
 msgid "Blue component of the shutdown color"
 msgstr "Plava sastavnica boje spuštanja programa"
 
-#: modules/video_filter/atmo/atmo.cpp:217
+#: modules/video_filter/atmo/atmo.cpp:224
 msgid "End-Fadesteps"
 msgstr "Svršetak - Prijelazni koraci prigušivanja"
 
-#: modules/video_filter/atmo/atmo.cpp:218
+#: modules/video_filter/atmo/atmo.cpp:225
 msgid ""
 "Number of steps to change current color to end color for dimming up the "
 "light in cinema style... (each step takes 40ms)"
@@ -21616,84 +21693,84 @@ msgstr ""
 "programa za prigušivanje svjetla kao u kino dvorani... (svaki korak traje 40 "
 "ms)"
 
-#: modules/video_filter/atmo/atmo.cpp:222
+#: modules/video_filter/atmo/atmo.cpp:229
 #, fuzzy
 msgid "Number of zones on top"
 msgstr "Broj klonova"
 
-#: modules/video_filter/atmo/atmo.cpp:223
+#: modules/video_filter/atmo/atmo.cpp:230
 #, fuzzy
 msgid "Number of zones on the top of the screen"
 msgstr "Broj pixela koji će se obrezivati s vrha slike."
 
-#: modules/video_filter/atmo/atmo.cpp:224
+#: modules/video_filter/atmo/atmo.cpp:231
 #, fuzzy
 msgid "Number of zones on bottom"
 msgstr "Broj klonova"
 
-#: modules/video_filter/atmo/atmo.cpp:225
+#: modules/video_filter/atmo/atmo.cpp:232
 #, fuzzy
 msgid "Number of zones on the bottom of the screen"
 msgstr "Broj pixela koji će se obrezivati s dna slike."
 
-#: modules/video_filter/atmo/atmo.cpp:226
+#: modules/video_filter/atmo/atmo.cpp:233
 msgid "Zones on left / right side"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:227
+#: modules/video_filter/atmo/atmo.cpp:234
 msgid "left and right side having allways the same number of zones"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:229
+#: modules/video_filter/atmo/atmo.cpp:236
 msgid "Calculate a average zone"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:230
+#: modules/video_filter/atmo/atmo.cpp:237
 msgid ""
 "it contains the average of all pixels in the sample image (only useful for "
 "single channel AtmoLight)"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:235
+#: modules/video_filter/atmo/atmo.cpp:242
 msgid "Use Software White adjust"
 msgstr "Koristiti programsku prilagodbu bôja"
 
-#: modules/video_filter/atmo/atmo.cpp:236
+#: modules/video_filter/atmo/atmo.cpp:243
 msgid ""
 "Should the buildin driver do a white adjust or your LED stripes? recommend."
 msgstr ""
 "Treba li ugrađeni upravljač sâm podesiti vrijednosti bijelog svjetla ili "
 "prûga Vašeg LED-a? Preporučljivo."
 
-#: modules/video_filter/atmo/atmo.cpp:238
+#: modules/video_filter/atmo/atmo.cpp:245
 msgid "White Red"
 msgstr "Stanka - crveno"
 
-#: modules/video_filter/atmo/atmo.cpp:239
+#: modules/video_filter/atmo/atmo.cpp:246
 msgid "Red value of a pure white on your LED stripes."
 msgstr "Crvena vrijednost boje stanke na prugama Vašeg LED-a."
 
-#: modules/video_filter/atmo/atmo.cpp:241
+#: modules/video_filter/atmo/atmo.cpp:248
 msgid "White Green"
 msgstr "Stanka - zeleno"
 
-#: modules/video_filter/atmo/atmo.cpp:242
+#: modules/video_filter/atmo/atmo.cpp:249
 msgid "Green value of a pure white on your LED stripes."
 msgstr "Zelena vrijednost boje stanke na prugama Vašeg LED-a."
 
-#: modules/video_filter/atmo/atmo.cpp:244
+#: modules/video_filter/atmo/atmo.cpp:251
 msgid "White Blue"
 msgstr "Stanka - plavo"
 
-#: modules/video_filter/atmo/atmo.cpp:245
+#: modules/video_filter/atmo/atmo.cpp:252
 msgid "Blue value of a pure white on your LED stripes."
 msgstr "Plava vrijednost boje stanke na prugama Vašeg LED-a."
 
-#: modules/video_filter/atmo/atmo.cpp:248
+#: modules/video_filter/atmo/atmo.cpp:255
 msgid "Serial Port/Device"
 msgstr "Serijski port/uređaj"
 
-#: modules/video_filter/atmo/atmo.cpp:249
+#: modules/video_filter/atmo/atmo.cpp:256
 msgid ""
 "Name of the serial port where the AtmoLight controller is attached to.\n"
 "On Windows usually something like COM1 or COM2. On Linux /dev/ttyS01 f.e."
@@ -21702,11 +21779,11 @@ msgstr ""
 "Pod Windowsima je to obično nešto poput COM1 ili COM2. Pod Linuxom je to "
 "primjerice /dev/ttyS01."
 
-#: modules/video_filter/atmo/atmo.cpp:254
+#: modules/video_filter/atmo/atmo.cpp:261
 msgid "Edge Weightning"
 msgstr "Pritega rubova"
 
-#: modules/video_filter/atmo/atmo.cpp:255
+#: modules/video_filter/atmo/atmo.cpp:262
 msgid ""
 "Increasing this value will result in color more depending on the border of "
 "the frame."
@@ -21714,15 +21791,15 @@ msgstr ""
 "Povećavanje ove vrijednosti će imati ishod u bojama, koje su više ovisne o "
 "rubovima okvira."
 
-#: modules/video_filter/atmo/atmo.cpp:258
+#: modules/video_filter/atmo/atmo.cpp:265
 msgid "Overall brightness of your LED stripes"
 msgstr "Sveukupna svjetloća prûga Vašeg LED-a"
 
-#: modules/video_filter/atmo/atmo.cpp:259
+#: modules/video_filter/atmo/atmo.cpp:266
 msgid "Darkness Limit"
 msgstr "Granica tamnosti"
 
-#: modules/video_filter/atmo/atmo.cpp:260
+#: modules/video_filter/atmo/atmo.cpp:267
 msgid ""
 "Pixels with a saturation lower than this will be ignored. Should be greater "
 "than one for letterboxed videos."
@@ -21730,73 +21807,74 @@ msgstr ""
 "Pixeli sa zasićenošću nižom od ove će biti zanemarivani. Za prikaze video "
 "snimki iz poštanskog sandučića bi trebali biti veći od jedan."
 
-#: modules/video_filter/atmo/atmo.cpp:263
+#: modules/video_filter/atmo/atmo.cpp:270
 msgid "Hue windowing"
 msgstr "Ton boje okvîra okna"
 
-#: modules/video_filter/atmo/atmo.cpp:264
-#: modules/video_filter/atmo/atmo.cpp:266
+#: modules/video_filter/atmo/atmo.cpp:271
+#: modules/video_filter/atmo/atmo.cpp:273
 msgid "Used for statistics."
 msgstr "Koristi se za statistike."
 
-#: modules/video_filter/atmo/atmo.cpp:265
+#: modules/video_filter/atmo/atmo.cpp:272
 msgid "Sat windowing"
 msgstr "Zasićenost boje okvîra okna"
 
-#: modules/video_filter/atmo/atmo.cpp:268
+#: modules/video_filter/atmo/atmo.cpp:275
+#: modules/gui/qt4/ui/video_effects.h:1159
 msgid "Filter length (ms)"
 msgstr "Duljina filtra (ms)"
 
-#: modules/video_filter/atmo/atmo.cpp:269
+#: modules/video_filter/atmo/atmo.cpp:276
 msgid ""
 "Time it takes until a color is completely changed. This prevents flickering."
 msgstr ""
 "Vrijeme trajanja dok se boja potpuno ne izmijeni. To sprječava titranje."
 
-#: modules/video_filter/atmo/atmo.cpp:271
+#: modules/video_filter/atmo/atmo.cpp:278
 msgid "Filter threshold"
 msgstr "Filtar ograničenja"
 
-#: modules/video_filter/atmo/atmo.cpp:272
+#: modules/video_filter/atmo/atmo.cpp:279
 msgid "How much a color has to be changed for an immediate color change."
 msgstr "Koliko boje treba biti izmijenjeno za neposrednu izmjenu bôja."
 
-#: modules/video_filter/atmo/atmo.cpp:274
+#: modules/video_filter/atmo/atmo.cpp:281
 msgid "Filter Smoothness (in %)"
 msgstr "Filtar glatkosti (u %)"
 
-#: modules/video_filter/atmo/atmo.cpp:275
+#: modules/video_filter/atmo/atmo.cpp:282
 msgid "Filter Smoothness"
 msgstr "Filtar glatkosti"
 
-#: modules/video_filter/atmo/atmo.cpp:277
+#: modules/video_filter/atmo/atmo.cpp:284
 #, fuzzy
 msgid "Output Color filter mode"
 msgstr "Modul filtra izlazne video slike"
 
-#: modules/video_filter/atmo/atmo.cpp:278
+#: modules/video_filter/atmo/atmo.cpp:285
 msgid ""
 "defines the how the output color should be calculated based on previous color"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:287
+#: modules/video_filter/atmo/atmo.cpp:294
 msgid "No Filtering"
 msgstr "Bez filtriranja"
 
-#: modules/video_filter/atmo/atmo.cpp:288
+#: modules/video_filter/atmo/atmo.cpp:295
 msgid "Combined"
 msgstr "Kombinirano"
 
-#: modules/video_filter/atmo/atmo.cpp:289
+#: modules/video_filter/atmo/atmo.cpp:296
 msgid "Percent"
 msgstr "Postotak"
 
-#: modules/video_filter/atmo/atmo.cpp:292
+#: modules/video_filter/atmo/atmo.cpp:299
 #, fuzzy
 msgid "Frame delay (ms)"
 msgstr "Zaostajanje kadrova"
 
-#: modules/video_filter/atmo/atmo.cpp:293
+#: modules/video_filter/atmo/atmo.cpp:300
 msgid ""
 "Helps to get the video output and the light effects in sync. Values around "
 "20ms should do the trick."
@@ -21804,71 +21882,71 @@ msgstr ""
 "Pomaže usklađivanje izlaza slike i svjetlosnih učinaka. S vrijednostima oko "
 "20 ms bi to trebalo uspjeti."
 
-#: modules/video_filter/atmo/atmo.cpp:298
+#: modules/video_filter/atmo/atmo.cpp:305
 #, fuzzy
 msgid "Channel 0: summary"
 msgstr "Kanal ukupno"
 
-#: modules/video_filter/atmo/atmo.cpp:299
+#: modules/video_filter/atmo/atmo.cpp:306
 #, fuzzy
 msgid "Channel 1: left"
 msgstr "Lijevi kanal"
 
-#: modules/video_filter/atmo/atmo.cpp:300
+#: modules/video_filter/atmo/atmo.cpp:307
 #, fuzzy
 msgid "Channel 2: right"
 msgstr "Desni kanal"
 
-#: modules/video_filter/atmo/atmo.cpp:301
+#: modules/video_filter/atmo/atmo.cpp:308
 #, fuzzy
 msgid "Channel 3: top"
 msgstr "Vrh kanala"
 
-#: modules/video_filter/atmo/atmo.cpp:302
+#: modules/video_filter/atmo/atmo.cpp:309
 #, fuzzy
 msgid "Channel 4: bottom"
 msgstr "Dno kanala"
 
-#: modules/video_filter/atmo/atmo.cpp:304
+#: modules/video_filter/atmo/atmo.cpp:311
 #, fuzzy
 msgid "Maps the hardware channel X to logical zone Y to fix wrong wiring :-)"
 msgstr ""
 "Pridružuje očvrsnički kanal X logičkom kanalu Y da bi ispravio pogrešno "
 "užičavanje :-)"
 
-#: modules/video_filter/atmo/atmo.cpp:315
+#: modules/video_filter/atmo/atmo.cpp:322
 msgid "disabled"
 msgstr "isključeno"
 
-#: modules/video_filter/atmo/atmo.cpp:316
+#: modules/video_filter/atmo/atmo.cpp:323
 #, fuzzy
 msgid "Zone 4:summary"
 msgstr "Kanal ukupno"
 
-#: modules/video_filter/atmo/atmo.cpp:317
+#: modules/video_filter/atmo/atmo.cpp:324
 #, fuzzy
 msgid "Zone 3:left"
 msgstr "Lijevi kanal"
 
-#: modules/video_filter/atmo/atmo.cpp:318
+#: modules/video_filter/atmo/atmo.cpp:325
 #, fuzzy
 msgid "Zone 1:right"
 msgstr "Desni kanal"
 
-#: modules/video_filter/atmo/atmo.cpp:319
+#: modules/video_filter/atmo/atmo.cpp:326
 msgid "Zone 0:top"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:320
+#: modules/video_filter/atmo/atmo.cpp:327
 #, fuzzy
 msgid "Zone 2:bottom"
 msgstr "Dno kanala"
 
-#: modules/video_filter/atmo/atmo.cpp:322
+#: modules/video_filter/atmo/atmo.cpp:329
 msgid "Channel / Zone Assignment"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:323
+#: modules/video_filter/atmo/atmo.cpp:330
 msgid ""
 "for devices with more than five channels / zones write down here for each "
 "channel the zone number to show and seperate the values with , or ; and use "
@@ -21878,55 +21956,55 @@ msgid ""
 "classic AtmoLight would be -1,3,2,1,0"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:333
+#: modules/video_filter/atmo/atmo.cpp:340
 #, fuzzy
 msgid "Zone 0: Top gradient"
 msgstr "Gornji prijelaz"
 
-#: modules/video_filter/atmo/atmo.cpp:334
+#: modules/video_filter/atmo/atmo.cpp:341
 #, fuzzy
 msgid "Zone 1: Right gradient"
 msgstr "Desni prijelaz"
 
-#: modules/video_filter/atmo/atmo.cpp:335
+#: modules/video_filter/atmo/atmo.cpp:342
 #, fuzzy
 msgid "Zone 2: Bottom gradient"
 msgstr "Donji prijelaz"
 
-#: modules/video_filter/atmo/atmo.cpp:336
+#: modules/video_filter/atmo/atmo.cpp:343
 #, fuzzy
 msgid "Zone 3: Left gradient"
 msgstr "Lijevi prijelaz"
 
-#: modules/video_filter/atmo/atmo.cpp:337
+#: modules/video_filter/atmo/atmo.cpp:344
 #, fuzzy
 msgid "Zone 4: Summary gradient"
 msgstr "Prijelaz bôja ukupno"
 
-#: modules/video_filter/atmo/atmo.cpp:338
+#: modules/video_filter/atmo/atmo.cpp:345
 msgid ""
 "Defines a small bitmap with 64x48 pixels, containing a grayscale gradient"
 msgstr ""
 "Određuje mali bitski raspored s 64x48 pixela, koji sadrži prijelaze "
 "stupnjevanja sive boje"
 
-#: modules/video_filter/atmo/atmo.cpp:341
+#: modules/video_filter/atmo/atmo.cpp:348
 #, fuzzy
 msgid "Gradient bitmap searchpath"
 msgstr "Vrsta prijelaza bôja slike"
 
-#: modules/video_filter/atmo/atmo.cpp:342
+#: modules/video_filter/atmo/atmo.cpp:349
 msgid ""
 "Now prefered option to assign gradient bitmaps, put them as zone_0.bmp, "
 "zone_1.bmp etc. into one folder and set the foldername here"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:347
+#: modules/video_filter/atmo/atmo.cpp:354
 #, fuzzy
 msgid "Filename of AtmoWin*.exe"
 msgstr "Naziv datoteke AtmoWinA.exe"
 
-#: modules/video_filter/atmo/atmo.cpp:348
+#: modules/video_filter/atmo/atmo.cpp:355
 msgid ""
 "if you want the AtmoLight control software to be launched by VLC, enter the "
 "complete path of AtmoWinA.exe here."
@@ -21934,53 +22012,60 @@ msgstr ""
 "Ukoliko želite da  VLC pokrene AthmoLightove nadzorne programe, onda unesite "
 "ovdje potpunu putanju datoteke AtmoWinA.exe."
 
-#: modules/video_filter/atmo/atmo.cpp:359
+#: modules/video_filter/atmo/atmo.cpp:366
 msgid "AtmoLight Filter"
 msgstr "Filtar AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:361
+#: modules/video_filter/atmo/atmo.cpp:368
+#: modules/gui/qt4/ui/video_effects.h:1153
+#: modules/gui/qt4/ui/video_effects.h:1162
 msgid "AtmoLight"
 msgstr "AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:368
+#: modules/video_filter/atmo/atmo.cpp:375
 msgid "Choose Devicetype and Connection"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:393
+#: modules/video_filter/atmo/atmo.cpp:400
 msgid "Illuminate the room with this color on pause"
 msgstr "Prostor tijekom stanke osvijetliti ovom bojom"
 
-#: modules/video_filter/atmo/atmo.cpp:409
+#: modules/video_filter/atmo/atmo.cpp:416
 msgid "Illuminate the room with this color on shutdown"
 msgstr "Prostor pri spuštanju programa osvijetliti ovom bojom"
 
-#: modules/video_filter/atmo/atmo.cpp:420
+#: modules/video_filter/atmo/atmo.cpp:427
 #, fuzzy
 msgid "DMX options"
 msgstr "Mogućnosti"
 
-#: modules/video_filter/atmo/atmo.cpp:426
+#: modules/video_filter/atmo/atmo.cpp:433
 #, fuzzy
 msgid "MoMoLight options"
 msgstr "Mogućnosti prilagođavanja"
 
-#: modules/video_filter/atmo/atmo.cpp:468
+#: modules/video_filter/atmo/atmo.cpp:440
+#, fuzzy
+msgid "fnordlicht options"
+msgstr "Mogućnosti prilagođavanja"
+
+#: modules/video_filter/atmo/atmo.cpp:482
 msgid "Zone Layout for the build-in Atmo"
 msgstr ""
 
-#: modules/video_filter/atmo/atmo.cpp:484
+#: modules/video_filter/atmo/atmo.cpp:498
 msgid "Settings for the built-in Live Video Processor only"
 msgstr "Postavke samo za ugrađeni procesor video prikaza u živo"
 
-#: modules/video_filter/atmo/atmo.cpp:521
+#: modules/video_filter/atmo/atmo.cpp:535
 msgid "Change channel assignment (fixes wrong wiring)"
 msgstr "Promjena kanalskog usmjerenja (ispravlja pogrešno užičavanje)"
 
-#: modules/video_filter/atmo/atmo.cpp:554
+#: modules/video_filter/atmo/atmo.cpp:568
 msgid "Adjust the white light to your LED stripes"
 msgstr "Prilagodite vrijednosti bijelog svjetla prugama Vašeg LED-a"
 
-#: modules/video_filter/atmo/atmo.cpp:576
+#: modules/video_filter/atmo/atmo.cpp:590
 msgid "Change gradients"
 msgstr "Izmjena prijelaza bôja"
 
@@ -22184,7 +22269,7 @@ msgstr "Filtar valovitosti slike"
 msgid "Video filtering using a chain of video filter modules"
 msgstr "Filtriranje video snimke pomoću lanca modula za filtriranje slike"
 
-#: modules/video_filter/clone.c:39
+#: modules/video_filter/clone.c:39 modules/gui/qt4/ui/video_effects.h:1173
 msgid "Number of clones"
 msgstr "Broj klonova"
 
@@ -22212,7 +22297,7 @@ msgstr ""
 msgid "Clone video filter"
 msgstr "Filtar kloniranja slike"
 
-#: modules/video_filter/clone.c:57
+#: modules/video_filter/clone.c:57 modules/gui/qt4/ui/video_effects.h:1172
 msgid "Clone"
 msgstr "Kloniranje"
 
@@ -22238,6 +22323,7 @@ msgid "Color threshold filter"
 msgstr "Filtar ograničenja boje"
 
 #: modules/video_filter/colorthres.c:70
+#: modules/gui/qt4/ui/video_effects.h:1135
 msgid "Color threshold"
 msgstr "Prag boje"
 
@@ -23009,6 +23095,7 @@ msgid "The degree of blurring from 1 to 127."
 msgstr "Stupanj zamagljivanja od 1 do 127."
 
 #: modules/video_filter/motionblur.c:59
+#: modules/gui/qt4/ui/video_effects.h:1146
 msgid "Motion blur"
 msgstr "Zamagljenost pokreta"
 
@@ -23252,7 +23339,7 @@ msgstr ""
 msgid "Panoramix: wall with overlap video filter"
 msgstr "Panoramix: filtar video zida s prekrivanjem"
 
-#: modules/video_filter/panoramix.c:79
+#: modules/video_filter/panoramix.c:79 modules/gui/qt4/ui/video_effects.h:1169
 msgid "Panoramix"
 msgstr "Panoramix"
 
@@ -23618,7 +23705,7 @@ msgstr "Kut u stupnjevima (0 do 359)"
 msgid "Rotate video filter"
 msgstr "Filtar okretanja video slike"
 
-#: modules/video_filter/rotate.c:67
+#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1128
 msgid "Rotate"
 msgstr "Okretanje"
 
@@ -23835,7 +23922,7 @@ msgstr "Pojačavanje kontrasta između orisa."
 msgid "Sharpen video filter"
 msgstr "Izoštravanja slike"
 
-#: modules/video_filter/sharpen.c:67
+#: modules/video_filter/sharpen.c:67 modules/gui/qt4/ui/video_effects.h:1102
 msgid "Sharpen"
 msgstr "Izoštriti"
 
@@ -24083,12 +24170,12 @@ msgstr ""
 msgid "Direct3D video output"
 msgstr "Izlaz video slike DirectX 3D"
 
-#: modules/video_output/msw/direct3d.c:175
+#: modules/video_output/msw/direct3d.c:164
 #, fuzzy
 msgid "Desktop"
 msgstr "vrh"
 
-#: modules/video_output/msw/directx.c:68
+#: modules/video_output/msw/directx.c:68 modules/gui/qt4/ui/sprefs_video.h:317
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Koristiti očvrsničko pretvaranje YUV->RGB"
 
@@ -24154,7 +24241,7 @@ msgstr ""
 msgid "DirectX (DirectDraw) video output"
 msgstr "Izlaz video slike DirectX 3D"
 
-#: modules/video_output/msw/directx.c:233
+#: modules/video_output/msw/directx.c:222
 msgid "Wallpaper"
 msgstr "Tapeta"
 
@@ -24295,11 +24382,11 @@ msgstr "Izlaz spremnika video slike"
 msgid "Video memory"
 msgstr "Spremnik video slike"
 
-#: modules/video_output/xcb/glx.c:50
+#: modules/video_output/xcb/glx.c:51
 msgid "GLX"
 msgstr ""
 
-#: modules/video_output/xcb/glx.c:51
+#: modules/video_output/xcb/glx.c:52
 #, fuzzy
 msgid "GLX video output (XCB)"
 msgstr "Izlaz video slike X11"
@@ -24657,657 +24744,934 @@ msgstr "Filtar upravitelja vizualizacije"
 msgid "Spectrum analyser"
 msgstr "Raščlanjivač spektra"
 
-#~ msgid "Form"
-#~ msgstr "Oblik"
+#: modules/gui/qt4/ui/equalizer.h:126 modules/gui/qt4/ui/open_disk.h:290
+#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:454
+#: modules/gui/qt4/ui/sprefs_audio.h:403 modules/gui/qt4/ui/sprefs_input.h:305
+#: modules/gui/qt4/ui/sprefs_interface.h:372
+#: modules/gui/qt4/ui/sprefs_subtitles.h:200
+#: modules/gui/qt4/ui/sprefs_video.h:308 modules/gui/qt4/ui/streampanel.h:168
+#: modules/gui/qt4/ui/v4l2.h:58
+msgid "Form"
+msgstr "Oblik"
 
-#~ msgid "Preset"
-#~ msgstr "Predložak"
+#: modules/gui/qt4/ui/equalizer.h:129
+msgid "Preset"
+msgstr "Predložak"
 
-#~ msgid "Dialog"
-#~ msgstr "Dijalog"
+#: modules/gui/qt4/ui/open.h:230
+#: modules/gui/qt4/ui/podcast_configuration.h:101
+msgid "Dialog"
+msgstr "Dijalog"
 
-#~ msgid "Show extended options"
-#~ msgstr "Prikaz proširenih mogućnosti"
+#: modules/gui/qt4/ui/open.h:232
+msgid "Show extended options"
+msgstr "Prikaz proširenih mogućnosti"
 
-#~ msgid "Show &more options"
-#~ msgstr "Prikazati &još mogućnosti"
+#: modules/gui/qt4/ui/open.h:234
+msgid "Show &more options"
+msgstr "Prikazati &još mogućnosti"
 
-#~ msgid "Change the caching for the media"
-#~ msgstr "Izmijenite pohranjivanje u međuspremnik za medije"
+#: modules/gui/qt4/ui/open.h:237
+msgid "Change the caching for the media"
+msgstr "Izmijenite pohranjivanje u međuspremnik za medije"
 
-#~ msgid " ms"
-#~ msgstr " ms"
+#: modules/gui/qt4/ui/open.h:239
+msgid " ms"
+msgstr " ms"
 
-#~ msgid "Start Time"
-#~ msgstr "Početno vrijeme"
+#: modules/gui/qt4/ui/open.h:240
+msgid "Start Time"
+msgstr "Početno vrijeme"
 
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr ""
-#~ "Istovremeno izvoditi i druge medije (dodatnu zvukovnu datoteku, ...)"
+#: modules/gui/qt4/ui/open.h:241
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "Istovremeno izvoditi i druge medije (dodatnu zvukovnu datoteku, ...)"
 
-#~ msgid "Extra media"
-#~ msgstr "Dodatni mediji"
+#: modules/gui/qt4/ui/open.h:242
+msgid "Extra media"
+msgstr "Dodatni mediji"
 
-#~ msgid "Select the file"
-#~ msgstr "Odaberite datoteku"
+#: modules/gui/qt4/ui/open.h:244
+msgid "Select the file"
+msgstr "Odaberite datoteku"
 
-#~ msgid "MRL"
-#~ msgstr "MRL"
+#: modules/gui/qt4/ui/open.h:247
+msgid "MRL"
+msgstr "MRL"
 
-#~ msgid "Complete MRL for VLC internal"
-#~ msgstr "Potpuni MRL za obradu unutar VLC-a"
+#: modules/gui/qt4/ui/open.h:249
+msgid "Complete MRL for VLC internal"
+msgstr "Potpuni MRL za obradu unutar VLC-a"
 
-#~ msgid "Edit Options"
-#~ msgstr "Uređivanje mogućnosti"
+#: modules/gui/qt4/ui/open.h:251
+msgid "Edit Options"
+msgstr "Uređivanje mogućnosti"
 
-#~ msgid "Change the start time for the media"
-#~ msgstr "Izmijenite početno vrijeme za medije"
+#: modules/gui/qt4/ui/open.h:253
+msgid "Change the start time for the media"
+msgstr "Izmijenite početno vrijeme za medije"
 
-#~ msgid "s"
-#~ msgstr "s"
+#: modules/gui/qt4/ui/open.h:255
+msgid "s"
+msgstr "s"
 
-#~ msgid "Capture mode"
-#~ msgstr "Način zahvaćanja"
+#: modules/gui/qt4/ui/open_capture.h:98
+msgid "Capture mode"
+msgstr "Način zahvaćanja"
 
-#~ msgid "Select the capture device type"
-#~ msgstr "Odaberite vrstu uređaja za zahvaćanje"
+#: modules/gui/qt4/ui/open_capture.h:100
+msgid "Select the capture device type"
+msgstr "Odaberite vrstu uređaja za zahvaćanje"
 
-#~ msgid "Device Selection"
-#~ msgstr "Izbor uređaja"
+#: modules/gui/qt4/ui/open_capture.h:102
+msgid "Device Selection"
+msgstr "Izbor uređaja"
 
-#~ msgid "Access advanced options to tweak the device"
-#~ msgstr "Pristupite naprednim mogućnostima za istančano podešavanje uređaja"
+#: modules/gui/qt4/ui/open_capture.h:105
+msgid "Access advanced options to tweak the device"
+msgstr "Pristupite naprednim mogućnostima za istančano podešavanje uređaja"
 
-#~ msgid "Advanced options..."
-#~ msgstr "Napredne mogućnosti..."
+#: modules/gui/qt4/ui/open_capture.h:107
+msgid "Advanced options..."
+msgstr "Napredne mogućnosti..."
 
-#~ msgid "Disc Selection"
-#~ msgstr "Odaberite disk"
+#: modules/gui/qt4/ui/open_disk.h:291
+msgid "Disc Selection"
+msgstr "Odaberite disk"
 
-#~ msgid "SVCD/VCD"
-#~ msgstr "SVCD/VCD"
+#: modules/gui/qt4/ui/open_disk.h:294
+msgid "SVCD/VCD"
+msgstr "SVCD/VCD"
 
-#~ msgid "Disable DVD Menus (for compatibility)"
-#~ msgstr "Onemogućiti izbornike DVD-a (zbog spojivosti)"
+#: modules/gui/qt4/ui/open_disk.h:296
+msgid "Disable DVD Menus (for compatibility)"
+msgstr "Onemogućiti izbornike DVD-a (zbog spojivosti)"
 
-#~ msgid "Disc device"
-#~ msgstr "Diskovni uređaj"
+#: modules/gui/qt4/ui/open_disk.h:299
+msgid "Disc device"
+msgstr "Diskovni uređaj"
 
-#~ msgid "Starting Position"
-#~ msgstr "Početni položaj"
+#: modules/gui/qt4/ui/open_disk.h:301
+msgid "Starting Position"
+msgstr "Početni položaj"
 
-#~ msgid "Audio and Subtitles"
-#~ msgstr "Zvuk i podnaslovi"
+#: modules/gui/qt4/ui/open_disk.h:304
+msgid "Audio and Subtitles"
+msgstr "Zvuk i podnaslovi"
 
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "Odaberite jednu ili više medijskih datoteka za otvaranje"
+#: modules/gui/qt4/ui/open_file.h:219
+msgid "Choose one or more media file to open"
+msgstr "Odaberite jednu ili više medijskih datoteka za otvaranje"
 
-#~ msgid "File Selection"
-#~ msgstr "Izbor datoteka"
+#: modules/gui/qt4/ui/open_file.h:221
+msgid "File Selection"
+msgstr "Izbor datoteka"
 
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr "Mjesne datoteke možete birati slijedećim spiskom i gumbima."
+#: modules/gui/qt4/ui/open_file.h:222
+msgid "You can select local files with the following list and buttons."
+msgstr "Mjesne datoteke možete birati slijedećim spiskom i gumbima."
 
-#~ msgid "Add..."
-#~ msgstr "Dodati..."
+#: modules/gui/qt4/ui/open_file.h:223
+msgid "Add..."
+msgstr "Dodati..."
 
-#~ msgid "Add a subtitles file"
-#~ msgstr "Dodavanje datoteke podnaslova"
+#: modules/gui/qt4/ui/open_file.h:226
+msgid "Add a subtitles file"
+msgstr "Dodavanje datoteke podnaslova"
 
-#~ msgid "Use a sub&titles file"
-#~ msgstr "Koristiti datoteku pod&naslova"
+#: modules/gui/qt4/ui/open_file.h:228
+msgid "Use a sub&titles file"
+msgstr "Koristiti datoteku pod&naslova"
 
-#~ msgid "Select the subtitles file"
-#~ msgstr "Odaberite datoteku podnaslova"
+#: modules/gui/qt4/ui/open_file.h:230
+msgid "Select the subtitles file"
+msgstr "Odaberite datoteku podnaslova"
 
+#: modules/gui/qt4/ui/open_file.h:233
 #, fuzzy
-#~ msgid "Font size:"
-#~ msgstr "Veličina fonta"
+msgid "Font size:"
+msgstr "Veličina fonta"
 
+#: modules/gui/qt4/ui/open_file.h:234
 #, fuzzy
-#~ msgid "Text alignment:"
-#~ msgstr "Usmjerenje teleteksta"
+msgid "Text alignment:"
+msgstr "Usmjerenje teleteksta"
 
-#~ msgid "Network Protocol"
-#~ msgstr "Protokol mrežnih veza"
+#: modules/gui/qt4/ui/open_net.h:92
+msgid "Network Protocol"
+msgstr "Protokol mrežnih veza"
 
+#: modules/gui/qt4/ui/open_net.h:93
 #, fuzzy
-#~ msgid "Please enter a network URL:"
-#~ msgstr "Unesite molim novi naziv profila."
+msgid "Please enter a network URL:"
+msgstr "Unesite molim novi naziv profila."
 
+#: modules/gui/qt4/ui/open_net.h:95
 #, fuzzy
-#~ msgid "Enter the URL of the network stream here."
-#~ msgstr ""
-#~ "Ovdje unesite adresu toka mrežnog strujanja, s protokolom ili bez njega."
+msgid "Enter the URL of the network stream here."
+msgstr ""
+"Ovdje unesite adresu toka mrežnog strujanja, s protokolom ili bez njega."
 
-#~ msgid "MPEG-TS"
-#~ msgstr "MPEG-TS"
+#: modules/gui/qt4/ui/open_net.h:97
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">http://www.example.com/stream.avi</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">rtp://@1234</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">rtsp://server.example.org:8080/test.sdp</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
+msgstr ""
 
-#~ msgid "MPEG-PS"
-#~ msgstr "MPEG-PS"
+#: modules/gui/qt4/ui/profiles.h:456
+msgid "MPEG-TS"
+msgstr "MPEG-TS"
 
-#~ msgid "WAV"
-#~ msgstr "WAV"
+#: modules/gui/qt4/ui/profiles.h:457
+msgid "MPEG-PS"
+msgstr "MPEG-PS"
 
-#~ msgid "ASF/WMV"
-#~ msgstr "ASF/WMV"
+#: modules/gui/qt4/ui/profiles.h:458
+msgid "WAV"
+msgstr "WAV"
 
-#~ msgid "Ogg/Ogm"
-#~ msgstr "Ogg/Ogm"
+#: modules/gui/qt4/ui/profiles.h:459
+msgid "ASF/WMV"
+msgstr "ASF/WMV"
 
-#~ msgid "RAW"
-#~ msgstr "RAW"
+#: modules/gui/qt4/ui/profiles.h:460
+msgid "Ogg/Ogm"
+msgstr "Ogg/Ogm"
 
-#~ msgid "MPEG 1"
-#~ msgstr "MPEG 1"
+#: modules/gui/qt4/ui/profiles.h:461
+msgid "RAW"
+msgstr "RAW"
 
-#~ msgid "FLV"
-#~ msgstr "FLV"
+#: modules/gui/qt4/ui/profiles.h:462
+msgid "MPEG 1"
+msgstr "MPEG 1"
 
-#~ msgid "AVI"
-#~ msgstr "AVI"
+#: modules/gui/qt4/ui/profiles.h:463
+msgid "FLV"
+msgstr "FLV"
 
-#~ msgid "MP4/MOV"
-#~ msgstr "MP4/MOV"
+#: modules/gui/qt4/ui/profiles.h:464
+msgid "AVI"
+msgstr "AVI"
 
-#~ msgid "MKV"
-#~ msgstr "MKV"
+#: modules/gui/qt4/ui/profiles.h:465
+msgid "MP4/MOV"
+msgstr "MP4/MOV"
 
-#~ msgid "Encapsulation"
-#~ msgstr "Učahurivanje podataka"
+#: modules/gui/qt4/ui/profiles.h:467
+msgid "MKV"
+msgstr "MKV"
 
-#~ msgid " kb/s"
-#~ msgstr " kb/s"
+#: modules/gui/qt4/ui/profiles.h:468
+msgid "Encapsulation"
+msgstr "Učahurivanje podataka"
 
-#~ msgid "Frame Rate"
-#~ msgstr "Stopa protoka kadrova"
+#: modules/gui/qt4/ui/profiles.h:472 modules/gui/qt4/ui/profiles.h:491
+msgid " kb/s"
+msgstr " kb/s"
 
+#: modules/gui/qt4/ui/profiles.h:473
+msgid "Frame Rate"
+msgstr "Stopa protoka kadrova"
+
+#: modules/gui/qt4/ui/profiles.h:475
 #, fuzzy
-#~ msgid " fps"
-#~ msgstr " fps"
+msgid " fps"
+msgstr " fps"
+
+#: modules/gui/qt4/ui/profiles.h:477
+msgid ""
+"You just need to fill one of the three following parameters, VLC will "
+"autodetect the other using the original aspect ratio"
+msgstr ""
+"Potrebno je navesti samo jedan od tri slijedeća parametra, pa će VLC pomoću "
+"bočnog omjera sâm prepoznati ostale"
+
+#: modules/gui/qt4/ui/profiles.h:480 modules/gui/qt4/ui/profiles.h:483
+msgid "00000; "
+msgstr "00000; "
+
+#: modules/gui/qt4/ui/profiles.h:485
+msgid "Keep original video track"
+msgstr "Zadržati izvorni trag video slike"
+
+#: modules/gui/qt4/ui/profiles.h:486
+msgid "Video codec"
+msgstr "Kôdek video slike"
+
+#: modules/gui/qt4/ui/profiles.h:488
+msgid "Keep original audio track"
+msgstr "Zadržati izvorni trag zvuka"
+
+#: modules/gui/qt4/ui/profiles.h:493
+#, fuzzy
+msgid "Sample Rate"
+msgstr "Stopa uzorkovanja"
+
+#: modules/gui/qt4/ui/profiles.h:494
+msgid "Audio codec"
+msgstr "Kôdek zvuka"
+
+#: modules/gui/qt4/ui/profiles.h:496
+#, fuzzy
+msgid "Overlay subtitles on the video"
+msgstr "Napredovanje podnaslova naspram video slike:"
+
+#: modules/gui/qt4/ui/sout.h:329 modules/gui/qt4/ui/sout.h:339
+msgid "Destinations"
+msgstr "Odredišta"
+
+#: modules/gui/qt4/ui/sout.h:330
+msgid "New destination"
+msgstr "Novo odredište"
+
+#: modules/gui/qt4/ui/sout.h:332
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+"Pridodajte odredišta u nastavku iza metoda strujanja koje potrebujete. "
+"Provjerite je li pri prekodiranju format sukladan metodi koju ste odabrali."
+
+#: modules/gui/qt4/ui/sout.h:333
+msgid "Display locally"
+msgstr "Mjesni prikaz"
+
+#: modules/gui/qt4/ui/sout.h:336
+msgid "Activate Transcoding"
+msgstr "Aktivirati prekodiranje"
+
+#: modules/gui/qt4/ui/sout.h:340
+msgid "Miscellaneous Options"
+msgstr "Razne mogućnosti"
+
+#: modules/gui/qt4/ui/sout.h:341
+msgid "Stream all elementary streams"
+msgstr "Strujati sva osnovna strujanja"
+
+#: modules/gui/qt4/ui/sout.h:343
+msgid "Group name"
+msgstr "Naziv skupine"
+
+#: modules/gui/qt4/ui/sout.h:345
+msgid "Generated stream output string"
+msgstr "Proizvedeni niz izlaznog strujanja"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:406
+msgid "Keep audio level between sessions"
+msgstr ""
+
+#: modules/gui/qt4/ui/sprefs_audio.h:407
+msgid "Always reset audio start level to:"
+msgstr ""
+
+#: modules/gui/qt4/ui/sprefs_audio.h:408
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:409 modules/gui/qt4/ui/sprefs_video.h:313
+msgid "Output"
+msgstr "Izlaz"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:410
+#, fuzzy
+msgid "Output module:"
+msgstr "Modul izlaza"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:415
+#, fuzzy
+msgid "Dolby Surround:"
+msgstr "Dolby Surround"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:416
+msgid "Normalize volume to:"
+msgstr ""
+
+#: modules/gui/qt4/ui/sprefs_audio.h:417
+#, fuzzy
+msgid "Replay gain mode:"
+msgstr "Način pojačanja ponovnog izvođenja"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:418
+#, fuzzy
+msgid "Visualization:"
+msgstr "Vizualizacija"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:420
+#, fuzzy
+msgid "Enable Time-Stretching audio"
+msgstr "Omogućiti vremensko rastezanje zvuka"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:422
+#, fuzzy
+msgid "Preferred audio language:"
+msgstr "Preferirani jezik zvuka"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:423
+#, fuzzy
+msgid "Password:"
+msgstr "Lozinka"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:424
+#, fuzzy
+msgid "Username:"
+msgstr "Korisničko ime"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:425
+#, fuzzy
+msgid "Submit played tracks stats to Last.fm"
+msgstr "Slanje izvođenih skladbi na last.fm"
+
+#: modules/gui/qt4/ui/sprefs_input.h:306
+msgid "Optical drive"
+msgstr ""
+
+#: modules/gui/qt4/ui/sprefs_input.h:307
+#, fuzzy
+msgid "Default optical device"
+msgstr "Polazni diskovni uređaj"
+
+#: modules/gui/qt4/ui/sprefs_input.h:309
+#, fuzzy
+msgid "Codecs"
+msgstr "Kôdek"
+
+#: modules/gui/qt4/ui/sprefs_input.h:310
+#, fuzzy
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr "Preskočiti filtar petlje"
+
+#: modules/gui/qt4/ui/sprefs_input.h:311
+#, fuzzy
+msgid "Video quality post-processing level"
+msgstr "Filtar završne obrade slike"
+
+#: modules/gui/qt4/ui/sprefs_input.h:312
+msgid "Use GPU acceleration (experimental)"
+msgstr ""
+
+#: modules/gui/qt4/ui/sprefs_input.h:313
+#, fuzzy
+msgid "Use system codecs if available (better quality, but dangerous)"
+msgstr "Koristiti kôdeke sustava ako su dostupni (bolja kakvoća)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:315
+#, fuzzy
+msgid "Damaged or incomplete AVI file"
+msgstr "Filtar svojstava slike"
+
+#: modules/gui/qt4/ui/sprefs_input.h:319
+#, fuzzy
+msgid "Default port (server mode)"
+msgstr "Polazni port poslužitelja"
+
+#: modules/gui/qt4/ui/sprefs_input.h:320
+#, fuzzy
+msgid "HTTP proxy URL"
+msgstr "Posrednički poslužitelj HTTP-a"
+
+#: modules/gui/qt4/ui/sprefs_input.h:321
+#, fuzzy
+msgid "Default caching policy"
+msgstr "Polazna razina međupohranjivanja"
+
+#: modules/gui/qt4/ui/sprefs_input.h:322
+#, fuzzy
+msgid "HTTP (default)"
+msgstr "polazno"
+
+#: modules/gui/qt4/ui/sprefs_input.h:323
+#, fuzzy
+msgid "RTP over RTSP (TCP)"
+msgstr "RTP koristiti preko RTSP-a (TCP)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:324
+#, fuzzy
+msgid "Live555 stream transport"
+msgstr "Izlaz datotečnog strujanja"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:373
+msgid "Instances"
+msgstr "Instance"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:374
+msgid "Allow only one instance"
+msgstr "Dopustiti samo jednu instancu"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:375
+msgid "Enqueue files when in one instance mode"
+msgstr "Pri radu s jednom instancom stavke uvrštavati u spisak izvođenja"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:377
+#, fuzzy
+msgid "Album art download policy:"
+msgstr "Preuzimanje omotnih slika albuma"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:378
+msgid "Activate update notifier"
+msgstr "Aktivirati podsjetnik na dogradnje"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:380
+#, fuzzy
+msgid "Every "
+msgstr "Prekrivanje"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:381
+msgid "Save recently played items"
+msgstr "Pohranjivati nedavno izvođene stavke"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:384
+msgid "Separate words by | (without space)"
+msgstr "Riječi rastavljajte znakom | (bez praznina)"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:387
+#, fuzzy
+msgid "Menus language:"
+msgstr "Jezik zvuka"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:388
+#, fuzzy
+msgid "File associations"
+msgstr "Združivanja datoteka:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:389
+#, fuzzy
+msgid "Set up associations..."
+msgstr "Združivanja datoteka:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:390
+msgid "Look and feel"
+msgstr ""
+
+#: modules/gui/qt4/ui/sprefs_interface.h:391
+#, fuzzy
+msgid "Use custom skin"
+msgstr "Odabrati presvlaku"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:393
+#, fuzzy
+msgid "Skin resource file:"
+msgstr "Datoteka presvlake"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:395
+msgid "Resize interface to video size"
+msgstr "Sučelje prilagoditi veličini video-prikaza"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:396
+#, fuzzy
+msgid "Force window style:"
+msgstr "Slijedeći grafički stil:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:397
+#, fuzzy
+msgid "Show systray icon"
+msgstr "Prikaz ikone u traci odlaganja"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:398
+msgid "Embed video in interface"
+msgstr "Video sliku uklopiti u sučelje"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:399
+msgid " Systray popup when minimized"
+msgstr ""
+
+#: modules/gui/qt4/ui/sprefs_interface.h:400
+#, fuzzy
+msgid "Show controls in full screen mode"
+msgstr "Nadzornik prikazati preko cijelog zaslona"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:401
+msgid "Minimal view mode (no toolbars)"
+msgstr ""
+
+#: modules/gui/qt4/ui/sprefs_interface.h:403
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "Ovo je polazno VLC-ovo sučelje, s prirođenim izgledom i ozračjem."
+
+#: modules/gui/qt4/ui/sprefs_interface.h:405
+#, fuzzy
+msgid "Use native style"
+msgstr "Koristiti datoteku podnaslova"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:202
+#, fuzzy
+msgid "Enable On Screen Display (OSD)"
+msgstr "Prikaz u tekućem prikazu (OSD)"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:203
+#, fuzzy
+msgid "Show media title on video start"
+msgstr "Na video slici prikazivati naslov medija"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:204
+msgid "Subtitles Language"
+msgstr "Jezik ponaslova"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:205
+msgid "Preferred subtitles language"
+msgstr "Preferirani jezik podnaslova"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:206
+msgid "Default encoding"
+msgstr "Polazno kodiranje"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:208
+msgid "Effect"
+msgstr "Učinak"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:209
+msgid "Font color"
+msgstr "Boja fonta"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:212
+#: modules/gui/qt4/ui/video_effects.h:1113
+#: modules/gui/qt4/ui/video_effects.h:1115
+#: modules/gui/qt4/ui/video_effects.h:1117
+#: modules/gui/qt4/ui/video_effects.h:1119
+msgid " px"
+msgstr " px"
+
+#: modules/gui/qt4/ui/sprefs_video.h:314
+msgid "Accelerated video output (Overlay)"
+msgstr "Pospješivani izlaz slike (s prekrivanjem)"
+
+#: modules/gui/qt4/ui/sprefs_video.h:318
+msgid "DirectX"
+msgstr "DirectX"
+
+#: modules/gui/qt4/ui/sprefs_video.h:319
+msgid "Display device"
+msgstr "Uređaj prikaza"
+
+#: modules/gui/qt4/ui/sprefs_video.h:320
+msgid "Enable wallpaper mode"
+msgstr "Omogućiti način tapetnog prikaza"
+
+#: modules/gui/qt4/ui/sprefs_video.h:322
+#, fuzzy
+msgid "Deinterlacing"
+msgstr "Način raspletanja"
+
+#: modules/gui/qt4/ui/sprefs_video.h:323
+msgid "Force Aspect Ratio"
+msgstr "Nametnuti bočni omjer"
+
+#: modules/gui/qt4/ui/sprefs_video.h:327
+#, fuzzy
+msgid "Directory"
+msgstr "Datoteka/imenik"
+
+#: modules/gui/qt4/ui/sprefs_video.h:329
+msgid "vlc-snap"
+msgstr "vlc-snap"
+
+#: modules/gui/qt4/ui/streampanel.h:172
+msgid "Stuff"
+msgstr "Stvari"
+
+#: modules/gui/qt4/ui/streampanel.h:174
+msgid "Edit settings"
+msgstr "Uređivanje postavki"
+
+#: modules/gui/qt4/ui/streampanel.h:175
+msgid "Control"
+msgstr "Nadzor"
+
+#: modules/gui/qt4/ui/streampanel.h:176
+msgid "Run manually"
+msgstr "Pokrenuti ručno"
+
+#: modules/gui/qt4/ui/streampanel.h:177
+msgid "Setup schedule"
+msgstr "Postaviti raspored"
+
+#: modules/gui/qt4/ui/streampanel.h:178
+msgid "Run on schedule"
+msgstr "Pokrenuti prema rasporedu"
+
+#: modules/gui/qt4/ui/streampanel.h:179
+msgid "Status"
+msgstr "Stanje"
+
+#: modules/gui/qt4/ui/streampanel.h:180
+msgid "P/P"
+msgstr "P/P"
+
+#: modules/gui/qt4/ui/streampanel.h:183
+msgid "Prev"
+msgstr "Prethodno"
+
+#: modules/gui/qt4/ui/streampanel.h:184
+msgid "Add Input"
+msgstr "Dodati ulazni sadržaj"
+
+#: modules/gui/qt4/ui/streampanel.h:185
+msgid "Edit Input"
+msgstr "Urediti ulazni sadržaj"
+
+#: modules/gui/qt4/ui/streampanel.h:186
+msgid "Clear List"
+msgstr "Očistiti spisak"
+
+#: modules/gui/qt4/ui/v4l2.h:59
+msgid "Refresh"
+msgstr "Osvježiti"
+
+#: modules/gui/qt4/ui/v4l2.h:60
+msgid "No v4l2 instance found. Press the refresh button to try again."
+msgstr ""
+"Instanca v4l2 nije pronađena. Za pokušati opet pritisnite gumb osvježavanja."
+
+#: modules/gui/qt4/ui/video_effects.h:1101
+msgid "Transform"
+msgstr "Pretvoriti"
+
+#: modules/gui/qt4/ui/video_effects.h:1103
+msgid "Sigma"
+msgstr "Sigma"
+
+#: modules/gui/qt4/ui/video_effects.h:1120
+#, fuzzy
+msgid "Synchronize top and bottom"
+msgstr "Uskladiti lijevo i desno"
+
+#: modules/gui/qt4/ui/video_effects.h:1121
+msgid "Synchronize left and right"
+msgstr "Uskladiti lijevo i desno"
+
+#: modules/gui/qt4/ui/video_effects.h:1123
+msgid "Magnification/Zoom"
+msgstr "Uvećavanje/Približavanje"
+
+#: modules/gui/qt4/ui/video_effects.h:1124
+msgid "Puzzle game"
+msgstr "Igra slagalice"
+
+#: modules/gui/qt4/ui/video_effects.h:1125
+msgid "Black slot"
+msgstr "Crni prorez"
+
+#: modules/gui/qt4/ui/video_effects.h:1126
+#: modules/gui/qt4/ui/video_effects.h:1165
+#: modules/gui/qt4/ui/video_effects.h:1171
+msgid "Columns"
+msgstr "Stupci"
+
+#: modules/gui/qt4/ui/video_effects.h:1127
+#: modules/gui/qt4/ui/video_effects.h:1164
+#: modules/gui/qt4/ui/video_effects.h:1170
+msgid "Rows"
+msgstr "Redovi"
+
+#: modules/gui/qt4/ui/video_effects.h:1129
+msgid "Angle"
+msgstr "Kut"
+
+#: modules/gui/qt4/ui/video_effects.h:1130
+msgid "Geometry"
+msgstr "Geometrija"
+
+#: modules/gui/qt4/ui/video_effects.h:1131
+msgid "Color extraction"
+msgstr "Izdvajanje boje"
+
+#: modules/gui/qt4/ui/video_effects.h:1133
+#: modules/gui/qt4/ui/video_effects.h:1139
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt4/ui/video_effects.h:1136
+msgid "Similarity"
+msgstr "Sličnost"
+
+#: modules/gui/qt4/ui/video_effects.h:1140
+msgid "Color fun"
+msgstr "Radost bôja"
+
+#: modules/gui/qt4/ui/video_effects.h:1142
+msgid "Water effect"
+msgstr "Učinak vode"
+
+#: modules/gui/qt4/ui/video_effects.h:1145
+msgid "Motion detect"
+msgstr "Prepoznavanje pokreta"
+
+#: modules/gui/qt4/ui/video_effects.h:1147
+msgid "Factor"
+msgstr "Čimbenik"
+
+#: modules/gui/qt4/ui/video_effects.h:1151
+msgid "Cartoon"
+msgstr "Crtani film"
+
+#: modules/gui/qt4/ui/video_effects.h:1152
+msgid "Image modification"
+msgstr "Preinačivanje slike"
+
+#: modules/gui/qt4/ui/video_effects.h:1154
+#, fuzzy
+msgid "Edge weightning"
+msgstr "Pritega rubova"
+
+#: modules/gui/qt4/ui/video_effects.h:1155
+#, fuzzy
+msgid "Output Color Filtermode"
+msgstr "Modul filtra izlazne video slike"
+
+#: modules/gui/qt4/ui/video_effects.h:1156
+#, fuzzy
+msgid "Brightness (%)"
+msgstr "Svjetloća"
+
+#: modules/gui/qt4/ui/video_effects.h:1157
+#, fuzzy
+msgid "Darknesslimit"
+msgstr "Granica tamnosti"
+
+#: modules/gui/qt4/ui/video_effects.h:1158
+msgid "Mark analyzed Pixels"
+msgstr ""
+
+#: modules/gui/qt4/ui/video_effects.h:1160
+#, fuzzy
+msgid "Filter threshold (%)"
+msgstr "Filtar ograničenja"
+
+#: modules/gui/qt4/ui/video_effects.h:1161
+#, fuzzy
+msgid "Filter smoothness (%)"
+msgstr "Filtar glatkosti (u %)"
+
+#: modules/gui/qt4/ui/video_effects.h:1163
+msgid "Wall"
+msgstr "Zid"
+
+#: modules/gui/qt4/ui/video_effects.h:1166
+msgid "Add text"
+msgstr "Dodati tekst"
+
+#: modules/gui/qt4/ui/video_effects.h:1174
+msgid "Vout/Overlay"
+msgstr "Izlaz video slike/Prekrivanje"
+
+#: modules/gui/qt4/ui/video_effects.h:1175
+msgid "Add logo"
+msgstr "Dodati logotip"
+
+#: modules/gui/qt4/ui/video_effects.h:1179
+#: modules/gui/qt4/ui/video_effects.h:1184
+msgid "Logo"
+msgstr "Logotip"
+
+#: modules/gui/qt4/ui/video_effects.h:1180
+msgid "Logo erase"
+msgstr "Ukloniti logotip"
+
+#: modules/gui/qt4/ui/video_effects.h:1183
+msgid "Mask"
+msgstr "Maska"
+
+#: modules/gui/qt4/ui/video_effects.h:1185
+#, fuzzy
+msgid "Subpicture filters"
+msgstr "Modul filtra podslîka"
+
+#: modules/gui/qt4/ui/video_effects.h:1186
+msgid "Video filters"
+msgstr "Filtri video slike"
+
+#: modules/gui/qt4/ui/video_effects.h:1187
+msgid "Vout filters"
+msgstr "Filtri izlazne video slike"
+
+#: modules/gui/qt4/ui/video_effects.h:1188
+msgid "Reset"
+msgstr "Vratiti na polazno"
+
+#: modules/gui/qt4/ui/video_effects.h:1189
+msgid "Update"
+msgstr "Aktualizirati"
+
+#: modules/gui/qt4/ui/video_effects.h:1190
+msgid "Advanced video filter controls"
+msgstr "Napredno upravljanje filtrima videa"
+
+#: modules/gui/qt4/ui/vlm.h:287
+msgid "VLM configurator"
+msgstr "Prilagodbe VLM-a"
+
+#: modules/gui/qt4/ui/vlm.h:288
+msgid "Media Manager Edition"
+msgstr "Izdanje medijskog upravitelja"
+
+#: modules/gui/qt4/ui/vlm.h:289
+msgid "Name:"
+msgstr "Naziv:"
+
+#: modules/gui/qt4/ui/vlm.h:291
+msgid "Input:"
+msgstr "Ulaz:"
+
+#: modules/gui/qt4/ui/vlm.h:292
+msgid "Select Input"
+msgstr "Izbor ulaza"
+
+#: modules/gui/qt4/ui/vlm.h:293
+msgid "Output:"
+msgstr "Izlaz:"
+
+#: modules/gui/qt4/ui/vlm.h:294
+msgid "Select Output"
+msgstr "Izbor izlaza"
+
+#: modules/gui/qt4/ui/vlm.h:295
+msgid "Time Control"
+msgstr "Upravljanje vremenom"
+
+#: modules/gui/qt4/ui/vlm.h:296
+msgid "Mux Control"
+msgstr "Upravljanje multiplekserom"
+
+#: modules/gui/qt4/ui/vlm.h:297
+msgid "Muxer:"
+msgstr "Muxer:"
+
+#: modules/gui/qt4/ui/vlm.h:298
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt4/ui/vlm.h:299
+msgid "Loop"
+msgstr "Petlja"
+
+#: modules/gui/qt4/ui/vlm.h:303
+msgid "Media Manager List"
+msgstr "Spisak medijskog upravitelja"
 
 #~ msgid ""
-#~ "You just need to fill one of the three following parameters, VLC will "
-#~ "autodetect the other using the original aspect ratio"
+#~ "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 #~ msgstr ""
-#~ "Potrebno je navesti samo jedan od tri slijedeća parametra, pa će VLC "
-#~ "pomoću bočnog omjera sâm prepoznati ostale"
-
-#~ msgid "00000; "
-#~ msgstr "00000; "
-
-#~ msgid "Keep original video track"
-#~ msgstr "Zadržati izvorni trag video slike"
-
-#~ msgid "Video codec"
-#~ msgstr "Kôdek video slike"
-
-#~ msgid "Keep original audio track"
-#~ msgstr "Zadržati izvorni trag zvuka"
-
-#, fuzzy
-#~ msgid "Sample Rate"
-#~ msgstr "Stopa uzorkovanja"
-
-#~ msgid "Audio codec"
-#~ msgstr "Kôdek zvuka"
-
-#, fuzzy
-#~ msgid "Overlay subtitles on the video"
-#~ msgstr "Napredovanje podnaslova naspram video slike:"
-
-#~ msgid "Destinations"
-#~ msgstr "Odredišta"
-
-#~ msgid "New destination"
-#~ msgstr "Novo odredište"
-
-#~ msgid ""
-#~ "Add destinations following the streaming methods you need. Be sure to "
-#~ "check with transcoding that the format is compatible with the method used."
-#~ msgstr ""
-#~ "Pridodajte odredišta u nastavku iza metoda strujanja koje potrebujete. "
-#~ "Provjerite je li pri prekodiranju format sukladan metodi koju ste "
-#~ "odabrali."
-
-#~ msgid "Display locally"
-#~ msgstr "Mjesni prikaz"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "Aktivirati prekodiranje"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "Razne mogućnosti"
-
-#~ msgid "Stream all elementary streams"
-#~ msgstr "Strujati sva osnovna strujanja"
-
-#~ msgid "Group name"
-#~ msgstr "Naziv skupine"
-
-#~ msgid "Generated stream output string"
-#~ msgstr "Proizvedeni niz izlaznog strujanja"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output"
-#~ msgstr "Izlaz"
-
-#, fuzzy
-#~ msgid "Output module:"
-#~ msgstr "Modul izlaza"
-
-#, fuzzy
-#~ msgid "Dolby Surround:"
-#~ msgstr "Dolby Surround"
-
-#, fuzzy
-#~ msgid "Replay gain mode:"
-#~ msgstr "Način pojačanja ponovnog izvođenja"
-
-#, fuzzy
-#~ msgid "Visualization:"
-#~ msgstr "Vizualizacija"
-
-#, fuzzy
-#~ msgid "Enable Time-Stretching audio"
-#~ msgstr "Omogućiti vremensko rastezanje zvuka"
-
-#, fuzzy
-#~ msgid "Preferred audio language:"
-#~ msgstr "Preferirani jezik zvuka"
-
-#, fuzzy
-#~ msgid "Password:"
-#~ msgstr "Lozinka"
-
-#, fuzzy
-#~ msgid "Username:"
-#~ msgstr "Korisničko ime"
-
-#, fuzzy
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "Slanje izvođenih skladbi na last.fm"
-
-#, fuzzy
-#~ msgid "Default optical device"
-#~ msgstr "Polazni diskovni uređaj"
-
-#, fuzzy
-#~ msgid "Codecs"
-#~ msgstr "Kôdek"
-
-#, fuzzy
-#~ msgid "Skip H.264 in-loop deblocking filter"
-#~ msgstr "Preskočiti filtar petlje"
-
-#, fuzzy
-#~ msgid "Video quality post-processing level"
-#~ msgstr "Filtar završne obrade slike"
-
-#, fuzzy
-#~ msgid "Use system codecs if available (better quality, but dangerous)"
-#~ msgstr "Koristiti kôdeke sustava ako su dostupni (bolja kakvoća)"
-
-#, fuzzy
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "Filtar svojstava slike"
-
-#, fuzzy
-#~ msgid "Default port (server mode)"
-#~ msgstr "Polazni port poslužitelja"
-
-#, fuzzy
-#~ msgid "HTTP proxy URL"
-#~ msgstr "Posrednički poslužitelj HTTP-a"
-
-#, fuzzy
-#~ msgid "Default caching policy"
-#~ msgstr "Polazna razina međupohranjivanja"
-
-#, fuzzy
-#~ msgid "HTTP (default)"
-#~ msgstr "polazno"
-
-#, fuzzy
-#~ msgid "RTP over RTSP (TCP)"
-#~ msgstr "RTP koristiti preko RTSP-a (TCP)"
-
-#, fuzzy
-#~ msgid "Live555 stream transport"
-#~ msgstr "Izlaz datotečnog strujanja"
-
-#~ msgid "Instances"
-#~ msgstr "Instance"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "Dopustiti samo jednu instancu"
-
-#~ msgid "Enqueue files when in one instance mode"
-#~ msgstr "Pri radu s jednom instancom stavke uvrštavati u spisak izvođenja"
-
-#, fuzzy
-#~ msgid "Album art download policy:"
-#~ msgstr "Preuzimanje omotnih slika albuma"
-
-#~ msgid "Activate update notifier"
-#~ msgstr "Aktivirati podsjetnik na dogradnje"
-
-#, fuzzy
-#~ msgid "Every "
-#~ msgstr "Prekrivanje"
-
-#~ msgid "Save recently played items"
-#~ msgstr "Pohranjivati nedavno izvođene stavke"
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "Riječi rastavljajte znakom | (bez praznina)"
-
-#, fuzzy
-#~ msgid "Menus language:"
-#~ msgstr "Jezik zvuka"
-
-#, fuzzy
-#~ msgid "File associations"
-#~ msgstr "Združivanja datoteka:"
-
-#, fuzzy
-#~ msgid "Set up associations..."
-#~ msgstr "Združivanja datoteka:"
-
-#, fuzzy
-#~ msgid "Use custom skin"
-#~ msgstr "Odabrati presvlaku"
-
-#, fuzzy
-#~ msgid "Skin resource file:"
-#~ msgstr "Datoteka presvlake"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "Sučelje prilagoditi veličini video-prikaza"
-
-#, fuzzy
-#~ msgid "Force window style:"
-#~ msgstr "Slijedeći grafički stil:"
-
-#, fuzzy
-#~ msgid "Show systray icon"
-#~ msgstr "Prikaz ikone u traci odlaganja"
-
-#~ msgid "Embed video in interface"
-#~ msgstr "Video sliku uklopiti u sučelje"
-
-#, fuzzy
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "Nadzornik prikazati preko cijelog zaslona"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr "Ovo je polazno VLC-ovo sučelje, s prirođenim izgledom i ozračjem."
-
-#, fuzzy
-#~ msgid "Use native style"
-#~ msgstr "Koristiti datoteku podnaslova"
-
-#, fuzzy
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "Prikaz u tekućem prikazu (OSD)"
-
-#, fuzzy
-#~ msgid "Show media title on video start"
-#~ msgstr "Na video slici prikazivati naslov medija"
-
-#~ msgid "Subtitles Language"
-#~ msgstr "Jezik ponaslova"
-
-#~ msgid "Preferred subtitles language"
-#~ msgstr "Preferirani jezik podnaslova"
-
-#~ msgid "Default encoding"
-#~ msgstr "Polazno kodiranje"
-
-#~ msgid "Effect"
-#~ msgstr "Učinak"
-
-#~ msgid "Font color"
-#~ msgstr "Boja fonta"
-
-#~ msgid " px"
-#~ msgstr " px"
-
-#~ msgid "Accelerated video output (Overlay)"
-#~ msgstr "Pospješivani izlaz slike (s prekrivanjem)"
-
-#~ msgid "DirectX"
-#~ msgstr "DirectX"
-
-#~ msgid "Display device"
-#~ msgstr "Uređaj prikaza"
-
-#~ msgid "Enable wallpaper mode"
-#~ msgstr "Omogućiti način tapetnog prikaza"
-
-#, fuzzy
-#~ msgid "Deinterlacing"
-#~ msgstr "Način raspletanja"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "Nametnuti bočni omjer"
-
-#, fuzzy
-#~ msgid "Directory"
-#~ msgstr "Datoteka/imenik"
-
-#~ msgid "vlc-snap"
-#~ msgstr "vlc-snap"
-
-#~ msgid "Stuff"
-#~ msgstr "Stvari"
-
-#~ msgid "Edit settings"
-#~ msgstr "Uređivanje postavki"
-
-#~ msgid "Control"
-#~ msgstr "Nadzor"
-
-#~ msgid "Run manually"
-#~ msgstr "Pokrenuti ručno"
-
-#~ msgid "Setup schedule"
-#~ msgstr "Postaviti raspored"
-
-#~ msgid "Run on schedule"
-#~ msgstr "Pokrenuti prema rasporedu"
-
-#~ msgid "Status"
-#~ msgstr "Stanje"
-
-#~ msgid "P/P"
-#~ msgstr "P/P"
-
-#~ msgid "Prev"
-#~ msgstr "Prethodno"
-
-#~ msgid "Add Input"
-#~ msgstr "Dodati ulazni sadržaj"
-
-#~ msgid "Edit Input"
-#~ msgstr "Urediti ulazni sadržaj"
-
-#~ msgid "Clear List"
-#~ msgstr "Očistiti spisak"
-
-#~ msgid "Refresh"
-#~ msgstr "Osvježiti"
-
-#~ msgid "No v4l2 instance found. Press the refresh button to try again."
-#~ msgstr ""
-#~ "Instanca v4l2 nije pronađena. Za pokušati opet pritisnite gumb "
-#~ "osvježavanja."
-
-#~ msgid "Transform"
-#~ msgstr "Pretvoriti"
-
-#~ msgid "Sigma"
-#~ msgstr "Sigma"
-
-#, fuzzy
-#~ msgid "Synchronize top and bottom"
-#~ msgstr "Uskladiti lijevo i desno"
-
-#~ msgid "Synchronize left and right"
-#~ msgstr "Uskladiti lijevo i desno"
-
-#~ msgid "Magnification/Zoom"
-#~ msgstr "Uvećavanje/Približavanje"
-
-#~ msgid "Puzzle game"
-#~ msgstr "Igra slagalice"
-
-#~ msgid "Black slot"
-#~ msgstr "Crni prorez"
-
-#~ msgid "Columns"
-#~ msgstr "Stupci"
-
-#~ msgid "Rows"
-#~ msgstr "Redovi"
-
-#~ msgid "Angle"
-#~ msgstr "Kut"
-
-#~ msgid "Geometry"
-#~ msgstr "Geometrija"
-
-#~ msgid "Color extraction"
-#~ msgstr "Izdvajanje boje"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Similarity"
-#~ msgstr "Sličnost"
-
-#~ msgid "Color fun"
-#~ msgstr "Radost bôja"
-
-#~ msgid "Water effect"
-#~ msgstr "Učinak vode"
-
-#~ msgid "Motion detect"
-#~ msgstr "Prepoznavanje pokreta"
-
-#~ msgid "Factor"
-#~ msgstr "Čimbenik"
-
-#~ msgid "Cartoon"
-#~ msgstr "Crtani film"
-
-#~ msgid "Image modification"
-#~ msgstr "Preinačivanje slike"
-
-#, fuzzy
-#~ msgid "Edge weightning"
-#~ msgstr "Pritega rubova"
-
-#, fuzzy
-#~ msgid "Output Color Filtermode"
-#~ msgstr "Modul filtra izlazne video slike"
-
-#, fuzzy
-#~ msgid "Brightness (%)"
-#~ msgstr "Svjetloća"
-
-#, fuzzy
-#~ msgid "Darknesslimit"
-#~ msgstr "Granica tamnosti"
-
-#, fuzzy
-#~ msgid "Filter threshold (%)"
-#~ msgstr "Filtar ograničenja"
-
-#, fuzzy
-#~ msgid "Filter smoothness (%)"
-#~ msgstr "Filtar glatkosti (u %)"
-
-#~ msgid "Wall"
-#~ msgstr "Zid"
-
-#~ msgid "Add text"
-#~ msgstr "Dodati tekst"
-
-#~ msgid "Vout/Overlay"
-#~ msgstr "Izlaz video slike/Prekrivanje"
-
-#~ msgid "Add logo"
-#~ msgstr "Dodati logotip"
-
-#~ msgid "Logo"
-#~ msgstr "Logotip"
-
-#~ msgid "Logo erase"
-#~ msgstr "Ukloniti logotip"
-
-#~ msgid "Mask"
-#~ msgstr "Maska"
-
-#, fuzzy
-#~ msgid "Subpicture filters"
-#~ msgstr "Modul filtra podslîka"
-
-#~ msgid "Video filters"
-#~ msgstr "Filtri video slike"
-
-#~ msgid "Vout filters"
-#~ msgstr "Filtri izlazne video slike"
-
-#~ msgid "Reset"
-#~ msgstr "Vratiti na polazno"
-
-#~ msgid "Update"
-#~ msgstr "Aktualizirati"
-
-#~ msgid "Advanced video filter controls"
-#~ msgstr "Napredno upravljanje filtrima videa"
-
-#~ msgid "VLM configurator"
-#~ msgstr "Prilagodbe VLM-a"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "Izdanje medijskog upravitelja"
-
-#~ msgid "Name:"
-#~ msgstr "Naziv:"
-
-#~ msgid "Input:"
-#~ msgstr "Ulaz:"
-
-#~ msgid "Select Input"
-#~ msgstr "Izbor ulaza"
-
-#~ msgid "Output:"
-#~ msgstr "Izlaz:"
-
-#~ msgid "Select Output"
-#~ msgstr "Izbor izlaza"
-
-#~ msgid "Time Control"
-#~ msgstr "Upravljanje vremenom"
-
-#~ msgid "Mux Control"
-#~ msgstr "Upravljanje multiplekserom"
-
-#~ msgid "Muxer:"
-#~ msgstr "Muxer:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Loop"
-#~ msgstr "Petlja"
-
-#~ msgid "Media Manager List"
-#~ msgstr "Spisak medijskog upravitelja"
+#~ "Spremnici (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 
 #, fuzzy
 #~ msgid "Devices"

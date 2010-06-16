@@ -2,7 +2,7 @@
  * oss.c : OSS /dev/dsp module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: d3e4a74e12ad34531376f1a1669eb83039d6987f $
+ * $Id: 14d91ca1c0efa9a3d196006d4bea70f2742708fe $
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -509,7 +509,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_aout->output.p_sys->b_workaround_buggy_driver =
-        var_InheritInteger( p_aout, "oss-buggy" );
+        var_InheritBool( p_aout, "oss-buggy" );
 
     /* Create OSS thread and wait for its readiness. */
     if( vlc_thread_create( p_aout, "aout", OSSThread,

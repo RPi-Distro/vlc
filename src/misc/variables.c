@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 9df5a40079c08e2a64309c0efc08973c63362d9a $
+ * $Id: 1cbfefaf94f5525a9986be56cc75aad4fcb21128 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -1046,12 +1046,7 @@ void var_OptionParse( vlc_object_t *p_obj, const char *psz_option,
     if( psz_value != NULL )
         *psz_value++ = '\0';
 
-    /* FIXME: :programs should be handled generically */
-    if( !strcmp( psz_name, "programs" ) )
-        i_type = VLC_VAR_LIST;
-    else
-        i_type = config_GetType( p_obj, psz_name );
-
+    i_type = config_GetType( p_obj, psz_name );
     if( !i_type && !psz_value )
     {
         /* check for "no-foo" or "nofoo" */

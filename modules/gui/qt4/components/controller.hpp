@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: f987226a497c9f917f5c16c1f853fc2a28acc074 $
+ * $Id: 0bfa70e5682f8bd297b5c42c19be0c118fd2fc7d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -167,8 +167,8 @@ protected slots:
     virtual void setStatus( int );
 
 signals:
-    void inputExists( bool ); /// This might be usefull in the IM ?
-    void inputPlaying( bool ); /// This might be usefull in the IM ?
+    void inputExists( bool ); /// This might be useful in the IM ?
+    void inputPlaying( bool ); /// This might be useful in the IM ?
     void inputIsRecordable( bool ); /// same ?
     void inputIsTrickPlayable( bool ); /// same ?
 };

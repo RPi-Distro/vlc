@@ -2,7 +2,7 @@
  * wingdi.c : Win32 / WinCE GDI video output plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: fe97eeb852ea05458a8d67eb3ddfd08930b2bec8 $
+ * $Id: 619e664fddec95255058c757c941b093fa3ed7bc $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -134,7 +134,7 @@ static int Open(vlc_object_t *object)
     vout_display_info_t info = vd->info;
     info.is_slow              = false;
     info.has_double_click     = true;
-    info.has_hide_mouse       = true;
+    info.has_hide_mouse       = false;
     info.has_pictures_invalid = true;
 
     /* */

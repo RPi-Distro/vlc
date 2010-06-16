@@ -2,7 +2,7 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 01795e015cce53f2ce6a75270395ba713b115fda $
+ * $Id: 51d4b6712d33c867ec1f71fc8a48ce69ac65a6d7 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -134,7 +134,7 @@ static int Open( vlc_object_t* p_this )
     else
     {
         dialog_Login( p_access, &psz_username, &psz_password,
-                      _("SFTP authentification"),
+                      _("SFTP authentication"),
                       _("Please enter a valid login and password for the sftp "
                         "connexion to %s"), url.psz_host );
         if( EMPTY_STR(psz_username) || !psz_password )

@@ -2,7 +2,7 @@
  * display.c: "vout display" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: fa92cf80e24f9e973300744cfdd748e465c68f03 $
+ * $Id: 198cd8f6d82f96cdeb073825106e530acf099570 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -253,7 +253,7 @@ void vout_display_PlacePicture(vout_display_place_t *place,
         place->x = cfg->display.width - place->width;
         break;
     default:
-        place->x = (cfg->display.width - place->width) / 2;
+        place->x = ((int)cfg->display.width - (int)place->width) / 2;
         break;
     }
 
@@ -265,7 +265,7 @@ void vout_display_PlacePicture(vout_display_place_t *place,
         place->y = cfg->display.height - place->height;
         break;
     default:
-        place->y = (cfg->display.height - place->height) / 2;
+        place->y = ((int)cfg->display.height - (int)place->height) / 2;
         break;
     }
 }

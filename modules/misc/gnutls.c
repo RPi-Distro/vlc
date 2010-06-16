@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id: 10671c340bb553db5cd3b252fa1b0c5e3aa80fd4 $
+ * $Id: 71876b5f678a1d16c14163a71281f6082a1d248b $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -238,7 +238,7 @@ gnutls_Recv( void *p_session, void *buf, int i_length )
 /**
  * Starts or continues the TLS handshake.
  *
- * @return -1 on fatal error, 0 on succesful handshake completion,
+ * @return -1 on fatal error, 0 on successful handshake completion,
  * 1 if more would-be blocking recv is needed,
  * 2 if more would-be blocking send is required.
  */

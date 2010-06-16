@@ -2,7 +2,7 @@
  * EPGWidget.h : EPGWidget
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: d5f235dbd1d0c0ca84af3747c64e3ff95c023f83 $
+ * $Id: 59b52290eeb90148a628cd36782738e7a683b9b4 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -37,13 +37,17 @@ EPGWidget::EPGWidget( QWidget *parent ) : QWidget( parent )
 {
     m_rulerWidget = new EPGRuler( this );
     m_epgView = new EPGView( this );
+    m_channelsWidget = new EPGChannels( this, m_epgView );
+
+    m_channelsWidget->setMinimumWidth( 100 );
 
     m_epgView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setZoom( 1 );
 
-    QVBoxLayout* layout = new QVBoxLayout( this );
-    layout->addWidget( m_rulerWidget );
-    layout->addWidget( m_epgView );
+    QGridLayout* layout = new QGridLayout( this );
+    layout->addWidget( m_rulerWidget, 0, 1 );
+    layout->addWidget( m_channelsWidget, 1, 0 );
+    layout->addWidget( m_epgView, 1, 1 );
     layout->setSpacing( 0 );
     setLayout( layout );
 
@@ -53,6 +57,8 @@ EPGWidget::EPGWidget( QWidget *parent ) : QWidget( parent )
              m_rulerWidget, SLOT( setDuration(int) ) );
     connect( m_epgView->horizontalScrollBar(), SIGNAL( valueChanged(int) ),
              m_rulerWidget, SLOT( setOffset(int) ) );
+    connect( m_epgView->verticalScrollBar(), SIGNAL( valueChanged(int) ),
+             m_channelsWidget, SLOT( setOffset(int) ) );
     connect( m_epgView, SIGNAL( eventFocusedChanged(EPGEvent*)),
              this, SIGNAL(itemSelectionChanged(EPGEvent*)) );
 }
@@ -77,19 +83,22 @@ void EPGWidget::updateEPG( vlc_epg_t **pp_epg, int i_epg )
             EPGEvent *item = NULL;
             vlc_epg_event_t *p_event = p_epg->pp_event[j];
             QString eventName = qfu( p_event->psz_name );
+            QDateTime eventStart = QDateTime::fromTime_t( p_event->i_start );
 
             QList<EPGEvent*> events = m_events.values( channelName );
 
             for ( int k = 0; k < events.count(); ++k )
             {
                 if ( events.at( k )->name == eventName &&
-                     events.at( k )->channelName == channelName )
+                     events.at( k )->channelName == channelName &&
+                     events.at( k )->start == eventStart )
                 {
+                    /* Update the event. */
                     item = events.at( k );
                     item->updated = true;
                     item->description = qfu( p_event->psz_description );
                     item->shortDescription = qfu( p_event->psz_short_description );
-                    item->start = QDateTime::fromTime_t( p_event->i_start );
+                    item->start = eventStart;
                     item->duration = p_event->i_duration;
                     item->current = ( p_epg->p_current == p_event ) ? true : false;
 
@@ -106,7 +115,7 @@ void EPGWidget::updateEPG( vlc_epg_t **pp_epg, int i_epg )
                 item = new EPGEvent( eventName );
                 item->description = qfu( p_event->psz_description );
                 item->shortDescription = qfu( p_event->psz_short_description );
-                item->start = QDateTime::fromTime_t( p_event->i_start );
+                item->start = eventStart;
                 item->duration = p_event->i_duration;
                 item->channelName = channelName;
                 item->current = ( p_epg->p_current == p_event ) ? true : false;

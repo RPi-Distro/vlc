@@ -2,7 +2,7 @@
  * stream_filter.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: fc06b6fa5f1072b65e7ca6c22dfb28c50b68d89b $
+ * $Id: 9126f76788509c3a0c22c2f025b6dcc287980eb0 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -108,7 +108,7 @@ stream_t *stream_FilterChainNew( stream_t *p_source,
     }
     free( psz_tmp );
 
-    /* Add record filter if usefull */
+    /* Add record filter if useful */
     if( b_record )
     {
         stream_t *p_filter = stream_FilterNew( p_source,

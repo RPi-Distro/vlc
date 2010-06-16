@@ -2,7 +2,7 @@
  * common.c:
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: fc11a167a3426ae50b6f62075c74c64ecc6a0faa $
+ * $Id: 47c29580a7f8d204958e3cd5db2e09f28d3ecf0b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -83,9 +83,6 @@ int CommonInit(vout_display_t *vd)
 
     var_Create(vd, "video-title", VLC_VAR_STRING | VLC_VAR_DOINHERIT);
     var_Create(vd, "video-deco", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
-
-    /* FIXME remove mouse hide from msw */
-    var_Create(vd, "mouse-hide-timeout", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
 
     /* */
     sys->event = EventThreadCreate(vd);
@@ -195,9 +192,6 @@ void CommonManage(vout_display_t *vd)
     /* */
     if (EventThreadGetAndResetHasMoved(sys->event))
         UpdateRects(vd, NULL, NULL, false);
-
-    /* Pointer change */
-    EventThreadMouseAutoHide(sys->event);
 }
 
 /**
@@ -253,7 +247,7 @@ static void CommonChangeThumbnailClip(vout_display_t *vd, bool show)
                                  &taskbl)) {
         taskbl->vt->HrInit(taskbl);
 
-        HWND hroot = GetAncestor(sys->hwnd,GA_ROOT);
+        HWND hroot = GetAncestor(sys->hwnd,GA_PARENT);
         RECT relative;
         if (show) {
             RECT video, parent;
@@ -326,7 +320,7 @@ void UpdateRects(vout_display_t *vd,
     place_cfg.display.height = rect.bottom;
 
     vout_display_place_t place;
-    vout_display_PlacePicture(&place, source, &place_cfg, true);
+    vout_display_PlacePicture(&place, source, &place_cfg, false);
 
     EventThreadUpdateSourceAndPlace(sys->event, source, &place);
 #if defined(MODULE_NAME_IS_wingapi)
@@ -555,9 +549,6 @@ static int CommonControlSetFullscreen(vout_display_t *vd, bool is_fullscreen)
             SetWindowPlacement(hwnd, &window_placement);
             ShowWindow(hwnd, SW_SHOWNORMAL);
         }
-
-        /* Make sure the mouse cursor is displayed */
-        EventThreadMouseShow(sys->event);
     }
     return VLC_SUCCESS;
 }
@@ -631,11 +622,16 @@ int CommonControl(vout_display_t *vd, int query, va_list args)
     }
     case VOUT_DISPLAY_CHANGE_FULLSCREEN: {   /* const vout_display_cfg_t *p_cfg */
         const vout_display_cfg_t *cfg = va_arg(args, const vout_display_cfg_t *);
-        return CommonControlSetFullscreen(vd, cfg->is_fullscreen);
+        if (CommonControlSetFullscreen(vd, cfg->is_fullscreen))
+            return VLC_EGENERIC;
+        UpdateRects(vd, NULL, NULL, false);
+        return VLC_SUCCESS;
     }
 
-    case VOUT_DISPLAY_RESET_PICTURES:
     case VOUT_DISPLAY_HIDE_MOUSE:
+        EventThreadMouseHide(sys->event);
+        return VLC_SUCCESS;
+    case VOUT_DISPLAY_RESET_PICTURES:
         assert(0);
     default:
         return VLC_EGENERIC;

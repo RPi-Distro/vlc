@@ -2,7 +2,7 @@
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 6c87d5e7185e86901bb067554ab542e4e876c1eb $
+ * $Id: c995f19c7c9dbaa014fdf7705f4c2a9d034d2acd $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -1017,12 +1017,12 @@ void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout,
         bool b_fs, int i_timeout )
 {
     /* FIXME - multiple vout (ie multiple mouse position ?) and thread safety if multiple vout ? */
-    msg_Dbg( p_vout, "Qt: Entering Fullscreen" );
 
     vlc_mutex_lock( &lock );
     /* Entering fullscreen, register callback */
     if( b_fs && !b_fullscreen )
     {
+        msg_Dbg( p_vout, "Qt: Entering Fullscreen" );
         b_fullscreen = true;
         i_hide_timeout = i_timeout;
         var_AddCallback( p_vout, "mouse-moved",
@@ -1031,6 +1031,7 @@ void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout,
     /* Quitting fullscreen, unregistering callback */
     else if( !b_fs && b_fullscreen )
     {
+        msg_Dbg( p_vout, "Qt: Quitting Fullscreen" );
         b_fullscreen = false;
         i_hide_timeout = i_timeout;
         var_DelCallback( p_vout, "mouse-moved",

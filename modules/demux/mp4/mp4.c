@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: b044ea9b672c40846d8a5c5bb1039d17d494c5e5 $
+ * $Id: 7a0a92ce194a3c793ecf44893f0799bd109a7d91 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -495,7 +495,7 @@ static int Open( vlc_object_t * p_this )
             p_sys->p_tref_chap = p_chap;
     }
 
-    /* now process each track and extract all usefull information */
+    /* now process each track and extract all useful information */
     for( i = 0; i < p_sys->i_tracks; i++ )
     {
         p_trak = MP4_BoxGet( p_sys->p_root, "/moov/trak[%d]", i );
@@ -1874,9 +1874,10 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
                             p_track->fmt.i_extra);
                 }
                 break;
+            case VLC_FOURCC( 's', 'a', 'm', 'r' ):
+                p_track->fmt.audio.i_rate = 8000;
             case VLC_FOURCC( 'Q', 'D', 'M', 'C' ):
             case VLC_FOURCC( 'Q', 'D', 'M', '2' ):
-            case VLC_FOURCC( 's', 'a', 'm', 'r' ):
             case VLC_FOURCC( 'a', 'l', 'a', 'c' ):
                 p_track->fmt.i_extra =
                     p_sample->data.p_sample_soun->i_qt_description;

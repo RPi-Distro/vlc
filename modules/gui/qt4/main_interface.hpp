@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 3390190d443347db4144ed0c7ef44c99501f6d46 $
+ * $Id: e2a59852f1bed0494d9d12aa2d2a5955c2e580e2 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -86,6 +86,7 @@ public:
 #endif
     int getControlsVisibilityStatus();
     bool isPlDocked() { return ( b_plDocked != false ); }
+    bool isInterfaceFullScreen() { return b_interfaceFullScreen; }
 
 protected:
     void dropEventPlay( QDropEvent *, bool);
@@ -97,7 +98,6 @@ protected:
     virtual void dragMoveEvent( QDragMoveEvent * );
     virtual void dragLeaveEvent( QDragLeaveEvent * );
     virtual void closeEvent( QCloseEvent *);
-    virtual void customEvent( QEvent *);
     virtual void keyPressEvent( QKeyEvent *);
     virtual void wheelEvent( QWheelEvent * );
 
@@ -116,6 +116,10 @@ private:
     void showTab( QWidget *);
     void showVideo();
     void restoreStackOldWidget();
+
+    /* */
+    void setMinimalView( bool );
+    void setInterfaceFullScreen( bool );
 
     /* */
     QSettings           *settings;
@@ -151,8 +155,11 @@ private:
     bool                 b_notificationEnabled; /// Systray Notifications
     bool                 b_autoresize;          ///< persistent resizeable window
     bool                 b_videoEmbedded;       ///< Want an external Video Window
+    bool                 b_videoFullScreen;     ///< --fullscreen
+    bool                 b_videoOnTop;          ///< --video-on-top
     bool                 b_hideAfterCreation;
-    int                  i_visualmode;          ///< Visual Mode
+    bool                 b_minimalView;         ///< Minimal video
+    bool                 b_interfaceFullScreen;
 
     /* States */
     bool                 playlistVisible;       ///< Is the playlist visible ?
@@ -176,7 +183,7 @@ public slots:
     void toggleUpdateSystrayMenu();
 #endif
     void toggleAdvancedButtons();
-    void toggleFullScreen();
+    void toggleInterfaceFullScreen();
     void toggleFSC();
 
     void popupMenu( const QPoint& );
@@ -209,12 +216,15 @@ private slots:
 
     void resizeStack( int w, int h ) {
         if( !isFullScreen() && !isMaximized() )
-            if( i_visualmode == 1 ) resize( w, h ); /* Oh yes, it shouldn't
+            if( b_minimalView ) resize( w, h ); /* Oh yes, it shouldn't
                                    be possible that size() - stackCentralW->size() < 0
                                    since stackCentralW is contained in the QMW... */
             else resize( size() - stackCentralW->size() + QSize( w, h ) );
         debug(); }
 
+    void setVideoSize( unsigned int, unsigned int );
+    void setVideoFullScreen( bool );
+    void setVideoOnTop( bool );
 
 signals:
     void askGetVideo( WId *p_id, int *pi_x, int *pi_y,
@@ -222,6 +232,7 @@ signals:
     void askReleaseVideo( );
     void askVideoToResize( unsigned int, unsigned int );
     void askVideoSetFullScreen( bool );
+    void askVideoOnTop( bool );
     void minimalViewToggled( bool );
     void fullscreenInterfaceToggled( bool );
 

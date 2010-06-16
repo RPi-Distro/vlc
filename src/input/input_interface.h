@@ -2,7 +2,7 @@
  * input_interface.h: Input functions usable outside input code.
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 7f7347d5765ececc7d4fb669c6959f351bb9b77e $
+ * $Id: 1e2e7c8dab514a497bd4ed0542e37cb22503f142 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -50,11 +50,6 @@ input_stats_t *stats_NewInputStats( input_thread_t *p_input );
  * This function deletes the current sout in the resources.
  */
 void input_resource_TerminateSout( input_resource_t *p_resource );
-
-/**
- * This function deletes the current vout in the resources.
- */
-void input_resource_TerminateVout( input_resource_t *p_resource );
 
 /**
  * This function return true if there is at least one vout in the resources.

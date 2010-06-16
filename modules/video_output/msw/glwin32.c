@@ -2,7 +2,7 @@
  * glwin32.c: Windows OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: f120069ca2468ca5f06c59b899c3a315d7064649 $
+ * $Id: 4619b7fff145076e8b613ac9cac4f6d1d86eeb7f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -57,19 +57,7 @@ vlc_module_begin()
     add_shortcut("glwin32")
     add_shortcut("opengl")
     set_callbacks(Open, Close)
-
-    /* FIXME: Hack to avoid unregistering our window class */
-    cannot_unload_broken_library ()
 vlc_module_end()
-
-#if 0 /* FIXME */
-    /* check if we registered a window class because we need to
-     * unregister it */
-    WNDCLASS wndclass;
-    if(GetClassInfo(GetModuleHandle(NULL), "VLC DirectX", &wndclass))
-        UnregisterClass("VLC DirectX", GetModuleHandle(NULL));
-#endif
-
 
 /*****************************************************************************
  * Local prototypes.
@@ -133,7 +121,7 @@ static int Open(vlc_object_t *object)
 
     vout_display_info_t info = vd->info;
     info.has_double_click = true;
-    info.has_hide_mouse = true;
+    info.has_hide_mouse = false;
     info.has_pictures_invalid = true;
 
    /* Setup vout_display now that everything is fine */

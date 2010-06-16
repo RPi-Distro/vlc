@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- *$Id: d62775634a4fa087488a7ed6360937ee664aa2ba $
+ *$Id: ac7e5811cf695f47d40a899c24676c3f5ff1be13 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -73,22 +73,11 @@ vlc_module_begin ()
     add_shortcut("direct3d_xp")
     set_callbacks(OpenVideoXP, Close)
 
-    /* FIXME: Hack to avoid unregistering our window class */
-    cannot_unload_broken_library()
-
     add_submodule()
         set_capability("vout display", 150)
         add_shortcut("direct3d_vista")
         set_callbacks(OpenVideoVista, Close)
 vlc_module_end ()
-
-#if 0 /* FIXME */
-    /* check if we registered a window class because we need to
-     * unregister it */
-    WNDCLASS wndclass;
-    if (GetClassInfo(GetModuleHandle(NULL), "VLC DirectX", &wndclass))
-        UnregisterClass("VLC DirectX", GetModuleHandle(NULL));
-#endif
 
 /*****************************************************************************
  * Local prototypes.
@@ -163,7 +152,7 @@ static int Open(vlc_object_t *object)
     vout_display_info_t info = vd->info;
     info.is_slow = true;
     info.has_double_click = true;
-    info.has_hide_mouse = true;
+    info.has_hide_mouse = false;
     info.has_pictures_invalid = true;
 
     /* Interaction */

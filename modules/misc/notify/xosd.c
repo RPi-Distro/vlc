@@ -2,7 +2,7 @@
  * xosd.c : X On Screen Display interface
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 587bc23aac24df930a6ea56f869f9a3bd0913b11 $
+ * $Id: 2cea9331817b45745388df5723b5d70869dda7a4 $
  *
  * Authors: Loïc Minier <lool@videolan.org>
  *
@@ -141,7 +141,7 @@ static int Open( vlc_object_t *p_this )
     xosd_set_font( p_osd, psz_font );
     xosd_set_colour( p_osd, psz_colour );
     xosd_set_timeout( p_osd, 3 );
-    xosd_set_pos( p_osd, var_InheritInteger( p_intf, "xosd-position" ) ?
+    xosd_set_pos( p_osd, var_InheritBool( p_intf, "xosd-position" ) ?
                                         XOSD_bottom: XOSD_top );
     xosd_set_horizontal_offset( p_osd,
                     var_InheritInteger( p_intf, "xosd-text-offset" ) );

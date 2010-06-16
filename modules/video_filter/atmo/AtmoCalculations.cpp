@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: 1f738abc65a614599b1f11fd558bed50956b94fa $
+ * $Id: 66b0a2609e20ac48df81c08c18f5b9e607ed2908 $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -250,7 +250,7 @@ pColorPacket CAtmoColorCalculator::AnalyzeHSV(tHSVColor *HSV_Img)
     // windowing from -hue_windowsize -> +hue_windowsize
     for (int mywin = -hue_windowsize; mywin < hue_windowsize+1; mywin++)
     {
-      // adressed histogram candlestick
+      // addressed histogram candlestick
       int myidx = i + mywin;
 
       // handle beginning of windowing -> roll back
@@ -374,7 +374,7 @@ pColorPacket CAtmoColorCalculator::AnalyzeHSV(tHSVColor *HSV_Img)
      // windowing from -hue_windowsize -> +hue_windowsize
      for (int mywin = -sat_windowsize; mywin < sat_windowsize+1; mywin++)
      {
-       // adressed histogram candlestick
+       // addressed histogram candlestick
        int myidx = i + mywin;
 
        // handle beginning of windowing -> roll back

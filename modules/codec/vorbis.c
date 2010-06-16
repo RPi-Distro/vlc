@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: b5255ce4185bdc36948885a91dae30a1cc21923a $
+ * $Id: b241bbf6bb36190b34670756fa9fdfda69ae95b4 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -203,7 +203,7 @@ vlc_module_begin ()
 #   define ENC_CFG_PREFIX "sout-vorbis-"
     add_submodule ()
     set_description( N_("Vorbis audio encoder") )
-    set_capability( "encoder", 100 )
+    set_capability( "encoder", 130 )
     set_callbacks( OpenEncoder, CloseEncoder )
 
     add_integer( ENC_CFG_PREFIX "quality", 0, NULL, ENC_QUALITY_TEXT,

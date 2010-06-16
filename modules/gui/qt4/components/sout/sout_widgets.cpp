@@ -4,7 +4,7 @@
  * Copyright (C) 2007-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 3be195cedb0b6ccaa098f9bd639b68a654fb5e5e $
+ * $Id: aa430b0fe5fe0ef59db2b38337cd6f40109cdbb5 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin@savoirfairelinux.com>
@@ -113,11 +113,21 @@ QString FileDestBox::getMRL( const QString& mux )
     if( fileEdit->text().isEmpty() ) return "";
 
     SoutMrl m;
-    m.begin( "std" );
-    m.option( "access", "file" );
+    m.begin( "file" );
+    QString outputfile = fileEdit->text();
     if( !mux.isEmpty() )
-        m.option( "mux", mux ); //FIXME: alert if ext doesn't match
-    m.option( "dst", fileEdit->text() );
+    {
+        if( outputfile.contains( QRegExp("\\..{2,4}$")) &&
+            !outputfile.endsWith(mux) )
+        {
+           /* Replace the extension according to muxer */
+           outputfile.replace(QRegExp("\\..{2,4}$"),"."+mux);
+        } else if (!outputfile.endsWith( mux ) )
+        {
+           m.option( "mux", mux );
+        }
+    }
+    m.option( "dst", outputfile );
     m.end();
 
     return m.getMrl();
@@ -126,7 +136,7 @@ QString FileDestBox::getMRL( const QString& mux )
 void FileDestBox::fileBrowse()
 {
     QString fileName = QFileDialog::getSaveFileName( this, qtr( "Save file..." ),
-            "", qtr( "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)" ) );
+            "", qtr( "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)" ) );
     fileEdit->setText( toNativeSeparators( fileName ) );
     emit mrlUpdated();
 }
@@ -175,10 +185,17 @@ QString HTTPDestBox::getMRL( const QString& mux )
     QString dst = ":" + port + path;
 
     SoutMrl m;
-    m.begin( "std" );
-    m.option(  "access", "http" );
-    if( !mux.isEmpty() )
-        m.option( "mux", mux );
+    m.begin( "http" );
+    /* Path-extension is primary muxer to use if possible,
+       otherwise check for mux-choise and see that it isn't mp4
+       then fallback to flv*/
+    if ( !path.contains(QRegExp("\\..{2,3}$") ) )
+    {
+        if( !mux.isEmpty() && mux.compare("mp4") )
+           m.option( "mux", mux );
+        else
+           m.option( "mux", "ffmpeg{mux=flv}" );
+    }
     m.option( "dst", dst );
     m.end();
 
@@ -314,9 +331,9 @@ QString UDPDestBox::getMRL( const QString& mux )
     if( UDPEdit->text().isEmpty() ) return "";
 
     SoutMrl m;
-    m.begin( "std" );
-    m.option(  "access", "udp" );
-    if( !mux.isEmpty() )
+    m.begin( "udp" );
+    /* udp output, ts-mux is really only reasonable one to use*/
+    if( !mux.isEmpty() && !mux.compare("ts" ) )
         m.option( "mux", mux );
     m.option( "dst", UDPEdit->text(), UDPPort->value() );
     m.end();
@@ -365,6 +382,7 @@ QString RTPDestBox::getMRL( const QString& )
     m.begin( "rtp" );
     m.option( "dst", RTPEdit->text() );
     m.option( "port", RTPPort->value() );
+    /* mp4-mux ain't usable in rtp-output either */
     if( mux != NULL )
         m.option( "mux", qfu( mux ) );
     m.end();

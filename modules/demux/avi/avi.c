@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: b522217a599b1d6d7eb933cb46ab199f6af34f11 $
+ * $Id: ebb8f565c42f16634b94743ce580ddbdcd6f00a9 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -283,7 +283,7 @@ static int Open( vlc_object_t * p_this )
 
     /* For unseekable stream, automaticaly use Demux_UnSeekable */
     if( !p_sys->b_seekable
-     || var_InheritInteger( p_demux, "avi-interleaved" ) )
+     || var_InheritBool( p_demux, "avi-interleaved" ) )
     {
         p_demux->pf_demux = Demux_UnSeekable;
     }

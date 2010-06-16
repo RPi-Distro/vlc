@@ -2,7 +2,7 @@
  * directx.c: Windows DirectX audio output method
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: f03db57ce9c08d647db2f5259e7198c9d9951947 $
+ * $Id: 23cfe0af5f64e72fb448eeaf1f0dfb51450f7d43 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -960,7 +960,7 @@ static int FillBuffer( aout_instance_t *p_aout, int i_frame,
                 p_notif->i_frame_size,                    /* Number of bytes */
                 &p_write_position,                  /* Address of lock start */
                 &l_bytes1,       /* Count of bytes locked before wrap around */
-                &p_wrap_around,            /* Buffer adress (if wrap around) */
+                &p_wrap_around,           /* Buffer address (if wrap around) */
                 &l_bytes2,               /* Count of bytes after wrap around */
                 0 );                                                /* Flags */
     if( dsresult == DSERR_BUFFERLOST )

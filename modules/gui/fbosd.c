@@ -2,7 +2,7 @@
  * fbosd.c : framebuffer osd plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007-2008, the VideoLAN team
- * $Id: c2b6c3f0a7e2be55bc72e8fbfaa1e4030cd1b21d $
+ * $Id: d7845bfc4bee6db2f2666ae87930100f987c035c $
  *
  * Authors: Jean-Paul Saman
  * Copied from modules/video_output/fb.c by Samuel Hocevar <sam@zoy.org>
@@ -538,7 +538,7 @@ static int OpenBlending( intf_thread_t *p_intf )
             p_intf->p_sys->fmt_out.i_sar_den;
     p_intf->p_sys->p_blend->fmt_out.video.i_chroma =
             p_intf->p_sys->fmt_out.i_chroma;
-    if( var_InheritInteger( p_intf, "freetype-yuvp" ) )
+    if( var_InheritBool( p_intf, "freetype-yuvp" ) )
         p_intf->p_sys->p_blend->fmt_in.video.i_chroma =
                 VLC_CODEC_YUVP;
     else

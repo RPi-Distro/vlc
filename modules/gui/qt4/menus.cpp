@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 13a38959288f442b4095bed593411ec1ea318257 $
+ * $Id: 23025596d89eeb84f84d20509b9a372ae466cee7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -465,9 +465,9 @@ QMenu *QVLCMenu::ViewMenu( intf_thread_t *p_intf, QMenu *current, MainInterface 
 
     /* FullScreen View */
     action = menu->addAction( qtr( "&Fullscreen Interface" ), mi,
-            SLOT( toggleFullScreen() ), QString( "F11" ) );
+            SLOT( toggleInterfaceFullScreen() ), QString( "F11" ) );
     action->setCheckable( true );
-    action->setChecked( mi->isFullScreen() );
+    action->setChecked( mi->isInterfaceFullScreen() );
     CONNECT( mi, fullscreenInterfaceToggled( bool ),
              action, setChecked( bool ) );
 

@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: c3fcd3a39ebb2d3edc0918ca7f2ffe6a0d179055 $
+ * $Id: 16af5fe99effbdadfcfe28ea6e0f7d74c31be6b3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -46,14 +46,11 @@ class QPixmap;
 class QHBoxLayout;
 class QMenu;
 class QSlider;
-class ReparentableWidget;
 
 /******************** Video Widget ****************/
 class VideoWidget : public QFrame
 {
     Q_OBJECT
-friend class ReparentableWidget;
-
 public:
     VideoWidget( intf_thread_t * );
     virtual ~VideoWidget();
@@ -61,6 +58,7 @@ public:
     WId request( int *, int *, unsigned int *, unsigned int *, bool );
     void  release( void );
     int   control( void *, int, va_list );
+    void  sync( void );
 
 protected:
     virtual QPaintEngine *paintEngine() const
@@ -71,16 +69,13 @@ protected:
 private:
     intf_thread_t *p_intf;
 
-    QWidget *reparentable;
+    QWidget *stable;
     QLayout *layout;
-    virtual bool eventFilter ( QObject * watched, QEvent * event );
 signals:
-    void keyPressed( QKeyEvent * );
     void sizeChanged( int, int );
 
 public slots:
     void SetSizing( unsigned int, unsigned int );
-    void SetFullScreen( bool );
 };
 
 /******************** Background Widget ****************/

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slovak translation for VLC Media Player\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-06-03 15:23+0200\n"
+"POT-Creation-Date: 2010-06-16 03:39+0200\n"
 "PO-Revision-Date: 2010-05-16 12:33+0100\n"
 "Last-Translator: Marian Hikanik <podnety-at-mojepreklady.net>\n"
 "Language-Team: Marián Hikaník (controlled by Pavel Kříž)\n"
@@ -74,7 +74,7 @@ msgstr "Nastavenia kontrolných rozhraní programu VLC"
 msgid "Hotkeys settings"
 msgstr "Nastavenia klávesových skratiek"
 
-#: include/vlc_config_cat.h:52 src/input/es_out.c:2845 src/input/es_out.c:2885
+#: include/vlc_config_cat.h:52 src/input/es_out.c:2850 src/input/es_out.c:2890
 #: src/libvlc-module.c:1567 modules/gui/macosx/intf.m:667
 #: modules/gui/macosx/output.m:170 modules/gui/macosx/playlistinfo.m:114
 #: modules/gui/macosx/simple_prefs.m:184 modules/gui/macosx/wizard.m:380
@@ -82,6 +82,7 @@ msgstr "Nastavenia klávesových skratiek"
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:192
+#: modules/gui/qt4/ui/profiles.h:487
 msgid "Audio"
 msgstr "Zvuk"
 
@@ -119,7 +120,7 @@ msgstr "Výstupné moduly"
 msgid "General settings for audio output modules."
 msgstr "Všeobecné nastavenia výstupných modulov zvuku."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2039
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2042
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Rôzne"
@@ -128,7 +129,7 @@ msgstr "Rôzne"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Rôzne nastavenia zvuku a modulov."
 
-#: include/vlc_config_cat.h:70 src/input/es_out.c:2848 src/input/es_out.c:2932
+#: include/vlc_config_cat.h:70 src/input/es_out.c:2853 src/input/es_out.c:2937
 #: src/libvlc-module.c:1620 modules/gui/macosx/intf.m:680
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:103
 #: modules/gui/macosx/simple_prefs.m:188 modules/gui/macosx/wizard.m:381
@@ -136,6 +137,7 @@ msgstr "Rôzne nastavenia zvuku a modulov."
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:101 modules/stream_out/transcode/transcode.c:161
+#: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Video"
 msgstr "Video"
 
@@ -241,7 +243,7 @@ msgid "General input settings. Use with care..."
 msgstr ""
 "Nastavenia všeobecného vstupu. Týmto nastaveniam venujte zvýšenú pozornosť..."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1959
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1962
 msgid "Stream output"
 msgstr "Výstupný tok"
 
@@ -353,7 +355,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "Implementácia funkcie videa na požiadanie (Video on Demand)"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2105
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2108
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:608 modules/gui/qt4/components/controller.hpp:106
@@ -387,7 +389,7 @@ msgstr ""
 "Zisťovacie moduly pridávajú do programu VLC možnosť automatického pridávania "
 "položiek do playlistu."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1906
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1909
 msgid "Advanced"
 msgstr "Pokročilé"
 
@@ -413,6 +415,7 @@ msgstr "Pokročilé nastavenia"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:180
 #: modules/gui/macosx/open.m:459 modules/gui/macosx/simple_prefs.m:259
+#: modules/gui/qt4/ui/sprefs_input.h:318
 msgid "Network"
 msgstr "Sieť"
 
@@ -543,6 +546,7 @@ msgstr "&O programe"
 #: modules/gui/macosx/intf.m:2013 modules/gui/macosx/intf.m:2014
 #: modules/gui/macosx/intf.m:2015 modules/gui/macosx/playlist.m:464
 #: modules/gui/qt4/components/controller.hpp:104 modules/gui/qt4/menus.cpp:790
+#: modules/gui/qt4/ui/open.h:256
 msgid "Play"
 msgstr "Prehrať"
 
@@ -685,7 +689,7 @@ msgid ""
 msgstr ""
 "Zväčšiť časť videa. Tu si môžete zvoliť, ktorú časť videa chcete zväčšiť."
 
-#: include/vlc_intf_strings.h:117
+#: include/vlc_intf_strings.h:117 modules/gui/qt4/ui/video_effects.h:1141
 msgid "Waves"
 msgstr "Vlny"
 
@@ -857,7 +861,9 @@ msgstr "Stereo"
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
-#: modules/video_filter/rss.c:174
+#: modules/video_filter/rss.c:174 modules/gui/qt4/ui/video_effects.h:1114
+#: modules/gui/qt4/ui/video_effects.h:1177
+#: modules/gui/qt4/ui/video_effects.h:1182
 msgid "Left"
 msgstr "Vľavo"
 
@@ -868,7 +874,7 @@ msgstr "Vľavo"
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
-#: modules/video_filter/rss.c:174
+#: modules/video_filter/rss.c:174 modules/gui/qt4/ui/video_effects.h:1116
 msgid "Right"
 msgstr "Vpravo"
 
@@ -920,8 +926,8 @@ msgstr "dekodér"
 
 #: src/input/decoder.c:278 src/input/decoder.c:430
 #: modules/codec/avcodec/encoder.c:224 modules/codec/avcodec/encoder.c:232
-#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:704
-#: modules/codec/avcodec/encoder.c:713 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:706
+#: modules/codec/avcodec/encoder.c:715 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr "Streamovanie a prekódovanie sa nepodarilo"
@@ -973,115 +979,118 @@ msgstr "Kódované"
 msgid "Yes"
 msgstr "Áno"
 
-#: src/input/es_out.c:2007
+#: src/input/es_out.c:2012
 #, c-format
 msgid "Closed captions %u"
 msgstr "Uzatvorené kapitoly %u"
 
-#: src/input/es_out.c:2835
+#: src/input/es_out.c:2840
 #, c-format
 msgid "Stream %d"
 msgstr "Tok %d"
 
-#: src/input/es_out.c:2851 src/input/es_out.c:2959
+#: src/input/es_out.c:2856 src/input/es_out.c:2964
 msgid "Subtitle"
 msgstr "Titulky"
 
-#: src/input/es_out.c:2859 src/input/es_out.c:2885 src/input/es_out.c:2932
-#: src/input/es_out.c:2959 modules/gui/macosx/output.m:153
+#: src/input/es_out.c:2864 src/input/es_out.c:2890 src/input/es_out.c:2937
+#: src/input/es_out.c:2964 modules/gui/macosx/output.m:153
 msgid "Type"
 msgstr "Typ"
 
-#: src/input/es_out.c:2862
+#: src/input/es_out.c:2867
 msgid "Original ID"
 msgstr "Originálne ID"
 
-#: src/input/es_out.c:2869 src/input/es_out.c:2872
-#: modules/gui/macosx/wizard.m:385
+#: src/input/es_out.c:2874 src/input/es_out.c:2877
+#: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
+#: modules/gui/qt4/ui/profiles.h:489
 msgid "Codec"
 msgstr "Kodek"
 
-#: src/input/es_out.c:2876 src/input/meta.c:62 src/libvlc-module.c:212
+#: src/input/es_out.c:2881 src/input/meta.c:62 src/libvlc-module.c:212
 #: modules/gui/macosx/simple_prefs.m:269
+#: modules/gui/qt4/ui/sprefs_interface.h:386
 msgid "Language"
 msgstr "Jazyk"
 
-#: src/input/es_out.c:2879 src/input/meta.c:57
+#: src/input/es_out.c:2884 src/input/meta.c:57
 #: modules/gui/macosx/bookmarks.m:94 modules/gui/qt4/dialogs/bookmarks.cpp:65
 msgid "Description"
 msgstr "Popis"
 
-#: src/input/es_out.c:2888 src/input/es_out.c:2891
-#: modules/gui/macosx/output.m:176
+#: src/input/es_out.c:2893 src/input/es_out.c:2896
+#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
 msgid "Channels"
 msgstr "Kanály"
 
-#: src/input/es_out.c:2896
+#: src/input/es_out.c:2901
 msgid "Sample rate"
 msgstr "Vzorkovacia frekvencia"
 
-#: src/input/es_out.c:2896
+#: src/input/es_out.c:2901
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:2906
+#: src/input/es_out.c:2911
 msgid "Bits per sample"
 msgstr "bitov na vzorok"
 
-#: src/input/es_out.c:2911 modules/access/pvr.c:96
+#: src/input/es_out.c:2916 modules/access/pvr.c:96
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:413
 #: modules/gui/qt4/components/open_panels.cpp:901
+#: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
 msgid "Bitrate"
 msgstr "Dátový tok"
 
-#: src/input/es_out.c:2911
+#: src/input/es_out.c:2916
 #, c-format
 msgid "%u kb/s"
 msgstr "%u kb/s"
 
-#: src/input/es_out.c:2923
+#: src/input/es_out.c:2928
 msgid "Track replay gain"
 msgstr "Zosilnenie pri prehrávaní stopy"
 
-#: src/input/es_out.c:2925
+#: src/input/es_out.c:2930
 msgid "Album replay gain"
 msgstr "Zosilnenie pri prehrávaní albumu"
 
-#: src/input/es_out.c:2926
+#: src/input/es_out.c:2931
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2935
+#: src/input/es_out.c:2940 modules/gui/qt4/ui/profiles.h:476
 msgid "Resolution"
 msgstr "Rozlíšenie"
 
-#: src/input/es_out.c:2940
+#: src/input/es_out.c:2945
 msgid "Display resolution"
 msgstr "Rozlíšenie obrazovky"
 
-#: src/input/es_out.c:2950 src/input/es_out.c:2953
+#: src/input/es_out.c:2955 src/input/es_out.c:2958
 #: modules/access/screen/screen.c:44 modules/access/screen/xcb.c:38
 msgid "Frame rate"
 msgstr "Rýchlosť snímkovania"
 
-#: src/input/input.c:2478
+#: src/input/input.c:2488
 msgid "Your input can't be opened"
 msgstr "Zadaný vstup sa nedá otvoriť"
 
-#: src/input/input.c:2479
+#: src/input/input.c:2489
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 "Program VLC nemôže otvoriť adresu MRL  '%s'. Podrobnejšie informácie nájdete "
 "v súbore so záznamom."
 
-#: src/input/input.c:2598
+#: src/input/input.c:2608
 msgid "VLC can't recognize the input's format"
 msgstr "Program nedokáže rozpoznať vstupný formát"
 
-#: src/input/input.c:2599
+#: src/input/input.c:2609
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -1093,6 +1102,7 @@ msgstr ""
 #: modules/gui/macosx/intf.m:663 modules/gui/macosx/open.m:190
 #: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
 #: modules/gui/qt4/components/open_panels.cpp:372 modules/mux/asf.c:56
+#: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
 msgstr "Titul"
 
@@ -1130,6 +1140,7 @@ msgid "Setting"
 msgstr "Nastavenie"
 
 #: src/input/meta.c:61 modules/gui/macosx/open.m:203
+#: modules/gui/qt4/ui/podcast_configuration.h:103
 msgid "URL"
 msgstr "URL adresa"
 
@@ -1163,6 +1174,7 @@ msgstr "Programy"
 
 #: src/input/var.c:192 modules/gui/macosx/intf.m:664
 #: modules/gui/macosx/intf.m:665 modules/gui/macosx/open.m:191
+#: modules/gui/qt4/ui/open_disk.h:303
 msgid "Chapter"
 msgstr "Kapitola"
 
@@ -1397,7 +1409,7 @@ msgstr ""
 "Ak chcete pokračovať, stlačte ENTER... \n"
 
 #: src/libvlc.h:175 src/libvlc-module.c:1462 src/libvlc-module.c:1463
-#: src/libvlc-module.c:2639 src/video_output/vout_intf.c:195
+#: src/libvlc-module.c:2642 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Priblížiť"
 
@@ -1585,6 +1597,7 @@ msgstr ""
 "program vždy automaticky vyberie najlepšiu možnú metódu."
 
 #: src/libvlc-module.c:252 modules/stream_out/display.c:41
+#: modules/gui/qt4/ui/sprefs_audio.h:404
 msgid "Enable audio"
 msgstr "Zapnúť zvuk"
 
@@ -1696,6 +1709,7 @@ msgstr ""
 "začiatkom prehrávania)."
 
 #: src/libvlc-module.c:301 modules/gui/macosx/simple_prefs.m:237
+#: modules/gui/qt4/ui/sprefs_audio.h:413
 msgid "Use S/PDIF when available"
 msgstr "Použiť výstup S/PDIF, ak je dostupný"
 
@@ -1799,7 +1813,7 @@ msgstr ""
 #: src/libvlc-module.c:356 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/codec/avcodec/avcodec.c:74
 #: modules/codec/kate.c:203
-#: modules/gui/qt4/components/interface_widgets.cpp:388
+#: modules/gui/qt4/components/interface_widgets.cpp:295
 msgid "None"
 msgstr "Žiaden"
 
@@ -1829,6 +1843,7 @@ msgstr ""
 "program vždy automaticky vyberie najlepšiu možnú metódu."
 
 #: src/libvlc-module.c:375 modules/stream_out/display.c:43
+#: modules/gui/qt4/ui/sprefs_video.h:309
 msgid "Enable video"
 msgstr "Zapnúť video"
 
@@ -1934,7 +1949,9 @@ msgstr "Vycentrovať"
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
-#: modules/video_filter/rss.c:174
+#: modules/video_filter/rss.c:174 modules/gui/qt4/ui/video_effects.h:1112
+#: modules/gui/qt4/ui/video_effects.h:1178
+#: modules/gui/qt4/ui/video_effects.h:1181
 msgid "Top"
 msgstr "Hore"
 
@@ -1942,7 +1959,7 @@ msgstr "Hore"
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
-#: modules/video_filter/rss.c:174
+#: modules/video_filter/rss.c:174 modules/gui/qt4/ui/video_effects.h:1118
 msgid "Bottom"
 msgstr "Dole"
 
@@ -2040,7 +2057,7 @@ msgstr ""
 "hardvérovú akceleráciu videa."
 
 #: src/libvlc-module.c:442 src/video_output/vout_intf.c:344
-#: modules/gui/macosx/simple_prefs.m:295
+#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "Zostať vždy navrchu"
 
@@ -2154,7 +2171,7 @@ msgstr ""
 "Zablokuje sa spúšťanie schémy napájania počas prehrávania, čo zabráni "
 "vypnutiu počítača z dôvodu nečinnosti."
 
-#: src/libvlc-module.c:503
+#: src/libvlc-module.c:503 modules/gui/qt4/ui/sprefs_video.h:316
 msgid "Window decorations"
 msgstr "Dekorácie okna"
 
@@ -2365,6 +2382,7 @@ msgstr ""
 "videu aspoň na hodnotu 4:3."
 
 #: src/libvlc-module.c:597 modules/gui/macosx/simple_prefs.m:297
+#: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "Preskočiť snímky"
 
@@ -2495,6 +2513,7 @@ msgstr "Predvolený"
 
 #: src/libvlc-module.c:653 modules/gui/macosx/equalizer.m:149
 #: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
+#: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Aktivovať"
 
@@ -2588,7 +2607,7 @@ msgstr ""
 "zoznamu oddeľujte prosím čiarkou. Túto voľbou používajte len vtedy, ak "
 "chcete nechať načítať multi-programový stream (napríklad DVB stream)."
 
-#: src/libvlc-module.c:700
+#: src/libvlc-module.c:700 modules/gui/qt4/ui/open_disk.h:305
 msgid "Audio track"
 msgstr "Zvuková stopa"
 
@@ -2596,7 +2615,7 @@ msgstr "Zvuková stopa"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Streamovať túto zvukovú stopu (zadajte číslo v rozsahu od 0 do n)."
 
-#: src/libvlc-module.c:705
+#: src/libvlc-module.c:705 modules/gui/qt4/ui/open_disk.h:306
 msgid "Subtitles track"
 msgstr "Stopa s titulkami"
 
@@ -2736,7 +2755,7 @@ msgstr ""
 "\"{názov=názov-záložky,čas=prípadný-časový-offset,byty=prípadný-bytový-"
 "offset},{...}\""
 
-#: src/libvlc-module.c:770
+#: src/libvlc-module.c:770 modules/gui/qt4/ui/sprefs_input.h:316
 msgid "Record directory or filename"
 msgstr "Priečinok alebo názov súboru so záznamom"
 
@@ -2790,7 +2809,7 @@ msgstr ""
 "zapnúť tu a konfigurujú sa v sekcií \"filtre podsnímok.\". Tam môžete "
 "nastaviť aj ďalšie vlastnosti podsnímok. "
 
-#: src/libvlc-module.c:796
+#: src/libvlc-module.c:796 modules/gui/qt4/ui/sprefs_subtitles.h:213
 msgid "Force subtitle position"
 msgstr "Vynútiť si pozíciu titulkov"
 
@@ -2810,9 +2829,10 @@ msgstr "Zapnúť pod-obrázky"
 msgid "You can completely disable the sub-picture processing."
 msgstr "Tu môžete kompletne vypnúť spracovávanie pod-obrázkov."
 
-#: src/libvlc-module.c:805 src/libvlc-module.c:1758
+#: src/libvlc-module.c:805 src/libvlc-module.c:1761
 #: modules/gui/macosx/simple_prefs.m:286
 #: modules/stream_out/transcode/transcode.c:222
+#: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
 msgstr "Ovládanie - On Screen Display"
 
@@ -3795,6 +3815,7 @@ msgstr ""
 #: modules/gui/macosx/intf.m:685 modules/gui/macosx/intf.m:750
 #: modules/gui/macosx/simple_prefs.m:294
 #: modules/gui/qt4/components/controller.hpp:105
+#: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
 msgstr "Celoobrazovkový režim"
 
@@ -3885,7 +3906,8 @@ msgstr "Pomalšie (presne)"
 #: modules/gui/macosx/intf.m:746 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:321
+#: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
+#: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Ďalej"
 
@@ -3900,7 +3922,8 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:599
 #: modules/gui/macosx/intf.m:651 modules/gui/macosx/intf.m:739
 #: modules/gui/macosx/intf.m:745 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:319
+#: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
+#: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Dozadu"
 
@@ -3914,7 +3937,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:602
 #: modules/gui/macosx/intf.m:647 modules/gui/macosx/intf.m:737
 #: modules/gui/macosx/intf.m:744 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231
+#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr "Stop"
 
@@ -3926,6 +3949,7 @@ msgstr "Vyberte si klávesu, ktorú chcete používať pre zastavenie prehrávan
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:70 modules/gui/macosx/intf.m:607
 #: modules/video_filter/marq.c:158 modules/video_filter/rss.c:201
+#: modules/gui/qt4/ui/video_effects.h:1167
 msgid "Position"
 msgstr "Pozícia"
 
@@ -4608,7 +4632,7 @@ msgstr "Cyklicky prechádzať po jednotlivých zvukových zariadeniach."
 msgid "Cycle through available audio devices"
 msgstr "Cyklicky prechádzať po dostupných zvukových zariadeniach."
 
-#: src/libvlc-module.c:1683 src/video_output/vout_intf.c:363
+#: src/libvlc-module.c:1686 src/video_output/vout_intf.c:363
 #: modules/gui/macosx/controls.m:494 modules/gui/macosx/controls.m:1086
 #: modules/gui/macosx/intf.m:687 modules/gui/macosx/intf.m:751
 #: modules/gui/qt4/components/controller.hpp:106
@@ -4616,96 +4640,97 @@ msgstr "Cyklicky prechádzať po dostupných zvukových zariadeniach."
 msgid "Snapshot"
 msgstr "Snímka"
 
-#: src/libvlc-module.c:1700
+#: src/libvlc-module.c:1703
 msgid "Window properties"
 msgstr "Vlastnosti okna"
 
-#: src/libvlc-module.c:1759
+#: src/libvlc-module.c:1762
 msgid "Subpictures"
 msgstr "Pod-obrázky"
 
-#: src/libvlc-module.c:1767 modules/codec/subtitles/subsdec.c:202
+#: src/libvlc-module.c:1770 modules/codec/subtitles/subsdec.c:202
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
-#: modules/demux/subtitle.c:73
+#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
+#: modules/gui/qt4/ui/profiles.h:497
 msgid "Subtitles"
 msgstr "Titulky"
 
-#: src/libvlc-module.c:1785 modules/stream_out/transcode/transcode.c:115
+#: src/libvlc-module.c:1788 modules/stream_out/transcode/transcode.c:115
 msgid "Overlays"
 msgstr "Prekryvy/Titulky"
 
-#: src/libvlc-module.c:1793
+#: src/libvlc-module.c:1796
 msgid "Track settings"
 msgstr "Nastavenia stopy"
 
-#: src/libvlc-module.c:1823
+#: src/libvlc-module.c:1826
 msgid "Playback control"
 msgstr "Kontrola prehrávania"
 
-#: src/libvlc-module.c:1850
+#: src/libvlc-module.c:1853
 msgid "Default devices"
 msgstr "Predvolené zariadenia"
 
-#: src/libvlc-module.c:1859
+#: src/libvlc-module.c:1862
 msgid "Network settings"
 msgstr "Nastavenia siete"
 
-#: src/libvlc-module.c:1871
+#: src/libvlc-module.c:1874
 msgid "Socks proxy"
 msgstr "Socks proxy"
 
-#: src/libvlc-module.c:1880 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1883 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Meta-dáta"
 
-#: src/libvlc-module.c:1931
+#: src/libvlc-module.c:1934
 msgid "Decoders"
 msgstr "Dekodéry"
 
-#: src/libvlc-module.c:1938 modules/access/v4l2.c:80
+#: src/libvlc-module.c:1941 modules/access/v4l2.c:80
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Vstup"
 
-#: src/libvlc-module.c:1977
+#: src/libvlc-module.c:1980
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2009
+#: src/libvlc-module.c:2012
 msgid "CPU"
 msgstr "Procesor (CPU)"
 
-#: src/libvlc-module.c:2038
+#: src/libvlc-module.c:2041
 msgid "Special modules"
 msgstr "Špeciálne moduly"
 
-#: src/libvlc-module.c:2044 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2047 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Prídavné moduly"
 
-#: src/libvlc-module.c:2059
+#: src/libvlc-module.c:2062
 msgid "Performance options"
 msgstr "Nastavenia výkonu"
 
-#: src/libvlc-module.c:2207
+#: src/libvlc-module.c:2210
 msgid "Hot keys"
 msgstr "Klávesové skratky"
 
-#: src/libvlc-module.c:2649
+#: src/libvlc-module.c:2652
 msgid "Jump sizes"
 msgstr "Veľkosti skoku"
 
-#: src/libvlc-module.c:2726
+#: src/libvlc-module.c:2729
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "zobraziť pomocníka programu VLC (príkaz možno kombinovať s parametrom --"
 "advanced)"
 
-#: src/libvlc-module.c:2729
+#: src/libvlc-module.c:2732
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Rozsiahly pomocník pre program VLC a jeho moduly"
 
-#: src/libvlc-module.c:2731
+#: src/libvlc-module.c:2734
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4713,21 +4738,21 @@ msgstr ""
 "zobraziť pomocníka programu VLC a všetkých jeho modulov (príkaz možno "
 "kombinovať s parametrami --advanced a --help-verbose)"
 
-#: src/libvlc-module.c:2734
+#: src/libvlc-module.c:2737
 msgid "ask for extra verbosity when displaying help"
 msgstr ""
 "pri zobrazení pomocníka sa spýtať na použitie rozšíreného komunikačného "
 "režimu programu"
 
-#: src/libvlc-module.c:2736
+#: src/libvlc-module.c:2739
 msgid "print a list of available modules"
 msgstr "zobraziť zoznam dostupných modulov"
 
-#: src/libvlc-module.c:2738
+#: src/libvlc-module.c:2741
 msgid "print a list of available modules with extra detail"
 msgstr "zobraziť zoznam dostupných modulov s detailnými informáciami"
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2743
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -4736,28 +4761,28 @@ msgstr ""
 "parametrami --advanced a --help-verbose). Pri striktných príkazoch pridajte "
 "k modulu prefix =."
 
-#: src/libvlc-module.c:2744
+#: src/libvlc-module.c:2747
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 "do konfiguračného súboru sa neuloží ani sa z neho nenačíta žiadna vlastnosť"
 
-#: src/libvlc-module.c:2746
+#: src/libvlc-module.c:2749
 msgid "reset the current config to the default values"
 msgstr "odstrániť aktuálnu konfiguráciu a aktivovať predvolené nastavenia"
 
-#: src/libvlc-module.c:2748
+#: src/libvlc-module.c:2751
 msgid "use alternate config file"
 msgstr "použiť alternatívny konfiguračný súbor"
 
-#: src/libvlc-module.c:2750
+#: src/libvlc-module.c:2753
 msgid "resets the current plugins cache"
 msgstr "vymaže aktuálnu vyrovnávaciu pamäť prídavných modulov"
 
-#: src/libvlc-module.c:2752
+#: src/libvlc-module.c:2755
 msgid "print version information"
 msgstr "zobraziť informácie o verzii programu"
 
-#: src/libvlc-module.c:2790
+#: src/libvlc-module.c:2793
 msgid "main program"
 msgstr "hlavný program"
 
@@ -4914,7 +4939,7 @@ msgstr "Dodatočné spracovávanie"
 
 #: src/video_output/vout_intf.c:228 modules/gui/macosx/intf.m:692
 #: modules/gui/macosx/intf.m:693 modules/video_filter/crop.c:107
-#: modules/video_filter/croppadd.c:86
+#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1122
 msgid "Crop"
 msgstr "Vystrihnúť"
 
@@ -5315,7 +5340,7 @@ msgstr "Režim terestriálnej hierarchie"
 msgid "Hierarchy alpha value [Undefined,1,2,4]"
 msgstr "Hierarchia hodnoty alfa [Nedefinované,1,2,4]"
 
-#: modules/access/bda/bda.c:169
+#: modules/access/bda/bda.c:169 modules/gui/qt4/ui/streampanel.h:170
 msgid "1"
 msgstr "1"
 
@@ -5417,6 +5442,7 @@ msgstr ""
 
 #: modules/access/cdda.c:67 modules/gui/macosx/open.m:198
 #: modules/gui/macosx/open.m:643 modules/gui/macosx/open.m:731
+#: modules/gui/qt4/ui/open_disk.h:293
 msgid "Audio CD"
 msgstr "Audio CD"
 
@@ -6391,6 +6417,7 @@ msgstr "Norma v tomto streame (automatická, SECAM, PAL, alebo NTSC)."
 #: modules/access/pvr.c:74 modules/access/v4l.c:102 modules/access/v4l2.c:89
 #: modules/codec/invmem.c:53 modules/demux/rawvid.c:48
 #: modules/video_filter/mosaic.c:95 modules/video_output/vmem.c:42
+#: modules/gui/qt4/ui/profiles.h:479
 msgid "Width"
 msgstr "Šírka"
 
@@ -6401,6 +6428,7 @@ msgstr "Šírka zachytávaného streamu (pre autodetekciu zadajte hodnotu -1)."
 #: modules/access/pvr.c:78 modules/access/v4l.c:105 modules/access/v4l2.c:92
 #: modules/codec/invmem.c:56 modules/demux/rawvid.c:52
 #: modules/video_filter/mosaic.c:93 modules/video_output/vmem.c:45
+#: modules/gui/qt4/ui/profiles.h:482
 msgid "Height"
 msgstr "Výška"
 
@@ -6473,7 +6501,7 @@ msgstr "Bitová maska, ktorú bude používať zvuková časť karty."
 #: modules/access/pvr.c:109 modules/access/v4l2.c:163
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/embeddedwindow.m:74
 #: modules/gui/macosx/intf.m:606 modules/gui/qt4/dialogs/toolbar.cpp:347
-#: modules/stream_out/raop.c:150
+#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:405
 msgid "Volume"
 msgstr "Hlasitosť"
 
@@ -6860,7 +6888,7 @@ msgid "SFTP input"
 msgstr "Vstup SFTP"
 
 #: modules/access/sftp.c:137
-msgid "SFTP authentification"
+msgid "SFTP authentication"
 msgstr "Autentifikácia SFTP"
 
 #: modules/access/sftp.c:138
@@ -6976,7 +7004,8 @@ msgid "Height of the stream to capture (-1 for autodetect)."
 msgstr "Výška zachytávaného streamu (autodetekcia: -1)."
 
 #: modules/access/v4l.c:108 modules/access/v4l2.c:108
-#: modules/gui/macosx/extended.m:98 modules/video_filter/atmo/atmo.cpp:257
+#: modules/gui/macosx/extended.m:98 modules/video_filter/atmo/atmo.cpp:264
+#: modules/gui/qt4/ui/video_effects.h:1107
 msgid "Brightness"
 msgstr "Jas"
 
@@ -6985,7 +7014,7 @@ msgid "Brightness of the video input."
 msgstr "Jas na vstupe videa."
 
 #: modules/access/v4l.c:111 modules/access/v4l2.c:117
-#: modules/gui/macosx/extended.m:101
+#: modules/gui/macosx/extended.m:101 modules/gui/qt4/ui/video_effects.h:1109
 msgid "Hue"
 msgstr "Farebný odtieň"
 
@@ -6996,6 +7025,9 @@ msgstr "Farebný odtieň na vstupe videa."
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
 #: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
+#: modules/gui/qt4/ui/video_effects.h:1132
+#: modules/gui/qt4/ui/video_effects.h:1138
+#: modules/gui/qt4/ui/video_effects.h:1150
 msgid "Color"
 msgstr "Farba"
 
@@ -7004,7 +7036,7 @@ msgid "Color of the video input."
 msgstr "Farba vstupu videa"
 
 #: modules/access/v4l.c:117 modules/access/v4l2.c:111
-#: modules/gui/macosx/extended.m:99
+#: modules/gui/macosx/extended.m:99 modules/gui/qt4/ui/video_effects.h:1106
 msgid "Contrast"
 msgstr "Kontrast"
 
@@ -7020,7 +7052,7 @@ msgstr "Tuner"
 msgid "Tuner to use, if there are several ones."
 msgstr "Používaný tuner."
 
-#: modules/access/v4l.c:122
+#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:466
 msgid "MJPEG"
 msgstr "MJPEG"
 
@@ -7143,6 +7175,8 @@ msgstr ""
 "Kontrast vstupu videa (ak je takáto funkcia podporovaná ovládačom v4l2)."
 
 #: modules/access/v4l2.c:114 modules/gui/macosx/extended.m:102
+#: modules/gui/qt4/ui/video_effects.h:1108
+#: modules/gui/qt4/ui/video_effects.h:1137
 msgid "Saturation"
 msgstr "Sýtosť"
 
@@ -7212,6 +7246,7 @@ msgstr ""
 "ovládačom v4l2)."
 
 #: modules/access/v4l2.c:137 modules/gui/macosx/extended.m:100
+#: modules/gui/qt4/ui/video_effects.h:1105
 msgid "Gamma"
 msgstr "Gamma"
 
@@ -7536,7 +7571,7 @@ msgstr "Systémové ID"
 msgid "Entries"
 msgstr "Záznamy"
 
-#: modules/access/vcdx/info.c:75
+#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:421
 msgid "Tracks"
 msgstr "Stopy"
 
@@ -7699,7 +7734,7 @@ msgstr "Používateľské meno, ktoré je potrebné pre prístup k streamu."
 
 #: modules/access_output/http.c:68 modules/control/telnet.c:81
 #: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:234
-#: modules/gui/qt4/dialogs/external.cpp:124 modules/misc/audioscrobbler.c:136
+#: modules/gui/qt4/dialogs/external.cpp:125 modules/misc/audioscrobbler.c:136
 #: modules/misc/notify/growl_udp.c:73 modules/stream_out/raop.c:154
 msgid "Password"
 msgstr "Heslo"
@@ -8683,22 +8718,22 @@ msgstr "Zvukový výstup PORTAUDIO"
 msgid "5.1"
 msgstr "5.1"
 
-#: modules/audio_output/pulse.c:65 modules/gui/macosx/embeddedwindow.m:76
+#: modules/audio_output/pulse.c:66 modules/gui/macosx/embeddedwindow.m:76
 #: modules/gui/macosx/intf.m:595 modules/gui/macosx/intf.m:596
 #: modules/gui/macosx/intf.m:1992 modules/gui/qt4/dialogs/help.cpp:99
-#: modules/gui/qt4/main_interface.cpp:809
-#: modules/gui/qt4/main_interface.cpp:813
-#: modules/gui/qt4/main_interface.cpp:853
-#: modules/gui/qt4/main_interface.cpp:855
-#: modules/gui/qt4/main_interface.cpp:923
-#: modules/gui/qt4/main_interface.cpp:940
-#: modules/gui/qt4/main_interface.cpp:947
-#: modules/gui/qt4/main_interface.cpp:970
+#: modules/gui/qt4/main_interface.cpp:865
+#: modules/gui/qt4/main_interface.cpp:869
+#: modules/gui/qt4/main_interface.cpp:909
+#: modules/gui/qt4/main_interface.cpp:911
+#: modules/gui/qt4/main_interface.cpp:979
+#: modules/gui/qt4/main_interface.cpp:996
+#: modules/gui/qt4/main_interface.cpp:1003
+#: modules/gui/qt4/main_interface.cpp:1026
 #: modules/video_output/xcb/window.c:319
 msgid "VLC media player"
 msgstr "VLC media player"
 
-#: modules/audio_output/pulse.c:103
+#: modules/audio_output/pulse.c:104
 msgid "Pulseaudio audio output"
 msgstr "Zvukový výstup Pulseaudio"
 
@@ -9295,7 +9330,7 @@ msgstr ""
 "Preto nie je potrebné, aby ste o tejto chybe informovali tím vývojárov "
 "projektu VideoLAN.\n"
 
-#: modules/codec/avcodec/encoder.c:705 modules/codec/avcodec/encoder.c:714
+#: modules/codec/avcodec/encoder.c:707 modules/codec/avcodec/encoder.c:716
 msgid "VLC could not open the encoder."
 msgstr "Program VLC nemôže otvoriť enkodér."
 
@@ -10166,7 +10201,8 @@ msgid "MP3 fixed point audio encoder"
 msgstr "Audio enkodér formátu MP3 s pevným bodom"
 
 #: modules/codec/speex.c:57 modules/codec/speex.c:800
-#: modules/gui/macosx/open.m:209
+#: modules/gui/macosx/open.m:209 modules/gui/qt4/ui/sprefs_video.h:324
+#: modules/gui/qt4/ui/video_effects.h:1149
 msgid "Mode"
 msgstr "Režim"
 
@@ -11449,6 +11485,7 @@ msgid "Quiet mode."
 msgstr "Tichý režim. "
 
 #: modules/codec/x264.c:370 modules/gui/macosx/playlistinfo.m:82
+#: modules/gui/qt4/ui/streampanel.h:171
 msgid "Statistics"
 msgstr "Štatistiky"
 
@@ -12560,11 +12597,11 @@ msgstr ""
 
 #: modules/control/telnet.c:77 modules/gui/macosx/open.m:200
 #: modules/gui/macosx/open.m:202 modules/gui/macosx/output.m:147
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:146
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:198
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:243
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:293
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:386
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:156
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:215
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:260
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:310
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:404
 #: modules/stream_out/rtp.c:112
 msgid "Port"
 msgstr "Port"
@@ -12885,11 +12922,11 @@ msgstr "Port HTTP tunelu"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "Port použitý pre tunelovanie RTSP/RTP protokolu cez HTTP protokol."
 
-#: modules/demux/live555.cpp:602
+#: modules/demux/live555.cpp:603
 msgid "RTSP authentication"
 msgstr "Autentifikácia RTSP"
 
-#: modules/demux/live555.cpp:603
+#: modules/demux/live555.cpp:604
 msgid "Please enter a valid login name and a password."
 msgstr "Prosím zadajte platné meno používateľa a heslo."
 
@@ -13566,8 +13603,9 @@ msgid "Separate sub-streams"
 msgstr "Oddeliť pod-streamy."
 
 #: modules/demux/ts.c:160
+#, fuzzy
 msgid ""
-"Separate teletex/dvbs pages into independant ES. It can be usefull to turn "
+"Separate teletex/dvbs pages into independent ES. It can be useful to turn "
 "off this option when using stream output."
 msgstr ""
 "Oddeliť teletextové/DVB-S stránky do nezávislých sekcií ES. Pri použití "
@@ -13706,7 +13744,7 @@ msgstr ""
 "priehľadné, 255=nepriehľadné)."
 
 #: modules/gui/fbosd.c:118 modules/misc/logger.c:112
-#: modules/video_filter/marq.c:87
+#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1168
 msgid "Text"
 msgstr "Text"
 
@@ -13820,6 +13858,7 @@ msgstr ""
 #: modules/misc/freetype.c:92 modules/misc/notify/xosd.c:80
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
+#: modules/gui/qt4/ui/sprefs_subtitles.h:211
 msgid "Font"
 msgstr "Písmo"
 
@@ -13865,13 +13904,15 @@ msgid "Bookmarks"
 msgstr "Záložky"
 
 #: modules/gui/macosx/bookmarks.m:88
+#: modules/gui/qt4/ui/podcast_configuration.h:104
+#: modules/gui/qt4/ui/sout.h:331 modules/gui/qt4/ui/vlm.h:300
 msgid "Add"
 msgstr "Pridať"
 
 #: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:642
 #: modules/gui/macosx/simple_prefs.m:246
 #: modules/gui/qt4/components/preferences_widgets.cpp:1206
-#: modules/gui/qt4/dialogs/bookmarks.cpp:47
+#: modules/gui/qt4/dialogs/bookmarks.cpp:47 modules/gui/qt4/ui/vlm.h:301
 msgid "Clear"
 msgstr "Vyčistiť"
 
@@ -13884,7 +13925,7 @@ msgstr "Úpravy"
 msgid "Extract"
 msgstr "Extrahovať"
 
-#: modules/gui/macosx/bookmarks.m:92
+#: modules/gui/macosx/bookmarks.m:92 modules/gui/qt4/ui/open_file.h:224
 msgid "Remove"
 msgstr "Odstrániť"
 
@@ -14032,7 +14073,7 @@ msgid "Step Backward"
 msgstr "Krok dozadu"
 
 #: modules/gui/macosx/coredialogs.m:64 modules/gui/macosx/simple_prefs.m:235
-#: modules/gui/qt4/dialogs/external.cpp:119
+#: modules/gui/qt4/dialogs/external.cpp:120
 msgid "User name"
 msgstr "Meno používateľa"
 
@@ -14056,7 +14097,7 @@ msgstr "Previnúť"
 msgid "Fast Forward"
 msgstr "Rýchle dopredu"
 
-#: modules/gui/macosx/equalizer.m:146
+#: modules/gui/macosx/equalizer.m:146 modules/gui/qt4/ui/equalizer.h:128
 msgid "2 Pass"
 msgstr "2-krát"
 
@@ -14070,7 +14111,7 @@ msgstr ""
 "Zapnúť ekvalizér. Pásma môžete nastaviť manuálne alebo použiť niektoré z "
 "predvolených nastavení"
 
-#: modules/gui/macosx/equalizer.m:152
+#: modules/gui/macosx/equalizer.m:152 modules/gui/qt4/ui/equalizer.h:130
 msgid "Preamp"
 msgstr "Predzosilnenie"
 
@@ -14092,11 +14133,12 @@ msgstr "Ripple"
 
 #: modules/gui/macosx/extended.m:72 modules/meta_engine/id3genres.h:95
 #: modules/video_filter/psychedelic.c:55
+#: modules/gui/qt4/ui/video_effects.h:1143
 msgid "Psychedelic"
 msgstr "Psychedelic"
 
 #: modules/gui/macosx/extended.m:73 modules/video_filter/gradient.c:76
-#: modules/video_filter/gradient.c:82
+#: modules/video_filter/gradient.c:82 modules/gui/qt4/ui/video_effects.h:1148
 msgid "Gradient"
 msgstr "Gradient"
 
@@ -14128,7 +14170,7 @@ msgstr "Vystrihnutie obrázka"
 msgid "Crops a defined part of the image"
 msgstr "Vystrihne definovanú časť obrázka"
 
-#: modules/gui/macosx/extended.m:83
+#: modules/gui/macosx/extended.m:83 modules/gui/qt4/ui/video_effects.h:1134
 msgid "Invert colors"
 msgstr "Invertovať farby"
 
@@ -14671,6 +14713,10 @@ msgstr "Snímať"
 #: modules/gui/qt4/components/preferences_widgets.cpp:299
 #: modules/gui/qt4/components/simple_preferences.cpp:276
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
+#: modules/gui/qt4/ui/open.h:246 modules/gui/qt4/ui/open_disk.h:300
+#: modules/gui/qt4/ui/open_file.h:232 modules/gui/qt4/ui/sprefs_audio.h:412
+#: modules/gui/qt4/ui/sprefs_input.h:308 modules/gui/qt4/ui/sprefs_input.h:317
+#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Browse..."
 msgstr "Prehľadávať..."
 
@@ -14684,6 +14730,7 @@ msgstr "Prehrávať iné médium synchronizovane"
 
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/macosx/wizard.m:346 modules/gui/macosx/wizard.m:414
+#: modules/gui/qt4/ui/sprefs_interface.h:394
 msgid "Choose..."
 msgstr "Vybrať..."
 
@@ -14692,7 +14739,7 @@ msgstr "Vybrať..."
 msgid "Device name"
 msgstr "Označenie jednotky"
 
-#: modules/gui/macosx/open.m:193
+#: modules/gui/macosx/open.m:193 modules/gui/qt4/ui/open_disk.h:298
 msgid "No DVD menus"
 msgstr "Bez DVD menu"
 
@@ -14701,7 +14748,7 @@ msgid "VIDEO_TS folder"
 msgstr "Priečinok VIDEO_TS"
 
 #: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:739
-#: modules/services_discovery/udev.c:587
+#: modules/services_discovery/udev.c:587 modules/gui/qt4/ui/open_disk.h:292
 msgid "DVD"
 msgstr "DVD"
 
@@ -14744,10 +14791,10 @@ msgid "Protocol"
 msgstr "Protokol"
 
 #: modules/gui/macosx/open.m:211 modules/gui/macosx/output.m:146
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:197
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:292
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:339
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:385
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:214
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:309
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:356
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:403
 msgid "Address"
 msgstr "Adresa"
 
@@ -14845,7 +14892,7 @@ msgstr "FPS (počet snímok za sekundu)"
 msgid "Subtitles encoding"
 msgstr "Znaková sada titulkov"
 
-#: modules/gui/macosx/open.m:316
+#: modules/gui/macosx/open.m:316 modules/gui/qt4/ui/sprefs_subtitles.h:210
 msgid "Font size"
 msgstr "Veľkosť písma"
 
@@ -14862,7 +14909,7 @@ msgid "Subtitle File"
 msgstr "Súbor s titulkami"
 
 #: modules/gui/macosx/open.m:587 modules/gui/macosx/open.m:953
-#: modules/gui/macosx/open.m:1189
+#: modules/gui/macosx/open.m:1189 modules/gui/qt4/ui/open_file.h:217
 msgid "Open File"
 msgstr "Otvoriť súbor"
 
@@ -14928,7 +14975,7 @@ msgstr "Analyzovať \"surový\" (raw) vstup"
 msgid "Encapsulation Method"
 msgstr "Metóda zapuzdrovania"
 
-#: modules/gui/macosx/output.m:159
+#: modules/gui/macosx/output.m:159 modules/gui/qt4/ui/sout.h:335
 msgid "Transcoding options"
 msgstr "Vlastnosti prekódovávania"
 
@@ -14937,7 +14984,7 @@ msgstr "Vlastnosti prekódovávania"
 msgid "Bitrate (kb/s)"
 msgstr "Dátový tok (kb/s)"
 
-#: modules/gui/macosx/output.m:166
+#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:478
 msgid "Scale"
 msgstr "Rozsah"
 
@@ -14945,7 +14992,7 @@ msgstr "Rozsah"
 msgid "Stream Announcing"
 msgstr "Ohlasovanie streamu"
 
-#: modules/gui/macosx/output.m:181
+#: modules/gui/macosx/output.m:181 modules/gui/qt4/ui/sout.h:342
 msgid "SAP announce"
 msgstr "Ohlasovanie cez SAP"
 
@@ -14976,6 +15023,7 @@ msgstr "Uložiť súbor"
 #: modules/gui/macosx/output.m:526 modules/gui/macosx/playlist.m:745
 #: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:310
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
+#: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "Uložiť"
 
@@ -14996,6 +15044,8 @@ msgid "Save Playlist..."
 msgstr "Uložiť playlist..."
 
 #: modules/gui/macosx/playlist.m:465 modules/gui/qt4/dialogs/bookmarks.cpp:45
+#: modules/gui/qt4/ui/podcast_configuration.h:105
+#: modules/gui/qt4/ui/streampanel.h:173
 msgid "Delete"
 msgstr "Vymazať"
 
@@ -15178,6 +15228,7 @@ msgid "Reset All"
 msgstr "Obnoviť všetko"
 
 #: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:306
+#: modules/gui/qt4/ui/video_effects.h:1111
 msgid "Basic"
 msgstr "Základné"
 
@@ -15240,7 +15291,7 @@ msgstr "Vstup a kodeky"
 msgid "Input & Codec settings"
 msgstr "Nastavenia vstupu a kodekov"
 
-#: modules/gui/macosx/simple_prefs.m:228
+#: modules/gui/macosx/simple_prefs.m:228 modules/gui/qt4/ui/sprefs_audio.h:414
 msgid "Effects"
 msgstr "Efekty"
 
@@ -15252,7 +15303,7 @@ msgstr "Zapnúť zvuk"
 msgid "General Audio"
 msgstr "Všeobecné nastavenia audia"
 
-#: modules/gui/macosx/simple_prefs.m:231
+#: modules/gui/macosx/simple_prefs.m:231 modules/gui/qt4/ui/sprefs_audio.h:419
 msgid "Headphone surround effect"
 msgstr "Priestorový efekt pre zvuk v slúchadlách"
 
@@ -15301,7 +15352,7 @@ msgstr "Opraviť AVI súbory"
 msgid "Default Caching Level"
 msgstr "Predvolená úroveň ukladania do vyrovnávacej pamäte "
 
-#: modules/gui/macosx/simple_prefs.m:254
+#: modules/gui/macosx/simple_prefs.m:254 modules/gui/qt4/ui/open.h:235
 msgid "Caching"
 msgstr "Ukladať do vyrovnávacej pamäte"
 
@@ -15346,6 +15397,7 @@ msgid "Show Fullscreen Controller"
 msgstr "Zobraziť ovládač celoobrazovkového režimu"
 
 #: modules/gui/macosx/simple_prefs.m:270
+#: modules/gui/qt4/ui/sprefs_interface.h:376
 msgid "Privacy / Network Interaction"
 msgstr "Súkromie / interakcia siete"
 
@@ -15362,6 +15414,7 @@ msgid "Default Encoding"
 msgstr "Predvolené kódovanie"
 
 #: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/qt4/ui/sprefs_subtitles.h:207
 msgid "Display Settings"
 msgstr "Nastavenia zobrazovania"
 
@@ -15391,6 +15444,7 @@ msgstr "Čierne obrazovky pri celoobr. režime"
 
 #: modules/gui/macosx/simple_prefs.m:292 modules/stream_out/display.c:54
 #: modules/video_filter/deinterlace.c:138
+#: modules/gui/qt4/ui/sprefs_video.h:310
 msgid "Display"
 msgstr "Zobraziť"
 
@@ -15402,7 +15456,7 @@ msgstr "Zapnúť video"
 msgid "Output module"
 msgstr "Výstupný modul"
 
-#: modules/gui/macosx/simple_prefs.m:298
+#: modules/gui/macosx/simple_prefs.m:298 modules/gui/qt4/ui/sprefs_video.h:325
 msgid "Video snapshots"
 msgstr "Snímka videa"
 
@@ -15410,15 +15464,15 @@ msgstr "Snímka videa"
 msgid "Folder"
 msgstr "Priečinok"
 
-#: modules/gui/macosx/simple_prefs.m:301
+#: modules/gui/macosx/simple_prefs.m:301 modules/gui/qt4/ui/sprefs_video.h:330
 msgid "Format"
 msgstr "Formát"
 
-#: modules/gui/macosx/simple_prefs.m:302
+#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Prefix"
 msgstr "Koncovka"
 
-#: modules/gui/macosx/simple_prefs.m:303
+#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:331
 msgid "Sequential numbering"
 msgstr "Sekvenčné číslovanie"
 
@@ -15924,6 +15978,7 @@ msgstr ""
 "procesu."
 
 #: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
+#: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr "Max. počet preskočení (TTL)"
 
@@ -16178,7 +16233,7 @@ msgstr ""
 "Nezobrazovať dialógové okná, ktoré nevyžadujú zásah zo strany používateľa "
 "(len panel kritických chýb a porúch)."
 
-#: modules/gui/hildon/maemo.c:62
+#: modules/gui/hildon/maemo.c:63
 msgid "Maemo hildon interface"
 msgstr "Rozhranie Maemo hildon"
 
@@ -16821,11 +16876,11 @@ msgstr "Prehrané"
 msgid "buffers"
 msgstr "vyr. pamätí"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:386
+#: modules/gui/qt4/components/interface_widgets.cpp:293
 msgid "Current visualization"
 msgstr "Aktuálna vizualizácia"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:425
+#: modules/gui/qt4/components/interface_widgets.cpp:332
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -16833,19 +16888,19 @@ msgstr ""
 "Aktuálna rýchlosť prehrávania: %1\n"
 "Prispôsobenie vykonáte kliknutím"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:496
+#: modules/gui/qt4/components/interface_widgets.cpp:403
 msgid "Revert to normal play speed"
 msgstr "Vrátiť na normálnu rýchlosť prehrávania"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:570
+#: modules/gui/qt4/components/interface_widgets.cpp:477
 msgid "Download cover art"
 msgstr "Stiahnuť obal"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:613
+#: modules/gui/qt4/components/interface_widgets.cpp:520
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "Kliknutím môžete prepnúť medzi uplynulým a zostávajúcim časom"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:615
+#: modules/gui/qt4/components/interface_widgets.cpp:522
 msgid "Double click to jump to a chosen time position"
 msgstr "Na preskočenie na určitú pozíciu, dvakrát kliknite"
 
@@ -16867,6 +16922,7 @@ msgid "File names:"
 msgstr "Názvy súborov:"
 
 #: modules/gui/qt4/components/open_panels.cpp:149
+#: modules/gui/qt4/ui/sprefs_interface.h:382
 msgid "Filter:"
 msgstr "Filter:"
 
@@ -17159,11 +17215,11 @@ msgstr "Vymazať vybraný profil"
 msgid "Create a new profile"
 msgstr "Vytvoriť nový profil"
 
-#: modules/gui/qt4/components/sout/profile_selector.cpp:400
+#: modules/gui/qt4/components/sout/profile_selector.cpp:402
 msgid " Profile Name Missing"
 msgstr "Chýbajúci názov profilu"
 
-#: modules/gui/qt4/components/sout/profile_selector.cpp:401
+#: modules/gui/qt4/components/sout/profile_selector.cpp:403
 msgid "You must set a name for the profile."
 msgstr "Musíte zadať názov profilu."
 
@@ -17176,6 +17232,7 @@ msgid "File/Folder"
 msgstr "Súbor/priečinok"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:46
+#: modules/gui/qt4/ui/sout.h:328
 msgid "Source"
 msgstr "Zdroj"
 
@@ -17195,64 +17252,66 @@ msgstr "Tento modul umožňuje zápis prekódovaného streamu do súboru."
 msgid "Filename"
 msgstr "Názov súboru"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:128
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:138
 #: modules/gui/qt4/dialogs/convert.cpp:111
 msgid "Save file..."
 msgstr "Uložiť súbor..."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:129
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:139
 #: modules/gui/qt4/dialogs/convert.cpp:113
-msgid "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
+#, fuzzy
+msgid ""
+"Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 msgstr "Kontajnery (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:141
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:151
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr ""
 "Táto voľba Vám umožňuje streamovať prekódovaný stream do siete použitím "
 "protokolu HTTP."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:145
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:242
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:155
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:259
 msgid "Path"
 msgstr "Cesta"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:193
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:210
 msgid ""
 "This module outputs the transcoded stream to a network  via the mms protocol."
 msgstr ""
 "Tento modul umožňuje výstup prekódovaného streamu do siete pomocou protokolu "
 "mms."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:238
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:255
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr ""
 "Tento modul odošle prekódovaný stream do siete s použitím protokolu RTSP."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:288
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:305
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr ""
 "Táto voľba Vám umožňuje streamovať prekódovaný stream do siete použitím "
 "protokolu UDP."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:335
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:352
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr ""
 "Táto voľba Vám umožňuje streamovať prekódovaný stream do siete použitím "
 "protokolu RTP."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:340
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:357
 msgid "Base port"
 msgstr "Základný port"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:381
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:399
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr "Tento modul umožňuje výstup prekódovaného streamu na server Icecast."
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:402
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:420
 msgid "Mount Point"
 msgstr "Bod pripojenia"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:403
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:421
 msgid "Login:pass"
 msgstr "Prihlasovacie meno:heslo"
 
@@ -17298,6 +17357,7 @@ msgid "Convert"
 msgstr "Konvertovať"
 
 #: modules/gui/qt4/dialogs/convert.cpp:58
+#: modules/gui/qt4/ui/sprefs_audio.h:411
 msgid "Destination file:"
 msgstr "Cieľový súbor:"
 
@@ -17385,6 +17445,7 @@ msgstr ""
 "o používaní, a to ani anonymné.</p>\n"
 
 #: modules/gui/qt4/dialogs/firstrun.cpp:83
+#: modules/gui/qt4/ui/open_capture.h:103 modules/gui/qt4/ui/sout.h:347
 msgid "Options"
 msgstr "Vlastnosti"
 
@@ -17729,7 +17790,7 @@ msgstr "&Obnoviť nastavenia"
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "Naozaj chcete obnoviť pôvodné nastavenia programu VLC media player?"
 
-#: modules/gui/qt4/dialogs/sout.cpp:42
+#: modules/gui/qt4/dialogs/sout.cpp:42 modules/gui/qt4/ui/sout.h:326
 msgid "Stream Output"
 msgstr "Výstup streamu"
 
@@ -17827,7 +17888,7 @@ msgstr "Vymazať aktuálny profil"
 msgid "Cl&ose"
 msgstr "&Zatvoriť"
 
-#: modules/gui/qt4/dialogs/toolbar.cpp:217
+#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:455
 msgid "Profile Name"
 msgstr "Názov profilu"
 
@@ -17892,6 +17953,7 @@ msgid "Repeat delay:"
 msgstr "Omeškanie opakovania:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:112
+#: modules/gui/qt4/ui/sprefs_interface.h:379
 msgid " days"
 msgstr "dní"
 
@@ -17975,11 +18037,11 @@ msgstr "Súbory s titulkami"
 msgid "All Files"
 msgstr "Všetky súbory"
 
-#: modules/gui/qt4/main_interface.cpp:924
+#: modules/gui/qt4/main_interface.cpp:980
 msgid "Control menu for the player"
 msgstr "Kontrolné menu prehrávača"
 
-#: modules/gui/qt4/main_interface.cpp:967
+#: modules/gui/qt4/main_interface.cpp:1023
 msgid "Paused"
 msgstr "Pozastavené"
 
@@ -18747,6 +18809,7 @@ msgid "Gospel"
 msgstr "Gospel"
 
 #: modules/meta_engine/id3genres.h:67 modules/video_filter/noise.c:52
+#: modules/gui/qt4/ui/video_effects.h:1144
 msgid "Noise"
 msgstr "Šum"
 
@@ -20123,6 +20186,7 @@ msgid "My Pictures"
 msgstr "Moje obrázky"
 
 #: modules/services_discovery/podcast.c:58
+#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "Podcast URLs list"
 msgstr "Zoznam URL adries podcastov"
 
@@ -20563,6 +20627,7 @@ msgstr ""
 "masku alebo filter videa Bluescreen, zadajte hodnotu YUVA."
 
 #: modules/stream_out/mosaic_bridge.c:128 modules/video_filter/mosaic.c:88
+#: modules/gui/qt4/ui/video_effects.h:1176
 msgid "Transparency"
 msgstr "Priehľadnosť"
 
@@ -20963,7 +21028,7 @@ msgstr ""
 msgid "Standard stream output"
 msgstr "Štandardný výstup streamu"
 
-#: modules/stream_out/switcher.c:90
+#: modules/stream_out/switcher.c:90 modules/gui/qt4/ui/sprefs_input.h:314
 msgid "Files"
 msgstr "Súbory"
 
@@ -21281,7 +21346,7 @@ msgstr "SSE2 konverzie z"
 msgid "AltiVec conversions from "
 msgstr "Konverzie Altivec z"
 
-#: modules/video_filter/adjust.c:64
+#: modules/video_filter/adjust.c:64 modules/gui/qt4/ui/video_effects.h:1110
 msgid "Brightness threshold"
 msgstr "Dodržiavať hranicu jasu"
 
@@ -21346,7 +21411,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr "Filter vlastností obrázka"
 
-#: modules/video_filter/adjust.c:81
+#: modules/video_filter/adjust.c:81 modules/gui/qt4/ui/video_effects.h:1104
 msgid "Image adjust"
 msgstr "Prispôsobiť obrázok"
 
@@ -21413,39 +21478,43 @@ msgstr ""
 "prideliť externému procesu (s viacerými možnými voľbami), vyberte si voľbu "
 "AtmoWin Software"
 
-#: modules/video_filter/atmo/atmo.cpp:152
+#: modules/video_filter/atmo/atmo.cpp:153
 msgid "AtmoWin Software"
 msgstr "AtmoWin Software"
 
-#: modules/video_filter/atmo/atmo.cpp:154
+#: modules/video_filter/atmo/atmo.cpp:155
 msgid "Classic AtmoLight"
 msgstr "Classic AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:155
+#: modules/video_filter/atmo/atmo.cpp:156
 msgid "Quattro AtmoLight"
 msgstr "Quattro AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:156
+#: modules/video_filter/atmo/atmo.cpp:157
 msgid "DMX"
 msgstr "DMX"
 
-#: modules/video_filter/atmo/atmo.cpp:157
+#: modules/video_filter/atmo/atmo.cpp:158
 msgid "MoMoLight"
 msgstr "MoMoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:160
+#: modules/video_filter/atmo/atmo.cpp:159
+msgid "fnordlicht"
+msgstr ""
+
+#: modules/video_filter/atmo/atmo.cpp:162
 msgid "Count of AtmoLight channels"
 msgstr "Počet kanálov AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:161
+#: modules/video_filter/atmo/atmo.cpp:163
 msgid "How many AtmoLight channels, should be emulated with that DMX device"
 msgstr "Koľko kanálov AtmoLight by sa malo emulovať pomocou zariadenia DMX"
 
-#: modules/video_filter/atmo/atmo.cpp:163
+#: modules/video_filter/atmo/atmo.cpp:165
 msgid "DMX address for each channel"
 msgstr "Adresa DMX pre každý kanál"
 
-#: modules/video_filter/atmo/atmo.cpp:164
+#: modules/video_filter/atmo/atmo.cpp:166
 msgid ""
 "Define here the DMX base address for each channel use , or ; to seperate the "
 "values"
@@ -21453,128 +21522,138 @@ msgstr ""
 "Tu môžete definovať základnú adresu DMX použitú pre každý kanál. Na "
 "oddelenie hodnôt použite znak , alebo ;"
 
-#: modules/video_filter/atmo/atmo.cpp:167
+#: modules/video_filter/atmo/atmo.cpp:169
 msgid "Count of channels"
 msgstr "Počet kanálov"
 
-#: modules/video_filter/atmo/atmo.cpp:168
+#: modules/video_filter/atmo/atmo.cpp:170
 msgid "Depending on your MoMoLight hardware choose 3 or 4 channels"
 msgstr "Podľa vášho konkrétneho hardvéru MoMoLight si vyberte 3 alebo 4 kanály"
 
-#: modules/video_filter/atmo/atmo.cpp:178
+#: modules/video_filter/atmo/atmo.cpp:173
+#, fuzzy
+msgid "Count of fnordlicht's"
+msgstr "Počet kanálov"
+
+#: modules/video_filter/atmo/atmo.cpp:174
+#, fuzzy
+msgid "Depending on the amount your fnordlicht hardware choose 1 to 4 channels"
+msgstr "Podľa vášho konkrétneho hardvéru MoMoLight si vyberte 3 alebo 4 kanály"
+
+#: modules/video_filter/atmo/atmo.cpp:185
 msgid "Save Debug Frames"
 msgstr "Uložiť snímky na analyzáciu"
 
-#: modules/video_filter/atmo/atmo.cpp:179
+#: modules/video_filter/atmo/atmo.cpp:186
 msgid "Write every 128th miniframe to a folder."
 msgstr "Zapísať každý 128. minisnímku do priečinka."
 
-#: modules/video_filter/atmo/atmo.cpp:180
+#: modules/video_filter/atmo/atmo.cpp:187
 msgid "Debug Frame Folder"
 msgstr "Priečinok pre analyzovanie snímok"
 
-#: modules/video_filter/atmo/atmo.cpp:181
+#: modules/video_filter/atmo/atmo.cpp:188
 msgid "The path where the debugframes should be saved"
 msgstr "Cesta, kde by sa mali analyzované snímky ukladať."
 
-#: modules/video_filter/atmo/atmo.cpp:185
+#: modules/video_filter/atmo/atmo.cpp:192
 msgid "Extracted Image Width"
 msgstr "Šírka extrahovaného obrázka"
 
-#: modules/video_filter/atmo/atmo.cpp:186
+#: modules/video_filter/atmo/atmo.cpp:193
 msgid "The width of the mini image for further processing (64 is default)"
 msgstr "Šírka mini-obrázka pre ďalšie spracovávanie (predvolená hodnota je 64)"
 
-#: modules/video_filter/atmo/atmo.cpp:189
+#: modules/video_filter/atmo/atmo.cpp:196
 msgid "Extracted Image Height"
 msgstr "Výška extrahovaného obrázka"
 
-#: modules/video_filter/atmo/atmo.cpp:190
+#: modules/video_filter/atmo/atmo.cpp:197
 msgid "The height of the mini image for further processing (48 is default)"
 msgstr "Výška mini-obrázka pre ďalšie spracovávanie (predvolená je hodnota 48)"
 
-#: modules/video_filter/atmo/atmo.cpp:193
+#: modules/video_filter/atmo/atmo.cpp:200
 msgid "Mark analyzed pixels"
 msgstr "Označiť analyzované pixely"
 
-#: modules/video_filter/atmo/atmo.cpp:194
+#: modules/video_filter/atmo/atmo.cpp:201
 msgid "makes the sample grid visible on screen as white pixels"
 msgstr "zviditeľní mriežku, ktorá sa bude zobrazovať vo forme bielych pixelov"
 
-#: modules/video_filter/atmo/atmo.cpp:197
+#: modules/video_filter/atmo/atmo.cpp:204
 msgid "Color when paused"
 msgstr "Farba pri pozastavení"
 
-#: modules/video_filter/atmo/atmo.cpp:198
+#: modules/video_filter/atmo/atmo.cpp:205
 msgid ""
 "Set the color to show if the user pauses the video. (Have light to get "
 "another beer?)"
 msgstr "Nastavenie farby, zobrazovanej ak používateľ pozastaví prehrávanie."
 
-#: modules/video_filter/atmo/atmo.cpp:201
+#: modules/video_filter/atmo/atmo.cpp:208
 msgid "Pause-Red"
 msgstr "Pozastavenie-červená"
 
-#: modules/video_filter/atmo/atmo.cpp:202
+#: modules/video_filter/atmo/atmo.cpp:209
 msgid "Red component of the pause color"
 msgstr "Červená zložka farby pri pozastavení"
 
-#: modules/video_filter/atmo/atmo.cpp:203
+#: modules/video_filter/atmo/atmo.cpp:210
 msgid "Pause-Green"
 msgstr "Pozastavenie-zelená"
 
-#: modules/video_filter/atmo/atmo.cpp:204
+#: modules/video_filter/atmo/atmo.cpp:211
 msgid "Green component of the pause color"
 msgstr "Zelená zložka farby pri pozastavení"
 
-#: modules/video_filter/atmo/atmo.cpp:205
+#: modules/video_filter/atmo/atmo.cpp:212
 msgid "Pause-Blue"
 msgstr "Pozastavenie-modrá"
 
-#: modules/video_filter/atmo/atmo.cpp:206
+#: modules/video_filter/atmo/atmo.cpp:213
 msgid "Blue component of the pause color"
 msgstr "Modrá zložka farby pri pozastavení"
 
-#: modules/video_filter/atmo/atmo.cpp:207
+#: modules/video_filter/atmo/atmo.cpp:214
 msgid "Pause-Fadesteps"
 msgstr "Pozastaviť - kroky vybledávania"
 
-#: modules/video_filter/atmo/atmo.cpp:208
+#: modules/video_filter/atmo/atmo.cpp:215
 msgid ""
 "Number of steps to change current color to pause color (each step takes 40ms)"
 msgstr ""
 "Počet krokov, počas ktorých sa aktuálna farba zmení na farbu pri pozastavení "
 "(každý krok trvá 40 ms)"
 
-#: modules/video_filter/atmo/atmo.cpp:211
+#: modules/video_filter/atmo/atmo.cpp:218
 msgid "End-Red"
 msgstr "Ukončenie-červená"
 
-#: modules/video_filter/atmo/atmo.cpp:212
+#: modules/video_filter/atmo/atmo.cpp:219
 msgid "Red component of the shutdown color"
 msgstr "Červená zložka vo farbe pri vypnutí"
 
-#: modules/video_filter/atmo/atmo.cpp:213
+#: modules/video_filter/atmo/atmo.cpp:220
 msgid "End-Green"
 msgstr "Ukončenie-zelená"
 
-#: modules/video_filter/atmo/atmo.cpp:214
+#: modules/video_filter/atmo/atmo.cpp:221
 msgid "Green component of the shutdown color"
 msgstr "Zelená zložka vo farbe pri vypnutí"
 
-#: modules/video_filter/atmo/atmo.cpp:215
+#: modules/video_filter/atmo/atmo.cpp:222
 msgid "End-Blue"
 msgstr "Ukončenie-modrá"
 
-#: modules/video_filter/atmo/atmo.cpp:216
+#: modules/video_filter/atmo/atmo.cpp:223
 msgid "Blue component of the shutdown color"
 msgstr "Modrá zložka vo farbe pri vypnutí"
 
-#: modules/video_filter/atmo/atmo.cpp:217
+#: modules/video_filter/atmo/atmo.cpp:224
 msgid "End-Fadesteps"
 msgstr "Koniec-počet krokov vybledávania"
 
-#: modules/video_filter/atmo/atmo.cpp:218
+#: modules/video_filter/atmo/atmo.cpp:225
 msgid ""
 "Number of steps to change current color to end color for dimming up the "
 "light in cinema style... (each step takes 40ms)"
@@ -21582,35 +21661,35 @@ msgstr ""
 "Počet krokov, počas ktorých sa aktuálna farby zmení na farbu pri ukončení. "
 "Tento efekt môžete vidieť aj v kine... (každý krok trvá 40 ms)"
 
-#: modules/video_filter/atmo/atmo.cpp:222
+#: modules/video_filter/atmo/atmo.cpp:229
 msgid "Number of zones on top"
 msgstr "Počet zón navrchu"
 
-#: modules/video_filter/atmo/atmo.cpp:223
+#: modules/video_filter/atmo/atmo.cpp:230
 msgid "Number of zones on the top of the screen"
 msgstr "Počet zón v hornej časti obrazovky"
 
-#: modules/video_filter/atmo/atmo.cpp:224
+#: modules/video_filter/atmo/atmo.cpp:231
 msgid "Number of zones on bottom"
 msgstr "Počet zód dole"
 
-#: modules/video_filter/atmo/atmo.cpp:225
+#: modules/video_filter/atmo/atmo.cpp:232
 msgid "Number of zones on the bottom of the screen"
 msgstr "Počet zón v dolnej časti obrazovky"
 
-#: modules/video_filter/atmo/atmo.cpp:226
+#: modules/video_filter/atmo/atmo.cpp:233
 msgid "Zones on left / right side"
 msgstr "Zóny na ľavej / pravej strane"
 
-#: modules/video_filter/atmo/atmo.cpp:227
+#: modules/video_filter/atmo/atmo.cpp:234
 msgid "left and right side having allways the same number of zones"
 msgstr "ľavá a pravá strana obsahujú vždy rovnaký počet zón"
 
-#: modules/video_filter/atmo/atmo.cpp:229
+#: modules/video_filter/atmo/atmo.cpp:236
 msgid "Calculate a average zone"
 msgstr "Vypočítať zónu s priemerom"
 
-#: modules/video_filter/atmo/atmo.cpp:230
+#: modules/video_filter/atmo/atmo.cpp:237
 msgid ""
 "it contains the average of all pixels in the sample image (only useful for "
 "single channel AtmoLight)"
@@ -21618,46 +21697,46 @@ msgstr ""
 "obsahuje priemer všetkých pixelov v obrázku (použiteľné len pre jeden kanál "
 "AtmoLight)"
 
-#: modules/video_filter/atmo/atmo.cpp:235
+#: modules/video_filter/atmo/atmo.cpp:242
 msgid "Use Software White adjust"
 msgstr "Použiť softvérové vyrovnávanie bielej farby"
 
-#: modules/video_filter/atmo/atmo.cpp:236
+#: modules/video_filter/atmo/atmo.cpp:243
 msgid ""
 "Should the buildin driver do a white adjust or your LED stripes? recommend."
 msgstr ""
 "Má vstavaný ovládač vykonávať reguláciu bielej farby na Vašich prúžkoch LED "
 "diód? Odporúčame zvoliť áno."
 
-#: modules/video_filter/atmo/atmo.cpp:238
+#: modules/video_filter/atmo/atmo.cpp:245
 msgid "White Red"
 msgstr "Bledočervená"
 
-#: modules/video_filter/atmo/atmo.cpp:239
+#: modules/video_filter/atmo/atmo.cpp:246
 msgid "Red value of a pure white on your LED stripes."
 msgstr "Červená zložka čisto bielej farby na LED prúžkoch."
 
-#: modules/video_filter/atmo/atmo.cpp:241
+#: modules/video_filter/atmo/atmo.cpp:248
 msgid "White Green"
 msgstr "Bledozelená"
 
-#: modules/video_filter/atmo/atmo.cpp:242
+#: modules/video_filter/atmo/atmo.cpp:249
 msgid "Green value of a pure white on your LED stripes."
 msgstr "Zelená zložka čisto bielej farby na LED prúžkoch."
 
-#: modules/video_filter/atmo/atmo.cpp:244
+#: modules/video_filter/atmo/atmo.cpp:251
 msgid "White Blue"
 msgstr "Bledomodrá"
 
-#: modules/video_filter/atmo/atmo.cpp:245
+#: modules/video_filter/atmo/atmo.cpp:252
 msgid "Blue value of a pure white on your LED stripes."
 msgstr "Modrá zložka čisto bielej farby na LED prúžkoch."
 
-#: modules/video_filter/atmo/atmo.cpp:248
+#: modules/video_filter/atmo/atmo.cpp:255
 msgid "Serial Port/Device"
 msgstr "Sériový port/zariadenie"
 
-#: modules/video_filter/atmo/atmo.cpp:249
+#: modules/video_filter/atmo/atmo.cpp:256
 msgid ""
 "Name of the serial port where the AtmoLight controller is attached to.\n"
 "On Windows usually something like COM1 or COM2. On Linux /dev/ttyS01 f.e."
@@ -21666,11 +21745,11 @@ msgstr ""
 "V systéme Windows sa zadávajú hodnoty ako napr. COM1 alebo COM2. Na systéme "
 "Linux sa zadáva /dev/ttyS01 a pod."
 
-#: modules/video_filter/atmo/atmo.cpp:254
+#: modules/video_filter/atmo/atmo.cpp:261
 msgid "Edge Weightning"
 msgstr "Zdôrazňovanie rohov"
 
-#: modules/video_filter/atmo/atmo.cpp:255
+#: modules/video_filter/atmo/atmo.cpp:262
 msgid ""
 "Increasing this value will result in color more depending on the border of "
 "the frame."
@@ -21678,15 +21757,15 @@ msgstr ""
 "Zvýšením tejto hodnoty dosiahnete to, že farba bude viac závislá od okraja "
 "snímky."
 
-#: modules/video_filter/atmo/atmo.cpp:258
+#: modules/video_filter/atmo/atmo.cpp:265
 msgid "Overall brightness of your LED stripes"
 msgstr "Celkový jas vašich LED prúžkov"
 
-#: modules/video_filter/atmo/atmo.cpp:259
+#: modules/video_filter/atmo/atmo.cpp:266
 msgid "Darkness Limit"
 msgstr "Limit tmavosti"
 
-#: modules/video_filter/atmo/atmo.cpp:260
+#: modules/video_filter/atmo/atmo.cpp:267
 msgid ""
 "Pixels with a saturation lower than this will be ignored. Should be greater "
 "than one for letterboxed videos."
@@ -21694,74 +21773,75 @@ msgstr ""
 "Pixely so sýtosťou nižšou, ako je zadané tu, sa budú ignorovať. Táto hodnota "
 "by mala byť väčšia ako hodnota pre videá vo formáte letterbox."
 
-#: modules/video_filter/atmo/atmo.cpp:263
+#: modules/video_filter/atmo/atmo.cpp:270
 msgid "Hue windowing"
 msgstr "Odtieň v okne"
 
-#: modules/video_filter/atmo/atmo.cpp:264
-#: modules/video_filter/atmo/atmo.cpp:266
+#: modules/video_filter/atmo/atmo.cpp:271
+#: modules/video_filter/atmo/atmo.cpp:273
 msgid "Used for statistics."
 msgstr "Používa sa na štat. účely"
 
-#: modules/video_filter/atmo/atmo.cpp:265
+#: modules/video_filter/atmo/atmo.cpp:272
 msgid "Sat windowing"
 msgstr "Sýtosť v okne"
 
-#: modules/video_filter/atmo/atmo.cpp:268
+#: modules/video_filter/atmo/atmo.cpp:275
+#: modules/gui/qt4/ui/video_effects.h:1159
 msgid "Filter length (ms)"
 msgstr "Dĺžka filtra (v ms)"
 
-#: modules/video_filter/atmo/atmo.cpp:269
+#: modules/video_filter/atmo/atmo.cpp:276
 msgid ""
 "Time it takes until a color is completely changed. This prevents flickering."
 msgstr ""
 "Čas, do uplynutia ktorého sa farba kompletne zmení. Táto funkcia zabraňuje "
 "blikaniu."
 
-#: modules/video_filter/atmo/atmo.cpp:271
+#: modules/video_filter/atmo/atmo.cpp:278
 msgid "Filter threshold"
 msgstr "Hranica filtra"
 
-#: modules/video_filter/atmo/atmo.cpp:272
+#: modules/video_filter/atmo/atmo.cpp:279
 msgid "How much a color has to be changed for an immediate color change."
 msgstr "Udáva, aké množstvo farby sa má zmeniť pri okamžitej zmene farby."
 
-#: modules/video_filter/atmo/atmo.cpp:274
+#: modules/video_filter/atmo/atmo.cpp:281
 msgid "Filter Smoothness (in %)"
 msgstr "Zjemňovací filter (v %)"
 
-#: modules/video_filter/atmo/atmo.cpp:275
+#: modules/video_filter/atmo/atmo.cpp:282
 msgid "Filter Smoothness"
 msgstr "Filter na zjemnenie"
 
-#: modules/video_filter/atmo/atmo.cpp:277
+#: modules/video_filter/atmo/atmo.cpp:284
 msgid "Output Color filter mode"
 msgstr "Režim filtrovanie farby na výstupe"
 
-#: modules/video_filter/atmo/atmo.cpp:278
+#: modules/video_filter/atmo/atmo.cpp:285
 msgid ""
 "defines the how the output color should be calculated based on previous color"
 msgstr ""
 "definuje spôsob, akým má byť výstupná farba vypočítaná na základe "
 "predchádzajúcej farby"
 
-#: modules/video_filter/atmo/atmo.cpp:287
+#: modules/video_filter/atmo/atmo.cpp:294
 msgid "No Filtering"
 msgstr "Bez filtrovania"
 
-#: modules/video_filter/atmo/atmo.cpp:288
+#: modules/video_filter/atmo/atmo.cpp:295
 msgid "Combined"
 msgstr "Kombinované"
 
-#: modules/video_filter/atmo/atmo.cpp:289
+#: modules/video_filter/atmo/atmo.cpp:296
 msgid "Percent"
 msgstr "Percent."
 
-#: modules/video_filter/atmo/atmo.cpp:292
+#: modules/video_filter/atmo/atmo.cpp:299
 msgid "Frame delay (ms)"
 msgstr "Oneskorenie snímky (ms)"
 
-#: modules/video_filter/atmo/atmo.cpp:293
+#: modules/video_filter/atmo/atmo.cpp:300
 msgid ""
 "Helps to get the video output and the light effects in sync. Values around "
 "20ms should do the trick."
@@ -21769,61 +21849,61 @@ msgstr ""
 "Tento údaj pomáha synchronizovať výstup videa a svetelné efekty. Odporúčame "
 "zadať hodnotu okolo 20 ms."
 
-#: modules/video_filter/atmo/atmo.cpp:298
+#: modules/video_filter/atmo/atmo.cpp:305
 msgid "Channel 0: summary"
 msgstr "Kanál 0:zhrnutie"
 
-#: modules/video_filter/atmo/atmo.cpp:299
+#: modules/video_filter/atmo/atmo.cpp:306
 msgid "Channel 1: left"
 msgstr "Kanál 1:vľavo"
 
-#: modules/video_filter/atmo/atmo.cpp:300
+#: modules/video_filter/atmo/atmo.cpp:307
 msgid "Channel 2: right"
 msgstr "Kanál 2:vpravo"
 
-#: modules/video_filter/atmo/atmo.cpp:301
+#: modules/video_filter/atmo/atmo.cpp:308
 msgid "Channel 3: top"
 msgstr "Kanál 3:hore"
 
-#: modules/video_filter/atmo/atmo.cpp:302
+#: modules/video_filter/atmo/atmo.cpp:309
 msgid "Channel 4: bottom"
 msgstr "Kanál 4:dole"
 
-#: modules/video_filter/atmo/atmo.cpp:304
+#: modules/video_filter/atmo/atmo.cpp:311
 msgid "Maps the hardware channel X to logical zone Y to fix wrong wiring :-)"
 msgstr ""
 "Namapuje hardvérový kanál X do logickej zóny Y, aby sa opravilo zlé "
 "prepojenie :-)"
 
-#: modules/video_filter/atmo/atmo.cpp:315
+#: modules/video_filter/atmo/atmo.cpp:322
 msgid "disabled"
 msgstr "zablokované"
 
-#: modules/video_filter/atmo/atmo.cpp:316
+#: modules/video_filter/atmo/atmo.cpp:323
 msgid "Zone 4:summary"
 msgstr "Zóna 4:zhrnutie"
 
-#: modules/video_filter/atmo/atmo.cpp:317
+#: modules/video_filter/atmo/atmo.cpp:324
 msgid "Zone 3:left"
 msgstr "Zóna 3:vľavo"
 
-#: modules/video_filter/atmo/atmo.cpp:318
+#: modules/video_filter/atmo/atmo.cpp:325
 msgid "Zone 1:right"
 msgstr "Zóna 1:vpravo"
 
-#: modules/video_filter/atmo/atmo.cpp:319
+#: modules/video_filter/atmo/atmo.cpp:326
 msgid "Zone 0:top"
 msgstr "Zóna 0:hore"
 
-#: modules/video_filter/atmo/atmo.cpp:320
+#: modules/video_filter/atmo/atmo.cpp:327
 msgid "Zone 2:bottom"
 msgstr "Zóna 2:dole"
 
-#: modules/video_filter/atmo/atmo.cpp:322
+#: modules/video_filter/atmo/atmo.cpp:329
 msgid "Channel / Zone Assignment"
 msgstr "Pridelenie kanála / zóny"
 
-#: modules/video_filter/atmo/atmo.cpp:323
+#: modules/video_filter/atmo/atmo.cpp:330
 msgid ""
 "for devices with more than five channels / zones write down here for each "
 "channel the zone number to show and seperate the values with , or ; and use "
@@ -21839,38 +21919,38 @@ msgstr ""
 "jedna vľavo a vpravo a žiadna súhrnná zóna, je potrebné zadať hodnoty "
 "-1,3,2,1,0"
 
-#: modules/video_filter/atmo/atmo.cpp:333
+#: modules/video_filter/atmo/atmo.cpp:340
 msgid "Zone 0: Top gradient"
 msgstr "Zóna 0: gradient hore"
 
-#: modules/video_filter/atmo/atmo.cpp:334
+#: modules/video_filter/atmo/atmo.cpp:341
 msgid "Zone 1: Right gradient"
 msgstr "Zóna 1: gradient vpravo"
 
-#: modules/video_filter/atmo/atmo.cpp:335
+#: modules/video_filter/atmo/atmo.cpp:342
 msgid "Zone 2: Bottom gradient"
 msgstr "Zóna 2: gradient dole"
 
-#: modules/video_filter/atmo/atmo.cpp:336
+#: modules/video_filter/atmo/atmo.cpp:343
 msgid "Zone 3: Left gradient"
 msgstr "Zóna 3 gradient vľavo"
 
-#: modules/video_filter/atmo/atmo.cpp:337
+#: modules/video_filter/atmo/atmo.cpp:344
 msgid "Zone 4: Summary gradient"
 msgstr "Zóna 4: zhrnutie gradientov"
 
-#: modules/video_filter/atmo/atmo.cpp:338
+#: modules/video_filter/atmo/atmo.cpp:345
 msgid ""
 "Defines a small bitmap with 64x48 pixels, containing a grayscale gradient"
 msgstr ""
 "Definuje malú bitmapu s rozmerom 64x48 pixelov, obsahujúcu gradient vo "
 "farbách šedi"
 
-#: modules/video_filter/atmo/atmo.cpp:341
+#: modules/video_filter/atmo/atmo.cpp:348
 msgid "Gradient bitmap searchpath"
 msgstr "Cesta pre hľadanie gradientového obrázka"
 
-#: modules/video_filter/atmo/atmo.cpp:342
+#: modules/video_filter/atmo/atmo.cpp:349
 msgid ""
 "Now prefered option to assign gradient bitmaps, put them as zone_0.bmp, "
 "zone_1.bmp etc. into one folder and set the foldername here"
@@ -21879,11 +21959,11 @@ msgstr ""
 "jedného spoločného priečinka, pomenujte ich napr. zone_0.bmp, zone_1.bmp "
 "atď. Potom sem zadajte názov priečinka"
 
-#: modules/video_filter/atmo/atmo.cpp:347
+#: modules/video_filter/atmo/atmo.cpp:354
 msgid "Filename of AtmoWin*.exe"
 msgstr "Názov súboru AtmoWin*.exe"
 
-#: modules/video_filter/atmo/atmo.cpp:348
+#: modules/video_filter/atmo/atmo.cpp:355
 msgid ""
 "if you want the AtmoLight control software to be launched by VLC, enter the "
 "complete path of AtmoWinA.exe here."
@@ -21891,51 +21971,58 @@ msgstr ""
 "Ak chcete, aby sa ovládací softvér AtmoLight spúšťal programom VLC, zadajte "
 "úplnú cestu k súboru AtmoWinA.exe."
 
-#: modules/video_filter/atmo/atmo.cpp:359
+#: modules/video_filter/atmo/atmo.cpp:366
 msgid "AtmoLight Filter"
 msgstr "Filter AtmoLight "
 
-#: modules/video_filter/atmo/atmo.cpp:361
+#: modules/video_filter/atmo/atmo.cpp:368
+#: modules/gui/qt4/ui/video_effects.h:1153
+#: modules/gui/qt4/ui/video_effects.h:1162
 msgid "AtmoLight"
 msgstr "AtmoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:368
+#: modules/video_filter/atmo/atmo.cpp:375
 msgid "Choose Devicetype and Connection"
 msgstr "Vyberte si typ zariadenia a spojenie"
 
-#: modules/video_filter/atmo/atmo.cpp:393
+#: modules/video_filter/atmo/atmo.cpp:400
 msgid "Illuminate the room with this color on pause"
 msgstr "Pri pozastavení naplniť miestnosť touto farbou"
 
-#: modules/video_filter/atmo/atmo.cpp:409
+#: modules/video_filter/atmo/atmo.cpp:416
 msgid "Illuminate the room with this color on shutdown"
 msgstr "Pri ukončení naplniť miestnosť touto farbou"
 
-#: modules/video_filter/atmo/atmo.cpp:420
+#: modules/video_filter/atmo/atmo.cpp:427
 msgid "DMX options"
 msgstr "Vlastnosti DMX"
 
-#: modules/video_filter/atmo/atmo.cpp:426
+#: modules/video_filter/atmo/atmo.cpp:433
 msgid "MoMoLight options"
 msgstr "Vlastnosti MoMoLight"
 
-#: modules/video_filter/atmo/atmo.cpp:468
+#: modules/video_filter/atmo/atmo.cpp:440
+#, fuzzy
+msgid "fnordlicht options"
+msgstr "Vlastnosti MoMoLight"
+
+#: modules/video_filter/atmo/atmo.cpp:482
 msgid "Zone Layout for the build-in Atmo"
 msgstr "Rozloženie zón pre zabudované Atmo"
 
-#: modules/video_filter/atmo/atmo.cpp:484
+#: modules/video_filter/atmo/atmo.cpp:498
 msgid "Settings for the built-in Live Video Processor only"
 msgstr "Nastavenia len pre vstavaný procesor živého videa"
 
-#: modules/video_filter/atmo/atmo.cpp:521
+#: modules/video_filter/atmo/atmo.cpp:535
 msgid "Change channel assignment (fixes wrong wiring)"
 msgstr "Zmeniť pridelenie kanála (opraví sa nesprávne pripojenie)"
 
-#: modules/video_filter/atmo/atmo.cpp:554
+#: modules/video_filter/atmo/atmo.cpp:568
 msgid "Adjust the white light to your LED stripes"
 msgstr "Prispôsobiť biele svetlo vašim LED prúžkom"
 
-#: modules/video_filter/atmo/atmo.cpp:576
+#: modules/video_filter/atmo/atmo.cpp:590
 msgid "Change gradients"
 msgstr "Zmeniť tiene"
 
@@ -22137,7 +22224,7 @@ msgstr "Filter videa Canvas"
 msgid "Video filtering using a chain of video filter modules"
 msgstr "Video filtrovanie použitím  filtrovacích modulov"
 
-#: modules/video_filter/clone.c:39
+#: modules/video_filter/clone.c:39 modules/gui/qt4/ui/video_effects.h:1173
 msgid "Number of clones"
 msgstr "Počet klonov"
 
@@ -22166,7 +22253,7 @@ msgstr ""
 msgid "Clone video filter"
 msgstr "Filter pre klonovanie videa"
 
-#: modules/video_filter/clone.c:57
+#: modules/video_filter/clone.c:57 modules/gui/qt4/ui/video_effects.h:1172
 msgid "Clone"
 msgstr "Klonovať"
 
@@ -22192,6 +22279,7 @@ msgid "Color threshold filter"
 msgstr "Hraničná hodnota filtrovania farieb"
 
 #: modules/video_filter/colorthres.c:70
+#: modules/gui/qt4/ui/video_effects.h:1135
 msgid "Color threshold"
 msgstr "Hranica farby"
 
@@ -22967,6 +23055,7 @@ msgid "The degree of blurring from 1 to 127."
 msgstr "Stupeň rozmazávania, od 1 do 127."
 
 #: modules/video_filter/motionblur.c:59
+#: modules/gui/qt4/ui/video_effects.h:1146
 msgid "Motion blur"
 msgstr "Motion blur"
 
@@ -23209,7 +23298,7 @@ msgstr ""
 msgid "Panoramix: wall with overlap video filter"
 msgstr "Panoramix: obrazová stena s použitím prekrývacieho filtra"
 
-#: modules/video_filter/panoramix.c:79
+#: modules/video_filter/panoramix.c:79 modules/gui/qt4/ui/video_effects.h:1169
 msgid "Panoramix"
 msgstr "Panoramix"
 
@@ -23586,7 +23675,7 @@ msgstr "Uhol v stupňoch (0 - 359)"
 msgid "Rotate video filter"
 msgstr "Filter videa pre otočenie obrazu"
 
-#: modules/video_filter/rotate.c:67
+#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1128
 msgid "Rotate"
 msgstr "Otočiť"
 
@@ -23806,7 +23895,7 @@ msgstr "Zvýšiť kontrast medzi kontúrami."
 msgid "Sharpen video filter"
 msgstr "Filter videa pre zaostrenie"
 
-#: modules/video_filter/sharpen.c:67
+#: modules/video_filter/sharpen.c:67 modules/gui/qt4/ui/video_effects.h:1102
 msgid "Sharpen"
 msgstr "Zaostrenie"
 
@@ -24052,11 +24141,11 @@ msgstr "Odporúčaný výstup videa pre systém Windows Vista a novší"
 msgid "Direct3D video output"
 msgstr "Výstup videa Direct 3D"
 
-#: modules/video_output/msw/direct3d.c:175
+#: modules/video_output/msw/direct3d.c:164
 msgid "Desktop"
 msgstr "Pracovná plocha"
 
-#: modules/video_output/msw/directx.c:68
+#: modules/video_output/msw/directx.c:68 modules/gui/qt4/ui/sprefs_video.h:317
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Používať hardvérovú konverziu YUV->RGB"
 
@@ -24120,7 +24209,7 @@ msgstr ""
 msgid "DirectX (DirectDraw) video output"
 msgstr "Výstup videa DirectX (DirectDraw)"
 
-#: modules/video_output/msw/directx.c:233
+#: modules/video_output/msw/directx.c:222
 msgid "Wallpaper"
 msgstr "Pozadie"
 
@@ -24258,11 +24347,11 @@ msgstr "Výstup pamäte videa"
 msgid "Video memory"
 msgstr "Pamäť videa"
 
-#: modules/video_output/xcb/glx.c:50
+#: modules/video_output/xcb/glx.c:51
 msgid "GLX"
 msgstr "GLX"
 
-#: modules/video_output/xcb/glx.c:51
+#: modules/video_output/xcb/glx.c:52
 msgid "GLX video output (XCB)"
 msgstr "Výstup videa GLX (XCB)"
 
@@ -24611,681 +24700,909 @@ msgstr "Filter vizualizátora"
 msgid "Spectrum analyser"
 msgstr "Spektrálny analyzátor"
 
-#~ msgid "Form"
-#~ msgstr "Tvar"
+#: modules/gui/qt4/ui/equalizer.h:126 modules/gui/qt4/ui/open_disk.h:290
+#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:454
+#: modules/gui/qt4/ui/sprefs_audio.h:403 modules/gui/qt4/ui/sprefs_input.h:305
+#: modules/gui/qt4/ui/sprefs_interface.h:372
+#: modules/gui/qt4/ui/sprefs_subtitles.h:200
+#: modules/gui/qt4/ui/sprefs_video.h:308 modules/gui/qt4/ui/streampanel.h:168
+#: modules/gui/qt4/ui/v4l2.h:58
+msgid "Form"
+msgstr "Tvar"
 
-#~ msgid "Preset"
-#~ msgstr "Prednastavené"
+#: modules/gui/qt4/ui/equalizer.h:129
+msgid "Preset"
+msgstr "Prednastavené"
 
-#~ msgid "Dialog"
-#~ msgstr "Dialóg"
+#: modules/gui/qt4/ui/open.h:230
+#: modules/gui/qt4/ui/podcast_configuration.h:101
+msgid "Dialog"
+msgstr "Dialóg"
 
-#~ msgid "Show extended options"
-#~ msgstr "Zobraziť pokročilé nastavenia"
+#: modules/gui/qt4/ui/open.h:232
+msgid "Show extended options"
+msgstr "Zobraziť pokročilé nastavenia"
 
-#~ msgid "Show &more options"
-#~ msgstr "Zobraziť &viac nastavení"
+#: modules/gui/qt4/ui/open.h:234
+msgid "Show &more options"
+msgstr "Zobraziť &viac nastavení"
 
-#~ msgid "Change the caching for the media"
-#~ msgstr "Tu môžete zmeniť čas ukladania média do vyrovnávacej pamäte"
+#: modules/gui/qt4/ui/open.h:237
+msgid "Change the caching for the media"
+msgstr "Tu môžete zmeniť čas ukladania média do vyrovnávacej pamäte"
 
-#~ msgid " ms"
-#~ msgstr " ms"
+#: modules/gui/qt4/ui/open.h:239
+msgid " ms"
+msgstr " ms"
 
-#~ msgid "Start Time"
-#~ msgstr "Čas spustenia"
+#: modules/gui/qt4/ui/open.h:240
+msgid "Start Time"
+msgstr "Čas spustenia"
 
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr "Synchrónne prehrávať iné médium (napr. zvláštny zvukový súbor...)"
+#: modules/gui/qt4/ui/open.h:241
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "Synchrónne prehrávať iné médium (napr. zvláštny zvukový súbor...)"
 
-#~ msgid "Extra media"
-#~ msgstr "Extra médium"
+#: modules/gui/qt4/ui/open.h:242
+msgid "Extra media"
+msgstr "Extra médium"
 
-#~ msgid "Select the file"
-#~ msgstr "Vyberte si súbor"
+#: modules/gui/qt4/ui/open.h:244
+msgid "Select the file"
+msgstr "Vyberte si súbor"
 
-#~ msgid "MRL"
-#~ msgstr "MRL"
+#: modules/gui/qt4/ui/open.h:247
+msgid "MRL"
+msgstr "MRL"
 
-#~ msgid "Complete MRL for VLC internal"
-#~ msgstr "Skompletizovať MRL adresu pre interné potreby programu VLC"
+#: modules/gui/qt4/ui/open.h:249
+msgid "Complete MRL for VLC internal"
+msgstr "Skompletizovať MRL adresu pre interné potreby programu VLC"
 
-#~ msgid "Edit Options"
-#~ msgstr "Upraviť vlastnosti"
+#: modules/gui/qt4/ui/open.h:251
+msgid "Edit Options"
+msgstr "Upraviť vlastnosti"
 
-#~ msgid "Change the start time for the media"
-#~ msgstr "Zmeniť čas spustenia média"
+#: modules/gui/qt4/ui/open.h:253
+msgid "Change the start time for the media"
+msgstr "Zmeniť čas spustenia média"
 
-#~ msgid "s"
-#~ msgstr "s"
+#: modules/gui/qt4/ui/open.h:255
+msgid "s"
+msgstr "s"
 
-#~ msgid "Capture mode"
-#~ msgstr "Režim snímania"
+#: modules/gui/qt4/ui/open_capture.h:98
+msgid "Capture mode"
+msgstr "Režim snímania"
 
-#~ msgid "Select the capture device type"
-#~ msgstr "Zvoľte si typ snímacieho zariadenia"
+#: modules/gui/qt4/ui/open_capture.h:100
+msgid "Select the capture device type"
+msgstr "Zvoľte si typ snímacieho zariadenia"
 
-#~ msgid "Device Selection"
-#~ msgstr "Výber zariadenia"
+#: modules/gui/qt4/ui/open_capture.h:102
+msgid "Device Selection"
+msgstr "Výber zariadenia"
 
-#~ msgid "Access advanced options to tweak the device"
-#~ msgstr "Prístup k pokročilým nastaveniam pre ladenie zariadenia"
+#: modules/gui/qt4/ui/open_capture.h:105
+msgid "Access advanced options to tweak the device"
+msgstr "Prístup k pokročilým nastaveniam pre ladenie zariadenia"
 
-#~ msgid "Advanced options..."
-#~ msgstr "Pokročilé nastavenia..."
+#: modules/gui/qt4/ui/open_capture.h:107
+msgid "Advanced options..."
+msgstr "Pokročilé nastavenia..."
 
-#~ msgid "Disc Selection"
-#~ msgstr "Výber disku"
+#: modules/gui/qt4/ui/open_disk.h:291
+msgid "Disc Selection"
+msgstr "Výber disku"
 
-#~ msgid "SVCD/VCD"
-#~ msgstr "SVCD/VCD"
+#: modules/gui/qt4/ui/open_disk.h:294
+msgid "SVCD/VCD"
+msgstr "SVCD/VCD"
 
-#~ msgid "Disable DVD Menus (for compatibility)"
-#~ msgstr "Zablokovať menu DVD (vyššia kompatibilita)"
+#: modules/gui/qt4/ui/open_disk.h:296
+msgid "Disable DVD Menus (for compatibility)"
+msgstr "Zablokovať menu DVD (vyššia kompatibilita)"
 
-#~ msgid "Disc device"
-#~ msgstr "Disková jednotka"
+#: modules/gui/qt4/ui/open_disk.h:299
+msgid "Disc device"
+msgstr "Disková jednotka"
 
-#~ msgid "Starting Position"
-#~ msgstr "Štartovacia pozícia"
+#: modules/gui/qt4/ui/open_disk.h:301
+msgid "Starting Position"
+msgstr "Štartovacia pozícia"
 
-#~ msgid "Audio and Subtitles"
-#~ msgstr "Zvuk a titulky"
+#: modules/gui/qt4/ui/open_disk.h:304
+msgid "Audio and Subtitles"
+msgstr "Zvuk a titulky"
 
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "Zvoľte si jeden alebo viacero médií, ktoré chcete otvoriť"
+#: modules/gui/qt4/ui/open_file.h:219
+msgid "Choose one or more media file to open"
+msgstr "Zvoľte si jeden alebo viacero médií, ktoré chcete otvoriť"
 
-#~ msgid "File Selection"
-#~ msgstr "Výber súboru"
+#: modules/gui/qt4/ui/open_file.h:221
+msgid "File Selection"
+msgstr "Výber súboru"
 
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr ""
-#~ "Pomocou nasledujúceho zoznamu a tlačidiel si môžete vybrať lokálne súbory."
+#: modules/gui/qt4/ui/open_file.h:222
+msgid "You can select local files with the following list and buttons."
+msgstr ""
+"Pomocou nasledujúceho zoznamu a tlačidiel si môžete vybrať lokálne súbory."
 
-#~ msgid "Add..."
-#~ msgstr "Pridať..."
+#: modules/gui/qt4/ui/open_file.h:223
+msgid "Add..."
+msgstr "Pridať..."
 
-#~ msgid "Add a subtitles file"
-#~ msgstr "Pridať súbor s titulkami"
+#: modules/gui/qt4/ui/open_file.h:226
+msgid "Add a subtitles file"
+msgstr "Pridať súbor s titulkami"
 
-#~ msgid "Use a sub&titles file"
-#~ msgstr "Použiť súbor s &titulkami"
+#: modules/gui/qt4/ui/open_file.h:228
+msgid "Use a sub&titles file"
+msgstr "Použiť súbor s &titulkami"
 
-#~ msgid "Select the subtitles file"
-#~ msgstr "Vyberte súbor s titulkami"
+#: modules/gui/qt4/ui/open_file.h:230
+msgid "Select the subtitles file"
+msgstr "Vyberte súbor s titulkami"
 
-#~ msgid "Font size:"
-#~ msgstr "Veľkosť písma:"
+#: modules/gui/qt4/ui/open_file.h:233
+msgid "Font size:"
+msgstr "Veľkosť písma:"
 
-#~ msgid "Text alignment:"
-#~ msgstr "Zarovnanie textu:"
+#: modules/gui/qt4/ui/open_file.h:234
+msgid "Text alignment:"
+msgstr "Zarovnanie textu:"
 
-#~ msgid "Network Protocol"
-#~ msgstr "Sieťový protokol"
+#: modules/gui/qt4/ui/open_net.h:92
+msgid "Network Protocol"
+msgstr "Sieťový protokol"
 
-#~ msgid "Please enter a network URL:"
-#~ msgstr "Zadajte prosím sieťovú adresu URL:"
+#: modules/gui/qt4/ui/open_net.h:93
+msgid "Please enter a network URL:"
+msgstr "Zadajte prosím sieťovú adresu URL:"
 
-#~ msgid "Enter the URL of the network stream here."
-#~ msgstr "Sem zadajte URL adresu sieťového stremu."
+#: modules/gui/qt4/ui/open_net.h:95
+msgid "Enter the URL of the network stream here."
+msgstr "Sem zadajte URL adresu sieťového stremu."
+
+#: modules/gui/qt4/ui/open_net.h:97
+msgid ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">http://www.example.com/stream.avi</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">rtp://@1234</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">rtsp://server.example.org:8080/test.sdp</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
+msgstr ""
+"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
+"REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
+"\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
+"weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">http://www.example.com/stream.avi</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">rtp://@1234</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">rtsp://server.example.org:8080/test.sdp</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
+"#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
+
+#: modules/gui/qt4/ui/profiles.h:456
+msgid "MPEG-TS"
+msgstr "MPEG-TS"
+
+#: modules/gui/qt4/ui/profiles.h:457
+msgid "MPEG-PS"
+msgstr "MPEG-PS"
+
+#: modules/gui/qt4/ui/profiles.h:458
+msgid "WAV"
+msgstr "WAV"
+
+#: modules/gui/qt4/ui/profiles.h:459
+msgid "ASF/WMV"
+msgstr "ASF/WMV"
+
+#: modules/gui/qt4/ui/profiles.h:460
+msgid "Ogg/Ogm"
+msgstr "Ogg/Ogm"
+
+#: modules/gui/qt4/ui/profiles.h:461
+msgid "RAW"
+msgstr "RAW"
+
+#: modules/gui/qt4/ui/profiles.h:462
+msgid "MPEG 1"
+msgstr "MPEG 1"
+
+#: modules/gui/qt4/ui/profiles.h:463
+msgid "FLV"
+msgstr "FLV"
+
+#: modules/gui/qt4/ui/profiles.h:464
+msgid "AVI"
+msgstr "AVI"
+
+#: modules/gui/qt4/ui/profiles.h:465
+msgid "MP4/MOV"
+msgstr "MP4/MOV"
+
+#: modules/gui/qt4/ui/profiles.h:467
+msgid "MKV"
+msgstr "MKV"
+
+#: modules/gui/qt4/ui/profiles.h:468
+msgid "Encapsulation"
+msgstr "Zapuzdrovanie"
+
+#: modules/gui/qt4/ui/profiles.h:472 modules/gui/qt4/ui/profiles.h:491
+msgid " kb/s"
+msgstr " kb/s"
+
+#: modules/gui/qt4/ui/profiles.h:473
+msgid "Frame Rate"
+msgstr "Rýchlosť snímkovania"
+
+#: modules/gui/qt4/ui/profiles.h:475
+msgid " fps"
+msgstr " fps"
+
+#: modules/gui/qt4/ui/profiles.h:477
+msgid ""
+"You just need to fill one of the three following parameters, VLC will "
+"autodetect the other using the original aspect ratio"
+msgstr ""
+"Stačí zadať jeden z týchto troch parametrov. Program VLC zistí ostatné "
+"parametre automaticky, podľ pôvodného stranového pomeru"
+
+#: modules/gui/qt4/ui/profiles.h:480 modules/gui/qt4/ui/profiles.h:483
+msgid "00000; "
+msgstr "00000; "
+
+#: modules/gui/qt4/ui/profiles.h:485
+msgid "Keep original video track"
+msgstr "Zachovať pôvodnú obrazovú stopu"
+
+#: modules/gui/qt4/ui/profiles.h:486
+msgid "Video codec"
+msgstr "Kodek pre video"
+
+#: modules/gui/qt4/ui/profiles.h:488
+msgid "Keep original audio track"
+msgstr "Zachovať pôvodnú zvukovú stopu"
+
+#: modules/gui/qt4/ui/profiles.h:493
+msgid "Sample Rate"
+msgstr "Vzorkovacia frekvencia"
+
+#: modules/gui/qt4/ui/profiles.h:494
+msgid "Audio codec"
+msgstr "Kodek pre zvuk"
+
+#: modules/gui/qt4/ui/profiles.h:496
+msgid "Overlay subtitles on the video"
+msgstr "Prekrývanie titulkov vo videu"
+
+#: modules/gui/qt4/ui/sout.h:329 modules/gui/qt4/ui/sout.h:339
+msgid "Destinations"
+msgstr "Ciele"
+
+#: modules/gui/qt4/ui/sout.h:330
+msgid "New destination"
+msgstr "Nový cieľ"
+
+#: modules/gui/qt4/ui/sout.h:332
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+"Pridajte ciele s ohľadom na metódu streamovania, ktorú chcete použiť. "
+"Transkódovaním sa uistite, že formát je kompatibilný s použitou metódou."
+
+#: modules/gui/qt4/ui/sout.h:333
+msgid "Display locally"
+msgstr "Zobraziť lokálne"
+
+#: modules/gui/qt4/ui/sout.h:336
+msgid "Activate Transcoding"
+msgstr "Aktivovať transkódovanie"
+
+#: modules/gui/qt4/ui/sout.h:340
+msgid "Miscellaneous Options"
+msgstr "Rôzne nastavenia"
+
+#: modules/gui/qt4/ui/sout.h:341
+msgid "Stream all elementary streams"
+msgstr "Vysielať všetky elementárne streamy"
+
+#: modules/gui/qt4/ui/sout.h:343
+msgid "Group name"
+msgstr "Názov skupiny"
+
+#: modules/gui/qt4/ui/sout.h:345
+msgid "Generated stream output string"
+msgstr "Generovaný príkaz pre výstup streamu"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:406
+msgid "Keep audio level between sessions"
+msgstr "Udržiavať úroveň zvuku medzi sedeniami"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:407
+msgid "Always reset audio start level to:"
+msgstr "Vždy obnoviť úvodnú úroveň zvuku na hodnotu:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:408
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:409 modules/gui/qt4/ui/sprefs_video.h:313
+msgid "Output"
+msgstr "Výstup"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:410
+msgid "Output module:"
+msgstr "Výstupný modul:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:415
+msgid "Dolby Surround:"
+msgstr "Dolby Surround:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:416
+msgid "Normalize volume to:"
+msgstr "Normalizovať zvuk na:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:417
+msgid "Replay gain mode:"
+msgstr "Režim zosilnenia pri opakovaní:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:418
+msgid "Visualization:"
+msgstr "Vizualizácia:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:420
+msgid "Enable Time-Stretching audio"
+msgstr "Zapnúť časové roztiahnutie zvuku:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:422
+msgid "Preferred audio language:"
+msgstr "Preferovaný jazyk zvukovej stopy:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:423
+msgid "Password:"
+msgstr "Heslo:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:424
+msgid "Username:"
+msgstr "Meno používateľa:"
+
+#: modules/gui/qt4/ui/sprefs_audio.h:425
+msgid "Submit played tracks stats to Last.fm"
+msgstr "Oznamovanie štatistiky o prehraných skladbách do služby Last.fm"
+
+#: modules/gui/qt4/ui/sprefs_input.h:306
+msgid "Optical drive"
+msgstr "Optická jednotka"
+
+#: modules/gui/qt4/ui/sprefs_input.h:307
+msgid "Default optical device"
+msgstr "Predvolené diskové zariadenia"
+
+#: modules/gui/qt4/ui/sprefs_input.h:309
+msgid "Codecs"
+msgstr "Kodeky"
+
+#: modules/gui/qt4/ui/sprefs_input.h:310
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr "Preskočiť deblokovací filter H.264 in loop"
+
+#: modules/gui/qt4/ui/sprefs_input.h:311
+msgid "Video quality post-processing level"
+msgstr "Kvalitatívna úroveň dodatočného spracovávania videa"
+
+#: modules/gui/qt4/ui/sprefs_input.h:312
+msgid "Use GPU acceleration (experimental)"
+msgstr "Použiť akceleráciu GPU (experimentálne)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:313
+msgid "Use system codecs if available (better quality, but dangerous)"
+msgstr ""
+"Použiť systémové kodeky, ak sú dostupné (lepšia kvalita, avšak väčšie "
+"ohrozenie funkčnosti)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:315
+msgid "Damaged or incomplete AVI file"
+msgstr "Poškodený alebo neúplný súbor AVI"
+
+#: modules/gui/qt4/ui/sprefs_input.h:319
+msgid "Default port (server mode)"
+msgstr "Predvolený port (serverový mód)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:320
+msgid "HTTP proxy URL"
+msgstr "URL na HTTP proxy"
+
+#: modules/gui/qt4/ui/sprefs_input.h:321
+msgid "Default caching policy"
+msgstr "Predvolená politika ukladania do vyrovnávacej pamäte "
+
+#: modules/gui/qt4/ui/sprefs_input.h:322
+msgid "HTTP (default)"
+msgstr "HTTP (predvolené)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:323
+msgid "RTP over RTSP (TCP)"
+msgstr "Používať RTP cez RTSP (TCP)"
+
+#: modules/gui/qt4/ui/sprefs_input.h:324
+msgid "Live555 stream transport"
+msgstr "Transport streamu Live555"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:373
+msgid "Instances"
+msgstr "Inštancie"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:374
+msgid "Allow only one instance"
+msgstr "Povoliť len jednu spustenú inštanciu programu"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:375
+msgid "Enqueue files when in one instance mode"
+msgstr "Zaraďovať súbory, ak sa používa len jedna inštancia programu"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:377
+msgid "Album art download policy:"
+msgstr "Metóda sťahovania druhu albumu:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:378
+msgid "Activate update notifier"
+msgstr "Aktivovať upozornenie na aktualizácie"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:380
+msgid "Every "
+msgstr "Každých"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:381
+msgid "Save recently played items"
+msgstr "Uložiť naposledy prehrávané položky"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:384
+msgid "Separate words by | (without space)"
+msgstr "Oddeľovať slova znakom | (bez medzery)"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:387
+msgid "Menus language:"
+msgstr "Jazyk ponúk v menu:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:388
+msgid "File associations"
+msgstr "Asociácie so súborom"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:389
+msgid "Set up associations..."
+msgstr "Nastavenie asociácií..."
+
+#: modules/gui/qt4/ui/sprefs_interface.h:390
+msgid "Look and feel"
+msgstr "Vzhľad a dojem"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:391
+msgid "Use custom skin"
+msgstr "Použiť užívateľom vybraný vzhľad"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:393
+msgid "Skin resource file:"
+msgstr "Zdrojový súbor so vzhľadom:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:395
+msgid "Resize interface to video size"
+msgstr "Meniť veľkosť rozhrania podľa veľkosti videa"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:396
+msgid "Force window style:"
+msgstr "Vynútiť si štýl okien:"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:397
+msgid "Show systray icon"
+msgstr "Zobraziť ikonu v oznamovacej oblasti"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:398
+msgid "Embed video in interface"
+msgstr "Pridať video do rozhrania"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:399
+msgid " Systray popup when minimized"
+msgstr ""
+" Pri minimalizovaní použiť vyskakovacie okno z lišty v oznamovacej oblasti"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:400
+msgid "Show controls in full screen mode"
+msgstr "Zobraziť ovládače v celoobrazovkovom režime"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:401
+msgid "Minimal view mode (no toolbars)"
+msgstr "Režim minimálneho zobrazenia (bez panelov nástrojov)"
+
+#: modules/gui/qt4/ui/sprefs_interface.h:403
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "Toto je predvolené rozhranie programu VLC."
+
+#: modules/gui/qt4/ui/sprefs_interface.h:405
+msgid "Use native style"
+msgstr "Použiť natívny štýl"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:202
+msgid "Enable On Screen Display (OSD)"
+msgstr "Zapnúť ovládanie On Screen Display (OSD)"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:203
+msgid "Show media title on video start"
+msgstr "Zobraziť názov média pri spustení videa"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:204
+msgid "Subtitles Language"
+msgstr "Jazyk titulkov"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:205
+msgid "Preferred subtitles language"
+msgstr "Preferovaný jazyk zvukovej stopy"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:206
+msgid "Default encoding"
+msgstr "Predvolené kódovanie"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:208
+msgid "Effect"
+msgstr "Efekt"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:209
+msgid "Font color"
+msgstr "Farba písma"
+
+#: modules/gui/qt4/ui/sprefs_subtitles.h:212
+#: modules/gui/qt4/ui/video_effects.h:1113
+#: modules/gui/qt4/ui/video_effects.h:1115
+#: modules/gui/qt4/ui/video_effects.h:1117
+#: modules/gui/qt4/ui/video_effects.h:1119
+msgid " px"
+msgstr " px"
+
+#: modules/gui/qt4/ui/sprefs_video.h:314
+msgid "Accelerated video output (Overlay)"
+msgstr "Akcelerovaný výstup videa (prekrývanie)"
+
+#: modules/gui/qt4/ui/sprefs_video.h:318
+msgid "DirectX"
+msgstr "DirectX"
+
+#: modules/gui/qt4/ui/sprefs_video.h:319
+msgid "Display device"
+msgstr "Zobrazovacie zariadenie"
+
+#: modules/gui/qt4/ui/sprefs_video.h:320
+msgid "Enable wallpaper mode"
+msgstr "Zapnúť režim prehrávania na pozadí"
+
+#: modules/gui/qt4/ui/sprefs_video.h:322
+msgid "Deinterlacing"
+msgstr "Rozkladanie"
+
+#: modules/gui/qt4/ui/sprefs_video.h:323
+msgid "Force Aspect Ratio"
+msgstr "Vynútiť si stranový pomer"
+
+#: modules/gui/qt4/ui/sprefs_video.h:327
+msgid "Directory"
+msgstr "Priečinok"
+
+#: modules/gui/qt4/ui/sprefs_video.h:329
+msgid "vlc-snap"
+msgstr "vlc-snap"
+
+#: modules/gui/qt4/ui/streampanel.h:172
+msgid "Stuff"
+msgstr "Materiál"
+
+#: modules/gui/qt4/ui/streampanel.h:174
+msgid "Edit settings"
+msgstr "Upraviť nastavenia"
+
+#: modules/gui/qt4/ui/streampanel.h:175
+msgid "Control"
+msgstr "Ovládanie"
+
+#: modules/gui/qt4/ui/streampanel.h:176
+msgid "Run manually"
+msgstr "Spustiť manuálne"
+
+#: modules/gui/qt4/ui/streampanel.h:177
+msgid "Setup schedule"
+msgstr "Nastavenie automatických úloh"
+
+#: modules/gui/qt4/ui/streampanel.h:178
+msgid "Run on schedule"
+msgstr "Spustiť úlohu"
+
+#: modules/gui/qt4/ui/streampanel.h:179
+msgid "Status"
+msgstr "Stav"
+
+#: modules/gui/qt4/ui/streampanel.h:180
+msgid "P/P"
+msgstr "P/P"
+
+#: modules/gui/qt4/ui/streampanel.h:183
+msgid "Prev"
+msgstr "Predchádzajúce"
+
+#: modules/gui/qt4/ui/streampanel.h:184
+msgid "Add Input"
+msgstr "Pridať vstup"
+
+#: modules/gui/qt4/ui/streampanel.h:185
+msgid "Edit Input"
+msgstr "Upraviť vstup"
+
+#: modules/gui/qt4/ui/streampanel.h:186
+msgid "Clear List"
+msgstr "Vyčistiť zoznam"
+
+#: modules/gui/qt4/ui/v4l2.h:59
+msgid "Refresh"
+msgstr "Obnoviť"
+
+#: modules/gui/qt4/ui/v4l2.h:60
+msgid "No v4l2 instance found. Press the refresh button to try again."
+msgstr ""
+"Nenašla sa žiadna inštanica v4l2. Skúste to ešte raz stlačením tlačidla "
+"Obnoviť."
+
+#: modules/gui/qt4/ui/video_effects.h:1101
+msgid "Transform"
+msgstr "Transformovať"
+
+#: modules/gui/qt4/ui/video_effects.h:1103
+msgid "Sigma"
+msgstr "Sigma"
+
+#: modules/gui/qt4/ui/video_effects.h:1120
+msgid "Synchronize top and bottom"
+msgstr "Synchronizovať hore a dole"
+
+#: modules/gui/qt4/ui/video_effects.h:1121
+msgid "Synchronize left and right"
+msgstr "Synchronizovať naľavo a napravo"
+
+#: modules/gui/qt4/ui/video_effects.h:1123
+msgid "Magnification/Zoom"
+msgstr "Zväčšenie/zoom"
+
+#: modules/gui/qt4/ui/video_effects.h:1124
+msgid "Puzzle game"
+msgstr "Puzzle"
+
+#: modules/gui/qt4/ui/video_effects.h:1125
+msgid "Black slot"
+msgstr "Čierna dlaždica"
+
+#: modules/gui/qt4/ui/video_effects.h:1126
+#: modules/gui/qt4/ui/video_effects.h:1165
+#: modules/gui/qt4/ui/video_effects.h:1171
+msgid "Columns"
+msgstr "Stĺpce"
+
+#: modules/gui/qt4/ui/video_effects.h:1127
+#: modules/gui/qt4/ui/video_effects.h:1164
+#: modules/gui/qt4/ui/video_effects.h:1170
+msgid "Rows"
+msgstr "Riadky"
+
+#: modules/gui/qt4/ui/video_effects.h:1129
+msgid "Angle"
+msgstr "Uhol"
+
+#: modules/gui/qt4/ui/video_effects.h:1130
+msgid "Geometry"
+msgstr "Geometria"
+
+#: modules/gui/qt4/ui/video_effects.h:1131
+msgid "Color extraction"
+msgstr "Extrakcia farieb"
+
+#: modules/gui/qt4/ui/video_effects.h:1133
+#: modules/gui/qt4/ui/video_effects.h:1139
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt4/ui/video_effects.h:1136
+msgid "Similarity"
+msgstr "Podobnosť"
+
+#: modules/gui/qt4/ui/video_effects.h:1140
+msgid "Color fun"
+msgstr "Farebná zábava"
+
+#: modules/gui/qt4/ui/video_effects.h:1142
+msgid "Water effect"
+msgstr "Efekt vody"
+
+#: modules/gui/qt4/ui/video_effects.h:1145
+msgid "Motion detect"
+msgstr "Detekcia pohybu"
+
+#: modules/gui/qt4/ui/video_effects.h:1147
+msgid "Factor"
+msgstr "Faktor"
+
+#: modules/gui/qt4/ui/video_effects.h:1151
+msgid "Cartoon"
+msgstr "Kreslené"
+
+#: modules/gui/qt4/ui/video_effects.h:1152
+msgid "Image modification"
+msgstr "Modifikácia obrázka"
+
+#: modules/gui/qt4/ui/video_effects.h:1154
+msgid "Edge weightning"
+msgstr "Zmäkčenie hrán"
+
+#: modules/gui/qt4/ui/video_effects.h:1155
+msgid "Output Color Filtermode"
+msgstr "Režim filtrovania farby na výstupe"
+
+#: modules/gui/qt4/ui/video_effects.h:1156
+msgid "Brightness (%)"
+msgstr "Jas (%)"
+
+#: modules/gui/qt4/ui/video_effects.h:1157
+msgid "Darknesslimit"
+msgstr "Limit tmavosti"
+
+#: modules/gui/qt4/ui/video_effects.h:1158
+msgid "Mark analyzed Pixels"
+msgstr "Označiť analyzované pixely"
+
+#: modules/gui/qt4/ui/video_effects.h:1160
+msgid "Filter threshold (%)"
+msgstr "Hranica filtra (%)"
+
+#: modules/gui/qt4/ui/video_effects.h:1161
+msgid "Filter smoothness (%)"
+msgstr "Zjemnenie filtra (%)"
+
+#: modules/gui/qt4/ui/video_effects.h:1163
+msgid "Wall"
+msgstr "Stena"
+
+#: modules/gui/qt4/ui/video_effects.h:1166
+msgid "Add text"
+msgstr "Pridať text"
+
+#: modules/gui/qt4/ui/video_effects.h:1174
+msgid "Vout/Overlay"
+msgstr "Vout/Prekrytie"
+
+#: modules/gui/qt4/ui/video_effects.h:1175
+msgid "Add logo"
+msgstr "Pridať logo"
+
+#: modules/gui/qt4/ui/video_effects.h:1179
+#: modules/gui/qt4/ui/video_effects.h:1184
+msgid "Logo"
+msgstr "Logo"
+
+#: modules/gui/qt4/ui/video_effects.h:1180
+msgid "Logo erase"
+msgstr "Vymazanie loga"
+
+#: modules/gui/qt4/ui/video_effects.h:1183
+msgid "Mask"
+msgstr "Maska"
+
+#: modules/gui/qt4/ui/video_effects.h:1185
+msgid "Subpicture filters"
+msgstr "Filtre pre pod-obrázky"
+
+#: modules/gui/qt4/ui/video_effects.h:1186
+msgid "Video filters"
+msgstr "Filtre videa"
+
+#: modules/gui/qt4/ui/video_effects.h:1187
+msgid "Vout filters"
+msgstr "Filtre výstupného videa"
+
+#: modules/gui/qt4/ui/video_effects.h:1188
+msgid "Reset"
+msgstr "Obnoviť"
+
+#: modules/gui/qt4/ui/video_effects.h:1189
+msgid "Update"
+msgstr "Aktualizovať"
+
+#: modules/gui/qt4/ui/video_effects.h:1190
+msgid "Advanced video filter controls"
+msgstr "Pokročilé ovládanie filtrov videa"
+
+#: modules/gui/qt4/ui/vlm.h:287
+msgid "VLM configurator"
+msgstr "Konfigurátor VLM"
+
+#: modules/gui/qt4/ui/vlm.h:288
+msgid "Media Manager Edition"
+msgstr "Edícia správcu médií"
+
+#: modules/gui/qt4/ui/vlm.h:289
+msgid "Name:"
+msgstr "Názov:"
+
+#: modules/gui/qt4/ui/vlm.h:291
+msgid "Input:"
+msgstr "Vstup:"
+
+#: modules/gui/qt4/ui/vlm.h:292
+msgid "Select Input"
+msgstr "Vybrať vstup"
+
+#: modules/gui/qt4/ui/vlm.h:293
+msgid "Output:"
+msgstr "Výstup:"
+
+#: modules/gui/qt4/ui/vlm.h:294
+msgid "Select Output"
+msgstr "Vybrať výstup"
+
+#: modules/gui/qt4/ui/vlm.h:295
+msgid "Time Control"
+msgstr "Časové ovládanie"
+
+#: modules/gui/qt4/ui/vlm.h:296
+msgid "Mux Control"
+msgstr "Ovládanie muxovania"
+
+#: modules/gui/qt4/ui/vlm.h:297
+msgid "Muxer:"
+msgstr "Muxér:"
+
+#: modules/gui/qt4/ui/vlm.h:298
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt4/ui/vlm.h:299
+msgid "Loop"
+msgstr "Opakovanie"
+
+#: modules/gui/qt4/ui/vlm.h:303
+msgid "Media Manager List"
+msgstr "Zoznam správcov médií"
 
 #~ msgid ""
-#~ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#~ "REC-html40/strict.dtd\">\n"
-#~ "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#~ "css\">\n"
-#~ "p, li { white-space: pre-wrap; }\n"
-#~ "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; "
-#~ "font-weight:400; font-style:normal;\">\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">http://www.example.com/stream.avi</span></p>\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">rtp://@1234</span></p>\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">rtsp://server.example.org:8080/test.sdp</span></p>\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
+#~ "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 #~ msgstr ""
-#~ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#~ "REC-html40/strict.dtd\">\n"
-#~ "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#~ "css\">\n"
-#~ "p, li { white-space: pre-wrap; }\n"
-#~ "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; "
-#~ "font-weight:400; font-style:normal;\">\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">http://www.example.com/stream.avi</span></p>\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">rtp://@1234</span></p>\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">rtsp://server.example.org:8080/test.sdp</span></p>\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-#~ "#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
-
-#~ msgid "MPEG-TS"
-#~ msgstr "MPEG-TS"
-
-#~ msgid "MPEG-PS"
-#~ msgstr "MPEG-PS"
-
-#~ msgid "WAV"
-#~ msgstr "WAV"
-
-#~ msgid "ASF/WMV"
-#~ msgstr "ASF/WMV"
-
-#~ msgid "Ogg/Ogm"
-#~ msgstr "Ogg/Ogm"
-
-#~ msgid "RAW"
-#~ msgstr "RAW"
-
-#~ msgid "MPEG 1"
-#~ msgstr "MPEG 1"
-
-#~ msgid "FLV"
-#~ msgstr "FLV"
-
-#~ msgid "AVI"
-#~ msgstr "AVI"
-
-#~ msgid "MP4/MOV"
-#~ msgstr "MP4/MOV"
-
-#~ msgid "MKV"
-#~ msgstr "MKV"
-
-#~ msgid "Encapsulation"
-#~ msgstr "Zapuzdrovanie"
-
-#~ msgid " kb/s"
-#~ msgstr " kb/s"
-
-#~ msgid "Frame Rate"
-#~ msgstr "Rýchlosť snímkovania"
-
-#~ msgid " fps"
-#~ msgstr " fps"
-
-#~ msgid ""
-#~ "You just need to fill one of the three following parameters, VLC will "
-#~ "autodetect the other using the original aspect ratio"
-#~ msgstr ""
-#~ "Stačí zadať jeden z týchto troch parametrov. Program VLC zistí ostatné "
-#~ "parametre automaticky, podľ pôvodného stranového pomeru"
-
-#~ msgid "00000; "
-#~ msgstr "00000; "
-
-#~ msgid "Keep original video track"
-#~ msgstr "Zachovať pôvodnú obrazovú stopu"
-
-#~ msgid "Video codec"
-#~ msgstr "Kodek pre video"
-
-#~ msgid "Keep original audio track"
-#~ msgstr "Zachovať pôvodnú zvukovú stopu"
-
-#~ msgid "Sample Rate"
-#~ msgstr "Vzorkovacia frekvencia"
-
-#~ msgid "Audio codec"
-#~ msgstr "Kodek pre zvuk"
-
-#~ msgid "Overlay subtitles on the video"
-#~ msgstr "Prekrývanie titulkov vo videu"
-
-#~ msgid "Destinations"
-#~ msgstr "Ciele"
-
-#~ msgid "New destination"
-#~ msgstr "Nový cieľ"
-
-#~ msgid ""
-#~ "Add destinations following the streaming methods you need. Be sure to "
-#~ "check with transcoding that the format is compatible with the method used."
-#~ msgstr ""
-#~ "Pridajte ciele s ohľadom na metódu streamovania, ktorú chcete použiť. "
-#~ "Transkódovaním sa uistite, že formát je kompatibilný s použitou metódou."
-
-#~ msgid "Display locally"
-#~ msgstr "Zobraziť lokálne"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "Aktivovať transkódovanie"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "Rôzne nastavenia"
-
-#~ msgid "Stream all elementary streams"
-#~ msgstr "Vysielať všetky elementárne streamy"
-
-#~ msgid "Group name"
-#~ msgstr "Názov skupiny"
-
-#~ msgid "Generated stream output string"
-#~ msgstr "Generovaný príkaz pre výstup streamu"
-
-#~ msgid "Keep audio level between sessions"
-#~ msgstr "Udržiavať úroveň zvuku medzi sedeniami"
-
-#~ msgid "Always reset audio start level to:"
-#~ msgstr "Vždy obnoviť úvodnú úroveň zvuku na hodnotu:"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output"
-#~ msgstr "Výstup"
-
-#~ msgid "Output module:"
-#~ msgstr "Výstupný modul:"
-
-#~ msgid "Dolby Surround:"
-#~ msgstr "Dolby Surround:"
-
-#~ msgid "Normalize volume to:"
-#~ msgstr "Normalizovať zvuk na:"
-
-#~ msgid "Replay gain mode:"
-#~ msgstr "Režim zosilnenia pri opakovaní:"
-
-#~ msgid "Visualization:"
-#~ msgstr "Vizualizácia:"
-
-#~ msgid "Enable Time-Stretching audio"
-#~ msgstr "Zapnúť časové roztiahnutie zvuku:"
-
-#~ msgid "Preferred audio language:"
-#~ msgstr "Preferovaný jazyk zvukovej stopy:"
-
-#~ msgid "Password:"
-#~ msgstr "Heslo:"
-
-#~ msgid "Username:"
-#~ msgstr "Meno používateľa:"
-
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "Oznamovanie štatistiky o prehraných skladbách do služby Last.fm"
-
-#~ msgid "Optical drive"
-#~ msgstr "Optická jednotka"
-
-#~ msgid "Default optical device"
-#~ msgstr "Predvolené diskové zariadenia"
-
-#~ msgid "Codecs"
-#~ msgstr "Kodeky"
-
-#~ msgid "Skip H.264 in-loop deblocking filter"
-#~ msgstr "Preskočiť deblokovací filter H.264 in loop"
-
-#~ msgid "Video quality post-processing level"
-#~ msgstr "Kvalitatívna úroveň dodatočného spracovávania videa"
-
-#~ msgid "Use GPU acceleration (experimental)"
-#~ msgstr "Použiť akceleráciu GPU (experimentálne)"
-
-#~ msgid "Use system codecs if available (better quality, but dangerous)"
-#~ msgstr ""
-#~ "Použiť systémové kodeky, ak sú dostupné (lepšia kvalita, avšak väčšie "
-#~ "ohrozenie funkčnosti)"
-
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "Poškodený alebo neúplný súbor AVI"
-
-#~ msgid "Default port (server mode)"
-#~ msgstr "Predvolený port (serverový mód)"
-
-#~ msgid "HTTP proxy URL"
-#~ msgstr "URL na HTTP proxy"
-
-#~ msgid "Default caching policy"
-#~ msgstr "Predvolená politika ukladania do vyrovnávacej pamäte "
-
-#~ msgid "HTTP (default)"
-#~ msgstr "HTTP (predvolené)"
-
-#~ msgid "RTP over RTSP (TCP)"
-#~ msgstr "Používať RTP cez RTSP (TCP)"
-
-#~ msgid "Live555 stream transport"
-#~ msgstr "Transport streamu Live555"
-
-#~ msgid "Instances"
-#~ msgstr "Inštancie"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "Povoliť len jednu spustenú inštanciu programu"
-
-#~ msgid "Enqueue files when in one instance mode"
-#~ msgstr "Zaraďovať súbory, ak sa používa len jedna inštancia programu"
-
-#~ msgid "Album art download policy:"
-#~ msgstr "Metóda sťahovania druhu albumu:"
-
-#~ msgid "Activate update notifier"
-#~ msgstr "Aktivovať upozornenie na aktualizácie"
-
-#~ msgid "Every "
-#~ msgstr "Každých"
-
-#~ msgid "Save recently played items"
-#~ msgstr "Uložiť naposledy prehrávané položky"
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "Oddeľovať slova znakom | (bez medzery)"
-
-#~ msgid "Menus language:"
-#~ msgstr "Jazyk ponúk v menu:"
-
-#~ msgid "File associations"
-#~ msgstr "Asociácie so súborom"
-
-#~ msgid "Set up associations..."
-#~ msgstr "Nastavenie asociácií..."
-
-#~ msgid "Look and feel"
-#~ msgstr "Vzhľad a dojem"
-
-#~ msgid "Use custom skin"
-#~ msgstr "Použiť užívateľom vybraný vzhľad"
-
-#~ msgid "Skin resource file:"
-#~ msgstr "Zdrojový súbor so vzhľadom:"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "Meniť veľkosť rozhrania podľa veľkosti videa"
-
-#~ msgid "Force window style:"
-#~ msgstr "Vynútiť si štýl okien:"
-
-#~ msgid "Show systray icon"
-#~ msgstr "Zobraziť ikonu v oznamovacej oblasti"
-
-#~ msgid "Embed video in interface"
-#~ msgstr "Pridať video do rozhrania"
-
-#~ msgid " Systray popup when minimized"
-#~ msgstr ""
-#~ " Pri minimalizovaní použiť vyskakovacie okno z lišty v oznamovacej oblasti"
-
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "Zobraziť ovládače v celoobrazovkovom režime"
-
-#~ msgid "Minimal view mode (no toolbars)"
-#~ msgstr "Režim minimálneho zobrazenia (bez panelov nástrojov)"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr "Toto je predvolené rozhranie programu VLC."
-
-#~ msgid "Use native style"
-#~ msgstr "Použiť natívny štýl"
-
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "Zapnúť ovládanie On Screen Display (OSD)"
-
-#~ msgid "Show media title on video start"
-#~ msgstr "Zobraziť názov média pri spustení videa"
-
-#~ msgid "Subtitles Language"
-#~ msgstr "Jazyk titulkov"
-
-#~ msgid "Preferred subtitles language"
-#~ msgstr "Preferovaný jazyk zvukovej stopy"
-
-#~ msgid "Default encoding"
-#~ msgstr "Predvolené kódovanie"
-
-#~ msgid "Effect"
-#~ msgstr "Efekt"
-
-#~ msgid "Font color"
-#~ msgstr "Farba písma"
-
-#~ msgid " px"
-#~ msgstr " px"
-
-#~ msgid "Accelerated video output (Overlay)"
-#~ msgstr "Akcelerovaný výstup videa (prekrývanie)"
-
-#~ msgid "DirectX"
-#~ msgstr "DirectX"
-
-#~ msgid "Display device"
-#~ msgstr "Zobrazovacie zariadenie"
-
-#~ msgid "Enable wallpaper mode"
-#~ msgstr "Zapnúť režim prehrávania na pozadí"
-
-#~ msgid "Deinterlacing"
-#~ msgstr "Rozkladanie"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "Vynútiť si stranový pomer"
-
-#~ msgid "Directory"
-#~ msgstr "Priečinok"
-
-#~ msgid "vlc-snap"
-#~ msgstr "vlc-snap"
-
-#~ msgid "Stuff"
-#~ msgstr "Materiál"
-
-#~ msgid "Edit settings"
-#~ msgstr "Upraviť nastavenia"
-
-#~ msgid "Control"
-#~ msgstr "Ovládanie"
-
-#~ msgid "Run manually"
-#~ msgstr "Spustiť manuálne"
-
-#~ msgid "Setup schedule"
-#~ msgstr "Nastavenie automatických úloh"
-
-#~ msgid "Run on schedule"
-#~ msgstr "Spustiť úlohu"
-
-#~ msgid "Status"
-#~ msgstr "Stav"
-
-#~ msgid "P/P"
-#~ msgstr "P/P"
-
-#~ msgid "Prev"
-#~ msgstr "Predchádzajúce"
-
-#~ msgid "Add Input"
-#~ msgstr "Pridať vstup"
-
-#~ msgid "Edit Input"
-#~ msgstr "Upraviť vstup"
-
-#~ msgid "Clear List"
-#~ msgstr "Vyčistiť zoznam"
-
-#~ msgid "Refresh"
-#~ msgstr "Obnoviť"
-
-#~ msgid "No v4l2 instance found. Press the refresh button to try again."
-#~ msgstr ""
-#~ "Nenašla sa žiadna inštanica v4l2. Skúste to ešte raz stlačením tlačidla "
-#~ "Obnoviť."
-
-#~ msgid "Transform"
-#~ msgstr "Transformovať"
-
-#~ msgid "Sigma"
-#~ msgstr "Sigma"
-
-#~ msgid "Synchronize top and bottom"
-#~ msgstr "Synchronizovať hore a dole"
-
-#~ msgid "Synchronize left and right"
-#~ msgstr "Synchronizovať naľavo a napravo"
-
-#~ msgid "Magnification/Zoom"
-#~ msgstr "Zväčšenie/zoom"
-
-#~ msgid "Puzzle game"
-#~ msgstr "Puzzle"
-
-#~ msgid "Black slot"
-#~ msgstr "Čierna dlaždica"
-
-#~ msgid "Columns"
-#~ msgstr "Stĺpce"
-
-#~ msgid "Rows"
-#~ msgstr "Riadky"
-
-#~ msgid "Angle"
-#~ msgstr "Uhol"
-
-#~ msgid "Geometry"
-#~ msgstr "Geometria"
-
-#~ msgid "Color extraction"
-#~ msgstr "Extrakcia farieb"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Similarity"
-#~ msgstr "Podobnosť"
-
-#~ msgid "Color fun"
-#~ msgstr "Farebná zábava"
-
-#~ msgid "Water effect"
-#~ msgstr "Efekt vody"
-
-#~ msgid "Motion detect"
-#~ msgstr "Detekcia pohybu"
-
-#~ msgid "Factor"
-#~ msgstr "Faktor"
-
-#~ msgid "Cartoon"
-#~ msgstr "Kreslené"
-
-#~ msgid "Image modification"
-#~ msgstr "Modifikácia obrázka"
-
-#~ msgid "Edge weightning"
-#~ msgstr "Zmäkčenie hrán"
-
-#~ msgid "Output Color Filtermode"
-#~ msgstr "Režim filtrovania farby na výstupe"
-
-#~ msgid "Brightness (%)"
-#~ msgstr "Jas (%)"
-
-#~ msgid "Darknesslimit"
-#~ msgstr "Limit tmavosti"
-
-#~ msgid "Mark analyzed Pixels"
-#~ msgstr "Označiť analyzované pixely"
-
-#~ msgid "Filter threshold (%)"
-#~ msgstr "Hranica filtra (%)"
-
-#~ msgid "Filter smoothness (%)"
-#~ msgstr "Zjemnenie filtra (%)"
-
-#~ msgid "Wall"
-#~ msgstr "Stena"
-
-#~ msgid "Add text"
-#~ msgstr "Pridať text"
-
-#~ msgid "Vout/Overlay"
-#~ msgstr "Vout/Prekrytie"
-
-#~ msgid "Add logo"
-#~ msgstr "Pridať logo"
-
-#~ msgid "Logo"
-#~ msgstr "Logo"
-
-#~ msgid "Logo erase"
-#~ msgstr "Vymazanie loga"
-
-#~ msgid "Mask"
-#~ msgstr "Maska"
-
-#~ msgid "Subpicture filters"
-#~ msgstr "Filtre pre pod-obrázky"
-
-#~ msgid "Video filters"
-#~ msgstr "Filtre videa"
-
-#~ msgid "Vout filters"
-#~ msgstr "Filtre výstupného videa"
-
-#~ msgid "Reset"
-#~ msgstr "Obnoviť"
-
-#~ msgid "Update"
-#~ msgstr "Aktualizovať"
-
-#~ msgid "Advanced video filter controls"
-#~ msgstr "Pokročilé ovládanie filtrov videa"
-
-#~ msgid "VLM configurator"
-#~ msgstr "Konfigurátor VLM"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "Edícia správcu médií"
-
-#~ msgid "Name:"
-#~ msgstr "Názov:"
-
-#~ msgid "Input:"
-#~ msgstr "Vstup:"
-
-#~ msgid "Select Input"
-#~ msgstr "Vybrať vstup"
-
-#~ msgid "Output:"
-#~ msgstr "Výstup:"
-
-#~ msgid "Select Output"
-#~ msgstr "Vybrať výstup"
-
-#~ msgid "Time Control"
-#~ msgstr "Časové ovládanie"
-
-#~ msgid "Mux Control"
-#~ msgstr "Ovládanie muxovania"
-
-#~ msgid "Muxer:"
-#~ msgstr "Muxér:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Loop"
-#~ msgstr "Opakovanie"
-
-#~ msgid "Media Manager List"
-#~ msgstr "Zoznam správcov médií"
+#~ "Kontajnery (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 
 #~ msgid "Attachment"
 #~ msgstr "Príloha"

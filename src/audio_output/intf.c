@@ -2,7 +2,7 @@
  * intf.c : audio output API towards the interface modules
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: f7c0f489e616c4645ae6f6a6500af981c656cf4e $
+ * $Id: 493ad5c71bb22c768390ecac596b70adc92d0f99 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -121,6 +121,17 @@ int doVolumeChanges( unsigned action, vlc_object_t * p_object, int i_nb_steps,
                         || /* or toggle */
                         ( action == TOGGLE_MUTE )
                     ));
+
+    /* If muting or unmuting when play hasn't started */
+    if ( action == SET_MUTE && !b_unmute_condition && !b_mute_condition )
+    {
+        if ( p_aout )
+        {
+            aout_unlock_volume( p_aout );
+            vlc_object_release( p_aout );
+        }
+        return i_result;
+    }
 
     /* On UnMute */
     if ( b_unmute_condition )

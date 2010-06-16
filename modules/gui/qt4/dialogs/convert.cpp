@@ -2,7 +2,7 @@
  * Convert.cpp : Convertion dialogs
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: cd2c8a8ab59466955bcc29668c1e838ba451fe42 $
+ * $Id: e2de2f8c5873901f0cbd8e0e928738ccb82295eb $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -110,7 +110,7 @@ void ConvertDialog::fileBrowse()
 {
     QString fileName = QFileDialog::getSaveFileName( this, qtr( "Save file..." ),
             "",
- qtr( "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)" ) );
+ qtr( "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)" ) );
     fileLine->setText( toNativeSeparators( fileName ) );
 }
 
@@ -135,10 +135,12 @@ void ConvertDialog::close()
             mrl.remove( '}' );
             mrl += ",deinterlace}";
         }
-        mrl += ":duplicate{";
-        if( displayBox->isChecked() ) mrl += "dst=display,";
-        mrl += "dst=std{access=file,mux=" + profile->getMux() +
-            ",dst='" + fileLine->text() + "'}";
+        mrl += ":";
+        if( displayBox->isChecked() )
+            mrl += "duplicate{dst=display,dst=";
+        mrl += "file{dst='" + fileLine->text() + "'}";
+        if( displayBox->isChecked() )
+            mrl += "}";
     }
 
     msg_Warn( p_intf, "Transcode MRL: %s", qtu( mrl ) );

@@ -2,7 +2,7 @@
  * EPGView.cpp: EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 5af6f93382f12fa5a989d71a07cfe0f52c5af450 $
+ * $Id: ea32110601ca581bccc8a8ac0d66b84aa9873bd9 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -34,33 +34,14 @@
 EPGView::EPGView( QWidget *parent ) : QGraphicsView( parent )
 {
     setContentsMargins( 0, 0, 0, 0 );
-    setFrameStyle( QFrame::NoFrame );
+    setFrameStyle( QFrame::Box );
     setAlignment( Qt::AlignLeft | Qt::AlignTop );
-    setViewportUpdateMode( QGraphicsView::FullViewportUpdate );
 
     m_startTime = QDateTime::currentDateTime();
 
     QGraphicsScene *EPGscene = new QGraphicsScene( this );
 
     setScene( EPGscene );
-
-    connect( horizontalScrollBar(), SIGNAL( valueChanged(int) ),
-             this, SLOT( updateOverlayPosition(int) ) );
-
-    m_overlay = EPGscene->addRect( 0, 0, 100, 1, QPen(), QBrush( QColor( 40, 86, 255, 220 ) ) );
-    m_overlay->setFlag( QGraphicsItem::ItemIgnoresTransformations );
-    m_overlay->setZValue( 100 );
-
-    sceneRectChanged( scene()->sceneRect() );
-
-    connect( scene(), SIGNAL( sceneRectChanged(QRectF) ),
-             this, SLOT( sceneRectChanged(QRectF) ) );
-}
-
-void EPGView::updateOverlayPosition( int value )
-{
-    int pos = value * matrix().inverted().m11();
-    m_overlay->setPos( pos, 0 );
 }
 
 void EPGView::setScale( double scaleFactor )
@@ -79,7 +60,11 @@ void EPGView::setStartTime( const QDateTime& startTime )
 
     for ( int i = 0; i < itemList.count(); ++i )
     {
+#ifndef WIN32
         EPGItem* item = dynamic_cast<EPGItem*>( itemList.at( i ) );
+#else
+        EPGItem *item = NULL;
+#endif
         if ( !item ) continue;
         item->setStart( item->start().addSecs( diff ) );
     }
@@ -98,13 +83,7 @@ const QDateTime& EPGView::startTime()
 void EPGView::addEvent( EPGEvent* event )
 {
     if ( !m_channels.contains( event->channelName ) )
-    {
         m_channels.append( event->channelName );
-        QGraphicsTextItem* channelTitle = new QGraphicsTextItem( event->channelName, m_overlay );
-        channelTitle->setZValue( 101 );
-        channelTitle->setPos( 0, m_channels.indexOf( event->channelName ) * TRACKS_HEIGHT );
-        channelTitle->setTextWidth( 100 );
-    }
 
     EPGItem* item = new EPGItem( this );
     item->setChannel( m_channels.indexOf( event->channelName ) );
@@ -128,23 +107,6 @@ void EPGView::delEvent( EPGEvent* event )
     //qDebug() << "Del event: " << event->name;
 }
 
-void EPGView::drawBackground( QPainter *painter, const QRectF &rect )
-{
-    painter->setPen( QPen( QColor( 72, 72, 72 ) ) );
-
-    QPointF p = mapToScene( width(), 0 );
-
-    int y = 0;
-    for ( int i = 0; i < m_channels.count() + 1; ++i )
-    {
-        painter->drawLine( 0,
-                           y * TRACKS_HEIGHT,
-                           p.x(),
-                           y * TRACKS_HEIGHT );
-        ++y;
-    }
-}
-
 void EPGView::updateDuration()
 {
     QDateTime lastItem;
@@ -152,7 +114,11 @@ void EPGView::updateDuration()
 
     for ( int i = 0; i < list.count(); ++i )
     {
+#ifndef WIN32
         EPGItem* item = dynamic_cast<EPGItem*>( list.at( i ) );
+#else
+        EPGItem *item = NULL;
+#endif
         if ( !item ) continue;
         QDateTime itemEnd = item->start().addSecs( item->duration() );
 
@@ -163,12 +129,12 @@ void EPGView::updateDuration()
     emit durationChanged( m_duration );
 }
 
+QList<QString> EPGView::getChannelList()
+{
+    return m_channels;
+}
+
 void EPGView::eventFocused( EPGEvent *ev )
 {
     emit eventFocusedChanged( ev );
-}
-
-void EPGView::sceneRectChanged( const QRectF& rect )
-{
-    m_overlay->setRect( 0, 0, m_overlay->rect().width(), rect.height() );
 }

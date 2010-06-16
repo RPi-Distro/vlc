@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: a85d2940f1f8f0202bda4a64fd727e1f30808804 $
+ * $Id: 36549844f0ba8097fba12e23062f4aec0e9adda9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste <jb@videolan.org>
@@ -62,6 +62,7 @@ enum {
     LoopChanged_Type,
     RepeatChanged_Type,
     LeafToParent_Type,
+    EPGEvent_Type,
 /*    SignalChanged_Type, */
 
     FullscreenControlToggle_Type = QEvent::User + IMEventType + 20,
@@ -170,6 +171,7 @@ private:
     void UpdateCaching();
     void UpdateRecord();
     void UpdateProgramEvent();
+    void UpdateEPG();
 
 public slots:
     void setInput( input_thread_t * ); ///< Our controlled input changed
@@ -234,6 +236,7 @@ signals:
     void cachingChanged( float );
     /// Program Event changes
     void encryptionChanged( bool );
+    void epgChanged();
 };
 
 class MainInputManager : public QObject

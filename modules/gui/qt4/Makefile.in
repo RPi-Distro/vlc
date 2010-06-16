@@ -141,6 +141,7 @@ am__objects_1 = libqt4_plugin_la-qt4.lo libqt4_plugin_la-menus.lo \
 	components/libqt4_plugin_la-interface_widgets.lo \
 	components/libqt4_plugin_la-controller.lo \
 	components/libqt4_plugin_la-controller_widget.lo \
+	components/epg/libqt4_plugin_la-EPGChannels.lo \
 	components/epg/libqt4_plugin_la-EPGItem.lo \
 	components/epg/libqt4_plugin_la-EPGRuler.lo \
 	components/epg/libqt4_plugin_la-EPGView.lo \
@@ -195,6 +196,7 @@ am__objects_2 = libqt4_plugin_la-main_interface.moc.lo \
 	components/libqt4_plugin_la-interface_widgets.moc.lo \
 	components/libqt4_plugin_la-controller.moc.lo \
 	components/libqt4_plugin_la-controller_widget.moc.lo \
+	components/epg/libqt4_plugin_la-EPGChannels.moc.lo \
 	components/epg/libqt4_plugin_la-EPGRuler.moc.lo \
 	components/epg/libqt4_plugin_la-EPGView.moc.lo \
 	components/epg/libqt4_plugin_la-EPGWidget.moc.lo \
@@ -845,6 +847,7 @@ nodist_SOURCES_qt4 = \
 		components/interface_widgets.moc.cpp \
 		components/controller.moc.cpp \
 		components/controller_widget.moc.cpp \
+		components/epg/EPGChannels.moc.cpp \
 		components/epg/EPGRuler.moc.cpp \
 		components/epg/EPGView.moc.cpp \
 		components/epg/EPGWidget.moc.cpp \
@@ -974,6 +977,10 @@ DEPS_res = \
 	pixmaps/types/type_node.png \
 	pixmaps/types/type_playlist.png \
 	pixmaps/types/type_unknown.xpm \
+	pixmaps/win7/win7thumbnail_prev.png \
+	pixmaps/win7/win7thumbnail_next.png \
+	pixmaps/win7/win7thumbnail_play.png \
+	pixmaps/win7/win7thumbnail_pause.png \
 	pixmaps/update.png \
 	pixmaps/lock.png
 
@@ -1025,6 +1032,7 @@ SOURCES_qt4 = qt4.cpp \
 		components/interface_widgets.cpp \
 		components/controller.cpp \
 		components/controller_widget.cpp \
+		components/epg/EPGChannels.cpp \
 		components/epg/EPGItem.cpp \
 		components/epg/EPGRuler.cpp \
 		components/epg/EPGView.cpp \
@@ -1081,6 +1089,7 @@ noinst_HEADERS = \
 	components/interface_widgets.hpp \
 	components/controller.hpp \
 	components/controller_widget.hpp \
+	components/epg/EPGChannels.hpp \
 	components/epg/EPGEvent.hpp \
 	components/epg/EPGItem.hpp \
 	components/epg/EPGRuler.hpp \
@@ -1267,6 +1276,9 @@ components/epg/$(am__dirstamp):
 components/epg/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) components/epg/$(DEPDIR)
 	@: > components/epg/$(DEPDIR)/$(am__dirstamp)
+components/epg/libqt4_plugin_la-EPGChannels.lo:  \
+	components/epg/$(am__dirstamp) \
+	components/epg/$(DEPDIR)/$(am__dirstamp)
 components/epg/libqt4_plugin_la-EPGItem.lo:  \
 	components/epg/$(am__dirstamp) \
 	components/epg/$(DEPDIR)/$(am__dirstamp)
@@ -1396,6 +1408,9 @@ components/libqt4_plugin_la-controller.moc.lo:  \
 components/libqt4_plugin_la-controller_widget.moc.lo:  \
 	components/$(am__dirstamp) \
 	components/$(DEPDIR)/$(am__dirstamp)
+components/epg/libqt4_plugin_la-EPGChannels.moc.lo:  \
+	components/epg/$(am__dirstamp) \
+	components/epg/$(DEPDIR)/$(am__dirstamp)
 components/epg/libqt4_plugin_la-EPGRuler.moc.lo:  \
 	components/epg/$(am__dirstamp) \
 	components/epg/$(DEPDIR)/$(am__dirstamp)
@@ -1437,6 +1452,10 @@ libqt4_plugin.la: $(libqt4_plugin_la_OBJECTS) $(libqt4_plugin_la_DEPENDENCIES)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f components/epg/libqt4_plugin_la-EPGChannels.$(OBJEXT)
+	-rm -f components/epg/libqt4_plugin_la-EPGChannels.lo
+	-rm -f components/epg/libqt4_plugin_la-EPGChannels.moc.$(OBJEXT)
+	-rm -f components/epg/libqt4_plugin_la-EPGChannels.moc.lo
 	-rm -f components/epg/libqt4_plugin_la-EPGItem.$(OBJEXT)
 	-rm -f components/epg/libqt4_plugin_la-EPGItem.lo
 	-rm -f components/epg/libqt4_plugin_la-EPGRuler.$(OBJEXT)
@@ -1654,6 +1673,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@components/$(DEPDIR)/libqt4_plugin_la-preferences_widgets.moc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@components/$(DEPDIR)/libqt4_plugin_la-simple_preferences.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@components/$(DEPDIR)/libqt4_plugin_la-simple_preferences.moc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@components/epg/$(DEPDIR)/libqt4_plugin_la-EPGChannels.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@components/epg/$(DEPDIR)/libqt4_plugin_la-EPGChannels.moc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@components/epg/$(DEPDIR)/libqt4_plugin_la-EPGItem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@components/epg/$(DEPDIR)/libqt4_plugin_la-EPGRuler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@components/epg/$(DEPDIR)/libqt4_plugin_la-EPGRuler.moc.Plo@am__quote@
@@ -2071,6 +2092,14 @@ components/libqt4_plugin_la-controller_widget.lo: components/controller_widget.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='components/controller_widget.cpp' object='components/libqt4_plugin_la-controller_widget.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqt4_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o components/libqt4_plugin_la-controller_widget.lo `test -f 'components/controller_widget.cpp' || echo '$(srcdir)/'`components/controller_widget.cpp
+
+components/epg/libqt4_plugin_la-EPGChannels.lo: components/epg/EPGChannels.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqt4_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT components/epg/libqt4_plugin_la-EPGChannels.lo -MD -MP -MF components/epg/$(DEPDIR)/libqt4_plugin_la-EPGChannels.Tpo -c -o components/epg/libqt4_plugin_la-EPGChannels.lo `test -f 'components/epg/EPGChannels.cpp' || echo '$(srcdir)/'`components/epg/EPGChannels.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) components/epg/$(DEPDIR)/libqt4_plugin_la-EPGChannels.Tpo components/epg/$(DEPDIR)/libqt4_plugin_la-EPGChannels.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='components/epg/EPGChannels.cpp' object='components/epg/libqt4_plugin_la-EPGChannels.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqt4_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o components/epg/libqt4_plugin_la-EPGChannels.lo `test -f 'components/epg/EPGChannels.cpp' || echo '$(srcdir)/'`components/epg/EPGChannels.cpp
 
 components/epg/libqt4_plugin_la-EPGItem.lo: components/epg/EPGItem.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqt4_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT components/epg/libqt4_plugin_la-EPGItem.lo -MD -MP -MF components/epg/$(DEPDIR)/libqt4_plugin_la-EPGItem.Tpo -c -o components/epg/libqt4_plugin_la-EPGItem.lo `test -f 'components/epg/EPGItem.cpp' || echo '$(srcdir)/'`components/epg/EPGItem.cpp
@@ -2495,6 +2524,14 @@ components/libqt4_plugin_la-controller_widget.moc.lo: components/controller_widg
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='components/controller_widget.moc.cpp' object='components/libqt4_plugin_la-controller_widget.moc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqt4_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o components/libqt4_plugin_la-controller_widget.moc.lo `test -f 'components/controller_widget.moc.cpp' || echo '$(srcdir)/'`components/controller_widget.moc.cpp
+
+components/epg/libqt4_plugin_la-EPGChannels.moc.lo: components/epg/EPGChannels.moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqt4_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT components/epg/libqt4_plugin_la-EPGChannels.moc.lo -MD -MP -MF components/epg/$(DEPDIR)/libqt4_plugin_la-EPGChannels.moc.Tpo -c -o components/epg/libqt4_plugin_la-EPGChannels.moc.lo `test -f 'components/epg/EPGChannels.moc.cpp' || echo '$(srcdir)/'`components/epg/EPGChannels.moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) components/epg/$(DEPDIR)/libqt4_plugin_la-EPGChannels.moc.Tpo components/epg/$(DEPDIR)/libqt4_plugin_la-EPGChannels.moc.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='components/epg/EPGChannels.moc.cpp' object='components/epg/libqt4_plugin_la-EPGChannels.moc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqt4_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o components/epg/libqt4_plugin_la-EPGChannels.moc.lo `test -f 'components/epg/EPGChannels.moc.cpp' || echo '$(srcdir)/'`components/epg/EPGChannels.moc.cpp
 
 components/epg/libqt4_plugin_la-EPGRuler.moc.lo: components/epg/EPGRuler.moc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libqt4_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT components/epg/libqt4_plugin_la-EPGRuler.moc.lo -MD -MP -MF components/epg/$(DEPDIR)/libqt4_plugin_la-EPGRuler.moc.Tpo -c -o components/epg/libqt4_plugin_la-EPGRuler.moc.lo `test -f 'components/epg/EPGRuler.moc.cpp' || echo '$(srcdir)/'`components/epg/EPGRuler.moc.cpp

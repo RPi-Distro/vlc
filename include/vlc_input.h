@@ -2,7 +2,7 @@
  * vlc_input.h: Core input structures
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: ac90b1092ed7c5ff2fb351819a1ebe578ff2d60b $
+ * $Id: 179fed6fceab7f8af0c2a8063f2f035dc8a0c5ef $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -667,5 +667,10 @@ VLC_EXPORT(input_resource_t *, input_DetachResource, ( input_thread_t * ) );
  * This function releases the input resource.
  */
 VLC_EXPORT(void, input_resource_Delete, ( input_resource_t * ) );
+
+/**
+ * Forcefully destroys the video output (e.g. when the playlist is stopped).
+ */
+VLC_EXPORT(void, input_resource_TerminateVout, ( input_resource_t * ) );
 
 #endif

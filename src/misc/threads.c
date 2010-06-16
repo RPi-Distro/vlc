@@ -2,7 +2,7 @@
  * threads.c : threads implementation for the VideoLAN client
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 5099041ef18d7948b558ffdeddfb94d6cadc73f6 $
+ * $Id: b73eb301ab63b924a84c4a82643c25816e752551 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -232,4 +232,24 @@ void vlc_thread_cancel (vlc_object_t *obj)
 
     if (priv->b_thread)
         vlc_cancel (priv->thread_id);
+}
+
+/*** Global locks ***/
+
+void vlc_global_mutex (unsigned n, bool acquire)
+{
+    static vlc_mutex_t locks[] = {
+        VLC_STATIC_MUTEX,
+    };
+    assert (n < (sizeof (locks) / sizeof (locks[0])));
+    vlc_mutex_t *lock = locks + n;
+
+    if (acquire)
+        vlc_mutex_lock (lock);
+    else
+        vlc_mutex_unlock (lock);
+
+    /* Compile-time assertion ;-) */
+    char enough_locks[(sizeof (locks) / sizeof (locks[0])) - VLC_MAX_MUTEX];
+    (void) enough_locks;
 }

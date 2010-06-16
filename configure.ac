@@ -2,11 +2,11 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2010 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.0-rc2)
+AC_INIT(vlc, 1.1.0-rc4)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
 VERSION_REVISION="0"
-VERSION_EXTRA="-rc2"
+VERSION_EXTRA="-rc4"
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
@@ -1560,7 +1560,7 @@ AS_IF([test "x${enable_debug}" = "xno"], [
 ])
 
 dnl
-dnl Allow runing as root (usefull for people runing on embedded platforms)
+dnl Allow runing as root (useful for people runing on embedded platforms)
 dnl
 AC_ARG_ENABLE(run-as-root,
 [  --enable-run-as-root    allow runing VLC as root (default disabled)])
@@ -1631,7 +1631,7 @@ then
       AC_MSG_ERROR([Could not find lua. Lua is needed for some interfaces (rc, telnet, http) as well as many other custom scripts. Use --disable-lua to ignore this error.])
   fi
   AC_ARG_VAR([LUAC], [LUA byte compiler])
-  AC_PATH_PROG(LUAC, luac, [false])
+  AC_PATH_PROGS(LUAC,[${LUAC} luac], [false])
   AS_IF([test "${ac_cv_path_LUAC}" = "false"], [
     AC_MSG_ERROR([Could not find the LUA byte compiler.])
   ])
@@ -4422,7 +4422,7 @@ AC_SUBST(DEFS_BIGENDIAN)
 dnl
 dnl Where to install KDE solid .desktop
 dnl
-AC_ARG_VAR([KDE4_CONFIG], [path to kde4-config utility])
+AC_ARG_VAR([KDE4_CONFIG], [kde4-config utility])
 AS_IF([test "x$KDE4_CONFIG" = "x"], [
   KDE4_CONFIG="kde4-config"
 ])

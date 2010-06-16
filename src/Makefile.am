@@ -104,6 +104,7 @@ pluginsinclude_HEADERS = \
 	../include/vlc_vout_opengl.h \
 	../include/vlc_vout_window.h \
 	../include/vlc_xml.h \
+	../include/vlc_xlib.h \
 	$(NULL)
 
 noinst_HEADERS = \
@@ -123,6 +124,7 @@ noinst_HEADERS = \
 	../include/vlc_update.h \
 	../include/vlc_vod.h \
 	../include/vlc_vout_wrapper.h \
+	../include/vlc_windows_interfaces.h \
 	$(NULL)
 
 ../include/vlc_about.h: Makefile.am $(top_srcdir)/COPYING $(top_srcdir)/THANKS $(top_srcdir)/AUTHORS

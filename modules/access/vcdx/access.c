@@ -3,7 +3,7 @@
  *         vlc-specific things tend to go here.
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 91c77616d68c5185a757a3d62b719211d12cd66a $
+ * $Id: 8414089f50dcfbd9afc0912ad153bb68365104ae $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *   Some code is based on the non-libcdio VCD plugin (as there really
@@ -546,7 +546,7 @@ VCDParse( access_t * p_access, /*out*/ vcdinfo_itemid_t * p_itemid,
     char        *psz_source;
     char        *psz_next;
 
-    if( var_InheritInteger( p_access, MODULE_STRING "-PBC" ) ) {
+    if( var_InheritBool( p_access, MODULE_STRING "-PBC" ) ) {
       p_itemid->type = VCDINFO_ITEM_TYPE_LID;
       p_itemid->num = 1;
       *play_single_item = false;

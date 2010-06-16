@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: aee63266d26c58e5cdce1ff6f6dc31986b0df530 $
+ * $Id: fc13f7ab5cdb9c5789041b797283669cadf6521a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -194,7 +194,7 @@ vlc_module_begin ()
                 AENC_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "acodec", NULL, NULL, ACODEC_TEXT,
                 ACODEC_LONGTEXT, false )
-    add_integer( SOUT_CFG_PREFIX "ab", 0, NULL, AB_TEXT,
+    add_integer( SOUT_CFG_PREFIX "ab", 96, NULL, AB_TEXT,
                  AB_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "alang", NULL, NULL, ALANG_TEXT,
                 ALANG_LONGTEXT, true )

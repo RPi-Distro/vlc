@@ -2,7 +2,7 @@
  * media_player.c: Libvlc API Media Instance management functions
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: cac7a2052ba512f0d24651639d8a11ff2cda2fd3 $
+ * $Id: adbc8eb5d2d10a7086a3200b31449996a45f0321 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -742,6 +742,9 @@ void libvlc_media_player_stop( libvlc_media_player_t *p_mi )
         event.type = libvlc_MediaPlayerStopped;
         libvlc_event_send( p_mi->p_event_manager, &event );
     }
+
+    if( p_mi->input.p_resource != NULL )
+        input_resource_TerminateVout( p_mi->input.p_resource );
     unlock_input(p_mi);
 }
 

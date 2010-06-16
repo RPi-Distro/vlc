@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 304172bcdcfdc1736480a20b99709fa30b1fce82 $
+ * $Id: ca260d8fdff400942af922edb4ccf394d675a7a6 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -115,11 +115,11 @@ Dialogs::~Dialogs()
         // Detach the dialogs provider from its parent interface
         module_unneed( m_pProvider, m_pModule );
         vlc_object_release( m_pProvider );
-    }
 
-    /* Unregister callbacks */
-    var_DelCallback( getIntf()->p_libvlc, "intf-popupmenu",
-                     PopupMenuCB, this );
+        /* Unregister callbacks */
+        var_DelCallback( getIntf()->p_libvlc, "intf-popupmenu",
+                         PopupMenuCB, this );
+    }
 }
 
 

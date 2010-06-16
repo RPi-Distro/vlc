@@ -2,7 +2,7 @@
  * copy.c: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 6bc0d8207c72279caee68c44f18b48e912159589 $
+ * $Id: 9c9a44bcbd413d042630c3c802e95df3a60d48e0 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -63,7 +63,6 @@
  */
 static void CopyFromUswc(uint8_t *dst, size_t dst_pitch,
                          const uint8_t *src, size_t src_pitch,
-                         unsigned unaligned,
                          unsigned width, unsigned height,
                          unsigned cpu)
 {
@@ -71,6 +70,7 @@ static void CopyFromUswc(uint8_t *dst, size_t dst_pitch,
 
     ASM_SSE2(cpu, "mfence");
     for (unsigned y = 0; y < height; y++) {
+        const unsigned unaligned = (intptr_t)src & 0x0f;
         unsigned x;
 
         for (x = 0; x < unaligned; x++)
@@ -237,13 +237,11 @@ static void CopyPlane(uint8_t *dst, size_t dst_pitch, const uint8_t *src, size_t
     assert(hstep > 0);
 
     for (unsigned y = 0; y < height; y += hstep) {
-        const unsigned unaligned = (intptr_t)src & 0x0f;
         const unsigned hblock =  __MIN(hstep, height - y);
 
         /* Copy a bunch of line into our cache */
         CopyFromUswc(cache, w16,
                      src, src_pitch,
-                     unaligned,
                      width, hblock, cpu);
 
         /* Copy from our cache to the destination */
@@ -270,13 +268,11 @@ static void SplitPlanes(uint8_t *dstu, size_t dstu_pitch,
     assert(hstep > 0);
 
     for (unsigned y = 0; y < height; y += hstep) {
-        const unsigned unaligned = (intptr_t)src & 0x0f;
         const unsigned hblock =  __MIN(hstep, height - y);
 
         /* Copy a bunch of line into our cache */
         CopyFromUswc(cache, w2_16,
                      src, src_pitch,
-                     unaligned,
                      2*width, hblock, cpu);
 
         /* Copy from our cache to the destination */

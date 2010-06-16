@@ -2,7 +2,7 @@
  * event.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 43828f4bef9dba4a821f2b6389e6a46e829e08c1 $
+ * $Id: 2b21965f94d05a73eba74834e6ff540e97897ea5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -49,8 +49,7 @@ void            EventThreadDestroy( event_thread_t * );
 int             EventThreadStart( event_thread_t *, event_hwnd_t *, const event_cfg_t * );
 void            EventThreadStop( event_thread_t * );
 
-void            EventThreadMouseAutoHide( event_thread_t * );
-void            EventThreadMouseShow( event_thread_t * );
+void            EventThreadMouseHide( event_thread_t * );
 void            EventThreadUpdateTitle( event_thread_t *, const char *psz_fallback );
 int             EventThreadGetWindowStyle( event_thread_t * );
 void            EventThreadUpdateWindowPosition( event_thread_t *, bool *pb_moved, bool *pb_resized,

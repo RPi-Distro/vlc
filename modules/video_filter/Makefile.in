@@ -129,6 +129,7 @@ am__objects_3 = libatmo_plugin_la-atmo.lo \
 	libatmo_plugin_la-DmxTools.lo \
 	libatmo_plugin_la-AtmoMultiConnection.lo \
 	libatmo_plugin_la-MoMoConnection.lo \
+	libatmo_plugin_la-FnordlichtConnection.lo \
 	libatmo_plugin_la-AtmoPacketQueue.lo
 am_libatmo_plugin_la_OBJECTS = $(am__objects_3)
 nodist_libatmo_plugin_la_OBJECTS =
@@ -1440,6 +1441,7 @@ SOURCES_atmo = atmo/atmo.cpp \
 	atmo/DmxTools.cpp atmo/DmxTools.h \
 	atmo/AtmoMultiConnection.cpp atmo/AtmoMultiConnection.h \
 	atmo/MoMoConnection.cpp atmo/MoMoConnection.h \
+	atmo/FnordlichtConnection.cpp atmo/FnordlichtConnection.h \
 	atmo/AtmoPacketQueue.cpp atmo/AtmoPacketQueue.h
 
 SOURCES_video_filter_wrapper = wrapper.c
@@ -2200,6 +2202,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libatmo_plugin_la-AtmoTools.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libatmo_plugin_la-AtmoZoneDefinition.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libatmo_plugin_la-DmxTools.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libatmo_plugin_la-FnordlichtConnection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libatmo_plugin_la-MoMoConnection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libatmo_plugin_la-atmo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaudiobargraph_v_plugin_la-audiobargraph_v.Plo@am__quote@
@@ -2892,6 +2895,14 @@ libatmo_plugin_la-MoMoConnection.lo: atmo/MoMoConnection.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='atmo/MoMoConnection.cpp' object='libatmo_plugin_la-MoMoConnection.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libatmo_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libatmo_plugin_la-MoMoConnection.lo `test -f 'atmo/MoMoConnection.cpp' || echo '$(srcdir)/'`atmo/MoMoConnection.cpp
+
+libatmo_plugin_la-FnordlichtConnection.lo: atmo/FnordlichtConnection.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libatmo_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libatmo_plugin_la-FnordlichtConnection.lo -MD -MP -MF $(DEPDIR)/libatmo_plugin_la-FnordlichtConnection.Tpo -c -o libatmo_plugin_la-FnordlichtConnection.lo `test -f 'atmo/FnordlichtConnection.cpp' || echo '$(srcdir)/'`atmo/FnordlichtConnection.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libatmo_plugin_la-FnordlichtConnection.Tpo $(DEPDIR)/libatmo_plugin_la-FnordlichtConnection.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='atmo/FnordlichtConnection.cpp' object='libatmo_plugin_la-FnordlichtConnection.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libatmo_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libatmo_plugin_la-FnordlichtConnection.lo `test -f 'atmo/FnordlichtConnection.cpp' || echo '$(srcdir)/'`atmo/FnordlichtConnection.cpp
 
 libatmo_plugin_la-AtmoPacketQueue.lo: atmo/AtmoPacketQueue.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libatmo_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libatmo_plugin_la-AtmoPacketQueue.lo -MD -MP -MF $(DEPDIR)/libatmo_plugin_la-AtmoPacketQueue.Tpo -c -o libatmo_plugin_la-AtmoPacketQueue.lo `test -f 'atmo/AtmoPacketQueue.cpp' || echo '$(srcdir)/'`atmo/AtmoPacketQueue.cpp
