@@ -1,7 +1,7 @@
-diff --git a/config.h.in b/config.h.in
-index a786b54..cadf91e 100644
---- a/config.h.in
-+++ b/config.h.in
+Index: debian.git/config.h.in
+===================================================================
+--- debian.git.orig/config.h.in	2010-06-21 01:50:57.000000000 +0200
++++ debian.git/config.h.in	2010-06-23 00:47:04.664226507 +0200
 @@ -501,6 +501,9 @@
  /* Define to 1 if you have the <npapi.h> header file. */
  #undef HAVE_NPAPI_H
@@ -12,11 +12,11 @@ index a786b54..cadf91e 100644
  /* Define to 1 if you have the <npruntime.h> header file. */
  #undef HAVE_NPRUNTIME_H
  
-diff --git a/configure b/configure
-index 1fc0a29..730e753 100755
---- a/configure
-+++ b/configure
-@@ -46990,33 +46990,39 @@ $as_echo "$as_me: Checking for Mozilla" >&6;}
+Index: debian.git/configure
+===================================================================
+--- debian.git.orig/configure	2010-06-21 01:50:55.000000000 +0200
++++ debian.git/configure	2010-06-23 00:47:04.674226144 +0200
+@@ -47000,33 +47000,39 @@
        found=1
      else
        if test -n "$PKG_CONFIG"; then
@@ -65,7 +65,7 @@ index 1fc0a29..730e753 100755
          for ac_header in npapi.h
  do :
    ac_fn_cxx_check_header_mongrel "$LINENO" "npapi.h" "ac_cv_header_npapi_h" "$ac_includes_default"
-@@ -47050,7 +47056,7 @@ fi
+@@ -47060,7 +47066,7 @@
  done
  
          if test "${MOZILLA_REQUIRED_HEADERS}" = "0"; then
@@ -74,7 +74,7 @@ index 1fc0a29..730e753 100755
          fi
          MOZILLA_REQUIRED_HEADERS=
          mozilla=:
-@@ -47058,11 +47064,12 @@ done
+@@ -47068,11 +47074,12 @@
  
  
  
@@ -89,7 +89,7 @@ index 1fc0a29..730e753 100755
  
  
  pkg_failed=no
-@@ -47122,13 +47129,13 @@ fi
+@@ -47132,13 +47139,13 @@
  	echo "$XPM_PKG_ERRORS" >&5
  
  
@@ -105,7 +105,7 @@ index 1fc0a29..730e753 100755
  
  else
  	XPM_CFLAGS=$pkg_cv_XPM_CFLAGS
-@@ -47144,11 +47151,6 @@ $as_echo "yes" >&6; }
+@@ -47154,11 +47161,6 @@
  
  
  fi
@@ -117,7 +117,7 @@ index 1fc0a29..730e753 100755
  
  fi
  
-@@ -47224,7 +47226,7 @@ fi
+@@ -47234,7 +47236,7 @@
  done
  test -n "$MOZILLA_CONFIG" || MOZILLA_CONFIG="no"
  
@@ -126,7 +126,7 @@ index 1fc0a29..730e753 100755
  
  
  fi
-@@ -47482,8 +47484,22 @@ fi
+@@ -47492,8 +47494,22 @@
      fi
  
      real_mozilla_sdk="`cd ${with_mozilla_sdk_path} 2>/dev/null && pwd`"
@@ -150,7 +150,7 @@ index 1fc0a29..730e753 100755
      for ac_header in npapi.h
  do :
    ac_fn_cxx_check_header_mongrel "$LINENO" "npapi.h" "ac_cv_header_npapi_h" "$ac_includes_default"
-@@ -47525,10 +47541,29 @@ done
+@@ -47535,10 +47551,29 @@
      PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
  
  
@@ -181,11 +181,11 @@ index 1fc0a29..730e753 100755
      MOZILLA_SDK_PATH="${real_mozilla_sdk}"
  
      if test -n "${CYGPATH}"; then
-diff --git a/configure.ac b/configure.ac
-index 139afd8..9f4918c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -4550,29 +4550,27 @@ then
+Index: debian.git/configure.ac
+===================================================================
+--- debian.git.orig/configure.ac	2010-06-20 22:17:11.000000000 +0200
++++ debian.git/configure.ac	2010-06-23 00:47:04.684226299 +0200
+@@ -4550,29 +4550,27 @@
        found=1
      else
        if test -n "$PKG_CONFIG"; then
@@ -219,7 +219,7 @@ index 139afd8..9f4918c 100644
          AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
          AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
            [#if HAVE_NPAPI_H
-@@ -4580,24 +4578,22 @@ then
+@@ -4580,24 +4578,22 @@
             #endif
            ])
          if test "${MOZILLA_REQUIRED_HEADERS}" = "0"; then
@@ -254,7 +254,7 @@ index 139afd8..9f4918c 100644
          VLC_ADD_LIBS([mozilla],[${MOZILLA_LIBS} ${XPM_LIBS}])
          VLC_ADD_PLUGIN([mozilla])
          PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
-@@ -4606,9 +4602,9 @@ then
+@@ -4606,9 +4602,9 @@
            ],
            [
              AC_PATH_PROGS(MOZILLA_CONFIG,
@@ -266,7 +266,7 @@ index 139afd8..9f4918c 100644
            ]
          )
      dnl pkg-config failed but we might have found a mozilla-config
-@@ -4664,8 +4660,9 @@ then
+@@ -4664,8 +4660,9 @@
      fi
  
      real_mozilla_sdk="`cd ${with_mozilla_sdk_path} 2>/dev/null && pwd`"
@@ -277,7 +277,7 @@ index 139afd8..9f4918c 100644
      AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
      AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
          [#if HAVE_NPAPI_H
-@@ -4679,7 +4676,17 @@ then
+@@ -4679,7 +4676,17 @@
      MOZILLA_REQUIRED_HEADERS=
      mozilla=:
      PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
@@ -296,11 +296,11 @@ index 139afd8..9f4918c 100644
      MOZILLA_SDK_PATH="${real_mozilla_sdk}"
  
      if test -n "${CYGPATH}"; then
-diff --git a/projects/mozilla/Makefile.am b/projects/mozilla/Makefile.am
-index 230b720..9d1b7e6 100644
---- a/projects/mozilla/Makefile.am
-+++ b/projects/mozilla/Makefile.am
-@@ -67,7 +67,8 @@ CPPFLAGS_mozilla_EXTRA = -I. -I$(top_builddir) -I$(srcdir)/../include -c \
+Index: debian.git/projects/mozilla/Makefile.am
+===================================================================
+--- debian.git.orig/projects/mozilla/Makefile.am	2010-04-27 23:44:27.000000000 +0200
++++ debian.git/projects/mozilla/Makefile.am	2010-06-23 00:47:04.684226299 +0200
+@@ -67,7 +67,8 @@
  	-F/System/Library/Frameworks/CoreFoundation.framework $(moz_CFLAGS) \
  	-I/Developer/Headers/FlatCarbon -fno-common -fpascal-strings \
  	-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -DXP_MACOSX=1 \
@@ -310,11 +310,11 @@ index 230b720..9d1b7e6 100644
  LDFLAGS_mozilla_EXTRA = -no-undefined -bundle -Wl,-read_only_relocs -Wl,suppress \
  	-Wl,-headerpad_max_install_names -shrext $(LIBEXT) -Wl,-framework,Carbon -Wl,-framework,System
  
-diff --git a/projects/mozilla/Makefile.in b/projects/mozilla/Makefile.in
-index a5b7cc0..89d1ee1 100644
---- a/projects/mozilla/Makefile.in
-+++ b/projects/mozilla/Makefile.in
-@@ -740,7 +740,8 @@ DIST_sources = $(SOURCES_mozilla_common) \
+Index: debian.git/projects/mozilla/Makefile.in
+===================================================================
+--- debian.git.orig/projects/mozilla/Makefile.in	2010-06-21 01:51:16.000000000 +0200
++++ debian.git/projects/mozilla/Makefile.in	2010-06-23 00:47:04.684226299 +0200
+@@ -740,7 +740,8 @@
  @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-F/System/Library/Frameworks/CoreFoundation.framework $(moz_CFLAGS) \
  @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-I/Developer/Headers/FlatCarbon -fno-common -fpascal-strings \
  @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -DXP_MACOSX=1 \
@@ -324,10 +324,10 @@ index a5b7cc0..89d1ee1 100644
  
  @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@CPPFLAGS_mozilla_EXTRA = -DXP_WIN -DXP_WIN32
  @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@LDFLAGS_mozilla_EXTRA = -no-undefined -bundle -Wl,-read_only_relocs -Wl,suppress \
-diff --git a/projects/mozilla/control/npolibvlc.cpp b/projects/mozilla/control/npolibvlc.cpp
-index 2e6440e..6fb6132 100644
---- a/projects/mozilla/control/npolibvlc.cpp
-+++ b/projects/mozilla/control/npolibvlc.cpp
+Index: debian.git/projects/mozilla/control/npolibvlc.cpp
+===================================================================
+--- debian.git.orig/projects/mozilla/control/npolibvlc.cpp	2010-04-27 23:44:27.000000000 +0200
++++ debian.git/projects/mozilla/control/npolibvlc.cpp	2010-06-23 00:47:04.684226299 +0200
 @@ -28,6 +28,11 @@
  #include <string.h>
  #include <stdlib.h>
@@ -340,7 +340,7 @@ index 2e6440e..6fb6132 100644
  #include "vlcplugin.h"
  #include "npolibvlc.h"
  
-@@ -52,7 +57,7 @@ NPVariant copyNPVariant(const NPVariant& original)
+@@ -52,7 +57,7 @@
      NPVariant res;
  
      if (NPVARIANT_IS_STRING(original))
@@ -349,7 +349,7 @@ index 2e6440e..6fb6132 100644
      else if (NPVARIANT_IS_INT32(original))
          INT32_TO_NPVARIANT(NPVARIANT_TO_INT32(original), res);
      else if (NPVARIANT_IS_DOUBLE(original))
-@@ -962,7 +967,7 @@ LibvlcPlaylistNPObject::invoke(int index, const NPVariant *args,
+@@ -962,7 +967,7 @@
  void LibvlcPlaylistNPObject::parseOptions(const NPString &nps,
                                           int *i_options, char*** ppsz_options)
  {
@@ -358,7 +358,7 @@ index 2e6440e..6fb6132 100644
      {
          char *s = stringValue(nps);
          char *val = s;
-@@ -974,7 +979,7 @@ void LibvlcPlaylistNPObject::parseOptions(const NPString &nps,
+@@ -974,7 +979,7 @@
              {
                  int nOptions = 0;
  
@@ -367,7 +367,7 @@ index 2e6440e..6fb6132 100644
                  while( val < end )
                  {
                      // skip leading blanks
-@@ -1634,7 +1639,7 @@ LibvlcMarqueeNPObject::setProperty(int index, const NPVariant &value)
+@@ -1634,7 +1639,7 @@
  
      case ID_marquee_position:
          if( !NPVARIANT_IS_STRING(value) ||
@@ -376,7 +376,7 @@ index 2e6440e..6fb6132 100644
              return INVOKERESULT_INVALID_VALUE;
  
          libvlc_video_set_marquee_int(p_md, libvlc_marquee_Position, i);
-@@ -1780,7 +1785,7 @@ LibvlcLogoNPObject::setProperty(int index, const NPVariant &value)
+@@ -1780,7 +1785,7 @@
  
      case ID_logo_position:
          if( !NPVARIANT_IS_STRING(value) ||
@@ -385,7 +385,7 @@ index 2e6440e..6fb6132 100644
              return INVOKERESULT_INVALID_VALUE;
  
          libvlc_video_set_logo_int(p_md, libvlc_logo_position, i);
-@@ -1838,7 +1843,7 @@ LibvlcLogoNPObject::invoke(int index, const NPVariant *args,
+@@ -1838,7 +1843,7 @@
          {
              if( !NPVARIANT_IS_STRING(args[i]) )
                  return INVOKERESULT_INVALID_VALUE;
@@ -394,7 +394,7 @@ index 2e6440e..6fb6132 100644
          }
  
          buf = (char *)malloc( len+1 );
-@@ -1848,8 +1853,8 @@ LibvlcLogoNPObject::invoke(int index, const NPVariant *args,
+@@ -1848,8 +1853,8 @@
          for( h=buf,i=0;i<argCount;++i )
          {
              if(i) *h++=';';
@@ -405,10 +405,10 @@ index 2e6440e..6fb6132 100644
              h+=len;
          }
          *h='\0';
-diff --git a/projects/mozilla/control/nporuntime.cpp b/projects/mozilla/control/nporuntime.cpp
-index 396bbb9..b237fbd 100644
---- a/projects/mozilla/control/nporuntime.cpp
-+++ b/projects/mozilla/control/nporuntime.cpp
+Index: debian.git/projects/mozilla/control/nporuntime.cpp
+===================================================================
+--- debian.git.orig/projects/mozilla/control/nporuntime.cpp	2010-04-27 23:44:27.000000000 +0200
++++ debian.git/projects/mozilla/control/nporuntime.cpp	2010-06-23 00:47:04.684226299 +0200
 @@ -27,16 +27,21 @@
  #include <string.h>
  #include <stdlib.h>
@@ -434,10 +434,10 @@ index 396bbb9..b237fbd 100644
      }
      return val;
  }
-diff --git a/projects/mozilla/support/npmac.cpp b/projects/mozilla/support/npmac.cpp
-index b8e2d0e..fc5b4be 100644
---- a/projects/mozilla/support/npmac.cpp
-+++ b/projects/mozilla/support/npmac.cpp
+Index: debian.git/projects/mozilla/support/npmac.cpp
+===================================================================
+--- debian.git.orig/projects/mozilla/support/npmac.cpp	2010-04-27 23:44:55.000000000 +0200
++++ debian.git/projects/mozilla/support/npmac.cpp	2010-06-23 00:47:04.684226299 +0200
 @@ -76,13 +76,10 @@
  #undef XP_UNIX
  #endif
@@ -455,7 +455,7 @@ index b8e2d0e..fc5b4be 100644
  #endif
  
  #include "../vlcshell.h"
-@@ -218,7 +215,7 @@ static void* SetupTVtoFPGlue(TTVtoFPGlue* functionGlue, void* tvp)
+@@ -218,7 +215,7 @@
      return functionGlue;
  }
  
@@ -464,7 +464,7 @@ index b8e2d0e..fc5b4be 100644
  
  #else
  
-@@ -265,7 +262,7 @@ NPError NPN_GetURLNotify(NPP instance, const char* url, const char* window, void
+@@ -265,7 +262,7 @@
  
      if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
      {
@@ -473,7 +473,7 @@ index b8e2d0e..fc5b4be 100644
      }
      else
      {
-@@ -276,7 +273,7 @@ NPError NPN_GetURLNotify(NPP instance, const char* url, const char* window, void
+@@ -276,7 +273,7 @@
  
  NPError NPN_GetURL(NPP instance, const char* url, const char* window)
  {
@@ -482,7 +482,7 @@ index b8e2d0e..fc5b4be 100644
  }
  
  NPError NPN_PostURLNotify(NPP instance, const char* url, const char* window, uint32_t len, const char* buf, NPBool file, void* notifyData)
-@@ -286,7 +283,7 @@ NPError NPN_PostURLNotify(NPP instance, const char* url, const char* window, uin
+@@ -286,7 +283,7 @@
  
      if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
      {
@@ -491,7 +491,7 @@ index b8e2d0e..fc5b4be 100644
                                                          window, len, buf, file, notifyData);
      }
      else
-@@ -298,12 +295,12 @@ NPError NPN_PostURLNotify(NPP instance, const char* url, const char* window, uin
+@@ -298,12 +295,12 @@
  
  NPError NPN_PostURL(NPP instance, const char* url, const char* window, uint32_t len, const char* buf, NPBool file)
  {
@@ -506,7 +506,7 @@ index b8e2d0e..fc5b4be 100644
  }
  
  NPError NPN_NewStream(NPP instance, NPMIMEType type, const char* window, NPStream** stream)
-@@ -313,7 +310,7 @@ NPError NPN_NewStream(NPP instance, NPMIMEType type, const char* window, NPStrea
+@@ -313,7 +310,7 @@
  
      if( navMinorVers >= NPVERS_HAS_STREAMOUTPUT )
      {
@@ -515,7 +515,7 @@ index b8e2d0e..fc5b4be 100644
      }
      else
      {
-@@ -329,7 +326,7 @@ int32_t NPN_Write(NPP instance, NPStream* stream, int32_t len, void* buffer)
+@@ -329,7 +326,7 @@
  
      if( navMinorVers >= NPVERS_HAS_STREAMOUTPUT )
      {
@@ -524,7 +524,7 @@ index b8e2d0e..fc5b4be 100644
      }
      else
      {
-@@ -345,7 +342,7 @@ NPError    NPN_DestroyStream(NPP instance, NPStream* stream, NPError reason)
+@@ -345,7 +342,7 @@
  
      if( navMinorVers >= NPVERS_HAS_STREAMOUTPUT )
      {
@@ -533,7 +533,7 @@ index b8e2d0e..fc5b4be 100644
      }
      else
      {
-@@ -356,32 +353,32 @@ NPError    NPN_DestroyStream(NPP instance, NPStream* stream, NPError reason)
+@@ -356,32 +353,32 @@
  
  void NPN_Status(NPP instance, const char* message)
  {
@@ -572,7 +572,7 @@ index b8e2d0e..fc5b4be 100644
  }
  
  #ifdef OJI
-@@ -398,27 +395,27 @@ jobject  NPN_GetJavaPeer(NPP instance)
+@@ -398,27 +395,27 @@
  
  NPError NPN_GetValue(NPP instance, NPNVariable variable, void *value)
  {
@@ -605,7 +605,7 @@ index b8e2d0e..fc5b4be 100644
  }
  
  NPIdentifier NPN_GetStringIdentifier(const NPUTF8 *name)
-@@ -426,7 +423,7 @@ NPIdentifier NPN_GetStringIdentifier(const NPUTF8 *name)
+@@ -426,7 +423,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -614,7 +614,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return NULL;
  }
-@@ -436,7 +433,7 @@ void NPN_GetStringIdentifiers(const NPUTF8 **names, int32_t nameCount, NPIdentif
+@@ -436,7 +433,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -623,7 +623,7 @@ index b8e2d0e..fc5b4be 100644
      }
  }
  
-@@ -445,7 +442,7 @@ NPIdentifier NPN_GetIntIdentifier(int32_t intid)
+@@ -445,7 +442,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -632,7 +632,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return NULL;
  }
-@@ -455,7 +452,7 @@ bool NPN_IdentifierIsString(NPIdentifier identifier)
+@@ -455,7 +452,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -641,7 +641,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -465,7 +462,7 @@ NPUTF8 *NPN_UTF8FromIdentifier(NPIdentifier identifier)
+@@ -465,7 +462,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -650,7 +650,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return NULL;
  }
-@@ -475,7 +472,7 @@ int32_t NPN_IntFromIdentifier(NPIdentifier identifier)
+@@ -475,7 +472,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -659,7 +659,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return 0;
  }
-@@ -485,7 +482,7 @@ NPObject *NPN_CreateObject(NPP instance, NPClass *aClass)
+@@ -485,7 +482,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -668,7 +668,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return NULL;
  }
-@@ -495,7 +492,7 @@ NPObject *NPN_RetainObject(NPObject *npobj)
+@@ -495,7 +492,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -677,7 +677,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return NULL;
  }
-@@ -505,7 +502,7 @@ void NPN_ReleaseObject(NPObject *npobj)
+@@ -505,7 +502,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -686,7 +686,7 @@ index b8e2d0e..fc5b4be 100644
      }
  }
  
-@@ -514,7 +511,7 @@ bool NPN_Invoke(NPP instance, NPObject *npobj, NPIdentifier methodName, const NP
+@@ -514,7 +511,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -695,7 +695,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -524,7 +521,7 @@ bool NPN_InvokeDefault(NPP instance, NPObject *npobj, const NPVariant *args, uin
+@@ -524,7 +521,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -704,7 +704,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -534,7 +531,7 @@ bool NPN_Evaluate(NPP instance, NPObject *npobj, NPString *script, NPVariant *re
+@@ -534,7 +531,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -713,7 +713,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -544,7 +541,7 @@ bool NPN_GetProperty(NPP instance, NPObject *npobj, NPIdentifier propertyName, N
+@@ -544,7 +541,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -722,7 +722,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -554,7 +551,7 @@ bool NPN_SetProperty(NPP instance, NPObject *npobj, NPIdentifier propertyName, c
+@@ -554,7 +551,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -731,7 +731,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -564,7 +561,7 @@ bool NPN_RemoveProperty(NPP instance, NPObject *npobj, NPIdentifier propertyName
+@@ -564,7 +561,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -740,7 +740,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -574,7 +571,7 @@ bool NPN_HasProperty(NPP instance, NPObject *npobj, NPIdentifier propertyName)
+@@ -574,7 +571,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -749,7 +749,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -584,7 +581,7 @@ bool NPN_HasMethod(NPP instance, NPObject *npobj, NPIdentifier methodName)
+@@ -584,7 +581,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -758,7 +758,7 @@ index b8e2d0e..fc5b4be 100644
      }
      return false;
  }
-@@ -594,7 +591,7 @@ void NPN_ReleaseVariantValue(NPVariant *variant)
+@@ -594,7 +591,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -767,7 +767,7 @@ index b8e2d0e..fc5b4be 100644
      }
  }
  
-@@ -603,7 +600,7 @@ void NPN_SetException(NPObject *npobj, const NPUTF8 *message)
+@@ -603,7 +600,7 @@
      int navMinorVers = gNetscapeFuncs.version & 0xFF;
      if( navMinorVers >= 14 )
      {
@@ -776,7 +776,7 @@ index b8e2d0e..fc5b4be 100644
      }
  }
  
-@@ -634,9 +631,7 @@ void        Private_StreamAsFile(NPP instance, NPStream* stream, const char* fna
+@@ -634,9 +631,7 @@
  void        Private_Print(NPP instance, NPPrint* platformPrint);
  int16_t     Private_HandleEvent(NPP instance, void* event);
  void        Private_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyData);
@@ -786,7 +786,7 @@ index b8e2d0e..fc5b4be 100644
  
  
  NPError Private_Initialize(void)
-@@ -896,22 +891,14 @@ void SetUpQD(void)
+@@ -896,22 +891,14 @@
  #endif
  }
  
@@ -812,7 +812,7 @@ index b8e2d0e..fc5b4be 100644
  #if !TARGET_API_MAC_CARBON
  #pragma export on
  
-@@ -924,7 +911,11 @@ RoutineDescriptor mainRD = BUILD_ROUTINE_DESCRIPTOR(uppNPP_MainEntryProcInfo, ma
+@@ -924,7 +911,11 @@
  #pragma export off
  #endif /* !TARGET_API_MAC_CARBON */
  
@@ -825,7 +825,7 @@ index b8e2d0e..fc5b4be 100644
  {
      EnterCodeResource();
      PLUGINDEBUGSTR("\pmain");
-@@ -968,55 +959,55 @@ DEFINE_API_C(main_return_t) main(NPNetscapeFuncs* nsTable, NPPluginFuncs* plugin
+@@ -968,55 +959,55 @@
  
          gNetscapeFuncs.version          = nsTable->version;
          gNetscapeFuncs.size             = nsTable->size;
@@ -921,10 +921,10 @@ index b8e2d0e..fc5b4be 100644
          }
  
          //
-diff --git a/projects/mozilla/support/npunix.c b/projects/mozilla/support/npunix.c
-index 9eb851c..52096bc 100644
---- a/projects/mozilla/support/npunix.c
-+++ b/projects/mozilla/support/npunix.c
+Index: debian.git/projects/mozilla/support/npunix.c
+===================================================================
+--- debian.git.orig/projects/mozilla/support/npunix.c	2010-04-13 02:22:27.000000000 +0200
++++ debian.git/projects/mozilla/support/npunix.c	2010-06-23 00:47:04.684226299 +0200
 @@ -46,12 +46,13 @@
  #include "config.h"
  
@@ -942,10 +942,10 @@ index 9eb851c..52096bc 100644
  #endif
  
  #include "../vlcshell.h"
-diff --git a/projects/mozilla/support/npwin.cpp b/projects/mozilla/support/npwin.cpp
-index e384b3e..463c760 100644
---- a/projects/mozilla/support/npwin.cpp
-+++ b/projects/mozilla/support/npwin.cpp
+Index: debian.git/projects/mozilla/support/npwin.cpp
+===================================================================
+--- debian.git.orig/projects/mozilla/support/npwin.cpp	2010-04-27 23:45:07.000000000 +0200
++++ debian.git/projects/mozilla/support/npwin.cpp	2010-06-23 00:47:04.684226299 +0200
 @@ -30,15 +30,19 @@
  
  //#define OJI 1
@@ -970,7 +970,7 @@ index e384b3e..463c760 100644
  #endif
  
  #include "../vlcshell.h"
-@@ -542,7 +546,7 @@ const char* NPN_UserAgent(NPP instance)
+@@ -542,7 +546,7 @@
  /* allocates memory from the Navigator's memory space.  Necessary so that
   * saved instance data may be freed by Navigator when exiting.
   */
@@ -979,10 +979,10 @@ index e384b3e..463c760 100644
  {
      return g_pNavigatorFuncs->memalloc(size);
  }
-diff --git a/projects/mozilla/vlcplugin.cpp b/projects/mozilla/vlcplugin.cpp
-index cbf3155..96f0683 100644
---- a/projects/mozilla/vlcplugin.cpp
-+++ b/projects/mozilla/vlcplugin.cpp
+Index: debian.git/projects/mozilla/vlcplugin.cpp
+===================================================================
+--- debian.git.orig/projects/mozilla/vlcplugin.cpp	2010-06-08 00:57:45.000000000 +0200
++++ debian.git/projects/mozilla/vlcplugin.cpp	2010-06-23 00:47:04.684226299 +0200
 @@ -28,11 +28,14 @@
   *****************************************************************************/
  #include "config.h"
@@ -1008,7 +1008,7 @@ index cbf3155..96f0683 100644
  
  /*****************************************************************************
   * utilitiy functions
-@@ -104,11 +105,7 @@ static void plugin_unlock(plugin_lock_t *lock)
+@@ -104,11 +105,7 @@
  /*****************************************************************************
   * VlcPlugin constructor and destructor
   *****************************************************************************/
@@ -1020,7 +1020,7 @@ index cbf3155..96f0683 100644
      i_npmode(mode),
      b_stream(0),
      b_autoplay(1),
-@@ -233,7 +230,7 @@ inline EventObj::event_t EventObj::find_event(const char *s) const
+@@ -233,7 +230,7 @@
  
  bool EventObj::insert(const NPString &s, NPObject *l, bool b)
  {
@@ -1029,7 +1029,7 @@ index cbf3155..96f0683 100644
      if( e>=maxbit() )
          return false;
  
-@@ -258,7 +255,7 @@ bool EventObj::insert(const NPString &s, NPObject *l, bool b)
+@@ -258,7 +255,7 @@
  
  bool EventObj::remove(const NPString &s, NPObject *l, bool b)
  {
@@ -1038,7 +1038,7 @@ index cbf3155..96f0683 100644
      if( e>=maxbit() || !get(e) )
          return false;
  
-@@ -452,8 +449,8 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
+@@ -453,8 +450,8 @@
          NPString script;
          NPVariant result;
  
@@ -1049,7 +1049,7 @@ index cbf3155..96f0683 100644
  
          if( NPN_Evaluate(p_browser, plugin, &script, &result) )
          {
-@@ -461,11 +458,11 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
+@@ -462,11 +459,11 @@
              {
                  NPString &location = NPVARIANT_TO_STRING(result);
  
@@ -1064,10 +1064,10 @@ index cbf3155..96f0683 100644
                  }
              }
              NPN_ReleaseVariantValue(&result);
-diff --git a/projects/mozilla/vlcplugin.h b/projects/mozilla/vlcplugin.h
-index ff9e5a0..3f37685 100644
---- a/projects/mozilla/vlcplugin.h
-+++ b/projects/mozilla/vlcplugin.h
+Index: debian.git/projects/mozilla/vlcplugin.h
+===================================================================
+--- debian.git.orig/projects/mozilla/vlcplugin.h	2010-05-20 18:25:11.000000000 +0200
++++ debian.git/projects/mozilla/vlcplugin.h	2010-06-23 00:47:04.684226299 +0200
 @@ -30,16 +30,10 @@
  #define __VLCPLUGIN_H__
  
@@ -1109,7 +1109,7 @@ index ff9e5a0..3f37685 100644
  typedef struct {
  #if defined(XP_UNIX)
      pthread_mutex_t mutex;
-@@ -186,11 +173,7 @@ private:
+@@ -186,11 +173,7 @@
  class VlcPlugin
  {
  public:
@@ -1121,7 +1121,7 @@ index ff9e5a0..3f37685 100644
      virtual ~VlcPlugin();
  
      NPError             init(int argc, char* const argn[], char* const argv[]);
-@@ -243,11 +226,7 @@ public:
+@@ -243,11 +226,7 @@
      vlc_toolbar_clicked_t getToolbarButtonClicked( int i_xpos, int i_ypos );
  #endif
  
@@ -1133,10 +1133,10 @@ index ff9e5a0..3f37685 100644
  
      /* plugin properties */
      int      b_stream;
-diff --git a/projects/mozilla/vlcshell.cpp b/projects/mozilla/vlcshell.cpp
-index 49f7d16..91fd601 100644
---- a/projects/mozilla/vlcshell.cpp
-+++ b/projects/mozilla/vlcshell.cpp
+Index: debian.git/projects/mozilla/vlcshell.cpp
+===================================================================
+--- debian.git.orig/projects/mozilla/vlcshell.cpp	2010-05-03 11:26:24.000000000 +0200
++++ debian.git/projects/mozilla/vlcshell.cpp	2010-06-23 00:47:04.684226299 +0200
 @@ -31,6 +31,11 @@
  #include <string.h>
  #include <stdlib.h>
@@ -1149,7 +1149,7 @@ index 49f7d16..91fd601 100644
  /* This is from mozilla java, do we really need it? */
  #if 0
  #include <jri.h>
-@@ -269,24 +274,17 @@ NPError NPP_Initialize( void )
+@@ -269,24 +274,17 @@
      return NPERR_NO_ERROR;
  }
  
@@ -1175,7 +1175,7 @@ index 49f7d16..91fd601 100644
                   char* argn[], char* argv[], NPSavedData* saved )
  {
      NPError status;
-@@ -557,11 +555,7 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
+@@ -557,11 +555,7 @@
  }
  
  NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
@@ -1187,7 +1187,7 @@ index 49f7d16..91fd601 100644
  {
      if( NULL == instance  )
      {
-@@ -590,23 +584,14 @@ NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
+@@ -590,23 +584,14 @@
      return NPERR_GENERIC_ERROR;
  }
  
@@ -1211,10 +1211,10 @@ index 49f7d16..91fd601 100644
  {
      /* TODO */
      return len;
-diff --git a/projects/mozilla/vlcshell.h b/projects/mozilla/vlcshell.h
-index f7444eb..ca67277 100644
---- a/projects/mozilla/vlcshell.h
-+++ b/projects/mozilla/vlcshell.h
+Index: debian.git/projects/mozilla/vlcshell.h
+===================================================================
+--- debian.git.orig/projects/mozilla/vlcshell.h	2010-04-27 23:44:27.000000000 +0200
++++ debian.git/projects/mozilla/vlcshell.h	2010-06-23 00:47:04.684226299 +0200
 @@ -27,20 +27,11 @@
  char * NPP_GetMIMEDescription( void );
  
@@ -1236,7 +1236,7 @@ index f7444eb..ca67277 100644
  NPError NPP_Destroy( NPP instance, NPSavedData** save );
  
  NPError NPP_GetValue( NPP instance, NPPVariable variable, void *value );
-@@ -49,34 +40,20 @@ NPError NPP_SetValue( NPP instance, NPNVariable variable, void *value );
+@@ -49,34 +40,20 @@
  NPError NPP_SetWindow( NPP instance, NPWindow* window );
  
  NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
