@@ -2,7 +2,7 @@
  * equalizer.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 55ef7386f00526ee9acc3e00d24c579f4fb256ee $
+ * $Id: 7d16a50d818d057f29ce9562927f9620c5eb1eca $
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *          Felix Paul Kühne <fkuehne -at- videolan -dot- org>
@@ -98,7 +98,7 @@ static void ChangeFiltersString( intf_thread_t *p_intf,
          }
     }
 
-    aout_EnableFilter( p_object, psz_string, false);
+    aout_EnableFilter( pl_Get( p_intf ), psz_string, b_add);
 
     if( (BOOL)config_GetInt( p_object, "macosx-eq-keep" ) == YES )
     {
@@ -296,7 +296,9 @@ static bool GetFiltersStatus( intf_thread_t *p_intf,
 
 - (IBAction)enable:(id)sender
 {
-    ChangeFiltersString( VLCIntf, (char *)"equalizer", [sender state] );
+//    ChangeFiltersString( VLCIntf, (char *)"equalizer", [sender state] );
+    // to fix #3718
+    aout_EnableFilter( pl_Get( VLCIntf ), (char *)"equalizer", [sender state]);
 }
 
 - (IBAction)preampSliderUpdated:(id)sender

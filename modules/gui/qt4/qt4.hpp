@@ -2,7 +2,7 @@
  * qt4.hpp : QT4 interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 64f58212b70815b1c5abb2edfcff5cc2f75a1e5c $
+ * $Id: 47407d5685096c8b1b2bfe7860e7ea0100aa27ad $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -44,6 +44,7 @@
 #endif
 
 #define HAS_QT45 ( QT_VERSION >= 0x040500 )
+#define HAS_QT46 ( QT_VERSION >= 0x040600 )
 
 enum {
     DialogEventType = 0,

@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 1468ba4a7cf6bbddbe88e2a888104cc626134788 $
+ * $Id: afc8c47fecd1937eee46a122e01834b332ac76f8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -2869,7 +2869,8 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
 
     const char *psz_codec_description =
         vlc_fourcc_GetDescription( p_fmt_es->i_cat, p_fmt_es->i_codec );
-    const vlc_fourcc_t i_codec_fourcc = p_fmt_es->i_original_fourcc ?: p_fmt_es->i_codec;
+    const vlc_fourcc_t i_codec_fourcc = ( p_fmt_es->i_original_fourcc )?
+                               p_fmt_es->i_original_fourcc : p_fmt_es->i_codec;
     if( psz_codec_description )
         info_category_AddInfo( p_cat, _("Codec"), "%s (%.4s)",
                                psz_codec_description, (char*)&i_codec_fourcc );

@@ -2,7 +2,7 @@
  * asf.c: asf muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2004, 2006 the VideoLAN team
- * $Id: 31beadf9b836d2e8cfe15ba75f883a1ae72a60f2 $
+ * $Id: c790104ecbefb65f2b449fa062db06164508914b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -539,6 +539,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             {
                 tk->psz_name = "Windows Media Video 9";
                 tk->i_fourcc = VLC_FOURCC( 'W', 'M', 'V', '3' );
+                tk->b_extended = true;
             }
             else if( p_input->p_fmt->i_codec == VLC_CODEC_VC1 )
             {

@@ -208,7 +208,6 @@ luac_verbose_0 = @echo "  LUAC   $@";
 if BUILD_LUA
 nobase_vlclib_DATA = \
 	lua/extensions/allocine-fr.luac \
-	lua/extensions/imdb.luac \
 	lua/intf/dummy.luac \
 	lua/intf/dumpmeta.luac \
 	lua/intf/hotkeys.luac \
@@ -250,7 +249,6 @@ nobase_vlclib_DATA = \
 	lua/playlist/youtube_homepage.luac \
 	lua/sd/fmc.luac \
 	lua/sd/freebox.luac \
-	lua/sd/frenchtv.luac \
 	lua/sd/icecast.luac \
 	lua/sd/jamendo.luac \
 	$(NULL)
@@ -267,7 +265,6 @@ EXTRA_DIST += \
 	lua/README.txt \
 	lua/extensions/README.txt \
 	lua/extensions/allocine-fr.lua \
-	lua/extensions/imdb.lua \
 	lua/intf/README.txt \
 	lua/intf/dummy.lua \
 	lua/intf/dumpmeta.lua \
@@ -316,7 +313,6 @@ EXTRA_DIST += \
 	lua/sd/README.txt \
 	lua/sd/fmc.lua \
 	lua/sd/freebox.lua \
-	lua/sd/frenchtv.lua \
 	lua/sd/icecast.lua \
 	lua/sd/jamendo.lua
 

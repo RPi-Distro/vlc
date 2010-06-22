@@ -2,7 +2,7 @@
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 97204c0a72bfa590de91e77c6464b893f439e3de $
+ * $Id: c348a426bdc2080a35ab8543a7a6867997ab46cc $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -25,6 +25,9 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+
+/* workaround libflac overriding assert.h system header */
+#define assert(x) do {} while(0)
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"

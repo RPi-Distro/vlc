@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 09e2458b3c852dce1cda9fdd127c7da70d29111f $
+ * $Id: db1b8e08f2eebe2105bf03b1b1474d525208124e $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -53,6 +53,8 @@
 #import <vlc_services_discovery.h>
 #import <vlc_osd.h>
 #import <vlc_interface.h>
+
+#include <vlc_url.h>
 
 
 /*****************************************************************************
@@ -1779,8 +1781,14 @@
         for( i = 0; i < (int)[o_values count]; i++)
         {
             NSDictionary *o_dic;
-            o_dic = [NSDictionary dictionaryWithObject:[o_values
-                        objectAtIndex:i] forKey:@"ITEM_URL"];
+            char *psz_uri = make_URI([[o_values objectAtIndex:i] UTF8String]);
+            if( !psz_uri )
+                continue;
+
+            o_dic = [NSDictionary dictionaryWithObject:[NSString stringWithCString:psz_uri encoding:NSUTF8StringEncoding] forKey:@"ITEM_URL"];
+
+            free( psz_uri );
+
             o_array = [o_array arrayByAddingObject: o_dic];
         }
 

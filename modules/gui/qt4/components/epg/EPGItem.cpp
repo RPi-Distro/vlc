@@ -2,7 +2,7 @@
  * EPGItem.cpp: EPGItem
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 39dbea5153f799f3ae3081f6b59842170ed3cbff $
+ * $Id: ec2d1f9bf4de50b48877b3950e70499933ab1b83 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -59,15 +59,19 @@ void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
     QTransform viewPortTransform = m_view->viewportTransform();
     QRectF mapped = deviceTransform( viewPortTransform ).mapRect( boundingRect() );
 
-    painter->setPen( QPen( Qt::black ) );
-
     if ( m_current )
-        painter->setBrush( QBrush( QColor( 100, 100, 100 ) ) );
+    {
+        painter->setBrush( QBrush( QColor( 244, 102, 146 ) ) );
+        painter->setPen( QPen( QColor( 244, 102, 146 ) ) );
+    }
     else
-        painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
+    {
+        painter->setBrush( QBrush( QColor( 201, 217, 242 ) ) );
+        painter->setPen( QPen( QColor( 201, 217, 242 ) ) );
+    }
 
-    painter->drawRect( mapped );
-
+    mapped.adjust( 1, 2, -1, -2 );
+    painter->drawRoundedRect( mapped, 10, 10 );
 
     /* Draw text */
 
@@ -80,7 +84,7 @@ void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
     // Adjust the drawing rect
     mapped.adjust( 6, 6, -6, -6 );
 
-    painter->setPen( Qt::white );
+    painter->setPen( Qt::black );
     /* Draw the title. */
     painter->drawText( mapped, Qt::AlignTop | Qt::AlignLeft, fm.elidedText( m_name, Qt::ElideRight, mapped.width() ) );
 
@@ -111,14 +115,13 @@ void EPGItem::setChannel( int channelNb )
 {
     //qDebug() << "Channel" << channelNb;
     m_channelNb = channelNb;
-    setPos( pos().x(), m_channelNb * TRACKS_HEIGHT );
+    updatePos();
 }
 
 void EPGItem::setStart( const QDateTime& start )
 {
     m_start = start;
-    int x = m_view->startTime().secsTo( start );
-    setPos( x, pos().y() );
+    updatePos();
 }
 
 void EPGItem::setDuration( int duration )
@@ -147,10 +150,18 @@ void EPGItem::setCurrent( bool current )
     m_current = current;
 }
 
+void EPGItem::updatePos()
+{
+    int x = m_view->startTime().secsTo( m_start );
+    setPos( x, m_channelNb * TRACKS_HEIGHT );
+}
+
 void EPGItem::focusInEvent( QFocusEvent * event )
 {
     EPGEvent *evEPG = new EPGEvent( m_name );
     evEPG->description = m_description;
     evEPG->shortDescription = m_shortDescription;
+    evEPG->start = m_start;
+    evEPG->duration = m_duration;
     m_view->eventFocused( evEPG );
 }

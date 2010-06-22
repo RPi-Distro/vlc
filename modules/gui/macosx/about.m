@@ -2,7 +2,7 @@
  * about.m: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 03bbc0466ca095a98c699317c417ca22737877bd $
+ * $Id: d56ed7f59ed5596f9c8194b6e5e57c188e56100b $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -59,6 +59,12 @@ static VLAboutBox *_o_sharedInstance = nil;
     }
  
     return _o_sharedInstance;
+}
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [super dealloc];
 }
 
 /*****************************************************************************

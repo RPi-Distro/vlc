@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 104291f2d6aab7cec4884b205f658310cc667927 $
+ * $Id: c9302777fd33b49f92c2b039ae87db8c0187b8b0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -428,7 +428,7 @@ void SpeedControlWidget::updateControls( float rate )
         return;
     }
 
-    double value = 17 * log( rate ) / log( 2 );
+    double value = 17 * log( rate ) / log( 2. );
     int sliderValue = (int) ( ( value > 0 ) ? value + .5 : value - .5 );
 
     if( sliderValue < speedSlider->minimum() )

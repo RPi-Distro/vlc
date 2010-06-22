@@ -2,7 +2,7 @@
  * pls.c : PLS playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: ac5d99a5b4d50e1c96621b46404fe0ea5ae09304 $
+ * $Id: 20a6f52a945b7b1662f9d4861a33fe9fed09af66 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -147,7 +147,7 @@ static int Demux( demux_t *p_demux )
                 input_item_node_AppendItem( p_subitems, p_input );
                 vlc_gc_decref( p_input );
                 free( psz_mrl_orig );
-                psz_mrl_orig = NULL;
+                psz_mrl_orig = psz_mrl = NULL;
             }
             else
             {
@@ -204,7 +204,6 @@ static int Demux( demux_t *p_demux )
         input_item_node_AppendItem( p_subitems, p_input );
         vlc_gc_decref( p_input );
         free( psz_mrl_orig );
-        psz_mrl = NULL;
     }
     else
     {

@@ -261,8 +261,8 @@
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
-/* Define to 1 if you have the `fstatfs' function. */
-#undef HAVE_FSTATFS
+/* Define to 1 if you have the `fstatvfs' function. */
+#undef HAVE_FSTATVFS
 
 /* Define to 1 if you have the `gai_strerror' function. */
 #undef HAVE_GAI_STRERROR
@@ -668,6 +668,9 @@
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <sys/videoio.h> header file. */
+#undef HAVE_SYS_VIDEOIO_H
 
 /* Define to 1 if you have the `tdestroy' function. */
 #undef HAVE_TDESTROY

@@ -2,7 +2,7 @@
  * VLCProgressPanel.m: A Generic Progress Indicator Panel created for VLC
  *****************************************************************************
  * Copyright (C) 2009-2010 the VideoLAN team
- * $Id: 10853e38f144d9c2040bae1c3862f292ff884dd1 $
+ * $Id: 89cbd34c90ff499259ce19795f97425659b0b9a6 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -55,6 +55,7 @@
     [_cancelButton setBordered:YES];
     [_cancelButton setTarget:self];
     [_cancelButton setAction:@selector(cancelDialog:)];
+    [_cancelButton setKeyEquivalent:@"\e"] ; // escape key
     [ourContentView addSubview:_cancelButton];
 
     s_rc.origin.x = 89;

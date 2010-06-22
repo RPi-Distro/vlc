@@ -2,7 +2,7 @@
  * EPGEvent.h : EPGEvent
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 1296f7b68cb8111b5d2ae39bdf68e157b9974bb9 $
+ * $Id: c246abe232ac33656fddcdb4ea72c6ac2362fd3f $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -25,15 +25,27 @@
 #define EPGEVENT_H
 
 class QString;
+class EPGItem;
 #include <QDateTime>
 
 class EPGEvent
 {
 public:
     EPGEvent( const QString& eventName )
-        : current( false ), updated( true )
+        : current( false ), updated( true ), item( NULL )
     {
         name = eventName;
+    }
+
+    bool operator==( const EPGEvent & other ) const
+    {
+        return start == other.start
+               && duration == other.duration
+               && name == other.name
+               && description == other.description
+               && shortDescription == other.shortDescription
+               && channelName == other.channelName
+               && current == other.current;
     }
 
     QDateTime   start;
@@ -44,6 +56,8 @@ public:
     QString     channelName;
     bool        current;
     bool        updated;
+
+    EPGItem     *item;
 };
 
 #endif // EPGEVENT_H

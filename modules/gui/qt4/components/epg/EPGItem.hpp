@@ -2,7 +2,7 @@
  * EPGItem.h : EPGItem
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: fd531caefe048d9e887d5c38422c0efa3734ea51 $
+ * $Id: 04f9909ef37e7560179a0c096e097bb4a588fbee $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -52,6 +52,7 @@ public:
     void setDescription( const QString& description );
     void setShortDescription( const QString& shortDescription );
     void setCurrent( bool current );
+    void updatePos();
 
 protected:
     virtual void focusInEvent( QFocusEvent * event );

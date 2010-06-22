@@ -2,7 +2,7 @@
  * v4l2.c : Video4Linux2 input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 4f1ee508af677458638bec9a4a538d687bb63832 $
+ * $Id: 791cccf4a368e20139182c20479efcbd243c96f2 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -51,7 +51,13 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
-#include <linux/videodev2.h>
+#if defined(HAVE_LINUX_VIDEODEV2_H)
+#   include <linux/videodev2.h>
+#elif defined(HAVE_SYS_VIDEOIO_H)
+#   include <sys/videoio.h>
+#else
+#   error "No Video4Linux2 headers found."
+#endif
 
 #include <poll.h>
 

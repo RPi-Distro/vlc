@@ -2,11 +2,11 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2010 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.0-rc4)
+AC_INIT(vlc, 1.1.0)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
 VERSION_REVISION="0"
-VERSION_EXTRA="-rc4"
+VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
@@ -549,14 +549,14 @@ dnl Check for system libs needed
 need_libc=false
 
 dnl Check for usual libc functions
-AC_CHECK_FUNCS([ctime_r daemon fcntl fdopendir fork getenv getpwuid_r gettimeofday isatty lstat memalign openat posix_fadvise posix_madvise posix_memalign setenv setlocale stricmp strnicmp tdestroy uselocale])
+AC_CHECK_FUNCS([ctime_r daemon fcntl fdopendir fstatvfs fork getenv getpwuid_r gettimeofday isatty lstat memalign openat posix_fadvise posix_madvise posix_memalign setenv setlocale stricmp strnicmp tdestroy uselocale])
 AC_REPLACE_FUNCS([asprintf atof atoll getcwd getdelim getpid gmtime_r lldiv localtime_r nrand48 rewind strcasecmp strcasestr strdup strlcpy strncasecmp strndup strnlen strsep strtof strtok_r strtoll swab vasprintf])
 AC_CHECK_FUNCS(fdatasync,,
   [AC_DEFINE(fdatasync, fsync, [Alias fdatasync() to fsync() if missing.])
 ])
 
 dnl Check for non-standard system calls
-AC_CHECK_FUNCS([accept4 dup3 eventfd fstatfs vmsplice])
+AC_CHECK_FUNCS([accept4 dup3 eventfd vmsplice])
 
 AH_BOTTOM([#include <vlc_fixups.h>])
 
@@ -681,7 +681,7 @@ AC_CHECK_LIB(m,cos,[
   VLC_ADD_LIBS([adjust wave ripple psychedelic gradient a52tofloat32 dtstofloat32 x264 goom visual panoramix rotate noise grain scene kate flac lua chorus_flanger],[-lm])
 ])
 AC_CHECK_LIB(m,pow,[
-  VLC_ADD_LIBS([avcodec avformat access_avio swscale postproc ffmpegaltivec i420_rgb faad twolame equalizer spatializer param_eq libvlccore freetype mod mpc dmo quicktime realvideo opengl],[-lm])
+  VLC_ADD_LIBS([avcodec avformat access_avio swscale postproc ffmpegaltivec i420_rgb faad twolame equalizer spatializer param_eq libvlccore freetype mod mpc dmo quicktime realvideo opengl qt4],[-lm])
 ])
 AC_CHECK_LIB(m,sqrt,[
   VLC_ADD_LIBS([headphone_channel_mixer normvol audiobargraph_a speex mono colorthres extract ball],[-lm])
@@ -2184,7 +2184,7 @@ then
   fi
 
   CPPFLAGS="${CPPFLAGS_save} ${CPPFLAGS_v4l2}"
-  AC_CHECK_HEADERS(linux/videodev2.h, [
+  AC_CHECK_HEADERS(linux/videodev2.h sys/videoio.h, [
     VLC_ADD_PLUGIN([v4l2])
   ],[])
   CPPFLAGS="${CPPFLAGS_save}"

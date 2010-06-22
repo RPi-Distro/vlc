@@ -1,3 +1,616 @@
+commit 22f4398b590f7b9d4ad02ce19b70c386eba29625
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 21 01:33:35 2010 +0200
+
+    Update NEWS
+
+commit 7e0ed0e309983c8fa069628a132dd68880e5d201
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 21 00:53:55 2010 +0200
+
+    Win32: fix danish package
+    (cherry picked from commit 6ff44239c2361efe7b89c66ea0edfd5acfb5dedd)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6dec133a9ebf5121aef20f1b3c0f1bb1d3e61ac0
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 21 00:29:45 2010 +0200
+
+    Update PO files.
+
+commit fe3fa06275b5dba227cff200945271b00585b74d
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Sun Jun 20 23:23:20 2010 +0100
+
+    nsis: Polish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+    (cherry picked from commit 797eeaa422d8f82683383cdd09233a9e6bfe39ed)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit d357698c04a5cac917fb5515a7d76e70f770166e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jun 21 00:13:28 2010 +0200
+
+    Qt: Do not try to move when going to fullscreen if you have only 1 screen.
+
+commit c0b232828813060eb5d2ba2ab48e76714cd12faa
+Author: A S Alam <aalam@users.sf.net>
+Date:   Sun Jun 20 22:07:32 2010 +0100
+
+    l10n: Punjabi update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 5595427f355c84f40c36bd10f9c94373fffb6423
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Sun Jun 20 22:05:52 2010 +0100
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit e78c63b317decc93fbe1eeaed23596ecba07f753
+Author: Luqman Hakim <ovdl@rocketmail.com>
+Date:   Sun Jun 20 22:04:30 2010 +0100
+
+    l10n: Indonesian  update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit ab097340c02ea3e0ac2b143027c110a2a7db4082
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Fri Jun 18 19:57:49 2010 +0200
+
+    Qt/EPG: update and synchronise as in master
+    
+    (cherry picked from commit c57d47dbe87f236784e975743ae1fe32e18fdcdc)
+    (cherry picked from commit 753a7d15e9d2dedf650789245dc7d0b5b1765c65)
+    (cherry picked from commit 1ef8da27660e7a46070a7b104b9b5b1f96daf5a7)
+    (cherry picked from commit 44676a0590c2b96d13ea5a700b5878166b6f432a)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 472087d66d36af1de896a7c6d38b340491573002
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Fri Jun 18 22:09:13 2010 +0200
+
+    Enabled mpeg2 dxva2 decoding support.
+    (cherry picked from commit beb86eee25d2d255563cf959c086879f1a4b08fd)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c3012fc3c3e64d1ea96b84ee00056f759c079660
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jun 20 22:17:21 2010 +0200
+
+    Configure.ac and NEWS are now 1.1.0
+
+commit 08fc68fc3f8b55ec60901074ca9b85f31c089867
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Jun 19 21:40:18 2010 +0200
+
+    Fixed video format decoder changes detection.
+
+commit b971d0c96035471d170c5fea4cd8452942b64593
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jun 20 22:16:41 2010 +0300
+
+    Fix automake warning
+    
+    whitespace following trailing backslash
+
+commit 0e9a6ccaacd0ef6a9a4739b9080a16da65f2d035
+Author: Adam Hoka <ahoka@netbsd.org>
+Date:   Sun Jun 20 20:13:13 2010 +0300
+
+    V4L2 on NetBSD
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 0c55b2d8d29921428716ec5e8ffcaaf057146823)
+
+commit cd8f0c4b88345e32770de51e5931801705240c69
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jun 20 20:16:33 2010 +0300
+
+    Use fstatvfs where usable (BSD) - fixes #3762
+    
+    (cherry picked from commit 62a73f7d2d352c90014ae6b142fecceb173f4443)
+    
+    Conflicts:
+    
+    	configure.ac
+
+commit affcbabe1553aa0de7cd499c1850847ec640c172
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jun 20 07:07:15 2010 +0300
+
+    alsa-lib 1.0.24 is not out yet, so refer to exact commitdiff
+
+commit 8b5694db244b5e10d74e98b7a93247e0231ee52d
+Author: Thomas de Rocker <thomasderocker@yahoo.com>
+Date:   Sat Jun 19 23:52:05 2010 +0100
+
+    l10n: Dutch update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 5250448eaa84d0677f9a74cba2488ccaeb8226b2
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Sat Jun 19 23:50:12 2010 +0100
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 05045b1a4a36d31b64759cd6abda7914990dec1a
+Author: Vincenzo Reale <smart2128@baslug.org>
+Date:   Sat Jun 19 23:49:29 2010 +0100
+
+    l10n: Italian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit c201423c6df50968add5f1ca7e1a63c74758e360
+Author: Marián Hikaník <podnety@mojepreklady.net>
+Date:   Sat Jun 19 23:48:42 2010 +0100
+
+    l10n: Slovak update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 88337c8901c9f53d8110cb47491b1736cf4da962
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Sat Jun 19 23:45:39 2010 +0100
+
+    l10n: Japanese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 48d4ab9dc77b6cef77ba352953acac06a7ff2479
+Author: Mindaugas Baranauskas <embar@users.berlios.de>
+Date:   Sat Jun 19 23:44:46 2010 +0100
+
+    l10n: Lithuanian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 31c2a63a848ac4890f80b367067d65ac9acf6f12
+Author: Oleksandr Natalenko <pfactum@gmail.com>
+Date:   Sat Jun 19 23:42:52 2010 +0100
+
+    l10n: Ukrainian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit db513a1b19f0ea319333d94de38c340898d998de
+Author: Gonçalo Cordeiro <gzcordeiro@gmail.com>
+Date:   Sat Jun 19 23:40:11 2010 +0100
+
+    l10n: Galician update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit c53bf246c3a9d85849d80d31b6e8d82274de988c
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Jun 19 23:14:34 2010 +0100
+
+    Fix Estonian selection in installer
+    (cherry picked from commit 90252288ca81eabbf4094f43b554207a34ce3a7a)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 5e3a613c166e8d760559e6c65c556fac0edef2ba
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Jun 19 23:13:38 2010 +0100
+
+    Add Lithuanian installer translation
+    (cherry picked from commit f9cb4fd52f9e81e647e61fad0d1b3f2b4ba103cd)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 9cb014f24b18e470d0337c0549008138ec62653a
+Author: Rémi Denis-Courmont <remi.denis-courmont@nokia.com>
+Date:   Sat Jun 19 04:43:56 2010 +0300
+
+    da: spell check "playback" (fixes: #3756)
+
+commit bceed5d3032663fbe8b4dbc99f251801c78181ee
+Author: Rémi Denis-Courmont <remi.denis-courmont@nokia.com>
+Date:   Sat Jun 19 04:41:18 2010 +0300
+
+    Qt4 needs libm (fixes: #3744)
+    
+    (cherry picked from commit fb718f7cebbb1d4a0b307647a02b1fc884a043e2)
+    
+    Conflicts:
+    
+    	configure.ac
+
+commit 0f75c0cf9e15a95dc29b374f20bf07a7ac9bb835
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Fri Jun 18 21:53:47 2010 +0200
+
+    Added 'Extended Stream Properties' in asf muxer for WMV3 too.
+    
+    It closes #3522.
+    (cherry picked from commit 7c801152fd5e10de620c8d34a46067ad2f2a634f)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 81a09175f8523c9f091b62c1256c611ba99d14e5
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Fri Jun 18 21:52:46 2010 +0200
+
+    Parse WMV3 frame type in the generic packetizer.
+    
+    It is needed to close #3522.
+    (cherry picked from commit bc96ea9fe82d4f8e0cf439b83b31cfc74dd6cf9b)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5b1e4391efdabe49d49964aa4231155df7351c6e
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Fri Jun 18 19:51:53 2010 +0200
+
+    Qt/EPG: Display the short description and the long one when available.
+    (cherry picked from commit 3f7e57a4c23b25054ce185dd3d650bfa52f9e09f)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 48514572feed9ad74f0b8b2f1b1242d610dabcf2
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Fri Jun 18 19:14:40 2010 +0200
+
+    Qt/EPG: Fix an EPGitem position issue.
+    This was wrong to update the EPGItem start times when changing the EPGView start time.
+    (cherry picked from commit 330016cb7d533bc6c5d7946c66aa26b9944eb830)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 751cc1621aec86041420158bb7bf402153108242
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Fri Jun 18 17:29:51 2010 +0100
+
+    l10n: Japanese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 4cfcb829c286dd2a42b44621cb005dd1362fdd1d
+Author: Mihkel <turakas@gmail.com>
+Date:   Fri Jun 18 17:31:16 2010 +0100
+
+    l10n: Estonian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 992930b778094a7998665b917ada6125dd20d1bb
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Fri Jun 18 17:13:23 2010 +0100
+
+    Japanese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+    (cherry picked from commit fffa506d3108a582b6792eee9412d2eaccf6ab21)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit a776d324ff12e3593da17c5abe173c9241626339
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 16 21:13:08 2010 +0200
+
+    Win32 installer: add Danish translation
+    
+    (cherry picked from commit a5909adc57c8429890f4fa67bc098f5c50eacd46)
+    (cherry picked from commit d9d146597f0d447fae4d8ade4b9ca7f1123f6f75)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 3c23a1e3ef6ad653ab7cf6e6f6eb87491ea3d5a0
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Jun 18 09:46:57 2010 +0200
+
+    French translation fix.
+
+commit 5ff7bcdfa34c4e0732204381bffe0471e4396f04
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Thu Jun 17 22:14:15 2010 +0200
+
+    Qt/EPG: Display the program start and end times just before the title in the description box.
+    (cherry picked from commit e600df620ad1805ff6948fe4e679144d25d2cb95)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6a6a915e802e531a7817ed26c852a3d67afa0559
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Jun 14 18:36:51 2010 +0200
+
+    fix unsupported shortcut syntax
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 063895670b30de910d13a46942b3c902b36205b1)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f6e1a870b7e1170bd9609beec9f948ca788b59b7
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Jun 14 18:36:53 2010 +0200
+
+    Ambiguity between std::log(double) and std::log(float)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit b72555737405cb4f31071ee28367ba42d3150ce7)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 98afd0513cb3651a5293d664c9234d3c1a791cd9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 16 01:52:17 2010 +0200
+
+    Win32: fix memleak
+    (cherry picked from commit 2e959033fffa317c99c45b1d7926851e33fe3b1a)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 738767898617e91eabab6fc870779882af80e19b
+Author: Jai Menon <jmenon86@gmail.com>
+Date:   Wed Jun 16 16:55:07 2010 +0530
+
+    AVFormat Muxer : Don't create AVStreams for unsupported ES types.
+    
+    Currently, the libavformat based muxer supports audio and video streams
+    properly. Subtitle muxing is still a work-in-progress. Till those are
+    verified to work as well, we need to ensure that we don't create AVStreams
+    with invalid codec type.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit e276b6488d2c59d61549828aafe95221f0e76146)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 435d14a32163aa6f6da6454b6c4376dd34aee429
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Fri Jun 18 01:05:02 2010 +0100
+
+    Update .po files
+
+commit 702af73ad2d69573eef40f6d3157709bfec5b7f0
+Author: Thomas De Rocker <thomasderocker@hotmail.com>
+Date:   Fri Jun 18 01:02:54 2010 +0100
+
+    l10n: Dutch update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 9110e94b4ce9008bd061b19f93c564bcdfee9fdc
+Author: H.Shalitha Vikum <HSVIKUM@sinhalaya.com>
+Date:   Fri Jun 18 01:01:50 2010 +0100
+
+    l10n: Sinhalese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit d91e22f4a30353866e89ecbece6e255595f28766
+Author: Jamil Ahmed <itsjamil@gmail.com>
+Date:   Fri Jun 18 01:00:56 2010 +0100
+
+    l10N: Bengali update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 240e905c1e836c39c39343cdd768b07571e4fd32
+Author: Predrag Ljubenović <predragljubenovic@gmail.com>
+Date:   Fri Jun 18 00:59:35 2010 +0100
+
+    l10n: Serbian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit c384bd8c8620edefed44a79d65852ce07f2a56e4
+Author: Gonçalo Cordeiro <gzcordeiro@gmail.com>
+Date:   Fri Jun 18 00:58:39 2010 +0100
+
+    l10n: Galician update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit d5396538e6c811af35eeece5b1372d5d62766bd4
+Author: Oleksandr Natalenko <pfactum@gmail.com>
+Date:   Fri Jun 18 00:56:58 2010 +0100
+
+    l10n: Ukranian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit b1aaed43f9809dd3920492bf59157892c067d092
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Fri Jun 18 00:56:16 2010 +0100
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 320a49160d03d6182ae7f99411c267d170087a34
+Author: Éric Lassauge <lassauge@users.sourceforge.net>
+Date:   Fri Jun 18 00:55:20 2010 +0100
+
+    l10n: French update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 5d63a4077572ed0fab2fe622b1f6c94f2bfc3602
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Fri Jun 18 00:49:31 2010 +0100
+
+    Update vlc.pot with a few more files
+
+commit 7d0e4ace9688762f3a8e4f8f52f21b904107b588
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Apr 22 20:24:48 2010 +0300
+
+    POTFILES: missing files
+    
+    Cherry-pick 4c584433c6a46b6626f7662af1af7435962e955a
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit b0620aea6b50d3062d1240e6d4a3945ca40b5e92
+Author: Sebastien Zwickert <dilaroga@free.fr>
+Date:   Fri Jun 18 00:06:11 2010 +0200
+
+    gui/macosx: set URL instead of path to ITEM_URL. Fixes #3706
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit d3ed6bcb51d1bf13be1f035239e085fca3910645)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 75358c5383cc552233046e778f7149be9e482a35
+Author: Sebastien Zwickert <dilaroga@free.fr>
+Date:   Thu Jun 17 19:21:35 2010 +0200
+
+    gui/macosx: second attempt to fix equalizer issue #3718.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 6a8df715f0f0831bab4e8344b7ff7b57d1c01964)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a0a45ea144b5744a384ec29fda035dda4a986cd7
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Fri Jun 18 00:17:07 2010 +0200
+
+    Fixed reverse stereo mode (close #3755).
+    (cherry picked from commit 5897814445b62d1c87cff47631a340a6b9bd42dc)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1c01d49d69fb64ec9cf389a84e0e92796da7186c
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Thu Jun 17 22:39:48 2010 +0200
+
+    luatelnet: the oldtelnet options are now working well with the luatelnet module.
+    (cherry picked from commit db35e6905cec16d2e9f29bcbcfee394d536affd1)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 5cdfc67bb062c7101b97061fb7eaf3df39fb1a73
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Thu Jun 17 21:20:25 2010 +0200
+
+    playlist_pls: fix use after free (can be triggered by some invalid shoutcast playlist files).
+    (cherry picked from commit e1ff44d2afe03c87242cd3e5e9b48146bdb1e1da)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit b5e19c1a15c8a20b47c047ec3ebbf49efdf500d1
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Wed Jun 16 17:23:22 2010 +0200
+
+    Update THANKS and AUTHORS.
+    
+    If in AUTHORS => not in THANKS
+    I moved also some people from AUTHORS to THANKS (only small fixes).
+    (cherry picked from commit 19d59d86736e79f5d9f89e0e349156eaad035d36)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 9f3d2d535ded2023310b9183557acc35f039e5be
+Author: Jai Menon <jmenon86@gmail.com>
+Date:   Thu Jun 17 12:08:13 2010 +0530
+
+    AVFormat Muxer : Set codec frame size.
+    
+    This allows for correct output when using muxers (like the MOV/MP4 muxer)
+    that require frame_size set.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 077f47ff59b9e5e1a523d924a0307105dcdee4bc)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3126c8c84523948b944e29600b0031d39723f3a7
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Thu Jun 17 05:36:24 2010 +0200
+
+    libflac installs its own assert.h which fails to define assert()
+    
+    Define assert() to no-op
+    (cherry picked from commit 1e2a142ff8e90af6a4ab3fa725320a1ab2772eab)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c78769e4f9b00cff30f4bbec6c53ccfcde50d3b1
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 16 21:53:36 2010 +0200
+
+    Qt/EPG: use a qgraphicsitem_cast instead of dynamic_cast
+    (cherry picked from commit a8c86004499bed7014dfbdbe188a113759f7e340)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2ed48d53e4a0af8d3017d05cd156c940ee9b4655
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 16 23:27:34 2010 +0200
+
+    Do not distribute imdb and frenchtv extensions
+
+commit 4a19588b580a83214c5f4289301f493fa28ce40e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 16 20:44:29 2010 +0200
+
+    Win32 installer: add a few new extensions and Autostarters
+    
+    Patch by Diblo_Dk on our forum and adapted by yours truly
+    (cherry picked from commit fa5ddee7f338704fd959fa5e2edce765584cb322)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3dc713a162249c4e5dfb099352d4e7bc61717148
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 16 21:04:55 2010 +0200
+
+    Add extensions to open dialog ones
+    
+    Patch from Diblo_Dk on the forum, adapted by /me
+    (cherry picked from commit d5446dd5bcdfcca32eccfa1a75b1365ebe70e2d2)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4deadc4c8a068f3feadc597bc8def1d794bde6df
+Author: Sebastien Zwickert <dilaroga@free.fr>
+Date:   Mon Jun 7 22:34:31 2010 +0200
+
+    Remove observer from the notification center in the dealloc method to prevent a crash when notification center posts NSApplicationWillTerminateNotification and the VLAboutBox has already been released.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 5995ceeb4cd344894f24bfd9402e18972fd5adca)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bdb9584a81932d5e67308668cb8bf1d82127d5fc
+Author: Sebastien Zwickert <dilaroga@free.fr>
+Date:   Tue Jun 15 23:57:13 2010 +0200
+
+    gui/macosx: fixes equalizer issue #3718.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 4a65401d54fef5d25742fe9b482b89072a2aa679)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4fae5afad6bad951f75d367a2047707f7315fddf
+Author: Sebastien Zwickert <dilaroga@free.fr>
+Date:   Wed Jun 16 00:05:08 2010 +0200
+
+    macosx_dialog_provider: set the usual keys equivalent to cancel or validate a dialog.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit d9a02c44cf5498976fa3719f622199e3e76e6121)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
 commit ad3efb5ebc939b5d88c8cabf5fa8fd7b2aeee24f
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jun 16 03:40:42 2010 +0200

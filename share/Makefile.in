@@ -644,9 +644,9 @@ EXTRA_DIST = $(skins2_default_vlt_FILES) $(DIST_rsrc) $(DIST_skins2) \
 	$(DIST_http) $(DIST_http_lua) $(DIST_lua) \
 	$(DIST_osdmenu_default) $(DIST_mozilla) $(DIST_maemo) \
 	$(DIST_solid) lua/README.txt lua/extensions/README.txt \
-	lua/extensions/allocine-fr.lua lua/extensions/imdb.lua \
-	lua/intf/README.txt lua/intf/dummy.lua lua/intf/dumpmeta.lua \
-	lua/intf/hotkeys.lua lua/intf/http.lua lua/intf/luac.lua \
+	lua/extensions/allocine-fr.lua lua/intf/README.txt \
+	lua/intf/dummy.lua lua/intf/dumpmeta.lua lua/intf/hotkeys.lua \
+	lua/intf/http.lua lua/intf/luac.lua \
 	lua/intf/modules/common.lua lua/intf/modules/host.lua \
 	lua/intf/rc.lua lua/intf/telnet.lua lua/meta/art/README.txt \
 	lua/meta/art/01_musicbrainz.lua lua/meta/art/02_frenchtv.lua \
@@ -667,7 +667,7 @@ EXTRA_DIST = $(skins2_default_vlt_FILES) $(DIST_rsrc) $(DIST_skins2) \
 	lua/playlist/rockbox_fm_presets.lua lua/playlist/vimeo.lua \
 	lua/playlist/youtube.lua lua/playlist/youtube_homepage.lua \
 	lua/sd/README.txt lua/sd/fmc.lua lua/sd/freebox.lua \
-	lua/sd/frenchtv.lua lua/sd/icecast.lua lua/sd/jamendo.lua
+	lua/sd/icecast.lua lua/sd/jamendo.lua
 nobase_vlcdata_DATA = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_7)
 @KDE_SOLID_TRUE@soliddata_DATA = $(DIST_solid)
@@ -800,9 +800,8 @@ luac_verbose = $(luac_verbose_$(V))
 luac_verbose_ = $(luac_verbose_$(AM_DEFAULT_VERBOSITY))
 luac_verbose_0 = @echo "  LUAC   $@";
 @BUILD_LUA_TRUE@nobase_vlclib_DATA = lua/extensions/allocine-fr.luac \
-@BUILD_LUA_TRUE@	lua/extensions/imdb.luac lua/intf/dummy.luac \
-@BUILD_LUA_TRUE@	lua/intf/dumpmeta.luac lua/intf/hotkeys.luac \
-@BUILD_LUA_TRUE@	lua/intf/luac.luac \
+@BUILD_LUA_TRUE@	lua/intf/dummy.luac lua/intf/dumpmeta.luac \
+@BUILD_LUA_TRUE@	lua/intf/hotkeys.luac lua/intf/luac.luac \
 @BUILD_LUA_TRUE@	lua/intf/modules/common.luac \
 @BUILD_LUA_TRUE@	lua/intf/modules/host.luac lua/intf/rc.luac \
 @BUILD_LUA_TRUE@	lua/intf/telnet.luac \
@@ -838,8 +837,8 @@ luac_verbose_0 = @echo "  LUAC   $@";
 @BUILD_LUA_TRUE@	lua/playlist/youtube.luac \
 @BUILD_LUA_TRUE@	lua/playlist/youtube_homepage.luac \
 @BUILD_LUA_TRUE@	lua/sd/fmc.luac lua/sd/freebox.luac \
-@BUILD_LUA_TRUE@	lua/sd/frenchtv.luac lua/sd/icecast.luac \
-@BUILD_LUA_TRUE@	lua/sd/jamendo.luac $(NULL) $(am__append_6)
+@BUILD_LUA_TRUE@	lua/sd/icecast.luac lua/sd/jamendo.luac \
+@BUILD_LUA_TRUE@	$(NULL) $(am__append_6)
 DIST_http_lua = \
 	lua/http/.hosts \
 	lua/http/custom.lua \

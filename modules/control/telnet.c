@@ -2,7 +2,7 @@
  * telnet.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 0b63fd1b962cd9b8ed11754021f6ac85cecc861c $
+ * $Id: 442c580877122ac1eab6e0c209be53ef83404ce0 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -87,7 +87,7 @@ vlc_module_begin ()
     set_shortname( "Telnet" )
     set_category( CAT_INTERFACE )
     set_subcategory( SUBCAT_INTERFACE_CONTROL )
-    add_string( "telnet-host", "", NULL, TELNETHOST_TEXT,
+    add_string( "telnet-host", "localhost", NULL, TELNETHOST_TEXT,
                  TELNETHOST_LONGTEXT, true )
     add_integer( "telnet-port", TELNETPORT_DEFAULT, NULL, TELNETPORT_TEXT,
                  TELNETPORT_LONGTEXT, true )

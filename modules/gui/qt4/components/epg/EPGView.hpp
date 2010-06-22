@@ -2,7 +2,7 @@
  * EPGView.h : EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 8cad5bdf860d5dca1452700a2d2e169b53870b65 $
+ * $Id: 0655ce5b3fd164d4f88ddac5d0f591848ca2f3f0 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -29,7 +29,7 @@
 #include <QGraphicsView>
 #include <QList>
 
-#define TRACKS_HEIGHT 75
+#define TRACKS_HEIGHT 60
 
 class QDateTime;
 class EPGView : public QGraphicsView
@@ -45,7 +45,6 @@ public:
     const QDateTime& startTime();
 
     void            addEvent( EPGEvent* event );
-    void            updateEvent( EPGEvent* event );
     void            delEvent( EPGEvent* event );
     void            updateDuration();
 

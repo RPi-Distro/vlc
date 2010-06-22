@@ -2,7 +2,7 @@
  * VLCLoginPanel.m: A Generic Login Panel created for VLC
  *****************************************************************************
  * Copyright (C) 2009-2010 the VideoLAN team
- * $Id: 856a7031956e78a11e2bed0cf966614d6aeb0957 $
+ * $Id: 3658665689a74b52bcab382ba9fef1311798d7e1 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -55,6 +55,7 @@
     [_cancelButton setBordered:YES];
     [_cancelButton setTarget:self];
     [_cancelButton setAction:@selector(buttonAction:)];
+    [_cancelButton setKeyEquivalent:@"\e"] ; // escape key
     [ourContentView addSubview:_cancelButton];
 
     s_rc.origin.x = 383;
@@ -68,6 +69,7 @@
     [_okayButton setBordered:YES];
     [_okayButton setTarget:self];
     [_okayButton setAction:@selector(buttonAction:)];
+    [_okayButton setKeyEquivalent:@"\r"] ; // enter key
     [ourContentView addSubview:_okayButton];
     
     s_rc.origin.x = 94;

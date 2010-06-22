@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 6c4ce9810fe28a9acfa3cdf27919cd362f1a3003 $
+ * $Id: 5c36be7ff17c96cec7a14c059670a3ef43b6fb15 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -614,7 +614,11 @@ void MainInterface::setVideoFullScreen( bool fs )
         QRect screenres = QApplication::desktop()->screenGeometry( numscreen );
 
         /* To be sure window is on proper-screen in xinerama */
+#if HAS_QT46
+        if( !screenres.contains( pos() ) && QApplication::desktop()->screenCount() > 1 )
+#else
         if( !screenres.contains( pos() ) )
+#endif
         {
             msg_Dbg( p_intf, "Moving video to correct screen");
             move( QPoint( screenres.x(), screenres.y() ) );

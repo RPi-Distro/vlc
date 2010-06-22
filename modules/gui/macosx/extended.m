@@ -2,7 +2,7 @@
  * extended.m: MacOS X Extended interface panel
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id: 3b9165e7e05ee256d86a41d685c6da0713d84d94 $
+ * $Id: 9f11a1811bf1e2eada9e56486908af58fe66d774 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -733,7 +733,7 @@ static VLCExtended *_o_sharedInstance = nil;
     }
     else
     {
-        aout_EnableFilter( p_aout, psz_string, false );
+        aout_EnableFilter( pl_Get( p_intf ), psz_string, b_add );
     }
     free( psz_string );
 

@@ -2,7 +2,7 @@
  * EPGView.cpp: EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: ea32110601ca581bccc8a8ac0d66b84aa9873bd9 $
+ * $Id: d1d95348de8b0ebdc769d0092468d9a16d692a01 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -56,20 +56,14 @@ void EPGView::setStartTime( const QDateTime& startTime )
 {
     QList<QGraphicsItem*> itemList = items();
 
-    int diff = startTime.secsTo( m_startTime );
+    m_startTime = startTime;
 
     for ( int i = 0; i < itemList.count(); ++i )
     {
-#ifndef WIN32
-        EPGItem* item = dynamic_cast<EPGItem*>( itemList.at( i ) );
-#else
-        EPGItem *item = NULL;
-#endif
+        EPGItem* item = qgraphicsitem_cast<EPGItem*>( itemList.at( i ) );
         if ( !item ) continue;
-        item->setStart( item->start().addSecs( diff ) );
+        item->updatePos();
     }
-
-    m_startTime = startTime;
 
     // Our start time has changed
     emit startTimeChanged( startTime );
@@ -94,17 +88,16 @@ void EPGView::addEvent( EPGEvent* event )
     item->setShortDescription( event->shortDescription );
     item->setCurrent( event->current );
 
-    scene()->addItem( item );
-}
+    event->item = item;
 
-void EPGView::updateEvent( EPGEvent* event )
-{
-    //qDebug() << "Update event: " << event->name;
+    scene()->addItem( item );
 }
 
 void EPGView::delEvent( EPGEvent* event )
 {
-    //qDebug() << "Del event: " << event->name;
+    if( event->item != NULL )
+        scene()->removeItem( event->item );
+    event->item = NULL;
 }
 
 void EPGView::updateDuration()
@@ -114,11 +107,7 @@ void EPGView::updateDuration()
 
     for ( int i = 0; i < list.count(); ++i )
     {
-#ifndef WIN32
-        EPGItem* item = dynamic_cast<EPGItem*>( list.at( i ) );
-#else
-        EPGItem *item = NULL;
-#endif
+        EPGItem* item = qgraphicsitem_cast<EPGItem*>( list.at( i ) );
         if ( !item ) continue;
         QDateTime itemEnd = item->start().addSecs( item->duration() );
 

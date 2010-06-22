@@ -2,7 +2,7 @@
  * mux.c: muxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: cd4049251cab4659026a80dc812397f68bfeed8c $
+ * $Id: a09aab4d68a6c23f3bd831add72faa253b04ba35 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -214,6 +214,12 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     p_input->p_sys = malloc( sizeof( int ) );
     *((int *)p_input->p_sys) = p_sys->oc->nb_streams;
 
+    if( p_input->p_fmt->i_cat != VIDEO_ES && p_input->p_fmt->i_cat != AUDIO_ES)
+    {
+        msg_Warn( p_mux, "Unhandled ES category" );
+        return VLC_EGENERIC;
+    }
+
     stream = av_new_stream( p_sys->oc, p_sys->oc->nb_streams);
     if( !stream )
     {
@@ -232,6 +238,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         codec->channels = p_input->p_fmt->audio.i_channels;
         codec->sample_rate = p_input->p_fmt->audio.i_rate;
         codec->time_base = (AVRational){1, codec->sample_rate};
+        codec->frame_size = p_input->p_fmt->audio.i_frame_length;
         break;
 
     case VIDEO_ES:
@@ -257,8 +264,6 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         codec->time_base.num = p_input->p_fmt->video.i_frame_rate_base;
         break;
 
-    default:
-        msg_Warn( p_mux, "Unhandled ES category" );
     }
 
     codec->bit_rate = p_input->p_fmt->i_bitrate;
