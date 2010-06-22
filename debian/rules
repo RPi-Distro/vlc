@@ -40,7 +40,7 @@ confflags += \
 	--config-cache \
 	--disable-maintainer-mode \
 	--disable-update-check \
-        --disable-silent-rules \
+	--disable-silent-rules \
 	--enable-fast-install \
 	--enable-release \
 	--prefix=/usr \
@@ -53,7 +53,7 @@ confflags += \
 	--disable-gnomevfs \
 	--disable-kate \
 	--disable-mtp \
-        --disable-sqlite \
+	--disable-sqlite \
 	--disable-x264 \
 	--disable-zvbi \
 	--enable-a52 \
@@ -100,7 +100,7 @@ confflags += \
 	--enable-vcd \
 	--enable-vcdx \
 	--enable-vorbis \
-        --with-kde-solid=/usr/share/kde4/apps/ \
+	--with-kde-solid=/usr/share/kde4/apps/ \
 	--with-mozilla-pkg=libxul \
 	$(NULL)
 
