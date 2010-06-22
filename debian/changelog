@@ -1,6 +1,6 @@
-vlc (1.1.0~rc4-1) experimental; urgency=low
+vlc (1.1.0-1) UNRELEASED; urgency=low
 
-  * New upstream version 1.1.0~rc4
+  * New upstream version 1.1.0
     * SONAME changes
     * Update symbols files
     * Refresh patches and remove the ones merged upstream
