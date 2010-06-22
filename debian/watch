@@ -1,4 +1,2 @@
 version=3
-
-#opts="dversionmangle=s/(\d\.\d\.\d).([a-z])/$1$2/" \
 http://download.videolan.org/pub/videolan/vlc/([\d][\d\.]+[a-z]?)/vlc-([\d][\d\.]+[a-z]?)\.tar\.bz2
