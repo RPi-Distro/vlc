@@ -65,7 +65,7 @@ revmodel::revmodel()
 void revmodel::mute()
 {
     int i;
-    if (getmode() >= freezemode)
+    if (mode >= freezemode)
         return;
 
     for (i = 0 ; i < numcombs ; i++)
@@ -252,14 +252,6 @@ void revmodel::setmode(float value)
 {
     mode = value;
     update();
-}
-
-float revmodel::getmode()
-{
-    if (mode >= freezemode)
-        return 1;
-    else
-        return 0;
 }
 
 //ends

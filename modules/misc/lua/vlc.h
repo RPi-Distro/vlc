@@ -2,7 +2,7 @@
  * vlc.h: VLC specific lua library functions.
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 94d69f6357a5b200bc181491410d47d25467c284 $
+ * $Id: 71dfcc78114fb0d9f7d188f61b83def3c6e45e31 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -35,11 +35,6 @@
 #include <vlc_url.h>
 #include <vlc_strings.h>
 #include <vlc_stream.h>
-#include <vlc_charset.h>
-
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
 
 #include <lua.h>        /* Low level lua C API */
 #include <lauxlib.h>    /* Higher level C API */
@@ -48,6 +43,8 @@
 /*****************************************************************************
  * Module entry points
  *****************************************************************************/
+int ReadMeta( vlc_object_t * );
+int FetchMeta( vlc_object_t * );
 int FindArt( vlc_object_t * );
 
 int Import_LuaPlaylist( vlc_object_t * );
@@ -56,6 +53,11 @@ void Close_LuaPlaylist( vlc_object_t * );
 int Open_LuaIntf( vlc_object_t * );
 void Close_LuaIntf( vlc_object_t * );
 
+int Open_Extension( vlc_object_t * );
+void Close_Extension( vlc_object_t * );
+
+int Open_LuaSD( vlc_object_t * );
+void Close_LuaSD( vlc_object_t * );
 
 /*****************************************************************************
  * Lua debug
@@ -64,8 +66,7 @@ static inline void lua_Dbg( vlc_object_t * p_this, const char * ppz_fmt, ... )
 {
     va_list ap;
     va_start( ap, ppz_fmt );
-    __msg_GenericVa( ( vlc_object_t *)p_this, VLC_MSG_DBG, MODULE_STRING,
-                      ppz_fmt, ap );
+    msg_GenericVa( p_this, VLC_MSG_DBG, MODULE_STRING, ppz_fmt, ap );
     va_end( ap );
 }
 
@@ -90,7 +91,12 @@ static inline const char *luaL_nilorcheckstring( lua_State *L, int narg )
     return luaL_checkstring( L, narg );
 }
 
+void vlclua_set_this( lua_State *, vlc_object_t * );
+#define vlclua_set_this(a, b) vlclua_set_this(a, VLC_OBJECT(b))
 vlc_object_t * vlclua_get_this( lua_State * );
+
+struct intf_sys_t;
+void vlclua_set_intf( lua_State *, struct intf_sys_t * );
 
 /*****************************************************************************
  * Lua function bridge
@@ -103,10 +109,11 @@ int vlclua_push_ret( lua_State *, int i_error );
  * success.
  *****************************************************************************/
 int vlclua_scripts_batch_execute( vlc_object_t *p_this, const char * luadirname,
-        int (*func)(vlc_object_t *, const char *, lua_State *, void *),
-        lua_State * L, void * user_data );
-int vlclua_dir_list( const char *luadirname, char **ppsz_dir_list );
+        int (*func)(vlc_object_t *, const char *, void *),
+        void * user_data );
+int vlclua_dir_list( vlc_object_t *p_this, const char *luadirname, char ***pppsz_dir_list );
 void vlclua_dir_list_free( char **ppsz_dir_list );
+char *vlclua_find_file( vlc_object_t *p_this, const char *psz_luadirname, const char *psz_name );
 
 /*****************************************************************************
  * Playlist and meta data internal utilities.
@@ -121,6 +128,9 @@ void __vlclua_read_custom_meta_data( vlc_object_t *, lua_State *,
 int __vlclua_playlist_add_internal( vlc_object_t *, lua_State *, playlist_t *,
                                     input_item_t *, bool );
 #define vlclua_playlist_add_internal(a,b,c,d,e) __vlclua_playlist_add_internal(VLC_OBJECT(a),b,c,d,e)
+
+int __vlclua_add_modules_path( vlc_object_t *, lua_State *, const char *psz_filename );
+#define vlclua_add_modules_path( a, b, c ) __vlclua_add_modules_path(VLC_OBJECT(a), b, c)
 
 /**
  * Per-interface private state

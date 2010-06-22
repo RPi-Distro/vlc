@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 20da086d23e2ddadd65daeef805d683cb1abffe1 $
+ * $Id: 9d7f57b4b635e4f3a5c552f2dd480685e70ff8df $
  */
 #ifndef _AtmoLiveView_h_
 #define _AtmoLiveView_h_
@@ -13,8 +13,6 @@
 #include "AtmoDefs.h"
 
 #if !defined(_ATMO_VLC_PLUGIN_)
-#   include <comdef.h>		
-#   include "AtmoWin_h.h"
 #   include <windows.h>
 #endif
 
@@ -28,32 +26,12 @@ class CAtmoLiveView :  public CThread
 protected:
 	virtual DWORD Execute(void);
 
-#if !defined(_ATMO_VLC_PLUGIN_)
-public:
-    STDMETHODIMP setLiveViewSource(enum ComLiveViewSource dwModus);
-    STDMETHODIMP getCurrentLiveViewSource(enum ComLiveViewSource *modus);
-#endif
-
 protected:
     CAtmoDynData *m_pAtmoDynData;
-    CAtmoInput *m_pAtmoInput;
-
-#if !defined(_ATMO_VLC_PLUGIN_)
-    ComLiveViewSource m_LiveViewSource;
-    ComLiveViewSource m_CurrentLiveViewSource;
-    CRITICAL_SECTION m_InputChangeCriticalSection;
-    HANDLE m_InputChangedEvent;
-#endif
 
 public:
     CAtmoLiveView(CAtmoDynData *pAtmoDynData);
     virtual ~CAtmoLiveView(void);
-
-    CAtmoInput *getAtmoInput() { return m_pAtmoInput; }
-
-#if !defined(_ATMO_VLC_PLUGIN_)
-    ComLiveViewSource getLiveViewSource() { return m_CurrentLiveViewSource; }
-#endif
 };
 
 #endif

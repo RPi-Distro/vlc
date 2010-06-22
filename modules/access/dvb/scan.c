@@ -36,11 +36,8 @@
 #   include <unistd.h>
 #endif
 
-#include <fcntl.h>
 #include <sys/types.h>
-#include <sys/poll.h>
-
-#include <errno.h>
+#include <poll.h>
 
 /* Include dvbpsi headers */
 #ifdef HAVE_DVBPSI_DR_H
@@ -64,7 +61,7 @@
 #endif
 
 #ifdef ENABLE_HTTPD
-#   include "vlc_httpd.h"
+#   include <vlc_httpd.h>
 #endif
 
 #include "dvb.h"
@@ -327,7 +324,7 @@ int scan_Next( scan_t *p_scan, scan_configuration_t *p_cfg )
             msg_Info( p_scan->p_obj, "Scan ETA %s | %f", secstotimestr( psz_eta, i_eta/1000000 ), f_position * 100 );
 
         if( p_scan->p_dialog == NULL )
-            p_scan->p_dialog = dialog_ProgressCreate( p_scan->p_obj, _("Scanning DVB-T"), psz_text, _("Cancel") );
+            p_scan->p_dialog = dialog_ProgressCreate( p_scan->p_obj, _("Scanning DVB"), psz_text, _("Cancel") );
         if( p_scan->p_dialog != NULL )
             dialog_ProgressSet( p_scan->p_dialog, psz_text, f_position );
         free( psz_text );

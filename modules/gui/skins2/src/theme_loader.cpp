@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d02fa718e1a777bb7c07b658631bd97ea93ba080 $
+ * $Id: 0d9cfd5b9ee7fede21f097417049b9b057588139 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,8 +29,6 @@
 #include "../src/os_factory.hpp"
 #include "../src/vlcproc.hpp"
 #include "../src/window_manager.hpp"
-
-#include <cctype>
 
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
@@ -79,7 +77,7 @@ bool ThemeLoader::load( const string &fileName )
 
     //Before all, let's see if the file is present
     struct stat p_stat;
-    if( utf8_stat( path.c_str(), &p_stat ) )
+    if( vlc_stat( path.c_str(), &p_stat ) )
         return false;
 
     // First, we try to un-targz the file, and if it fails we hope it's a XML
@@ -417,7 +415,7 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
     char *pszDirContent;
 
     // Open the dir
-    pCurrDir = utf8_opendir( rootDir.c_str() );
+    pCurrDir = vlc_opendir( rootDir.c_str() );
 
     if( pCurrDir == NULL )
     {
@@ -427,7 +425,7 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
     }
 
     // While we still have entries in the directory
-    while( ( pszDirContent = utf8_readdir( pCurrDir ) ) != NULL )
+    while( ( pszDirContent = vlc_readdir( pCurrDir ) ) != NULL )
     {
         string newURI = rootDir + sep + pszDirContent;
 
@@ -438,7 +436,7 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
 #if defined( S_ISDIR )
             struct stat stat_data;
 
-            if( ( utf8_stat( newURI.c_str(), &stat_data ) == 0 )
+            if( ( vlc_stat( newURI.c_str(), &stat_data ) == 0 )
              && S_ISDIR(stat_data.st_mode) )
 #elif defined( DT_DIR )
             if( pDirContent->d_type & DT_DIR )
@@ -579,34 +577,33 @@ int tar_extract_all( TAR *t, char *prefix )
 
             switch( buffer.header.typeflag )
             {
-                case DIRTYPE:
-                    makedir( fname );
-                    break;
-                case REGTYPE:
-                case AREGTYPE:
-                    remaining = getoct( buffer.header.size, 12 );
-                    if( remaining )
+            case DIRTYPE:
+                makedir( fname );
+                break;
+            case REGTYPE:
+            case AREGTYPE:
+                remaining = getoct( buffer.header.size, 12 );
+                if( !remaining ) outfile = NULL; else
+                {
+                    outfile = fopen( fname, "wb" );
+                    if( outfile == NULL )
                     {
-                        outfile = fopen( fname, "wb" );
-                        if( outfile == NULL )
+                        /* try creating directory */
+                        char *p = strrchr( fname, '/' );
+                        if( p != NULL )
                         {
-                            /* try creating directory */
-                            char *p = strrchr( fname, '/' );
-                            if( p != NULL )
+                            *p = '\0';
+                            makedir( fname );
+                            *p = '/';
+                            outfile = fopen( fname, "wb" );
+                            if( !outfile )
                             {
-                                *p = '\0';
-                                makedir( fname );
-                                *p = '/';
-                                outfile = fopen( fname, "wb" );
-                                if( !outfile )
-                                {
-                                    fprintf( stderr, "tar couldn't create %s\n",
-                                             fname );
-                                }
+                                fprintf( stderr, "tar couldn't create %s\n",
+                                         fname );
                             }
                         }
                     }
-                    else outfile = NULL;
+                }
 
                 /*
                  * could have no contents
@@ -741,16 +738,16 @@ int gzopen_frontend( const char *pathname, int oflags, int mode )
 
     switch( oflags )
     {
-        case O_WRONLY:
-            gzflags = "wb";
-            break;
-        case O_RDONLY:
-            gzflags = "rb";
-            break;
-        case O_RDWR:
-        default:
-            errno = EINVAL;
-            return -1;
+    case O_WRONLY:
+        gzflags = "wb";
+        break;
+    case O_RDONLY:
+        gzflags = "rb";
+        break;
+    case O_RDWR:
+    default:
+        errno = EINVAL;
+        return -1;
     }
 
     gzf = gzopen( pathname, gzflags );

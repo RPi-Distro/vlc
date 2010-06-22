@@ -2,7 +2,7 @@
  * stream.c: stream functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 49e48b3c2dffd64b57222bb684f421051d0bfdde $
+ * $Id: 4dcae620646de25394b1cc71ab42fcdbef2c194a $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -36,7 +36,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_meta.h>
-#include <vlc_charset.h>
 #include <vlc_aout.h>
 
 #include <lua.h>        /* Low level lua C API */
@@ -51,22 +50,23 @@
 static int vlclua_stream_read( lua_State * );
 static int vlclua_stream_readline( lua_State * );
 static int vlclua_stream_delete( lua_State * );
+static int vlclua_stream_add_filter( lua_State *L );
 
 static const luaL_Reg vlclua_stream_reg[] = {
     { "read", vlclua_stream_read },
     { "readline", vlclua_stream_readline },
+    { "addfilter", vlclua_stream_add_filter },
     { NULL, NULL }
 };
 
-static int vlclua_stream_new( lua_State *L )
+static int vlclua_stream_new_inner( lua_State *L, stream_t *p_stream )
 {
-    vlc_object_t * p_this = vlclua_get_this( L );
-    stream_t * p_stream;
-    const char * psz_url;
-    psz_url = luaL_checkstring( L, 1 );
-    p_stream = stream_UrlNew( p_this, psz_url );
     if( !p_stream )
-        return luaL_error( L, "Error when opening url: `%s'", psz_url );
+    {
+        lua_pushnil( L );
+        lua_pushliteral( L, "Error when opening stream" );
+        return 2;
+    }
 
     stream_t **pp_stream = lua_newuserdata( L, sizeof( stream_t * ) );
     *pp_stream = p_stream;
@@ -82,6 +82,23 @@ static int vlclua_stream_new( lua_State *L )
 
     lua_setmetatable( L, -2 );
     return 1;
+}
+
+static int vlclua_stream_new( lua_State *L )
+{
+    vlc_object_t * p_this = vlclua_get_this( L );
+    const char * psz_url = luaL_checkstring( L, 1 );
+    stream_t *p_stream = stream_UrlNew( p_this, psz_url );
+    return vlclua_stream_new_inner( L, p_stream );
+}
+
+static int vlclua_memory_stream_new( lua_State *L )
+{
+    vlc_object_t * p_this = vlclua_get_this( L );
+    /* FIXME: duplicating the whole buffer is suboptimal. Keeping a reference to the string so that it doesn't get garbage collected would be better */
+    char * psz_content = strdup( luaL_checkstring( L, 1 ) );
+    stream_t *p_stream = stream_MemoryNew( p_this, (uint8_t *)psz_content, strlen( psz_content ), false );
+    return vlclua_stream_new_inner( L, p_stream );
 }
 
 static int vlclua_stream_read( lua_State *L )
@@ -111,6 +128,56 @@ static int vlclua_stream_readline( lua_State *L )
     return 1;
 }
 
+static int vlclua_stream_add_filter( lua_State *L )
+{
+    vlc_object_t *p_this = vlclua_get_this( L );
+
+    /* Make sure that we have 1 argument (+ 1 object) */
+    lua_settop( L, 2 );
+
+    stream_t **pp_stream = (stream_t **)luaL_checkudata( L, 1, "stream" );
+    if( !*pp_stream ) return vlclua_error( L );
+    const char *psz_filter = NULL;
+
+    if( lua_isstring( L, 2 ) )
+        psz_filter = lua_tostring( L, 2 );
+
+    if( !psz_filter || !*psz_filter )
+    {
+        msg_Dbg( p_this, "adding all automatic stream filters" );
+        while( true )
+        {
+            /* Add next automatic stream */
+            stream_t *p_filtered = stream_FilterNew( *pp_stream, NULL );
+            if( !p_filtered )
+                break;
+            else
+            {
+                msg_Dbg( p_this, "inserted an automatic stream filter" );
+                *pp_stream = p_filtered;
+            }
+        }
+        luaL_getmetatable( L, "stream" );
+        lua_setmetatable( L, 1 );
+    }
+    else
+    {
+        /* Add a named filter */
+        stream_t *p_filter = stream_FilterNew( *pp_stream, psz_filter );
+        if( !p_filter )
+            msg_Dbg( p_this, "Unable to open requested stream filter '%s'",
+                     psz_filter );
+        else
+        {
+            *pp_stream = p_filter;
+            luaL_getmetatable( L, "stream" );
+            lua_setmetatable( L, 1 );
+        }
+    }
+
+    return 1;
+}
+
 static int vlclua_stream_delete( lua_State *L )
 {
     stream_t **pp_stream = (stream_t **)luaL_checkudata( L, 1, "stream" );
@@ -125,4 +192,6 @@ void luaopen_stream( lua_State *L )
 {
     lua_pushcfunction( L, vlclua_stream_new );
     lua_setfield( L, -2, "stream" );
+    lua_pushcfunction( L, vlclua_memory_stream_new );
+    lua_setfield( L, -2, "memory_stream" );
 }

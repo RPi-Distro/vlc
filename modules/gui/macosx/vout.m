@@ -2,7 +2,7 @@
  * vout.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 94548d3e40488c013a3983217762d504a015a3fc $
+ * $Id: d68c415e3ba0184842b42be6b1a91c60df9b350a $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -30,7 +30,6 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <errno.h>                                                 /* ENOMEM */
 #include <stdlib.h>                                                /* free() */
 #include <string.h>
 
@@ -44,13 +43,15 @@
 /* SystemUIMode */
 #import <Carbon/Carbon.h>
 
-#include <vlc_keys.h>
 
 #include "intf.h"
 #include "fspanel.h"
 #include "vout.h"
 #import "controls.h"
 #import "embeddedwindow.h"
+
+#include <vlc_common.h>
+#include <vlc_keys.h>
 
 /*****************************************************************************
  * DeviceCallback: Callback triggered when the video-device variable is changed
@@ -121,10 +122,6 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
 - (BOOL)windowContainsEmbedded: (id)o_window
 {
-/*    if( ![[o_window className] isEqualToString: @"VLCVoutWindow"] )
-    {
-        NSLog( @"We were not given a VLCVoutWindow" );
-    }*/
     return ([self viewForWindow: o_window] == nil ? NO : YES );
 }
 
@@ -283,14 +280,14 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
 - (void)updateTitle
 {
-    NSString * o_title = nil; 
+    NSString * o_title = nil;
     NSMutableString * o_mrl = nil;
     input_thread_t * p_input;
     char * psz_title;
 
     if( !p_vout ) return;
 
-    p_input = vlc_object_find( p_vout, VLC_OBJECT_INPUT, FIND_PARENT );
+    p_input = getInput();
 
     if( !p_input ) return;
 
@@ -434,9 +431,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 {
     vlc_value_t val;
     if( !p_real_vout ) return;
-    var_Get( p_real_vout, "fullscreen", &val );
-    val.b_bool = !val.b_bool;
-    var_Set( p_real_vout, "fullscreen", val );
+    var_ToggleBool( p_real_vout, "fullscreen" );
 }
 
 - (BOOL)isFullscreen
@@ -511,7 +506,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
                 val.i_int |= (int)CocoaKeyToVLC( key );
             var_Set( p_vout->p_libvlc, "key-pressed", val );
         }
-        else NSLog( @"Could not send keyevent to VLC core" );
+        else msg_Warn( p_vout, "could not send keyevent to VLC core" );
     }
     else
         [super keyDown: o_event];
@@ -581,7 +576,10 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
     if( p_vout && [o_event type] == NSLeftMouseUp )
     {
-        var_SetBool( p_vout, "mouse-clicked", true );
+        int x, y;
+
+        var_GetCoords( p_vout, "mouse-moved", &x, &y );
+        var_SetCoords( p_vout, "mouse-clicked", x, y );
 
         var_Get( p_vout, "mouse-button-down", &val );
         val.i_int &= ~1;
@@ -647,31 +645,24 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
         if( b_inside )
         {
-            vlc_value_t val;
+            int x, y;
             unsigned int i_width, i_height, i_x, i_y;
 
             vout_PlacePicture( p_vout, (unsigned int)s_rect.size.width,
                                        (unsigned int)s_rect.size.height,
                                        &i_x, &i_y, &i_width, &i_height );
 
-            val.i_int = ( ((int)ml.x) - i_x ) *
-                        p_vout->render.i_width / i_width;
-            var_Set( p_vout, "mouse-x", val );
-
+            x = (((int)ml.x) - i_x) * p_vout->render.i_width / i_width;
             if( [[o_view className] isEqualToString: @"VLCGLView"] )
             {
-                val.i_int = ( ((int)(s_rect.size.height - ml.y)) - i_y ) *
+                y = (((int)(s_rect.size.height - ml.y)) - i_y) *
                             p_vout->render.i_height / i_height;
             }
             else
             {
-                val.i_int = ( ((int)ml.y) - i_y ) *
-                            p_vout->render.i_height / i_height;
+                y = (((int)ml.y) - i_y) * p_vout->render.i_height / i_height;
             }
-            var_Set( p_vout, "mouse-y", val );
-
-            val.b_bool = true;
-            var_Set( p_vout, "mouse-moved", val );
+            var_SetCoords( p_vout, "mouse-moved", x, y );
         }
         if( [self isFullscreen] )
             [[[[VLCMain sharedInstance] controls] fspanel] fadeIn];
@@ -772,17 +763,15 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 - (void)enterFullscreen
 {
     /* Save the settings for next playing item */
-    playlist_t * p_playlist = pl_Hold( p_real_vout );
+    playlist_t * p_playlist = pl_Get( p_real_vout );
     var_SetBool( p_playlist, "fullscreen", true );
-    pl_Release( p_real_vout );
 }
 
 - (void)leaveFullscreen
 {
     /* Save the settings for next playing item */
-    playlist_t * p_playlist = pl_Hold( p_real_vout );
+    playlist_t * p_playlist = pl_Get( p_real_vout );
     var_SetBool( p_playlist, "fullscreen", false );
-    pl_Release( p_real_vout );
 }
 
 @end
@@ -811,7 +800,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     i_time_mouse_last_moved = mdate();
     o_window = [[VLCVoutWindow alloc] initWithVout: p_arg_vout view: self
                                                     frame: s_arg_frame];
-    
+
     [self updateTitle];
     if([self isFullscreen])
         [o_window performSelectorOnMainThread: @selector(enterFullscreen) withObject: NULL waitUntilDone: YES];
@@ -954,7 +943,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     /* o_window needs to point to our o_embeddedwindow, super might have set it
      * to the fullscreen window that o_embeddedwindow setups during fullscreen */
     o_window = o_embeddedwindow;
- 
+
     if( b_return )
     {
         [o_window lockFullscreenAnimation];

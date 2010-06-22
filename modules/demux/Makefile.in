@@ -56,7 +56,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/m4/with_pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -93,8 +94,11 @@ am_libaiff_plugin_la_OBJECTS = $(am__objects_1)
 nodist_libaiff_plugin_la_OBJECTS =
 libaiff_plugin_la_OBJECTS = $(am_libaiff_plugin_la_OBJECTS) \
 	$(nodist_libaiff_plugin_la_OBJECTS)
-libaiff_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+libaiff_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libaiff_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am__objects_2 = libasademux_plugin_la-subtitle_asa.lo \
@@ -103,8 +107,8 @@ am_libasademux_plugin_la_OBJECTS = $(am__objects_2)
 nodist_libasademux_plugin_la_OBJECTS =
 libasademux_plugin_la_OBJECTS = $(am_libasademux_plugin_la_OBJECTS) \
 	$(nodist_libasademux_plugin_la_OBJECTS)
-libasademux_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libasademux_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libasademux_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_3 = libau_plugin_la-au.lo
@@ -112,16 +116,17 @@ am_libau_plugin_la_OBJECTS = $(am__objects_3)
 nodist_libau_plugin_la_OBJECTS =
 libau_plugin_la_OBJECTS = $(am_libau_plugin_la_OBJECTS) \
 	$(nodist_libau_plugin_la_OBJECTS)
-libau_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libau_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libau_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libau_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_4 = libdemux_cdg_plugin_la-cdg.lo
 am_libdemux_cdg_plugin_la_OBJECTS = $(am__objects_4)
 nodist_libdemux_cdg_plugin_la_OBJECTS =
 libdemux_cdg_plugin_la_OBJECTS = $(am_libdemux_cdg_plugin_la_OBJECTS) \
 	$(nodist_libdemux_cdg_plugin_la_OBJECTS)
-libdemux_cdg_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libdemux_cdg_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdemux_cdg_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_5 = libdemuxdump_plugin_la-demuxdump.lo
@@ -129,8 +134,8 @@ am_libdemuxdump_plugin_la_OBJECTS = $(am__objects_5)
 nodist_libdemuxdump_plugin_la_OBJECTS =
 libdemuxdump_plugin_la_OBJECTS = $(am_libdemuxdump_plugin_la_OBJECTS) \
 	$(nodist_libdemuxdump_plugin_la_OBJECTS)
-libdemuxdump_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libdemuxdump_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdemuxdump_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_6 = libdirac_plugin_la-dirac.lo
@@ -138,8 +143,8 @@ am_libdirac_plugin_la_OBJECTS = $(am__objects_6)
 nodist_libdirac_plugin_la_OBJECTS =
 libdirac_plugin_la_OBJECTS = $(am_libdirac_plugin_la_OBJECTS) \
 	$(nodist_libdirac_plugin_la_OBJECTS)
-libdirac_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libdirac_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdirac_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_7 = libflacsys_plugin_la-flac.lo
@@ -147,8 +152,8 @@ am_libflacsys_plugin_la_OBJECTS = $(am__objects_7)
 nodist_libflacsys_plugin_la_OBJECTS =
 libflacsys_plugin_la_OBJECTS = $(am_libflacsys_plugin_la_OBJECTS) \
 	$(nodist_libflacsys_plugin_la_OBJECTS)
-libflacsys_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libflacsys_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libflacsys_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_8 = libgme_plugin_la-gme.lo
@@ -156,8 +161,8 @@ am_libgme_plugin_la_OBJECTS = $(am__objects_8)
 nodist_libgme_plugin_la_OBJECTS =
 libgme_plugin_la_OBJECTS = $(am_libgme_plugin_la_OBJECTS) \
 	$(nodist_libgme_plugin_la_OBJECTS)
-libgme_plugin_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+libgme_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_9 = liblive555_plugin_la-live555.lo \
@@ -166,8 +171,8 @@ am_liblive555_plugin_la_OBJECTS = $(am__objects_9)
 nodist_liblive555_plugin_la_OBJECTS =
 liblive555_plugin_la_OBJECTS = $(am_liblive555_plugin_la_OBJECTS) \
 	$(nodist_liblive555_plugin_la_OBJECTS)
-liblive555_plugin_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+liblive555_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(liblive555_plugin_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_10 = libmjpeg_plugin_la-mjpeg.lo
@@ -175,82 +180,90 @@ am_libmjpeg_plugin_la_OBJECTS = $(am__objects_10)
 nodist_libmjpeg_plugin_la_OBJECTS =
 libmjpeg_plugin_la_OBJECTS = $(am_libmjpeg_plugin_la_OBJECTS) \
 	$(nodist_libmjpeg_plugin_la_OBJECTS)
-libmjpeg_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libmjpeg_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmjpeg_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_11 = libmod_plugin_la-mod.lo
+am__objects_11 = libmod_plugin_la-mod.lo libmod_plugin_la-dummy.lo
 am_libmod_plugin_la_OBJECTS = $(am__objects_11)
 nodist_libmod_plugin_la_OBJECTS =
 libmod_plugin_la_OBJECTS = $(am_libmod_plugin_la_OBJECTS) \
 	$(nodist_libmod_plugin_la_OBJECTS)
-libmod_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libmod_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libmod_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(libmod_plugin_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am__objects_12 = libmpc_plugin_la-mpc.lo
 am_libmpc_plugin_la_OBJECTS = $(am__objects_12)
 nodist_libmpc_plugin_la_OBJECTS =
 libmpc_plugin_la_OBJECTS = $(am_libmpc_plugin_la_OBJECTS) \
 	$(nodist_libmpc_plugin_la_OBJECTS)
-libmpc_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libmpc_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libmpc_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libmpc_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_13 = libnsc_plugin_la-nsc.lo
 am_libnsc_plugin_la_OBJECTS = $(am__objects_13)
 nodist_libnsc_plugin_la_OBJECTS =
 libnsc_plugin_la_OBJECTS = $(am_libnsc_plugin_la_OBJECTS) \
 	$(nodist_libnsc_plugin_la_OBJECTS)
-libnsc_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libnsc_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libnsc_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libnsc_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_14 = libnsv_plugin_la-nsv.lo
 am_libnsv_plugin_la_OBJECTS = $(am__objects_14)
 nodist_libnsv_plugin_la_OBJECTS =
 libnsv_plugin_la_OBJECTS = $(am_libnsv_plugin_la_OBJECTS) \
 	$(nodist_libnsv_plugin_la_OBJECTS)
-libnsv_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libnsv_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libnsv_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libnsv_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_15 = libnuv_plugin_la-nuv.lo
 am_libnuv_plugin_la_OBJECTS = $(am__objects_15)
 nodist_libnuv_plugin_la_OBJECTS =
 libnuv_plugin_la_OBJECTS = $(am_libnuv_plugin_la_OBJECTS) \
 	$(nodist_libnuv_plugin_la_OBJECTS)
-libnuv_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libnuv_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libnuv_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libnuv_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_16 = libogg_plugin_la-ogg.lo \
 	libogg_plugin_la-kate_categories.lo
 am_libogg_plugin_la_OBJECTS = $(am__objects_16)
 nodist_libogg_plugin_la_OBJECTS =
 libogg_plugin_la_OBJECTS = $(am_libogg_plugin_la_OBJECTS) \
 	$(nodist_libogg_plugin_la_OBJECTS)
-libogg_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libogg_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libogg_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libogg_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_17 = libps_plugin_la-ps.lo
 am_libps_plugin_la_OBJECTS = $(am__objects_17)
 nodist_libps_plugin_la_OBJECTS =
 libps_plugin_la_OBJECTS = $(am_libps_plugin_la_OBJECTS) \
 	$(nodist_libps_plugin_la_OBJECTS)
-libps_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libps_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libps_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libps_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_18 = libpva_plugin_la-pva.lo
 am_libpva_plugin_la_OBJECTS = $(am__objects_18)
 nodist_libpva_plugin_la_OBJECTS =
 libpva_plugin_la_OBJECTS = $(am_libpva_plugin_la_OBJECTS) \
 	$(nodist_libpva_plugin_la_OBJECTS)
-libpva_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libpva_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libpva_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libpva_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_19 = librawaud_plugin_la-rawaud.lo
 am_librawaud_plugin_la_OBJECTS = $(am__objects_19)
 nodist_librawaud_plugin_la_OBJECTS =
 librawaud_plugin_la_OBJECTS = $(am_librawaud_plugin_la_OBJECTS) \
 	$(nodist_librawaud_plugin_la_OBJECTS)
-librawaud_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+librawaud_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(librawaud_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_20 = librawdv_plugin_la-rawdv.lo
@@ -258,8 +271,8 @@ am_librawdv_plugin_la_OBJECTS = $(am__objects_20)
 nodist_librawdv_plugin_la_OBJECTS =
 librawdv_plugin_la_OBJECTS = $(am_librawdv_plugin_la_OBJECTS) \
 	$(nodist_librawdv_plugin_la_OBJECTS)
-librawdv_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+librawdv_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(librawdv_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_21 = librawvid_plugin_la-rawvid.lo
@@ -267,8 +280,8 @@ am_librawvid_plugin_la_OBJECTS = $(am__objects_21)
 nodist_librawvid_plugin_la_OBJECTS =
 librawvid_plugin_la_OBJECTS = $(am_librawvid_plugin_la_OBJECTS) \
 	$(nodist_librawvid_plugin_la_OBJECTS)
-librawvid_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+librawvid_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(librawvid_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_22 = libreal_plugin_la-real.lo
@@ -276,8 +289,8 @@ am_libreal_plugin_la_OBJECTS = $(am__objects_22)
 nodist_libreal_plugin_la_OBJECTS =
 libreal_plugin_la_OBJECTS = $(am_libreal_plugin_la_OBJECTS) \
 	$(nodist_libreal_plugin_la_OBJECTS)
-libreal_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libreal_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libreal_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am__objects_23 = libsmf_plugin_la-smf.lo
@@ -285,16 +298,17 @@ am_libsmf_plugin_la_OBJECTS = $(am__objects_23)
 nodist_libsmf_plugin_la_OBJECTS =
 libsmf_plugin_la_OBJECTS = $(am_libsmf_plugin_la_OBJECTS) \
 	$(nodist_libsmf_plugin_la_OBJECTS)
-libsmf_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libsmf_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libsmf_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libsmf_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_24 = libsubtitle_plugin_la-subtitle.lo
 am_libsubtitle_plugin_la_OBJECTS = $(am__objects_24)
 nodist_libsubtitle_plugin_la_OBJECTS =
 libsubtitle_plugin_la_OBJECTS = $(am_libsubtitle_plugin_la_OBJECTS) \
 	$(nodist_libsubtitle_plugin_la_OBJECTS)
-libsubtitle_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libsubtitle_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libsubtitle_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_25 = libts_plugin_la-ts.lo libts_plugin_la-csa.lo
@@ -302,40 +316,44 @@ am_libts_plugin_la_OBJECTS = $(am__objects_25)
 nodist_libts_plugin_la_OBJECTS =
 libts_plugin_la_OBJECTS = $(am_libts_plugin_la_OBJECTS) \
 	$(nodist_libts_plugin_la_OBJECTS)
-libts_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libts_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libts_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libts_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_26 = libtta_plugin_la-tta.lo
 am_libtta_plugin_la_OBJECTS = $(am__objects_26)
 nodist_libtta_plugin_la_OBJECTS =
 libtta_plugin_la_OBJECTS = $(am_libtta_plugin_la_OBJECTS) \
 	$(nodist_libtta_plugin_la_OBJECTS)
-libtta_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libtta_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libtta_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libtta_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_27 = libty_plugin_la-ty.lo
 am_libty_plugin_la_OBJECTS = $(am__objects_27)
 nodist_libty_plugin_la_OBJECTS =
 libty_plugin_la_OBJECTS = $(am_libty_plugin_la_OBJECTS) \
 	$(nodist_libty_plugin_la_OBJECTS)
-libty_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libty_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libty_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libty_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_28 = libvc1_plugin_la-vc1.lo
 am_libvc1_plugin_la_OBJECTS = $(am__objects_28)
 nodist_libvc1_plugin_la_OBJECTS =
 libvc1_plugin_la_OBJECTS = $(am_libvc1_plugin_la_OBJECTS) \
 	$(nodist_libvc1_plugin_la_OBJECTS)
-libvc1_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libvc1_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libvc1_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libvc1_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_29 = libvobsub_plugin_la-vobsub.lo
 am_libvobsub_plugin_la_OBJECTS = $(am__objects_29)
 nodist_libvobsub_plugin_la_OBJECTS =
 libvobsub_plugin_la_OBJECTS = $(am_libvobsub_plugin_la_OBJECTS) \
 	$(nodist_libvobsub_plugin_la_OBJECTS)
-libvobsub_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libvobsub_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libvobsub_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_30 = libvoc_plugin_la-voc.lo
@@ -343,47 +361,70 @@ am_libvoc_plugin_la_OBJECTS = $(am__objects_30)
 nodist_libvoc_plugin_la_OBJECTS =
 libvoc_plugin_la_OBJECTS = $(am_libvoc_plugin_la_OBJECTS) \
 	$(nodist_libvoc_plugin_la_OBJECTS)
-libvoc_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libvoc_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libvoc_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libvoc_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_31 = libwav_plugin_la-wav.lo
 am_libwav_plugin_la_OBJECTS = $(am__objects_31)
 nodist_libwav_plugin_la_OBJECTS =
 libwav_plugin_la_OBJECTS = $(am_libwav_plugin_la_OBJECTS) \
 	$(nodist_libwav_plugin_la_OBJECTS)
-libwav_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libwav_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libwav_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libwav_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_32 = libxa_plugin_la-xa.lo
 am_libxa_plugin_la_OBJECTS = $(am__objects_32)
 nodist_libxa_plugin_la_OBJECTS =
 libxa_plugin_la_OBJECTS = $(am_libxa_plugin_la_OBJECTS) \
 	$(nodist_libxa_plugin_la_OBJECTS)
-libxa_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libxa_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libxa_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libxa_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-LTCXXCOMPILE = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CXXFLAGS) $(CXXFLAGS)
+AM_V_CXX = $(am__v_CXX_$(V))
+am__v_CXX_ = $(am__v_CXX_$(AM_DEFAULT_VERBOSITY))
+am__v_CXX_0 = @echo "  CXX   " $@;
 CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CXXLD = $(am__v_CXXLD_$(V))
+am__v_CXXLD_ = $(am__v_CXXLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CXXLD_0 = @echo "  CXXLD " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libaiff_plugin_la_SOURCES) \
 	$(nodist_libaiff_plugin_la_SOURCES) \
 	$(libasademux_plugin_la_SOURCES) \
@@ -491,11 +532,14 @@ am__relativize = \
   reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
-ALLOCA = @ALLOCA@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = @AM_CPPFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
+ARM_NEON_CFLAGS = @ARM_NEON_CFLAGS@
 AS = @AS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
@@ -521,8 +565,6 @@ COPYRIGHT_MESSAGE = @COPYRIGHT_MESSAGE@
 COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CSRI_CFLAGS = @CSRI_CFLAGS@
-CSRI_LIBS = @CSRI_LIBS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -531,6 +573,8 @@ CYGPATH = @CYGPATH@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
+DC1394_CFLAGS = @DC1394_CFLAGS@
+DC1394_LIBS = @DC1394_LIBS@
 DCA_CFLAGS = @DCA_CFLAGS@
 DCA_LIBS = @DCA_LIBS@
 DEFS = @DEFS@
@@ -545,6 +589,8 @@ DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DV_CFLAGS = @DV_CFLAGS@
+DV_LIBS = @DV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -553,27 +599,32 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FLAC_CFLAGS = @FLAC_CFLAGS@
+FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
 FRIBIDI_LIBS = @FRIBIDI_LIBS@
+GCRYPT_CFLAGS = @GCRYPT_CFLAGS@
+GCRYPT_LIBS = @GCRYPT_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GLIB2_CFLAGS = @GLIB2_CFLAGS@
-GLIB2_LIBS = @GLIB2_LIBS@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
 GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
+GOOM_CFLAGS = @GOOM_CFLAGS@
+GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-HAL_CFLAGS = @HAL_CFLAGS@
-HAL_LIBS = @HAL_LIBS@
 HILDON_CFLAGS = @HILDON_CFLAGS@
+HILDON_FM_CFLAGS = @HILDON_FM_CFLAGS@
+HILDON_FM_LIBS = @HILDON_FM_LIBS@
 HILDON_LIBS = @HILDON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -582,8 +633,11 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+JACK_CFLAGS = @JACK_CFLAGS@
+JACK_LIBS = @JACK_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
+KDE4_CONFIG = @KDE4_CONFIG@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -592,14 +646,12 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBCDIO_CFLAGS = @LIBCDIO_CFLAGS@
 LIBCDIO_LIBS = @LIBCDIO_LIBS@
-LIBCDIO_PARANOIA_CFLAGS = @LIBCDIO_PARANOIA_CFLAGS@
-LIBCDIO_PARANOIA_LIBS = @LIBCDIO_PARANOIA_LIBS@
+LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
-LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
-LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
+LIBMODPLUG_CFLAGS = @LIBMODPLUG_CFLAGS@
+LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -609,15 +661,23 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIBV4L_CFLAGS = @LIBV4L_CFLAGS@
+LIBV4L_LIBS = @LIBV4L_LIBS@
+LIBVA_CFLAGS = @LIBVA_CFLAGS@
+LIBVA_LIBS = @LIBVA_LIBS@
+LIBVCDINFO_CFLAGS = @LIBVCDINFO_CFLAGS@
+LIBVCDINFO_LIBS = @LIBVCDINFO_LIBS@
+LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
+LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
-LTLIBa52tospdif = @LTLIBa52tospdif@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_alsa = @LTLIBaccess_alsa@
+LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_dv = @LTLIBaccess_dv@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
@@ -627,212 +687,114 @@ LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_oss = @LTLIBaccess_oss@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
+LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
-LTLIBadjust = @LTLIBadjust@
-LTLIBalphamask = @LTLIBalphamask@
 LTLIBalsa = @LTLIBalsa@
 LTLIBaout_directx = @LTLIBaout_directx@
-LTLIBaout_file = @LTLIBaout_file@
 LTLIBaout_sdl = @LTLIBaout_sdl@
 LTLIBasademux = @LTLIBasademux@
 LTLIBatmo = @LTLIBatmo@
-LTLIBaudio_format = @LTLIBaudio_format@
-LTLIBaudioscrobbler = @LTLIBaudioscrobbler@
 LTLIBauhal = @LTLIBauhal@
 LTLIBavcodec = @LTLIBavcodec@
 LTLIBavformat = @LTLIBavformat@
-LTLIBbandlimited_resampler = @LTLIBbandlimited_resampler@
 LTLIBbda = @LTLIBbda@
-LTLIBbeos = @LTLIBbeos@
-LTLIBblend = @LTLIBblend@
-LTLIBblendbench = @LTLIBblendbench@
-LTLIBbluescreen = @LTLIBbluescreen@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
-LTLIBcanvas = @LTLIBcanvas@
 LTLIBcdda = @LTLIBcdda@
-LTLIBcddax = @LTLIBcddax@
-LTLIBchain = @LTLIBchain@
-LTLIBclone = @LTLIBclone@
-LTLIBcmml = @LTLIBcmml@
-LTLIBcolorthres = @LTLIBcolorthres@
-LTLIBconverter_float = @LTLIBconverter_float@
-LTLIBcrop = @LTLIBcrop@
-LTLIBcroppadd = @LTLIBcroppadd@
-LTLIBcsri = @LTLIBcsri@
 LTLIBdbus = @LTLIBdbus@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdeinterlace = @LTLIBdeinterlace@
 LTLIBdirac = @LTLIBdirac@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
+LTLIBdirectx = @LTLIBdirectx@
 LTLIBdmo = @LTLIBdmo@
-LTLIBdolby_surround_decoder = @LTLIBdolby_surround_decoder@
 LTLIBdshow = @LTLIBdshow@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
-LTLIBdtstospdif = @LTLIBdtstospdif@
 LTLIBdvb = @LTLIBdvb@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
 LTLIBdynamicoverlay = @LTLIBdynamicoverlay@
-LTLIBequalizer = @LTLIBequalizer@
-LTLIBerase = @LTLIBerase@
-LTLIBextract = @LTLIBextract@
 LTLIBfaad = @LTLIBfaad@
-LTLIBfake = @LTLIBfake@
 LTLIBfb = @LTLIBfb@
 LTLIBfbosd = @LTLIBfbosd@
-LTLIBfloat32_mixer = @LTLIBfloat32_mixer@
+LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
-LTLIBfolder = @LTLIBfolder@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgalaktos = @LTLIBgalaktos@
-LTLIBgaussianblur = @LTLIBgaussianblur@
-LTLIBgestures = @LTLIBgestures@
 LTLIBggi = @LTLIBggi@
 LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
-LTLIBgnome2_main = @LTLIBgnome2_main@
-LTLIBgnome_main = @LTLIBgnome_main@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
-LTLIBgradient = @LTLIBgradient@
-LTLIBgrain = @LTLIBgrain@
 LTLIBgrowl = @LTLIBgrowl@
 LTLIBgrowl_udp = @LTLIBgrowl_udp@
-LTLIBgtk2_main = @LTLIBgtk2_main@
-LTLIBgtk_main = @LTLIBgtk_main@
-LTLIBhal = @LTLIBhal@
 LTLIBhd1000a = @LTLIBhd1000a@
 LTLIBhd1000v = @LTLIBhd1000v@
-LTLIBheadphone_channel_mixer = @LTLIBheadphone_channel_mixer@
-LTLIBhotkeys = @LTLIBhotkeys@
-LTLIBhttp = @LTLIBhttp@
-LTLIBi420_rgb_mmx = @LTLIBi420_rgb_mmx@
-LTLIBi420_rgb_sse2 = @LTLIBi420_rgb_sse2@
-LTLIBi420_ymga = @LTLIBi420_ymga@
-LTLIBi420_ymga_mmx = @LTLIBi420_ymga_mmx@
-LTLIBi420_yuy2 = @LTLIBi420_yuy2@
-LTLIBi420_yuy2_altivec = @LTLIBi420_yuy2_altivec@
-LTLIBi420_yuy2_mmx = @LTLIBi420_yuy2_mmx@
-LTLIBi420_yuy2_sse2 = @LTLIBi420_yuy2_sse2@
-LTLIBi422_i420 = @LTLIBi422_i420@
-LTLIBi422_yuy2 = @LTLIBi422_yuy2@
-LTLIBi422_yuy2_mmx = @LTLIBi422_yuy2_mmx@
-LTLIBi422_yuy2_sse2 = @LTLIBi422_yuy2_sse2@
+LTLIBhildon = @LTLIBhildon@
 LTLIBid3tag = @LTLIBid3tag@
 LTLIBinhibit = @LTLIBinhibit@
-LTLIBinvert = @LTLIBinvert@
 LTLIBjack = @LTLIBjack@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlinear_resampler = @LTLIBlinear_resampler@
 LTLIBlirc = @LTLIBlirc@
 LTLIBlive555 = @LTLIBlive555@
-LTLIBlogo = @LTLIBlogo@
 LTLIBmacosx = @LTLIBmacosx@
-LTLIBmaemo = @LTLIBmaemo@
-LTLIBmagnify = @LTLIBmagnify@
-LTLIBmarq = @LTLIBmarq@
-LTLIBmemcpy3dn = @LTLIBmemcpy3dn@
-LTLIBmemcpyaltivec = @LTLIBmemcpyaltivec@
-LTLIBmemcpymmx = @LTLIBmemcpymmx@
-LTLIBmemcpymmxext = @LTLIBmemcpymmxext@
-LTLIBmga = @LTLIBmga@
+LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
 LTLIBmod = @LTLIBmod@
-LTLIBmosaic = @LTLIBmosaic@
-LTLIBmotion = @LTLIBmotion@
-LTLIBmotionblur = @LTLIBmotionblur@
-LTLIBmotiondetect = @LTLIBmotiondetect@
 LTLIBmozilla = @LTLIBmozilla@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
-LTLIBmsn = @LTLIBmsn@
 LTLIBmtp = @LTLIBmtp@
 LTLIBmux_ogg = @LTLIBmux_ogg@
 LTLIBmux_ts = @LTLIBmux_ts@
 LTLIBncurses = @LTLIBncurses@
-LTLIBnoise = @LTLIBnoise@
-LTLIBnormvol = @LTLIBnormvol@
 LTLIBnotify = @LTLIBnotify@
-LTLIBntservice = @LTLIBntservice@
 LTLIBogg = @LTLIBogg@
+LTLIBoldhttp = @LTLIBoldhttp@
+LTLIBoldtelnet = @LTLIBoldtelnet@
 LTLIBomapfb = @LTLIBomapfb@
+LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopengl = @LTLIBopengl@
-LTLIBopengllayer = @LTLIBopengllayer@
-LTLIBopie = @LTLIBopie@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBoss = @LTLIBoss@
+LTLIBosso_screensaver = @LTLIBosso_screensaver@
 LTLIBpanoramix = @LTLIBpanoramix@
-LTLIBparam_eq = @LTLIBparam_eq@
-LTLIBpda = @LTLIBpda@
 LTLIBpng = @LTLIBpng@
-LTLIBpodcast = @LTLIBpodcast@
 LTLIBportaudio = @LTLIBportaudio@
 LTLIBpostproc = @LTLIBpostproc@
-LTLIBprobe_hal = @LTLIBprobe_hal@
-LTLIBpsychedelic = @LTLIBpsychedelic@
+LTLIBprojectm = @LTLIBprojectm@
 LTLIBpulse = @LTLIBpulse@
-LTLIBpuzzle = @LTLIBpuzzle@
 LTLIBpvr = @LTLIBpvr@
-LTLIBqnx = @LTLIBqnx@
 LTLIBqt4 = @LTLIBqt4@
 LTLIBqtcapture = @LTLIBqtcapture@
-LTLIBqte = @LTLIBqte@
-LTLIBqte_main = @LTLIBqte_main@
-LTLIBquartztext = @LTLIBquartztext@
 LTLIBquicktime = @LTLIBquicktime@
-LTLIBrc = @LTLIBrc@
-LTLIBrealaudio = @LTLIBrealaudio@
 LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
-LTLIBripple = @LTLIBripple@
-LTLIBrotate = @LTLIBrotate@
-LTLIBrss = @LTLIBrss@
-LTLIBrv32 = @LTLIBrv32@
-LTLIBsap = @LTLIBsap@
-LTLIBscale = @LTLIBscale@
-LTLIBscaletempo = @LTLIBscaletempo@
-LTLIBscene = @LTLIBscene@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
-LTLIBsharpen = @LTLIBsharpen@
 LTLIBshine = @LTLIBshine@
-LTLIBshout = @LTLIBshout@
-LTLIBshowintf = @LTLIBshowintf@
-LTLIBsignals = @LTLIBsignals@
-LTLIBsimple_channel_mixer = @LTLIBsimple_channel_mixer@
 LTLIBskins2 = @LTLIBskins2@
 LTLIBsnapshot = @LTLIBsnapshot@
-LTLIBspatializer = @LTLIBspatializer@
-LTLIBspdif_mixer = @LTLIBspdif_mixer@
 LTLIBspeex = @LTLIBspeex@
+LTLIBsqlite = @LTLIBsqlite@
 LTLIBstream_out_raop = @LTLIBstream_out_raop@
+LTLIBstream_out_switcher = @LTLIBstream_out_switcher@
 LTLIBsvg = @LTLIBsvg@
 LTLIBsvgalib = @LTLIBsvgalib@
 LTLIBswscale = @LTLIBswscale@
-LTLIBswscale_maemo = @LTLIBswscale_maemo@
+LTLIBswscale_omap = @LTLIBswscale_omap@
 LTLIBtaglib = @LTLIBtaglib@
-LTLIBtarkin = @LTLIBtarkin@
 LTLIBtelepathy = @LTLIBtelepathy@
-LTLIBtelnet = @LTLIBtelnet@
 LTLIBtelx = @LTLIBtelx@
-LTLIBtest1 = @LTLIBtest1@
-LTLIBtest2 = @LTLIBtest2@
-LTLIBtest3 = @LTLIBtest3@
-LTLIBtest4 = @LTLIBtest4@
 LTLIBtheora = @LTLIBtheora@
-LTLIBtransform = @LTLIBtransform@
 LTLIBtremor = @LTLIBtremor@
 LTLIBts = @LTLIBts@
 LTLIBtwolame = @LTLIBtwolame@
@@ -845,34 +807,26 @@ LTLIBv4l2 = @LTLIBv4l2@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
 LTLIBvisual = @LTLIBvisual@
-LTLIBvmem = @LTLIBvmem@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_directx = @LTLIBvout_directx@
+LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
-LTLIBwall = @LTLIBwall@
-LTLIBwave = @LTLIBwave@
 LTLIBwaveout = @LTLIBwaveout@
-LTLIBwin32text = @LTLIBwin32text@
-LTLIBwince = @LTLIBwince@
 LTLIBwingapi = @LTLIBwingapi@
 LTLIBwingdi = @LTLIBwingdi@
 LTLIBwma_fixed = @LTLIBwma_fixed@
-LTLIBx11 = @LTLIBx11@
-LTLIBx11_screen = @LTLIBx11_screen@
 LTLIBx264 = @LTLIBx264@
-LTLIBxcb = @LTLIBxcb@
+LTLIBxcb_apps = @LTLIBxcb_apps@
+LTLIBxcb_glx = @LTLIBxcb_glx@
+LTLIBxcb_screen = @LTLIBxcb_screen@
 LTLIBxcb_window = @LTLIBxcb_window@
+LTLIBxcb_x11 = @LTLIBxcb_x11@
 LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
-LTLIBxvideo = @LTLIBxvideo@
-LTLIBxvmc = @LTLIBxvmc@
-LTLIByuv = @LTLIByuv@
-LTLIByuvp = @LTLIByuvp@
-LTLIByuy2_i420 = @LTLIByuy2_i420@
-LTLIByuy2_i422 = @LTLIByuy2_i422@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
+LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
 MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
@@ -882,6 +836,7 @@ MIDL = @MIDL@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
+MMX_CFLAGS = @MMX_CFLAGS@
 MOC = @MOC@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
@@ -892,6 +847,8 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
+MUX_OGG_LIBS = @MUX_OGG_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
@@ -902,8 +859,12 @@ OBJCFLAGS = @OBJCFLAGS@
 OBJCOPY = @OBJCOPY@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OGG_CFLAGS = @OGG_CFLAGS@
+OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OSSO_SCREENSAVER_CFLAGS = @OSSO_SCREENSAVER_CFLAGS@
+OSSO_SCREENSAVER_LIBS = @OSSO_SCREENSAVER_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -916,12 +877,20 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CFLAGS = @PCRE_CFLAGS@
 PCRE_LIBS = @PCRE_LIBS@
+PEFLAGS = @PEFLAGS@
 PKGDIR = @PKGDIR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PORTAUDIO_CFLAGS = @PORTAUDIO_CFLAGS@
+PORTAUDIO_LIBS = @PORTAUDIO_LIBS@
 POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
+PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
+PROJECTM2_LIBS = @PROJECTM2_LIBS@
+PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
+PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
 QT4LOCALEDIR = @QT4LOCALEDIR@
@@ -931,15 +900,21 @@ RANLIB = @RANLIB@
 RCC = @RCC@
 SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
 SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
-SDL11_CONFIG = @SDL11_CONFIG@
-SDL12_CONFIG = @SDL12_CONFIG@
-SDL_CONFIG = @SDL_CONFIG@
+SDL_CFLAGS = @SDL_CFLAGS@
+SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
+SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
+SDL_LIBS = @SDL_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
+SPEEX_CFLAGS = @SPEEX_CFLAGS@
+SPEEX_LIBS = @SPEEX_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
+SSE2_CFLAGS = @SSE2_CFLAGS@
 STRIP = @STRIP@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
@@ -948,14 +923,19 @@ SWSCALE_LIBS = @SWSCALE_LIBS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
+THEORA_CFLAGS = @THEORA_CFLAGS@
+THEORA_LIBS = @THEORA_LIBS@
 TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
+U2D = @U2D@
 UDEV_CFLAGS = @UDEV_CFLAGS@
 UDEV_LIBS = @UDEV_LIBS@
 UIC = @UIC@
+UPNP_CFLAGS = @UPNP_CFLAGS@
+UPNP_LIBS = @UPNP_LIBS@
 USE_NLS = @USE_NLS@
-VCDINFO_CFLAGS = @VCDINFO_CFLAGS@
-VCDINFO_LIBS = @VCDINFO_LIBS@
 VERSION = @VERSION@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_EXTRA_RC = @VERSION_EXTRA_RC@
@@ -964,6 +944,8 @@ VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
+VORBIS_CFLAGS = @VORBIS_CFLAGS@
+VORBIS_LIBS = @VORBIS_LIBS@
 WIDL = @WIDL@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
@@ -973,6 +955,8 @@ XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
 XCB_LIBS = @XCB_LIBS@
+XCB_RANDR_CFLAGS = @XCB_RANDR_CFLAGS@
+XCB_RANDR_LIBS = @XCB_RANDR_LIBS@
 XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
@@ -980,9 +964,9 @@ XCB_XV_LIBS = @XCB_XV_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
+XLIB_XCB_CFLAGS = @XLIB_XCB_CFLAGS@
+XLIB_XCB_LIBS = @XLIB_XCB_LIBS@
 XMKMF = @XMKMF@
-XML2_CFLAGS = @XML2_CFLAGS@
-XML2_LIBS = @XML2_LIBS@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
 XPROTO_CFLAGS = @XPROTO_CFLAGS@
@@ -1041,6 +1025,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+soliddatadir = @soliddatadir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -1066,9 +1051,9 @@ libvlc_LTLIBRARIES = $(LTLIBasademux) $(LTLIBgme) $(LTLIBlive555) \
 EXTRA_LTLIBRARIES = libasademux_plugin.la libgme_plugin.la liblive555_plugin.la libmod_plugin.la libmpc_plugin.la libogg_plugin.la libts_plugin.la
 NULL = 
 SUFFIXES = 
-libvlcdir = $(vlclibdir)/$(basedir)
+libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
-BUILT_SOURCES = 
+BUILT_SOURCES = dummy.cpp
 CLEANFILES = $(BUILT_SOURCES)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 AM_CFLAGS = `$(VLC_CONFIG) --cflags plugin $@`
@@ -1078,6 +1063,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
 	-export-symbol-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
+	-rpath "$(libvlcdir)" \
 	-no-undefined \
 	 `$(VLC_CONFIG) --ldflags plugin $@`
 
@@ -1086,7 +1072,7 @@ AM_LIBADD = `$(VLC_CONFIG) -libs plugin $@` \
 
 SUBDIRS = asf avformat avi mkv mp4 mpeg playlist
 SOURCES_flacsys = flac.c
-SOURCES_ogg = ogg.c vorbis.h kate_categories.c kate_categories.h
+SOURCES_ogg = ogg.c vorbis.h kate_categories.c kate_categories.h xiph.h
 SOURCES_demuxdump = demuxdump.c
 SOURCES_rawdv = rawdv.c
 SOURCES_rawvid = rawvid.c
@@ -1098,14 +1084,14 @@ SOURCES_nsv = nsv.c
 SOURCES_real = real.c
 SOURCES_ts = ts.c ../mux/mpeg/csa.c
 SOURCES_ps = ps.c ps.h
-SOURCES_mod = mod.c
+SOURCES_mod = mod.c dummy.cpp
 SOURCES_pva = pva.c
 SOURCES_aiff = aiff.c
 SOURCES_mjpeg = mjpeg.c
 SOURCES_subtitle = subtitle.c
 SOURCES_asademux = subtitle_asa.c asademux.c asademux_defs.h asademux.h
 SOURCES_ty = ty.c ../codec/cc.h
-SOURCES_vobsub = vobsub.c
+SOURCES_vobsub = vobsub.c vobsub.h
 SOURCES_voc = voc.c
 SOURCES_xa = xa.c
 SOURCES_nuv = nuv.c
@@ -1536,69 +1522,69 @@ clean-libvlcLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libaiff_plugin.la: $(libaiff_plugin_la_OBJECTS) $(libaiff_plugin_la_DEPENDENCIES) 
-	$(libaiff_plugin_la_LINK) -rpath $(libvlcdir) $(libaiff_plugin_la_OBJECTS) $(libaiff_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libaiff_plugin_la_LINK) -rpath $(libvlcdir) $(libaiff_plugin_la_OBJECTS) $(libaiff_plugin_la_LIBADD) $(LIBS)
 libasademux_plugin.la: $(libasademux_plugin_la_OBJECTS) $(libasademux_plugin_la_DEPENDENCIES) 
-	$(libasademux_plugin_la_LINK)  $(libasademux_plugin_la_OBJECTS) $(libasademux_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libasademux_plugin_la_LINK)  $(libasademux_plugin_la_OBJECTS) $(libasademux_plugin_la_LIBADD) $(LIBS)
 libau_plugin.la: $(libau_plugin_la_OBJECTS) $(libau_plugin_la_DEPENDENCIES) 
-	$(libau_plugin_la_LINK) -rpath $(libvlcdir) $(libau_plugin_la_OBJECTS) $(libau_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libau_plugin_la_LINK) -rpath $(libvlcdir) $(libau_plugin_la_OBJECTS) $(libau_plugin_la_LIBADD) $(LIBS)
 libdemux_cdg_plugin.la: $(libdemux_cdg_plugin_la_OBJECTS) $(libdemux_cdg_plugin_la_DEPENDENCIES) 
-	$(libdemux_cdg_plugin_la_LINK) -rpath $(libvlcdir) $(libdemux_cdg_plugin_la_OBJECTS) $(libdemux_cdg_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libdemux_cdg_plugin_la_LINK) -rpath $(libvlcdir) $(libdemux_cdg_plugin_la_OBJECTS) $(libdemux_cdg_plugin_la_LIBADD) $(LIBS)
 libdemuxdump_plugin.la: $(libdemuxdump_plugin_la_OBJECTS) $(libdemuxdump_plugin_la_DEPENDENCIES) 
-	$(libdemuxdump_plugin_la_LINK) -rpath $(libvlcdir) $(libdemuxdump_plugin_la_OBJECTS) $(libdemuxdump_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libdemuxdump_plugin_la_LINK) -rpath $(libvlcdir) $(libdemuxdump_plugin_la_OBJECTS) $(libdemuxdump_plugin_la_LIBADD) $(LIBS)
 libdirac_plugin.la: $(libdirac_plugin_la_OBJECTS) $(libdirac_plugin_la_DEPENDENCIES) 
-	$(libdirac_plugin_la_LINK) -rpath $(libvlcdir) $(libdirac_plugin_la_OBJECTS) $(libdirac_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libdirac_plugin_la_LINK) -rpath $(libvlcdir) $(libdirac_plugin_la_OBJECTS) $(libdirac_plugin_la_LIBADD) $(LIBS)
 libflacsys_plugin.la: $(libflacsys_plugin_la_OBJECTS) $(libflacsys_plugin_la_DEPENDENCIES) 
-	$(libflacsys_plugin_la_LINK) -rpath $(libvlcdir) $(libflacsys_plugin_la_OBJECTS) $(libflacsys_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libflacsys_plugin_la_LINK) -rpath $(libvlcdir) $(libflacsys_plugin_la_OBJECTS) $(libflacsys_plugin_la_LIBADD) $(LIBS)
 libgme_plugin.la: $(libgme_plugin_la_OBJECTS) $(libgme_plugin_la_DEPENDENCIES) 
-	$(libgme_plugin_la_LINK)  $(libgme_plugin_la_OBJECTS) $(libgme_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CXXLD)$(libgme_plugin_la_LINK)  $(libgme_plugin_la_OBJECTS) $(libgme_plugin_la_LIBADD) $(LIBS)
 liblive555_plugin.la: $(liblive555_plugin_la_OBJECTS) $(liblive555_plugin_la_DEPENDENCIES) 
-	$(liblive555_plugin_la_LINK)  $(liblive555_plugin_la_OBJECTS) $(liblive555_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CXXLD)$(liblive555_plugin_la_LINK)  $(liblive555_plugin_la_OBJECTS) $(liblive555_plugin_la_LIBADD) $(LIBS)
 libmjpeg_plugin.la: $(libmjpeg_plugin_la_OBJECTS) $(libmjpeg_plugin_la_DEPENDENCIES) 
-	$(libmjpeg_plugin_la_LINK) -rpath $(libvlcdir) $(libmjpeg_plugin_la_OBJECTS) $(libmjpeg_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmjpeg_plugin_la_LINK) -rpath $(libvlcdir) $(libmjpeg_plugin_la_OBJECTS) $(libmjpeg_plugin_la_LIBADD) $(LIBS)
 libmod_plugin.la: $(libmod_plugin_la_OBJECTS) $(libmod_plugin_la_DEPENDENCIES) 
-	$(libmod_plugin_la_LINK)  $(libmod_plugin_la_OBJECTS) $(libmod_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CXXLD)$(libmod_plugin_la_LINK)  $(libmod_plugin_la_OBJECTS) $(libmod_plugin_la_LIBADD) $(LIBS)
 libmpc_plugin.la: $(libmpc_plugin_la_OBJECTS) $(libmpc_plugin_la_DEPENDENCIES) 
-	$(libmpc_plugin_la_LINK)  $(libmpc_plugin_la_OBJECTS) $(libmpc_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmpc_plugin_la_LINK)  $(libmpc_plugin_la_OBJECTS) $(libmpc_plugin_la_LIBADD) $(LIBS)
 libnsc_plugin.la: $(libnsc_plugin_la_OBJECTS) $(libnsc_plugin_la_DEPENDENCIES) 
-	$(libnsc_plugin_la_LINK) -rpath $(libvlcdir) $(libnsc_plugin_la_OBJECTS) $(libnsc_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnsc_plugin_la_LINK) -rpath $(libvlcdir) $(libnsc_plugin_la_OBJECTS) $(libnsc_plugin_la_LIBADD) $(LIBS)
 libnsv_plugin.la: $(libnsv_plugin_la_OBJECTS) $(libnsv_plugin_la_DEPENDENCIES) 
-	$(libnsv_plugin_la_LINK) -rpath $(libvlcdir) $(libnsv_plugin_la_OBJECTS) $(libnsv_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnsv_plugin_la_LINK) -rpath $(libvlcdir) $(libnsv_plugin_la_OBJECTS) $(libnsv_plugin_la_LIBADD) $(LIBS)
 libnuv_plugin.la: $(libnuv_plugin_la_OBJECTS) $(libnuv_plugin_la_DEPENDENCIES) 
-	$(libnuv_plugin_la_LINK) -rpath $(libvlcdir) $(libnuv_plugin_la_OBJECTS) $(libnuv_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libnuv_plugin_la_LINK) -rpath $(libvlcdir) $(libnuv_plugin_la_OBJECTS) $(libnuv_plugin_la_LIBADD) $(LIBS)
 libogg_plugin.la: $(libogg_plugin_la_OBJECTS) $(libogg_plugin_la_DEPENDENCIES) 
-	$(libogg_plugin_la_LINK)  $(libogg_plugin_la_OBJECTS) $(libogg_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libogg_plugin_la_LINK)  $(libogg_plugin_la_OBJECTS) $(libogg_plugin_la_LIBADD) $(LIBS)
 libps_plugin.la: $(libps_plugin_la_OBJECTS) $(libps_plugin_la_DEPENDENCIES) 
-	$(libps_plugin_la_LINK) -rpath $(libvlcdir) $(libps_plugin_la_OBJECTS) $(libps_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libps_plugin_la_LINK) -rpath $(libvlcdir) $(libps_plugin_la_OBJECTS) $(libps_plugin_la_LIBADD) $(LIBS)
 libpva_plugin.la: $(libpva_plugin_la_OBJECTS) $(libpva_plugin_la_DEPENDENCIES) 
-	$(libpva_plugin_la_LINK) -rpath $(libvlcdir) $(libpva_plugin_la_OBJECTS) $(libpva_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpva_plugin_la_LINK) -rpath $(libvlcdir) $(libpva_plugin_la_OBJECTS) $(libpva_plugin_la_LIBADD) $(LIBS)
 librawaud_plugin.la: $(librawaud_plugin_la_OBJECTS) $(librawaud_plugin_la_DEPENDENCIES) 
-	$(librawaud_plugin_la_LINK) -rpath $(libvlcdir) $(librawaud_plugin_la_OBJECTS) $(librawaud_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(librawaud_plugin_la_LINK) -rpath $(libvlcdir) $(librawaud_plugin_la_OBJECTS) $(librawaud_plugin_la_LIBADD) $(LIBS)
 librawdv_plugin.la: $(librawdv_plugin_la_OBJECTS) $(librawdv_plugin_la_DEPENDENCIES) 
-	$(librawdv_plugin_la_LINK) -rpath $(libvlcdir) $(librawdv_plugin_la_OBJECTS) $(librawdv_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(librawdv_plugin_la_LINK) -rpath $(libvlcdir) $(librawdv_plugin_la_OBJECTS) $(librawdv_plugin_la_LIBADD) $(LIBS)
 librawvid_plugin.la: $(librawvid_plugin_la_OBJECTS) $(librawvid_plugin_la_DEPENDENCIES) 
-	$(librawvid_plugin_la_LINK) -rpath $(libvlcdir) $(librawvid_plugin_la_OBJECTS) $(librawvid_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(librawvid_plugin_la_LINK) -rpath $(libvlcdir) $(librawvid_plugin_la_OBJECTS) $(librawvid_plugin_la_LIBADD) $(LIBS)
 libreal_plugin.la: $(libreal_plugin_la_OBJECTS) $(libreal_plugin_la_DEPENDENCIES) 
-	$(libreal_plugin_la_LINK) -rpath $(libvlcdir) $(libreal_plugin_la_OBJECTS) $(libreal_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libreal_plugin_la_LINK) -rpath $(libvlcdir) $(libreal_plugin_la_OBJECTS) $(libreal_plugin_la_LIBADD) $(LIBS)
 libsmf_plugin.la: $(libsmf_plugin_la_OBJECTS) $(libsmf_plugin_la_DEPENDENCIES) 
-	$(libsmf_plugin_la_LINK) -rpath $(libvlcdir) $(libsmf_plugin_la_OBJECTS) $(libsmf_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libsmf_plugin_la_LINK) -rpath $(libvlcdir) $(libsmf_plugin_la_OBJECTS) $(libsmf_plugin_la_LIBADD) $(LIBS)
 libsubtitle_plugin.la: $(libsubtitle_plugin_la_OBJECTS) $(libsubtitle_plugin_la_DEPENDENCIES) 
-	$(libsubtitle_plugin_la_LINK) -rpath $(libvlcdir) $(libsubtitle_plugin_la_OBJECTS) $(libsubtitle_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libsubtitle_plugin_la_LINK) -rpath $(libvlcdir) $(libsubtitle_plugin_la_OBJECTS) $(libsubtitle_plugin_la_LIBADD) $(LIBS)
 libts_plugin.la: $(libts_plugin_la_OBJECTS) $(libts_plugin_la_DEPENDENCIES) 
-	$(libts_plugin_la_LINK)  $(libts_plugin_la_OBJECTS) $(libts_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libts_plugin_la_LINK)  $(libts_plugin_la_OBJECTS) $(libts_plugin_la_LIBADD) $(LIBS)
 libtta_plugin.la: $(libtta_plugin_la_OBJECTS) $(libtta_plugin_la_DEPENDENCIES) 
-	$(libtta_plugin_la_LINK) -rpath $(libvlcdir) $(libtta_plugin_la_OBJECTS) $(libtta_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libtta_plugin_la_LINK) -rpath $(libvlcdir) $(libtta_plugin_la_OBJECTS) $(libtta_plugin_la_LIBADD) $(LIBS)
 libty_plugin.la: $(libty_plugin_la_OBJECTS) $(libty_plugin_la_DEPENDENCIES) 
-	$(libty_plugin_la_LINK) -rpath $(libvlcdir) $(libty_plugin_la_OBJECTS) $(libty_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libty_plugin_la_LINK) -rpath $(libvlcdir) $(libty_plugin_la_OBJECTS) $(libty_plugin_la_LIBADD) $(LIBS)
 libvc1_plugin.la: $(libvc1_plugin_la_OBJECTS) $(libvc1_plugin_la_DEPENDENCIES) 
-	$(libvc1_plugin_la_LINK) -rpath $(libvlcdir) $(libvc1_plugin_la_OBJECTS) $(libvc1_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libvc1_plugin_la_LINK) -rpath $(libvlcdir) $(libvc1_plugin_la_OBJECTS) $(libvc1_plugin_la_LIBADD) $(LIBS)
 libvobsub_plugin.la: $(libvobsub_plugin_la_OBJECTS) $(libvobsub_plugin_la_DEPENDENCIES) 
-	$(libvobsub_plugin_la_LINK) -rpath $(libvlcdir) $(libvobsub_plugin_la_OBJECTS) $(libvobsub_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libvobsub_plugin_la_LINK) -rpath $(libvlcdir) $(libvobsub_plugin_la_OBJECTS) $(libvobsub_plugin_la_LIBADD) $(LIBS)
 libvoc_plugin.la: $(libvoc_plugin_la_OBJECTS) $(libvoc_plugin_la_DEPENDENCIES) 
-	$(libvoc_plugin_la_LINK) -rpath $(libvlcdir) $(libvoc_plugin_la_OBJECTS) $(libvoc_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libvoc_plugin_la_LINK) -rpath $(libvlcdir) $(libvoc_plugin_la_OBJECTS) $(libvoc_plugin_la_LIBADD) $(LIBS)
 libwav_plugin.la: $(libwav_plugin_la_OBJECTS) $(libwav_plugin_la_DEPENDENCIES) 
-	$(libwav_plugin_la_LINK) -rpath $(libvlcdir) $(libwav_plugin_la_OBJECTS) $(libwav_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libwav_plugin_la_LINK) -rpath $(libvlcdir) $(libwav_plugin_la_OBJECTS) $(libwav_plugin_la_LIBADD) $(LIBS)
 libxa_plugin.la: $(libxa_plugin_la_OBJECTS) $(libxa_plugin_la_DEPENDENCIES) 
-	$(libxa_plugin_la_LINK) -rpath $(libvlcdir) $(libxa_plugin_la_OBJECTS) $(libxa_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libxa_plugin_la_LINK) -rpath $(libvlcdir) $(libxa_plugin_la_OBJECTS) $(libxa_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1619,6 +1605,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblive555_plugin_la-buffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblive555_plugin_la-live555.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmjpeg_plugin_la-mjpeg.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmod_plugin_la-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmod_plugin_la-mod.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmpc_plugin_la-mpc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnsc_plugin_la-nsc.Plo@am__quote@
@@ -1645,305 +1632,356 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxa_plugin_la-xa.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 libaiff_plugin_la-aiff.lo: aiff.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaiff_plugin_la_CFLAGS) $(CFLAGS) -MT libaiff_plugin_la-aiff.lo -MD -MP -MF $(DEPDIR)/libaiff_plugin_la-aiff.Tpo -c -o libaiff_plugin_la-aiff.lo `test -f 'aiff.c' || echo '$(srcdir)/'`aiff.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libaiff_plugin_la-aiff.Tpo $(DEPDIR)/libaiff_plugin_la-aiff.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaiff_plugin_la_CFLAGS) $(CFLAGS) -MT libaiff_plugin_la-aiff.lo -MD -MP -MF $(DEPDIR)/libaiff_plugin_la-aiff.Tpo -c -o libaiff_plugin_la-aiff.lo `test -f 'aiff.c' || echo '$(srcdir)/'`aiff.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libaiff_plugin_la-aiff.Tpo $(DEPDIR)/libaiff_plugin_la-aiff.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='aiff.c' object='libaiff_plugin_la-aiff.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaiff_plugin_la_CFLAGS) $(CFLAGS) -c -o libaiff_plugin_la-aiff.lo `test -f 'aiff.c' || echo '$(srcdir)/'`aiff.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaiff_plugin_la_CFLAGS) $(CFLAGS) -c -o libaiff_plugin_la-aiff.lo `test -f 'aiff.c' || echo '$(srcdir)/'`aiff.c
 
 libasademux_plugin_la-subtitle_asa.lo: subtitle_asa.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libasademux_plugin_la_CFLAGS) $(CFLAGS) -MT libasademux_plugin_la-subtitle_asa.lo -MD -MP -MF $(DEPDIR)/libasademux_plugin_la-subtitle_asa.Tpo -c -o libasademux_plugin_la-subtitle_asa.lo `test -f 'subtitle_asa.c' || echo '$(srcdir)/'`subtitle_asa.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libasademux_plugin_la-subtitle_asa.Tpo $(DEPDIR)/libasademux_plugin_la-subtitle_asa.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libasademux_plugin_la_CFLAGS) $(CFLAGS) -MT libasademux_plugin_la-subtitle_asa.lo -MD -MP -MF $(DEPDIR)/libasademux_plugin_la-subtitle_asa.Tpo -c -o libasademux_plugin_la-subtitle_asa.lo `test -f 'subtitle_asa.c' || echo '$(srcdir)/'`subtitle_asa.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libasademux_plugin_la-subtitle_asa.Tpo $(DEPDIR)/libasademux_plugin_la-subtitle_asa.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='subtitle_asa.c' object='libasademux_plugin_la-subtitle_asa.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libasademux_plugin_la_CFLAGS) $(CFLAGS) -c -o libasademux_plugin_la-subtitle_asa.lo `test -f 'subtitle_asa.c' || echo '$(srcdir)/'`subtitle_asa.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libasademux_plugin_la_CFLAGS) $(CFLAGS) -c -o libasademux_plugin_la-subtitle_asa.lo `test -f 'subtitle_asa.c' || echo '$(srcdir)/'`subtitle_asa.c
 
 libasademux_plugin_la-asademux.lo: asademux.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libasademux_plugin_la_CFLAGS) $(CFLAGS) -MT libasademux_plugin_la-asademux.lo -MD -MP -MF $(DEPDIR)/libasademux_plugin_la-asademux.Tpo -c -o libasademux_plugin_la-asademux.lo `test -f 'asademux.c' || echo '$(srcdir)/'`asademux.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libasademux_plugin_la-asademux.Tpo $(DEPDIR)/libasademux_plugin_la-asademux.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libasademux_plugin_la_CFLAGS) $(CFLAGS) -MT libasademux_plugin_la-asademux.lo -MD -MP -MF $(DEPDIR)/libasademux_plugin_la-asademux.Tpo -c -o libasademux_plugin_la-asademux.lo `test -f 'asademux.c' || echo '$(srcdir)/'`asademux.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libasademux_plugin_la-asademux.Tpo $(DEPDIR)/libasademux_plugin_la-asademux.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='asademux.c' object='libasademux_plugin_la-asademux.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libasademux_plugin_la_CFLAGS) $(CFLAGS) -c -o libasademux_plugin_la-asademux.lo `test -f 'asademux.c' || echo '$(srcdir)/'`asademux.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libasademux_plugin_la_CFLAGS) $(CFLAGS) -c -o libasademux_plugin_la-asademux.lo `test -f 'asademux.c' || echo '$(srcdir)/'`asademux.c
 
 libau_plugin_la-au.lo: au.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libau_plugin_la_CFLAGS) $(CFLAGS) -MT libau_plugin_la-au.lo -MD -MP -MF $(DEPDIR)/libau_plugin_la-au.Tpo -c -o libau_plugin_la-au.lo `test -f 'au.c' || echo '$(srcdir)/'`au.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libau_plugin_la-au.Tpo $(DEPDIR)/libau_plugin_la-au.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libau_plugin_la_CFLAGS) $(CFLAGS) -MT libau_plugin_la-au.lo -MD -MP -MF $(DEPDIR)/libau_plugin_la-au.Tpo -c -o libau_plugin_la-au.lo `test -f 'au.c' || echo '$(srcdir)/'`au.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libau_plugin_la-au.Tpo $(DEPDIR)/libau_plugin_la-au.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='au.c' object='libau_plugin_la-au.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libau_plugin_la_CFLAGS) $(CFLAGS) -c -o libau_plugin_la-au.lo `test -f 'au.c' || echo '$(srcdir)/'`au.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libau_plugin_la_CFLAGS) $(CFLAGS) -c -o libau_plugin_la-au.lo `test -f 'au.c' || echo '$(srcdir)/'`au.c
 
 libdemux_cdg_plugin_la-cdg.lo: cdg.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdemux_cdg_plugin_la_CFLAGS) $(CFLAGS) -MT libdemux_cdg_plugin_la-cdg.lo -MD -MP -MF $(DEPDIR)/libdemux_cdg_plugin_la-cdg.Tpo -c -o libdemux_cdg_plugin_la-cdg.lo `test -f 'cdg.c' || echo '$(srcdir)/'`cdg.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libdemux_cdg_plugin_la-cdg.Tpo $(DEPDIR)/libdemux_cdg_plugin_la-cdg.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdemux_cdg_plugin_la_CFLAGS) $(CFLAGS) -MT libdemux_cdg_plugin_la-cdg.lo -MD -MP -MF $(DEPDIR)/libdemux_cdg_plugin_la-cdg.Tpo -c -o libdemux_cdg_plugin_la-cdg.lo `test -f 'cdg.c' || echo '$(srcdir)/'`cdg.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdemux_cdg_plugin_la-cdg.Tpo $(DEPDIR)/libdemux_cdg_plugin_la-cdg.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cdg.c' object='libdemux_cdg_plugin_la-cdg.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdemux_cdg_plugin_la_CFLAGS) $(CFLAGS) -c -o libdemux_cdg_plugin_la-cdg.lo `test -f 'cdg.c' || echo '$(srcdir)/'`cdg.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdemux_cdg_plugin_la_CFLAGS) $(CFLAGS) -c -o libdemux_cdg_plugin_la-cdg.lo `test -f 'cdg.c' || echo '$(srcdir)/'`cdg.c
 
 libdemuxdump_plugin_la-demuxdump.lo: demuxdump.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdemuxdump_plugin_la_CFLAGS) $(CFLAGS) -MT libdemuxdump_plugin_la-demuxdump.lo -MD -MP -MF $(DEPDIR)/libdemuxdump_plugin_la-demuxdump.Tpo -c -o libdemuxdump_plugin_la-demuxdump.lo `test -f 'demuxdump.c' || echo '$(srcdir)/'`demuxdump.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libdemuxdump_plugin_la-demuxdump.Tpo $(DEPDIR)/libdemuxdump_plugin_la-demuxdump.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdemuxdump_plugin_la_CFLAGS) $(CFLAGS) -MT libdemuxdump_plugin_la-demuxdump.lo -MD -MP -MF $(DEPDIR)/libdemuxdump_plugin_la-demuxdump.Tpo -c -o libdemuxdump_plugin_la-demuxdump.lo `test -f 'demuxdump.c' || echo '$(srcdir)/'`demuxdump.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdemuxdump_plugin_la-demuxdump.Tpo $(DEPDIR)/libdemuxdump_plugin_la-demuxdump.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='demuxdump.c' object='libdemuxdump_plugin_la-demuxdump.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdemuxdump_plugin_la_CFLAGS) $(CFLAGS) -c -o libdemuxdump_plugin_la-demuxdump.lo `test -f 'demuxdump.c' || echo '$(srcdir)/'`demuxdump.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdemuxdump_plugin_la_CFLAGS) $(CFLAGS) -c -o libdemuxdump_plugin_la-demuxdump.lo `test -f 'demuxdump.c' || echo '$(srcdir)/'`demuxdump.c
 
 libdirac_plugin_la-dirac.lo: dirac.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirac_plugin_la_CFLAGS) $(CFLAGS) -MT libdirac_plugin_la-dirac.lo -MD -MP -MF $(DEPDIR)/libdirac_plugin_la-dirac.Tpo -c -o libdirac_plugin_la-dirac.lo `test -f 'dirac.c' || echo '$(srcdir)/'`dirac.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libdirac_plugin_la-dirac.Tpo $(DEPDIR)/libdirac_plugin_la-dirac.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirac_plugin_la_CFLAGS) $(CFLAGS) -MT libdirac_plugin_la-dirac.lo -MD -MP -MF $(DEPDIR)/libdirac_plugin_la-dirac.Tpo -c -o libdirac_plugin_la-dirac.lo `test -f 'dirac.c' || echo '$(srcdir)/'`dirac.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdirac_plugin_la-dirac.Tpo $(DEPDIR)/libdirac_plugin_la-dirac.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dirac.c' object='libdirac_plugin_la-dirac.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirac_plugin_la_CFLAGS) $(CFLAGS) -c -o libdirac_plugin_la-dirac.lo `test -f 'dirac.c' || echo '$(srcdir)/'`dirac.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirac_plugin_la_CFLAGS) $(CFLAGS) -c -o libdirac_plugin_la-dirac.lo `test -f 'dirac.c' || echo '$(srcdir)/'`dirac.c
 
 libflacsys_plugin_la-flac.lo: flac.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflacsys_plugin_la_CFLAGS) $(CFLAGS) -MT libflacsys_plugin_la-flac.lo -MD -MP -MF $(DEPDIR)/libflacsys_plugin_la-flac.Tpo -c -o libflacsys_plugin_la-flac.lo `test -f 'flac.c' || echo '$(srcdir)/'`flac.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libflacsys_plugin_la-flac.Tpo $(DEPDIR)/libflacsys_plugin_la-flac.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflacsys_plugin_la_CFLAGS) $(CFLAGS) -MT libflacsys_plugin_la-flac.lo -MD -MP -MF $(DEPDIR)/libflacsys_plugin_la-flac.Tpo -c -o libflacsys_plugin_la-flac.lo `test -f 'flac.c' || echo '$(srcdir)/'`flac.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflacsys_plugin_la-flac.Tpo $(DEPDIR)/libflacsys_plugin_la-flac.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='flac.c' object='libflacsys_plugin_la-flac.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflacsys_plugin_la_CFLAGS) $(CFLAGS) -c -o libflacsys_plugin_la-flac.lo `test -f 'flac.c' || echo '$(srcdir)/'`flac.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflacsys_plugin_la_CFLAGS) $(CFLAGS) -c -o libflacsys_plugin_la-flac.lo `test -f 'flac.c' || echo '$(srcdir)/'`flac.c
 
 liblive555_plugin_la-asf.lo: ../access/mms/asf.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -MT liblive555_plugin_la-asf.lo -MD -MP -MF $(DEPDIR)/liblive555_plugin_la-asf.Tpo -c -o liblive555_plugin_la-asf.lo `test -f '../access/mms/asf.c' || echo '$(srcdir)/'`../access/mms/asf.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblive555_plugin_la-asf.Tpo $(DEPDIR)/liblive555_plugin_la-asf.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -MT liblive555_plugin_la-asf.lo -MD -MP -MF $(DEPDIR)/liblive555_plugin_la-asf.Tpo -c -o liblive555_plugin_la-asf.lo `test -f '../access/mms/asf.c' || echo '$(srcdir)/'`../access/mms/asf.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblive555_plugin_la-asf.Tpo $(DEPDIR)/liblive555_plugin_la-asf.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../access/mms/asf.c' object='liblive555_plugin_la-asf.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -c -o liblive555_plugin_la-asf.lo `test -f '../access/mms/asf.c' || echo '$(srcdir)/'`../access/mms/asf.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -c -o liblive555_plugin_la-asf.lo `test -f '../access/mms/asf.c' || echo '$(srcdir)/'`../access/mms/asf.c
 
 liblive555_plugin_la-buffer.lo: ../access/mms/buffer.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -MT liblive555_plugin_la-buffer.lo -MD -MP -MF $(DEPDIR)/liblive555_plugin_la-buffer.Tpo -c -o liblive555_plugin_la-buffer.lo `test -f '../access/mms/buffer.c' || echo '$(srcdir)/'`../access/mms/buffer.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liblive555_plugin_la-buffer.Tpo $(DEPDIR)/liblive555_plugin_la-buffer.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -MT liblive555_plugin_la-buffer.lo -MD -MP -MF $(DEPDIR)/liblive555_plugin_la-buffer.Tpo -c -o liblive555_plugin_la-buffer.lo `test -f '../access/mms/buffer.c' || echo '$(srcdir)/'`../access/mms/buffer.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblive555_plugin_la-buffer.Tpo $(DEPDIR)/liblive555_plugin_la-buffer.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../access/mms/buffer.c' object='liblive555_plugin_la-buffer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -c -o liblive555_plugin_la-buffer.lo `test -f '../access/mms/buffer.c' || echo '$(srcdir)/'`../access/mms/buffer.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -c -o liblive555_plugin_la-buffer.lo `test -f '../access/mms/buffer.c' || echo '$(srcdir)/'`../access/mms/buffer.c
 
 libmjpeg_plugin_la-mjpeg.lo: mjpeg.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmjpeg_plugin_la_CFLAGS) $(CFLAGS) -MT libmjpeg_plugin_la-mjpeg.lo -MD -MP -MF $(DEPDIR)/libmjpeg_plugin_la-mjpeg.Tpo -c -o libmjpeg_plugin_la-mjpeg.lo `test -f 'mjpeg.c' || echo '$(srcdir)/'`mjpeg.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libmjpeg_plugin_la-mjpeg.Tpo $(DEPDIR)/libmjpeg_plugin_la-mjpeg.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmjpeg_plugin_la_CFLAGS) $(CFLAGS) -MT libmjpeg_plugin_la-mjpeg.lo -MD -MP -MF $(DEPDIR)/libmjpeg_plugin_la-mjpeg.Tpo -c -o libmjpeg_plugin_la-mjpeg.lo `test -f 'mjpeg.c' || echo '$(srcdir)/'`mjpeg.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmjpeg_plugin_la-mjpeg.Tpo $(DEPDIR)/libmjpeg_plugin_la-mjpeg.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mjpeg.c' object='libmjpeg_plugin_la-mjpeg.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmjpeg_plugin_la_CFLAGS) $(CFLAGS) -c -o libmjpeg_plugin_la-mjpeg.lo `test -f 'mjpeg.c' || echo '$(srcdir)/'`mjpeg.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmjpeg_plugin_la_CFLAGS) $(CFLAGS) -c -o libmjpeg_plugin_la-mjpeg.lo `test -f 'mjpeg.c' || echo '$(srcdir)/'`mjpeg.c
 
 libmod_plugin_la-mod.lo: mod.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmod_plugin_la_CFLAGS) $(CFLAGS) -MT libmod_plugin_la-mod.lo -MD -MP -MF $(DEPDIR)/libmod_plugin_la-mod.Tpo -c -o libmod_plugin_la-mod.lo `test -f 'mod.c' || echo '$(srcdir)/'`mod.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libmod_plugin_la-mod.Tpo $(DEPDIR)/libmod_plugin_la-mod.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmod_plugin_la_CFLAGS) $(CFLAGS) -MT libmod_plugin_la-mod.lo -MD -MP -MF $(DEPDIR)/libmod_plugin_la-mod.Tpo -c -o libmod_plugin_la-mod.lo `test -f 'mod.c' || echo '$(srcdir)/'`mod.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmod_plugin_la-mod.Tpo $(DEPDIR)/libmod_plugin_la-mod.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mod.c' object='libmod_plugin_la-mod.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmod_plugin_la_CFLAGS) $(CFLAGS) -c -o libmod_plugin_la-mod.lo `test -f 'mod.c' || echo '$(srcdir)/'`mod.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmod_plugin_la_CFLAGS) $(CFLAGS) -c -o libmod_plugin_la-mod.lo `test -f 'mod.c' || echo '$(srcdir)/'`mod.c
 
 libmpc_plugin_la-mpc.lo: mpc.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmpc_plugin_la_CFLAGS) $(CFLAGS) -MT libmpc_plugin_la-mpc.lo -MD -MP -MF $(DEPDIR)/libmpc_plugin_la-mpc.Tpo -c -o libmpc_plugin_la-mpc.lo `test -f 'mpc.c' || echo '$(srcdir)/'`mpc.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libmpc_plugin_la-mpc.Tpo $(DEPDIR)/libmpc_plugin_la-mpc.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmpc_plugin_la_CFLAGS) $(CFLAGS) -MT libmpc_plugin_la-mpc.lo -MD -MP -MF $(DEPDIR)/libmpc_plugin_la-mpc.Tpo -c -o libmpc_plugin_la-mpc.lo `test -f 'mpc.c' || echo '$(srcdir)/'`mpc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmpc_plugin_la-mpc.Tpo $(DEPDIR)/libmpc_plugin_la-mpc.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mpc.c' object='libmpc_plugin_la-mpc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmpc_plugin_la_CFLAGS) $(CFLAGS) -c -o libmpc_plugin_la-mpc.lo `test -f 'mpc.c' || echo '$(srcdir)/'`mpc.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmpc_plugin_la_CFLAGS) $(CFLAGS) -c -o libmpc_plugin_la-mpc.lo `test -f 'mpc.c' || echo '$(srcdir)/'`mpc.c
 
 libnsc_plugin_la-nsc.lo: nsc.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnsc_plugin_la_CFLAGS) $(CFLAGS) -MT libnsc_plugin_la-nsc.lo -MD -MP -MF $(DEPDIR)/libnsc_plugin_la-nsc.Tpo -c -o libnsc_plugin_la-nsc.lo `test -f 'nsc.c' || echo '$(srcdir)/'`nsc.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libnsc_plugin_la-nsc.Tpo $(DEPDIR)/libnsc_plugin_la-nsc.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnsc_plugin_la_CFLAGS) $(CFLAGS) -MT libnsc_plugin_la-nsc.lo -MD -MP -MF $(DEPDIR)/libnsc_plugin_la-nsc.Tpo -c -o libnsc_plugin_la-nsc.lo `test -f 'nsc.c' || echo '$(srcdir)/'`nsc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libnsc_plugin_la-nsc.Tpo $(DEPDIR)/libnsc_plugin_la-nsc.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='nsc.c' object='libnsc_plugin_la-nsc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnsc_plugin_la_CFLAGS) $(CFLAGS) -c -o libnsc_plugin_la-nsc.lo `test -f 'nsc.c' || echo '$(srcdir)/'`nsc.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnsc_plugin_la_CFLAGS) $(CFLAGS) -c -o libnsc_plugin_la-nsc.lo `test -f 'nsc.c' || echo '$(srcdir)/'`nsc.c
 
 libnsv_plugin_la-nsv.lo: nsv.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnsv_plugin_la_CFLAGS) $(CFLAGS) -MT libnsv_plugin_la-nsv.lo -MD -MP -MF $(DEPDIR)/libnsv_plugin_la-nsv.Tpo -c -o libnsv_plugin_la-nsv.lo `test -f 'nsv.c' || echo '$(srcdir)/'`nsv.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libnsv_plugin_la-nsv.Tpo $(DEPDIR)/libnsv_plugin_la-nsv.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnsv_plugin_la_CFLAGS) $(CFLAGS) -MT libnsv_plugin_la-nsv.lo -MD -MP -MF $(DEPDIR)/libnsv_plugin_la-nsv.Tpo -c -o libnsv_plugin_la-nsv.lo `test -f 'nsv.c' || echo '$(srcdir)/'`nsv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libnsv_plugin_la-nsv.Tpo $(DEPDIR)/libnsv_plugin_la-nsv.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='nsv.c' object='libnsv_plugin_la-nsv.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnsv_plugin_la_CFLAGS) $(CFLAGS) -c -o libnsv_plugin_la-nsv.lo `test -f 'nsv.c' || echo '$(srcdir)/'`nsv.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnsv_plugin_la_CFLAGS) $(CFLAGS) -c -o libnsv_plugin_la-nsv.lo `test -f 'nsv.c' || echo '$(srcdir)/'`nsv.c
 
 libnuv_plugin_la-nuv.lo: nuv.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnuv_plugin_la_CFLAGS) $(CFLAGS) -MT libnuv_plugin_la-nuv.lo -MD -MP -MF $(DEPDIR)/libnuv_plugin_la-nuv.Tpo -c -o libnuv_plugin_la-nuv.lo `test -f 'nuv.c' || echo '$(srcdir)/'`nuv.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libnuv_plugin_la-nuv.Tpo $(DEPDIR)/libnuv_plugin_la-nuv.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnuv_plugin_la_CFLAGS) $(CFLAGS) -MT libnuv_plugin_la-nuv.lo -MD -MP -MF $(DEPDIR)/libnuv_plugin_la-nuv.Tpo -c -o libnuv_plugin_la-nuv.lo `test -f 'nuv.c' || echo '$(srcdir)/'`nuv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libnuv_plugin_la-nuv.Tpo $(DEPDIR)/libnuv_plugin_la-nuv.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='nuv.c' object='libnuv_plugin_la-nuv.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnuv_plugin_la_CFLAGS) $(CFLAGS) -c -o libnuv_plugin_la-nuv.lo `test -f 'nuv.c' || echo '$(srcdir)/'`nuv.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnuv_plugin_la_CFLAGS) $(CFLAGS) -c -o libnuv_plugin_la-nuv.lo `test -f 'nuv.c' || echo '$(srcdir)/'`nuv.c
 
 libogg_plugin_la-ogg.lo: ogg.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libogg_plugin_la_CFLAGS) $(CFLAGS) -MT libogg_plugin_la-ogg.lo -MD -MP -MF $(DEPDIR)/libogg_plugin_la-ogg.Tpo -c -o libogg_plugin_la-ogg.lo `test -f 'ogg.c' || echo '$(srcdir)/'`ogg.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libogg_plugin_la-ogg.Tpo $(DEPDIR)/libogg_plugin_la-ogg.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libogg_plugin_la_CFLAGS) $(CFLAGS) -MT libogg_plugin_la-ogg.lo -MD -MP -MF $(DEPDIR)/libogg_plugin_la-ogg.Tpo -c -o libogg_plugin_la-ogg.lo `test -f 'ogg.c' || echo '$(srcdir)/'`ogg.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libogg_plugin_la-ogg.Tpo $(DEPDIR)/libogg_plugin_la-ogg.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ogg.c' object='libogg_plugin_la-ogg.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libogg_plugin_la_CFLAGS) $(CFLAGS) -c -o libogg_plugin_la-ogg.lo `test -f 'ogg.c' || echo '$(srcdir)/'`ogg.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libogg_plugin_la_CFLAGS) $(CFLAGS) -c -o libogg_plugin_la-ogg.lo `test -f 'ogg.c' || echo '$(srcdir)/'`ogg.c
 
 libogg_plugin_la-kate_categories.lo: kate_categories.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libogg_plugin_la_CFLAGS) $(CFLAGS) -MT libogg_plugin_la-kate_categories.lo -MD -MP -MF $(DEPDIR)/libogg_plugin_la-kate_categories.Tpo -c -o libogg_plugin_la-kate_categories.lo `test -f 'kate_categories.c' || echo '$(srcdir)/'`kate_categories.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libogg_plugin_la-kate_categories.Tpo $(DEPDIR)/libogg_plugin_la-kate_categories.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libogg_plugin_la_CFLAGS) $(CFLAGS) -MT libogg_plugin_la-kate_categories.lo -MD -MP -MF $(DEPDIR)/libogg_plugin_la-kate_categories.Tpo -c -o libogg_plugin_la-kate_categories.lo `test -f 'kate_categories.c' || echo '$(srcdir)/'`kate_categories.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libogg_plugin_la-kate_categories.Tpo $(DEPDIR)/libogg_plugin_la-kate_categories.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='kate_categories.c' object='libogg_plugin_la-kate_categories.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libogg_plugin_la_CFLAGS) $(CFLAGS) -c -o libogg_plugin_la-kate_categories.lo `test -f 'kate_categories.c' || echo '$(srcdir)/'`kate_categories.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libogg_plugin_la_CFLAGS) $(CFLAGS) -c -o libogg_plugin_la-kate_categories.lo `test -f 'kate_categories.c' || echo '$(srcdir)/'`kate_categories.c
 
 libps_plugin_la-ps.lo: ps.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libps_plugin_la_CFLAGS) $(CFLAGS) -MT libps_plugin_la-ps.lo -MD -MP -MF $(DEPDIR)/libps_plugin_la-ps.Tpo -c -o libps_plugin_la-ps.lo `test -f 'ps.c' || echo '$(srcdir)/'`ps.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libps_plugin_la-ps.Tpo $(DEPDIR)/libps_plugin_la-ps.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libps_plugin_la_CFLAGS) $(CFLAGS) -MT libps_plugin_la-ps.lo -MD -MP -MF $(DEPDIR)/libps_plugin_la-ps.Tpo -c -o libps_plugin_la-ps.lo `test -f 'ps.c' || echo '$(srcdir)/'`ps.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libps_plugin_la-ps.Tpo $(DEPDIR)/libps_plugin_la-ps.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ps.c' object='libps_plugin_la-ps.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libps_plugin_la_CFLAGS) $(CFLAGS) -c -o libps_plugin_la-ps.lo `test -f 'ps.c' || echo '$(srcdir)/'`ps.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libps_plugin_la_CFLAGS) $(CFLAGS) -c -o libps_plugin_la-ps.lo `test -f 'ps.c' || echo '$(srcdir)/'`ps.c
 
 libpva_plugin_la-pva.lo: pva.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpva_plugin_la_CFLAGS) $(CFLAGS) -MT libpva_plugin_la-pva.lo -MD -MP -MF $(DEPDIR)/libpva_plugin_la-pva.Tpo -c -o libpva_plugin_la-pva.lo `test -f 'pva.c' || echo '$(srcdir)/'`pva.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libpva_plugin_la-pva.Tpo $(DEPDIR)/libpva_plugin_la-pva.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpva_plugin_la_CFLAGS) $(CFLAGS) -MT libpva_plugin_la-pva.lo -MD -MP -MF $(DEPDIR)/libpva_plugin_la-pva.Tpo -c -o libpva_plugin_la-pva.lo `test -f 'pva.c' || echo '$(srcdir)/'`pva.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpva_plugin_la-pva.Tpo $(DEPDIR)/libpva_plugin_la-pva.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pva.c' object='libpva_plugin_la-pva.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpva_plugin_la_CFLAGS) $(CFLAGS) -c -o libpva_plugin_la-pva.lo `test -f 'pva.c' || echo '$(srcdir)/'`pva.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpva_plugin_la_CFLAGS) $(CFLAGS) -c -o libpva_plugin_la-pva.lo `test -f 'pva.c' || echo '$(srcdir)/'`pva.c
 
 librawaud_plugin_la-rawaud.lo: rawaud.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawaud_plugin_la_CFLAGS) $(CFLAGS) -MT librawaud_plugin_la-rawaud.lo -MD -MP -MF $(DEPDIR)/librawaud_plugin_la-rawaud.Tpo -c -o librawaud_plugin_la-rawaud.lo `test -f 'rawaud.c' || echo '$(srcdir)/'`rawaud.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/librawaud_plugin_la-rawaud.Tpo $(DEPDIR)/librawaud_plugin_la-rawaud.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawaud_plugin_la_CFLAGS) $(CFLAGS) -MT librawaud_plugin_la-rawaud.lo -MD -MP -MF $(DEPDIR)/librawaud_plugin_la-rawaud.Tpo -c -o librawaud_plugin_la-rawaud.lo `test -f 'rawaud.c' || echo '$(srcdir)/'`rawaud.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/librawaud_plugin_la-rawaud.Tpo $(DEPDIR)/librawaud_plugin_la-rawaud.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rawaud.c' object='librawaud_plugin_la-rawaud.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawaud_plugin_la_CFLAGS) $(CFLAGS) -c -o librawaud_plugin_la-rawaud.lo `test -f 'rawaud.c' || echo '$(srcdir)/'`rawaud.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawaud_plugin_la_CFLAGS) $(CFLAGS) -c -o librawaud_plugin_la-rawaud.lo `test -f 'rawaud.c' || echo '$(srcdir)/'`rawaud.c
 
 librawdv_plugin_la-rawdv.lo: rawdv.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawdv_plugin_la_CFLAGS) $(CFLAGS) -MT librawdv_plugin_la-rawdv.lo -MD -MP -MF $(DEPDIR)/librawdv_plugin_la-rawdv.Tpo -c -o librawdv_plugin_la-rawdv.lo `test -f 'rawdv.c' || echo '$(srcdir)/'`rawdv.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/librawdv_plugin_la-rawdv.Tpo $(DEPDIR)/librawdv_plugin_la-rawdv.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawdv_plugin_la_CFLAGS) $(CFLAGS) -MT librawdv_plugin_la-rawdv.lo -MD -MP -MF $(DEPDIR)/librawdv_plugin_la-rawdv.Tpo -c -o librawdv_plugin_la-rawdv.lo `test -f 'rawdv.c' || echo '$(srcdir)/'`rawdv.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/librawdv_plugin_la-rawdv.Tpo $(DEPDIR)/librawdv_plugin_la-rawdv.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rawdv.c' object='librawdv_plugin_la-rawdv.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawdv_plugin_la_CFLAGS) $(CFLAGS) -c -o librawdv_plugin_la-rawdv.lo `test -f 'rawdv.c' || echo '$(srcdir)/'`rawdv.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawdv_plugin_la_CFLAGS) $(CFLAGS) -c -o librawdv_plugin_la-rawdv.lo `test -f 'rawdv.c' || echo '$(srcdir)/'`rawdv.c
 
 librawvid_plugin_la-rawvid.lo: rawvid.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawvid_plugin_la_CFLAGS) $(CFLAGS) -MT librawvid_plugin_la-rawvid.lo -MD -MP -MF $(DEPDIR)/librawvid_plugin_la-rawvid.Tpo -c -o librawvid_plugin_la-rawvid.lo `test -f 'rawvid.c' || echo '$(srcdir)/'`rawvid.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/librawvid_plugin_la-rawvid.Tpo $(DEPDIR)/librawvid_plugin_la-rawvid.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawvid_plugin_la_CFLAGS) $(CFLAGS) -MT librawvid_plugin_la-rawvid.lo -MD -MP -MF $(DEPDIR)/librawvid_plugin_la-rawvid.Tpo -c -o librawvid_plugin_la-rawvid.lo `test -f 'rawvid.c' || echo '$(srcdir)/'`rawvid.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/librawvid_plugin_la-rawvid.Tpo $(DEPDIR)/librawvid_plugin_la-rawvid.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rawvid.c' object='librawvid_plugin_la-rawvid.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawvid_plugin_la_CFLAGS) $(CFLAGS) -c -o librawvid_plugin_la-rawvid.lo `test -f 'rawvid.c' || echo '$(srcdir)/'`rawvid.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(librawvid_plugin_la_CFLAGS) $(CFLAGS) -c -o librawvid_plugin_la-rawvid.lo `test -f 'rawvid.c' || echo '$(srcdir)/'`rawvid.c
 
 libreal_plugin_la-real.lo: real.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libreal_plugin_la_CFLAGS) $(CFLAGS) -MT libreal_plugin_la-real.lo -MD -MP -MF $(DEPDIR)/libreal_plugin_la-real.Tpo -c -o libreal_plugin_la-real.lo `test -f 'real.c' || echo '$(srcdir)/'`real.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libreal_plugin_la-real.Tpo $(DEPDIR)/libreal_plugin_la-real.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libreal_plugin_la_CFLAGS) $(CFLAGS) -MT libreal_plugin_la-real.lo -MD -MP -MF $(DEPDIR)/libreal_plugin_la-real.Tpo -c -o libreal_plugin_la-real.lo `test -f 'real.c' || echo '$(srcdir)/'`real.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libreal_plugin_la-real.Tpo $(DEPDIR)/libreal_plugin_la-real.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='real.c' object='libreal_plugin_la-real.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libreal_plugin_la_CFLAGS) $(CFLAGS) -c -o libreal_plugin_la-real.lo `test -f 'real.c' || echo '$(srcdir)/'`real.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libreal_plugin_la_CFLAGS) $(CFLAGS) -c -o libreal_plugin_la-real.lo `test -f 'real.c' || echo '$(srcdir)/'`real.c
 
 libsmf_plugin_la-smf.lo: smf.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsmf_plugin_la_CFLAGS) $(CFLAGS) -MT libsmf_plugin_la-smf.lo -MD -MP -MF $(DEPDIR)/libsmf_plugin_la-smf.Tpo -c -o libsmf_plugin_la-smf.lo `test -f 'smf.c' || echo '$(srcdir)/'`smf.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libsmf_plugin_la-smf.Tpo $(DEPDIR)/libsmf_plugin_la-smf.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsmf_plugin_la_CFLAGS) $(CFLAGS) -MT libsmf_plugin_la-smf.lo -MD -MP -MF $(DEPDIR)/libsmf_plugin_la-smf.Tpo -c -o libsmf_plugin_la-smf.lo `test -f 'smf.c' || echo '$(srcdir)/'`smf.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsmf_plugin_la-smf.Tpo $(DEPDIR)/libsmf_plugin_la-smf.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='smf.c' object='libsmf_plugin_la-smf.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsmf_plugin_la_CFLAGS) $(CFLAGS) -c -o libsmf_plugin_la-smf.lo `test -f 'smf.c' || echo '$(srcdir)/'`smf.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsmf_plugin_la_CFLAGS) $(CFLAGS) -c -o libsmf_plugin_la-smf.lo `test -f 'smf.c' || echo '$(srcdir)/'`smf.c
 
 libsubtitle_plugin_la-subtitle.lo: subtitle.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsubtitle_plugin_la_CFLAGS) $(CFLAGS) -MT libsubtitle_plugin_la-subtitle.lo -MD -MP -MF $(DEPDIR)/libsubtitle_plugin_la-subtitle.Tpo -c -o libsubtitle_plugin_la-subtitle.lo `test -f 'subtitle.c' || echo '$(srcdir)/'`subtitle.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libsubtitle_plugin_la-subtitle.Tpo $(DEPDIR)/libsubtitle_plugin_la-subtitle.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsubtitle_plugin_la_CFLAGS) $(CFLAGS) -MT libsubtitle_plugin_la-subtitle.lo -MD -MP -MF $(DEPDIR)/libsubtitle_plugin_la-subtitle.Tpo -c -o libsubtitle_plugin_la-subtitle.lo `test -f 'subtitle.c' || echo '$(srcdir)/'`subtitle.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsubtitle_plugin_la-subtitle.Tpo $(DEPDIR)/libsubtitle_plugin_la-subtitle.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='subtitle.c' object='libsubtitle_plugin_la-subtitle.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsubtitle_plugin_la_CFLAGS) $(CFLAGS) -c -o libsubtitle_plugin_la-subtitle.lo `test -f 'subtitle.c' || echo '$(srcdir)/'`subtitle.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsubtitle_plugin_la_CFLAGS) $(CFLAGS) -c -o libsubtitle_plugin_la-subtitle.lo `test -f 'subtitle.c' || echo '$(srcdir)/'`subtitle.c
 
 libts_plugin_la-ts.lo: ts.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -MT libts_plugin_la-ts.lo -MD -MP -MF $(DEPDIR)/libts_plugin_la-ts.Tpo -c -o libts_plugin_la-ts.lo `test -f 'ts.c' || echo '$(srcdir)/'`ts.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libts_plugin_la-ts.Tpo $(DEPDIR)/libts_plugin_la-ts.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -MT libts_plugin_la-ts.lo -MD -MP -MF $(DEPDIR)/libts_plugin_la-ts.Tpo -c -o libts_plugin_la-ts.lo `test -f 'ts.c' || echo '$(srcdir)/'`ts.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libts_plugin_la-ts.Tpo $(DEPDIR)/libts_plugin_la-ts.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ts.c' object='libts_plugin_la-ts.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -c -o libts_plugin_la-ts.lo `test -f 'ts.c' || echo '$(srcdir)/'`ts.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -c -o libts_plugin_la-ts.lo `test -f 'ts.c' || echo '$(srcdir)/'`ts.c
 
 libts_plugin_la-csa.lo: ../mux/mpeg/csa.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -MT libts_plugin_la-csa.lo -MD -MP -MF $(DEPDIR)/libts_plugin_la-csa.Tpo -c -o libts_plugin_la-csa.lo `test -f '../mux/mpeg/csa.c' || echo '$(srcdir)/'`../mux/mpeg/csa.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libts_plugin_la-csa.Tpo $(DEPDIR)/libts_plugin_la-csa.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -MT libts_plugin_la-csa.lo -MD -MP -MF $(DEPDIR)/libts_plugin_la-csa.Tpo -c -o libts_plugin_la-csa.lo `test -f '../mux/mpeg/csa.c' || echo '$(srcdir)/'`../mux/mpeg/csa.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libts_plugin_la-csa.Tpo $(DEPDIR)/libts_plugin_la-csa.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../mux/mpeg/csa.c' object='libts_plugin_la-csa.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -c -o libts_plugin_la-csa.lo `test -f '../mux/mpeg/csa.c' || echo '$(srcdir)/'`../mux/mpeg/csa.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -c -o libts_plugin_la-csa.lo `test -f '../mux/mpeg/csa.c' || echo '$(srcdir)/'`../mux/mpeg/csa.c
 
 libtta_plugin_la-tta.lo: tta.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -MT libtta_plugin_la-tta.lo -MD -MP -MF $(DEPDIR)/libtta_plugin_la-tta.Tpo -c -o libtta_plugin_la-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libtta_plugin_la-tta.Tpo $(DEPDIR)/libtta_plugin_la-tta.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -MT libtta_plugin_la-tta.lo -MD -MP -MF $(DEPDIR)/libtta_plugin_la-tta.Tpo -c -o libtta_plugin_la-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libtta_plugin_la-tta.Tpo $(DEPDIR)/libtta_plugin_la-tta.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_plugin_la-tta.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -c -o libtta_plugin_la-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -c -o libtta_plugin_la-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
 
 libty_plugin_la-ty.lo: ty.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libty_plugin_la_CFLAGS) $(CFLAGS) -MT libty_plugin_la-ty.lo -MD -MP -MF $(DEPDIR)/libty_plugin_la-ty.Tpo -c -o libty_plugin_la-ty.lo `test -f 'ty.c' || echo '$(srcdir)/'`ty.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libty_plugin_la-ty.Tpo $(DEPDIR)/libty_plugin_la-ty.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libty_plugin_la_CFLAGS) $(CFLAGS) -MT libty_plugin_la-ty.lo -MD -MP -MF $(DEPDIR)/libty_plugin_la-ty.Tpo -c -o libty_plugin_la-ty.lo `test -f 'ty.c' || echo '$(srcdir)/'`ty.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libty_plugin_la-ty.Tpo $(DEPDIR)/libty_plugin_la-ty.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ty.c' object='libty_plugin_la-ty.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libty_plugin_la_CFLAGS) $(CFLAGS) -c -o libty_plugin_la-ty.lo `test -f 'ty.c' || echo '$(srcdir)/'`ty.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libty_plugin_la_CFLAGS) $(CFLAGS) -c -o libty_plugin_la-ty.lo `test -f 'ty.c' || echo '$(srcdir)/'`ty.c
 
 libvc1_plugin_la-vc1.lo: vc1.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvc1_plugin_la_CFLAGS) $(CFLAGS) -MT libvc1_plugin_la-vc1.lo -MD -MP -MF $(DEPDIR)/libvc1_plugin_la-vc1.Tpo -c -o libvc1_plugin_la-vc1.lo `test -f 'vc1.c' || echo '$(srcdir)/'`vc1.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libvc1_plugin_la-vc1.Tpo $(DEPDIR)/libvc1_plugin_la-vc1.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvc1_plugin_la_CFLAGS) $(CFLAGS) -MT libvc1_plugin_la-vc1.lo -MD -MP -MF $(DEPDIR)/libvc1_plugin_la-vc1.Tpo -c -o libvc1_plugin_la-vc1.lo `test -f 'vc1.c' || echo '$(srcdir)/'`vc1.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvc1_plugin_la-vc1.Tpo $(DEPDIR)/libvc1_plugin_la-vc1.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vc1.c' object='libvc1_plugin_la-vc1.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvc1_plugin_la_CFLAGS) $(CFLAGS) -c -o libvc1_plugin_la-vc1.lo `test -f 'vc1.c' || echo '$(srcdir)/'`vc1.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvc1_plugin_la_CFLAGS) $(CFLAGS) -c -o libvc1_plugin_la-vc1.lo `test -f 'vc1.c' || echo '$(srcdir)/'`vc1.c
 
 libvobsub_plugin_la-vobsub.lo: vobsub.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvobsub_plugin_la_CFLAGS) $(CFLAGS) -MT libvobsub_plugin_la-vobsub.lo -MD -MP -MF $(DEPDIR)/libvobsub_plugin_la-vobsub.Tpo -c -o libvobsub_plugin_la-vobsub.lo `test -f 'vobsub.c' || echo '$(srcdir)/'`vobsub.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libvobsub_plugin_la-vobsub.Tpo $(DEPDIR)/libvobsub_plugin_la-vobsub.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvobsub_plugin_la_CFLAGS) $(CFLAGS) -MT libvobsub_plugin_la-vobsub.lo -MD -MP -MF $(DEPDIR)/libvobsub_plugin_la-vobsub.Tpo -c -o libvobsub_plugin_la-vobsub.lo `test -f 'vobsub.c' || echo '$(srcdir)/'`vobsub.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvobsub_plugin_la-vobsub.Tpo $(DEPDIR)/libvobsub_plugin_la-vobsub.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vobsub.c' object='libvobsub_plugin_la-vobsub.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvobsub_plugin_la_CFLAGS) $(CFLAGS) -c -o libvobsub_plugin_la-vobsub.lo `test -f 'vobsub.c' || echo '$(srcdir)/'`vobsub.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvobsub_plugin_la_CFLAGS) $(CFLAGS) -c -o libvobsub_plugin_la-vobsub.lo `test -f 'vobsub.c' || echo '$(srcdir)/'`vobsub.c
 
 libvoc_plugin_la-voc.lo: voc.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvoc_plugin_la_CFLAGS) $(CFLAGS) -MT libvoc_plugin_la-voc.lo -MD -MP -MF $(DEPDIR)/libvoc_plugin_la-voc.Tpo -c -o libvoc_plugin_la-voc.lo `test -f 'voc.c' || echo '$(srcdir)/'`voc.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libvoc_plugin_la-voc.Tpo $(DEPDIR)/libvoc_plugin_la-voc.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvoc_plugin_la_CFLAGS) $(CFLAGS) -MT libvoc_plugin_la-voc.lo -MD -MP -MF $(DEPDIR)/libvoc_plugin_la-voc.Tpo -c -o libvoc_plugin_la-voc.lo `test -f 'voc.c' || echo '$(srcdir)/'`voc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvoc_plugin_la-voc.Tpo $(DEPDIR)/libvoc_plugin_la-voc.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='voc.c' object='libvoc_plugin_la-voc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvoc_plugin_la_CFLAGS) $(CFLAGS) -c -o libvoc_plugin_la-voc.lo `test -f 'voc.c' || echo '$(srcdir)/'`voc.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvoc_plugin_la_CFLAGS) $(CFLAGS) -c -o libvoc_plugin_la-voc.lo `test -f 'voc.c' || echo '$(srcdir)/'`voc.c
 
 libwav_plugin_la-wav.lo: wav.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwav_plugin_la_CFLAGS) $(CFLAGS) -MT libwav_plugin_la-wav.lo -MD -MP -MF $(DEPDIR)/libwav_plugin_la-wav.Tpo -c -o libwav_plugin_la-wav.lo `test -f 'wav.c' || echo '$(srcdir)/'`wav.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libwav_plugin_la-wav.Tpo $(DEPDIR)/libwav_plugin_la-wav.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwav_plugin_la_CFLAGS) $(CFLAGS) -MT libwav_plugin_la-wav.lo -MD -MP -MF $(DEPDIR)/libwav_plugin_la-wav.Tpo -c -o libwav_plugin_la-wav.lo `test -f 'wav.c' || echo '$(srcdir)/'`wav.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libwav_plugin_la-wav.Tpo $(DEPDIR)/libwav_plugin_la-wav.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='wav.c' object='libwav_plugin_la-wav.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwav_plugin_la_CFLAGS) $(CFLAGS) -c -o libwav_plugin_la-wav.lo `test -f 'wav.c' || echo '$(srcdir)/'`wav.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwav_plugin_la_CFLAGS) $(CFLAGS) -c -o libwav_plugin_la-wav.lo `test -f 'wav.c' || echo '$(srcdir)/'`wav.c
 
 libxa_plugin_la-xa.lo: xa.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxa_plugin_la_CFLAGS) $(CFLAGS) -MT libxa_plugin_la-xa.lo -MD -MP -MF $(DEPDIR)/libxa_plugin_la-xa.Tpo -c -o libxa_plugin_la-xa.lo `test -f 'xa.c' || echo '$(srcdir)/'`xa.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libxa_plugin_la-xa.Tpo $(DEPDIR)/libxa_plugin_la-xa.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxa_plugin_la_CFLAGS) $(CFLAGS) -MT libxa_plugin_la-xa.lo -MD -MP -MF $(DEPDIR)/libxa_plugin_la-xa.Tpo -c -o libxa_plugin_la-xa.lo `test -f 'xa.c' || echo '$(srcdir)/'`xa.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libxa_plugin_la-xa.Tpo $(DEPDIR)/libxa_plugin_la-xa.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xa.c' object='libxa_plugin_la-xa.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxa_plugin_la_CFLAGS) $(CFLAGS) -c -o libxa_plugin_la-xa.lo `test -f 'xa.c' || echo '$(srcdir)/'`xa.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxa_plugin_la_CFLAGS) $(CFLAGS) -c -o libxa_plugin_la-xa.lo `test -f 'xa.c' || echo '$(srcdir)/'`xa.c
 
 .cpp.o:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .cpp.lo:
-@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
 libgme_plugin_la-gme.lo: gme.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libgme_plugin_la-gme.lo -MD -MP -MF $(DEPDIR)/libgme_plugin_la-gme.Tpo -c -o libgme_plugin_la-gme.lo `test -f 'gme.cpp' || echo '$(srcdir)/'`gme.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libgme_plugin_la-gme.Tpo $(DEPDIR)/libgme_plugin_la-gme.Plo
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libgme_plugin_la-gme.lo -MD -MP -MF $(DEPDIR)/libgme_plugin_la-gme.Tpo -c -o libgme_plugin_la-gme.lo `test -f 'gme.cpp' || echo '$(srcdir)/'`gme.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgme_plugin_la-gme.Tpo $(DEPDIR)/libgme_plugin_la-gme.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='gme.cpp' object='libgme_plugin_la-gme.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libgme_plugin_la-gme.lo `test -f 'gme.cpp' || echo '$(srcdir)/'`gme.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libgme_plugin_la-gme.lo `test -f 'gme.cpp' || echo '$(srcdir)/'`gme.cpp
 
 liblive555_plugin_la-live555.lo: live555.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT liblive555_plugin_la-live555.lo -MD -MP -MF $(DEPDIR)/liblive555_plugin_la-live555.Tpo -c -o liblive555_plugin_la-live555.lo `test -f 'live555.cpp' || echo '$(srcdir)/'`live555.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/liblive555_plugin_la-live555.Tpo $(DEPDIR)/liblive555_plugin_la-live555.Plo
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT liblive555_plugin_la-live555.lo -MD -MP -MF $(DEPDIR)/liblive555_plugin_la-live555.Tpo -c -o liblive555_plugin_la-live555.lo `test -f 'live555.cpp' || echo '$(srcdir)/'`live555.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblive555_plugin_la-live555.Tpo $(DEPDIR)/liblive555_plugin_la-live555.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='live555.cpp' object='liblive555_plugin_la-live555.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o liblive555_plugin_la-live555.lo `test -f 'live555.cpp' || echo '$(srcdir)/'`live555.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o liblive555_plugin_la-live555.lo `test -f 'live555.cpp' || echo '$(srcdir)/'`live555.cpp
+
+libmod_plugin_la-dummy.lo: dummy.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmod_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libmod_plugin_la-dummy.lo -MD -MP -MF $(DEPDIR)/libmod_plugin_la-dummy.Tpo -c -o libmod_plugin_la-dummy.lo `test -f 'dummy.cpp' || echo '$(srcdir)/'`dummy.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmod_plugin_la-dummy.Tpo $(DEPDIR)/libmod_plugin_la-dummy.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='dummy.cpp' object='libmod_plugin_la-dummy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmod_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libmod_plugin_la-dummy.lo `test -f 'dummy.cpp' || echo '$(srcdir)/'`dummy.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -2273,13 +2311,11 @@ uninstall-am: uninstall-libvlcLTLIBRARIES
 	uninstall-libvlcLTLIBRARIES
 
 
+dummy.cpp:
+	touch dummy.cpp
+
 @MAINTAINER_MODE_TRUE@$(srcdir)/Makefile.am: $(srcdir)/Modules.am $(top_srcdir)/modules/genmf
-@MAINTAINER_MODE_TRUE@	cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
-
-nice:
-	$(top_builddir)/compile
-
-.PHONY: nice
+@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

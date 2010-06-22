@@ -2,7 +2,7 @@
  * volume.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 926046a5acd6a769ff4e2b2e1848ec3dd7cc2086 $
+ * $Id: afa15dceb472a39b90163673bc81741784592179 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -36,7 +36,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_meta.h>
-#include <vlc_charset.h>
 #include <vlc_aout.h>
 
 #include <lua.h>        /* Low level lua C API */
@@ -53,22 +52,20 @@
 static int vlclua_volume_set( lua_State *L )
 {
     playlist_t *p_this = vlclua_get_playlist_internal( L );
-    int i_volume = luaL_checkint( L, 1 );
-    /* Do we need to check that i_volume is in the AOUT_VOLUME_MIN->MAX range?*/
+    int i_volume = __MAX(__MIN(luaL_checkint( L, 1 ), AOUT_VOLUME_MAX),
+                         AOUT_VOLUME_MIN);
     int i_ret = aout_VolumeSet( p_this, i_volume );
-    vlclua_release_playlist_internal( p_this );
     return vlclua_push_ret( L, i_ret );
 }
 
 static int vlclua_volume_get( lua_State *L )
 {
-    audio_volume_t i_volume;
     playlist_t *p_this = vlclua_get_playlist_internal( L );
+    audio_volume_t i_volume;
     if( aout_VolumeGet( p_this, &i_volume ) == VLC_SUCCESS )
         lua_pushnumber( L, i_volume );
     else
         lua_pushnil( L );
-    vlclua_release_playlist_internal( p_this );
     return 1;
 }
 
@@ -78,7 +75,6 @@ static int vlclua_volume_up( lua_State *L )
     playlist_t *p_this = vlclua_get_playlist_internal( L );
     aout_VolumeUp( p_this, luaL_optint( L, 1, 1 ), &i_volume );
     lua_pushnumber( L, i_volume );
-    vlclua_release_playlist_internal( p_this );
     return 1;
 }
 
@@ -88,7 +84,6 @@ static int vlclua_volume_down( lua_State *L )
     playlist_t *p_this = vlclua_get_playlist_internal( L );
     aout_VolumeDown( p_this, luaL_optint( L, 1, 1 ), &i_volume );
     lua_pushnumber( L, i_volume );
-    vlclua_release_playlist_internal( p_this );
     return 1;
 }
 

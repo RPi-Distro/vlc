@@ -11,51 +11,53 @@ AC_DEFUN([VLC_ADD_BUILTINS], [
 ])
 
 AC_DEFUN([VLC_ADD_PLUGIN], [
-  PLUGINS="${PLUGINS} $1"
-  AC_SUBST([LTLIB$1], ["lib$1_plugin.la"])
+  m4_foreach_w([element], [$1], [
+    [PLUGINS="${PLUGINS} ]element["]
+    AC_SUBST([LTLIB]element, [lib]element[_plugin.la])
+  ])
 ])
 
 dnl  Special cases: vlc, pics, plugins, save
 AC_DEFUN([VLC_ADD_CPPFLAGS], [
-  for element in [$1]; do
-    eval "CPPFLAGS_${element}="'"$'"{CPPFLAGS_${element}} $2"'"'
-    am_modules_with_cppflags="${am_modules_with_cppflags} ${element}"
-  done
+  m4_foreach_w([element], [$1], [
+    [eval "CPPFLAGS_]element[="'"$'"{CPPFLAGS_]element[} $2"'"']
+    [am_modules_with_cppflags="${am_modules_with_cppflags} ]element["]
+  ])
 ])
 
 AC_DEFUN([VLC_ADD_CFLAGS], [
-  for element in [$1]; do
-    eval "CFLAGS_${element}="'"$'"{CFLAGS_${element}} $2"'"'
-    am_modules_with_cflags="${am_modules_with_cflags} ${element}"
-  done
+  m4_foreach_w([element], [$1], [
+    [eval "CFLAGS_]element[="'"$'"{CFLAGS_]element[} $2"'"']
+    [am_modules_with_cflags="${am_modules_with_cflags} ]element["]
+  ])
 ])
 
 AC_DEFUN([VLC_ADD_CXXFLAGS], [
-  for element in [$1]; do
-    eval "CXXFLAGS_${element}="'"$'"{CXXFLAGS_${element}} $2"'"'
-    am_modules_with_cxxflags="${am_modules_with_cxxflags} ${element}"
-  done
+  m4_foreach_w([element], [$1], [
+    [eval "CXXFLAGS_]element[="'"$'"{CXXFLAGS_]element[} $2"'"']
+    [am_modules_with_cxxflags="${am_modules_with_cxxflags} ]element["]
+  ])
 ])
 
 AC_DEFUN([VLC_ADD_OBJCFLAGS], [
-  for element in [$1]; do
-    eval "OBJCFLAGS_${element}="'"$'"{OBJCFLAGS_${element}} $2"'"'
-    am_modules_with_objcflags="${am_modules_with_objcflags} ${element}"
-  done
+  m4_foreach_w([element], [$1], [
+    [eval "OBJCFLAGS_]element[="'"$'"{OBJCFLAGS_]element[} $2"'"']
+    [am_modules_with_objcflags="${am_modules_with_objcflags} ]element["]
+  ])
 ])
 
 AC_DEFUN([VLC_ADD_LDFLAGS], [
-  for element in [$1]; do
-    eval "LDFLAGS_${element}="'"'"$2 "'$'"{LDFLAGS_${element}} "'"'
-    am_modules_with_ldflags="${am_modules_with_ldflags} ${element}"
-  done
+  m4_foreach_w([element], [$1], [
+    [eval "LDFLAGS_]element[="'"$2 $'"{LDFLAGS_]element[}"'"']
+    [am_modules_with_ldflags="${am_modules_with_ldflags} ]element["]
+  ])
 ])
 
 AC_DEFUN([VLC_ADD_LIBS], [
-  for element in [$1]; do
-    eval "LIBS_${element}="'"'"$2 "'$'"{LIBS_${element}} "'"'
-    am_modules_with_libs="${am_modules_with_libs} ${element}"
-  done
+  m4_foreach_w([element], [$1], [
+    [eval "LIBS_]element[="'"'"$2 "'$'"{LIBS_]element[}"'"']
+    [am_modules_with_libs="${am_modules_with_libs} ]element["]
+  ])
 ])
 
 dnl ===========================================================================
@@ -94,7 +96,6 @@ AC_DEFUN([VLC_OUTPUT_VLC_CONFIG_IN], [
           -e "s/@cprof@/${enable_cprof}/" \
           -e "s/@optim@/${enable_optimizations}/" \
           -e "s/@debug@/${enable_debug}/" \
-          -e "s/@release@/${enable_release}/" \
           -e "s/@PLUGINS@/${PLUGINS}/" \
           -e "s/@BUILTINS@/${BUILTINS}/" \
           -e "s/@CFLAGS_TUNING@/${CFLAGS_TUNING}/" \

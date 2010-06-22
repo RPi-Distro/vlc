@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 4ff71feb6d4e7522b2026c5dc536e3cffeee748e $
+ * $Id: 19f6ad7e7ee36212a7d5447f72e1dd28ba0016af $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -41,19 +41,28 @@ InputSlider::InputSlider( Qt::Orientation q, QWidget *_parent ) :
                                  QSlider( q, _parent )
 {
     b_isSliding = false;
-    setMinimum( 0 );
-    setMouseTracking(true);
-    setMaximum( 1000 );
+    lastSeeked  = 0;
+
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
+
+    /* Properties */
+    setRange( 0, 1000 );
     setSingleStep( 2 );
     setPageStep( 10 );
+    setMouseTracking(true);
     setTracking( true );
+    setFocusPolicy( Qt::NoFocus );
+
+    /* Init to 0 */
     setPosition( -1.0, 0, 0 );
     secstotimestr( psz_length, 0 );
-    setFocusPolicy( Qt::NoFocus );
+
     CONNECT( this, valueChanged(int), this, userDrag( int ) );
+    CONNECT( timer, timeout(), this, seekTick() );
 }
 
-void InputSlider::setPosition( float pos, int a, int b )
+void InputSlider::setPosition( float pos, int64_t a, int b )
 {
     if( pos == -1.0 )
     {
@@ -71,9 +80,16 @@ void InputSlider::setPosition( float pos, int a, int b )
 
 void InputSlider::userDrag( int new_value )
 {
-    if( b_isSliding )
+    if( b_isSliding && !timer->isActive() )
+        timer->start( 150 );
+}
+
+void InputSlider::seekTick()
+{
+    if( value() != lastSeeked )
     {
-        float f_pos = (float)(new_value)/1000.0;
+        lastSeeked = value();
+        float f_pos = (float)(lastSeeked)/1000.0;
         emit sliderDragged( f_pos );
     }
 }
@@ -100,6 +116,8 @@ void InputSlider::mousePressEvent(QMouseEvent* event)
         Qt::MouseButtons( event->buttons() ^ Qt::LeftButton ^ Qt::MidButton ),
         event->modifiers() );
     QSlider::mousePressEvent( &newEvent );
+
+    seekTick();
 }
 
 void InputSlider::mouseMoveEvent(QMouseEvent *event)
@@ -148,18 +166,21 @@ SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
     setMouseTracking( true );
     b_isSliding = false;
     b_mouseOutside = true;
+    b_isMuted = false;
 
-    pixOutside = QPixmap( ":/volslide-outside" );
+    pixOutside = QPixmap( ":/toolbar/volslide-outside" );
 
-    const QPixmap temp( ":/volslide-inside" );
+    const QPixmap temp( ":/toolbar/volslide-inside" );
     const QBitmap mask( temp.createHeuristicMask() );
 
-    setMinimumSize( pixOutside.size() );
+    setFixedSize( pixOutside.size() );
 
     pixGradient = QPixmap( mask.size() );
+    pixGradient2 = QPixmap( mask.size() );
 
     /* Gradient building from the preferences */
     QLinearGradient gradient( paddingL, 2, WLENGTH + paddingL , 2 );
+    QLinearGradient gradient2( paddingL, 2, WLENGTH + paddingL , 2 );
 
     QStringList colorList = qfu( psz_colors ).split( ";" );
     free( psz_colors );
@@ -169,11 +190,28 @@ SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
         for( int i = colorList.size(); i < 12; i++)
             colorList.append( "255" );
 
+    /* Regular colors */
 #define c(i) colorList.at(i).toInt()
-    gradient.setColorAt( 0.0, QColor( c(0), c(1), c(2) ) );
-    gradient.setColorAt( 0.22, QColor( c(3), c(4), c(5) ) );
-    gradient.setColorAt( 0.5, QColor( c(6), c(7), c(8) ) );
-    gradient.setColorAt( 1.0, QColor( c(9), c(10), c(11) ) );
+#define add_color(gradient, range, c1, c2, c3) \
+    gradient.setColorAt( range, QColor( c(c1), c(c2), c(c3) ) );
+
+    /* Desaturated colors */
+#define desaturate(c) c->setHsvF( c->hueF(), 0.2 , 0.5, 1.0 )
+#define add_desaturated_color(gradient, range, c1, c2, c3) \
+    foo = new QColor( c(c1), c(c2), c(c3) );\
+    desaturate( foo ); gradient.setColorAt( range, *foo );\
+    delete foo;
+
+    /* combine the two helpers */
+#define add_colors( gradient1, gradient2, range, c1, c2, c3 )\
+    add_color( gradient1, range, c1, c2, c3 ); \
+    add_desaturated_color( gradient2, range, c1, c2, c3 );
+
+    QColor * foo;
+    add_colors( gradient, gradient2, 0.0, 0, 1, 2 );
+    add_colors( gradient, gradient2, 0.22, 3, 4, 5 );
+    add_colors( gradient, gradient2, 0.5, 6, 7, 8 );
+    add_colors( gradient, gradient2, 1.0, 9, 10, 11 );
 
     QPainter painter( &pixGradient );
     painter.setPen( Qt::NoPen );
@@ -181,7 +219,14 @@ SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
     painter.drawRect( pixGradient.rect() );
     painter.end();
 
+    painter.begin( &pixGradient2 );
+    painter.setPen( Qt::NoPen );
+    painter.setBrush( gradient2 );
+    painter.drawRect( pixGradient2.rect() );
+    painter.end();
+
     pixGradient.setMask( mask );
+    pixGradient2.setMask( mask );
 }
 
 void SoundSlider::wheelEvent( QWheelEvent *event )
@@ -190,6 +235,7 @@ void SoundSlider::wheelEvent( QWheelEvent *event )
     setValue( __MIN( __MAX( minimum(), newvalue ), maximum() ) );
 
     emit sliderReleased();
+    emit sliderMoved( value() );
 }
 
 void SoundSlider::mousePressEvent( QMouseEvent *event )
@@ -201,6 +247,7 @@ void SoundSlider::mousePressEvent( QMouseEvent *event )
         i_oldvalue = value();
         emit sliderPressed();
         changeValue( event->x() - paddingL );
+        emit sliderMoved( value() );
     }
 }
 
@@ -212,6 +259,7 @@ void SoundSlider::mouseReleaseEvent( QMouseEvent *event )
         {
             emit sliderReleased();
             setValue( value() );
+            emit sliderMoved( value() );
         }
         b_isSliding = false;
         b_mouseOutside = false;
@@ -250,13 +298,25 @@ void SoundSlider::changeValue( int x )
     setValue( (x * maximum() + 40 ) / WLENGTH );
 }
 
+void SoundSlider::setMuted( bool m )
+{
+    b_isMuted = m;
+    update();
+}
+
 void SoundSlider::paintEvent( QPaintEvent *e )
 {
     QPainter painter( this );
+    QPixmap *pixGradient;
+    if (b_isMuted)
+        pixGradient = &this->pixGradient2;
+    else
+        pixGradient = &this->pixGradient;
+
     const int offset = int( ( WLENGTH * value() + 100 ) / maximum() ) + paddingL;
 
-    const QRectF boundsG( 0, 0, offset , pixGradient.height() );
-    painter.drawPixmap( boundsG, pixGradient, boundsG );
+    const QRectF boundsG( 0, 0, offset , pixGradient->height() );
+    painter.drawPixmap( boundsG, *pixGradient, boundsG );
 
     const QRectF boundsO( 0, 0, pixOutside.width(), pixOutside.height() );
     painter.drawPixmap( boundsO, pixOutside, boundsO );

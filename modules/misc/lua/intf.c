@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 9ee4b1b1a4380892df0fe3808cb98a77fcb18748 $
+ * $Id: bbed53bae8bc53a953265f0e5b6eedd8e9c646ba $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -34,11 +34,12 @@
 
 #include <vlc_common.h>
 #include <vlc_meta.h>
-#include <vlc_charset.h>
 
 #include <vlc_interface.h>
 #include <vlc_playlist.h>
 #include <vlc_aout.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <lua.h>        /* Low level lua C API */
 #include <lauxlib.h>    /* Higher level C API */
@@ -57,34 +58,6 @@ static const char * const ppsz_intf_options[] = { "intf", "config", NULL };
 /*****************************************************************************
  *
  *****************************************************************************/
-static char *FindFile( const char *psz_name )
-{
-    char  *ppsz_dir_list[] = { NULL, NULL, NULL, NULL };
-    char **ppsz_dir;
-    vlclua_dir_list( "intf", ppsz_dir_list );
-    for( ppsz_dir = ppsz_dir_list; *ppsz_dir; ppsz_dir++ )
-    {
-        char *psz_filename;
-        FILE *fp;
-        if( asprintf( &psz_filename, "%s"DIR_SEP"%s.lua", *ppsz_dir,
-                      psz_name ) < 0 )
-        {
-            vlclua_dir_list_free( ppsz_dir_list );
-            return NULL;
-        }
-        fp = fopen( psz_filename, "r" );
-        if( fp )
-        {
-            fclose( fp );
-            vlclua_dir_list_free( ppsz_dir_list );
-            return psz_filename;
-        }
-        free( psz_filename );
-    }
-    vlclua_dir_list_free( ppsz_dir_list );
-    return NULL;
-}
-
 static inline void luaL_register_submodule( lua_State *L, const char *psz_name,
                                             const luaL_Reg *l )
 {
@@ -99,29 +72,28 @@ static const struct
     const char *psz_name;
 } pp_shortcuts[] = {
     { "luarc", "rc" },
-    /* { "rc", "rc" }, */
+    { "rc", "rc" },
     { "luahotkeys", "hotkeys" },
     /* { "hotkeys", "hotkeys" }, */
     { "luatelnet", "telnet" },
-    /* { "telnet", "telnet" }, */
+    { "telnet", "telnet" },
     { "luahttp", "http" },
     /* { "http", "http" }, */
     { NULL, NULL } };
 
-static bool WordInList( const char *psz_list, const char *psz_word )
+static const char *WordInList( const char *psz_list, const char *psz_word )
 {
-    const char *psz_str = strstr( psz_list, psz_word );
-    int i_len = strlen( psz_word );
-    while( psz_str )
+    for( ;; )
     {
-        if( (psz_str == psz_list || *(psz_str-1) == ',' )
-         /* it doesn't start in middle of a word */
-         /* it doest end in middle of a word */
-         && ( psz_str[i_len] == '\0' || psz_str[i_len] == ',' ) )
-            return true;
-        psz_str = strstr( psz_str, psz_word );
+        const char *end = strchr( psz_list, ',' );
+        if( end == NULL )
+            break;
+
+        if( !strncmp( psz_list, psz_word, end - psz_list ) )
+            return psz_list;
+        psz_list = end + 1;
     }
-    return false;
+    return !strcmp( psz_list, psz_word ) ? psz_list : NULL;
 }
 
 static char *GetModuleName( intf_thread_t *p_intf )
@@ -132,11 +104,24 @@ static char *GetModuleName( intf_thread_t *p_intf )
         psz_intf = var_GetString( p_intf, p_intf->psz_intf+1 );
     else*/
         psz_intf = p_intf->psz_intf;
+
+    int i_candidate = -1;
+    const char *psz_candidate = NULL;
     for( i = 0; pp_shortcuts[i].psz_name; i++ )
     {
-        if( WordInList( psz_intf, pp_shortcuts[i].psz_shortcut ) )
-            return strdup( pp_shortcuts[i].psz_name );
+        const char *psz_match;
+        if( ( psz_match = WordInList( psz_intf, pp_shortcuts[i].psz_shortcut ) ) )
+        {
+            if( !psz_candidate || psz_match < psz_candidate )
+            {
+                psz_candidate = psz_match;
+                i_candidate = i;
+            }
+        }
     }
+
+    if( i_candidate >= 0 )
+        return strdup( pp_shortcuts[i_candidate].psz_name );
 
     return var_CreateGetString( p_intf, "lua-intf" );
 }
@@ -150,10 +135,17 @@ int Open_LuaIntf( vlc_object_t *p_this )
     lua_State *L;
 
     config_ChainParse( p_intf, "lua-", ppsz_intf_options, p_intf->p_cfg );
-    char *psz_name = GetModuleName( p_intf );
+    char *psz_name = NULL;
+
+    if( !p_intf->psz_intf || !*p_intf->psz_intf )
+        psz_name = strdup( "rc" );
+    else
+        psz_name = GetModuleName( p_intf );
+
+    if( !psz_name ) psz_name = strdup( "dummy" );
+
     char *psz_config;
     bool b_config_set = false;
-    if( !psz_name ) psz_name = strdup( "dummy" );
 
     p_intf->p_sys = (intf_sys_t*)malloc( sizeof(intf_sys_t) );
     if( !p_intf->p_sys )
@@ -162,14 +154,12 @@ int Open_LuaIntf( vlc_object_t *p_this )
         return VLC_ENOMEM;
     }
     p_sys = p_intf->p_sys;
-    p_sys->psz_filename = FindFile( psz_name );
+    p_sys->psz_filename = vlclua_find_file( p_this, "intf", psz_name );
     if( !p_sys->psz_filename )
     {
         msg_Err( p_intf, "Couldn't find lua interface script \"%s\".",
                  psz_name );
-        free( psz_name );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
     msg_Dbg( p_intf, "Found lua interface script: %s", p_sys->psz_filename );
 
@@ -177,19 +167,16 @@ int Open_LuaIntf( vlc_object_t *p_this )
     if( !L )
     {
         msg_Err( p_intf, "Could not create new Lua State" );
-        free( psz_name );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
+
+    vlclua_set_this( L, p_intf );
+    vlclua_set_intf( L, p_sys );
 
     luaL_openlibs( L );
 
     /* register our functions */
     luaL_register( L, "vlc", p_reg );
-
-    /* store a pointer to p_intf (FIXME: user could overwrite this) */
-    lua_pushlightuserdata( L, p_intf );
-    lua_setfield( L, -2, "private" );
 
     /* register submodules */
     luaopen_acl( L );
@@ -210,34 +197,91 @@ int Open_LuaIntf( vlc_object_t *p_this )
     luaopen_video( L );
     luaopen_vlm( L );
     luaopen_volume( L );
+    luaopen_gettext( L );
+    luaopen_xml( L );
+    luaopen_md5( L );
 
     /* clean up */
     lua_pop( L, 1 );
 
-    /* <gruik> */
     /* Setup the module search path */
+    if( vlclua_add_modules_path( p_intf, L, p_sys->psz_filename ) )
     {
-    char *psz_command;
-    char *psz_char = strrchr(p_sys->psz_filename,DIR_SEP_CHAR);
-    *psz_char = '\0';
-    /* FIXME: don't use luaL_dostring */
-    if( asprintf( &psz_command,
-                  "package.path = \"%s"DIR_SEP"modules"DIR_SEP"?.lua;\"..package.path",
-                  p_sys->psz_filename ) < 0 )
-        return VLC_EGENERIC;
-    *psz_char = DIR_SEP_CHAR;
-    if( luaL_dostring( L, psz_command ) )
-        return VLC_EGENERIC;
+        msg_Warn( p_intf, "Error while setting the module search path for %s",
+                  p_sys->psz_filename );
+        lua_close( L );
+        goto error;
     }
-    /* </gruik> */
 
-    psz_config = var_CreateGetString( p_intf, "lua-config" );
-    if( psz_config && *psz_config )
+    /*
+     * Get the lua-config string.
+     * If the string is empty, try with the old http-* or telnet-* options
+     * and build the right configuration line
+     */
+    psz_config = var_CreateGetNonEmptyString( p_intf, "lua-config" );
+    if( !psz_config )
+    {
+        if( !strcmp( psz_name, "http" ) )
+        {
+            char *psz_http_host = var_CreateGetNonEmptyString( p_intf, "http-host" );
+            char *psz_http_src = var_CreateGetNonEmptyString( p_intf, "http-src" );
+            bool b_http_index = var_CreateGetBool( p_intf, "http-index" );
+            if( psz_http_host )
+            {
+                char *psz_esc = config_StringEscape( psz_http_host );
+                asprintf( &psz_config, "http={host='%s'", psz_esc );
+                free( psz_esc );
+                free( psz_http_host );
+            }
+            if( psz_http_src )
+            {
+                char *psz_esc = config_StringEscape( psz_http_src );
+                if( psz_config )
+                {
+                    char *psz_tmp;
+                    asprintf( &psz_tmp, "%s,dir='%s'", psz_config, psz_esc );
+                    free( psz_config );
+                    psz_config = psz_tmp;
+                }
+                else
+                    asprintf( &psz_config, "http={dir='%s'", psz_esc );
+                free( psz_esc );
+                free( psz_http_src );
+            }
+            if( psz_config )
+            {
+                char *psz_tmp;
+                asprintf( &psz_tmp, "%s,no_index=%s}", psz_config, b_http_index ? "true" : "false" );
+                free( psz_config );
+                psz_config = psz_tmp;
+            }
+            else
+                asprintf( &psz_config, "http={no_index=%s}", b_http_index ? "true" : "false" );
+        }
+        else if( !strcmp( psz_name, "telnet" ) )
+        {
+            char *psz_telnet_host = var_CreateGetString( p_intf, "telnet-host" );
+            int i_telnet_port = var_CreateGetInteger( p_intf, "telnet-port" );
+            char *psz_telnet_passwd = var_CreateGetString( p_intf, "telnet-password" );
+
+            char *psz_esc_host = config_StringEscape( psz_telnet_host );
+            char *psz_esc_passwd = config_StringEscape( psz_telnet_passwd );
+
+            asprintf( &psz_config, "telnet={host='%s:%d',password='%s'}", psz_esc_host ? psz_esc_host : "", i_telnet_port, psz_esc_passwd );
+
+            free( psz_esc_host );
+            free( psz_esc_passwd );
+            free( psz_telnet_passwd );
+            free( psz_telnet_host );
+        }
+    }
+
+    if( psz_config )
     {
         char *psz_buffer;
         if( asprintf( &psz_buffer, "config={%s}", psz_config ) != -1 )
         {
-            printf("%s\n", psz_buffer);
+            msg_Dbg( p_intf, "Setting config variable: %s", psz_buffer );
             if( luaL_dostring( L, psz_buffer ) == 1 )
                 msg_Err( p_intf, "Error while parsing \"lua-config\"." );
             free( psz_buffer );
@@ -252,8 +296,8 @@ int Open_LuaIntf( vlc_object_t *p_this )
                 }
             }
         }
+        free( psz_config );
     }
-    free( psz_config );
 
     if( b_config_set == false )
     {
@@ -272,12 +316,19 @@ int Open_LuaIntf( vlc_object_t *p_this )
 
     if( vlc_clone( &p_sys->thread, Run, p_intf, VLC_THREAD_PRIORITY_LOW ) )
     {
-        p_sys->exiting = true;
-        Close_LuaIntf( p_this );
-        return VLC_ENOMEM;
+        p_intf->psz_header = NULL;
+        vlc_cond_destroy( &p_sys->wait );
+        vlc_mutex_destroy( &p_sys->lock );
+        lua_close( p_sys->L );
+        goto error;
     }
 
     return VLC_SUCCESS;
+error:
+    free( p_sys->psz_filename );
+    free( p_sys );
+    free( psz_name );
+    return VLC_EGENERIC;
 }
 
 void Close_LuaIntf( vlc_object_t *p_this )
@@ -285,18 +336,19 @@ void Close_LuaIntf( vlc_object_t *p_this )
     intf_thread_t *p_intf = (intf_thread_t*)p_this;
     intf_sys_t *p_sys = p_intf->p_sys;
 
-    if( !p_sys->exiting ) /* <- Read-only here and in thread: no locking */
-    {
-        vlc_mutex_lock( &p_sys->lock );
-        p_sys->exiting = true;
-        vlc_cond_signal( &p_sys->wait );
-        vlc_mutex_unlock( &p_sys->lock );
-        vlc_join( p_sys->thread, NULL );
-    }
+    vlc_cancel( p_sys->thread );
+
+    vlc_mutex_lock( &p_sys->lock );
+    p_sys->exiting = true;
+    vlc_cond_signal( &p_sys->wait );
+    vlc_mutex_unlock( &p_sys->lock );
+    vlc_join( p_sys->thread, NULL );
     vlc_cond_destroy( &p_sys->wait );
     vlc_mutex_destroy( &p_sys->lock );
 
     lua_close( p_sys->L );
+
+    free( p_sys->psz_filename );
     free( p_sys );
 }
 

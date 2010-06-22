@@ -2,7 +2,7 @@
  * raop.c: Remote Audio Output Protocol streaming support
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: c0ee052eeb1396bc4cf66c07f80229fa8eaaa730 $
+ * $Id: 498b1c487d012229d16540cdda16b0b97923d9f0 $
  *
  * Author: Michael Hanselmann
  *
@@ -39,8 +39,11 @@
 #include <vlc_network.h>
 #include <vlc_strings.h>
 #include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_gcrypt.h>
 #include <vlc_es.h>
+#include <vlc_http.h>
+#include <vlc_memory.h>
 
 #define RAOP_PORT 5000
 #define RAOP_USER_AGENT "VLC " VERSION
@@ -97,6 +100,7 @@ struct sout_stream_sys_t
 {
     /* Input parameters */
     char *psz_host;
+    char *psz_password;
     int i_volume;
 
     /* Plugin status */
@@ -115,11 +119,14 @@ struct sout_stream_sys_t
     char *psz_url;
     char *psz_client_instance;
     char *psz_session;
+    char *psz_last_status_line;
 
     int i_cseq;
     int i_server_port;
     int i_audio_latency;
     int i_jack_type;
+
+    http_auth_t auth;
 
     /* Send buffer */
     size_t i_sendbuf_len;
@@ -144,7 +151,13 @@ struct sout_stream_id_t
 #define VOLUME_LONGTEXT N_("Output volume for analog output: 0 for silence, " \
                            "1..255 from almost silent to very loud.")
 
-vlc_module_begin()
+#define PASSWORD_TEXT N_("Password")
+#define PASSWORD_LONGTEXT N_("Password for target device.")
+
+#define PASSWORD_FILE_TEXT N_("Password file")
+#define PASSWORD_FILE_LONGTEXT N_("Read password for target device from file.")
+
+vlc_module_begin();
     set_shortname( N_("RAOP") )
     set_description( N_("Remote Audio Output Protocol stream output") )
     set_capability( "sout stream", 0 )
@@ -153,6 +166,10 @@ vlc_module_begin()
     set_subcategory( SUBCAT_SOUT_STREAM )
     add_string( SOUT_CFG_PREFIX "host", "", NULL,
                 HOST_TEXT, HOST_LONGTEXT, false )
+    add_password( SOUT_CFG_PREFIX "password", NULL, NULL,
+                  PASSWORD_TEXT, PASSWORD_LONGTEXT, false )
+    add_file( SOUT_CFG_PREFIX "password-file", NULL, NULL,
+              PASSWORD_FILE_TEXT, PASSWORD_FILE_LONGTEXT, false )
     add_integer_with_range( SOUT_CFG_PREFIX "volume", 100, 0, 255, NULL,
                             VOLUME_TEXT, VOLUME_LONGTEXT, false )
     set_callbacks( Open, Close )
@@ -160,6 +177,8 @@ vlc_module_end()
 
 static const char *const ppsz_sout_options[] = {
     "host",
+    "password",
+    "password-file",
     "volume",
     NULL
 };
@@ -184,9 +203,11 @@ static void FreeSys( vlc_object_t *p_this, sout_stream_sys_t *p_sys )
 
     free( p_sys->p_sendbuf );
     free( p_sys->psz_host );
+    free( p_sys->psz_password );
     free( p_sys->psz_url );
     free( p_sys->psz_session );
     free( p_sys->psz_client_instance );
+    free( p_sys->psz_last_status_line );
     free( p_sys );
 }
 
@@ -426,7 +447,7 @@ static int EncryptAesKeyBase64( vlc_object_t *p_this, char **result )
     unsigned char ps_padded_key[256];
     unsigned char *ps_value;
     size_t i_value_size;
-    int i_err = VLC_SUCCESS;
+    int i_err;
 
     /* Add RSA-OAES-SHA1 padding */
     i_err = AddOaepPadding( p_this,
@@ -435,25 +456,20 @@ static int EncryptAesKeyBase64( vlc_object_t *p_this, char **result )
                             NULL, 0 );
     if ( i_err != VLC_SUCCESS )
         goto error;
+    i_err = VLC_EGENERIC;
 
     /* Read public key */
     i_gcrypt_err = gcry_mpi_scan( &mpi_pubkey, GCRYMPI_FMT_USG,
                                   ps_raop_rsa_pubkey,
                                   sizeof( ps_raop_rsa_pubkey ) - 1, NULL );
     if ( CheckForGcryptError( p_stream, i_gcrypt_err ) )
-    {
-        i_err = VLC_EGENERIC;
         goto error;
-    }
 
     /* Read exponent */
     i_gcrypt_err = gcry_mpi_scan( &mpi_exp, GCRYMPI_FMT_USG, ps_raop_rsa_exp,
                                   sizeof( ps_raop_rsa_exp ) - 1, NULL );
     if ( CheckForGcryptError( p_stream, i_gcrypt_err ) )
-    {
-        i_err = VLC_EGENERIC;
         goto error;
-    }
 
     /* If the input data starts with a set bit (0x80), gcrypt thinks it's a
      * signed integer and complains. Prefixing it with a zero byte (\0)
@@ -464,45 +480,32 @@ static int EncryptAesKeyBase64( vlc_object_t *p_this, char **result )
                                   ps_padded_key, sizeof( ps_padded_key ),
                                   NULL);
     if ( CheckForGcryptError( p_stream, i_gcrypt_err ) )
-    {
-        i_err = VLC_EGENERIC;
         goto error;
-    }
 
     /* Build S-expression with RSA parameters */
     i_gcrypt_err = gcry_sexp_build( &sexp_rsa_params, NULL,
                                     "(public-key(rsa(n %m)(e %m)))",
                                     mpi_pubkey, mpi_exp );
     if ( CheckForGcryptError( p_stream, i_gcrypt_err ) )
-    {
-        i_err = VLC_EGENERIC;
         goto error;
-    }
 
     /* Build S-expression for data */
     i_gcrypt_err = gcry_sexp_build( &sexp_input, NULL, "(data(value %m))",
                                     mpi_input );
     if ( CheckForGcryptError( p_stream, i_gcrypt_err ) )
-    {
-        i_err = VLC_EGENERIC;
         goto error;
-    }
 
     /* Encrypt data */
     i_gcrypt_err = gcry_pk_encrypt( &sexp_encrypted, sexp_input,
                                     sexp_rsa_params );
     if ( CheckForGcryptError( p_stream, i_gcrypt_err ) )
-    {
-        i_err = VLC_EGENERIC;
         goto error;
-    }
 
     /* Extract encrypted data */
     sexp_token_a = gcry_sexp_find_token( sexp_encrypted, "a", 0 );
     if ( !sexp_token_a )
     {
         msg_Err( p_this , "Token 'a' not found in result S-expression" );
-        i_err = VLC_EGENERIC;
         goto error;
     }
 
@@ -510,7 +513,6 @@ static int EncryptAesKeyBase64( vlc_object_t *p_this, char **result )
     if ( !mpi_output )
     {
         msg_Err( p_this, "Unable to extract MPI from result" );
-        i_err = VLC_EGENERIC;
         goto error;
     }
 
@@ -519,12 +521,12 @@ static int EncryptAesKeyBase64( vlc_object_t *p_this, char **result )
                                     mpi_output );
     if ( CheckForGcryptError( p_stream, i_gcrypt_err ) )
     {
-        i_err = VLC_EGENERIC;
         goto error;
     }
 
     /* Encode in Base64 */
     *result = vlc_b64_encode_binary( ps_value, i_value_size );
+    i_err = VLC_SUCCESS;
 
 error:
     gcry_sexp_release( sexp_rsa_params );
@@ -537,6 +539,56 @@ error:
     gcry_mpi_release( mpi_output );
 
     return i_err;
+}
+
+static char *ReadPasswordFile( vlc_object_t *p_this, const char *psz_path )
+{
+    FILE *p_file = NULL;
+    char *psz_password = NULL;
+    char *psz_newline;
+    char ps_buffer[256];
+
+    p_file = vlc_fopen( psz_path, "rt" );
+    if ( p_file == NULL )
+    {
+        msg_Err( p_this, "Unable to open password file '%s': %m", psz_path );
+        goto error;
+    }
+
+    /* Read one line only */
+    if ( fgets( ps_buffer, sizeof( ps_buffer ), p_file ) == NULL )
+    {
+        if ( ferror( p_file ) )
+        {
+            msg_Err( p_this, "Error reading '%s': %m", psz_path );
+            goto error;
+        }
+
+        /* Nothing was read, but there was no error either. Maybe the file is
+         * empty. Not all implementations of fgets(3) write \0 to the output
+         * buffer in this case.
+         */
+        ps_buffer[0] = '\0';
+
+    } else {
+        /* Replace first newline with '\0' */
+        psz_newline = strchr( ps_buffer, '\n' );
+        if ( psz_newline != NULL )
+            *psz_newline = '\0';
+    }
+
+    if ( strlen( ps_buffer ) == 0 ) {
+        msg_Err( p_this, "No password could be read from '%s'", psz_path );
+        goto error;
+    }
+
+    psz_password = strdup( ps_buffer );
+
+error:
+    if ( p_file != NULL )
+        fclose( p_file );
+
+    return psz_password;
 }
 
 /* Splits the value of a received header.
@@ -573,45 +625,44 @@ static int ReadStatusLine( vlc_object_t *p_this )
 {
     sout_stream_t *p_stream = (sout_stream_t*)p_this;
     sout_stream_sys_t *p_sys = p_stream->p_sys;
-    char *psz_original = NULL;
     char *psz_line = NULL;
     char *psz_token;
     char *psz_next;
-    int i_err = VLC_SUCCESS;
+    int i_result = VLC_EGENERIC;
 
-    psz_line = net_Gets( p_this, p_sys->i_control_fd, NULL );
-    if ( !psz_line )
-    {
-        i_err = VLC_EGENERIC;
+    p_sys->psz_last_status_line = net_Gets( p_this, p_sys->i_control_fd,
+                                            NULL );
+    if ( !p_sys->psz_last_status_line )
         goto error;
-    }
 
-    psz_original = strdup( psz_line );
+    /* Create working copy */
+    psz_line = strdup( p_sys->psz_last_status_line );
     psz_next = psz_line;
 
     /* Protocol field */
     psz_token = strsep( &psz_next, psz_delim_space );
     if ( !psz_token || strncmp( psz_token, "RTSP/1.", 7 ) != 0 )
     {
-        msg_Err( p_this, "Unknown protocol (%s)", psz_original );
-        i_err = VLC_EGENERIC;
+        msg_Err( p_this, "Unknown protocol (%s)",
+                 p_sys->psz_last_status_line );
         goto error;
     }
 
     /* Status field */
     psz_token = strsep( &psz_next, psz_delim_space );
-    if ( !psz_token || strcmp( psz_token, "200" ) != 0 )
+    if ( !psz_token )
     {
-        msg_Err( p_this, "Request failed (%s)", psz_original );
-        i_err = VLC_EGENERIC;
+        msg_Err( p_this, "Request failed (%s)",
+                 p_sys->psz_last_status_line );
         goto error;
     }
 
+    i_result = atoi( psz_token );
+
 error:
-    free( psz_original );
     free( psz_line );
 
-    return i_err;
+    return i_result;
 }
 
 static int ReadHeader( vlc_object_t *p_this,
@@ -638,7 +689,7 @@ static int ReadHeader( vlc_object_t *p_this,
     /* Empty line for response end */
     if ( psz_line[0] == '\0' )
         *done = 1;
-    else if ( p_resp_headers )
+    else
     {
         psz_original = strdup( psz_line );
         psz_next = psz_line;
@@ -749,12 +800,9 @@ static int SendRequest( vlc_object_t *p_this, const char *psz_method,
         }
     }
 
-    if ( p_req_headers )
-    {
-        i_err = WriteAuxHeaders( p_this, p_req_headers );
-        if ( i_err != VLC_SUCCESS )
-            goto error;
-    }
+    i_err = WriteAuxHeaders( p_this, p_req_headers );
+    if ( i_err != VLC_SUCCESS )
+        goto error;
 
     i_rc = net_Write( p_this, p_sys->i_control_fd, NULL,
                       psz_headers_end, sizeof( psz_headers_end ) - 1 );
@@ -772,6 +820,30 @@ error:
     return i_err;
 }
 
+static int ParseAuthenticateHeader( vlc_object_t *p_this,
+                                    vlc_dictionary_t *p_resp_headers )
+{
+    sout_stream_t *p_stream = (sout_stream_t*)p_this;
+    sout_stream_sys_t *p_sys = p_stream->p_sys;
+    char *psz_auth;
+    int i_err = VLC_SUCCESS;
+
+    psz_auth = vlc_dictionary_value_for_key( p_resp_headers,
+                                             "WWW-Authenticate" );
+    if ( psz_auth == NULL )
+    {
+        msg_Err( p_this, "HTTP 401 response missing "
+                         "WWW-Authenticate header" );
+        i_err = VLC_EGENERIC;
+        goto error;
+    }
+
+    http_auth_ParseWwwAuthenticateHeader( p_this, &p_sys->auth, psz_auth );
+
+error:
+    return i_err;
+}
+
 static int ExecRequest( vlc_object_t *p_this, const char *psz_method,
                         const char *psz_content_type, const char *psz_body,
                         vlc_dictionary_t *p_req_headers,
@@ -779,8 +851,11 @@ static int ExecRequest( vlc_object_t *p_this, const char *psz_method,
 {
     sout_stream_t *p_stream = (sout_stream_t*)p_this;
     sout_stream_sys_t *p_sys = p_stream->p_sys;
+    char *psz_authorization = NULL;
     int headers_done;
     int i_err = VLC_SUCCESS;
+    int i_status;
+    int i_auth_state;
 
     if ( p_sys->i_control_fd < 0 )
     {
@@ -789,30 +864,86 @@ static int ExecRequest( vlc_object_t *p_this, const char *psz_method,
         goto error;
     }
 
-    /* Send request */
-    i_err = SendRequest( p_this, psz_method, psz_content_type, psz_body,
-                         p_req_headers);
-    if ( i_err != VLC_SUCCESS )
-        goto error;
-
-    /* Read status line */
-    i_err = ReadStatusLine( p_this );
-    if ( i_err != VLC_SUCCESS )
-        goto error;
-
-    if ( p_resp_headers )
-        vlc_dictionary_clear( p_resp_headers, FreeHeader, NULL );
-
-    /* Read headers */
-    headers_done = 0;
-    while ( !headers_done )
+    i_auth_state = 0;
+    while ( 1 )
     {
-        i_err = ReadHeader( p_this, p_resp_headers, &headers_done );
+        /* Send header only when Digest authentication is used */
+        if ( p_sys->psz_password != NULL && p_sys->auth.psz_nonce != NULL )
+        {
+            FREENULL( psz_authorization );
+
+            psz_authorization =
+                http_auth_FormatAuthorizationHeader( p_this, &p_sys->auth,
+                                                     psz_method,
+                                                     p_sys->psz_url, "",
+                                                     p_sys->psz_password );
+            if ( psz_authorization == NULL )
+            {
+                i_err = VLC_EGENERIC;
+                goto error;
+            }
+
+            vlc_dictionary_insert( p_req_headers, "Authorization",
+                                   psz_authorization );
+        }
+
+        /* Send request */
+        i_err = SendRequest( p_this, psz_method, psz_content_type, psz_body,
+                             p_req_headers);
         if ( i_err != VLC_SUCCESS )
             goto error;
+
+        /* Read status line */
+        i_status = ReadStatusLine( p_this );
+        if ( i_status < 0 )
+        {
+            i_err = i_status;
+            goto error;
+        }
+
+        vlc_dictionary_clear( p_resp_headers, FreeHeader, NULL );
+
+        /* Read headers */
+        headers_done = 0;
+        while ( !headers_done )
+        {
+            i_err = ReadHeader( p_this, p_resp_headers, &headers_done );
+            if ( i_err != VLC_SUCCESS )
+                goto error;
+        }
+
+        if ( i_status == 200 )
+            /* Request successful */
+            break;
+        else if ( i_status == 401 )
+        {
+            /* Authorization required */
+            if ( i_auth_state == 1 || p_sys->psz_password == NULL )
+            {
+                msg_Err( p_this, "Access denied, password invalid" );
+                i_err = VLC_EGENERIC;
+                goto error;
+            }
+
+            i_err = ParseAuthenticateHeader( p_this, p_resp_headers );
+            if ( i_err != VLC_SUCCESS )
+                goto error;
+
+            i_auth_state = 1;
+        }
+        else
+        {
+            msg_Err( p_this, "Request failed (%s), status is %d",
+                     p_sys->psz_last_status_line, i_status );
+            i_err = VLC_EGENERIC;
+            goto error;
+        }
     }
 
 error:
+    FREENULL( p_sys->psz_last_status_line );
+    free( psz_authorization );
+
     return i_err;
 }
 
@@ -1024,34 +1155,46 @@ error:
 static int SendFlush( vlc_object_t *p_this )
 {
     VLC_UNUSED( p_this );
-
+    vlc_dictionary_t resp_headers;
     vlc_dictionary_t req_headers;
     int i_err = VLC_SUCCESS;
 
     vlc_dictionary_init( &req_headers, 0 );
+    vlc_dictionary_init( &resp_headers, 0 );
 
     vlc_dictionary_insert( &req_headers, "RTP-Info",
                            (void *)"seq=0;rtptime=0" );
 
-    i_err = ExecRequest( p_this, "FLUSH", NULL, NULL, &req_headers, NULL );
+    i_err = ExecRequest( p_this, "FLUSH", NULL, NULL,
+                         &req_headers, &resp_headers );
     if ( i_err != VLC_SUCCESS )
         goto error;
 
 error:
     vlc_dictionary_clear( &req_headers, NULL, NULL );
+    vlc_dictionary_clear( &resp_headers, FreeHeader, NULL );
 
     return i_err;
 }
 
 static int SendTeardown( vlc_object_t *p_this )
 {
+    vlc_dictionary_t resp_headers;
+    vlc_dictionary_t req_headers;
     int i_err = VLC_SUCCESS;
 
-    i_err = ExecRequest( p_this, "TEARDOWN", NULL, NULL, NULL, NULL );
+    vlc_dictionary_init( &req_headers, 0 );
+    vlc_dictionary_init( &resp_headers, 0 );
+
+    i_err = ExecRequest( p_this, "TEARDOWN", NULL, NULL,
+                         &req_headers, &resp_headers );
     if ( i_err != VLC_SUCCESS )
         goto error;
 
 error:
+    vlc_dictionary_clear( &req_headers, NULL, NULL );
+    vlc_dictionary_clear( &resp_headers, FreeHeader, NULL );
+
     return i_err;
 }
 
@@ -1060,12 +1203,14 @@ static int UpdateVolume( vlc_object_t *p_this )
     sout_stream_t *p_stream = (sout_stream_t*)p_this;
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     vlc_dictionary_t req_headers;
+    vlc_dictionary_t resp_headers;
     char *psz_parameters = NULL;
     double d_volume;
     int i_err = VLC_SUCCESS;
     int i_rc;
 
     vlc_dictionary_init( &req_headers, 0 );
+    vlc_dictionary_init( &resp_headers, 0 );
 
     /* Our volume is 0..255, RAOP is -144..0 (-144 off, -30..0 on) */
 
@@ -1090,12 +1235,13 @@ static int UpdateVolume( vlc_object_t *p_this )
 
     i_err = ExecRequest( p_this, "SET_PARAMETER",
                          "text/parameters", psz_parameters,
-                         &req_headers, NULL );
+                         &req_headers, &resp_headers );
     if ( i_err != VLC_SUCCESS )
         goto error;
 
 error:
     vlc_dictionary_clear( &req_headers, NULL, NULL );
+    vlc_dictionary_clear( &resp_headers, FreeHeader, NULL );
     free( psz_parameters );
 
     return i_err;
@@ -1155,7 +1301,7 @@ static void SendAudio( sout_stream_t *p_stream, block_t *p_buffer )
             /* Grow in blocks of 4K */
             i_realloc_len = (1 + (i_len / 4096)) * 4096;
 
-            p_sys->p_sendbuf = realloc( p_sys->p_sendbuf, i_realloc_len );
+            p_sys->p_sendbuf = realloc_or_free( p_sys->p_sendbuf, i_realloc_len );
             if ( p_sys->p_sendbuf == NULL )
                 goto error;
 
@@ -1226,6 +1372,7 @@ static int Open( vlc_object_t *p_this )
     sout_stream_t *p_stream = (sout_stream_t*)p_this;
     sout_stream_sys_t *p_sys;
     char psz_local[NI_MAXNUMERICHOST];
+    char *psz_pwfile = NULL;
     gcry_error_t i_gcrypt_err;
     int i_err = VLC_SUCCESS;
     uint32_t i_session_id;
@@ -1254,6 +1401,8 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_volume = var_GetInteger( p_stream, SOUT_CFG_PREFIX "volume");
     p_sys->i_jack_type = JACK_TYPE_NONE;
 
+    http_auth_Init( &p_sys->auth );
+
     p_sys->psz_host = var_GetNonEmptyString( p_stream,
                                              SOUT_CFG_PREFIX "host" );
     if ( p_sys->psz_host == NULL )
@@ -1262,6 +1411,27 @@ static int Open( vlc_object_t *p_this )
         i_err = VLC_EGENERIC;
         goto error;
     }
+
+    p_sys->psz_password = var_GetNonEmptyString( p_stream,
+                                                 SOUT_CFG_PREFIX "password" );
+    if ( p_sys->psz_password == NULL )
+    {
+        /* Try password file instead */
+        psz_pwfile = var_GetNonEmptyString( p_stream,
+                                            SOUT_CFG_PREFIX "password-file" );
+        if ( psz_pwfile != NULL )
+        {
+            p_sys->psz_password = ReadPasswordFile( p_this, psz_pwfile );
+            if ( p_sys->psz_password == NULL )
+            {
+                i_err = VLC_EGENERIC;
+                goto error;
+            }
+        }
+    }
+
+    if ( p_sys->psz_password != NULL )
+        msg_Info( p_this, "Using password authentication" );
 
     var_AddCallback( p_stream, SOUT_CFG_PREFIX "volume",
                      VolumeCallback, NULL );
@@ -1293,7 +1463,7 @@ static int Open( vlc_object_t *p_this )
     /* Random client instance */
     gcry_randomize( &i_client_instance, sizeof( i_client_instance ),
                     GCRY_STRONG_RANDOM );
-    if ( asprintf( &p_sys->psz_client_instance, "%016llX",
+    if ( asprintf( &p_sys->psz_client_instance, "%016"PRIX64,
                    i_client_instance ) < 0 )
     {
         i_err = VLC_ENOMEM;
@@ -1363,6 +1533,8 @@ static int Open( vlc_object_t *p_this )
     }
 
 error:
+    free( psz_pwfile );
+
     if ( i_err != VLC_SUCCESS )
         FreeSys( p_this, p_sys );
 
@@ -1404,7 +1576,7 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     switch ( id->fmt.i_cat )
     {
     case AUDIO_ES:
-        if ( id->fmt.i_codec == VLC_FOURCC('a', 'l', 'a', 'c') )
+        if ( id->fmt.i_codec == VLC_CODEC_ALAC )
         {
             if ( p_sys->p_audio_stream )
             {

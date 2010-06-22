@@ -2,7 +2,7 @@
  * ctrl_resize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7e5965563e603d08eebbf92f930d661068b99d44 $
+ * $Id: 1fb37b72bf9ffe6c7aaccbf067c7f52686d59418 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "ctrl_resize.hpp"
@@ -89,6 +89,13 @@ void CtrlResize::setLayout( GenericLayout *pLayout, const Position &rPosition )
 }
 
 
+void CtrlResize::unsetLayout()
+{
+    m_rCtrl.unsetLayout();
+    CtrlGeneric::unsetLayout();
+}
+
+
 const Position *CtrlResize::getPosition() const
 {
     return m_rCtrl.getPosition();
@@ -113,15 +120,16 @@ void CtrlResize::handleEvent( EvtGeneric &rEvent )
 
 void CtrlResize::changeCursor( WindowManager::Direction_t direction ) const
 {
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-    if( direction == WindowManager::kResizeSE )
-        pOsFactory->changeCursor( OSFactory::kResizeNWSE );
-    else if( direction == WindowManager::kResizeS )
-        pOsFactory->changeCursor( OSFactory::kResizeNS );
-    else if( direction == WindowManager::kResizeE )
-        pOsFactory->changeCursor( OSFactory::kResizeWE );
-    else if( direction == WindowManager::kNone )
-        pOsFactory->changeCursor( OSFactory::kDefaultArrow );
+    OSFactory::CursorType_t cursor;
+    switch( direction )
+    {
+    default:
+    case WindowManager::kNone:     cursor = OSFactory::kDefaultArrow; break;
+    case WindowManager::kResizeSE: cursor = OSFactory::kResizeNWSE;   break;
+    case WindowManager::kResizeS:  cursor = OSFactory::kResizeNS;     break;
+    case WindowManager::kResizeE:  cursor = OSFactory::kResizeWE;     break;
+    }
+    OSFactory::instance( getIntf() )->changeCursor( cursor );
 }
 
 
@@ -145,7 +153,7 @@ void CtrlResize::CmdStillStill::execute()
 
 void CtrlResize::CmdStillResize::execute()
 {
-    EvtMouse *pEvtMouse = (EvtMouse*)m_pParent->m_pEvt;
+    EvtMouse *pEvtMouse = static_cast<EvtMouse*>(m_pParent->m_pEvt);
 
     // Set the cursor
     m_pParent->changeCursor( m_pParent->m_direction );
@@ -176,9 +184,8 @@ void CtrlResize::CmdResizeStill::execute()
 
 void CtrlResize::CmdResizeResize::execute()
 {
-    EvtMotion *pEvtMotion = (EvtMotion*)m_pParent->m_pEvt;
+    EvtMotion *pEvtMotion = static_cast<EvtMotion*>(m_pParent->m_pEvt);
 
-    // Set the cursor
     m_pParent->changeCursor( m_pParent->m_direction );
 
     int newWidth = m_pParent->m_width;
@@ -194,6 +201,5 @@ void CtrlResize::CmdResizeResize::execute()
                                       m_pParent->m_rLayout,
                                       newWidth, newHeight );
     // Push the command in the asynchronous command queue
-    AsyncQueue *pQueue = AsyncQueue::instance( getIntf() );
-    pQueue->push( CmdGenericPtr( pCmd ) );
+    AsyncQueue::instance( getIntf() )->push( CmdGenericPtr( pCmd ) );
 }

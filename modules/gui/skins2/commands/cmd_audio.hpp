@@ -2,7 +2,7 @@
  * cmd_audio.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f3fba5bd5d3aa04f8c56645a8fc9ed1f345c1529 $
+ * $Id: e9c8ee72dedb807fc5ceca8c3c857f8b9fc679ee $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef CMD_AUDIO_HPP
@@ -29,20 +29,16 @@
 /// Command to enable/disable the equalizer
 class CmdSetEqualizer: public CmdGeneric
 {
-    public:
-        CmdSetEqualizer( intf_thread_t *pIntf, bool iEnable ):
-            CmdGeneric( pIntf ), m_enable( iEnable ) {}
-        virtual ~CmdSetEqualizer() {}
+public:
+    CmdSetEqualizer( intf_thread_t *pIntf, bool iEnable )
+                   : CmdGeneric( pIntf ), m_enable( iEnable ) { }
+    virtual ~CmdSetEqualizer() { }
+    virtual void execute();
+    virtual string getType() const { return "set equalizer"; }
 
-        /// This method does the real job of the command
-        virtual void execute();
-
-        /// Return the type of the command
-        virtual string getType() const { return "set equalizer"; }
-
-    private:
-        /// Enable or disable the equalizer
-        bool m_enable;
+private:
+    /// Enable or disable the equalizer
+    bool m_enable;
 };
 
 

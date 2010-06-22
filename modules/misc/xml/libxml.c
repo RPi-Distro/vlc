@@ -2,7 +2,7 @@
  * libxml.c: XML parser using libxml2
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 266c5ee2bff0b9370a29319c91997e669667edf7 $
+ * $Id: 540579318fddb932b6ff8c2d43765f7867135bd2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -28,9 +28,9 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
-#include "vlc_block.h"
-#include "vlc_stream.h"
-#include "vlc_xml.h"
+#include <vlc_block.h>
+#include <vlc_stream.h>
+#include <vlc_xml.h>
 
 #include <libxml/xmlreader.h>
 #include <libxml/catalog.h>
@@ -45,6 +45,11 @@ vlc_module_begin ()
     set_description( N_("XML Parser (using libxml2)") )
     set_capability( "xml", 10 )
     set_callbacks( Open, Close )
+
+#ifdef WIN32
+    cannot_unload_broken_library()
+#endif
+
 vlc_module_end ()
 
 struct xml_reader_sys_t
@@ -246,8 +251,7 @@ static char *ReaderName( xml_reader_t *p_reader )
     const xmlChar *psz_name =
         xmlTextReaderConstName( p_reader->p_sys->p_reader );
 
-    if( psz_name ) return strdup( (const char *)psz_name );
-    else return 0;
+    return psz_name ? strdup( (const char *)psz_name ) : NULL;
 }
 
 static char *ReaderValue( xml_reader_t *p_reader )
@@ -255,8 +259,7 @@ static char *ReaderValue( xml_reader_t *p_reader )
     const xmlChar *psz_value =
         xmlTextReaderConstValue( p_reader->p_sys->p_reader );
 
-    if( psz_value ) return strdup( (const char *)psz_value );
-    else return 0;
+    return psz_value ? strdup( (const char *)psz_value ) : NULL;
 }
 
 static int ReaderNextAttr( xml_reader_t *p_reader )

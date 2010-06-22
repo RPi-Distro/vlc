@@ -2,7 +2,7 @@
  * mono.c : stereo2mono downmixsimple channel mixer plug-in
  *****************************************************************************
  * Copyright (C) 2006 M2X
- * $Id: 131a118c35061fa3066bdf41b7e981d9c8af019c $
+ * $Id: 19b3969d4b27a4c50bd0685a97611edf3d76904c $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -37,7 +37,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_es.h>
 #include <vlc_block.h>
 #include <vlc_filter.h>
 #include <vlc_aout.h>
@@ -107,7 +106,7 @@ static const uint32_t pi_channels_out[] =
  *****************************************************************************/
 vlc_module_begin ()
     set_description( N_("Audio filter for stereo to mono conversion") )
-    set_capability( "audio filter2", 2 )
+    set_capability( "audio filter", 2 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AFILTER )
     set_callbacks( OpenFilter, CloseFilter )
@@ -206,7 +205,7 @@ static int Init( vlc_object_t *p_this, struct filter_sys_t * p_data,
                  unsigned int i_nb_channels, uint32_t i_physical_channels,
                  unsigned int i_rate )
 {
-    double d_x = config_GetInt( p_this, "headphone-dim" );
+    double d_x = var_InheritInteger( p_this, "headphone-dim" );
     double d_z = d_x;
     double d_z_rear = -d_x/3;
     double d_min = 0;
@@ -214,7 +213,7 @@ static int Init( vlc_object_t *p_this, struct filter_sys_t * p_data,
     int i_source_channel_offset;
     unsigned int i;
 
-    if( config_GetInt( p_this, "headphone-compensate" ) )
+    if( var_InheritBool( p_this, "headphone-compensate" ) )
     {
         /* minimal distance to any speaker */
         if( i_physical_channels & AOUT_CHAN_REARCENTER )
@@ -358,8 +357,8 @@ static int OpenFilter( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if( (p_filter->fmt_in.i_codec != AOUT_FMT_S16_NE) ||
-        (p_filter->fmt_out.i_codec != AOUT_FMT_S16_NE) )
+    if( (p_filter->fmt_in.i_codec != VLC_CODEC_S16N) ||
+        (p_filter->fmt_out.i_codec != VLC_CODEC_S16N) )
     {
         /*msg_Err( p_this, "filter discarded (invalid format)" );*/
         return VLC_EGENERIC;
@@ -367,8 +366,8 @@ static int OpenFilter( vlc_object_t *p_this )
 
     if( (p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format) &&
         (p_filter->fmt_in.audio.i_rate != p_filter->fmt_out.audio.i_rate) &&
-        (p_filter->fmt_in.audio.i_format != AOUT_FMT_S16_NE) &&
-        (p_filter->fmt_out.audio.i_format != AOUT_FMT_S16_NE) &&
+        (p_filter->fmt_in.audio.i_format != VLC_CODEC_S16N) &&
+        (p_filter->fmt_out.audio.i_format != VLC_CODEC_S16N) &&
         (p_filter->fmt_in.audio.i_bitspersample !=
                                     p_filter->fmt_out.audio.i_bitspersample))
     {
@@ -381,14 +380,9 @@ static int OpenFilter( vlc_object_t *p_this )
     if( p_sys == NULL )
         return VLC_EGENERIC;
 
-    var_Create( p_this, MONO_CFG "downmix",
-                VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    p_sys->b_downmix = var_GetBool( p_this, MONO_CFG "downmix" );
-
-    var_Create( p_this, MONO_CFG "channel",
-                VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
+    p_sys->b_downmix = var_CreateGetBool( p_this, MONO_CFG "downmix" );
     p_sys->i_channel_selected =
-            (unsigned int) var_GetInteger( p_this, MONO_CFG "channel" );
+            (unsigned int) var_CreateGetInteger( p_this, MONO_CFG "channel" );
 
     if( p_sys->b_downmix )
     {
@@ -465,14 +459,14 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
     unsigned int i_samples;
     int i_out_size;
 
-    if( !p_block || !p_block->i_samples )
+    if( !p_block || !p_block->i_nb_samples )
     {
         if( p_block )
             block_Release( p_block );
         return NULL;
     }
 
-    i_out_size = p_block->i_samples * p_filter->p_sys->i_bitspersample/8 *
+    i_out_size = p_block->i_nb_samples * p_filter->p_sys->i_bitspersample/8 *
                  aout_FormatNbChannels( &(p_filter->fmt_out.audio) );
 
     p_out = p_filter->pf_audio_buffer_new( p_filter, i_out_size );
@@ -482,26 +476,27 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
         block_Release( p_block );
         return NULL;
     }
-    p_out->i_samples = (p_block->i_samples / p_filter->p_sys->i_nb_channels) *
+    p_out->i_nb_samples =
+                  (p_block->i_nb_samples / p_filter->p_sys->i_nb_channels) *
                        aout_FormatNbChannels( &(p_filter->fmt_out.audio) );
     p_out->i_dts = p_block->i_dts;
     p_out->i_pts = p_block->i_pts;
     p_out->i_length = p_block->i_length;
 
     aout_filter.p_sys = (struct aout_filter_sys_t *)p_filter->p_sys;
-    aout_filter.input = p_filter->fmt_in.audio;
-    aout_filter.input.i_format = p_filter->fmt_in.i_codec;
-    aout_filter.output = p_filter->fmt_out.audio;
-    aout_filter.output.i_format = p_filter->fmt_out.i_codec;
+    aout_filter.fmt_in.audio = p_filter->fmt_in.audio;
+    aout_filter.fmt_in.audio.i_format = p_filter->fmt_in.i_codec;
+    aout_filter.fmt_out.audio = p_filter->fmt_out.audio;
+    aout_filter.fmt_out.audio.i_format = p_filter->fmt_out.i_codec;
 
     in_buf.p_buffer = p_block->p_buffer;
-    in_buf.i_nb_bytes = p_block->i_buffer;
-    in_buf.i_nb_samples = p_block->i_samples;
+    in_buf.i_buffer = p_block->i_buffer;
+    in_buf.i_nb_samples = p_block->i_nb_samples;
 
 #if 0
     unsigned int i_in_size = in_buf.i_nb_samples  * (p_filter->p_sys->i_bitspersample/8) *
                              aout_FormatNbChannels( &(p_filter->fmt_in.audio) );
-    if( (in_buf.i_nb_bytes != i_in_size) && ((i_in_size % 32) != 0) ) /* is it word aligned?? */
+    if( (in_buf.i_buffer != i_in_size) && ((i_in_size % 32) != 0) ) /* is it word aligned?? */
     {
         msg_Err( p_filter, "input buffer is not word aligned" );
         /* Fix output buffer to be word aligned */
@@ -509,8 +504,8 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
 #endif
 
     out_buf.p_buffer = p_out->p_buffer;
-    out_buf.i_nb_bytes = p_out->i_buffer;
-    out_buf.i_nb_samples = p_out->i_samples;
+    out_buf.i_buffer = p_out->i_buffer;
+    out_buf.i_nb_samples = p_out->i_nb_samples;
 
     memset( p_out->p_buffer, 0, i_out_size );
     if( p_filter->p_sys->b_downmix )
@@ -523,8 +518,8 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
         i_samples = stereo_to_mono( &aout_filter, &out_buf, &in_buf );
     }
 
-    p_out->i_buffer = out_buf.i_nb_bytes;
-    p_out->i_samples = out_buf.i_nb_samples;
+    p_out->i_buffer = out_buf.i_buffer;
+    p_out->i_nb_samples = out_buf.i_nb_samples;
 
     block_Release( p_block );
     return p_out;
@@ -540,8 +535,8 @@ static void stereo2mono_downmix( aout_filter_t * p_filter,
 {
     filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
 
-    int i_input_nb = aout_FormatNbChannels( &p_filter->input );
-    int i_output_nb = aout_FormatNbChannels( &p_filter->output );
+    int i_input_nb = aout_FormatNbChannels( &p_filter->fmt_in.audio );
+    int i_output_nb = aout_FormatNbChannels( &p_filter->fmt_out.audio );
 
     int16_t * p_in = (int16_t*) p_in_buf->p_buffer;
     uint8_t * p_out;
@@ -560,87 +555,80 @@ static void stereo2mono_downmix( aout_filter_t * p_filter,
 
     /* out buffer characterisitcs */
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
-    p_out_buf->i_nb_bytes = p_in_buf->i_nb_bytes * i_output_nb / i_input_nb;
+    p_out_buf->i_buffer = p_in_buf->i_buffer * i_output_nb / i_input_nb;
     p_out = p_out_buf->p_buffer;
-    i_out_size = p_out_buf->i_nb_bytes;
+    i_out_size = p_out_buf->i_buffer;
 
-    if( p_sys != NULL )
-    {
-        /* Slide the overflow buffer */
-        p_overflow = p_sys->p_overflow_buffer;
-        i_overflow_size = p_sys->i_overflow_buffer_size;
+    /* Slide the overflow buffer */
+    p_overflow = p_sys->p_overflow_buffer;
+    i_overflow_size = p_sys->i_overflow_buffer_size;
 
-        if ( i_out_size > i_overflow_size )
-            memcpy( p_out, p_overflow, i_overflow_size );
-        else
-            memcpy( p_out, p_overflow, i_out_size );
-
-        p_slide = p_sys->p_overflow_buffer;
-        while( p_slide < p_overflow + i_overflow_size )
-        {
-            if( p_slide + i_out_size < p_overflow + i_overflow_size )
-            {
-                memset( p_slide, 0, i_out_size );
-                if( p_slide + 2 * i_out_size < p_overflow + i_overflow_size )
-                    memcpy( p_slide, p_slide + i_out_size, i_out_size );
-                else
-                    memcpy( p_slide, p_slide + i_out_size,
-                            p_overflow + i_overflow_size - ( p_slide + i_out_size ) );
-            }
-            else
-            {
-                memset( p_slide, 0, p_overflow + i_overflow_size - p_slide );
-            }
-            p_slide += i_out_size;
-        }
-
-        /* apply the atomic operations */
-        for( i = 0; i < p_sys->i_nb_atomic_operations; i++ )
-        {
-            /* shorter variable names */
-            i_source_channel_offset
-                = p_sys->p_atomic_operations[i].i_source_channel_offset;
-            i_dest_channel_offset
-                = p_sys->p_atomic_operations[i].i_dest_channel_offset;
-            i_delay = p_sys->p_atomic_operations[i].i_delay;
-            d_amplitude_factor
-                = p_sys->p_atomic_operations[i].d_amplitude_factor;
-
-            if( p_out_buf->i_nb_samples > i_delay )
-            {
-                /* current buffer coefficients */
-                for( j = 0; j < p_out_buf->i_nb_samples - i_delay; j++ )
-                {
-                    ((int16_t*)p_out)[ (i_delay+j)*i_output_nb + i_dest_channel_offset ]
-                        += p_in[ j * i_input_nb + i_source_channel_offset ]
-                           * d_amplitude_factor;
-                }
-
-                /* overflow buffer coefficients */
-                for( j = 0; j < i_delay; j++ )
-                {
-                    ((int16_t*)p_overflow)[ j*i_output_nb + i_dest_channel_offset ]
-                        += p_in[ (p_out_buf->i_nb_samples - i_delay + j)
-                           * i_input_nb + i_source_channel_offset ]
-                           * d_amplitude_factor;
-                }
-            }
-            else
-            {
-                /* overflow buffer coefficients only */
-                for( j = 0; j < p_out_buf->i_nb_samples; j++ )
-                {
-                    ((int16_t*)p_overflow)[ (i_delay - p_out_buf->i_nb_samples + j)
-                        * i_output_nb + i_dest_channel_offset ]
-                        += p_in[ j * i_input_nb + i_source_channel_offset ]
-                           * d_amplitude_factor;
-                }
-            }
-        }
-    }
+    if ( i_out_size > i_overflow_size )
+        memcpy( p_out, p_overflow, i_overflow_size );
     else
+        memcpy( p_out, p_overflow, i_out_size );
+
+    p_slide = p_sys->p_overflow_buffer;
+    while( p_slide < p_overflow + i_overflow_size )
     {
-        memset( p_out, 0, i_out_size );
+        if( p_slide + i_out_size < p_overflow + i_overflow_size )
+        {
+            memset( p_slide, 0, i_out_size );
+            if( p_slide + 2 * i_out_size < p_overflow + i_overflow_size )
+                memcpy( p_slide, p_slide + i_out_size, i_out_size );
+            else
+                memcpy( p_slide, p_slide + i_out_size,
+                        p_overflow + i_overflow_size - ( p_slide + i_out_size ) );
+        }
+        else
+        {
+            memset( p_slide, 0, p_overflow + i_overflow_size - p_slide );
+        }
+        p_slide += i_out_size;
+    }
+
+    /* apply the atomic operations */
+    for( i = 0; i < p_sys->i_nb_atomic_operations; i++ )
+    {
+        /* shorter variable names */
+        i_source_channel_offset
+            = p_sys->p_atomic_operations[i].i_source_channel_offset;
+        i_dest_channel_offset
+            = p_sys->p_atomic_operations[i].i_dest_channel_offset;
+        i_delay = p_sys->p_atomic_operations[i].i_delay;
+        d_amplitude_factor
+            = p_sys->p_atomic_operations[i].d_amplitude_factor;
+
+        if( p_out_buf->i_nb_samples > i_delay )
+        {
+            /* current buffer coefficients */
+            for( j = 0; j < p_out_buf->i_nb_samples - i_delay; j++ )
+            {
+                ((int16_t*)p_out)[ (i_delay+j)*i_output_nb + i_dest_channel_offset ]
+                    += p_in[ j * i_input_nb + i_source_channel_offset ]
+                       * d_amplitude_factor;
+            }
+
+            /* overflow buffer coefficients */
+            for( j = 0; j < i_delay; j++ )
+            {
+                ((int16_t*)p_overflow)[ j*i_output_nb + i_dest_channel_offset ]
+                    += p_in[ (p_out_buf->i_nb_samples - i_delay + j)
+                       * i_input_nb + i_source_channel_offset ]
+                       * d_amplitude_factor;
+            }
+        }
+        else
+        {
+            /* overflow buffer coefficients only */
+            for( j = 0; j < p_out_buf->i_nb_samples; j++ )
+            {
+                ((int16_t*)p_overflow)[ (i_delay - p_out_buf->i_nb_samples + j)
+                                        * i_output_nb + i_dest_channel_offset ]
+                    += p_in[ j * i_input_nb + i_source_channel_offset ]
+                       * d_amplitude_factor;
+            }
+        }
     }
 }
 

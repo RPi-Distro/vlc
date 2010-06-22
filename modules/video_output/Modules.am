@@ -1,37 +1,35 @@
-SUBDIRS = msw qte x11
+SUBDIRS = msw
 # Automake forgets to add a proper tag to libtool with Objective-C files.
 # Moreocer Libtool should default tag to CC when none is specified but
 # obviously does not. Here is a fix for that.
 LIBTOOL=@LIBTOOL@ --tag=CC
 
-SOURCES_aa = aa.c
-SOURCES_caca = caca.c
+SOURCES_aa = aa.c keythread.h keythread.c
+SOURCES_caca = caca.c keythread.h keythread.c
 SOURCES_fb = fb.c
 SOURCES_omapfb = omapfb.c
 SOURCES_ggi = ggi.c
-SOURCES_vout_sdl = sdl.c
+SOURCES_vout_sdl = sdl.c keythread.h keythread.c
 SOURCES_svgalib = svgalib.c
-SOURCES_mga = mga.c
 SOURCES_hd1000v = hd1000v.cpp
 SOURCES_snapshot = snapshot.c
-SOURCES_opengl = opengl.c
-SOURCES_opengllayer = opengllayer.m
+SOURCES_opengl = opengl.c opengl.h
 SOURCES_directfb = directfb.c
 SOURCES_vmem = vmem.c
 SOURCES_yuv = yuv.c
+SOURCES_vout_wrapper = wrapper.c
+SOURCES_vout_macosx = macosx.m
 
-libxcb_plugin_la_SOURCES = \
+libxcb_x11_plugin_la_SOURCES = \
 	xcb/xcb_vlc.h \
 	xcb/x11.c \
 	xcb/common.c \
 	xcb/events.c
-libxcb_plugin_la_CFLAGS = $(AM_CFLAGS) \
-	$(XCB_CFLAGS) $(XCB_SHM_CFLAGS) \
-	$(XPROTO_CFLAGS)
-libxcb_plugin_la_LIBADD = $(AM_LIBADD) \
-	$(XCB_LIBS) $(XCB_SHM_LIBS) \
-	$(XPROTO_LIBS)
-libxcb_plugin_la_DEPENDENCIES =
+libxcb_x11_plugin_la_CFLAGS = $(AM_CFLAGS) \
+	$(XCB_CFLAGS) $(XCB_SHM_CFLAGS)
+libxcb_x11_plugin_la_LIBADD = $(AM_LIBADD) \
+	$(XCB_LIBS) $(XCB_SHM_LIBS)
+libxcb_x11_plugin_la_DEPENDENCIES =
 
 libxcb_xv_plugin_la_SOURCES = \
 	xcb/xcb_vlc.h \
@@ -39,29 +37,41 @@ libxcb_xv_plugin_la_SOURCES = \
 	xcb/common.c \
 	xcb/events.c
 libxcb_xv_plugin_la_CFLAGS = $(AM_CFLAGS) \
-	$(XCB_CFLAGS) $(XCB_SHM_CFLAGS) $(XCB_XV_CFLAGS) \
-	$(XPROTO_CFLAGS)
+	$(XCB_CFLAGS) $(XCB_SHM_CFLAGS) $(XCB_XV_CFLAGS)
 libxcb_xv_plugin_la_LIBADD = $(AM_LIBADD) \
-	$(XCB_LIBS) $(XCB_SHM_LIBS) $(XCB_XV_LIBS) \
-	$(XPROTO_LIBS)
+	$(XCB_LIBS) $(XCB_SHM_LIBS) $(XCB_XV_LIBS)
 libxcb_xv_plugin_la_DEPENDENCIES =
 
-libxcb_window_plugin_la_SOURCES = xcb/window.c xcb/keys.c
+libxcb_glx_plugin_la_SOURCES = \
+	xcb/xcb_vlc.h \
+	xcb/glx.c \
+	xcb/events.c
+libxcb_glx_plugin_la_CFLAGS = $(AM_CFLAGS) \
+	$(XLIB_XCB_CFLAGS) $(GL_CFLAGS)
+libxcb_glx_plugin_la_LIBADD = $(AM_LIBADD) \
+	$(XLIB_XCB_LIBS) $(GL_LIBS)
+libxcb_glx_plugin_la_DEPENDENCIES =
+
+libxcb_window_plugin_la_SOURCES = xcb/window.c xcb/keys.c xcb/keysym.h xcb/xcb_keysym.h
 libxcb_window_plugin_la_CFLAGS = $(AM_CFLAGS) \
+	$(XPROTO_CFLAGS) \
 	$(XCB_CFLAGS) \
-	$(XCB_AUX_CFLAGS) $(XCB_KEYSYMS_CFLAGS)
+	$(XCB_KEYSYMS_CFLAGS)
 libxcb_window_plugin_la_LIBADD = $(AM_LIBADD) \
+	$(XPROTO_LIBS) \
 	$(XCB_LIBS) \
-	$(XCB_AUX_LIBS) $(XCB_KEYSYMS_LIBS)
+	$(XCB_KEYSYMS_LIBS)
 libxcb_window_plugin_la_DEPENDENCIES =
 
 EXTRA_LTLIBRARIES += \
-	libxcb_plugin.la \
+	libxcb_x11_plugin.la \
 	libxcb_xv_plugin.la \
+	libxcb_glx_plugin.la \
 	libxcb_window_plugin.la
 libvlc_LTLIBRARIES += \
-	$(LTLIBxcb) \
+	$(LTLIBxcb_x11) \
 	$(LTLIBxcb_xv) \
+	$(LTLIBxcb_glx) \
 	$(LTLIBxcb_window)
 
 # XXX: do we need yet another modules/ subdirectory?
@@ -69,4 +79,11 @@ libdrawable_plugin_la_SOURCES = drawable.c
 libdrawable_plugin_la_CFLAGS = $(AM_CFLAGS)
 libdrawable_plugin_la_LIBADD = $(AM_LIBADD)
 libdrawable_plugin_la_DEPENDENCIES =
+if HAVE_WIN32
 libvlc_LTLIBRARIES += libdrawable_plugin.la
+endif
+
+libvlc_LTLIBRARIES += \
+	libvmem_plugin.la \
+	libyuv_plugin.la \
+	libvout_wrapper_plugin.la

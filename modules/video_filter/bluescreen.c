@@ -2,7 +2,7 @@
  * bluescreen.c : Bluescreen (weather channel like) video filter for vlc
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: 90396c81cc447b473d6fddf74300c1a4acc1aa35 $
+ * $Id: 378219168dc021cd2f2df4da2998fe332f0e7e74 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -31,9 +31,7 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
-
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 
 #define BLUESCREEN_HELP N_( \
     "This effect, also known as \"greenscreen\" or \"chroma key\" blends " \
@@ -113,10 +111,10 @@ static int Create( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
 
-    if( p_filter->fmt_in.video.i_chroma != VLC_FOURCC('Y','U','V','A') )
+    if( p_filter->fmt_in.video.i_chroma != VLC_CODEC_YUVA )
     {
         msg_Err( p_filter,
-                 "Unsupported input chroma \"%4s\". "
+                 "Unsupported input chroma \"%4.4s\". "
                  "Bluescreen can only use \"YUVA\".",
                  (char*)&p_filter->fmt_in.video.i_chroma );
         return VLC_EGENERIC;
@@ -178,16 +176,17 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     uint8_t *p_v = p_pic->p[ V_PLANE ].p_pixels;
     uint8_t umin, umax, vmin, vmax;
 
-    if( p_pic->format.i_chroma != VLC_FOURCC('Y','U','V','A') )
+    if( p_pic->format.i_chroma != VLC_CODEC_YUVA )
     {
         msg_Err( p_filter,
-                 "Unsupported input chroma \"%4s\". "
+                 "Unsupported input chroma \"%4.4s\". "
                  "Bluescreen can only use \"YUVA\".",
                  (char*)&p_pic->format.i_chroma );
         return NULL;
     }
 
-    p_sys->p_at = realloc( p_sys->p_at, i_lines * i_pitch * sizeof( uint8_t ) );
+    p_sys->p_at = xrealloc( p_sys->p_at,
+                            i_lines * i_pitch * sizeof( uint8_t ) );
     p_at = p_sys->p_at;
 
     vlc_mutex_lock( &p_sys->lock );

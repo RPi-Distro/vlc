@@ -2,7 +2,7 @@
  * mpc.c : MPC stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 374bb53dd3d9f2408ecd45778ab84400563d6042 $
+ * $Id: 649a93e72ef8b95c0911edec1c4eb1f72c5b1210 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr.com>
  *
@@ -178,12 +178,12 @@ static int Open( vlc_object_t * p_this )
 
     /* */
 #ifndef MPC_FIXED_POINT
-    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 'f', 'l', '3', '2' ) );
+    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_FL32 );
 #else
 #   ifdef WORDS_BIGENDIAN
-    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 's', '3', '2', 'b' ) );
+    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_S32B );
 #   else
-    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 's', '3', '2', 'l' ) );
+    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_S32L );
 #   endif
 #endif
     fmt.audio.i_channels = p_sys->info.channels;
@@ -281,7 +281,7 @@ static int Demux( demux_t *p_demux )
     /* */
     p_data->i_buffer = i_ret * sizeof(MPC_SAMPLE_FORMAT) * p_sys->info.channels;
     p_data->i_dts = p_data->i_pts =
-            1 + INT64_C(1000000) * p_sys->i_position / p_sys->info.sample_freq;
+            VLC_TS_0 + INT64_C(1000000) * p_sys->i_position / p_sys->info.sample_freq;
 
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_data->i_dts );
 

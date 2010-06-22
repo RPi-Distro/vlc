@@ -2,7 +2,7 @@
  * input_internal.h: Internal input structures
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: 2725f6bdc9d109611a14dddea2f499eac972af7a $
+ * $Id: 654913095884997add164fbdf004466eec5a31d4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -85,15 +85,15 @@ typedef struct
 struct input_thread_private_t
 {
     /* Global properties */
+    double      f_fps;
+    int         i_state;
     bool        b_can_pause;
     bool        b_can_rate_control;
     bool        b_can_pace_control;
-    double      f_fps;
-    int         i_state;
 
     /* Current state */
-    int         i_rate;
     bool        b_recording;
+    int         i_rate;
 
     /* Playtime configuration and state */
     int64_t     i_start;    /* :start-time,0 by default */
@@ -101,6 +101,12 @@ struct input_thread_private_t
     int64_t     i_run;      /* :run-time, 0 if none */
     int64_t     i_time;     /* Current time */
     bool        b_fast_seek;/* :input-fast-seek */
+
+    /* Output */
+    bool            b_out_pace_control; /* XXX Move it ot es_sout ? */
+    sout_instance_t *p_sout;            /* Idem ? */
+    es_out_t        *p_es_out;
+    es_out_t        *p_es_out_display;
 
     /* Title infos FIXME multi-input (not easy) ? */
     int          i_title;
@@ -117,12 +123,6 @@ struct input_thread_private_t
     /* Input attachment */
     int i_attachment;
     input_attachment_t **attachment;
-
-    /* Output */
-    es_out_t        *p_es_out;
-    es_out_t        *p_es_out_display;
-    sout_instance_t *p_sout;            /* XXX Move it to es_out ? */
-    bool            b_out_pace_control; /*     idem ? */
 
     /* Main input properties */
 
@@ -179,14 +179,10 @@ enum input_control_e
     INPUT_CONTROL_SET_STATE,
 
     INPUT_CONTROL_SET_RATE,
-    INPUT_CONTROL_SET_RATE_SLOWER,
-    INPUT_CONTROL_SET_RATE_FASTER,
 
     INPUT_CONTROL_SET_POSITION,
-    INPUT_CONTROL_SET_POSITION_OFFSET,
 
     INPUT_CONTROL_SET_TIME,
-    INPUT_CONTROL_SET_TIME_OFFSET,
 
     INPUT_CONTROL_SET_PROGRAM,
 
@@ -221,6 +217,9 @@ enum input_control_e
  * input_ControlPush
  */
 void input_ControlPush( input_thread_t *, int i_type, vlc_value_t * );
+
+/* Bound pts_delay */
+#define INPUT_PTS_DELAY_MAX INT64_C(60000000)
 
 /**********************************************************************
  * Item metadata

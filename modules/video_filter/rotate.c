@@ -2,7 +2,7 @@
  * rotate.c : video rotation filter
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: c0f1965bfbdc8b704a505f75469d337e1539ce51 $
+ * $Id: eabdfcb9e2a75da1aab108b463ec01006d1f434b $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -33,9 +33,8 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -123,7 +122,7 @@ static int Create( vlc_object_t *p_this )
             break;
 
         default:
-            msg_Err( p_filter, "Unsupported input chroma (%4s)",
+            msg_Err( p_filter, "Unsupported input chroma (%4.4s)",
                      (char*)&(p_filter->fmt_in.video.i_chroma) );
             return VLC_EGENERIC;
     }
@@ -146,7 +145,6 @@ static int Create( vlc_object_t *p_this )
     var_AddCallback( p_filter, FILTER_PREFIX "angle", RotateCallback, p_sys );
     var_AddCallback( p_filter, FILTER_PREFIX "deciangle",
                      PreciseRotateCallback, p_sys );
-
 
     return VLC_SUCCESS;
 }
@@ -172,7 +170,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
     filter_sys_t *p_sys = p_filter->p_sys;
-    int i_sin, i_cos;
 
     if( !p_pic ) return NULL;
 
@@ -184,8 +181,8 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     }
 
     vlc_spin_lock( &p_sys->lock );
-    i_sin = p_sys->i_sin;
-    i_cos = p_sys->i_cos;
+    const int i_sin = p_sys->i_sin;
+    const int i_cos = p_sys->i_cos;
     vlc_spin_unlock( &p_sys->lock );
 
     for( int i_plane = 0 ; i_plane < p_pic->i_planes ; i_plane++ )
@@ -297,7 +294,6 @@ static picture_t *FilterPacked( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
     filter_sys_t *p_sys = p_filter->p_sys;
-    const int i_sin = p_sys->i_sin, i_cos = p_sys->i_cos;
 
     if( !p_pic ) return NULL;
 
@@ -306,7 +302,7 @@ static picture_t *FilterPacked( filter_t *p_filter, picture_t *p_pic )
     if( GetPackedYuvOffsets( p_pic->format.i_chroma, &i_y_offset,
                              &i_u_offset, &i_v_offset ) != VLC_SUCCESS )
     {
-        msg_Warn( p_filter, "Unsupported input chroma (%4s)",
+        msg_Warn( p_filter, "Unsupported input chroma (%4.4s)",
                   (char*)&(p_pic->format.i_chroma) );
         picture_Release( p_pic );
         return NULL;
@@ -333,6 +329,11 @@ static picture_t *FilterPacked( filter_t *p_filter, picture_t *p_pic )
 
     const int i_line_center = i_visible_lines>>1;
     const int i_col_center  = i_visible_pitch>>1;
+
+    vlc_spin_lock( &p_sys->lock );
+    const int i_sin = p_sys->i_sin;
+    const int i_cos = p_sys->i_cos;
+    vlc_spin_unlock( &p_sys->lock );
 
     int i_col, i_line;
     for( i_line = 0; i_line < i_visible_lines; i_line++ )

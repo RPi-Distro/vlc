@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: c02736316538139ebdbfe196118cc831caa08348 $
+ * $Id: db1b8e08f2eebe2105bf03b1b1474d525208124e $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -39,7 +39,6 @@
 #include <string.h>
 #include <math.h>
 #include <sys/mount.h>
-#include <vlc_keys.h>
 
 #import "intf.h"
 #import "wizard.h"
@@ -47,10 +46,16 @@
 #import "playlistinfo.h"
 #import "playlist.h"
 #import "controls.h"
-#import "vlc_osd.h"
 #import "misc.h"
-#import <vlc_interface.h>
+#import "sidebarview.h"
+
+#include <vlc_keys.h>
 #import <vlc_services_discovery.h>
+#import <vlc_osd.h>
+#import <vlc_interface.h>
+
+#include <vlc_url.h>
+
 
 /*****************************************************************************
  * VLCPlaylistView implementation
@@ -112,14 +117,18 @@
 }
 - (void)awakeFromNib
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
     [o_outline_view setTarget: self];
     [o_outline_view setDelegate: self];
     [o_outline_view setDataSource: self];
     [o_outline_view setAllowsEmptySelection: NO];
     [o_outline_view expandItem: [o_outline_view itemAtRow:0]];
 
-    pl_Release( VLCIntf );
+	[o_outline_view_other setTarget: self];
+    [o_outline_view_other setDelegate: self];
+    [o_outline_view_other setDataSource: self];
+    [o_outline_view_other setAllowsEmptySelection: NO];
+
     [self initStrings];
 }
 
@@ -128,6 +137,29 @@
     [[o_tc_name headerCell] setStringValue:_NS("Name")];
     [[o_tc_author headerCell] setStringValue:_NS("Author")];
     [[o_tc_duration headerCell] setStringValue:_NS("Duration")];
+
+	[[o_tc_name_other headerCell] setStringValue:_NS("Name")];
+    [[o_tc_author_other headerCell] setStringValue:_NS("Author")];
+    [[o_tc_duration_other headerCell] setStringValue:_NS("Duration")];
+}
+
+- (void)swapPlaylists:(id)newList
+{
+	if(newList != o_outline_view)
+	{
+		id o_outline_view_temp = o_outline_view;
+		id o_tc_author_temp = o_tc_author;
+		id o_tc_duration_temp = o_tc_duration;
+		id o_tc_name_temp = o_tc_name;
+		o_outline_view = o_outline_view_other;
+		o_tc_author = o_tc_author_other;
+		o_tc_duration = o_tc_duration_other;
+		o_tc_name = o_tc_name_other;
+		o_outline_view_other = o_outline_view_temp;
+		o_tc_author_other = o_tc_author_temp;
+		o_tc_duration_other = o_tc_duration_temp;
+		o_tc_name_other = o_tc_name_temp;
+	}
 }
 
 - (NSOutlineView *)outlineView
@@ -150,8 +182,8 @@
 {
     int i_return = 0;
     playlist_item_t *p_item = NULL;
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
-    assert( outlineView == o_outline_view );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
+    //assert( outlineView == o_outline_view );
 
     if( !item )
         p_item = p_playlist->p_root_category;
@@ -161,8 +193,6 @@
     if( p_item )
         i_return = p_item->i_children;
 
-    pl_Release( VLCIntf );
-
     return i_return > 0 ? i_return : 0;
 }
 
@@ -171,7 +201,7 @@
 {
     playlist_item_t *p_return = NULL, *p_item = NULL;
     NSValue *o_value;
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
 
     PL_LOCK;
     if( item == nil )
@@ -186,8 +216,6 @@
     if( p_item && index < p_item->i_children && index >= 0 )
         p_return = p_item->pp_children[index];
     PL_UNLOCK;
-
-    pl_Release( VLCIntf );
 
     o_value = [o_outline_dict objectForKey:[NSString stringWithFormat: @"%p", p_return]];
 
@@ -205,7 +233,7 @@
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
     int i_return = 0;
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
 
     PL_LOCK;
     if( item == nil )
@@ -223,7 +251,6 @@
             i_return = p_item->i_children;
     }
     PL_UNLOCK;
-    pl_Release( VLCIntf );
 
     return (i_return >= 0);
 }
@@ -360,18 +387,24 @@
 
 - (void)awakeFromNib
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
 
     int i;
 
     [super awakeFromNib];
 
     [o_outline_view setDoubleAction: @selector(playItem:)];
+    [o_outline_view_other setDoubleAction: @selector(playItem:)];
 
     [o_outline_view registerForDraggedTypes:
         [NSArray arrayWithObjects: NSFilenamesPboardType,
         @"VLCPlaylistItemPboardType", nil]];
     [o_outline_view setIntercellSpacing: NSMakeSize (0.0, 1.0)];
+
+    [o_outline_view_other registerForDraggedTypes:
+     [NSArray arrayWithObjects: NSFilenamesPboardType,
+      @"VLCPlaylistItemPboardType", nil]];
+    [o_outline_view_other setIntercellSpacing: NSMakeSize (0.0, 1.0)];
 
     /* This uses private Apple API which works fine until 10.5.
      * We need to keep checking in the future!
@@ -382,12 +415,9 @@
     o_tc_sortColumn = nil;
 
     char ** ppsz_name;
-    char ** ppsz_services = vlc_sd_GetNames( &ppsz_name );
+    char ** ppsz_services = vlc_sd_GetNames( VLCIntf, &ppsz_name, NULL );
     if( !ppsz_services )
-    {
-        pl_Release( VLCIntf );
         return;
-    }
     
     for( i = 0; ppsz_services[i]; i++ )
     {
@@ -421,8 +451,6 @@
     }
     free( ppsz_services );
     free( ppsz_name );
-
-    pl_Release( VLCIntf );
 }
 
 - (void)searchfieldChanged:(NSNotification *)o_notification
@@ -450,14 +478,28 @@
     [o_mi_services setTitle: _NS("Services discovery")];
     [o_mm_mi_services setTitle: _NS("Services discovery")];
     [o_status_field setStringValue: _NS("No items in the playlist")];
+    [o_status_field_embed setStringValue: _NS("No items in the playlist")];
 
     [o_search_field setToolTip: _NS("Search in Playlist")];
+    [o_search_field_other setToolTip: _NS("Search in Playlist")];
     [o_mi_addNode setTitle: _NS("Add Folder to Playlist")];
 
     [o_save_accessory_text setStringValue: _NS("File Format:")];
     [[o_save_accessory_popup itemAtIndex:0] setTitle: _NS("Extended M3U")];
     [[o_save_accessory_popup itemAtIndex:1] setTitle: _NS("XML Shareable Playlist Format (XSPF)")];
     [[o_save_accessory_popup itemAtIndex:2] setTitle: _NS("HTML Playlist")];
+}
+
+- (void)swapPlaylists:(id)newList
+{
+	if(newList != o_outline_view)
+	{
+		id o_search_field_temp = o_search_field;
+		o_search_field = o_search_field_other;
+		o_search_field_other = o_search_field_temp;
+		[super swapPlaylists:newList];
+		[self playlistUpdated];
+	}
 }
 
 - (void)playlistUpdated
@@ -474,10 +516,11 @@
     // TODO Find a way to keep the dict size to a minimum
     //[o_outline_dict removeAllObjects];
     [o_outline_view reloadData];
+    [o_sidebar updateSidebar:[self playingItem]];
     [[[[VLCMain sharedInstance] wizard] playlistWizard] reloadOutlineView];
     [[[[VLCMain sharedInstance] bookmarks] dataTable] reloadData];
 
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
 
     PL_LOCK;
     if( playlist_CurrentSize( p_playlist ) >= 2 )
@@ -485,23 +528,31 @@
         [o_status_field setStringValue: [NSString stringWithFormat:
                     _NS("%i items"),
                 playlist_CurrentSize( p_playlist )]];
+        [o_status_field_embed setStringValue: [NSString stringWithFormat:
+                                               _NS("%i items"),
+                                               playlist_CurrentSize( p_playlist )]];        
     }
     else
     {
         if( playlist_IsEmpty( p_playlist ) )
+        {
             [o_status_field setStringValue: _NS("No items in the playlist")];
+            [o_status_field_embed setStringValue: _NS("No items in the playlist")];
+        }
         else
+        {
             [o_status_field setStringValue: _NS("1 item")];
+            [o_status_field_embed setStringValue: _NS("1 item")];
+        }
     }
     PL_UNLOCK;
-    pl_Release( VLCIntf );
 
     [self outlineViewSelectionDidChange: nil];
 }
 
 - (void)playModeUpdated
 {
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
 
     bool loop = var_GetBool( p_playlist, "loop" );
     bool repeat = var_GetBool( p_playlist, "repeat" );
@@ -513,8 +564,6 @@
         [[[VLCMain sharedInstance] controls] repeatOff];
 
     [[[VLCMain sharedInstance] controls] shuffle];
-
-    pl_Release( VLCIntf );
 }
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
@@ -566,7 +615,7 @@
     unsigned int j;
 
     // FIXME: unsafe
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
     playlist_item_t *p_item, *p_temp_item;
     NSMutableArray *o_array = [NSMutableArray array];
 
@@ -575,7 +624,6 @@
     if( p_item == NULL )
     {
         PL_UNLOCK;
-        pl_Release( VLCIntf );
         return;
     }
 
@@ -597,8 +645,6 @@
             [o_outline_view expandItem: o_item];
         }
     }
-
-    pl_Release( VLCIntf );
 }
 
 /* Check if p_item is a child of p_node recursively. We need to check the item
@@ -612,20 +658,14 @@
                     locked:(BOOL)b_locked
 
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
     playlist_item_t *p_temp_item = p_item;
 
     if( p_node == p_item )
-    {
-        pl_Release( VLCIntf );
         return YES;
-    }
 
     if( p_node->i_children < 1)
-    {
-        pl_Release( VLCIntf );
         return NO;
-    }
 
     if ( p_temp_item )
     {
@@ -643,7 +683,6 @@
                 else if ( i == p_playlist->all_items.i_size - 1 )
                 {
                     if(!b_locked) PL_UNLOCK;
-                    pl_Release( VLCIntf );
                     return NO;
                 }
             }
@@ -655,14 +694,11 @@
             if( p_temp_item == p_node )
             {
                 if(!b_locked) PL_UNLOCK;
-                pl_Release( VLCIntf );
                 return YES;
             }
         }
         if(!b_locked) PL_UNLOCK;
     }
-
-    pl_Release( VLCIntf );
     return NO;
 }
 
@@ -673,7 +709,7 @@
     [self isItem:p_item inNode:p_node checkItemExistence:b_check locked:NO];
 }
 
-/* This method is usefull for instance to remove the selected children of an
+/* This method is useful for instance to remove the selected children of an
    already selected node */
 - (void)removeItemsFrom:(id)o_items ifChildrenOf:(id)o_nodes
 {
@@ -702,7 +738,7 @@
 
 - (IBAction)savePlaylist:(id)sender
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
 
     NSSavePanel *o_save_panel = [NSSavePanel savePanel];
     NSString * o_name = [NSString stringWithFormat: @"%@", _NS("Untitled")];
@@ -777,14 +813,13 @@
                 p_playlist->p_local_category, "export-html" );
         }
     }
-    pl_Release( VLCIntf );
 }
 
 /* When called retrieves the selected outlineview row and plays that node or item */
 - (IBAction)playItem:(id)sender
 {
     intf_thread_t * p_intf = VLCIntf;
-    playlist_t * p_playlist = pl_Hold( p_intf );
+    playlist_t * p_playlist = pl_Get( p_intf );
 
     playlist_item_t *p_item;
     playlist_item_t *p_node = NULL;
@@ -813,7 +848,39 @@
         playlist_Control( p_playlist, PLAYLIST_VIEWPLAY, pl_Locked, p_node, p_item );
     }
     PL_UNLOCK;
-    pl_Release( p_intf );
+}
+
+- (void)playSidebarItem:(id)item
+{
+    intf_thread_t * p_intf = VLCIntf;
+    playlist_t * p_playlist = pl_Get( p_intf );
+    
+    playlist_item_t *p_item;
+    playlist_item_t *p_node = NULL;
+    
+    p_item = [item pointerValue];
+    
+    if( p_item )
+    {
+        if( p_item->i_children == -1 )
+        {
+            p_node = p_item->p_parent;
+            
+        }
+        else
+        {
+            p_node = p_item;
+            if( p_node->i_children > 0 && p_node->pp_children[0]->i_children == -1 )
+            {
+                p_item = p_node->pp_children[0];
+            }
+            else
+            {
+                p_item = NULL;
+            }
+        }
+        playlist_Control( p_playlist, PLAYLIST_VIEWPLAY, pl_Unlocked, p_node, p_item );
+    }
 }
 
 - (IBAction)revealItemInFinder:(id)sender
@@ -843,7 +910,7 @@
     int i_count;
     NSMutableArray *o_to_preparse;
     intf_thread_t * p_intf = VLCIntf;
-    playlist_t * p_playlist = pl_Hold( p_intf );
+    playlist_t * p_playlist = pl_Get( p_intf );
  
     o_to_preparse = [NSMutableArray arrayWithArray:[[o_outline_view selectedRowEnumerator] allObjects]];
     i_count = [o_to_preparse count];
@@ -864,7 +931,7 @@
         {
             if( p_item->i_children == -1 )
             {
-                playlist_PreparseEnqueue( p_playlist, p_item->p_input, pl_Unlocked );
+                playlist_PreparseEnqueue( p_playlist, p_item->p_input );
             }
             else
             {
@@ -872,7 +939,6 @@
             }
         }
     }
-    pl_Release( p_intf );
     [self playlistUpdated];
 }
 
@@ -881,7 +947,7 @@
     int i_count;
     NSMutableArray *o_to_preparse;
     intf_thread_t * p_intf = VLCIntf;
-    playlist_t * p_playlist = pl_Hold( p_intf );
+    playlist_t * p_playlist = pl_Get( p_intf );
 
     o_to_preparse = [NSMutableArray arrayWithArray:[[o_outline_view selectedRowEnumerator] allObjects]];
     i_count = [o_to_preparse count];
@@ -900,10 +966,9 @@
 
         if( p_item && p_item->i_children == -1 )
         {
-            playlist_AskForArtEnqueue( p_playlist, p_item->p_input, pl_Unlocked );
+            playlist_AskForArtEnqueue( p_playlist, p_item->p_input );
         }
     }
-    pl_Release( p_intf );
     [self playlistUpdated];
 }
 
@@ -911,7 +976,7 @@
 {
     NSMenuItem *o_mi = (NSMenuItem *)sender;
     NSString *o_string = [o_mi representedObject];
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
     if( !playlist_IsServicesDiscoveryLoaded( p_playlist, [o_string UTF8String] ) )
         playlist_ServicesDiscoveryAdd( p_playlist, [o_string UTF8String] );
     else
@@ -920,7 +985,6 @@
     [o_mi setState: playlist_IsServicesDiscoveryLoaded( p_playlist,
                                           [o_string UTF8String] ) ? YES : NO];
 
-    pl_Release( VLCIntf );
     [self playlistUpdated];
     return;
 }
@@ -942,7 +1006,7 @@
     o_to_delete = [NSMutableArray arrayWithArray:[[o_outline_view selectedRowEnumerator] allObjects]];
     i_count = [o_to_delete count];
 
-    p_playlist = pl_Hold( p_intf );
+    p_playlist = pl_Get( p_intf );
 
     for( int i = 0; i < i_count; i++ )
     {
@@ -972,7 +1036,7 @@
             playlist_NodeDelete( p_playlist, p_item, true, false );
         }
         else
-            playlist_DeleteFromInput( p_playlist, p_item->p_input->i_id, pl_Locked );
+            playlist_DeleteFromInput( p_playlist, p_item->p_input, pl_Locked );
 
         PL_UNLOCK;
         [o_outline_dict removeObjectForKey:[NSString stringWithFormat:@"%p",
@@ -981,7 +1045,6 @@
     }
 
     [self playlistUpdated];
-    pl_Release( p_intf );
 }
 
 - (IBAction)sortNodeByName:(id)sender
@@ -996,7 +1059,7 @@
 
 - (void)sortNode:(int)i_mode
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
     playlist_item_t * p_item;
 
     if( [o_outline_view selectedRow] > -1 )
@@ -1020,14 +1083,13 @@
                 p_item->p_parent, i_mode, ORDER_NORMAL );
     }
     PL_UNLOCK;
-    pl_Release( VLCIntf );
     [self playlistUpdated];
 }
 
 - (input_item_t *)createItem:(NSDictionary *)o_one_item
 {
     intf_thread_t * p_intf = VLCIntf;
-    playlist_t * p_playlist = pl_Hold( p_intf );
+    playlist_t * p_playlist = pl_Get( p_intf );
 
     input_item_t *p_input;
     int i;
@@ -1087,10 +1149,7 @@
 
     p_input = input_item_New( p_playlist, [o_uri fileSystemRepresentation], o_name ? [o_name UTF8String] : NULL );
     if( !p_input )
-    {
-        pl_Release( p_intf );
         return NULL;
-    }
 
     if( o_options )
     {
@@ -1108,15 +1167,13 @@
         [[NSDocumentController sharedDocumentController]
             noteNewRecentDocumentURL: o_true_file];
     }
-
-    pl_Release( p_intf );
     return p_input;
 }
 
 - (void)appendArray:(NSArray*)o_array atPos:(int)i_position enqueue:(BOOL)b_enqueue
 {
     int i_item;
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
 
     PL_LOCK;
     for( i_item = 0; i_item < (int)[o_array count]; i_item++ )
@@ -1164,13 +1221,12 @@
     PL_UNLOCK;
 
     [self playlistUpdated];
-    pl_Release( VLCIntf );
 }
 
 - (void)appendNodeArray:(NSArray*)o_array inNode:(playlist_item_t *)p_node atPos:(int)i_position enqueue:(BOOL)b_enqueue
 {
     int i_item;
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
 
     for( i_item = 0; i_item < (int)[o_array count]; i_item++ )
     {
@@ -1184,13 +1240,12 @@
         if( !p_input ) continue;
 
         /* Add the item */
-        /* FIXME: playlist_BothAddInput() can fail */
         PL_LOCK;
-        playlist_BothAddInput( p_playlist, p_input, p_node,
+        playlist_NodeAddInput( p_playlist, p_input, p_node,
                                       PLAYLIST_INSERT,
                                       i_position == -1 ?
                                       PLAYLIST_END : i_position + i_item,
-                                      NULL, NULL, pl_Locked );
+                                      pl_Locked );
 
 
         if( i_item == 0 && !b_enqueue )
@@ -1203,12 +1258,11 @@
         vlc_gc_decref( p_input );
     }
     [self playlistUpdated];
-    pl_Release( VLCIntf );
 }
 
 - (NSMutableArray *)subSearchItem:(playlist_item_t *)p_item
 {
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
     playlist_item_t *p_selected_item;
     int i_current, i_selected_row;
 
@@ -1241,7 +1295,6 @@
         else if( p_selected_item == p_item->pp_children[i_current] &&
                     b_selected_item_met == YES )
         {
-            pl_Release( VLCIntf );
             return NULL;
         }
         else if( b_selected_item_met == YES &&
@@ -1250,7 +1303,6 @@
                       [o_current_author rangeOfString:[o_search_field
                         stringValue] options:NSCaseInsensitiveSearch].length ) )
         {
-            pl_Release( VLCIntf );
             /*Adds the parent items in the result array as well, so that we can
             expand the tree*/
             return [NSMutableArray arrayWithObject: [NSValue
@@ -1262,20 +1314,18 @@
                                             p_item->pp_children[i_current]];
             if( o_result != NULL )
             {
-                pl_Release( VLCIntf );
                 [o_result insertObject: [NSValue valueWithPointer:
                                 p_item->pp_children[i_current]] atIndex:0];
                 return o_result;
             }
         }
     }
-    pl_Release( VLCIntf );
     return NULL;
 }
 
 - (IBAction)searchItem:(id)sender
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
     id o_result;
 
     unsigned int i;
@@ -1313,10 +1363,9 @@
     }
     if( i_row > -1 )
     {
-        [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:i_row] byExtendingSelection:NO];
+		[o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:i_row] byExtendingSelection:NO];
         [o_outline_view scrollRowToVisible: i_row];
     }
-    pl_Release( VLCIntf );
 }
 
 - (IBAction)recursiveExpandNode:(id)sender
@@ -1370,13 +1419,12 @@
     int i_mode, i_type = 0;
     intf_thread_t *p_intf = VLCIntf;
 
-    playlist_t *p_playlist = pl_Hold( p_intf );
+    playlist_t *p_playlist = pl_Get( p_intf );
 
     /* Check whether the selected table column header corresponds to a
        sortable table column*/
     if( !( o_tc == o_tc_name || o_tc == o_tc_author ) )
     {
-        pl_Release( p_intf );
         return;
     }
 
@@ -1411,7 +1459,6 @@
     playlist_RecursiveNodeSort( p_playlist, p_playlist->p_root_category, i_mode, i_type );
     PL_UNLOCK;
 
-    pl_Release( p_intf );
     [self playlistUpdated];
 
     o_tc_sortColumn = o_tc;
@@ -1435,7 +1482,7 @@
                                 forTableColumn:(NSTableColumn *)tableColumn
                                 item:(id)item
 {
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
 
     id o_playing_item;
 
@@ -1454,20 +1501,31 @@
     {
         [cell setFont: [[NSFontManager sharedFontManager] convertFont:[cell font] toNotHaveTrait:NSBoldFontMask]];
     }
-    pl_Release( VLCIntf );
+}
+
+- (id)playingItem
+{
+    playlist_t *p_playlist = pl_Get( VLCIntf );
+    
+    id o_playing_item;
+
+    PL_LOCK;
+    o_playing_item = [o_outline_dict objectForKey:
+                      [NSString stringWithFormat:@"%p",  playlist_CurrentPlayingItem( p_playlist )]];
+    PL_UNLOCK;
+
+    return o_playing_item;
 }
 
 - (IBAction)addNode:(id)sender
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
     vlc_thread_set_priority( p_playlist, VLC_THREAD_PRIORITY_LOW );
 
     PL_LOCK;
     playlist_NodeCreate( p_playlist, _("Empty Folder"),
-                                      p_playlist->p_local_category, 0, NULL );
+                                      p_playlist->p_local_category, PLAYLIST_END, 0, NULL );
     PL_UNLOCK;
-
-    pl_Release( VLCIntf );
 
     [self playlistUpdated];
 }
@@ -1478,7 +1536,7 @@
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
 {
     id o_value = [super outlineView: outlineView child: index ofItem: item];
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
 
     PL_LOCK;
     if( playlist_CurrentSize( p_playlist )  >= 2 )
@@ -1486,21 +1544,24 @@
         [o_status_field setStringValue: [NSString stringWithFormat:
                     _NS("%i items"),
              playlist_CurrentSize( p_playlist )]];
+        [o_status_field_embed setStringValue: [NSString stringWithFormat:
+                                               _NS("%i items"),
+                                               playlist_CurrentSize( p_playlist )]];
     }
     else
     {
         if( playlist_IsEmpty( p_playlist ) )
         {
             [o_status_field setStringValue: _NS("No items in the playlist")];
+            [o_status_field_embed setStringValue: _NS("No items in the playlist")];
         }
         else
         {
             [o_status_field setStringValue: _NS("1 item")];
+            [o_status_field_embed setStringValue: _NS("1 item")];
         }
     }
     PL_UNLOCK;
-
-    pl_Release( VLCIntf );
 
     [o_outline_dict setObject:o_value forKey:[NSString stringWithFormat:@"%p",
                                                     [o_value pointerValue]]];
@@ -1512,7 +1573,7 @@
 - (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)items toPasteboard:(NSPasteboard *)pboard
 {
     unsigned int i;
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
 
     /* First remove the items that were moved during the last drag & drop
        operation */
@@ -1533,7 +1594,6 @@
             [o_item pointerValue] == p_playlist->p_local_category ||
             [o_item pointerValue] == p_playlist->p_ml_category )
         {
-            pl_Release( VLCIntf );
             return NO;
         }
         /* Fill the items and nodes to move in 2 different arrays */
@@ -1555,13 +1615,12 @@
         @"VLCPlaylistItemPboardType", nil] owner: self];
     [pboard setData:[NSData data] forType:@"VLCPlaylistItemPboardType"];
 
-    pl_Release( VLCIntf );
     return YES;
 }
 
 - (NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
 {
-    playlist_t *p_playlist = pl_Hold( VLCIntf );
+    playlist_t *p_playlist = pl_Get( VLCIntf );
     NSPasteboard *o_pasteboard = [info draggingPasteboard];
 
     if( !p_playlist ) return NSDragOperationNone;
@@ -1572,7 +1631,6 @@
         if( index == NSOutlineViewDropOnItemIndex &&
                 ((playlist_item_t *)[item pointerValue])->i_children == -1 )
         {
-            pl_Release( VLCIntf );
             return NSDragOperationNone;
         }
     }
@@ -1580,7 +1638,6 @@
     /* Don't allow on drop on playlist root element's child */
     if( !item && index != NSOutlineViewDropOnItemIndex)
     {
-        pl_Release( VLCIntf );
         return NSDragOperationNone;
     }
 
@@ -1590,7 +1647,6 @@
     if( !( ([self isItem: [item pointerValue] inNode: p_playlist->p_local_category checkItemExistence: NO] || 
         ( var_CreateGetBool( p_playlist, "media-library" ) && [self isItem: [item pointerValue] inNode: p_playlist->p_ml_category checkItemExistence: NO] ) ) || item == nil ) )
     {
-        pl_Release( VLCIntf );
         return NSDragOperationNone;
     }
 
@@ -1605,27 +1661,23 @@
                     [[o_nodes_array objectAtIndex: i] pointerValue]
                     checkItemExistence: NO] )
             {
-                pl_Release( VLCIntf );
                 return NSDragOperationNone;
             }
         }
-        pl_Release( VLCIntf );
         return NSDragOperationMove;
     }
 
     /* Drop from the Finder */
     else if( [[o_pasteboard types] containsObject: NSFilenamesPboardType] )
     {
-        pl_Release( VLCIntf );
         return NSDragOperationGeneric;
     }
-    pl_Release( VLCIntf );
     return NSDragOperationNone;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(NSInteger)index
 {
-    playlist_t * p_playlist =  pl_Hold( VLCIntf );
+    playlist_t * p_playlist =  pl_Get( VLCIntf );
     NSPasteboard *o_pasteboard = [info draggingPasteboard];
 
     /* Drag & Drop inside the playlist */
@@ -1646,7 +1698,6 @@
            (This should never be true) */
         if( p_new_parent->i_children < 0 )
         {
-            pl_Release( VLCIntf );
             return NO;
         }
 
@@ -1713,7 +1764,6 @@
         [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:i_row] byExtendingSelection:NO];
         [o_outline_view scrollRowToVisible: i_row];
 
-        pl_Release( VLCIntf );
         return YES;
     }
 
@@ -1731,8 +1781,14 @@
         for( i = 0; i < (int)[o_values count]; i++)
         {
             NSDictionary *o_dic;
-            o_dic = [NSDictionary dictionaryWithObject:[o_values
-                        objectAtIndex:i] forKey:@"ITEM_URL"];
+            char *psz_uri = make_URI([[o_values objectAtIndex:i] UTF8String]);
+            if( !psz_uri )
+                continue;
+
+            o_dic = [NSDictionary dictionaryWithObject:[NSString stringWithCString:psz_uri encoding:NSUTF8StringEncoding] forKey:@"ITEM_URL"];
+
+            free( psz_uri );
+
             o_array = [o_array arrayByAddingObject: o_dic];
         }
 
@@ -1746,10 +1802,8 @@
             [self appendNodeArray:o_array inNode: p_node
                 atPos:index enqueue:YES];
         }
-        pl_Release( VLCIntf );
         return YES;
     }
-    pl_Release( VLCIntf );
     return NO;
 }
 @end

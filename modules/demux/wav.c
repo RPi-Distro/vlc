@@ -2,7 +2,7 @@
  * wav.c : wav file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 988b305e7d2ab8de948453807dbba6bef2c55615 $
+ * $Id: 3c3a01249da3c22c80fe833e2c64a7309a4054d9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -222,9 +222,10 @@ static int Open( vlc_object_t * p_this )
                 static const uint32_t pi_pair[] = { AOUT_CHAN_REARLEFT|AOUT_CHAN_REARRIGHT,
                                                     AOUT_CHAN_MIDDLELEFT|AOUT_CHAN_MIDDLERIGHT,
                                                     AOUT_CHAN_LEFT|AOUT_CHAN_RIGHT };
+                /* FIXME: Unused yet
                 static const uint32_t pi_center[] = { AOUT_CHAN_REARCENTER,
                                                       0,
-                                                      AOUT_CHAN_CENTER };
+                                                      AOUT_CHAN_CENTER }; */
 
                 /* Try to complete with pair */
                 for( unsigned i = 0; i < sizeof(pi_pair)/sizeof(*pi_pair); i++ )
@@ -310,19 +311,19 @@ static int Open( vlc_object_t * p_this )
     case VLC_FOURCC( 'a', 'r', 'a', 'w' ):
     case VLC_FOURCC( 'a', 'f', 'l', 't' ):
     case VLC_FOURCC( 'u', 'l', 'a', 'w' ):
-    case VLC_FOURCC( 'a', 'l', 'a', 'w' ):
-    case VLC_FOURCC( 'm', 'l', 'a', 'w' ):
+    case VLC_CODEC_ALAW:
+    case VLC_CODEC_MULAW:
     case VLC_FOURCC( 'p', 'c', 'm', ' ' ):
         if( FrameInfo_PCM( &p_sys->i_frame_size, &p_sys->i_frame_samples,
                            &p_sys->fmt ) )
             goto error;
         break;
-    case VLC_FOURCC( 'm', 's', 0x00, 0x02 ):
+    case VLC_CODEC_ADPCM_MS:
         if( FrameInfo_MS_ADPCM( &p_sys->i_frame_size, &p_sys->i_frame_samples,
                                 &p_sys->fmt ) )
             goto error;
         break;
-    case VLC_FOURCC( 'm', 's', 0x00, 0x11 ):
+    case VLC_CODEC_ADPCM_IMA_WAV:
         if( FrameInfo_IMA_ADPCM( &p_sys->i_frame_size, &p_sys->i_frame_samples,
                                  &p_sys->fmt ) )
             goto error;
@@ -334,12 +335,12 @@ static int Open( vlc_object_t * p_this )
                                 &p_sys->fmt ) )
             goto error;
         break;
-    case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
-    case VLC_FOURCC( 'a', '5', '2', ' ' ):
+    case VLC_CODEC_MPGA:
+    case VLC_CODEC_A52:
         /* FIXME set end of area FIXME */
         goto error;
-    case VLC_FOURCC( 'a', 'g', 's', 'm' ):
-    case VLC_FOURCC( 'g', '7', '2', '6' ):
+    case VLC_CODEC_GSM_MS:
+    case VLC_CODEC_ADPCM_G726:
         if( FrameInfo_MSGSM( &p_sys->i_frame_size, &p_sys->i_frame_samples,
                              &p_sys->fmt ) )
             goto error;
@@ -418,7 +419,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = date_Increment( &p_sys->pts, p_sys->i_frame_samples );
+    p_block->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
 
     /* set PCR */
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
@@ -431,6 +432,8 @@ static int Demux( demux_t *p_demux )
                              p_sys->fmt.audio.i_bitspersample );
 
     es_out_Send( p_demux->out, p_sys->p_es, p_block );
+
+    date_Increment( &p_sys->pts, p_sys->i_frame_samples );
 
     return 1;
 }

@@ -3,9 +3,9 @@
 
 basedir = video_output
 dir = video_output
-mods = aa caca directfb fb ggi hd1000v mga omapfb opengl opengllayer snapshot svgalib vmem vout_sdl yuv
-libvlc_LTLIBRARIES =  $(LTLIBaa) $(LTLIBcaca) $(LTLIBdirectfb) $(LTLIBfb) $(LTLIBggi) $(LTLIBhd1000v) $(LTLIBmga) $(LTLIBomapfb) $(LTLIBopengl) $(LTLIBopengllayer) $(LTLIBsnapshot) $(LTLIBsvgalib) $(LTLIBvmem) $(LTLIBvout_sdl) $(LTLIByuv)
-EXTRA_LTLIBRARIES =  libaa_plugin.la libcaca_plugin.la libdirectfb_plugin.la libfb_plugin.la libggi_plugin.la libhd1000v_plugin.la libmga_plugin.la libomapfb_plugin.la libopengl_plugin.la libopengllayer_plugin.la libsnapshot_plugin.la libsvgalib_plugin.la libvmem_plugin.la libvout_sdl_plugin.la libyuv_plugin.la
+mods = aa caca directfb fb ggi hd1000v omapfb opengl snapshot svgalib vmem vout_macosx vout_sdl vout_wrapper yuv
+libvlc_LTLIBRARIES =  $(LTLIBaa) $(LTLIBcaca) $(LTLIBdirectfb) $(LTLIBfb) $(LTLIBggi) $(LTLIBhd1000v) $(LTLIBomapfb) $(LTLIBopengl) $(LTLIBsnapshot) $(LTLIBsvgalib) $(LTLIBvout_macosx) $(LTLIBvout_sdl)
+EXTRA_LTLIBRARIES =  libaa_plugin.la libcaca_plugin.la libdirectfb_plugin.la libfb_plugin.la libggi_plugin.la libhd1000v_plugin.la libomapfb_plugin.la libopengl_plugin.la libsnapshot_plugin.la libsvgalib_plugin.la libvout_macosx_plugin.la libvout_sdl_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -75,17 +75,6 @@ libhd1000v_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libhd1000v_plugin_la_LIBADD = $(AM_LIBADD)
 libhd1000v_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The mga plugin
-libmga_plugin_la_SOURCES = $(SOURCES_mga)
-nodist_libmga_plugin_la_SOURCES = $(nodist_SOURCES_mga)
-# Force per-target objects:
-libmga_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmga_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmga_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libmga_plugin_la_LIBADD = $(AM_LIBADD)
-libmga_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
 # The omapfb plugin
 libomapfb_plugin_la_SOURCES = $(SOURCES_omapfb)
 nodist_libomapfb_plugin_la_SOURCES = $(nodist_SOURCES_omapfb)
@@ -107,17 +96,6 @@ libopengl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libopengl_plugin_la_LIBADD = $(AM_LIBADD)
 libopengl_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The opengllayer plugin
-libopengllayer_plugin_la_SOURCES = $(SOURCES_opengllayer)
-nodist_libopengllayer_plugin_la_SOURCES = $(nodist_SOURCES_opengllayer)
-# Force per-target objects:
-libopengllayer_plugin_la_CFLAGS = $(AM_CFLAGS)
-libopengllayer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libopengllayer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libopengllayer_plugin_la_LIBADD = $(AM_LIBADD)
-libopengllayer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The snapshot plugin
 libsnapshot_plugin_la_SOURCES = $(SOURCES_snapshot)
@@ -152,6 +130,17 @@ libvmem_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libvmem_plugin_la_LIBADD = $(AM_LIBADD)
 libvmem_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
+# The vout_macosx plugin
+libvout_macosx_plugin_la_SOURCES = $(SOURCES_vout_macosx)
+nodist_libvout_macosx_plugin_la_SOURCES = $(nodist_SOURCES_vout_macosx)
+# Force per-target objects:
+libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS)
+libvout_macosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libvout_macosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libvout_macosx_plugin_la_LIBADD = $(AM_LIBADD)
+libvout_macosx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
 # The vout_sdl plugin
 libvout_sdl_plugin_la_SOURCES = $(SOURCES_vout_sdl)
 nodist_libvout_sdl_plugin_la_SOURCES = $(nodist_SOURCES_vout_sdl)
@@ -162,6 +151,17 @@ libvout_sdl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvout_sdl_plugin_la_LIBADD = $(AM_LIBADD)
 libvout_sdl_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The vout_wrapper plugin
+libvout_wrapper_plugin_la_SOURCES = $(SOURCES_vout_wrapper)
+nodist_libvout_wrapper_plugin_la_SOURCES = $(nodist_SOURCES_vout_wrapper)
+# Force per-target objects:
+libvout_wrapper_plugin_la_CFLAGS = $(AM_CFLAGS)
+libvout_wrapper_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libvout_wrapper_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libvout_wrapper_plugin_la_LIBADD = $(AM_LIBADD)
+libvout_wrapper_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The yuv plugin
 libyuv_plugin_la_SOURCES = $(SOURCES_yuv)

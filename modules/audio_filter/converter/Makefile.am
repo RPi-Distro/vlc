@@ -3,9 +3,9 @@
 
 basedir = audio_filter
 dir = audio_filter/converter
-mods = a52tofloat32 a52tospdif converter_fixed converter_float dtstofloat32 dtstospdif mpgatofixed32
-libvlc_LTLIBRARIES =  $(LTLIBa52tofloat32) $(LTLIBa52tospdif) $(LTLIBconverter_float) $(LTLIBdtstofloat32) $(LTLIBdtstospdif) $(LTLIBmpgatofixed32)
-EXTRA_LTLIBRARIES =  liba52tofloat32_plugin.la liba52tospdif_plugin.la libconverter_float_plugin.la libdtstofloat32_plugin.la libdtstospdif_plugin.la libmpgatofixed32_plugin.la
+mods = a52tofloat32 a52tospdif audio_format converter_fixed dtstofloat32 dtstospdif mpgatofixed32
+libvlc_LTLIBRARIES =  $(LTLIBa52tofloat32) $(LTLIBdtstofloat32) $(LTLIBmpgatofixed32)
+EXTRA_LTLIBRARIES =  liba52tofloat32_plugin.la libdtstofloat32_plugin.la libmpgatofixed32_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -31,6 +31,17 @@ liba52tospdif_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 liba52tospdif_plugin_la_LIBADD = $(AM_LIBADD)
 liba52tospdif_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
+# The audio_format plugin
+libaudio_format_plugin_la_SOURCES = $(SOURCES_audio_format)
+nodist_libaudio_format_plugin_la_SOURCES = $(nodist_SOURCES_audio_format)
+# Force per-target objects:
+libaudio_format_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaudio_format_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaudio_format_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libaudio_format_plugin_la_LIBADD = $(AM_LIBADD)
+libaudio_format_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
 # The converter_fixed plugin
 libconverter_fixed_plugin_la_SOURCES = $(SOURCES_converter_fixed)
 nodist_libconverter_fixed_plugin_la_SOURCES = $(nodist_SOURCES_converter_fixed)
@@ -41,17 +52,6 @@ libconverter_fixed_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libconverter_fixed_plugin_la_LIBADD = $(AM_LIBADD)
 libconverter_fixed_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The converter_float plugin
-libconverter_float_plugin_la_SOURCES = $(SOURCES_converter_float)
-nodist_libconverter_float_plugin_la_SOURCES = $(nodist_SOURCES_converter_float)
-# Force per-target objects:
-libconverter_float_plugin_la_CFLAGS = $(AM_CFLAGS)
-libconverter_float_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libconverter_float_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libconverter_float_plugin_la_LIBADD = $(AM_LIBADD)
-libconverter_float_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The dtstofloat32 plugin
 libdtstofloat32_plugin_la_SOURCES = $(SOURCES_dtstofloat32)

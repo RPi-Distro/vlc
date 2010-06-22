@@ -1,9 +1,23 @@
 SOURCES_sap = sap.c
-SOURCES_hal = hal.c
-SOURCES_shout = shout.c
 SOURCES_upnp_cc = upnp_cc.cpp
 SOURCES_upnp_intel = upnp_intel.cpp upnp_intel.hpp
 SOURCES_bonjour = bonjour.c
 SOURCES_podcast = podcast.c
 SOURCES_mtp = mtp.c
+SOURCES_mediadirs = mediadirs.c
 SOURCES_udev = udev.c
+
+libxcb_apps_plugin_la_SOURCES = xcb_apps.c
+libxcb_apps_plugin_la_CFLAGS = $(AM_CFLAGS) \
+	$(XCB_CFLAGS)
+libxcb_apps_plugin_la_LIBADD = $(AM_LIBADD) \
+	$(XCB_LIBS)
+libxcb_apps_plugin_la_DEPENDENCIES =
+
+EXTRA_LTLIBRARIES += \
+	libxcb_apps_plugin.la
+libvlc_LTLIBRARIES += \
+	libmediadirs_plugin.la \
+	libpodcast_plugin.la \
+	libsap_plugin.la \
+	$(LTLIBxcb_apps)

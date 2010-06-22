@@ -4,7 +4,7 @@
  * Copyright (C) 2003-2004 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
  *
- * $Id: adb5696af5d0d283214979ac9db98c8462e47e11 $
+ * $Id: a1cc95317051da7d790541f7943e66f8f86d9a59 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -52,7 +52,7 @@ struct rtsp_stream_t
     httpd_host_t   *host;
     httpd_url_t    *url;
     char           *psz_path;
-    const char     *track_fmt;
+    unsigned        track_id;
     unsigned        port;
 
     int             sessionc;
@@ -84,18 +84,13 @@ rtsp_stream_t *RtspSetup( sout_stream_t *p_stream, const vlc_url_t *url )
     rtsp->host = NULL;
     rtsp->url = NULL;
     rtsp->psz_path = NULL;
+    rtsp->track_id = 0;
     vlc_mutex_init( &rtsp->lock );
 
     rtsp->port = (url->i_port > 0) ? url->i_port : 554;
     rtsp->psz_path = strdup( ( url->psz_path != NULL ) ? url->psz_path : "/" );
     if( rtsp->psz_path == NULL )
         goto error;
-
-    assert( strlen( rtsp->psz_path ) > 0 );
-    if( rtsp->psz_path[strlen( rtsp->psz_path ) - 1] == '/' )
-        rtsp->track_fmt = "%strackID=%u";
-    else
-        rtsp->track_fmt = "%s/trackID=%u";
 
     msg_Dbg( p_stream, "RTSP stream: host %s port %d at %s",
              url->psz_host, rtsp->port, rtsp->psz_path );
@@ -150,6 +145,7 @@ struct rtsp_stream_id_t
     httpd_url_t      *url;
     const char       *dst;
     int               ttl;
+    unsigned          track_id;
     uint32_t          ssrc;
     uint16_t          loport, hiport;
 };
@@ -172,19 +168,31 @@ struct rtsp_session_t
 /* Unicast session track */
 struct rtsp_strack_t
 {
-    sout_stream_id_t  *id;
+    rtsp_stream_id_t  *id;
     int                fd;
     bool         playing;
 };
 
 
+char *RtspAppendTrackPath( rtsp_stream_id_t *id, const char *base )
+{
+    const char *sep = strlen( base ) > 0 && base[strlen( base ) - 1] == '/' ?
+                      "" : "/";
+    char *url;
+
+    if( asprintf( &url, "%s%strackID=%u", base, sep, id->track_id ) == -1 )
+        url = NULL;
+    return url;
+}
+
+
 rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_t *sid,
-                             unsigned num, uint32_t ssrc,
+                             uint32_t ssrc,
                              /* Multicast stuff - TODO: cleanup */
                              const char *dst, int ttl,
                              unsigned loport, unsigned hiport )
 {
-    char urlbuf[sizeof( "/trackID=123" ) + strlen( rtsp->psz_path )];
+    char *urlbuf;
     rtsp_stream_id_t *id = malloc( sizeof( *id ) );
     httpd_url_t *url;
 
@@ -193,6 +201,7 @@ rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_t *sid,
 
     id->stream = rtsp;
     id->sout_id = sid;
+    id->track_id = rtsp->track_id;
     id->ssrc = ssrc;
     /* TODO: can we assume that this need not be strdup'd? */
     id->dst = dst;
@@ -203,11 +212,16 @@ rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_t *sid,
         id->hiport = hiport;
     }
 
-    /* FIXME: num screws up if any ES has been removed and re-added */
-    snprintf( urlbuf, sizeof( urlbuf ), rtsp->track_fmt, rtsp->psz_path,
-              num );
+    urlbuf = RtspAppendTrackPath( id, rtsp->psz_path );
+    if( urlbuf == NULL )
+    {
+        free( id );
+        return NULL;
+    }
+
     msg_Dbg( rtsp->owner, "RTSP: adding %s", urlbuf );
     url = id->url = httpd_UrlNewUnique( rtsp->host, urlbuf, NULL, NULL, NULL );
+    free( urlbuf );
 
     if( url == NULL )
     {
@@ -221,6 +235,8 @@ rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_t *sid,
     httpd_UrlCatch( url, HTTPD_MSG_PAUSE,    RtspCallbackId, (void *)id );
     httpd_UrlCatch( url, HTTPD_MSG_GETPARAMETER, RtspCallbackId, (void *)id );
     httpd_UrlCatch( url, HTTPD_MSG_TEARDOWN, RtspCallbackId, (void *)id );
+
+    rtsp->track_id++;
 
     return id;
 }
@@ -237,10 +253,10 @@ void RtspDelId( rtsp_stream_t *rtsp, rtsp_stream_id_t *id )
 
         for( int j = 0; j < ses->trackc; j++ )
         {
-            if( ses->trackv[j].id == id->sout_id )
+            if( ses->trackv[j].id == id )
             {
                 rtsp_strack_t *tr = ses->trackv + j;
-                rtp_del_sink( tr->id, tr->fd );
+                rtp_del_sink( tr->id->sout_id, tr->fd );
                 REMOVE_ELEM( ses->trackv, ses->trackc, j );
             }
         }
@@ -304,7 +320,7 @@ void RtspClientDel( rtsp_stream_t *rtsp, rtsp_session_t *session )
     TAB_REMOVE( rtsp->sessionc, rtsp->sessionv, session );
 
     for( i = 0; i < session->trackc; i++ )
-        rtp_del_sink( session->trackv[i].id, session->trackv[i].fd );
+        rtp_del_sink( session->trackv[i].id->sout_id, session->trackv[i].fd );
 
     free( session->trackv );
     free( session );
@@ -382,7 +398,7 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
     answer->i_body = 0;
     answer->p_body = NULL;
 
-    httpd_MsgAdd( answer, "Server", "%s", PACKAGE_STRING );
+    httpd_MsgAdd( answer, "Server", "VLC/%s", VERSION );
 
     /* Date: is always allowed, and sometimes mandatory with RTSP/2.0. */
     struct tm ut;
@@ -522,8 +538,8 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
                     if( psz_session == NULL )
                     {
                         /* Create a dummy session ID */
-                        snprintf( psz_sesbuf, sizeof( psz_sesbuf ), "%d",
-                                  rand() );
+                        snprintf( psz_sesbuf, sizeof( psz_sesbuf ), "%lu",
+                                  vlc_mrand48() );
                         psz_session = psz_sesbuf;
                     }
                     answer->i_status = 200;
@@ -538,7 +554,7 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
                 {
                     char ip[NI_MAXNUMERICHOST], src[NI_MAXNUMERICHOST];
                     rtsp_session_t *ses = NULL;
-                    rtsp_strack_t track = { id->sout_id, -1, false };
+                    rtsp_strack_t track = { id, -1, false };
                     int sport;
 
                     if( httpd_ClientIP( cl, ip ) == NULL )
@@ -558,6 +574,9 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
                         continue;
                     }
 
+                    /* Ignore any unexpected incoming packet */
+                    setsockopt (track.fd, SOL_SOCKET, SO_RCVBUF, &(int){ 0 },
+                                sizeof (int));
                     net_GetSockAddress( track.fd, src, &sport );
 
                     vlc_mutex_lock( &rtsp->lock );
@@ -634,31 +653,35 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
             ses = RtspClientGet( rtsp, psz_session );
             if( ses != NULL )
             {
+                /* The "trackID" part must match what is done in
+                 * RtspAppendTrackPath() */
                 /* FIXME: we really need to limit the number of tracks... */
                 char info[ses->trackc * ( strlen( control )
                               + sizeof("url=/trackID=123;seq=65535;"
                                        "rtptime=4294967295, ") ) + 1];
                 size_t infolen = 0;
+                int64_t ts = rtp_get_ts( rtsp->owner );
 
                 for( int i = 0; i < ses->trackc; i++ )
                 {
                     rtsp_strack_t *tr = ses->trackv + i;
-                    if( ( id == NULL ) || ( tr->id == id->sout_id ) )
+                    if( ( id == NULL ) || ( tr->id == id ) )
                     {
+                        uint16_t seq;
                         if( !tr->playing )
                         {
                             tr->playing = true;
-                            rtp_add_sink( tr->id, tr->fd, false );
+                            rtp_add_sink( tr->id->sout_id, tr->fd, false,
+                                          &seq );
                         }
-                        /* This is racy, as the first packets may have
-                         * already been sent before we fetch this info:
-                         * these extra packets might confuse the client. */
+                        else
+                            seq = rtp_get_seq( tr->id->sout_id );
+                        char *url = RtspAppendTrackPath( tr->id, control );
                         infolen += sprintf( info + infolen,
-                                    "url=%s/trackID=%u;seq=%u;rtptime=%u, ",
-                                            control,
-                                            rtp_get_num( tr->id ),
-                                            rtp_get_seq( tr->id ),
-                                            rtp_get_ts( tr->id ) );
+                                    "url=%s;seq=%u;rtptime=%u, ",
+                                    url != NULL ? url : "", seq,
+                                    rtp_compute_ts( tr->id->sout_id, ts ) );
+                        free( url );
                     }
                 }
                 if( infolen > 0 )
@@ -709,7 +732,7 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
                 else /* Delete one track from the session */
                 for( int i = 0; i < ses->trackc; i++ )
                 {
-                    if( ses->trackv[i].id == id->sout_id )
+                    if( ses->trackv[i].id == id )
                     {
                         rtp_del_sink( id->sout_id, ses->trackv[i].fd );
                         REMOVE_ELEM( ses->trackv, ses->trackc, i );

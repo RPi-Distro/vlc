@@ -20,12 +20,15 @@ nodist_SOURCES_qt4 = \
 		dialogs_provider.moc.cpp \
 		input_manager.moc.cpp \
 		actions_manager.moc.cpp \
+		extensions_manager.moc.cpp \
 		recents.moc.cpp \
+		variables.moc.cpp \
 		dialogs/playlist.moc.cpp \
 		dialogs/bookmarks.moc.cpp \
 		dialogs/mediainfo.moc.cpp \
 		dialogs/extended.moc.cpp \
 		dialogs/messages.moc.cpp \
+		dialogs/epg.moc.cpp \
 		dialogs/errors.moc.cpp \
 		dialogs/external.moc.cpp \
 		dialogs/plugins.moc.cpp \
@@ -39,6 +42,8 @@ nodist_SOURCES_qt4 = \
 		dialogs/openurl.moc.cpp \
 		dialogs/podcast_configuration.moc.cpp \
 		dialogs/vlm.moc.cpp \
+		dialogs/firstrun.moc.cpp \
+		dialogs/extensions.moc.cpp \
 		components/extended_panels.moc.cpp \
 		components/info_panels.moc.cpp \
 		components/preferences_widgets.moc.cpp \
@@ -48,10 +53,14 @@ nodist_SOURCES_qt4 = \
 		components/interface_widgets.moc.cpp \
 		components/controller.moc.cpp \
 		components/controller_widget.moc.cpp \
+		components/epg/EPGChannels.moc.cpp \
+		components/epg/EPGRuler.moc.cpp \
+		components/epg/EPGView.moc.cpp \
+		components/epg/EPGWidget.moc.cpp \
+		components/playlist/icon_view.moc.cpp \
 		components/playlist/playlist_model.moc.cpp \
-		components/playlist/playlist_item.moc.cpp \
 		components/playlist/playlist.moc.cpp \
-		components/playlist/panels.moc.cpp \
+		components/playlist/standardpanel.moc.cpp \
 		components/playlist/selector.moc.cpp \
 		components/sout/profile_selector.moc.cpp \
 		components/sout/sout_widgets.moc.cpp \
@@ -94,6 +103,7 @@ DEPS_res = \
 	pixmaps/menus/stream_16px.png \
 	pixmaps/next.png \
 	pixmaps/next_16px.png \
+	pixmaps/noart-64.png \
 	pixmaps/noart.png \
 	pixmaps/pause.png \
 	pixmaps/pause_16px.png \
@@ -102,6 +112,7 @@ DEPS_res = \
 	pixmaps/playlist/add.png \
 	pixmaps/playlist/jumpto.png \
 	pixmaps/playlist/playlist.png \
+	pixmaps/playlist/remove.png \
 	pixmaps/playlist/repeat_all.png \
 	pixmaps/playlist/repeat_off.png \
 	pixmaps/playlist/repeat_one.png \
@@ -123,6 +134,9 @@ DEPS_res = \
 	pixmaps/previous.png \
 	pixmaps/previous_16px.png \
 	pixmaps/profile_new.png \
+	pixmaps/sample_complete.png \
+	pixmaps/sample_minimal.png \
+	pixmaps/sample_skins.png \
 	pixmaps/slower.png \
 	pixmaps/space.png \
 	pixmaps/stop.png \
@@ -169,36 +183,54 @@ DEPS_res = \
 	pixmaps/types/type_node.png \
 	pixmaps/types/type_playlist.png \
 	pixmaps/types/type_unknown.xpm \
+	pixmaps/win7/win7thumbnail_prev.png \
+	pixmaps/win7/win7thumbnail_next.png \
+	pixmaps/win7/win7thumbnail_play.png \
+	pixmaps/win7/win7thumbnail_pause.png \
 	pixmaps/update.png \
 	pixmaps/lock.png
 
 BUILT_SOURCES += $(nodist_SOURCES_qt4)
 
+moc_verbose = $(moc_verbose_$(V))
+moc_verbose_ = $(moc_verbose__$(AM_DEFAULT_VERBOSITY))
+moc_verbose_0 = @echo "  MOC   " $@;
+moc_verbose__0 = $(moc_verbose_0)
+
+uic_verbose = $(uic_verbose_$(V))
+uic_verbose_ = $(uic_verbose__$(AM_DEFAULT_VERBOSITY))
+uic_verbose_0 = @echo "  UIC   " $@;
+uic_verbose__0 = $(uic_verbose_0)
+
 resources.cpp: vlc.qrc $(DEPS_res)
-	$(RCC) -name vlc -o $@ $<
+	$(AM_V_GEN)$(RCC) -name vlc -o $@ $<
 
 .hpp.moc.cpp:
-	$(MOC) $(DEFS) $(CPPFLAGS) -I$(top_builddir) `$(VLC_CONFIG) --cppflags plugin qt4` -o $@ $<
+	$(moc_verbose)$(MOC) $(DEFS) $(CPPFLAGS) -I$(top_builddir) `$(VLC_CONFIG) --cppflags plugin qt4` -o $@ $<
 
 .ui.h:
-	mkdir -p -- ui
-	rm -f $@ $@.tmp
-	echo "#define Q_(a,b) QString::fromUtf8(_(a))" > $@.tmp
-	$(UIC) -tr "Q_" $< >> $@.tmp
-	sed -e 's/Q_(\"_(\\\"\(.*\)\\\")"/Q_("\1"/' $@.tmp >$@
-	rm -f $@.tmp
+	$(AM_V_at)mkdir -p -- ui
+	$(AM_V_at)rm -f $@ $@.tmp
+	$(AM_V_at)echo "#define Q_(a,b) QString::fromUtf8(_(a))" > $@.tmp
+	$(uic_verbose)$(UIC) -tr "Q_" $< >> $@.tmp
+	$(AM_V_at)sed -e 's/Q_(\"_(\\\"\(.*\)\\\")"/Q_("\1"/' $@.tmp >$@
+	$(AM_V_at)rm -f $@.tmp
 
 SOURCES_qt4 = 	qt4.cpp \
 		menus.cpp \
 		main_interface.cpp \
+		main_interface_win32.cpp \
 		dialogs_provider.cpp \
 		input_manager.cpp \
 		actions_manager.cpp \
+		extensions_manager.cpp \
 		recents.cpp \
+		variables.cpp \
 		dialogs/playlist.cpp \
 		dialogs/bookmarks.cpp \
 		dialogs/preferences.cpp \
 		dialogs/mediainfo.cpp \
+		dialogs/epg.cpp \
 		dialogs/extended.cpp \
 		dialogs/messages.cpp \
 		dialogs/errors.cpp \
@@ -212,7 +244,9 @@ SOURCES_qt4 = 	qt4.cpp \
 		dialogs/open.cpp \
 		dialogs/openurl.cpp \
 		dialogs/vlm.cpp \
+		dialogs/firstrun.cpp \
 		dialogs/podcast_configuration.cpp \
+		dialogs/extensions.cpp \
 		components/extended_panels.cpp \
 		components/info_panels.cpp \
 		components/preferences_widgets.cpp \
@@ -222,6 +256,12 @@ SOURCES_qt4 = 	qt4.cpp \
 		components/interface_widgets.cpp \
 		components/controller.cpp \
 		components/controller_widget.cpp \
+		components/epg/EPGChannels.cpp \
+		components/epg/EPGItem.cpp \
+		components/epg/EPGRuler.cpp \
+		components/epg/EPGView.cpp \
+		components/epg/EPGWidget.cpp \
+		components/playlist/icon_view.cpp \
 		components/playlist/playlist_model.cpp \
 		components/playlist/playlist_item.cpp \
 		components/playlist/standardpanel.cpp \
@@ -240,12 +280,15 @@ noinst_HEADERS = \
 	dialogs_provider.hpp \
 	input_manager.hpp \
 	actions_manager.hpp \
+	extensions_manager.hpp \
 	recents.hpp \
+	variables.hpp \
 	dialogs/playlist.hpp \
 	dialogs/bookmarks.hpp \
 	dialogs/mediainfo.hpp \
 	dialogs/extended.hpp \
 	dialogs/messages.hpp \
+	dialogs/epg.hpp \
 	dialogs/errors.hpp \
 	dialogs/external.hpp \
 	dialogs/plugins.hpp \
@@ -258,7 +301,9 @@ noinst_HEADERS = \
 	dialogs/open.hpp \
 	dialogs/openurl.hpp \
 	dialogs/vlm.hpp \
+	dialogs/firstrun.hpp \
 	dialogs/podcast_configuration.hpp \
+	dialogs/extensions.hpp \
 	components/extended_panels.hpp \
 	components/info_panels.hpp \
 	components/preferences_widgets.hpp \
@@ -268,9 +313,16 @@ noinst_HEADERS = \
 	components/interface_widgets.hpp \
 	components/controller.hpp \
 	components/controller_widget.hpp \
+	components/epg/EPGChannels.hpp \
+	components/epg/EPGEvent.hpp \
+	components/epg/EPGItem.hpp \
+	components/epg/EPGRuler.hpp \
+	components/epg/EPGView.hpp \
+	components/epg/EPGWidget.hpp \
+	components/playlist/icon_view.hpp \
 	components/playlist/playlist_model.hpp \
 	components/playlist/playlist_item.hpp \
-	components/playlist/panels.hpp \
+	components/playlist/standardpanel.hpp \
 	components/playlist/playlist.hpp \
 	components/playlist/selector.hpp \
 	components/playlist/sorting.h \
@@ -282,7 +334,9 @@ noinst_HEADERS = \
 	util/qvlcframe.hpp \
 	util/qvlcapp.hpp \
 	util/qt_dirs.hpp \
-	util/registry.hpp
+	util/registry.hpp \
+	util/singleton.hpp
+
 
 EXTRA_DIST += \
 	vlc.qrc \

@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 9e0aa9a9235e4b7a16490435ff65ee6ea2769e8d $
+ * $Id: 0bfa70e5682f8bd297b5c42c19be0c118fd2fc7d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -34,7 +34,7 @@
 #include <QString>
 
 #define MAIN_TB1_DEFAULT "64;39;64;38;65"
-#define MAIN_TB2_DEFAULT "0-2;64;3;1;4;64;7;10;9;64-4;37;65;35-4"
+#define MAIN_TB2_DEFAULT "0-2;64;3;1;4;64;7;10;9;64-4;20;19;64-4;37;65;35-4"
 #define ADV_TB_DEFAULT "12;11;13;14"
 #define INPT_TB_DEFAULT "5-1;15-1;33;6-1"
 #define FSC_TB_DEFAULT "0-2;64;3;1;4;64;37;64;38;64;8;65;35-4;34"
@@ -80,6 +80,9 @@ typedef enum buttonType_e
     SKIP_BACK_BUTTON,
     SKIP_FW_BUTTON,
     QUIT_BUTTON,
+    RANDOM_BUTTON,
+    LOOP_BUTTON,
+    INFO_BUTTON,
     BUTTON_MAX,
 
     SPLITTER = 0x20,
@@ -102,7 +105,8 @@ static const char* const nameL[BUTTON_MAX] = { N_("Play"), N_("Stop"), N_("Open"
     N_("Previous"), N_("Next"), N_("Slower"), N_("Faster"), N_("Fullscreen"),
    N_("De-Fullscreen"), N_("Extended panel"), N_("Playlist"), N_("Snapshot"),
    N_("Record"), N_("A->B Loop"), N_("Frame By Frame"), N_("Trickplay Reverse"),
-   N_("Step backward" ), N_("Step forward"), N_("Quit") };
+   N_("Step backward" ), N_("Step forward"), N_("Quit"), N_("Random"),
+   N_("Loop/Repeat mode"), N_("Information") };
 static const char* const tooltipL[BUTTON_MAX] = { I_PLAY_TOOLTIP,
     N_("Stop playback"), N_("Open a medium"),
     N_("Previous media in the playlist"),
@@ -111,12 +115,16 @@ static const char* const tooltipL[BUTTON_MAX] = { I_PLAY_TOOLTIP,
     N_("Show extended settings" ), N_( "Show playlist" ),
     N_( "Take a snapshot" ), N_( "Record" ),
     N_( "Loop from point A to point B continuously." ), N_("Frame by frame"),
-    N_("Reverse"), N_("Step backward"), N_("Step forward"), N_("Quit") };
-static const QString iconL[BUTTON_MAX] ={ ":/play_b", ":/stop_b", ":/eject",
-    ":/previous_b", ":/next_b", ":/slower", ":/faster", ":/fullscreen",
-    ":/defullscreen", ":/extended", ":/playlist", ":/snapshot", ":/record",
-    ":/atob_nob", ":/frame", ":/reverse", ":/skip_back", ":/skip_fw",
-    ":/clear" };
+    N_("Reverse"), N_("Step backward"), N_("Step forward"), N_("Quit"),
+    N_("Random"), N_("Change the loop and repeat modes"), N_("Information") };
+static const QString iconL[BUTTON_MAX] ={ ":/toolbar/play_b", ":/toolbar/stop_b",
+    ":/toolbar/eject", ":/toolbar/previous_b", ":/toolbar/next_b",
+    ":/toolbar/slower", ":/toolbar/faster", ":/toolbar/fullscreen",
+    ":/toolbar/defullscreen", ":/toolbar/extended", ":/toolbar/playlist",
+    ":/toolbar/snapshot", ":/toolbar/record", ":/toolbar/atob_nob",
+    ":/toolbar/frame", ":/toolbar/reverse", ":/toolbar/skip_back",
+    ":/toolbar/skip_fw", ":/toolbar/clear", ":/buttons/playlist/shuffle_on",
+    ":/buttons/playlist/repeat_all", ":/menu/info" };
 
 enum
 {
@@ -159,11 +167,10 @@ protected slots:
     virtual void setStatus( int );
 
 signals:
-    void inputExists( bool ); /// This might be usefull in the IM ?
-    void inputPlaying( bool ); /// This might be usefull in the IM ?
+    void inputExists( bool ); /// This might be useful in the IM ?
+    void inputPlaying( bool ); /// This might be useful in the IM ?
     void inputIsRecordable( bool ); /// same ?
     void inputIsTrickPlayable( bool ); /// same ?
-    void sizeChanged();
 };
 
 /* Advanced Button Bar */
@@ -195,7 +202,7 @@ public:
 protected:
     friend class MainInterface;
 
-    bool                 b_advancedVisible;
+    bool b_advancedVisible;
 
 protected slots:
     void toggleAdvanced();
@@ -226,6 +233,9 @@ public:
     /* Vout */
     void fullscreenChanged( vout_thread_t *, bool b_fs, int i_timeout );
     void mouseChanged( vout_thread_t *, int i_mousex, int i_mousey );
+
+signals:
+    void keyPressed( QKeyEvent * );
 
 public slots:
     void setVoutList( vout_thread_t **, int );

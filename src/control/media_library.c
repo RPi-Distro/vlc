@@ -3,7 +3,7 @@
  * Create a tree of the 'tags' of a media_list's medias.
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: fd68429940d60455666381ef9ec51dbbf1545f47 $
+ * $Id: 972f6cd02020df6cf151bbab210fcaec3f4f90c2 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -23,7 +23,7 @@
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+# include "config.h"
 #endif
 
 #include <vlc/libvlc.h>
@@ -57,10 +57,8 @@ struct libvlc_media_library_t
  *       new (Public)
  **************************************************************************/
 libvlc_media_library_t *
-libvlc_media_library_new( libvlc_instance_t * p_inst,
-                          libvlc_exception_t * p_e )
+libvlc_media_library_new( libvlc_instance_t * p_inst )
 {
-    (void)p_e;
     libvlc_media_library_t * p_mlib;
 
     p_mlib = malloc(sizeof(libvlc_media_library_t));
@@ -72,7 +70,12 @@ libvlc_media_library_new( libvlc_instance_t * p_inst,
     p_mlib->i_refcount = 1;
     p_mlib->p_mlist = NULL;
 
-    p_mlib->p_event_manager = libvlc_event_manager_new( p_mlib, p_inst, p_e );
+    p_mlib->p_event_manager = libvlc_event_manager_new( p_mlib, p_inst );
+    if( unlikely(p_mlib->p_event_manager == NULL) )
+    {
+        free(p_mlib);
+        return NULL;
+    }
 
     return p_mlib;
 }
@@ -104,58 +107,39 @@ void libvlc_media_library_retain( libvlc_media_library_t * p_mlib )
  *
  * It doesn't yet load the playlists
  **************************************************************************/
-void
-libvlc_media_library_load( libvlc_media_library_t * p_mlib,
-                           libvlc_exception_t * p_e )
+int libvlc_media_library_load( libvlc_media_library_t * p_mlib )
 {
-    char *psz_datadir = config_GetUserDataDir();
+    char *psz_datadir = config_GetUserDir( VLC_DATA_DIR );
     char * psz_uri;
 
-    if( !psz_datadir ) /* XXX: i doubt that this can ever happen */
+    if( psz_datadir == NULL
+     || asprintf( &psz_uri, "file/xspf-open://%s" DIR_SEP "ml.xsp",
+                  psz_datadir ) == -1 )
+        psz_uri = NULL;
+    free( psz_datadir );
+
+    if( psz_uri == NULL )
     {
-        libvlc_exception_raise( p_e, "Can't get data directory" );
-        return;
+        libvlc_printerr( "Not enough memory" );
+        return -1;
     }
 
-    if( asprintf( &psz_uri, "file/xspf-open://%s" DIR_SEP "ml.xsp",
-                  psz_datadir ) == -1 )
-    {
-        free( psz_datadir );
-        libvlc_exception_raise( p_e, "Can't get create the path" );
-        return;
-    }
-    free( psz_datadir );
     if( p_mlib->p_mlist )
         libvlc_media_list_release( p_mlib->p_mlist );
 
-    p_mlib->p_mlist = libvlc_media_list_new(
-                        p_mlib->p_libvlc_instance,
-                        p_e );
+    p_mlib->p_mlist = libvlc_media_list_new( p_mlib->p_libvlc_instance );
 
-    libvlc_media_list_add_file_content( p_mlib->p_mlist, psz_uri, p_e );
+    int ret = libvlc_media_list_add_file_content( p_mlib->p_mlist, psz_uri );
     free( psz_uri );
-    return;
-}
-
-/**************************************************************************
- *       save (Public)
- **************************************************************************/
-void
-libvlc_media_library_save( libvlc_media_library_t * p_mlib,
-                           libvlc_exception_t * p_e )
-{
-    (void)p_mlib;
-    libvlc_exception_raise( p_e, "Not supported" );
+    return ret;
 }
 
 /**************************************************************************
  *        media_list (Public)
  **************************************************************************/
 libvlc_media_list_t *
-libvlc_media_library_media_list( libvlc_media_library_t * p_mlib,
-                                     libvlc_exception_t * p_e )
+libvlc_media_library_media_list( libvlc_media_library_t * p_mlib )
 {
-    (void)p_e;
     if( p_mlib->p_mlist )
         libvlc_media_list_retain( p_mlib->p_mlist );
     return p_mlib->p_mlist;

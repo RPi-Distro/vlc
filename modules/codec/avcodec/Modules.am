@@ -1,21 +1,37 @@
-SOURCES_avcodec = \
+libavcodec_plugin_la_SOURCES = \
 	avcodec.c \
 	avcodec.h \
 	video.c \
+	subtitle.c \
 	audio.c \
 	deinterlace.c \
 	avutil.h \
 	fourcc.c \
 	chroma.c \
+	vaapi.c \
+	dxva2.c \
+	copy.c \
+	copy.h \
+	va.h \
 	$(NULL)
-
 if ENABLE_SOUT
-SOURCES_avcodec += encoder.c
+libavcodec_plugin_la_SOURCES += \
+	encoder.c
 endif
+libavcodec_plugin_la_CFLAGS = $(AM_CFLAGS)
+libavcodec_plugin_la_LIBADD = $(AM_LIBADD)
+libavcodec_plugin_la_DEPENDENCIES =
 
-EXTRA_libavcodec_plugin_la_SOURCES = \
-	encoder.c \
-	$(NULL)
+if MERGE_FFMPEG
+libavcodec_plugin_la_SOURCES += \
+	../../demux/avformat/demux.c \
+	../../access/avio.c
+if ENABLE_SOUT
+libavcodec_plugin_la_SOURCES += \
+	../../demux/avformat/mux.c
+endif
+libavcodec_plugin_la_CFLAGS += -DMERGE_FFMPEG
+endif
 
 libvlc_LTLIBRARIES += \
 	$(LTLIBavcodec)

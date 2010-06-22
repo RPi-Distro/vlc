@@ -2,7 +2,7 @@
  * volume.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9227a61abb9c8198d07df341e96268d4bdc540db $
+ * $Id: 2809c0d58349e578de2d7a27c5e99aa68047ebf3 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,26 +28,29 @@
 
 #include <vlc_common.h>
 #include <vlc_aout.h>
+#include <vlc_playlist.h>
 #include "volume.hpp"
 
 Volume::Volume( intf_thread_t *pIntf ): VarPercent( pIntf )
 {
     // Initial value
     audio_volume_t val;
-    aout_VolumeGet( getIntf(), &val );
-    VarPercent::set( val * 2.0 / AOUT_VOLUME_MAX );
+
+    aout_VolumeGet( getIntf()->p_sys->p_playlist, &val );
+    VarPercent::set( val / AOUT_VOLUME_MAX );
 }
 
 
-void Volume::set( float percentage )
+void Volume::set( float percentage, bool updateVLC )
 {
     // Avoid looping forever...
     if( (int)(get() * AOUT_VOLUME_MAX) !=
         (int)(percentage * AOUT_VOLUME_MAX) )
     {
         VarPercent::set( percentage );
-
-        aout_VolumeSet( getIntf(), (int)(get() * AOUT_VOLUME_MAX / 2.0) );
+        if( updateVLC )
+            aout_VolumeSet( getIntf()->p_sys->p_playlist,
+                            (int)(get() * AOUT_VOLUME_MAX) );
     }
 }
 
@@ -56,11 +59,8 @@ string Volume::getAsStringPercent() const
 {
     int value = (int)(100. * VarPercent::get());
     // 0 <= value <= 100, so we need 4 chars
-    char *str = new char[4];
+    char str[4];
     snprintf( str, 4, "%d", value );
-    string ret = str;
-    delete[] str;
-
-    return ret;
+    return string(str);
 }
 

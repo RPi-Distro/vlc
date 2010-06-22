@@ -2,7 +2,7 @@
  * cmd_resize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 2180ed52ee6a754f4a73d3124318f3d420fc393a $
+ * $Id: 5903b4624194dca20bd5f205899cb288496e1d16 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,26 +17,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "cmd_resize.hpp"
 #include "../src/generic_layout.hpp"
-#include "../src/window_manager.hpp"
 #include "../src/vlcproc.hpp"
-#include "../src/vout_window.hpp"
+#include "../src/window_manager.hpp"
+#include "../src/vout_manager.hpp"
 #include "../controls/ctrl_video.hpp"
-#include <vlc_vout.h>
 
 
 CmdResize::CmdResize( intf_thread_t *pIntf, const WindowManager &rWindowManager,
-                      GenericLayout &rLayout, int width, int height ):
-    CmdGeneric( pIntf ), m_rWindowManager( rWindowManager ),
-    m_rLayout( rLayout ), m_width( width ), m_height( height )
-{
-}
+                      GenericLayout &rLayout, int width, int height )
+    : CmdGeneric( pIntf ), m_rWindowManager( rWindowManager ),
+      m_rLayout( rLayout ), m_width( width ), m_height( height ) { }
 
 
 void CmdResize::execute()
@@ -46,39 +43,26 @@ void CmdResize::execute()
 }
 
 
-CmdResizeVout::CmdResizeVout( intf_thread_t *pIntf, VoutWindow *pVoutWindow,
-                              int width, int height ):
-    CmdGeneric( pIntf ), m_pVoutWindow( pVoutWindow ), m_width( width ),
-    m_height( height )
-{
-}
+
+CmdResizeVout::CmdResizeVout( intf_thread_t *pIntf, vout_window_t* pWnd,
+                              int width, int height )
+    : CmdGeneric( pIntf ), m_pWnd( pWnd ), m_width( width ),
+      m_height( height ) { }
 
 
 void CmdResizeVout::execute()
 {
-    if( m_pVoutWindow )
-    {
-        m_pVoutWindow->setOriginalWidth( m_width );
-        m_pVoutWindow->setOriginalHeight( m_height );
-
-        CtrlVideo* pCtrlVideo = m_pVoutWindow->getCtrlVideo();
-        if( pCtrlVideo )
-        {
-            pCtrlVideo->resizeControl( m_width, m_height );
-        }
-    }
+    getIntf()->p_sys->p_voutManager->setSizeWnd( m_pWnd, m_width, m_height );
 }
 
+CmdSetFullscreen::CmdSetFullscreen( intf_thread_t *pIntf,
+                                    vout_window_t * pWnd, bool fullscreen )
+    : CmdGeneric( pIntf ), m_pWnd( pWnd ), m_bFullscreen( fullscreen ) { }
 
-CmdResizeInnerVout::CmdResizeInnerVout( intf_thread_t *pIntf,
-                    CtrlVideo* pCtrlVideo )
-         : CmdGeneric( pIntf ), m_pCtrlVideo( pCtrlVideo )
+
+void CmdSetFullscreen::execute()
 {
+    getIntf()->p_sys->p_voutManager->setFullscreenWnd( m_pWnd, m_bFullscreen );
 }
 
-
-void CmdResizeInnerVout::execute()
-{
-    m_pCtrlVideo->resizeInnerVout();
-}
 

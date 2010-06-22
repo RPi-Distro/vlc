@@ -2,7 +2,7 @@
  * stream_filter.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 99060f89c74e0480bfb737e54820b853e74e1b82 $
+ * $Id: 9126f76788509c3a0c22c2f025b6dcc287980eb0 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -29,6 +29,8 @@
 #include <vlc_stream.h>
 #include <libvlc.h>
 
+#include <assert.h>
+
 #include "stream.h"
 
 static void StreamDelete( stream_t * );
@@ -37,10 +39,13 @@ stream_t *stream_FilterNew( stream_t *p_source,
                             const char *psz_stream_filter )
 {
     stream_t *s;
+    assert( p_source != NULL );
 
     s = stream_CommonNew( VLC_OBJECT( p_source ) );
     if( s == NULL )
         return NULL;
+
+    s->p_input = p_source->p_input;
 
     /* */
     s->psz_path = strdup( p_source->psz_path );
@@ -103,7 +108,7 @@ stream_t *stream_FilterChainNew( stream_t *p_source,
     }
     free( psz_tmp );
 
-    /* Add record filter if usefull */
+    /* Add record filter if useful */
     if( b_record )
     {
         stream_t *p_filter = stream_FilterNew( p_source,

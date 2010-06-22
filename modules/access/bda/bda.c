@@ -15,9 +15,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -53,7 +53,7 @@ static int Control( access_t *, int, va_list );
     "named /dev/dvb/adapter[n] with n>=0.")
 
 #define DEVICE_TEXT N_("Device number to use on adapter")
-#define DEVICE_LONGTEXT ""
+#define DEVICE_LONGTEXT NULL
 
 #define FREQ_TEXT N_("Transponder/multiplex frequency")
 #if defined(WIN32) || defined(WINCE)
@@ -80,7 +80,7 @@ static const char *const ppsz_inversion_text[] = { N_("Undefined"), N_("Off"),
 /* Satellite */
 #if defined(WIN32) || defined(WINCE)
 #    define NETID_TEXT N_("Network Identifier")
-#    define NETID_LONGTEXT ""
+#    define NETID_LONGTEXT NULL
 #else
 #    define SATNO_TEXT N_("Satellite number in the Diseqc system")
 #    define SATNO_LONGTEXT N_("[0=no diseqc, 1-4=satellite number].")
@@ -100,7 +100,7 @@ static const char *const ppsz_inversion_text[] = { N_("Undefined"), N_("Off"),
 #define FEC_LONGTEXT N_("FEC=Forward Error Correction mode [9=auto].")
 
 #define SRATE_TEXT N_("Transponder symbol rate in kHz")
-#define SRATE_LONGTEXT ""
+#define SRATE_LONGTEXT NULL
 
 #define LNB_LOF1_TEXT N_("Antenna lnb_lof1 (kHz)")
 #define LNB_LOF1_LONGTEXT N_("Low Band Local Osc Freq in kHz (usually 9.75GHz)")
@@ -201,6 +201,7 @@ vlc_module_begin ()
         change_safe()
     add_integer( "dvb-frequency", 0, NULL, FREQ_TEXT, FREQ_LONGTEXT,
                  false )
+        change_safe()
 #   if defined(WIN32) || defined(WINCE)
         add_string( "dvb-network-name", NULL, NULL, NAME_TEXT, NAME_LONGTEXT,
                     true )
@@ -212,8 +213,8 @@ vlc_module_begin ()
         /* dvb-device refers to a frontend within an adapter */
         add_integer( "dvb-device", 0, NULL, DEVICE_TEXT, DEVICE_LONGTEXT,
                      true )
-        add_bool( "dvb-probe", 1, NULL, PROBE_TEXT, PROBE_LONGTEXT, true )
-        add_bool( "dvb-budget-mode", 0, NULL, BUDGET_TEXT, BUDGET_LONGTEXT,
+        add_bool( "dvb-probe", true, NULL, PROBE_TEXT, PROBE_LONGTEXT, true )
+        add_bool( "dvb-budget-mode", false, NULL, BUDGET_TEXT, BUDGET_LONGTEXT,
                   true )
 #   endif
 
@@ -243,7 +244,7 @@ vlc_module_begin ()
             true )
         add_integer( "dvb-voltage", 13, NULL, VOLTAGE_TEXT, VOLTAGE_LONGTEXT,
             true )
-        add_bool( "dvb-high-voltage", 0, NULL, HIGH_VOLTAGE_TEXT,
+        add_bool( "dvb-high-voltage", false, NULL, HIGH_VOLTAGE_TEXT,
             HIGH_VOLTAGE_LONGTEXT, true )
         add_integer( "dvb-tone", -1, NULL, TONE_TEXT, TONE_LONGTEXT,
             true )
@@ -281,6 +282,7 @@ vlc_module_begin ()
     add_integer( "dvb-bandwidth", 0, NULL, BANDWIDTH_TEXT, BANDWIDTH_LONGTEXT,
         false )
         change_integer_list( i_band_list, ppsz_band_text, NULL )
+        change_safe()
     add_integer( "dvb-guard", -1, NULL, GUARD_TEXT, GUARD_LONGTEXT, true )
         change_integer_list( i_guard_list, ppsz_guard_text, NULL )
     add_integer( "dvb-transmission", -1, NULL, TRANSMISSION_TEXT,
@@ -363,7 +365,7 @@ static int Open( vlc_object_t *p_this )
 
     for( int i = 0; i < i_param_count; i++ )
     {
-        snprintf( psz_full_name, 128, "%s-%s\0", psz_module,
+        snprintf( psz_full_name, 128, "%s-%s", psz_module,
                   psz_param[i] );
         var_Create( p_access, psz_full_name, i_type[i] | VLC_VAR_DOINHERIT );
     }
@@ -420,10 +422,15 @@ static int Open( vlc_object_t *p_this )
     }
 
     if( !i_ret )
+    {
+        free( p_access->psz_demux );
         p_access->psz_demux = strdup( "ts" );
+    }
     else
+    {
         msg_Warn( p_access, "DVB_Open: Unsupported Network %s",
                   p_access->psz_access);
+    }
     return i_ret;
 }
 
@@ -509,7 +516,7 @@ static int ParsePath( access_t *p_access, const char* psz_module,
              v_value.psz_string = strdup( psz_value );
         if( i_type[i_this_param] == VLC_VAR_INTEGER )
              v_value.i_int = atol( psz_value );
-        snprintf( psz_full_name, 128, "%s-%s\0", psz_module,
+        snprintf( psz_full_name, 128, "%s-%s", psz_module,
             psz_param[i_this_param] );
         var_Set( p_access, psz_full_name, v_value );
 
@@ -556,7 +563,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         break;
     case ACCESS_GET_PTS_DELAY:      /* 5 */
         pi_64 = (int64_t*)va_arg( args, int64_t * );
-        *pi_64 = var_GetInteger( p_access, "dvb-caching" ) * 1000;
+        *pi_64 = (int64_t)var_GetInteger( p_access, "dvb-caching" ) * 1000;
         break;
         /* */
     case ACCESS_GET_TITLE_INFO:     /* 6 */
@@ -572,7 +579,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         b_bool = (bool)va_arg( args, int );
         break;
     case ACCESS_SET_PRIVATE_ID_CA:  /* 12 -From Demux */
-        break;
+        return VLC_EGENERIC;
     default:
         msg_Warn( p_access,
                   "DVB_Control: Unimplemented query in control %d", i_query );

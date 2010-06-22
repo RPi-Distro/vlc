@@ -2,7 +2,7 @@
  * objects.c: Generic lua<->vlc object wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 950f5fe78752237b057432a11d0d8cb05d4ab99b $
+ * $Id: a10a5f3d4a4e94c23563f3ce0376c1bb0538d1af $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -61,7 +61,7 @@ int __vlclua_push_vlc_object( lua_State *L, vlc_object_t *p_obj,
     if( luaL_newmetatable( L, "vlc_object" ) )
     {
         /* Hide the metatable */
-        lua_pushstring( L, "none of your business" );
+        lua_pushliteral( L, "none of your business" );
         lua_setfield( L, -2, "__metatable" );
         if( pf_gc ) /* FIXME */
         {
@@ -90,10 +90,8 @@ static int vlc_object_type_from_string( const char *psz_name )
         const char *psz_name;
     } pp_objects[] =
         { { VLC_OBJECT_INPUT, "input" },
-          { VLC_OBJECT_DECODER, "decoder" },
           { VLC_OBJECT_VOUT, "vout" },
           { VLC_OBJECT_AOUT, "aout" },
-          { VLC_OBJECT_GENERIC, "generic" },
           { 0, "" } };
     int i;
     for( i = 0; pp_objects[i].i_type; i++ )
@@ -197,9 +195,9 @@ static int vlclua_get_playlist( lua_State *L )
     if( p_playlist )
     {
         vlclua_push_vlc_object( L, p_playlist, vlclua_gc_release );
+        vlc_object_hold( p_playlist );
     }
     else lua_pushnil( L );
-    //vlclua_release_playlist_internal( p_playlist );
     return 1;
 }
 

@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: c01e5fff96066343d37a609bbd70b347a860905f $
+ * $Id: 1461d4a9cc15330637c236ede24a11efdae68df8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -34,6 +34,7 @@
  * early enough. */
 #define __STDC_FORMAT_MACROS 1
 #define __STDC_CONSTANT_MACROS 1
+#define __STDC_LIMIT_MACROS 1
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -48,10 +49,9 @@
 #   include <time.h>                                               /* time() */
 #endif
 
-
 #include <vlc_codecs.h>               /* BITMAPINFOHEADER, WAVEFORMATEX */
 #include <vlc_iso_lang.h>
-#include "vlc_meta.h"
+#include <vlc_meta.h>
 #include <vlc_charset.h>
 #include <vlc_input.h>
 #include <vlc_demux.h>
@@ -102,7 +102,7 @@
 
 #include "ebml/StdIOCallback.h"
 
-#include "vlc_keys.h"
+#include <vlc_keys.h>
 
 extern "C" {
    #include "../mp4/libmp4.h"
@@ -119,21 +119,14 @@ extern "C" {
 
 #define MKVD_TIMECODESCALE 1000000
 
-/**
- * What's between a directory and a filename?
- */
-#if defined( WIN32 )
-    #define DIRECTORY_SEPARATOR '\\'
-#else
-    #define DIRECTORY_SEPARATOR '/'
-#endif
-
-
 #define MKV_IS_ID( el, C ) ( EbmlId( (*el) ) == C::ClassInfos.GlobalId )
 
 
 using namespace LIBMATROSKA_NAMESPACE;
 using namespace std;
+
+void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
+                         mtime_t i_pts, mtime_t i_duration, bool f_mandatory );
 
 class attachment_c
 {
@@ -195,6 +188,7 @@ typedef struct
 
     char         *psz_codec;
     bool         b_dts_only;
+    bool         b_pts_only;
 
     uint64_t     i_default_duration;
     float        f_timecodescale;

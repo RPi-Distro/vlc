@@ -2,7 +2,7 @@
  * extended_panels.hpp : Exentended Panels
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 3d498c7dca0dc79ff6c277e01ea4611e6e3e1f75 $
+ * $Id: a4bbb4f3c369864b6de86ad700214b84d35cb74e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -30,7 +30,6 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_aout.h>
 
 #include "ui/equalizer.h"
 #include "ui/video_effects.h"
@@ -48,7 +47,7 @@ class ExtVideo: public QObject
     Q_OBJECT
     friend class ExtendedDialog;
 public:
-    ExtVideo( intf_thread_t *, QTabWidget * );
+    ExtVideo( struct intf_thread_t *, QTabWidget * );
     virtual ~ExtVideo();
     /*void gotoConf( QObject* );*/
 private:
@@ -114,7 +113,6 @@ private slots:
     void setPreamp();
     void setCoreBands();
     void setCorePreset(int);
-    void updateUISliderValues( int );
 };
 
 class Spatializer: public QWidget

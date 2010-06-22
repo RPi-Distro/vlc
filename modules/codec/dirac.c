@@ -7,7 +7,7 @@
  *          ##
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: f397ba281a829f9073778fc0356d9cfe7cd5b746 $
+ * $Id: 67da03a531e061f6aff6346fa18c2a2824c8eaaf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  * Rewritten: David Flynn <davidf at rd.bbc.co.uk>
@@ -41,7 +41,6 @@
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_sout.h>
-#include <vlc_vout.h>
 
 #include <libdirac_encoder/dirac_encoder.h>
 
@@ -205,6 +204,7 @@ vlc_module_begin()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_description( N_("Dirac video encoder using dirac-research library") )
+    set_shortname( "Dirac" )
     set_capability( "encoder", 100 )
     set_callbacks( OpenEncoder, CloseEncoder )
 
@@ -249,12 +249,10 @@ vlc_module_begin()
 
     add_integer( ENC_CFG_PREFIX ENC_MCBLK_WIDTH, -1, NULL,
                  ENC_MCBLK_WIDTH_TEXT, ENC_MCBLK_WIDTH_LONGTEXT, false )
-    add_deprecated_alias( ENC_CFG_PREFIX ENC_MCBLK_XBLEN );
     change_integer_range(-1, INT_MAX);
 
     add_integer( ENC_CFG_PREFIX ENC_MCBLK_HEIGHT, -1, NULL,
                  ENC_MCBLK_HEIGHT, ENC_MCBLK_HEIGHT_LONGTEXT, false )
-    add_deprecated_alias( ENC_CFG_PREFIX ENC_MCBLK_YBLEN );
     change_integer_range(-1, INT_MAX);
 
     add_integer( ENC_CFG_PREFIX ENC_MCBLK_OVERLAP, -1, NULL,
@@ -443,7 +441,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     float f_tmp;
     char *psz_tmp;
 
-    if( p_enc->fmt_out.i_codec != VLC_FOURCC('d','r','a','c') &&
+    if( p_enc->fmt_out.i_codec != VLC_CODEC_DIRAC &&
         !p_enc->b_force )
     {
         return VLC_EGENERIC;
@@ -462,7 +460,7 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     p_enc->p_sys = p_sys;
     p_enc->pf_encode_video = Encode;
-    p_enc->fmt_out.i_codec = VLC_FOURCC('d','r','a','c');
+    p_enc->fmt_out.i_codec = VLC_CODEC_DIRAC;
     p_enc->fmt_out.i_cat = VIDEO_ES;
 
     if( ( p_sys->p_dts_fifo = block_FifoNew() ) == NULL )
@@ -507,9 +505,8 @@ static int OpenEncoder( vlc_object_t *p_this )
     p_sys->ctx.src_params.frame_rate.denominator = p_enc->fmt_in.video.i_frame_rate_base;
     unsigned u_asr_num, u_asr_den;
     vlc_ureduce( &u_asr_num, &u_asr_den,
-                 p_enc->fmt_in.video.i_height * p_enc->fmt_in.video.i_aspect,
-                 p_enc->fmt_in.video.i_width * VOUT_ASPECT_FACTOR,
-                 0 );
+                 p_enc->fmt_in.video.i_sar_num,
+                 p_enc->fmt_in.video.i_sar_den, 0 );
     p_sys->ctx.src_params.pix_asr.numerator = u_asr_num;
     p_sys->ctx.src_params.pix_asr.denominator = u_asr_den;
 
@@ -519,19 +516,19 @@ static int OpenEncoder( vlc_object_t *p_this )
     if( !psz_tmp )
         goto error;
     else if( !strcmp( psz_tmp, "420" ) ) {
-        p_enc->fmt_in.i_codec = VLC_FOURCC('I','4','2','0');
+        p_enc->fmt_in.i_codec = VLC_CODEC_I420;
         p_enc->fmt_in.video.i_bits_per_pixel = 12;
         p_sys->ctx.src_params.chroma = format420;
         p_sys->i_buffer_in = p_enc->fmt_in.video.i_width * p_enc->fmt_in.video.i_height * 3 / 2;
     }
     else if( !strcmp( psz_tmp, "422" ) ) {
-        p_enc->fmt_in.i_codec = VLC_FOURCC('I','4','2','2');
+        p_enc->fmt_in.i_codec = VLC_CODEC_I422;
         p_enc->fmt_in.video.i_bits_per_pixel = 16;
         p_sys->ctx.src_params.chroma = format422;
         p_sys->i_buffer_in = p_enc->fmt_in.video.i_width * p_enc->fmt_in.video.i_height * 2;
     }
     else if( !strcmp( psz_tmp, "444" ) ) {
-        p_enc->fmt_in.i_codec = VLC_FOURCC('I','4','4','4');
+        p_enc->fmt_in.i_codec = VLC_CODEC_I444;
         p_enc->fmt_in.video.i_bits_per_pixel = 24;
         p_sys->ctx.src_params.chroma = format444;
         p_sys->i_buffer_in = p_enc->fmt_in.video.i_width * p_enc->fmt_in.video.i_height * 3;
@@ -801,7 +798,6 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
         if( !p_sys->p_dirac )
         {
             msg_Err( p_enc, "Failed to initialize dirac encoder" );
-            p_enc->b_error = 1;
             return NULL;
         }
         date_Init( &date, p_enc->fmt_in.video.i_frame_rate, p_enc->fmt_in.video.i_frame_rate_base );
@@ -860,10 +856,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
      * coded order */
     p_block = block_New( p_enc, 1 );
     if( !p_block )
-    {
-        p_enc->b_error = 1;
         return NULL;
-    }
     p_block->i_dts = p_pic->date - p_sys->i_pts_offset;
     block_FifoPut( p_sys->p_dts_fifo, p_block );
     p_block = NULL;
@@ -878,10 +871,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
 
         p_block = block_New( p_enc, 1 );
         if( !p_block )
-        {
-            p_enc->b_error = 1;
             return NULL;
-        }
         p_block->i_dts = p_pic->date - p_sys->i_pts_offset + p_sys->i_field_time;
         block_FifoPut( p_sys->p_dts_fifo, p_block );
         p_block = NULL;
@@ -902,10 +892,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
             /* extract data from encoder temporary buffer. */
             p_block = block_New( p_enc, p_sys->p_dirac->enc_buf.size );
             if( !p_block )
-            {
-                p_enc->b_error = 1;
                 return NULL;
-            }
             memcpy( p_block->p_buffer, p_sys->p_dirac->enc_buf.buffer,
                     p_sys->p_dirac->enc_buf.size );
 
@@ -934,10 +921,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
                     /* XXX, should this be done using the packetizer ? */
                     p_enc->fmt_out.p_extra = malloc( len + sizeof(eos) );
                     if( !p_enc->fmt_out.p_extra )
-                    {
-                        p_enc->b_error = 1;
                         return NULL;
-                    }
                     memcpy( p_enc->fmt_out.p_extra, p_block->p_buffer, len);
                     memcpy( (uint8_t*)p_enc->fmt_out.p_extra + len, eos, sizeof(eos) );
                     SetDWBE( (uint8_t*)p_enc->fmt_out.p_extra + len + 10, len );

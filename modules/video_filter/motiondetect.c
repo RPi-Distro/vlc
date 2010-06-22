@@ -2,7 +2,7 @@
  * motiondetec.c : Second version of a motion detection plugin.
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: aaf8f3149dd66e25929b3a68d7acd933367ad30e $
+ * $Id: 79946d989a678581cd66c165711ecf47bbd9b8fb $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -32,9 +32,8 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
-#include <vlc_vout.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -104,7 +103,7 @@ static int Create( vlc_object_t *p_this )
             break;
 
         default:
-            msg_Err( p_filter, "Unsupported input chroma (%4s)",
+            msg_Err( p_filter, "Unsupported input chroma (%4.4s)",
                      (char*)&(p_fmt->i_chroma) );
             return VLC_EGENERIC;
     }
@@ -115,8 +114,7 @@ static int Create( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     p_sys->b_old = false;
-    p_sys->p_old = picture_New( p_fmt->i_chroma,
-                                p_fmt->i_width, p_fmt->i_height, 0 );
+    p_sys->p_old = picture_NewFromFormat( p_fmt );
     p_sys->p_buf  = calloc( p_fmt->i_width * p_fmt->i_height, sizeof(*p_sys->p_buf) );
     p_sys->p_buf2 = calloc( p_fmt->i_width * p_fmt->i_height, sizeof(*p_sys->p_buf) );
 
@@ -198,16 +196,15 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_inpic )
     int i_chroma_dy;
     switch( p_inpic->format.i_chroma )
     {
-        case VLC_FOURCC('I','4','2','0'):
-        case VLC_FOURCC('I','Y','U','V'):
-        case VLC_FOURCC('J','4','2','0'):
-        case VLC_FOURCC('Y','V','1','2'):
+        case VLC_CODEC_I420:
+        case VLC_CODEC_J420:
+        case VLC_CODEC_YV12:
             i_chroma_dx = 2;
             i_chroma_dy = 2;
             break;
 
-        case VLC_FOURCC('I','4','2','2'):
-        case VLC_FOURCC('J','4','2','2'):
+        case VLC_CODEC_I422:
+        case VLC_CODEC_J422:
             i_chroma_dx = 2;
             i_chroma_dy = 1;
             break;
@@ -294,7 +291,7 @@ static picture_t *FilterPacked( filter_t *p_filter, picture_t *p_inpic )
     if( GetPackedYuvOffsets( p_fmt->i_chroma,
                              &i_y_offset, &i_u_offset, &i_v_offset ) )
     {
-        msg_Warn( p_filter, "Unsupported input chroma (%4s)",
+        msg_Warn( p_filter, "Unsupported input chroma (%4.4s)",
                   (char*)&p_fmt->i_chroma );
         return p_inpic;
     }

@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 15f5ac2fee6d469c27339e27e161b761f1ba043c $
+ * $Id: 57a7af6de059360a458a136885b2d805da2ebf01 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damien@videolan.org>
@@ -33,7 +33,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
-#include <vlc_vout.h>
 
 #if defined (MODULE_NAME_IS_i420_yuy2_altivec) && defined(HAVE_ALTIVEC_H)
 #   include <altivec.h>
@@ -91,16 +90,13 @@ vlc_module_begin ()
 #elif defined (MODULE_NAME_IS_i420_yuy2_mmx)
     set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 160 )
-    add_requirement( MMX )
 #elif defined (MODULE_NAME_IS_i420_yuy2_sse2)
     set_description( N_("SSE2 conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 250 )
-    add_requirement( SSE2 )
 #elif defined (MODULE_NAME_IS_i420_yuy2_altivec)
     set_description(
             _("AltiVec conversions from " SRC_FOURCC " to " DEST_FOURCC) );
     set_capability( "video filter2", 250 )
-    add_requirement( ALTIVEC )
 #endif
     set_callbacks( Activate, NULL )
 vlc_module_end ()
@@ -126,23 +122,19 @@ static int Activate( vlc_object_t *p_this )
 
     switch( p_filter->fmt_in.video.i_chroma )
     {
-        case VLC_FOURCC('Y','V','1','2'):
-        case VLC_FOURCC('I','4','2','0'):
-        case VLC_FOURCC('I','Y','U','V'):
+        case VLC_CODEC_YV12:
+        case VLC_CODEC_I420:
             switch( p_filter->fmt_out.video.i_chroma )
             {
-                case VLC_FOURCC('Y','U','Y','2'):
-                case VLC_FOURCC('Y','U','N','V'):
+                case VLC_CODEC_YUYV:
                     p_filter->pf_video_filter = I420_YUY2_Filter;
                     break;
 
-                case VLC_FOURCC('Y','V','Y','U'):
+                case VLC_CODEC_YVYU:
                     p_filter->pf_video_filter = I420_YVYU_Filter;
                     break;
 
-                case VLC_FOURCC('U','Y','V','Y'):
-                case VLC_FOURCC('U','Y','N','V'):
-                case VLC_FOURCC('Y','4','2','2'):
+                case VLC_CODEC_UYVY:
                     p_filter->pf_video_filter = I420_UYVY_Filter;
                     break;
 #if !defined (MODULE_NAME_IS_i420_yuy2_altivec)
@@ -150,13 +142,13 @@ static int Activate( vlc_object_t *p_this )
                     p_filter->pf_video_filter = I420_IUYV_Filter;
                     break;
 
-                case VLC_FOURCC('c','y','u','v'):
+                case VLC_CODEC_CYUV:
                     p_filter->pf_video_filter = I420_cyuv_Filter;
                     break;
 #endif
 
 #if defined (MODULE_NAME_IS_i420_yuy2)
-                case VLC_FOURCC('Y','2','1','1'):
+                case VLC_CODEC_Y211:
                     p_filter->pf_video_filter = I420_Y211_Filter;
                     break;
 #endif

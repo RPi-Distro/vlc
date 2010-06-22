@@ -2,7 +2,7 @@
  * vlc_intf_strings.h : Strings for main interfaces
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e4cae97f97410a18ee62d0d952c8cb6fcc04b883 $
+ * $Id: cd532b5c9e5b4ee7264189b101b2eaab0b391523 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -29,13 +29,26 @@
  * This file defines a number of strings used in user interfaces
  */
 
+/* A helper macro that will expand to either of the arguments
+   depanding on platform. The arguments are supposed to be:
+   1. dir: a string containing "directory"
+   2. folder: a string with the same meaning but with directory
+              substituted with "folder"
+*/
+#if defined( WIN32 ) || defined(__APPLE__)
+    #define I_DIR_OR_FOLDER( dir, folder ) folder
+#else
+    #define I_DIR_OR_FOLDER( dir, folder ) dir
+#endif
+
 /*************** Open dialogs **************/
 
 #define I_OP_OPF        N_("Quick &Open File...")
 #define I_OP_ADVOP      N_("&Advanced Open...")
-#define I_OP_OPDIR      N_("Open &Directory...")
-
+#define I_OP_OPDIR I_DIR_OR_FOLDER( N_("Open D&irectory..."), \
+                                    N_("Open &Folder...") )
 #define I_OP_SEL_FILES  N_("Select one or more files to open")
+#define I_OP_SEL_DIR   I_DIR_OR_FOLDER( N_("Select Directory"), N_("Select Folder") )
 
 /******************* Menus *****************/
 
@@ -51,29 +64,33 @@
 /* Playlist popup */
 #define I_POP_PLAY N_("Play")
 #define I_POP_PREPARSE N_("Fetch Information")
-#define I_POP_DEL N_("Delete")
+#define I_POP_DEL N_("Remove Selected")
 #define I_POP_INFO N_("Information...")
 #define I_POP_SORT N_("Sort")
-#define I_POP_ADD N_("Add Node")
+#define I_POP_NEWFOLDER I_DIR_OR_FOLDER( N_("Create Directory..."), \
+                                         N_("Create Folder...") )
+#define I_POP_EXPLORE I_DIR_OR_FOLDER( N_("Show Containing Directory..."), \
+                                       N_("Show Containing Folder...") )
 #define I_POP_STREAM N_("Stream...")
 #define I_POP_SAVE N_("Save...")
-#define I_POP_EXPLORE N_("Open Folder...")
+
 
 /*************** Playlist *************/
 
-#define I_PL_LOOP       N_("Repeat all")
-#define I_PL_REPEAT     N_("Repeat one")
-#define I_PL_NOREPEAT   N_("No repeat")
+#define I_PL_LOOP       N_("Repeat All")
+#define I_PL_REPEAT     N_("Repeat One")
+#define I_PL_NOREPEAT   N_("No Repeat")
 
 #define I_PL_RANDOM     N_("Random")
-#define I_PL_NORANDOM   N_("Random off")
+#define I_PL_NORANDOM   N_("Random Off")
 
-#define I_PL_ADDPL      N_("Add to playlist")
-#define I_PL_ADDML      N_("Add to media library")
+#define I_PL_ADDPL      N_("Add to Playlist")
+#define I_PL_ADDML      N_("Add to Media Library")
 
-#define I_PL_ADDF       N_("Add file...")
-#define I_PL_ADVADD     N_("Advanced open...")
-#define I_PL_ADDDIR     N_("Add directory...")
+#define I_PL_ADDF       N_("Add File...")
+#define I_PL_ADVADD     N_("Advanced Open...")
+#define I_PL_ADDDIR     I_DIR_OR_FOLDER( N_("Add Directory..."), \
+                                         N_("Add Folder...") )
 
 #define I_PL_SAVE       N_("Save Playlist to &File...")
 #define I_PL_LOAD       N_("Open Play&list...")

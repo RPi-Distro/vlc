@@ -2,7 +2,7 @@
  * qt4.hpp : QT4 interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: dbcd04f7aa47f8a311e575d1f298b0ad6a9c43e4 $
+ * $Id: 47407d5685096c8b1b2bfe7860e7ea0100aa27ad $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -33,21 +33,18 @@
 #include <vlc_interface.h> /* intf_thread_t */
 #include <vlc_playlist.h>  /* playlist_t */
 
-#include <QEvent>
+#define QT_NO_CAST_TO_ASCII
 #include <QString>
 
-#if ( QT_VERSION < 0x040300 )
-# error Update your Qt version
+#if ( QT_VERSION < 0x040400 )
+# error Update your Qt version to at least 4.4.0
 #endif
 #if QT_VERSION == 0x040500
-# warning Please update Qt version to 4.5.1. This warning will become an error.
+# error Please update Qt version to 4.5.1. 4.5.0 is too buggy
 #endif
 
-enum {
-    QT_NORMAL_MODE = 0,
-    QT_ALWAYS_VIDEO_MODE,
-    QT_MINIMAL_MODE
-};
+#define HAS_QT45 ( QT_VERSION >= 0x040500 )
+#define HAS_QT46 ( QT_VERSION >= 0x040600 )
 
 enum {
     DialogEventType = 0,
@@ -78,7 +75,6 @@ struct intf_sys_t
 
     QString filepath;        /* Last path used in dialogs */
 
-    QMenu * p_popup_menu;    /* The right click menu */
 };
 
 #define THEPL p_intf->p_sys->p_playlist
@@ -87,12 +83,16 @@ struct intf_sys_t
 
 #define THEDP DialogsProvider::getInstance()
 #define THEMIM MainInputManager::getInstance( p_intf )
+#define THEAM ActionsManager::getInstance( p_intf )
 
 #define qfu( i ) QString::fromUtf8( i )
 #define qtr( i ) QString::fromUtf8( vlc_gettext(i) )
 #define qtu( i ) ((i).toUtf8().constData())
 
-#define CONNECT( a, b, c, d ) connect( a, SIGNAL( b ), c, SLOT(d) )
+#define CONNECT( a, b, c, d ) \
+        connect( a, SIGNAL( b ), c, SLOT(d) )
+#define DCONNECT( a, b, c, d ) \
+        connect( a, SIGNAL( b ), c, SLOT(d), Qt::DirectConnection )
 #define BUTTONACT( b, a ) connect( b, SIGNAL( clicked() ), this, SLOT(a) )
 
 #define BUTTON_SET( button, text, tooltip )  \
@@ -116,9 +116,16 @@ struct intf_sys_t
 #define TOGGLEV( x ) { if( x->isVisible() ) x->hide();          \
             else  x->show(); }
 
-#define setLayoutMargins( a, b, c, d, e) setContentsMargins( a, b, c, d )
-
 #define getSettings() p_intf->p_sys->mainSettings
 
+static inline QString QVLCUserDir( vlc_userdir_t type )
+{
+    char *dir = config_GetUserDir( type );
+    if( !dir )
+        abort();
+    QString res = qfu( dir );
+    free( dir );
+    return res;
+}
 
 #endif

@@ -2,7 +2,7 @@
  * playlist.c :  Playlist import module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 244bfcf1bde2d0d0475e43e01a16d369b398011f $
+ * $Id: de14c4a4411232511b2e7b9bef451de3177ca2dd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -31,6 +31,10 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
+#include <vlc_url.h>
+#ifdef WIN32
+# include <ctype.h>
+#endif
 
 #include "playlist.h"
 
@@ -54,13 +58,12 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
 
-    add_bool( "playlist-autostart", 1, NULL,
+    add_bool( "playlist-autostart", true, NULL,
               AUTOSTART_TEXT, AUTOSTART_LONGTEXT, false )
 
-    add_integer( "parent-item", 0, NULL, NULL, NULL, true )
-        change_internal ()
+    add_obsolete_integer( "parent-item" ) /* removed since 1.1.0 */
 
-    add_bool( "playlist-skip-ads", 1, NULL,
+    add_bool( "playlist-skip-ads", true, NULL,
               SKIP_ADS_TEXT, SKIP_ADS_LONGTEXT, false )
 
     set_shortname( N_("Playlist") )
@@ -153,8 +156,28 @@ vlc_module_begin ()
         add_shortcut( "itml" )
         set_capability( "demux", 10 )
         set_callbacks( Import_iTML, Close_iTML )
+    add_submodule ()
+        set_description( N_("WPL playlist import") )
+        add_shortcut( "playlist" )
+        add_shortcut( "wpl" )
+        set_capability( "demux", 10 )
+        set_callbacks( Import_WPL, Close_WPL )
+    add_submodule ()
+        set_description( N_("ZPL playlist import") )
+        add_shortcut( "playlist" )
+        add_shortcut( "zpl" )
+        set_capability( "demux", 10 )
+        set_callbacks( Import_ZPL, Close_ZPL )
 vlc_module_end ()
 
+input_item_t * GetCurrentItem(demux_t *p_demux)
+{
+    input_thread_t *p_input_thread = demux_GetParentInput( p_demux );
+    input_item_t *p_current_input = input_GetItem( p_input_thread );
+    vlc_gc_incref(p_current_input);
+    vlc_object_release(p_input_thread);
+    return p_current_input;
+}
 
 /**
  * Find directory part of the path to the playlist file, in case of
@@ -162,26 +185,41 @@ vlc_module_end ()
  */
 char *FindPrefix( demux_t *p_demux )
 {
-    char *psz_name;
-    char *psz_path = strdup( p_demux->psz_path );
+    char *psz_file;
+    char *psz_prefix;
+    char *psz_path;
+    if( p_demux->psz_access )
+    {
+        if( asprintf( &psz_path,"%s://%s", p_demux->psz_access, p_demux->psz_path ) == -1 )
+            return NULL;
+    }
+    else
+    {
+        psz_path = strdup( p_demux->psz_path );
+        if( psz_path == NULL )
+            return NULL;
+    }
 
-#ifndef WIN32
-    psz_name = strrchr( psz_path, '/' );
-#else
-    psz_name = strrchr( psz_path, '\\' );
-    if( !psz_name ) psz_name = strrchr( psz_path, '/' );
+#ifdef WIN32
+    psz_file = strrchr( psz_path, '\\' );
+    if( !psz_file )
 #endif
-    if( psz_name ) psz_name[1] = '\0';
-    else *psz_path = '\0';
+    psz_file = strrchr( psz_path, '/' );
 
-    return psz_path;
+    if( psz_file )
+        psz_prefix = strndup( psz_path, psz_file - psz_path + 1 );
+    else
+        psz_prefix = strdup( "" );
+    free( psz_path );
+
+    return psz_prefix;
 }
 
 /**
  * Add the directory part of the playlist file to the start of the
  * mrl, if the mrl is a relative file path
  */
-char *ProcessMRL( char *psz_mrl, char *psz_prefix )
+char *ProcessMRL( const char *psz_mrl, const char *psz_prefix )
 {
     /* Check for a protocol name.
      * for URL, we should look for "://"
@@ -190,19 +228,33 @@ char *ProcessMRL( char *psz_mrl, char *psz_prefix )
      * PB: on some file systems, ':' are valid characters though */
 
     /* Simple cases first */
-    if( !psz_mrl || !*psz_mrl ) return NULL;
-    if( !psz_prefix || !*psz_prefix ) return strdup( psz_mrl );
+    if( !psz_mrl || !*psz_mrl )
+        return NULL;
+    if( !psz_prefix || !*psz_prefix )
+        goto uri;
 
     /* Check if the line specifies an absolute path */
-    if( *psz_mrl == '/' || *psz_mrl == '\\' ) return strdup( psz_mrl );
-
-    /* Check if the line specifies an mrl/url
-     * (and on win32, contains a drive letter) */
-    if( strchr( psz_mrl, ':' ) ) return strdup( psz_mrl );
+    /* FIXME: that's wrong if the playlist is not a local file */
+    if( *psz_mrl == DIR_SEP_CHAR )
+        goto uri;
+#ifdef WIN32
+    /* Drive letter (this assumes URL scheme are not a single character) */
+    if( isalpha(psz_mrl[0]) && psz_mrl[1] == ':' )
+        goto uri;
+#endif
+    if( strstr( psz_mrl, "://" ) )
+        return strdup( psz_mrl );
 
     /* This a relative path, prepend the prefix */
-    if( asprintf( &psz_mrl, "%s%s", psz_prefix, psz_mrl ) != -1 )
-        return psz_mrl;
-    else
-        return NULL;
+    char *ret;
+    char *postfix = encode_URI_component( psz_mrl );
+    /* FIXME: postfix may not be encoded correctly (esp. slashes) */
+    if( postfix == NULL
+     || asprintf( &ret, "%s%s", psz_prefix, postfix ) == -1 )
+        ret = NULL;
+    free( postfix );
+    return ret;
+
+uri:
+    return make_URI( psz_mrl );
 }

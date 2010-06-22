@@ -2,7 +2,7 @@
  * var_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e692433d5e3d5ee1c6edab725520e00c666538ca $
+ * $Id: 4ca805fd877662c8b3a823c0d61a11755a3e3700 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -219,14 +219,21 @@ void VarText::onUpdate( Subject<VarText> &rVariable, void *arg )
 void VarText::delObservers()
 {
     // Stop observing other variables
-    VlcProc *pVlcProc = VlcProc::instance( getIntf() );
-    pVlcProc->getTimeVar().delObserver( this );
-    pVlcProc->getVolumeVar().delObserver( this );
-    pVlcProc->getStreamNameVar().delObserver( this );
-    pVlcProc->getStreamURIVar().delObserver( this );
-    pVlcProc->getStreamBitRateVar().delObserver( this );
-    pVlcProc->getStreamSampleRateVar().delObserver( this );
-    VarManager *pVarManager = VarManager::instance( getIntf() );
-    pVarManager->getHelpText().delObserver( this );
+
+    VlcProc *pVlcProc = getIntf()->p_sys->p_vlcProc;
+    VarManager *pVarManager = getIntf()->p_sys->p_varManager;
+
+    if( pVlcProc )
+    {
+        pVlcProc->getTimeVar().delObserver( this );
+        pVlcProc->getVolumeVar().delObserver( this );
+        pVlcProc->getStreamNameVar().delObserver( this );
+        pVlcProc->getStreamURIVar().delObserver( this );
+        pVlcProc->getStreamBitRateVar().delObserver( this );
+        pVlcProc->getStreamSampleRateVar().delObserver( this );
+    }
+
+    if( pVarManager )
+        pVarManager->getHelpText().delObserver( this );
 }
 

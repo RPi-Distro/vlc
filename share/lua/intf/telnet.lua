@@ -58,7 +58,7 @@ function on_password( client )
     if client.type == host.client_type.net then
         client:send( "Password: " ..IAC..WILL..ECHO )
     else
-        -- no authentification needed on stdin
+        -- no authentication needed on stdin
         client:switch_status( host.status.read )
     end
 end
@@ -172,8 +172,7 @@ end
 
 --[[ The main loop ]]
 while not vlc.misc.should_die() do
-    h:accept()
-    local w, r = h:select( 0.1 )
+    local w, r = h:accept_and_select()
 
     -- Handle writes
     for _, client in pairs(w) do
@@ -186,7 +185,10 @@ while not vlc.misc.should_die() do
     for _, client in pairs(r) do
         local str = client:recv(1000)
         local done = false
-        if string.match(str,"\n$") then
+        if not str then -- the telnet client program has leave
+            client.buffer = "quit"
+            done = true
+        elseif string.match(str,"\n$") then
             client.buffer = string.gsub(client.buffer..str,"\r?\n$","")
             done = true
         elseif client.buffer == ""

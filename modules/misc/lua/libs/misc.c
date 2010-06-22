@@ -2,7 +2,7 @@
  * misc.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 3a390af031efeb20b3345343b89029ca03d5525d $
+ * $Id: b2fb76e2a26454f376681ac7c3e3b26857f5d739 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -36,9 +36,9 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_meta.h>
-#include <vlc_charset.h>
 #include <vlc_aout.h>
 #include <vlc_interface.h>
+#include <vlc_keys.h>
 
 #include <lua.h>        /* Low level lua C API */
 #include <lauxlib.h>    /* Higher level C API */
@@ -50,14 +50,41 @@
 /*****************************************************************************
  * Internal lua<->vlc utils
  *****************************************************************************/
+static void vlclua_set_object( lua_State *L, void *id, void *value )
+{
+    lua_pushlightuserdata( L, id );
+    lua_pushlightuserdata( L, value );
+    lua_rawset( L, LUA_REGISTRYINDEX );
+}
+
+static void *vlclua_get_object( lua_State *L, void *id )
+{
+    lua_pushlightuserdata( L, id );
+    lua_rawget( L, LUA_REGISTRYINDEX );
+    const void *p = lua_topointer( L, -1 );
+    lua_pop( L, 1 );
+    return (void *)p;
+}
+
+#undef vlclua_set_this
+void vlclua_set_this( lua_State *L, vlc_object_t *p_this )
+{
+    vlclua_set_object( L, vlclua_set_this, p_this );
+}
+
 vlc_object_t * vlclua_get_this( lua_State *L )
 {
-    vlc_object_t * p_this;
-    lua_getglobal( L, "vlc" );
-    lua_getfield( L, -1, "private" );
-    p_this = (vlc_object_t*)lua_topointer( L, lua_gettop( L ) );
-    lua_pop( L, 2 );
-    return p_this;
+    return vlclua_get_object( L, vlclua_set_this );
+}
+
+void vlclua_set_intf( lua_State *L, intf_sys_t *p_intf )
+{
+    vlclua_set_object( L, vlclua_set_intf, p_intf );
+}
+
+static intf_sys_t * vlclua_get_intf( lua_State *L )
+{
+    return vlclua_get_object( L, vlclua_set_intf );
 }
 
 /*****************************************************************************
@@ -84,7 +111,7 @@ static int vlclua_version( lua_State *L )
  *****************************************************************************/
 static int vlclua_copyright( lua_State *L )
 {
-    lua_pushstring( L, COPYRIGHT_MESSAGE );
+    lua_pushliteral( L, COPYRIGHT_MESSAGE );
     return 1;
 }
 
@@ -114,27 +141,31 @@ static int vlclua_quit( lua_State *L )
  *****************************************************************************/
 static int vlclua_datadir( lua_State *L )
 {
-    lua_pushstring( L, config_GetDataDir() );
+    char *psz_data = config_GetDataDir( vlclua_get_this( L ) );
+    lua_pushstring( L, psz_data );
+    free( psz_data );
     return 1;
 }
 
 static int vlclua_userdatadir( lua_State *L )
 {
-    char *data = config_GetUserDataDir();
-    lua_pushstring( L, data );
-    free( data );
+    char *dir = config_GetUserDir( VLC_DATA_DIR );
+    lua_pushstring( L, dir );
+    free( dir );
     return 1;
 }
 
 static int vlclua_homedir( lua_State *L )
 {
-    lua_pushstring( L, config_GetHomeDir() );
+    char *home = config_GetUserDir( VLC_HOME_DIR );
+    lua_pushstring( L, home );
+    free( home );
     return 1;
 }
 
 static int vlclua_configdir( lua_State *L )
 {
-    char *dir = config_GetUserConfDir();
+    char *dir = config_GetUserDir( VLC_CONFIG_DIR );
     lua_pushstring( L, dir );
     free( dir );
     return 1;
@@ -142,7 +173,7 @@ static int vlclua_configdir( lua_State *L )
 
 static int vlclua_cachedir( lua_State *L )
 {
-    char *dir = config_GetCacheDir();
+    char *dir = config_GetUserDir( VLC_CACHE_DIR );
     lua_pushstring( L, dir );
     free( dir );
     return 1;
@@ -151,14 +182,14 @@ static int vlclua_cachedir( lua_State *L )
 static int vlclua_datadir_list( lua_State *L )
 {
     const char *psz_dirname = luaL_checkstring( L, 1 );
-    char  *ppsz_dir_list[] = { NULL, NULL, NULL, NULL };
-    char **ppsz_dir = ppsz_dir_list;
+    char **ppsz_dir_list = NULL;
     int i = 1;
 
-    if( vlclua_dir_list( psz_dirname, ppsz_dir_list ) != VLC_SUCCESS )
+    if( vlclua_dir_list( vlclua_get_this( L ), psz_dirname, &ppsz_dir_list )
+        != VLC_SUCCESS )
         return 0;
     lua_newtable( L );
-    for( ; *ppsz_dir; ppsz_dir++ )
+    for( char **ppsz_dir = ppsz_dir_list; *ppsz_dir; ppsz_dir++ )
     {
         lua_pushstring( L, *ppsz_dir );
         lua_rawseti( L, -2, i );
@@ -172,13 +203,13 @@ static int vlclua_datadir_list( lua_State *L )
  *****************************************************************************/
 static int vlclua_lock_and_wait( lua_State *L )
 {
-    intf_thread_t *p_intf = (intf_thread_t *)vlclua_get_this( L );
-    intf_sys_t *p_sys = p_intf->p_sys;
+    intf_sys_t *p_sys = vlclua_get_intf( L );
 
     vlc_mutex_lock( &p_sys->lock );
+    mutex_cleanup_push( &p_sys->lock );
     while( !p_sys->exiting )
         vlc_cond_wait( &p_sys->wait, &p_sys->lock );
-    vlc_mutex_unlock( &p_sys->lock );
+    vlc_cleanup_run();
     lua_pushboolean( L, 1 );
     return 1;
 }
@@ -198,8 +229,17 @@ static int vlclua_mwait( lua_State *L )
 
 static int vlclua_intf_should_die( lua_State *L )
 {
-    intf_thread_t *p_intf = (intf_thread_t*)vlclua_get_this( L );
-    lua_pushboolean( L, p_intf->p_sys->exiting );
+    intf_sys_t *p_sys = vlclua_get_intf( L );
+    lua_pushboolean( L, p_sys->exiting );
+    return 1;
+}
+
+static int vlclua_action_id( lua_State *L )
+{
+    vlc_key_t i_key = vlc_GetActionId( luaL_checkstring( L, 1 ) );
+    if (i_key == 0)
+        return 0;
+    lua_pushnumber( L, i_key );
     return 1;
 }
 
@@ -217,6 +257,8 @@ static const luaL_Reg vlclua_misc_reg[] = {
     { "configdir", vlclua_configdir },
     { "cachedir", vlclua_cachedir },
     { "datadir_list", vlclua_datadir_list },
+
+    { "action_id", vlclua_action_id },
 
     { "mdate", vlclua_mdate },
     { "mwait", vlclua_mwait },

@@ -616,7 +616,7 @@ function parse_playlist()
                     pl.appendChild( document.createTextNode( elt.getAttribute( 'name' ) ) );
                     var duration = elt.getAttribute( 'duration' );
                     if( duration > 0 )
-                        pl.appendChild( document.createTextNode( " (" + format_time( elt.getAttribute( 'duration' ) / 1000000 ) + ")" ) );
+                        pl.appendChild( document.createTextNode( " (" + format_time( elt.getAttribute( 'duration' ) ) + ")" ) );
                     pos.appendChild( pl );
 
                     if( elt.getAttribute( 'ro' ) == 'rw' )
@@ -1035,8 +1035,8 @@ function update_sout()
     if( ( transcode || output ) && checked( 'sout_all' ) )
         input_options.push( ":sout-all" );
 
-    /*var mrl = document.getElementById( 'sout_mrl' );
-    mrl.value = input_options.join( " " )*/
+    var mrl = document.getElementById( 'sout_mrl' );
+    mrl.value = option;
 
     refresh_input_options_list();
 }

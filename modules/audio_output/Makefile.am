@@ -4,8 +4,8 @@
 basedir = audio_output
 dir = audio_output
 mods = alsa aout_directx aout_file aout_sdl auhal hd1000a jack oss portaudio pulse waveout
-libvlc_LTLIBRARIES =  $(LTLIBalsa) $(LTLIBaout_directx) $(LTLIBaout_file) $(LTLIBaout_sdl) $(LTLIBauhal) $(LTLIBhd1000a) $(LTLIBjack) $(LTLIBoss) $(LTLIBportaudio) $(LTLIBpulse) $(LTLIBwaveout)
-EXTRA_LTLIBRARIES =  libalsa_plugin.la libaout_directx_plugin.la libaout_file_plugin.la libaout_sdl_plugin.la libauhal_plugin.la libhd1000a_plugin.la libjack_plugin.la liboss_plugin.la libportaudio_plugin.la libpulse_plugin.la libwaveout_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBalsa) $(LTLIBaout_directx) $(LTLIBaout_sdl) $(LTLIBauhal) $(LTLIBhd1000a) $(LTLIBjack) $(LTLIBoss) $(LTLIBportaudio) $(LTLIBpulse) $(LTLIBwaveout)
+EXTRA_LTLIBRARIES =  libalsa_plugin.la libaout_directx_plugin.la libaout_sdl_plugin.la libauhal_plugin.la libhd1000a_plugin.la libjack_plugin.la liboss_plugin.la libportaudio_plugin.la libpulse_plugin.la libwaveout_plugin.la
 
 include $(top_srcdir)/modules/common.am
 

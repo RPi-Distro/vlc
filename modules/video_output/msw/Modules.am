@@ -1,29 +1,39 @@
-SOURCES_vout_directx = \
+SOURCES_directx = \
 	directx.c \
-	vout.h \
+	common.h \
+	events.h \
 	events.c \
+	common.c \
 	$(NULL)
 
 SOURCES_direct3d = \
 	direct3d.c \
-	vout.h \
+	common.h \
+	events.h \
 	events.c \
+	common.c \
 	$(NULL)
 
 SOURCES_glwin32 = \
 	glwin32.c \
-	vout.h \
+	common.h \
+	events.h \
 	events.c \
+	common.c \
 	$(NULL)
 
 SOURCES_wingdi = \
 	wingdi.c \
-	vout.h \
+	common.h \
+	events.h \
 	events.c \
+	common.c \
 	$(NULL)
 
 SOURCES_wingapi = \
 	wingdi.c \
-	vout.h \
+	common.h \
+	events.h \
 	events.c \
+	common.c \
 	$(NULL)

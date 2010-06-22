@@ -2,7 +2,7 @@
  * Messages.hpp : Information about a stream
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: def795d0e24692fdf59e4d1c7493231b2bbd5faa $
+ * $Id: 762adb80d08b6e3d159f052775bc8e4c470eb356 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -25,6 +25,7 @@
 #define QVLC_MESSAGES_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
+#include "util/singleton.hpp"
 
 class QTabWidget;
 class QPushButton;
@@ -34,29 +35,15 @@ class QLabel;
 class QTextEdit;
 class QTreeWidget;
 class QTreeWidgetItem;
+class QLineEdit;
 
-class MessagesDialog : public QVLCFrame
+class MessagesDialog : public QVLCFrame, public Singleton<MessagesDialog>
 {
-    Q_OBJECT;
-public:
-    static MessagesDialog * getInstance( intf_thread_t *p_intf )
-    {
-        if( !instance)
-            instance = new MessagesDialog( p_intf );
-        return instance;
-    }
-    static void killInstance()
-    {
-        delete instance;
-        instance = NULL;
-    }
-
-
+    Q_OBJECT
 private:
     MessagesDialog( intf_thread_t * );
     virtual ~MessagesDialog();
 
-    static MessagesDialog *instance;
     QTabWidget *mainTab;
     QSpinBox *verbosityBox;
     QLabel *verbosityLabel;
@@ -64,6 +51,8 @@ private:
     QTreeWidget *modulesTree;
     QPushButton *clearUpdateButton;
     QPushButton *saveLogButton;
+    QLineEdit *vbobjectsEdit;
+    QLabel *vbobjectsLabel;
     msg_subscription_t *sub;
     msg_cb_data_t *cbData;
     static void sinkMessage( msg_cb_data_t *, msg_item_t *, unsigned );
@@ -74,10 +63,13 @@ private slots:
     void updateTab( int );
     void clearOrUpdate();
     bool save();
+    void updateConfig();
 private:
     void clear();
     void updateTree();
     void buildTree( QTreeWidgetItem *, vlc_object_t * );
+
+    friend class    Singleton<MessagesDialog>;
 };
 
 #endif

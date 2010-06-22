@@ -2,7 +2,7 @@
  * vlc_es.h: Elementary stream formats descriptions
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 8744f20f733e05d67f7e20dff8926a62b23590b9 $
+ * $Id: 3d1ec2fc04e60fde3c4476c0c365a76e07409a73 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,9 +24,7 @@
 #ifndef VLC_ES_H
 #define VLC_ES_H 1
 
-/* FIXME: i'm not too sure about this include but it fixes compilation of
- * video chromas -- dionoea */
-#include "vlc_common.h"
+#include <vlc_fourcc.h>
 
 /**
  * \file
@@ -95,16 +93,7 @@ struct audio_format_t
     unsigned     i_bitspersample;
     unsigned     i_blockalign;
     uint8_t      i_channels; /* must be <=32 */
-    uint8_t      i_flavor;
 };
-
-#ifdef WORDS_BIGENDIAN
-#   define AUDIO_FMT_S16_NE VLC_FOURCC('s','1','6','b')
-#   define AUDIO_FMT_U16_NE VLC_FOURCC('u','1','6','b')
-#else
-#   define AUDIO_FMT_S16_NE VLC_FOURCC('s','1','6','l')
-#   define AUDIO_FMT_U16_NE VLC_FOURCC('u','1','6','l')
-#endif
 
 /**
  * video format description
@@ -112,7 +101,6 @@ struct audio_format_t
 struct video_format_t
 {
     vlc_fourcc_t i_chroma;                               /**< picture chroma */
-    unsigned int i_aspect;                                 /**< aspect ratio */
 
     unsigned int i_width;                                 /**< picture width */
     unsigned int i_height;                               /**< picture height */
@@ -129,7 +117,7 @@ struct video_format_t
     unsigned int i_frame_rate;                     /**< frame rate numerator */
     unsigned int i_frame_rate_base;              /**< frame rate denominator */
 
-    int i_rmask, i_gmask, i_bmask;          /**< color masks for RGB chroma */
+    uint32_t i_rmask, i_gmask, i_bmask;          /**< color masks for RGB chroma */
     int i_rrshift, i_lrshift;
     int i_rgshift, i_lgshift;
     int i_rbshift, i_lbshift;
@@ -154,18 +142,18 @@ static inline void video_format_Init( video_format_t *p_src, vlc_fourcc_t i_chro
  * \param p_dst video_format_t to copy to
  * \param p_src video_format_t to copy from
  */
-static inline int video_format_Copy( video_format_t *p_dst, video_format_t *p_src )
+static inline int video_format_Copy( video_format_t *p_dst, const video_format_t *p_src )
 {
-    memcpy( p_dst, p_src, sizeof( video_format_t ) );
+    memcpy( p_dst, p_src, sizeof( *p_dst ) );
     if( p_src->p_palette )
     {
         p_dst->p_palette = (video_palette_t *) malloc( sizeof( video_palette_t ) );
         if( !p_dst->p_palette )
             return VLC_ENOMEM;
-        memcpy( p_dst->p_palette, p_src->p_palette, sizeof( video_palette_t ) );
+        memcpy( p_dst->p_palette, p_src->p_palette, sizeof( *p_dst->p_palette ) );
     }
     return VLC_SUCCESS;
-};
+}
 
 /**
  * Cleanup and free palette of this video_format_t
@@ -177,6 +165,18 @@ static inline void video_format_Clean( video_format_t *p_src )
     memset( p_src, 0, sizeof( video_format_t ) );
     p_src->p_palette = NULL;
 }
+
+/**
+ * It will fill up a video_format_tvideo_format_t using the given arguments.
+ * Becarefull that the video_format_t must already be initialized.
+ */
+VLC_EXPORT( void, video_format_Setup, ( video_format_t *, vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den ) );
+
+/**
+ * This function will check if the first video format is similar
+ * to the second one.
+ */
+VLC_EXPORT( bool, video_format_IsSimilar, ( const video_format_t *, const video_format_t * ) );
 
 /**
  * subtitles format description
@@ -227,8 +227,9 @@ typedef struct extra_languages_t
  */
 struct es_format_t
 {
-    int             i_cat;      /**< ES category @see es_format_category_e */
-    vlc_fourcc_t    i_codec;    /**< FOURCC value as used in vlc */
+    int             i_cat;              /**< ES category @see es_format_category_e */
+    vlc_fourcc_t    i_codec;            /**< FOURCC value as used in vlc */
+    vlc_fourcc_t    i_original_fourcc;  /**< original FOURCC from the container */
 
     int             i_id;       /**< es identifier, where means
                                     -1: let the core mark the right id
@@ -254,6 +255,8 @@ struct es_format_t
     subs_format_t  subs;      /**< description of subtitle format */
 
     unsigned int   i_bitrate; /**< bitrate of this ES */
+    int      i_profile;       /**< codec specific information (like real audio flavor, mpeg audio layer, h264 profile ...) */
+    int      i_level;         /**< codec specific information: indicates maximum restrictions on the stream (resolution, bitrate, codec features ...) */
 
     bool     b_packetized;  /**< wether the data is packetized (ie. not truncated) */
     int     i_extra;        /**< length in bytes of extra data pointer */
@@ -277,9 +280,14 @@ enum es_format_category_e
 VLC_EXPORT( void, video_format_FixRgb, ( video_format_t * ) );
 
 /**
- * This funtion will initialize a es_format_t structure.
+ * This function will initialize a es_format_t structure.
  */
 VLC_EXPORT( void, es_format_Init, ( es_format_t *, int i_cat, vlc_fourcc_t i_codec ) );
+
+/**
+ * This function will initialize a es_format_t structure from a video_format_t.
+ */
+VLC_EXPORT( void, es_format_InitFromVideo, ( es_format_t *, const video_format_t * ) );
 
 /**
  * This functions will copy a es_format_t.
@@ -292,5 +300,13 @@ VLC_EXPORT( int, es_format_Copy, ( es_format_t *p_dst, const es_format_t *p_src 
  * You can call it multiple times on the same structure.
  */
 VLC_EXPORT( void, es_format_Clean, ( es_format_t *fmt ) );
+
+/**
+ * This function will check if the first ES format is similar
+ * to the second one.
+ *
+ * All descriptive fields are ignored.
+ */
+VLC_EXPORT( bool, es_format_IsSimilar, ( const es_format_t *, const es_format_t * ) );
 
 #endif

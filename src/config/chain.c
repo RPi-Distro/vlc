@@ -2,7 +2,7 @@
  * chain.c : configuration module chain parsing stuff
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 8e0c067e3b426a4208d17a59a419a64c7de18c9d $
+ * $Id: a9a6fce29713eeabfdeb0e8c94f4cda504bb25e4 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -186,7 +186,7 @@ char *config_ChainCreate( char **ppsz_name, config_chain_t **pp_cfg,
 
     if( !psz_chain )
         return NULL;
-    psz_chain += strspn( psz_chain, " \t" );
+    SKIPSPACE( psz_chain );
 
     /* Look for parameter (a {...} or :...) or end of name (space or nul) */
     len = strcspn( psz_chain, "{: \t" );
@@ -194,14 +194,14 @@ char *config_ChainCreate( char **ppsz_name, config_chain_t **pp_cfg,
     psz_chain += len;
 
     /* Parse the parameters */
-    psz_chain += strspn( psz_chain, " \t" );
+    SKIPSPACE( psz_chain );
     if( *psz_chain == '{' )
     {
         /* Parse all name=value[,] elements */
         do
         {
             psz_chain++; /* skip previous delimiter */
-            psz_chain += strspn( psz_chain, " \t" );
+            SKIPSPACE( psz_chain );
 
             /* Look for the end of the name (,={}_space_) */
             len = strcspn( psz_chain, "=,{} \t" );
@@ -221,17 +221,17 @@ char *config_ChainCreate( char **ppsz_name, config_chain_t **pp_cfg,
             pp_next = &p_cfg->p_next;
 
             /* Extract the option value */
-            psz_chain += strspn( psz_chain, " \t" );
+            SKIPSPACE( psz_chain );
             if( strchr( "={", *psz_chain ) )
             {
                 p_cfg->psz_value = ChainGetValue( &psz_chain );
-                psz_chain += strspn( psz_chain, " \t" );
+                SKIPSPACE( psz_chain );
             }
         }
         while( !memchr( "}", *psz_chain, 2 ) );
 
         if( *psz_chain ) psz_chain++; /* skip '}' */;
-        psz_chain += strspn( psz_chain, " \t" );
+        SKIPSPACE( psz_chain );
     }
 
     if( *psz_chain == ':' )
@@ -256,8 +256,9 @@ void config_ChainDestroy( config_chain_t *p_cfg )
     }
 }
 
-void __config_ChainParse( vlc_object_t *p_this, const char *psz_prefix,
-                          const char *const *ppsz_options, config_chain_t *cfg )
+#undef config_ChainParse
+void config_ChainParse( vlc_object_t *p_this, const char *psz_prefix,
+                        const char *const *ppsz_options, config_chain_t *cfg )
 {
     if( psz_prefix == NULL ) psz_prefix = "";
     size_t plen = 1 + strlen( psz_prefix );
@@ -411,6 +412,26 @@ void __config_ChainParse( vlc_object_t *p_this, const char *psz_prefix,
         msg_Dbg( p_this, "set config option: %s to %s", psz_name,
                  cfg->psz_value ? cfg->psz_value : "(null)" );
     }
+}
+
+config_chain_t *config_ChainDuplicate( const config_chain_t *p_src )
+{
+    config_chain_t *p_dst = NULL;
+    config_chain_t **pp_last = &p_dst;
+
+    for( ; p_src != NULL; p_src = p_src->p_next )
+    {
+        config_chain_t *p = malloc( sizeof(*p) );
+        if( !p )
+            break;
+        p->p_next    = NULL;
+        p->psz_name  = p_src->psz_name  ? strdup( p_src->psz_name )  : NULL;
+        p->psz_value = p_src->psz_value ? strdup( p_src->psz_value ) : NULL;
+
+        *pp_last = p;
+        pp_last = &p->p_next;
+    }
+    return p_dst;
 }
 
 char *config_StringUnescape( char *psz_string )

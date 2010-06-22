@@ -2,7 +2,7 @@
  * qvlcapp.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: f43c1b526a16b4bc58f5c44cada8840ddcf74328 $
+ * $Id: bfd8a90599fad8ae6b9f11a7774deba4fb54c92e $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -30,6 +30,10 @@
 
 #if defined(Q_WS_WIN)
 #   include <windows.h>
+#   include <vlc_common.h>
+#   include <vlc_interface.h>
+#   include "qt4.hpp"
+#   include "input_manager.hpp"
 #endif
 
 class QVLCApp : public QApplication
@@ -56,22 +60,6 @@ public:
         connect( this, SIGNAL(quitSignal()), this, SLOT(quit()) );
      }
 #endif
-
-#if defined(Q_WS_WIN)
-protected:
-    virtual bool winEventFilter( MSG *msg, long *result )
-    {
-        switch( msg->message )
-        {
-            case 0x0319: /* WM_APPCOMMAND 0x0319 */
-                DefWindowProc( msg->hwnd, msg->message,
-                               msg->wParam, msg->lParam );
-                break;
-        }
-        return false;
-    }
-#endif
-
 
 signals:
     void quitSignal();

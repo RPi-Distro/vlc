@@ -2,7 +2,7 @@
  * vlc_es_out.h: es_out (demuxer output) descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: fdde1c935f298af2d0ad27782438109e66ba0ca5 $
+ * $Id: 57fc5c003ad3d319f75c6dcbae650c1f45e50d28 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -33,14 +33,6 @@
  * \defgroup es out Es Out
  * @{
  */
-
-enum es_out_mode_e
-{
-    ES_OUT_MODE_NONE,   /* don't select anything */
-    ES_OUT_MODE_ALL,    /* eg for stream output */
-    ES_OUT_MODE_AUTO,   /* best audio/video or for input follow audio-track, sub-track */
-    ES_OUT_MODE_PARTIAL /* select programs given after --programs */
-};
 
 enum es_out_query_e
 {
@@ -73,10 +65,10 @@ enum es_out_query_e
 
     /* Allow preroll of data (data with dts/pts < i_pts for all ES will be decoded but not displayed */
     ES_OUT_SET_NEXT_DISPLAY_TIME,       /* arg1=int64_t i_pts(microsecond) */
-    /* Set meta data for group (dynamic) */
-    ES_OUT_SET_GROUP_META,  /* arg1=int i_group arg2=vlc_meta_t */
-    /* Set epg for group (dynamic) */
-    ES_OUT_SET_GROUP_EPG,   /* arg1=int i_group arg2=vlc_epg_t */
+    /* Set meta data for group (dynamic) (The vlc_meta_t is not modified nor released) */
+    ES_OUT_SET_GROUP_META,  /* arg1=int i_group arg2=const vlc_meta_t */
+    /* Set epg for group (dynamic) (The vlc_epg_t is not modified nor released) */
+    ES_OUT_SET_GROUP_EPG,   /* arg1=int i_group arg2=const vlc_epg_t */
     /* */
     ES_OUT_DEL_GROUP,       /* arg1=int i_group */
 
@@ -93,6 +85,10 @@ enum es_out_query_e
     /* Set global meta data (The vlc_meta_t is not modified nor released) */
     ES_OUT_SET_META, /* arg1=const vlc_meta_t * */
 
+    /* PCR system clock manipulation for external clock synchronization */
+    ES_OUT_GET_PCR_SYSTEM, /* arg1=mtime_t *, arg2=mtime_t * res=can fail */
+    ES_OUT_MODIFY_PCR_SYSTEM, /* arg1=int is_absolute, arg2=mtime_t, res=can fail */
+
     /* First value usable for private control */
     ES_OUT_PRIVATE_START = 0x10000,
 };
@@ -104,8 +100,6 @@ struct es_out_t
     void         (*pf_del)    ( es_out_t *, es_out_id_t * );
     int          (*pf_control)( es_out_t *, int i_query, va_list );
     void         (*pf_destroy)( es_out_t * );
-
-    bool         b_sout;
 
     es_out_sys_t    *p_sys;
 };
@@ -151,6 +145,15 @@ static inline void es_out_Delete( es_out_t *p_out )
 static inline int es_out_ControlSetMeta( es_out_t *out, const vlc_meta_t *p_meta )
 {
     return es_out_Control( out, ES_OUT_SET_META, p_meta );
+}
+
+static inline int es_out_ControlGetPcrSystem( es_out_t *out, mtime_t *pi_system, mtime_t *pi_delay )
+{
+    return es_out_Control( out, ES_OUT_GET_PCR_SYSTEM, pi_system, pi_delay );
+}
+static inline int es_out_ControlModifyPcrSystem( es_out_t *out, bool b_absolute, mtime_t i_system )
+{
+    return es_out_Control( out, ES_OUT_MODIFY_PCR_SYSTEM, b_absolute, i_system );
 }
 
 /**

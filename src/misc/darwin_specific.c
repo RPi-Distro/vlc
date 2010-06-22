@@ -1,8 +1,9 @@
+
 /*****************************************************************************
  * darwin_specific.m: Darwin specific features
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 23ef2ff28f2439b0062a248bcdc16bb9a656ec69 $
+ * $Id: 810bd1b27ae175a7935d64dddd90eff13edf6154 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -30,14 +31,13 @@
 #include <vlc_common.h>
 #include "../libvlc.h"
 #include <dirent.h>                                                /* *dir() */
-
+#include <libgen.h>
+#include <dlfcn.h>
 #include <CoreFoundation/CoreFoundation.h>
+#include <mach-o/dyld.h>
 
 #ifdef HAVE_LOCALE_H
 #   include <locale.h>
-#endif
-#ifdef HAVE_MACH_O_DYLD_H
-#   include <mach-o/dyld.h>
 #endif
 
 #ifndef MAXPATHLEN
@@ -70,7 +70,7 @@ void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
             p_char += 26; /* p_char += strlen(" VLCKit.framework/Versions/" ) */
             while( *p_char != '\0' && *p_char != '/')
                 p_char++;
-            
+
             /* If the string ends with VLC then we've found a winner */
             if ( !strcmp( p_char, "/VLCKit" ) )
             {
@@ -80,8 +80,26 @@ void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
             else
                 p_char = NULL;
         }
+        else
+        {
+            size_t len = strlen(psz_img_name);
+            /* Do we end by "VLC"? If so we are the legacy VLC.app that doesn't
+             * link to VLCKit. */
+            if( !strcmp( psz_img_name + len - 3, "VLC") )
+            {
+                p_char = strdup( psz_img_name );
+                break;
+            }
+        }
     }
-
+    if ( !p_char )
+    {
+        /* We are not linked to the VLC.framework, let's use dladdr to figure
+         * libvlc path */
+        Dl_info info;
+        if( dladdr(system_Init, &info) )
+            p_char = strdup(dirname( info.dli_fname ));
+    }
     if( !p_char )
     {
         char path[MAXPATHLEN+1];
@@ -110,6 +128,7 @@ void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
         p_char++;
     }
 
+#ifdef ENABLE_NLS
     /* Check if $LANG is set. */
     if( NULL == getenv("LANG") )
     {
@@ -137,15 +156,17 @@ void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
         }
         CFRelease( all_locales );
     }
+#endif
 }
 
 /*****************************************************************************
  * system_Configure: check for system specific configuration options.
  *****************************************************************************/
-void system_Configure( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
+void system_Configure( libvlc_int_t *p_this,
+                       int i_argc, const char *const ppsz_argv[] )
 {
     (void)p_this;
-    (void)pi_argc;
+    (void)i_argc;
     (void)ppsz_argv;
 }
 

@@ -2,7 +2,7 @@
  * audioscrobbler.c : audioscrobbler submission plugin
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: d287188505babf079035745fee26090bb5256766 $
+ * $Id: 9b18f1d337760d317efd7ec1dbfd04eb8bb8c229 $
  *
  * Author: Rafaël Carré <funman at videolanorg>
  *         Ilkka Ollakka <ileoo at videolan org>
@@ -26,6 +26,7 @@
  * http://www.audioscrobbler.net/development/protocol/
  *
  * TODO:    "Now Playing" feature (not mandatory)
+ *          Update to new API? http://www.lastfm.fr/api
  */
 /*****************************************************************************
  * Preamble
@@ -176,7 +177,6 @@ vlc_module_end ()
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    playlist_t      *p_playlist;
     intf_thread_t   *p_intf     = ( intf_thread_t* ) p_this;
     intf_sys_t      *p_sys      = calloc( 1, sizeof( intf_sys_t ) );
 
@@ -188,11 +188,7 @@ static int Open( vlc_object_t *p_this )
     vlc_mutex_init( &p_sys->lock );
     vlc_cond_init( &p_sys->wait );
 
-    p_playlist = pl_Hold( p_intf );
-    PL_LOCK;
-    var_AddCallback( p_playlist, "item-current", ItemChange, p_intf );
-    PL_UNLOCK;
-    pl_Release( p_intf );
+    var_AddCallback( pl_Get( p_intf ), "item-current", ItemChange, p_intf );
 
     p_intf->pf_run = Run;
 
@@ -204,27 +200,19 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    playlist_t                  *p_playlist;
+    playlist_t                  *p_playlist = pl_Get( p_this );
     input_thread_t              *p_input;
     intf_thread_t               *p_intf = ( intf_thread_t* ) p_this;
     intf_sys_t                  *p_sys  = p_intf->p_sys;
 
-    p_playlist = pl_Hold( p_intf );
-    if( p_playlist )
+    var_DelCallback( p_playlist, "item-current", ItemChange, p_intf );
+
+    p_input = playlist_CurrentInput( p_playlist );
+    if ( p_input )
     {
-
-        var_DelCallback( p_playlist, "item-current", ItemChange, p_intf );
-
-        p_input = playlist_CurrentInput( p_playlist );
-        if ( p_input )
-        {
-            if( p_sys->b_state_cb )
-                var_DelCallback( p_input, "intf-event", PlayingChange, p_intf );
-
-            vlc_object_release( p_input );
-        }
-
-        pl_Release( p_intf );
+        if( p_sys->b_state_cb )
+            var_DelCallback( p_input, "intf-event", PlayingChange, p_intf );
+        vlc_object_release( p_input );
     }
 
     int i;
@@ -393,7 +381,7 @@ static void Run( intf_thread_t *p_intf )
 
         /* we transmit the data */
         i_net_ret = net_Printf(
-            VLC_OBJECT( p_intf ), i_post_socket, NULL,
+            p_intf, i_post_socket, NULL,
             POST_REQUEST, p_sys->psz_submit_file,
             (unsigned)strlen( psz_submit ), p_sys->psz_submit_host,
             VERSION, psz_submit
@@ -465,6 +453,8 @@ static void Run( intf_thread_t *p_intf )
 static int PlayingChange( vlc_object_t *p_this, const char *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
+    VLC_UNUSED( oldval );
+
     intf_thread_t   *p_intf = ( intf_thread_t* ) p_data;
     intf_sys_t      *p_sys  = p_intf->p_sys;
     input_thread_t  *p_input = ( input_thread_t* )p_this;
@@ -473,6 +463,12 @@ static int PlayingChange( vlc_object_t *p_this, const char *psz_var,
     VLC_UNUSED( p_this ); VLC_UNUSED( psz_var );
 
     if( newval.i_int != INPUT_EVENT_STATE ) return VLC_SUCCESS;
+
+    if( var_CountChoices( p_input, "video-es" ) )
+    {
+        msg_Dbg( p_this, "Not an audio-only input, not submitting");
+        return VLC_SUCCESS;
+    }
 
     state_value.i_int = 0;
 
@@ -505,12 +501,10 @@ static int PlayingChange( vlc_object_t *p_this, const char *psz_var,
 static int ItemChange( vlc_object_t *p_this, const char *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
-    playlist_t          *p_playlist;
     input_thread_t      *p_input;
     intf_thread_t       *p_intf     = ( intf_thread_t* ) p_data;
     intf_sys_t          *p_sys      = p_intf->p_sys;
     input_item_t        *p_item;
-    vlc_value_t         video_val;
 
     VLC_UNUSED( p_this ); VLC_UNUSED( psz_var );
     VLC_UNUSED( oldval ); VLC_UNUSED( newval );
@@ -519,16 +513,10 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     p_sys->b_meta_read      = false;
     p_sys->b_submit         = false;
 
-    p_playlist = pl_Hold( p_intf );
-    p_input = playlist_CurrentInput( p_playlist );
+    p_input = playlist_CurrentInput( pl_Get( p_intf ) );
 
     if( !p_input || p_input->b_dead )
-    {
-        pl_Release( p_intf );
         return VLC_SUCCESS;
-    }
-
-    pl_Release( p_intf );
 
     p_item = input_GetItem( p_input );
     if( !p_item )
@@ -537,10 +525,9 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
         return VLC_SUCCESS;
     }
 
-    var_Change( p_input, "video-es", VLC_VAR_CHOICESCOUNT, &video_val, NULL );
-    if( ( video_val.i_int > 0 ) || p_item->i_type == ITEM_TYPE_NET )
+    if( var_CountChoices( p_input, "video-es" ) )
     {
-        msg_Dbg( p_this, "Not an audio local file, not submitting");
+        msg_Dbg( p_this, "Not an audio-only input, not submitting");
         vlc_object_release( p_input );
         return VLC_SUCCESS;
     }
@@ -728,11 +715,11 @@ static int Handshake( intf_thread_t *p_this )
     intf_thread_t       *p_intf                 = ( intf_thread_t* ) p_this;
     intf_sys_t          *p_sys                  = p_this->p_sys;
 
-    psz_username = config_GetPsz( p_this, "lastfm-username" );
+    psz_username = var_InheritString( p_this, "lastfm-username" );
     if( !psz_username )
         return VLC_ENOMEM;
 
-    psz_password = config_GetPsz( p_this, "lastfm-password" );
+    psz_password = var_InheritString( p_this, "lastfm-password" );
     if( !psz_password )
     {
         free( psz_username );
@@ -785,7 +772,7 @@ static int Handshake( intf_thread_t *p_this )
     strncpy( p_sys->psz_auth_token, psz_auth_token, 33 );
     free( psz_auth_token );
 
-    psz_scrobbler_url = config_GetPsz( p_this, "scrobbler-url" );
+    psz_scrobbler_url = var_InheritString( p_this, "scrobbler-url" );
     if( !psz_scrobbler_url )
     {
         free( psz_username );
@@ -942,21 +929,14 @@ static void DeleteSong( audioscrobbler_song_t* p_song )
  *****************************************************************************/
 static int ReadMetaData( intf_thread_t *p_this )
 {
-    playlist_t          *p_playlist;
     input_thread_t      *p_input;
     input_item_t        *p_item;
 
     intf_sys_t          *p_sys = p_this->p_sys;
 
-    p_playlist = pl_Hold( p_this );
-    p_input = playlist_CurrentInput( p_playlist );
+    p_input = playlist_CurrentInput( pl_Get( p_this ) );
     if( !p_input )
-    {
-        pl_Release( p_this );
         return( VLC_SUCCESS );
-    }
-
-    pl_Release( p_this );
 
     p_item = input_GetItem( p_input );
     if( !p_item )

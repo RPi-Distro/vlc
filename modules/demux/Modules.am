@@ -1,6 +1,6 @@
 SUBDIRS = asf avformat avi mkv mp4 mpeg playlist
 SOURCES_flacsys = flac.c
-SOURCES_ogg = ogg.c vorbis.h kate_categories.c kate_categories.h
+SOURCES_ogg = ogg.c vorbis.h kate_categories.c kate_categories.h xiph.h
 SOURCES_demuxdump = demuxdump.c
 SOURCES_rawdv = rawdv.c
 SOURCES_rawvid = rawvid.c
@@ -12,14 +12,14 @@ SOURCES_nsv = nsv.c
 SOURCES_real = real.c
 SOURCES_ts = ts.c ../mux/mpeg/csa.c
 SOURCES_ps = ps.c ps.h
-SOURCES_mod = mod.c
+SOURCES_mod = mod.c dummy.cpp
 SOURCES_pva = pva.c
 SOURCES_aiff = aiff.c
 SOURCES_mjpeg = mjpeg.c
 SOURCES_subtitle = subtitle.c
 SOURCES_asademux = subtitle_asa.c asademux.c asademux_defs.h asademux.h
 SOURCES_ty = ty.c ../codec/cc.h
-SOURCES_vobsub = vobsub.c
+SOURCES_vobsub = vobsub.c vobsub.h
 SOURCES_voc = voc.c
 SOURCES_xa = xa.c
 SOURCES_nuv = nuv.c
@@ -59,3 +59,8 @@ libvlc_LTLIBRARIES += \
 	libwav_plugin.la \
 	libxa_plugin.la \
 	$(NULL)
+
+BUILT_SOURCES += dummy.cpp
+
+dummy.cpp:
+	touch dummy.cpp

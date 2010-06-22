@@ -2,7 +2,7 @@
  * media_discoverer.c: libvlc new API media discoverer functions
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 94b4b0aef6787fbf4526b6f113e16421a55bf991 $
+ * $Id: c4163b3d586f5aaa6bf428d4a47b5f4b1df5b46a $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -20,6 +20,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <assert.h>
 
@@ -62,9 +66,8 @@ static void services_discovery_item_added( const vlc_event_t * p_event,
     libvlc_media_discoverer_t * p_mdis = user_data;
     libvlc_media_list_t * p_mlist = p_mdis->p_mlist;
 
-    p_md = libvlc_media_new_from_input_item(
-            p_mdis->p_libvlc_instance,
-            p_item, NULL );
+    p_md = libvlc_media_new_from_input_item( p_mdis->p_libvlc_instance,
+                                             p_item );
 
     /* If we have a category, that mean we have to group the items having
      * that category in a media_list. */
@@ -75,8 +78,8 @@ static void services_discovery_item_added( const vlc_event_t * p_event,
         if( p_mlist == kVLCDictionaryNotFound )
         {
             libvlc_media_t * p_catmd;
-            p_catmd = libvlc_media_new_as_node( p_mdis->p_libvlc_instance, psz_cat, NULL );
-            p_mlist = libvlc_media_subitems( p_catmd, NULL );
+            p_catmd = libvlc_media_new_as_node( p_mdis->p_libvlc_instance, psz_cat );
+            p_mlist = libvlc_media_subitems( p_catmd );
             p_mlist->b_read_only = true;
 
             /* Insert the newly created mlist in our dictionary */
@@ -84,7 +87,7 @@ static void services_discovery_item_added( const vlc_event_t * p_event,
 
             /* Insert the md into the root list */
             libvlc_media_list_lock( p_mdis->p_mlist );
-            _libvlc_media_list_add_media( p_mdis->p_mlist, p_catmd, NULL );
+            _libvlc_media_list_add_media( p_mdis->p_mlist, p_catmd );
             libvlc_media_list_unlock( p_mdis->p_mlist );
 
             /* We don't release the mlist cause the dictionary
@@ -92,12 +95,12 @@ static void services_discovery_item_added( const vlc_event_t * p_event,
             libvlc_media_release( p_catmd );
         }
     }
-    else
-    {
-        libvlc_media_list_lock( p_mlist );
-        _libvlc_media_list_add_media( p_mlist, p_md, NULL );
-        libvlc_media_list_unlock( p_mlist );
-    }
+
+    libvlc_media_list_lock( p_mlist );
+    _libvlc_media_list_add_media( p_mlist, p_md );
+    libvlc_media_list_unlock( p_mlist );
+
+    libvlc_media_release( p_md );
 }
 
 /**************************************************************************
@@ -111,14 +114,14 @@ static void services_discovery_item_removed( const vlc_event_t * p_event,
     libvlc_media_t * p_md;
     libvlc_media_discoverer_t * p_mdis = user_data;
 
-    int i, count = libvlc_media_list_count( p_mdis->p_mlist, NULL );
+    int i, count = libvlc_media_list_count( p_mdis->p_mlist );
     libvlc_media_list_lock( p_mdis->p_mlist );
     for( i = 0; i < count; i++ )
     {
-        p_md = libvlc_media_list_item_at_index( p_mdis->p_mlist, i, NULL );
+        p_md = libvlc_media_list_item_at_index( p_mdis->p_mlist, i );
         if( p_md->p_input_item == p_item )
         {
-            _libvlc_media_list_remove_index( p_mdis->p_mlist, i, NULL );
+            _libvlc_media_list_remove_index( p_mdis->p_mlist, i );
             break;
         }
     }
@@ -166,39 +169,43 @@ static void services_discovery_ended( const vlc_event_t * p_event,
  **************************************************************************/
 libvlc_media_discoverer_t *
 libvlc_media_discoverer_new_from_name( libvlc_instance_t * p_inst,
-                                       const char * psz_name,
-                                       libvlc_exception_t * p_e )
+                                       const char * psz_name )
 {
     libvlc_media_discoverer_t * p_mdis;
 
     p_mdis = malloc(sizeof(libvlc_media_discoverer_t));
-    if( !p_mdis )
+    if( unlikely(!p_mdis) )
     {
-        libvlc_exception_raise( p_e, "Not enough memory" );
+        libvlc_printerr( "Not enough memory" );
         return NULL;
     }
 
     p_mdis->p_libvlc_instance = p_inst;
-    p_mdis->p_mlist = libvlc_media_list_new( p_inst, NULL );
+    p_mdis->p_mlist = libvlc_media_list_new( p_inst );
     p_mdis->p_mlist->b_read_only = true;
     p_mdis->running = false;
 
     vlc_dictionary_init( &p_mdis->catname_to_submedialist, 0 );
 
-    p_mdis->p_event_manager = libvlc_event_manager_new( p_mdis,
-            p_inst, NULL );
-
-    libvlc_event_manager_register_event_type( p_mdis->p_event_manager,
-            libvlc_MediaDiscovererStarted, NULL );
-    libvlc_event_manager_register_event_type( p_mdis->p_event_manager,
-            libvlc_MediaDiscovererEnded, NULL );
-
-    p_mdis->p_sd = vlc_sd_Create( (vlc_object_t*)p_inst->p_libvlc_int );
-
-    if( !p_mdis->p_sd )
+    p_mdis->p_event_manager = libvlc_event_manager_new( p_mdis, p_inst );
+    if( unlikely(p_mdis->p_event_manager == NULL) )
     {
+        free( p_mdis );
+        return NULL;
+    }
+
+    libvlc_event_manager_register_event_type( p_mdis->p_event_manager,
+            libvlc_MediaDiscovererStarted );
+    libvlc_event_manager_register_event_type( p_mdis->p_event_manager,
+            libvlc_MediaDiscovererEnded );
+
+    p_mdis->p_sd = vlc_sd_Create( (vlc_object_t*)p_inst->p_libvlc_int,
+                                  psz_name );
+    if( unlikely(p_mdis->p_sd == NULL) )
+    {
+        libvlc_printerr( "%s: no such discovery module found", psz_name );
         libvlc_media_list_release( p_mdis->p_mlist );
-        libvlc_exception_raise( p_e, "Can't find the services_discovery module named '%s'", psz_name );
+        libvlc_event_manager_release( p_mdis->p_event_manager );
         free( p_mdis );
         return NULL;
     }
@@ -221,10 +228,12 @@ libvlc_media_discoverer_new_from_name( libvlc_instance_t * p_inst,
                       p_mdis );
 
     /* Here we go */
-    if( !vlc_sd_Start( p_mdis->p_sd, psz_name ) )
+    if( !vlc_sd_Start( p_mdis->p_sd ) )
     {
+        libvlc_printerr( "%s: internal module error",
+                         p_mdis->p_sd->psz_name );
         libvlc_media_list_release( p_mdis->p_mlist );
-        libvlc_exception_raise( p_e, "Can't start the services_discovery module named '%s'", psz_name );
+        libvlc_event_manager_release( p_mdis->p_event_manager );
         free( p_mdis );
         return NULL;
     }
@@ -240,7 +249,25 @@ libvlc_media_discoverer_release( libvlc_media_discoverer_t * p_mdis )
 {
     int i;
 
+    vlc_event_detach( services_discovery_EventManager( p_mdis->p_sd ),
+                     vlc_ServicesDiscoveryItemAdded,
+                     services_discovery_item_added,
+                     p_mdis );
+    vlc_event_detach( services_discovery_EventManager( p_mdis->p_sd ),
+                     vlc_ServicesDiscoveryItemRemoved,
+                     services_discovery_item_removed,
+                     p_mdis );
+    vlc_event_detach( services_discovery_EventManager( p_mdis->p_sd ),
+                     vlc_ServicesDiscoveryStarted,
+                     services_discovery_started,
+                     p_mdis );
+    vlc_event_detach( services_discovery_EventManager( p_mdis->p_sd ),
+                     vlc_ServicesDiscoveryEnded,
+                     services_discovery_ended,
+                     p_mdis );
+
     libvlc_media_list_release( p_mdis->p_mlist );
+
     vlc_sd_StopAndDestroy( p_mdis->p_sd );
 
     /* Free catname_to_submedialist and all the mlist */

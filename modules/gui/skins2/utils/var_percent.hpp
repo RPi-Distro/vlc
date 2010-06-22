@@ -2,7 +2,7 @@
  * var_percent.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7a18ab672ecc746bd25af064d1de39ab7ebe8406 $
+ * $Id: 5f5ca3c6b96e4163876233ac5a6d5b9607b837fe $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VAR_PERCENT_HPP
@@ -34,22 +34,22 @@ class VarPercent;
 /// Percentage variable
 class VarPercent: public Variable, public Subject<VarPercent>
 {
-    public:
-        VarPercent( intf_thread_t *pIntf ): Variable( pIntf ), m_value( 0 ) {}
-        virtual ~VarPercent() {}
+public:
+    VarPercent( intf_thread_t *pIntf ): Variable( pIntf ), m_value( 0 ) { }
+    virtual ~VarPercent() { }
 
-        /// Get the variable type
-        virtual const string &getType() const { return m_type; }
+    /// Get the variable type
+    virtual const string &getType() const { return m_type; }
 
-        /// Set the internal value
-        virtual void set( float percentage );
-        virtual float get() const { return m_value; }
+    /// Set the internal value
+    virtual void set( float percentage );
+    virtual float get() const { return m_value; }
 
-    private:
-        /// Variable type
-        static const string m_type;
-        /// Percent value
-        float m_value;
+private:
+    /// Variable type
+    static const string m_type;
+    /// Percent value
+    float m_value;
 };
 
 #endif

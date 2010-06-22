@@ -4,8 +4,8 @@
 basedir = audio_filter
 dir = audio_filter/channel_mixer
 mods = dolby_surround_decoder headphone_channel_mixer mono simple_channel_mixer trivial_channel_mixer
-libvlc_LTLIBRARIES =  $(LTLIBdolby_surround_decoder) $(LTLIBheadphone_channel_mixer) $(LTLIBsimple_channel_mixer)
-EXTRA_LTLIBRARIES =  libdolby_surround_decoder_plugin.la libheadphone_channel_mixer_plugin.la libsimple_channel_mixer_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 

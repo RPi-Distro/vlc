@@ -2,7 +2,7 @@
  * bonjour.c: Bonjour services discovery module
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: b4dfac3b3265ea0473677c67b84f59732e5fed24 $
+ * $Id: 0110e016b0f81d5cfbed5933d4fab0e799d0d385 $
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *
@@ -48,6 +48,8 @@
     static int  Open ( vlc_object_t * );
     static void Close( vlc_object_t * );
 
+VLC_SD_PROBE_HELPER("bonjour", "Bonjour services", SD_CAT_LAN)
+
 vlc_module_begin ()
     set_shortname( "Bonjour" )
     set_description( N_("Bonjour services") )
@@ -55,6 +57,8 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_PLAYLIST_SD )
     set_capability( "services_discovery", 0 )
     set_callbacks( Open, Close )
+
+    VLC_SD_PROBE_SUBMODULE
 vlc_module_end ()
 
 /*****************************************************************************

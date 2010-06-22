@@ -2,7 +2,7 @@
  * h264.c : H264 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 5f6071c48220737855b4e7753ada1e7e945100f3 $
+ * $Id: a0e57b814e92fefc49aecddfe81ca32137db66b5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -32,7 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
-#include "vlc_codec.h"
+#include <vlc_codec.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -102,14 +102,14 @@ static int Open( vlc_object_t * p_this )
     p_demux->pf_control= Control;
     p_demux->p_sys     = p_sys = malloc( sizeof( demux_sys_t ) );
     p_sys->p_es        = NULL;
-    p_sys->i_dts       = 1;
+    p_sys->i_dts       = 0;
     p_sys->f_fps       = var_CreateGetFloat( p_demux, "h264-fps" );
     if( p_sys->f_fps < 0.001 )
         p_sys->f_fps = 0.001;
     msg_Dbg( p_demux, "using %.2f fps", p_sys->f_fps );
 
     /* Load the mpegvideo packetizer */
-    es_format_Init( &fmt, VIDEO_ES, VLC_FOURCC( 'h', '2', '6', '4' ) );
+    es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_H264 );
     p_sys->p_packetizer = demux_PacketizerNew( p_demux, &fmt, "h264" );
     if( !p_sys->p_packetizer )
     {
@@ -148,8 +148,8 @@ static int Demux( demux_t *p_demux)
     }
 
     /* m4v demuxer doesn't set pts/dts at all */
-    p_block_in->i_dts = 1;
-    p_block_in->i_pts = 1;
+    p_block_in->i_dts = VLC_TS_0;
+    p_block_in->i_pts = VLC_TS_0;
 
     while( (p_block_out = p_sys->p_packetizer->pf_packetize( p_sys->p_packetizer, &p_block_in )) )
     {
@@ -166,8 +166,8 @@ static int Demux( demux_t *p_demux)
             }
 
             es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_dts );
-            p_block_out->i_dts = p_sys->i_dts;
-            p_block_out->i_pts = p_sys->i_dts;
+            p_block_out->i_dts = VLC_TS_0 + p_sys->i_dts;
+            p_block_out->i_pts = VLC_TS_0 + p_sys->i_dts;
 
             es_out_Send( p_demux->out, p_sys->p_es, p_block_out );
 

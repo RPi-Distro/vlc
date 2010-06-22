@@ -2,7 +2,7 @@
  * variables.c: Generic lua<->vlc variables interface
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 16833bc6c405ead000018a01504bfbd1e4b5d739 $
+ * $Id: 9c86a28da71ee6968d9dcaba9aaa45bfc53db175 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -48,7 +48,7 @@
  *****************************************************************************/
 int vlclua_pushvalue( lua_State *L, int i_type, vlc_value_t val )
 {
-    switch( i_type &= 0xf0 )
+    switch( i_type &= VLC_VAR_CLASS )
     {
         case VLC_VAR_VOID:
             vlclua_error( L );
@@ -98,7 +98,7 @@ int vlclua_pushvalue( lua_State *L, int i_type, vlc_value_t val )
 
 static int vlclua_tovalue( lua_State *L, int i_type, vlc_value_t *val )
 {
-    switch( i_type & 0xf0 )
+    switch( i_type & VLC_VAR_CLASS )
     {
         case VLC_VAR_VOID:
             break;
@@ -200,7 +200,7 @@ static int vlclua_var_get_list( lua_State *L )
     if( i_ret < 0 ) return vlclua_push_ret( L, i_ret );
     vlclua_pushvalue( L, VLC_VAR_LIST, val );
     vlclua_pushvalue( L, VLC_VAR_LIST, text );
-    var_Change( *pp_obj, psz_var, VLC_VAR_FREELIST, &val, &text );
+    var_FreeList( &val, &text );
     return 2;
 }
 
@@ -224,7 +224,7 @@ static int vlclua_command( lua_State *L )
     }
     else
     {
-        lua_pushstring( L, "" );
+        lua_pushliteral( L, "" );
     }
     return vlclua_push_ret( L, ret ) + 1;
 }
@@ -238,7 +238,7 @@ static int vlclua_libvlc_command( lua_State *L )
     val_arg.psz_string = strdup( luaL_optstring( L, 2, "" ) );
     lua_pop( L, 2 );
     int i_type = var_Type( p_this->p_libvlc, psz_cmd );
-    if( ! i_type & VLC_VAR_ISCOMMAND )
+    if( ! (i_type & VLC_VAR_ISCOMMAND) )
     {
         free( val_arg.psz_string );
         return luaL_error( L, "libvlc's \"%s\" is not a command",
@@ -342,6 +342,27 @@ static int vlclua_add_callback( lua_State *L )
     lua_settop( L, 4 ); /* makes sure that optional data arg is set */
     if( !lua_isfunction( L, 3 ) )
         return vlclua_error( L );
+
+    if( !pp_obj || !*pp_obj )
+        return vlclua_error( L );
+
+    /* Check variable type, in order to avoid PANIC */
+    switch( var_Type( *pp_obj, psz_var ) )
+    {
+        case VLC_VAR_BOOL:
+        case VLC_VAR_INTEGER:
+        case VLC_VAR_STRING:
+        case VLC_VAR_FLOAT:
+        case VLC_VAR_TIME:
+            break;
+        case VLC_VAR_ADDRESS:
+        case VLC_VAR_VOID:
+        case VLC_VAR_MUTEX:
+        case VLC_VAR_LIST:
+        default:
+            return vlclua_error( L );
+    }
+
     i_index++;
 
     p_callback = (vlclua_callback_t*)malloc( sizeof( vlclua_callback_t ) );
@@ -516,6 +537,14 @@ static int vlclua_del_callback( lua_State *L )
     return 0;
 }
 
+static int vlclua_trigger_callback( lua_State *L )
+{
+    vlc_object_t **pp_obj = luaL_checkudata( L, 1, "vlc_object" );
+    const char *psz_var = luaL_checkstring( L, 2 );
+
+    return vlclua_push_ret( L, var_TriggerCallback( *pp_obj, psz_var ) );
+}
+
 /*****************************************************************************
  *
  *****************************************************************************/
@@ -526,6 +555,7 @@ static const luaL_Reg vlclua_var_reg[] = {
     { "create", vlclua_var_create },
     { "add_callback", vlclua_add_callback },
     { "del_callback", vlclua_del_callback },
+    { "trigger_callback", vlclua_trigger_callback },
     { "command", vlclua_command },
     { "libvlc_command", vlclua_libvlc_command },
     { NULL, NULL }

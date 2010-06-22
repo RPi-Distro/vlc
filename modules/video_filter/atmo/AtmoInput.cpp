@@ -5,22 +5,27 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 3cf6ef1c0fe36f5a37bdaf3f198732bf0c9e328c $
+ * $Id: fc0ba660bd13f81cbdb7fd288ae31f014faf4765 $
  */
-
+#include "AtmoDefs.h"
 #include "AtmoInput.h"
 
+#if defined(_ATMO_VLC_PLUGIN_)
+CAtmoInput::CAtmoInput(CAtmoDynData *pAtmoDynData) : CThread(pAtmoDynData->getAtmoFilter())
+{
+  m_pAtmoDynData         = pAtmoDynData;
+  m_pAtmoColorCalculator = new CAtmoColorCalculator(pAtmoDynData->getAtmoConfig());
+}
+#else
 CAtmoInput::CAtmoInput(CAtmoDynData *pAtmoDynData)
 {
-  this->m_pAtmoDynData = pAtmoDynData;
+  m_pAtmoDynData = pAtmoDynData;
+  m_pAtmoColorCalculator = new CAtmoColorCalculator(pAtmoDynData->getAtmoConfig());
 }
+#endif
 
 CAtmoInput::~CAtmoInput(void)
 {
-}
-
-void CAtmoInput::WaitForNextFrame(DWORD timeout)
-{
-    return;
+  delete m_pAtmoColorCalculator;
 }
 

@@ -2,7 +2,7 @@
  * acl.c:
  *****************************************************************************
  * Copyright © 2005-2007 Rémi Denis-Courmont
- * $Id: 37f21bcbbe1eeb57ee95fe9e675a7c4cdcde3ed2 $
+ * $Id: f10ec64152e87ec3a959825cd497a865a828d00a $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -33,10 +33,8 @@
 #include <ctype.h>
 #include <vlc_acl.h>
 
-#include <errno.h>
-
 #include <vlc_network.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 
 /* FIXME: rwlock on acl, but libvlc doesn't implement rwlock */
 typedef struct vlc_acl_entry_t
@@ -201,7 +199,7 @@ int ACL_AddNet( vlc_acl_t *p_acl, const char *psz_ip, int i_len,
     return 0;
 }
 
-
+#undef ACL_Create
 /**
  * Creates an empty ACL.
  *
@@ -210,7 +208,7 @@ int ACL_AddNet( vlc_acl_t *p_acl, const char *psz_ip, int i_len,
  *
  * @return an ACL object. NULL in case of error.
  */
-vlc_acl_t *__ACL_Create( vlc_object_t *p_this, bool b_allow )
+vlc_acl_t *ACL_Create( vlc_object_t *p_this, bool b_allow )
 {
     vlc_acl_t *p_acl;
 
@@ -227,7 +225,7 @@ vlc_acl_t *__ACL_Create( vlc_object_t *p_this, bool b_allow )
     return p_acl;
 }
 
-
+#undef ACL_Duplicate
 /**
  * Perform a deep copy of an existing ACL.
  *
@@ -236,7 +234,7 @@ vlc_acl_t *__ACL_Create( vlc_object_t *p_this, bool b_allow )
  *
  * @return a new ACL object, or NULL on error.
  */
-vlc_acl_t *__ACL_Duplicate( vlc_object_t *p_this, const vlc_acl_t *p_acl )
+vlc_acl_t *ACL_Duplicate( vlc_object_t *p_this, const vlc_acl_t *p_acl )
 {
     vlc_acl_t *p_dupacl;
 
@@ -280,9 +278,7 @@ void ACL_Destroy( vlc_acl_t *p_acl )
 {
     if( p_acl != NULL )
     {
-        if( p_acl->p_entries != NULL )
-            free( p_acl->p_entries );
-
+        free( p_acl->p_entries );
         vlc_object_release( p_acl->p_owner );
         free( p_acl );
     }
@@ -304,7 +300,7 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
     if( p_acl == NULL )
         return -1;
 
-    file = utf8_fopen( psz_path, "r" );
+    file = vlc_fopen( psz_path, "r" );
     if( file == NULL )
         return -1;
 

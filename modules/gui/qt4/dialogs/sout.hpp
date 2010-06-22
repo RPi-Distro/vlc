@@ -2,7 +2,7 @@
  * sout.hpp : Stream output dialog ( old-style, ala WX )
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 220333650ae062e7fe493bed2785764b1557cc9f $
+ * $Id: 85c1284ca30df23e1bdd2d45bf83bc143347852b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -111,7 +111,7 @@ private:
 
 class SoutDialog : public QVLCDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     SoutDialog( QWidget* parent, intf_thread_t *, const QString& mrl = "");
     virtual ~SoutDialog(){}

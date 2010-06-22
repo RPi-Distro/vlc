@@ -2,7 +2,7 @@
  * sorting.h : commun sorting & column display code
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 860febd8412b1f558b528ff3c4941b05d0649d38 $
+ * $Id: c3240548a88a58e5206869b94450b8b01f3b1ad6 $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -24,15 +24,15 @@
 /* You can use these numbers with | and & to determine what you want to show */
 enum
 {
-    COLUMN_NUMBER       = 0x0001,
-    COLUMN_TITLE        = 0x0002,
-    COLUMN_DURATION     = 0x0004,
-    COLUMN_ARTIST       = 0x0008,
-    COLUMN_GENRE        = 0x0010,
-    COLUMN_ALBUM        = 0x0020,
-    COLUMN_TRACK_NUMBER = 0x0040,
-    COLUMN_DESCRIPTION  = 0x0080,
-    COLUMN_URI          = 0x0100,
+    COLUMN_TITLE          = 0x0001,
+    COLUMN_DURATION       = 0x0002,
+    COLUMN_ARTIST         = 0x0004,
+    COLUMN_GENRE          = 0x0008,
+    COLUMN_ALBUM          = 0x0010,
+    COLUMN_TRACK_NUMBER   = 0x0020,
+    COLUMN_DESCRIPTION    = 0x0040,
+    COLUMN_URI            = 0x0080,
+    COLUMN_NUMBER         = 0x0100,
 
     /* Add new entries here and update the COLUMN_END value*/
 
@@ -73,6 +73,7 @@ static inline char * psz_column_meta( input_item_t *p_item, uint32_t i_column )
         return input_item_GetTitleFbName( p_item );
     case COLUMN_DURATION:
         i_duration = input_item_GetDuration( p_item ) / 1000000;
+        if( i_duration == 0 ) return NULL;
         secstotimestr( psz_duration, i_duration );
         return strdup( psz_duration );
     case COLUMN_ARTIST:

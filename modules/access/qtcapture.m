@@ -33,7 +33,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_input.h>
-#include <vlc_vout.h>
 #include <vlc_demux.h>
 #include <vlc_interface.h>
 #include <vlc_dialog.h>
@@ -171,9 +170,9 @@ static int qtchroma_to_fourcc( int i_qt )
     } qtchroma_to_fourcc[] =
     {
         /* Raw data types */
-        { k422YpCbCr8CodecType,    VLC_FOURCC('U','Y','V','Y') },
-        { kComponentVideoCodecType,VLC_FOURCC('Y','U','Y','2') },
-        { kComponentVideoUnsigned, VLC_FOURCC('U','Y','V','Y') },
+        { '2vuy',    VLC_CODEC_UYVY },
+        { 'yuv2',VLC_CODEC_YUYV },
+        { 'yuvs', VLC_CODEC_YUYV },
         { 0, 0 }
     };
     int i;
@@ -196,7 +195,6 @@ static int Open( vlc_object_t *p_this )
     int i;
     int i_width;
     int i_height;
-    int i_aspect;
     int result = 0;
 
     /* Only when selected */
@@ -256,12 +254,12 @@ static int Open( vlc_object_t *p_this )
     /* Get the formats */
     NSArray *format_array = [p_sys->device formatDescriptions];
     QTFormatDescription* camera_format = NULL;
-    for( int k=0; k < [format_array count]; k++ )
+    for( int k = 0; k < [format_array count]; k++ )
     {
         camera_format = [format_array objectAtIndex: k];
 
-        NSLog( [camera_format localizedFormatSummary] );
-        NSLog( [[camera_format formatDescriptionAttributes] description] );
+        NSLog( @"%@", [camera_format localizedFormatSummary] );
+        NSLog( @"%@",[[camera_format formatDescriptionAttributes] description] );
     }
     if( [format_array count] )
         camera_format = [format_array objectAtIndex: 0];
@@ -286,7 +284,8 @@ static int Open( vlc_object_t *p_this )
     fmt.video.i_height = p_sys->height = encoded_size.height;
     if( par_size.width != encoded_size.width )
     {
-        fmt.video.i_aspect = par_size.width * VOUT_ASPECT_FACTOR / encoded_size.width ;
+        fmt.video.i_sar_num = (int64_t)encoded_size.height * par_size.width / encoded_size.width;
+        fmt.video.i_sar_den = encoded_size.width;
     }
 
     NSLog( @"encoded_size %d %d", (int)encoded_size.width, (int)encoded_size.height );
@@ -352,9 +351,11 @@ static void Close( vlc_object_t *p_this )
      * Else we dead lock. */
     if( vlc_object_alive(p_this->p_libvlc))
     {
-        [p_sys->session stopRunning];
-        [p_sys->output release];
-        [p_sys->session release];
+        // Perform this on main thread, as the framework itself will sometimes try to synchronously
+        // work on main thread. And this will create a dead lock.
+        [p_sys->session performSelectorOnMainThread:@selector(stopRunning) withObject:nil waitUntilDone:NO];
+        [p_sys->output performSelectorOnMainThread:@selector(release) withObject:nil waitUntilDone:NO];
+        [p_sys->session performSelectorOnMainThread:@selector(release) withObject:nil waitUntilDone:NO];
     }
     free( p_sys );
 

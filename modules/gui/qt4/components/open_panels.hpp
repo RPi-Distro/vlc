@@ -4,7 +4,7 @@
  * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: e7a2a36ba447705aebd53c8c0527a2bc63dad40b $
+ * $Id: 4d2d05b0a24fa16e7562ab0223f25a3e4157eddc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -48,19 +48,6 @@
 
 enum
 {
-    NO_PROTO,
-    HTTP_PROTO,
-    HTTPS_PROTO,
-    MMS_PROTO,
-    FTP_PROTO,
-    RTSP_PROTO,
-    RTP_PROTO,
-    UDP_PROTO,
-    RTMP_PROTO
-};
-
-enum
-{
     V4L_DEVICE,
     V4L2_DEVICE,
     PVR_DEVICE,
@@ -78,7 +65,7 @@ class QStringListModel;
 
 class OpenPanel: public QWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     OpenPanel( QWidget *p, intf_thread_t *_p_intf ) : QWidget( p )
     {
@@ -97,7 +84,7 @@ signals:
 
 class FileOpenBox: public QFileDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     FileOpenBox( QWidget *parent, const QString &caption,
                  const QString &directory, const QString &filter ):
@@ -110,7 +97,7 @@ public slots:
 
 class FileOpenPanel: public OpenPanel
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     FileOpenPanel( QWidget *, intf_thread_t * );
     virtual ~FileOpenPanel();
@@ -136,13 +123,14 @@ public slots:
 private slots:
     void browseFileSub();
     void browseFile();
-    void deleteFile();
+    void removeFile();
+    void updateButtons();
     void toggleSubtitleFrame( bool );
 };
 
 class NetOpenPanel: public OpenPanel
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     NetOpenPanel( QWidget *, intf_thread_t * );
     virtual ~NetOpenPanel();
@@ -153,13 +141,12 @@ private:
 public slots:
     virtual void updateMRL();
 private slots:
-    void updateProtocol( int );
     void updateCompleter();
 };
 
 class DiscOpenPanel: public OpenPanel
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     DiscOpenPanel( QWidget *, intf_thread_t * );
     virtual ~DiscOpenPanel();
@@ -180,7 +167,7 @@ private slots:
 
 class CaptureOpenPanel: public OpenPanel
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     CaptureOpenPanel( QWidget *, intf_thread_t * );
     virtual ~CaptureOpenPanel();
@@ -211,7 +198,7 @@ private:
     QCheckBox *jackPace, *jackConnect;
     QLineEdit *jackPortsSelected;
 #endif
-    QSpinBox *screenFPS;
+    QDoubleSpinBox *screenFPS;
 
 public slots:
     virtual void updateMRL();

@@ -38,7 +38,13 @@ typedef struct
 } lldiv_t;
 #endif
 
-#ifndef HAVE_REWIND
+#if !defined(HAVE_GETENV) || \
+    !defined(HAVE_USELOCALE)
+# include <stddef.h> /* NULL */
+#endif
+
+#if !defined (HAVE_REWIND) || \
+    !defined (HAVE_GETDELIM)
 # include <stdio.h> /* FILE */
 #endif
 
@@ -51,6 +57,12 @@ typedef struct
 
 #ifndef HAVE_VASPRINTF
 # include <stdarg.h> /* va_list */
+#endif
+
+#if !defined (HAVE_GETDELIM) || \
+    !defined (HAVE_GETPID)   || \
+    !defined (HAVE_SWAB)
+# include <sys/types.h> /* ssize_t, pid_t */
 #endif
 
 #ifdef __cplusplus
@@ -133,6 +145,19 @@ void rewind (FILE *);
 char *getcwd (char *buf, size_t size);
 #endif
 
+#ifndef HAVE_GETDELIM
+ssize_t getdelim (char **, size_t *, int, FILE *);
+ssize_t getline (char **, size_t *, FILE *);
+#endif
+
+#ifndef HAVE_GETPID
+pid_t getpid (void);
+#endif
+
+#ifndef HAVE_STRTOK_R
+char *strtok_r(char *, const char *, char **);
+#endif
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
@@ -153,16 +178,29 @@ static inline char *getenv (const char *name)
 #endif
 
 #ifndef HAVE_USELOCALE
+#define LC_NUMERIC_MASK  0
+#define LC_MESSAGES_MASK 0
 typedef void *locale_t;
-# define newlocale( a, b, c ) ((locale_t)0)
-# define uselocale( a ) ((locale_t)0)
-# define freelocale( a ) (void)0
+static inline locale_t uselocale(locale_t loc)
+{
+    (void)loc;
+    return NULL;
+}
+static inline void freelocale(locale_t loc)
+{
+    (void)loc;
+}
+static inline locale_t newlocale(int mask, const char * locale, locale_t base)
+{
+    (void)mask; (void)locale; (void)base;
+    return NULL;
+}
 #endif
 
 #ifdef WIN32
 # include <dirent.h>
-# define opendir Use_utf8_opendir_or_vlc_wopendir_instead!
-# define readdir Use_utf8_readdir_or_vlc_wreaddir_instead!
+# define opendir Use_vlc_opendir_or_vlc_wopendir_instead!
+# define readdir Use_vlc_readdir_or_vlc_wreaddir_instead!
 # define closedir vlc_wclosedir
 #endif
 
@@ -173,6 +211,51 @@ typedef void *locale_t;
 
 #ifndef HAVE_SWAB
 void swab (const void *, void *, ssize_t);
+#endif
+
+/* Socket stuff */
+#ifndef HAVE_INET_PTON
+# define inet_pton vlc_inet_pton
+#endif
+
+#ifndef HAVE_INET_NTOP
+# define inet_ntop vlc_inet_ntop
+#endif
+
+#ifndef HAVE_POLL
+enum
+{
+    POLLIN=1,
+    POLLOUT=2,
+    POLLPRI=4,
+    POLLERR=8,  // unsupported stub
+    POLLHUP=16, // unsupported stub
+    POLLNVAL=32 // unsupported stub
+};
+
+struct pollfd
+{
+    int fd;
+    unsigned events;
+    unsigned revents;
+};
+
+# define poll(a, b, c) vlc_poll(a, b, c)
+#elif defined (HAVE_MAEMO)
+# include <poll.h>
+# define poll(a, b, c) vlc_poll(a, b, c)
+int vlc_poll (struct pollfd *, unsigned, int);
+#endif
+
+#ifndef HAVE_TDESTROY
+# define tdestroy vlc_tdestroy
+#endif
+
+/* Random numbers */
+#ifndef HAVE_NRAND48
+double erand48 (unsigned short subi[3]);
+long jrand48 (unsigned short subi[3]);
+long nrand48 (unsigned short subi[3]);
 #endif
 
 #endif /* !LIBVLC_FIXUPS_H */

@@ -2,7 +2,7 @@
  * evt_motion.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9e34aed282a5e45d809ab43809cb07c533213711 $
+ * $Id: 259f87429f56771b05ad8fc70112286ef8652d30 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef EVT_MOTION_HPP
@@ -31,26 +31,24 @@
 /// Mouse move event
 class EvtMotion: public EvtInput
 {
-    public:
-        EvtMotion( intf_thread_t *pIntf, int xPos, int yPos ):
-            EvtInput( pIntf ), m_xPos( xPos ), m_yPos( yPos ) {}
-        virtual ~EvtMotion() {}
+public:
+    EvtMotion( intf_thread_t *pIntf, int xPos, int yPos )
+             : EvtInput( pIntf ), m_xPos( xPos ), m_yPos( yPos ) { }
+    virtual ~EvtMotion() { }
+    virtual const string getAsString() const { return "motion"; }
 
-        /// Return the type of event
-        virtual const string getAsString() const { return "motion"; }
+    // Getters
+    int getXPos() const { return m_xPos; }
+    int getYPos() const { return m_yPos; }
 
-        // Getters
-        int getXPos() const { return m_xPos; }
-        int getYPos() const { return m_yPos; }
-
-    private:
-        /// Coordinates of the mouse (absolute or relative)
-        /**
-         * The coordinates are absolute when the event is sent to the
-         * GenericWindow, but are relative to the window when the event is
-         * forwarded to the controls
-         */
-        int m_xPos, m_yPos;
+private:
+    /// Coordinates of the mouse (absolute or relative)
+    /**
+     * The coordinates are absolute when the event is sent to the
+     * GenericWindow, but are relative to the window when the event is
+     * forwarded to the controls
+     */
+    int m_xPos, m_yPos;
 };
 
 

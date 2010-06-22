@@ -23,7 +23,13 @@ end
 
 -- Trigger a hotkey
 function hotkey(arg)
-    vlc.var.set( vlc.object.libvlc(), "key-pressed", vlc.config.get( arg ) )
+    local id = vlc.misc.action_id( arg )
+    if id ~= nil then
+        vlc.var.set( vlc.object.libvlc(), "key-action", id )
+        return true
+    else
+        return false
+    end
 end
 
 -- Take a video snapshot
@@ -48,6 +54,10 @@ end
 -- print a table (recursively)
 function table_print(t,prefix)
     local prefix = prefix or ""
+    if not t then
+        print(prefix.."/!\\ nil")
+        return
+    end
     for a,b in pairs_sorted(t) do
         print(prefix..tostring(a),b)
         if type(b)==type({}) then
@@ -57,7 +67,7 @@ function table_print(t,prefix)
 end
 
 -- print the list of callbacks registered in lua
--- usefull for debug purposes
+-- useful for debug purposes
 function print_callbacks()
     print "callbacks:"
     table_print(vlc.callbacks)
@@ -83,5 +93,13 @@ function seek(value)
         vlc.var.set(input,"position",tonumber(string.sub(value,1,#value-1))/100.)
     else
         vlc.var.set(input,"time",tonumber(value))
+    end
+end
+
+function volume(value)
+    if type(value)=="string" and string.sub(value,1,1) == "+" or string.sub(value,1,1) == "-" then
+        vlc.volume.set(vlc.volume.get()+tonumber(value))
+    else
+        vlc.volume.set(tostring(value))
     end
 end

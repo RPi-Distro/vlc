@@ -2,7 +2,7 @@
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 4935d3f71db4a4ffce94f076e2b039285fa72b26 $
+ * $Id: f3e8c4cb140c47c0617123d4c78917f1148d9984 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *
@@ -41,7 +41,7 @@
     if ( [o_command isEqualToString:@"GetURL"] || [o_command isEqualToString:@"OpenURL"] )
     {
         intf_thread_t * p_intf = VLCIntf;
-        playlist_t * p_playlist = pl_Hold( p_intf );
+        playlist_t * p_playlist = pl_Get( p_intf );
         if( p_playlist == NULL )
         {
             return nil;
@@ -69,7 +69,6 @@
                     noteNewRecentDocumentURL: o_url];
             }
         }
-        pl_Release( p_intf );
     }
     return nil;
 }
@@ -90,7 +89,7 @@
     NSString *o_command = [[self commandDescription] commandName];
 
     intf_thread_t * p_intf = VLCIntf;
-    playlist_t * p_playlist = pl_Hold( p_intf );
+    playlist_t * p_playlist = pl_Get( p_intf );
     if( p_playlist == NULL )
     {
         return nil;
@@ -133,7 +132,6 @@
             [o_controls volumeDown:self];
         }
     }
-    pl_Release( p_intf );
     return nil;
 }
 

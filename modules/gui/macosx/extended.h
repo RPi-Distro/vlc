@@ -2,9 +2,9 @@
  * extended.h: MacOS X Extended interface panel
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: ca38b23476615ded641b21e842a69d3f8dd45154 $
+ * $Id: ed8ad986ead462fcf2785072a99dbd58709f7ae7 $
  *
- * Authors: Felix Paul Kühne <fkuehne@videolan.org>
+ * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

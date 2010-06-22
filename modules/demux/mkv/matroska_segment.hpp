@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 5347e75f319d689b951eaea36eed6e834ad35945 $
+ * $Id: 3ac9b601a6204c4fb20935e1b62a6b438edcca09 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -148,7 +148,7 @@ public:
     void LoadTags( KaxTags *tags );
     void InformationCreate( );
     void Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_global_position );
-    int BlockGet( KaxBlock * &, KaxSimpleBlock * &, int64_t *, int64_t *, int64_t *);
+    int BlockGet( KaxBlock * &, KaxSimpleBlock * &, bool *, bool *, int64_t *);
 
     int BlockFindTrackIndex( size_t *pi_track,
                              const KaxBlock *, const KaxSimpleBlock * );

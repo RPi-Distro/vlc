@@ -2,7 +2,7 @@
  * GotoTime.hpp : GotoTime dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 54698f6e268ff622645335a96e0769e6783a28ec $
+ * $Id: a173d104af82557b831057bd653112f1320ce34c $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -25,28 +25,22 @@
 #define QVLC_GOTOTIME_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
+#include "util/singleton.hpp"
 
 class QTimeEdit;
 
-class GotoTimeDialog : public QVLCDialog
+class GotoTimeDialog : public QVLCDialog, public Singleton<GotoTimeDialog>
 {
-    Q_OBJECT;
-public:
-    static GotoTimeDialog * getInstance( intf_thread_t *p_intf )
-    {
-        if( !instance)
-            instance = new GotoTimeDialog( (QWidget *)p_intf->p_sys->p_mi, p_intf );
-        return instance;
-    }
-    virtual ~GotoTimeDialog();
-
+    Q_OBJECT
 private:
-    GotoTimeDialog( QWidget *, intf_thread_t * );
-    static GotoTimeDialog *instance;
+    GotoTimeDialog( intf_thread_t * );
+    virtual ~GotoTimeDialog();
     QTimeEdit *timeEdit;
 private slots:
     void close();
     void cancel();
+
+    friend class    Singleton<GotoTimeDialog>;
 };
 
 #endif

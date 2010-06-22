@@ -2,7 +2,7 @@
  * pointer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1c68cb4599bae46f8562e23169b29e909200c026 $
+ * $Id: 4d2aa29c25b9e6bb1bbcceab46d27c5c21591215 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef POINTER_HPP
@@ -29,64 +29,67 @@
 /// Reference couting pointer
 template <class T> class CountedPtr
 {
-    public:
-        explicit CountedPtr( T *pPtr = 0 ): m_pCounter( 0 )
+public:
+    typedef T *pointer;
+    typedef T &reference;
+
+    explicit CountedPtr( pointer pPtr = 0 ): m_pCounter( 0 )
+    {
+        if( pPtr ) m_pCounter = new Counter( pPtr );
+    }
+
+    ~CountedPtr() { release(); }
+
+    CountedPtr( const CountedPtr &rPtr ) { acquire( rPtr.m_pCounter ); }
+
+    CountedPtr &operator=( const CountedPtr &rPtr )
+    {
+        if( this != &rPtr )
         {
-            if( pPtr ) m_pCounter = new Counter( pPtr );
+            release();
+            acquire( rPtr.m_pCounter );
         }
+        return *this;
+    }
 
-        ~CountedPtr() { release(); }
+    // XXX Somebody explain why operator* and operator-> don't use get()
+    reference operator*() const { return *m_pCounter->m_pPtr; }
+    pointer   operator->() const { return m_pCounter->m_pPtr; }
 
-        CountedPtr(const CountedPtr &rPtr ) { acquire( rPtr.m_pCounter ); }
+    pointer get() const { return m_pCounter ? m_pCounter->m_pPtr : 0; }
 
-        CountedPtr &operator=( const CountedPtr &rPtr )
+    bool unique() const
+    {
+        return ( m_pCounter ? m_pCounter->m_count == 1 : true );
+    }
+
+private:
+    struct Counter
+    {
+        Counter( pointer pPtr = 0, unsigned int c = 1 )
+               : m_pPtr( pPtr ), m_count( c ) { }
+        pointer m_pPtr;
+        unsigned int m_count;
+    } *m_pCounter;
+
+    void acquire( Counter* pCount )
+    {
+        m_pCounter = pCount;
+        if( pCount ) ++pCount->m_count;
+    }
+
+    void release()
+    {
+        if( m_pCounter )
         {
-            if( this != &rPtr )
+            if( --m_pCounter->m_count == 0 )
             {
-                release();
-                acquire( rPtr.m_pCounter );
+                delete m_pCounter->m_pPtr;
+                delete m_pCounter;
             }
-            return *this;
+            m_pCounter = 0;
         }
-
-        T &operator*() const { return *m_pCounter->m_pPtr; }
-
-        T *operator->() const {return m_pCounter->m_pPtr; }
-
-        T *get() const { return m_pCounter ? m_pCounter->m_pPtr : 0; }
-
-        bool unique() const
-        {
-            return ( m_pCounter ? m_pCounter->m_count == 1 : true );
-        }
-
-    private:
-        struct Counter
-        {
-            Counter( T* pPtr = 0, unsigned int c = 1 ):
-                m_pPtr( pPtr ), m_count( c ) {}
-            T* m_pPtr;
-            unsigned int m_count;
-        } *m_pCounter;
-
-        void acquire( Counter* pCount )
-        {
-            m_pCounter = pCount;
-            if( pCount ) ++pCount->m_count;
-        }
-
-        void release()
-        {
-            if( m_pCounter )
-            {
-                if( --m_pCounter->m_count == 0 )
-                {
-                    delete m_pCounter->m_pPtr;
-                    delete m_pCounter;
-                }
-                m_pCounter = 0;
-            }
-        }
+    }
 };
 
 

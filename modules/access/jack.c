@@ -41,7 +41,6 @@
 #include <vlc_plugin.h>
 #include <vlc_input.h>
 #include <vlc_demux.h>
-#include <vlc_vout.h>
 #include <vlc_codecs.h>
 #include <vlc_url.h>
 #include <vlc_strings.h>
@@ -49,7 +48,6 @@
 #include <jack/jack.h>
 #include <jack/ringbuffer.h>
 
-#include <errno.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -305,7 +303,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->jack_sample_size = sizeof( jack_default_audio_sample_t );
 
     /* Define output format */
-    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 'f','l','3','2' ) );
+    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_FL32 );
     fmt.audio.i_channels =  p_sys->i_channels;
     fmt.audio.i_rate =  p_sys->jack_sample_rate;
     fmt.audio.i_bitspersample =  p_sys->jack_sample_size * 8;
@@ -463,6 +461,8 @@ static block_t *GrabJack( demux_t *p_demux )
 
     if( i_read < 100 ) /* avoid small read */
     {   /* vlc has too much free time on its hands? */
+#undef msleep
+#warning Hmm.... looks wrong
         msleep(1000);
         return NULL;
     }
@@ -540,7 +540,7 @@ static void Port_finder( demux_t *p_demux )
                 i_out_ports++;
             }
             /* alloc an array to store all the matched ports */
-            p_sys->pp_jack_port_table = realloc( p_sys->pp_jack_port_table,
+            p_sys->pp_jack_port_table = xrealloc( p_sys->pp_jack_port_table,
                 (i_out_ports * sizeof( char * ) + i_total_out_ports * sizeof( char * ) ) );
 
             for(int i=0; i<i_out_ports;i++)

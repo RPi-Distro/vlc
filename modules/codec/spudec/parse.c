@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 the VideoLAN team
- * $Id: b2ea3a177c1f18ae7365a7e3e377ebba60ccb689 $
+ * $Id: 6fc4a4dee441582772326ee2411676a2286ca5cc $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -31,7 +31,6 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_vout.h>
 #include <vlc_codec.h>
 #include <vlc_input.h>
 
@@ -162,7 +161,7 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     /* Our current index in the SPU packet */
-    unsigned int i_index = p_sys->i_rle_size + 4;
+    unsigned int i_index;
 
     /* The next start-of-control-sequence index and the previous one */
     unsigned int i_next_seq = 0, i_cur_seq = 0;
@@ -294,11 +293,14 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                 return VLC_EGENERIC;
             }
 
-            b_cmd_alpha = true;
-            spu_data_cmd.pi_alpha[3] = (p_sys->buffer[i_index+1]>>4)&0x0f;
-            spu_data_cmd.pi_alpha[2] = (p_sys->buffer[i_index+1])&0x0f;
-            spu_data_cmd.pi_alpha[1] = (p_sys->buffer[i_index+2]>>4)&0x0f;
-            spu_data_cmd.pi_alpha[0] = (p_sys->buffer[i_index+2])&0x0f;
+            if(!p_sys->b_disabletrans)
+            { /* If we want to use original transparency values */
+                b_cmd_alpha = true;
+                spu_data_cmd.pi_alpha[3] = (p_sys->buffer[i_index+1]>>4)&0x0f;
+                spu_data_cmd.pi_alpha[2] = (p_sys->buffer[i_index+1])&0x0f;
+                spu_data_cmd.pi_alpha[1] = (p_sys->buffer[i_index+2]>>4)&0x0f;
+                spu_data_cmd.pi_alpha[0] = (p_sys->buffer[i_index+2])&0x0f;
+            }
 
             i_index += 3;
             break;
@@ -465,7 +467,7 @@ static int ParseRLE( decoder_t *p_dec,
     bool b_empty_top = true;
     unsigned int i_skipped_top = 0, i_skipped_bottom = 0;
     unsigned int i_transparent_code = 0;
- 
+
     /* Colormap statistics */
     int i_border = -1;
     int stats[4]; stats[0] = stats[1] = stats[2] = stats[3] = 0;
@@ -614,7 +616,7 @@ static int ParseRLE( decoder_t *p_dec,
                  p_spu->i_width, i_height, p_spu->i_x, i_y );
 #endif
     }
- 
+
     /* Handle color if no palette was found */
     if( !p_spu_data->b_palette )
     {
@@ -688,8 +690,9 @@ static void Render( decoder_t *p_dec, subpicture_t *p_spu,
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
-    fmt.i_aspect = 0; /* 0 means use aspect ratio of background video */
+    fmt.i_chroma = VLC_CODEC_YUVP;
+    fmt.i_sar_num = 0; /* 0 means use aspect ratio of background video */
+    fmt.i_sar_den = 1;
     fmt.i_width = fmt.i_visible_width = p_spu_properties->i_width;
     fmt.i_height = fmt.i_visible_height = p_spu_properties->i_height -
         p_spu_data->i_y_top_offset - p_spu_data->i_y_bottom_offset;
@@ -701,9 +704,7 @@ static void Render( decoder_t *p_dec, subpicture_t *p_spu,
         fmt.p_palette->palette[i_x][0] = p_spu_data->pi_yuv[i_x][0];
         fmt.p_palette->palette[i_x][1] = p_spu_data->pi_yuv[i_x][1];
         fmt.p_palette->palette[i_x][2] = p_spu_data->pi_yuv[i_x][2];
-        fmt.p_palette->palette[i_x][3] =
-            p_spu_data->pi_alpha[i_x] == 0xf ? 0xff :
-            p_spu_data->pi_alpha[i_x] << 4;
+        fmt.p_palette->palette[i_x][3] = p_spu_data->pi_alpha[i_x] * 0x11;
     }
 
     p_spu->p_region = subpicture_region_New( &fmt );

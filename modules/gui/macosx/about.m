@@ -1,8 +1,8 @@
 /*****************************************************************************
  * about.m: MacOS X About Panel
  *****************************************************************************
- * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: dc0ef540d7745ef432cf48cc9c48c0384e37c34a $
+ * Copyright (C) 2001-2009 the VideoLAN team
+ * $Id: d56ed7f59ed5596f9c8194b6e5e57c188e56100b $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -61,6 +61,12 @@ static VLAboutBox *_o_sharedInstance = nil;
     return _o_sharedInstance;
 }
 
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [super dealloc];
+}
+
 /*****************************************************************************
 * VLC About Window
 *****************************************************************************/
@@ -112,6 +118,7 @@ static VLAboutBox *_o_sharedInstance = nil;
  
     /* Show the window */
     b_restart = YES;
+    [o_credits_textview scrollPoint:NSMakePoint( 0, 0 )];
     [o_about_window makeKeyAndOrderFront: nil];
 }
 
@@ -134,7 +141,7 @@ static VLAboutBox *_o_sharedInstance = nil;
     if( b_restart )
     {
         /* Reset the starttime */
-        i_start = [NSDate timeIntervalSinceReferenceDate] + 3.0;
+        i_start = [NSDate timeIntervalSinceReferenceDate] + 5.0;
         f_current = 0;
         f_end = [o_credits_textview bounds].size.height - [o_credits_scrollview bounds].size.height;
         b_restart = NO;
@@ -151,6 +158,7 @@ static VLAboutBox *_o_sharedInstance = nil;
         /* If at end, restart at the top */
         if( f_current >= f_end )
         {
+            [o_credits_textview scrollPoint:NSMakePoint( 0, 0 )];
             b_restart = YES;
         }
     }

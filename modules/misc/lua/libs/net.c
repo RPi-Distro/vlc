@@ -2,7 +2,7 @@
  * net.c: Network related functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: dcf21664632fdbbff14972e38c7e3ac98681409a $
+ * $Id: c23f4756b5f3716c5ed9dfc39595a4bbed8da5ad $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -35,10 +35,17 @@
 #include <vlc_common.h>
 #include <vlc_network.h>
 #include <vlc_url.h>
+#include <vlc_fs.h>
 
 #include <lua.h>        /* Low level lua C API */
 #include <lauxlib.h>    /* Higher level C API */
 
+#ifdef HAVE_POLL
+#include <poll.h>       /* poll structures and defines */
+#endif
+#include <sys/stat.h>
+
+#include<errno.h>
 #include "../vlc.h"
 #include "../libs.h"
 
@@ -79,9 +86,11 @@ static int vlclua_url_parse( lua_State *L )
  *****************************************************************************/
 static int vlclua_net_listen_close( lua_State * );
 static int vlclua_net_accept( lua_State * );
+static int vlclua_net_fds( lua_State * );
 
 static const luaL_Reg vlclua_net_listen_reg[] = {
     { "accept", vlclua_net_accept },
+    { "fds", vlclua_net_fds },
     { NULL, NULL }
 };
 
@@ -117,12 +126,24 @@ static int vlclua_net_listen_close( lua_State *L )
     return 0;
 }
 
+static int vlclua_net_fds( lua_State *L )
+{
+    int **ppi_fd = (int**)luaL_checkudata( L, 1, "net_listen" );
+    int *pi_fd = *ppi_fd;
+
+    int i_count = 0;
+    while( pi_fd[i_count] != -1 )
+        lua_pushinteger( L, pi_fd[i_count++] );
+
+    return i_count;
+}
+
 static int vlclua_net_accept( lua_State *L )
 {
     vlc_object_t *p_this = vlclua_get_this( L );
     int **ppi_fd = (int**)luaL_checkudata( L, 1, "net_listen" );
-    mtime_t i_wait = luaL_optint( L, 2, -1 ); /* default to block */
-    int i_fd = net_Accept( p_this, *ppi_fd, i_wait );
+    int i_fd = net_Accept( p_this, *ppi_fd );
+
     lua_pushinteger( L, i_fd );
     return 1;
 }
@@ -130,6 +151,16 @@ static int vlclua_net_accept( lua_State *L )
 /*****************************************************************************
  *
  *****************************************************************************/
+static int vlclua_net_connect_tcp( lua_State *L )
+{
+    vlc_object_t *p_this = vlclua_get_this( L );
+    const char *psz_host = luaL_checkstring( L, 1 );
+    int i_port = luaL_checkint( L, 2 );
+    int i_fd = net_Connect( p_this, psz_host, i_port, SOCK_STREAM, IPPROTO_TCP );
+    lua_pushinteger( L, i_fd );
+    return 1;
+}
+
 static int vlclua_net_close( lua_State *L )
 {
     int i_fd = luaL_checkint( L, 1 );
@@ -153,102 +184,50 @@ static int vlclua_net_recv( lua_State *L )
     int i_fd = luaL_checkint( L, 1 );
     size_t i_len = luaL_optint( L, 2, 1 );
     char psz_buffer[i_len];
-    i_len = recv( i_fd, psz_buffer, i_len, 0 );
-    lua_pushlstring( L, psz_buffer, i_len );
+    ssize_t i_ret = recv( i_fd, psz_buffer, i_len, 0 );
+    lua_pushlstring( L, psz_buffer, (i_ret >= 0) ? i_ret : 0 );
     return 1;
 }
 
 /*****************************************************************************
  *
  *****************************************************************************/
-static int vlclua_net_select( lua_State *L )
+/* Takes a { fd : events } table as first arg and modifies it to { fd : revents } */
+static int vlclua_net_poll( lua_State *L )
 {
-    int i_ret;
-    size_t i_nfds = luaL_checkint( L, 1 );
-    fd_set *fds_read = (fd_set*)luaL_checkudata( L, 2, "fd_set" );
-    fd_set *fds_write = (fd_set*)luaL_checkudata( L, 3, "fd_set" );
-    double f_timeout = luaL_checknumber( L, 4 );
-    struct timeval timeout;
+    luaL_checktype( L, 1, LUA_TTABLE );
+    double f_timeout = luaL_optnumber( L, 2, -1. );
 
-#ifndef WIN32
-    if( i_nfds > FD_SETSIZE )
-        i_nfds = FD_SETSIZE;
-#endif
-    timeout.tv_sec = (int)f_timeout;
-    timeout.tv_usec = (int)(1e6*(f_timeout-(double)((int)f_timeout)));
-    i_ret = select( i_nfds, fds_read, fds_write, 0, &timeout );
-    lua_pushinteger( L, i_ret );
-    lua_pushinteger( L, (double)timeout.tv_sec+((double)timeout.tv_usec)/1e-6 );
-    return 2;
-}
-
-/*****************************************************************************
- *
- *****************************************************************************/
-static int vlclua_fd_clr( lua_State * );
-static int vlclua_fd_isset( lua_State * );
-static int vlclua_fd_set( lua_State * );
-static int vlclua_fd_zero( lua_State * );
-
-static const luaL_Reg vlclua_fd_set_reg[] = {
-    { "clr", vlclua_fd_clr },
-    { "isset", vlclua_fd_isset },
-    { "set", vlclua_fd_set },
-    { "zero", vlclua_fd_zero },
-    { NULL, NULL }
-};
-
-static int vlclua_fd_set_new( lua_State *L )
-{
-    fd_set *fds = (fd_set*)lua_newuserdata( L, sizeof( fd_set ) );
-    FD_ZERO( fds );
-
-    if( luaL_newmetatable( L, "fd_set" ) )
+    int i_fds = 0;
+    lua_pushnil( L );
+    while( lua_next( L, 1 ) )
     {
-        lua_newtable( L );
-        luaL_register( L, NULL, vlclua_fd_set_reg );
-        lua_setfield( L, -2, "__index" );
+        i_fds++;
+        lua_pop( L, 1 );
+    }
+    struct pollfd *p_fds = malloc( i_fds * sizeof( struct pollfd ) );
+    vlc_cleanup_push( free, p_fds );
+    lua_pushnil( L );
+    int i = 0;
+    while( lua_next( L, 1 ) )
+    {
+        p_fds[i].fd = luaL_checkinteger( L, -2 );
+        p_fds[i].events = luaL_checkinteger( L, -1 );
+        p_fds[i].revents = 0;
+        lua_pop( L, 1 );
+        i++;
     }
 
-    lua_setmetatable( L, -2 );
+    int i_ret = poll( p_fds, i_fds, f_timeout < 0. ? -1 : (int)(f_timeout*1000) );
+    for( i = 0; i < i_fds; i++ )
+    {
+        lua_pushinteger( L, p_fds[i].fd );
+        lua_pushinteger( L, p_fds[i].revents );
+        lua_settable( L, 1 );
+    }
+    lua_pushinteger( L, i_ret );
+    vlc_cleanup_run();
     return 1;
-}
-
-static int vlclua_fd_clr( lua_State *L )
-{
-    fd_set *fds = (fd_set*)luaL_checkudata( L, 1, "fd_set" );
-    int i_fd = luaL_checkint( L, 2 );
-    FD_CLR( i_fd, fds );
-    return 0;
-}
-
-static int vlclua_fd_isset( lua_State *L )
-{
-    fd_set *fds = (fd_set*)luaL_checkudata( L, 1, "fd_set" );
-    int i_fd = luaL_checkint( L, 2 );
-    lua_pushboolean( L, FD_ISSET( i_fd, fds ) );
-    return 1;
-}
-
-static int vlclua_fd_set( lua_State *L )
-{
-    fd_set *fds = (fd_set*)luaL_checkudata( L, 1, "fd_set" );
-    size_t i_fd = luaL_checkint( L, 2 );
-    /* FIXME: we should really use poll() instead here, but that breaks the
-     * VLC/LUA API. On Windows, overflow protection is built-in FD_SET, not
-     * on POSIX. In both cases, run-time behavior will however be wrong. */
-#ifndef WIN32
-    if( i_fd < FD_SETSIZE )
-#endif
-        FD_SET( i_fd, fds );
-    return 0;
-}
-
-static int vlclua_fd_zero( lua_State *L )
-{
-    fd_set *fds = (fd_set*)luaL_checkudata( L, 1, "fd_set" );
-    FD_ZERO( fds );
-    return 0;
 }
 
 /*****************************************************************************
@@ -277,8 +256,8 @@ static int vlclua_fd_read( lua_State *L )
     int i_fd = luaL_checkint( L, 1 );
     size_t i_len = luaL_optint( L, 2, 1 );
     char psz_buffer[i_len];
-    i_len = read( i_fd, psz_buffer, i_len );
-    lua_pushlstring( L, psz_buffer, i_len );
+    ssize_t i_ret = read( i_fd, psz_buffer, i_len );
+    lua_pushlstring( L, psz_buffer, (i_ret >= 0) ? i_ret : 0 );
     return 1;
 }
 
@@ -290,36 +269,36 @@ static int vlclua_stat( lua_State *L )
 #ifdef HAVE_SYS_STAT_H
     const char *psz_path = luaL_checkstring( L, 1 );
     struct stat s;
-    if( utf8_stat( psz_path, &s ) )
+    if( vlc_stat( psz_path, &s ) )
         return 0;
         //return luaL_error( L, "Couldn't stat %s.", psz_path );
     lua_newtable( L );
     if( S_ISREG( s.st_mode ) )
-        lua_pushstring( L, "file" );
+        lua_pushliteral( L, "file" );
     else if( S_ISDIR( s.st_mode ) )
-        lua_pushstring( L, "dir" );
+        lua_pushliteral( L, "dir" );
 #ifdef S_ISCHR
     else if( S_ISCHR( s.st_mode ) )
-        lua_pushstring( L, "character device" );
+        lua_pushliteral( L, "character device" );
 #endif
 #ifdef S_ISBLK
     else if( S_ISBLK( s.st_mode ) )
-        lua_pushstring( L, "block device" );
+        lua_pushliteral( L, "block device" );
 #endif
 #ifdef S_ISFIFO
     else if( S_ISFIFO( s.st_mode ) )
-        lua_pushstring( L, "fifo" );
+        lua_pushliteral( L, "fifo" );
 #endif
 #ifdef S_ISLNK
     else if( S_ISLNK( s.st_mode ) )
-        lua_pushstring( L, "symbolic link" );
+        lua_pushliteral( L, "symbolic link" );
 #endif
 #ifdef S_ISSOCK
     else if( S_ISSOCK( s.st_mode ) )
-        lua_pushstring( L, "socket" );
+        lua_pushliteral( L, "socket" );
 #endif
     else
-        lua_pushstring( L, "unknown" );
+        lua_pushliteral( L, "unknown" );
     lua_setfield( L, -2, "type" );
     lua_pushinteger( L, s.st_mode );
     lua_setfield( L, -2, "mode" );
@@ -348,13 +327,13 @@ static int vlclua_opendir( lua_State *L )
     DIR *p_dir;
     int i = 0;
 
-    if( ( p_dir = utf8_opendir( psz_dir ) ) == NULL )
+    if( ( p_dir = vlc_opendir( psz_dir ) ) == NULL )
         return luaL_error( L, "cannot open directory `%s'.", psz_dir );
 
     lua_newtable( L );
     for( ;; )
     {
-        char *psz_filename = utf8_readdir( p_dir );
+        char *psz_filename = vlc_readdir( p_dir );
         if( !psz_filename ) break;
         i++;
         lua_pushstring( L, psz_filename );
@@ -371,11 +350,11 @@ static int vlclua_opendir( lua_State *L )
 static const luaL_Reg vlclua_net_reg[] = {
     { "url_parse", vlclua_url_parse },
     { "listen_tcp", vlclua_net_listen_tcp },
+    { "connect_tcp", vlclua_net_connect_tcp },
     { "close", vlclua_net_close },
     { "send", vlclua_net_send },
     { "recv", vlclua_net_recv },
-    { "select", vlclua_net_select },
-    { "fd_set_new", vlclua_fd_set_new },
+    { "poll", vlclua_net_poll },
     { "read", vlclua_fd_read },
     { "write", vlclua_fd_write },
     { "stat", vlclua_stat }, /* Not really "net" */
@@ -387,5 +366,14 @@ void luaopen_net( lua_State *L )
 {
     lua_newtable( L );
     luaL_register( L, NULL, vlclua_net_reg );
+#define ADD_CONSTANT( name, value )    \
+    lua_pushinteger( L, value ); \
+    lua_setfield( L, -2, name );
+    ADD_CONSTANT( "POLLIN", POLLIN )
+    ADD_CONSTANT( "POLLPRI", POLLPRI )
+    ADD_CONSTANT( "POLLOUT", POLLOUT )
+    ADD_CONSTANT( "POLLERR", POLLERR )
+    ADD_CONSTANT( "POLLHUP", POLLHUP )
+    ADD_CONSTANT( "POLLNVAL", POLLNVAL )
     lua_setfield( L, -2, "net" );
 }

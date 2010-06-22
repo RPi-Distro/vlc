@@ -2,7 +2,7 @@
  * vlc_config_cat.h : Definition of configuration categories
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f8686f8bc9f0bbc6bcb617a4b608bc08920adfda $
+ * $Id: 87cd0c6959a24c0874711b1dcf4cc09e433ef315 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Anil Daoud <anil@videolan.org>
@@ -109,13 +109,13 @@
 #define DEMUX_HELP N_( "Demuxers are used to separate audio and video streams." )
 
 #define VDEC_TITLE  N_( "Video codecs" )
-#define VDEC_HELP N_( "Settings for the video-only decoders and encoders." )
+#define VDEC_HELP N_( "Settings for the video, images or video+audio decoders and encoders." )
 
 #define ADEC_TITLE  N_( "Audio codecs" )
 #define ADEC_HELP N_( "Settings for the audio-only decoders and encoders." )
 
-#define SDEC_TITLE N_( "Other codecs")
-#define SDEC_HELP N_( "Settings for audio+video and miscellaneous decoders and encoders." )
+#define SDEC_TITLE N_( "Subtitles codecs")
+#define SDEC_HELP N_( "Settings for subtitles, teletext and CC decoders and encoders." )
 
 #define ADVANCED_TITLE N_("General Input" )
 #define ADVANCED_HELP N_( "General input settings. Use with care..." )

@@ -3,9 +3,9 @@
 
 basedir = access
 dir = access
-mods = access_alsa access_directory access_dv access_eyetv access_fake access_file access_ftp access_gnomevfs access_http access_jack access_mmap access_mtp access_oss access_smb access_tcp access_udp cdda dc1394 dvdnav dvdread pvr qtcapture v4l v4l2
-libvlc_LTLIBRARIES =  $(LTLIBaccess_alsa) $(LTLIBaccess_dv) $(LTLIBaccess_eyetv) $(LTLIBaccess_gnomevfs) $(LTLIBaccess_jack) $(LTLIBaccess_mmap) $(LTLIBaccess_mtp) $(LTLIBaccess_oss) $(LTLIBaccess_smb) $(LTLIBcdda) $(LTLIBdc1394) $(LTLIBdvdnav) $(LTLIBdvdread) $(LTLIBpvr) $(LTLIBqtcapture) $(LTLIBv4l) $(LTLIBv4l2)
-EXTRA_LTLIBRARIES =  libaccess_alsa_plugin.la libaccess_dv_plugin.la libaccess_eyetv_plugin.la libaccess_gnomevfs_plugin.la libaccess_jack_plugin.la libaccess_mmap_plugin.la libaccess_mtp_plugin.la libaccess_oss_plugin.la libaccess_smb_plugin.la libcdda_plugin.la libdc1394_plugin.la libdvdnav_plugin.la libdvdread_plugin.la libpvr_plugin.la libqtcapture_plugin.la libv4l_plugin.la libv4l2_plugin.la
+mods = access_alsa access_attachment access_avio access_directory access_dv access_eyetv access_fake access_ftp access_gnomevfs access_http access_imem access_jack access_mmap access_mtp access_oss access_sftp access_smb access_tcp access_udp cdda dc1394 dvdnav dvdread pvr qtcapture v4l v4l2
+libvlc_LTLIBRARIES =  $(LTLIBaccess_alsa) $(LTLIBaccess_avio) $(LTLIBaccess_directory) $(LTLIBaccess_dv) $(LTLIBaccess_eyetv) $(LTLIBaccess_gnomevfs) $(LTLIBaccess_jack) $(LTLIBaccess_mmap) $(LTLIBaccess_mtp) $(LTLIBaccess_oss) $(LTLIBaccess_sftp) $(LTLIBaccess_smb) $(LTLIBcdda) $(LTLIBdc1394) $(LTLIBdvdnav) $(LTLIBdvdread) $(LTLIBpvr) $(LTLIBqtcapture) $(LTLIBv4l) $(LTLIBv4l2)
+EXTRA_LTLIBRARIES =  libaccess_alsa_plugin.la libaccess_avio_plugin.la libaccess_directory_plugin.la libaccess_dv_plugin.la libaccess_eyetv_plugin.la libaccess_gnomevfs_plugin.la libaccess_jack_plugin.la libaccess_mmap_plugin.la libaccess_mtp_plugin.la libaccess_oss_plugin.la libaccess_sftp_plugin.la libaccess_smb_plugin.la libcdda_plugin.la libdc1394_plugin.la libdvdnav_plugin.la libdvdread_plugin.la libpvr_plugin.la libqtcapture_plugin.la libv4l_plugin.la libv4l2_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -19,6 +19,28 @@ libaccess_alsa_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_alsa_plugin_la_LIBADD = $(AM_LIBADD)
 libaccess_alsa_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The access_attachment plugin
+libaccess_attachment_plugin_la_SOURCES = $(SOURCES_access_attachment)
+nodist_libaccess_attachment_plugin_la_SOURCES = $(nodist_SOURCES_access_attachment)
+# Force per-target objects:
+libaccess_attachment_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaccess_attachment_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaccess_attachment_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libaccess_attachment_plugin_la_LIBADD = $(AM_LIBADD)
+libaccess_attachment_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The access_avio plugin
+libaccess_avio_plugin_la_SOURCES = $(SOURCES_access_avio)
+nodist_libaccess_avio_plugin_la_SOURCES = $(nodist_SOURCES_access_avio)
+# Force per-target objects:
+libaccess_avio_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaccess_avio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaccess_avio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libaccess_avio_plugin_la_LIBADD = $(AM_LIBADD)
+libaccess_avio_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_directory plugin
 libaccess_directory_plugin_la_SOURCES = $(SOURCES_access_directory)
@@ -64,17 +86,6 @@ libaccess_fake_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libaccess_fake_plugin_la_LIBADD = $(AM_LIBADD)
 libaccess_fake_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The access_file plugin
-libaccess_file_plugin_la_SOURCES = $(SOURCES_access_file)
-nodist_libaccess_file_plugin_la_SOURCES = $(nodist_SOURCES_access_file)
-# Force per-target objects:
-libaccess_file_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaccess_file_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaccess_file_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libaccess_file_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_file_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
 # The access_ftp plugin
 libaccess_ftp_plugin_la_SOURCES = $(SOURCES_access_ftp)
 nodist_libaccess_ftp_plugin_la_SOURCES = $(nodist_SOURCES_access_ftp)
@@ -107,6 +118,17 @@ libaccess_http_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_http_plugin_la_LIBADD = $(AM_LIBADD)
 libaccess_http_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The access_imem plugin
+libaccess_imem_plugin_la_SOURCES = $(SOURCES_access_imem)
+nodist_libaccess_imem_plugin_la_SOURCES = $(nodist_SOURCES_access_imem)
+# Force per-target objects:
+libaccess_imem_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaccess_imem_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaccess_imem_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libaccess_imem_plugin_la_LIBADD = $(AM_LIBADD)
+libaccess_imem_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_jack plugin
 libaccess_jack_plugin_la_SOURCES = $(SOURCES_access_jack)
@@ -151,6 +173,17 @@ libaccess_oss_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_oss_plugin_la_LIBADD = $(AM_LIBADD)
 libaccess_oss_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The access_sftp plugin
+libaccess_sftp_plugin_la_SOURCES = $(SOURCES_access_sftp)
+nodist_libaccess_sftp_plugin_la_SOURCES = $(nodist_SOURCES_access_sftp)
+# Force per-target objects:
+libaccess_sftp_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaccess_sftp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaccess_sftp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libaccess_sftp_plugin_la_LIBADD = $(AM_LIBADD)
+libaccess_sftp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_smb plugin
 libaccess_smb_plugin_la_SOURCES = $(SOURCES_access_smb)

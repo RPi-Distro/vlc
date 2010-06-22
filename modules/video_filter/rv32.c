@@ -2,7 +2,7 @@
  * rv32.c: conversion plugin to RV32 format.
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 68ef70f3469d67506a9aa072c80ac18991656e7a $
+ * $Id: 5bb8e67ebdc699af522f2e921cce7c16955fd684 $
  *
  * Author: Cyril Deguet <asmax@videolan.org>
  *
@@ -30,24 +30,12 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
-#include "vlc_filter.h"
-
-/*****************************************************************************
- * filter_sys_t : filter descriptor
- *****************************************************************************/
-struct filter_sys_t
-{
-    es_format_t fmt_in;
-    es_format_t fmt_out;
-};
+#include <vlc_filter.h>
 
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
 static int  OpenFilter ( vlc_object_t * );
-static void CloseFilter( vlc_object_t * );
-
 static picture_t *Filter( filter_t *, picture_t * );
 
 /*****************************************************************************
@@ -56,7 +44,7 @@ static picture_t *Filter( filter_t *, picture_t * );
 vlc_module_begin ()
     set_description( N_("RV32 conversion filter") )
     set_capability( "video filter2", 1 )
-    set_callbacks( OpenFilter, CloseFilter )
+    set_callbacks( OpenFilter, NULL )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -65,12 +53,11 @@ vlc_module_end ()
 static int OpenFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys;
 
     /* XXX Only support RV24 -> RV32 conversion */
-    if( p_filter->fmt_in.video.i_chroma != VLC_FOURCC('R','V','2','4') ||
-        (p_filter->fmt_out.video.i_chroma != VLC_FOURCC('R', 'V', '3', '2') &&
-        p_filter->fmt_out.video.i_chroma != VLC_FOURCC('R', 'G', 'B', 'A')) )
+    if( p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB24 ||
+        (p_filter->fmt_out.video.i_chroma != VLC_CODEC_RGB32 &&
+        p_filter->fmt_out.video.i_chroma != VLC_CODEC_RGBA) )
     {
         return VLC_EGENERIC;
     }
@@ -79,25 +66,9 @@ static int OpenFilter( vlc_object_t *p_this )
      || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
         return -1;
 
-    /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_filter->p_sys = p_sys =
-          (filter_sys_t *)malloc(sizeof(filter_sys_t)) ) == NULL )
-        return VLC_ENOMEM;
-
     p_filter->pf_video_filter = Filter;
 
     return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * CloseFilter: clean up the filter
- *****************************************************************************/
-static void CloseFilter( vlc_object_t *p_this )
-{
-    filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys = p_filter->p_sys;
-
-    free( p_sys );
 }
 
 /****************************************************************************

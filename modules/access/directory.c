@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: dd238e510d2b5b2db3c29cdc85502ce28e65d47b $
+ * $Id: f2b8aec07913e54c84e2e9ad9c31e0273c07d651 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -31,18 +31,17 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_plugin.h>
+#include "fs.h"
 #include <vlc_access.h>
 
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
+#include <sys/types.h>
 #ifdef HAVE_SYS_STAT_H
 #   include <sys/stat.h>
 #endif
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
+#   include <fcntl.h>
 #elif defined( WIN32 ) && !defined( UNDER_CE )
 #   include <io.h>
 #endif
@@ -57,61 +56,15 @@ static inline int dirfd (DIR *dir)
 }
 #endif
 
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_url.h>
 #include <vlc_strings.h>
 
-/*****************************************************************************
- * Module descriptor
- *****************************************************************************/
-static int  Open ( vlc_object_t * );
-static void Close( vlc_object_t * );
-
-#define RECURSIVE_TEXT N_("Subdirectory behavior")
-#define RECURSIVE_LONGTEXT N_( \
-        "Select whether subdirectories must be expanded.\n" \
-        "none: subdirectories do not appear in the playlist.\n" \
-        "collapse: subdirectories appear but are expanded on first play.\n" \
-        "expand: all subdirectories are expanded.\n" )
-
-static const char *const psz_recursive_list[] = { "none", "collapse", "expand" };
-static const char *const psz_recursive_list_text[] = {
-    N_("none"), N_("collapse"), N_("expand") };
-
-#define IGNORE_TEXT N_("Ignored extensions")
-#define IGNORE_LONGTEXT N_( \
-        "Files with these extensions will not be added to playlist when " \
-        "opening a directory.\n" \
-        "This is useful if you add directories that contain playlist files " \
-        "for instance. Use a comma-separated list of extensions." )
-
-vlc_module_begin ()
-    set_category( CAT_INPUT )
-    set_shortname( N_("Directory" ) )
-    set_subcategory( SUBCAT_INPUT_ACCESS )
-    set_description( N_("Standard filesystem directory input") )
-    set_capability( "access", 55 )
-    add_shortcut( "directory" )
-    add_shortcut( "dir" )
-    add_shortcut( "file" )
-    add_string( "recursive", "expand" , NULL, RECURSIVE_TEXT,
-                RECURSIVE_LONGTEXT, false )
-      change_string_list( psz_recursive_list, psz_recursive_list_text, 0 )
-    add_string( "ignore-filetypes", "m3u,db,nfo,ini,jpg,jpeg,ljpg,gif,png,pgm,pgmyuv,pbm,pam,tga,bmp,pnm,xpm,xcf,pcx,tif,tiff,lbm,sfv,txt,sub,idx,srt,cue,ssa",
-                NULL, IGNORE_TEXT, IGNORE_LONGTEXT, false )
-    set_callbacks( Open, Close )
-vlc_module_end ()
-
-
-/*****************************************************************************
- * Local prototypes, constants, structures
- *****************************************************************************/
-
 enum
 {
-    MODE_EXPAND,
+    MODE_NONE,
     MODE_COLLAPSE,
-    MODE_NONE
+    MODE_EXPAND,
 };
 
 typedef struct directory_t directory_t;
@@ -123,69 +76,67 @@ struct directory_t
 #ifndef WIN32
     struct stat  st;
 #endif
-    char         path[1];
+#ifndef HAVE_OPENAT
+    char         *path;
+#endif
 };
 
 struct access_sys_t
 {
     directory_t *current;
     DIR *handle;
+    char *uri;
     char *ignored_exts;
     int mode;
     int i_item_count;
     char *psz_xspf_extension;
 };
 
-static block_t *Block( access_t * );
-static int Control( access_t *, int, va_list );
-
 /*****************************************************************************
  * Open: open the directory
  *****************************************************************************/
-static int Open( vlc_object_t *p_this )
+int DirOpen( vlc_object_t *p_this )
 {
     access_t *p_access = (access_t*)p_this;
-    access_sys_t *p_sys;
 
     if( !p_access->psz_path )
         return VLC_EGENERIC;
 
-    DIR *handle;
-    if (strcmp (p_access->psz_path, "-"))
-        handle = utf8_opendir (p_access->psz_path);
-    else
-    {
-#if 0   /* This won't work yet, it generates paths like "-/music.ogg".
-         * We'd need to use openat() here and in the file access... */
-        int fd = dup (0);
-        handle = fdopendir (fd);
-        if (handle == NULL)
-            close (fd);
-#else
-        return VLC_EGENERIC;
-#endif
-    }
-
+    DIR *handle = vlc_opendir (p_access->psz_path);
     if (handle == NULL)
         return VLC_EGENERIC;
 
-    p_sys = malloc (sizeof (*p_sys));
-    if (!p_sys)
+    return DirInit (p_access, handle);
+}
+
+int DirInit (access_t *p_access, DIR *handle)
+{
+    access_sys_t *p_sys = malloc (sizeof (*p_sys));
+    if (unlikely(p_sys == NULL))
+        goto error;
+
+    char *uri;
+    if (!strcmp (p_access->psz_access, "fd"))
     {
-        closedir( handle );
-        return VLC_ENOMEM;
+        if (asprintf (&uri, "fd://%s", p_access->psz_path) == -1)
+            uri = NULL;
     }
+    else
+        uri = make_URI (p_access->psz_path);
+    if (unlikely(uri == NULL))
+        goto error;
 
     p_access->p_sys = p_sys;
     p_sys->current = NULL;
     p_sys->handle = handle;
-    p_sys->ignored_exts = var_CreateGetString (p_access, "ignore-filetypes");
+    p_sys->uri = uri;
+    p_sys->ignored_exts = var_InheritString (p_access, "ignore-filetypes");
     p_sys->i_item_count = 0;
     p_sys->psz_xspf_extension = strdup( "" );
 
     /* Handle mode */
-    char *psz = var_CreateGetString( p_access, "recursive" );
-    if( *psz == '\0' || !strcasecmp( psz, "none" )  )
+    char *psz = var_InheritString (p_access, "recursive");
+    if (psz == NULL || !strcasecmp (psz, "none"))
         p_sys->mode = MODE_NONE;
     else if( !strcasecmp( psz, "collapse" )  )
         p_sys->mode = MODE_COLLAPSE;
@@ -193,20 +144,26 @@ static int Open( vlc_object_t *p_this )
         p_sys->mode = MODE_EXPAND;
     free( psz );
 
+    access_InitFields(p_access);
     p_access->pf_read  = NULL;
-    p_access->pf_block = Block;
+    p_access->pf_block = DirBlock;
     p_access->pf_seek  = NULL;
-    p_access->pf_control= Control;
+    p_access->pf_control= DirControl;
     free (p_access->psz_demux);
     p_access->psz_demux = strdup ("xspf-open");
 
     return VLC_SUCCESS;
+
+error:
+    closedir (handle);
+    free (p_sys);
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
  * Close: close the target
  *****************************************************************************/
-static void Close( vlc_object_t * p_this )
+void DirClose( vlc_object_t * p_this )
 {
     access_t *p_access = (access_t*)p_this;
     access_sys_t *p_sys = p_access->p_sys;
@@ -218,10 +175,17 @@ static void Close( vlc_object_t * p_this )
         p_sys->current = current->parent;
         closedir (current->handle);
         free (current->uri);
+#ifndef HAVE_OPENAT
+        free (current->path);
+#endif
         free (current);
     }
+
+    /* corner case: Block() not called ever */
     if (p_sys->handle != NULL)
-        closedir (p_sys->handle); /* corner case,:Block() not called ever */
+        closedir (p_sys->handle);
+    free (p_sys->uri);
+
     free (p_sys->psz_xspf_extension);
     free (p_sys->ignored_exts);
     free (p_sys);
@@ -238,12 +202,14 @@ static bool has_inode_loop (const directory_t *dir)
         if ((dir->st.st_dev == dev) && (dir->st.st_ino == inode))
             return true;
 #else
+# undef fstat
 # define fstat( fd, st ) (0)
+    VLC_UNUSED( dir );
 #endif
     return false;
 }
 
-static block_t *Block (access_t *p_access)
+block_t *DirBlock (access_t *p_access)
 {
     access_sys_t *p_sys = p_access->p_sys;
     directory_t *current = p_sys->current;
@@ -263,7 +229,7 @@ static block_t *Block (access_t *p_access)
         memcpy (block->p_buffer, header, sizeof (header) - 1);
 
         /* "Open" the base directory */
-        current = malloc (sizeof (*current) + strlen (p_access->psz_path));
+        current = malloc (sizeof (*current));
         if (current == NULL)
         {
             block_Release (block);
@@ -271,28 +237,32 @@ static block_t *Block (access_t *p_access)
         }
         current->parent = NULL;
         current->handle = p_sys->handle;
-        strcpy (current->path, p_access->psz_path);
-        current->uri = make_URI (current->path);
-        if ((current->uri == NULL)
-         || fstat (dirfd (current->handle), &current->st))
+#ifndef HAVE_OPENAT
+        current->path = strdup (p_access->psz_path);
+#endif
+        current->uri = p_sys->uri;
+        if (fstat (dirfd (current->handle), &current->st))
         {
-            free (current->uri);
             free (current);
             block_Release (block);
             goto fatal;
         }
 
         p_sys->handle = NULL;
+        p_sys->uri = NULL;
         p_sys->current = current;
         return block;
     }
 
-    char *entry = utf8_readdir (current->handle);
+    char *entry = vlc_readdir (current->handle);
     if (entry == NULL)
     {   /* End of directory, go back to parent */
         closedir (current->handle);
         p_sys->current = current->parent;
         free (current->uri);
+#ifndef HAVE_OPENAT
+        free (current->path);
+#endif
         free (current);
 
         if (p_sys->current == NULL)
@@ -303,14 +273,12 @@ static block_t *Block (access_t *p_access)
                 "%s" \
                 " </extension>\n" \
                 "</playlist>\n", p_sys->psz_xspf_extension );
-            if( len < 0 )
+            if (unlikely(len == -1))
                 goto fatal;
 
-            block_t *block = block_Alloc ( len );
-            if (!block)
-                goto fatal;
-            memcpy (block->p_buffer, footer, len);
-            free( footer );
+            block_t *block = block_heap_Alloc (footer, footer, len);
+            if (unlikely(block == NULL))
+                free (footer);
             p_access->info.b_eof = true;
             return block;
         }
@@ -339,16 +307,30 @@ static block_t *Block (access_t *p_access)
     /* Handle recursion */
     if (p_sys->mode != MODE_COLLAPSE)
     {
-        directory_t *sub = malloc (sizeof (*sub) + strlen (current->path) + 1
-                                                 + strlen (entry));
+        directory_t *sub = malloc (sizeof (*sub));
         if (sub == NULL)
         {
             free (entry);
             return NULL;
         }
-        sprintf (sub->path, "%s/%s", current->path, entry);
 
-        DIR *handle = utf8_opendir (sub->path);
+        DIR *handle;
+#ifdef HAVE_OPENAT
+        int fd = vlc_openat (dirfd (current->handle), entry, O_RDONLY);
+        if (fd != -1)
+        {
+            handle = fdopendir (fd);
+            if (handle == NULL)
+                close (fd);
+        }
+        else
+            handle = NULL;
+#else
+        if (asprintf (&sub->path, "%s/%s", current->path, entry) != -1)
+            handle = vlc_opendir (sub->path);
+        else
+            handle = NULL;
+#endif
         if (handle != NULL)
         {
             sub->parent = current;
@@ -452,15 +434,12 @@ static block_t *Block (access_t *p_access)
         goto fatal;
     free( old_xspf_extension );
 
-    /* TODO: new block allocator for malloc()ated data */
-    block_t *block = block_Alloc (len);
-    if (!block)
+    block_t *block = block_heap_Alloc (entry, entry, len);
+    if (unlikely(block == NULL))
     {
         free (entry);
         goto fatal;
     }
-    memcpy (block->p_buffer, entry, len);
-    free (entry);
     return block;
 
 fatal:
@@ -471,30 +450,24 @@ fatal:
 /*****************************************************************************
  * Control:
  *****************************************************************************/
-static int Control( access_t *p_access, int i_query, va_list args )
+int DirControl( access_t *p_access, int i_query, va_list args )
 {
-    bool    *pb_bool;
-    int64_t *pi_64;
-
     switch( i_query )
     {
         /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = false;
+            *va_arg( args, bool* ) = false;
             break;
 
         case ACCESS_CAN_PAUSE:
         case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = true;
+            *va_arg( args, bool* ) = true;
             break;
 
         /* */
         case ACCESS_GET_PTS_DELAY:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = DEFAULT_PTS_DELAY * 1000;
+            *va_arg( args, int64_t * ) = DEFAULT_PTS_DELAY * 1000;
             break;
 
         /* */

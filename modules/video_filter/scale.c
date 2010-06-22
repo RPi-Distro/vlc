@@ -3,7 +3,7 @@
  *  Uses the low quality "nearest neighbour" algorithm.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 159bd180fca315d1f9889bf6db0b74c9fcd80b1a $
+ * $Id: 0f72c5bd24bb0504e9e772be6f563aa618f63203 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea @t videolan dot org>
@@ -32,24 +32,12 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
-#include "vlc_filter.h"
-
-/*****************************************************************************
- * filter_sys_t : filter descriptor
- *****************************************************************************/
-struct filter_sys_t
-{
-    es_format_t fmt_in;
-    es_format_t fmt_out;
-};
+#include <vlc_filter.h>
 
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
 static int  OpenFilter ( vlc_object_t * );
-static void CloseFilter( vlc_object_t * );
-
 static picture_t *Filter( filter_t *, picture_t * );
 
 /*****************************************************************************
@@ -58,7 +46,7 @@ static picture_t *Filter( filter_t *, picture_t * );
 vlc_module_begin ()
     set_description( N_("Video scaling filter") )
     set_capability( "video filter2", 10 )
-    set_callbacks( OpenFilter, CloseFilter )
+    set_callbacks( OpenFilter, NULL )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -67,23 +55,17 @@ vlc_module_end ()
 static int OpenFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys;
 
-    if( ( p_filter->fmt_in.video.i_chroma != VLC_FOURCC('Y','U','V','P') &&
-          p_filter->fmt_in.video.i_chroma != VLC_FOURCC('Y','U','V','A') &&
-          p_filter->fmt_in.video.i_chroma != VLC_FOURCC('I','4','2','0') &&
-          p_filter->fmt_in.video.i_chroma != VLC_FOURCC('Y','V','1','2') &&
-          p_filter->fmt_in.video.i_chroma != VLC_FOURCC('R','V','3','2') &&
-          p_filter->fmt_in.video.i_chroma != VLC_FOURCC('R','G','B','A') ) ||
+    if( ( p_filter->fmt_in.video.i_chroma != VLC_CODEC_YUVP &&
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_YUVA &&
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_I420 &&
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_YV12 &&
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB32 &&
+          p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGBA ) ||
         p_filter->fmt_in.video.i_chroma != p_filter->fmt_out.video.i_chroma )
     {
         return VLC_EGENERIC;
     }
-
-    /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_filter->p_sys = p_sys =
-          (filter_sys_t *)malloc(sizeof(filter_sys_t)) ) == NULL )
-        return VLC_ENOMEM;
 
     p_filter->pf_video_filter = Filter;
 
@@ -92,17 +74,6 @@ static int OpenFilter( vlc_object_t *p_this )
              p_filter->fmt_out.video.i_height );
 
     return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * CloseFilter: clean up the filter
- *****************************************************************************/
-static void CloseFilter( vlc_object_t *p_this )
-{
-    filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys = p_filter->p_sys;
-
-    free( p_sys );
 }
 
 /****************************************************************************
@@ -131,8 +102,8 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         return NULL;
     }
 
-    if( p_filter->fmt_in.video.i_chroma != VLC_FOURCC('R','G','B','A') &&
-        p_filter->fmt_in.video.i_chroma != VLC_FOURCC('R','V','3','2') )
+    if( p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGBA &&
+        p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB32 )
     {
         for( i_plane = 0; i_plane < p_pic_dst->i_planes; i_plane++ )
         {

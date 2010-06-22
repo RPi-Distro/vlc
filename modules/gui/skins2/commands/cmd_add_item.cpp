@@ -2,7 +2,7 @@
  * cmd_add_item.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f90c188a1ed1d5f3bf7aac53667756dbcf161e89 $
+ * $Id: 604a87efef6e9b92bbd0c791cdf0f07303f8c17c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,27 +28,22 @@
 
 #include <vlc_common.h>
 #include <vlc_playlist.h>
+#include <vlc_url.h>
 #include "cmd_add_item.hpp"
 
 void CmdAddItem::execute()
 {
     playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    if( pPlaylist == NULL )
-    {
+    if( !pPlaylist )
         return;
-    }
 
-    if( m_playNow )
-    {
-        // Enqueue and play the item
-        playlist_Add( pPlaylist, m_name.c_str(), NULL,
-                      PLAYLIST_APPEND | PLAYLIST_GO, PLAYLIST_END, true,
-                      false );
-    }
-    else
-    {
-        // Enqueue the item only
-        playlist_Add( pPlaylist, m_name.c_str(), NULL,
-                      PLAYLIST_APPEND, PLAYLIST_END, true, false );
-    }
+    char* psz_uri = make_URI(  m_name.c_str() );
+    if( !psz_uri )
+        return;
+
+    playlist_Add( pPlaylist, psz_uri, NULL,
+                  m_playNow ? PLAYLIST_APPEND | PLAYLIST_GO : PLAYLIST_APPEND,
+                  PLAYLIST_END, true, false );
+
+    free( psz_uri );
 }

@@ -2,7 +2,7 @@
  * evt_special.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 436c6a603be6c2db42a7f6d08c1e9f1d71ec5cb5 $
+ * $Id: f284516331e881e8a720ef04506b3e3c87d2deff $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef EVT_SPECIAL_HPP
@@ -31,25 +31,23 @@
 /// Class for non-genuine events
 class EvtSpecial: public EvtGeneric
 {
-    public:
-        enum ActionType_t
-        {
-            kShow,
-            kHide,
-            kEnable,
-            kDisable
-        };
+public:
+    enum ActionType_t
+    {
+        kShow,
+        kHide,
+        kEnable,
+        kDisable
+    };
 
-        EvtSpecial( intf_thread_t *pIntf, ActionType_t action ):
-            EvtGeneric( pIntf ), m_action( action ) {}
-        virtual ~EvtSpecial() {}
+    EvtSpecial( intf_thread_t *pIntf, ActionType_t action )
+              : EvtGeneric( pIntf ), m_action( action ) { }
+    virtual ~EvtSpecial() { }
+    virtual const string getAsString() const;
 
-        /// Return the type of event
-        virtual const string getAsString() const;
-
-    private:
-        /// Type of action
-        ActionType_t m_action;
+private:
+    /// Type of action
+    ActionType_t m_action;
 };
 
 

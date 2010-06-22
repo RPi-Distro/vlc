@@ -3,9 +3,9 @@
 
 basedir = misc
 dir = misc
-mods = audioscrobbler freetype gnome2_main gnome_main gnutls gtk2_main gtk_main inhibit logger qte_main quartztext screensaver svg vod_rtsp win32text
-libvlc_LTLIBRARIES =  $(LTLIBaudioscrobbler) $(LTLIBfreetype) $(LTLIBgnome2_main) $(LTLIBgnome_main) $(LTLIBgnutls) $(LTLIBgtk2_main) $(LTLIBgtk_main) $(LTLIBinhibit) $(LTLIBqte_main) $(LTLIBquartztext) $(LTLIBscreensaver) $(LTLIBsvg) $(LTLIBwin32text)
-EXTRA_LTLIBRARIES =  libaudioscrobbler_plugin.la libfreetype_plugin.la libgnome2_main_plugin.la libgnome_main_plugin.la libgnutls_plugin.la libgtk2_main_plugin.la libgtk_main_plugin.la libinhibit_plugin.la libqte_main_plugin.la libquartztext_plugin.la libscreensaver_plugin.la libsvg_plugin.la libwin32text_plugin.la
+mods = audioscrobbler freetype gnutls inhibit logger osso_screensaver quartztext sqlite svg vod_rtsp win32text xdg_screensaver xscreensaver
+libvlc_LTLIBRARIES =  $(LTLIBfreetype) $(LTLIBgnutls) $(LTLIBinhibit) $(LTLIBosso_screensaver) $(LTLIBsqlite) $(LTLIBsvg) $(LTLIBxdg_screensaver) $(LTLIBxscreensaver)
+EXTRA_LTLIBRARIES =  libfreetype_plugin.la libgnutls_plugin.la libinhibit_plugin.la libosso_screensaver_plugin.la libsqlite_plugin.la libsvg_plugin.la libxdg_screensaver_plugin.la libxscreensaver_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -31,28 +31,6 @@ libfreetype_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libfreetype_plugin_la_LIBADD = $(AM_LIBADD)
 libfreetype_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The gnome2_main plugin
-libgnome2_main_plugin_la_SOURCES = $(SOURCES_gnome2_main)
-nodist_libgnome2_main_plugin_la_SOURCES = $(nodist_SOURCES_gnome2_main)
-# Force per-target objects:
-libgnome2_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgnome2_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgnome2_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgnome2_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgnome2_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The gnome_main plugin
-libgnome_main_plugin_la_SOURCES = $(SOURCES_gnome_main)
-nodist_libgnome_main_plugin_la_SOURCES = $(nodist_SOURCES_gnome_main)
-# Force per-target objects:
-libgnome_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgnome_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgnome_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgnome_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgnome_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
 # The gnutls plugin
 libgnutls_plugin_la_SOURCES = $(SOURCES_gnutls)
 nodist_libgnutls_plugin_la_SOURCES = $(nodist_SOURCES_gnutls)
@@ -63,28 +41,6 @@ libgnutls_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgnutls_plugin_la_LIBADD = $(AM_LIBADD)
 libgnutls_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The gtk2_main plugin
-libgtk2_main_plugin_la_SOURCES = $(SOURCES_gtk2_main)
-nodist_libgtk2_main_plugin_la_SOURCES = $(nodist_SOURCES_gtk2_main)
-# Force per-target objects:
-libgtk2_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgtk2_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgtk2_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgtk2_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgtk2_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The gtk_main plugin
-libgtk_main_plugin_la_SOURCES = $(SOURCES_gtk_main)
-nodist_libgtk_main_plugin_la_SOURCES = $(nodist_SOURCES_gtk_main)
-# Force per-target objects:
-libgtk_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgtk_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgtk_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgtk_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgtk_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The inhibit plugin
 libinhibit_plugin_la_SOURCES = $(SOURCES_inhibit)
@@ -108,16 +64,16 @@ liblogger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 liblogger_plugin_la_LIBADD = $(AM_LIBADD)
 liblogger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The qte_main plugin
-libqte_main_plugin_la_SOURCES = $(SOURCES_qte_main)
-nodist_libqte_main_plugin_la_SOURCES = $(nodist_SOURCES_qte_main)
+# The osso_screensaver plugin
+libosso_screensaver_plugin_la_SOURCES = $(SOURCES_osso_screensaver)
+nodist_libosso_screensaver_plugin_la_SOURCES = $(nodist_SOURCES_osso_screensaver)
 # Force per-target objects:
-libqte_main_plugin_la_CFLAGS = $(AM_CFLAGS)
-libqte_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libqte_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libosso_screensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
+libosso_screensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libosso_screensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libqte_main_plugin_la_LIBADD = $(AM_LIBADD)
-libqte_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libosso_screensaver_plugin_la_LIBADD = $(AM_LIBADD)
+libosso_screensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The quartztext plugin
 libquartztext_plugin_la_SOURCES = $(SOURCES_quartztext)
@@ -130,16 +86,16 @@ libquartztext_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libquartztext_plugin_la_LIBADD = $(AM_LIBADD)
 libquartztext_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The screensaver plugin
-libscreensaver_plugin_la_SOURCES = $(SOURCES_screensaver)
-nodist_libscreensaver_plugin_la_SOURCES = $(nodist_SOURCES_screensaver)
+# The sqlite plugin
+libsqlite_plugin_la_SOURCES = $(SOURCES_sqlite)
+nodist_libsqlite_plugin_la_SOURCES = $(nodist_SOURCES_sqlite)
 # Force per-target objects:
-libscreensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
-libscreensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libscreensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libsqlite_plugin_la_CFLAGS = $(AM_CFLAGS)
+libsqlite_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libsqlite_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libscreensaver_plugin_la_LIBADD = $(AM_LIBADD)
-libscreensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libsqlite_plugin_la_LIBADD = $(AM_LIBADD)
+libsqlite_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The svg plugin
 libsvg_plugin_la_SOURCES = $(SOURCES_svg)
@@ -173,4 +129,26 @@ libwin32text_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwin32text_plugin_la_LIBADD = $(AM_LIBADD)
 libwin32text_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The xdg_screensaver plugin
+libxdg_screensaver_plugin_la_SOURCES = $(SOURCES_xdg_screensaver)
+nodist_libxdg_screensaver_plugin_la_SOURCES = $(nodist_SOURCES_xdg_screensaver)
+# Force per-target objects:
+libxdg_screensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
+libxdg_screensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libxdg_screensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libxdg_screensaver_plugin_la_LIBADD = $(AM_LIBADD)
+libxdg_screensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The xscreensaver plugin
+libxscreensaver_plugin_la_SOURCES = $(SOURCES_xscreensaver)
+nodist_libxscreensaver_plugin_la_SOURCES = $(nodist_SOURCES_xscreensaver)
+# Force per-target objects:
+libxscreensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
+libxscreensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libxscreensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libxscreensaver_plugin_la_LIBADD = $(AM_LIBADD)
+libxscreensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

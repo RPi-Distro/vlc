@@ -2,7 +2,7 @@
  * stream_demux.c
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 7200ac17ce86ea07183c1c27c9a8c47786b7ccf7 $
+ * $Id: fe96fdf567fd5f7636a51fbf36df6dfeace4e7f3 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -24,6 +24,7 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+#include <limits.h>
 
 #include "demux.h"
 #include <libvlc.h>
@@ -38,7 +39,7 @@ struct stream_sys_t
     block_fifo_t *p_fifo;
     block_t      *p_block;
 
-    int64_t     i_pos;
+    uint64_t    i_pos;
 
     /* Demuxer */
     char        *psz_name;
@@ -54,9 +55,9 @@ static void DStreamDelete ( stream_t * );
 static void* DStreamThread ( vlc_object_t * );
 
 
-stream_t *__stream_DemuxNew( vlc_object_t *p_obj, const char *psz_demux,
-                             es_out_t *out )
+stream_t *stream_DemuxNew( demux_t *p_demux, const char *psz_demux, es_out_t *out )
 {
+    vlc_object_t *p_obj = VLC_OBJECT(p_demux);
     /* We create a stream reader, and launch a thread */
     stream_t     *s;
     stream_sys_t *p_sys;
@@ -64,6 +65,7 @@ stream_t *__stream_DemuxNew( vlc_object_t *p_obj, const char *psz_demux,
     s = stream_CommonNew( p_obj );
     if( s == NULL )
         return NULL;
+    s->p_input = p_demux->p_input;
     s->psz_path  = strdup(""); /* N/A */
     s->pf_read   = DStreamRead;
     s->pf_peek   = DStreamPeek;
@@ -97,7 +99,6 @@ stream_t *__stream_DemuxNew( vlc_object_t *p_obj, const char *psz_demux,
     if( vlc_thread_create( s, "stream out", DStreamThread,
                            VLC_THREAD_PRIORITY_INPUT ) )
     {
-        vlc_object_detach( s );
         stream_CommonDelete( s );
         free( p_sys->psz_name );
         free( p_sys );
@@ -134,7 +135,6 @@ static void DStreamDelete( stream_t *s )
     block_FifoRelease( p_sys->p_fifo );
     free( p_sys->psz_name );
     free( p_sys );
-    vlc_object_detach( s );
     stream_CommonDelete( s );
 }
 
@@ -222,13 +222,13 @@ static int DStreamPeek( stream_t *s, const uint8_t **pp_peek, unsigned int i_pee
 static int DStreamControl( stream_t *s, int i_query, va_list args )
 {
     stream_sys_t *p_sys = s->p_sys;
-    int64_t    *p_i64;
+    uint64_t    *p_i64;
     bool *p_b;
 
     switch( i_query )
     {
         case STREAM_GET_SIZE:
-            p_i64 = (int64_t*) va_arg( args, int64_t * );
+            p_i64 = va_arg( args, uint64_t * );
             *p_i64 = 0;
             return VLC_SUCCESS;
 
@@ -243,21 +243,22 @@ static int DStreamControl( stream_t *s, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case STREAM_GET_POSITION:
-            p_i64 = (int64_t*) va_arg( args, int64_t * );
+            p_i64 = va_arg( args, uint64_t * );
             *p_i64 = p_sys->i_pos;
             return VLC_SUCCESS;
 
         case STREAM_SET_POSITION:
         {
-            int64_t i64 = (int64_t)va_arg( args, int64_t );
-            int i_skip;
-            if( i64 < p_sys->i_pos ) return VLC_EGENERIC;
-            i_skip = i64 - p_sys->i_pos;
+            uint64_t i64 = va_arg( args, uint64_t );
+            if( i64 < p_sys->i_pos )
+                return VLC_EGENERIC;
 
+            uint64_t i_skip = i64 - p_sys->i_pos;
             while( i_skip > 0 )
             {
-                int i_read = DStreamRead( s, NULL, (long)i_skip );
-                if( i_read <= 0 ) return VLC_EGENERIC;
+                int i_read = DStreamRead( s, NULL, __MIN(i_skip, INT_MAX) );
+                if( i_read <= 0 )
+                    return VLC_EGENERIC;
                 i_skip -= i_read;
             }
             return VLC_SUCCESS;
@@ -282,7 +283,7 @@ static void* DStreamThread( vlc_object_t* p_this )
     int canc = vlc_savecancel();
 
     /* Create the demuxer */
-    if( !(p_demux = demux_New( s, "", p_sys->psz_name, "", s, p_sys->out,
+    if( !(p_demux = demux_New( s, s->p_input, "", p_sys->psz_name, "", s, p_sys->out,
                                false )) )
     {
         return NULL;

@@ -2,7 +2,7 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: 8b0e02ece326754b86991c75306cf4f11c192ec7 $
+ * $Id: 98d21f8fbc4108e74f66e0642068f27c3c76ee8c $
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *
@@ -54,11 +54,11 @@
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_common.h"
-#include "vlc_image.h"
-#include "vlc_osd.h"
-#include "vlc_keys.h"
+#include <vlc_image.h>
+#include <vlc_osd.h>
+#include <vlc_keys.h>
 
 #include <vlc_network.h>
 #include <gcrypt.h>              /* to encrypt password */
@@ -133,11 +133,11 @@ vlc_module_begin ()
     add_integer_with_range( RMTOSD_CFG "update", RMTOSD_UPDATE_DEFAULT,
         RMTOSD_UPDATE_MIN, RMTOSD_UPDATE_MAX, NULL, RMTOSD_UPDATE_TEXT,
         RMTOSD_UPDATE_LONGTEXT, true )
-    add_bool( RMTOSD_CFG "vnc-polling", 0, NULL,
+    add_bool( RMTOSD_CFG "vnc-polling", false, NULL,
               RMTOSD_POLL_TEXT , RMTOSD_POLL_LONGTEXT, false )
-    add_bool( RMTOSD_CFG "mouse-events", 0, NULL,
+    add_bool( RMTOSD_CFG "mouse-events", false, NULL,
               RMTOSD_MOUSE_TEXT , RMTOSD_MOUSE_LONGTEXT, false )
-    add_bool( RMTOSD_CFG "key-events", 0, NULL,
+    add_bool( RMTOSD_CFG "key-events", false, NULL,
               RMTOSD_KEYS_TEXT , RMTOSD_KEYS_LONGTEXT, false )
     add_integer_with_range( RMTOSD_CFG "alpha", 255, 0, 255, NULL,
         RMTOSD_ALPHA_TEXT, RMTOSD_ALPHA_LONGTEXT, true )
@@ -202,8 +202,6 @@ static void vnc_encrypt_bytes( unsigned char *bytes, char *passwd );
  *****************************************************************************/
 struct filter_sys_t
 {
-    VLC_COMMON_MEMBERS
-
     bool          b_need_update;       /* VNC picture is updated, do update the OSD*/
     mtime_t       i_vnc_poll_interval; /* Update the OSD menu every n ms */
 
@@ -253,10 +251,9 @@ static int CreateFilter ( vlc_object_t *p_this )
 
     msg_Dbg( p_filter, "Creating vnc osd filter..." );
 
-    p_filter->p_sys = p_sys = malloc( sizeof(*p_sys) );
+    p_filter->p_sys = p_sys = calloc( 1, sizeof(*p_sys) );
     if( !p_filter->p_sys )
         return VLC_ENOMEM;
-    memset( p_sys, 0, sizeof(*p_sys) );
 
     /* Populating struct */
     vlc_mutex_init( &p_sys->lock );
@@ -323,7 +320,7 @@ static int CreateFilter ( vlc_object_t *p_this )
                          KeyEvent, p_this );
     }
 
-    es_format_Init( &p_filter->fmt_out, SPU_ES, VLC_FOURCC( 's','p','u',' ' ) );
+    es_format_Init( &p_filter->fmt_out, SPU_ES, VLC_CODEC_SPU );
     p_filter->fmt_out.i_priority = 0;
 
     vlc_gcrypt_init();
@@ -335,7 +332,6 @@ static int CreateFilter ( vlc_object_t *p_this )
     if( vlc_thread_create( p_sys->p_worker_thread, "vnc worker thread",
                            vnc_worker_thread, VLC_THREAD_PRIORITY_LOW ) )
     {
-        vlc_object_detach( p_sys->p_worker_thread );
         vlc_object_release( p_sys->p_worker_thread );
         msg_Err( p_filter, "cannot spawn vnc message reader thread" );
         goto error;
@@ -410,7 +406,6 @@ static void stop_osdvnc ( filter_t *p_filter )
         msg_Dbg( p_filter, "joining worker_thread" );
         vlc_object_kill( p_sys->p_worker_thread );
         vlc_thread_join( p_sys->p_worker_thread );
-        vlc_object_detach( p_sys->p_worker_thread );
         vlc_object_release( p_sys->p_worker_thread );
         msg_Dbg( p_filter, "released worker_thread" );
     }
@@ -697,8 +692,8 @@ static void* vnc_worker_thread( vlc_object_t *p_thread_obj )
 
     /* Create an empty picture for VNC the data */
     vlc_mutex_lock( &p_sys->lock );
-    p_sys->p_pic = picture_New( VLC_FOURCC('Y','U','V','A'),
-                                p_sys->i_vnc_width, p_sys->i_vnc_height, VOUT_ASPECT_FACTOR );
+    p_sys->p_pic = picture_New( VLC_CODEC_YUVA,
+                                p_sys->i_vnc_width, p_sys->i_vnc_height, 1, 1 );
     if( !p_sys->p_pic )
     {
         vlc_mutex_unlock( &p_sys->lock );
@@ -716,7 +711,6 @@ static void* vnc_worker_thread( vlc_object_t *p_thread_obj )
                            "vnc update request thread",
                            update_request_thread, VLC_THREAD_PRIORITY_LOW ) )
     {
-        vlc_object_detach( p_update_request_thread );
         vlc_object_release( p_update_request_thread );
         msg_Err( p_filter, "cannot spawn vnc update request thread" );
         goto exit;
@@ -777,7 +771,6 @@ static void* vnc_worker_thread( vlc_object_t *p_thread_obj )
     msg_Dbg( p_filter, "joining update_request_thread" );
     vlc_object_kill( p_update_request_thread );
     vlc_thread_join( p_update_request_thread );
-    vlc_object_detach( p_update_request_thread );
     vlc_object_release( p_update_request_thread );
     msg_Dbg( p_filter, "released update_request_thread" );
 
@@ -1154,8 +1147,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
 
     /* Create new SPU region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('Y','U','V','A');
-    fmt.i_aspect = VOUT_ASPECT_FACTOR;
+    fmt.i_chroma = VLC_CODEC_YUVA;
     fmt.i_sar_num = fmt.i_sar_den = 1;
     fmt.i_width = fmt.i_visible_width = p_pic->p[Y_PLANE].i_visible_pitch;
     fmt.i_height = fmt.i_visible_height = p_pic->p[Y_PLANE].i_visible_lines;
@@ -1343,10 +1335,8 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
     int i_x, i_y;
     int i_v;
 
-
     i_v = var_GetInteger( p_sys->p_vout, "mouse-button-down" );
-    i_y = var_GetInteger( p_sys->p_vout, "mouse-y" );
-    i_x = var_GetInteger( p_sys->p_vout, "mouse-x" );
+    var_GetCoords( p_sys->p_vout, "mouse-moved", &i_x, &i_y );
 
     vlc_mutex_lock( &p_sys->lock );
 

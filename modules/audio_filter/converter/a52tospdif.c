@@ -2,7 +2,7 @@
  * a52tospdif.c : encapsulates A/52 frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: f43855135934775fb62bfe36ae13ba7a1e202755 $
+ * $Id: 8ee261cebb28fe4ade9fb2bd9386a590c87c897f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>
@@ -33,18 +33,14 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
-
 #include <vlc_aout.h>
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 static int  Create    ( vlc_object_t * );
-static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
-                        aout_buffer_t * );
+static block_t *DoWork( filter_t *, block_t * );
 
 /*****************************************************************************
  * Module descriptor
@@ -62,40 +58,41 @@ vlc_module_end ()
  *****************************************************************************/
 static int Create( vlc_object_t *p_this )
 {
-    aout_filter_t * p_filter = (aout_filter_t *)p_this;
+    filter_t * p_filter = (filter_t *)p_this;
 
-    if ( p_filter->input.i_format != VLC_FOURCC('a','5','2',' ') ||
-         ( p_filter->output.i_format != VLC_FOURCC('s','p','d','b') &&
-           p_filter->output.i_format != VLC_FOURCC('s','p','d','i') ) )
+    if ( p_filter->fmt_in.audio.i_format != VLC_CODEC_A52 ||
+         ( p_filter->fmt_out.audio.i_format != VLC_CODEC_SPDIFB &&
+           p_filter->fmt_out.audio.i_format != VLC_CODEC_SPDIFL ) )
     {
-        return -1;
+        return VLC_EGENERIC;
     }
 
-    p_filter->pf_do_work = DoWork;
-    p_filter->b_in_place = 0;
+    p_filter->pf_audio_filter = DoWork;
 
-    return 0;
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
  * DoWork: convert a buffer
  *****************************************************************************/
-static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
-                    aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
+static block_t *DoWork( filter_t * p_filter, block_t *p_in_buf )
 {
-    VLC_UNUSED(p_aout);
     /* AC3 is natively big endian. Most SPDIF devices have the native
      * endianness of the computer system.
      * On Mac OS X however, little endian devices are also common.
      */
     static const uint8_t p_sync_le[6] = { 0x72, 0xF8, 0x1F, 0x4E, 0x01, 0x00 };
     static const uint8_t p_sync_be[6] = { 0xF8, 0x72, 0x4E, 0x1F, 0x00, 0x01 };
-    uint16_t i_frame_size = p_in_buf->i_nb_bytes / 2;
+    uint16_t i_frame_size = p_in_buf->i_buffer / 2;
     uint8_t * p_in = p_in_buf->p_buffer;
+
+    block_t *p_out_buf = filter_NewAudioBuffer( p_filter, AOUT_SPDIF_SIZE );
+    if( !p_out_buf )
+        goto out;
     uint8_t * p_out = p_out_buf->p_buffer;
 
     /* Copy the S/PDIF headers. */
-    if( p_filter->output.i_format == VLC_FOURCC('s','p','d','b') )
+    if( p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFB )
     {
         vlc_memcpy( p_out, p_sync_be, 6 );
         p_out[4] = p_in[5] & 0x7; /* bsmod */
@@ -114,7 +111,12 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
     vlc_memset( p_out + 8 + i_frame_size * 2, 0,
                 AOUT_SPDIF_SIZE - i_frame_size * 2 - 8 );
 
+    p_out_buf->i_dts = p_in_buf->i_dts;
+    p_out_buf->i_pts = p_in_buf->i_pts;
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
-    p_out_buf->i_nb_bytes = AOUT_SPDIF_SIZE;
+    p_out_buf->i_buffer = AOUT_SPDIF_SIZE;
+out:
+    block_Release( p_in_buf );
+    return p_out_buf;
 }
 

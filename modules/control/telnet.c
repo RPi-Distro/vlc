@@ -2,7 +2,7 @@
  * telnet.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 9fbc52461d8011d29616dccd520d39b88f7b4e97 $
+ * $Id: 442c580877122ac1eab6e0c209be53ef83404ce0 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -36,14 +36,8 @@
 #include <vlc_input.h>
 
 #include <stdbool.h>
-#include <sys/stat.h>
 
 #include <errno.h>
-#include <fcntl.h>
-
-#ifdef HAVE_SYS_TIME_H
-#    include <sys/time.h>
-#endif
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
@@ -93,7 +87,7 @@ vlc_module_begin ()
     set_shortname( "Telnet" )
     set_category( CAT_INTERFACE )
     set_subcategory( SUBCAT_INTERFACE_CONTROL )
-    add_string( "telnet-host", "", NULL, TELNETHOST_TEXT,
+    add_string( "telnet-host", "localhost", NULL, TELNETHOST_TEXT,
                  TELNETHOST_LONGTEXT, true )
     add_integer( "telnet-port", TELNETPORT_DEFAULT, NULL, TELNETPORT_TEXT,
                  TELNETPORT_LONGTEXT, true )
@@ -171,9 +165,8 @@ static int Open( vlc_object_t *p_this )
 
     msg_Info( p_intf, "using the VLM interface plugin..." );
 
-    i_telnetport = config_GetInt( p_intf, "telnet-port" );
-    psz_address  = config_GetPsz( p_intf, "telnet-host" );
-
+    i_telnetport = var_InheritInteger( p_intf, "telnet-port" );
+    psz_address  = var_InheritString( p_intf, "telnet-host" );
     vlc_UrlParse(&url, psz_address, 0);
     free( psz_address );
 
@@ -247,7 +240,7 @@ static void Run( intf_thread_t *p_intf )
         nlisten++; /* How many listening sockets do we have? */
 
     /* FIXME: make sure config_* is cancel-safe */
-    psz_password = config_GetPsz( p_intf, "telnet-password" );
+    psz_password = var_InheritString( p_intf, "telnet-password" );
     vlc_cleanup_push( free, psz_password );
 
     for( ;; )
@@ -280,8 +273,12 @@ static void Run( intf_thread_t *p_intf )
                 if (net_errno != EINTR)
                 {
                     msg_Err (p_intf, "network poll error");
-                    msleep (1000);
-                    continue;
+#ifndef WIN32
+                    pause ();  /* We are screwed! */
+#else
+                    abort (); /* We are even more screwed! (no pause() in win32) */
+#endif
+                    break;
                 }
             case 0:
                 continue;
@@ -568,7 +565,7 @@ static char *MessageToString( vlm_message_t *message, int i_level )
     }
 
     i_message += strlen( message->psz_name ) + i_level * sizeof( "    " ) + 1;
-    psz_message = malloc( i_message );
+    psz_message = xmalloc( i_message );
     *psz_message = 0;
     for( i = 0; i < i_level; i++ ) strcat( psz_message, "    " );
     strcat( psz_message, message->psz_name );
@@ -577,7 +574,7 @@ static char *MessageToString( vlm_message_t *message, int i_level )
     {
         i_message += sizeof( " : " ) + strlen( message->psz_value ) +
             sizeof( STRING_CR );
-        psz_message = realloc( psz_message, i_message );
+        psz_message = xrealloc( psz_message, i_message );
         strcat( psz_message, " : " );
         strcat( psz_message, message->psz_value );
         strcat( psz_message, STRING_CR );
@@ -585,7 +582,7 @@ static char *MessageToString( vlm_message_t *message, int i_level )
     else
     {
         i_message += sizeof( STRING_CR );
-        psz_message = realloc( psz_message, i_message );
+        psz_message = xrealloc( psz_message, i_message );
         strcat( psz_message, STRING_CR );
     }
 
@@ -595,7 +592,7 @@ static char *MessageToString( vlm_message_t *message, int i_level )
             MessageToString( message->child[i], i_level + 1 );
 
         i_message += strlen( child_message );
-        psz_message = realloc( psz_message, i_message );
+        psz_message = xrealloc( psz_message, i_message );
         strcat( psz_message, child_message );
         free( child_message );
     }

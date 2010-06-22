@@ -2,7 +2,7 @@
  * open.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 618b5e16d7db9d725dbaff155c04f3b87fb27218 $
+ * $Id: 025c94f2649c128bd073fe6d54d18d9eeca25087 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -420,7 +420,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
             }
         }
         if( [o_file_slave_ckbox state] && o_file_slave_path )
-            [o_options addObject: [NSString stringWithFormat: @"input-slave=%@", o_file_slave_path]];
+           [o_options addObject: [NSString stringWithFormat: @"input-slave=%@", o_file_slave_path]];
         if( [[[o_tabview selectedTabViewItem] label] isEqualToString: _NS("Capture")] )
         {
             if( [[[o_capture_mode_pop selectedItem] title] isEqualToString: _NS("Screen")] )
@@ -509,12 +509,12 @@ static VLCOpen *_o_sharedMainInstance = nil;
         [o_open_panel setCanChooseFiles: YES];
         [o_open_panel setCanChooseDirectories: NO];
         if( [o_open_panel runModalForDirectory: nil file: nil types: nil] == NSOKButton )
-            {
-                if( o_file_slave_path )
-                        [o_file_slave_path release];
-                o_file_slave_path = [[o_open_panel filenames] objectAtIndex: 0];
-                [o_file_slave_path retain];
-            }
+        {
+            if( o_file_slave_path )
+                [o_file_slave_path release];
+            o_file_slave_path = [[o_open_panel filenames] objectAtIndex: 0];
+            [o_file_slave_path retain];
+        }
         else
             [o_file_slave_filename_txt setStringValue: @""];
     }
@@ -880,13 +880,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
     }
     else
     {
-        NSString *o_url = [o_net_http_url stringValue];
-
-        if ( ![o_url hasPrefix:@"http:"] && ![o_url hasPrefix:@"ftp:"]
-              && ![o_url hasPrefix:@"mms"] && ![o_url hasPrefix:@"rtsp"] && ![o_url hasPrefix:@"rtmp"] )
-            o_mrl_string = [NSString stringWithFormat: @"http://%@", o_url];
-        else
-            o_mrl_string = o_url;
+        o_mrl_string = [o_net_http_url stringValue];
     }
     [o_mrl setStringValue: o_mrl_string];
 }
@@ -969,7 +963,14 @@ static VLCOpen *_o_sharedMainInstance = nil;
         for( i = 0; i < (int)[o_values count]; i++)
         {
             NSDictionary *o_dic;
-            o_dic = [NSDictionary dictionaryWithObject:[o_values objectAtIndex:i] forKey:@"ITEM_URL"];
+            char *psz_uri = make_URI([[o_values objectAtIndex:i] UTF8String]);
+            if( !psz_uri )
+                continue;
+
+            o_dic = [NSDictionary dictionaryWithObject:[NSString stringWithCString:psz_uri encoding:NSUTF8StringEncoding] forKey:@"ITEM_URL"];
+
+            free( psz_uri );
+
             o_array = [o_array arrayByAddingObject: o_dic];
         }
         if( b_autoplay )

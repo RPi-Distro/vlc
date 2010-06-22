@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: fe99b42e794eec0ccd8ecfdc51ad43b9959f97e2 $
+ * $Id: b113d22fcde4bea0370643a223e6eab478564d4d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -103,5 +103,12 @@ bool input_DecoderHasFormatChanged( decoder_t *p_dec, es_format_t *p_fmt, vlc_me
  * This function returns the current size in bytes of the decoder fifo
  */
 size_t input_DecoderGetFifoSize( decoder_t *p_dec );
+
+/**
+ * This function returns the objects associated to a decoder
+ *
+ * They must be released using vlc_object_release().
+ */
+void input_DecoderGetObjects( decoder_t *, vout_thread_t **, aout_instance_t ** );
 
 #endif

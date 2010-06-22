@@ -2,7 +2,7 @@
  * block.c: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 099c31e226f403a3fe1dd552c37a44d56427b696 $
+ * Copyright (C) 2007-2009 Rémi Denis-Courmont
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -30,6 +30,8 @@
 
 #include <vlc_common.h>
 #include <sys/stat.h>
+#include <assert.h>
+#include <errno.h>
 #include "vlc_block.h"
 
 /**
@@ -63,6 +65,7 @@ void block_Init( block_t *restrict b, void *buf, size_t size )
     b->i_dts = VLC_TS_INVALID;
     b->i_length = 0;
     b->i_rate = 0;
+    b->i_nb_samples = 0;
     b->p_buffer = buf;
     b->i_buffer = size;
 #ifndef NDEBUG
@@ -75,10 +78,21 @@ static void BlockRelease( block_t *p_block )
     free( p_block );
 }
 
-/* Memory alignment */
+static void BlockMetaCopy( block_t *restrict out, const block_t *in )
+{
+    out->p_next    = in->p_next;
+    out->i_dts     = in->i_dts;
+    out->i_pts     = in->i_pts;
+    out->i_flags   = in->i_flags;
+    out->i_length  = in->i_length;
+    out->i_rate    = in->i_rate;
+    out->i_nb_samples = in->i_nb_samples;
+}
+
+/* Memory alignment (must be a multiple of sizeof(void*) and a power of two) */
 #define BLOCK_ALIGN        16
-/* Initial size of reserved header and footer */
-#define BLOCK_PADDING_SIZE 32
+/* Initial reserved header and footer size (must be multiple of alignment) */
+#define BLOCK_PADDING      32
 /* Maximum size of reserved footer before we release with realloc() */
 #define BLOCK_WASTE_SIZE   2048
 
@@ -86,24 +100,41 @@ block_t *block_Alloc( size_t i_size )
 {
     /* We do only one malloc
      * TODO: bench if doing 2 malloc but keeping a pool of buffer is better
-     * TODO: use memalign
-     * 16 -> align on 16
-     * 2 * BLOCK_PADDING_SIZE -> pre + post padding
+     * 2 * BLOCK_PADDING -> pre + post padding
      */
-    const size_t i_alloc = i_size + 2 * BLOCK_PADDING_SIZE + BLOCK_ALIGN;
-    block_sys_t *p_sys = malloc( sizeof( *p_sys ) + i_alloc );
+    block_sys_t *p_sys;
+    uint8_t *buf;
 
+#define ALIGN(x) (((x) + BLOCK_ALIGN - 1) & ~(BLOCK_ALIGN - 1))
+#if 0 /*def HAVE_POSIX_MEMALIGN */
+    /* posix_memalign(,16,) is much slower than malloc() on glibc.
+     * -- Courmisch, September 2009, glibc 2.5 & 2.9 */
+    const size_t i_alloc = ALIGN(sizeof(*p_sys)) + (2 * BLOCK_PADDING)
+                         + ALIGN(i_size);
+    void *ptr;
+
+    if( posix_memalign( &ptr, BLOCK_ALIGN, i_alloc ) )
+        return NULL;
+
+    p_sys = ptr;
+    buf = p_sys->p_allocated_buffer + (-sizeof(*p_sys) & (BLOCK_ALIGN - 1));
+
+#else
+    const size_t i_alloc = sizeof(*p_sys) + BLOCK_ALIGN + (2 * BLOCK_PADDING)
+                         + ALIGN(i_size);
+    p_sys = malloc( i_alloc );
     if( p_sys == NULL )
         return NULL;
 
-    /* Fill opaque data */
-    p_sys->i_allocated_buffer = i_alloc;
+    buf = (void *)ALIGN((uintptr_t)p_sys->p_allocated_buffer);
 
-    block_Init( &p_sys->self, p_sys->p_allocated_buffer + BLOCK_PADDING_SIZE
-                + BLOCK_ALIGN
-                - ((uintptr_t)p_sys->p_allocated_buffer % BLOCK_ALIGN),
-                i_size );
+#endif
+    buf += BLOCK_PADDING;
+
+    block_Init( &p_sys->self, buf, i_size );
     p_sys->self.pf_release    = BlockRelease;
+    /* Fill opaque data */
+    p_sys->i_allocated_buffer = i_alloc - sizeof(*p_sys);
 
     return &p_sys->self;
 }
@@ -111,9 +142,10 @@ block_t *block_Alloc( size_t i_size )
 block_t *block_Realloc( block_t *p_block, ssize_t i_prebody, size_t i_body )
 {
     block_sys_t *p_sys = (block_sys_t *)p_block;
-    ssize_t i_buffer_size = i_prebody + i_body;
+    size_t requested = i_prebody + i_body;
 
-    if( i_buffer_size <= 0 )
+    /* Corner case: empty block requested */
+    if( i_prebody <= 0 && i_body <= (size_t)(-i_prebody) )
     {
         block_Release( p_block );
         return NULL;
@@ -132,66 +164,147 @@ block_t *block_Realloc( block_t *p_block, ssize_t i_prebody, size_t i_body )
         p_sys = (block_sys_t *)p_block;
     }
 
-    /* Adjust reserved header if there is enough room */
-    if( p_block->p_buffer - i_prebody > p_sys->p_allocated_buffer &&
-        p_block->p_buffer - i_prebody < p_sys->p_allocated_buffer +
-        p_sys->i_allocated_buffer )
+    uint8_t *p_start = p_sys->p_allocated_buffer;
+    uint8_t *p_end = p_sys->p_allocated_buffer + p_sys->i_allocated_buffer;
+
+    assert( p_block->p_buffer + p_block->i_buffer <= p_end );
+    assert( p_block->p_buffer >= p_start );
+
+    /* Corner case: the current payload is discarded completely */
+    if( i_prebody <= 0 && p_block->i_buffer <= (size_t)-i_prebody )
+         p_block->i_buffer = 0; /* discard current payload */
+    if( p_block->i_buffer == 0 )
     {
-        p_block->p_buffer -= i_prebody;
-        p_block->i_buffer += i_prebody;
-        i_prebody = 0;
-    }
+        size_t available = p_end - p_start;
 
-    /* Adjust payload size if there is enough room */
-    if( p_block->p_buffer + i_body < p_sys->p_allocated_buffer +
-        p_sys->i_allocated_buffer )
-    {
-        p_block->i_buffer = i_buffer_size;
-        i_body = 0;
-    }
+        if( requested <= available )
+        {   /* Enough room: recycle buffer */
+            size_t extra = available - requested;
 
-    /* Not enough room, reallocate the buffer */
-    if( i_body > 0 || i_prebody > 0 )
-    {
-        /* FIXME: this is really dumb, we should use realloc() */
-        block_t *p_rea = block_New( NULL, i_buffer_size );
-
-        if( p_rea )
-        {
-            p_rea->i_dts     = p_block->i_dts;
-            p_rea->i_pts     = p_block->i_pts;
-            p_rea->i_flags   = p_block->i_flags;
-            p_rea->i_length  = p_block->i_length;
-            p_rea->i_rate    = p_block->i_rate;
-            p_rea->i_samples = p_block->i_samples;
-
-            memcpy( p_rea->p_buffer + i_prebody, p_block->p_buffer,
-                    __MIN( p_block->i_buffer, p_rea->i_buffer - i_prebody ) );
+            p_block->p_buffer = p_start + (extra / 2);
+            p_block->i_buffer = requested;
+            return p_block;
         }
-
+        /* Not enough room: allocate a new buffer */
+        block_t *p_rea = block_Alloc( requested );
+        if( p_rea )
+            BlockMetaCopy( p_rea, p_block );
         block_Release( p_block );
-
         return p_rea;
     }
 
-    /* We have a very large reserved footer now? Release some of it.
-     * XXX it may not keep the algniment of p_buffer */
-    if( (p_sys->p_allocated_buffer + p_sys->i_allocated_buffer) -
-        (p_block->p_buffer + p_block->i_buffer) > BLOCK_WASTE_SIZE )
-    {
-        const ptrdiff_t i_prebody = p_block->p_buffer - p_sys->p_allocated_buffer;
-        const size_t i_new = i_prebody + p_block->i_buffer + 1 * BLOCK_PADDING_SIZE;
-        block_sys_t *p_new = realloc( p_sys, sizeof (*p_sys) + i_new );
+    /* First, shrink payload */
 
-        if( p_new != NULL )
+    /* Pull payload start */
+    if( i_prebody < 0 )
+    {
+        assert( p_block->i_buffer >= (size_t)-i_prebody );
+        p_block->p_buffer -= i_prebody;
+        p_block->i_buffer += i_prebody;
+        i_body += i_prebody;
+        i_prebody = 0;
+    }
+
+    /* Trim payload end */
+    if( p_block->i_buffer > i_body )
+        p_block->i_buffer = i_body;
+
+    /* Second, reallocate the buffer if we lack space. This is done now to
+     * minimize the payload size for memory copy. */
+    assert( i_prebody >= 0 );
+    if( (size_t)(p_block->p_buffer - p_start) < (size_t)i_prebody
+     || (size_t)(p_end - p_block->p_buffer) < i_body )
+    {
+        block_t *p_rea = block_Alloc( requested );
+        if( p_rea )
         {
-            p_sys = p_new;
-            p_sys->i_allocated_buffer = i_new;
-            p_block = &p_sys->self;
-            p_block->p_buffer = &p_sys->p_allocated_buffer[i_prebody];
+            BlockMetaCopy( p_rea, p_block );
+            p_rea->p_buffer += i_prebody;
+            p_rea->i_buffer -= i_prebody;
+            memcpy( p_rea->p_buffer, p_block->p_buffer, p_block->i_buffer );
+        }
+        block_Release( p_block );
+        if( p_rea == NULL )
+            return NULL;
+        p_block = p_rea;
+    }
+    else
+    /* We have a very large reserved footer now? Release some of it.
+     * XXX it might not preserve the alignment of p_buffer */
+    if( p_end - (p_block->p_buffer + i_body) > BLOCK_WASTE_SIZE )
+    {
+        block_t *p_rea = block_Alloc( requested );
+        if( p_rea )
+        {
+            BlockMetaCopy( p_rea, p_block );
+            p_rea->p_buffer += i_prebody;
+            p_rea->i_buffer -= i_prebody;
+            memcpy( p_rea->p_buffer, p_block->p_buffer, p_block->i_buffer );
+            block_Release( p_block );
+            p_block = p_rea;
         }
     }
+
+    /* NOTE: p_start and p_end are corrupted from this point */
+
+    /* Third, expand payload */
+
+    /* Push payload start */
+    if( i_prebody > 0 )
+    {
+        p_block->p_buffer -= i_prebody;
+        p_block->i_buffer += i_prebody;
+        i_body += i_prebody;
+        i_prebody = 0;
+    }
+
+    /* Expand payload to requested size */
+    p_block->i_buffer = i_body;
+
     return p_block;
+}
+
+
+typedef struct
+{
+    block_t  self;
+    void    *mem;
+} block_heap_t;
+
+static void block_heap_Release (block_t *self)
+{
+    block_heap_t *block = (block_heap_t *)self;
+
+    free (block->mem);
+    free (block);
+}
+
+/**
+ * Creates a block from a heap allocation.
+ * This is provided by LibVLC so that manually heap-allocated blocks can safely
+ * be deallocated even after the origin plugin has been unloaded from memory.
+ *
+ * When block_Release() is called, VLC will free() the specified pointer.
+ *
+ * @param ptr base address of the heap allocation (will be free()'d)
+ * @param addr base address of the useful buffer data
+ * @param length bytes length of the useful buffer datan
+ * @return NULL in case of error (ptr free()'d in that case), or a valid
+ * block_t pointer.
+ */
+block_t *block_heap_Alloc (void *ptr, void *addr, size_t length)
+{
+    block_heap_t *block = malloc (sizeof (*block));
+    if (block == NULL)
+    {
+        free (addr);
+        return NULL;
+    }
+
+    block_Init (&block->self, (uint8_t *)addr, length);
+    block->self.pf_release = block_heap_Release;
+    block->mem = ptr;
+    return &block->self;
 }
 
 #ifdef HAVE_MMAP
@@ -260,7 +373,7 @@ ssize_t pread (int fd, void *buf, size_t count, off_t offset)
     if (handle == INVALID_HANDLE_VALUE)
         return -1;
 
-    OVERLAPPED olap = { .Offset = offset, .OffsetHigh = (offset >> 32), };
+    OVERLAPPED olap; olap.Offset = offset; olap.OffsetHigh = (offset >> 32);
     DWORD written;
     /* This braindead API will override the file pointer even if we specify
      * an explicit read offset... So do not expect this to mix well with
@@ -395,23 +508,27 @@ void block_FifoRelease( block_fifo_t *p_fifo )
 
 void block_FifoEmpty( block_fifo_t *p_fifo )
 {
-    block_t *b;
+    block_t *block;
 
     vlc_mutex_lock( &p_fifo->lock );
-    for( b = p_fifo->p_first; b != NULL; )
+    block = p_fifo->p_first;
+    if (block != NULL)
     {
-        block_t *p_next;
-
-        p_next = b->p_next;
-        block_Release( b );
-        b = p_next;
+        p_fifo->i_depth = p_fifo->i_size = 0;
+        p_fifo->p_first = NULL;
+        p_fifo->pp_last = &p_fifo->p_first;
     }
-
-    p_fifo->i_depth = p_fifo->i_size = 0;
-    p_fifo->p_first = NULL;
-    p_fifo->pp_last = &p_fifo->p_first;
     vlc_cond_broadcast( &p_fifo->wait_room );
     vlc_mutex_unlock( &p_fifo->lock );
+
+    while (block != NULL)
+    {
+        block_t *buf;
+
+        buf = block->p_next;
+        block_Release (block);
+        block = buf;
+    }
 }
 
 /**
@@ -449,25 +566,29 @@ void block_FifoPace (block_fifo_t *fifo, size_t max_depth, size_t max_size)
  * Immediately queue one block at the end of a FIFO.
  * @param fifo queue
  * @param block head of a block list to queue (may be NULL)
+ * @return total number of bytes appended to the queue
  */
 size_t block_FifoPut( block_fifo_t *p_fifo, block_t *p_block )
 {
-    size_t i_size = 0;
-    vlc_mutex_lock( &p_fifo->lock );
+    size_t i_size = 0, i_depth = 0;
+    block_t *p_last;
 
-    while (p_block != NULL)
+    if (p_block == NULL)
+        return 0;
+    for (p_last = p_block; ; p_last = p_last->p_next)
     {
-        i_size += p_block->i_buffer;
-
-        *p_fifo->pp_last = p_block;
-        p_fifo->pp_last = &p_block->p_next;
-        p_fifo->i_depth++;
-        p_fifo->i_size += p_block->i_buffer;
-
-        p_block = p_block->p_next;
+        i_size += p_last->i_buffer;
+        i_depth++;
+        if (!p_last->p_next)
+            break;
     }
 
-    /* We queued one block: wake up one read-waiting thread */
+    vlc_mutex_lock (&p_fifo->lock);
+    *p_fifo->pp_last = p_block;
+    p_fifo->pp_last = &p_last->p_next;
+    p_fifo->i_depth += i_depth;
+    p_fifo->i_size += i_size;
+    /* We queued at least one block: wake up one read-waiting thread */
     vlc_cond_signal( &p_fifo->wait );
     vlc_mutex_unlock( &p_fifo->lock );
 
@@ -483,6 +604,12 @@ void block_FifoWake( block_fifo_t *p_fifo )
     vlc_mutex_unlock( &p_fifo->lock );
 }
 
+/**
+ * Dequeue the first block from the FIFO. If necessary, wait until there is
+ * one block in the queue. This function is (always) cancellation point.
+ *
+ * @return a valid block, or NULL if block_FifoWake() was called.
+ */
 block_t *block_FifoGet( block_fifo_t *p_fifo )
 {
     block_t *b;
@@ -525,6 +652,17 @@ block_t *block_FifoGet( block_fifo_t *p_fifo )
     return b;
 }
 
+/**
+ * Peeks the first block in the FIFO.
+ * If necessary, wait until there is one block.
+ * This function is (always) a cancellation point.
+ *
+ * @warning This function leaves the block in the FIFO.
+ * You need to protect against concurrent threads who could dequeue the block.
+ * Preferrably, there should be only one thread reading from the FIFO.
+ *
+ * @return a valid block.
+ */
 block_t *block_FifoShow( block_fifo_t *p_fifo )
 {
     block_t *b;

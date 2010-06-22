@@ -173,12 +173,12 @@ def Repeat(widget):
 def Shuffle(widget):
     global shuffle
     shuffle = not shuffle
-    tracklist.Random(shuffle)
+    tracklist.SetRandom(shuffle)
 
 def Loop(widget):
     global loop
     loop = not loop
-    tracklist.Loop(loop)
+    tracklist.SetLoop(loop)
 
 # update status display
 def update(widget):
@@ -212,7 +212,7 @@ def update(widget):
     GetPlayStatus(0)
 
 # callback for volume change
-def volchange(widget, data):
+def volchange(widget):
     player.VolumeSet(vol.get_value_as_int(), reply_handler=(lambda *args: None), error_handler=(lambda *args: None))
 
 # callback for position change
@@ -336,8 +336,7 @@ bt_loop.connect('clicked',      Loop)
 bt_repeat.connect('clicked',    Repeat)
 bt_shuffle.connect('clicked',   Shuffle)
 exp.connect('activate',         expander)
-vol.connect('change-value',     volchange)
-vol.connect('scroll-event',     volchange)
+vol.connect('changed',          volchange)
 time_s.connect('adjust-bounds', timechange)
 audioicon.set_events(gtk.gdk.BUTTON_PRESS_MASK) # hack for the bottom right icon
 audioicon.connect('button_press_event', icon_clicked) 

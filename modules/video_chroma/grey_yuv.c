@@ -2,7 +2,7 @@
  * grey_yuv.c : grayscale to others conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2007, 2008 the VideoLAN team
- * $Id: 99e150c99fa7b1e37bf38d110d5be09789f8ebf6 $
+ * $Id: 84b39fd32431eedbf9cd8fa8632ae1cad51783e5 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -32,7 +32,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
-#include <vlc_vout.h>
 
 #define SRC_FOURCC  "GREY"
 #define DEST_FOURCC "I420,YUY2"
@@ -78,15 +77,13 @@ static int Activate( vlc_object_t *p_this )
 
     switch( p_filter->fmt_in.video.i_chroma )
     {
-        case VLC_FOURCC('Y','8','0','0'):
-            p_filter->fmt_in.video.i_chroma = VLC_FOURCC('G','R','E','Y');
-        case VLC_FOURCC('G','R','E','Y'):
+        case VLC_CODEC_GREY:
             switch( p_filter->fmt_out.video.i_chroma )
             {
-                case VLC_FOURCC('I','4','2','0'):
+                case VLC_CODEC_I420:
                     p_filter->pf_video_filter = GREY_I420_Filter;
                     break;
-                case VLC_FOURCC('Y','U','Y','2'):
+                case VLC_CODEC_YUYV:
                     p_filter->pf_video_filter = GREY_YUY2_Filter;
                     break;
                 default:

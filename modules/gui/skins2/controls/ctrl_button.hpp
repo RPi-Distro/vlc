@@ -2,7 +2,7 @@
  * ctrl_button.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5d11290ebda151af03d9828df049ec284897239a $
+ * $Id: 6e4581a8c983fbd47a8f0006a2e61df822f7ef8b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef CTRL_BUTTON_HPP
@@ -36,59 +36,67 @@ class CmdGeneric;
 /// Base class for button controls
 class CtrlButton: public CtrlGeneric, public Observer<AnimBitmap>
 {
-    public:
-        /// Create a button with 3 images
-        CtrlButton( intf_thread_t *pIntf, const GenericBitmap &rBmpUp,
-                    const GenericBitmap &rBmpOver,
-                    const GenericBitmap &rBmpDown,
-                    CmdGeneric &rCommand, const UString &rTooltip,
-                    const UString &rHelp, VarBool *pVisible );
+public:
+    /// Create a button with 3 images
+    CtrlButton( intf_thread_t *pIntf, const GenericBitmap &rBmpUp,
+                const GenericBitmap &rBmpOver, const GenericBitmap &rBmpDown,
+                CmdGeneric &rCommand, const UString &rTooltip,
+                const UString &rHelp, VarBool *pVisible );
 
-        virtual ~CtrlButton();
+    virtual ~CtrlButton();
 
-        /// Handle an event
-        virtual void handleEvent( EvtGeneric &rEvent );
+    /// Set the position and the associated layout of the control
+    virtual void setLayout( GenericLayout *pLayout,
+                            const Position &rPosition );
+    virtual void unsetLayout();
 
-        /// Check whether coordinates are inside the control
-        virtual bool mouseOver( int x, int y ) const;
+    /// Handle an event
+    virtual void handleEvent( EvtGeneric &rEvent );
 
-        /// Draw the control on the given graphics
-        virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    /// Check whether coordinates are inside the control
+    virtual bool mouseOver( int x, int y ) const;
 
-        /// Get the text of the tooltip
-        virtual UString getTooltipText() const { return m_tooltip; }
+    /// Draw the control on the given graphics
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
 
-        /// Get the type of control (custom RTTI)
-        virtual string getType() const { return "button"; }
+    /// Get the text of the tooltip
+    virtual UString getTooltipText() const { return m_tooltip; }
 
-    private:
-        /// Finite state machine of the control
-        FSM m_fsm;
-        /// Command triggered by the button
-        CmdGeneric &m_rCommand;
-        /// Tooltip text
-        const UString m_tooltip;
-        /// Images of the button in the different states
-        AnimBitmap m_imgUp, m_imgOver, m_imgDown;
-        /// Current image
-        AnimBitmap *m_pImg;
+    /// Get the type of control (custom RTTI)
+    virtual string getType() const { return "button"; }
 
-        /// Callback objects
-        DEFINE_CALLBACK( CtrlButton, UpOverDownOver )
-        DEFINE_CALLBACK( CtrlButton, DownOverUpOver )
-        DEFINE_CALLBACK( CtrlButton, DownOverDown )
-        DEFINE_CALLBACK( CtrlButton, DownDownOver )
-        DEFINE_CALLBACK( CtrlButton, UpOverUp )
-        DEFINE_CALLBACK( CtrlButton, UpUpOver )
-        DEFINE_CALLBACK( CtrlButton, DownUp )
-        DEFINE_CALLBACK( CtrlButton, UpHidden )
-        DEFINE_CALLBACK( CtrlButton, HiddenUp )
+private:
+    /// Finite state machine of the control
+    FSM m_fsm;
+    /// Command triggered by the button
+    CmdGeneric &m_rCommand;
+    /// Tooltip text
+    const UString m_tooltip;
+    /// Images of the button in the different states
+    AnimBitmap m_imgUp, m_imgOver, m_imgDown;
+    /// Current image
+    AnimBitmap *m_pImg;
 
-        /// Change the current image
-        void setImage( AnimBitmap *pImg );
+    /// Callback objects
+    DEFINE_CALLBACK( CtrlButton, UpOverDownOver )
+    DEFINE_CALLBACK( CtrlButton, DownOverUpOver )
+    DEFINE_CALLBACK( CtrlButton, DownOverDown )
+    DEFINE_CALLBACK( CtrlButton, DownDownOver )
+    DEFINE_CALLBACK( CtrlButton, UpOverUp )
+    DEFINE_CALLBACK( CtrlButton, UpUpOver )
+    DEFINE_CALLBACK( CtrlButton, DownUp )
+    DEFINE_CALLBACK( CtrlButton, UpHidden )
+    DEFINE_CALLBACK( CtrlButton, HiddenUp )
 
-        /// Method called when an animated bitmap changes
-        virtual void onUpdate( Subject<AnimBitmap> &rBitmap, void* );
+    /// Change the current image
+    void setImage( AnimBitmap *pImg );
+
+    /// Method called when an animated bitmap changes
+    virtual void onUpdate( Subject<AnimBitmap> &rBitmap, void* );
+
+    /// Method called when visibility or ActiveLayout is updated
+    virtual void onUpdate( Subject<VarBool> &rVariable , void* );
+
 };
 
 

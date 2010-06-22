@@ -2,7 +2,7 @@
  * normvol.c: volume normalizer
  *****************************************************************************
  * Copyright (C) 2001, 2006 the VideoLAN team
- * $Id: 2257b078fba3af03b0c6ae58dc9fbd62642123c7 $
+ * $Id: 6a9dc2700bb1c0023a563a834b6c0380d7b3ffa6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -36,16 +36,13 @@
 # include "config.h"
 #endif
 
-#include <errno.h>                                                 /* ENOMEM */
-#include <ctype.h>
-
 #include <math.h>
-
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
 #include <vlc_aout.h>
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -53,10 +50,9 @@
 
 static int  Open     ( vlc_object_t * );
 static void Close    ( vlc_object_t * );
-static void DoWork   ( aout_instance_t * , aout_filter_t *,
-                aout_buffer_t * , aout_buffer_t *);
+static block_t *DoWork( filter_t *, block_t * );
 
-struct aout_filter_sys_t
+struct filter_sys_t
 {
     int i_nb;
     float *p_last;
@@ -72,7 +68,7 @@ struct aout_filter_sys_t
                 "increase the response time of the filter to a spike " \
                 "but will make it less sensitive to short variations." )
 
-#define LEVEL_TEXT N_("Max level" )
+#define LEVEL_TEXT N_("Maximal volume level" )
 #define LEVEL_LONGTEXT N_("If the average power over the last N buffers " \
                "is higher than this value, the volume will be normalized. " \
                "This value is a positive floating point number. A value " \
@@ -97,39 +93,32 @@ vlc_module_end ()
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    aout_filter_t *p_filter = (aout_filter_t*)p_this;
-    bool b_fit = true;
-    int i_channels;
-    aout_filter_sys_t *p_sys;
+    filter_t *p_filter = (filter_t*)p_this;
+    unsigned i_channels;
+    filter_sys_t *p_sys;
 
-    if( p_filter->input.i_format != VLC_FOURCC('f','l','3','2' ) ||
-        p_filter->output.i_format != VLC_FOURCC('f','l','3','2') )
+    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 ||
+        p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
     {
-        b_fit = false;
-        p_filter->input.i_format = VLC_FOURCC('f','l','3','2');
-        p_filter->output.i_format = VLC_FOURCC('f','l','3','2');
+        p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+        p_filter->fmt_out.audio.i_format = VLC_CODEC_FL32;
         msg_Warn( p_filter, "bad input or output format" );
-    }
-
-    if ( !AOUT_FMTS_SIMILAR( &p_filter->input, &p_filter->output ) )
-    {
-        b_fit = false;
-        memcpy( &p_filter->output, &p_filter->input,
-                sizeof(audio_sample_format_t) );
-        msg_Warn( p_filter, "input and output formats are not similar" );
-    }
-
-    if ( ! b_fit )
-    {
         return VLC_EGENERIC;
     }
 
-    p_filter->pf_do_work = DoWork;
-    p_filter->b_in_place = true;
+    if ( !AOUT_FMTS_SIMILAR( &p_filter->fmt_in.audio, &p_filter->fmt_out.audio ) )
+    {
+        memcpy( &p_filter->fmt_out.audio, &p_filter->fmt_in.audio,
+                sizeof(audio_sample_format_t) );
+        msg_Warn( p_filter, "input and output formats are not similar" );
+        return VLC_EGENERIC;
+    }
 
-    i_channels = aout_FormatNbChannels( &p_filter->input );
+    p_filter->pf_audio_filter = DoWork;
 
-    p_sys = p_filter->p_sys = malloc( sizeof( aout_filter_sys_t ) );
+    i_channels = aout_FormatNbChannels( &p_filter->fmt_in.audio );
+
+    p_sys = p_filter->p_sys = malloc( sizeof( *p_sys ) );
     if( !p_sys )
         return VLC_ENOMEM;
     p_sys->i_nb = var_CreateGetInteger( p_filter->p_parent, "norm-buff-size" );
@@ -151,8 +140,7 @@ static int Open( vlc_object_t *p_this )
 /*****************************************************************************
  * DoWork : normalizes and sends a buffer
  *****************************************************************************/
- static void DoWork( aout_instance_t *p_aout, aout_filter_t *p_filter,
-                     aout_buffer_t *p_in_buf, aout_buffer_t *p_out_buf )
+static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )
 {
     float *pf_sum;
     float *pf_gain;
@@ -160,25 +148,22 @@ static int Open( vlc_object_t *p_this )
     int i, i_chan;
 
     int i_samples = p_in_buf->i_nb_samples;
-    int i_channels = aout_FormatNbChannels( &p_filter->input );
-    float *p_out = (float*)p_out_buf->p_buffer;
+    int i_channels = aout_FormatNbChannels( &p_filter->fmt_in.audio );
+    float *p_out = (float*)p_in_buf->p_buffer;
     float *p_in =  (float*)p_in_buf->p_buffer;
 
-    struct aout_filter_sys_t *p_sys = p_filter->p_sys;
+    struct filter_sys_t *p_sys = p_filter->p_sys;
 
     pf_sum = calloc( i_channels, sizeof(float) );
     if( !pf_sum )
-        return;
+        goto out;
 
     pf_gain = malloc( sizeof(float) * i_channels );
     if( !pf_gain )
     {
         free( pf_sum );
-        return;
+        goto out;
     }
-
-    p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
-    p_out_buf->i_nb_bytes = p_in_buf->i_nb_bytes;
 
     /* Calculate the average power level on this buffer */
     for( i = 0 ; i < i_samples; i++ )
@@ -215,7 +200,7 @@ static int Open( vlc_object_t *p_this )
         f_average = f_average / p_sys->i_nb;
 
         /* Seuil arbitraire */
-        p_sys->f_max = var_GetFloat( p_aout, "norm-max-level" );
+        p_sys->f_max = var_GetFloat( p_filter->p_parent, "norm-max-level" );
 
         //fprintf(stderr,"Average %f, max %f\n", f_average, p_sys->f_max );
         if( f_average > p_sys->f_max )
@@ -241,7 +226,10 @@ static int Open( vlc_object_t *p_this )
     free( pf_sum );
     free( pf_gain );
 
-    return;
+    return p_in_buf;
+out:
+    block_Release( p_in_buf );
+    return NULL;
 }
 
 /**********************************************************************
@@ -249,12 +237,9 @@ static int Open( vlc_object_t *p_this )
  **********************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    aout_filter_t *p_filter = (aout_filter_t*)p_this;
-    aout_filter_sys_t *p_sys = p_filter->p_sys;
+    filter_t *p_filter = (filter_t*)p_this;
+    filter_sys_t *p_sys = p_filter->p_sys;
 
-    if( p_sys )
-    {
-        free( p_sys->p_last );
-        free( p_sys );
-    }
+    free( p_sys->p_last );
+    free( p_sys );
 }

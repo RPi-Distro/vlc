@@ -2,7 +2,7 @@
  * cmd_snapshot.cpp
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: bc2b0208688c388d71344ae338f463c72ff807fa $
+ * $Id: 33107c5690f24548ce56354c75456bff63237221 $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "cmd_snapshot.hpp"
@@ -38,4 +38,21 @@ void CmdSnapshot::execute()
         vlc_object_release( pVout );
     }
 }
+
+
+void CmdToggleRecord::execute()
+{
+    input_thread_t* pInput = getIntf()->p_sys->p_input;
+    if( pInput )
+        var_ToggleBool( pInput, "record" );
+}
+
+
+void CmdNextFrame::execute()
+{
+    input_thread_t* pInput = getIntf()->p_sys->p_input;
+    if( pInput )
+        var_TriggerCallback( pInput, "frame-next" );
+}
+
 

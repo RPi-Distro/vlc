@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 42485d7eb6edcf2d5c68e2eb5159e9fc2a3f17fe $
+ * $Id: 0e8739b5eaa5dd790e4777caa16d2323a3ecf1b2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -32,9 +32,10 @@
 #include <vlc_common.h>
 #include <vlc_access.h>
 
-#define access_New( a, b, c, d ) __access_New(VLC_OBJECT(a), b, c, d )
-access_t * __access_New( vlc_object_t *p_obj, const char *psz_access,
-                          const char *psz_demux, const char *psz_path );
+#define access_New( a, b, c, d, e ) __access_New(VLC_OBJECT(a), b, c, d, e )
+access_t * __access_New( vlc_object_t *p_obj, input_thread_t *p_input,
+                         const char *psz_access, const char *psz_demux,
+                         const char *psz_path );
 void access_Delete( access_t * );
 
 #endif

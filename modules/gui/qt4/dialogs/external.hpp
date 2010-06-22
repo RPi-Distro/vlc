@@ -23,23 +23,7 @@
 
 #include <QObject>
 #include <vlc_common.h>
-
-class QVLCVariable : public QObject
-{
-    Q_OBJECT
-private:
-    static int callback (vlc_object_t *, const char *,
-                         vlc_value_t, vlc_value_t, void *);
-    vlc_object_t *object;
-    QString name;
-
-public:
-    QVLCVariable (vlc_object_t *, const char *, int);
-    virtual ~QVLCVariable (void);
-
-signals:
-    void pointerChanged (vlc_object_t *, void *);
-};
+#include "variables.hpp"
 
 struct intf_thread_t;
 class QProgressDialog;
@@ -58,10 +42,10 @@ private:
     intf_thread_t *intf;
     static int error (vlc_object_t *, const char *, vlc_value_t, vlc_value_t,
                       void *);
-    QVLCVariable critical;
-    QVLCVariable login;
-    QVLCVariable question;
-    QVLCVariable progressBar;
+    QVLCPointer critical;
+    QVLCPointer login;
+    QVLCPointer question;
+    QVLCPointer progressBar;
 signals:
     void progressBarDestroyed (QWidget *);
     void error (const QString&, const QString&);
@@ -84,8 +68,6 @@ class QVLCProgressDialog : public QProgressDialog
 public:
     QVLCProgressDialog (DialogHandler *parent,
                         struct dialog_progress_bar_t *);
-    virtual ~QVLCProgressDialog (void);
-
 private:
     DialogHandler *handler;
     bool cancelled;

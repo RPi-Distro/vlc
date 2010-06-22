@@ -36,12 +36,22 @@
 #include <windows.h>
 
 #if !defined(UNDER_CE)
-#   define  _WIN32_IE 0x500
+# ifndef _WIN32_IE
+#   define  _WIN32_IE 0x501
+# endif
 #   include <shlobj.h>
 #   include <tlhelp32.h>
 #   include <wininet.h>
-static void check_crashdump();
+# ifndef _WIN64
+static void check_crashdump(void);
 LONG WINAPI vlc_exception_filter(struct _EXCEPTION_POINTERS *lpExceptionInfo);
+# endif
+typedef enum _HEAP_INFORMATION_CLASS {
+        HeapCompatibilityInformation,
+        HeapEnableTerminationOnCorruption
+} HEAP_INFORMATION_CLASS;
+WINBASEAPI BOOL WINAPI HeapSetInformation(HANDLE,HEAP_INFORMATION_CLASS,PVOID,SIZE_T);
+#define HeapEnableTerminationOnCorruption (HEAP_INFORMATION_CLASS)1
 #endif
 
 #ifndef UNDER_CE
@@ -113,8 +123,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 #endif
                     int nCmdShow )
 {
-    int argc, ret;
+    int argc;
 #ifndef UNDER_CE
+    HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
     wchar_t **wargv = CommandLineToArgvW (GetCommandLine (), &argc);
     if (wargv == NULL)
         return 1;
@@ -122,7 +133,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     char *argv[argc + 1];
     BOOL crash_handling = TRUE;
     int j = 0;
-    for (int i = 0; i < argc; i++)
+
+    argv[j++] = FromWide( L"--no-ignore-config" );
+    for (int i = 1; i < argc; i++)
     {
         if(!wcscmp(wargv[i], L"--no-crashdump"))
         {
@@ -139,11 +152,13 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     argv[argc] = NULL;
     LocalFree (wargv);
 
+# ifndef _WIN64
     if(crash_handling)
     {
         check_crashdump();
         SetUnhandledExceptionFilter(vlc_exception_filter);
     }
+# endif /* WIN64 */
 
 #else
     char **argv, psz_cmdline[wcslen(lpCmdLine) * 4];
@@ -154,34 +169,26 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     argc = parse_cmdline (psz_cmdline, &argv);
 #endif
 
-    libvlc_exception_t ex, dummy;
-    libvlc_exception_init (&ex);
-    libvlc_exception_init (&dummy);
-
     /* Initialize libvlc */
     libvlc_instance_t *vlc;
-    vlc = libvlc_new (argc - 1, (const char **)argv + 1, &ex);
+    vlc = libvlc_new (argc, (const char **)argv);
     if (vlc != NULL)
     {
-        libvlc_add_intf (vlc, "globalhotkeys,none", &ex);
-        libvlc_add_intf (vlc, NULL, &ex);
-        libvlc_playlist_play (vlc, -1, 0, NULL, &dummy);
+        libvlc_add_intf (vlc, "globalhotkeys,none");
+        libvlc_add_intf (vlc, NULL);
+        libvlc_playlist_play (vlc, -1, 0, NULL);
         libvlc_wait (vlc);
         libvlc_release (vlc);
     }
-
-    ret = libvlc_exception_raised (&ex);
-    libvlc_exception_clear (&ex);
-    libvlc_exception_clear (&dummy);
 
     for (int i = 0; i < argc; i++)
         free (argv[i]);
 
     (void)hInstance; (void)hPrevInstance; (void)lpCmdLine; (void)nCmdShow;
-    return ret;
+    return 0;
 }
 
-#if !defined( UNDER_CE )
+#if !defined( UNDER_CE ) && !defined( _WIN64 )
 
 static void get_crashdump_path(wchar_t * wdir)
 {

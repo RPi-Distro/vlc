@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.m
  * AppleRemote
- * $Id: f758f6adb1a16c3fb50dcbd973a0e09aac3d9190 $
+ * $Id: 6f41baef9bd686a7aa2dff9ff3c5030edf18670c $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -66,7 +66,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 #pragma public interface
 
 - (id) init {
-    if ( self = [super init] ) {
+    if(( self = [super init])) {
         openInExclusiveMode = YES;
         queue = NULL;
         hidDeviceInterface = NULL;
@@ -104,14 +104,13 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]     forKey:@"37_33_21_20_2_37_33_21_20_2_"];
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]     forKey:@"19_"];
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonPlay]       forKey:@"33_21_20_8_2_33_21_20_8_2_"];
-            [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonMiddlePlay] forKey:@"33_21_20_3_2_33_21_20_3_2_"];
+            [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonFullscreen] forKey:@"33_21_20_3_2_33_21_20_3_2_"];
         }
-
-
-        /* defaults */
-        [self setSimulatesPlusMinusHold: YES];
-        maxClickTimeDifference = DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE;
     }
+
+    /* defaults */
+    [self setSimulatesPlusMinusHold: YES];
+    maxClickTimeDifference = DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE;
 
     return self;
 }
@@ -174,7 +173,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 }
 - (void) setClickCountingEnabled: (BOOL) value {
     if (value) {
-        [self setClickCountEnabledButtons: kRemoteButtonVolume_Plus | kRemoteButtonVolume_Minus | kRemoteButtonPlay | kRemoteButtonLeft | kRemoteButtonRight | kRemoteButtonMenu | k2009RemoteButtonPlay | k2009RemoteButtonMiddlePlay];
+        [self setClickCountEnabledButtons: kRemoteButtonVolume_Plus | kRemoteButtonVolume_Minus | kRemoteButtonPlay | kRemoteButtonLeft | kRemoteButtonRight | kRemoteButtonMenu | k2009RemoteButtonPlay | k2009RemoteButtonFullscreen];
     } else {
         [self setClickCountEnabledButtons: 0];
     }
@@ -350,7 +349,7 @@ static AppleRemote* sharedInstance=nil;
     if (cookieString == nil || [cookieString length] == 0) return nil;
     NSEnumerator* keyEnum = [[self cookieToButtonMapping] keyEnumerator];
     NSString* key;
-    while(key = [keyEnum nextObject]) {
+    while((key = [keyEnum nextObject])) {
         NSRange range = [cookieString rangeOfString:key];
         if (range.location == 0) return key;
     }
@@ -455,21 +454,13 @@ static AppleRemote* sharedInstance=nil;
     if (cookieString == nil || [cookieString length] == 0) return;
     NSNumber* buttonId = [[self cookieToButtonMapping] objectForKey: cookieString];
     if (buttonId != nil) {
-        switch ([buttonId intValue]) {
-            case k2009RemoteButtonPlay:
-            case k2009RemoteButtonMiddlePlay:
-                buttonId = [NSNumber numberWithInt:kRemoteButtonPlay];
-                break;
-            default:
-                break;
-		}
         [self sendRemoteButtonEvent: [buttonId intValue] pressedDown: (sumOfValues>0)];
     } else {
         // let's see if a number of events are stored in the cookie string. this does
         // happen when the main thread is too busy to handle all incoming events in time.
         NSString* subCookieString;
         NSString* lastSubCookieString=nil;
-        while(subCookieString = [self validCookieSubstring: cookieString]) {
+        while((subCookieString = [self validCookieSubstring: cookieString])) {
             cookieString = [cookieString substringFromIndex: [subCookieString length]];
             lastSubCookieString = subCookieString;
             if (processesBacklog) [self handleEventWithCookieString: subCookieString sumOfValues:sumOfValues];
@@ -607,7 +598,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
         memset(cookies, 0, sizeof(IOHIDElementCookie) * NUMBER_OF_APPLE_REMOTE_ACTIONS);
         */
         allCookies = [[NSMutableArray alloc] init];
-        int i;
+        unsigned int i;
         for (i=0; i< [elements count]; i++) {
             element = [elements objectAtIndex:i];
 
@@ -648,7 +639,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
         if (queue) {
             result = (*queue)->create(queue, 0, 12);    //depth: maximum number of elements in queue before oldest elements in queue begin to be lost.
 
-            int i=0;
+            unsigned int i=0;
             for(i=0; i<[allCookies count]; i++) {
                 IOHIDElementCookie cookie = (IOHIDElementCookie)[[allCookies objectAtIndex:i] intValue];
                 (*queue)->addElement(queue, cookie, 0);
@@ -681,9 +672,8 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 @implementation AppleRemoteApplicationDelegate
 
 - (id) initWithApplicationDelegate: (id) delegate {
-    if (self = [super init]) {
+    if((self = [super init]))
         applicationDelegate = [delegate retain];
-    }
     return self;
 }
 

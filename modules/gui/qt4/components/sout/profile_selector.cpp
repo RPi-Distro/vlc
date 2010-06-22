@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 064cd8db32080d18d7aa1655e3191c3bbf9eb799 $
+ * $Id: e279c6bf3dfb330be87826d1bfbe75158281427e $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -45,12 +45,12 @@ VLCProfileSelector::VLCProfileSelector( QWidget *_parent ): QWidget( _parent )
     layout->addWidget( profileBox );
 
     QToolButton *editButton = new QToolButton( this );
-    editButton->setIcon( QIcon( ":/preferences" ) );
+    editButton->setIcon( QIcon( ":/menu/preferences" ) );
     editButton->setToolTip( qtr( "Edit selected profile" ) );
     layout->addWidget( editButton );
 
     QToolButton *deleteButton = new QToolButton( this );
-    deleteButton->setIcon( QIcon( ":/clear" ) );
+    deleteButton->setIcon( QIcon( ":/toolbar/clear" ) );
     deleteButton->setToolTip( qtr( "Delete selected profile" ) );
     layout->addWidget( deleteButton );
 
@@ -91,7 +91,7 @@ inline void VLCProfileSelector::fillProfilesCombo()
     }
     if( i_size == 0 )
     {
-        for( int i = 0; i < NB_PROFILE; i++ )
+        for( size_t i = 0; i < NB_PROFILE; i++ )
         {
             profileBox->addItem( video_profile_name_list[i],
                                  video_profile_value_list[i] );
@@ -269,6 +269,7 @@ inline void VLCProfileEditor::registerCodecs()
     ADD_VCODEC( "DIVX 3" , "DIV3" )
     ADD_VCODEC( "H-263", "H263" )
     ADD_VCODEC( "H-264", "h264" )
+    ADD_VCODEC( "VP8", "VP80" )
     ADD_VCODEC( "WMV1", "WMV1" )
     ADD_VCODEC( "WMV2" , "WMV2" )
     ADD_VCODEC( "M-JPEG", "MJPG" )
@@ -300,8 +301,9 @@ inline void VLCProfileEditor::registerCodecs()
 #undef ADD_SCALING
 
 #define ADD_SAMPLERATE( sample ) ui.aSampleBox->addItem( sample );
-    ADD_SAMPLERATE( "11250" )
-    ADD_SAMPLERATE( "22500" )
+    ADD_SAMPLERATE( "8000" )
+    ADD_SAMPLERATE( "11025" )
+    ADD_SAMPLERATE( "22050" )
     ADD_SAMPLERATE( "44100" )
     ADD_SAMPLERATE( "48000" )
 #undef ADD_SAMPLERATE
@@ -322,6 +324,7 @@ void VLCProfileEditor::fillProfile( const QString& qs )
 #define CHECKMUX( button, text) if( text == mux ) ui.button->setChecked( true ); else
     CHECKMUX( PSMux, "ps" )
     CHECKMUX( TSMux, "ts" )
+    CHECKMUX( WEBMux, "webm" )
     CHECKMUX( MPEG1Mux, "mpeg1" )
     CHECKMUX( OggMux, "ogg" )
     CHECKMUX( ASFMux, "asf" )
@@ -411,6 +414,7 @@ QString VLCProfileEditor::transcodeValue()
 #define SMUX( x, txt ) if( ui.x->isChecked() ) muxValue =  txt; else
     SMUX( PSMux, "ps" )
     SMUX( TSMux, "ts" )
+    SMUX( WEBMux, "webm" )
     SMUX( MPEG1Mux, "mpeg1" )
     SMUX( OggMux, "ogg" )
     SMUX( ASFMux, "asf" )

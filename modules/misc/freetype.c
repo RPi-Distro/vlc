@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2007 the VideoLAN team
- * $Id: 99b7a80304afd53d0038e167aa0edc46dd46fc35 $
+ * $Id: cff07a6b10eb9042e926a57d3f539da05b5f6db8 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -39,19 +39,19 @@
 #include <vlc_xml.h>
 #include <vlc_input.h>
 #include <vlc_strings.h>
+#include <vlc_dialog.h>
+#include <vlc_memory.h>
 
 #include <math.h>
-#include <errno.h>
 
 #include <ft2build.h>
+#include <freetype/ftsynth.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #define FT_FLOOR(X)     ((X & -64) >> 6)
 #define FT_CEIL(X)      (((X + 63) & -64) >> 6)
-#define FT_MulFix(v, s) (((v)*(s))>>16)
-
-#ifdef __APPLE__
-#import <Carbon/Carbon.h>
+#ifndef FT_MulFix
+ #define FT_MulFix(v, s) (((v)*(s))>>16)
 #endif
 
 #ifdef __APPLE__
@@ -63,6 +63,9 @@
 #elif defined( WIN32 )
 #define DEFAULT_FONT "" /* Default font found at run-time */
 #define FC_DEFAULT_FONT "Arial"
+#elif defined( HAVE_MAEMO )
+#define DEFAULT_FONT "/usr/share/fonts/nokia/nosnb.ttf"
+#define FC_DEFAULT_FONT "Nokia Sans Bold"
 #else
 #define DEFAULT_FONT "/usr/share/fonts/truetype/freefont/FreeSerifBold.ttf"
 #define FC_DEFAULT_FONT "Serif Bold"
@@ -74,6 +77,8 @@
 
 #ifdef HAVE_FONTCONFIG
 #include <fontconfig/fontconfig.h>
+#undef DEFAULT_FONT
+#define DEFAULT_FONT FC_DEFAULT_FONT
 #endif
 
 #include <assert.h>
@@ -85,7 +90,13 @@ static int  Create ( vlc_object_t * );
 static void Destroy( vlc_object_t * );
 
 #define FONT_TEXT N_("Font")
-#define FONT_LONGTEXT N_("Filename for the font you want to use")
+
+#ifdef HAVE_FONTCONFIG
+#define FONT_LONGTEXT N_("Font family for the font you want to use")
+#else
+#define FONT_LONGTEXT N_("Fontfile for the font you want to use")
+#endif
+
 #define FONTSIZE_TEXT N_("Font size in pixels")
 #define FONTSIZE_LONGTEXT N_("This is the default size of the fonts " \
     "that will be rendered on the video. " \
@@ -103,7 +114,7 @@ static void Destroy( vlc_object_t * );
 #define FONTSIZER_TEXT N_("Relative font size")
 #define FONTSIZER_LONGTEXT N_("This is the relative default size of the " \
     "fonts that will be rendered on the video. If absolute font size is set, "\
-    "relative size will be overriden." )
+    "relative size will be overridden." )
 
 static const int pi_sizes[] = { 20, 18, 16, 12, 6 };
 static const char *const ppsz_sizes_text[] = {
@@ -138,7 +149,7 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_SUBPIC )
 
-    add_file( "freetype-font", DEFAULT_FONT, NULL, FONT_TEXT, FONT_LONGTEXT,
+    add_font( "freetype-font", DEFAULT_FONT, NULL, FONT_TEXT, FONT_LONGTEXT,
               false )
 
     add_integer( "freetype-fontsize", 0, NULL, FONTSIZE_TEXT,
@@ -160,7 +171,7 @@ vlc_module_begin ()
                  EFFECT_LONGTEXT, false )
         change_integer_list( pi_effects, ppsz_effects_text, NULL )
 
-    add_bool( "freetype-yuvp", 0, NULL, YUVP_TEXT,
+    add_bool( "freetype-yuvp", false, NULL, YUVP_TEXT,
               YUVP_LONGTEXT, true )
     set_capability( "text renderer", 100 )
     add_shortcut( "text" )
@@ -207,7 +218,7 @@ struct line_desc_t
     uint8_t        *p_fg_bg_ratio; /* 0x00=100% FG --> 0x7F=100% BG */
     bool      b_new_color_mode;
     /** underline information -- only supplied if text should be underlined */
-    uint16_t       *pi_underline_offset;
+    int            *pi_underline_offset;
     uint16_t       *pi_underline_thickness;
 
     int             i_height;
@@ -227,22 +238,13 @@ typedef struct
     bool  b_italic;
     bool  b_bold;
     bool  b_underline;
+    bool  b_through;
     char       *psz_fontname;
 } ft_style_t;
 
 static int Render( filter_t *, subpicture_region_t *, line_desc_t *, int, int);
 static void FreeLines( line_desc_t * );
 static void FreeLine( line_desc_t * );
-
-#ifdef HAVE_FONTCONFIG
-static vlc_object_t *FontBuilderAttach( filter_t *p_filter );
-static void  FontBuilderDetach( filter_t *p_filter, vlc_object_t *p_fontbuilder );
-static void* FontBuilderThread( vlc_object_t *p_this);
-static void  FontBuilderDestructor( vlc_object_t *p_this );
-static void  FontBuilderGetFcConfig( filter_t *p_filter, vlc_object_t *p_fontbuilder );
-static int   FontBuilderDone( vlc_object_t*, const char *, vlc_value_t, vlc_value_t,
-                        void* );
-#endif
 
 /*****************************************************************************
  * filter_sys_t: freetype local data
@@ -263,19 +265,17 @@ struct filter_sys_t
     int            i_default_font_size;
     int            i_display_height;
 #ifdef HAVE_FONTCONFIG
-    bool           b_fontconfig_ok;
-    FcConfig      *p_fontconfig;
+    char*          psz_fontfamily;
     xml_t         *p_xml;
 #endif
 
     input_attachment_t **pp_font_attachments;
     int                  i_font_attachments;
 
-    vlc_object_t  *p_fontbuilder;
 };
 
 #define UCHAR uint32_t
-#define TR_DEFAULT_FONT FC_DEFAULT_FONT
+#define TR_DEFAULT_FONT p_sys->psz_fontfamily
 #define TR_FONT_STYLE_PTR ft_style_t *
 
 #include "text_renderer.h"
@@ -289,15 +289,24 @@ static int Create( vlc_object_t *p_this )
 {
     filter_t      *p_filter = (filter_t *)p_this;
     filter_sys_t  *p_sys;
-    char          *psz_fontfile = NULL;
-    int            i_error;
-    vlc_value_t    val;
+    char          *psz_fontfile=NULL;
+    char          *psz_fontfamily=NULL;
+    int            i_error,fontindex;
+
+#ifdef HAVE_FONTCONFIG
+    FcPattern     *fontpattern = NULL, *fontmatch = NULL;
+    /* Initialise result to Match, as fontconfig doesnt
+     * really set this other than some error-cases */
+    FcResult       fontresult = FcResultMatch;
+#endif
+
 
     /* Allocate structure */
     p_filter->p_sys = p_sys = malloc( sizeof( filter_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
  #ifdef HAVE_FONTCONFIG
+    p_sys->psz_fontfamily = NULL;
     p_sys->p_xml = NULL;
 #endif
     p_sys->p_face = 0;
@@ -305,41 +314,115 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_font_size = 0;
     p_sys->i_display_height = 0;
 
-    var_Create( p_filter, "freetype-font",
-                VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-    var_Create( p_filter, "freetype-fontsize",
-                VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     var_Create( p_filter, "freetype-rel-fontsize",
                 VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Create( p_filter, "freetype-opacity",
-                VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Create( p_filter, "freetype-effect",
-                VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_filter, "freetype-opacity", &val );
-    p_sys->i_font_opacity = __MAX( __MIN( val.i_int, 255 ), 0 );
-    var_Create( p_filter, "freetype-color",
-                VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_filter, "freetype-color", &val );
-    p_sys->i_font_color = __MAX( __MIN( val.i_int, 0xFFFFFF ), 0 );
-    p_sys->i_effect = var_GetInteger( p_filter, "freetype-effect" );
 
-    /* Look what method was requested */
-    var_Get( p_filter, "freetype-font", &val );
-    psz_fontfile = val.psz_string;
-    if( !psz_fontfile || !*psz_fontfile )
+    psz_fontfamily = var_CreateGetString( p_filter, "freetype-font" );
+    p_sys->i_default_font_size = var_CreateGetInteger( p_filter, "freetype-fontsize" );
+    p_sys->i_effect = var_CreateGetInteger( p_filter, "freetype-effect" );
+    p_sys->i_font_opacity = var_CreateGetInteger( p_filter,"freetype-opacity" );
+    p_sys->i_font_opacity = __MAX( __MIN( p_sys->i_font_opacity, 255 ), 0 );
+    p_sys->i_font_color = var_CreateGetInteger( p_filter, "freetype-color" );
+    p_sys->i_font_color = __MAX( __MIN( p_sys->i_font_color , 0xFFFFFF ), 0 );
+
+    fontindex=0;
+    if( !psz_fontfamily || !*psz_fontfamily )
     {
-        free( psz_fontfile );
-        psz_fontfile = (char *)malloc( PATH_MAX + 1 );
-        if( !psz_fontfile )
-            goto error;
-#ifdef WIN32
-        GetWindowsDirectory( psz_fontfile, PATH_MAX + 1 );
-        strcat( psz_fontfile, "\\fonts\\arial.ttf" );
+        free( psz_fontfamily );
+#ifdef HAVE_FONTCONFIG
+        psz_fontfamily=strdup( DEFAULT_FONT );
 #else
-        msg_Err( p_filter, "user didn't specify a font" );
-        goto error;
+        psz_fontfamily = (char *)malloc( PATH_MAX + 1 );
+        if( !psz_fontfamily )
+            goto error;
+# ifdef WIN32
+        GetWindowsDirectory( psz_fontfamily , PATH_MAX + 1 );
+        strcat( psz_fontfamily, "\\fonts\\arial.ttf" );
+# else
+        strcpy( psz_fontfamily, DEFAULT_FONT );
+# endif
+        msg_Err( p_filter,"User didn't specify fontfile, using %s", psz_fontfamily);
 #endif
     }
+
+#ifdef HAVE_FONTCONFIG
+    msg_Dbg( p_filter, "Building font databases.");
+    mtime_t t1, t2;
+    t1 = mdate();
+
+#ifdef WIN32
+    dialog_progress_bar_t *p_dialog = NULL;
+    FcConfig *fcConfig = FcInitLoadConfig();
+
+    p_dialog = dialog_ProgressCreate( p_filter,
+            _("Building font cache"),
+            _("Please wait while your font cache is rebuilt.\n"
+                "This should take less than a few minutes."), NULL );
+
+/*    if( p_dialog )
+        dialog_ProgressSet( p_dialog, NULL, 0.5 ); */
+
+    FcConfigBuildFonts( fcConfig );
+    t2 = mdate();
+    msg_Dbg( p_filter, "Took %ld microseconds", (long)((t2 - t1)) );
+
+    if( p_dialog )
+    {
+//        dialog_ProgressSet( p_dialog, NULL, 1.0 );
+        dialog_ProgressDestroy( p_dialog );
+        p_dialog = NULL;
+    }
+#endif
+    /* Lets find some fontfile from freetype-font variable family */
+    char *psz_fontsize;
+    if( asprintf( &psz_fontsize, "%d", p_sys->i_default_font_size ) == -1 )
+        goto error;
+
+    fontpattern = FcPatternCreate();
+    if( !fontpattern )
+    {
+        msg_Err( p_filter, "Creating fontpattern failed");
+        goto error;
+    }
+
+    FcPatternAddString( fontpattern, FC_FAMILY, psz_fontfamily);
+    FcPatternAddString( fontpattern, FC_SIZE, psz_fontsize );
+    free( psz_fontsize );
+
+    if( FcConfigSubstitute( NULL, fontpattern, FcMatchPattern ) == FcFalse )
+    {
+        msg_Err( p_filter, "FontSubstitute failed");
+        goto error;
+    }
+    FcDefaultSubstitute( fontpattern );
+
+    /* testing fontresult here doesn't do any good really, but maybe it will
+     * in future as fontconfig code doesn't set it in all cases and just
+     * returns NULL or doesn't set to to Match on all Match cases.*/
+    fontmatch = FcFontMatch( NULL, fontpattern, &fontresult );
+    if( !fontmatch || fontresult == FcResultNoMatch )
+    {
+        msg_Err( p_filter, "Fontmatching failed");
+        goto error;
+    }
+
+    FcPatternGetString( fontmatch, FC_FILE, 0, &psz_fontfile);
+    FcPatternGetInteger( fontmatch, FC_INDEX, 0, &fontindex );
+    if( !psz_fontfile )
+    {
+        msg_Err( p_filter, "Failed to get fontfile");
+        goto error;
+    }
+
+    msg_Dbg( p_filter, "Using %s as font from file %s", psz_fontfamily,
+             psz_fontfile ? psz_fontfile : "(null)" );
+    p_sys->psz_fontfamily = strdup( psz_fontfamily );
+
+#else
+
+    psz_fontfile = psz_fontfamily;
+
+#endif
 
     i_error = FT_Init_FreeType( &p_sys->p_library );
     if( i_error )
@@ -347,16 +430,20 @@ static int Create( vlc_object_t *p_this )
         msg_Err( p_filter, "couldn't initialize freetype" );
         goto error;
     }
+
     i_error = FT_New_Face( p_sys->p_library, psz_fontfile ? psz_fontfile : "",
-                           0, &p_sys->p_face );
+                           fontindex, &p_sys->p_face );
+
     if( i_error == FT_Err_Unknown_File_Format )
     {
-        msg_Err( p_filter, "file %s have unknown format", psz_fontfile );
+        msg_Err( p_filter, "file %s have unknown format",
+                 psz_fontfile ? psz_fontfile : "(null)" );
         goto error;
     }
     else if( i_error )
     {
-        msg_Err( p_filter, "failed to load font file %s", psz_fontfile );
+        msg_Err( p_filter, "failed to load font file %s",
+                 psz_fontfile ? psz_fontfile : "(null)" );
         goto error;
     }
 
@@ -367,19 +454,10 @@ static int Create( vlc_object_t *p_this )
         goto error;
     }
 
-#ifdef HAVE_FONTCONFIG
-    p_sys->b_fontconfig_ok = false;
-    p_sys->p_fontconfig    = NULL;
-    p_sys->p_fontbuilder   = FontBuilderAttach( p_filter );
-#endif
-
     p_sys->i_use_kerning = FT_HAS_KERNING( p_sys->p_face );
 
-    var_Get( p_filter, "freetype-fontsize", &val );
-    p_sys->i_default_font_size = val.i_int;
     if( SetFontSize( p_filter, 0 ) != VLC_SUCCESS ) goto error;
 
-    free( psz_fontfile );
 
     p_sys->pp_font_attachments = NULL;
     p_sys->i_font_attachments = 0;
@@ -387,18 +465,31 @@ static int Create( vlc_object_t *p_this )
     p_filter->pf_render_text = RenderText;
 #ifdef HAVE_FONTCONFIG
     p_filter->pf_render_html = RenderHtml;
+    FcPatternDestroy( fontmatch );
+    FcPatternDestroy( fontpattern );
 #else
     p_filter->pf_render_html = NULL;
 #endif
 
+    free( psz_fontfamily );
     LoadFontsFromAttachments( p_filter );
 
     return VLC_SUCCESS;
 
- error:
+error:
+#ifdef HAVE_FONTCONFIG
+    if( fontmatch ) FcPatternDestroy( fontmatch );
+    if( fontpattern ) FcPatternDestroy( fontpattern );
+#endif
+
+#ifdef WIN32
+    if( p_dialog )
+        dialog_ProgressDestroy( p_dialog );
+#endif
+
     if( p_sys->p_face ) FT_Done_Face( p_sys->p_face );
     if( p_sys->p_library ) FT_Done_FreeType( p_sys->p_library );
-    free( psz_fontfile );
+    free( psz_fontfamily );
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -424,8 +515,8 @@ static void Destroy( vlc_object_t *p_this )
     }
 
 #ifdef HAVE_FONTCONFIG
-    FontBuilderDetach( p_filter, p_sys->p_fontbuilder );
     if( p_sys->p_xml ) xml_Delete( p_sys->p_xml );
+    free( p_sys->psz_fontfamily );
 #endif
 
     /* FcFini asserts calling the subfunction FcCacheFini()
@@ -436,153 +527,6 @@ static void Destroy( vlc_object_t *p_this )
     FT_Done_FreeType( p_sys->p_library );
     free( p_sys );
 }
-
-#ifdef HAVE_FONTCONFIG
-static vlc_mutex_t fb_lock = VLC_STATIC_MUTEX;
-
-static vlc_object_t *FontBuilderAttach( filter_t *p_filter )
-{
-    /* Check for an existing Fontbuilder thread */
-    vlc_mutex_lock( &fb_lock );
-    vlc_object_t *p_fontbuilder =
-        vlc_object_find_name( p_filter->p_libvlc,
-                              "fontlist builder", FIND_CHILD );
-
-    if( !p_fontbuilder )
-    {
-        /* Create the FontBuilderThread thread as a child of a top-level
-         * object, so that it can survive the destruction of the
-         * freetype object - the fontlist only needs to be built once,
-         * and calling the fontbuild a second time while the first is
-         * still in progress can cause thread instabilities.
-         *
-         * XXX The fontbuilder will be destroy as soon as it is unused.
-         */
-
-        p_fontbuilder = vlc_object_create( p_filter->p_libvlc,
-                                           sizeof(vlc_object_t) );
-        if( p_fontbuilder )
-        {
-            p_fontbuilder->psz_object_name = strdup( "fontlist builder" );
-            p_fontbuilder->p_private = NULL;
-            vlc_object_set_destructor( p_fontbuilder, FontBuilderDestructor );
-
-            vlc_object_attach( p_fontbuilder, p_filter->p_libvlc );
-
-            var_Create( p_fontbuilder, "build-done", VLC_VAR_BOOL );
-            var_SetBool( p_fontbuilder, "build-done", false );
-            var_Create( p_fontbuilder, "build-joined", VLC_VAR_BOOL );
-            var_SetBool( p_fontbuilder, "build-joined", false );
-
-            if( vlc_thread_create( p_fontbuilder,
-                                   "fontlist builder",
-                                   FontBuilderThread,
-                                   VLC_THREAD_PRIORITY_LOW ) )
-            {
-                msg_Warn( p_filter, "fontconfig database builder thread can't "
-                        "be launched. Font styling support will be limited." );
-            }
-        }
-    }
-
-    if( p_fontbuilder )
-    {
-        var_AddCallback( p_fontbuilder, "build-done", FontBuilderDone, p_filter );
-        FontBuilderGetFcConfig( p_filter, p_fontbuilder );
-    }
-    vlc_mutex_unlock( &fb_lock );
-    return p_fontbuilder;
-}
-static void FontBuilderDetach( filter_t *p_filter, vlc_object_t *p_fontbuilder )
-{
-    vlc_mutex_lock( &fb_lock );
-    if( p_fontbuilder )
-    {
-        var_DelCallback( p_fontbuilder, "build-done", FontBuilderDone, p_filter );
-
-        /* We wait for the thread on the first FontBuilderDetach */
-        if( !var_GetBool( p_fontbuilder, "build-joined" ) )
-        {
-            var_SetBool( p_fontbuilder, "build-joined", true );
-            vlc_mutex_unlock( &fb_lock );
-            /* We need to unlock otherwise we may not join (the thread waiting
-             * for the lock). It is safe to unlock as no one else will try a
-             * join and we have a reference on the object) */
-            vlc_thread_join( p_fontbuilder );
-            vlc_mutex_lock( &fb_lock );
-        }
-        vlc_object_release( p_fontbuilder );
-    }
-    vlc_mutex_unlock( &fb_lock );
-}
-static void* FontBuilderThread( vlc_object_t *p_this )
-{
-    FcConfig      *p_fontconfig = FcInitLoadConfig();
-
-    if( p_fontconfig )
-    {
-        mtime_t    t1, t2;
-        int canc = vlc_savecancel ();
-
-        //msg_Dbg( p_this, "Building font database..." );
-        msg_Dbg( p_this, "Building font database..." );
-        t1 = mdate();
-        if(! FcConfigBuildFonts( p_fontconfig ))
-        {
-            /* Don't destroy the fontconfig object - we won't be able to do
-             * italics or bold or change the font face, but we will still
-             * be able to do underline and change the font size.
-             */
-            msg_Err( p_this, "fontconfig database can't be built. "
-                                    "Font styling won't be available" );
-        }
-        t2 = mdate();
-
-        msg_Dbg( p_this, "Finished building font database." );
-        msg_Dbg( p_this, "Took %ld microseconds", (long)((t2 - t1)) );
-
-        vlc_mutex_lock( &fb_lock );
-        p_this->p_private = p_fontconfig;
-        vlc_mutex_unlock( &fb_lock );
-
-        var_SetBool( p_this, "build-done", true );
-        vlc_restorecancel (canc);
-    }
-    return NULL;
-}
-static void FontBuilderGetFcConfig( filter_t *p_filter, vlc_object_t *p_fontbuilder )
-{
-    filter_sys_t *p_sys = p_filter->p_sys;
-
-    p_sys->p_fontconfig = p_fontbuilder->p_private;
-    p_sys->b_fontconfig_ok = p_fontbuilder->p_private != NULL;
-}
-static void FontBuilderDestructor( vlc_object_t *p_this )
-{
-    FcConfig *p_fontconfig = p_this->p_private;
-
-    if( p_fontconfig )
-        FcConfigDestroy( p_fontconfig );
-}
-static int FontBuilderDone( vlc_object_t *p_this, const char *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *param )
-{
-    filter_t *p_filter = param;
-
-    if( newval.b_bool )
-    {
-        vlc_mutex_lock( &fb_lock );
-
-        FontBuilderGetFcConfig( p_filter, p_this );
-
-        vlc_mutex_unlock( &fb_lock );
-    }
-
-    VLC_UNUSED(psz_var);
-    VLC_UNUSED(oldval);
-    return VLC_SUCCESS;
-}
-#endif
 
 /*****************************************************************************
  * Make any TTF/OTF fonts present in the attachments of the media file
@@ -650,6 +594,7 @@ static int LoadFontsFromAttachments( filter_t *p_filter )
 static int Render( filter_t *p_filter, subpicture_region_t *p_region,
                    line_desc_t *p_line, int i_width, int i_height )
 {
+    VLC_UNUSED(p_filter);
     static const uint8_t pi_gamma[16] =
         {0x00, 0x52, 0x84, 0x96, 0xb8, 0xca, 0xdc, 0xee, 0xff,
           0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
@@ -662,8 +607,7 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
-    fmt.i_aspect = 0;
+    fmt.i_chroma = VLC_CODEC_YUVP;
     fmt.i_width = fmt.i_visible_width = i_width + 4;
     fmt.i_height = fmt.i_visible_height = i_height + 4;
     if( p_region->fmt.i_visible_width > 0 )
@@ -673,7 +617,7 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     fmt.i_x_offset = fmt.i_y_offset = 0;
 
     assert( !p_region->p_picture );
-    p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
+    p_region->p_picture = picture_NewFromFormat( &fmt );
     if( !p_region->p_picture )
         return VLC_EGENERIC;
     fmt.p_palette = p_region->fmt.p_palette ? p_region->fmt.p_palette : malloc(sizeof(*fmt.p_palette));
@@ -819,8 +763,9 @@ static void UnderlineGlyphYUVA( int i_line_thickness, int i_line_offset, bool b_
             bool b_ok = true;
 
             /* break the underline around the tails of any glyphs which cross it */
+            /* Strikethrough doesn't get broken */
             for( z = x - i_line_thickness;
-                 z < x + i_line_thickness && b_ok;
+                 z < x + i_line_thickness && b_ok && (i_line_offset >= 0);
                  z++ )
             {
                 if( p_next_glyph && ( z >= i_extra ) )
@@ -929,8 +874,7 @@ static int RenderYUVA( filter_t *p_filter, subpicture_region_t *p_region,
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('Y','U','V','A');
-    fmt.i_aspect = 0;
+    fmt.i_chroma = VLC_CODEC_YUVA;
     fmt.i_width = fmt.i_visible_width = i_width + 6;
     fmt.i_height = fmt.i_visible_height = i_height + 6;
     if( p_region->fmt.i_visible_width > 0 )
@@ -939,7 +883,7 @@ static int RenderYUVA( filter_t *p_filter, subpicture_region_t *p_region,
         fmt.i_visible_height = p_region->fmt.i_visible_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
 
-    p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
+    p_region->p_picture = picture_NewFromFormat( &fmt );
     if( !p_region->p_picture )
         return VLC_EGENERIC;
     p_region->fmt = fmt;
@@ -1206,7 +1150,7 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
         /* Do bidi conversion line-by-line */
         while( pos < i_string_length )
         {
-            while( pos < i_string_length ) 
+            while( pos < i_string_length )
             {
                 i_char = psz_unicode[pos];
                 if (i_char != '\r' && i_char != '\n')
@@ -1298,12 +1242,16 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
         }
         p_line->p_glyph_pos[ i ].x = i_pen_x;
         p_line->p_glyph_pos[ i ].y = i_pen_y;
-        i_error = FT_Load_Glyph( face, i_glyph_index, FT_LOAD_DEFAULT );
+        i_error = FT_Load_Glyph( face, i_glyph_index, FT_LOAD_NO_BITMAP | FT_LOAD_DEFAULT );
         if( i_error )
         {
-            msg_Err( p_filter, "unable to render text FT_Load_Glyph returned"
-                               " %d", i_error );
-            goto error;
+	        i_error = FT_Load_Glyph( face, i_glyph_index, FT_LOAD_DEFAULT );
+	        if( i_error )
+	        {
+	            msg_Err( p_filter, "unable to render text FT_Load_Glyph returned"
+	                               " %d", i_error );
+	            goto error;
+	        }
         }
         i_error = FT_Get_Glyph( glyph, &tmp_glyph );
         if( i_error )
@@ -1387,7 +1335,7 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
     p_region_out->i_x = p_region_in->i_x;
     p_region_out->i_y = p_region_in->i_y;
 
-    if( config_GetInt( p_filter, "freetype-yuvp" ) )
+    if( var_InheritBool( p_filter, "freetype-yuvp" ) )
         Render( p_filter, p_region_out, p_lines, result.x, result.y );
     else
         RenderYUVA( p_filter, p_region_out, p_lines, result.x, result.y );
@@ -1405,7 +1353,7 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
 #ifdef HAVE_FONTCONFIG
 static ft_style_t *CreateStyle( char *psz_fontname, int i_font_size,
         uint32_t i_font_color, uint32_t i_karaoke_bg_color, bool b_bold,
-        bool b_italic, bool b_uline )
+        bool b_italic, bool b_uline, bool b_through )
 {
     ft_style_t  *p_style = malloc( sizeof( ft_style_t ));
 
@@ -1417,6 +1365,7 @@ static ft_style_t *CreateStyle( char *psz_fontname, int i_font_size,
         p_style->b_italic           = b_italic;
         p_style->b_bold             = b_bold;
         p_style->b_underline        = b_uline;
+        p_style->b_through          = b_through;
 
         p_style->psz_fontname = strdup( psz_fontname );
     }
@@ -1442,6 +1391,7 @@ static bool StyleEquals( ft_style_t *s1, ft_style_t *s2 )
     if(( s1->i_font_size  == s2->i_font_size ) &&
        ( s1->i_font_color == s2->i_font_color ) &&
        ( s1->b_italic     == s2->b_italic ) &&
+       ( s1->b_through    == s2->b_through ) &&
        ( s1->b_bold       == s2->b_bold ) &&
        ( s1->b_underline  == s2->b_underline ) &&
        ( !strcmp( s1->psz_fontname, s2->psz_fontname )))
@@ -1508,7 +1458,7 @@ static void IconvText( filter_t *p_filter, const char *psz_string,
 
 static ft_style_t *GetStyleFromFontStack( filter_sys_t *p_sys,
         font_stack_t **p_fonts, bool b_bold, bool b_italic,
-        bool b_uline )
+        bool b_uline, bool b_through )
 {
     ft_style_t   *p_style = NULL;
 
@@ -1521,13 +1471,14 @@ static ft_style_t *GetStyleFromFontStack( filter_sys_t *p_sys,
                                  &i_font_color, &i_karaoke_bg_color ))
     {
         p_style = CreateStyle( psz_fontname, i_font_size, i_font_color,
-                i_karaoke_bg_color, b_bold, b_italic, b_uline );
+                i_karaoke_bg_color, b_bold, b_italic, b_uline, b_through );
     }
     return p_style;
 }
 
 static int RenderTag( filter_t *p_filter, FT_Face p_face, int i_font_color,
-                      bool b_uline, int i_karaoke_bgcolor,
+                      bool b_uline, bool b_through, bool b_bold,
+                      bool b_italic, int i_karaoke_bgcolor,
                       line_desc_t *p_line, uint32_t *psz_unicode,
                       int *pi_pen_x, int i_pen_y, int *pi_start,
                       FT_Vector *p_result )
@@ -1581,14 +1532,28 @@ static int RenderTag( filter_t *p_filter, FT_Face p_face, int i_font_color,
         p_line->p_glyph_pos[ i ].x = *pi_pen_x;
         p_line->p_glyph_pos[ i ].y = i_pen_y;
 
-        i_error = FT_Load_Glyph( p_face, i_glyph_index, FT_LOAD_DEFAULT );
+        i_error = FT_Load_Glyph( p_face, i_glyph_index, FT_LOAD_NO_BITMAP | FT_LOAD_DEFAULT );
         if( i_error )
         {
-            msg_Err( p_filter,
-                   "unable to render text FT_Load_Glyph returned %d", i_error );
-            p_line->pp_glyphs[ i ] = NULL;
-            return VLC_EGENERIC;
+	        i_error = FT_Load_Glyph( p_face, i_glyph_index, FT_LOAD_DEFAULT );
+	        if( i_error )
+	        {
+	            msg_Err( p_filter,
+	                   "unable to render text FT_Load_Glyph returned %d", i_error );
+	            p_line->pp_glyphs[ i ] = NULL;
+	            return VLC_EGENERIC;
+	        }
         }
+
+        /* Do synthetic styling now that Freetype supports it;
+         * ie. if the font we have loaded is NOT already in the
+         * style that the tags want, then switch it on; if they
+         * are then don't. */
+        if (b_bold && !( p_face->style_flags & FT_STYLE_FLAG_BOLD ))
+            FT_GlyphSlot_Embolden( p_face->glyph );
+        if (b_italic && !( p_face->style_flags & FT_STYLE_FLAG_ITALIC ))
+            FT_GlyphSlot_Oblique( p_face->glyph );
+
         i_error = FT_Get_Glyph( p_face->glyph, &tmp_glyph );
         if( i_error )
         {
@@ -1604,7 +1569,7 @@ static int RenderTag( filter_t *p_filter, FT_Face p_face, int i_font_color,
             FT_Done_Glyph( tmp_glyph );
             continue;
         }
-        if( b_uline )
+        if( b_uline || b_through )
         {
             float aOffset = FT_FLOOR(FT_MulFix(p_face->underline_position,
                                                p_face->size->metrics.y_scale));
@@ -1615,7 +1580,19 @@ static int RenderTag( filter_t *p_filter, FT_Face p_face, int i_font_color,
                                        ( aOffset < 0 ) ? -aOffset : aOffset;
             p_line->pi_underline_thickness[ i ] =
                                        ( aSize < 0 ) ? -aSize   : aSize;
+            if (b_through)
+            {
+                /* Move the baseline to make it strikethrough instead of
+                 * underline. That means that strikethrough takes precedence
+                 */
+                float aDescent = FT_FLOOR(FT_MulFix(p_face->descender*2,
+                                                    p_face->size->metrics.y_scale));
+
+                p_line->pi_underline_offset[ i ]  -=
+                                       ( aDescent < 0 ) ? -aDescent : aDescent;
+            }
         }
+
         p_line->pp_glyphs[ i ] = (FT_BitmapGlyph)tmp_glyph;
         p_line->p_fg_rgb[ i ] = i_font_color & 0x00ffffff;
         p_line->p_bg_rgb[ i ] = i_karaoke_bgcolor & 0x00ffffff;
@@ -1715,15 +1692,16 @@ static void SetupLine( filter_t *p_filter, const char *psz_text_in,
     {
         (*pi_runs)++;
 
+        /* XXX this logic looks somewhat broken */
+
         if( *ppp_styles )
         {
-            *ppp_styles = (ft_style_t **)
-                realloc( *ppp_styles, *pi_runs * sizeof( ft_style_t * ) );
+            *ppp_styles = realloc_or_free( *ppp_styles,
+                                          *pi_runs * sizeof( ft_style_t * ) );
         }
         else if( *pi_runs == 1 )
         {
-            *ppp_styles = (ft_style_t **)
-                malloc( *pi_runs * sizeof( ft_style_t * ) );
+            *ppp_styles = malloc( *pi_runs * sizeof( ft_style_t * ) );
         }
 
         /* We have just malloc'ed this memory successfully -
@@ -1734,10 +1712,12 @@ static void SetupLine( filter_t *p_filter, const char *psz_text_in,
             p_style = NULL;
         }
 
+        /* XXX more iffy logic */
+
         if( *ppi_run_lengths )
         {
-            *ppi_run_lengths = (uint32_t *)
-                realloc( *ppi_run_lengths, *pi_runs * sizeof( uint32_t ) );
+            *ppi_run_lengths = realloc_or_free( *ppi_run_lengths,
+                                              *pi_runs * sizeof( uint32_t ) );
         }
         else if( *pi_runs == 1 )
         {
@@ -2021,19 +2001,11 @@ static int ProcessLines( filter_t *p_filter,
             {
                 char *psz_fontfile = NULL;
 
-                vlc_mutex_lock( &fb_lock );
-                if( p_sys->b_fontconfig_ok )
-                {
-                    /* FIXME Is there really a race condition between FontConfig_Select with default fontconfig(NULL)
-                     * and FcConfigBuildFonts ? If not it would be better to remove the check on b_fontconfig_ok */
-                    psz_fontfile = FontConfig_Select( p_sys->p_fontconfig,
-                                                      p_style->psz_fontname,
-                                                      p_style->b_bold,
-                                                      p_style->b_italic,
-                                                      &i_idx );
-                }
-                vlc_mutex_unlock( &fb_lock );
-
+                psz_fontfile = FontConfig_Select( NULL,
+                                                  p_style->psz_fontname,
+                                                  p_style->b_bold,
+                                                  p_style->b_italic,
+                                                  &i_idx );
                 if( psz_fontfile && ! *psz_fontfile )
                 {
                     msg_Warn( p_filter, "Fontconfig was unable to find a font: \"%s\" %s"
@@ -2140,6 +2112,9 @@ static int ProcessLines( filter_t *p_filter,
 
                 if( RenderTag( p_filter, p_face ? p_face : p_sys->p_face,
                                p_style->i_font_color, p_style->b_underline,
+                               p_style->b_through,
+                               p_style->b_bold,
+                               p_style->b_italic,
                                p_style->i_karaoke_bg_color,
                                p_line, psz_unicode, &i_pen_x, i_pen_y, &i_posn,
                                &tmp_result ) != VLC_SUCCESS )
@@ -2336,7 +2311,7 @@ static int RenderHtml( filter_t *p_filter, subpicture_region_t *p_region_out,
                      */
                     if(( rv == VLC_SUCCESS ) && ( i_len > 0 ))
                     {
-                        if( config_GetInt( p_filter, "freetype-yuvp" ) )
+                        if( var_InheritBool( p_filter, "freetype-yuvp" ) )
                         {
                             Render( p_filter, p_region_out, p_lines,
                                     result.x, result.y );
@@ -2438,13 +2413,14 @@ static void SetupLine( filter_t *p_filter, const char *psz_text_in,
 
 static ft_style_t *GetStyleFromFontStack( filter_sys_t *p_sys,
         font_stack_t **p_fonts, bool b_bold, bool b_italic,
-        bool b_uline )
+        bool b_uline, bool b_through )
 {
         VLC_UNUSED(p_sys);
         VLC_UNUSED(p_fonts);
         VLC_UNUSED(b_bold);
         VLC_UNUSED(b_italic);
         VLC_UNUSED(b_uline);
+        VLC_UNUSED(b_through);
         return NULL;
 }
 #endif
@@ -2493,7 +2469,7 @@ static line_desc_t *NewLine( int i_count )
     p_line->p_fg_rgb = malloc( sizeof( uint32_t ) * ( i_count + 1 ) );
     p_line->p_bg_rgb = malloc( sizeof( uint32_t ) * ( i_count + 1 ) );
     p_line->p_fg_bg_ratio = calloc( i_count + 1, sizeof( uint8_t ) );
-    p_line->pi_underline_offset = calloc( i_count + 1, sizeof( uint16_t ) );
+    p_line->pi_underline_offset = calloc( i_count + 1, sizeof( int ) );
     p_line->pi_underline_thickness = calloc( i_count + 1, sizeof( uint16_t ) );
     if( ( p_line->pp_glyphs == NULL ) ||
         ( p_line->p_glyph_pos == NULL ) ||

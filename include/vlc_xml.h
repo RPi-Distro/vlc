@@ -2,7 +2,7 @@
  * xml.h: XML abstraction layer
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 20b097059adb5334912b2591fca3460161e75a58 $
+ * $Id: 497fc7f9334d62a7f4f19983f6ca362a3665fa8e $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -50,8 +50,8 @@ struct xml_t
                                const char * );
 };
 
-#define xml_Create( a ) __xml_Create( VLC_OBJECT(a) )
-VLC_EXPORT( xml_t *, __xml_Create, ( vlc_object_t * ) );
+VLC_EXPORT( xml_t *, xml_Create, ( vlc_object_t * ) );
+#define xml_Create( a ) xml_Create( VLC_OBJECT(a) )
 VLC_EXPORT( void, xml_Delete, ( xml_t * ) );
 
 #define xml_ReaderCreate( a, b ) a->pf_reader_create( a, b )

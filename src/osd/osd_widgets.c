@@ -2,7 +2,7 @@
  * osd_widgets.c : OSD widgets manipulation functions
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 5e880ead03e9e8faf0a411d1e81b9feade270ca6 $
+ * $Id: ef9dd7b738598896ded54f1db0f78e9737656f02 $
  *
  * Author: Yoann Peronneau <yoann@videolan.org>
  *
@@ -159,8 +159,7 @@ static int CreatePicture( spu_t *p_spu, subpicture_t *p_subpic,
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('Y','U','V','A');
-    fmt.i_aspect = 0;
+    fmt.i_chroma = VLC_CODEC_YUVA;
     fmt.i_width = fmt.i_visible_width = i_width;
     fmt.i_height = fmt.i_visible_height = i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;

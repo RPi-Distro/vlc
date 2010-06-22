@@ -2,7 +2,7 @@
  * vlm_event.h: VLM event functions
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 41e1311959a2cdd3659fbcc941fab0e0f297c0ce $
+ * $Id: 2aa837fbaa061d52c96352090b4647af3a78b0f8 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ fr>
  *
@@ -39,7 +39,7 @@ void vlm_SendEventMediaChanged( vlm_t *, int64_t id, const char *psz_name );
 
 void vlm_SendEventMediaInstanceStarted( vlm_t *, int64_t id, const char *psz_name );
 void vlm_SendEventMediaInstanceStopped( vlm_t *, int64_t id, const char *psz_name );
-
+void vlm_SendEventMediaInstanceState( vlm_t *, int64_t id, const char *psz_name, const char *psz_instance_name, input_state_e state );
 
 #endif
 

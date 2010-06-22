@@ -2,7 +2,7 @@
  * Upnp_intel.hpp :  UPnP discovery module (Intel SDK) header
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: f78e0545d9b5ab4737057d516198abd6009d2009 $
+ * $Id: c571e8d97e8d1e76f7653ae05337e5b376756f2d $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -35,49 +35,6 @@
 
 // Classes
 class Container;
-
-
-class Lockable
-{
-public:
-
-    Lockable()
-    {
-        vlc_mutex_init( &_mutex );
-    }
-
-    ~Lockable()
-    {
-        vlc_mutex_destroy( &_mutex );
-    }
-
-    void lock() { vlc_mutex_lock( &_mutex ); }
-    void unlock() { vlc_mutex_unlock( &_mutex ); }
-
-private:
-
-    vlc_mutex_t _mutex;
-};
-
-
-class Locker
-{
-public:
-    Locker( Lockable* l )
-    {
-        _lockable = l;
-        _lockable->lock();
-    }
-
-    ~Locker()
-    {
-        _lockable->unlock();
-    }
-
-private:
-    Lockable* _lockable;
-};
-
 
 class MediaServer
 {
@@ -112,7 +69,7 @@ public:
 private:
 
     bool _fetchContents( Container* parent );
-    void _buildPlaylist( Container* container );
+    void _buildPlaylist( Container* container, input_item_node_t * );
 
     IXML_Document* _browseAction( const char*, const char*,
             const char*, const char*, const char*, const char* );

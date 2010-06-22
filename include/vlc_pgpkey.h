@@ -2,7 +2,7 @@
  * vlc_pgpkey.h: VideoLAN PGP Public Key used to sign releases
  *****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 07492864cfcccef1911694602dc14a88f47b5084 $
+ * $Id: a3e9c985bc6195a073afd684f81cc72d2fa7b3b0 $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -22,6 +22,11 @@
  *****************************************************************************/
 
 /* We trust this public key, and by extension, also keys signed by it. */
+
+/* NOTE:
+ * We need a 1024 bits DSA key.
+ * Don't forget to upload the key to http://download.videolan.org/pub/keys/
+ */
 
 /*
  * VideoLAN Release Signing Key (2010)

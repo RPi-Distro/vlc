@@ -2,7 +2,7 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: f68a0018106104c58b055c4cec769c2f05f56a5c $
+ * $Id: 80f564fb453f72f32fee329384e99ba37045f4d1 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,12 +37,19 @@ static void test (conv_t f, const char *in, const char *out)
 {
     char *res;
 
-    printf ("\"%s\" -> \"%s\" ?\n", in, out);
+    if (out != NULL)
+       printf ("\"%s\" -> \"%s\" ?\n", in, out);
+    else
+       printf ("\"%s\" -> NULL ?\n", in);
     res = f (in);
     if (res == NULL)
-        exit (1);
-
-    if (strcmp (res, out))
+    {
+        if (out == NULL)
+            return; /* good: NULL -> NULL */
+        puts (" ERROR: got NULL");
+        exit (2);
+    }
+    if (out == NULL || strcmp (res, out))
     {
         printf (" ERROR: got \"%s\"\n", res);
         exit (2);
@@ -66,6 +73,15 @@ static inline void test_path (const char *in, const char *out)
     test (make_URI, in, out);
 }
 
+static inline void test_current_directory_path (const char *in, const char *cwd, const char *out)
+{
+    char * expected_result = NULL;
+    int val = asprintf(&expected_result, "file://%s/%s", cwd, out);
+    assert (val != -1);
+    
+    test (make_URI, in, expected_result);
+}
+
 int main (void)
 {
     int val;
@@ -87,10 +103,9 @@ int main (void)
     test_decode ("%2", "%2");
     test_decode ("%0000", "");
 
-    /* UTF-8 tests */
+    /* Non-ASCII tests */
     test_decode ("T%C3%a9l%c3%A9vision+%e2%82%Ac", "Télévision €");
-    test_decode ("T%E9l%E9vision", "T?l?vision");
-    test_decode ("%C1%94%C3%a9l%c3%A9vision", "??élévision"); /* overlong */
+    test_decode ("T%E9l%E9vision", "T\xe9l\xe9vision");
 
     /* Base 64 tests */
     test_b64 ("", "");
@@ -115,11 +130,32 @@ int main (void)
     assert (fd != -1);*/
     val = chdir ("/tmp");
     assert (val != -1);
-    test_path ("movie.ogg", "file:///tmp/movie.ogg");
-    test_path (".", "file:///tmp/.");
-    test_path ("", "file:///tmp/");
+
+    char buf[256];
+    char * tmpdir;
+    tmpdir = getcwd(buf, sizeof(buf)/sizeof(*buf));
+    assert (tmpdir);
+
+    test_current_directory_path ("movie.ogg", tmpdir, "movie.ogg");
+    test_current_directory_path (".", tmpdir, ".");
+    test_current_directory_path ("", tmpdir, "");
+
     /*val = fchdir (fd);
     assert (val != -1);*/
+
+    /* URI to path tests */
+#define test( a, b ) test (make_path, a, b)
+    test ("mailto:john@example.com", NULL);
+    test ("http://www.example.com/file.html#ref", NULL);
+    test ("file://", NULL);
+    test ("file:///", "/");
+    test ("file://localhost/home/john/music%2Eogg", "/home/john/music.ogg");
+    test ("file://localhost/home/john/text#ref", "/home/john/text");
+    test ("fd://0foobar", NULL);
+    test ("fd://0#ref", "/dev/stdin");
+    test ("fd://1", "/dev/stdout");
+    test ("fd://12345", "/dev/fd/12345");
+#undef test
 
     return 0;
 }

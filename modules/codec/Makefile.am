@@ -3,9 +3,9 @@
 
 basedir = codec
 dir = codec
-mods = a52 adpcm aes3 araw cc cdg csri cvdsub dirac dts dvbsub faad fake flac fluidsynth invmem kate libass libmpeg2 lpcm mash mpeg_audio png quicktime rawvideo realaudio realvideo schroedinger sdl_image speex svcdsub tarkin telx theora tremor twolame vorbis x264 zvbi
-libvlc_LTLIBRARIES =  $(LTLIBcsri) $(LTLIBdirac) $(LTLIBfaad) $(LTLIBfake) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBpng) $(LTLIBquicktime) $(LTLIBrealaudio) $(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBtarkin) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi)
-EXTRA_LTLIBRARIES =  libcsri_plugin.la libdirac_plugin.la libfaad_plugin.la libfake_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libpng_plugin.la libquicktime_plugin.la librealaudio_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtarkin_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
+mods = a52 adpcm aes3 araw cc cdg cvdsub dirac dts dvbsub faad fake flac fluidsynth invmem kate libass libmpeg2 lpcm mash mpeg_audio png quicktime rawvideo realvideo schroedinger sdl_image speex svcdsub telx theora tremor twolame vorbis x264 zvbi
+libvlc_LTLIBRARIES =  $(LTLIBdirac) $(LTLIBfaad) $(LTLIBflac) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBpng) $(LTLIBquicktime) $(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi)
+EXTRA_LTLIBRARIES =  libdirac_plugin.la libfaad_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libpng_plugin.la libquicktime_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -74,17 +74,6 @@ libcdg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcdg_plugin_la_LIBADD = $(AM_LIBADD)
 libcdg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The csri plugin
-libcsri_plugin_la_SOURCES = $(SOURCES_csri)
-nodist_libcsri_plugin_la_SOURCES = $(nodist_SOURCES_csri)
-# Force per-target objects:
-libcsri_plugin_la_CFLAGS = $(AM_CFLAGS)
-libcsri_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libcsri_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libcsri_plugin_la_LIBADD = $(AM_LIBADD)
-libcsri_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The cvdsub plugin
 libcvdsub_plugin_la_SOURCES = $(SOURCES_cvdsub)
@@ -284,17 +273,6 @@ librawvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 librawvideo_plugin_la_LIBADD = $(AM_LIBADD)
 librawvideo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The realaudio plugin
-librealaudio_plugin_la_SOURCES = $(SOURCES_realaudio)
-nodist_librealaudio_plugin_la_SOURCES = $(nodist_SOURCES_realaudio)
-# Force per-target objects:
-librealaudio_plugin_la_CFLAGS = $(AM_CFLAGS)
-librealaudio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-librealaudio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-librealaudio_plugin_la_LIBADD = $(AM_LIBADD)
-librealaudio_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
 # The realvideo plugin
 librealvideo_plugin_la_SOURCES = $(SOURCES_realvideo)
 nodist_librealvideo_plugin_la_SOURCES = $(nodist_SOURCES_realvideo)
@@ -349,17 +327,6 @@ libsvcdsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsvcdsub_plugin_la_LIBADD = $(AM_LIBADD)
 libsvcdsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The tarkin plugin
-libtarkin_plugin_la_SOURCES = $(SOURCES_tarkin)
-nodist_libtarkin_plugin_la_SOURCES = $(nodist_SOURCES_tarkin)
-# Force per-target objects:
-libtarkin_plugin_la_CFLAGS = $(AM_CFLAGS)
-libtarkin_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libtarkin_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libtarkin_plugin_la_LIBADD = $(AM_LIBADD)
-libtarkin_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The telx plugin
 libtelx_plugin_la_SOURCES = $(SOURCES_telx)

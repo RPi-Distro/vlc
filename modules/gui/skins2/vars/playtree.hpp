@@ -2,7 +2,7 @@
  * playtree.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: b1d1db675bdd0c0a59e7cd5557b9ec08761d4906 $
+ * $Id: 871cc08e9bc37c2a2e3bed0b87b2016a81089002 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -17,53 +17,60 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef PLAYTREE_HPP
 #define PLAYTREE_HPP
 
+#include <vlc_playlist.h>
 #include "../utils/var_tree.hpp"
 
 /// Variable for VLC playlist (new tree format)
 class Playtree: public VarTree
 {
-    public:
-        Playtree( intf_thread_t *pIntf );
-        virtual ~Playtree();
+public:
+    Playtree( intf_thread_t *pIntf );
+    virtual ~Playtree();
 
-        /// Remove the selected elements from the list
-        virtual void delSelected();
+    /// Remove the selected elements from the list
+    virtual void delSelected();
 
-        /// Execute the action associated to this item
-        virtual void action( VarTree *pItem );
+    /// Execute the action associated to this item
+    virtual void action( VarTree *pItem );
 
-        /// Function called to notify playlist changes
-        void onChange();
+    /// Function called to notify playlist changes
+    void onChange();
 
-        /// Function called to notify playlist item update
-        void onUpdateItem( int id );
+    /// Function called to notify playlist item update
+    void onUpdateItem( int id );
 
-        /// Function called to notify playlist item append
-        void onAppend( playlist_add_t * );
+    /// Function called to notify about current playing item
+    void onUpdateCurrent( bool b_active );
 
-        /// Function called to notify playlist item delete
-        void onDelete( int );
+    /// Function called to notify playlist item append
+    void onAppend( playlist_add_t * );
 
-        /// Items waiting to be appended
-        int i_items_to_append;
+    /// Function called to notify playlist item delete
+    void onDelete( int );
 
-    private:
-        /// VLC playlist object
-        playlist_t *m_pPlaylist;
+    /// Items waiting to be appended
+    int i_items_to_append;
 
-        /// Build the list from the VLC playlist
-        void buildTree();
+private:
+    /// VLC playlist object
+    playlist_t *m_pPlaylist;
 
-        /// Update Node's children
-        void buildNode( playlist_item_t *p_node, VarTree &m_pNode );
+    /// Build the list from the VLC playlist
+    void buildTree();
+
+    /// Update Node's children
+    void buildNode( playlist_item_t *p_node, VarTree &m_pNode );
+
+    /// keep track of item being played
+    playlist_item_t* m_currentItem;
 };
 
 #endif

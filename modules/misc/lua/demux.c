@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: d7f4445bf0ced0fdaf02b7567cdd43de7a4c8449 $
+ * $Id: c3d3595c69d2a6bd64243cf6029a8bceda7bf188 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -34,12 +34,6 @@
 #include <vlc_demux.h>
 #include <vlc_url.h>
 #include <vlc_strings.h>
-#include <vlc_charset.h>
-
-#include <errno.h>                                                 /* ENOMEM */
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
 
 #include "vlc.h"
 #include "libs.h"
@@ -122,26 +116,53 @@ static const luaL_Reg p_reg_parse[] =
  * the script pointed by psz_filename.
  *****************************************************************************/
 static int probe_luascript( vlc_object_t *p_this, const char * psz_filename,
-                            lua_State * L, void * user_data )
+                            void * user_data )
 {
     VLC_UNUSED(user_data);
     demux_t * p_demux = (demux_t *)p_this;
 
     p_demux->p_sys->psz_filename = strdup(psz_filename);
 
-    /* In lua, setting a variable's value to nil is equivalent to deleting it */
-    lua_pushnil( L );
-    lua_pushnil( L );
-    lua_setglobal( L, "probe" );
-    lua_setglobal( L, "parse" );
+    /* Initialise Lua state structure */
+    lua_State *L = luaL_newstate();
+    if( !L )
+    {
+        msg_Err( p_demux, "Could not create new Lua State" );
+        goto error;
+    }
+    p_demux->p_sys->L = L;
+
+    /* Load Lua libraries */
+    luaL_openlibs( L ); /* FIXME: Don't open all the libs? */
+
+    vlclua_set_this( L, p_demux );
+    luaL_register( L, "vlc", p_reg );
+    luaopen_msg( L );
+    luaopen_strings( L );
+    luaopen_stream( L );
+    luaopen_xml( L );
+    luaopen_md5( L );
+    lua_pushstring( L, p_demux->psz_path );
+    lua_setfield( L, -2, "path" );
+    lua_pushstring( L, p_demux->psz_access );
+    lua_setfield( L, -2, "access" );
+
+    lua_pop( L, 1 );
+
+    /* Setup the module search path */
+    if( vlclua_add_modules_path( p_demux, L, psz_filename ) )
+    {
+        msg_Warn( p_demux, "Error while setting the module search path for %s",
+                  psz_filename );
+        goto error;
+    }
 
     /* Load and run the script(s) */
     if( luaL_dofile( L, psz_filename ) )
     {
         msg_Warn( p_demux, "Error loading script %s: %s", psz_filename,
                   lua_tostring( L, lua_gettop( L ) ) );
-        lua_pop( L, 1 );
-        return VLC_EGENERIC;
+        goto error;
     }
 
     lua_getglobal( L, "probe" );
@@ -150,8 +171,7 @@ static int probe_luascript( vlc_object_t *p_this, const char * psz_filename,
     {
         msg_Warn( p_demux, "Error while runing script %s, "
                   "function probe() not found", psz_filename );
-        lua_pop( L, 1 );
-        return VLC_EGENERIC;
+        goto error;
     }
 
     if( lua_pcall( L, 0, 1, 0 ) )
@@ -159,23 +179,25 @@ static int probe_luascript( vlc_object_t *p_this, const char * psz_filename,
         msg_Warn( p_demux, "Error while runing script %s, "
                   "function probe(): %s", psz_filename,
                   lua_tostring( L, lua_gettop( L ) ) );
-        lua_pop( L, 1 );
-        return VLC_EGENERIC;
+        goto error;
     }
 
     if( lua_gettop( L ) )
     {
-        int i_ret = VLC_EGENERIC;
         if( lua_toboolean( L, 1 ) )
         {
             msg_Dbg( p_demux, "Lua playlist script %s's "
                      "probe() function was successful", psz_filename );
-            i_ret = VLC_SUCCESS;
+            lua_pop( L, 1 );
+            return VLC_SUCCESS;
         }
-        lua_pop( L, 1 );
-
-        return i_ret;
     }
+
+error:
+    lua_pop( L, 1 );
+    lua_close( p_demux->p_sys->L );
+    p_demux->p_sys->L = NULL;
+    FREENULL( p_demux->p_sys->psz_filename );
     return VLC_EGENERIC;
 }
 
@@ -185,7 +207,6 @@ static int probe_luascript( vlc_object_t *p_this, const char * psz_filename,
 int Import_LuaPlaylist( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
-    lua_State *L;
     int ret;
 
     p_demux->p_sys = (demux_sys_t*)malloc( sizeof( demux_sys_t ) );
@@ -199,33 +220,8 @@ int Import_LuaPlaylist( vlc_object_t *p_this )
     p_demux->pf_control = Control;
     p_demux->pf_demux = Demux;
 
-    /* Initialise Lua state structure */
-    L = luaL_newstate();
-    if( !L )
-    {
-        msg_Err( p_demux, "Could not create new Lua State" );
-        free( p_demux->p_sys );
-        return VLC_EGENERIC;
-    }
-    p_demux->p_sys->L = L;
-
-    /* Load Lua libraries */
-    luaL_openlibs( L ); /* FIXME: Don't open all the libs? */
-
-    luaL_register( L, "vlc", p_reg );
-    luaopen_msg( L );
-    luaopen_strings( L );
-    lua_pushlightuserdata( L, p_demux );
-    lua_setfield( L, -2, "private" );
-    lua_pushstring( L, p_demux->psz_path );
-    lua_setfield( L, -2, "path" );
-    lua_pushstring( L, p_demux->psz_access );
-    lua_setfield( L, -2, "access" );
-
-    lua_pop( L, 1 );
-
     ret = vlclua_scripts_batch_execute( p_this, "playlist",
-                                        &probe_luascript, L, NULL );
+                                        &probe_luascript, NULL );
     if( ret )
         Close_LuaPlaylist( p_this );
     return ret;
@@ -238,7 +234,8 @@ int Import_LuaPlaylist( vlc_object_t *p_this )
 void Close_LuaPlaylist( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
-    lua_close( p_demux->p_sys->L );
+    if( p_demux->p_sys->L )
+        lua_close( p_demux->p_sys->L );
     free( p_demux->p_sys->psz_filename );
     free( p_demux->p_sys );
 }
@@ -248,10 +245,9 @@ static int Demux( demux_t *p_demux )
     lua_State *L = p_demux->p_sys->L;
     char *psz_filename = p_demux->p_sys->psz_filename;
 
-    input_thread_t *p_input_thread = (input_thread_t *)
-        vlc_object_find( p_demux, VLC_OBJECT_INPUT, FIND_PARENT );
+    input_thread_t *p_input_thread = demux_GetParentInput( p_demux );
     input_item_t *p_current_input = input_GetItem( p_input_thread );
-    playlist_t *p_playlist = pl_Hold( p_demux );
+    playlist_t *p_playlist = pl_Get( p_demux );
 
     luaL_register( L, "vlc", p_reg_parse );
 
@@ -261,7 +257,6 @@ static int Demux( demux_t *p_demux )
     {
         msg_Warn( p_demux, "Error while runing script %s, "
                   "function parse() not found", psz_filename );
-        pl_Release( p_demux );
         return VLC_EGENERIC;
     }
 
@@ -270,7 +265,6 @@ static int Demux( demux_t *p_demux )
         msg_Warn( p_demux, "Error while runing script %s, "
                   "function parse(): %s", psz_filename,
                   lua_tostring( L, lua_gettop( L ) ) );
-        pl_Release( p_demux );
         return VLC_EGENERIC;
     }
 
@@ -281,7 +275,6 @@ static int Demux( demux_t *p_demux )
         msg_Err( p_demux, "Script went completely foobar" );
 
     vlc_object_release( p_input_thread );
-    vlclua_release_playlist_internal( p_playlist );
 
     return -1; /* Needed for correct operation of go back */
 }

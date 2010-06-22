@@ -2,7 +2,7 @@
  * ini_file.hpp
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 8b2ae321bf20f6d953d31b6555dfedc058456771 $
+ * $Id: 59e1574108e25cedd85773008a976ebbfb828ed2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef INI_FILE_HPP
@@ -32,17 +32,17 @@
 /// INI file parser
 class IniFile: public SkinObject
 {
-    public:
-        IniFile( intf_thread_t *pIntf, const string &rName,
-                 const string &rPath );
-        virtual ~IniFile() {}
+public:
+    IniFile( intf_thread_t *pIntf, const string &rName,
+             const string &rPath );
+    virtual ~IniFile() { }
 
-        /// Parse the INI file and fill the VarManager
-        void parseFile();
+    /// Parse the INI file and fill the VarManager
+    void parseFile();
 
-    private:
-        string m_name;
-        string m_path;
+private:
+    string m_name;
+    string m_path;
 };
 
 

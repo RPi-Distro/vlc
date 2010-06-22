@@ -2,7 +2,7 @@
  * modules.h : Module management functions.
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 252abe5b491faf8834a81bb569bf89a0f9d0a1cb $
+ * $Id: 50add49bc55f292b76ced27a586ae63715f14e58 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -25,8 +25,8 @@
 # error This header file can only be included from LibVLC.
 #endif
 
-#ifndef __LIBVLC_MODULES_H
-# define __LIBVLC_MODULES_H 1
+#ifndef LIBVLC_MODULES_H
+# define LIBVLC_MODULES_H 1
 
 
 /* Number of tries before we unload an unused module */
@@ -40,8 +40,6 @@
 struct module_bank_t
 {
     unsigned         i_usage;
-
-    bool             b_plugins;
 
     /* Plugins cache */
     bool             b_cache;
@@ -65,15 +63,13 @@ struct module_cache_t
     char       *psz_file;
     int64_t    i_time;
     int64_t    i_size;
-    bool b_junk;
 
     /* Optional extra data */
     module_t *p_module;
-    bool b_used;
 };
 
 
-#define MODULE_SHORTCUT_MAX 50
+#define MODULE_SHORTCUT_MAX 20
 
 /* The module handle type. */
 #if defined(HAVE_DL_DYLD) && !defined(__x86_64__)
@@ -102,7 +98,6 @@ struct module_t
     module_t   *parent;
     unsigned    submodule_count;
     gc_object_t vlc_gc_data;
-    vlc_mutex_t lock;
 
     /*
      * Variables set by the module to identify itself
@@ -116,10 +111,8 @@ struct module_t
 
     char    *psz_capability;                                 /**< Capability */
     int      i_score;                          /**< Score for the capability */
-    uint32_t i_cpu;                           /**< Required CPU capabilities */
 
     bool b_unloadable;                        /**< Can we be dlclosed? */
-    bool b_reentrant;                           /**< Are we reentrant? */
     bool b_submodule;                        /**< Is this a submodule? */
 
     /* Callbacks */
@@ -140,6 +133,7 @@ struct module_t
     /* Plugin-specific stuff */
     module_handle_t     handle;                             /* Unique handle */
     char *              psz_filename;                     /* Module filename */
+    char *              domain;                            /* gettext domain */
 
     bool          b_builtin;  /* Set to true if the module is built in */
     bool          b_loaded;        /* Set to true if the dll is loaded */
@@ -148,12 +142,14 @@ struct module_t
 module_t *vlc_module_create (vlc_object_t *);
 module_t *vlc_submodule_create (module_t *module);
 
-#define module_InitBank(a)     __module_InitBank(VLC_OBJECT(a))
-void  __module_InitBank        ( vlc_object_t * );
-void module_LoadPlugins( vlc_object_t *, bool );
-#define module_LoadPlugins(a,b) module_LoadPlugins(VLC_OBJECT(a),b)
+void  module_InitBank( vlc_object_t * );
+#define module_InitBank(a) module_InitBank(VLC_OBJECT(a))
+void module_LoadPlugins( vlc_object_t * );
+#define module_LoadPlugins(a) module_LoadPlugins(VLC_OBJECT(a))
 void module_EndBank( vlc_object_t *, bool );
 #define module_EndBank(a,b) module_EndBank(VLC_OBJECT(a), b)
+
+int vlc_bindtextdomain (const char *);
 
 /* Low-level OS-dependent handler */
 int  module_Load   (vlc_object_t *, const char *, module_handle_t *);
@@ -162,8 +158,9 @@ void module_Unload (module_handle_t);
 
 /* Plugins cache */
 void   CacheMerge (vlc_object_t *, module_t *, module_t *);
-void   CacheLoad  (vlc_object_t *, module_bank_t *, bool);
-void   CacheSave  (vlc_object_t *, module_bank_t *);
+void   CacheDelete(vlc_object_t *, const char *);
+void   CacheLoad  (vlc_object_t *, module_bank_t *, const char *);
+void   CacheSave  (vlc_object_t *, const char *, module_cache_t *const *, size_t);
 module_cache_t * CacheFind (module_bank_t *, const char *, int64_t, int64_t);
 
-#endif /* !__LIBVLC_MODULES_H */
+#endif /* !LIBVLC_MODULES_H */

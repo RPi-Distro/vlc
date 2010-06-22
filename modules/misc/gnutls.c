@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id: a718278cb742a675042461c613c95b9ca5e1447e $
+ * $Id: 71876b5f678a1d16c14163a71281f6082a1d248b $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -52,6 +52,7 @@
 
 #include <vlc_tls.h>
 #include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_block.h>
 
 #include <gcrypt.h>
@@ -237,7 +238,7 @@ gnutls_Recv( void *p_session, void *buf, int i_length )
 /**
  * Starts or continues the TLS handshake.
  *
- * @return -1 on fatal error, 0 on succesful handshake completion,
+ * @return -1 on fatal error, 0 on successful handshake completion,
  * 1 if more would-be blocking recv is needed,
  * 2 if more would-be blocking send is required.
  */
@@ -521,7 +522,7 @@ gnutls_Addx509Directory( vlc_object_t *p_this,
     if( *psz_dirname == '\0' )
         psz_dirname = ".";
 
-    dir = utf8_opendir( psz_dirname );
+    dir = vlc_opendir( psz_dirname );
     if( dir == NULL )
     {
         if (errno != ENOENT)
@@ -532,7 +533,7 @@ gnutls_Addx509Directory( vlc_object_t *p_this,
 
         msg_Dbg (p_this, "creating empty certificate directory: %s",
                  psz_dirname);
-        utf8_mkdir (psz_dirname, b_priv ? 0700 : 0755);
+        vlc_mkdir (psz_dirname, b_priv ? 0700 : 0755);
         return VLC_SUCCESS;
     }
 #ifdef S_ISLNK
@@ -547,7 +548,7 @@ gnutls_Addx509Directory( vlc_object_t *p_this,
          * that the inode is still the same, to avoid TOCTOU race condition.
          */
         if( ( fd == -1)
-         || fstat( fd, &st1 ) || utf8_lstat( psz_dirname, &st2 )
+         || fstat( fd, &st1 ) || vlc_lstat( psz_dirname, &st2 )
          || S_ISLNK( st2.st_mode ) || ( st1.st_ino != st2.st_ino ) )
         {
             closedir( dir );
@@ -558,7 +559,7 @@ gnutls_Addx509Directory( vlc_object_t *p_this,
 
     for (;;)
     {
-        char *ent = utf8_readdir (dir);
+        char *ent = vlc_readdir (dir);
         if (ent == NULL)
             break;
 
@@ -587,7 +588,7 @@ gnutls_Addx509File( vlc_object_t *p_this,
 {
     struct stat st;
 
-    int fd = utf8_open (psz_path, O_RDONLY, 0);
+    int fd = vlc_open (psz_path, O_RDONLY);
     if (fd == -1)
         goto error;
 
@@ -675,12 +676,12 @@ static int OpenClient (vlc_object_t *obj)
         goto error;
     }
 
-    char *userdir = config_GetUserDataDir ();
+    char *userdir = config_GetUserDir ( VLC_DATA_DIR );
     if (userdir != NULL)
     {
         char path[strlen (userdir) + sizeof ("/ssl/private")];
         sprintf (path, "%s/ssl", userdir);
-        utf8_mkdir (path, 0755);
+        vlc_mkdir (path, 0755);
 
         sprintf (path, "%s/ssl/certs", userdir);
         gnutls_Addx509Directory (VLC_OBJECT (p_session),
@@ -907,7 +908,6 @@ gnutls_SessionClose (tls_server_t *p_server, tls_session_t *p_session)
         gnutls_bye( p_sys->session, GNUTLS_SHUT_WR );
     gnutls_deinit( p_sys->session );
 
-    vlc_object_detach( p_session );
     vlc_object_release( p_session );
 
     free( p_sys );
@@ -976,7 +976,7 @@ gnutls_ServerSessionPrepare( tls_server_t *p_server )
         gnutls_certificate_server_set_request (session, GNUTLS_CERT_REQUIRE);
 
     /* Session resumption support */
-    i_val = config_GetInt (p_server, "gnutls-cache-timeout");
+    i_val = var_InheritInteger (p_server, "gnutls-cache-timeout");
     if (i_val >= 0)
         gnutls_db_set_cache_expiration (session, i_val);
     gnutls_db_set_retrieve_function( session, cb_fetch );
@@ -988,7 +988,6 @@ gnutls_ServerSessionPrepare( tls_server_t *p_server )
 
 error:
     free( p_session->p_sys );
-    vlc_object_detach( p_session );
     vlc_object_release( p_session );
     return NULL;
 }
@@ -1077,7 +1076,7 @@ static int OpenServer (vlc_object_t *obj)
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
-    p_sys->i_cache_size = config_GetInt (obj, "gnutls-cache-size");
+    p_sys->i_cache_size = var_InheritInteger (obj, "gnutls-cache-size");
     if (p_sys->i_cache_size == -1) /* Duh, config subsystem exploded?! */
         p_sys->i_cache_size = 0;
     p_sys->p_cache = calloc (p_sys->i_cache_size,

@@ -2,7 +2,7 @@
  * aout_internal.h : internal defines for audio output
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: ca2576e9d241c6a9c0aca9f019eba678625a43ad $
+ * $Id: 12878c26027b81aff3d5f94d3bb29219beb3f906 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -28,64 +28,76 @@
 #ifndef __LIBVLC_AOUT_INTERNAL_H
 # define __LIBVLC_AOUT_INTERNAL_H 1
 
-#include <assert.h>
+aout_buffer_t *aout_BufferAlloc(aout_alloc_t *allocation, mtime_t microseconds,
+        aout_buffer_t *old_buffer);
 
-#if defined( __APPLE__ ) || defined( SYS_BSD )
-#undef HAVE_ALLOCA
-#endif
+typedef struct
+{
+    struct vout_thread_t  *(*pf_request_vout)( void *, struct vout_thread_t *,
+                                               video_format_t *, bool );
+    void *p_private;
+} aout_request_vout_t;
 
-#ifdef HAVE_ALLOCA
-#   define ALLOCA_TEST( p_alloc, p_new_buffer )                             \
-        if ( (p_alloc)->i_alloc_type == AOUT_ALLOC_STACK )                  \
-        {                                                                   \
-            (p_new_buffer) = alloca( i_alloc_size + sizeof(aout_buffer_t) );\
-            i_alloc_type = AOUT_ALLOC_STACK;                                \
-        }                                                                   \
-        else
-#else
-#   define ALLOCA_TEST( p_alloc, p_new_buffer )
-#endif
-
-#define aout_BufferAlloc( p_alloc, i_nb_usec, p_previous_buffer,            \
-                          p_new_buffer )                                    \
-    if ( (p_alloc)->i_alloc_type == AOUT_ALLOC_NONE )                       \
-    {                                                                       \
-        (p_new_buffer) = p_previous_buffer;                                 \
-    }                                                                       \
-    else                                                                    \
-    {                                                                       \
-        int i_alloc_size, i_alloc_type;                                     \
-        i_alloc_size = (int)( (uint64_t)(p_alloc)->i_bytes_per_sec          \
-                                            * (i_nb_usec) / 1000000 + 1 );  \
-        ALLOCA_TEST( p_alloc, p_new_buffer )                                \
-        {                                                                   \
-            (p_new_buffer) = malloc( i_alloc_size + sizeof(aout_buffer_t) );\
-            i_alloc_type = AOUT_ALLOC_HEAP;                                 \
-        }                                                                   \
-        if ( p_new_buffer != NULL )                                         \
-        {                                                                   \
-            (p_new_buffer)->i_alloc_type = i_alloc_type;                    \
-            (p_new_buffer)->i_size = i_alloc_size;                          \
-            (p_new_buffer)->p_buffer = (uint8_t *)(p_new_buffer)            \
-                                         + sizeof(aout_buffer_t);           \
-            (p_new_buffer)->b_discontinuity = false;                        \
-            if ( (p_previous_buffer) != NULL )                              \
-            {                                                               \
-                (p_new_buffer)->start_date =                                \
-                           ((aout_buffer_t *)p_previous_buffer)->start_date;\
-                (p_new_buffer)->end_date =                                  \
-                           ((aout_buffer_t *)p_previous_buffer)->end_date;  \
-            }                                                               \
-        }                                                                   \
-        /* we'll keep that for a while --Meuuh */                           \
-        /* else printf("%s:%d\n", __FILE__, __LINE__); */                   \
-    }
-
-struct aout_filter_owner_sys_t
+struct filter_owner_sys_t
 {
     aout_instance_t *p_aout;
     aout_input_t    *p_input;
 };
+
+block_t *aout_FilterBufferNew( filter_t *, int );
+
+/** an input stream for the audio output */
+struct aout_input_t
+{
+    /* When this lock is taken, the pipeline cannot be changed by a
+     * third-party. */
+    vlc_mutex_t             lock;
+
+    audio_sample_format_t   input;
+    aout_alloc_t            input_alloc;
+
+    /* pre-filters */
+    filter_t *              pp_filters[AOUT_MAX_FILTERS];
+    int                     i_nb_filters;
+
+    filter_t *              p_playback_rate_filter;
+
+    /* resamplers */
+    filter_t *              pp_resamplers[AOUT_MAX_FILTERS];
+    int                     i_nb_resamplers;
+    int                     i_resampling_type;
+    mtime_t                 i_resamp_start_date;
+    int                     i_resamp_start_drift;
+
+    /* Mixer information */
+    audio_replay_gain_t     replay_gain;
+
+    /* If b_restart == 1, the input pipeline will be re-created. */
+    bool              b_restart;
+
+    /* If b_error == 1, there is no input pipeline. */
+    bool              b_error;
+
+    /* Did we just change the output format? (expect buffer inconsistencies) */
+    bool              b_changed;
+
+    /* last rate from input */
+    int               i_last_input_rate;
+
+    /* */
+    int               i_buffer_lost;
+
+    /* */
+    bool              b_paused;
+    mtime_t           i_pause_date;
+
+    /* */
+    bool                b_recycle_vout;
+    aout_request_vout_t request_vout;
+
+    /* */
+    aout_mixer_input_t mixer;
+ };
 
 /****************************************************************************
  * Prototypes
@@ -96,12 +108,13 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
 int aout_InputDelete( aout_instance_t * p_aout, aout_input_t * p_input );
 int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
                     aout_buffer_t * p_buffer, int i_input_rate );
+void aout_InputCheckAndRestart( aout_instance_t * p_aout, aout_input_t * p_input );
 
 /* From filters.c : */
-int aout_FiltersCreatePipeline ( aout_instance_t * p_aout, aout_filter_t ** pp_filters, int * pi_nb_filters, const audio_sample_format_t * p_input_format, const audio_sample_format_t * p_output_format );
-void aout_FiltersDestroyPipeline ( aout_instance_t * p_aout, aout_filter_t ** pp_filters, int i_nb_filters );
-void  aout_FiltersPlay ( aout_instance_t * p_aout, aout_filter_t ** pp_filters, int i_nb_filters, aout_buffer_t ** pp_input_buffer );
-void aout_FiltersHintBuffers( aout_instance_t * p_aout, aout_filter_t ** pp_filters, int i_nb_filters, aout_alloc_t * p_first_alloc );
+int aout_FiltersCreatePipeline ( aout_instance_t * p_aout, filter_t ** pp_filters, int * pi_nb_filters, const audio_sample_format_t * p_input_format, const audio_sample_format_t * p_output_format );
+void aout_FiltersDestroyPipeline ( aout_instance_t * p_aout, filter_t ** pp_filters, int i_nb_filters );
+void  aout_FiltersPlay ( filter_t ** pp_filters, unsigned i_nb_filters, aout_buffer_t ** pp_input_buffer );
+void aout_FiltersHintBuffers( aout_instance_t * p_aout, filter_t ** pp_filters, int i_nb_filters, aout_alloc_t * p_first_alloc );
 
 /* From mixer.c : */
 int aout_MixerNew( aout_instance_t * p_aout );
@@ -152,50 +165,94 @@ int aout_DecGetResetLost( aout_instance_t *, aout_input_t * );
 void aout_DecChangePause( aout_instance_t *, aout_input_t *, bool b_paused, mtime_t i_date );
 void aout_DecFlush( aout_instance_t *, aout_input_t * );
 
-/* Helpers */
+/* Audio output locking */
+
+#if !defined (NDEBUG) \
+ && defined __linux__ && (defined (__i386__) || defined (__x86_64__))
+# define AOUT_DEBUG 1
+#endif
+
+#ifdef AOUT_DEBUG
+enum
+{
+    MIXER_LOCK=1,
+    INPUT_LOCK=2,
+    INPUT_FIFO_LOCK=4,
+    OUTPUT_FIFO_LOCK=8,
+    VOLUME_VARS_LOCK=16
+};
+
+void aout_lock (unsigned);
+void aout_unlock (unsigned);
+
+#else
+# define aout_lock( i )   (void)0
+# define aout_unlock( i ) (void)0
+#endif
 
 static inline void aout_lock_mixer( aout_instance_t *p_aout )
 {
+    aout_lock( MIXER_LOCK );
     vlc_mutex_lock( &p_aout->mixer_lock );
 }
 
 static inline void aout_unlock_mixer( aout_instance_t *p_aout )
 {
+    aout_unlock( MIXER_LOCK );
     vlc_mutex_unlock( &p_aout->mixer_lock );
 }
 
 static inline void aout_lock_input_fifos( aout_instance_t *p_aout )
 {
+    aout_lock( INPUT_FIFO_LOCK );
     vlc_mutex_lock( &p_aout->input_fifos_lock );
 }
 
 static inline void aout_unlock_input_fifos( aout_instance_t *p_aout )
 {
+    aout_unlock( INPUT_FIFO_LOCK );
     vlc_mutex_unlock( &p_aout->input_fifos_lock );
 }
 
 static inline void aout_lock_output_fifo( aout_instance_t *p_aout )
 {
+    aout_lock( OUTPUT_FIFO_LOCK );
     vlc_mutex_lock( &p_aout->output_fifo_lock );
 }
 
 static inline void aout_unlock_output_fifo( aout_instance_t *p_aout )
 {
+    aout_unlock( OUTPUT_FIFO_LOCK );
     vlc_mutex_unlock( &p_aout->output_fifo_lock );
 }
 
 static inline void aout_lock_input( aout_instance_t *p_aout, aout_input_t * p_input )
 {
     (void)p_aout;
+    aout_lock( INPUT_LOCK );
     vlc_mutex_lock( &p_input->lock );
 }
 
 static inline void aout_unlock_input( aout_instance_t *p_aout, aout_input_t * p_input )
 {
     (void)p_aout;
+    aout_unlock( INPUT_LOCK );
     vlc_mutex_unlock( &p_input->lock );
 }
 
+static inline void aout_lock_volume( aout_instance_t *p_aout )
+{
+    aout_lock( VOLUME_VARS_LOCK );
+    vlc_mutex_lock( &p_aout->volume_vars_lock );
+}
+
+static inline void aout_unlock_volume( aout_instance_t *p_aout )
+{
+    aout_unlock( VOLUME_VARS_LOCK );
+    vlc_mutex_unlock( &p_aout->volume_vars_lock );
+}
+
+/* Helpers */
 
 /**
  * This function will safely mark aout input to be restarted as soon as
@@ -216,39 +273,42 @@ static inline bool AoutChangeFilterString( vlc_object_t *p_obj, aout_instance_t 
                                            const char* psz_variable,
                                            const char *psz_name, bool b_add )
 {
-    vlc_value_t val;
+    char *psz_val;
     char *psz_parser;
 
     if( *psz_name == '\0' )
         return false;
 
     if( p_aout )
-        var_Get( p_aout, psz_variable, &val );
+        psz_val = var_GetString( p_aout, psz_variable );
     else
-        val.psz_string = config_GetPsz( p_obj, "audio-filter" );
+    {
+        psz_val = var_CreateGetString( p_obj->p_libvlc, "audio-filter" );
+        var_Destroy( p_obj->p_libvlc, "audio-filter" );
+    }
 
-    if( !val.psz_string )
-        val.psz_string = strdup("");
+    if( !psz_val )
+        psz_val = strdup( "" );
 
-    psz_parser = strstr( val.psz_string, psz_name );
+    psz_parser = strstr( psz_val, psz_name );
 
     if( ( b_add && psz_parser ) || ( !b_add && !psz_parser ) )
     {
         /* Nothing to do */
-        free( val.psz_string );
+        free( psz_val );
         return false;
     }
 
     if( b_add )
     {
-        char *psz_old = val.psz_string;
+        char *psz_old = psz_val;
         if( *psz_old )
         {
-            if( asprintf( &val.psz_string, "%s:%s", psz_old, psz_name ) == -1 )
-                val.psz_string = NULL;
+            if( asprintf( &psz_val, "%s:%s", psz_old, psz_name ) == -1 )
+                psz_val = NULL;
         }
         else
-            val.psz_string = strdup( psz_name );
+            psz_val = strdup( psz_name );
         free( psz_old );
     }
     else
@@ -264,10 +324,10 @@ static inline bool AoutChangeFilterString( vlc_object_t *p_obj, aout_instance_t 
     }
 
     if( p_aout )
-        var_Set( p_aout, psz_variable, val );
+        var_SetString( p_aout, psz_variable, psz_val );
     else
-        config_PutPsz( p_obj, psz_variable, val.psz_string );
-    free( val.psz_string );
+        config_PutPsz( p_obj, psz_variable, psz_val );
+    free( psz_val );
     return true;
 }
 

@@ -2,7 +2,7 @@
  * zip.h: Module (access+filter) to extract different archives, based on zlib
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: a6d7b62fcdbb5b0a58ff33e93aa817f3c57d7a2c $
+ * $Id: 6137a0e6aa06cfb1d97809322d79c99f47bf4bb7 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -28,7 +28,6 @@
 #ifndef ZIP_ACCESSDEMUX_H
 #define ZIP_ACCESSDEMUX_H
 
-#include <vlc/vlc.h>
 #include <vlc_common.h>
 #include <vlc_url.h>
 #include <vlc_strings.h>

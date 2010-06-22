@@ -1,8 +1,8 @@
 /*****************************************************************************
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
-* Copyright (C) 2008-2009 the VideoLAN team
-* $Id: 936a4cf158f4f872ca4146d8e585b283a5f4bdb0 $
+* Copyright (C) 2008 the VideoLAN team
+* $Id: 2c11578e6b4916fb0982b8963fe95b71e836a584 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -96,6 +96,8 @@
     IBOutlet id o_intf_lang_txt;
     IBOutlet id o_intf_network_box;
     IBOutlet id o_intf_view;
+    IBOutlet id o_intf_update_ckb;
+    IBOutlet id o_intf_last_update_lbl;
 
     IBOutlet id o_osd_encoding_pop;
     IBOutlet id o_osd_encoding_txt;

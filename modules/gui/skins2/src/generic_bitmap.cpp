@@ -2,7 +2,7 @@
  * generic_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: bf26bca12046de177cda27fbff28e5ccb3685607 $
+ * $Id: 37818df4cae1d0775ce79c166d62887bc2e4c221 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -24,15 +24,17 @@
 #include "generic_bitmap.hpp"
 
 
-GenericBitmap::GenericBitmap( intf_thread_t *pIntf, int nbFrames, int fps ):
-    SkinObject( pIntf ), m_nbFrames( nbFrames ), m_frameRate( fps )
+GenericBitmap::GenericBitmap( intf_thread_t *pIntf,
+                              int nbFrames, int fps, int nbLoops ):
+    SkinObject( pIntf ), m_nbFrames( nbFrames ),
+    m_frameRate( fps ), m_nbLoops( nbLoops )
 {
 }
 
 
 BitmapImpl::BitmapImpl( intf_thread_t *pIntf, int width, int height,
-                        int nbFrames, int fps ):
-    GenericBitmap( pIntf, nbFrames, fps ), m_width( width ),
+                        int nbFrames, int fps, int nbLoops ):
+    GenericBitmap( pIntf, nbFrames, fps, nbLoops ), m_width( width ),
     m_height( height ), m_pData( NULL )
 {
     m_pData = new uint8_t[width * height * 4];

@@ -2,7 +2,7 @@
  * svgalib.c : SVGAlib plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: ae99b3452922115ed140c74a8ddae8aea6412f4e $
+ * $Id: d66bc947c9d0f8facee7bf72b134073f3924ba07 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -61,7 +61,7 @@ vlc_module_begin ()
     set_description( N_("SVGAlib video output") )
     set_capability( "video output", 0 )
     set_callbacks( Create, Destroy )
-    linked_with_a_crap_library_which_uses_atexit ()
+    cannot_unload_broken_library () /* SVGAlib uses atexit() */
 vlc_module_end ()
 
 /*****************************************************************************
@@ -155,7 +155,7 @@ static int Init( vout_thread_t *p_vout )
 
     /* Initialize the output structure: RGB with square pixels, whatever
      * the input format is, since it's the only format we know */
-    p_vout->output.i_chroma = VLC_FOURCC('R','G','B','2');
+    p_vout->output.i_chroma = VLC_CODEC_RGB8;
     p_vout->output.pf_setpalette = SetPalette;
     p_vout->output.i_width = vga_getxdim();
     p_vout->output.i_height = vga_getydim();
@@ -183,7 +183,8 @@ static int Init( vout_thread_t *p_vout )
 
     vout_AllocatePicture( p_vout, p_pic, p_vout->output.i_chroma,
                           p_vout->output.i_width, p_vout->output.i_height,
-                          p_vout->output.i_aspect );
+                          p_vout->output.i_aspect * p_vout->output.i_height,
+                          VOUT_ASPECT_FACTOR      * p_vout->output.i_width );
 
     if( p_pic->i_planes == 0 )
     {

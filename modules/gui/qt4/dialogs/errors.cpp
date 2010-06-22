@@ -2,7 +2,7 @@
  * errors.cpp : Errors
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: a2bd94f73d44c7e92b93bcf86005c70a3967a7cb $
+ * $Id: 0d4edccae9a9ea287b4481158d2c16e4cb412513 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -34,12 +34,11 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-ErrorsDialog *ErrorsDialog::instance = NULL;
-
-ErrorsDialog::ErrorsDialog( QWidget *parent, intf_thread_t *_p_intf )
-             : QVLCDialog( parent, _p_intf )
+ErrorsDialog::ErrorsDialog( intf_thread_t *_p_intf )
+             : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
 {
     setWindowTitle( qtr( "Errors" ) );
+    setWindowRole( "vlc-errors" );
     resize( 500 , 300 );
 
     QGridLayout *layout = new QGridLayout( this );

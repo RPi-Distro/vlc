@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 62b097b23337b246ee82f957e4b1df7a00a02af4 $
+ * $Id: c36adefcfc41aee18fa14cc1687408b74fabc7c4 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -66,9 +66,9 @@ vlc_module_begin ()
     set_description( N_("Windows Service interface") )
     set_category( CAT_INTERFACE )
     set_subcategory( SUBCAT_INTERFACE_CONTROL )
-    add_bool( "ntservice-install", 0, NULL,
+    add_bool( "ntservice-install", false, NULL,
               INSTALL_TEXT, INSTALL_LONGTEXT, true )
-    add_bool( "ntservice-uninstall", 0, NULL,
+    add_bool( "ntservice-uninstall", false, NULL,
               UNINSTALL_TEXT, UNINSTALL_LONGTEXT, true )
     add_string ( "ntservice-name", VLCSERVICENAME, NULL,
                  NAME_TEXT, NAME_LONGTEXT, true )
@@ -125,27 +125,26 @@ void Close( vlc_object_t *p_this )
 static void Run( intf_thread_t *p_intf )
 {
     intf_sys_t sys;
-    intf_thread_t *p_extraintf;
     SERVICE_TABLE_ENTRY dispatchTable[] =
     {
-        { VLCSERVICENAME, &ServiceDispatch },
+        { (LPTSTR)VLCSERVICENAME, &ServiceDispatch },
         { NULL, NULL }
     };
 
     int canc = vlc_savecancel();
     p_global_intf = p_intf;
     p_intf->p_sys = &sys;
-    p_intf->p_sys->psz_service = config_GetPsz( p_intf, "ntservice-name" );
+    p_intf->p_sys->psz_service = var_InheritString( p_intf, "ntservice-name" );
     p_intf->p_sys->psz_service = p_intf->p_sys->psz_service ?
         p_intf->p_sys->psz_service : strdup(VLCSERVICENAME);
 
-    if( config_GetInt( p_intf, "ntservice-install" ) )
+    if( var_InheritBool( p_intf, "ntservice-install" ) )
     {
         NTServiceInstall( p_intf );
         return;
     }
 
-    if( config_GetInt( p_intf, "ntservice-uninstall" ) )
+    if( var_InheritBool( p_intf, "ntservice-uninstall" ) )
     {
         NTServiceUninstall( p_intf );
         return;
@@ -183,21 +182,21 @@ static int NTServiceInstall( intf_thread_t *p_intf )
     GetModuleFileName( NULL, psz_pathtmp, MAX_PATH );
     sprintf( psz_path, "\"%s\" -I "MODULE_STRING, psz_pathtmp );
 
-    psz_extra = config_GetPsz( p_intf, "ntservice-extraintf" );
-    if( psz_extra && *psz_extra )
+    psz_extra = var_InheritString( p_intf, "ntservice-extraintf" );
+    if( psz_extra )
     {
         strcat( psz_path, " --ntservice-extraintf " );
         strcat( psz_path, psz_extra );
+        free( psz_extra );
     }
-    free( psz_extra );
 
-    psz_extra = config_GetPsz( p_intf, "ntservice-options" );
+    psz_extra = var_InheritString( p_intf, "ntservice-options" );
     if( psz_extra && *psz_extra )
     {
         strcat( psz_path, " " );
         strcat( psz_path, psz_extra );
+        free( psz_extra );
     }
-    free( psz_extra );
 
     SC_HANDLE service =
         CreateService( handle, p_sys->psz_service, p_sys->psz_service,
@@ -294,7 +293,7 @@ static void WINAPI ServiceDispatch( DWORD numArgs, char **args )
     /*
      * Load background interfaces
      */
-    psz_modules = config_GetPsz( p_intf, "ntservice-extraintf" );
+    psz_modules = var_InheritString( p_intf, "ntservice-extraintf" );
     psz_parser = psz_modules;
     while( psz_parser && *psz_parser )
     {
@@ -309,26 +308,14 @@ static void WINAPI ServiceDispatch( DWORD numArgs, char **args )
 
         if( asprintf( &psz_temp, "%s,none", psz_module ) != -1 )
         {
-            intf_thread_t *p_new_intf;
-
             /* Try to create the interface */
-            p_new_intf = intf_Create( p_intf, psz_temp );
-            if( p_new_intf == NULL )
+            if( intf_Create( p_intf, psz_temp ) )
             {
                 msg_Err( p_intf, "interface \"%s\" initialization failed",
                          psz_temp );
                 free( psz_temp );
                 continue;
             }
-
-            /* Try to run the interface */
-            if( intf_RunThread( p_new_intf ) )
-            {
-                vlc_object_detach( p_new_intf );
-                vlc_object_release( p_new_intf );
-                msg_Err( p_intf, "interface \"%s\" cannot run", psz_temp );
-            }
-
             free( psz_temp );
         }
     }

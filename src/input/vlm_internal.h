@@ -2,7 +2,7 @@
  * vlm_internal.h: Internal vlm structures
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: a8c72fc714cf289a02ed56ed9e8e0836cb7c772a $
+ * $Id: 03e58284db722399588c53ae97ea904f5c02372d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -29,7 +29,7 @@
 #define _VLM_INTERNAL_H 1
 
 #include <vlc_vlm.h>
-#include "input_internal.h"
+#include "input_interface.h"
 
 /* Private */
 typedef struct
@@ -90,12 +90,14 @@ struct vlm_t
 
     vlc_mutex_t  lock;
     vlc_thread_t thread;
-
+    vlc_mutex_t  lock_manage;
+    vlc_cond_t   wait_manage;
+    /* tell vlm thread there is work to do */
+    bool         input_state_changed;
     /* */
     int64_t        i_id;
 
     /* Vod server (used by media) */
-    int            i_vod;
     vod_t          *p_vod;
 
     /* Media list */

@@ -2,7 +2,7 @@
  * oss.c : OSS /dev/dsp module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: e6154656b84ac97a154c986a5aa9e0bc8df69930 $
+ * $Id: 14d91ca1c0efa9a3d196006d4bea70f2742708fe $
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -31,17 +31,13 @@
 # include "config.h"
 #endif
 
-#include <errno.h>                                                 /* ENOMEM */
 #include <fcntl.h>                                       /* open(), O_WRONLY */
 #include <sys/ioctl.h>                                            /* ioctl() */
 #include <unistd.h>                                      /* write(), close() */
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
-#ifdef HAVE_ALLOCA_H
-#   include <alloca.h>
-#endif
+#include <vlc_fs.h>
 
 #include <vlc_aout.h>
 
@@ -113,7 +109,7 @@ vlc_module_begin ()
     add_file( "oss-audio-device", "/dev/dsp", aout_FindAndRestart,
               N_("OSS DSP device"), NULL, false )
         add_deprecated_alias( "dspdev" )   /* deprecated since 0.9.3 */
-    add_bool( "oss-buggy", 0, NULL, BUGGY_TEXT, BUGGY_LONGTEXT, true )
+    add_bool( "oss-buggy", false, NULL, BUGGY_TEXT, BUGGY_LONGTEXT, true )
 
     set_capability( "audio output", 100 )
     add_shortcut( "oss" )
@@ -250,10 +246,10 @@ static void Probe( aout_instance_t * p_aout )
             text.psz_string = _("A/52 over S/PDIF");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
-            if( config_GetInt( p_aout, "spdif" ) )
+            if( var_InheritBool( p_aout, "spdif" ) )
                 var_Set( p_aout, "audio-device", val );
         }
-        else if( config_GetInt( p_aout, "spdif" ) )
+        else if( var_InheritBool( p_aout, "spdif" ) )
         {
             msg_Warn( p_aout, "S/PDIF not supported by card" );
         }
@@ -282,7 +278,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     /* Get device name */
-    if( (psz_device = config_GetPsz( p_aout, "oss-audio-device" )) == NULL )
+    if( (psz_device = var_InheritString( p_aout, "oss-audio-device" )) == NULL )
     {
         msg_Err( p_aout, "no audio device specified (maybe /dev/dsp?)" );
         free( p_sys );
@@ -294,7 +290,7 @@ static int Open( vlc_object_t *p_this )
      * wait forever until the device is available. Since this breaks the
      * OSS spec, we immediately put it back to blocking mode if the
      * operation was successful. */
-    p_sys->i_fd = open( psz_device, O_WRONLY | O_NDELAY );
+    p_sys->i_fd = vlc_open( psz_device, O_WRONLY | O_NDELAY );
     if( p_sys->i_fd < 0 )
     {
         msg_Err( p_aout, "cannot open audio device (%s)", psz_device );
@@ -326,11 +322,11 @@ static int Open( vlc_object_t *p_this )
 
     if ( val.i_int == AOUT_VAR_SPDIF )
     {
-        p_aout->output.output.i_format = VLC_FOURCC('s','p','d','i');
+        p_aout->output.output.i_format = VLC_CODEC_SPDIFL;
     }
     else if ( val.i_int == AOUT_VAR_5_1 )
     {
-        p_aout->output.output.i_format = AOUT_FMT_S16_NE;
+        p_aout->output.output.i_format = VLC_CODEC_S16N;
         p_aout->output.output.i_physical_channels
             = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
                | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT
@@ -338,20 +334,20 @@ static int Open( vlc_object_t *p_this )
     }
     else if ( val.i_int == AOUT_VAR_2F2R )
     {
-        p_aout->output.output.i_format = AOUT_FMT_S16_NE;
+        p_aout->output.output.i_format = VLC_CODEC_S16N;
         p_aout->output.output.i_physical_channels
             = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
                | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT;
     }
     else if ( val.i_int == AOUT_VAR_STEREO )
     {
-        p_aout->output.output.i_format = AOUT_FMT_S16_NE;
+        p_aout->output.output.i_format = VLC_CODEC_S16N;
         p_aout->output.output.i_physical_channels
             = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
     }
     else if ( val.i_int == AOUT_VAR_MONO )
     {
-        p_aout->output.output.i_format = AOUT_FMT_S16_NE;
+        p_aout->output.output.i_format = VLC_CODEC_S16N;
         p_aout->output.output.i_physical_channels = AOUT_CHAN_CENTER;
     }
     else
@@ -388,7 +384,7 @@ static int Open( vlc_object_t *p_this )
             return VLC_EGENERIC;
         }
 
-        p_aout->output.output.i_format = VLC_FOURCC('s','p','d','i');
+        p_aout->output.output.i_format = VLC_CODEC_SPDIFL;
         p_aout->output.i_nb_samples = A52_FRAME_NB;
         p_aout->output.output.i_bytes_per_frame = AOUT_SPDIF_SIZE;
         p_aout->output.output.i_frame_length = A52_FRAME_NB;
@@ -415,22 +411,22 @@ static int Open( vlc_object_t *p_this )
         switch ( i_format )
         {
         case AFMT_U8:
-            p_aout->output.output.i_format = VLC_FOURCC('u','8',' ',' ');
+            p_aout->output.output.i_format = VLC_CODEC_U8;
             break;
         case AFMT_S8:
-            p_aout->output.output.i_format = VLC_FOURCC('s','8',' ',' ');
+            p_aout->output.output.i_format = VLC_CODEC_S8;
             break;
         case AFMT_U16_LE:
-            p_aout->output.output.i_format = VLC_FOURCC('u','1','6','l');
+            p_aout->output.output.i_format = VLC_CODEC_U16L;
             break;
         case AFMT_S16_LE:
-            p_aout->output.output.i_format = VLC_FOURCC('s','1','6','l');
+            p_aout->output.output.i_format = VLC_CODEC_S16L;
             break;
         case AFMT_U16_BE:
-            p_aout->output.output.i_format = VLC_FOURCC('u','1','6','b');
+            p_aout->output.output.i_format = VLC_CODEC_U16B;
             break;
         case AFMT_S16_BE:
-            p_aout->output.output.i_format = VLC_FOURCC('s','1','6','b');
+            p_aout->output.output.i_format = VLC_CODEC_S16B;
             break;
         default:
             msg_Err( p_aout, "OSS fell back to an unknown format (%d)",
@@ -513,7 +509,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_aout->output.p_sys->b_workaround_buggy_driver =
-        config_GetInt( p_aout, "oss-buggy" );
+        var_InheritBool( p_aout, "oss-buggy" );
 
     /* Create OSS thread and wait for its readiness. */
     if( vlc_thread_create( p_aout, "aout", OSSThread,
@@ -522,7 +518,7 @@ static int Open( vlc_object_t *p_this )
         msg_Err( p_aout, "cannot create OSS thread (%m)" );
         close( p_sys->i_fd );
         free( p_sys );
-        return VLC_ETHREAD;
+        return VLC_ENOMEM;
     }
 
     return VLC_SUCCESS;
@@ -598,7 +594,7 @@ static void* OSSThread( vlc_object_t *p_this )
         int i_tmp, i_size;
         uint8_t * p_bytes;
 
-        if ( p_aout->output.output.i_format != VLC_FOURCC('s','p','d','i') )
+        if ( p_aout->output.output.i_format != VLC_CODEC_SPDIFL )
         {
             mtime_t buffered = BufferDuration( p_aout );
 
@@ -652,7 +648,7 @@ static void* OSSThread( vlc_object_t *p_this )
             while( vlc_object_alive (p_aout) && ! ( p_buffer =
                 aout_OutputNextBuffer( p_aout, next_date, true ) ) )
             {
-                msleep( 1000 );
+                msleep( VLC_HARD_MIN_SLEEP );
                 next_date = mdate();
             }
         }
@@ -660,10 +656,10 @@ static void* OSSThread( vlc_object_t *p_this )
         if ( p_buffer != NULL )
         {
             p_bytes = p_buffer->p_buffer;
-            i_size = p_buffer->i_nb_bytes;
+            i_size = p_buffer->i_buffer;
             /* This is theoretical ... we'll see next iteration whether
              * we're drifting */
-            next_date += p_buffer->end_date - p_buffer->start_date;
+            next_date += p_buffer->i_length;
         }
         else
         {

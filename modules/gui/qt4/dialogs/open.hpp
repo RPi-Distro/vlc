@@ -2,7 +2,7 @@
  * open.hpp : advanced open dialog
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 7ba13fc6fd93360b2486657d300824c6f3118a2c $
+ * $Id: db2efbb67feb28438e2c0baec3f1525fe516a7c6 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -29,6 +29,7 @@
 #endif
 
 #include <vlc_common.h>
+#include <vlc_url.h>
 
 #include "util/qvlcframe.hpp"
 #include "ui/open.h"
@@ -56,7 +57,7 @@ class QTabWidget;
 
 class OpenDialog : public QVLCDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     static OpenDialog * getInstance( QWidget *parent, intf_thread_t *p_intf,
                                 bool b_rawInstance = false, int _action_flag = 0,
@@ -101,7 +102,7 @@ private:
     QStringList SeparateEntries( const QString& );
 
     QPushButton *cancelButton, *selectButton;
-    QPushButton *playButton;
+    QToolButton *playButton;
 
     void finish( bool );
 

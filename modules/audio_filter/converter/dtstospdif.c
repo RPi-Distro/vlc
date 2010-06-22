@@ -2,7 +2,7 @@
  * dtstospdif.c : encapsulates DTS frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2003, 2006 the VideoLAN team
- * $Id: d55446d11bbfff66d9a358b406e164b7bbc0e5ea $
+ * $Id: c345e011cdaaa4c25f120ce08bb7ae9178d386da $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -31,28 +31,22 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
-
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
-
 #include <vlc_aout.h>
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Local structures
  *****************************************************************************/
-struct aout_filter_sys_t
+struct filter_sys_t
 {
+    mtime_t start_date;
+
     /* 3 DTS frames have to be packed into an S/PDIF frame.
      * We accumulate DTS frames from the decoder until we have enough to
      * send. */
-
+    size_t i_frame_size;
     uint8_t *p_buf;
-
-    mtime_t start_date;
-
-    int i_frames;
-    unsigned int i_frame_size;
+    unsigned i_frames;
 };
 
 /*****************************************************************************
@@ -60,8 +54,7 @@ struct aout_filter_sys_t
  *****************************************************************************/
 static int  Create    ( vlc_object_t * );
 static void Close     ( vlc_object_t * );
-static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
-                        aout_buffer_t * );
+static block_t *DoWork( filter_t *, block_t * );
 
 /*****************************************************************************
  * Module descriptor
@@ -79,24 +72,27 @@ vlc_module_end ()
  *****************************************************************************/
 static int Create( vlc_object_t *p_this )
 {
-    aout_filter_t * p_filter = (aout_filter_t *)p_this;
+    filter_t * p_filter = (filter_t *)p_this;
+    filter_sys_t *p_sys;
 
-    if( p_filter->input.i_format != VLC_FOURCC('d','t','s',' ') ||
-        ( p_filter->output.i_format != VLC_FOURCC('s','p','d','i') &&
-          p_filter->output.i_format != VLC_FOURCC('s','p','d','b') ) )
+    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_DTS ||
+        ( p_filter->fmt_out.audio.i_format != VLC_CODEC_SPDIFL &&
+          p_filter->fmt_out.audio.i_format != VLC_CODEC_SPDIFB ) )
     {
-        return -1;
+        return VLC_EGENERIC;
     }
 
     /* Allocate the memory needed to store the module's structure */
-    p_filter->p_sys = calloc( 1, sizeof(struct aout_filter_sys_t) );
-    if( !p_filter->p_sys )
+    p_sys = p_filter->p_sys = malloc( sizeof(*p_sys) );
+    if( !p_sys )
         return VLC_ENOMEM;
+    p_sys->p_buf = NULL;
+    p_sys->i_frame_size = 0;
+    p_sys->i_frames = 0;
 
-    p_filter->pf_do_work = DoWork;
-    p_filter->b_in_place = 1;
+    p_filter->pf_audio_filter = DoWork;
 
-    return 0;
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -104,41 +100,41 @@ static int Create( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t * p_this )
 {
-    aout_filter_t * p_filter = (aout_filter_t *)p_this;
-    if( p_filter->p_sys->i_frame_size ) free( p_filter->p_sys->p_buf );
+    filter_t * p_filter = (filter_t *)p_this;
+
+    free( p_filter->p_sys->p_buf );
     free( p_filter->p_sys );
 }
 
 /*****************************************************************************
  * DoWork: convert a buffer
  *****************************************************************************/
-static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
-                    aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
+static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
 {
     uint32_t i_ac5_spdif_type = 0;
     uint16_t i_fz = p_in_buf->i_nb_samples * 4;
-    uint16_t i_frame, i_length = p_in_buf->i_nb_bytes;
+    uint16_t i_frame, i_length = p_in_buf->i_buffer;
     static const uint8_t p_sync_le[6] = { 0x72, 0xF8, 0x1F, 0x4E, 0x00, 0x00 };
     static const uint8_t p_sync_be[6] = { 0xF8, 0x72, 0x4E, 0x1F, 0x00, 0x00 };
 
-    if( p_in_buf->i_nb_bytes != p_filter->p_sys->i_frame_size )
+    if( p_in_buf->i_buffer != p_filter->p_sys->i_frame_size )
     {
         /* Frame size changed, reset everything */
-        msg_Warn( p_aout, "Frame size changed from %u to %u, "
+        msg_Warn( p_filter, "Frame size changed from %zu to %zu, "
                           "resetting everything.",
-                  p_filter->p_sys->i_frame_size,
-                  (unsigned)p_in_buf->i_nb_bytes );
+                  p_filter->p_sys->i_frame_size, p_in_buf->i_buffer );
 
-        p_filter->p_sys->i_frame_size = p_in_buf->i_nb_bytes;
-        p_filter->p_sys->p_buf = realloc( p_filter->p_sys->p_buf,
-                                          p_in_buf->i_nb_bytes * 3 );
+        p_filter->p_sys->i_frame_size = p_in_buf->i_buffer;
+        p_filter->p_sys->p_buf = xrealloc( p_filter->p_sys->p_buf,
+                                                  p_in_buf->i_buffer * 3 );
         p_filter->p_sys->i_frames = 0;
     }
 
     /* Backup frame */
-    vlc_memcpy( p_filter->p_sys->p_buf + p_in_buf->i_nb_bytes *
+    /* TODO: keeping the blocks in a list would save one memcpy */
+    vlc_memcpy( p_filter->p_sys->p_buf + p_in_buf->i_buffer *
                   p_filter->p_sys->i_frames,
-                p_in_buf->p_buffer, p_in_buf->i_nb_bytes );
+                p_in_buf->p_buffer, p_in_buf->i_buffer );
 
     p_filter->p_sys->i_frames++;
 
@@ -146,15 +142,18 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
     {
         if( p_filter->p_sys->i_frames == 1 )
             /* We'll need the starting date */
-            p_filter->p_sys->start_date = p_in_buf->start_date;
+            p_filter->p_sys->start_date = p_in_buf->i_pts;
 
         /* Not enough data */
-        p_out_buf->i_nb_samples = 0;
-        p_out_buf->i_nb_bytes = 0;
-        return;
+        block_Release( p_in_buf );
+        return NULL;
     }
 
     p_filter->p_sys->i_frames = 0;
+    block_t *p_out_buf = filter_NewAudioBuffer( p_filter,
+                                                12 * p_in_buf->i_nb_samples );
+    if( !p_out_buf )
+        goto out;
 
     for( i_frame = 0; i_frame < 3; i_frame++ )
     {
@@ -170,7 +169,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         }
 
         /* Copy the S/PDIF headers. */
-        if( p_filter->output.i_format == VLC_FOURCC('s','p','d','b') )
+        if( p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFB )
         {
             vlc_memcpy( p_out, p_sync_be, 6 );
             p_out[5] = i_ac5_spdif_type;
@@ -185,8 +184,8 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
             p_out[7] = (( i_length ) >> 5 ) & 0xFF;
         }
 
-        if( ( (p_in[0] == 0x1F || p_in[0] == 0x7F) && p_filter->output.i_format == VLC_FOURCC('s','p','d','i') ) ||
-            ( (p_in[0] == 0xFF || p_in[0] == 0xFE) && p_filter->output.i_format == VLC_FOURCC('s','p','d','b') ) )
+        if( ( (p_in[0] == 0x1F || p_in[0] == 0x7F) && p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFL ) ||
+            ( (p_in[0] == 0xFF || p_in[0] == 0xFE) && p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFB ) )
         {
             /* We are dealing with a big endian bitstream and a little endian output
              * or a little endian bitstream and a big endian output.
@@ -213,7 +212,10 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         }
     }
 
-    p_out_buf->start_date = p_filter->p_sys->start_date;
+    p_out_buf->i_pts = p_filter->p_sys->start_date;
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples * 3;
-    p_out_buf->i_nb_bytes = p_out_buf->i_nb_samples * 4;
+    p_out_buf->i_buffer = p_out_buf->i_nb_samples * 4;
+out:
+    block_Release( p_in_buf );
+    return p_out_buf;
 }

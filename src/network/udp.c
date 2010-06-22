@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: 2bbf4a127de2b557c5a4417fa142c1e34e300463 $
+ * $Id: 3b2f5454670a1b5fb26bdfcfb3b9dde58341f702 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -34,10 +34,6 @@
 #include <vlc_common.h>
 
 #include <errno.h>
-
-#ifdef HAVE_SYS_TIME_H
-#    include <sys/time.h>
-#endif
 
 #include <vlc_network.h>
 
@@ -146,6 +142,7 @@ static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
     memset (&hints, 0, sizeof( hints ));
     hints.ai_family = family;
     hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_protocol = protocol;
     hints.ai_flags = AI_PASSIVE;
 
     if (host && !*host)
@@ -164,11 +161,10 @@ static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
 
     val = -1;
 
-    int fd6 = -1;
     for (const struct addrinfo *ptr = res; ptr != NULL; ptr = ptr->ai_next)
     {
         int fd = net_Socket (obj, ptr->ai_family, ptr->ai_socktype,
-                             protocol ? protocol : ptr->ai_protocol);
+                             ptr->ai_protocol);
         if (fd == -1)
         {
             msg_Dbg (obj, "socket error: %m");
@@ -184,25 +180,13 @@ static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
             int on = (family == AF_INET6);
             setsockopt (fd, SOL_IPV6, IPV6_V6ONLY, &on, sizeof (on));
         }
-        else if (ptr->ai_family == AF_INET && family == AF_UNSPEC)
-        {
-            for (const struct addrinfo *p = ptr; p != NULL; p = p->ai_next)
-                if (p->ai_family == AF_INET6)
-                {
-                    net_Close (fd);
-                    fd = -1;
-                    break;
-                }
-            if (fd == -1)
-                continue;
-        }
-#else
+        if (ptr->ai_family == AF_INET)
+#endif
         if (family == AF_UNSPEC && ptr->ai_next != NULL)
         {
             msg_Warn (obj, "ambiguous network protocol specification");
             msg_Warn (obj, "please select IP version explicitly");
         }
-#endif
 
         fd = net_SetupDgramSocket( obj, fd, ptr );
         if( fd == -1 )
@@ -260,9 +244,13 @@ static int net_SetMcastHopLimit( vlc_object_t *p_this,
         /* BSD compatibility */
         unsigned char buf;
 
+        msg_Dbg( p_this, "cannot set hop limit (%d): %m", hlim );
         buf = (unsigned char)(( hlim > 255 ) ? 255 : hlim);
         if( setsockopt( fd, proto, cmd, &buf, sizeof( buf ) ) )
+        {
+            msg_Err( p_this, "cannot set hop limit (%d): %m", hlim );
             return VLC_EGENERIC;
+        }
     }
 
     return VLC_SUCCESS;
@@ -646,15 +634,15 @@ static int net_SetDSCP( int fd, uint8_t dscp )
     return setsockopt( fd, level, cmd, &(int){ dscp }, sizeof (int));
 }
 
-
+#undef net_ConnectDgram
 /*****************************************************************************
- * __net_ConnectDgram:
+ * net_ConnectDgram:
  *****************************************************************************
  * Open a datagram socket to send data to a defined destination, with an
  * optional hop limit.
  *****************************************************************************/
-int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
-                        int i_hlim, int proto )
+int net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
+                      int i_hlim, int proto )
 {
     struct addrinfo hints, *res, *ptr;
     int             i_val, i_handle = -1;
@@ -665,6 +653,7 @@ int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
 
     memset( &hints, 0, sizeof( hints ) );
     hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_protocol = proto;
 
     msg_Dbg( p_this, "net: connecting to [%s]:%d", psz_host, i_port );
 
@@ -680,7 +669,7 @@ int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
     {
         char *str;
         int fd = net_Socket (p_this, ptr->ai_family, ptr->ai_socktype,
-                             proto ? proto : ptr->ai_protocol);
+                             ptr->ai_protocol);
         if (fd == -1)
             continue;
 
@@ -747,15 +736,15 @@ int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
     return i_handle;
 }
 
-
+#undef net_OpenDgram
 /*****************************************************************************
- * __net_OpenDgram:
+ * net_OpenDgram:
  *****************************************************************************
  * OpenDgram a datagram socket and return a handle
  *****************************************************************************/
-int __net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
-                     const char *psz_server, int i_server,
-                     int family, int protocol )
+int net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
+                   const char *psz_server, int i_server,
+                   int family, int protocol )
 {
     if ((psz_server == NULL) || (psz_server[0] == '\0'))
         return net_ListenSingle (obj, psz_bind, i_bind, family, protocol);
@@ -769,6 +758,7 @@ int __net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
     memset (&hints, 0, sizeof (hints));
     hints.ai_family = family;
     hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_protocol = protocol;
 
     val = vlc_getaddrinfo (obj, psz_server, i_server, &hints, &rem);
     if (val)
@@ -791,7 +781,7 @@ int __net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
     for (struct addrinfo *ptr = loc; ptr != NULL; ptr = ptr->ai_next)
     {
         int fd = net_Socket (obj, ptr->ai_family, ptr->ai_socktype,
-                             protocol ? protocol : ptr->ai_protocol);
+                             ptr->ai_protocol);
         if (fd == -1)
             continue; // usually, address family not supported
 

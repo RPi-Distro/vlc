@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: ffbb3f9b16a66c295799a31d9d793c1549a9ef40 $
+ * $Id: 45d20e2b43d20c451b1f6abcd54ad8787c65b92a $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -39,9 +39,6 @@ static vlc_fourcc_t GetFOURCC( const uint8_t *p_buff )
 {
     return VLC_FOURCC( p_buff[0], p_buff[1], p_buff[2], p_buff[3] );
 }
-
-#define AVI_ChunkFree( a, b ) _AVI_ChunkFree( (a), (avi_chunk_t*)(b) )
-void    _AVI_ChunkFree( stream_t *, avi_chunk_t *p_chk );
 
 /****************************************************************************
  *
@@ -206,6 +203,11 @@ static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
 
 #define AVI_READCHUNK_ENTER \
     int64_t i_read = __EVEN(p_chk->common.i_chunk_size ) + 8; \
+    if( i_read > 100000000 ) \
+    { \
+        msg_Err( s, "Big chunk ignored" ); \
+        return VLC_EGENERIC; \
+    } \
     uint8_t  *p_read, *p_buff;    \
     if( !( p_read = p_buff = malloc(i_read ) ) ) \
     { \
@@ -801,7 +803,7 @@ static void AVI_ChunkDumpDebug_level( vlc_object_t *p_obj,
     avi_chunk_t *p_child;
 
     char str[512];
-    if( i_level * 5 + 1 >= sizeof(str) )
+    if( i_level >= (sizeof(str) - 1)/5 )
         return;
 
     memset( str, ' ', sizeof( str ) );

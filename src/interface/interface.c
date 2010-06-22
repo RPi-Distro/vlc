@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: 9b99c1b62538963816b90f72f0457b2661c05458 $
+ * $Id: 00871e4a98612afad9fd8f0c2882b5ad4b2ad5fc $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -37,6 +37,7 @@
 # include "config.h"
 #endif
 
+#include <assert.h>
 #include <vlc_common.h>
 
 #include <vlc_aout.h>
@@ -58,137 +59,30 @@ static void * MonitorLibVLCDeath( vlc_object_t *p_this );
 static int AddIntfCallback( vlc_object_t *, char const *,
                             vlc_value_t , vlc_value_t , void * );
 
+static vlc_mutex_t lock = VLC_STATIC_MUTEX;
+
+#undef intf_Create
 /**
- * Destroy the interface after the main loop endeed.
- *
- * @param p_obj: the interface thread
- */
-static void intf_Destroy( vlc_object_t *obj )
-{
-    intf_thread_t *p_intf = (intf_thread_t *)obj;
-
-    free( p_intf->psz_intf );
-    config_ChainDestroy( p_intf->p_cfg );
-}
-
-
-/**
- * Create the interface, and prepare it for main loop. It opens ouput device
- * and creates specific interfaces. Sends its own error messages.
+ * Create and start an interface.
  *
  * @param p_this the calling vlc_object_t
  * @param psz_module a preferred interface module
- * @return a pointer to the created interface thread, NULL on error
+ * @return VLC_SUCCESS or an error code
  */
-intf_thread_t* __intf_Create( vlc_object_t *p_this, const char *psz_module )
+int intf_Create( vlc_object_t *p_this, const char *psz_module )
 {
+    libvlc_int_t *p_libvlc = p_this->p_libvlc;
     intf_thread_t * p_intf;
+    static const char psz_type[] = "interface";
 
     /* Allocate structure */
-    p_intf = vlc_object_create( p_this, VLC_OBJECT_INTF );
+    p_intf = vlc_custom_create( p_libvlc, sizeof( *p_intf ),
+                                VLC_OBJECT_GENERIC, psz_type );
     if( !p_intf )
-        return NULL;
-#if defined( __APPLE__ ) || defined( WIN32 )
-    p_intf->b_should_run_on_first_thread = false;
-#endif
-
-    /* Choose the best module */
-    p_intf->p_cfg = NULL;
-    char *psz_parser = *psz_module == '$'
-                     ? var_CreateGetString(p_intf,psz_module+1)
-                     : strdup( psz_module );
-    char *psz_tmp = config_ChainCreate( &p_intf->psz_intf, &p_intf->p_cfg,
-                                        psz_parser );
-    free( psz_tmp );
-    free( psz_parser );
-    p_intf->p_module = module_need( p_intf, "interface", p_intf->psz_intf, true );
-
-    if( p_intf->p_module == NULL )
-    {
-        msg_Err( p_intf, "no suitable interface module" );
-        free( p_intf->psz_intf );
-        vlc_object_release( p_intf );
-        return NULL;
-    }
-
-    /* Attach interface to its parent object */
-    vlc_object_attach( p_intf, p_this );
-    vlc_object_set_destructor( p_intf, intf_Destroy );
-
-    return p_intf;
-}
-
-
-/**
- * Starts and runs the interface thread.
- *
- * @param p_intf the interface thread
- * @return VLC_SUCCESS on success, an error number else
- */
-int intf_RunThread( intf_thread_t *p_intf )
-{
-#if defined( __APPLE__ ) || defined( WIN32 )
-    /* Hack to get Mac OS X Cocoa runtime running
-     * (it needs access to the main thread) */
-    if( p_intf->b_should_run_on_first_thread )
-    {
-        if( vlc_thread_create( p_intf, "interface", MonitorLibVLCDeath,
-                               VLC_THREAD_PRIORITY_LOW ) )
-        {
-            msg_Err( p_intf, "cannot spawn libvlc death monitoring thread" );
-            return VLC_EGENERIC;
-        }
-        RunInterface( VLC_OBJECT(p_intf) );
-
-        /* It is monitoring libvlc, not the p_intf */
-        vlc_object_kill( p_intf->p_libvlc );
-
-        return VLC_SUCCESS;
-    }
-#endif
-    /* Run the interface in a separate thread */
-    if( vlc_thread_create( p_intf, "interface", RunInterface,
-                           VLC_THREAD_PRIORITY_LOW ) )
-    {
-        msg_Err( p_intf, "cannot spawn interface thread" );
-        return VLC_EGENERIC;
-    }
-
-    return VLC_SUCCESS;
-}
-
-
-/**
- * Stops the interface thread
- *
- * This function asks the interface thread to stop
- * @param p_intf the interface thread
- */
-void intf_StopThread( intf_thread_t *p_intf )
-{
-    /* Tell the interface to die */
-    vlc_object_kill( p_intf );
-    vlc_thread_join( p_intf );
-
-    module_unneed( p_intf, p_intf->p_module );
-}
-
-
-
-/* Following functions are local */
-
-/**
- * RunInterface: setups necessary data and give control to the interface
- *
- * @param p_this: interface object
- */
-static void* RunInterface( vlc_object_t *p_this )
-{
-    intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    vlc_value_t val, text;
-    int canc = vlc_savecancel ();
+        return VLC_ENOMEM;
 
     /* Variable used for interface spawning */
+    vlc_value_t val, text;
     var_Create( p_intf, "intf-add", VLC_VAR_STRING |
                 VLC_VAR_HASCHOICE | VLC_VAR_ISCOMMAND );
     text.psz_string = _("Add Interface");
@@ -211,12 +105,130 @@ static void* RunInterface( vlc_object_t *p_this )
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
 
     var_AddCallback( p_intf, "intf-add", AddIntfCallback, NULL );
-    vlc_restorecancel (canc);
 
-    /* Give control to the interface */
-    if( p_intf->pf_run )
+    /* Attach interface to LibVLC */
+    vlc_object_attach( p_intf, p_libvlc );
+#if defined( __APPLE__ ) || defined( WIN32 )
+    p_intf->b_should_run_on_first_thread = false;
+#endif
+
+    /* Choose the best module */
+    p_intf->p_cfg = NULL;
+    char *psz_parser = *psz_module == '$'
+                     ? var_CreateGetString(p_intf,psz_module+1)
+                     : strdup( psz_module );
+    char *psz_tmp = config_ChainCreate( &p_intf->psz_intf, &p_intf->p_cfg,
+                                        psz_parser );
+    free( psz_tmp );
+    free( psz_parser );
+    p_intf->p_module = module_need( p_intf, "interface", p_intf->psz_intf, true );
+    if( p_intf->p_module == NULL )
+    {
+        msg_Err( p_intf, "no suitable interface module" );
+        goto error;
+    }
+
+    vlc_mutex_lock( &lock );
+    if( !vlc_object_alive( p_libvlc ) )
+    {
+        vlc_mutex_unlock( &lock );
+        goto error; /* Too late! */
+    }
+#if defined( __APPLE__ ) || defined( WIN32 )
+    /* Hack to get Mac OS X Cocoa runtime running
+     * (it needs access to the main thread) */
+    if( p_intf->b_should_run_on_first_thread )
+    {
+        if( vlc_thread_create( p_intf, "interface", MonitorLibVLCDeath,
+                               VLC_THREAD_PRIORITY_LOW ) )
+        {
+            msg_Err( p_intf, "cannot spawn libvlc death monitoring thread" );
+            vlc_mutex_unlock( &lock );
+            goto error;
+        }
+        assert( p_intf->pf_run );
         p_intf->pf_run( p_intf );
 
+        /* It is monitoring libvlc, not the p_intf */
+        vlc_object_kill( p_intf->p_libvlc );
+    }
+    else
+#endif
+    /* Run the interface in a separate thread */
+    if( p_intf->pf_run
+     && vlc_thread_create( p_intf, "interface", RunInterface,
+                           VLC_THREAD_PRIORITY_LOW ) )
+    {
+        msg_Err( p_intf, "cannot spawn interface thread" );
+        vlc_mutex_unlock( &lock );
+        goto error;
+    }
+
+    p_intf->p_next = libvlc_priv( p_libvlc )->p_intf;
+    libvlc_priv( p_libvlc )->p_intf = p_intf;
+    vlc_mutex_unlock( &lock );
+
+    return VLC_SUCCESS;
+
+error:
+    if( p_intf->p_module )
+        module_unneed( p_intf, p_intf->p_module );
+    config_ChainDestroy( p_intf->p_cfg );
+    free( p_intf->psz_intf );
+    vlc_object_release( p_intf );
+    return VLC_EGENERIC;
+}
+
+
+/**
+ * Stops and destroys all interfaces
+ * @param p_libvlc the LibVLC instance
+ */
+void intf_DestroyAll( libvlc_int_t *p_libvlc )
+{
+    intf_thread_t *p_first;
+
+    assert( !vlc_object_alive( p_libvlc ) );
+
+    vlc_mutex_lock( &lock );
+    p_first = libvlc_priv( p_libvlc )->p_intf;
+#ifndef NDEBUG
+    libvlc_priv( p_libvlc )->p_intf = NULL;
+#endif
+    vlc_mutex_unlock( &lock );
+
+    /* Tell the interfaces to die */
+    for( intf_thread_t *p_intf = p_first; p_intf; p_intf = p_intf->p_next )
+        vlc_object_kill( p_intf );
+
+    /* Cleanup the interfaces */
+    for( intf_thread_t *p_intf = p_first; p_intf != NULL; )
+    {
+        intf_thread_t *p_next = p_intf->p_next;
+
+        if( p_intf->pf_run )
+            vlc_thread_join( p_intf );
+        module_unneed( p_intf, p_intf->p_module );
+        free( p_intf->psz_intf );
+        config_ChainDestroy( p_intf->p_cfg );
+        vlc_object_release( p_intf );
+
+        p_intf = p_next;
+    }
+}
+
+/* Following functions are local */
+
+/**
+ * RunInterface: setups necessary data and give control to the interface
+ *
+ * @param p_this: interface object
+ */
+static void* RunInterface( vlc_object_t *p_this )
+{
+    intf_thread_t *p_intf = (intf_thread_t *)p_this;
+
+    p_intf->pf_run( p_intf );
     return NULL;
 }
 
@@ -245,30 +257,16 @@ static int AddIntfCallback( vlc_object_t *p_this, char const *psz_cmd,
                          vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
     (void)psz_cmd; (void)oldval; (void)p_data;
-    intf_thread_t *p_intf;
     char* psz_intf;
 
     /* Try to create the interface */
     if( asprintf( &psz_intf, "%s,none", newval.psz_string ) == -1 )
         return VLC_ENOMEM;
 
-    p_intf = intf_Create( p_this->p_libvlc, psz_intf );
+    int ret = intf_Create( VLC_OBJECT(p_this->p_libvlc), psz_intf );
     free( psz_intf );
-    if( p_intf == NULL )
-    {
+    if( ret )
         msg_Err( p_this, "interface \"%s\" initialization failed",
                  newval.psz_string );
-        return VLC_EGENERIC;
-    }
-
-    /* Try to run the interface */
-    if( intf_RunThread( p_intf ) != VLC_SUCCESS )
-    {
-        vlc_object_detach( p_intf );
-        vlc_object_release( p_intf );
-        return VLC_EGENERIC;
-    }
-
-    return VLC_SUCCESS;
+    return ret;
 }
-

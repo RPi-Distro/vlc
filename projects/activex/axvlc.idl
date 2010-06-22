@@ -2,6 +2,7 @@
  * axvlc.idl: ActiveX control for VLC
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
+ * Copyright (C) 2010 M2X BV
  *
  * Authors: Damien Fouilleul <Damien.Fouilleul@laposte.net>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
@@ -21,8 +22,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-//comments terminated by [t] are by tonsofpcs, regarding the string review.  April 02, 2006. [t]
-//Possibly change all instances of "the current playlist" to "the playlist" and "current playlist" to "the playlist" [t]
+// comments terminated by [t] are by tonsofpcs, regarding the string
+// review. April 02, 2006. [t]
+// Possibly change all instances of "the current playlist" to "the
+// playlist" and "current playlist" to "the playlist" [t]
 
 import "ocidl.idl";
 
@@ -37,11 +40,11 @@ library AXVLC
     interface IVLCControl;
     interface IVLCAudio;
     interface IVLCInput;
-    interface IVLCLog;
-    interface IVLCMessage;
-    interface IVLCMessageIterator;
-    interface IVLCMessages;
+    interface IVLCLogo;
+    interface IVLCDeinterlace;
+    interface IVLCMarquee;
     interface IVLCPlaylist;
+    interface IVLCSubtitle;
     interface IVLCVideo;
     interface IVLCControl2;
     dispinterface DVLCEvents;
@@ -127,13 +130,13 @@ library AXVLC
         HRESULT setVariable([in] BSTR name, [in] VARIANT value);
         [helpstring("Returns the value of a VLC variable.")]
         HRESULT getVariable([in] BSTR name, [out, retval] VARIANT *value);
-        [helpstring("Add an item to the playlist.")]
 
 /*
 ** use VARIANT rather than a SAFEARRAY as argument type
 ** for compatibility with some scripting language (JScript)
 */
 
+        [helpstring("Add an item to the playlist.")]
         HRESULT addTarget([in] BSTR uri, [in] VARIANT options, [in] enum VLCPlaylistMode mode, [in] int position);
         [propget, helpstring("Returns index of current item in playlist.")]
         HRESULT PlaylistIndex([out, retval] int* index);
@@ -165,6 +168,23 @@ library AXVLC
     const int DISPID_PauseEvent = 101;
     const int DISPID_StopEvent  = 102;
 
+    /* async events from libvlc */
+    const int DISPID_MediaPlayerNothingSpecialEvent = 200;
+    const int DISPID_MediaPlayerOpeningEvent = 201;
+    const int DISPID_MediaPlayerBufferingEvent = 202;
+    const int DISPID_MediaPlayerPlayingEvent = 203;
+    const int DISPID_MediaPlayerPausedEvent = 204;
+    const int DISPID_MediaPlayerForwardEvent = 205;
+    const int DISPID_MediaPlayerBackwardEvent = 206;
+    const int DISPID_MediaPlayerEncounteredErrorEvent = 207;
+    const int DISPID_MediaPlayerEndReachedEvent = 208;
+    const int DISPID_MediaPlayerStoppedEvent = 209;
+
+    const int DISPID_MediaPlayerTimeChangedEvent = 210;
+    const int DISPID_MediaPlayerPositionChangedEvent = 211;
+    const int DISPID_MediaPlayerSeekableChangedEvent = 212;
+    const int DISPID_MediaPlayerPausableChangedEvent = 213;
+
     [
       uuid(DF48072F-5EF8-434e-9B40-E2F3AE759B5F),
       helpstring("Event interface for VLC control"),
@@ -179,6 +199,37 @@ library AXVLC
             void pause();
             [id(DISPID_StopEvent), helpstring("Stopped")]
             void stop();
+
+            /* asyn events from libvlc */
+            [id(DISPID_MediaPlayerNothingSpecialEvent), helpstring("Idle state")]
+            void MediaPlayerNothingSpecial();
+            [id(DISPID_MediaPlayerOpeningEvent), helpstring("Opening media")]
+            void MediaPlayerOpening();
+            [id(DISPID_MediaPlayerBufferingEvent), helpstring("Buffering media")]
+            void MediaPlayerBuffering();
+            [id(DISPID_MediaPlayerPlayingEvent), helpstring("Media is playing")]
+            void MediaPlayerPlaying();
+            [id(DISPID_MediaPlayerPausedEvent), helpstring("Media is paused")]
+            void MediaPlayerPaused();
+            [id(DISPID_MediaPlayerForwardEvent), helpstring("Forward playback")]
+            void MediaPlayerForward();
+            [id(DISPID_MediaPlayerBackwardEvent), helpstring("Backward playback")]
+            void MediaPlayerBackward();
+            [id(DISPID_MediaPlayerEncounteredErrorEvent), helpstring("An error has been encountered")]
+            void MediaPlayerEncounteredError();
+            [id(DISPID_MediaPlayerEndReachedEvent), helpstring("End of playback reached")]
+            void MediaPlayerEndReached();
+            [id(DISPID_MediaPlayerStoppedEvent), helpstring("Playback stopped")]
+            void MediaPlayerStopped();
+
+            [id(DISPID_MediaPlayerTimeChangedEvent), helpstring("Time changed")]
+            void MediaPlayerTimeChanged([in] long time);
+            [id(DISPID_MediaPlayerPositionChangedEvent), helpstring("Position changed")]
+            void MediaPlayerPositionChanged([in] long position);
+            [id(DISPID_MediaPlayerSeekableChangedEvent), helpstring("Seek changed")]
+            void MediaPlayerSeekableChanged([in] VARIANT_BOOL seekable);
+            [id(DISPID_MediaPlayerPausableChangedEvent), helpstring("Pause setting changed")]
+            void MediaPlayerPausableChanged([in] VARIANT_BOOL pausable);
     };
 
     [
@@ -207,6 +258,11 @@ library AXVLC
         HRESULT track([out, retval] long* track);
         [propput, helpstring("Returns/sets audio track used/to use.")]
         HRESULT track([in] long track);
+
+        [propget, helpstring("Returns the number of audio tracks available.")]
+        HRESULT count([out, retval] long* trackNumber);
+        [helpstring("Returns audio track name.")]
+        HRESULT description([in] long trackID, [out, retval] BSTR* name);
 
         [propget, helpstring("Returns audio channel [1-5] indicating; stereo, reverse stereo, left, right, dolby.")]
         HRESULT channel([out, retval] long* channel);
@@ -249,90 +305,6 @@ library AXVLC
 
         [propget, helpstring("Returns whether current playback displays video.")]
         HRESULT hasVout([out, retval] VARIANT_BOOL* hasVout);
-    };
-
-    [
-      odl,
-      uuid(9ED00AFA-7BCD-4FFF-8D48-7DD4DB2C800D),
-      helpstring("VLC Log Message"),
-      dual,
-      oleautomation
-    ]
-    interface IVLCMessage: IDispatch
-    {
-        [id(DISPID_VALUE), propget]
-        HRESULT _Value([out, retval] VARIANT* message);
-
-        [propget, helpstring("Returns message severity.")]
-        HRESULT severity([out, retval] long* level);
-
-        [propget, helpstring("Returns message issuer type.")]
-        HRESULT type([out, retval] BSTR* type);
-
-        [propget, helpstring("Returns message issuer name.")]
-        HRESULT name([out, retval] BSTR* name);
-
-        [propget, helpstring("Returns message header.")]
-        HRESULT header([out, retval] BSTR* header);
-
-        [propget, helpstring("Returns message content.")]
-        HRESULT message([out, retval] BSTR* message);
-    };
-
-    [
-      odl,
-      uuid(15179CD8-CC12-4242-A58E-E412217FF343),
-      helpstring("VLC Log iterator"),
-      dual,
-      oleautomation
-    ]
-    interface IVLCMessageIterator : IDispatch
-    {
-        [propget, helpstring("Returns whether a message is available.")]
-        HRESULT hasNext([out, retval] VARIANT_BOOL* hasNext);
-
-        [helpstring("Returns next message.")]
-        HRESULT next([out, retval] IVLCMessage** msg);
-    };
-
-    [
-      odl,
-      uuid(6C5CE55D-2D6C-4AAD-8299-C62D2371F106),
-      helpstring("VLC Log Messages Collection."),
-      dual,
-      oleautomation
-    ]
-    interface IVLCMessages : IDispatch
-    {
-        [id(DISPID_NEWENUM), propget]
-        HRESULT _NewEnum([out, retval] IUnknown** _NewEnum);
-
-        [helpstring("Clear all messages from log.")]
-        HRESULT clear();
-
-        [propget, helpstring("Returns the number of messages.")]
-        HRESULT count([out, retval] long* count);
-
-        [helpstring("Returns an iterator for messages in log")]
-        HRESULT iterator([out, retval] IVLCMessageIterator** iter);
-    };
-
-    [
-      odl,
-      uuid(8E3BC3D9-62E9-48FB-8A6D-993F9ABC4A0A),
-      helpstring("VLC Log APIs"),
-      dual,
-      oleautomation
-    ]
-    interface IVLCLog : IDispatch
-    {
-        [propget, helpstring("Returns messages in log")]
-        HRESULT messages([out, retval] IVLCMessages** iter);
-
-        [propget, helpstring("Returns/Sets the log versbosity level.")]
-        HRESULT verbosity([out, retval] long* level);
-        [propput, helpstring("Returns/Sets the log versbosity level.")]
-        HRESULT verbosity([in] long level);
     };
 
     [
@@ -402,6 +374,142 @@ library AXVLC
 
     [
       odl,
+      uuid(465E787A-0556-452F-9477-954E4A940003),
+      helpstring("VLC Subtitle APIs"),
+      dual,
+      oleautomation
+    ]
+    interface IVLCSubtitle : IDispatch
+    {
+        [propget, helpstring("Returns video subtitle used.")]
+        HRESULT track([out, retval] long* spu);
+        [propput, helpstring("Sets video subtitle to use.")]
+        HRESULT track([in] long spu);
+
+        [propget, helpstring("Returns the number of video subtitles available.")]
+        HRESULT count([out, retval] long* spuNumber);
+        [helpstring("Returns video subtitle name.")]
+        HRESULT description([in] long nameID, [out, retval] BSTR* name);
+    };
+
+    [
+      odl,
+      uuid(8D076AD6-9B6F-4150-A0FD-5D7E8C8CB02C),
+      helpstring("VLC Marquee Filter"),
+      dual,
+      oleautomation
+    ]
+    interface IVLCMarquee : IDispatch
+    {
+        [helpstring("enable Marquee Filter.")]
+        HRESULT enable();
+        [helpstring("disable Marquee Filter.")]
+        HRESULT disable();
+
+        [propget, helpstring("Retrieve marquee text.")]
+        HRESULT text([out, retval] BSTR* val);
+        [propput, helpstring("Change marquee text.")]
+        HRESULT text([in] BSTR val);
+
+        [propget, helpstring("Retrieve text color.")]
+        HRESULT color([out, retval] LONG* val);
+        [propput, helpstring("Change text color.")]
+        HRESULT color([in] LONG val);
+        [propget, helpstring("Retrieve text opacity.")]
+        HRESULT opacity([out, retval] LONG* val);
+        [propput, helpstring("Set text opacity (0=transparent, 255=opaque).")]
+        HRESULT opacity([in] LONG val);
+        [propget, helpstring("Retrieve text position.")]
+        HRESULT position([out, retval] BSTR* val);
+        [propput, helpstring("Text positioning relative to: center, left, right, top, bottom, top-left, top-right, bottom-left, bottom-right.")]
+        HRESULT position([in] BSTR val);
+        [propget, helpstring("Retrieve text refresh time.")]
+        HRESULT refresh([out, retval] LONG* val);
+        [propput, helpstring("Set text refresh time.")]
+        HRESULT refresh([in] LONG val);
+        [propget, helpstring("Retrieve text size.")]
+        HRESULT size([out, retval] LONG* val);
+        [propput, helpstring("Set text size.")]
+        HRESULT size([in] LONG val);
+        [propget, helpstring("Retrieve timeout.")]
+        HRESULT timeout([out, retval] LONG* val);
+        [propput, helpstring("Change timeout.")]
+        HRESULT timeout([in] LONG val);
+        [propget, helpstring("Retrieve text abcissa.")]
+        HRESULT x([out, retval] LONG* val);
+        [propput, helpstring("Change text abcissa.")]
+        HRESULT x([in] LONG val);
+        [propget, helpstring("Retrieve text ordinate.")]
+        HRESULT y([out, retval] LONG* val);
+        [propput, helpstring("Change text ordinate.")]
+        HRESULT y([in] LONG val);
+    };
+
+    [
+      odl,
+      uuid(8a4a20c2-93f3-44e8-8644-beb2e3487e84),
+      helpstring("VLC Logo Filter"),
+      dual,
+      oleautomation
+    ]
+    interface IVLCLogo : IDispatch
+    {
+        [helpstring("Enable the logo filter.")]
+        HRESULT enable();
+        [helpstring("Disable the logo filter.")]
+        HRESULT disable();
+
+        [helpstring("specify input file[[,delay],alpha].")]
+        HRESULT file([in] BSTR fname);
+
+        [propget, helpstring("")]
+        HRESULT delay([out, retval] long* val);
+        [propput, helpstring("Set delay-to-next-picture in miliseconds.")]
+        HRESULT delay([in] long val);
+
+        [propget, helpstring("")]
+        HRESULT repeat([out, retval] long* val);
+        [propput, helpstring("Repeat: -1 continuous (default), 0 no repeat, ....")]
+        HRESULT repeat([in] long val);
+
+        [propget, helpstring("Returns the `global' alpha value.")]
+        HRESULT opacity([out, retval] long* val);
+        [propput, helpstring("Alpha value: 0 opaque to 255 fully transparent")]
+        HRESULT opacity([in] long val);
+
+        [propget, helpstring("Retrieve picture position.")]
+        HRESULT position([out, retval] BSTR* val);
+        [propput, helpstring("Picture positioning relative to: center, left, right, top, bottom, top-left, top-right, bottom-left, bottom-right.")]
+        HRESULT position([in] BSTR val);
+
+        [propget, helpstring("Picture x offset.")]
+        HRESULT x([out, retval] long* val);
+        [propput, helpstring("Picture x offset.")]
+        HRESULT x([in] long val);
+        [propget, helpstring("Picture y offset.")]
+        HRESULT y([out, retval] long* val);
+        [propput, helpstring("Picture y offset.")]
+        HRESULT y([in] long val);
+
+    };
+    [
+      odl,
+      uuid(bc97469f-cb11-4037-8dce-5fc9f5f85307),
+      helpstring("VLC Deinterlace Filter"),
+      dual,
+      oleautomation
+    ]
+    interface IVLCDeinterlace : IDispatch
+    {
+        [helpstring("Enable deinterlace filter and set method.")]
+        HRESULT enable([in] BSTR mode);
+        [helpstring("Disable deinterlace filter.")]
+        HRESULT disable();
+
+    };
+
+    [
+      odl,
       uuid(0AAEDF0B-D333-4B27-A0C6-BBF31413A42E),
       helpstring("VLC Video APIs"),
       dual,
@@ -449,6 +557,15 @@ library AXVLC
 
         [helpstring("toggle teletext transparent state.")]
         HRESULT toggleTeletext();
+
+        [propget, helpstring("Returns the marquee object.")]
+        HRESULT marquee([out, retval] IVLCMarquee** obj);
+
+        [propget, helpstring("Returns the logo object.")]
+        HRESULT logo([out, retval] IVLCLogo** obj);
+
+        [propget, helpstring("Returns the logo object.")]
+        HRESULT deinterlace([out, retval] IVLCDeinterlace** obj);
     };
 
     [
@@ -519,11 +636,11 @@ library AXVLC
         [propget, helpstring("Returns the audio object.")]
         HRESULT input([out, retval] IVLCInput** obj);
 
-        [propget, helpstring("Returns the log object.")]
-        HRESULT log([out, retval] IVLCLog** obj);
-
         [propget, helpstring("Returns the playlist object.")]
         HRESULT playlist([out, retval] IVLCPlaylist** obj);
+
+        [propget, helpstring("Returns the audio object.")]
+        HRESULT subtitle([out, retval] IVLCSubtitle** obj);
 
         [propget, helpstring("Returns the audio object.")]
         HRESULT video([out, retval] IVLCVideo** obj);
@@ -550,5 +667,6 @@ library AXVLC
     {
         [default] interface IVLCControl2;
         interface IVLCControl;
+        [default, source] dispinterface DVLCEvents;
     };
 };

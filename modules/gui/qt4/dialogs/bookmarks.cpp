@@ -31,13 +31,12 @@
 #include <QSpacerItem>
 #include <QPushButton>
 
-BookmarksDialog *BookmarksDialog::instance = NULL;
-
 BookmarksDialog::BookmarksDialog( intf_thread_t *_p_intf ):QVLCFrame( _p_intf )
 {
     setWindowFlags( Qt::Tool );
-    setWindowOpacity( config_GetFloat( p_intf, "qt-opacity" ) );
+    setWindowOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
     setWindowTitle( qtr( "Edit Bookmarks" ) );
+    setWindowRole( "vlc-bookmarks" );
 
     QGridLayout *layout = new QGridLayout( this );
 
@@ -152,8 +151,9 @@ void BookmarksDialog::add()
 
     if( !input_Control( p_input, INPUT_GET_BOOKMARK, &bookmark ) )
     {
-        bookmark.psz_name = const_cast<char *>qtu( THEMIM->getIM()->getName() +
-                   QString::number( bookmarksList->topLevelItemCount() ) );
+        QString name = THEMIM->getIM()->getName()
+                     + QString::number( bookmarksList->topLevelItemCount() );
+        bookmark.psz_name = const_cast<char *>qtu( name );
 
         input_Control( p_input, INPUT_ADD_BOOKMARK, &bookmark );
     }

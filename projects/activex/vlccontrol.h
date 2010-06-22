@@ -1,7 +1,7 @@
 /*****************************************************************************
  * vlccontrol.h: ActiveX control for VLC
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
+ * Copyright (C) 2005-2010 the VideoLAN team
  *
  * Authors: Damien Fouilleul <Damien.Fouilleul@laposte.net>
  *
@@ -15,9 +15,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _VLCCONTROL_H_
@@ -29,7 +29,8 @@ class VLCControl : public IVLCControl
 {
 public:
 
-    VLCControl(VLCPlugin *p_instance) :  _p_instance(p_instance), _p_typeinfo(NULL) {};
+    VLCControl(VLCPlugin *p_instance):
+        _p_instance(p_instance), _p_typeinfo(NULL) { }
     virtual ~VLCControl();
 
     // IUnknown methods
@@ -46,10 +47,12 @@ public:
             return NOERROR;
         }
         return _p_instance->pUnkOuter->QueryInterface(riid, ppv);
-    };
+    }
 
-    STDMETHODIMP_(ULONG) AddRef(void) { return _p_instance->pUnkOuter->AddRef(); };
-    STDMETHODIMP_(ULONG) Release(void) { return _p_instance->pUnkOuter->Release(); };
+    STDMETHODIMP_(ULONG) AddRef(void)
+        { return _p_instance->pUnkOuter->AddRef(); }
+    STDMETHODIMP_(ULONG) Release(void)
+        { return _p_instance->pUnkOuter->Release(); }
 
     // IDispatch methods
     STDMETHODIMP GetTypeInfoCount(UINT*);

@@ -2,7 +2,7 @@
  * filter_common.h: Common filter functions
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003 the VideoLAN team
- * $Id: 2f3e40e9870d66f911eeb1333f7c1108296c8159 $
+ * $Id: 9a0b076825db743b5395f66600208b92f31d5a5c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -50,7 +50,8 @@ static inline void vout_filter_AllocateDirectBuffers( vout_thread_t *p_vout, int
         vout_AllocatePicture( VLC_OBJECT(p_vout), p_pic, p_vout->output.i_chroma,
                               p_vout->output.i_width,
                               p_vout->output.i_height,
-                              p_vout->output.i_aspect );
+                              p_vout->output.i_aspect * p_vout->output.i_height,
+                              VOUT_ASPECT_FACTOR      * p_vout->output.i_width );
 
         if( !p_pic->i_planes )
             break;
@@ -82,40 +83,25 @@ static inline int ForwardEvent( vlc_object_t *p_this, char const *psz_var,
     return var_Set( p_dst, psz_var, newval );
 }
 /**
- * Internal helper to forward fullscreen event from p_this to p_data.
- */
-static inline int ForwardFullscreen( vlc_object_t *p_this, char const *psz_var,
-                                     vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
-    vlc_object_t *p_dst = (vlc_object_t*)p_data;
-
-    if( !var_GetBool( p_dst, "fullscreen" ) != !newval.b_bool )
-        return var_SetBool( p_dst, psz_var, newval.b_bool );
-    return VLC_SUCCESS;
-}
-/**
  * Install/remove all callbacks needed for proper event handling inside
  * a vout-filter.
  */
-static inline void vout_filter_SetupChild( vout_thread_t *p_parent, vout_thread_t *p_child,
+static inline void vout_filter_SetupChild( vout_thread_t *p_parent,
+                                           vout_thread_t *p_child,
                                            vlc_callback_t pf_mouse_event,
-                                           vlc_callback_t pf_fullscreen_up,
                                            vlc_callback_t pf_fullscreen_down,
                                            bool b_init )
 {
     int (*pf_execute)( vlc_object_t *, const char *, vlc_callback_t, void * );
 
     if( b_init )
-        pf_execute = __var_AddCallback;
+        pf_execute = var_AddCallback;
     else
-        pf_execute = __var_DelCallback;
+        pf_execute = var_DelCallback;
 
     /* */
     if( !pf_mouse_event )
         pf_mouse_event = ForwardEvent;
-    pf_execute( VLC_OBJECT(p_child), "mouse-x",           pf_mouse_event, p_parent );
-    pf_execute( VLC_OBJECT(p_child), "mouse-y",           pf_mouse_event, p_parent );
     pf_execute( VLC_OBJECT(p_child), "mouse-moved",       pf_mouse_event, p_parent );
     pf_execute( VLC_OBJECT(p_child), "mouse-clicked",     pf_mouse_event, p_parent );
     pf_execute( VLC_OBJECT(p_child), "mouse-button-down", pf_mouse_event, p_parent );
@@ -127,14 +113,11 @@ static inline void vout_filter_SetupChild( vout_thread_t *p_parent, vout_thread_
     pf_execute( VLC_OBJECT(p_parent), "crop",         ForwardEvent, p_child );
 
     /* */
-    if( !pf_fullscreen_up )
-        pf_fullscreen_up = ForwardFullscreen;
     if( !pf_fullscreen_down )
-        pf_fullscreen_down = ForwardFullscreen;
-    pf_execute( VLC_OBJECT(p_child),  "fullscreen", pf_fullscreen_up,   p_parent );
+        pf_fullscreen_down = ForwardEvent;
     pf_execute( VLC_OBJECT(p_parent), "fullscreen", pf_fullscreen_down, p_child );
 }
 
-#define vout_filter_AddChild( a, b, c ) vout_filter_SetupChild( a, b, c, NULL, NULL, true )
-#define vout_filter_DelChild( a, b, c ) vout_filter_SetupChild( a, b, c, NULL, NULL, false )
+#define vout_filter_AddChild( a, b, c ) vout_filter_SetupChild( a, b, c, NULL, true )
+#define vout_filter_DelChild( a, b, c ) vout_filter_SetupChild( a, b, c, NULL, false )
 

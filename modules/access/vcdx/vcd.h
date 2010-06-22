@@ -3,7 +3,7 @@
  *         using libcdio, libvcd and libvcdinfo
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: 23685cfe8bd9ff448a216919643617b2f073b56c $
+ * $Id: caf31ad69f16e05508f8e158ce0f835192a3d737 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -23,14 +23,14 @@
  *****************************************************************************/
 
 #include <libvcd/info.h>
+#include <vlc_interface.h>
 
 #define VCD_MRL_PREFIX "vcdx://"
 
 /*****************************************************************************
  * vcd_data_t: structure for communication between access and intf.
  *****************************************************************************/
-typedef struct
-{
+typedef struct {
 #ifdef FINISHED
     vcdplay_ptr             vmg;
 #endif
@@ -53,4 +53,4 @@ typedef struct
 } vcd_data_t;
 
 int  VCDSetArea      ( access_t * );
-int  VCDSeek         ( access_t *, off_t );
+int  VCDSeek         ( access_t *, uint64_t );
