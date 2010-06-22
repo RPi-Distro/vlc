@@ -53,6 +53,7 @@ confflags += \
 	--disable-gnomevfs \
 	--disable-kate \
 	--disable-mtp \
+	--disable-portaudio \
 	--disable-sqlite \
 	--disable-x264 \
 	--disable-zvbi \
