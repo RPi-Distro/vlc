@@ -161,13 +161,6 @@ clean:
 	# Clean VLC
 	[ ! -f Makefile ] || $(MAKE) distclean
 	rm -rf tmp/
-	# Clean zsh completion stuff
-	rm -f extras/zsh
-	# Removed ugly cruft
-	rm -f src/misc/modules_builtin.h
-	rm -f mozilla/vlcintf.xpt mozilla/vlcintf.h
-	# Remove spurious autotools stuff
-	rm -f config.log confdefs.h
 	dh_clean
 
 install: build
