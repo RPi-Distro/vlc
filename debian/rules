@@ -42,6 +42,7 @@ confflags += \
 	--enable-fast-install \
 	--enable-release \
 	--prefix=/usr \
+	--sysconfdir=/etc \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	$(NULL)
 # configure features
@@ -244,8 +245,8 @@ binary-arch: build install
 	dh_strip -s --dbg-package=vlc-dbg
 	dh_compress -s
 	dh_fixperms -s
-	dh_makeshlibs -plibvlc5 -V # -V is nasty, but I mean it
-	dh_makeshlibs -plibvlccore4 -V # -V is nasty, but I mean it
+	dh_makeshlibs -plibvlc5
+	dh_makeshlibs -plibvlccore4
 	dh_installdeb -s
 	dh_shlibdeps -s -ldebian/libvlc5/usr/lib:debian/libvlccore4/usr/lib
 	dh_gencontrol -s
