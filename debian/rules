@@ -42,6 +42,7 @@ confflags += \
 	--enable-fast-install \
 	--enable-release \
 	--prefix=/usr \
+	--sysconfdir=/etc \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	$(NULL)
 # configure features
