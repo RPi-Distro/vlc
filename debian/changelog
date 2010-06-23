@@ -1,6 +1,16 @@
 vlc (1.1.0-1) UNRELEASED; urgency=low
 
-  * New upstream version 1.1.0
+  [ Christophe Mutricy ]
+  * New upstream version 1.1.0 (Closes: #586760, LP: #597108)
+    * Fixes many bugs (LP: #206152, #261001, #281478, #282215, #282966, #283379,
+      #283855, #285681, #287263, #328064, #328861, #346631, #356006, #356908,
+      #357595, #358461, #362793, #368599, #375854, #380077, #383443, #403135,
+      #403657, #403802, #414069, #415396, #416294, #419915, #422797, #425975,
+      #427247, #435225, #439271, #442038, #444795, #453928, #459515, #461443,
+      #465687, #466418, #476478, #482440, #491151, #491601, #514915, #517329,
+      #517496, #537627, #539406, #542293, #549029, #549902, #550468, #550485,
+      #550599, #551482, #553503, #554277, #556440, #560167, #564964, #566347,
+      #568750, #570666, #582785, #584009, #586692, #587528)
     * SONAME changes
     * Update symbols files
     * Refresh patches and remove the ones merged upstream
@@ -19,8 +29,20 @@ vlc (1.1.0-1) UNRELEASED; urgency=low
     * add lua5.1 to have luac
     * Add more build-dep: xcb*, dirac, dc1394 
   * Patch to allow compilation with xul 1.9.1
+  * Remove unneeded -V for dh_makeshlibs
+  * Use configure option instead of patching
 
- -- Christophe Mutricy <xtophe@videolan.org>  Tue, 08 Jun 2010 23:46:13 +0100
+  [ Benjamin Drung ]
+  * Switch to dpkg-source 3.0 (quilt) format.
+  * Disable portaudio module.
+  * Update symbols files.
+  * Cleanup clean rule and other parts of debian/rules.
+  * Remove default values from git-buildpackage config.
+  * Change installation of man pages.
+  * Remove unused ${shlibs:Depends}.
+  * Sort Build-Depends and Depends.
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 24 Jun 2010 00:51:13 +0200
 
 vlc (1.0.6-1) unstable; urgency=low
 
