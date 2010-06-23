@@ -186,10 +186,8 @@ install: build
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -exec rm '{}' ';'
 	# Remove useless stuff
-	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
-	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
-	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
-	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
+	ln -sf /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
+	ln -sf /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	rm -f debian/tmp/usr/share/man/man1/vlc-config.1
 	# Install stuff
 	dh_install -si --fail-missing --sourcedir=debian/tmp
