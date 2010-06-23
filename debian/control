@@ -127,8 +127,7 @@ Package: vlc-dbg
 Section: debug
 Priority: extra
 Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
+Depends: ${misc:Depends},
          vlc-nox (= ${binary:Version})
 Description: debugging symbols for vlc
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -194,7 +193,7 @@ Package: libvlccore-dev
 Section: libdevel
 Architecture: any
 Depends: libvlccore4 (= ${binary:Version}), pkg-config,
-         ${shlibs:Depends}, ${misc:Depends}
+         ${misc:Depends}
 Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
  for VLC.
@@ -207,7 +206,7 @@ Package: libvlc-dev
 Section: libdevel
 Architecture: any
 Depends: libvlc5 (= ${binary:Version}), libvlccore-dev, pkg-config,
-         ${shlibs:Depends}, ${misc:Depends}
+         ${misc:Depends}
 Replaces: libvlc0-dev
 Description: development files for libvlc
  This package contains headers and a static library required to build 
