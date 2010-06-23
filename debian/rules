@@ -31,8 +31,6 @@ endif
 
 
 
-include /usr/share/quilt/quilt.make
-
 LDFLAGS = -Wl,--as-needed
 
 # configure flags
@@ -126,7 +124,7 @@ endif
 VIDDIR := usr/share/vlc
 
 build: build-stamp
-build-stamp: $(QUILT_STAMPFN)
+build-stamp:
 	dh_testdir
 	# We need to build the static library apart
 	# Else it's a mess when we build the modules
@@ -170,8 +168,6 @@ clean:
 	rm -f mozilla/vlcintf.xpt mozilla/vlcintf.h
 	# Remove spurious autotools stuff
 	rm -f config.log confdefs.h
-	# Unpatch package
-	$(MAKE) -f debian/rules unpatch
 	dh_clean
 
 install: build
