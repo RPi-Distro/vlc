@@ -10,8 +10,6 @@ Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
 Build-Depends: debhelper (>= 7),
                dh-buildinfo,
                gettext,
-               nasm,
-               yasm [amd64 kfreebsd-amd64],
                liba52-0.7.4-dev,
                libaa1-dev,
                libasound2-dev (>= 0.9.0beta10a) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
@@ -43,7 +41,6 @@ Build-Depends: debhelper (>= 7),
                liblircclient-dev,
                liblivemedia-dev (>= 2009.11.27),
                liblua5.1-0-dev,
-               lua5.1,
                libmad0-dev,
                libmatroska-dev (>= 0.8.0),
                libmodplug-dev,
@@ -88,8 +85,11 @@ Build-Depends: debhelper (>= 7),
                libxpm-dev,
                libxt-dev,
                libxv-dev,
+               lua5.1,
+               nasm,
                pkg-config,
                xulrunner-dev,
+               yasm [amd64 kfreebsd-amd64],
                zlib1g-dev
 Standards-Version: 3.8.4
 Homepage: http://www.videolan.org/vlc/
@@ -98,10 +98,10 @@ Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/h
 
 Package: vlc
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}),
-         ${shlibs:Depends},
+Depends: ttf-dejavu-core,
+         vlc-nox (= ${binary:Version}),
          ${misc:Depends},
-         ttf-dejavu-core
+         ${shlibs:Depends}
 Recommends: vlc-plugin-pulse (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
@@ -127,8 +127,8 @@ Package: vlc-dbg
 Section: debug
 Priority: extra
 Architecture: any
-Depends: ${misc:Depends},
-         vlc-nox (= ${binary:Version})
+Depends: vlc-nox (= ${binary:Version}),
+         ${misc:Depends}
 Description: debugging symbols for vlc
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
@@ -138,8 +138,8 @@ Description: debugging symbols for vlc
 
 Package: vlc-nox
 Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
 Replaces: vlc (<< 1.0.4-2)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
@@ -166,8 +166,8 @@ Package: libvlccore4
 Section: libs
 Architecture: any
 Depends: vlc-data (= ${source:Version}),
-         ${shlibs:Depends},
-         ${misc:Depends}
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: base library for VLC and its modules
  This package contains the shared library required by VLC modules and libvlc.
  .
@@ -178,8 +178,8 @@ Description: base library for VLC and its modules
 Package: libvlc5
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
 Replaces: vlc (<< 0.8.6.c-6)
 Description: multimedia player and streamer library
  This package contains the shared library required by applications using VLC
@@ -192,7 +192,8 @@ Description: multimedia player and streamer library
 Package: libvlccore-dev
 Section: libdevel
 Architecture: any
-Depends: libvlccore4 (= ${binary:Version}), pkg-config,
+Depends: libvlccore4 (= ${binary:Version}),
+         pkg-config,
          ${misc:Depends}
 Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
@@ -205,7 +206,9 @@ Description: development files for libvlccore
 Package: libvlc-dev
 Section: libdevel
 Architecture: any
-Depends: libvlc5 (= ${binary:Version}), libvlccore-dev, pkg-config,
+Depends: libvlc5 (= ${binary:Version}),
+         libvlccore-dev,
+         pkg-config,
          ${misc:Depends}
 Replaces: libvlc0-dev
 Description: development files for libvlc
@@ -218,7 +221,9 @@ Description: development files for libvlc
 
 Package: vlc-plugin-sdl
 Architecture: any
-Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
+Depends: vlc-nox,
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: SDL video and audio output plugin for VLC
  This plugin adds support for the Simple DirectMedia Layer library to
  the VLC media player. To activate it, use the `--vout sdl' or
@@ -231,7 +236,9 @@ Description: SDL video and audio output plugin for VLC
 
 Package: vlc-plugin-ggi
 Architecture: any
-Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
+Depends: vlc-nox,
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: GGI video output plugin for VLC
  This is a GGI plugin for the VLC media player.  To activate it, use
  the `--vout ggi' flag or select the `ggi' video output plugin from the
@@ -243,7 +250,10 @@ Description: GGI video output plugin for VLC
 
 Package: mozilla-plugin-vlc
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}), vlc, ${shlibs:Depends}, ${misc:Depends}
+Depends: vlc,
+         vlc-nox (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: multimedia plugin for web browsers based on VLC
  This plugin adds support for MPEG, MPEG2, DVD, DivX, Ogg/Vorbis and many
  more formats to your Gecko-based web browser (Firefox, Galeon, etc.). The
@@ -257,7 +267,9 @@ Description: multimedia plugin for web browsers based on VLC
 
 Package: vlc-plugin-svgalib
 Architecture: amd64 i386
-Depends: vlc-nox (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends: vlc-nox (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: SVGAlib video output plugin for VLC
  This plugin adds support for SVGAlib to the VLC media player. To
  activate it, use the `--vout svgalib' flag or select the `svgalib' video
@@ -271,8 +283,8 @@ Description: SVGAlib video output plugin for VLC
 Package: vlc-plugin-jack
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}),
-         ${shlibs:Depends},
-         ${misc:Depends}
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: Jack audio plugins for VLC
  These plugins add support for JACK to the VLC media player. To
  activate the audio output module, use the `--aout jack' flag or
@@ -286,8 +298,8 @@ Description: Jack audio plugins for VLC
 Package: vlc-plugin-pulse
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}),
-         ${shlibs:Depends},
-         ${misc:Depends}
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: PulseAudio plugin for VLC
  This plugin adds support for PulseAudio to the VLC media player. To
  activate the audio output module, use the `--aout pulse' flag or
@@ -300,8 +312,8 @@ Description: PulseAudio plugin for VLC
 Package: vlc-plugin-svg
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}),
-         ${shlibs:Depends},
-         ${misc:Depends}
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: SVG plugin for VLC
  This plugin allows you to render SVG graphics on top of the video. It is a text
  renderer, and must be activated through the '--text-renderer svg' option. When
@@ -315,7 +327,9 @@ Description: SVG plugin for VLC
 Package: vlc-data
 Depends: ${misc:Depends}
 Architecture: all
-Replaces: vlc (<< 0.9.2-1), vlc-nox (<< 0.9.2-1), mozilla-plugin-vlc (<< 0.9.2-1)
+Replaces: mozilla-plugin-vlc (<< 0.9.2-1),
+          vlc (<< 0.9.2-1),
+          vlc-nox (<< 0.9.2-1)
 Description: Common data for VLC
  Localisations, HTTP interface files, Lua scripts for VLC media player 
  .
