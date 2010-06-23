@@ -158,3 +158,4 @@ usr/lib/vlc/plugins/video_output/libvout_wrapper_plugin.so
 usr/lib/vlc/plugins/video_output/libyuv_plugin.so
 usr/lib/vlc/plugins/visualization/libvisual_plugin.so
 usr/lib/vlc/vlc-cache-gen
+usr/share/man

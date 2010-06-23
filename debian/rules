@@ -190,7 +190,7 @@ install: build
 	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
-	rm -rf debian/tmp/usr/share/man/man1
+	rm -f debian/tmp/usr/share/man/man1/vlc-config.1
 	# Install stuff
 	dh_install -si --fail-missing --sourcedir=debian/tmp
 	# move .hosts
@@ -239,8 +239,7 @@ binary-arch: build install
 	dh_buildinfo -p vlc-nox
 	dh_installmenu -s
 	dh_installmime -s
-	dh_installman doc/vlc.1 -p vlc-nox
-	dh_installman doc/vlc-wrapper.1 -p vlc-nox
+	dh_installman -s
 	dh_installchangelogs ChangeLog -p vlc
 	dh_installchangelogs ChangeLog -p vlc-nox
 	dh_lintian 
