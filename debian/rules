@@ -42,11 +42,6 @@ confflags += \
 	$(NULL)
 # configure features
 confflags += \
-	--disable-gnomevfs \
-	--disable-portaudio \
-	--disable-sqlite \
-	--disable-telx \
-	--disable-x264 \
 	--enable-a52 \
 	--enable-aa \
 	--enable-atmo \
@@ -79,7 +74,6 @@ confflags += \
 	--enable-notify \
 	--enable-ogg \
 	--enable-pulse \
-	--disable-projectm \
 	--enable-qt4 \
 	--enable-realrtsp \
 	--enable-sdl \
@@ -97,6 +91,21 @@ confflags += \
 	--enable-zvbi \
 	--with-kde-solid=/usr/share/kde4/apps/ \
 	--with-mozilla-pkg=libxul \
+	$(NULL)
+# Reasons for disabling features:
+# gnomevfs -> poorly maintained
+# portaudio -> not needed
+# projectm -> broken
+# sqlite -> still in development
+# telx -> incompatible with zvbi
+# x264 -> not in Debian
+confflags += \
+	--disable-gnomevfs \
+	--disable-portaudio \
+	--disable-projectm \
+	--disable-sqlite \
+	--disable-telx \
+	--disable-x264 \
 	$(NULL)
 
 # Linux specific flags
