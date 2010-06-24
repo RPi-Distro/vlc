@@ -42,17 +42,14 @@ confflags += \
 	$(NULL)
 # configure features
 confflags += \
-	--disable-atmo \
-	--disable-fluidsynth \
 	--disable-gnomevfs \
-	--disable-kate \
-	--disable-mtp \
 	--disable-portaudio \
 	--disable-sqlite \
 	--disable-telx \
 	--disable-x264 \
 	--enable-a52 \
 	--enable-aa \
+	--enable-atmo \
 	--enable-bonjour \
 	--enable-caca \
 	--enable-dca \
@@ -61,11 +58,13 @@ confflags += \
 	--enable-dvdnav \
 	--enable-faad \
 	--enable-flac \
+	--enable-fluidsynth \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-ggi \
 	--enable-gnutls \
 	--enable-jack \
+	--enable-kate \
 	--enable-libass \
 	--enable-libmpeg2 \
 	--enable-lirc \
@@ -75,6 +74,7 @@ confflags += \
 	--enable-mod \
 	--enable-mozilla \
 	--enable-mpc \
+	--enable-mtp \
 	--enable-ncurses \
 	--enable-notify \
 	--enable-ogg \

@@ -15,6 +15,7 @@ usr/lib/vlc/plugins/access/libaccess_http_plugin.so
 usr/lib/vlc/plugins/access/libaccess_imem_plugin.so
 usr/lib/vlc/plugins/access/libaccess_mmap_plugin.so
 usr/lib/vlc/plugins/access/libaccess_mms_plugin.so
+usr/lib/vlc/plugins/access/libaccess_mtp_plugin.so
 usr/lib/vlc/plugins/access/libaccess_oss_plugin.so
 usr/lib/vlc/plugins/access/libaccess_realrtsp_plugin.so
 usr/lib/vlc/plugins/access/libaccess_smb_plugin.so
@@ -53,7 +54,9 @@ usr/lib/vlc/plugins/codec/libdvbsub_plugin.so
 usr/lib/vlc/plugins/codec/libfaad_plugin.so
 usr/lib/vlc/plugins/codec/libfake_plugin.so
 usr/lib/vlc/plugins/codec/libflac_plugin.so
+usr/lib/vlc/plugins/codec/libfluidsynth_plugin.so
 usr/lib/vlc/plugins/codec/libinvmem_plugin.so
+usr/lib/vlc/plugins/codec/libkate_plugin.so
 usr/lib/vlc/plugins/codec/liblibass_plugin.so
 usr/lib/vlc/plugins/codec/liblibmpeg2_plugin.so
 usr/lib/vlc/plugins/codec/liblpcm_plugin.so
@@ -105,6 +108,7 @@ usr/lib/vlc/plugins/stream_out
 usr/lib/vlc/plugins/video_chroma
 usr/lib/vlc/plugins/video_filter/libadjust_plugin.so
 usr/lib/vlc/plugins/video_filter/libalphamask_plugin.so
+usr/lib/vlc/plugins/video_filter/libatmo_plugin.so
 usr/lib/vlc/plugins/video_filter/libaudiobargraph_v_plugin.so
 usr/lib/vlc/plugins/video_filter/libball_plugin.so
 usr/lib/vlc/plugins/video_filter/libblend_plugin.so
