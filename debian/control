@@ -6,7 +6,8 @@ Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Clément Stenac <zorglub@debian.org>,
            Loic Minier <lool@dooz.org>,
            Christophe Mutricy <xtophe@videolan.org>,
-           Mohammed Adnène Trojette <adn+deb@diwi.org>
+           Mohammed Adnène Trojette <adn+deb@diwi.org>,
+           Benjamin Drung <bdrung@ubuntu.com>
 Build-Depends: debhelper (>= 7.2.3~),
                dh-buildinfo,
                gettext,
