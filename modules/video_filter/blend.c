@@ -1,8 +1,8 @@
 /*****************************************************************************
  * blend.c: alpha blend 2 pictures together
  *****************************************************************************
- * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: 08fe36f55bb99f5890e2e2d2a9497f8d7d1f9223 $
+ * Copyright (C) 2003-2009 the VideoLAN team
+ * $Id: 06d5847d238e3f01a0a9d811a43ccec9a10994b9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea @t videolan dot org>
@@ -32,8 +32,7 @@
 #include <assert.h>
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -47,74 +46,51 @@ vlc_module_begin ()
     set_callbacks( OpenFilter, CloseFilter )
 vlc_module_end ()
 
-
-/*****************************************************************************
- * filter_sys_t : filter descriptor
- *****************************************************************************/
-struct filter_sys_t
-{
-    int i_dummy;
-};
-
-#define FCC_YUVA VLC_FOURCC('Y','U','V','A')
-#define FCC_YUVP VLC_FOURCC('Y','U','V','P')
-#define FCC_RGBA VLC_FOURCC('R','G','B','A')
-
-#define FCC_I420 VLC_FOURCC('I','4','2','0')
-#define FCC_YV12 VLC_FOURCC('Y','V','1','2')
-#define FCC_YUY2 VLC_FOURCC('Y','U','Y','2')
-#define FCC_UYVY VLC_FOURCC('U','Y','V','Y')
-#define FCC_YVYU VLC_FOURCC('Y','V','Y','U')
-#define FCC_RV15 VLC_FOURCC('R','V','1','5')
-#define FCC_RV16 VLC_FOURCC('R','V','1','6')
-#define FCC_RV24 VLC_FOURCC('R','V','2','4')
-#define FCC_RV32 VLC_FOURCC('R','V','3','2')
-
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
-static void Blend( filter_t *, picture_t *, picture_t *,
+static void Blend( filter_t *, picture_t *, const picture_t *,
                    int, int, int );
 
 /* YUVA */
-static void BlendYUVAI420( filter_t *, picture_t *, picture_t *,
+static void BlendYUVAI420( filter_t *, picture_t *, const picture_t *,
                            int, int, int, int, int );
-static void BlendYUVARV16( filter_t *, picture_t *, picture_t *,
+static void BlendYUVARV16( filter_t *, picture_t *, const picture_t *,
                            int, int, int, int, int );
-static void BlendYUVARV24( filter_t *, picture_t *, picture_t *,
+static void BlendYUVARV24( filter_t *, picture_t *, const picture_t *,
                            int, int, int, int, int );
-static void BlendYUVAYUVPacked( filter_t *, picture_t *, picture_t *,
+static void BlendYUVAYUVPacked( filter_t *, picture_t *, const picture_t *,
                                 int, int, int, int, int );
 
 /* I420, YV12 */
-static void BlendI420I420( filter_t *, picture_t *, picture_t *,
+static void BlendI420I420( filter_t *, picture_t *, const picture_t *,
                            int, int, int, int, int );
 static void BlendI420I420_no_alpha(
-                           filter_t *, picture_t *, picture_t *,
+                           filter_t *, picture_t *, const picture_t *,
                            int, int, int, int );
-static void BlendI420R16( filter_t *, picture_t *, picture_t *,
+static void BlendI420R16( filter_t *, picture_t *, const picture_t *,
                            int, int, int, int, int );
-static void BlendI420R24( filter_t *, picture_t *, picture_t *,
+static void BlendI420R24( filter_t *, picture_t *, const picture_t *,
                           int, int, int, int, int );
 static void BlendI420YUVPacked( filter_t *, picture_t *,
-                                picture_t *, int, int, int, int, int );
+                                const picture_t *, int, int, int, int, int );
 
 /* YUVP */
-static void BlendPalI420( filter_t *, picture_t *, picture_t *,
+static void BlendPalI420( filter_t *, picture_t *, const picture_t *,
                           int, int, int, int, int );
-static void BlendPalYUVPacked( filter_t *, picture_t *, picture_t *,
+static void BlendPalYUVPacked( filter_t *, picture_t *, const picture_t *,
                                int, int, int, int, int );
-static void BlendPalRV( filter_t *, picture_t *, picture_t *,
+static void BlendPalRV( filter_t *, picture_t *, const picture_t *,
                         int, int, int, int, int );
 
 /* RGBA */
-static void BlendRGBAI420( filter_t *, picture_t *, picture_t *,
+static void BlendRGBAI420( filter_t *, picture_t *, const picture_t *,
                            int, int, int, int, int );
 static void BlendRGBAYUVPacked( filter_t *, picture_t *,
-                                picture_t *, int, int, int, int, int );
-static void BlendRGBAR16( filter_t *, picture_t *, picture_t *,
+                                const picture_t *, int, int, int, int, int );
+static void BlendRGBAR16( filter_t *, picture_t *, const picture_t *,
                           int, int, int, int, int );
-static void BlendRGBAR24( filter_t *, picture_t *, picture_t *,
+static void BlendRGBAR24( filter_t *, picture_t *, const picture_t *,
                           int, int, int, int, int );
 
 /*****************************************************************************
@@ -123,28 +99,25 @@ static void BlendRGBAR24( filter_t *, picture_t *, picture_t *,
 static int OpenFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys;
 
     /* Check if we can handle that format.
      * We could try to use a chroma filter if we can't. */
     int in_chroma = p_filter->fmt_in.video.i_chroma;
     int out_chroma = p_filter->fmt_out.video.i_chroma;
-    if( ( in_chroma  != FCC_YUVA && in_chroma  != FCC_I420 &&
-          in_chroma  != FCC_YV12 && in_chroma  != FCC_YUVP &&
-          in_chroma  != FCC_RGBA ) ||
-        ( out_chroma != FCC_I420 && out_chroma != FCC_YUY2 &&
-          out_chroma != FCC_YV12 && out_chroma != FCC_UYVY &&
-          out_chroma != FCC_YVYU && out_chroma != FCC_RV15 &&
-          out_chroma != FCC_YVYU && out_chroma != FCC_RV16 &&
-          out_chroma != FCC_RV24 && out_chroma != FCC_RV32 ) )
+    if( ( in_chroma  != VLC_CODEC_YUVA && in_chroma  != VLC_CODEC_I420 &&
+          in_chroma  != VLC_CODEC_YV12 && in_chroma  != VLC_CODEC_YUVP &&
+          in_chroma  != VLC_CODEC_RGBA ) ||
+        ( out_chroma != VLC_CODEC_I420 && out_chroma != VLC_CODEC_J420 &&
+          out_chroma != VLC_CODEC_YV12 &&
+          out_chroma != VLC_CODEC_YUYV && out_chroma != VLC_CODEC_YVYU &&
+          out_chroma != VLC_CODEC_UYVY && out_chroma != VLC_CODEC_VYUY &&
+          out_chroma != VLC_CODEC_RGB15 &&
+          out_chroma != VLC_CODEC_RGB16 &&
+          out_chroma != VLC_CODEC_RGB24 &&
+          out_chroma != VLC_CODEC_RGB32 ) )
     {
         return VLC_EGENERIC;
     }
-
-    /* Allocate the memory needed to store the decoder's structure */
-    p_filter->p_sys = p_sys = malloc(sizeof(filter_sys_t));
-    if( !p_sys )
-        return VLC_ENOMEM;
 
     /* Misc init */
     p_filter->pf_video_blend = Blend;
@@ -161,10 +134,7 @@ static int OpenFilter( vlc_object_t *p_this )
  *****************************************************************************/
 static void CloseFilter( vlc_object_t *p_this )
 {
-    filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys = p_filter->p_sys;
-
-    free( p_sys );
+    (void)p_this;
 }
 
 /****************************************************************************
@@ -173,19 +143,19 @@ static void CloseFilter( vlc_object_t *p_this )
  * This function is called just after the thread is launched.
  ****************************************************************************/
 typedef void (*BlendFunction)( filter_t *,
-                       picture_t *, picture_t *,
+                       picture_t *, const picture_t *,
                        int , int , int , int , int );
 
-#define FCC_PLANAR_420 { FCC_I420, FCC_YV12, 0 }
-#define FCC_PACKED_422 { FCC_YUY2, FCC_UYVY, FCC_YVYU, 0 }
-#define FCC_RGB_16 { FCC_RV15, FCC_RV16, 0 }
-#define FCC_RGB_24 { FCC_RV24, FCC_RV32, 0 }
+#define VLC_CODEC_PLANAR_420 { VLC_CODEC_I420, VLC_CODEC_J420, VLC_CODEC_YV12, 0 }
+#define VLC_CODEC_PACKED_422 { VLC_CODEC_YUYV, VLC_CODEC_UYVY, VLC_CODEC_YVYU, VLC_CODEC_VYUY, 0 }
+#define VLC_CODEC_RGB_16 { VLC_CODEC_RGB15, VLC_CODEC_RGB16, 0 }
+#define VLC_CODEC_RGB_24 { VLC_CODEC_RGB24, VLC_CODEC_RGB32, 0 }
 
 #define BLEND_CFG( fccSrc, fctPlanar, fctPacked, fctRgb16, fctRgb24  ) \
-    { .src = fccSrc, .p_dst = FCC_PLANAR_420, .pf_blend = fctPlanar }, \
-    { .src = fccSrc, .p_dst = FCC_PACKED_422, .pf_blend = fctPacked }, \
-    { .src = fccSrc, .p_dst = FCC_RGB_16,     .pf_blend = fctRgb16  }, \
-    { .src = fccSrc, .p_dst = FCC_RGB_24,     .pf_blend = fctRgb24  }
+    { .src = fccSrc, .p_dst = VLC_CODEC_PLANAR_420, .pf_blend = fctPlanar }, \
+    { .src = fccSrc, .p_dst = VLC_CODEC_PACKED_422, .pf_blend = fctPacked }, \
+    { .src = fccSrc, .p_dst = VLC_CODEC_RGB_16,     .pf_blend = fctRgb16  }, \
+    { .src = fccSrc, .p_dst = VLC_CODEC_RGB_24,     .pf_blend = fctRgb24  }
 
 static const struct
 {
@@ -194,21 +164,21 @@ static const struct
     BlendFunction pf_blend;
 } p_blend_cfg[] = {
 
-    BLEND_CFG( FCC_YUVA, BlendYUVAI420, BlendYUVAYUVPacked, BlendYUVARV16, BlendYUVARV24 ),
+    BLEND_CFG( VLC_CODEC_YUVA, BlendYUVAI420, BlendYUVAYUVPacked, BlendYUVARV16, BlendYUVARV24 ),
 
-    BLEND_CFG( FCC_YUVP, BlendPalI420, BlendPalYUVPacked, BlendPalRV, BlendPalRV ),
+    BLEND_CFG( VLC_CODEC_YUVP, BlendPalI420, BlendPalYUVPacked, BlendPalRV, BlendPalRV ),
 
-    BLEND_CFG( FCC_RGBA, BlendRGBAI420, BlendRGBAYUVPacked, BlendRGBAR16, BlendRGBAR24 ),
+    BLEND_CFG( VLC_CODEC_RGBA, BlendRGBAI420, BlendRGBAYUVPacked, BlendRGBAR16, BlendRGBAR24 ),
 
-    BLEND_CFG( FCC_I420, BlendI420I420, BlendI420YUVPacked, BlendI420R16, BlendI420R24 ),
+    BLEND_CFG( VLC_CODEC_I420, BlendI420I420, BlendI420YUVPacked, BlendI420R16, BlendI420R24 ),
 
-    BLEND_CFG( FCC_YV12, BlendI420I420, BlendI420YUVPacked, BlendI420R16, BlendI420R24 ),
+    BLEND_CFG( VLC_CODEC_YV12, BlendI420I420, BlendI420YUVPacked, BlendI420R16, BlendI420R24 ),
 
     { 0, {0,}, NULL }
 };
 
 static void Blend( filter_t *p_filter,
-                   picture_t *p_dst, picture_t *p_src,
+                   picture_t *p_dst, const picture_t *p_src,
                    int i_x_offset, int i_y_offset, int i_alpha )
 {
     int i_width, i_height;
@@ -322,7 +292,7 @@ static inline void rgb_to_yuv( uint8_t *y, uint8_t *u, uint8_t *v,
 }
 
 static uint8_t *vlc_plane_start( int *pi_pitch,
-                                 picture_t *p_picture,
+                                 const picture_t *p_picture,
                                  int i_plane,
                                  int i_x_offset, int i_y_offset,
                                  const video_format_t *p_fmt,
@@ -345,9 +315,10 @@ static void vlc_yuv_packed_index( int *pi_y, int *pi_u, int *pi_v, vlc_fourcc_t 
         vlc_fourcc_t chroma;
         int y, u ,v;
     } p_index[] = {
-        { FCC_YUY2, 0, 1, 3 },
-        { FCC_UYVY, 1, 0, 2 },
-        { FCC_YVYU, 0, 3, 1 },
+        { VLC_CODEC_YUYV, 0, 1, 3 },
+        { VLC_CODEC_UYVY, 1, 0, 2 },
+        { VLC_CODEC_YVYU, 0, 3, 1 },
+        { VLC_CODEC_VYUY, 1, 2, 0 },
         { 0, 0, 0, 0 }
     };
     int i;
@@ -392,12 +363,12 @@ static void vlc_blend_rgb16( uint16_t *p_dst,
 static void vlc_rgb_index( int *pi_rindex, int *pi_gindex, int *pi_bindex,
                            const video_format_t *p_fmt )
 {
-    if( p_fmt->i_chroma != FCC_RV24 && p_fmt->i_chroma != FCC_RV32 )
+    if( p_fmt->i_chroma != VLC_CODEC_RGB24 && p_fmt->i_chroma != VLC_CODEC_RGB32 )
         return;
 
     /* XXX it will works only if mask are 8 bits aligned */
 #ifdef WORDS_BIGENDIAN
-    const int i_mask_bits = p_fmt->i_chroma == FCC_RV24 ? 24 : 32;
+    const int i_mask_bits = p_fmt->i_chroma == VLC_CODEC_RGB24 ? 24 : 32;
     *pi_rindex = ( i_mask_bits - p_fmt->i_lrshift ) / 8;
     *pi_gindex = ( i_mask_bits - p_fmt->i_lgshift ) / 8;
     *pi_bindex = ( i_mask_bits - p_fmt->i_lbshift ) / 8;
@@ -412,7 +383,7 @@ static void vlc_rgb_index( int *pi_rindex, int *pi_gindex, int *pi_bindex,
  * YUVA
  ***********************************************************************/
 static void BlendYUVAI420( filter_t *p_filter,
-                           picture_t *p_dst, picture_t *p_src,
+                           picture_t *p_dst, const picture_t *p_src,
                            int i_x_offset, int i_y_offset,
                            int i_width, int i_height, int i_alpha )
 {
@@ -471,7 +442,7 @@ static void BlendYUVAI420( filter_t *p_filter,
 }
 
 static void BlendYUVARV16( filter_t *p_filter,
-                           picture_t *p_dst_pic, picture_t *p_src,
+                           picture_t *p_dst_pic, const picture_t *p_src,
                            int i_x_offset, int i_y_offset,
                            int i_width, int i_height, int i_alpha )
 {
@@ -523,7 +494,7 @@ static void BlendYUVARV16( filter_t *p_filter,
 }
 
 static void BlendYUVARV24( filter_t *p_filter,
-                           picture_t *p_dst_pic, picture_t *p_src,
+                           picture_t *p_dst_pic, const picture_t *p_src,
                            int i_x_offset, int i_y_offset,
                            int i_width, int i_height, int i_alpha )
 {
@@ -647,7 +618,7 @@ static void BlendYUVARV24( filter_t *p_filter,
 }
 
 static void BlendYUVAYUVPacked( filter_t *p_filter,
-                                picture_t *p_dst_pic, picture_t *p_src,
+                                picture_t *p_dst_pic, const picture_t *p_src,
                                 int i_x_offset, int i_y_offset,
                                 int i_width, int i_height, int i_alpha )
 {
@@ -725,7 +696,7 @@ static void BlendYUVAYUVPacked( filter_t *p_filter,
  * I420, YV12
  ***********************************************************************/
 static void BlendI420I420( filter_t *p_filter,
-                           picture_t *p_dst, picture_t *p_src,
+                           picture_t *p_dst, const picture_t *p_src,
                            int i_x_offset, int i_y_offset,
                            int i_width, int i_height, int i_alpha )
 {
@@ -800,7 +771,7 @@ static void BlendI420I420( filter_t *p_filter,
     }
 }
 static void BlendI420I420_no_alpha( filter_t *p_filter,
-                                    picture_t *p_dst, picture_t *p_src,
+                                    picture_t *p_dst, const picture_t *p_src,
                                     int i_x_offset, int i_y_offset,
                                     int i_width, int i_height )
 {
@@ -860,7 +831,7 @@ static void BlendI420I420_no_alpha( filter_t *p_filter,
 }
 
 static void BlendI420R16( filter_t *p_filter,
-                          picture_t *p_dst_pic, picture_t *p_src,
+                          picture_t *p_dst_pic, const picture_t *p_src,
                           int i_x_offset, int i_y_offset,
                           int i_width, int i_height, int i_alpha )
 {
@@ -908,7 +879,7 @@ static void BlendI420R16( filter_t *p_filter,
 }
 
 static void BlendI420R24( filter_t *p_filter,
-                          picture_t *p_dst_pic, picture_t *p_src,
+                          picture_t *p_dst_pic, const picture_t *p_src,
                           int i_x_offset, int i_y_offset,
                           int i_width, int i_height, int i_alpha )
 {
@@ -963,7 +934,7 @@ static void BlendI420R24( filter_t *p_filter,
 }
 
 static void BlendI420YUVPacked( filter_t *p_filter,
-                                picture_t *p_dst_pic, picture_t *p_src,
+                                picture_t *p_dst_pic, const picture_t *p_src,
                                 int i_x_offset, int i_y_offset,
                                 int i_width, int i_height, int i_alpha )
 {
@@ -1022,7 +993,7 @@ static void BlendI420YUVPacked( filter_t *p_filter,
  * YUVP
  ***********************************************************************/
 static void BlendPalI420( filter_t *p_filter,
-                          picture_t *p_dst, picture_t *p_src_pic,
+                          picture_t *p_dst, const picture_t *p_src_pic,
                           int i_x_offset, int i_y_offset,
                           int i_width, int i_height, int i_alpha )
 {
@@ -1083,7 +1054,7 @@ static void BlendPalI420( filter_t *p_filter,
 }
 
 static void BlendPalYUVPacked( filter_t *p_filter,
-                               picture_t *p_dst_pic, picture_t *p_src_pic,
+                               picture_t *p_dst_pic, const picture_t *p_src_pic,
                                int i_x_offset, int i_y_offset,
                                int i_width, int i_height, int i_alpha )
 {
@@ -1152,7 +1123,7 @@ static void BlendPalYUVPacked( filter_t *p_filter,
 }
 
 static void BlendPalRV( filter_t *p_filter,
-                        picture_t *p_dst_pic, picture_t *p_src_pic,
+                        picture_t *p_dst_pic, const picture_t *p_src_pic,
                         int i_x_offset, int i_y_offset,
                         int i_width, int i_height, int i_alpha )
 {
@@ -1202,7 +1173,7 @@ static void BlendPalRV( filter_t *p_filter,
                 continue;
 
             /* Blending */
-            if( p_filter->fmt_out.video.i_chroma == FCC_RV15 || p_filter->fmt_out.video.i_chroma == FCC_RV16 )
+            if( p_filter->fmt_out.video.i_chroma == VLC_CODEC_RGB15 || p_filter->fmt_out.video.i_chroma == VLC_CODEC_RGB16 )
                 vlc_blend_rgb16( (uint16_t*)&p_dst[i_x * i_pix_pitch],
                                   rgbpal[p_src[i_x]][0], rgbpal[p_src[i_x]][1], rgbpal[p_src[i_x]][2],
                                   i_trans,
@@ -1223,7 +1194,7 @@ static void BlendPalRV( filter_t *p_filter,
  * RGBA
  ***********************************************************************/
 static void BlendRGBAI420( filter_t *p_filter,
-                           picture_t *p_dst, picture_t *p_src_pic,
+                           picture_t *p_dst, const picture_t *p_src_pic,
                            int i_x_offset, int i_y_offset,
                            int i_width, int i_height, int i_alpha )
 {
@@ -1292,7 +1263,7 @@ static void BlendRGBAI420( filter_t *p_filter,
 }
 
 static void BlendRGBAR24( filter_t *p_filter,
-                          picture_t *p_dst_pic, picture_t *p_src_pic,
+                          picture_t *p_dst_pic, const picture_t *p_src_pic,
                           int i_x_offset, int i_y_offset,
                           int i_width, int i_height, int i_alpha )
 {
@@ -1340,7 +1311,7 @@ static void BlendRGBAR24( filter_t *p_filter,
 }
 
 static void BlendRGBAR16( filter_t *p_filter,
-                          picture_t *p_dst_pic, picture_t *p_src_pic,
+                          picture_t *p_dst_pic, const picture_t *p_src_pic,
                           int i_x_offset, int i_y_offset,
                           int i_width, int i_height, int i_alpha )
 {
@@ -1384,7 +1355,7 @@ static void BlendRGBAR16( filter_t *p_filter,
 }
 
 static void BlendRGBAYUVPacked( filter_t *p_filter,
-                                picture_t *p_dst_pic, picture_t *p_src_pic,
+                                picture_t *p_dst_pic, const picture_t *p_src_pic,
                                 int i_x_offset, int i_y_offset,
                                 int i_width, int i_height, int i_alpha )
 {

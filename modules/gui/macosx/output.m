@@ -2,7 +2,7 @@
  * output.m: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 74c04324607f954db8667eb84701b99b852c3b3f $
+ * $Id: 14ff97b768d3136a167695b04c08b2967d5afc90 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -129,7 +129,7 @@
     NSArray *o_v_bitrates = [NSArray arrayWithObjects: @"16", @"32", @"64", @"96",
         @"128", @"192", @"256", @"384", @"512", @"768", @"1024", @"2048", @"3072", nil];
     NSArray *o_v_scales = [NSArray arrayWithObjects: @"0.25",@"0.5",@"0.75",@"1",@"1.25",@"1.5",@"1.75",@"2",nil];
-    NSArray *o_a_codecs = [NSArray arrayWithObjects: @"mpga", @"mp3 ", @"a52 ", @"vorb", @"flac", @"spx ", nil]; //@"mp4a"
+    NSArray *o_a_codecs = [NSArray arrayWithObjects: @"mpga", @"mp3 ", @"mp4a", @"a52 ", @"vorb", @"flac", @"spx ", nil];
     NSArray *o_v_codecs = [NSArray arrayWithObjects: @"mp1v", @"mp2v", @"mp4v", @"DIV1",
         @"DIV2", @"DIV3", @"h263", @"h264", @"WMV1", @"WMV2", @"MJPG", @"theo", nil];
 

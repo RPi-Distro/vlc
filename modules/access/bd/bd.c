@@ -2,7 +2,7 @@
  * bd.c: BluRay Disc support (uncrypted)
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 232b10fe491b656bf5637436b8a43c68cd097e88 $
+ * $Id: 20b78b06f1f4d51155344851812802b8dea192eb $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -39,7 +39,7 @@
 #include <vlc_input.h>
 #include <vlc_access.h>
 #include <vlc_demux.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_bits.h>
 #include <assert.h>
 
@@ -66,6 +66,7 @@ vlc_module_begin ()
         CACHING_TEXT, CACHING_LONGTEXT, true )
     set_capability( "access_demux", 60 )
     add_shortcut( "bd" )
+    add_shortcut( "file" )
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -152,7 +153,9 @@ static int Open( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
 
-    if( *p_demux->psz_access && strcmp( p_demux->psz_access, "bd" ) )
+    if( *p_demux->psz_access &&
+        strcmp( p_demux->psz_access, "bd" ) &&
+        strcmp( p_demux->psz_access, "file" ) )
         return VLC_EGENERIC;
 
     /* */
@@ -941,7 +944,7 @@ static int CheckFileList( const char *psz_base, const char *ppsz_name[] )
         if( asprintf( &psz_tmp, "%s/%s", psz_base, ppsz_name[i] ) < 0 )
             return VLC_EGENERIC;
 
-        bool b_ok = utf8_stat( psz_tmp, &s ) == 0 && S_ISREG( s.st_mode );
+        bool b_ok = vlc_stat( psz_tmp, &s ) == 0 && S_ISREG( s.st_mode );
 
         free( psz_tmp );
         if( !b_ok )
@@ -965,13 +968,13 @@ static char *FindPathBase( const char *psz_path, bool *pb_shortname )
         psz_base[strlen(psz_base)-1] = '\0';
 
     /* */
-    if( utf8_stat( psz_base, &s ) || !S_ISDIR( s.st_mode ) )
+    if( vlc_stat( psz_base, &s ) || !S_ISDIR( s.st_mode ) )
         goto error;
 
     /* Check BDMV */
     if( asprintf( &psz_tmp, "%s/BDMV", psz_base ) < 0 )
         goto error;
-    if( !utf8_stat( psz_tmp, &s ) && S_ISDIR( s.st_mode ) )
+    if( !vlc_stat( psz_tmp, &s ) && S_ISDIR( s.st_mode ) )
     {
         free( psz_base );
         psz_base = psz_tmp;
@@ -1209,7 +1212,7 @@ static int Load( demux_t *p_demux,
 
     char **ppsz_list;
 
-    int i_list = utf8_scandir( psz_playlist, &ppsz_list, pf_filter, ScanSort );
+    int i_list = vlc_scandir( psz_playlist, &ppsz_list, pf_filter, ScanSort );
 
     for( int i = 0; i < i_list; i++ )
     {
@@ -1340,7 +1343,6 @@ static es_out_t *EsOutNew( demux_t *p_demux )
     p_out->pf_del     = EsOutDel;
     p_out->pf_control = EsOutControl;
     p_out->pf_destroy = EsOutDestroy;
-    p_out->b_sout = false;
 
     p_out->p_sys = p_sys = malloc( sizeof(*p_sys) );
     if( !p_sys )

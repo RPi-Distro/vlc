@@ -2,7 +2,7 @@
  * osdmenu.c: osd filter module
  *****************************************************************************
  * Copyright (C) 2004-2007 M2X
- * $Id: 76214056519fe5ddb6ba84223963ea7e98bff044 $
+ * $Id: 377f7407b23d657002931dac12b9d1c0af06c98b $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -253,18 +253,12 @@ static int CreateFilter ( vlc_object_t *p_this )
     /* Attach subpicture filter callback */
     p_filter->pf_sub_filter = Filter;
 
-    p_sys->p_vout = vlc_object_find( p_this, VLC_OBJECT_VOUT, FIND_ANYWHERE );
+    p_sys->p_vout = vlc_object_find( p_this, VLC_OBJECT_VOUT, FIND_PARENT );
     if( p_sys->p_vout )
-    {
-        var_AddCallback( p_sys->p_vout, "mouse-x",
-                        MouseEvent, p_sys );
-        var_AddCallback( p_sys->p_vout, "mouse-y",
-                        MouseEvent, p_sys );
         var_AddCallback( p_sys->p_vout, "mouse-clicked",
                         MouseEvent, p_sys );
-    }
 
-    es_format_Init( &p_filter->fmt_out, SPU_ES, VLC_FOURCC( 's','p','u',' ' ) );
+    es_format_Init( &p_filter->fmt_out, SPU_ES, VLC_CODEC_SPU );
     p_filter->fmt_out.i_priority = 0;
 
     return VLC_SUCCESS;
@@ -291,25 +285,16 @@ static void DestroyFilter( vlc_object_t *p_this )
     var_DelCallback( p_filter, OSD_CFG "update", OSDMenuCallback, p_sys );
     var_DelCallback( p_filter, OSD_CFG "alpha", OSDMenuCallback, p_sys );
 
-    if( p_sys ) /* FIXME: <-- WTF??? what about the 4 ones above? */
-    {
-        var_DelCallback( p_sys->p_menu, "osd-menu-update",
-                         OSDMenuUpdateEvent, p_filter );
-        var_DelCallback( p_sys->p_menu, "osd-menu-visible",
-                         OSDMenuVisibleEvent, p_filter );
-    }
+    var_DelCallback( p_sys->p_menu, "osd-menu-update",
+                     OSDMenuUpdateEvent, p_filter );
+    var_DelCallback( p_sys->p_menu, "osd-menu-visible",
+                     OSDMenuVisibleEvent, p_filter );
 
-    if( p_sys && p_sys->p_vout )
+    if( p_sys->p_vout )
     {
-        var_DelCallback( p_sys->p_vout, "mouse-x",
-                        MouseEvent, p_sys );
-        var_DelCallback( p_sys->p_vout, "mouse-y",
-                        MouseEvent, p_sys );
         var_DelCallback( p_sys->p_vout, "mouse-clicked",
                         MouseEvent, p_sys );
-
         vlc_object_release( p_sys->p_vout );
-        p_sys->p_vout = NULL;
     }
 
     var_Destroy( p_this, OSD_CFG "file-path" );
@@ -321,14 +306,10 @@ static void DestroyFilter( vlc_object_t *p_this )
     var_Destroy( p_this, OSD_CFG "update" );
     var_Destroy( p_this, OSD_CFG "alpha" );
 
-    if( p_sys )
-    {
-        osd_MenuDelete( p_filter, p_sys->p_menu );
-
-        free( p_sys->psz_path );
-        free( p_sys->psz_file );
-        free( p_sys );
-    }
+    osd_MenuDelete( p_filter, p_sys->p_menu );
+    free( p_sys->psz_path );
+    free( p_sys->psz_file );
+    free( p_sys );
 }
 
 /*****************************************************************************
@@ -371,8 +352,7 @@ static subpicture_region_t *create_text_region( filter_t *p_filter, subpicture_t
 
     /* Create new SPU region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC( 'T','E','X','T' );
-    fmt.i_aspect = VOUT_ASPECT_FACTOR;
+    fmt.i_chroma = VLC_CODEC_TEXT;
     fmt.i_sar_num = fmt.i_sar_den = 1;
     fmt.i_width = fmt.i_visible_width = i_width;
     fmt.i_height = fmt.i_visible_height = i_height;
@@ -409,13 +389,12 @@ static subpicture_region_t *create_picture_region( filter_t *p_filter, subpictur
 
     /* Create new SPU region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = (p_pic == NULL) ? VLC_FOURCC('Y','U','V','P') : VLC_FOURCC('Y','U','V','A');
-    fmt.i_aspect = VOUT_ASPECT_FACTOR;
+    fmt.i_chroma = (p_pic == NULL) ? VLC_CODEC_YUVP : VLC_CODEC_YUVA;
     fmt.i_sar_num = fmt.i_sar_den = 1;
     fmt.i_width = fmt.i_visible_width = i_width;
     fmt.i_height = fmt.i_visible_height = i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    if( fmt.i_chroma == VLC_FOURCC('Y','U','V','P') )
+    if( fmt.i_chroma == VLC_CODEC_YUVP )
     {
         fmt.p_palette = &palette;
         fmt.p_palette->i_entries = 0;
@@ -664,35 +643,18 @@ static int OSDMenuCallback( vlc_object_t *p_this, char const *psz_var,
 static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
-    VLC_UNUSED(oldval); VLC_UNUSED(newval);
+    VLC_UNUSED(oldval);
     filter_sys_t *p_sys = (filter_sys_t *)p_data;
     vout_thread_t *p_vout = (vout_thread_t*)p_sys->p_vout;
-    int i_x, i_y;
-    int i_v;
-
-#define MOUSE_DOWN    1
-#define MOUSE_CLICKED 2
-#define MOUSE_MOVE_X  4
-#define MOUSE_MOVE_Y  8
-#define MOUSE_MOVE    12
-    uint8_t mouse= 0;
-
+    int i_x = newval.coords.x;
+    int i_y = newval.coords.y;
     int v_h = p_vout->output.i_height;
     int v_w = p_vout->output.i_width;
-
-    if( psz_var[6] == 'x' ) mouse |= MOUSE_MOVE_X;
-    if( psz_var[6] == 'y' ) mouse |= MOUSE_MOVE_Y;
-    if( psz_var[6] == 'c' ) mouse |= MOUSE_CLICKED;
-
-    i_v = var_GetInteger( p_sys->p_vout, "mouse-button-down" );
-    if( i_v & 0x1 ) mouse |= MOUSE_DOWN;
-    i_y = var_GetInteger( p_sys->p_vout, "mouse-y" );
-    i_x = var_GetInteger( p_sys->p_vout, "mouse-x" );
 
     if( i_y < 0 || i_x < 0 || i_y >= v_h || i_x >= v_w )
         return VLC_SUCCESS;
 
-    if( mouse & MOUSE_CLICKED )
+    do
     {
         int i_scale_width, i_scale_height;
         osd_button_t *p_button = NULL;
@@ -712,5 +674,6 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
             msg_Dbg( p_this, "mouse clicked %s (%d,%d)", p_button->psz_name, i_x, i_y );
         }
     }
+    while(0);
     return VLC_SUCCESS;
 }

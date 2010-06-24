@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-#DH_VERBOSE=1
-
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_HOST_ARCH       ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
@@ -29,10 +27,6 @@ MAKEFLAGS += -j$(NUMJOBS)
 endif
 endif
 
-
-
-include /usr/share/quilt/quilt.make
-
 LDFLAGS = -Wl,--as-needed
 
 # configure flags
@@ -40,37 +34,38 @@ confflags += \
 	--config-cache \
 	--disable-maintainer-mode \
 	--disable-update-check \
+	--disable-silent-rules \
 	--enable-fast-install \
-	--enable-release \
 	--prefix=/usr \
+	--sysconfdir=/etc \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	$(NULL)
 # configure features
 confflags += \
-	--disable-atmo \
-	--disable-fluidsynth \
-	--disable-gnomevfs \
-	--disable-kate \
-	--disable-mtp \
-	--enable-x264 \
-	--disable-zvbi \
 	--enable-a52 \
 	--enable-aa \
+	--enable-atmo \
 	--enable-bonjour \
 	--enable-caca \
+	--enable-dc1394 \
 	--enable-dca \
+	--enable-dirac \
 	--enable-dvb \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
 	--enable-flac \
+	--enable-fluidsynth \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-ggi \
 	--enable-gnutls \
 	--enable-jack \
+	--enable-kate \
 	--enable-libass \
 	--enable-libmpeg2 \
+	--enable-libproxy \
+	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \
 	--enable-mad \
@@ -78,12 +73,15 @@ confflags += \
 	--enable-mod \
 	--enable-mozilla \
 	--enable-mpc \
+	--enable-mtp \
+	--enable-mux_ogg \
 	--enable-ncurses \
 	--enable-notify \
 	--enable-ogg \
 	--enable-pulse \
 	--enable-qt4 \
 	--enable-realrtsp \
+	--enable-schroedinger \
 	--enable-sdl \
 	--enable-shout \
 	--enable-skins2 \
@@ -91,15 +89,39 @@ confflags += \
 	--enable-speex \
 	--enable-svg \
 	--enable-taglib \
-	--enable-telx \
 	--enable-theora \
 	--enable-twolame \
+	--enable-udev \
+	--enable-upnp \
 	--enable-vcd \
 	--enable-vcdx \
 	--enable-vorbis \
+	--enable-x264 \
+	--enable-zvbi \
+	--with-kde-solid=/usr/share/kde4/apps/ \
 	--with-mozilla-pkg=libxul \
 	$(NULL)
-
+# Reasons for disabling features:
+# dxva2 -> Windows only
+# gnomevfs -> poorly maintained
+# goom -> not in Debian
+# libva -> needs a vaapi enabled avcodec
+# osso_screensaver -> not targetting maemo
+# portaudio -> not needed
+# projectm -> broken
+# sqlite -> still in development
+# telx -> incompatible with zvbi
+confflags += \
+	--disable-dxva2 \
+	--disable-gnomevfs \
+	--disable-goom \
+	--disable-libva \
+	--disable-osso_screensaver \
+	--disable-portaudio \
+	--disable-projectm \
+	--disable-sqlite \
+	--disable-telx \
+	$(NULL)
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
@@ -117,11 +139,8 @@ ifneq ($(filter $(DEB_HOST_ARCH), amd64 i386),)
 confflags += --enable-svgalib
 endif
 
-# A few shortcuts
-VIDDIR := usr/share/vlc
-
 build: build-stamp
-build-stamp: $(QUILT_STAMPFN)
+build-stamp:
 	dh_testdir
 	# We need to build the static library apart
 	# Else it's a mess when we build the modules
@@ -151,66 +170,52 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
+	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak \
+        debian/vlc-nox.install
 	rm -f debian/vlc-nox.install.kfreebsd
 	rm -f debian/vlc-nox.install.hurd
 	# Clean VLC
 	[ ! -f Makefile ] || $(MAKE) distclean
 	rm -rf tmp/
-	# Clean zsh completion stuff
-	rm -f extras/zsh
-	# Removed ugly cruft
-	rm -f src/misc/modules_builtin.h
-	rm -f mozilla/vlcintf.xpt mozilla/vlcintf.h
-	# Remove spurious autotools stuff
-	rm -f config.log confdefs.h
-	# Unpatch package
-	$(MAKE) -f debian/rules unpatch
 	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
+	dh_installdirs
+# Add the optimization dirs only if present
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
+	cp debian/vlc-nox.install debian/vlc-nox.install.bak
+	for dir in sse2 3dnow altivec arm_neon mmx mmxext ; do \
+	        if test -d debian/tmp/usr/lib/vlc/plugins/$${dir}; then \
+	                echo usr/lib/vlc/plugins/$${dir} >> debian/vlc-nox.install ; \
+	        fi ; \
+	done
+# Remove some modules on non-linux arch
 	sed -e '/\(lib\|libaccess_\)\(alsa\|dv\|dvb\|fb\|v4l\|v4l2\|pvr\)_/d' \
 	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
 	sed -e '/\(lib\|libaccess_\)\(probe_hal\)_/d' \
 	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd
-	dh_installdirs
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
 	cp tmp/libvlc.a debian/tmp/usr/lib
 	cp tmp/libvlccore.a debian/tmp/usr/lib
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -exec rm '{}' ';'
 	# Remove useless stuff
-	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
-	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
-	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
-	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
-	rm -rf debian/tmp/usr/share/man/man1
-	# Move icons around
-	mkdir -p debian/tmp/usr/share/icons/hicolor/16x16/apps
-	mv debian/tmp/$(VIDDIR)/vlc16x16.png debian/tmp/usr/share/icons/hicolor/16x16/apps/vlc.png
-	mkdir -p debian/tmp/usr/share/icons/hicolor/32x32/apps
-	mv debian/tmp/$(VIDDIR)/vlc32x32.png debian/tmp/usr/share/icons/hicolor/32x32/apps/vlc.png
-	mkdir -p debian/tmp/usr/share/icons/hicolor/48x48/apps
-	mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/usr/share/icons/hicolor/48x48/apps/vlc.png
-	mv debian/tmp/$(VIDDIR)/vlc48x48-christmas.png debian/tmp/usr/share/icons/hicolor/48x48/apps/vlc-christmas.png
-	mkdir -p debian/tmp/usr/share/icons/hicolor/128x128/apps
-	mv debian/tmp/$(VIDDIR)/vlc128x128.png debian/tmp/usr/share/icons/hicolor/128x128/apps/vlc.png
-	mv debian/tmp/$(VIDDIR)/vlc128x128-christmas.png debian/tmp/usr/share/icons/hicolor/128x128/apps/vlc-christmas.png
-	mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
+	ln -sf /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
+	ln -sf /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
+	rm -f debian/tmp/usr/share/man/man1/vlc-config.1
 	# Install stuff
 	dh_install -si --fail-missing
 	# move .hosts
 	mkdir -p debian/vlc-data/etc/vlc/http
 	mv debian/vlc-data/usr/share/vlc/http/.hosts debian/vlc-data/etc/vlc/http
 	ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/http/.hosts
+	mkdir -p debian/vlc-data/etc/vlc/lua/http
+	mv debian/vlc-data/usr/share/vlc/lua/http/.hosts debian/vlc-data/etc/vlc/lua/http
+	ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/lua/http/.hosts
+	
 
-	#install BTS stuff
-	for pkg in vlc-nox vlc-data; do \
-	    mkdir -p  debian/$${pkg}/usr/share/bug/$${pkg}; \
-	    cp debian/bug/* debian/$${pkg}/usr/share/bug/$${pkg}; \
-	done
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check that we did not install a plugin linked with libX11 in vlc-nox
 	BORKED=no; \
@@ -247,18 +252,18 @@ binary-arch: build install
 	dh_buildinfo -p vlc-nox
 	dh_installmenu -s
 	dh_installmime -s
-	dh_installman doc/vlc.1 -p vlc-nox
-	dh_installman doc/vlc-wrapper.1 -p vlc-nox
+	dh_installman -s
 	dh_installchangelogs ChangeLog -p vlc
 	dh_installchangelogs ChangeLog -p vlc-nox
 	dh_lintian 
+	dh_bugfiles
 	dh_strip -s --dbg-package=vlc-dbg
 	dh_compress -s
 	dh_fixperms -s
-	dh_makeshlibs -plibvlc2 -V # -V is nasty, but I mean it
-	dh_makeshlibs -plibvlccore2 -V # -V is nasty, but I mean it
+	dh_makeshlibs -plibvlc5
+	dh_makeshlibs -plibvlccore4
 	dh_installdeb -s
-	dh_shlibdeps -s -ldebian/libvlc2/usr/lib:debian/libvlccore2/usr/lib
+	dh_shlibdeps -s -ldebian/libvlc5/usr/lib:debian/libvlccore4/usr/lib
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s

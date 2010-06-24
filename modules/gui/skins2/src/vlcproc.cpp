@@ -2,10 +2,11 @@
  * vlcproc.cpp
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 3b985cf970a1af9cbd96659c175b9c3bda62d59e $
+ * $Id: 208a56fc1972aa32e31bab6c407c14d4c2f5a4d2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
+ *          Erwan Tulou      <erwan10@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +18,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -30,7 +31,6 @@
 #include <vlc_aout.h>
 #include <vlc_vout.h>
 #include <vlc_playlist.h>
-#include <vlc_window.h>
 
 #include "vlcproc.hpp"
 #include "os_factory.hpp"
@@ -47,10 +47,12 @@
 #include "../commands/cmd_resize.hpp"
 #include "../commands/cmd_vars.hpp"
 #include "../commands/cmd_dialogs.hpp"
-#include "../commands/cmd_update_item.hpp"
+#include "../commands/cmd_audio.hpp"
+#include "../commands/cmd_callbacks.hpp"
 #include "../utils/var_bool.hpp"
 #include <sstream>
 
+#include <assert.h>
 
 VlcProc *VlcProc::instance( intf_thread_t *pIntf )
 {
@@ -65,17 +67,14 @@ VlcProc *VlcProc::instance( intf_thread_t *pIntf )
 
 void VlcProc::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_vlcProc )
-    {
-        delete pIntf->p_sys->p_vlcProc;
-        pIntf->p_sys->p_vlcProc = NULL;
-    }
+    delete pIntf->p_sys->p_vlcProc;
+    pIntf->p_sys->p_vlcProc = NULL;
 }
 
 
 VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
-    m_varVoutSize( pIntf ), m_varEqBands( pIntf ),
-    m_pVout( NULL ), m_pAout( NULL ), m_cmdManage( this )
+    m_varEqBands( pIntf ), m_pVout( NULL ), m_pAout( NULL ),
+    m_bEqualizer_started( false ), m_cmdManage( this )
 {
     // Create a timer to poll the status of the vlc
     OSFactory *pOsFactory = OSFactory::instance( pIntf );
@@ -106,6 +105,9 @@ VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     REGISTER_VAR( m_cVarTime, StreamTime, "time" )
     REGISTER_VAR( m_cVarSeekable, VarBoolImpl, "vlc.isSeekable" )
     REGISTER_VAR( m_cVarDvdActive, VarBoolImpl, "dvd.isActive" )
+
+    REGISTER_VAR( m_cVarRecordable, VarBoolImpl, "vlc.canRecord" )
+    REGISTER_VAR( m_cVarRecording, VarBoolImpl, "vlc.isRecording" )
 
     /* Vout variables */
     REGISTER_VAR( m_cVarFullscreen, VarBoolImpl, "vlc.isFullscreen" )
@@ -141,9 +143,19 @@ VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     // so they must put commands in the queue and NOT do anything else
     // (X11 calls are not reentrant)
 
-    // Called when the playlist changes
-    var_AddCallback( pIntf->p_sys->p_playlist, "intf-change",
-                     onIntfChange, this );
+#define ADD_CALLBACK( p_object, var ) \
+    var_AddCallback( p_object, var, onGenericCallback, this );
+
+    ADD_CALLBACK( pIntf->p_sys->p_playlist, "volume-change" )
+    ADD_CALLBACK( pIntf->p_libvlc, "intf-show" )
+
+    ADD_CALLBACK( pIntf->p_sys->p_playlist, "item-current" )
+    ADD_CALLBACK( pIntf->p_sys->p_playlist, "random" )
+    ADD_CALLBACK( pIntf->p_sys->p_playlist, "loop" )
+    ADD_CALLBACK( pIntf->p_sys->p_playlist, "repeat" )
+
+#undef ADD_CALLBACK
+
     // Called when a playlist item is added
     var_AddCallback( pIntf->p_sys->p_playlist, "playlist-item-append",
                      onItemAppend, this );
@@ -151,12 +163,9 @@ VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     // TODO: properly handle item-deleted
     var_AddCallback( pIntf->p_sys->p_playlist, "playlist-item-deleted",
                      onItemDelete, this );
-    // Called when the "interface shower" wants us to show the skin
-    var_AddCallback( pIntf->p_libvlc, "intf-show",
-                     onIntfShow, this );
-    // Called when the current played item changes
-    var_AddCallback( pIntf->p_sys->p_playlist, "item-current",
-                     onPlaylistChange, this );
+    // Called when the current input changes
+    var_AddCallback( pIntf->p_sys->p_playlist, "input-current",
+                     onInputNew, this );
     // Called when a playlist item changed
     var_AddCallback( pIntf->p_sys->p_playlist, "item-change",
                      onItemChange, this );
@@ -168,7 +177,8 @@ VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     var_AddCallback( pIntf, "interaction", onInteraction, this );
     interaction_Register( pIntf );
 
-    getIntf()->p_sys->p_input = NULL;
+    // initialize variables refering to liblvc and playlist objects
+    init_variables();
 }
 
 
@@ -176,24 +186,40 @@ VlcProc::~VlcProc()
 {
     m_pTimer->stop();
     delete( m_pTimer );
-    if( getIntf()->p_sys->p_input )
+
+    if( m_pAout )
     {
-        vlc_object_release( getIntf()->p_sys->p_input );
-        getIntf()->p_sys->p_input = NULL;
+        vlc_object_release( m_pAout );
+        m_pAout = NULL;
+    }
+    if( m_pVout )
+    {
+        vlc_object_release( m_pVout );
+        m_pVout = NULL;
     }
 
     interaction_Unregister( getIntf() );
 
-    var_DelCallback( getIntf()->p_sys->p_playlist, "intf-change",
-                     onIntfChange, this );
+    var_DelCallback( getIntf()->p_sys->p_playlist, "volume-change",
+                     onGenericCallback, this );
+    var_DelCallback( getIntf()->p_libvlc, "intf-show",
+                     onGenericCallback, this );
+
+    var_DelCallback( getIntf()->p_sys->p_playlist, "item-current",
+                     onGenericCallback, this );
+    var_DelCallback( getIntf()->p_sys->p_playlist, "random",
+                     onGenericCallback, this );
+    var_DelCallback( getIntf()->p_sys->p_playlist, "loop",
+                     onGenericCallback, this );
+    var_DelCallback( getIntf()->p_sys->p_playlist, "repeat",
+                     onGenericCallback, this );
+
     var_DelCallback( getIntf()->p_sys->p_playlist, "playlist-item-append",
                      onItemAppend, this );
     var_DelCallback( getIntf()->p_sys->p_playlist, "playlist-item-deleted",
                      onItemDelete, this );
-    var_DelCallback( getIntf()->p_libvlc, "intf-show",
-                     onIntfShow, this );
-    var_DelCallback( getIntf()->p_sys->p_playlist, "item-current",
-                     onPlaylistChange, this );
+    var_DelCallback( getIntf()->p_sys->p_playlist, "input-current",
+                     onInputNew, this );
     var_DelCallback( getIntf()->p_sys->p_playlist, "item-change",
                      onItemChange, this );
     var_DelCallback( getIntf(), "skin-to-load", onSkinToLoad, this );
@@ -202,30 +228,6 @@ VlcProc::~VlcProc()
 
 void VlcProc::manage()
 {
-#ifdef WIN32
-    if( !vlc_object_alive( getIntf() ) &&
-        !getIntf()->p_sys->b_exitRequested )
-    {
-        getIntf()->p_sys->b_exitRequested = true;
-
-        // explicitly stop the playlist
-        playlist_Stop( getIntf()->p_sys->p_playlist );
-
-        if( !VoutManager::instance( getIntf() )->hasVout() )
-            getIntf()->p_sys->b_exitOK = true;
-    }
-
-    if( getIntf()->p_sys->b_exitOK )
-    {
-        // Get the instance of OSFactory
-        OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-
-        // Exit the main OS loop
-        pOsFactory->getOSLoop()->exit();
-
-        return;
-    }
-#else
     // Did the user request to quit vlc ?
     if( !vlc_object_alive( getIntf() ) )
     {
@@ -237,11 +239,6 @@ void VlcProc::manage()
 
         return;
     }
-#endif
-
-    refreshPlaylist();
-    refreshAudio();
-    refreshInput();
 }
 
 void VlcProc::CmdManage::execute()
@@ -250,210 +247,32 @@ void VlcProc::CmdManage::execute()
     m_pParent->manage();
 }
 
-void VlcProc::refreshAudio()
-{
-    char *pFilters;
 
-    // Check if the audio output has changed
-    aout_instance_t *pAout = (aout_instance_t *)vlc_object_find( getIntf(),
-            VLC_OBJECT_AOUT, FIND_ANYWHERE );
-    if( pAout )
-    {
-        if( pAout != m_pAout )
-        {
-            // Register the equalizer callbacks
-            if( !var_AddCallback( pAout, "equalizer-bands",
-                                  onEqBandsChange, this ) &&
-                !var_AddCallback( pAout, "equalizer-preamp",
-                                  onEqPreampChange, this ) )
-            {
-                m_pAout = pAout;
-                //char * psz_bands = var_GetString( p_aout, "equalizer-bands" );
-            }
-        }
-        // Get the audio filters
-        pFilters = var_GetNonEmptyString( pAout, "audio-filter" );
-        vlc_object_release( pAout );
-    }
-    else
-    {
-        // Get the audio filters
-        pFilters = config_GetPsz( getIntf(), "audio-filter" );
-    }
-
-    // Refresh sound volume
-    audio_volume_t volume;
-    aout_VolumeGet( getIntf(), &volume );
-    Volume *pVolume = (Volume*)m_cVarVolume.get();
-    pVolume->set( (double)volume * 2.0 / AOUT_VOLUME_MAX );
-
-    // Set the mute variable
-    VarBoolImpl *pVarMute = (VarBoolImpl*)m_cVarMute.get();
-    pVarMute->set( volume == 0 );
-
-    // Refresh the equalizer variable
-    VarBoolImpl *pVarEqualizer = (VarBoolImpl*)m_cVarEqualizer.get();
-    pVarEqualizer->set( pFilters && strstr( pFilters, "equalizer" ) );
-    free( pFilters );
-}
-
-void VlcProc::refreshPlaylist()
-{
-    // Refresh the random variable
-    VarBoolImpl *pVarRandom = (VarBoolImpl*)m_cVarRandom.get();
-    vlc_value_t val;
-    var_Get( getIntf()->p_sys->p_playlist, "random", &val );
-    pVarRandom->set( val.b_bool != 0 );
-
-    // Refresh the loop variable
-    VarBoolImpl *pVarLoop = (VarBoolImpl*)m_cVarLoop.get();
-    var_Get( getIntf()->p_sys->p_playlist, "loop", &val );
-    pVarLoop->set( val.b_bool != 0 );
-
-    // Refresh the repeat variable
-    VarBoolImpl *pVarRepeat = (VarBoolImpl*)m_cVarRepeat.get();
-    var_Get( getIntf()->p_sys->p_playlist, "repeat", &val );
-    pVarRepeat->set( val.b_bool != 0 );
-}
-
-void VlcProc::refreshInput()
-{
-    StreamTime *pTime = (StreamTime*)m_cVarTime.get();
-    VarBoolImpl *pVarSeekable = (VarBoolImpl*)m_cVarSeekable.get();
-    VarBoolImpl *pVarDvdActive = (VarBoolImpl*)m_cVarDvdActive.get();
-    VarBoolImpl *pVarHasVout = (VarBoolImpl*)m_cVarHasVout.get();
-    VarBoolImpl *pVarHasAudio = (VarBoolImpl*)m_cVarHasAudio.get();
-    VarText *pBitrate = (VarText*)m_cVarStreamBitRate.get();
-    VarText *pSampleRate = (VarText*)m_cVarStreamSampleRate.get();
-    VarBoolImpl *pVarFullscreen = (VarBoolImpl*)m_cVarFullscreen.get();
-    VarBoolImpl *pVarPlaying = (VarBoolImpl*)m_cVarPlaying.get();
-    VarBoolImpl *pVarStopped = (VarBoolImpl*)m_cVarStopped.get();
-    VarBoolImpl *pVarPaused = (VarBoolImpl*)m_cVarPaused.get();
-
-    // Update the input
-    if( getIntf()->p_sys->p_input == NULL )
-    {
-        getIntf()->p_sys->p_input =
-            playlist_CurrentInput( getIntf()->p_sys->p_playlist );
-    }
-    else if( getIntf()->p_sys->p_input->b_dead )
-    {
-        vlc_object_release( getIntf()->p_sys->p_input );
-        getIntf()->p_sys->p_input = NULL;
-    }
-
-    input_thread_t *pInput = getIntf()->p_sys->p_input;
-
-    if( pInput && vlc_object_alive (pInput) )
-    {
-        // Refresh time variables
-        vlc_value_t pos;
-        var_Get( pInput, "position", &pos );
-        pTime->set( pos.f_float, false );
-        pVarSeekable->set( pos.f_float != 0.0 );
-
-        // Refresh DVD detection
-        vlc_value_t chapters_count;
-        var_Change( pInput, "chapter", VLC_VAR_CHOICESCOUNT,
-                        &chapters_count, NULL );
-        pVarDvdActive->set( chapters_count.i_int > 0 );
-
-        // Get the input bitrate
-        int bitrate = var_GetInteger( pInput, "bit-rate" ) / 1000;
-        pBitrate->set( UString::fromInt( getIntf(), bitrate ) );
-
-        // Get the audio sample rate
-        int sampleRate = var_GetInteger( pInput, "sample-rate" ) / 1000;
-        pSampleRate->set( UString::fromInt( getIntf(), sampleRate ) );
-
-        // Do we have audio
-        vlc_value_t audio_es;
-        var_Change( pInput, "audio-es", VLC_VAR_CHOICESCOUNT,
-                        &audio_es, NULL );
-        pVarHasAudio->set( audio_es.i_int > 0 );
-
-        // Refresh fullscreen status
-        vout_thread_t *pVout = input_GetVout( pInput );
-        pVarHasVout->set( pVout != NULL );
-        if( pVout )
-        {
-            pVarFullscreen->set( var_GetBool( pVout, "fullscreen" ) );
-            vlc_object_release( pVout );
-        }
-
-        // Refresh play/pause status
-        int state = var_GetInteger( pInput, "state" );
-        pVarStopped->set( false );
-        pVarPlaying->set( state != PAUSE_S );
-        pVarPaused->set( state == PAUSE_S );
-    }
-    else
-    {
-        pVarSeekable->set( false );
-        pVarDvdActive->set( false );
-        pTime->set( 0, false );
-        pVarFullscreen->set( false );
-        pVarHasAudio->set( false );
-        pVarHasVout->set( false );
-        pVarStopped->set( true );
-        pVarPlaying->set( false );
-        pVarPaused->set( false );
-    }
-}
-
-int VlcProc::onIntfChange( vlc_object_t *pObj, const char *pVariable,
-                           vlc_value_t oldVal, vlc_value_t newVal,
-                           void *pParam )
+int VlcProc::onInputNew( vlc_object_t *pObj, const char *pVariable,
+                         vlc_value_t oldval, vlc_value_t newval, void *pParam )
 {
     VlcProc *pThis = (VlcProc*)pParam;
+    input_thread_t *pInput = static_cast<input_thread_t*>(newval.p_address);
 
-    // Update the stream variable
-    pThis->updateStreamName();
-
-    // Create a playtree notify command (for new style playtree)
-    CmdPlaytreeChanged *pCmdTree = new CmdPlaytreeChanged( pThis->getIntf() );
-
-    // Push the command in the asynchronous command queue
-    AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
-    pQueue->push( CmdGenericPtr( pCmdTree ) );
-
-    return VLC_SUCCESS;
-}
-
-
-int VlcProc::onIntfShow( vlc_object_t *pObj, const char *pVariable,
-                         vlc_value_t oldVal, vlc_value_t newVal,
-                         void *pParam )
-{
-    if (newVal.b_bool)
-    {
-        VlcProc *pThis = (VlcProc*)pParam;
-
-        // Create a raise all command
-        CmdRaiseAll *pCmd = new CmdRaiseAll( pThis->getIntf(),
-            pThis->getIntf()->p_sys->p_theme->getWindowManager() );
-
-        // Push the command in the asynchronous command queue
-        AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
-        pQueue->push( CmdGenericPtr( pCmd ) );
-    }
+    var_AddCallback( pInput, "intf-event", onGenericCallback, pThis );
+    var_AddCallback( pInput, "bit-rate", onGenericCallback, pThis );
+    var_AddCallback( pInput, "sample-rate", onGenericCallback, pThis );
+    var_AddCallback( pInput, "can-record", onGenericCallback, pThis );
 
     return VLC_SUCCESS;
 }
 
 
 int VlcProc::onItemChange( vlc_object_t *pObj, const char *pVariable,
-                           vlc_value_t oldVal, vlc_value_t newVal,
+                           vlc_value_t oldval, vlc_value_t newval,
                            void *pParam )
 {
     VlcProc *pThis = (VlcProc*)pParam;
-
-    // Update the stream variable
-    pThis->updateStreamName();
+    input_item_t *p_item = static_cast<input_item_t*>(newval.p_address);
 
     // Create a playtree notify command
     CmdPlaytreeUpdate *pCmdTree = new CmdPlaytreeUpdate( pThis->getIntf(),
-                                                         newVal.i_int );
+                                                         p_item );
 
     // Push the command in the asynchronous command queue
     AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
@@ -468,10 +287,7 @@ int VlcProc::onItemAppend( vlc_object_t *pObj, const char *pVariable,
 {
     VlcProc *pThis = (VlcProc*)pParam;
 
-    playlist_add_t *p_add = (playlist_add_t*)malloc( sizeof(
-                                                playlist_add_t ) ) ;
-
-    memcpy( p_add, newVal.p_address, sizeof( playlist_add_t ) ) ;
+    playlist_add_t *p_add = static_cast<playlist_add_t*>(newVal.p_address);
 
     CmdGenericPtr ptrTree;
     CmdPlaytreeAppend *pCmdTree = new CmdPlaytreeAppend( pThis->getIntf(),
@@ -501,28 +317,6 @@ int VlcProc::onItemDelete( vlc_object_t *pObj, const char *pVariable,
     // Push the command in the asynchronous command queue
     AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
     pQueue->push( ptrTree , false );
-
-    return VLC_SUCCESS;
-}
-
-
-int VlcProc::onPlaylistChange( vlc_object_t *pObj, const char *pVariable,
-                               vlc_value_t oldVal, vlc_value_t newVal,
-                               void *pParam )
-{
-    VlcProc *pThis = (VlcProc*)pParam;
-
-    AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
-
-    // Update the stream variable
-    pThis->updateStreamName();
-
-    // Create two playtree notify commands: one for old item, one for new
-    CmdPlaytreeUpdate *pCmdTree = new CmdPlaytreeUpdate( pThis->getIntf(),
-                                                         oldVal.i_int );
-    pQueue->push( CmdGenericPtr( pCmdTree ) , true );
-    pCmdTree = new CmdPlaytreeUpdate( pThis->getIntf(), newVal.i_int );
-    pQueue->push( CmdGenericPtr( pCmdTree ) , true );
 
     return VLC_SUCCESS;
 }
@@ -558,17 +352,6 @@ int VlcProc::onInteraction( vlc_object_t *pObj, const char *pVariable,
     return VLC_SUCCESS;
 }
 
-
-void VlcProc::updateStreamName()
-{
-    // Create a update item command
-    CmdUpdateItem *pCmdItem = new CmdUpdateItem( getIntf(), getStreamNameVar(), getStreamURIVar() );
-
-    // Push the command in the asynchronous command queue
-    AsyncQueue *pQueue = AsyncQueue::instance( getIntf() );
-    pQueue->push( CmdGenericPtr( pCmdItem ) );
-}
-
 int VlcProc::onEqBandsChange( vlc_object_t *pObj, const char *pVariable,
                               vlc_value_t oldVal, vlc_value_t newVal,
                               void *pParam )
@@ -602,3 +385,386 @@ int VlcProc::onEqPreampChange( vlc_object_t *pObj, const char *pVariable,
     return VLC_SUCCESS;
 }
 
+
+int VlcProc::onGenericCallback( vlc_object_t *pObj, const char *pVariable,
+                                vlc_value_t oldVal, vlc_value_t newVal,
+                                void *pParam )
+{
+    VlcProc *pThis = (VlcProc*)pParam;
+    AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
+
+    CmdGeneric *pCmd = NULL;
+
+#define ADD_CALLBACK_ENTRY( var, label ) \
+    { \
+    if( strcmp( pVariable, var ) == 0 ) \
+        pCmd = new Cmd_##label( pThis->getIntf(), pObj, newVal ); \
+    }
+
+    ADD_CALLBACK_ENTRY( "item-current", item_current_changed )
+    ADD_CALLBACK_ENTRY( "volume-change", volume_changed )
+
+    ADD_CALLBACK_ENTRY( "intf-event", intf_event_changed )
+    ADD_CALLBACK_ENTRY( "bit-rate", bit_rate_changed )
+    ADD_CALLBACK_ENTRY( "sample-rate", sample_rate_changed )
+    ADD_CALLBACK_ENTRY( "can-record", can_record_changed )
+
+    ADD_CALLBACK_ENTRY( "random", random_changed )
+    ADD_CALLBACK_ENTRY( "loop", loop_changed )
+    ADD_CALLBACK_ENTRY( "repeat", repeat_changed )
+
+    ADD_CALLBACK_ENTRY( "audio-filter", audio_filter_changed )
+
+    ADD_CALLBACK_ENTRY( "intf-show", intf_show_changed )
+
+#undef ADD_CALLBACK_ENTRY
+
+    if( pCmd )
+        pQueue->push( CmdGenericPtr( pCmd ), false );
+    else
+        msg_Err( pObj, "no Callback entry provided for %s", pVariable );
+
+    return VLC_SUCCESS;
+}
+
+#define SET_BOOL(m,v)         ((VarBoolImpl*)(m).get())->set(v)
+#define SET_STREAMTIME(m,v,b) ((StreamTime*)(m).get())->set(v,b)
+#define SET_TEXT(m,v)         ((VarText*)(m).get())->set(v)
+#define SET_VOLUME(m,v,b)     ((Volume*)(m).get())->set(v,b)
+
+void VlcProc::on_item_current_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    input_item_t *p_item = static_cast<input_item_t*>(newVal.p_address);
+
+    // Update short name
+    char *psz_name = input_item_GetName( p_item );
+    SET_TEXT( m_cVarStreamName, UString( getIntf(), psz_name ) );
+    free( psz_name );
+
+    // Update full uri
+    char *psz_uri = input_item_GetURI( p_item );
+    SET_TEXT( m_cVarStreamURI, UString( getIntf(), psz_uri ) );
+    free( psz_uri );
+
+    // Update playtree
+    getPlaytreeVar().onUpdateCurrent( true );
+}
+
+void VlcProc::on_intf_event_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    input_thread_t* pInput = (input_thread_t*) p_obj;
+
+    assert( getIntf()->p_sys->p_input == NULL || getIntf()->p_sys->p_input == pInput );
+
+    if( !getIntf()->p_sys->p_input )
+    {
+        msg_Dbg( getIntf(), "new input %p detected", pInput );
+
+        getIntf()->p_sys->p_input = pInput;
+        vlc_object_hold( pInput );
+    }
+
+    switch( newVal.i_int )
+    {
+        case INPUT_EVENT_STATE:
+        {
+            int state = var_GetInteger( pInput, "state" );
+            SET_BOOL( m_cVarStopped, false );
+            SET_BOOL( m_cVarPlaying, state != PAUSE_S );
+            SET_BOOL( m_cVarPaused, state == PAUSE_S );
+            break;
+        }
+
+        case INPUT_EVENT_POSITION:
+        {
+            float pos = var_GetFloat( pInput, "position" );
+            SET_STREAMTIME( m_cVarTime, pos, false );
+            SET_BOOL( m_cVarSeekable, pos != 0.0 );
+            break;
+        }
+
+        case INPUT_EVENT_ES:
+        {
+            // Do we have audio
+            vlc_value_t audio_es;
+            var_Change( pInput, "audio-es", VLC_VAR_CHOICESCOUNT,
+                            &audio_es, NULL );
+            SET_BOOL( m_cVarHasAudio, audio_es.i_int > 0 );
+            break;
+        }
+
+        case INPUT_EVENT_VOUT:
+        {
+            vout_thread_t* pVout = input_GetVout( pInput );
+            SET_BOOL( m_cVarHasVout, pVout != NULL );
+            if( pVout )
+            {
+                SET_BOOL( m_cVarFullscreen,
+                                         var_GetBool( pVout, "fullscreen" ) );
+                vlc_object_release( pVout );
+            }
+            break;
+        }
+
+        case INPUT_EVENT_AOUT:
+        {
+            aout_instance_t* pAout = input_GetAout( pInput );
+
+            // end of input or aout reuse (nothing to do)
+            if( !pAout || pAout == m_pAout )
+            {
+                if( pAout )
+                    vlc_object_release( pAout );
+                break;
+            }
+
+            // remove previous Aout if any
+            if( m_pAout )
+            {
+                var_DelCallback( m_pAout, "audio-filter",
+                                 onGenericCallback, this );
+                if( m_bEqualizer_started )
+                {
+                    var_DelCallback( m_pAout, "equalizer-bands",
+                                     onEqBandsChange, this );
+                    var_DelCallback( m_pAout, "equalizer-preamp",
+                                     onEqPreampChange, this );
+                }
+                vlc_object_release( m_pAout );
+                m_pAout = NULL;
+                m_bEqualizer_started = false;
+            }
+
+            // New Aout (addCallbacks)
+            var_AddCallback( pAout, "audio-filter", onGenericCallback, this );
+
+            char *pFilters = var_GetNonEmptyString( pAout, "audio-filter" );
+            bool b_equalizer = pFilters && strstr( pFilters, "equalizer" );
+            free( pFilters );
+            SET_BOOL( m_cVarEqualizer, b_equalizer );
+            if( b_equalizer )
+            {
+                var_AddCallback( pAout, "equalizer-bands",
+                              onEqBandsChange, this );
+                var_AddCallback( pAout, "equalizer-preamp",
+                              onEqPreampChange, this );
+                m_bEqualizer_started = true;
+            }
+            m_pAout = pAout;
+            break;
+        }
+
+        case INPUT_EVENT_CHAPTER:
+        {
+            vlc_value_t chapters_count;
+            var_Change( pInput, "chapter", VLC_VAR_CHOICESCOUNT,
+                        &chapters_count, NULL );
+            SET_BOOL( m_cVarDvdActive, chapters_count.i_int > 0 );
+            break;
+        }
+
+        case INPUT_EVENT_RECORD:
+            SET_BOOL( m_cVarRecording, var_GetBool( pInput, "record" ) );
+            break;
+
+        case INPUT_EVENT_DEAD:
+            msg_Dbg( getIntf(), "end of input detected for %p", pInput );
+
+            var_DelCallback( pInput, "intf-event", onGenericCallback, this );
+            var_DelCallback( pInput, "bit-rate", onGenericCallback, this );
+            var_DelCallback( pInput, "sample-rate", onGenericCallback, this );
+            var_DelCallback( pInput, "can-record" , onGenericCallback, this );
+            vlc_object_release( pInput );
+            getIntf()->p_sys->p_input = NULL;
+            reset_input();
+            break;
+
+        default:
+            break;
+    }
+}
+
+void VlcProc::on_bit_rate_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    input_thread_t* pInput = (input_thread_t*) p_obj;
+
+    assert( getIntf()->p_sys->p_input == NULL || getIntf()->p_sys->p_input == pInput );
+
+    int bitrate = var_GetInteger( pInput, "bit-rate" ) / 1000;
+    SET_TEXT( m_cVarStreamBitRate, UString::fromInt( getIntf(), bitrate ) );
+}
+
+void VlcProc::on_sample_rate_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    input_thread_t* pInput = (input_thread_t*) p_obj;
+
+    assert( getIntf()->p_sys->p_input == NULL || getIntf()->p_sys->p_input == pInput );
+
+    int sampleRate = var_GetInteger( pInput, "sample-rate" ) / 1000;
+    SET_TEXT( m_cVarStreamSampleRate, UString::fromInt(getIntf(),sampleRate) );
+}
+
+void VlcProc::on_can_record_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    input_thread_t* pInput = (input_thread_t*) p_obj;
+
+    assert( getIntf()->p_sys->p_input == NULL || getIntf()->p_sys->p_input == pInput );
+
+    SET_BOOL( m_cVarRecordable, var_GetBool(  pInput, "can-record" ) );
+}
+
+void VlcProc::on_random_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    playlist_t* pPlaylist = (playlist_t*) p_obj;
+
+    SET_BOOL( m_cVarRandom, var_GetBool( pPlaylist, "random" ) );
+}
+
+void VlcProc::on_loop_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    playlist_t* pPlaylist = (playlist_t*) p_obj;
+
+    SET_BOOL( m_cVarLoop, var_GetBool( pPlaylist, "loop" ) );
+}
+
+void VlcProc::on_repeat_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    playlist_t* pPlaylist = (playlist_t*) p_obj;
+
+    SET_BOOL( m_cVarRepeat, var_GetBool( pPlaylist, "repeat" ) );
+}
+
+void VlcProc::on_volume_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    (void)p_obj; (void)newVal;
+    playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
+
+    audio_volume_t volume;
+    aout_VolumeGet( pPlaylist, &volume );
+    SET_VOLUME( m_cVarVolume, (double)volume / AOUT_VOLUME_MAX, false );
+    SET_BOOL( m_cVarMute, volume == 0 );
+}
+
+void VlcProc::on_audio_filter_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    aout_instance_t* pAout = (aout_instance_t*) p_obj;
+
+    char *pFilters = newVal.psz_string;
+
+    bool b_equalizer = pFilters && strstr( pFilters, "equalizer" );
+    SET_BOOL( m_cVarEqualizer, b_equalizer );
+    if( b_equalizer && !m_bEqualizer_started )
+    {
+        var_AddCallback( pAout, "equalizer-bands", onEqBandsChange, this );
+        var_AddCallback( pAout, "equalizer-preamp", onEqPreampChange, this );
+        m_bEqualizer_started = true;
+    }
+}
+
+void VlcProc::on_intf_show_changed( vlc_object_t* p_obj, vlc_value_t newVal )
+{
+    (void)p_obj;
+    bool b_fullscreen = getFullscreenVar().get();
+
+    if( !b_fullscreen )
+    {
+        if( newVal.b_bool )
+        {
+            // Create a raise all command
+            CmdRaiseAll *pCmd = new CmdRaiseAll( getIntf(),
+                getIntf()->p_sys->p_theme->getWindowManager() );
+
+            // Push the command in the asynchronous command queue
+            AsyncQueue *pQueue = AsyncQueue::instance( getIntf() );
+            pQueue->push( CmdGenericPtr( pCmd ) );
+        }
+    }
+    else
+    {
+        Theme* pTheme =  getIntf()->p_sys->p_theme;
+        TopWindow *pWin = pTheme->getWindowById( "fullscreenController" );
+        if( pWin )
+        {
+            bool b_visible = pWin->getVisibleVar().get();
+            AsyncQueue *pQueue = AsyncQueue::instance( getIntf() );
+
+            if( !b_visible )
+            {
+               CmdShowWindow* pCmd = new CmdShowWindow( getIntf(),
+                             getIntf()->p_sys->p_theme->getWindowManager(),
+                             *pWin );
+               pQueue->push( CmdGenericPtr( pCmd ) );
+            }
+            else
+            {
+               CmdHideWindow* pCmd = new CmdHideWindow( getIntf(),
+                              getIntf()->p_sys->p_theme->getWindowManager(),
+                              *pWin );
+               pQueue->push( CmdGenericPtr( pCmd ) );
+            }
+        }
+    }
+}
+
+void VlcProc::reset_input()
+{
+    SET_BOOL( m_cVarSeekable, false );
+    SET_BOOL( m_cVarRecordable, false );
+    SET_BOOL( m_cVarRecording, false );
+    SET_BOOL( m_cVarDvdActive, false );
+    SET_BOOL( m_cVarFullscreen, false );
+    SET_BOOL( m_cVarHasAudio, false );
+    SET_BOOL( m_cVarHasVout, false );
+    SET_BOOL( m_cVarStopped, true );
+    SET_BOOL( m_cVarPlaying, false );
+    SET_BOOL( m_cVarPaused, false );
+
+    SET_STREAMTIME( m_cVarTime, 0, false );
+    SET_TEXT( m_cVarStreamName, UString( getIntf(), "") );
+    SET_TEXT( m_cVarStreamURI, UString( getIntf(), "") );
+    SET_TEXT( m_cVarStreamBitRate, UString( getIntf(), "") );
+    SET_TEXT( m_cVarStreamSampleRate, UString( getIntf(), "") );
+
+    getPlaytreeVar().onUpdateCurrent( false );
+}
+
+void VlcProc::init_variables()
+{
+    playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
+
+    SET_BOOL( m_cVarRandom, var_GetBool( pPlaylist, "random" ) );
+    SET_BOOL( m_cVarLoop, var_GetBool( pPlaylist, "loop" ) );
+    SET_BOOL( m_cVarRepeat, var_GetBool( pPlaylist, "repeat" ) );
+
+    audio_volume_t volume;
+    aout_VolumeGet( pPlaylist, &volume );
+    SET_VOLUME( m_cVarVolume, (double)volume / AOUT_VOLUME_MAX, false );
+    SET_BOOL( m_cVarMute, volume == 0 );
+
+    update_equalizer();
+}
+
+void VlcProc::update_equalizer()
+{
+
+    char *pFilters;
+    if( m_pAout )
+        pFilters = var_GetNonEmptyString( m_pAout, "audio-filter" );
+    else
+        pFilters = var_InheritString( getIntf(), "audio-filter" );
+
+    bool b_equalizer = pFilters && strstr( pFilters, "equalizer" );
+    free( pFilters );
+
+    SET_BOOL( m_cVarEqualizer, b_equalizer );
+}
+
+void VlcProc::setFullscreenVar( bool b_fullscreen )
+{
+    SET_BOOL( m_cVarFullscreen, b_fullscreen );
+}
+
+#undef  SET_BOOL
+#undef  SET_STREAMTIME
+#undef  SET_TEXT
+#undef  SET_VOLUME

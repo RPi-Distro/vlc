@@ -2,7 +2,7 @@
  * i420_rgb.h : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2004 the VideoLAN team
- * $Id: 260f63e6afcc25b5229bd96f92e8ee19fac90b69 $
+ * $Id: 66171fbeee5ad0e40355391250d0c691739100b9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -60,10 +60,6 @@ void I420_RGB8         ( filter_t *, picture_t *, picture_t * );
 void I420_RGB16_dither ( filter_t *, picture_t *, picture_t * );
 void I420_RGB16        ( filter_t *, picture_t *, picture_t * );
 void I420_RGB32        ( filter_t *, picture_t *, picture_t * );
-static picture_t *I420_RGB8_Filter         ( filter_t *, picture_t * );
-static picture_t *I420_RGB16_dither_Filter ( filter_t *, picture_t * );
-static picture_t *I420_RGB16_Filter        ( filter_t *, picture_t * );
-static picture_t *I420_RGB32_Filter        ( filter_t *, picture_t * );
 #else // if defined(MODULE_NAME_IS_i420_rgb_mmx)
 void I420_R5G5B5       ( filter_t *, picture_t *, picture_t * );
 void I420_R5G6B5       ( filter_t *, picture_t *, picture_t * );
@@ -71,12 +67,6 @@ void I420_A8R8G8B8     ( filter_t *, picture_t *, picture_t * );
 void I420_R8G8B8A8     ( filter_t *, picture_t *, picture_t * );
 void I420_B8G8R8A8     ( filter_t *, picture_t *, picture_t * );
 void I420_A8B8G8R8     ( filter_t *, picture_t *, picture_t * );
-static picture_t *I420_R5G5B5_Filter       ( filter_t *, picture_t * );
-static picture_t *I420_R5G6B5_Filter       ( filter_t *, picture_t * );
-static picture_t *I420_A8R8G8B8_Filter     ( filter_t *, picture_t * );
-static picture_t *I420_R8G8B8A8_Filter     ( filter_t *, picture_t * );
-static picture_t *I420_B8G8R8A8_Filter     ( filter_t *, picture_t * );
-static picture_t *I420_A8B8G8R8_Filter     ( filter_t *, picture_t * );
 #endif
 
 /*****************************************************************************

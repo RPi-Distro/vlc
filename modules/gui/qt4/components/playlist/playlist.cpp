@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlist.cpp : Custom widgets for the playlist
  ****************************************************************************
- * Copyright © 2007-2008 the VideoLAN team
- * $Id: 1535332e8862dff86e2d43976c35a3d6e99a8943 $
+ * Copyright © 2007-2010 the VideoLAN team
+ * $Id: ea5495abe703d325287fea2225825d20f32022cf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -26,27 +26,46 @@
 # include "config.h"
 #endif
 
-#include "components/playlist/panels.hpp"
+#include "components/playlist/standardpanel.hpp"
 #include "components/playlist/selector.hpp"
 #include "components/playlist/playlist.hpp"
 
 #include "input_manager.hpp" /* art signal */
 #include "main_interface.hpp" /* DropEvent TODO remove this*/
 
+#include <QGroupBox>
+
+#include <iostream>
 /**********************************************************************
  * Playlist Widget. The embedded playlist
  **********************************************************************/
 
-PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i ) : p_intf ( _p_i )
+PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i, QWidget *_par )
+               : QSplitter( _par ), p_intf ( _p_i )
 {
     setContentsMargins( 3, 3, 3, 3 );
 
     /* Left Part and design */
-    QSplitter *leftW = new QSplitter( Qt::Vertical, this );
+    leftSplitter = new QSplitter( Qt::Vertical, this );
 
     /* Source Selector */
     selector = new PLSelector( this, p_intf );
-    leftW->addWidget( selector );
+
+    QLabel *selLabel = new QLabel( qtr( "Media Browser" ) );
+    QFont font;
+    font.setBold( true );
+    selLabel->setFont( font );
+    selLabel->setMargin( 5 );
+
+    QVBoxLayout *selBox = new QVBoxLayout();
+    selBox->setContentsMargins(0,0,0,0);
+    selBox->setSpacing( 0 );
+    selBox->addWidget( selLabel );
+    selBox->addWidget( selector );
+
+    QWidget *mediaBrowser = new QWidget();
+    mediaBrowser->setLayout( selBox );
+    leftSplitter->addWidget( mediaBrowser );
 
     /* Create a Container for the Art Label
        in order to have a beautiful resizing for the selector above it */
@@ -60,37 +79,30 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i ) : p_intf ( _p_i )
     art = new ArtLabel( artContainer, p_intf );
     art->setToolTip( qtr( "Double click to get media information" ) );
 
+    CONNECT( THEMIM->getIM(), artChanged( QString ),
+             art, showArtUpdate( const QString& ) );
+
     artContLay->addWidget( art, 1 );
 
-    leftW->addWidget( artContainer );
+    leftSplitter->addWidget( artContainer );
 
     /* Initialisation of the playlist */
     playlist_t * p_playlist = THEPL;
     PL_LOCK;
-    playlist_item_t *p_root =
-                  playlist_GetPreferredNode( THEPL, THEPL->p_local_category );
+    playlist_item_t *p_root = THEPL->p_playing;
+
     PL_UNLOCK;
 
     rightPanel = new StandardPLPanel( this, p_intf, THEPL, p_root );
 
     /* Connect the activation of the selector to a redefining of the PL */
-    CONNECT( selector, activated( int ), rightPanel, setRoot( int ) );
+    DCONNECT( selector, activated( playlist_item_t * ),
+              rightPanel, setRoot( playlist_item_t * ) );
 
-    /* Connect the activated() to the rootChanged() signal
-       This will be used by StandardPLPanel to setCurrentRootId, that will
-       change the label of the addButton  */
-    connect( selector, SIGNAL( activated( int ) ),
-             this, SIGNAL( rootChanged( int ) ) );
-
-    /* Forward removal requests from the selector to the main panel */
-    CONNECT( qobject_cast<PLSelector *>( selector )->model,
-             shouldRemove( int ),
-             qobject_cast<StandardPLPanel *>( rightPanel ), removeItem( int ) );
-
-    emit rootChanged( p_root->i_id );
+    rightPanel->setRoot( p_root );
 
     /* Add the two sides of the QSplitter */
-    addWidget( leftW );
+    addWidget( leftSplitter );
     addWidget( rightPanel );
 
     QList<int> sizeList;
@@ -99,19 +111,20 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i ) : p_intf ( _p_i )
     //setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
     setStretchFactor( 0, 0 );
     setStretchFactor( 1, 3 );
-    leftW->setMaximumWidth( 250 );
+    leftSplitter->setMaximumWidth( 250 );
     setCollapsible( 1, false );
 
     /* In case we want to keep the splitter informations */
     // components shall never write there setting to a fixed location, may infer
     // with other uses of the same component...
-    // getSettings()->beginGroup( "playlist" );
     getSettings()->beginGroup("Playlist");
     restoreState( getSettings()->value("splitterSizes").toByteArray());
+    leftSplitter->restoreState( getSettings()->value("leftSplitterGeometry").toByteArray() );
     getSettings()->endGroup();
 
     setAcceptDrops( true );
     setWindowTitle( qtr( "Playlist" ) );
+    setWindowRole( "vlc-playlist" );
     setWindowIcon( QApplication::windowIcon() );
 }
 
@@ -119,6 +132,7 @@ PlaylistWidget::~PlaylistWidget()
 {
     getSettings()->beginGroup("Playlist");
     getSettings()->setValue( "splitterSizes", saveState() );
+    getSettings()->setValue( "leftSplitterGeometry", leftSplitter->saveState() );
     getSettings()->endGroup();
     msg_Dbg( p_intf, "Playlist Destroyed" );
 }
@@ -138,12 +152,26 @@ void PlaylistWidget::closeEvent( QCloseEvent *event )
     if( THEDP->isDying() )
     {
         /* FIXME is it needed ? */
-        close();
+        event->accept();
     }
     else
     {
-        if( p_intf->p_sys->p_mi )
-            p_intf->p_sys->p_mi->togglePlaylist();
+        p_intf->p_sys->p_mi->playlistVisible = false;
+        hide();
+        event->ignore();
     }
-    event->accept();
+}
+
+void PlaylistWidget::forceHide()
+{
+    leftSplitter->hide();
+    rightPanel->hide();
+    updateGeometry();
+}
+
+void PlaylistWidget::forceShow()
+{
+    leftSplitter->show();
+    rightPanel->show();
+    updateGeometry();
 }

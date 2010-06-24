@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 96e400c3c01983b075ac5b855e4b704146d20e0f $
+ * $Id: 0b62bc2592ea89c7a97d991a9a8a5a7fbee14861 $
  *
  * Author: Johan Bilien <jobi@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -85,7 +85,7 @@ struct access_sys_t
 };
 
 static block_t *Block( access_t * );
-static int      Seek( access_t *, int64_t );
+static int      Seek( access_t *, uint64_t );
 static int      Control( access_t *, int, va_list );
 static int      EntryPoints( access_t * );
 
@@ -136,12 +136,10 @@ static int Open( vlc_object_t *p_this )
 #endif
 
     /* Open VCD */
-    if( !(vcddev = ioctl_Open( p_this, psz_dup )) )
-    {
-        free( psz_dup );
-        return VLC_EGENERIC;
-    }
+    vcddev = ioctl_Open( p_this, psz_dup );
     free( psz_dup );
+    if( !vcddev )
+        return VLC_EGENERIC;
 
     /* Set up p_access */
     p_access->pf_read = NULL;
@@ -218,7 +216,7 @@ static int Open( vlc_object_t *p_this )
     return VLC_SUCCESS;
 
 error:
-    ioctl_Close( VLC_OBJECT(p_access), p_sys->vcddev );
+    ioctl_Close( VLC_OBJECT(p_access), vcddev );
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -241,9 +239,6 @@ static void Close( vlc_object_t *p_this )
 static int Control( access_t *p_access, int i_query, va_list args )
 {
     access_sys_t *p_sys = p_access->p_sys;
-    bool   *pb_bool;
-    int          *pi_int;
-    int64_t      *pi_64;
     input_title_t ***ppp_title;
     int i;
 
@@ -254,14 +249,13 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_CAN_FASTSEEK:
         case ACCESS_CAN_PAUSE:
         case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = true;
+            *va_arg( args, bool* ) = true;
             break;
 
         /* */
         case ACCESS_GET_PTS_DELAY:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = var_GetInteger( p_access, "vcd-caching" ) * 1000;
+            *va_arg( args, int64_t * )
+                     = (int64_t)var_GetInteger(p_access,"vcd-caching") * 1000;
             break;
 
         /* */
@@ -269,11 +263,10 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         case ACCESS_GET_TITLE_INFO:
-            ppp_title = (input_title_t***)va_arg( args, input_title_t*** );
-            pi_int    = (int*)va_arg( args, int* );
+            ppp_title = va_arg( args, input_title_t*** );
+            *va_arg( args, int* ) = p_sys->i_titles;
 
             /* Duplicate title infos */
-            *pi_int = p_sys->i_titles;
             *ppp_title = malloc( sizeof(input_title_t **) * p_sys->i_titles );
             for( i = 0; i < p_sys->i_titles; i++ )
             {
@@ -282,7 +275,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         case ACCESS_SET_TITLE:
-            i = (int)va_arg( args, int );
+            i = va_arg( args, int );
             if( i != p_access->info.i_title )
             {
                 /* Update info */
@@ -301,7 +294,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_SET_SEEKPOINT:
         {
             input_title_t *t = p_sys->title[p_access->info.i_title];
-            i = (int)va_arg( args, int );
+            i = va_arg( args, int );
             if( t->i_seekpoint > 0 )
             {
                 p_access->info.i_update |= INPUT_UPDATE_SEEKPOINT;
@@ -310,7 +303,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
                 p_sys->i_sector = p_sys->p_sectors[1+p_access->info.i_title] +
                     t->seekpoint[i]->i_byte_offset / VCD_DATA_SIZE;
 
-                p_access->info.i_pos = (int64_t)(p_sys->i_sector -
+                p_access->info.i_pos = (uint64_t)(p_sys->i_sector -
                     p_sys->p_sectors[1+p_access->info.i_title]) *VCD_DATA_SIZE;
             }
             return VLC_SUCCESS;
@@ -413,7 +406,7 @@ static block_t *Block( access_t *p_access )
 /*****************************************************************************
  * Seek:
  *****************************************************************************/
-static int Seek( access_t *p_access, int64_t i_pos )
+static int Seek( access_t *p_access, uint64_t i_pos )
 {
     access_sys_t *p_sys = p_access->p_sys;
     input_title_t *t = p_sys->title[p_access->info.i_title];

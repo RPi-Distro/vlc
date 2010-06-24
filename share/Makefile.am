@@ -1,13 +1,25 @@
 CLEANFILES = skins2/default.vlt
+MOSTLYCLEANFILES =
 
-nobase_dist_data_DATA = applications/vlc.desktop
+appdatadir = $(datadir)/applications/
 
-dist_vlcdata_DATA = \
-	$(DIST_icons) \
-	$(DIST_icons16) \
-	$(DIST_icons32) \
-	$(DIST_icons48) \
-	$(DIST_icons128)
+iconsdatadir = $(datadir)/icons/hicolor/
+icons16dir = $(iconsdatadir)/16x16/apps/
+icons32dir = $(iconsdatadir)/32x32/apps/
+icons48dir = $(iconsdatadir)/48x48/apps/
+icons128dir = $(iconsdatadir)/128x128/apps/
+icons256dir = $(iconsdatadir)/256x256/apps/
+
+dist_appdata_DATA = vlc.desktop
+
+dist_vlcdata_DATA = icons/vlc.ico
+dist_icons16_DATA = icons/16x16/vlc.png icons/16x16/vlc.xpm
+dist_icons32_DATA = icons/32x32/vlc.png icons/32x32/vlc.xpm \
+		    icons/32x32/vlc-christmas.xpm
+dist_icons48_DATA = icons/48x48/vlc.png icons/48x48/vlc-christmas.png
+dist_icons128_DATA = icons/128x128/vlc.png icons/128x128/vlc-christmas.png
+dist_icons256_DATA = icons/256x256/vlc.png
+
 nobase_dist_vlcdata_SCRIPTS = \
 	utils/gnome-vlc-default.sh \
 	utils/audio-vlc-default.sh \
@@ -17,22 +29,19 @@ nobase_dist_vlcdata_SCRIPTS = \
 EXTRA_DIST = \
 	$(skins2_default_vlt_FILES) \
 	$(DIST_rsrc) \
-	$(DIST_pda) \
 	$(DIST_skins2) \
 	$(DIST_http) \
 	$(DIST_http_lua) \
 	$(DIST_lua) \
 	$(DIST_osdmenu_default) \
 	$(DIST_mozilla) \
-	$(DIST_maemo)
+	$(DIST_maemo) \
+	$(DIST_solid)
 
 nobase_vlcdata_DATA =
 if BUILD_SKINS
 nobase_vlcdata_DATA += skins2/default.vlt
 nobase_vlcdata_DATA += $(DIST_skins2)
-endif
-if BUILD_PDA
-nobase_vlcdata_DATA += $(DIST_pda)
 endif
 if BUILD_HTTPD
 nobase_vlcdata_DATA += $(DIST_http)
@@ -41,47 +50,22 @@ if BUILD_OSDMENU
 nobase_vlcdata_DATA += \
 	$(DIST_osdmenu_default)
 endif
-if BUILD_LUA
-nobase_vlcdata_DATA += $(DIST_lua)
-if BUILD_HTTPD
-nobase_vlcdata_DATA += $(DIST_http_lua)
-endif
-endif
 if BUILD_MOZILLA
 # TODO: move to the mozilla directory
 nobase_vlcdata_DATA += $(DIST_mozilla)
 endif
-if BUILD_MAEMO
+if BUILD_HILDON
 nobase_vlcdata_DATA += $(DIST_maemo) $(maemo_FILES)
+endif
+if KDE_SOLID
+soliddata_DATA = $(DIST_solid)
 endif
 
 DIST_rsrc = \
 	newres.h \
 	resource.h \
 	vlc_wince_rc.rc \
-	vlc_beos.rsrc \
-	vlc_win32_rc.rc.in \
-	libvlc_win32_rc.rc.in
-
-DIST_pda = \
-	pda-forwardb16x16.xpm \
-	pda-openb16x16.xpm \
-	pda-pauseb16x16.xpm \
-	pda-playb16x16.xpm \
-	pda-playlistb16x16.xpm \
-	pda-preferencesb16x16.xpm \
-	pda-rewindb16x16.xpm \
-	pda-stopb16x16.xpm
-
-DIST_icons = vlc.ico
-
-DIST_icons16 = vlc16x16.png vlc16x16.xpm
-
-DIST_icons32 = vlc32x32.png vlc32x32.xpm vlc32x32-christmas.xpm
-
-DIST_icons48 = vlc48x48.png vlc48x48-christmas.png
-
-DIST_icons128 = vlc128x128.png vlc128x128-christmas.png
+	vlc_beos.rsrc
 
 DIST_skins2 = \
 	skins2/fonts/FreeSans.ttf \
@@ -202,36 +186,135 @@ DIST_osdmenu_default = \
 	osdmenu/default/volume/volume_09.png \
 	osdmenu/default/volume/volume_10.png
 
-DIST_lua= \
+#
+# LUA
+#
+luac_verbose = $(luac_verbose_$(V))
+luac_verbose_ = $(luac_verbose_$(AM_DEFAULT_VERBOSITY))
+luac_verbose_0 = @echo "  LUAC   $@";
+
+.lua.luac:
+	$(AM_V_at)for f in $(EXTRA_DIST); do \
+		test "$(srcdir)" = . || f="$(srcdir)/$$f"; \
+		if test $$f = $<; then \
+			exit 0; \
+		fi; \
+	done; \
+	echo "Attempt to byte-compile unknown file: $(<)!"; \
+	exit 1
+	$(AM_V_at)mkdir -p "$$(dirname '$@')"
+	$(luac_verbose)$(LUAC) -o $@ $<
+
+if BUILD_LUA
+nobase_vlclib_DATA = \
+	lua/extensions/allocine-fr.luac \
+	lua/intf/dummy.luac \
+	lua/intf/dumpmeta.luac \
+	lua/intf/hotkeys.luac \
+	lua/intf/luac.luac \
+	lua/intf/modules/common.luac \
+	lua/intf/modules/host.luac \
+	lua/intf/rc.luac \
+	lua/intf/telnet.luac \
+	lua/meta/art/01_musicbrainz.luac \
+	lua/meta/art/02_frenchtv.luac \
+	lua/meta/art/03_lastfm.luac \
+	lua/meta/art/10_googleimage.luac \
+	lua/meta/fetcher/tvrage.luac \
+	lua/meta/reader/filename.luac \
+	lua/modules/sandbox.luac \
+	lua/modules/simplexml.luac \
+	lua/playlist/anevia_streams.luac \
+	lua/playlist/anevia_xml.luac \
+	lua/playlist/appletrailers.luac \
+	lua/playlist/bbc_co_uk.luac \
+	lua/playlist/break.luac \
+	lua/playlist/canalplus.luac \
+	lua/playlist/cue.luac \
+	lua/playlist/dailymotion.luac \
+	lua/playlist/france2.luac \
+	lua/playlist/googlevideo.luac \
+	lua/playlist/jamendo.luac \
+	lua/playlist/joox.luac \
+	lua/playlist/katsomo.luac \
+	lua/playlist/koreus.luac \
+	lua/playlist/lelombrik.luac \
+	lua/playlist/megavideo.luac \
+	lua/playlist/metacafe.luac \
+	lua/playlist/mpora.luac \
+	lua/playlist/pinkbike.luac \
+	lua/playlist/rockbox_fm_presets.luac \
+	lua/playlist/vimeo.luac \
+	lua/playlist/youtube.luac \
+	lua/playlist/youtube_homepage.luac \
+	lua/sd/fmc.luac \
+	lua/sd/freebox.luac \
+	lua/sd/icecast.luac \
+	lua/sd/jamendo.luac \
+	$(NULL)
+if BUILD_HTTPD
+nobase_vlclib_DATA += \
+	lua/intf/http.luac \
+	$(NULL)
+nobase_vlcdata_DATA += $(DIST_http_lua)
+endif
+endif
+MOSTLYCLEANFILES += $(nobase_vlclib_DATA)
+
+EXTRA_DIST += \
 	lua/README.txt \
-	lua/meta/README.txt \
-	lua/meta/01_musicbrainz.lua \
-	lua/meta/10_googleimage.lua \
+	lua/extensions/README.txt \
+	lua/extensions/allocine-fr.lua \
+	lua/intf/README.txt \
+	lua/intf/dummy.lua \
+	lua/intf/dumpmeta.lua \
+	lua/intf/hotkeys.lua \
+	lua/intf/http.lua \
+	lua/intf/luac.lua \
+	lua/intf/modules/common.lua \
+	lua/intf/modules/host.lua \
+	lua/intf/rc.lua \
+	lua/intf/telnet.lua \
+	lua/meta/art/README.txt \
+	lua/meta/art/01_musicbrainz.lua \
+	lua/meta/art/02_frenchtv.lua \
+	lua/meta/art/03_lastfm.lua \
+	lua/meta/art/10_googleimage.lua \
+	lua/meta/fetcher/README.txt \
+	lua/meta/fetcher/tvrage.lua \
+	lua/meta/reader/README.txt \
+	lua/meta/reader/filename.lua \
+	lua/modules/sandbox.lua \
+	lua/modules/simplexml.lua \
 	lua/playlist/README.txt \
 	lua/playlist/anevia_streams.lua \
+	lua/playlist/anevia_xml.lua \
 	lua/playlist/appletrailers.lua \
+	lua/playlist/bbc_co_uk.lua \
 	lua/playlist/break.lua \
+	lua/playlist/canalplus.lua \
 	lua/playlist/cue.lua \
 	lua/playlist/dailymotion.lua \
 	lua/playlist/france2.lua \
+	lua/playlist/googlevideo.lua \
+	lua/playlist/jamendo.lua \
 	lua/playlist/joox.lua \
+	lua/playlist/katsomo.lua \
+	lua/playlist/koreus.lua \
 	lua/playlist/lelombrik.lua \
-	lua/playlist/youtube.lua \
-	lua/playlist/youtube_homepage.lua \
 	lua/playlist/megavideo.lua \
 	lua/playlist/metacafe.lua \
-	lua/playlist/googlevideo.lua \
 	lua/playlist/mpora.lua \
+	lua/playlist/pinkbike.lua \
+	lua/playlist/rockbox_fm_presets.lua \
 	lua/playlist/vimeo.lua \
-	lua/intf/README.txt \
-	lua/intf/http.lua \
-	lua/intf/rc.lua \
-	lua/intf/hotkeys.lua \
-	lua/intf/modules/common.lua \
-	lua/intf/modules/host.lua \
-	lua/intf/modules/sandbox.lua \
-	lua/intf/telnet.lua \
-	lua/intf/dummy.lua
+	lua/playlist/youtube.lua \
+	lua/playlist/youtube_homepage.lua \
+	lua/sd/README.txt \
+	lua/sd/fmc.lua \
+	lua/sd/freebox.lua \
+	lua/sd/icecast.lua \
+	lua/sd/jamendo.lua
 
 DIST_http_lua = \
 	lua/http/.hosts \
@@ -318,12 +401,17 @@ DIST_maemo = \
 	maemo/vlc_intf.rc \
 	maemo/vlc_left_tab_active.png \
 	maemo/vlc_left_tab_passive.png \
-	maemo/playlist.png
+	maemo/playlist.png \
+	maemo/play.png \
+	maemo/pause.png \
+	maemo/stop.png \
+	maemo/previous.png \
+	maemo/next.png
 
 maemo_FILES = \
-	../modules/gui/qt4/pixmaps/play.png \
-	../modules/gui/qt4/pixmaps/pause.png \
-	../modules/gui/qt4/pixmaps/stop.png \
-	../modules/gui/qt4/pixmaps/previous.png \
-	../modules/gui/qt4/pixmaps/next.png \
 	vlc32x32.png
+
+DIST_solid = \
+	solid/vlc-opencda.desktop \
+	solid/vlc-opendvd.desktop \
+	solid/vlc-openvcd.desktop

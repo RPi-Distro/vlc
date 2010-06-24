@@ -40,8 +40,9 @@
 #ifdef UNDER_CE
 #  include <tchar.h>
 #endif
+#include <errno.h>
 
-#ifdef __APPLE__
+#if defined (__APPLE__) || defined (HAVE_MAEMO)
 /* Define this if the OS always use UTF-8 internally */
 # define ASSUME_UTF8 1
 #endif
@@ -285,30 +286,25 @@ static char *CheckUTF8( char *str, char rep )
     for (;;)
     {
         uint8_t c = ptr[0];
-        int charlen = -1;
 
         if (c == '\0')
             break;
 
-        for (int i = 0; i < 7; i++)
-            if ((c >> (7 - i)) == ((0xff >> (7 - i)) ^ 1))
-            {
-                charlen = i;
-                break;
-            }
+        if (c > 0xF4)
+            goto error;
 
+        int charlen = clz8 (c ^ 0xFF);
         switch (charlen)
         {
             case 0: // 7-bit ASCII character -> OK
                 ptr++;
                 continue;
 
-            case -1: // 1111111x -> error
             case 1: // continuation byte -> error
                 goto error;
         }
 
-        assert (charlen >= 2);
+        assert (charlen >= 2 && charlen <= 4);
 
         uint32_t cp = c & ~((0xff >> (7 - charlen)) << (7 - charlen));
         for (int i = 1; i < charlen; i++)
@@ -316,18 +312,26 @@ static char *CheckUTF8( char *str, char rep )
             assert (cp < (1 << 26));
             c = ptr[i];
 
-            if ((c == '\0') // unexpected end of string
-             || ((c >> 6) != 2)) // not a continuation byte
+            if ((c >> 6) != 2) // not a continuation byte
                 goto error;
 
             cp = (cp << 6) | (ptr[i] & 0x3f);
         }
 
-        if (cp < 128) // overlong (special case for ASCII)
-            goto error;
-        if (cp < (1u << (5 * charlen - 3))) // overlong
-            goto error;
-
+        switch (charlen)
+        {
+            case 4:
+                if (cp > 0x10FFFF) // beyond Unicode
+                    goto error;
+            case 3:
+                if (cp >= 0xD800 && cp < 0xC000) // UTF-16 surrogate
+                    goto error;
+            case 2:
+                if (cp < 128) // ASCII overlong
+                    goto error;
+                if (cp < (1u << (5 * charlen - 3))) // overlong
+                    goto error;
+        }
         ptr += charlen;
         continue;
 
@@ -365,3 +369,40 @@ const char *IsUTF8( const char *str )
 {
     return CheckUTF8( (char *)str, 0 );
 }
+
+/**
+ * Converts a string from the given character encoding to utf-8.
+ *
+ * @return a nul-terminated utf-8 string, or null in case of error.
+ * The result must be freed using free().
+ */
+char *FromCharset(const char *charset, const void *data, size_t data_size)
+{
+    vlc_iconv_t handle = vlc_iconv_open ("UTF-8", charset);
+    if (handle == (vlc_iconv_t)(-1))
+        return NULL;
+
+    char *out = NULL;
+    for(unsigned mul = 4; mul < 8; mul++ )
+    {
+        size_t in_size = data_size;
+        const char *in = data;
+        size_t out_max = mul * data_size;
+        char *tmp = out = malloc (1 + out_max);
+        if (!out)
+            break;
+
+        if (vlc_iconv (handle, &in, &in_size, &tmp, &out_max) != (size_t)(-1)) {
+            *tmp = '\0';
+            break;
+        }
+        free(out);
+        out = NULL;
+
+        if (errno != E2BIG)
+            break;
+    }
+    vlc_iconv_close(handle);
+    return out;
+}
+

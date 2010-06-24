@@ -1,7 +1,7 @@
 /*
  * core.c - libvlc smoke test
  *
- * $Id: 4f68bf110e414995fe21891417d8c5dda60e7f6d $
+ * $Id: 3871e5e8197e01e052674a9fe025eabb1a9f00b4 $
  */
 
 /**********************************************************************
@@ -26,23 +26,11 @@
 static void test_core (const char ** argv, int argc)
 {
     libvlc_instance_t *vlc;
-    int id;
 
     log ("Testing core\n");
 
-    libvlc_exception_init (&ex);
-    vlc = libvlc_new (argc, argv, &ex);
-    catch ();
-
-    libvlc_playlist_clear (vlc, &ex);
-    catch ();
-
-    id = libvlc_playlist_add_extended (vlc, "/dev/null", "Test", 0, NULL,
-                                       &ex);
-    catch ();
-
-    libvlc_playlist_clear (vlc, &ex);
-    catch ();
+    vlc = libvlc_new (argc, argv);
+    assert (vlc != NULL);
 
     libvlc_retain (vlc);
     libvlc_release (vlc);

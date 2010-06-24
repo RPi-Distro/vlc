@@ -2,7 +2,7 @@
  * playlist.cpp : Playlist dialog
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 2736e5279c3982fecec87e3c559362b66fe1ce96 $
+ * $Id: 7250090550553396f2452b5115dccca5ae208af1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -33,21 +33,20 @@
 #include <QUrl>
 #include <QHBoxLayout>
 
-PlaylistDialog *PlaylistDialog::instance = NULL;
-
 PlaylistDialog::PlaylistDialog( intf_thread_t *_p_intf )
                 : QVLCMW( _p_intf )
 {
     QWidget *main = new QWidget( this );
     setCentralWidget( main );
     setWindowTitle( qtr( "Playlist" ) );
-    setWindowOpacity( config_GetFloat( p_intf, "qt-opacity" ) );
+    setWindowRole( "vlc-playlist" );
+    setWindowOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
 
     QHBoxLayout *l = new QHBoxLayout( centralWidget() );
 
     getSettings()->beginGroup("playlistdialog");
 
-    playlistWidget = new PlaylistWidget( p_intf );
+    playlistWidget = new PlaylistWidget( p_intf, this );
     l->addWidget( playlistWidget );
 
     readSettings( getSettings(), QSize( 600,700 ) );

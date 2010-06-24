@@ -2,7 +2,7 @@
  * xosd.c : X On Screen Display interface
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: cce06a676aaf4cc6e902696fa3483b27b9e7eabd $
+ * $Id: 2cea9331817b45745388df5723b5d70869dda7a4 $
  *
  * Authors: Loïc Minier <lool@videolan.org>
  *
@@ -87,7 +87,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INTERFACE_CONTROL )
     set_description( N_("XOSD interface") )
     set_shortname( "XOSD" )
-    add_bool( "xosd-position", 1, NULL, POSITION_TEXT, POSITION_LONGTEXT, true )
+    add_bool( "xosd-position", true, NULL, POSITION_TEXT, POSITION_LONGTEXT, true )
     add_integer( "xosd-text-offset", 30, NULL, TXT_OFS_TEXT, TXT_OFS_LONGTEXT, true )
     add_integer( "xosd-shadow-offset", 2, NULL,
                  SHD_OFS_TEXT, SHD_OFS_LONGTEXT, true )
@@ -122,8 +122,8 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     /* Initialize library */
-    psz_font = config_GetPsz( p_intf, "xosd-font" );
-    psz_colour = config_GetPsz( p_intf, "xosd-colour" );
+    psz_font = var_InheritString( p_intf, "xosd-font" );
+    psz_colour = var_InheritString( p_intf, "xosd-colour" );
 
     p_osd = xosd_create( 1 );
     if( p_osd == NULL )
@@ -141,14 +141,14 @@ static int Open( vlc_object_t *p_this )
     xosd_set_font( p_osd, psz_font );
     xosd_set_colour( p_osd, psz_colour );
     xosd_set_timeout( p_osd, 3 );
-    xosd_set_pos( p_osd, config_GetInt( p_intf, "xosd-position" ) ?
+    xosd_set_pos( p_osd, var_InheritBool( p_intf, "xosd-position" ) ?
                                         XOSD_bottom: XOSD_top );
     xosd_set_horizontal_offset( p_osd,
-                    config_GetInt( p_intf, "xosd-text-offset" ) );
+                    var_InheritInteger( p_intf, "xosd-text-offset" ) );
     xosd_set_vertical_offset( p_osd,
-                    config_GetInt( p_intf, "xosd-text-offset" ) );
+                    var_InheritInteger( p_intf, "xosd-text-offset" ) );
     xosd_set_shadow_offset( p_osd,
-                    config_GetInt( p_intf, "xosd-shadow-offset" ));
+                    var_InheritInteger( p_intf, "xosd-shadow-offset" ));
 
     /* Initialize to NULL */
     xosd_display( p_osd, 0, XOSD_string, "XOSD interface initialized" );
@@ -160,10 +160,9 @@ static int Open( vlc_object_t *p_this )
     vlc_mutex_init( &p_sys->lock );
     vlc_cond_init( &p_sys->cond );
     // Add the callbacks
-    playlist_t *p_playlist = pl_Hold( p_intf );
+    playlist_t *p_playlist = pl_Get( p_intf );
     var_AddCallback( p_playlist, "item-current", PlaylistNext, p_this );
     var_AddCallback( p_playlist, "item-change", PlaylistNext, p_this );
-    pl_Release( p_intf );
 
     p_sys->b_need_update = true;
     p_intf->pf_run = Run;
@@ -177,10 +176,9 @@ static void Close( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
-    playlist_t *p_playlist = pl_Hold( p_intf );
+    playlist_t *p_playlist = pl_Get( p_intf );
     var_DelCallback( p_playlist, "item-current", PlaylistNext, p_this );
     var_DelCallback( p_playlist, "item-change", PlaylistNext, p_this );
-    pl_Release( p_intf );
 
     /* Uninitialize library */
     xosd_destroy( p_intf->p_sys->p_osd );
@@ -216,14 +214,13 @@ static void Run( intf_thread_t *p_intf )
 
         // Compute the signal
         cancel = vlc_savecancel();
-        p_playlist = pl_Hold( p_intf );
+        p_playlist = pl_Get( p_intf );
         PL_LOCK;
 
         // If the playlist is empty don't do anything
         if( playlist_IsEmpty( p_playlist ) )
         {
             PL_UNLOCK;
-            pl_Release( p_intf );
             continue;
         }
 
@@ -244,7 +241,6 @@ static void Run( intf_thread_t *p_intf )
             {
                 psz_display = NULL;
                 PL_UNLOCK;
-                pl_Release( p_intf );
                 continue;
             }
             input_item_t *p_input = p_item->p_input;
@@ -261,7 +257,6 @@ static void Run( intf_thread_t *p_intf )
                 psz_display = strdup( p_input->psz_name );
         }
         PL_UNLOCK;
-        pl_Release( p_intf );
 
         /* Display */
         xosd_display( p_intf->p_sys->p_osd, 0, /* first line */

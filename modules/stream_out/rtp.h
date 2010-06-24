@@ -2,7 +2,7 @@
  * rtp.h: rtp stream output module header
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 6d2d5c0ab9049db0b091f8bee7cc96f59ffe440d $
+ * $Id: 01e7288ece697dcef4a0641609109fe489ed65b8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -29,18 +29,20 @@ rtsp_stream_t *RtspSetup( sout_stream_t *p_stream, const vlc_url_t *url );
 void RtspUnsetup( rtsp_stream_t *rtsp );
 
 rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_t *sid,
-                             unsigned i, uint32_t ssrc,
+                             uint32_t ssrc,
                              const char *dst, int ttl,
                              unsigned loport, unsigned hiport );
 void RtspDelId( rtsp_stream_t *rtsp, rtsp_stream_id_t * );
 
+char *RtspAppendTrackPath( rtsp_stream_id_t *id, const char *base );
+
 char *SDPGenerate( sout_stream_t *p_stream, const char *rtsp_url );
 
-int rtp_add_sink( sout_stream_id_t *id, int fd, bool rtcp_mux );
+uint32_t rtp_compute_ts( const sout_stream_id_t *id, int64_t i_pts );
+int rtp_add_sink( sout_stream_id_t *id, int fd, bool rtcp_mux, uint16_t *seq );
 void rtp_del_sink( sout_stream_id_t *id, int fd );
-uint16_t rtp_get_seq( const sout_stream_id_t *id );
-uint32_t rtp_get_ts( const sout_stream_id_t *id );
-unsigned rtp_get_num( const sout_stream_id_t *id );
+uint16_t rtp_get_seq( sout_stream_id_t *id );
+int64_t rtp_get_ts( const sout_stream_t *p_stream );
 
 /* RTP packetization */
 void rtp_packetize_common (sout_stream_id_t *id, block_t *out,
@@ -52,6 +54,7 @@ int rtp_packetize_mpa  (sout_stream_id_t *, block_t *);
 int rtp_packetize_mpv  (sout_stream_id_t *, block_t *);
 int rtp_packetize_ac3  (sout_stream_id_t *, block_t *);
 int rtp_packetize_split(sout_stream_id_t *, block_t *);
+int rtp_packetize_swab (sout_stream_id_t *, block_t *);
 int rtp_packetize_mp4a (sout_stream_id_t *, block_t *);
 int rtp_packetize_mp4a_latm (sout_stream_id_t *, block_t *);
 int rtp_packetize_h263 (sout_stream_id_t *, block_t *);

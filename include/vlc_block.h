@@ -2,7 +2,7 @@
  * vlc_block.h: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: aa49c65228306e04b734695938b93bad64c8c175 $
+ * $Id: 887cd2dc57cfbfd00d1feffa84749d82048e18b6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -78,6 +78,14 @@ typedef struct block_sys_t block_sys_t;
 #define BLOCK_FLAG_PREROLL       0x0800
 /** This block is corrupted and/or there is data loss  */
 #define BLOCK_FLAG_CORRUPTED     0x1000
+/** This block contains an interlaced picture with top field first */
+#define BLOCK_FLAG_TOP_FIELD_FIRST 0x2000
+/** This block contains an interlaced picture with bottom field first */
+#define BLOCK_FLAG_BOTTOM_FIELD_FIRST 0x4000
+
+/** This block contains an interlaced picture */
+#define BLOCK_FLAG_INTERLACED_MASK \
+    (BLOCK_FLAG_TOP_FIELD_FIRST|BLOCK_FLAG_BOTTOM_FIELD_FIRST)
 
 #define BLOCK_FLAG_TYPE_MASK \
     (BLOCK_FLAG_TYPE_I|BLOCK_FLAG_TYPE_P|BLOCK_FLAG_TYPE_B|BLOCK_FLAG_TYPE_PB)
@@ -102,7 +110,7 @@ struct block_t
     mtime_t     i_dts;
     mtime_t     i_length;
 
-    int         i_samples; /* Used for audio */
+    unsigned    i_nb_samples; /* Used for audio */
     int         i_rate;
 
     size_t      i_buffer;
@@ -146,7 +154,7 @@ static inline block_t *block_Duplicate( block_t *p_block )
     p_dup->i_flags   = p_block->i_flags;
     p_dup->i_length  = p_block->i_length;
     p_dup->i_rate    = p_block->i_rate;
-    p_dup->i_samples = p_block->i_samples;
+    p_dup->i_nb_samples = p_block->i_nb_samples;
     memcpy( p_dup->p_buffer, p_block->p_buffer, p_block->i_buffer );
 
     return p_dup;
@@ -157,6 +165,7 @@ static inline void block_Release( block_t *p_block )
     p_block->pf_release( p_block );
 }
 
+VLC_EXPORT( block_t *, block_heap_Alloc, (void *, void *, size_t) LIBVLC_USED );
 VLC_EXPORT( block_t *, block_mmap_Alloc, (void *addr, size_t length) LIBVLC_USED );
 VLC_EXPORT( block_t *, block_File, (int fd) LIBVLC_USED );
 
@@ -283,6 +292,7 @@ static inline block_t *block_ChainGather( block_t *p_list )
  ****************************************************************************
  * - block_FifoNew : create and init a new fifo
  * - block_FifoRelease : destroy a fifo and free all blocks in it.
+ * - block_FifoPace : wait for a fifo to drain to a specified number of packets or total data size
  * - block_FifoEmpty : free all blocks in a fifo
  * - block_FifoPut : put a block
  * - block_FifoGet : get a packet from the fifo (and wait if it is empty)
@@ -298,8 +308,7 @@ static inline block_t *block_ChainGather( block_t *p_list )
 
 VLC_EXPORT( block_fifo_t *, block_FifoNew,      ( void ) LIBVLC_USED );
 VLC_EXPORT( void,           block_FifoRelease,  ( block_fifo_t * ) );
-/* TODO: do we need to export this? */
-void block_FifoPace (block_fifo_t *fifo, size_t max_depth, size_t max_size);
+VLC_EXPORT( void,           block_FifoPace,     ( block_fifo_t *fifo, size_t max_depth, size_t max_size ) );
 VLC_EXPORT( void,           block_FifoEmpty,    ( block_fifo_t * ) );
 VLC_EXPORT( size_t,         block_FifoPut,      ( block_fifo_t *, block_t * ) );
 VLC_EXPORT( void,           block_FifoWake,     ( block_fifo_t * ) );

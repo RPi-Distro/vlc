@@ -2,7 +2,7 @@
  * blendbench.c : blending benchmark plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: d60bb20616d2e5fd06c2d9a00a5eeef20efd46f8 $
+ * $Id: 263b404567a0846f4e152ffd9504dec2c6ff6288 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
@@ -32,10 +32,9 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
-#include <vlc_vout.h>
 
-#include "vlc_filter.h"
-#include "vlc_image.h"
+#include <vlc_filter.h>
+#include <vlc_image.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -61,7 +60,7 @@ static picture_t *Filter( filter_t *, picture_t * );
 #define BASE_CHROMA_TEXT N_("Chroma for the base image")
 #define BASE_CHROMA_LONGTEXT N_("Chroma which the base image will be loaded in")
 
-#define BLEND_IMAGE_TEXT N_("Image which will be blended.")
+#define BLEND_IMAGE_TEXT N_("Image which will be blended")
 #define BLEND_IMAGE_LONGTEXT N_("The image blended onto the base image")
 
 #define BLEND_CHROMA_TEXT N_("Chroma for the blend image")
@@ -232,7 +231,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     if( !p_blend->p_module )
     {
         picture_Release( p_pic );
-        vlc_object_detach( p_blend );
         vlc_object_release( p_blend );
         return NULL;
     }
@@ -246,7 +244,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     }
     time = mdate() - time;
 
-    msg_Info( p_filter, "Blended %d images in %f sec.", p_sys->i_loops,
+    msg_Info( p_filter, "Blended %d images in %f sec", p_sys->i_loops,
               time / 1000000.0f );
     msg_Info( p_filter, "Speed is: %f images/second, %f pixels/second",
               (float) p_sys->i_loops / time * 1000000,
@@ -256,7 +254,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 
     module_unneed( p_blend, p_blend->p_module );
 
-    vlc_object_detach( p_blend );
     vlc_object_release( p_blend );
 
     p_sys->b_done = true;

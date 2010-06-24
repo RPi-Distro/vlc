@@ -2,7 +2,7 @@
  * extended.cpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: ffc34f0e1abf36ffb2ebf8d97735e3646b3cba18 $
+ * $Id: 8fa16537f533d87a9c63f3541e07e86a9f7bbfbc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -33,16 +33,15 @@
 #include <QTabWidget>
 #include <QGridLayout>
 
-ExtendedDialog *ExtendedDialog::instance = NULL;
-
 ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
 {
     setWindowFlags( Qt::Tool );
-    setWindowOpacity( config_GetFloat( p_intf, "qt-opacity" ) );
+    setWindowOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
     setWindowTitle( qtr( "Adjustments and Effects" ) );
+    setWindowRole( "vlc-extended" );
 
     QGridLayout *layout = new QGridLayout( this );
-    layout->setLayoutMargins( 0, 2, 0, 1, 1 );
+    layout->setContentsMargins( 0, 2, 0, 1 );
     layout->setSpacing( 3 );
 
     mainTabW = new QTabWidget( this );
@@ -88,12 +87,12 @@ ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
     CONNECT( closeButton, clicked(), this, close() );
 
     /* Restore geometry or move this dialog on the left pane of the MI */
-    if( !restoreGeometry(getSettings()->value("EPanel/geometry").toByteArray()))
+    if( !restoreGeometry( getSettings()->value("EPanel/geometry").toByteArray() ) )
     {
         resize( QSize( 400, 280 ) );
 
         MainInterface *p_mi = p_intf->p_sys->p_mi;
-        if( p_mi )
+        if( p_mi && p_mi->x() > 50 )
             move( ( p_mi->x() - frameGeometry().width() - 10 ), p_mi->y() );
         else
             move ( 450 , 0 );

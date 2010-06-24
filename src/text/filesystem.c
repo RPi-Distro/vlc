@@ -30,7 +30,8 @@
 
 #include <vlc_common.h>
 #include <vlc_charset.h>
-#include "libvlc.h" /* utf8_mkdir */
+#include <vlc_fs.h>
+#include "libvlc.h" /* vlc_mkdir */
 #include <vlc_rand.h>
 
 #include <assert.h>
@@ -42,9 +43,6 @@
 #ifdef HAVE_DIRENT_H
 #  include <dirent.h>
 #endif
-#ifdef UNDER_CE
-#  include <tchar.h>
-#endif
 #ifdef HAVE_SYS_STAT_H
 # include <sys/stat.h>
 #endif
@@ -53,11 +51,15 @@
 #endif
 #ifdef WIN32
 # include <io.h>
+# include <winsock2.h>
 # ifndef UNDER_CE
 #  include <direct.h>
+# else
+#  include <tchar.h>
 # endif
 #else
 # include <unistd.h>
+# include <sys/socket.h>
 #endif
 
 #ifndef HAVE_LSTAT
@@ -86,11 +88,24 @@ static int convert_path (const char *restrict path, wchar_t *restrict wpath)
  *
  * @param filename file path to open (with UTF-8 encoding)
  * @param flags open() flags, see the C library open() documentation
- * @param mode file permissions if creating a new file
  * @return a file handle on success, -1 on error (see errno).
+ * @note Contrary to standard open(), this function returns file handles
+ * with the close-on-exec flag enabled.
  */
-int utf8_open (const char *filename, int flags, mode_t mode)
+int vlc_open (const char *filename, int flags, ...)
 {
+    unsigned int mode = 0;
+    va_list ap;
+
+    va_start (ap, flags);
+    if (flags & O_CREAT)
+        mode = va_arg (ap, unsigned int);
+    va_end (ap);
+
+#ifdef O_CLOEXEC
+    flags |= O_CLOEXEC;
+#endif
+
 #ifdef UNDER_CE
     /*_open translates to wchar internally on WinCE*/
     return _open (filename, flags, mode);
@@ -111,22 +126,11 @@ int utf8_open (const char *filename, int flags, mode_t mode)
         return -1;
     }
 
-    int fd;
-
-#ifdef O_CLOEXEC
-    fd = open (local_name, flags | O_CLOEXEC, mode);
-    if (fd == -1 && errno == EINVAL)
-#endif
-    {
-        fd = open (local_name, flags, mode);
+    int fd = open (local_name, flags, mode);
 #ifdef HAVE_FCNTL
-        if (fd != -1)
-        {
-            int flags = fcntl (fd, F_GETFD);
-            fcntl (fd, F_SETFD, FD_CLOEXEC | ((flags != -1) ? flags : 0));
-        }
+    if (fd != -1)
+        fcntl (fd, F_SETFD, FD_CLOEXEC);
 #endif
-    }
 
     LocaleFree (local_name);
     return fd;
@@ -138,7 +142,7 @@ int utf8_open (const char *filename, int flags, mode_t mode)
  * @param mode fopen file open mode
  * @return NULL on error, an open FILE pointer on success.
  */
-FILE *utf8_fopen (const char *filename, const char *mode)
+FILE *vlc_fopen (const char *filename, const char *mode)
 {
     int rwflags = 0, oflags = 0;
     bool append = false;
@@ -174,7 +178,7 @@ FILE *utf8_fopen (const char *filename, const char *mode)
         }
     }
 
-    int fd = utf8_open (filename, rwflags | oflags, 0666);
+    int fd = vlc_open (filename, rwflags | oflags, 0666);
     if (fd == -1)
         return NULL;
 
@@ -192,6 +196,53 @@ FILE *utf8_fopen (const char *filename, const char *mode)
 }
 
 /**
+ * Opens a system file handle relative to an existing directory handle.
+ *
+ * @param dir directory file descriptor
+ * @param filename file path to open (with UTF-8 encoding)
+ * @param flags open() flags, see the C library open() documentation
+ * @return a file handle on success, -1 on error (see errno).
+ * @note Contrary to standard open(), this function returns file handles
+ * with the close-on-exec flag enabled.
+ */
+int vlc_openat (int dir, const char *filename, int flags, ...)
+{
+    unsigned int mode = 0;
+    va_list ap;
+
+    va_start (ap, flags);
+    if (flags & O_CREAT)
+        mode = va_arg (ap, unsigned int);
+    va_end (ap);
+
+#ifdef O_CLOEXEC
+    flags |= O_CLOEXEC;
+#endif
+
+    const char *local_name = ToLocale (filename);
+    if (local_name == NULL)
+    {
+        errno = ENOENT;
+        return -1;
+    }
+
+#ifdef HAVE_OPENAT
+    int fd = openat (dir, local_name, flags, mode);
+# ifdef HAVE_FCNTL
+    if (fd != -1)
+        fcntl (fd, F_SETFD, FD_CLOEXEC);
+# endif
+#else
+    int fd = -1;
+    errno = ENOSYS;
+#endif
+
+    LocaleFree (local_name);
+    return fd;
+}
+
+
+/**
  * Creates a directory using UTF-8 paths.
  *
  * @param dirname a UTF-8 string with the name of the directory that you
@@ -199,7 +250,7 @@ FILE *utf8_fopen (const char *filename, const char *mode)
  * @param mode directory permissions
  * @return 0 on success, -1 on error (see errno).
  */
-int utf8_mkdir( const char *dirname, mode_t mode )
+int vlc_mkdir( const char *dirname, mode_t mode )
 {
 #if defined (UNDER_CE)
     (void) mode;
@@ -233,7 +284,7 @@ int utf8_mkdir( const char *dirname, mode_t mode )
  * @return a pointer to the DIR struct, or NULL in case of error.
  * Release with standard closedir().
  */
-DIR *utf8_opendir( const char *dirname )
+DIR *vlc_opendir( const char *dirname )
 {
 #ifdef WIN32
     CONVERT_PATH (dirname, wpath, NULL);
@@ -262,7 +313,7 @@ DIR *utf8_opendir( const char *dirname )
  * @return a UTF-8 string of the directory entry.
  * Use free() to free this memory.
  */
-char *utf8_readdir( DIR *dir )
+char *vlc_readdir( DIR *dir )
 {
 #ifdef WIN32
     struct _wdirent *ent = vlc_wreaddir (dir);
@@ -294,10 +345,10 @@ static int dummy_select( const char *str )
 }
 
 /**
- * Does the same as utf8_scandir(), but takes an open directory pointer
+ * Does the same as vlc_scandir(), but takes an open directory pointer
  * instead of a directory path.
  */
-int utf8_loaddir( DIR *dir, char ***namelist,
+int vlc_loaddir( DIR *dir, char ***namelist,
                   int (*select)( const char * ),
                   int (*compar)( const char **, const char ** ) )
 {
@@ -314,7 +365,7 @@ int utf8_loaddir( DIR *dir, char ***namelist,
 
         rewinddir( dir );
 
-        while( ( entry = utf8_readdir( dir ) ) != NULL )
+        while( ( entry = vlc_readdir( dir ) ) != NULL )
         {
             char **newtab;
 
@@ -346,8 +397,7 @@ int utf8_loaddir( DIR *dir, char ***namelist,
 
         for( i = 0; i < num; i++ )
             free( tab[i] );
-        if( tab != NULL )
-            free( tab );
+        free( tab );
         }
     }
     return -1;
@@ -357,29 +407,29 @@ int utf8_loaddir( DIR *dir, char ***namelist,
  * Selects file entries from a directory, as GNU C scandir().
  *
  * @param dirname UTF-8 diretory path
- * @param pointer [OUT] pointer set, on succesful completion, to the address
+ * @param pointer [OUT] pointer set, on successful completion, to the address
  * of a table of UTF-8 filenames. All filenames must be freed with free().
  * The table itself must be freed with free() as well.
  *
  * @return How many file names were selected (possibly 0),
  * or -1 in case of error.
  */
-int utf8_scandir( const char *dirname, char ***namelist,
+int vlc_scandir( const char *dirname, char ***namelist,
                   int (*select)( const char * ),
                   int (*compar)( const char **, const char ** ) )
 {
-    DIR *dir = utf8_opendir (dirname);
+    DIR *dir = vlc_opendir (dirname);
     int val = -1;
 
     if (dir != NULL)
     {
-        val = utf8_loaddir (dir, namelist, select, compar);
+        val = vlc_loaddir (dir, namelist, select, compar);
         closedir (dir);
     }
     return val;
 }
 
-static int utf8_statEx( const char *filename, struct stat *buf,
+static int vlc_statEx( const char *filename, struct stat *buf,
                         bool deref )
 {
 #ifdef UNDER_CE
@@ -411,9 +461,9 @@ static int utf8_statEx( const char *filename, struct stat *buf,
  *
  * @param filename UTF-8 file path
  */
-int utf8_stat( const char *filename, struct stat *buf)
+int vlc_stat( const char *filename, struct stat *buf)
 {
-    return utf8_statEx( filename, buf, true );
+    return vlc_statEx( filename, buf, true );
 }
 
 /**
@@ -422,9 +472,9 @@ int utf8_stat( const char *filename, struct stat *buf)
  *
  * @param filename UTF-8 file path
  */
-int utf8_lstat( const char *filename, struct stat *buf)
+int vlc_lstat( const char *filename, struct stat *buf)
 {
-    return utf8_statEx( filename, buf, false );
+    return vlc_statEx( filename, buf, false );
 }
 
 /**
@@ -434,7 +484,7 @@ int utf8_lstat( const char *filename, struct stat *buf)
  * @return A 0 return value indicates success. A -1 return value indicates an
  *        error, and an error code is stored in errno
  */
-int utf8_unlink( const char *filename )
+int vlc_unlink( const char *filename )
 {
 #ifdef UNDER_CE
     /*_open translates to wchar internally on WinCE*/
@@ -465,7 +515,7 @@ int utf8_unlink( const char *filename )
  * @return A 0 return value indicates success. A -1 return value indicates an
  *        error, and an error code is stored in errno
  */
-int utf8_rename (const char *oldpath, const char *newpath)
+int vlc_rename (const char *oldpath, const char *newpath)
 {
 #if defined (WIN32)
     CONVERT_PATH (oldpath, wold, -1);
@@ -477,7 +527,17 @@ int utf8_rename (const char *oldpath, const char *newpath)
     else
         return -1;
 #else
-    return _wrename (wold, wnew);
+    if (_wrename (wold, wnew) && errno == EACCES)
+    {   /* Windows does not allow atomic file replacement */
+        if (_wremove (wnew))
+        {
+            errno = EACCES; /* restore errno */
+            return -1;
+        }
+        if (_wrename (wold, wnew))
+            return -1;
+    }
+    return 0;
 #endif
 
 #endif
@@ -500,7 +560,7 @@ error:
     return ret;
 }
 
-int utf8_mkstemp( char *template )
+int vlc_mkstemp( char *template )
 {
     static const char digits[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     static const int i_digits = sizeof(digits)/sizeof(*digits) - 1;
@@ -529,7 +589,7 @@ int utf8_mkstemp( char *template )
             psz_rand[j] = digits[pi_rand[j] % i_digits];
 
         /* */
-        int fd = utf8_open( template, O_CREAT | O_EXCL | O_RDWR, 0600 );
+        int fd = vlc_open( template, O_CREAT | O_EXCL | O_RDWR, 0600 );
         if( fd >= 0 )
             return fd;
         if( errno != EEXIST )
@@ -540,3 +600,129 @@ int utf8_mkstemp( char *template )
     return -1;
 }
 
+#ifdef UNDER_CE
+# define dup(fd) (fd, -1)
+#endif
+
+/**
+ * Duplicates a file descriptor. The new file descriptor has the close-on-exec
+ * descriptor flag set.
+ * @return a new file descriptor or -1
+ */
+int vlc_dup (int oldfd)
+{
+    int newfd;
+
+#ifdef HAVE_DUP3
+    /* Unfortunately, dup3() works like dup2(), not like plain dup(). So we
+     * need such contortion to find the new file descriptor while preserving
+     * thread safety of the file descriptor table. */
+    newfd = vlc_open ("/dev/null", O_RDONLY);
+    if (likely(newfd != -1))
+    {
+        if (likely(dup3 (oldfd, newfd, O_CLOEXEC) == newfd))
+            return newfd;
+        close (newfd);
+    }
+#endif
+
+    newfd = dup (oldfd);
+#ifdef HAVE_FCNTL
+    if (likely(newfd != -1))
+        fcntl (newfd, F_SETFD, FD_CLOEXEC);
+#endif
+    return newfd;
+}
+
+#include <vlc_network.h>
+
+/**
+ * Creates a socket file descriptor. The new file descriptor has the
+ * close-on-exec flag set.
+ * @param pf protocol family
+ * @param type socket type
+ * @param proto network protocol
+ * @param nonblock true to create a non-blocking socket
+ * @return a new file descriptor or -1
+ */
+int vlc_socket (int pf, int type, int proto, bool nonblock)
+{
+    int fd;
+
+#ifdef SOCK_CLOEXEC
+    type |= SOCK_CLOEXEC;
+    if (nonblock)
+        type |= SOCK_NONBLOCK;
+    fd = socket (pf, type, proto);
+    if (fd != -1 || errno != EINVAL)
+        return fd;
+
+    type &= ~(SOCK_CLOEXEC|SOCK_NONBLOCK);
+#endif
+
+    fd = socket (pf, type, proto);
+    if (fd == -1)
+        return -1;
+
+#ifndef WIN32
+    fcntl (fd, F_SETFD, FD_CLOEXEC);
+    if (nonblock)
+        fcntl (fd, F_SETFL, fcntl (fd, F_GETFL, 0) | O_NONBLOCK);
+#else
+    if (nonblock)
+        ioctlsocket (fd, FIONBIO, &(unsigned long){ 1 });
+#endif
+    return fd;
+}
+
+/**
+ * Accepts an inbound connection request on a listening socket.
+ * The new file descriptor has the close-on-exec flag set.
+ * @param lfd listening socket file descriptor
+ * @param addr pointer to the peer address or NULL [OUT]
+ * @param alen pointer to the length of the peer address or NULL [OUT]
+ * @param nonblock whether to put the new socket in non-blocking mode
+ * @return a new file descriptor, or -1 on error.
+ */
+int vlc_accept (int lfd, struct sockaddr *addr, socklen_t *alen, bool nonblock)
+{
+#ifdef HAVE_ACCEPT4
+    int flags = SOCK_CLOEXEC;
+    if (nonblock)
+        flags |= SOCK_NONBLOCK;
+
+    do
+    {
+        int fd = accept4 (lfd, addr, alen, flags);
+        if (fd != -1)
+            return fd;
+    }
+    while (errno == EINTR);
+
+    if (errno != ENOSYS)
+        return -1;
+#endif
+#ifdef WIN32
+    errno = 0;
+#endif
+
+    do
+    {
+        int fd = accept (lfd, addr, alen);
+        if (fd != -1)
+        {
+#ifndef WIN32
+            fcntl (fd, F_SETFD, FD_CLOEXEC);
+            if (nonblock)
+                fcntl (fd, F_SETFL, fcntl (fd, F_GETFL, 0) | O_NONBLOCK);
+#else
+            if (nonblock)
+                ioctlsocket (fd, FIONBIO, &(unsigned long){ 1 });
+#endif
+            return fd;
+        }
+    }
+    while (errno == EINTR);
+
+    return -1;
+}

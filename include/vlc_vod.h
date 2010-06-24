@@ -2,7 +2,7 @@
  * vlc_vod.h: interface for VoD server modules
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 17cd2e497af218a5ab2f935f2f923966905be1dd $
+ * $Id: 9b136108f2b844a971087a407f249ed3f5c5cf9b $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -30,7 +30,8 @@
  */
 
 /**
- * \defgroup server Video On Demand (VOD)
+ * \defgroup vod Video On Demand (VOD)
+ * \ingroup server
  * Video On Demand (VOD) functionality is provided from VLM.
  * @{
  */
@@ -78,6 +79,8 @@ enum vod_query_e
     VOD_MEDIA_FORWARD,      /* arg1= double         res=    */
 };
 
-/**}*/
+/**
+ * @}
+ */
 
 #endif

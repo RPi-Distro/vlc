@@ -2,7 +2,7 @@
  * control.c : Handle control of the playlist & running through it
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 4aed8889a5f90ca2f4cf4374e73a0cb462eab6c0 $
+ * $Id: 38ddf485646668a97440732351a857bd6b2a64f0 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -39,31 +39,37 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
  * Playlist control
  *****************************************************************************/
 
-playlist_t *__pl_Hold( vlc_object_t *p_this )
+static vlc_mutex_t global_lock = VLC_STATIC_MUTEX;
+
+#undef pl_Get
+playlist_t *pl_Get (vlc_object_t *obj)
 {
     playlist_t *pl;
+    libvlc_int_t *p_libvlc = obj->p_libvlc;
 
-    barrier();
-    pl = libvlc_priv (p_this->p_libvlc)->p_playlist;
+    vlc_mutex_lock (&global_lock);
+    pl = libvlc_priv (p_libvlc)->p_playlist;
+    assert (pl != NULL);
 
-    assert( VLC_OBJECT(pl) != p_this /* This does not make sense to hold the playlist
-    using pl_Hold. use vlc_object_hold in this case */ );
-
-    if (pl)
-        vlc_object_hold (pl);
+    if (!libvlc_priv (p_libvlc)->playlist_active)
+    {
+         playlist_Activate (pl);
+         libvlc_priv (p_libvlc)->playlist_active = true;
+    }
+    vlc_mutex_unlock (&global_lock);
     return pl;
 }
 
-void __pl_Release( vlc_object_t *p_this )
+void pl_Deactivate (libvlc_int_t *p_libvlc)
 {
-    playlist_t *pl = libvlc_priv (p_this->p_libvlc)->p_playlist;
-    assert( pl != NULL );
+    bool deactivate;
 
-    /* The rule is that pl_Release() should act on
-       the same object than pl_Hold() */
-    assert( VLC_OBJECT(pl) != p_this);
+    vlc_mutex_lock (&global_lock);
+    deactivate = libvlc_priv (p_libvlc)->playlist_active;
+    vlc_mutex_unlock (&global_lock);
 
-    vlc_object_release( pl );
+    if (deactivate)
+        playlist_Deactivate (libvlc_priv (p_libvlc)->p_playlist);
 }
 
 void playlist_Lock( playlist_t *pl )
@@ -151,22 +157,21 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
         break;
 
     case PLAYLIST_PAUSE:
-        if( pl_priv(p_playlist)->p_input &&
-            var_GetInteger( pl_priv(p_playlist)->p_input, "state" ) == PAUSE_S )
+        if( !pl_priv(p_playlist)->p_input )
+        {    /* FIXME: is this really useful without input? */
+             pl_priv(p_playlist)->status.i_status = PLAYLIST_PAUSED;
+             break;
+        }
+
+        if( var_GetInteger( pl_priv(p_playlist)->p_input, "state" ) == PAUSE_S )
         {
             pl_priv(p_playlist)->status.i_status = PLAYLIST_RUNNING;
-            if( pl_priv(p_playlist)->p_input )
-            {
-                var_SetInteger( pl_priv(p_playlist)->p_input, "state", PLAYING_S );
-            }
+            var_SetInteger( pl_priv(p_playlist)->p_input, "state", PLAYING_S );
         }
         else
         {
             pl_priv(p_playlist)->status.i_status = PLAYLIST_PAUSED;
-            if( pl_priv(p_playlist)->p_input )
-            {
-                var_SetInteger( pl_priv(p_playlist)->p_input, "state", PAUSE_S );
-            }
+            var_SetInteger( pl_priv(p_playlist)->p_input, "state", PAUSE_S );
         }
         break;
 
@@ -193,28 +198,22 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
  * Preparse control
  *****************************************************************************/
 /** Enqueue an item for preparsing */
-int playlist_PreparseEnqueue( playlist_t *p_playlist,
-                              input_item_t *p_item, bool b_locked )
+int playlist_PreparseEnqueue( playlist_t *p_playlist, input_item_t *p_item )
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    PL_LOCK_IF( !b_locked );
     if( p_sys->p_preparser )
         playlist_preparser_Push( p_sys->p_preparser, p_item );
-    PL_UNLOCK_IF( !b_locked );
 
     return VLC_SUCCESS;
 }
 
-int playlist_AskForArtEnqueue( playlist_t *p_playlist,
-                               input_item_t *p_item, bool b_locked )
+int playlist_AskForArtEnqueue( playlist_t *p_playlist, input_item_t *p_item )
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    PL_LOCK_IF( !b_locked );
     if( p_sys->p_fetcher )
         playlist_fetcher_Push( p_sys->p_fetcher, p_item );
-    PL_UNLOCK_IF( !b_locked );
 
     return VLC_SUCCESS;
 }

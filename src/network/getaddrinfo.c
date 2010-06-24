@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
  * Copyright (C) 2002-2007 Rémi Denis-Courmont
- * $Id: 5f73492df81c395fbcf65f4b42e527c1a96fd432 $
+ * $Id: 7d56c2dccf386ce23e3f4a820d6e971453ee9ded $
  *
  * Author: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -35,9 +35,7 @@
 #include <errno.h>
 #include <assert.h>
 
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
+#include <sys/types.h>
 #ifdef HAVE_ARPA_INET_H
 #   include <arpa/inet.h>
 #endif
@@ -689,7 +687,9 @@ int vlc_getaddrinfo( vlc_object_t *p_this, const char *node,
 #endif
     ret = getaddrinfo (node, psz_service, &hints, res);
 
+#if defined(AI_IDN) || defined(WIN32)
 out:
+#endif
     LocaleFree (node);
     return ret;
 }

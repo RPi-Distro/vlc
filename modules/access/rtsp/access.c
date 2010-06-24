@@ -2,7 +2,7 @@
  * access.c: Real rtsp input
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: 0115d30ad77641c7427bf22afed52e14b3e6ee6a $
+ * $Id: bf2dd762913f50898edf804179b5d2c221137209 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -68,14 +68,11 @@ vlc_module_end ()
  * Exported prototypes
  *****************************************************************************/
 static block_t *BlockRead( access_t * );
-static int     Seek( access_t *, int64_t );
+static int     Seek( access_t *, uint64_t );
 static int     Control( access_t *, int, va_list );
 
 struct access_sys_t
 {
-    bool b_seekable;
-    bool b_pace_control;
-
     rtsp_client_t *p_rtsp;
 
     int fd;
@@ -126,7 +123,7 @@ static int RtspReadLine( void *p_userdata, uint8_t *p_buffer, int i_buffer )
     access_t *p_access = (access_t *)p_userdata;
     access_sys_t *p_sys = p_access->p_sys;
 
-    char *psz = net_Gets( VLC_OBJECT(p_access), p_sys->fd, 0 );
+    char *psz = net_Gets( p_access, p_sys->fd, 0 );
 
     //fprintf(stderr, "ReadLine: %s\n", psz);
 
@@ -139,12 +136,13 @@ static int RtspReadLine( void *p_userdata, uint8_t *p_buffer, int i_buffer )
 
 static int RtspWrite( void *p_userdata, uint8_t *p_buffer, int i_buffer )
 {
+    VLC_UNUSED(i_buffer);
     access_t *p_access = (access_t *)p_userdata;
     access_sys_t *p_sys = p_access->p_sys;
 
     //fprintf(stderr, "Write: %s", p_buffer);
 
-    net_Printf( VLC_OBJECT(p_access), p_sys->fd, 0, "%s", p_buffer );
+    net_Printf( p_access, p_sys->fd, 0, "%s", p_buffer );
 
     return 0;
 }
@@ -237,7 +235,7 @@ static int Open( vlc_object_t *p_this )
 
 
             msg_Err( p_access, "rtsp session can not be established" );
-            dialog_Fatal( p_access, _("Session failed"),
+            dialog_Fatal( p_access, _("Session failed"), "%s",
                     _("The requested RTSP session could not be established.") );
             goto error;
         }
@@ -309,8 +307,10 @@ static block_t *BlockRead( access_t *p_access )
 /*****************************************************************************
  * Seek: seek to a specific location in a file
  *****************************************************************************/
-static int Seek( access_t *p_access, int64_t i_pos )
+static int Seek( access_t *p_access, uint64_t i_pos )
 {
+    VLC_UNUSED(p_access);
+    VLC_UNUSED(i_pos);
     return VLC_SUCCESS;
 }
 
@@ -319,31 +319,22 @@ static int Seek( access_t *p_access, int64_t i_pos )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    bool        *pb_bool;
-    int64_t     *pi_64;
-
     switch( i_query )
     {
         /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = false;//p_sys->b_seekable;
-            break;
-
         case ACCESS_CAN_PAUSE:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = false;
+            *va_arg( args, bool* ) = false;
             break;
 
         case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = true;//p_sys->b_pace_control;
+            *va_arg( args, bool* ) = true;
             break;
 
         case ACCESS_GET_PTS_DELAY:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = var_GetInteger( p_access, "realrtsp-caching" ) * 1000;
+            *va_arg( args, int64_t * ) =
+                    (int64_t)var_GetInteger(p_access,"realrtsp-caching")*1000;
             break;
 
         /* */

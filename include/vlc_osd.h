@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
  * Copyright (C) 2004-2005 M2X
- * $Id: 229e3056d09784b848d8f0d37a7e1538c447ab38 $
+ * $Id: ec80d07f6981c114c3963472e2e83c0fb9ce0e93 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -56,6 +56,9 @@ extern "C" {
 
 typedef struct spu_private_t spu_private_t;
 
+/* Default subpicture channel ID */
+#define DEFAULT_CHAN           1
+
 /**
  * Subpicture unit descriptor
  */
@@ -93,8 +96,8 @@ static inline int spu_Control( spu_t *p_spu, int i_query, ... )
     return i_result;
 }
 
-#define spu_Create(a) __spu_Create(VLC_OBJECT(a))
-VLC_EXPORT( spu_t *, __spu_Create, ( vlc_object_t * ) );
+VLC_EXPORT( spu_t *, spu_Create, ( vlc_object_t * ) );
+#define spu_Create(a) spu_Create(VLC_OBJECT(a))
 VLC_EXPORT( int, spu_Init, ( spu_t * ) );
 VLC_EXPORT( void, spu_Destroy, ( spu_t * ) );
 void spu_Attach( spu_t *, vlc_object_t *, bool );
@@ -112,8 +115,7 @@ VLC_EXPORT( void, spu_DisplaySubpicture, ( spu_t *, subpicture_t * ) );
  *
  * The returned list can only be used by spu_RenderSubpictures.
  */
-VLC_EXPORT( subpicture_t *, spu_SortSubpictures, ( spu_t *, mtime_t display_date, bool b_paused, bool b_subtitle_only ) );
-VLC_EXPORT( subpicture_t *, spu_SortSubpicturesNew, ( spu_t *, mtime_t render_subtitle_date, bool b_subtitle_only ) );
+VLC_EXPORT( subpicture_t *, spu_SortSubpictures, ( spu_t *, mtime_t render_subtitle_date, bool b_subtitle_only ) );
 
 /**
  * This function renders a list of subpicture_t on the provided picture.
@@ -121,8 +123,7 @@ VLC_EXPORT( subpicture_t *, spu_SortSubpicturesNew, ( spu_t *, mtime_t render_su
  * \param p_fmt_dst is the format of the destination picture.
  * \param p_fmt_src is the format of the original(source) video.
  */
-VLC_EXPORT( void, spu_RenderSubpictures, ( spu_t *,  picture_t *, const video_format_t *p_fmt_dst, subpicture_t *p_list, const video_format_t *p_fmt_src, bool b_paused ) );
-VLC_EXPORT( void, spu_RenderSubpicturesNew, ( spu_t *,  picture_t *, const video_format_t *p_fmt_dst, subpicture_t *p_list, const video_format_t *p_fmt_src, mtime_t render_subtitle_date ) );
+VLC_EXPORT( void, spu_RenderSubpictures, ( spu_t *,  picture_t *, const video_format_t *p_fmt_dst, subpicture_t *p_list, const video_format_t *p_fmt_src, mtime_t render_subtitle_date ) );
 
 /** @}*/
 
@@ -267,8 +268,25 @@ struct text_style_t
 #define STYLE_UNDERLINE   32
 #define STYLE_STRIKEOUT   64
 
-static const text_style_t default_text_style = { NULL, 22, 0xffffff, 0xff, STYLE_OUTLINE,
-                0x000000, 0xff, 0x000000, 0xff, 0xffffff, 0x80, 0xffffff, 0xff, 1, 0, -1 };
+/**
+ * Create a default text style
+ */
+VLC_EXPORT( text_style_t *, text_style_New, ( void ) );
+
+/**
+ * Copy a text style into another
+ */
+VLC_EXPORT( text_style_t *, text_style_Copy, ( text_style_t *, const text_style_t * ) );
+
+/**
+ * Duplicate a text style
+ */
+VLC_EXPORT( text_style_t *, text_style_Duplicate, ( const text_style_t * ) );
+
+/**
+ * Delete a text style created by text_style_New or text_style_Duplicate
+ */
+VLC_EXPORT( void, text_style_Delete, ( text_style_t * ) );
 
 /**
  * OSD menu button states
@@ -415,7 +433,7 @@ struct osd_menu_t
  * functions. It creates the osd_menu object and holds a pointer to it
  * during its lifetime.
  */
-VLC_EXPORT( osd_menu_t *, __osd_MenuCreate, ( vlc_object_t *, const char * ) );
+VLC_EXPORT( osd_menu_t *, osd_MenuCreate, ( vlc_object_t *, const char * ) );
 
 /**
  * Delete the osd_menu_t object
@@ -424,25 +442,25 @@ VLC_EXPORT( osd_menu_t *, __osd_MenuCreate, ( vlc_object_t *, const char * ) );
  * memory for the osdmenu. After return of this function the pointer to
  * osd_menu_t* is invalid.
  */
-VLC_EXPORT( void, __osd_MenuDelete, ( vlc_object_t *, osd_menu_t * ) );
+VLC_EXPORT( void, osd_MenuDelete, ( vlc_object_t *, osd_menu_t * ) );
 
-#define osd_MenuCreate(object,file) __osd_MenuCreate( VLC_OBJECT(object), file )
-#define osd_MenuDelete(object,osd)  __osd_MenuDelete( VLC_OBJECT(object), osd )
+#define osd_MenuCreate(object,file) osd_MenuCreate( VLC_OBJECT(object), file )
+#define osd_MenuDelete(object,osd)  osd_MenuDelete( VLC_OBJECT(object), osd )
 
 /**
  * Find OSD Menu button at position x,y
  */
-VLC_EXPORT( osd_button_t *, __osd_ButtonFind, ( vlc_object_t *p_this,
+VLC_EXPORT( osd_button_t *, osd_ButtonFind, ( vlc_object_t *p_this,
      int, int, int, int, int, int ) );
 
-#define osd_ButtonFind(object,x,y,h,w,sh,sw)  __osd_ButtonFind(object,x,y,h,w,sh,sw)
+#define osd_ButtonFind(object,x,y,h,w,sh,sw)  osd_ButtonFind(object,x,y,h,w,sh,sw)
 
 /**
  * Select the button provided as the new active button
  */
-VLC_EXPORT( void, __osd_ButtonSelect, ( vlc_object_t *, osd_button_t *) );
+VLC_EXPORT( void, osd_ButtonSelect, ( vlc_object_t *, osd_button_t *) );
 
-#define osd_ButtonSelect(object,button) __osd_ButtonSelect(object,button)
+#define osd_ButtonSelect(object,button) osd_ButtonSelect(object,button)
 
 /**
  * Show the OSD menu.
@@ -451,14 +469,14 @@ VLC_EXPORT( void, __osd_ButtonSelect, ( vlc_object_t *, osd_button_t *) );
  * Every change to the OSD menu will now be visible in the output. An output
  * can be a video output window or a stream (\see stream output)
  */
-VLC_EXPORT( void, __osd_MenuShow, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuShow, ( vlc_object_t * ) );
 
 /**
  * Hide the OSD menu.
  *
  * Stop showing the OSD menu on the video output or mux it into the stream.
  */
-VLC_EXPORT( void, __osd_MenuHide, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuHide, ( vlc_object_t * ) );
 
 /**
  * Activate the action of this OSD menu item.
@@ -467,11 +485,11 @@ VLC_EXPORT( void, __osd_MenuHide, ( vlc_object_t * ) );
  * hotkey action to the hotkey interface. The hotkey that belongs to
  * the current highlighted OSD menu item will be used.
  */
-VLC_EXPORT( void, __osd_MenuActivate,   ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuActivate,   ( vlc_object_t * ) );
 
-#define osd_MenuShow(object) __osd_MenuShow( VLC_OBJECT(object) )
-#define osd_MenuHide(object) __osd_MenuHide( VLC_OBJECT(object) )
-#define osd_MenuActivate(object)   __osd_MenuActivate( VLC_OBJECT(object) )
+#define osd_MenuShow(object) osd_MenuShow( VLC_OBJECT(object) )
+#define osd_MenuHide(object) osd_MenuHide( VLC_OBJECT(object) )
+#define osd_MenuActivate(object)   osd_MenuActivate( VLC_OBJECT(object) )
 
 /**
  * Next OSD menu item
@@ -480,7 +498,7 @@ VLC_EXPORT( void, __osd_MenuActivate,   ( vlc_object_t * ) );
  * Note: The actual position on screen of the menu item is determined by
  * the OSD menu configuration file.
  */
-VLC_EXPORT( void, __osd_MenuNext, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuNext, ( vlc_object_t * ) );
 
 /**
  * Previous OSD menu item
@@ -489,7 +507,7 @@ VLC_EXPORT( void, __osd_MenuNext, ( vlc_object_t * ) );
  * Note: The actual position on screen of the menu item is determined by
  * the OSD menu configuration file.
  */
-VLC_EXPORT( void, __osd_MenuPrev, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuPrev, ( vlc_object_t * ) );
 
 /**
  * OSD menu item above
@@ -498,7 +516,7 @@ VLC_EXPORT( void, __osd_MenuPrev, ( vlc_object_t * ) );
  * Note: The actual position on screen of the menu item is determined by
  * the OSD menu configuration file.
  */
-VLC_EXPORT( void, __osd_MenuUp,   ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuUp,   ( vlc_object_t * ) );
 
 /**
  * OSD menu item below
@@ -507,12 +525,12 @@ VLC_EXPORT( void, __osd_MenuUp,   ( vlc_object_t * ) );
  * Note: The actual position on screen of the menu item is determined by
  * the OSD menu configuration file.
  */
-VLC_EXPORT( void, __osd_MenuDown, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuDown, ( vlc_object_t * ) );
 
-#define osd_MenuNext(object) __osd_MenuNext( VLC_OBJECT(object) )
-#define osd_MenuPrev(object) __osd_MenuPrev( VLC_OBJECT(object) )
-#define osd_MenuUp(object)   __osd_MenuUp( VLC_OBJECT(object) )
-#define osd_MenuDown(object) __osd_MenuDown( VLC_OBJECT(object) )
+#define osd_MenuNext(object) osd_MenuNext( VLC_OBJECT(object) )
+#define osd_MenuPrev(object) osd_MenuPrev( VLC_OBJECT(object) )
+#define osd_MenuUp(object)   osd_MenuUp( VLC_OBJECT(object) )
+#define osd_MenuDown(object) osd_MenuDown( VLC_OBJECT(object) )
 
 /**
  * Display the audio volume bitmap.
@@ -520,9 +538,9 @@ VLC_EXPORT( void, __osd_MenuDown, ( vlc_object_t * ) );
  * Display the correct audio volume bitmap that corresponds to the
  * current Audio Volume setting.
  */
-VLC_EXPORT( void, __osd_Volume, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_Volume, ( vlc_object_t * ) );
 
-#define osd_Volume(object)     __osd_Volume( VLC_OBJECT(object) )
+#define osd_Volume(object)     osd_Volume( VLC_OBJECT(object) )
 
 /**
  * Retrieve a non modifyable pointer to the OSD Menu state
@@ -592,8 +610,8 @@ static inline void osd_SetMenuUpdate( osd_menu_t *p_osd, bool b_value )
  * object. The types are declared in the include file include/vlc_osd.h
  * @see vlc_osd.h
  */
-VLC_EXPORT( int, osd_ShowTextRelative, ( spu_t *, int, const char *, text_style_t *, int, int, int, mtime_t ) );
-VLC_EXPORT( int, osd_ShowTextAbsolute, ( spu_t *, int, const char *, text_style_t *, int, int, int, mtime_t, mtime_t ) );
+VLC_EXPORT( int, osd_ShowTextRelative, ( spu_t *, int, const char *, const text_style_t *, int, int, int, mtime_t ) );
+VLC_EXPORT( int, osd_ShowTextAbsolute, ( spu_t *, int, const char *, const text_style_t *, int, int, int, mtime_t, mtime_t ) );
 VLC_EXPORT( void, osd_Message, ( spu_t *, int, char *, ... ) LIBVLC_FORMAT( 3, 4 ) );
 
 /**
@@ -613,34 +631,11 @@ VLC_EXPORT( int, osd_Icon, ( vlc_object_t *, spu_t *, int, int, int, int, int, s
  * Vout text and widget overlays
  **********************************************************************/
 
-/**
- * Show text on the video for some time
- * \param p_vout pointer to the vout the text is to be showed on
- * \param i_channel Subpicture channel
- * \param psz_string The text to be shown
- * \param p_style Pointer to a struct with text style info
- * \param i_flags flags for alignment and such
- * \param i_hmargin horizontal margin in pixels
- * \param i_vmargin vertical margin in pixels
- * \param i_duration Amount of time the text is to be shown.
- */
-VLC_EXPORT( int, vout_ShowTextRelative, ( vout_thread_t *, int, char *, text_style_t *, int, int, int, mtime_t ) );
+VLC_EXPORT( int, vout_ShowTextRelative, ( vout_thread_t *, int, char *, const text_style_t *, int, int, int, mtime_t ) );
 
-/**
- * Show text on the video from a given start date to a given end date
- * \param p_vout pointer to the vout the text is to be showed on
- * \param i_channel Subpicture channel
- * \param psz_string The text to be shown
- * \param p_style Pointer to a struct with text style info
- * \param i_flags flags for alignment and such
- * \param i_hmargin horizontal margin in pixels
- * \param i_vmargin vertical margin in pixels
- * \param i_start the time when this string is to appear on the video
- * \param i_stop the time when this string should stop to be displayed
- *               if this is 0 the string will be shown untill the next string
- *               is about to be shown
- */
-VLC_EXPORT( int, vout_ShowTextAbsolute, ( vout_thread_t *, int, const char *, text_style_t *, int, int, int, mtime_t, mtime_t ) );
+VLC_EXPORT( int, vout_ShowTextAbsolute, ( vout_thread_t *, int, const char *, const text_style_t *, int, int, int, mtime_t, mtime_t ) );
+
+VLC_EXPORT( int, vout_OSDEpg, ( vout_thread_t *, input_item_t * ) );
 
 /**
  * Write an informative message at the default location,
@@ -649,13 +644,10 @@ VLC_EXPORT( int, vout_ShowTextAbsolute, ( vout_thread_t *, int, const char *, te
  * \param i_channel Subpicture channel
  * \param psz_format printf style formatting
  **/
-VLC_EXPORT( void,  __vout_OSDMessage, ( vlc_object_t *, int, const char *, ... ) LIBVLC_FORMAT( 3, 4 ) );
+VLC_EXPORT( void,  vout_OSDMessage, ( vlc_object_t *, int, const char *, ... ) LIBVLC_FORMAT( 3, 4 ) );
 
-/**
- * Same as __vlc_OSDMessage() but with automatic casting
- */
 #define vout_OSDMessage( obj, chan, ...) \
-      __vout_OSDMessage( VLC_OBJECT(obj), chan, __VA_ARGS__ )
+        vout_OSDMessage( VLC_OBJECT(obj), chan, __VA_ARGS__ )
 
 /**
  * Display a slider on the video output.

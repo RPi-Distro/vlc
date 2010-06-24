@@ -56,7 +56,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/m4/with_pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -93,33 +94,38 @@ am_libbonjour_plugin_la_OBJECTS = $(am__objects_1)
 nodist_libbonjour_plugin_la_OBJECTS =
 libbonjour_plugin_la_OBJECTS = $(am_libbonjour_plugin_la_OBJECTS) \
 	$(nodist_libbonjour_plugin_la_OBJECTS)
-libbonjour_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+libbonjour_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libbonjour_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_2 = libhal_plugin_la-hal.lo
-am_libhal_plugin_la_OBJECTS = $(am__objects_2)
-nodist_libhal_plugin_la_OBJECTS =
-libhal_plugin_la_OBJECTS = $(am_libhal_plugin_la_OBJECTS) \
-	$(nodist_libhal_plugin_la_OBJECTS)
-libhal_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libhal_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am__objects_2 = libmediadirs_plugin_la-mediadirs.lo
+am_libmediadirs_plugin_la_OBJECTS = $(am__objects_2)
+nodist_libmediadirs_plugin_la_OBJECTS =
+libmediadirs_plugin_la_OBJECTS = $(am_libmediadirs_plugin_la_OBJECTS) \
+	$(nodist_libmediadirs_plugin_la_OBJECTS)
+libmediadirs_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libmediadirs_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am__objects_3 = libmtp_plugin_la-mtp.lo
 am_libmtp_plugin_la_OBJECTS = $(am__objects_3)
 nodist_libmtp_plugin_la_OBJECTS =
 libmtp_plugin_la_OBJECTS = $(am_libmtp_plugin_la_OBJECTS) \
 	$(nodist_libmtp_plugin_la_OBJECTS)
-libmtp_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libmtp_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+libmtp_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libmtp_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am__objects_4 = libpodcast_plugin_la-podcast.lo
 am_libpodcast_plugin_la_OBJECTS = $(am__objects_4)
 nodist_libpodcast_plugin_la_OBJECTS =
 libpodcast_plugin_la_OBJECTS = $(am_libpodcast_plugin_la_OBJECTS) \
 	$(nodist_libpodcast_plugin_la_OBJECTS)
-libpodcast_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libpodcast_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpodcast_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_5 = libsap_plugin_la-sap.lo
@@ -127,45 +133,44 @@ am_libsap_plugin_la_OBJECTS = $(am__objects_5)
 nodist_libsap_plugin_la_OBJECTS =
 libsap_plugin_la_OBJECTS = $(am_libsap_plugin_la_OBJECTS) \
 	$(nodist_libsap_plugin_la_OBJECTS)
-libsap_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libsap_plugin_la_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_6 = libshout_plugin_la-shout.lo
-am_libshout_plugin_la_OBJECTS = $(am__objects_6)
-nodist_libshout_plugin_la_OBJECTS =
-libshout_plugin_la_OBJECTS = $(am_libshout_plugin_la_OBJECTS) \
-	$(nodist_libshout_plugin_la_OBJECTS)
-libshout_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libshout_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am__objects_7 = libudev_plugin_la-udev.lo
-am_libudev_plugin_la_OBJECTS = $(am__objects_7)
+libsap_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libsap_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
+am__objects_6 = libudev_plugin_la-udev.lo
+am_libudev_plugin_la_OBJECTS = $(am__objects_6)
 nodist_libudev_plugin_la_OBJECTS =
 libudev_plugin_la_OBJECTS = $(am_libudev_plugin_la_OBJECTS) \
 	$(nodist_libudev_plugin_la_OBJECTS)
-libudev_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libudev_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libudev_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-am__objects_8 = libupnp_cc_plugin_la-upnp_cc.lo
-am_libupnp_cc_plugin_la_OBJECTS = $(am__objects_8)
+am__objects_7 = libupnp_cc_plugin_la-upnp_cc.lo
+am_libupnp_cc_plugin_la_OBJECTS = $(am__objects_7)
 nodist_libupnp_cc_plugin_la_OBJECTS =
 libupnp_cc_plugin_la_OBJECTS = $(am_libupnp_cc_plugin_la_OBJECTS) \
 	$(nodist_libupnp_cc_plugin_la_OBJECTS)
-libupnp_cc_plugin_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+libupnp_cc_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(libupnp_cc_plugin_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_9 = libupnp_intel_plugin_la-upnp_intel.lo
-am_libupnp_intel_plugin_la_OBJECTS = $(am__objects_9)
+am__objects_8 = libupnp_intel_plugin_la-upnp_intel.lo
+am_libupnp_intel_plugin_la_OBJECTS = $(am__objects_8)
 nodist_libupnp_intel_plugin_la_OBJECTS =
 libupnp_intel_plugin_la_OBJECTS =  \
 	$(am_libupnp_intel_plugin_la_OBJECTS) \
 	$(nodist_libupnp_intel_plugin_la_OBJECTS)
-libupnp_intel_plugin_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+libupnp_intel_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(libupnp_intel_plugin_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__DEPENDENCIES_2 =
+am_libxcb_apps_plugin_la_OBJECTS = libxcb_apps_plugin_la-xcb_apps.lo
+libxcb_apps_plugin_la_OBJECTS = $(am_libxcb_apps_plugin_la_OBJECTS)
+libxcb_apps_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libxcb_apps_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
@@ -173,53 +178,76 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-LTCXXCOMPILE = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CXXFLAGS) $(CXXFLAGS)
+AM_V_CXX = $(am__v_CXX_$(V))
+am__v_CXX_ = $(am__v_CXX_$(AM_DEFAULT_VERBOSITY))
+am__v_CXX_0 = @echo "  CXX   " $@;
 CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CXXLD = $(am__v_CXXLD_$(V))
+am__v_CXXLD_ = $(am__v_CXXLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CXXLD_0 = @echo "  CXXLD " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libbonjour_plugin_la_SOURCES) \
 	$(nodist_libbonjour_plugin_la_SOURCES) \
-	$(libhal_plugin_la_SOURCES) $(nodist_libhal_plugin_la_SOURCES) \
+	$(libmediadirs_plugin_la_SOURCES) \
+	$(nodist_libmediadirs_plugin_la_SOURCES) \
 	$(libmtp_plugin_la_SOURCES) $(nodist_libmtp_plugin_la_SOURCES) \
 	$(libpodcast_plugin_la_SOURCES) \
 	$(nodist_libpodcast_plugin_la_SOURCES) \
 	$(libsap_plugin_la_SOURCES) $(nodist_libsap_plugin_la_SOURCES) \
-	$(libshout_plugin_la_SOURCES) \
-	$(nodist_libshout_plugin_la_SOURCES) \
 	$(libudev_plugin_la_SOURCES) \
 	$(nodist_libudev_plugin_la_SOURCES) \
 	$(libupnp_cc_plugin_la_SOURCES) \
 	$(nodist_libupnp_cc_plugin_la_SOURCES) \
 	$(libupnp_intel_plugin_la_SOURCES) \
-	$(nodist_libupnp_intel_plugin_la_SOURCES)
+	$(nodist_libupnp_intel_plugin_la_SOURCES) \
+	$(libxcb_apps_plugin_la_SOURCES)
 DIST_SOURCES = $(libbonjour_plugin_la_SOURCES) \
-	$(libhal_plugin_la_SOURCES) $(libmtp_plugin_la_SOURCES) \
+	$(libmediadirs_plugin_la_SOURCES) $(libmtp_plugin_la_SOURCES) \
 	$(libpodcast_plugin_la_SOURCES) $(libsap_plugin_la_SOURCES) \
-	$(libshout_plugin_la_SOURCES) $(libudev_plugin_la_SOURCES) \
-	$(libupnp_cc_plugin_la_SOURCES) \
-	$(libupnp_intel_plugin_la_SOURCES)
+	$(libudev_plugin_la_SOURCES) $(libupnp_cc_plugin_la_SOURCES) \
+	$(libupnp_intel_plugin_la_SOURCES) \
+	$(libxcb_apps_plugin_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
-ALLOCA = @ALLOCA@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = @AM_CPPFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
+ARM_NEON_CFLAGS = @ARM_NEON_CFLAGS@
 AS = @AS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
@@ -245,8 +273,6 @@ COPYRIGHT_MESSAGE = @COPYRIGHT_MESSAGE@
 COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CSRI_CFLAGS = @CSRI_CFLAGS@
-CSRI_LIBS = @CSRI_LIBS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -255,6 +281,8 @@ CYGPATH = @CYGPATH@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
+DC1394_CFLAGS = @DC1394_CFLAGS@
+DC1394_LIBS = @DC1394_LIBS@
 DCA_CFLAGS = @DCA_CFLAGS@
 DCA_LIBS = @DCA_LIBS@
 DEFS = @DEFS@
@@ -269,6 +297,8 @@ DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DV_CFLAGS = @DV_CFLAGS@
+DV_LIBS = @DV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -277,27 +307,32 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FLAC_CFLAGS = @FLAC_CFLAGS@
+FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
 FRIBIDI_LIBS = @FRIBIDI_LIBS@
+GCRYPT_CFLAGS = @GCRYPT_CFLAGS@
+GCRYPT_LIBS = @GCRYPT_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GLIB2_CFLAGS = @GLIB2_CFLAGS@
-GLIB2_LIBS = @GLIB2_LIBS@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
 GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
+GOOM_CFLAGS = @GOOM_CFLAGS@
+GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-HAL_CFLAGS = @HAL_CFLAGS@
-HAL_LIBS = @HAL_LIBS@
 HILDON_CFLAGS = @HILDON_CFLAGS@
+HILDON_FM_CFLAGS = @HILDON_FM_CFLAGS@
+HILDON_FM_LIBS = @HILDON_FM_LIBS@
 HILDON_LIBS = @HILDON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -306,8 +341,11 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+JACK_CFLAGS = @JACK_CFLAGS@
+JACK_LIBS = @JACK_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
+KDE4_CONFIG = @KDE4_CONFIG@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -316,14 +354,12 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBCDIO_CFLAGS = @LIBCDIO_CFLAGS@
 LIBCDIO_LIBS = @LIBCDIO_LIBS@
-LIBCDIO_PARANOIA_CFLAGS = @LIBCDIO_PARANOIA_CFLAGS@
-LIBCDIO_PARANOIA_LIBS = @LIBCDIO_PARANOIA_LIBS@
+LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
-LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
-LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
+LIBMODPLUG_CFLAGS = @LIBMODPLUG_CFLAGS@
+LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -333,15 +369,23 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIBV4L_CFLAGS = @LIBV4L_CFLAGS@
+LIBV4L_LIBS = @LIBV4L_LIBS@
+LIBVA_CFLAGS = @LIBVA_CFLAGS@
+LIBVA_LIBS = @LIBVA_LIBS@
+LIBVCDINFO_CFLAGS = @LIBVCDINFO_CFLAGS@
+LIBVCDINFO_LIBS = @LIBVCDINFO_LIBS@
+LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
+LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
-LTLIBa52tospdif = @LTLIBa52tospdif@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_alsa = @LTLIBaccess_alsa@
+LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_dv = @LTLIBaccess_dv@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
@@ -351,212 +395,114 @@ LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_oss = @LTLIBaccess_oss@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
+LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
-LTLIBadjust = @LTLIBadjust@
-LTLIBalphamask = @LTLIBalphamask@
 LTLIBalsa = @LTLIBalsa@
 LTLIBaout_directx = @LTLIBaout_directx@
-LTLIBaout_file = @LTLIBaout_file@
 LTLIBaout_sdl = @LTLIBaout_sdl@
 LTLIBasademux = @LTLIBasademux@
 LTLIBatmo = @LTLIBatmo@
-LTLIBaudio_format = @LTLIBaudio_format@
-LTLIBaudioscrobbler = @LTLIBaudioscrobbler@
 LTLIBauhal = @LTLIBauhal@
 LTLIBavcodec = @LTLIBavcodec@
 LTLIBavformat = @LTLIBavformat@
-LTLIBbandlimited_resampler = @LTLIBbandlimited_resampler@
 LTLIBbda = @LTLIBbda@
-LTLIBbeos = @LTLIBbeos@
-LTLIBblend = @LTLIBblend@
-LTLIBblendbench = @LTLIBblendbench@
-LTLIBbluescreen = @LTLIBbluescreen@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
-LTLIBcanvas = @LTLIBcanvas@
 LTLIBcdda = @LTLIBcdda@
-LTLIBcddax = @LTLIBcddax@
-LTLIBchain = @LTLIBchain@
-LTLIBclone = @LTLIBclone@
-LTLIBcmml = @LTLIBcmml@
-LTLIBcolorthres = @LTLIBcolorthres@
-LTLIBconverter_float = @LTLIBconverter_float@
-LTLIBcrop = @LTLIBcrop@
-LTLIBcroppadd = @LTLIBcroppadd@
-LTLIBcsri = @LTLIBcsri@
 LTLIBdbus = @LTLIBdbus@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdeinterlace = @LTLIBdeinterlace@
 LTLIBdirac = @LTLIBdirac@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
+LTLIBdirectx = @LTLIBdirectx@
 LTLIBdmo = @LTLIBdmo@
-LTLIBdolby_surround_decoder = @LTLIBdolby_surround_decoder@
 LTLIBdshow = @LTLIBdshow@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
-LTLIBdtstospdif = @LTLIBdtstospdif@
 LTLIBdvb = @LTLIBdvb@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
 LTLIBdynamicoverlay = @LTLIBdynamicoverlay@
-LTLIBequalizer = @LTLIBequalizer@
-LTLIBerase = @LTLIBerase@
-LTLIBextract = @LTLIBextract@
 LTLIBfaad = @LTLIBfaad@
-LTLIBfake = @LTLIBfake@
 LTLIBfb = @LTLIBfb@
 LTLIBfbosd = @LTLIBfbosd@
-LTLIBfloat32_mixer = @LTLIBfloat32_mixer@
+LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
-LTLIBfolder = @LTLIBfolder@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgalaktos = @LTLIBgalaktos@
-LTLIBgaussianblur = @LTLIBgaussianblur@
-LTLIBgestures = @LTLIBgestures@
 LTLIBggi = @LTLIBggi@
 LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
-LTLIBgnome2_main = @LTLIBgnome2_main@
-LTLIBgnome_main = @LTLIBgnome_main@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
-LTLIBgradient = @LTLIBgradient@
-LTLIBgrain = @LTLIBgrain@
 LTLIBgrowl = @LTLIBgrowl@
 LTLIBgrowl_udp = @LTLIBgrowl_udp@
-LTLIBgtk2_main = @LTLIBgtk2_main@
-LTLIBgtk_main = @LTLIBgtk_main@
-LTLIBhal = @LTLIBhal@
 LTLIBhd1000a = @LTLIBhd1000a@
 LTLIBhd1000v = @LTLIBhd1000v@
-LTLIBheadphone_channel_mixer = @LTLIBheadphone_channel_mixer@
-LTLIBhotkeys = @LTLIBhotkeys@
-LTLIBhttp = @LTLIBhttp@
-LTLIBi420_rgb_mmx = @LTLIBi420_rgb_mmx@
-LTLIBi420_rgb_sse2 = @LTLIBi420_rgb_sse2@
-LTLIBi420_ymga = @LTLIBi420_ymga@
-LTLIBi420_ymga_mmx = @LTLIBi420_ymga_mmx@
-LTLIBi420_yuy2 = @LTLIBi420_yuy2@
-LTLIBi420_yuy2_altivec = @LTLIBi420_yuy2_altivec@
-LTLIBi420_yuy2_mmx = @LTLIBi420_yuy2_mmx@
-LTLIBi420_yuy2_sse2 = @LTLIBi420_yuy2_sse2@
-LTLIBi422_i420 = @LTLIBi422_i420@
-LTLIBi422_yuy2 = @LTLIBi422_yuy2@
-LTLIBi422_yuy2_mmx = @LTLIBi422_yuy2_mmx@
-LTLIBi422_yuy2_sse2 = @LTLIBi422_yuy2_sse2@
+LTLIBhildon = @LTLIBhildon@
 LTLIBid3tag = @LTLIBid3tag@
 LTLIBinhibit = @LTLIBinhibit@
-LTLIBinvert = @LTLIBinvert@
 LTLIBjack = @LTLIBjack@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlinear_resampler = @LTLIBlinear_resampler@
 LTLIBlirc = @LTLIBlirc@
 LTLIBlive555 = @LTLIBlive555@
-LTLIBlogo = @LTLIBlogo@
 LTLIBmacosx = @LTLIBmacosx@
-LTLIBmaemo = @LTLIBmaemo@
-LTLIBmagnify = @LTLIBmagnify@
-LTLIBmarq = @LTLIBmarq@
-LTLIBmemcpy3dn = @LTLIBmemcpy3dn@
-LTLIBmemcpyaltivec = @LTLIBmemcpyaltivec@
-LTLIBmemcpymmx = @LTLIBmemcpymmx@
-LTLIBmemcpymmxext = @LTLIBmemcpymmxext@
-LTLIBmga = @LTLIBmga@
+LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
 LTLIBmod = @LTLIBmod@
-LTLIBmosaic = @LTLIBmosaic@
-LTLIBmotion = @LTLIBmotion@
-LTLIBmotionblur = @LTLIBmotionblur@
-LTLIBmotiondetect = @LTLIBmotiondetect@
 LTLIBmozilla = @LTLIBmozilla@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
-LTLIBmsn = @LTLIBmsn@
 LTLIBmtp = @LTLIBmtp@
 LTLIBmux_ogg = @LTLIBmux_ogg@
 LTLIBmux_ts = @LTLIBmux_ts@
 LTLIBncurses = @LTLIBncurses@
-LTLIBnoise = @LTLIBnoise@
-LTLIBnormvol = @LTLIBnormvol@
 LTLIBnotify = @LTLIBnotify@
-LTLIBntservice = @LTLIBntservice@
 LTLIBogg = @LTLIBogg@
+LTLIBoldhttp = @LTLIBoldhttp@
+LTLIBoldtelnet = @LTLIBoldtelnet@
 LTLIBomapfb = @LTLIBomapfb@
+LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopengl = @LTLIBopengl@
-LTLIBopengllayer = @LTLIBopengllayer@
-LTLIBopie = @LTLIBopie@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBoss = @LTLIBoss@
+LTLIBosso_screensaver = @LTLIBosso_screensaver@
 LTLIBpanoramix = @LTLIBpanoramix@
-LTLIBparam_eq = @LTLIBparam_eq@
-LTLIBpda = @LTLIBpda@
 LTLIBpng = @LTLIBpng@
-LTLIBpodcast = @LTLIBpodcast@
 LTLIBportaudio = @LTLIBportaudio@
 LTLIBpostproc = @LTLIBpostproc@
-LTLIBprobe_hal = @LTLIBprobe_hal@
-LTLIBpsychedelic = @LTLIBpsychedelic@
+LTLIBprojectm = @LTLIBprojectm@
 LTLIBpulse = @LTLIBpulse@
-LTLIBpuzzle = @LTLIBpuzzle@
 LTLIBpvr = @LTLIBpvr@
-LTLIBqnx = @LTLIBqnx@
 LTLIBqt4 = @LTLIBqt4@
 LTLIBqtcapture = @LTLIBqtcapture@
-LTLIBqte = @LTLIBqte@
-LTLIBqte_main = @LTLIBqte_main@
-LTLIBquartztext = @LTLIBquartztext@
 LTLIBquicktime = @LTLIBquicktime@
-LTLIBrc = @LTLIBrc@
-LTLIBrealaudio = @LTLIBrealaudio@
 LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
-LTLIBripple = @LTLIBripple@
-LTLIBrotate = @LTLIBrotate@
-LTLIBrss = @LTLIBrss@
-LTLIBrv32 = @LTLIBrv32@
-LTLIBsap = @LTLIBsap@
-LTLIBscale = @LTLIBscale@
-LTLIBscaletempo = @LTLIBscaletempo@
-LTLIBscene = @LTLIBscene@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
-LTLIBsharpen = @LTLIBsharpen@
 LTLIBshine = @LTLIBshine@
-LTLIBshout = @LTLIBshout@
-LTLIBshowintf = @LTLIBshowintf@
-LTLIBsignals = @LTLIBsignals@
-LTLIBsimple_channel_mixer = @LTLIBsimple_channel_mixer@
 LTLIBskins2 = @LTLIBskins2@
 LTLIBsnapshot = @LTLIBsnapshot@
-LTLIBspatializer = @LTLIBspatializer@
-LTLIBspdif_mixer = @LTLIBspdif_mixer@
 LTLIBspeex = @LTLIBspeex@
+LTLIBsqlite = @LTLIBsqlite@
 LTLIBstream_out_raop = @LTLIBstream_out_raop@
+LTLIBstream_out_switcher = @LTLIBstream_out_switcher@
 LTLIBsvg = @LTLIBsvg@
 LTLIBsvgalib = @LTLIBsvgalib@
 LTLIBswscale = @LTLIBswscale@
-LTLIBswscale_maemo = @LTLIBswscale_maemo@
+LTLIBswscale_omap = @LTLIBswscale_omap@
 LTLIBtaglib = @LTLIBtaglib@
-LTLIBtarkin = @LTLIBtarkin@
 LTLIBtelepathy = @LTLIBtelepathy@
-LTLIBtelnet = @LTLIBtelnet@
 LTLIBtelx = @LTLIBtelx@
-LTLIBtest1 = @LTLIBtest1@
-LTLIBtest2 = @LTLIBtest2@
-LTLIBtest3 = @LTLIBtest3@
-LTLIBtest4 = @LTLIBtest4@
 LTLIBtheora = @LTLIBtheora@
-LTLIBtransform = @LTLIBtransform@
 LTLIBtremor = @LTLIBtremor@
 LTLIBts = @LTLIBts@
 LTLIBtwolame = @LTLIBtwolame@
@@ -569,34 +515,26 @@ LTLIBv4l2 = @LTLIBv4l2@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
 LTLIBvisual = @LTLIBvisual@
-LTLIBvmem = @LTLIBvmem@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_directx = @LTLIBvout_directx@
+LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
-LTLIBwall = @LTLIBwall@
-LTLIBwave = @LTLIBwave@
 LTLIBwaveout = @LTLIBwaveout@
-LTLIBwin32text = @LTLIBwin32text@
-LTLIBwince = @LTLIBwince@
 LTLIBwingapi = @LTLIBwingapi@
 LTLIBwingdi = @LTLIBwingdi@
 LTLIBwma_fixed = @LTLIBwma_fixed@
-LTLIBx11 = @LTLIBx11@
-LTLIBx11_screen = @LTLIBx11_screen@
 LTLIBx264 = @LTLIBx264@
-LTLIBxcb = @LTLIBxcb@
+LTLIBxcb_apps = @LTLIBxcb_apps@
+LTLIBxcb_glx = @LTLIBxcb_glx@
+LTLIBxcb_screen = @LTLIBxcb_screen@
 LTLIBxcb_window = @LTLIBxcb_window@
+LTLIBxcb_x11 = @LTLIBxcb_x11@
 LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
-LTLIBxvideo = @LTLIBxvideo@
-LTLIBxvmc = @LTLIBxvmc@
-LTLIByuv = @LTLIByuv@
-LTLIByuvp = @LTLIByuvp@
-LTLIByuy2_i420 = @LTLIByuy2_i420@
-LTLIByuy2_i422 = @LTLIByuy2_i422@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
+LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
 MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
@@ -606,6 +544,7 @@ MIDL = @MIDL@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
+MMX_CFLAGS = @MMX_CFLAGS@
 MOC = @MOC@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
@@ -616,6 +555,8 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
+MUX_OGG_LIBS = @MUX_OGG_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
@@ -626,8 +567,12 @@ OBJCFLAGS = @OBJCFLAGS@
 OBJCOPY = @OBJCOPY@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OGG_CFLAGS = @OGG_CFLAGS@
+OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OSSO_SCREENSAVER_CFLAGS = @OSSO_SCREENSAVER_CFLAGS@
+OSSO_SCREENSAVER_LIBS = @OSSO_SCREENSAVER_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -640,12 +585,20 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CFLAGS = @PCRE_CFLAGS@
 PCRE_LIBS = @PCRE_LIBS@
+PEFLAGS = @PEFLAGS@
 PKGDIR = @PKGDIR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PORTAUDIO_CFLAGS = @PORTAUDIO_CFLAGS@
+PORTAUDIO_LIBS = @PORTAUDIO_LIBS@
 POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
+PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
+PROJECTM2_LIBS = @PROJECTM2_LIBS@
+PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
+PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
 QT4LOCALEDIR = @QT4LOCALEDIR@
@@ -655,15 +608,21 @@ RANLIB = @RANLIB@
 RCC = @RCC@
 SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
 SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
-SDL11_CONFIG = @SDL11_CONFIG@
-SDL12_CONFIG = @SDL12_CONFIG@
-SDL_CONFIG = @SDL_CONFIG@
+SDL_CFLAGS = @SDL_CFLAGS@
+SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
+SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
+SDL_LIBS = @SDL_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
+SPEEX_CFLAGS = @SPEEX_CFLAGS@
+SPEEX_LIBS = @SPEEX_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
+SSE2_CFLAGS = @SSE2_CFLAGS@
 STRIP = @STRIP@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
@@ -672,14 +631,19 @@ SWSCALE_LIBS = @SWSCALE_LIBS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
+THEORA_CFLAGS = @THEORA_CFLAGS@
+THEORA_LIBS = @THEORA_LIBS@
 TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
+U2D = @U2D@
 UDEV_CFLAGS = @UDEV_CFLAGS@
 UDEV_LIBS = @UDEV_LIBS@
 UIC = @UIC@
+UPNP_CFLAGS = @UPNP_CFLAGS@
+UPNP_LIBS = @UPNP_LIBS@
 USE_NLS = @USE_NLS@
-VCDINFO_CFLAGS = @VCDINFO_CFLAGS@
-VCDINFO_LIBS = @VCDINFO_LIBS@
 VERSION = @VERSION@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_EXTRA_RC = @VERSION_EXTRA_RC@
@@ -688,6 +652,8 @@ VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
+VORBIS_CFLAGS = @VORBIS_CFLAGS@
+VORBIS_LIBS = @VORBIS_LIBS@
 WIDL = @WIDL@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
@@ -697,6 +663,8 @@ XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
 XCB_LIBS = @XCB_LIBS@
+XCB_RANDR_CFLAGS = @XCB_RANDR_CFLAGS@
+XCB_RANDR_LIBS = @XCB_RANDR_LIBS@
 XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
@@ -704,9 +672,9 @@ XCB_XV_LIBS = @XCB_XV_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
+XLIB_XCB_CFLAGS = @XLIB_XCB_CFLAGS@
+XLIB_XCB_LIBS = @XLIB_XCB_LIBS@
 XMKMF = @XMKMF@
-XML2_CFLAGS = @XML2_CFLAGS@
-XML2_LIBS = @XML2_LIBS@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
 XPROTO_CFLAGS = @XPROTO_CFLAGS@
@@ -765,6 +733,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+soliddatadir = @soliddatadir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -775,12 +744,16 @@ vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 basedir = services_discovery
 dir = services_discovery
-mods = bonjour hal mtp podcast sap shout udev upnp_cc upnp_intel
-libvlc_LTLIBRARIES = $(LTLIBbonjour) $(LTLIBhal) $(LTLIBmtp) $(LTLIBpodcast) $(LTLIBsap) $(LTLIBshout) $(LTLIBudev) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
-EXTRA_LTLIBRARIES = libbonjour_plugin.la libhal_plugin.la libmtp_plugin.la libpodcast_plugin.la libsap_plugin.la libshout_plugin.la libudev_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
+mods = bonjour mediadirs mtp podcast sap udev upnp_cc upnp_intel
+libvlc_LTLIBRARIES = $(LTLIBbonjour) $(LTLIBmtp) $(LTLIBudev) \
+	$(LTLIBupnp_cc) $(LTLIBupnp_intel) libmediadirs_plugin.la \
+	libpodcast_plugin.la libsap_plugin.la $(LTLIBxcb_apps)
+EXTRA_LTLIBRARIES = libbonjour_plugin.la libmtp_plugin.la \
+	libudev_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la \
+	libxcb_apps_plugin.la
 NULL = 
 SUFFIXES = 
-libvlcdir = $(vlclibdir)/$(basedir)
+libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
 BUILT_SOURCES = 
 CLEANFILES = $(BUILT_SOURCES)
@@ -792,6 +765,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
 	-export-symbol-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
+	-rpath "$(libvlcdir)" \
 	-no-undefined \
 	 `$(VLC_CONFIG) --ldflags plugin $@`
 
@@ -799,14 +773,21 @@ AM_LIBADD = `$(VLC_CONFIG) -libs plugin $@` \
 	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
 
 SOURCES_sap = sap.c
-SOURCES_hal = hal.c
-SOURCES_shout = shout.c
 SOURCES_upnp_cc = upnp_cc.cpp
 SOURCES_upnp_intel = upnp_intel.cpp upnp_intel.hpp
 SOURCES_bonjour = bonjour.c
 SOURCES_podcast = podcast.c
 SOURCES_mtp = mtp.c
+SOURCES_mediadirs = mediadirs.c
 SOURCES_udev = udev.c
+libxcb_apps_plugin_la_SOURCES = xcb_apps.c
+libxcb_apps_plugin_la_CFLAGS = $(AM_CFLAGS) \
+	$(XCB_CFLAGS)
+
+libxcb_apps_plugin_la_LIBADD = $(AM_LIBADD) \
+	$(XCB_LIBS)
+
+libxcb_apps_plugin_la_DEPENDENCIES = 
 
 # The bonjour plugin
 libbonjour_plugin_la_SOURCES = $(SOURCES_bonjour)
@@ -819,16 +800,16 @@ libbonjour_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 libbonjour_plugin_la_LIBADD = $(AM_LIBADD)
 libbonjour_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The hal plugin
-libhal_plugin_la_SOURCES = $(SOURCES_hal)
-nodist_libhal_plugin_la_SOURCES = $(nodist_SOURCES_hal)
+# The mediadirs plugin
+libmediadirs_plugin_la_SOURCES = $(SOURCES_mediadirs)
+nodist_libmediadirs_plugin_la_SOURCES = $(nodist_SOURCES_mediadirs)
 # Force per-target objects:
-libhal_plugin_la_CFLAGS = $(AM_CFLAGS)
-libhal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libhal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmediadirs_plugin_la_CFLAGS = $(AM_CFLAGS)
+libmediadirs_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libmediadirs_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libhal_plugin_la_LIBADD = $(AM_LIBADD)
-libhal_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmediadirs_plugin_la_LIBADD = $(AM_LIBADD)
+libmediadirs_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mtp plugin
 libmtp_plugin_la_SOURCES = $(SOURCES_mtp)
@@ -862,17 +843,6 @@ libsap_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsap_plugin_la_LIBADD = $(AM_LIBADD)
 libsap_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The shout plugin
-libshout_plugin_la_SOURCES = $(SOURCES_shout)
-nodist_libshout_plugin_la_SOURCES = $(nodist_SOURCES_shout)
-# Force per-target objects:
-libshout_plugin_la_CFLAGS = $(AM_CFLAGS)
-libshout_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libshout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libshout_plugin_la_LIBADD = $(AM_LIBADD)
-libshout_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The udev plugin
 libudev_plugin_la_SOURCES = $(SOURCES_udev)
@@ -973,23 +943,23 @@ clean-libvlcLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libbonjour_plugin.la: $(libbonjour_plugin_la_OBJECTS) $(libbonjour_plugin_la_DEPENDENCIES) 
-	$(libbonjour_plugin_la_LINK)  $(libbonjour_plugin_la_OBJECTS) $(libbonjour_plugin_la_LIBADD) $(LIBS)
-libhal_plugin.la: $(libhal_plugin_la_OBJECTS) $(libhal_plugin_la_DEPENDENCIES) 
-	$(libhal_plugin_la_LINK)  $(libhal_plugin_la_OBJECTS) $(libhal_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libbonjour_plugin_la_LINK)  $(libbonjour_plugin_la_OBJECTS) $(libbonjour_plugin_la_LIBADD) $(LIBS)
+libmediadirs_plugin.la: $(libmediadirs_plugin_la_OBJECTS) $(libmediadirs_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libmediadirs_plugin_la_LINK) -rpath $(libvlcdir) $(libmediadirs_plugin_la_OBJECTS) $(libmediadirs_plugin_la_LIBADD) $(LIBS)
 libmtp_plugin.la: $(libmtp_plugin_la_OBJECTS) $(libmtp_plugin_la_DEPENDENCIES) 
-	$(libmtp_plugin_la_LINK)  $(libmtp_plugin_la_OBJECTS) $(libmtp_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmtp_plugin_la_LINK)  $(libmtp_plugin_la_OBJECTS) $(libmtp_plugin_la_LIBADD) $(LIBS)
 libpodcast_plugin.la: $(libpodcast_plugin_la_OBJECTS) $(libpodcast_plugin_la_DEPENDENCIES) 
-	$(libpodcast_plugin_la_LINK)  $(libpodcast_plugin_la_OBJECTS) $(libpodcast_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libpodcast_plugin_la_LINK) -rpath $(libvlcdir) $(libpodcast_plugin_la_OBJECTS) $(libpodcast_plugin_la_LIBADD) $(LIBS)
 libsap_plugin.la: $(libsap_plugin_la_OBJECTS) $(libsap_plugin_la_DEPENDENCIES) 
-	$(libsap_plugin_la_LINK)  $(libsap_plugin_la_OBJECTS) $(libsap_plugin_la_LIBADD) $(LIBS)
-libshout_plugin.la: $(libshout_plugin_la_OBJECTS) $(libshout_plugin_la_DEPENDENCIES) 
-	$(libshout_plugin_la_LINK)  $(libshout_plugin_la_OBJECTS) $(libshout_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libsap_plugin_la_LINK) -rpath $(libvlcdir) $(libsap_plugin_la_OBJECTS) $(libsap_plugin_la_LIBADD) $(LIBS)
 libudev_plugin.la: $(libudev_plugin_la_OBJECTS) $(libudev_plugin_la_DEPENDENCIES) 
-	$(libudev_plugin_la_LINK)  $(libudev_plugin_la_OBJECTS) $(libudev_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libudev_plugin_la_LINK)  $(libudev_plugin_la_OBJECTS) $(libudev_plugin_la_LIBADD) $(LIBS)
 libupnp_cc_plugin.la: $(libupnp_cc_plugin_la_OBJECTS) $(libupnp_cc_plugin_la_DEPENDENCIES) 
-	$(libupnp_cc_plugin_la_LINK)  $(libupnp_cc_plugin_la_OBJECTS) $(libupnp_cc_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CXXLD)$(libupnp_cc_plugin_la_LINK)  $(libupnp_cc_plugin_la_OBJECTS) $(libupnp_cc_plugin_la_LIBADD) $(LIBS)
 libupnp_intel_plugin.la: $(libupnp_intel_plugin_la_OBJECTS) $(libupnp_intel_plugin_la_DEPENDENCIES) 
-	$(libupnp_intel_plugin_la_LINK)  $(libupnp_intel_plugin_la_OBJECTS) $(libupnp_intel_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CXXLD)$(libupnp_intel_plugin_la_LINK)  $(libupnp_intel_plugin_la_OBJECTS) $(libupnp_intel_plugin_la_LIBADD) $(LIBS)
+libxcb_apps_plugin.la: $(libxcb_apps_plugin_la_OBJECTS) $(libxcb_apps_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libxcb_apps_plugin_la_LINK)  $(libxcb_apps_plugin_la_OBJECTS) $(libxcb_apps_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -998,119 +968,134 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libbonjour_plugin_la-bonjour.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libhal_plugin_la-hal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmediadirs_plugin_la-mediadirs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmtp_plugin_la-mtp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpodcast_plugin_la-podcast.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsap_plugin_la-sap.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshout_plugin_la-shout.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libudev_plugin_la-udev.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libupnp_cc_plugin_la-upnp_cc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libupnp_intel_plugin_la-upnp_intel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxcb_apps_plugin_la-xcb_apps.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 libbonjour_plugin_la-bonjour.lo: bonjour.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libbonjour_plugin_la_CFLAGS) $(CFLAGS) -MT libbonjour_plugin_la-bonjour.lo -MD -MP -MF $(DEPDIR)/libbonjour_plugin_la-bonjour.Tpo -c -o libbonjour_plugin_la-bonjour.lo `test -f 'bonjour.c' || echo '$(srcdir)/'`bonjour.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libbonjour_plugin_la-bonjour.Tpo $(DEPDIR)/libbonjour_plugin_la-bonjour.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libbonjour_plugin_la_CFLAGS) $(CFLAGS) -MT libbonjour_plugin_la-bonjour.lo -MD -MP -MF $(DEPDIR)/libbonjour_plugin_la-bonjour.Tpo -c -o libbonjour_plugin_la-bonjour.lo `test -f 'bonjour.c' || echo '$(srcdir)/'`bonjour.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libbonjour_plugin_la-bonjour.Tpo $(DEPDIR)/libbonjour_plugin_la-bonjour.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bonjour.c' object='libbonjour_plugin_la-bonjour.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libbonjour_plugin_la_CFLAGS) $(CFLAGS) -c -o libbonjour_plugin_la-bonjour.lo `test -f 'bonjour.c' || echo '$(srcdir)/'`bonjour.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libbonjour_plugin_la_CFLAGS) $(CFLAGS) -c -o libbonjour_plugin_la-bonjour.lo `test -f 'bonjour.c' || echo '$(srcdir)/'`bonjour.c
 
-libhal_plugin_la-hal.lo: hal.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libhal_plugin_la_CFLAGS) $(CFLAGS) -MT libhal_plugin_la-hal.lo -MD -MP -MF $(DEPDIR)/libhal_plugin_la-hal.Tpo -c -o libhal_plugin_la-hal.lo `test -f 'hal.c' || echo '$(srcdir)/'`hal.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libhal_plugin_la-hal.Tpo $(DEPDIR)/libhal_plugin_la-hal.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='hal.c' object='libhal_plugin_la-hal.lo' libtool=yes @AMDEPBACKSLASH@
+libmediadirs_plugin_la-mediadirs.lo: mediadirs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmediadirs_plugin_la_CFLAGS) $(CFLAGS) -MT libmediadirs_plugin_la-mediadirs.lo -MD -MP -MF $(DEPDIR)/libmediadirs_plugin_la-mediadirs.Tpo -c -o libmediadirs_plugin_la-mediadirs.lo `test -f 'mediadirs.c' || echo '$(srcdir)/'`mediadirs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmediadirs_plugin_la-mediadirs.Tpo $(DEPDIR)/libmediadirs_plugin_la-mediadirs.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mediadirs.c' object='libmediadirs_plugin_la-mediadirs.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libhal_plugin_la_CFLAGS) $(CFLAGS) -c -o libhal_plugin_la-hal.lo `test -f 'hal.c' || echo '$(srcdir)/'`hal.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmediadirs_plugin_la_CFLAGS) $(CFLAGS) -c -o libmediadirs_plugin_la-mediadirs.lo `test -f 'mediadirs.c' || echo '$(srcdir)/'`mediadirs.c
 
 libmtp_plugin_la-mtp.lo: mtp.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmtp_plugin_la_CFLAGS) $(CFLAGS) -MT libmtp_plugin_la-mtp.lo -MD -MP -MF $(DEPDIR)/libmtp_plugin_la-mtp.Tpo -c -o libmtp_plugin_la-mtp.lo `test -f 'mtp.c' || echo '$(srcdir)/'`mtp.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libmtp_plugin_la-mtp.Tpo $(DEPDIR)/libmtp_plugin_la-mtp.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmtp_plugin_la_CFLAGS) $(CFLAGS) -MT libmtp_plugin_la-mtp.lo -MD -MP -MF $(DEPDIR)/libmtp_plugin_la-mtp.Tpo -c -o libmtp_plugin_la-mtp.lo `test -f 'mtp.c' || echo '$(srcdir)/'`mtp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmtp_plugin_la-mtp.Tpo $(DEPDIR)/libmtp_plugin_la-mtp.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mtp.c' object='libmtp_plugin_la-mtp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmtp_plugin_la_CFLAGS) $(CFLAGS) -c -o libmtp_plugin_la-mtp.lo `test -f 'mtp.c' || echo '$(srcdir)/'`mtp.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmtp_plugin_la_CFLAGS) $(CFLAGS) -c -o libmtp_plugin_la-mtp.lo `test -f 'mtp.c' || echo '$(srcdir)/'`mtp.c
 
 libpodcast_plugin_la-podcast.lo: podcast.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpodcast_plugin_la_CFLAGS) $(CFLAGS) -MT libpodcast_plugin_la-podcast.lo -MD -MP -MF $(DEPDIR)/libpodcast_plugin_la-podcast.Tpo -c -o libpodcast_plugin_la-podcast.lo `test -f 'podcast.c' || echo '$(srcdir)/'`podcast.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libpodcast_plugin_la-podcast.Tpo $(DEPDIR)/libpodcast_plugin_la-podcast.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpodcast_plugin_la_CFLAGS) $(CFLAGS) -MT libpodcast_plugin_la-podcast.lo -MD -MP -MF $(DEPDIR)/libpodcast_plugin_la-podcast.Tpo -c -o libpodcast_plugin_la-podcast.lo `test -f 'podcast.c' || echo '$(srcdir)/'`podcast.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libpodcast_plugin_la-podcast.Tpo $(DEPDIR)/libpodcast_plugin_la-podcast.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='podcast.c' object='libpodcast_plugin_la-podcast.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpodcast_plugin_la_CFLAGS) $(CFLAGS) -c -o libpodcast_plugin_la-podcast.lo `test -f 'podcast.c' || echo '$(srcdir)/'`podcast.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpodcast_plugin_la_CFLAGS) $(CFLAGS) -c -o libpodcast_plugin_la-podcast.lo `test -f 'podcast.c' || echo '$(srcdir)/'`podcast.c
 
 libsap_plugin_la-sap.lo: sap.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsap_plugin_la_CFLAGS) $(CFLAGS) -MT libsap_plugin_la-sap.lo -MD -MP -MF $(DEPDIR)/libsap_plugin_la-sap.Tpo -c -o libsap_plugin_la-sap.lo `test -f 'sap.c' || echo '$(srcdir)/'`sap.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libsap_plugin_la-sap.Tpo $(DEPDIR)/libsap_plugin_la-sap.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsap_plugin_la_CFLAGS) $(CFLAGS) -MT libsap_plugin_la-sap.lo -MD -MP -MF $(DEPDIR)/libsap_plugin_la-sap.Tpo -c -o libsap_plugin_la-sap.lo `test -f 'sap.c' || echo '$(srcdir)/'`sap.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libsap_plugin_la-sap.Tpo $(DEPDIR)/libsap_plugin_la-sap.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='sap.c' object='libsap_plugin_la-sap.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsap_plugin_la_CFLAGS) $(CFLAGS) -c -o libsap_plugin_la-sap.lo `test -f 'sap.c' || echo '$(srcdir)/'`sap.c
-
-libshout_plugin_la-shout.lo: shout.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libshout_plugin_la_CFLAGS) $(CFLAGS) -MT libshout_plugin_la-shout.lo -MD -MP -MF $(DEPDIR)/libshout_plugin_la-shout.Tpo -c -o libshout_plugin_la-shout.lo `test -f 'shout.c' || echo '$(srcdir)/'`shout.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libshout_plugin_la-shout.Tpo $(DEPDIR)/libshout_plugin_la-shout.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shout.c' object='libshout_plugin_la-shout.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libshout_plugin_la_CFLAGS) $(CFLAGS) -c -o libshout_plugin_la-shout.lo `test -f 'shout.c' || echo '$(srcdir)/'`shout.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libsap_plugin_la_CFLAGS) $(CFLAGS) -c -o libsap_plugin_la-sap.lo `test -f 'sap.c' || echo '$(srcdir)/'`sap.c
 
 libudev_plugin_la-udev.lo: udev.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libudev_plugin_la_CFLAGS) $(CFLAGS) -MT libudev_plugin_la-udev.lo -MD -MP -MF $(DEPDIR)/libudev_plugin_la-udev.Tpo -c -o libudev_plugin_la-udev.lo `test -f 'udev.c' || echo '$(srcdir)/'`udev.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libudev_plugin_la-udev.Tpo $(DEPDIR)/libudev_plugin_la-udev.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libudev_plugin_la_CFLAGS) $(CFLAGS) -MT libudev_plugin_la-udev.lo -MD -MP -MF $(DEPDIR)/libudev_plugin_la-udev.Tpo -c -o libudev_plugin_la-udev.lo `test -f 'udev.c' || echo '$(srcdir)/'`udev.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libudev_plugin_la-udev.Tpo $(DEPDIR)/libudev_plugin_la-udev.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='udev.c' object='libudev_plugin_la-udev.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libudev_plugin_la_CFLAGS) $(CFLAGS) -c -o libudev_plugin_la-udev.lo `test -f 'udev.c' || echo '$(srcdir)/'`udev.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libudev_plugin_la_CFLAGS) $(CFLAGS) -c -o libudev_plugin_la-udev.lo `test -f 'udev.c' || echo '$(srcdir)/'`udev.c
+
+libxcb_apps_plugin_la-xcb_apps.lo: xcb_apps.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxcb_apps_plugin_la_CFLAGS) $(CFLAGS) -MT libxcb_apps_plugin_la-xcb_apps.lo -MD -MP -MF $(DEPDIR)/libxcb_apps_plugin_la-xcb_apps.Tpo -c -o libxcb_apps_plugin_la-xcb_apps.lo `test -f 'xcb_apps.c' || echo '$(srcdir)/'`xcb_apps.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libxcb_apps_plugin_la-xcb_apps.Tpo $(DEPDIR)/libxcb_apps_plugin_la-xcb_apps.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='xcb_apps.c' object='libxcb_apps_plugin_la-xcb_apps.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libxcb_apps_plugin_la_CFLAGS) $(CFLAGS) -c -o libxcb_apps_plugin_la-xcb_apps.lo `test -f 'xcb_apps.c' || echo '$(srcdir)/'`xcb_apps.c
 
 .cpp.o:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .cpp.lo:
-@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
 libupnp_cc_plugin_la-upnp_cc.lo: upnp_cc.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libupnp_cc_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libupnp_cc_plugin_la-upnp_cc.lo -MD -MP -MF $(DEPDIR)/libupnp_cc_plugin_la-upnp_cc.Tpo -c -o libupnp_cc_plugin_la-upnp_cc.lo `test -f 'upnp_cc.cpp' || echo '$(srcdir)/'`upnp_cc.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libupnp_cc_plugin_la-upnp_cc.Tpo $(DEPDIR)/libupnp_cc_plugin_la-upnp_cc.Plo
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libupnp_cc_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libupnp_cc_plugin_la-upnp_cc.lo -MD -MP -MF $(DEPDIR)/libupnp_cc_plugin_la-upnp_cc.Tpo -c -o libupnp_cc_plugin_la-upnp_cc.lo `test -f 'upnp_cc.cpp' || echo '$(srcdir)/'`upnp_cc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libupnp_cc_plugin_la-upnp_cc.Tpo $(DEPDIR)/libupnp_cc_plugin_la-upnp_cc.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='upnp_cc.cpp' object='libupnp_cc_plugin_la-upnp_cc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libupnp_cc_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libupnp_cc_plugin_la-upnp_cc.lo `test -f 'upnp_cc.cpp' || echo '$(srcdir)/'`upnp_cc.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libupnp_cc_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libupnp_cc_plugin_la-upnp_cc.lo `test -f 'upnp_cc.cpp' || echo '$(srcdir)/'`upnp_cc.cpp
 
 libupnp_intel_plugin_la-upnp_intel.lo: upnp_intel.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libupnp_intel_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libupnp_intel_plugin_la-upnp_intel.lo -MD -MP -MF $(DEPDIR)/libupnp_intel_plugin_la-upnp_intel.Tpo -c -o libupnp_intel_plugin_la-upnp_intel.lo `test -f 'upnp_intel.cpp' || echo '$(srcdir)/'`upnp_intel.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libupnp_intel_plugin_la-upnp_intel.Tpo $(DEPDIR)/libupnp_intel_plugin_la-upnp_intel.Plo
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libupnp_intel_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libupnp_intel_plugin_la-upnp_intel.lo -MD -MP -MF $(DEPDIR)/libupnp_intel_plugin_la-upnp_intel.Tpo -c -o libupnp_intel_plugin_la-upnp_intel.lo `test -f 'upnp_intel.cpp' || echo '$(srcdir)/'`upnp_intel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libupnp_intel_plugin_la-upnp_intel.Tpo $(DEPDIR)/libupnp_intel_plugin_la-upnp_intel.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='upnp_intel.cpp' object='libupnp_intel_plugin_la-upnp_intel.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libupnp_intel_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libupnp_intel_plugin_la-upnp_intel.lo `test -f 'upnp_intel.cpp' || echo '$(srcdir)/'`upnp_intel.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libupnp_intel_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libupnp_intel_plugin_la-upnp_intel.lo `test -f 'upnp_intel.cpp' || echo '$(srcdir)/'`upnp_intel.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1325,12 +1310,7 @@ uninstall-am: uninstall-libvlcLTLIBRARIES
 
 
 @MAINTAINER_MODE_TRUE@$(srcdir)/Makefile.am: $(srcdir)/Modules.am $(top_srcdir)/modules/genmf
-@MAINTAINER_MODE_TRUE@	cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
-
-nice:
-	$(top_builddir)/compile
-
-.PHONY: nice
+@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

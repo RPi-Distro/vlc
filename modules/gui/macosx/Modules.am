@@ -35,8 +35,6 @@ SOURCES_macosx = \
 	simple_prefs.m \
 	output.h \
 	output.m \
-	update.m \
-	update.h \
 	vout.m \
 	voutgl.m \
 	vout.h \
@@ -48,6 +46,10 @@ SOURCES_macosx = \
 	bookmarks.m \
 	embeddedwindow.h \
 	embeddedwindow.m \
+	sidebarview.h \
+	sidebarview.m \
+	sidestatusview.h \
+	sidestatusview.m \
 	fspanel.m \
 	fspanel.h \
 	eyetv.h \

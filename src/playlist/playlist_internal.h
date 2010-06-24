@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: cae5b040959b483053dd7d63128fa612209370ac $
+ * $Id: 959b8e3d9f1bf5cbd52e37be480fb131f187dd98 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -41,14 +41,7 @@
 #include "fetcher.h"
 #include "preparser.h"
 
-typedef struct playlist_services_discovery_support_t {
-    /* the playlist items for category and onelevel */
-    playlist_item_t      *p_cat;
-    playlist_item_t      *p_one;
-    services_discovery_t *p_sd; /**< Loaded service discovery modules */
-    char                 *psz_name;
-} vlc_sd_internal_t;
-
+typedef struct vlc_sd_internal_t vlc_sd_internal_t;
 
 typedef struct playlist_private_t
 {
@@ -108,14 +101,16 @@ typedef struct playlist_private_t
 
 /* Creation/Deletion */
 playlist_t *playlist_Create( vlc_object_t * );
+void playlist_Destroy( playlist_t * );
 
 /* */
 void playlist_Activate( playlist_t * );
 void playlist_Deactivate( playlist_t * );
+void pl_Deactivate (libvlc_int_t *);
 
 /* */
 playlist_item_t *playlist_ItemNewFromInput( playlist_t *p_playlist,
-                                              input_item_t *p_input );
+                                            input_item_t *p_input );
 
 /* Engine */
 playlist_item_t * get_current_status_item( playlist_t * p_playlist);
@@ -137,18 +132,21 @@ void playlist_SendAddNotify( playlist_t *p_playlist, int i_item_id,
 playlist_item_t * playlist_NodeAddInput( playlist_t *, input_item_t *,
         playlist_item_t *,int , int, bool );
 
+playlist_item_t * playlist_InsertInputItemTree ( playlist_t *,
+        playlist_item_t *, input_item_node_t *, int, bool );
+
 /* Tree walking */
 playlist_item_t *playlist_ItemFindFromInputAndRoot( playlist_t *p_playlist,
-                                   int i_input_id, playlist_item_t *p_root,
-                                   bool );
+                                input_item_t *p_input, playlist_item_t *p_root,
+                                bool );
 
-int playlist_DeleteFromInputInParent( playlist_t *, int, playlist_item_t *, bool );
+int playlist_DeleteFromInputInParent( playlist_t *, input_item_t *,
+                                      playlist_item_t *, bool );
 int playlist_DeleteFromItemId( playlist_t*, int );
 int playlist_ItemRelease( playlist_item_t * );
 
-
-void playlist_NodesPairCreate( playlist_t *, const char *, playlist_item_t **, playlist_item_t **, bool );
 int playlist_NodeEmpty( playlist_t *, playlist_item_t *, bool );
+int playlist_DeleteItem( playlist_t * p_playlist, playlist_item_t *, bool);
 
 
 /**

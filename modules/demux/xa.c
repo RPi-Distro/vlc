@@ -2,7 +2,7 @@
  * xa.c : xa file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: 65a3f2eca904e3fb666047b939aa95a0524359e9 $
+ * $Id: 65b0c97a3d2db78a98da1083eb2ff032f6280212 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -62,6 +62,7 @@ struct demux_sys_t
 
     int64_t         i_data_offset;
     unsigned int    i_data_size;
+    unsigned int    i_block_frames;
 
     date_t          pts;
 };
@@ -78,7 +79,6 @@ typedef struct xa_header_t
     uint16_t nBlockAlign;
     uint16_t wBitsPerSample;
 } xa_header_t;
-
 
 /*****************************************************************************
  * Open: check file and initializes structures
@@ -129,6 +129,8 @@ static int Open( vlc_object_t * p_this )
     p_sys->i_data_offset = stream_Tell( p_demux->s );
     /* FIXME: better computation */
     p_sys->i_data_size = p_xa.iSize * 15 / 56;
+    /* How many frames per block (1:1 is too CPU intensive) */
+    p_sys->i_block_frames = p_sys->fmt.audio.i_rate / (28 * 20) + 1;
 
     msg_Dbg( p_demux, "fourcc: %4.4s, channels: %d, "
              "freq: %d Hz, bitrate: %dKo/s, blockalign: %d",
@@ -154,6 +156,7 @@ static int Demux( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t     *p_block;
     int64_t     i_offset;
+    unsigned    i_frames = p_sys->i_block_frames;
 
     i_offset = stream_Tell( p_demux->s );
 
@@ -164,19 +167,20 @@ static int Demux( demux_t *p_demux )
         return 0;
     }
 
-    p_block = stream_Block( p_demux->s, p_sys->fmt.audio.i_bytes_per_frame );
+    p_block = stream_Block( p_demux->s, p_sys->fmt.audio.i_bytes_per_frame *
+                            i_frames );
     if( p_block == NULL )
     {
         msg_Warn( p_demux, "cannot read data" );
         return 0;
     }
 
-    p_block->i_dts = p_block->i_pts =
-        date_Increment( &p_sys->pts, p_sys->fmt.audio.i_frame_length );
-
+    i_frames = p_block->i_buffer / p_sys->fmt.audio.i_bytes_per_frame;
+    p_block->i_dts = p_block->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
-
     es_out_Send( p_demux->out, p_sys->p_es, p_block );
+
+    date_Increment( &p_sys->pts, i_frames * p_sys->fmt.audio.i_frame_length );
 
     return 1;
 }

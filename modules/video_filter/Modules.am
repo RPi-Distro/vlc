@@ -1,14 +1,16 @@
-SUBDIRS = atmo dynamicoverlay
+SUBDIRS = dynamicoverlay
 SOURCES_mosaic = mosaic.c mosaic.h
 SOURCES_transform = transform.c
 SOURCES_invert = invert.c
+SOURCES_mirror = mirror.c
 SOURCES_adjust = adjust.c
 SOURCES_wall = wall.c
 SOURCES_clone = clone.c
 SOURCES_crop = crop.c
 SOURCES_motionblur = motionblur.c
 SOURCES_logo = logo.c
-SOURCES_deinterlace = deinterlace.c yadif.h
+SOURCES_audiobargraph_v = audiobargraph_v.c
+SOURCES_deinterlace = deinterlace.c yadif.h mmx.h
 SOURCES_blend = blend.c
 SOURCES_scale = scale.c
 SOURCES_marq = marq.c
@@ -22,9 +24,10 @@ SOURCES_wave = wave.c
 SOURCES_ripple = ripple.c
 SOURCES_psychedelic = psychedelic.c
 SOURCES_gradient = gradient.c
+SOURCES_ball = ball.c
 SOURCES_panoramix = panoramix.c
 SOURCES_opencv_wrapper = opencv_wrapper.c
-SOURCES_opencv_example = opencv_example.cpp filter_event_info.h
+SOURCES_opencv_example = opencv_example.c filter_event_info.h
 SOURCES_rotate = rotate.c
 SOURCES_noise = noise.c
 SOURCES_puzzle = puzzle.c
@@ -42,7 +45,77 @@ SOURCES_blendbench = blendbench.c
 SOURCES_chain = chain.c
 SOURCES_postproc = postproc.c
 SOURCES_swscale = swscale.c ../codec/avcodec/chroma.c
-SOURCES_swscale_maemo = swscale_maemo.c libswscale_nokia770/arm_jit_swscale.c libswscale_nokia770/arm_colorconv.S libswscale_nokia770/arm_jit_swscale.h libswscale_nokia770/arm_colorconv.h
+SOURCES_swscale_omap = swscale_omap.c \
+	libswscale_nokia770/arm_jit_swscale.c \
+	libswscale_nokia770/arm_colorconv.S \
+	libswscale_nokia770/arm_jit_swscale.h \
+	libswscale_nokia770/arm_colorconv.h
 SOURCES_scene = scene.c
 SOURCES_yuvp = yuvp.c
+SOURCES_atmo = atmo/atmo.cpp \
+	atmo/AtmoDefs.h \
+	atmo/AtmoCalculations.cpp atmo/AtmoCalculations.h \
+	atmo/AtmoConfig.cpp atmo/AtmoConfig.h \
+	atmo/AtmoConnection.cpp atmo/AtmoConnection.h \
+	atmo/AtmoDynData.cpp atmo/AtmoDynData.h \
+	atmo/AtmoExternalCaptureInput.cpp atmo/AtmoExternalCaptureInput.h \
+	atmo/AtmoInput.cpp atmo/AtmoInput.h \
+	atmo/AtmoLiveView.cpp atmo/AtmoLiveView.h \
+	atmo/AtmoOutputFilter.cpp atmo/AtmoOutputFilter.h \
+	atmo/AtmoThread.cpp atmo/AtmoThread.h \
+	atmo/AtmoTools.cpp atmo/AtmoTools.h \
+	atmo/AtmoZoneDefinition.cpp atmo/AtmoZoneDefinition.h \
+	atmo/AtmoChannelAssignment.cpp atmo/AtmoChannelAssignment.h \
+	atmo/AtmoClassicConnection.cpp atmo/AtmoClassicConnection.h \
+	atmo/AtmoDmxSerialConnection.cpp atmo/AtmoDmxSerialConnection.h \
+	atmo/DmxTools.cpp atmo/DmxTools.h \
+	atmo/AtmoMultiConnection.cpp atmo/AtmoMultiConnection.h \
+	atmo/MoMoConnection.cpp atmo/MoMoConnection.h \
+	atmo/FnordlichtConnection.cpp atmo/FnordlichtConnection.h \
+	atmo/AtmoPacketQueue.cpp atmo/AtmoPacketQueue.h
+SOURCES_video_filter_wrapper = wrapper.c
 noinst_HEADERS = filter_common.h filter_picture.h
+
+libvlc_LTLIBRARIES += \
+	libadjust_plugin.la \
+	libalphamask_plugin.la \
+	libaudiobargraph_v_plugin.la \
+	libball_plugin.la \
+	libblend_plugin.la \
+	libblendbench_plugin.la \
+	libbluescreen_plugin.la \
+	libcanvas_plugin.la \
+	libchain_plugin.la \
+	libclone_plugin.la \
+	libcolorthres_plugin.la \
+	libcrop_plugin.la \
+	libcroppadd_plugin.la \
+	libdeinterlace_plugin.la \
+	liberase_plugin.la \
+	libextract_plugin.la \
+	libgradient_plugin.la \
+	libgrain_plugin.la \
+	libgaussianblur_plugin.la \
+	libinvert_plugin.la \
+	liblogo_plugin.la \
+	libmagnify_plugin.la \
+	libmarq_plugin.la \
+	libmirror_plugin.la \
+	libmosaic_plugin.la \
+	libmotionblur_plugin.la \
+	libmotiondetect_plugin.la \
+	libnoise_plugin.la \
+	libpsychedelic_plugin.la \
+	libpuzzle_plugin.la \
+	libripple_plugin.la \
+	librotate_plugin.la \
+	librss_plugin.la \
+	librv32_plugin.la \
+	libscale_plugin.la \
+	libscene_plugin.la \
+	libsharpen_plugin.la \
+	libtransform_plugin.la \
+	libwall_plugin.la \
+	libwave_plugin.la \
+	libyuvp_plugin.la \
+	libvideo_filter_wrapper_plugin.la

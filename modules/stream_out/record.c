@@ -1,8 +1,8 @@
 /*****************************************************************************
  * record.c: record stream output module
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: ca68231161afbea957c120df47ba0d8277837bcd $
+ * Copyright (C) 2008-2009 the VideoLAN team
+ * $Id: 2eb542015c0a9e69ed26770f02a4caf9c7d5a24c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -35,7 +35,7 @@
 #include <vlc_plugin.h>
 #include <vlc_block.h>
 #include <vlc_sout.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <assert.h>
 
 /*****************************************************************************
@@ -148,11 +148,11 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_date_start = -1;
     p_sys->i_size = 0;
 #ifdef OPTIMIZE_MEMORY
-    p_sys->i_max_wait = 5*1000000; /* 5s */
-    p_sys->i_max_size = 1*1000000; /* 1 Mbyte */
+    p_sys->i_max_wait = 5*CLOCK_FREQ; /* 5s */
+    p_sys->i_max_size = 1*1024*1024; /* 1 MiB */
 #else
-    p_sys->i_max_wait = 30*1000000; /* 30s */
-    p_sys->i_max_size = 20*1000000; /* 20 Mbyte */
+    p_sys->i_max_wait = 30*CLOCK_FREQ; /* 30s */
+    p_sys->i_max_size = 20*1024*1024; /* 20 MiB */
 #endif
     p_sys->b_drop = false;
     p_sys->i_dts_start = 0;
@@ -170,7 +170,7 @@ static void Close( vlc_object_t * p_this )
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
     if( p_sys->p_out )
-        sout_StreamDelete( p_sys->p_out );
+        sout_StreamChainDelete( p_sys->p_out, p_sys->p_out );
 
     TAB_CLEAN( p_sys->i_id, p_sys->id );
     free( p_sys->psz_prefix );
@@ -267,38 +267,36 @@ typedef struct
  * Do not do non native and non standard association !
  * Muxer will be probe if no entry found */
 static const muxer_properties_t p_muxers[] = {
-    M( "raw", "mp3", 1,         VLC_FOURCC('m','p','g','a'), VLC_FOURCC('m','p','3',' ') ),
-    M( "raw", "a52", 1,         VLC_FOURCC('a','5','2',' ') ),
-    M( "raw", "dts", 1,         VLC_FOURCC('d','t','s',' ') ),
-    M( "raw", "mpc", 1,         VLC_FOURCC('m','p','c',' ') ),
-    M( "raw", "ape", 1,         VLC_FOURCC('A','P','E',' ') ),
+    M( "raw", "mp3", 1,         VLC_CODEC_MPGA ),
+    M( "raw", "a52", 1,         VLC_CODEC_A52 ),
+    M( "raw", "dts", 1,         VLC_CODEC_DTS ),
+    M( "raw", "mpc", 1,         VLC_CODEC_MUSEPACK7, VLC_CODEC_MUSEPACK8 ),
+    M( "raw", "ape", 1,         VLC_CODEC_APE ),
 
-    M( "wav", "wav", 1,         VLC_FOURCC('a','r','a','w'), VLC_FOURCC('u','8',' ',' '), VLC_FOURCC('s','1','6','l'),
-                                VLC_FOURCC('s','2','4','l'), VLC_FOURCC('s','3','2','l'), VLC_FOURCC('f','l','3','2') ),
+    M( "wav", "wav", 1,         VLC_CODEC_U8,   VLC_CODEC_S16L,
+                                VLC_CODEC_S24L, VLC_CODEC_S32L, VLC_CODEC_FL32 ),
 
-    //M( "ffmpeg{mux=flac}", "flac", 1, VLC_FOURCC('f','l','a','c') ), BROKEN
+    //M( "ffmpeg{mux=flac}", "flac", 1, VLC_CODEC_FLAC ), BROKEN
 
-    M( "ogg", "ogg", INT_MAX,   VLC_FOURCC('v','o','r','b'), VLC_FOURCC('s','p','x',' '), VLC_FOURCC('f','l','a','c'),
-                                VLC_FOURCC('s','u','b','t'), VLC_FOURCC('t','h','e','o'), VLC_FOURCC('d','r','a','c')  ),
+    M( "ogg", "ogg", INT_MAX,   VLC_CODEC_VORBIS, VLC_CODEC_SPEEX,  VLC_CODEC_FLAC,
+                                VLC_CODEC_SUBT,   VLC_CODEC_THEORA, VLC_CODEC_DIRAC  ),
 
-    M( "asf", "asf", 127,       VLC_FOURCC('w','m','a','1'), VLC_FOURCC('w','m','a','2'), VLC_FOURCC('w','m','a',' '),
-                                VLC_FOURCC('w','m','a','p'), VLC_FOURCC('w','m','a','l'),
-                                VLC_FOURCC('W','M','V','1'), VLC_FOURCC('W','M','V','2'), VLC_FOURCC('W','M','V','3'),
-                                VLC_FOURCC('W','V','C','1')),
+    M( "asf", "asf", 127,       VLC_CODEC_WMA1, VLC_CODEC_WMA2, VLC_CODEC_WMAP, VLC_CODEC_WMAL, VLC_CODEC_WMAS,
+                                VLC_CODEC_WMV1, VLC_CODEC_WMV2, VLC_CODEC_WMV3, VLC_CODEC_VC1 ),
 
-    M( "mp4", "mp4", INT_MAX,   VLC_FOURCC('m','p','4','a'), VLC_FOURCC('h','2','6','4'), VLC_FOURCC('m','p','4','v'),
-                                VLC_FOURCC('s','u','b','t') ),
+    M( "mp4", "mp4", INT_MAX,   VLC_CODEC_MP4A, VLC_CODEC_H264, VLC_CODEC_MP4V,
+                                VLC_CODEC_SUBT ),
 
-    M( "ps", "mpg", 16/* FIXME*/,VLC_FOURCC('m','p','g','v'), VLC_FOURCC('m','p','1','v'), VLC_FOURCC('m','p','2','v'),
-                                VLC_FOURCC('m','p','g','a'), VLC_FOURCC('m','p','3',' '), VLC_FOURCC('l','p','c','m'), VLC_FOURCC('a','5','2',' '),
-                                VLC_FOURCC('d','t','s',' '),
-                                VLC_FOURCC('s','p','u',' ') ),
+    M( "ps", "mpg", 16/* FIXME*/,VLC_CODEC_MPGV,
+                                VLC_CODEC_MPGA, VLC_CODEC_DVD_LPCM, VLC_CODEC_A52,
+                                VLC_CODEC_DTS,
+                                VLC_CODEC_SPU ),
 
-    M( "ts", "ts", 8000,        VLC_FOURCC('m','p','g','v'), VLC_FOURCC('m','p','1','v'), VLC_FOURCC('m','p','2','v'),
-                                VLC_FOURCC('h','2','6','4'),
-                                VLC_FOURCC('m','p','g','a'), VLC_FOURCC('m','p','3',' '), VLC_FOURCC('l','p','c','m'), VLC_FOURCC('a','5','2',' '),
-                                VLC_FOURCC('d','t','s',' '), VLC_FOURCC('m','p','4','a'),
-                                VLC_FOURCC('d','v','b','s'), VLC_FOURCC('t','e','l','x') ),
+    M( "ts", "ts", 8000,        VLC_CODEC_MPGV,
+                                VLC_CODEC_H264,
+                                VLC_CODEC_MPGA, VLC_CODEC_DVD_LPCM, VLC_CODEC_A52,
+                                VLC_CODEC_DTS,  VLC_CODEC_MP4A,
+                                VLC_CODEC_DVBS, VLC_CODEC_TELETEXT ),
 
     M( NULL, NULL, 0, 0 )
 };
@@ -308,21 +306,31 @@ static int OutputNew( sout_stream_t *p_stream,
                       const char *psz_muxer, const char *psz_prefix, const char *psz_extension  )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
-    char *psz_output;
+    char *psz_file = NULL;
+    char *psz_output = NULL;
     int i_count;
 
-    if( asprintf( &psz_output, "std{access=file,mux='%s',dst='%s%s%s'}",
-                  psz_muxer, psz_prefix, psz_extension ? "." : "", psz_extension ? psz_extension : "" ) < 0 )
-        return -1;
+    if( asprintf( &psz_file, "%s%s%s",
+                  psz_prefix, psz_extension ? "." : "", psz_extension ? psz_extension : "" ) < 0 )
+    {
+        psz_file = NULL;
+        goto error;
+    }
+
+    if( asprintf( &psz_output, "std{access=file,mux='%s',dst='%s'}",
+                  psz_muxer, psz_file ) < 0 )
+    {
+        psz_output = NULL;
+        goto error;
+    }
 
     /* Create the output */
     msg_Dbg( p_stream, "Using record output `%s'", psz_output );
-    p_sys->p_out = sout_StreamNew( p_stream->p_sout, psz_output );
 
-    free( psz_output );
+    p_sys->p_out = sout_StreamChainNew( p_stream->p_sout, psz_output, NULL, NULL );
 
     if( !p_sys->p_out )
-        return -1;
+        goto error;
 
     /* Add es */
     i_count = 0;
@@ -335,7 +343,20 @@ static int OutputNew( sout_stream_t *p_stream,
             i_count++;
     }
 
+    if( psz_file && psz_extension )
+        var_SetString( p_stream->p_libvlc, "record-file", psz_file );
+
+    free( psz_file );
+    free( psz_output );
+
     return i_count;
+
+error:
+
+    free( psz_file );
+    free( psz_output );
+    return -1;
+
 }
 
 static void OutputStart( sout_stream_t *p_stream )
@@ -424,7 +445,7 @@ static void OutputStart( sout_stream_t *p_stream )
 
             if( i_es < 0 )
             {
-                utf8_unlink( psz_file );
+                vlc_unlink( psz_file );
                 free( psz_file );
                 continue;
             }
@@ -439,7 +460,7 @@ static void OutputStart( sout_stream_t *p_stream )
                 id->id = NULL;
             }
             if( p_sys->p_out )
-                sout_StreamDelete( p_sys->p_out );
+                sout_StreamChainDelete( p_sys->p_out, p_sys->p_out );
             p_sys->p_out = NULL;
 
             if( i_es > i_best_es )
@@ -450,7 +471,7 @@ static void OutputStart( sout_stream_t *p_stream )
                 if( i_best_es >= p_sys->i_id )
                     break;
             }
-            utf8_unlink( psz_file );
+            vlc_unlink( psz_file );
             free( psz_file );
         }
 

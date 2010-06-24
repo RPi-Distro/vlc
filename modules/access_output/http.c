@@ -2,7 +2,7 @@
  * http.c
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: c6b930fcf06b16fe446a7c6cbbccc7ffcfa0d3a8 $
+ * $Id: f65c7146768264fe6a8e00bc77ceab1ec2596872 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jon Lech Johansen <jon@nanocrew.net>
@@ -49,7 +49,7 @@
     #endif
 #endif
 
-#include "vlc_httpd.h"
+#include <vlc_httpd.h>
 
 #define DEFAULT_PORT        8080
 #define DEFAULT_SSL_PORT    8443
@@ -102,8 +102,8 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_SOUT_ACO )
     add_string( SOUT_CFG_PREFIX "user", "", NULL,
                 USER_TEXT, USER_LONGTEXT, true )
-    add_string( SOUT_CFG_PREFIX "pwd", "", NULL,
-                PASS_TEXT, PASS_LONGTEXT, true )
+    add_password( SOUT_CFG_PREFIX "pwd", "", NULL,
+                  PASS_TEXT, PASS_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "mime", "", NULL,
                 MIME_TEXT, MIME_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "cert", "vlc.pem", NULL,
@@ -165,12 +165,11 @@ static int Open( vlc_object_t *p_this )
     char                *psz_bind_addr;
     int                 i_bind_port;
     char                *psz_file_name;
-    char                *psz_user = NULL;
-    char                *psz_pwd = NULL;
-    char                *psz_mime = NULL;
+    char                *psz_user;
+    char                *psz_pwd;
+    char                *psz_mime;
     char                *psz_cert = NULL, *psz_key = NULL, *psz_ca = NULL,
                         *psz_crl = NULL;
-    vlc_value_t         val;
 
     if( !( p_sys = p_access->p_sys =
                 malloc( sizeof( sout_access_out_sys_t ) ) ) )
@@ -179,7 +178,7 @@ static int Open( vlc_object_t *p_this )
     config_ChainParse( p_access, SOUT_CFG_PREFIX, ppsz_sout_options, p_access->p_cfg );
 
     /* p_access->psz_path = "hostname:port/filename" */
-    psz_bind_addr = psz_parser = strdup( p_access->psz_path );
+    psz_bind_addr = strdup( p_access->psz_path );
 
     i_bind_port = 0;
 
@@ -251,30 +250,16 @@ static int Open( vlc_object_t *p_this )
     }
     free( psz_parser );
 
+    psz_user = var_GetNonEmptyString( p_access, SOUT_CFG_PREFIX "user" );
+    psz_pwd = var_GetNonEmptyString( p_access, SOUT_CFG_PREFIX "pwd" );
     if( p_access->psz_access && !strcmp( p_access->psz_access, "mmsh" ) )
     {
         psz_mime = strdup( "video/x-ms-asf-stream" );
     }
     else
     {
-        var_Get( p_access, SOUT_CFG_PREFIX "mime", &val );
-        if( *val.psz_string )
-            psz_mime = val.psz_string;
-        else
-            free( val.psz_string );
+        psz_mime = var_GetNonEmptyString( p_access, SOUT_CFG_PREFIX "mime" );
     }
-
-    var_Get( p_access, SOUT_CFG_PREFIX "user", &val );
-    if( *val.psz_string )
-        psz_user = val.psz_string;
-    else
-        free( val.psz_string );
-
-    var_Get( p_access, SOUT_CFG_PREFIX "pwd", &val );
-    if( *val.psz_string )
-        psz_pwd = val.psz_string;
-    else
-        free( val.psz_string );
 
     p_sys->p_httpd_stream =
         httpd_StreamNew( p_sys->p_httpd_host, psz_file_name, psz_mime,
@@ -294,10 +279,10 @@ static int Open( vlc_object_t *p_this )
     }
 
 #if 0 //def HAVE_AVAHI_CLIENT
-    if( config_GetInt(p_this, SOUT_CFG_PREFIX "bonjour") )
+    if( var_InheritBool(p_this, SOUT_CFG_PREFIX "bonjour") )
     {
         char                *psz_txt, *psz_name;
-        playlist_t          *p_playlist = pl_Hold( p_access );
+        playlist_t          *p_playlist = pl_Get( p_access );
 
         char *psz_uri = input_item_GetURI( p_playlist->status.p_item->p_input );
         char *psz_newuri = psz_uri;
@@ -308,7 +293,6 @@ static int Open( vlc_object_t *p_this )
         if( psz_file_name &&
             asprintf( &psz_txt, "path=%s", psz_file_name ) == -1 )
             {
-                pl_Release( p_access );
                 free( psz_uri );
                 return VLC_ENOMEM;
             }
@@ -322,7 +306,6 @@ static int Open( vlc_object_t *p_this )
 
         if( p_sys->p_bonjour == NULL )
             msg_Err( p_access, "unable to start requested Bonjour announce" );
-        pl_Release( p_access );
     }
     else
         p_sys->p_bonjour = NULL;
@@ -332,7 +315,7 @@ static int Open( vlc_object_t *p_this )
 
     p_sys->i_header_allocated = 1024;
     p_sys->i_header_size      = 0;
-    p_sys->p_header           = malloc( p_sys->i_header_allocated );
+    p_sys->p_header           = xmalloc( p_sys->i_header_allocated );
     p_sys->b_header_complete  = false;
 
     p_access->pf_write       = Write;
@@ -408,8 +391,8 @@ static ssize_t Write( sout_access_out_t *p_access, block_t *p_buffer )
             {
                 p_sys->i_header_allocated =
                     p_buffer->i_buffer + p_sys->i_header_size + 1024;
-                p_sys->p_header =
-                    realloc( p_sys->p_header, p_sys->i_header_allocated );
+                p_sys->p_header = xrealloc( p_sys->p_header,
+                                                  p_sys->i_header_allocated );
             }
             memcpy( &p_sys->p_header[p_sys->i_header_size],
                     p_buffer->p_buffer,

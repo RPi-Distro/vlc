@@ -2,7 +2,7 @@
  * gvp.c: Google Video Playlist demuxer
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: e06b3114ebe59e66259ae2661289eef20a5ad9b0 $
+ * $Id: 2747d985c2f66ce94c93b20b21e8c3aef5e538bd $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan d.t org>
  *
@@ -129,7 +129,9 @@ static int Demux( demux_t *p_demux )
     char *psz_description = NULL;
     input_item_t *p_input;
 
-    INIT_PLAYLIST_STUFF;
+    input_item_t *p_current_input = GetCurrentItem(p_demux);
+
+    input_item_node_t *p_subitems = input_item_node_Create( p_current_input );
 
     p_sys->p_current_input = p_current_input;
 
@@ -208,11 +210,13 @@ static int Demux( demux_t *p_demux )
         SADD_INFO( "gvp_version", psz_version );
         SADD_INFO( "docid", psz_docid );
         SADD_INFO( "description", psz_description );
-        input_item_AddSubItem( p_current_input, p_input );
+        input_item_node_AppendItem( p_subitems, p_input );
         vlc_gc_decref( p_input );
     }
 
-    HANDLE_PLAY_AND_RELEASE;
+    input_item_node_PostAndDelete( p_subitems );
+
+    vlc_gc_decref(p_current_input);
 
     free( psz_version );
     free( psz_url );

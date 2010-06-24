@@ -2,7 +2,7 @@
  * preferences.hpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: ef50b5201b63447983cb37bef35222a73de2bcda $
+ * $Id: e14124009eeb1dbb796f829251768c5a20e4e9cc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -43,7 +43,7 @@ class QLabel;
 
 class PrefsDialog : public QVLCDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     PrefsDialog( QWidget *, intf_thread_t * );
     virtual ~PrefsDialog() {}

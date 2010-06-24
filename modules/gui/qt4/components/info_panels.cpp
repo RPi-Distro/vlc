@@ -2,7 +2,7 @@
  * infopanels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 98bd70791b2512545f3289eb482e05472bc35879 $
+ * $Id: 2b35cdb599a2869f9540b6e617d53a16d1dd9b5d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -32,6 +32,8 @@
 #include "components/interface_widgets.hpp"
 
 #include <assert.h>
+#include <vlc_url.h>
+#include <vlc_meta.h>
 
 #include <QTreeWidget>
 #include <QHeaderView>
@@ -55,6 +57,7 @@ MetaPanel::MetaPanel( QWidget *parent,
                       : QWidget( parent ), p_intf( _p_intf )
 {
     QGridLayout *metaLayout = new QGridLayout( this );
+    metaLayout->setVerticalSpacing( 12 );
 
     int line = 0; /* Counter for GridLayout */
     p_input = NULL;
@@ -136,6 +139,7 @@ MetaPanel::MetaPanel( QWidget *parent,
 
     metaLayout->setColumnStretch( 1, 2 );
     metaLayout->setColumnMinimumWidth ( 1, 80 );
+    metaLayout->setRowStretch( line, 10 );
 #undef ADD_META
 #undef ADD_META_2
 
@@ -226,6 +230,20 @@ void MetaPanel::update( input_item_t *p_item )
 #undef UPDATE_META_INT
 #undef UPDATE_META
 
+    // If a artURL is available as a local file, directly display it !
+
+    QString file;
+    char *psz_art = input_item_GetArtURL( p_item );
+    if( psz_art )
+    {
+        char *psz = make_path( psz_art );
+        free( psz_art );
+        file = qfu( psz );
+        free( psz );
+    }
+
+    art_cover->showArtUpdate( file );
+
 }
 
 /**
@@ -233,29 +251,7 @@ void MetaPanel::update( input_item_t *p_item )
  **/
 void MetaPanel::saveMeta()
 {
-    playlist_t *p_playlist;
-
-    meta_export_t p_export;
-    p_export.p_item = p_input;
-
     if( p_input == NULL )
-        return;
-
-    /* we can write meta data only in a file */
-    vlc_mutex_lock( &p_input->lock );
-    int i_type = p_input->i_type;
-    vlc_mutex_unlock( &p_input->lock );
-    if( i_type == ITEM_TYPE_FILE )
-    {
-        char *psz_uri_orig = input_item_GetURI( p_input );
-        char *psz_uri = psz_uri_orig;
-        if( !strncmp( psz_uri, "file://", 7 ) )
-            psz_uri += 7; /* strlen("file://") = 7 */
-
-        p_export.psz_file = strndup( psz_uri, PATH_MAX );
-        free( psz_uri_orig );
-    }
-    else
         return;
 
     /* now we read the modified meta data */
@@ -270,15 +266,8 @@ void MetaPanel::saveMeta()
     input_item_SetPublisher( p_input, qtu( publisher_text->text() ) );
     input_item_SetDescription( p_input, qtu( description_text->text() ) );
 
-    p_playlist = pl_Hold( p_intf );
-    PL_LOCK;
-    p_playlist->p_private = &p_export;
-
-    module_t *p_mod = module_need( p_playlist, "meta writer", NULL, false );
-    if( p_mod )
-        module_unneed( p_playlist, p_mod );
-    PL_UNLOCK;
-    pl_Release( p_intf );
+    playlist_t *p_playlist = pl_Get( p_intf );
+    input_item_WriteMeta( VLC_OBJECT(p_playlist), p_input );
 
     /* Reset the status of the mode. No need to emit any signal because parent
        is the only caller */
@@ -374,13 +363,11 @@ void ExtraMetaPanel::update( input_item_t *p_item )
         return;
     }
 
-    vlc_dictionary_t * p_dict = &p_meta->extra_tags;
-    char ** ppsz_allkey = vlc_dictionary_all_keys( p_dict );
+    char ** ppsz_allkey = vlc_meta_CopyExtraNames( p_meta);
 
     for( int i = 0; ppsz_allkey[i] ; i++ )
     {
-        const char * psz_value = (const char *)vlc_dictionary_value_for_key(
-                p_dict, ppsz_allkey[i] );
+        const char * psz_value = vlc_meta_GetExtra( p_meta, ppsz_allkey[i] );
         QStringList tempItem;
         tempItem.append( qfu( ppsz_allkey[i] ) + " : ");
         tempItem.append( qfu( psz_value ) );
@@ -493,8 +480,8 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
 
      QList<QTreeWidgetItem *> items;
 
-     QLabel *topLabel = new QLabel( qtr( "Statistics about the currently "
-                 "playing media or stream." ) );
+     QLabel *topLabel = new QLabel( qtr( "Current"
+                 " media / stream " "statistics") );
      topLabel->setWordWrap( true );
      layout->addWidget( topLabel, 0, 0 );
 
@@ -519,39 +506,39 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
     /* Create the main categories */
     CREATE_CATEGORY( audio, qtr("Audio") );
     CREATE_CATEGORY( video, qtr("Video") );
-    CREATE_CATEGORY( input, qtr("Input") );
-    CREATE_CATEGORY( streaming, qtr("Streaming") );
+    CREATE_CATEGORY( input, qtr("Input/Read") );
+    CREATE_CATEGORY( streaming, qtr("Output/Written/Sent") );
 
-    CREATE_AND_ADD_TO_CAT( read_media_stat, qtr("Read at media"),
-                           "0", input , "kB" );
+    CREATE_AND_ADD_TO_CAT( read_media_stat, qtr("Media data size"),
+                           "0", input , "KiB" );
     CREATE_AND_ADD_TO_CAT( input_bitrate_stat, qtr("Input bitrate"),
                            "0", input, "kb/s" );
-    CREATE_AND_ADD_TO_CAT( demuxed_stat, qtr("Demuxed"), "0", input, "kB") ;
-    CREATE_AND_ADD_TO_CAT( stream_bitrate_stat, qtr("Stream bitrate"),
+    CREATE_AND_ADD_TO_CAT( demuxed_stat, qtr("Demuxed data size"), "0", input, "KiB") ;
+    CREATE_AND_ADD_TO_CAT( stream_bitrate_stat, qtr("Content bitrate"),
                            "0", input, "kb/s" );
-    CREATE_AND_ADD_TO_CAT( corrupted_stat, qtr("Corrupted"),
+    CREATE_AND_ADD_TO_CAT( corrupted_stat, qtr("Discarded (corrupted)"),
                            "0", input, "" );
-    CREATE_AND_ADD_TO_CAT( discontinuity_stat, qtr("Discontinuities"),
+    CREATE_AND_ADD_TO_CAT( discontinuity_stat, qtr("Dropped (discontinued)"),
                            "0", input, "" );
 
-    CREATE_AND_ADD_TO_CAT( vdecoded_stat, qtr("Decoded blocks"),
-                           "0", video, "" );
-    CREATE_AND_ADD_TO_CAT( vdisplayed_stat, qtr("Displayed frames"),
-                           "0", video, "" );
-    CREATE_AND_ADD_TO_CAT( vlost_frames_stat, qtr("Lost frames"),
-                           "0", video, "" );
+    CREATE_AND_ADD_TO_CAT( vdecoded_stat, qtr("Decoded"),
+                           "0", video, qtr("blocks") );
+    CREATE_AND_ADD_TO_CAT( vdisplayed_stat, qtr("Displayed"),
+                           "0", video, qtr("frames") );
+    CREATE_AND_ADD_TO_CAT( vlost_frames_stat, qtr("Lost"),
+                           "0", video, qtr("frames") );
 
-    CREATE_AND_ADD_TO_CAT( send_stat, qtr("Sent packets"), "0", streaming, "" );
-    CREATE_AND_ADD_TO_CAT( send_bytes_stat, qtr("Sent bytes"),
-                           "0", streaming, "kB" );
-    CREATE_AND_ADD_TO_CAT( send_bitrate_stat, qtr("Sent bitrate"),
+    CREATE_AND_ADD_TO_CAT( send_stat, qtr("Sent"), "0", streaming, qtr("packets") );
+    CREATE_AND_ADD_TO_CAT( send_bytes_stat, qtr("Sent"),
+                           "0", streaming, "KiB" );
+    CREATE_AND_ADD_TO_CAT( send_bitrate_stat, qtr("Upstream rate"),
                            "0", streaming, "kb/s" );
 
-    CREATE_AND_ADD_TO_CAT( adecoded_stat, qtr("Decoded blocks"),
-                           "0", audio, "" );
-    CREATE_AND_ADD_TO_CAT( aplayed_stat, qtr("Played buffers"),
-                           "0", audio, "" );
-    CREATE_AND_ADD_TO_CAT( alost_stat, qtr("Lost buffers"), "0", audio, "" );
+    CREATE_AND_ADD_TO_CAT( adecoded_stat, qtr("Decoded"),
+                           "0", audio, qtr("blocks") );
+    CREATE_AND_ADD_TO_CAT( aplayed_stat, qtr("Played"),
+                           "0", audio, qtr("buffers") );
+    CREATE_AND_ADD_TO_CAT( alost_stat, qtr("Lost"), "0", audio, qtr("buffers") );
 
 #undef CREATE_AND_ADD_TO_CAT
 #undef CREATE_CATEGORY
@@ -580,11 +567,11 @@ void InputStatsPanel::update( input_item_t *p_item )
     { QString str; widget->setText( 1 , str.sprintf( format, ## calc ) );  }
 
     UPDATE( read_media_stat, "%8.0f",
-            (float)(p_item->p_stats->i_read_bytes)/1000);
+            (float)(p_item->p_stats->i_read_bytes)/1024);
     UPDATE( input_bitrate_stat, "%6.0f",
                     (float)(p_item->p_stats->f_input_bitrate * 8000 ));
     UPDATE( demuxed_stat, "%8.0f",
-                    (float)(p_item->p_stats->i_demux_read_bytes)/1000 );
+                    (float)(p_item->p_stats->i_demux_read_bytes)/1024 );
     UPDATE( stream_bitrate_stat, "%6.0f",
                     (float)(p_item->p_stats->f_demux_bitrate * 8000 ));
     UPDATE( corrupted_stat, "%5i", p_item->p_stats->i_demux_corrupted );
@@ -598,7 +585,7 @@ void InputStatsPanel::update( input_item_t *p_item )
     /* Sout */
     UPDATE( send_stat, "%5i", p_item->p_stats->i_sent_packets );
     UPDATE( send_bytes_stat, "%8.0f",
-            (float)(p_item->p_stats->i_sent_bytes)/1000 );
+            (float)(p_item->p_stats->i_sent_bytes)/1024 );
     UPDATE( send_bitrate_stat, "%6.0f",
             (float)(p_item->p_stats->f_send_bitrate*8)*1000 );
 

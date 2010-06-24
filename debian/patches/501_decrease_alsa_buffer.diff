@@ -1,6 +1,9 @@
-Patch taken from http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=472811
-
-also reported in ubuntu as lp #243152
+Description: Decrease alsa buffer size. That improves the behaviour of the alsa
+ output module on pulseaudio system. But note that vlc-plugin-pulse provides a
+ native pulseaudio output module.
+Author: Reinhard Tartler <siretart@tauware.de>
+Bug-Debian: http://bugs.debian.org/472811
+Bug-Ubuntu: https://launchpad.net/bugs/243152
 
 Index: vlc-debian/modules/audio_output/alsa.c
 ===================================================================

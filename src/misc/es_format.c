@@ -2,7 +2,7 @@
  * es_format.c : es_format_t helpers.
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 9f74db009c3b0bd90f7476bdb0cd3c906fe43aba $
+ * $Id: cad689af8f8267c107e1aed2959e9ea9c1832509 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -31,6 +31,7 @@
 
 #include <vlc_common.h>
 #include <vlc_es.h>
+#include <vlc_aout.h>
 
 
 /*****************************************************************************
@@ -92,24 +93,24 @@ void video_format_FixRgb( video_format_t *p_fmt )
     {
         switch( p_fmt->i_chroma )
         {
-        case VLC_FOURCC('R','V','1','5'):
+        case VLC_CODEC_RGB15:
             p_fmt->i_rmask = 0x7c00;
             p_fmt->i_gmask = 0x03e0;
             p_fmt->i_bmask = 0x001f;
             break;
 
-        case VLC_FOURCC('R','V','1','6'):
+        case VLC_CODEC_RGB16:
             p_fmt->i_rmask = 0xf800;
             p_fmt->i_gmask = 0x07e0;
             p_fmt->i_bmask = 0x001f;
             break;
 
-        case VLC_FOURCC('R','V','2','4'):
+        case VLC_CODEC_RGB24:
             p_fmt->i_rmask = 0xff0000;
             p_fmt->i_gmask = 0x00ff00;
             p_fmt->i_bmask = 0x0000ff;
             break;
-        case VLC_FOURCC('R','V','3','2'):
+        case VLC_CODEC_RGB32:
             p_fmt->i_rmask = 0x00ff0000;
             p_fmt->i_gmask = 0x0000ff00;
             p_fmt->i_bmask = 0x000000ff;
@@ -128,11 +129,121 @@ void video_format_FixRgb( video_format_t *p_fmt )
                  p_fmt->i_bmask );
 }
 
+void video_format_Setup( video_format_t *p_fmt, vlc_fourcc_t i_chroma,
+                         int i_width, int i_height,
+                         int i_sar_num, int i_sar_den )
+{
+    p_fmt->i_chroma         = vlc_fourcc_GetCodec( VIDEO_ES, i_chroma );
+    p_fmt->i_width          =
+    p_fmt->i_visible_width  = i_width;
+    p_fmt->i_height         =
+    p_fmt->i_visible_height = i_height;
+    p_fmt->i_x_offset       =
+    p_fmt->i_y_offset       = 0;
+    vlc_ureduce( &p_fmt->i_sar_num, &p_fmt->i_sar_den,
+                 i_sar_num, i_sar_den, 0 );
+
+    switch( p_fmt->i_chroma )
+    {
+    case VLC_CODEC_YUVA:
+        p_fmt->i_bits_per_pixel = 32;
+        break;
+    case VLC_CODEC_I444:
+    case VLC_CODEC_J444:
+        p_fmt->i_bits_per_pixel = 24;
+        break;
+    case VLC_CODEC_I422:
+    case VLC_CODEC_YUYV:
+    case VLC_CODEC_YVYU:
+    case VLC_CODEC_UYVY:
+    case VLC_CODEC_VYUY:
+    case VLC_CODEC_J422:
+        p_fmt->i_bits_per_pixel = 16;
+        break;
+    case VLC_CODEC_I440:
+    case VLC_CODEC_J440:
+        p_fmt->i_bits_per_pixel = 16;
+        break;
+    case VLC_CODEC_I411:
+    case VLC_CODEC_YV12:
+    case VLC_CODEC_I420:
+    case VLC_CODEC_J420:
+        p_fmt->i_bits_per_pixel = 12;
+        break;
+    case VLC_CODEC_YV9:
+    case VLC_CODEC_I410:
+        p_fmt->i_bits_per_pixel = 9;
+        break;
+    case VLC_CODEC_Y211:
+        p_fmt->i_bits_per_pixel = 8;
+        break;
+    case VLC_CODEC_YUVP:
+        p_fmt->i_bits_per_pixel = 8;
+        break;
+
+    case VLC_CODEC_RGB32:
+    case VLC_CODEC_RGBA:
+        p_fmt->i_bits_per_pixel = 32;
+        break;
+    case VLC_CODEC_RGB24:
+        p_fmt->i_bits_per_pixel = 24;
+        break;
+    case VLC_CODEC_RGB15:
+    case VLC_CODEC_RGB16:
+        p_fmt->i_bits_per_pixel = 16;
+        break;
+    case VLC_CODEC_RGB8:
+        p_fmt->i_bits_per_pixel = 8;
+        break;
+
+    case VLC_CODEC_GREY:
+    case VLC_CODEC_RGBP:
+        p_fmt->i_bits_per_pixel = 8;
+        break;
+
+    default:
+        p_fmt->i_bits_per_pixel = 0;
+        break;
+    }
+}
+bool video_format_IsSimilar( const video_format_t *p_fmt1, const video_format_t *p_fmt2 )
+{
+    video_format_t v1 = *p_fmt1;
+    video_format_t v2 = *p_fmt2;
+
+    if( v1.i_chroma != v2.i_chroma )
+        return false;
+
+    if( v1.i_width != v2.i_width || v1.i_height != v2.i_height ||
+        v1.i_visible_width != v2.i_visible_width ||
+        v1.i_visible_height != v2.i_visible_height ||
+        v1.i_x_offset != v2.i_x_offset || v1.i_y_offset != v2.i_y_offset )
+        return false;
+
+    if( v1.i_chroma == VLC_CODEC_RGB15 ||
+        v1.i_chroma == VLC_CODEC_RGB16 ||
+        v1.i_chroma == VLC_CODEC_RGB24 ||
+        v1.i_chroma == VLC_CODEC_RGB32 )
+    {
+        video_format_FixRgb( &v1 );
+        video_format_FixRgb( &v2 );
+
+        if( v1.i_rmask != v2.i_rmask ||
+            v1.i_gmask != v2.i_gmask ||
+            v1.i_bmask != v2.i_bmask )
+            return false;
+    }
+    return true;
+}
+
 void es_format_Init( es_format_t *fmt,
                      int i_cat, vlc_fourcc_t i_codec )
 {
     fmt->i_cat                  = i_cat;
     fmt->i_codec                = i_codec;
+    fmt->i_original_fourcc      = 0;
+    fmt->i_profile              = -1;
+    fmt->i_level                = -1;
     fmt->i_id                   = -1;
     fmt->i_group                = 0;
     fmt->i_priority             = 0;
@@ -151,6 +262,12 @@ void es_format_Init( es_format_t *fmt,
     fmt->i_bitrate              = 0;
     fmt->i_extra                = 0;
     fmt->p_extra                = NULL;
+}
+
+void es_format_InitFromVideo( es_format_t *p_es, const video_format_t *p_fmt )
+{
+    es_format_Init( p_es, VIDEO_ES, p_fmt->i_chroma );
+    video_format_Copy( &p_es->video, p_fmt );
 }
 
 int es_format_Copy( es_format_t *dst, const es_format_t *src )
@@ -236,5 +353,45 @@ void es_format_Clean( es_format_t *fmt )
 
     /* es_format_Clean can be called multiple times */
     memset( fmt, 0, sizeof(*fmt) );
+}
+
+bool es_format_IsSimilar( const es_format_t *p_fmt1, const es_format_t *p_fmt2 )
+{
+    if( p_fmt1->i_cat != p_fmt2->i_cat ||
+        vlc_fourcc_GetCodec( p_fmt1->i_cat, p_fmt1->i_codec ) !=
+        vlc_fourcc_GetCodec( p_fmt2->i_cat, p_fmt2->i_codec ) )
+        return false;
+
+    switch( p_fmt1->i_cat )
+    {
+    case AUDIO_ES:
+    {
+        audio_format_t a1 = p_fmt1->audio;
+        audio_format_t a2 = p_fmt2->audio;
+
+        if( a1.i_format && a2.i_format && a1.i_format != a2.i_format )
+            return false;
+        if( a1.i_rate != a2.i_rate ||
+            a1.i_physical_channels != a2.i_physical_channels ||
+            a1.i_original_channels != a2.i_original_channels )
+            return false;
+        return true;
+    }
+
+    case VIDEO_ES:
+    {
+        video_format_t v1 = p_fmt1->video;
+        video_format_t v2 = p_fmt2->video;
+        if( !v1.i_chroma )
+            v1.i_chroma = vlc_fourcc_GetCodec( p_fmt1->i_cat, p_fmt1->i_codec );
+        if( !v2.i_chroma )
+            v2.i_chroma = vlc_fourcc_GetCodec( p_fmt1->i_cat, p_fmt2->i_codec );
+        return video_format_IsSimilar( &p_fmt1->video, &p_fmt2->video );
+    }
+
+    case SPU_ES:
+    default:
+        return true;
+    }
 }
 

@@ -2,7 +2,7 @@
  * os_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 2e0a660f8fdb118b43c21ffb4abaded6afb44f55 $
+ * $Id: c9f7eae66f4a110e3c9a1bad901103627d76e5c0 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef OS_POPUP_HPP
@@ -34,26 +34,26 @@ class OSGraphics;
 /// Base class for OS specific Popup Windows
 class OSPopup: public SkinObject
 {
-    public:
-        virtual ~OSPopup() {}
+public:
+    virtual ~OSPopup() { }
 
-        /// Show the popup menu at the given (absolute) corrdinates
-        virtual void show( int xPos, int yPos ) = 0;
+    /// Show the popup menu at the given (absolute) corrdinates
+    virtual void show( int xPos, int yPos ) = 0;
 
-        /// Hide the popup menu
-        virtual void hide() = 0;
+    /// Hide the popup menu
+    virtual void hide() = 0;
 
-        /// Append a new menu item with the given label to the popup menu
-        virtual void addItem( const string &rLabel, int pos ) = 0;
+    /// Append a new menu item with the given label to the popup menu
+    virtual void addItem( const string &rLabel, int pos ) = 0;
 
-        /// Create a dummy menu item to separate sections
-        virtual void addSeparator( int pos ) = 0;
+    /// Create a dummy menu item to separate sections
+    virtual void addSeparator( int pos ) = 0;
 
-        /// Return the position of the item identified by the given id
-        virtual int getPosFromId( int id ) const = 0;
+    /// Return the position of the item identified by the given id
+    virtual int getPosFromId( int id ) const = 0;
 
-    protected:
-        OSPopup( intf_thread_t *pIntf ): SkinObject( pIntf ) {}
+protected:
+    OSPopup( intf_thread_t *pIntf ): SkinObject( pIntf ) { }
 };
 
 #endif

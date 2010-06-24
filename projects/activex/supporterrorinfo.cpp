@@ -1,7 +1,7 @@
 /*****************************************************************************
  * supporterrorinfo.cpp: ActiveX control for VLC
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
+ * Copyright (C) 2005-2010 the VideoLAN team
  *
  * Authors: Damien Fouilleul <Damien.Fouilleul@laposte.net>
  *
@@ -32,12 +32,11 @@ STDMETHODIMP VLCSupportErrorInfo::InterfaceSupportsErrorInfo(REFIID  riid)
 {
     if( (riid == IID_IVLCAudio)
      || (riid == IID_IVLCInput)
-     || (riid == IID_IVLCLog)
-     || (riid == IID_IVLCMessage)
-     || (riid == IID_IVLCMessageIterator)
-     || (riid == IID_IVLCMessages)
+     || (riid == IID_IVLCMarquee)
+     || (riid == IID_IVLCLogo)
      || (riid == IID_IVLCPlaylist)
      || (riid == IID_IVLCPlaylistItems)
+     || (riid == IID_IVLCSubtitle)
      || (riid == IID_IVLCVideo)
      || (riid == IID_IVLCControl2) )
     {

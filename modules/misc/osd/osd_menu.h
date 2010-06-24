@@ -2,7 +2,7 @@
  * parser.c :  OSD import module
  *****************************************************************************
  * Copyright (C) 2007 M2X
- * $Id: dcde173c82828e0ec1166ef2b1f23b5b32fe237d $
+ * $Id: 1505fb356f06c1ec0fd28fd40e3076bdf229a2fd $
  *
  * Authors: Jean-Paul Saman
  *
@@ -24,7 +24,7 @@
 #ifndef _OSD_MENU_PARSER_H_
 #define _OSD_MENU_PARSER_H_
 
-static const char *ppsz_button_states[] = { "unselect", "select", "pressed" };
+extern const char * const ppsz_button_states[3];
 
 /* OSD Menu structure support routines for internal use by
  * OSD Menu configuration file parsers only.

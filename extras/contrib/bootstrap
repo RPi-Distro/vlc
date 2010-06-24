@@ -72,15 +72,19 @@ fi
 
 case $HOST in
     *powerpc*|*ppc*)
-         echo "ARCH=ppc" >> config.mak
+         ARCH="ppc"
      ;;
     *86_64*)
-          echo "ARCH=x86_64" >> config.mak
+          ARCH="x86_64"
      ;;
     *86*)
-          echo "ARCH=i386" >> config.mak
+          ARCH="i386"
+     ;;
+    arm*eabi)
+          ARCH="armel"
      ;;
 esac
+echo "ARCH = $ARCH" >> config.mak
 
 # Check the HAVE_{OS}
 case $HOST in
@@ -96,9 +100,6 @@ case $HOST in
     ;;
     *wince*)
         echo "HAVE_WINCE = 1" >> config.mak
-    ;;
-    *beos*)
-        echo "HAVE_BEOS = 1" >> config.mak
     ;;
 esac
 
@@ -179,7 +180,7 @@ case $HOST in
         CFLAGS_TUNING=" -march=core2 -mtune=core2 -m64 -arch x86_64"
         echo "HAVE_DARWIN_64 = 1" >> config.mak
         EXTRA_CFLAGS=" -D\${ENVP} -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
-        EXTRA_LDFLAGS=" -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
+        EXTRA_LDFLAGS=" -arch x86_64 -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
         echo "PATH = /bin:/usr/bin:/usr/local/bin" >> config.mak
         CC="/Developer/usr/bin/gcc-4.2"
         CXX="/Developer/usr/bin/g++-4.2"
@@ -198,37 +199,13 @@ case $HOST in
             echo "HAVE_DARWIN_10 = 1" >> config.mak
         fi
     ;;
-    i586-pc-beos)
-        if test -f /boot/beos/system/lib/libbind.so; then
-            EXTRA_LDFLAGS=" -lbind -lsocket"
-        else
-            EXTRA_LDFLAGS=" -lnet"
-        fi
-        if test "$HOST" = "$BUILD"; then
-#           Compiling on BeOS
-            PATH=".:/boot/home/config/bin:/bin:/boot/apps"
-            PATH="${PATH}:/boot/preferences:/boot/beos/apps"
-            PATH="${PATH}:/boot/beos/preferences"
-            PATH="${PATH}:/boot/develop/tools/gnupro/bin"
-            echo "PATH = ${PATH}" >> config.mak
-            LIBRARY_PATH="${LIBRARY_PATH}:%A/lib:/boot/home/config/lib"
-            LIBRARY_PATH="${LIBRARY_PATH}:/boot/beos/system/lib"
-            echo "LIBRARY_PATH = ${LIBRARY_PATH}" >> config.mak
-        else
-#           Cross compiling from Linux
-            PATH="/opt/beos-tools/bin:/opt/cross-tools/bin"
-            PATH="${PATH}:/usr/bin:/bin"
-            echo "PATH = ${PATH}" >> config.mak
-        fi
-        cat src/Distributions/beos.mak >> distro.mak
-    ;;
     *mingw32ce)
         echo "HAVE_WINCE = 1" >> config.mak
         echo "PKG_CONFIG_PATH = \$(PREFIX)/lib/pkgconfig" >> config.mak
         EXTRA_CPPFLAGS=" -D_WIN32_WCE=0x0500"
         DISTRO=wince
     ;;
-    x86_64-*-mingw*)
+    *64-*mingw*)
         echo "HAVE_WIN64 = 1" >> config.mak
         echo "HAVE_WIN32 = 1" >> config.mak
         echo "PKG_CONFIG_PATH = \$(PREFIX)/lib/pkgconfig" >> config.mak
@@ -238,7 +215,7 @@ case $HOST in
     *mingw32*)
         echo "HAVE_WIN32 = 1" >> config.mak
         echo "PKG_CONFIG_PATH = \$(PREFIX)/lib/pkgconfig" >> config.mak
-        EXTRA_CFLAGS="-O3"
+        EXTRA_CFLAGS=" -O3 -march=i686 -mtune=generic"
         DISTRO=win32
     ;;
     i686-pc-cygwin)
@@ -268,9 +245,8 @@ case $HOST in
             DISTRO=maemo
             echo 'HAVE_MAEMO = 1' >> config.mak
             EXTRA_CFLAGS=" -mcpu=cortex-a8 -mtune=cortex-a8 -march=armv7-a"
-            EXTRA_CLFAGS="$EXTRA_CFLAGS -mfpu=neon"
-            EXTRA_CFLAGS="$EXTRA_CFLAGS -mthumb -mthumb-interwork"
-            echo 'HAVE_ISA_THUMB = 1' >> config.mak
+            EXTRA_CFLAGS="$EXTRA_CFLAGS -mfpu=neon -mfloat-abi=softfp"
+            EXTRA_CFLAGS="$EXTRA_CFLAGS -O3 -fno-tree-vectorize"
         else
             EXTRA_CFLAGS="-msoft-float"
         fi
@@ -314,7 +290,9 @@ cat src/Distributions/"${DISTRO}".mak >> distro.mak
 echo "BUILD = $BUILD" >> config.mak
 echo "HOST = $HOST" >> config.mak
 
-echo "PREFIX = `pwd`" >> config.mak
+echo "PREFIX = `pwd`/hosts/$HOST" >> config.mak
+
+ln -sfn hosts/$HOST build 
 
 echo "CC = ${CC}" >> config.mak
 echo "CXX = ${CXX}" >> config.mak
@@ -326,6 +304,19 @@ echo "EXTRA_CFLAGS = ${CFLAGS_TUNING} ${EXTRA_CFLAGS}" >> config.mak
 echo "EXTRA_CPPFLAGS = ${EXTRA_CPPFLAGS} -isystem \$(PREFIX)/include" >> config.mak
 echo "EXTRA_LDFLAGS = ${EXTRA_LDFLAGS}" >> config.mak
 echo "EXTRA_PATH = ${EXTRA_PATH}" >> config.mak
+
+#CMAKE
+if test "$HOST" != "$BUILD"; then
+if test ${DISTRO} = "win32"; then
+echo "SET(CMAKE_SYSTEM_NAME Windows)" >> toolchain.cmake
+fi
+echo "SET(CMAKE_C_COMPILER ${CC})" >> toolchain.cmake
+echo "SET(CMAKE_CXX_COMPILER ${CXX})" >> toolchain.cmake
+echo "SET(CMAKE_FIND_ROOT_PATH  `pwd` )" >> toolchain.cmake
+echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> toolchain.cmake
+echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> toolchain.cmake
+echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> toolchain.cmake
+fi
 
 if wget --version >/dev/null 2>&1; then
     echo "WGET = `which wget` -c --passive" >> config.mak

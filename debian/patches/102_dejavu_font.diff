@@ -1,12 +1,13 @@
-Change the default font to one very likely to be present on a Debian box
+Description: Change the default font to one very likely to be present on a
+ Debian box.
 
-Index: vlc-debian/modules/misc/freetype.c
+Index: debian.git/modules/misc/freetype.c
 ===================================================================
---- vlc-debian.orig/modules/misc/freetype.c	2010-02-13 15:44:12.000000000 +0000
-+++ vlc-debian/modules/misc/freetype.c	2010-02-13 15:44:27.000000000 +0000
-@@ -64,7 +64,7 @@
- #define DEFAULT_FONT "" /* Default font found at run-time */
- #define FC_DEFAULT_FONT "Arial"
+--- debian.git.orig/modules/misc/freetype.c	2010-06-16 01:58:09.000000000 +0200
++++ debian.git/modules/misc/freetype.c	2010-06-23 00:46:55.485476112 +0200
+@@ -67,7 +67,7 @@
+ #define DEFAULT_FONT "/usr/share/fonts/nokia/nosnb.ttf"
+ #define FC_DEFAULT_FONT "Nokia Sans Bold"
  #else
 -#define DEFAULT_FONT "/usr/share/fonts/truetype/freefont/FreeSerifBold.ttf"
 +#define DEFAULT_FONT "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf"

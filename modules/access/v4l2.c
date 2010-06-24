@@ -2,7 +2,7 @@
  * v4l2.c : Video4Linux2 input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 2659b81508dd38b01076426bc93dd9ee49e660a5 $
+ * $Id: 791cccf4a368e20139182c20479efcbd243c96f2 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -41,15 +41,23 @@
 #include <vlc_plugin.h>
 #include <vlc_access.h>
 #include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_demux.h>
 #include <vlc_input.h>
 
 #include <ctype.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
-#include <linux/videodev2.h>
+#if defined(HAVE_LINUX_VIDEODEV2_H)
+#   include <linux/videodev2.h>
+#elif defined(HAVE_SYS_VIDEOIO_H)
+#   include <sys/videoio.h>
+#else
+#   error "No Video4Linux2 headers found."
+#endif
 
 #include <poll.h>
 
@@ -215,9 +223,26 @@ typedef enum {
 } io_method;
 
 static const int i_standards_list[] =
-    { V4L2_STD_UNKNOWN, V4L2_STD_SECAM, V4L2_STD_PAL, V4L2_STD_NTSC };
+    { V4L2_STD_UNKNOWN, V4L2_STD_SECAM, V4L2_STD_PAL, V4L2_STD_NTSC,
+      V4L2_STD_PAL_B, V4L2_STD_PAL_B1, V4L2_STD_PAL_G, V4L2_STD_PAL_H,
+      V4L2_STD_PAL_I, V4L2_STD_PAL_D, V4L2_STD_PAL_D1, V4L2_STD_PAL_K,
+      V4L2_STD_PAL_M, V4L2_STD_PAL_N, V4L2_STD_PAL_Nc, V4L2_STD_PAL_60,
+      V4L2_STD_NTSC_M, V4L2_STD_NTSC_M_JP, V4L2_STD_NTSC_443,
+      V4L2_STD_NTSC_M_KR,
+      V4L2_STD_SECAM_B, V4L2_STD_SECAM_D, V4L2_STD_SECAM_G,
+      V4L2_STD_SECAM_H, V4L2_STD_SECAM_K, V4L2_STD_SECAM_K1,
+      V4L2_STD_SECAM_L, V4L2_STD_SECAM_LC,
+      V4L2_STD_ATSC_8_VSB, V4L2_STD_ATSC_16_VSB,
+      };
 static const char *const psz_standards_list_text[] =
-    { N_("Default"), N_("SECAM"), N_("PAL"),  N_("NTSC") };
+    { N_("Default"), "SECAM", "PAL",  "NTSC",
+      "PAL_B", "PAL_B1", "PAL_G", "PAL_H", "PAL_I", "PAL_D",
+      "PAL_D1", "PAL_K", "PAL_M", "PAL_N", "PAL_Nc", "PAL_60",
+      "NTSC_M", "NTSC_M_JP", "NTSC_443", "NTSC_M_KR",
+      "SECAM_B", "SECAM_D", "SECAM_G", "SECAM_H", "SECAM_K",
+      "SECAM_K1", "SECAM_L", "SECAM_LC",
+      "ATSC_8_VSB", "ATSC_16_VSB"
+    };
 
 static const int i_iomethod_list[] =
     { IO_METHOD_AUTO, IO_METHOD_READ, IO_METHOD_MMAP, IO_METHOD_USERPTR };
@@ -239,6 +264,16 @@ static const char *const psz_tuner_audio_modes_list_text[] =
 #define V4L2_DEFAULT "/dev/video0"
 #define CFG_PREFIX "v4l2-"
 
+#ifdef HAVE_MAEMO
+# define DEFAULT_WIDTH	640
+# define DEFAULT_HEIGHT	492
+#endif
+
+#ifndef DEFAULT_WIDTH
+# define DEFAULT_WIDTH	(-1)
+# define DEFAULT_HEIGHT	(-1)
+#endif
+
 vlc_module_begin ()
     set_shortname( N_("Video4Linux2") )
     set_description( N_("Video4Linux2 input") )
@@ -258,14 +293,14 @@ vlc_module_begin ()
     add_integer( CFG_PREFIX "io", IO_METHOD_AUTO, NULL, IOMETHOD_TEXT,
                  IOMETHOD_LONGTEXT, true )
         change_integer_list( i_iomethod_list, psz_iomethod_list_text, NULL )
-    add_integer( CFG_PREFIX "width", -1, NULL, WIDTH_TEXT,
+    add_integer( CFG_PREFIX "width", DEFAULT_WIDTH, NULL, WIDTH_TEXT,
                 WIDTH_LONGTEXT, true )
-    add_integer( CFG_PREFIX "height", -1, NULL, HEIGHT_TEXT,
+    add_integer( CFG_PREFIX "height", DEFAULT_HEIGHT, NULL, HEIGHT_TEXT,
                 HEIGHT_LONGTEXT, true )
     add_string( CFG_PREFIX "aspect-ratio", "4:3", NULL, ASPECT_TEXT,
               ASPECT_LONGTEXT, true )
     add_float( CFG_PREFIX "fps", 0, NULL, FPS_TEXT, FPS_LONGTEXT, true )
-    add_integer( CFG_PREFIX "caching", DEFAULT_PTS_DELAY / 1000, NULL,
+    add_integer( CFG_PREFIX "caching", 50 /* ms */, NULL,
                 CACHING_TEXT, CACHING_LONGTEXT, true )
 #ifdef HAVE_LIBV4L2
     add_bool( CFG_PREFIX "use-libv4l2", false, NULL, LIBV4L2_TEXT, LIBV4L2_LONGTEXT, true );
@@ -401,43 +436,42 @@ static int AccessControlResetCallback( vlc_object_t *p_this,
 static const struct
 {
     unsigned int i_v4l2;
-    int i_fourcc;
+    vlc_fourcc_t i_fourcc;
     int i_rmask;
     int i_gmask;
     int i_bmask;
 } v4l2chroma_to_fourcc[] =
 {
     /* Raw data types */
-    { V4L2_PIX_FMT_GREY,    VLC_FOURCC('G','R','E','Y'), 0, 0, 0 },
+    { V4L2_PIX_FMT_GREY,    VLC_CODEC_GREY, 0, 0, 0 },
     { V4L2_PIX_FMT_HI240,   VLC_FOURCC('I','2','4','0'), 0, 0, 0 },
-    { V4L2_PIX_FMT_RGB555,  VLC_FOURCC('R','V','1','5'), 0x001f,0x03e0,0x7c00 },
-    { V4L2_PIX_FMT_RGB565,  VLC_FOURCC('R','V','1','6'), 0x001f,0x07e0,0xf800 },
+    { V4L2_PIX_FMT_RGB555,  VLC_CODEC_RGB15, 0x001f,0x03e0,0x7c00 },
+    { V4L2_PIX_FMT_RGB565,  VLC_CODEC_RGB16, 0x001f,0x07e0,0xf800 },
     /* Won't work since we don't know how to handle such gmask values
      * correctly
-    { V4L2_PIX_FMT_RGB555X, VLC_FOURCC('R','V','1','5'), 0x007c,0xe003,0x1f00 },
-    { V4L2_PIX_FMT_RGB565X, VLC_FOURCC('R','V','1','6'), 0x00f8,0xe007,0x1f00 },
+    { V4L2_PIX_FMT_RGB555X, VLC_CODEC_RGB15, 0x007c,0xe003,0x1f00 },
+    { V4L2_PIX_FMT_RGB565X, VLC_CODEC_RGB16, 0x00f8,0xe007,0x1f00 },
     */
-    { V4L2_PIX_FMT_BGR24,   VLC_FOURCC('R','V','2','4'), 0xff0000,0xff00,0xff },
-    { V4L2_PIX_FMT_RGB24,   VLC_FOURCC('R','V','2','4'), 0xff,0xff00,0xff0000 },
-    { V4L2_PIX_FMT_BGR32,   VLC_FOURCC('R','V','3','2'), 0xff0000,0xff00,0xff },
-    { V4L2_PIX_FMT_RGB32,   VLC_FOURCC('R','V','3','2'), 0xff,0xff00,0xff0000 },
-    { V4L2_PIX_FMT_YUYV,    VLC_FOURCC('Y','U','Y','2'), 0, 0, 0 },
-    { V4L2_PIX_FMT_YUYV,    VLC_FOURCC('Y','U','Y','V'), 0, 0, 0 },
-    { V4L2_PIX_FMT_UYVY,    VLC_FOURCC('U','Y','V','Y'), 0, 0, 0 },
+    { V4L2_PIX_FMT_BGR24,   VLC_CODEC_RGB24, 0xff0000,0xff00,0xff },
+    { V4L2_PIX_FMT_RGB24,   VLC_CODEC_RGB24, 0xff,0xff00,0xff0000 },
+    { V4L2_PIX_FMT_BGR32,   VLC_CODEC_RGB32, 0xff0000,0xff00,0xff },
+    { V4L2_PIX_FMT_RGB32,   VLC_CODEC_RGB32, 0xff,0xff00,0xff0000 },
+    { V4L2_PIX_FMT_YUYV,    VLC_CODEC_YUYV, 0, 0, 0 },
+    { V4L2_PIX_FMT_UYVY,    VLC_CODEC_UYVY, 0, 0, 0 },
     { V4L2_PIX_FMT_Y41P,    VLC_FOURCC('I','4','1','N'), 0, 0, 0 },
-    { V4L2_PIX_FMT_YUV422P, VLC_FOURCC('I','4','2','2'), 0, 0, 0 },
-    { V4L2_PIX_FMT_YVU420,  VLC_FOURCC('Y','V','1','2'), 0, 0, 0 },
-    { V4L2_PIX_FMT_YUV411P, VLC_FOURCC('I','4','1','1'), 0, 0, 0 },
-    { V4L2_PIX_FMT_YUV410,  VLC_FOURCC('I','4','1','0'), 0, 0, 0 },
+    { V4L2_PIX_FMT_YUV422P, VLC_CODEC_I422, 0, 0, 0 },
+    { V4L2_PIX_FMT_YVU420,  VLC_CODEC_YV12, 0, 0, 0 },
+    { V4L2_PIX_FMT_YUV411P, VLC_CODEC_I411, 0, 0, 0 },
+    { V4L2_PIX_FMT_YUV410,  VLC_CODEC_I410, 0, 0, 0 },
 
     /* Raw data types, not in V4L2 spec but still in videodev2.h and supported
      * by VLC */
-    { V4L2_PIX_FMT_YUV420,  VLC_FOURCC('I','4','2','0'), 0, 0, 0 },
-    /* FIXME { V4L2_PIX_FMT_RGB444,  VLC_FOURCC('R','V','3','2') }, */
+    { V4L2_PIX_FMT_YUV420,  VLC_CODEC_I420, 0, 0, 0 },
+    /* FIXME { V4L2_PIX_FMT_RGB444,  VLC_CODEC_RGB32 }, */
 
     /* Compressed data types */
-    { V4L2_PIX_FMT_MJPEG,   VLC_FOURCC('M','J','P','G'), 0, 0, 0 },
-    { V4L2_PIX_FMT_JPEG,    VLC_FOURCC('J','P','E','G'), 0, 0, 0 },
+    { V4L2_PIX_FMT_MJPEG,   VLC_CODEC_MJPG, 0, 0, 0 },
+    { V4L2_PIX_FMT_JPEG,    VLC_CODEC_JPEG, 0, 0, 0 },
 #if 0
     { V4L2_PIX_FMT_DV,      VLC_FOURCC('?','?','?','?') },
     { V4L2_PIX_FMT_MPEG,    VLC_FOURCC('?','?','?','?') },
@@ -451,7 +485,7 @@ static const struct
  *
  * Try YUV chromas first, then RGB little endian and MJPEG as last resort.
  */
-static const __u32 p_chroma_fallbacks[] =
+static const uint32_t p_chroma_fallbacks[] =
 { V4L2_PIX_FMT_YUV420, V4L2_PIX_FMT_YVU420, V4L2_PIX_FMT_YUV422P,
   V4L2_PIX_FMT_YUYV, V4L2_PIX_FMT_UYVY, V4L2_PIX_FMT_BGR24,
   V4L2_PIX_FMT_BGR32, V4L2_PIX_FMT_MJPEG, V4L2_PIX_FMT_JPEG };
@@ -536,6 +570,7 @@ struct demux_sys_t
     float f_fps;            /* <= 0.0 mean to grab at full rate */
     mtime_t i_video_pts;    /* only used when f_fps > 0 */
     int i_fourcc;
+    uint32_t i_block_flags;
 
     es_out_id_t *p_es;
 
@@ -550,6 +585,7 @@ struct demux_sys_t
 
 #ifdef HAVE_LIBV4L2
     /* */
+    int (*pf_open)(const char *, int, ...);
     int (*pf_close)( int );
     int (*pf_dup)( int );
     int (*pf_ioctl)( int, unsigned long int, ... );
@@ -563,6 +599,7 @@ struct demux_sys_t
 #ifdef HAVE_LIBV4L2
 static void use_kernel_v4l2( demux_sys_t *p_sys )
 {
+    p_sys->pf_open = vlc_open;
     p_sys->pf_close = close;
     p_sys->pf_dup = dup;
     p_sys->pf_ioctl = ioctl;
@@ -574,6 +611,7 @@ static void use_kernel_v4l2( demux_sys_t *p_sys )
 
 static void use_libv4l2( demux_sys_t *p_sys )
 {
+    p_sys->pf_open = v4l2_open;
     p_sys->pf_close = v4l2_close;
     p_sys->pf_dup = v4l2_dup;
     p_sys->pf_ioctl = v4l2_ioctl;
@@ -583,6 +621,7 @@ static void use_libv4l2( demux_sys_t *p_sys )
     p_sys->b_libv4l2 = true;
 }
 
+#   define v4l2_open (p_sys->pf_open)
 #   define v4l2_close (p_sys->pf_close)
 #   define v4l2_dup (p_sys->pf_dup)
 #   define v4l2_ioctl (p_sys->pf_ioctl)
@@ -590,6 +629,7 @@ static void use_libv4l2( demux_sys_t *p_sys )
 #   define v4l2_mmap (p_sys->pf_mmap)
 #   define v4l2_munmap (p_sys->pf_munmap)
 #else
+#   define v4l2_open vlc_open
 #   define v4l2_close close
 #   define v4l2_dup dup
 #   define v4l2_ioctl ioctl
@@ -645,7 +685,7 @@ static int DemuxOpen( vlc_object_t *p_this )
     ParseMRL( p_sys, p_demux->psz_path, (vlc_object_t *) p_demux );
 
 #ifdef HAVE_LIBV4L2
-    if( !config_GetInt( p_this, CFG_PREFIX "use-libv4l2" ) )
+    if( !var_InheritBool( p_this, CFG_PREFIX "use-libv4l2" ) )
     {
         msg_Dbg( p_this, "Trying direct kernel v4l2" );
         use_kernel_v4l2( p_sys );
@@ -696,9 +736,9 @@ static void GetV4L2Params( demux_sys_t *p_sys, vlc_object_t *p_obj )
     p_sys->psz_set_ctrls = var_CreateGetString( p_obj, "v4l2-set-ctrls" );
 
     char *psz_aspect = var_CreateGetString( p_obj, "v4l2-aspect-ratio" );
-    if( psz_aspect && *psz_aspect && strchr( psz_aspect, ':' ) )
+    char *psz_delim = !EMPTY_STR(psz_aspect) ? strchr( psz_aspect, ':' ) : NULL;
+    if( psz_delim )
     {
-        char *psz_delim = strchr( psz_aspect, ':' );
         p_sys->i_aspect = atoi( psz_aspect ) * VOUT_ASPECT_FACTOR / atoi( psz_delim + 1 );
     }
     else
@@ -737,30 +777,22 @@ static void ParseMRL( demux_sys_t *p_sys, char *psz_path, vlc_object_t *p_obj )
             if( !strncmp( psz_parser, "standard=", strlen( "standard=" ) ) )
             {
                 psz_parser += strlen( "standard=" );
-                if( !strncmp( psz_parser, "pal", strlen( "pal" ) ) )
+                size_t i;
+                for( i = 0; i < ARRAY_SIZE(psz_standards_list_text); i++ )
                 {
-                    p_sys->i_selected_standard_id = V4L2_STD_PAL;
-                    psz_parser += strlen( "pal" );
+                    const char *psz_value = psz_standards_list_text[i];
+                    size_t i_len = strlen( psz_value );
+                    if( !strncasecmp( psz_parser, psz_value, i_len ) &&
+                        ( psz_parser[i_len] == ':' || psz_parser[i_len] == 0 ) )
+                    {
+                        p_sys->i_selected_standard_id = i_standards_list[i];
+                        psz_parser += i_len;
+                        break;
+                    }
                 }
-                else if( !strncmp( psz_parser, "ntsc", strlen( "ntsc" ) ) )
-                {
-                    p_sys->i_selected_standard_id = V4L2_STD_NTSC;
-                    psz_parser += strlen( "ntsc" );
-                }
-                else if( !strncmp( psz_parser, "secam", strlen( "secam" ) ) )
-                {
-                    p_sys->i_selected_standard_id = V4L2_STD_SECAM;
-                    psz_parser += strlen( "secam" );
-                }
-                else if( !strncmp( psz_parser, "default", strlen( "default" ) ) )
-                {
-                    p_sys->i_selected_standard_id = V4L2_STD_UNKNOWN;
-                    psz_parser += strlen( "default" );
-                }
-                else
-                {
+
+                if( i == ARRAY_SIZE(psz_standards_list_text) )
                     p_sys->i_selected_standard_id = i_standards_list[strtol( psz_parser, &psz_parser, 0 )];
-                }
             }
             else if( !strncmp( psz_parser, "chroma=", strlen( "chroma=" ) ) )
             {
@@ -1108,7 +1140,7 @@ static int AccessOpen( vlc_object_t * p_this )
     ParseMRL( p_sys, p_access->psz_path, (vlc_object_t *) p_access );
 
 #ifdef HAVE_LIBV4L2
-    if( !config_GetInt( p_this, CFG_PREFIX "use-libv4l2" ) )
+    if( !var_InheritBool( p_this, CFG_PREFIX "use-libv4l2" ) )
     {
         msg_Dbg( p_this, "Trying direct kernel v4l2" );
         use_kernel_v4l2( p_sys );
@@ -1151,29 +1183,21 @@ static int AccessOpen( vlc_object_t * p_this )
  *****************************************************************************/
 static int DemuxControl( demux_t *p_demux, int i_query, va_list args )
 {
-    demux_sys_t *p_sys = p_demux->p_sys;
-    bool *pb;
-    int64_t    *pi64;
-
     switch( i_query )
     {
         /* Special for access_demux */
         case DEMUX_CAN_PAUSE:
         case DEMUX_CAN_SEEK:
-        case DEMUX_SET_PAUSE_STATE:
         case DEMUX_CAN_CONTROL_PACE:
-            pb = (bool*)va_arg( args, bool * );
-            *pb = false;
+            *va_arg( args, bool * ) = false;
             return VLC_SUCCESS;
 
         case DEMUX_GET_PTS_DELAY:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
-            *pi64 = (int64_t)p_sys->i_cache * 1000;
+            *va_arg(args,int64_t *) = (int64_t)p_demux->p_sys->i_cache*1000;
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
-            *pi64 = mdate();
+            *va_arg( args, int64_t * ) = mdate();
             return VLC_SUCCESS;
 
         /* TODO implement others */
@@ -1189,8 +1213,6 @@ static int DemuxControl( demux_t *p_demux, int i_query, va_list args )
  *****************************************************************************/
 static int AccessControl( access_t *p_access, int i_query, va_list args )
 {
-    bool    *pb_bool;
-    int64_t *pi_64;
     demux_sys_t  *p_sys = (demux_sys_t *) p_access->p_sys;
 
     switch( i_query )
@@ -1198,22 +1220,14 @@ static int AccessControl( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = false;
-            break;
         case ACCESS_CAN_PAUSE:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = false;
-            break;
         case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = false;
+            *va_arg( args, bool* ) = false;
             break;
 
         /* */
         case ACCESS_GET_PTS_DELAY:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t) p_sys->i_cache * 1000;
+            *va_arg(args,int64_t *) = (int64_t)p_sys->i_cache*1000;
             break;
 
         /* */
@@ -1344,7 +1358,8 @@ static block_t* GrabVideo( vlc_object_t *p_demux, demux_sys_t *p_sys )
         mtime_t i_dur = (mtime_t)((double)1000000 / (double)p_sys->f_fps);
 
         /* Did we wait long enough ? (frame rate reduction) */
-        if( p_sys->i_video_pts + i_dur > mdate() ) return 0;
+        if( p_sys->i_video_pts + i_dur > mdate() )
+            return NULL;
     }
 
     /* Grab Video Frame */
@@ -1357,7 +1372,7 @@ static block_t* GrabVideo( vlc_object_t *p_demux, demux_sys_t *p_sys )
             switch( errno )
             {
             case EAGAIN:
-                return 0;
+                return NULL;
             case EIO:
                 /* Could ignore EIO, see spec. */
                 /* fall through */
@@ -1368,7 +1383,8 @@ static block_t* GrabVideo( vlc_object_t *p_demux, demux_sys_t *p_sys )
         }
 
         p_block = ProcessVideoFrame( p_demux, (uint8_t*)p_sys->p_buffers[0].start, i_ret );
-        if( !p_block ) return 0;
+        if( !p_block )
+            return NULL;
 
         break;
 
@@ -1383,30 +1399,31 @@ static block_t* GrabVideo( vlc_object_t *p_demux, demux_sys_t *p_sys )
             switch( errno )
             {
             case EAGAIN:
-                return 0;
+                return NULL;
             case EIO:
                 /* Could ignore EIO, see spec. */
                 /* fall through */
             default:
                 msg_Err( p_demux, "Failed to wait (VIDIOC_DQBUF)" );
-                return 0;
+                return NULL;
                }
         }
 
         if( buf.index >= p_sys->i_nbuffers ) {
             msg_Err( p_demux, "Failed capturing new frame as i>=nbuffers" );
-            return 0;
+            return NULL;
         }
 
         p_block = ProcessVideoFrame( p_demux, p_sys->p_buffers[buf.index].start, buf.bytesused );
-        if( !p_block ) return 0;
+        if( !p_block )
+            return NULL;
 
         /* Unlock */
         if( v4l2_ioctl( p_sys->i_fd, VIDIOC_QBUF, &buf ) < 0 )
         {
             msg_Err( p_demux, "Failed to unlock (VIDIOC_QBUF)" );
             block_Release( p_block );
-            return 0;
+            return NULL;
         }
 
         break;
@@ -1422,13 +1439,13 @@ static block_t* GrabVideo( vlc_object_t *p_demux, demux_sys_t *p_sys )
             switch( errno )
             {
             case EAGAIN:
-                return 0;
+                return NULL;
             case EIO:
                 /* Could ignore EIO, see spec. */
                 /* fall through */
             default:
                 msg_Err( p_demux, "Failed to wait (VIDIOC_DQBUF)" );
-                return 0;
+                return NULL;
             }
         }
 
@@ -1443,18 +1460,19 @@ static block_t* GrabVideo( vlc_object_t *p_demux, demux_sys_t *p_sys )
         if( i >= p_sys->i_nbuffers )
         {
             msg_Err( p_demux, "Failed capturing new frame as i>=nbuffers" );
-            return 0;
+            return NULL;
         }
 
         p_block = ProcessVideoFrame( p_demux, (uint8_t*)buf.m.userptr, buf.bytesused );
-        if( !p_block ) return 0;
+        if( !p_block )
+            return NULL;
 
         /* Unlock */
         if( v4l2_ioctl( p_sys->i_fd, VIDIOC_QBUF, &buf ) < 0 )
         {
             msg_Err( p_demux, "Failed to unlock (VIDIOC_QBUF)" );
             block_Release( p_block );
-            return 0;
+            return NULL;
         }
 
         break;
@@ -1465,6 +1483,7 @@ static block_t* GrabVideo( vlc_object_t *p_demux, demux_sys_t *p_sys )
 
     /* Timestamp */
     p_sys->i_video_pts = p_block->i_pts = p_block->i_dts = mdate();
+    p_block->i_flags |= p_sys->i_block_flags;
 
     return p_block;
 }
@@ -1477,13 +1496,13 @@ static block_t* ProcessVideoFrame( vlc_object_t *p_demux, uint8_t *p_frame, size
 {
     block_t *p_block;
 
-    if( !p_frame ) return 0;
+    if( !p_frame ) return NULL;
 
     /* New block */
     if( !( p_block = block_New( p_demux, i_size ) ) )
     {
         msg_Warn( p_demux, "Cannot get new block" );
-        return 0;
+        return NULL;
     }
 
     /* Copy frame */
@@ -1823,7 +1842,7 @@ static int OpenVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys, bool b_demux )
     const char *psz_device = p_sys->psz_device;
     es_format_t es_fmt;
 
-    if( ( i_fd = open( psz_device, O_RDWR ) ) < 0 )
+    if( ( i_fd = v4l2_open( psz_device, O_RDWR ) ) < 0 )
     {
         msg_Err( p_obj, "cannot open device (%m)" );
         goto open_failed;
@@ -1895,7 +1914,21 @@ static int OpenVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys, bool b_demux )
             msg_Err( p_obj, "cannot set standard (%m)" );
             goto open_failed;
         }
-        msg_Dbg( p_obj, "Set standard" );
+        if( v4l2_ioctl( i_fd, VIDIOC_G_STD, &p_sys->i_selected_standard_id ) < 0 )
+        {
+            msg_Err( p_obj, "cannot get standard (%m). This should never happen!" );
+            goto open_failed;
+        }
+        msg_Dbg( p_obj, "Set standard to (0x%"PRIx64"):", p_sys->i_selected_standard_id );
+        int i_standard;
+        for( i_standard = 0; i_standard<p_sys->i_standard; i_standard++)
+        {
+            if( p_sys->p_standards[i_standard].id & p_sys->i_selected_standard_id )
+            {
+                msg_Dbg( p_obj, "  %s",
+                        p_sys->p_standards[i_standard].name );
+            }
+        }
     }
 
     /* Select input */
@@ -2032,9 +2065,8 @@ static int OpenVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys, bool b_demux )
         if( p_sys->psz_requested_chroma && *p_sys->psz_requested_chroma )
         {
             /* User specified chroma */
-            int i_requested_fourcc = VLC_FOURCC(
-                p_sys->psz_requested_chroma[0], p_sys->psz_requested_chroma[1],
-                p_sys->psz_requested_chroma[2], p_sys->psz_requested_chroma[3] );
+            const vlc_fourcc_t i_requested_fourcc =
+                vlc_fourcc_GetCodecFromString( VIDEO_ES, p_sys->psz_requested_chroma );
 
             for( int i = 0; v4l2chroma_to_fourcc[i].i_v4l2 != 0; i++ )
             {
@@ -2143,30 +2175,34 @@ static int OpenVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys, bool b_demux )
             break;
         case V4L2_FIELD_INTERLACED:
             msg_Dbg( p_obj, "Interlacing setting: interleaved (bottom top if M/NTSC, top bottom otherwise)" );
+            if( p_sys->i_selected_standard_id == V4L2_STD_NTSC )
+                p_sys->i_block_flags = BLOCK_FLAG_BOTTOM_FIELD_FIRST;
+            else
+                p_sys->i_block_flags = BLOCK_FLAG_TOP_FIELD_FIRST;
             break;
         case V4L2_FIELD_SEQ_TB:
-            msg_Dbg( p_obj, "Interlacing setting: sequential top bottom" );
+            msg_Dbg( p_obj, "Interlacing setting: sequential top bottom (TODO)" );
             break;
         case V4L2_FIELD_SEQ_BT:
-            msg_Dbg( p_obj, "Interlacing setting: sequential bottom top" );
+            msg_Dbg( p_obj, "Interlacing setting: sequential bottom top (TODO)" );
             break;
         case V4L2_FIELD_ALTERNATE:
-            msg_Dbg( p_obj, "Interlacing setting: alternate fields" );
+            msg_Dbg( p_obj, "Interlacing setting: alternate fields (TODO)" );
             p_sys->i_height = p_sys->i_height * 2;
             break;
         case V4L2_FIELD_INTERLACED_TB:
             msg_Dbg( p_obj, "Interlacing setting: interleaved top bottom" );
+            p_sys->i_block_flags = BLOCK_FLAG_TOP_FIELD_FIRST;
             break;
         case V4L2_FIELD_INTERLACED_BT:
             msg_Dbg( p_obj, "Interlacing setting: interleaved bottom top" );
+            p_sys->i_block_flags = BLOCK_FLAG_BOTTOM_FIELD_FIRST;
             break;
         default:
             msg_Warn( p_obj, "Interlacing setting: unknown type (%d)",
                       fmt.fmt.pix.field );
             break;
     }
-    if( fmt.fmt.pix.field != V4L2_FIELD_NONE )
-        msg_Warn( p_obj, "Interlaced inputs haven't been tested. Please report any issue." );
 
     /* Look up final fourcc */
     p_sys->i_fourcc = 0;
@@ -2204,7 +2240,7 @@ static int OpenVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys, bool b_demux )
         char psz_fourcc[5];
         memset( &psz_fourcc, 0, sizeof( psz_fourcc ) );
         vlc_fourcc_to_char( p_sys->i_fourcc, &psz_fourcc );
-        msg_Dbg( p_obj, "supported frame intervals for %4s, %dx%d:",
+        msg_Dbg( p_obj, "supported frame intervals for %4.4s, %dx%d:",
                  psz_fourcc, frmival.width, frmival.height );
         switch( frmival.type )
         {
@@ -2267,7 +2303,8 @@ static int OpenVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys, bool b_demux )
         es_fmt.video.i_height = p_sys->i_height;
 
         /* Get aspect-ratio */
-        es_fmt.video.i_aspect = p_sys->i_aspect;
+        es_fmt.video.i_sar_num = p_sys->i_aspect    * es_fmt.video.i_height;
+        es_fmt.video.i_sar_den = VOUT_ASPECT_FACTOR * es_fmt.video.i_width;
 
         demux_t *p_demux = (demux_t *) p_obj;
         msg_Dbg( p_demux, "added new video es %4.4s %dx%d",
@@ -2367,7 +2404,7 @@ static bool ProbeVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys,
 
     int i_fd;
 
-    if( ( i_fd = open( psz_device, O_RDWR ) ) < 0 )
+    if( ( i_fd = v4l2_open( psz_device, O_RDWR ) ) < 0 )
     {
         msg_Err( p_obj, "cannot open video device '%s' (%m)", psz_device );
         goto open_failed;
@@ -2405,7 +2442,7 @@ static bool ProbeVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys,
                             p_sys->dev_cap.version & 0xFF,
                             p_sys->dev_cap.bus_info );
 
-    msg_Dbg( p_obj, "the device has the capabilities: (%c) Video Capure, "
+    msg_Dbg( p_obj, "the device has the capabilities: (%c) Video Capture, "
                                                        "(%c) Audio, "
                                                        "(%c) Tuner, "
                                                        "(%c) Radio",
@@ -2438,12 +2475,11 @@ static bool ProbeVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys,
     if( p_sys->dev_cap.capabilities & V4L2_CAP_HW_FREQ_SEEK )
         msg_Dbg( p_obj, "device supports hardware frequency seeking" );
 #endif
-
     if( p_sys->dev_cap.capabilities & V4L2_CAP_VBI_CAPTURE )
-        msg_Dbg( p_obj, "device support raw VBI capture" );
+        msg_Dbg( p_obj, "device supports raw VBI capture" );
 
     if( p_sys->dev_cap.capabilities & V4L2_CAP_SLICED_VBI_CAPTURE )
-        msg_Dbg( p_obj, "device support sliced VBI capture" );
+        msg_Dbg( p_obj, "device supports sliced VBI capture" );
 
     /* Now, enumerate all the video inputs. This is useless at the moment
        since we have no way to present that info to the user except with
@@ -2512,7 +2548,7 @@ static bool ProbeVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys,
             msg_Dbg( p_obj, "video standard %i is: %s %c",
                                 i_standard,
                                 p_sys->p_standards[i_standard].name,
-                                (unsigned)i_standard == p_sys->i_selected_standard_id ? '*' : ' ' );
+                                (p_sys->p_standards[i_standard].id & p_sys->i_selected_standard_id) ? '*' : ' ' );
         }
     }
 
@@ -2656,7 +2692,7 @@ static bool ProbeVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys,
                     memset( &psz_fourcc, 0, sizeof( psz_fourcc ) );
                     vlc_fourcc_to_char( v4l2chroma_to_fourcc[i].i_fourcc,
                                         &psz_fourcc );
-                    msg_Dbg( p_obj, "device supports chroma %4s [%s, %s]",
+                    msg_Dbg( p_obj, "device supports chroma %4.4s [%s, %s]",
                                 psz_fourcc,
                                 p_sys->p_codecs[i_index].description,
                                 psz_fourcc_v4l2 );
@@ -2706,7 +2742,7 @@ static bool ProbeVideoDev( vlc_object_t *p_obj, demux_sys_t *p_sys,
             if( !b_codec_supported )
             {
                     msg_Dbg( p_obj,
-                         "device codec %4s (%s) not supported",
+                         "device codec %4.4s (%s) not supported",
                          psz_fourcc_v4l2,
                          p_sys->p_codecs[i_index].description );
             }
@@ -3090,7 +3126,7 @@ static void SetAvailControlsByString( vlc_object_t *p_obj, demux_sys_t *p_sys,
             psz_parser = ( *psz_delim ) ? ( psz_delim + 1 ) : psz_delim;
         }
     }
-    var_Change( p_obj, "allcontrols", VLC_VAR_FREELIST, &val, &text );
+    var_FreeList( &val, &text );
 }
 
 /*****************************************************************************
@@ -3259,12 +3295,12 @@ static int Control( vlc_object_t *p_obj, demux_sys_t *p_sys, int i_fd,
             case VLC_VAR_BOOL:
                 val.b_bool = control.value;
                 var_Change( p_obj, psz_name, VLC_VAR_SETVALUE, &val, NULL );
-                var_SetVoid( p_obj, "controls-update" );
+                var_TriggerCallback( p_obj, "controls-update" );
                 break;
             case VLC_VAR_INTEGER:
                 val.i_int = control.value;
                 var_Change( p_obj, psz_name, VLC_VAR_SETVALUE, &val, NULL );
-                var_SetVoid( p_obj, "controls-update" );
+                var_TriggerCallback( p_obj, "controls-update" );
                 break;
         }
     }

@@ -2,7 +2,7 @@
  * mlp.c: packetize MLP/TrueHD audio
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 85a7b6bee61dc29a69e9a2eab428363fa241146a $
+ * $Id: d466e77102904dc67cd37495eb6655c5a9e78a45 $
  *
  * Authors: Laurent Aimar < fenrir _AT videolan _DOT_ org >
  *
@@ -56,15 +56,15 @@ vlc_module_end ()
 typedef struct
 {
     int i_type;
-    int i_rate;
-    int i_channels;
+    unsigned i_rate;
+    unsigned i_channels;
     int i_channels_conf;
-    int i_samples;
+    unsigned i_samples;
 
     bool b_vbr;
-    int  i_bitrate;
+    unsigned  i_bitrate;
 
-    int  i_substreams;
+    unsigned  i_substreams;
 
 } mlp_header_t;
 
@@ -80,7 +80,7 @@ struct decoder_sys_t
     /*
      * Common properties
      */
-    audio_date_t   end_date;
+    date_t  end_date;
 
     mtime_t i_pts;
     int i_frame_size;
@@ -120,8 +120,8 @@ static int Open( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC('m','l','p',' ') &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC('t','r','h','d') )
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_MLP &&
+        p_dec->fmt_in.i_codec != VLC_CODEC_TRUEHD )
         return VLC_EGENERIC;
 
     /* */
@@ -131,7 +131,7 @@ static int Open( vlc_object_t *p_this )
 
     /* */
     p_sys->i_state = STATE_NOSYNC;
-    aout_DateSet( &p_sys->end_date, 0 );
+    date_Set( &p_sys->end_date, 0 );
 
     p_sys->bytestream = block_BytestreamInit();
     p_sys->b_mlp = false;
@@ -168,12 +168,12 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_NOSYNC;
             block_BytestreamEmpty( &p_sys->bytestream );
         }
-        aout_DateSet( &p_sys->end_date, 0 );
+        date_Set( &p_sys->end_date, 0 );
         block_Release( *pp_block );
         return NULL;
     }
 
-    if( !aout_DateGet( &p_sys->end_date ) && !(*pp_block)->i_pts )
+    if( !date_Get( &p_sys->end_date ) && !(*pp_block)->i_pts )
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( *pp_block );
@@ -212,10 +212,10 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
         case STATE_SYNC:
             /* New frame, set the Presentation Time Stamp */
             p_sys->i_pts = p_sys->bytestream.p_block->i_pts;
-            if( p_sys->i_pts != 0 &&
-                p_sys->i_pts != aout_DateGet( &p_sys->end_date ) )
+            if( p_sys->i_pts > VLC_TS_INVALID &&
+                p_sys->i_pts != date_Get( &p_sys->end_date ) )
             {
-                aout_DateSet( &p_sys->end_date, p_sys->i_pts );
+                date_Set( &p_sys->end_date, p_sys->i_pts );
             }
             p_sys->i_state = STATE_HEADER;
 
@@ -302,8 +302,9 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
                 msg_Info( p_dec, "MLP channels: %d samplerate: %d",
                           p_sys->mlp.i_channels, p_sys->mlp.i_rate );
 
-                aout_DateInit( &p_sys->end_date, p_sys->mlp.i_rate );
-                aout_DateSet( &p_sys->end_date, p_sys->i_pts );
+                const mtime_t i_end_date = date_Get( &p_sys->end_date );
+                date_Init( &p_sys->end_date, p_sys->mlp.i_rate, 1 );
+                date_Set( &p_sys->end_date, i_end_date );
             }
 
             p_dec->fmt_out.audio.i_rate     = p_sys->mlp.i_rate;
@@ -311,14 +312,14 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             p_dec->fmt_out.audio.i_original_channels = p_sys->mlp.i_channels_conf;
             p_dec->fmt_out.audio.i_physical_channels = p_sys->mlp.i_channels_conf & AOUT_CHAN_PHYSMASK;
 
-            p_out_buffer->i_pts = p_out_buffer->i_dts = aout_DateGet( &p_sys->end_date );
+            p_out_buffer->i_pts = p_out_buffer->i_dts = date_Get( &p_sys->end_date );
 
             p_out_buffer->i_length =
-                aout_DateIncrement( &p_sys->end_date, p_sys->mlp.i_samples ) - p_out_buffer->i_pts;
+                date_Increment( &p_sys->end_date, p_sys->mlp.i_samples ) - p_out_buffer->i_pts;
 
             /* Make sure we don't reuse the same pts twice */
             if( p_sys->i_pts == p_sys->bytestream.p_block->i_pts )
-                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = 0;
+                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = VLC_TS_INVALID;
 
             /* So p_block doesn't get re-added several times */
             *pp_block = block_BytestreamPop( &p_sys->bytestream );
@@ -392,7 +393,10 @@ static int MlpParse( mlp_header_t *p_mlp, const uint8_t p_hdr[MLP_HEADER_SYNC] )
         bs_skip( &s, 4 + 4 );
 
         i_rate_idx1 = bs_read( &s, 4 );
-        const int i_rate_idx2 = bs_read( &s, 4 );
+
+        // Just skip the 4 following, since we don't use it
+        // const int i_rate_idx2 = bs_read( &s, 4 );
+        bs_skip( &s, 4 );
 
         bs_skip( &s, 11 );
 
@@ -465,7 +469,7 @@ static int SyncInfo( const uint8_t *p_hdr, bool *pb_mlp, mlp_header_t *p_mlp )
         int i_tmp = 0 ^ p_hdr[0] ^ p_hdr[1] ^ p_hdr[2] ^ p_hdr[3];
         const uint8_t *p = &p_hdr[4 + ( b_has_sync ? 28 : 0 )];
 
-        for( int i = 0; i < p_mlp->i_substreams; i++ )
+        for( unsigned i = 0; i < p_mlp->i_substreams; i++ )
         {
             i_tmp ^= *p++;
             i_tmp ^= *p++;

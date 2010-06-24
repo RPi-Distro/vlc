@@ -2,7 +2,7 @@
  * noise.c : "add grain to image" video filter
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id: 28f54eb813ffb07c3c3a5088f0ed5f671e99b48a $
+ * $Id: 8aff4cddf3383decdcd42f5758a91b89d4df4e29 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -31,9 +31,9 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
+#include <vlc_rand.h>
 
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -46,12 +46,14 @@ static picture_t *Filter( filter_t *, picture_t * );
 
 #define FILTER_PREFIX "grain-"
 
+#define NOISE_HELP N_("add grain to image")
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
     set_description( N_("Grain video filter") )
     set_shortname( N_( "Grain" ))
+    set_help(NOISE_HELP)
     set_capability( "video filter2", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
@@ -74,7 +76,7 @@ static int Create( vlc_object_t *p_this )
             break;
 
         default:
-            msg_Err( p_filter, "Unsupported input chroma (%4s)",
+            msg_Err( p_filter, "Unsupported input chroma (%4.4s)",
                      (char*)&(p_filter->fmt_in.video.i_chroma) );
             return VLC_EGENERIC;
     }
@@ -134,7 +136,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         {
             for( i_col = 0; i_col < i_num_cols; i_col++ )
             {
-                p_noise[i_line*i_pitch+i_col] = ((rand()&0x1f)-0x0f);
+                p_noise[i_line*i_pitch+i_col] = ((vlc_mrand48()&0x1f)-0x0f);
             }
         }
 

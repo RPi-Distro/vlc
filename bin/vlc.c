@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 8917ff4f5284ca86d006dccf885a8be44f56aabe $
+ * $Id: 5b2259dffddde3a4792d1b7cc0b15596c4d25a77 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -34,22 +34,57 @@
 #include <stdlib.h>
 #include <locale.h>
 
+#ifdef __APPLE__
+#include <string.h>
+#endif
+
 
 /* Explicit HACK */
 extern void LocaleFree (const char *);
 extern char *FromLocale (const char *);
+extern void vlc_enable_override (void);
 
 #include <signal.h>
 #include <time.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <dlfcn.h>
+
+#ifdef HAVE_MAEMO
+static void dummy_handler (int signum)
+{
+    (void) signum;
+}
+#endif
 
 /*****************************************************************************
  * main: parse command line, start interface and spawn threads.
  *****************************************************************************/
 int main( int i_argc, const char *ppsz_argv[] )
 {
-    int i_ret;
+    /* The so-called POSIX-compliant MacOS X reportedly processes SIGPIPE even
+     * if it is blocked in all thread. Also some libraries want SIGPIPE blocked
+     * as they have no clue about signal masks.
+     * Note: this is NOT an excuse for not protecting against SIGPIPE. If
+     * LibVLC runs outside of VLC, we cannot rely on this code snippet. */
+    signal (SIGPIPE, SIG_IGN);
+    /* Restore default for SIGCHLD in case parent ignores it. */
+    signal (SIGCHLD, SIG_DFL);
+
+#ifdef HAVE_SETENV
+# ifndef NDEBUG
+    /* Activate malloc checking routines to detect heap corruptions. */
+    setenv ("MALLOC_CHECK_", "2", 1);
+
+    /* Disable the ugly Gnome crash dialog so that we properly segfault */
+    setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", 1);
+# endif
+
+    /* Clear the X.Org startup notification ID. Otherwise the UI might try to
+     * change the environment while the process is multi-threaded. That could
+     * crash. Screw you X.Org. Next time write a thread-safe specification. */
+    unsetenv ("DESKTOP_STARTUP_ID");
+#endif
 
 #ifndef ALLOW_RUN_AS_ROOT
     if (geteuid () == 0)
@@ -66,23 +101,14 @@ int main( int i_argc, const char *ppsz_argv[] )
 
 #ifndef __APPLE__
     /* This clutters OSX GUI error logs */
-    fprintf( stderr, "VLC media player %s\n", libvlc_get_version() );
-#endif
-
-#ifdef HAVE_PUTENV
-#   ifndef NDEBUG
-    /* Activate malloc checking routines to detect heap corruptions. */
-    putenv( (char*)"MALLOC_CHECK_=2" );
-
-    /* Disable the ugly Gnome crash dialog so that we properly segfault */
-    putenv( (char *)"GNOME_DISABLE_CRASH_DIALOG=1" );
-#   endif
+    fprintf( stderr, "VLC media player %s (revision %s)\n",
+             libvlc_get_version(), libvlc_get_changeset() );
 #endif
 
     /* Synchronously intercepted POSIX signals.
      *
      * In a threaded program such as VLC, the only sane way to handle signals
-     * is to block them in all thread but one - this is the only way to
+     * is to block them in all threads but one - this is the only way to
      * predict which thread will receive them. If any piece of code depends
      * on delivery of one of this signal it is intrinsically not thread-safe
      * and MUST NOT be used in VLC, whether we like it or not.
@@ -110,6 +136,13 @@ int main( int i_argc, const char *ppsz_argv[] )
     sigemptyset (&set);
     for (unsigned i = 0; i < sizeof (sigs) / sizeof (sigs[0]); i++)
         sigaddset (&set, sigs[i]);
+#ifdef HAVE_MAEMO
+    sigaddset (&set, SIGRTMIN);
+    {
+        struct sigaction act = { .sa_handler = dummy_handler, };
+        sigaction (SIGRTMIN, &act, NULL);
+    }
+#endif
 
     /* Block all these signals */
     pthread_sigmask (SIG_BLOCK, &set, NULL);
@@ -117,53 +150,54 @@ int main( int i_argc, const char *ppsz_argv[] )
     sigdelset (&set, SIGCHLD);
 
     /* Note that FromLocale() can be used before libvlc is initialized */
-    const char *argv[i_argc + 3];
+    const char *argv[i_argc + 4];
     int argc = 0;
 
+    argv[argc++] = "--no-ignore-config";
+    argv[argc++] = "--user-agent=\"VLC media player\"";
 #ifdef TOP_BUILDDIR
     argv[argc++] = FromLocale ("--plugin-path="TOP_BUILDDIR"/modules");
 #endif
 #ifdef TOP_SRCDIR
-# ifdef ENABLE_HTTPD
-    argv[argc++] = FromLocale ("--http-src="TOP_SRCDIR"/share/http");
-# endif
+    argv[argc++] = FromLocale ("--data-path="TOP_SRCDIR"/share");
 #endif
 
-    for (int i = 1; i < i_argc; i++)
+    int i = 1;
+#ifdef __APPLE__
+    /* When VLC.app is run by double clicking in Mac OS X, the 2nd arg
+     * is the PSN - process serial number (a unique PID-ish thingie)
+     * still ok for real Darwin & when run from command line
+     * for example -psn_0_9306113 */
+    if(i_argc >= 2 && !strncmp( ppsz_argv[1] , "-psn" , 4 ))
+        i = 2;
+#endif
+    for (; i < i_argc; i++)
         if ((argv[argc++] = FromLocale (ppsz_argv[i])) == NULL)
             return 1; // BOOM!
+    argv[argc] = NULL;
 
-    libvlc_exception_t ex, dummy;
-    libvlc_exception_init (&ex);
-    libvlc_exception_init (&dummy);
+    vlc_enable_override ();
 
     /* Initialize libvlc */
-    libvlc_instance_t *vlc = libvlc_new (argc, argv, &ex);
+    libvlc_instance_t *vlc = libvlc_new (argc, argv);
 
     if (vlc != NULL)
     {
-        libvlc_add_intf (vlc, "signals", &ex);
-        if (libvlc_exception_raised (&ex))
-        {
-            libvlc_exception_clear (&ex);
+        if (libvlc_add_intf (vlc, "signals"))
             pthread_sigmask (SIG_UNBLOCK, &set, NULL);
+#if !defined (HAVE_MAEMO)
+        libvlc_add_intf (vlc, "globalhotkeys,none");
+#endif
+        if (libvlc_add_intf (vlc, NULL) == 0)
+        {
+            libvlc_playlist_play (vlc, -1, 0, NULL);
+            libvlc_wait (vlc);
         }
-        libvlc_add_intf (vlc, "globalhotkeys,none", &ex);
-        libvlc_exception_clear (&ex);
-        libvlc_add_intf (vlc, NULL, &ex);
-        libvlc_playlist_play (vlc, -1, 0, NULL, &dummy);
-        libvlc_wait (vlc);
         libvlc_release (vlc);
     }
-    i_ret = libvlc_exception_raised (&ex);
-    if( i_ret )
-        fprintf( stderr, "%s\n", libvlc_exception_get_message( &ex));
 
-    libvlc_exception_clear (&ex);
-    libvlc_exception_clear (&dummy);
-
-    for (int i = 0; i < argc; i++)
+    for (int i = 2; i < argc; i++)
         LocaleFree (argv[i]);
 
-    return i_ret;
+    return 0;
 }

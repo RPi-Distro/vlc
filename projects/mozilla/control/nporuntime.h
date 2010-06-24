@@ -3,7 +3,7 @@
  *              FYI: http://www.mozilla.org/projects/plugins/npruntime.html
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: 2ac525d39de922ee692ee3ffd4beae75126fd42a $
+ * $Id: fe9bfc62936a305188162070584e99fab3112f88 $
  *
  * Authors: Damien Fouilleul <damien.fouilleul@laposte.net>
  *
@@ -42,6 +42,9 @@ static bool RuntimeNPClassInvokeDefault(NPObject *npobj,
 class RuntimeNPObject : public NPObject
 {
 public:
+    // Lazy child object cration helper. Doing this avoids
+    // ownership problems with firefox.
+    template<class T> void InstantObj( NPObject *&obj );
 
     /*
     ** utility functions
@@ -127,6 +130,8 @@ protected:
 
     bool returnInvokeResult(InvokeResult result);
 
+    static InvokeResult invokeResultString(const char *,NPVariant &);
+
     bool isPluginRunning()
     {
         return (_instance->pdata != NULL);
@@ -171,6 +176,13 @@ private:
     NPIdentifier *propertyIdentifiers;
     NPIdentifier *methodIdentifiers;
 };
+
+template<class T>
+inline void RuntimeNPObject::InstantObj( NPObject *&obj )
+{
+    if( !obj )
+        obj = NPN_CreateObject(_instance, RuntimeNPClass<T>::getClass());
+}
 
 template<class T>
 static NPObject *RuntimeNPClassAllocate(NPP instance, NPClass *aClass)

@@ -2,7 +2,7 @@
  * mms.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 000c5501dccee589f093426a1956e72c124f2f3c $
+ * $Id: 45e363d2d2bbf00725d206dde07aa626cae93d1c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -38,24 +38,13 @@
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
-#ifdef HAVE_SYS_TIME_H
-#   include <sys/time.h>
-#endif
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
+#include <sys/types.h>
 #ifdef HAVE_POLL
 #   include <poll.h>
 #endif
 
 #include <vlc_network.h>
-#include "vlc_url.h"
+#include <vlc_url.h>
 #include "asf.h"
 #include "buffer.h"
 
@@ -77,7 +66,7 @@ void  MMSTUClose  ( access_t * );
 
 
 static block_t *Block( access_t * );
-static int Seek( access_t *, int64_t );
+static int Seek( access_t *, uint64_t );
 static int Control( access_t *, int, va_list );
 
 static int  MMSOpen ( access_t *, vlc_url_t *, int );
@@ -310,19 +299,15 @@ static int Control( access_t *p_access, int i_query, va_list args )
 /*****************************************************************************
  * Seek: try to go at the right place
  *****************************************************************************/
-static int Seek( access_t * p_access, int64_t i_pos )
+static int Seek( access_t * p_access, uint64_t i_pos )
 {
     access_sys_t *p_sys = p_access->p_sys;
     uint32_t    i_packet;
     uint32_t    i_offset;
     var_buffer_t buffer;
 
-    if( i_pos < 0 )
-        return VLC_EGENERIC;
-
     if( i_pos < p_sys->i_header)
     {
-
         if( p_access->info.i_pos < p_sys->i_header )
         {
             /* no need to restart stream, it was already one
@@ -344,7 +329,7 @@ static int Seek( access_t * p_access, int64_t i_pos )
     if( p_sys->b_seekable && i_packet >= p_sys->i_packet_count )
         return VLC_EGENERIC;
 
-    msg_Dbg( p_access, "seeking to %"PRId64 " (packet:%d)", i_pos, i_packet );
+    msg_Dbg( p_access, "seeking to %"PRIu64 " (packet:%u)", i_pos, i_packet );
 
     MMSStop( p_access );
     msg_Dbg( p_access, "stream stopped (seek)" );
@@ -574,7 +559,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
 #define GETUTF16( psz, size ) \
     { \
         int i; \
-        psz = malloc( size + 1); \
+        psz = xmalloc( size + 1); \
         for( i = 0; i < size; i++ ) \
         { \
             psz[i] = p[i]; \
@@ -711,11 +696,11 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
 
     msg_Dbg( p_access,
              "answer 0x06 flags:0x%8.8"PRIx32" media_length:%"PRIu32"s "
-             "packet_length:%u packet_count:%"PRId32" max_bit_rate:%d "
+             "packet_length:%zu packet_count:%"PRIu32" max_bit_rate:%d "
              "header_size:%zu",
              p_sys->i_flags_broadcast,
              p_sys->i_media_length,
-             (unsigned)p_sys->i_packet_length,
+             p_sys->i_packet_length,
              p_sys->i_packet_count,
              p_sys->i_max_bit_rate,
              p_sys->i_header_size );
@@ -784,10 +769,10 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
      asf_HeaderParse ( &p_sys->asfh,
                            p_sys->p_header, p_sys->i_header );
      asf_StreamSelect( &p_sys->asfh,
-                           var_CreateGetInteger( p_access, "mms-maxbitrate" ),
-                           var_CreateGetInteger( p_access, "mms-all" ),
-                           var_CreateGetInteger( p_access, "audio" ),
-                           var_CreateGetInteger( p_access, "video" ) );
+                           var_InheritInteger( p_access, "mms-maxbitrate" ),
+                           var_InheritBool( p_access, "mms-all" ),
+                           var_InheritBool( p_access, "audio" ),
+                           var_InheritBool( p_access, "video" ) );
 
     /* *** now select stream we want to receive *** */
     /* TODO take care of stream bitrate TODO */
@@ -814,7 +799,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
             {
                 var_buffer_add16( &buffer, 0x0000 );
                 msg_Info( p_access,
-                          "selecting stream[0x%x] %s (%d kb/s)",
+                          "selecting stream[0x%x] %s (%d Kib/s)",
                           i,
                           ( p_sys->asfh.stream[i].i_cat == ASF_STREAM_AUDIO  ) ?
                                                   "audio" : "video" ,
@@ -824,7 +809,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
             {
                 var_buffer_add16( &buffer, 0x0002 );
                 msg_Info( p_access,
-                          "ignoring stream[0x%x] %s (%d kb/s)",
+                          "ignoring stream[0x%x] %s (%d Kib/s)",
                           i,
                           ( p_sys->asfh.stream[i].i_cat == ASF_STREAM_AUDIO  ) ?
                                     "audio" : "video" ,
@@ -1089,7 +1074,7 @@ static int NetFillBuffer( access_t *p_access )
             return -1;
         }
 
-        if( !vlc_object_alive (p_access) || p_access->b_error )
+        if( !vlc_object_alive (p_access) )
             return -1;
 
         //msg_Dbg( p_access, "NetFillBuffer: trying again (select)" );
@@ -1157,7 +1142,7 @@ static int  mms_ParseCommand( access_t *p_access,
 
     free( p_sys->p_cmd );
     p_sys->i_cmd = i_data;
-    p_sys->p_cmd = malloc( i_data );
+    p_sys->p_cmd = xmalloc( i_data );
     memcpy( p_sys->p_cmd, p_data, i_data );
 
     *pi_used = i_data; /* by default */
@@ -1280,8 +1265,8 @@ static int  mms_ParsePacket( access_t *p_access,
     {
         if( p_sys->p_header )
         {
-            p_sys->p_header = realloc( p_sys->p_header,
-                                          p_sys->i_header + i_packet_length - 8 );
+            p_sys->p_header = xrealloc( p_sys->p_header,
+                                      p_sys->i_header + i_packet_length - 8 );
             memcpy( &p_sys->p_header[p_sys->i_header],
                     p_data + 8, i_packet_length - 8 );
             p_sys->i_header += i_packet_length - 8;
@@ -1289,7 +1274,7 @@ static int  mms_ParsePacket( access_t *p_access,
         }
         else
         {
-            uint8_t* p_packet = malloc( i_packet_length - 8 ); // don't bother with preheader
+            uint8_t* p_packet = xmalloc( i_packet_length - 8 ); // don't bother with preheader
             memcpy( p_packet, p_data + 8, i_packet_length - 8 );
             p_sys->p_header = p_packet;
             p_sys->i_header = i_packet_length - 8;
@@ -1302,7 +1287,7 @@ static int  mms_ParsePacket( access_t *p_access,
     }
     else
     {
-        uint8_t* p_packet = malloc( i_packet_length - 8 ); // don't bother with preheader
+        uint8_t* p_packet = xmalloc( i_packet_length - 8 ); // don't bother with preheader
         memcpy( p_packet, p_data + 8, i_packet_length - 8 );
         FREENULL( p_sys->p_media );
         p_sys->p_media = p_packet;

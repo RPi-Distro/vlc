@@ -2,7 +2,7 @@
  * x11_dragdrop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fd77b6c103187891b4a5e3c261b33341649ca7e7 $
+ * $Id: ff327e747658e7c0bf66a2898d27d9f90a3f7bd2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -120,18 +120,11 @@ void X11DragDrop::dndPosition( ldata_t data )
     event.xclient.message_type = typeAtom;
     event.xclient.format = 32;
     event.xclient.data.l[0] = m_wnd;
-    if( m_target != None )
-    {
-        // Accept the drop
-        event.xclient.data.l[1] = 1;
-    }
-    else
-    {
-        // Do not accept the drop
-        event.xclient.data.l[1] = 0;
-    }
-    int w = X11Factory::instance( getIntf() )->getScreenWidth();
-    int h = X11Factory::instance( getIntf() )->getScreenHeight();
+    // Accept the drop (1), or not (0).
+    event.xclient.data.l[1] = m_target != None ? 1 : 0;
+    OSFactory *pOsFactory = X11Factory::instance( getIntf() );
+    int w = pOsFactory->getScreenWidth();
+    int h = pOsFactory->getScreenHeight();
     event.xclient.data.l[2] = 0;
     event.xclient.data.l[3] = (w << 16) | h;
     event.xclient.data.l[4] = actionAtom;
@@ -170,35 +163,24 @@ void X11DragDrop::dndDrop( ldata_t data )
     XGetWindowProperty( XDISPLAY, src, propAtom, 0, 1024, False,
                         AnyPropertyType, &type, &format, &nitems, &nbytes,
                         (unsigned char**)&buffer );
-    string selection = "";
+
     if( buffer != NULL )
     {
-        selection = buffer;
-    }
-    XFree( buffer );
-
-    if( selection != "" )
-    {
-        // TODO: multiple files handling
-        string::size_type end = selection.find( "\n", 0 );
-        selection = selection.substr( 0, end - 1 );
-        end = selection.find( "\r", 0 );
-        selection = selection.substr( 0, end - 1 );
-
-        // Find the protocol, if any
-        if( selection.find( "file://", 0 ) == 0 )
+        char* psz_dup = strdup( buffer );
+        char* psz_new = psz_dup;
+        while( psz_new && *psz_new )
         {
-            selection.erase( 0, 7 );
+            char* psz_end = strchr( psz_new, '\n' );
+            if( psz_end )
+                *psz_end = '\0';
+
+            CmdAddItem cmd( getIntf(), psz_new, m_playOnDrop );
+            cmd.execute();
+
+            psz_new = psz_end ? psz_end + 1 : NULL;
         }
-
-        char *psz_fileName = new char[selection.size() + 1];
-        strncpy( psz_fileName, selection.c_str(), selection.size() + 1 );
-
-        // Add the file
-        CmdAddItem cmd( getIntf(), psz_fileName, m_playOnDrop );
-        cmd.execute();
-
-        delete[] psz_fileName;
+        free( psz_dup );
+        XFree( buffer );
     }
 
     // Tell the source we accepted the drop

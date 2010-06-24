@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 98f34b8d9fcc8448dde480f77c3780547949037b $
+ * $Id: ca260d8fdff400942af922edb4ccf394d675a7a6 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -113,15 +113,13 @@ Dialogs::~Dialogs()
     if( m_pProvider && m_pModule )
     {
         // Detach the dialogs provider from its parent interface
-        vlc_object_detach( m_pProvider );
-
         module_unneed( m_pProvider, m_pModule );
         vlc_object_release( m_pProvider );
-    }
 
-    /* Unregister callbacks */
-    var_DelCallback( getIntf()->p_libvlc, "intf-popupmenu",
-                     PopupMenuCB, this );
+        /* Unregister callbacks */
+        var_DelCallback( getIntf()->p_libvlc, "intf-popupmenu",
+                         PopupMenuCB, this );
+    }
 }
 
 
@@ -147,11 +145,8 @@ Dialogs *Dialogs::instance( intf_thread_t *pIntf )
 
 void Dialogs::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_dialogs )
-    {
-        delete pIntf->p_sys->p_dialogs;
-        pIntf->p_sys->p_dialogs = NULL;
-    }
+    delete pIntf->p_sys->p_dialogs;
+    pIntf->p_sys->p_dialogs = NULL;
 }
 
 
@@ -163,6 +158,9 @@ bool Dialogs::init()
     if( m_pProvider == NULL )
         return false;
 
+    // Attach the dialogs provider to its parent interface
+    vlc_object_attach( m_pProvider, getIntf() );
+
     m_pModule = module_need( m_pProvider, "dialogs provider", NULL, false );
     if( m_pModule == NULL )
     {
@@ -170,16 +168,6 @@ bool Dialogs::init()
         vlc_object_release( m_pProvider );
         m_pProvider = NULL;
         return false;
-    }
-
-    // Attach the dialogs provider to its parent interface
-    vlc_object_attach( m_pProvider, getIntf() );
-
-    // Initialize dialogs provider
-    // (returns as soon as initialization is done)
-    if( m_pProvider->pf_run )
-    {
-        m_pProvider->pf_run( m_pProvider );
     }
 
     /* Register callback for the intf-popupmenu variable */

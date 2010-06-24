@@ -3,9 +3,9 @@
 
 basedir = access
 dir = access/screen
-mods = screen x11_screen
-libvlc_LTLIBRARIES =  $(LTLIBscreen) $(LTLIBx11_screen)
-EXTRA_LTLIBRARIES =  libscreen_plugin.la libx11_screen_plugin.la
+mods = screen
+libvlc_LTLIBRARIES =  $(LTLIBscreen)
+EXTRA_LTLIBRARIES =  libscreen_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -19,15 +19,4 @@ libscreen_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libscreen_plugin_la_LIBADD = $(AM_LIBADD)
 libscreen_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The x11_screen plugin
-libx11_screen_plugin_la_SOURCES = $(SOURCES_x11_screen)
-nodist_libx11_screen_plugin_la_SOURCES = $(nodist_SOURCES_x11_screen)
-# Force per-target objects:
-libx11_screen_plugin_la_CFLAGS = $(AM_CFLAGS)
-libx11_screen_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libx11_screen_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libx11_screen_plugin_la_LIBADD = $(AM_LIBADD)
-libx11_screen_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

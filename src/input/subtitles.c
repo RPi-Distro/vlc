@@ -1,8 +1,8 @@
 /*****************************************************************************
- * subtitles.c
+ * subtitles.c : subtitles detection
  *****************************************************************************
- * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: c721a7958ef3cdbd0f695d973620c3702638fcb3 $
+ * Copyright (C) 2003-2009 the VideoLAN team
+ * $Id: 77816bd5a686508c682e82ba050affac685ddac5 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  * This is adapted code from the GPL'ed MPlayer (http://mplayerhq.hu)
@@ -32,28 +32,27 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_input.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
+#include <vlc_url.h>
 
 #ifdef HAVE_DIRENT_H
 #   include <dirent.h>
 #endif
 
-#include <limits.h>
-
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
+
 #include <sys/stat.h>
 
-#include <ctype.h>
+#include <ctype.h> /* isalnum */
+
 #include "input_internal.h"
 
 /**
  * We are not going to autodetect more subtitle files than this.
  */
 #define MAX_SUBTITLE_FILES 128
-
 
 /**
  * The possible extensions for subtitle files we support
@@ -135,11 +134,11 @@ static int whiteonly( const char *s )
 
 enum
 {
-    SUB_PRIORITY_NONE = 0,
-    SUB_PRIORITY_MATCH_NONE = 1,
+    SUB_PRIORITY_NONE        = 0,
+    SUB_PRIORITY_MATCH_NONE  = 1,
     SUB_PRIORITY_MATCH_RIGHT = 2,
-    SUB_PRIORITY_MATCH_LEFT = 3,
-    SUB_PRIORITY_MATCH_ALL = 4,
+    SUB_PRIORITY_MATCH_LEFT  = 3,
+    SUB_PRIORITY_MATCH_ALL   = 4,
 };
 typedef struct
 {
@@ -172,13 +171,12 @@ static int compare_sub_priority( const void *a, const void *b )
 int subtitles_Filter( const char *psz_dir_content )
 {
     const char *tmp = strrchr( psz_dir_content, '.');
-    int i;
 
     if( !tmp )
         return 0;
     tmp++;
 
-    for( i = 0; sub_exts[i][0]; i++ )
+    for( int i = 0; sub_exts[i][0]; i++ )
         if( strcasecmp( sub_exts[i], tmp ) == 0 )
             return 1;
     return 0;
@@ -260,13 +258,13 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
 
     vlc_subfn_t *result = NULL; /* unsorted results */
     char **result2; /* sorted results */
-    const char *psz_fname = psz_name_org;
 
-    if( !psz_fname )
+    if( !psz_name_org )
         return NULL;
 
-    if( !strncmp( psz_fname, "file://", 7 ) )
-        psz_fname += 7;
+    char *psz_fname = make_path( psz_name_org );
+    if( !psz_fname )
+        return NULL;
 
     /* extract filename & dirname from psz_fname */
     tmp = strrchr( psz_fname, DIR_SEP_CHAR );
@@ -285,7 +283,10 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
         char *psz_cwd = NULL;
 #endif
         if( !psz_cwd )
+        {
+            free( psz_fname );
             return NULL;
+        }
 
         f_fname = strdup( psz_fname );
         if( asprintf( &f_dir, "%s%c", psz_cwd, DIR_SEP_CHAR ) == -1 )
@@ -296,10 +297,21 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
     {
         free( f_fname );
         free( f_dir );
+        free( psz_fname );
         return NULL;
     }
 
     i_fname_len = strlen( f_fname );
+
+    /* HACK: do not look for subtitles for Transport Streams */
+    /* This breaks the clock synchronization */
+    if( i_fname_len > 3 && !strcasecmp( f_fname + i_fname_len - 3, ".ts" ) )
+    {
+        free( f_fname );
+        free( f_dir );
+        free( psz_fname );
+        return NULL;
+    }
 
     f_fname_noext = malloc(i_fname_len + 1);
     f_fname_trim = malloc(i_fname_len + 1 );
@@ -309,6 +321,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
         free( f_dir );
         free( f_fname_noext );
         free( f_fname_trim );
+        free( psz_fname );
         return NULL;
     }
 
@@ -324,19 +337,18 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
         const char *psz_dir = j < 0 ? f_dir : subdirs[j];
         char **ppsz_dir_content;
         int i_dir_content;
-        int a;
 
         if( psz_dir == NULL || ( j >= 0 && !strcmp( psz_dir, f_dir ) ) )
             continue;
 
         /* parse psz_src dir */
-        i_dir_content = utf8_scandir( psz_dir, &ppsz_dir_content,
+        i_dir_content = vlc_scandir( psz_dir, &ppsz_dir_content,
                                       subtitles_Filter, NULL );
         if( i_dir_content < 0 )
             continue;
 
         msg_Dbg( p_this, "looking for a subtitle file in %s", psz_dir );
-        for( a = 0; a < i_dir_content && i_sub_count < MAX_SUBTITLE_FILES ; a++ )
+        for( int a = 0; a < i_dir_content && i_sub_count < MAX_SUBTITLE_FILES ; a++ )
         {
             char *psz_name = ppsz_dir_content[a];
             char tmp_fname_noext[strlen( psz_name ) + 1];
@@ -391,7 +403,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
                 if( !strcmp( psz_path, psz_fname ) )
                     continue;
 
-                if( !utf8_stat( psz_path, &st ) && S_ISREG( st.st_mode ) && result )
+                if( !vlc_stat( psz_path, &st ) && S_ISREG( st.st_mode ) && result )
                 {
                     msg_Dbg( p_this,
                             "autodetected subtitle: %s with priority %d",
@@ -410,7 +422,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
         }
         if( ppsz_dir_content )
         {
-            for( a = 0; a < i_dir_content; a++ )
+            for( int a = 0; a < i_dir_content; a++ )
                 free( ppsz_dir_content[a] );
             free( ppsz_dir_content );
         }
@@ -425,6 +437,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
     free( f_dir );
     free( f_fname_trim );
     free( f_fname_noext );
+    free( psz_fname );
 
     if( !result )
         return NULL;

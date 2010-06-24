@@ -2,7 +2,7 @@
  * id3tag.c: id3/ape tag parser/skipper based on libid3tag
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 78a85cebc18066b33083ffb1271a84ddfe87659e $
+ * $Id: 9d8de17dbf9aa2b038a33c14acb4d1441c4cf582 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -62,11 +62,10 @@ vlc_module_end ()
 /*****************************************************************************
  * ParseID3Tag : parse an id3tag into the info structures
  *****************************************************************************/
-static void ParseID3Tag( demux_t *p_demux, const uint8_t *p_data, int i_size )
+static void ParseID3Tag( demux_meta_t *p_demux_meta, const uint8_t *p_data, int i_size )
 {
     struct id3_tag   *p_id3_tag;
     struct id3_frame *p_frame;
-    demux_meta_t     *p_demux_meta = (demux_meta_t*)p_demux->p_private;
     vlc_meta_t       *p_meta;
     int i;
 
@@ -92,10 +91,7 @@ static void ParseID3Tag( demux_t *p_demux, const uint8_t *p_data, int i_size )
             id3_byte_t const * p_ufid;
             id3_length_t i_ufidlen;
 
-            p_ufid = (id3_byte_t const *)
-                        id3_field_getbinarydata(
-                                &p_frame->fields[1],
-                                &i_ufidlen );
+            p_ufid = id3_field_getbinarydata( &p_frame->fields[1], &i_ufidlen );
             char *psz_ufid = strndup( p_ufid, i_ufidlen );
 
             vlc_meta_SetTrackID( p_meta, psz_ufid );
@@ -136,7 +132,8 @@ static void ParseID3Tag( demux_t *p_demux, const uint8_t *p_data, int i_size )
             while( i_data >= 4 )
             {
                 const unsigned int i_peak_size = p_data[3];
-                const float f_gain = (float)GetWBE( &p_data[1] ) / 512.0;
+                const float f_temp = GetWBE( &p_data[1] );
+                const float f_gain = f_temp / 512.0;
                 char psz_value[32];
 
                 if( i_data < i_peak_size + 4 )
@@ -161,7 +158,7 @@ static void ParseID3Tag( demux_t *p_demux, const uint8_t *p_data, int i_size )
     /* T--- Text informations */
     for( i = 0; (p_frame = id3_tag_findframe( p_id3_tag, "T", i )) != NULL; i++ )
     {
-        int i_strings;
+        unsigned i_strings;
  
         /* Special case TXXX is not the same beast */
         if( ID_IS( "TXXX" ) )
@@ -227,7 +224,7 @@ static void ParseID3Tag( demux_t *p_demux, const uint8_t *p_data, int i_size )
             }
             else if( ID_IS ( "APIC" ) )
             {
-                msg_Dbg( p_demux, "** Has APIC **" );
+                msg_Dbg( p_demux_meta, "** Has APIC **" );
             }
             else if( p_frame->description )
             {
@@ -267,9 +264,8 @@ static size_t GetAPEvXSize( const uint8_t *p_data, int i_data )
     /* it is the footer */
     return i_body + ( (flags&(1<<31)) ? APE_TAG_HEADERSIZE : 0 );
 }
-static void ParseAPEvXTag( demux_t *p_demux, const uint8_t *p_data, int i_data )
+static void ParseAPEvXTag( demux_meta_t *p_demux_meta, const uint8_t *p_data, int i_data )
 {
-    demux_meta_t     *p_demux_meta = (demux_meta_t*)p_demux->p_private;
     vlc_meta_t       *p_meta;
     bool b_start;
     bool b_end;
@@ -373,8 +369,9 @@ static void ParseAPEvXTag( demux_t *p_demux, const uint8_t *p_data, int i_data )
  * CheckFooter: check for ID3/APE at the end of the file
  * CheckHeader: check for ID3/APE at the begining of the file
  *****************************************************************************/
-static void CheckFooter( demux_t *p_demux )
+static void CheckFooter( demux_meta_t *p_demux_meta )
 {
+    demux_t      *p_demux = (demux_t *)p_demux_meta->p_demux;
     const int64_t i_pos = stream_Size( p_demux->s );
     const size_t i_peek = 128+APE_TAG_HEADERSIZE;
     const uint8_t *p_peek;
@@ -399,7 +396,7 @@ static void CheckFooter( demux_t *p_demux )
     if( i_id3v1_size == 128 )
     {
         msg_Dbg( p_demux, "found ID3v1 tag" );
-        ParseID3Tag( p_demux, p_peek_id3, i_id3v1_size );
+        ParseID3Tag( p_demux_meta, p_peek_id3, i_id3v1_size );
     }
 
     /* Compute ID3v2 position */
@@ -435,7 +432,7 @@ static void CheckFooter( demux_t *p_demux )
             stream_Peek( p_demux->s, &p_peek, i_id3v2_size ) == i_id3v2_size )
         {
             msg_Dbg( p_demux, "found ID3v2 tag at end of file" );
-            ParseID3Tag( p_demux, p_peek, i_id3v2_size );
+            ParseID3Tag( p_demux_meta, p_peek, i_id3v2_size );
         }
     }
 
@@ -446,14 +443,16 @@ static void CheckFooter( demux_t *p_demux )
             stream_Peek( p_demux->s, &p_peek, i_apevx_size ) == i_apevx_size )
         {
             msg_Dbg( p_demux, "found APEvx tag at end of file" );
-            ParseAPEvXTag( p_demux, p_peek, i_apevx_size );
+            ParseAPEvXTag( p_demux_meta, p_peek, i_apevx_size );
         }
     }
 }
-static void CheckHeader( demux_t *p_demux )
+static void CheckHeader( demux_meta_t *p_demux_meta )
 {
     const uint8_t *p_peek;
     int i_size;
+
+    demux_t      *p_demux = (demux_t *)p_demux_meta->p_demux;
 
     if( stream_Seek( p_demux->s, 0 ) )
         return;
@@ -466,7 +465,7 @@ static void CheckHeader( demux_t *p_demux )
         stream_Peek( p_demux->s, &p_peek, i_size ) == i_size )
     {
         msg_Dbg( p_demux, "found ID3v2 tag" );
-        ParseID3Tag( p_demux, p_peek, i_size );
+        ParseID3Tag( p_demux_meta, p_peek, i_size );
         return;
     }
 
@@ -478,7 +477,7 @@ static void CheckHeader( demux_t *p_demux )
         stream_Peek( p_demux->s, &p_peek, i_size ) == i_size )
     {
         msg_Dbg( p_demux, "found APEv1/2 tag" );
-        ParseAPEvXTag( p_demux, p_peek, i_size );
+        ParseAPEvXTag( p_demux_meta, p_peek, i_size );
     }
 }
 
@@ -487,12 +486,12 @@ static void CheckHeader( demux_t *p_demux )
  ****************************************************************************/
 static int ParseTags( vlc_object_t *p_this )
 {
-    demux_t      *p_demux = (demux_t *)p_this;
-    demux_meta_t *p_demux_meta = (demux_meta_t*)p_demux->p_private;
+    demux_meta_t *p_demux_meta = (demux_meta_t *)p_this;
+    demux_t      *p_demux = (demux_t *)p_demux_meta->p_demux;
     bool    b_seekable;
     int64_t       i_init;
 
-    msg_Dbg( p_demux, "checking for ID3v1/2 and APEv1/2 tags" );
+    msg_Dbg( p_demux_meta, "checking for ID3v1/2 and APEv1/2 tags" );
     stream_Control( p_demux->s, STREAM_CAN_FASTSEEK, &b_seekable );
     if( !b_seekable )
         return VLC_EGENERIC;
@@ -503,10 +502,10 @@ static int ParseTags( vlc_object_t *p_this )
     p_demux_meta->p_meta = NULL;
 
     /* */
-    CheckFooter( p_demux );
+    CheckFooter( p_demux_meta );
 
     /* */
-    CheckHeader( p_demux );
+    CheckHeader( p_demux_meta );
 
     /* Restore position
      *  Demuxer will not see tags at the start as src/input/demux.c skips it

@@ -2,7 +2,7 @@
  * cmd_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c1f9bbf61725814e7acdc4d8b0fb41af5ebed3da $
+ * $Id: 19214cb1afe39e7694c16b6d0dc51d0dd904a5ad $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "cmd_layout.hpp"
@@ -29,18 +29,13 @@
 
 
 CmdLayout::CmdLayout( intf_thread_t *pIntf, TopWindow &rWindow,
-                      GenericLayout &rLayout ):
-    CmdGeneric( pIntf ), m_rWindow( rWindow ), m_rLayout( rLayout )
-{
-}
+                      GenericLayout &rLayout )
+    : CmdGeneric( pIntf ), m_rWindow( rWindow ), m_rLayout( rLayout ) { }
 
 
 void CmdLayout::execute()
 {
-    if( !getIntf()->p_sys->p_theme )
-    {
-        return;
-    }
-    getIntf()->p_sys->p_theme->getWindowManager().setActiveLayout( m_rWindow,
-                                                                   m_rLayout );
+    Theme *p_theme = getIntf()->p_sys->p_theme;
+    if( p_theme )
+        p_theme->getWindowManager().setActiveLayout( m_rWindow, m_rLayout );
 }

@@ -1,3 +1,21 @@
+vlc (1.1.0-1) unstable; urgency=low
+
+  Teletext decoding is now done through zvbi. It requires installing an
+  extra packages: vlc-plugin-zvbi.
+
+  Some control interace are now implemented in lua. The C equivalents are
+  still present.
+    + HTTP: Default is still the C-implemented one. Use -I luahttp to
+      test the lua one. Remember to edit /etc/vlc/lua/http/.hosts
+    + RC: Default is the new lua-implemented one. Use -I oldrc to use the 
+      C one.
+    + Telnet: Default is the new lua-implemented one. Use -I oldtelnet to
+      use the C one.
+
+  For other changes, see /usr/share/vlc-nox/NEWS.gz
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 24 Jun 2010 22:01:26 +0100
+
 vlc (1.0.6-1) unstable; urgency=low
 
   The rtmp access module has been removed by upstream as it is deemed too buggy.

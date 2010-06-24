@@ -2,7 +2,7 @@
  * xml.c: XML parser wrapper for XML modules
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: e5c73ab671f7c7afa8d149c18702e793c05e1755 $
+ * $Id: 0d2625f8b3c6ece215b7ff0c3db0d4be1fbfbeef $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -29,13 +29,14 @@
 #include "vlc_xml.h"
 #include "../libvlc.h"
 
+#undef xml_Create
 /*****************************************************************************
  * xml_Create:
  *****************************************************************************
  * Create an instance of an XML parser.
  * Returns NULL on error.
  *****************************************************************************/
-xml_t *__xml_Create( vlc_object_t *p_this )
+xml_t *xml_Create( vlc_object_t *p_this )
 {
     xml_t *p_xml;
 
@@ -46,7 +47,6 @@ xml_t *__xml_Create( vlc_object_t *p_this )
     p_xml->p_module = module_need( p_xml, "xml", NULL, false );
     if( !p_xml->p_module )
     {
-        vlc_object_detach( p_xml );
         vlc_object_release( p_xml );
         msg_Err( p_this, "XML provider not found" );
         return NULL;
@@ -61,6 +61,5 @@ xml_t *__xml_Create( vlc_object_t *p_this )
 void xml_Delete( xml_t *p_xml )
 {
     module_unneed( p_xml, p_xml->p_module );
-    vlc_object_detach( p_xml );
     vlc_object_release( p_xml );
 }

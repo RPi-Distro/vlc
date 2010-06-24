@@ -2,7 +2,7 @@
  * trivial.c : trivial channel mixer plug-in (drops unwanted channels)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: ee393ed48deac87a410381317b587a827b08d844 $
+ * $Id: b76aa90a64541c9fa2812bee859465c0d12b20d1 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -32,14 +32,14 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 static int  Create    ( vlc_object_t * );
 
-static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
-                        aout_buffer_t * );
+static block_t *DoWork( filter_t *, block_t * );
 
 /*****************************************************************************
  * Module descriptor
@@ -57,34 +57,22 @@ vlc_module_end ()
  *****************************************************************************/
 static int Create( vlc_object_t *p_this )
 {
-    aout_filter_t * p_filter = (aout_filter_t *)p_this;
+    filter_t * p_filter = (filter_t *)p_this;
 
-    if ( (p_filter->input.i_physical_channels
-           == p_filter->output.i_physical_channels
-           && p_filter->input.i_original_channels
-               == p_filter->output.i_original_channels)
-          || p_filter->input.i_format != p_filter->output.i_format
-          || p_filter->input.i_rate != p_filter->output.i_rate
-          || (p_filter->input.i_format != VLC_FOURCC('f','l','3','2')
-               && p_filter->input.i_format != VLC_FOURCC('f','i','3','2')) )
+    if ( (p_filter->fmt_in.audio.i_physical_channels
+           == p_filter->fmt_out.audio.i_physical_channels
+           && p_filter->fmt_in.audio.i_original_channels
+               == p_filter->fmt_out.audio.i_original_channels)
+          || p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format
+          || p_filter->fmt_in.audio.i_rate != p_filter->fmt_out.audio.i_rate
+          || (p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32
+               && p_filter->fmt_in.audio.i_format != VLC_CODEC_FI32) )
     {
-        return -1;
+        return VLC_EGENERIC;
     }
 
-    p_filter->pf_do_work = DoWork;
-    if ( aout_FormatNbChannels( &p_filter->input )
-           > aout_FormatNbChannels( &p_filter->output ) )
-    {
-        /* Downmixing */
-        p_filter->b_in_place = 1;
-    }
-    else
-    {
-        /* Upmixing */
-        p_filter->b_in_place = 0;
-    }
-
-    return 0;
+    p_filter->pf_audio_filter = DoWork;
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -109,30 +97,41 @@ static void SparseCopy( int32_t * p_dest, const int32_t * p_src, size_t i_len,
 /*****************************************************************************
  * DoWork: convert a buffer
  *****************************************************************************/
-static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
-                    aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
+static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
 {
-    VLC_UNUSED(p_aout);
-    int i_input_nb = aout_FormatNbChannels( &p_filter->input );
-    int i_output_nb = aout_FormatNbChannels( &p_filter->output );
+    int i_input_nb = aout_FormatNbChannels( &p_filter->fmt_in.audio );
+    int i_output_nb = aout_FormatNbChannels( &p_filter->fmt_out.audio );
+
+    block_t *p_out_buf;
+    if( i_input_nb >= i_output_nb )
+    {
+        p_out_buf = p_in_buf; /* mix in place */
+        p_out_buf->i_buffer = p_in_buf->i_buffer / i_input_nb * i_output_nb;
+    }
+    else
+    {
+        p_out_buf = filter_NewAudioBuffer( p_filter,
+                              p_in_buf->i_buffer / i_input_nb * i_output_nb );
+        if( !p_out_buf )
+            goto out;
+        p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
+    }
+
     int32_t * p_dest = (int32_t *)p_out_buf->p_buffer;
-    int32_t * p_src = (int32_t *)p_in_buf->p_buffer;
+    const int32_t * p_src = (int32_t *)p_in_buf->p_buffer;
 
-    p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
-    p_out_buf->i_nb_bytes = p_in_buf->i_nb_bytes * i_output_nb / i_input_nb;
-
-    if ( (p_filter->output.i_original_channels & AOUT_CHAN_PHYSMASK)
-                != (p_filter->input.i_original_channels & AOUT_CHAN_PHYSMASK)
-           && (p_filter->input.i_original_channels & AOUT_CHAN_PHYSMASK)
+    if ( (p_filter->fmt_out.audio.i_original_channels & AOUT_CHAN_PHYSMASK)
+                != (p_filter->fmt_in.audio.i_original_channels & AOUT_CHAN_PHYSMASK)
+           && (p_filter->fmt_in.audio.i_original_channels & AOUT_CHAN_PHYSMASK)
                 == (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT) )
     {
         int i;
         /* This is a bit special. */
-        if ( !(p_filter->output.i_original_channels & AOUT_CHAN_LEFT) )
+        if ( !(p_filter->fmt_out.audio.i_original_channels & AOUT_CHAN_LEFT) )
         {
             p_src++;
         }
-        if ( p_filter->output.i_physical_channels == AOUT_CHAN_CENTER )
+        if ( p_filter->fmt_out.audio.i_physical_channels == AOUT_CHAN_CENTER )
         {
             /* Mono mode */
             for ( i = p_in_buf->i_nb_samples; i--; )
@@ -155,17 +154,18 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
             }
         }
     }
-    else if ( p_filter->output.i_original_channels
+    else if ( p_filter->fmt_out.audio.i_original_channels
                                     & AOUT_CHAN_REVERSESTEREO )
     {
         /* Reverse-stereo mode */
         int i;
         for ( i = p_in_buf->i_nb_samples; i--; )
         {
-            *p_dest = p_src[1];
-            p_dest++;
-            *p_dest = p_src[0];
-            p_dest++;
+            int32_t i_tmp = p_src[0];
+            p_dest[0] = p_src[1];
+            p_dest[1] = i_tmp;
+
+            p_dest += 2;
             p_src += 2;
         }
     }
@@ -174,5 +174,9 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         SparseCopy( p_dest, p_src, p_in_buf->i_nb_samples, i_output_nb,
                     i_input_nb );
     }
+out:
+    if( p_in_buf != p_out_buf )
+        block_Release( p_in_buf );
+    return p_out_buf;
 }
 

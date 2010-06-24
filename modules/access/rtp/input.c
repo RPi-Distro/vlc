@@ -6,8 +6,8 @@
  * Copyright © 2008 Rémi Denis-Courmont
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2.0
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
@@ -35,7 +35,9 @@
 #endif
 
 #include "rtp.h"
-#include <srtp.h>
+#ifdef HAVE_SRTP
+# include <srtp.h>
+#endif
 
 static bool fd_dead (int fd)
 {
@@ -139,7 +141,7 @@ static block_t *rtp_recv (demux_t *demux)
         const uint8_t ptype = rtp_ptype (block);
         if (ptype >= 72 && ptype <= 76)
             continue; /* Muxed RTCP, ignore for now */
-
+#ifdef HAVE_SRTP
         if (p_sys->srtp)
         {
             size_t len = block->i_buffer;
@@ -155,11 +157,19 @@ static block_t *rtp_recv (demux_t *demux)
             }
             block->i_buffer = len;
         }
+#endif
         return block; /* success! */
     }
     return NULL;
 }
 
+
+static void timer_cleanup (void *timer)
+{
+    vlc_timer_destroy ((vlc_timer_t)timer);
+}
+
+static void rtp_process (void *data);
 
 void *rtp_thread (void *data)
 {
@@ -167,56 +177,51 @@ void *rtp_thread (void *data)
     demux_sys_t *p_sys = demux->p_sys;
     bool autodetect = true;
 
-    do
+    if (vlc_timer_create (&p_sys->timer, rtp_process, data))
+        return NULL;
+    vlc_cleanup_push (timer_cleanup, (void *)p_sys->timer);
+
+    for (;;)
     {
         block_t *block = rtp_recv (demux);
+        if (block == NULL)
+            break;
+
+        if (autodetect)
+        {   /* Autodetect payload type, _before_ rtp_queue() */
+            /* No need for lock - the queue is empty. */
+            if (rtp_autodetect (demux, p_sys->session, block))
+            {
+                block_Release (block);
+                continue;
+            }
+            autodetect = false;
+        }
 
         int canc = vlc_savecancel ();
         vlc_mutex_lock (&p_sys->lock);
-        if (block == NULL)
-            p_sys->dead = true; /* Fatal error: abort */
-        else
-        {
-            if (autodetect)
-            {   /* Autodetect payload type, _before_ rtp_queue() */
-                if (rtp_autodetect (demux, p_sys->session, block))
-                {
-                    vlc_mutex_unlock (&p_sys->lock);
-                    block_Release (block);
-                    continue;
-                }
-                autodetect = false;
-            }
-            rtp_queue (demux, p_sys->session, block);
-        }
-        vlc_cond_signal (&p_sys->wait);
+        rtp_queue (demux, p_sys->session, block);
         vlc_mutex_unlock (&p_sys->lock);
         vlc_restorecancel (canc);
-    }
-    while (!p_sys->dead);
 
+        rtp_process (demux);
+    }
+    vlc_cleanup_run ();
     return NULL;
 }
 
 
 /**
  * Process one RTP packet from the de-jitter queue.
- * @return 0 on success, -1 on EOF
  */
-int rtp_process (demux_t *demux)
+static void rtp_process (void *data)
 {
+    demux_t *demux = data;
     demux_sys_t *p_sys = demux->p_sys;
-    mtime_t deadline = INT64_MAX;
-    int ret;
+    mtime_t deadline;
 
     vlc_mutex_lock (&p_sys->lock);
     if (rtp_dequeue (demux, p_sys->session, &deadline))
-        /* Pace the demux thread */
-        vlc_cond_timedwait (&p_sys->wait, &p_sys->lock, deadline);
-    else
-        vlc_cond_wait (&p_sys->wait, &p_sys->lock);
-    ret = p_sys->dead ? -1 : 0;
+        vlc_timer_schedule (p_sys->timer, true, deadline, 0);
     vlc_mutex_unlock (&p_sys->lock);
-
-    return ret;
 }

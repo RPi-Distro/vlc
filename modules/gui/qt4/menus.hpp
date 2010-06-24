@@ -2,7 +2,7 @@
  * menus.hpp : Menus handling
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 19c9c46e536ceb375650076c96de40ac8c412ff9 $
+ * $Id: f553679ba91f187ff45c64e5f9f51443a44fe768 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -30,13 +30,6 @@
 #include <QObject>
 #include <QAction>
 #include <vector>
-
-/* Folder vs. Directory */
-#if defined( WIN32 ) || defined(__APPLE__)
-#define I_OPEN_FOLDER N_("Open &Folder...")
-#else
-#define I_OPEN_FOLDER N_("Open D&irectory...")
-#endif //WIN32
 
 using namespace std;
 
@@ -78,7 +71,7 @@ private:
 
 class QVLCMenu : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
     friend class MenuFunc;
 
 public:
@@ -87,12 +80,12 @@ public:
 
     /* Popups Menus */
     static void PopupMenu( intf_thread_t *, bool );
-    static void AudioPopupMenu( intf_thread_t * );
-    static void VideoPopupMenu( intf_thread_t * );
-    static void MiscPopupMenu( intf_thread_t * );
+    static void AudioPopupMenu( intf_thread_t *, bool );
+    static void VideoPopupMenu( intf_thread_t *, bool );
+    static void MiscPopupMenu( intf_thread_t *, bool );
 
     /* Systray */
-    static void updateSystrayMenu( MainInterface *,intf_thread_t  *,
+    static void updateSystrayMenu( MainInterface *, intf_thread_t  *,
                                    bool b_force_visible = false);
 
     /* Actions */
@@ -106,9 +99,11 @@ private:
     static QMenu *ToolsMenu( QMenu * );
     static QMenu *ToolsMenu( QWidget * );
 
-    static QMenu *ViewMenu( intf_thread_t *, MainInterface *,
-                            bool with = true );
+    static QMenu *ViewMenu( intf_thread_t *, QWidget * );
+    static QMenu *ViewMenu( intf_thread_t *, QMenu *, MainInterface * mi = NULL );
+
     static QMenu *InterfacesMenu( intf_thread_t *p_intf, QMenu * );
+    static void ExtensionsMenu( intf_thread_t *p_intf, QMenu * );
 
     static QMenu *NavigMenu( intf_thread_t *, QMenu * );
     static QMenu *NavigMenu( intf_thread_t *, QWidget * );
@@ -133,9 +128,9 @@ private:
     static QMenu * Populate( intf_thread_t *, QMenu *current,
                              vector<const char*>&, vector<vlc_object_t *>& );
 
-    static void CreateAndConnect( QMenu *, const char *, QString, QString,
-                                  int, vlc_object_t *, vlc_value_t, int,
-                                  bool c = false );
+    static void CreateAndConnect( QMenu *, const char *, const QString&,
+                                  const QString&, int, vlc_object_t *,
+                                  vlc_value_t, int, bool c = false );
     static void UpdateItem( intf_thread_t *, QMenu *, const char *,
                             vlc_object_t *, bool );
     static int CreateChoicesMenu( QMenu *,const char *, vlc_object_t *, bool );
@@ -162,7 +157,7 @@ public:
             case 1: QVLCMenu::AudioMenu( p_intf, menu ); break;
             case 2: QVLCMenu::VideoMenu( p_intf, menu ); break;
             case 3: QVLCMenu::RebuildNavigMenu( p_intf, menu ); break;
-            case 4: QVLCMenu::InterfacesMenu( p_intf, menu ); break;
+            case 4: QVLCMenu::ViewMenu( p_intf, menu ); break;
         }
     }
 private:

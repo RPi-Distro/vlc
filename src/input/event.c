@@ -2,7 +2,7 @@
  * event.c: Events
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 242bf1fd01b61e6bf5c45f7fd9deb58499abe022 $
+ * $Id: f0a420518d310a87ce24f9d8fd6d3075e4c25d12 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
@@ -60,8 +60,7 @@ void input_SendEventAbort( input_thread_t *p_input )
     Trigger( p_input, INPUT_EVENT_ABORT );
 }
 
-void input_SendEventTimes( input_thread_t *p_input,
-                           double f_position, mtime_t i_time, mtime_t i_length )
+void input_SendEventPosition( input_thread_t *p_input, double f_position, mtime_t i_time )
 {
     vlc_value_t val;
 
@@ -73,13 +72,22 @@ void input_SendEventTimes( input_thread_t *p_input,
     val.i_time = i_time;
     var_Change( p_input, "time", VLC_VAR_SETVALUE, &val, NULL );
 
-	/* FIXME ugly + what about meta change event ? */
-    if( var_GetTime( p_input, "length" ) != i_length )
-        input_item_SetDuration( p_input->p->p_item, i_length );
+    Trigger( p_input, INPUT_EVENT_POSITION );
+}
+void input_SendEventLength( input_thread_t *p_input, mtime_t i_length )
+{
+    vlc_value_t val;
+
+    /* FIXME ugly + what about meta change event ? */
+    if( var_GetTime( p_input, "length" ) == i_length )
+        return;
+
+    input_item_SetDuration( p_input->p->p_item, i_length );
+
     val.i_time = i_length;
     var_Change( p_input, "length", VLC_VAR_SETVALUE, &val, NULL );
 
-    Trigger( p_input, INPUT_EVENT_TIMES );
+    Trigger( p_input, INPUT_EVENT_LENGTH );
 }
 void input_SendEventStatistics( input_thread_t *p_input )
 {
@@ -87,29 +95,29 @@ void input_SendEventStatistics( input_thread_t *p_input )
 }
 void input_SendEventRate( input_thread_t *p_input, int i_rate )
 {
-	vlc_value_t val;
+    vlc_value_t val;
 
-	val.i_int = i_rate;
-	var_Change( p_input, "rate", VLC_VAR_SETVALUE, &val, NULL );
+    val.f_float = (float)INPUT_RATE_DEFAULT / (float)i_rate;
+    var_Change( p_input, "rate", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_RATE );
 }
 void input_SendEventAudioDelay( input_thread_t *p_input, mtime_t i_delay )
 {
-	vlc_value_t val;
+    vlc_value_t val;
 
-	val.i_time = i_delay;
-	var_Change( p_input, "audio-delay", VLC_VAR_SETVALUE, &val, NULL );
+    val.i_time = i_delay;
+    var_Change( p_input, "audio-delay", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_AUDIO_DELAY );
 }
 
 void input_SendEventSubtitleDelay( input_thread_t *p_input, mtime_t i_delay )
 {
-	vlc_value_t val;
+    vlc_value_t val;
 
-	val.i_time = i_delay;
-	var_Change( p_input, "spu-delay", VLC_VAR_SETVALUE, &val, NULL );
+    val.i_time = i_delay;
+    var_Change( p_input, "spu-delay", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_SUBTITLE_DELAY );
 }
@@ -117,34 +125,40 @@ void input_SendEventSubtitleDelay( input_thread_t *p_input, mtime_t i_delay )
 /* TODO and file name ? */
 void input_SendEventRecord( input_thread_t *p_input, bool b_recording )
 {
-	vlc_value_t val;
+    vlc_value_t val;
 
-	val.b_bool = b_recording;
-	var_Change( p_input, "record", VLC_VAR_SETVALUE, &val, NULL );
+    val.b_bool = b_recording;
+    var_Change( p_input, "record", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_RECORD );
 }
 
 void input_SendEventTitle( input_thread_t *p_input, int i_title )
 {
-	vlc_value_t val;
+    vlc_value_t val;
 
-	val.i_int = i_title;
-	var_Change( p_input, "title", VLC_VAR_SETVALUE, &val, NULL );
+    val.i_int = i_title;
+    var_Change( p_input, "title", VLC_VAR_SETVALUE, &val, NULL );
 
-	input_ControlVarTitle( p_input, i_title );
+    input_ControlVarTitle( p_input, i_title );
 
     Trigger( p_input, INPUT_EVENT_TITLE );
 }
 
 void input_SendEventSeekpoint( input_thread_t *p_input, int i_title, int i_seekpoint )
 {
-	vlc_value_t val;
+    vlc_value_t val;
 
-	VLC_UNUSED( i_title );
-	val.i_int = i_seekpoint;
-	var_Change( p_input, "chapter", VLC_VAR_SETVALUE, &val, NULL );
+    /* "chapter" */
+    val.i_int = i_seekpoint;
+    var_Change( p_input, "chapter", VLC_VAR_SETVALUE, &val, NULL );
 
+    /* "title %2i" */
+    char psz_title[10];
+    snprintf( psz_title, sizeof(psz_title), "title %2i", i_title );
+    var_Change( p_input, psz_title, VLC_VAR_SETVALUE, &val, NULL );
+
+    /* */
     Trigger( p_input, INPUT_EVENT_CHAPTER );
 }
 
@@ -153,10 +167,10 @@ void input_SendEventSignal( input_thread_t *p_input, double f_quality, double f_
     vlc_value_t val;
 
     val.f_float = f_quality;
-	var_Change( p_input, "signal-quality", VLC_VAR_SETVALUE, &val, NULL );
+    var_Change( p_input, "signal-quality", VLC_VAR_SETVALUE, &val, NULL );
 
     val.f_float = f_strength;
-	var_Change( p_input, "signal-strength", VLC_VAR_SETVALUE, &val, NULL );
+    var_Change( p_input, "signal-strength", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_SIGNAL );
 }
@@ -176,7 +190,7 @@ void input_SendEventCache( input_thread_t *p_input, double f_level )
     vlc_value_t val;
 
     val.f_float = f_level;
-	var_Change( p_input, "cache", VLC_VAR_SETVALUE, &val, NULL );
+    var_Change( p_input, "cache", VLC_VAR_SETVALUE, &val, NULL );
 
     Trigger( p_input, INPUT_EVENT_CACHE );
 }
@@ -188,19 +202,19 @@ void input_SendEventMeta( input_thread_t *p_input )
 {
     Trigger( p_input, INPUT_EVENT_ITEM_META );
 
-	/* FIXME remove this ugliness ? */
-	vlc_event_t event;
+    /* FIXME remove this ugliness ? */
+    vlc_event_t event;
 
-	event.type = vlc_InputItemMetaChanged;
-	event.u.input_item_meta_changed.meta_type = vlc_meta_ArtworkURL;
-	vlc_event_send( &p_input->p->p_item->event_manager, &event );
+    event.type = vlc_InputItemMetaChanged;
+    event.u.input_item_meta_changed.meta_type = vlc_meta_ArtworkURL;
+    vlc_event_send( &p_input->p->p_item->event_manager, &event );
 }
 
 void input_SendEventMetaInfo( input_thread_t *p_input )
 {
     Trigger( p_input, INPUT_EVENT_ITEM_INFO );
 
-	/* FIXME remove this ugliness */
+    /* FIXME remove this ugliness */
     vlc_event_t event;
 
     event.type = vlc_InputItemInfoChanged;
@@ -211,7 +225,7 @@ void input_SendEventMetaName( input_thread_t *p_input, const char *psz_name )
 {
     Trigger( p_input, INPUT_EVENT_ITEM_NAME );
 
-	/* FIXME remove this ugliness */
+    /* FIXME remove this ugliness */
     vlc_event_t event;
 
     event.type = vlc_InputItemNameChanged;
@@ -219,6 +233,10 @@ void input_SendEventMetaName( input_thread_t *p_input, const char *psz_name )
     vlc_event_send( &p_input->p->p_item->event_manager, &event );
 }
 
+void input_SendEventMetaEpg( input_thread_t *p_input )
+{
+    Trigger( p_input, INPUT_EVENT_ITEM_EPG );
+}
 /*****************************************************************************
  * Event for es_out.c
  *****************************************************************************/

@@ -2,7 +2,7 @@
  * pes.c: PES packetizer used by the MPEG multiplexers
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 06afc9a08b351d9611ba255e28baba5315874831 $
+ * $Id: 60b4aebb9e3c290898a2a5be940953ed8c2dbe4c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -111,7 +111,7 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
 
                 if( i_pts > 0 && i_dts > 0 &&
                     ( i_pts != i_dts || ( p_fmt->i_cat == VIDEO_ES &&
-                      p_fmt->i_codec != VLC_FOURCC('m','p','g','v') ) ) )
+                      p_fmt->i_codec != VLC_CODEC_MPGV ) ) )
                 {
                     i_pts_dts = 0x03;
                     if ( !i_header_size ) i_header_size = 0xa;
@@ -319,6 +319,7 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
                    int b_mpeg2, int b_data_alignment, int i_header_size,
                    int i_max_pes_size )
 {
+    VLC_UNUSED(p_sout);
     block_t *p_pes;
     mtime_t i_pts, i_dts, i_length;
 
@@ -341,7 +342,7 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
         i_max_pes_size = PES_PAYLOAD_SIZE_MAX;
     }
 
-    if( p_fmt->i_codec == VLC_FOURCC( 'm', 'p','4', 'v' ) &&
+    if( p_fmt->i_codec == VLC_CODEC_MP4V &&
         p_es->i_flags & BLOCK_FLAG_TYPE_I )
     {
         /* For MPEG4 video, add VOL before I-frames */

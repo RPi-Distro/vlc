@@ -2,7 +2,7 @@
  * preferences_widgets.hpp : Widgets for preferences panels
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 3a0f5e116318a8e13bca8f61f93133d0f1d27bf6 $
+ * $Id: 412f21e81e6f400855f1aeed615d0c6cac65edf8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -45,6 +45,7 @@
 #include <QPushButton>
 #include <QVector>
 #include <QDialog>
+#include <QFontComboBox>
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -52,6 +53,28 @@ class QGroupBox;
 class QGridLayout;
 class QDialogButtonBox;
 class QVBoxLayout;
+
+/*******************************************************
+ * Simple widgets
+ *******************************************************/
+
+class InterfacePreviewWidget : public QLabel
+{
+    Q_OBJECT
+public:
+    InterfacePreviewWidget( QWidget * );
+    enum enum_style {
+                 COMPLETE, // aka MPC
+                 MINIMAL,  // aka WMP12 minimal
+                 SKINS };
+public slots:
+    void setPreview( enum_style );
+    void setNormalPreview( bool b_minimal );
+};
+
+/*******************************************************
+ * Variable controls
+ *******************************************************/
 
 class ConfigControl : public QObject
 {
@@ -184,14 +207,14 @@ public:
     BoolConfigControl( vlc_object_t *, module_config_t *, QWidget *,
                        QGridLayout *, int& );
     BoolConfigControl( vlc_object_t *, module_config_t *,
-                       QLabel *, QCheckBox*, bool );
+                       QLabel *, QAbstractButton*, bool );
     virtual ~BoolConfigControl() {};
     virtual int getValue();
     virtual void show() { checkbox->show(); }
     virtual void hide() { checkbox->hide(); }
     virtual int getType() { return CONFIG_ITEM_BOOL; }
 private:
-    QCheckBox *checkbox;
+    QAbstractButton *checkbox;
     void finish();
 };
 
@@ -280,7 +303,7 @@ private:
 
 class FileConfigControl : public VStringConfigControl
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     FileConfigControl( vlc_object_t *, module_config_t *, QWidget *,
                        QGridLayout *, int& );
@@ -301,7 +324,7 @@ protected:
 
 class DirectoryConfigControl : public FileConfigControl
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     DirectoryConfigControl( vlc_object_t *, module_config_t *, QWidget *,
                             QGridLayout *, int& );
@@ -312,20 +335,20 @@ public slots:
     virtual void updateField();
 };
 
-#if 0
-class FontConfigControl : public FileConfigControl
+class FontConfigControl : public VStringConfigControl
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     FontConfigControl( vlc_object_t *, module_config_t *, QWidget *,
-                       QGridLayout *, int&, bool pwd );
+                       QGridLayout *, int&);
     FontConfigControl( vlc_object_t *, module_config_t *, QLabel *,
-                       QLineEdit *, QPushButton *, bool pwd );
+                       QFontComboBox *);
     virtual ~FontConfigControl() {};
-public slots:
-    virtual void updateField();
+    virtual QString getValue(){ return font->currentFont().family(); }
+protected:
+    QLabel *label;
+    QFontComboBox *font;
 };
-#endif
 
 class ModuleConfigControl : public VStringConfigControl
 {
@@ -351,7 +374,7 @@ struct checkBoxListItem {
 
 class ModuleListConfigControl : public VStringConfigControl
 {
-    Q_OBJECT;
+    Q_OBJECT
     friend class ConfigControl;
 public:
     ModuleListConfigControl( vlc_object_t *, module_config_t *, QWidget *,
@@ -373,7 +396,7 @@ private:
 
 class StringListConfigControl : public VStringConfigControl
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     StringListConfigControl( vlc_object_t *, module_config_t *, QWidget *,
                              bool, QGridLayout*, int& );
@@ -421,7 +444,7 @@ private slot:
  **********************************************************************/
 class KeyShortcutEdit: public QLineEdit
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     void setValue( int _value ){ value = _value; }
     int getValue() const { return value; }
@@ -429,7 +452,7 @@ public:
     void setGlobal( bool _value ) { b_global = _value; }
     bool getGlobal()  const { return b_global; }
 public slots:
-    virtual void clear(void) { value = 0; QLineEdit::clear(); b_global = false;}
+    virtual void clear(void) { value = 0; QLineEdit::clear(); }
 private:
     int value;
     bool b_global;
@@ -441,7 +464,7 @@ signals:
 class SearchLineEdit;
 class KeySelectorControl : public ConfigControl
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     KeySelectorControl( vlc_object_t *, module_config_t *, QWidget *,
                         QGridLayout*, int& );
@@ -460,6 +483,7 @@ private:
 private slots:
     void setTheKey();
     void selectKey( QTreeWidgetItem * = NULL, int column = 1 );
+    void select( QTreeWidgetItem * = NULL, int column = 1 );
     void select1Key();
     void filter( const QString & );
 };

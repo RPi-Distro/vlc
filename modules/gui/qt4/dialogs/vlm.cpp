@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 679eededa5eb67123f8525c836a861c6c0c1e773 $
+ * $Id: ef02c6c88b33bc3bfa51e1ec3dd61f545dd90586 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -55,9 +55,7 @@
 #include <QFileDialog>
 
 
-VLMDialog *VLMDialog::instance = NULL;
-
-VLMDialog::VLMDialog( QWidget *parent, intf_thread_t *_p_intf ) : QVLCDialog( parent, _p_intf )
+VLMDialog::VLMDialog( intf_thread_t *_p_intf ) : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
 {
     p_vlm = vlm_New( p_intf );
 
@@ -267,7 +265,7 @@ bool VLMDialog::exportVLMConf()
 {
     QString saveVLMConfFileName = QFileDialog::getSaveFileName( this,
                                         qtr( "Save VLM configuration as..." ),
-                                        qfu( config_GetHomeDir() ),
+                                        QVLCUserDir( VLC_DOCUMENTS_DIR ),
                                         qtr( "VLM conf (*.vlm);;All (*)" ) );
 
     if( !saveVLMConfFileName.isEmpty() )
@@ -339,7 +337,7 @@ bool VLMDialog::importVLMConf()
     QString openVLMConfFileName = toNativeSeparators(
             QFileDialog::getOpenFileName(
             this, qtr( "Open VLM configuration..." ),
-            qfu( config_GetHomeDir() ),
+            QVLCUserDir( VLC_DOCUMENTS_DIR ),
             qtr( "VLM conf (*.vlm);;All (*)" ) ) );
 
     if( !openVLMConfFileName.isEmpty() )
@@ -496,11 +494,11 @@ VLMAWidget::VLMAWidget( const QString& _name,
     objLayout->addWidget( time, 1, 3, 1, 2 );*/
 
     QToolButton *modifyButton = new QToolButton;
-    modifyButton->setIcon( QIcon( QPixmap( ":/settings" ) ) );
+    modifyButton->setIcon( QIcon( ":/menu/settings" ) );
     objLayout->addWidget( modifyButton, 0, 5 );
 
     QToolButton *deleteButton = new QToolButton;
-    deleteButton->setIcon( QIcon( QPixmap( ":/quit" ) ) );
+    deleteButton->setIcon( QIcon( ":/menu/quit" ) );
     objLayout->addWidget( deleteButton, 0, 6 );
 
     BUTTONACT( modifyButton, modify() );
@@ -537,12 +535,12 @@ VLMBroadcast::VLMBroadcast( const QString& _name, const QString& _input,
     b_looped = _looped;
 
     playButton = new QToolButton;
-    playButton->setIcon( QIcon( QPixmap( ":/play" ) ) );
+    playButton->setIcon( QIcon( ":/menu/play" ) );
     objLayout->addWidget( playButton, 1, 0 );
     b_playing = true;
 
     QToolButton *stopButton = new QToolButton;
-    stopButton->setIcon( QIcon( QPixmap( ":/stop_b" ) ) );
+    stopButton->setIcon( QIcon( ":/toolbar/stop_b" ) );
     objLayout->addWidget( stopButton, 1, 1 );
 
     loopButton = new QToolButton;
@@ -559,9 +557,9 @@ void VLMBroadcast::update()
 {
     VLMWrapper::EditBroadcast( name, input, output, b_enabled, b_looped );
     if( b_looped )
-        loopButton->setIcon( QIcon( QPixmap( ":/repeat_all" ) ) );
+        loopButton->setIcon( QIcon( ":/buttons/playlist/repeat_all" ) );
     else
-        loopButton->setIcon( QIcon( QPixmap( ":/repeat_off" ) ) );
+        loopButton->setIcon( QIcon( ":/buttons/playlist/repeat_off" ) );
 }
 
 void VLMBroadcast::togglePlayPause()
@@ -569,12 +567,12 @@ void VLMBroadcast::togglePlayPause()
     if( b_playing )
     {
         VLMWrapper::ControlBroadcast( name, ControlBroadcastPause );
-        playButton->setIcon( QIcon( QPixmap( ":/pause_16px" ) ) );
+        playButton->setIcon( QIcon( ":/menu/pause" ) );
     }
     else
     {
         VLMWrapper::ControlBroadcast( name, ControlBroadcastPlay );
-        playButton->setIcon( QIcon( QPixmap( ":/play_16px" ) ) );
+        playButton->setIcon( QIcon( ":/menu/play" ) );
     }
     b_playing = !b_playing;
 }
@@ -588,7 +586,7 @@ void VLMBroadcast::toggleLoop()
 void VLMBroadcast::stop()
 {
     VLMWrapper::ControlBroadcast( name, ControlBroadcastStop );
-    playButton->setIcon( QIcon( QPixmap( ":/play_16px" ) ) );
+    playButton->setIcon( QIcon( ":/menu/play" ) );
 }
 
 /****************

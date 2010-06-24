@@ -56,7 +56,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/m4/with_pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -94,7 +95,10 @@ nodist_liba52tofloat32_plugin_la_OBJECTS =
 liba52tofloat32_plugin_la_OBJECTS =  \
 	$(am_liba52tofloat32_plugin_la_OBJECTS) \
 	$(nodist_liba52tofloat32_plugin_la_OBJECTS)
-liba52tofloat32_plugin_la_LINK = $(LIBTOOL) --tag=CC \
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+liba52tofloat32_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(liba52tofloat32_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -104,29 +108,29 @@ nodist_liba52tospdif_plugin_la_OBJECTS =
 liba52tospdif_plugin_la_OBJECTS =  \
 	$(am_liba52tospdif_plugin_la_OBJECTS) \
 	$(nodist_liba52tospdif_plugin_la_OBJECTS)
-liba52tospdif_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+liba52tospdif_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(liba52tospdif_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_3 = libconverter_fixed_plugin_la-fixed.lo
-am_libconverter_fixed_plugin_la_OBJECTS = $(am__objects_3)
+am__objects_3 = libaudio_format_plugin_la-format.lo
+am_libaudio_format_plugin_la_OBJECTS = $(am__objects_3)
+nodist_libaudio_format_plugin_la_OBJECTS =
+libaudio_format_plugin_la_OBJECTS =  \
+	$(am_libaudio_format_plugin_la_OBJECTS) \
+	$(nodist_libaudio_format_plugin_la_OBJECTS)
+libaudio_format_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libaudio_format_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+am__objects_4 = libconverter_fixed_plugin_la-fixed.lo
+am_libconverter_fixed_plugin_la_OBJECTS = $(am__objects_4)
 nodist_libconverter_fixed_plugin_la_OBJECTS =
 libconverter_fixed_plugin_la_OBJECTS =  \
 	$(am_libconverter_fixed_plugin_la_OBJECTS) \
 	$(nodist_libconverter_fixed_plugin_la_OBJECTS)
-libconverter_fixed_plugin_la_LINK = $(LIBTOOL) --tag=CC \
+libconverter_fixed_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libconverter_fixed_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am__objects_4 = libconverter_float_plugin_la-float.lo
-am_libconverter_float_plugin_la_OBJECTS = $(am__objects_4)
-nodist_libconverter_float_plugin_la_OBJECTS =
-libconverter_float_plugin_la_OBJECTS =  \
-	$(am_libconverter_float_plugin_la_OBJECTS) \
-	$(nodist_libconverter_float_plugin_la_OBJECTS)
-libconverter_float_plugin_la_LINK = $(LIBTOOL) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libconverter_float_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_5 = libdtstofloat32_plugin_la-dtstofloat32.lo
 am_libdtstofloat32_plugin_la_OBJECTS = $(am__objects_5)
@@ -134,7 +138,7 @@ nodist_libdtstofloat32_plugin_la_OBJECTS =
 libdtstofloat32_plugin_la_OBJECTS =  \
 	$(am_libdtstofloat32_plugin_la_OBJECTS) \
 	$(nodist_libdtstofloat32_plugin_la_OBJECTS)
-libdtstofloat32_plugin_la_LINK = $(LIBTOOL) --tag=CC \
+libdtstofloat32_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdtstofloat32_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -144,8 +148,8 @@ nodist_libdtstospdif_plugin_la_OBJECTS =
 libdtstospdif_plugin_la_OBJECTS =  \
 	$(am_libdtstospdif_plugin_la_OBJECTS) \
 	$(nodist_libdtstospdif_plugin_la_OBJECTS)
-libdtstospdif_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+libdtstospdif_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdtstospdif_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__objects_7 = libmpgatofixed32_plugin_la-mpgatofixed32.lo
@@ -154,7 +158,7 @@ nodist_libmpgatofixed32_plugin_la_OBJECTS =
 libmpgatofixed32_plugin_la_OBJECTS =  \
 	$(am_libmpgatofixed32_plugin_la_OBJECTS) \
 	$(nodist_libmpgatofixed32_plugin_la_OBJECTS)
-libmpgatofixed32_plugin_la_LINK = $(LIBTOOL) --tag=CC \
+libmpgatofixed32_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmpgatofixed32_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -164,21 +168,34 @@ am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(liba52tofloat32_plugin_la_SOURCES) \
 	$(nodist_liba52tofloat32_plugin_la_SOURCES) \
 	$(liba52tospdif_plugin_la_SOURCES) \
 	$(nodist_liba52tospdif_plugin_la_SOURCES) \
+	$(libaudio_format_plugin_la_SOURCES) \
+	$(nodist_libaudio_format_plugin_la_SOURCES) \
 	$(libconverter_fixed_plugin_la_SOURCES) \
 	$(nodist_libconverter_fixed_plugin_la_SOURCES) \
-	$(libconverter_float_plugin_la_SOURCES) \
-	$(nodist_libconverter_float_plugin_la_SOURCES) \
 	$(libdtstofloat32_plugin_la_SOURCES) \
 	$(nodist_libdtstofloat32_plugin_la_SOURCES) \
 	$(libdtstospdif_plugin_la_SOURCES) \
@@ -187,8 +204,8 @@ SOURCES = $(liba52tofloat32_plugin_la_SOURCES) \
 	$(nodist_libmpgatofixed32_plugin_la_SOURCES)
 DIST_SOURCES = $(liba52tofloat32_plugin_la_SOURCES) \
 	$(liba52tospdif_plugin_la_SOURCES) \
+	$(libaudio_format_plugin_la_SOURCES) \
 	$(libconverter_fixed_plugin_la_SOURCES) \
-	$(libconverter_float_plugin_la_SOURCES) \
 	$(libdtstofloat32_plugin_la_SOURCES) \
 	$(libdtstospdif_plugin_la_SOURCES) \
 	$(libmpgatofixed32_plugin_la_SOURCES)
@@ -197,11 +214,14 @@ CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
-ALLOCA = @ALLOCA@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = @AM_CPPFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
+ARM_NEON_CFLAGS = @ARM_NEON_CFLAGS@
 AS = @AS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
@@ -227,8 +247,6 @@ COPYRIGHT_MESSAGE = @COPYRIGHT_MESSAGE@
 COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CSRI_CFLAGS = @CSRI_CFLAGS@
-CSRI_LIBS = @CSRI_LIBS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -237,6 +255,8 @@ CYGPATH = @CYGPATH@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
+DC1394_CFLAGS = @DC1394_CFLAGS@
+DC1394_LIBS = @DC1394_LIBS@
 DCA_CFLAGS = @DCA_CFLAGS@
 DCA_LIBS = @DCA_LIBS@
 DEFS = @DEFS@
@@ -251,6 +271,8 @@ DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DV_CFLAGS = @DV_CFLAGS@
+DV_LIBS = @DV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -259,27 +281,32 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FLAC_CFLAGS = @FLAC_CFLAGS@
+FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
 FRIBIDI_LIBS = @FRIBIDI_LIBS@
+GCRYPT_CFLAGS = @GCRYPT_CFLAGS@
+GCRYPT_LIBS = @GCRYPT_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GLIB2_CFLAGS = @GLIB2_CFLAGS@
-GLIB2_LIBS = @GLIB2_LIBS@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
 GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
+GOOM_CFLAGS = @GOOM_CFLAGS@
+GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-HAL_CFLAGS = @HAL_CFLAGS@
-HAL_LIBS = @HAL_LIBS@
 HILDON_CFLAGS = @HILDON_CFLAGS@
+HILDON_FM_CFLAGS = @HILDON_FM_CFLAGS@
+HILDON_FM_LIBS = @HILDON_FM_LIBS@
 HILDON_LIBS = @HILDON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -288,8 +315,11 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+JACK_CFLAGS = @JACK_CFLAGS@
+JACK_LIBS = @JACK_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
+KDE4_CONFIG = @KDE4_CONFIG@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -298,14 +328,12 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBCDIO_CFLAGS = @LIBCDIO_CFLAGS@
 LIBCDIO_LIBS = @LIBCDIO_LIBS@
-LIBCDIO_PARANOIA_CFLAGS = @LIBCDIO_PARANOIA_CFLAGS@
-LIBCDIO_PARANOIA_LIBS = @LIBCDIO_PARANOIA_LIBS@
+LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
-LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
-LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
+LIBMODPLUG_CFLAGS = @LIBMODPLUG_CFLAGS@
+LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -315,15 +343,23 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIBV4L_CFLAGS = @LIBV4L_CFLAGS@
+LIBV4L_LIBS = @LIBV4L_LIBS@
+LIBVA_CFLAGS = @LIBVA_CFLAGS@
+LIBVA_LIBS = @LIBVA_LIBS@
+LIBVCDINFO_CFLAGS = @LIBVCDINFO_CFLAGS@
+LIBVCDINFO_LIBS = @LIBVCDINFO_LIBS@
+LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
+LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
-LTLIBa52tospdif = @LTLIBa52tospdif@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_alsa = @LTLIBaccess_alsa@
+LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_dv = @LTLIBaccess_dv@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
@@ -333,212 +369,114 @@ LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_oss = @LTLIBaccess_oss@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
+LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
-LTLIBadjust = @LTLIBadjust@
-LTLIBalphamask = @LTLIBalphamask@
 LTLIBalsa = @LTLIBalsa@
 LTLIBaout_directx = @LTLIBaout_directx@
-LTLIBaout_file = @LTLIBaout_file@
 LTLIBaout_sdl = @LTLIBaout_sdl@
 LTLIBasademux = @LTLIBasademux@
 LTLIBatmo = @LTLIBatmo@
-LTLIBaudio_format = @LTLIBaudio_format@
-LTLIBaudioscrobbler = @LTLIBaudioscrobbler@
 LTLIBauhal = @LTLIBauhal@
 LTLIBavcodec = @LTLIBavcodec@
 LTLIBavformat = @LTLIBavformat@
-LTLIBbandlimited_resampler = @LTLIBbandlimited_resampler@
 LTLIBbda = @LTLIBbda@
-LTLIBbeos = @LTLIBbeos@
-LTLIBblend = @LTLIBblend@
-LTLIBblendbench = @LTLIBblendbench@
-LTLIBbluescreen = @LTLIBbluescreen@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
-LTLIBcanvas = @LTLIBcanvas@
 LTLIBcdda = @LTLIBcdda@
-LTLIBcddax = @LTLIBcddax@
-LTLIBchain = @LTLIBchain@
-LTLIBclone = @LTLIBclone@
-LTLIBcmml = @LTLIBcmml@
-LTLIBcolorthres = @LTLIBcolorthres@
-LTLIBconverter_float = @LTLIBconverter_float@
-LTLIBcrop = @LTLIBcrop@
-LTLIBcroppadd = @LTLIBcroppadd@
-LTLIBcsri = @LTLIBcsri@
 LTLIBdbus = @LTLIBdbus@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdeinterlace = @LTLIBdeinterlace@
 LTLIBdirac = @LTLIBdirac@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
+LTLIBdirectx = @LTLIBdirectx@
 LTLIBdmo = @LTLIBdmo@
-LTLIBdolby_surround_decoder = @LTLIBdolby_surround_decoder@
 LTLIBdshow = @LTLIBdshow@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
-LTLIBdtstospdif = @LTLIBdtstospdif@
 LTLIBdvb = @LTLIBdvb@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
 LTLIBdynamicoverlay = @LTLIBdynamicoverlay@
-LTLIBequalizer = @LTLIBequalizer@
-LTLIBerase = @LTLIBerase@
-LTLIBextract = @LTLIBextract@
 LTLIBfaad = @LTLIBfaad@
-LTLIBfake = @LTLIBfake@
 LTLIBfb = @LTLIBfb@
 LTLIBfbosd = @LTLIBfbosd@
-LTLIBfloat32_mixer = @LTLIBfloat32_mixer@
+LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
-LTLIBfolder = @LTLIBfolder@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgalaktos = @LTLIBgalaktos@
-LTLIBgaussianblur = @LTLIBgaussianblur@
-LTLIBgestures = @LTLIBgestures@
 LTLIBggi = @LTLIBggi@
 LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
-LTLIBgnome2_main = @LTLIBgnome2_main@
-LTLIBgnome_main = @LTLIBgnome_main@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
-LTLIBgradient = @LTLIBgradient@
-LTLIBgrain = @LTLIBgrain@
 LTLIBgrowl = @LTLIBgrowl@
 LTLIBgrowl_udp = @LTLIBgrowl_udp@
-LTLIBgtk2_main = @LTLIBgtk2_main@
-LTLIBgtk_main = @LTLIBgtk_main@
-LTLIBhal = @LTLIBhal@
 LTLIBhd1000a = @LTLIBhd1000a@
 LTLIBhd1000v = @LTLIBhd1000v@
-LTLIBheadphone_channel_mixer = @LTLIBheadphone_channel_mixer@
-LTLIBhotkeys = @LTLIBhotkeys@
-LTLIBhttp = @LTLIBhttp@
-LTLIBi420_rgb_mmx = @LTLIBi420_rgb_mmx@
-LTLIBi420_rgb_sse2 = @LTLIBi420_rgb_sse2@
-LTLIBi420_ymga = @LTLIBi420_ymga@
-LTLIBi420_ymga_mmx = @LTLIBi420_ymga_mmx@
-LTLIBi420_yuy2 = @LTLIBi420_yuy2@
-LTLIBi420_yuy2_altivec = @LTLIBi420_yuy2_altivec@
-LTLIBi420_yuy2_mmx = @LTLIBi420_yuy2_mmx@
-LTLIBi420_yuy2_sse2 = @LTLIBi420_yuy2_sse2@
-LTLIBi422_i420 = @LTLIBi422_i420@
-LTLIBi422_yuy2 = @LTLIBi422_yuy2@
-LTLIBi422_yuy2_mmx = @LTLIBi422_yuy2_mmx@
-LTLIBi422_yuy2_sse2 = @LTLIBi422_yuy2_sse2@
+LTLIBhildon = @LTLIBhildon@
 LTLIBid3tag = @LTLIBid3tag@
 LTLIBinhibit = @LTLIBinhibit@
-LTLIBinvert = @LTLIBinvert@
 LTLIBjack = @LTLIBjack@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlinear_resampler = @LTLIBlinear_resampler@
 LTLIBlirc = @LTLIBlirc@
 LTLIBlive555 = @LTLIBlive555@
-LTLIBlogo = @LTLIBlogo@
 LTLIBmacosx = @LTLIBmacosx@
-LTLIBmaemo = @LTLIBmaemo@
-LTLIBmagnify = @LTLIBmagnify@
-LTLIBmarq = @LTLIBmarq@
-LTLIBmemcpy3dn = @LTLIBmemcpy3dn@
-LTLIBmemcpyaltivec = @LTLIBmemcpyaltivec@
-LTLIBmemcpymmx = @LTLIBmemcpymmx@
-LTLIBmemcpymmxext = @LTLIBmemcpymmxext@
-LTLIBmga = @LTLIBmga@
+LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
 LTLIBmod = @LTLIBmod@
-LTLIBmosaic = @LTLIBmosaic@
-LTLIBmotion = @LTLIBmotion@
-LTLIBmotionblur = @LTLIBmotionblur@
-LTLIBmotiondetect = @LTLIBmotiondetect@
 LTLIBmozilla = @LTLIBmozilla@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
-LTLIBmsn = @LTLIBmsn@
 LTLIBmtp = @LTLIBmtp@
 LTLIBmux_ogg = @LTLIBmux_ogg@
 LTLIBmux_ts = @LTLIBmux_ts@
 LTLIBncurses = @LTLIBncurses@
-LTLIBnoise = @LTLIBnoise@
-LTLIBnormvol = @LTLIBnormvol@
 LTLIBnotify = @LTLIBnotify@
-LTLIBntservice = @LTLIBntservice@
 LTLIBogg = @LTLIBogg@
+LTLIBoldhttp = @LTLIBoldhttp@
+LTLIBoldtelnet = @LTLIBoldtelnet@
 LTLIBomapfb = @LTLIBomapfb@
+LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopengl = @LTLIBopengl@
-LTLIBopengllayer = @LTLIBopengllayer@
-LTLIBopie = @LTLIBopie@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBoss = @LTLIBoss@
+LTLIBosso_screensaver = @LTLIBosso_screensaver@
 LTLIBpanoramix = @LTLIBpanoramix@
-LTLIBparam_eq = @LTLIBparam_eq@
-LTLIBpda = @LTLIBpda@
 LTLIBpng = @LTLIBpng@
-LTLIBpodcast = @LTLIBpodcast@
 LTLIBportaudio = @LTLIBportaudio@
 LTLIBpostproc = @LTLIBpostproc@
-LTLIBprobe_hal = @LTLIBprobe_hal@
-LTLIBpsychedelic = @LTLIBpsychedelic@
+LTLIBprojectm = @LTLIBprojectm@
 LTLIBpulse = @LTLIBpulse@
-LTLIBpuzzle = @LTLIBpuzzle@
 LTLIBpvr = @LTLIBpvr@
-LTLIBqnx = @LTLIBqnx@
 LTLIBqt4 = @LTLIBqt4@
 LTLIBqtcapture = @LTLIBqtcapture@
-LTLIBqte = @LTLIBqte@
-LTLIBqte_main = @LTLIBqte_main@
-LTLIBquartztext = @LTLIBquartztext@
 LTLIBquicktime = @LTLIBquicktime@
-LTLIBrc = @LTLIBrc@
-LTLIBrealaudio = @LTLIBrealaudio@
 LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
-LTLIBripple = @LTLIBripple@
-LTLIBrotate = @LTLIBrotate@
-LTLIBrss = @LTLIBrss@
-LTLIBrv32 = @LTLIBrv32@
-LTLIBsap = @LTLIBsap@
-LTLIBscale = @LTLIBscale@
-LTLIBscaletempo = @LTLIBscaletempo@
-LTLIBscene = @LTLIBscene@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
-LTLIBsharpen = @LTLIBsharpen@
 LTLIBshine = @LTLIBshine@
-LTLIBshout = @LTLIBshout@
-LTLIBshowintf = @LTLIBshowintf@
-LTLIBsignals = @LTLIBsignals@
-LTLIBsimple_channel_mixer = @LTLIBsimple_channel_mixer@
 LTLIBskins2 = @LTLIBskins2@
 LTLIBsnapshot = @LTLIBsnapshot@
-LTLIBspatializer = @LTLIBspatializer@
-LTLIBspdif_mixer = @LTLIBspdif_mixer@
 LTLIBspeex = @LTLIBspeex@
+LTLIBsqlite = @LTLIBsqlite@
 LTLIBstream_out_raop = @LTLIBstream_out_raop@
+LTLIBstream_out_switcher = @LTLIBstream_out_switcher@
 LTLIBsvg = @LTLIBsvg@
 LTLIBsvgalib = @LTLIBsvgalib@
 LTLIBswscale = @LTLIBswscale@
-LTLIBswscale_maemo = @LTLIBswscale_maemo@
+LTLIBswscale_omap = @LTLIBswscale_omap@
 LTLIBtaglib = @LTLIBtaglib@
-LTLIBtarkin = @LTLIBtarkin@
 LTLIBtelepathy = @LTLIBtelepathy@
-LTLIBtelnet = @LTLIBtelnet@
 LTLIBtelx = @LTLIBtelx@
-LTLIBtest1 = @LTLIBtest1@
-LTLIBtest2 = @LTLIBtest2@
-LTLIBtest3 = @LTLIBtest3@
-LTLIBtest4 = @LTLIBtest4@
 LTLIBtheora = @LTLIBtheora@
-LTLIBtransform = @LTLIBtransform@
 LTLIBtremor = @LTLIBtremor@
 LTLIBts = @LTLIBts@
 LTLIBtwolame = @LTLIBtwolame@
@@ -551,34 +489,26 @@ LTLIBv4l2 = @LTLIBv4l2@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
 LTLIBvisual = @LTLIBvisual@
-LTLIBvmem = @LTLIBvmem@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_directx = @LTLIBvout_directx@
+LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
-LTLIBwall = @LTLIBwall@
-LTLIBwave = @LTLIBwave@
 LTLIBwaveout = @LTLIBwaveout@
-LTLIBwin32text = @LTLIBwin32text@
-LTLIBwince = @LTLIBwince@
 LTLIBwingapi = @LTLIBwingapi@
 LTLIBwingdi = @LTLIBwingdi@
 LTLIBwma_fixed = @LTLIBwma_fixed@
-LTLIBx11 = @LTLIBx11@
-LTLIBx11_screen = @LTLIBx11_screen@
 LTLIBx264 = @LTLIBx264@
-LTLIBxcb = @LTLIBxcb@
+LTLIBxcb_apps = @LTLIBxcb_apps@
+LTLIBxcb_glx = @LTLIBxcb_glx@
+LTLIBxcb_screen = @LTLIBxcb_screen@
 LTLIBxcb_window = @LTLIBxcb_window@
+LTLIBxcb_x11 = @LTLIBxcb_x11@
 LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
-LTLIBxvideo = @LTLIBxvideo@
-LTLIBxvmc = @LTLIBxvmc@
-LTLIByuv = @LTLIByuv@
-LTLIByuvp = @LTLIByuvp@
-LTLIByuy2_i420 = @LTLIByuy2_i420@
-LTLIByuy2_i422 = @LTLIByuy2_i422@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
+LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
 MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
@@ -588,6 +518,7 @@ MIDL = @MIDL@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
+MMX_CFLAGS = @MMX_CFLAGS@
 MOC = @MOC@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
@@ -598,6 +529,8 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
+MUX_OGG_LIBS = @MUX_OGG_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
@@ -608,8 +541,12 @@ OBJCFLAGS = @OBJCFLAGS@
 OBJCOPY = @OBJCOPY@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OGG_CFLAGS = @OGG_CFLAGS@
+OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OSSO_SCREENSAVER_CFLAGS = @OSSO_SCREENSAVER_CFLAGS@
+OSSO_SCREENSAVER_LIBS = @OSSO_SCREENSAVER_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -622,12 +559,20 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CFLAGS = @PCRE_CFLAGS@
 PCRE_LIBS = @PCRE_LIBS@
+PEFLAGS = @PEFLAGS@
 PKGDIR = @PKGDIR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PORTAUDIO_CFLAGS = @PORTAUDIO_CFLAGS@
+PORTAUDIO_LIBS = @PORTAUDIO_LIBS@
 POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
+PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
+PROJECTM2_LIBS = @PROJECTM2_LIBS@
+PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
+PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
 QT4LOCALEDIR = @QT4LOCALEDIR@
@@ -637,15 +582,21 @@ RANLIB = @RANLIB@
 RCC = @RCC@
 SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
 SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
-SDL11_CONFIG = @SDL11_CONFIG@
-SDL12_CONFIG = @SDL12_CONFIG@
-SDL_CONFIG = @SDL_CONFIG@
+SDL_CFLAGS = @SDL_CFLAGS@
+SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
+SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
+SDL_LIBS = @SDL_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
+SPEEX_CFLAGS = @SPEEX_CFLAGS@
+SPEEX_LIBS = @SPEEX_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
+SSE2_CFLAGS = @SSE2_CFLAGS@
 STRIP = @STRIP@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
@@ -654,14 +605,19 @@ SWSCALE_LIBS = @SWSCALE_LIBS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
+THEORA_CFLAGS = @THEORA_CFLAGS@
+THEORA_LIBS = @THEORA_LIBS@
 TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
+U2D = @U2D@
 UDEV_CFLAGS = @UDEV_CFLAGS@
 UDEV_LIBS = @UDEV_LIBS@
 UIC = @UIC@
+UPNP_CFLAGS = @UPNP_CFLAGS@
+UPNP_LIBS = @UPNP_LIBS@
 USE_NLS = @USE_NLS@
-VCDINFO_CFLAGS = @VCDINFO_CFLAGS@
-VCDINFO_LIBS = @VCDINFO_LIBS@
 VERSION = @VERSION@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_EXTRA_RC = @VERSION_EXTRA_RC@
@@ -670,6 +626,8 @@ VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
+VORBIS_CFLAGS = @VORBIS_CFLAGS@
+VORBIS_LIBS = @VORBIS_LIBS@
 WIDL = @WIDL@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
@@ -679,6 +637,8 @@ XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
 XCB_LIBS = @XCB_LIBS@
+XCB_RANDR_CFLAGS = @XCB_RANDR_CFLAGS@
+XCB_RANDR_LIBS = @XCB_RANDR_LIBS@
 XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
@@ -686,9 +646,9 @@ XCB_XV_LIBS = @XCB_XV_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
+XLIB_XCB_CFLAGS = @XLIB_XCB_CFLAGS@
+XLIB_XCB_LIBS = @XLIB_XCB_LIBS@
 XMKMF = @XMKMF@
-XML2_CFLAGS = @XML2_CFLAGS@
-XML2_LIBS = @XML2_LIBS@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
 XPROTO_CFLAGS = @XPROTO_CFLAGS@
@@ -747,6 +707,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+soliddatadir = @soliddatadir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -757,15 +718,15 @@ vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 basedir = audio_filter
 dir = audio_filter/converter
-mods = a52tofloat32 a52tospdif converter_fixed converter_float dtstofloat32 dtstospdif mpgatofixed32
-libvlc_LTLIBRARIES = $(LTLIBa52tofloat32) $(LTLIBa52tospdif) \
-	$(LTLIBconverter_float) $(LTLIBdtstofloat32) \
-	$(LTLIBdtstospdif) $(LTLIBmpgatofixed32) \
-	libconverter_fixed_plugin.la $(NULL)
-EXTRA_LTLIBRARIES = liba52tofloat32_plugin.la liba52tospdif_plugin.la libconverter_float_plugin.la libdtstofloat32_plugin.la libdtstospdif_plugin.la libmpgatofixed32_plugin.la
+mods = a52tofloat32 a52tospdif audio_format converter_fixed dtstofloat32 dtstospdif mpgatofixed32
+libvlc_LTLIBRARIES = $(LTLIBa52tofloat32) $(LTLIBdtstofloat32) \
+	$(LTLIBmpgatofixed32) liba52tospdif_plugin.la \
+	libaudio_format_plugin.la libconverter_fixed_plugin.la \
+	libdtstospdif_plugin.la $(NULL)
+EXTRA_LTLIBRARIES = liba52tofloat32_plugin.la libdtstofloat32_plugin.la libmpgatofixed32_plugin.la
 NULL = 
 SUFFIXES = 
-libvlcdir = $(vlclibdir)/$(basedir)
+libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
 BUILT_SOURCES = 
 CLEANFILES = $(BUILT_SOURCES)
@@ -777,6 +738,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
 	-export-symbol-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
+	-rpath "$(libvlcdir)" \
 	-no-undefined \
 	 `$(VLC_CONFIG) --ldflags plugin $@`
 
@@ -784,12 +746,12 @@ AM_LIBADD = `$(VLC_CONFIG) -libs plugin $@` \
 	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
 
 SOURCES_converter_fixed = fixed.c
-SOURCES_converter_float = float.c
 SOURCES_a52tospdif = a52tospdif.c
 SOURCES_a52tofloat32 = a52tofloat32.c
 SOURCES_dtstospdif = dtstospdif.c
 SOURCES_dtstofloat32 = dtstofloat32.c
 SOURCES_mpgatofixed32 = mpgatofixed32.c
+SOURCES_audio_format = format.c
 
 # The a52tofloat32 plugin
 liba52tofloat32_plugin_la_SOURCES = $(SOURCES_a52tofloat32)
@@ -813,6 +775,17 @@ liba52tospdif_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 liba52tospdif_plugin_la_LIBADD = $(AM_LIBADD)
 liba52tospdif_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
+# The audio_format plugin
+libaudio_format_plugin_la_SOURCES = $(SOURCES_audio_format)
+nodist_libaudio_format_plugin_la_SOURCES = $(nodist_SOURCES_audio_format)
+# Force per-target objects:
+libaudio_format_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaudio_format_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaudio_format_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libaudio_format_plugin_la_LIBADD = $(AM_LIBADD)
+libaudio_format_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
 # The converter_fixed plugin
 libconverter_fixed_plugin_la_SOURCES = $(SOURCES_converter_fixed)
 nodist_libconverter_fixed_plugin_la_SOURCES = $(nodist_SOURCES_converter_fixed)
@@ -823,17 +796,6 @@ libconverter_fixed_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libconverter_fixed_plugin_la_LIBADD = $(AM_LIBADD)
 libconverter_fixed_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The converter_float plugin
-libconverter_float_plugin_la_SOURCES = $(SOURCES_converter_float)
-nodist_libconverter_float_plugin_la_SOURCES = $(nodist_SOURCES_converter_float)
-# Force per-target objects:
-libconverter_float_plugin_la_CFLAGS = $(AM_CFLAGS)
-libconverter_float_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libconverter_float_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libconverter_float_plugin_la_LIBADD = $(AM_LIBADD)
-libconverter_float_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The dtstofloat32 plugin
 libdtstofloat32_plugin_la_SOURCES = $(SOURCES_dtstofloat32)
@@ -934,19 +896,19 @@ clean-libvlcLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 liba52tofloat32_plugin.la: $(liba52tofloat32_plugin_la_OBJECTS) $(liba52tofloat32_plugin_la_DEPENDENCIES) 
-	$(liba52tofloat32_plugin_la_LINK)  $(liba52tofloat32_plugin_la_OBJECTS) $(liba52tofloat32_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(liba52tofloat32_plugin_la_LINK)  $(liba52tofloat32_plugin_la_OBJECTS) $(liba52tofloat32_plugin_la_LIBADD) $(LIBS)
 liba52tospdif_plugin.la: $(liba52tospdif_plugin_la_OBJECTS) $(liba52tospdif_plugin_la_DEPENDENCIES) 
-	$(liba52tospdif_plugin_la_LINK)  $(liba52tospdif_plugin_la_OBJECTS) $(liba52tospdif_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(liba52tospdif_plugin_la_LINK) -rpath $(libvlcdir) $(liba52tospdif_plugin_la_OBJECTS) $(liba52tospdif_plugin_la_LIBADD) $(LIBS)
+libaudio_format_plugin.la: $(libaudio_format_plugin_la_OBJECTS) $(libaudio_format_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libaudio_format_plugin_la_LINK) -rpath $(libvlcdir) $(libaudio_format_plugin_la_OBJECTS) $(libaudio_format_plugin_la_LIBADD) $(LIBS)
 libconverter_fixed_plugin.la: $(libconverter_fixed_plugin_la_OBJECTS) $(libconverter_fixed_plugin_la_DEPENDENCIES) 
-	$(libconverter_fixed_plugin_la_LINK) -rpath $(libvlcdir) $(libconverter_fixed_plugin_la_OBJECTS) $(libconverter_fixed_plugin_la_LIBADD) $(LIBS)
-libconverter_float_plugin.la: $(libconverter_float_plugin_la_OBJECTS) $(libconverter_float_plugin_la_DEPENDENCIES) 
-	$(libconverter_float_plugin_la_LINK)  $(libconverter_float_plugin_la_OBJECTS) $(libconverter_float_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libconverter_fixed_plugin_la_LINK) -rpath $(libvlcdir) $(libconverter_fixed_plugin_la_OBJECTS) $(libconverter_fixed_plugin_la_LIBADD) $(LIBS)
 libdtstofloat32_plugin.la: $(libdtstofloat32_plugin_la_OBJECTS) $(libdtstofloat32_plugin_la_DEPENDENCIES) 
-	$(libdtstofloat32_plugin_la_LINK)  $(libdtstofloat32_plugin_la_OBJECTS) $(libdtstofloat32_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libdtstofloat32_plugin_la_LINK)  $(libdtstofloat32_plugin_la_OBJECTS) $(libdtstofloat32_plugin_la_LIBADD) $(LIBS)
 libdtstospdif_plugin.la: $(libdtstospdif_plugin_la_OBJECTS) $(libdtstospdif_plugin_la_DEPENDENCIES) 
-	$(libdtstospdif_plugin_la_LINK)  $(libdtstospdif_plugin_la_OBJECTS) $(libdtstospdif_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libdtstospdif_plugin_la_LINK) -rpath $(libvlcdir) $(libdtstospdif_plugin_la_OBJECTS) $(libdtstospdif_plugin_la_LIBADD) $(LIBS)
 libmpgatofixed32_plugin.la: $(libmpgatofixed32_plugin_la_OBJECTS) $(libmpgatofixed32_plugin_la_DEPENDENCIES) 
-	$(libmpgatofixed32_plugin_la_LINK)  $(libmpgatofixed32_plugin_la_OBJECTS) $(libmpgatofixed32_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libmpgatofixed32_plugin_la_LINK)  $(libmpgatofixed32_plugin_la_OBJECTS) $(libmpgatofixed32_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -956,81 +918,91 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liba52tofloat32_plugin_la-a52tofloat32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liba52tospdif_plugin_la-a52tospdif.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaudio_format_plugin_la-format.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libconverter_fixed_plugin_la-fixed.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libconverter_float_plugin_la-float.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdtstofloat32_plugin_la-dtstofloat32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdtstospdif_plugin_la-dtstospdif.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmpgatofixed32_plugin_la-mpgatofixed32.Plo@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 liba52tofloat32_plugin_la-a52tofloat32.lo: a52tofloat32.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liba52tofloat32_plugin_la_CFLAGS) $(CFLAGS) -MT liba52tofloat32_plugin_la-a52tofloat32.lo -MD -MP -MF $(DEPDIR)/liba52tofloat32_plugin_la-a52tofloat32.Tpo -c -o liba52tofloat32_plugin_la-a52tofloat32.lo `test -f 'a52tofloat32.c' || echo '$(srcdir)/'`a52tofloat32.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liba52tofloat32_plugin_la-a52tofloat32.Tpo $(DEPDIR)/liba52tofloat32_plugin_la-a52tofloat32.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liba52tofloat32_plugin_la_CFLAGS) $(CFLAGS) -MT liba52tofloat32_plugin_la-a52tofloat32.lo -MD -MP -MF $(DEPDIR)/liba52tofloat32_plugin_la-a52tofloat32.Tpo -c -o liba52tofloat32_plugin_la-a52tofloat32.lo `test -f 'a52tofloat32.c' || echo '$(srcdir)/'`a52tofloat32.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liba52tofloat32_plugin_la-a52tofloat32.Tpo $(DEPDIR)/liba52tofloat32_plugin_la-a52tofloat32.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a52tofloat32.c' object='liba52tofloat32_plugin_la-a52tofloat32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liba52tofloat32_plugin_la_CFLAGS) $(CFLAGS) -c -o liba52tofloat32_plugin_la-a52tofloat32.lo `test -f 'a52tofloat32.c' || echo '$(srcdir)/'`a52tofloat32.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liba52tofloat32_plugin_la_CFLAGS) $(CFLAGS) -c -o liba52tofloat32_plugin_la-a52tofloat32.lo `test -f 'a52tofloat32.c' || echo '$(srcdir)/'`a52tofloat32.c
 
 liba52tospdif_plugin_la-a52tospdif.lo: a52tospdif.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liba52tospdif_plugin_la_CFLAGS) $(CFLAGS) -MT liba52tospdif_plugin_la-a52tospdif.lo -MD -MP -MF $(DEPDIR)/liba52tospdif_plugin_la-a52tospdif.Tpo -c -o liba52tospdif_plugin_la-a52tospdif.lo `test -f 'a52tospdif.c' || echo '$(srcdir)/'`a52tospdif.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/liba52tospdif_plugin_la-a52tospdif.Tpo $(DEPDIR)/liba52tospdif_plugin_la-a52tospdif.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liba52tospdif_plugin_la_CFLAGS) $(CFLAGS) -MT liba52tospdif_plugin_la-a52tospdif.lo -MD -MP -MF $(DEPDIR)/liba52tospdif_plugin_la-a52tospdif.Tpo -c -o liba52tospdif_plugin_la-a52tospdif.lo `test -f 'a52tospdif.c' || echo '$(srcdir)/'`a52tospdif.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liba52tospdif_plugin_la-a52tospdif.Tpo $(DEPDIR)/liba52tospdif_plugin_la-a52tospdif.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='a52tospdif.c' object='liba52tospdif_plugin_la-a52tospdif.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liba52tospdif_plugin_la_CFLAGS) $(CFLAGS) -c -o liba52tospdif_plugin_la-a52tospdif.lo `test -f 'a52tospdif.c' || echo '$(srcdir)/'`a52tospdif.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liba52tospdif_plugin_la_CFLAGS) $(CFLAGS) -c -o liba52tospdif_plugin_la-a52tospdif.lo `test -f 'a52tospdif.c' || echo '$(srcdir)/'`a52tospdif.c
+
+libaudio_format_plugin_la-format.lo: format.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudio_format_plugin_la_CFLAGS) $(CFLAGS) -MT libaudio_format_plugin_la-format.lo -MD -MP -MF $(DEPDIR)/libaudio_format_plugin_la-format.Tpo -c -o libaudio_format_plugin_la-format.lo `test -f 'format.c' || echo '$(srcdir)/'`format.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libaudio_format_plugin_la-format.Tpo $(DEPDIR)/libaudio_format_plugin_la-format.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='format.c' object='libaudio_format_plugin_la-format.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaudio_format_plugin_la_CFLAGS) $(CFLAGS) -c -o libaudio_format_plugin_la-format.lo `test -f 'format.c' || echo '$(srcdir)/'`format.c
 
 libconverter_fixed_plugin_la-fixed.lo: fixed.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libconverter_fixed_plugin_la_CFLAGS) $(CFLAGS) -MT libconverter_fixed_plugin_la-fixed.lo -MD -MP -MF $(DEPDIR)/libconverter_fixed_plugin_la-fixed.Tpo -c -o libconverter_fixed_plugin_la-fixed.lo `test -f 'fixed.c' || echo '$(srcdir)/'`fixed.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libconverter_fixed_plugin_la-fixed.Tpo $(DEPDIR)/libconverter_fixed_plugin_la-fixed.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libconverter_fixed_plugin_la_CFLAGS) $(CFLAGS) -MT libconverter_fixed_plugin_la-fixed.lo -MD -MP -MF $(DEPDIR)/libconverter_fixed_plugin_la-fixed.Tpo -c -o libconverter_fixed_plugin_la-fixed.lo `test -f 'fixed.c' || echo '$(srcdir)/'`fixed.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libconverter_fixed_plugin_la-fixed.Tpo $(DEPDIR)/libconverter_fixed_plugin_la-fixed.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='fixed.c' object='libconverter_fixed_plugin_la-fixed.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libconverter_fixed_plugin_la_CFLAGS) $(CFLAGS) -c -o libconverter_fixed_plugin_la-fixed.lo `test -f 'fixed.c' || echo '$(srcdir)/'`fixed.c
-
-libconverter_float_plugin_la-float.lo: float.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libconverter_float_plugin_la_CFLAGS) $(CFLAGS) -MT libconverter_float_plugin_la-float.lo -MD -MP -MF $(DEPDIR)/libconverter_float_plugin_la-float.Tpo -c -o libconverter_float_plugin_la-float.lo `test -f 'float.c' || echo '$(srcdir)/'`float.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libconverter_float_plugin_la-float.Tpo $(DEPDIR)/libconverter_float_plugin_la-float.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='float.c' object='libconverter_float_plugin_la-float.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libconverter_float_plugin_la_CFLAGS) $(CFLAGS) -c -o libconverter_float_plugin_la-float.lo `test -f 'float.c' || echo '$(srcdir)/'`float.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libconverter_fixed_plugin_la_CFLAGS) $(CFLAGS) -c -o libconverter_fixed_plugin_la-fixed.lo `test -f 'fixed.c' || echo '$(srcdir)/'`fixed.c
 
 libdtstofloat32_plugin_la-dtstofloat32.lo: dtstofloat32.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdtstofloat32_plugin_la_CFLAGS) $(CFLAGS) -MT libdtstofloat32_plugin_la-dtstofloat32.lo -MD -MP -MF $(DEPDIR)/libdtstofloat32_plugin_la-dtstofloat32.Tpo -c -o libdtstofloat32_plugin_la-dtstofloat32.lo `test -f 'dtstofloat32.c' || echo '$(srcdir)/'`dtstofloat32.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libdtstofloat32_plugin_la-dtstofloat32.Tpo $(DEPDIR)/libdtstofloat32_plugin_la-dtstofloat32.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdtstofloat32_plugin_la_CFLAGS) $(CFLAGS) -MT libdtstofloat32_plugin_la-dtstofloat32.lo -MD -MP -MF $(DEPDIR)/libdtstofloat32_plugin_la-dtstofloat32.Tpo -c -o libdtstofloat32_plugin_la-dtstofloat32.lo `test -f 'dtstofloat32.c' || echo '$(srcdir)/'`dtstofloat32.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdtstofloat32_plugin_la-dtstofloat32.Tpo $(DEPDIR)/libdtstofloat32_plugin_la-dtstofloat32.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dtstofloat32.c' object='libdtstofloat32_plugin_la-dtstofloat32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdtstofloat32_plugin_la_CFLAGS) $(CFLAGS) -c -o libdtstofloat32_plugin_la-dtstofloat32.lo `test -f 'dtstofloat32.c' || echo '$(srcdir)/'`dtstofloat32.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdtstofloat32_plugin_la_CFLAGS) $(CFLAGS) -c -o libdtstofloat32_plugin_la-dtstofloat32.lo `test -f 'dtstofloat32.c' || echo '$(srcdir)/'`dtstofloat32.c
 
 libdtstospdif_plugin_la-dtstospdif.lo: dtstospdif.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdtstospdif_plugin_la_CFLAGS) $(CFLAGS) -MT libdtstospdif_plugin_la-dtstospdif.lo -MD -MP -MF $(DEPDIR)/libdtstospdif_plugin_la-dtstospdif.Tpo -c -o libdtstospdif_plugin_la-dtstospdif.lo `test -f 'dtstospdif.c' || echo '$(srcdir)/'`dtstospdif.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libdtstospdif_plugin_la-dtstospdif.Tpo $(DEPDIR)/libdtstospdif_plugin_la-dtstospdif.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdtstospdif_plugin_la_CFLAGS) $(CFLAGS) -MT libdtstospdif_plugin_la-dtstospdif.lo -MD -MP -MF $(DEPDIR)/libdtstospdif_plugin_la-dtstospdif.Tpo -c -o libdtstospdif_plugin_la-dtstospdif.lo `test -f 'dtstospdif.c' || echo '$(srcdir)/'`dtstospdif.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libdtstospdif_plugin_la-dtstospdif.Tpo $(DEPDIR)/libdtstospdif_plugin_la-dtstospdif.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dtstospdif.c' object='libdtstospdif_plugin_la-dtstospdif.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdtstospdif_plugin_la_CFLAGS) $(CFLAGS) -c -o libdtstospdif_plugin_la-dtstospdif.lo `test -f 'dtstospdif.c' || echo '$(srcdir)/'`dtstospdif.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdtstospdif_plugin_la_CFLAGS) $(CFLAGS) -c -o libdtstospdif_plugin_la-dtstospdif.lo `test -f 'dtstospdif.c' || echo '$(srcdir)/'`dtstospdif.c
 
 libmpgatofixed32_plugin_la-mpgatofixed32.lo: mpgatofixed32.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmpgatofixed32_plugin_la_CFLAGS) $(CFLAGS) -MT libmpgatofixed32_plugin_la-mpgatofixed32.lo -MD -MP -MF $(DEPDIR)/libmpgatofixed32_plugin_la-mpgatofixed32.Tpo -c -o libmpgatofixed32_plugin_la-mpgatofixed32.lo `test -f 'mpgatofixed32.c' || echo '$(srcdir)/'`mpgatofixed32.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libmpgatofixed32_plugin_la-mpgatofixed32.Tpo $(DEPDIR)/libmpgatofixed32_plugin_la-mpgatofixed32.Plo
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmpgatofixed32_plugin_la_CFLAGS) $(CFLAGS) -MT libmpgatofixed32_plugin_la-mpgatofixed32.lo -MD -MP -MF $(DEPDIR)/libmpgatofixed32_plugin_la-mpgatofixed32.Tpo -c -o libmpgatofixed32_plugin_la-mpgatofixed32.lo `test -f 'mpgatofixed32.c' || echo '$(srcdir)/'`mpgatofixed32.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmpgatofixed32_plugin_la-mpgatofixed32.Tpo $(DEPDIR)/libmpgatofixed32_plugin_la-mpgatofixed32.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='mpgatofixed32.c' object='libmpgatofixed32_plugin_la-mpgatofixed32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmpgatofixed32_plugin_la_CFLAGS) $(CFLAGS) -c -o libmpgatofixed32_plugin_la-mpgatofixed32.lo `test -f 'mpgatofixed32.c' || echo '$(srcdir)/'`mpgatofixed32.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmpgatofixed32_plugin_la_CFLAGS) $(CFLAGS) -c -o libmpgatofixed32_plugin_la-mpgatofixed32.lo `test -f 'mpgatofixed32.c' || echo '$(srcdir)/'`mpgatofixed32.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1245,12 +1217,7 @@ uninstall-am: uninstall-libvlcLTLIBRARIES
 
 
 @MAINTAINER_MODE_TRUE@$(srcdir)/Makefile.am: $(srcdir)/Modules.am $(top_srcdir)/modules/genmf
-@MAINTAINER_MODE_TRUE@	cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
-
-nice:
-	$(top_builddir)/compile
-
-.PHONY: nice
+@MAINTAINER_MODE_TRUE@	$(AM_V_GEN)cd \$(top_srcdir) && \$(SHELL) modules/genmf $(dir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

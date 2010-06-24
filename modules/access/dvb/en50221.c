@@ -33,12 +33,9 @@
 #include <errno.h>
 
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/stat.h>
-#include <sys/poll.h>
+#include <poll.h>
 #include <netinet/in.h>
 
 /* DVB Card Drivers */
@@ -69,7 +66,7 @@
 #endif
 
 #ifdef ENABLE_HTTPD
-#   include "vlc_httpd.h"
+#   include <vlc_httpd.h>
 #endif
 
 #include "dvb.h"
@@ -272,7 +269,7 @@ static int TPDURecv( access_t * p_access, uint8_t i_slot, uint8_t *pi_tag,
 
     if ( pi_size == NULL )
     {
-        p_data = malloc( MAX_TPDU_SIZE );
+        p_data = xmalloc( MAX_TPDU_SIZE );
     }
 
     for ( ; ; )
@@ -353,7 +350,7 @@ static int SPDUSend( access_t * p_access, int i_session_id,
                      uint8_t *p_data, int i_size )
 {
     access_sys_t *p_sys = p_access->p_sys;
-    uint8_t *p_spdu = malloc( i_size + 4 );
+    uint8_t *p_spdu = xmalloc( i_size + 4 );
     uint8_t *p = p_spdu;
     uint8_t i_tag;
     uint8_t i_slot = p_sys->p_sessions[i_session_id - 1].i_slot;
@@ -416,6 +413,8 @@ static int SPDUSend( access_t * p_access, int i_session_id,
 static void SessionOpen( access_t * p_access, uint8_t i_slot,
                          uint8_t *p_spdu, int i_size )
 {
+    VLC_UNUSED( i_size );
+
     access_sys_t *p_sys = p_access->p_sys;
     int i_session_id;
     int i_resource_id = ResourceIdToInt( &p_spdu[2] );
@@ -550,6 +549,9 @@ static void SessionCreate( access_t * p_access, int i_slot, int i_resource_id )
 static void SessionCreateResponse( access_t * p_access, uint8_t i_slot,
                                    uint8_t *p_spdu, int i_size )
 {
+    VLC_UNUSED( i_size );
+    VLC_UNUSED( i_slot );
+
     access_sys_t *p_sys = p_access->p_sys;
     int i_status = p_spdu[2];
     int i_resource_id = ResourceIdToInt( &p_spdu[3] );
@@ -796,7 +798,7 @@ static int APDUSend( access_t * p_access, int i_session_id, int i_tag,
                      uint8_t *p_data, int i_size )
 {
     access_sys_t *p_sys = p_access->p_sys;
-    uint8_t *p_apdu = malloc( i_size + 12 );
+    uint8_t *p_apdu = xmalloc( i_size + 12 );
     uint8_t *p = p_apdu;
     ca_msg_t ca_msg;
     int i_ret;
@@ -909,6 +911,7 @@ static void ApplicationInformationEnterMenu( access_t * p_access,
 static void ApplicationInformationHandle( access_t * p_access, int i_session_id,
                                           uint8_t *p_apdu, int i_size )
 {
+    VLC_UNUSED(i_session_id);
     int i_tag = APDUGetTag( p_apdu, i_size );
 
     switch ( i_tag )
@@ -1041,9 +1044,9 @@ static uint8_t *CAPMTHeader( system_ids_t *p_ids, uint8_t i_list_mgt,
     uint8_t *p_data;
 
     if ( i_size )
-        p_data = malloc( 7 + i_size );
+        p_data = xmalloc( 7 + i_size );
     else
-        p_data = malloc( 6 );
+        p_data = xmalloc( 6 );
 
     p_data[0] = i_list_mgt;
     p_data[1] = i_program_number >> 8;
@@ -1095,9 +1098,9 @@ static uint8_t *CAPMTES( system_ids_t *p_ids, uint8_t *p_capmt,
     int i;
  
     if ( i_size )
-        p_data = realloc( p_capmt, i_capmt_size + 6 + i_size );
+        p_data = xrealloc( p_capmt, i_capmt_size + 6 + i_size );
     else
-        p_data = realloc( p_capmt, i_capmt_size + 5 );
+        p_data = xrealloc( p_capmt, i_capmt_size + 5 );
 
     i = i_capmt_size;
 
@@ -1566,7 +1569,7 @@ static void MMISendObject( access_t *p_access, int i_session_id,
     case EN50221_MMI_ANSW:
         i_tag = AOT_ANSW;
         i_size = 1 + strlen( p_object->u.answ.psz_answ );
-        p_data = malloc( i_size );
+        p_data = xmalloc( i_size );
         p_data[0] = (p_object->u.answ.b_ok == true) ? 0x1 : 0x0;
         strncpy( (char *)&p_data[1], p_object->u.answ.psz_answ, i_size - 1 );
         break;
@@ -1574,7 +1577,7 @@ static void MMISendObject( access_t *p_access, int i_session_id,
     case EN50221_MMI_MENU_ANSW:
         i_tag = AOT_MENU_ANSW;
         i_size = 1;
-        p_data = malloc( i_size );
+        p_data = xmalloc( i_size );
         p_data[0] = p_object->u.menu_answ.i_choice;
         break;
 
@@ -1647,6 +1650,8 @@ static char *MMIGetText( access_t *p_access, uint8_t **pp_apdu, int *pi_size )
 static void MMIHandleEnq( access_t *p_access, int i_session_id,
                           uint8_t *p_apdu, int i_size )
 {
+    VLC_UNUSED( i_size );
+
     access_sys_t *p_sys = p_access->p_sys;
     mmi_t *p_mmi = (mmi_t *)p_sys->p_sessions[i_session_id - 1].p_sys;
     int i_slot = p_sys->p_sessions[i_session_id - 1].i_slot;
@@ -1658,7 +1663,7 @@ static void MMIHandleEnq( access_t *p_access, int i_session_id,
     p_mmi->last_object.u.enq.b_blind = (*d & 0x1) ? true : false;
     d += 2; /* skip answer_text_length because it is not mandatory */
     l -= 2;
-    p_mmi->last_object.u.enq.psz_text = malloc( l + 1 );
+    p_mmi->last_object.u.enq.psz_text = xmalloc( l + 1 );
     strncpy( p_mmi->last_object.u.enq.psz_text, (char *)d, l );
     p_mmi->last_object.u.enq.psz_text[l] = '\0';
 
@@ -1674,6 +1679,7 @@ static void MMIHandleEnq( access_t *p_access, int i_session_id,
 static void MMIHandleMenu( access_t *p_access, int i_session_id, int i_tag,
                            uint8_t *p_apdu, int i_size )
 {
+    VLC_UNUSED(i_size);
     access_sys_t *p_sys = p_access->p_sys;
     mmi_t *p_mmi = (mmi_t *)p_sys->p_sessions[i_session_id - 1].p_sys;
     int i_slot = p_sys->p_sessions[i_session_id - 1].i_slot;
@@ -1799,7 +1805,7 @@ static void MMIOpen( access_t *p_access, int i_session_id )
 
     p_sys->p_sessions[i_session_id - 1].pf_handle = MMIHandle;
     p_sys->p_sessions[i_session_id - 1].pf_close = MMIClose;
-    p_sys->p_sessions[i_session_id - 1].p_sys = malloc(sizeof(mmi_t));
+    p_sys->p_sessions[i_session_id - 1].p_sys = xmalloc(sizeof(mmi_t));
     p_mmi = (mmi_t *)p_sys->p_sessions[i_session_id - 1].p_sys;
     p_mmi->last_object.i_object_type = EN50221_MMI_NONE;
 }
@@ -2338,7 +2344,7 @@ static inline void *FixUTF8( char *p )
     return p;
 }
 
-char *dvbsi_to_utf8( char *psz_instring, size_t i_length )
+char *dvbsi_to_utf8( const char *psz_instring, size_t i_length )
 {
     const char *psz_encoding, *psz_stringstart;
     char *psz_outstring, *psz_tmp;
@@ -2430,7 +2436,7 @@ char *dvbsi_to_utf8( char *psz_instring, size_t i_length )
     iconv_handle = vlc_iconv_open( "UTF-8", psz_encoding );
     i_in = i_length - (psz_stringstart - psz_instring );
     i_out = i_in * 6;
-    psz_outstring = psz_tmp = (char*)malloc( i_out + 1 );
+    psz_outstring = psz_tmp = (char*)xmalloc( i_out + 1 );
     vlc_iconv( iconv_handle, &psz_stringstart, &i_in, &psz_tmp, &i_out );
     vlc_iconv_close( iconv_handle );
     *psz_tmp = '\0';

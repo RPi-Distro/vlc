@@ -1,3 +1,173 @@
+Changes between 1.0.5 and 1.1.0:
+--------------------------------
+
+Important changes for users:
+ * On Linux, known bugs in the ALSA library might prevent audio output.
+   Update to alsa-lib v1.0.23-2-g8d80d5f or later, or use the libpulse audio
+   output plugin instead of the ALSA one (if you have PulseAudio).
+
+Important changes for packagers:
+ * The module cache has moved to ${libdir}/vlc/. The module cache can now be
+   generated at install time except if you use staged installation. In the
+   later case, you can generate the module cache in your post-inst script
+   by invoking 'vlc-cache-gen'. If the module cache is not present and vlc
+   can't write in ${libdir}/vlc/, it will result it vlc taking a long time to
+   launch each time.
+ * Most X11-related plugins now use XCB instead of Xlib. VLC now uses
+   - xproto,
+   - xcb, xcb-shm, xcb-xv, xcb-randr (from libxcb),
+   - xcb-keysyms (from xcb-utils),
+   - x11-xcb (from libx11) - only for GLX support.
+ * On X11 platforms, a _working_ version of xdg-screensaver is typically
+   required to inhibit the screensaver during video playback.
+
+
+Access:
+ * Support for the sftp protocol
+ * Support for CDDB servers for Audio-CD on the Windows port
+ * New memory input (imem) access and access_demux module to feed VLC from data in memory
+ * New avio module to use libavformat capabilities for network streams, like rtmp://
+ * Port of the screen module from Xlib to XCB
+ * Port of the dc1394 module from libdc1394 to libdc1394 v2.0
+
+Decoders:
+ * Support for DxVA2 for H.264 decoding on GPU on Windows Vista and 7
+ * Support for VAAPI for H.264 decoding on GPU on GNU/Linux
+ * Support for Audio/Video decoders and encoders using OpenMAX IL components for DSP
+
+ * Support PGS subtitles for Blu-Ray
+ * Support for HD-DVB subtitles - Display Definition Segment
+ * Invmem module improvements
+ * Support for Atrac1 audio codec
+ * Support for SSE3 and SSE4 capabilities in some codecs
+ * Multiple improvements for subtitles styles in .SRT and .SSA
+ * Support for native decoding of Windows Media Speech (Voice) audio codec
+ * Support for AMR-NB audio codec on the Windows and Mac port
+ * Support for Indeo5 video codec
+ * Improvements on the FLAC format (7.1 channels and 88.2/176.4/192 kHz support)
+ * Direct rendering is used more often with H.264 in avcodec module
+ * Support for MPEG-4 ALS lossless audio codec
+ * Support for VP8 codec
+ * Support for 7.1 channels in vorbis audio
+
+Demuxers:
+ * Many fixes on Matroska support (notably seeking) and support for Webm format
+ * Support for .aob files from DVD-Audio (MLP and LPCM) (Full disc support is NOT present yet)
+ * Support for ADPCM in .flv streams
+ * Support for TwinVQ (.vqf) and AMV (.amv) files
+ * Various EGP improvements
+ * Support for embedded subtitles in OpenDML and legacy .avi files
+ * Metadata and cover art improvements
+
+Video Output:
+ * Rewrite of the video output core and most video outputs
+ * Added desktop mode to the Direct3D output module. It differs from DirectX
+   desktop mode, because it hides the desktop icons, but reacts to mouse clicks.
+ * New x11, glx and xv modules based on XCB
+ * New deinterlacing modes based on yadif and yadif(x2)
+ * New audio/video filter to show audio level on the video output
+ * Enhanced AtmoLight filter with hardware support for
+     Classic AtmoLight (http://www.vdr-wiki.de/wiki/index.php/Atmo-plugin)
+     Quattro AtmoLight (use just 4 Classic AtmoLights as one)
+     MoMoLight (http://www.ambilight4pc.com/momolight/momolight.html)
+     Simple serial DMX controller (http://www.ulrichradig.de/ search for DMX)
+
+Extensions:
+ * New content extensions framework for lua
+
+Audio filters:
+ * Chorus/Flanger audio filter
+ * 3F1R to stereo down-mix filter
+ * Dolby mixer, parameterized equalizer, trivial mixer, scaletempo, bandlimited 
+   resampler, linear resampler, ugly resampler, converter_fixed, DTS to SPDIF 
+   and A/52 to SPDIF filters have been upgraded to the "audio filter2" API
+ * NEON assembly audio converter module
+ * Converter filters have been rewritten and extended to support s32 as input
+
+Playlist:
+ * WPL and ZPL playlist support
+ * Lua scripts for Mpora, Vimeo playback and Rockbox FM radios
+ * New Play-And-Pause function to stop playback on latest video image
+ * Podcast images are now displayed
+
+Service discovery:
+ * Service discoveries can now be written in lua
+ * Service discovery for Picture/Music/Video user directories
+ * Service discovery based on libudev
+ * Shoutcast Service discoveries are now removed
+
+Encoders:
+ * x264, add psy-rd parameter and change default settings
+ * x264, add profile-limitter same way as x264.exe has, for example
+    #transcode{vcodec=h264,venc=x264{profile=baseline,level=1.2},vb=384,width=320,height=176}
+ * x264, defaults to crf=23 as x264.exe-does, if bitrate is given,
+   uses ABR and if qp-value is set uses CQP
+ * libx264-version 0.76 or higher is required
+ * x264 has tune/preset parameters supported
+
+Stream output:
+ * New smem module, streaming to memory
+ * Allow duplicate outputs to be merged, like:
+   --sout "#duplicate{dst=transcode{vcodec=mp2v},select=es=0,dst=transcode,select=es=1}:std{...}"
+
+Interfaces:
+ * Renamed the legacy rc, telnet and http interfaces to oldrc, oldtelnet
+   and oldhttp.
+ * rc, telnet and http are now implemented using the lua interface system.
+ * qt4 interface contains new iconview and listview mode for playlist
+
+Visualization:
+ * Support of .milk visualization files using projectM libraries
+
+Mac OS X Port:
+ * Vastly improved VLCKit framework
+ * A new dialog provider for libvlc-internal interaction without full interface
+ * Improved update detection and installation by using the Sparkle framework
+   by Andy Matuschak et al.
+ * New CoreText based text renderer replacing the former ATSUI renderer
+ * New Video output module (mostly targetting VLCKit)
+ * Optimised behavior when using the 2009 Apple Remote
+
+Windows port:
+ * Integration in Windows 7 taskbar
+ * Playback of .Midi files is supported through fluidsynth's module
+
+Maemo port:
+ * Multiple improvements for N900 compliance and efficiency
+ * Support for HW accelerated video decoding on N900
+ * Improvements to the maemo/hildon interface
+
+Misc:
+ * new sqlite module
+ * --save-config command line option not supported anymore.
+ * Fixed and reenabled netsync module.
+ * Improved Solaris port
+
+Bindings:
+ * new C++ wrapper around libVLC: libVLCpp
+ * phonon-VLC backend is now usable
+
+Removed modules:
+ * csri codec: use the libass module instead.
+ * galaktos visualisation: use the new projectM module instead.
+ * showintf: Useless in Qt and on Mac OS X
+ * transrate: broken since too long
+ * Xlib x11, Xlib xvideo, Xlib glx: Use the new XCB modules instead.
+ * HAL: Use libudev instead.
+ * gtk_main, gtk_main2, gnome_main, gnome_main2 and pda interfaces
+ * WinCE, BeOS and qnx interfaces
+ * opie, qte and qte_main interfaces
+ * linear_resampler and trivial_resampler are removed: use the ugly one.
+ * XvMC accelerated modules: use VAAPI instead.
+ * MGA (Matroska) for Linux: use Linux Framebuffer (or X) instead.
+ * opengllayer: use macosx_video instead.
+ * cddax: use cdda instead.
+ * cmml and tarkin codecs are removed because they are dead codecs.
+ * realaudio codecs: use libavcodec
+ * access_file removed in favor of filesystem
+ * RTMP input and output: use avio module
+
+
 Changes between 1.0.5 and 1.0.6:
 --------------------------------
 
@@ -31,6 +201,7 @@ Removed modules:
  * RTMP input and output are removed due to security problems. Please update
    to VLC 1.1.0 which provides an FFmpeg-based RTMP input if needed.
 
+
 Changes between 1.0.4 and 1.0.5:
 --------------------------------
 
@@ -46,7 +217,7 @@ Windows port:
    increase performance and fix x264 issues
 
 Translations:
- * Portuguese Brazilian, Lithunanian, Romanian, Ukranian, Japanese, Bengali,
+ * Portuguese Brazilian, Lithuanian, Romanian, Ukrainian, Japanese, Bengali,
    Walloon, Galician, Danish, Khmer, Polish, Slovenian, Vietnamese, Finnish
    Russian, Slovak translation updates
  * New Malayalam, Macedoninan, Nynorsk translations
@@ -216,34 +387,7 @@ Windows port:
 Translations updates for Brazillian, French, German, Korean, Norwegian Nynorsk, Lithuanian
 
 
-Changes between 0.9.9a and 0.9.10:
---------------------------------------
-
-HTTP Interface:
- * Fixed default ACL
-
-Mac OS X:
- * Fixed crashes on multi-screen setups
- * Corrected volume and subtitle encoding options in the Preferences
- * Improved Information panel behavior, when playlist is not displayed
- * Fixed QTCapture input support for the latest iSight models
- * Added a menu-item to unlock the video window's aspect ratio
- * Fixed redraw issues when autosizing the video window
- * Updated libpng, libgpg-error, libgcrypt, fribidi
-
-Various fixes to the following modules:
- * access:
-   - HTTP, SMB
-   - updated and additional access scripts (BBC radio, dailymotion, ...)
-   - Prevent integer underflow in Real pseudo-RTSP module, discovered by tixxDZ,
-     DZCORE Labs, Algeria
- * stream out:
-   - RTP, RTSP VoD, Mosaic Bridge
- * decoder:
-   - TSCC
-
-
-Changes between 0.9.9a and 1.0.0:
+Changes between 0.9.10 and 1.0.0:
 ---------------------------------
 
 Important notes:
@@ -374,6 +518,33 @@ New Localization:
  * Khmer
  * Mongolian
  * Sorani
+
+
+Changes between 0.9.9a and 0.9.10:
+--------------------------------------
+
+HTTP Interface:
+ * Fixed default ACL
+
+Mac OS X:
+ * Fixed crashes on multi-screen setups
+ * Corrected volume and subtitle encoding options in the Preferences
+ * Improved Information panel behavior, when playlist is not displayed
+ * Fixed QTCapture input support for the latest iSight models
+ * Added a menu-item to unlock the video window's aspect ratio
+ * Fixed redraw issues when autosizing the video window
+ * Updated libpng, libgpg-error, libgcrypt, fribidi
+
+Various fixes to the following modules:
+ * access:
+   - HTTP, SMB
+   - updated and additional access scripts (BBC radio, dailymotion, ...)
+   - Prevent integer underflow in Real pseudo-RTSP module, discovered by tixxDZ,
+     DZCORE Labs, Algeria
+ * stream out:
+   - RTP, RTSP VoD, Mosaic Bridge
+ * decoder:
+   - TSCC
 
 
 Changes between 0.9.9 and 0.9.9a:

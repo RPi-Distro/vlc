@@ -27,7 +27,6 @@
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 #include <vlc_keys.h>
-#include <ctype.h>
 #include <errno.h>
 
 #include <xcb/xcb.h>
@@ -78,9 +77,8 @@ struct intf_sys_t
     hotkey_mapping_t *p_map;
 };
 
-static void Mapping( intf_thread_t *p_intf );
+static bool Mapping( intf_thread_t *p_intf );
 static void Register( intf_thread_t *p_intf );
-static void Unregister( intf_thread_t *p_intf );
 static void *Thread( void *p_data );
 
 /*****************************************************************************
@@ -90,6 +88,7 @@ static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     intf_sys_t *p_sys;
+    int ret = VLC_EGENERIC;
 
     p_intf->p_sys = p_sys = calloc( 1, sizeof(*p_sys) );
     if( !p_sys )
@@ -124,12 +123,16 @@ static int Open( vlc_object_t *p_this )
     if( !p_sys->p_symbols )
         goto error;
 
-    Mapping( p_intf );
+    if( !Mapping( p_intf ) )
+    {
+        ret = VLC_SUCCESS;
+        p_intf->p_sys = NULL; /* for Close() */
+        goto error;
+    }
     Register( p_intf );
 
     if( vlc_clone( &p_sys->thread, Thread, p_intf, VLC_THREAD_PRIORITY_LOW ) )
     {
-        Unregister( p_intf );
 #ifndef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
         if( p_sys->p_map )
             free( p_sys->p_map->p_keys );
@@ -144,7 +147,7 @@ error:
         xcb_key_symbols_free( p_sys->p_symbols );
     xcb_disconnect( p_sys->p_connection );
     free( p_sys );
-    return VLC_EGENERIC;
+    return ret;
 }
 
 /*****************************************************************************
@@ -155,10 +158,12 @@ static void Close( vlc_object_t *p_this )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     intf_sys_t *p_sys = p_intf->p_sys;
 
+    if( !p_sys )
+        return; /* if we were running disabled */
+
     vlc_cancel( p_sys->thread );
     vlc_join( p_sys->thread, NULL );
 
-    Unregister( p_intf );
 #ifndef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
     if( p_sys->p_map )
         free( p_sys->p_map->p_keys );
@@ -267,55 +272,25 @@ static const struct
 
 } x11keys_to_vlckeys[] =
 {
-    { XK_F1, KEY_F1 }, { XK_F2, KEY_F2 }, { XK_F3, KEY_F3 }, { XK_F4, KEY_F4 },
-    { XK_F5, KEY_F5 }, { XK_F6, KEY_F6 }, { XK_F7, KEY_F7 }, { XK_F8, KEY_F8 },
-    { XK_F9, KEY_F9 }, { XK_F10, KEY_F10 }, { XK_F11, KEY_F11 },
-    { XK_F12, KEY_F12 },
-
-    { XK_Return, KEY_ENTER },
-    { XK_KP_Enter, KEY_ENTER },
-    { XK_space, KEY_SPACE },
-    { XK_Escape, KEY_ESC },
-
-    { XK_Menu, KEY_MENU },
-    { XK_Left, KEY_LEFT },
-    { XK_Right, KEY_RIGHT },
-    { XK_Up, KEY_UP },
-    { XK_Down, KEY_DOWN },
-
-    { XK_Home, KEY_HOME },
-    { XK_End, KEY_END },
-    { XK_Page_Up, KEY_PAGEUP },
-    { XK_Page_Down, KEY_PAGEDOWN },
-
-    { XK_Insert, KEY_INSERT },
-    { XK_Delete, KEY_DELETE },
-    { XF86XK_AudioNext, KEY_MEDIA_NEXT_TRACK},
-    { XF86XK_AudioPrev, KEY_MEDIA_PREV_TRACK},
-    { XF86XK_AudioMute, KEY_VOLUME_MUTE },
-    { XF86XK_AudioLowerVolume, KEY_VOLUME_DOWN },
-    { XF86XK_AudioRaiseVolume, KEY_VOLUME_UP },
-    { XF86XK_AudioPlay, KEY_MEDIA_PLAY_PAUSE },
-    { XF86XK_AudioPause, KEY_MEDIA_PLAY_PAUSE },
-
+#include "../../video_output/xcb/xcb_keysym.h"
     { 0, 0 }
 };
 static xcb_keysym_t GetX11Key( unsigned i_vlc )
 {
+    /* X11 and VLC use ASCII for printable ASCII characters */
+    if( i_vlc >= 32 && i_vlc <= 127 )
+        return i_vlc;
+
     for( int i = 0; x11keys_to_vlckeys[i].i_vlc != 0; i++ )
     {
         if( x11keys_to_vlckeys[i].i_vlc == i_vlc )
             return x11keys_to_vlckeys[i].i_x11;
     }
 
-    /* Copied from xcb, it seems that xcb use ascii code for ascii characters */
-    if( isascii( i_vlc ) )
-        return i_vlc;
-
     return XK_VoidSymbol;
 }
 
-static void Mapping( intf_thread_t *p_intf )
+static bool Mapping( intf_thread_t *p_intf )
 {
     static const xcb_keysym_t p_x11_modifier_ignored[] = {
         0,
@@ -325,6 +300,7 @@ static void Mapping( intf_thread_t *p_intf )
     };
 
     intf_sys_t *p_sys = p_intf->p_sys;
+    bool active = false;
 
     p_sys->i_map = 0;
     p_sys->p_map = NULL;
@@ -339,7 +315,7 @@ static void Mapping( intf_thread_t *p_intf )
             break;
 
         const int i_vlc_action = p_hotkey->i_action;
-        const int i_vlc_key = config_GetInt( p_intf, psz_hotkey );
+        const int i_vlc_key = var_InheritInteger( p_intf, psz_hotkey );
         free( psz_hotkey );
 
         if( !i_vlc_key )
@@ -382,8 +358,10 @@ static void Mapping( intf_thread_t *p_intf )
 #endif
             p_map->i_modifier = i_modifier|i_ignored;
             p_map->i_action = i_vlc_action;
+            active = true;
         }
     }
+    return active;
 }
 
 static void Register( intf_thread_t *p_intf )
@@ -404,23 +382,6 @@ static void Register( intf_thread_t *p_intf )
                           p_map->i_modifier, p_map->p_keys[j],
                           XCB_GRAB_MODE_ASYNC, XCB_GRAB_MODE_ASYNC );
         }
-#endif
-    }
-}
-static void Unregister( intf_thread_t *p_intf )
-{
-    intf_sys_t *p_sys = p_intf->p_sys;
-
-    for( int i = 0; i < p_sys->i_map; i++ )
-    {
-        const hotkey_mapping_t *p_map = &p_sys->p_map[i];
-#ifdef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
-        xcb_ungrab_key( p_sys->p_connection, p_map->i_x11, p_sys->root,
-                p_map->i_modifier );
-#else
-        for( int j = 0; p_map->p_keys[j] != XCB_NO_SYMBOL; j++ )
-            xcb_ungrab_key( p_sys->p_connection, p_map->p_keys[j], p_sys->root,
-                    p_map->i_modifier );
 #endif
     }
 }

@@ -2,7 +2,7 @@
  * pva.c: PVA demuxer
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 68093d98df0e8ab65dd9887d1874c48d29ef2f02 $
+ * $Id: b02f8ddff17820d5a8e270ce64eef2f9ff9d9505 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -98,10 +98,12 @@ static int Open( vlc_object_t *p_this )
     p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
 
     /* Register one audio and one video stream */
-    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 'm', 'p', 'g', 'a' ) );
+    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_MPGA );
+    fmt.b_packetized = false;
     p_sys->p_audio = es_out_Add( p_demux->out, &fmt );
 
-    es_format_Init( &fmt, VIDEO_ES, VLC_FOURCC( 'm', 'p', 'g', 'v' ) );
+    es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_MPGV );
+    fmt.b_packetized = false;
     p_sys->p_video = es_out_Add( p_demux->out, &fmt );
 
     p_sys->i_vc    = -1;
@@ -207,7 +209,7 @@ static int Demux( demux_t *p_demux )
                 if( ( p_frame = p_sys->p_es ) )
                 {
 
-                    if( p_frame->i_pts > 0 && !p_sys->b_pcr_audio )
+                    if( p_frame->i_pts > VLC_TS_INVALID && !p_sys->b_pcr_audio )
                     {
                         es_out_Control( p_demux->out, ES_OUT_SET_PCR, (int64_t)p_frame->i_pts);
                     }
@@ -221,7 +223,8 @@ static int Demux( demux_t *p_demux )
             {
                 p_frame->p_buffer += i_skip;
                 p_frame->i_buffer -= i_skip;
-                if( i_pts > 0 ) p_frame->i_pts = i_pts * 100 / 9;
+                if( i_pts >= 0 )
+                    p_frame->i_pts = VLC_TS_0 + i_pts * 100 / 9;
                 block_ChainAppend( &p_sys->p_es, p_frame );
             }
             break;
@@ -285,7 +288,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if( ( i64 = stream_Size( p_demux->s ) ) > 0 )
             {
                 pf = (double*) va_arg( args, double* );
-                *pf = (double)stream_Tell( p_demux->s ) / (double)i64;
+                double current = stream_Tell( p_demux->s );
+                *pf = current / (double)i64;
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
@@ -378,7 +382,7 @@ static void ParsePES( demux_t *p_demux )
     uint8_t     hdr[30];
     int         i_pes_size;
 
-    int         i_skip;
+    unsigned    i_skip;
     mtime_t     i_dts = -1;
     mtime_t     i_pts = -1;
 
@@ -426,8 +430,10 @@ static void ParsePES( demux_t *p_demux )
     p_pes->i_buffer -= i_skip;
     p_pes->p_buffer += i_skip;
 
-    if( i_dts >= 0 ) p_pes->i_dts = i_dts * 100 / 9;
-    if( i_pts >= 0 ) p_pes->i_pts = i_pts * 100 / 9;
+    if( i_dts >= 0 )
+        p_pes->i_dts = VLC_TS_0 + i_dts * 100 / 9;
+    if( i_pts >= 0 )
+        p_pes->i_pts = VLC_TS_0 + i_pts * 100 / 9;
 
     /* Set PCR */
     if( p_pes->i_pts > 0 )

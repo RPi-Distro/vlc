@@ -38,9 +38,7 @@
 
 #include <assert.h>
 #include <errno.h>
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
+#include <sys/types.h>
 #ifdef HAVE_SYS_STAT_H
 #   include <sys/stat.h>
 #endif
@@ -51,7 +49,7 @@
 #include <unistd.h>
 #include <poll.h>
 
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 
 #include "libmtp.h"
 
@@ -81,7 +79,7 @@ vlc_module_end()
  * Exported prototypes
  *****************************************************************************/
 
-static int  Seek( access_t *, int64_t );
+static int  Seek( access_t *, uint64_t );
 static ssize_t Read( access_t *, uint8_t *, size_t );
 static int  Control( access_t *, int, va_list );
 
@@ -189,7 +187,7 @@ static void Close( vlc_object_t * p_this )
     access_sys_t *p_sys = p_access->p_sys;
 
     close ( p_sys->fd );
-    if(	utf8_unlink( p_access->psz_path ) != 0 )
+    if(	vlc_unlink( p_access->psz_path ) != 0 )
         msg_Err( p_access, "Error deleting file %s, %m", p_access->psz_path );
     free( p_sys );
 }
@@ -235,7 +233,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
 /*****************************************************************************
  * Seek: seek to a specific location in a file
  *****************************************************************************/
-static int Seek( access_t *p_access, int64_t i_pos )
+static int Seek( access_t *p_access, uint64_t i_pos )
 {
     p_access->info.i_pos = i_pos;
     p_access->info.b_eof = false;
@@ -299,7 +297,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
  *****************************************************************************/
 static int open_file( access_t *p_access, const char *path )
 {
-    int fd = utf8_open( path, O_RDONLY | O_NONBLOCK /* O_LARGEFILE*/, 0666 );
+    int fd = vlc_open( path, O_RDONLY | O_NONBLOCK );
     if( fd == -1 )
     {
         msg_Err( p_access, "cannot open file %s (%m)", path );

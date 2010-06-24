@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id: 56baf3b80790c9b28b2d4c96f17ea07242d2751c $
+ * $Id: f959a4e36eb708b3756a778bc83242261fa4fd0f $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -37,6 +37,7 @@
 #include <vlc_osd.h>
 #include "../libvlc.h"
 #include "vout_internal.h"
+#include <vlc_image.h>
 
 #include <assert.h>
 #include <limits.h>
@@ -47,11 +48,6 @@
 
 /* Number of simultaneous subpictures */
 #define VOUT_MAX_SUBPICTURES (__MAX(VOUT_MAX_PICTURES, SPU_MAX_PREPARE_TIME/5000))
-
-#define VLC_FOURCC_YUVP VLC_FOURCC('Y','U','V','P')
-#define VLC_FOURCC_YUVA VLC_FOURCC('Y','U','V','A')
-#define VLC_FOURCC_RGBA VLC_FOURCC('R','G','B','A')
-#define VLC_FOURCC_TEXT VLC_FOURCC('T','E','X','T')
 
 /* */
 typedef struct
@@ -160,6 +156,8 @@ static void SpuRenderRegion( spu_t *,
 static void UpdateSPU   ( spu_t *, vlc_object_t * );
 static int  CropCallback( vlc_object_t *, char const *,
                           vlc_value_t, vlc_value_t, void * );
+static int MarginCallback( vlc_object_t *, char const *,
+                           vlc_value_t, vlc_value_t, void * );
 
 static int SpuControl( spu_t *, int, va_list );
 
@@ -181,27 +179,28 @@ static void SubFilterAllocationClean( filter_t * );
 /* */
 static void SpuRenderCreateAndLoadText( spu_t * );
 static void SpuRenderCreateAndLoadScale( spu_t * );
-static void SpuRenderCreateBlend( spu_t *, const video_format_t * );
 static void FilterRelease( filter_t *p_filter );
 
 /*****************************************************************************
  * Public API
  *****************************************************************************/
+
+#undef spu_Create
 /**
  * Creates the subpicture unit
  *
  * \param p_this the parent object which creates the subpicture unit
  */
-spu_t *__spu_Create( vlc_object_t *p_this )
+spu_t *spu_Create( vlc_object_t *p_this )
 {
     spu_t *p_spu;
     spu_private_t *p_sys;
- 
+
     p_spu = vlc_custom_create( p_this, sizeof(spu_t) + sizeof(spu_private_t),
                                VLC_OBJECT_GENERIC, "subpicture" );
-
     if( !p_spu )
         return NULL;
+    vlc_object_attach( p_spu, p_this );
 
     /* Initialize spu fields */
     p_spu->pf_control = SpuControl;
@@ -217,10 +216,10 @@ spu_t *__spu_Create( vlc_object_t *p_this )
     p_sys->p_scale = NULL;
     p_sys->p_scale_yuvp = NULL;
 
+    p_sys->i_margin = var_InheritInteger( p_spu, "sub-margin" );
+
     /* Register the default subpicture channel */
     p_sys->i_channel = 2;
-
-    vlc_object_attach( p_spu, p_this );
 
     p_sys->psz_chain_update = NULL;
     p_sys->p_chain = filter_chain_New( p_spu, "sub filter", false,
@@ -245,11 +244,6 @@ spu_t *__spu_Create( vlc_object_t *p_this )
  */
 int spu_Init( spu_t *p_spu )
 {
-    spu_private_t *p_sys = p_spu->p;
-
-    /* If the user requested a sub margin, we force the position. */
-    p_sys->i_margin = var_CreateGetInteger( p_spu, "sub-margin" );
-
     var_Create( p_spu, "sub-filter", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
     var_AddCallback( p_spu, "sub-filter", SubFilterCallback, p_spu );
     var_TriggerCallback( p_spu, "sub-filter" );
@@ -269,7 +263,7 @@ void spu_Destroy( spu_t *p_spu )
     var_DelCallback( p_spu, "sub-filter", SubFilterCallback, p_spu );
 
     if( p_sys->p_blend )
-        FilterRelease( p_sys->p_blend );
+        filter_DeleteBlend( p_sys->p_blend );
 
     if( p_sys->p_text )
         FilterRelease( p_sys->p_text );
@@ -308,13 +302,22 @@ void spu_Attach( spu_t *p_spu, vlc_object_t *p_this, bool b_attach )
     if( b_attach )
     {
         UpdateSPU( p_spu, VLC_OBJECT(p_input) );
+        var_Create( p_input, "highlight", VLC_VAR_BOOL );
         var_AddCallback( p_input, "highlight", CropCallback, p_spu );
+        var_AddCallback( p_input, "sub-margin", MarginCallback, p_spu->p );
+
+        vlc_mutex_lock( &p_spu->p->lock );
+        p_spu->p->i_margin = var_GetInteger( p_input, "sub-margin" );
+        vlc_mutex_unlock( &p_spu->p->lock );
+
         vlc_object_release( p_input );
     }
     else
     {
-        /* Delete callback */
+        /* Delete callbacks */
+        var_DelCallback( p_input, "sub-margin", MarginCallback, p_spu->p );
         var_DelCallback( p_input, "highlight", CropCallback, p_spu );
+        var_Destroy( p_input, "highlight" );
         vlc_object_release( p_input );
     }
 }
@@ -354,11 +357,11 @@ void spu_DisplaySubpicture( spu_t *p_spu, subpicture_t *p_subpic )
 /**
  * This function renders all sub picture units in the list.
  */
-void spu_RenderSubpicturesNew( spu_t *p_spu,
-                               picture_t *p_pic_dst, const video_format_t *p_fmt_dst,
-                               subpicture_t *p_subpic_list,
-                               const video_format_t *p_fmt_src,
-                               mtime_t render_subtitle_date )
+void spu_RenderSubpictures( spu_t *p_spu,
+                            picture_t *p_pic_dst, const video_format_t *p_fmt_dst,
+                            subpicture_t *p_subpic_list,
+                            const video_format_t *p_fmt_src,
+                            mtime_t render_subtitle_date )
 {
     spu_private_t *p_sys = p_spu->p;
 
@@ -384,10 +387,6 @@ void spu_RenderSubpicturesNew( spu_t *p_spu,
             p_subpic != NULL;
                 p_subpic = p_subpic->p_next )
     {
-        /* TODO remove pre-render */
-        if( p_subpic->pf_pre_render )
-            p_subpic->pf_pre_render( p_spu, p_subpic, p_fmt_dst );
-
         if( p_subpic->pf_update_regions )
         {
             video_format_t fmt_org = *p_fmt_dst;
@@ -430,7 +429,7 @@ void spu_RenderSubpicturesNew( spu_t *p_spu,
 
     /* Create the blending module */
     if( !p_sys->p_blend )
-        SpuRenderCreateBlend( p_spu, p_fmt_dst );
+        p_spu->p->p_blend = filter_NewBlend( VLC_OBJECT(p_spu), p_fmt_dst );
 
     /* Process all subpictures and regions (in the right order) */
     for( unsigned int i_index = 0; i_index < i_subpicture; i_index++ )
@@ -478,16 +477,8 @@ void spu_RenderSubpicturesNew( spu_t *p_spu,
         p_region = p_subpic->p_region;
         if( !p_region->fmt.i_sar_num || !p_region->fmt.i_sar_den )
         {
-            if( p_region->fmt.i_aspect != 0 )
-            {
-                p_region->fmt.i_sar_den = p_region->fmt.i_aspect;
-                p_region->fmt.i_sar_num = VOUT_ASPECT_FACTOR;
-            }
-            else
-            {
-                p_region->fmt.i_sar_den = p_fmt_dst->i_sar_den;
-                p_region->fmt.i_sar_num = p_fmt_dst->i_sar_num;
-            }
+            p_region->fmt.i_sar_den = p_fmt_dst->i_sar_den;
+            p_region->fmt.i_sar_num = p_fmt_dst->i_sar_num;
         }
 
         /* Take care of the aspect ratio */
@@ -540,17 +531,6 @@ void spu_RenderSubpicturesNew( spu_t *p_spu,
 
     vlc_mutex_unlock( &p_sys->lock );
 }
-void spu_RenderSubpictures( spu_t *p_spu,
-                            picture_t *p_pic_dst, const video_format_t *p_fmt_dst,
-                            subpicture_t *p_subpic_list,
-                            const video_format_t *p_fmt_src,
-                            bool b_paused )
-{
-    VLC_UNUSED(b_paused);
-    spu_RenderSubpictures( p_spu, p_pic_dst, p_fmt_dst,
-                           p_subpic_list, p_fmt_src, mdate() );
-}
-
 
 /*****************************************************************************
  * spu_SortSubpictures: find the subpictures to display
@@ -562,8 +542,8 @@ void spu_RenderSubpictures( spu_t *p_spu,
  * to be removed if a newer one is available), which makes it a lot
  * more difficult to guess if a subpicture has to be rendered or not.
  *****************************************************************************/
-subpicture_t *spu_SortSubpicturesNew( spu_t *p_spu, mtime_t render_subtitle_date,
-                                      bool b_subtitle_only )
+subpicture_t *spu_SortSubpictures( spu_t *p_spu, mtime_t render_subtitle_date,
+                                   bool b_subtitle_only )
 {
     spu_private_t *p_sys = p_spu->p;
     int i_channel;
@@ -697,13 +677,6 @@ subpicture_t *spu_SortSubpicturesNew( spu_t *p_spu, mtime_t render_subtitle_date
 
     return p_subpic;
 }
-subpicture_t *spu_SortSubpictures( spu_t *p_spu, mtime_t display_date, bool b_paused,
-                                   bool b_subtitle_only )
-{
-    VLC_UNUSED(b_paused);
-    return spu_SortSubpicturesNew( p_spu, display_date, b_subtitle_only );
-}
-
 
 void spu_OffsetSubtitleDate( spu_t *p_spu, mtime_t i_duration )
 {
@@ -741,7 +714,6 @@ subpicture_t *subpicture_New( void )
     p_subpic->b_subtitle = false;
     p_subpic->i_alpha    = 0xFF;
     p_subpic->p_region   = NULL;
-    p_subpic->pf_render  = NULL;
     p_subpic->pf_destroy = NULL;
     p_subpic->p_sys      = NULL;
 
@@ -767,6 +739,55 @@ static void SubpictureChain( subpicture_t **pp_head, subpicture_t *p_subpic )
     *pp_head = p_subpic;
 }
 
+subpicture_t *subpicture_NewFromPicture( vlc_object_t *p_obj,
+                                         picture_t *p_picture, vlc_fourcc_t i_chroma )
+{
+    /* */
+    video_format_t fmt_in = p_picture->format;
+
+    /* */
+    video_format_t fmt_out;
+    fmt_out = fmt_in;
+    fmt_out.i_chroma = i_chroma;
+
+    /* */
+    image_handler_t *p_image = image_HandlerCreate( p_obj );
+    if( !p_image )
+        return NULL;
+
+    picture_t *p_pip = image_Convert( p_image, p_picture, &fmt_in, &fmt_out );
+
+    image_HandlerDelete( p_image );
+
+    if( !p_pip )
+        return NULL;
+
+    subpicture_t *p_subpic = subpicture_New();
+    if( !p_subpic )
+    {
+         picture_Release( p_pip );
+         return NULL;
+    }
+
+    p_subpic->i_original_picture_width  = fmt_out.i_width;
+    p_subpic->i_original_picture_height = fmt_out.i_height;
+
+    fmt_out.i_sar_num =
+    fmt_out.i_sar_den = 0;
+
+    p_subpic->p_region = subpicture_region_New( &fmt_out );
+    if( p_subpic->p_region )
+    {
+        picture_Release( p_subpic->p_region->p_picture );
+        p_subpic->p_region->p_picture = p_pip;
+    }
+    else
+    {
+        picture_Release( p_pip );
+    }
+    return p_subpic;
+}
+
 /*****************************************************************************
  * subpicture_region_t allocation
  *****************************************************************************/
@@ -778,7 +799,7 @@ subpicture_region_t *subpicture_region_New( const video_format_t *p_fmt )
 
     p_region->fmt = *p_fmt;
     p_region->fmt.p_palette = NULL;
-    if( p_fmt->i_chroma == VLC_FOURCC_YUVP )
+    if( p_fmt->i_chroma == VLC_CODEC_YUVP )
     {
         p_region->fmt.p_palette = calloc( 1, sizeof(*p_region->fmt.p_palette) );
         if( p_fmt->p_palette )
@@ -791,14 +812,13 @@ subpicture_region_t *subpicture_region_New( const video_format_t *p_fmt )
     p_region->p_style = NULL;
     p_region->p_picture = NULL;
 
-    if( p_fmt->i_chroma == VLC_FOURCC_TEXT )
+    if( p_fmt->i_chroma == VLC_CODEC_TEXT )
         return p_region;
 
-    p_region->p_picture = picture_New( p_fmt->i_chroma, p_fmt->i_width, p_fmt->i_height,
-                                       p_fmt->i_aspect );
+    p_region->p_picture = picture_NewFromFormat( p_fmt );
     if( !p_region->p_picture )
     {
-        free( p_fmt->p_palette );
+        free( p_region->fmt.p_palette );
         free( p_region );
         return NULL;
     }
@@ -822,7 +842,8 @@ void subpicture_region_Delete( subpicture_region_t *p_region )
 
     free( p_region->psz_text );
     free( p_region->psz_html );
-    //free( p_region->p_style ); FIXME --fenrir plugin does not allocate the memory for it. I think it might lead to segfault, video renderer can live longer than the decoder
+    if( p_region->p_style )
+        text_style_Delete( p_region->p_style );
     free( p_region );
 }
 
@@ -937,77 +958,9 @@ static void FilterRelease( filter_t *p_filter )
     if( p_filter->p_module )
         module_unneed( p_filter, p_filter->p_module );
 
-    vlc_object_detach( p_filter );
     vlc_object_release( p_filter );
 }
 
-static void SpuRenderCreateBlend( spu_t *p_spu, const video_format_t *p_fmt )
-{
-    filter_t *p_blend;
-
-    assert( !p_spu->p->p_blend );
-
-    p_spu->p->p_blend =
-    p_blend        = vlc_custom_create( p_spu, sizeof(filter_t),
-                                        VLC_OBJECT_GENERIC, "blend" );
-    if( !p_blend )
-        return;
-
-    es_format_Init( &p_blend->fmt_in, VIDEO_ES, 0 );
-
-    es_format_Init( &p_blend->fmt_out, VIDEO_ES, 0 );
-    p_blend->fmt_out.video.i_x_offset = 0;
-    p_blend->fmt_out.video.i_y_offset = 0;
-    p_blend->fmt_out.video.i_chroma = p_fmt->i_chroma;
-    p_blend->fmt_out.video.i_aspect = p_fmt->i_aspect;
-    p_blend->fmt_out.video.i_chroma = p_fmt->i_chroma;
-    p_blend->fmt_out.video.i_rmask  = p_fmt->i_rmask;
-    p_blend->fmt_out.video.i_gmask  = p_fmt->i_gmask;
-    p_blend->fmt_out.video.i_bmask  = p_fmt->i_bmask;
-    p_blend->fmt_out.video.i_rrshift= p_fmt->i_rrshift;
-    p_blend->fmt_out.video.i_rgshift= p_fmt->i_rgshift;
-    p_blend->fmt_out.video.i_rbshift= p_fmt->i_rbshift;
-    p_blend->fmt_out.video.i_lrshift= p_fmt->i_lrshift;
-    p_blend->fmt_out.video.i_lgshift= p_fmt->i_lgshift;
-    p_blend->fmt_out.video.i_lbshift= p_fmt->i_lbshift;
-
-
-    /* The blend module will be loaded when needed with the real
-    * input format */
-    p_blend->p_module = NULL;
-
-    /* */
-    vlc_object_attach( p_blend, p_spu );
-}
-static void SpuRenderUpdateBlend( spu_t *p_spu, int i_out_width, int i_out_height,
-                                  const video_format_t *p_in_fmt )
-{
-    filter_t *p_blend = p_spu->p->p_blend;
-
-    assert( p_blend );
-
-    /* */
-    if( p_blend->p_module && p_blend->fmt_in.video.i_chroma != p_in_fmt->i_chroma )
-    {
-        /* The chroma is not the same, we need to reload the blend module
-         * XXX to match the old behaviour just test !p_blend->fmt_in.video.i_chroma */
-        module_unneed( p_blend, p_blend->p_module );
-        p_blend->p_module = NULL;
-    }
-
-    /* */
-    p_blend->fmt_in.video = *p_in_fmt;
-
-    /* */
-    p_blend->fmt_out.video.i_width =
-    p_blend->fmt_out.video.i_visible_width = i_out_width;
-    p_blend->fmt_out.video.i_height =
-    p_blend->fmt_out.video.i_visible_height = i_out_height;
-
-    /* */
-    if( !p_blend->p_module )
-        p_blend->p_module = module_need( p_blend, "video blending", NULL, false );
-}
 static void SpuRenderCreateAndLoadText( spu_t *p_spu )
 {
     filter_t *p_text;
@@ -1074,8 +1027,8 @@ static filter_t *CreateAndLoadScale( vlc_object_t *p_obj,
     p_scale->fmt_out.video.i_width =
     p_scale->fmt_out.video.i_height = b_resize ? 16 : 32;
 
-    p_scale->pf_vout_buffer_new = spu_new_video_buffer;
-    p_scale->pf_vout_buffer_del = spu_del_video_buffer;
+    p_scale->pf_video_buffer_new = spu_new_video_buffer;
+    p_scale->pf_video_buffer_del = spu_del_video_buffer;
 
     vlc_object_attach( p_scale, p_obj );
     p_scale->p_module = module_need( p_scale, "video filter2", NULL, false );
@@ -1089,11 +1042,11 @@ static void SpuRenderCreateAndLoadScale( spu_t *p_spu )
     /* XXX p_spu->p_scale is used for all conversion/scaling except yuvp to
      * yuva/rgba */
     p_spu->p->p_scale = CreateAndLoadScale( VLC_OBJECT(p_spu),
-                                            VLC_FOURCC_YUVA, VLC_FOURCC_YUVA, true );
+                                            VLC_CODEC_YUVA, VLC_CODEC_YUVA, true );
     /* This one is used for YUVP to YUVA/RGBA without scaling
      * FIXME rename it */
     p_spu->p->p_scale_yuvp = CreateAndLoadScale( VLC_OBJECT(p_spu),
-                                                 VLC_FOURCC_YUVP, VLC_FOURCC_YUVA, false );
+                                                 VLC_CODEC_YUVP, VLC_CODEC_YUVA, false );
 }
 
 static void SpuRenderText( spu_t *p_spu, bool *pb_rerender_text,
@@ -1102,7 +1055,7 @@ static void SpuRenderText( spu_t *p_spu, bool *pb_rerender_text,
 {
     filter_t *p_text = p_spu->p->p_text;
 
-    assert( p_region->fmt.i_chroma == VLC_FOURCC_TEXT );
+    assert( p_region->fmt.i_chroma == VLC_CODEC_TEXT );
 
     if( !p_text || !p_text->p_module )
         goto exit;
@@ -1237,14 +1190,11 @@ static bool spu_area_overlap( spu_area_t a, spu_area_t b )
  * Avoid area overlapping
  */
 static void SpuAreaFixOverlap( spu_area_t *p_dst,
-                               const spu_area_t *p_master,
                                const spu_area_t *p_sub, int i_sub, int i_align )
 {
     spu_area_t a = spu_area_scaled( *p_dst );
     bool b_moved = false;
     bool b_ok;
-
-    assert( p_master->i_x == 0 && p_master->i_y == 0 );
 
     /* Check for overlap
      * XXX It is not fast O(n^2) but we should not have a lot of region */
@@ -1262,8 +1212,6 @@ static void SpuAreaFixOverlap( spu_area_t *p_dst,
             {
                 /* We go down */
                 int i_y = sub.i_y + sub.i_height;
-                if( i_y + a.i_height > p_master->i_height )
-                    break;
                 a.i_y = i_y;
                 b_moved = true;
             }
@@ -1271,8 +1219,6 @@ static void SpuAreaFixOverlap( spu_area_t *p_dst,
             {
                 /* We go up */
                 int i_y = sub.i_y - a.i_height;
-                if( i_y < 0 )
-                    break;
                 a.i_y = i_y;
                 b_moved = true;
             }
@@ -1293,13 +1239,31 @@ static void SpuAreaFixOverlap( spu_area_t *p_dst,
 }
 
 
+static void SpuAreaFitInside( spu_area_t *p_area, const spu_area_t *p_boundary )
+{
+  spu_area_t a = spu_area_scaled( *p_area );
+
+  const int i_error_x = (a.i_x + a.i_width) - p_boundary->i_width;
+  if( i_error_x > 0 )
+      a.i_x -= i_error_x;
+  if( a.i_x < 0 )
+      a.i_x = 0;
+
+  const int i_error_y = (a.i_y + a.i_height) - p_boundary->i_height;
+  if( i_error_y > 0 )
+      a.i_y -= i_error_y;
+  if( a.i_y < 0 )
+      a.i_y = 0;
+
+  *p_area = spu_area_unscaled( a, p_area->scale );
+}
+
 /**
  * Place a region
  */
 static void SpuRegionPlace( int *pi_x, int *pi_y,
                             const subpicture_t *p_subpic,
-                            const subpicture_region_t *p_region,
-                            int i_margin_y )
+                            const subpicture_region_t *p_region )
 {
     const int i_delta_x = p_region->i_x;
     const int i_delta_y = p_region->i_y;
@@ -1337,23 +1301,6 @@ static void SpuRegionPlace( int *pi_x, int *pi_y,
         i_x = i_delta_x;
         i_y = i_delta_y;
     }
-
-    /* Margin shifts all subpictures */
-    if( i_margin_y != 0 )
-        i_y -= i_margin_y;
-
-    /* Clamp offset to not go out of the screen (when possible) */
-    const int i_error_x = (i_x + p_region->fmt.i_width) - p_subpic->i_original_picture_width;
-    if( i_error_x > 0 )
-        i_x -= i_error_x;
-    if( i_x < 0 )
-        i_x = 0;
-
-    const int i_error_y = (i_y + p_region->fmt.i_height) - p_subpic->i_original_picture_height;
-    if( i_error_y > 0 )
-        i_y -= i_error_y;
-    if( i_y < 0 )
-        i_y = 0;
 
     *pi_x = i_x;
     *pi_y = i_y;
@@ -1408,7 +1355,7 @@ static void SpuRenderRegion( spu_t *p_spu,
     *p_area = spu_area_create( 0,0, 0,0, scale_size );
 
     /* Render text region */
-    if( p_region->fmt.i_chroma == VLC_FOURCC_TEXT )
+    if( p_region->fmt.i_chroma == VLC_CODEC_TEXT )
     {
         const int i_min_scale_ratio = SCALE_UNIT; /* FIXME what is the right value? (scale_size is not) */
         SpuRenderText( p_spu, &b_rerender_text, p_subpic, p_region,
@@ -1416,7 +1363,7 @@ static void SpuRenderRegion( spu_t *p_spu,
         b_restore_format = b_rerender_text;
 
         /* Check if the rendering has failed ... */
-        if( p_region->fmt.i_chroma == VLC_FOURCC_TEXT )
+        if( p_region->fmt.i_chroma == VLC_CODEC_TEXT )
             goto exit;
     }
 
@@ -1424,7 +1371,7 @@ static void SpuRenderRegion( spu_t *p_spu,
      * FIXME b_force_palette and b_force_crop are applied to all subpictures using palette
      * instead of only the right one (being the dvd spu).
      */
-    const bool b_using_palette = p_region->fmt.i_chroma == VLC_FOURCC_YUVP;
+    const bool b_using_palette = p_region->fmt.i_chroma == VLC_CODEC_YUVP;
     const bool b_force_palette = b_using_palette && p_sys->b_force_palette;
     const bool b_force_crop    = b_force_palette && p_sys->b_force_crop;
     bool b_changed_palette     = false;
@@ -1440,7 +1387,7 @@ static void SpuRenderRegion( spu_t *p_spu,
     /* Place the picture
      * We compute the position in the rendered size */
     SpuRegionPlace( &i_x_offset, &i_y_offset,
-                    p_subpic, p_region, i_margin_y );
+                    p_subpic, p_region );
 
     /* Save this position for subtitle overlap support
      * it is really important that there are given without scale_size applied */
@@ -1451,16 +1398,25 @@ static void SpuRenderRegion( spu_t *p_spu,
     /* Handle overlapping subtitles when possible */
     if( p_subpic->b_subtitle && !p_subpic->b_absolute )
     {
-        spu_area_t display = spu_area_create( 0, 0, p_fmt->i_width, p_fmt->i_height,
-                                              spu_scale_unit() );
-
-        SpuAreaFixOverlap( p_area, &display, p_subtitle_area, i_subtitle_area,
+        SpuAreaFixOverlap( p_area, p_subtitle_area, i_subtitle_area,
                            p_region->i_align );
     }
 
+    /* we copy the area: for the subtitle overlap support we want
+     * to only save the area without margin applied */
+    spu_area_t restrained = *p_area;
+
+    /* apply margin to subtitles and correct if they go over the picture edge */
+    if( p_subpic->b_subtitle )
+        restrained.i_y -= i_margin_y;
+
+    spu_area_t display = spu_area_create( 0, 0, p_fmt->i_width, p_fmt->i_height,
+                                          spu_scale_unit() );
+    SpuAreaFitInside( &restrained, &display );
+
     /* Fix the position for the current scale_size */
-    i_x_offset = spu_scale_w( p_area->i_x, p_area->scale );
-    i_y_offset = spu_scale_h( p_area->i_y, p_area->scale );
+    i_x_offset = spu_scale_w( restrained.i_x, restrained.scale );
+    i_y_offset = spu_scale_h( restrained.i_y, restrained.scale );
 
     /* */
     if( b_force_palette )
@@ -1539,7 +1495,7 @@ static void SpuRenderRegion( spu_t *p_spu,
 
                 /* TODO converting to RGBA for RGB video output is better */
                 p_scale_yuvp->fmt_out.video = p_region->fmt;
-                p_scale_yuvp->fmt_out.video.i_chroma = VLC_FOURCC_YUVA;
+                p_scale_yuvp->fmt_out.video.i_chroma = VLC_CODEC_YUVA;
 
                 p_picture = p_scale_yuvp->pf_video_filter( p_scale_yuvp, p_picture );
                 if( !p_picture )
@@ -1639,19 +1595,15 @@ static void SpuRenderRegion( spu_t *p_spu,
     }
 
     /* Update the blender */
-    SpuRenderUpdateBlend( p_spu, p_fmt->i_width, p_fmt->i_height, &region_fmt );
-
-    if( p_sys->p_blend->p_module )
-    {
-        const int i_alpha = SpuRegionAlpha( p_subpic, p_region );
-
-        p_sys->p_blend->pf_video_blend( p_sys->p_blend, p_pic_dst,
-            p_region_picture, i_x_offset, i_y_offset, i_alpha );
-    }
-    else
+    if( filter_ConfigureBlend( p_spu->p->p_blend,
+                               p_fmt->i_width, p_fmt->i_height,
+                               &region_fmt ) ||
+        filter_Blend( p_spu->p->p_blend,
+                      p_pic_dst, i_x_offset, i_y_offset,
+                      p_region_picture, SpuRegionAlpha( p_subpic, p_region ) ) )
     {
         msg_Err( p_spu, "blending %4.4s to %4.4s failed",
-                 (char *)&p_sys->p_blend->fmt_out.video.i_chroma,
+                 (char *)&p_sys->p_blend->fmt_in.video.i_chroma,
                  (char *)&p_sys->p_blend->fmt_out.video.i_chroma );
     }
 
@@ -1835,6 +1787,22 @@ static int CropCallback( vlc_object_t *p_object, char const *psz_var,
 }
 
 /*****************************************************************************
+ * MarginCallback: called when requested subtitle position has changed         *
+ *****************************************************************************/
+
+static int MarginCallback( vlc_object_t *p_object, char const *psz_var,
+                         vlc_value_t oldval, vlc_value_t newval, void *p_data )
+{
+    VLC_UNUSED( psz_var ); VLC_UNUSED( oldval ); VLC_UNUSED( p_object );
+    spu_private_t *p_sys = ( spu_private_t* ) p_data;
+
+    vlc_mutex_lock( &p_sys->lock );
+    p_sys->i_margin = newval.i_int;
+    vlc_mutex_unlock( &p_sys->lock );
+    return VLC_SUCCESS;
+}
+
+/*****************************************************************************
  * Buffers allocation callbacks for the filters
  *****************************************************************************/
 struct filter_owner_sys_t
@@ -1874,8 +1842,7 @@ static picture_t *spu_new_video_buffer( filter_t *p_filter )
     const video_format_t *p_fmt = &p_filter->fmt_out.video;
 
     VLC_UNUSED(p_filter);
-    return picture_New( p_fmt->i_chroma,
-                        p_fmt->i_width, p_fmt->i_height, p_fmt->i_aspect );
+    return picture_NewFromFormat( p_fmt );
 }
 static void spu_del_video_buffer( filter_t *p_filter, picture_t *p_picture )
 {

@@ -2,7 +2,7 @@
  * simple_preferences.hpp : Simple prefs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 754d8adbbc4fe5a75e5347e2ece215e972df2cc4 $
+ * $Id: 626de8279bd38084013990262409ecb0f38166a8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -75,9 +75,10 @@ enum {
        normalizerChB,
        volLW,
        headphoneB,
+       spdifChB,
 };
 enum { inputLE, cachingCoB };
-enum { skinRB, qtRB };
+enum { skinRB, qtRB, styleCB };
 
 class ConfigControl;
 class QComboBox;
@@ -92,7 +93,7 @@ class QTreeWidgetItem;
 
 class SPrefsCatList : public QWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     SPrefsCatList( intf_thread_t *, QWidget *, bool );
     virtual ~SPrefsCatList() {};
@@ -135,6 +136,7 @@ private slots:
     void assoDialog();
     void saveAsso();
 #endif
+    void changeStyle( QString );
 };
 
 #endif

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: cee838bda7e8e6dc32ee19d522be270327216226 $
+ * Copyright (C) 2004-2009 the VideoLAN team
+ * $Id: 06d2442a9ed05696c8988ef0e4812e130f402b87 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -87,6 +87,8 @@ struct demux_sys_t
     int         i_time_track;
     int64_t     i_current_pts;
 
+    int         i_aob_mlp_count;
+
     bool  b_lost_sync;
     bool  b_have_pack;
     bool  b_seekable;
@@ -135,6 +137,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_force )
     p_sys->i_length   = -1;
     p_sys->i_current_pts = (mtime_t) 0;
     p_sys->i_time_track = -1;
+    p_sys->i_aob_mlp_count = 0;
 
     p_sys->b_lost_sync = false;
     p_sys->b_have_pack = false;
@@ -237,7 +240,7 @@ static void FindLength( demux_t *p_demux )
     int64_t i_current_pos = -1, i_size = 0, i_end = 0;
     int i;
 
-    if( !var_CreateGetInteger( p_demux, "ps-trust-timestamps" ) )
+    if( !var_CreateGetBool( p_demux, "ps-trust-timestamps" ) )
         return;
 
     if( p_sys->i_length == -1 ) /* First time */
@@ -355,6 +358,19 @@ static int Demux( demux_t *p_demux )
     default:
         if( (i_id = ps_pkt_id( p_pkt )) >= 0xc0 )
         {
+            /* Small heuristic to improve MLP detection from AOB */
+            if( i_id == 0xa001 &&
+                p_sys->i_aob_mlp_count < 500 )
+            {
+                p_sys->i_aob_mlp_count++;
+            }
+            else if( i_id == 0xbda1 &&
+                     p_sys->i_aob_mlp_count > 0 )
+            {
+                p_sys->i_aob_mlp_count--;
+                i_id = 0xa001;
+            }
+
             bool b_new = false;
             ps_track_t *tk = &p_sys->tk[PS_ID_TO_TK(i_id)];
 
@@ -381,21 +397,21 @@ static int Demux( demux_t *p_demux )
                 p_sys->i_scr = -1;
             }
 
-            if( p_sys->i_scr > 0 )
-                es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_scr );
+            if( p_sys->i_scr >= 0 )
+                es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_scr );
 
             p_sys->i_scr = -1;
 
             if( tk->b_seen && tk->es &&
                 (
 #ifdef ZVBI_COMPILED /* FIXME!! */
-                tk->fmt.i_codec == VLC_FOURCC('t','e','l','x') ||
+                tk->fmt.i_codec == VLC_CODEC_TELETEXT ||
 #endif
                 !ps_pkt_parse_pes( p_pkt, tk->i_skip ) ) )
             {
                 if( !b_new && !p_sys->b_have_pack &&
                     (tk->fmt.i_cat == AUDIO_ES) &&
-                    (p_pkt->i_pts > 0) )
+                    (p_pkt->i_pts > VLC_TS_INVALID) )
                 {
                     /* A hack to sync the A/V on PES files. */
                     msg_Dbg( p_demux, "force SCR: %"PRId64, p_pkt->i_pts );
@@ -440,7 +456,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             i64 = stream_Size( p_demux->s );
             if( i64 > 0 )
             {
-                *pf = (double)stream_Tell( p_demux->s ) / (double)i64;
+                double current = stream_Tell( p_demux->s );
+                *pf = current / (double)i64;
             }
             else
             {
@@ -497,6 +514,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 if( !i_now )
                     return i64 ? VLC_EGENERIC : VLC_SUCCESS;
 
+                p_sys->i_current_pts = 0;
                 i_pos *= (float)i64 / (float)i_now;
                 stream_Seek( p_demux->s, i_pos );
                 return VLC_SUCCESS;

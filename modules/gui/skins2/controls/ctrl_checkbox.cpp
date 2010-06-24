@@ -2,7 +2,7 @@
  * ctrl_checkbox.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 89c2c57ea21d749d140acc92466d7dd452299adb $
+ * $Id: 0f0116faf31ce721ade15e50a5c179e84cf1824b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -276,7 +276,5 @@ void CtrlCheckbox::changeButton()
 
     // Notify the window the tooltip has changed
     notifyTooltipChange();
-    // Refresh
-    notifyLayout();
 }
 

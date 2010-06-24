@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 4a33621166da3ea930fa76848d05a4277232c82a $
+ * $Id: afa1a6496d4625f726c22b3187676e51561c2ea8 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -36,7 +36,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 #include <vlc_codec.h>
 #include <vlc_osd.h>
 #include <vlc_input.h>
@@ -76,7 +75,6 @@ vlc_module_end ()
  *****************************************************************************/
 static subpicture_t *DecodeBlock( decoder_t *, block_t ** );
 static void DestroySubpicture( subpicture_t * );
-static void PreRender( spu_t *, subpicture_t *, const video_format_t * );
 static void UpdateRegions( spu_t *,
                            subpicture_t *, const video_format_t *, mtime_t );
 
@@ -107,9 +105,6 @@ struct decoder_sys_t
 
     /* */
     ASS_Track    *p_track;
-
-    /* */
-    subpicture_t *p_spu_final;
 };
 static void DecSysRelease( decoder_sys_t *p_sys );
 static void DecSysHold( decoder_sys_t *p_sys );
@@ -147,7 +142,7 @@ static int Create( vlc_object_t *p_this )
     decoder_sys_t *p_sys;
     ASS_Track *p_track;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC('s','s','a',' ') )
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_SSA )
         return VLC_EGENERIC;
 
     p_dec->pf_decode_sub = DecodeBlock;
@@ -180,7 +175,7 @@ static int Create( vlc_object_t *p_this )
     vlc_mutex_unlock( &libass_lock );
 
     p_dec->fmt_out.i_cat = SPU_ES;
-    p_dec->fmt_out.i_codec = VLC_FOURCC('R','G','B','A');
+    p_dec->fmt_out.i_codec = VLC_CODEC_RGBA;
 
     return VLC_SUCCESS;
 }
@@ -295,7 +290,6 @@ static subpicture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
     vlc_mutex_unlock( &libass_lock );
 
-    p_spu->pf_pre_render = PreRender;
     p_spu->pf_update_regions = UpdateRegions;
     p_spu->pf_destroy = DestroySubpicture;
     p_spu->p_sys->p_dec_sys = p_sys;
@@ -318,16 +312,6 @@ static void DestroySubpicture( subpicture_t *p_subpic )
     free( p_subpic->p_sys );
 }
 
-static void PreRender( spu_t *p_spu, subpicture_t *p_subpic,
-                       const video_format_t *p_fmt )
-{
-    decoder_sys_t *p_dec_sys = p_subpic->p_sys->p_dec_sys;
-
-    p_dec_sys->p_spu_final = p_subpic;
-    VLC_UNUSED(p_fmt);
-    VLC_UNUSED(p_spu);
-}
-
 static void UpdateRegions( spu_t *p_spu, subpicture_t *p_subpic,
                            const video_format_t *p_fmt, mtime_t i_ts )
 {
@@ -337,17 +321,11 @@ static void UpdateRegions( spu_t *p_spu, subpicture_t *p_subpic,
     video_format_t fmt;
     bool b_fmt_changed;
 
-    if( p_subpic != p_sys->p_spu_final )
-    {
-        SubpictureReleaseRegions( p_spu, p_subpic );
-        return;
-    }
-
     vlc_mutex_lock( &libass_lock );
 
     /* */
     fmt = *p_fmt;
-    fmt.i_chroma = VLC_FOURCC('R','G','B','A');
+    fmt.i_chroma = VLC_CODEC_RGBA;
     fmt.i_width = fmt.i_visible_width;
     fmt.i_height = fmt.i_visible_height;
     fmt.i_bits_per_pixel = 0;
@@ -720,46 +698,6 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
     }
     free( pp_attachments );
 
-    char *psz_font_dir = NULL;
-
-
-#if defined(WIN32)
-    dialog_progress_bar_t *p_dialog = dialog_ProgressCreate( p_dec,
-        _("Building font cache"),
-        _( "Please wait while your font cache is rebuild.\n"
-        "This should take less than a minute." ), NULL );
-    /* This makes Windows build of VLC hang */
-    const UINT uPath = GetSystemWindowsDirectoryW( NULL, 0 );
-    if( uPath > 0 )
-    {
-        wchar_t *psw_path = calloc( uPath + 1, sizeof(wchar_t) );
-        if( psw_path )
-        {
-            if( GetSystemWindowsDirectoryW( psw_path, uPath + 1 ) > 0 )
-            {
-                char *psz_tmp = FromWide( psw_path );
-                if( psz_tmp &&
-                    asprintf( &psz_font_dir, "%s\\Fonts", psz_tmp ) < 0 )
-                    psz_font_dir = NULL;
-                free( psz_tmp );
-            }
-            free( psw_path );
-        }
-    }
-#endif
-    if( !psz_font_dir )
-        psz_font_dir = config_GetCacheDir();
-
-    if( !psz_font_dir )
-        goto error;
-    msg_Dbg( p_dec, "Setting libass fontdir: %s", psz_font_dir );
-    ass_set_fonts_dir( p_library, psz_font_dir );
-    free( psz_font_dir );
-#ifdef WIN32
-    if( p_dialog )
-        dialog_ProgressSet( p_dialog, NULL, 0.1 );
-#endif
-
     ass_set_extract_fonts( p_library, true );
     ass_set_style_overrides( p_library, NULL );
 
@@ -779,7 +717,11 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
     const char *psz_family = "Arial"; /* Use Arial if we can't find anything more suitable */
 
 #ifdef HAVE_FONTCONFIG
-#ifdef WIN32
+#if defined(WIN32)
+    dialog_progress_bar_t *p_dialog = dialog_ProgressCreate( p_dec,
+        _("Building font cache"),
+        _( "Please wait while your font cache is rebuilt.\n"
+        "This should take less than a minute." ), NULL );
     if( p_dialog )
         dialog_ProgressSet( p_dialog, NULL, 0.2 );
 #endif
@@ -790,7 +732,11 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
 #endif
 #ifdef WIN32
     if( p_dialog )
+    {
         dialog_ProgressSet( p_dialog, NULL, 1.0 );
+        dialog_ProgressDestroy( p_dialog );
+        p_dialog = NULL;
+    }
 #endif
 #else
     /* FIXME you HAVE to give him a font if no fontconfig */
@@ -808,10 +754,6 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
 
     /* */
     vlc_mutex_unlock( &libass_lock );
-#ifdef WIN32
-    if( p_dialog )
-        dialog_ProgressDestroy( p_dialog );
-#endif
     return p_ass;
 
 error:

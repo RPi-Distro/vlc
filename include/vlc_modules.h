@@ -2,7 +2,7 @@
  * modules.h : Module descriptor and load functions
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 8c91e71a8a1de2528271d6e626616bfee2a76dcc $
+ * $Id: 2a1fdd52785c4e4578af0a31e1c2aae789b06425 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -30,10 +30,10 @@
  * Exported functions.
  *****************************************************************************/
 
-#define module_need(a,b,c,d) __module_need(VLC_OBJECT(a),b,c,d)
-VLC_EXPORT( module_t *, __module_need, ( vlc_object_t *, const char *, const char *, bool ) );
-#define module_unneed(a,b) __module_unneed(VLC_OBJECT(a),b)
-VLC_EXPORT( void, __module_unneed, ( vlc_object_t *, module_t * ) );
+VLC_EXPORT( module_t *, module_need, ( vlc_object_t *, const char *, const char *, bool ) );
+#define module_need(a,b,c,d) module_need(VLC_OBJECT(a),b,c,d)
+VLC_EXPORT( void, module_unneed, ( vlc_object_t *, module_t * ) );
+#define module_unneed(a,b) module_unneed(VLC_OBJECT(a),b)
 VLC_EXPORT( bool,  module_exists, (const char *) );
 VLC_EXPORT( module_t *, module_find, (const char *) );
 
@@ -52,6 +52,7 @@ VLC_EXPORT( const char *, module_get_name, ( const module_t *m, bool long_name )
 VLC_EXPORT( const char *, module_get_help, ( const module_t *m ) );
 VLC_EXPORT( const char *, module_get_capability, ( const module_t *m ) );
 VLC_EXPORT( int, module_get_score, ( const module_t *m ) );
+VLC_EXPORT( const char *, module_gettext, ( const module_t *, const char * ) );
 
 static inline module_t *module_get_main (void)
 {

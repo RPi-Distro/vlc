@@ -2,7 +2,7 @@
  * stream_memory.c: stream_t wrapper around memory buffer
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 8cd3c43725ff27bc2fdc1e7aff810e8f0038678e $
+ * $Id: d73d846cdf17bb2c2bb59788eb9729988ef4f578 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -30,8 +30,8 @@
 struct stream_sys_t
 {
     bool  i_preserve_memory;
-    int64_t     i_pos;      /* Current reading offset */
-    int64_t     i_size;
+    uint64_t    i_pos;      /* Current reading offset */
+    uint64_t    i_size;
     uint8_t    *p_buffer;
 
 };
@@ -41,6 +41,7 @@ static int  Peek   ( stream_t *, const uint8_t **pp_peek, unsigned int i_read );
 static int  Control( stream_t *, int i_query, va_list );
 static void Delete ( stream_t * );
 
+#undef stream_MemoryNew
 /**
  * Create a stream from a memory buffer
  *
@@ -50,8 +51,8 @@ static void Delete ( stream_t * );
  * \param i_preserve_memory if this is set to false the memory buffer
  *        pointed to by p_buffer is freed on stream_Destroy
  */
-stream_t *__stream_MemoryNew( vlc_object_t *p_this, uint8_t *p_buffer,
-                              int64_t i_size, bool i_preserve_memory )
+stream_t *stream_MemoryNew( vlc_object_t *p_this, uint8_t *p_buffer,
+                            uint64_t i_size, bool i_preserve_memory )
 {
     stream_t *s = stream_CommonNew( p_this );
     stream_sys_t *p_sys;
@@ -78,6 +79,12 @@ stream_t *__stream_MemoryNew( vlc_object_t *p_this, uint8_t *p_buffer,
 
     vlc_object_attach( s, p_this );
 
+    /* Get a weak link to the parent input */
+    /* FIXME: The usage of vlc_object_find has to be removed. */
+    s->p_input = (input_thread_t *)vlc_object_find( p_this, VLC_OBJECT_INPUT, FIND_PARENT );
+    if(s->p_input)
+        vlc_object_release((vlc_object_t*)s->p_input);
+
     return s;
 }
 
@@ -85,7 +92,6 @@ static void Delete( stream_t *s )
 {
     if( !s->p_sys->i_preserve_memory ) free( s->p_sys->p_buffer );
     free( s->p_sys );
-    vlc_object_detach( s );
     stream_CommonDelete( s );
 }
 
@@ -97,13 +103,13 @@ static int Control( stream_t *s, int i_query, va_list args )
     stream_sys_t *p_sys = s->p_sys;
 
     bool *p_bool;
-    int64_t    *pi_64, i_64;
+    uint64_t   *pi_64, i_64;
     int        i_int;
 
     switch( i_query )
     {
         case STREAM_GET_SIZE:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
+            pi_64 = va_arg( args, uint64_t * );
             *pi_64 = p_sys->i_size;
             break;
 
@@ -118,13 +124,12 @@ static int Control( stream_t *s, int i_query, va_list args )
             break;
 
         case STREAM_GET_POSITION:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
+            pi_64 = va_arg( args, uint64_t * );
             *pi_64 = p_sys->i_pos;
             break;
 
         case STREAM_SET_POSITION:
-            i_64 = (int64_t)va_arg( args, int64_t );
-            i_64 = __MAX( i_64, 0 );
+            i_64 = va_arg( args, uint64_t );
             i_64 = __MIN( i_64, s->p_sys->i_size );
             p_sys->i_pos = i_64;
             break;

@@ -2,7 +2,7 @@
  * vlc_strings.h: String functions
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: c04801b9e3604f0844abb7db5fffb1a0026c923d $
+ * $Id: 42304257dd97a2a1e608691298e2396fceda7de2 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -45,12 +45,12 @@ VLC_EXPORT( size_t, vlc_b64_decode_binary, ( uint8_t **pp_dst, const char *psz_s
 VLC_EXPORT( char *, vlc_b64_decode, ( const char *psz_src ) );
 
 VLC_EXPORT( char *, str_format_time, ( const char * ) );
-#define str_format_meta( a, b ) __str_format_meta( VLC_OBJECT( a ), b )
-VLC_EXPORT( char *, __str_format_meta, ( vlc_object_t *, const char * ) );
-#define str_format( a, b ) __str_format( VLC_OBJECT( a ), b )
-VLC_EXPORT( char *, __str_format, ( vlc_object_t *, const char * ) );
+VLC_EXPORT( char *, str_format_meta, ( vlc_object_t *, const char * ) );
+#define str_format_meta( a, b ) str_format_meta( VLC_OBJECT( a ), b )
+VLC_EXPORT( char *, str_format, ( vlc_object_t *, const char * ) );
+#define str_format( a, b ) str_format( VLC_OBJECT( a ), b )
 
-VLC_EXPORT( char *, filename_sanitize, ( const char * ) ) LIBVLC_USED;
+VLC_EXPORT( void, filename_sanitize, ( char * ) );
 VLC_EXPORT( void, path_sanitize, ( char * ) );
 
 /**

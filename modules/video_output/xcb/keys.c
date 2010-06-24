@@ -6,8 +6,8 @@
  * Copyright © 2009 Rémi Denis-Courmont
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2.0
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
  * of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
@@ -26,7 +26,6 @@
 
 #include <stdlib.h>
 #include <inttypes.h>
-#include <ctype.h>
 #include <assert.h>
 
 #include <xcb/xcb.h>
@@ -79,92 +78,32 @@ static int keysymcmp (const void *pa, const void *pb)
     return a - b;
 }
 
-static int ConvertKeySym (xcb_keysym_t sym)
+static uint_fast32_t ConvertKeySym (xcb_keysym_t sym)
 {
     static const struct
     {
         xcb_keysym_t x11;
         uint32_t vlc;
     } *res, tab[] = {
-    /* This list MUST be in XK_* incremental order (see keysymdef.h),
-     * so that binary search works.
-     * Multiple X keys can match the same VLC key.
-     * X key symbols must be in the first column of the struct. */
-        { XK_BackSpace,     KEY_BACKSPACE, },
-        { XK_Tab,           KEY_TAB, },
-        { XK_Return,        KEY_ENTER, },
-        { XK_Escape,        KEY_ESC, },
-        { XK_Home,          KEY_HOME, },
-        { XK_Left,          KEY_LEFT, },
-        { XK_Up,            KEY_UP, },
-        { XK_Right,         KEY_RIGHT, },
-        { XK_Down,          KEY_DOWN, },
-        { XK_Page_Up,       KEY_PAGEUP, },
-        { XK_Page_Down,     KEY_PAGEDOWN, },
-        { XK_End,           KEY_END, },
-        { XK_Begin,         KEY_HOME, },
-        { XK_Insert,        KEY_INSERT, },
-        { XK_Menu,          KEY_MENU },
-        { XK_KP_Space,      KEY_SPACE, },
-        { XK_KP_Tab,        KEY_TAB, },
-        { XK_KP_Enter,      KEY_ENTER, },
-        { XK_KP_F1,         KEY_F1, },
-        { XK_KP_F2,         KEY_F2, },
-        { XK_KP_F3,         KEY_F3, },
-        { XK_KP_F4,         KEY_F4, },
-        { XK_KP_Home,       KEY_HOME, },
-        { XK_KP_Left,       KEY_LEFT, },
-        { XK_KP_Up,         KEY_UP, },
-        { XK_KP_Right,      KEY_RIGHT, },
-        { XK_KP_Down,       KEY_DOWN, },
-        { XK_KP_Page_Up,    KEY_PAGEUP, },
-        { XK_KP_Page_Down,  KEY_PAGEDOWN, },
-        { XK_KP_End,        KEY_END, },
-        { XK_KP_Begin,      KEY_HOME, },
-        { XK_KP_Insert,     KEY_INSERT, },
-        { XK_KP_Delete,     KEY_DELETE, },
-        { XK_F1,            KEY_F1, },
-        { XK_F2,            KEY_F2, },
-        { XK_F3,            KEY_F3, },
-        { XK_F4,            KEY_F4, },
-        { XK_F5,            KEY_F5, },
-        { XK_F6,            KEY_F6, },
-        { XK_F7,            KEY_F7, },
-        { XK_F8,            KEY_F8, },
-        { XK_F9,            KEY_F9, },
-        { XK_F10,           KEY_F10, },
-        { XK_F11,           KEY_F11, },
-        { XK_F12,           KEY_F12, },
-        { XK_Delete,        KEY_DELETE, },
-
-        /* XFree86 extensions */
-        { XF86XK_AudioLowerVolume, KEY_VOLUME_DOWN, },
-        { XF86XK_AudioMute,        KEY_VOLUME_MUTE, },
-        { XF86XK_AudioRaiseVolume, KEY_VOLUME_UP, },
-        { XF86XK_AudioPlay,        KEY_MEDIA_PLAY_PAUSE, },
-        { XF86XK_AudioStop,        KEY_MEDIA_STOP, },
-        { XF86XK_AudioPrev,        KEY_MEDIA_PREV_TRACK, },
-        { XF86XK_AudioNext,        KEY_MEDIA_NEXT_TRACK, },
-        { XF86XK_HomePage,         KEY_BROWSER_HOME, },
-        { XF86XK_Search,           KEY_BROWSER_SEARCH, },
-        { XF86XK_Back,             KEY_BROWSER_BACK, },
-        { XF86XK_Forward,          KEY_BROWSER_FORWARD, },
-        { XF86XK_Stop,             KEY_BROWSER_STOP, },
-        { XF86XK_Refresh,          KEY_BROWSER_REFRESH, },
-        { XF86XK_Favorites,        KEY_BROWSER_FAVORITES, },
-        { XF86XK_AudioPause,       KEY_MEDIA_PLAY_PAUSE, },
-        { XF86XK_Reload,           KEY_BROWSER_REFRESH, },
+#include "xcb_keysym.h"
+    }, old[] = {
+#include "keysym.h"
     };
 
-    /* X11 and VLC both use the ASCII code for printable ASCII characters,
-     * except for space (only X11). */
-    if (sym == XK_space)
-        return KEY_SPACE;
-    if (isascii(sym))
+    /* X11 Latin-1 range */
+    if (sym <= 0xff)
         return sym;
+    /* X11 Unicode range */
+    if (sym >= 0x1000100 && sym <= 0x110ffff)
+        return sym - 0x1000000;
 
     /* Special keys */
     res = bsearch (&sym, tab, sizeof (tab) / sizeof (tab[0]), sizeof (tab[0]),
+                   keysymcmp);
+    if (res != NULL)
+        return res->vlc;
+    /* Legacy X11 symbols outside the Unicode range */
+    res = bsearch (&sym, old, sizeof (old) / sizeof (old[0]), sizeof (old[0]),
                    keysymcmp);
     if (res != NULL)
         return res->vlc;
@@ -190,8 +129,9 @@ int ProcessKeyEvent (key_handler_t *ctx, xcb_generic_event_t *ev)
         {
             xcb_key_press_event_t *e = (xcb_key_press_event_t *)ev;
             xcb_keysym_t sym = xcb_key_press_lookup_keysym (ctx->syms, e, 0);
-            int vk = ConvertKeySym (sym);
+            uint_fast32_t vk = ConvertKeySym (sym);
 
+            msg_Dbg (ctx->obj, "key: 0x%08"PRIxFAST32, vk);
             if (vk == KEY_UNSET)
                 break;
             if (e->state & XCB_MOD_MASK_SHIFT)
@@ -201,7 +141,7 @@ int ProcessKeyEvent (key_handler_t *ctx, xcb_generic_event_t *ev)
             if (e->state & XCB_MOD_MASK_1)
                 vk |= KEY_MODIFIER_ALT;
             if (e->state & XCB_MOD_MASK_4)
-                vk |= KEY_MODIFIER_COMMAND;
+                vk |= KEY_MODIFIER_META;
             var_SetInteger (ctx->obj->p_libvlc, "key-pressed", vk);
             break;
         }
@@ -209,7 +149,14 @@ int ProcessKeyEvent (key_handler_t *ctx, xcb_generic_event_t *ev)
         case XCB_KEY_RELEASE:
             break;
 
-        /*TODO: key mappings update*/
+        case XCB_MAPPING_NOTIFY:
+        {
+            xcb_mapping_notify_event_t *e = (xcb_mapping_notify_event_t *)ev;
+            msg_Dbg (ctx->obj, "refreshing keyboard mapping");
+            xcb_refresh_keyboard_mapping (ctx->syms, e);
+            break;
+        }
+
         default:
             return -1;
     }

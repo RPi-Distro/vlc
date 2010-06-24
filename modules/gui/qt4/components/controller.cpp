@@ -1,8 +1,8 @@
 /*****************************************************************************
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
- * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 080eb764a78096f8af2278be519d3c4d2c7014f7 $
+ * Copyright (C) 2006-2009 the VideoLAN team
+ * $Id: c995f19c7c9dbaa014fdf7705f4c2a9d034d2acd $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -46,6 +46,8 @@
 #include <QSignalMapper>
 #include <QTimer>
 
+//#define DEBUG_LAYOUT 1
+
 /**********************************************************************
  * TEH controls
  **********************************************************************/
@@ -66,6 +68,8 @@ AbstractController::AbstractController( intf_thread_t * _p_i, QWidget *_parent )
     CONNECT( toolbarActionsMapper, mapped( int ),
              ActionsManager::getInstance( p_intf  ), doAction( int ) );
     CONNECT( THEMIM->getIM(), statusChanged( int ), this, setStatus( int ) );
+
+    setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 }
 
 /* Reemit some signals on status Change to activate some buttons */
@@ -143,13 +147,13 @@ void AbstractController::createAndAddWidget( QBoxLayout *controlLayout,
     /* Special case for SPACERS, who aren't QWidgets */
     if( i_type == WIDGET_SPACER )
     {
-        controlLayout->insertSpacing( i_index, 16 );
+        controlLayout->insertSpacing( i_index, 12 );
         return;
     }
 
     if(  i_type == WIDGET_SPACER_EXTEND )
     {
-        controlLayout->insertStretch( i_index, 16 );
+        controlLayout->insertStretch( i_index, 12 );
         return;
     }
 
@@ -172,7 +176,6 @@ void AbstractController::createAndAddWidget( QBoxLayout *controlLayout,
     button->setToolTip( tooltip );          \
     button->setIcon( QIcon( ":/"#image ) );
 
-
 #define ENABLE_ON_VIDEO( a ) \
     CONNECT( THEMIM->getIM(), voutChanged( bool ), a, setEnabled( bool ) ); \
     a->setEnabled( THEMIM->getIM()->hasVideo() ); /* TODO: is this necessary? when input is started before the interface? */
@@ -181,11 +184,18 @@ void AbstractController::createAndAddWidget( QBoxLayout *controlLayout,
     CONNECT( this, inputExists( bool ), a, setEnabled( bool ) ); \
     a->setEnabled( THEMIM->getIM()->hasInput() ); /* TODO: is this necessary? when input is started before the interface? */
 
+#define NORMAL_BUTTON( name )                           \
+    QToolButton * name ## Button = new QToolButton;     \
+    setupButton( name ## Button );                      \
+    CONNECT_MAP_SET( name ## Button, name ## _ACTION ); \
+    BUTTON_SET_BAR( name ## Button );                   \
+    widget = name ## Button;
+
 QWidget *AbstractController::createWidget( buttonType_e button, int options )
 {
 
-    bool b_flat = options & WIDGET_FLAT;
-    bool b_big = options & WIDGET_BIG;
+    bool b_flat  = options & WIDGET_FLAT;
+    bool b_big   = options & WIDGET_BIG;
     bool b_shiny = options & WIDGET_SHINY;
     bool b_special = false;
 
@@ -203,106 +213,54 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
         }
         break;
     case STOP_BUTTON:{
-        QToolButton *stopButton = new QToolButton;
-        setupButton( stopButton );
-        CONNECT_MAP_SET( stopButton, STOP_ACTION );
-        BUTTON_SET_BAR(  stopButton );
-        widget = stopButton;
+        NORMAL_BUTTON( STOP );
         }
         break;
     case OPEN_BUTTON:{
-        QToolButton *openButton = new QToolButton;
-        setupButton( openButton );
-        CONNECT_MAP_SET( openButton, OPEN_ACTION );
-        BUTTON_SET_BAR( openButton );
-        widget = openButton;
+        NORMAL_BUTTON( OPEN );
         }
         break;
     case PREVIOUS_BUTTON:{
-        QToolButton *prevButton = new QToolButton;
-        setupButton( prevButton );
-        CONNECT_MAP_SET( prevButton, PREVIOUS_ACTION );
-        BUTTON_SET_BAR( prevButton );
-        widget = prevButton;
+        NORMAL_BUTTON( PREVIOUS );
         }
         break;
-    case NEXT_BUTTON:
-        {
-        QToolButton *nextButton = new QToolButton;
-        setupButton( nextButton );
-        CONNECT_MAP_SET( nextButton, NEXT_ACTION );
-        BUTTON_SET_BAR( nextButton );
-        widget = nextButton;
+    case NEXT_BUTTON: {
+        NORMAL_BUTTON( NEXT );
         }
         break;
     case SLOWER_BUTTON:{
-        QToolButton *slowerButton = new QToolButton;
-        setupButton( slowerButton );
-        CONNECT_MAP_SET( slowerButton, SLOWER_ACTION );
-        BUTTON_SET_BAR(  slowerButton );
-        ENABLE_ON_INPUT( slowerButton );
-        widget = slowerButton;
+        NORMAL_BUTTON( SLOWER );
+        ENABLE_ON_INPUT( SLOWERButton );
         }
         break;
     case FASTER_BUTTON:{
-        QToolButton *fasterButton = new QToolButton;
-        setupButton( fasterButton );
-        CONNECT_MAP_SET( fasterButton, FASTER_ACTION );
-        BUTTON_SET_BAR(  fasterButton );
-        ENABLE_ON_INPUT( fasterButton );
-        widget = fasterButton;
+        NORMAL_BUTTON( FASTER );
+        ENABLE_ON_INPUT( FASTERButton );
         }
         break;
     case FRAME_BUTTON: {
-        QToolButton *frameButton = new QToolButton;
-        setupButton( frameButton );
-        CONNECT_MAP_SET( frameButton, FRAME_ACTION );
-        BUTTON_SET_BAR(  frameButton );
-        ENABLE_ON_VIDEO( frameButton );
-        widget = frameButton;
+        NORMAL_BUTTON( FRAME );
+        ENABLE_ON_VIDEO( FRAMEButton );
         }
         break;
-    case FULLSCREEN_BUTTON:{
-        QToolButton *fullscreenButton = new QToolButton;
-        setupButton( fullscreenButton );
-        CONNECT_MAP_SET( fullscreenButton, FULLSCREEN_ACTION );
-        BUTTON_SET_BAR( fullscreenButton );
-        ENABLE_ON_VIDEO( fullscreenButton );
-        widget = fullscreenButton;
-        }
-        break;
-    case DEFULLSCREEN_BUTTON:{
-        QToolButton *fullscreenButton = new QToolButton;
-        setupButton( fullscreenButton );
-        CONNECT_MAP_SET( fullscreenButton, FULLSCREEN_ACTION );
-        BUTTON_SET_BAR( fullscreenButton )
-        ENABLE_ON_VIDEO( fullscreenButton );
-        widget = fullscreenButton;
+    case FULLSCREEN_BUTTON:
+    case DEFULLSCREEN_BUTTON:
+        {
+        NORMAL_BUTTON( FULLSCREEN );
+        ENABLE_ON_VIDEO( FULLSCREENButton );
         }
         break;
     case EXTENDED_BUTTON:{
-        QToolButton *extSettingsButton = new QToolButton;
-        setupButton( extSettingsButton );
-        CONNECT_MAP_SET( extSettingsButton, EXTENDED_ACTION );
-        BUTTON_SET_BAR( extSettingsButton )
-        widget = extSettingsButton;
+        NORMAL_BUTTON( EXTENDED );
         }
         break;
     case PLAYLIST_BUTTON:{
-        QToolButton *playlistButton = new QToolButton;
-        setupButton( playlistButton );
-        CONNECT_MAP_SET( playlistButton, PLAYLIST_ACTION );
-        BUTTON_SET_BAR( playlistButton );
-        widget = playlistButton;
+        NORMAL_BUTTON( PLAYLIST );
         }
         break;
     case SNAPSHOT_BUTTON:{
-        QToolButton *snapshotButton = new QToolButton;
-        setupButton( snapshotButton );
-        CONNECT_MAP_SET( snapshotButton, SNAPSHOT_ACTION );
-        BUTTON_SET_BAR(  snapshotButton );
-        ENABLE_ON_VIDEO( snapshotButton );
-        widget = snapshotButton;
+        NORMAL_BUTTON( SNAPSHOT );
+        ENABLE_ON_VIDEO( SNAPSHOTButton );
         }
         break;
     case RECORD_BUTTON:{
@@ -333,8 +291,8 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
         InputSlider *slider = new InputSlider( Qt::Horizontal, NULL );
 
         /* Update the position when the IM has changed */
-        CONNECT( THEMIM->getIM(), positionUpdated( float, int, int ),
-                slider, setPosition( float, int, int ) );
+        CONNECT( THEMIM->getIM(), positionUpdated( float, int64_t, int ),
+                slider, setPosition( float, int64_t, int ) );
         /* And update the IM, when the position has changed */
         CONNECT( slider, sliderDragged( float ),
                  THEMIM->getIM(), sliderUpdate( float ) );
@@ -393,29 +351,40 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
         }
         break;
     case SKIP_BACK_BUTTON: {
-        QToolButton *skipBakButton = new QToolButton;
-        setupButton( skipBakButton );
-        CONNECT_MAP_SET( skipBakButton, SKIP_BACK_ACTION );
-        BUTTON_SET_BAR(  skipBakButton );
-        ENABLE_ON_INPUT( skipBakButton );
-        widget = skipBakButton;
+        NORMAL_BUTTON( SKIP_BACK );
+        ENABLE_ON_INPUT( SKIP_BACKButton );
         }
         break;
     case SKIP_FW_BUTTON: {
-        QToolButton *skipFwButton = new QToolButton;
-        setupButton( skipFwButton );
-        CONNECT_MAP_SET( skipFwButton, SKIP_FW_ACTION );
-        BUTTON_SET_BAR(  skipFwButton );
-        ENABLE_ON_INPUT( skipFwButton );
-        widget = skipFwButton;
+        NORMAL_BUTTON( SKIP_FW );
+        ENABLE_ON_INPUT( SKIP_FWButton );
         }
         break;
     case QUIT_BUTTON: {
-        QToolButton *quitButton = new QToolButton;
-        setupButton( quitButton );
-        CONNECT_MAP_SET( quitButton, QUIT_ACTION );
-        BUTTON_SET_BAR(  quitButton );
-        widget = quitButton;
+        NORMAL_BUTTON( QUIT );
+        }
+        break;
+    case RANDOM_BUTTON: {
+        NORMAL_BUTTON( RANDOM );
+        RANDOMButton->setCheckable( true );
+        RANDOMButton->setChecked( var_GetBool( THEPL, "random" ) );
+        CONNECT( THEMIM, randomChanged( bool ),
+                 RANDOMButton, setChecked( bool ) );
+        }
+        break;
+    case LOOP_BUTTON:{
+        LoopButton *loopButton = new LoopButton;
+        setupButton( loopButton );
+        loopButton->setToolTip( qtr( "Click to toggle between loop one, loop all" ) );
+        loopButton->setCheckable( true );
+        loopButton->updateIcons( NORMAL );
+        CONNECT( THEMIM, repeatLoopChanged( int ), loopButton, updateIcons( int ) );
+        CONNECT( loopButton, clicked(), THEMIM, loopRepeatLoopStatus() );
+        widget = loopButton;
+        }
+        break;
+    case INFO_BUTTON: {
+        NORMAL_BUTTON( INFO );
         }
         break;
     default:
@@ -442,6 +411,7 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
     }
     return widget;
 }
+#undef NORMAL_BUTTON
 
 void AbstractController::applyAttributes( QToolButton *tmpButton, bool b_flat, bool b_big )
 {
@@ -467,19 +437,19 @@ QFrame *AbstractController::discFrame()
 
     QToolButton *prevSectionButton = new QToolButton( discFrame );
     setupButton( prevSectionButton );
-    BUTTON_SET_BAR2( prevSectionButton, dvd_prev,
+    BUTTON_SET_BAR2( prevSectionButton, toolbar/dvd_prev,
             qtr("Previous Chapter/Title" ) );
     discLayout->addWidget( prevSectionButton );
 
     QToolButton *menuButton = new QToolButton( discFrame );
     setupButton( menuButton );
     discLayout->addWidget( menuButton );
-    BUTTON_SET_BAR2( menuButton, dvd_menu, qtr( "Menu" ) );
+    BUTTON_SET_BAR2( menuButton, toolbar/dvd_menu, qtr( "Menu" ) );
 
     QToolButton *nextSectionButton = new QToolButton( discFrame );
     setupButton( nextSectionButton );
     discLayout->addWidget( nextSectionButton );
-    BUTTON_SET_BAR2( nextSectionButton, dvd_next,
+    BUTTON_SET_BAR2( nextSectionButton, toolbar/dvd_next,
             qtr("Next Chapter/Title" ) );
 
     /* Change the navigation button display when the IM
@@ -495,8 +465,6 @@ QFrame *AbstractController::discFrame()
             sectionNext() );
     CONNECT( menuButton, clicked(), THEMIM->getIM(),
             sectionMenu() );
-    connect( THEMIM->getIM(), SIGNAL( titleChanged( bool ) ),
-             this, SIGNAL( sizeChanged() ) );
 
     return discFrame;
 }
@@ -506,18 +474,16 @@ QFrame *AbstractController::telexFrame()
     /**
      * Telextext QFrame
      **/
-    QFrame *telexFrame = new QFrame;
+    QFrame *telexFrame = new QFrame( this );
     QHBoxLayout *telexLayout = new QHBoxLayout( telexFrame );
     telexLayout->setSpacing( 0 ); telexLayout->setMargin( 0 );
     CONNECT( THEMIM->getIM(), teletextPossible( bool ),
              telexFrame, setVisible( bool ) );
-    connect( THEMIM->getIM(), SIGNAL( teletextPossible( bool ) ),
-             this, SIGNAL( sizeChanged() ) );
 
     /* On/Off button */
     QToolButton *telexOn = new QToolButton;
     setupButton( telexOn );
-    BUTTON_SET_BAR2( telexOn, tv, qtr( "Teletext Activation" ) );
+    BUTTON_SET_BAR2( telexOn, toolbar/tv, qtr( "Teletext Activation" ) );
     telexOn->setEnabled( false );
     telexOn->setCheckable( true );
 
@@ -532,7 +498,7 @@ QFrame *AbstractController::telexFrame()
     /* Transparency button */
     QToolButton *telexTransparent = new QToolButton;
     setupButton( telexTransparent );
-    BUTTON_SET_BAR2( telexTransparent, tvtelx,
+    BUTTON_SET_BAR2( telexTransparent, toolbar/tvtelx,
                      qtr( "Toggle Transparency " ) );
     telexTransparent->setEnabled( false );
     telexTransparent->setCheckable( true );
@@ -584,23 +550,24 @@ ControlsWidget::ControlsWidget( intf_thread_t *_p_i,
                                 QWidget *_parent ) :
                                 AbstractController( _p_i, _parent )
 {
-    setSizePolicy( QSizePolicy::Preferred , QSizePolicy::Maximum );
-
     /* advanced Controls handling */
     b_advancedVisible = b_advControls;
+#if DEBUG_LAYOUT
+    setStyleSheet( " background: red ");
+#endif
 
     QVBoxLayout *controlLayout = new QVBoxLayout( this );
-    controlLayout->setLayoutMargins( 6, 4, 6, 2, 5 );
+    controlLayout->setContentsMargins( 4, 1, 4, 0 );
     controlLayout->setSpacing( 0 );
     QHBoxLayout *controlLayout1 = new QHBoxLayout;
-    controlLayout1->setSpacing( 0 );
+    controlLayout1->setSpacing( 0 ); controlLayout1->setMargin( 0 );
 
     QString line1 = getSettings()->value( "MainToolbar1", MAIN_TB1_DEFAULT )
                                         .toString();
     parseAndCreate( line1, controlLayout1 );
 
     QHBoxLayout *controlLayout2 = new QHBoxLayout;
-    controlLayout2->setSpacing( 0 );
+    controlLayout2->setSpacing( 0 ); controlLayout2->setMargin( 0 );
     QString line2 = getSettings()->value( "MainToolbar2", MAIN_TB2_DEFAULT )
                                         .toString();
     parseAndCreate( line2, controlLayout2 );
@@ -637,6 +604,10 @@ AdvControlsWidget::AdvControlsWidget( intf_thread_t *_p_i, QWidget *_parent ) :
     controlLayout = new QHBoxLayout( this );
     controlLayout->setMargin( 0 );
     controlLayout->setSpacing( 0 );
+#if DEBUG_LAYOUT
+    setStyleSheet( " background: orange ");
+#endif
+
 
     QString line = getSettings()->value( "AdvToolbar", ADV_TB_DEFAULT )
         .toString();
@@ -649,6 +620,9 @@ InputControlsWidget::InputControlsWidget( intf_thread_t *_p_i, QWidget *_parent 
     controlLayout = new QHBoxLayout( this );
     controlLayout->setMargin( 0 );
     controlLayout->setSpacing( 0 );
+#if DEBUG_LAYOUT
+    setStyleSheet( " background: green ");
+#endif
 
     QString line = getSettings()->value( "InputToolbar", INPT_TB_DEFAULT ).toString();
     parseAndCreate( line, controlLayout );
@@ -682,7 +656,7 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
     setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
 
     QVBoxLayout *controlLayout2 = new QVBoxLayout( this );
-    controlLayout2->setLayoutMargins( 4, 6, 4, 2, 5 );
+    controlLayout2->setContentsMargins( 4, 6, 4, 2 );
 
     /* First line */
     InputControlsWidget *inputC = new InputControlsWidget( p_intf, this );
@@ -706,13 +680,18 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
 
     vlc_mutex_init_recursive( &lock );
 
-    CONNECT( THEMIM->getIM(), voutListChanged( vout_thread_t **, int ),
-             this, setVoutList( vout_thread_t **, int ) );
+    DCONNECT( THEMIM->getIM(), voutListChanged( vout_thread_t **, int ),
+              this, setVoutList( vout_thread_t **, int ) );
 
     /* First Move */
+    QRect rect1 = getSettings()->value( "FullScreen/screen" ).toRect();
     QPoint pos1 = getSettings()->value( "FullScreen/pos" ).toPoint();
-    int number = QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
-    if( QApplication::desktop()->screenGeometry( number ).contains( pos1, true ) )
+    int number =  var_InheritInteger( p_intf, "qt-fullscreen-screennumber" );
+    if( number == -1 || number > QApplication::desktop()->numScreens() )
+        number = QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
+
+    QRect rect = QApplication::desktop()->screenGeometry( number );
+    if( rect == rect1 && rect.contains( pos1, true ) )
     {
         move( pos1 );
         i_screennumber = number;
@@ -727,7 +706,11 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
 
 FullscreenControllerWidget::~FullscreenControllerWidget()
 {
-    getSettings()->setValue( "FullScreen/pos", pos() );
+    QPoint pos1 = pos();
+    QRect rect1 = QApplication::desktop()->screenGeometry( pos1 );
+    getSettings()->setValue( "FullScreen/pos", pos1 );
+    getSettings()->setValue( "FullScreen/screen", rect1 );
+
     setVoutList( NULL, 0 );
     vlc_mutex_destroy( &lock );
 }
@@ -761,7 +744,7 @@ void FullscreenControllerWidget::showFSC()
     }
 
 #if HAVE_TRANSPARENCY
-    setWindowOpacity( config_GetFloat( p_intf, "qt-fs-opacity" )  );
+    setWindowOpacity( var_InheritFloat( p_intf, "qt-fs-opacity" )  );
 #endif
 
     show();
@@ -935,19 +918,10 @@ void FullscreenControllerWidget::leaveEvent( QEvent *event )
 
 /**
  * When you get pressed key, send it to video output
- * FIXME: clearing focus by clearFocus() to not getting
- * key press events didnt work
  */
 void FullscreenControllerWidget::keyPressEvent( QKeyEvent *event )
 {
-    int i_vlck = qtEventToVLCKey( event );
-    if( i_vlck > 0 )
-    {
-        var_SetInteger( p_intf->p_libvlc, "key-pressed", i_vlck );
-        event->accept();
-    }
-    else
-        event->ignore();
+    emit keyPressed( event );
 }
 
 /* */
@@ -973,10 +947,7 @@ static int FullscreenControllerWidgetMouseMoved( vlc_object_t *vlc_object, const
     FullscreenControllerWidget *p_fs = (FullscreenControllerWidget *)data;
 
     /* Get the value from the Vout - Trust the vout more than Qt */
-    const int i_mousex = var_GetInteger( p_vout, "mouse-x" );
-    const int i_mousey = var_GetInteger( p_vout, "mouse-y" );
-
-    p_fs->mouseChanged( p_vout, i_mousex, i_mousey );
+    p_fs->mouseChanged( p_vout, new_val.coords.x, new_val.coords.y );
 
     return VLC_SUCCESS;
 }
@@ -1046,12 +1017,12 @@ void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout,
         bool b_fs, int i_timeout )
 {
     /* FIXME - multiple vout (ie multiple mouse position ?) and thread safety if multiple vout ? */
-    msg_Dbg( p_vout, "Qt: Entering Fullscreen" );
 
     vlc_mutex_lock( &lock );
     /* Entering fullscreen, register callback */
     if( b_fs && !b_fullscreen )
     {
+        msg_Dbg( p_vout, "Qt: Entering Fullscreen" );
         b_fullscreen = true;
         i_hide_timeout = i_timeout;
         var_AddCallback( p_vout, "mouse-moved",
@@ -1060,6 +1031,7 @@ void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout,
     /* Quitting fullscreen, unregistering callback */
     else if( !b_fs && b_fullscreen )
     {
+        msg_Dbg( p_vout, "Qt: Quitting Fullscreen" );
         b_fullscreen = false;
         i_hide_timeout = i_timeout;
         var_DelCallback( p_vout, "mouse-moved",

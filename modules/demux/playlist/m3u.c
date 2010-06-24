@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 5884c6ea5ac302cffdaadcaf73a1400aaff0a3e9 $
+ * $Id: 9320a6b11ebb152318fd081190a269017d37bcde $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -144,7 +144,8 @@ static int Demux( demux_t *p_demux )
     bool b_cleanup = false;
     input_item_t *p_input;
 
-    INIT_PLAYLIST_STUFF;
+    input_item_t *p_current_input = GetCurrentItem(p_demux);
+    input_item_node_t *p_subitems = input_item_node_Create( p_current_input );
 
     psz_line = stream_ReadLine( p_demux->s );
     while( psz_line )
@@ -170,6 +171,8 @@ static int Demux( demux_t *p_demux )
             {
                 /* Extended info */
                 psz_parse += sizeof("EXTINF:") - 1;
+                free(psz_name);
+                free(psz_artist);
                 parseEXTINF( psz_parse, &psz_artist, &psz_name, &i_parsed_duration );
                 if( i_parsed_duration >= 0 )
                     i_duration = i_parsed_duration * INT64_C(1000000);
@@ -208,7 +211,11 @@ static int Demux( demux_t *p_demux )
             psz_mrl = ProcessMRL( psz_parse, p_demux->p_sys->psz_prefix );
 
             b_cleanup = true;
-            if( !psz_mrl ) goto error;
+            if( !psz_mrl )
+            {
+                LocaleFree( psz_parse );
+                goto error;
+            }
 
             p_input = input_item_NewExt( p_demux, psz_mrl, psz_name,
                                         i_options, ppsz_options, 0, i_duration );
@@ -220,7 +227,7 @@ static int Demux( demux_t *p_demux )
                 input_item_SetArtist( p_input, psz_artist );
             if( psz_name ) input_item_SetTitle( p_input, psz_name );
 
-            input_item_AddSubItem( p_current_input, p_input );
+            input_item_node_AppendItem( p_subitems, p_input );
             vlc_gc_decref( p_input );
         }
 
@@ -247,7 +254,8 @@ static int Demux( demux_t *p_demux )
             b_cleanup = false;
         }
     }
-    HANDLE_PLAY_AND_RELEASE;
+    input_item_node_PostAndDelete( p_subitems );
+    vlc_gc_decref(p_current_input);
     var_Destroy( p_demux, "m3u-extvlcopt" );
     return 0; /* Needed for correct operation of go back */
 }

@@ -2,7 +2,7 @@
  * vout_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 88413604d797e369803b72f0a12dcfa254cd9aa5 $
+ * $Id: 034ba46eecd5bea524a6c5eb5cca03fb18050d1d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -28,73 +28,35 @@
 #include "os_factory.hpp"
 #include "os_graphics.hpp"
 #include "os_window.hpp"
+#include "../events/evt_key.hpp"
 
-int VoutWindow::count = 0;
+#include <vlc_keys.h>
 
-VoutWindow::VoutWindow( intf_thread_t *pIntf, vout_thread_t* pVout,
+
+VoutWindow::VoutWindow( intf_thread_t *pIntf, vout_window_t* pWnd,
                         int width, int height, GenericWindow* pParent ) :
-      GenericWindow( pIntf, 0, 0, false, false, pParent ),
-      m_pVout( pVout ), original_width( width ), original_height( height ),
-      m_pParentWindow( pParent ), m_pCtrlVideo( NULL ), m_pImage( NULL )
+      GenericWindow( pIntf, 0, 0, false, false, pParent,
+                     GenericWindow::VoutWindow ),
+      m_pWnd( pWnd ), original_width( width ), original_height( height ),
+      m_pParentWindow( pParent ), m_pCtrlVideo( NULL )
 {
-    // counter for debug
-    count++;
-
-    if( m_pVout )
-        vlc_object_hold( m_pVout );
-
-    // needed on MS-Windows to prevent vlc hanging
-    show();
+    if( m_pWnd )
+        vlc_object_hold( m_pWnd );
 }
 
 
 VoutWindow::~VoutWindow()
 {
-    delete m_pImage;
-    if( m_pVout )
-        vlc_object_release( m_pVout );
-
-    count--;
-    msg_Dbg( getIntf(), "VoutWindow count = %d", count );
+    if( m_pWnd )
+        vlc_object_release( m_pWnd );
 }
 
-
-void VoutWindow::resize( int width, int height )
-{
-    // don't try to resize with zero value
-    if( !width || !height )
-        return;
-
-    // Get the OSFactory
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-
-    // Recreate the image
-    delete m_pImage;
-    m_pImage = pOsFactory->createOSGraphics( width, height );
-    // Draw a black rectangle
-    m_pImage->fillRect( 0, 0, width, height, 0 );
-
-    // Resize the window
-    GenericWindow::resize( width, height );
-}
-
-
-void VoutWindow::refresh( int left, int top, int width, int height )
-{
-    if( m_pImage )
-    {
-        if( !m_pCtrlVideo )
-        {
-            m_pImage->copyToWindow( *getOSWindow(), left, top,
-                                    width, height, left, top );
-        }
-    }
-}
 
 void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
 {
     if( pCtrlVideo )
     {
+        hide();
         const Position *pPos = pCtrlVideo->getPosition();
         int x = pPos->getLeft();
         int y = pPos->getTop();
@@ -103,15 +65,31 @@ void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
 
         setParent( pCtrlVideo->getWindow(), x, y, w, h );
         m_pParentWindow = pCtrlVideo->getWindow();
+
+        show();
     }
     else
     {
+        hide();
+        int w = VoutManager::instance( getIntf() )->getVoutMainWindow()->getWidth();
+        int h = VoutManager::instance( getIntf() )->getVoutMainWindow()->getHeight();
+
         setParent( VoutManager::instance( getIntf() )->getVoutMainWindow(),
-                   0, 0, 0, 0 );
+                   0, 0, w, h );
         m_pParentWindow =
                   VoutManager::instance( getIntf() )->getVoutMainWindow();
+        show();
     }
 
     m_pCtrlVideo = pCtrlVideo;
+}
+
+
+void VoutWindow::processEvent( EvtKey &rEvtKey )
+{
+    // Only do the action when the key is down
+    if( rEvtKey.getKeyState() == EvtKey::kDown )
+        var_SetInteger( getIntf()->p_libvlc, "key-pressed",
+                         rEvtKey.getModKey() );
 }
 

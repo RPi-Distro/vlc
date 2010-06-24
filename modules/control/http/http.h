@@ -2,7 +2,7 @@
  * http.h: Headers for the HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 038b36baf8faec8a81fa29ed2bbbc9782c68b2b0 $
+ * $Id: ac32dc9f553da13e8418cb3db7c298e8e394ae7d $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -32,26 +32,16 @@
 #include <vlc_common.h>
 #include <stdlib.h>
 #include <strings.h>
-#include <ctype.h>
 #include <vlc_interface.h>
 #include <vlc_playlist.h>
 
 #include <vlc_aout.h>
 #include <vlc_vout.h> /* for fullscreen */
 
-#include "vlc_httpd.h"
-#include "vlc_vlm.h"
-#include "vlc_network.h"
-#include "vlc_acl.h"
-#include "vlc_charset.h"
-
-#ifdef HAVE_SYS_STAT_H
-#   include <sys/stat.h>
-#endif
-#include <errno.h>
-#ifdef HAVE_FCNTL_H
-#   include <fcntl.h>
-#endif
+#include <vlc_httpd.h>
+#include <vlc_vlm.h>
+#include <vlc_network.h>
+#include <vlc_acl.h>
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
@@ -103,8 +93,6 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
                         char *psz_dir );
 /** This function loads a file into a buffer */
 int FileLoad( FILE *f, char **pp_data, int *pi_data );
-/** This function creates a suitable URL for a filename */
-char *FileToUrl( char *name, bool *pb_index );
 /** This function returns the real path of a file or directory */
 char *RealPath( const char *psz_src );
 
@@ -198,8 +186,8 @@ void     mvar_AppendNewVar( mvar_t *vars, const char *name,
  * The arg parameter must be of the form "start[:stop[:step]]"  */
 mvar_t *mvar_IntegerSetNew( const char *name, const char *arg );
 
-/** This function creates a set variable with a list of VLC objects */
-mvar_t *mvar_ObjectSetNew( intf_thread_t *p_intf, char *name, const char *arg );
+/** This function creates a set variable with a list of SD plugins */
+mvar_t *mvar_ServicesSetNew( intf_thread_t *p_intf, char *name );
 
 /** This function creates a set variable with the contents of the playlist */
 mvar_t *mvar_PlaylistSetNew( intf_thread_t *p_intf, char *name,
@@ -294,14 +282,14 @@ void Execute( httpd_file_sys_t *p_args,
                   char *p_request, int i_request,
                   char **pp_data, int *pi_data,
                   char **pp_dst,
-                  char *_src, char *_end );
+                  const char *_src, const char *_end );
 
 /**@}*/
 
 /**
  * Core stuff
  */
-/** \struct
+/** \struct httpd_file_sys_t
  * This structure represent a single HTML file to be parsed by the macros
  * handling engine */
 struct httpd_file_sys_t
@@ -321,7 +309,7 @@ struct httpd_file_sys_t
     mvar_t        *vars;
 };
 
-/** \struct
+/** \struct http_association_t
  * Structure associating an extension to an external program
  */
 typedef struct http_association_t
@@ -331,7 +319,7 @@ typedef struct http_association_t
     char                **ppsz_argv;
 } http_association_t;
 
-/** \struct
+/** \struct httpd_handler_sys_t
  * This structure represent a single CGI file to be parsed by the macros
  * handling engine */
 struct httpd_handler_sys_t
@@ -344,7 +332,7 @@ struct httpd_handler_sys_t
     http_association_t *p_association;
 };
 
-/** \struct
+/** \struct intf_sys_t
  * Internal service structure for the HTTP interface
  */
 struct intf_sys_t

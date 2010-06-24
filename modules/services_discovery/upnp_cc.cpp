@@ -2,7 +2,7 @@
  * upnp_cc.cpp :  UPnP discovery module
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: aed508ba66a720f2d593176f5c4f7f392346c89a $
+ * $Id: 7bd73c67fb02191d3802624cf09ed4dedd4d4fb3 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -58,14 +58,18 @@ using namespace CyberLink;
     static int  Open ( vlc_object_t * );
     static void Close( vlc_object_t * );
 
+VLC_SD_PROBE_HELPER("upnp", "Universal Plug'n'Play", SD_CAT_LAN)
+
 vlc_module_begin ()
     set_shortname( "UPnP")
-    set_description( N_("Universal Plug'n'Play discovery") )
+    set_description( N_("Universal Plug'n'Play") )
     set_category( CAT_PLAYLIST )
     set_subcategory( SUBCAT_PLAYLIST_SD )
 
     set_capability( "services_discovery", 0 )
     set_callbacks( Open, Close )
+
+    VLC_SD_PROBE_SUBMODULE
 
 vlc_module_end ()
 
@@ -143,7 +147,7 @@ static void Close( vlc_object_t *p_this )
     UPnPHandler *u = (UPnPHandler *)p_this->p_private;
     u->stop( );
 
-    msg_Dbg( p_this, "upnp discovery started" );
+    msg_Dbg( p_this, "upnp discovery stopped" );
 }
 
 
@@ -166,7 +170,7 @@ playlist_item_t *UPnPHandler::AddDevice( Device *dev )
      */
     char *str = strdup( dev->getFriendlyName( ) );
 
-    p_item = playlist_NodeCreate( p_playlist, str, p_sd->p_cat, 0, NULL );
+    p_item = playlist_NodeCreate( p_playlist, str, p_sd->p_cat, PLAYLIST_END, 0, NULL );
     p_item->i_flags &= ~PLAYLIST_SKIP_FLAG;
     msg_Dbg( p_sd, "device %s added", str );
     free( str );
@@ -200,8 +204,8 @@ void UPnPHandler::AddContent( playlist_item_t *p_parent, ContentNode *node )
         ItemNode *iNode = (ItemNode *)node;
         input_item_t *p_input = input_item_New( p_sd, iNode->getResource(), title );
         /* FIXME: playlist_AddInput() can fail */
-        playlist_BothAddInput( p_playlist, p_input, p_parent,
-                               PLAYLIST_APPEND, PLAYLIST_END, NULL, NULL,
+        playlist_NodeAddInput( p_playlist, p_input, p_parent,
+                               PLAYLIST_APPEND, PLAYLIST_END,
                                false );
         vlc_gc_decref( p_input );
     } else if ( node->isContainerNode() )
@@ -210,7 +214,7 @@ void UPnPHandler::AddContent( playlist_item_t *p_parent, ContentNode *node )
 
         char* p_name = strdup(title); /* See other comment on strdup */
         playlist_item_t* p_node = playlist_NodeCreate( p_playlist, p_name,
-                                                       p_parent, 0, NULL );
+                                                       p_parent, PLAYLIST_END, 0, NULL );
         free(p_name);
 
         unsigned nContentNodes = conNode->getNContentNodes();

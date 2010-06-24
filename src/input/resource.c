@@ -2,7 +2,7 @@
  * resource.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: d0cd74268c775181ecb2dddd03a6e1b8a5e47f77 $
+ * $Id: ae890c4ee118ff305e547072aca6417c87561331 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -27,6 +27,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_vout.h>
@@ -152,6 +154,7 @@ static void DestroyVout( input_resource_t *p_resource )
 }
 static vout_thread_t *DetachVout( input_resource_t *p_resource )
 {
+    vlc_assert_locked( &p_resource->lock );
     assert( p_resource->i_vout == 0 );
     vout_thread_t *p_vout = p_resource->p_vout_free;
     p_resource->p_vout_free = NULL;
@@ -205,6 +208,8 @@ static vout_thread_t *RequestVout( input_resource_t *p_resource,
                                    vout_thread_t *p_vout, video_format_t *p_fmt,
                                    bool b_recycle )
 {
+    vlc_assert_locked( &p_resource->lock );
+
     if( !p_vout && !p_fmt )
     {
         if( p_resource->p_vout_free )
@@ -268,7 +273,7 @@ static vout_thread_t *RequestVout( input_resource_t *p_resource,
         {
             msg_Dbg( p_resource->p_input, "saving a free vout" );
             vout_Flush( p_vout, 1 );
-            spu_Control( p_vout->p_spu, SPU_CHANNEL_CLEAR, -1 );
+            spu_Control( vout_GetSpu( p_vout ), SPU_CHANNEL_CLEAR, -1 );
 
             p_resource->p_vout_free = p_vout;
         }
@@ -288,7 +293,9 @@ static vout_thread_t *HoldVout( input_resource_t *p_resource )
 
     return p_vout;
 }
-static void HoldVouts( input_resource_t *p_resource, vout_thread_t ***ppp_vout, int *pi_vout )
+
+static void HoldVouts( input_resource_t *p_resource, vout_thread_t ***ppp_vout,
+                       size_t *pi_vout )
 {
     vout_thread_t **pp_vout;
 
@@ -300,7 +307,7 @@ static void HoldVouts( input_resource_t *p_resource, vout_thread_t ***ppp_vout, 
     if( p_resource->i_vout <= 0 )
         goto exit;
 
-    pp_vout = calloc( p_resource->i_vout, sizeof(*pp_vout) );
+    pp_vout = malloc( p_resource->i_vout * sizeof(*pp_vout) );
     if( !pp_vout )
         goto exit;
 
@@ -326,6 +333,7 @@ static void DestroyAout( input_resource_t *p_resource )
 }
 static aout_instance_t *DetachAout( input_resource_t *p_resource )
 {
+    vlc_assert_locked( &p_resource->lock );
     vlc_mutex_lock( &p_resource->lock_hold );
 
     aout_instance_t *p_aout = p_resource->p_aout;
@@ -338,6 +346,7 @@ static aout_instance_t *DetachAout( input_resource_t *p_resource )
 
 static aout_instance_t *RequestAout( input_resource_t *p_resource, aout_instance_t *p_aout )
 {
+    vlc_assert_locked( &p_resource->lock );
     assert( p_resource->p_input );
 
     if( p_aout )
@@ -460,10 +469,13 @@ vout_thread_t *input_resource_HoldVout( input_resource_t *p_resource )
 {
     return HoldVout( p_resource );
 }
-void input_resource_HoldVouts( input_resource_t *p_resource, vout_thread_t ***ppp_vout, int *pi_vout )
+
+void input_resource_HoldVouts( input_resource_t *p_resource, vout_thread_t ***ppp_vout,
+                               size_t *pi_vout )
 {
     HoldVouts( p_resource, ppp_vout, pi_vout );
 }
+
 void input_resource_TerminateVout( input_resource_t *p_resource )
 {
     input_resource_RequestVout( p_resource, NULL, NULL, false );

@@ -2,9 +2,9 @@
  * extended.m: MacOS X Extended interface panel
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id: 7b182e881273e1afa6d5aa3313eb527e2191542b $
+ * $Id: 9f11a1811bf1e2eada9e56486908af58fe66d774 $
  *
- * Authors: Felix Paul Kühne <fkuehne@videolan.org>
+ * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #import <vlc_aout.h>
 #import <vlc_vout.h>
 #import <vlc_interface.h>
+#import <vlc_playlist.h>
 
 /*****************************************************************************
  * VLCExtended implementation
@@ -108,7 +109,7 @@ static VLCExtended *_o_sharedInstance = nil;
     /* set the adjust-filter-sliders to the values from the prefs and enable
      * them, if wanted */
     char * psz_vfilters;
-    intf_thread_t * p_intf = VLCIntf;
+    intf_thread_t *p_intf = VLCIntf;
     psz_vfilters = config_GetPsz( p_intf, "vout-filter" );
     /* set the video-filter-checkboxes to the correct values */
     if( psz_vfilters )
@@ -322,7 +323,7 @@ static VLCExtended *_o_sharedInstance = nil;
 {
     /* read-out the sliders' values and apply them */
     intf_thread_t * p_intf = VLCIntf;
-    vout_thread_t *p_vout = (vout_thread_t *)vlc_object_find(p_intf, VLC_OBJECT_VOUT, FIND_ANYWHERE);
+    vout_thread_t *p_vout = getVout();
     vlc_object_t *p_filter;
 
     if( p_vout == NULL )
@@ -356,7 +357,7 @@ static VLCExtended *_o_sharedInstance = nil;
     else
     {
         msg_Dbg( p_intf, "we found a vout to adjust, let's look for the filter" );
-        p_filter = (vlc_object_t *)vlc_object_find_name( p_intf, "adjust", FIND_ANYWHERE );
+        p_filter = vlc_object_find_name( p_intf, "adjust", FIND_ANYWHERE );
 
         if(! p_filter )
         {
@@ -408,8 +409,8 @@ static VLCExtended *_o_sharedInstance = nil;
     id o_window = [NSApp keyWindow];
     NSArray *o_windows = [NSApp orderedWindows];
     NSEnumerator *o_enumerator = [o_windows objectEnumerator];
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
-    vout_thread_t *p_vout = vlc_object_find( VLCIntf, VLC_OBJECT_VOUT, FIND_ANYWHERE );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
+    vout_thread_t *p_vout = getVout();
     vout_thread_t *p_real_vout;
 
     val.f_float = [o_sld_opaque floatValue] / 100;
@@ -435,8 +436,6 @@ static VLCExtended *_o_sharedInstance = nil;
     /* store to prefs */
     config_PutFloat( p_playlist , "macosx-opaqueness" , val.f_float );
 
-    pl_Release( VLCIntf );
-
     o_config_changed = YES;
 }
 
@@ -453,7 +452,7 @@ static VLCExtended *_o_sharedInstance = nil;
 {
     /* read-out the slider's value and apply it */
     intf_thread_t * p_intf = VLCIntf;
-    aout_instance_t * p_aout= (aout_instance_t *)vlc_object_find(p_intf, VLC_OBJECT_AOUT, FIND_ANYWHERE);
+    aout_instance_t * p_aout= getAout();
 
     if( p_aout != NULL )
     {
@@ -592,8 +591,7 @@ static VLCExtended *_o_sharedInstance = nil;
     config_PutPsz( p_intf, "vout-filter", psz_string );
 
     /* Try to set on the fly */
-    p_vout = (vout_thread_t *)vlc_object_find( p_intf, VLC_OBJECT_VOUT,
-                                              FIND_ANYWHERE );
+    p_vout = getVout();
     if( p_vout )
     {
         var_SetString( p_vout, "vout-filter", psz_string );
@@ -659,8 +657,7 @@ static VLCExtended *_o_sharedInstance = nil;
     config_PutPsz( p_intf, "video-filter", psz_string );
 
     /* Try to set on the fly */
-    p_vout = (vout_thread_t *)vlc_object_find( p_intf, VLC_OBJECT_VOUT,
-                                              FIND_ANYWHERE );
+    p_vout = getVout();
     if( p_vout )
     {
         var_SetString( p_vout, "video-filter", psz_string );
@@ -679,8 +676,7 @@ static VLCExtended *_o_sharedInstance = nil;
 
     char *psz_parser, *psz_string;
     intf_thread_t * p_intf = VLCIntf;
-    aout_instance_t * p_aout= (aout_instance_t *)vlc_object_find(p_intf,
-                                 VLC_OBJECT_AOUT, FIND_ANYWHERE);
+    aout_instance_t * p_aout = getAout();
 
     if( p_aout )
     {
@@ -737,14 +733,7 @@ static VLCExtended *_o_sharedInstance = nil;
     }
     else
     {
-        var_SetString( p_aout, "audio-filter", psz_string );
-        int i = 0;
-        while( i < p_aout->i_nb_inputs )
-        {
-            p_aout->pp_inputs[i]->b_restart = true;
-            i = (i + 1);
-        }
-        vlc_object_release( p_aout );
+        aout_EnableFilter( pl_Get( p_intf ), psz_string, b_add );
     }
     free( psz_string );
 
@@ -755,7 +744,7 @@ static VLCExtended *_o_sharedInstance = nil;
 {
     /* save the preferences to make sure that our module-changes will up on
      * next launch again */
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    playlist_t * p_playlist = pl_Get( VLCIntf );
     int returnedValue;
     NSArray * theModules;
     theModules = [[NSArray alloc] initWithObjects: @"main", 
@@ -784,7 +773,6 @@ static VLCExtended *_o_sharedInstance = nil;
             "extended control attribute '%s' (%i)",
             [[theModules objectAtIndex: x] UTF8String] , returnedValue);
             [theModules release];
-            pl_Release( VLCIntf );
  
             return;
         }
@@ -795,6 +783,5 @@ static VLCExtended *_o_sharedInstance = nil;
     msg_Dbg( VLCIntf, "VLCExtended: saved certain preferences successfully" );
  
     [theModules release];
-    pl_Release( VLCIntf );
 }
 @end

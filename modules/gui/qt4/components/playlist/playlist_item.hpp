@@ -2,7 +2,7 @@
  * playlist_item.hpp : Item for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 26ce13c5896f43ed103757b7caf31b1befe809df $
+ * $Id: 6caafcb9a776558da0a208a05410e9b60b4f3042 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -28,21 +28,15 @@
 # include "config.h"
 #endif
 
-#include "components/playlist/playlist_model.hpp"
-
-#include <QString>
 #include <QList>
 
-class QSettings;
-class PLModel;
 
 class PLItem
 {
     friend class PLModel;
 public:
-    PLItem( int, int, PLItem *parent , PLModel * );
-    PLItem( playlist_item_t *, PLItem *parent, PLModel * );
-    PLItem( playlist_item_t *, QSettings *, PLModel * );
+    PLItem( playlist_item_t *, PLItem *parent );
+    PLItem( playlist_item_t * );
     ~PLItem();
 
     int row() const;
@@ -50,34 +44,28 @@ public:
     void insertChild( PLItem *, int p, bool signal = true );
     void appendChild( PLItem *item, bool signal = true )
     {
-        insertChild( item, children.count(), signal );
+        children.insert( children.count(), item );
     };
+    void removeChild( PLItem * );
+    void removeChildren();
+    void takeChildAt( int );
 
-    void remove( PLItem *removed );
+    PLItem *child( int row ) { return children.value( row ); }
+    int childCount() const { return children.count(); }
 
-    PLItem *child( int row ) { return children.value( row ); };
-    int childCount() const { return children.count(); };
-
-    PLItem *parent() { return parentItem; };
-
-    QString columnString( int col ) { return item_col_strings.value( col ); };
-
-    void update( playlist_item_t *, bool );
+    PLItem *parent() { return parentItem; }
+    input_item_t *inputItem() { return p_input; }
+    int id() { return i_id; }
+    bool operator< ( PLItem& );
 
 protected:
     QList<PLItem*> children;
-    QList<QString> item_col_strings;
-    bool b_current;
-    int i_type;
     int i_id;
-    int i_input_id;
-    int i_showflags;
+    input_item_t *p_input;
 
 private:
-    void init( int, int, PLItem *, PLModel *, QSettings * );
-    void updateColumnHeaders();
+    void init( playlist_item_t *, PLItem * );
     PLItem *parentItem;
-    PLModel *model;
 };
 
 #endif

@@ -2,7 +2,7 @@
  * jack : JACK audio output module
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: e6f26546d662f263492c7f90b645da2bd459f30b $
+ * $Id: 538e7d950698e781b74ff0da99d22eccaaec6452 $
  *
  * Authors: Cyril Deguet <asmax _at_ videolan.org>
  *          Jon Griffiths <jon_p_griffiths _At_ yahoo _DOT_ com>
@@ -54,6 +54,7 @@ struct aout_sys_t
     jack_port_t   **p_jack_ports;
     jack_sample_t **p_jack_buffers;
     unsigned int    i_channels;
+    jack_nframes_t latency;
 };
 
 /*****************************************************************************
@@ -63,6 +64,7 @@ static int  Open         ( vlc_object_t * );
 static void Close        ( vlc_object_t * );
 static void Play         ( aout_instance_t * );
 static int  Process      ( jack_nframes_t i_frames, void *p_arg );
+static int  GraphChange  ( void *p_arg );
 
 #define AUTO_CONNECT_OPTION "jack-auto-connect"
 #define AUTO_CONNECT_TEXT N_("Automatically connect to writable clients")
@@ -85,7 +87,7 @@ vlc_module_begin ()
     set_capability( "audio output", 100 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AOUT )
-    add_bool( AUTO_CONNECT_OPTION, 0, NULL, AUTO_CONNECT_TEXT,
+    add_bool( AUTO_CONNECT_OPTION, false, NULL, AUTO_CONNECT_TEXT,
               AUTO_CONNECT_LONGTEXT, true )
     add_string( CONNECT_REGEX_OPTION, NULL, NULL, CONNECT_REGEX_TEXT,
                 CONNECT_REGEX_LONGTEXT, true )
@@ -112,6 +114,7 @@ static int Open( vlc_object_t *p_this )
         goto error_out;
     }
     p_aout->output.p_sys = p_sys;
+    p_sys->latency = 0;
 
     /* Connect to the JACK server */
     snprintf( psz_name, sizeof(psz_name), "vlc_%d", getpid());
@@ -128,12 +131,13 @@ static int Open( vlc_object_t *p_this )
 
     /* Set the process callback */
     jack_set_process_callback( p_sys->p_jack_client, Process, p_aout );
+    jack_set_graph_order_callback ( p_sys->p_jack_client, GraphChange, p_aout );
 
     p_aout->output.pf_play = Play;
     aout_VolumeSoftInit( p_aout );
 
     /* JACK only supports fl32 format */
-    p_aout->output.output.i_format = VLC_FOURCC('f','l','3','2');
+    p_aout->output.output.i_format = VLC_CODEC_FL32;
     // TODO add buffer size callback
     p_aout->output.i_nb_samples = jack_get_buffer_size( p_sys->p_jack_client );
     p_aout->output.output.i_rate = jack_get_sample_rate( p_sys->p_jack_client );
@@ -182,10 +186,10 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* Auto connect ports if we were asked to */
-    if( config_GetInt( p_aout, AUTO_CONNECT_OPTION ) )
+    if( var_InheritBool( p_aout, AUTO_CONNECT_OPTION ) )
     {
         unsigned int i_in_ports;
-        char *psz_regex = config_GetPsz( p_aout, CONNECT_REGEX_OPTION );
+        char *psz_regex = var_InheritString( p_aout, CONNECT_REGEX_OPTION );
         const char **pp_in_ports = jack_get_ports( p_sys->p_jack_client,
                                                    psz_regex, NULL,
                                                    JackPortIsInput );
@@ -249,10 +253,14 @@ int Process( jack_nframes_t i_frames, void *p_arg )
     struct aout_sys_t *p_sys = p_aout->output.p_sys;
     jack_sample_t *p_src = NULL;
 
+    jack_nframes_t dframes = p_sys->latency
+                             - jack_frames_since_cycle_start( p_sys->p_jack_client );
+
+    jack_time_t dtime = dframes * 1000 * 1000 / jack_get_sample_rate( p_sys->p_jack_client );
+    mtime_t play_date = mdate() + (mtime_t) ( dtime );
+
     /* Get the next audio data buffer */
-    vlc_mutex_lock( &p_aout->output_fifo_lock );
-    aout_buffer_t *p_buffer = aout_FifoPop( p_aout, &p_aout->output.fifo );
-    vlc_mutex_unlock( &p_aout->output_fifo_lock );
+    aout_buffer_t *p_buffer = aout_OutputNextBuffer( p_aout, play_date, false );
 
     if( p_buffer != NULL )
     {
@@ -295,13 +303,38 @@ int Process( jack_nframes_t i_frames, void *p_arg )
     return 0;
 }
 
+/*****************************************************************************
+ * GraphChange: callback when JACK reorders it's process graph.
+                We update latency information.
+ *****************************************************************************/
+
+static int GraphChange( void *p_arg )
+{
+  aout_instance_t *p_aout = (aout_instance_t*) p_arg;
+  struct aout_sys_t *p_sys = p_aout->output.p_sys;
+  unsigned int i;
+  jack_nframes_t port_latency;
+
+  p_sys->latency = 0;
+
+  for( i = 0; i < p_sys->i_channels; ++i )
+  {
+    port_latency = jack_port_get_total_latency( p_sys->p_jack_client,
+                                                  p_sys->p_jack_ports[i] );
+    p_sys->latency = __MAX( p_sys->latency, port_latency );
+  }
+
+  msg_Dbg(p_aout, "JACK graph reordered. Our maximum latency=%d.", p_sys->latency);
+
+  return 0;
+}
 
 /*****************************************************************************
  * Play: nothing to do
  *****************************************************************************/
 static void Play( aout_instance_t *p_aout )
 {
-    aout_FifoFirstDate( p_aout, &p_aout->output.fifo );
+    VLC_UNUSED( p_aout );
 }
 
 /*****************************************************************************

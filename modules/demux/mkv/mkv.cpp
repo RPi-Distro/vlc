@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: c405fa1f2508059946fb90518d662ec552942292 $
+ * $Id: c515f9b60c952e7ce976f3990ad4af86df9f8871 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -33,6 +33,8 @@
 
 #include "stream_io_callback.hpp"
 
+#include <vlc_fs.h>
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -47,23 +49,23 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
 
-    add_bool( "mkv-use-ordered-chapters", 1, NULL,
+    add_bool( "mkv-use-ordered-chapters", true, NULL,
             N_("Ordered chapters"),
             N_("Play ordered chapters as specified in the segment."), true );
 
-    add_bool( "mkv-use-chapter-codec", 1, NULL,
+    add_bool( "mkv-use-chapter-codec", true, NULL,
             N_("Chapter codecs"),
             N_("Use chapter codecs found in the segment."), true );
 
-    add_bool( "mkv-preload-local-dir", 0, NULL,
+    add_bool( "mkv-preload-local-dir", false, NULL,
             N_("Preload Directory"),
             N_("Preload matroska files from the same family in the same directory (not good for broken files)."), true );
 
-    add_bool( "mkv-seek-percent", 0, NULL,
+    add_bool( "mkv-seek-percent", false, NULL,
             N_("Seek based on percent not time"),
             N_("Seek based on percent not time."), true );
 
-    add_bool( "mkv-use-dummy", 0, NULL,
+    add_bool( "mkv-use-dummy", false, NULL,
             N_("Dummy Elements"),
             N_("Read and discard unknown EBML elements (not good for broken files)."), true );
 
@@ -137,7 +139,7 @@ static int Open( vlc_object_t * p_this )
         goto error;
     }
 
-    if (config_GetInt( p_demux, "mkv-preload-local-dir" ))
+    if (var_InheritBool( p_demux, "mkv-preload-local-dir" ))
     {
         /* get the files from the same dir from the same family (based on p_demux->psz_path) */
         if (p_demux->psz_path[0] != '\0' && !strcmp(p_demux->psz_access, ""))
@@ -145,28 +147,28 @@ static int Open( vlc_object_t * p_this )
             // assume it's a regular file
             // get the directory path
             s_path = p_demux->psz_path;
-            if (s_path.at(s_path.length() - 1) == DIRECTORY_SEPARATOR)
+            if (s_path.at(s_path.length() - 1) == DIR_SEP_CHAR)
             {
                 s_path = s_path.substr(0,s_path.length()-1);
             }
             else
             {
-                if (s_path.find_last_of(DIRECTORY_SEPARATOR) > 0)
+                if (s_path.find_last_of(DIR_SEP_CHAR) > 0)
                 {
-                    s_path = s_path.substr(0,s_path.find_last_of(DIRECTORY_SEPARATOR));
+                    s_path = s_path.substr(0,s_path.find_last_of(DIR_SEP_CHAR));
                 }
             }
 
-            DIR *p_src_dir = utf8_opendir(s_path.c_str());
+            DIR *p_src_dir = vlc_opendir(s_path.c_str());
 
             if (p_src_dir != NULL)
             {
                 char *psz_file;
-                while ((psz_file = utf8_readdir(p_src_dir)) != NULL)
+                while ((psz_file = vlc_readdir(p_src_dir)) != NULL)
                 {
                     if (strlen(psz_file) > 4)
                     {
-                        s_filename = s_path + DIRECTORY_SEPARATOR + psz_file;
+                        s_filename = s_path + DIR_SEP_CHAR + psz_file;
 
 #ifdef WIN32
                         if (!strcasecmp(s_filename.c_str(), p_demux->psz_path))
@@ -419,7 +421,7 @@ static void Seek( demux_t *p_demux, mtime_t i_date, double f_percent, chapter_it
     }
 
     /* seek without index or without date */
-    if( f_percent >= 0 && (config_GetInt( p_demux, "mkv-seek-percent" ) || !p_segment->b_cues || i_date < 0 ))
+    if( f_percent >= 0 && (var_InheritBool( p_demux, "mkv-seek-percent" ) || !p_segment->b_cues || i_date < 0 ))
     {
         if( p_sys->f_duration >= 0 && p_segment->b_cues )
         {
@@ -465,8 +467,8 @@ static block_t *MemToBlock( demux_t *p_demux, uint8_t *p_mem, size_t i_mem, size
     return p_block;
 }
 
-/* Needed by matroska_segment::Seek() */
-static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
+/* Needed by matroska_segment::Seek() and Seek */
+void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
                          mtime_t i_pts, mtime_t i_duration, bool f_mandatory )
 {
     demux_sys_t        *p_sys = p_demux->p_sys;
@@ -584,7 +586,12 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
         {
             if( tk->b_dts_only )
             {
-                p_block->i_pts = 0;
+                p_block->i_pts = VLC_TS_INVALID;
+                p_block->i_dts = i_pts;
+            }
+            else if( tk->b_pts_only )
+            {
+                p_block->i_pts = i_pts;
                 p_block->i_dts = i_pts;
             }
             else
@@ -594,7 +601,6 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
                     p_block->i_dts = p_block->i_pts;
                 else
                     p_block->i_dts = min( i_pts, tk->i_last_dts + (mtime_t)(tk->i_default_duration >> 10));
-                p_sys->i_pts = p_block->i_dts;
             }
         }
         tk->i_last_dts = p_block->i_dts;
@@ -608,165 +614,17 @@ msg_Dbg( p_demux, "block i_dts: %"PRId64" / i_pts: %"PRId64, p_block->i_dts, p_b
         }
 
         /* FIXME remove when VLC_TS_INVALID work is done */
-        if( i == 0 || p_block->i_dts > 0 )
-            p_block->i_dts++;
-        if( !tk->b_dts_only && ( i == 0 || p_block->i_pts ) )
-            p_block->i_pts++;
+        if( i == 0 || p_block->i_dts > VLC_TS_INVALID )
+            p_block->i_dts += VLC_TS_0;
+        if( !tk->b_dts_only && ( i == 0 || p_block->i_pts > VLC_TS_INVALID ) )
+            p_block->i_pts += VLC_TS_0;
 
         es_out_Send( p_demux->out, tk->p_es, p_block );
 
         /* use time stamp only for first block */
-        i_pts = 0;
+        i_pts = VLC_TS_INVALID;
     }
 }
-
-
-void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_global_position )
-{
-    KaxBlock    *block;
-    KaxSimpleBlock *simpleblock;
-    int         i_track_skipping;
-    int64_t     i_block_duration;
-    int64_t     i_block_ref1;
-    int64_t     i_block_ref2;
-    size_t      i_track;
-    int64_t     i_seek_position = i_start_pos;
-    int64_t     i_seek_time = i_start_time;
-
-    if( i_global_position >= 0 )
-    {
-        /* Special case for seeking in files with no cues */
-        EbmlElement *el = NULL;
-        es.I_O().setFilePointer( i_start_pos, seek_beginning );
-        delete ep;
-        ep = new EbmlParser( &es, segment, &sys.demuxer );
-        cluster = NULL;
-
-        while( ( el = ep->Get() ) != NULL )
-        {
-            if( MKV_IS_ID( el, KaxCluster ) )
-            {
-                cluster = (KaxCluster *)el;
-                i_cluster_pos = cluster->GetElementPosition();
-                if( i_index == 0 ||
-                        ( i_index > 0 && p_indexes[i_index - 1].i_position < (int64_t)cluster->GetElementPosition() ) )
-                {
-                    IndexAppendCluster( cluster );
-                }
-                if( es.I_O().getFilePointer() >= i_global_position )
-                {
-                    ParseCluster();
-                    msg_Dbg( &sys.demuxer, "we found a cluster that is in the neighbourhood" );
-                    return;
-                }
-            }
-        }
-        msg_Err( &sys.demuxer, "This file has no cues, and we were unable to seek to the requested position by parsing." );
-        return;
-    }
-
-    if ( i_index > 0 )
-    {
-        int i_idx = 0;
-
-        for( ; i_idx < i_index; i_idx++ )
-        {
-            if( p_indexes[i_idx].i_time + i_time_offset > i_date )
-            {
-                break;
-            }
-        }
-
-        if( i_idx > 0 )
-        {
-            i_idx--;
-        }
-
-        i_seek_position = p_indexes[i_idx].i_position;
-        i_seek_time = p_indexes[i_idx].i_time;
-    }
-
-    msg_Dbg( &sys.demuxer, "seek got %"PRId64" (%d%%)",
-                i_seek_time, (int)( 100 * i_seek_position / stream_Size( sys.demuxer.s ) ) );
-
-    es.I_O().setFilePointer( i_seek_position, seek_beginning );
-
-    delete ep;
-    ep = new EbmlParser( &es, segment, &sys.demuxer );
-    cluster = NULL;
-
-    sys.i_start_pts = i_date;
-
-    /* now parse until key frame */
-    i_track_skipping = 0;
-    for( i_track = 0; i_track < tracks.size(); i_track++ )
-    {
-        if( tracks[i_track]->fmt.i_cat == VIDEO_ES )
-        {
-            tracks[i_track]->b_search_keyframe = true;
-            i_track_skipping++;
-        }
-    }
-    es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
-
-    while( i_track_skipping > 0 )
-    {
-        if( BlockGet( block, simpleblock, &i_block_ref1, &i_block_ref2, &i_block_duration ) )
-        {
-            msg_Warn( &sys.demuxer, "cannot get block EOF?" );
-
-            return;
-        }
-        ep->Down();
-
-        for( i_track = 0; i_track < tracks.size(); i_track++ )
-        {
-            if( (simpleblock && tracks[i_track]->i_number == simpleblock->TrackNum()) ||
-                (block && tracks[i_track]->i_number == block->TrackNum()) )
-            {
-                break;
-            }
-        }
-
-        if( simpleblock )
-            sys.i_pts = (sys.i_chapter_time + simpleblock->GlobalTimecode()) / (mtime_t) 1000;
-        else
-            sys.i_pts = (sys.i_chapter_time + block->GlobalTimecode()) / (mtime_t) 1000;
-
-        if( i_track < tracks.size() )
-        {
-            if( sys.i_pts >= sys.i_start_pts )
-            {
-                cluster = static_cast<KaxCluster*>(ep->UnGet( i_block_pos, i_cluster_pos ));
-                i_track_skipping = 0;
-            }
-            else if( tracks[i_track]->fmt.i_cat == VIDEO_ES )
-            {
-                if( i_block_ref1 == 0 && tracks[i_track]->b_search_keyframe )
-                {
-                    tracks[i_track]->b_search_keyframe = false;
-                    i_track_skipping--;
-                }
-                if( !tracks[i_track]->b_search_keyframe )
-                {
-                    BlockDecode( &sys.demuxer, block, simpleblock, sys.i_pts, 0, i_block_ref1 >= 0 || i_block_ref2 > 0 );
-                }
-            }
-        }
-
-        delete block;
-    }
-
-    /* FIXME current ES_OUT_SET_NEXT_DISPLAY_TIME does not work that well if
-     * the delay is too high. */
-    if( sys.i_pts + 500*1000 < sys.i_start_pts )
-    {
-        sys.i_start_pts = sys.i_pts;
-
-        es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, sys.i_start_pts );
-    }
-}
-
 
 /*****************************************************************************
  * Demux: reads and demuxes data packets
@@ -819,10 +677,9 @@ static int Demux( demux_t *p_demux)
         KaxBlock *block;
         KaxSimpleBlock *simpleblock;
         int64_t i_block_duration = 0;
-        int64_t i_block_ref1;
-        int64_t i_block_ref2;
-
-        if( p_segment->BlockGet( block, simpleblock, &i_block_ref1, &i_block_ref2, &i_block_duration ) )
+        bool b_key_picture;
+        bool b_discardable_picture;
+        if( p_segment->BlockGet( block, simpleblock, &b_key_picture, &b_discardable_picture, &i_block_duration ) )
         {
             if ( p_vsegment->Edition() && p_vsegment->Edition()->b_ordered )
             {
@@ -869,8 +726,8 @@ static int Demux( demux_t *p_demux)
         else
             p_sys->i_pts = (p_sys->i_chapter_time + block->GlobalTimecode()) / (mtime_t) 1000;
 
-        /* FIXME remove the +1 when VLC_TS_INVALID work is done */
-        es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pts+1 );
+        /* */
+        es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_pts );
 
         if( p_sys->i_pts >= p_sys->i_start_pts  )
         {
@@ -906,7 +763,7 @@ static int Demux( demux_t *p_demux)
             continue;
         }
 
-        BlockDecode( p_demux, block, simpleblock, p_sys->i_pts, i_block_duration, i_block_ref1 >= 0 || i_block_ref2 > 0 );
+        BlockDecode( p_demux, block, simpleblock, p_sys->i_pts, i_block_duration, b_key_picture || b_discardable_picture );
 
         delete block;
         i_block_count++;

@@ -2,7 +2,7 @@
  * playtree.cpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 839b928291b101a03be093d42fb6cf0295104157 $
+ * $Id: 2407e385cf3be21e502931f94768bd0a2b33ddd4 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -32,10 +32,8 @@
 #include <vlc_playlist.h>
 #include "../utils/ustring.hpp"
 
-#include "vlc_charset.h"
-
-
-Playtree::Playtree( intf_thread_t *pIntf ): VarTree( pIntf )
+Playtree::Playtree( intf_thread_t *pIntf ):
+    VarTree( pIntf ), m_currentItem( NULL )
 {
     // Get the VLC playlist object
     m_pPlaylist = pIntf->p_sys->p_playlist;
@@ -74,7 +72,7 @@ void Playtree::delSelected()
             if( p_item->i_children == -1 )
             {
                 playlist_DeleteFromInput( getIntf()->p_sys->p_playlist,
-                                          p_item->p_input->i_id, pl_Locked );
+                                          p_item->p_input, pl_Locked );
                 it2 = getNextVisibleItem( it ) ;
                 it->parent()->removeChild( it );
                 it = it2;
@@ -136,10 +134,6 @@ void Playtree::onUpdateItem( int id )
         playlist_item_t* pNode = (playlist_item_t*)(it->m_pData);
         UString *pName = new UString( getIntf(), pNode->p_input->psz_name );
         it->m_cString = UStringPtr( pName );
-        playlist_Lock( m_pPlaylist );
-        it->m_playing = playlist_CurrentPlayingItem( m_pPlaylist ) == pNode;
-        playlist_Unlock( m_pPlaylist );
-        if( it->m_playing ) descr.b_active_item = true;
     }
     else
     {
@@ -148,6 +142,43 @@ void Playtree::onUpdateItem( int id )
     descr.i_type = 0;
     notify( &descr );
 }
+
+
+void Playtree::onUpdateCurrent( bool b_active )
+{
+    if( !b_active )
+    {
+        if( !m_currentItem )
+            return;
+
+        Iterator it = findById( m_currentItem->i_id );
+        it->m_playing = false;
+        m_currentItem = NULL;
+    }
+    else
+    {
+        playlist_Lock( m_pPlaylist );
+
+        playlist_item_t* current = playlist_CurrentPlayingItem( m_pPlaylist );
+        if( !current )
+        {
+            playlist_Unlock( m_pPlaylist );
+            return;
+        }
+
+        Iterator it = findById( current->i_id );
+        it->m_playing = true;
+        m_currentItem = current;
+
+        playlist_Unlock( m_pPlaylist );
+    }
+
+    tree_update descr;
+    descr.b_active_item = true;
+    descr.i_type = 0;
+    notify( &descr );
+}
+
 
 /// \todo keep a list of "recently removed" to avoid looking up if we
 //  already removed it
@@ -161,7 +192,7 @@ void Playtree::onDelete( int i_id )
     {
         if( item->parent() )
             item->parent()->removeChild( item );
-        descr.b_visible = item->parent() ? true : item->parent()->m_expanded;
+        descr.b_visible = item->parent() ? item->parent()->m_expanded : true;
         notify( &descr );
     }
 }

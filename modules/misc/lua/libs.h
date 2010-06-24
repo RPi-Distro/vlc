@@ -2,7 +2,7 @@
  * libs.h: VLC Lua wrapper libraries
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 689025e6ffc3d5c0b66ebe4045cc453d65c415cc $
+ * $Id: 8bca89c41d6f6bd8dff382567a14d51c061c10c1 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -26,7 +26,7 @@
 
 void luaopen_acl( lua_State * );
 void luaopen_config( lua_State * );
-void luaopen_volume( lua_State * );
+void luaopen_dialog( lua_State *, void * );
 void luaopen_httpd( lua_State * );
 void luaopen_input( lua_State * );
 void luaopen_msg( lua_State * );
@@ -42,5 +42,9 @@ void luaopen_variables( lua_State * );
 void luaopen_video( lua_State * );
 void luaopen_vlm( lua_State * );
 void luaopen_volume( lua_State * );
+void luaopen_gettext( lua_State * );
+void luaopen_input_item( lua_State *L, input_item_t *item );
+void luaopen_xml( lua_State *L );
+void luaopen_md5( lua_State *L );
 
 #endif

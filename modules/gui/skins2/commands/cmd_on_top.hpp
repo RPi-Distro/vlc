@@ -2,7 +2,7 @@
  * cmd_on_top.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6537370559cf1a03c8636bbe63ac4bd84e621118 $
+ * $Id: 458ae3cff9821f69e52caeadef329b9d8f8f893c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -30,5 +30,19 @@
 
 /// "Always on top" command
 DEFINE_COMMAND( OnTop, "always on top" )
+
+class CmdSetOnTop: public CmdGeneric
+{
+public:
+    CmdSetOnTop( intf_thread_t *pIntf, bool b_ontop )
+        : CmdGeneric( pIntf ), m_ontop( b_ontop ) { }
+    virtual ~CmdSetOnTop() { }
+    virtual void execute();
+    virtual string getType() const { return "set on top"; }
+
+private:
+    bool m_ontop;
+};
+
 
 #endif

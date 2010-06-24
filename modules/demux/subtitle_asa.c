@@ -2,7 +2,7 @@
  * subtitle_asa.c: Demux for subtitle text files using the asa engine.
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 7a654f302a40d0d776bb6e26a1d90d730c73b768 $
+ * $Id: b9f6a371e2cd7ae7e69f8f847faa1bddd57d6a8b $
  *
  * Authors: David Lamparter <equinox at videolan dot org>
  *
@@ -33,16 +33,9 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_input.h>
-
-
-#include <errno.h>
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
-#include <ctype.h>
+#include <vlc_memory.h>
 
 #include <vlc_demux.h>
-#include <vlc_charset.h>
 
 #include "asademux.h"
 
@@ -246,17 +239,17 @@ static int Open ( vlc_object_t *p_this )
         p_sys->i_length = p_sys->subtitle[p_sys->i_subtitles-1].i_stop;
         /* +1 to avoid 0 */
         if( p_sys->i_length <= 0 )
-            p_sys->i_length = p_sys->subtitle[p_sys->i_subtitles-1].i_start+1;
+            p_sys->i_length = p_sys->subtitle[p_sys->i_subtitles-1].i_start + VLC_TS_0;
     }
 
     /* *** add subtitle ES *** */
     if( p_detect->fmt->target == ASAI_TARGET_SSA )
     {
-        es_format_Init( &fmt, SPU_ES, VLC_FOURCC( 's','s','a',' ' ) );
+        es_format_Init( &fmt, SPU_ES, VLC_CODEC_SSA );
     }
     else
     {
-        es_format_Init( &fmt, SPU_ES, VLC_FOURCC( 's','u','b','t' ) );
+        es_format_Init( &fmt, SPU_ES, VLC_CODEC_SUBT );
     }
     p_sys->es = es_out_Add( p_demux->out, &fmt );
 
@@ -280,8 +273,8 @@ static int ProcessLine( demux_t *p_demux, void *p_arg,
     if( p_sys->i_subtitles >= p_sys->i_subs_alloc )
     {
         p_sys->i_subs_alloc += 500;
-        if( !( p_sys->subtitle = realloc( p_sys->subtitle, sizeof(subtitle_t)
-                                          * p_sys->i_subs_alloc ) ) )
+        if( !( p_sys->subtitle = realloc_or_free( p_sys->subtitle,
+                                sizeof(subtitle_t) * p_sys->i_subs_alloc ) ) )
         {
             return VLC_ENOMEM;
         }
@@ -446,9 +439,9 @@ static int Demux( demux_t *p_demux )
             continue;
         }
 
-        p_block->i_pts = p_sys->subtitle[p_sys->i_subtitle].i_start;
-        p_block->i_dts = p_block->i_pts;
-        if( p_sys->subtitle[p_sys->i_subtitle].i_stop > 0 )
+        p_block->i_pts = VLC_TS_0 + p_sys->subtitle[p_sys->i_subtitle].i_start;
+        p_block->i_dts = VLC_TS_0 + p_block->i_pts;
+        if( p_sys->subtitle[p_sys->i_subtitle].i_stop >= 0 )
         {
             p_block->i_length =
                 p_sys->subtitle[p_sys->i_subtitle].i_stop - p_block->i_pts;
@@ -456,7 +449,7 @@ static int Demux( demux_t *p_demux )
 
         memcpy( p_block->p_buffer,
                 p_sys->subtitle[p_sys->i_subtitle].psz_text, i_len );
-        if( p_block->i_pts > 0 )
+        if( p_block->i_pts > VLC_TS_INVALID )
         {
             es_out_Send( p_demux->out, p_sys->es, p_block );
         }

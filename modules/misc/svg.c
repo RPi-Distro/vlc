@@ -2,7 +2,7 @@
  * svg.c : Put SVG on the video
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 46a5457620ec37a1396170a8ab350eee32f5d71c $
+ * $Id: 7c5ad64b8912b575280e0413673cea83d72c4e09 $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
@@ -31,15 +31,13 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_vout.h>
 #include <vlc_osd.h>
 #include <vlc_block.h>
 #include <vlc_filter.h>
 
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
-#endif
+#include <sys/types.h>
 
 #ifdef HAVE_UNISTD_H
 #    include <unistd.h>
@@ -160,7 +158,7 @@ static char *svg_GetTemplate( vlc_object_t *p_this )
     char *psz_template;
     FILE *file;
 
-    psz_filename = config_GetPsz( p_filter, "svg-template-file" );
+    psz_filename = var_InheritString( p_filter, "svg-template-file" );
     if( !psz_filename || (psz_filename[0] == 0) )
     {
         /* No filename. Use a default value. */
@@ -169,7 +167,7 @@ static char *svg_GetTemplate( vlc_object_t *p_this )
     else
     {
         /* Read the template */
-        file = utf8_fopen( psz_filename, "rt" );
+        file = vlc_fopen( psz_filename, "rt" );
         if( !file )
         {
             msg_Warn( p_this, "SVG template file %s does not exist.",
@@ -197,14 +195,13 @@ static char *svg_GetTemplate( vlc_object_t *p_this )
                 msg_Dbg( p_this, "reading %ld bytes from template %s",
                          (unsigned long)s.st_size, psz_filename );
 
-                psz_template = malloc( s.st_size + 42 );
+                psz_template = calloc( 1, s.st_size + 42 );
                 if( !psz_template )
                 {
                     fclose( file );
                     free( psz_filename );
                     return NULL;
                 }
-                memset( psz_template, 0, s.st_size + 1 );
                 if(! fread( psz_template, s.st_size, 1, file ) )
                 {
                     msg_Dbg( p_this, "No data read from template." );
@@ -277,13 +274,14 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof( video_format_t ) );
-    fmt.i_chroma = VLC_FOURCC( 'Y','U','V','A' );
-    fmt.i_aspect = VOUT_ASPECT_FACTOR;
+    fmt.i_chroma = VLC_CODEC_YUVA;
     fmt.i_width = fmt.i_visible_width = i_width;
     fmt.i_height = fmt.i_visible_height = i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
+    fmt.i_sar_num = 1;
+    fmt.i_sar_den = 1;
 
-    p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
+    p_region->p_picture = picture_NewFromFormat( &fmt );
     if( !p_region->p_picture )
         return VLC_EGENERIC;
     p_region->fmt = fmt;
@@ -470,18 +468,17 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
         int length;
         char* psz_template = p_sys->psz_template;
         length = strlen( psz_string ) + strlen( psz_template ) + 42;
-        p_svg->psz_text = malloc( length + 1 );
+        p_svg->psz_text = calloc( 1, length + 1 );
         if( !p_svg->psz_text )
         {
             free( p_svg );
             return VLC_ENOMEM;
         }
-        memset( p_svg->psz_text, 0, length + 1 );
         snprintf( p_svg->psz_text, length, psz_template, psz_string );
     }
     p_svg->i_width = p_sys->i_width;
     p_svg->i_height = p_sys->i_height;
-    p_svg->i_chroma = VLC_FOURCC( 'Y','U','V','A' );
+    p_svg->i_chroma = VLC_CODEC_YUVA;
 
     /* Render the SVG.
        The input data is stored in the p_string structure,

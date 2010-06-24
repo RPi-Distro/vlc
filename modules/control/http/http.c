@@ -28,6 +28,7 @@
 #include "http.h"
 #include <vlc_plugin.h>
 #include <vlc_url.h>
+#include <vlc_fs.h>
 
 #include <assert.h>
 
@@ -49,7 +50,7 @@ static void Close( vlc_object_t * );
 #define HANDLERS_LONGTEXT N_( \
         "List of handler extensions and executable paths (for instance: " \
         "php=/usr/bin/php,pl=/usr/bin/perl)." )
-#define ART_TEXT N_( "Export album art as /art." )
+#define ART_TEXT N_( "Export album art as /art" )
 #define ART_LONGTEXT N_( \
         "Allow exporting album art for current playlist items at the " \
         "/art and /art?id=<id> URLs." )
@@ -83,6 +84,7 @@ vlc_module_begin ()
         add_string ( "http-intf-crl",  NULL, NULL, CRL_TEXT,  CRL_LONGTEXT,  true )
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )
+    add_shortcut( "http" )
 vlc_module_end ()
 
 
@@ -129,7 +131,7 @@ static int Open( vlc_object_t *p_this )
         return( VLC_ENOMEM );
     }
 
-    p_sys->p_playlist = pl_Hold( p_this );
+    p_sys->p_playlist = pl_Get( p_this );
     p_sys->p_input    = NULL;
     p_sys->p_vlm      = NULL;
     p_sys->psz_address = psz_address;
@@ -140,8 +142,8 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_handlers = 0;
     p_sys->pp_handlers = NULL;
 #if defined( HAVE_FORK ) || defined( WIN32 )
-    psz_src = config_GetPsz( p_intf, "http-handlers" );
-    if( psz_src != NULL && *psz_src )
+    psz_src = var_InheritString( p_intf, "http-handlers" );
+    if( psz_src != NULL )
     {
         char *p = psz_src;
         while( p != NULL )
@@ -175,19 +177,19 @@ static int Open( vlc_object_t *p_this )
 
             TAB_APPEND( p_sys->i_handlers, p_sys->pp_handlers, p_handler );
         }
+        free( psz_src );
     }
-    free( psz_src );
 #endif
 
     /* determine SSL configuration */
-    psz_cert = config_GetPsz( p_intf, "http-intf-cert" );
+    psz_cert = var_InheritString( p_intf, "http-intf-cert" );
     if ( psz_cert != NULL )
     {
         msg_Dbg( p_intf, "enabling TLS for HTTP interface (cert file: %s)",
                  psz_cert );
-        psz_key = var_GetNonEmptyString( p_intf, "http-intf-key" );
-        psz_ca = var_GetNonEmptyString( p_intf, "http-intf-ca" );
-        psz_crl = var_GetNonEmptyString( p_intf, "http-intf-crl" );
+        psz_key = var_InheritString( p_intf, "http-intf-key" );
+        psz_ca = var_InheritString( p_intf, "http-intf-ca" );
+        psz_crl = var_InheritString( p_intf, "http-intf-crl" );
 
         if( i_port <= 0 )
             i_port = 8443;
@@ -211,7 +213,6 @@ static int Open( vlc_object_t *p_this )
     if( p_sys->p_httpd_host == NULL )
     {
         msg_Err( p_intf, "cannot listen on %s:%d", psz_address, i_port );
-        pl_Release( p_this );
         free( p_sys->psz_address );
         free( p_sys );
         return VLC_EGENERIC;
@@ -229,15 +230,16 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_files  = 0;
     p_sys->pp_files = NULL;
 
-    psz_src = config_GetPsz( p_intf, "http-src" );
-    if( ( psz_src == NULL ) || ( *psz_src == '\0' ) )
+    psz_src = var_InheritString( p_intf, "http-src" );
+    if( psz_src == NULL )
     {
-        const char *data_path = config_GetDataDir ();
+        char *data_path = config_GetDataDir( p_intf );
         if( asprintf( &psz_src, "%s" DIR_SEP "http", data_path ) == -1 )
             psz_src = NULL;
+        free( data_path );
     }
 
-    if( !psz_src || *psz_src == '\0' )
+    if( psz_src == NULL )
     {
         msg_Err( p_intf, "invalid web interface source directory" );
         goto failed;
@@ -259,7 +261,7 @@ static int Open( vlc_object_t *p_this )
 
     free( psz_src );
 
-    if( config_GetInt( p_intf, "http-album-art" ) )
+    if( var_InheritBool( p_intf, "http-album-art" ) )
     {
         /* FIXME: we're leaking h */
         httpd_handler_sys_t *h = malloc( sizeof( httpd_handler_sys_t ) );
@@ -283,7 +285,6 @@ failed:
     httpd_HostDelete( p_sys->p_httpd_host );
     free( p_sys->psz_address );
     free( p_sys );
-    pl_Release( p_this );
     return VLC_EGENERIC;
 }
 
@@ -334,7 +335,6 @@ static void Close ( vlc_object_t *p_this )
     httpd_HostDelete( p_sys->p_httpd_host );
     free( p_sys->psz_address );
     free( p_sys );
-    pl_Release( p_this );
 }
 
 /****************************************************************************
@@ -407,7 +407,7 @@ static void ParseExecute( httpd_file_sys_t *p_args, char *p_buffer,
         state = "stop";
     }
 
-    aout_VolumeGet( p_args->p_intf, &i_volume );
+    aout_VolumeGet( p_sys->p_playlist, &i_volume );
     snprintf( volume, sizeof(volume), "%d", (int)i_volume );
 
     p_args->vars = mvar_New( "variables", "" );
@@ -419,8 +419,6 @@ static void ParseExecute( httpd_file_sys_t *p_args, char *p_buffer,
     mvar_AppendNewVar( p_args->vars, "vlc_compile_by", VLC_CompileBy() );
     mvar_AppendNewVar( p_args->vars, "vlc_compile_host",
                            VLC_CompileHost() );
-    mvar_AppendNewVar( p_args->vars, "vlc_compile_domain",
-                           VLC_CompileDomain() );
     mvar_AppendNewVar( p_args->vars, "vlc_compiler", VLC_Compiler() );
     mvar_AppendNewVar( p_args->vars, "stream_position", position );
     mvar_AppendNewVar( p_args->vars, "stream_time", time );
@@ -495,7 +493,7 @@ int  HttpCallback( httpd_file_sys_t *p_args,
     char **pp_data = (char **)_pp_data;
     FILE *f;
 
-    if( ( f = utf8_fopen( p_args->file, "r" ) ) == NULL )
+    if( ( f = vlc_fopen( p_args->file, "r" ) ) == NULL )
     {
         Callback404( p_args, pp_data, pi_data );
         return VLC_SUCCESS;
@@ -553,7 +551,7 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
     /* Create environment for the CGI */
     TAB_APPEND( i_env, ppsz_env, strdup("GATEWAY_INTERFACE=CGI/1.1") );
     TAB_APPEND( i_env, ppsz_env, strdup("SERVER_PROTOCOL=HTTP/1.1") );
-    TAB_APPEND( i_env, ppsz_env, strdup("SERVER_SOFTWARE=" COPYRIGHT_MESSAGE) );
+    TAB_APPEND( i_env, ppsz_env, strdup("SERVER_SOFTWARE=VLC "VERSION) );
 
     switch( i_type )
     {
@@ -572,33 +570,40 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
 
     if( i_request )
     {
-        asprintf( &psz_tmp, "QUERY_STRING=%s", p_request );
+        if( -1==asprintf( &psz_tmp, "QUERY_STRING=%s", p_request ) )
+            psz_tmp = NULL;
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
 
-        asprintf( &psz_tmp, "REQUEST_URI=%s?%s", p_url, p_request );
+        if( -1==asprintf( &psz_tmp, "REQUEST_URI=%s?%s", p_url, p_request ) )
+            psz_tmp = NULL;
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
     else
     {
-        asprintf( &psz_tmp, "REQUEST_URI=%s", p_url );
+        if( -1==asprintf( &psz_tmp, "REQUEST_URI=%s", p_url ) )
+            psz_tmp = NULL;
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 
-    asprintf( &psz_tmp, "SCRIPT_NAME=%s", p_url );
+    if( -1==asprintf( &psz_tmp, "SCRIPT_NAME=%s", p_url ) )
+        psz_tmp = NULL;
     TAB_APPEND( i_env, ppsz_env, psz_tmp );
 
 #define p_sys p_args->file.p_intf->p_sys
-    asprintf( &psz_tmp, "SERVER_NAME=%s", p_sys->psz_address );
+    if( -1==asprintf( &psz_tmp, "SERVER_NAME=%s", p_sys->psz_address ) )
+        psz_tmp = NULL;
     TAB_APPEND( i_env, ppsz_env, psz_tmp );
 
-    asprintf( &psz_tmp, "SERVER_PORT=%u", p_sys->i_port );
+    if( -1==asprintf( &psz_tmp, "SERVER_PORT=%u", p_sys->i_port ) )
+        psz_tmp = NULL;
     TAB_APPEND( i_env, ppsz_env, psz_tmp );
 #undef p_sys
 
     p = getenv( "PATH" );
     if( p != NULL )
     {
-        asprintf( &psz_tmp, "PATH=%s", p );
+        if( -1==asprintf( &psz_tmp, "PATH=%s", p ) )
+            psz_tmp = NULL;
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 
@@ -606,20 +611,23 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
     p = getenv( "windir" );
     if( p != NULL )
     {
-        asprintf( &psz_tmp, "SYSTEMROOT=%s", p );
+        if( -1==asprintf( &psz_tmp, "SYSTEMROOT=%s", p ) )
+            psz_tmp = NULL;
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 #endif
 
     if( psz_remote_addr != NULL && *psz_remote_addr )
     {
-        asprintf( &psz_tmp, "REMOTE_ADDR=%s", psz_remote_addr );
+        if( -1==asprintf( &psz_tmp, "REMOTE_ADDR=%s", psz_remote_addr ) )
+            psz_tmp = NULL;
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 
     if( psz_remote_host != NULL && *psz_remote_host )
     {
-        asprintf( &psz_tmp, "REMOTE_HOST=%s", psz_remote_host );
+        if( -1==asprintf( &psz_tmp, "REMOTE_HOST=%s", psz_remote_host ) )
+            psz_tmp = NULL;
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 
@@ -634,7 +642,8 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
                 if( end == NULL )
                     break;
                 *end = '\0';
-                asprintf( &psz_tmp, "CONTENT_TYPE=%s", p );
+                if( -1==asprintf( &psz_tmp, "CONTENT_TYPE=%s", p ) )
+                    psz_tmp = NULL;
                 TAB_APPEND( i_env, ppsz_env, psz_tmp );
                 *end = '\r';
             }
@@ -645,7 +654,8 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
                 if( end == NULL )
                     break;
                 *end = '\0';
-                asprintf( &psz_tmp, "CONTENT_LENGTH=%s", p );
+                if( -1==asprintf( &psz_tmp, "CONTENT_LENGTH=%s", p ) )
+                    psz_tmp = NULL;
                 TAB_APPEND( i_env, ppsz_env, psz_tmp );
                 *end = '\r';
             }
@@ -664,7 +674,8 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
     if( psz_file != NULL )
     {
         psz_file++;
-        asprintf( &psz_tmp, "SCRIPT_FILENAME=%s", psz_file );
+        if( -1==asprintf( &psz_tmp, "SCRIPT_FILENAME=%s", psz_file ) )
+            psz_tmp = NULL;
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
 
         TAB_APPEND( p_args->p_association->i_argc,
@@ -777,51 +788,56 @@ int  ArtCallback( httpd_handler_sys_t *p_args,
         psz_art = input_item_GetArtURL( p_item );
     }
 
-    if( psz_art && !strncmp( psz_art, "file://", strlen( "file://" ) ) &&
-        decode_URI( psz_art + 7 ) )
+    if( psz_art )
     {
-        FILE *f;
-        char *psz_ext;
-        char *psz_header;
-        char *p_data = NULL;
-        int i_header_size, i_data;
+        char *psz = make_path( psz_art );
+        free( psz_art );
+        psz_art = psz;
+    }
 
-        if( ( f = utf8_fopen( psz_art + strlen( "file://" ), "r" ) ) == NULL )
-        {
-            msg_Dbg( p_intf, "Couldn't open album art file %s",
-                     psz_art + strlen( "file://" ) );
-            Callback404( &p_args->file, (char**)pp_data, pi_data );
-            free( psz_art );
-            return VLC_SUCCESS;
-        }
+    if( psz_art == NULL )
+    {
+        msg_Dbg( p_intf, "No album art found" );
+        Callback404( &p_args->file, (char**)pp_data, pi_data );
+        return VLC_SUCCESS;
+    }
 
-        FileLoad( f, &p_data, &i_data );
+    FILE *f = vlc_fopen( psz_art, "r" );
+    if( f == NULL )
+    {
+        msg_Dbg( p_intf, "Couldn't open album art file %s", psz_art );
+        Callback404( &p_args->file, (char**)pp_data, pi_data );
+        free( psz_art );
+        return VLC_SUCCESS;
+    }
+    free( psz_art );
 
-        fclose( f );
+    char *p_data = NULL;
+    int i_data;
+    FileLoad( f, &p_data, &i_data );
+    fclose( f );
 
-        psz_ext = strrchr( psz_art, '.' );
-        if( psz_ext ) psz_ext++;
+    char *psz_ext = strrchr( psz_art, '.' );
+    if( psz_ext ) psz_ext++;
 
 #define HEADER  "Content-Type: image/%s\n" \
                 "Content-Length: %d\n" \
                 "\n"
-        i_header_size = asprintf( &psz_header, HEADER, psz_ext, i_data );
+    char *psz_header;
+    int i_header_size = asprintf( &psz_header, HEADER, psz_ext, i_data );
 #undef HEADER
-
-        *pi_data = i_header_size + i_data;
-        *pp_data = (uint8_t*)malloc( *pi_data );
-        memcpy( *pp_data, psz_header, i_header_size );
-        memcpy( *pp_data+i_header_size, p_data, i_data );
-        free( psz_header );
-        free( p_data );
-    }
-    else
+    if( likely(i_header_size != -1) )
     {
-        msg_Dbg( p_intf, "No album art found" );
-        Callback404( &p_args->file, (char**)pp_data, pi_data );
+        *pp_data = malloc( i_header_size + i_data );
+        if( likely(*pp_data != NULL) )
+        {
+            *pi_data = i_header_size + i_data;
+            memcpy( *pp_data, psz_header, i_header_size );
+            memcpy( *pp_data+i_header_size, p_data, i_data );
+        }
+        free( psz_header );
     }
-
-    free( psz_art );
+    free( p_data );
 
     return VLC_SUCCESS;
 }

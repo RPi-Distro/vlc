@@ -2,7 +2,7 @@
  * cdg.c : cdg file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: d9102884bc680ef0e3e2ac190daf5a51ddd05b26 $
+ * $Id: 6cc401fc5737bef64d3b4ebb29e5853a4c7a8b63 $
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
@@ -94,7 +94,7 @@ static int Open( vlc_object_t * p_this )
     p_demux->p_sys      = p_sys = malloc( sizeof( demux_sys_t ) );
 
     /* */
-    es_format_Init( &p_sys->fmt, VIDEO_ES, VLC_FOURCC('C','D','G', ' ' ) );
+    es_format_Init( &p_sys->fmt, VIDEO_ES, VLC_CODEC_CDG );
     p_sys->fmt.video.i_width  = 300-2*6;
     p_sys->fmt.video.i_height = 216-2*12 ;
 
@@ -102,7 +102,7 @@ static int Open( vlc_object_t * p_this )
 
     /* There is CDG_FRAME_RATE frames per second */
     date_Init( &p_sys->pts, CDG_FRAME_RATE, 1 );
-    date_Set( &p_sys->pts, 1 );
+    date_Set( &p_sys->pts, 0 );
 
     return VLC_SUCCESS;
 }
@@ -125,11 +125,14 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = date_Increment( &p_sys->pts, 1 );
+    p_block->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
 
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
 
     es_out_Send( p_demux->out, p_sys->p_es, p_block );
+
+    date_Increment( &p_sys->pts, 1 );
+
     return 1;
 }
 

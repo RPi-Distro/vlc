@@ -2,7 +2,7 @@
  * nsv.c: NullSoft Video demuxer.
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: d8cedd1906d947ce7291806f83b5aefb7ecc7e28 $
+ * $Id: d81251d23f74e334869f35edfb9434b9393b995d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -118,7 +118,7 @@ static int Open( vlc_object_t *p_this )
     es_format_Init( &p_sys->fmt_sub, SPU_ES, 0 );
     p_sys->p_sub = NULL;
 
-    p_sys->i_pcr   = 1;
+    p_sys->i_pcr   = 0;
     p_sys->i_time  = 0;
     p_sys->i_pcr_inc = 0;
 
@@ -203,7 +203,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Set PCR */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, (int64_t)p_sys->i_pcr );
+    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_pcr );
 
     /* Read video */
     i_size = ( header[0] >> 4 ) | ( header[1] << 4 ) | ( header[2] << 12 );
@@ -251,8 +251,8 @@ static int Demux( demux_t *p_demux )
                     }
 
                     /* Skip the first part (it is the language name) */
-                    p_frame->i_pts = p_sys->i_pcr;
-                    p_frame->i_dts = p_sys->i_pcr + 4000000;    /* 4s */
+                    p_frame->i_pts = VLC_TS_0 + p_sys->i_pcr;
+                    p_frame->i_dts = VLC_TS_0 + p_sys->i_pcr + 4000000;    /* 4s */
 
                     es_out_Send( p_demux->out, p_sys->p_sub, p_frame );
                 }
@@ -272,7 +272,7 @@ static int Demux( demux_t *p_demux )
         /* msg_Dbg( p_demux, "frame video size=%d", i_size ); */
         if( i_size > 0 && ( p_frame = stream_Block( p_demux->s, i_size ) ) )
         {
-            p_frame->i_dts = p_sys->i_pcr;
+            p_frame->i_dts = VLC_TS_0 + p_sys->i_pcr;
             es_out_Send( p_demux->out, p_sys->p_video, p_frame );
         }
     }
@@ -300,7 +300,7 @@ static int Demux( demux_t *p_demux )
         if( ( p_frame = stream_Block( p_demux->s, i_size ) ) )
         {
             p_frame->i_dts =
-            p_frame->i_pts = p_sys->i_pcr;
+            p_frame->i_pts = VLC_TS_0 + p_sys->i_pcr;
             es_out_Send( p_demux->out, p_sys->p_audio, p_frame );
         }
     }
@@ -331,7 +331,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             i64 = stream_Size( p_demux->s );
             if( i64 > 0 )
             {
-                *pf = (double)stream_Tell( p_demux->s ) / (double)i64;
+                double current = stream_Tell( p_demux->s );
+                *pf = current / (double)i64;
             }
             else
             {
@@ -454,7 +455,7 @@ static int ReadNSVf( demux_t *p_demux )
     return stream_Read( p_demux->s, NULL, i_size ) == i_size ? VLC_SUCCESS : VLC_EGENERIC;
 }
 /*****************************************************************************
- * ReadNSVf:
+ * ReadNSVs:
  *****************************************************************************/
 static int ReadNSVs( demux_t *p_demux )
 {

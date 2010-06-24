@@ -3,7 +3,7 @@
  *               using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 4b97455b15fb98b4642b0293860e377b00956e88 $
+ * $Id: 9006346e08204dbe3e6d22b6ad3d6691ebc18c60 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -31,7 +31,6 @@
 
 #include <vlc_common.h>
 #include <vlc_codec.h>
-#include <vlc_vout.h>
 #include <vlc_filter.h>
 
 /* ffmpeg header */

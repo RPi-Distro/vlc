@@ -1,8 +1,8 @@
 /*****************************************************************************
  * msn.c : msn title plugin
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 8ba75ec90969b402456a13eeafd9ffb93237357d $
+ * Copyright (C) 2005-2010 the VideoLAN team
+ * $Id: fe6faddaa46822f414d4b44946dfc3fc8755b71d $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -93,7 +93,7 @@ static int Open( vlc_object_t *p_this )
     if( !p_intf->p_sys )
         return VLC_ENOMEM;
 
-    p_intf->p_sys->psz_format = config_GetPsz( p_intf, "msn-format" );
+    p_intf->p_sys->psz_format = var_InheritString( p_intf, "msn-format" );
     if( !p_intf->p_sys->psz_format )
     {
         msg_Dbg( p_intf, "no format provided" );
@@ -101,10 +101,9 @@ static int Open( vlc_object_t *p_this )
     }
     msg_Dbg( p_intf, "using format: %s", p_intf->p_sys->psz_format );
 
-    p_playlist = pl_Hold( p_intf );
+    p_playlist = pl_Get( p_intf );
     var_AddCallback( p_playlist, "item-change", ItemChange, p_intf );
     var_AddCallback( p_playlist, "item-current", ItemChange, p_intf );
-    pl_Release( p_intf );
 
     return VLC_SUCCESS;
 }
@@ -115,7 +114,7 @@ static int Open( vlc_object_t *p_this )
 static void Close( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    playlist_t *p_playlist = pl_Hold( p_this );
+    playlist_t *p_playlist = pl_Get( p_this );
 
     /* clear the MSN stuff ... else it looks like we're still playing
      * something although VLC (or the MSN plugin) is closed */
@@ -123,7 +122,6 @@ static void Close( vlc_object_t *p_this )
 
     var_DelCallback( p_playlist, "item-change", ItemChange, p_intf );
     var_DelCallback( p_playlist, "item-current", ItemChange, p_intf );
-    pl_Release( p_this );
 
     /* Destroy structure */
     free( p_intf->p_sys->psz_format );
@@ -139,10 +137,6 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     (void)psz_var;    (void)oldval;    (void)newval;
     intf_thread_t *p_intf = (intf_thread_t *)param;
     char psz_tmp[MSN_MAX_LENGTH];
-    char *psz_title = NULL;
-    char *psz_artist = NULL;
-    char *psz_album = NULL;
-    char *psz_buf = NULL;
     input_thread_t *p_input =  playlist_CurrentInput( (playlist_t *) p_this );
 
     if( !p_input ) return VLC_SUCCESS;
@@ -156,20 +150,17 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     }
 
     /* Playing something ... */
-    psz_artist = input_item_GetArtist( input_GetItem( p_input ) );
-    psz_album = input_item_GetAlbum( input_GetItem( p_input ) );
-    psz_title = input_item_GetTitleFbName( input_GetItem( p_input ) );
-    if( !psz_artist ) psz_artist = strdup( "" );
-    if( !psz_album ) psz_album = strdup( "" );
-
-    psz_buf = str_format_meta( p_intf, p_intf->p_sys->psz_format );
+    char *psz_artist = input_item_GetArtist( input_GetItem( p_input ) );
+    char *psz_album = input_item_GetAlbum( input_GetItem( p_input ) );
+    char *psz_title = input_item_GetTitleFbName( input_GetItem( p_input ) );
+    char *psz_buf = str_format_meta( p_intf, p_intf->p_sys->psz_format );
 
     snprintf( psz_tmp,
               MSN_MAX_LENGTH,
               "\\0Music\\01\\0%s\\0%s\\0%s\\0%s\\0\\0\\0",
               psz_buf,
-              psz_artist,
-              psz_title,
+              psz_artist ? psz_artist : "",
+              psz_title ? psz_title : "",
               psz_album );
     free( psz_buf );
     free( psz_title );
@@ -193,7 +184,7 @@ static int SendToMSN( const char *psz_msg )
     wchar_t buffer[MSN_MAX_LENGTH];
 
     //mbstowcs( buffer, psz_msg, MSN_MAX_LENGTH );
-    int nLen = MultiByteToWideChar(CP_ACP, 0, psz_msg, -1, NULL, NULL);
+    int nLen = MultiByteToWideChar(CP_ACP, 0, psz_msg, -1, NULL, 0);
     MultiByteToWideChar(CP_ACP, 0, psz_msg, -1, &buffer, nLen);
 
     msndata.dwData = 0x547;

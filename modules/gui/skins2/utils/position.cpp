@@ -2,7 +2,7 @@
  * position.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6ba21cb3c094dc8d7b52e57e12d8d515da42c49a $
+ * $Id: cd71e518a5ad5bcae060114e15c5ad752080362e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -120,14 +120,14 @@ int Position::getLeft() const
     {
         switch( m_refLeftTop )
         {
-            case kLeftTop:
-            case kLeftBottom:
-                return m_rRect.getLeft() + m_left;
-                break;
-            case kRightTop:
-            case kRightBottom:
-                return m_rRect.getLeft() + m_rRect.getWidth() + m_left - 1;
-                break;
+        case kLeftTop:
+        case kLeftBottom:
+            return m_rRect.getLeft() + m_left;
+            break;
+        case kRightTop:
+        case kRightBottom:
+            return m_rRect.getLeft() + m_rRect.getWidth() + m_left - 1;
+            break;
         }
         // Avoid a warning
         return 0;

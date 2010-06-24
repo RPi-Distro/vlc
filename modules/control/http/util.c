@@ -2,7 +2,7 @@
  * util.c : Utility functions for HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: aee0199cfec637c129fb21e699d8f71cc59533a4 $
+ * $Id: 565c100b1120c3d630a89c8a889dc4e65477b3b7 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -29,56 +29,46 @@
 
 #include <vlc_common.h>
 #include "http.h"
-#include "vlc_strings.h"
+#include <vlc_strings.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <vlc_fs.h>
 
 /****************************************************************************
  * File and directory functions
  ****************************************************************************/
 
 /* ToUrl: create a good name for an url from filename */
-char *FileToUrl( char *name, bool *pb_index )
+static char *FileToUrl( const char *name, bool *pb_index )
 {
-    char *url, *p;
-
-    url = p = malloc( strlen( name ) + 1 );
-
     *pb_index = false;
-    if( !url || !p )
-    {
+
+    char *url = malloc( strlen( name ) + 2 );
+    if( unlikely(url == NULL) )
         return NULL;
-    }
 
-#ifdef WIN32
-    while( *name == '\\' || *name == '/' )
+#if (DIR_SEP_CHAR == '/')
+    name += strspn( name, "/" );
 #else
-    while( *name == '/' )
+    name += strspn( name, "/"DIR_SEP );
 #endif
-    {
-        name++;
-    }
+    *url = '/';
+    strcpy( url + 1, name );
 
-    *p++ = '/';
-    strcpy( p, name );
-
-#ifdef WIN32
+#if (DIR_SEP_CHAR != '/')
     /* convert '\\' into '/' */
-    name = p;
-    while( *name )
-    {
-        if( *name == '\\' )
-            *name = '/';
-        name++;
-    }
+    for( char *ptr = url; *ptr; ptr++ )
+        if( *ptr == DIR_SEP_CHAR )
+            *ptr = '/';
 #endif
 
     /* index.* -> / */
-    if( ( p = strrchr( url, '/' ) ) != NULL )
+    char *p = strrchr( url, '/' );
+    if( p != NULL && !strncmp( p, "/index.", 7 ) )
     {
-        if( !strncmp( p, "/index.", 7 ) )
-        {
-            p[1] = '\0';
-            *pb_index = true;
-        }
+        p[1] = '\0';
+        *pb_index = true;
     }
     return url;
 }
@@ -90,11 +80,12 @@ int FileLoad( FILE *f, char **pp_data, int *pi_data )
 
     /* just load the file */
     *pi_data = 0;
-    *pp_data = malloc( 1025 );  /* +1 for \0 */
+    *pp_data = xmalloc( 1025 );  /* +1 for \0 */
+
     while( ( i_read = fread( &(*pp_data)[*pi_data], 1, 1024, f ) ) == 1024 )
     {
         *pi_data += 1024;
-        *pp_data = realloc( *pp_data, *pi_data  + 1025 );
+        *pp_data = xrealloc( *pp_data, *pi_data  + 1025 );
     }
     if( i_read > 0 )
     {
@@ -120,7 +111,7 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
 
     int           i_dirlen;
 
-    if( ( p_dir = utf8_opendir( psz_dir ) ) == NULL )
+    if( ( p_dir = vlc_opendir( psz_dir ) ) == NULL )
     {
         if( errno != ENOENT && errno != ENOTDIR )
             msg_Err( p_intf, "cannot open directory (%s)", psz_dir );
@@ -138,7 +129,7 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
     msg_Dbg( p_intf, "dir=%s", psz_dir );
 
     snprintf( dir, sizeof( dir ), "%s"DIR_SEP".access", psz_dir );
-    if( ( file = utf8_fopen( dir, "r" ) ) != NULL )
+    if( ( file = vlc_fopen( dir, "r" ) ) != NULL )
     {
         char line[1024];
         int  i_size;
@@ -177,7 +168,7 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
         ACL_Destroy( p_acl );
 
         struct stat st;
-        if( stat( dir, &st ) == 0 )
+        if( vlc_stat( dir, &st ) == 0 )
         {
             free( user );
             free( password );
@@ -191,7 +182,7 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
     {
         char *psz_filename;
         /* parse psz_src dir */
-        if( ( psz_filename = utf8_readdir( p_dir ) ) == NULL )
+        if( ( psz_filename = vlc_readdir( p_dir ) ) == NULL )
         {
             break;
         }
@@ -232,7 +223,7 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
             }
             if( f == NULL )
             {
-                f = malloc( sizeof( httpd_file_sys_t ) );
+                f = xmalloc( sizeof( httpd_file_sys_t ) );
                 f->b_handler = false;
             }
 
@@ -350,7 +341,7 @@ void PlaylistListNode( intf_thread_t *p_intf, playlist_t *p_pl,
             return;
 
         mvar_t *itm = mvar_New( name, "set" );
-        if( p_item->p_input->i_id == p_node->p_input->i_id )
+        if( p_item->p_input == p_node->p_input )
             mvar_AppendNewVar( itm, "current", "1" );
         else
             mvar_AppendNewVar( itm, "current", "0" );
@@ -366,8 +357,7 @@ void PlaylistListNode( intf_thread_t *p_intf, playlist_t *p_pl,
         mvar_AppendNewVar( itm, "uri", psz );
         free( psz );
 
-        sprintf( value, "Item");
-        mvar_AppendNewVar( itm, "type", value );
+        mvar_AppendNewVar( itm, "type", "Item" );
 
         sprintf( value, "%d", i_depth );
         mvar_AppendNewVar( itm, "depth", value );
@@ -457,8 +447,7 @@ void PlaylistListNode( intf_thread_t *p_intf, playlist_t *p_pl,
         mvar_AppendNewVar( itm, "name", p_node->p_input->psz_name );
         mvar_AppendNewVar( itm, "uri", p_node->p_input->psz_name );
 
-        sprintf( value, "Node" );
-        mvar_AppendNewVar( itm, "type", value );
+        mvar_AppendNewVar( itm, "type", "Node" );
 
         sprintf( value, "%d", p_node->i_id );
         mvar_AppendNewVar( itm, "index", value );
@@ -922,7 +911,7 @@ char *RealPath( const char *psz_src )
     char *p;
     int i_len = strlen(psz_src);
 
-    psz_dir = malloc( i_len + 2 );
+    psz_dir = xmalloc( i_len + 2 );
     strcpy( psz_dir, psz_src );
 
     /* Add a trailing sep to ease the .. step */
@@ -953,10 +942,13 @@ char *RealPath( const char *psz_src )
 
     if( psz_dir[0] == '~' )
     {
-        char *dir;
-        asprintf( &dir, "%s%s", config_GetHomeDir(), psz_dir + 1 );
-        free( psz_dir );
-        psz_dir = dir;
+        char *home = config_GetUserDir( VLC_HOME_DIR ), *dir;
+        if( asprintf( &dir, "%s%s", home, psz_dir + 1 ) != -1 )
+        {
+            free( psz_dir );
+            psz_dir = dir;
+        }
+        free( home );
     }
 
     if( strlen(psz_dir) > 2 )

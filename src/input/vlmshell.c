@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: ba62608c1c9b4891bf9a9b11bf7343152e7d2ea8 $
+ * $Id: d2fcc54e78f515ac520481dcf0a91d4ce5e23721 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -40,18 +40,14 @@
 
 #ifdef ENABLE_VLM
 
-#ifndef WIN32
-#   include <sys/time.h>                                   /* gettimeofday() */
-#endif
-
 #include <time.h>                                                 /* ctime() */
 
 #include <vlc_input.h>
 #include "input_internal.h"
 #include <vlc_stream.h>
 #include "vlm_internal.h"
-#include <vlc_vod.h>
 #include <vlc_charset.h>
+#include <vlc_fs.h>
 #include <vlc_sout.h>
 #include "../stream_output/stream_output.h"
 #include "../libvlc.h"
@@ -138,7 +134,7 @@ static int Unescape( char *out, const char *in )
         // Don't escape the end of the string if we find a '#'
         // that's the begining of a vlc command
         // TODO: find a better solution
-        if( c == '#' || param )
+        if( ( c == '#' && !quote ) || param )
         {
             param = true;
             *out++ = c;
@@ -533,7 +529,7 @@ static int ExecuteExport( vlm_t *p_vlm, vlm_message_t **pp_status )
 
 static int ExecuteSave( vlm_t *p_vlm, const char *psz_file, vlm_message_t **pp_status )
 {
-    FILE *f = utf8_fopen( psz_file, "wt" );
+    FILE *f = vlc_fopen( psz_file, "wt" );
     char *psz_save = NULL;
 
     if( !f )
@@ -566,7 +562,7 @@ error:
 static int ExecuteLoad( vlm_t *p_vlm, const char *psz_url, vlm_message_t **pp_status )
 {
     stream_t *p_stream = stream_UrlNew( p_vlm, psz_url );
-    int64_t i_size;
+    uint64_t i_size;
     char *psz_buffer;
 
     if( !p_stream )
@@ -585,6 +581,8 @@ static int ExecuteLoad( vlm_t *p_vlm, const char *psz_url, vlm_message_t **pp_st
     }
 
     i_size = stream_Size( p_stream );
+    if( i_size > SIZE_MAX - 1 )
+        i_size = SIZE_MAX - 1;
 
     psz_buffer = malloc( i_size + 1 );
     if( !psz_buffer )
@@ -641,7 +639,8 @@ static int ExecuteScheduleProperty( vlm_t *p_vlm, vlm_schedule_sys_t *p_schedule
             psz_line = strdup( ppsz_property[i] );
             for( j = i+1; j < i_property; j++ )
             {
-                psz_line = realloc( psz_line, strlen(psz_line) + strlen(ppsz_property[j]) + 1 + 1 );
+                psz_line = xrealloc( psz_line,
+                        strlen(psz_line) + strlen(ppsz_property[j]) + 1 + 1 );
                 strcat( psz_line, " " );
                 strcat( psz_line, ppsz_property[j] );
             }
@@ -665,6 +664,12 @@ static int ExecuteScheduleProperty( vlm_t *p_vlm, vlm_schedule_sys_t *p_schedule
         }
     }
     *pp_status = vlm_MessageSimpleNew( psz_cmd );
+
+    vlc_mutex_lock( &p_vlm->lock_manage );
+    p_vlm->input_state_changed = true;
+    vlc_cond_signal( &p_vlm->wait_manage );
+    vlc_mutex_unlock( &p_vlm->lock_manage );
+
     return VLC_SUCCESS;
 
 error:
@@ -1214,6 +1219,7 @@ static int vlm_ScheduleSetup( vlm_schedule_sys_t *schedule, const char *psz_cmd,
     {
         return 1;
     }
+
     return 0;
 }
 
@@ -1366,7 +1372,7 @@ static vlm_message_t *vlm_ShowMedia( vlm_media_sys_t *p_media )
             APPEND_INPUT_INFO( "position", "%f", Float );
             APPEND_INPUT_INFO( "time", "%"PRIi64, Time );
             APPEND_INPUT_INFO( "length", "%"PRIi64, Time );
-            APPEND_INPUT_INFO( "rate", "%d", Integer );
+            APPEND_INPUT_INFO( "rate", "%f", Float );
             APPEND_INPUT_INFO( "title", "%d", Integer );
             APPEND_INPUT_INFO( "chapter", "%d", Integer );
             APPEND_INPUT_INFO( "can-seek", "%d", Bool );

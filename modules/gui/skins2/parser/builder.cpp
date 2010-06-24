@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7423822f4af4b8cdfe1fa56c8e6f4e1466f98618 $
+ * $Id: 74c0a62e611604b7724ec67e8337923171e00b82 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,6 +38,7 @@
 #include "../src/popup.hpp"
 #include "../src/theme.hpp"
 #include "../src/window_manager.hpp"
+#include "../src/vout_manager.hpp"
 #include "../commands/cmd_generic.hpp"
 #include "../controls/ctrl_button.hpp"
 #include "../controls/ctrl_checkbox.hpp"
@@ -55,7 +56,7 @@
 #include "../utils/var_bool.hpp"
 #include "../utils/var_text.hpp"
 
-#include "vlc_image.h"
+#include <vlc_image.h>
 
 
 Builder::Builder( intf_thread_t *pIntf, const BuilderData &rData,
@@ -75,24 +76,23 @@ CmdGeneric *Builder::parseAction( const string &rAction )
     return Interpreter::instance( getIntf() )->parseAction( rAction, m_pTheme );
 }
 
-
-// Useful macro
-#define ADD_OBJECTS( type ) \
-    list<BuilderData::type>::const_iterator it##type; \
-    for( it##type = m_rData.m_list##type.begin(); \
-         it##type != m_rData.m_list##type.end(); it##type++ ) \
-    { \
-        add##type( *it##type ); \
-    }
-
+template<class T> inline
+void Builder::add_objects(const std::list<T> &list,
+                          void (Builder::*addfn)(const T &))
+{
+    typename std::list<T>::const_iterator i;
+    for( i = list.begin(); i != list.end(); ++i )
+        (this->*addfn)( *i );
+}
 
 Theme *Builder::build()
 {
-    m_pTheme = new Theme( getIntf() );
+#define ADD_OBJECTS( type ) \
+    add_objects(m_rData.m_list##type,&Builder::add##type)
+
+    m_pTheme = new (std::nothrow) Theme( getIntf() );
     if( m_pTheme == NULL )
-    {
         return NULL;
-    }
 
     // Create everything from the data in the XML
     ADD_OBJECTS( Theme );
@@ -123,6 +123,8 @@ Theme *Builder::build()
     ADD_OBJECTS( MenuSeparator );
 
     return m_pTheme;
+
+#undef  ADD_OBJECTS
 }
 
 
@@ -189,7 +191,7 @@ void Builder::addBitmap( const BuilderData::Bitmap &rData )
     GenericBitmap *pBmp =
         new FileBitmap( getIntf(), m_pImageHandler,
                         getFilePath( rData.m_fileName ), rData.m_alphaColor,
-                        rData.m_nbFrames, rData.m_fps );
+                        rData.m_nbFrames, rData.m_fps, rData.m_nbLoops );
     if( !pBmp->getData() )
     {
         // Invalid bitmap
@@ -215,7 +217,7 @@ void Builder::addSubBitmap( const BuilderData::SubBitmap &rData )
     // Copy a region of the parent bitmap to the new one
     BitmapImpl *pBmp =
         new BitmapImpl( getIntf(), rData.m_width, rData.m_height,
-                        rData.m_nbFrames, rData.m_fps );
+                        rData.m_nbFrames, rData.m_fps, rData.m_nbLoops );
     bool res = pBmp->drawBitmap( *pParentBmp, rData.m_x, rData.m_y, 0, 0,
                                  rData.m_width, rData.m_height );
     if( !res )
@@ -350,6 +352,9 @@ void Builder::addWindow( const BuilderData::Window &rData )
                        rData.m_visible );
 
     m_pTheme->m_windows[rData.m_id] = TopWindowPtr( pWin );
+
+    if( rData.m_id == "fullscreenController" )
+        VoutManager::instance( getIntf())->registerFSC( pWin );
 }
 
 
@@ -1005,14 +1010,22 @@ void Builder::addVideo( const BuilderData::Video &rData )
         pVisible );
     m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pVideo );
 
+    // if autoresize is true, force the control to resize
+    BuilderData::Video Data = rData;
+    if( rData.m_autoResize )
+    {
+        Data.m_leftTop = "lefttop";
+        Data.m_rightBottom = "rightbottom";
+    }
+
     // Compute the position of the control
     const GenericRect *pRect;
     GET_BOX( pRect, rData.m_panelId , pLayout);
-    const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
-                                       rData.m_xPos, rData.m_yPos,
-                                       rData.m_width, rData.m_height,
+    const Position pos = makePosition( Data.m_leftTop, Data.m_rightBottom,
+                                       Data.m_xPos, Data.m_yPos,
+                                       Data.m_width, Data.m_height,
                                        *pRect,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                                       Data.m_xKeepRatio, Data.m_yKeepRatio );
 
     pLayout->addControl( pVideo, pos, rData.m_layer );
 }
@@ -1142,7 +1155,26 @@ GenericFont *Builder::getFont( const string &fontId )
 string Builder::getFilePath( const string &rFileName ) const
 {
     OSFactory *pFactory = OSFactory::instance( getIntf() );
-    return m_path + pFactory->getDirSeparator() + sFromLocale( rFileName );
+    const string &sep = pFactory->getDirSeparator();
+
+    string file = rFileName;
+    if( file.find( "\\" ) != string::npos )
+    {
+        // For skins to be valid on both Linux and Win32,
+        // slash should be used as path separator for both OSs.
+        msg_Warn( getIntf(), "use of '/' is preferred to '\\' for paths" );
+        int pos;
+        while( ( pos = file.find( "\\" ) ) != string::npos )
+           file[pos] = '/';
+    }
+
+#ifdef WIN32
+    int pos;
+    while( ( pos = file.find( "/" ) ) != string::npos )
+       file.replace( pos, 1, sep );
+#endif
+
+    return m_path + sep + sFromLocale( file );
 }
 
 

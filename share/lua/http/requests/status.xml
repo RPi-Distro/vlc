@@ -4,7 +4,7 @@ vim:syntax=lua
 <!--  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  status.xml: VLC media player web interface
 < - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
-<  Copyright (C) 2005-2006 the VideoLAN team
+<  Copyright (C) 2005-2009 the VideoLAN team
 <  $Id$
 < 
 <  Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -44,7 +44,7 @@ end
 local status = vlc.playlist.status()
 
 if command == "in_play" then
-  ---[[
+  --[[
   vlc.msg.err( "<options>" )
   for a,b in ipairs(options) do
     vlc.msg.err(b)
@@ -57,8 +57,7 @@ elseif command == "in_enqueue" then
 elseif command == "pl_play" then
   vlc.playlist.goto(id)
 elseif command == "pl_pause" then
-  vlc.msg.err("FIXME: pl_pause implementation is ugly")
-  common.hotkey("key-play-pause") -- gruik
+  vlc.playlist.pause()
 elseif command == "pl_stop" then
   vlc.playlist.stop()
 elseif command == "pl_next" then
@@ -85,11 +84,11 @@ elseif command == "pl_sd" then
     vlc.sd.add(val)
   end
 elseif command == "fullscreen" then
-  vlc.fullscreen()
+  vlc.video.fullscreen()
 elseif command == "snapshot" then
   common.snapshot()
 elseif command == "volume" then
-  vlc.volume.set(tonumber(val))
+  common.volume(val)
 elseif command == "seek" then
   common.seek(val)
 elseif command == "key" then
@@ -102,13 +101,14 @@ local id = nil
 local val = nil
 
 local input = vlc.object.input()
+local item = vlc.input.item()
 local playlist = vlc.object.playlist()
 local vout = input and vlc.object.find(input,'vout','child')
 ?>
 <root>
   <volume><?vlc print(vlc.volume.get()) ?></volume>
-  <length><?vlc if input then print(vlc.var.get(input,"length")) else print(0) end?></length>
-  <time><?vlc if input then print(vlc.var.get(input,"time")) else print(0) end?></time>
+  <length><?vlc if input then print(math.floor(vlc.var.get(input,"length"))) else print(0) end?></length>
+  <time><?vlc if input then print(math.floor(vlc.var.get(input,"time"))) else print(0) end?></time>
   <state><?vlc print(status) ?></state>
   <position><?vlc if input then print(vlc.var.get(input,"position")) else print(0) end?></position>
   <fullscreen><?vlc if vout then vlc.var.get(vout,"fullscreen") else print(0) end?></fullscreen>
@@ -116,13 +116,23 @@ local vout = input and vlc.object.find(input,'vout','child')
   <loop><?vlc print(vlc.var.get(playlist,"loop")) ?></loop>
   <repeat><?vlc print(vlc.var.get(playlist,"repeat")) ?></repeat>
   <information>
+    <category name="meta">
+    <?vlc
+      if item then
+        local metas = item:metas()
+        for k,v in pairs(metas) do
+          print("<info name='"..k.."'>"..vlc.strings.convert_xml_special_chars(v).."</info>")
+        end
+      end
+    ?>
+    </category>
   <?vlc
-    if input then
-      local info = vlc.input.info()
+    if item then
+      local info = item:info()
       for k, v in pairs(info) do
         print("<category name='"..k.."'>")
           for k2, v2 in pairs(v) do
-            print("<info name='"..k2.."'>"..v2.replace('&','&amp;').."</info>")
+            print("<info name='"..k2.."'>"..vlc.strings.convert_xml_special_chars(v2).."</info>")
           end
         print("</category>")
       end
@@ -131,8 +141,8 @@ local vout = input and vlc.object.find(input,'vout','child')
   </information>
   <stats>
   <?vlc
-    if input then
-      local stats = vlc.input.stats()
+    if item then
+      local stats = item:stats()
       for k,v in pairs(stats) do
         local tag = string.gsub(k,"_","")
         print("<"..tag..">"..tostring(v).."</"..tag..">\n")

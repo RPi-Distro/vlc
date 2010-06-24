@@ -2,7 +2,7 @@
  * generic_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: dbc3cf67f56127efe61287e9449ecf353a01d099 $
+ * $Id: 731d8dd75c1fe87147fb2f7c0e2348ea4d599914 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -56,11 +56,20 @@ GenericLayout::GenericLayout( intf_thread_t *pIntf, int width, int height,
 GenericLayout::~GenericLayout()
 {
     delete m_pImage;
+
     list<Anchor*>::const_iterator it;
     for( it = m_anchorList.begin(); it != m_anchorList.end(); it++ )
     {
         delete *it;
     }
+
+    list<LayeredControl>::const_iterator iter;
+    for( iter = m_controlList.begin(); iter != m_controlList.end(); iter++ )
+    {
+        CtrlGeneric *pCtrl = (*iter).m_pControl;
+        pCtrl->unsetLayout();
+    }
+
 }
 
 
@@ -101,7 +110,8 @@ void GenericLayout::addControl( CtrlGeneric *pControl,
         pControl->setLayout( this, rPosition );
 
         // Draw the control
-        pControl->draw( *m_pImage, rPosition.getLeft(), rPosition.getTop() );
+        if( pControl->isVisible() )
+            pControl->draw( *m_pImage, rPosition.getLeft(), rPosition.getTop() );
 
         // Add the control in the list.
         // This list must remain sorted by layer order
@@ -186,9 +196,7 @@ void GenericLayout::resize( int width, int height )
     {
         // Resize the window
         pWindow->resize( width, height );
-        refreshAll();
         // Change the shape of the window and redraw it
-        pWindow->updateShape();
         refreshAll();
     }
 }
@@ -205,6 +213,9 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
     // Do nothing if the layout is hidden
     if( !m_visible )
         return;
+
+    // update the transparency global mask
+    m_pImage->clear( x, y, width, height );
 
     // Draw all the controls of the layout
     list<LayeredControl>::const_iterator iter;
@@ -223,6 +234,9 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
     TopWindow *pWindow = getWindow();
     if( pWindow )
     {
+        // first apply new shape to the window
+        pWindow->updateShape();
+
         // Check boundaries
         if( x < 0 )
             x = 0;
@@ -233,128 +247,7 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
         if( y + height > m_rect.getHeight() )
             height = m_rect.getHeight() - y;
 
-        // Refresh the window... but do not paint on a visible video control!
-        if( !m_pVideoCtrlSet.size() )
-        {
-            // No video control, we can safely repaint the rectangle
-            pWindow->refresh( x, y, width, height );
-        }
-        else
-        {
-            // video control(s) present, we need more calculations
-            computeRefresh( x, y, width, height );
-        }
-    }
-}
-
-class rect
-{
-public:
-  rect( int v_x = 0, int v_y = 0,
-          int v_width = 0, int v_height = 0 )
-     : x( v_x), y( v_y ), width( v_width), height( v_height)
-    {}
-    ~rect(){}
-    int x;
-    int y;
-    int width;
-    int height;
-
-    static bool isIncluded( rect& rect2, rect& rect1 )
-    {
-        int x1 = rect1.x;
-        int y1 = rect1.y;
-        int w1 = rect1.width;
-        int h1 = rect1.height;
-
-        int x2 = rect2.x;
-        int y2 = rect2.y;
-        int w2 = rect2.width;
-        int h2 = rect2.height;
-
-        return  x2 >= x1 && x2 < x1 + w1
-            &&  y2 >= y1 && y2 < y1 + h1
-            &&  w2 <= w1
-            &&  h2 <= h1;
-    }
-};
-
-void GenericLayout::computeRefresh( int x, int y, int width, int height )
-{
-    int w = width;
-    int h = height;
-    TopWindow *pWindow = getWindow();
-
-    set<int> x_set;
-    set<int> y_set;
-    vector<rect> rect_set;
-
-    x_set.insert( x + w );
-    y_set.insert( y + h );
-
-    // retrieve video controls being used
-    // and remember their rectangles
-    set<CtrlVideo*>::const_iterator it;
-    for( it = m_pVideoCtrlSet.begin(); it != m_pVideoCtrlSet.end(); it++ )
-    {
-        if( (*it)->isUsed() )
-        {
-            int xx = (*it)->getPosition()->getLeft();
-            int yy = (*it)->getPosition()->getTop();
-            int ww = (*it)->getPosition()->getWidth();
-            int hh = (*it)->getPosition()->getHeight();
-
-            rect r(xx, yy, ww, hh );
-            rect_set.push_back( r );
-
-            if( xx > x && xx < x + w )
-                x_set.insert( xx );
-            if( xx + ww > x && xx + ww < x + w )
-                x_set.insert( xx + ww );
-            if( yy > y && yy < y + h )
-                y_set.insert( yy );
-            if( yy + hh > y && yy + hh < y + h )
-                y_set.insert( yy + hh );
-        }
-    }
-
-    // for each subregion, test whether they are part
-    // of the video control(s) or not
-    set<int>::const_iterator it_x;
-    set<int>::const_iterator it_y;
-    int x_prev, y_prev;
-
-    for( x_prev = x, it_x = x_set.begin();
-         it_x != x_set.end(); x_prev = *it_x, it_x++ )
-    {
-        int x0 = x_prev;
-        int w0 = *it_x - x_prev;
-
-        for( y_prev = y, it_y = y_set.begin();
-             it_y != y_set.end(); y_prev = *it_y, it_y++ )
-        {
-            int y0 = y_prev;
-            int h0 = *it_y - y_prev;
-
-            rect r( x0, y0, w0, h0 );
-            bool b_refresh = true;
-
-            vector<rect>::iterator it;
-            for( it = rect_set.begin(); it != rect_set.end(); it++ )
-            {
-                rect r_ctrl = *it;
-                if( rect::isIncluded( r, r_ctrl ) )
-                {
-                    b_refresh = false;
-                    break;
-                }
-            }
-
-            // subregion is not part of a video control
-            // needs to be refreshed
-            if( b_refresh )
-                pWindow->refresh( x0, y0, w0 ,h0 );
-        }
+        pWindow->refresh( x, y, width, height );
     }
 }
 

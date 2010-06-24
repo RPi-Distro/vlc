@@ -2,7 +2,7 @@
  * udp.c
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: dae64f1e477c6adf1f2a42e85680276a67252dc7 $
+ * $Id: 21ff9a4de49f2423a6150c2508f3a296c546b0f7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -33,9 +33,6 @@
 #include <vlc_plugin.h>
 
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <fcntl.h>
 #include <assert.h>
 
 #include <vlc_sout.h>

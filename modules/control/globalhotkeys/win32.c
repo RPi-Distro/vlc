@@ -162,9 +162,9 @@ static void *Thread( void *p_data )
     vlc_cond_signal( &p_sys->wait );
     vlc_mutex_unlock( &p_sys->lock );
 
-    SetWindowLongPtr( p_sys->hotkeyWindow, GWL_WNDPROC,
+    SetWindowLongPtr( p_sys->hotkeyWindow, GWLP_WNDPROC,
             (LONG_PTR)WMHOTKEYPROC );
-    SetWindowLongPtr( p_sys->hotkeyWindow, GWL_USERDATA,
+    SetWindowLongPtr( p_sys->hotkeyWindow, GWLP_USERDATA,
             (LONG_PTR)p_intf );
 
     /* Registering of Hotkeys */
@@ -175,7 +175,7 @@ static void *Thread( void *p_data )
         if( asprintf( &psz_hotkey, "global-%s", p_hotkey->psz_action ) < 0 )
             break;
 
-        i_key = config_GetInt( p_intf, psz_hotkey );
+        i_key = var_InheritInteger( p_intf, psz_hotkey );
 
         free( psz_hotkey );
 
@@ -186,6 +186,8 @@ static void *Thread( void *p_data )
 
 #define HANDLE( key ) case KEY_##key: i_vk = VK_##key; break
 #define HANDLE2( key, key2 ) case KEY_##key: i_vk = VK_##key2; break
+
+#define KEY_SPACE ' '
 
 #ifndef VK_VOLUME_DOWN
 #define VK_VOLUME_DOWN          0xAE
@@ -290,19 +292,18 @@ LRESULT CALLBACK WMHOTKEYPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
     {
         case WM_HOTKEY:
             {
-                int i;
                 char psz_atomName[40];
 
-                intf_thread_t *p_intf =
-                    (intf_thread_t*)GetWindowLongPtr( hwnd, GWL_USERDATA );
+                LONG_PTR ret = GetWindowLongPtr( hwnd, GWLP_USERDATA );
+                intf_thread_t *p_intf = (intf_thread_t*)ret;
                 struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
 
-                i = GlobalGetAtomNameA(
-                        wParam, psz_atomName, sizeof( psz_atomName ) );
-                if( !i ) return 0;
+                if( !GlobalGetAtomNameA(
+                        wParam, psz_atomName, sizeof( psz_atomName ) ) )
+                    return 0;
 
                 /* search for key associated with VLC */
-                for( i = 0; p_hotkeys[i].psz_action != NULL; i++ )
+                for( int i = 0; p_hotkeys[i].psz_action != NULL; i++ )
                 {
                     if( strcmp( p_hotkeys[i].psz_action, psz_atomName ) )
                         continue;

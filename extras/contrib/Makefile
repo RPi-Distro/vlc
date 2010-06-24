@@ -26,7 +26,7 @@
 
 include ./config.mak
 
-BUILDDIRS = bin doc etc include info lib man sbin share tmp gecko-sdk Sparkle
+BUILDDIRS = hosts build
 
 ifdef HAVE_DARWIN_OS
 TARGETALL=using-bin
@@ -47,42 +47,48 @@ src: using-src
 
 ifdef HAVE_DARWIN_OS
 
-CONTRIBREV=27
+CONTRIBREV=31
 
 contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2:
 	$(WGET) http://downloads.videolan.org/pub/videolan/testing/contrib/$@
 
-using-bin: contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
+hosts/$(HOST)/.$(CONTRIBREV): contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
 	@if test -d tmp; then \
 		echo "Move away ./tmp, it's in the way" ; \
 		exit 1 ; \
 	fi
 	mkdir tmp
+	mkdir -p $(PREFIX)
 	(cd tmp && tar jxvf ../$<)
 	./change_prefix.sh tmp @@CONTRIB_PREFIX@@  $(PREFIX)
-	(cd tmp && find . -type d) | while read dir; do mkdir -p -- "$$dir"; done
-	(cd tmp && find . -not -type d) | while read i; do mv -f -- tmp/"$$i" "$$i"; done
+	(cd tmp && find . -type d) | while read dir; do mkdir -p -- "$(PREFIX)/$$dir"; done
+	(cd tmp && find . -not -type d) | while read i; do mv -f -- tmp/"$$i" "$(PREFIX)/$$i"; done
 	rm -rf tmp
-    # install the gecko-sdk, which isn't part of the package for size and speed reasons
+	# install the gecko-sdk, which isn't part of the package for size and speed reasons
 	(cd src && rm -rf *gecko* && $(MAKE) .gecko)
     # libiconv.la is no longer present on Snow Leopard, so fix possible references to it, which would
     # result in linking issues
 ifdef HAVE_DARWIN_10
 	(cd $(PREFIX)/lib && sed -e 's%/usr/lib/libiconv.la%$(PREFIX)/lib/libiconv.la%g' -i.orig *.la && rm -f *.la.orig)
-	(cd $(PREFIX)/src && $(MAKE) .iconv)
+	(cd src && rm -f .iconv && $(MAKE) .iconv)
 endif
+	touch hosts/$(HOST)/.$(CONTRIBREV)
+
+using-bin: hosts/$(HOST)/.$(CONTRIBREV) 
+
 endif
 
-clean-src:
+clean:
 	rm -rf $(BUILDDIRS)
-	$(MAKE) -C src clean-src
+	$(MAKE) -C src clean
 
 clean-bin:
 	rm -rf $(BUILDDIRS)
 	$(MAKE) -C src clean-dots
 
-clean:
-	$(MAKE) clean-src
+distclean:
+	$(MAKE) clean
+	$(MAKE) -C src clean-src
 	rm -rf config.mak distro.mak
 
 bin: using-bin
@@ -93,25 +99,25 @@ package-macosx:
 		exit 1 ; \
 	fi
 	mkdir tmp
-	tar cf - Sparkle bin sbin include lib share/aclocal* share/autoconf* \
-		share/automake* share/gettext* share/libtool* | (cd tmp; tar xf -)
+	(cd $(PREFIX); tar cf - Sparkle bin sbin include lib share/aclocal* share/autoconf* \
+		share/automake* share/gettext* share/libtool*) | (cd tmp; tar xf -)
 	./change_prefix.sh tmp $(PREFIX) @@CONTRIB_PREFIX@@
 	(cd tmp; tar cf - .) | bzip2 -c > contrib-macosx.tar.bz2
 	rm -rf tmp
 	rm -f contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
 	mv contrib-macosx.tar.bz2 contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
 
-DISTDIR = usr/win32
+DISTDIR = usr/win$*
 
-package-win32:
+package-win%:
 	@if test -d tmp; then \
 		echo "Move away ./tmp, it's in the way" ; \
 		exit 1 ; \
 	fi
 	mkdir -p tmp/$(DISTDIR)
-	tar cf - --dereference bin sbin include lib share/aclocal*\
+	(cd $(PREFIX); tar cf - --dereference bin sbin include lib share/aclocal*\
 		share/autoconf* share/qt4* \
-		share/automake* share/gettext* gecko-sdk\
+		share/automake* share/gettext* gecko-sdk)\
 		| (cd tmp/$(DISTDIR); tar xpf -)
 #kludge for live.com
 	mkdir -p tmp/$(DISTDIR)/live.com
@@ -122,14 +128,10 @@ package-win32:
 	done;
 # Change Prefix.
 	./change_prefix.sh tmp $(PREFIX) $(DISTDIR)
-# Hack for qt4
-	(cd tmp/$(DISTDIR)/bin; mv uic.exe uic.ex; mv rcc.exe rcc.ex; mv moc.exe moc.ex)
-#	Remove unused and potentially harmful files	
-	(cd tmp/$(DISTDIR)/bin; rm -rfv *.exe; chmod a+x *)
-# Hack for qt4
-	(cd tmp/$(DISTDIR)/bin; mv uic.ex uic.exe; mv rcc.ex rcc.exe; mv moc.ex moc.exe)
+# Remove unused and potentially harmful files (but skip qt4 executables)
+	(cd tmp/$(DISTDIR)/bin && rm -fv `find . -name 'uic.exe' -o -name 'rcc.exe' -o -name 'moc.exe' -o -name '*.exe' -printf '%p '` && chmod a+x * || true)
 # Tar it.
-	(cd tmp; tar cf - $(DISTDIR)) | bzip2 -c > contrib-`date +%Y%m%d`-win32-bin-gcc-`$(CC) --version|head -n 1|cut -f 3 -d ' '`-runtime-`/bin/echo -e "#include <_mingw.h>\n__MINGW32_VERSION"|$(CC) -E -|grep -v ^#|grep -v ' '`-only.tar.bz2
+	(cd tmp; tar cf - $(DISTDIR)) | bzip2 -c > contrib-`date +%Y%m%d`-win$*-bin-gcc-`$(CC) --version|head -n 1|cut -f 3 -d ' '`-runtime-`/bin/echo -e "#include <_mingw.h>\n__MINGW32_VERSION"|$(CC) -E -|grep -v ^#|grep -v ' '`-only.tar.bz2
 	rm -rf tmp
 
-.PHONY: all clean-src clean-bin clean package-macosx package-win32
+.PHONY: all clean-src clean-bin clean package-macosx

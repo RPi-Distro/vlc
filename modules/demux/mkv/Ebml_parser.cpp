@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: e9b01cdd03e5f7cfe06c38da84e90295dd6f9c7f $
+ * $Id: 5feafdf4bb3e631d92fbb57964fe47c8c2d4e9f4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -43,7 +43,7 @@ EbmlParser::EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux 
     mi_level = 1;
     mi_user_level = 1;
     mb_keep = false;
-    mb_dummy = config_GetInt( p_demux, "mkv-use-dummy" );
+    mb_dummy = var_InheritBool( p_demux, "mkv-use-dummy" );
 }
 
 EbmlParser::~EbmlParser( void )
@@ -127,7 +127,7 @@ void EbmlParser::Reset( demux_t *p_demux )
     mi_user_level = mi_level = 1;
     // a little faster and cleaner
     m_es->I_O().setFilePointer( static_cast<KaxSegment*>(m_el[0])->GetGlobalPosition(0) );
-    mb_dummy = config_GetInt( p_demux, "mkv-use-dummy" );
+    mb_dummy = var_InheritBool( p_demux, "mkv-use-dummy" );
 }
 
 

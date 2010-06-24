@@ -2,7 +2,7 @@
  * intf_dummy.c: dummy interface plugin
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 3843dd8a286d2c01418042a15ca421b0ba5ae8a1 $
+ * $Id: 11e46889b9ccf877a65990d4a121d70f5c092f8e $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -43,7 +43,7 @@ int  OpenIntf ( vlc_object_t *p_this )
 
 #ifdef WIN32
     bool b_quiet;
-    b_quiet = config_GetInt( p_intf, "dummy-quiet" );
+    b_quiet = var_InheritBool( p_intf, "dummy-quiet" );
     if( !b_quiet )
         CONSOLE_INTRO_MSG;
 #endif

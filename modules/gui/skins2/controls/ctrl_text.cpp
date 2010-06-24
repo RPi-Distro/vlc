@@ -2,7 +2,7 @@
  * ctrl_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e32da13683a8a0cfff3190cf1cd0a5f9ab1a5952 $
+ * $Id: a6c90a03886824238f498f019d0dc5135eb0a7e1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -207,6 +207,23 @@ void CtrlText::onUpdate( Subject<VarText> &rVariable, void* arg )
     if( isVisible() )
     {
         displayText( m_rVariable.get() );
+    }
+}
+
+
+void CtrlText::onUpdate( Subject<VarBool> &rVariable, void *arg  )
+{
+    // Visibility changed
+    if( &rVariable == m_pVisible )
+    {
+        if( isVisible() )
+        {
+            displayText( m_rVariable.get() );
+        }
+        else
+        {
+            notifyLayout();
+        }
     }
 }
 

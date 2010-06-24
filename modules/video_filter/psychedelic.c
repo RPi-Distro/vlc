@@ -2,7 +2,7 @@
  * Psychedelic.c : Psychedelic video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 2e1c53c36acbb924206f16db2b97e675cdcd2ae7 $
+ * $Id: 8c6d34da8723f39bfe58778a76629167d9b2168b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -35,8 +35,8 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
-#include "vlc_filter.h"
-#include "vlc_image.h"
+#include <vlc_filter.h>
+#include <vlc_image.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -62,7 +62,7 @@ vlc_module_begin ()
 vlc_module_end ()
 
 /*****************************************************************************
- * vout_sys_t: Distort video output method descriptor
+ * filter_sys_t: Distort video output method descriptor
  *****************************************************************************
  * This structure is part of the video output thread descriptor.
  * It describes the Distort specific properties of an output thread.

@@ -2,7 +2,7 @@
  * spudec.h : sub picture unit decoder thread interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2006 the VideoLAN team
- * $Id: 9e5b5fbbc5af385e43374423d114b7bd4cb24aef $
+ * $Id: ce414200a03ee92c295ed4f42206a9e699bcbb49 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -25,7 +25,8 @@
 
 struct decoder_sys_t
 {
-    int b_packetizer;
+    bool b_packetizer;
+    bool b_disabletrans;
 
     mtime_t i_pts;
     unsigned int i_spu_size;

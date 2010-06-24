@@ -1,8 +1,8 @@
 /*****************************************************************************
  * embeddedwindow.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 123dd4818502097e82beff992e33bfd8cdda45f9 $
+ * Copyright (C) 2005-2008 the VideoLAN team
+ * $Id: acbf2cde3843f63381fc5c9628e73443e2e8c243 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -31,6 +31,7 @@
 #import "vout.h"
 #import "embeddedwindow.h"
 #import "fspanel.h"
+#import "playlist.h"
 
 /* SetSystemUIMode, ... */
 #import <Carbon/Carbon.h>
@@ -61,19 +62,36 @@
 {
     [self setDelegate: self];
 
+    /* button strings */
     [o_btn_backward setToolTip: _NS("Rewind")];
     [o_btn_forward setToolTip: _NS("Fast Forward")];
     [o_btn_fullscreen setToolTip: _NS("Fullscreen")];
     [o_btn_play setToolTip: _NS("Play")];
-    [o_slider setToolTip: _NS("Position")];
+    [o_timeslider setToolTip: _NS("Position")];
+    [o_btn_prev setToolTip: _NS("Previous")];
+    [o_btn_stop setToolTip: _NS("Stop")];
+    [o_btn_next setToolTip: _NS("Next")];
+    [o_volumeslider setToolTip: _NS("Volume")];
+    [o_btn_playlist setToolTip: _NS("Playlist")];
+    [self setTitle: _NS("VLC media player")];
 
     o_img_play = [NSImage imageNamed: @"play_embedded"];
     o_img_pause = [NSImage imageNamed: @"pause_embedded"];
+
     [self controlTintChanged];
     [[NSNotificationCenter defaultCenter] addObserver: self
                                              selector: @selector( controlTintChanged )
                                                  name: NSControlTintDidChangeNotification
                                                object: nil];
+
+    /* Set color of sidebar to Leopard's "Sidebar Blue" */
+    [o_sidebar_list setBackgroundColor: [NSColor colorWithCalibratedRed:0.820
+                                                                  green:0.843
+                                                                   blue:0.886
+                                                                  alpha:1.0]];
+
+    [self setMinSize:NSMakeSize([o_sidebar_list convertRect:[o_sidebar_list bounds]
+                                                     toView: nil].size.width + 551., 114.)];
 
     /* Useful to save o_view frame in fullscreen mode */
     o_temp_view = [[NSView alloc] init];
@@ -101,7 +119,7 @@
     BOOL b_playing = NO;
     if( [o_btn_play alternateImage] == o_img_play_pressed )
         b_playing = YES;
-    
+
     if( [NSColor currentControlTint] == NSGraphiteControlTint )
     {
         o_img_play_pressed = [NSImage imageNamed: @"play_embedded_graphite"];
@@ -109,16 +127,14 @@
         [o_btn_backward setAlternateImage: [NSImage imageNamed: @"skip_previous_embedded_graphite"]];
         [o_btn_forward setAlternateImage: [NSImage imageNamed: @"skip_forward_embedded_graphite"]];
         [o_btn_fullscreen setAlternateImage: [NSImage imageNamed: @"fullscreen_graphite"]];
-    }
-    else
-    {
+    } else {
         o_img_play_pressed = [NSImage imageNamed: @"play_embedded_blue"];
         o_img_pause_pressed = [NSImage imageNamed: @"pause_embedded_blue"];
         [o_btn_backward setAlternateImage: [NSImage imageNamed: @"skip_previous_embedded_blue"]];
         [o_btn_forward setAlternateImage: [NSImage imageNamed: @"skip_forward_embedded_blue"]];
         [o_btn_fullscreen setAlternateImage: [NSImage imageNamed: @"fullscreen_blue"]];
     }
-    
+
     if( b_playing )
         [o_btn_play setAlternateImage: o_img_play_pressed];
     else
@@ -132,14 +148,14 @@
     [o_img_play_pressed release];
     [o_img_pause release];
     [o_img_pause_pressed release];
-    
+
     [super dealloc];
 }
 
 - (void)setTime:(NSString *)o_arg_time position:(float)f_position
 {
     [o_time setStringValue: o_arg_time];
-    [o_slider setFloatValue: f_position];
+    [o_timeslider setFloatValue: f_position];
 }
 
 - (void)playStatusUpdated:(int)i_status
@@ -162,7 +178,45 @@
 {
     [o_btn_forward setEnabled: b_seekable];
     [o_btn_backward setEnabled: b_seekable];
-    [o_slider setEnabled: b_seekable];
+    [o_timeslider setEnabled: b_seekable];
+}
+
+- (void)setScrollString:(NSString *)o_string
+{
+    [o_scrollfield setStringValue: o_string];
+}
+
+- (id)getPgbar
+{
+    if( o_main_pgbar )
+        return o_main_pgbar;
+
+    return nil;
+}
+
+- (void)setStop:(BOOL)b_input
+{
+    [o_btn_stop setEnabled: b_input];
+}
+
+- (void)setNext:(BOOL)b_input
+{
+    [o_btn_next setEnabled: b_input];
+}
+
+- (void)setPrev:(BOOL)b_input
+{
+    [o_btn_prev setEnabled: b_input];
+}
+
+- (void)setVolumeEnabled:(BOOL)b_input
+{
+    [o_volumeslider setEnabled: b_input];
+}
+
+- (void)setVolumeSlider:(float)f_level
+{
+    [o_volumeslider setFloatValue: f_level];
 }
 
 - (BOOL)windowShouldZoom:(NSWindow *)sender toFrame:(NSRect)newFrame
@@ -173,10 +227,9 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
-    playlist_t * p_playlist = pl_Hold( VLCIntf );
-
+    playlist_t * p_playlist = pl_Get( VLCIntf );
     playlist_Stop( p_playlist );
-    pl_Release( VLCIntf );
+
     return YES;
 }
 
@@ -210,6 +263,117 @@
     return proposedFrameSize;
 }
 
+- (void)becomeMainWindow
+{
+    [o_sidebar_list setBackgroundColor: [NSColor colorWithCalibratedRed:0.820
+                                                                  green:0.843
+                                                                   blue:0.886
+                                                                  alpha:1.0]];
+	[o_status becomeMainWindow];
+    [super becomeMainWindow];
+}
+
+- (void)resignMainWindow
+{
+    [o_sidebar_list setBackgroundColor: [NSColor colorWithCalibratedWhite:0.91 alpha:1.0]];
+	[o_status resignMainWindow];
+    [super resignMainWindow];
+}
+
+- (CGFloat)splitView:(NSSplitView *) splitView constrainSplitPosition:(CGFloat) proposedPosition ofSubviewAt:(NSInteger) index
+{
+	if([splitView isVertical])
+		return proposedPosition;
+	else if ( splitView == o_vertical_split )
+		return proposedPosition ;
+	else {
+		float bottom = [splitView frame].size.height - [splitView dividerThickness];
+		if(proposedPosition > bottom - 50) {
+			[o_btn_playlist setState: NSOffState];
+			[o_searchfield setHidden:YES];
+			[o_playlist_view setHidden:YES];
+			return bottom;
+		}
+		else {
+			[o_btn_playlist setState: NSOnState];
+			[o_searchfield setHidden:NO];
+			[o_playlist_view setHidden:NO];
+			[o_playlist swapPlaylists: o_playlist_table];
+			[o_vlc_main togglePlaylist:self];
+			return proposedPosition;
+		}
+	}
+}
+
+- (void)splitViewWillResizeSubviews:(NSNotification *) notification
+{
+
+}
+
+- (CGFloat)splitView:(NSSplitView *) splitView constrainMinCoordinate:(CGFloat) proposedMin ofSubviewAt:(NSInteger) offset
+{
+	if([splitView isVertical])
+		return 125.;
+	else
+		return 0.;
+}
+
+- (CGFloat)splitView:(NSSplitView *) splitView constrainMaxCoordinate:(CGFloat) proposedMax ofSubviewAt:(NSInteger) offset
+{
+    if([splitView isVertical])
+		return MIN([self frame].size.width - 551, 300);
+	else
+		return [splitView frame].size.height;
+}
+
+- (BOOL)splitView:(NSSplitView *) splitView canCollapseSubview:(NSView *) subview
+{
+	if([splitView isVertical])
+		return NO;
+	else
+		return NO;
+}
+
+- (NSRect)splitView:(NSSplitView *)splitView effectiveRect:(NSRect)proposedEffectiveRect forDrawnRect:(NSRect)drawnRect
+   ofDividerAtIndex:(NSInteger)dividerIndex
+{
+	if([splitView isVertical]) {
+		drawnRect.origin.x -= 3;
+		drawnRect.size.width += 5;
+		return drawnRect;
+	}
+	else
+		return drawnRect;
+}
+
+- (IBAction)togglePlaylist:(id)sender
+{
+	NSView *playback_area = [[o_vertical_split subviews] objectAtIndex:0];
+	NSView *playlist_area = [[o_vertical_split subviews] objectAtIndex:1];
+	NSRect newVid = [playback_area frame];
+	NSRect newList = [playlist_area frame];
+	if(newList.size.height < 50 && sender != self && sender != o_vlc_main) {
+		newList.size.height = newVid.size.height/2;
+		newVid.size.height = newVid.size.height/2;
+		newVid.origin.y = newVid.origin.y + newList.size.height;
+		[o_btn_playlist setState: NSOnState];
+		[o_searchfield setHidden:NO];
+		[o_playlist_view setHidden:NO];
+		[o_playlist swapPlaylists: o_playlist_table];
+		[o_vlc_main togglePlaylist:self];
+	}
+	else {
+		newVid.size.height = newVid.size.height + newList.size.height;
+		newList.size.height = 0;
+		newVid.origin.y = 0;
+		[o_btn_playlist setState: NSOffState];
+		[o_searchfield setHidden:YES];
+		[o_playlist_view setHidden:YES];
+	}
+	[playback_area setFrame: newVid];
+	[playlist_area setFrame: newList];
+}
+
 /*****************************************************************************
  * Fullscreen support
  */
@@ -235,11 +399,11 @@
     NSScreen *screen;
     NSRect screen_rect;
     NSRect rect;
-    vout_thread_t *p_vout = vlc_object_find( VLCIntf, VLC_OBJECT_VOUT, FIND_ANYWHERE );
+    vout_thread_t *p_vout = getVout();
     BOOL blackout_other_displays = config_GetInt( VLCIntf, "macosx-black" );
 
-    screen = [NSScreen screenWithDisplayID:(CGDirectDisplayID)var_GetInteger( p_vout, "video-device" )]; 
- 
+    screen = [NSScreen screenWithDisplayID:(CGDirectDisplayID)var_GetInteger( p_vout, "video-device" )];
+
     [self lockFullscreenAnimation];
 
     if (!screen)
@@ -260,8 +424,8 @@
     [o_btn_fullscreen setState: YES];
 
     [NSCursor setHiddenUntilMouseMoves: YES];
- 
-    if( blackout_other_displays )        
+
+    if( blackout_other_displays )
         [screen blackoutOtherScreens];
 
     /* Make sure we don't see the window flashes in float-on-top mode */
@@ -285,14 +449,14 @@
             /* We don't animate if we are not visible, instead we
              * simply fade the display */
             CGDisplayFadeReservationToken token;
- 
+
             CGAcquireDisplayFadeReservation(kCGMaxDisplayReservationInterval, &token);
             CGDisplayFade( token, 0.5, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0, 0, 0, YES );
- 
+
             if ([screen isMainScreen])
                 SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
- 
-            [[self contentView] replaceSubview:o_view with:o_temp_view];
+
+            [[o_view superview] replaceSubview:o_view with:o_temp_view];
             [o_temp_view setFrame:[o_view frame]];
             [o_fullscreen_window setContentView:o_view];
 
@@ -309,10 +473,10 @@
 
             return;
         }
- 
+
         /* Make sure we don't see the o_view disappearing of the screen during this operation */
         NSDisableScreenUpdates();
-		[[self contentView] replaceSubview:o_view with:o_temp_view];
+        [[o_view superview] replaceSubview:o_view with:o_temp_view];
         [o_temp_view setFrame:[o_view frame]];
         [o_fullscreen_window setContentView:o_view];
         [o_fullscreen_window makeKeyAndOrderFront:self];
@@ -338,7 +502,7 @@
         [o_fullscreen_anim2 stopAnimation];
         [o_fullscreen_anim2 release];
     }
- 
+
     if ([screen isMainScreen])
         SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
 
@@ -506,7 +670,7 @@
     NSDisableScreenUpdates();
     [o_view retain];
     [o_view removeFromSuperviewWithoutNeedingDisplay];
-    [[self contentView] replaceSubview:o_temp_view with:o_view];
+    [[o_temp_view superview] replaceSubview:o_temp_view with:o_view];
     [o_view release];
     [o_view setFrame:[o_temp_view frame]];
     [self makeFirstResponder: o_view];
@@ -634,5 +798,169 @@
         [super setFrame:args->frame display:args->display animate:args->animate];
     }
 
+}
+@end
+
+/*****************************************************************************
+ * embeddedbackground
+ *****************************************************************************/
+
+
+@implementation embeddedbackground
+
+- (void)dealloc
+{
+    [self unregisterDraggedTypes];
+    [super dealloc];
+}
+
+- (void)awakeFromNib
+{
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType,
+                                   NSFilenamesPboardType, nil]];
+    [self addSubview: o_timeslider];
+    [self addSubview: o_scrollfield];
+    [self addSubview: o_time];
+    [self addSubview: o_main_pgbar];
+    [self addSubview: o_btn_backward];
+    [self addSubview: o_btn_forward];
+    [self addSubview: o_btn_fullscreen];
+    [self addSubview: o_btn_equalizer];
+    [self addSubview: o_btn_playlist];
+    [self addSubview: o_btn_play];
+    [self addSubview: o_btn_prev];
+    [self addSubview: o_btn_stop];
+    [self addSubview: o_btn_next];
+    [self addSubview: o_btn_volume_down];
+    [self addSubview: o_volumeslider];
+    [self addSubview: o_btn_volume_up];
+    [self addSubview: o_searchfield];
+}
+
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
+{
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask])
+        == NSDragOperationGeneric)
+    {
+        return NSDragOperationGeneric;
+    }
+    else
+    {
+        return NSDragOperationNone;
+    }
+}
+
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
+{
+    return YES;
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
+    NSPasteboard *o_paste = [sender draggingPasteboard];
+    NSArray *o_types = [NSArray arrayWithObjects: NSFilenamesPboardType, nil];
+    NSString *o_desired_type = [o_paste availableTypeFromArray:o_types];
+    NSData *o_carried_data = [o_paste dataForType:o_desired_type];
+    BOOL b_autoplay = config_GetInt( VLCIntf, "macosx-autoplay" );
+
+    if( o_carried_data )
+    {
+        if ([o_desired_type isEqualToString:NSFilenamesPboardType])
+        {
+            int i;
+            NSArray *o_array = [NSArray array];
+            NSArray *o_values = [[o_paste propertyListForType: NSFilenamesPboardType]
+                                 sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+
+            for( i = 0; i < (int)[o_values count]; i++)
+            {
+                NSDictionary *o_dic;
+                o_dic = [NSDictionary dictionaryWithObject:[o_values objectAtIndex:i] forKey:@"ITEM_URL"];
+                o_array = [o_array arrayByAddingObject: o_dic];
+            }
+            if( b_autoplay )
+                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:NO];
+            else
+                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:YES];
+            return YES;
+        }
+    }
+    [self setNeedsDisplay:YES];
+    return YES;
+}
+
+- (void)concludeDragOperation:(id <NSDraggingInfo>)sender
+{
+    [self setNeedsDisplay:YES];
+}
+
+- (void)drawRect:(NSRect)rect
+{
+    NSImage *leftImage = [NSImage imageNamed:@"display_left"];
+    NSImage *middleImage = [NSImage imageNamed:@"display_middle"];
+    NSImage *rightImage = [NSImage imageNamed:@"display_right"];
+    [middleImage setSize:NSMakeSize(NSWidth( [self bounds] ) - 134 - [leftImage size].width - [rightImage size].width, [middleImage size].height)];
+    [middleImage setScalesWhenResized:YES];
+    [leftImage compositeToPoint:NSMakePoint( 122., 40. ) operation:NSCompositeSourceOver];
+    [middleImage compositeToPoint:NSMakePoint( 122. + [leftImage size].width, 40. ) operation:NSCompositeSourceOver];
+    [rightImage compositeToPoint:NSMakePoint( NSWidth( [self bounds] ) - 12 - [rightImage size].width, 40. ) operation:NSCompositeSourceOver];
+}
+
+- (void)mouseDown:(NSEvent *)event
+{
+    dragStart = [self convertPoint:[event locationInWindow] fromView:nil];
+}
+
+- (void)mouseDragged:(NSEvent *)event
+{
+    NSPoint dragLocation = [self convertPoint:[event locationInWindow] fromView:nil];
+    NSPoint winOrigin = [o_window frame].origin;
+
+    NSPoint newOrigin = NSMakePoint(winOrigin.x + (dragLocation.x - dragStart.x),
+                                    winOrigin.y + (dragLocation.y - dragStart.y));
+    [o_window setFrameOrigin: newOrigin];
+}
+
+@end
+
+/*****************************************************************************
+ * statusbar
+ *****************************************************************************/
+
+
+@implementation statusbar
+- (void)awakeFromNib
+{
+    [self addSubview: o_text];
+	mainwindow = YES;
+}
+
+- (void)resignMainWindow
+{
+	mainwindow = NO;
+	[self needsDisplay];
+}
+
+- (void)becomeMainWindow
+{
+	mainwindow = YES;
+	[self needsDisplay];
+}
+
+- (void)drawRect:(NSRect)rect
+{
+	if(mainwindow)
+		[[NSColor colorWithCalibratedRed:0.820
+								   green:0.843
+									blue:0.886
+								   alpha:1.0] set];
+	else
+		[[NSColor colorWithCalibratedWhite:0.91 alpha:1.0] set];
+	NSRectFill(rect);
+	/*NSRect divider = rect;
+	divider.origin.y += divider.size.height - 1;
+	divider.size.height = 1;
+	[[NSColor colorWithCalibratedWhite:0.65 alpha:1.] set];
+	NSRectFill(divider);*/
 }
 @end

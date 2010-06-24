@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 803ffb7224069f7f08ed2e187c57939ef02e2cdb $
+ * $Id: a6aee7728d50987bab3599e4278680883cd51745 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -40,14 +40,8 @@
 #include <vlc_network.h>
 #include <vlc_charset.h>
 
-#include <ctype.h>
-#include <errno.h>
-
 #ifdef HAVE_UNISTD_H
 #    include <unistd.h>
-#endif
-#ifdef HAVE_SYS_TIME_H
-#    include <sys/time.h>
 #endif
 #ifdef HAVE_POLL
 # include <poll.h>
@@ -120,32 +114,36 @@
     static int  OpenDemux ( vlc_object_t * );
     static void CloseDemux ( vlc_object_t * );
 
+VLC_SD_PROBE_HELPER("sap", "Network streams (SAP)", SD_CAT_LAN)
+
 vlc_module_begin ()
     set_shortname( N_("SAP"))
-    set_description( N_("SAP Announcements") )
+    set_description( N_("Network streams (SAP)") )
     set_category( CAT_PLAYLIST )
     set_subcategory( SUBCAT_PLAYLIST_SD )
 
     add_string( "sap-addr", NULL, NULL,
                 SAP_ADDR_TEXT, SAP_ADDR_LONGTEXT, true )
-    add_bool( "sap-ipv4", 1 , NULL,
+    add_bool( "sap-ipv4", true, NULL,
                SAP_IPV4_TEXT,SAP_IPV4_LONGTEXT, true )
-    add_bool( "sap-ipv6", 1 , NULL,
+    add_bool( "sap-ipv6", true, NULL,
               SAP_IPV6_TEXT, SAP_IPV6_LONGTEXT, true )
     add_integer( "sap-timeout", 1800, NULL,
                  SAP_TIMEOUT_TEXT, SAP_TIMEOUT_LONGTEXT, true )
-    add_bool( "sap-parse", 1 , NULL,
+    add_bool( "sap-parse", true, NULL,
                SAP_PARSE_TEXT,SAP_PARSE_LONGTEXT, true )
-    add_bool( "sap-strict", 0 , NULL,
+    add_bool( "sap-strict", false, NULL,
                SAP_STRICT_TEXT,SAP_STRICT_LONGTEXT, true )
 #if 0
-    add_bool( "sap-cache", 0 , NULL,
+    add_bool( "sap-cache", false, NULL,
                SAP_CACHE_TEXT,SAP_CACHE_LONGTEXT, true )
 #endif
     add_obsolete_bool( "sap-timeshift" ) /* Redumdant since 1.0.0 */
 
     set_capability( "services_discovery", 0 )
     set_callbacks( Open, Close )
+
+    VLC_SD_PROBE_SUBMODULE
 
     add_submodule ()
         set_description( N_("SDP Descriptions parser") )
@@ -321,11 +319,11 @@ static int Open( vlc_object_t *p_this )
     p_sys->pi_fd = NULL;
     p_sys->i_fd = 0;
 
-    p_sys->b_strict = var_CreateGetInteger( p_sd, "sap-strict");
-    p_sys->b_parse = var_CreateGetInteger( p_sd, "sap-parse" );
+    p_sys->b_strict = var_CreateGetBool( p_sd, "sap-strict");
+    p_sys->b_parse = var_CreateGetBool( p_sd, "sap-parse" );
 
 #if 0
-    if( var_CreateGetInteger( p_sd, "sap-cache" ) )
+    if( var_CreateGetBool( p_sd, "sap-cache" ) )
     {
         CacheLoad( p_sd );
     }
@@ -355,7 +353,7 @@ static int OpenDemux( vlc_object_t *p_this )
     int errval = VLC_EGENERIC;
     size_t i_len;
 
-    if( !var_CreateGetInteger( p_demux, "sap-parse" ) )
+    if( !var_CreateGetBool( p_demux, "sap-parse" ) )
     {
         /* We want livedotcom module to parse this SDP file */
         return VLC_EGENERIC;
@@ -414,6 +412,8 @@ static int OpenDemux( vlc_object_t *p_this )
     if( p_sdp->psz_uri == NULL ) goto error;
 
     p_demux->p_sys = (demux_sys_t *)malloc( sizeof(demux_sys_t) );
+    if( unlikely( !p_demux->p_sys ) )
+        goto error;
     p_demux->p_sys->p_sdp = p_sdp;
     p_demux->pf_control = Control;
     p_demux->pf_demux = Demux;
@@ -447,7 +447,7 @@ static void Close( vlc_object_t *p_this )
     FREENULL( p_sys->pi_fd );
 
 #if 0
-    if( config_GetInt( p_sd, "sap-cache" ) )
+    if( var_InheritBool( p_sd, "sap-cache" ) )
     {
         CacheSave( p_sd );
     }
@@ -468,11 +468,10 @@ static void Close( vlc_object_t *p_this )
 static void CloseDemux( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
-    if( p_demux->p_sys )
-    {
-        if( p_demux->p_sys->p_sdp ) { FreeSDP( p_demux->p_sys->p_sdp ); p_demux->p_sys->p_sdp = NULL; }
-        free( p_demux->p_sys );
-    }
+
+    if( p_demux->p_sys->p_sdp )
+        FreeSDP( p_demux->p_sys->p_sdp );
+    free( p_demux->p_sys );
 }
 
 /*****************************************************************************
@@ -496,14 +495,14 @@ static void *Run( void *data )
      * Winsock 1.1 from Windows 95, if not Windows 3.1.
      * Anyway, to avoid a 30 seconds delay for failed IPv6 socket creation,
      * we have to open sockets in Run() rather than Open(). */
-    if( var_CreateGetInteger( p_sd, "sap-ipv4" ) )
+    if( var_CreateGetBool( p_sd, "sap-ipv4" ) )
     {
         InitSocket( p_sd, SAP_V4_GLOBAL_ADDRESS, SAP_PORT );
         InitSocket( p_sd, SAP_V4_ORG_ADDRESS, SAP_PORT );
         InitSocket( p_sd, SAP_V4_LOCAL_ADDRESS, SAP_PORT );
         InitSocket( p_sd, SAP_V4_LINK_ADDRESS, SAP_PORT );
     }
-    if( var_CreateGetInteger( p_sd, "sap-ipv6" ) )
+    if( var_CreateGetBool( p_sd, "sap-ipv6" ) )
     {
         char psz_address[NI_MAXNUMERICHOST] = "ff02::2:7ffe%";
 
@@ -651,8 +650,7 @@ static int Demux( demux_t *p_demux )
     input_thread_t *p_input;
     input_item_t *p_parent_input;
 
-    p_input = (input_thread_t *)vlc_object_find( p_demux, VLC_OBJECT_INPUT,
-                                                 FIND_PARENT );
+    p_input = demux_GetParentInput( p_demux );
     assert( p_input );
     if( !p_input )
     {
@@ -1246,7 +1244,7 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                     goto error;
                 }
 
-                if ((sscanf (data, "%63s %"PRIu64" %"PRIu64" IN IP%u %1023s",
+                if ((sscanf (data, "%63s %"SCNu64" %"SCNu64" IN IP%u %1023s",
                              p_sdp->username, &p_sdp->session_id,
                              &p_sdp->session_version, &p_sdp->orig_ip_version,
                              p_sdp->orig_host) != 5)

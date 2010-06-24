@@ -2,7 +2,7 @@
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2004, 2007-2009 the VideoLAN team
- * $Id: a6e751d8bd07c838a11aaeab5f3c294951657261 $
+ * $Id: 9276f4526abf89cf97d33eb8531da20762e98746 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -30,10 +30,10 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <errno.h>                                                 /* ENOMEM */
 #include <stdlib.h>                                                /* free() */
 #include <string.h>
 
+#include <vlc_common.h>
 #include <vlc_keys.h>
 
 #include "intf.h"
@@ -103,7 +103,6 @@ static void aglUnlock ( vout_thread_t * p_vout );
 int OpenVideoGL  ( vlc_object_t * p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *) p_this;
-    vlc_value_t value_drawable;
 
     if( !CGDisplayUsesOpenGLAcceleration( kCGDirectMainDisplay ) )
     {
@@ -119,8 +118,9 @@ int OpenVideoGL  ( vlc_object_t * p_this )
     memset( p_vout->p_sys, 0, sizeof( vout_sys_t ) );
 
 #ifndef __x86_64__
-    var_Get( p_vout->p_libvlc, "drawable-agl", &value_drawable );
-    if( value_drawable.i_int != 0 )
+    int i_drawable_agl;
+    i_drawable_agl = var_GetInteger( p_vout->p_libvlc, "drawable-agl" );
+    if( i_drawable_agl > 0 )
     {
         static const GLint ATTRIBUTES[] = {
             AGL_WINDOW,
@@ -146,7 +146,7 @@ int OpenVideoGL  ( vlc_object_t * p_this )
             free( p_vout->p_sys );
             return VLC_EGENERIC;
         }
- 
+
         p_vout->p_sys->agl_ctx = aglCreateContext(pixFormat, NULL);
         aglDestroyPixelFormat(pixFormat);
         if( NULL == p_vout->p_sys->agl_ctx )
@@ -208,7 +208,6 @@ void CloseVideoGL ( vlc_object_t * p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *) p_this;
 
-    msg_Dbg( p_this, "Closing" );
 
 #ifndef __x86_64__
     if( p_vout->p_sys->b_embedded )
@@ -364,7 +363,7 @@ static void Unlock( vout_thread_t * p_vout )
 #define o_glview p_vout->p_sys->o_glview
     o_glview = [[VLCGLView alloc] initWithVout: p_vout];
     [o_glview autorelease];
- 
+
     if( p_vout->p_sys->b_saved_frame )
     {
         id old_vout = p_vout->p_sys->o_vout_view;
@@ -503,6 +502,18 @@ static void Unlock( vout_thread_t * p_vout )
     Unlock( p_vout );
 }
 
+- (void) renewGState
+{
+    NSWindow *window = [self window];
+
+	if ([window respondsToSelector:@selector(disableScreenUpdatesUntilFlush)])
+	{
+		[window disableScreenUpdatesUntilFlush];
+	}
+
+    [super renewGState];
+}
+
 @end
 
 /*****************************************************************************
@@ -519,7 +530,7 @@ static int aglInit( vout_thread_t * p_vout )
 {
     Rect viewBounds;
     Rect clipBounds;
- 
+
     p_vout->p_sys->agl_drawable = (AGLDrawable)
             var_GetInteger( p_vout->p_libvlc, "drawable-agl" );
     aglSetDrawable(p_vout->p_sys->agl_ctx, p_vout->p_sys->agl_drawable);
@@ -664,10 +675,10 @@ static int aglManage( vout_thread_t * p_vout )
         {
             /* Go into fullscreen */
             Rect deviceRect;
- 
+
             GDHandle deviceHdl = GetMainDevice();
             deviceRect = (*deviceHdl)->gdRect;
- 
+
             if( !p_vout->p_sys->theWindow )
             {
                 /* Create a window */
@@ -677,7 +688,7 @@ static int aglManage( vout_thread_t * p_vout )
                             | kWindowStandardHandlerAttribute
                             | kWindowLiveResizeAttribute
                             | kWindowNoShadowAttribute;
- 
+
                 windowAttrs &= (~kWindowResizableAttribute);
 
                 CreateNewWindow(kDocumentWindowClass, windowAttrs, &deviceRect, &p_vout->p_sys->theWindow);
@@ -687,14 +698,14 @@ static int aglManage( vout_thread_t * p_vout )
                     SetWindowGroup(p_vout->p_sys->theWindow, p_vout->p_sys->winGroup);
                     SetWindowGroupParent( p_vout->p_sys->winGroup, GetWindowGroupOfClass(kDocumentWindowClass) ) ;
                 }
- 
+
                 // Window title
                 CFStringRef titleKey    = CFSTR("Fullscreen VLC media plugin");
                 CFStringRef windowTitle = CFCopyLocalizedString(titleKey, NULL);
                 SetWindowTitleWithCFString(p_vout->p_sys->theWindow, windowTitle);
                 CFRelease(titleKey);
                 CFRelease(windowTitle);
- 
+
                 //Install event handler
                 static const EventTypeSpec win_events[] = {
                     { kEventClassMouse, kEventMouseDown },
@@ -751,7 +762,7 @@ static int aglControl( vout_thread_t *p_vout, int i_query, va_list args )
             clipBounds.left = va_arg( args, int);
             clipBounds.bottom = va_arg( args, int);
             clipBounds.right = va_arg( args, int);
- 
+
             if( !p_vout->b_fullscreen )
             {
                 /*
@@ -870,7 +881,7 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
     {
         HICommand theHICommand;
         GetEventParameter( event, kEventParamDirectObject, typeHICommand, NULL, sizeof( HICommand ), NULL, &theHICommand );
- 
+
         switch ( theHICommand.commandID )
         {
             default:
@@ -881,7 +892,7 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
     {
         WindowRef     window;
         Rect          rectPort = {0,0,0,0};
- 
+
         GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL, sizeof(WindowRef), NULL, &window);
 
         if(window)
@@ -895,7 +906,7 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
             case kEventWindowZoomed:
             case kEventWindowBoundsChanged:
                 break;
- 
+
             default:
                 result = eventNotHandledErr;
         }
@@ -907,7 +918,7 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
             case kEventMouseDown:
             {
                 UInt16     button;
- 
+
                 GetEventParameter(event, kEventParamMouseButton, typeMouseButton, NULL, sizeof(button), NULL, &button);
                 switch (button)
                 {
@@ -947,7 +958,7 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
             case kEventMouseUp:
             {
                 UInt16     button;
- 
+
                 GetEventParameter(event, kEventParamMouseButton, typeMouseButton, NULL, sizeof(button), NULL, &button);
                 switch (button)
                 {
@@ -965,8 +976,10 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
                         else
                         {
                             vlc_value_t val;
+                            int x, y;
 
-                            var_SetBool( p_vout, "mouse-clicked", true );
+                            var_GetCoords( p_vout, "mouse-moved", &x, &y );
+                            var_SetCoords( p_vout, "mouse-clicked", x, y );
 
                             var_Get( p_vout, "mouse-button-down", &val );
                             val.i_int &= ~1;
@@ -1006,26 +1019,18 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
                 unsigned int i_x, i_y;
                 unsigned int i_height = p_vout->p_sys->i_height;
                 unsigned int i_width  = p_vout->p_sys->i_width;
+                int x, y;
 
                 vout_PlacePicture(p_vout, i_width, i_height, &i_x, &i_y, &i_width, &i_height);
 
                 GetEventParameter(event, kEventParamWindowMouseLocation, typeQDPoint, NULL, sizeof(Point), NULL, &ml);
- 
-                val.i_int = ( ((int)ml.h) - i_x ) *
-                            p_vout->render.i_width / i_width;
-                var_Set( p_vout, "mouse-x", val );
 
-                val.i_int = ( ((int)ml.v) - i_y ) *
-                            p_vout->render.i_height / i_height;
-
-                var_Set( p_vout, "mouse-y", val );
-
-                val.b_bool = true;
-                var_Set( p_vout, "mouse-moved", val );
-
+                x = (((int)ml.h) - i_x) * p_vout->render.i_width / i_width;
+                y = (((int)ml.v) - i_y) * p_vout->render.i_height / i_height;
+                var_SetCoords( p_vout, "mouse-moved", x, y );
                 break;
             }
- 
+
             default:
                 result = eventNotHandledErr;
         }

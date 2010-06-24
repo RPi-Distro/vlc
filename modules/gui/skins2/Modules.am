@@ -9,6 +9,7 @@ SOURCES_skins2 = \
 	commands/cmd_dvd.cpp \
 	commands/cmd_dvd.hpp \
 	commands/cmd_generic.hpp \
+        commands/cmd_callbacks.hpp \
 	commands/cmd_change_skin.cpp \
 	commands/cmd_change_skin.hpp \
 	commands/cmd_dialogs.hpp \
@@ -32,11 +33,11 @@ SOURCES_skins2 = \
 	commands/cmd_quit.hpp \
 	commands/cmd_resize.cpp \
 	commands/cmd_resize.hpp \
+	commands/cmd_voutwindow.cpp \
+	commands/cmd_voutwindow.hpp \
 	commands/cmd_snapshot.cpp \
 	commands/cmd_snapshot.hpp \
 	commands/cmd_show_window.hpp \
-	commands/cmd_update_item.cpp \
-	commands/cmd_update_item.hpp \
 	commands/cmd_vars.cpp \
 	commands/cmd_vars.hpp \
 	\
@@ -110,6 +111,8 @@ SOURCES_skins2 = \
 	src/ft2_bitmap.hpp \
 	src/ft2_font.cpp \
 	src/ft2_font.hpp \
+	src/ft2_err.c \
+	src/ft2_err.h \
 	src/generic_bitmap.cpp \
 	src/generic_bitmap.hpp \
 	src/generic_font.hpp \
@@ -206,9 +209,27 @@ SOURCES_skins2 += \
 	win32/win32_window.cpp \
 	win32/win32_window.hpp \
     $(NULL)
-endif
-
-if HAVE_LINUX
+else
+if HAVE_DARWIN
+SOURCES_skins2 += \
+	macosx/macosx_dragdrop.cpp \
+	macosx/macosx_dragdrop.hpp \
+	macosx/macosx_factory.cpp \
+	macosx/macosx_factory.hpp \
+	macosx/macosx_graphics.cpp \
+	macosx/macosx_graphics.hpp \
+	macosx/macosx_loop.cpp \
+	macosx/macosx_loop.hpp \
+	macosx/macosx_popup.cpp \
+	macosx/macosx_popup.hpp \
+	macosx/macosx_timer.cpp \
+	macosx/macosx_timer.hpp \
+	macosx/macosx_window.cpp \
+	macosx/macosx_window.hpp \
+	macosx/macosx_tooltip.cpp \
+	macosx/macosx_tooltip.hpp \
+    $(NULL)
+else
 SOURCES_skins2 += \
 	x11/x11_display.cpp \
 	x11/x11_display.hpp \
@@ -230,24 +251,4 @@ SOURCES_skins2 += \
 	x11/x11_tooltip.hpp \
     $(NULL)
 endif
-
-if HAVE_DARWIN
-SOURCES_skins2 += \
-	macosx/macosx_dragdrop.cpp \
-	macosx/macosx_dragdrop.hpp \
-	macosx/macosx_factory.cpp \
-	macosx/macosx_factory.hpp \
-	macosx/macosx_graphics.cpp \
-	macosx/macosx_graphics.hpp \
-	macosx/macosx_loop.cpp \
-	macosx/macosx_loop.hpp \
-	macosx/macosx_popup.cpp \
-	macosx/macosx_popup.hpp \
-	macosx/macosx_timer.cpp \
-	macosx/macosx_timer.hpp \
-	macosx/macosx_window.cpp \
-	macosx/macosx_window.hpp \
-	macosx/macosx_tooltip.cpp \
-	macosx/macosx_tooltip.hpp \
-    $(NULL)
 endif

@@ -2,7 +2,7 @@
  * demux.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: b939c101eb2fdb42bb26dd3b25ff70414bd8f31e $
+ * $Id: 981799ff2d7da30693b11f4065824f186f64c405 $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -37,7 +37,7 @@ static bool SkipAPETag( demux_t *p_demux );
  * demux_New:
  *  if s is NULL then load a access_demux
  *****************************************************************************/
-demux_t *__demux_New( vlc_object_t *p_obj,
+demux_t *__demux_New( vlc_object_t *p_obj, input_thread_t *p_parent_input,
                        const char *psz_access, const char *psz_demux,
                        const char *psz_path,
                        stream_t *s, es_out_t *out, bool b_quick )
@@ -48,6 +48,8 @@ demux_t *__demux_New( vlc_object_t *p_obj,
     const char *psz_module;
 
     if( p_demux == NULL ) return NULL;
+
+    p_demux->p_input = p_parent_input;
 
     /* Parse URL */
     p_demux->psz_access = strdup( psz_access );
@@ -165,20 +167,17 @@ demux_t *__demux_New( vlc_object_t *p_obj,
 
         p_demux->p_module =
             module_need( p_demux, "demux", psz_module,
-                         !strcmp( psz_module, p_demux->psz_demux ) ?
-                         true : false );
+                         !strcmp( psz_module, p_demux->psz_demux ) );
     }
     else
     {
         p_demux->p_module =
             module_need( p_demux, "access_demux", psz_module,
-                         !strcmp( psz_module, p_demux->psz_access ) ?
-                         true : false );
+                         !strcmp( psz_module, p_demux->psz_access ) );
     }
 
     if( p_demux->p_module == NULL )
     {
-        vlc_object_detach( p_demux );
         free( p_demux->psz_path );
         free( p_demux->psz_demux );
         free( p_demux->psz_access );
@@ -195,7 +194,6 @@ demux_t *__demux_New( vlc_object_t *p_obj,
 void demux_Delete( demux_t *p_demux )
 {
     module_unneed( p_demux, p_demux->p_module );
-    vlc_object_detach( p_demux );
 
     free( p_demux->psz_path );
     free( p_demux->psz_demux );
@@ -203,6 +201,15 @@ void demux_Delete( demux_t *p_demux )
 
     vlc_object_release( p_demux );
 }
+
+/*****************************************************************************
+ * demux_GetParentInput:
+ *****************************************************************************/
+input_thread_t * demux_GetParentInput( demux_t *p_demux )
+{
+    return p_demux->p_input ? vlc_object_hold((vlc_object_t*)p_demux->p_input) : NULL;
+}
+
 
 /*****************************************************************************
  * demux_vaControlHelper:
@@ -301,8 +308,9 @@ int demux_vaControlHelper( stream_t *s,
  ****************************************************************************/
 decoder_t *demux_PacketizerNew( demux_t *p_demux, es_format_t *p_fmt, const char *psz_msg )
 {
-    decoder_t *p_packetizer = vlc_object_create( p_demux, VLC_OBJECT_PACKETIZER );
-
+    decoder_t *p_packetizer;
+    p_packetizer = vlc_custom_create( p_demux, sizeof( *p_packetizer ),
+                                      VLC_OBJECT_GENERIC, "demux packetizer" );
     if( !p_packetizer )
     {
         es_format_Clean( p_fmt );
@@ -318,6 +326,7 @@ decoder_t *demux_PacketizerNew( demux_t *p_demux, es_format_t *p_fmt, const char
     p_packetizer->fmt_in = *p_fmt;
     es_format_Init( &p_packetizer->fmt_out, UNKNOWN_ES, 0 );
 
+    vlc_object_attach( p_packetizer, p_demux );
     p_packetizer->p_module = module_need( p_packetizer, "packetizer", NULL, false );
     if( !p_packetizer->p_module )
     {
@@ -329,6 +338,7 @@ decoder_t *demux_PacketizerNew( demux_t *p_demux, es_format_t *p_fmt, const char
 
     return p_packetizer;
 }
+
 void demux_PacketizerDestroy( decoder_t *p_packetizer )
 {
     if( p_packetizer->p_module )

@@ -2,7 +2,7 @@
  * crop.c : Crop video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: d8a258a42a2bb0be765adb0b742acda7fa85b793 $
+ * $Id: b48cd08ed2ce3ca9bd28a234889cf2c8acc5c448 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          mod by Cedric Cocquebert <Cedric.Cocquebert@supelec.fr>
@@ -76,6 +76,8 @@ static int FilterCallback ( vlc_object_t *, char const *,
 #define AUTOCROP_TEXT N_("Automatic cropping")
 #define AUTOCROP_LONGTEXT N_("Automatically detect black borders and crop them.")
 
+#define CROP_HELP N_("Remove borders of the video and replace them by black borders")
+
 #ifdef BEST_AUTOCROP
 #define RATIOMAX_TEXT N_("Ratio max (x 1000)")
 #define RATIOMAX_LONGTEXT N_("Maximum image ratio. The crop plugin will never automatically crop to a higher ratio (ie, to a more \"flat\" image). The value is x1000: 1333 means 4/3.")
@@ -103,13 +105,14 @@ static int FilterCallback ( vlc_object_t *, char const *,
 vlc_module_begin ()
     set_description( N_("Crop video filter") )
     set_shortname( N_("Crop" ))
+    set_help(CROP_HELP)
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
     set_capability( "video filter", 0 )
 
     add_string( "crop-geometry", NULL, NULL, GEOMETRY_TEXT,
                                              GEOMETRY_LONGTEXT, false )
-    add_bool( "autocrop", 0, NULL, AUTOCROP_TEXT,
+    add_bool( "autocrop", false, NULL, AUTOCROP_TEXT,
                                    AUTOCROP_LONGTEXT, false )
 
 #ifdef BEST_AUTOCROP
@@ -218,24 +221,27 @@ static int Init( vout_thread_t *p_vout )
     p_vout->fmt_out = p_vout->fmt_in;
 
     /* Shall we use autocrop ? */
-    p_vout->p_sys->b_autocrop = config_GetInt( p_vout, "autocrop" );
+    p_vout->p_sys->b_autocrop = var_InheritBool( p_vout, "autocrop" );
 #ifdef BEST_AUTOCROP
-    p_vout->p_sys->i_ratio_max = config_GetInt( p_vout, "autocrop-ratio-max" );
+    p_vout->p_sys->i_ratio_max =
+        var_InheritInteger( p_vout, "autocrop-ratio-max" );
     p_vout->p_sys->i_threshold =
-                    config_GetInt( p_vout, "autocrop-luminance-threshold" );
+        var_InheritInteger( p_vout, "autocrop-luminance-threshold" );
     p_vout->p_sys->i_skipPercent =
-                    config_GetInt( p_vout, "autocrop-skip-percent" );
+        var_InheritInteger( p_vout, "autocrop-skip-percent" );
     p_vout->p_sys->i_nonBlackPixel =
-                    config_GetInt( p_vout, "autocrop-non-black-pixels" );
-    p_vout->p_sys->i_diff = config_GetInt( p_vout, "autocrop-diff" );
-    p_vout->p_sys->i_time = config_GetInt( p_vout, "autocrop-time" );
+        var_InheritInteger( p_vout, "autocrop-non-black-pixels" );
+    p_vout->p_sys->i_diff =
+        var_InheritInteger( p_vout, "autocrop-diff" );
+    p_vout->p_sys->i_time =
+        var_InheritInteger( p_vout, "autocrop-time" );
     var_SetString( p_vout, "ratio-crop", "0" );
 
     if (p_vout->p_sys->b_autocrop)
         p_vout->p_sys->i_ratio = 0;
     else
     {
-        p_vout->p_sys->i_ratio = config_GetInt( p_vout, "crop-ratio" );
+        p_vout->p_sys->i_ratio = var_InheritInteger( p_vout, "crop-ratio" );
         // ratio < width / height => ratio = 0 (unchange ratio)
         if (p_vout->p_sys->i_ratio < (p_vout->output.i_width * 1000) / p_vout->output.i_height)
             p_vout->p_sys->i_ratio = 0;
@@ -244,7 +250,7 @@ static int Init( vout_thread_t *p_vout )
 
 
     /* Get geometry value from the user */
-    psz_var = config_GetPsz( p_vout, "crop-geometry" );
+    psz_var = var_InheritString( p_vout, "crop-geometry" );
     if( psz_var )
     {
         char *psz_parser, *psz_tmp;
@@ -351,9 +357,9 @@ static int Init( vout_thread_t *p_vout )
                      p_vout->p_sys->i_x, p_vout->p_sys->i_y,
                      p_vout->p_sys->b_autocrop ? "" : "not " );
     /* Set current output image properties */
-    p_vout->p_sys->i_aspect = p_vout->fmt_out.i_aspect
-           * p_vout->fmt_out.i_visible_height / p_vout->p_sys->i_height
-           * p_vout->p_sys->i_width / p_vout->fmt_out.i_visible_width;
+    p_vout->p_sys->i_aspect = (int64_t)VOUT_ASPECT_FACTOR *
+        p_vout->fmt_out.i_sar_num * p_vout->p_sys->i_width /
+        (p_vout->fmt_out.i_sar_den * p_vout->p_sys->i_height);
 
 #ifdef BEST_AUTOCROP
     msg_Info( p_vout, "ratio %d",  p_vout->p_sys->i_aspect / 432);
@@ -362,9 +368,8 @@ static int Init( vout_thread_t *p_vout )
     fmt.i_height = fmt.i_visible_height = p_vout->p_sys->i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
     fmt.i_chroma = p_vout->render.i_chroma;
-    fmt.i_aspect = p_vout->p_sys->i_aspect;
-    fmt.i_sar_num = p_vout->p_sys->i_aspect * fmt.i_height / fmt.i_width;
-    fmt.i_sar_den = VOUT_ASPECT_FACTOR;
+    fmt.i_sar_num = p_vout->p_sys->i_aspect * fmt.i_height;
+    fmt.i_sar_den = VOUT_ASPECT_FACTOR * fmt.i_width;
 
     /* Try to open the real video output */
     p_vout->p_sys->p_vout = vout_Create( p_vout, &fmt );
@@ -455,7 +460,6 @@ static int Manage( vout_thread_t *p_vout )
     fmt.i_height = fmt.i_visible_height = p_vout->p_sys->i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
     fmt.i_chroma = p_vout->render.i_chroma;
-    fmt.i_aspect = p_vout->p_sys->i_aspect;
     fmt.i_sar_num = p_vout->p_sys->i_aspect * fmt.i_height / fmt.i_width;
     fmt.i_sar_den = VOUT_ASPECT_FACTOR;
 
@@ -558,15 +562,13 @@ static bool NonBlackLine(uint8_t *p_in, int i_line, int i_pitch,
     switch(i_chroma)
     {
     // planar YUV
-        case VLC_FOURCC('I','4','4','4'):
-        case VLC_FOURCC('I','4','2','2'):
-        case VLC_FOURCC('I','4','2','0'):
-        case VLC_FOURCC('Y','V','1','2'):
-        case VLC_FOURCC('I','Y','U','V'):
-        case VLC_FOURCC('I','4','1','1'):
-        case VLC_FOURCC('I','4','1','0'):
-        case VLC_FOURCC('Y','V','U','9'):
-        case VLC_FOURCC('Y','U','V','A'):
+        case VLC_CODEC_I444:
+        case VLC_CODEC_I422:
+        case VLC_CODEC_I420:
+        case VLC_CODEC_YV12:
+        case VLC_CODEC_I411:
+        case VLC_CODEC_I410:
+        case VLC_CODEC_YUVA:
             i_skipCount = (i_pitch * i_skipCountPercent) / 100;
             for (i_index = i_col/2 + i_skipCount/2;
                  i_index <= i_visible_pitch/2 + i_col/2 - i_skipCount/2;
@@ -577,7 +579,7 @@ static bool NonBlackLine(uint8_t *p_in, int i_line, int i_pitch,
             }
             break;
     // packed RGB
-        case VLC_FOURCC('R','G','B','2'):    // packed by 1
+        case VLC_CODEC_RGB8:    // packed by 1
             i_skipCount = (i_pitch * i_skipCountPercent) / 100;
             for (i_index = i_col/2 + i_skipCount/2;
                  i_index <= i_visible_pitch/2 + i_col/2 - i_skipCount/2;
@@ -587,8 +589,8 @@ static bool NonBlackLine(uint8_t *p_in, int i_line, int i_pitch,
             if (i_count > i_nonBlackPixel) break;
             }
             break;
-        case VLC_FOURCC('R','V','1','5'):    // packed by 2
-        case VLC_FOURCC('R','V','1','6'):    // packed by 2
+        case VLC_CODEC_RGB15:    // packed by 2
+        case VLC_CODEC_RGB16:    // packed by 2
             i_skipCount = (i_pitch * i_skipCountPercent) / 100;
             for (i_index = i_col/2 + i_skipCount/2 -
                                 (i_col/2 + i_skipCount/2) % 2;
@@ -600,7 +602,7 @@ static bool NonBlackLine(uint8_t *p_in, int i_line, int i_pitch,
             if (i_count > i_nonBlackPixel) break;
             }
             break;
-        case VLC_FOURCC('R','V','2','4'):    // packed by 3
+        case VLC_CODEC_RGB24:    // packed by 3
             i_skipCount = (i_pitch * i_skipCountPercent) / 100;
             for (i_index = i_col/2 + i_skipCount/2 - (i_col/2 + i_skipCount/2) % 3; i_index <= i_visible_pitch/2 + i_col/2 - i_skipCount/2; i_index+=3)
             {
@@ -610,7 +612,7 @@ static bool NonBlackLine(uint8_t *p_in, int i_line, int i_pitch,
             if (i_count > i_nonBlackPixel) break;
             }
             break;
-        case VLC_FOURCC('R','V','3','2'):    // packed by 4
+        case VLC_CODEC_RGB32:    // packed by 4
             i_skipCount = (i_pitch * i_skipCountPercent) / 100;
             for (i_index = i_col/2 + i_skipCount/2 - (i_col/2 + i_skipCount/2) % 4; i_index <= i_visible_pitch/2 + i_col/2 - i_skipCount/2; i_index+=4)
             {
@@ -619,11 +621,8 @@ static bool NonBlackLine(uint8_t *p_in, int i_line, int i_pitch,
             }
             break;
     // packed YUV
-        case VLC_FOURCC('Y','U','Y','2'):    // packed by 2
-        case VLC_FOURCC('Y','U','N','V'):    // packed by 2
-        case VLC_FOURCC('U','Y','V','Y'):    // packed by 2
-        case VLC_FOURCC('U','Y','N','V'):    // packed by 2
-        case VLC_FOURCC('Y','4','2','2'):    // packed by 2
+        case VLC_CODEC_YUYV:    // packed by 2
+        case VLC_CODEC_UYVY:    // packed by 2
             i_skipCount = (i_pitch * i_skipCountPercent) / 100;
             for (i_index = (i_col/2 + i_skipCount/2) -
                            (i_col/2 + i_skipCount/2) % 2;
@@ -740,7 +739,7 @@ static void UpdateStats( vout_thread_t *p_vout, picture_t *p_pic )
     /* Determine where black borders are */
     switch( p_vout->output.i_chroma )
     {
-    case VLC_FOURCC('I','4','2','0'):
+    case VLC_CODEC_I420:
         /* XXX: Do not laugh ! I know this is very naive. But it's just a
          *      proof of concept code snippet... */
         for( i = i_lines ; i-- ; )
@@ -832,14 +831,14 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
     vout_thread_t *p_vout = p_data;
     VLC_UNUSED(p_this); VLC_UNUSED(oldval);
 
+    if( !strcmp( psz_var, "mouse-button-down" ) )
+        return var_SetChecked( p_vout, psz_var, VLC_VAR_INTEGER, newval );
+
     /* Translate the mouse coordinates
      * FIXME missing lock */
-    if( !strcmp( psz_var, "mouse-x" ) )
-        newval.i_int += p_vout->p_sys->i_x;
-    else if( !strcmp( psz_var, "mouse-y" ) )
-        newval.i_int += p_vout->p_sys->i_y;
-
-    return var_Set( p_vout, psz_var, newval );
+    newval.coords.x += p_vout->p_sys->i_x;
+    newval.coords.y += p_vout->p_sys->i_y;
+    return var_SetChecked( p_vout, psz_var, VLC_VAR_COORDS, newval );
 }
 
 #ifdef BEST_AUTOCROP

@@ -40,7 +40,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @LOADER_TRUE@am__append_1 = libs/loader
-@HAVE_LIBGCRYPT_TRUE@am__append_2 = libs/srtp
+@HAVE_GCRYPT_TRUE@am__append_2 = libs/srtp
 @HAVE_MINIZIP_FALSE@@HAVE_ZLIB_TRUE@am__append_3 = libs/unzip
 @BUILD_VLC_TRUE@am__append_4 = bin
 @BUILD_MOZILLA_TRUE@am__append_5 = projects/mozilla
@@ -54,12 +54,12 @@ DIST_COMMON = README $(am__configure_deps) $(dist_noinst_SCRIPTS) \
 	$(top_srcdir)/extras/package/macosx/Resources/English.lproj/InfoPlist.strings.in \
 	$(top_srcdir)/extras/package/macosx/plugin/Info.plist.in \
 	$(top_srcdir)/extras/package/macosx/plugin/InstallerInfo.plist.in \
+	$(top_srcdir)/extras/package/win32/spad.nsi.in \
 	$(top_srcdir)/extras/package/win32/vlc.win32.nsi.in ABOUT-NLS \
 	AUTHORS COPYING ChangeLog INSTALL NEWS THANKS \
 	autotools/compile autotools/config.guess \
 	autotools/config.rpath autotools/config.sub autotools/depcomp \
-	autotools/install-sh autotools/ltmain.sh autotools/missing \
-	compile
+	autotools/install-sh autotools/ltmain.sh autotools/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
@@ -69,14 +69,16 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/m4/with_pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = extras/package/win32/vlc.win32.nsi \
+CONFIG_CLEAN_FILES = extras/package/win32/spad.nsi \
+	extras/package/win32/vlc.win32.nsi \
 	extras/package/macosx/Info.plist \
 	extras/package/macosx/Resources/English.lproj/InfoPlist.strings \
 	extras/package/macosx/plugin/Info.plist \
@@ -106,6 +108,12 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(bindir)"
 SCRIPTS = $(bin_SCRIPTS) $(dist_noinst_SCRIPTS) \
 	$(nodist_noinst_SCRIPTS) $(noinst_SCRIPTS)
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -161,11 +169,14 @@ distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
-ALLOCA = @ALLOCA@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = @AM_CPPFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
+ARM_NEON_CFLAGS = @ARM_NEON_CFLAGS@
 AS = @AS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
@@ -191,8 +202,6 @@ COPYRIGHT_MESSAGE = @COPYRIGHT_MESSAGE@
 COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CSRI_CFLAGS = @CSRI_CFLAGS@
-CSRI_LIBS = @CSRI_LIBS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -201,6 +210,8 @@ CYGPATH = @CYGPATH@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
+DC1394_CFLAGS = @DC1394_CFLAGS@
+DC1394_LIBS = @DC1394_LIBS@
 DCA_CFLAGS = @DCA_CFLAGS@
 DCA_LIBS = @DCA_LIBS@
 DEFS = @DEFS@
@@ -215,6 +226,8 @@ DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DV_CFLAGS = @DV_CFLAGS@
+DV_LIBS = @DV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -223,27 +236,32 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FLAC_CFLAGS = @FLAC_CFLAGS@
+FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
 FRIBIDI_LIBS = @FRIBIDI_LIBS@
+GCRYPT_CFLAGS = @GCRYPT_CFLAGS@
+GCRYPT_LIBS = @GCRYPT_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GLIB2_CFLAGS = @GLIB2_CFLAGS@
-GLIB2_LIBS = @GLIB2_LIBS@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
 GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
+GOOM_CFLAGS = @GOOM_CFLAGS@
+GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-HAL_CFLAGS = @HAL_CFLAGS@
-HAL_LIBS = @HAL_LIBS@
 HILDON_CFLAGS = @HILDON_CFLAGS@
+HILDON_FM_CFLAGS = @HILDON_FM_CFLAGS@
+HILDON_FM_LIBS = @HILDON_FM_LIBS@
 HILDON_LIBS = @HILDON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -252,8 +270,11 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+JACK_CFLAGS = @JACK_CFLAGS@
+JACK_LIBS = @JACK_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
+KDE4_CONFIG = @KDE4_CONFIG@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -262,14 +283,12 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBCDIO_CFLAGS = @LIBCDIO_CFLAGS@
 LIBCDIO_LIBS = @LIBCDIO_LIBS@
-LIBCDIO_PARANOIA_CFLAGS = @LIBCDIO_PARANOIA_CFLAGS@
-LIBCDIO_PARANOIA_LIBS = @LIBCDIO_PARANOIA_LIBS@
+LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
-LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
-LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
+LIBMODPLUG_CFLAGS = @LIBMODPLUG_CFLAGS@
+LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -279,15 +298,23 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIBV4L_CFLAGS = @LIBV4L_CFLAGS@
+LIBV4L_LIBS = @LIBV4L_LIBS@
+LIBVA_CFLAGS = @LIBVA_CFLAGS@
+LIBVA_LIBS = @LIBVA_LIBS@
+LIBVCDINFO_CFLAGS = @LIBVCDINFO_CFLAGS@
+LIBVCDINFO_LIBS = @LIBVCDINFO_LIBS@
+LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
+LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
-LTLIBa52tospdif = @LTLIBa52tospdif@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_alsa = @LTLIBaccess_alsa@
+LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_dv = @LTLIBaccess_dv@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
@@ -297,212 +324,114 @@ LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_oss = @LTLIBaccess_oss@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
+LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
-LTLIBadjust = @LTLIBadjust@
-LTLIBalphamask = @LTLIBalphamask@
 LTLIBalsa = @LTLIBalsa@
 LTLIBaout_directx = @LTLIBaout_directx@
-LTLIBaout_file = @LTLIBaout_file@
 LTLIBaout_sdl = @LTLIBaout_sdl@
 LTLIBasademux = @LTLIBasademux@
 LTLIBatmo = @LTLIBatmo@
-LTLIBaudio_format = @LTLIBaudio_format@
-LTLIBaudioscrobbler = @LTLIBaudioscrobbler@
 LTLIBauhal = @LTLIBauhal@
 LTLIBavcodec = @LTLIBavcodec@
 LTLIBavformat = @LTLIBavformat@
-LTLIBbandlimited_resampler = @LTLIBbandlimited_resampler@
 LTLIBbda = @LTLIBbda@
-LTLIBbeos = @LTLIBbeos@
-LTLIBblend = @LTLIBblend@
-LTLIBblendbench = @LTLIBblendbench@
-LTLIBbluescreen = @LTLIBbluescreen@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
-LTLIBcanvas = @LTLIBcanvas@
 LTLIBcdda = @LTLIBcdda@
-LTLIBcddax = @LTLIBcddax@
-LTLIBchain = @LTLIBchain@
-LTLIBclone = @LTLIBclone@
-LTLIBcmml = @LTLIBcmml@
-LTLIBcolorthres = @LTLIBcolorthres@
-LTLIBconverter_float = @LTLIBconverter_float@
-LTLIBcrop = @LTLIBcrop@
-LTLIBcroppadd = @LTLIBcroppadd@
-LTLIBcsri = @LTLIBcsri@
 LTLIBdbus = @LTLIBdbus@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdeinterlace = @LTLIBdeinterlace@
 LTLIBdirac = @LTLIBdirac@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
+LTLIBdirectx = @LTLIBdirectx@
 LTLIBdmo = @LTLIBdmo@
-LTLIBdolby_surround_decoder = @LTLIBdolby_surround_decoder@
 LTLIBdshow = @LTLIBdshow@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
-LTLIBdtstospdif = @LTLIBdtstospdif@
 LTLIBdvb = @LTLIBdvb@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
 LTLIBdynamicoverlay = @LTLIBdynamicoverlay@
-LTLIBequalizer = @LTLIBequalizer@
-LTLIBerase = @LTLIBerase@
-LTLIBextract = @LTLIBextract@
 LTLIBfaad = @LTLIBfaad@
-LTLIBfake = @LTLIBfake@
 LTLIBfb = @LTLIBfb@
 LTLIBfbosd = @LTLIBfbosd@
-LTLIBfloat32_mixer = @LTLIBfloat32_mixer@
+LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
-LTLIBfolder = @LTLIBfolder@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgalaktos = @LTLIBgalaktos@
-LTLIBgaussianblur = @LTLIBgaussianblur@
-LTLIBgestures = @LTLIBgestures@
 LTLIBggi = @LTLIBggi@
 LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
-LTLIBgnome2_main = @LTLIBgnome2_main@
-LTLIBgnome_main = @LTLIBgnome_main@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
-LTLIBgradient = @LTLIBgradient@
-LTLIBgrain = @LTLIBgrain@
 LTLIBgrowl = @LTLIBgrowl@
 LTLIBgrowl_udp = @LTLIBgrowl_udp@
-LTLIBgtk2_main = @LTLIBgtk2_main@
-LTLIBgtk_main = @LTLIBgtk_main@
-LTLIBhal = @LTLIBhal@
 LTLIBhd1000a = @LTLIBhd1000a@
 LTLIBhd1000v = @LTLIBhd1000v@
-LTLIBheadphone_channel_mixer = @LTLIBheadphone_channel_mixer@
-LTLIBhotkeys = @LTLIBhotkeys@
-LTLIBhttp = @LTLIBhttp@
-LTLIBi420_rgb_mmx = @LTLIBi420_rgb_mmx@
-LTLIBi420_rgb_sse2 = @LTLIBi420_rgb_sse2@
-LTLIBi420_ymga = @LTLIBi420_ymga@
-LTLIBi420_ymga_mmx = @LTLIBi420_ymga_mmx@
-LTLIBi420_yuy2 = @LTLIBi420_yuy2@
-LTLIBi420_yuy2_altivec = @LTLIBi420_yuy2_altivec@
-LTLIBi420_yuy2_mmx = @LTLIBi420_yuy2_mmx@
-LTLIBi420_yuy2_sse2 = @LTLIBi420_yuy2_sse2@
-LTLIBi422_i420 = @LTLIBi422_i420@
-LTLIBi422_yuy2 = @LTLIBi422_yuy2@
-LTLIBi422_yuy2_mmx = @LTLIBi422_yuy2_mmx@
-LTLIBi422_yuy2_sse2 = @LTLIBi422_yuy2_sse2@
+LTLIBhildon = @LTLIBhildon@
 LTLIBid3tag = @LTLIBid3tag@
 LTLIBinhibit = @LTLIBinhibit@
-LTLIBinvert = @LTLIBinvert@
 LTLIBjack = @LTLIBjack@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlinear_resampler = @LTLIBlinear_resampler@
 LTLIBlirc = @LTLIBlirc@
 LTLIBlive555 = @LTLIBlive555@
-LTLIBlogo = @LTLIBlogo@
 LTLIBmacosx = @LTLIBmacosx@
-LTLIBmaemo = @LTLIBmaemo@
-LTLIBmagnify = @LTLIBmagnify@
-LTLIBmarq = @LTLIBmarq@
-LTLIBmemcpy3dn = @LTLIBmemcpy3dn@
-LTLIBmemcpyaltivec = @LTLIBmemcpyaltivec@
-LTLIBmemcpymmx = @LTLIBmemcpymmx@
-LTLIBmemcpymmxext = @LTLIBmemcpymmxext@
-LTLIBmga = @LTLIBmga@
+LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
 LTLIBmod = @LTLIBmod@
-LTLIBmosaic = @LTLIBmosaic@
-LTLIBmotion = @LTLIBmotion@
-LTLIBmotionblur = @LTLIBmotionblur@
-LTLIBmotiondetect = @LTLIBmotiondetect@
 LTLIBmozilla = @LTLIBmozilla@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
-LTLIBmsn = @LTLIBmsn@
 LTLIBmtp = @LTLIBmtp@
 LTLIBmux_ogg = @LTLIBmux_ogg@
 LTLIBmux_ts = @LTLIBmux_ts@
 LTLIBncurses = @LTLIBncurses@
-LTLIBnoise = @LTLIBnoise@
-LTLIBnormvol = @LTLIBnormvol@
 LTLIBnotify = @LTLIBnotify@
-LTLIBntservice = @LTLIBntservice@
 LTLIBogg = @LTLIBogg@
+LTLIBoldhttp = @LTLIBoldhttp@
+LTLIBoldtelnet = @LTLIBoldtelnet@
 LTLIBomapfb = @LTLIBomapfb@
+LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopengl = @LTLIBopengl@
-LTLIBopengllayer = @LTLIBopengllayer@
-LTLIBopie = @LTLIBopie@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBoss = @LTLIBoss@
+LTLIBosso_screensaver = @LTLIBosso_screensaver@
 LTLIBpanoramix = @LTLIBpanoramix@
-LTLIBparam_eq = @LTLIBparam_eq@
-LTLIBpda = @LTLIBpda@
 LTLIBpng = @LTLIBpng@
-LTLIBpodcast = @LTLIBpodcast@
 LTLIBportaudio = @LTLIBportaudio@
 LTLIBpostproc = @LTLIBpostproc@
-LTLIBprobe_hal = @LTLIBprobe_hal@
-LTLIBpsychedelic = @LTLIBpsychedelic@
+LTLIBprojectm = @LTLIBprojectm@
 LTLIBpulse = @LTLIBpulse@
-LTLIBpuzzle = @LTLIBpuzzle@
 LTLIBpvr = @LTLIBpvr@
-LTLIBqnx = @LTLIBqnx@
 LTLIBqt4 = @LTLIBqt4@
 LTLIBqtcapture = @LTLIBqtcapture@
-LTLIBqte = @LTLIBqte@
-LTLIBqte_main = @LTLIBqte_main@
-LTLIBquartztext = @LTLIBquartztext@
 LTLIBquicktime = @LTLIBquicktime@
-LTLIBrc = @LTLIBrc@
-LTLIBrealaudio = @LTLIBrealaudio@
 LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
-LTLIBripple = @LTLIBripple@
-LTLIBrotate = @LTLIBrotate@
-LTLIBrss = @LTLIBrss@
-LTLIBrv32 = @LTLIBrv32@
-LTLIBsap = @LTLIBsap@
-LTLIBscale = @LTLIBscale@
-LTLIBscaletempo = @LTLIBscaletempo@
-LTLIBscene = @LTLIBscene@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
-LTLIBsharpen = @LTLIBsharpen@
 LTLIBshine = @LTLIBshine@
-LTLIBshout = @LTLIBshout@
-LTLIBshowintf = @LTLIBshowintf@
-LTLIBsignals = @LTLIBsignals@
-LTLIBsimple_channel_mixer = @LTLIBsimple_channel_mixer@
 LTLIBskins2 = @LTLIBskins2@
 LTLIBsnapshot = @LTLIBsnapshot@
-LTLIBspatializer = @LTLIBspatializer@
-LTLIBspdif_mixer = @LTLIBspdif_mixer@
 LTLIBspeex = @LTLIBspeex@
+LTLIBsqlite = @LTLIBsqlite@
 LTLIBstream_out_raop = @LTLIBstream_out_raop@
+LTLIBstream_out_switcher = @LTLIBstream_out_switcher@
 LTLIBsvg = @LTLIBsvg@
 LTLIBsvgalib = @LTLIBsvgalib@
 LTLIBswscale = @LTLIBswscale@
-LTLIBswscale_maemo = @LTLIBswscale_maemo@
+LTLIBswscale_omap = @LTLIBswscale_omap@
 LTLIBtaglib = @LTLIBtaglib@
-LTLIBtarkin = @LTLIBtarkin@
 LTLIBtelepathy = @LTLIBtelepathy@
-LTLIBtelnet = @LTLIBtelnet@
 LTLIBtelx = @LTLIBtelx@
-LTLIBtest1 = @LTLIBtest1@
-LTLIBtest2 = @LTLIBtest2@
-LTLIBtest3 = @LTLIBtest3@
-LTLIBtest4 = @LTLIBtest4@
 LTLIBtheora = @LTLIBtheora@
-LTLIBtransform = @LTLIBtransform@
 LTLIBtremor = @LTLIBtremor@
 LTLIBts = @LTLIBts@
 LTLIBtwolame = @LTLIBtwolame@
@@ -515,34 +444,26 @@ LTLIBv4l2 = @LTLIBv4l2@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
 LTLIBvisual = @LTLIBvisual@
-LTLIBvmem = @LTLIBvmem@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_directx = @LTLIBvout_directx@
+LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
-LTLIBwall = @LTLIBwall@
-LTLIBwave = @LTLIBwave@
 LTLIBwaveout = @LTLIBwaveout@
-LTLIBwin32text = @LTLIBwin32text@
-LTLIBwince = @LTLIBwince@
 LTLIBwingapi = @LTLIBwingapi@
 LTLIBwingdi = @LTLIBwingdi@
 LTLIBwma_fixed = @LTLIBwma_fixed@
-LTLIBx11 = @LTLIBx11@
-LTLIBx11_screen = @LTLIBx11_screen@
 LTLIBx264 = @LTLIBx264@
-LTLIBxcb = @LTLIBxcb@
+LTLIBxcb_apps = @LTLIBxcb_apps@
+LTLIBxcb_glx = @LTLIBxcb_glx@
+LTLIBxcb_screen = @LTLIBxcb_screen@
 LTLIBxcb_window = @LTLIBxcb_window@
+LTLIBxcb_x11 = @LTLIBxcb_x11@
 LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
-LTLIBxvideo = @LTLIBxvideo@
-LTLIBxvmc = @LTLIBxvmc@
-LTLIByuv = @LTLIByuv@
-LTLIByuvp = @LTLIByuvp@
-LTLIByuy2_i420 = @LTLIByuy2_i420@
-LTLIByuy2_i422 = @LTLIByuy2_i422@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
+LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
 MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
@@ -552,6 +473,7 @@ MIDL = @MIDL@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
+MMX_CFLAGS = @MMX_CFLAGS@
 MOC = @MOC@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
@@ -562,6 +484,8 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
+MUX_OGG_LIBS = @MUX_OGG_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
@@ -572,8 +496,12 @@ OBJCFLAGS = @OBJCFLAGS@
 OBJCOPY = @OBJCOPY@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OGG_CFLAGS = @OGG_CFLAGS@
+OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OSSO_SCREENSAVER_CFLAGS = @OSSO_SCREENSAVER_CFLAGS@
+OSSO_SCREENSAVER_LIBS = @OSSO_SCREENSAVER_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -586,12 +514,20 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CFLAGS = @PCRE_CFLAGS@
 PCRE_LIBS = @PCRE_LIBS@
+PEFLAGS = @PEFLAGS@
 PKGDIR = @PKGDIR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PORTAUDIO_CFLAGS = @PORTAUDIO_CFLAGS@
+PORTAUDIO_LIBS = @PORTAUDIO_LIBS@
 POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
+PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
+PROJECTM2_LIBS = @PROJECTM2_LIBS@
+PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
+PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
 QT4LOCALEDIR = @QT4LOCALEDIR@
@@ -601,15 +537,21 @@ RANLIB = @RANLIB@
 RCC = @RCC@
 SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
 SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
-SDL11_CONFIG = @SDL11_CONFIG@
-SDL12_CONFIG = @SDL12_CONFIG@
-SDL_CONFIG = @SDL_CONFIG@
+SDL_CFLAGS = @SDL_CFLAGS@
+SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
+SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
+SDL_LIBS = @SDL_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
+SPEEX_CFLAGS = @SPEEX_CFLAGS@
+SPEEX_LIBS = @SPEEX_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
+SSE2_CFLAGS = @SSE2_CFLAGS@
 STRIP = @STRIP@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
@@ -618,14 +560,19 @@ SWSCALE_LIBS = @SWSCALE_LIBS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
+THEORA_CFLAGS = @THEORA_CFLAGS@
+THEORA_LIBS = @THEORA_LIBS@
 TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
+U2D = @U2D@
 UDEV_CFLAGS = @UDEV_CFLAGS@
 UDEV_LIBS = @UDEV_LIBS@
 UIC = @UIC@
+UPNP_CFLAGS = @UPNP_CFLAGS@
+UPNP_LIBS = @UPNP_LIBS@
 USE_NLS = @USE_NLS@
-VCDINFO_CFLAGS = @VCDINFO_CFLAGS@
-VCDINFO_LIBS = @VCDINFO_LIBS@
 VERSION = @VERSION@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_EXTRA_RC = @VERSION_EXTRA_RC@
@@ -634,6 +581,8 @@ VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
+VORBIS_CFLAGS = @VORBIS_CFLAGS@
+VORBIS_LIBS = @VORBIS_LIBS@
 WIDL = @WIDL@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
@@ -643,6 +592,8 @@ XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
 XCB_LIBS = @XCB_LIBS@
+XCB_RANDR_CFLAGS = @XCB_RANDR_CFLAGS@
+XCB_RANDR_LIBS = @XCB_RANDR_LIBS@
 XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
@@ -650,9 +601,9 @@ XCB_XV_LIBS = @XCB_XV_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
+XLIB_XCB_CFLAGS = @XLIB_XCB_CFLAGS@
+XLIB_XCB_LIBS = @XLIB_XCB_LIBS@
 XMKMF = @XMKMF@
-XML2_CFLAGS = @XML2_CFLAGS@
-XML2_LIBS = @XML2_LIBS@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
 XPROTO_CFLAGS = @XPROTO_CFLAGS@
@@ -711,6 +662,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+soliddatadir = @soliddatadir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -744,23 +696,28 @@ SUBDIRS = po compat src $(am__append_1) $(am__append_2) \
 ##############################################################################
 EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/package/win32/vlc.exe.manifest \
-	extras/package/win32/libvlc.dll.manifest MAINTAINERS \
+	extras/package/win32/libvlc.dll.manifest \
 	extras/package/macosx/README.MacOSX.rtf vlc-config.in.in \
 	extras/package/rpm/vlc.fedora.spec \
 	extras/package/rpm/vlc.altlinux.spec \
 	extras/package/win32/vlc.win32.nsi.in \
+	extras/package/win32/spad.nsi.in extras/package/win32/UAC.nsh \
+	extras/package/win32/UAC.dll \
+	extras/package/win32/languages/declaration.nsh \
 	extras/package/win32/languages/bengali.nsh \
 	extras/package/win32/languages/brazilian_portuguese.nsh \
 	extras/package/win32/languages/bulgarian.nsh \
 	extras/package/win32/languages/catalan.nsh \
-	extras/package/win32/languages/declaration.nsh \
+	extras/package/win32/languages/danish.nsh \
 	extras/package/win32/languages/dutch.nsh \
 	extras/package/win32/languages/english.nsh \
+	extras/package/win32/languages/estonian.nsh \
 	extras/package/win32/languages/finnish.nsh \
 	extras/package/win32/languages/french.nsh \
 	extras/package/win32/languages/german.nsh \
 	extras/package/win32/languages/hungarian.nsh \
 	extras/package/win32/languages/italian.nsh \
+	extras/package/win32/languages/japanese.nsh \
 	extras/package/win32/languages/occitan.nsh \
 	extras/package/win32/languages/polish.nsh \
 	extras/package/win32/languages/punjabi.nsh \
@@ -770,40 +727,28 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/package/win32/languages/slovenian.nsh \
 	extras/package/win32/languages/sorani.nsh \
 	extras/package/win32/languages/spanish.nsh \
-	extras/package/macosx/Resources/English.lproj/MainMenu.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/MainMenu.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/MainMenu.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/MainMenu.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/MediaInfo.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/MediaInfo.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/MediaInfo.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/MediaInfo.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/About.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/About.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/About.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/About.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/Open.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/Open.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/Open.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/Open.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/Preferences.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/Preferences.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/Preferences.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/Preferences.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/Wizard.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/Wizard.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/Wizard.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/Wizard.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/Bookmarks.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/Bookmarks.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/Bookmarks.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/Bookmarks.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/Extended.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/Extended.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/Extended.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/Extended.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/Update.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/Update.nib/info.nib \
-	extras/package/macosx/Resources/English.lproj/Update.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/CoreDialogs.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/CoreDialogs.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/CoreDialogs.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/CoreDialogs.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/designable.nib \
 	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/keyedobjects.nib \
 	extras/package/macosx/Resources/English.lproj/InfoPlist.strings.in \
+	extras/package/macosx/Resources/dsa_pub.pem \
 	extras/package/macosx/Resources/aiff.icns \
 	extras/package/macosx/Resources/audio.icns \
 	extras/package/macosx/Resources/avi.icns \
@@ -920,6 +865,28 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/package/macosx/Resources/skip_previous_graphite.png \
 	extras/package/macosx/Resources/stop_graphite.png \
 	extras/package/macosx/Resources/volumeslider_graphite.png \
+	extras/package/macosx/Resources/backward_big_down.png \
+	extras/package/macosx/Resources/backward_big.png \
+	extras/package/macosx/Resources/eq_sm.pdf \
+	extras/package/macosx/Resources/forward_big_down.png \
+	extras/package/macosx/Resources/forward_big.png \
+	extras/package/macosx/Resources/fs_sm.pdf \
+	extras/package/macosx/Resources/list_sm.pdf \
+	extras/package/macosx/Resources/next_sm.pdf \
+	extras/package/macosx/Resources/pause_big_down.png \
+	extras/package/macosx/Resources/pause_big.png \
+	extras/package/macosx/Resources/play_big_down.png \
+	extras/package/macosx/Resources/play_big.png \
+	extras/package/macosx/Resources/prev_sm.pdf \
+	extras/package/macosx/Resources/sidebarAdd.png \
+	extras/package/macosx/Resources/sidebarRepeat.png \
+	extras/package/macosx/Resources/sidebarRepeatOn.png \
+	extras/package/macosx/Resources/sidebarRepeatOneOn.png \
+	extras/package/macosx/Resources/sidebarResizeWidget.png \
+	extras/package/macosx/Resources/sidebarShuffle.png \
+	extras/package/macosx/Resources/sidebarShuffleOn.png \
+	extras/package/macosx/Resources/sidebarStatusAreaBackground.png \
+	extras/package/macosx/Resources/stop_sm.pdf \
 	extras/package/macosx/Resources/noart.png \
 	extras/package/macosx/Resources/spref_cone_Audio_64.png \
 	extras/package/macosx/Resources/spref_cone_Hotkeys_64.png \
@@ -956,16 +923,19 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/misc/mpris.glade
 dist_noinst_SCRIPTS = bootstrap toolbox make-alias
 nodist_noinst_SCRIPTS = compile
-BUILT_SOURCES_distclean = vlc-config extras/package/win32/vlc.win32.nsi
+BUILT_SOURCES_distclean = vlc-config extras/package/win32/vlc.win32.nsi extras/package/win32/spad.nsi
 @HAVE_DARWIN_FALSE@BUILT_SOURCES_clean = 
 @HAVE_DARWIN_TRUE@BUILT_SOURCES_clean = macosx-sdk
 BUILT_SOURCES = $(BUILT_SOURCES_distclean) $(BUILT_SOURCES_clean)
 SUFFIXES = 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-fast-install \
+	--disable-a52 \
+	--disable-avcodec --disable-avformat \
+	--disable-postproc --disable-swscale \
 	--disable-dbus \
-	--disable-dvd --disable-mad --disable-libmpeg2 \
-	--disable-ffmpeg --disable-faad --disable-skins2 \
+	--disable-mad --disable-libmpeg2 \
+	--disable-faad --disable-skins2 \
 	--disable-live555 \
 	--disable-fribidi --disable-glx
 
@@ -987,7 +957,7 @@ DISTCLEANFILES = $(BUILT_SOURCES_distclean) vlc-config.in compile
 MAINTAINERCLEANFILES = ChangeLog
 
 # Create the MacOS X app
-@BUILD_VLC_TRUE@@HAVE_DARWIN_TRUE@noinst_DATA = VLC.app
+@BUILD_MACOSX_VLC_APP_TRUE@@HAVE_DARWIN_TRUE@noinst_DATA = VLC.app
 @HAVE_BEOS_TRUE@noinst_DATA = vlc-bundle
 
 ###############################################################################
@@ -997,6 +967,9 @@ ALL_ALIASES = cvlc rvlc svlc qvlc nvlc mvlc
 bin_SCRIPTS = $(ALIASES)
 EXTRA_SCRIPTS = $(ALL_ALIASES)
 MKALIAS = bindir="$(bindir)" transform="$(transform)" program_prefix="$(program_prefix)" program_suffix="$(program_suffix)" $(top_srcdir)/make-alias $@
+silentstd = $(silentstd_$(V))
+silentstd_ = $(silentstd_$(AM_DEFAULT_VERBOSITY))
+silentstd_0 = 2>&1 >/dev/null
 
 ###############################################################################
 # Building architecture-specific binary packages
@@ -1009,6 +982,7 @@ MKALIAS = bindir="$(bindir)" transform="$(transform)" program_prefix="$(program_
 ############################################################################
 ############################################################################
 win32_destdir = $(top_builddir)/vlc-$(VERSION)
+win32_xpi_destdir = $(win32_destdir)/vlc-plugin
 win32_debugdir = $(top_builddir)/symbols-$(VERSION)
 npvlc = vlc-$(VERSION)/mozilla/npvlc$(LIBEXT)
 axvlc = vlc-$(VERSION)/activex/axvlc$(LIBEXT)
@@ -1070,6 +1044,8 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
+extras/package/win32/spad.nsi: $(top_builddir)/config.status $(top_srcdir)/extras/package/win32/spad.nsi.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 extras/package/win32/vlc.win32.nsi: $(top_builddir)/config.status $(top_srcdir)/extras/package/win32/vlc.win32.nsi.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 extras/package/macosx/Info.plist: $(top_builddir)/config.status $(top_srcdir)/extras/package/macosx/Info.plist.in
@@ -1593,7 +1569,10 @@ vlc-config.in: vlc-config.in.in
 # Shortcut for developers to rebuild the core (libvlc + vlc)
 # Don't use it if you don't know what it is about.
 # Don't complain if it doesn't work. -- Courmisch
-libvlc:
+libcompat:
+	cd compat && $(MAKE) $(AM_MAKEFLAGS)
+
+libvlc: libcompat
 	cd src && $(MAKE) $(AM_MAKEFLAGS) libvlc.la
 
 core: libvlc vlc
@@ -1603,10 +1582,6 @@ doc:
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) doc
 
 .PHONY: libvlc core doc
-
-#To get some nice output
-nice:
-	$(top_builddir)/compile
 @HAVE_BEOS_TRUE@vlc-bundle: vlc
 @HAVE_BEOS_TRUE@	rm -Rf $(top_builddir)/vlc-bundle ; mkdir -p $(top_builddir)/vlc-bundle
 @HAVE_BEOS_TRUE@	cp $(top_builddir)/vlc $(top_builddir)/vlc-bundle/
@@ -1617,9 +1592,9 @@ nice:
 @HAVE_BEOS_TRUE@	    cp "$$i$(LIBEXT)" $(top_builddir)/vlc-bundle/plugins/ ; \
 @HAVE_BEOS_TRUE@	  fi ; \
 @HAVE_BEOS_TRUE@	done
-@HAVE_BEOS_TRUE@	if test -d $(top_builddir)/extras/contrib/vlc-lib ; then \
+@HAVE_BEOS_TRUE@	if test -d $(CONTRIB_DIR)/vlc-lib ; then \
 @HAVE_BEOS_TRUE@	  mkdir -p $(top_builddir)/vlc-bundle/lib ; \
-@HAVE_BEOS_TRUE@	  for i in $(top_builddir)/extras/contrib/vlc-lib/*.so ; do \
+@HAVE_BEOS_TRUE@	  for i in $(CONTRIB_DIR)/vlc-lib/*.so ; do \
 @HAVE_BEOS_TRUE@	    cp $$i $(top_builddir)/vlc-bundle/lib/ ; \
 @HAVE_BEOS_TRUE@	  done ; \
 @HAVE_BEOS_TRUE@	fi
@@ -1631,43 +1606,45 @@ nice:
 @HAVE_BEOS_TRUE@	find $(top_builddir)/vlc-bundle -type f -exec mimeset -f "{}" \;
 
 cvlc: make-alias Makefile
-	$(MKALIAS) dummy
+	$(AM_V_GEN)$(MKALIAS) dummy
 
 rvlc: make-alias Makefile
-	$(MKALIAS) rc
+	$(AM_V_GEN)$(MKALIAS) rc
 
 svlc: make-alias Makefile
-	$(MKALIAS) skins2
+	$(AM_V_GEN)$(MKALIAS) skins2
 
 qvlc: make-alias Makefile
-	$(MKALIAS) qt4
+	$(AM_V_GEN)$(MKALIAS) qt4
 
 nvlc: make-alias Makefile
-	$(MKALIAS) ncurses
+	$(AM_V_GEN)$(MKALIAS) ncurses
 
 mvlc: make-alias Makefile
-	$(MKALIAS) maemo
+	$(AM_V_GEN)$(MKALIAS) maemo
 
 vlc$(EXEEXT):
-	ln -sf bin/vlc-static$(EXEEXT) vlc$(EXEEXT)
+	$(AM_V_GEN)ln -sf bin/vlc-static$(EXEEXT) vlc$(EXEEXT)
 
 # VLC-release.app for packaging and giving it to your friends
 # use package-macosx to get a nice dmg
 VLC-release.app: vlc
-	( cd src && make install )
+	( cd src && $(MAKE) $(AM_MAKEFLAGS) install $(silentstd) )
 	rm -Rf "$(top_builddir)/tmp"
 	mkdir -p "$(top_builddir)/tmp/extras/package/macosx"
 	rm -Rf $(top_builddir)/VLC-release.app
 	for i in vlc.xcodeproj Resources README.MacOSX.rtf ; do \
 	  cp -R $(srcdir)/extras/package/macosx/$$i $(top_builddir)/tmp/extras/package/macosx/; \
 	done
-	REVISION=`git describe --always` && \
+	REVISION=`(git --git-dir=$(srcdir)/.git describe --always || echo exported)` && \
 	cat $(top_builddir)/extras/package/macosx/Info.plist | \
 	sed "s/#REVISION#/$$REVISION/g" > $(top_builddir)/tmp/extras/package/macosx/Info.plist
 	cp -R $(top_builddir)/extras/package/macosx/Resources $(top_builddir)/tmp/extras/package/macosx/
 	for i in AUTHORS COPYING THANKS; do \
 	  cp "$(srcdir)/$$i" $(top_builddir)/tmp; \
 	done
+	mkdir -p $(top_builddir)/tmp/extras/contrib/Sparkle
+	cp -R $(CONTRIB_DIR)/Sparkle/Sparkle.framework $(top_builddir)/tmp/extras/contrib/Sparkle
 	mkdir -p $(top_builddir)/tmp/modules/audio_output
 	mkdir -p $(top_builddir)/tmp/modules/gui/macosx
 	for i in \
@@ -1708,8 +1685,6 @@ VLC-release.app: vlc
 	    extended.m \
 	    bookmarks.h \
 	    bookmarks.m \
-	    update.h \
-	    update.m \
 	    coredialogs.h \
 	    coredialogs.m \
 	    embeddedwindow.h \
@@ -1720,10 +1695,10 @@ VLC-release.app: vlc
 	  cp "$(srcdir)/modules/gui/macosx/$$i" \
              $(top_builddir)/tmp/modules/gui/macosx; \
 	done
-	cd $(top_builddir)/tmp/extras/package/macosx && xcodebuild -target vlc | grep -v '^\([ \t]\|$$\)' && \
-	    cd ../../../../ && \
-	    cp -R $(top_builddir)/tmp/extras/package/macosx/build/Default/VLC.bundle \
-	          $(top_builddir)/VLC-release.app; \
+	$(AM_V_GEN)cd $(top_builddir)/tmp/extras/package/macosx && \
+        xcodebuild -target vlc SYMROOT=../../../build $(silentstd) && \
+	cd ../../../../ && \
+	cp -R $(top_builddir)/tmp/build/Default/VLC.bundle $(top_builddir)/VLC-release.app; \
 	rm -Rf $(top_builddir)/tmp
 	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS
 	PRODUCT="VLC-release.app" ACTION="release-makefile" src_dir=$(srcdir) build_dir=$(top_builddir) sh $(srcdir)/projects/macosx/framework/Pre-Compile.sh
@@ -1800,28 +1775,29 @@ VLC-release.app: vlc
 	      $(top_builddir)/VLC-release.app/Contents/Resources/$${i}.lproj ; \
 	done
 	printf "APPLVLC#" >| $(top_builddir)/VLC-release.app/Contents/PkgInfo
-	find $(top_builddir)/VLC-release.app/Contents/Resources/English.lproj -name classes.nib -delete;
-	find $(top_builddir)/VLC-release.app/Contents/Resources/English.lproj -name info.nib -delete;
+	find $(top_builddir)/VLC-release.app/Contents/Resources/English.lproj -name designable.nib -delete;
 	find $(top_builddir)/VLC-release.app -type d -exec chmod ugo+rx '{}' \;
 	find $(top_builddir)/VLC-release.app -type f -exec chmod ugo+r '{}' \;
 
 # This is just for development purposes. 
 # The resulting VLC.app will only run in this tree.
 VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.libs/libvlc.dylib
-	(cd src && make install)
+	$(AM_V_GEN)(cd src && make install $(silentstd))
 	rm -Rf $(top_builddir)/tmp
 	mkdir -p "$(top_builddir)/tmp/extras/package/macosx"
 	rm -Rf $(top_builddir)/VLC.app
 	for i in vlc.xcodeproj Resources README.MacOSX.rtf; do \
 	  cp -R $(srcdir)/extras/package/macosx/$$i $(top_builddir)/tmp/extras/package/macosx/; \
 	done
-	REVISION=`git describe --always` && \
+	REVISION=`(git --git-dir=$(srcdir)/.git describe --always || echo exported)` && \
 	cat $(top_builddir)/extras/package/macosx/Info.plist | \
 	sed "s/#REVISION#/$$REVISION/g" > $(top_builddir)/tmp/extras/package/macosx/Info.plist
 	cp -R $(top_builddir)/extras/package/macosx/Resources $(top_builddir)/tmp/extras/package/macosx/
 	for i in AUTHORS COPYING THANKS; do \
 	  cp "$(srcdir)/$$i" $(top_builddir)/tmp; \
 	done
+	mkdir -p $(top_builddir)/tmp/extras/contrib/Sparkle
+	cp -R $(CONTRIB_DIR)/Sparkle/Sparkle.framework $(top_builddir)/tmp/extras/contrib/Sparkle
 	mkdir -p $(top_builddir)/tmp/modules/audio_output
 	mkdir -p $(top_builddir)/tmp/modules/gui/macosx
 	for i in \
@@ -1862,8 +1838,6 @@ VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.lib
 	    extended.m \
 	    bookmarks.h \
 	    bookmarks.m \
-	    update.h \
-	    update.m \
 	    coredialogs.h \
 	    coredialogs.m \
 	    embeddedwindow.h \
@@ -1874,15 +1848,15 @@ VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.lib
 	  cp "$(srcdir)/modules/gui/macosx/$$i" \
              $(top_builddir)/tmp/modules/gui/macosx; \
 	done
-	cd $(top_builddir)/tmp/extras/package/macosx && xcodebuild -target vlc | grep -v '^\([ \t]\|$$\)' && \
-	    cd ../../../../ && \
-	    cp -R $(top_builddir)/tmp/extras/package/macosx/build/Default/VLC.bundle \
-	          $(top_builddir)/VLC.app
+	$(AM_V_GEN)cd $(top_builddir)/tmp/extras/package/macosx && \
+	xcodebuild -target vlc SYMROOT=../../../build $(silentstd) && \
+	cd ../../../../ && \
+	cp -R $(top_builddir)/tmp/build/Default/VLC.bundle $(top_builddir)/VLC.app
 	$(INSTALL) -d $(top_builddir)/VLC.app/Contents/MacOS
 	touch $(top_builddir)/VLC.app/Contents/MacOS/VLC
 	chmod +x $(top_builddir)/VLC.app/Contents/MacOS/VLC
 	$(INSTALL) $(top_builddir)/bin/.libs/vlc $(top_builddir)/VLC.app/Contents/MacOS/VLC
-	ln -sf ../../../modules $(top_builddir)/VLC.app/Contents/MacOS/modules
+	ln -sf ../../../modules $(top_builddir)/VLC.app/Contents/MacOS/plugins
 	install -d $(top_builddir)/VLC.app/Contents/MacOS/share
 	for i in `ls $(srcdir)/share`; do \
 	   ln -sf `pwd`/$(srcdir)/share/$$i $(top_builddir)/VLC.app/Contents/MacOS/share/; \
@@ -1908,32 +1882,39 @@ package-win-common:
 	else \
 	  echo "OK."; mkdir -p "$(win32_destdir)"; \
 	fi
+# Same for debug symbols dir
+	@if test -e "$(win32_debugdir)"; then \
+	  echo "Error: please remove $(win32_debugdir), it is in the way"; \
+	  false; \
+	else \
+	  echo "OK."; mkdir -p "$(win32_debugdir)"; \
+	fi
 
 # Copy relevant files
-# Copy executables and libs
+# Copy executables, major libs+manifests
 	cp "$(top_builddir)/bin/.libs/vlc$(EXEEXT)" "$(win32_destdir)/"
+	cp "$(top_builddir)/bin/.libs/vlc-cache-gen$(EXEEXT)" "$(win32_destdir)/"
 	cp "$(top_srcdir)/extras/package/win32/vlc.exe.manifest" "$(win32_destdir)/"
-		cp "$(top_srcdir)/extras/package/win32/libvlc.dll.manifest" "$(win32_destdir)/"
+	cp "$(top_srcdir)/extras/package/win32/libvlc.dll.manifest" "$(win32_destdir)/"
 	cp "$(top_builddir)/src/.libs/libvlccore$(LIBEXT)" "$(win32_destdir)/"
 	cp "$(top_builddir)/src/.libs/libvlc$(LIBEXT)" "$(win32_destdir)/"
 
 # Copy Text files
-	for file in AUTHORS MAINTAINERS THANKS ; \
+	for file in AUTHORS THANKS ; \
 	  do sed 's/@/_AT_/' < "$(srcdir)/$$file" > "$(win32_destdir)/$${file}.txt" ; done;
 	for file in NEWS COPYING README; \
 	  do cp "$(srcdir)/$$file" "$(win32_destdir)/$${file}.txt"; done
-	unix2dos "$(win32_destdir)/"*.txt || echo "WARNING: this shouldn't happen"
+	$(U2D) "$(win32_destdir)/"*.txt || echo "WARNING: this shouldn't happen"
 
 # Necessary icons
-	cp $(srcdir)/share/vlc.ico $(win32_destdir)/
+	cp $(srcdir)/share/icons/vlc.ico $(win32_destdir)/
 
 # Copy the locales
 	mkdir -p $(win32_destdir)/locale
 	cat $(top_srcdir)/po/LINGUAS | while read i; do \
 	  mkdir -p "$(win32_destdir)/locale/$${i}/LC_MESSAGES" ; \
 	  cp "$(srcdir)/po/$${i}.gmo" \
-	    "$(win32_destdir)/locale/$${i}/LC_MESSAGES/vlc.mo" \
-            || true ; \
+	    "$(win32_destdir)/locale/$${i}/LC_MESSAGES/vlc.mo" || true ; \
 	done
 	mkdir -p $(win32_destdir)/locale/qt4/
 	cp $(QT4LOCALEDIR)/*.qm $(win32_destdir)/locale/qt4/ || true
@@ -1947,8 +1928,7 @@ package-win-common:
 @BUILD_ACTIVEX_TRUE@	mkdir -p "$(win32_destdir)/activex"
 @BUILD_ACTIVEX_TRUE@	cp $(srcdir)/projects/activex/README.TXT  $(win32_destdir)/activex/
 @BUILD_ACTIVEX_TRUE@	cp $(srcdir)/projects/activex/test.html  $(win32_destdir)/activex/
-@BUILD_ACTIVEX_TRUE@	unix2dos $(win32_destdir)/activex/*
-
+@BUILD_ACTIVEX_TRUE@	$(U2D) $(win32_destdir)/activex/*
 @BUILD_ACTIVEX_TRUE@	cp $(top_builddir)/projects/activex/.libs/axvlc$(LIBEXT) $(win32_destdir)/activex/
 @BUILD_ACTIVEX_TRUE@	cp $(top_srcdir)/projects/activex/axvlc.dll.manifest $(win32_destdir)/activex/
 
@@ -1957,10 +1937,36 @@ package-win-common:
 		find $(win32_destdir) -type f -name '*.dll' -print | rebase -b 0x70000000 -T -; \
 	fi
 
+# Copy the UAC NSIS plugin
+	mkdir -p "$(win32_destdir)/NSIS"
+	cp "$(top_srcdir)/extras/package/win32/UAC.nsh" "$(win32_destdir)/NSIS"
+	cp "$(top_srcdir)/extras/package/win32/UAC.dll" "$(win32_destdir)/NSIS"
+
+package-win32-xpi: package-win-common-strip
+	mkdir -p "$(win32_xpi_destdir)/plugins"
+	cp $(top_builddir)/projects/mozilla/install.rdf "$(win32_xpi_destdir)"
+	cp $(win32_destdir)/mozilla/npvlc$(LIBEXT) \
+		"$(win32_xpi_destdir)/plugins"
+	cp $(top_srcdir)/projects/mozilla/npvlc.dll.manifest \
+		"$(win32_xpi_destdir)/plugins"
+	cp "$(top_srcdir)/extras/package/win32/libvlc.dll.manifest" \
+		"$(win32_xpi_destdir)/plugins"
+	cp "$(win32_destdir)/libvlccore$(LIBEXT)" \
+		"$(win32_xpi_destdir)/plugins"
+	cp "$(win32_destdir)/libvlc$(LIBEXT)" \
+		"$(win32_xpi_destdir)/plugins"
+	mkdir -p "$(win32_xpi_destdir)/plugins/plugins"
+	cp $(win32_destdir)/plugins/*$(LIBEXT) \
+		"$(win32_xpi_destdir)/plugins/plugins"
+	rm -rf "$(win32_xpi_destdir)/plugins/plugins/*qt*"
+	rm -rf "$(win32_xpi_destdir)/plugins/plugins/*skins*"
+	cd $(win32_xpi_destdir) && zip -r vlc-$(VERSION).xpi install.rdf plugins
+
 package-win32-base-debug: package-win-common
 # Copy relevant files
 # Script installer
 	cp "$(top_builddir)/extras/package/win32/vlc.win32.nsi" "$(win32_destdir)/"
+	cp "$(top_builddir)/extras/package/win32/spad.nsi" "$(win32_destdir)/"
 	mkdir "$(win32_destdir)/languages"
 	cp $(srcdir)/extras/package/win32/languages/*.nsh "$(win32_destdir)/languages/"
 
@@ -1971,8 +1977,10 @@ package-win32-base-debug: package-win-common
 	    $(INSTALL) "$$i" "vlc-$(VERSION)/plugins/" ; \
 	  fi ; done
 
-# Contrib *.dll's
-	cp $(srcdir)/extras/contrib/lib/*.dll "vlc-$(VERSION)/" || true
+#Enable DEP and ASLR for all the binaries
+@USE_PEFLAGS_TRUE@	find $(win32_destdir) -type f -name '*.dll' -print -o -name '*.exe' -print | while read i; do \
+@USE_PEFLAGS_TRUE@	$(PEFLAGS) --dynamicbase=true --nxcompat=true "$$i" ; \
+@USE_PEFLAGS_TRUE@	done
 
 # Copy the lua scripts (HTTP)
 @BUILD_LUA_TRUE@	mkdir -p "$(win32_lua_destdir)/http/images"
@@ -1980,36 +1988,38 @@ package-win32-base-debug: package-win-common
 @BUILD_LUA_TRUE@	mkdir -p "$(win32_lua_destdir)/http/js"
 @BUILD_LUA_TRUE@	mkdir -p "$(win32_lua_destdir)/http/dialogs"
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/*.html $(win32_lua_destdir)/http/
-@BUILD_LUA_TRUE@	unix2dos $(win32_lua_destdir)/http/*.html
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/*.html
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/.hosts $(win32_lua_destdir)/http/
-@BUILD_LUA_TRUE@	unix2dos $(win32_lua_destdir)/http/.hosts
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/.hosts
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/*.css $(win32_lua_destdir)/http/
-@BUILD_LUA_TRUE@	unix2dos $(win32_lua_destdir)/http/*.css
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/*.css
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/js/*.js $(win32_lua_destdir)/http/js/
-@BUILD_LUA_TRUE@	unix2dos $(win32_lua_destdir)/http/js/*.js
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/js/*.js
+@BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/*.lua $(win32_lua_destdir)/http/
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/*.lua
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/dialogs/* $(win32_lua_destdir)/http/dialogs/
-@BUILD_LUA_TRUE@	unix2dos $(win32_lua_destdir)/http/dialogs/*
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/dialogs/*
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/dialogs/.hosts $(win32_lua_destdir)/http/dialogs/
-@BUILD_LUA_TRUE@	unix2dos $(win32_lua_destdir)/http/dialogs/.hosts
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/dialogs/.hosts
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/*.ico $(win32_lua_destdir)/http/
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/images/*.png $(win32_lua_destdir)/http/images/
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/requests/*.xml $(win32_lua_destdir)/http/requests/
-@BUILD_LUA_TRUE@	unix2dos $(win32_lua_destdir)/http/requests/*.xml
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/requests/*.xml
 @BUILD_LUA_TRUE@	cp $(srcdir)/share/lua/http/requests/readme $(win32_lua_destdir)/http/requests/readme.txt
-@BUILD_LUA_TRUE@	unix2dos $(win32_lua_destdir)/http/requests/readme.txt
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/http/requests/readme.txt
 
 #Lua Scripts
 @BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)
 @BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/*.* ; do \
 @BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/`basename $${i}` ; \
 @BUILD_LUA_TRUE@	done
-@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/playlist
-@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/playlist/*.* ; do \
-@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/playlist/`basename $${i}` ; \
+@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/modules
+@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/modules/*.* ; do \
+@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/modules/`basename $${i}` ; \
 @BUILD_LUA_TRUE@	done
-@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/meta
-@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/meta/*.* ; do \
-@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/meta/`basename $${i}` ; \
+@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/extensions
+@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/extensions/*.* ; do \
+@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/extensions/`basename $${i}` ; \
 @BUILD_LUA_TRUE@	done
 @BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/intf
 @BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/intf/*.* ; do \
@@ -2019,6 +2029,35 @@ package-win32-base-debug: package-win-common
 @BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/intf/modules/*.* ; do \
 @BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/intf/modules/`basename $${i}` ; \
 @BUILD_LUA_TRUE@	done
+@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/meta/art
+@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/meta/art/*.* ; do \
+@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/meta/art/`basename $${i}` ; \
+@BUILD_LUA_TRUE@	done
+@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/meta/fetcher
+@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/meta/fetcher/*.* ; do \
+@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/meta/fetcher/`basename $${i}` ; \
+@BUILD_LUA_TRUE@	done
+@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/meta/reader
+@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/meta/reader/*.* ; do \
+@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/meta/reader/`basename $${i}` ; \
+@BUILD_LUA_TRUE@	done
+@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/playlist
+@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/playlist/*.* ; do \
+@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/playlist/`basename $${i}` ; \
+@BUILD_LUA_TRUE@	done
+@BUILD_LUA_TRUE@	$(INSTALL) -d $(win32_lua_destdir)/sd
+@BUILD_LUA_TRUE@	for i in $(srcdir)/share/lua/sd/*.* ; do \
+@BUILD_LUA_TRUE@	  $(INSTALL) -m 644 -- "$${i}" $(win32_lua_destdir)/sd/`basename $${i}` ; \
+@BUILD_LUA_TRUE@	done
+
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/README.txt
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/extensions/README.txt
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/intf/README.txt
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/meta/art/README.txt
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/meta/fetcher/README.txt
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/meta/reader/README.txt
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/playlist/README.txt
+@BUILD_LUA_TRUE@	$(U2D) $(win32_lua_destdir)/sd/README.txt
 
 # Copy the http files
 @BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/images"
@@ -2026,23 +2065,23 @@ package-win32-base-debug: package-win-common
 @BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/js"
 @BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/dialogs"
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/*.html $(win32_http_destdir)/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/*.html
+@BUILD_HTTPD_TRUE@	$(U2D) $(win32_http_destdir)/*.html
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/.hosts $(win32_http_destdir)/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/.hosts
+@BUILD_HTTPD_TRUE@	$(U2D) $(win32_http_destdir)/.hosts
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/*.css $(win32_http_destdir)/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/*.css
+@BUILD_HTTPD_TRUE@	$(U2D) $(win32_http_destdir)/*.css
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/js/*.js $(win32_http_destdir)/js/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/js/*.js
+@BUILD_HTTPD_TRUE@	$(U2D) $(win32_http_destdir)/js/*.js
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/dialogs/* $(win32_http_destdir)/dialogs/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/dialogs/*
+@BUILD_HTTPD_TRUE@	$(U2D) $(win32_http_destdir)/dialogs/*
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/dialogs/.hosts $(win32_http_destdir)/dialogs/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/dialogs/.hosts
+@BUILD_HTTPD_TRUE@	$(U2D) $(win32_http_destdir)/dialogs/.hosts
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/*.ico $(win32_http_destdir)/
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/images/*.png $(win32_http_destdir)/images/
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/requests/*.xml $(win32_http_destdir)/requests/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/requests/*.xml
+@BUILD_HTTPD_TRUE@	$(U2D) $(win32_http_destdir)/requests/*.xml
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/requests/readme $(win32_http_destdir)/requests/readme.txt
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/requests/readme.txt
+@BUILD_HTTPD_TRUE@	$(U2D) $(win32_http_destdir)/requests/readme.txt
 
 # Skins
 @BUILD_SKINS_TRUE@	mkdir -p $(win32_destdir)/skins/fonts
@@ -2064,7 +2103,7 @@ package-win32-base-debug: package-win-common
 @BUILD_OSDMENU_TRUE@			 cp -- "$$file" "$(win32_destdir)/osdmenu/$$dir"; \
 @BUILD_OSDMENU_TRUE@		done; \
 @BUILD_OSDMENU_TRUE@	done
-@BUILD_OSDMENU_TRUE@	unix2dos $(win32_destdir)/osdmenu/*.cfg;
+@BUILD_OSDMENU_TRUE@	$(U2D) $(win32_destdir)/osdmenu/*.cfg;
 @BUILD_OSDMENU_TRUE@	for file in $(win32_destdir)/osdmenu/*.cfg; do \
 @BUILD_OSDMENU_TRUE@		sed 's%share/osdmenu%osdmenu%g' "$$file" > "$$file.tmp" || exit $$? ; \
 @BUILD_OSDMENU_TRUE@		sed 's%/%\\%g' "$$file.tmp" > "$$file" || exit$$? ; \
@@ -2083,13 +2122,10 @@ package-win32-base-debug: package-win-common
 
 # Strip DLLs
 package-win-common-strip: package-win32-base-debug
-	@if test -e "$(win32_debugdir)"; then \
-	  echo "Error: please remove $(win32_debugdir), it is in the way"; \
-	  false; \
-	else \
-	  echo "OK."; mkdir -p "$(win32_debugdir)"; \
-	fi
 	for i in "" $(win32_destdir)/*$(LIBEXT) \
+	            $(win32_destdir)/*$(EXEEXT) \
+	            $(win32_destdir)/activex/*$(LIBEXT) \
+	            $(win32_destdir)/mozilla/*$(LIBEXT) \
 	            $(win32_destdir)/plugins/*$(LIBEXT) \
 	; do \
 	  if test -n "$$i" ; then \
@@ -2116,6 +2152,7 @@ package-win32-base-exe: package-win32-base
 	else \
 	    echo 'Error: cannot locate makensis tool'; exit 1; \
 	fi; \
+	eval "$$MAKENSIS $(win32_destdir)/spad.nsi"; \
 	eval "$$MAKENSIS $(win32_destdir)/vlc.win32.nsi"
 
 package-win32-base-zip: package-win32-base
@@ -2136,36 +2173,29 @@ package-win32-base-debug-7zip: package-win32-base-debug
 # Create package
 	7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on vlc-$(VERSION)-win32-debug.7z vlc-$(VERSION)
 
-package-win32-exe: package-win32-base package-win32-base-exe
-# Clean up
+package-win32-cleanup:
 	rm -Rf $(win32_destdir)
+	rm -Rf $(win32_debugdir)
 
-package-win32-zip: package-win32-base-zip
-# Clean up
-	rm -Rf $(win32_destdir)
+package-win32-exe: package-win32-base package-win32-base-exe package-win32-cleanup
 
-package-win32-debug-zip: package-win32-base-debug-zip
-# Clean up
-	rm -Rf $(win32_destdir)
+package-win32-zip: package-win32-base-zip package-win32-cleanup
 
-package-win32-7zip: package-win32-base-7zip
-# Clean up
-	rm -Rf $(win32_destdir)
+package-win32-debug-zip: package-win32-base-debug-zip package-win32-cleanup
 
-package-win32-debug-7zip: package-win32-base-debug-7zip
-# Clean up
-	rm -Rf $(win32_destdir)
+package-win32-7zip: package-win32-base-7zip package-win32-cleanup
+
+package-win32-debug-7zip: package-win32-base-debug-7zip package-win32-cleanup
 
 package-win32-no-clean: package-win32-base-zip package-win32-base-7zip package-win32-base-exe 
 
-package-win32: package-win32-no-clean
-# Clean up
-	rm -Rf $(win32_destdir)
+package-win32: package-win32-no-clean package-win32-cleanup
 
-package-win32-debug: package-win32-base-debug-zip package-win32-base-debug-7zip
-# Clean up
-	rm -Rf $(win32_destdir)
+package-win32-debug: package-win32-base-debug-zip package-win32-base-debug-7zip package-win32-cleanup
 
+#######
+# WinCE
+#######
 package-wince-base: package-win-common-strip
 
 package-wince-base-zip: package-wince-base
@@ -2173,9 +2203,7 @@ package-wince-base-zip: package-wince-base
 	rm -f -- vlc-$(VERSION)-wince.zip
 	zip -r -9 vlc-$(VERSION)-wince.zip vlc-$(VERSION)
 
-package-wince: package-wince-base-zip
-# Clean up
-	rm -Rf $(win32_destdir)
+package-wince: package-wince-base-zip package-win32-cleanup
 
 #####################################################################
 #####################################################################
@@ -2297,7 +2325,7 @@ package-macosx-zip: VLC-release.app
 	     $(top_builddir)/vlc-$(VERSION)/Goodies
 	cp $(srcdir)/extras/package/macosx/README.MacOSX.rtf \
 	   $(top_builddir)/vlc-$(VERSION)/Read\ Me.rtf
-	zip -r $(top_builddir)/vlc-$(VERSION).zip $(top_builddir)/vlc-$(VERSION)
+	zip -r -y -9 $(top_builddir)/vlc-$(VERSION).zip $(top_builddir)/vlc-$(VERSION)
 	rm -Rf $(top_builddir)/vlc-$(VERSION)
 
 package-macosx-framework-zip:
@@ -2309,7 +2337,7 @@ package-macosx-framework-zip:
 	for i in AUTHORS COPYING ChangeLog README THANKS NEWS; do \
 	  cp $(srcdir)/$$i $(top_builddir)/vlckit-$(VERSION)/Goodies; \
 	done
-	zip -r $(top_builddir)/vlckit-$(VERSION).zip $(top_builddir)/vlckit-$(VERSION)
+	zip -r -y -9 $(top_builddir)/vlckit-$(VERSION).zip $(top_builddir)/vlckit-$(VERSION)
 	rm -Rf $(top_builddir)/vlc-$(VERSION)
 
 package-macosx-plugin:
@@ -2342,6 +2370,14 @@ package-macosx-plugin:
 @BUILD_MOZILLA_TRUE@	  -scrub -imagekey zlib-level=9
 @BUILD_MOZILLA_TRUE@	echo "Disk image creation completed:"
 @BUILD_MOZILLA_TRUE@	rm -rf "$(top_builddir)/vlc-plugin-$(VERSION)"
+
+package-macosx-xpi:
+@BUILD_MOZILLA_TRUE@	mkdir -p "$(top_builddir)/macosx-xpi/plugins"
+@BUILD_MOZILLA_TRUE@	cp $(top_builddir)/projects/mozilla/install.rdf \
+@BUILD_MOZILLA_TRUE@		"$(top_builddir)/macosx-xpi/"
+@BUILD_MOZILLA_TRUE@	cp -R "$(top_builddir)/projects/mozilla/VLC Plugin.plugin" \
+@BUILD_MOZILLA_TRUE@		"$(top_builddir)/macosx-xpi/plugins"
+@BUILD_MOZILLA_TRUE@	cd "$(top_builddir)/macosx-xpi" && zip -r vlc-$(VERSION).xpi install.rdf plugins
 
 package-translations:
 	@if test -e "$(srcdir)/vlc-translations-$(VERSION)"; then \

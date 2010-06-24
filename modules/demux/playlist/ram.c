@@ -2,7 +2,7 @@
  * ram.c : RAM playlist format import
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: bdcbb5a5f587dc153053f9b2a7b020ce80fdf26d $
+ * $Id: 1f6e5277be7ff96dcec3f537cdad98c5b7410e5c $
  *
  * Authors: Srikanth Raju <srikiraju@gmail.com>
  *
@@ -49,9 +49,8 @@ http://service.real.com/help/library/guides/realone/IntroGuide/HTML/htmfiles/ram
 
 #include <vlc_common.h>
 #include <vlc_demux.h>
+#include <vlc_url.h>
 #include <vlc_charset.h>
-
-#include <ctype.h>
 
 #include "playlist.h"
 
@@ -77,8 +76,7 @@ static void ParseClipInfo( const char * psz_clipinfo, char **ppsz_artist, char *
 int Import_RAM( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
-    const uint8_t *p_peek;
-    CHECK_PEEK( p_peek, 8 );
+
     if(! demux_IsPathExtension( p_demux, ".ram" ) ||
          demux_IsPathExtension( p_demux, ".rm" ) )
         return VLC_EGENERIC;
@@ -98,34 +96,6 @@ void Close_RAM( vlc_object_t *p_this )
     demux_t *p_demux = (demux_t *)p_this;
     free( p_demux->p_sys->psz_prefix );
     free( p_demux->p_sys );
-}
-
-/**
- * Returns a UTF8 encoded version of the string
- * @param str: input string
- * @return pointer to UTF8 string
- */
-static inline char *MaybeFromLocaleDup (const char *str)
-{
-    if (str == NULL)
-        return NULL;
-
-    return IsUTF8 (str) ? strdup (str) : FromLocaleDup (str);
-}
-
-/**
- * Converts a string to UTF8 encoding
- * @param str: input string
- */
-static inline void MaybeFromLocaleRep (char **str)
-{
-    char *const orig_str = *str;
-
-    if ((orig_str != NULL) && !IsUTF8 (orig_str))
-    {
-        *str = FromLocaleDup (orig_str);
-        free (orig_str);
-    }
 }
 
 /**
@@ -234,7 +204,6 @@ static int ParseTime( const char *s, size_t i_strlen)
 static int Demux( demux_t *p_demux )
 {
     char       *psz_line;
-    char       *psz_name = NULL;
     char       *psz_artist = NULL, *psz_album = NULL, *psz_genre = NULL, *psz_year = NULL;
     char       *psz_author = NULL, *psz_title = NULL, *psz_copyright = NULL, *psz_cdnum = NULL, *psz_comments = NULL;
     int        i_parsed_duration = 0;
@@ -244,7 +213,9 @@ static int Demux( demux_t *p_demux )
     bool b_cleanup = false;
     input_item_t *p_input;
 
-    INIT_PLAYLIST_STUFF;
+    input_item_t *p_current_input = GetCurrentItem(p_demux);
+
+    input_item_node_t *p_subitems = input_item_node_Create( p_current_input );
 
     psz_line = stream_ReadLine( p_demux->s );
     while( psz_line )
@@ -261,58 +232,47 @@ static int Demux( demux_t *p_demux )
         }
         else if( *psz_parse )
         {
-            char *psz_mrl, *psz_option_start, *psz_option_next, *psz_temp_mrl, *psz_option;
+            char *psz_mrl, *psz_option_next, *psz_option;
             char *psz_param, *psz_value;
-            if( !psz_name || !*psz_name )
-            {
-                /* Default filename as name for relative entries
-                   TODO: Currently not used. Either remove or use */
-                psz_name = MaybeFromLocaleDup( psz_parse );
-            }
 
             /* Get the MRL from the file. Note that this might contain parameters of form ?param1=value1&param2=value2 in a RAM file */
             psz_mrl = ProcessMRL( psz_parse, p_demux->p_sys->psz_prefix );
-            MaybeFromLocaleRep( &psz_mrl );
 
             b_cleanup = true;
             if ( !psz_mrl ) goto error;
 
             /* We have the MRL, now we have to check for options and parse them from MRL */
-            psz_temp_mrl = strdup( psz_mrl );
-            psz_option_start = strchr( psz_temp_mrl, '?' ); /* Look for start of options */
-            if( psz_option_start )
+            psz_option = strchr( psz_mrl, '?' ); /* Look for start of options */
+            if( psz_option )
             {
-                psz_option_start++;
-                psz_option_next = psz_option_start;
+                /* Remove options from MRL
+                   because VLC can't get the file otherwise */
+                *psz_option = '\0';
+                psz_option++;
+                psz_option_next = psz_option;
                 while( 1 ) /* Process each option */
                 {
                     /* Look for end of first option which maybe a & or \0 */
-                    psz_option_start = psz_option_next;
-                    psz_option_next = strchr( psz_option_start, '&' );
+                    psz_option = psz_option_next;
+                    psz_option_next = strchr( psz_option, '&' );
                     if( psz_option_next )
                     {
                         *psz_option_next = '\0';
                         psz_option_next++;
                     }
                     else
-                        psz_option_next = strchr( psz_option_start, '\0' );
+                        psz_option_next = strchr( psz_option, '\0' );
                     /* Quit if options are over */
-                    if( psz_option_next == psz_option_start )
+                    if( psz_option_next == psz_option )
                         break;
-                    psz_option = MaybeFromLocaleDup( psz_option_start );
-                    /* If this option is screwed up, try the next one */
-                    if( !psz_option )
-                        continue;
 
                     /* Parse out param and value */
                     psz_param = psz_option;
-                    if( strchr( psz_option, '=' ) )
-                    {
-                        psz_value = strchr( psz_option, '=' ) + 1;
-                        *(strchr( psz_option, '=' )) = '\0';
-                    }
-                    else
+                    psz_value = strchr( psz_option, '=' );
+                    if( psz_value == NULL )
                         break;
+                    *psz_value = '\0';
+                    psz_value++;
 
                     /* Take action based on parameter value in the below if else structure */
                     /* TODO: Remove any quotes surrounding values if required */
@@ -323,7 +283,10 @@ static int Demux( demux_t *p_demux )
                            &psz_cdnum, &psz_comments ); /* clipinfo has various sub parameters, which is parsed by this function */
                     }
                     else if( !strcmp( psz_param, "author" ) )
-                        psz_author = strdup(psz_value);
+                    {
+                        psz_author = decode_URI_duplicate(psz_value);
+                        EnsureUTF8( psz_author );
+                    }
                     else if( !strcmp( psz_param, "start" ) )
                     {
                         i_start = ParseTime( psz_value, strlen( psz_value ) );
@@ -345,21 +308,21 @@ static int Demux( demux_t *p_demux )
                         }
                     }
                     else if( !strcmp( psz_param, "title" ) )
-                        psz_title = strdup(psz_value);
+                    {
+                        psz_title = decode_URI_duplicate(psz_value);
+                        EnsureUTF8( psz_title );
+                    }
                     else if( !strcmp( psz_param, "copyright" ) )
-                        psz_copyright = strdup(psz_value);
+                    {
+                        psz_copyright = decode_URI_duplicate(psz_value);
+                        EnsureUTF8( psz_copyright );
+                    }
                     else
                     {   /* TODO: insert option anyway? Currently ignores*/
                         /* INSERT_ELEM( ppsz_options, i_options, i_options, psz_option ); */
                     }
-
-                    free( psz_option );
                 }
-
-                *(strchr( psz_mrl, '?' )) = '\0'; /* Remove options from MRL because VLC can't get the file otherwise */
             }
-
-            free( psz_temp_mrl );
 
             /* Create the input item and pump in all the options into playlist item */
             p_input = input_item_NewExt( p_demux, psz_mrl, psz_title, i_options, ppsz_options, 0, i_duration );
@@ -374,7 +337,7 @@ static int Demux( demux_t *p_demux )
             if( !EMPTY_STR( psz_cdnum ) ) input_item_SetTrackNum( p_input, psz_cdnum );
             if( !EMPTY_STR( psz_comments ) ) input_item_SetDescription( p_input, psz_comments );
 
-            input_item_AddSubItem( p_current_input, p_input );
+            input_item_node_AppendItem( p_subitems, p_input );
             vlc_gc_decref( p_input );
             free( psz_mrl );
         }
@@ -390,7 +353,6 @@ static int Demux( demux_t *p_demux )
             /* Cleanup state */
             while( i_options-- ) free( (char*)ppsz_options[i_options] );
             FREENULL( ppsz_options );
-            FREENULL( psz_name );
             FREENULL( psz_artist );
             FREENULL( psz_title );
             FREENULL( psz_author );
@@ -408,7 +370,8 @@ static int Demux( demux_t *p_demux )
             b_cleanup = false;
         }
     }
-    HANDLE_PLAY_AND_RELEASE;
+    input_item_node_PostAndDelete( p_subitems );
+    vlc_gc_decref(p_current_input);
     var_Destroy( p_demux, "m3u-extvlcopt" );
     return 0; /* Needed for correct operation of go back */
 }
@@ -466,7 +429,7 @@ static void ParseClipInfo( const char *psz_clipinfo, char **ppsz_artist, char **
         if( psz_option_next == psz_option_start )
             break;
 
-        psz_suboption = MaybeFromLocaleDup( psz_option_start );
+        psz_suboption = strdup( psz_option_start );
         if( !psz_suboption )
             break;
 
@@ -481,19 +444,19 @@ static void ParseClipInfo( const char *psz_clipinfo, char **ppsz_artist, char **
             break;
         /* Put into args */
         if( !strcmp( psz_param, "artist name" ) )
-            *ppsz_artist = strdup( psz_value );
+            *ppsz_artist = decode_URI_duplicate( psz_value );
         else if( !strcmp( psz_param, "title" ) )
-            *ppsz_title = strdup( psz_value );
+            *ppsz_title = decode_URI_duplicate( psz_value );
         else if( !strcmp( psz_param, "album name" ) )
-            *ppsz_album = strdup( psz_value );
+            *ppsz_album = decode_URI_duplicate( psz_value );
         else if( !strcmp( psz_param, "genre" ) )
-            *ppsz_genre = strdup( psz_value );
+            *ppsz_genre = decode_URI_duplicate( psz_value );
         else if( !strcmp( psz_param, "year" ) )
-            *ppsz_year = strdup( psz_value );
+            *ppsz_year = decode_URI_duplicate( psz_value );
         else if( !strcmp( psz_param, "cdnum" ) )
-            *ppsz_cdnum = strdup( psz_value );
+            *ppsz_cdnum = decode_URI_duplicate( psz_value );
         else if( !strcmp( psz_param, "comments" ) )
-            *ppsz_comments = strdup( psz_value );
+            *ppsz_comments = decode_URI_duplicate( psz_value );
 
         free( psz_suboption );
         psz_option_next++;

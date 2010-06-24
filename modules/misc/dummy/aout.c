@@ -1,8 +1,8 @@
 /*****************************************************************************
- * aout_dummy.c : dummy audio output plugin
+ * aout.c : dummy audio output plugin
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: e1e64ff23db1fcc612b05a001b8ff97c0096fc5d $
+ * $Id: e988e1928e4d75e3113fbe87d293bd448d3aa9bd $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -52,7 +52,7 @@ int OpenAudio ( vlc_object_t * p_this )
     p_aout->output.pf_play = Play;
     aout_VolumeSoftInit( p_aout );
 
-    if ( p_aout->output.output.i_format == VLC_FOURCC('s','p','d','i') )
+    if ( p_aout->output.output.i_format == VLC_CODEC_SPDIFL )
     {
         p_aout->output.i_nb_samples = A52_FRAME_NB;
         p_aout->output.output.i_bytes_per_frame = AOUT_SPDIF_SIZE;

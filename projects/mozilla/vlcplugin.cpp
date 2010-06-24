@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 6fe41a232852e85dae57aaf0efa5fe28afc595a4 $
+ * Copyright (C) 2002-2010 the VideoLAN team
+ * $Id: dea87e6a8ef98256f1c131057f1afab7d7220b66 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -28,23 +28,92 @@
  *****************************************************************************/
 #include "config.h"
 
-#ifdef HAVE_MOZILLA_CONFIG_H
-#   include <mozilla-config.h>
-#endif
-
 #include "vlcplugin.h"
 #include "control/npolibvlc.h"
 
 #include <ctype.h>
 
+#if defined(XP_UNIX)
+#   include <pthread.h>
+#elif defined(XP_WIN)
+    /* windows headers */
+#   include <winbase.h>
+#else
+#warning "locking not implemented for this platform"
+#endif
+
+#include <stdio.h>
+#include <assert.h>
+#include <stdlib.h>
+
+/*****************************************************************************
+ * utilitiy functions
+ *****************************************************************************/
+static void plugin_lock_init(plugin_lock_t *lock)
+{
+    assert(lock);
+
+#if defined(XP_UNIX)
+    pthread_mutex_init(&lock->mutex, NULL);
+#elif defined(XP_WIN)
+    InitializeCriticalSection(&lock->cs);
+#else
+#warning "locking not implemented in this platform"
+#endif
+}
+
+static void plugin_lock_destroy(plugin_lock_t *lock)
+{
+    assert(lock);
+
+#if defined(XP_UNIX)
+    pthread_mutex_destroy(&lock->mutex);
+#elif defined(XP_WIN)
+    DeleteCriticalSection(&lock->cs);
+#else
+#warning "locking not implemented in this platform"
+#endif
+}
+
+static void plugin_lock(plugin_lock_t *lock)
+{
+    assert(lock);
+
+#if defined(XP_UNIX)
+    pthread_mutex_lock(&lock->mutex);
+#elif defined(XP_WIN)
+    EnterCriticalSection(&lock->cs);
+#else
+#warning "locking not implemented in this platform"
+#endif
+}
+
+static void plugin_unlock(plugin_lock_t *lock)
+{
+    assert(lock);
+
+#if defined(XP_UNIX)
+    pthread_mutex_unlock(&lock->mutex);
+#elif defined(XP_WIN)
+    LeaveCriticalSection(&lock->cs);
+#else
+#warning "locking not implemented in this platform"
+#endif
+}
+
 /*****************************************************************************
  * VlcPlugin constructor and destructor
  *****************************************************************************/
+#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
 VlcPlugin::VlcPlugin( NPP instance, uint16 mode ) :
+#else
+VlcPlugin::VlcPlugin( NPP instance, uint16_t mode ) :
+#endif
     i_npmode(mode),
     b_stream(0),
     b_autoplay(1),
     b_toolbar(0),
+    psz_text(NULL),
     psz_target(NULL),
     playlist_index(-1),
     libvlc_instance(NULL),
@@ -53,10 +122,10 @@ VlcPlugin::VlcPlugin( NPP instance, uint16 mode ) :
     p_scriptClass(NULL),
     p_browser(instance),
     psz_baseURL(NULL)
-#if XP_WIN
+#if defined(XP_WIN)
     ,pf_wndproc(NULL)
 #endif
-#if XP_UNIX
+#if defined(XP_UNIX)
     ,i_width((unsigned)-1)
     ,i_height((unsigned)-1)
     ,i_tb_width(0)
@@ -73,7 +142,7 @@ VlcPlugin::VlcPlugin( NPP instance, uint16 mode ) :
 #endif
 {
     memset(&npwindow, 0, sizeof(NPWindow));
-#if XP_UNIX
+#if defined(XP_UNIX)
     memset(&npvideo, 0, sizeof(Window));
     memset(&npcontrol, 0, sizeof(Window));
 #endif
@@ -84,6 +153,170 @@ static bool boolValue(const char *value) {
              !strcasecmp(value, "true") ||
              !strcasecmp(value, "yes") );
 }
+
+bool EventObj::init()
+{
+    plugin_lock_init(&lock);
+    return true;
+}
+
+EventObj::~EventObj()
+{
+    plugin_lock_destroy(&lock);
+}
+
+void EventObj::deliver(NPP browser)
+{
+    NPVariant result;
+    NPVariant params[1];
+
+    plugin_lock(&lock);
+
+    for( ev_l::iterator i=_elist.begin();i!=_elist.end();++i )
+    {
+        libvlc_event_type_t event = *i;
+        STRINGZ_TO_NPVARIANT(libvlc_event_type_name(event), params[0]);
+
+        // Invalid events aren't supposed to be queued up.
+        // if( !have_event(event) ) continue;
+
+        for( lr_l::iterator j=_llist.begin();j!=_llist.end();++j )
+        {
+            if (j->get(event))
+            {
+                NPN_InvokeDefault(browser, j->listener(), params, 1, &result);
+                NPN_ReleaseVariantValue(&result);
+            }
+        }
+    }
+    _elist.clear();
+
+    plugin_unlock(&lock);
+}
+
+void VlcPlugin::eventAsync(void *param)
+{
+    VlcPlugin *plugin = (VlcPlugin*)param;
+    plugin->events.deliver(plugin->getBrowser());
+}
+
+void EventObj::callback(const libvlc_event_t* event)
+{
+    plugin_lock(&lock);
+
+    if( have_event(event->type) )
+        _elist.push_back(event->type);
+
+    plugin_unlock(&lock);
+}
+
+void VlcPlugin::event_callback(const libvlc_event_t* event, void *param)
+{
+    VlcPlugin *plugin = (VlcPlugin*)param;
+#if defined(XP_UNIX)
+    plugin->events.callback(event);
+    NPN_PluginThreadAsyncCall(plugin->getBrowser(), eventAsync, plugin);
+#else
+#warning NPN_PluginThreadAsyncCall not implemented yet.
+    printf("No NPN_PluginThreadAsyncCall(), doing nothing.");
+#endif
+}
+
+inline EventObj::event_t EventObj::find_event(const char *s) const
+{
+    event_t i;
+    for(i=0;i<maxbit();++i)
+        if(!strcmp(s,libvlc_event_type_name(i)))
+            break;
+    return i;
+}
+
+bool EventObj::insert(const NPString &s, NPObject *l, bool b)
+{
+    event_t e = find_event(s.UTF8Characters);
+    if( e>=maxbit() )
+        return false;
+
+    if( !have_event(e) && !ask_for_event(e) )
+        return false;
+
+    lr_l::iterator i;
+    for(i=_llist.begin();i!=_llist.end();++i)
+        if(i->listener()==l && i->bubble()==b)
+            break;
+
+    if( i == _llist.end() ) {
+        _llist.push_back(Listener(e,l,b));
+    } else {
+        if( i->get(e) )
+            return false;
+        i->get(e);
+    }
+    return true;
+}
+
+
+bool EventObj::remove(const NPString &s, NPObject *l, bool b)
+{
+    event_t e = find_event(s.UTF8Characters);
+    if( e>=maxbit() || !get(e) )
+        return false;
+
+    bool any=false;
+    for(lr_l::iterator i=_llist.begin();i!=_llist.end();)
+    {
+        if(i->listener()!=l || i->bubble()!=b)
+            any|=i->get(e);
+        else
+        {
+            i->reset(e);
+            if(i->empty())
+            {
+                i=_llist.erase(i);
+                continue;
+            }
+        }
+        ++i;
+    }
+    if(!any)
+        unask_for_event(e);
+
+    return true;
+}
+
+
+void EventObj::hook_manager(libvlc_event_manager_t *em,
+                            libvlc_callback_t cb, void *udata)
+{
+    _em = em; _cb = cb; _ud = udata;
+    if( !_em )
+        return;
+    for(size_t i=0;i<maxbit();++i)
+        if(get(i))
+            libvlc_event_attach(_em, i, _cb, _ud);
+}
+
+void EventObj::unhook_manager()
+{
+    if( !_em )
+    return;
+    for(size_t i=0;i<maxbit();++i)
+        if(get(i))
+            libvlc_event_detach(_em, i, _cb, _ud);
+}
+
+
+bool EventObj::ask_for_event(event_t e)
+{
+    return _em?0==libvlc_event_attach(_em, e, _cb, _ud):false;
+}
+
+
+void EventObj::unask_for_event(event_t e)
+{
+    if(_em) libvlc_event_detach(_em, e, _cb, _ud);
+}
+
 
 NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
 {
@@ -97,7 +330,7 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
 
     /* locate VLC module path */
 #ifdef XP_MACOSX
-    ppsz_argv[ppsz_argc++] = "--plugin-path=/Library/Internet\\ Plug-Ins/VLC\\ Plugin.plugin/Contents/MacOS/modules";
+    ppsz_argv[ppsz_argc++] = "--plugin-path=/Library/Internet\\ Plug-Ins/VLC\\ Plugin.plugin/Contents/MacOS/plugins";
     ppsz_argv[ppsz_argc++] = "--vout=minimal_macosx";
 #elif defined(XP_WIN)
     HKEY h_key;
@@ -126,9 +359,9 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     ppsz_argv[ppsz_argc++] = "-vv";
     ppsz_argv[ppsz_argc++] = "--no-stats";
     ppsz_argv[ppsz_argc++] = "--no-media-library";
-    ppsz_argv[ppsz_argc++] = "--ignore-config";
     ppsz_argv[ppsz_argc++] = "--intf=dummy";
     ppsz_argv[ppsz_argc++] = "--no-video-title-show";
+    ppsz_argv[ppsz_argc++] = "--no-xlib";
 
     const char *progid = NULL;
 
@@ -143,6 +376,11 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
          || !strcmp( argn[i], "src") )
         {
             psz_target = argv[i];
+        }
+        else if( !strcmp( argn[i], "text" ) )
+        {
+            free( psz_text );
+            psz_text = strdup( argv[i] );
         }
         else if( !strcmp( argn[i], "autoplay")
               || !strcmp( argn[i], "autostart") )
@@ -194,22 +432,10 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
         }
     }
 
-    libvlc_exception_t ex;
-    libvlc_exception_init(&ex);
-
-    libvlc_instance = libvlc_new(ppsz_argc, ppsz_argv, &ex);
-    if( libvlc_exception_raised(&ex) )
-    {
-        libvlc_exception_clear(&ex);
+    libvlc_instance = libvlc_new(ppsz_argc, ppsz_argv);
+    if( !libvlc_instance )
         return NPERR_GENERIC_ERROR;
-    }
-
-    libvlc_media_list = libvlc_media_list_new(libvlc_instance,&ex);
-    if( libvlc_exception_raised(&ex) )
-    {
-        libvlc_exception_clear(&ex);
-        return NPERR_GENERIC_ERROR;
-    }
+    libvlc_media_list = libvlc_media_list_new(libvlc_instance);
 
     /*
     ** fetch plugin base URL, which is the URL of the page containing the plugin
@@ -227,8 +453,8 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
         NPString script;
         NPVariant result;
 
-        script.utf8characters = docLocHref;
-        script.utf8length = sizeof(docLocHref)-1;
+        script.UTF8Characters = docLocHref;
+        script.UTF8Length = sizeof(docLocHref)-1;
 
         if( NPN_Evaluate(p_browser, plugin, &script, &result) )
         {
@@ -236,11 +462,11 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
             {
                 NPString &location = NPVARIANT_TO_STRING(result);
 
-                psz_baseURL = (char *) malloc(location.utf8length+1);
+                psz_baseURL = (char *) malloc(location.UTF8Length+1);
                 if( psz_baseURL )
                 {
-                    strncpy(psz_baseURL, location.utf8characters, location.utf8length);
-                    psz_baseURL[location.utf8length] = '\0';
+                    strncpy(psz_baseURL, location.UTF8Characters, location.UTF8Length);
+                    psz_baseURL[location.UTF8Length] = '\0';
                 }
             }
             NPN_ReleaseVariantValue(&result);
@@ -259,6 +485,9 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     /* new APIs */
     p_scriptClass = RuntimeNPClass<LibvlcRootNPObject>::getClass();
 
+    if( !events.init() )
+        return NPERR_GENERIC_ERROR;
+
     return NPERR_NO_ERROR;
 }
 
@@ -266,9 +495,15 @@ VlcPlugin::~VlcPlugin()
 {
     free(psz_baseURL);
     free(psz_target);
+    free(psz_text);
 
     if( libvlc_media_player )
+    {
+        if( playlist_isplaying() )
+            playlist_stop();
+        events.unhook_manager();
         libvlc_media_player_release( libvlc_media_player );
+    }
     if( libvlc_media_list )
         libvlc_media_list_release( libvlc_media_list );
     if( libvlc_instance )
@@ -278,34 +513,31 @@ VlcPlugin::~VlcPlugin()
 /*****************************************************************************
  * VlcPlugin playlist replacement methods
  *****************************************************************************/
-void VlcPlugin::set_player_window( libvlc_exception_t *ex )
+void VlcPlugin::set_player_window()
 {
 #ifdef XP_UNIX
     libvlc_media_player_set_xwindow(libvlc_media_player,
-                                    (libvlc_drawable_t)getVideoWindow(),
-                                    ex);
+                                    (uint32_t)getVideoWindow());
 #endif
 #ifdef XP_MACOSX
     // XXX FIXME insert appropriate call here
 #endif
 #ifdef XP_WIN
     libvlc_media_player_set_hwnd(libvlc_media_player,
-                                 getWindow().window,
-                                 ex);
+                                 getWindow().window);
 #endif
 }
 
-int VlcPlugin::playlist_add( const char *mrl, libvlc_exception_t *ex )
+int VlcPlugin::playlist_add( const char *mrl )
 {
     int item = -1;
-    libvlc_media_t *p_m = libvlc_media_new(libvlc_instance,mrl,ex);
-    if( libvlc_exception_raised(ex) )
+    libvlc_media_t *p_m = libvlc_media_new_location(libvlc_instance,mrl);
+    if( !p_m )
         return -1;
-
+    assert( libvlc_media_list );
     libvlc_media_list_lock(libvlc_media_list);
-    libvlc_media_list_add_media(libvlc_media_list,p_m,ex);
-    if( !libvlc_exception_raised(ex) )
-        item = libvlc_media_list_count(libvlc_media_list,ex)-1;
+    if( !libvlc_media_list_add_media(libvlc_media_list,p_m) )
+        item = libvlc_media_list_count(libvlc_media_list)-1;
     libvlc_media_list_unlock(libvlc_media_list);
 
     libvlc_media_release(p_m);
@@ -314,118 +546,128 @@ int VlcPlugin::playlist_add( const char *mrl, libvlc_exception_t *ex )
 }
 
 int VlcPlugin::playlist_add_extended_untrusted( const char *mrl, const char *name,
-                    int optc, const char **optv, libvlc_exception_t *ex )
+                    int optc, const char **optv )
 {
-    libvlc_media_t *p_m = libvlc_media_new(libvlc_instance, mrl,ex);
+    libvlc_media_t *p_m;
     int item = -1;
-    if( libvlc_exception_raised(ex) )
+
+    assert( libvlc_media_list );
+
+    p_m = libvlc_media_new_location(libvlc_instance, mrl);
+    if( !p_m )
         return -1;
 
     for( int i = 0; i < optc; ++i )
-    {
-        libvlc_media_add_option_untrusted(p_m, optv[i],ex);
-        if( libvlc_exception_raised(ex) )
-        {
-            libvlc_media_release(p_m);
-            return -1;
-        }
-    }
+        libvlc_media_add_option_flag(p_m, optv[i], libvlc_media_option_unique);
 
     libvlc_media_list_lock(libvlc_media_list);
-    libvlc_media_list_add_media(libvlc_media_list,p_m,ex);
-    if( !libvlc_exception_raised(ex) )
-        item = libvlc_media_list_count(libvlc_media_list,ex)-1;
+    if( !libvlc_media_list_add_media(libvlc_media_list,p_m) )
+        item = libvlc_media_list_count(libvlc_media_list)-1;
     libvlc_media_list_unlock(libvlc_media_list);
     libvlc_media_release(p_m);
 
     return item;
 }
 
-bool VlcPlugin::playlist_select( int idx, libvlc_exception_t *ex )
+bool VlcPlugin::playlist_select( int idx )
 {
     libvlc_media_t *p_m = NULL;
 
+    assert( libvlc_media_list );
+
     libvlc_media_list_lock(libvlc_media_list);
 
-    int count = libvlc_media_list_count(libvlc_media_list,ex);
-    if( libvlc_exception_raised(ex) )
-        goto bad_unlock;
-
+    int count = libvlc_media_list_count(libvlc_media_list);
     if( idx<0||idx>=count )
         goto bad_unlock;
 
     playlist_index = idx;
 
-    p_m = libvlc_media_list_item_at_index(libvlc_media_list,playlist_index,ex);
+    p_m = libvlc_media_list_item_at_index(libvlc_media_list,playlist_index);
     libvlc_media_list_unlock(libvlc_media_list);
 
-    if( libvlc_exception_raised(ex) )
+    if( !p_m )
         return false;
 
     if( libvlc_media_player )
     {
+        if( playlist_isplaying() )
+            playlist_stop();
+        events.unhook_manager();
         libvlc_media_player_release( libvlc_media_player );
         libvlc_media_player = NULL;
     }
 
-    libvlc_media_player = libvlc_media_player_new_from_media(p_m,ex);
+    libvlc_media_player = libvlc_media_player_new_from_media(p_m);
     if( libvlc_media_player )
-        set_player_window(ex);
+    {
+        set_player_window();
+        events.hook_manager(
+                      libvlc_media_player_event_manager(libvlc_media_player),
+                      event_callback, this);
+    }
 
     libvlc_media_release( p_m );
-    return !libvlc_exception_raised(ex);
+    return true;
 
 bad_unlock:
     libvlc_media_list_unlock(libvlc_media_list);
     return false;
 }
 
-void VlcPlugin::playlist_delete_item( int idx, libvlc_exception_t *ex )
+int VlcPlugin::playlist_delete_item( int idx )
 {
+    if( !libvlc_media_list )
+        return -1;
     libvlc_media_list_lock(libvlc_media_list);
-    libvlc_media_list_remove_index(libvlc_media_list,idx,ex);
+    int ret = libvlc_media_list_remove_index(libvlc_media_list,idx);
     libvlc_media_list_unlock(libvlc_media_list);
+    return ret;
 }
 
-void VlcPlugin::playlist_clear( libvlc_exception_t *ex )
+void VlcPlugin::playlist_clear()
 {
     if( libvlc_media_list )
         libvlc_media_list_release(libvlc_media_list);
-    libvlc_media_list = libvlc_media_list_new(getVLC(),ex);
+    libvlc_media_list = libvlc_media_list_new(getVLC());
 }
 
-int VlcPlugin::playlist_count( libvlc_exception_t *ex )
+int VlcPlugin::playlist_count()
 {
     int items_count = 0;
+    if( !libvlc_media_list )
+        return items_count;
     libvlc_media_list_lock(libvlc_media_list);
-    items_count = libvlc_media_list_count(libvlc_media_list,ex);
+    items_count = libvlc_media_list_count(libvlc_media_list);
     libvlc_media_list_unlock(libvlc_media_list);
     return items_count;
 }
 
-void VlcPlugin::toggle_fullscreen( libvlc_exception_t *ex )
+void VlcPlugin::toggle_fullscreen()
 {
-    if( playlist_isplaying(ex) )
-        libvlc_toggle_fullscreen(libvlc_media_player,ex);
+    if( playlist_isplaying() )
+        libvlc_toggle_fullscreen(libvlc_media_player);
 }
-void VlcPlugin::set_fullscreen( int yes, libvlc_exception_t *ex )
+
+void VlcPlugin::set_fullscreen( int yes )
 {
-    if( playlist_isplaying(ex) )
-        libvlc_set_fullscreen(libvlc_media_player,yes,ex);
+    if( playlist_isplaying() )
+        libvlc_set_fullscreen(libvlc_media_player,yes);
 }
-int  VlcPlugin::get_fullscreen( libvlc_exception_t *ex )
+
+int  VlcPlugin::get_fullscreen()
 {
     int r = 0;
-    if( playlist_isplaying(ex) )
-        r = libvlc_get_fullscreen(libvlc_media_player,ex);
+    if( playlist_isplaying() )
+        r = libvlc_get_fullscreen(libvlc_media_player);
     return r;
 }
 
-bool  VlcPlugin::player_has_vout( libvlc_exception_t *ex )
+bool  VlcPlugin::player_has_vout()
 {
     bool r = false;
-    if( playlist_isplaying(ex) )
-        r = libvlc_media_player_has_vout(libvlc_media_player, ex);
+    if( playlist_isplaying() )
+        r = libvlc_media_player_has_vout(libvlc_media_player);
     return r;
 }
 
@@ -474,7 +716,7 @@ relativeurl:
             if( href )
             {
                 /* prepend base URL */
-                strcpy(href, psz_baseURL);
+                memcpy(href, psz_baseURL, baseLen+1);
 
                 /*
                 ** relative url could be empty,
@@ -489,7 +731,7 @@ relativeurl:
 
                 /* skip over protocol part  */
                 char *pathstart = strchr(href, ':');
-                char *pathend;
+                char *pathend = href+baseLen;
                 if( pathstart )
                 {
                     if( '/' == *(++pathstart) )
@@ -501,7 +743,6 @@ relativeurl:
                     }
                     /* skip over host part */
                     pathstart = strchr(pathstart, '/');
-                    pathend = href+baseLen;
                     if( ! pathstart )
                     {
                         // no path, add a / past end of url (over '\0')
@@ -519,7 +760,6 @@ relativeurl:
                         return NULL;
                     }
                     pathstart = href;
-                    pathend = href+baseLen;
                 }
 
                 /* relative URL made of an absolute path ? */
@@ -589,7 +829,7 @@ relativeurl:
     return NULL;
 }
 
-#if XP_UNIX
+#if defined(XP_UNIX)
 int  VlcPlugin::setSize(unsigned width, unsigned height)
 {
     int diff = (width != i_width) || (height != i_height);
@@ -730,7 +970,6 @@ void VlcPlugin::hideToolbar()
 
 void VlcPlugin::redrawToolbar()
 {
-    libvlc_exception_t ex;
     int is_playing = 0;
     bool b_mute = false;
     unsigned int dst_x, dst_y;
@@ -739,7 +978,7 @@ void VlcPlugin::redrawToolbar()
     unsigned int i_tb_width, i_tb_height;
 
     /* This method does nothing if toolbar is hidden. */
-    if( !b_toolbar )
+    if( !b_toolbar || !libvlc_media_player )
         return;
 
     const NPWindow& window = getWindow();
@@ -748,11 +987,8 @@ void VlcPlugin::redrawToolbar()
 
     getToolbarSize( &i_tb_width, &i_tb_height );
 
-    libvlc_exception_init( &ex );
-
     /* get mute info */
-    b_mute = libvlc_audio_get_mute( getVLC(), &ex );
-    libvlc_exception_clear( &ex );
+    b_mute = libvlc_audio_get_mute( libvlc_media_player );
 
     gcv.foreground = BlackPixel( p_display, 0 );
     gc = XCreateGC( p_display, control, GCForeground, &gcv );
@@ -818,12 +1054,11 @@ void VlcPlugin::redrawToolbar()
                    (window.width-(dst_x+BTN_SPACE)), p_timeline->height );
 
     /* get movie position in % */
-    if( playlist_isplaying(&ex) )
+    if( playlist_isplaying() )
     {
         i_last_position = (int)((window.width-(dst_x+BTN_SPACE))*
-                   libvlc_media_player_get_position(libvlc_media_player,&ex));
+                   libvlc_media_player_get_position(libvlc_media_player));
     }
-    libvlc_exception_clear( &ex );
 
     if( p_btnTime )
         XPutImage( p_display, control, gc, p_btnTime,
@@ -839,7 +1074,6 @@ vlc_toolbar_clicked_t VlcPlugin::getToolbarButtonClicked( int i_xpos, int i_ypos
     unsigned int i_dest = BTN_SPACE;
     int is_playing = 0;
     bool b_mute = false;
-    libvlc_exception_t ex;
 
 #ifndef NDEBUG
     fprintf( stderr, "ToolbarButtonClicked:: "
@@ -855,13 +1089,11 @@ vlc_toolbar_clicked_t VlcPlugin::getToolbarButtonClicked( int i_xpos, int i_ypos
      */
 
     /* get isplaying */
-    libvlc_exception_init( &ex );
-    is_playing = playlist_isplaying( &ex );
-    libvlc_exception_clear( &ex );
+    is_playing = playlist_isplaying();
 
     /* get mute info */
-    b_mute = libvlc_audio_get_mute( getVLC(), &ex );
-    libvlc_exception_clear( &ex );
+    if( libvlc_media_player )
+        b_mute = libvlc_audio_get_mute( libvlc_media_player );
 
     /* is Pause of Play button clicked */
     if( (is_playing != 1) &&
@@ -916,3 +1148,19 @@ vlc_toolbar_clicked_t VlcPlugin::getToolbarButtonClicked( int i_xpos, int i_ypos
 }
 #undef BTN_SPACE
 #endif
+
+// Verifies the version of the NPAPI.
+// The eventListeners use a NPAPI function available
+// since Gecko 1.9.
+bool VlcPlugin::canUseEventListener()
+{
+    int plugin_major, plugin_minor;
+    int browser_major, browser_minor;
+
+    NPN_Version(&plugin_major, &plugin_minor,
+                &browser_major, &browser_minor);
+
+    if (browser_minor >= 19 || browser_major > 0)
+        return true;
+    return false;
+}

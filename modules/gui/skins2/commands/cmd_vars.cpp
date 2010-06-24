@@ -2,7 +2,7 @@
  * cmd_vars.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 59c5848567995ab56d75174a209815512b0c211a $
+ * $Id: b14c402d745337175424712b79f5a70c86bb4d4d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "cmd_vars.hpp"
@@ -30,60 +30,55 @@
 
 void CmdPlaytreeChanged::execute()
 {
-    // Notify  the playtree variable
-    Playtree &rVar = VlcProc::instance( getIntf() )->getPlaytreeVar();
-    rVar.onChange();
+    VlcProc::instance( getIntf() )->getPlaytreeVar().onChange();
 }
 
 void CmdPlaytreeUpdate::execute()
 {
-    // Notify  the playtree variable
-    Playtree &rVar = VlcProc::instance( getIntf() )->getPlaytreeVar();
-    rVar.onUpdateItem( m_id );
+    if( !m_pItem )
+        return;
+
+    playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
+    playlist_Lock( pPlaylist );
+    playlist_item_t* p_plItem = playlist_ItemGetByInput( pPlaylist, m_pItem );
+    int id = p_plItem ? p_plItem->i_id : 0;
+    playlist_Unlock( pPlaylist );
+
+    if( id )
+        VlcProc::instance( getIntf() )->getPlaytreeVar().onUpdateItem( id );
 }
 
 bool CmdPlaytreeUpdate::checkRemove( CmdGeneric *pQueuedCommand ) const
 {
     // We don't use RTTI - Use C-style cast
     CmdPlaytreeUpdate *pUpdateCommand = (CmdPlaytreeUpdate *)(pQueuedCommand);
-    if( m_id == pUpdateCommand->m_id )
-    {
-        return true;
-    }
-    return false;
+    return m_pItem == pUpdateCommand->m_pItem;
 }
 
 
 void CmdPlaytreeAppend::execute()
 {
-    // Notify  the playtree variable
-    Playtree &rVar = VlcProc::instance( getIntf() )->getPlaytreeVar();
-    rVar.onAppend( m_pAdd );
+    VlcProc::instance( getIntf() )->getPlaytreeVar().onAppend( m_pAdd );
 }
 
 void CmdPlaytreeDelete::execute()
 {
-    // Notify  the playtree variable
-    Playtree &rVar = VlcProc::instance( getIntf() )->getPlaytreeVar();
-    rVar.onDelete( m_id );
+    VlcProc::instance( getIntf() )->getPlaytreeVar().onDelete( m_id );
 }
 
 void CmdSetText::execute()
 {
-    // Change the text variable
     m_rText.set( m_value );
 }
 
 
 void CmdSetEqBands::execute()
 {
-    // Change the equalizer bands
     m_rEqBands.set( m_value );
 }
 
 
 void CmdSetEqPreamp::execute()
 {
-    // Change the preamp variable
     m_rPreamp.set( m_value, false );
 }

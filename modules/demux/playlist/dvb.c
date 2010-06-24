@@ -1,8 +1,8 @@
 /*****************************************************************************
  * dvb.c : DVB channel list import (szap/tzap/czap compatible channel lists)
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 7c36a796f23eace157e9f88c8fe280341f52562a $
+ * Copyright (C) 2005-20009 the VideoLAN team
+ * $Id: 15e057894eeaa3230540ba80fbade71ee0a0468b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -30,7 +30,6 @@
 
 #include <vlc_common.h>
 #include <vlc_demux.h>
-#include <vlc_interface.h>
 #include <vlc_charset.h>
 
 #include "playlist.h"
@@ -101,7 +100,9 @@ static int Demux( demux_t *p_demux )
 {
     char       *psz_line;
     input_item_t *p_input;
-    INIT_PLAYLIST_STUFF;
+    input_item_t *p_current_input = GetCurrentItem(p_demux);
+
+    input_item_node_t *p_subitems = input_item_node_Create( p_current_input );
 
     while( (psz_line = stream_ReadLine( p_demux->s )) )
     {
@@ -121,7 +122,7 @@ static int Demux( demux_t *p_demux )
 
         p_input = input_item_NewExt( p_demux, "dvb://", psz_name,
                                      i_options, (const char**)ppsz_options, VLC_INPUT_OPTION_TRUSTED, -1 );
-        input_item_AddSubItem( p_current_input, p_input );
+        input_item_node_AppendItem( p_subitems, p_input );
         vlc_gc_decref( p_input );
 
         while( i_options-- )
@@ -131,7 +132,9 @@ static int Demux( demux_t *p_demux )
         free( psz_line );
     }
 
-    HANDLE_PLAY_AND_RELEASE;
+    input_item_node_PostAndDelete( p_subitems );
+
+    vlc_gc_decref(p_current_input);
     return 0; /* Needed for correct operation of go back */
 }
 
@@ -211,8 +214,8 @@ static int ParseLine( char *psz_line, char **ppsz_name,
     while( psz_parse )
     {
         const char *psz_option = NULL;
-        char *psz_end = strchr( psz_parse, ':' );
-        if( psz_end ) { *psz_end = 0; psz_end++; }
+        char *psz_option_end = strchr( psz_parse, ':' );
+        if( psz_option_end ) { *psz_option_end = 0; psz_option_end++; }
 
         if( i_count == 0 )
         {
@@ -278,7 +281,7 @@ static int ParseLine( char *psz_line, char **ppsz_name,
                              psz_dup );
         }
 
-        psz_parse = psz_end;
+        psz_parse = psz_option_end;
         i_count++;
     }
 

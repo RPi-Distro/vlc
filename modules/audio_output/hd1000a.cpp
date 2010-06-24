@@ -2,7 +2,7 @@
  * hd1000a.cpp : Roku HD1000 audio output
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 78a77d1cba7e0d3ea85d5b06ad594884c0fe7ab0 $
+ * $Id: 29481707c72ed01bf51b26ad13ce0d51c96d39ce $
  *
  * Author: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -26,8 +26,6 @@
  *****************************************************************************/
 extern "C"
 {
-#include <errno.h>
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -156,7 +154,7 @@ static int Open( vlc_object_t * p_this )
         }
     }
 
-    p_aout->output.output.i_format = AOUT_FMT_S16_NE;
+    p_aout->output.output.i_format = VLC_CODEC_S16N;
     p_aout->output.i_nb_samples = FRAME_SIZE;
     p_aout->output.output.i_physical_channels
             = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
@@ -175,7 +173,7 @@ static int Open( vlc_object_t * p_this )
         delete pPlayer;
         free( p_sys->ppBuffers );
         free( p_sys );
-        return VLC_ETHREAD;
+        return VLC_ENOMEM;
     }
 
     return VLC_SUCCESS;

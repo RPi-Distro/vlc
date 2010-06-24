@@ -2,7 +2,7 @@
  * iso_lang.h: function to decode language code (in dvd or a52 for instance).
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: 2d8ddb6fa9ac4593c3d80482bc62815c596cb866 $
+ * $Id: e37739fcd51aa910ea33a9c5486c2e25386808e0 $
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *         Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
@@ -29,11 +29,11 @@
 
 struct iso639_lang_t
 {
-    const char * psz_eng_name;        /* Description in English */
-    const char * psz_native_name;     /* Description in native language */
-    const char * psz_iso639_1;        /* ISO-639-1 (2 characters) code */
-    const char * psz_iso639_2T;       /* ISO-639-2/T (3 characters) English code */
-    const char * psz_iso639_2B;       /* ISO-639-2/B (3 characters) native code */
+    const char *psz_eng_name;    /* Description in English */
+    const char *psz_native_name; /* Description in native language */
+    const char psz_iso639_1[3];  /* ISO-639-1 (2 characters) code */
+    const char psz_iso639_2T[4]; /* ISO-639-2/T (3 characters) English code */
+    const char psz_iso639_2B[4]; /* ISO-639-2/B (3 characters) native code */
 };
 
 #if defined( __cplusplus )

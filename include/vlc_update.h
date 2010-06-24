@@ -2,7 +2,7 @@
  * vlc_update.h: VLC update download
  *****************************************************************************
  * Copyright © 2005-2007 the VideoLAN team
- * $Id: 1bb91f90fadfe2037b178bc208d494614c4b4851 $
+ * $Id: 1fd5a8593aca6d0f06b34debf5564c207abd8727 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rafaël Carré <funman@videolanorg>
@@ -55,15 +55,13 @@ struct update_release_t
 
 typedef struct update_release_t update_release_t;
 
-#define update_New( a ) __update_New( VLC_OBJECT( a ) )
-
-VLC_EXPORT( update_t *, __update_New, ( vlc_object_t * ) );
+VLC_EXPORT( update_t *, update_New, ( vlc_object_t * ) );
+#define update_New( a ) update_New( VLC_OBJECT( a ) )
 VLC_EXPORT( void, update_Delete, ( update_t * ) );
 VLC_EXPORT( void, update_Check, ( update_t *, void (*callback)( void*, bool ), void * ) );
 VLC_EXPORT( bool, update_NeedUpgrade, ( update_t * ) );
 VLC_EXPORT( void, update_Download, ( update_t *, const char* ) );
 VLC_EXPORT( update_release_t*, update_GetRelease, ( update_t * ) );
-VLC_EXPORT( void, update_WaitDownload, ( update_t * ) );
 
 /**
  * @}

@@ -2,7 +2,7 @@
  * a52.c: parse A/52 audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2002 the VideoLAN team
- * $Id: ac1207814c99a0316efacd22ad0d3a565d8f2dd3 $
+ * $Id: 8ba2d25fae2d5de060b1d803b9e37c252ef901e3 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -77,7 +77,7 @@ struct decoder_sys_t
     /*
      * Common properties
      */
-    audio_date_t   end_date;
+    date_t  end_date;
 
     mtime_t i_pts;
 
@@ -99,7 +99,7 @@ enum {
  ****************************************************************************/
 static void *DecodeBlock  ( decoder_t *, block_t ** );
 
-static uint8_t       *GetOutBuffer ( decoder_t *, void **, size_t * );
+static uint8_t       *GetOutBuffer ( decoder_t *, block_t ** );
 static aout_buffer_t *GetAoutBuffer( decoder_t * );
 static block_t       *GetSoutBuffer( decoder_t * );
 
@@ -114,16 +114,15 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
 
     switch( p_dec->fmt_in.i_codec )
     {
-    case VLC_FOURCC('a','5','2',' '):
-    case VLC_FOURCC('a','5','2','b'):
-        i_codec = VLC_FOURCC('a','5','2',' ');
+    case VLC_CODEC_A52:
+        i_codec = VLC_CODEC_A52;
         break;
-    case VLC_FOURCC('e','a','c','3'):
+    case VLC_CODEC_EAC3:
         /* XXX ugly hack, a52 does not support eac3 so no eac3 pass-through
          * support */
         if( !b_packetizer )
             return VLC_EGENERIC;
-        i_codec = VLC_FOURCC('e','a','c','3');
+        i_codec = VLC_CODEC_EAC3;
         break;
     default:
         return VLC_EGENERIC;
@@ -137,7 +136,8 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
     /* Misc init */
     p_sys->b_packetizer = b_packetizer;
     p_sys->i_state = STATE_NOSYNC;
-    aout_DateSet( &p_sys->end_date, 0 );
+    date_Set( &p_sys->end_date, 0 );
+    p_sys->i_pts = VLC_TS_INVALID;
 
     p_sys->bytestream = block_BytestreamInit();
 
@@ -159,7 +159,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
 
 static int OpenDecoder( vlc_object_t *p_this )
 {
-    /* HACK: Don't use this codec if we don't have an dts audio filter */
+    /* HACK: Don't use this codec if we don't have an a52 audio filter */
     if( !module_exists( "a52tofloat32" ) )
         return VLC_EGENERIC;
     return OpenCommon( p_this, false );
@@ -180,7 +180,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t p_header[VLC_A52_HEADER_SIZE];
     uint8_t *p_buf;
-    void *p_out_buffer;
+    block_t *p_out_buffer;
 
     if( !pp_block || !*pp_block ) return NULL;
 
@@ -191,12 +191,12 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_NOSYNC;
             block_BytestreamEmpty( &p_sys->bytestream );
         }
-        aout_DateSet( &p_sys->end_date, 0 );
+        date_Set( &p_sys->end_date, 0 );
         block_Release( *pp_block );
         return NULL;
     }
 
-    if( !aout_DateGet( &p_sys->end_date ) && !(*pp_block)->i_pts )
+    if( !date_Get( &p_sys->end_date ) && (*pp_block)->i_pts <= VLC_TS_INVALID)
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( *pp_block );
@@ -231,10 +231,10 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         case STATE_SYNC:
             /* New frame, set the Presentation Time Stamp */
             p_sys->i_pts = p_sys->bytestream.p_block->i_pts;
-            if( p_sys->i_pts != 0 &&
-                p_sys->i_pts != aout_DateGet( &p_sys->end_date ) )
+            if( p_sys->i_pts > VLC_TS_INVALID &&
+                p_sys->i_pts != date_Get( &p_sys->end_date ) )
             {
-                aout_DateSet( &p_sys->end_date, p_sys->i_pts );
+                date_Set( &p_sys->end_date, p_sys->i_pts );
             }
             p_sys->i_state = STATE_HEADER;
 
@@ -302,10 +302,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_SEND_DATA;
 
         case STATE_SEND_DATA:
-        {
-            size_t i_len;
-
-            if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer, &i_len )) )
+            if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer )) )
             {
                 //p_dec->b_error = true;
                 return NULL;
@@ -314,11 +311,11 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             /* Copy the whole frame into the buffer. When we reach this point
              * we already know we have enough data available. */
             block_GetBytes( &p_sys->bytestream,
-                            p_buf, __MIN( p_sys->frame.i_size, i_len ) );
+                            p_buf, __MIN( p_sys->frame.i_size, p_out_buffer->i_buffer ) );
 
             /* Make sure we don't reuse the same pts twice */
             if( p_sys->i_pts == p_sys->bytestream.p_block->i_pts )
-                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = 0;
+                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = VLC_TS_INVALID;
 
             /* So p_block doesn't get re-added several times */
             *pp_block = block_BytestreamPop( &p_sys->bytestream );
@@ -326,7 +323,6 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_sys->i_state = STATE_NOSYNC;
 
             return p_out_buffer;
-        }
         }
     }
 
@@ -349,19 +345,18 @@ static void CloseCommon( vlc_object_t *p_this )
 /*****************************************************************************
  * GetOutBuffer:
  *****************************************************************************/
-static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer,
-                              size_t *p_len )
+static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p_buf;
 
     if( p_dec->fmt_out.audio.i_rate != p_sys->frame.i_rate )
     {
-        msg_Info( p_dec, "A/52 channels:%d samplerate:%d bitrate:%d",
-                  p_sys->frame.i_channels, p_sys->frame.i_rate, p_sys->frame.i_bitrate );
+        msg_Dbg( p_dec, "A/52 channels:%d samplerate:%d bitrate:%d",
+                 p_sys->frame.i_channels, p_sys->frame.i_rate, p_sys->frame.i_bitrate );
 
-        aout_DateInit( &p_sys->end_date, p_sys->frame.i_rate );
-        aout_DateSet( &p_sys->end_date, p_sys->i_pts );
+        date_Init( &p_sys->end_date, p_sys->frame.i_rate, 1 );
+        date_Set( &p_sys->end_date, p_sys->i_pts );
     }
 
     p_dec->fmt_out.audio.i_rate     = p_sys->frame.i_rate;
@@ -379,25 +374,13 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, void **pp_out_buffer,
     if( p_sys->b_packetizer )
     {
         block_t *p_sout_buffer = GetSoutBuffer( p_dec );
-        if( p_sout_buffer )
-        {
-            p_buf = p_sout_buffer->p_buffer;
-            *p_len = p_sout_buffer->i_buffer;
-        }
-        else
-            p_buf = NULL;
+        p_buf = p_sout_buffer ? p_sout_buffer->p_buffer : NULL;
         *pp_out_buffer = p_sout_buffer;
     }
     else
     {
         aout_buffer_t *p_aout_buffer = GetAoutBuffer( p_dec );
-        if( p_aout_buffer )
-        {
-            p_buf = p_aout_buffer->p_buffer;
-            *p_len = p_aout_buffer->i_size;
-        }
-        else
-            p_buf = NULL;
+        p_buf = p_aout_buffer ? p_aout_buffer->p_buffer : NULL;
         *pp_out_buffer = p_aout_buffer;
     }
 
@@ -415,8 +398,9 @@ static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
     p_buf = decoder_NewAudioBuffer( p_dec, p_sys->frame.i_samples );
     if( p_buf == NULL ) return NULL;
 
-    p_buf->start_date = aout_DateGet( &p_sys->end_date );
-    p_buf->end_date = aout_DateIncrement( &p_sys->end_date, p_sys->frame.i_samples );
+    p_buf->i_pts = date_Get( &p_sys->end_date );
+    p_buf->i_length = date_Increment( &p_sys->end_date,
+                                      p_sys->frame.i_samples ) - p_buf->i_pts;
 
     return p_buf;
 }
@@ -432,10 +416,10 @@ static block_t *GetSoutBuffer( decoder_t *p_dec )
     p_block = block_New( p_dec, p_sys->frame.i_size );
     if( p_block == NULL ) return NULL;
 
-    p_block->i_pts = p_block->i_dts = aout_DateGet( &p_sys->end_date );
+    p_block->i_pts = p_block->i_dts = date_Get( &p_sys->end_date );
 
     p_block->i_length =
-        aout_DateIncrement( &p_sys->end_date, p_sys->frame.i_samples ) - p_block->i_pts;
+        date_Increment( &p_sys->end_date, p_sys->frame.i_samples ) - p_block->i_pts;
 
     return p_block;
 }

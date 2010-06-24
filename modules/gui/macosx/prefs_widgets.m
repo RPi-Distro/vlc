@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: e3b83d4283670eb7d31c4c7c40eb4933ae2baefc $
+ * $Id: d444d176fdb29af7604d2e01dac18f87c3ca34b4 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -33,7 +33,7 @@
 #endif
 
 #include <vlc_common.h>
-#include "vlc_keys.h"
+#include <vlc_keys.h>
 
 #include "intf.h"
 #include "prefs_widgets.h"
@@ -1074,9 +1074,13 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             -2, 0, o_textfieldTooltip )
         [o_combo setAutoresizingMask:NSViewWidthSizable ];
         for( i_index = 0; i_index < p_item->i_list; i_index++ )
-            if( p_item->value.psz &&
+        {
+            if( !p_item->value.psz && !p_item->ppsz_list[i_index] )
+                [o_combo selectItemAtIndex: i_index];
+            else if( p_item->value.psz && p_item->ppsz_list[i_index] &&
                 !strcmp( p_item->value.psz, p_item->ppsz_list[i_index] ) )
                 [o_combo selectItemAtIndex: i_index];
+       }
         [self addSubview: o_combo];
     }
     return self;
@@ -1118,9 +1122,13 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     char *psz_value = config_GetPsz( VLCIntf, p_item->psz_name );
 
     for( i_index = 0; i_index < p_item->i_list; i_index++ )
-        if( psz_value &&
+    {
+        if( !psz_value && !p_item->ppsz_list[i_index] )
+            [o_combo selectItemAtIndex: i_index];
+        else if( psz_value && p_item->ppsz_list[i_index] &&
             !strcmp( psz_value, p_item->ppsz_list[i_index] ) )
             [o_combo selectItemAtIndex: i_index];
+    }
 
     free( psz_value );
     [super resetValues];
@@ -2071,11 +2079,14 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         {
             unsigned int i;
             o_keys_menu = [[NSMenu alloc] initWithTitle: @"Keys Menu"];
+#warning This does not work anymore. FIXME.
+#if 0
             for ( i = 0; i < sizeof(vlc_keys) / sizeof(key_descriptor_t); i++)
                 if( vlc_keys[i].psz_key_string )
                     POPULATE_A_KEY( o_keys_menu,
                         [NSString stringWithUTF8String:vlc_keys[i].psz_key_string]
                         , vlc_keys[i].i_key_code)
+#endif
         }
         [o_popup setMenu:[o_keys_menu copyWithZone:nil]];
         [o_popup selectItem:[[o_popup menu] itemWithTag:p_item->value.i]];

@@ -2,7 +2,7 @@
  * tta.c : The Lossless True Audio parser
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 0922f389536461e946cab0cebd810c71afec35dd $
+ * $Id: b0c53bb8393555445878d163ac1e155da526eaff $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -117,7 +117,7 @@ static int Open( vlc_object_t * p_this )
     p_sys->pi_seektable = NULL;
 
     /* Read the metadata */
-    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 'T', 'T', 'A', '1' ) );
+    es_format_Init( &fmt, AUDIO_ES, VLC_CODEC_TTA );
     fmt.audio.i_channels = GetWLE( &p_header[6] );
     fmt.audio.i_bitspersample = GetWLE( &p_header[8] );
     fmt.audio.i_rate = GetDWLE( &p_header[10] );
@@ -200,7 +200,7 @@ static int Demux( demux_t *p_demux )
 
     p_data = stream_Block( p_demux->s, p_sys->pi_seektable[p_sys->i_currentframe] );
     if( p_data == NULL ) return 0;
-    p_data->i_dts = p_data->i_pts = (int64_t)(1 + INT64_C(1000000) * p_sys->i_currentframe) * TTA_FRAMETIME;
+    p_data->i_dts = p_data->i_pts = VLC_TS_0 + (int64_t)(INT64_C(1000000) * p_sys->i_currentframe) * TTA_FRAMETIME;
 
     p_sys->i_currentframe++;
 

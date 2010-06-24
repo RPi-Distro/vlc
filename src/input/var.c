@@ -2,7 +2,7 @@
  * var.c: object variables for input thread
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: fcad8118d8ae7eade55d8418b008cf5a90e257fa $
+ * $Id: 5fca34ba8f0602acdc33f5ab54829528acf72617 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -29,6 +29,8 @@
 #endif
 
 #include <vlc_common.h>
+#include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,6 +42,8 @@
 static int StateCallback   ( vlc_object_t *p_this, char const *psz_cmd,
                              vlc_value_t oldval, vlc_value_t newval, void * );
 static int RateCallback    ( vlc_object_t *p_this, char const *psz_cmd,
+                             vlc_value_t oldval, vlc_value_t newval, void * );
+static int RateOffsetCallback( vlc_object_t *p_this, char const *psz_cmd,
                              vlc_value_t oldval, vlc_value_t newval, void * );
 static int PositionCallback( vlc_object_t *p_this, char const *psz_cmd,
                              vlc_value_t oldval, vlc_value_t newval, void * );
@@ -86,8 +90,8 @@ static const vlc_input_callback_t p_input_callbacks[] =
 {
     CALLBACK( "state", StateCallback ),
     CALLBACK( "rate", RateCallback ),
-    CALLBACK( "rate-slower", RateCallback ),
-    CALLBACK( "rate-faster", RateCallback ),
+    CALLBACK( "rate-slower", RateOffsetCallback ),
+    CALLBACK( "rate-faster", RateOffsetCallback ),
     CALLBACK( "position", PositionCallback ),
     CALLBACK( "position-offset", PositionCallback ),
     CALLBACK( "time", TimeCallback ),
@@ -136,8 +140,8 @@ void input_ControlVarInit ( input_thread_t *p_input )
     var_Change( p_input, "state", VLC_VAR_SETVALUE, &val, NULL );
 
     /* Rate */
-    var_Create( p_input, "rate", VLC_VAR_INTEGER );
-    val.i_int = p_input->p->i_rate;
+    var_Create( p_input, "rate", VLC_VAR_FLOAT );
+    val.f_float = (float)INPUT_RATE_DEFAULT / (float)p_input->p->i_rate;
     var_Change( p_input, "rate", VLC_VAR_SETVALUE, &val, NULL );
 
     var_Create( p_input, "rate-slower", VLC_VAR_VOID );
@@ -174,7 +178,7 @@ void input_ControlVarInit ( input_thread_t *p_input )
     var_Change( p_input, "program", VLC_VAR_SETTEXT, &text, NULL );
 
     /* Programs */
-    var_Create( p_input, "programs", VLC_VAR_LIST | VLC_VAR_DOINHERIT );
+    var_Create( p_input, "programs", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
     text.psz_string = _("Programs");
     var_Change( p_input, "programs", VLC_VAR_SETTEXT, &text, NULL );
 
@@ -216,12 +220,17 @@ void input_ControlVarInit ( input_thread_t *p_input )
     text.psz_string = _("Subtitles Track");
     var_Change( p_input, "spu-es", VLC_VAR_SETTEXT, &text, NULL );
 
+    var_Create( p_input, "sub-margin", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
+
     /* Special read only objects variables for intf */
     var_Create( p_input, "bookmarks", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
 
     var_Create( p_input, "length",  VLC_VAR_TIME );
     val.i_time = 0;
     var_Change( p_input, "length", VLC_VAR_SETVALUE, &val, NULL );
+
+    var_Create( p_input, "bit-rate", VLC_VAR_INTEGER );
+    var_Create( p_input, "sample-rate", VLC_VAR_INTEGER );
 
     if( !p_input->b_preparsing )
     {
@@ -241,7 +250,8 @@ void input_ControlVarInit ( input_thread_t *p_input )
  *****************************************************************************/
 void input_ControlVarStop( input_thread_t *p_input )
 {
-    InputDelCallbacks( p_input, p_input_callbacks );
+    if( !p_input->b_preparsing )
+        InputDelCallbacks( p_input, p_input_callbacks );
 
     if( p_input->p->i_title > 0 )
     {
@@ -353,7 +363,7 @@ void input_ControlVarNavigation( input_thread_t *p_input )
 void input_ControlVarTitle( input_thread_t *p_input, int i_title )
 {
     input_title_t *t = p_input->p->title[i_title];
-    vlc_value_t val, text;
+    vlc_value_t text;
     int  i;
 
     /* Create/Destroy command variables */
@@ -362,7 +372,7 @@ void input_ControlVarTitle( input_thread_t *p_input, int i_title )
         var_Destroy( p_input, "next-chapter" );
         var_Destroy( p_input, "prev-chapter" );
     }
-    else if( var_Get( p_input, "next-chapter", &val ) != VLC_SUCCESS )
+    else if( var_Type( p_input, "next-chapter" ) == 0 )
     {
         var_Create( p_input, "next-chapter", VLC_VAR_VOID );
         text.psz_string = _("Next chapter");
@@ -379,6 +389,7 @@ void input_ControlVarTitle( input_thread_t *p_input, int i_title )
     var_Change( p_input, "chapter", VLC_VAR_CLEARCHOICES, NULL, NULL );
     for( i = 0; i <  t->i_seekpoint; i++ )
     {
+        vlc_value_t val;
         val.i_int = i;
 
         if( t->seekpoint[i]->psz_name == NULL ||
@@ -557,20 +568,55 @@ static int RateCallback( vlc_object_t *p_this, char const *psz_cmd,
                          vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
-    VLC_UNUSED(oldval); VLC_UNUSED(p_data);
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data); VLC_UNUSED(psz_cmd);
 
-    /* Problem with this way: the "rate" variable is update after the input thread do the change */
-    if( !strcmp( psz_cmd, "rate-slower" ) )
+    newval.i_int = INPUT_RATE_DEFAULT / newval.f_float;
+    input_ControlPush( p_input, INPUT_CONTROL_SET_RATE, &newval );
+
+    return VLC_SUCCESS;
+}
+
+static int RateOffsetCallback( vlc_object_t *p_this, char const *psz_cmd,
+                               vlc_value_t oldval, vlc_value_t newval, void *p_data )
+{
+    input_thread_t *p_input = (input_thread_t*)p_this;
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data); VLC_UNUSED(newval);
+
+    static const float pf_rate[] = {
+        1.0/64, 1.0/32, 1.0/16, 1.0/8, 1.0/4, 1.0/3, 1.0/2, 2.0/3,
+        1.0/1,
+        3.0/2, 2.0/1, 3.0/1, 4.0/1, 8.0/1, 16.0/1, 32.0/1, 64.0/1,
+    };
+    const unsigned i_rate_count = sizeof(pf_rate)/sizeof(*pf_rate);
+
+    const float f_rate = var_GetFloat( p_input, "rate" );
+
+    /* Determine the factor closest to the current rate */
+    float f_error;
+    int i_idx;
+    for( unsigned i = 0; i < i_rate_count; i++ )
     {
-        input_ControlPush( p_input, INPUT_CONTROL_SET_RATE_SLOWER, NULL );
+        const float f_test_e = fabs( fabs( f_rate ) - pf_rate[i] );
+        if( i == 0 || f_test_e < f_error )
+        {
+            i_idx = i;
+            f_error = f_test_e;
+        }
     }
-    else if( !strcmp( psz_cmd, "rate-faster" ) )
+    assert( i_idx < (int)i_rate_count );
+
+    /* */
+    i_idx += strcmp( psz_cmd, "rate-faster" ) == 0 ? 1 : -1;
+    if( i_idx >= 0 && i_idx < (int)i_rate_count )
     {
-        input_ControlPush( p_input, INPUT_CONTROL_SET_RATE_FASTER, NULL );
-    }
-    else
-    {
-        input_ControlPush( p_input, INPUT_CONTROL_SET_RATE, &newval );
+        const float f_rate_min = (float)INPUT_RATE_DEFAULT / INPUT_RATE_MAX;
+        const float f_rate_max = (float)INPUT_RATE_DEFAULT / INPUT_RATE_MIN;
+        const float f_sign = f_rate >= 0 ? +1. : -1.;
+
+        var_SetFloat( p_input, "rate",
+                      f_sign * __MAX( __MIN( pf_rate[i_idx],
+                                             f_rate_max ),
+                                      f_rate_min ) );
     }
     return VLC_SUCCESS;
 }
@@ -713,16 +759,6 @@ static int SeekpointCallback( vlc_object_t *p_this, char const *psz_cmd,
     else
     {
         input_ControlPush( p_input, INPUT_CONTROL_SET_SEEKPOINT, &newval );
-        val.i_int = newval.i_int;
-    }
-
-    /* Actualize "title %2i" variable */
-    if( val.i_int >= 0 && val.i_int < count.i_int )
-    {
-        int i_title = var_GetInteger( p_input, "title" );
-        char psz_titlevar[10] = {0};
-        snprintf( psz_titlevar, 10, "title %2i", i_title );
-        var_Change( p_input, psz_titlevar, VLC_VAR_SETVALUE, &val, NULL );
     }
 
     return VLC_SUCCESS;

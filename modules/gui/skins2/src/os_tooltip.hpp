@@ -2,7 +2,7 @@
  * os_tooltip.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c3da5a60a8086761c610bcb132d92b6a12e3afd1 $
+ * $Id: 0e7fe5e2878b74f0d1c60cc6cacf3adbfa50a101 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,9 +17,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef OS_TOOLTIP_HPP
@@ -33,17 +33,17 @@ class OSGraphics;
 /// Base class for OS specific Tooltip Windows
 class OSTooltip: public SkinObject
 {
-    public:
-        virtual ~OSTooltip() {}
+public:
+    virtual ~OSTooltip() { }
 
-        /// Show the tooltip
-        virtual void show( int left, int top, OSGraphics &rText ) = 0;
+    /// Show the tooltip
+    virtual void show( int left, int top, OSGraphics &rText ) = 0;
 
-        /// Hide the tooltip
-        virtual void hide() = 0;
+    /// Hide the tooltip
+    virtual void hide() = 0;
 
-    protected:
-        OSTooltip( intf_thread_t *pIntf ): SkinObject( pIntf ) {}
+protected:
+    OSTooltip( intf_thread_t *pIntf ): SkinObject( pIntf ) { }
 };
 
 #endif

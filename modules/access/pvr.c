@@ -2,7 +2,7 @@
  * pvr.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 70d0127afe6802cb6eebf26f4aeb724ebcc40e74 $
+ * $Id: f044cece86d693d5399ebe183381791c53b0b4a5 $
  *
  * Authors: Eric Petit <titer@videolan.org>
  *          Paul Corke <paulc@datatote.co.uk>
@@ -32,12 +32,11 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_access.h>
+#include <vlc_fs.h>
 
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <errno.h>
 #include <linux/types.h>
 #include <sys/ioctl.h>
 #include <sys/poll.h>
@@ -664,7 +663,7 @@ static int Open( vlc_object_t * p_this )
     free( psz_tofree );
 
     /* open the device */
-    p_sys->i_fd = open( p_sys->psz_videodev, O_RDWR );
+    p_sys->i_fd = vlc_open( p_sys->psz_videodev, O_RDWR );
     if( p_sys->i_fd < 0 )
     {
         msg_Err( p_access, "Cannot open device %s (%m).",
@@ -774,7 +773,7 @@ static int Open( vlc_object_t * p_this )
         if ( (p_sys->i_frequency >= pi_radio_range[0])
               && (p_sys->i_frequency <= pi_radio_range[1]) )
         {
-            p_sys->i_radio_fd = open( p_sys->psz_radiodev, O_RDWR );
+            p_sys->i_radio_fd = vlc_open( p_sys->psz_radiodev, O_RDWR );
             if( p_sys->i_radio_fd < 0 )
             {
                 msg_Err( p_access, "Cannot open radio device (%m)." );

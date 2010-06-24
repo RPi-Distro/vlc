@@ -2,7 +2,7 @@
  * Controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: dc2983df34b291da27e33815f78a43ce3db480e7 $
+ * $Id: 328ec14242ffb1d0a135dab129a405da72ae4c11 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -43,7 +43,7 @@
 SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
                           bool b_shiny, bool b_special )
                          : QWidget( _parent ), p_intf( _p_intf),
-                           b_my_volume( false )
+                           b_is_muted( false )
 {
     /* We need a layout for this widget */
     QHBoxLayout *layout = new QHBoxLayout( this );
@@ -51,7 +51,7 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
 
     /* We need a Label for the pix */
     volMuteLabel = new QLabel;
-    volMuteLabel->setPixmap( QPixmap( ":/volume-medium" ) );
+    volMuteLabel->setPixmap( QPixmap( ":/toolbar/volume-medium" ) );
 
     /* We might need a subLayout too */
     QVBoxLayout *subLayout;
@@ -71,7 +71,7 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
 
         volumeControlWidget = new QFrame;
         subLayout = new QVBoxLayout( volumeControlWidget );
-        subLayout->setLayoutMargins( 4, 4, 4, 4, 4 );
+        subLayout->setContentsMargins( 4, 4, 4, 4 );
         volumeMenu = new QMenu( this );
 
         QWidgetAction *widgetAction = new QWidgetAction( volumeControlWidget );
@@ -87,21 +87,16 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
     {
         volumeSlider = new SoundSlider( this,
             config_GetInt( p_intf, "volume-step" ),
-            config_GetInt( p_intf, "qt-volume-complete" ),
-            config_GetPsz( p_intf, "qt-slider-colours" ) );
+            var_InheritBool( p_intf, "qt-volume-complete" ),
+            var_InheritString( p_intf, "qt-slider-colours" ) );
     }
     else
     {
         volumeSlider = new QSlider( NULL );
         volumeSlider->setOrientation( b_special ? Qt::Vertical
                                                 : Qt::Horizontal );
-        volumeSlider->setMaximum( config_GetInt( p_intf, "qt-volume-complete" )
+        volumeSlider->setMaximum( var_InheritBool( p_intf, "qt-volume-complete" )
                                   ? 400 : 200 );
-    }
-    if( volumeSlider->orientation() ==  Qt::Horizontal )
-    {
-        volumeSlider->setMaximumSize( QSize( 200, 40 ) );
-        volumeSlider->setMinimumSize( QSize( 85, 30 ) );
     }
 
     volumeSlider->setFocusPolicy( Qt::NoFocus );
@@ -111,15 +106,15 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
         layout->addWidget( volumeSlider, 0, Qt::AlignBottom  );
 
     /* Set the volume from the config */
-    volumeSlider->setValue( ( config_GetInt( p_intf, "volume" ) ) *
-                              VOLUME_MAX / (AOUT_VOLUME_MAX/2) );
-
+    libUpdateVolume();
     /* Force the update at build time in order to have a muted icon if needed */
-    updateVolume( volumeSlider->value() );
+    updateMuteStatus();
 
     /* Volume control connection */
-    CONNECT( volumeSlider, valueChanged( int ), this, updateVolume( int ) );
-    CONNECT( THEMIM, volumeChanged( void ), this, updateVolume( void ) );
+    CONNECT( volumeSlider, valueChanged( int ), this, refreshLabels( void ) );
+    CONNECT( volumeSlider, sliderMoved( int ), this, userUpdateVolume( int ) );
+    CONNECT( THEMIM, volumeChanged( void ), this, libUpdateVolume( void ) );
+    CONNECT( THEMIM, soundMuteChanged( void ), this, updateMuteStatus( void ) );
 }
 
 SoundWidget::~SoundWidget()
@@ -128,48 +123,77 @@ SoundWidget::~SoundWidget()
     delete volumeControlWidget;
 }
 
-void SoundWidget::updateVolume( int i_sliderVolume )
+void SoundWidget::refreshLabels()
 {
-    if( !b_my_volume )
+    int i_sliderVolume = volumeSlider->value();
+
+    if( b_is_muted )
     {
-        int i_res = i_sliderVolume  * (AOUT_VOLUME_MAX / 2) / VOLUME_MAX;
-        aout_VolumeSet( p_intf, i_res );
-    }
-    if( i_sliderVolume == 0 )
-    {
-        volMuteLabel->setPixmap( QPixmap(":/volume-muted" ) );
-        volMuteLabel->setToolTip( qtr( "Unmute" ) );
+        volMuteLabel->setPixmap( QPixmap(":/toolbar/volume-muted" ) );
+        volMuteLabel->setToolTip(qfu(vlc_pgettext("Tooltip|Unmute", "Unmute")));
         return;
     }
 
     if( i_sliderVolume < VOLUME_MAX / 3 )
-        volMuteLabel->setPixmap( QPixmap( ":/volume-low" ) );
+        volMuteLabel->setPixmap( QPixmap( ":/toolbar/volume-low" ) );
     else if( i_sliderVolume > (VOLUME_MAX * 2 / 3 ) )
-        volMuteLabel->setPixmap( QPixmap( ":/volume-high" ) );
-    else volMuteLabel->setPixmap( QPixmap( ":/volume-medium" ) );
-    volMuteLabel->setToolTip( qtr( "Mute" ) );
+        volMuteLabel->setPixmap( QPixmap( ":/toolbar/volume-high" ) );
+    else volMuteLabel->setPixmap( QPixmap( ":/toolbar/volume-medium" ) );
+    volMuteLabel->setToolTip( qfu(vlc_pgettext("Tooltip|Mute", "Mute")) );
 }
 
-void SoundWidget::updateVolume()
+/* volumeSlider changed value event slot */
+void SoundWidget::userUpdateVolume( int i_sliderVolume )
+{
+    /* Only if volume is set by user action on slider */
+    setMuted( false );
+    playlist_t *p_playlist = pl_Get( p_intf );
+    int i_res = i_sliderVolume  * (AOUT_VOLUME_MAX / 2) / VOLUME_MAX;
+    aout_VolumeSet( p_playlist, i_res );
+}
+
+/* libvlc changed value event slot */
+void SoundWidget::libUpdateVolume()
 {
     /* Audio part */
     audio_volume_t i_volume;
-    aout_VolumeGet( p_intf, &i_volume );
+    playlist_t *p_playlist = pl_Get( p_intf );
+
+    aout_VolumeGet( p_playlist, &i_volume );
     i_volume = ( ( i_volume + 1 ) *  VOLUME_MAX )/ (AOUT_VOLUME_MAX/2);
     int i_gauge = volumeSlider->value();
-    b_my_volume = false;
-    if( i_volume - i_gauge > 1 || i_gauge - i_volume > 1 )
+    if ( !b_is_muted && /* do not show mute effect on volume (set to 0) */
+        ( i_volume - i_gauge > 1 || i_gauge - i_volume > 1 )
+    )
     {
-        b_my_volume = true;
         volumeSlider->setValue( i_volume );
-        b_my_volume = false;
     }
+}
+
+/* libvlc mute/unmute event slot */
+void SoundWidget::updateMuteStatus()
+{
+    playlist_t *p_playlist = pl_Get( p_intf );
+    b_is_muted = aout_IsMuted( VLC_OBJECT(p_playlist) );
+
+    SoundSlider *soundSlider = qobject_cast<SoundSlider *>(volumeSlider);
+    if( soundSlider )
+        soundSlider->setMuted( b_is_muted );
+    refreshLabels();
 }
 
 void SoundWidget::showVolumeMenu( QPoint pos )
 {
+    volumeMenu->setFixedHeight( volumeMenu->sizeHint().height() );
     volumeMenu->exec( QCursor::pos() - pos - QPoint( 0, volumeMenu->height()/2 )
                           + QPoint( width(), height() /2) );
+}
+
+void SoundWidget::setMuted( bool mute )
+{
+    b_is_muted = mute;
+    playlist_t *p_playlist = pl_Get( p_intf );
+    aout_SetMute( VLC_OBJECT(p_playlist), NULL, mute );
 }
 
 bool SoundWidget::eventFilter( QObject *obj, QEvent *e )
@@ -184,7 +208,7 @@ bool SoundWidget::eventFilter( QObject *obj, QEvent *e )
         }
         else
         {
-            aout_VolumeMute( p_intf, NULL );
+            setMuted( !b_is_muted );
         }
         e->accept();
         return true;
@@ -201,7 +225,7 @@ bool SoundWidget::eventFilter( QObject *obj, QEvent *e )
  **/
 void PlayButton::updateButton( bool b_playing )
 {
-    setIcon( b_playing ? QIcon( ":/pause_b" ) : QIcon( ":/play_b" ) );
+    setIcon( b_playing ? QIcon( ":/toolbar/pause_b" ) : QIcon( ":/toolbar/play_b" ) );
     setToolTip( b_playing ? qtr( "Pause the playback" )
                           : qtr( I_PLAY_TOOLTIP ) );
 }
@@ -210,20 +234,25 @@ void AtoB_Button::setIcons( bool timeA, bool timeB )
 {
     if( !timeA && !timeB)
     {
-        setIcon( QIcon( ":/atob_nob" ) );
+        setIcon( QIcon( ":/toolbar/atob_nob" ) );
         setToolTip( qtr( "Loop from point A to point B continuously\n"
                          "Click to set point A" ) );
     }
     else if( timeA && !timeB )
     {
-        setIcon( QIcon( ":/atob_noa" ) );
+        setIcon( QIcon( ":/toolbar/atob_noa" ) );
         setToolTip( qtr( "Click to set point B" ) );
     }
     else if( timeA && timeB )
     {
-        setIcon( QIcon( ":/atob" ) );
+        setIcon( QIcon( ":/toolbar/atob" ) );
         setToolTip( qtr( "Stop the A to B loop" ) );
     }
 }
 
-
+void LoopButton::updateIcons( int value )
+{
+    setChecked( value != NORMAL );
+    setIcon( ( value == REPEAT_ONE ) ? QIcon( ":/buttons/playlist/repeat_one" )
+                                     : QIcon( ":/buttons/playlist/repeat_all" ) );
+}

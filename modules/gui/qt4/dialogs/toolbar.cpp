@@ -1,8 +1,8 @@
 /*****************************************************************************
- * ToolbarEdit.cpp : ToolbarEdit and About dialogs
+ * ToolbarEdit.cpp : ToolbarEdit dialog
  ****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: 78aab015c460794e1a194cb64ef2dd066f181a0b $
+ * Copyright (C) 2008-2009 the VideoLAN team
+ * $Id: 17ec24da8fe5a1d3c3ee1e16a7f694001454afd9 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -36,15 +36,19 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QListWidget>
+#include <QSpinBox>
 
 #include <QDragEnterEvent>
 #include <QDialogButtonBox>
 #include <QInputDialog>
 
+#include <assert.h>
+
 ToolbarEditDialog::ToolbarEditDialog( QWidget *_w, intf_thread_t *_p_intf)
                   : QVLCDialog( _w,  _p_intf )
 {
     setWindowTitle( qtr( "Toolbars Editor" ) );
+    setWindowRole( "vlc-toolbars-editor" );
     QGridLayout *mainLayout = new QGridLayout( this );
     setMinimumWidth( 600 );
     setAttribute( Qt::WA_DeleteOnClose );
@@ -82,7 +86,7 @@ ToolbarEditDialog::ToolbarEditDialog( QWidget *_w, intf_thread_t *_p_intf)
                 getSettings()->value( "MainWindow/ToolbarPos", 0 ).toInt() ) );
     mainTboxLayout->addWidget( positionCombo, 0, 2, 1, 1 );
 
-    QLabel *line1Label = new QLabel( "Line 1:" );
+    QLabel *line1Label = new QLabel( qtr("Line 1:") );
     QString line1 = getSettings()->value( "MainWindow/MainToolbar1",
                                           MAIN_TB1_DEFAULT ).toString();
     controller1 = new DroppingController( p_intf, line1,
@@ -90,7 +94,7 @@ ToolbarEditDialog::ToolbarEditDialog( QWidget *_w, intf_thread_t *_p_intf)
     mainTboxLayout->addWidget( line1Label, 1, 0, 1, 1 );
     mainTboxLayout->addWidget( controller1, 1, 1, 1, 2 );
 
-    QLabel *line2Label = new QLabel( "Line 2:" );
+    QLabel *line2Label = new QLabel( qtr("Line 2:") );
     QString line2 = getSettings()->value( "MainWindow/MainToolbar2",
                                           MAIN_TB2_DEFAULT ).toString();
     controller2 = new DroppingController( p_intf, line2,
@@ -144,7 +148,7 @@ ToolbarEditDialog::ToolbarEditDialog( QWidget *_w, intf_thread_t *_p_intf)
     QToolButton *newButton = new QToolButton;
     newButton->setIcon( QIcon( ":/new" ) );
     QToolButton *deleteButton = new QToolButton;
-    deleteButton->setIcon( QIcon( ":/clear" ) );
+    deleteButton->setIcon( QIcon( ":/toolbar/clear" ) );
     deleteButton->setToolTip( qtr( "Delete the current profile" ) );
 
     profileBoxLayout->addWidget( profileLabel, 0, 0 );
@@ -290,12 +294,12 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
     }
 
     /* Spacers are yet again a different thing */
-    QListWidgetItem *widgetItem = new QListWidgetItem( QIcon( ":/space" ),
+    QListWidgetItem *widgetItem = new QListWidgetItem( QIcon( ":/toolbar/space" ),
             qtr( "Spacer" ), this );
     widgetItem->setData( Qt::UserRole, WIDGET_SPACER );
     addItem( widgetItem );
 
-    widgetItem = new QListWidgetItem( QIcon( ":/space" ),
+    widgetItem = new QListWidgetItem( QIcon( ":/toolbar/space" ),
             qtr( "Expanding Spacer" ), this );
     widgetItem->setData( Qt::UserRole, WIDGET_SPACER_EXTEND );
     addItem( widgetItem );
@@ -346,7 +350,7 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
             {
                 QListWidgetItem *widgetItem = new QListWidgetItem( this );
                 widgetItem->setText( qtr("Small Volume") );
-                widgetItem->setIcon( QIcon( ":/volume-medium" ) );
+                widgetItem->setIcon( QIcon( ":/toolbar/volume-medium" ) );
                 widgetItem->setData( Qt::UserRole, QVariant( i ) );
                 addItem( widgetItem );
             }
@@ -366,15 +370,15 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
                 discLayout->setSpacing( 0 ); discLayout->setMargin( 0 );
 
                 QToolButton *prevSectionButton = new QToolButton( discFrame );
-                prevSectionButton->setIcon( QIcon( ":/dvd_prev" ) );
+                prevSectionButton->setIcon( QIcon( ":/toolbar/dvd_prev" ) );
                 discLayout->addWidget( prevSectionButton );
 
                 QToolButton *menuButton = new QToolButton( discFrame );
-                menuButton->setIcon( QIcon( ":/dvd_menu" ) );
+                menuButton->setIcon( QIcon( ":/toolbar/dvd_menu" ) );
                 discLayout->addWidget( menuButton );
 
                 QToolButton *nextButton = new QToolButton( discFrame );
-                nextButton->setIcon( QIcon( ":/dvd_next" ) );
+                nextButton->setIcon( QIcon( ":/toolbar/dvd_next" ) );
                 discLayout->addWidget( nextButton );
 
                 widget = discFrame;
@@ -388,11 +392,11 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
                 telexLayout->setSpacing( 0 ); telexLayout->setMargin( 0 );
 
                 QToolButton *telexOn = new QToolButton( telexFrame );
-                telexOn->setIcon( QIcon( ":/tv" ) );
+                telexOn->setIcon( QIcon( ":/toolbar/tv" ) );
                 telexLayout->addWidget( telexOn );
 
                 QToolButton *telexTransparent = new QToolButton;
-                telexOn->setIcon( QIcon( ":/tvtelx" ) );
+                telexOn->setIcon( QIcon( ":/toolbar/tvtelx" ) );
                 telexLayout->addWidget( telexTransparent );
 
                 QSpinBox *telexPage = new QSpinBox;
@@ -505,7 +509,7 @@ void DroppingController::createAndAddWidget( QBoxLayout *controlLayout,
     if( i_type == WIDGET_SPACER || i_type == WIDGET_SPACER_EXTEND )
     {
         QLabel *label = new QLabel( this );
-        label->setPixmap( QPixmap( ":/space" ) );
+        label->setPixmap( QPixmap( ":/toolbar/space" ) );
         if( i_type == WIDGET_SPACER_EXTEND )
         {
             label->setSizePolicy( QSizePolicy::MinimumExpanding,

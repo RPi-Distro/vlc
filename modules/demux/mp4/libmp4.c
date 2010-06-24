@@ -1,8 +1,8 @@
 /*****************************************************************************
  * libmp4.c : LibMP4 library for mp4 module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: dafe7d0c936b7e4f05b4979a5fce751a1969714b $
+ * Copyright (C) 2001-2004, 2010 the VideoLAN team
+ * $Id: 0a1829f976718629cfc0c27f78b4ef80f9813ada $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -20,13 +20,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
 #include <vlc_common.h>
-
-
 #include <vlc_demux.h>
 
 #ifdef HAVE_ZLIB_H
@@ -38,9 +37,10 @@
 
 /*****************************************************************************
  * Here are defined some macro to make life simpler but before using it
- *  *look* at the code.
+ * *look* at the code.
  *
  *****************************************************************************/
+
 #define MP4_BOX_HEADERSIZE( p_box )             \
   ( 8 + ( p_box->i_shortsize == 1 ? 8 : 0 )     \
       + ( p_box->i_type == FOURCC_uuid ? 16 : 0 ) )
@@ -114,7 +114,7 @@
 
 
 /* Some assumptions:
-        * The input method HAVE to be seekable
+ * The input method HAS to be seekable
 
 */
 
@@ -1136,6 +1136,86 @@ static int MP4_ReadBox_dac3( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_READBOX_EXIT( 1 );
 }
 
+static int MP4_ReadBox_enda( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_Box_data_enda_t *p_enda;
+    MP4_READBOX_ENTER( MP4_Box_data_enda_t );
+
+    p_enda = p_box->data.p_enda;
+
+    MP4_GET2BYTES( p_enda->i_little_endian );
+
+#ifdef MP4_VERBOSE
+    msg_Dbg( p_stream,
+             "read box: \"enda\" little_endian=%d", p_enda->i_little_endian );
+#endif
+    MP4_READBOX_EXIT( 1 );
+}
+
+static int MP4_ReadBox_gnre( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_Box_data_gnre_t *p_gnre;
+    MP4_READBOX_ENTER( MP4_Box_data_gnre_t );
+
+    p_gnre = p_box->data.p_gnre;
+
+    uint32_t i_data_len;
+    uint32_t i_data_tag;
+
+    MP4_GET4BYTES( i_data_len );
+    MP4_GETFOURCC( i_data_tag );
+    if( i_data_len < 10 || i_data_tag != VLC_FOURCC('d', 'a', 't', 'a') )
+        MP4_READBOX_EXIT( 0 );
+
+    uint32_t i_version;
+    uint32_t i_reserved;
+    MP4_GET4BYTES( i_version );
+    MP4_GET4BYTES( i_reserved );
+    MP4_GET2BYTES( p_gnre->i_genre );
+    if( p_gnre->i_genre == 0 )
+        MP4_READBOX_EXIT( 0 );
+#ifdef MP4_VERBOSE
+    msg_Dbg( p_stream, "read box: \"gnre\" genre=%i", p_gnre->i_genre );
+#endif
+
+    MP4_READBOX_EXIT( 1 );
+}
+
+static int MP4_ReadBox_trkn( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_Box_data_trkn_t *p_trkn;
+    MP4_READBOX_ENTER( MP4_Box_data_trkn_t );
+
+    p_trkn = p_box->data.p_trkn;
+
+    uint32_t i_data_len;
+    uint32_t i_data_tag;
+
+    MP4_GET4BYTES( i_data_len );
+    MP4_GETFOURCC( i_data_tag );
+    if( i_data_len < 12 || i_data_tag != VLC_FOURCC('d', 'a', 't', 'a') )
+        MP4_READBOX_EXIT( 0 );
+
+    uint32_t i_version;
+    uint32_t i_reserved;
+    MP4_GET4BYTES( i_version );
+    MP4_GET4BYTES( i_reserved );
+    MP4_GET4BYTES( p_trkn->i_track_number );
+#ifdef MP4_VERBOSE
+    msg_Dbg( p_stream, "read box: \"trkn\" number=%i", p_trkn->i_track_number );
+#endif
+    if( i_data_len > 15 )
+    {
+       MP4_GET4BYTES( p_trkn->i_track_total );
+#ifdef MP4_VERBOSE
+       msg_Dbg( p_stream, "read box: \"trkn\" total=%i", p_trkn->i_track_total );
+#endif
+    }
+
+    MP4_READBOX_EXIT( 1 );
+}
+
+
 static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
 {
     unsigned int i;
@@ -1243,12 +1323,12 @@ static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
 
     if( p_box->i_type == FOURCC_drms )
     {
-        p_box->data.p_sample_soun->p_drms =
-            drms_alloc( config_GetHomeDir() );
-
-        if( p_box->data.p_sample_soun->p_drms == NULL )
+        char *home = config_GetUserDir( VLC_HOME_DIR );
+        if( home != NULL )
         {
-            msg_Err( p_stream, "drms_alloc() failed" );
+            p_box->data.p_sample_soun->p_drms = drms_alloc( home );
+            if( p_box->data.p_sample_soun->p_drms == NULL )
+                msg_Err( p_stream, "drms_alloc() failed" );
         }
     }
 
@@ -1344,12 +1424,12 @@ int MP4_ReadBox_sample_vide( stream_t *p_stream, MP4_Box_t *p_box )
 
     if( p_box->i_type == FOURCC_drmi )
     {
-        p_box->data.p_sample_vide->p_drms =
-            drms_alloc( config_GetHomeDir() );
-
-        if( p_box->data.p_sample_vide->p_drms == NULL )
+        char *home = config_GetUserDir( VLC_HOME_DIR );
+        if( home != NULL )
         {
-            msg_Err( p_stream, "drms_alloc() failed" );
+            p_box->data.p_sample_vide->p_drms = drms_alloc( home );
+            if( p_box->data.p_sample_vide->p_drms == NULL )
+                msg_Err( p_stream, "drms_alloc() failed" );
         }
     }
 
@@ -2036,7 +2116,7 @@ static int MP4_ReadBox_cmov( stream_t *p_stream, MP4_Box_t *p_box )
     p_cmvd->data.p_cmvd->p_data = p_data;
     p_cmvd->data.p_cmvd->b_compressed = 0;
 
-    msg_Dbg( p_stream, "read box: \"cmov\" box succesfully uncompressed" );
+    msg_Dbg( p_stream, "read box: \"cmov\" box successfully uncompressed" );
 
     /* now create a memory stream */
     p_stream_memory =
@@ -2554,6 +2634,9 @@ static const struct
     { FOURCC_cmvd,  MP4_ReadBox_cmvd,       MP4_FreeBox_cmvd },
     { FOURCC_avcC,  MP4_ReadBox_avcC,       MP4_FreeBox_avcC },
     { FOURCC_dac3,  MP4_ReadBox_dac3,       MP4_FreeBox_Common },
+    { FOURCC_enda,  MP4_ReadBox_enda,       MP4_FreeBox_Common },
+    { FOURCC_gnre,  MP4_ReadBox_gnre,       MP4_FreeBox_Common },
+    { FOURCC_trkn,  MP4_ReadBox_trkn,       MP4_FreeBox_Common },
 
     /* Nothing to do with this box */
     { FOURCC_mdat,  MP4_ReadBoxSkip,        MP4_FreeBox_Common },
@@ -2829,7 +2912,6 @@ MP4_Box_t *MP4_BoxGetRoot( stream_t *s )
 
     if( i_result )
     {
-        MP4_Box_t *p_child;
         MP4_Box_t *p_moov;
         MP4_Box_t *p_cmov;
 
@@ -2851,7 +2933,7 @@ MP4_Box_t *MP4_BoxGetRoot( stream_t *s )
             p_moov->p_father = p_root;
 
             /* insert this new moov box as first child of p_root */
-            p_moov->p_next = p_child = p_root->p_first;
+            p_moov->p_next = p_root->p_first;
             p_root->p_first = p_moov;
         }
     }

@@ -2,7 +2,7 @@
  * tree.c : Playlist tree walking functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 1eab637c0ab5aa5467e2a02f5f29b8ea7d7d5101 $
+ * $Id: e7fdebeaeb4eb2413086d39b660b580a2a6cee2e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -50,14 +50,15 @@ playlist_item_t *GetPrevItem( playlist_t *p_playlist,
  * \param p_playlist the playlist
  * \param psz_name the name of the node
  * \param p_parent the parent node to attach to or NULL if no attach
+ * \param i_pos position of the node in the parent, PLAYLIST_END to append to end.
  * \param p_flags miscellaneous flags
  * \param p_input the input_item to attach to or NULL if it has to be created
  * \return the new node
  */
 playlist_item_t * playlist_NodeCreate( playlist_t *p_playlist,
                                        const char *psz_name,
-                                       playlist_item_t *p_parent, int i_flags,
-                                       input_item_t *p_input )
+                                       playlist_item_t *p_parent, int i_pos,
+                                       int i_flags, input_item_t *p_input )
 {
     input_item_t *p_new_input = NULL;
     playlist_item_t *p_item;
@@ -79,10 +80,14 @@ playlist_item_t * playlist_NodeCreate( playlist_t *p_playlist,
     ARRAY_APPEND(p_playlist->all_items, p_item);
 
     if( p_parent != NULL )
-        playlist_NodeAppend( p_playlist, p_item, p_parent );
+        playlist_NodeInsert( p_playlist, p_item, p_parent,
+                             i_pos == PLAYLIST_END ? -1 : i_pos );
     playlist_SendAddNotify( p_playlist, p_item->i_id,
                             p_parent ? p_parent->i_id : -1,
                             !( i_flags & PLAYLIST_NO_REBUILD ));
+
+    p_item->i_flags |= i_flags;
+
     return p_item;
 }
 
@@ -144,7 +149,7 @@ int playlist_NodeDelete( playlist_t *p_playlist, playlist_item_t *p_root,
     }
 
     /* Delete the children */
-    for( i =  p_root->i_children - 1 ; i >= 0; i-- )
+    for( i = p_root->i_children - 1 ; i >= 0; i-- )
     {
         if( p_root->pp_children[i]->i_children > -1 )
         {
@@ -153,8 +158,7 @@ int playlist_NodeDelete( playlist_t *p_playlist, playlist_item_t *p_root,
         }
         else if( b_delete_items )
         {
-            playlist_DeleteFromItemId( p_playlist,
-                                       p_root->pp_children[i]->i_id );
+            playlist_DeleteItem( p_playlist, p_root->pp_children[i], true );
         }
     }
     /* Delete the node */
@@ -267,96 +271,9 @@ playlist_item_t *playlist_ChildSearchName( playlist_item_t *p_node,
     return NULL;
 }
 
-/**
- * Create a pair of nodes in the category and onelevel trees.
- * They share the same input item.
- * \param p_playlist the playlist
- * \param psz_name the name of the nodes
- * \param pp_node_cat pointer to return the node in category tree
- * \param pp_node_one pointer to return the node in onelevel tree
- * \param b_for_sd For Services Discovery ? (make node read-only and unskipping)
- */
-void playlist_NodesPairCreate( playlist_t *p_playlist, const char *psz_name,
-                               playlist_item_t **pp_node_cat,
-                               playlist_item_t **pp_node_one,
-                               bool b_for_sd )
-{
-    PL_ASSERT_LOCKED;
-    *pp_node_cat = playlist_NodeCreate( p_playlist, psz_name,
-                                        p_playlist->p_root_category, 0, NULL );
-    *pp_node_one = playlist_NodeCreate( p_playlist, psz_name,
-                                        p_playlist->p_root_onelevel, 0,
-                                        (*pp_node_cat)->p_input );
-    if( b_for_sd )
-    {
-        (*pp_node_cat)->i_flags |= PLAYLIST_RO_FLAG;
-        (*pp_node_cat)->i_flags |= PLAYLIST_SKIP_FLAG;
-        (*pp_node_one)->i_flags |= PLAYLIST_RO_FLAG;
-        (*pp_node_one)->i_flags |= PLAYLIST_SKIP_FLAG;
-    }
-}
-
-/**
- * Get the node in the preferred tree from a node in one of category
- * or onelevel tree.
- */
-playlist_item_t * playlist_GetPreferredNode( playlist_t *p_playlist,
-                                             playlist_item_t *p_node )
-{
-    PL_ASSERT_LOCKED;
-    int i;
-    if( p_node->p_parent == p_playlist->p_root_category )
-    {
-        if( pl_priv(p_playlist)->b_tree || p_node->p_input->b_prefers_tree )
-            return p_node;
-        for( i = 0 ; i< p_playlist->p_root_onelevel->i_children; i++ )
-        {
-            if( p_playlist->p_root_onelevel->pp_children[i]->p_input->i_id ==
-                    p_node->p_input->i_id )
-                return p_playlist->p_root_onelevel->pp_children[i];
-        }
-    }
-    else if( p_node->p_parent == p_playlist->p_root_onelevel )
-    {
-        if( !pl_priv(p_playlist)->b_tree || !p_node->p_input->b_prefers_tree )
-            return p_node;
-        for( i = 0 ; i< p_playlist->p_root_category->i_children; i++ )
-        {
-            if( p_playlist->p_root_category->pp_children[i]->p_input->i_id ==
-                    p_node->p_input->i_id )
-                return p_playlist->p_root_category->pp_children[i];
-        }
-    }
-    return NULL;
-}
-
 /**********************************************************************
  * Tree walking functions
  **********************************************************************/
-
-playlist_item_t *playlist_GetLastLeaf(playlist_t *p_playlist,
-                                      playlist_item_t *p_root )
-{
-    PL_ASSERT_LOCKED;
-    int i;
-    playlist_item_t *p_item;
-    for ( i = p_root->i_children - 1; i >= 0; i-- )
-    {
-        if( p_root->pp_children[i]->i_children == -1 )
-            return p_root->pp_children[i];
-        else if( p_root->pp_children[i]->i_children > 0)
-        {
-             p_item = playlist_GetLastLeaf( p_playlist,
-                                            p_root->pp_children[i] );
-            if ( p_item != NULL )
-                return p_item;
-        }
-        else if( i == 0 )
-            return NULL;
-    }
-    return NULL;
-}
-
 /**
  * Finds the next item to play
  *
@@ -415,7 +332,7 @@ playlist_item_t *playlist_GetPrevLeaf( playlist_t *p_playlist,
     PL_ASSERT_LOCKED;
     playlist_item_t *p_prev;
 
-    PL_DEBUG2( "finding previous os %s within %s", PLI_NAME( p_item ),
+    PL_DEBUG2( "finding previous of %s within %s", PLI_NAME( p_item ),
                                                    PLI_NAME( p_root ) );
     assert( p_root && p_root->i_children != -1 );
 

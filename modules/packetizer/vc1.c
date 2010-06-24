@@ -2,7 +2,7 @@
  * vc1.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: c422f7a3dc73fed98bbb6f0b4e78bd5648496f03 $
+ * $Id: e3c7daa0942c3386418136f193a0d046715f5d85 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -35,8 +35,8 @@
 #include <vlc_codec.h>
 #include <vlc_block.h>
 
-#include "vlc_bits.h"
-#include "vlc_block_helper.h"
+#include <vlc_bits.h>
+#include <vlc_block_helper.h>
 #include "packetizer_helper.h"
 
 /*****************************************************************************
@@ -130,7 +130,7 @@ static int Open( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec !=  VLC_FOURCC( 'W', 'V', 'C', '1' ) )
+    if( p_dec->fmt_in.i_codec !=  VLC_CODEC_VC1 )
         return VLC_EGENERIC;
 
     p_dec->pf_packetize = Packetize;
@@ -138,10 +138,12 @@ static int Open( vlc_object_t *p_this )
     /* Create the output format */
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
     p_dec->p_sys = p_sys = malloc( sizeof( decoder_sys_t ) );
+    if( unlikely( !p_sys ) )
+        return VLC_ENOMEM;
 
     packetizer_Init( &p_sys->packetizer,
                      p_vc1_startcode, sizeof(p_vc1_startcode),
-                     NULL, 0,
+                     NULL, 0, 4,
                      PacketizeReset, PacketizeParse, PacketizeValidate, p_dec );
 
     p_sys->b_sequence_header = false;
@@ -203,7 +205,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
     if( p_sys->b_check_startcode && pp_block && *pp_block )
     {
         /* Fix syntax for (some?) VC1 from asf */
-        const int i_startcode = sizeof(p_vc1_startcode);
+        const unsigned i_startcode = sizeof(p_vc1_startcode);
 
         block_t *p_block = *pp_block;
         if( p_block->i_buffer > 0 &&
@@ -309,7 +311,7 @@ static void BuildExtraData( decoder_t *p_dec )
     if( p_es->i_extra != i_extra )
     {
         p_es->i_extra = i_extra;
-        p_es->p_extra = realloc( p_dec->fmt_out.p_extra, p_es->i_extra );
+        p_es->p_extra = xrealloc( p_es->p_extra, p_es->i_extra );
     }
     memcpy( p_es->p_extra,
             p_sys->sh.p_sh->p_buffer, p_sys->sh.p_sh->i_buffer );
@@ -490,7 +492,8 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_used_ts, block_t *p_frag )
                 const int i_display_width  = bs_read( &s, 14 )+1;
                 const int i_display_height = bs_read( &s, 14 )+1;
 
-                p_es->video.i_aspect = VOUT_ASPECT_FACTOR * i_display_width / i_display_height;
+                p_es->video.i_sar_num = i_display_width  * p_es->video.i_height;
+                p_es->video.i_sar_den = i_display_height * p_es->video.i_width;
 
                 if( !p_sys->b_sequence_header )
                     msg_Dbg( p_dec, "display size %dx%d", i_display_width, i_display_height );

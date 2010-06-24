@@ -2,7 +2,7 @@
  * rawvid.c : raw video input module for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 22ded17b8e4ce979880fc7cdc50781fbc172f88c $
+ * $Id: 120c9e391ab77d7cbf9652d127641460c9a2b882 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan d.t org>
@@ -33,7 +33,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
-#include <vlc_vout.h>                                     /* vout_InitFormat */
 #include <assert.h>
 
 /*****************************************************************************
@@ -113,12 +112,12 @@ struct preset_t
 
 static const struct preset_t p_presets[] =
 {
-    { "sqcif", 128, 96, 30000, 1001, 4,3, VLC_FOURCC('Y','V','1','2') },
-    { "qcif", 176, 144, 30000, 1001, 4,3, VLC_FOURCC('Y','V','1','2') },
-    { "cif", 352, 288, 30000, 1001, 4,3, VLC_FOURCC('Y','V','1','2') },
-    { "4cif", 704, 576, 30000, 1001, 4,3, VLC_FOURCC('Y','V','1','2') },
-    { "16cif", 1408, 1152, 30000, 1001, 4,3, VLC_FOURCC('Y','V','1','2') },
-    { "yuv", 176, 144, 25, 1, 4,3, VLC_FOURCC('Y','V','1','2') },
+    { "sqcif", 128, 96, 30000, 1001, 4,3, VLC_CODEC_YV12 },
+    { "qcif", 176, 144, 30000, 1001, 4,3, VLC_CODEC_YV12 },
+    { "cif", 352, 288, 30000, 1001, 4,3, VLC_CODEC_YV12 },
+    { "4cif", 704, 576, 30000, 1001, 4,3, VLC_CODEC_YV12 },
+    { "16cif", 1408, 1152, 30000, 1001, 4,3, VLC_CODEC_YV12 },
+    { "yuv", 176, 144, 25, 1, 4,3, VLC_CODEC_YV12 },
     { NULL, 0, 0, 0, 0, 0,0, 0 }
 };
 
@@ -133,7 +132,8 @@ static int Open( vlc_object_t * p_this )
     unsigned u_fps_num=0, u_fps_den=1;
     char *psz_ext;
     vlc_fourcc_t i_chroma;
-    unsigned int i_aspect = 0;
+    unsigned int i_sar_num = 0;
+    unsigned int i_sar_den = 0;
     const struct preset_t *p_preset = NULL;
     const uint8_t *p_peek;
     bool b_valid = false;
@@ -183,7 +183,8 @@ static int Open( vlc_object_t * p_this )
         i_height = p_preset->i_height;
         u_fps_num = p_preset->u_fps_num;
         u_fps_den = p_preset->u_fps_den;
-        i_aspect = VOUT_ASPECT_FACTOR * p_preset->u_ar_num / p_preset->u_ar_den;
+        i_sar_num = p_preset->u_ar_num * p_preset->i_height;
+        i_sar_den = p_preset->u_ar_den * p_preset->i_width;
         i_chroma = p_preset->i_chroma;
     }
 
@@ -227,23 +228,23 @@ static int Open( vlc_object_t * p_this )
         READ_FRAC( " F", u_fps_num, u_fps_den );
         READ_FRAC( " A", a, b );
 #undef READ_FRAC
-        /* Try to calculate aspect ratio here, rather than store ratio
-         * in u_ar_{num,den}, since width may be overridden by then.
-         * Plus, a:b is sar. */
         if( b != 0 )
-            i_aspect = VOUT_ASPECT_FACTOR * a * i_width / (b * i_height);
+        {
+            i_sar_num = a;
+            i_sar_den = b;
+        }
 
         psz_buf = strstr( psz+9, " C" );
         if( psz_buf )
         {
             static const struct { const char *psz_name; vlc_fourcc_t i_fcc; } formats[] =
             {
-                { "420jpeg",    VLC_FOURCC('I','4','2','0') },
-                { "420paldv",   VLC_FOURCC('I','4','2','0') },
-                { "420",        VLC_FOURCC('I','4','2','0') },
-                { "422",        VLC_FOURCC('I','4','2','2') },
-                { "444",        VLC_FOURCC('I','4','4','4') },
-                { "mono",       VLC_FOURCC('G','R','E','Y') },
+                { "420jpeg",    VLC_CODEC_I420 },
+                { "420paldv",   VLC_CODEC_I420 },
+                { "420",        VLC_CODEC_I420 },
+                { "422",        VLC_CODEC_I422 },
+                { "444",        VLC_CODEC_I444 },
+                { "mono",       VLC_CODEC_GREY },
                 { NULL, 0 }
             };
             bool b_found = false;
@@ -330,8 +331,8 @@ static int Open( vlc_object_t * p_this )
         if( psz_denominator )
         {
             *psz_denominator++ = '\0';
-            i_aspect = atoi( psz_tmp ) * VOUT_ASPECT_FACTOR
-                     / atoi( psz_denominator );
+            i_sar_num = atoi( psz_tmp )         * i_height;
+            i_sar_den = atoi( psz_denominator ) * i_width;
         }
         free( psz_tmp );
     }
@@ -350,22 +351,24 @@ static int Open( vlc_object_t * p_this )
     }
 
     /* fixup anything missing with sensible assumptions */
-    if( !i_aspect )
+    if( i_sar_num <= 0 || i_sar_den <= 0 )
     {
         /* assume 1:1 sar */
-        i_aspect = i_width * VOUT_ASPECT_FACTOR / i_height;
+        i_sar_num = 1;
+        i_sar_den = 1;
     }
 
     es_format_Init( &p_sys->fmt_video, VIDEO_ES, i_chroma );
-    vout_InitFormat( &p_sys->fmt_video.video, i_chroma, i_width, i_height,
-                     i_aspect );
+    video_format_Setup( &p_sys->fmt_video.video,
+                        i_chroma, i_width, i_height,
+                        i_sar_num, i_sar_den );
 
     vlc_ureduce( &p_sys->fmt_video.video.i_frame_rate,
                  &p_sys->fmt_video.video.i_frame_rate_base,
                  u_fps_num, u_fps_den, 0);
     date_Init( &p_sys->pcr, p_sys->fmt_video.video.i_frame_rate,
                p_sys->fmt_video.video.i_frame_rate_base );
-    date_Set( &p_sys->pcr, 1 );
+    date_Set( &p_sys->pcr, 0 );
 
     if( !p_sys->fmt_video.video.i_bits_per_pixel )
     {
@@ -380,6 +383,7 @@ static int Open( vlc_object_t * p_this )
     return VLC_SUCCESS;
 
 error:
+    stream_Seek( p_demux->s, 0 ); // Workaround, but y4m uses stream_ReadLines
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -406,7 +410,7 @@ static int Demux( demux_t *p_demux )
     mtime_t i_pcr = date_Get( &p_sys->pcr );
 
     /* Call the pace control */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, i_pcr );
+    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + i_pcr );
 
     if( p_sys->b_y4m )
     {
@@ -431,7 +435,7 @@ static int Demux( demux_t *p_demux )
         return 0;
     }
 
-    p_block->i_dts = p_block->i_pts = i_pcr;
+    p_block->i_dts = p_block->i_pts = VLC_TS_0 + i_pcr;
     es_out_Send( p_demux->out, p_sys->p_es_video, p_block );
 
     date_Increment( &p_sys->pcr, 1 );

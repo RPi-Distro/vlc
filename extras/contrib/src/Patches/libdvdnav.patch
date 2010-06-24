@@ -1,8 +1,8 @@
 Index: src/vm/vm.c
 ===================================================================
---- src/vm/vm.c	(revision 1136)
+--- src/vm/vm.c	(revision 1199)
 +++ src/vm/vm.c	(working copy)
-@@ -146,12 +146,11 @@
+@@ -172,12 +172,11 @@
      fd = open(device, O_RDONLY);
      if (fd > 0) {
        off = lseek( fd, 32 * (off_t) DVD_VIDEO_LB_LEN, SEEK_SET );
@@ -17,7 +17,7 @@ Index: src/vm/vm.c
              if((data[i] == 0)) break;
              if((data[i] > 32) && (data[i] < 127)) {
                fprintf(MSG_OUT, "%c", data[i]);
-@@ -159,10 +158,12 @@
+@@ -185,10 +184,12 @@
                fprintf(MSG_OUT, " ");
              }
            }
@@ -35,7 +35,7 @@ Index: src/vm/vm.c
                fprintf(MSG_OUT, "%c", data[i]);
 Index: Makefile.am
 ===================================================================
---- Makefile.am	(revision 1136)
+--- Makefile.am	(revision 1199)
 +++ Makefile.am	(working copy)
 @@ -1,7 +1,7 @@
  include $(top_srcdir)/misc/Makefile.common
@@ -46,16 +46,3 @@ Index: Makefile.am
  
  EXTRA_DIST = autogen.sh \
  	     AUTHORS \
-Index: src/dvdnav_internal.h
-===================================================================
---- src/dvdnav_internal.h	(revision 1136)
-+++ src/dvdnav_internal.h	working copy)
-@@ -37,7 +37,7 @@
- #define pthread_mutex_init(a, b) InitializeCriticalSection(a)
- #define pthread_mutex_lock(a)    EnterCriticalSection(a)
- #define pthread_mutex_unlock(a)  LeaveCriticalSection(a)
--#define pthread_mutex_destroy(a)
-+#define pthread_mutex_destroy(a) DeleteCriticalSection(a)
-
- /* replacement gettimeofday implementation */
- #include <sys/timeb.h>

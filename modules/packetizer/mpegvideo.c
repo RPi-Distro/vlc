@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: a3a4020cfb57a89edda885b03f58bb6ec3e218d3 $
+ * $Id: 56bbcee4c8d39bf480301860a2fe298a3bfdb6ab $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -73,7 +73,7 @@ vlc_module_begin ()
     set_capability( "packetizer", 50 )
     set_callbacks( Open, Close )
 
-    add_bool( "packetizer-mpegvideo-sync-iframe", 0, NULL, SYNC_INTRAFRAME_TEXT,
+    add_bool( "packetizer-mpegvideo-sync-iframe", false, NULL, SYNC_INTRAFRAME_TEXT,
               SYNC_INTRAFRAME_LONGTEXT, true )
 vlc_module_end ()
 
@@ -153,14 +153,12 @@ static int Open( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC( 'm', 'p', 'g', '1' ) &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC( 'm', 'p', 'g', '2' ) &&
-        p_dec->fmt_in.i_codec != VLC_FOURCC( 'm', 'p', 'g', 'v' ) )
-    {
+    if( p_dec->fmt_in.i_codec != VLC_CODEC_MPGV )
         return VLC_EGENERIC;
-    }
 
-    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_FOURCC('m','p','g','v') );
+    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_CODEC_MPGV );
+    p_dec->fmt_out.i_original_fourcc = p_dec->fmt_in.i_original_fourcc;
+
     p_dec->pf_packetize = Packetize;
     p_dec->pf_get_cc = GetCc;
 
@@ -172,7 +170,7 @@ static int Open( vlc_object_t *p_this )
     /* Misc init */
     packetizer_Init( &p_sys->packetizer,
                      p_mp2v_startcode, sizeof(p_mp2v_startcode),
-                     NULL, 0,
+                     NULL, 0, 4,
                      PacketizeReset, PacketizeParse, PacketizeValidate, p_dec );
 
     p_sys->p_seq = NULL;
@@ -181,7 +179,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->pp_last = &p_sys->p_frame;
     p_sys->b_frame_slice = false;
 
-    p_sys->i_dts = p_sys->i_pts = 0;
+    p_sys->i_dts = p_sys->i_pts = VLC_TS_INVALID;
 
     p_sys->i_frame_rate = 1;
     p_sys->i_frame_rate_base = 1;
@@ -197,8 +195,8 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_progressive_frame = 0;
     p_sys->b_inited = 0;
 
-    p_sys->i_interpolated_dts = 0;
-    p_sys->i_last_ref_pts = 0;
+    p_sys->i_interpolated_dts = VLC_TS_INVALID;
+    p_sys->i_last_ref_pts = VLC_TS_INVALID;
     p_sys->b_second_field = 0;
 
     p_sys->b_discontinuity = false;
@@ -296,10 +294,10 @@ static void PacketizeReset( void *p_private, bool b_broken )
         p_sys->pp_last = &p_sys->p_frame;
         p_sys->b_frame_slice = false;
     }
-    p_sys->i_dts = 0;
-    p_sys->i_pts = 0;
-    p_sys->i_interpolated_dts = 0;
-    p_sys->i_last_ref_pts = 0;
+    p_sys->i_dts =
+    p_sys->i_pts =
+    p_sys->i_interpolated_dts =
+    p_sys->i_last_ref_pts = VLC_TS_INVALID;
 }
 
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t *p_block )
@@ -307,7 +305,7 @@ static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t *p_bl
     decoder_t *p_dec = p_private;
 
     /* Check if we have a picture start code */
-    *pb_ts_used = p_block->i_buffer >= 4 && p_block->p_buffer[3] == 0x00;
+    *pb_ts_used = p_block->p_buffer[3] == 0x00;
 
     return ParseMPEGBlock( p_dec, p_block );
 }
@@ -335,16 +333,16 @@ static int PacketizeValidate( void *p_private, block_t *p_au )
 
     /* We've just started the stream, wait for the first PTS.
      * We discard here so we can still get the sequence header. */
-    if( p_sys->i_dts <= 0 && p_sys->i_pts <= 0 &&
-        p_sys->i_interpolated_dts <= 0 )
+    if( p_sys->i_dts <= VLC_TS_INVALID && p_sys->i_pts <= VLC_TS_INVALID &&
+        p_sys->i_interpolated_dts <= VLC_TS_INVALID )
     {
         msg_Dbg( p_dec, "need a starting pts/dts" );
         return VLC_EGENERIC;
     }
 
     /* When starting the stream we can have the first frame with
-     * a null DTS (i_interpolated_pts is initialized to 0) */
-    if( !p_au->i_dts )
+     * an invalid DTS (i_interpolated_pts is initialized to VLC_TS_INVALID) */
+    if( p_au->i_dts <= VLC_TS_INVALID )
         p_au->i_dts = p_au->i_pts;
 
     return VLC_SUCCESS;
@@ -427,15 +425,18 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         {
             /* Trivial case (DTS == PTS) */
             /* Correct interpolated dts when we receive a new pts/dts */
-            if( p_sys->i_pts > 0 ) p_sys->i_interpolated_dts = p_sys->i_pts;
-            if( p_sys->i_dts > 0 ) p_sys->i_interpolated_dts = p_sys->i_dts;
+            if( p_sys->i_pts > VLC_TS_INVALID )
+                p_sys->i_interpolated_dts = p_sys->i_pts;
+            if( p_sys->i_dts > VLC_TS_INVALID )
+                p_sys->i_interpolated_dts = p_sys->i_dts;
         }
         else
         {
             /* Correct interpolated dts when we receive a new pts/dts */
-            if( p_sys->i_last_ref_pts > 0 && !p_sys->b_second_field )
+            if(p_sys->i_last_ref_pts > VLC_TS_INVALID && !p_sys->b_second_field)
                 p_sys->i_interpolated_dts = p_sys->i_last_ref_pts;
-            if( p_sys->i_dts > 0 ) p_sys->i_interpolated_dts = p_sys->i_dts;
+            if( p_sys->i_dts > VLC_TS_INVALID )
+                p_sys->i_interpolated_dts = p_sys->i_dts;
 
             if( !p_sys->b_second_field )
                 p_sys->i_last_ref_pts = p_sys->i_pts;
@@ -445,7 +446,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         p_sys->i_interpolated_dts += i_duration;
 
         /* Set PTS only if we have a B frame or if it comes from the stream */
-        if( p_sys->i_pts > 0 )
+        if( p_sys->i_pts > VLC_TS_INVALID )
         {
             p_pic->i_pts = p_sys->i_pts;
         }
@@ -455,7 +456,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         }
         else
         {
-            p_pic->i_pts = 0;
+            p_pic->i_pts = VLC_TS_INVALID;
         }
 
         switch ( p_sys->i_picture_type )
@@ -609,10 +610,12 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
              * of aspect ratio change, we're screwed. --Meuuh
              */
 #if 0
-            p_dec->fmt_out.video.i_aspect =
+            p_dec->fmt_out.video.i_sar_num =
                 mpeg2_aspect[p_sys->i_aspect_ratio_info][0] *
-                VOUT_ASPECT_FACTOR /
-                mpeg2_aspect[p_sys->i_aspect_ratio_info][1];
+                p_dec->fmt_out.video.i_height;
+            p_dec->fmt_out.video.i_sar_den =
+                mpeg2_aspect[p_sys->i_aspect_ratio_info][1] *
+                p_dec->fmt_out.video.i_width;
 #endif
 
         }
@@ -627,7 +630,8 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
     }
     else if( p_frag->p_buffer[3] == 0xb2 && p_frag->i_buffer > 4 )
     {
-        cc_Extract( &p_sys->cc, &p_frag->p_buffer[4], p_frag->i_buffer - 4 );
+        cc_Extract( &p_sys->cc, p_sys->i_top_field_first,
+                    &p_frag->p_buffer[4], p_frag->i_buffer - 4 );
     }
     else if( p_frag->p_buffer[3] == 0x00 )
     {

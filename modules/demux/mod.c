@@ -2,7 +2,7 @@
  * mod.c: MOD file demuxer (using libmodplug)
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 745e2673c326014ba357692a814028e1e9c7106f $
+ * $Id: 37deaa496a059b230b99705121868e255dc6d837 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  * Konstanty Bialkowski <konstanty@ieee.org>
@@ -235,7 +235,7 @@ static int Open( vlc_object_t *p_this )
 
     /* init time */
     date_Init( &p_sys->pts, settings.mFrequency, 1 );
-    date_Set( &p_sys->pts, 1 );
+    date_Set( &p_sys->pts, 0 );
     p_sys->i_length = ModPlug_GetLength( p_sys->f ) * INT64_C(1000);
 
     msg_Dbg( p_demux, "MOD loaded name=%s lenght=%"PRId64"ms",
@@ -292,13 +292,15 @@ static int Demux( demux_t *p_demux )
     }
     p_frame->i_buffer = i_read;
     p_frame->i_dts =
-    p_frame->i_pts = date_Increment( &p_sys->pts, p_frame->i_buffer / i_bk );
+    p_frame->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
 
     /* Set PCR */
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_frame->i_pts );
 
     /* Send data */
     es_out_Send( p_demux->out, p_sys->es, p_frame );
+
+    date_Increment( &p_sys->pts, i_read / i_bk );
 
     return 1;
 }
@@ -318,7 +320,9 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         pf = (double*) va_arg( args, double* );
         if( p_sys->i_length > 0 )
         {
-            *pf = (double)date_Get( &p_sys->pts ) / (double)p_sys->i_length;
+            double current = date_Get( &p_sys->pts );
+            double length = p_sys->i_length;
+            *pf = current / length;
             return VLC_SUCCESS;
         }
         return VLC_EGENERIC;
@@ -330,7 +334,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         if( i64 >= 0 && i64 <= p_sys->i_length )
         {
             ModPlug_Seek( p_sys->f, i64 / 1000 );
-            date_Set( &p_sys->pts, i64 + 1 );
+            date_Set( &p_sys->pts, i64 );
 
             return VLC_SUCCESS;
         }
@@ -352,7 +356,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         if( i64 >= 0 && i64 <= p_sys->i_length )
         {
             ModPlug_Seek( p_sys->f, i64 / 1000 );
-            date_Set( &p_sys->pts, i64 + 1 );
+            date_Set( &p_sys->pts, i64 );
 
             return VLC_SUCCESS;
         }
@@ -407,7 +411,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         if( i_num_instruments )
         {
             i_temp_index = 0;
-            for( int i = 0; i < i_num_instruments && i_temp_index < sizeof(psz_temp); i++ )
+            for( unsigned i = 0; i < i_num_instruments && i_temp_index < sizeof(psz_temp); i++ )
             {
                 char lBuffer[33];
                 ModPlug_InstrumentName( p_sys->f, i, lBuffer );
@@ -419,7 +423,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         }
 
         /* Make list of samples */
-        for( int i = 0; i < i_num_samples && i_temp_index < sizeof(psz_temp); i++ )
+        for( unsigned int i = 0; i < i_num_samples && i_temp_index < sizeof(psz_temp); i++ )
         {
             char psz_buffer[33];
             ModPlug_SampleName( p_sys->f, i, psz_buffer );

@@ -2,7 +2,7 @@
  * i420_rgb.c : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2004, 2008 the VideoLAN team
- * $Id: 1d56f9d5f1ce8e44ec03bd7dfbe6a8a7014b5e72 $
+ * $Id: cfaeb734a5679c1d6f0d73cf46406ef2f7004415 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -35,11 +35,21 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
-#include <vlc_vout.h>
 
 #include "i420_rgb.h"
 #if defined (MODULE_NAME_IS_i420_rgb)
 #   include "i420_rgb_c.h"
+    static picture_t *I420_RGB8_Filter         ( filter_t *, picture_t * );
+//    static picture_t *I420_RGB16_dither_Filter ( filter_t *, picture_t * );
+    static picture_t *I420_RGB16_Filter        ( filter_t *, picture_t * );
+    static picture_t *I420_RGB32_Filter        ( filter_t *, picture_t * );
+#else
+    static picture_t *I420_R5G5B5_Filter       ( filter_t *, picture_t * );
+    static picture_t *I420_R5G6B5_Filter       ( filter_t *, picture_t * );
+    static picture_t *I420_A8R8G8B8_Filter     ( filter_t *, picture_t * );
+    static picture_t *I420_R8G8B8A8_Filter     ( filter_t *, picture_t * );
+    static picture_t *I420_B8G8R8A8_Filter     ( filter_t *, picture_t * );
+    static picture_t *I420_A8B8G8R8_Filter     ( filter_t *, picture_t * );
 #endif
 
 /*****************************************************************************
@@ -77,12 +87,10 @@ vlc_module_begin ()
     set_description( N_( "MMX I420,IYUV,YV12 to "
                         "RV15,RV16,RV24,RV32 conversions") )
     set_capability( "video filter2", 100 )
-    add_requirement( MMX )
 #elif defined (MODULE_NAME_IS_i420_rgb_sse2)
     set_description( N_( "SSE2 I420,IYUV,YV12 to "
                         "RV15,RV16,RV24,RV32 conversions") )
     set_capability( "video filter2", 120 )
-    add_requirement( SSE2 )
 #endif
     set_callbacks( Activate, Deactivate )
 vlc_module_end ()
@@ -107,18 +115,17 @@ static int Activate( vlc_object_t *p_this )
 
     switch( p_filter->fmt_in.video.i_chroma )
     {
-        case VLC_FOURCC('Y','V','1','2'):
-        case VLC_FOURCC('I','4','2','0'):
-        case VLC_FOURCC('I','Y','U','V'):
+        case VLC_CODEC_YV12:
+        case VLC_CODEC_I420:
             switch( p_filter->fmt_out.video.i_chroma )
             {
 #if defined (MODULE_NAME_IS_i420_rgb)
-                case VLC_FOURCC('R','G','B','2'):
+                case VLC_CODEC_RGB8:
                     p_filter->pf_video_filter = I420_RGB8_Filter;
                     break;
 #endif
-                case VLC_FOURCC('R','V','1','5'):
-                case VLC_FOURCC('R','V','1','6'):
+                case VLC_CODEC_RGB15:
+                case VLC_CODEC_RGB16:
 #if ! defined (MODULE_NAME_IS_i420_rgb)
                     /* If we don't have support for the bitmasks, bail out */
                     if( ( p_filter->fmt_out.video.i_rmask == 0x7c00
@@ -147,10 +154,10 @@ static int Activate( vlc_object_t *p_this )
 
 #if 0
                 /* Hmmm, is there only X11 using 32bits per pixel for RV24 ? */
-                case VLC_FOURCC('R','V','2','4'):
+                case VLC_CODEC_RGB24:
 #endif
 
-                case VLC_FOURCC('R','V','3','2'):
+                case VLC_CODEC_RGB32:
 #if ! defined (MODULE_NAME_IS_i420_rgb)
                     /* If we don't have support for the bitmasks, bail out */
                     if( p_filter->fmt_out.video.i_rmask == 0x00ff0000
@@ -211,18 +218,18 @@ static int Activate( vlc_object_t *p_this )
     switch( p_filter->fmt_out.video.i_chroma )
     {
 #if defined (MODULE_NAME_IS_i420_rgb)
-        case VLC_FOURCC('R','G','B','2'):
+        case VLC_CODEC_RGB8:
             p_filter->p_sys->p_buffer = malloc( VOUT_MAX_WIDTH );
             break;
 #endif
 
-        case VLC_FOURCC('R','V','1','5'):
-        case VLC_FOURCC('R','V','1','6'):
+        case VLC_CODEC_RGB15:
+        case VLC_CODEC_RGB16:
             p_filter->p_sys->p_buffer = malloc( VOUT_MAX_WIDTH * 2 );
             break;
 
-        case VLC_FOURCC('R','V','2','4'):
-        case VLC_FOURCC('R','V','3','2'):
+        case VLC_CODEC_RGB24:
+        case VLC_CODEC_RGB32:
             p_filter->p_sys->p_buffer = malloc( VOUT_MAX_WIDTH * 4 );
             break;
 
@@ -239,7 +246,7 @@ static int Activate( vlc_object_t *p_this )
 
     p_filter->p_sys->p_offset = malloc( p_filter->fmt_out.video.i_width
                     * ( ( p_filter->fmt_out.video.i_chroma
-                           == VLC_FOURCC('R','G','B','2') ) ? 2 : 1 )
+                           == VLC_CODEC_RGB8 ) ? 2 : 1 )
                     * sizeof( int ) );
     if( p_filter->p_sys->p_offset == NULL )
     {
@@ -251,11 +258,11 @@ static int Activate( vlc_object_t *p_this )
 #if defined (MODULE_NAME_IS_i420_rgb)
     switch( p_filter->fmt_out.video.i_chroma )
     {
-    case VLC_FOURCC('R','G','B','2'):
+    case VLC_CODEC_RGB8:
         i_tables_size = sizeof( uint8_t ) * PALETTE_TABLE_SIZE;
         break;
-    case VLC_FOURCC('R','V','1','5'):
-    case VLC_FOURCC('R','V','1','6'):
+    case VLC_CODEC_RGB15:
+    case VLC_CODEC_RGB16:
         i_tables_size = sizeof( uint16_t ) * RGB_TABLE_SIZE;
         break;
     default: /* RV24, RV32 */
@@ -298,6 +305,7 @@ static void Deactivate( vlc_object_t *p_this )
 #if defined (MODULE_NAME_IS_i420_rgb)
 VIDEO_FILTER_WRAPPER( I420_RGB8 )
 VIDEO_FILTER_WRAPPER( I420_RGB16 )
+//VIDEO_FILTER_WRAPPER( I420_RGB16_dither )
 VIDEO_FILTER_WRAPPER( I420_RGB32 )
 #else
 VIDEO_FILTER_WRAPPER( I420_R5G5B5 )
@@ -348,13 +356,13 @@ static void SetYUV( filter_t *p_filter )
     /* Color: build red, green and blue tables */
     switch( p_filter->fmt_out.video.i_chroma )
     {
-    case VLC_FOURCC('R','G','B','2'):
+    case VLC_CODEC_RGB8:
         p_filter->p_sys->p_rgb8 = (uint8_t *)p_filter->p_sys->p_base;
         Set8bppPalette( p_filter, p_filter->p_sys->p_rgb8 );
         break;
 
-    case VLC_FOURCC('R','V','1','5'):
-    case VLC_FOURCC('R','V','1','6'):
+    case VLC_CODEC_RGB15:
+    case VLC_CODEC_RGB16:
         p_filter->p_sys->p_rgb16 = (uint16_t *)p_filter->p_sys->p_base;
         for( i_index = 0; i_index < RED_MARGIN; i_index++ )
         {
@@ -379,8 +387,8 @@ static void SetYUV( filter_t *p_filter )
         }
         break;
 
-    case VLC_FOURCC('R','V','2','4'):
-    case VLC_FOURCC('R','V','3','2'):
+    case VLC_CODEC_RGB24:
+    case VLC_CODEC_RGB32:
         p_filter->p_sys->p_rgb32 = (uint32_t *)p_filter->p_sys->p_base;
         for( i_index = 0; i_index < RED_MARGIN; i_index++ )
         {

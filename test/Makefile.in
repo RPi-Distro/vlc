@@ -38,10 +38,11 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 check_PROGRAMS = test_libvlc_core$(EXEEXT) test_libvlc_events$(EXEEXT) \
-	test_libvlc_media_list$(EXEEXT) \
+	test_libvlc_media$(EXEEXT) test_libvlc_media_list$(EXEEXT) \
+	test_libvlc_media_player$(EXEEXT) \
+	test_src_misc_variables$(EXEEXT)
+EXTRA_PROGRAMS = test_libvlc_meta$(EXEEXT) \
 	test_libvlc_media_list_player$(EXEEXT)
-EXTRA_PROGRAMS = test_libvlc_media_player$(EXEEXT) \
-	test_libvlc_meta$(EXEEXT)
 subdir = test
 DIST_COMMON = $(check_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in TODO
@@ -54,7 +55,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/m4/with_pkg.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -65,73 +67,108 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am_test_libvlc_core_OBJECTS = libvlc/test_libvlc_core-core.$(OBJEXT)
 test_libvlc_core_OBJECTS = $(am_test_libvlc_core_OBJECTS)
 test_libvlc_core_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-test_libvlc_core_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_libvlc_core_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+test_libvlc_core_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_libvlc_core_CFLAGS) $(CFLAGS) \
+	$(test_libvlc_core_LDFLAGS) $(LDFLAGS) -o $@
 am_test_libvlc_events_OBJECTS =  \
 	libvlc/test_libvlc_events-events.$(OBJEXT)
 test_libvlc_events_OBJECTS = $(am_test_libvlc_events_OBJECTS)
 test_libvlc_events_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-test_libvlc_events_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(test_libvlc_events_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+test_libvlc_events_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_libvlc_events_CFLAGS) $(CFLAGS) \
+	$(test_libvlc_events_LDFLAGS) $(LDFLAGS) -o $@
+am_test_libvlc_media_OBJECTS =  \
+	libvlc/test_libvlc_media-media.$(OBJEXT)
+test_libvlc_media_OBJECTS = $(am_test_libvlc_media_OBJECTS)
+test_libvlc_media_DEPENDENCIES = $(top_builddir)/src/libvlc.la
+test_libvlc_media_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_libvlc_media_CFLAGS) $(CFLAGS) \
+	$(test_libvlc_media_LDFLAGS) $(LDFLAGS) -o $@
 am_test_libvlc_media_list_OBJECTS =  \
 	libvlc/test_libvlc_media_list-media_list.$(OBJEXT)
 test_libvlc_media_list_OBJECTS = $(am_test_libvlc_media_list_OBJECTS)
 test_libvlc_media_list_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-test_libvlc_media_list_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(test_libvlc_media_list_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+test_libvlc_media_list_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_libvlc_media_list_CFLAGS) $(CFLAGS) \
+	$(test_libvlc_media_list_LDFLAGS) $(LDFLAGS) -o $@
 am_test_libvlc_media_list_player_OBJECTS = libvlc/test_libvlc_media_list_player-media_list_player.$(OBJEXT)
 test_libvlc_media_list_player_OBJECTS =  \
 	$(am_test_libvlc_media_list_player_OBJECTS)
 test_libvlc_media_list_player_DEPENDENCIES =  \
 	$(top_builddir)/src/libvlc.la
-test_libvlc_media_list_player_LINK = $(LIBTOOL) --tag=CC \
+test_libvlc_media_list_player_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_libvlc_media_list_player_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+	$(test_libvlc_media_list_player_LDFLAGS) $(LDFLAGS) -o $@
 am_test_libvlc_media_player_OBJECTS =  \
 	libvlc/test_libvlc_media_player-media_player.$(OBJEXT)
 test_libvlc_media_player_OBJECTS =  \
 	$(am_test_libvlc_media_player_OBJECTS)
 test_libvlc_media_player_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-test_libvlc_media_player_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(test_libvlc_media_player_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+test_libvlc_media_player_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_libvlc_media_player_CFLAGS) $(CFLAGS) \
+	$(test_libvlc_media_player_LDFLAGS) $(LDFLAGS) -o $@
 am_test_libvlc_meta_OBJECTS = libvlc/test_libvlc_meta-meta.$(OBJEXT)
 test_libvlc_meta_OBJECTS = $(am_test_libvlc_meta_OBJECTS)
 test_libvlc_meta_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-test_libvlc_meta_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_libvlc_meta_CFLAGS) \
-	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+test_libvlc_meta_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_libvlc_meta_CFLAGS) $(CFLAGS) \
+	$(test_libvlc_meta_LDFLAGS) $(LDFLAGS) -o $@
+am_test_src_misc_variables_OBJECTS =  \
+	src/misc/test_src_misc_variables-variables.$(OBJEXT)
+test_src_misc_variables_OBJECTS =  \
+	$(am_test_src_misc_variables_OBJECTS)
+test_src_misc_variables_DEPENDENCIES = $(top_builddir)/src/libvlc.la
+test_src_misc_variables_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_src_misc_variables_CFLAGS) $(CFLAGS) \
+	$(test_src_misc_variables_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
+AM_V_GEN = $(am__v_GEN_$(V))
+am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
+am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(test_libvlc_core_SOURCES) $(test_libvlc_events_SOURCES) \
-	$(test_libvlc_media_list_SOURCES) \
+	$(test_libvlc_media_SOURCES) $(test_libvlc_media_list_SOURCES) \
 	$(test_libvlc_media_list_player_SOURCES) \
 	$(test_libvlc_media_player_SOURCES) \
-	$(test_libvlc_meta_SOURCES)
+	$(test_libvlc_meta_SOURCES) $(test_src_misc_variables_SOURCES)
 DIST_SOURCES = $(test_libvlc_core_SOURCES) \
-	$(test_libvlc_events_SOURCES) \
+	$(test_libvlc_events_SOURCES) $(test_libvlc_media_SOURCES) \
 	$(test_libvlc_media_list_SOURCES) \
 	$(test_libvlc_media_list_player_SOURCES) \
 	$(test_libvlc_media_player_SOURCES) \
-	$(test_libvlc_meta_SOURCES)
+	$(test_libvlc_meta_SOURCES) $(test_src_misc_variables_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
@@ -139,11 +176,14 @@ red=; grn=; lgn=; blu=; std=
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
-ALLOCA = @ALLOCA@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = @AM_CPPFLAGS@
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARCH = @ARCH@
+ARM_NEON_CFLAGS = @ARM_NEON_CFLAGS@
 AS = @AS@
 ASM = @ASM@
 AUTOCONF = @AUTOCONF@
@@ -169,8 +209,6 @@ COPYRIGHT_MESSAGE = @COPYRIGHT_MESSAGE@
 COPYRIGHT_YEARS = @COPYRIGHT_YEARS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CSRI_CFLAGS = @CSRI_CFLAGS@
-CSRI_LIBS = @CSRI_LIBS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -179,6 +217,8 @@ CYGPATH = @CYGPATH@
 CYGPATH_W = @CYGPATH_W@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
+DC1394_CFLAGS = @DC1394_CFLAGS@
+DC1394_LIBS = @DC1394_LIBS@
 DCA_CFLAGS = @DCA_CFLAGS@
 DCA_LIBS = @DCA_LIBS@
 DEFS = @DEFS@
@@ -193,6 +233,8 @@ DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+DV_CFLAGS = @DV_CFLAGS@
+DV_LIBS = @DV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -201,27 +243,32 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FLAC_CFLAGS = @FLAC_CFLAGS@
+FLAC_LIBS = @FLAC_LIBS@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
 FLUIDSYNTH_LIBS = @FLUIDSYNTH_LIBS@
 FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
 FREETYPE_LIBS = @FREETYPE_LIBS@
 FRIBIDI_CFLAGS = @FRIBIDI_CFLAGS@
 FRIBIDI_LIBS = @FRIBIDI_LIBS@
+GCRYPT_CFLAGS = @GCRYPT_CFLAGS@
+GCRYPT_LIBS = @GCRYPT_LIBS@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GLIB2_CFLAGS = @GLIB2_CFLAGS@
-GLIB2_LIBS = @GLIB2_LIBS@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
 GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
+GOOM_CFLAGS = @GOOM_CFLAGS@
+GOOM_LIBS = @GOOM_LIBS@
 GREP = @GREP@
-GTK2_CFLAGS = @GTK2_CFLAGS@
-GTK2_LIBS = @GTK2_LIBS@
-HAL_CFLAGS = @HAL_CFLAGS@
-HAL_LIBS = @HAL_LIBS@
 HILDON_CFLAGS = @HILDON_CFLAGS@
+HILDON_FM_CFLAGS = @HILDON_FM_CFLAGS@
+HILDON_FM_LIBS = @HILDON_FM_LIBS@
 HILDON_LIBS = @HILDON_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -230,8 +277,11 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTLLIBS = @INTLLIBS@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+JACK_CFLAGS = @JACK_CFLAGS@
+JACK_LIBS = @JACK_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
+KDE4_CONFIG = @KDE4_CONFIG@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBASS_CFLAGS = @LIBASS_CFLAGS@
@@ -240,14 +290,12 @@ LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
 LIBCDDB_LIBS = @LIBCDDB_LIBS@
 LIBCDIO_CFLAGS = @LIBCDIO_CFLAGS@
 LIBCDIO_LIBS = @LIBCDIO_LIBS@
-LIBCDIO_PARANOIA_CFLAGS = @LIBCDIO_PARANOIA_CFLAGS@
-LIBCDIO_PARANOIA_LIBS = @LIBCDIO_PARANOIA_LIBS@
+LIBDL = @LIBDL@
 LIBEXT = @LIBEXT@
-LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
-LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
-LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
+LIBMODPLUG_CFLAGS = @LIBMODPLUG_CFLAGS@
+LIBMODPLUG_LIBS = @LIBMODPLUG_LIBS@
 LIBMPEG2_CFLAGS = @LIBMPEG2_CFLAGS@
 LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
@@ -257,15 +305,23 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIBV4L_CFLAGS = @LIBV4L_CFLAGS@
+LIBV4L_LIBS = @LIBV4L_LIBS@
+LIBVA_CFLAGS = @LIBVA_CFLAGS@
+LIBVA_LIBS = @LIBVA_LIBS@
+LIBVCDINFO_CFLAGS = @LIBVCDINFO_CFLAGS@
+LIBVCDINFO_LIBS = @LIBVCDINFO_LIBS@
+LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
+LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52tofloat32 = @LTLIBa52tofloat32@
-LTLIBa52tospdif = @LTLIBa52tospdif@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_alsa = @LTLIBaccess_alsa@
+LTLIBaccess_avio = @LTLIBaccess_avio@
 LTLIBaccess_dv = @LTLIBaccess_dv@
 LTLIBaccess_eyetv = @LTLIBaccess_eyetv@
 LTLIBaccess_gnomevfs = @LTLIBaccess_gnomevfs@
@@ -275,212 +331,114 @@ LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_oss = @LTLIBaccess_oss@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
+LTLIBaccess_sftp = @LTLIBaccess_sftp@
 LTLIBaccess_smb = @LTLIBaccess_smb@
-LTLIBadjust = @LTLIBadjust@
-LTLIBalphamask = @LTLIBalphamask@
 LTLIBalsa = @LTLIBalsa@
 LTLIBaout_directx = @LTLIBaout_directx@
-LTLIBaout_file = @LTLIBaout_file@
 LTLIBaout_sdl = @LTLIBaout_sdl@
 LTLIBasademux = @LTLIBasademux@
 LTLIBatmo = @LTLIBatmo@
-LTLIBaudio_format = @LTLIBaudio_format@
-LTLIBaudioscrobbler = @LTLIBaudioscrobbler@
 LTLIBauhal = @LTLIBauhal@
 LTLIBavcodec = @LTLIBavcodec@
 LTLIBavformat = @LTLIBavformat@
-LTLIBbandlimited_resampler = @LTLIBbandlimited_resampler@
 LTLIBbda = @LTLIBbda@
-LTLIBbeos = @LTLIBbeos@
-LTLIBblend = @LTLIBblend@
-LTLIBblendbench = @LTLIBblendbench@
-LTLIBbluescreen = @LTLIBbluescreen@
 LTLIBbonjour = @LTLIBbonjour@
 LTLIBcaca = @LTLIBcaca@
-LTLIBcanvas = @LTLIBcanvas@
 LTLIBcdda = @LTLIBcdda@
-LTLIBcddax = @LTLIBcddax@
-LTLIBchain = @LTLIBchain@
-LTLIBclone = @LTLIBclone@
-LTLIBcmml = @LTLIBcmml@
-LTLIBcolorthres = @LTLIBcolorthres@
-LTLIBconverter_float = @LTLIBconverter_float@
-LTLIBcrop = @LTLIBcrop@
-LTLIBcroppadd = @LTLIBcroppadd@
-LTLIBcsri = @LTLIBcsri@
 LTLIBdbus = @LTLIBdbus@
 LTLIBdc1394 = @LTLIBdc1394@
-LTLIBdeinterlace = @LTLIBdeinterlace@
 LTLIBdirac = @LTLIBdirac@
 LTLIBdirect3d = @LTLIBdirect3d@
 LTLIBdirectfb = @LTLIBdirectfb@
+LTLIBdirectx = @LTLIBdirectx@
 LTLIBdmo = @LTLIBdmo@
-LTLIBdolby_surround_decoder = @LTLIBdolby_surround_decoder@
 LTLIBdshow = @LTLIBdshow@
 LTLIBdtstofloat32 = @LTLIBdtstofloat32@
-LTLIBdtstospdif = @LTLIBdtstospdif@
 LTLIBdvb = @LTLIBdvb@
 LTLIBdvdnav = @LTLIBdvdnav@
 LTLIBdvdread = @LTLIBdvdread@
 LTLIBdynamicoverlay = @LTLIBdynamicoverlay@
-LTLIBequalizer = @LTLIBequalizer@
-LTLIBerase = @LTLIBerase@
-LTLIBextract = @LTLIBextract@
 LTLIBfaad = @LTLIBfaad@
-LTLIBfake = @LTLIBfake@
 LTLIBfb = @LTLIBfb@
 LTLIBfbosd = @LTLIBfbosd@
-LTLIBfloat32_mixer = @LTLIBfloat32_mixer@
+LTLIBflac = @LTLIBflac@
 LTLIBfluidsynth = @LTLIBfluidsynth@
-LTLIBfolder = @LTLIBfolder@
 LTLIBfreetype = @LTLIBfreetype@
-LTLIBgalaktos = @LTLIBgalaktos@
-LTLIBgaussianblur = @LTLIBgaussianblur@
-LTLIBgestures = @LTLIBgestures@
 LTLIBggi = @LTLIBggi@
 LTLIBglobalhotkeys = @LTLIBglobalhotkeys@
 LTLIBglwin32 = @LTLIBglwin32@
-LTLIBglx = @LTLIBglx@
 LTLIBgme = @LTLIBgme@
-LTLIBgnome2_main = @LTLIBgnome2_main@
-LTLIBgnome_main = @LTLIBgnome_main@
 LTLIBgnutls = @LTLIBgnutls@
 LTLIBgoom = @LTLIBgoom@
-LTLIBgradient = @LTLIBgradient@
-LTLIBgrain = @LTLIBgrain@
 LTLIBgrowl = @LTLIBgrowl@
 LTLIBgrowl_udp = @LTLIBgrowl_udp@
-LTLIBgtk2_main = @LTLIBgtk2_main@
-LTLIBgtk_main = @LTLIBgtk_main@
-LTLIBhal = @LTLIBhal@
 LTLIBhd1000a = @LTLIBhd1000a@
 LTLIBhd1000v = @LTLIBhd1000v@
-LTLIBheadphone_channel_mixer = @LTLIBheadphone_channel_mixer@
-LTLIBhotkeys = @LTLIBhotkeys@
-LTLIBhttp = @LTLIBhttp@
-LTLIBi420_rgb_mmx = @LTLIBi420_rgb_mmx@
-LTLIBi420_rgb_sse2 = @LTLIBi420_rgb_sse2@
-LTLIBi420_ymga = @LTLIBi420_ymga@
-LTLIBi420_ymga_mmx = @LTLIBi420_ymga_mmx@
-LTLIBi420_yuy2 = @LTLIBi420_yuy2@
-LTLIBi420_yuy2_altivec = @LTLIBi420_yuy2_altivec@
-LTLIBi420_yuy2_mmx = @LTLIBi420_yuy2_mmx@
-LTLIBi420_yuy2_sse2 = @LTLIBi420_yuy2_sse2@
-LTLIBi422_i420 = @LTLIBi422_i420@
-LTLIBi422_yuy2 = @LTLIBi422_yuy2@
-LTLIBi422_yuy2_mmx = @LTLIBi422_yuy2_mmx@
-LTLIBi422_yuy2_sse2 = @LTLIBi422_yuy2_sse2@
+LTLIBhildon = @LTLIBhildon@
 LTLIBid3tag = @LTLIBid3tag@
 LTLIBinhibit = @LTLIBinhibit@
-LTLIBinvert = @LTLIBinvert@
 LTLIBjack = @LTLIBjack@
 LTLIBkate = @LTLIBkate@
 LTLIBlibass = @LTLIBlibass@
 LTLIBlibmpeg2 = @LTLIBlibmpeg2@
-LTLIBlinear_resampler = @LTLIBlinear_resampler@
 LTLIBlirc = @LTLIBlirc@
 LTLIBlive555 = @LTLIBlive555@
-LTLIBlogo = @LTLIBlogo@
 LTLIBmacosx = @LTLIBmacosx@
-LTLIBmaemo = @LTLIBmaemo@
-LTLIBmagnify = @LTLIBmagnify@
-LTLIBmarq = @LTLIBmarq@
-LTLIBmemcpy3dn = @LTLIBmemcpy3dn@
-LTLIBmemcpyaltivec = @LTLIBmemcpyaltivec@
-LTLIBmemcpymmx = @LTLIBmemcpymmx@
-LTLIBmemcpymmxext = @LTLIBmemcpymmxext@
-LTLIBmga = @LTLIBmga@
+LTLIBmacosx_dialog_provider = @LTLIBmacosx_dialog_provider@
 LTLIBminimal_macosx = @LTLIBminimal_macosx@
 LTLIBmkv = @LTLIBmkv@
 LTLIBmod = @LTLIBmod@
-LTLIBmosaic = @LTLIBmosaic@
-LTLIBmotion = @LTLIBmotion@
-LTLIBmotionblur = @LTLIBmotionblur@
-LTLIBmotiondetect = @LTLIBmotiondetect@
 LTLIBmozilla = @LTLIBmozilla@
 LTLIBmpc = @LTLIBmpc@
 LTLIBmpgatofixed32 = @LTLIBmpgatofixed32@
-LTLIBmsn = @LTLIBmsn@
 LTLIBmtp = @LTLIBmtp@
 LTLIBmux_ogg = @LTLIBmux_ogg@
 LTLIBmux_ts = @LTLIBmux_ts@
 LTLIBncurses = @LTLIBncurses@
-LTLIBnoise = @LTLIBnoise@
-LTLIBnormvol = @LTLIBnormvol@
 LTLIBnotify = @LTLIBnotify@
-LTLIBntservice = @LTLIBntservice@
 LTLIBogg = @LTLIBogg@
+LTLIBoldhttp = @LTLIBoldhttp@
+LTLIBoldtelnet = @LTLIBoldtelnet@
 LTLIBomapfb = @LTLIBomapfb@
+LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopengl = @LTLIBopengl@
-LTLIBopengllayer = @LTLIBopengllayer@
-LTLIBopie = @LTLIBopie@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBoss = @LTLIBoss@
+LTLIBosso_screensaver = @LTLIBosso_screensaver@
 LTLIBpanoramix = @LTLIBpanoramix@
-LTLIBparam_eq = @LTLIBparam_eq@
-LTLIBpda = @LTLIBpda@
 LTLIBpng = @LTLIBpng@
-LTLIBpodcast = @LTLIBpodcast@
 LTLIBportaudio = @LTLIBportaudio@
 LTLIBpostproc = @LTLIBpostproc@
-LTLIBprobe_hal = @LTLIBprobe_hal@
-LTLIBpsychedelic = @LTLIBpsychedelic@
+LTLIBprojectm = @LTLIBprojectm@
 LTLIBpulse = @LTLIBpulse@
-LTLIBpuzzle = @LTLIBpuzzle@
 LTLIBpvr = @LTLIBpvr@
-LTLIBqnx = @LTLIBqnx@
 LTLIBqt4 = @LTLIBqt4@
 LTLIBqtcapture = @LTLIBqtcapture@
-LTLIBqte = @LTLIBqte@
-LTLIBqte_main = @LTLIBqte_main@
-LTLIBquartztext = @LTLIBquartztext@
 LTLIBquicktime = @LTLIBquicktime@
-LTLIBrc = @LTLIBrc@
-LTLIBrealaudio = @LTLIBrealaudio@
 LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
-LTLIBripple = @LTLIBripple@
-LTLIBrotate = @LTLIBrotate@
-LTLIBrss = @LTLIBrss@
-LTLIBrv32 = @LTLIBrv32@
-LTLIBsap = @LTLIBsap@
-LTLIBscale = @LTLIBscale@
-LTLIBscaletempo = @LTLIBscaletempo@
-LTLIBscene = @LTLIBscene@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
-LTLIBsharpen = @LTLIBsharpen@
 LTLIBshine = @LTLIBshine@
-LTLIBshout = @LTLIBshout@
-LTLIBshowintf = @LTLIBshowintf@
-LTLIBsignals = @LTLIBsignals@
-LTLIBsimple_channel_mixer = @LTLIBsimple_channel_mixer@
 LTLIBskins2 = @LTLIBskins2@
 LTLIBsnapshot = @LTLIBsnapshot@
-LTLIBspatializer = @LTLIBspatializer@
-LTLIBspdif_mixer = @LTLIBspdif_mixer@
 LTLIBspeex = @LTLIBspeex@
+LTLIBsqlite = @LTLIBsqlite@
 LTLIBstream_out_raop = @LTLIBstream_out_raop@
+LTLIBstream_out_switcher = @LTLIBstream_out_switcher@
 LTLIBsvg = @LTLIBsvg@
 LTLIBsvgalib = @LTLIBsvgalib@
 LTLIBswscale = @LTLIBswscale@
-LTLIBswscale_maemo = @LTLIBswscale_maemo@
+LTLIBswscale_omap = @LTLIBswscale_omap@
 LTLIBtaglib = @LTLIBtaglib@
-LTLIBtarkin = @LTLIBtarkin@
 LTLIBtelepathy = @LTLIBtelepathy@
-LTLIBtelnet = @LTLIBtelnet@
 LTLIBtelx = @LTLIBtelx@
-LTLIBtest1 = @LTLIBtest1@
-LTLIBtest2 = @LTLIBtest2@
-LTLIBtest3 = @LTLIBtest3@
-LTLIBtest4 = @LTLIBtest4@
 LTLIBtheora = @LTLIBtheora@
-LTLIBtransform = @LTLIBtransform@
 LTLIBtremor = @LTLIBtremor@
 LTLIBts = @LTLIBts@
 LTLIBtwolame = @LTLIBtwolame@
@@ -493,34 +451,26 @@ LTLIBv4l2 = @LTLIBv4l2@
 LTLIBvcd = @LTLIBvcd@
 LTLIBvcdx = @LTLIBvcdx@
 LTLIBvisual = @LTLIBvisual@
-LTLIBvmem = @LTLIBvmem@
 LTLIBvorbis = @LTLIBvorbis@
-LTLIBvout_directx = @LTLIBvout_directx@
+LTLIBvout_macosx = @LTLIBvout_macosx@
 LTLIBvout_sdl = @LTLIBvout_sdl@
-LTLIBwall = @LTLIBwall@
-LTLIBwave = @LTLIBwave@
 LTLIBwaveout = @LTLIBwaveout@
-LTLIBwin32text = @LTLIBwin32text@
-LTLIBwince = @LTLIBwince@
 LTLIBwingapi = @LTLIBwingapi@
 LTLIBwingdi = @LTLIBwingdi@
 LTLIBwma_fixed = @LTLIBwma_fixed@
-LTLIBx11 = @LTLIBx11@
-LTLIBx11_screen = @LTLIBx11_screen@
 LTLIBx264 = @LTLIBx264@
-LTLIBxcb = @LTLIBxcb@
+LTLIBxcb_apps = @LTLIBxcb_apps@
+LTLIBxcb_glx = @LTLIBxcb_glx@
+LTLIBxcb_screen = @LTLIBxcb_screen@
 LTLIBxcb_window = @LTLIBxcb_window@
+LTLIBxcb_x11 = @LTLIBxcb_x11@
 LTLIBxcb_xv = @LTLIBxcb_xv@
+LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
-LTLIBxvideo = @LTLIBxvideo@
-LTLIBxvmc = @LTLIBxvmc@
-LTLIByuv = @LTLIByuv@
-LTLIByuvp = @LTLIByuvp@
-LTLIByuy2_i420 = @LTLIByuy2_i420@
-LTLIByuy2_i422 = @LTLIByuy2_i422@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
+LUAC = @LUAC@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
 MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
@@ -530,6 +480,7 @@ MIDL = @MIDL@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
 MINIZIP_LIBS = @MINIZIP_LIBS@
 MKDIR_P = @MKDIR_P@
+MMX_CFLAGS = @MMX_CFLAGS@
 MOC = @MOC@
 MOZILLA_CFLAGS = @MOZILLA_CFLAGS@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
@@ -540,6 +491,8 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
+MUX_OGG_LIBS = @MUX_OGG_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
@@ -550,8 +503,12 @@ OBJCFLAGS = @OBJCFLAGS@
 OBJCOPY = @OBJCOPY@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OGG_CFLAGS = @OGG_CFLAGS@
+OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OSSO_SCREENSAVER_CFLAGS = @OSSO_SCREENSAVER_CFLAGS@
+OSSO_SCREENSAVER_LIBS = @OSSO_SCREENSAVER_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -564,12 +521,20 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CFLAGS = @PCRE_CFLAGS@
 PCRE_LIBS = @PCRE_LIBS@
+PEFLAGS = @PEFLAGS@
 PKGDIR = @PKGDIR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PORTAUDIO_CFLAGS = @PORTAUDIO_CFLAGS@
+PORTAUDIO_LIBS = @PORTAUDIO_LIBS@
 POSTPROC_CFLAGS = @POSTPROC_CFLAGS@
 POSTPROC_LIBS = @POSTPROC_LIBS@
 POSUB = @POSUB@
+PROJECTM2_CFLAGS = @PROJECTM2_CFLAGS@
+PROJECTM2_LIBS = @PROJECTM2_LIBS@
+PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
+PROJECTM_LIBS = @PROJECTM_LIBS@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
 QT4LOCALEDIR = @QT4LOCALEDIR@
@@ -579,15 +544,21 @@ RANLIB = @RANLIB@
 RCC = @RCC@
 SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
 SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
-SDL11_CONFIG = @SDL11_CONFIG@
-SDL12_CONFIG = @SDL12_CONFIG@
-SDL_CONFIG = @SDL_CONFIG@
+SDL_CFLAGS = @SDL_CFLAGS@
+SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
+SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
+SDL_LIBS = @SDL_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
+SPEEX_CFLAGS = @SPEEX_CFLAGS@
+SPEEX_LIBS = @SPEEX_LIBS@
+SQLITE_CFLAGS = @SQLITE_CFLAGS@
+SQLITE_LIBS = @SQLITE_LIBS@
+SSE2_CFLAGS = @SSE2_CFLAGS@
 STRIP = @STRIP@
 SVG_CFLAGS = @SVG_CFLAGS@
 SVG_LIBS = @SVG_LIBS@
@@ -596,14 +567,19 @@ SWSCALE_LIBS = @SWSCALE_LIBS@
 SYS = @SYS@
 TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
+THEORA_CFLAGS = @THEORA_CFLAGS@
+THEORA_LIBS = @THEORA_LIBS@
 TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
+TWOLAME_CFLAGS = @TWOLAME_CFLAGS@
+TWOLAME_LIBS = @TWOLAME_LIBS@
+U2D = @U2D@
 UDEV_CFLAGS = @UDEV_CFLAGS@
 UDEV_LIBS = @UDEV_LIBS@
 UIC = @UIC@
+UPNP_CFLAGS = @UPNP_CFLAGS@
+UPNP_LIBS = @UPNP_LIBS@
 USE_NLS = @USE_NLS@
-VCDINFO_CFLAGS = @VCDINFO_CFLAGS@
-VCDINFO_LIBS = @VCDINFO_LIBS@
 VERSION = @VERSION@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_EXTRA_RC = @VERSION_EXTRA_RC@
@@ -612,6 +588,8 @@ VERSION_MESSAGE = @VERSION_MESSAGE@
 VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
+VORBIS_CFLAGS = @VORBIS_CFLAGS@
+VORBIS_LIBS = @VORBIS_LIBS@
 WIDL = @WIDL@
 WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
@@ -621,6 +599,8 @@ XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
 XCB_LIBS = @XCB_LIBS@
+XCB_RANDR_CFLAGS = @XCB_RANDR_CFLAGS@
+XCB_RANDR_LIBS = @XCB_RANDR_LIBS@
 XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
@@ -628,9 +608,9 @@ XCB_XV_LIBS = @XCB_XV_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
+XLIB_XCB_CFLAGS = @XLIB_XCB_CFLAGS@
+XLIB_XCB_LIBS = @XLIB_XCB_LIBS@
 XMKMF = @XMKMF@
-XML2_CFLAGS = @XML2_CFLAGS@
-XML2_LIBS = @XML2_LIBS@
 XPM_CFLAGS = @XPM_CFLAGS@
 XPM_LIBS = @XPM_LIBS@
 XPROTO_CFLAGS = @XPROTO_CFLAGS@
@@ -689,6 +669,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+soliddatadir = @soliddatadir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
@@ -698,33 +679,53 @@ top_srcdir = @top_srcdir@
 vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 AUTOMAKE_OPTIONS = subdir-objects
+extra_check_verbose = $(extra_check_verbose_$(V))
+extra_check_verbose_ = $(extra_check_flags__$(AM_DEFAULT_VERBOSITY))
+extra_check_verbose_0 = @echo TEST $@
+extra_check_verbose__0 = $(extra_check_verbose_0)
+
 #check_DATA = samples/test.sample samples/meta.sample
-EXTRA_DIST = samples/empty.voc
-check_HEADERS = libvlc/test.h
+EXTRA_DIST = samples/empty.voc samples/image.jpg
+check_HEADERS = libvlc/test.h libvlc/libvlc_additions.h
 TESTS = $(check_PROGRAMS)
 DISTCLEANFILES = samples/test.sample samples/meta.sample
 
 # Samples server
 SAMPLES_SERVER = http://streams.videolan.org/streams-videolan/reference
 CFLAGS_tests = `$(VLC_CONFIG) --cflags libvlc` -DSRCDIR=\"$(srcdir)\"
+LDFLAGS_tests = -no-install -static
 test_libvlc_core_SOURCES = libvlc/core.c
 test_libvlc_core_LDADD = $(top_builddir)/src/libvlc.la
 test_libvlc_core_CFLAGS = $(CFLAGS_tests)
+test_libvlc_core_LDFLAGS = $(LDFLAGS_tests)
 test_libvlc_events_SOURCES = libvlc/events.c
 test_libvlc_events_LDADD = $(top_builddir)/src/libvlc.la
 test_libvlc_events_CFLAGS = $(CFLAGS_tests)
+test_libvlc_events_LDFLAGS = $(LDFLAGS_tests)
+test_libvlc_media_SOURCES = libvlc/media.c
+test_libvlc_media_LDADD = $(top_builddir)/src/libvlc.la
+test_libvlc_media_CFLAGS = $(CFLAGS_tests)
+test_libvlc_media_LDFLAGS = $(LDFLAGS_tests)
 test_libvlc_media_list_player_SOURCES = libvlc/media_list_player.c
 test_libvlc_media_list_player_LDADD = $(top_builddir)/src/libvlc.la
 test_libvlc_media_list_player_CFLAGS = $(CFLAGS_tests)
+test_libvlc_media_list_player_LDFLAGS = $(LDFLAGS_tests)
 test_libvlc_media_list_SOURCES = libvlc/media_list.c
 test_libvlc_media_list_LDADD = $(top_builddir)/src/libvlc.la
 test_libvlc_media_list_CFLAGS = $(CFLAGS_tests)
+test_libvlc_media_list_LDFLAGS = $(LDFLAGS_tests)
 test_libvlc_media_player_SOURCES = libvlc/media_player.c
 test_libvlc_media_player_LDADD = $(top_builddir)/src/libvlc.la
 test_libvlc_media_player_CFLAGS = $(CFLAGS_tests)
+test_libvlc_media_player_LDFLAGS = $(LDFLAGS_tests)
 test_libvlc_meta_SOURCES = libvlc/meta.c
 test_libvlc_meta_LDADD = $(top_builddir)/src/libvlc.la
 test_libvlc_meta_CFLAGS = $(CFLAGS_tests)
+test_libvlc_meta_LDFLAGS = $(LDFLAGS_tests)
+test_src_misc_variables_SOURCES = src/misc/variables.c
+test_src_misc_variables_LDADD = $(top_builddir)/src/libvlc.la
+test_src_misc_variables_CFLAGS = $(CFLAGS_tests)
+test_src_misc_variables_LDFLAGS = $(LDFLAGS_tests)
 all: all-am
 
 .SUFFIXES:
@@ -778,159 +779,226 @@ libvlc/test_libvlc_core-core.$(OBJEXT): libvlc/$(am__dirstamp) \
 	libvlc/$(DEPDIR)/$(am__dirstamp)
 test_libvlc_core$(EXEEXT): $(test_libvlc_core_OBJECTS) $(test_libvlc_core_DEPENDENCIES) 
 	@rm -f test_libvlc_core$(EXEEXT)
-	$(test_libvlc_core_LINK) $(test_libvlc_core_OBJECTS) $(test_libvlc_core_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_libvlc_core_LINK) $(test_libvlc_core_OBJECTS) $(test_libvlc_core_LDADD) $(LIBS)
 libvlc/test_libvlc_events-events.$(OBJEXT): libvlc/$(am__dirstamp) \
 	libvlc/$(DEPDIR)/$(am__dirstamp)
 test_libvlc_events$(EXEEXT): $(test_libvlc_events_OBJECTS) $(test_libvlc_events_DEPENDENCIES) 
 	@rm -f test_libvlc_events$(EXEEXT)
-	$(test_libvlc_events_LINK) $(test_libvlc_events_OBJECTS) $(test_libvlc_events_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_libvlc_events_LINK) $(test_libvlc_events_OBJECTS) $(test_libvlc_events_LDADD) $(LIBS)
+libvlc/test_libvlc_media-media.$(OBJEXT): libvlc/$(am__dirstamp) \
+	libvlc/$(DEPDIR)/$(am__dirstamp)
+test_libvlc_media$(EXEEXT): $(test_libvlc_media_OBJECTS) $(test_libvlc_media_DEPENDENCIES) 
+	@rm -f test_libvlc_media$(EXEEXT)
+	$(AM_V_CCLD)$(test_libvlc_media_LINK) $(test_libvlc_media_OBJECTS) $(test_libvlc_media_LDADD) $(LIBS)
 libvlc/test_libvlc_media_list-media_list.$(OBJEXT):  \
 	libvlc/$(am__dirstamp) libvlc/$(DEPDIR)/$(am__dirstamp)
 test_libvlc_media_list$(EXEEXT): $(test_libvlc_media_list_OBJECTS) $(test_libvlc_media_list_DEPENDENCIES) 
 	@rm -f test_libvlc_media_list$(EXEEXT)
-	$(test_libvlc_media_list_LINK) $(test_libvlc_media_list_OBJECTS) $(test_libvlc_media_list_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_libvlc_media_list_LINK) $(test_libvlc_media_list_OBJECTS) $(test_libvlc_media_list_LDADD) $(LIBS)
 libvlc/test_libvlc_media_list_player-media_list_player.$(OBJEXT):  \
 	libvlc/$(am__dirstamp) libvlc/$(DEPDIR)/$(am__dirstamp)
 test_libvlc_media_list_player$(EXEEXT): $(test_libvlc_media_list_player_OBJECTS) $(test_libvlc_media_list_player_DEPENDENCIES) 
 	@rm -f test_libvlc_media_list_player$(EXEEXT)
-	$(test_libvlc_media_list_player_LINK) $(test_libvlc_media_list_player_OBJECTS) $(test_libvlc_media_list_player_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_libvlc_media_list_player_LINK) $(test_libvlc_media_list_player_OBJECTS) $(test_libvlc_media_list_player_LDADD) $(LIBS)
 libvlc/test_libvlc_media_player-media_player.$(OBJEXT):  \
 	libvlc/$(am__dirstamp) libvlc/$(DEPDIR)/$(am__dirstamp)
 test_libvlc_media_player$(EXEEXT): $(test_libvlc_media_player_OBJECTS) $(test_libvlc_media_player_DEPENDENCIES) 
 	@rm -f test_libvlc_media_player$(EXEEXT)
-	$(test_libvlc_media_player_LINK) $(test_libvlc_media_player_OBJECTS) $(test_libvlc_media_player_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_libvlc_media_player_LINK) $(test_libvlc_media_player_OBJECTS) $(test_libvlc_media_player_LDADD) $(LIBS)
 libvlc/test_libvlc_meta-meta.$(OBJEXT): libvlc/$(am__dirstamp) \
 	libvlc/$(DEPDIR)/$(am__dirstamp)
 test_libvlc_meta$(EXEEXT): $(test_libvlc_meta_OBJECTS) $(test_libvlc_meta_DEPENDENCIES) 
 	@rm -f test_libvlc_meta$(EXEEXT)
-	$(test_libvlc_meta_LINK) $(test_libvlc_meta_OBJECTS) $(test_libvlc_meta_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_libvlc_meta_LINK) $(test_libvlc_meta_OBJECTS) $(test_libvlc_meta_LDADD) $(LIBS)
+src/misc/$(am__dirstamp):
+	@$(MKDIR_P) src/misc
+	@: > src/misc/$(am__dirstamp)
+src/misc/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) src/misc/$(DEPDIR)
+	@: > src/misc/$(DEPDIR)/$(am__dirstamp)
+src/misc/test_src_misc_variables-variables.$(OBJEXT):  \
+	src/misc/$(am__dirstamp) src/misc/$(DEPDIR)/$(am__dirstamp)
+test_src_misc_variables$(EXEEXT): $(test_src_misc_variables_OBJECTS) $(test_src_misc_variables_DEPENDENCIES) 
+	@rm -f test_src_misc_variables$(EXEEXT)
+	$(AM_V_CCLD)$(test_src_misc_variables_LINK) $(test_src_misc_variables_OBJECTS) $(test_src_misc_variables_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f libvlc/test_libvlc_core-core.$(OBJEXT)
 	-rm -f libvlc/test_libvlc_events-events.$(OBJEXT)
+	-rm -f libvlc/test_libvlc_media-media.$(OBJEXT)
 	-rm -f libvlc/test_libvlc_media_list-media_list.$(OBJEXT)
 	-rm -f libvlc/test_libvlc_media_list_player-media_list_player.$(OBJEXT)
 	-rm -f libvlc/test_libvlc_media_player-media_player.$(OBJEXT)
 	-rm -f libvlc/test_libvlc_meta-meta.$(OBJEXT)
+	-rm -f src/misc/test_src_misc_variables-variables.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/test_libvlc_core-core.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/test_libvlc_events-events.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/test_libvlc_media-media.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/test_libvlc_meta-meta.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/misc/$(DEPDIR)/test_src_misc_variables-variables.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
 @am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
 @am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .c.lo:
-@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
 @am__fastdepCC_TRUE@	$(LTCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
 @am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
 libvlc/test_libvlc_core-core.o: libvlc/core.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_core_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_core-core.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_core-core.Tpo -c -o libvlc/test_libvlc_core-core.o `test -f 'libvlc/core.c' || echo '$(srcdir)/'`libvlc/core.c
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_core-core.Tpo libvlc/$(DEPDIR)/test_libvlc_core-core.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_core_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_core-core.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_core-core.Tpo -c -o libvlc/test_libvlc_core-core.o `test -f 'libvlc/core.c' || echo '$(srcdir)/'`libvlc/core.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_core-core.Tpo libvlc/$(DEPDIR)/test_libvlc_core-core.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/core.c' object='libvlc/test_libvlc_core-core.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_core_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_core-core.o `test -f 'libvlc/core.c' || echo '$(srcdir)/'`libvlc/core.c
 
 libvlc/test_libvlc_core-core.obj: libvlc/core.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_core_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_core-core.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_core-core.Tpo -c -o libvlc/test_libvlc_core-core.obj `if test -f 'libvlc/core.c'; then $(CYGPATH_W) 'libvlc/core.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/core.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_core-core.Tpo libvlc/$(DEPDIR)/test_libvlc_core-core.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_core_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_core-core.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_core-core.Tpo -c -o libvlc/test_libvlc_core-core.obj `if test -f 'libvlc/core.c'; then $(CYGPATH_W) 'libvlc/core.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/core.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_core-core.Tpo libvlc/$(DEPDIR)/test_libvlc_core-core.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/core.c' object='libvlc/test_libvlc_core-core.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_core_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_core-core.obj `if test -f 'libvlc/core.c'; then $(CYGPATH_W) 'libvlc/core.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/core.c'; fi`
 
 libvlc/test_libvlc_events-events.o: libvlc/events.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_events_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_events-events.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_events-events.Tpo -c -o libvlc/test_libvlc_events-events.o `test -f 'libvlc/events.c' || echo '$(srcdir)/'`libvlc/events.c
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_events-events.Tpo libvlc/$(DEPDIR)/test_libvlc_events-events.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_events_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_events-events.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_events-events.Tpo -c -o libvlc/test_libvlc_events-events.o `test -f 'libvlc/events.c' || echo '$(srcdir)/'`libvlc/events.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_events-events.Tpo libvlc/$(DEPDIR)/test_libvlc_events-events.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/events.c' object='libvlc/test_libvlc_events-events.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_events_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_events-events.o `test -f 'libvlc/events.c' || echo '$(srcdir)/'`libvlc/events.c
 
 libvlc/test_libvlc_events-events.obj: libvlc/events.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_events_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_events-events.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_events-events.Tpo -c -o libvlc/test_libvlc_events-events.obj `if test -f 'libvlc/events.c'; then $(CYGPATH_W) 'libvlc/events.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/events.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_events-events.Tpo libvlc/$(DEPDIR)/test_libvlc_events-events.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_events_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_events-events.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_events-events.Tpo -c -o libvlc/test_libvlc_events-events.obj `if test -f 'libvlc/events.c'; then $(CYGPATH_W) 'libvlc/events.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/events.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_events-events.Tpo libvlc/$(DEPDIR)/test_libvlc_events-events.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/events.c' object='libvlc/test_libvlc_events-events.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_events_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_events-events.obj `if test -f 'libvlc/events.c'; then $(CYGPATH_W) 'libvlc/events.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/events.c'; fi`
 
+libvlc/test_libvlc_media-media.o: libvlc/media.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media-media.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media-media.Tpo -c -o libvlc/test_libvlc_media-media.o `test -f 'libvlc/media.c' || echo '$(srcdir)/'`libvlc/media.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media-media.Tpo libvlc/$(DEPDIR)/test_libvlc_media-media.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/media.c' object='libvlc/test_libvlc_media-media.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_media-media.o `test -f 'libvlc/media.c' || echo '$(srcdir)/'`libvlc/media.c
+
+libvlc/test_libvlc_media-media.obj: libvlc/media.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media-media.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media-media.Tpo -c -o libvlc/test_libvlc_media-media.obj `if test -f 'libvlc/media.c'; then $(CYGPATH_W) 'libvlc/media.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media-media.Tpo libvlc/$(DEPDIR)/test_libvlc_media-media.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/media.c' object='libvlc/test_libvlc_media-media.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_media-media.obj `if test -f 'libvlc/media.c'; then $(CYGPATH_W) 'libvlc/media.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media.c'; fi`
+
 libvlc/test_libvlc_media_list-media_list.o: libvlc/media_list.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_list-media_list.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Tpo -c -o libvlc/test_libvlc_media_list-media_list.o `test -f 'libvlc/media_list.c' || echo '$(srcdir)/'`libvlc/media_list.c
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Tpo libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_list-media_list.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Tpo -c -o libvlc/test_libvlc_media_list-media_list.o `test -f 'libvlc/media_list.c' || echo '$(srcdir)/'`libvlc/media_list.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Tpo libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/media_list.c' object='libvlc/test_libvlc_media_list-media_list.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_media_list-media_list.o `test -f 'libvlc/media_list.c' || echo '$(srcdir)/'`libvlc/media_list.c
 
 libvlc/test_libvlc_media_list-media_list.obj: libvlc/media_list.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_list-media_list.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Tpo -c -o libvlc/test_libvlc_media_list-media_list.obj `if test -f 'libvlc/media_list.c'; then $(CYGPATH_W) 'libvlc/media_list.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_list.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Tpo libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_list-media_list.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Tpo -c -o libvlc/test_libvlc_media_list-media_list.obj `if test -f 'libvlc/media_list.c'; then $(CYGPATH_W) 'libvlc/media_list.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_list.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Tpo libvlc/$(DEPDIR)/test_libvlc_media_list-media_list.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/media_list.c' object='libvlc/test_libvlc_media_list-media_list.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_media_list-media_list.obj `if test -f 'libvlc/media_list.c'; then $(CYGPATH_W) 'libvlc/media_list.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_list.c'; fi`
 
 libvlc/test_libvlc_media_list_player-media_list_player.o: libvlc/media_list_player.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_player_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_list_player-media_list_player.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Tpo -c -o libvlc/test_libvlc_media_list_player-media_list_player.o `test -f 'libvlc/media_list_player.c' || echo '$(srcdir)/'`libvlc/media_list_player.c
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Tpo libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_player_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_list_player-media_list_player.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Tpo -c -o libvlc/test_libvlc_media_list_player-media_list_player.o `test -f 'libvlc/media_list_player.c' || echo '$(srcdir)/'`libvlc/media_list_player.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Tpo libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/media_list_player.c' object='libvlc/test_libvlc_media_list_player-media_list_player.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_player_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_media_list_player-media_list_player.o `test -f 'libvlc/media_list_player.c' || echo '$(srcdir)/'`libvlc/media_list_player.c
 
 libvlc/test_libvlc_media_list_player-media_list_player.obj: libvlc/media_list_player.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_player_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_list_player-media_list_player.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Tpo -c -o libvlc/test_libvlc_media_list_player-media_list_player.obj `if test -f 'libvlc/media_list_player.c'; then $(CYGPATH_W) 'libvlc/media_list_player.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_list_player.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Tpo libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_player_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_list_player-media_list_player.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Tpo -c -o libvlc/test_libvlc_media_list_player-media_list_player.obj `if test -f 'libvlc/media_list_player.c'; then $(CYGPATH_W) 'libvlc/media_list_player.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_list_player.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Tpo libvlc/$(DEPDIR)/test_libvlc_media_list_player-media_list_player.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/media_list_player.c' object='libvlc/test_libvlc_media_list_player-media_list_player.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_list_player_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_media_list_player-media_list_player.obj `if test -f 'libvlc/media_list_player.c'; then $(CYGPATH_W) 'libvlc/media_list_player.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_list_player.c'; fi`
 
 libvlc/test_libvlc_media_player-media_player.o: libvlc/media_player.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_player_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_player-media_player.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Tpo -c -o libvlc/test_libvlc_media_player-media_player.o `test -f 'libvlc/media_player.c' || echo '$(srcdir)/'`libvlc/media_player.c
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Tpo libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_player_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_player-media_player.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Tpo -c -o libvlc/test_libvlc_media_player-media_player.o `test -f 'libvlc/media_player.c' || echo '$(srcdir)/'`libvlc/media_player.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Tpo libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/media_player.c' object='libvlc/test_libvlc_media_player-media_player.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_player_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_media_player-media_player.o `test -f 'libvlc/media_player.c' || echo '$(srcdir)/'`libvlc/media_player.c
 
 libvlc/test_libvlc_media_player-media_player.obj: libvlc/media_player.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_player_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_player-media_player.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Tpo -c -o libvlc/test_libvlc_media_player-media_player.obj `if test -f 'libvlc/media_player.c'; then $(CYGPATH_W) 'libvlc/media_player.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_player.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Tpo libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_player_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_media_player-media_player.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Tpo -c -o libvlc/test_libvlc_media_player-media_player.obj `if test -f 'libvlc/media_player.c'; then $(CYGPATH_W) 'libvlc/media_player.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_player.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Tpo libvlc/$(DEPDIR)/test_libvlc_media_player-media_player.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/media_player.c' object='libvlc/test_libvlc_media_player-media_player.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_media_player_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_media_player-media_player.obj `if test -f 'libvlc/media_player.c'; then $(CYGPATH_W) 'libvlc/media_player.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/media_player.c'; fi`
 
 libvlc/test_libvlc_meta-meta.o: libvlc/meta.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_meta_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_meta-meta.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_meta-meta.Tpo -c -o libvlc/test_libvlc_meta-meta.o `test -f 'libvlc/meta.c' || echo '$(srcdir)/'`libvlc/meta.c
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_meta-meta.Tpo libvlc/$(DEPDIR)/test_libvlc_meta-meta.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_meta_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_meta-meta.o -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_meta-meta.Tpo -c -o libvlc/test_libvlc_meta-meta.o `test -f 'libvlc/meta.c' || echo '$(srcdir)/'`libvlc/meta.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_meta-meta.Tpo libvlc/$(DEPDIR)/test_libvlc_meta-meta.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/meta.c' object='libvlc/test_libvlc_meta-meta.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_meta_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_meta-meta.o `test -f 'libvlc/meta.c' || echo '$(srcdir)/'`libvlc/meta.c
 
 libvlc/test_libvlc_meta-meta.obj: libvlc/meta.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_meta_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_meta-meta.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_meta-meta.Tpo -c -o libvlc/test_libvlc_meta-meta.obj `if test -f 'libvlc/meta.c'; then $(CYGPATH_W) 'libvlc/meta.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/meta.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) libvlc/$(DEPDIR)/test_libvlc_meta-meta.Tpo libvlc/$(DEPDIR)/test_libvlc_meta-meta.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_meta_CFLAGS) $(CFLAGS) -MT libvlc/test_libvlc_meta-meta.obj -MD -MP -MF libvlc/$(DEPDIR)/test_libvlc_meta-meta.Tpo -c -o libvlc/test_libvlc_meta-meta.obj `if test -f 'libvlc/meta.c'; then $(CYGPATH_W) 'libvlc/meta.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/meta.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libvlc/$(DEPDIR)/test_libvlc_meta-meta.Tpo libvlc/$(DEPDIR)/test_libvlc_meta-meta.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='libvlc/meta.c' object='libvlc/test_libvlc_meta-meta.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_libvlc_meta_CFLAGS) $(CFLAGS) -c -o libvlc/test_libvlc_meta-meta.obj `if test -f 'libvlc/meta.c'; then $(CYGPATH_W) 'libvlc/meta.c'; else $(CYGPATH_W) '$(srcdir)/libvlc/meta.c'; fi`
+
+src/misc/test_src_misc_variables-variables.o: src/misc/variables.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_src_misc_variables_CFLAGS) $(CFLAGS) -MT src/misc/test_src_misc_variables-variables.o -MD -MP -MF src/misc/$(DEPDIR)/test_src_misc_variables-variables.Tpo -c -o src/misc/test_src_misc_variables-variables.o `test -f 'src/misc/variables.c' || echo '$(srcdir)/'`src/misc/variables.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/misc/$(DEPDIR)/test_src_misc_variables-variables.Tpo src/misc/$(DEPDIR)/test_src_misc_variables-variables.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/misc/variables.c' object='src/misc/test_src_misc_variables-variables.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_src_misc_variables_CFLAGS) $(CFLAGS) -c -o src/misc/test_src_misc_variables-variables.o `test -f 'src/misc/variables.c' || echo '$(srcdir)/'`src/misc/variables.c
+
+src/misc/test_src_misc_variables-variables.obj: src/misc/variables.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_src_misc_variables_CFLAGS) $(CFLAGS) -MT src/misc/test_src_misc_variables-variables.obj -MD -MP -MF src/misc/$(DEPDIR)/test_src_misc_variables-variables.Tpo -c -o src/misc/test_src_misc_variables-variables.obj `if test -f 'src/misc/variables.c'; then $(CYGPATH_W) 'src/misc/variables.c'; else $(CYGPATH_W) '$(srcdir)/src/misc/variables.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/misc/$(DEPDIR)/test_src_misc_variables-variables.Tpo src/misc/$(DEPDIR)/test_src_misc_variables-variables.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/misc/variables.c' object='src/misc/test_src_misc_variables-variables.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_src_misc_variables_CFLAGS) $(CFLAGS) -c -o src/misc/test_src_misc_variables-variables.obj `if test -f 'src/misc/variables.c'; then $(CYGPATH_W) 'src/misc/variables.c'; else $(CYGPATH_W) '$(srcdir)/src/misc/variables.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1141,6 +1209,8 @@ distclean-generic:
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f libvlc/$(DEPDIR)/$(am__dirstamp)
 	-rm -f libvlc/$(am__dirstamp)
+	-rm -f src/misc/$(DEPDIR)/$(am__dirstamp)
+	-rm -f src/misc/$(am__dirstamp)
 	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
@@ -1152,7 +1222,7 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf libvlc/$(DEPDIR)
+	-rm -rf libvlc/$(DEPDIR) src/misc/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1198,7 +1268,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf libvlc/$(DEPDIR)
+	-rm -rf libvlc/$(DEPDIR) src/misc/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

@@ -2,7 +2,7 @@
  * win32_tooltip.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 34d4487852fe9dbb582f8e722596f51f5839baeb $
+ * $Id: 09585848611b945928e5ec2b598961d7145c5fb2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -64,7 +64,7 @@ void Win32Tooltip::show( int left, int top, OSGraphics &rText )
     SetWindowPos( m_hWnd, HWND_TOPMOST, left, top, width, height, 0 );
     ShowWindow( m_hWnd, SW_SHOW );
 
-    HDC wndDC = GetWindowDC( m_hWnd );
+    HDC wndDC = GetDC( m_hWnd );
     BitBlt( wndDC, 0, 0, width, height, srcDC, 0, 0, SRCCOPY );
     ReleaseDC( m_hWnd, wndDC );
 }

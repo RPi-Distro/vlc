@@ -2,7 +2,7 @@
  * async_queue.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: de19dc7b3710fbb4921a1a8bd0cefac36021e98b $
+ * $Id: 759ff6a6e5d37fa65d3ee7b67145aa3b6eb8f616 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -67,48 +67,45 @@ AsyncQueue *AsyncQueue::instance( intf_thread_t *pIntf )
 
 void AsyncQueue::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_queue )
-    {
-        delete pIntf->p_sys->p_queue;
-        pIntf->p_sys->p_queue = NULL;
-    }
+    delete pIntf->p_sys->p_queue;
+    pIntf->p_sys->p_queue = NULL;
 }
 
 
 void AsyncQueue::push( const CmdGenericPtr &rcCommand, bool removePrev )
 {
+    vlc_mutex_lock( &m_lock );
+
     if( removePrev )
     {
         // Remove the commands of the same type
         remove( rcCommand.get()->getType(), rcCommand );
     }
     m_cmdList.push_back( rcCommand );
+
+    vlc_mutex_unlock( &m_lock );
 }
 
 
 void AsyncQueue::remove( const string &rType, const CmdGenericPtr &rcCommand )
 {
-    vlc_mutex_lock( &m_lock );
-
-    list<CmdGenericPtr>::iterator it;
-    for( it = m_cmdList.begin(); it != m_cmdList.end(); it++ )
+    cmdList_t::iterator it;
+    for( it = m_cmdList.begin(); it != m_cmdList.end(); /* nothing */ )
     {
-        // Remove the command if it is of the given type
-        if( (*it).get()->getType() == rType )
-        {
-            // Maybe the command wants to check if it must really be
-            // removed
-            if( rcCommand.get()->checkRemove( (*it).get() ) == true )
-            {
-                list<CmdGenericPtr>::iterator itNew = it;
-                itNew++;
-                m_cmdList.erase( it );
-                it = itNew;
-            }
-        }
-    }
+        // Remove the command if it is of the given type and the command
+        // doesn't disagree. Note trickery to avoid skipping entries
+        // while maintaining iterator validity.
 
-    vlc_mutex_unlock( &m_lock );
+        if( (*it).get()->getType() == rType &&
+            rcCommand.get()->checkRemove( (*it).get() ) )
+        {
+            cmdList_t::iterator itNew = it;
+            ++itNew;
+            m_cmdList.erase( it );
+            it = itNew;
+        }
+        else ++it;
+    }
 }
 
 

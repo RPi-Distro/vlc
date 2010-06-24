@@ -31,11 +31,13 @@
 #include <vlc_plugin.h>
 
 #include <vlc_aout.h>
+#include <vlc_cpu.h>
 
 #include <pulse/pulseaudio.h>
-#ifdef HAVE_X11_XLIB_H
-# include <X11/Xlib.h>
+#ifdef X_DISPLAY_MISSING
+# error Xlib required due to PulseAudio bug 799!
 #endif
+#include <vlc_xlib.h>
 
 #include <assert.h>
 
@@ -98,7 +100,7 @@ static void uninit(aout_instance_t *p_aout);
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-    set_shortname( "Pulse Audio" )
+    set_shortname( "PulseAudio" )
     set_description( N_("Pulseaudio audio output") )
     set_capability( "audio output", 160 )
     set_category( CAT_AUDIO )
@@ -106,7 +108,6 @@ vlc_module_begin ()
     add_shortcut( "pulseaudio" )
     add_shortcut( "pa" )
     set_callbacks( Open, Close )
-    linked_with_a_crap_library_which_uses_atexit()
 vlc_module_end ()
 
 /*****************************************************************************
@@ -121,10 +122,9 @@ static int Open ( vlc_object_t *p_this )
     struct pa_buffer_attr a;
     struct pa_channel_map map;
 
-#ifdef HAVE_X11_XLIB_H
-    if( !XInitThreads() )
+    if( !vlc_xlib_init( p_this ) )
         return VLC_EGENERIC;
-#endif
+
     /* Allocate structures */
     p_aout->output.p_sys = p_sys = calloc( 1, sizeof( aout_sys_t ) );
     if( p_sys == NULL )
@@ -172,11 +172,19 @@ static int Open ( vlc_object_t *p_this )
     }
 
     /* Add a quick command line info message */
-    msg_Info(p_aout, "No. of Audio Channels: %d", ss.channels);
+    msg_Dbg(p_aout, "%d audio channels", ss.channels);
 
     ss.rate = p_aout->output.output.i_rate;
-    ss.format = PA_SAMPLE_FLOAT32NE;
-    p_aout->output.output.i_format = VLC_FOURCC('f','l','3','2');
+    if (HAVE_FPU)
+    {
+        ss.format = PA_SAMPLE_FLOAT32NE;
+        p_aout->output.output.i_format = VLC_CODEC_FL32;
+    }
+    else
+    {
+        ss.format = PA_SAMPLE_S16NE;
+        p_aout->output.output.i_format = VLC_CODEC_S16N;
+    }
 
     if (!pa_sample_spec_valid(&ss)) {
         msg_Err(p_aout,"Invalid sample spec");
@@ -336,11 +344,16 @@ static void Close ( vlc_object_t *p_this )
     msg_Dbg(p_aout, "Pulse Close");
 
     if(p_sys->stream){
-        pa_operation *o;
         pa_threaded_mainloop_lock(p_sys->mainloop);
         pa_stream_set_write_callback(p_sys->stream, NULL, NULL);
 
-        if((o = pa_stream_drain(p_sys->stream, success_cb, p_aout))){
+/* I didn't find any explanation why we need to do pa_stream_drain on close
+ * as we don't really care if we lose 20ms buffer in this point anyway?
+ * And disabling this speeds up closing pulseaudio quite a lot (atleast for me).
+ */
+#if 0
+        pa_operation *o = pa_stream_drain(p_sys->stream, success_cb, p_aout);
+        if(o){
             while (pa_operation_get_state(o) != PA_OPERATION_DONE) {
                 CHECK_DEAD_GOTO(fail);
                 pa_threaded_mainloop_wait(p_sys->mainloop);
@@ -350,7 +363,7 @@ static void Close ( vlc_object_t *p_this )
 
             pa_operation_unref(o);
         }
-
+#endif
         pa_threaded_mainloop_unlock(p_sys->mainloop);
     }
     uninit(p_aout);
@@ -431,6 +444,7 @@ static void stream_state_cb(pa_stream *s, void * userdata) {
 }
 
 static void stream_request_cb(pa_stream *s, size_t length, void *userdata) {
+    VLC_UNUSED( s );
     aout_instance_t *p_aout = (aout_instance_t *)userdata;
     struct aout_sys_t * p_sys = (struct aout_sys_t *) p_aout->output.p_sys;
     mtime_t next_date;
@@ -465,9 +479,9 @@ static void stream_request_cb(pa_stream *s, size_t length, void *userdata) {
 
         if ( p_buffer != NULL )
         {
-            PULSE_DEBUG( "Pulse stream request write buffer %d", p_buffer->i_nb_bytes);
-            pa_stream_write(p_sys->stream, p_buffer->p_buffer, p_buffer->i_nb_bytes, NULL, 0, PA_SEEK_RELATIVE);
-            length -= p_buffer->i_nb_bytes;
+            PULSE_DEBUG( "Pulse stream request write buffer %d", p_buffer->i_buffer);
+            pa_stream_write(p_sys->stream, p_buffer->p_buffer, p_buffer->i_buffer, NULL, 0, PA_SEEK_RELATIVE);
+            length -= p_buffer->i_buffer;
             aout_BufferFree( p_buffer );
         }
         else
@@ -484,6 +498,7 @@ static void stream_request_cb(pa_stream *s, size_t length, void *userdata) {
 }
 
 static void stream_latency_update_cb(pa_stream *s, void *userdata) {
+    VLC_UNUSED( s );
     aout_instance_t *p_aout = (aout_instance_t *)userdata;
     struct aout_sys_t * p_sys = (struct aout_sys_t *) p_aout->output.p_sys;
 
@@ -496,6 +511,7 @@ static void stream_latency_update_cb(pa_stream *s, void *userdata) {
 
 static void success_cb(pa_stream *s, int sucess, void *userdata)
 {
+    VLC_UNUSED( s );
     aout_instance_t *p_aout = (aout_instance_t *)userdata;
     struct aout_sys_t * p_sys = (struct aout_sys_t *) p_aout->output.p_sys;
 

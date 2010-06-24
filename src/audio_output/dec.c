@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: b31b02f4af6b4db366d8aff428f48994a001a3e3 $
+ * $Id: ddd2f69008514a810f1c5c6097f461c5774c75e8 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -28,11 +28,9 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
+#include <assert.h>
 
-#ifdef HAVE_ALLOCA_H
-#   include <alloca.h>
-#endif
+#include <vlc_common.h>
 
 #include <vlc_aout.h>
 #include <vlc_input.h>
@@ -112,7 +110,7 @@ static aout_input_t * DecNew( aout_instance_t * p_aout,
     p_aout->pp_inputs[p_aout->i_nb_inputs] = p_input;
     p_aout->i_nb_inputs++;
 
-    if ( p_aout->mixer.b_error )
+    if ( !p_aout->p_mixer )
     {
         int i;
 
@@ -231,14 +229,8 @@ int aout_DecDelete( aout_instance_t * p_aout, aout_input_t * p_input )
     {
         aout_OutputDelete( p_aout );
         aout_MixerDelete( p_aout );
-        if ( var_Type( p_aout, "audio-device" ) != 0 )
-        {
-            var_Destroy( p_aout, "audio-device" );
-        }
-        if ( var_Type( p_aout, "audio-channels" ) != 0 )
-        {
-            var_Destroy( p_aout, "audio-channels" );
-        }
+        var_Destroy( p_aout, "audio-device" );
+        var_Destroy( p_aout, "audio-channels" );
     }
 
     aout_unlock_mixer( p_aout );
@@ -271,9 +263,9 @@ aout_buffer_t * aout_DecNewBuffer( aout_input_t * p_input,
     duration = (1000000 * (mtime_t)i_nb_samples) / p_input->input.i_rate;
 
     /* This necessarily allocates in the heap. */
-    aout_BufferAlloc( &p_input->input_alloc, duration, NULL, p_buffer );
+    p_buffer = aout_BufferAlloc( &p_input->input_alloc, duration, NULL );
     if( p_buffer != NULL )
-        p_buffer->i_nb_bytes = i_nb_samples * p_input->input.i_bytes_per_frame
+        p_buffer->i_buffer = i_nb_samples * p_input->input.i_bytes_per_frame
                                   / p_input->input.i_frame_length;
 
     /* Suppose the decoder doesn't have more than one buffered buffer */
@@ -285,7 +277,7 @@ aout_buffer_t * aout_DecNewBuffer( aout_input_t * p_input,
         return NULL;
 
     p_buffer->i_nb_samples = i_nb_samples;
-    p_buffer->start_date = p_buffer->end_date = 0;
+    p_buffer->i_pts = p_buffer->i_length = 0;
     return p_buffer;
 }
 
@@ -308,17 +300,19 @@ int aout_DecPlay( aout_instance_t * p_aout, aout_input_t * p_input,
     assert( i_input_rate >= INPUT_RATE_DEFAULT / AOUT_MAX_INPUT_RATE &&
             i_input_rate <= INPUT_RATE_DEFAULT * AOUT_MAX_INPUT_RATE );
 
-    assert( p_buffer->start_date > 0 );
+    assert( p_buffer->i_pts > 0 );
 
-    p_buffer->end_date = p_buffer->start_date
-                            + (mtime_t)p_buffer->i_nb_samples * 1000000
+    p_buffer->i_length = (mtime_t)p_buffer->i_nb_samples * 1000000
                                 / p_input->input.i_rate;
 
+    aout_lock_mixer( p_aout );
     aout_lock_input( p_aout, p_input );
 
     if( p_input->b_error )
     {
         aout_unlock_input( p_aout, p_input );
+        aout_unlock_mixer( p_aout );
+
         aout_BufferFree( p_buffer );
         return -1;
     }
@@ -330,17 +324,20 @@ int aout_DecPlay( aout_instance_t * p_aout, aout_input_t * p_input,
         mtime_t duration = (1000000 * (mtime_t)p_buffer->i_nb_samples)
                             / p_input->input.i_rate;
 
-        aout_BufferAlloc( &p_input->input_alloc, duration, NULL, p_new_buffer );
+        p_new_buffer = aout_BufferAlloc( &p_input->input_alloc, duration, NULL);
         vlc_memcpy( p_new_buffer->p_buffer, p_buffer->p_buffer,
-                    p_buffer->i_nb_bytes );
+                    p_buffer->i_buffer );
         p_new_buffer->i_nb_samples = p_buffer->i_nb_samples;
-        p_new_buffer->i_nb_bytes = p_buffer->i_nb_bytes;
-        p_new_buffer->start_date = p_buffer->start_date;
-        p_new_buffer->end_date = p_buffer->end_date;
+        p_new_buffer->i_buffer = p_buffer->i_buffer;
+        p_new_buffer->i_pts = p_buffer->i_pts;
+        p_new_buffer->i_length = p_buffer->i_length;
         aout_BufferFree( p_buffer );
         p_buffer = p_new_buffer;
         p_input->b_changed = false;
     }
+
+    aout_InputCheckAndRestart( p_aout, p_input );
+    aout_unlock_mixer( p_aout );
 
     int i_ret = aout_InputPlay( p_aout, p_input, p_buffer, i_input_rate );
 
@@ -385,10 +382,9 @@ void aout_DecChangePause( aout_instance_t *p_aout, aout_input_t *p_input, bool b
     if( i_duration != 0 )
     {
         aout_lock_mixer( p_aout );
-        for( aout_buffer_t *p = p_input->fifo.p_first; p != NULL; p = p->p_next )
+        for( aout_buffer_t *p = p_input->mixer.fifo.p_first; p != NULL; p = p->p_next )
         {
-            p->start_date += i_duration;
-            p->end_date += i_duration;
+            p->i_pts += i_duration;
         }
         aout_unlock_mixer( p_aout );
     }
@@ -398,8 +394,8 @@ void aout_DecFlush( aout_instance_t *p_aout, aout_input_t *p_input )
 {
     aout_lock_input_fifos( p_aout );
 
-    aout_FifoSet( p_aout, &p_input->fifo, 0 );
-    p_input->p_first_byte_to_mix = NULL;
+    aout_FifoSet( p_aout, &p_input->mixer.fifo, 0 );
+    p_input->mixer.begin = NULL;
 
     aout_unlock_input_fifos( p_aout );
 }

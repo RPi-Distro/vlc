@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: a0c24e8e39d84d6169f4bc9d89a453e29add6764 $
+ * $Id: b85c7ef0e3cedca38b14d43142615b18a97f1fa4 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Rémi Denis-Courmont <rem$videolan,org>
@@ -80,9 +80,9 @@ int nanosleep(struct timespec *, struct timespec *);
 
 # if (_POSIX_CLOCK_SELECTION < 0)
 /*
- * We cannot use the monotonic clock is clock selection is not available,
+ * We cannot use the monotonic clock if clock selection is not available,
  * as it would screw vlc_cond_timedwait() completely. Instead, we have to
- * stick to the realtime clock. Nevermind it screws everything when ntpdate
+ * stick to the realtime clock. Nevermind it screws everything up when ntpdate
  * warps the wall clock.
  */
 #  undef CLOCK_MONOTONIC
@@ -125,25 +125,28 @@ char *mstrtime( char *psz_buffer, mtime_t date )
  * \param psz_buffer should be a buffer at least MSTRTIME_MAX_SIZE characters
  * \return psz_buffer is returned so this can be used as printf parameter.
  */
-char *secstotimestr( char *psz_buffer, int i_seconds )
+char *secstotimestr( char *psz_buffer, int32_t i_seconds )
 {
-    int i_hours, i_mins;
-    i_mins = i_seconds / 60;
-    i_hours = i_mins / 60 ;
-    if( i_hours )
+    if( unlikely(i_seconds < 0) )
     {
-        snprintf( psz_buffer, MSTRTIME_MAX_SIZE, "%d:%2.2d:%2.2d",
-                 (int) i_hours,
-                 (int) (i_mins % 60),
-                 (int) (i_seconds % 60) );
+        secstotimestr( psz_buffer + 1, -i_seconds );
+        *psz_buffer = '-';
+        return psz_buffer;
     }
+
+    div_t d;
+
+    d = div( i_seconds, 60 );
+    i_seconds = d.rem;
+    d = div( d.quot, 60 );
+
+    if( d.quot )
+        snprintf( psz_buffer, MSTRTIME_MAX_SIZE, "%u:%02u:%02u",
+                 d.quot, d.rem, i_seconds );
     else
-    {
-         snprintf( psz_buffer, MSTRTIME_MAX_SIZE, "%2.2d:%2.2d",
-                   (int) i_mins ,
-                   (int) (i_seconds % 60) );
-    }
-    return( psz_buffer );
+        snprintf( psz_buffer, MSTRTIME_MAX_SIZE, "%02u:%02u",
+                  d.rem, i_seconds );
+    return psz_buffer;
 }
 
 #if defined (HAVE_CLOCK_NANOSLEEP)
@@ -324,7 +327,8 @@ mtime_t mdate( void )
         i_previous_time = res;
         LeaveCriticalSection( &date_lock );
     }
-#elif USE_APPLE_MACH /* The version that should be used, if it was cancelable */
+#elif defined(USE_APPLE_MACH)
+    /* The version that should be used, if it was cancelable */
     pthread_once(&mtime_timebase_info_once, mtime_init_timebase);
     uint64_t mach_time = date * 1000 * mtime_timebase_info.denom / mtime_timebase_info.numer;
     mach_wait_until(mach_time);
@@ -425,7 +429,8 @@ void msleep( mtime_t delay )
 
     while( nanosleep( &ts_delay, &ts_delay ) && ( errno == EINTR ) );
 
-#elif USE_APPLE_MACH /* The version that should be used, if it was cancelable */
+#elif defined (USE_APPLE_MACH)
+    /* The version that should be used, if it was cancelable */
     pthread_once(&mtime_timebase_info_once, mtime_init_timebase);
     uint64_t mach_time = delay * 1000 * mtime_timebase_info.denom / mtime_timebase_info.numer;
     mach_wait_until(mach_time + mach_absolute_time());
