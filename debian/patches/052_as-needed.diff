@@ -1,5 +1,5 @@
-Patch originally taken from the BTS #347650 and then adapted for 
-later libtool version
+Description: Fix incorrect argument reordering
+Bug-Debian: http://bugs.debian.org/347650
 
 Index: vlc-debian/autotools/ltmain.sh
 ===================================================================

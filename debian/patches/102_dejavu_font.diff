@@ -1,4 +1,5 @@
-Change the default font to one very likely to be present on a Debian box
+Description: Change the default font to one very likely to be present on a
+ Debian box.
 
 Index: debian.git/modules/misc/freetype.c
 ===================================================================

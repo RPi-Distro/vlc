@@ -1,5 +1,6 @@
-Fix upstream code. Reflect the new path
-Will be fixed upstream in 1.1.1
+Description: Fix upstream code. Reflect the new path.
+Author: Christophe Mutricy <xtophe@videolan.org>
+Applied-Upstream: 1.1.1
 
 Index: debian.git/modules/misc/notify/notify.c
 ===================================================================

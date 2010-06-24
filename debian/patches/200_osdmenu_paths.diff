@@ -1,4 +1,5 @@
-Use the installed files for osdmenu rather than the ones in the current dir
+Description: Use the installed files for osdmenu rather than the ones in the
+ current dir.
 
 Index: vlc-debian/share/osdmenu/default.cfg
 ===================================================================
