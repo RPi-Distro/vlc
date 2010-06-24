@@ -1,3 +1,7 @@
+Description: Make vlc compatible with xulrunner 1.9.1
+Author: Christophe Mutricy <xtophe@videolan.org>
+Forwarded: not-needed
+
 Index: debian.git/config.h.in
 ===================================================================
 --- debian.git.orig/config.h.in	2010-06-21 01:50:57.000000000 +0200
