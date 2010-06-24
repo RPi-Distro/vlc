@@ -49,8 +49,8 @@ confflags += \
 	--disable-mtp \
 	--disable-portaudio \
 	--disable-sqlite \
+	--disable-telx \
 	--disable-x264 \
-	--disable-zvbi \
 	--enable-a52 \
 	--enable-aa \
 	--enable-bonjour \
@@ -89,12 +89,12 @@ confflags += \
 	--enable-speex \
 	--enable-svg \
 	--enable-taglib \
-	--enable-telx \
 	--enable-theora \
 	--enable-twolame \
 	--enable-vcd \
 	--enable-vcdx \
 	--enable-vorbis \
+	--enable-zvbi \
 	--with-kde-solid=/usr/share/kde4/apps/ \
 	--with-mozilla-pkg=libxul \
 	$(NULL)

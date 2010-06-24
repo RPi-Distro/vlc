@@ -81,6 +81,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                libxml2-dev,
                libxpm-dev,
                libxt-dev,
+               libzvbi-dev,
                lua5.1,
                nasm,
                pkg-config,
@@ -315,6 +316,18 @@ Description: SVG plugin for VLC
  renderer, and must be activated through the '--text-renderer svg' option. When
  sent non-SVG data, it will convert it to SVG using a template that can be
  specified by the svg-template-file option.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: vlc-plugin-zvbi
+Architecture: any
+Depends: vlc-nox (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: VBI teletext plugin for VLC
+ This plugin adds support for VBI teletext to the VLC media player.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
