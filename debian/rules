@@ -36,7 +36,6 @@ confflags += \
 	--disable-update-check \
 	--disable-silent-rules \
 	--enable-fast-install \
-	--enable-release \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--with-binary-version=$(DEBIAN_VERSION) \
