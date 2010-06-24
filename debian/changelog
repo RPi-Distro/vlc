@@ -31,6 +31,12 @@ vlc (1.1.0-1) UNRELEASED; urgency=low
   * Patch to allow compilation with xul 1.9.1
   * Remove unneeded -V for dh_makeshlibs
   * Use configure option instead of patching
+  * Use dh_bugfiles
+  * Update the bug control file
+  * Don't advertise deprecated package
+  * Fix icon path
+  * Add some news
+  * Move the luahttp's .hosts
 
   [ Benjamin Drung ]
   * Switch to dpkg-source 3.0 (quilt) format.
@@ -41,6 +47,14 @@ vlc (1.1.0-1) UNRELEASED; urgency=low
   * Change installation of man pages.
   * Remove unused ${shlibs:Depends}.
   * Sort Build-Depends and Depends.
+  * Remove unused libhal-dev from Build-Depends (Closes: #580407).
+  * Remove unused --enable-release configure flag.
+  * Remove unused Build-Depends libid3tag0-dev, libsysfs-dev, and libxv-dev.
+  * Provide VBI teletext plugin (Closes: #563873) - thanks to László
+    Benedek <benedekl@gmail.com> for the patch.
+  * Enable atmo, fluidsynth (separate package), libproxy, kate, and mtp plugin.
+  * Comment disabled features.
+  * Explicitly enable or disable features.
 
  -- Christophe Mutricy <xtophe@videolan.org>  Thu, 24 Jun 2010 00:51:13 +0200
 
