@@ -1,11 +1,13 @@
-vlc (1.1.0-1ubuntu1) UNRELEASED; urgency=low
+vlc (1.1.0-1ubuntu1) maverick; urgency=low
 
   * Merge from Debian unstable, remaining changes:
     - build and install the libx264 plugin
     - add Xb-Npp header to vlc package
     - Add apport hook to include more vlc dependencies in bug reports
+  * Drop xulrunner patches.
+  * Drop 502_xulrunner_191.diff.
 
- -- Benjamin Drung <bdrung@ubuntu.com>  Fri, 25 Jun 2010 00:19:19 +0200
+ -- Benjamin Drung <bdrung@ubuntu.com>  Fri, 25 Jun 2010 01:09:16 +0200
 
 vlc (1.1.0-1) unstable; urgency=low
 
