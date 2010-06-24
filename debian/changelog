@@ -57,6 +57,7 @@ vlc (1.1.0-1) unstable; urgency=low
   * Vcs-Browser link to summary page.
   * Convert patch header to DEP-3 and add DEP-3 to 502_xulrunner_191.diff.
   * Add myself to Uploaders.
+  * Drop --sourcedir=debian/tmp from dh_install.
 
  -- Christophe Mutricy <xtophe@videolan.org>  Thu, 24 Jun 2010 22:01:26 +0100
 
