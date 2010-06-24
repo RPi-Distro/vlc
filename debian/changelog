@@ -2,21 +2,19 @@ vlc (1.1.0-1) unstable; urgency=low
 
   [ Christophe Mutricy ]
   * New upstream version 1.1.0 (Closes: #586760, LP: #597108)
-    * Fixes many bugs (Closes: #572151, #578917, #526088, #572914, #503377)
-         (LP:  #206152,  #261001,  #281478, #282215,  #282966,  #283379,
-         #283855, #285681, #287263,  #328064, #328861, #346631, #356006,
-         #356908, #357595, #358461,  #362793, #368599, #375854, #380077,
-         #383443, #403135, #403657,  #403802, #414069, #415396, #416294,
-         #419915, #422797, #425975,  #427247, #435225, #439271, #442038,
-         #444795, #453928, #459515,  #461443, #465687, #466418, #476478,
-         #482440, #491151, #491601,  #514915, #517329, #517496, #537627,
-         #539406, #542293, #549029,  #549902, #550468, #550485, #550599,
-         #551482, #553503, #554277,  #556440, #560167, #564964, #566347,
-         #568750, #570666, #582785, #584009, #586692, #587528)
+    * Fixes many bugs (Closes: #572151, #578917, #526088, #572914, #503377;
+      LP: #206152, #261001, #281478, #282215, #282966, #283379, #283855,
+      #285681, #287263, #328064, #328861, #346631, #356006, #356908, #357595,
+      #358461, #362793, #368599, #375854, #380077, #383443, #403135, #403657,
+      #403802, #414069, #415396, #416294, #419915, #422797, #425975, #427247,
+      #435225, #439271, #442038, #444795, #453928, #459515, #461443, #465687,
+      #466418, #476478, #482440, #491151, #491601, #514915, #517329, #517496,
+      #537627, #539406, #542293, #549029, #549902, #550468, #550485, #550599,
+      #551482, #553503, #554277, #556440, #560167, #564964, #566347, #568750,
+      #570666, #582785, #584009, #586692, #587528)
     * SONAME changes
     * Update symbols files
     * Refresh patches and remove the ones merged upstream
-    * Remove patches merged upstream
   * rules:
     * Disable projectm and sqlite
     * Upstream Makefile install icons at the good place, simplify debian/rules
@@ -52,13 +50,12 @@ vlc (1.1.0-1) unstable; urgency=low
   * Remove unused Build-Depends libid3tag0-dev, libsysfs-dev, and libxv-dev.
   * Provide VBI teletext plugin (Closes: #563873) - thanks to László
     Benedek <benedekl@gmail.com> for the patch.
-  * Enable atmo, fluidsynth (separate package), libproxy (Closes:  #532110),
+  * Enable atmo, fluidsynth (separate package), libproxy (Closes: #532110),
     kate (Closes: #563464), and mtp plugin.
   * Comment disabled features.
   * Explicitly enable or disable features.
   * Vcs-Browser link to summary page.
-  * Convert patch header to DEP-3 header.
-  * Add DEP-3 to 502_xulrunner_191.diff.
+  * Convert patch header to DEP-3 and add DEP-3 to 502_xulrunner_191.diff.
   * Add myself to Uploaders.
 
  -- Christophe Mutricy <xtophe@videolan.org>  Thu, 24 Jun 2010 22:01:26 +0100
