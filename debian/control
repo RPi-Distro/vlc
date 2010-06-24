@@ -250,6 +250,19 @@ Description: multimedia player and streamer (without X support)
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
 
+Package: vlc-plugin-fluidsynth
+Architecture: any
+Depends: vlc-nox (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: FluidSynth plugin for VLC
+ This plugin adds support for playing MIDI file via the FluidSynth software
+ synthesizer to the VLC media player.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
 Package: vlc-plugin-ggi
 Architecture: any
 Depends: vlc-nox,
