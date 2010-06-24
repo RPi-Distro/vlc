@@ -3,9 +3,6 @@ vlc (1.1.0-1ubuntu1) UNRELEASED; urgency=low
   * Merge from Debian unstable, remaining changes:
     - build and install the libx264 plugin
     - add Xb-Npp header to vlc package
-    - Add patches 519-526 to fix FTBFS with xulruner-1.9.2 from upstream
-    - Add 600-drop-OJI-xul-192.patch to drop OJI support as xulrunner-1.9.2 on
-      Linux doesn't support it
     - Add apport hook to include more vlc dependencies in bug reports
 
  -- Benjamin Drung <bdrung@ubuntu.com>  Fri, 25 Jun 2010 00:19:19 +0200
