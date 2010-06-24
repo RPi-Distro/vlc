@@ -47,7 +47,9 @@ confflags += \
 	--enable-atmo \
 	--enable-bonjour \
 	--enable-caca \
+	--enable-dc1394 \
 	--enable-dca \
+	--enable-dirac \
 	--enable-dvb \
 	--enable-dvbpsi \
 	--enable-dvdnav \
@@ -62,6 +64,7 @@ confflags += \
 	--enable-kate \
 	--enable-libass \
 	--enable-libmpeg2 \
+	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \
 	--enable-mad \
@@ -70,12 +73,14 @@ confflags += \
 	--enable-mozilla \
 	--enable-mpc \
 	--enable-mtp \
+	--enable-mux_ogg \
 	--enable-ncurses \
 	--enable-notify \
 	--enable-ogg \
 	--enable-pulse \
 	--enable-qt4 \
 	--enable-realrtsp \
+	--enable-schroedinger \
 	--enable-sdl \
 	--enable-shout \
 	--enable-skins2 \
@@ -85,6 +90,8 @@ confflags += \
 	--enable-taglib \
 	--enable-theora \
 	--enable-twolame \
+	--enable-udev \
+	--enable-upnp \
 	--enable-vcd \
 	--enable-vcdx \
 	--enable-vorbis \
@@ -93,14 +100,22 @@ confflags += \
 	--with-mozilla-pkg=libxul \
 	$(NULL)
 # Reasons for disabling features:
+# dxva2 -> Windows only
 # gnomevfs -> poorly maintained
+# goom -> not in Debian
+# libva -> needs a vaapi enabled avcodec
+# osso_screensaver -> not targetting maemo
 # portaudio -> not needed
 # projectm -> broken
 # sqlite -> still in development
 # telx -> incompatible with zvbi
 # x264 -> not in Debian
 confflags += \
+	--disable-dxva2 \
 	--disable-gnomevfs \
+	--disable-goom \
+	--disable-libva \
+	--disable-osso_screensaver \
 	--disable-portaudio \
 	--disable-projectm \
 	--disable-sqlite \
