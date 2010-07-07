@@ -1,3 +1,11 @@
+vlc (1.1.0-2) UNRELEASED; urgency=low
+
+  * libdc1394 is linux specific.
+  * Fix FTBFS on arm with patch cherry-picked from upstream
+  * Set policy to 3.9.0 (no change needed)
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 07 Jul 2010 22:14:49 +0100
+
 vlc (1.1.0-1) unstable; urgency=low
 
   [ Christophe Mutricy ]
