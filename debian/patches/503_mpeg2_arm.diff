@@ -1,0 +1,21 @@
+Subject: Fix FTBFS on arm with old libmpeg2
+
+commit 8940931e6375cce95b08079342c7bb8f25788e0a
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Mon Jun 28 18:59:42 2010 +0100
+
+    Fix build of mpeg2 module with old libmpeg2 on arm
+
+diff --git a/modules/codec/libmpeg2.c b/modules/codec/libmpeg2.c
+index 1189ee9..62d359c 100644
+--- a/modules/codec/libmpeg2.c
++++ b/modules/codec/libmpeg2.c
+@@ -213,7 +213,7 @@ static int OpenDecoder( vlc_object_t *p_this )
+         i_accel |= MPEG2_ACCEL_PPC_ALTIVEC;
+     }
+ 
+-#elif defined(__arm__)
++#elif defined(__arm__) && defined(MPEG2_ACCEL_ARM)
+     i_accel |= MPEG2_ACCEL_ARM;
+ 
+ # ifdef MPEG2_ACCEL_ARM_NEON

@@ -23,7 +23,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                libcaca-dev (>= 0.99.beta4),
                libcddb2-dev,
                libcdio-dev,
-               libdc1394-22-dev,
+               libdc1394-22-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], 
                libdca-dev,
                libdirac-dev,
                libdvbpsi-dev | libdvbpsi5-dev,
@@ -95,7 +95,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                xulrunner-dev,
                yasm [amd64 kfreebsd-amd64],
                zlib1g-dev
-Standards-Version: 3.8.4
+Standards-Version: 3.9.0
 Homepage: http://www.videolan.org/vlc/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=summary
