@@ -90,7 +90,6 @@ confflags += \
 	--enable-taglib \
 	--enable-theora \
 	--enable-twolame \
-	--enable-udev \
 	--enable-upnp \
 	--enable-vcd \
 	--enable-vcdx \
@@ -131,6 +130,7 @@ confflags += \
 	--enable-pvr \
 	--enable-v4l \
 	--enable-v4l2 \
+	--enable-udev \
 	--enable-dc1394 \
 	$(NULL)
 endif
