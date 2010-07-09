@@ -47,7 +47,6 @@ confflags += \
 	--enable-atmo \
 	--enable-bonjour \
 	--enable-caca \
-	--enable-dc1394 \
 	--enable-dca \
 	--enable-dirac \
 	--enable-dvb \
@@ -132,6 +131,7 @@ confflags += \
 	--enable-pvr \
 	--enable-v4l \
 	--enable-v4l2 \
+	--enable-dc1394 \
 	$(NULL)
 endif
 
