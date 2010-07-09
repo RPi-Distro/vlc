@@ -1,3 +1,9 @@
+vlc (1.1.0-3) unstable; urgency=low
+
+  * really enable dc1394 only for Linux, Closes: #588410
+
+ -- Reinhard Tartler <siretart@tauware.de>  Fri, 09 Jul 2010 15:18:08 -0400
+
 vlc (1.1.0-2) unstable; urgency=low
 
   * libdc1394 is linux specific.
