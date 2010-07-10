@@ -1,3 +1,12 @@
+vlc (1.1.0-4) unstable; urgency=low
+
+  * also move udev to the list of linux specific features
+  * alphabetize configure switches
+  * fix kfreebsd ftbfs in access file module (Closes: #588655)
+  * forcefully disable alsa on kFreeBSD
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 10 Jul 2010 19:39:57 -0400
+
 vlc (1.1.0-3) unstable; urgency=low
 
   * really enable dc1394 only for Linux, Closes: #588410
