@@ -33,8 +33,8 @@ LDFLAGS = -Wl,--as-needed
 confflags += \
 	--config-cache \
 	--disable-maintainer-mode \
-	--disable-update-check \
 	--disable-silent-rules \
+	--disable-update-check \
 	--enable-fast-install \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -126,12 +126,12 @@ confflags += \
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 confflags += \
 	--enable-alsa \
+	--enable-dc1394 \
 	--enable-dv \
 	--enable-pvr \
+	--enable-udev \
 	--enable-v4l \
 	--enable-v4l2 \
-	--enable-udev \
-	--enable-dc1394 \
 	$(NULL)
 endif
 
