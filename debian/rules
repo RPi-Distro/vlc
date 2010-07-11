@@ -44,7 +44,6 @@ confflags += \
 confflags += \
 	--enable-a52 \
 	--enable-aa \
-	--enable-atmo \
 	--enable-bonjour \
 	--enable-caca \
 	--enable-dca \
@@ -126,6 +125,7 @@ confflags += \
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 confflags += \
 	--enable-alsa \
+	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv \
 	--enable-pvr \
@@ -200,7 +200,7 @@ install: build
 	        fi ; \
 	done
 # Remove some modules on non-linux arch
-	sed -e '/\(lib\|libaccess_\)\(alsa\|dc1394\|dv\|dvb\|fb\|v4l\|v4l2\|pvr\)_/d' \
+	sed -e '/\(lib\|libaccess_\)\(alsa\|atmo\|dc1394\|dv\|dvb\|fb\|v4l\|v4l2\|pvr\)_/d' \
 	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
 	sed -e '/\(lib\|libaccess_\)\(probe_hal\)_/d' \
 	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd
