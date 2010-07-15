@@ -73,6 +73,7 @@ vlc (1.1.0-1) unstable; urgency=low
   * Remove unused Build-Depends libid3tag0-dev, libsysfs-dev, and libxv-dev.
   * Provide VBI teletext plugin (Closes: #563873) - thanks to László
     Benedek <benedekl@gmail.com> for the patch.
+  * Split the VBI teletext module to its own package vlc-plugin-zvbi.
   * Enable atmo, fluidsynth (separate package), libproxy (Closes: #532110),
     kate (Closes: #563464), and mtp plugin.
   * Comment disabled features.
