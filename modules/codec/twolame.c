@@ -3,7 +3,7 @@
  *            (using libtwolame from http://users.tpg.com.au/adslblvi/)
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 35dbcced69ffb7a7e1ee768096715d99046bdb11 $
+ * $Id: 9b0649ee6704d73193301b81e42720a0ab753927 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -25,10 +25,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/sout.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_sout.h>
+#include <vlc_aout.h>
 
 #include <twolame.h>
 
@@ -61,31 +66,31 @@ static block_t *Encode   ( encoder_t *, aout_buffer_t * );
 #define ENC_PSY_LONGTEXT N_( \
   "Integer from -1 (no model) to 4." )
 
-static int pi_stereo_values[] = { 0, 1, 2 };
-static char *ppsz_stereo_descriptions[] =
+static const int pi_stereo_values[] = { 0, 1, 2 };
+static const char *const ppsz_stereo_descriptions[] =
 { N_("Stereo"), N_("Dual mono"), N_("Joint stereo") };
 
 
-vlc_module_begin();
-    set_shortname( "Twolame");
-    set_description( _("Libtwolame audio encoder") );
-    set_capability( "encoder", 50 );
-    set_callbacks( OpenEncoder, CloseEncoder );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
+vlc_module_begin ()
+    set_shortname( "Twolame")
+    set_description( N_("Libtwolame audio encoder") )
+    set_capability( "encoder", 50 )
+    set_callbacks( OpenEncoder, CloseEncoder )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
 
     add_float( ENC_CFG_PREFIX "quality", 0.0, NULL, ENC_QUALITY_TEXT,
-               ENC_QUALITY_LONGTEXT, VLC_FALSE );
+               ENC_QUALITY_LONGTEXT, false )
     add_integer( ENC_CFG_PREFIX "mode", 0, NULL, ENC_MODE_TEXT,
-                 ENC_MODE_LONGTEXT, VLC_FALSE );
-        change_integer_list( pi_stereo_values, ppsz_stereo_descriptions, 0 );
-    add_bool( ENC_CFG_PREFIX "vbr", 0, NULL, ENC_VBR_TEXT,
-              ENC_VBR_LONGTEXT, VLC_FALSE );
+                 ENC_MODE_LONGTEXT, false )
+        change_integer_list( pi_stereo_values, ppsz_stereo_descriptions, NULL );
+    add_bool( ENC_CFG_PREFIX "vbr", false, NULL, ENC_VBR_TEXT,
+              ENC_VBR_LONGTEXT, false )
     add_integer( ENC_CFG_PREFIX "psy", 3, NULL, ENC_PSY_TEXT,
-                 ENC_PSY_LONGTEXT, VLC_FALSE );
-vlc_module_end();
+                 ENC_PSY_LONGTEXT, false )
+vlc_module_end ()
 
-static const char *ppsz_enc_options[] = {
+static const char *const ppsz_enc_options[] = {
     "quality", "mode", "vbr", "psy", NULL
 };
 
@@ -124,10 +129,9 @@ static int OpenEncoder( vlc_object_t *p_this )
 {
     encoder_t *p_enc = (encoder_t *)p_this;
     encoder_sys_t *p_sys;
-    vlc_value_t val;
     int i_frequency;
 
-    if( p_enc->fmt_out.i_codec != VLC_FOURCC('m','p','g','a') &&
+    if( p_enc->fmt_out.i_codec != VLC_CODEC_MPGA &&
         p_enc->fmt_out.i_codec != VLC_FOURCC('m','p','2','a') &&
         p_enc->fmt_out.i_codec != VLC_FOURCC('m','p','2',' ') &&
         !p_enc->b_force )
@@ -155,17 +159,16 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_sys = (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_enc, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     p_enc->p_sys = p_sys;
 
     p_enc->pf_encode_audio = Encode;
-    p_enc->fmt_in.i_codec = AOUT_FMT_S16_NE;
-    p_enc->fmt_out.i_codec = VLC_FOURCC('m','p','g','a');
+    p_enc->fmt_in.i_codec = VLC_CODEC_S16N;
 
-    sout_CfgParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
+    p_enc->fmt_out.i_cat = AUDIO_ES;
+    p_enc->fmt_out.i_codec = VLC_CODEC_MPGA;
+
+    config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
 
     p_sys->p_twolame = twolame_init();
 
@@ -173,16 +176,13 @@ static int OpenEncoder( vlc_object_t *p_this )
     twolame_set_in_samplerate( p_sys->p_twolame, p_enc->fmt_out.audio.i_rate );
     twolame_set_out_samplerate( p_sys->p_twolame, p_enc->fmt_out.audio.i_rate );
 
-    var_Get( p_enc, ENC_CFG_PREFIX "vbr", &val );
-    if ( val.b_bool )
+    if( var_GetBool( p_enc, ENC_CFG_PREFIX "vbr" ) )
     {
-        float i_quality;
-        var_Get( p_enc, ENC_CFG_PREFIX "quality", &val );
-        i_quality = val.i_int;
-        if ( i_quality > 50.0 ) i_quality = 50.0;
-        if ( i_quality < 0.0 ) i_quality = 0.0;
+        float f_quality = var_GetFloat( p_enc, ENC_CFG_PREFIX "quality" );
+        if ( f_quality > 50.0 ) f_quality = 50.0;
+        if ( f_quality < 0.0 ) f_quality = 0.0;
         twolame_set_VBR( p_sys->p_twolame, 1 );
-        twolame_set_VBR_q( p_sys->p_twolame, i_quality );
+        twolame_set_VBR_q( p_sys->p_twolame, f_quality );
     }
     else
     {
@@ -215,8 +215,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     else
     {
         twolame_set_num_channels( p_sys->p_twolame, 2 );
-        var_Get( p_enc, ENC_CFG_PREFIX "mode", &val );
-        switch ( val.i_int )
+        switch( var_GetInteger( p_enc, ENC_CFG_PREFIX "mode" ) )
         {
         case 1:
             twolame_set_mode( p_sys->p_twolame, TWOLAME_DUAL_CHANNEL );
@@ -231,8 +230,8 @@ static int OpenEncoder( vlc_object_t *p_this )
         }
     }
 
-    var_Get( p_enc, ENC_CFG_PREFIX "psy", &val );
-    twolame_set_psymodel( p_sys->p_twolame, val.i_int );
+    twolame_set_psymodel( p_sys->p_twolame,
+                          var_GetInteger( p_enc, ENC_CFG_PREFIX "psy" ) );
 
     if ( twolame_init_params( p_sys->p_twolame ) )
     {
@@ -267,7 +266,7 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
     int i_nb_samples = p_aout_buf->i_nb_samples;
     block_t *p_chain = NULL;
 
-    p_sys->i_pts = p_aout_buf->start_date -
+    p_sys->i_pts = p_aout_buf->i_pts -
                 (mtime_t)1000000 * (mtime_t)p_sys->i_nb_samples /
                 (mtime_t)p_enc->fmt_out.audio.i_rate;
 
@@ -285,8 +284,7 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
                                p_sys->p_out_buffer, MAX_CODED_FRAME_SIZE );
         p_sys->i_nb_samples = 0;
         p_block = block_New( p_enc, i_used );
-        p_enc->p_vlc->pf_memcpy( p_block->p_buffer, p_sys->p_out_buffer,
-                                 i_used );
+        vlc_memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
         p_block->i_length = (mtime_t)1000000 *
                 (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;
         p_block->i_dts = p_block->i_pts = p_sys->i_pts;

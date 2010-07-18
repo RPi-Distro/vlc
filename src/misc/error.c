@@ -2,7 +2,7 @@
  * error.c: error handling routine
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: e103c447f9c9eb0bc39f0ac59485f11f47f11c91 $
+ * $Id: a11639e785f647f98e703684f591f75cfffece15 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -24,13 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 /*****************************************************************************
  * vlc_error: strerror() equivalent
  *****************************************************************************
  * This function returns a string describing the error code passed in the
- * argument. A list of all errors can be found in include/vlc/vlc.h.
+ * argument. A list of all errors can be found in include/vlc_common.h.
  *****************************************************************************/
 char const * vlc_error ( int i_err )
 {
@@ -41,8 +45,6 @@ char const * vlc_error ( int i_err )
 
         case VLC_ENOMEM:
             return "not enough memory";
-        case VLC_ETHREAD:
-            return "thread error";
         case VLC_ETIMEOUT:
             return "timeout";
 
@@ -51,8 +53,6 @@ char const * vlc_error ( int i_err )
 
         case VLC_ENOOBJ:
             return "object not found";
-        case VLC_EBADOBJ:
-            return "bad object type";
 
         case VLC_ENOVAR:
             return "variable not found";

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * video_text.c : text manipulation functions
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 80a1b7294677321056739c78beaf61b004e2b6e2 $
+ * Copyright (C) 1999-2007 the VideoLAN team
+ * $Id: d9383c602e24931a7dde657280df9f3b9c1ec474 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -20,7 +20,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <vlc/vout.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
 #include <vlc_block.h>
 #include <vlc_filter.h>
 #include <vlc_osd.h>
@@ -30,14 +36,14 @@
  * \param p_vout pointer to the vout the text is to be showed on
  * \param i_channel Subpicture channel
  * \param psz_string The text to be shown
- * \param p_style Pointer to a struct with text style info
+ * \param p_style Pointer to a struct with text style info (it is duplicated if non NULL)
  * \param i_flags flags for alignment and such
  * \param i_hmargin horizontal margin in pixels
  * \param i_vmargin vertical margin in pixels
  * \param i_duration Amount of time the text is to be shown.
  */
 int vout_ShowTextRelative( vout_thread_t *p_vout, int i_channel,
-                           char *psz_string, text_style_t *p_style,
+                           char *psz_string, const text_style_t *p_style,
                            int i_flags, int i_hmargin, int i_vmargin,
                            mtime_t i_duration )
 {
@@ -53,7 +59,7 @@ int vout_ShowTextRelative( vout_thread_t *p_vout, int i_channel,
  * \param p_vout pointer to the vout the text is to be showed on
  * \param i_channel Subpicture channel
  * \param psz_string The text to be shown
- * \param p_style Pointer to a struct with text style info
+ * \param p_style Pointer to a struct with text style info (it is duplicated if non NULL)
  * \param i_flags flags for alignment and such
  * \param i_hmargin horizontal margin in pixels
  * \param i_vmargin vertical margin in pixels
@@ -63,7 +69,7 @@ int vout_ShowTextRelative( vout_thread_t *p_vout, int i_channel,
  *               is about to be shown
  */
 int vout_ShowTextAbsolute( vout_thread_t *p_vout, int i_channel,
-                           char *psz_string, text_style_t *p_style,
+                           const char *psz_string, const text_style_t *p_style,
                            int i_flags, int i_hmargin, int i_vmargin,
                            mtime_t i_start, mtime_t i_stop )
 {
@@ -72,40 +78,44 @@ int vout_ShowTextAbsolute( vout_thread_t *p_vout, int i_channel,
 
     if( !psz_string ) return VLC_EGENERIC;
 
-    p_spu = spu_CreateSubpicture( p_vout->p_spu );
-    if( !p_spu ) return VLC_EGENERIC;
+    p_spu = subpicture_New();
+    if( !p_spu )
+        return VLC_EGENERIC;
+
+    p_spu->i_channel = i_channel;
+    p_spu->i_start = i_start;
+    p_spu->i_stop = i_stop;
+    p_spu->b_ephemer = true;
+    p_spu->b_absolute = false;
+    p_spu->b_fade = true;
+
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('T','E','X','T');
-    fmt.i_aspect = 0;
+    fmt.i_chroma = VLC_CODEC_TEXT;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_vout), &fmt );
+    p_spu->p_region = subpicture_region_New( &fmt );
     if( !p_spu->p_region )
     {
         msg_Err( p_vout, "cannot allocate SPU region" );
-        spu_DestroySubpicture( p_vout->p_spu, p_spu );
+        subpicture_Delete( p_spu );
         return VLC_EGENERIC;
     }
 
     p_spu->p_region->psz_text = strdup( psz_string );
-    p_spu->i_start = i_start;
-    p_spu->i_stop = i_stop;
-    p_spu->b_ephemer = VLC_TRUE;
-    p_spu->b_absolute = VLC_FALSE;
-
-    p_spu->i_x = i_hmargin;
-    p_spu->i_y = i_vmargin;
-    p_spu->i_flags = i_flags;
-    p_spu->i_channel = i_channel;
+    p_spu->p_region->i_align = i_flags & SUBPICTURE_ALIGN_MASK;
+    p_spu->p_region->i_x = i_hmargin;
+    p_spu->p_region->i_y = i_vmargin;
+    if( p_style )
+        p_spu->p_region->p_style = text_style_Duplicate( p_style );
 
     spu_DisplaySubpicture( p_vout->p_spu, p_spu );
 
     return VLC_SUCCESS;
 }
 
-
+#undef vout_OSDMessage
 /**
  * \brief Write an informative message at the default location,
  *        for the default duration and only if the OSD option is enabled.
@@ -113,30 +123,91 @@ int vout_ShowTextAbsolute( vout_thread_t *p_vout, int i_channel,
  * \param i_channel Subpicture channel
  * \param psz_format printf style formatting
  **/
-void __vout_OSDMessage( vlc_object_t *p_caller, int i_channel,
-                        char *psz_format, ... )
+void vout_OSDMessage( vlc_object_t *p_caller, int i_channel,
+                      const char *psz_format, ... )
 {
     vout_thread_t *p_vout;
-    char *psz_string;
+    char *psz_string = NULL;
     va_list args;
 
-    if( !config_GetInt( p_caller, "osd" ) ) return;
+    if( !var_InheritBool( p_caller, "osd" ) ) return;
 
     p_vout = vlc_object_find( p_caller, VLC_OBJECT_VOUT, FIND_ANYWHERE );
     if( p_vout )
     {
         va_start( args, psz_format );
-        vasprintf( &psz_string, psz_format, args );
-
-        vout_ShowTextRelative( p_vout, i_channel, psz_string, NULL,
-                               OSD_ALIGN_TOP|OSD_ALIGN_RIGHT,
-                               30 + p_vout->fmt_in.i_width
-                                  - p_vout->fmt_in.i_visible_width
-                                  - p_vout->fmt_in.i_x_offset,
-                               20 + p_vout->fmt_in.i_y_offset, 1000000 );
-
+        if( vasprintf( &psz_string, psz_format, args ) != -1 )
+        {
+            vout_ShowTextRelative( p_vout, i_channel, psz_string, NULL,
+                                   OSD_ALIGN_TOP|OSD_ALIGN_RIGHT,
+                                   30 + p_vout->fmt_in.i_width
+                                      - p_vout->fmt_in.i_visible_width
+                                      - p_vout->fmt_in.i_x_offset,
+                                   20 + p_vout->fmt_in.i_y_offset, 1000000 );
+            free( psz_string );
+        }
         vlc_object_release( p_vout );
-        free( psz_string );
         va_end( args );
     }
 }
+
+/* */
+text_style_t *text_style_New( void )
+{
+    text_style_t *p_style = calloc( 1, sizeof(*p_style) );
+    if( !p_style )
+        return NULL;
+
+    /* initialize to default text style */
+    p_style->psz_fontname = NULL;
+    p_style->i_font_size = 22;
+    p_style->i_font_color = 0xffffff;
+    p_style->i_font_alpha = 0xff;
+    p_style->i_style_flags = STYLE_OUTLINE;
+    p_style->i_outline_color = 0x000000;
+    p_style->i_outline_alpha = 0xff;
+    p_style->i_shadow_color = 0x000000;
+    p_style->i_shadow_alpha = 0xff;
+    p_style->i_background_color = 0xffffff;
+    p_style->i_background_alpha = 0x80;
+    p_style->i_karaoke_background_color = 0xffffff;
+    p_style->i_karaoke_background_alpha = 0xff;
+    p_style->i_outline_width = 1;
+    p_style->i_shadow_width = 0;
+    p_style->i_spacing = -1;
+
+    return p_style;
+}
+
+text_style_t *text_style_Copy( text_style_t *p_dst, const text_style_t *p_src )
+{
+    if( !p_src )
+        return p_dst;
+
+    /* */
+    *p_dst = *p_src;
+
+    if( p_src->psz_fontname )
+        p_dst->psz_fontname = strdup( p_src->psz_fontname );
+
+    return p_dst;
+}
+
+text_style_t *text_style_Duplicate( const text_style_t *p_src )
+{
+    if( !p_src )
+        return NULL;
+
+    text_style_t *p_dst = calloc( 1, sizeof(*p_dst) );
+    if( p_dst )
+        text_style_Copy( p_dst, p_src );
+    return p_dst;
+}
+
+void text_style_Delete( text_style_t *p_style )
+{
+    if( p_style )
+        free( p_style->psz_fontname );
+    free( p_style );
+}
+

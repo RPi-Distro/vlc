@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a010836b37b250fdc186ea1f8caf669e205746c0 $
+ * $Id: 97ab4c92f8091120930b1045e4fd907a3c7cd81b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,6 +38,10 @@
 #include "x11_window.hpp"
 #include "x11_tooltip.hpp"
 
+#include "../src/generic_window.hpp"
+
+#include <vlc_common.h>
+#include <vlc_xlib.h>
 
 X11Factory::X11Factory( intf_thread_t *pIntf ): OSFactory( pIntf ),
     m_pDisplay( NULL ), m_pTimerLoop( NULL ), m_dirSep( "/" )
@@ -55,6 +59,13 @@ X11Factory::~X11Factory()
 
 bool X11Factory::init()
 {
+    // make sure xlib is safe-thread
+    if( !vlc_xlib_init( VLC_OBJECT(getIntf()) ) )
+    {
+        msg_Err( getIntf(), "initializing xlib for multi-threading failed" );
+        return false;
+    }
+
     // Create the X11 display
     m_pDisplay = new X11Display( getIntf() );
 
@@ -71,10 +82,13 @@ bool X11Factory::init()
                                      ConnectionNumber( pDisplay ) );
 
     // Initialize the resource path
-    m_resourcePath.push_back( (string)getIntf()->p_vlc->psz_homedir +
-        m_dirSep + CONFIG_DIR + "/skins2" );
+    char *datadir = config_GetUserDir( VLC_DATA_DIR );
+    m_resourcePath.push_back( (string)datadir + "/skins2" );
+    free( datadir );
     m_resourcePath.push_back( (string)"share/skins2" );
-    m_resourcePath.push_back( (string)DATA_PATH + "/skins2" );
+    datadir = config_GetDataDir( getIntf() );
+    m_resourcePath.push_back( (string)datadir + "/skins2" );
+    free( datadir );
 
     return true;
 }
@@ -135,10 +149,11 @@ OSTimer *X11Factory::createOSTimer( CmdGeneric &rCmd )
 
 
 OSWindow *X11Factory::createOSWindow( GenericWindow &rWindow, bool dragDrop,
-                                      bool playOnDrop, OSWindow *pParent )
+                                      bool playOnDrop, OSWindow *pParent,
+                                      GenericWindow::WindowType_t type )
 {
     return new X11Window( getIntf(), rWindow, *m_pDisplay, dragDrop,
-                          playOnDrop, (X11Window*)pParent );
+                          playOnDrop, (X11Window*)pParent, type );
 }
 
 
@@ -170,10 +185,10 @@ int X11Factory::getScreenHeight() const
 }
 
 
-Rect X11Factory::getWorkArea() const
+SkinsRect X11Factory::getWorkArea() const
 {
     // XXX
-    return Rect( 0, 0, getScreenWidth(), getScreenHeight() );
+    return SkinsRect( 0, 0, getScreenWidth(), getScreenHeight() );
 }
 
 
@@ -192,6 +207,11 @@ void X11Factory::getMousePos( int &rXPos, int &rYPos ) const
 
 void X11Factory::rmDir( const string &rPath )
 {
+    struct
+    {
+        struct dirent ent;
+        char buf[NAME_MAX + 1];
+    } buf;
     struct dirent *file;
     DIR *dir;
 
@@ -199,7 +219,7 @@ void X11Factory::rmDir( const string &rPath )
     if( !dir ) return;
 
     // Parse the directory and remove everything it contains
-    while( (file = readdir( dir )) )
+    while( readdir_r( dir, &buf.ent, &file ) == 0 && file != NULL )
     {
         struct stat statbuf;
         string filename = file->d_name;
@@ -212,7 +232,7 @@ void X11Factory::rmDir( const string &rPath )
 
         filename = rPath + "/" + filename;
 
-        if( !stat( filename.c_str(), &statbuf ) && statbuf.st_mode & S_IFDIR )
+        if( !stat( filename.c_str(), &statbuf ) && S_ISDIR(statbuf.st_mode) )
         {
             rmDir( filename );
         }

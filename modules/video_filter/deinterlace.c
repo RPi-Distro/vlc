@@ -1,8 +1,8 @@
 /*****************************************************************************
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: 68aade2f54e0416a26cbb98302d73d644bb8ca20 $
+ * Copyright (C) 2000-2009 the VideoLAN team
+ * $Id: 4f030cdd5370325469590cbd5911999c2f4fa555 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *
@@ -24,18 +24,22 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <errno.h>
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/sout.h>
-#include "vlc_filter.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <assert.h>
 
 #ifdef HAVE_ALTIVEC_H
 #   include <altivec.h>
 #endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_filter.h>
+#include <vlc_cpu.h>
 
 #ifdef CAN_COMPILE_MMXEXT
 #   include "mmx.h"
@@ -49,6 +53,8 @@
 #define DEINTERLACE_BOB     4
 #define DEINTERLACE_LINEAR  5
 #define DEINTERLACE_X       6
+#define DEINTERLACE_YADIF   7
+#define DEINTERLACE_YADIF2X 8
 
 /*****************************************************************************
  * Local protypes
@@ -60,12 +66,16 @@ static int  Init      ( vout_thread_t * );
 static void End       ( vout_thread_t * );
 static void Render    ( vout_thread_t *, picture_t * );
 
+static int  MouseEvent( vlc_object_t *p_this, char const *psz_var,
+                        vlc_value_t oldval, vlc_value_t newval, void *p_data );
+
 static void RenderDiscard( vout_thread_t *, picture_t *, picture_t *, int );
 static void RenderBob    ( vout_thread_t *, picture_t *, picture_t *, int );
 static void RenderMean   ( vout_thread_t *, picture_t *, picture_t * );
 static void RenderBlend  ( vout_thread_t *, picture_t *, picture_t * );
 static void RenderLinear ( vout_thread_t *, picture_t *, picture_t *, int );
-static void RenderX      ( vout_thread_t *, picture_t *, picture_t * );
+static void RenderX      ( picture_t *, picture_t * );
+static void RenderYadif  ( vout_thread_t *, picture_t *, picture_t *, int, int );
 
 static void MergeGeneric ( void *, const void *, const void *, size_t );
 #if defined(CAN_COMPILE_C_ALTIVEC)
@@ -86,11 +96,11 @@ static void EndMMX       ( void );
 #if defined(CAN_COMPILE_3DNOW)
 static void End3DNow     ( void );
 #endif
+#if defined __ARM_NEON__
+static void MergeNEON (void *, const void *, const void *, size_t);
+#endif
 
-static int  SendEvents   ( vlc_object_t *, char const *,
-                           vlc_value_t, vlc_value_t, void * );
-
-static void SetFilterMethod( vout_thread_t *p_vout, char *psz_method );
+static void SetFilterMethod( vout_thread_t *p_vout, const char *psz_method );
 static vout_thread_t *SpawnRealVout( vout_thread_t *p_vout );
 
 static int OpenFilter( vlc_object_t *p_this );
@@ -99,8 +109,8 @@ static void CloseFilter( vlc_object_t *p_this );
 /*****************************************************************************
  * Callback prototypes
  *****************************************************************************/
-static int FilterCallback ( vlc_object_t *, char const *,
-                            vlc_value_t, vlc_value_t, void * );
+static int FilterCallback( vlc_object_t *, char const *,
+                           vlc_value_t, vlc_value_t, void * );
 
 /*****************************************************************************
  * Module descriptor
@@ -113,35 +123,38 @@ static int FilterCallback ( vlc_object_t *, char const *,
 
 #define FILTER_CFG_PREFIX "sout-deinterlace-"
 
-static char *mode_list[] = { "discard", "blend", "mean", "bob", "linear", "x" };
-static char *mode_list_text[] = { N_("Discard"), N_("Blend"), N_("Mean"),
-                                  N_("Bob"), N_("Linear"), "X" };
+static const char *const mode_list[] = {
+    "discard", "blend", "mean", "bob", "linear", "x", "yadif", "yadif2x" };
+static const char *const mode_list_text[] = {
+    N_("Discard"), N_("Blend"), N_("Mean"), N_("Bob"), N_("Linear"), "X", "Yadif", "Yadif (2x)" };
 
-vlc_module_begin();
-    set_description( _("Deinterlacing video filter") );
-    set_shortname( _("Deinterlace" ));
-    set_capability( "video filter", 0 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_description( N_("Deinterlacing video filter") )
+    set_shortname( N_("Deinterlace" ))
+    set_capability( "video filter", 0 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    set_section( N_("Display"),NULL);
-    add_string( "deinterlace-mode", "discard", NULL, MODE_TEXT,
-                MODE_LONGTEXT, VLC_FALSE );
-        change_string_list( mode_list, mode_list_text, 0 );
+    set_section( N_("Display"),NULL)
+    add_string( "filter-deinterlace-mode", "discard", NULL, MODE_TEXT,
+                MODE_LONGTEXT, false )
+        change_string_list( mode_list, mode_list_text, 0 )
+        change_safe ()
 
-    add_shortcut( "deinterlace" );
-    set_callbacks( Create, Destroy );
+    add_shortcut( "deinterlace" )
+    set_callbacks( Create, Destroy )
 
-    add_submodule();
-    set_capability( "video filter2", 0 );
-    set_section( N_("Streaming"),NULL);
+    add_submodule ()
+    set_capability( "video filter2", 0 )
+    set_section( N_("Streaming"),NULL)
     add_string( FILTER_CFG_PREFIX "mode", "blend", NULL, SOUT_MODE_TEXT,
-                SOUT_MODE_LONGTEXT, VLC_FALSE );
-        change_string_list( mode_list, mode_list_text, 0 );
-    set_callbacks( OpenFilter, CloseFilter );
-vlc_module_end();
+                SOUT_MODE_LONGTEXT, false )
+        change_string_list( mode_list, mode_list_text, 0 )
+    add_shortcut( "deinterlace" )
+    set_callbacks( OpenFilter, CloseFilter )
+vlc_module_end ()
 
-static const char *ppsz_filter_options[] = {
+static const char *const ppsz_filter_options[] = {
     "mode", NULL
 };
 
@@ -151,10 +164,12 @@ static const char *ppsz_filter_options[] = {
  * This structure is part of the video output thread descriptor.
  * It describes the Deinterlace specific properties of an output thread.
  *****************************************************************************/
+#define HISTORY_SIZE (3)
 struct vout_sys_t
 {
     int        i_mode;        /* Deinterlace mode */
-    vlc_bool_t b_double_rate; /* Shall we double the framerate? */
+    bool b_double_rate; /* Shall we double the framerate? */
+    bool b_half_height; /* Shall be devide the height by 2 */
 
     mtime_t    last_date;
     mtime_t    next_date;
@@ -165,6 +180,9 @@ struct vout_sys_t
 
     void (*pf_merge) ( void *, const void *, const void *, size_t );
     void (*pf_end_merge) ( void );
+
+    /* Yadif */
+    picture_t *pp_history[HISTORY_SIZE];
 };
 
 /*****************************************************************************
@@ -183,15 +201,13 @@ static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 static int Create( vlc_object_t *p_this )
 {
     vout_thread_t *p_vout = (vout_thread_t *)p_this;
-    vlc_value_t val;
+    vout_sys_t *p_sys;
+    char *psz_mode;
 
     /* Allocate structure */
-    p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
+    p_sys = p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return VLC_ENOMEM;
-    }
 
     p_vout->pf_init = Init;
     p_vout->pf_end = End;
@@ -200,66 +216,72 @@ static int Create( vlc_object_t *p_this )
     p_vout->pf_display = NULL;
     p_vout->pf_control = Control;
 
-    p_vout->p_sys->i_mode = DEINTERLACE_DISCARD;
-    p_vout->p_sys->b_double_rate = VLC_FALSE;
-    p_vout->p_sys->last_date = 0;
-    p_vout->p_sys->p_vout = 0;
-    vlc_mutex_init( p_vout, &p_vout->p_sys->filter_lock );
+    p_sys->i_mode = DEINTERLACE_DISCARD;
+    p_sys->b_double_rate = false;
+    p_sys->b_half_height = true;
+    p_sys->last_date = 0;
+    p_sys->p_vout = 0;
+    vlc_mutex_init( &p_sys->filter_lock );
 
 #if defined(CAN_COMPILE_C_ALTIVEC)
-    if( p_vout->p_libvlc->i_cpu & CPU_CAPABILITY_ALTIVEC )
+    if( vlc_CPU() & CPU_CAPABILITY_ALTIVEC )
     {
-        p_vout->p_sys->pf_merge = MergeAltivec;
-        p_vout->p_sys->pf_end_merge = NULL;
+        p_sys->pf_merge = MergeAltivec;
+        p_sys->pf_end_merge = NULL;
     }
     else
 #endif
 #if defined(CAN_COMPILE_SSE)
-    if( p_vout->p_libvlc->i_cpu & CPU_CAPABILITY_SSE2 )
+    if( vlc_CPU() & CPU_CAPABILITY_SSE2 )
     {
-        p_vout->p_sys->pf_merge = MergeSSE2;
-        p_vout->p_sys->pf_end_merge = EndMMX;
+        p_sys->pf_merge = MergeSSE2;
+        p_sys->pf_end_merge = EndMMX;
     }
     else
 #endif
 #if defined(CAN_COMPILE_MMXEXT)
-    if( p_vout->p_libvlc->i_cpu & CPU_CAPABILITY_MMXEXT )
+    if( vlc_CPU() & CPU_CAPABILITY_MMXEXT )
     {
-        p_vout->p_sys->pf_merge = MergeMMXEXT;
-        p_vout->p_sys->pf_end_merge = EndMMX;
+        p_sys->pf_merge = MergeMMXEXT;
+        p_sys->pf_end_merge = EndMMX;
     }
     else
 #endif
 #if defined(CAN_COMPILE_3DNOW)
-    if( p_vout->p_libvlc->i_cpu & CPU_CAPABILITY_3DNOW )
+    if( vlc_CPU() & CPU_CAPABILITY_3DNOW )
     {
-        p_vout->p_sys->pf_merge = Merge3DNow;
-        p_vout->p_sys->pf_end_merge = End3DNow;
+        p_sys->pf_merge = Merge3DNow;
+        p_sys->pf_end_merge = End3DNow;
+    }
+    else
+#endif
+#if defined __ARM_NEON__
+    if( vlc_CPU() & CPU_CAPABILITY_NEON )
+    {
+        p_sys->pf_merge = MergeNEON;
+        p_sys->pf_end_merge = NULL;
     }
     else
 #endif
     {
-        p_vout->p_sys->pf_merge = MergeGeneric;
-        p_vout->p_sys->pf_end_merge = NULL;
+        p_sys->pf_merge = MergeGeneric;
+        p_sys->pf_end_merge = NULL;
     }
 
     /* Look what method was requested */
-    var_Create( p_vout, "deinterlace-mode", VLC_VAR_STRING );
-    var_Change( p_vout, "deinterlace-mode", VLC_VAR_INHERITVALUE, &val, NULL );
+    psz_mode = var_CreateGetString( p_vout, "filter-deinterlace-mode" );
 
-    if( val.psz_string == NULL )
+    if( !psz_mode )
     {
-        msg_Err( p_vout, "configuration variable deinterlace-mode empty" );
+        msg_Err( p_vout, "configuration variable filter-deinterlace-mode empty" );
         msg_Err( p_vout, "no deinterlace mode provided, using \"discard\"" );
 
-        val.psz_string = strdup( "discard" );
+        psz_mode = strdup( "discard" );
     }
 
-    msg_Dbg( p_vout, "using %s deinterlace mode", val.psz_string );
+    SetFilterMethod( p_vout, psz_mode );
 
-    SetFilterMethod( p_vout, val.psz_string );
-
-    free( val.psz_string );
+    free( psz_mode );
 
     return VLC_SUCCESS;
 }
@@ -267,48 +289,110 @@ static int Create( vlc_object_t *p_this )
 /*****************************************************************************
  * SetFilterMethod: setup the deinterlace method to use.
  *****************************************************************************/
-static void SetFilterMethod( vout_thread_t *p_vout, char *psz_method )
+static void SetFilterMethod( vout_thread_t *p_vout, const char *psz_method )
 {
-    if( !strcmp( psz_method, "discard" ) )
+    vout_sys_t *p_sys = p_vout->p_sys;
+    if( !strcmp( psz_method, "mean" ) )
     {
-        p_vout->p_sys->i_mode = DEINTERLACE_DISCARD;
-        p_vout->p_sys->b_double_rate = VLC_FALSE;
-    }
-    else if( !strcmp( psz_method, "mean" ) )
-    {
-        p_vout->p_sys->i_mode = DEINTERLACE_MEAN;
-        p_vout->p_sys->b_double_rate = VLC_FALSE;
+        p_sys->i_mode = DEINTERLACE_MEAN;
+        p_sys->b_double_rate = false;
+        p_sys->b_half_height = true;
     }
     else if( !strcmp( psz_method, "blend" )
              || !strcmp( psz_method, "average" )
              || !strcmp( psz_method, "combine-fields" ) )
     {
-        p_vout->p_sys->i_mode = DEINTERLACE_BLEND;
-        p_vout->p_sys->b_double_rate = VLC_FALSE;
+        p_sys->i_mode = DEINTERLACE_BLEND;
+        p_sys->b_double_rate = false;
+        p_sys->b_half_height = false;
     }
     else if( !strcmp( psz_method, "bob" )
              || !strcmp( psz_method, "progressive-scan" ) )
     {
-        p_vout->p_sys->i_mode = DEINTERLACE_BOB;
-        p_vout->p_sys->b_double_rate = VLC_TRUE;
+        p_sys->i_mode = DEINTERLACE_BOB;
+        p_sys->b_double_rate = true;
+        p_sys->b_half_height = false;
     }
     else if( !strcmp( psz_method, "linear" ) )
     {
-        p_vout->p_sys->i_mode = DEINTERLACE_LINEAR;
-        p_vout->p_sys->b_double_rate = VLC_TRUE;
+        p_sys->i_mode = DEINTERLACE_LINEAR;
+        p_sys->b_double_rate = true;
+        p_sys->b_half_height = false;
     }
     else if( !strcmp( psz_method, "x" ) )
     {
-        p_vout->p_sys->i_mode = DEINTERLACE_X;
-        p_vout->p_sys->b_double_rate = VLC_FALSE;
+        p_sys->i_mode = DEINTERLACE_X;
+        p_sys->b_double_rate = false;
+        p_sys->b_half_height = false;
+    }
+    else if( !strcmp( psz_method, "yadif" ) )
+    {
+        p_sys->i_mode = DEINTERLACE_YADIF;
+        p_sys->b_double_rate = false;
+        p_sys->b_half_height = false;
+    }
+    else if( !strcmp( psz_method, "yadif2x" ) )
+    {
+        p_sys->i_mode = DEINTERLACE_YADIF2X;
+        p_sys->b_double_rate = true;
+        p_sys->b_half_height = false;
     }
     else
     {
-        msg_Err( p_vout, "no valid deinterlace mode provided, "
-                 "using \"discard\"" );
+        const bool b_i422 = p_vout->render.i_chroma == VLC_CODEC_I422 ||
+                            p_vout->render.i_chroma == VLC_CODEC_J422;
+        if( strcmp( psz_method, "discard" ) )
+            msg_Err( p_vout, "no valid deinterlace mode provided, "
+                     "using \"discard\"" );
+
+        p_sys->i_mode = DEINTERLACE_DISCARD;
+        p_sys->b_double_rate = false;
+        p_sys->b_half_height = !b_i422;
     }
 
     msg_Dbg( p_vout, "using %s deinterlace method", psz_method );
+}
+
+static void GetOutputFormat( vout_thread_t *p_vout,
+                             video_format_t *p_dst, const video_format_t *p_src )
+{
+    *p_dst = *p_src;
+
+    if( p_vout->p_sys->b_half_height )
+    {
+        p_dst->i_height /= 2;
+        p_dst->i_visible_height /= 2;
+        p_dst->i_y_offset /= 2;
+        p_dst->i_sar_den *= 2;
+    }
+
+    if( p_src->i_chroma == VLC_CODEC_I422 ||
+        p_src->i_chroma == VLC_CODEC_J422 )
+    {
+        switch( p_vout->p_sys->i_mode )
+        {
+        case DEINTERLACE_MEAN:
+        case DEINTERLACE_LINEAR:
+        case DEINTERLACE_X:
+        case DEINTERLACE_YADIF:
+        case DEINTERLACE_YADIF2X:
+            p_dst->i_chroma = p_src->i_chroma;
+            break;
+        default:
+            p_dst->i_chroma = p_src->i_chroma == VLC_CODEC_I422 ? VLC_CODEC_I420 :
+                                                                  VLC_CODEC_J420;
+            break;
+        }
+    }
+}
+
+static bool IsChromaSupported( vlc_fourcc_t i_chroma )
+{
+    return i_chroma == VLC_CODEC_I420 ||
+           i_chroma == VLC_CODEC_J420 ||
+           i_chroma == VLC_CODEC_YV12 ||
+           i_chroma == VLC_CODEC_I422 ||
+           i_chroma == VLC_CODEC_J422;
 }
 
 /*****************************************************************************
@@ -316,30 +400,18 @@ static void SetFilterMethod( vout_thread_t *p_vout, char *psz_method )
  *****************************************************************************/
 static int Init( vout_thread_t *p_vout )
 {
-    int i_index;
-    picture_t *p_pic;
-
     I_OUTPUTPICTURES = 0;
+
+    if( !IsChromaSupported( p_vout->render.i_chroma ) )
+        return VLC_EGENERIC; /* unknown chroma */
 
     /* Initialize the output structure, full of directbuffers since we want
      * the decoder to output directly to our structures. */
-    switch( p_vout->render.i_chroma )
-    {
-        case VLC_FOURCC('I','4','2','0'):
-        case VLC_FOURCC('I','Y','U','V'):
-        case VLC_FOURCC('Y','V','1','2'):
-        case VLC_FOURCC('I','4','2','2'):
-            p_vout->output.i_chroma = p_vout->render.i_chroma;
-            p_vout->output.i_width  = p_vout->render.i_width;
-            p_vout->output.i_height = p_vout->render.i_height;
-            p_vout->output.i_aspect = p_vout->render.i_aspect;
-            p_vout->fmt_out = p_vout->fmt_in;
-            break;
-
-        default:
-            return VLC_EGENERIC; /* unknown chroma */
-            break;
-    }
+    p_vout->output.i_chroma = p_vout->render.i_chroma;
+    p_vout->output.i_width  = p_vout->render.i_width;
+    p_vout->output.i_height = p_vout->render.i_height;
+    p_vout->output.i_aspect = p_vout->render.i_aspect;
+    p_vout->fmt_out = p_vout->fmt_in;
 
     /* Try to open the real video output */
     p_vout->p_sys->p_vout = SpawnRealVout( p_vout );
@@ -352,13 +424,14 @@ static int Init( vout_thread_t *p_vout )
         return VLC_EGENERIC;
     }
 
-    var_AddCallback( p_vout, "deinterlace-mode", FilterCallback, NULL );
+    for( int i = 0; i < HISTORY_SIZE; i++ )
+        p_vout->p_sys->pp_history[i] = NULL;
 
-    ALLOCATE_DIRECTBUFFERS( VOUT_MAX_PICTURES );
+    vout_filter_AllocateDirectBuffers( p_vout, VOUT_MAX_PICTURES );
 
-    ADD_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
+    vout_filter_AddChild( p_vout, p_vout->p_sys->p_vout, MouseEvent );
 
-    ADD_PARENT_CALLBACKS( SendEventsToChild );
+    var_AddCallback( p_vout, "filter-deinterlace-mode", FilterCallback, NULL );
 
     return VLC_SUCCESS;
 }
@@ -368,46 +441,12 @@ static int Init( vout_thread_t *p_vout )
  *****************************************************************************/
 static vout_thread_t *SpawnRealVout( vout_thread_t *p_vout )
 {
-    vout_thread_t *p_real_vout = NULL;
-    video_format_t fmt = {0};
-
     msg_Dbg( p_vout, "spawning the real video output" );
 
-    fmt = p_vout->fmt_out;
+    video_format_t fmt;
+    GetOutputFormat( p_vout, &fmt, &p_vout->fmt_out );
 
-    switch( p_vout->render.i_chroma )
-    {
-    case VLC_FOURCC('I','4','2','0'):
-    case VLC_FOURCC('I','Y','U','V'):
-    case VLC_FOURCC('Y','V','1','2'):
-        switch( p_vout->p_sys->i_mode )
-        {
-        case DEINTERLACE_MEAN:
-        case DEINTERLACE_DISCARD:
-            fmt.i_height /= 2; fmt.i_visible_height /= 2; fmt.i_y_offset /= 2;
-            fmt.i_sar_den *= 2;
-            p_real_vout = vout_Create( p_vout, &fmt );
-            break;
-
-        case DEINTERLACE_BOB:
-        case DEINTERLACE_BLEND:
-        case DEINTERLACE_LINEAR:
-        case DEINTERLACE_X:
-            p_real_vout = vout_Create( p_vout, &fmt );
-            break;
-        }
-        break;
-
-    case VLC_FOURCC('I','4','2','2'):
-        fmt.i_chroma = VLC_FOURCC('I','4','2','0');
-        p_real_vout = vout_Create( p_vout, &fmt );
-        break;
-
-    default:
-        break;
-    }
-
-    return p_real_vout;
+    return vout_Create( p_vout, &fmt );
 }
 
 /*****************************************************************************
@@ -415,23 +454,23 @@ static vout_thread_t *SpawnRealVout( vout_thread_t *p_vout )
  *****************************************************************************/
 static void End( vout_thread_t *p_vout )
 {
-    int i_index;
+    vout_sys_t *p_sys = p_vout->p_sys;
 
-    /* Free the fake output buffers we allocated */
-    for( i_index = I_OUTPUTPICTURES ; i_index ; )
+    var_DelCallback( p_vout, "filter-deinterlace-mode", FilterCallback, NULL );
+
+    for( int i = 0; i < HISTORY_SIZE; i++ )
     {
-        i_index--;
-        free( PP_OUTPUTPICTURE[ i_index ]->p_data_orig );
+        if( p_sys->pp_history[i] )
+            picture_Release( p_sys->pp_history[i] );
     }
 
-    if( p_vout->p_sys->p_vout )
+    if( p_sys->p_vout )
     {
-        DEL_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
-        vlc_object_detach( p_vout->p_sys->p_vout );
-        vout_Destroy( p_vout->p_sys->p_vout );
+        vout_filter_DelChild( p_vout, p_sys->p_vout, MouseEvent );
+        vout_CloseAndRelease( p_sys->p_vout );
     }
 
-    DEL_PARENT_CALLBACKS( SendEventsToChild );
+    vout_filter_ReleaseDirectBuffers( p_vout );
 }
 
 /*****************************************************************************
@@ -446,6 +485,23 @@ static void Destroy( vlc_object_t *p_this )
     free( p_vout->p_sys );
 }
 
+/**
+ * Forward mouse event with proper conversion.
+ */
+static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
+                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
+{
+    vout_thread_t *p_vout = p_data;
+    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
+
+    if( !strcmp( psz_var, "mouse-button-down" ) )
+        return var_SetChecked( p_vout, psz_var, VLC_VAR_INTEGER, newval );
+
+    if( p_vout->p_sys->b_half_height )
+        newval.coords.y *= 2;
+    return var_SetChecked( p_vout, psz_var, VLC_VAR_COORDS, newval );
+}
+
 /*****************************************************************************
  * Render: displays previously rendered output
  *****************************************************************************
@@ -458,22 +514,42 @@ static void Render ( vout_thread_t *p_vout, picture_t *p_pic )
     vout_sys_t *p_sys = p_vout->p_sys;
     picture_t *pp_outpic[2];
 
-    p_vout->fmt_out.i_x_offset = p_sys->p_vout->fmt_in.i_x_offset =
-        p_vout->fmt_in.i_x_offset;
-    p_vout->fmt_out.i_y_offset = p_sys->p_vout->fmt_in.i_y_offset =
-        p_vout->fmt_in.i_y_offset;
-    p_vout->fmt_out.i_visible_width = p_sys->p_vout->fmt_in.i_visible_width =
-        p_vout->fmt_in.i_visible_width;
-    p_vout->fmt_out.i_visible_height = p_sys->p_vout->fmt_in.i_visible_height =
-        p_vout->fmt_in.i_visible_height;
-    if( p_vout->p_sys->i_mode == DEINTERLACE_MEAN ||
-        p_vout->p_sys->i_mode == DEINTERLACE_DISCARD )
+    /* FIXME are they needed ? */
+    p_vout->fmt_out.i_x_offset = p_vout->fmt_in.i_x_offset;
+    p_vout->fmt_out.i_y_offset = p_vout->fmt_in.i_y_offset;
+    p_vout->fmt_out.i_visible_width = p_vout->fmt_in.i_visible_width;
+    p_vout->fmt_out.i_visible_height = p_vout->fmt_in.i_visible_height;
+
+    /* FIXME p_sys->p_vout->* should NOT be changed FIXME */
+    p_sys->p_vout->fmt_in.i_x_offset = p_vout->fmt_out.i_x_offset;
+    p_sys->p_vout->fmt_in.i_y_offset = p_vout->fmt_out.i_y_offset;
+    p_sys->p_vout->fmt_in.i_visible_width = p_vout->fmt_out.i_visible_width;
+    p_sys->p_vout->fmt_in.i_visible_height = p_vout->fmt_in.i_visible_height;
+    if( p_vout->p_sys->b_half_height )
     {
-        p_vout->fmt_out.i_y_offset /= 2; p_sys->p_vout->fmt_in.i_y_offset /= 2;
-        p_vout->fmt_out.i_visible_height /= 2;
+        p_sys->p_vout->fmt_in.i_y_offset /= 2;
         p_sys->p_vout->fmt_in.i_visible_height /= 2;
     }
- 
+
+    if( p_vout->i_changes & VOUT_ASPECT_CHANGE )
+    {
+        p_vout->i_changes &= ~VOUT_ASPECT_CHANGE;
+
+        p_vout->fmt_out.i_sar_num = p_vout->fmt_in.i_sar_num;
+        p_vout->fmt_out.i_sar_den = p_vout->fmt_in.i_sar_den;
+
+        video_format_t fmt = p_vout->fmt_out;
+        if( p_vout->p_sys->b_half_height )
+        {
+            fmt.i_height /= 2; fmt.i_visible_height /= 2; fmt.i_y_offset /= 2;
+            fmt.i_sar_den *= 2;
+        }
+
+        p_sys->p_vout = vout_Request( p_vout, p_sys->p_vout, &fmt );
+    }
+    if( !p_sys->p_vout )
+        return;
+
     pp_outpic[0] = pp_outpic[1] = NULL;
 
     vlc_mutex_lock( &p_vout->p_sys->filter_lock );
@@ -483,7 +559,7 @@ static void Render ( vout_thread_t *p_vout, picture_t *p_pic )
                                                 0, 0, 0 ) )
               == NULL )
     {
-        if( p_vout->b_die || p_vout->b_error )
+        if( !vlc_object_alive( p_vout ) || p_vout->b_error )
         {
             vlc_mutex_unlock( &p_vout->p_sys->filter_lock );
             return;
@@ -491,7 +567,7 @@ static void Render ( vout_thread_t *p_vout, picture_t *p_pic )
         msleep( VOUT_OUTMEM_SLEEP );
     }
 
-    vout_DatePicture( p_vout->p_sys->p_vout, pp_outpic[0], p_pic->date );
+    pp_outpic[0]->date = p_pic->date;
 
     /* If we are using double rate, get an additional new picture */
     if( p_vout->p_sys->b_double_rate )
@@ -500,7 +576,7 @@ static void Render ( vout_thread_t *p_vout, picture_t *p_pic )
                                                  0, 0, 0 ) )
                   == NULL )
         {
-            if( p_vout->b_die || p_vout->b_error )
+            if( !vlc_object_alive( p_vout ) || p_vout->b_error )
             {
                 vout_DestroyPicture( p_vout->p_sys->p_vout, pp_outpic[0] );
                 vlc_mutex_unlock( &p_vout->p_sys->filter_lock );
@@ -511,15 +587,9 @@ static void Render ( vout_thread_t *p_vout, picture_t *p_pic )
 
         /* 20ms is a bit arbitrary, but it's only for the first image we get */
         if( !p_vout->p_sys->last_date )
-        {
-            vout_DatePicture( p_vout->p_sys->p_vout, pp_outpic[1],
-                              p_pic->date + 20000 );
-        }
+            pp_outpic[1]->date = p_pic->date + 20000;
         else
-        {
-            vout_DatePicture( p_vout->p_sys->p_vout, pp_outpic[1],
-                      (3 * p_pic->date - p_vout->p_sys->last_date) / 2 );
-        }
+            pp_outpic[1]->date = (3 * p_pic->date - p_vout->p_sys->last_date) / 2;
         p_vout->p_sys->last_date = p_pic->date;
     }
 
@@ -555,8 +625,20 @@ static void Render ( vout_thread_t *p_vout, picture_t *p_pic )
             break;
 
         case DEINTERLACE_X:
-            RenderX( p_vout, pp_outpic[0], p_pic );
+            RenderX( pp_outpic[0], p_pic );
             vout_DisplayPicture( p_vout->p_sys->p_vout, pp_outpic[0] );
+            break;
+
+        case DEINTERLACE_YADIF:
+            RenderYadif( p_vout, pp_outpic[0], p_pic, 0, 0 );
+            vout_DisplayPicture( p_vout->p_sys->p_vout, pp_outpic[0] );
+            break;
+
+        case DEINTERLACE_YADIF2X:
+            RenderYadif( p_vout, pp_outpic[0], p_pic, 0, p_pic->b_top_field_first ? 0 : 1 );
+            vout_DisplayPicture( p_vout->p_sys->p_vout, pp_outpic[0] );
+            RenderYadif( p_vout, pp_outpic[1], p_pic, 1, p_pic->b_top_field_first ? 1 : 0 );
+            vout_DisplayPicture( p_vout->p_sys->p_vout, pp_outpic[1] );
             break;
     }
     vlc_mutex_unlock( &p_vout->p_sys->filter_lock );
@@ -585,21 +667,21 @@ static void RenderDiscard( vout_thread_t *p_vout,
 
         switch( p_vout->render.i_chroma )
         {
-        case VLC_FOURCC('I','4','2','0'):
-        case VLC_FOURCC('I','Y','U','V'):
-        case VLC_FOURCC('Y','V','1','2'):
+        case VLC_CODEC_I420:
+        case VLC_CODEC_J420:
+        case VLC_CODEC_YV12:
 
             for( ; p_out < p_out_end ; )
             {
-                p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                          p_pic->p[i_plane].i_pitch );
+                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
                 p_out += p_outpic->p[i_plane].i_pitch;
                 p_in += 2 * p_pic->p[i_plane].i_pitch;
             }
             break;
 
-        case VLC_FOURCC('I','4','2','2'):
+        case VLC_CODEC_I422:
+        case VLC_CODEC_J422:
 
             i_increment = 2 * p_pic->p[i_plane].i_pitch;
 
@@ -607,11 +689,9 @@ static void RenderDiscard( vout_thread_t *p_vout,
             {
                 for( ; p_out < p_out_end ; )
                 {
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                     p_out += p_outpic->p[i_plane].i_pitch;
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                     p_out += p_outpic->p[i_plane].i_pitch;
                     p_in += i_increment;
                 }
@@ -620,8 +700,7 @@ static void RenderDiscard( vout_thread_t *p_vout,
             {
                 for( ; p_out < p_out_end ; )
                 {
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                     p_out += p_outpic->p[i_plane].i_pitch;
                     p_in += i_increment;
                 }
@@ -654,14 +733,13 @@ static void RenderBob( vout_thread_t *p_vout,
 
         switch( p_vout->render.i_chroma )
         {
-            case VLC_FOURCC('I','4','2','0'):
-            case VLC_FOURCC('I','Y','U','V'):
-            case VLC_FOURCC('Y','V','1','2'):
+            case VLC_CODEC_I420:
+            case VLC_CODEC_J420:
+            case VLC_CODEC_YV12:
                 /* For BOTTOM field we need to add the first line */
                 if( i_field == 1 )
                 {
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                     p_in += p_pic->p[i_plane].i_pitch;
                     p_out += p_outpic->p[i_plane].i_pitch;
                 }
@@ -670,37 +748,33 @@ static void RenderBob( vout_thread_t *p_vout,
 
                 for( ; p_out < p_out_end ; )
                 {
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
                     p_out += p_outpic->p[i_plane].i_pitch;
 
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
                     p_in += 2 * p_pic->p[i_plane].i_pitch;
                     p_out += p_outpic->p[i_plane].i_pitch;
                 }
 
-                p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                          p_pic->p[i_plane].i_pitch );
+                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
                 /* For TOP field we need to add the last line */
                 if( i_field == 0 )
                 {
                     p_in += p_pic->p[i_plane].i_pitch;
                     p_out += p_outpic->p[i_plane].i_pitch;
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                 }
                 break;
 
-            case VLC_FOURCC('I','4','2','2'):
+            case VLC_CODEC_I422:
+            case VLC_CODEC_J422:
                 /* For BOTTOM field we need to add the first line */
                 if( i_field == 1 )
                 {
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                     p_in += p_pic->p[i_plane].i_pitch;
                     p_out += p_outpic->p[i_plane].i_pitch;
                 }
@@ -711,13 +785,11 @@ static void RenderBob( vout_thread_t *p_vout,
                 {
                     for( ; p_out < p_out_end ; )
                     {
-                        p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                                  p_pic->p[i_plane].i_pitch );
+                        vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
                         p_out += p_outpic->p[i_plane].i_pitch;
 
-                        p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                                  p_pic->p[i_plane].i_pitch );
+                        vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
                         p_in += 2 * p_pic->p[i_plane].i_pitch;
                         p_out += p_outpic->p[i_plane].i_pitch;
@@ -727,24 +799,21 @@ static void RenderBob( vout_thread_t *p_vout,
                 {
                     for( ; p_out < p_out_end ; )
                     {
-                        p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                                  p_pic->p[i_plane].i_pitch );
+                        vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
                         p_out += p_outpic->p[i_plane].i_pitch;
                         p_in += 2 * p_pic->p[i_plane].i_pitch;
                     }
                 }
 
-                p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                          p_pic->p[i_plane].i_pitch );
+                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
                 /* For TOP field we need to add the last line */
                 if( i_field == 0 )
                 {
                     p_in += p_pic->p[i_plane].i_pitch;
                     p_out += p_outpic->p[i_plane].i_pitch;
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                              p_pic->p[i_plane].i_pitch );
+                    vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                 }
                 break;
         }
@@ -775,8 +844,7 @@ static void RenderLinear( vout_thread_t *p_vout,
         /* For BOTTOM field we need to add the first line */
         if( i_field == 1 )
         {
-            p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                      p_pic->p[i_plane].i_pitch );
+            vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
             p_in += p_pic->p[i_plane].i_pitch;
             p_out += p_outpic->p[i_plane].i_pitch;
         }
@@ -785,8 +853,7 @@ static void RenderLinear( vout_thread_t *p_vout,
 
         for( ; p_out < p_out_end ; )
         {
-            p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                      p_pic->p[i_plane].i_pitch );
+            vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
             p_out += p_outpic->p[i_plane].i_pitch;
 
@@ -797,16 +864,14 @@ static void RenderLinear( vout_thread_t *p_vout,
             p_out += p_outpic->p[i_plane].i_pitch;
         }
 
-        p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                  p_pic->p[i_plane].i_pitch );
+        vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
 
         /* For TOP field we need to add the last line */
         if( i_field == 0 )
         {
             p_in += p_pic->p[i_plane].i_pitch;
             p_out += p_outpic->p[i_plane].i_pitch;
-            p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                      p_pic->p[i_plane].i_pitch );
+            vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
         }
     }
     EndMerge();
@@ -859,12 +924,11 @@ static void RenderBlend( vout_thread_t *p_vout,
 
         switch( p_vout->render.i_chroma )
         {
-            case VLC_FOURCC('I','4','2','0'):
-            case VLC_FOURCC('I','Y','U','V'):
-            case VLC_FOURCC('Y','V','1','2'):
+            case VLC_CODEC_I420:
+            case VLC_CODEC_J420:
+            case VLC_CODEC_YV12:
                 /* First line: simple copy */
-                p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                          p_pic->p[i_plane].i_pitch );
+                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                 p_out += p_outpic->p[i_plane].i_pitch;
 
                 /* Remaining lines: mean value */
@@ -878,10 +942,10 @@ static void RenderBlend( vout_thread_t *p_vout,
                 }
                 break;
 
-            case VLC_FOURCC('I','4','2','2'):
+            case VLC_CODEC_I422:
+            case VLC_CODEC_J422:
                 /* First line: simple copy */
-                p_vout->p_vlc->pf_memcpy( p_out, p_in,
-                                          p_pic->p[i_plane].i_pitch );
+                vlc_memcpy( p_out, p_in, p_pic->p[i_plane].i_pitch );
                 p_out += p_outpic->p[i_plane].i_pitch;
 
                 /* Remaining lines: mean value */
@@ -1010,10 +1074,10 @@ static void MergeSSE2( void *_p_dest, const void *_p_s1, const void *_p_s2,
     const uint8_t *p_s1 = (const uint8_t *)_p_s1;
     const uint8_t *p_s2 = (const uint8_t *)_p_s2;
     uint8_t* p_end;
-    while( (ptrdiff_t)p_s1 % 16 )
+    while( (uintptr_t)p_s1 % 16 )
     {
         *p_dest++ = ( (uint16_t)(*p_s1++) + (uint16_t)(*p_s2++) ) >> 1;
-    }        
+    }
     p_end = p_dest + i_bytes - 16;
     while( p_dest < p_end )
     {
@@ -1060,7 +1124,7 @@ static void MergeAltivec( void *_p_dest, const void *_p_s1,
     uint8_t *p_end  = p_dest + i_bytes - 15;
 
     /* Use C until the first 16-bytes aligned destination pixel */
-    while( (int)p_dest & 0xF )
+    while( (uintptr_t)p_dest & 0xF )
     {
         *p_dest++ = ( (uint16_t)(*p_s1++) + (uint16_t)(*p_s2++) ) >> 1;
     }
@@ -1120,6 +1184,66 @@ static void MergeAltivec( void *_p_dest, const void *_p_s1,
 }
 #endif
 
+#ifdef __ARM_NEON__
+static void MergeNEON (void *restrict out, const void *in1,
+                       const void *in2, size_t n)
+{
+    uint8_t *outp = out;
+    const uint8_t *in1p = in1;
+    const uint8_t *in2p = in2;
+    size_t mis = ((uintptr_t)outp) & 15;
+
+    if (mis)
+    {
+        MergeGeneric (outp, in1p, in2p, mis);
+        outp += mis;
+        in1p += mis;
+        in2p += mis;
+        n -= mis;
+    }
+
+    uint8_t *end = outp + (n & ~15);
+
+    if ((((uintptr_t)in1p)|((uintptr_t)in2p)) & 15)
+        while (outp < end)
+            asm volatile (
+                "vld1.u8  {q0-q1}, [%[in1]]!\n"
+                "vld1.u8  {q2-q3}, [%[in2]]!\n"
+                "vhadd.u8 q4, q0, q2\n"
+                "vld1.u8  {q6-q7}, [%[in1]]!\n"
+                "vhadd.u8 q5, q1, q3\n"
+                "vld1.u8  {q8-q9}, [%[in2]]!\n"
+                "vhadd.u8 q10, q6, q8\n"
+                "vhadd.u8 q11, q7, q9\n"
+                "vst1.u8  {q4-q5}, [%[out],:128]!\n"
+                "vst1.u8  {q10-q11}, [%[out],:128]!\n"
+                : [out] "+r" (outp), [in1] "+r" (in1p), [in2] "+r" (in2p)
+                :
+                : "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11", "memory");
+    else
+         while (outp < end)
+            asm volatile (
+                "vld1.u8  {q0-q1}, [%[in1],:128]!\n"
+                "vld1.u8  {q2-q3}, [%[in2],:128]!\n"
+                "vhadd.u8 q4, q0, q2\n"
+                "vld1.u8  {q6-q7}, [%[in1],:128]!\n"
+                "vhadd.u8 q5, q1, q3\n"
+                "vld1.u8  {q8-q9}, [%[in2],:128]!\n"
+                "vhadd.u8 q10, q6, q8\n"
+                "vhadd.u8 q11, q7, q9\n"
+                "vst1.u8  {q4-q5}, [%[out],:128]!\n"
+                "vst1.u8  {q10-q11}, [%[out],:128]!\n"
+                : [out] "+r" (outp), [in1] "+r" (in1p), [in2] "+r" (in2p)
+                :
+                : "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11", "memory");
+    n &= 15;
+    if (n)
+        MergeGeneric (outp, in1p, in2p, n);
+}
+#endif
+
 /*****************************************************************************
  * RenderX: This algo works on a 8x8 block basic, it copies the top field
  * and apply a process to recreate the bottom field :
@@ -1165,7 +1289,7 @@ static inline int XDeint8x8DetectC( uint8_t *src, int i_src )
         src += 2*i_src;
     }
 
-    return fc < 1 ? VLC_FALSE : VLC_TRUE;
+    return fc < 1 ? false : true;
 }
 #ifdef CAN_COMPILE_MMXEXT
 static inline int XDeint8x8DetectMMXEXT( uint8_t *src, int i_src )
@@ -1232,30 +1356,6 @@ static inline int XDeint8x8DetectMMXEXT( uint8_t *src, int i_src )
 }
 #endif
 
-/* XDeint8x8Frame: apply a small blend between field (1,6,1).
- * This won't destroy details, and help if there is a bit of interlacing.
- * (It helps with paning to avoid flickers)
- * (Use 8x9 pixels)
- */
-#if 0
-static inline void XDeint8x8FrameC( uint8_t *dst, int i_dst,
-                                    uint8_t *src, int i_src )
-{
-    int y, x;
-
-    /* Progressive */
-    for( y = 0; y < 8; y += 2 )
-    {
-        memcpy( dst, src, 8 );
-        dst += i_dst;
-
-        for( x = 0; x < 8; x++ )
-            dst[x] = (src[x] + 6*src[1*i_src+x] + src[2*i_src+x] + 4 ) >> 3;
-        dst += 1*i_dst;
-        src += 2*i_src;
-    }
-}
-#endif
 static inline void XDeint8x8MergeC( uint8_t *dst, int i_dst,
                                     uint8_t *src1, int i_src1,
                                     uint8_t *src2, int i_src2 )
@@ -1282,7 +1382,7 @@ static inline void XDeint8x8MergeMMXEXT( uint8_t *dst, int i_dst,
                                          uint8_t *src1, int i_src1,
                                          uint8_t *src2, int i_src2 )
 {
-    static const uint64_t m_4 = I64C(0x0004000400040004);
+    static const uint64_t m_4 = INT64_C(0x0004000400040004);
     int y, x;
 
     /* Progressive */
@@ -1462,305 +1562,6 @@ static inline void XDeint8x8FieldMMXEXT( uint8_t *dst, int i_dst,
 }
 #endif
 
-#if 0
-static inline int XDeint8x8SsdC( uint8_t *pix1, int i_pix1,
-                                 uint8_t *pix2, int i_pix2 )
-{
-    int y, x;
-    int s = 0;
-
-    for( y = 0; y < 8; y++ )
-        for( x = 0; x < 8; x++ )
-            s += ssd( pix1[y*i_pix1+x] - pix2[y*i_pix2+x] );
-    return s;
-}
-
-#ifdef CAN_COMPILE_MMXEXT
-static inline int XDeint8x8SsdMMXEXT( uint8_t *pix1, int i_pix1,
-                                      uint8_t *pix2, int i_pix2 )
-{
-    int y;
-    int32_t s;
-
-    pxor_r2r( mm7, mm7 );
-    pxor_r2r( mm6, mm6 );
-
-    for( y = 0; y < 8; y++ )
-    {
-        movq_m2r( pix1[0], mm0 );
-        movq_m2r( pix2[0], mm1 );
-
-        movq_r2r( mm0, mm2 );
-        movq_r2r( mm1, mm3 );
-
-        punpcklbw_r2r( mm7, mm0 );
-        punpckhbw_r2r( mm7, mm2 );
-        punpcklbw_r2r( mm7, mm1 );
-        punpckhbw_r2r( mm7, mm3 );
-
-        psubw_r2r( mm1, mm0 );
-        psubw_r2r( mm3, mm2 );
-
-        pmaddwd_r2r( mm0, mm0 );
-        pmaddwd_r2r( mm2, mm2 );
-
-        paddd_r2r( mm2, mm0 );
-        paddd_r2r( mm0, mm6 );
-
-        pix1 += i_pix1;
-        pix2 += i_pix2;
-    }
-
-    movq_r2r( mm6, mm7 );
-    psrlq_i2r( 32, mm7 );
-    paddd_r2r( mm6, mm7 );
-    movd_r2m( mm7, s );
-
-    return s;
-}
-#endif
-#endif
-
-#if 0
-/* A little try with motion, but doesn't work better that pure intra (and slow) */
-#ifdef CAN_COMPILE_MMXEXT
-/* XDeintMC:
- *  Bilinear MC QPel
- *  TODO: mmx version (easier in sse2)
- */
-static inline void XDeintMC( uint8_t *dst, int i_dst,
-                             uint8_t *src, int i_src,
-                             int mvx, int mvy,
-                             int i_width, int i_height )
-{
-    const int d4x = mvx&0x03;
-    const int d4y = mvy&0x03;
-
-    const int cA = (4-d4x)*(4-d4y);
-    const int cB = d4x    *(4-d4y);
-    const int cC = (4-d4x)*d4y;
-    const int cD = d4x    *d4y;
-
-    int y, x;
-    uint8_t *srcp;
-
-
-    src  += (mvy >> 2) * i_src + (mvx >> 2);
-    srcp = &src[i_src];
-
-    for( y = 0; y < i_height; y++ )
-    {
-        for( x = 0; x < i_width; x++ )
-        {
-            dst[x] = ( cA*src[x]  + cB*src[x+1] +
-                       cC*srcp[x] + cD*srcp[x+1] + 8 ) >> 4;
-        }
-        dst  += i_dst;
-
-        src   = srcp;
-        srcp += i_src;
-    }
-}
-static int XDeint8x4SadMMXEXT( uint8_t *pix1, int i_pix1,
-                               uint8_t *pix2, int i_pix2 )
-{
-    int32_t s;
-
-    movq_m2r( pix1[0*i_pix1], mm0 );
-    movq_m2r( pix1[1*i_pix1], mm1 );
-
-    psadbw_m2r( pix2[0*i_pix2], mm0 );
-    psadbw_m2r( pix2[1*i_pix2], mm1 );
-
-    movq_m2r( pix1[2*i_pix1], mm2 );
-    movq_m2r( pix1[3*i_pix1], mm3 );
-    psadbw_m2r( pix2[2*i_pix2], mm2 );
-    psadbw_m2r( pix2[3*i_pix2], mm3 );
-
-    paddd_r2r( mm1, mm0 );
-    paddd_r2r( mm3, mm2 );
-    paddd_r2r( mm2, mm0 );
-    movd_r2m( mm0, s );
-
-    return s;
-}
-
-static inline int XDeint8x4TestQpel( uint8_t *src, int i_src,
-                                     uint8_t *ref, int i_stride,
-                                     int mx, int my,
-                                     int xmax, int ymax )
-{
-    uint8_t buffer[8*4];
-
-    if( abs(mx) >= 4*xmax || abs(my) >= 4*ymax )
-        return 255*255*255;
-
-    XDeintMC( buffer, 8, ref, i_stride, mx, my, 8, 4 );
-    return XDeint8x4SadMMXEXT( src, i_src, buffer, 8 );
-}
-static inline int XDeint8x4TestInt( uint8_t *src, int i_src,
-                                    uint8_t *ref, int i_stride,
-                                    int mx, int my,
-                                    int xmax, int ymax )
-{
-    if( abs(mx) >= xmax || abs(my) >= ymax )
-        return 255*255*255;
-
-    return XDeint8x4SadMMXEXT( src, i_src, &ref[my*i_stride+mx], i_stride );
-}
-
-static inline void XDeint8x8FieldMotion( uint8_t *dst, int i_dst,
-                                         uint8_t *src, int i_src,
-                                         int *mpx, int *mpy,
-                                         int xmax, int ymax )
-{
-    static const int dx[8] = { 0,  0, -1, 1, -1, -1,  1, 1 };
-    static const int dy[8] = {-1,  1,  0, 0, -1,  1, -1, 1 };
-    uint8_t *next = &src[i_src];
-    const int i_src2 = 2*i_src;
-    int mvx, mvy;
-    int mvs, s;
-    int i_step;
-
-    uint8_t *rec = &dst[i_dst];
-
-    /* We construct with intra method the missing field */
-    XDeint8x8FieldMMXEXT( dst, i_dst, src, i_src );
-
-    /* Now we will try to find a match with ME with the other field */
-
-    /* ME: A small/partial EPZS
-     * We search only for small MV (with high motion intra will be perfect */
-    if( xmax > 4 ) xmax = 4;
-    if( ymax > 4 ) ymax = 4;
-
-    /* Init with NULL Mv */
-    mvx = mvy = 0;
-    mvs = XDeint8x4SadMMXEXT( rec, i_src2, next, i_src2 );
-
-    /* Try predicted Mv */
-    if( (s=XDeint8x4TestInt( rec, i_src2, next, i_src2, *mpx, *mpy, xmax, ymax)) < mvs )
-    {
-        mvs = s;
-        mvx = *mpx;
-        mvy = *mpy;
-    }
-    /* Search interger pel (small mv) */
-    for( i_step = 0; i_step < 4; i_step++ )
-    {
-        int c = 4;
-        int s;
-        int i;
-
-        for( i = 0; i < 4; i++ )
-        {
-            s = XDeint8x4TestInt( rec, i_src2,
-                                  next, i_src2, mvx+dx[i], mvy+dy[i],
-                                  xmax, ymax );
-            if( s < mvs )
-            {
-                mvs = s;
-                c = i;
-            }
-        }
-        if( c == 4 )
-            break;
-
-        mvx += dx[c];
-        mvy += dy[c];
-    }
-    *mpx = mvx;
-    *mpy = mvy;
-
-    mvx <<= 2;
-    mvy <<= 2;
-
-    if( mvs > 4 && mvs < 256 )
-    {
-        /* Search Qpel */
-        /* XXX: for now only HPEL (too slow) */
-        for( i_step = 0; i_step < 4; i_step++ )
-        {
-            int c = 8;
-            int s;
-            int i;
-
-            for( i = 0; i < 8; i++ )
-            {
-                s = XDeint8x4TestQpel( rec, i_src2, next, i_src2,
-                                       mvx+dx[i], mvy+dy[i],
-                                       xmax, ymax );
-                if( s < mvs )
-                {
-                    mvs = s;
-                    c = i;
-                }
-            }
-            if( c == 8 )
-                break;
-
-            mvx += dx[c];
-            mvy += dy[c];
-        }
-    }
-
-    if( mvs < 128 )
-    {
-        uint8_t buffer[8*4];
-        XDeintMC( buffer, 8, next, i_src2, mvx, mvy, 8, 4 );
-        XDeint8x8MergeMMXEXT( dst, i_dst, src, 2*i_src, buffer, 8 );
-
-        //XDeint8x8Set( dst, i_dst, 0 );
-    }
-}
-#endif
-#endif
-
-#if 0
-/* Kernel interpolation (1,-5,20,20,-5,1)
- * Loose a bit more details+add aliasing than edge interpol but avoid
- * more artifacts
- */
-static inline uint8_t clip1( int a )
-{
-    if( a <= 0 )
-        return 0;
-    else if( a >= 255 )
-        return 255;
-    else
-        return a;
-}
-static inline void XDeint8x8Field( uint8_t *dst, int i_dst,
-                                   uint8_t *src, int i_src )
-{
-    int y, x;
-
-    /* Interlaced */
-    for( y = 0; y < 8; y += 2 )
-    {
-        const int i_src2 = i_src*2;
-
-        memcpy( dst, src, 8 );
-        dst += i_dst;
-
-        for( x = 0; x < 8; x++ )
-        {
-            int pix;
-
-            pix =   1*(src[-2*i_src2+x]+src[3*i_src2+x]) +
-                   -5*(src[-1*i_src2+x]+src[2*i_src2+x])
-                  +20*(src[ 0*i_src2+x]+src[1*i_src2+x]);
-
-            dst[x] = clip1( ( pix + 16 ) >> 5 );
-        }
-
-        dst += 1*i_dst;
-        src += 2*i_src;
-    }
-}
-
-#endif
-
 /* NxN arbitray size (and then only use pixel in the NxN block)
  */
 static inline int XDeintNxNDetect( uint8_t *src, int i_src,
@@ -1787,7 +1588,7 @@ static inline int XDeintNxNDetect( uint8_t *src, int i_src,
             fc++;
     }
 
-    return fc < 2 ? VLC_FALSE : VLC_TRUE;
+    return fc < 2 ? false : true;
 }
 
 static inline void XDeintNxNFrame( uint8_t *dst, int i_dst,
@@ -1939,8 +1740,7 @@ static inline void XDeintBand8x8MMXEXT( uint8_t *dst, int i_dst,
 }
 #endif
 
-static void RenderX( vout_thread_t *p_vout,
-                     picture_t *p_outpic, picture_t *p_pic )
+static void RenderX( picture_t *p_outpic, picture_t *p_pic )
 {
     int i_plane;
 
@@ -1964,7 +1764,7 @@ static void RenderX( vout_thread_t *p_vout,
             uint8_t *src = &p_pic->p[i_plane].p_pixels[8*y*i_src];
 
 #ifdef CAN_COMPILE_MMXEXT
-            if( p_vout->p_libvlc->i_cpu & CPU_CAPABILITY_MMXEXT )
+            if( vlc_CPU() & CPU_CAPABILITY_MMXEXT )
                 XDeintBand8x8MMXEXT( dst, i_dst, src, i_src, i_mbx, i_modx );
             else
 #endif
@@ -1991,34 +1791,129 @@ static void RenderX( vout_thread_t *p_vout,
     }
 
 #ifdef CAN_COMPILE_MMXEXT
-    if( p_vout->p_libvlc->i_cpu & CPU_CAPABILITY_MMXEXT )
+    if( vlc_CPU() & CPU_CAPABILITY_MMXEXT )
         emms();
 #endif
 }
 
 /*****************************************************************************
- * SendEvents: forward mouse and keyboard events to the parent p_vout
+ * Yadif (Yet Another DeInterlacing Filter).
  *****************************************************************************/
-static int SendEvents( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *_p_vout )
-{
-    vout_thread_t *p_vout = (vout_thread_t *)_p_vout;
-    vlc_value_t sentval = newval;
+/* */
+struct vf_priv_s {
+    /*
+     * 0: Output 1 frame for each frame.
+     * 1: Output 1 frame for each field.
+     * 2: Like 0 but skips spatial interlacing check.
+     * 3: Like 1 but skips spatial interlacing check.
+     *
+     * In vlc, only & 0x02 has meaning, as we do the & 0x01 ourself.
+     */
+    int mode;
+};
 
-    if( !strcmp( psz_var, "mouse-y" ) )
+/* I am unsure it is the right one */
+typedef intptr_t x86_reg;
+
+#define FFABS(a) ((a) >= 0 ? (a) : (-(a)))
+#define FFMAX(a,b)      __MAX(a,b)
+#define FFMAX3(a,b,c)   FFMAX(FFMAX(a,b),c)
+#define FFMIN(a,b)      __MIN(a,b)
+#define FFMIN3(a,b,c)   FFMIN(FFMIN(a,b),c)
+
+/* yadif.h comes from vf_yadif.c of mplayer project */
+#include "yadif.h"
+
+static void RenderYadif( vout_thread_t *p_vout, picture_t *p_dst, picture_t *p_src, int i_order, int i_field )
+{
+    vout_sys_t *p_sys = p_vout->p_sys;
+
+    /* */
+    assert( i_order == 0 || i_order == 1 );
+    assert( i_field == 0 || i_field == 1 );
+
+    if( i_order == 0 )
     {
-        switch( p_vout->p_sys->i_mode )
-        {
-            case DEINTERLACE_MEAN:
-            case DEINTERLACE_DISCARD:
-                sentval.i_int *= 2;
-                break;
-        }
+        /* Duplicate the picture
+         * TODO when the vout rework is finished, picture_Hold() might be enough
+         * but becarefull, the pitches must match */
+        picture_t *p_dup = picture_NewFromFormat( &p_src->format );
+        if( p_dup )
+            picture_Copy( p_dup, p_src );
+
+        /* Slide the history */
+        if( p_sys->pp_history[0] )
+            picture_Release( p_sys->pp_history[0]  );
+        for( int i = 1; i < HISTORY_SIZE; i++ )
+            p_sys->pp_history[i-1] = p_sys->pp_history[i];
+        p_sys->pp_history[HISTORY_SIZE-1] = p_dup;
     }
 
-    var_Set( p_vout, psz_var, sentval );
+    /* As the pitches must match, use ONLY pictures coming from picture_New()! */
+    picture_t *p_prev = p_sys->pp_history[0];
+    picture_t *p_cur  = p_sys->pp_history[1];
+    picture_t *p_next = p_sys->pp_history[2];
 
-    return VLC_SUCCESS;
+    /* Filter if we have all the pictures we need */
+    if( p_prev && p_cur && p_next )
+    {
+        /* */
+        void (*filter)(struct vf_priv_s *p, uint8_t *dst, uint8_t *prev, uint8_t *cur, uint8_t *next, int w, int refs, int parity);
+#if defined(HAVE_YADIF_SSE2)
+        if( vlc_CPU() & CPU_CAPABILITY_SSE2 )
+            filter = yadif_filter_line_mmx2;
+        else
+#endif
+            filter = yadif_filter_line_c;
+
+        for( int n = 0; n < p_dst->i_planes; n++ )
+        {
+            const plane_t *prevp = &p_prev->p[n];
+            const plane_t *curp  = &p_cur->p[n];
+            const plane_t *nextp = &p_next->p[n];
+            plane_t *dstp        = &p_dst->p[n];
+
+            for( int y = 1; y < dstp->i_visible_lines - 1; y++ )
+            {
+                if( (y % 2) == i_field )
+                {
+                    vlc_memcpy( &dstp->p_pixels[y * dstp->i_pitch],
+                                &curp->p_pixels[y * curp->i_pitch], dstp->i_visible_pitch );
+                }
+                else
+                {
+                    struct vf_priv_s cfg;
+                    /* Spatial checks only when enough data */
+                    cfg.mode = (y >= 2 && y < dstp->i_visible_lines - 2) ? 0 : 2;
+
+                    assert( prevp->i_pitch == curp->i_pitch && curp->i_pitch == nextp->i_pitch );
+                    filter( &cfg,
+                            &dstp->p_pixels[y * dstp->i_pitch],
+                            &prevp->p_pixels[y * prevp->i_pitch],
+                            &curp->p_pixels[y * curp->i_pitch],
+                            &nextp->p_pixels[y * nextp->i_pitch],
+                            dstp->i_visible_pitch,
+                            curp->i_pitch,
+                            (i_field ^ (i_order == i_field)) & 1 );
+                }
+
+                /* We duplicate the first and last lines */
+                if( y == 1 )
+                    vlc_memcpy(&dstp->p_pixels[(y-1) * dstp->i_pitch], &dstp->p_pixels[y * dstp->i_pitch], dstp->i_pitch);
+                else if( y == dstp->i_visible_lines - 2 )
+                    vlc_memcpy(&dstp->p_pixels[(y+1) * dstp->i_pitch], &dstp->p_pixels[y * dstp->i_pitch], dstp->i_pitch);
+            }
+        }
+
+        /* */
+        p_dst->date = (p_next->date - p_cur->date) * i_order / 2 + p_cur->date;
+    }
+    else
+    {
+        /* Fallback to something simple
+         * XXX it is wrong when we have 2 pictures, we should not output a picture */
+        RenderX( p_dst, p_src );
+    }
 }
 
 /*****************************************************************************
@@ -2028,91 +1923,47 @@ static int FilterCallback( vlc_object_t *p_this, char const *psz_cmd,
                            vlc_value_t oldval, vlc_value_t newval,
                            void *p_data )
 {
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(p_data); VLC_UNUSED(oldval);
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
-    int i_old_mode = p_vout->p_sys->i_mode;
+    vout_sys_t *p_sys = p_vout->p_sys;
 
     msg_Dbg( p_vout, "using %s deinterlace mode", newval.psz_string );
 
-    vlc_mutex_lock( &p_vout->p_sys->filter_lock );
+    vlc_mutex_lock( &p_sys->filter_lock );
+    const bool b_old_half_height = p_sys->b_half_height;
 
     SetFilterMethod( p_vout, newval.psz_string );
 
-    switch( p_vout->render.i_chroma )
+    if( !b_old_half_height == !p_sys->b_half_height )
     {
-    case VLC_FOURCC('I','4','2','2'):
-        vlc_mutex_unlock( &p_vout->p_sys->filter_lock );
+        vlc_mutex_unlock( &p_sys->filter_lock );
         return VLC_SUCCESS;
-        break;
-
-    case VLC_FOURCC('I','4','2','0'):
-    case VLC_FOURCC('I','Y','U','V'):
-    case VLC_FOURCC('Y','V','1','2'):
-        switch( p_vout->p_sys->i_mode )
-        {
-        case DEINTERLACE_MEAN:
-        case DEINTERLACE_DISCARD:
-            if( ( i_old_mode == DEINTERLACE_MEAN )
-                || ( i_old_mode == DEINTERLACE_DISCARD ) )
-            {
-                vlc_mutex_unlock( &p_vout->p_sys->filter_lock );
-                return VLC_SUCCESS;
-            }
-            break;
-
-        case DEINTERLACE_BOB:
-        case DEINTERLACE_BLEND:
-        case DEINTERLACE_LINEAR:
-            if( ( i_old_mode == DEINTERLACE_BOB )
-                || ( i_old_mode == DEINTERLACE_BLEND )
-                || ( i_old_mode == DEINTERLACE_LINEAR ) )
-            {
-                vlc_mutex_unlock( &p_vout->p_sys->filter_lock );
-                return VLC_SUCCESS;
-            }
-            break;
-        }
-        break;
-
-    default:
-        break;
     }
 
     /* We need to kill the old vout */
-
-    DEL_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
-
-    vlc_object_detach( p_vout->p_sys->p_vout );
-    vout_Destroy( p_vout->p_sys->p_vout );
+    if( p_sys->p_vout )
+    {
+        vout_filter_DelChild( p_vout, p_sys->p_vout, MouseEvent );
+        vout_CloseAndRelease( p_sys->p_vout );
+    }
 
     /* Try to open a new video output */
-    p_vout->p_sys->p_vout = SpawnRealVout( p_vout );
+    p_sys->p_vout = SpawnRealVout( p_vout );
 
-    if( p_vout->p_sys->p_vout == NULL )
+    if( p_sys->p_vout == NULL )
     {
         /* Everything failed */
         msg_Err( p_vout, "cannot open vout, aborting" );
 
-        vlc_mutex_unlock( &p_vout->p_sys->filter_lock );
+        vlc_mutex_unlock( &p_sys->filter_lock );
         return VLC_EGENERIC;
     }
 
-    ADD_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
+    vout_filter_AddChild( p_vout, p_sys->p_vout, MouseEvent );
 
-    vlc_mutex_unlock( &p_vout->p_sys->filter_lock );
+    vlc_mutex_unlock( &p_sys->filter_lock );
     return VLC_SUCCESS;
 }
-
-/*****************************************************************************
- * SendEventsToChild: forward events to the child/children vout
- *****************************************************************************/
-static int SendEventsToChild( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    vout_thread_t *p_vout = (vout_thread_t *)p_this;
-    var_Set( p_vout->p_sys->p_vout, psz_var, newval );
-    return VLC_SUCCESS;
-}
-
 
 /*****************************************************************************
  * video filter2 functions
@@ -2123,23 +1974,17 @@ static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic )
     picture_t *p_pic_dst;
 
     /* Request output picture */
-    p_pic_dst = p_filter->pf_vout_buffer_new( p_filter );
+    p_pic_dst = filter_NewPicture( p_filter );
     if( p_pic_dst == NULL )
     {
-        msg_Warn( p_filter, "can't get output picture" );
+        picture_Release( p_pic );
         return NULL;
     }
 
     switch( p_vout->p_sys->i_mode )
     {
         case DEINTERLACE_DISCARD:
-#if 0
             RenderDiscard( p_vout, p_pic_dst, p_pic, 0 );
-#endif
-            msg_Err( p_vout, "discarding lines is not supported yet" );
-            if( p_pic_dst->pf_release )
-                p_pic_dst->pf_release( p_pic_dst );
-            return p_pic;
             break;
 
         case DEINTERLACE_BOB:
@@ -2155,10 +2000,9 @@ static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic )
             RenderLinear( p_vout, pp_outpic[1], p_pic, 1 );
 #endif
             msg_Err( p_vout, "doubling the frame rate is not supported yet" );
-            if( p_pic_dst->pf_release )
-                p_pic_dst->pf_release( p_pic_dst );
-            return p_pic;
-            break;
+            picture_Release( p_pic_dst );
+            picture_Release( p_pic );
+            return NULL;
 
         case DEINTERLACE_MEAN:
             RenderMean( p_vout, p_pic_dst, p_pic );
@@ -2169,17 +2013,26 @@ static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic )
             break;
 
         case DEINTERLACE_X:
-            RenderX( p_vout, p_pic_dst, p_pic );
+            RenderX( p_pic_dst, p_pic );
             break;
+
+        case DEINTERLACE_YADIF:
+            msg_Err( p_vout, "delaying frames is not supported yet" );
+            picture_Release( p_pic_dst );
+            picture_Release( p_pic );
+            return NULL;
+
+        case DEINTERLACE_YADIF2X:
+            msg_Err( p_vout, "doubling the frame rate is not supported yet" );
+            picture_Release( p_pic_dst );
+            picture_Release( p_pic );
+            return NULL;
     }
 
-    p_pic_dst->date = p_pic->date;
-    p_pic_dst->b_force = p_pic->b_force;
-    p_pic_dst->i_nb_fields = p_pic->i_nb_fields;
-    p_pic_dst->b_progressive = VLC_TRUE;
-    p_pic_dst->b_top_field_first = p_pic->b_top_field_first;
-    if( p_pic->pf_release )
-        p_pic->pf_release( p_pic );
+    picture_CopyProperties( p_pic_dst, p_pic );
+    p_pic_dst->b_progressive = true;
+
+    picture_Release( p_pic );
     return p_pic_dst;
 }
 
@@ -2192,13 +2045,8 @@ static int OpenFilter( vlc_object_t *p_this )
     vout_thread_t *p_vout;
     vlc_value_t val;
 
-    if( ( p_filter->fmt_in.video.i_chroma != VLC_FOURCC('I','4','2','0') &&
-          p_filter->fmt_in.video.i_chroma != VLC_FOURCC('I','Y','U','V') &&
-          p_filter->fmt_in.video.i_chroma != VLC_FOURCC('Y','V','1','2') ) ||
-        p_filter->fmt_in.video.i_chroma != p_filter->fmt_out.video.i_chroma )
-    {
+    if( !IsChromaSupported( p_filter->fmt_in.video.i_chroma ) )
         return VLC_EGENERIC;
-    }
 
     /* Impossible to use VLC_OBJECT_VOUT here because it would be used
      * by spu filters */
@@ -2207,19 +2055,31 @@ static int OpenFilter( vlc_object_t *p_this )
     p_filter->p_sys = (filter_sys_t *)p_vout;
     p_vout->render.i_chroma = p_filter->fmt_in.video.i_chroma;
 
-    sout_CfgParse( p_filter, FILTER_CFG_PREFIX, ppsz_filter_options,
+    config_ChainParse( p_filter, FILTER_CFG_PREFIX, ppsz_filter_options,
                    p_filter->p_cfg );
     var_Get( p_filter, FILTER_CFG_PREFIX "mode", &val );
-    var_Create( p_filter, "deinterlace-mode", VLC_VAR_STRING );
-    var_Set( p_filter, "deinterlace-mode", val );
 
-    if ( Create( VLC_OBJECT(p_vout) ) != VLC_SUCCESS )
+    var_Create( p_filter, "filter-deinterlace-mode", VLC_VAR_STRING );
+    var_Set( p_filter, "filter-deinterlace-mode", val );
+    free( val.psz_string );
+
+    if( Create( VLC_OBJECT(p_vout) ) != VLC_SUCCESS )
     {
-        vlc_object_detach( p_vout );
         vlc_object_release( p_vout );
         return VLC_EGENERIC;
     }
 
+    video_format_t fmt;
+    GetOutputFormat( p_vout, &fmt, &p_filter->fmt_in.video );
+    if( !p_filter->b_allow_fmt_out_change &&
+        ( fmt.i_chroma != p_filter->fmt_in.video.i_chroma ||
+          fmt.i_height != p_filter->fmt_in.video.i_height ) )
+    {
+        CloseFilter( VLC_OBJECT(p_filter) );
+        return VLC_EGENERIC;
+    }
+    p_filter->fmt_out.video = fmt;
+    p_filter->fmt_out.i_codec = fmt.i_chroma;
     p_filter->pf_video_filter = Deinterlace;
 
     msg_Dbg( p_filter, "deinterlacing" );
@@ -2236,7 +2096,6 @@ static void CloseFilter( vlc_object_t *p_this )
     vout_thread_t *p_vout = (vout_thread_t *)p_filter->p_sys;
 
     Destroy( VLC_OBJECT(p_vout) );
-    vlc_object_detach( p_vout );
     vlc_object_release( p_vout );
 }
 

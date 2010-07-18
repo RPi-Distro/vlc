@@ -1,12 +1,13 @@
 /*****************************************************************************
  * sdl.c: SDL video output display method
  *****************************************************************************
- * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: ba975d23a1462d37c86c72781dcf22d8c951d693 $
+ * Copyright (C) 1998-2009 the VideoLAN team
+ * $Id: fc372bfc1ad7a99502012af8caa87ce248a3dffb $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Pierre Baillet <oct@zoy.org>
  *          Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
+ *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,911 +27,683 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <errno.h>                                                 /* ENOMEM */
-#include <stdlib.h>                                                /* free() */
-#include <string.h>                                            /* strerror() */
-
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
-#include <vlc/aout.h>
-
-#include <sys/types.h>
-#ifndef WIN32
-#   include <netinet/in.h>                            /* BSD: struct in_addr */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
 
-#include SDL_INCLUDE_FILE
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout_display.h>
+#include <vlc_picture_pool.h>
+#include "keythread.h"
 
-/* SDL is not able to crop overlays - so use only 1 direct buffer */
-#define SDL_MAX_DIRECTBUFFERS 1
-#define SDL_DEFAULT_BPP 16
+#include <assert.h>
 
-/*****************************************************************************
- * vout_sys_t: video output SDL method descriptor
- *****************************************************************************
- * This structure is part of the video output thread descriptor.
- * It describes the SDL specific properties of an output thread.
- *****************************************************************************/
-struct vout_sys_t
-{
-    SDL_Surface *   p_display;                             /* display device */
-
-    int i_width;
-    int i_height;
-
-    /* For YUV output */
-    SDL_Overlay * p_overlay;   /* An overlay we keep to grab the XVideo port */
-
-    /* For RGB output */
-    int i_surfaces;
-
-    vlc_bool_t  b_cursor;
-    vlc_bool_t  b_cursor_autohidden;
-    mtime_t     i_lastmoved;
-    mtime_t     i_lastpressed;                        /* to track dbl-clicks */
-};
-
-/*****************************************************************************
- * picture_sys_t: direct buffer method descriptor
- *****************************************************************************
- * This structure is part of the picture descriptor, it describes the
- * SDL specific properties of a direct buffer.
- *****************************************************************************/
-struct picture_sys_t
-{
-    SDL_Overlay *p_overlay;
-};
-
-/*****************************************************************************
- * Local prototypes
- *****************************************************************************/
-static int  Open      ( vlc_object_t * );
-static void Close     ( vlc_object_t * );
-static int  Init      ( vout_thread_t * );
-static void End       ( vout_thread_t * );
-static int  Manage    ( vout_thread_t * );
-static void Display   ( vout_thread_t *, picture_t * );
-
-static int  OpenDisplay     ( vout_thread_t * );
-static void CloseDisplay    ( vout_thread_t * );
-static int  NewPicture      ( vout_thread_t *, picture_t * );
-static void SetPalette      ( vout_thread_t *,
-                              uint16_t *, uint16_t *, uint16_t * );
+#include <SDL.h>
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_shortname( "SDL" );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( _("Simple DirectMedia Layer video output") );
-    set_capability( "video output", 60 );
-    add_shortcut( "sdl" );
-    set_callbacks( Open, Close );
-    /* XXX: check for conflicts with the SDL audio output */
-    var_Create( p_module->p_libvlc, "sdl", VLC_VAR_MUTEX );
-#if defined( __i386__ ) || defined( __x86_64__ )
+static int  Open (vlc_object_t *);
+static void Close(vlc_object_t *);
+
+#define CHROMA_TEXT N_("SDL chroma format")
+#define CHROMA_LONGTEXT N_(\
+    "Force the SDL renderer to use a specific chroma format instead of " \
+    "trying to improve performances by using the most efficient one.")
+
+vlc_module_begin()
+    set_shortname("SDL")
+    set_category(CAT_VIDEO)
+    set_subcategory(SUBCAT_VIDEO_VOUT)
+    set_description(N_("Simple DirectMedia Layer video output"))
+    set_capability("vout display", 60)
+    add_shortcut("sdl")
+    add_string("sdl-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true)
+    add_obsolete_string("sdl-video-driver") /* obsolete since 1.1.0 */
+    set_callbacks(Open, Close)
+#if defined(__i386__) || defined(__x86_64__)
     /* On i386, SDL is linked against svgalib */
-    linked_with_a_crap_library_which_uses_atexit();
+    cannot_unload_broken_library()
 #endif
-vlc_module_end();
+vlc_module_end()
+
 
 /*****************************************************************************
- * OpenVideo: allocate SDL video thread output method
- *****************************************************************************
- * This function allocate and initialize a SDL vout method. It uses some of the
- * vout properties to choose the correct mode, and change them according to the
- * mode actually used.
+ * Local prototypes
  *****************************************************************************/
-static int Open ( vlc_object_t *p_this )
+static picture_pool_t *Pool  (vout_display_t *, unsigned);
+static void           Display(vout_display_t *, picture_t *);
+static int            Control(vout_display_t *, int, va_list);
+static void           Manage(vout_display_t *);
+
+/* */
+static int ConvertKey(SDLKey);
+
+/* */
+static vlc_mutex_t sdl_lock = VLC_STATIC_MUTEX;
+
+/* */
+struct vout_display_sys_t {
+    vout_display_place_t place;
+
+    SDL_Surface          *display;
+    int                  display_bpp;
+    uint32_t             display_flags;
+
+    unsigned int         desktop_width;
+    unsigned int         desktop_height;
+
+    /* For YUV output */
+    SDL_Overlay          *overlay;
+    bool                 is_uv_swapped;
+
+    /* */
+    picture_pool_t       *pool;
+    key_thread_t         *keys;
+};
+
+/**
+ * This function initializes SDL vout method.
+ */
+static int Open(vlc_object_t *object)
 {
-    vout_thread_t * p_vout = (vout_thread_t *)p_this;
-    vlc_value_t lockval;
+    vout_display_t *vd = (vout_display_t *)object;
+    vout_display_sys_t *sys;
 
-#ifdef HAVE_SETENV
-    char *psz_method;
-#endif
+    /* XXX: check for conflicts with the SDL audio output */
+    vlc_mutex_lock(&sdl_lock);
 
-    var_Get( p_this->p_libvlc, "sdl", &lockval );
-    vlc_mutex_lock( lockval.p_address );
-
-    if( SDL_WasInit( SDL_INIT_VIDEO ) != 0 )
-    {
-        vlc_mutex_unlock( lockval.p_address );
+    /* Check if SDL video module has been initialized */
+    if (SDL_WasInit(SDL_INIT_VIDEO) != 0) {
+        vlc_mutex_unlock(&sdl_lock);
         return VLC_EGENERIC;
     }
 
-    /* Allocate structure */
-    p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
-    if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
-        vlc_mutex_unlock( lockval.p_address );
+    vd->sys = sys = calloc(1, sizeof(*sys));
+    if (!sys) {
+        vlc_mutex_unlock(&sdl_lock);
         return VLC_ENOMEM;
     }
 
-    p_vout->pf_init = Init;
-    p_vout->pf_end = End;
-    p_vout->pf_manage = Manage;
-    p_vout->pf_render = NULL;
-    p_vout->pf_display = Display;
-
-#ifdef HAVE_SETENV
-    psz_method = config_GetPsz( p_vout, "vout" );
-    if( psz_method )
-    {
-        while( *psz_method && *psz_method != ':' )
-        {
-            psz_method++;
-        }
-
-        if( *psz_method )
-        {
-            setenv( "SDL_VIDEODRIVER", psz_method + 1, 1 );
-        }
-    }
+    /* */
+    int sdl_flags = SDL_INIT_VIDEO;
+#ifndef WIN32
+    /* Win32 SDL implementation doesn't support SDL_INIT_EVENTTHREAD yet*/
+    sdl_flags |= SDL_INIT_EVENTTHREAD;
+#endif
+#ifndef NDEBUG
+    /* In debug mode you may want vlc to dump a core instead of staying stuck */
+    sdl_flags |= SDL_INIT_NOPARACHUTE;
 #endif
 
     /* Initialize library */
-    if( SDL_Init( SDL_INIT_VIDEO
-#ifndef WIN32
-    /* Win32 SDL implementation doesn't support SDL_INIT_EVENTTHREAD yet*/
-                | SDL_INIT_EVENTTHREAD
-#endif
-#ifdef DEBUG
-    /* In debug mode you may want vlc to dump a core instead of staying
-     * stuck */
-                | SDL_INIT_NOPARACHUTE
-#endif
-                ) < 0 )
-    {
-        msg_Err( p_vout, "cannot initialize SDL (%s)", SDL_GetError() );
-        free( p_vout->p_sys );
-        vlc_mutex_unlock( lockval.p_address );
+    if (SDL_Init(sdl_flags) < 0) {
+        vlc_mutex_unlock(&sdl_lock);
+
+        msg_Err(vd, "cannot initialize SDL (%s)", SDL_GetError());
+        free(sys);
         return VLC_EGENERIC;
     }
+    vlc_mutex_unlock(&sdl_lock);
 
-    vlc_mutex_unlock( lockval.p_address );
+    /* Translate keys into unicode */
+    SDL_EnableUNICODE(1);
 
-    p_vout->p_sys->b_cursor = 1;
-    p_vout->p_sys->b_cursor_autohidden = 0;
-    p_vout->p_sys->i_lastmoved = mdate();
+    /* Get the desktop resolution */
+    /* FIXME: SDL has a problem with virtual desktop */
+    sys->desktop_width  = SDL_GetVideoInfo()->current_w;
+    sys->desktop_height = SDL_GetVideoInfo()->current_h;
 
-    if( OpenDisplay( p_vout ) )
-    {
-        msg_Err( p_vout, "cannot set up SDL (%s)", SDL_GetError() );
-        SDL_QuitSubSystem( SDL_INIT_VIDEO );
-        free( p_vout->p_sys );
-        return VLC_EGENERIC;
-    }
+    /* */
+    video_format_t fmt = vd->fmt;
 
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * Init: initialize SDL video thread output method
- *****************************************************************************
- * This function initialize the SDL display device.
- *****************************************************************************/
-static int Init( vout_thread_t *p_vout )
-{
-    int i_index;
-    picture_t *p_pic;
-
-    p_vout->p_sys->i_surfaces = 0;
-
-    I_OUTPUTPICTURES = 0;
-
-    /* Initialize the output structure */
-    if( p_vout->p_sys->p_overlay == NULL )
-    {
-        /* All we have is an RGB image with square pixels */
-        p_vout->output.i_width  = p_vout->p_sys->i_width;
-        p_vout->output.i_height = p_vout->p_sys->i_height;
-        p_vout->output.i_aspect = p_vout->output.i_width
-                                   * VOUT_ASPECT_FACTOR
-                                   / p_vout->output.i_height;
-    }
-    else
-    {
-        /* We may need to convert the chroma, but at least we keep the
-         * aspect ratio */
-        p_vout->output.i_width  = p_vout->render.i_width;
-        p_vout->output.i_height = p_vout->render.i_height;
-        p_vout->output.i_aspect = p_vout->render.i_aspect;
-    }
-
-    /* Try to initialize SDL_MAX_DIRECTBUFFERS direct buffers */
-    while( I_OUTPUTPICTURES < SDL_MAX_DIRECTBUFFERS )
-    {
-        p_pic = NULL;
-
-        /* Find an empty picture slot */
-        for( i_index = 0 ; i_index < VOUT_MAX_PICTURES ; i_index++ )
-        {
-            if( p_vout->p_picture[ i_index ].i_status == FREE_PICTURE )
-            {
-                p_pic = p_vout->p_picture + i_index;
-                break;
-            }
-        }
-
-        /* Allocate the picture if we found one */
-        if( p_pic == NULL || NewPicture( p_vout, p_pic ) )
-        {
-            break;
-        }
-
-        p_pic->i_status = DESTROYED_PICTURE;
-        p_pic->i_type   = DIRECT_PICTURE;
-
-        PP_OUTPUTPICTURE[ I_OUTPUTPICTURES ] = p_pic;
-
-        I_OUTPUTPICTURES++;
-    }
-
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * End: terminate Sys video thread output method
- *****************************************************************************
- * Terminate an output method created by OpenVideo
- *****************************************************************************/
-static void End( vout_thread_t *p_vout )
-{
-    int i_index;
-
-    /* Free the output buffers we allocated */
-    for( i_index = I_OUTPUTPICTURES ; i_index ; )
-    {
-        i_index--;
-        if( p_vout->p_sys->p_overlay == NULL )
-        {
-            /* RGB picture */
-        }
-        else
-        {
-            SDL_UnlockYUVOverlay(
-                    PP_OUTPUTPICTURE[ i_index ]->p_sys->p_overlay );
-            SDL_FreeYUVOverlay(
-                    PP_OUTPUTPICTURE[ i_index ]->p_sys->p_overlay );
-        }
-        free( PP_OUTPUTPICTURE[ i_index ]->p_sys );
-    }
-}
-
-/*****************************************************************************
- * CloseVideo: destroy Sys video thread output method
- *****************************************************************************
- * Terminate an output method created by vout_SDLCreate
- *****************************************************************************/
-static void Close ( vlc_object_t *p_this )
-{
-    vout_thread_t * p_vout = (vout_thread_t *)p_this;
-
-    CloseDisplay( p_vout );
-    SDL_QuitSubSystem( SDL_INIT_VIDEO );
-
-    free( p_vout->p_sys );
-}
-
-/*****************************************************************************
- * Manage: handle Sys events
- *****************************************************************************
- * This function should be called regularly by video output thread. It returns
- * a non null value if an error occurred.
- *****************************************************************************/
-static int Manage( vout_thread_t *p_vout )
-{
-    SDL_Event event;                                            /* SDL event */
-    vlc_value_t val;
-    unsigned int i_width, i_height, i_x, i_y;
-
-    /* Process events */
-    while( SDL_PollEvent(&event) )
-    {
-        switch( event.type )
-        {
-        case SDL_VIDEORESIZE:                          /* Resizing of window */
-            /* Update dimensions */
-            p_vout->i_changes |= VOUT_SIZE_CHANGE;
-            p_vout->i_window_width = p_vout->p_sys->i_width = event.resize.w;
-            p_vout->i_window_height = p_vout->p_sys->i_height = event.resize.h;
-            break;
-
-        case SDL_MOUSEMOTION:
-            vout_PlacePicture( p_vout, p_vout->p_sys->i_width,
-                               p_vout->p_sys->i_height,
-                               &i_x, &i_y, &i_width, &i_height );
-
-            val.i_int = ( event.motion.x - i_x )
-                         * p_vout->render.i_width / i_width;
-            var_Set( p_vout, "mouse-x", val );
-            val.i_int = ( event.motion.y - i_y )
-                         * p_vout->render.i_height / i_height;
-            var_Set( p_vout, "mouse-y", val );
-
-            val.b_bool = VLC_TRUE;
-            var_Set( p_vout, "mouse-moved", val );
-
-            if( p_vout->p_sys->b_cursor &&
-                (abs(event.motion.xrel) > 2 || abs(event.motion.yrel) > 2) )
-            {
-                if( p_vout->p_sys->b_cursor_autohidden )
-                {
-                    p_vout->p_sys->b_cursor_autohidden = 0;
-                    SDL_ShowCursor( 1 );
-                }
-                else
-                {
-                    p_vout->p_sys->i_lastmoved = mdate();
-                }
-            }
-            break;
-
-        case SDL_MOUSEBUTTONUP:
-            switch( event.button.button )
-            {
-            case SDL_BUTTON_LEFT:
-                val.b_bool = VLC_TRUE;
-                var_Set( p_vout, "mouse-clicked", val );
-                break;
-
-            case SDL_BUTTON_RIGHT:
-                {
-                    intf_thread_t *p_intf;
-                    p_intf = vlc_object_find( p_vout, VLC_OBJECT_INTF,
-                                                      FIND_ANYWHERE );
-                    if( p_intf )
-                    {
-                        p_intf->b_menu_change = 1;
-                        vlc_object_release( p_intf );
-                    }
-                }
-                break;
-            }
-            break;
-
-        case SDL_MOUSEBUTTONDOWN:
-            switch( event.button.button )
-            {
-            case SDL_BUTTON_LEFT:
-                /* In this part we will eventually manage
-                 * clicks for DVD navigation for instance. */
-
-                /* detect double-clicks */
-                if( ( mdate() - p_vout->p_sys->i_lastpressed ) < 300000 )
-                    p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
-
-                p_vout->p_sys->i_lastpressed = mdate();
-                break;
-
-            case 4:
-                break;
-
-            case 5:
-                break;
-            }
-            break;
-
-        case SDL_QUIT:
-            p_vout->p_vlc->b_die = 1;
-            break;
-
-        case SDL_KEYDOWN:                             /* if a key is pressed */
-
-            switch( event.key.keysym.sym )
-            {
-            case SDLK_ESCAPE:
-                if( p_vout->b_fullscreen )
-                {
-                    p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
-                }
-                else
-                {
-                    p_vout->p_vlc->b_die = 1;
-                }
-                break;
-
-            case SDLK_q:                                             /* quit */
-                p_vout->p_vlc->b_die = 1;
-                break;
-
-            case SDLK_f:                             /* switch to fullscreen */
-                p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
-                break;
-
-            case SDLK_c:                                 /* toggle grayscale */
-                p_vout->b_grayscale = ! p_vout->b_grayscale;
-                p_vout->i_changes |= VOUT_GRAYSCALE_CHANGE;
-                break;
-
-            case SDLK_i:                                      /* toggle info */
-                p_vout->b_info = ! p_vout->b_info;
-                p_vout->i_changes |= VOUT_INFO_CHANGE;
-                break;
-
-            case SDLK_s:                                   /* toggle scaling */
-                p_vout->b_scale = ! p_vout->b_scale;
-                p_vout->i_changes |= VOUT_SCALE_CHANGE;
-                break;
-
-            case SDLK_SPACE:                             /* toggle interface */
-                p_vout->b_interface = ! p_vout->b_interface;
-                p_vout->i_changes |= VOUT_INTF_CHANGE;
-                break;
-
-            case SDLK_MENU:
-                {
-                    intf_thread_t *p_intf;
-                    p_intf = vlc_object_find( p_vout, VLC_OBJECT_INTF,
-                                                      FIND_ANYWHERE );
-                    if( p_intf != NULL )
-                    {
-                        p_intf->b_menu_change = 1;
-                        vlc_object_release( p_intf );
-                    }
-                }
-                break;
-
-            case SDLK_LEFT:
-                break;
-
-            case SDLK_RIGHT:
-                break;
-
-            case SDLK_UP:
-                break;
-
-            case SDLK_DOWN:
-                break;
-
-            case SDLK_b:
-                {
-                    audio_volume_t i_volume;
-                    if ( !aout_VolumeDown( p_vout, 1, &i_volume ) )
-                    {
-                        msg_Dbg( p_vout, "audio volume is now %d", i_volume );
-                    }
-                    else
-                    {
-                        msg_Dbg( p_vout, "audio volume: operation not supported" );
-                    }
-                }
-                break;
-
-            case SDLK_n:
-                {
-                    audio_volume_t i_volume;
-                    if ( !aout_VolumeUp( p_vout, 1, &i_volume ) )
-                    {
-                        msg_Dbg( p_vout, "audio volume is now %d", i_volume );
-                    }
-                    else
-                    {
-                        msg_Dbg( p_vout, "audio volume: operation not supported" );
-                    }
-                }
-                break;
-
-             default:
-                break;
-            }
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    /* Fullscreen change */
-    if( p_vout->i_changes & VOUT_FULLSCREEN_CHANGE )
-    {
-        p_vout->b_fullscreen = ! p_vout->b_fullscreen;
-
-        p_vout->p_sys->b_cursor_autohidden = 0;
-        SDL_ShowCursor( p_vout->p_sys->b_cursor &&
-                        ! p_vout->p_sys->b_cursor_autohidden );
-
-        p_vout->i_changes &= ~VOUT_FULLSCREEN_CHANGE;
-        p_vout->i_changes |= VOUT_SIZE_CHANGE;
-    }
-
-    /*
-     * Size change
-     */
-    if( p_vout->i_changes & VOUT_SIZE_CHANGE )
-    {
-        msg_Dbg( p_vout, "video display resized (%dx%d)",
-                 p_vout->p_sys->i_width, p_vout->p_sys->i_height );
-
-        CloseDisplay( p_vout );
-        OpenDisplay( p_vout );
-
-        /* We don't need to signal the vout thread about the size change if
-         * we can handle rescaling ourselves */
-        if( p_vout->p_sys->p_overlay != NULL )
-            p_vout->i_changes &= ~VOUT_SIZE_CHANGE;
-
-    }
-
-    /* Pointer change */
-    if( ! p_vout->p_sys->b_cursor_autohidden &&
-        ( mdate() - p_vout->p_sys->i_lastmoved > 2000000 ) )
-    {
-        /* Hide the mouse automatically */
-        p_vout->p_sys->b_cursor_autohidden = 1;
-        SDL_ShowCursor( 0 );
-    }
-
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * Display: displays previously rendered output
- *****************************************************************************
- * This function sends the currently rendered image to the display.
- *****************************************************************************/
-static void Display( vout_thread_t *p_vout, picture_t *p_pic )
-{
-    unsigned int x, y, w, h;
-    SDL_Rect disp;
-
-    vout_PlacePicture( p_vout, p_vout->p_sys->i_width, p_vout->p_sys->i_height,
-                       &x, &y, &w, &h );
-    disp.x = x;
-    disp.y = y;
-    disp.w = w;
-    disp.h = h;
-
-    if( p_vout->p_sys->p_overlay == NULL )
-    {
-        /* RGB picture */
-        SDL_Flip( p_vout->p_sys->p_display );
-    }
-    else
-    {
-        /* Overlay picture */
-        SDL_UnlockYUVOverlay( p_pic->p_sys->p_overlay);
-        SDL_DisplayYUVOverlay( p_pic->p_sys->p_overlay , &disp );
-        SDL_LockYUVOverlay( p_pic->p_sys->p_overlay);
-    }
-}
-
-/* following functions are local */
-
-/*****************************************************************************
- * OpenDisplay: open and initialize SDL device
- *****************************************************************************
- * Open and initialize display according to preferences specified in the vout
- * thread fields.
- *****************************************************************************/
-static int OpenDisplay( vout_thread_t *p_vout )
-{
-    uint32_t i_flags;
-    int i_bpp;
-
-    /* SDL fucked up fourcc definitions on bigendian machines */
-    uint32_t i_sdl_chroma;
+    /* */
+    vout_display_info_t info = vd->info;
 
     /* Set main window's size */
-    p_vout->p_sys->i_width = p_vout->b_fullscreen ? p_vout->output.i_width :
-                                                    p_vout->i_window_width;
-    p_vout->p_sys->i_height = p_vout->b_fullscreen ? p_vout->output.i_height :
-                                                     p_vout->i_window_height;
+    int display_width;
+    int display_height;
+    if (vd->cfg->is_fullscreen) {
+        display_width  = sys->desktop_width;
+        display_height = sys->desktop_height;
+    } else {
+        display_width  = vd->cfg->display.width;
+        display_height = vd->cfg->display.height;
+    }
 
     /* Initialize flags and cursor */
-    i_flags = SDL_ANYFORMAT | SDL_HWPALETTE | SDL_HWSURFACE | SDL_DOUBLEBUF;
-    i_flags |= p_vout->b_fullscreen ? SDL_FULLSCREEN : SDL_RESIZABLE;
+    sys->display_flags = SDL_ANYFORMAT | SDL_HWPALETTE | SDL_HWSURFACE | SDL_DOUBLEBUF;
+    sys->display_flags |= vd->cfg->is_fullscreen ? SDL_FULLSCREEN : SDL_RESIZABLE;
 
-    i_bpp = SDL_VideoModeOK( p_vout->p_sys->i_width, p_vout->p_sys->i_height,
-                             SDL_DEFAULT_BPP, i_flags );
-    if( i_bpp == 0 )
-    {
-        msg_Err( p_vout, "no video mode available" );
-        return VLC_EGENERIC;
+    sys->display_bpp = SDL_VideoModeOK(display_width, display_height,
+                                       16, sys->display_flags);
+    if (sys->display_bpp == 0) {
+        msg_Err(vd, "no video mode available");
+        goto error;
     }
 
-    p_vout->p_sys->p_display = SDL_SetVideoMode( p_vout->p_sys->i_width,
-                                                 p_vout->p_sys->i_height,
-                                                 i_bpp, i_flags );
-
-    if( p_vout->p_sys->p_display == NULL )
-    {
-        msg_Err( p_vout, "cannot set video mode" );
-        return VLC_EGENERIC;
+    sys->display = SDL_SetVideoMode(display_width, display_height,
+                                    sys->display_bpp, sys->display_flags);
+    if (!sys->display) {
+        msg_Err(vd, "cannot set video mode");
+        goto error;
     }
 
-    SDL_LockSurface( p_vout->p_sys->p_display );
+    /* We keep the surface locked forever */
+    SDL_LockSurface(sys->display);
 
-    /* Choose the chroma we will try first. */
-    switch( p_vout->render.i_chroma )
-    {
-        case VLC_FOURCC('Y','U','Y','2'):
-        case VLC_FOURCC('Y','U','N','V'):
-            p_vout->output.i_chroma = VLC_FOURCC('Y','U','Y','2');
-            i_sdl_chroma = SDL_YUY2_OVERLAY;
+    /* */
+    vlc_fourcc_t forced_chroma = 0;
+    char *psz_chroma = var_CreateGetNonEmptyString(vd, "sdl-chroma");
+    if (psz_chroma) {
+        forced_chroma = vlc_fourcc_GetCodecFromString(VIDEO_ES, psz_chroma);
+        if (forced_chroma)
+            msg_Dbg(vd, "Forcing chroma to 0x%.8x (%4.4s)",
+                    forced_chroma, (const char*)&forced_chroma);
+        free(psz_chroma);
+    }
+
+    /* Try to open an overlay if requested */
+    sys->overlay = NULL;
+    const bool is_overlay = var_CreateGetBool(vd, "overlay");
+    if (is_overlay) {
+        static const struct
+        {
+            vlc_fourcc_t vlc;
+            uint32_t     sdl;
+        } vlc_to_sdl[] = {
+            { VLC_CODEC_YV12, SDL_YV12_OVERLAY },
+            { VLC_CODEC_I420, SDL_IYUV_OVERLAY },
+            { VLC_CODEC_YUYV, SDL_YUY2_OVERLAY },
+            { VLC_CODEC_UYVY, SDL_UYVY_OVERLAY },
+            { VLC_CODEC_YVYU, SDL_YVYU_OVERLAY },
+
+            { 0, 0 }
+        };
+        const vlc_fourcc_t forced_chromas[] = {
+            forced_chroma, 0
+        };
+        const vlc_fourcc_t *fallback_chromas =
+            vlc_fourcc_GetYUVFallback(fmt.i_chroma);
+        const vlc_fourcc_t *chromas = forced_chroma ? forced_chromas : fallback_chromas;
+
+        for (int pass = forced_chroma ? 1 : 0; pass < 2 && !sys->overlay; pass++) {
+            for (int i = 0; chromas[i] != 0; i++) {
+                const vlc_fourcc_t vlc = chromas[i];
+
+                uint32_t sdl = 0;
+                for (int j = 0; vlc_to_sdl[j].vlc != 0 && !sdl; j++) {
+                    if (vlc_to_sdl[j].vlc == vlc)
+                        sdl = vlc_to_sdl[j].sdl;
+                }
+                if (!sdl)
+                    continue;
+
+                sys->overlay = SDL_CreateYUVOverlay(fmt.i_width, fmt.i_height,
+                                                    sdl, sys->display);
+                if (sys->overlay && !sys->overlay->hw_overlay && pass == 0) {
+                    /* Ignore non hardware overlay surface in first pass */
+                    SDL_FreeYUVOverlay(sys->overlay);
+                    sys->overlay = NULL;
+                }
+                if (sys->overlay) {
+                    /* We keep the surface locked forever */
+                    SDL_LockYUVOverlay(sys->overlay);
+
+                    fmt.i_chroma = vlc;
+                    sys->is_uv_swapped = vlc_fourcc_AreUVPlanesSwapped(fmt.i_chroma,
+                                                                       vd->fmt.i_chroma);
+                    if (sys->is_uv_swapped)
+                        fmt.i_chroma = vd->fmt.i_chroma;
+                    break;
+                }
+            }
+        }
+    } else {
+        msg_Warn(vd, "SDL overlay disabled by the user");
+    }
+
+    /* */
+    vout_display_cfg_t place_cfg = *vd->cfg;
+    place_cfg.display.width  = display_width;
+    place_cfg.display.height = display_height;
+    vout_display_PlacePicture(&sys->place, &vd->source, &place_cfg, !sys->overlay);
+
+    /* If no overlay, fallback to software output */
+    if (!sys->overlay) {
+        /* */
+        switch (sys->display->format->BitsPerPixel) {
+        case 8:
+            fmt.i_chroma = VLC_CODEC_RGB8;
             break;
-        case VLC_FOURCC('U','Y','V','Y'):
-        case VLC_FOURCC('U','Y','N','V'):
-        case VLC_FOURCC('Y','4','2','2'):
-            p_vout->output.i_chroma = VLC_FOURCC('U','Y','V','Y');
-            i_sdl_chroma = SDL_UYVY_OVERLAY;
+        case 15:
+            fmt.i_chroma = VLC_CODEC_RGB15;
             break;
-        case VLC_FOURCC('Y','V','Y','U'):
-            p_vout->output.i_chroma = VLC_FOURCC('Y','V','Y','U');
-            i_sdl_chroma = SDL_YVYU_OVERLAY;
+        case 16:
+            fmt.i_chroma = VLC_CODEC_RGB16;
             break;
-        case VLC_FOURCC('Y','V','1','2'):
-        case VLC_FOURCC('I','4','2','0'):
-        case VLC_FOURCC('I','Y','U','V'):
+        case 24:
+            fmt.i_chroma = VLC_CODEC_RGB24;
+            break;
+        case 32:
+            fmt.i_chroma = VLC_CODEC_RGB32;
+            break;
         default:
-            p_vout->output.i_chroma = VLC_FOURCC('Y','V','1','2');
-            i_sdl_chroma = SDL_YV12_OVERLAY;
-            break;
-    }
-
-    p_vout->p_sys->p_overlay =
-        SDL_CreateYUVOverlay( 32, 32, i_sdl_chroma, p_vout->p_sys->p_display );
-    /* FIXME: if the first overlay we find is software, don't stop,
-     * because we may find a hardware one later ... */
-
-    /* If this best choice failed, fall back to other chromas */
-    if( p_vout->p_sys->p_overlay == NULL )
-    {
-        p_vout->output.i_chroma = VLC_FOURCC('I','Y','U','V');
-        p_vout->p_sys->p_overlay =
-            SDL_CreateYUVOverlay( 32, 32, SDL_IYUV_OVERLAY,
-                                  p_vout->p_sys->p_display );
-    }
-
-    if( p_vout->p_sys->p_overlay == NULL )
-    {
-        p_vout->output.i_chroma = VLC_FOURCC('Y','V','1','2');
-        p_vout->p_sys->p_overlay =
-            SDL_CreateYUVOverlay( 32, 32, SDL_YV12_OVERLAY,
-                                  p_vout->p_sys->p_display );
-    }
-
-    if( p_vout->p_sys->p_overlay == NULL )
-    {
-        p_vout->output.i_chroma = VLC_FOURCC('Y','U','Y','2');
-        p_vout->p_sys->p_overlay =
-            SDL_CreateYUVOverlay( 32, 32, SDL_YUY2_OVERLAY,
-                                  p_vout->p_sys->p_display );
-    }
-
-    if( p_vout->p_sys->p_overlay == NULL )
-    {
-        msg_Warn( p_vout, "no SDL overlay for 0x%.8x (%4.4s)",
-                  p_vout->render.i_chroma, (char*)&p_vout->render.i_chroma );
-
-        switch( p_vout->p_sys->p_display->format->BitsPerPixel )
-        {
-            case 8:
-                p_vout->output.i_chroma = VLC_FOURCC('R','G','B','2');
-                p_vout->output.pf_setpalette = SetPalette;
-                break;
-            case 15:
-                p_vout->output.i_chroma = VLC_FOURCC('R','V','1','5');
-                break;
-            case 16:
-                p_vout->output.i_chroma = VLC_FOURCC('R','V','1','6');
-                break;
-            case 24:
-                p_vout->output.i_chroma = VLC_FOURCC('R','V','2','4');
-                break;
-            case 32:
-                p_vout->output.i_chroma = VLC_FOURCC('R','V','3','2');
-                break;
-            default:
-                msg_Err( p_vout, "unknown screen depth %i",
-                         p_vout->p_sys->p_display->format->BitsPerPixel );
-                SDL_UnlockSurface( p_vout->p_sys->p_display );
-                SDL_FreeSurface( p_vout->p_sys->p_display );
-                return VLC_EGENERIC;
+            msg_Err(vd, "unknown screen depth %i",
+                    sys->display->format->BitsPerPixel);
+            goto error;
         }
 
-        p_vout->output.i_rmask = p_vout->p_sys->p_display->format->Rmask;
-        p_vout->output.i_gmask = p_vout->p_sys->p_display->format->Gmask;
-        p_vout->output.i_bmask = p_vout->p_sys->p_display->format->Bmask;
+        /* All we have is an RGB image with square pixels */
+        fmt.i_width  = display_width;
+        fmt.i_height = display_height;
+        fmt.i_rmask = sys->display->format->Rmask;
+        fmt.i_gmask = sys->display->format->Gmask;
+        fmt.i_bmask = sys->display->format->Bmask;
 
-        SDL_WM_SetCaption( VOUT_TITLE " (software RGB SDL output)",
-                           VOUT_TITLE " (software RGB SDL output)" );
+        info.has_pictures_invalid = true;
     }
+
+    if (vd->cfg->display.title)
+        SDL_WM_SetCaption(vd->cfg->display.title,
+                          vd->cfg->display.title);
+    else if (!sys->overlay)
+        SDL_WM_SetCaption(VOUT_TITLE " (software RGB SDL output)",
+                          VOUT_TITLE " (software RGB SDL output)");
+    else if (sys->overlay->hw_overlay)
+        SDL_WM_SetCaption(VOUT_TITLE " (hardware YUV SDL output)",
+                          VOUT_TITLE " (hardware YUV SDL output)");
     else
-    {
-        if( p_vout->p_sys->p_overlay->hw_overlay )
-        {
-            SDL_WM_SetCaption( VOUT_TITLE " (hardware YUV SDL output)",
-                               VOUT_TITLE " (hardware YUV SDL output)" );
+        SDL_WM_SetCaption(VOUT_TITLE " (software YUV SDL output)",
+                          VOUT_TITLE " (software YUV SDL output)");
+
+    /* Setup events */
+    SDL_EventState(SDL_KEYUP, SDL_IGNORE);               /* ignore keys up */
+
+    /* Setup vout_display now that everything is fine */
+    vd->fmt = fmt;
+    vd->info = info;
+
+    vd->pool    = Pool;
+    vd->prepare = NULL;
+    vd->display = Display;
+    vd->control = Control;
+    vd->manage  = Manage;
+
+    /* */
+    vout_display_SendEventDisplaySize(vd, display_width, display_height, vd->cfg->is_fullscreen);
+
+    sys->keys = vlc_CreateKeyThread (vd);
+    return VLC_SUCCESS;
+
+error:
+    msg_Err(vd, "cannot set up SDL (%s)", SDL_GetError());
+
+    if (sys->display) {
+        SDL_UnlockSurface(sys->display);
+        SDL_FreeSurface(sys->display);
+    }
+
+    vlc_mutex_lock(&sdl_lock);
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    vlc_mutex_unlock(&sdl_lock);
+
+    free(sys);
+    return VLC_EGENERIC;
+}
+
+/**
+ * Close a SDL video output
+ */
+static void Close(vlc_object_t *object)
+{
+    vout_display_t *vd = (vout_display_t *)object;
+    vout_display_sys_t *sys = vd->sys;
+
+    vlc_DestroyKeyThread(sys->keys);
+
+    if (sys->pool)
+        picture_pool_Delete(sys->pool);
+
+    if (sys->overlay) {
+        SDL_LockYUVOverlay(sys->overlay);
+        SDL_FreeYUVOverlay(sys->overlay);
+    }
+    SDL_UnlockSurface (sys->display);
+    SDL_FreeSurface(sys->display);
+
+    vlc_mutex_lock(&sdl_lock);
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    vlc_mutex_unlock(&sdl_lock);
+
+    free(sys);
+}
+
+/**
+ * Return a pool of direct buffers
+ */
+static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
+{
+    vout_display_sys_t *sys = vd->sys;
+    VLC_UNUSED(count);
+
+    if (!sys->pool) {
+        picture_resource_t rsc;
+
+        memset(&rsc, 0, sizeof(rsc));
+
+        if (sys->overlay) {
+            SDL_Overlay *ol = sys->overlay;
+
+            for (int i = 0; i < ol->planes; i++) {
+                rsc.p[i].p_pixels = ol->pixels[ i > 0 && sys->is_uv_swapped ? (3-i) : i];
+                rsc.p[i].i_pitch  = ol->pitches[i > 0 && sys->is_uv_swapped ? (3-i) : i];
+                rsc.p[i].i_lines  = ol->h;
+                if (ol->format == SDL_YV12_OVERLAY ||
+                    ol->format == SDL_IYUV_OVERLAY)
+                    rsc.p[i].i_lines /= 2;
+
+            }
+        } else {
+            const int x = sys->place.x;
+            const int y = sys->place.y;
+
+            SDL_Surface *sf = sys->display;
+            SDL_FillRect(sf, NULL, 0);
+
+            assert(x >= 0 && y >= 0);
+            rsc.p[0].p_pixels = (uint8_t*)sf->pixels + y * sf->pitch + x * ((sf->format->BitsPerPixel + 7) / 8);
+            rsc.p[0].i_pitch  = sf->pitch;
+            rsc.p[0].i_lines  = vd->fmt.i_height;
         }
+
+        picture_t *picture = picture_NewFromResource(&vd->fmt, &rsc);;
+        if (!picture)
+            return NULL;
+
+        sys->pool = picture_pool_New(1, &picture);
+    }
+
+    return sys->pool;
+}
+
+/**
+ * Display a picture
+ */
+static void Display(vout_display_t *vd, picture_t *p_pic)
+{
+    vout_display_sys_t *sys = vd->sys;
+
+    if (sys->overlay) {
+        SDL_Rect disp;
+        disp.x = sys->place.x;
+        disp.y = sys->place.y;
+        disp.w = sys->place.width;
+        disp.h = sys->place.height;
+
+        SDL_UnlockYUVOverlay(sys->overlay);
+        SDL_DisplayYUVOverlay(sys->overlay , &disp);
+        SDL_LockYUVOverlay(sys->overlay);
+    } else {
+        SDL_Flip(sys->display);
+    }
+
+    picture_Release(p_pic);
+}
+
+
+/**
+ * Control for vout display
+ */
+static int Control(vout_display_t *vd, int query, va_list args)
+{
+    vout_display_sys_t *sys = vd->sys;
+
+    switch (query)
+    {
+    case VOUT_DISPLAY_HIDE_MOUSE:
+        SDL_ShowCursor(0);
+        return VLC_SUCCESS;
+
+    case VOUT_DISPLAY_CHANGE_DISPLAY_SIZE: {
+        const vout_display_cfg_t *cfg = va_arg(args, const vout_display_cfg_t *);
+
+        /* */
+        sys->display = SDL_SetVideoMode(cfg->display.width,
+                                        cfg->display.height,
+                                        sys->display_bpp, sys->display_flags);
+        if (!sys->display) {
+            sys->display = SDL_SetVideoMode(vd->cfg->display.width,
+                                            vd->cfg->display.height,
+                                            sys->display_bpp, sys->display_flags);
+            return VLC_EGENERIC;
+        }
+        if (sys->overlay)
+            vout_display_PlacePicture(&sys->place, &vd->source, cfg, !sys->overlay);
         else
-        {
-            SDL_WM_SetCaption( VOUT_TITLE " (software YUV SDL output)",
-                               VOUT_TITLE " (software YUV SDL output)" );
+            vout_display_SendEventPicturesInvalid(vd);
+        return VLC_SUCCESS;
+    }
+    case VOUT_DISPLAY_CHANGE_FULLSCREEN: {
+        vout_display_cfg_t cfg = *va_arg(args, const vout_display_cfg_t *);
+
+        /* Fix flags */
+        sys->display_flags &= ~(SDL_FULLSCREEN | SDL_RESIZABLE);
+        sys->display_flags |= cfg.is_fullscreen ? SDL_FULLSCREEN : SDL_RESIZABLE;
+
+        if (cfg.is_fullscreen) {
+            cfg.display.width = sys->desktop_width;
+            cfg.display.height = sys->desktop_height;
         }
+
+        if (sys->overlay) {
+            sys->display = SDL_SetVideoMode(cfg.display.width, cfg.display.height,
+                                            sys->display_bpp, sys->display_flags);
+
+            vout_display_PlacePicture(&sys->place, &vd->source, &cfg, !sys->overlay);
+        }
+        vout_display_SendEventDisplaySize(vd, cfg.display.width, cfg.display.height, cfg.is_fullscreen);
+        return VLC_SUCCESS;
+    }
+    case VOUT_DISPLAY_CHANGE_ZOOM:
+    case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
+    case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT: {
+        const vout_display_cfg_t *cfg;
+        const video_format_t *source;
+
+        if (query == VOUT_DISPLAY_CHANGE_SOURCE_ASPECT) {
+            source = va_arg(args, const video_format_t *);
+            cfg = vd->cfg;
+        } else {
+            source = &vd->source;
+            cfg = va_arg(args, const vout_display_cfg_t *);
+        }
+        if (sys->overlay) {
+            sys->display = SDL_SetVideoMode(cfg->display.width, cfg->display.height,
+                                            sys->display_bpp, sys->display_flags);
+
+            vout_display_PlacePicture(&sys->place, source, cfg, !sys->overlay);
+        } else {
+            vout_display_SendEventPicturesInvalid(vd);
+        }
+        return VLC_SUCCESS;
     }
 
-    SDL_EventState( SDL_KEYUP, SDL_IGNORE );               /* ignore keys up */
+    case VOUT_DISPLAY_RESET_PICTURES: {
+        /* */
+        assert(!sys->overlay);
 
-    return VLC_SUCCESS;
-}
+        /* */
+        if (sys->pool)
+            picture_pool_Delete(sys->pool);
+        sys->pool = NULL;
 
-/*****************************************************************************
- * CloseDisplay: close and reset SDL device
- *****************************************************************************
- * This function returns all resources allocated by OpenDisplay and restore
- * the original state of the device.
- *****************************************************************************/
-static void CloseDisplay( vout_thread_t *p_vout )
-{
-    SDL_FreeYUVOverlay( p_vout->p_sys->p_overlay );
-    SDL_UnlockSurface ( p_vout->p_sys->p_display );
-    SDL_FreeSurface( p_vout->p_sys->p_display );
-}
+        vout_display_PlacePicture(&sys->place, &vd->source, vd->cfg, !sys->overlay);
 
-/*****************************************************************************
- * NewPicture: allocate a picture
- *****************************************************************************
- * Returns 0 on success, -1 otherwise
- *****************************************************************************/
-static int NewPicture( vout_thread_t *p_vout, picture_t *p_pic )
-{
-    int i_width  = p_vout->output.i_width;
-    int i_height = p_vout->output.i_height;
-
-    if( p_vout->p_sys->p_overlay == NULL )
-    {
-        /* RGB picture */
-        if( p_vout->p_sys->i_surfaces )
-        {
-            /* We already allocated this surface, return */
-            return VLC_EGENERIC;
-        }
-
-        p_pic->p_sys = malloc( sizeof( picture_sys_t ) );
-
-        if( p_pic->p_sys == NULL )
-        {
-            return VLC_ENOMEM;
-        }
-
-        switch( p_vout->p_sys->p_display->format->BitsPerPixel )
-        {
-            case 8:
-                p_pic->p->i_pixel_pitch = 1;
-                break;
-            case 15:
-            case 16:
-                p_pic->p->i_pixel_pitch = 2;
-                break;
-            case 24:
-            case 32:
-                p_pic->p->i_pixel_pitch = 4;
-                break;
-            default:
-                return VLC_EGENERIC;
-        }
-
-        p_pic->p->p_pixels = p_vout->p_sys->p_display->pixels;
-        p_pic->p->i_lines = p_vout->p_sys->p_display->h;
-        p_pic->p->i_visible_lines = p_vout->p_sys->p_display->h;
-        p_pic->p->i_pitch = p_vout->p_sys->p_display->pitch;
-        p_pic->p->i_visible_pitch =
-            p_pic->p->i_pixel_pitch * p_vout->p_sys->p_display->w;
-
-        p_vout->p_sys->i_surfaces++;
-
-        p_pic->i_planes = 1;
+        /* */
+        vd->fmt.i_width  = sys->place.width;
+        vd->fmt.i_height = sys->place.height;
+        return VLC_SUCCESS;
     }
-    else
-    {
-        p_pic->p_sys = malloc( sizeof( picture_sys_t ) );
 
-        if( p_pic->p_sys == NULL )
-        {
-            return VLC_ENOMEM;
-        }
+    case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
+    case VOUT_DISPLAY_CHANGE_WINDOW_STATE:
+        /* I don't think it is possible to support with SDL:
+         * - crop
+         * - on top
+         */
+        return VLC_EGENERIC;
 
-        p_pic->p_sys->p_overlay =
-            SDL_CreateYUVOverlay( i_width, i_height,
-                                  p_vout->output.i_chroma,
-                                  p_vout->p_sys->p_display );
+    default:
+        msg_Err(vd, "Unsupported query in vout display SDL");
+        return VLC_EGENERIC;
+    }
+}
 
-        if( p_pic->p_sys->p_overlay == NULL )
-        {
-            free( p_pic->p_sys );
-            return VLC_EGENERIC;
-        }
+/**
+ * Proccess pending event
+ */
+static void Manage(vout_display_t *vd)
+{
+    vout_display_sys_t *sys = vd->sys;
+    SDL_Event event;
 
-        SDL_LockYUVOverlay( p_pic->p_sys->p_overlay );
-
-        p_pic->Y_PIXELS = p_pic->p_sys->p_overlay->pixels[0];
-        p_pic->p[Y_PLANE].i_lines = p_pic->p_sys->p_overlay->h;
-        p_pic->p[Y_PLANE].i_visible_lines = p_pic->p_sys->p_overlay->h;
-        p_pic->p[Y_PLANE].i_pitch = p_pic->p_sys->p_overlay->pitches[0];
-
-        switch( p_vout->output.i_chroma )
-        {
-        case SDL_YV12_OVERLAY:
-            p_pic->p[Y_PLANE].i_pixel_pitch = 1;
-            p_pic->p[Y_PLANE].i_visible_pitch = p_pic->p_sys->p_overlay->w;
-
-            p_pic->U_PIXELS = p_pic->p_sys->p_overlay->pixels[2];
-            p_pic->p[U_PLANE].i_lines = p_pic->p_sys->p_overlay->h / 2;
-            p_pic->p[U_PLANE].i_visible_lines = p_pic->p_sys->p_overlay->h / 2;
-            p_pic->p[U_PLANE].i_pitch = p_pic->p_sys->p_overlay->pitches[2];
-            p_pic->p[U_PLANE].i_pixel_pitch = 1;
-            p_pic->p[U_PLANE].i_visible_pitch = p_pic->p_sys->p_overlay->w / 2;
-
-            p_pic->V_PIXELS = p_pic->p_sys->p_overlay->pixels[1];
-            p_pic->p[V_PLANE].i_lines = p_pic->p_sys->p_overlay->h / 2;
-            p_pic->p[V_PLANE].i_visible_lines = p_pic->p_sys->p_overlay->h / 2;
-            p_pic->p[V_PLANE].i_pitch = p_pic->p_sys->p_overlay->pitches[1];
-            p_pic->p[V_PLANE].i_pixel_pitch = 1;
-            p_pic->p[V_PLANE].i_visible_pitch = p_pic->p_sys->p_overlay->w / 2;
-
-            p_pic->i_planes = 3;
+    /* */
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT:
+            vout_display_SendEventClose(vd);
             break;
 
-        case SDL_IYUV_OVERLAY:
-            p_pic->p[Y_PLANE].i_pixel_pitch = 1;
-            p_pic->p[Y_PLANE].i_visible_pitch = p_pic->p_sys->p_overlay->w;
+        case SDL_KEYDOWN: {
+            /* convert the key if possible */
+            int key = ConvertKey(event.key.keysym.sym);
 
-            p_pic->U_PIXELS = p_pic->p_sys->p_overlay->pixels[1];
-            p_pic->p[U_PLANE].i_lines = p_pic->p_sys->p_overlay->h / 2;
-            p_pic->p[U_PLANE].i_visible_lines = p_pic->p_sys->p_overlay->h / 2;
-            p_pic->p[U_PLANE].i_pitch = p_pic->p_sys->p_overlay->pitches[1];
-            p_pic->p[U_PLANE].i_pixel_pitch = 1;
-            p_pic->p[U_PLANE].i_visible_pitch = p_pic->p_sys->p_overlay->w / 2;
+            if (!key) {
+                /* Find the right caracter */
+                if ((event.key.keysym.unicode & 0xff80) == 0) {
+                    key = event.key.keysym.unicode & 0x7f;
+                    /* FIXME: find a better solution than this
+                              hack to find the right caracter */
+                    if (key >= 1 && key <= 26)
+                        key += 96;
+                    else if (key >= 65 && key <= 90)
+                        key += 32;
+                }
+            }
+            if (!key)
+                break;
 
-            p_pic->V_PIXELS = p_pic->p_sys->p_overlay->pixels[2];
-            p_pic->p[V_PLANE].i_lines = p_pic->p_sys->p_overlay->h / 2;
-            p_pic->p[V_PLANE].i_visible_lines = p_pic->p_sys->p_overlay->h / 2;
-            p_pic->p[V_PLANE].i_pitch = p_pic->p_sys->p_overlay->pitches[2];
-            p_pic->p[V_PLANE].i_pixel_pitch = 1;
-            p_pic->p[V_PLANE].i_visible_pitch = p_pic->p_sys->p_overlay->w / 2;
+            if (event.key.keysym.mod & KMOD_SHIFT)
+                key |= KEY_MODIFIER_SHIFT;
+            if (event.key.keysym.mod & KMOD_CTRL)
+                key |= KEY_MODIFIER_CTRL;
+            if (event.key.keysym.mod & KMOD_ALT)
+                key |= KEY_MODIFIER_ALT;
+            vlc_EmitKey(sys->keys, key);
+            break;
+        }
 
-            p_pic->i_planes = 3;
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONUP: {
+            static const struct { int sdl; int vlc; } buttons[] = {
+                { SDL_BUTTON_LEFT,      MOUSE_BUTTON_LEFT },
+                { SDL_BUTTON_MIDDLE,    MOUSE_BUTTON_CENTER },
+                { SDL_BUTTON_RIGHT,     MOUSE_BUTTON_RIGHT },
+                { SDL_BUTTON_WHEELUP,   MOUSE_BUTTON_WHEEL_UP },
+                { SDL_BUTTON_WHEELDOWN, MOUSE_BUTTON_WHEEL_DOWN },
+                { -1, -1 },
+            };
+
+            SDL_ShowCursor(1);
+            for (int i = 0; buttons[i].sdl != -1; i++) {
+                if (buttons[i].sdl == event.button.button) {
+                    if (event.type == SDL_MOUSEBUTTONDOWN)
+                        vout_display_SendEventMousePressed(vd, buttons[i].vlc);
+                    else
+                        vout_display_SendEventMouseReleased(vd, buttons[i].vlc);
+                }
+            }
+            break;
+        }
+
+        case SDL_MOUSEMOTION: {
+            if (sys->place.width <= 0 || sys->place.height <= 0)
+                break;
+
+            const int x = (int64_t)(event.motion.x - sys->place.x) * vd->source.i_width  / sys->place.width;
+            const int y = (int64_t)(event.motion.y - sys->place.y) * vd->source.i_height / sys->place.height;
+
+            SDL_ShowCursor(1);
+            vout_display_SendEventMouseMoved(vd, x, y);
+            break;
+        }
+
+        case SDL_VIDEORESIZE:
+            vout_display_SendEventDisplaySize(vd, event.resize.w, event.resize.h, vd->cfg->is_fullscreen);
             break;
 
         default:
-            p_pic->p[Y_PLANE].i_pixel_pitch = 2;
-            p_pic->p[U_PLANE].i_visible_pitch = p_pic->p_sys->p_overlay->w * 2;
-
-            p_pic->i_planes = 1;
             break;
         }
     }
 
-    return VLC_SUCCESS;
 }
 
-/*****************************************************************************
- * SetPalette: sets an 8 bpp palette
- *****************************************************************************/
-static void SetPalette( vout_thread_t *p_vout,
-                        uint16_t *red, uint16_t *green, uint16_t *blue )
+static const struct {
+    SDLKey sdl_key;
+    int    vlckey;
+
+} sdlkeys_to_vlckeys[] = {
+    { SDLK_F1,  KEY_F1 },
+    { SDLK_F2,  KEY_F2 },
+    { SDLK_F3,  KEY_F3 },
+    { SDLK_F4,  KEY_F4 },
+    { SDLK_F5,  KEY_F5 },
+    { SDLK_F6,  KEY_F6 },
+    { SDLK_F7,  KEY_F7 },
+    { SDLK_F8,  KEY_F8 },
+    { SDLK_F9,  KEY_F9 },
+    { SDLK_F10, KEY_F10 },
+    { SDLK_F11, KEY_F11 },
+    { SDLK_F12, KEY_F12 },
+
+    { SDLK_RETURN, KEY_ENTER },
+    { SDLK_KP_ENTER, KEY_ENTER },
+    { SDLK_SPACE, ' ' },
+    { SDLK_ESCAPE, KEY_ESC },
+
+    { SDLK_MENU, KEY_MENU },
+    { SDLK_LEFT, KEY_LEFT },
+    { SDLK_RIGHT, KEY_RIGHT },
+    { SDLK_UP, KEY_UP },
+    { SDLK_DOWN, KEY_DOWN },
+
+    { SDLK_HOME, KEY_HOME },
+    { SDLK_END, KEY_END },
+    { SDLK_PAGEUP, KEY_PAGEUP },
+    { SDLK_PAGEDOWN,  KEY_PAGEDOWN },
+
+    { SDLK_INSERT, KEY_INSERT },
+    { SDLK_DELETE, KEY_DELETE },
+    /*TODO: find a equivalent for SDL 
+    { , KEY_MEDIA_NEXT_TRACK }
+    { , KEY_MEDIA_PREV_TRACK }
+    { , KEY_VOLUME_MUTE }
+    { , KEY_VOLUME_DOWN }
+    { , KEY_VOLUME_UP }
+    { , KEY_MEDIA_PLAY_PAUSE }
+    { , KEY_MEDIA_PLAY_PAUSE }*/
+
+    { 0, 0 }
+};
+
+static int ConvertKey(SDLKey sdl_key)
 {
-    SDL_Color colors[256];
-    int i;
-
-    /* Fill colors with color information */
-    for( i = 0; i < 256; i++ )
-    {
-        colors[ i ].r = red[ i ] >> 8;
-        colors[ i ].g = green[ i ] >> 8;
-        colors[ i ].b = blue[ i ] >> 8;
+    for (int i = 0; sdlkeys_to_vlckeys[i].sdl_key != 0; i++) {
+        if (sdlkeys_to_vlckeys[i].sdl_key == sdl_key)
+            return sdlkeys_to_vlckeys[i].vlckey;
     }
-
-    /* Set palette */
-    if( SDL_SetColors( p_vout->p_sys->p_display, colors, 0, 256 ) == 0 )
-    {
-        msg_Err( p_vout, "failed to set palette" );
-    }
+    return 0;
 }
-

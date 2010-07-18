@@ -9,6 +9,7 @@ SOURCES_skins2 = \
 	commands/cmd_dvd.cpp \
 	commands/cmd_dvd.hpp \
 	commands/cmd_generic.hpp \
+        commands/cmd_callbacks.hpp \
 	commands/cmd_change_skin.cpp \
 	commands/cmd_change_skin.hpp \
 	commands/cmd_dialogs.hpp \
@@ -32,6 +33,8 @@ SOURCES_skins2 = \
 	commands/cmd_quit.hpp \
 	commands/cmd_resize.cpp \
 	commands/cmd_resize.hpp \
+	commands/cmd_voutwindow.cpp \
+	commands/cmd_voutwindow.hpp \
 	commands/cmd_snapshot.cpp \
 	commands/cmd_snapshot.hpp \
 	commands/cmd_show_window.hpp \
@@ -108,6 +111,8 @@ SOURCES_skins2 = \
 	src/ft2_bitmap.hpp \
 	src/ft2_font.cpp \
 	src/ft2_font.hpp \
+	src/ft2_err.c \
+	src/ft2_err.h \
 	src/generic_bitmap.cpp \
 	src/generic_bitmap.hpp \
 	src/generic_font.hpp \
@@ -149,6 +154,8 @@ SOURCES_skins2 = \
 	src/vlcproc.hpp \
 	src/vout_window.cpp \
 	src/vout_window.hpp \
+	src/vout_manager.cpp \
+	src/vout_manager.hpp \
 	src/window_manager.cpp \
 	src/window_manager.hpp \
 	\
@@ -176,15 +183,15 @@ SOURCES_skins2 = \
 	\
 	vars/equalizer.cpp \
 	vars/equalizer.hpp \
-	vars/playlist.cpp \
-	vars/playlist.hpp \
 	vars/playtree.cpp \
 	vars/playtree.hpp \
 	vars/time.cpp \
 	vars/time.hpp \
 	vars/volume.cpp \
-	vars/volume.hpp \
-	\
+	vars/volume.hpp
+
+if HAVE_WIN32
+SOURCES_skins2 += \
 	win32/win32_dragdrop.cpp \
 	win32/win32_dragdrop.hpp \
 	win32/win32_factory.cpp \
@@ -201,7 +208,29 @@ SOURCES_skins2 = \
 	win32/win32_tooltip.hpp \
 	win32/win32_window.cpp \
 	win32/win32_window.hpp \
-	\
+    $(NULL)
+else
+if HAVE_DARWIN
+SOURCES_skins2 += \
+	macosx/macosx_dragdrop.cpp \
+	macosx/macosx_dragdrop.hpp \
+	macosx/macosx_factory.cpp \
+	macosx/macosx_factory.hpp \
+	macosx/macosx_graphics.cpp \
+	macosx/macosx_graphics.hpp \
+	macosx/macosx_loop.cpp \
+	macosx/macosx_loop.hpp \
+	macosx/macosx_popup.cpp \
+	macosx/macosx_popup.hpp \
+	macosx/macosx_timer.cpp \
+	macosx/macosx_timer.hpp \
+	macosx/macosx_window.cpp \
+	macosx/macosx_window.hpp \
+	macosx/macosx_tooltip.cpp \
+	macosx/macosx_tooltip.hpp \
+    $(NULL)
+else
+SOURCES_skins2 += \
 	x11/x11_display.cpp \
 	x11/x11_display.hpp \
 	x11/x11_dragdrop.cpp \
@@ -220,27 +249,6 @@ SOURCES_skins2 = \
 	x11/x11_window.hpp \
 	x11/x11_tooltip.cpp \
 	x11/x11_tooltip.hpp \
-	\
-	macosx/macosx_dragdrop.cpp \
-	macosx/macosx_dragdrop.hpp \
-	macosx/macosx_factory.cpp \
-	macosx/macosx_factory.hpp \
-	macosx/macosx_graphics.cpp \
-	macosx/macosx_graphics.hpp \
-	macosx/macosx_loop.cpp \
-	macosx/macosx_loop.hpp \
-	macosx/macosx_popup.cpp \
-	macosx/macosx_popup.hpp \
-	macosx/macosx_timer.cpp \
-	macosx/macosx_timer.hpp \
-	macosx/macosx_window.cpp \
-	macosx/macosx_window.hpp \
-	macosx/macosx_tooltip.cpp \
-	macosx/macosx_tooltip.hpp \
-	\
-	unzip/crypt.h \
-	unzip/ioapi.c \
-	unzip/ioapi.h \
-	unzip/unzip.c \
-	unzip/unzip.h \
-	$(NULL)
+    $(NULL)
+endif
+endif

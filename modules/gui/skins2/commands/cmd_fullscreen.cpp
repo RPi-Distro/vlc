@@ -1,8 +1,8 @@
 /*****************************************************************************
  * cmd_fullscreen.cpp
  *****************************************************************************
- * Copyright (C) 2003 the VideoLAN team
- * $Id: a7f4f4354ab8110b59d39b6cd4b61e064a758a30 $
+ * Copyright (C) 2003-2009 the VideoLAN team
+ * $Id: a2ef8f9b386a5e8a636fa499ae4e62f7f870fb08 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -23,27 +23,22 @@
  *****************************************************************************/
 
 #include "cmd_fullscreen.hpp"
-#include <vlc/vout.h>
+#include <vlc_input.h>
+#include <vlc_vout.h>
+#include <vlc_playlist.h>
 
 
 void CmdFullscreen::execute()
 {
-    vout_thread_t *pVout;
+    bool fs = var_ToggleBool( pl_Get( getIntf() ), "fullscreen" );
 
     if( getIntf()->p_sys->p_input == NULL )
-    {
         return;
-    }
-
-    pVout = (vout_thread_t *)vlc_object_find( getIntf()->p_sys->p_input,
-                                            VLC_OBJECT_VOUT, FIND_CHILD );
-    if( !pVout )
-        pVout = (vout_thread_t *)vlc_object_find( getIntf()->p_sys->p_input,
-                                            VLC_OBJECT_VOUT, FIND_ANYWHERE );
+    vout_thread_t *pVout = input_GetVout( getIntf()->p_sys->p_input );
     if( pVout )
     {
-        // Switch to fullscreen
-        pVout->i_changes |= VOUT_FULLSCREEN_CHANGE;
+        // Switch fullscreen
+        var_SetBool( pVout, "fullscreen", fs );
         vlc_object_release( pVout );
     }
 }

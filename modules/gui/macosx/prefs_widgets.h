@@ -1,16 +1,16 @@
 /*****************************************************************************
  * prefs_widgets.h: Preferences controls
  *****************************************************************************
- * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: 1db82dd1b45b716c898b4eadebc80d9263089e1e $
+ * Copyright (C) 2002-2007 the VideoLAN team
+ * $Id: 8d44a7733481de855f405c96669bb57c8b1f248d $
  *
- * Authors: Derk-Jan Hartman <hartman at videolan.org> 
+ * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -23,10 +23,11 @@
 
 #define CONFIG_ITEM_STRING_LIST (CONFIG_ITEM_STRING + 1)
 #define CONFIG_ITEM_RANGED_INTEGER (CONFIG_ITEM_INTEGER + 1)
-#define CONFIG_ITEM_KEY_BEFORE_10_3 (CONFIG_ITEM_KEY + 1)
 #define CONFIG_ITEM_KEY_AFTER_10_3 (CONFIG_ITEM_KEY + 2)
 #define LEFTMARGIN  18
 #define RIGHTMARGIN 18
+
+static NSMenu   *o_keys_menu = nil;
 
 @interface VLCConfigControl : NSView
 {
@@ -35,24 +36,24 @@
     NSTextField     *o_label;
     int             i_type;
     int             i_view_type;
-    vlc_bool_t      b_advanced;
+    bool      b_advanced;
 }
 
 + (VLCConfigControl *)newControl: (module_config_t *)_p_item
         withView: (NSView *)o_parent_view;
 - (id)initWithFrame: (NSRect)frame item: (module_config_t *)p_item;
-- (NSString *)getName;
-- (int)getType;
-- (int)getViewType;
+- (NSString *)name;
+- (int)type;
+- (int)viewType;
 - (BOOL)isAdvanced;
 - (void)setYPos:(int)i_yPos;
 - (int)intValue;
 - (float)floatValue;
 - (char *)stringValue;
 - (void)applyChanges;
-- (int)getLabelSize;
+- (void)resetValues;
+- (int)labelSize;
 - (void) alignWithXPosition:(int)i_xPos;
-static NSMenu   *o_keys_menu = nil;
 
 + (int)calcVerticalMargin: (int)i_curItem lastItem:(int)i_lastItem;
 
@@ -183,21 +184,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface KeyConfigControlBefore103 : VLCConfigControl
-{
-    NSButton        *o_cmd_checkbox;
-    NSButton        *o_ctrl_checkbox;
-    NSButton        *o_alt_checkbox;
-    NSButton        *o_shift_checkbox;
-    NSPopUpButton   *o_popup;
-}
-
-- (id) initWithItem: (module_config_t *)_p_item
-           withView: (NSView *)o_parent_view;
-
-@end
-
-@interface KeyConfigControlAfter103 : VLCConfigControl
+@interface KeyConfigControl : VLCConfigControl
 {
     NSPopUpButton   *o_popup;
 }
@@ -216,11 +203,10 @@ static NSMenu   *o_keys_menu = nil;
 
 - (id) initWithItem: (module_config_t *)_p_item
            withView: (NSView *)o_parent_view;
-           
+
 @end
 
 //#undef CONFIG_ITEM_LIST_STRING
 //#undef CONFIG_ITEM_RANGED_INTEGER
-//#undef CONFIG_ITEM_KEY_BEFORE_10_3
 //#undef CONFIG_ITEM_KEY_AFTER_10_3
 

@@ -3,7 +3,7 @@
  *       multiplexer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 300f52cbe8ff5bac43e1e2512f8cbc01e67764c6 $
+ * $Id: b80c287349aabc81ddd407893961cdc44837e6de $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -27,17 +27,21 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/sout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "codecs.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_sout.h>
+#include <vlc_codecs.h>
+#include <vlc_block.h>
+
 #include "bits.h"
 #include "pes.h"
 
-#include "iso_lang.h"
+#include <vlc_iso_lang.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -57,22 +61,22 @@ static void    Close  ( vlc_object_t * );
 
 #define SOUT_CFG_PREFIX "sout-ps-"
 
-vlc_module_begin();
-    set_description( _("PS muxer") );
-    set_shortname( "MPEG-PS" );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_MUX );
-    set_capability( "sout mux", 50 );
-    add_shortcut( "ps" );
-    add_shortcut( "mpeg1" );
-    add_shortcut( "dvd" );
-    set_callbacks( Open, Close );
+vlc_module_begin ()
+    set_description( N_("PS muxer") )
+    set_shortname( "MPEG-PS" )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_MUX )
+    set_capability( "sout mux", 50 )
+    add_shortcut( "ps" )
+    add_shortcut( "mpeg1" )
+    add_shortcut( "dvd" )
+    set_callbacks( Open, Close )
 
     add_integer( SOUT_CFG_PREFIX "dts-delay", 200, NULL, DTS_TEXT,
-                 DTS_LONGTEXT, VLC_TRUE );
+                 DTS_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "pes-max-size", PES_PAYLOAD_SIZE_MAX, NULL,
-                 PES_SIZE_TEXT, PES_SIZE_LONGTEXT, VLC_TRUE );
-vlc_module_end();
+                 PES_SIZE_TEXT, PES_SIZE_LONGTEXT, true )
+vlc_module_end ()
 
 /*****************************************************************************
  * Exported prototypes
@@ -85,15 +89,14 @@ static int Mux      ( sout_mux_t * );
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int  MuxGetStream        ( sout_mux_t *, int *, mtime_t * );
 
 static void MuxWritePackHeader  ( sout_mux_t *, block_t **, mtime_t );
 static void MuxWriteSystemHeader( sout_mux_t *, block_t **, mtime_t );
 static void MuxWritePSM         ( sout_mux_t *, block_t **, mtime_t );
 
-static void StreamIdInit        ( vlc_bool_t *id, int i_range );
-static int  StreamIdGet         ( vlc_bool_t *id, int i_id_min, int i_id_max );
-static void StreamIdRelease     ( vlc_bool_t *id, int i_id_min, int i_id );
+static void StreamIdInit        ( bool *id, int i_range );
+static int  StreamIdGet         ( bool *id, int i_id_min, int i_id_max );
+static void StreamIdRelease     ( bool *id, int i_id_min, int i_id );
 
 typedef struct ps_stream_s
 {
@@ -109,12 +112,12 @@ typedef struct ps_stream_s
 struct sout_mux_sys_t
 {
     /* Which id are unused */
-    vlc_bool_t  stream_id_mpga[16]; /* 0xc0 -> 0xcf */
-    vlc_bool_t  stream_id_mpgv[16]; /* 0xe0 -> 0xef */
-    vlc_bool_t  stream_id_a52[8];   /* 0x80 -> 0x87 <- FIXME I'm not sure */
-    vlc_bool_t  stream_id_spu[32];  /* 0x20 -> 0x3f */
-    vlc_bool_t  stream_id_dts[8];   /* 0x88 -> 0x8f */
-    vlc_bool_t  stream_id_lpcm[16]; /* 0xa0 -> 0xaf */
+    bool  stream_id_mpga[16]; /* 0xc0 -> 0xcf */
+    bool  stream_id_mpgv[16]; /* 0xe0 -> 0xef */
+    bool  stream_id_a52[8];   /* 0x80 -> 0x87 <- FIXME I'm not sure */
+    bool  stream_id_spu[32];  /* 0x20 -> 0x3f */
+    bool  stream_id_dts[8];   /* 0x88 -> 0x8f */
+    bool  stream_id_lpcm[16]; /* 0xa0 -> 0xaf */
 
     int i_audio_bound;
     int i_video_bound;
@@ -122,12 +125,12 @@ struct sout_mux_sys_t
     int i_system_header;
     int i_dts_delay;
     int i_rate_bound; /* units of 50 bytes/second */
-    
+ 
     int64_t i_instant_bitrate;
     int64_t i_instant_size;
     int64_t i_instant_dts;
 
-    vlc_bool_t b_mpeg2;
+    bool b_mpeg2;
 
     int i_pes_max_size;
 
@@ -135,7 +138,7 @@ struct sout_mux_sys_t
     uint32_t crc32_table[256];
 };
 
-static const char *ppsz_sout_options[] = {
+static const char *const ppsz_sout_options[] = {
     "dts-delay", "pes-max-size", NULL
 };
 
@@ -149,7 +152,7 @@ static int Open( vlc_object_t *p_this )
     vlc_value_t val;
 
     msg_Info( p_mux, "Open" );
-    sout_CfgParse( p_mux, SOUT_CFG_PREFIX, ppsz_sout_options, p_mux->p_cfg );
+    config_ChainParse( p_mux, SOUT_CFG_PREFIX, ppsz_sout_options, p_mux->p_cfg );
 
     p_mux->pf_control   = Control;
     p_mux->pf_addstream = AddStream;
@@ -228,29 +231,30 @@ static void Close( vlc_object_t * p_this )
  *****************************************************************************/
 static int Control( sout_mux_t *p_mux, int i_query, va_list args )
 {
-    vlc_bool_t *pb_bool;
+    VLC_UNUSED(p_mux);
+    bool *pb_bool;
     char **ppsz;
 
-   switch( i_query )
-   {
-       case MUX_CAN_ADD_STREAM_WHILE_MUXING:
-           pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-           *pb_bool = VLC_TRUE;
-           return VLC_SUCCESS;
+    switch( i_query )
+    {
+        case MUX_CAN_ADD_STREAM_WHILE_MUXING:
+            pb_bool = (bool*)va_arg( args, bool * );
+            *pb_bool = true;
+            return VLC_SUCCESS;
 
-       case MUX_GET_ADD_STREAM_WAIT:
-           pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-           *pb_bool = VLC_FALSE;
-           return VLC_SUCCESS;
+        case MUX_GET_ADD_STREAM_WAIT:
+            pb_bool = (bool*)va_arg( args, bool * );
+            *pb_bool = false;
+            return VLC_SUCCESS;
 
-       case MUX_GET_MIME:
-           ppsz = (char**)va_arg( args, char ** );
-           *ppsz = strdup( "video/mpeg" );
-           return VLC_SUCCESS;
+        case MUX_GET_MIME:
+            ppsz = (char**)va_arg( args, char ** );
+            *ppsz = strdup( "video/mpeg" );
+            return VLC_SUCCESS;
 
         default:
             return VLC_EGENERIC;
-   }
+    }
 }
 
 /*****************************************************************************
@@ -260,7 +264,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
     sout_mux_sys_t  *p_sys = p_mux->p_sys;
     ps_stream_t *p_stream;
-    
+ 
 
     msg_Dbg( p_mux, "adding input codec=%4.4s",
              (char*)&p_input->p_fmt->i_codec );
@@ -271,50 +275,44 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     /* Init this new stream */
     switch( p_input->p_fmt->i_codec )
     {
-        case VLC_FOURCC( 'm', 'p', '1', 'v' ):
-            p_stream->i_stream_id =
-                StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
-            p_stream->i_stream_type = 0x01; /* ISO/IEC 11172 Video */
-            break;
-        case VLC_FOURCC( 'm', 'p', '2', 'v' ):
-        case VLC_FOURCC( 'm', 'p', 'g', 'v' ):
+        case VLC_CODEC_MPGV:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
             p_stream->i_stream_type = 0x02; /* ISO/IEC 13818 Video */
             break;
-        case VLC_FOURCC( 'm', 'p', '4', 'v' ):
+        case VLC_CODEC_MP4V:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
             p_stream->i_stream_type = 0x10;
             break;
-        case VLC_FOURCC( 'h', '2', '6', '4' ):
+        case VLC_CODEC_H264:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpgv, 0xe0, 0xef );
             p_stream->i_stream_type = 0x1b;
             break;
-        case VLC_FOURCC( 'l', 'p', 'c', 'm' ):
+        case VLC_CODEC_DVD_LPCM:
             p_stream->i_stream_id =
                 0xbd00 | StreamIdGet( p_sys->stream_id_lpcm, 0xa0, 0xaf );
             break;
-        case VLC_FOURCC( 'd', 't', 's', ' ' ):
+        case VLC_CODEC_DTS:
             p_stream->i_stream_id =
                 0xbd00 | StreamIdGet( p_sys->stream_id_dts, 0x88, 0x8f );
             break;
-        case VLC_FOURCC( 'a', '5', '2', ' ' ):
+        case VLC_CODEC_A52:
             p_stream->i_stream_id =
                 0xbd00 | StreamIdGet( p_sys->stream_id_a52, 0x80, 0x87 );
             break;
-        case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
+        case VLC_CODEC_MPGA:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpga, 0xc0, 0xcf );
             p_stream->i_stream_type = 0x03; /* ISO/IEC 11172 Audio */
             break;
-        case VLC_FOURCC( 'm', 'p', '4', 'a' ):
+        case VLC_CODEC_MP4A:
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpga, 0xc0, 0xcf );
             p_stream->i_stream_type = 0x0f;
             break;
-        case VLC_FOURCC( 's', 'p', 'u', ' ' ):
+        case VLC_CODEC_SPU:
             p_stream->i_stream_id =
                 0xbd00 | StreamIdGet( p_sys->stream_id_spu, 0x20, 0x3f );
             break;
@@ -344,7 +342,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     p_sys->i_instant_bitrate += p_input->p_fmt->i_bitrate + 1000/* overhead */;
 
     /* FIXME -- spec requires  an upper limit rate boundary in the system header;
-       our codecs are VBR; using 2x nominal rate, convert to 50 bytes/sec */ 
+       our codecs are VBR; using 2x nominal rate, convert to 50 bytes/sec */
     p_sys->i_rate_bound += p_input->p_fmt->i_bitrate * 2 / (8 * 50);
     p_sys->i_psm_version++;
 
@@ -394,27 +392,27 @@ static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
     msg_Dbg( p_mux, "removing input" );
     switch( p_input->p_fmt->i_codec )
     {
-        case VLC_FOURCC( 'm', 'p', 'g', 'v' ):
+        case VLC_CODEC_MPGV:
             StreamIdRelease( p_sys->stream_id_mpgv, 0xe0,
                              p_stream->i_stream_id );
             break;
-        case VLC_FOURCC( 'l', 'p', 'c', 'm' ):
+        case VLC_CODEC_DVD_LPCM:
             StreamIdRelease( p_sys->stream_id_lpcm, 0xa0,
                              p_stream->i_stream_id&0xff );
             break;
-        case VLC_FOURCC( 'd', 't', 's', ' ' ):
+        case VLC_CODEC_DTS:
             StreamIdRelease( p_sys->stream_id_dts, 0x88,
                              p_stream->i_stream_id&0xff );
             break;
-        case VLC_FOURCC( 'a', '5', '2', ' ' ):
+        case VLC_CODEC_A52:
             StreamIdRelease( p_sys->stream_id_a52, 0x80,
                              p_stream->i_stream_id&0xff );
             break;
-        case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
+        case VLC_CODEC_MPGA:
             StreamIdRelease( p_sys->stream_id_mpga, 0xc0,
                              p_stream->i_stream_id  );
             break;
-        case VLC_FOURCC( 's', 'p', 'u', ' ' ):
+        case VLC_CODEC_SPU:
             StreamIdRelease( p_sys->stream_id_spu, 0x20,
                              p_stream->i_stream_id&0xff );
             break;
@@ -458,10 +456,10 @@ static int Mux( sout_mux_t *p_mux )
         block_t *p_ps, *p_data;
 
         mtime_t        i_dts;
-        int            i_stream;
 
         /* Choose which stream to mux */
-        if( MuxGetStream( p_mux, &i_stream, &i_dts ) )
+        int i_stream = sout_MuxGetStream( p_mux, 1, &i_dts );
+        if( i_stream < 0 )
         {
             return VLC_SUCCESS;
         }
@@ -516,7 +514,7 @@ static int Mux( sout_mux_t *p_mux )
 
         /* Get and mux a packet */
         p_data = block_FifoGet( p_input->p_fifo );
-        E_( EStoPES )( p_mux->p_sout, &p_data, p_data,
+         EStoPES ( p_mux->p_sout, &p_data, p_data,
                        p_input->p_fmt, p_stream->i_stream_id,
                        p_sys->b_mpeg2, 0, 0, p_sys->i_pes_max_size );
 
@@ -540,16 +538,16 @@ static int Mux( sout_mux_t *p_mux )
 /*****************************************************************************
  *
  *****************************************************************************/
-static void StreamIdInit( vlc_bool_t *id, int i_range )
+static void StreamIdInit( bool *id, int i_range )
 {
     int i;
 
     for( i = 0; i < i_range; i++ )
     {
-        id[i] = VLC_TRUE;
+        id[i] = true;
     }
 }
-static int StreamIdGet( vlc_bool_t *id, int i_id_min, int i_id_max )
+static int StreamIdGet( bool *id, int i_id_min, int i_id_max )
 {
     int i;
 
@@ -557,16 +555,16 @@ static int StreamIdGet( vlc_bool_t *id, int i_id_min, int i_id_max )
     {
         if( id[i] )
         {
-            id[i] = VLC_FALSE;
+            id[i] = false;
 
             return i_id_min + i;
         }
     }
     return -1;
 }
-static void StreamIdRelease( vlc_bool_t *id, int i_id_min, int i_id )
+static void StreamIdRelease( bool *id, int i_id_min, int i_id )
 {
-    id[i_id - i_id_min] = VLC_TRUE;
+    id[i_id - i_id_min] = true;
 }
 
 static void MuxWritePackHeader( sout_mux_t *p_mux, block_t **p_buf,
@@ -631,7 +629,7 @@ static void MuxWriteSystemHeader( sout_mux_t *p_mux, block_t **p_buf,
     sout_mux_sys_t  *p_sys = p_mux->p_sys;
     block_t   *p_hdr;
     bits_buffer_t   bits;
-    vlc_bool_t      b_private;
+    bool      b_private;
     int i_rate_bound;
 
     int             i_nb_private, i_nb_stream;
@@ -664,7 +662,7 @@ static void MuxWriteSystemHeader( sout_mux_t *p_mux, block_t **p_buf,
     bits_write( &bits, 32, 0x01bb );
     bits_write( &bits, 16, 12 - 6 + i_nb_stream * 3 );
     bits_write( &bits, 1,  1 ); // marker bit
-    bits_write( &bits, 22, i_rate_bound); 
+    bits_write( &bits, 22, i_rate_bound);
     bits_write( &bits, 1,  1 ); // marker bit
 
     bits_write( &bits, 6,  p_sys->i_audio_bound );
@@ -680,7 +678,7 @@ static void MuxWriteSystemHeader( sout_mux_t *p_mux, block_t **p_buf,
     bits_write( &bits, 7,  0xff ); // reserved bits
 
     /* stream_id table */
-    for( i = 0, b_private = VLC_FALSE; i < p_mux->i_nb_inputs; i++ )
+    for( i = 0, b_private = false; i < p_mux->i_nb_inputs; i++ )
     {
         sout_input_t *p_input;
         ps_stream_t *p_stream;
@@ -694,7 +692,7 @@ static void MuxWriteSystemHeader( sout_mux_t *p_mux, block_t **p_buf,
             {
                 continue;
             }
-            b_private = VLC_TRUE;
+            b_private = true;
             /* Write stream id */
             bits_write( &bits, 8, 0xbd );
         }
@@ -791,7 +789,7 @@ static void MuxWritePSM( sout_mux_t *p_mux, block_t **p_buf, mtime_t i_dts )
     /* CRC32 */
     {
         uint32_t i_crc = 0xffffffff;
-        for( i = 0; i < p_hdr->i_buffer; i++ )
+        for( i = 0; (size_t)i < p_hdr->i_buffer; i++ )
         i_crc = (i_crc << 8) ^
             p_sys->crc32_table[((i_crc >> 24) ^ p_hdr->p_buffer[i]) & 0xff];
 
@@ -799,45 +797,4 @@ static void MuxWritePSM( sout_mux_t *p_mux, block_t **p_buf, mtime_t i_dts )
     }
 
     block_ChainAppend( p_buf, p_hdr );
-}
-
-/*
- * Find stream to be muxed.
- */
-static int MuxGetStream( sout_mux_t *p_mux, int *pi_stream, mtime_t *pi_dts )
-{
-    mtime_t i_dts;
-    int     i_stream;
-    int     i;
-
-    for( i = 0, i_dts = 0, i_stream = -1; i < p_mux->i_nb_inputs; i++ )
-    {
-        sout_input_t *p_input = p_mux->pp_inputs[i];
-        block_t *p_data;
-
-        if( p_input->p_fifo->i_depth <= 0 )
-        {
-            if( p_input->p_fmt->i_cat == AUDIO_ES ||
-                p_input->p_fmt->i_cat == VIDEO_ES )
-            {
-                /* We need that audio+video fifo contain at least 1 packet */
-                return VLC_EGENERIC;
-            }
-
-            /* SPU */
-            continue;
-        }
-
-        p_data = block_FifoShow( p_input->p_fifo );
-        if( i_stream == -1 || p_data->i_dts < i_dts )
-        {
-            i_stream = i;
-            i_dts    = p_data->i_dts;
-        }
-    }
-
-    *pi_stream = i_stream;
-    *pi_dts = i_dts;
-
-    return VLC_SUCCESS;
 }

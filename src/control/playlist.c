@@ -2,7 +2,7 @@
  * playlist.c: libvlc new API playlist handling functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 584a9ee54e45e2aba495986911be0e58f0d93d4a $
+ * $Id: 79f274cda5757fe50a677005e1ac9d836776f2d6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -21,160 +21,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <libvlc_internal.h>
-#include <vlc/libvlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/intf.h>
+#include "libvlc_internal.h"
+#include "libvlc.h"
+
+#include <vlc/libvlc_structures.h>
+#include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_media_player.h>
+#include <vlc/deprecated.h>
+
+#include <vlc_playlist.h>
 
 #include <assert.h>
 
 void libvlc_playlist_play( libvlc_instance_t *p_instance, int i_id,
-                           int i_options, char **ppsz_options,
-                           libvlc_exception_t *p_e )
+                           int i_options, char **ppsz_options )
 {
-    assert( p_instance->p_playlist );
-    ///\todo Handle additionnal options
+    playlist_t *pl = libvlc_priv (p_instance->p_libvlc_int)->p_playlist;
+    VLC_UNUSED(i_id); VLC_UNUSED(i_options); VLC_UNUSED(ppsz_options);
 
-    if( p_instance->p_playlist->i_size == 0 ) RAISEVOID( "Empty playlist" );
-    if( i_id > 0 )
-    {
-        /* Always use the current view when using libvlc */
-        playlist_view_t *p_view;
-        playlist_item_t *p_item;
-
-        if( p_instance->p_playlist->status.i_view == -1 )
-        {
-            playlist_Control( p_instance->p_playlist, PLAYLIST_GOTO,
-                              i_id );
-        }
-        p_view = playlist_ViewFind( p_instance->p_playlist,
-                                    p_instance->p_playlist->status.i_view );
-        if( !p_view )
-        {
-             libvlc_exception_raise( p_e,
-                                     "Unable to find current playlist view ");
-             return;
-        }
-
-        p_item = playlist_ItemGetById( p_instance->p_playlist, i_id );
-
-        if( !p_item )
-        {
-            libvlc_exception_raise( p_e, "Unable to find item " );
-            return;
-        }
-        playlist_LockControl( p_instance->p_playlist, PLAYLIST_VIEWPLAY,
-                          p_instance->p_playlist->status.i_view,
-                          p_view->p_root, p_item );
-    }
-    else
-    {
-        playlist_Play( p_instance->p_playlist );
-    }
-}
-
-void libvlc_playlist_pause( libvlc_instance_t *p_instance,
-                           libvlc_exception_t *p_e )
-{
-    assert( p_instance->p_playlist );
-    if( playlist_Pause( p_instance->p_playlist ) != VLC_SUCCESS )
-        RAISEVOID( "Empty playlist" );
-}
-
-
-void libvlc_playlist_stop( libvlc_instance_t *p_instance,
-                           libvlc_exception_t *p_e )
-{
-    assert( p_instance->p_playlist );
-    if( playlist_Stop( p_instance->p_playlist ) != VLC_SUCCESS )
-        RAISEVOID( "Empty playlist" );
-}
-
-void libvlc_playlist_clear( libvlc_instance_t *p_instance,
-                           libvlc_exception_t *p_e )
-{
-    assert( p_instance->p_playlist );
-    playlist_Clear( p_instance->p_playlist );
-}
-
-void libvlc_playlist_next( libvlc_instance_t *p_instance,
-                           libvlc_exception_t *p_e )
-{
-    assert( p_instance->p_playlist );
-    if( playlist_Next( p_instance->p_playlist ) != VLC_SUCCESS )
-        RAISEVOID( "Empty playlist" );
-}
-
-void libvlc_playlist_prev( libvlc_instance_t *p_instance,
-                           libvlc_exception_t *p_e )
-{
-    if( playlist_Prev( p_instance->p_playlist ) != VLC_SUCCESS )
-        RAISEVOID( "Empty playlist" );
-}
-
-int libvlc_playlist_add( libvlc_instance_t *p_instance, const char *psz_uri,
-                         const char *psz_name, libvlc_exception_t *p_e )
-{
-    return libvlc_playlist_add_extended( p_instance, psz_uri, psz_name,
-                                         0, NULL, p_e );
-}
-
-int libvlc_playlist_add_extended( libvlc_instance_t *p_instance,
-                                  const char *psz_uri, const char *psz_name,
-                                  int i_options, const char **ppsz_options,
-                                  libvlc_exception_t *p_e )
-{
-    assert( p_instance->p_playlist );
-    return playlist_AddExt( p_instance->p_playlist, psz_uri, psz_name,
-                            PLAYLIST_INSERT, PLAYLIST_END, -1, ppsz_options,
-                            i_options );
-}
-
-int libvlc_playlist_delete_item( libvlc_instance_t *p_instance, int i_id,
-                                 libvlc_exception_t *p_e )
-{
-    assert( p_instance->p_playlist );
-    return playlist_Delete( p_instance->p_playlist, i_id );
-}
-
-
-int libvlc_playlist_isplaying( libvlc_instance_t *p_instance,
-                               libvlc_exception_t *p_e )
-{
-    assert( p_instance->p_playlist );
-    return playlist_IsPlaying( p_instance->p_playlist );
-}
-
-int libvlc_playlist_items_count( libvlc_instance_t *p_instance,
-                                 libvlc_exception_t *p_e )
-{
-    assert( p_instance->p_playlist );
-    return p_instance->p_playlist->i_size;
-}
-
-libvlc_input_t * libvlc_playlist_get_input( libvlc_instance_t *p_instance,
-                                            libvlc_exception_t *p_e )
-{
-    libvlc_input_t *p_input = NULL;
-    assert( p_instance->p_playlist );
-
-    vlc_mutex_lock( &p_instance->p_playlist->object_lock );
-    if( p_instance->p_playlist->p_input == NULL )
-    {
-        libvlc_exception_raise( p_e, "No active input" );
-        vlc_mutex_unlock( &p_instance->p_playlist->object_lock );
-        return NULL;
-    }
-    p_input = (libvlc_input_t *)malloc( sizeof( libvlc_input_t ) );
-    if( !p_input )
-    {
-        libvlc_exception_raise( p_e, "No memory left" );
-        vlc_mutex_unlock( &p_instance->p_playlist->object_lock );
-        return NULL;
-    }
-    p_input->i_input_id = p_instance->p_playlist->p_input->i_object_id;
-    p_input->p_instance = p_instance;
-    vlc_mutex_unlock( &p_instance->p_playlist->object_lock );
-
-    return p_input;
+    assert( pl );
+    if( pl->items.i_size == 0 )
+        return;
+    playlist_Control( pl, PLAYLIST_PLAY, false );
 }

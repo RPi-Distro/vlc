@@ -2,7 +2,7 @@
  * scaled_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 049139936f4390ef32dd21a84c6062e6d654f14c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -104,9 +104,6 @@ ScaledBitmap::ScaledBitmap( intf_thread_t *pIntf, const GenericBitmap &rBitmap,
 
 ScaledBitmap::~ScaledBitmap()
 {
-    if( m_pData )
-    {
-        delete[] m_pData;
-    }
+    delete[] m_pData;
 }
 

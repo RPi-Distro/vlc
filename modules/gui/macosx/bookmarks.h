@@ -1,10 +1,10 @@
 /*****************************************************************************
  * bookmarks.h: MacOS X Bookmarks window
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 1695eadb0001c56602e834cfc41c82f637984671 $
+ * Copyright (C) 2005, 2007 the VideoLAN team
+ * $Id: 2b255fc2db3732987f578d5befcd047743286880 $
  *
- * Authors: Felix Kühne <fkuehne@users.sf.net>
+ * Authors: Felix Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import <vlc/vlc.h>
+#import "intf.h"
+#import <vlc_common.h>
 
 @interface VLCBookmarks : NSObject
 {
@@ -34,7 +35,7 @@
     IBOutlet id o_btn_extract;
     IBOutlet id o_btn_rm;
     IBOutlet id o_tbl_dataTable;
-    
+
     /* edit window */
     IBOutlet id o_edit_window;
     IBOutlet id o_edit_btn_ok;
@@ -45,7 +46,7 @@
     IBOutlet id o_edit_fld_name;
     IBOutlet id o_edit_fld_time;
     IBOutlet id o_edit_fld_bytes;
-    
+
     input_thread_t *p_old_input;
 }
 
@@ -63,5 +64,5 @@
 
 - (void)initStrings;
 - (void)showBookmarks;
-- (id)getDataTable;
+- (id)dataTable;
 @end

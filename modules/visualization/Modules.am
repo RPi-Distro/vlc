@@ -1,2 +1,3 @@
+SUBDIRS = visual
 SOURCES_goom = goom.c
-SOURCES_xosd = xosd.c
+SOURCES_projectm = projectm.cpp

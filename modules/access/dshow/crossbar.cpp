@@ -2,7 +2,7 @@
  * crossbar.c : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 7bcb01bce9e946e4415532e60bad7b4929d08ce1 $
+ * $Id: 653227ea6479610095cf2e5a3225e1f26f8667ec $
  *
  * Author: Damien Fouilleul <damien dot fouilleul at laposte dot net>
  *
@@ -24,13 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #ifndef _MSC_VER
     /* Work-around a bug in w32api-2.5 */
@@ -39,6 +38,41 @@
 
 #include "common.h"
 
+
+
+// Helper function to associate a crossbar pin name with the type.
+static const char * GetPhysicalPinName(long lType)
+{
+    switch (lType)
+    {
+    case PhysConn_Video_Tuner:            return "Video Tuner";
+    case PhysConn_Video_Composite:        return "Video Composite";
+    case PhysConn_Video_SVideo:           return "S-Video";
+    case PhysConn_Video_RGB:              return "Video RGB";
+    case PhysConn_Video_YRYBY:            return "Video YRYBY";
+    case PhysConn_Video_SerialDigital:    return "Video Serial Digital";
+    case PhysConn_Video_ParallelDigital:  return "Video Parallel Digital";
+    case PhysConn_Video_SCSI:             return "Video SCSI";
+    case PhysConn_Video_AUX:              return "Video AUX";
+    case PhysConn_Video_1394:             return "Video 1394";
+    case PhysConn_Video_USB:              return "Video USB";
+    case PhysConn_Video_VideoDecoder:     return "Video Decoder";
+    case PhysConn_Video_VideoEncoder:     return "Video Encoder";
+
+    case PhysConn_Audio_Tuner:            return "Audio Tuner";
+    case PhysConn_Audio_Line:             return "Audio Line";
+    case PhysConn_Audio_Mic:              return "Audio Microphone";
+    case PhysConn_Audio_AESDigital:       return "Audio AES/EBU Digital";
+    case PhysConn_Audio_SPDIFDigital:     return "Audio S/PDIF";
+    case PhysConn_Audio_SCSI:             return "Audio SCSI";
+    case PhysConn_Audio_AUX:              return "Audio AUX";
+    case PhysConn_Audio_1394:             return "Audio 1394";
+    case PhysConn_Audio_USB:              return "Audio USB";
+    case PhysConn_Audio_AudioDecoder:     return "Audio Decoder";
+
+    default:                              return "Unknown Type";
+    }
+}
 /*****************************************************************************
  * DeleteCrossbarRoutes
  *****************************************************************************/
@@ -59,9 +93,9 @@ static HRESULT GetCrossbarIPinAtIndex( IAMCrossbar *pXbar, LONG PinIndex,
                                        BOOL IsInputPin, IPin ** ppPin )
 {
     LONG         cntInPins, cntOutPins;
-    IPin        *pP = 0;
+    IPin        *pP = NULL;
     IBaseFilter *pFilter = NULL;
-    IEnumPins   *pins=0;
+    IEnumPins   *pins = NULL;
     ULONG        n;
 
     if( !pXbar || !ppPin ) return E_POINTER;
@@ -74,13 +108,13 @@ static HRESULT GetCrossbarIPinAtIndex( IAMCrossbar *pXbar, LONG PinIndex,
 
     if( pXbar->QueryInterface(IID_IBaseFilter, (void **)&pFilter) == S_OK )
     {
-        if( SUCCEEDED(pFilter->EnumPins(&pins)) ) 
+        if( SUCCEEDED(pFilter->EnumPins(&pins)) )
         {
             LONG i = 0;
-            while( pins->Next(1, &pP, &n) == S_OK ) 
+            while( pins->Next(1, &pP, &n) == S_OK )
             {
                 pP->Release();
-                if( i == TrueIndex ) 
+                if( i == TrueIndex )
                 {
                     *ppPin = pP;
                     break;
@@ -92,7 +126,7 @@ static HRESULT GetCrossbarIPinAtIndex( IAMCrossbar *pXbar, LONG PinIndex,
         pFilter->Release();
     }
 
-    return *ppPin ? S_OK : E_FAIL; 
+    return *ppPin ? S_OK : E_FAIL;
 }
 
 /*****************************************************************************
@@ -102,9 +136,9 @@ static HRESULT GetCrossbarIndexFromIPin( IAMCrossbar * pXbar, LONG * PinIndex,
                                          BOOL IsInputPin, IPin * pPin )
 {
     LONG         cntInPins, cntOutPins;
-    IPin        *pP = 0;
+    IPin        *pP = NULL;
     IBaseFilter *pFilter = NULL;
-    IEnumPins   *pins = 0;
+    IEnumPins   *pins = NULL;
     ULONG        n;
     BOOL         fOK = FALSE;
 
@@ -136,7 +170,7 @@ static HRESULT GetCrossbarIndexFromIPin( IAMCrossbar * pXbar, LONG * PinIndex,
         pFilter->Release();
     }
 
-    return fOK ? S_OK : E_FAIL; 
+    return fOK ? S_OK : E_FAIL;
 }
 
 /*****************************************************************************
@@ -159,7 +193,7 @@ HRESULT FindCrossbarRoutes( vlc_object_t *p_this, access_sys_t *p_sys,
         return S_FALSE;
     }
 
-    IAMCrossbar *pXbar=0;
+    IAMCrossbar *pXbar = NULL;
     if( FAILED(pinInfo.pFilter->QueryInterface(IID_IAMCrossbar,
                                                (void **)&pXbar)) )
     {
@@ -207,11 +241,11 @@ HRESULT FindCrossbarRoutes( vlc_object_t *p_this, access_sys_t *p_sys,
             {
                 // remember connector type
                 physicalType = inputPinPhysicalType;
-                
-                msg_Dbg( p_this, "found existing route for output %ld (type %ld) to input %ld (type %ld)",
-                         outputPinIndex, outputPinPhysicalType, inputPinIndex,
-                         inputPinPhysicalType );
-                         
+ 
+                msg_Dbg( p_this, "found existing route for output %ld (type %s) to input %ld (type %s)",
+                         outputPinIndex, GetPhysicalPinName( outputPinPhysicalType ),
+                         inputPinIndex, GetPhysicalPinName( inputPinPhysicalType ) );
+ 
                 // fall through to for loop, note 'inputPinIndex' is set to the pin we are looking for
                 // hence, loop iteration should not wind back
 
@@ -221,8 +255,8 @@ HRESULT FindCrossbarRoutes( vlc_object_t *p_this, access_sys_t *p_sys,
             // reset to first pin for complete loop iteration
             inputPinIndex = 0;
         }
-    }                  
-         
+    }
+ 
     //
     // for all input pins
     //
@@ -236,8 +270,8 @@ HRESULT FindCrossbarRoutes( vlc_object_t *p_this, access_sys_t *p_sys,
 
         // Can we route it?
         if( FAILED(pXbar->CanRoute(outputPinIndex, inputPinIndex)) ) continue;
-            
-   
+ 
+ 
         IPin *pPin;
         if( FAILED(GetCrossbarIPinAtIndex( pXbar, inputPinIndex,
                                            TRUE, &pPin)) ) continue;
@@ -260,9 +294,9 @@ HRESULT FindCrossbarRoutes( vlc_object_t *p_this, access_sys_t *p_sys,
             p_sys->crossbar_routes[depth].AudioOutputIndex = outputPinIndexRelated;
 
             msg_Dbg( p_this, "crossbar at depth %d, found route for "
-                     "output %ld (type %ld) to input %ld (type %ld)", depth,
-                     outputPinIndex, outputPinPhysicalType, inputPinIndex,
-                     inputPinPhysicalType );
+                     "output %ld (type %s) to input %ld (type %s)", depth,
+                     outputPinIndex, GetPhysicalPinName( outputPinPhysicalType ),
+                     inputPinIndex, GetPhysicalPinName( inputPinPhysicalType ) );
 
             result = S_OK;
         }

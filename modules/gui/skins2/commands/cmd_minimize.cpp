@@ -2,9 +2,10 @@
  * cmd_minimize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 815e6f6c15b1ff2e7aa17308f49eee2335caf849 $
+ * $Id: d9302b51936f3930ad5adfc79e52dc8b2367cf71 $
  *
  * Authors: Mohammed Adnène Trojette     <adn@via.ecp.fr>
+ *          Olivier Teulière <ipkiss@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,59 +17,75 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #include "cmd_minimize.hpp"
+#include "../src/window_manager.hpp"
 #include "../src/os_factory.hpp"
 
 
 void CmdMinimize::execute()
 {
-    // Get the instance of OSFactory
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-    pOsFactory->minimize();
+    OSFactory::instance( getIntf() )->minimize();
 }
 
 
 void CmdRestore::execute()
 {
-    // Get the instance of OSFactory
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-    pOsFactory->restore();
+    OSFactory::instance( getIntf() )->restore();
+}
+
+
+CmdMaximize::CmdMaximize( intf_thread_t *pIntf, WindowManager &rWindowManager,
+                          TopWindow &rWindow )
+    : CmdGeneric( pIntf ), m_rWindowManager( rWindowManager ),
+      m_rWindow( rWindow ) { }
+
+
+void CmdMaximize::execute()
+{
+    // Simply delegate the job to the WindowManager
+    m_rWindowManager.maximize( m_rWindow );
+}
+
+
+CmdUnmaximize::CmdUnmaximize( intf_thread_t *pIntf,
+                              WindowManager &rWindowManager,
+                              TopWindow &rWindow )
+    : CmdGeneric( pIntf ), m_rWindowManager( rWindowManager ),
+      m_rWindow( rWindow ) { }
+
+
+void CmdUnmaximize::execute()
+{
+    // Simply delegate the job to the WindowManager
+    m_rWindowManager.unmaximize( m_rWindow );
 }
 
 
 void CmdAddInTray::execute()
 {
-    // Get the instance of OSFactory
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-    pOsFactory->addInTray();
+    OSFactory::instance( getIntf() )->addInTray();
 }
 
 
 void CmdRemoveFromTray::execute()
 {
-    // Get the instance of OSFactory
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-    pOsFactory->removeFromTray();
+    OSFactory::instance( getIntf() )->removeFromTray();
 }
 
 
 void CmdAddInTaskBar::execute()
 {
-    // Get the instance of OSFactory
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-    pOsFactory->addInTaskBar();
+    OSFactory::instance( getIntf() )->addInTaskBar();
 }
 
 
 void CmdRemoveFromTaskBar::execute()
 {
-    // Get the instance of OSFactory
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-    pOsFactory->removeFromTaskBar();
+    OSFactory::instance( getIntf() )->removeFromTaskBar();
 }
 

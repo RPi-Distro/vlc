@@ -2,7 +2,7 @@
  * skin_common.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 41b3b458102611bf900a4038ff27675209e02901 $
+ * $Id: d680319d09e607f38f0f2ed2ea98b05051087c51 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -17,17 +17,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #ifndef SKIN_COMMON_HPP
 #define SKIN_COMMON_HPP
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include "charset.h"
+#include <vlc_common.h>
+#include <vlc_interface.h>
+#include <vlc_charset.h>
+#include <vlc_fs.h>
 
 #include <string>
 using namespace std;
@@ -40,6 +45,7 @@ class OSFactory;
 class OSLoop;
 class VarManager;
 class VlcProc;
+class VoutManager;
 class Theme;
 class ThemeRepository;
 
@@ -54,18 +60,6 @@ class ThemeRepository;
 #pragma warning ( disable:4786 )
 #endif
 
-// Useful macros
-#define SKINS_DELETE( p ) \
-   if( p ) \
-   { \
-       delete p; \
-   } \
-   else \
-   { \
-       msg_Err( getIntf(), "delete NULL pointer in %s at line %d", \
-                __FILE__, __LINE__ ); \
-   }
-
 
 /// Wrapper around FromLocale, to avoid the need to call LocaleFree()
 static inline string sFromLocale( const string &rLocale )
@@ -76,6 +70,7 @@ static inline string sFromLocale( const string &rLocale )
     return res;
 }
 
+#ifdef WIN32
 /// Wrapper around FromWide, to avoid the need to call free()
 static inline string sFromWide( const wstring &rWide )
 {
@@ -84,6 +79,7 @@ static inline string sFromWide( const wstring &rWide )
     free( s );
     return res;
 }
+#endif
 
 /// Wrapper around ToLocale, to avoid the need to call LocaleFree()
 static inline string sToLocale( const string &rUTF8 )
@@ -126,27 +122,41 @@ struct intf_sys_t
     VarManager *p_varManager;
     /// VLC state handler
     VlcProc *p_vlcProc;
+    /// Vout manager
+    VoutManager *p_voutManager;
     /// Theme repository
     ThemeRepository *p_repository;
 
     /// Current theme
     Theme *p_theme;
+
+    /// synchronisation at start of interface
+    vlc_thread_t thread;
+    vlc_mutex_t  init_lock;
+    vlc_cond_t   init_wait;
+    bool         b_ready;
+
+    /// handle (vout windows)
+    void*        handle;
+    vlc_mutex_t  vout_lock;
+    vlc_cond_t   vout_wait;
+    bool         b_vout_ready;
 };
 
 
 /// Base class for all skin classes
 class SkinObject
 {
-    public:
-        SkinObject( intf_thread_t *pIntf ): m_pIntf( pIntf ) {}
-        virtual ~SkinObject() {}
+public:
+    SkinObject( intf_thread_t *pIntf ): m_pIntf( pIntf ) { }
+    virtual ~SkinObject() { }
 
-        /// Getter (public because it is used in C callbacks in the win32
-        /// interface)
-        intf_thread_t *getIntf() const { return m_pIntf; }
+    /// Getter (public because it is used in C callbacks in the win32
+    /// interface)
+    intf_thread_t *getIntf() const { return m_pIntf; }
 
-    private:
-        intf_thread_t *m_pIntf;
+private:
+    intf_thread_t *m_pIntf;
 };
 
 

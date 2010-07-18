@@ -2,7 +2,7 @@
  * access.c: Real rtsp input
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: b44170f7cc0159020ccfb6478fb66db982b0866d $
+ * $Id: bf2dd762913f50898edf804179b5d2c221137209 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -16,18 +16,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "network.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_access.h>
+#include <vlc_dialog.h>
+
+#include <vlc_network.h>
 #include "rtsp.h"
 #include "real.h"
 
@@ -42,33 +48,31 @@ static void Close( vlc_object_t * );
     "Caching value for RTSP streams. This " \
     "value should be set in milliseconds." )
 
-vlc_module_begin();
-    set_description( _("Real RTSP") );
-    set_shortname( _("Real RTSP") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_description( N_("Real RTSP") )
+    set_shortname( N_("Real RTSP") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
     add_integer( "realrtsp-caching", 3000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
-    set_capability( "access2", 10 );
-    set_callbacks( Open, Close );
-    add_shortcut( "realrtsp" );
-    add_shortcut( "rtsp" );
-    add_shortcut( "pnm" );
-vlc_module_end();
+                 CACHING_TEXT, CACHING_LONGTEXT, true )
+        change_safe()
+    set_capability( "access", 10 )
+    set_callbacks( Open, Close )
+    add_shortcut( "realrtsp" )
+    add_shortcut( "rtsp" )
+    add_shortcut( "pnm" )
+vlc_module_end ()
 
 
 /*****************************************************************************
  * Exported prototypes
  *****************************************************************************/
 static block_t *BlockRead( access_t * );
-static int     Seek( access_t *, int64_t );
+static int     Seek( access_t *, uint64_t );
 static int     Control( access_t *, int, va_list );
 
 struct access_sys_t
 {
-    vlc_bool_t b_seekable;
-    vlc_bool_t b_pace_control;
-
     rtsp_client_t *p_rtsp;
 
     int fd;
@@ -89,6 +93,8 @@ static int RtspConnect( void *p_userdata, char *psz_server, int i_port )
     if( p_sys->fd < 0 )
     {
         msg_Err( p_access, "cannot connect to %s:%d", psz_server, i_port );
+        dialog_Fatal( p_access, _("Connection failed"),
+                        _("VLC could not connect to \"%s:%d\"."), psz_server, i_port );
         return VLC_EGENERIC;
     }
 
@@ -109,7 +115,7 @@ static int RtspRead( void *p_userdata, uint8_t *p_buffer, int i_buffer )
     access_t *p_access = (access_t *)p_userdata;
     access_sys_t *p_sys = p_access->p_sys;
 
-    return net_Read( p_access, p_sys->fd, 0, p_buffer, i_buffer, VLC_TRUE );
+    return net_Read( p_access, p_sys->fd, 0, p_buffer, i_buffer, true );
 }
 
 static int RtspReadLine( void *p_userdata, uint8_t *p_buffer, int i_buffer )
@@ -117,25 +123,26 @@ static int RtspReadLine( void *p_userdata, uint8_t *p_buffer, int i_buffer )
     access_t *p_access = (access_t *)p_userdata;
     access_sys_t *p_sys = p_access->p_sys;
 
-    char *psz = net_Gets( VLC_OBJECT(p_access), p_sys->fd, 0 );
+    char *psz = net_Gets( p_access, p_sys->fd, 0 );
 
     //fprintf(stderr, "ReadLine: %s\n", psz);
 
     if( psz ) strncpy( (char *)p_buffer, psz, i_buffer );
     else *p_buffer = 0;
 
-    if( psz ) free( psz );
+    free( psz );
     return 0;
 }
 
 static int RtspWrite( void *p_userdata, uint8_t *p_buffer, int i_buffer )
 {
+    VLC_UNUSED(i_buffer);
     access_t *p_access = (access_t *)p_userdata;
     access_sys_t *p_sys = p_access->p_sys;
 
     //fprintf(stderr, "Write: %s", p_buffer);
 
-    net_Printf( VLC_OBJECT(p_access), p_sys->fd, 0, "%s", p_buffer );
+    net_Printf( p_access, p_sys->fd, 0, "%s", p_buffer );
 
     return 0;
 }
@@ -147,11 +154,11 @@ static int Open( vlc_object_t *p_this )
 {
     access_t *p_access = (access_t *)p_this;
     access_sys_t *p_sys;
-    char *psz_server = 0;
+    char* psz_server = NULL;
     int i_result;
 
     if( !p_access->psz_access || (
-        strncmp( p_access->psz_access, "rtsp", 4 ) && 
+        strncmp( p_access->psz_access, "rtsp", 4 ) &&
         strncmp( p_access->psz_access, "pnm", 3 )  &&
         strncmp( p_access->psz_access, "realrtsp", 8 ) ))
     {
@@ -165,13 +172,20 @@ static int Open( vlc_object_t *p_this )
     p_access->info.i_update = 0;
     p_access->info.i_size = 0;
     p_access->info.i_pos = 0;
-    p_access->info.b_eof = VLC_FALSE;
+    p_access->info.b_eof = false;
     p_access->info.i_title = 0;
     p_access->info.i_seekpoint = 0;
     p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
+    if( !p_sys )
+        return VLC_ENOMEM;
     p_sys->p_rtsp = malloc( sizeof( rtsp_client_t) );
+    if( !p_sys->p_rtsp )
+    {
+        free( p_sys );
+        return VLC_ENOMEM;
+    }
 
-    p_sys->p_header = 0;
+    p_sys->p_header = NULL;
     p_sys->p_rtsp->p_userdata = p_access;
     p_sys->p_rtsp->pf_connect = RtspConnect;
     p_sys->p_rtsp->pf_disconnect = RtspDisconnect;
@@ -184,7 +198,7 @@ static int Open( vlc_object_t *p_this )
     {
         msg_Dbg( p_access, "could not connect to: %s", p_access->psz_path );
         free( p_sys->p_rtsp );
-        p_sys->p_rtsp = 0;
+        p_sys->p_rtsp = NULL;
         goto error;
     }
 
@@ -221,12 +235,14 @@ static int Open( vlc_object_t *p_this )
 
 
             msg_Err( p_access, "rtsp session can not be established" );
+            dialog_Fatal( p_access, _("Session failed"), "%s",
+                    _("The requested RTSP session could not be established.") );
             goto error;
         }
 
         p_sys->p_header = block_New( p_access, 4096 );
         p_sys->p_header->i_buffer =
-            rmff_dump_header( h, p_sys->p_header->p_buffer, 1024 );
+            rmff_dump_header( h, (char *)p_sys->p_header->p_buffer, 1024 );
         rmff_free_header( h );
     }
     else
@@ -239,11 +255,11 @@ static int Open( vlc_object_t *p_this )
     var_Create( p_access, "realrtsp-caching",
                 VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
 
-    if( psz_server ) free( psz_server );
+    free( psz_server );
     return VLC_SUCCESS;
 
  error:
-    if( psz_server ) free( psz_server );
+    free( psz_server );
     Close( p_this );
     return VLC_EGENERIC;
 }
@@ -257,7 +273,7 @@ static void Close( vlc_object_t * p_this )
     access_sys_t *p_sys = p_access->p_sys;
 
     if( p_sys->p_rtsp ) rtsp_close( p_sys->p_rtsp );
-    if( p_sys->p_rtsp ) free( p_sys->p_rtsp );
+    free( p_sys->p_rtsp );
     free( p_sys );
 }
 
@@ -274,12 +290,12 @@ static block_t *BlockRead( access_t *p_access )
     if( p_sys->p_header )
     {
         p_block = p_sys->p_header;
-        p_sys->p_header = 0;
+        p_sys->p_header = NULL;
         return p_block;
     }
 
     i_size = real_get_rdt_chunk_header( p_access->p_sys->p_rtsp, &pheader );
-    if( i_size <= 0 ) return 0;
+    if( i_size <= 0 ) return NULL;
 
     p_block = block_New( p_access, i_size );
     p_block->i_buffer = real_get_rdt_chunk( p_access->p_sys->p_rtsp, &pheader,
@@ -291,8 +307,10 @@ static block_t *BlockRead( access_t *p_access )
 /*****************************************************************************
  * Seek: seek to a specific location in a file
  *****************************************************************************/
-static int Seek( access_t *p_access, int64_t i_pos )
+static int Seek( access_t *p_access, uint64_t i_pos )
 {
+    VLC_UNUSED(p_access);
+    VLC_UNUSED(i_pos);
     return VLC_SUCCESS;
 }
 
@@ -301,38 +319,22 @@ static int Seek( access_t *p_access, int64_t i_pos )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    vlc_bool_t   *pb_bool;
-    int          *pi_int;
-    int64_t      *pi_64;
-
     switch( i_query )
     {
         /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_FALSE;//p_sys->b_seekable;
-            break;
-
         case ACCESS_CAN_PAUSE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_FALSE;
+            *va_arg( args, bool* ) = false;
             break;
 
         case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_TRUE;//p_sys->b_pace_control;
-            break;
-
-        /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = 0;
+            *va_arg( args, bool* ) = true;
             break;
 
         case ACCESS_GET_PTS_DELAY:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = var_GetInteger( p_access, "realrtsp-caching" ) * 1000;
+            *va_arg( args, int64_t * ) =
+                    (int64_t)var_GetInteger(p_access,"realrtsp-caching")*1000;
             break;
 
         /* */
@@ -345,6 +347,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_SET_SEEKPOINT:
         case ACCESS_SET_PRIVATE_ID_STATE:
         case ACCESS_GET_META:
+        case ACCESS_GET_CONTENT_TYPE:
             return VLC_EGENERIC;
 
         default:

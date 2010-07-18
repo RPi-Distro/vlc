@@ -1,10 +1,10 @@
 /*****************************************************************************
  * access.c
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 394bf9814ef879bd59af347fd78864d1e295906d $
+ * Copyright (C) 1999-2008 the VideoLAN team
+ * $Id: 9604751e24f0b3f2f7d1c983ac50426d27d27cba $
  *
- * Author: Laurent Aimar <fenrir@via.ecp.fr>
+ * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,84 +21,55 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdlib.h>
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "input_internal.h"
+#include "access.h"
+#include <libvlc.h>
 
 /*****************************************************************************
- * access2_InternalNew:
+ * access_New:
  *****************************************************************************/
-static access_t *access2_InternalNew( vlc_object_t *p_obj, char *psz_access,
-                                      char *psz_demux, char *psz_path,
-                                      access_t *p_source, vlc_bool_t b_quick )
+access_t *__access_New( vlc_object_t *p_obj, input_thread_t *p_parent_input,
+                        const char *psz_access, const char *psz_demux,
+                        const char *psz_path )
 {
-    access_t *p_access = vlc_object_create( p_obj, VLC_OBJECT_ACCESS );
+    access_t *p_access = vlc_custom_create( p_obj, sizeof (*p_access),
+                                            VLC_OBJECT_GENERIC, "access" );
 
     if( p_access == NULL )
-    {
-        msg_Err( p_obj, "vlc_object_create() failed" );
         return NULL;
-    }
 
-    /* Parse URL */
-    p_access->p_source = p_source;
-    if( p_source )
-    {
-        msg_Dbg( p_obj, "creating access filter '%s'", psz_access );
-        p_access->psz_access = strdup( p_source->psz_access );
-        p_access->psz_path   = strdup( p_source->psz_path );
-        p_access->psz_demux   = strdup( p_source->psz_demux );
-    }
-    else
-    {
-        p_access->psz_path   = strdup( psz_path );
-        p_access->psz_access =
-            b_quick ? strdup( "file" ) : strdup( psz_access );
-        p_access->psz_demux  = strdup( psz_demux );
+    /* */
+    msg_Dbg( p_obj, "creating access '%s' path='%s'",
+             psz_access, psz_path );
 
-        if( !b_quick )
-            msg_Dbg( p_obj, "creating access '%s' path='%s'",
-                     psz_access, psz_path );
-    }
+    p_access->p_input = p_parent_input;
+
+    p_access->psz_path   = strdup( psz_path );
+    p_access->psz_access = strdup( psz_access );
+    p_access->psz_demux  = strdup( psz_demux );
 
     p_access->pf_read    = NULL;
     p_access->pf_block   = NULL;
     p_access->pf_seek    = NULL;
     p_access->pf_control = NULL;
     p_access->p_sys      = NULL;
-    p_access->info.i_update = 0;
-    p_access->info.i_size   = 0;
-    p_access->info.i_pos    = 0;
-    p_access->info.b_eof    = VLC_FALSE;
-    p_access->info.b_prebuffered = VLC_FALSE;
-    p_access->info.i_title  = 0;
-    p_access->info.i_seekpoint = 0;
 
+    access_InitFields( p_access );
 
-    /* Before module_Need (for var_Create...) */
+    /* Before module_need (for var_Create...) */
     vlc_object_attach( p_access, p_obj );
 
-    if( p_source )
-    {
-        p_access->p_module =
-            module_Need( p_access, "access_filter", psz_access, VLC_FALSE );
-    }
-    else
-    {
-        p_access->p_module =
-            module_Need( p_access, "access2", p_access->psz_access,
-                         b_quick ? VLC_TRUE : VLC_FALSE );
-    }
+    p_access->p_module = module_need( p_access, "access", psz_access, true );
 
     if( p_access->p_module == NULL )
     {
-        vlc_object_detach( p_access );
         free( p_access->psz_access );
         free( p_access->psz_path );
         free( p_access->psz_demux );
-        vlc_object_destroy( p_access );
+        vlc_object_release( p_access );
         return NULL;
     }
 
@@ -106,41 +77,25 @@ static access_t *access2_InternalNew( vlc_object_t *p_obj, char *psz_access,
 }
 
 /*****************************************************************************
- * access2_New:
+ * access_Delete:
  *****************************************************************************/
-access_t *__access2_New( vlc_object_t *p_obj, char *psz_access,
-                         char *psz_demux, char *psz_path, vlc_bool_t b_quick )
+void access_Delete( access_t *p_access )
 {
-    return access2_InternalNew( p_obj, psz_access, psz_demux,
-                                psz_path, NULL, b_quick );
-}
-
-/*****************************************************************************
- * access2_FilterNew:
- *****************************************************************************/
-access_t *access2_FilterNew( access_t *p_source, char *psz_access_filter )
-{
-    return access2_InternalNew( VLC_OBJECT(p_source), psz_access_filter,
-                                NULL, NULL, p_source, VLC_FALSE );
-}
-
-/*****************************************************************************
- * access2_Delete:
- *****************************************************************************/
-void access2_Delete( access_t *p_access )
-{
-    module_Unneed( p_access, p_access->p_module );
-    vlc_object_detach( p_access );
+    module_unneed( p_access, p_access->p_module );
 
     free( p_access->psz_access );
     free( p_access->psz_path );
     free( p_access->psz_demux );
 
-    if( p_access->p_source )
-    {
-        access2_Delete( p_access->p_source );
-    }
+    vlc_object_release( p_access );
+}
 
-    vlc_object_destroy( p_access );
+
+/*****************************************************************************
+ * access_GetParentInput:
+ *****************************************************************************/
+input_thread_t * access_GetParentInput( access_t *p_access )
+{
+    return p_access->p_input ? vlc_object_hold((vlc_object_t *)p_access->p_input) : NULL;
 }
 

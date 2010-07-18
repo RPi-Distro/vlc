@@ -2,7 +2,7 @@
  * filter.h : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id$
+ * $Id: ce7e6261db1dac6a9185f2f56bb0fc5682100342 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -41,7 +41,9 @@ using namespace std;
 #   define AM_NOVTABLE
 #   define _OBJBASE_H_
 #   undef _X86_
-#   define _I64_MAX LONG_LONG_MAX
+#   ifndef _I64_MAX
+#     define _I64_MAX LONG_LONG_MAX
+#   endif
 #   define LONGLONG long long
 #endif
 
@@ -129,6 +131,8 @@ class CapturePin: public IPin, public IMemInputPin
 
     /* Custom methods */
     HRESULT CustomGetSample( VLCMediaSample * );
+    HRESULT CustomGetSamples( deque<VLCMediaSample> &external_queue );
+
     AM_MEDIA_TYPE &CustomGetMediaType();
 };
 

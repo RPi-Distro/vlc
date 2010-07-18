@@ -1,8 +1,8 @@
 /*****************************************************************************
  * param_eq.c:
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: c8376954b720f38b577b71297229157e9047b6b4 $
+ * Copyright © 2006 the VideoLAN team
+ * $Id: 57cbc5489c1ccf90d52d02ddea44a25830b215ed $
  *
  * Authors: Antti Huovilainen
  *          Sigmund A. Helberg <dnumgis@videolan.org>
@@ -25,14 +25,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <math.h>
 
-#include <vlc/vlc.h>
-
-#include <vlc/aout.h>
-#include "aout_internal.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -41,51 +44,46 @@ static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 static void CalcPeakEQCoeffs( float, float, float, float, float * );
 static void CalcShelfEQCoeffs( float, float, float, int, float, float * );
-static void ProcessEQ( float *, float *, float *, int, int, float *, int );
-static void DoWork( aout_instance_t *, aout_filter_t *,
-                    aout_buffer_t *, aout_buffer_t * );
+static void ProcessEQ( const float *, float *, float *, unsigned, unsigned,
+                       const float *, unsigned );
+static block_t *DoWork( filter_t *, block_t * );
 
-vlc_module_begin();
-    set_description( _("Parametric Equalizer") );
-    set_shortname( _("Parametric Equalizer" ) );
-    set_capability( "audio filter", 0 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AFILTER );
+vlc_module_begin ()
+    set_description( N_("Parametric Equalizer") )
+    set_shortname( N_("Parametric Equalizer" ) )
+    set_capability( "audio filter", 0 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AFILTER )
 
-    add_float( "param-eq-lowf", 100, NULL, N_("Low freq (Hz)"),"", VLC_FALSE );
-    /// \bug Db -> dB
+    add_float( "param-eq-lowf", 100, NULL, N_("Low freq (Hz)"),NULL, false )
     add_float_with_range( "param-eq-lowgain", 0, -20.0, 20.0, NULL,
-                          N_("Low freq gain (Db)"), "",VLC_FALSE );
-    add_float( "param-eq-highf", 10000, NULL, N_("High freq (Hz)"),"", VLC_FALSE );
-    /// \bug Db -> dB
+                          N_("Low freq gain (dB)"), NULL,false )
+    add_float( "param-eq-highf", 10000, NULL, N_("High freq (Hz)"),NULL, false )
     add_float_with_range( "param-eq-highgain", 0, -20.0, 20.0, NULL,
-                          N_("High freq gain (Db)"),"",VLC_FALSE );
-    add_float( "param-eq-f1", 300, NULL, N_("Freq 1 (Hz)"),"", VLC_FALSE );
-    /// \bug Db -> dB
+                          N_("High freq gain (dB)"),NULL,false )
+    add_float( "param-eq-f1", 300, NULL, N_("Freq 1 (Hz)"),NULL, false )
     add_float_with_range( "param-eq-gain1", 0, -20.0, 20.0, NULL,
-                          N_("Freq 1 gain (Db)"), "",VLC_FALSE );
+                          N_("Freq 1 gain (dB)"), NULL,false )
     add_float_with_range( "param-eq-q1", 3, 0.1, 100.0, NULL,
-                          N_("Freq 1 Q"), "",VLC_FALSE );
-    add_float( "param-eq-f2", 1000, NULL, N_("Freq 2 (Hz)"),"", VLC_FALSE );
-    /// \bug Db -> dB
+                          N_("Freq 1 Q"), NULL,false )
+    add_float( "param-eq-f2", 1000, NULL, N_("Freq 2 (Hz)"),NULL, false )
     add_float_with_range( "param-eq-gain2", 0, -20.0, 20.0, NULL,
-                          N_("Freq 2 gain (Db)"),"",VLC_FALSE );
+                          N_("Freq 2 gain (dB)"),NULL,false )
     add_float_with_range( "param-eq-q2", 3, 0.1, 100.0, NULL,
-                          N_("Freq 2 Q"),"",VLC_FALSE );
-    add_float( "param-eq-f3", 3000, NULL, N_("Freq 3 (Hz)"),"", VLC_FALSE );
-    /// \bug Db -> dB
+                          N_("Freq 2 Q"),NULL,false )
+    add_float( "param-eq-f3", 3000, NULL, N_("Freq 3 (Hz)"),NULL, false )
     add_float_with_range( "param-eq-gain3", 0, -20.0, 20.0, NULL,
-                          N_("Freq 3 gain (Db)"),"",VLC_FALSE );
+                          N_("Freq 3 gain (dB)"),NULL,false )
     add_float_with_range( "param-eq-q3", 3, 0.1, 100.0, NULL,
-                          N_("Freq 3 Q"),"",VLC_FALSE );
+                          N_("Freq 3 Q"),NULL,false )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-typedef struct aout_filter_sys_t
+struct filter_sys_t
 {
     /* Filter static config */
     float   f_lowf, f_lowgain;
@@ -97,8 +95,7 @@ typedef struct aout_filter_sys_t
     float   coeffs[5*5];
     /* State */
     float  *p_state;
-       
-} aout_filter_sys_t;
+};
 
 
 
@@ -108,23 +105,23 @@ typedef struct aout_filter_sys_t
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    aout_filter_t     *p_filter = (aout_filter_t *)p_this;
-    aout_filter_sys_t *p_sys;
-    vlc_bool_t         b_fit = VLC_TRUE;
-    int                i_samplerate;
+    filter_t     *p_filter = (filter_t *)p_this;
+    filter_sys_t *p_sys;
+    bool         b_fit = true;
+    unsigned     i_samplerate;
 
-    if( p_filter->input.i_format != VLC_FOURCC('f','l','3','2' ) ||
-        p_filter->output.i_format != VLC_FOURCC('f','l','3','2') )
+    if( p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32 ||
+        p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
     {
-        b_fit = VLC_FALSE;
-        p_filter->input.i_format = VLC_FOURCC('f','l','3','2');
-        p_filter->output.i_format = VLC_FOURCC('f','l','3','2');
+        b_fit = false;
+        p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+        p_filter->fmt_out.audio.i_format = VLC_CODEC_FL32;
         msg_Warn( p_filter, "bad input or output format" );
     }
-    if ( !AOUT_FMTS_SIMILAR( &p_filter->input, &p_filter->output ) )
+    if ( !AOUT_FMTS_SIMILAR( &p_filter->fmt_in.audio, &p_filter->fmt_out.audio ) )
     {
-        b_fit = VLC_FALSE;
-        memcpy( &p_filter->output, &p_filter->input,
+        b_fit = false;
+        memcpy( &p_filter->fmt_out.audio, &p_filter->fmt_in.audio,
                 sizeof(audio_sample_format_t) );
         msg_Warn( p_filter, "input and output formats are not similar" );
     }
@@ -134,31 +131,32 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    p_filter->pf_do_work = DoWork;
-    p_filter->b_in_place = VLC_TRUE;
-
     /* Allocate structure */
-    p_sys = p_filter->p_sys = malloc( sizeof( aout_filter_sys_t ) );
+    p_sys = p_filter->p_sys = malloc( sizeof( *p_sys ) );
+    if( !p_sys )
+        return VLC_EGENERIC;
 
-    p_sys->f_lowf = config_GetFloat( p_this, "param-eq-lowf");
-    p_sys->f_lowgain = config_GetFloat( p_this, "param-eq-lowgain");
-    p_sys->f_highf = config_GetFloat( p_this, "param-eq-highf");
-    p_sys->f_highgain = config_GetFloat( p_this, "param-eq-highgain");
-    
-    p_sys->f_f1 = config_GetFloat( p_this, "param-eq-f1");
-    p_sys->f_Q1 = config_GetFloat( p_this, "param-eq-q1");
-    p_sys->f_gain1 = config_GetFloat( p_this, "param-eq-gain1");
-    
-    p_sys->f_f2 = config_GetFloat( p_this, "param-eq-f2");
-    p_sys->f_Q2 = config_GetFloat( p_this, "param-eq-q2");
-    p_sys->f_gain2 = config_GetFloat( p_this, "param-eq-gain2");
+    p_filter->pf_audio_filter = DoWork;
 
-    p_sys->f_f3 = config_GetFloat( p_this, "param-eq-f3");
-    p_sys->f_Q3 = config_GetFloat( p_this, "param-eq-q3");
-    p_sys->f_gain3 = config_GetFloat( p_this, "param-eq-gain3");
-  
+    p_sys->f_lowf = var_InheritFloat( p_this, "param-eq-lowf");
+    p_sys->f_lowgain = var_InheritFloat( p_this, "param-eq-lowgain");
+    p_sys->f_highf = var_InheritFloat( p_this, "param-eq-highf");
+    p_sys->f_highgain = var_InheritFloat( p_this, "param-eq-highgain");
+ 
+    p_sys->f_f1 = var_InheritFloat( p_this, "param-eq-f1");
+    p_sys->f_Q1 = var_InheritFloat( p_this, "param-eq-q1");
+    p_sys->f_gain1 = var_InheritFloat( p_this, "param-eq-gain1");
+ 
+    p_sys->f_f2 = var_InheritFloat( p_this, "param-eq-f2");
+    p_sys->f_Q2 = var_InheritFloat( p_this, "param-eq-q2");
+    p_sys->f_gain2 = var_InheritFloat( p_this, "param-eq-gain2");
 
-    i_samplerate = p_filter->input.i_rate;
+    p_sys->f_f3 = var_InheritFloat( p_this, "param-eq-f3");
+    p_sys->f_Q3 = var_InheritFloat( p_this, "param-eq-q3");
+    p_sys->f_gain3 = var_InheritFloat( p_this, "param-eq-gain3");
+ 
+
+    i_samplerate = p_filter->fmt_in.audio.i_rate;
     CalcPeakEQCoeffs(p_sys->f_f1, p_sys->f_Q1, p_sys->f_gain1,
                      i_samplerate, p_sys->coeffs+0*5);
     CalcPeakEQCoeffs(p_sys->f_f2, p_sys->f_Q2, p_sys->f_gain2,
@@ -169,7 +167,7 @@ static int Open( vlc_object_t *p_this )
                       i_samplerate, p_sys->coeffs+3*5);
     CalcShelfEQCoeffs(p_sys->f_highf, 1, p_sys->f_highgain, 0,
                       i_samplerate, p_sys->coeffs+4*5);
-    p_sys->p_state = (float*)calloc( p_filter->input.i_channels*5*4,
+    p_sys->p_state = (float*)calloc( p_filter->fmt_in.audio.i_channels*5*4,
                                      sizeof(float) );
 
     return VLC_SUCCESS;
@@ -177,7 +175,7 @@ static int Open( vlc_object_t *p_this )
 
 static void Close( vlc_object_t *p_this )
 {
-    aout_filter_t *p_filter = (aout_filter_t *)p_this;
+    filter_t *p_filter = (filter_t *)p_this;
     free( p_filter->p_sys->p_state );
     free( p_filter->p_sys );
 }
@@ -187,16 +185,13 @@ static void Close( vlc_object_t *p_this )
  *****************************************************************************
  *
  *****************************************************************************/
-static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
-                    aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
+static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
 {
-    p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
-    p_out_buf->i_nb_bytes = p_in_buf->i_nb_bytes;
-
-    ProcessEQ( (float*)p_in_buf->p_buffer, (float*)p_out_buf->p_buffer,
-               p_filter->p_sys->p_state, 
-               p_filter->input.i_channels, p_in_buf->i_nb_samples,
+    ProcessEQ( (float*)p_in_buf->p_buffer, (float*)p_in_buf->p_buffer,
+               p_filter->p_sys->p_state,
+               p_filter->fmt_in.audio.i_channels, p_in_buf->i_nb_samples,
                p_filter->p_sys->coeffs, 5 );
+    return p_in_buf;
 }
 
 /*
@@ -207,7 +202,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
  * coeffs[3] = a1
  * coeffs[4] = a2
  *
- * Equations taken from RBJ audio EQ cookbook 
+ * Equations taken from RBJ audio EQ cookbook
  * (http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt)
  */
 static void CalcPeakEQCoeffs( float f0, float Q, float gainDB, float Fs,
@@ -220,23 +215,23 @@ static void CalcPeakEQCoeffs( float f0, float Q, float gainDB, float Fs,
     float a0, a1, a2;
 
     // Provide sane limits to avoid overflow
-    if (Q < 0.1f) Q = 0.1f;   
+    if (Q < 0.1f) Q = 0.1f;
     if (Q > 100) Q = 100;
     if (f0 > Fs/2*0.95f) f0 = Fs/2*0.95f;
     if (gainDB < -40) gainDB = -40;
     if (gainDB > 40) gainDB = 40;
-    
+ 
     A = pow(10, gainDB/40);
     w0 = 2*3.141593f*f0/Fs;
     alpha = sin(w0)/(2*Q);
-    
+ 
     b0 = 1 + alpha*A;
     b1 = -2*cos(w0);
     b2 = 1 - alpha*A;
     a0 = 1 + alpha/A;
     a1 = -2*cos(w0);
     a2 = 1 - alpha/A;
-    
+ 
     // Store values to coeffs and normalize by 1/a0
     coeffs[0] = b0/a0;
     coeffs[1] = b1/a0;
@@ -253,7 +248,7 @@ static void CalcPeakEQCoeffs( float f0, float Q, float gainDB, float Fs,
  * coeffs[3] = a1
  * coeffs[4] = a2
  *
- * Equations taken from RBJ audio EQ cookbook 
+ * Equations taken from RBJ audio EQ cookbook
  * (http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt)
  */
 static void CalcShelfEQCoeffs( float f0, float slope, float gainDB, int high,
@@ -307,23 +302,22 @@ static void CalcShelfEQCoeffs( float f0, float slope, float gainDB, int high,
   samples is not premultiplied by channels
   size of coeffs is 5*eqCount
 */
-void ProcessEQ( float *src, float *dest, float *state, 
-                int channels, int samples, float *coeffs, 
-                int eqCount )
+void ProcessEQ( const float *src, float *dest, float *state,
+                unsigned channels, unsigned samples, const float *coeffs,
+                unsigned eqCount )
 {
-    int i, chn, eq;
+    unsigned i, chn, eq;
     float   b0, b1, b2, a1, a2;
     float   x, y = 0;
-    float   *src1, *dest1;
-    float   *coeffs1, *state1;
-    src1 = src;
-    dest1 = dest;
+    const float *src1 = src;
+    float *dest1 = dest;
+
     for (i = 0; i < samples; i++)
     {
-        state1 = state;
+        float *state1 = state;
         for (chn = 0; chn < channels; chn++)
         {
-            coeffs1 = coeffs;
+            const float *coeffs1 = coeffs;
             x = *src1++;
             /* Direct form 1 IIRs */
             for (eq = 0; eq < eqCount; eq++)

@@ -1,15 +1,40 @@
-SOURCES_gtk_main = gtk_main.c
-SOURCES_gnome_main = gtk_main.c
-SOURCES_gtk2_main = gtk_main.c
-SOURCES_gnome2_main = gtk_main.c
-SOURCES_screensaver = screensaver.c
-SOURCES_qte_main = qte_main.cpp
-SOURCES_freetype = freetype.c
+BASE_SUBDIRS = dummy notify playlist stats osd xml
+EXTRA_SUBDIRS = lua
+
+SUBDIRS = $(BASE_SUBDIRS)
+DIST_SUBDIRS = $(BASE_SUBDIRS) $(EXTRA_SUBDIRS)
+
+if BUILD_LUA
+SUBDIRS += lua
+endif
+
+SOURCES_freetype = freetype.c text_renderer.h
 SOURCES_win32text = win32text.c
+SOURCES_quartztext = quartztext.c text_renderer.h
 SOURCES_logger = logger.c
 SOURCES_vod_rtsp = rtsp.c
-SOURCES_gnutls = gnutls.c
+SOURCES_gnutls = gnutls.c dhparams.h
 SOURCES_svg = svg.c
-SOURCES_msn = msn.c
-SOURCES_growl = growl.c
-SOURCES_notify = notify.c
+SOURCES_audioscrobbler = audioscrobbler.c
+SOURCES_inhibit = inhibit.c
+SOURCES_sqlite = sqlite.c
+
+SOURCES_xscreensaver = inhibit/xscreensaver.c
+SOURCES_xdg_screensaver = inhibit/xdg.c
+SOURCES_osso_screensaver = inhibit/osso.c
+
+libvlc_LTLIBRARIES += \
+	libaudioscrobbler_plugin.la \
+	liblogger_plugin.la
+
+if HAVE_WINCE
+libvlc_LTLIBRARIES += libwin32text_plugin.la
+endif
+if HAVE_DARWIN
+libvlc_LTLIBRARIES += libquartztext_plugin.la
+endif
+if ENABLE_SOUT
+libvlc_LTLIBRARIES += \
+	libvod_rtsp_plugin.la \
+	$(NULL)
+endif

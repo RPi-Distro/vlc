@@ -1,8 +1,8 @@
 /*****************************************************************************
- * vlc_help.h: Help strings
+ * vlc_config_cat.h : Definition of configuration categories
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 880b449837b2f2e5fc7491a415f81d4e476f0054 $
+ * $Id: 87cd0c6959a24c0874711b1dcf4cc09e433ef315 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Anil Daoud <anil@videolan.org>
@@ -22,8 +22,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_HELP_H
-#define _VLC_HELP_H 1
+#ifndef VLC_HELP_H
+#define VLC_HELP_H 1
 
 /*
  *  First, we need help strings for the General Settings and for the
@@ -33,13 +33,11 @@
 #define MAIN_HELP N_( \
     "Select \"Advanced Options\" to see all options." )
 
-#define GENERAL_TITLE N_("General")
-
 /* Interface */
 #define INTF_TITLE N_("Interface")
 #define INTF_HELP  N_( "Settings for VLC's interfaces" )
 
-#define INTF_GENERAL_HELP N_( "General interface settings" )
+#define INTF_GENERAL_HELP N_( "Main interfaces settings" )
 
 #define INTF_MAIN_TITLE  N_( "Main interfaces" )
 #define INTF_MAIN_HELP N_( "Settings for the main interface" )
@@ -54,19 +52,16 @@
 #define AUDIO_TITLE N_( "Audio" )
 #define AUDIO_HELP N_( "Audio settings" )
 
-#define AUDIO_GENERAL_TITLE N_( "General audio settings" )
 #define AUDIO_GENERAL_HELP N_("General audio settings")
 
 #define AFILTER_TITLE N_("Filters")
-#define AFILTER_HELP N_( \
-    "Audio filters are used to postprocess the audio stream." )
+#define AFILTER_HELP N_( "Audio filters are used to process the audio stream." )
 
 #define AVISUAL_TITLE N_("Visualizations")
-#define AVISUAL_HELP N_( \
-    "Audio visualizations" )
+#define AVISUAL_HELP N_( "Audio visualizations" )
 
 #define AOUT_TITLE N_( "Output modules" )
-#define AOUT_HELP N_("These are general settings for audio output modules.")
+#define AOUT_HELP N_("General settings for audio output modules.")
 
 #define AMISC_TITLE N_("Miscellaneous")
 #define AMISC_HELP N_( "Miscellaneous audio settings and modules." )
@@ -75,7 +70,6 @@
 #define VIDEO_TITLE N_("Video")
 #define VIDEO_HELP N_("Video settings")
 
-#define VIDEO_GENERAL_TITLE N_( "General video settings")
 #define VIDEO_GENERAL_HELP N_( "General video settings" )
 
 #define _VOUT_TITLE N_("Output modules" )
@@ -84,11 +78,11 @@
 
 #define VFILTER_TITLE N_("Filters" )
 #define VFILTER_HELP N_( \
-    "Video filters are used to postprocess the video stream." )
+    "Video filters are used to process the video stream." )
 
 #define SUBPIC_TITLE N_( "Subtitles/OSD")
-#define SUBPIC_HELP N_( "Miscellaneous settings related to On-Screen-Display,"\
-        " subtitles and \"overlay subpictures\".")
+#define SUBPIC_HELP N_( "Settings related to On-Screen-Display,"\
+        " subtitles and \"overlay subpictures\"")
 /*
 #define TEXT_TITLE N_("Text rendering")
 #define TEXT_HELP N_( \
@@ -97,41 +91,40 @@
 */
 /* Input */
 #define INPUT_TITLE N_( "Input / Codecs" )
-#define INPUT_HELP N_( "These are the settings for the input, demultiplexing " \
-         "and decoding parts of VLC. Encoder settings can also be found here." )
+#define INPUT_HELP N_( "Settings for input, demultiplexing, " \
+         "decoding and encoding")
 
 #define ACCESS_TITLE N_( "Access modules" )
 #define ACCESS_HELP N_( \
-    "Settings related to the various access methods used by VLC. " \
+    "Settings related to the various access methods. " \
     "Common settings you may want to alter are HTTP proxy or " \
     "caching settings." )
 
-#define ACCESS_FILTER_TITLE N_( "Access filters" )
-#define ACCESS_FILTER_HELP N_( \
-    "Access filters are special modules that allow advanced operations on " \
-    "the input side of VLC. You should not touch anything here unless you " \
-    "know what you are doing." )
+#define STREAM_FILTER_TITLE N_( "Stream filters" )
+#define STREAM_FILTER_HELP N_( \
+    "Stream filters are special modules that allow advanced operations on " \
+    "the input side of VLC. Use with care..." )
 
 #define DEMUX_TITLE N_("Demuxers")
 #define DEMUX_HELP N_( "Demuxers are used to separate audio and video streams." )
 
 #define VDEC_TITLE  N_( "Video codecs" )
-#define VDEC_HELP N_( "Settings for the video-only decoders and encoders." )
+#define VDEC_HELP N_( "Settings for the video, images or video+audio decoders and encoders." )
 
 #define ADEC_TITLE  N_( "Audio codecs" )
 #define ADEC_HELP N_( "Settings for the audio-only decoders and encoders." )
 
-#define SDEC_TITLE N_( "Other codecs")
-#define SDEC_HELP N_( "Settings for audio+video and miscellaneous decoders and encoders." )
+#define SDEC_TITLE N_( "Subtitles codecs")
+#define SDEC_HELP N_( "Settings for subtitles, teletext and CC decoders and encoders." )
 
-#define ADVANCED_TITLE N_("General")
-#define ADVANCED_HELP N_( "General input settings. Use with care." )
+#define ADVANCED_TITLE N_("General Input" )
+#define ADVANCED_HELP N_( "General input settings. Use with care..." )
 
 /* Sout */
 #define SOUT_TITLE N_( "Stream output" )
 #define SOUT_HELP N_( \
-      "Stream output is what allows VLC to act as a streaming server " \
-      "or to save incoming streams.\n" \
+      "Stream output settings are used when acting as a streaming server " \
+      "or when saving incoming streams.\n" \
       "Streams are first muxed and then sent through an \"access output\" "\
       "module that can either save the stream to a file, or stream " \
       "it (UDP, HTTP, RTP/RTSP).\n" \
@@ -191,20 +184,20 @@
 
 /* Advanced */
 #define AADVANCED_TITLE N_( "Advanced" )
-#define AADVANCED_HELP N_( "Advanced settings. Use with care.")
+#define AADVANCED_HELP N_( "Advanced settings. Use with care...")
 
 #define CPU_TITLE N_( "CPU features" )
 #define CPU_HELP N_( "You can choose to disable some CPU accelerations " \
-        "here. You should probably not change these settings." )
+        "here. Use with extreme care!" )
 
 #define MISC_TITLE N_( "Advanced settings" )
-#define MISC_HELP N_( "Other advanced settings")
 
+
+/* OLD */
+#if 0
 #define NETWORK_TITLE N_( "Network" )
 #define NETWORK_HELP N_( "These modules provide network functions to all " \
                 "other parts of VLC." )
-
-/* OLD */
 
 #define CHROMA_TITLE N_("Chroma modules settings")
 #define CHROMA_HELP N_("These settings affect chroma transformation modules.")
@@ -227,105 +220,48 @@
     "In this section you can force the behavior of the subtitle demuxer, " \
     "for example by setting the subtitles type or file name.")
 
-#define VIDEO_FILTER2_TITLE N_("Video filters settings")
-#define VIDEO_FILTER2_HELP " "
-
 /*
  *  A little help for modules with unknown capabilities
  */
 
 #define UNKNOWN_TITLE N_("No help available" )
 #define UNKNOWN_HELP N_("There is no help available for these modules.")
+#endif
 
-/*****************************************************************************
- * GetCapabilityHelp: Display the help for one capability.
- *****************************************************************************/
-static inline char * GetCapabilityHelp( char *psz_capability, int i_type)
-{
-/*
-    if( psz_capability == NULL) return " ";
-
-    if( !strcasecmp(psz_capability,"access_demux") )
-        return i_type == 1 ? ACCESS_TITLE : ACCESS_HELP;
-    if( !strcasecmp(psz_capability,"access2") )
-        return i_type == 1 ? ACCESS_TITLE : ACCESS_HELP;
-    if( !strcasecmp(psz_capability,"audio filter") )
-        return i_type == 1 ? AUDIO_FILTER_TITLE : AUDIO_FILTER_HELP;
-    if( !strcasecmp(psz_capability,"audio filter2") )
-        return i_type == 1 ? AUDIO_FILTER2_TITLE : AUDIO_FILTER2_HELP;
-    if( !strcasecmp(psz_capability,"audio output") )
-        return i_type == 1 ? AOUT_TITLE : AOUT_HELP;
-    if( !strcasecmp(psz_capability,"chroma") )
-        return i_type == 1 ? CHROMA_TITLE : CHROMA_HELP;
-    if( !strcasecmp(psz_capability,"decoder") )
-        return i_type == 1 ? DECODER_TITLE : DECODER_HELP;
-    if( !strcasecmp(psz_capability,"packetizer") )
-        return i_type == 1 ? PACKETIZER_TITLE : PACKETIZER_HELP;
-    if( !strcasecmp(psz_capability,"encoder") )
-        return i_type == 1 ? ENCODER_TITLE : ENCODER_HELP;
-    if( !strcasecmp(psz_capability,"demux2") )
-        return i_type == 1 ? DEMUX_TITLE : DEMUX_HELP;
-    if( !strcasecmp(psz_capability,"interface") )
-        return i_type == 1 ? INTERFACE_TITLE : INTERFACE_HELP;
-    if( !strcasecmp(psz_capability,"dialogs provider") )
-        return i_type == 1 ? DIALOGS_TITLE : DIALOGS_HELP;
-    if( !strcasecmp(psz_capability,"network") )
-        return i_type == 1 ? NETWORK_TITLE : NETWORK_HELP;
-    if( !strcasecmp(psz_capability,"sout access") )
-        return i_type == 1 ? SOUT_ACCESS_TITLE : SOUT_ACCESS_HELP;
-    if( !strcasecmp(psz_capability,"sout mux") )
-        return i_type == 1 ? SOUT_MUX_TITLE : SOUT_MUX_HELP;
-    if( !strcasecmp(psz_capability,"sout stream") )
-        return i_type == 1 ? SOUT_STREAM_TITLE : SOUT_STREAM_HELP;
-    if( !strcasecmp(psz_capability,"subtitle demux") )
-        return i_type == 1 ? SUBTITLE_DEMUX_TITLE : SUBTITLE_DEMUX_HELP;
-    if( !strcasecmp(psz_capability,"text renderer") )
-        return i_type == 1 ? TEXT_TITLE : TEXT_HELP;
-    if( !strcasecmp(psz_capability,"video output") )
-        return i_type == 1 ? _VOUT_TITLE : VOUT_HELP;
-    if( !strcasecmp(psz_capability,"video filter") )
-        return i_type == 1 ? VIDEO_FILTER_TITLE : VIDEO_FILTER_HELP;
-    if( !strcasecmp(psz_capability,"video filter2") )
-        return i_type == 1 ? VIDEO_FILTER2_TITLE : VIDEO_FILTER2_HELP;
-
-    */
-    return " ";
-}
-
-
-static struct config_category_t categories_array[] =
+/* This function is deprecated and is kept only for compatibility */
+static const struct config_category_t categories_array[] =
 {
     /* Interface */
     { CAT_INTERFACE, INTF_TITLE, INTF_HELP },
-    { SUBCAT_INTERFACE_GENERAL, GENERAL_TITLE, INTF_GENERAL_HELP },
+    { SUBCAT_INTERFACE_GENERAL, INTF_TITLE, INTF_GENERAL_HELP },
     { SUBCAT_INTERFACE_MAIN, INTF_MAIN_TITLE, INTF_MAIN_HELP },
     { SUBCAT_INTERFACE_CONTROL, INTF_CONTROL_TITLE, INTF_CONTROL_HELP },
     { SUBCAT_INTERFACE_HOTKEYS, INTF_HOTKEYS_TITLE, INTF_HOTKEYS_HELP },
 
     { CAT_AUDIO, AUDIO_TITLE, AUDIO_HELP },
-    { SUBCAT_AUDIO_GENERAL, AUDIO_GENERAL_TITLE, AUDIO_GENERAL_HELP },
+    { SUBCAT_AUDIO_GENERAL, AUDIO_TITLE, AUDIO_GENERAL_HELP },
     { SUBCAT_AUDIO_AOUT, AOUT_TITLE, AOUT_HELP },
     { SUBCAT_AUDIO_AFILTER, AFILTER_TITLE, AFILTER_HELP },
     { SUBCAT_AUDIO_VISUAL, AVISUAL_TITLE, AVISUAL_HELP },
     { SUBCAT_AUDIO_MISC, AMISC_TITLE, AMISC_HELP },
 
     { CAT_VIDEO, VIDEO_TITLE, VIDEO_HELP },
-    { SUBCAT_VIDEO_GENERAL, VIDEO_GENERAL_TITLE, VIDEO_GENERAL_HELP },
+    { SUBCAT_VIDEO_GENERAL, VIDEO_TITLE, VIDEO_GENERAL_HELP },
     { SUBCAT_VIDEO_VOUT, _VOUT_TITLE, VOUT_HELP },
     { SUBCAT_VIDEO_VFILTER, VFILTER_TITLE, VFILTER_HELP },
     { SUBCAT_VIDEO_SUBPIC, SUBPIC_TITLE, SUBPIC_HELP },
 
     { CAT_INPUT, INPUT_TITLE, INPUT_HELP },
-    { SUBCAT_INPUT_GENERAL, ADVANCED_TITLE, ADVANCED_HELP },
+    { SUBCAT_INPUT_GENERAL, INPUT_TITLE, INPUT_HELP },
     { SUBCAT_INPUT_ACCESS, ACCESS_TITLE, ACCESS_HELP },
-    { SUBCAT_INPUT_ACCESS_FILTER, ACCESS_FILTER_TITLE, ACCESS_FILTER_HELP },
     { SUBCAT_INPUT_DEMUX, DEMUX_TITLE, DEMUX_HELP },
     { SUBCAT_INPUT_VCODEC, VDEC_TITLE, VDEC_HELP },
     { SUBCAT_INPUT_ACODEC, ADEC_TITLE, ADEC_HELP },
     { SUBCAT_INPUT_SCODEC, SDEC_TITLE, SDEC_HELP },
+    { SUBCAT_INPUT_STREAM_FILTER, STREAM_FILTER_TITLE, STREAM_FILTER_HELP },
 
     { CAT_SOUT, SOUT_TITLE, SOUT_HELP },
-    { SUBCAT_SOUT_GENERAL, GENERAL_TITLE, SOUT_GENERAL_HELP },
+    { SUBCAT_SOUT_GENERAL, SOUT_TITLE, SOUT_GENERAL_HELP },
     { SUBCAT_SOUT_STREAM, SOUT_STREAM_TITLE, SOUT_STREAM_HELP },
     { SUBCAT_SOUT_MUX, SOUT_MUX_TITLE, SOUT_MUX_HELP },
     { SUBCAT_SOUT_ACO, SOUT_ACO_TITLE, SOUT_ACO_HELP },
@@ -334,39 +270,40 @@ static struct config_category_t categories_array[] =
     { SUBCAT_SOUT_VOD, SOUT_VOD_TITLE, SOUT_VOD_HELP },
 
     { CAT_PLAYLIST, PLAYLIST_TITLE , PLAYLIST_HELP },
-    { SUBCAT_PLAYLIST_GENERAL, GENERAL_TITLE, PGENERAL_HELP },
+    { SUBCAT_PLAYLIST_GENERAL, PLAYLIST_TITLE, PGENERAL_HELP },
     { SUBCAT_PLAYLIST_SD, SD_TITLE, SD_HELP },
 
     { CAT_ADVANCED, AADVANCED_TITLE, AADVANCED_HELP },
     { SUBCAT_ADVANCED_CPU, CPU_TITLE, CPU_HELP },
-    { SUBCAT_ADVANCED_MISC, MISC_TITLE, MISC_HELP },
+    { SUBCAT_ADVANCED_MISC, MISC_TITLE, AADVANCED_HELP },
 
     { -1, NULL, NULL }
 };
 
-
-inline char *config_CategoryNameGet( int i_value )
+LIBVLC_USED
+static inline const char *config_CategoryNameGet( int i_value )
 {
     int i = 0 ;
     while( categories_array[i].psz_name != NULL )
     {
         if( categories_array[i].i_id == i_value )
         {
-            return _(categories_array[i].psz_name);
+            return vlc_gettext(categories_array[i].psz_name);
         }
         i++;
     }
     return NULL;
 }
 
-inline char *config_CategoryHelpGet( int i_value )
+LIBVLC_USED
+static inline const char *config_CategoryHelpGet( int i_value )
 {
     int i = 0 ;
     while( categories_array[i].psz_help != NULL )
     {
         if( categories_array[i].i_id == i_value )
         {
-            return _(categories_array[i].psz_help);
+            return vlc_gettext(categories_array[i].psz_help);
         }
         i++;
     }

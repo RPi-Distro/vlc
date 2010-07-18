@@ -1,10 +1,10 @@
 /*****************************************************************************
- * core.c: Core libvlc new API functions : initialization, exceptions handling
+ * core.c: Core libvlc new API functions : initialization
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: a0a52782361695ab19ba8142fb7e108d6d3ec50f $
  *
- * Authors: Cl�ent Stenac <zorglub@videolan.org>
+ * Authors: Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,113 +20,118 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <stdarg.h>
-#include <libvlc_internal.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include "libvlc_internal.h"
 #include <vlc/libvlc.h>
 
-#include <vlc/intf.h>
+#include <vlc_interface.h>
+#include <vlc_vlm.h>
 
-/*************************************************************************
- * Exceptions handling
- *************************************************************************/
-inline void libvlc_exception_init( libvlc_exception_t *p_exception )
-{
-    p_exception->b_raised = 0;
-    p_exception->psz_message = NULL;
-}
+#include <stdarg.h>
+#include <limits.h>
+#include <assert.h>
 
-void libvlc_exception_clear( libvlc_exception_t *p_exception )
-{
-    if( p_exception->psz_message )
-        free( p_exception->psz_message );
-    p_exception->psz_message = NULL;
-    p_exception->b_raised = 0;
-}
+static const char nomemstr[] = "Insufficient memory";
 
-inline int libvlc_exception_raised( libvlc_exception_t *p_exception )
+libvlc_instance_t * libvlc_new( int argc, const char *const *argv )
 {
-    return (NULL != p_exception) && p_exception->b_raised;
-}
+    libvlc_instance_t *p_new = malloc (sizeof (*p_new));
+    if (unlikely(p_new == NULL))
+        return NULL;
 
-inline char* libvlc_exception_get_message( libvlc_exception_t *p_exception )
-{
-    if( p_exception->b_raised == 1 && p_exception->psz_message )
+    libvlc_init_threads ();
+
+    const char *my_argv[argc + 2];
+    my_argv[0] = "libvlc"; /* dummy arg0, skipped by getopt() et al */
+    for( int i = 0; i < argc; i++ )
+         my_argv[i + 1] = argv[i];
+    my_argv[argc + 1] = NULL; /* C calling conventions require a NULL */
+
+    libvlc_int_t *p_libvlc_int = libvlc_InternalCreate();
+    if (unlikely (p_libvlc_int == NULL))
+        goto error;
+
+    if (libvlc_InternalInit( p_libvlc_int, argc + 1, my_argv ))
     {
-        return p_exception->psz_message;
+        libvlc_InternalDestroy( p_libvlc_int );
+        goto error;
     }
+
+    p_new->p_libvlc_int = p_libvlc_int;
+    p_new->libvlc_vlm.p_vlm = NULL;
+    p_new->libvlc_vlm.p_event_manager = NULL;
+    p_new->libvlc_vlm.pf_release = NULL;
+    p_new->ref_count = 1;
+    p_new->verbosity = 1;
+    p_new->p_callback_list = NULL;
+    vlc_mutex_init(&p_new->instance_lock);
+    return p_new;
+
+error:
+    libvlc_deinit_threads ();
+    free (p_new);
     return NULL;
 }
 
-inline void libvlc_exception_raise( libvlc_exception_t *p_exception,
-                                    char *psz_format, ... )
+void libvlc_retain( libvlc_instance_t *p_instance )
 {
-    va_list args;
+    assert( p_instance != NULL );
+    assert( p_instance->ref_count < UINT_MAX );
 
-    /* does caller care about exceptions ? */
-    if( p_exception == NULL ) return;
+    vlc_mutex_lock( &p_instance->instance_lock );
+    p_instance->ref_count++;
+    vlc_mutex_unlock( &p_instance->instance_lock );
+}
 
-    /* remove previous exception if it wasn't cleared */
-    if( p_exception->b_raised && p_exception->psz_message )
+void libvlc_release( libvlc_instance_t *p_instance )
+{
+    vlc_mutex_t *lock = &p_instance->instance_lock;
+    int refs;
+
+    vlc_mutex_lock( lock );
+    assert( p_instance->ref_count > 0 );
+    refs = --p_instance->ref_count;
+    vlc_mutex_unlock( lock );
+
+    if( refs == 0 )
     {
-        free(p_exception->psz_message);
-        p_exception->psz_message = NULL;
+        vlc_mutex_destroy( lock );
+        if( p_instance->libvlc_vlm.pf_release )
+            p_instance->libvlc_vlm.pf_release( p_instance );
+        libvlc_InternalCleanup( p_instance->p_libvlc_int );
+        libvlc_InternalDestroy( p_instance->p_libvlc_int );
+        free( p_instance );
+        libvlc_deinit_threads ();
     }
-
-    va_start( args, psz_format );
-    vasprintf( &p_exception->psz_message, psz_format, args );
-    va_end( args );
-
-    p_exception->b_raised = 1;
 }
 
-libvlc_instance_t * libvlc_new( int argc, char **argv,
-                                libvlc_exception_t *p_e )
+int libvlc_add_intf( libvlc_instance_t *p_i, const char *name )
 {
-    int i_vlc_id;
-    libvlc_instance_t *p_new;
-    vlc_t *p_vlc;
-
-    i_vlc_id = VLC_Create();
-    p_vlc = (vlc_t* ) vlc_current_object( i_vlc_id );
-
-    if( !p_vlc ) RAISENULL( "VLC initialization failed" );
-
-    p_new = (libvlc_instance_t *)malloc( sizeof( libvlc_instance_t ) );
-    if( !p_new ) RAISENULL( "Out of memory" );
-
-    /** \todo Look for interface settings. If we don't have any, add -I dummy */
-    /* Because we probably don't want a GUI by default */
-
-
-    VLC_Init( i_vlc_id, argc, argv );
-
-    p_new->p_vlc = p_vlc;
-    p_new->p_playlist = (playlist_t *)vlc_object_find( p_new->p_vlc,
-                                VLC_OBJECT_PLAYLIST, FIND_CHILD );
-    p_new->p_vlm = NULL;
-
-    if( !p_new->p_playlist )
-    {
-        libvlc_destroy( p_new );
-        RAISENULL( "Playlist creation failed" );
-    }
-
-    p_new->i_vlc_id = i_vlc_id;
-    return p_new;
+    return libvlc_InternalAddIntf( p_i->p_libvlc_int, name ) ? -1 : 0;
 }
 
-void libvlc_destroy( libvlc_instance_t *p_instance )
+void libvlc_wait( libvlc_instance_t *p_i )
 {
-    if( p_instance->p_playlist )
-        vlc_object_release( p_instance->p_playlist );
-    vlc_object_release( p_instance->p_vlc );
-    VLC_CleanUp( p_instance->i_vlc_id );
-    VLC_Destroy( p_instance->i_vlc_id );
-    free( p_instance );
+    libvlc_int_t *p_libvlc = p_i->p_libvlc_int;
+    libvlc_InternalWait( p_libvlc );
 }
 
-int libvlc_get_vlc_id( libvlc_instance_t *p_instance )
+const char * libvlc_get_version(void)
 {
-    return p_instance->i_vlc_id;
+    return VLC_Version();
 }
 
+const char * libvlc_get_compiler(void)
+{
+    return VLC_Compiler();
+}
+
+const char * libvlc_get_changeset(void)
+{
+    extern const char psz_vlc_changeset[];
+    return psz_vlc_changeset;
+}

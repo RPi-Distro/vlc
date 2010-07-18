@@ -1,10 +1,12 @@
 /*****************************************************************************
- * vlc_osd.h - OSD menu definitions and function prototypes
+ * vlc_osd.h - OSD menu and subpictures definitions and function prototypes
  *****************************************************************************
+ * Copyright (C) 1999-2006 the VideoLAN team
  * Copyright (C) 2004-2005 M2X
- * $Id: 9fda7077bad64580ce8cc21d9feeca362fade62f $
+ * $Id: ec80d07f6981c114c3963472e2e83c0fb9ce0e93 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
+ *          Gildas Bazin <gbazin@videolan.org>
  *
  * Added code from include/osd.h written by:
  * Copyright (C) 2003-2005 the VideoLAN team
@@ -25,8 +27,111 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifndef VLC_OSD_H
+#define VLC_OSD_H 1
+
+#include "vlc_vout.h"
+
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 /**
  * \file
+ * This file defines SPU subpicture and OSD functions and object types.
+ */
+
+/**********************************************************************
+ * Base SPU structures
+ **********************************************************************/
+/**
+ * \defgroup spu Subpicture Unit
+ * This module describes the programming interface for the subpicture unit.
+ * It includes functions allowing to create/destroy an spu, create/destroy
+ * subpictures and render them.
+ * @{
+ */
+
+#include <vlc_vout.h>
+
+typedef struct spu_private_t spu_private_t;
+
+/* Default subpicture channel ID */
+#define DEFAULT_CHAN           1
+
+/**
+ * Subpicture unit descriptor
+ */
+struct spu_t
+{
+    VLC_COMMON_MEMBERS
+
+    int (*pf_control)( spu_t *, int, va_list );
+
+    spu_private_t *p;
+};
+
+enum spu_query_e
+{
+    SPU_CHANNEL_REGISTER,         /* arg1= int *   res=    */
+    SPU_CHANNEL_CLEAR             /* arg1= int     res=    */
+};
+
+static inline int spu_vaControl( spu_t *p_spu, int i_query, va_list args )
+{
+    if( p_spu->pf_control )
+        return p_spu->pf_control( p_spu, i_query, args );
+    else
+        return VLC_EGENERIC;
+}
+
+static inline int spu_Control( spu_t *p_spu, int i_query, ... )
+{
+    va_list args;
+    int i_result;
+
+    va_start( args, i_query );
+    i_result = spu_vaControl( p_spu, i_query, args );
+    va_end( args );
+    return i_result;
+}
+
+VLC_EXPORT( spu_t *, spu_Create, ( vlc_object_t * ) );
+#define spu_Create(a) spu_Create(VLC_OBJECT(a))
+VLC_EXPORT( int, spu_Init, ( spu_t * ) );
+VLC_EXPORT( void, spu_Destroy, ( spu_t * ) );
+void spu_Attach( spu_t *, vlc_object_t *, bool );
+
+/**
+ * This function sends a subpicture to the spu_t core.
+ * 
+ * You cannot use the provided subpicture anymore. The spu_t core
+ * will destroy it at its convenience.
+ */
+VLC_EXPORT( void, spu_DisplaySubpicture, ( spu_t *, subpicture_t * ) );
+
+/**
+ * This function asks the spu_t core a list of subpictures to display.
+ *
+ * The returned list can only be used by spu_RenderSubpictures.
+ */
+VLC_EXPORT( subpicture_t *, spu_SortSubpictures, ( spu_t *, mtime_t render_subtitle_date, bool b_subtitle_only ) );
+
+/**
+ * This function renders a list of subpicture_t on the provided picture.
+ *
+ * \param p_fmt_dst is the format of the destination picture.
+ * \param p_fmt_src is the format of the original(source) video.
+ */
+VLC_EXPORT( void, spu_RenderSubpictures, ( spu_t *,  picture_t *, const video_format_t *p_fmt_dst, subpicture_t *p_list, const video_format_t *p_fmt_src, mtime_t render_subtitle_date ) );
+
+/** @}*/
+
+/**********************************************************************
+ * OSD Menu
+ **********************************************************************/
+/**
+ * \defgroup osdmenu OSD Menu
  * The OSD menu core creates the OSD menu structure in memory. It parses a
  * configuration file that defines all elements that are part of the menu. The
  * core also handles all actions and menu structure updates on behalf of video
@@ -34,12 +139,18 @@
  *
  * The file modules/video_filters/osdmenu.c implements a subpicture filter that
  * specifies the final information on positioning of the current state image.
- * A subpicture filter is called each time a video picture has to be rendered, it
- * also gives a start and end date to the subpicture. The subpicture can be streamed
- * if used inside a transcoding command. For example:
+ * A subpicture filter is called each time a video picture has to be rendered,
+ * it also gives a start and end date to the subpicture. The subpicture can be
+ * streamed if used inside a transcoding command. For example:
  *
  *  vlc dvdsimple:///dev/dvd --extraintf rc
  *  --sout='#transcode{osd}:std{access=udp,mux=ts,dst=dest_ipaddr}'
+ *  --osdmenu-file=share/osdmenu/dvd.cfg
+ *
+ * An example for local usage of the OSD menu is:
+ *
+ *  vlc dvdsimple:///dev/dvd --extraintf rc
+ *  --sub-filter osdmenu
  *  --osdmenu-file=share/osdmenu/dvd.cfg
  *
  * Each OSD menu element, called "action", defines a hotkey action. Each action
@@ -54,17 +165,10 @@
  * on the rc interface.
  *
  * The OSD menu configuration file uses a very simple syntax and basic parser.
- * A configuration file has the ".cfg". An example is "share/osdmenu/dvd256.cfg".
+ * A configuration file has the ".cfg".
+ * An example is "share/osdmenu/dvd256.cfg".
+ * @{
  */
-
-#ifndef _VLC_OSD_H
-#define _VLC_OSD_H 1
-
-#include "vlc_video.h"
-
-# ifdef __cplusplus
-extern "C" {
-# endif
 
 /**
  * \brief The OSD Menu configuration file format.
@@ -80,8 +184,9 @@ extern "C" {
  *
  * CONFIG_FILE = FILENAME '.cfg'
  * WS = [ ' ' | '\t' ]+
- * OSDMEN_PATH = PATHNAME
+ * OSDMENU_PATH = PATHNAME
  * DIR = 'dir' WS OSDMENU_PATH '\n'
+ * STYLE = 'style' [ 'default' | 'concat' ] '\n'
  * STATE = [ 'unselect' | 'select' | 'pressed' ]
  * HOTKEY_ACTION = 'key-' [ 'a' .. 'z', 'A' .. 'Z', '-' ]+
  *
@@ -145,10 +250,13 @@ struct text_style_t
     int        i_background_alpha;/**< The transparency of the background.
                                        0x00 is fully opaque,
                                        0xFF fully transparent */
+    int        i_karaoke_background_color;/**< Background color for karaoke 0xRRGGBB */
+    int        i_karaoke_background_alpha;/**< The transparency of the karaoke bg.
+                                       0x00 is fully opaque,
+                                       0xFF fully transparent */
     int        i_outline_width;   /**< The width of the outline in pixels */
     int        i_shadow_width;    /**< The width of the shadow in pixels */
     int        i_spacing;         /**< The spaceing between glyphs in pixels */
-    int        i_text_align;      /**< An alignment hint for the text */
 };
 
 /* Style flags for \ref text_style_t */
@@ -160,10 +268,25 @@ struct text_style_t
 #define STYLE_UNDERLINE   32
 #define STYLE_STRIKEOUT   64
 
-static const text_style_t default_text_style = { NULL, 22, 0xffffff, 0xff, STYLE_OUTLINE,
-                0x000000, 0xff, 0x000000, 0xff, 0xffffff, 0x80, 1, 0, -1, 0 };
+/**
+ * Create a default text style
+ */
+VLC_EXPORT( text_style_t *, text_style_New, ( void ) );
 
+/**
+ * Copy a text style into another
+ */
+VLC_EXPORT( text_style_t *, text_style_Copy, ( text_style_t *, const text_style_t * ) );
 
+/**
+ * Duplicate a text style
+ */
+VLC_EXPORT( text_style_t *, text_style_Duplicate, ( const text_style_t * ) );
+
+/**
+ * Delete a text style created by text_style_New or text_style_Duplicate
+ */
+VLC_EXPORT( void, text_style_Delete, ( text_style_t * ) );
 
 /**
  * OSD menu button states
@@ -194,6 +317,11 @@ struct osd_state_t
 
     char        *psz_state; /*< state name */
     int          i_state;   /*< state index */
+
+    int     i_x;            /*< x-position of button state image */
+    int     i_y;            /*< y-position of button state image */
+    int     i_width;        /*< width of button state image */
+    int     i_height;       /*< height of button state image */
 };
 
 /**
@@ -222,11 +350,27 @@ struct osd_button_t
 
     int     i_x;            /*< x-position of button visible state image */
     int     i_y;            /*< y-position of button visible state image */
+    int     i_width;        /*< width of button visible state image */
+    int     i_height;       /*< height of button visible state image */
 
     /* range style button */
-    vlc_bool_t   b_range;    /*< button should be interpreted as range */
+    bool   b_range;    /*< button should be interpreted as range */
     int          i_ranges;   /*< number of states */
 };
+
+/**
+ * OSD Menu Style
+ *
+ * The images that make up an OSD menu can be created in such away that
+ * they contain all buttons in the same picture, with the selected one
+ * highlighted or being a concatenation of all the seperate images. The
+ * first case is the default.
+ *
+ * To change the default style the keyword 'style' should be set to 'concat'.
+ */
+
+#define OSD_MENU_STYLE_SIMPLE 0x0
+#define OSD_MENU_STYLE_CONCAT 0x1
 
 /**
  * OSD Menu State object
@@ -244,8 +388,8 @@ struct osd_menu_state_t
     picture_t    *p_pic;  /*< pointer to picture to display */
     osd_button_t *p_visible; /*< shortcut to visible button */
 
-    vlc_bool_t b_menu_visible; /*< menu currently visible? */
-    vlc_bool_t b_update;       /*< update OSD Menu when VLC_TRUE */
+    bool b_menu_visible; /*< menu currently visible? */
+    bool b_update;       /*< update OSD Menu when true */
 
     /* quick hack to volume state. */
     osd_button_t *p_volume; /*< pointer to volume range object. */
@@ -266,6 +410,8 @@ struct osd_menu_t
     int     i_y;        /*< y-position of OSD Menu on the video screen */
     int     i_width;    /*< width of OSD Menu on the video screen */
     int     i_height;   /*< height of OSD Menu on the video screen */
+    int     i_style;    /*< style of spu region generation */
+    int     i_position; /*< display position */
 
     char             *psz_path;  /*< directory where OSD menu images are stored */
     osd_button_t     *p_button;  /*< doubly linked list of buttons */
@@ -273,6 +419,11 @@ struct osd_menu_t
 
     /* quick link in the linked list. */
     osd_button_t  *p_last_button; /*< pointer to last button in the list */
+
+    /* misc parser */
+    module_t        *p_parser;  /*< pointer to parser module */
+    char            *psz_file;  /*< Config file name */
+    image_handler_t *p_image;   /*< handler to image loading and conversion libraries */
 };
 
 /**
@@ -282,7 +433,7 @@ struct osd_menu_t
  * functions. It creates the osd_menu object and holds a pointer to it
  * during its lifetime.
  */
-VLC_EXPORT( osd_menu_t *, __osd_MenuCreate, ( vlc_object_t *, const char * ) );
+VLC_EXPORT( osd_menu_t *, osd_MenuCreate, ( vlc_object_t *, const char * ) );
 
 /**
  * Delete the osd_menu_t object
@@ -291,22 +442,25 @@ VLC_EXPORT( osd_menu_t *, __osd_MenuCreate, ( vlc_object_t *, const char * ) );
  * memory for the osdmenu. After return of this function the pointer to
  * osd_menu_t* is invalid.
  */
-VLC_EXPORT( void, __osd_MenuDelete, ( vlc_object_t *, osd_menu_t * ) );
+VLC_EXPORT( void, osd_MenuDelete, ( vlc_object_t *, osd_menu_t * ) );
+
+#define osd_MenuCreate(object,file) osd_MenuCreate( VLC_OBJECT(object), file )
+#define osd_MenuDelete(object,osd)  osd_MenuDelete( VLC_OBJECT(object), osd )
 
 /**
- * Change state on an osd_button_t.
- *
- * This function selects the specified state and returns a pointer to it. The
- * following states are currently supported:
- * \see OSD_BUTTON_UNSELECT
- * \see OSD_BUTTON_SELECT
- * \see OSD_BUTTON_PRESSED
+ * Find OSD Menu button at position x,y
  */
-VLC_EXPORT( osd_state_t *, __osd_StateChange, ( osd_state_t *, const int ) );
+VLC_EXPORT( osd_button_t *, osd_ButtonFind, ( vlc_object_t *p_this,
+     int, int, int, int, int, int ) );
 
-#define osd_MenuCreate(object,file) __osd_MenuCreate( VLC_OBJECT(object), file )
-#define osd_MenuDelete(object,osd)  __osd_MenuDelete( VLC_OBJECT(object), osd )
-#define osd_StateChange(object,value) __osd_StateChange( object, value )
+#define osd_ButtonFind(object,x,y,h,w,sh,sw)  osd_ButtonFind(object,x,y,h,w,sh,sw)
+
+/**
+ * Select the button provided as the new active button
+ */
+VLC_EXPORT( void, osd_ButtonSelect, ( vlc_object_t *, osd_button_t *) );
+
+#define osd_ButtonSelect(object,button) osd_ButtonSelect(object,button)
 
 /**
  * Show the OSD menu.
@@ -315,14 +469,14 @@ VLC_EXPORT( osd_state_t *, __osd_StateChange, ( osd_state_t *, const int ) );
  * Every change to the OSD menu will now be visible in the output. An output
  * can be a video output window or a stream (\see stream output)
  */
-VLC_EXPORT( void, __osd_MenuShow, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuShow, ( vlc_object_t * ) );
 
 /**
  * Hide the OSD menu.
  *
  * Stop showing the OSD menu on the video output or mux it into the stream.
  */
-VLC_EXPORT( void, __osd_MenuHide, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuHide, ( vlc_object_t * ) );
 
 /**
  * Activate the action of this OSD menu item.
@@ -331,11 +485,11 @@ VLC_EXPORT( void, __osd_MenuHide, ( vlc_object_t * ) );
  * hotkey action to the hotkey interface. The hotkey that belongs to
  * the current highlighted OSD menu item will be used.
  */
-VLC_EXPORT( void, __osd_MenuActivate,   ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuActivate,   ( vlc_object_t * ) );
 
-#define osd_MenuShow(object) __osd_MenuShow( VLC_OBJECT(object) )
-#define osd_MenuHide(object) __osd_MenuHide( VLC_OBJECT(object) )
-#define osd_MenuActivate(object)   __osd_MenuActivate( VLC_OBJECT(object) )
+#define osd_MenuShow(object) osd_MenuShow( VLC_OBJECT(object) )
+#define osd_MenuHide(object) osd_MenuHide( VLC_OBJECT(object) )
+#define osd_MenuActivate(object)   osd_MenuActivate( VLC_OBJECT(object) )
 
 /**
  * Next OSD menu item
@@ -344,7 +498,7 @@ VLC_EXPORT( void, __osd_MenuActivate,   ( vlc_object_t * ) );
  * Note: The actual position on screen of the menu item is determined by
  * the OSD menu configuration file.
  */
-VLC_EXPORT( void, __osd_MenuNext, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuNext, ( vlc_object_t * ) );
 
 /**
  * Previous OSD menu item
@@ -353,7 +507,7 @@ VLC_EXPORT( void, __osd_MenuNext, ( vlc_object_t * ) );
  * Note: The actual position on screen of the menu item is determined by
  * the OSD menu configuration file.
  */
-VLC_EXPORT( void, __osd_MenuPrev, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuPrev, ( vlc_object_t * ) );
 
 /**
  * OSD menu item above
@@ -362,7 +516,7 @@ VLC_EXPORT( void, __osd_MenuPrev, ( vlc_object_t * ) );
  * Note: The actual position on screen of the menu item is determined by
  * the OSD menu configuration file.
  */
-VLC_EXPORT( void, __osd_MenuUp,   ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuUp,   ( vlc_object_t * ) );
 
 /**
  * OSD menu item below
@@ -371,12 +525,12 @@ VLC_EXPORT( void, __osd_MenuUp,   ( vlc_object_t * ) );
  * Note: The actual position on screen of the menu item is determined by
  * the OSD menu configuration file.
  */
-VLC_EXPORT( void, __osd_MenuDown, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_MenuDown, ( vlc_object_t * ) );
 
-#define osd_MenuNext(object) __osd_MenuNext( VLC_OBJECT(object) )
-#define osd_MenuPrev(object) __osd_MenuPrev( VLC_OBJECT(object) )
-#define osd_MenuUp(object)   __osd_MenuUp( VLC_OBJECT(object) )
-#define osd_MenuDown(object) __osd_MenuDown( VLC_OBJECT(object) )
+#define osd_MenuNext(object) osd_MenuNext( VLC_OBJECT(object) )
+#define osd_MenuPrev(object) osd_MenuPrev( VLC_OBJECT(object) )
+#define osd_MenuUp(object)   osd_MenuUp( VLC_OBJECT(object) )
+#define osd_MenuDown(object) osd_MenuDown( VLC_OBJECT(object) )
 
 /**
  * Display the audio volume bitmap.
@@ -384,9 +538,9 @@ VLC_EXPORT( void, __osd_MenuDown, ( vlc_object_t * ) );
  * Display the correct audio volume bitmap that corresponds to the
  * current Audio Volume setting.
  */
-VLC_EXPORT( void, __osd_Volume, ( vlc_object_t * ) );
+VLC_EXPORT( void, osd_Volume, ( vlc_object_t * ) );
 
-#define osd_Volume(object)     __osd_Volume( VLC_OBJECT(object) )
+#define osd_Volume(object)     osd_Volume( VLC_OBJECT(object) )
 
 /**
  * Retrieve a non modifyable pointer to the OSD Menu state
@@ -402,7 +556,7 @@ static inline const osd_menu_state_t *osd_GetMenuState( osd_menu_t *p_osd )
  *
  * Returns 0 when no key has been pressed or the value of the key pressed.
  */
-static inline vlc_bool_t osd_GetKeyPressed( osd_menu_t *p_osd )
+static inline bool osd_GetKeyPressed( osd_menu_t *p_osd )
 {
     return( p_osd->p_state->b_update );
 }
@@ -423,10 +577,10 @@ static inline void osd_SetKeyPressed( vlc_object_t *p_this, int i_value )
 /**
  * Update the OSD Menu visibility flag.
  *
- * VLC_TRUE means OSD Menu should be shown. VLC_FALSE means OSD Menu
+ * true means OSD Menu should be shown. false means OSD Menu
  * should not be shown.
  */
-static inline void osd_SetMenuVisible( osd_menu_t *p_osd, vlc_bool_t b_value )
+static inline void osd_SetMenuVisible( osd_menu_t *p_osd, bool b_value )
 {
     vlc_value_t val;
 
@@ -438,9 +592,9 @@ static inline void osd_SetMenuVisible( osd_menu_t *p_osd, vlc_bool_t b_value )
  * Update the OSD Menu update flag
  *
  * If the OSD Menu should be updated then set the update flag to
- * VLC_TRUE, else to VLC_FALSE.
+ * true, else to false.
  */
-static inline void osd_SetMenuUpdate( osd_menu_t *p_osd, vlc_bool_t b_value )
+static inline void osd_SetMenuUpdate( osd_menu_t *p_osd, bool b_value )
 {
     vlc_value_t val;
 
@@ -456,9 +610,9 @@ static inline void osd_SetMenuUpdate( osd_menu_t *p_osd, vlc_bool_t b_value )
  * object. The types are declared in the include file include/vlc_osd.h
  * @see vlc_osd.h
  */
-VLC_EXPORT( int, osd_ShowTextRelative, ( spu_t *, int, char *, text_style_t *, int, int, int, mtime_t ) );
-VLC_EXPORT( int, osd_ShowTextAbsolute, ( spu_t *, int, char *, text_style_t *, int, int, int, mtime_t, mtime_t ) );
-VLC_EXPORT( void,osd_Message, ( spu_t *, int, char *, ... ) );
+VLC_EXPORT( int, osd_ShowTextRelative, ( spu_t *, int, const char *, const text_style_t *, int, int, int, mtime_t ) );
+VLC_EXPORT( int, osd_ShowTextAbsolute, ( spu_t *, int, const char *, const text_style_t *, int, int, int, mtime_t, mtime_t ) );
+VLC_EXPORT( void, osd_Message, ( spu_t *, int, char *, ... ) LIBVLC_FORMAT( 3, 4 ) );
 
 /**
  * Default feedback images
@@ -471,14 +625,48 @@ VLC_EXPORT( void,osd_Message, ( spu_t *, int, char *, ... ) );
 VLC_EXPORT( int, osd_Slider, ( vlc_object_t *, spu_t *, int, int, int, int, int, int, short ) );
 VLC_EXPORT( int, osd_Icon, ( vlc_object_t *, spu_t *, int, int, int, int, int, short ) );
 
+/** @} */
+
+/**********************************************************************
+ * Vout text and widget overlays
+ **********************************************************************/
+
+VLC_EXPORT( int, vout_ShowTextRelative, ( vout_thread_t *, int, char *, const text_style_t *, int, int, int, mtime_t ) );
+
+VLC_EXPORT( int, vout_ShowTextAbsolute, ( vout_thread_t *, int, const char *, const text_style_t *, int, int, int, mtime_t, mtime_t ) );
+
+VLC_EXPORT( int, vout_OSDEpg, ( vout_thread_t *, input_item_t * ) );
+
 /**
- * Loading and parse the OSD Configuration file
- *
- * These functions load/unload the OSD menu configuration file and
- * create/destroy the themable OSD menu structure on the OSD object.
+ * Write an informative message at the default location,
+ * for the default duration and only if the OSD option is enabled.
+ * \param p_caller The object that called the function.
+ * \param i_channel Subpicture channel
+ * \param psz_format printf style formatting
+ **/
+VLC_EXPORT( void,  vout_OSDMessage, ( vlc_object_t *, int, const char *, ... ) LIBVLC_FORMAT( 3, 4 ) );
+
+#define vout_OSDMessage( obj, chan, ...) \
+        vout_OSDMessage( VLC_OBJECT(obj), chan, __VA_ARGS__ )
+
+/**
+ * Display a slider on the video output.
+ * \param p_this    The object that called the function.
+ * \param i_channel Subpicture channel
+ * \param i_postion Current position in the slider
+ * \param i_type    Types are: OSD_HOR_SLIDER and OSD_VERT_SLIDER.
+ * @see vlc_osd.h
  */
-VLC_EXPORT( int,  osd_ConfigLoader, ( vlc_object_t *, const char *, osd_menu_t ** ) );
-VLC_EXPORT( void, osd_ConfigUnload, ( vlc_object_t *, osd_menu_t ** ) );
+VLC_EXPORT( void, vout_OSDSlider, ( vlc_object_t *, int, int , short ) );
+
+/**
+ * Display an Icon on the video output.
+ * \param p_this    The object that called the function.
+ * \param i_channel Subpicture channel
+ * \param i_type    Types are: OSD_PLAY_ICON, OSD_PAUSE_ICON, OSD_SPEAKER_ICON, OSD_MUTE_ICON
+ * @see vlc_osd.h
+ */
+VLC_EXPORT( void, vout_OSDIcon, ( vlc_object_t *, int, short ) );
 
 # ifdef __cplusplus
 }

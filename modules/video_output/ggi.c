@@ -1,8 +1,8 @@
 /*****************************************************************************
  * ggi.c : GGI plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 01e9e86e784be3060a68fadc0544eab9b75d567b $
+ * Copyright (C) 2000-2009 the VideoLAN team
+ * $Id: 3ec10a7459693bef6b38671d9afd0d08ba9b7aeb $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -25,15 +25,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
-#include <errno.h>                                                 /* ENOMEM */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <ggi/ggi.h>
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_interface.h>
+#include <vlc_vout.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -59,12 +60,12 @@ static void SetPalette     ( vout_thread_t *, uint16_t *, uint16_t *, uint16_t *
             "By default, VLC will use the value of the DISPLAY " \
             "environment variable.")
 
-vlc_module_begin();
-    add_string( "ggi-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, VLC_TRUE );
-    set_description( "General Graphics Interface video output" );
-    set_capability( "video output", 30 );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+vlc_module_begin ()
+    add_string( "ggi-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, true )
+    set_description( "General Graphics Interface video output" )
+    set_capability( "video output", 30 )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 /*****************************************************************************
  * vout_sys_t: video output GGI method descriptor
@@ -84,7 +85,7 @@ struct vout_sys_t
     ggi_directbuffer *  pp_buffer[2];                             /* buffers */
     int                 i_index;
 
-    vlc_bool_t          b_must_acquire;   /* must be acquired before writing */
+    bool          b_must_acquire;   /* must be acquired before writing */
 };
 
 /*****************************************************************************
@@ -101,17 +102,14 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
-        return( 1 );
-    }
+        return VLC_ENOMEM;
 
     /* Open and initialize device */
     if( OpenDisplay( p_vout ) )
     {
         msg_Err( p_vout, "cannot initialize GGI display" );
         free( p_vout->p_sys );
-        return( 1 );
+        return VLC_EGENERIC;
     }
 
     p_vout->pf_init = Init;
@@ -120,7 +118,7 @@ static int Create( vlc_object_t *p_this )
     p_vout->pf_render = NULL;
     p_vout->pf_display = Display;
 
-    return( 0 );
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -145,21 +143,21 @@ static int Init( vout_thread_t *p_vout )
     switch( p_vout->p_sys->i_bits_per_pixel )
     {
         case 8:
-            p_vout->output.i_chroma = VLC_FOURCC('R','G','B','2');
+            p_vout->output.i_chroma = VLC_CODEC_RGB8;
             p_vout->output.pf_setpalette = SetPalette;
             break;
         case 15:
-            p_vout->output.i_chroma = VLC_FOURCC('R','V','1','5'); break;
+            p_vout->output.i_chroma = VLC_CODEC_RGB15; break;
         case 16:
-            p_vout->output.i_chroma = VLC_FOURCC('R','V','1','6'); break;
+            p_vout->output.i_chroma = VLC_CODEC_RGB16; break;
         case 24:
-            p_vout->output.i_chroma = VLC_FOURCC('R','V','2','4'); break;
+            p_vout->output.i_chroma = VLC_CODEC_RGB24; break;
         case 32:
-            p_vout->output.i_chroma = VLC_FOURCC('R','V','3','2'); break;
+            p_vout->output.i_chroma = VLC_CODEC_RGB32; break;
         default:
             msg_Err( p_vout, "unknown screen depth %i",
                      p_vout->p_sys->i_bits_per_pixel );
-            return 0;
+            return VLC_EGENERIC;
     }
 
     /* Only useful for bits_per_pixel != 8 */
@@ -181,7 +179,7 @@ static int Init( vout_thread_t *p_vout )
 
     if( p_pic == NULL )
     {
-        return 0;
+        return VLC_EGENERIC;
     }
 
     /* We know the chroma, allocate a buffer which will be used
@@ -229,7 +227,7 @@ static int Init( vout_thread_t *p_vout )
     /* Set asynchronous display mode -- usually quite faster */
     ggiAddFlags( p_vout->p_sys->p_display, GGIFLAG_ASYNC );
 
-    return( 0 );
+    return VLC_SUCCESS;
 #undef p_b
 }
 
@@ -274,7 +272,6 @@ static int Manage( vout_thread_t *p_vout )
     struct timeval tv = { 0, 1000 };                        /* 1 millisecond */
     gii_event_mask mask;
     gii_event      event;
-    vlc_value_t    val;
 
     mask = emKeyboard | emPtrButtonPress | emPtrButtonRelease;
 
@@ -293,7 +290,7 @@ static int Manage( vout_thread_t *p_vout )
                     case 'q':
                     case 'Q':
                     case GIIUC_Escape:
-                        p_vout->p_vlc->b_die = 1;
+                        libvlc_Quit( p_vout->p_libvlc );
                         break;
 
                     default:
@@ -306,21 +303,12 @@ static int Manage( vout_thread_t *p_vout )
                 switch( event.pbutton.button )
                 {
                     case GII_PBUTTON_LEFT:
-                        val.b_bool = VLC_TRUE;
-                        var_Set( p_vout, "mouse-clicked", val );
+                        /*FIXME
+                        var_SetCoords( p_vout, "mouse-clicked", x, y );*/
                         break;
 
                     case GII_PBUTTON_RIGHT:
-                        {
-                            intf_thread_t *p_intf;
-                            p_intf = vlc_object_find( p_vout, VLC_OBJECT_INTF,
-                                                              FIND_ANYWHERE );
-                            if( p_intf )
-                            {
-                                p_intf->b_menu_change = 1;
-                                vlc_object_release( p_intf );
-                            }
-                        }
+                        var_SetBool( p_vout->p_libvlc, "intf-popupmenu", true );
                         break;
                 }
                 break;
@@ -386,26 +374,26 @@ static int OpenDisplay( vout_thread_t *p_vout )
     if( ggiInit() )
     {
         msg_Err( p_vout, "cannot initialize GGI library" );
-        return( 1 );
+        return VLC_EGENERIC;
     }
 
     /* Open display */
-    psz_display = config_GetPsz( p_vout, "ggi_display" );
+    psz_display = var_InheritString( p_vout, "ggi-display" );
 
     p_vout->p_sys->p_display = ggiOpen( psz_display, NULL );
-    if( psz_display ) free( psz_display );
+    free( psz_display );
 
     if( p_vout->p_sys->p_display == NULL )
     {
         msg_Err( p_vout, "cannot open GGI default display" );
         ggiExit();
-        return( 1 );
+        return VLC_EGENERIC;
     }
 
     /* Find most appropriate mode */
     p_vout->p_sys->mode.frames =    2;                          /* 2 buffers */
-    p_vout->p_sys->mode.visible.x = config_GetInt( p_vout, "width" );
-    p_vout->p_sys->mode.visible.y = config_GetInt( p_vout, "height" );
+    p_vout->p_sys->mode.visible.x = var_InheritInteger( p_vout, "width" );
+    p_vout->p_sys->mode.visible.y = var_InheritInteger( p_vout, "height" );
     p_vout->p_sys->mode.virt.x =    GGI_AUTO;
     p_vout->p_sys->mode.virt.y =    GGI_AUTO;
     p_vout->p_sys->mode.size.x =    GGI_AUTO;
@@ -423,7 +411,7 @@ static int OpenDisplay( vout_thread_t *p_vout )
         msg_Err( p_vout, "cannot set GGI mode" );
         ggiClose( p_vout->p_sys->p_display );
         ggiExit();
-        return( 1 );
+        return VLC_EGENERIC;
     }
 
     /* Check buffers properties */
@@ -439,7 +427,7 @@ static int OpenDisplay( vout_thread_t *p_vout )
             msg_Err( p_vout, "double buffering is not possible" );
             ggiClose( p_vout->p_sys->p_display );
             ggiExit();
-            return( 1 );
+            return VLC_EGENERIC;
         }
 
         /* Check buffer properties */
@@ -452,7 +440,7 @@ static int OpenDisplay( vout_thread_t *p_vout )
             msg_Err( p_vout, "incorrect video memory type" );
             ggiClose( p_vout->p_sys->p_display );
             ggiExit();
-            return( 1 );
+            return VLC_EGENERIC;
         }
 
         /* Check if buffer needs to be acquired before write */
@@ -473,7 +461,7 @@ static int OpenDisplay( vout_thread_t *p_vout )
         msg_Err( p_vout, "cannot set colors" );
         ggiClose( p_vout->p_sys->p_display );
         ggiExit();
-        return( 1 );
+        return VLC_EGENERIC;
     }
 
     /* Set clipping for text */
@@ -484,13 +472,13 @@ static int OpenDisplay( vout_thread_t *p_vout )
         msg_Err( p_vout, "cannot set clipping" );
         ggiClose( p_vout->p_sys->p_display );
         ggiExit();
-        return( 1 );
+        return VLC_EGENERIC;
     }
 
     /* FIXME: set palette in 8bpp */
     p_vout->p_sys->i_bits_per_pixel = p_b[ 0 ]->buffer.plb.pixelformat->depth;
 
-    return( 0 );
+    return VLC_SUCCESS;
 #undef p_b
 }
 

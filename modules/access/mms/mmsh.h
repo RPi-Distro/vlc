@@ -2,7 +2,7 @@
  * mmsh.h:
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: dc29b4e53ff87ebe8c7c0a7e3f69f71ee84a2b90 $
+ * $Id: a49fda8c54fc64666a82cbf95e1f9f17cd41432d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -20,6 +20,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifndef _MMSH_H_
+#define _MMSH_H_ 1
 
 typedef struct
 {
@@ -44,11 +47,14 @@ struct access_sys_t
     int             fd;
     vlc_url_t       url;
 
+    bool      b_proxy;
+    vlc_url_t       proxy;
+
     int             i_request_context;
 
     uint8_t         buffer[BUFFER_SIZE + 1];
 
-    vlc_bool_t      b_broadcast;
+    bool      b_broadcast;
 
     uint8_t         *p_header;
     int             i_header;
@@ -58,8 +64,10 @@ struct access_sys_t
     unsigned int    i_packet_used;
     unsigned int    i_packet_length;
 
-    int64_t         i_start;
+    uint64_t        i_start;
 
     asf_header_t    asfh;
     guid_t          guid;
 };
+
+#endif

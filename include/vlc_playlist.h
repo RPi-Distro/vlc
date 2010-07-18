@@ -2,7 +2,7 @@
  * vlc_playlist.h : Playlist functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: bb458706aaeb15ba657c5d11c39ca4ff1541e744 $
+ * $Id: 86c424acb55a77459c93bf905b7136bb991a2932 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -16,402 +16,375 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-/**
- *  \file
- *  This file contain structures and function prototypes related
- *  to the playlist in vlc
- */
+#ifndef VLC_PLAYLIST_H_
+#define VLC_PLAYLIST_H_
+
+# ifdef __cplusplus
+extern "C" {
+# endif
+
+#include <vlc_input.h>
+#include <vlc_events.h>
+
+TYPEDEF_ARRAY(playlist_item_t*, playlist_item_array_t)
 
 /**
+ * \file
+ * This file contain structures and function prototypes related
+ * to the playlist in vlc
+ *
  * \defgroup vlc_playlist Playlist
- * Brief description. Longer description
+ *
+ * The VLC playlist system has a tree structure. This allows advanced
+ * categorization, like for SAP streams (which are grouped by "sap groups").
+ *
+ * The base structure for all playlist operations is the input_item_t. This
+ * contains all information needed to play a stream and get info, ie, mostly,
+ * mrl and metadata. This structure contains a unique i_id field. ids are
+ * not recycled when an item is destroyed.
+ *
+ * Input items are not used directly, but through playlist items.
+ * The playlist items are themselves in a tree structure. They only contain
+ * a link to the input item, a unique id and a few flags. the playlist
+ * item id is NOT the same as the input item id.
+ * Several playlist items can be attached to a single input item. The input
+ * item is refcounted and is automatically destroyed when it is not used
+ * anymore.
+ *
+ * The top-level items are the main media sources and include:
+ * playlist, media library, SAP, Shoutcast, devices, ...
+ *
+ * It is envisioned that a third tree will appear: VLM, but it's not done yet
+ *
+ * The playlist also stores, for utility purposes, an array of all input
+ * items, an array of all playlist items and an array of all playlist items
+ * and nodes (both are represented by the same structure).
+ *
+ * So, here is an example:
+ * \verbatim
+ * Inputs array
+ *  - input 1 -> name = foo 1 uri = ...
+ *  - input 2 -> name = foo 2 uri = ...
+ *
+ * Playlist items tree
+ * - playlist (id 1)
+ *    - category 1 (id 2)
+ *      - foo 2 (id 6 - input 2)
+ * - media library (id 2)
+ *    - foo 1 (id 5 - input 1)
+ * \endverbatim
+ *
+ * Sometimes, an item creates subitems. This happens for the directory access
+ * for example. In that case, if the item is under the "playlist" top-level item
+ * and playlist is configured to be flat then the item will be deleted and
+ * replaced with new subitems. If the item is under another top-level item, it
+ * will be transformed to a node and removed from the list of all items without
+ * nodes.
+ *
+ * For "standard" item addition, you can use playlist_Add, playlist_AddExt
+ * (more options) or playlist_AddInput if you already created your input
+ * item. This will add the item at the root of "Playlist" or of "Media library"
+ * in each of the two trees.
+ *
+ * You can create nodes with playlist_NodeCreate and can create items from
+ * existing input items to be placed under any node with playlist_NodeAddInput.
+ *
+ * To delete an item, use playlist_DeleteFromInput( p_item ) which will
+ * remove all occurrences of the input.
+ *
+ *
+ * The playlist defines the following event variables:
+ *
+ * - "item-change": It will contain the input_item_t->i_id of a changed input
+ * item monitored by the playlist.
+ * - "item-current": It will contain a input_item_t->i_id of the current
+ * item being played.
+ *
+ * - "playlist-item-append": It will contain a pointer to a playlist_add_t.
+ * - "playlist-item-deleted": It will contain the playlist_item_t->i_id of a
+ * deleted playlist_item_t.
+ *
+ * - "leaf-to-parent": Set when an item gets subitems and is transformed to a
+ * node. It will contain a pointer to the input_item_t bound to the transformed
+ * playlist item.
+ *
+ *
+ * XXX Be really carefull, playlist_item_t->i_id and input_item_t->i_id are not
+ * the same. Yes, the situation is pretty bad.
+ *
  * @{
  */
 
-/**
- * playlist export helper structure
- */
-struct playlist_export_t
+/** Helper structure to export to file part of the playlist */
+typedef struct playlist_export_t
 {
-    char *psz_filename;
+    VLC_COMMON_MEMBERS
+    const char *psz_filename;
     FILE *p_file;
-};
+    playlist_item_t *p_root;
+} playlist_export_t;
 
-struct item_parent_t
-{
-    int i_view;
-    playlist_item_t *p_parent;
-};
-
-/**
- * playlist item / node
- * \see playlist_t
- */
+/** playlist item / node */
 struct playlist_item_t
 {
-    input_item_t           input;       /**< input item descriptor */
-
-    /* Tree specific fields */
-    int                    i_children;  /**< Number of children
-                                             -1 if not a node */
+    input_item_t           *p_input;    /**< Linked input item */
+    /** Number of children, -1 if not a node */
+    int                    i_children;
     playlist_item_t      **pp_children; /**< Children nodes/items */
-    int                    i_parents;   /**< Number of parents */
-    struct item_parent_t **pp_parents;  /**< Parents */
-    int                    i_serial;    /**< Has this node been updated ? */
+    playlist_item_t       *p_parent;    /**< Item parent */
 
+    int                    i_id;        /**< Playlist item specific id */
     uint8_t                i_flags;     /**< Flags */
-
-
-    int        i_nb_played;       /**< How many times was this item played ? */
-
-    /* LEGACY FIELDS */
-    vlc_bool_t b_autodeletion;    /**< Indicates whther this item is to
-                                   * be deleted after playback. True mean
-                                   * that this item is to be deleted
-                                   * after playback, false otherwise */
-    vlc_bool_t b_enabled;         /**< Indicates whether this item is to be
-                                   * played or skipped */
-    /* END LEGACY FIELDS */
+    playlist_t            *p_playlist;  /**< Parent playlist */
 };
 
-#define PLAYLIST_SAVE_FLAG      0x01     /**< Must it be saved */
-#define PLAYLIST_SKIP_FLAG      0x02     /**< Must playlist skip after it ? */
-#define PLAYLIST_ENA_FLAG       0x04     /**< Is it enabled ? */
-#define PLAYLIST_DEL_FLAG       0x08     /**< Autodelete ? */
-#define PLAYLIST_RO_FLAG        0x10    /**< Write-enabled ? */
-#define PLAYLIST_REMOVE_FLAG    0x20    /**< Remove this item at the end */
+#define PLAYLIST_SAVE_FLAG      0x0001    /**< Must it be saved */
+#define PLAYLIST_SKIP_FLAG      0x0002    /**< Must playlist skip after it ? */
+#define PLAYLIST_DBL_FLAG       0x0004    /**< Is it disabled ? */
+#define PLAYLIST_RO_FLAG        0x0008    /**< Write-enabled ? */
+#define PLAYLIST_REMOVE_FLAG    0x0010    /**< Remove this item at the end */
+#define PLAYLIST_EXPANDED_FLAG  0x0020    /**< Expanded node */
+#define PLAYLIST_SUBITEM_STOP_FLAG 0x0040 /**< Must playlist stop if the item gets subitems ?*/
 
-/**
- * playlist view
- * \see playlist_t
-*/
-struct playlist_view_t
-{
-    char            *   psz_name;        /**< View name */
-    int                 i_id;            /**< Identifier for the view */
-    playlist_item_t *   p_root;          /**< Root node */
-};
+/** Playlist status */
+typedef enum
+{ PLAYLIST_STOPPED,PLAYLIST_RUNNING,PLAYLIST_PAUSED } playlist_status_t;
 
-
-/**
- * predefined views
- *
- */
-#define VIEW_CATEGORY 1
-#define VIEW_SIMPLE   2
-#define VIEW_ALL      3
-#define VIEW_FIRST_SORTED  4
-#define VIEW_S_AUTHOR 4
-#define VIEW_S_GENRE 5
-#define VIEW_S_ALBUM  6
-
-#define VIEW_LAST_SORTED  10
-
-#define VIEW_FIRST_CUSTOM 100
-
-/**
- * Playlist status
- */
-typedef enum { PLAYLIST_STOPPED,PLAYLIST_RUNNING,PLAYLIST_PAUSED } playlist_status_t;
-
-
-struct services_discovery_t
-{
-    VLC_COMMON_MEMBERS
-    char *psz_module;
-
-    module_t *p_module;
-
-    services_discovery_sys_t *p_sys;
-    void (*pf_run) ( services_discovery_t *);
-};
-
-struct playlist_preparse_t
-{
-    VLC_COMMON_MEMBERS
-    vlc_mutex_t     lock;
-    int             i_waiting;
-    int            *pi_waiting;
-};
-
-
-/**
- * Structure containing information about the playlist
- */
+/** Structure containing information about the playlist */
 struct playlist_t
 {
     VLC_COMMON_MEMBERS
-/**
-   \name playlist_t
-   These members are uniq to playlist_t
-*/
-/*@{*/
-    int                   i_index;  /**< current index into the playlist */
-    int                   i_enabled; /**< How many items are enabled ? */
 
-    int                   i_size;   /**< total size of the list */
-    playlist_item_t **    pp_items; /**< array of pointers to the
-                                     * playlist items */
-    int                   i_all_size; /**< size of list of items and nodes */
-    playlist_item_t **    pp_all_items; /**< array of pointers to the
-                                         * playlist items and nodes */
+    playlist_item_array_t items; /**< Arrays of items */
+    playlist_item_array_t all_items; /**< Array of items and nodes */
 
-    int                   i_views; /**< Number of views */
-    playlist_view_t **    pp_views; /**< array of pointers to the
-                                     * playlist views */
+    playlist_item_array_t current; /**< Items currently being played */
+    int                   i_current_index; /**< Index in current array */
 
-    input_thread_t *      p_input;  /**< the input thread ascosiated
-                                     * with the current item */
+    /* Predefined items */
+    playlist_item_t *     p_root;
+    playlist_item_t *     p_playing;
+    playlist_item_t *     p_media_library;
 
-    mtime_t               request_date; /**< Used for profiling */
-
-    int                   i_last_id; /**< Last id to an item */
-    int                   i_sort; /**< Last sorting applied to the playlist */
-    int                   i_order; /**< Last ordering applied to the playlist */
-
-    playlist_item_t *    p_general; /**< Keep a pointer on the "general"
-                                        category */
-
-    services_discovery_t **pp_sds;
-    int                   i_sds;
-
-    vlc_bool_t          b_go_next; /*< Go further than the parent node ? */
-
-    struct {
-        /* Current status */
-        playlist_status_t   i_status;  /**< Current status of playlist */
-
-        /* R/O fields, don't touch if you aren't the playlist thread */
-        /* Use a request */
-        playlist_item_t *   p_item; /**< Currently playing/active item */
-        playlist_item_t *   p_node;   /**< Current node to play from */
-        int                 i_view;    /**< Current view */
-    } status;
-
-    struct {
-        /* Request */
-        /* Playlist thread uses this info to calculate the next position */
-        int                 i_view;   /**< requested view id */
-        playlist_item_t *   p_node;   /**< requested node to play from */
-        playlist_item_t *   p_item;   /**< requested item to play in the node */
-
-        int                 i_skip;   /**< Number of items to skip */
-        int                 i_goto;   /**< Direct index to go to (non-view)*/
-
-        vlc_bool_t          b_request; /**< Set to true by the requester
-                                            The playlist sets it back to false
-                                            when processing the request */
-        vlc_mutex_t         lock;      /**< Lock to protect request */
-    } request;
-
-    playlist_preparse_t     *p_preparse;
-
-    vlc_mutex_t gc_lock;         /**< Lock to protect the garbage collection */
-
-    // The following members are about user interaction
-    // The playlist manages the user interaction to avoid creating another
-    // thread
-    interaction_t *p_interaction;
-
-    global_stats_t *p_stats;
-
-    /*@}*/
+    //Phony ones, point to those above;
+    playlist_item_t *     p_root_category; /**< Root of category tree */
+    playlist_item_t *     p_root_onelevel; /**< Root of onelevel tree */
+    playlist_item_t *     p_local_category; /** < "Playlist" in CATEGORY view */
+    playlist_item_t *     p_ml_category; /** < "Library" in CATEGORY view */
+    playlist_item_t *     p_local_onelevel; /** < "Playlist" in ONELEVEL view */
+    playlist_item_t *     p_ml_onelevel; /** < "Library" in ONELEVEL view */
 };
 
-/* Helper to add an item */
+/** Helper to add an item */
 struct playlist_add_t
 {
-    int i_node;
-    int i_item;
-    int i_view;
-    int i_position;
+    int i_node; /**< Playist id of the parent node */
+    int i_item; /**< Playist id of the playlist_item_t */
 };
 
-#define SORT_ID 0
-#define SORT_TITLE 1
-#define SORT_TITLE_NODES_FIRST 2
-#define SORT_AUTHOR 3
-#define SORT_GENRE 4
-#define SORT_RANDOM 5
-#define SORT_DURATION 6
-#define SORT_TITLE_NUMERIC 7
-#define SORT_ALBUM 8
+/* A bit of macro magic to generate an enum out of the following list,
+ * and later, to generate a list of static functions out of the same list.
+ * There is also SORT_RANDOM, which is always last and handled specially.
+ */
+#define VLC_DEFINE_SORT_FUNCTIONS \
+    DEF( SORT_ID )\
+    DEF( SORT_TITLE )\
+    DEF( SORT_TITLE_NODES_FIRST )\
+    DEF( SORT_ARTIST )\
+    DEF( SORT_GENRE )\
+    DEF( SORT_DURATION )\
+    DEF( SORT_TITLE_NUMERIC )\
+    DEF( SORT_ALBUM )\
+    DEF( SORT_TRACK_NUMBER )\
+    DEF( SORT_DESCRIPTION )\
+    DEF( SORT_RATING )\
+    DEF( SORT_URI )
 
-#define ORDER_NORMAL 0
-#define ORDER_REVERSE 1
+#define DEF( s ) s,
+enum
+{
+    VLC_DEFINE_SORT_FUNCTIONS
+    SORT_RANDOM,
+    NUM_SORT_FNS=SORT_RANDOM
+};
+#undef  DEF
+#ifndef VLC_INTERNAL_PLAYLIST_SORT_FUNCTIONS
+#undef  VLC_DEFINE_SORT_FUNCTIONS
+#endif
+
+enum
+{
+    ORDER_NORMAL = 0,
+    ORDER_REVERSE = 1,
+};
+
+/* Used by playlist_Import */
+#define PLAYLIST_INSERT          0x0001
+#define PLAYLIST_APPEND          0x0002
+#define PLAYLIST_GO              0x0004
+#define PLAYLIST_PREPARSE        0x0008
+#define PLAYLIST_SPREPARSE       0x0010
+#define PLAYLIST_NO_REBUILD      0x0020
+
+#define PLAYLIST_END           -666
+
+enum pl_locked_state
+{
+    pl_Locked = true,
+    pl_Unlocked = false
+};
 
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
 
-/* Creation/Deletion */
-#define playlist_Create(a) __playlist_Create(VLC_OBJECT(a))
-playlist_t * __playlist_Create   ( vlc_object_t * );
-int            playlist_Destroy  ( playlist_t * );
+/* Helpers */
+#define PL_LOCK playlist_Lock( p_playlist )
+#define PL_UNLOCK playlist_Unlock( p_playlist )
+#define PL_ASSERT_LOCKED playlist_AssertLocked( p_playlist )
+
+VLC_EXPORT( playlist_t *, pl_Get, ( vlc_object_t * ) );
+#define pl_Get( a ) pl_Get( VLC_OBJECT(a) )
 
 /* Playlist control */
-#define playlist_Play(p) playlist_LockControl(p,PLAYLIST_PLAY )
-#define playlist_Pause(p) playlist_LockControl(p,PLAYLIST_PAUSE )
-#define playlist_Stop(p) playlist_LockControl(p,PLAYLIST_STOP )
-#define playlist_Next(p) playlist_LockControl(p,PLAYLIST_SKIP, 1)
-#define playlist_Prev(p) playlist_LockControl(p,PLAYLIST_SKIP, -1)
-#define playlist_Skip(p,i) playlist_LockControl(p,PLAYLIST_SKIP, i)
-#define playlist_Goto(p,i) playlist_LockControl(p,PLAYLIST_GOTO, i)
+#define playlist_Play(p) playlist_Control(p,PLAYLIST_PLAY, pl_Unlocked )
+#define playlist_Pause(p) playlist_Control(p,PLAYLIST_PAUSE, pl_Unlocked )
+#define playlist_Stop(p) playlist_Control(p,PLAYLIST_STOP, pl_Unlocked )
+#define playlist_Next(p) playlist_Control(p,PLAYLIST_SKIP, pl_Unlocked, 1)
+#define playlist_Prev(p) playlist_Control(p,PLAYLIST_SKIP, pl_Unlocked, -1)
+#define playlist_Skip(p,i) playlist_Control(p,PLAYLIST_SKIP, pl_Unlocked,  (i) )
 
-VLC_EXPORT( int, playlist_Control, ( playlist_t *, int, ...  ) );
-VLC_EXPORT( int, playlist_LockControl, ( playlist_t *, int, ...  ) );
+VLC_EXPORT( void, playlist_Lock, ( playlist_t * ) );
+VLC_EXPORT( void, playlist_Unlock, ( playlist_t * ) );
+VLC_EXPORT( void, playlist_AssertLocked, ( playlist_t * ) );
 
-VLC_EXPORT( int,  playlist_Clear, ( playlist_t * ) );
-VLC_EXPORT( int,  playlist_LockClear, ( playlist_t * ) );
+/**
+ * Do a playlist action.
+ * If there is something in the playlist then you can do playlist actions.
+ * Possible queries are listed in vlc_common.h
+ * \param p_playlist the playlist to do the command on
+ * \param i_query the command to do
+ * \param b_locked TRUE if playlist is locked when entering this function
+ * \param variable number of arguments
+ * \return VLC_SUCCESS or an error
+ */
+VLC_EXPORT( int, playlist_Control, ( playlist_t *p_playlist, int i_query, bool b_locked, ...  ) );
 
-VLC_EXPORT( int, playlist_PreparseEnqueue, (playlist_t *, input_item_t *) );
-VLC_EXPORT( int, playlist_PreparseEnqueueItem, (playlist_t *, playlist_item_t *) );
+/** Get current playing input. The object is retained.
+ */
+VLC_EXPORT( input_thread_t *, playlist_CurrentInput, ( playlist_t *p_playlist ) );
 
-/* Services discovery */
+/** Clear the playlist
+ * \param b_locked TRUE if playlist is locked when entering this function
+ */
+VLC_EXPORT( void,  playlist_Clear, ( playlist_t *, bool ) );
 
-VLC_EXPORT( int, playlist_ServicesDiscoveryAdd, (playlist_t *, const char *));
-VLC_EXPORT( int, playlist_ServicesDiscoveryRemove, (playlist_t *, const char *));
-VLC_EXPORT( int, playlist_AddSDModules, (playlist_t *, char *));
-VLC_EXPORT( vlc_bool_t, playlist_IsServicesDiscoveryLoaded, ( playlist_t *,const char *));
+/** Enqueue an input item for preparsing */
+VLC_EXPORT( int, playlist_PreparseEnqueue, (playlist_t *, input_item_t * ) );
 
-
-/* Item management functions (act on items) */
-#define playlist_AddItem(p,pi,i1,i2) playlist_ItemAdd(p,pi,i1,i2)
-#define playlist_ItemNew( a , b, c ) __playlist_ItemNew(VLC_OBJECT(a) , b , c )
-#define playlist_ItemCopy( a, b ) __playlist_ItemCopy(VLC_OBJECT(a), b )
-VLC_EXPORT( playlist_item_t* , __playlist_ItemNew, ( vlc_object_t *,const char *,const char * ) );
-VLC_EXPORT( playlist_item_t* , __playlist_ItemCopy, ( vlc_object_t *,playlist_item_t* ) );
-VLC_EXPORT( playlist_item_t* , playlist_ItemNewWithType, ( vlc_object_t *,const char *,const char *, int ) );
-VLC_EXPORT( int, playlist_ItemDelete, ( playlist_item_t * ) );
-VLC_EXPORT( int, playlist_ItemAddParent, ( playlist_item_t *, int,playlist_item_t *) );
-VLC_EXPORT( int, playlist_CopyParents, ( playlist_item_t *,playlist_item_t *) );
-/* Item informations accessors */
-VLC_EXPORT( int, playlist_ItemSetName, (playlist_item_t *,  char * ) );
-VLC_EXPORT( int, playlist_ItemSetDuration, (playlist_item_t *, mtime_t ) );
-
-
-/* View management functions */
-VLC_EXPORT( int, playlist_ViewInsert, (playlist_t *, int, char * ) );
-VLC_EXPORT( int, playlist_ViewDelete, (playlist_t *,playlist_view_t* ) );
-VLC_EXPORT( playlist_view_t *, playlist_ViewFind, (playlist_t *, int ) );
-VLC_EXPORT( int, playlist_ViewUpdate, (playlist_t *, int ) );
-VLC_EXPORT( int, playlist_ViewDump, (playlist_t *, playlist_view_t * ) );
-VLC_EXPORT( int, playlist_ViewEmpty, (playlist_t *, int, vlc_bool_t ) );
-
-/* Node management */
-VLC_EXPORT( playlist_item_t *, playlist_NodeCreate, ( playlist_t *,int,char *, playlist_item_t * p_parent ) );
-VLC_EXPORT( int, playlist_NodeAppend, (playlist_t *,int,playlist_item_t*,playlist_item_t *) );
-VLC_EXPORT( int, playlist_NodeInsert, (playlist_t *,int,playlist_item_t*,playlist_item_t *, int) );
-VLC_EXPORT( int, playlist_NodeRemoveItem, (playlist_t *,playlist_item_t*,playlist_item_t *) );
-VLC_EXPORT( int, playlist_NodeRemoveParent, (playlist_t *,playlist_item_t*,playlist_item_t *) );
-VLC_EXPORT( int, playlist_NodeChildrenCount, (playlist_t *,playlist_item_t* ) );
-VLC_EXPORT( playlist_item_t *, playlist_ChildSearchName, (playlist_item_t*, const char* ) );
-VLC_EXPORT( int, playlist_NodeDelete, ( playlist_t *, playlist_item_t *, vlc_bool_t , vlc_bool_t ) );
-VLC_EXPORT( int, playlist_NodeEmpty, ( playlist_t *, playlist_item_t *, vlc_bool_t ) );
-
-/* Tree walking */
-playlist_item_t *playlist_FindNextFromParent( playlist_t *p_playlist,
-                int i_view,
-                playlist_item_t *p_root,
-                playlist_item_t *p_node,
-                playlist_item_t *p_item );
-playlist_item_t *playlist_FindPrevFromParent( playlist_t *p_playlist,
-                int i_view,
-                playlist_item_t *p_root,
-                playlist_item_t *p_node,
-                playlist_item_t *p_item );
-
-
-/* Simple add/remove functions */
-/* These functions add the item to the "simple" view (+all & category )*/
-VLC_EXPORT( int,  playlist_Add,    ( playlist_t *, const char *, const char *, int, int ) );
-VLC_EXPORT( int,  playlist_AddExt, ( playlist_t *, const char *, const char *, int, int, mtime_t, const char **,int ) );
-VLC_EXPORT( int,  playlist_ItemAdd, ( playlist_t *, playlist_item_t *, int, int ) );
-VLC_EXPORT(int, playlist_NodeAddItem, ( playlist_t *, playlist_item_t *,int,playlist_item_t *,int , int ) );
-
-/* Misc item operations (act on item+playlist) */
-VLC_EXPORT( int,  playlist_Delete, ( playlist_t *, int ) );
-VLC_EXPORT( int,  playlist_LockDelete, ( playlist_t *, int ) );
-VLC_EXPORT( int,  playlist_Disable, ( playlist_t *, playlist_item_t * ) );
-VLC_EXPORT( int,  playlist_Enable, ( playlist_t *, playlist_item_t * ) );
-VLC_EXPORT( int, playlist_ItemToNode, (playlist_t *,playlist_item_t *) );
-VLC_EXPORT( int, playlist_LockItemToNode, (playlist_t *,playlist_item_t *) );
-VLC_EXPORT( int, playlist_Replace, (playlist_t *,playlist_item_t *, input_item_t*) );
-VLC_EXPORT( int, playlist_LockReplace, (playlist_t *,playlist_item_t *, input_item_t*) );
-
-
-/* Item search functions */
-VLC_EXPORT( playlist_item_t *, playlist_ItemGetById, (playlist_t *, int) );
-VLC_EXPORT( playlist_item_t *, playlist_LockItemGetById, (playlist_t *, int) );
-VLC_EXPORT( playlist_item_t *, playlist_ItemGetByPos, (playlist_t *, int) );
-VLC_EXPORT( playlist_item_t *, playlist_LockItemGetByPos, (playlist_t *, int) );
-VLC_EXPORT( playlist_item_t *, playlist_ItemGetByInput, (playlist_t *,input_item_t * ) );
-VLC_EXPORT( playlist_item_t *, playlist_LockItemGetByInput, (playlist_t *,input_item_t * ) );
-VLC_EXPORT( int, playlist_GetPositionById, (playlist_t *,int ) );
-
-VLC_EXPORT( int, playlist_ItemAddOption, (playlist_item_t *, const char *) );
+/** Request the art for an input item to be fetched */
+VLC_EXPORT( int, playlist_AskForArtEnqueue, (playlist_t *, input_item_t * ) );
 
 /* Playlist sorting */
-#define playlist_SortID(p, i) playlist_Sort( p, SORT_ID, i)
-#define playlist_SortTitle(p, i) playlist_Sort( p, SORT_TITLE, i)
-#define playlist_SortAuthor(p, i) playlist_Sort( p, SORT_AUTHOR, i)
-#define playlist_SortAlbum(p, i) playlist_Sort( p, SORT_ALBUM, i)
-#define playlist_SortGroup(p, i) playlist_Sort( p, SORT_GROUP, i)
-VLC_EXPORT( int,  playlist_Sort, ( playlist_t *, int, int) );
-VLC_EXPORT( int,  playlist_Move, ( playlist_t *, int, int ) );
-VLC_EXPORT( int,  playlist_TreeMove, ( playlist_t *, playlist_item_t *, playlist_item_t *, int, int ) );
-VLC_EXPORT( int,  playlist_NodeGroup, ( playlist_t *, int,playlist_item_t *,playlist_item_t **,int, int, int ) );
-VLC_EXPORT( int,  playlist_NodeSort, ( playlist_t *, playlist_item_t *,int, int ) );
+VLC_EXPORT( int,  playlist_TreeMove, ( playlist_t *, playlist_item_t *, playlist_item_t *, int ) );
+VLC_EXPORT( int,  playlist_TreeMoveMany, ( playlist_t *, int, playlist_item_t **, playlist_item_t *, int ) );
 VLC_EXPORT( int,  playlist_RecursiveNodeSort, ( playlist_t *, playlist_item_t *,int, int ) );
 
-/* Load/Save */
-VLC_EXPORT( int,  playlist_Import, ( playlist_t *, const char * ) );
-VLC_EXPORT( int,  playlist_Export, ( playlist_t *, const char *, const char * ) );
+VLC_EXPORT( playlist_item_t *,  playlist_CurrentPlayingItem, ( playlist_t * ) );
+VLC_EXPORT( int,   playlist_Status, ( playlist_t * ) );
+
+/**
+ * Export a node of the playlist to a certain type of playlistfile
+ * \param p_playlist the playlist to export
+ * \param psz_filename the location where the exported file will be saved
+ * \param p_export_root the root node to export
+ * \param psz_type the type of playlist file to create (m3u, pls, ..)
+ * \return VLC_SUCCESS on success
+ */
+VLC_EXPORT( int,  playlist_Export, ( playlist_t *p_playlist, const char *psz_name, playlist_item_t *p_export_root, const char *psz_type ) );
+
+/**
+ * Open a playlist file, add its content to the current playlist
+ */
+VLC_EXPORT( int, playlist_Import, ( playlist_t *p_playlist, const char *psz_file ) );
+
+/********************** Services discovery ***********************/
+
+/** Add a list of comma-separated service discovery modules */
+VLC_EXPORT( int, playlist_ServicesDiscoveryAdd, (playlist_t *, const char *));
+/** Remove a services discovery module by name */
+VLC_EXPORT( int, playlist_ServicesDiscoveryRemove, (playlist_t *, const char *));
+/** Check whether a given SD is loaded */
+VLC_EXPORT( bool, playlist_IsServicesDiscoveryLoaded, ( playlist_t *,const char *));
+
+
+
+/********************************************************
+ * Item management
+ ********************************************************/
+
+/*************************** Item deletion **************************/
+VLC_EXPORT( int,  playlist_DeleteFromInput, ( playlist_t *, input_item_t *, bool ) );
+
+/******************** Item addition ********************/
+VLC_EXPORT( int,  playlist_Add,    ( playlist_t *, const char *, const char *, int, int, bool, bool ) );
+VLC_EXPORT( int,  playlist_AddExt, ( playlist_t *, const char *, const char *, int, int, mtime_t, int, const char *const *, unsigned, bool, bool ) );
+VLC_EXPORT( int, playlist_AddInput, ( playlist_t *, input_item_t *, int, int, bool, bool ) );
+VLC_EXPORT( playlist_item_t *, playlist_NodeAddInput, ( playlist_t *, input_item_t *, playlist_item_t *, int, int, bool ) );
+VLC_EXPORT( int, playlist_NodeAddCopy, ( playlist_t *, playlist_item_t *, playlist_item_t *, int ) );
+
+/********************************** Item search *************************/
+VLC_EXPORT( playlist_item_t *, playlist_ItemGetById, (playlist_t *, int ) );
+VLC_EXPORT( playlist_item_t *, playlist_ItemGetByInput, (playlist_t *,input_item_t * ) );
+
+VLC_EXPORT( int, playlist_LiveSearchUpdate, (playlist_t *, playlist_item_t *, const char *, bool ) );
+
+/********************************************************
+ * Tree management
+ ********************************************************/
+/* Node management */
+VLC_EXPORT( playlist_item_t *, playlist_NodeCreate, ( playlist_t *, const char *, playlist_item_t * p_parent, int i_pos, int i_flags, input_item_t * ) );
+VLC_EXPORT( int, playlist_NodeAppend, (playlist_t *,playlist_item_t*,playlist_item_t *) );
+VLC_EXPORT( int, playlist_NodeInsert, (playlist_t *,playlist_item_t*,playlist_item_t *, int) );
+VLC_EXPORT( int, playlist_NodeRemoveItem, (playlist_t *,playlist_item_t*,playlist_item_t *) );
+VLC_EXPORT( playlist_item_t *, playlist_ChildSearchName, (playlist_item_t*, const char* ) );
+VLC_EXPORT( int, playlist_NodeDelete, ( playlist_t *, playlist_item_t *, bool , bool ) );
+
+VLC_EXPORT( playlist_item_t *, playlist_GetNextLeaf, ( playlist_t *p_playlist, playlist_item_t *p_root, playlist_item_t *p_item, bool b_ena, bool b_unplayed ) );
+VLC_EXPORT( playlist_item_t *, playlist_GetPrevLeaf, ( playlist_t *p_playlist, playlist_item_t *p_root, playlist_item_t *p_item, bool b_ena, bool b_unplayed ) );
 
 /***********************************************************************
  * Inline functions
  ***********************************************************************/
-
-
-/**
- *  tell if a playlist is currently playing.
- *  \param p_playlist the playlist to check
- *  \return true if playlist is playing, false otherwise
- */
-static inline vlc_bool_t playlist_IsPlaying( playlist_t * p_playlist )
+/** Small helper tp get current playing input or NULL. Release the input after use. */
+#define pl_CurrentInput(a) __pl_CurrentInput( VLC_OBJECT(a) )
+static  inline input_thread_t * __pl_CurrentInput( vlc_object_t * p_this )
 {
-    vlc_bool_t b_playing;
-
-    vlc_mutex_lock( &p_playlist->object_lock );
-    b_playing = p_playlist->status.i_status == PLAYLIST_RUNNING;
-    vlc_mutex_unlock( &p_playlist->object_lock );
-
-    return( b_playing );
+    return playlist_CurrentInput( pl_Get( p_this ) );
 }
 
-/**
- *  tell if a playlist is currently empty
- *  \param p_playlist the playlist to check
- *  \return true if the playlist is empty, false otherwise
- */
-static inline vlc_bool_t playlist_IsEmpty( playlist_t * p_playlist )
+/** Tell if the playlist is empty */
+static inline bool playlist_IsEmpty( playlist_t *p_playlist )
 {
-    vlc_bool_t b_empty;
-
-    vlc_mutex_lock( &p_playlist->object_lock );
-    b_empty = p_playlist->i_size == 0;
-    vlc_mutex_unlock( &p_playlist->object_lock );
-
-    return( b_empty );
+    PL_ASSERT_LOCKED;
+    return p_playlist->items.i_size == 0;
 }
 
+/** Tell the number of items in the current playing context */
+static inline int playlist_CurrentSize( playlist_t *p_playlist )
+{
+    PL_ASSERT_LOCKED;
+    return p_playlist->current.i_size;
+}
 
+/** @} */
+# ifdef __cplusplus
+}
+# endif
 
-/**
- * @}
- */
+#endif

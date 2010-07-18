@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f35f844992d17269b9649d532903308a210e5388 $
+ * $Id: 74c0a62e611604b7724ec67e8337923171e00b82 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,7 +22,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <string.h>
 #include "builder.hpp"
 #include "builder_data.hpp"
 #include "interpreter.hpp"
@@ -39,6 +38,7 @@
 #include "../src/popup.hpp"
 #include "../src/theme.hpp"
 #include "../src/window_manager.hpp"
+#include "../src/vout_manager.hpp"
 #include "../commands/cmd_generic.hpp"
 #include "../controls/ctrl_button.hpp"
 #include "../controls/ctrl_checkbox.hpp"
@@ -56,7 +56,7 @@
 #include "../utils/var_bool.hpp"
 #include "../utils/var_text.hpp"
 
-#include "vlc_image.h"
+#include <vlc_image.h>
 
 
 Builder::Builder( intf_thread_t *pIntf, const BuilderData &rData,
@@ -76,24 +76,23 @@ CmdGeneric *Builder::parseAction( const string &rAction )
     return Interpreter::instance( getIntf() )->parseAction( rAction, m_pTheme );
 }
 
-
-// Useful macro
-#define ADD_OBJECTS( type ) \
-    list<BuilderData::type>::const_iterator it##type; \
-    for( it##type = m_rData.m_list##type.begin(); \
-         it##type != m_rData.m_list##type.end(); it##type++ ) \
-    { \
-        add##type( *it##type ); \
-    }
-
+template<class T> inline
+void Builder::add_objects(const std::list<T> &list,
+                          void (Builder::*addfn)(const T &))
+{
+    typename std::list<T>::const_iterator i;
+    for( i = list.begin(); i != list.end(); ++i )
+        (this->*addfn)( *i );
+}
 
 Theme *Builder::build()
 {
-    m_pTheme = new Theme( getIntf() );
+#define ADD_OBJECTS( type ) \
+    add_objects(m_rData.m_list##type,&Builder::add##type)
+
+    m_pTheme = new (std::nothrow) Theme( getIntf() );
     if( m_pTheme == NULL )
-    {
         return NULL;
-    }
 
     // Create everything from the data in the XML
     ADD_OBJECTS( Theme );
@@ -107,6 +106,7 @@ Theme *Builder::build()
     // (at least) can give a valid window handle to the OSPopup objects
     ADD_OBJECTS( PopupMenu );
     ADD_OBJECTS( Layout );
+    ADD_OBJECTS( Panel );
     ADD_OBJECTS( Anchor );
     ADD_OBJECTS( Button );
     ADD_OBJECTS( Checkbox );
@@ -123,6 +123,8 @@ Theme *Builder::build()
     ADD_OBJECTS( MenuSeparator );
 
     return m_pTheme;
+
+#undef  ADD_OBJECTS
 }
 
 
@@ -137,6 +139,25 @@ Theme *Builder::build()
             return; \
         } \
     }
+
+
+// Macro to get the parent box of a control, given the panel ID
+#define GET_BOX( pRect, id, pLayout ) \
+    if( id == "none" ) \
+        pRect = &pLayout->getRect(); \
+    else \
+    { \
+        const Position *pParent = \
+            m_pTheme->getPositionById( rData.m_panelId ); \
+        if( pParent == NULL ) \
+        { \
+            msg_Err( getIntf(), "parent panel could not be found: %s", \
+                     rData.m_panelId.c_str() ); \
+            return; \
+        } \
+        pRect = pParent; \
+    }
+
 
 void Builder::addTheme( const BuilderData::Theme &rData )
 {
@@ -170,7 +191,7 @@ void Builder::addBitmap( const BuilderData::Bitmap &rData )
     GenericBitmap *pBmp =
         new FileBitmap( getIntf(), m_pImageHandler,
                         getFilePath( rData.m_fileName ), rData.m_alphaColor,
-                        rData.m_nbFrames, rData.m_fps );
+                        rData.m_nbFrames, rData.m_fps, rData.m_nbLoops );
     if( !pBmp->getData() )
     {
         // Invalid bitmap
@@ -196,7 +217,7 @@ void Builder::addSubBitmap( const BuilderData::SubBitmap &rData )
     // Copy a region of the parent bitmap to the new one
     BitmapImpl *pBmp =
         new BitmapImpl( getIntf(), rData.m_width, rData.m_height,
-                        rData.m_nbFrames, rData.m_fps );
+                        rData.m_nbFrames, rData.m_fps, rData.m_nbLoops );
     bool res = pBmp->drawBitmap( *pParentBmp, rData.m_x, rData.m_y, 0, 0,
                                  rData.m_width, rData.m_height );
     if( !res )
@@ -331,6 +352,9 @@ void Builder::addWindow( const BuilderData::Window &rData )
                        rData.m_visible );
 
     m_pTheme->m_windows[rData.m_id] = TopWindowPtr( pWin );
+
+    if( rData.m_id == "fullscreenController" )
+        VoutManager::instance( getIntf())->registerFSC( pWin );
 }
 
 
@@ -382,7 +406,8 @@ void Builder::addAnchor( const BuilderData::Anchor &rData )
     const Position pos = makePosition( rData.m_leftTop, rData.m_leftTop,
                                        rData.m_xPos, rData.m_yPos,
                                        pCurve->getWidth(),
-                                       pCurve->getHeight(), *pLayout );
+                                       pCurve->getHeight(),
+                                       pLayout->getRect() );
 
     Anchor *pAnc = new Anchor( getIntf(), pos, rData.m_range, rData.m_priority,
                                *pCurve, *pLayout );
@@ -424,18 +449,19 @@ void Builder::addButton( const BuilderData::Button &rData )
     CtrlButton *pButton = new CtrlButton( getIntf(), *pBmpUp, *pBmpOver,
         *pBmpDown, *pCommand, UString( getIntf(), rData.m_tooltip.c_str() ),
         UString( getIntf(), rData.m_help.c_str() ), pVisible );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pButton );
 
     // Compute the position of the control
     // XXX (we suppose all the images have the same size...)
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        pBmpUp->getWidth(),
-                                       pBmpUp->getHeight(), *pLayout,
+                                       pBmpUp->getHeight(), *pRect,
                                        rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pButton, pos, rData.m_layer );
-
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pButton );
 }
 
 
@@ -500,18 +526,19 @@ void Builder::addCheckbox( const BuilderData::Checkbox &rData )
         *pCommand2, UString( getIntf(), rData.m_tooltip1.c_str() ),
         UString( getIntf(), rData.m_tooltip2.c_str() ), *pVar,
         UString( getIntf(), rData.m_help.c_str() ), pVisible );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pCheckbox );
 
     // Compute the position of the control
     // XXX (we suppose all the images have the same size...)
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        pBmpUp1->getWidth(),
-                                       pBmpUp1->getHeight(), *pLayout,
+                                       pBmpUp1->getHeight(), *pRect,
                                        rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pCheckbox, pos, rData.m_layer );
-
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pCheckbox );
 }
 
 
@@ -550,20 +577,23 @@ void Builder::addImage( const BuilderData::Image &rData )
         (rData.m_resize == "scale" ? CtrlImage::kScale : CtrlImage::kMosaic);
     CtrlImage *pImage = new CtrlImage( getIntf(), *pBmp, *pCommand,
         resizeMethod, UString( getIntf(), rData.m_help.c_str() ), pVisible );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pImage );
 
     // Compute the position of the control
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        pBmp->getWidth(), pBmp->getHeight(),
-                                       *pLayout, rData.m_xKeepRatio,
+                                       *pRect, rData.m_xKeepRatio,
                                        rData.m_yKeepRatio );
 
-    // XXX: test to be changed! XXX
     if( rData.m_actionId == "move" )
     {
         CtrlMove *pMove = new CtrlMove( getIntf(), m_pTheme->getWindowManager(),
              *pImage, *pWindow, UString( getIntf(), rData.m_help.c_str() ),
              pVisible );
+        m_pTheme->m_controls[rData.m_id + "_move"] = CtrlGenericPtr( pMove );
         pLayout->addControl( pMove, pos, rData.m_layer );
     }
     else if( rData.m_actionId == "resizeS" )
@@ -572,6 +602,7 @@ void Builder::addImage( const BuilderData::Image &rData )
                 m_pTheme->getWindowManager(), *pImage, *pLayout,
                 UString( getIntf(), rData.m_help.c_str() ), pVisible,
                 WindowManager::kResizeS );
+        m_pTheme->m_controls[rData.m_id + "_rsz"] = CtrlGenericPtr( pResize );
         pLayout->addControl( pResize, pos, rData.m_layer );
     }
     else if( rData.m_actionId == "resizeE" )
@@ -580,6 +611,7 @@ void Builder::addImage( const BuilderData::Image &rData )
                 m_pTheme->getWindowManager(), *pImage, *pLayout,
                 UString( getIntf(), rData.m_help.c_str() ), pVisible,
                 WindowManager::kResizeE );
+        m_pTheme->m_controls[rData.m_id + "_rsz"] = CtrlGenericPtr( pResize );
         pLayout->addControl( pResize, pos, rData.m_layer );
     }
     else if( rData.m_actionId == "resizeSE" )
@@ -588,14 +620,38 @@ void Builder::addImage( const BuilderData::Image &rData )
                 m_pTheme->getWindowManager(), *pImage, *pLayout,
                 UString( getIntf(), rData.m_help.c_str() ), pVisible,
                 WindowManager::kResizeSE );
+        m_pTheme->m_controls[rData.m_id + "_rsz"] = CtrlGenericPtr( pResize );
         pLayout->addControl( pResize, pos, rData.m_layer );
     }
     else
     {
         pLayout->addControl( pImage, pos, rData.m_layer );
     }
+}
 
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pImage );
+
+void Builder::addPanel( const BuilderData::Panel &rData )
+{
+    // This method makes the assumption that the Panels are created in the
+    // order of the XML, because each child Panel expects its parent Panel
+    // in order to be fully created
+
+    GenericLayout *pLayout = m_pTheme->getLayoutById( rData.m_layoutId );
+    if( pLayout == NULL )
+    {
+        msg_Err( getIntf(), "unknown layout id: %s", rData.m_layoutId.c_str() );
+        return;
+    }
+
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
+    Position *pPos =
+        new Position( makePosition( rData.m_leftTop, rData.m_rightBottom,
+                                    rData.m_xPos, rData.m_yPos,
+                                    rData.m_width, rData.m_height,
+                                    *pRect, rData.m_xKeepRatio,
+                                    rData.m_yKeepRatio ) );
+    m_pTheme->m_positions[rData.m_id] = PositionPtr( pPos );
 }
 
 
@@ -657,13 +713,16 @@ void Builder::addText( const BuilderData::Text &rData )
     CtrlText *pText = new CtrlText( getIntf(), *pVar, *pFont,
         UString( getIntf(), rData.m_help.c_str() ), rData.m_color, pVisible,
         scrolling, alignment );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pText );
 
     int height = pFont->getSize();
 
     // Compute the position of the control
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
-                                       rData.m_width, height, *pLayout,
+                                       rData.m_width, height, *pRect,
                                        rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pText, pos, rData.m_layer );
@@ -671,8 +730,6 @@ void Builder::addText( const BuilderData::Text &rData )
     // Set the text of the control
     UString msg( getIntf(), rData.m_text.c_str() );
     pVar->set( msg );
-
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pText );
 }
 
 
@@ -708,19 +765,20 @@ void Builder::addRadialSlider( const BuilderData::RadialSlider &rData )
                               rData.m_minAngle, rData.m_maxAngle,
                               UString( getIntf(), rData.m_help.c_str() ),
                               pVisible );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pRadial );
 
     // XXX: resizing is not supported
     // Compute the position of the control
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        pSeq->getWidth(),
                                        pSeq->getHeight() / rData.m_nbImages,
-                                       *pLayout,
+                                       *pRect,
                                        rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pRadial, pos, rData.m_layer );
-
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pRadial );
 }
 
 
@@ -772,17 +830,18 @@ void Builder::addSlider( const BuilderData::Slider &rData )
         *pCurve, *pVar, rData.m_thickness, pBgImage, rData.m_nbHoriz,
         rData.m_nbVert, rData.m_padHoriz, rData.m_padVert,
         pVisible, UString( getIntf(), rData.m_help.c_str() ) );
+    m_pTheme->m_controls[rData.m_id + "_bg"] = CtrlGenericPtr( pBackground );
 
     // Compute the position of the control
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        pCurve->getWidth(), pCurve->getHeight(),
-                                       *pLayout,
+                                       *pRect,
                                        rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pBackground, pos, rData.m_layer );
-
-    m_pTheme->m_controls[rData.m_id + "_bg"] = CtrlGenericPtr( pBackground );
 
     // Get the bitmaps of the cursor
     GenericBitmap *pBmpUp = NULL;
@@ -799,10 +858,9 @@ void Builder::addSlider( const BuilderData::Slider &rData )
         *pBmpOver, *pBmpDown, *pCurve, *pVar, pVisible,
         UString( getIntf(), rData.m_tooltip.c_str() ),
         UString( getIntf(), rData.m_help.c_str() ) );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pCursor );
 
     pLayout->addControl( pCursor, pos, rData.m_layer );
-
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pCursor );
 
     // Associate the cursor to the background
     pBackground->associateCursor( *pCursor );
@@ -853,17 +911,18 @@ void Builder::addList( const BuilderData::List &rData )
     CtrlList *pList = new CtrlList( getIntf(), *pVar, *pFont, pBgBmp,
        fgColor, playColor, bgColor1, bgColor2, selColor,
        UString( getIntf(), rData.m_help.c_str() ), pVisible );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pList );
 
     // Compute the position of the control
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        rData.m_width, rData.m_height,
-                                       *pLayout,
+                                       *pRect,
                                        rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pList, pos, rData.m_layer );
-
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pList );
 }
 
 void Builder::addTree( const BuilderData::Tree &rData )
@@ -918,17 +977,18 @@ void Builder::addTree( const BuilderData::Tree &rData )
        pItemBmp, pOpenBmp, pClosedBmp,
        fgColor, playColor, bgColor1, bgColor2, selColor,
        UString( getIntf(), rData.m_help.c_str() ), pVisible, pFlat );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pTree );
 
     // Compute the position of the control
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        rData.m_width, rData.m_height,
-                                       *pLayout,
+                                       *pRect,
                                        rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pTree, pos, rData.m_layer );
-
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pTree );
 }
 
 void Builder::addVideo( const BuilderData::Video &rData )
@@ -948,32 +1008,41 @@ void Builder::addVideo( const BuilderData::Video &rData )
     CtrlVideo *pVideo = new CtrlVideo( getIntf(), *pLayout,
         rData.m_autoResize, UString( getIntf(), rData.m_help.c_str() ),
         pVisible );
+    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pVideo );
+
+    // if autoresize is true, force the control to resize
+    BuilderData::Video Data = rData;
+    if( rData.m_autoResize )
+    {
+        Data.m_leftTop = "lefttop";
+        Data.m_rightBottom = "rightbottom";
+    }
 
     // Compute the position of the control
-    const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
-                                       rData.m_xPos, rData.m_yPos,
-                                       rData.m_width, rData.m_height,
-                                       *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+    const GenericRect *pRect;
+    GET_BOX( pRect, rData.m_panelId , pLayout);
+    const Position pos = makePosition( Data.m_leftTop, Data.m_rightBottom,
+                                       Data.m_xPos, Data.m_yPos,
+                                       Data.m_width, Data.m_height,
+                                       *pRect,
+                                       Data.m_xKeepRatio, Data.m_yKeepRatio );
 
     pLayout->addControl( pVideo, pos, rData.m_layer );
-
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pVideo );
 }
 
 
 const Position Builder::makePosition( const string &rLeftTop,
                                       const string &rRightBottom,
                                       int xPos, int yPos, int width,
-                                      int height, const Box &rBox,
+                                      int height, const GenericRect &rRect,
                                       bool xKeepRatio, bool yKeepRatio ) const
 {
     int left = 0, top = 0, right = 0, bottom = 0;
     Position::Ref_t refLeftTop = Position::kLeftTop;
     Position::Ref_t refRightBottom = Position::kLeftTop;
 
-    int boxWidth = rBox.getWidth();
-    int boxHeight = rBox.getHeight();
+    int boxWidth = rRect.getWidth();
+    int boxHeight = rRect.getHeight();
 
     // Position of the left top corner
     if( rLeftTop == "lefttop" )
@@ -1042,7 +1111,7 @@ const Position Builder::makePosition( const string &rLeftTop,
         bottom = yPos + height;
     }
 
-    return Position( left, top, right, bottom, rBox, refLeftTop,
+    return Position( left, top, right, bottom, rRect, refLeftTop,
                      refRightBottom, xKeepRatio, yKeepRatio );
 }
 
@@ -1086,7 +1155,26 @@ GenericFont *Builder::getFont( const string &fontId )
 string Builder::getFilePath( const string &rFileName ) const
 {
     OSFactory *pFactory = OSFactory::instance( getIntf() );
-    return m_path + pFactory->getDirSeparator() + sFromLocale( rFileName );
+    const string &sep = pFactory->getDirSeparator();
+
+    string file = rFileName;
+    if( file.find( "\\" ) != string::npos )
+    {
+        // For skins to be valid on both Linux and Win32,
+        // slash should be used as path separator for both OSs.
+        msg_Warn( getIntf(), "use of '/' is preferred to '\\' for paths" );
+        int pos;
+        while( ( pos = file.find( "\\" ) ) != string::npos )
+           file[pos] = '/';
+    }
+
+#ifdef WIN32
+    int pos;
+    while( ( pos = file.find( "/" ) ) != string::npos )
+       file.replace( pos, 1, sep );
+#endif
+
+    return m_path + sep + sFromLocale( file );
 }
 
 
@@ -1101,14 +1189,7 @@ Bezier *Builder::getPoints( const char *pTag ) const
         {
             return NULL;
         }
-#if 0
-        if( x < 0 || y < 0 )
-        {
-            msg_Err( getIntf(),
-                     "Slider points cannot have negative coordinates!" );
-            return NULL;
-        }
-#endif
+
         xBez.push_back( x );
         yBez.push_back( y );
         pTag += n;

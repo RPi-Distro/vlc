@@ -4,7 +4,7 @@
  *   (http://developers.videolan.org/libdca.html).
  *****************************************************************************
  * Copyright (C) 2001, 2002libdca the VideoLAN team
- * $Id: 1d7c79a1fffe22d84b6d17467c7e8eb5f5ee6864 $
+ * $Id: 98c5fa02597bbd602174e097169389b492fbc518 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -26,50 +26,44 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                              /* strdup() */
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
-#include <dts.h>                                       /* libdca header file */
 
-#include <vlc/decoder.h>
-#include "aout_internal.h"
-#include "vlc_filter.h"
+#include <dca.h>                                       /* libdca header file */
+
+#include <vlc_aout.h>
+#include <vlc_block.h>
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int  Create    ( vlc_object_t * );
-static void Destroy   ( vlc_object_t * );
-static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
-                        aout_buffer_t * );
-
-static int  Open      ( vlc_object_t *, filter_sys_t *,
-                        audio_format_t, audio_format_t );
-
 static int  OpenFilter ( vlc_object_t * );
 static void CloseFilter( vlc_object_t * );
 static block_t *Convert( filter_t *, block_t * );
 
-/* libdca channel order */
+/* libdca channel order
+ * libdca currently only decodes 5.1, even if you have a DTS-ES source. */
 static const uint32_t pi_channels_in[] =
 { AOUT_CHAN_CENTER, AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
-  AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_LFE, 0 };
-/* our internal channel order (WG-4 order) */
-static const uint32_t pi_channels_out[] =
-{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
-  AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0 };
+  AOUT_CHAN_REARCENTER, AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
+  AOUT_CHAN_LFE,
+  0 };
 
 /*****************************************************************************
  * Local structures
  *****************************************************************************/
 struct filter_sys_t
 {
-    dts_state_t * p_libdts; /* libdca internal structure */
-    vlc_bool_t b_dynrng; /* see below */
+    dca_state_t * p_libdca; /* libdca internal structure */
+    bool b_dynrng; /* see below */
     int i_flags; /* libdca flags, see dtsdec/doc/libdts.txt */
-    vlc_bool_t b_dontwarn;
+    bool b_dontwarn;
     int i_nb_channels; /* number of float32 per sample */
 
     int pi_chan_table[AOUT_CHAN_MAX]; /* channel reordering */
@@ -86,66 +80,23 @@ struct filter_sys_t
     "compression the playback will be more adapted to a movie theater or a " \
     "listening room.")
 
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
-    set_shortname( "DCA" );
-    set_description( _("DTS Coherent Acoustics audio decoder") );
-    add_bool( "dts-dynrng", 1, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, VLC_FALSE );
-    set_capability( "audio filter", 100 );
-    set_callbacks( Create, Destroy );
-
-    add_submodule();
-    set_description( _("DTS Coherent Acoustics audio decoder") );
-    set_capability( "audio filter2", 100 );
-    set_callbacks( OpenFilter, CloseFilter );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
+    set_shortname( "DCA" )
+    set_description( N_("DTS Coherent Acoustics audio decoder") )
+    add_bool( "dts-dynrng", true, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
+    set_capability( "audio filter", 100 )
+    set_callbacks( OpenFilter, CloseFilter )
+vlc_module_end ()
 
 /*****************************************************************************
- * Create:
- *****************************************************************************/
-static int Create( vlc_object_t *p_this )
-{
-    aout_filter_t *p_filter = (aout_filter_t *)p_this;
-    filter_sys_t *p_sys;
-    int i_ret;
-
-    if ( p_filter->input.i_format != VLC_FOURCC('d','t','s',' ')
-          || p_filter->output.i_format != VLC_FOURCC('f','l','3','2') )
-    {
-        return -1;
-    }
-
-    if ( p_filter->input.i_rate != p_filter->output.i_rate )
-    {
-        return -1;
-    }
-
-    /* Allocate the memory needed to store the module's structure */
-    p_sys = malloc( sizeof(filter_sys_t) );
-    p_filter->p_sys = (struct aout_filter_sys_t *)p_sys;
-    if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
-        return -1;
-    }
-
-    i_ret = Open( VLC_OBJECT(p_filter), p_sys,
-                  p_filter->input, p_filter->output );
-
-    p_filter->pf_do_work = DoWork;
-    p_filter->b_in_place = 0;
-
-    return i_ret;
-}
-
-/*****************************************************************************
- * Open: 
+ * Open:
  *****************************************************************************/
 static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
                  audio_format_t input, audio_format_t output )
 {
-    p_sys->b_dynrng = config_GetInt( p_this, "dts-dynrng" );
+    p_sys->b_dynrng = var_InheritBool( p_this, "dts-dynrng" );
     p_sys->b_dontwarn = 0;
 
     /* We'll do our own downmixing, thanks. */
@@ -158,50 +109,50 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
               || (output.i_original_channels
                    & (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT)) )
         {
-            p_sys->i_flags = DTS_MONO;
+            p_sys->i_flags = DCA_MONO;
         }
         break;
 
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT:
         if ( output.i_original_channels & AOUT_CHAN_DOLBYSTEREO )
         {
-            p_sys->i_flags = DTS_DOLBY;
+            p_sys->i_flags = DCA_DOLBY;
         }
         else if ( input.i_original_channels == AOUT_CHAN_CENTER )
         {
-            p_sys->i_flags = DTS_MONO;
+            p_sys->i_flags = DCA_MONO;
         }
         else if ( input.i_original_channels & AOUT_CHAN_DUALMONO )
         {
-            p_sys->i_flags = DTS_CHANNEL;
+            p_sys->i_flags = DCA_CHANNEL;
         }
         else
         {
-            p_sys->i_flags = DTS_STEREO;
+            p_sys->i_flags = DCA_STEREO;
         }
         break;
 
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER:
-        p_sys->i_flags = DTS_3F;
+        p_sys->i_flags = DCA_3F;
         break;
 
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_REARCENTER:
-        p_sys->i_flags = DTS_2F1R;
+        p_sys->i_flags = DCA_2F1R;
         break;
 
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_REARCENTER:
-        p_sys->i_flags = DTS_3F1R;
+        p_sys->i_flags = DCA_3F1R;
         break;
 
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT:
-        p_sys->i_flags = DTS_2F2R;
+        p_sys->i_flags = DCA_2F2R;
         break;
 
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT:
-        p_sys->i_flags = DTS_3F2R;
+        p_sys->i_flags = DCA_3F2R;
         break;
 
     default:
@@ -211,19 +162,19 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
     }
     if ( output.i_physical_channels & AOUT_CHAN_LFE )
     {
-        p_sys->i_flags |= DTS_LFE;
+        p_sys->i_flags |= DCA_LFE;
     }
-    //p_sys->i_flags |= DTS_ADJUST_LEVEL;
+    //p_sys->i_flags |= DCA_ADJUST_LEVEL;
 
     /* Initialize libdca */
-    p_sys->p_libdts = dts_init( 0 );
-    if( p_sys->p_libdts == NULL )
+    p_sys->p_libdca = dca_init( 0 );
+    if( p_sys->p_libdca == NULL )
     {
         msg_Err( p_this, "unable to initialize libdca" );
         return VLC_EGENERIC;
     }
 
-    aout_CheckChannelReorder( pi_channels_in, pi_channels_out,
+    aout_CheckChannelReorder( pi_channels_in, NULL,
                               output.i_physical_channels & AOUT_CHAN_PHYSMASK,
                               p_sys->i_nb_channels,
                               p_sys->pi_chan_table );
@@ -283,10 +234,10 @@ static void Exchange( float * p_out, const float * p_in )
 /*****************************************************************************
  * DoWork: decode a DTS frame.
  *****************************************************************************/
-static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
+static void DoWork( filter_t * p_filter,
                     aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
 {
-    filter_sys_t    *p_sys = (filter_sys_t *)p_filter->p_sys;
+    filter_sys_t    *p_sys = p_filter->p_sys;
     sample_t        i_sample_level = 1;
     int             i_flags = p_sys->i_flags;
     int             i_bytes_per_block = 256 * p_sys->i_nb_channels
@@ -300,54 +251,54 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
     /* Needs to be called so the decoder knows which type of bitstream it is
      * dealing with. */
     int i_sample_rate, i_bit_rate, i_frame_length;
-    if( !dts_syncinfo( p_sys->p_libdts, p_in_buf->p_buffer, &i_flags,
+    if( !dca_syncinfo( p_sys->p_libdca, p_in_buf->p_buffer, &i_flags,
                        &i_sample_rate, &i_bit_rate, &i_frame_length ) )
     {
-        msg_Warn( p_aout, "libdca couldn't sync on frame" );
-        p_out_buf->i_nb_samples = p_out_buf->i_nb_bytes = 0;
+        msg_Warn( p_filter, "libdca couldn't sync on frame" );
+        p_out_buf->i_nb_samples = p_out_buf->i_buffer = 0;
         return;
     }
 
     i_flags = p_sys->i_flags;
-    dts_frame( p_sys->p_libdts, p_in_buf->p_buffer,
+    dca_frame( p_sys->p_libdca, p_in_buf->p_buffer,
                &i_flags, &i_sample_level, 0 );
 
-    if ( (i_flags & DTS_CHANNEL_MASK) != (p_sys->i_flags & DTS_CHANNEL_MASK)
+    if ( (i_flags & DCA_CHANNEL_MASK) != (p_sys->i_flags & DCA_CHANNEL_MASK)
           && !p_sys->b_dontwarn )
     {
-        msg_Warn( p_aout,
+        msg_Warn( p_filter,
                   "libdca couldn't do the requested downmix 0x%x->0x%x",
-                  p_sys->i_flags  & DTS_CHANNEL_MASK,
-                  i_flags & DTS_CHANNEL_MASK );
+                  p_sys->i_flags  & DCA_CHANNEL_MASK,
+                  i_flags & DCA_CHANNEL_MASK );
 
         p_sys->b_dontwarn = 1;
     }
 
     if( 0)//!p_sys->b_dynrng )
     {
-        dts_dynrng( p_sys->p_libdts, NULL, NULL );
+        dca_dynrng( p_sys->p_libdca, NULL, NULL );
     }
 
-    for ( i = 0; i < dts_blocks_num(p_sys->p_libdts); i++ )
+    for ( i = 0; i < dca_blocks_num(p_sys->p_libdca); i++ )
     {
         sample_t * p_samples;
 
-        if( dts_block( p_sys->p_libdts ) )
+        if( dca_block( p_sys->p_libdca ) )
         {
-            msg_Warn( p_aout, "dts_block failed for block %d", i );
+            msg_Warn( p_filter, "dca_block failed for block %d", i );
             break;
         }
 
-        p_samples = dts_samples( p_sys->p_libdts );
+        p_samples = dca_samples( p_sys->p_libdca );
 
-        if ( (p_sys->i_flags & DTS_CHANNEL_MASK) == DTS_MONO
-              && (p_filter->output.i_physical_channels 
+        if ( (p_sys->i_flags & DCA_CHANNEL_MASK) == DCA_MONO
+              && (p_filter->fmt_out.audio.i_physical_channels
                    & (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT)) )
         {
             Duplicate( (float *)(p_out_buf->p_buffer + i * i_bytes_per_block),
                        p_samples );
         }
-        else if ( p_filter->output.i_original_channels
+        else if ( p_filter->fmt_out.audio.i_original_channels
                     & AOUT_CHAN_REVERSESTEREO )
         {
             Exchange( (float *)(p_out_buf->p_buffer + i * i_bytes_per_block),
@@ -362,23 +313,11 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
     }
 
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
-    p_out_buf->i_nb_bytes = i_bytes_per_block * i;
+    p_out_buf->i_buffer = i_bytes_per_block * i;
 }
 
 /*****************************************************************************
- * Destroy : deallocate data structures
- *****************************************************************************/
-static void Destroy( vlc_object_t *p_this )
-{
-    aout_filter_t *p_filter = (aout_filter_t *)p_this;
-    filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
-
-    dts_free( p_sys->p_libdts );
-    free( p_sys );
-}
-
-/*****************************************************************************
- * OpenFilter: 
+ * OpenFilter:
  *****************************************************************************/
 static int OpenFilter( vlc_object_t *p_this )
 {
@@ -386,29 +325,22 @@ static int OpenFilter( vlc_object_t *p_this )
     filter_sys_t *p_sys;
     int i_ret;
 
-    if( p_filter->fmt_in.i_codec != VLC_FOURCC('d','t','s',' ')  )
+    if( p_filter->fmt_in.i_codec != VLC_CODEC_DTS ||
+        p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFB ||
+        p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFL )
     {
         return VLC_EGENERIC;
     }
 
     p_filter->fmt_out.audio.i_format =
-        p_filter->fmt_out.i_codec = VLC_FOURCC('f','l','3','2');
+        p_filter->fmt_out.i_codec = VLC_CODEC_FL32;
+    p_filter->fmt_out.audio.i_bitspersample =
+        aout_BitsPerSample( p_filter->fmt_out.i_codec );
 
     /* Allocate the memory needed to store the module's structure */
     p_sys = p_filter->p_sys = malloc( sizeof(filter_sys_t) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
-        return VLC_EGENERIC;
-    }
-
-    /* Allocate the memory needed to store the module's structure */
-    p_filter->p_sys = p_sys = malloc( sizeof(filter_sys_t) );
-    if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     i_ret = Open( VLC_OBJECT(p_filter), p_sys,
                   p_filter->fmt_in.audio, p_filter->fmt_out.audio );
@@ -427,59 +359,39 @@ static void CloseFilter( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    dts_free( p_sys->p_libdts );
+    dca_free( p_sys->p_libdca );
     free( p_sys );
 }
 
 static block_t *Convert( filter_t *p_filter, block_t *p_block )
 {
-    aout_filter_t aout_filter;
-    aout_buffer_t in_buf, out_buf;
-    block_t *p_out;
-    int i_out_size;
-
-    if( !p_block || !p_block->i_samples )
+    if( !p_block || !p_block->i_nb_samples )
     {
-        if( p_block ) p_block->pf_release( p_block );
+        if( p_block )
+            block_Release( p_block );
         return NULL;
     }
 
-    i_out_size = p_block->i_samples *
+    size_t i_out_size = p_block->i_nb_samples *
       p_filter->fmt_out.audio.i_bitspersample *
         p_filter->fmt_out.audio.i_channels / 8;
 
-    p_out = p_filter->pf_audio_buffer_new( p_filter, i_out_size );
+    block_t *p_out = p_filter->pf_audio_buffer_new( p_filter, i_out_size );
     if( !p_out )
     {
         msg_Warn( p_filter, "can't get output buffer" );
-        p_block->pf_release( p_block );
+        block_Release( p_block );
         return NULL;
     }
 
-    p_out->i_samples = p_block->i_samples;
+    p_out->i_nb_samples = p_block->i_nb_samples;
     p_out->i_dts = p_block->i_dts;
     p_out->i_pts = p_block->i_pts;
     p_out->i_length = p_block->i_length;
 
-    aout_filter.p_sys = (struct aout_filter_sys_t *)p_filter->p_sys;
-    aout_filter.input = p_filter->fmt_in.audio;
-    aout_filter.input.i_format = p_filter->fmt_in.i_codec;
-    aout_filter.output = p_filter->fmt_out.audio;
-    aout_filter.output.i_format = p_filter->fmt_out.i_codec;
+    DoWork( p_filter, p_block, p_out );
 
-    in_buf.p_buffer = p_block->p_buffer;
-    in_buf.i_nb_bytes = p_block->i_buffer;
-    in_buf.i_nb_samples = p_block->i_samples;
-    out_buf.p_buffer = p_out->p_buffer;
-    out_buf.i_nb_bytes = p_out->i_buffer;
-    out_buf.i_nb_samples = p_out->i_samples;
-
-    DoWork( (aout_instance_t *)p_filter, &aout_filter, &in_buf, &out_buf );
-
-    p_out->i_buffer = out_buf.i_nb_bytes;
-    p_out->i_samples = out_buf.i_nb_samples;
-
-    p_block->pf_release( p_block );
+    block_Release( p_block );
 
     return p_out;
 }

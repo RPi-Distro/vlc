@@ -2,7 +2,7 @@
  * cmd_audio.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 44ec89648631911952da0c2cee78232daf54cd62 $
+ * $Id: 5f9a54a9af49e303dbeeed0d81e30b1250ff1840 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -22,35 +22,18 @@
  *****************************************************************************/
 
 #include "cmd_audio.hpp"
-#include <vlc/aout.h>
-#include "aout_internal.h"
+#include "../src/vlcproc.hpp"
+#include <vlc_playlist.h>
+#include <vlc_input.h>
+#include <vlc_aout.h>
 #include <string>
 
 void CmdSetEqualizer::execute()
 {
-    // Get the audio output
-    aout_instance_t *pAout = (aout_instance_t *)vlc_object_find( getIntf(),
-        VLC_OBJECT_AOUT, FIND_ANYWHERE );
+    playlist_t* pPlaylist = getIntf()->p_sys->p_playlist;
 
-    // XXX
-    string filters;
-    if( m_enable)
-    {
-        filters = "equalizer";
-    }
-
-    if( pAout )
-    {
-        var_SetString( pAout, "audio-filter", (char*)filters.c_str() );
-        for( int i = 0; i < pAout->i_nb_inputs; i++ )
-        {
-            pAout->pp_inputs[i]->b_restart = VLC_TRUE;
-        }
-        vlc_object_release( pAout );
-    }
-    else
-    {
-        config_PutPsz( getIntf(), "audio-filter", filters.c_str() );
-    }
+    aout_EnableFilter( pPlaylist, "equalizer", m_enable );
+    VlcProc::instance( getIntf() )->update_equalizer();
 }
+
 

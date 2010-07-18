@@ -2,7 +2,7 @@
  * a52tospdif.c : encapsulates A/52 frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 3bc2392c8821286ff2afca8ca11a3b73c290ae01 $
+ * $Id: 8ee261cebb28fe4ade9fb2bd9386a590c87c897f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>
@@ -11,7 +11,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,61 +25,57 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
 
-#include "audio_output.h"
-#include "aout_internal.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+
+#include <vlc_aout.h>
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 static int  Create    ( vlc_object_t * );
-static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
-                        aout_buffer_t * );
+static block_t *DoWork( filter_t *, block_t * );
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_description( _("Audio filter for A/52->S/PDIF encapsulation") );
-    set_capability( "audio filter", 10 );
-    set_callbacks( Create, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_description( N_("Audio filter for A/52->S/PDIF encapsulation") )
+    set_capability( "audio filter", 10 )
+    set_callbacks( Create, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create:
  *****************************************************************************/
 static int Create( vlc_object_t *p_this )
 {
-    aout_filter_t * p_filter = (aout_filter_t *)p_this;
+    filter_t * p_filter = (filter_t *)p_this;
 
-    if ( p_filter->input.i_format != VLC_FOURCC('a','5','2',' ') ||
-         ( p_filter->output.i_format != VLC_FOURCC('s','p','d','b') &&
-           p_filter->output.i_format != VLC_FOURCC('s','p','d','i') ) )
+    if ( p_filter->fmt_in.audio.i_format != VLC_CODEC_A52 ||
+         ( p_filter->fmt_out.audio.i_format != VLC_CODEC_SPDIFB &&
+           p_filter->fmt_out.audio.i_format != VLC_CODEC_SPDIFL ) )
     {
-        return -1;
+        return VLC_EGENERIC;
     }
 
-    p_filter->pf_do_work = DoWork;
-    p_filter->b_in_place = 0;
+    p_filter->pf_audio_filter = DoWork;
 
-    return 0;
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
  * DoWork: convert a buffer
  *****************************************************************************/
-static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
-                    aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
+static block_t *DoWork( filter_t * p_filter, block_t *p_in_buf )
 {
     /* AC3 is natively big endian. Most SPDIF devices have the native
      * endianness of the computer system.
@@ -87,45 +83,40 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
      */
     static const uint8_t p_sync_le[6] = { 0x72, 0xF8, 0x1F, 0x4E, 0x01, 0x00 };
     static const uint8_t p_sync_be[6] = { 0xF8, 0x72, 0x4E, 0x1F, 0x00, 0x01 };
-#ifndef HAVE_SWAB
-    byte_t * p_tmp;
-    uint16_t i;
-#endif
-    uint16_t i_frame_size = p_in_buf->i_nb_bytes / 2;
-    byte_t * p_in = p_in_buf->p_buffer;
-    byte_t * p_out = p_out_buf->p_buffer;
+    uint16_t i_frame_size = p_in_buf->i_buffer / 2;
+    uint8_t * p_in = p_in_buf->p_buffer;
+
+    block_t *p_out_buf = filter_NewAudioBuffer( p_filter, AOUT_SPDIF_SIZE );
+    if( !p_out_buf )
+        goto out;
+    uint8_t * p_out = p_out_buf->p_buffer;
 
     /* Copy the S/PDIF headers. */
-    if( p_filter->output.i_format == VLC_FOURCC('s','p','d','b') )
+    if( p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFB )
     {
-        p_filter->p_vlc->pf_memcpy( p_out, p_sync_be, 6 );
+        vlc_memcpy( p_out, p_sync_be, 6 );
         p_out[4] = p_in[5] & 0x7; /* bsmod */
         p_out[6] = (i_frame_size >> 4) & 0xff;
         p_out[7] = (i_frame_size << 4) & 0xff;
-        p_filter->p_vlc->pf_memcpy( &p_out[8], p_in, i_frame_size * 2 );
+        vlc_memcpy( &p_out[8], p_in, i_frame_size * 2 );
     }
     else
     {
-        p_filter->p_vlc->pf_memcpy( p_out, p_sync_le, 6 );
+        vlc_memcpy( p_out, p_sync_le, 6 );
         p_out[5] = p_in[5] & 0x7; /* bsmod */
         p_out[6] = (i_frame_size << 4) & 0xff;
         p_out[7] = (i_frame_size >> 4) & 0xff;
-#ifdef HAVE_SWAB
         swab( p_in, &p_out[8], i_frame_size * 2 );
-#else
-        p_tmp = &p_out[8];
-        for( i = i_frame_size; i-- ; )
-        {
-            p_tmp[0] = p_in[1];
-            p_tmp[1] = p_in[0];
-            p_tmp += 2; p_in += 2;
-        }
-#endif
     }
-    p_filter->p_vlc->pf_memset( p_out + 8 + i_frame_size * 2, 0,
-                                AOUT_SPDIF_SIZE - i_frame_size * 2 - 8 );
+    vlc_memset( p_out + 8 + i_frame_size * 2, 0,
+                AOUT_SPDIF_SIZE - i_frame_size * 2 - 8 );
 
+    p_out_buf->i_dts = p_in_buf->i_dts;
+    p_out_buf->i_pts = p_in_buf->i_pts;
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
-    p_out_buf->i_nb_bytes = AOUT_SPDIF_SIZE;
+    p_out_buf->i_buffer = AOUT_SPDIF_SIZE;
+out:
+    block_Release( p_in_buf );
+    return p_out_buf;
 }
 

@@ -17,74 +17,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: 7cb46ebaa8195642b1dc71d8335a0e7fddb0ded2 $
+ * $Id: 65b3d09e98d4b07c3393eff204b24e14bb004f22 $
  *
  * sdp/sdpplin parser.
  *
  */
- 
+
 #include "real.h"
+#include <vlc_strings.h>
 #define BUFLEN 32000
 
-/*
- * Decodes base64 strings (based upon b64 package)
- */
-
-static char *b64_decode(const char *in, char *out, int *size) {
-
-  char dtable[256];              /* Encode / decode table */
-  int i,k;
-  unsigned int j;
-
-  for (i = 0; i < 255; i++) {
-    dtable[i] = 0x80;
-  }
-  for (i = 'A'; i <= 'Z'; i++) {
-    dtable[i] = 0 + (i - 'A');
-  }
-  for (i = 'a'; i <= 'z'; i++) {
-    dtable[i] = 26 + (i - 'a');
-  }
-  for (i = '0'; i <= '9'; i++) {
-    dtable[i] = 52 + (i - '0');
-  }
-  dtable['+'] = 62;
-  dtable['/'] = 63;
-  dtable['='] = 0;
-
-  k=0;
-  /*CONSTANTCONDITION*/
-  for (j=0; j<strlen(in); j+=4) {
-    char a[4], b[4];
-
-    for (i = 0; i < 4; i++) {
-      int c = in[i+j];
-
-      if (dtable[c] & 0x80) {
-        printf("Illegal character '%c' in input.\n", c);
-        exit(1);
-      }
-      a[i] = (char) c;
-      b[i] = (char) dtable[c];
-    }
-    //xine_buffer_ensure_size(out, k+3);
-    out[k++] = (b[0] << 2) | (b[1] >> 4);
-    out[k++] = (b[1] << 4) | (b[2] >> 2);
-    out[k++] = (b[2] << 6) | b[3];
-    i = a[2] == '=' ? 1 : (a[3] == '=' ? 2 : 3);
-    if (i < 3) {
-      out[k]=0;
-      *size=k;
-      return out;
-    }
-  }
-  out[k]=0;
-  *size=k;
-  return out;
-}
-
-static char *nl(char *data) {
-
+static inline char *nl(char *data) {
   char *nlptr = (data) ? strchr(data,'\n') : NULL;
   return (nlptr) ? nlptr + 1 : NULL;
 }
@@ -96,7 +39,7 @@ static int filter(const char *in, const char *filter, char **out, size_t outlen)
 
   if (!in) return 0;
 
-  len = (strchr(in,'\n')) ? strchr(in,'\n')-in : strlen(in);
+  len = (strchr(in,'\n')) ? (size_t)(strchr(in,'\n')-in) : strlen(in);
   if (!strncmp(in,filter,flen)) {
     if(in[flen]=='"') flen++;
     if(in[len-1]==13) len--;
@@ -115,16 +58,22 @@ static int filter(const char *in, const char *filter, char **out, size_t outlen)
 
 static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
 
-  sdpplin_stream_t *desc = malloc(sizeof(sdpplin_stream_t));
-  char      *buf = malloc(BUFLEN);
-  char      *decoded = malloc(BUFLEN);
-  int       handled;
+  sdpplin_stream_t *desc;
+  char* buf = NULL;
+  char* decoded = NULL;
+  int handled;
 
-  if( !desc ) return NULL;
-  memset(desc, 0, sizeof(sdpplin_stream_t));
+  desc = calloc( 1, sizeof(sdpplin_stream_t) );
+  if( !desc )
+    return NULL;
 
-  if( !buf ) goto error;
-  if( !decoded ) goto error;
+  buf = malloc( BUFLEN );
+  if( !buf )
+    goto error;
+
+  decoded = malloc( BUFLEN );
+  if( !decoded )
+    goto error;
 
   if (filter(*data, "m=", &buf, BUFLEN)) {
     desc->id = strdup(buf);
@@ -191,9 +140,10 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
       *data=nl(*data);
     }
     if(filter(*data,"a=OpaqueData:buffer;",&buf, BUFLEN)) {
-      decoded = b64_decode(buf, decoded, &(desc->mlti_data_size));
-      if ( decoded != NULL ) {
-          desc->mlti_data = malloc(sizeof(char)*desc->mlti_data_size);
+      desc->mlti_data_size =
+          vlc_b64_decode_binary_to_buffer(decoded, BUFLEN, buf );
+      if ( desc->mlti_data_size ) {
+          desc->mlti_data = malloc(desc->mlti_data_size);
           memcpy(desc->mlti_data, decoded, desc->mlti_data_size);
           handled=1;
           *data=nl(*data);
@@ -216,40 +166,45 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
       *data=nl(*data);
     }
   }
-  if( buf ) free(buf);
-  if( decoded )free(decoded);
+  free( buf );
+  free( decoded) ;
   return desc;
 
 error:
-  if( decoded ) free(decoded);
-  if( desc ) free( desc );
-  if( buf ) free( buf );
+  free( decoded );
+  free( desc );
+  free( buf );
   return NULL;
 }
 
-sdpplin_t *sdpplin_parse(char *data) {
 
-  sdpplin_t        *desc = malloc(sizeof(sdpplin_t));
-  sdpplin_stream_t *stream;
-  char             *buf=malloc(BUFLEN);
-  char             *decoded=malloc(BUFLEN);
-  int              handled;
-  int              len;
+sdpplin_t *sdpplin_parse(char *data)
+{
+  sdpplin_t*        desc;
+  sdpplin_stream_t* stream;
+  char*             buf;
+  char*             decoded;
+  int               handled;
 
-  if( !desc ) return NULL;
-  if( !buf ) {
+  desc = calloc( 1, sizeof(sdpplin_t) );
+  if( !desc )
+    return NULL;
+
+  buf = malloc( BUFLEN );
+  if( !buf )
+  {
     free( desc );
     return NULL;
   }
-  if( !decoded ) {
+
+  decoded = malloc( BUFLEN );
+  if( !decoded )
+  {
     free( buf );
     free( desc );
     return NULL;
   }
-
   desc->stream = NULL;
-
-  memset(desc, 0, sizeof(sdpplin_t));
 
   while (data && *data) {
     handled=0;
@@ -268,35 +223,31 @@ sdpplin_t *sdpplin_parse(char *data) {
         continue;
     }
     if(filter(data,"a=Title:buffer;",&buf, BUFLEN)) {
-      decoded=b64_decode(buf, decoded, &len);
-	  if ( decoded != NULL ) {
-          desc->title=strdup(decoded);
-          handled=1;
-          data=nl(data);
+      desc->title=vlc_b64_decode(buf);
+      if(desc->title) {
+        handled=1;
+        data=nl(data);
       }
     }
     if(filter(data,"a=Author:buffer;",&buf, BUFLEN)) {
-      decoded=b64_decode(buf, decoded, &len);
-	  if ( decoded != NULL ) {
-          desc->author=strdup(decoded);
-          handled=1;
-          data=nl(data);
+      desc->author=vlc_b64_decode(buf);
+      if(desc->author) {
+        handled=1;
+        data=nl(data);
       }
     }
     if(filter(data,"a=Copyright:buffer;",&buf, BUFLEN)) {
-      decoded=b64_decode(buf, decoded, &len);
-	  if ( decoded != NULL ) {
-          desc->copyright=strdup(decoded);
-          handled=1;
-          data=nl(data);
+      desc->copyright=vlc_b64_decode(buf);
+      if(desc->copyright) {
+        handled=1;
+        data=nl(data);
       }
     }
     if(filter(data,"a=Abstract:buffer;",&buf, BUFLEN)) {
-      decoded=b64_decode(buf, decoded, &len);
-      if ( decoded != NULL ) {
-           desc->abstract=strdup(decoded);
-           handled=1;
-           data=nl(data);
+      desc->abstract=vlc_b64_decode(buf);
+      if(desc->abstract) {
+        handled=1;
+        data=nl(data);
       }
     }
     if(filter(data,"a=StreamCount:integer;",&buf, BUFLEN)) {
@@ -329,8 +280,8 @@ sdpplin_t *sdpplin_parse(char *data) {
     }
   }
 
-  free(decoded);
-  free(buf);
+  free( decoded );
+  free( buf );
   return desc;
 }
 
@@ -342,36 +293,38 @@ void sdpplin_free(sdpplin_t *description) {
 
   for( i=0; i<description->stream_count; i++ ) {
     if( description->stream[i] ) {
-      if( description->stream[i]->id ) free( description->stream[i]->id );
-      if( description->stream[i]->bandwidth ) free( description->stream[i]->bandwidth );
-      if( description->stream[i]->range ) free( description->stream[i]->range );
-      if( description->stream[i]->length ) free( description->stream[i]->length );
-      if( description->stream[i]->rtpmap ) free( description->stream[i]->rtpmap );
-      if( description->stream[i]->mimetype ) free( description->stream[i]->mimetype );
-      if( description->stream[i]->stream_name ) free( description->stream[i]->stream_name );
-      if( description->stream[i]->mime_type ) free( description->stream[i]->mime_type );
-      if( description->stream[i]->mlti_data ) free( description->stream[i]->mlti_data );
-      if( description->stream[i]->rmff_flags ) free( description->stream[i]->rmff_flags );
-      if( description->stream[i]->asm_rule_book ) free( description->stream[i]->asm_rule_book );
+      free( description->stream[i]->id );
+      free( description->stream[i]->bandwidth );
+      free( description->stream[i]->range );
+      free( description->stream[i]->length );
+      free( description->stream[i]->rtpmap );
+      free( description->stream[i]->mimetype );
+      free( description->stream[i]->stream_name );
+      free( description->stream[i]->mime_type );
+      free( description->stream[i]->mlti_data );
+      free( description->stream[i]->rmff_flags );
+      free( description->stream[i]->asm_rule_book );
       free( description->stream[i] );
     }
   }
-  if( description->stream_count ) free( description->stream );
+  if( description->stream_count )
+    free( description->stream );
 
-  if( description->owner ) free( description->owner );
-  if( description->session_name ) free( description->session_name );
-  if( description->session_info ) free( description->session_info );
-  if( description->uri ) free( description->uri );
-  if( description->email ) free( description->email );
-  if( description->phone ) free( description->phone );
-  if( description->connection ) free( description->connection );
-  if( description->bandwidth ) free( description->bandwidth );
-  if( description->title ) free( description->title );
-  if( description->author ) free( description->author );
-  if( description->copyright ) free( description->copyright );
-  if( description->keywords ) free( description->keywords );
-  if( description->asm_rule_book ) free( description->asm_rule_book );
-  if( description->abstract ) free( description->abstract );
-  if( description->range ) free( description->range );
-  free(description);
+  free( description->owner );
+  free( description->session_name );
+  free( description->session_info );
+  free( description->uri );
+  free( description->email );
+  free( description->phone );
+  free( description->connection );
+  free( description->bandwidth );
+  free( description->title );
+  free( description->author );
+  free( description->copyright );
+  free( description->keywords );
+  free( description->asm_rule_book );
+  free( description->abstract );
+  free( description->range );
+  free( description );
 }
+

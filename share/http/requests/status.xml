@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="<vlc id="value" param1="charset"/>" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <vlc id="if" param1="0"/>
 <!--  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  status.xml: VLC media player web interface
@@ -100,6 +100,9 @@
   <vlc id="if" param1="command value 'seek' strcmp 0 =" />
     <vlc id="rpn" param1="val value vlc_seek" />
   <vlc id="end"/>
+  <vlc id="if" param1="command value 'key' strcmp 0 =" />
+    <vlc id="rpn" param1="'key-' val value strcat 'VLC_OBJECT_LIBVLC' vlc_var_get key-pressed 'VLC_OBJECT_LIBVLC' vlc_var_set" />
+  <vlc id="end"/>
 
 <vlc id="end" />
 <root>
@@ -114,13 +117,31 @@
   <repeat><vlc id="value" param1="'repeat' 'VLC_OBJECT_PLAYLIST' vlc_var_get" /></repeat>
   <information>
     <vlc id="foreach" param1="inf" param2="information" />
-      <category name="<vlc id="value" param1="inf.name" />">
+      <category name="<vlc id="value" param1="inf.name value xml_encode" />">
         <vlc id="foreach" param1="subinf" param2="inf.info" />
-          <info name="<vlc id="value" param1="subinf.name" />"><vlc id="value" param1="subinf.value" /></info>
+          <info name="<vlc id="value" param1="subinf.name value xml_encode" />"><vlc id="value" param1="subinf.value value xml_encode" /></info>
         <vlc id="end" />
       </category>
     <vlc id="end" />
-  </information>
+	   <meta-information>
+		    <title><![CDATA[<vlc id="value" param1="'TITLE' vlc_get_meta xml_encode" />]]></title>
+		    <artist><![CDATA[<vlc id="value" param1="'ARTIST' vlc_get_meta xml_encode" />]]></artist>
+		    <genre><![CDATA[<vlc id="value" param1="'GENRE' vlc_get_meta xml_encode" />]]></genre>
+		    <copyright><![CDATA[<vlc id="value" param1="'COPYRIGHT' vlc_get_meta xml_encode" />]]></copyright>
+		    <album><![CDATA[<vlc id="value" param1="'ALBUM' vlc_get_meta xml_encode" />]]></album>
+		    <track><![CDATA[<vlc id="value" param1="'TRACK_NUMBER' vlc_get_meta xml_encode" />]]></track>
+		    <description><![CDATA[<vlc id="value" param1="'DESCRIPTION' vlc_get_meta xml_encode" />]]></description>
+		    <rating><![CDATA[<vlc id="value" param1="'RATING' vlc_get_meta xml_encode" />]]></rating>
+		    <date><![CDATA[<vlc id="value" param1="'DATE' vlc_get_meta xml_encode" />]]></date>
+		    <url><![CDATA[<vlc id="value" param1="'URL' vlc_get_meta xml_encode" />]]></url>
+		    <language><![CDATA[<vlc id="value" param1="'LANGUAGE' vlc_get_meta xml_encode" />]]></language>
+		    <now_playing><![CDATA[<vlc id="value" param1="'NOW_PLAYING' vlc_get_meta xml_encode" />]]></now_playing>
+		    <publisher><![CDATA[<vlc id="value" param1="'PUBLISHER' vlc_get_meta xml_encode" />]]></publisher>
+		    <encoded_by><![CDATA[<vlc id="value" param1="'ENCODED_BY' vlc_get_meta xml_encode" />]]></encoded_by>
+		    <art_url><![CDATA[<vlc id="value" param1="'ART_URL' vlc_get_meta xml_encode" />]]></art_url>
+		    <track_id><![CDATA[<vlc id="value" param1="'TRACK_ID' vlc_get_meta xml_encode" />]]></track_id>
+		    </meta-information>
+	   </information>
   <stats>
     <readbytes><vlc id="value" param1="read_bytes" /></readbytes>
     <inputbitrate><vlc id="value" param1="input_bitrate" /></inputbitrate>

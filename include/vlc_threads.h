@@ -3,7 +3,7 @@
  * This header provides portable declarations for mutexes & conditions
  *****************************************************************************
  * Copyright (C) 1999, 2002 the VideoLAN team
- * $Id: 913c89ad9bcfdac2d0786aae6bdbc5440302d9f8 $
+ * Copyright © 2007-2008 Rémi Denis-Courmont
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -25,42 +25,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdio.h>
+#ifndef VLC_THREADS_H_
+#define VLC_THREADS_H_
 
-#if defined(DEBUG) && defined(HAVE_SYS_TIME_H)
-#   include <sys/time.h>
-#endif
+/**
+ * \file
+ * This file defines structures and functions for handling threads in vlc
+ *
+ */
 
-#if defined( PTH_INIT_IN_PTH_H )                                  /* GNU Pth */
-#   include <pth.h>
-
-#elif defined( ST_INIT_IN_ST_H )                            /* State threads */
-#   include <st.h>
-
-#elif defined( UNDER_CE )
-                                                                /* WinCE API */
+#if defined( UNDER_CE )
 #elif defined( WIN32 )
 #   include <process.h>                                         /* Win32 API */
 
-#elif defined( HAVE_KERNEL_SCHEDULER_H )                             /* BeOS */
-#   include <kernel/OS.h>
-#   include <kernel/scheduler.h>
-#   include <byteorder.h>
+#else                                         /* pthreads (like Linux & BSD) */
+#   define LIBVLC_USE_PTHREAD 1
+#   define LIBVLC_USE_PTHREAD_CANCEL 1
+#   define _APPLE_C_SOURCE    1 /* Proper pthread semantics on OSX */
 
-#elif defined( PTHREAD_COND_T_IN_PTHREAD_H )  /* pthreads (like Linux & BSD) */
+#   include <unistd.h> /* _POSIX_SPIN_LOCKS */
 #   include <pthread.h>
-#   ifdef DEBUG
-        /* Needed for pthread_cond_timedwait */
-#       include <errno.h>
-#   endif
-    /* This is not prototyped under Linux, though it exists. */
-    int pthread_mutexattr_setkind_np( pthread_mutexattr_t *attr, int kind );
-
-#elif defined( HAVE_CTHREADS_H )                                  /* GNUMach */
-#   include <cthreads.h>
-
-#else
-#   error no threads available on your system !
+#   include <semaphore.h>
 
 #endif
 
@@ -70,42 +55,33 @@
 
 /* Thread priorities */
 #ifdef __APPLE__
-#   define VLC_THREAD_PRIORITY_LOW (-47)
-#   define VLC_THREAD_PRIORITY_INPUT 37
-#   define VLC_THREAD_PRIORITY_AUDIO 37
-#   define VLC_THREAD_PRIORITY_VIDEO (-47)
-#   define VLC_THREAD_PRIORITY_OUTPUT 37
-#   define VLC_THREAD_PRIORITY_HIGHEST 37
+#   define VLC_THREAD_PRIORITY_LOW      0
+#   define VLC_THREAD_PRIORITY_INPUT   22
+#   define VLC_THREAD_PRIORITY_AUDIO   22
+#   define VLC_THREAD_PRIORITY_VIDEO    0
+#   define VLC_THREAD_PRIORITY_OUTPUT  22
+#   define VLC_THREAD_PRIORITY_HIGHEST 22
 
-#elif defined(SYS_BEOS)
-#   define VLC_THREAD_PRIORITY_LOW 5
-#   define VLC_THREAD_PRIORITY_INPUT 10
-#   define VLC_THREAD_PRIORITY_AUDIO 10
-#   define VLC_THREAD_PRIORITY_VIDEO 5
-#   define VLC_THREAD_PRIORITY_OUTPUT 15
-#   define VLC_THREAD_PRIORITY_HIGHEST 15
-
-#elif defined(PTHREAD_COND_T_IN_PTHREAD_H)
-#   define VLC_THREAD_PRIORITY_LOW 0
-#   define VLC_THREAD_PRIORITY_INPUT 20
-#   define VLC_THREAD_PRIORITY_AUDIO 10
-#   define VLC_THREAD_PRIORITY_VIDEO 0
-#   define VLC_THREAD_PRIORITY_OUTPUT 30
-#   define VLC_THREAD_PRIORITY_HIGHEST 40
+#elif defined(LIBVLC_USE_PTHREAD)
+#   define VLC_THREAD_PRIORITY_LOW      0
+#   define VLC_THREAD_PRIORITY_INPUT   10
+#   define VLC_THREAD_PRIORITY_AUDIO    5
+#   define VLC_THREAD_PRIORITY_VIDEO    0
+#   define VLC_THREAD_PRIORITY_OUTPUT  15
+#   define VLC_THREAD_PRIORITY_HIGHEST 20
 
 #elif defined(WIN32) || defined(UNDER_CE)
 /* Define different priorities for WinNT/2K/XP and Win9x/Me */
 #   define VLC_THREAD_PRIORITY_LOW 0
 #   define VLC_THREAD_PRIORITY_INPUT \
-        (IS_WINNT ? THREAD_PRIORITY_ABOVE_NORMAL : 0)
+        THREAD_PRIORITY_ABOVE_NORMAL
 #   define VLC_THREAD_PRIORITY_AUDIO \
-        (IS_WINNT ? THREAD_PRIORITY_HIGHEST : 0)
-#   define VLC_THREAD_PRIORITY_VIDEO \
-        (IS_WINNT ? 0 : THREAD_PRIORITY_BELOW_NORMAL )
+        THREAD_PRIORITY_HIGHEST
+#   define VLC_THREAD_PRIORITY_VIDEO 0
 #   define VLC_THREAD_PRIORITY_OUTPUT \
-        (IS_WINNT ? THREAD_PRIORITY_ABOVE_NORMAL : 0)
+        THREAD_PRIORITY_ABOVE_NORMAL
 #   define VLC_THREAD_PRIORITY_HIGHEST \
-        (IS_WINNT ? THREAD_PRIORITY_TIME_CRITICAL : 0)
+        THREAD_PRIORITY_TIME_CRITICAL
 
 #else
 #   define VLC_THREAD_PRIORITY_LOW 0
@@ -121,122 +97,347 @@
  * Type definitions
  *****************************************************************************/
 
-#if defined( PTH_INIT_IN_PTH_H )
-typedef pth_t            vlc_thread_t;
-typedef struct
-{
-    pth_mutex_t mutex;
-    vlc_object_t * p_this;
-} vlc_mutex_t;
-typedef struct
-{
-    pth_cond_t cond;
-    vlc_object_t * p_this;
-} vlc_cond_t;
-
-#elif defined( ST_INIT_IN_ST_H )
-typedef st_thread_t      vlc_thread_t;
-typedef struct
-{
-    st_mutex_t mutex;
-    vlc_object_t * p_this;
-} vlc_mutex_t;
-typedef struct
-{
-    st_cond_t cond;
-    vlc_object_t * p_this;
-} vlc_cond_t;
-
-#elif defined( WIN32 ) || defined( UNDER_CE )
-typedef HANDLE vlc_thread_t;
-typedef BOOL (WINAPI *SIGNALOBJECTANDWAIT) ( HANDLE, HANDLE, DWORD, BOOL );
-typedef unsigned (WINAPI *PTHREAD_START) (void *);
-
-typedef struct
-{
-    /* WinNT/2K/XP implementation */
-    HANDLE              mutex;
-    /* Win95/98/ME implementation */
-    CRITICAL_SECTION    csection;
-
-    vlc_object_t * p_this;
-} vlc_mutex_t;
-
-typedef struct
-{
-    volatile int        i_waiting_threads;
-    /* WinNT/2K/XP implementation */
-    HANDLE              event;
-    SIGNALOBJECTANDWAIT SignalObjectAndWait;
-    /* Win95/98/ME implementation */
-    HANDLE              semaphore;
-    CRITICAL_SECTION    csection;
-    int                 i_win9x_cv;
-
-    vlc_object_t * p_this;
-} vlc_cond_t;
-
-#elif defined( HAVE_KERNEL_SCHEDULER_H )
-/* This is the BeOS implementation of the vlc threads, note that the mutex is
- * not a real mutex and the cond_var is not like a pthread cond_var but it is
- * enough for what wee need */
-
-typedef thread_id vlc_thread_t;
-
-typedef struct
-{
-    int32_t         init;
-    sem_id          lock;
-
-    vlc_object_t * p_this;
-} vlc_mutex_t;
-
-typedef struct
-{
-    int32_t         init;
-    thread_id       thread;
-
-    vlc_object_t * p_this;
-} vlc_cond_t;
-
-#elif defined( PTHREAD_COND_T_IN_PTHREAD_H )
+#if defined (LIBVLC_USE_PTHREAD)
 typedef pthread_t       vlc_thread_t;
+typedef pthread_mutex_t vlc_mutex_t;
+#define VLC_STATIC_MUTEX PTHREAD_MUTEX_INITIALIZER
+typedef pthread_cond_t  vlc_cond_t;
+#define VLC_STATIC_COND  PTHREAD_COND_INITIALIZER
+typedef sem_t           vlc_sem_t;
+typedef pthread_rwlock_t vlc_rwlock_t;
+typedef pthread_key_t   vlc_threadvar_t;
+typedef struct vlc_timer *vlc_timer_t;
+
+#elif defined( WIN32 )
+#if !defined( UNDER_CE )
+typedef HANDLE vlc_thread_t;
+#else
 typedef struct
 {
-    pthread_mutex_t mutex;
-    vlc_object_t * p_this;
-} vlc_mutex_t;
-typedef struct
-{
-    pthread_cond_t cond;
-    vlc_object_t * p_this;
-} vlc_cond_t;
-
-#elif defined( HAVE_CTHREADS_H )
-typedef cthread_t       vlc_thread_t;
-
-/* Those structs are the ones defined in /include/cthreads.h but we need
- * to handle (&foo) where foo is a (mutex_t) while they handle (foo) where
- * foo is a (mutex_t*) */
-typedef struct
-{
-    spin_lock_t held;
-    spin_lock_t lock;
-    char *name;
-    struct cthread_queue queue;
-
-    vlc_object_t * p_this;
-} vlc_mutex_t;
-
-typedef struct
-{
-    spin_lock_t lock;
-    struct cthread_queue queue;
-    char *name;
-    struct cond_imp *implications;
-
-    vlc_object_t * p_this;
-} vlc_cond_t;
-
+    HANDLE handle;
+    HANDLE cancel_event;
+} *vlc_thread_t;
 #endif
 
+typedef struct
+{
+    bool dynamic;
+    union
+    {
+        struct
+        {
+            bool locked;
+            unsigned long contention;
+        };
+        CRITICAL_SECTION mutex;
+    };
+} vlc_mutex_t;
+#define VLC_STATIC_MUTEX { false, { { false, 0 } } }
+
+typedef struct
+{
+    HANDLE   handle;
+    unsigned clock;
+} vlc_cond_t;
+
+typedef HANDLE  vlc_sem_t;
+
+typedef struct
+{
+    vlc_mutex_t   mutex;
+    vlc_cond_t    read_wait;
+    vlc_cond_t    write_wait;
+    unsigned long readers;
+    unsigned long writers;
+    DWORD         writer;
+} vlc_rwlock_t;
+
+typedef DWORD   vlc_threadvar_t;
+typedef struct vlc_timer *vlc_timer_t;
+#endif
+
+#if defined( WIN32 ) && !defined ETIMEDOUT
+#  define ETIMEDOUT 10060 /* This is the value in winsock.h. */
+#endif
+
+/*****************************************************************************
+ * Function definitions
+ *****************************************************************************/
+VLC_EXPORT( void, vlc_mutex_init,    ( vlc_mutex_t * ) );
+VLC_EXPORT( void, vlc_mutex_init_recursive, ( vlc_mutex_t * ) );
+VLC_EXPORT( void, vlc_mutex_destroy, ( vlc_mutex_t * ) );
+VLC_EXPORT( void, vlc_mutex_lock, ( vlc_mutex_t * ) );
+VLC_EXPORT( int,  vlc_mutex_trylock, ( vlc_mutex_t * ) LIBVLC_USED );
+VLC_EXPORT( void, vlc_mutex_unlock, ( vlc_mutex_t * ) );
+VLC_EXPORT( void, vlc_cond_init,     ( vlc_cond_t * ) );
+VLC_EXPORT( void, vlc_cond_init_daytime, ( vlc_cond_t * ) );
+VLC_EXPORT( void, vlc_cond_destroy,  ( vlc_cond_t * ) );
+VLC_EXPORT( void, vlc_cond_signal, (vlc_cond_t *) );
+VLC_EXPORT( void, vlc_cond_broadcast, (vlc_cond_t *) );
+VLC_EXPORT( void, vlc_cond_wait, (vlc_cond_t *, vlc_mutex_t *) );
+VLC_EXPORT( int,  vlc_cond_timedwait, (vlc_cond_t *, vlc_mutex_t *, mtime_t) );
+VLC_EXPORT( void, vlc_sem_init, (vlc_sem_t *, unsigned) );
+VLC_EXPORT( void, vlc_sem_destroy, (vlc_sem_t *) );
+VLC_EXPORT( int,  vlc_sem_post, (vlc_sem_t *) );
+VLC_EXPORT( void, vlc_sem_wait, (vlc_sem_t *) );
+
+VLC_EXPORT( void, vlc_rwlock_init, (vlc_rwlock_t *) );
+VLC_EXPORT( void, vlc_rwlock_destroy, (vlc_rwlock_t *) );
+VLC_EXPORT( void, vlc_rwlock_rdlock, (vlc_rwlock_t *) );
+VLC_EXPORT( void, vlc_rwlock_wrlock, (vlc_rwlock_t *) );
+VLC_EXPORT( void, vlc_rwlock_unlock, (vlc_rwlock_t *) );
+VLC_EXPORT( int, vlc_threadvar_create, (vlc_threadvar_t * , void (*) (void *) ) );
+VLC_EXPORT( void, vlc_threadvar_delete, (vlc_threadvar_t *) );
+VLC_EXPORT( int, vlc_threadvar_set, (vlc_threadvar_t, void *) );
+VLC_EXPORT( void *, vlc_threadvar_get, (vlc_threadvar_t) );
+VLC_EXPORT( int,  vlc_thread_create, ( vlc_object_t *, const char *, int, const char *, void * ( * ) ( vlc_object_t * ), int ) LIBVLC_USED );
+VLC_EXPORT( int,  vlc_thread_set_priority, ( vlc_object_t *, const char *, int, int ) );
+VLC_EXPORT( void, vlc_thread_join,   ( vlc_object_t * ) );
+
+VLC_EXPORT( int, vlc_clone, (vlc_thread_t *, void * (*) (void *), void *, int) LIBVLC_USED );
+VLC_EXPORT( void, vlc_cancel, (vlc_thread_t) );
+VLC_EXPORT( void, vlc_join, (vlc_thread_t, void **) );
+VLC_EXPORT (void, vlc_control_cancel, (int cmd, ...));
+
+VLC_EXPORT( int, vlc_timer_create, (vlc_timer_t *, void (*) (void *), void *) LIBVLC_USED );
+VLC_EXPORT( void, vlc_timer_destroy, (vlc_timer_t) );
+VLC_EXPORT( void, vlc_timer_schedule, (vlc_timer_t, bool, mtime_t, mtime_t) );
+VLC_EXPORT( unsigned, vlc_timer_getoverrun, (vlc_timer_t) LIBVLC_USED );
+
+#ifndef LIBVLC_USE_PTHREAD_CANCEL
+enum {
+    VLC_CLEANUP_PUSH,
+    VLC_CLEANUP_POP,
+};
+#endif
+
+VLC_EXPORT( int, vlc_savecancel, (void) );
+VLC_EXPORT( void, vlc_restorecancel, (int state) );
+VLC_EXPORT( void, vlc_testcancel, (void) );
+
+#if defined (LIBVLC_USE_PTHREAD_CANCEL)
+/**
+ * Registers a new procedure to run if the thread is cancelled (or otherwise
+ * exits prematurely). Any call to vlc_cleanup_push() <b>must</b> paired with a
+ * call to either vlc_cleanup_pop() or vlc_cleanup_run(). Branching into or out
+ * of the block between these two function calls is not allowed (read: it will
+ * likely crash the whole process). If multiple procedures are registered,
+ * they are handled in last-in first-out order.
+ *
+ * @param routine procedure to call if the thread ends
+ * @param arg argument for the procedure
+ */
+# define vlc_cleanup_push( routine, arg ) pthread_cleanup_push (routine, arg)
+
+/**
+ * Removes a cleanup procedure that was previously registered with
+ * vlc_cleanup_push().
+ */
+# define vlc_cleanup_pop( ) pthread_cleanup_pop (0)
+
+/**
+ * Removes a cleanup procedure that was previously registered with
+ * vlc_cleanup_push(), and executes it.
+ */
+# define vlc_cleanup_run( ) pthread_cleanup_pop (1)
+#else
+typedef struct vlc_cleanup_t vlc_cleanup_t;
+
+struct vlc_cleanup_t
+{
+    vlc_cleanup_t *next;
+    void         (*proc) (void *);
+    void          *data;
+};
+
+/* This macros opens a code block on purpose. This is needed for multiple
+ * calls within a single function. This also prevent Win32 developers from
+ * writing code that would break on POSIX (POSIX opens a block as well). */
+# define vlc_cleanup_push( routine, arg ) \
+    do { \
+        vlc_cleanup_t vlc_cleanup_data = { NULL, routine, arg, }; \
+        vlc_control_cancel (VLC_CLEANUP_PUSH, &vlc_cleanup_data)
+
+# define vlc_cleanup_pop( ) \
+        vlc_control_cancel (VLC_CLEANUP_POP); \
+    } while (0)
+
+# define vlc_cleanup_run( ) \
+        vlc_control_cancel (VLC_CLEANUP_POP); \
+        vlc_cleanup_data.proc (vlc_cleanup_data.data); \
+    } while (0)
+
+#endif /* LIBVLC_USE_PTHREAD_CANCEL */
+
+static inline void vlc_cleanup_lock (void *lock)
+{
+    vlc_mutex_unlock ((vlc_mutex_t *)lock);
+}
+#define mutex_cleanup_push( lock ) vlc_cleanup_push (vlc_cleanup_lock, lock)
+
+# if defined (_POSIX_SPIN_LOCKS) && ((_POSIX_SPIN_LOCKS - 0) > 0)
+typedef pthread_spinlock_t vlc_spinlock_t;
+
+/**
+ * Initializes a spinlock.
+ */
+static inline void vlc_spin_init (vlc_spinlock_t *spin)
+{
+    if (pthread_spin_init (spin, PTHREAD_PROCESS_PRIVATE))
+        abort ();
+}
+
+/**
+ * Acquires a spinlock.
+ */
+static inline void vlc_spin_lock (vlc_spinlock_t *spin)
+{
+    pthread_spin_lock (spin);
+}
+
+/**
+ * Releases a spinlock.
+ */
+static inline void vlc_spin_unlock (vlc_spinlock_t *spin)
+{
+    pthread_spin_unlock (spin);
+}
+
+/**
+ * Deinitializes a spinlock.
+ */
+static inline void vlc_spin_destroy (vlc_spinlock_t *spin)
+{
+    pthread_spin_destroy (spin);
+}
+
+#elif defined (WIN32) && !defined (UNDER_CE)
+
+typedef CRITICAL_SECTION vlc_spinlock_t;
+
+/**
+ * Initializes a spinlock.
+ */
+static inline void vlc_spin_init (vlc_spinlock_t *spin)
+{
+    if (!InitializeCriticalSectionAndSpinCount(spin, 4000))
+        abort ();
+}
+
+/**
+ * Acquires a spinlock.
+ */
+static inline void vlc_spin_lock (vlc_spinlock_t *spin)
+{
+    EnterCriticalSection(spin);
+}
+
+/**
+ * Releases a spinlock.
+ */
+static inline void vlc_spin_unlock (vlc_spinlock_t *spin)
+{
+    LeaveCriticalSection(spin);
+}
+
+/**
+ * Deinitializes a spinlock.
+ */
+static inline void vlc_spin_destroy (vlc_spinlock_t *spin)
+{
+    DeleteCriticalSection(spin);
+}
+
+#else
+
+/* Fallback to plain mutexes if spinlocks are not available */
+typedef vlc_mutex_t vlc_spinlock_t;
+
+static inline void vlc_spin_init (vlc_spinlock_t *spin)
+{
+    vlc_mutex_init (spin);
+}
+
+# define vlc_spin_lock    vlc_mutex_lock
+# define vlc_spin_unlock  vlc_mutex_unlock
+# define vlc_spin_destroy vlc_mutex_destroy
+#endif
+
+/**
+ * Issues a full memory barrier.
+ */
+#if defined (__APPLE__)
+# include <libkern/OSAtomic.h> /* OSMemoryBarrier() */
+#endif
+static inline void barrier (void)
+{
+#if defined (__GNUC__) && !defined (__APPLE__) && \
+            ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
+    __sync_synchronize ();
+#elif defined(__APPLE__)
+    OSMemoryBarrier ();
+#elif defined(__powerpc__)
+    asm volatile ("sync":::"memory");
+#elif 0 // defined(__i386__) /*  Requires SSE2 support */
+    asm volatile ("mfence":::"memory");
+#else
+    vlc_spinlock_t spin;
+    vlc_spin_init (&spin);
+    vlc_spin_lock (&spin);
+    vlc_spin_unlock (&spin);
+    vlc_spin_destroy (&spin);
+#endif
+}
+
+/*****************************************************************************
+ * vlc_thread_create: create a thread
+ *****************************************************************************/
+#define vlc_thread_create( P_THIS, PSZ_NAME, FUNC, PRIORITY )         \
+    vlc_thread_create( VLC_OBJECT(P_THIS), __FILE__, __LINE__, PSZ_NAME, FUNC, PRIORITY )
+
+/*****************************************************************************
+ * vlc_thread_set_priority: set the priority of the calling thread
+ *****************************************************************************/
+#define vlc_thread_set_priority( P_THIS, PRIORITY )                         \
+    vlc_thread_set_priority( VLC_OBJECT(P_THIS), __FILE__, __LINE__, PRIORITY )
+
+/*****************************************************************************
+ * vlc_thread_join: wait until a thread exits
+ *****************************************************************************/
+#define vlc_thread_join( P_THIS )                                           \
+    vlc_thread_join( VLC_OBJECT(P_THIS) )
+
+#ifdef __cplusplus
+/**
+ * Helper C++ class to lock a mutex.
+ * The mutex is locked when the object is created, and unlocked when the object
+ * is destroyed.
+ */
+class vlc_mutex_locker
+{
+    private:
+        vlc_mutex_t *lock;
+    public:
+        vlc_mutex_locker (vlc_mutex_t *m) : lock (m)
+        {
+            vlc_mutex_lock (lock);
+        }
+
+        ~vlc_mutex_locker (void)
+        {
+            vlc_mutex_unlock (lock);
+        }
+};
+#endif
+
+enum {
+   VLC_XLIB_MUTEX,
+   /* Insert new entry HERE */
+   VLC_MAX_MUTEX
+};
+
+VLC_EXPORT( void, vlc_global_mutex, ( unsigned, bool ) );
+#define vlc_global_lock( n ) vlc_global_mutex( n, true )
+#define vlc_global_unlock( n ) vlc_global_mutex( n, false )
+
+#endif /* !_VLC_THREADS_H */

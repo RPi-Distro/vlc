@@ -3,7 +3,7 @@
 # The format of this file was inspired by the Linux kernel CREDITS file.
 # Authors are listed alphabetically.
 # 
-# The fields are: name (N), email (E), web-address (W), CVS account login (C),
+# The fields are: name (N), email (E), web-address (W), SVN account login (C),
 # PGP key ID and fingerprint (P), description (D), and snail-mail address (S).
 
 N: Laurent Aimar
@@ -34,8 +34,8 @@ D: BeOS module fixes and enhancements
 S: Germany
 
 N: Olivier Aubert
-E: oaubert at lisi dot univ-lyon1 dot fr
-D: CORBA interface
+E: olivier.aubert at liris dot cnrs dot fr
+D: Mediacontrol API, Python bindings, svg module
 S: France
 
 N: Sigmund Augdal Helberg
@@ -102,8 +102,19 @@ S: France
 
 N: Filippo Carone 
 E: filippo[dontspam]@carone.org
+C: littlejohn
 D: Java bindings
 S: Italy
+
+N: Rafaël "Hanz, David" Carré
+E: funman@videolanorg
+C: funman
+P: C0AFF10F
+D: D-Bus control, Audioscrobbler, Telepathy, Taglib meta reader/writer
+D: Ncurses enhancements, Power management inhibition
+D: PGP update core
+D: Spread bugfixes
+S: Netherlands
 
 N: Tony Castley
 E: tony@castley.net
@@ -114,15 +125,25 @@ S: Australia
 N: Antoine Cellerier
 E: dionoea@videolan.org
 C: dionoea
-D: Video Filters: mosaic, gradient and edge detection, magnify, rss
-D: Podcast demux
+D: Video Filters: mosaic, gradient and edge detection, magnify, rss, croppadd, erase, extract, gaussianblur, motion detect, puzzle, rotate, bluescreen, alphamask, psychedelic
+D: Demux: podcast, shoutcast
+D: Access: v4l2
 D: HTTP interface pages
+D: Lua (interface, meta fetcher, playlist, ...) modules
 S: France
 
 N: Renaud Dartus
 E: reno@via.ecp.fr
 C: reno
 D: AC3 decoder
+S: France
+
+N: Rémi Duraffort
+E: ivoire -at- videolan.org
+C: ivoire
+D: sftp access
+D: Improvement of SDL vout and taglib
+D: QA (memory leaks, race conditions)
 S: France
 
 N: Cyril Deguet
@@ -135,16 +156,26 @@ D: JACK audio output
 S: France
 
 N: Rémi Denis-Courmont
-E: rem#videolan.org
+W: www.remlab.net
 C: courmisch
-D: SSL/TLS support (core, HTTP server, HTTP input)
-D: VOC files demultiplexer
-S: France
+D: network subsystem
+D: threading subsystem
+D: Demux: RTP receiver, VOC, XA, Standard MIDI files
+D: Codecs: EA ADPCM, MIDI synthesis
+D: TLS and SRTP
+S: Finland
 
 N: Colin Delacroix
-E: colin@zoy.org
+E: colin#zoy.org
 C: colin
-D: MacOS X sound support
+D: initial MacOS X port
+S: France
+
+N: Pierre d'Herbemont
+E: pdherbemont#videolan.org
+C: pdherbemont
+D: Mac OS X Framework
+D: LibVLC enhancements
 S: France
 
 N: Boris Dorès
@@ -171,34 +202,15 @@ D: MPEG TS input
 D: Decoder modularization
 S: USA
 
-N: Andrew Flintham
-E: amf@cus.org.uk
-D: text subtitler and font scripts
-S: United Kingdom
-
 N: Damien Fouilleul
 E: Damien.Fouilleul@laposte.net
 C: Quovodis
 D: ActiveX control
 D: Safari/Firefox plugin for MacOS X
+D: Direct3D Video output
+D: SSE2 chroma converters
+D: improved MMX chroma converters
 S: Ireland
-
-N: Alexis Guillard
-E: alexis.guillard@bt.com
-D: IPv6 support
-S: United Kingdom
-
-N: Gerald Hansink
-E: gerald.hansink@ordina.nl
-D: Qt Embedded Video Output
-S: Netherlands
-
-N: Shane Harper
-E: shanegh@optusnet.com.au
-D: SDL plugin fixes and enhancements
-D: XVideo video output
-D: Gnome and Gtk+ interface enhancements
-S: United Kingdom
 
 N: Derk-Jan Hartman
 E: hartman@videolan.org
@@ -209,6 +221,7 @@ D: Directory input
 D: Mac OS X Video Output
 D: Mac OS X Audio Output
 D: Kasenna client support
+D: contrib system for 3rd party libraries
 S: Netherlands
 
 N: Gaël Hendryckx
@@ -254,10 +267,28 @@ D: AC3 decoder
 D: MPEG audio decoder
 S: France
 
-N: Felix Kühne
-E: fkuehne@users.sourceforge.net
+N: Jean-Baptiste Kempf
+E: jb@videolan.org
+C: jb
+D: Qt4 Interface
+D: Contribs system
+S: France
+
+N: Pavlov Konstantin
+E: thresh@videolan.org
+C: thresh
+D: Build system/linkage fixes
+D: Pidfile creation on daemon mode
+D: Parts of Russian translation
+D: ALTLinux VLC maintainer
+S: Russia
+
+N: Felix Paul Kühne
+E: fkuehne@videolan.org
 C: fkuehne
-D: MacOS X Interface (Wizard, structure, extended controls panel, bookmarks window)
+D: MacOS X Interface (wizard, structure, extended controls panel, bookmarks window, fullscreen controller)
+D: Interface Interaction (core and OSX)
+D: contrib system for 3rd party libraries
 D: German translation
 S: Germany
 
@@ -284,7 +315,9 @@ D: Many ports (Mac OS X, iPAQ, *BSD, Solaris...)
 D: DVB input
 D: mosaic
 D: TS muxer/demuxer improvements
+D: contrib system for 3rd party libraries
 D: documentation
+D: fortunes maintainer
 S: France
 
 N: Loïc Minier
@@ -295,21 +328,20 @@ D: xosd interface plug-in
 D: SLP
 S: France
 
+N: Christophe Mutricy
+E: xtophe at videolan d0t org
+C: xtophe
+D: libnotify plugin
+D: contrib system for 3rd party libraries
+D: win32 binary contribs
+D: Varios fixes (configure.ac, wxWidgets, M3U, ...)
+S: England
+
 N: Florian G. Pflug
 E: fgp@phlo.org
 C: fgp
 D: MacOS X port
 S: Austria
-
-N: Heiko Panther
-E: heiko.panther@web.de
-D: Mac OS X audio device selection framework
-S: Germany
-
-N: Vincent Penne
-E: ziggy at sashipa dot com
-D: teletext decoder
-S: France
 
 N: Eric Petit
 E: titer@videolan.org
@@ -317,6 +349,7 @@ C: titer
 D: BeOS module fixes and enhancements
 D: Stream output
 D: Mac OS X OpenGL video output
+D: contrib system for 3rd party libraries
 S: France
 
 N: Benjamin Pracht
@@ -330,11 +363,6 @@ N: Emmanuel Puig
 E: karibu@videolan.org
 C: karibu
 D: skins module (core and win32 port)
-S: France
-
-N: Frédéric RUGET
-E: frederic.ruget@free.fr
-D: Portaudio audio output
 S: France
 
 N: Jean-Paul Saman
@@ -365,6 +393,12 @@ D: YUV transforms
 D: X11 and GGI video outputs
 S: France
 
+N: Kenneth Self
+E: kens@campoz.fslife.co.uk
+C: kenS
+D: BDA module
+S: United Kingdom
+
 N: Richard Shepherd
 E: richard@rshepherd.demon.co.uk
 C: richards
@@ -379,11 +413,6 @@ D: wxWidgets and joystick interfaces
 D: Announce system
 D: visualisation, volume normalizer
 S: France
-
-N: Peter Surda
-E: shurdeek@panorama.sth.ac.at
-D: rc plugin for VLC control through /dev/stdin
-S: Austria
 
 N: Olivier Teulière
 E: ipkiss@via.ecp.fr

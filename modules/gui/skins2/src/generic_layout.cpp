@@ -2,7 +2,7 @@
  * generic_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c3bd603825f3512245467af7810553b82987326b $
+ * $Id: 731d8dd75c1fe87147fb2f7c0e2348ea4d599914 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -31,14 +31,15 @@
 #include "../controls/ctrl_generic.hpp"
 #include "../controls/ctrl_video.hpp"
 #include "../utils/var_bool.hpp"
+#include <set>
 
 
 GenericLayout::GenericLayout( intf_thread_t *pIntf, int width, int height,
                               int minWidth, int maxWidth, int minHeight,
                               int maxHeight ):
-    SkinObject( pIntf ), m_pWindow( NULL ), m_width( width ),
-    m_height( height ), m_minWidth( minWidth ), m_maxWidth( maxWidth ),
-    m_minHeight( minHeight ), m_maxHeight( maxHeight ), m_pVideoControl( NULL ),
+    SkinObject( pIntf ), m_pWindow( NULL ), m_rect( 0, 0, width, height ),
+    m_minWidth( minWidth ), m_maxWidth( maxWidth ),
+    m_minHeight( minHeight ), m_maxHeight( maxHeight ), m_pVideoCtrlSet(),
     m_visible( false ), m_pVarActive( NULL )
 {
     // Get the OSFactory
@@ -54,15 +55,21 @@ GenericLayout::GenericLayout( intf_thread_t *pIntf, int width, int height,
 
 GenericLayout::~GenericLayout()
 {
-    if( m_pImage )
-    {
-        delete m_pImage;
-    }
+    delete m_pImage;
+
     list<Anchor*>::const_iterator it;
     for( it = m_anchorList.begin(); it != m_anchorList.end(); it++ )
     {
         delete *it;
     }
+
+    list<LayeredControl>::const_iterator iter;
+    for( iter = m_controlList.begin(); iter != m_controlList.end(); iter++ )
+    {
+        CtrlGeneric *pCtrl = (*iter).m_pControl;
+        pCtrl->unsetLayout();
+    }
+
 }
 
 
@@ -103,10 +110,11 @@ void GenericLayout::addControl( CtrlGeneric *pControl,
         pControl->setLayout( this, rPosition );
 
         // Draw the control
-        pControl->draw( *m_pImage, rPosition.getLeft(), rPosition.getTop() );
+        if( pControl->isVisible() )
+            pControl->draw( *m_pImage, rPosition.getLeft(), rPosition.getTop() );
 
         // Add the control in the list.
-        // This list must remain sorted by layer order 
+        // This list must remain sorted by layer order
         list<LayeredControl>::iterator it;
         for( it = m_controlList.begin(); it != m_controlList.end(); it++ )
         {
@@ -125,7 +133,7 @@ void GenericLayout::addControl( CtrlGeneric *pControl,
         // Check if it is a video control
         if( pControl->getType() == "video" )
         {
-            m_pVideoControl = (CtrlVideo*)pControl;
+            m_pVideoCtrlSet.insert( (CtrlVideo*)pControl );
         }
     }
     else
@@ -165,8 +173,7 @@ void GenericLayout::onControlUpdate( const CtrlGeneric &rCtrl,
 void GenericLayout::resize( int width, int height )
 {
     // Update the window size
-    m_width = width;
-    m_height = height;
+    m_rect = SkinsRect( 0, 0 , width, height );
 
     // Recreate a new image
     if( m_pImage )
@@ -189,9 +196,7 @@ void GenericLayout::resize( int width, int height )
     {
         // Resize the window
         pWindow->resize( width, height );
-        refreshAll();
         // Change the shape of the window and redraw it
-        pWindow->updateShape();
         refreshAll();
     }
 }
@@ -199,7 +204,7 @@ void GenericLayout::resize( int width, int height )
 
 void GenericLayout::refreshAll()
 {
-    refreshRect( 0, 0, m_width, m_height );
+    refreshRect( 0, 0, m_rect.getWidth(), m_rect.getHeight() );
 }
 
 
@@ -208,6 +213,9 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
     // Do nothing if the layout is hidden
     if( !m_visible )
         return;
+
+    // update the transparency global mask
+    m_pImage->clear( x, y, width, height );
 
     // Draw all the controls of the layout
     list<LayeredControl>::const_iterator iter;
@@ -226,50 +234,20 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
     TopWindow *pWindow = getWindow();
     if( pWindow )
     {
+        // first apply new shape to the window
+        pWindow->updateShape();
+
         // Check boundaries
         if( x < 0 )
             x = 0;
         if( y < 0)
             y = 0;
-        if( x + width > m_width )
-            width = m_width - x;
-        if( y + height > m_height )
-            height = m_height - y;
+        if( x + width > m_rect.getWidth() )
+            width = m_rect.getWidth() - x;
+        if( y + height > m_rect.getHeight() )
+            height = m_rect.getHeight() - y;
 
-        // Refresh the window... but do not paint on a visible video control!
-        if( !m_pVideoControl || !m_pVideoControl->isVisible() )
-        {
-            // No video control, we can safely repaint the rectangle
-            pWindow->refresh( x, y, width, height );
-        }
-        else
-        {
-            // Bad luck, there is a video control somewhere (not necessarily
-            // in the repainting zone, btw).
-            // We will divide the repainting into 4 regions (top, left, bottom
-            // and right). The overlapping parts (i.e. the corners) of these
-            // regions will be painted twice, because otherwise the algorithm
-            // becomes a real mess :)
-
-            // Use short variable names for convenience
-            int xx = m_pVideoControl->getPosition()->getLeft();
-            int yy = m_pVideoControl->getPosition()->getTop();
-            int ww = m_pVideoControl->getPosition()->getWidth();
-            int hh = m_pVideoControl->getPosition()->getHeight();
-
-            // Top part:
-            if( y < yy )
-                pWindow->refresh( x, y, width, yy - y );
-            // Left part:
-            if( x < xx )
-                pWindow->refresh( x, y, xx - x, height );
-            // Bottom part
-            if( y + height > yy + hh )
-                pWindow->refresh( x, yy + hh, width, y + height - (yy + hh) );
-            // Right part
-            if( x + width > xx + ww )
-                pWindow->refresh( xx + ww, y, x + width - (xx + ww), height );
-        }
+        pWindow->refresh( x, y, width, height );
     }
 }
 
@@ -291,22 +269,11 @@ void GenericLayout::onShow()
     m_visible = true;
 
     refreshAll();
-    // TODO find a better way to handle the vout ?
-    if( m_pVideoControl )
-    {
-        m_pVideoControl->setVisible( true );
-    }
 }
 
 
 void GenericLayout::onHide()
 {
     m_visible = false;
-
-    // TODO find a better way to handle the vout ?
-    if( m_pVideoControl )
-    {
-        m_pVideoControl->setVisible( false );
-    }
 }
 

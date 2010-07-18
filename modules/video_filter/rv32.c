@@ -2,7 +2,7 @@
  * rv32.c: conversion plugin to RV32 format.
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 3d056cd697f4ea8131a3accf76fbbe3504b10e6c $
+ * $Id: 5bb8e67ebdc699af522f2e921cce7c16955fd684 $
  *
  * Author: Cyril Deguet <asmax@videolan.org>
  *
@@ -24,35 +24,28 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include "vlc_filter.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-/*****************************************************************************
- * filter_sys_t : filter descriptor
- *****************************************************************************/
-struct filter_sys_t
-{
-    es_format_t fmt_in;
-    es_format_t fmt_out;
-};
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_filter.h>
 
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
 static int  OpenFilter ( vlc_object_t * );
-static void CloseFilter( vlc_object_t * );
-
 static picture_t *Filter( filter_t *, picture_t * );
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( _("RV32 conversion filter") );
-    set_capability( "video filter2", 1 );
-    set_callbacks( OpenFilter, CloseFilter );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("RV32 conversion filter") )
+    set_capability( "video filter2", 1 )
+    set_callbacks( OpenFilter, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenFilter: probe the filter and return score
@@ -60,37 +53,22 @@ vlc_module_end();
 static int OpenFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys;
 
     /* XXX Only support RV24 -> RV32 conversion */
-    if( p_filter->fmt_in.video.i_chroma != VLC_FOURCC('R','V','2','4') ||
-        p_filter->fmt_out.video.i_chroma != VLC_FOURCC('R', 'V', '3', '2') )
+    if( p_filter->fmt_in.video.i_chroma != VLC_CODEC_RGB24 ||
+        (p_filter->fmt_out.video.i_chroma != VLC_CODEC_RGB32 &&
+        p_filter->fmt_out.video.i_chroma != VLC_CODEC_RGBA) )
     {
         return VLC_EGENERIC;
     }
 
-    /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_filter->p_sys = p_sys =
-          (filter_sys_t *)malloc(sizeof(filter_sys_t)) ) == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
-        return VLC_EGENERIC;
-    }
+    if( p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width
+     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
+        return -1;
 
     p_filter->pf_video_filter = Filter;
 
     return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * CloseFilter: clean up the filter
- *****************************************************************************/
-static void CloseFilter( vlc_object_t *p_this )
-{
-    filter_t *p_filter = (filter_t*)p_this;
-    filter_sys_t *p_sys = p_filter->p_sys;
-
-    free( p_sys );
 }
 
 /****************************************************************************
@@ -103,12 +81,10 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     unsigned int j;
 
     /* Request output picture */
-    p_pic_dst = p_filter->pf_vout_buffer_new( p_filter );
+    p_pic_dst = filter_NewPicture( p_filter );
     if( !p_pic_dst )
     {
-        msg_Warn( p_filter, "can't get output picture" );
-        if( p_pic->pf_release )
-            p_pic->pf_release( p_pic );
+        picture_Release( p_pic );
         return NULL;
     }
 
@@ -134,14 +110,9 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         }
     }
 
-    p_pic_dst->date = p_pic->date;
-    p_pic_dst->b_force = p_pic->b_force;
-    p_pic_dst->i_nb_fields = p_pic->i_nb_fields;
-    p_pic_dst->b_progressive = p_pic->b_progressive;
-    p_pic_dst->b_top_field_first = p_pic->b_top_field_first;
+    picture_CopyProperties( p_pic_dst, p_pic );
+    picture_Release( p_pic );
 
-    if( p_pic->pf_release )
-        p_pic->pf_release( p_pic );
     return p_pic_dst;
 }
 

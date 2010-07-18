@@ -2,7 +2,7 @@
  * switcher.c: MPEG2 video switcher module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 7250426191120abe4df08ece7219654d6a80b428 $
+ * $Id: 929ab9958b6d0c94f3f64360b60a0a087fec6e38 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,21 +24,28 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 
-#include <vlc/vlc.h>
-#include <vlc/sout.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <charset.h>
-#include <network.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_sout.h>
+#include <vlc_avcodec.h>
+#include <vlc_filter.h>
+#include <vlc_cpu.h>
+
+#include <vlc_block.h>
+
+#include <vlc_fs.h>
+#include <vlc_network.h>
 
 #define HAVE_MMX
 #ifdef HAVE_LIBAVCODEC_AVCODEC_H
 #   include <libavcodec/avcodec.h>
-#elif defined( HAVE_FFMPEG_AVCODEC_H )
+#elif defined(HAVE_FFMPEG_AVCODEC_H)
 #   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
@@ -105,43 +112,42 @@ static block_t *AudioGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
 #define AUDIO_LONGTEXT N_( \
     "Mute audio when command is not 0." )
 
-vlc_module_begin();
-    set_description( _("MPEG2 video switcher stream output") );
-    set_capability( "sout stream", 50 );
-    add_shortcut( "switcher" );
-    set_callbacks( Open, Close );
+vlc_module_begin ()
+    set_description( N_("MPEG2 video switcher stream output") )
+    set_capability( "sout stream", 50 )
+    add_shortcut( "switcher" )
+    set_callbacks( Open, Close )
 
     add_string( SOUT_CFG_PREFIX "files", "", NULL, FILES_TEXT,
-                FILES_LONGTEXT, VLC_FALSE );
+                FILES_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "sizes", "", NULL, SIZES_TEXT,
-                SIZES_LONGTEXT, VLC_FALSE );
+                SIZES_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "aspect-ratio", "4:3", NULL, RATIO_TEXT,
-                RATIO_LONGTEXT, VLC_FALSE );
+                RATIO_LONGTEXT, false )
     add_integer( SOUT_CFG_PREFIX "port", 5001, NULL,
-                 PORT_TEXT, PORT_LONGTEXT, VLC_TRUE );
+                 PORT_TEXT, PORT_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "command", 0, NULL,
-                 COMMAND_TEXT, COMMAND_LONGTEXT, VLC_TRUE );
+                 COMMAND_TEXT, COMMAND_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "gop", 8, NULL,
-                 GOP_TEXT, GOP_LONGTEXT, VLC_TRUE );
+                 GOP_TEXT, GOP_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "qscale", 5, NULL,
-                 QSCALE_TEXT, QSCALE_LONGTEXT, VLC_TRUE );
-    add_bool( SOUT_CFG_PREFIX "mute-audio", 1, NULL,
-              AUDIO_TEXT, AUDIO_LONGTEXT, VLC_TRUE );
-vlc_module_end();
+                 QSCALE_TEXT, QSCALE_LONGTEXT, true )
+    add_bool( SOUT_CFG_PREFIX "mute-audio", true, NULL,
+              AUDIO_TEXT, AUDIO_LONGTEXT, true )
+vlc_module_end ()
 
-static const char *ppsz_sout_options[] = {
+static const char *const ppsz_sout_options[] = {
     "files", "sizes", "aspect-ratio", "port", "command", "gop", "qscale",
     "mute-audio", NULL
 };
 
 struct sout_stream_sys_t
 {
-    sout_stream_t   *p_out;
     int             i_gop;
     int             i_qscale;
     int             i_aspect;
     sout_stream_id_t *pp_audio_ids[MAX_AUDIO];
-    vlc_bool_t      b_audio;
+    bool      b_audio;
 
     /* Pictures */
     picture_t       p_pictures[MAX_PICTURES];
@@ -155,8 +161,8 @@ struct sout_stream_sys_t
 struct sout_stream_id_t
 {
     void            *id;
-    vlc_bool_t      b_switcher_video;
-    vlc_bool_t      b_switcher_audio;
+    bool      b_switcher_video;
+    bool      b_switcher_audio;
     es_format_t     f_src;
     block_t         *p_queued;
 
@@ -180,18 +186,18 @@ static int Open( vlc_object_t *p_this )
     char              *psz_files, *psz_sizes;
     int               i_height = 0, i_width = 0;
 
-    p_sys = malloc( sizeof(sout_stream_sys_t) );
-    memset( p_sys, 0, sizeof(sout_stream_sys_t) );
+    p_sys = calloc( 1, sizeof(sout_stream_sys_t) );
+    if( !p_sys )
+        return VLC_ENOMEM;
 
-    p_sys->p_out = sout_StreamNew( p_stream->p_sout, p_stream->psz_next );
-    if( !p_sys->p_out )
+    if( !p_stream->p_next )
     {
         msg_Err( p_stream, "cannot create chain" );
         free( p_sys );
         return VLC_EGENERIC;
     }
 
-    sout_CfgParse( p_stream, SOUT_CFG_PREFIX, ppsz_sout_options,
+    config_ChainParse( p_stream, SOUT_CFG_PREFIX, ppsz_sout_options,
                    p_stream->p_cfg );
 
     var_Get( p_stream, SOUT_CFG_PREFIX "files", &val );
@@ -259,7 +265,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     var_Get( p_stream, SOUT_CFG_PREFIX "port", &val );
-    p_sys->i_fd = net_OpenUDP( p_stream, NULL, val.i_int, NULL, 0 );
+    p_sys->i_fd = net_ListenUDP1( VLC_OBJECT(p_stream), NULL, val.i_int );
     if ( p_sys->i_fd < 0 )
     {
         free( p_sys );
@@ -298,8 +304,6 @@ static void Close( vlc_object_t * p_this )
     sout_stream_t       *p_stream = (sout_stream_t *)p_this;
     sout_stream_sys_t   *p_sys = p_stream->p_sys;
 
-    sout_StreamDelete( p_sys->p_out );
-
     free( p_sys );
 }
 
@@ -311,36 +315,35 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     sout_stream_sys_t   *p_sys = p_stream->p_sys;
     sout_stream_id_t    *id;
 
-    id = malloc( sizeof( sout_stream_id_t ) );
-    memset( id, 0, sizeof( sout_stream_id_t ) );
-    id->id = NULL;
+    id = calloc( 1, sizeof( sout_stream_id_t ) );
+    if( !id )
+        return NULL;
 
-    if ( p_fmt->i_cat == VIDEO_ES
-            && (p_fmt->i_codec == VLC_FOURCC('m', 'p', 'g', 'v')
-                 || p_fmt->i_codec == VLC_FOURCC('f', 'a', 'k', 'e')) )
+    if( p_fmt->i_cat == VIDEO_ES &&
+        ( p_fmt->i_codec == VLC_CODEC_MPGV ||
+          p_fmt->i_codec == VLC_FOURCC('f', 'a', 'k', 'e') ) )
     {
-        id->b_switcher_video = VLC_TRUE;
-        p_fmt->i_codec = VLC_FOURCC('m', 'p', 'g', 'v');
-        msg_Dbg( p_stream,
-                 "creating video switcher for fcc=`%4.4s' cmd:%d",
+        id->b_switcher_video = true;
+        p_fmt->i_codec = VLC_CODEC_MPGV;
+        msg_Dbg( p_stream, "creating video switcher for fcc=`%4.4s' cmd:%d",
                  (char*)&p_fmt->i_codec, p_sys->i_cmd );
     }
-    else if ( p_fmt->i_cat == AUDIO_ES
-               && p_fmt->i_codec == VLC_FOURCC('m', 'p', 'g', 'a')
-               && p_sys->b_audio )
+    else if ( p_fmt->i_cat == AUDIO_ES &&
+              p_fmt->i_codec == VLC_CODEC_MPGA &&
+              p_sys->b_audio )
     {
         int i_ff_codec = CODEC_ID_MP2;
         int i;
 
-        id->b_switcher_audio = VLC_TRUE;
-        msg_Dbg( p_stream,
-                 "creating audio switcher for fcc=`%4.4s' cmd:%d",
+        id->b_switcher_audio = true;
+        msg_Dbg( p_stream, "creating audio switcher for fcc=`%4.4s' cmd:%d",
                  (char*)&p_fmt->i_codec, p_sys->i_cmd );
 
         /* Allocate the encoder right now. */
         if( i_ff_codec == 0 )
         {
             msg_Err( p_stream, "cannot find encoder" );
+            free( id );
             return NULL;
         }
 
@@ -348,26 +351,28 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
         if( !id->ff_enc )
         {
             msg_Err( p_stream, "cannot find encoder (avcodec)" );
+            free( id );
             return NULL;
         }
 
         id->ff_enc_c = avcodec_alloc_context();
 
         /* Set CPU capabilities */
+        unsigned i_cpu = vlc_CPU();
         id->ff_enc_c->dsp_mask = 0;
-        if( !(p_stream->p_libvlc->i_cpu & CPU_CAPABILITY_MMX) )
+        if( !(i_cpu & CPU_CAPABILITY_MMX) )
         {
             id->ff_enc_c->dsp_mask |= FF_MM_MMX;
         }
-        if( !(p_stream->p_libvlc->i_cpu & CPU_CAPABILITY_MMXEXT) )
+        if( !(i_cpu & CPU_CAPABILITY_MMXEXT) )
         {
             id->ff_enc_c->dsp_mask |= FF_MM_MMXEXT;
         }
-        if( !(p_stream->p_libvlc->i_cpu & CPU_CAPABILITY_3DNOW) )
+        if( !(i_cpu & CPU_CAPABILITY_3DNOW) )
         {
             id->ff_enc_c->dsp_mask |= FF_MM_3DNOW;
         }
-        if( !(p_stream->p_libvlc->i_cpu & CPU_CAPABILITY_SSE) )
+        if( !(i_cpu & CPU_CAPABILITY_SSE) )
         {
             id->ff_enc_c->dsp_mask |= FF_MM_SSE;
             id->ff_enc_c->dsp_mask |= FF_MM_SSE2;
@@ -377,32 +382,35 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
         id->ff_enc_c->channels    = p_fmt->audio.i_channels;
         id->ff_enc_c->bit_rate    = p_fmt->i_bitrate;
 
+        vlc_avcodec_lock();
         if( avcodec_open( id->ff_enc_c, id->ff_enc ) )
         {
+            vlc_avcodec_unlock();
             msg_Err( p_stream, "cannot open encoder" );
+            av_free( id->ff_enc_c );
+            free( id );
             return NULL;
         }
+        vlc_avcodec_unlock();
 
         id->p_buffer_out = malloc( AVCODEC_MAX_AUDIO_FRAME_SIZE * 2 );
-        id->p_samples = malloc( id->ff_enc_c->frame_size
-                                 * p_fmt->audio.i_channels * sizeof(int16_t) );
-        memset( id->p_samples, 0,
-                id->ff_enc_c->frame_size * p_fmt->audio.i_channels
-                 * sizeof(int16_t) );
+        id->p_samples = calloc( id->ff_enc_c->frame_size * p_fmt->audio.i_channels,
+                                sizeof(int16_t) );
+        if( !id->p_buffer_out || !id->p_samples )
+            goto error;
 
-        for ( i = 0; i < MAX_AUDIO; i++ )
+        for( i = 0; i < MAX_AUDIO; i++ )
         {
-            if ( p_sys->pp_audio_ids[i] == NULL )
+            if( p_sys->pp_audio_ids[i] == NULL )
             {
                 p_sys->pp_audio_ids[i] = id;
                 break;
             }
         }
-        if ( i == MAX_AUDIO )
+        if( i == MAX_AUDIO )
         {
             msg_Err( p_stream, "too many audio streams!" );
-            free( id );
-            return NULL;
+            goto error;
         }
     }
     else
@@ -415,15 +423,20 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     memcpy( &id->f_src, p_fmt, sizeof( es_format_t ) );
 
     /* open output stream */
-    id->id = p_sys->p_out->pf_add( p_sys->p_out, p_fmt );
+    id->id = p_stream->p_next->pf_add( p_stream->p_next, p_fmt );
 
-    if ( id->id == NULL )
-    {
-        free( id );
-        return NULL;
-    }
+    if( id->id != NULL )
+        return id;
 
-    return id;
+error:
+    vlc_avcodec_lock();
+    avcodec_close( id->ff_enc_c );
+    vlc_avcodec_unlock();
+    free( id->p_samples );
+    free( id->p_buffer_out );
+    av_free( id->ff_enc_c );
+    free( id );
+    return NULL;
 }
 
 /*****************************************************************************
@@ -448,7 +461,9 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
 
     if ( id->ff_enc )
     {
+        vlc_avcodec_lock();
         avcodec_close( id->ff_enc_c );
+        vlc_avcodec_unlock();
         av_free( id->ff_enc_c );
         av_free( id->p_frame );
         free( id->p_buffer_out );
@@ -456,7 +471,7 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
 
     if ( id->id )
     {
-        p_sys->p_out->pf_del( p_sys->p_out, id->id );
+        p_stream->p_next->pf_del( p_stream->p_next, id->id );
     }
     free( id );
 
@@ -479,7 +494,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
 
     if ( !id->b_switcher_video && !id->b_switcher_audio )
     {
-        return p_sys->p_out->pf_send( p_sys->p_out, id->id, p_buffer );
+        return p_stream->p_next->pf_send( p_stream->p_next, id->id, p_buffer );
     }
 
     block_ChainAppend( &id->p_queued, p_buffer );
@@ -491,7 +506,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
 
         while ( id->p_queued != NULL )
         {
-            mtime_t i_dts = 0;
+            mtime_t i_dts;
             int i;
 
             if ( p_sys->i_old_cmd != p_sys->i_cmd )
@@ -538,7 +553,7 @@ static mtime_t Process( sout_stream_t *p_stream, sout_stream_id_t *id,
     {
         /* Full forward */
         if ( p_blocks != NULL )
-            p_sys->p_out->pf_send( p_sys->p_out, id->id, p_blocks );
+            p_stream->p_next->pf_send( p_stream->p_next, id->id, p_blocks );
         return i_dts;
     }
 
@@ -575,7 +590,7 @@ static mtime_t Process( sout_stream_t *p_stream, sout_stream_id_t *id,
     }
 
     if ( p_blocks_out != NULL )
-        p_sys->p_out->pf_send( p_sys->p_out, id->id, p_blocks_out );
+        p_stream->p_next->pf_send( p_stream->p_next, id->id, p_blocks_out );
     return i_dts;
 }
 
@@ -587,7 +602,7 @@ static int UnpackFromFile( sout_stream_t *p_stream, const char *psz_file,
                            picture_t *p_pic )
 {
     int i, j;
-    FILE *p_file = utf8_fopen( psz_file, "r" );
+    FILE *p_file = vlc_fopen( psz_file, "r" );
 
     if ( p_file == NULL )
     {
@@ -595,9 +610,12 @@ static int UnpackFromFile( sout_stream_t *p_stream, const char *psz_file,
         return -1;
     }
 
-    vout_InitPicture( VLC_OBJECT(p_stream), p_pic, VLC_FOURCC('I','4','2','0'),
-                      i_width, i_height,
-                      i_width * VOUT_ASPECT_FACTOR / i_height );
+    if( picture_Setup( p_pic, VLC_CODEC_I420,
+                       i_width, i_height, 1, 1 ) )
+    {
+        msg_Err( p_stream, "unknown chroma" );
+        return -1;
+    }
     for ( i = 0; i < p_pic->i_planes; i++ )
     {
         p_pic->p[i].p_pixels = malloc( p_pic->p[i].i_lines *
@@ -652,8 +670,7 @@ static void NetCommand( sout_stream_t *p_stream )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     char psz_buffer[11];
-    int i_len = net_ReadNonBlock( p_stream, p_sys->i_fd, NULL, (uint8_t *)&psz_buffer[0],
-                                  sizeof( psz_buffer ) - 1, 0 );
+    int i_len = recv( p_sys->i_fd, psz_buffer, sizeof( psz_buffer ) - 1, 0 );
 
     if ( i_len > 0 )
     {
@@ -699,7 +716,9 @@ static mtime_t VideoCommand( sout_stream_t *p_stream, sout_stream_id_t *id )
 
     if ( id->ff_enc )
     {
+        vlc_avcodec_lock();
         avcodec_close( id->ff_enc_c );
+        vlc_avcodec_unlock();
         av_free( id->ff_enc_c );
         av_free( id->p_frame );
         free( id->p_buffer_out );
@@ -728,20 +747,21 @@ static mtime_t VideoCommand( sout_stream_t *p_stream, sout_stream_id_t *id )
         id->ff_enc_c = avcodec_alloc_context();
 
         /* Set CPU capabilities */
+        unsigned i_cpu = vlc_CPU();
         id->ff_enc_c->dsp_mask = 0;
-        if( !(p_stream->p_libvlc->i_cpu & CPU_CAPABILITY_MMX) )
+        if( !(i_cpu & CPU_CAPABILITY_MMX) )
         {
             id->ff_enc_c->dsp_mask |= FF_MM_MMX;
         }
-        if( !(p_stream->p_libvlc->i_cpu & CPU_CAPABILITY_MMXEXT) )
+        if( !(i_cpu & CPU_CAPABILITY_MMXEXT) )
         {
             id->ff_enc_c->dsp_mask |= FF_MM_MMXEXT;
         }
-        if( !(p_stream->p_libvlc->i_cpu & CPU_CAPABILITY_3DNOW) )
+        if( !(i_cpu & CPU_CAPABILITY_3DNOW) )
         {
             id->ff_enc_c->dsp_mask |= FF_MM_3DNOW;
         }
-        if( !(p_stream->p_libvlc->i_cpu & CPU_CAPABILITY_SSE) )
+        if( !(i_cpu & CPU_CAPABILITY_SSE) )
         {
             id->ff_enc_c->dsp_mask |= FF_MM_SSE;
             id->ff_enc_c->dsp_mask |= FF_MM_SSE2;
@@ -775,11 +795,14 @@ static mtime_t VideoCommand( sout_stream_t *p_stream, sout_stream_id_t *id )
         id->ff_enc_c->mb_decision = FF_MB_DECISION_SIMPLE;
         id->ff_enc_c->pix_fmt = PIX_FMT_YUV420P;
 
+        vlc_avcodec_lock();
         if( avcodec_open( id->ff_enc_c, id->ff_enc ) )
         {
+            vlc_avcodec_unlock();
             msg_Err( p_stream, "cannot open encoder" );
             return 0;
         }
+        vlc_avcodec_unlock();
 
         id->p_buffer_out = malloc( id->ff_enc_c->width * id->ff_enc_c->height * 3 );
         id->p_frame = avcodec_alloc_frame();
@@ -857,10 +880,8 @@ static block_t *VideoGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
             = id->ff_enc_c->coded_frame->motion_subsample_log2;
         id->p_frame->mb_type = malloc( ((mb_width + 1) * (mb_height + 1) + 1)
                                     * sizeof(uint32_t) );
-        p_stream->p_vlc->pf_memcpy( id->p_frame->mb_type,
-                                    id->ff_enc_c->coded_frame->mb_type,
-                                    (mb_width + 1) * mb_height
-                                      * sizeof(id->p_frame->mb_type[0]));
+        vlc_memcpy( id->p_frame->mb_type, id->ff_enc_c->coded_frame->mb_type,
+                    (mb_width + 1) * mb_height * sizeof(id->p_frame->mb_type[0]));
 
         for ( i = 0; i < 2; i++ )
         {
@@ -874,24 +895,24 @@ static block_t *VideoGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
             {
                 id->p_frame->motion_val[i] = malloc( 2 * stride * height
                                                 * sizeof(int16_t) );
-                p_stream->p_vlc->pf_memcpy( id->p_frame->motion_val[i],
-                                     id->ff_enc_c->coded_frame->motion_val[i],
-                                     2 * stride * height * sizeof(int16_t) );
+                vlc_memcpy( id->p_frame->motion_val[i],
+                            id->ff_enc_c->coded_frame->motion_val[i],
+                            2 * stride * height * sizeof(int16_t) );
             }
             if ( id->ff_enc_c->coded_frame->ref_index[i] )
             {
                 id->p_frame->ref_index[i] = malloc( b8_stride * 2 * mb_height
                                                * sizeof(int8_t) );
-                p_stream->p_vlc->pf_memcpy( id->p_frame->ref_index[i],
-                                 id->ff_enc_c->coded_frame->ref_index[i],
-                                 b8_stride * 2 * mb_height * sizeof(int8_t));
+                vlc_memcpy( id->p_frame->ref_index[i],
+                            id->ff_enc_c->coded_frame->ref_index[i],
+                            b8_stride * 2 * mb_height * sizeof(int8_t));
             }
         }
     }
 #endif
 
     p_out = block_New( p_stream, i_out );
-    p_stream->p_vlc->pf_memcpy( p_out->p_buffer, id->p_buffer_out, i_out );
+    vlc_memcpy( p_out->p_buffer, id->p_buffer_out, i_out );
     p_out->i_length = p_buffer->i_length;
     p_out->i_pts = p_buffer->i_dts;
     p_out->i_dts = p_buffer->i_dts;
@@ -926,6 +947,7 @@ static block_t *AudioGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
     int i_out;
     block_t *p_out;
 
+    (void)p_stream;
     i_out = avcodec_encode_audio( id->ff_enc_c, id->p_buffer_out,
                                   2 * AVCODEC_MAX_AUDIO_FRAME_SIZE,
                                   id->p_samples );
@@ -934,7 +956,7 @@ static block_t *AudioGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
         return NULL;
 
     p_out = block_New( p_stream, i_out );
-    p_stream->p_vlc->pf_memcpy( p_out->p_buffer, id->p_buffer_out, i_out );
+    vlc_memcpy( p_out->p_buffer, id->p_buffer_out, i_out );
     p_out->i_length = p_buffer->i_length;
     p_out->i_pts = p_buffer->i_dts;
     p_out->i_dts = p_buffer->i_dts;

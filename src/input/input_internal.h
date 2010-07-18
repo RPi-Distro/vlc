@@ -1,8 +1,8 @@
 /*****************************************************************************
- * input_internal.h:
+ * input_internal.h: Internal input structures
  *****************************************************************************
- * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: 8b16f1a1e090071b0fc03f40af448d5a5467ff87 $
+ * Copyright (C) 1998-2006 the VideoLAN team
+ * $Id: 654913095884997add164fbdf004466eec5a31d4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,9 +21,157 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
+# error This header file can only be included from LibVLC.
+#endif
+
 #ifndef _INPUT_INTERNAL_H
 #define _INPUT_INTERNAL_H 1
 
+#include <vlc_access.h>
+#include <vlc_demux.h>
+#include <vlc_input.h>
+#include <libvlc.h>
+#include "input_interface.h"
+
+/*****************************************************************************
+ *  Private input fields
+ *****************************************************************************/
+
+#define INPUT_CONTROL_FIFO_SIZE    100
+
+/* input_source_t: gathers all information per input source */
+typedef struct
+{
+    /* Access/Stream/Demux plugins */
+    access_t *p_access;
+    stream_t *p_stream;
+    demux_t  *p_demux;
+
+    /* Title infos for that input */
+    bool         b_title_demux; /* Titles/Seekpoints provided by demux */
+    int          i_title;
+    input_title_t **title;
+
+    int i_title_offset;
+    int i_seekpoint_offset;
+
+    int i_title_start;
+    int i_title_end;
+    int i_seekpoint_start;
+    int i_seekpoint_end;
+
+    /* Properties */
+    bool b_can_pause;
+    bool b_can_pace_control;
+    bool b_can_rate_control;
+    bool b_can_stream_record;
+    bool b_rescale_ts;
+
+    /* */
+    int64_t i_pts_delay;
+
+    bool       b_eof;   /* eof of demuxer */
+
+} input_source_t;
+
+typedef struct
+{
+    int         i_type;
+    vlc_value_t val;
+} input_control_t;
+
+/** Private input fields */
+struct input_thread_private_t
+{
+    /* Global properties */
+    double      f_fps;
+    int         i_state;
+    bool        b_can_pause;
+    bool        b_can_rate_control;
+    bool        b_can_pace_control;
+
+    /* Current state */
+    bool        b_recording;
+    int         i_rate;
+
+    /* Playtime configuration and state */
+    int64_t     i_start;    /* :start-time,0 by default */
+    int64_t     i_stop;     /* :stop-time, 0 if none */
+    int64_t     i_run;      /* :run-time, 0 if none */
+    int64_t     i_time;     /* Current time */
+    bool        b_fast_seek;/* :input-fast-seek */
+
+    /* Output */
+    bool            b_out_pace_control; /* XXX Move it ot es_sout ? */
+    sout_instance_t *p_sout;            /* Idem ? */
+    es_out_t        *p_es_out;
+    es_out_t        *p_es_out_display;
+
+    /* Title infos FIXME multi-input (not easy) ? */
+    int          i_title;
+    input_title_t **title;
+
+    int i_title_offset;
+    int i_seekpoint_offset;
+
+    /* User bookmarks FIXME won't be easy with multiples input */
+    seekpoint_t bookmark;
+    int         i_bookmark;
+    seekpoint_t **pp_bookmark;
+
+    /* Input attachment */
+    int i_attachment;
+    input_attachment_t **attachment;
+
+    /* Main input properties */
+
+    /* Input item */
+    input_item_t   *p_item;
+
+    /* Main source */
+    input_source_t input;
+    /* Slave sources (subs, and others) */
+    int            i_slave;
+    input_source_t **slave;
+
+    /* Resources */
+    input_resource_t *p_resource;
+
+    /* Stats counters */
+    struct {
+        counter_t *p_read_packets;
+        counter_t *p_read_bytes;
+        counter_t *p_input_bitrate;
+        counter_t *p_demux_read;
+        counter_t *p_demux_bitrate;
+        counter_t *p_demux_corrupted;
+        counter_t *p_demux_discontinuity;
+        counter_t *p_decoded_audio;
+        counter_t *p_decoded_video;
+        counter_t *p_decoded_sub;
+        counter_t *p_sout_sent_packets;
+        counter_t *p_sout_sent_bytes;
+        counter_t *p_sout_send_bitrate;
+        counter_t *p_played_abuffers;
+        counter_t *p_lost_abuffers;
+        counter_t *p_displayed_pictures;
+        counter_t *p_lost_pictures;
+        vlc_mutex_t counters_lock;
+    } counters;
+
+    /* Buffer of pending actions */
+    vlc_mutex_t lock_control;
+    vlc_cond_t  wait_control;
+    int i_control;
+    input_control_t control[INPUT_CONTROL_FIFO_SIZE];
+
+    bool b_abort;
+};
+
+/***************************************************************************
+ * Internal control helpers
+ ***************************************************************************/
 enum input_control_e
 {
     INPUT_CONTROL_SET_DIE,
@@ -31,14 +179,10 @@ enum input_control_e
     INPUT_CONTROL_SET_STATE,
 
     INPUT_CONTROL_SET_RATE,
-    INPUT_CONTROL_SET_RATE_SLOWER,
-    INPUT_CONTROL_SET_RATE_FASTER,
 
     INPUT_CONTROL_SET_POSITION,
-    INPUT_CONTROL_SET_POSITION_OFFSET,
 
     INPUT_CONTROL_SET_TIME,
-    INPUT_CONTROL_SET_TIME_OFFSET,
 
     INPUT_CONTROL_SET_PROGRAM,
 
@@ -53,114 +197,51 @@ enum input_control_e
     INPUT_CONTROL_SET_BOOKMARK,
 
     INPUT_CONTROL_SET_ES,
+    INPUT_CONTROL_RESTART_ES,
 
     INPUT_CONTROL_SET_AUDIO_DELAY,
     INPUT_CONTROL_SET_SPU_DELAY,
 
     INPUT_CONTROL_ADD_SLAVE,
+
+    INPUT_CONTROL_ADD_SUBTITLE,
+
+    INPUT_CONTROL_SET_RECORD_STATE,
+
+    INPUT_CONTROL_SET_FRAME_NEXT,
 };
 
 /* Internal helpers */
-static inline void input_ControlPush( input_thread_t *p_input,
-                                      int i_type, vlc_value_t *p_val )
-{
-    vlc_mutex_lock( &p_input->lock_control );
-    if( i_type == INPUT_CONTROL_SET_DIE )
-    {
-        /* Special case, empty the control */
-        p_input->i_control = 1;
-        p_input->control[0].i_type = i_type;
-        memset( &p_input->control[0].val, 0, sizeof( vlc_value_t ) );
-    }
-    else
-    {
-        if( p_input->i_control >= INPUT_CONTROL_FIFO_SIZE )
-        {
-            msg_Err( p_input, "input control fifo overflow, trashing type=%d",
-                     i_type );
-            vlc_mutex_unlock( &p_input->lock_control );
-            return;
-        }
-        p_input->control[p_input->i_control].i_type = i_type;
-        if( p_val )
-            p_input->control[p_input->i_control].val = *p_val;
-        else
-            memset( &p_input->control[p_input->i_control].val, 0,
-                    sizeof( vlc_value_t ) );
 
-        p_input->i_control++;
-    }
-    vlc_mutex_unlock( &p_input->lock_control );
-}
+/* XXX for string value you have to allocate it before calling
+ * input_ControlPush
+ */
+void input_ControlPush( input_thread_t *, int i_type, vlc_value_t * );
+
+/* Bound pts_delay */
+#define INPUT_PTS_DELAY_MAX INT64_C(60000000)
+
+/**********************************************************************
+ * Item metadata
+ **********************************************************************/
+/* input_ExtractAttachmentAndCacheArt:
+ *  Becarefull; p_item lock HAS to be taken */
+void input_ExtractAttachmentAndCacheArt( input_thread_t *p_input );
+
+/***************************************************************************
+ * Internal prototypes
+ ***************************************************************************/
 
 /* var.c */
 void input_ControlVarInit ( input_thread_t * );
-void input_ControlVarClean( input_thread_t * );
+void input_ControlVarStop( input_thread_t * );
 void input_ControlVarNavigation( input_thread_t * );
 void input_ControlVarTitle( input_thread_t *, int i_title );
 
 void input_ConfigVarInit ( input_thread_t * );
 
-/* stream.c */
-stream_t *stream_AccessNew( access_t *p_access, vlc_bool_t );
-void stream_AccessDelete( stream_t *s );
-void stream_AccessReset( stream_t *s );
-void stream_AccessUpdate( stream_t *s );
-
-/* decoder.c FIXME make it public ?*/
-void       input_DecoderDiscontinuity( decoder_t * p_dec );
-vlc_bool_t input_DecoderEmpty( decoder_t * p_dec );
-void       input_DecoderPreroll( decoder_t *p_dec, int64_t i_preroll_end );
-
-/* es_out.c */
-es_out_t  *input_EsOutNew( input_thread_t * );
-void       input_EsOutDelete( es_out_t * );
-es_out_id_t *input_EsOutGetFromID( es_out_t *, int i_id );
-void       input_EsOutDiscontinuity( es_out_t *, vlc_bool_t b_audio );
-void       input_EsOutSetDelay( es_out_t *, int i_cat, int64_t );
-vlc_bool_t input_EsOutDecodersEmpty( es_out_t * );
-
-/* clock.c */
-enum /* Synchro states */
-{
-    SYNCHRO_OK     = 0,
-    SYNCHRO_START  = 1,
-    SYNCHRO_REINIT = 2,
-};
-
-typedef struct
-{
-    /* Synchronization information */
-    mtime_t                 delta_cr;
-    mtime_t                 cr_ref, sysdate_ref;
-    mtime_t                 last_sysdate;
-    mtime_t                 last_cr; /* reference to detect unexpected stream
-                                      * discontinuities                      */
-    mtime_t                 last_pts;
-    int                     i_synchro_state;
-
-    vlc_bool_t              b_master;
-
-    /* Config */
-    int                     i_cr_average;
-    int                     i_delta_cr_residue;
-} input_clock_t;
-
-void input_ClockInit( input_clock_t *, vlc_bool_t b_master, int i_cr_average );
-void    input_ClockSetPCR( input_thread_t *, input_clock_t *, mtime_t );
-mtime_t input_ClockGetTS( input_thread_t *, input_clock_t *, mtime_t );
-
 /* Subtitles */
-char **subtitles_Detect( input_thread_t *, char* path, char *fname );
+char **subtitles_Detect( input_thread_t *, char* path, const char *fname );
 int subtitles_Filter( const char *);
-
-void MRLSplit( vlc_object_t *, char *, char **, char **, char ** );
-
-static inline void input_ChangeState( input_thread_t *p_input, int state )
-{
-    vlc_value_t val;
-    val.i_int = p_input->i_state = state;
-    var_Change( p_input, "state", VLC_VAR_SETVALUE, &val, NULL );
-}
 
 #endif

@@ -2,9 +2,9 @@
  * cmd_dvd.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f2d3472364a093dcf91cdfb6fa216035dcf8c69a $
+ * $Id: 6d6311aa44e36f877f72fb31cbec11969e5e9f33 $
  *
- * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
+ * Authors: Olivier TeuliÃ¨re <ipkiss@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +22,17 @@
  *****************************************************************************/
 
 #include "cmd_dvd.hpp"
-
+#include <vlc_input.h>
+#include <vlc_playlist.h>
 
 void CmdDvdNextTitle::execute()
 {
-    input_thread_t *p_input =
-        (input_thread_t *)vlc_object_find( getIntf(), VLC_OBJECT_INPUT,
-                                           FIND_ANYWHERE );
+    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
+    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+
     if( p_input )
     {
-        vlc_value_t val;
-        val.b_bool = VLC_TRUE;
-        var_Set( p_input, "next-title", val );
+        var_TriggerCallback( p_input, "next-title" );
         vlc_object_release( p_input );
     }
 }
@@ -41,14 +40,12 @@ void CmdDvdNextTitle::execute()
 
 void CmdDvdPreviousTitle::execute()
 {
-    input_thread_t *p_input =
-        (input_thread_t *)vlc_object_find( getIntf(), VLC_OBJECT_INPUT,
-                                           FIND_ANYWHERE );
+    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
+    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+
     if( p_input )
     {
-        vlc_value_t val;
-        val.b_bool = VLC_TRUE;
-        var_Set( p_input, "prev-title", val );
+        var_TriggerCallback( p_input, "prev-title" );
         vlc_object_release( p_input );
     }
 }
@@ -56,14 +53,12 @@ void CmdDvdPreviousTitle::execute()
 
 void CmdDvdNextChapter::execute()
 {
-    input_thread_t *p_input =
-        (input_thread_t *)vlc_object_find( getIntf(), VLC_OBJECT_INPUT,
-                                           FIND_ANYWHERE );
+    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
+    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+
     if( p_input )
     {
-        vlc_value_t val;
-        val.b_bool = VLC_TRUE;
-        var_Set( p_input, "next-chapter", val );
+        var_TriggerCallback( p_input, "next-chapter" );
         vlc_object_release( p_input );
     }
 }
@@ -71,14 +66,12 @@ void CmdDvdNextChapter::execute()
 
 void CmdDvdPreviousChapter::execute()
 {
-    input_thread_t *p_input =
-        (input_thread_t *)vlc_object_find( getIntf(), VLC_OBJECT_INPUT,
-                                           FIND_ANYWHERE );
+    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
+    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+
     if( p_input )
     {
-        vlc_value_t val;
-        val.b_bool = VLC_TRUE;
-        var_Set( p_input, "prev-chapter", val );
+        var_TriggerCallback( p_input, "prev-chapter" );
         vlc_object_release( p_input );
     }
 }
@@ -86,15 +79,12 @@ void CmdDvdPreviousChapter::execute()
 
 void CmdDvdRootMenu::execute()
 {
-    input_thread_t *p_input =
-        (input_thread_t *)vlc_object_find( getIntf(), VLC_OBJECT_INPUT,
-                                           FIND_ANYWHERE );
+    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
+    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+
     if( p_input )
     {
-        vlc_value_t val;
-        val.i_int = 2;
-
-        var_Set( p_input, "title  0", val);
+        var_SetInteger( p_input, "title  0", 2);
         vlc_object_release( p_input );
     }
 }

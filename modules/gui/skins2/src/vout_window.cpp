@@ -2,7 +2,7 @@
  * vout_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 034ba46eecd5bea524a6c5eb5cca03fb18050d1d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -22,71 +22,74 @@
  *****************************************************************************/
 
 #include "vout_window.hpp"
+#include "vout_manager.hpp"
 #include "vlcproc.hpp"
+#include "theme.hpp"
 #include "os_factory.hpp"
 #include "os_graphics.hpp"
 #include "os_window.hpp"
+#include "../events/evt_key.hpp"
+
+#include <vlc_keys.h>
 
 
-VoutWindow::VoutWindow( intf_thread_t *pIntf, int left, int top,
-                        bool dragDrop, bool playOnDrop,
-                        GenericWindow &rParent ):
-    GenericWindow( pIntf, left, top, dragDrop, playOnDrop,
-                   &rParent ), m_pImage( NULL )
+VoutWindow::VoutWindow( intf_thread_t *pIntf, vout_window_t* pWnd,
+                        int width, int height, GenericWindow* pParent ) :
+      GenericWindow( pIntf, 0, 0, false, false, pParent,
+                     GenericWindow::VoutWindow ),
+      m_pWnd( pWnd ), original_width( width ), original_height( height ),
+      m_pParentWindow( pParent ), m_pCtrlVideo( NULL )
 {
+    if( m_pWnd )
+        vlc_object_hold( m_pWnd );
 }
 
 
 VoutWindow::~VoutWindow()
 {
-    if( m_pImage )
-    {
-        delete m_pImage;
-    }
-
-    // Get the VlcProc
-    VlcProc *pVlcProc = getIntf()->p_sys->p_vlcProc;
-
-    // Reparent the video output
-    if( pVlcProc && pVlcProc->isVoutUsed() )
-    {
-        pVlcProc->dropVout();
-    }
+    if( m_pWnd )
+        vlc_object_release( m_pWnd );
 }
 
 
-void VoutWindow::resize( int width, int height )
+void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
 {
-    // Get the OSFactory
-    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-
-    // Recreate the image
-    if( m_pImage )
+    if( pCtrlVideo )
     {
-        delete m_pImage;
-    }
-    m_pImage = pOsFactory->createOSGraphics( width, height );
-    // Draw a black rectangle
-    m_pImage->fillRect( 0, 0, width, height, 0 );
+        hide();
+        const Position *pPos = pCtrlVideo->getPosition();
+        int x = pPos->getLeft();
+        int y = pPos->getTop();
+        int w = pPos->getWidth();
+        int h = pPos->getHeight();
 
-    // Resize the window
-    GenericWindow::resize( width, height );
+        setParent( pCtrlVideo->getWindow(), x, y, w, h );
+        m_pParentWindow = pCtrlVideo->getWindow();
+
+        show();
+    }
+    else
+    {
+        hide();
+        int w = VoutManager::instance( getIntf() )->getVoutMainWindow()->getWidth();
+        int h = VoutManager::instance( getIntf() )->getVoutMainWindow()->getHeight();
+
+        setParent( VoutManager::instance( getIntf() )->getVoutMainWindow(),
+                   0, 0, w, h );
+        m_pParentWindow =
+                  VoutManager::instance( getIntf() )->getVoutMainWindow();
+        show();
+    }
+
+    m_pCtrlVideo = pCtrlVideo;
 }
 
 
-void VoutWindow::refresh( int left, int top, int width, int height )
+void VoutWindow::processEvent( EvtKey &rEvtKey )
 {
-    if( m_pImage )
-    {
-        // Get the VlcProc
-        VlcProc *pVlcProc = getIntf()->p_sys->p_vlcProc;
-
-        // Refresh only when there is no video!
-        if( pVlcProc && !pVlcProc->isVoutUsed() )
-        {
-            m_pImage->copyToWindow( *getOSWindow(), left, top,
-                                    width, height, left, top );
-        }
-    }
+    // Only do the action when the key is down
+    if( rEvtKey.getKeyState() == EvtKey::kDown )
+        var_SetInteger( getIntf()->p_libvlc, "key-pressed",
+                         rEvtKey.getModKey() );
 }
 

@@ -2,7 +2,7 @@
  * vlc_meta.h: Stream meta-data
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 5041fbfb92458eddc317f780b139afef71d6f938 $
+ * $Id: 8481bd19bc639466fb278e9b57bb51f37951fb94 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,161 +21,127 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_META_H
-#define _VLC_META_H 1
+#ifndef VLC_META_H
+#define VLC_META_H 1
 
-/* VLC meta name */
-#define VLC_META_INFO_CAT           N_("Meta-information")
-#define VLC_META_TITLE              N_("Title")
-#define VLC_META_AUTHOR             N_("Author")
-#define VLC_META_ARTIST             N_("Artist")
-#define VLC_META_GENRE              N_("Genre")
-#define VLC_META_COPYRIGHT          N_("Copyright")
-#define VLC_META_COLLECTION         N_("Album/movie/show title")
-#define VLC_META_SEQ_NUM            N_("Track number/position in set")
-#define VLC_META_DESCRIPTION        N_("Description")
-#define VLC_META_RATING             N_("Rating")
-#define VLC_META_DATE               N_("Date")
-#define VLC_META_SETTING            N_("Setting")
-#define VLC_META_URL                N_("URL")
-#define VLC_META_LANGUAGE           N_("Language")
-#define VLC_META_NOW_PLAYING        N_("Now Playing")
-#define VLC_META_PUBLISHER          N_("Publisher")
+/**
+ * \file
+ * This file defines functions and structures for stream meta-data in vlc
+ *
+ */
 
-#define VLC_META_CDDB_ARTIST        N_("CDDB Artist")
-#define VLC_META_CDDB_CATEGORY      N_("CDDB Category")
-#define VLC_META_CDDB_DISCID        N_("CDDB Disc ID")
-#define VLC_META_CDDB_EXT_DATA      N_("CDDB Extended Data")
-#define VLC_META_CDDB_GENRE         N_("CDDB Genre")
-#define VLC_META_CDDB_YEAR          N_("CDDB Year")
-#define VLC_META_CDDB_TITLE         N_("CDDB Title")
-
-#define VLC_META_CDTEXT_ARRANGER    N_("CD-Text Arranger")
-#define VLC_META_CDTEXT_COMPOSER    N_("CD-Text Composer")
-#define VLC_META_CDTEXT_DISCID      N_("CD-Text Disc ID")
-#define VLC_META_CDTEXT_GENRE       N_("CD-Text Genre")
-#define VLC_META_CDTEXT_MESSAGE     N_("CD-Text Message")
-#define VLC_META_CDTEXT_SONGWRITER  N_("CD-Text Songwriter")
-#define VLC_META_CDTEXT_PERFORMER   N_("CD-Text Performer")
-#define VLC_META_CDTEXT_TITLE       N_("CD-Text Title")
-
-#define VLC_META_ISO_APPLICATION_ID N_("ISO-9660 Application ID")
-#define VLC_META_ISO_PREPARER       N_("ISO-9660 Preparer")
-#define VLC_META_ISO_PUBLISHER      N_("ISO-9660 Publisher")
-#define VLC_META_ISO_VOLUME         N_("ISO-9660 Volume")
-#define VLC_META_ISO_VOLUMESET      N_("ISO-9660 Volume Set")
-
-#define VLC_META_CODEC_NAME         N_("Codec Name")
-#define VLC_META_CODEC_DESCRIPTION  N_("Codec Description")
-
-struct vlc_meta_t
+typedef enum vlc_meta_type_t
 {
-    /* meta name/value pairs */
-    int     i_meta;
-    char    **name;
-    char    **value;
+    vlc_meta_Title,
+    vlc_meta_Artist,
+    vlc_meta_Genre,
+    vlc_meta_Copyright,
+    vlc_meta_Album,
+    vlc_meta_TrackNumber,
+    vlc_meta_Description,
+    vlc_meta_Rating,
+    vlc_meta_Date,
+    vlc_meta_Setting,
+    vlc_meta_URL,
+    vlc_meta_Language,
+    vlc_meta_NowPlaying,
+    vlc_meta_Publisher,
+    vlc_meta_EncodedBy,
+    vlc_meta_ArtworkURL,
+    vlc_meta_TrackID
+} vlc_meta_type_t;
 
-    /* track meta information */
-    int         i_track;
-    vlc_meta_t  **track;
+#define VLC_META_TYPE_COUNT 17
+
+#define ITEM_PREPARSED       1
+#define ITEM_ARTURL_FETCHED  2
+#define ITEM_ART_FETCHED     4
+#define ITEM_ART_NOTFOUND    8
+
+/**
+ * Basic function to deal with meta
+ */
+struct vlc_meta_t;
+
+VLC_EXPORT(vlc_meta_t *, vlc_meta_New, ( void ));
+VLC_EXPORT(void,         vlc_meta_Delete, ( vlc_meta_t *m ));
+VLC_EXPORT(void,         vlc_meta_Set, ( vlc_meta_t *p_meta, vlc_meta_type_t meta_type, const char *psz_val ));
+VLC_EXPORT(const char *, vlc_meta_Get, ( const vlc_meta_t *p_meta, vlc_meta_type_t meta_type ));
+
+VLC_EXPORT(void,         vlc_meta_AddExtra, ( vlc_meta_t *m, const char *psz_name, const char *psz_value ));
+VLC_EXPORT(const char *, vlc_meta_GetExtra, ( const vlc_meta_t *m, const char *psz_name ));
+VLC_EXPORT(unsigned,     vlc_meta_GetExtraCount, ( const vlc_meta_t *m ));
+
+/**
+ * Allocate a copy of all extra meta names and a table with it.
+ * Be sure to free both the returned pointers and its name.
+ */
+VLC_EXPORT(char **,      vlc_meta_CopyExtraNames, ( const vlc_meta_t *m ));
+
+VLC_EXPORT(void,         vlc_meta_Merge, ( vlc_meta_t *dst, const vlc_meta_t *src ));
+
+VLC_EXPORT(int,  vlc_meta_GetStatus, ( vlc_meta_t *m ));
+VLC_EXPORT(void, vlc_meta_SetStatus, ( vlc_meta_t *m, int status ));
+
+/**
+ * Returns a localizes string describing the meta
+ */
+VLC_EXPORT(const char *, vlc_meta_TypeToLocalizedString, ( vlc_meta_type_t meta_type ) );
+
+enum {
+    ALBUM_ART_WHEN_ASKED,
+    ALBUM_ART_WHEN_PLAYED,
+    ALBUM_ART_ALL
 };
 
-static inline vlc_meta_t *vlc_meta_New( void )
+
+typedef struct meta_export_t
 {
-    vlc_meta_t *m = (vlc_meta_t*)malloc( sizeof( vlc_meta_t ) );
+    VLC_COMMON_MEMBERS
+    input_item_t *p_item;
+    const char *psz_file;
+} meta_export_t;
 
-    m->i_meta = 0;
-    m->name   = NULL;
-    m->value  = NULL;
+VLC_EXPORT( int, input_item_WriteMeta, (vlc_object_t *, input_item_t *) );
 
-    m->i_track= 0;
-    m->track  = NULL;
+/* Setters for meta.
+ * Warning: Make sure to use the input_item meta setters (defined in vlc_input.h)
+ * instead of those one. */
+#define vlc_meta_SetTitle( meta, b )       vlc_meta_Set( meta, vlc_meta_Title, b )
+#define vlc_meta_SetArtist( meta, b )      vlc_meta_Set( meta, vlc_meta_Artist, b )
+#define vlc_meta_SetGenre( meta, b )       vlc_meta_Set( meta, vlc_meta_Genre, b )
+#define vlc_meta_SetCopyright( meta, b )   vlc_meta_Set( meta, vlc_meta_Copyright, b )
+#define vlc_meta_SetAlbum( meta, b )       vlc_meta_Set( meta, vlc_meta_Album, b )
+#define vlc_meta_SetTrackNum( meta, b )    vlc_meta_Set( meta, vlc_meta_TrackNumber, b )
+#define vlc_meta_SetDescription( meta, b ) vlc_meta_Set( meta, vlc_meta_Description, b )
+#define vlc_meta_SetRating( meta, b )      vlc_meta_Set( meta, vlc_meta_Rating, b )
+#define vlc_meta_SetDate( meta, b )        vlc_meta_Set( meta, vlc_meta_Date, b )
+#define vlc_meta_SetSetting( meta, b )     vlc_meta_Set( meta, vlc_meta_Setting, b )
+#define vlc_meta_SetURL( meta, b )         vlc_meta_Set( meta, vlc_meta_URL, b )
+#define vlc_meta_SetLanguage( meta, b )    vlc_meta_Set( meta, vlc_meta_Language, b )
+#define vlc_meta_SetNowPlaying( meta, b )  vlc_meta_Set( meta, vlc_meta_NowPlaying, b )
+#define vlc_meta_SetPublisher( meta, b )   vlc_meta_Set( meta, vlc_meta_Publisher, b )
+#define vlc_meta_SetEncodedBy( meta, b )   vlc_meta_Set( meta, vlc_meta_EncodedBy, b )
+#define vlc_meta_SetArtURL( meta, b )      vlc_meta_Set( meta, vlc_meta_ArtworkURL, b )
+#define vlc_meta_SetTrackID( meta, b )     vlc_meta_Set( meta, vlc_meta_TrackID, b )
 
-    return m;
-}
+#define VLC_META_TITLE              vlc_meta_TypeToLocalizedString( vlc_meta_Title )
+#define VLC_META_ARTIST             vlc_meta_TypeToLocalizedString( vlc_meta_Artist )
+#define VLC_META_GENRE              vlc_meta_TypeToLocalizedString( vlc_meta_Genre )
+#define VLC_META_COPYRIGHT          vlc_meta_TypeToLocalizedString( vlc_meta_Copyright )
+#define VLC_META_ALBUM              vlc_meta_TypeToLocalizedString( vlc_meta_Album )
+#define VLC_META_TRACK_NUMBER       vlc_meta_TypeToLocalizedString( vlc_meta_TrackNumber )
+#define VLC_META_DESCRIPTION        vlc_meta_TypeToLocalizedString( vlc_meta_Description )
+#define VLC_META_RATING             vlc_meta_TypeToLocalizedString( vlc_meta_Rating )
+#define VLC_META_DATE               vlc_meta_TypeToLocalizedString( vlc_meta_Date )
+#define VLC_META_SETTING            vlc_meta_TypeToLocalizedString( vlc_meta_Setting )
+#define VLC_META_URL                vlc_meta_TypeToLocalizedString( vlc_meta_URL )
+#define VLC_META_LANGUAGE           vlc_meta_TypeToLocalizedString( vlc_meta_Language )
+#define VLC_META_NOW_PLAYING        vlc_meta_TypeToLocalizedString( vlc_meta_NowPlaying )
+#define VLC_META_PUBLISHER          vlc_meta_TypeToLocalizedString( vlc_meta_Publisher )
+#define VLC_META_ENCODED_BY         vlc_meta_TypeToLocalizedString( vlc_meta_EncodedBy )
+#define VLC_META_ART_URL            vlc_meta_TypeToLocalizedString( vlc_meta_ArtworkURL )
+#define VLC_META_TRACKID            vlc_meta_TypeToLocalizedString( vlc_meta_TrackID )
 
-static inline void vlc_meta_Delete( vlc_meta_t *m )
-{
-    int i;
-    for( i = 0; i < m->i_meta; i++ )
-    {
-        free( m->name[i] );
-        free( m->value[i] );
-    }
-    if( m->name ) free( m->name );
-    if( m->value ) free( m->value );
-
-    for( i = 0; i < m->i_track; i++ )
-    {
-        vlc_meta_Delete( m->track[i] );
-    }
-    if( m->track ) free( m->track );
-    free( m );
-}
-
-static inline void vlc_meta_Add( vlc_meta_t *m,
-                                 const char *name, const char *value )
-{
-    m->name  = (char**)realloc( m->name, sizeof(char*) * ( m->i_meta + 1 ) );
-    m->name[m->i_meta] = strdup( name );
-
-    m->value = (char**)realloc( m->value, sizeof(char*) * ( m->i_meta + 1 ) );
-    m->value[m->i_meta] = strdup( value );
-
-    m->i_meta++;
-}
-
-static inline vlc_meta_t *vlc_meta_Duplicate( vlc_meta_t *src )
-{
-    vlc_meta_t *dst = vlc_meta_New();
-    int i;
-    for( i = 0; i < src->i_meta; i++ )
-    {
-        vlc_meta_Add( dst, src->name[i], src->value[i] );
-    }
-    for( i = 0; i < src->i_track; i++ )
-    {
-        vlc_meta_t *tk = vlc_meta_Duplicate( src->track[i] );
-
-        dst->track = (vlc_meta_t**)realloc( dst->track, sizeof( vlc_meta_t* ) * (dst->i_track+1) );
-        dst->track[dst->i_track++] = tk;
-    }
-    return dst;
-}
-
-static inline void vlc_meta_Merge( vlc_meta_t *dst, vlc_meta_t *src )
-{
-    int i, j;
-    for( i = 0; i < src->i_meta; i++ )
-    {
-        /* Check if dst contains the entry */
-        for( j = 0; j < dst->i_meta; j++ )
-        {
-            if( !strcmp( src->name[i], dst->name[j] ) ) break;
-        }
-        if( j < dst->i_meta )
-        {
-            if( dst->value[j] ) free( dst->value[j] );
-            dst->value[j] = strdup( src->value[i] );
-        }
-        else vlc_meta_Add( dst, src->name[i], src->value[i] );
-    }
-}
-
-static inline char *vlc_meta_GetValue( vlc_meta_t *m, const char *name )
-{
-    int i;
-
-    for( i = 0; i < m->i_meta; i++ )
-    {
-        if( !strcmp( m->name[i], name ) )
-        {
-            char *value = NULL;
-            if( m->value[i] ) value = strdup( m->value[i] );
-            return value;
-        }
-    }
-    return NULL;
-}
 
 #endif

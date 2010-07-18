@@ -2,9 +2,9 @@
  * cmd_dvd.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: ee905984339bb5c2902d98775726fa170cfaf9fe $
  *
- * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
+ * Authors: Olivier TeuliÃ¨re <ipkiss@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

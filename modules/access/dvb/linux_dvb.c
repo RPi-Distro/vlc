@@ -24,19 +24,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA    02111, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <vlc_common.h>
+#include <vlc_access.h>
 #include <sys/ioctl.h>
 #include <errno.h>
 
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/stat.h>
-#include <sys/poll.h>
+#include <poll.h>
+#include <vlc_fs.h>
 
 /* DVB Card Drivers */
 #include <linux/dvb/version.h>
@@ -52,6 +54,8 @@
 #   include <dvbpsi/pmt.h>
 #   include <dvbpsi/dr.h>
 #   include <dvbpsi/psi.h>
+#   include <dvbpsi/demux.h>
+#   include <dvbpsi/sdt.h>
 #else
 #   include "dvbpsi.h"
 #   include "descriptor.h"
@@ -59,10 +63,12 @@
 #   include "tables/pmt.h"
 #   include "descriptors/dr.h"
 #   include "psi.h"
+#   include "demux.h"
+#   include "tables/sdt.h"
 #endif
 
 #ifdef ENABLE_HTTPD
-#   include "vlc_httpd.h"
+#   include <vlc_httpd.h>
 #endif
 
 #include "dvb.h"
@@ -88,12 +94,12 @@ static int FrontendSetATSC( access_t * );
 /*****************************************************************************
  * FrontendOpen : Determine frontend device information and capabilities
  *****************************************************************************/
-int E_(FrontendOpen)( access_t *p_access )
+int FrontendOpen( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     frontend_t * p_frontend;
     unsigned int i_adapter, i_device;
-    vlc_bool_t b_probe;
+    bool b_probe;
     char frontend[128];
 
     i_adapter = var_GetInteger( p_access, "dvb-adapter" );
@@ -107,20 +113,21 @@ int E_(FrontendOpen)( access_t *p_access )
     }
 
     p_sys->p_frontend = p_frontend = malloc( sizeof(frontend_t) );
+    if( !p_frontend )
+        return VLC_ENOMEM;
 
     msg_Dbg( p_access, "Opening device %s", frontend );
-    if( (p_sys->i_frontend_handle = open(frontend, O_RDWR | O_NONBLOCK)) < 0 )
+    if( (p_sys->i_frontend_handle = vlc_open(frontend, O_RDWR | O_NONBLOCK)) < 0 )
     {
-        msg_Err( p_access, "FrontEndOpen: opening device failed (%s)",
-                 strerror(errno) );
+        msg_Err( p_access, "FrontEndOpen: opening device failed (%m)" );
         free( p_frontend );
         return VLC_EGENERIC;
     }
 
     if( b_probe )
     {
-        char * psz_expected = NULL;
-        char * psz_real;
+        const char * psz_expected = NULL;
+        const char * psz_real;
 
         if( FrontendInfo( p_access ) < 0 )
         {
@@ -210,7 +217,7 @@ int E_(FrontendOpen)( access_t *p_access )
 /*****************************************************************************
  * FrontendClose : Close the frontend
  *****************************************************************************/
-void E_(FrontendClose)( access_t *p_access )
+void FrontendClose( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
@@ -226,7 +233,7 @@ void E_(FrontendClose)( access_t *p_access )
 /*****************************************************************************
  * FrontendSet : Tune !
  *****************************************************************************/
-int E_(FrontendSet)( access_t *p_access )
+int FrontendSet( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
@@ -281,7 +288,7 @@ int E_(FrontendSet)( access_t *p_access )
 /*****************************************************************************
  * FrontendPoll : Poll for frontend events
  *****************************************************************************/
-void E_(FrontendPoll)( access_t *p_access )
+void FrontendPoll( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     frontend_t * p_frontend = p_sys->p_frontend;
@@ -297,8 +304,8 @@ void E_(FrontendPoll)( access_t *p_access )
             if( errno == EWOULDBLOCK )
                 return; /* no more events */
 
-            msg_Err( p_access, "reading frontend event failed (%d) %s",
-                     i_ret, strerror(errno) );
+            msg_Err( p_access, "reading frontend event failed (%d): %m",
+                     i_ret );
             return;
         }
 
@@ -335,17 +342,21 @@ void E_(FrontendPoll)( access_t *p_access )
 
             IF_UP( FE_HAS_LOCK )
             {
-                int32_t i_value = 0;
+                frontend_statistic_t stat;
+
                 msg_Dbg( p_access, "frontend has acquired lock" );
                 p_sys->i_frontend_timeout = 0;
 
                 /* Read some statistics */
-                if( ioctl( p_sys->i_frontend_handle, FE_READ_BER, &i_value ) >= 0 )
-                    msg_Dbg( p_access, "- Bit error rate: %d", i_value );
-                if( ioctl( p_sys->i_frontend_handle, FE_READ_SIGNAL_STRENGTH, &i_value ) >= 0 )
-                    msg_Dbg( p_access, "- Signal strength: %d", i_value );
-                if( ioctl( p_sys->i_frontend_handle, FE_READ_SNR, &i_value ) >= 0 )
-                    msg_Dbg( p_access, "- SNR: %d", i_value );
+                if( !FrontendGetStatistic( p_access, &stat ) )
+                {
+                    if( stat.i_ber >= 0 )
+                        msg_Dbg( p_access, "- Bit error rate: %d", stat.i_ber );
+                    if( stat.i_signal_strenth >= 0 )
+                        msg_Dbg( p_access, "- Signal strength: %d", stat.i_signal_strenth );
+                    if( stat.i_snr >= 0 )
+                        msg_Dbg( p_access, "- SNR: %d", stat.i_snr );
+                }
             }
             else
             {
@@ -357,18 +368,104 @@ void E_(FrontendPoll)( access_t *p_access )
             {
                 /* The frontend was reinited. */
                 msg_Warn( p_access, "reiniting frontend");
-                E_(FrontendSet)( p_access );
+                FrontendSet( p_access );
             }
         }
 #undef IF_UP
     }
+}
+int FrontendGetStatistic( access_t *p_access, frontend_statistic_t *p_stat )
+{
+    access_sys_t *p_sys = p_access->p_sys;
+    frontend_t * p_frontend = p_sys->p_frontend;
+
+    if( (p_frontend->i_last_status & FE_HAS_LOCK) == 0 )
+        return VLC_EGENERIC;
+
+    memset( p_stat, 0, sizeof(*p_stat) );
+    if( ioctl( p_sys->i_frontend_handle, FE_READ_BER, &p_stat->i_ber ) < 0 )
+        p_stat->i_ber = -1;
+    if( ioctl( p_sys->i_frontend_handle, FE_READ_SIGNAL_STRENGTH, &p_stat->i_signal_strenth ) < 0 )
+        p_stat->i_signal_strenth = -1;
+    if( ioctl( p_sys->i_frontend_handle, FE_READ_SNR, &p_stat->i_snr ) < 0 )
+        p_stat->i_snr = -1;
+
+    return VLC_SUCCESS;
+}
+void FrontendGetStatus( access_t *p_access, frontend_status_t *p_status )
+{
+    access_sys_t *p_sys = p_access->p_sys;
+    frontend_t * p_frontend = p_sys->p_frontend;
+
+    p_status->b_has_signal = (p_frontend->i_last_status & FE_HAS_SIGNAL) != 0;
+    p_status->b_has_carrier = (p_frontend->i_last_status & FE_HAS_CARRIER) != 0;
+    p_status->b_has_lock = (p_frontend->i_last_status & FE_HAS_LOCK) != 0;
+}
+static int ScanParametersDvbC( access_t *p_access, scan_parameter_t *p_scan )
+{
+    const frontend_t *p_frontend = p_access->p_sys->p_frontend;
+
+
+    memset( p_scan, 0, sizeof(*p_scan) );
+    p_scan->type = SCAN_DVB_C;
+    p_scan->b_exhaustive = false;
+
+    /* */
+    p_scan->frequency.i_min = p_frontend->info.frequency_min;
+    p_scan->frequency.i_max = p_frontend->info.frequency_max;
+    p_scan->frequency.i_step = p_frontend->info.frequency_stepsize
+        ? p_frontend->info.frequency_stepsize : 166667;
+    p_scan->frequency.i_count = (p_scan->frequency.i_max-p_scan->frequency.i_min)/p_scan->frequency.i_step;
+
+    /* */
+    p_scan->bandwidth.i_min  = 6;
+    p_scan->bandwidth.i_max  = 8;
+    p_scan->bandwidth.i_step = 1;
+    p_scan->bandwidth.i_count = 3;
+    return VLC_SUCCESS;
+}
+static int ScanParametersDvbT( access_t *p_access, scan_parameter_t *p_scan )
+{
+    const frontend_t *p_frontend = p_access->p_sys->p_frontend;
+
+
+    memset( p_scan, 0, sizeof(*p_scan) );
+    p_scan->type = SCAN_DVB_T;
+    p_scan->b_exhaustive = false;
+
+    /* */
+    p_scan->frequency.i_min = p_frontend->info.frequency_min;
+    p_scan->frequency.i_max = p_frontend->info.frequency_max;
+    p_scan->frequency.i_step = p_frontend->info.frequency_stepsize
+        ? p_frontend->info.frequency_stepsize : 166667;
+    p_scan->frequency.i_count = (p_scan->frequency.i_max-p_scan->frequency.i_min)/p_scan->frequency.i_step;
+
+    /* */
+    p_scan->bandwidth.i_min  = 6;
+    p_scan->bandwidth.i_max  = 8;
+    p_scan->bandwidth.i_step = 1;
+    p_scan->bandwidth.i_count = 3;
+    return VLC_SUCCESS;
+}
+int  FrontendGetScanParameter( access_t *p_access, scan_parameter_t *p_scan )
+{
+    access_sys_t *p_sys = p_access->p_sys;
+    const frontend_t *p_frontend = p_sys->p_frontend;
+
+    if( p_frontend->info.type == FE_OFDM )  // DVB-T
+        return ScanParametersDvbT( p_access, p_scan );
+    else if( p_frontend->info.type == FE_QAM )  // DVB-C
+        return ScanParametersDvbC( p_access, p_scan );
+
+    msg_Err( p_access, "Frontend type not supported for scanning" );
+    return VLC_EGENERIC;
 }
 
 #ifdef ENABLE_HTTPD
 /*****************************************************************************
  * FrontendStatus : Read frontend status
  *****************************************************************************/
-void E_(FrontendStatus)( access_t *p_access )
+void FrontendStatus( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     frontend_t *p_frontend = p_sys->p_frontend;
@@ -380,8 +477,9 @@ void E_(FrontendStatus)( access_t *p_access )
     if( (i_ret = ioctl( p_sys->i_frontend_handle, FE_GET_INFO,
                         &p_frontend->info )) < 0 )
     {
-        p += sprintf( p, "ioctl FE_GET_INFO failed (%d) %s\n", i_ret,
-                      strerror(errno) );
+        char buf[1000];
+        strerror_r( errno, buf, sizeof( buf ) );
+        p += sprintf( p, "ioctl FE_GET_INFO failed (%d) %s\n", i_ret, buf );
         goto out;
     }
 
@@ -467,8 +565,10 @@ void E_(FrontendStatus)( access_t *p_access )
     if( (i_ret = ioctl( p_sys->i_frontend_handle, FE_READ_STATUS, &i_status ))
            < 0 )
     {
-        p += sprintf( p, "</table>ioctl FE_READ_STATUS failed (%d) %s\n", i_ret,
-                      strerror(errno) );
+        char buf[1000];
+        strerror_r( errno, buf, sizeof( buf ) );
+        p += sprintf( p, "</table>ioctl FE_READ_STATUS failed (%d) %s\n",
+                      i_ret, buf );
         goto out;
     }
 
@@ -505,7 +605,7 @@ void E_(FrontendStatus)( access_t *p_access )
 
 out:
     vlc_mutex_lock( &p_sys->httpd_mutex );
-    p_sys->b_request_frontend_info = VLC_FALSE;
+    p_sys->b_request_frontend_info = false;
     vlc_cond_signal( &p_sys->httpd_cond );
     vlc_mutex_unlock( &p_sys->httpd_mutex );
 }
@@ -524,8 +624,7 @@ static int FrontendInfo( access_t *p_access )
     if( (i_ret = ioctl( p_sys->i_frontend_handle, FE_GET_INFO,
                         &p_frontend->info )) < 0 )
     {
-        msg_Err( p_access, "ioctl FE_GET_INFO failed (%d) %s", i_ret,
-                 strerror(errno) );
+        msg_Err( p_access, "ioctl FE_GET_INFO failed (%d): %m", i_ret );
         return VLC_EGENERIC;
     }
 
@@ -639,13 +738,13 @@ static int FrontendInfo( access_t *p_access )
  *****************************************************************************/
 static fe_spectral_inversion_t DecodeInversion( access_t *p_access )
 {
-    vlc_value_t         val;
+    int i_val;
     fe_spectral_inversion_t fe_inversion = 0;
 
-    var_Get( p_access, "dvb-inversion", &val );
-    msg_Dbg( p_access, "using inversion=%d", val.i_int );
+    i_val = var_GetInteger( p_access, "dvb-inversion" );
+    msg_Dbg( p_access, "using inversion=%d", i_val );
 
-    switch( val.i_int )
+    switch( i_val )
     {
         case 0: fe_inversion = INVERSION_OFF; break;
         case 1: fe_inversion = INVERSION_ON; break;
@@ -685,29 +784,52 @@ static fe_code_rate_t DecodeFEC( access_t *p_access, int i_val )
     return fe_fec;
 }
 
-static fe_modulation_t DecodeModulation( access_t *p_access )
+static fe_modulation_t DecodeModulationQAM( access_t *p_access )
 {
-    vlc_value_t         val;
-    fe_modulation_t     fe_modulation = 0;
-
-    var_Get( p_access, "dvb-modulation", &val );
-
-    switch( val.i_int )
+    switch( var_GetInteger( p_access, "dvb-modulation" ) )
     {
-        case -1: fe_modulation = QPSK; break;
-        case 0: fe_modulation = QAM_AUTO; break;
-        case 8: fe_modulation = VSB_8; break;      // ugly hack
-        case 16: fe_modulation = QAM_16; break;
-        case 32: fe_modulation = QAM_32; break;
-        case 64: fe_modulation = QAM_64; break;
-        case 128: fe_modulation = QAM_128; break;
-        case 256: fe_modulation = QAM_256; break;
+        case 0:     return QAM_AUTO;
+        case 16:    return QAM_16;
+        case 32:    return QAM_32;
+        case 64:    return QAM_64;
+        case 128:   return QAM_128;
+        case 256:   return QAM_256;
         default:
-            msg_Dbg( p_access, "terrestrial/cable dvb has constellation/modulation not set, using auto");
-            fe_modulation = QAM_AUTO;
-            break;
+            msg_Dbg( p_access, "QAM modulation not set, using auto");
+            return QAM_AUTO;
     }
-    return fe_modulation;
+}
+static fe_modulation_t DecodeModulationOFDM( access_t *p_access )
+{
+    switch( var_GetInteger( p_access, "dvb-modulation" ) )
+    {
+        case -1:    return QPSK;
+        case 0:     return QAM_AUTO;
+        case 16:    return QAM_16;
+        case 32:    return QAM_32;
+        case 64:    return QAM_64;
+        case 128:   return QAM_128;
+        case 256:   return QAM_256;
+        default:
+            msg_Dbg( p_access, "OFDM modulation not set, using QAM auto");
+            return QAM_AUTO;
+    }
+}
+static fe_modulation_t DecodeModulationATSC( access_t *p_access )
+{
+    switch( var_GetInteger( p_access, "dvb-modulation" ) )
+    {
+        case 0:     return QAM_AUTO;
+        case 8:     return VSB_8;
+        case 16:    return VSB_16;
+        case 32:    return QAM_32;
+        case 64:    return QAM_64;
+        case 128:   return QAM_128;
+        case 256:   return QAM_256;
+        default:
+            msg_Dbg( p_access, "ATSC modulation not set, using VSB 8");
+            return VSB_8;
+    }
 }
 
 /*****************************************************************************
@@ -715,20 +837,20 @@ static fe_modulation_t DecodeModulation( access_t *p_access )
  *****************************************************************************/
 static fe_sec_voltage_t DecodeVoltage( access_t *p_access )
 {
-    vlc_value_t         val;
+    int i_val;
     fe_sec_voltage_t    fe_voltage;
 
-    var_Get( p_access, "dvb-voltage", &val );
-    msg_Dbg( p_access, "using voltage=%d", val.i_int );
+    i_val = var_GetInteger( p_access, "dvb-voltage" );
+    msg_Dbg( p_access, "using voltage=%d", i_val );
 
-    switch( val.i_int )
+    switch( i_val )
     {
         case 0: fe_voltage = SEC_VOLTAGE_OFF; break;
         case 13: fe_voltage = SEC_VOLTAGE_13; break;
         case 18: fe_voltage = SEC_VOLTAGE_18; break;
         default:
             fe_voltage = SEC_VOLTAGE_OFF;
-            msg_Err( p_access, "argument has invalid voltage (%d)", val.i_int );
+            msg_Err( p_access, "argument has invalid voltage (%d)", i_val );
             break;
     }
     return fe_voltage;
@@ -736,19 +858,19 @@ static fe_sec_voltage_t DecodeVoltage( access_t *p_access )
 
 static fe_sec_tone_mode_t DecodeTone( access_t *p_access )
 {
-    vlc_value_t         val;
+    int i_val;
     fe_sec_tone_mode_t  fe_tone;
 
-    var_Get( p_access, "dvb-tone", &val );
-    msg_Dbg( p_access, "using tone=%d", val.i_int );
+    i_val = var_GetInteger( p_access, "dvb-tone" );
+    msg_Dbg( p_access, "using tone=%d", i_val );
 
-    switch( val.i_int )
+    switch( i_val )
     {
         case 0: fe_tone = SEC_TONE_OFF; break;
         case 1: fe_tone = SEC_TONE_ON; break;
         default:
             fe_tone = SEC_TONE_OFF;
-            msg_Err( p_access, "argument has invalid tone mode (%d)", val.i_int);
+            msg_Err( p_access, "argument has invalid tone mode (%d)", i_val );
             break;
     }
     return fe_tone;
@@ -763,25 +885,24 @@ struct diseqc_cmd_t
 static int DoDiseqc( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
-    vlc_value_t val;
+    int i_val;
+    bool b_val;
     int i_frequency, i_lnb_slof;
     fe_sec_voltage_t fe_voltage;
     fe_sec_tone_mode_t fe_tone;
     int i_err;
 
-    var_Get( p_access, "dvb-frequency", &val );
-    i_frequency = val.i_int;
-    var_Get( p_access, "dvb-lnb-slof", &val );
-    i_lnb_slof = val.i_int;
+    i_frequency = var_GetInteger( p_access, "dvb-frequency" );
+    i_lnb_slof = var_GetInteger( p_access, "dvb-lnb-slof" );
 
-    var_Get( p_access, "dvb-tone", &val );
-    if( val.i_int == -1 /* auto */ )
+    i_val = var_GetInteger( p_access, "dvb-tone" );
+    if( i_val == -1 /* auto */ )
     {
         if( i_frequency >= i_lnb_slof )
-            val.i_int = 1;
+            i_val = 1;
         else
-            val.i_int = 0;
-        var_Set( p_access, "dvb-tone", val );
+            i_val = 0;
+        var_SetInteger( p_access, "dvb-tone", i_val );
     }
 
     fe_voltage = DecodeVoltage( p_access );
@@ -790,34 +911,33 @@ static int DoDiseqc( access_t *p_access )
     /* Switch off continuous tone. */
     if( (i_err = ioctl( p_sys->i_frontend_handle, FE_SET_TONE, SEC_TONE_OFF )) < 0 )
     {
-        msg_Err( p_access, "ioctl FE_SET_TONE failed, tone=%s (%d) %s",
-                 fe_tone == SEC_TONE_ON ? "on" : "off", i_err,
-                 strerror(errno) );
+        msg_Err( p_access, "ioctl FE_SET_TONE failed, tone=%s (%d) %m",
+                 fe_tone == SEC_TONE_ON ? "on" : "off", i_err );
         return i_err;
     }
 
     /* Configure LNB voltage. */
     if( (i_err = ioctl( p_sys->i_frontend_handle, FE_SET_VOLTAGE, fe_voltage )) < 0 )
     {
-        msg_Err( p_access, "ioctl FE_SET_VOLTAGE failed, voltage=%d (%d) %s",
-                 fe_voltage, i_err, strerror(errno) );
+        msg_Err( p_access, "ioctl FE_SET_VOLTAGE failed, voltage=%d (%d) %m",
+                 fe_voltage, i_err );
         return i_err;
     }
 
-    var_Get( p_access, "dvb-high-voltage", &val );
+    b_val = var_GetBool( p_access, "dvb-high-voltage" );
     if( (i_err = ioctl( p_sys->i_frontend_handle, FE_ENABLE_HIGH_LNB_VOLTAGE,
-                        val.b_bool )) < 0 && val.b_bool )
+                        b_val )) < 0 && b_val )
     {
         msg_Err( p_access,
-                 "ioctl FE_ENABLE_HIGH_LNB_VOLTAGE failed, val=%d (%d) %s",
-                 val.b_bool, i_err, strerror(errno) );
+                 "ioctl FE_ENABLE_HIGH_LNB_VOLTAGE failed, val=%d (%d) %m",
+                 b_val, i_err );
     }
 
     /* Wait for at least 15 ms. */
     msleep(15000);
 
-    var_Get( p_access, "dvb-satno", &val );
-    if( val.i_int > 0 && val.i_int < 5 )
+    i_val = var_GetInteger( p_access, "dvb-satno" );
+    if( i_val > 0 && i_val < 5 )
     {
         /* digital satellite equipment control,
          * specification is available from http://www.eutelsat.com/
@@ -830,15 +950,15 @@ static int DoDiseqc( access_t *p_access )
          * bits are: option, position, polarization, band
          */
         cmd.cmd.msg[3] = 0xf0 /* reset bits */
-                          | (((val.i_int - 1) * 4) & 0xc)
+                          | (((i_val - 1) * 4) & 0xc)
                           | (fe_voltage == SEC_VOLTAGE_13 ? 0 : 2)
                           | (fe_tone == SEC_TONE_ON ? 1 : 0);
 
         if( (i_err = ioctl( p_sys->i_frontend_handle, FE_DISEQC_SEND_MASTER_CMD,
                            &cmd.cmd )) < 0 )
         {
-            msg_Err( p_access, "ioctl FE_SEND_MASTER_CMD failed (%d) %s",
-                     i_err, strerror(errno) );
+            msg_Err( p_access, "ioctl FE_SEND_MASTER_CMD failed (%d) %m",
+                     i_err );
             return i_err;
         }
 
@@ -846,10 +966,10 @@ static int DoDiseqc( access_t *p_access )
 
         /* A or B simple diseqc ("diseqc-compatible") */
         if( (i_err = ioctl( p_sys->i_frontend_handle, FE_DISEQC_SEND_BURST,
-                      ((val.i_int - 1) % 2) ? SEC_MINI_B : SEC_MINI_A )) < 0 )
+                      ((i_val - 1) % 2) ? SEC_MINI_B : SEC_MINI_A )) < 0 )
         {
-            msg_Err( p_access, "ioctl FE_SEND_BURST failed (%d) %s",
-                     i_err, strerror(errno) );
+            msg_Err( p_access, "ioctl FE_SEND_BURST failed (%d) %m",
+                     i_err );
             return i_err;
         }
 
@@ -858,9 +978,8 @@ static int DoDiseqc( access_t *p_access )
 
     if( (i_err = ioctl( p_sys->i_frontend_handle, FE_SET_TONE, fe_tone )) < 0 )
     {
-        msg_Err( p_access, "ioctl FE_SET_TONE failed, tone=%s (%d) %s",
-                 fe_tone == SEC_TONE_ON ? "on" : "off", i_err,
-                 strerror(errno) );
+        msg_Err( p_access, "ioctl FE_SET_TONE failed, tone=%s (%d) %m",
+                 fe_tone == SEC_TONE_ON ? "on" : "off", i_err );
         return i_err;
     }
 
@@ -873,15 +992,14 @@ static int FrontendSetQPSK( access_t *p_access )
     access_sys_t *p_sys = p_access->p_sys;
     struct dvb_frontend_parameters fep;
     int i_ret;
-    vlc_value_t val;
+    int i_val;
     int i_frequency, i_lnb_slof = 0, i_lnb_lof1, i_lnb_lof2 = 0;
 
     /* Prepare the fep structure */
-    var_Get( p_access, "dvb-frequency", &val );
-    i_frequency = val.i_int;
+    i_frequency = var_GetInteger( p_access, "dvb-frequency" );
 
-    var_Get( p_access, "dvb-lnb-lof1", &val );
-    if ( val.i_int == 0 )
+    i_val = var_GetInteger( p_access, "dvb-lnb-lof1" );
+    if( i_val == 0 )
     {
         /* Automatic mode. */
         if ( i_frequency >= 950000 && i_frequency <= 2150000 )
@@ -922,20 +1040,15 @@ static int FrontendSetQPSK( access_t *p_access )
                      "oscillator frequency" );
             return VLC_EGENERIC;
         }
-        val.i_int = i_lnb_lof1;
-        var_Set( p_access, "dvb-lnb-lof1", val );
-        val.i_int = i_lnb_lof2;
-        var_Set( p_access, "dvb-lnb-lof2", val );
-        val.i_int = i_lnb_slof;
-        var_Set( p_access, "dvb-lnb-slof", val );
+        var_SetInteger( p_access, "dvb-lnb-lof1", i_lnb_lof1 );
+        var_SetInteger( p_access, "dvb-lnb-lof2", i_lnb_lof2 );
+        var_SetInteger( p_access, "dvb-lnb-slof", i_lnb_slof );
     }
     else
     {
-        i_lnb_lof1 = val.i_int;
-        var_Get( p_access, "dvb-lnb-lof2", &val );
-        i_lnb_lof2 = val.i_int;
-        var_Get( p_access, "dvb-lnb-slof", &val );
-        i_lnb_slof = val.i_int;
+        i_lnb_lof1 = i_val;
+        i_lnb_lof2 = var_GetInteger( p_access, "dvb-lnb-lof2" );
+        i_lnb_slof = var_GetInteger( p_access, "dvb-lnb-slof" );
     }
 
     if( i_lnb_slof && i_frequency >= i_lnb_slof )
@@ -950,11 +1063,9 @@ static int FrontendSetQPSK( access_t *p_access )
 
     fep.inversion = DecodeInversion( p_access );
 
-    var_Get( p_access, "dvb-srate", &val );
-    fep.u.qpsk.symbol_rate = val.i_int;
+    fep.u.qpsk.symbol_rate = var_GetInteger( p_access, "dvb-srate" );
 
-    var_Get( p_access, "dvb-fec", &val );
-    fep.u.qpsk.fec_inner = DecodeFEC( p_access, val.i_int );
+    fep.u.qpsk.fec_inner = DecodeFEC( p_access, var_GetInteger( p_access, "dvb-fec" ) );
 
     if( DoDiseqc( p_access ) < 0 )
     {
@@ -973,8 +1084,7 @@ static int FrontendSetQPSK( access_t *p_access )
     /* Now send it all to the frontend device */
     if( (i_ret = ioctl( p_sys->i_frontend_handle, FE_SET_FRONTEND, &fep )) < 0 )
     {
-        msg_Err( p_access, "DVB-S: setting frontend failed (%d) %s", i_ret,
-                 strerror(errno) );
+        msg_Err( p_access, "DVB-S: setting frontend failed (%d) %m", i_ret );
         return VLC_EGENERIC;
     }
 
@@ -987,24 +1097,32 @@ static int FrontendSetQPSK( access_t *p_access )
 static int FrontendSetQAM( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
+    frontend_t *p_frontend = p_sys->p_frontend;
     struct dvb_frontend_parameters fep;
-    vlc_value_t val;
+    int i_val;
     int i_ret;
 
     /* Prepare the fep structure */
 
-    var_Get( p_access, "dvb-frequency", &val );
-    fep.frequency = val.i_int;
+    fep.frequency = var_GetInteger( p_access, "dvb-frequency" );
 
     fep.inversion = DecodeInversion( p_access );
 
-    var_Get( p_access, "dvb-srate", &val );
-    fep.u.qam.symbol_rate = val.i_int;
+    /* Default symbol-rate is for dvb-s, and doesn't fit
+     * for dvb-c, so if it's over the limit of frontend, default to
+     * somewhat common value
+     */
+    i_val = var_GetInteger( p_access, "dvb-srate" );
+    if( i_val < p_frontend->info.symbol_rate_max &&
+        i_val > p_frontend->info.symbol_rate_min )
+        fep.u.qam.symbol_rate = i_val;
+    else
+        fep.u.qam.symbol_rate = 6875000;
 
-    var_Get( p_access, "dvb-fec", &val );
-    fep.u.qam.fec_inner = DecodeFEC( p_access, val.i_int );
+    fep.u.qam.fec_inner = DecodeFEC( p_access, var_GetInteger( p_access,
+                                                               "dvb-fec" ) );
 
-    fep.u.qam.modulation = DecodeModulation( p_access );
+    fep.u.qam.modulation = DecodeModulationQAM( p_access );
 
     /* Empty the event queue */
     for( ; ; )
@@ -1018,8 +1136,7 @@ static int FrontendSetQAM( access_t *p_access )
     /* Now send it all to the frontend device */
     if( (i_ret = ioctl( p_sys->i_frontend_handle, FE_SET_FRONTEND, &fep )) < 0 )
     {
-        msg_Err( p_access, "DVB-C: setting frontend failed (%d) %s", i_ret,
-                 strerror(errno) );
+        msg_Err( p_access, "DVB-C: setting frontend failed (%d): %m", i_ret );
         return VLC_EGENERIC;
     }
 
@@ -1031,13 +1148,12 @@ static int FrontendSetQAM( access_t *p_access )
  *****************************************************************************/
 static fe_bandwidth_t DecodeBandwidth( access_t *p_access )
 {
-    vlc_value_t         val;
     fe_bandwidth_t      fe_bandwidth = 0;
+    int i_bandwith = var_GetInteger( p_access, "dvb-bandwidth" );
 
-    var_Get( p_access, "dvb-bandwidth", &val );
-    msg_Dbg( p_access, "using bandwidth=%d", val.i_int );
+    msg_Dbg( p_access, "using bandwidth=%d", i_bandwith );
 
-    switch( val.i_int )
+    switch( i_bandwith )
     {
         case 0: fe_bandwidth = BANDWIDTH_AUTO; break;
         case 6: fe_bandwidth = BANDWIDTH_6_MHZ; break;
@@ -1053,13 +1169,12 @@ static fe_bandwidth_t DecodeBandwidth( access_t *p_access )
 
 static fe_transmit_mode_t DecodeTransmission( access_t *p_access )
 {
-    vlc_value_t         val;
     fe_transmit_mode_t  fe_transmission = 0;
+    int i_transmission = var_GetInteger( p_access, "dvb-transmission" );
 
-    var_Get( p_access, "dvb-transmission", &val );
-    msg_Dbg( p_access, "using transmission=%d", val.i_int );
+    msg_Dbg( p_access, "using transmission=%d", i_transmission );
 
-    switch( val.i_int )
+    switch( i_transmission )
     {
         case 0: fe_transmission = TRANSMISSION_MODE_AUTO; break;
         case 2: fe_transmission = TRANSMISSION_MODE_2K; break;
@@ -1074,13 +1189,12 @@ static fe_transmit_mode_t DecodeTransmission( access_t *p_access )
 
 static fe_guard_interval_t DecodeGuardInterval( access_t *p_access )
 {
-    vlc_value_t         val;
     fe_guard_interval_t fe_guard = 0;
+    int i_guard = var_GetInteger( p_access, "dvb-guard" );
 
-    var_Get( p_access, "dvb-guard", &val );
-    msg_Dbg( p_access, "using guard=%d", val.i_int );
+    msg_Dbg( p_access, "using guard=%d", i_guard );
 
-    switch( val.i_int )
+    switch( i_guard )
     {
         case 0: fe_guard = GUARD_INTERVAL_AUTO; break;
         case 4: fe_guard = GUARD_INTERVAL_1_4; break;
@@ -1097,13 +1211,12 @@ static fe_guard_interval_t DecodeGuardInterval( access_t *p_access )
 
 static fe_hierarchy_t DecodeHierarchy( access_t *p_access )
 {
-    vlc_value_t         val;
     fe_hierarchy_t      fe_hierarchy = 0;
+    int i_hierarchy = var_GetInteger( p_access, "dvb-hierarchy" );
 
-    var_Get( p_access, "dvb-hierarchy", &val );
-    msg_Dbg( p_access, "using hierarchy=%d", val.i_int );
+    msg_Dbg( p_access, "using hierarchy=%d", i_hierarchy );
 
-    switch( val.i_int )
+    switch( i_hierarchy )
     {
         case -1: fe_hierarchy = HIERARCHY_NONE; break;
         case 0: fe_hierarchy = HIERARCHY_AUTO; break;
@@ -1122,22 +1235,20 @@ static int FrontendSetOFDM( access_t * p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     struct dvb_frontend_parameters fep;
-    vlc_value_t val;
     int ret;
 
     /* Prepare the fep structure */
 
-    var_Get( p_access, "dvb-frequency", &val );
-    fep.frequency = val.i_int;
+    fep.frequency = var_GetInteger( p_access, "dvb-frequency" );
 
     fep.inversion = DecodeInversion( p_access );
 
     fep.u.ofdm.bandwidth = DecodeBandwidth( p_access );
-    var_Get( p_access, "dvb-code-rate-hp", &val );
-    fep.u.ofdm.code_rate_HP = DecodeFEC( p_access, val.i_int );
-    var_Get( p_access, "dvb-code-rate-lp", &val );
-    fep.u.ofdm.code_rate_LP = DecodeFEC( p_access, val.i_int );
-    fep.u.ofdm.constellation = DecodeModulation( p_access );
+    fep.u.ofdm.code_rate_HP = DecodeFEC( p_access, var_GetInteger( p_access,
+                                                        "dvb-code-rate-hp" ) );
+    fep.u.ofdm.code_rate_LP = DecodeFEC( p_access, var_GetInteger( p_access,
+                                                        "dvb-code-rate-lp" ) );
+    fep.u.ofdm.constellation = DecodeModulationOFDM( p_access );
     fep.u.ofdm.transmission_mode = DecodeTransmission( p_access );
     fep.u.ofdm.guard_interval = DecodeGuardInterval( p_access );
     fep.u.ofdm.hierarchy_information = DecodeHierarchy( p_access );
@@ -1154,8 +1265,7 @@ static int FrontendSetOFDM( access_t * p_access )
     /* Now send it all to the frontend device */
     if( (ret = ioctl( p_sys->i_frontend_handle, FE_SET_FRONTEND, &fep )) < 0 )
     {
-        msg_Err( p_access, "DVB-T: setting frontend failed (%d) %s", ret,
-                 strerror(errno) );
+        msg_Err( p_access, "DVB-T: setting frontend failed (%d): %m", ret );
         return -1;
     }
 
@@ -1169,15 +1279,13 @@ static int FrontendSetATSC( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     struct dvb_frontend_parameters fep;
-    vlc_value_t val;
     int i_ret;
 
     /* Prepare the fep structure */
 
-    var_Get( p_access, "dvb-frequency", &val );
-    fep.frequency = val.i_int;
+    fep.frequency = var_GetInteger( p_access, "dvb-frequency" );
 
-    fep.u.vsb.modulation = DecodeModulation( p_access );
+    fep.u.vsb.modulation = DecodeModulationATSC( p_access );
 
     /* Empty the event queue */
     for( ; ; )
@@ -1191,8 +1299,7 @@ static int FrontendSetATSC( access_t *p_access )
     /* Now send it all to the frontend device */
     if( (i_ret = ioctl( p_sys->i_frontend_handle, FE_SET_FRONTEND, &fep )) < 0 )
     {
-        msg_Err( p_access, "ATSC: setting frontend failed (%d) %s", i_ret,
-                 strerror(errno) );
+        msg_Err( p_access, "ATSC: setting frontend failed (%d): %m", i_ret );
         return VLC_EGENERIC;
     }
 
@@ -1207,18 +1314,15 @@ static int FrontendSetATSC( access_t *p_access )
 /*****************************************************************************
  * DMXSetFilter : controls the demux to add a filter
  *****************************************************************************/
-int E_(DMXSetFilter)( access_t * p_access, int i_pid, int * pi_fd, int i_type )
+int DMXSetFilter( access_t * p_access, int i_pid, int * pi_fd, int i_type )
 {
     struct dmx_pes_filter_params s_filter_params;
     int i_ret;
     unsigned int i_adapter, i_device;
     char dmx[128];
-    vlc_value_t val;
 
-    var_Get( p_access, "dvb-adapter", &val );
-    i_adapter = val.i_int;
-    var_Get( p_access, "dvb-device", &val );
-    i_device = val.i_int;
+    i_adapter = var_GetInteger( p_access, "dvb-adapter" );
+    i_device = var_GetInteger( p_access, "dvb-device" );
 
     if( snprintf( dmx, sizeof(dmx), DMX, i_adapter, i_device )
             >= (int)sizeof(dmx) )
@@ -1228,10 +1332,9 @@ int E_(DMXSetFilter)( access_t * p_access, int i_pid, int * pi_fd, int i_type )
     }
 
     msg_Dbg( p_access, "Opening device %s", dmx );
-    if( (*pi_fd = open(dmx, O_RDWR)) < 0 )
+    if( (*pi_fd = vlc_open(dmx, O_RDWR)) < 0 )
     {
-        msg_Err( p_access, "DMXSetFilter: opening device failed (%s)",
-                 strerror(errno) );
+        msg_Err( p_access, "DMXSetFilter: opening device failed (%m)" );
         return VLC_EGENERIC;
     }
 
@@ -1337,8 +1440,7 @@ int E_(DMXSetFilter)( access_t * p_access, int i_pid, int * pi_fd, int i_type )
     /* We then give the order to the device : */
     if( (i_ret = ioctl( *pi_fd, DMX_SET_PES_FILTER, &s_filter_params )) < 0 )
     {
-        msg_Err( p_access, "DMXSetFilter: failed with %d (%s)", i_ret,
-                 strerror(errno) );
+        msg_Err( p_access, "DMXSetFilter: failed with %d (%m)", i_ret );
         return VLC_EGENERIC;
     }
     return VLC_SUCCESS;
@@ -1347,14 +1449,13 @@ int E_(DMXSetFilter)( access_t * p_access, int i_pid, int * pi_fd, int i_type )
 /*****************************************************************************
  * DMXUnsetFilter : removes a filter
  *****************************************************************************/
-int E_(DMXUnsetFilter)( access_t * p_access, int i_fd )
+int DMXUnsetFilter( access_t * p_access, int i_fd )
 {
     int i_ret;
 
     if( (i_ret = ioctl( i_fd, DMX_STOP )) < 0 )
     {
-        msg_Err( p_access, "DMX_STOP failed for demux (%d) %s",
-                 i_ret, strerror(errno) );
+        msg_Err( p_access, "DMX_STOP failed for demux (%d): %m", i_ret );
         return i_ret;
     }
 
@@ -1371,17 +1472,14 @@ int E_(DMXUnsetFilter)( access_t * p_access, int i_fd )
 /*****************************************************************************
  * DVROpen :
  *****************************************************************************/
-int E_(DVROpen)( access_t * p_access )
+int DVROpen( access_t * p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     unsigned int i_adapter, i_device;
     char dvr[128];
-    vlc_value_t val;
 
-    var_Get( p_access, "dvb-adapter", &val );
-    i_adapter = val.i_int;
-    var_Get( p_access, "dvb-device", &val );
-    i_device = val.i_int;
+    i_adapter = var_GetInteger( p_access, "dvb-adapter" );
+    i_device = var_GetInteger( p_access, "dvb-device" );
 
     if( snprintf( dvr, sizeof(dvr), DVR, i_adapter, i_device )
             >= (int)sizeof(dvr) )
@@ -1391,17 +1489,15 @@ int E_(DVROpen)( access_t * p_access )
     }
 
     msg_Dbg( p_access, "Opening device %s", dvr );
-    if( (p_sys->i_handle = open(dvr, O_RDONLY)) < 0 )
+    if( (p_sys->i_handle = vlc_open(dvr, O_RDONLY)) < 0 )
     {
-        msg_Err( p_access, "DVROpen: opening device failed (%s)",
-                 strerror(errno) );
+        msg_Err( p_access, "DVROpen: opening device failed (%m)" );
         return VLC_EGENERIC;
     }
 
     if( fcntl( p_sys->i_handle, F_SETFL, O_NONBLOCK ) == -1 )
     {
-        msg_Warn( p_access, "DVROpen: couldn't set non-blocking mode (%s)",
-                  strerror(errno) );
+        msg_Warn( p_access, "DVROpen: couldn't set non-blocking mode (%m)" );
     }
 
     return VLC_SUCCESS;
@@ -1410,7 +1506,7 @@ int E_(DVROpen)( access_t * p_access )
 /*****************************************************************************
  * DVRClose :
  *****************************************************************************/
-void E_(DVRClose)( access_t * p_access )
+void DVRClose( access_t * p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
@@ -1425,7 +1521,7 @@ void E_(DVRClose)( access_t * p_access )
 /*****************************************************************************
  * CAMOpen :
  *****************************************************************************/
-int E_(CAMOpen)( access_t *p_access )
+int CAMOpen( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     char ca[128];
@@ -1443,10 +1539,9 @@ int E_(CAMOpen)( access_t *p_access )
     memset( &caps, 0, sizeof( ca_caps_t ));
 
     msg_Dbg( p_access, "Opening device %s", ca );
-    if( (p_sys->i_ca_handle = open(ca, O_RDWR | O_NONBLOCK)) < 0 )
+    if( (p_sys->i_ca_handle = vlc_open(ca, O_RDWR | O_NONBLOCK)) < 0 )
     {
-        msg_Warn( p_access, "CAMInit: opening CAM device failed (%s)",
-                  strerror(errno) );
+        msg_Warn( p_access, "CAMInit: opening CAM device failed (%m)" );
         p_sys->i_ca_handle = 0;
         return VLC_EGENERIC;
     }
@@ -1460,7 +1555,7 @@ int E_(CAMOpen)( access_t *p_access )
     }
 
     /* Output CA capabilities */
-    msg_Dbg( p_access, "CAMInit: CA interface with %d %s", caps.slot_num, 
+    msg_Dbg( p_access, "CAMInit: CA interface with %d %s", caps.slot_num,
         caps.slot_num == 1 ? "slot" : "slots" );
     if ( caps.slot_type & CA_CI )
         msg_Dbg( p_access, "CAMInit: CI high level interface type" );
@@ -1498,7 +1593,8 @@ int E_(CAMOpen)( access_t *p_access )
     {
         p_sys->i_ca_type = CA_CI;
     }
-    else {
+    else
+    {
         p_sys->i_ca_type = -1;
         msg_Err( p_access, "CAMInit: incompatible CAM interface" );
         close( p_sys->i_ca_handle );
@@ -1507,18 +1603,18 @@ int E_(CAMOpen)( access_t *p_access )
     }
 
     p_sys->i_nb_slots = caps.slot_num;
-    memset( p_sys->pb_active_slot, 0, sizeof(vlc_bool_t) * MAX_CI_SLOTS );
-    memset( p_sys->pb_slot_mmi_expected, 0, sizeof(vlc_bool_t) * MAX_CI_SLOTS );
+    memset( p_sys->pb_active_slot, 0, sizeof(bool) * MAX_CI_SLOTS );
+    memset( p_sys->pb_slot_mmi_expected, 0, sizeof(bool) * MAX_CI_SLOTS );
     memset( p_sys->pb_slot_mmi_undisplayed, 0,
-            sizeof(vlc_bool_t) * MAX_CI_SLOTS );
+            sizeof(bool) * MAX_CI_SLOTS );
 
-    return E_(en50221_Init)( p_access );
+    return en50221_Init( p_access );
 }
 
 /*****************************************************************************
  * CAMPoll :
  *****************************************************************************/
-int E_(CAMPoll)( access_t * p_access )
+int CAMPoll( access_t * p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     int i_ret = VLC_EGENERIC;
@@ -1531,7 +1627,7 @@ int E_(CAMPoll)( access_t * p_access )
     switch( p_sys->i_ca_type )
     {
     case CA_CI_LINK:
-        i_ret = E_(en50221_Poll)( p_access );
+        i_ret = en50221_Poll( p_access );
         break;
     case CA_CI:
         i_ret = VLC_SUCCESS;
@@ -1548,7 +1644,7 @@ int E_(CAMPoll)( access_t * p_access )
 /*****************************************************************************
  * CAMStatus :
  *****************************************************************************/
-void E_(CAMStatus)( access_t * p_access )
+void CAMStatus( access_t * p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
     char *p;
@@ -1561,7 +1657,7 @@ void E_(CAMStatus)( access_t * p_access )
          * the user input to avoid confusing the CAM. */
         for ( i_slot = 0; i_slot < p_sys->i_nb_slots; i_slot++ )
         {
-            if ( p_sys->pb_slot_mmi_undisplayed[i_slot] == VLC_TRUE )
+            if ( p_sys->pb_slot_mmi_undisplayed[i_slot] == true )
             {
                 p_sys->psz_request = NULL;
                 msg_Dbg( p_access,
@@ -1578,11 +1674,11 @@ void E_(CAMStatus)( access_t * p_access )
         char *psz_request = p_sys->psz_request;
         char psz_value[255];
         int i_slot;
-        vlc_bool_t b_ok = VLC_FALSE;
+        bool b_ok = false;
 
         p_sys->psz_request = NULL;
 
-        if ( E_(HTTPExtractValue)( psz_request, "slot", psz_value,
+        if ( HTTPExtractValue( psz_request, "slot", psz_value,
                                    sizeof(psz_value) ) == NULL )
         {
             p_sys->psz_mmi_info = strdup( "invalid request parameter\n" );
@@ -1590,27 +1686,27 @@ void E_(CAMStatus)( access_t * p_access )
         }
         i_slot = atoi(psz_value);
 
-        if ( E_(HTTPExtractValue)( psz_request, "open", psz_value,
+        if ( HTTPExtractValue( psz_request, "open", psz_value,
                                    sizeof(psz_value) ) != NULL )
         {
-            E_(en50221_OpenMMI)( p_access, i_slot );
+            en50221_OpenMMI( p_access, i_slot );
             return;
         }
 
-        if ( E_(HTTPExtractValue)( psz_request, "close", psz_value,
+        if ( HTTPExtractValue( psz_request, "close", psz_value,
                                    sizeof(psz_value) ) != NULL )
         {
-            E_(en50221_CloseMMI)( p_access, i_slot );
+            en50221_CloseMMI( p_access, i_slot );
             return;
         }
 
-        if ( E_(HTTPExtractValue)( psz_request, "cancel", psz_value,
+        if ( HTTPExtractValue( psz_request, "cancel", psz_value,
                                    sizeof(psz_value) ) == NULL )
         {
-            b_ok = VLC_TRUE;
+            b_ok = true;
         }
 
-        if ( E_(HTTPExtractValue)( psz_request, "type", psz_value,
+        if ( HTTPExtractValue( psz_request, "type", psz_value,
                                    sizeof(psz_value) ) == NULL )
         {
             p_sys->psz_mmi_info = strdup( "invalid request parameter\n" );
@@ -1621,13 +1717,13 @@ void E_(CAMStatus)( access_t * p_access )
         {
             mmi_object.i_object_type = EN50221_MMI_ANSW;
             mmi_object.u.answ.b_ok = b_ok;
-            if ( b_ok == VLC_FALSE )
+            if ( b_ok == false )
             {
                 mmi_object.u.answ.psz_answ = strdup("");
             }
             else
             {
-                if ( E_(HTTPExtractValue)( psz_request, "answ", psz_value,
+                if ( HTTPExtractValue( psz_request, "answ", psz_value,
                                            sizeof(psz_value) ) == NULL )
                 {
                     p_sys->psz_mmi_info = strdup( "invalid request parameter\n" );
@@ -1640,13 +1736,13 @@ void E_(CAMStatus)( access_t * p_access )
         else
         {
             mmi_object.i_object_type = EN50221_MMI_MENU_ANSW;
-            if ( b_ok == VLC_FALSE )
+            if ( b_ok == false )
             {
                 mmi_object.u.menu_answ.i_choice = 0;
             }
             else
             {
-                if ( E_(HTTPExtractValue)( psz_request, "choice", psz_value,
+                if ( HTTPExtractValue( psz_request, "choice", psz_value,
                                            sizeof(psz_value) ) == NULL )
                     mmi_object.u.menu_answ.i_choice = 0;
                 else
@@ -1654,14 +1750,14 @@ void E_(CAMStatus)( access_t * p_access )
             }
         }
 
-        E_(en50221_SendMMIObject)( p_access, i_slot, &mmi_object );
+        en50221_SendMMIObject( p_access, i_slot, &mmi_object );
         return;
     }
 
     /* Check that we have all necessary MMI information. */
     for ( i_slot = 0; i_slot < p_sys->i_nb_slots; i_slot++ )
     {
-        if ( p_sys->pb_slot_mmi_expected[i_slot] == VLC_TRUE )
+        if ( p_sys->pb_slot_mmi_expected[i_slot] == true )
             return;
     }
 
@@ -1669,8 +1765,9 @@ void E_(CAMStatus)( access_t * p_access )
 
     if ( ioctl( p_sys->i_ca_handle, CA_GET_CAP, &caps ) != 0 )
     {
-        p += sprintf( p, "ioctl CA_GET_CAP failed (%s)\n",
-                      strerror(errno) );
+        char buf[1000];
+        strerror_r( errno, buf, sizeof( buf ) );
+        p += sprintf( p, "ioctl CA_GET_CAP failed (%s)\n", buf );
         goto out;
     }
 
@@ -1705,14 +1802,15 @@ void E_(CAMStatus)( access_t * p_access )
     {
         ca_slot_info_t sinfo;
 
-        p_sys->pb_slot_mmi_undisplayed[i_slot] = VLC_FALSE;
+        p_sys->pb_slot_mmi_undisplayed[i_slot] = false;
         p += sprintf( p, "<p>CA slot #%d: ", i_slot );
 
         sinfo.num = i_slot;
         if ( ioctl( p_sys->i_ca_handle, CA_GET_SLOT_INFO, &sinfo ) != 0 )
         {
-            p += sprintf( p, "ioctl CA_GET_SLOT_INFO failed (%s)<br>\n",
-                          strerror(errno) );
+            char buf[1000];
+            strerror_r( errno, buf, sizeof( buf ) );
+            p += sprintf( p, "ioctl CA_GET_SLOT_INFO failed (%s)<br>\n", buf );
             continue;
         }
 
@@ -1727,7 +1825,7 @@ void E_(CAMStatus)( access_t * p_access )
 
         if ( sinfo.flags & CA_CI_MODULE_READY )
         {
-            en50221_mmi_object_t *p_object = E_(en50221_GetMMIObject)( p_access,
+            en50221_mmi_object_t *p_object = en50221_GetMMIObject( p_access,
                                                                        i_slot );
 
             p += sprintf( p, "module present and ready<p>\n" );
@@ -1747,7 +1845,7 @@ void E_(CAMStatus)( access_t * p_access )
                     p += sprintf( p, "<input type=hidden name=type value=enq>\n" );
                     p += sprintf( p, "<table border=1><tr><th>%s</th></tr>\n",
                                   p_object->u.enq.psz_text );
-                    if ( p_object->u.enq.b_blind == VLC_FALSE )
+                    if ( p_object->u.enq.b_blind == false )
                         p += sprintf( p, "<tr><td><input type=text name=answ></td></tr>\n" );
                     else
                         p += sprintf( p, "<tr><td><input type=password name=answ></td></tr>\n" );
@@ -1797,7 +1895,7 @@ void E_(CAMStatus)( access_t * p_access )
 
 out:
     vlc_mutex_lock( &p_sys->httpd_mutex );
-    p_sys->b_request_mmi_info = VLC_FALSE;
+    p_sys->b_request_mmi_info = false;
     vlc_cond_signal( &p_sys->httpd_cond );
     vlc_mutex_unlock( &p_sys->httpd_mutex );
 }
@@ -1806,7 +1904,7 @@ out:
 /*****************************************************************************
  * CAMSet :
  *****************************************************************************/
-int E_(CAMSet)( access_t * p_access, dvbpsi_pmt_t *p_pmt )
+int CAMSet( access_t * p_access, dvbpsi_pmt_t *p_pmt )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
@@ -1816,7 +1914,7 @@ int E_(CAMSet)( access_t * p_access, dvbpsi_pmt_t *p_pmt )
         return VLC_EGENERIC;
     }
 
-    E_(en50221_SetCAPMT)( p_access, p_pmt );
+    en50221_SetCAPMT( p_access, p_pmt );
 
     return VLC_SUCCESS;
 }
@@ -1824,11 +1922,11 @@ int E_(CAMSet)( access_t * p_access, dvbpsi_pmt_t *p_pmt )
 /*****************************************************************************
  * CAMClose :
  *****************************************************************************/
-void E_(CAMClose)( access_t * p_access )
+void CAMClose( access_t * p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
-    E_(en50221_End)( p_access );
+    en50221_End( p_access );
 
     if ( p_sys->i_ca_handle )
     {

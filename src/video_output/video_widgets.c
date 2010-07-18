@@ -2,7 +2,7 @@
  * video_widgets.c : OSD widgets manipulation functions
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 504c7d5ee815866bb23cf37d39c998abb867a2ef $
+ * $Id: b6bf61d4da16abbfa2f4a06bf7c33f39bcb2208b $
  *
  * Author: Yoann Peronneau <yoann@videolan.org>
  *
@@ -24,12 +24,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                                /* free() */
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
 #include <vlc_osd.h>
 
-#include "vlc_video.h"
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Displays an OSD slider.
@@ -41,7 +44,7 @@ void vout_OSDSlider( vlc_object_t *p_caller, int i_channel, int i_position,
     vout_thread_t *p_vout = vlc_object_find( p_caller, VLC_OBJECT_VOUT,
                                              FIND_ANYWHERE );
 
-    if( p_vout && ( config_GetInt( p_caller, "osd" ) || ( i_position >= 0 ) ) )
+    if( p_vout && ( var_InheritBool( p_caller, "osd" ) && ( i_position >= 0 ) ) )
     {
         osd_Slider( p_caller, p_vout->p_spu, p_vout->render.i_width,
             p_vout->render.i_height, p_vout->fmt_in.i_x_offset,
@@ -63,7 +66,7 @@ void vout_OSDIcon( vlc_object_t *p_caller, int i_channel, short i_type )
 
     if( !p_vout ) return;
 
-    if( config_GetInt( p_caller, "osd" ) )
+    if( var_InheritBool( p_caller, "osd" ) )
     {
         osd_Icon( p_caller,
                   p_vout->p_spu,

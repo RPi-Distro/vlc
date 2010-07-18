@@ -2,7 +2,7 @@
  * theme_repository.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 7cd5fbc9de99768859acef15ddfe3dce4a3978ce $
+ * $Id: 1dc83b1c594b4be84a159f4c208a3ef3e759ffac $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -34,8 +34,7 @@
 #   include <dirent.h>
 #endif
 
-
-const char *ThemeRepository::kOpenDialog = "{openSkin}";
+#include <fstream>
 
 
 ThemeRepository *ThemeRepository::instance( intf_thread_t *pIntf )
@@ -51,11 +50,8 @@ ThemeRepository *ThemeRepository::instance( intf_thread_t *pIntf )
 
 void ThemeRepository::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_repository )
-    {
-        delete pIntf->p_sys->p_repository;
-        pIntf->p_sys->p_repository = NULL;
-    }
+    delete pIntf->p_sys->p_repository;
+    pIntf->p_sys->p_repository = NULL;
 }
 
 
@@ -78,33 +74,81 @@ ThemeRepository::ThemeRepository( intf_thread_t *pIntf ): SkinObject( pIntf )
         parseDirectory( *it );
     }
 
-    // Add an entry for the "open skin" dialog
-    val.psz_string = (char*)kOpenDialog;
-    text.psz_string = _("Open skin...");
-    var_Change( getIntf(), "intf-skins", VLC_VAR_ADDCHOICE, &val,
-                &text );
+    // retrieve skins from skins directories and locate default skins
+    map<string,string>::const_iterator itmap, itdefault;
+    for( itmap = m_skinsMap.begin(); itmap != m_skinsMap.end(); itmap++ )
+    {
+        string name = itmap->first;
+        string path = itmap->second;
+        val.psz_string = (char*) path.c_str();
+        text.psz_string = (char*) name.c_str();
+        var_Change( getIntf(), "intf-skins", VLC_VAR_ADDCHOICE, &val,
+                    &text );
+
+        if( name == "Default" )
+            itdefault = itmap;
+    }
+
+    // retrieve last skins stored or skins requested by user
+    char* psz_current = var_InheritString( getIntf(), "skins2-last" );
+    string current = string( psz_current ? psz_current : "" );
+    free( psz_current );
+
+    // check if skins exists and is readable
+    bool b_readable = !ifstream( current.c_str() ).fail();
+
+    msg_Dbg( getIntf(), "requested skins %s is %s accessible",
+                         current.c_str(), b_readable ? "" : "NOT" );
+
+    // set the default skins if given skins not accessible
+    if( !b_readable )
+        current = itdefault->second;
+
+    // save this valid skins for reuse
+    config_PutPsz( getIntf(), "skins2-last", current.c_str() );
+
+    // Update repository
+    updateRepository();
 
     // Set the callback
     var_AddCallback( pIntf, "intf-skins", changeSkin, this );
+
+    // variable for opening a dialog box to change skins
+    var_Create( pIntf, "intf-skins-interactive", VLC_VAR_VOID |
+                VLC_VAR_ISCOMMAND );
+    text.psz_string = _("Open skin ...");
+    var_Change( pIntf, "intf-skins-interactive", VLC_VAR_SETTEXT, &text, NULL );
+
+    // Set the callback
+    var_AddCallback( pIntf, "intf-skins-interactive", changeSkin, this );
+
 }
 
 
 ThemeRepository::~ThemeRepository()
 {
+    m_skinsMap.clear();
+
+    var_DelCallback( getIntf(), "intf-skins", changeSkin, this );
+    var_DelCallback( getIntf(), "intf-skins-interactive", changeSkin, this );
+
     var_Destroy( getIntf(), "intf-skins" );
+    var_Destroy( getIntf(), "intf-skins-interactive" );
 }
 
 
-void ThemeRepository::parseDirectory( const string &rDir )
+void ThemeRepository::parseDirectory( const string &rDir_locale )
 {
     DIR *pDir;
-    struct dirent *pDirContent;
+    char *pszDirContent;
     vlc_value_t val, text;
     // Path separator
     const string &sep = OSFactory::instance( getIntf() )->getDirSeparator();
 
     // Open the dir
-    pDir = opendir( rDir.c_str() );
+    // FIXME: parseDirectory should be invoked with UTF-8 input instead!!
+    string rDir = sFromLocale( rDir_locale );
+    pDir = vlc_opendir( rDir.c_str() );
 
     if( pDir == NULL )
     {
@@ -113,13 +157,10 @@ void ThemeRepository::parseDirectory( const string &rDir )
         return;
     }
 
-    // Get the first directory entry
-    pDirContent = (dirent*)readdir( pDir );
-
     // While we still have entries in the directory
-    while( pDirContent != NULL )
+    while( ( pszDirContent = vlc_readdir( pDir ) ) != NULL )
     {
-        string name = pDirContent->d_name;
+        string name = pszDirContent;
         string extension;
         if( name.size() > 4 )
         {
@@ -128,21 +169,17 @@ void ThemeRepository::parseDirectory( const string &rDir )
         if( extension == ".vlt" || extension == ".wsz" )
         {
             string path = rDir + sep + name;
-            msg_Dbg( getIntf(), "found skin %s", path.c_str() );
-
-            // Add the theme in the popup menu
             string shortname = name.substr( 0, name.size() - 4 );
-            val.psz_string = new char[path.size() + 1];
-            text.psz_string = new char[shortname.size() + 1];
-            strcpy( val.psz_string, path.c_str() );
-            strcpy( text.psz_string, shortname.c_str() );
-            var_Change( getIntf(), "intf-skins", VLC_VAR_ADDCHOICE, &val,
-                        &text );
-            delete[] val.psz_string;
-            delete[] text.psz_string;
+            for( int i = 0; i < shortname.size(); i++ )
+                shortname[i] = ( i == 0 ) ?
+                               toupper( shortname[i] ) :
+                               tolower( shortname[i] );
+            m_skinsMap[shortname] = path;
+
+            msg_Dbg( getIntf(), "found skin %s", path.c_str() );
         }
 
-        pDirContent = (dirent*)readdir( pDir );
+        free( pszDirContent );
     }
 
     closedir( pDir );
@@ -150,19 +187,18 @@ void ThemeRepository::parseDirectory( const string &rDir )
 
 
 
-int ThemeRepository::changeSkin( vlc_object_t *pIntf, char const *pCmd,
+int ThemeRepository::changeSkin( vlc_object_t *pIntf, char const *pVariable,
                                  vlc_value_t oldval, vlc_value_t newval,
                                  void *pData )
 {
     ThemeRepository *pThis = (ThemeRepository*)(pData);
 
-    // Special menu entry for the open skin dialog
-    if( !strcmp( newval.psz_string, kOpenDialog ) )
+    if( !strcmp( pVariable, "intf-skins-interactive" ) )
     {
         CmdDlgChangeSkin cmd( pThis->getIntf() );
         cmd.execute();
     }
-    else
+    else if( !strcmp( pVariable, "intf-skins" ) )
     {
         // Try to load the new skin
         CmdChangeSkin *pCmd = new CmdChangeSkin( pThis->getIntf(),
@@ -172,5 +208,40 @@ int ThemeRepository::changeSkin( vlc_object_t *pIntf, char const *pCmd,
     }
 
     return VLC_SUCCESS;
+}
+
+
+void ThemeRepository::updateRepository()
+{
+    vlc_value_t val, text;
+
+    // retrieve the current skin
+    char* psz_current = config_GetPsz( getIntf(), "skins2-last" );
+    if( !psz_current )
+        return;
+
+    val.psz_string = psz_current;
+    text.psz_string = psz_current;
+
+    // add this new skins if not yet present in repository
+    string current( psz_current );
+    map<string,string>::const_iterator it;
+    for( it = m_skinsMap.begin(); it != m_skinsMap.end(); it++ )
+    {
+        if( it->second == current )
+            break;
+    }
+    if( it == m_skinsMap.end() )
+    {
+        var_Change( getIntf(), "intf-skins", VLC_VAR_ADDCHOICE, &val,
+                    &text );
+        string name = psz_current;
+        m_skinsMap[name] = name;
+    }
+
+    // mark this current skins as 'checked' in list
+    var_Change( getIntf(), "intf-skins", VLC_VAR_SETVALUE, &val, NULL );
+
+    free( psz_current );
 }
 

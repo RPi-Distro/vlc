@@ -2,7 +2,7 @@
  * var_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 053ac95026414f99f7b215e47798e26f13723e78 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -48,6 +48,7 @@ VarManager::~VarManager()
         m_anonVarList.pop_back();
     }
 
+
     delete m_pTooltipText;
 
     // Warning! the help text must be the last variable to be deleted,
@@ -73,11 +74,8 @@ VarManager *VarManager::instance( intf_thread_t *pIntf )
 
 void VarManager::destroy( intf_thread_t *pIntf )
 {
-    if( pIntf->p_sys->p_varManager )
-    {
-        delete pIntf->p_sys->p_varManager;
-        pIntf->p_sys->p_varManager = NULL;
-    }
+    delete pIntf->p_sys->p_varManager;
+    pIntf->p_sys->p_varManager = NULL;
 }
 
 
@@ -85,6 +83,8 @@ void VarManager::registerVar( const VariablePtr &rcVar, const string &rName )
 {
     m_varMap[rName] = rcVar;
     m_varList.push_front( rName );
+
+    m_anonVarList.push_back( rcVar );
 }
 
 

@@ -2,7 +2,7 @@
  * beos.cpp: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1f87bee1884e86eb10011b5fba92a1145f836cbd $
+ * $Id: 5f70cdc66b2637c242978e99c9445dedc43ae6fe $
  *
  * Authors: Eric Petit <titer@m0k.org>
  *
@@ -21,10 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include <Screen.h>
 #include <Bitmap.h>
@@ -59,11 +61,11 @@ int screen_InitCapture( demux_t *p_demux )
     switch( p_data->p_screen->ColorSpace() )
     {
         case B_RGB32:
-            i_chroma = VLC_FOURCC('R','V','3','2');
+            i_chroma = VLC_CODEC_RGB32;
             i_bits_per_pixel = 32;
             break;
         case B_RGB16:
-            i_chroma = VLC_FOURCC('R','V','1','6');
+            i_chroma = VLC_CODEC_RGB16;
             i_bits_per_pixel = 16;
             break;
         default:

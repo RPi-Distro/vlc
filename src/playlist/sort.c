@@ -1,10 +1,12 @@
 /*****************************************************************************
  * sort.c : Playlist sorting functions
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id$
+ * Copyright (C) 1999-2009 the VideoLAN team
+ * $Id: e125b0d112cc639e5b3af8ebdf644526092cf565 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
+ *          Ilkka Ollakka <ileoo@videolan.org>
+ *          Rémi Duraffort <ivoire@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,369 +18,340 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <stdlib.h>                                      /* free(), strtol() */
-#include <stdio.h>                                              /* sprintf() */
-#include <string.h>                                            /* strerror() */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/vout.h>
-#include <vlc/sout.h>
-
+#include <vlc_common.h>
+#include <vlc_rand.h>
+#define  VLC_INTERNAL_PLAYLIST_SORT_FUNCTIONS
 #include "vlc_playlist.h"
+#include "playlist_internal.h"
 
 
-int playlist_ItemArraySort( playlist_t *p_playlist, int i_items,
-                playlist_item_t **pp_items, int i_mode,
-                int i_type );
-
-
+/* General comparison functions */
 /**
- * Sort the playlist.
- * \param p_playlist the playlist
- * \param i_mode: SORT_ID, SORT_TITLE, SORT_AUTHOR, SORT_ALBUM, SORT_RANDOM
- * \param i_type: ORDER_NORMAL or ORDER_REVERSE (reversed order)
- * \return VLC_SUCCESS on success
+ * Compare two items using their title or name
+ * @param first: the first item
+ * @param second: the second item
+ * @return -1, 0 or 1 like strcmp
  */
-int playlist_Sort( playlist_t * p_playlist , int i_mode, int i_type )
+static inline int meta_strcasecmp_title( const playlist_item_t *first,
+                              const playlist_item_t *second )
 {
-    int  i_id = -1;
-    vlc_value_t val;
-    val.b_bool = VLC_TRUE;
+    int i_ret;
+    char *psz_first = input_item_GetTitleFbName( first->p_input );
+    char *psz_second = input_item_GetTitleFbName( second->p_input );
 
-    vlc_mutex_lock( &p_playlist->object_lock );
+    if( psz_first && psz_second )
+        i_ret = strcasecmp( psz_first, psz_second );
+    else if( !psz_first && psz_second )
+        i_ret = 1;
+    else if( psz_first && !psz_second )
+        i_ret = -1;
+    else
+        i_ret = 0;
+    free( psz_first );
+    free( psz_second );
 
-    p_playlist->i_sort = i_mode;
-    p_playlist->i_order = i_type;
-
-    if( p_playlist->i_index >= 0 )
-    {
-        i_id = p_playlist->pp_items[p_playlist->i_index]->input.i_id;
-    }
-
-    playlist_ItemArraySort( p_playlist, p_playlist->i_size,
-                    p_playlist->pp_items, i_mode, i_type );
-
-    if( i_id != -1 )
-    {
-        p_playlist->i_index = playlist_GetPositionById( p_playlist, i_id );
-    }
-
-    /* ensure we are in no-view mode */
-    p_playlist->status.i_view = -1;
-
-    vlc_mutex_unlock( &p_playlist->object_lock );
-
-    /* Notify the interfaces */
-    var_Set( p_playlist, "intf-change", val );
-
-    return VLC_SUCCESS;
+    return i_ret;
 }
 
 /**
- * Sort a node.
- *
+ * Compare two intems accoring to the given meta type
+ * @param first: the first item
+ * @param second: the second item
+ * @param meta: the meta type to use to sort the items
+ * @param b_integer: true if the meta are integers
+ * @return -1, 0 or 1 like strcmp
+ */
+static inline int meta_sort( const playlist_item_t *first,
+                             const playlist_item_t *second,
+                             vlc_meta_type_t meta, bool b_integer )
+{
+    int i_ret;
+    char *psz_first = input_item_GetMeta( first->p_input, meta );
+    char *psz_second = input_item_GetMeta( second->p_input, meta );
+
+    /* Nodes go first */
+    if( first->i_children == -1 && second->i_children >= 0 )
+        i_ret = 1;
+    else if( first->i_children >= 0 && second->i_children == -1 )
+       i_ret = -1;
+    /* Both are nodes, sort by name */
+    else if( first->i_children >= 0 && second->i_children >= 0 )
+        i_ret = meta_strcasecmp_title( first, second );
+    /* Both are items */
+    else if( !psz_first && psz_second )
+        i_ret = 1;
+    else if( psz_first && !psz_second )
+        i_ret = -1;
+    /* No meta, sort by name */
+    else if( !psz_first && !psz_second )
+        i_ret = meta_strcasecmp_title( first, second );
+    else
+    {
+        if( b_integer )
+            i_ret = atoi( psz_first ) - atoi( psz_second );
+        else
+            i_ret = strcasecmp( psz_first, psz_second );
+    }
+
+    free( psz_first );
+    free( psz_second );
+    return i_ret;
+}
+
+/* Comparison functions */
+
+/**
+ * Return the comparison function appropriate for the SORT_* and ORDER_*
+ * arguments given, or NULL for SORT_RANDOM.
+ * @param i_mode: a SORT_* enum indicating the field to sort on
+ * @param i_type: ORDER_NORMAL or ORDER_REVERSE
+ * @return function pointer, or NULL for SORT_RANDOM or invalid input
+ */
+typedef int (*sortfn_t)(const void *,const void *);
+static const sortfn_t sorting_fns[NUM_SORT_FNS][2];
+static inline sortfn_t find_sorting_fn( unsigned i_mode, unsigned i_type )
+{
+  if( i_mode>=NUM_SORT_FNS || i_type>1 )
+      return 0;
+  return sorting_fns[i_mode][i_type];
+}
+
+/**
+ * Sort an array of items recursively
+ * @param i_items: number of items
+ * @param pp_items: the array of items
+ * @param p_sortfn: the sorting function
+ * @return nothing
+ */
+static inline
+void playlist_ItemArraySort( unsigned i_items, playlist_item_t **pp_items,
+                             sortfn_t p_sortfn )
+{
+    if( p_sortfn )
+    {
+        qsort( pp_items, i_items, sizeof( pp_items[0] ), p_sortfn );
+    }
+    else /* Randomise */
+    {
+        unsigned i_position;
+        unsigned i_new;
+        playlist_item_t *p_temp;
+
+        for( i_position = i_items - 1; i_position > 0; i_position-- )
+        {
+            i_new = ((unsigned)vlc_mrand48()) % (i_position+1);
+            p_temp = pp_items[i_position];
+            pp_items[i_position] = pp_items[i_new];
+            pp_items[i_new] = p_temp;
+        }
+    }
+}
+
+
+/**
+ * Sort a node recursively.
  * This function must be entered with the playlist lock !
- *
- * \param p_playlist the playlist
- * \param p_node the node to sort
- * \param i_mode: SORT_ID, SORT_TITLE, SORT_AUTHOR, SORT_ALBUM, SORT_RANDOM
- * \param i_type: ORDER_NORMAL or ORDER_REVERSE (reversed order)
- * \return VLC_SUCCESS on success
+ * @param p_playlist the playlist
+ * @param p_node the node to sort
+ * @param p_sortfn the sorting function
+ * @return VLC_SUCCESS on success
  */
-int playlist_NodeSort( playlist_t * p_playlist , playlist_item_t *p_node,
-                       int i_mode, int i_type )
+static int recursiveNodeSort( playlist_t *p_playlist, playlist_item_t *p_node,
+                              sortfn_t p_sortfn )
 {
-
-    playlist_ItemArraySort( p_playlist,p_node->i_children,
-                            p_node->pp_children, i_mode, i_type );
-
-    p_node->i_serial++;
-
+    int i;
+    playlist_ItemArraySort(p_node->i_children,p_node->pp_children,p_sortfn);
+    for( i = 0 ; i< p_node->i_children; i++ )
+    {
+        if( p_node->pp_children[i]->i_children != -1 )
+        {
+            recursiveNodeSort( p_playlist, p_node->pp_children[i], p_sortfn );
+        }
+    }
     return VLC_SUCCESS;
 }
 
 /**
- *
  * Sort a node recursively.
  *
  * This function must be entered with the playlist lock !
  *
  * \param p_playlist the playlist
  * \param p_node the node to sort
- * \param i_mode: SORT_ID, SORT_TITLE, SORT_AUTHOR, SORT_ALBUM, SORT_RANDOM
+ * \param i_mode: a SORT_* constant indicating the field to sort on
  * \param i_type: ORDER_NORMAL or ORDER_REVERSE (reversed order)
  * \return VLC_SUCCESS on success
  */
 int playlist_RecursiveNodeSort( playlist_t *p_playlist, playlist_item_t *p_node,
                                 int i_mode, int i_type )
 {
-    int i;
+    /* Ask the playlist to reset as we are changing the order */
+    pl_priv(p_playlist)->b_reset_currently_playing = true;
 
-    playlist_NodeSort( p_playlist, p_node, i_mode, i_type );
-    for( i = 0 ; i< p_node->i_children; i++ )
-    {
-        if( p_node->pp_children[i]->i_children != -1 )
-        {
-            playlist_RecursiveNodeSort( p_playlist, p_node->pp_children[i],
-                                        i_mode,i_type );
-        }
-    }
-
-    return VLC_SUCCESS;
-
+    /* Do the real job recursively */
+    return recursiveNodeSort(p_playlist,p_node,find_sorting_fn(i_mode,i_type));
 }
 
 
-int playlist_ItemArraySort( playlist_t *p_playlist, int i_items,
-                playlist_item_t **pp_items, int i_mode,
-                int i_type )
+/* This is the stuff the sorting functions are made of. The proto_##
+ * functions are wrapped in cmp_a_## and cmp_d_## functions that do
+ * void * to const playlist_item_t * casting and dereferencing and
+ * cmp_d_## inverts the result, too. proto_## are static inline,
+ * cmp_[ad]_## are merely static as they're the target of pointers.
+ *
+ * In any case, each SORT_## constant (except SORT_RANDOM) must have
+ * a matching SORTFN( )-declared function here.
+ */
+
+#define SORTFN( SORT, first, second ) static inline int proto_##SORT \
+	( const playlist_item_t *first, const playlist_item_t *second )
+
+SORTFN( SORT_ALBUM, first, second )
 {
-    int i , i_small , i_position;
-    playlist_item_t *p_temp;
-    vlc_value_t val;
-    val.b_bool = VLC_TRUE;
+    int i_ret = meta_sort( first, second, vlc_meta_Album, false );
+    /* Items came from the same album: compare the track numbers */
+    if( i_ret == 0 )
+        i_ret = meta_sort( first, second, vlc_meta_TrackNumber, true );
 
-    if( i_mode == SORT_RANDOM )
-    {
-        for( i_position = 0; i_position < i_items ; i_position ++ )
-        {
-            int i_new;
-
-            if( i_items > 1 )
-                i_new = rand() % (i_items - 1);
-            else
-                i_new = 0;
-            p_temp = pp_items[i_position];
-            pp_items[i_position] = pp_items[i_new];
-            pp_items[i_new] = p_temp;
-        }
-
-        return VLC_SUCCESS;
-    }
-
-    for( i_position = 0; i_position < i_items -1 ; i_position ++ )
-    {
-        i_small  = i_position;
-        for( i = i_position + 1 ; i< i_items ; i++)
-        {
-            int i_test = 0;
-
-            if( i_mode == SORT_TITLE )
-            {
-                i_test = strcasecmp( pp_items[i]->input.psz_name,
-                                         pp_items[i_small]->input.psz_name );
-            }
-            else if( i_mode == SORT_TITLE_NUMERIC )
-            {
-                i_test = atoi( pp_items[i]->input.psz_name ) -
-                         atoi( pp_items[i_small]->input.psz_name );
-            }
-            else if( i_mode == SORT_DURATION )
-            {
-                i_test = pp_items[i]->input.i_duration -
-                             pp_items[i_small]->input.i_duration;
-            }
-            else if( i_mode == SORT_AUTHOR )
-            {
-                char *psz_a = vlc_input_item_GetInfo(
-                                 &pp_items[i]->input,
-                                 _(VLC_META_INFO_CAT), _(VLC_META_ARTIST) );
-                char *psz_b = vlc_input_item_GetInfo(
-                                 &pp_items[i_small]->input,
-                                 _(VLC_META_INFO_CAT), _(VLC_META_ARTIST) );
-                if( pp_items[i]->i_children == -1 &&
-                    pp_items[i_small]->i_children >= 0 )
-                {
-                    i_test = 1;
-                }
-                else if( pp_items[i]->i_children >= 0 &&
-                         pp_items[i_small]->i_children == -1 )
-                {
-                    i_test = -1;
-                }
-                // both are nodes
-                else if( pp_items[i]->i_children >= 0 &&
-                         pp_items[i_small]->i_children >= 0 )
-                {
-                    i_test = strcasecmp( pp_items[i]->input.psz_name,
-                                         pp_items[i_small]->input.psz_name );
-                }
-                else if( psz_a == NULL && psz_b != NULL )
-                {
-                    i_test = 1;
-                }
-                else if( psz_a != NULL && psz_b == NULL )
-                {
-                    i_test = -1;
-                }
-                else if( psz_a == NULL && psz_b == NULL )
-                {
-                    i_test = strcasecmp( pp_items[i]->input.psz_name,
-                                         pp_items[i_small]->input.psz_name );
-                }
-                else
-                {
-                    i_test = strcmp( psz_b, psz_a );
-                }
-            }
-            else if( i_mode == SORT_ALBUM )
-	    {
-                char *psz_a = vlc_input_item_GetInfo(
-                                 &pp_items[i]->input,
-                                 _(VLC_META_INFO_CAT), _(VLC_META_COLLECTION) );
-                char *psz_b = vlc_input_item_GetInfo(
-                                 &pp_items[i_small]->input,
-                                 _(VLC_META_INFO_CAT), _(VLC_META_COLLECTION) );
-                if( pp_items[i]->i_children == -1 &&
-                    pp_items[i_small]->i_children >= 0 )
-                {
-                    i_test = 1;
-                }
-                else if( pp_items[i]->i_children >= 0 &&
-                         pp_items[i_small]->i_children == -1 )
-                {
-                    i_test = -1;
-                }
-                // both are nodes
-                else if( pp_items[i]->i_children >= 0 &&
-                         pp_items[i_small]->i_children >= 0 )
-                {
-                    i_test = strcasecmp( pp_items[i]->input.psz_name,
-                                         pp_items[i_small]->input.psz_name );
-                }
-                else if( psz_a == NULL && psz_b != NULL )
-                {
-                    i_test = 1;
-                }
-                else if( psz_a != NULL && psz_b == NULL )
-                {
-                    i_test = -1;
-                }
-                else if( psz_a == NULL && psz_b == NULL )
-                {
-                    i_test = strcasecmp( pp_items[i]->input.psz_name,
-                                         pp_items[i_small]->input.psz_name );
-                }
-                else
-                {
-                    i_test = strcmp( psz_b, psz_a );
-                }
-	    }
-            else if( i_mode == SORT_TITLE_NODES_FIRST )
-            {
-                /* Alphabetic sort, all nodes first */
-
-                if( pp_items[i]->i_children == -1 &&
-                    pp_items[i_small]->i_children >= 0 )
-                {
-                    i_test = 1;
-                }
-                else if( pp_items[i]->i_children >= 0 &&
-                         pp_items[i_small]->i_children == -1 )
-                {
-                    i_test = -1;
-                }
-                else
-                {
-                    i_test = strcasecmp( pp_items[i]->input.psz_name,
-                                         pp_items[i_small]->input.psz_name );
-                }
-            }
-
-            if( ( i_type == ORDER_NORMAL  && i_test < 0 ) ||
-                ( i_type == ORDER_REVERSE && i_test > 0 ) )
-            {
-                i_small = i;
-            }
-        }
-        p_temp = pp_items[i_position];
-        pp_items[i_position] = pp_items[i_small];
-        pp_items[i_small] = p_temp;
-    }
-    return VLC_SUCCESS;
+    return i_ret;
 }
 
-
-int playlist_NodeGroup( playlist_t * p_playlist , int i_view,
-                        playlist_item_t *p_root,
-                        playlist_item_t **pp_items,int i_item,
-                        int i_mode, int i_type )
+SORTFN( SORT_ARTIST, first, second )
 {
-    int i_nodes = 0;
-    playlist_item_t **pp_nodes = NULL;
-    playlist_item_t *p_node;
-    vlc_bool_t b_found;
-    int i,j;
-    for( i = 0; i< i_item ; i++ )
-    {
-        char *psz_search = NULL;
+    int i_ret = meta_sort( first, second, vlc_meta_Artist, false );
+    /* Items came from the same artist: compare the albums */
+    if( i_ret == 0 )
+        i_ret = proto_SORT_ALBUM( first, second );
 
-        if( i_mode == SORT_TITLE )
-        {
-            psz_search = strdup( pp_items[i]->input.psz_name );
-        }
-        else if ( i_mode == SORT_AUTHOR )
-        {
-            psz_search = vlc_input_item_GetInfo( &pp_items[i]->input,
-                            _(VLC_META_INFO_CAT), _(VLC_META_ARTIST) );
-        }
-        else if ( i_mode == SORT_ALBUM )
-        {
-            psz_search = vlc_input_item_GetInfo( &pp_items[i]->input,
-                            _(VLC_META_INFO_CAT), _(VLC_META_COLLECTION) );
-        }
-        else if ( i_mode == SORT_GENRE )
-        {
-            psz_search = vlc_input_item_GetInfo( &pp_items[i]->input,
-                            _(VLC_META_INFO_CAT), _(VLC_META_GENRE) );
-        }
-
-        if( !psz_search || !strcmp( psz_search, "" ) )
-        {
-            free( psz_search );
-            psz_search = strdup( _("Undefined") );
-        }
-
-        b_found = VLC_FALSE;
-        for( j = 0 ; j< i_nodes; j++ )
-        {
-           if( !strcasecmp( psz_search, pp_nodes[j]->input.psz_name ) )
-           {
-                playlist_NodeAppend( p_playlist, i_view,
-                                     pp_items[i], pp_nodes[j] );
-                b_found = VLC_TRUE;
-                break;
-           }
-        }
-        if( !b_found )
-        {
-            p_node = playlist_NodeCreate( p_playlist, i_view,psz_search,
-                                          NULL );
-            INSERT_ELEM( pp_nodes, i_nodes, i_nodes, p_node );
-            playlist_NodeAppend( p_playlist, i_view,
-                                 pp_items[i],p_node );
-        }
-
-        free( psz_search );
-    }
-
-    /* Now, sort the nodes by name */
-    playlist_ItemArraySort( p_playlist, i_nodes, pp_nodes, SORT_TITLE,
-                            i_type );
-
-    /* Now, sort each node and append it to the root node*/
-    for( i = 0 ; i< i_nodes ; i++ )
-    {
-        playlist_ItemArraySort( p_playlist, pp_nodes[i]->i_children,
-                                pp_nodes[i]->pp_children, SORT_TITLE, i_type );
-
-        playlist_NodeAppend( p_playlist, i_view,
-                             pp_nodes[i], p_root );
-    }
-    return VLC_SUCCESS;
+    return i_ret;
 }
+
+SORTFN( SORT_DESCRIPTION, first, second )
+{
+    return meta_sort( first, second, vlc_meta_Description, false );
+}
+
+SORTFN( SORT_DURATION, first, second )
+{
+    mtime_t time1 = input_item_GetDuration( first->p_input );
+    mtime_t time2 = input_item_GetDuration( second->p_input );
+    int i_ret = time1 > time2 ? 1 :
+                    ( time1 == time2 ? 0 : -1 );
+    return i_ret;
+}
+
+SORTFN( SORT_GENRE, first, second )
+{
+    return meta_sort( first, second, vlc_meta_Genre, false );
+}
+
+SORTFN( SORT_ID, first, second )
+{
+    return first->i_id - second->i_id;
+}
+
+SORTFN( SORT_RATING, first, second )
+{
+    return meta_sort( first, second, vlc_meta_Rating, true );
+}
+
+SORTFN( SORT_TITLE, first, second )
+{
+    return meta_strcasecmp_title( first, second );
+}
+
+SORTFN( SORT_TITLE_NODES_FIRST, first, second )
+{
+    /* If first is a node but not second */
+    if( first->i_children == -1 && second->i_children >= 0 )
+        return -1;
+    /* If second is a node but not first */
+    else if( first->i_children >= 0 && second->i_children == -1 )
+        return 1;
+    /* Both are nodes or both are not nodes */
+    else
+        return meta_strcasecmp_title( first, second );
+}
+
+SORTFN( SORT_TITLE_NUMERIC, first, second )
+{
+    int i_ret;
+    char *psz_first = input_item_GetTitleFbName( first->p_input );
+    char *psz_second = input_item_GetTitleFbName( second->p_input );
+
+    if( psz_first && psz_second )
+        i_ret = atoi( psz_first ) - atoi( psz_second );
+    else if( !psz_first && psz_second )
+        i_ret = 1;
+    else if( psz_first && !psz_second )
+        i_ret = -1;
+    else
+        i_ret = 0;
+
+    free( psz_first );
+    free( psz_second );
+    return i_ret;
+}
+
+SORTFN( SORT_TRACK_NUMBER, first, second )
+{
+    return meta_sort( first, second, vlc_meta_TrackNumber, true );
+}
+
+SORTFN( SORT_URI, first, second )
+{
+    int i_ret;
+    char *psz_first = input_item_GetURI( first->p_input );
+    char *psz_second = input_item_GetURI( second->p_input );
+
+    if( psz_first && psz_second )
+        i_ret = strcasecmp( psz_first, psz_second );
+    else if( !psz_first && psz_second )
+        i_ret = 1;
+    else if( psz_first && !psz_second )
+        i_ret = -1;
+    else
+        i_ret = 0;
+
+    free( psz_first );
+    free( psz_second );
+    return i_ret;
+}
+
+#undef  SORTFN
+
+/* Generate stubs around the proto_## sorting functions, ascending and
+ * descending both. Preprocessor magic up ahead. Brace yourself.
+ */
+
+#ifndef VLC_DEFINE_SORT_FUNCTIONS
+#error  Where is VLC_DEFINE_SORT_FUNCTIONS?
+#endif
+
+#define DEF( s ) \
+	static int cmp_a_##s(const void *l,const void *r) \
+	{ return proto_##s(*(const playlist_item_t *const *)l, \
+                           *(const playlist_item_t *const *)r); } \
+	static int cmp_d_##s(const void *l,const void *r) \
+	{ return -1*proto_##s(*(const playlist_item_t * const *)l, \
+                              *(const playlist_item_t * const *)r); }
+
+	VLC_DEFINE_SORT_FUNCTIONS
+
+#undef  DEF
+
+/* And populate an array with the addresses */
+
+static const sortfn_t sorting_fns[NUM_SORT_FNS][2] =
+#define DEF( a ) { cmp_a_##a, cmp_d_##a },
+{ VLC_DEFINE_SORT_FUNCTIONS };
+#undef  DEF
+

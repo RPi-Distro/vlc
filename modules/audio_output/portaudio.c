@@ -2,7 +2,7 @@
  * portaudio.c : portaudio (v19) audio output plugin
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: da2758aadbae32248fc3adf871604aa7e5936bb2 $
+ * $Id: 73080248cf106df8ff5bdf52e8db713e34c0b8de $
  *
  * Authors: Frederic Ruget <frederic.ruget@free.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -11,7 +11,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,14 +25,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <string.h>
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+
+
 #include <portaudio.h>
-
-#include "aout_internal.h"
 
 #define FRAME_SIZE 1024              /* The size is in samples, not in bytes */
 
@@ -50,10 +53,11 @@ typedef struct pa_thread_t
 
     vlc_cond_t  wait;
     vlc_mutex_t lock_wait;
-    vlc_bool_t  b_wait;
+    bool  b_wait;
     vlc_cond_t  signal;
     vlc_mutex_t lock_signal;
-    vlc_bool_t  b_signal;
+    bool  b_signal;
+    bool  b_error;
 
 } pa_thread_t;
 
@@ -67,28 +71,23 @@ struct aout_sys_t
     PaDeviceIndex i_device_id;
     const PaDeviceInfo *deviceInfo;
 
-    vlc_bool_t b_chan_reorder;              /* do we need channel reordering */
+    bool b_chan_reorder;              /* do we need channel reordering */
     int pi_chan_table[AOUT_CHAN_MAX];
     uint32_t i_channel_mask;
     uint32_t i_bits_per_sample;
     uint32_t i_channels;
 };
 
-static const uint32_t pi_channels_in[] =
-    { AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
-      AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT,
-      AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
-      AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0 };
 static const uint32_t pi_channels_out[] =
     { AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
       AOUT_CHAN_CENTER, AOUT_CHAN_LFE,
-      AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
+      AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_REARCENTER,
       AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT, 0 };
 
 #ifdef PORTAUDIO_IS_SERIOUSLY_BROKEN
-static vlc_bool_t b_init = 0;
+static bool b_init = 0;
 static pa_thread_t *pa_thread;
-static void PORTAUDIOThread( pa_thread_t * );
+static void* PORTAUDIOThread( vlc_object_t * );
 #endif
 
 /*****************************************************************************
@@ -107,16 +106,17 @@ static int PAOpenStream( aout_instance_t * );
 #define DEVICE_TEXT N_("Output device")
 #define DEVICE_LONGTEXT N_("Portaudio identifier for the output device")
 
-vlc_module_begin();
-    set_shortname( "PortAudio" );
-    set_description( _("PORTAUDIO audio output") );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
-    add_integer( "portaudio-device", 0, NULL,
-                 DEVICE_TEXT, DEVICE_LONGTEXT, VLC_FALSE );
-    set_capability( "audio output", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "PortAudio" )
+    set_description( N_("PORTAUDIO audio output") )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
+    add_integer( "portaudio-audio-device", 0, NULL,
+                 DEVICE_TEXT, DEVICE_LONGTEXT, false )
+        add_deprecated_alias( "portaudio-device" )   /* deprecated since 0.9.3 */
+    set_capability( "audio output", 0 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /* This routine will be called by the PortAudio engine when audio is needed.
  * It may called at interrupt level on some machines so don't do anything
@@ -127,6 +127,8 @@ static int paCallback( const void *inputBuffer, void *outputBuffer,
                        const PaStreamCallbackTimeInfo *paDate,
                        PaStreamCallbackFlags statusFlags, void *p_cookie )
 {
+    VLC_UNUSED( inputBuffer ); VLC_UNUSED( statusFlags );
+
     struct aout_sys_t *p_sys = (struct aout_sys_t*) p_cookie;
     aout_instance_t   *p_aout = p_sys->p_aout;
     aout_buffer_t     *p_buffer;
@@ -134,19 +136,19 @@ static int paCallback( const void *inputBuffer, void *outputBuffer,
 
     out_date = mdate() + (mtime_t) ( 1000000 *
         ( paDate->outputBufferDacTime - paDate->currentTime ) );
-    p_buffer = aout_OutputNextBuffer( p_aout, out_date, VLC_TRUE );
+    p_buffer = aout_OutputNextBuffer( p_aout, out_date, true );
 
     if ( p_buffer != NULL )
     {
         if( p_sys->b_chan_reorder )
         {
             /* Do the channel reordering here */
-            aout_ChannelReorder( p_buffer->p_buffer, p_buffer->i_nb_bytes,
+            aout_ChannelReorder( p_buffer->p_buffer, p_buffer->i_buffer,
                                  p_sys->i_channels, p_sys->pi_chan_table,
                                  p_sys->i_bits_per_sample );
         }
-        p_aout->p_vlc->pf_memcpy( outputBuffer, p_buffer->p_buffer,
-                                  framesPerBuffer * p_sys->i_sample_size );
+        vlc_memcpy( outputBuffer, p_buffer->p_buffer,
+                    framesPerBuffer * p_sys->i_sample_size );
         /* aout_BufferFree may be dangereous here, but then so is
          * aout_OutputNextBuffer (calls aout_BufferFree internally).
          * one solution would be to link the no longer useful buffers
@@ -158,8 +160,7 @@ static int paCallback( const void *inputBuffer, void *outputBuffer,
     else
         /* Audio output buffer shortage -> stop the fill process and wait */
     {
-        p_aout->p_vlc->pf_memset( outputBuffer, 0,
-                                  framesPerBuffer * p_sys->i_sample_size );
+        vlc_memset( outputBuffer, 0, framesPerBuffer * p_sys->i_sample_size );
     }
     return 0;
 }
@@ -171,31 +172,26 @@ static int Open( vlc_object_t * p_this )
 {
     aout_instance_t *p_aout = (aout_instance_t *)p_this;
     struct aout_sys_t * p_sys;
-    vlc_value_t val;
-    int i_err;
 
     msg_Dbg( p_aout, "entering Open()");
 
     /* Allocate p_sys structure */
-    p_sys = (aout_sys_t *)malloc( sizeof(aout_sys_t) );
+    p_sys = malloc( sizeof(aout_sys_t) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_aout, "out of memory" );
         return VLC_ENOMEM;
-    }
     p_sys->p_aout = p_aout;
     p_sys->p_stream = 0;
     p_aout->output.p_sys = p_sys;
     p_aout->output.pf_play = Play;
 
     /* Retrieve output device id from config */
-    var_Create( p_aout, "portaudio-device", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT);
-    var_Get( p_aout, "portaudio-device", &val );
-    p_sys->i_device_id = val.i_int;
+    p_sys->i_device_id = var_CreateGetInteger( p_aout, "portaudio-audio-device" );
 
 #ifdef PORTAUDIO_IS_SERIOUSLY_BROKEN
     if( !b_init )
     {
+        int i_err;
+
         /* Test device */
         if( PAOpenDevice( p_aout ) != VLC_SUCCESS )
         {
@@ -210,22 +206,22 @@ static int Open( vlc_object_t * p_this )
             msg_Err( p_aout, "closing the device returned %d", i_err );
         }
 
-        b_init = VLC_TRUE;
+        b_init = true;
 
         /* Now we need to setup our DirectSound play notification structure */
         pa_thread = vlc_object_create( p_aout, sizeof(pa_thread_t) );
         pa_thread->p_aout = p_aout;
-        pa_thread->b_error = VLC_FALSE;
-        vlc_mutex_init( p_aout, &pa_thread->lock_wait );
-        vlc_cond_init( p_aout, &pa_thread->wait );
-        pa_thread->b_wait = VLC_FALSE;
-        vlc_mutex_init( p_aout, &pa_thread->lock_signal );
-        vlc_cond_init( p_aout, &pa_thread->signal );
-        pa_thread->b_signal = VLC_FALSE;
+        pa_thread->b_error = false;
+        vlc_mutex_init( &pa_thread->lock_wait );
+        vlc_cond_init( &pa_thread->wait );
+        pa_thread->b_wait = false;
+        vlc_mutex_init( &pa_thread->lock_signal );
+        vlc_cond_init( &pa_thread->signal );
+        pa_thread->b_signal = false;
 
         /* Create PORTAUDIOThread */
         if( vlc_thread_create( pa_thread, "aout", PORTAUDIOThread,
-                               VLC_THREAD_PRIORITY_OUTPUT, VLC_FALSE ) )
+                               VLC_THREAD_PRIORITY_OUTPUT ) )
         {
             msg_Err( p_aout, "cannot create PORTAUDIO thread" );
             return VLC_EGENERIC;
@@ -234,14 +230,14 @@ static int Open( vlc_object_t * p_this )
     else
     {
         pa_thread->p_aout = p_aout;
-        pa_thread->b_wait = VLC_FALSE;
-        pa_thread->b_signal = VLC_FALSE;
-        pa_thread->b_error = VLC_FALSE;
+        pa_thread->b_wait = false;
+        pa_thread->b_signal = false;
+        pa_thread->b_error = false;
     }
 
     /* Signal start of stream */
     vlc_mutex_lock( &pa_thread->lock_signal );
-    pa_thread->b_signal = VLC_TRUE;
+    pa_thread->b_signal = true;
     vlc_cond_signal( &pa_thread->signal );
     vlc_mutex_unlock( &pa_thread->lock_signal );
 
@@ -250,7 +246,7 @@ static int Open( vlc_object_t * p_this )
     if( !pa_thread->b_wait )
         vlc_cond_wait( &pa_thread->wait, &pa_thread->lock_wait );
     vlc_mutex_unlock( &pa_thread->lock_wait );
-    pa_thread->b_wait = VLC_FALSE;
+    pa_thread->b_wait = false;
 
     if( pa_thread->b_error )
     {
@@ -287,7 +283,6 @@ static void Close ( vlc_object_t *p_this )
 {
     aout_instance_t *p_aout = (aout_instance_t *)p_this;
     aout_sys_t *p_sys = p_aout->output.p_sys;
-    int i_err;
 
     msg_Dbg( p_aout, "closing portaudio");
 
@@ -295,7 +290,7 @@ static void Close ( vlc_object_t *p_this )
 
     /* Signal end of stream */
     vlc_mutex_lock( &pa_thread->lock_signal );
-    pa_thread->b_signal = VLC_TRUE;
+    pa_thread->b_signal = true;
     vlc_cond_signal( &pa_thread->signal );
     vlc_mutex_unlock( &pa_thread->lock_signal );
 
@@ -304,11 +299,11 @@ static void Close ( vlc_object_t *p_this )
     if( !pa_thread->b_wait )
         vlc_cond_wait( &pa_thread->wait, &pa_thread->lock_wait );
     vlc_mutex_unlock( &pa_thread->lock_wait );
-    pa_thread->b_wait = VLC_FALSE;
+    pa_thread->b_wait = false;
 
 #else
 
-    i_err = Pa_StopStream( p_sys->p_stream );
+    int i_err = Pa_StopStream( p_sys->p_stream );
     if( i_err != paNoError )
     {
         msg_Err( p_aout, "Pa_StopStream: %d (%s)", i_err,
@@ -397,7 +392,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 1 )
         {
             val.i_int = AOUT_VAR_MONO;
-            text.psz_string = N_("Mono");
+            text.psz_string = _("Mono");
             var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE,
                         &val, &text );
             msg_Dbg( p_aout, "device supports 1 channel" );
@@ -405,7 +400,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 2 )
         {
             val.i_int = AOUT_VAR_STEREO;
-            text.psz_string = N_("Stereo");
+            text.psz_string = _("Stereo");
             var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE,
                         &val, &text );
             var_Change( p_aout, "audio-device", VLC_VAR_SETDEFAULT,
@@ -416,7 +411,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 4 )
         {
             val.i_int = AOUT_VAR_2F2R;
-            text.psz_string = N_("2 Front 2 Rear");
+            text.psz_string = _("2 Front 2 Rear");
             var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE,
                         &val, &text );
             msg_Dbg( p_aout, "device supports 4 channels" );
@@ -424,7 +419,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 5 )
         {
             val.i_int = AOUT_VAR_3F2R;
-            text.psz_string = N_("3 Front 2 Rear");
+            text.psz_string = _("3 Front 2 Rear");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             msg_Dbg( p_aout, "device supports 5 channels" );
@@ -432,20 +427,18 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 6 )
         {
             val.i_int = AOUT_VAR_5_1;
-            text.psz_string = "5.1";
+            text.psz_string = _("5.1");
             var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE,
                         &val, &text );
             msg_Dbg( p_aout, "device supports 5.1 channels" );
         }
 
         var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
-
-        val.b_bool = VLC_TRUE;
-        var_Set( p_aout, "intf-change", val );
+        var_SetBool( p_aout, "intf-change", true );
     }
 
     /* Audio format is paFloat32 (always supported by portaudio v19) */
-    p_aout->output.output.i_format = VLC_FOURCC('f','l','3','2');
+    p_aout->output.output.i_format = VLC_CODEC_FL32;
 
     return VLC_SUCCESS;
 
@@ -516,7 +509,7 @@ static int PAOpenStream( aout_instance_t *p_aout )
     p_aout->output.p_sys->i_channels = i_channels;
 
     p_aout->output.p_sys->b_chan_reorder =
-        aout_CheckChannelReorder( pi_channels_in, pi_channels_out,
+        aout_CheckChannelReorder( NULL, pi_channels_out,
                                   i_channel_mask, i_channels,
                                   p_aout->output.p_sys->pi_chan_table );
 
@@ -566,6 +559,7 @@ static int PAOpenStream( aout_instance_t *p_aout )
  *****************************************************************************/
 static void Play( aout_instance_t * p_aout )
 {
+    VLC_UNUSED( p_aout );
 }
 
 #ifdef PORTAUDIO_IS_SERIOUSLY_BROKEN
@@ -573,20 +567,22 @@ static void Play( aout_instance_t * p_aout )
  * PORTAUDIOThread: all interactions with libportaudio.a are handled
  * in this single thread.  Otherwise libportaudio.a is _not_ happy :-(
  *****************************************************************************/
-static void PORTAUDIOThread( pa_thread_t *pa_thread )
+static void* PORTAUDIOThread( vlc_object_t *p_this )
 {
+    pa_thread_t *pa_thread = (pa_thread_t*)p_this;
     aout_instance_t *p_aout;
     aout_sys_t *p_sys;
     int i_err;
+    int canc = vlc_savecancel ();
 
-    while( !pa_thread->b_die )
+    while( vlc_object_alive (pa_thread) )
     {
         /* Wait for start of stream */
         vlc_mutex_lock( &pa_thread->lock_signal );
         if( !pa_thread->b_signal )
             vlc_cond_wait( &pa_thread->signal, &pa_thread->lock_signal );
         vlc_mutex_unlock( &pa_thread->lock_signal );
-        pa_thread->b_signal = VLC_FALSE;
+        pa_thread->b_signal = false;
 
         p_aout = pa_thread->p_aout;
         p_sys = p_aout->output.p_sys;
@@ -594,13 +590,13 @@ static void PORTAUDIOThread( pa_thread_t *pa_thread )
         if( PAOpenDevice( p_aout ) != VLC_SUCCESS )
         {
             msg_Err( p_aout, "cannot open portaudio device" );
-            pa_thread->b_error = VLC_TRUE;
+            pa_thread->b_error = true;
         }
 
         if( !pa_thread->b_error && PAOpenStream( p_aout ) != VLC_SUCCESS )
         {
             msg_Err( p_aout, "cannot open portaudio device" );
-            pa_thread->b_error = VLC_TRUE;
+            pa_thread->b_error = true;
 
             i_err = Pa_Terminate();
             if( i_err != paNoError )
@@ -612,7 +608,7 @@ static void PORTAUDIOThread( pa_thread_t *pa_thread )
 
         /* Tell the main thread that we are ready */
         vlc_mutex_lock( &pa_thread->lock_wait );
-        pa_thread->b_wait = VLC_TRUE;
+        pa_thread->b_wait = true;
         vlc_cond_signal( &pa_thread->wait );
         vlc_mutex_unlock( &pa_thread->lock_wait );
 
@@ -621,7 +617,7 @@ static void PORTAUDIOThread( pa_thread_t *pa_thread )
         if( !pa_thread->b_signal )
             vlc_cond_wait( &pa_thread->signal, &pa_thread->lock_signal );
         vlc_mutex_unlock( &pa_thread->lock_signal );
-        pa_thread->b_signal = VLC_FALSE;
+        pa_thread->b_signal = false;
 
         if( pa_thread->b_error ) continue;
 
@@ -646,9 +642,11 @@ static void PORTAUDIOThread( pa_thread_t *pa_thread )
 
         /* Tell the main thread that we are ready */
         vlc_mutex_lock( &pa_thread->lock_wait );
-        pa_thread->b_wait = VLC_TRUE;
+        pa_thread->b_wait = true;
         vlc_cond_signal( &pa_thread->wait );
         vlc_mutex_unlock( &pa_thread->lock_wait );
     }
+    vlc_restorecancel (canc);
+    return NULL;
 }
 #endif

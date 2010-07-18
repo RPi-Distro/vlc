@@ -3,9 +3,9 @@
  *         using libcdio, libvcd and libvcdinfo
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: 8f7d033faf56c3d978764e15a406e82b0384809c $
+ * $Id: caf31ad69f16e05508f8e158ce0f835192a3d737 $
  *
- * Authors: Rocky Bernstein <rocky@panix.com> 
+ * Authors: Rocky Bernstein <rocky@panix.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,34 +23,34 @@
  *****************************************************************************/
 
 #include <libvcd/info.h>
+#include <vlc_interface.h>
 
 #define VCD_MRL_PREFIX "vcdx://"
 
 /*****************************************************************************
  * vcd_data_t: structure for communication between access and intf.
  *****************************************************************************/
-typedef struct
-{
-#if FINISHED
+typedef struct {
+#ifdef FINISHED
     vcdplay_ptr             vmg;
 #endif
     intf_thread_t *         p_intf;
 
-#if DEMUX_FINISHED
+#ifdef DEMUX_FINISHED
     int                     i_audio_nb;
     int                     i_spu_nb;
 #endif
 
     int                     i_still_time;
-    vlc_bool_t              b_end_of_cell;
+    bool              b_end_of_cell;
 
-#if FINISHED
+#ifdef FINISHED
     vcdplay_event_t         event;
-    vcdplay_ctrl_t          control;   
+    vcdplay_ctrl_t          control;
     vcdplay_highlight_t     hli;
 #endif
 
 } vcd_data_t;
 
 int  VCDSetArea      ( access_t * );
-int  VCDSeek         ( access_t *, off_t );
+int  VCDSeek         ( access_t *, uint64_t );

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * common.c : audio output management of common data structures
  *****************************************************************************
- * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: ea0a1fe2ed81117a64585e9e8f7de847085a1c49 $
+ * Copyright (C) 2002-2007 the VideoLAN team
+ * $Id: 5d5da1e76db9fa4f297fdcc69d8798eaee91c2a8 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,18 +24,52 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                            /* calloc(), malloc(), free() */
-#include <string.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
+#include <assert.h>
 
-#include "audio_output.h"
+#include <vlc_common.h>
+#include <vlc_aout.h>
 #include "aout_internal.h"
-
+#include "libvlc.h"
 
 /*
  * Instances management (internal and external)
  */
+
+#define AOUT_ASSERT_FIFO_LOCKED aout_assert_fifo_locked(p_aout, p_fifo)
+static inline void aout_assert_fifo_locked( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
+{
+#ifndef NDEBUG
+    if( !p_aout )
+        return;
+
+    if( p_fifo == &p_aout->output.fifo )
+        vlc_assert_locked( &p_aout->output_fifo_lock );
+    else
+    {
+        int i;
+        for( i = 0; i < p_aout->i_nb_inputs; i++ )
+        {
+            if( p_fifo == &p_aout->pp_inputs[i]->mixer.fifo)
+            {
+                vlc_assert_locked( &p_aout->input_fifos_lock );
+                break;
+            }
+        }
+        if( i == p_aout->i_nb_inputs )
+            vlc_assert_locked( &p_aout->mixer_lock );
+    }
+#else
+    (void)p_aout;
+    (void)p_fifo;
+#endif
+}
+
+/* Local functions */
+static void aout_Destructor( vlc_object_t * p_this );
 
 /*****************************************************************************
  * aout_New: initialize aout structure
@@ -43,47 +77,100 @@
 aout_instance_t * __aout_New( vlc_object_t * p_parent )
 {
     aout_instance_t * p_aout;
-    vlc_value_t val;
 
     /* Allocate descriptor. */
-    p_aout = vlc_object_create( p_parent, VLC_OBJECT_AOUT );
+    p_aout = vlc_custom_create( p_parent, sizeof( *p_aout ), VLC_OBJECT_AOUT,
+                                "audio output" );
     if( p_aout == NULL )
     {
         return NULL;
     }
 
     /* Initialize members. */
-    vlc_mutex_init( p_parent, &p_aout->input_fifos_lock );
-    vlc_mutex_init( p_parent, &p_aout->mixer_lock );
-    vlc_mutex_init( p_parent, &p_aout->output_fifo_lock );
+    vlc_mutex_init( &p_aout->input_fifos_lock );
+    vlc_mutex_init( &p_aout->mixer_lock );
+    vlc_mutex_init( &p_aout->volume_vars_lock );
+    vlc_mutex_init( &p_aout->output_fifo_lock );
     p_aout->i_nb_inputs = 0;
-    p_aout->mixer.f_multiplier = 1.0;
-    p_aout->mixer.b_error = 1;
+    p_aout->mixer_multiplier = 1.0;
+    p_aout->p_mixer = NULL;
     p_aout->output.b_error = 1;
     p_aout->output.b_starving = 1;
 
     var_Create( p_aout, "intf-change", VLC_VAR_BOOL );
-    val.b_bool = VLC_TRUE;
-    var_Set( p_aout, "intf-change", val );
+    var_SetBool( p_aout, "intf-change", true );
+
+    vlc_object_set_destructor( p_aout, aout_Destructor );
 
     return p_aout;
 }
 
 /*****************************************************************************
- * aout_Delete: destroy aout structure
+ * aout_Destructor: destroy aout structure
  *****************************************************************************/
-void aout_Delete( aout_instance_t * p_aout )
+static void aout_Destructor( vlc_object_t * p_this )
 {
-    var_Destroy( p_aout, "intf-change" );
-
+    aout_instance_t * p_aout = (aout_instance_t *)p_this;
     vlc_mutex_destroy( &p_aout->input_fifos_lock );
     vlc_mutex_destroy( &p_aout->mixer_lock );
+    vlc_mutex_destroy( &p_aout->volume_vars_lock );
     vlc_mutex_destroy( &p_aout->output_fifo_lock );
-
-    /* Free structure. */
-    vlc_object_destroy( p_aout );
 }
 
+/* Lock ordering rules:
+ *
+ *            Vars Mixer Input IFIFO OFIFO (< Inner lock)
+ * Vars        No!   Yes   Yes   Yes   Yes
+ * Mixer       No!   No!   Yes   Yes   Yes
+ * Input       No!   No!   No!   Yes   Yes
+ * In FIFOs    No!   No!   No!   No!   Yes
+ * Out FIFOs   No!   No!   No!   No!   No!
+ * (^ Outer lock)
+ */
+#ifdef AOUT_DEBUG
+/* Lock debugging */
+static __thread unsigned aout_locks = 0;
+
+void aout_lock (unsigned i)
+{
+    unsigned allowed;
+    switch (i)
+    {
+        case VOLUME_VARS_LOCK:
+            allowed = 0;
+            break;
+        case MIXER_LOCK:
+            allowed = VOLUME_VARS_LOCK;
+            break;
+        case INPUT_LOCK:
+            allowed = VOLUME_VARS_LOCK|MIXER_LOCK;
+            break;
+        case INPUT_FIFO_LOCK:
+            allowed = VOLUME_VARS_LOCK|MIXER_LOCK|INPUT_LOCK;
+            break;
+        case OUTPUT_FIFO_LOCK:
+            allowed = VOLUME_VARS_LOCK|MIXER_LOCK|INPUT_LOCK|INPUT_FIFO_LOCK;
+            break;
+        default:
+            abort ();
+    }
+
+    if (aout_locks & ~allowed)
+    {
+        fprintf (stderr, "Illegal audio lock transition (%x -> %x)\n",
+                 aout_locks, aout_locks|i);
+        vlc_backtrace ();
+        abort ();
+    }
+    aout_locks |= i;
+}
+
+void aout_unlock (unsigned i)
+{
+    assert (aout_locks & i);
+    aout_locks &= ~i;
+}
+#endif
 
 /*
  * Formats management (internal and external)
@@ -109,52 +196,59 @@ unsigned int aout_FormatNbChannels( const audio_sample_format_t * p_format )
 }
 
 /*****************************************************************************
+ * aout_BitsPerSample : get the number of bits per sample
+ *****************************************************************************/
+unsigned int aout_BitsPerSample( vlc_fourcc_t i_format )
+{
+    switch( vlc_fourcc_GetCodec( AUDIO_ES, i_format ) )
+    {
+    case VLC_CODEC_U8:
+    case VLC_CODEC_S8:
+        return 8;
+
+    case VLC_CODEC_U16L:
+    case VLC_CODEC_S16L:
+    case VLC_CODEC_U16B:
+    case VLC_CODEC_S16B:
+        return 16;
+
+    case VLC_CODEC_U24L:
+    case VLC_CODEC_S24L:
+    case VLC_CODEC_U24B:
+    case VLC_CODEC_S24B:
+        return 24;
+
+    case VLC_CODEC_S32L:
+    case VLC_CODEC_S32B:
+    case VLC_CODEC_F32L:
+    case VLC_CODEC_F32B:
+    case VLC_CODEC_FI32:
+        return 32;
+
+    case VLC_CODEC_F64L:
+    case VLC_CODEC_F64B:
+        return 64;
+
+    default:
+        /* For these formats the caller has to indicate the parameters
+         * by hand. */
+        return 0;
+    }
+}
+
+/*****************************************************************************
  * aout_FormatPrepare : compute the number of bytes per frame & frame length
  *****************************************************************************/
 void aout_FormatPrepare( audio_sample_format_t * p_format )
 {
-    int i_result;
-
-    switch ( p_format->i_format )
+    p_format->i_channels = aout_FormatNbChannels( p_format );
+    p_format->i_bitspersample = aout_BitsPerSample( p_format->i_format );
+    if( p_format->i_bitspersample > 0 )
     {
-    case VLC_FOURCC('u','8',' ',' '):
-    case VLC_FOURCC('s','8',' ',' '):
-        i_result = 1;
-        break;
-
-    case VLC_FOURCC('u','1','6','l'):
-    case VLC_FOURCC('s','1','6','l'):
-    case VLC_FOURCC('u','1','6','b'):
-    case VLC_FOURCC('s','1','6','b'):
-        i_result = 2;
-        break;
-
-    case VLC_FOURCC('u','2','4','l'):
-    case VLC_FOURCC('s','2','4','l'):
-    case VLC_FOURCC('u','2','4','b'):
-    case VLC_FOURCC('s','2','4','b'):
-        i_result = 3;
-        break;
-
-    case VLC_FOURCC('f','l','3','2'):
-    case VLC_FOURCC('f','i','3','2'):
-        i_result = 4;
-        break;
-
-    case VLC_FOURCC('s','p','d','i'):
-    case VLC_FOURCC('s','p','d','b'): /* Big endian spdif output */
-    case VLC_FOURCC('a','5','2',' '):
-    case VLC_FOURCC('d','t','s',' '):
-    case VLC_FOURCC('m','p','g','a'):
-    case VLC_FOURCC('m','p','g','3'):
-    default:
-        /* For these formats the caller has to indicate the parameters
-         * by hand. */
-        return;
+        p_format->i_bytes_per_frame = ( p_format->i_bitspersample / 8 )
+                                    * aout_FormatNbChannels( p_format );
+        p_format->i_frame_length = 1;
     }
-
-    p_format->i_bytes_per_frame = i_result * aout_FormatNbChannels( p_format );
-    p_format->i_frame_length = 1;
 }
 
 /*****************************************************************************
@@ -164,6 +258,8 @@ const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
 {
     switch ( p_format->i_physical_channels & AOUT_CHAN_PHYSMASK )
     {
+    case AOUT_CHAN_LEFT:
+    case AOUT_CHAN_RIGHT:
     case AOUT_CHAN_CENTER:
         if ( (p_format->i_original_channels & AOUT_CHAN_CENTER)
               || (p_format->i_original_channels
@@ -203,9 +299,15 @@ const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT:
         return "2F2R";
+    case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
+          | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT:
+        return "2F2M";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT:
         return "3F2R";
+    case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
+          | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT:
+        return "3F2M";
 
     case AOUT_CHAN_CENTER | AOUT_CHAN_LFE:
         if ( (p_format->i_original_channels & AOUT_CHAN_CENTER)
@@ -238,9 +340,15 @@ const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_LFE:
         return "2F2R/LFE";
+    case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
+          | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT | AOUT_CHAN_LFE:
+        return "2F2M/LFE";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_LFE:
         return "3F2R/LFE";
+    case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
+          | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT | AOUT_CHAN_LFE:
+        return "3F2M/LFE";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT
           | AOUT_CHAN_MIDDLERIGHT:
@@ -294,6 +402,8 @@ void aout_FormatsPrint( aout_instance_t * p_aout, const char * psz_text,
 void aout_FifoInit( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
                     uint32_t i_rate )
 {
+    AOUT_ASSERT_FIFO_LOCKED;
+
     if( i_rate == 0 )
     {
         msg_Err( p_aout, "initialising fifo with zero divider" );
@@ -301,7 +411,7 @@ void aout_FifoInit( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
 
     p_fifo->p_first = NULL;
     p_fifo->pp_last = &p_fifo->p_first;
-    aout_DateInit( &p_fifo->end_date, i_rate );
+    date_Init( &p_fifo->end_date, i_rate, 1 );
 }
 
 /*****************************************************************************
@@ -310,19 +420,23 @@ void aout_FifoInit( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
 void aout_FifoPush( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
                     aout_buffer_t * p_buffer )
 {
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
+
     *p_fifo->pp_last = p_buffer;
     p_fifo->pp_last = &p_buffer->p_next;
     *p_fifo->pp_last = NULL;
     /* Enforce the continuity of the stream. */
-    if ( aout_DateGet( &p_fifo->end_date ) )
+    if ( date_Get( &p_fifo->end_date ) )
     {
-        p_buffer->start_date = aout_DateGet( &p_fifo->end_date );
-        p_buffer->end_date = aout_DateIncrement( &p_fifo->end_date,
-                                                 p_buffer->i_nb_samples );
+        p_buffer->i_pts = date_Get( &p_fifo->end_date );
+        p_buffer->i_length = date_Increment( &p_fifo->end_date,
+                                             p_buffer->i_nb_samples );
+        p_buffer->i_length -= p_buffer->i_pts;
     }
     else
     {
-        aout_DateSet( &p_fifo->end_date, p_buffer->end_date );
+        date_Set( &p_fifo->end_date, p_buffer->i_pts + p_buffer->i_length );
     }
 }
 
@@ -334,8 +448,10 @@ void aout_FifoSet( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
                    mtime_t date )
 {
     aout_buffer_t * p_buffer;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
 
-    aout_DateSet( &p_fifo->end_date, date );
+    date_Set( &p_fifo->end_date, date );
     p_buffer = p_fifo->p_first;
     while ( p_buffer != NULL )
     {
@@ -354,13 +470,14 @@ void aout_FifoMoveDates( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
                          mtime_t difference )
 {
     aout_buffer_t * p_buffer;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
 
-    aout_DateMove( &p_fifo->end_date, difference );
+    date_Move( &p_fifo->end_date, difference );
     p_buffer = p_fifo->p_first;
     while ( p_buffer != NULL )
     {
-        p_buffer->start_date += difference;
-        p_buffer->end_date += difference;
+        p_buffer->i_pts += difference;
         p_buffer = p_buffer->p_next;
     }
 }
@@ -370,7 +487,9 @@ void aout_FifoMoveDates( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
  *****************************************************************************/
 mtime_t aout_FifoNextStart( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 {
-    return aout_DateGet( &p_fifo->end_date );
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
+    return date_Get( &p_fifo->end_date );
 }
 
 /*****************************************************************************
@@ -379,7 +498,9 @@ mtime_t aout_FifoNextStart( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
  *****************************************************************************/
 mtime_t aout_FifoFirstDate( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 {
-    return p_fifo->p_first ?  p_fifo->p_first->start_date : 0;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
+    return p_fifo->p_first ?  p_fifo->p_first->i_pts : 0;
 }
 
 /*****************************************************************************
@@ -388,6 +509,8 @@ mtime_t aout_FifoFirstDate( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 aout_buffer_t * aout_FifoPop( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 {
     aout_buffer_t * p_buffer;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
 
     p_buffer = p_fifo->p_first;
     if ( p_buffer == NULL ) return NULL;
@@ -406,6 +529,8 @@ aout_buffer_t * aout_FifoPop( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 void aout_FifoDestroy( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 {
     aout_buffer_t * p_buffer;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
 
     p_buffer = p_fifo->p_first;
     while ( p_buffer != NULL )
@@ -419,64 +544,6 @@ void aout_FifoDestroy( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
     p_fifo->pp_last = &p_fifo->p_first;
 }
 
-
-/*
- * Date management (internal and external)
- */
-
-/*****************************************************************************
- * aout_DateInit : set the divider of an audio_date_t
- *****************************************************************************/
-void aout_DateInit( audio_date_t * p_date, uint32_t i_divider )
-{
-    p_date->date = 0;
-    p_date->i_divider = i_divider;
-    p_date->i_remainder = 0;
-}
-
-/*****************************************************************************
- * aout_DateSet : set the date of an audio_date_t
- *****************************************************************************/
-void aout_DateSet( audio_date_t * p_date, mtime_t new_date )
-{
-    p_date->date = new_date;
-    p_date->i_remainder = 0;
-}
-
-/*****************************************************************************
- * aout_DateMove : move forwards or backwards the date of an audio_date_t
- *****************************************************************************/
-void aout_DateMove( audio_date_t * p_date, mtime_t difference )
-{
-    p_date->date += difference;
-}
-
-/*****************************************************************************
- * aout_DateGet : get the date of an audio_date_t
- *****************************************************************************/
-mtime_t aout_DateGet( const audio_date_t * p_date )
-{
-    return p_date->date;
-}
-
-/*****************************************************************************
- * aout_DateIncrement : increment the date and return the result, taking
- * into account rounding errors
- *****************************************************************************/
-mtime_t aout_DateIncrement( audio_date_t * p_date, uint32_t i_nb_samples )
-{
-    mtime_t i_dividend = (mtime_t)i_nb_samples * 1000000;
-    p_date->date += i_dividend / p_date->i_divider;
-    p_date->i_remainder += (int)(i_dividend % p_date->i_divider);
-    if ( p_date->i_remainder >= p_date->i_divider )
-    {
-        /* This is Bresenham algorithm. */
-        p_date->date++;
-        p_date->i_remainder -= p_date->i_divider;
-    }
-    return p_date->date;
-}
-
 /*****************************************************************************
  * aout_CheckChannelReorder : Check if we need to do some channel re-ordering
  *****************************************************************************/
@@ -485,10 +552,16 @@ int aout_CheckChannelReorder( const uint32_t *pi_chan_order_in,
                               uint32_t i_channel_mask,
                               int i_channels, int *pi_chan_table )
 {
-    vlc_bool_t b_chan_reorder = VLC_FALSE;
+    bool b_chan_reorder = false;
     int i, j, k, l;
 
-    if( i_channels > AOUT_CHAN_MAX ) return VLC_FALSE;
+    if( i_channels > AOUT_CHAN_MAX )
+        return false;
+
+    if( pi_chan_order_in == NULL )
+        pi_chan_order_in = pi_vlc_chan_order_wg4;
+    if( pi_chan_order_out == NULL )
+        pi_chan_order_out = pi_vlc_chan_order_wg4;
 
     for( i = 0, j = 0; pi_chan_order_in[i]; i++ )
     {
@@ -504,7 +577,7 @@ int aout_CheckChannelReorder( const uint32_t *pi_chan_order_in,
 
     for( i = 0; i < i_channels; i++ )
     {
-        if( pi_chan_table[i] != i ) b_chan_reorder = VLC_TRUE;
+        if( pi_chan_table[i] != i ) b_chan_reorder = true;
     }
 
     return b_chan_reorder;
@@ -578,4 +651,124 @@ void aout_ChannelReorder( uint8_t *p_buf, int i_buffer,
             p_buf += 4 * i_channels;
         }
     }
+}
+
+/*****************************************************************************
+ * aout_ChannelExtract:
+ *****************************************************************************/
+static inline void ExtractChannel( uint8_t *pi_dst, int i_dst_channels,
+                                   const uint8_t *pi_src, int i_src_channels,
+                                   int i_sample_count,
+                                   const int *pi_selection, int i_bytes )
+{
+    for( int i = 0; i < i_sample_count; i++ )
+    {
+        for( int j = 0; j < i_dst_channels; j++ )
+            memcpy( &pi_dst[j * i_bytes], &pi_src[pi_selection[j] * i_bytes], i_bytes );
+        pi_dst += i_dst_channels * i_bytes;
+        pi_src += i_src_channels * i_bytes;
+    }
+}
+
+void aout_ChannelExtract( void *p_dst, int i_dst_channels,
+                          const void *p_src, int i_src_channels,
+                          int i_sample_count, const int *pi_selection, int i_bits_per_sample )
+{
+    /* It does not work in place */
+    assert( p_dst != p_src );
+
+    /* Force the compiler to inline for the specific cases so it can optimize */
+    if( i_bits_per_sample == 8 )
+        ExtractChannel( p_dst, i_dst_channels, p_src, i_src_channels, i_sample_count, pi_selection, 1 );
+    else  if( i_bits_per_sample == 16 )
+        ExtractChannel( p_dst, i_dst_channels, p_src, i_src_channels, i_sample_count, pi_selection, 2 );
+    else  if( i_bits_per_sample == 24 )
+        ExtractChannel( p_dst, i_dst_channels, p_src, i_src_channels, i_sample_count, pi_selection, 3 );
+    else  if( i_bits_per_sample == 32 )
+        ExtractChannel( p_dst, i_dst_channels, p_src, i_src_channels, i_sample_count, pi_selection, 4 );
+    else  if( i_bits_per_sample == 64 )
+        ExtractChannel( p_dst, i_dst_channels, p_src, i_src_channels, i_sample_count, pi_selection, 8 );
+}
+
+bool aout_CheckChannelExtraction( int *pi_selection,
+                                  uint32_t *pi_layout, int *pi_channels,
+                                  const uint32_t pi_order_dst[AOUT_CHAN_MAX],
+                                  const uint32_t *pi_order_src, int i_channels )
+{
+    const uint32_t pi_order_dual_mono[] = { AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT };
+    uint32_t i_layout = 0;
+    int i_out = 0;
+    int pi_index[AOUT_CHAN_MAX];
+
+    /* */
+    if( !pi_order_dst )
+        pi_order_dst = pi_vlc_chan_order_wg4;
+
+    /* Detect special dual mono case */
+    if( i_channels == 2 &&
+        pi_order_src[0] == AOUT_CHAN_CENTER && pi_order_src[1] == AOUT_CHAN_CENTER )
+    {
+        i_layout |= AOUT_CHAN_DUALMONO;
+        pi_order_src = pi_order_dual_mono;
+    }
+
+    /* */
+    for( int i = 0; i < i_channels; i++ )
+    {
+        /* Ignore unknown or duplicated channels or not present in output */
+        if( !pi_order_src[i] || (i_layout & pi_order_src[i]) )
+            continue;
+
+        for( int j = 0; j < AOUT_CHAN_MAX; j++ )
+        {
+            if( pi_order_dst[j] == pi_order_src[i] )
+            {
+                assert( i_out < AOUT_CHAN_MAX );
+                pi_index[i_out++] = i;
+                i_layout |= pi_order_src[i];
+                break;
+            }
+        }
+    }
+
+    /* */
+    for( int i = 0, j = 0; i < AOUT_CHAN_MAX; i++ )
+    {
+        for( int k = 0; k < i_out; k++ )
+        {
+            if( pi_order_dst[i] == pi_order_src[pi_index[k]] )
+            {
+                pi_selection[j++] = pi_index[k];
+                break;
+            }
+        }
+    }
+
+    *pi_layout = i_layout;
+    *pi_channels = i_out;
+
+    for( int i = 0; i < i_out; i++ )
+    {
+        if( pi_selection[i] != i )
+            return true;
+    }
+    return i_out == i_channels;
+}
+
+/*****************************************************************************
+ * aout_BufferAlloc:
+ *****************************************************************************/
+
+aout_buffer_t *aout_BufferAlloc(aout_alloc_t *allocation, mtime_t microseconds,
+        aout_buffer_t *old_buffer)
+{
+    if ( !allocation->b_alloc )
+    {
+        return old_buffer;
+    }
+
+    size_t i_alloc_size = (int)( (uint64_t)allocation->i_bytes_per_sec
+                                        * (microseconds) / 1000000 + 1 );
+
+    return block_Alloc( i_alloc_size );
 }

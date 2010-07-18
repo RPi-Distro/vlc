@@ -2,7 +2,7 @@
  * vlc_block.h: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d1a4ab0d4746fd9986823a8d1f907a89db59de77 $
+ * $Id: 887cd2dc57cfbfd00d1feffa84749d82048e18b6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_BLOCK_H
-#define _VLC_BLOCK_H 1
+#ifndef VLC_BLOCK_H
+#define VLC_BLOCK_H 1
+
+/**
+ * \file
+ * This file implements functions and structures to handle blocks of data in vlc
+ *
+ */
 
 /****************************************************************************
  * block:
@@ -31,7 +37,7 @@
  * - i_flags may not always be set (ie could be 0, even for a key frame
  *      it depends where you receive the buffer (before/after a packetizer
  *      and the demux/packetizer implementations.
- * - i_dts/i_pts could be 0, it means no pts
+ * - i_dts/i_pts could be VLC_TS_INVALID, it means no pts/dts
  * - i_length: length in microseond of the packet, can be null except in the
  *      sout where it is mandatory.
  * - i_rate 0 or a valid input rate, look at vlc_input.h
@@ -56,12 +62,14 @@ typedef struct block_sys_t block_sys_t;
 #define BLOCK_FLAG_TYPE_B        0x0008
 /** For inter frame when you don't know the real type */
 #define BLOCK_FLAG_TYPE_PB       0x0010
-/** Warm that this block is a header one */
+/** Warn that this block is a header one */
 #define BLOCK_FLAG_HEADER        0x0020
 /** This is the last block of the frame */
 #define BLOCK_FLAG_END_OF_FRAME  0x0040
 /** This is not a key frame for bitrate shaping */
 #define BLOCK_FLAG_NO_KEYFRAME   0x0080
+/** This block contains the last part of a sequence  */
+#define BLOCK_FLAG_END_OF_SEQUENCE 0x0100
 /** This block contains a clock reference */
 #define BLOCK_FLAG_CLOCK         0x0200
 /** This block is scrambled */
@@ -70,14 +78,31 @@ typedef struct block_sys_t block_sys_t;
 #define BLOCK_FLAG_PREROLL       0x0800
 /** This block is corrupted and/or there is data loss  */
 #define BLOCK_FLAG_CORRUPTED     0x1000
+/** This block contains an interlaced picture with top field first */
+#define BLOCK_FLAG_TOP_FIELD_FIRST 0x2000
+/** This block contains an interlaced picture with bottom field first */
+#define BLOCK_FLAG_BOTTOM_FIELD_FIRST 0x4000
 
-#define BLOCK_FLAG_PRIVATE_MASK  0xffff0000
-#define BLOCK_FLAG_PRIVATE_SHIFT 16
+/** This block contains an interlaced picture */
+#define BLOCK_FLAG_INTERLACED_MASK \
+    (BLOCK_FLAG_TOP_FIELD_FIRST|BLOCK_FLAG_BOTTOM_FIELD_FIRST)
+
+#define BLOCK_FLAG_TYPE_MASK \
+    (BLOCK_FLAG_TYPE_I|BLOCK_FLAG_TYPE_P|BLOCK_FLAG_TYPE_B|BLOCK_FLAG_TYPE_PB)
+
+/* These are for input core private usage only */
+#define BLOCK_FLAG_CORE_PRIVATE_MASK  0x00ff0000
+#define BLOCK_FLAG_CORE_PRIVATE_SHIFT 16
+
+/* These are for module private usage only */
+#define BLOCK_FLAG_PRIVATE_MASK  0xff000000
+#define BLOCK_FLAG_PRIVATE_SHIFT 24
+
+typedef void (*block_free_t) (block_t *);
 
 struct block_t
 {
     block_t     *p_next;
-    block_t     *p_prev;
 
     uint32_t    i_flags;
 
@@ -85,33 +110,22 @@ struct block_t
     mtime_t     i_dts;
     mtime_t     i_length;
 
-    int         i_samples; /* Used for audio */
+    unsigned    i_nb_samples; /* Used for audio */
     int         i_rate;
 
-    int         i_buffer;
+    size_t      i_buffer;
     uint8_t     *p_buffer;
 
-    /* This way the block_Release can be overloaded
-     * Don't mess with it now, if you need it the ask on ML
-     */
-    void        (*pf_release)   ( block_t * );
-
-    /* It's an object that should be valid as long as the block_t is valid */
-    /* It should become a true block manager to reduce malloc/free */
-    vlc_object_t    *p_manager;
-
-    /* Following fields are private, user should never touch it */
-    /* XXX never touch that OK !!! the first that access that will
-     * have cvs account removed ;) XXX */
-    block_sys_t *p_sys;
+    /* Rudimentary support for overloading block (de)allocation. */
+    block_free_t pf_release;
 };
 
 /****************************************************************************
  * Blocks functions:
  ****************************************************************************
- * - block_New : create a new block with the requested size ( >= 0 ), return
+ * - block_Alloc : create a new block with the requested size ( >= 0 ), return
  *      NULL for failure.
- * - block_Release : release a block allocated with block_New.
+ * - block_Release : release a block allocated with block_Alloc.
  * - block_Realloc : realloc a block,
  *      i_pre: how many bytes to insert before body if > 0, else how many
  *      bytes of body to skip (the latter can be done without using
@@ -122,13 +136,16 @@ struct block_t
  *      and decrease are supported). Use it as it is optimised.
  * - block_Duplicate : create a copy of a block.
  ****************************************************************************/
-#define block_New( a, b ) __block_New( VLC_OBJECT(a), b )
-VLC_EXPORT( block_t *,  __block_New,        ( vlc_object_t *, int ) );
-VLC_EXPORT( block_t *, block_Realloc,       ( block_t *, int i_pre, int i_body ) );
+VLC_EXPORT( void,      block_Init,    ( block_t *, void *, size_t ) );
+VLC_EXPORT( block_t *, block_Alloc,   ( size_t ) LIBVLC_USED );
+VLC_EXPORT( block_t *, block_Realloc, ( block_t *, ssize_t i_pre, size_t i_body ) LIBVLC_USED );
 
+#define block_New( dummy, size ) block_Alloc(size)
+
+LIBVLC_USED
 static inline block_t *block_Duplicate( block_t *p_block )
 {
-    block_t *p_dup = block_New( p_block->p_manager, p_block->i_buffer );
+    block_t *p_dup = block_Alloc( p_block->i_buffer );
     if( p_dup == NULL )
         return NULL;
 
@@ -137,27 +154,38 @@ static inline block_t *block_Duplicate( block_t *p_block )
     p_dup->i_flags   = p_block->i_flags;
     p_dup->i_length  = p_block->i_length;
     p_dup->i_rate    = p_block->i_rate;
-    p_dup->i_samples = p_block->i_samples;
+    p_dup->i_nb_samples = p_block->i_nb_samples;
     memcpy( p_dup->p_buffer, p_block->p_buffer, p_block->i_buffer );
 
     return p_dup;
 }
+
 static inline void block_Release( block_t *p_block )
 {
     p_block->pf_release( p_block );
 }
 
+VLC_EXPORT( block_t *, block_heap_Alloc, (void *, void *, size_t) LIBVLC_USED );
+VLC_EXPORT( block_t *, block_mmap_Alloc, (void *addr, size_t length) LIBVLC_USED );
+VLC_EXPORT( block_t *, block_File, (int fd) LIBVLC_USED );
+
+static inline void block_Cleanup (void *block)
+{
+    block_Release ((block_t *)block);
+}
+#define block_cleanup_push( block ) vlc_cleanup_push (block_Cleanup, block)
+
 /****************************************************************************
  * Chains of blocks functions helper
  ****************************************************************************
- * - block_ChainAppend : append a block the the last block of a chain. Try to
+ * - block_ChainAppend : append a block to the last block of a chain. Try to
  *      avoid using with a lot of data as it's really slow, prefer
  *      block_ChainLastAppend
  * - block_ChainLastAppend : use a pointer over a pointer to the next blocks,
  *      and update it.
  * - block_ChainRelease : release a chain of block
  * - block_ChainExtract : extract data from a chain, return real bytes counts
- * - block_ChainGather : gather a chain, free it and return a block.
+ * - block_ChainGather : gather a chain, free it and return one block.
  ****************************************************************************/
 static inline void block_ChainAppend( block_t **pp_list, block_t *p_block )
 {
@@ -174,7 +202,7 @@ static inline void block_ChainAppend( block_t **pp_list, block_t *p_block )
     }
 }
 
-static inline void block_ChainLastAppend( block_t ***ppp_last, block_t *p_block  )
+static inline void block_ChainLastAppend( block_t ***ppp_last, block_t *p_block )
 {
     block_t *p_last = p_block;
 
@@ -193,45 +221,60 @@ static inline void block_ChainRelease( block_t *p_block )
         p_block = p_next;
     }
 }
-static int block_ChainExtract( block_t *p_list, void *p_data, int i_max )
+
+static size_t block_ChainExtract( block_t *p_list, void *p_data, size_t i_max )
 {
-    block_t *b;
-    int     i_total = 0;
+    size_t  i_total = 0;
     uint8_t *p = (uint8_t*)p_data;
 
-    for( b = p_list; b != NULL; b = b->p_next )
+    while( p_list && i_max )
     {
-        int i_copy = __MIN( i_max, b->i_buffer );
-        if( i_copy > 0 )
-        {
-            memcpy( p, b->p_buffer, i_copy );
-            i_max   -= i_copy;
-            i_total += i_copy;
-            p       += i_copy;
+        size_t i_copy = __MIN( i_max, p_list->i_buffer );
+        memcpy( p, p_list->p_buffer, i_copy );
+        i_max   -= i_copy;
+        i_total += i_copy;
+        p       += i_copy;
 
-            if( i_max == 0 )
-                return i_total;
-        }
+        p_list = p_list->p_next;
     }
     return i_total;
 }
 
+static inline void block_ChainProperties( block_t *p_list, int *pi_count, size_t *pi_size, mtime_t *pi_length )
+{
+    size_t i_size = 0;
+    mtime_t i_length = 0;
+    int i_count = 0;
+
+    while( p_list )
+    {
+        i_size += p_list->i_buffer;
+        i_length += p_list->i_length;
+        i_count++;
+
+        p_list = p_list->p_next;
+    }
+
+    if( pi_size )
+        *pi_size = i_size;
+    if( pi_length )
+        *pi_length = i_length;
+    if( pi_count )
+        *pi_count = i_count;
+}
+
 static inline block_t *block_ChainGather( block_t *p_list )
 {
-    int     i_total = 0;
+    size_t  i_total = 0;
     mtime_t i_length = 0;
-    block_t *b, *g;
+    block_t *g;
 
     if( p_list->p_next == NULL )
         return p_list;  /* Already gathered */
 
-    for( b = p_list; b != NULL; b = b->p_next )
-    {
-        i_total += b->i_buffer;
-        i_length += b->i_length;
-    }
+    block_ChainProperties( p_list, NULL, &i_total, &i_length );
 
-    g = block_New( p_list->p_manager, i_total );
+    g = block_Alloc( i_total );
     block_ChainExtract( p_list, g->p_buffer, g->i_buffer );
 
     g->i_flags = p_list->i_flags;
@@ -244,39 +287,34 @@ static inline block_t *block_ChainGather( block_t *p_list )
     return g;
 }
 
-
 /****************************************************************************
  * Fifos of blocks.
  ****************************************************************************
- * Avoid touching block_fifo_t unless you really know what you are doing.
- * ( Some race conditions has to be correctly handled, like in win32 ;)
  * - block_FifoNew : create and init a new fifo
  * - block_FifoRelease : destroy a fifo and free all blocks in it.
+ * - block_FifoPace : wait for a fifo to drain to a specified number of packets or total data size
  * - block_FifoEmpty : free all blocks in a fifo
  * - block_FifoPut : put a block
  * - block_FifoGet : get a packet from the fifo (and wait if it is empty)
  * - block_FifoShow : show the first packet of the fifo (and wait if
- *      needed), becarefull, you can use it ONLY if you are sure to be the
+ *      needed), be carefull, you can use it ONLY if you are sure to be the
  *      only one getting data from the fifo.
+ * - block_FifoCount : how many packets are waiting in the fifo
+ * - block_FifoWake : wake ups a thread with block_FifoGet() = NULL
+ *   (this is used to wakeup a thread when there is no data to queue)
+ *
+ * block_FifoGet and block_FifoShow are cancellation points.
  ****************************************************************************/
-struct block_fifo_t
-{
-    vlc_mutex_t         lock;                         /* fifo data lock */
-    vlc_cond_t          wait;         /* fifo data conditional variable */
 
-    int                 i_depth;
-    block_t             *p_first;
-    block_t             **pp_last;
-    int                 i_size;
-};
-
-
-#define block_FifoNew( a ) __block_FifoNew( VLC_OBJECT(a) )
-VLC_EXPORT( block_fifo_t *, __block_FifoNew,    ( vlc_object_t * ) );
+VLC_EXPORT( block_fifo_t *, block_FifoNew,      ( void ) LIBVLC_USED );
 VLC_EXPORT( void,           block_FifoRelease,  ( block_fifo_t * ) );
+VLC_EXPORT( void,           block_FifoPace,     ( block_fifo_t *fifo, size_t max_depth, size_t max_size ) );
 VLC_EXPORT( void,           block_FifoEmpty,    ( block_fifo_t * ) );
-VLC_EXPORT( int,            block_FifoPut,      ( block_fifo_t *, block_t * ) );
-VLC_EXPORT( block_t *,      block_FifoGet,      ( block_fifo_t * ) );
+VLC_EXPORT( size_t,         block_FifoPut,      ( block_fifo_t *, block_t * ) );
+VLC_EXPORT( void,           block_FifoWake,     ( block_fifo_t * ) );
+VLC_EXPORT( block_t *,      block_FifoGet,      ( block_fifo_t * ) LIBVLC_USED );
 VLC_EXPORT( block_t *,      block_FifoShow,     ( block_fifo_t * ) );
+size_t block_FifoSize( const block_fifo_t *p_fifo ) LIBVLC_USED;
+VLC_EXPORT( size_t,         block_FifoCount,    ( const block_fifo_t *p_fifo ) LIBVLC_USED );
 
 #endif /* VLC_BLOCK_H */

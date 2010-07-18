@@ -2,7 +2,7 @@
  * spdif.c : dummy mixer for S/PDIF output (1 input only)
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: e54c7bccc8db554e61da672b74b5dbb3834ca827 $
+ * $Id: c21e6e6094c74f95b04f52a0a8c8620cf37a07fe $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,47 +24,51 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include "audio_output.h"
-#include "aout_internal.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <assert.h>
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 static int  Create    ( vlc_object_t * );
 
-static void DoWork    ( aout_instance_t *, aout_buffer_t * );
+static void DoWork    ( aout_mixer_t *, aout_buffer_t * );
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_description( _("Dummy S/PDIF audio mixer") );
-    set_capability( "audio mixer", 1 );
-    set_callbacks( Create, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_description( N_("Dummy S/PDIF audio mixer") )
+    set_capability( "audio mixer", 1 )
+    set_callbacks( Create, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create: allocate spdif mixer
  *****************************************************************************/
 static int Create( vlc_object_t *p_this )
 {
-    aout_instance_t * p_aout = (aout_instance_t *)p_this;
+    aout_mixer_t *p_mixer = (aout_mixer_t *)p_this;
 
-    if ( !AOUT_FMT_NON_LINEAR(&p_aout->mixer.mixer) )
+    if ( !AOUT_FMT_NON_LINEAR(&p_mixer->fmt) )
     {
         return -1;
     }
 
-    p_aout->mixer.pf_do_work = DoWork;
+    p_mixer->mix = DoWork;
     /* This is a bit kludgy - do not ask for a new buffer, since the one
      * provided by the first input will be good enough. */
-    p_aout->mixer.output_alloc.i_alloc_type = AOUT_ALLOC_NONE;
+    p_mixer->allocation.b_alloc = false;
 
     return 0;
 }
@@ -72,34 +76,30 @@ static int Create( vlc_object_t *p_this )
 /*****************************************************************************
  * DoWork: mix a new output buffer - this does nothing, indeed
  *****************************************************************************/
-static void DoWork( aout_instance_t * p_aout, aout_buffer_t * p_buffer )
+static void DoWork( aout_mixer_t * p_mixer, aout_buffer_t * p_buffer )
 {
-    int i = 0;
-    aout_input_t * p_input = p_aout->pp_inputs[i];
-    while ( p_input->b_error )
-    {
-        p_input = p_aout->pp_inputs[++i];
-    }
-    aout_FifoPop( p_aout, &p_input->fifo );
+    VLC_UNUSED( p_buffer );
+
+    unsigned i = 0;
+    aout_mixer_input_t * p_input = p_mixer->input[i];
+    while ( p_input->is_invalid )
+        p_input = p_mixer->input[++i];
+
+    aout_buffer_t * p_old_buffer = aout_FifoPop( NULL, &p_input->fifo );
+    /* We don't free the old buffer because,
+     * The aout core use a hack to avoid useless memcpy: the buffer in which
+     * to mix is the same as the one in the first active input fifo.
+     * So the ownership of that buffer belongs to our caller */
+    assert( p_old_buffer == p_buffer );
 
     /* Empty other FIFOs to avoid a memory leak. */
-    for ( i++; i < p_aout->i_nb_inputs; i++ )
+    for ( i++; i < p_mixer->input_count; i++ )
     {
-        aout_fifo_t * p_fifo;
-        aout_buffer_t * p_deleted;
-
-        p_input = p_aout->pp_inputs[i];
-        if ( p_input->b_error ) continue;
-        p_fifo = &p_input->fifo;
-        p_deleted = p_fifo->p_first;  
-        while ( p_deleted != NULL )
-        {
-            aout_buffer_t * p_next = p_deleted->p_next;
-            aout_BufferFree( p_deleted );
-            p_deleted = p_next;
-        }
-        p_fifo->p_first = NULL;
-        p_fifo->pp_last = &p_fifo->p_first;
+        p_input = p_mixer->input[i];
+        if ( p_input->is_invalid )
+            continue;
+        while ((p_old_buffer = aout_FifoPop( NULL, &p_input->fifo )))
+            aout_BufferFree( p_old_buffer );
     }
 }
 

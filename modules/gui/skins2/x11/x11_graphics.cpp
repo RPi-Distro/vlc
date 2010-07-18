@@ -2,7 +2,7 @@
  * x11_graphics.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7fab9a8addaedec62e8e8c2360f0018a51ffbc04 $
+ * $Id: b3e143d8908f4454f15a66084a9f6b1c23a10f9c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -24,7 +24,6 @@
 
 #ifdef X11_SKINS
 
-#include <stdlib.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
@@ -74,11 +73,27 @@ X11Graphics::~X11Graphics()
 }
 
 
-void X11Graphics::clear()
+void X11Graphics::clear( int xDest, int yDest, int width, int height )
 {
-    // Clear the transparency mask
-    XDestroyRegion( m_mask );
-    m_mask = XCreateRegion();
+    if( width <= 0 || height <= 0 )
+    {
+        // Clear the transparency mask completely
+        XDestroyRegion( m_mask );
+        m_mask = XCreateRegion();
+    }
+    else
+    {
+        // remove this area from the mask
+        XRectangle rect;
+        rect.x = xDest;
+        rect.y = yDest;
+        rect.width = width;
+        rect.height = height;
+        Region regMask = XCreateRegion();
+        XUnionRectWithRegion( &rect, regMask, regMask );
+        XSubtractRegion( m_mask, regMask, m_mask );
+        XDestroyRegion( regMask );
+    }
 }
 
 

@@ -2,7 +2,7 @@
  * ctrl_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: df0e86508a33499257183feb3326c59fca6a2497 $
+ * $Id: a6c90a03886824238f498f019d0dc5135eb0a7e1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -104,18 +104,9 @@ CtrlText::CtrlText( intf_thread_t *pIntf, VarText &rVariable,
 CtrlText::~CtrlText()
 {
     m_rVariable.delObserver( this );
-    if( m_pTimer )
-    {
-        delete m_pTimer;
-    }
-    if( m_pImg )
-    {
-        delete m_pImg;
-    }
-    if( m_pImgDouble )
-    {
-        delete m_pImgDouble;
-    }
+    delete m_pTimer;
+    delete m_pImg;
+    delete m_pImgDouble;
 }
 
 
@@ -220,14 +211,28 @@ void CtrlText::onUpdate( Subject<VarText> &rVariable, void* arg )
 }
 
 
+void CtrlText::onUpdate( Subject<VarBool> &rVariable, void *arg  )
+{
+    // Visibility changed
+    if( &rVariable == m_pVisible )
+    {
+        if( isVisible() )
+        {
+            displayText( m_rVariable.get() );
+        }
+        else
+        {
+            notifyLayout();
+        }
+    }
+}
+
+
 void CtrlText::displayText( const UString &rText )
 {
     // Create the images ('normal' and 'double') from the text
     // 'Normal' image
-    if( m_pImg )
-    {
-        delete m_pImg;
-    }
+    delete m_pImg;
     m_pImg = m_rFont.drawString( rText, m_color );
     if( !m_pImg )
     {
@@ -235,10 +240,7 @@ void CtrlText::displayText( const UString &rText )
     }
     // 'Double' image
     const UString doubleStringWithSep = rText + SEPARATOR_STRING + rText;
-    if( m_pImgDouble )
-    {
-        delete m_pImgDouble;
-    }
+    delete m_pImgDouble;
     m_pImgDouble = m_rFont.drawString( doubleStringWithSep, m_color );
 
     // Update the current image used, as if the control size had changed
@@ -288,6 +290,11 @@ void CtrlText::onPositionChange()
         if( m_pImg->getWidth() < getPosition()->getWidth() )
         {
             m_pCurrImg = m_pImg;
+
+            // When the control becomes wide enough for the text to display,
+            // make sure to stop any scrolling effect
+            m_pTimer->stop();
+            m_xPos = 0;
         }
         else
         {

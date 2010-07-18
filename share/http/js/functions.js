@@ -27,6 +27,7 @@
 
 var old_time = 0;
 var pl_cur_id;
+var albumart_id = -1;
 
 /**********************************************************************
  * Slider functions
@@ -381,6 +382,11 @@ function snapshot()
 {
     loadXMLDoc( 'requests/status.xml?command=snapshot', parse_status );
 }
+function hotkey( str )
+{
+    /* Use hotkey name (without the "key-" part) as the argument to simulate a hotkey press */
+    loadXMLDoc( 'requests/status.xml?command=key&val='+str, parse_status );
+}
 function update_status()
 {
     loadXMLDoc( 'requests/status.xml', parse_status );
@@ -624,6 +630,7 @@ function parse_playlist()
                     {
                         elt = elt.parentNode;
                         if( ! elt.parentNode ) break;
+                        pos = pos.parentNode;
                     }
                     if( ! elt.parentNode ) break;
                     elt = elt.parentNode.nextSibling;
@@ -814,7 +821,7 @@ function update_input_fake()
 {
     var mrl = document.getElementById( 'input_mrl' );
 
-    mrl.value = "fake:";
+    mrl.value = "fake://";
     mrl.value += " :fake-file=" + value( "input_fake_filename" );
 
     if( value( "input_fake_width" ) )
@@ -1034,7 +1041,16 @@ function browse_path( p )
     hide( 'browse' );
     document.getElementById( value( 'browse_dest' ) ).focus();
 }
-
+function refresh_albumart( force )
+{
+    if( albumart_id != pl_cur_id || force )
+    {
+        var now = new Date();
+        var albumart = document.getElementById( 'albumart' );
+        albumart.src = '/art?timestamp=' + now.getTime();
+        albumart_id = pl_cur_id;
+    }
+}
 /**********************************************************************
  * Periodically update stuff in the interface
  *********************************************************************/
@@ -1048,9 +1064,15 @@ function loop_refresh_playlist()
     /* setTimeout( 'loop_refresh_playlist()', 10000 ); */
     update_playlist();
 }
+function loop_refresh_albumart()
+{
+    setTimeout( 'loop_refresh_albumart()', 1000 );
+    refresh_albumart( false );
+}
 function loop_refresh()
 {
     setTimeout( 'loop_refresh_status()', 1 );
     setTimeout( 'loop_refresh_playlist()', 1 );
+    setTimeout( 'loop_refresh_albumart()', 1 );
 }
 

@@ -2,7 +2,7 @@
  * sdl.c : SDL audio output plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: 9b0e70d0172b85eb041bd5c214b078f02346683a $
+ * $Id: 89bbfb1eb0d24dffa666f92b0849c89e5d75b464 $
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -27,15 +27,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <string.h>                                            /* strerror() */
 #include <unistd.h>                                      /* write(), close() */
-#include <stdlib.h>                            /* calloc(), malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include "aout_internal.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include SDL_INCLUDE_FILE
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+
+#include <SDL.h>
 
 #define FRAME_SIZE 2048
 
@@ -57,20 +59,20 @@ struct aout_sys_t
 static int  Open        ( vlc_object_t * );
 static void Close       ( vlc_object_t * );
 static void Play        ( aout_instance_t * );
-static void SDLCallback ( void *, byte_t *, int );
+static void SDLCallback ( void *, uint8_t *, int );
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_shortname( "SDL" );
-    set_description( _("Simple DirectMedia Layer audio output") );
-    set_capability( "audio output", 40 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
-    add_shortcut( "sdl" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "SDL" )
+    set_description( N_("Simple DirectMedia Layer audio output") )
+    set_capability( "audio output", 40 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
+    add_shortcut( "sdl" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: open the audio device
@@ -89,11 +91,8 @@ static int Open ( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-#ifndef WIN32
-    /* Win32 SDL implementation doesn't support SDL_INIT_EVENTTHREAD yet */
     i_flags |= SDL_INIT_EVENTTHREAD;
-#endif
-#ifdef DEBUG
+#ifndef NDEBUG
     /* In debug mode you may want vlc to dump a core instead of staying
      * stuck */
     i_flags |= SDL_INIT_NOPARACHUTE;
@@ -106,11 +105,9 @@ static int Open ( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if ( var_Type( p_aout, "audio-device" ) != 0 )
+    if( var_Get( p_aout, "audio-device", &val ) != VLC_ENOVAR )
     {
         /* The user has selected an audio device. */
-        vlc_value_t val;
-        var_Get( p_aout, "audio-device", &val );
         if ( val.i_int == AOUT_VAR_STEREO )
         {
             p_aout->output.output.i_physical_channels
@@ -149,17 +146,17 @@ static int Open ( vlc_object_t *p_this )
     switch ( obtained.format )
     {
     case AUDIO_S16LSB:
-        p_aout->output.output.i_format = VLC_FOURCC('s','1','6','l'); break;
+        p_aout->output.output.i_format = VLC_CODEC_S16L; break;
     case AUDIO_S16MSB:
-        p_aout->output.output.i_format = VLC_FOURCC('s','1','6','b'); break;
+        p_aout->output.output.i_format = VLC_CODEC_S16B; break;
     case AUDIO_U16LSB:
-        p_aout->output.output.i_format = VLC_FOURCC('u','1','6','l'); break;
+        p_aout->output.output.i_format = VLC_CODEC_U16L; break;
     case AUDIO_U16MSB:
-        p_aout->output.output.i_format = VLC_FOURCC('u','1','6','b'); break;
+        p_aout->output.output.i_format = VLC_CODEC_U16B; break;
     case AUDIO_S8:
-        p_aout->output.output.i_format = VLC_FOURCC('s','8',' ',' '); break;
+        p_aout->output.output.i_format = VLC_CODEC_S8; break;
     case AUDIO_U8:
-        p_aout->output.output.i_format = VLC_FOURCC('u','8',' ',' '); break;
+        p_aout->output.output.i_format = VLC_CODEC_U8; break;
     }
     /* Volume is entirely done in software. */
     aout_VolumeSoftInit( p_aout );
@@ -179,8 +176,8 @@ static int Open ( vlc_object_t *p_this )
 
             val.i_int = (obtained.channels == 2) ? AOUT_VAR_STEREO :
                         AOUT_VAR_MONO;
-            text.psz_string = (obtained.channels == 2) ? N_("Stereo") :
-                              N_("Mono");
+            text.psz_string = (obtained.channels == 2) ? _("Stereo") :
+                              _("Mono");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart,
@@ -196,10 +193,10 @@ static int Open ( vlc_object_t *p_this )
         var_Change( p_aout, "audio-device", VLC_VAR_SETTEXT, &text, NULL );
 
         val.i_int = AOUT_VAR_STEREO;
-        text.psz_string = N_("Stereo");
+        text.psz_string = _("Stereo");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
         val.i_int = AOUT_VAR_MONO;
-        text.psz_string = N_("Mono");
+        text.psz_string = _("Mono");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
         if ( i_nb_channels == 2 )
         {
@@ -213,8 +210,7 @@ static int Open ( vlc_object_t *p_this )
         var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
     }
 
-    val.b_bool = VLC_TRUE;
-    var_Set( p_aout, "intf-change", val );
+    var_SetBool( p_aout, "intf-change", true );
 
     p_aout->output.output.i_rate = obtained.freq;
     p_aout->output.i_nb_samples = obtained.samples;
@@ -228,6 +224,7 @@ static int Open ( vlc_object_t *p_this )
  *****************************************************************************/
 static void Play( aout_instance_t * p_aout )
 {
+    VLC_UNUSED(p_aout);
 }
 
 /*****************************************************************************
@@ -235,6 +232,7 @@ static void Play( aout_instance_t * p_aout )
  *****************************************************************************/
 static void Close ( vlc_object_t *p_this )
 {
+    VLC_UNUSED(p_this);
     SDL_PauseAudio( 1 );
     SDL_CloseAudio();
     SDL_QuitSubSystem( SDL_INIT_AUDIO );
@@ -243,7 +241,7 @@ static void Close ( vlc_object_t *p_this )
 /*****************************************************************************
  * SDLCallback: what to do once SDL has played sound samples
  *****************************************************************************/
-static void SDLCallback( void * _p_aout, byte_t * p_stream, int i_len )
+static void SDLCallback( void * _p_aout, uint8_t * p_stream, int i_len )
 {
     aout_instance_t * p_aout = (aout_instance_t *)_p_aout;
     aout_buffer_t *   p_buffer;
@@ -258,12 +256,12 @@ static void SDLCallback( void * _p_aout, byte_t * p_stream, int i_len )
 
     if ( p_buffer != NULL )
     {
-        p_aout->p_vlc->pf_memcpy( p_stream, p_buffer->p_buffer, i_len );
+        vlc_memcpy( p_stream, p_buffer->p_buffer, i_len );
         aout_BufferFree( p_buffer );
     }
     else
     {
-        p_aout->p_vlc->pf_memset( p_stream, 0, i_len );
+        vlc_memset( p_stream, 0, i_len );
     }
 }
 

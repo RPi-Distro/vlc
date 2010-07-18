@@ -1,10 +1,11 @@
 /*****************************************************************************
  * screen.h: Screen capture module.
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 3ad778b0de31558bc51c217abf61e55d88f3ac04 $
+ * Copyright (C) 2004-2008 the VideoLAN team
+ * $Id: 28f1433dca9a2053e5d75290e129af855e36bbcd $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
+ *          Antoine Cellerier <dionoea at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +22,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <vlc_input.h>
+#include <vlc_access.h>
+#include <vlc_demux.h>
+
+#if !defined( HAVE_BEOS ) && !defined( HAVE_DARWIN )
+#   define SCREEN_SUBSCREEN
+#   define SCREEN_MOUSE
+#endif
+
+#ifdef SCREEN_MOUSE
+#   include <vlc_image.h>
+#endif
+
 typedef struct screen_data_t screen_data_t;
 
 struct demux_sys_t
@@ -32,6 +46,23 @@ struct demux_sys_t
     mtime_t i_next_date;
     int i_incr;
 
+#ifdef SCREEN_SUBSCREEN
+    bool b_follow_mouse;
+    unsigned int i_screen_height;
+    unsigned int i_screen_width;
+
+    unsigned int i_top;
+    unsigned int i_left;
+    unsigned int i_height;
+    unsigned int i_width;
+#endif
+
+#ifdef SCREEN_MOUSE
+    picture_t *p_mouse;
+    filter_t *p_blend;
+    picture_t dst;
+#endif
+
     screen_data_t *p_data;
 };
 
@@ -39,3 +70,9 @@ int      screen_InitCapture ( demux_t * );
 int      screen_CloseCapture( demux_t * );
 block_t *screen_Capture( demux_t * );
 
+#ifdef SCREEN_SUBSCREEN
+void FollowMouse( demux_sys_t *, int, int );
+#endif
+#ifdef SCREEN_MOUSE
+void RenderCursor( demux_t *, int, int, uint8_t * );
+#endif

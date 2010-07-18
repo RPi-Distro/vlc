@@ -2,7 +2,7 @@
  * intf_eject.c: CD/DVD-ROM ejection handling functions
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 8a764bf91ca9827913dfc5457edab7f658282779 $
+ * $Id: 4031d99d75e5116501973499be4e00426257ceb4 $
  *
  * Authors: Julien Blache <jb@technologeek.org> for the Linux part
  *                with code taken from the Linux "eject" command
@@ -29,16 +29,15 @@
  *  This file contain functions to eject CD and DVD drives
  */
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <vlc_common.h>
 
 #ifdef HAVE_UNISTD_H
 #    include <unistd.h>
 #endif
-
-#include <string.h>
 
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
@@ -48,7 +47,7 @@
 #   include <dvd.h>
 #endif
 
-#if defined(SYS_LINUX) && defined(HAVE_LINUX_VERSION_H)
+#if defined(__linux__) && defined(HAVE_LINUX_VERSION_H)
 #   include <linux/version.h>
     /* handy macro found in 2.1 kernels, but not in older ones */
 #   ifndef KERNEL_VERSION
@@ -56,7 +55,6 @@
 #   endif
 
 #   include <sys/types.h>
-#   include <sys/stat.h>
 #   include <sys/ioctl.h>
 
 #   include <sys/ioctl.h>
@@ -76,20 +74,16 @@
 #   include <mmsystem.h>
 #endif
 
+#include <vlc_interface.h>
+
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-#if defined(SYS_LINUX) && defined(HAVE_LINUX_VERSION_H)
+#if defined(__linux__) && defined(HAVE_LINUX_VERSION_H)
 static int EjectSCSI ( int i_fd );
 #endif
 
-/*****************************************************************************
- * intf_Eject: eject the CDRom
- *****************************************************************************
- * returns 0 on success
- * returns 1 on failure
- * returns -1 if not implemented
- *****************************************************************************/
+#undef intf_Eject
 /**
  * \brief Ejects the CD /DVD
  * \ingroup vlc_interface
@@ -97,8 +91,9 @@ static int EjectSCSI ( int i_fd );
  * \param psz_device the CD/DVD to eject
  * \return 0 on success, 1 on failure, -1 if not implemented
  */
-int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
+int intf_Eject( vlc_object_t *p_this, const char *psz_device )
 {
+    VLC_UNUSED(p_this);
     int i_ret = VLC_SUCCESS;
 
 #ifdef __APPLE__
@@ -165,7 +160,7 @@ int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
     i_flags = MCI_OPEN_TYPE | MCI_OPEN_TYPE_ID |
               MCI_OPEN_ELEMENT | MCI_OPEN_SHAREABLE;
 
-    if( !mciSendCommand( 0, MCI_OPEN, i_flags, (unsigned long)&op ) )
+    if( !mciSendCommand( 0, MCI_OPEN, i_flags, (uintptr_t)&op ) )
     {
         st.dwItem = MCI_STATUS_READY;
         /* Eject disc */
@@ -190,7 +185,7 @@ int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
         return VLC_EGENERIC;
     }
 
-#if defined(SYS_LINUX) && defined(HAVE_LINUX_VERSION_H)
+#if defined(__linux__) && defined(HAVE_LINUX_VERSION_H)
     /* Try a simple ATAPI eject */
     i_ret = ioctl( i_fd, CDROMEJECT, 0 );
 
@@ -220,7 +215,7 @@ int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
 
 /* The following functions are local */
 
-#if defined(SYS_LINUX) && defined(HAVE_LINUX_VERSION_H)
+#if defined(__linux__) && defined(HAVE_LINUX_VERSION_H)
 /*****************************************************************************
  * Eject using SCSI commands. Return 0 if successful
  *****************************************************************************/
