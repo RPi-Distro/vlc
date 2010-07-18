@@ -1,3 +1,28 @@
+vlc (1.1.0-4ubuntu1) maverick; urgency=low
+
+  * Merge from Debian unstable (LP: #606849), remaining changes:
+    - build and install the libx264 plugin
+    - add Xb-Npp header to vlc package
+    - Add apport hook to include more vlc dependencies in bug reports
+    - drop xulrunner 1.9.1 patch (502_xulrunner_191.diff)
+
+ -- Lorenzo De Liso <blackz@ubuntu.com>  Sun, 18 Jul 2010 09:45:01 +0200
+
+vlc (1.1.0-4) unstable; urgency=low
+
+  * also move udev to the list of linux specific features
+  * alphabetize configure switches
+  * fix kfreebsd ftbfs in access file module (Closes: #588655)
+  * forcefully disable alsa on kFreeBSD
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 10 Jul 2010 19:39:57 -0400
+
+vlc (1.1.0-3) unstable; urgency=low
+
+  * really enable dc1394 only for Linux, Closes: #588410
+
+ -- Reinhard Tartler <siretart@tauware.de>  Fri, 09 Jul 2010 15:18:08 -0400
+
 vlc (1.1.0-2ubuntu1) maverick; urgency=low
 
   * Merge from Debian unstable, remaining changes:
