@@ -1,3 +1,12 @@
+vlc (1.1.0-4+exp1~3.gbp3949bb) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @3949bb65d022ae61e0069a42029405f942833bf2 **
+
+  * Depends on xulrunner-dev >= 1.9.2
+  * Activate VA-API (Closes: #587792)
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sun, 18 Jul 2010 19:46:07 +0200
+
 vlc (1.1.0-4) unstable; urgency=low
 
   * also move udev to the list of linux specific features
