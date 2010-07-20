@@ -4,5 +4,3 @@
 200_osdmenu_paths.diff
 501_decrease_alsa_buffer.diff
 502_xulrunner_191.diff
-503_mpeg2_arm.diff
-504_fix_kfreebsd_ftbfs_access_file_module.diff
