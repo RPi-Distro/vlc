@@ -2,7 +2,7 @@
  * fourcc.c: libavcodec <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2009 the VideoLAN team
- * $Id: 5a215e56e7a10aa3d40f34436bb095e0e904c5b6 $
+ * $Id: bee9b10d94e7d4c72baa74b4f42001b93e92c6b3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -53,6 +53,7 @@ static const struct
      */
 
     { VLC_CODEC_MPGV, CODEC_ID_MPEG2VIDEO, VIDEO_ES },
+    { VLC_CODEC_MPGV, CODEC_ID_MPEG1VIDEO, VIDEO_ES },
 
     { VLC_CODEC_MP4V, CODEC_ID_MPEG4, VIDEO_ES },
     /* 3ivx delta 3.5 Unsupported

@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: f90dafa48ec6e6b060c99962ede1eafad3b4a58e $
+ * $Id: 196c34ab9d0d5f0b8369c0a0607a4cde3baa60ed $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -189,6 +189,7 @@ vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "marquee", "x", "y", "position", "color", "size", "timeout", "refresh",
+    "opacity",
     NULL
 };
 

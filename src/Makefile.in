@@ -1050,7 +1050,7 @@ libvlc_la_LIBADD = `$(VLC_CONFIG) -libs libvlc` \
 
 libvlc_la_CFLAGS = `$(VLC_CONFIG) --cflags libvlc`
 libvlc_la_LDFLAGS = $(AM_LDFLAGS) `$(VLC_CONFIG) --ldflags libvlc` \
-	-version-info 5:0:0 -export-symbols $(srcdir)/libvlc.sym \
+	-version-info 6:0:1 -export-symbols $(srcdir)/libvlc.sym \
 	$(am__append_6)
 libvlc_la_DEPENDENCIES = libvlc.sym libvlccore.la $(am__append_5)
 EXTRA_libvlccore_la_SOURCES = \

@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- *$Id: ac7e5811cf695f47d40a899c24676c3f5ff1be13 $
+ *$Id: 4728e7de3dfb80f5fce3791673077190a6bf447f $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -85,6 +85,7 @@ vlc_module_end ()
 struct picture_sys_t
 {
     LPDIRECT3DSURFACE9 surface;
+    picture_t          *fallback;
 };
 
 static int  Open(vlc_object_t *);
@@ -181,7 +182,10 @@ static int Open(vlc_object_t *object)
 
     return VLC_SUCCESS;
 error:
-    Close(VLC_OBJECT(vd));
+    Direct3DClose(vd);
+    CommonClean(vd);
+    Direct3DDestroy(vd);
+    free(vd->sys);
     return VLC_EGENERIC;
 }
 
@@ -752,32 +756,10 @@ static int Direct3DLockSurface(picture_t *picture)
     HRESULT hr = IDirect3DSurface9_LockRect(picture->p_sys->surface, &d3drect, NULL, 0);
     if (FAILED(hr)) {
         //msg_Dbg(vd, "%s:%d (hr=0x%0lX)", __FUNCTION__, __LINE__, hr);
-        return VLC_EGENERIC;
+        return CommonUpdatePicture(picture, &picture->p_sys->fallback, NULL, 0);
     }
 
-    /* fill in buffer info in first plane */
-    picture->p->p_pixels = d3drect.pBits;
-    picture->p->i_pitch  = d3drect.Pitch;
-
-    /*  Fill chroma planes for planar YUV */
-    if (picture->format.i_chroma == VLC_CODEC_I420 ||
-        picture->format.i_chroma == VLC_CODEC_J420 ||
-        picture->format.i_chroma == VLC_CODEC_YV12) {
-
-        for (int n = 1; n < picture->i_planes; n++) {
-            const plane_t *o = &picture->p[n-1];
-            plane_t *p = &picture->p[n];
-
-            p->p_pixels = o->p_pixels + o->i_lines * o->i_pitch;
-            p->i_pitch  = d3drect.Pitch / 2;
-        }
-        /* The d3d buffer is always allocated as YV12 */
-        if (vlc_fourcc_AreUVPlanesSwapped(picture->format.i_chroma, VLC_CODEC_YV12)) {
-            uint8_t *p_tmp = picture->p[1].p_pixels;
-            picture->p[1].p_pixels = picture->p[2].p_pixels;
-            picture->p[2].p_pixels = p_tmp;
-        }
-    }
+    CommonUpdatePicture(picture, NULL, d3drect.pBits, d3drect.Pitch);
     return VLC_SUCCESS;
 }
 /**
@@ -848,6 +830,7 @@ static int Direct3DCreatePool(vout_display_t *vd, video_format_t *fmt)
         return VLC_ENOMEM;
     }
     rsc->p_sys->surface = surface;
+    rsc->p_sys->fallback = NULL;
     for (int i = 0; i < PICTURE_PLANE_MAX; i++) {
         rsc->p[i].p_pixels = NULL;
         rsc->p[i].i_pitch = 0;
@@ -886,7 +869,8 @@ static void Direct3DDestroyPool(vout_display_t *vd)
     if (sys->pool) {
         picture_resource_t *rsc = &sys->resource;
         IDirect3DSurface9_Release(rsc->p_sys->surface);
-
+        if (rsc->p_sys->fallback)
+            picture_Release(rsc->p_sys->fallback);
         picture_pool_Delete(sys->pool);
     }
     sys->pool = NULL;

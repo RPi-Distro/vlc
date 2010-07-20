@@ -2,7 +2,7 @@
  * variables.h: variables handling
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 4a0de14f21a11ec05225d8934756519b15fcf37e $
+ * $Id: 258ed05fc15cba182493b0c33d911509c17eaf7b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -711,6 +711,16 @@ static inline mtime_t var_InheritTime( vlc_object_t *obj, const char *name )
     return val.i_time;
 }
 #define var_InheritTime(o, n) var_InheritTime(VLC_OBJECT(o), n)
+
+static inline void *var_InheritAddress( vlc_object_t *obj, const char *name )
+{
+    vlc_value_t val;
+
+    if( var_Inherit( obj, name, VLC_VAR_ADDRESS, &val ) )
+        val.p_address = NULL;
+    return val.p_address;
+}
+#define var_InheritAddress(o, n) var_InheritAddress(VLC_OBJECT(o), n)
 
 #define var_GetInteger(a,b)   var_GetInteger( VLC_OBJECT(a),b)
 #define var_GetBool(a,b)   var_GetBool( VLC_OBJECT(a),b)

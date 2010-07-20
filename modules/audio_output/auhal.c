@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: d3f22a72428d3eaf402dc6071e145e6c76ee6d96 $
+ * $Id: 303b7ed04a88797c114aab5c7111de6a26409841 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -77,7 +77,7 @@
     sfm.mChannelsPerFrame, sfm.mBitsPerChannel
 
 #define FRAMESIZE 2048
-#define BUFSIZE (FRAMESIZE * 8)
+#define BUFSIZE (FRAMESIZE * 8) * 8
 #define AOUT_VAR_SPDIF_FLAG 0xf00000
 
 /*

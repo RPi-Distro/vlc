@@ -2,7 +2,7 @@
  * video.c: video decoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 1ea72aa15663ed5bb6a521c1097afb5e4af9393e $
+ * $Id: 234cd589f0c518c329f9249195f4cfdc51fc1f8a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -300,6 +300,11 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
        (p_sys->p_codec->capabilities & CODEC_CAP_DR1) &&
         /* No idea why ... but this fixes flickering on some TSCC streams */
         p_sys->i_codec_id != CODEC_ID_TSCC &&
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 68, 2 )
+        /* avcodec native vp8 decode doesn't handle EMU_EDGE flag, and I
+           don't have idea howto implement fallback to libvpx decoder */
+        p_sys->i_codec_id != CODEC_ID_VP8 &&
+#endif
         !p_sys->p_context->debug_mv )
     {
         /* Some codecs set pix_fmt only after the 1st frame has been decoded,

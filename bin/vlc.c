@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 5b2259dffddde3a4792d1b7cc0b15596c4d25a77 $
+ * $Id: 51633b2bff13685e4ce1a02a4636988c3541f87a $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -150,11 +150,10 @@ int main( int i_argc, const char *ppsz_argv[] )
     sigdelset (&set, SIGCHLD);
 
     /* Note that FromLocale() can be used before libvlc is initialized */
-    const char *argv[i_argc + 4];
+    const char *argv[i_argc + 3];
     int argc = 0;
 
     argv[argc++] = "--no-ignore-config";
-    argv[argc++] = "--user-agent=\"VLC media player\"";
 #ifdef TOP_BUILDDIR
     argv[argc++] = FromLocale ("--plugin-path="TOP_BUILDDIR"/modules");
 #endif
@@ -183,9 +182,11 @@ int main( int i_argc, const char *ppsz_argv[] )
 
     if (vlc != NULL)
     {
+        libvlc_set_user_agent (vlc, "VLC media player", NULL);
+
         if (libvlc_add_intf (vlc, "signals"))
             pthread_sigmask (SIG_UNBLOCK, &set, NULL);
-#if !defined (HAVE_MAEMO)
+#if !defined (HAVE_MAEMO) && !defined __APPLE__
         libvlc_add_intf (vlc, "globalhotkeys,none");
 #endif
         if (libvlc_add_intf (vlc, NULL) == 0)
@@ -196,7 +197,7 @@ int main( int i_argc, const char *ppsz_argv[] )
         libvlc_release (vlc);
     }
 
-    for (int i = 2; i < argc; i++)
+    for (int i = 1; i < argc; i++)
         LocaleFree (argv[i]);
 
     return 0;

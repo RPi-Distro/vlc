@@ -2,7 +2,7 @@
  * vout_manager.hpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 999990d6a6a34c5bda6f1a5918b9d16a46e2a816 $
+ * $Id: 643af52cd8d9451db696d942f55a1951ccc48027 $
  *
  * Authors: Erwan Tulou < brezhoneg1 at yahoo.fr r>
  *
@@ -28,10 +28,12 @@
 
 #include <vlc_vout.h>
 #include <vlc_vout_window.h>
+#include <vlc_keys.h>
 #include "../utils/position.hpp"
 #include "../commands/cmd_generic.hpp"
 #include "../controls/ctrl_video.hpp"
 #include "../events/evt_key.hpp"
+#include "../events/evt_scroll.hpp"
 
 class VarBool;
 class GenericWindow;
@@ -74,11 +76,22 @@ public:
             var_SetInteger( getIntf()->p_libvlc, "key-pressed",
                              rEvtKey.getModKey() );
     }
+
+    virtual void processEvent( EvtScroll &rEvtScroll )
+    {
+        // scroll events sent to core as hotkeys
+        int i_vlck = 0;
+        i_vlck |= rEvtScroll.getMod();
+        i_vlck |= ( rEvtScroll.getDirection() == EvtScroll::kUp ) ?
+                  KEY_MOUSEWHEELUP : KEY_MOUSEWHEELDOWN;
+
+        var_SetInteger( getIntf()->p_libvlc, "key-pressed", i_vlck );
+    }
 };
 
 
 /// Singleton object handling VLC internal state and playlist
-class VoutManager: public SkinObject
+class VoutManager: public SkinObject, public Observer<VarBool>
 {
 public:
     /// Get the instance of VoutManager
@@ -132,6 +145,9 @@ public:
 
     // test if vout are running
     bool hasVout() { return ( m_SavedWndVec.size() != 0 ) ; }
+
+    /// called when fullscreen variable changed
+    virtual void onUpdate( Subject<VarBool> &rVariable , void* );
 
 protected:
     // Protected because it is a singleton

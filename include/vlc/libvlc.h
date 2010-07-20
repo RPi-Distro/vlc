@@ -2,7 +2,7 @@
  * libvlc.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 5f3b52b14616e057024858eebba05a7ac6eb5729 $
+ * $Id: a24d6eb6d02564e4e16fbb534c82ee2d9a2a2dcd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -67,8 +67,9 @@ extern "C" {
  * You can create one (or more) instance(s) of LibVLC in a given process,
  * with libvlc_new() and destroy them with libvlc_release().
  *
- * \version This documents LibVLC version 1.1.
- * Earlier versions (0.9 and 1.0) are <b>not</b> compatible.
+ * \version Unless otherwise stated, these functions are available
+ * from LibVLC versions numbered 1.1.0 or more.
+ * Earlier versions (0.9.x and 1.0.x) are <b>not</b> compatible.
  * @{
  */
 
@@ -153,6 +154,19 @@ int libvlc_add_intf( libvlc_instance_t *p_instance, const char *name );
  */
 VLC_PUBLIC_API
 void libvlc_wait( libvlc_instance_t *p_instance );
+
+/**
+ * Sets the application name. LibVLC passes this as the user agent string
+ * when a protocol requires it.
+ *
+ * \param p_instance LibVLC instance
+ * \param name human-readable application name, e.g. "FooBar player 1.2.3"
+ * \param http HTTP User Agent, e.g. "FooBar/1.2.3 Python/2.6.0"
+ * \version LibVLC 1.1.1 or later
+ */
+VLC_PUBLIC_API
+void libvlc_set_user_agent( libvlc_instance_t *p_instance,
+                            const char *name, const char *http );
 
 /**
  * Retrieve libvlc version.

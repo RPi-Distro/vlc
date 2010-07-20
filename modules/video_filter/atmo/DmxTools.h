@@ -1,9 +1,9 @@
 /*
-* DmxTools.h: functions to convert , or ; seperatered numbers into an integer array
+* DmxTools.h: functions to convert , or ; separated numbers into an integer array
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: a714bc973ee992a86be9958967ed5e5e83e581bc $
+ * $Id: 0640ca59d8c116d0f8f885e69ee6f736fbbdb3ba $
  */
 
 #ifndef _dmxtools_h_

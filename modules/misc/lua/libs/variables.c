@@ -2,7 +2,7 @@
  * variables.c: Generic lua<->vlc variables interface
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 9c86a28da71ee6968d9dcaba9aaa45bfc53db175 $
+ * $Id: 4373f37995c5856051633ab983d15e9de0ba0164 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -320,7 +320,7 @@ static int vlclua_callback( vlc_object_t *p_this, char const *psz_var,
     {
         /* errormessage */
         const char *psz_err = lua_tostring( L, -1 );
-        msg_Err( p_this, "Error while runing lua interface callback: %s",
+        msg_Err( p_this, "Error while running lua interface callback: %s",
                  psz_err );
         /* empty the stack (should only contain the error message) */
         lua_settop( L, 0 );

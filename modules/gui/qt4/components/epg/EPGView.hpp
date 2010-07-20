@@ -2,7 +2,7 @@
  * EPGView.h : EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 0655ce5b3fd164d4f88ddac5d0f591848ca2f3f0 $
+ * $Id: 6c26be11f202a0409c2a988a95b1e56acd3bf61c $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -41,7 +41,7 @@ public:
 
     void            setScale( double scaleFactor );
 
-    void            setStartTime( const QDateTime& startTime );
+    void            updateStartTime();
     const QDateTime& startTime();
 
     void            addEvent( EPGEvent* event );

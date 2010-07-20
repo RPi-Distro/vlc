@@ -2,7 +2,7 @@
  * standard.c: standard stream output module
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: bf2a0dd16d0fd2aef5d34d5a9034d0cf46368b8f $
+ * $Id: 7210638dbf9da4be7df9ea0944bb8cbc16dda407 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -249,6 +249,8 @@ static int Open( vlc_object_t *p_this )
             { "avi", "avi" },
             { "ogg", "ogg" },
             { "ogm", "ogg" },
+            { "ogv", "ogg" },
+            { "mp3", "raw" },
             { "mp4", "mp4" },
             { "mov", "mov" },
             { "moov","mov" },
@@ -268,10 +270,9 @@ static int Open( vlc_object_t *p_this )
             { "",    "" }
         };
         const char *psz_ext = strrchr( psz_url, '.' ) + 1;
-        int  i;
 
         msg_Dbg( p_this, "extension is %s", psz_ext );
-        for( i = 0; exttomux[i].ext[0]; i++ )
+        for( int i = 0; exttomux[i].ext[0]; i++ )
         {
             if( !strcasecmp( psz_ext, exttomux[i].ext ) )
             {

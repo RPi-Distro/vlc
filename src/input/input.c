@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: 085bd251e22fef73155953ff326194bb20803e2a $
+ * $Id: 8dba6a637a9d481152bfc40408fd03e2a940c058 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1171,7 +1171,7 @@ static void InitPrograms( input_thread_t * p_input )
                  prgm = strtok_r( NULL, ",", &buf ) )
             {
                 vlc_value_t val = { .i_int = atoi( prgm ) };
-                TAB_APPEND( list.i_count, list.p_values, val );
+                INSERT_ELEM( list.p_values, list.i_count, list.i_count, val );
             }
 
             if( list.i_count > 0 )
@@ -1197,7 +1197,7 @@ static void InitPrograms( input_thread_t * p_input )
     else
     {
         demux_Control( p_input->p->input.p_demux, DEMUX_SET_GROUP,
-                       (int) var_GetInteger( p_input, "program" ), NULL );
+                       es_out_GetGroupForced( p_input->p->p_es_out ), NULL );
     }
 }
 

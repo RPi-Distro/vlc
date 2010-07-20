@@ -2,7 +2,7 @@
  * Messages.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 3558aa2581753bf3b909dca782c26f6fa325ec25 $
+ * $Id: a8d1e957cce46a72d27ad3b2f4b892b336e48cb3 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -195,10 +195,9 @@ void MessagesDialog::updateConfig()
     config_PutPsz(p_intf, "verbose-objects", qtu(vbobjectsEdit->text()));
     //vbobjectsEdit->setText("vbEdit changed!");
 
-    char * psz_verbose_objects = strdup(qtu(vbobjectsEdit->text()));
-    msg_EnableObjectPrinting(p_intf, "all");
-    if( psz_verbose_objects )
+    if( !vbobjectsEdit->text().isEmpty() )
     {
+        char * psz_verbose_objects = strdup(qtu(vbobjectsEdit->text()));
         char * psz_object, * iter =  psz_verbose_objects;
         while( (psz_object = strsep( &iter, "," )) )
         {
@@ -210,6 +209,10 @@ void MessagesDialog::updateConfig()
              }
         }
         free( psz_verbose_objects );
+    }
+    else
+    {
+        msg_EnableObjectPrinting( p_intf, "all");
     }
 }
 

@@ -2,7 +2,7 @@
  * display.c: "vout display" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 198cd8f6d82f96cdeb073825106e530acf099570 $
+ * $Id: 99f548a64a35064b03c153cf130eed7fb28ac81f $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -459,15 +459,12 @@ static void VoutDisplayEventMouse(vout_display_t *vd, int event, va_list args)
     case VOUT_DISPLAY_EVENT_MOUSE_MOVED: {
         const int x = (int)va_arg(args, int);
         const int y = (int)va_arg(args, int);
-        if (x != osys->mouse.state.i_x || y != osys->mouse.state.i_y) {
-            //msg_Dbg(vd, "VoutDisplayEvent 'mouse' @%d,%d", x, y);
 
-            m.i_x = x;
-            m.i_y = y;
-            m.b_double_click = false;
-        } else {
-            is_ignored = true;
-        }
+        //msg_Dbg(vd, "VoutDisplayEvent 'mouse' @%d,%d", x, y);
+
+        m.i_x = x;
+        m.i_y = y;
+        m.b_double_click = false;
         break;
     }
     case VOUT_DISPLAY_EVENT_MOUSE_PRESSED:
@@ -633,12 +630,29 @@ static vout_window_t *VoutDisplayNewWindow(vout_display_t *vd, const vout_window
 {
     vout_display_owner_sys_t *osys = vd->owner.sys;
 
+#ifdef ALLOW_DUMMY_VOUT
+    if (!osys->vout->p) {
+        vout_window_cfg_t cfg_override = *cfg;
+
+        if (!var_InheritBool(osys->vout, "embedded-video"))
+            cfg_override.is_standalone = true;
+
+        return vout_window_New(VLC_OBJECT(osys->vout), NULL, &cfg_override);
+    }
+#endif
     return vout_NewDisplayWindow(osys->vout, vd, cfg);
 }
 static void VoutDisplayDelWindow(vout_display_t *vd, vout_window_t *window)
 {
     vout_display_owner_sys_t *osys = vd->owner.sys;
 
+#ifdef ALLOW_DUMMY_VOUT
+    if (!osys->vout->p) {
+        if( window)
+            vout_window_Delete(window);
+        return;
+    }
+#endif
     vout_DeleteDisplayWindow(osys->vout, vd, window);
 }
 

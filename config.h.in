@@ -3,8 +3,11 @@
 /* Define if building universal (internal helper macro) */
 #undef AC_APPLE_UNIVERSAL_BUILD
 
-/* Define to 1 to allow runing VLC as root (uid 0). */
+/* Define to 1 to allow running VLC as root (uid 0). */
 #undef ALLOW_RUN_AS_ROOT
+
+/* Define to 1 if the operating system uses UTF-8 internally */
+#undef ASSUME_UTF8
 
 /* Maximum supported data alignment */
 #undef ATTRIBUTE_ALIGNED_MAX
@@ -671,6 +674,9 @@
 
 /* Define to 1 if you have the <sys/videoio.h> header file. */
 #undef HAVE_SYS_VIDEOIO_H
+
+/* Define to 1 if you have the <taglib/mp4coverart.h> header file. */
+#undef HAVE_TAGLIB_MP4COVERART_H
 
 /* Define to 1 if you have the `tdestroy' function. */
 #undef HAVE_TDESTROY

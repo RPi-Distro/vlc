@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
  * Copyright (C) 2004-2005 M2X
- * $Id: ec80d07f6981c114c3963472e2e83c0fb9ce0e93 $
+ * $Id: 5c60c5897b6d790c847e0b58dd2164fb933641c3 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -363,7 +363,7 @@ struct osd_button_t
  *
  * The images that make up an OSD menu can be created in such away that
  * they contain all buttons in the same picture, with the selected one
- * highlighted or being a concatenation of all the seperate images. The
+ * highlighted or being a concatenation of all the separate images. The
  * first case is the default.
  *
  * To change the default style the keyword 'style' should be set to 'concat'.

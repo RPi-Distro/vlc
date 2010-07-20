@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 148a7b1102e96a800c4cb91390ddd50a1495713b $
+ * $Id: 2769853a4feb4378e98f8a6014758a313a587f04 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -229,7 +229,11 @@ void FileOpenPanel::updateMRL()
                 fileList << ui.fileListWidg->item( i )->text();
         }
     else
+    {
         fileList = dialogBox->selectedFiles();
+        for( int i = 0; i < fileList.count(); i++ )
+            fileList[i] = toNativeSeparators( fileList[i] );
+    }
 
     /* Options */
     if( ui.subCheckBox->isChecked() &&  !ui.subInput->text().isEmpty() ) {
@@ -851,7 +855,7 @@ void CaptureOpenPanel::initialize()
     jackPropLayout->addWidget( jackPace, 2, 1 );
 
     /* Auto Connect */
-    jackConnect = new QCheckBox( qtr( "Auto connnection" ));
+    jackConnect = new QCheckBox( qtr( "Auto connection" ));
     jackPropLayout->addWidget( jackConnect, 2, 2 );
 
     /* Jack CONNECTs */

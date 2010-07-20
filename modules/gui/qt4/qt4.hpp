@@ -2,7 +2,7 @@
  * qt4.hpp : QT4 interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 47407d5685096c8b1b2bfe7860e7ea0100aa27ad $
+ * $Id: e46dbaf1ed22904c971ca5fa96e827d46e0a538b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -122,7 +122,7 @@ static inline QString QVLCUserDir( vlc_userdir_t type )
 {
     char *dir = config_GetUserDir( type );
     if( !dir )
-        abort();
+        return "";
     QString res = qfu( dir );
     free( dir );
     return res;
