@@ -7,7 +7,7 @@
  *          ##
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 67da03a531e061f6aff6346fa18c2a2824c8eaaf $
+ * $Id: 2d5af1b5e5d9170de856d65c8fdc2e5d21a72769 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  * Rewritten: David Flynn <davidf at rd.bbc.co.uk>
@@ -103,13 +103,13 @@ static const char *const enc_chromafmt_list_text[] =
 #define ENC_CODINGMODE "coding-mode"
 #define ENC_CODINGMODE_TEXT N_("Picture coding mode")
 #define ENC_CODINGMODE_LONGTEXT N_("Field coding is where interlaced fields are coded" \
-                                   " seperately as opposed to a pseudo-progressive frame")
+                                   " separately as opposed to a pseudo-progressive frame")
 static const char *const enc_codingmode_list[] =
   { "auto", "progressive", "field" };
 static const char *const enc_codingmode_list_text[] =
   { N_("auto - let encoder decide based upon input (Best)"),
     N_("force coding frame as single picture"),
-    N_("force coding frame as seperate interlaced fields"),
+    N_("force coding frame as separate interlaced fields"),
   };
 
 #define ENC_MCBLK_WIDTH "mc-blk-width"

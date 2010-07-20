@@ -2,7 +2,7 @@
  * playlist.c :  Playlist import module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: de14c4a4411232511b2e7b9bef451de3177ca2dd $
+ * $Id: 8446fe44007b122ecda0b5a6ad0968dfa6d4dace $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -188,14 +188,16 @@ char *FindPrefix( demux_t *p_demux )
     char *psz_file;
     char *psz_prefix;
     char *psz_path;
-    if( p_demux->psz_access )
+
+    if( p_demux->psz_access && *p_demux->psz_access
+     && strcasecmp( p_demux->psz_access, "file" ) )
     {
         if( asprintf( &psz_path,"%s://%s", p_demux->psz_access, p_demux->psz_path ) == -1 )
             return NULL;
     }
     else
     {
-        psz_path = strdup( p_demux->psz_path );
+        psz_path = make_URI( p_demux->psz_path );
         if( psz_path == NULL )
             return NULL;
     }

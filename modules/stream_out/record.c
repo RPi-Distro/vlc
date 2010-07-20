@@ -2,7 +2,7 @@
  * record.c: record stream output module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 2eb542015c0a9e69ed26770f02a4caf9c7d5a24c $
+ * $Id: 4f8255f73f92f34597739803eb37d92858026921 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -374,7 +374,7 @@ static void OutputStart( sout_stream_t *p_stream )
     const char *psz_muxer = NULL;
     const char *psz_extension = NULL;
 
-    /* Look for prefered muxer
+    /* Look for preferred muxer
      * TODO we could insert transcode in a few cases like
      * s16l <-> s16b
      */

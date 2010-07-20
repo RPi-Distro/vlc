@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 4b2643376e9882a32d7b673745c162c790678b30 $
+ * $Id: 64fa4aed54d1130f1facb2d47c4118ea7c6f56d3 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -34,6 +34,7 @@
 #include "x11_dragdrop.hpp"
 #include "x11_factory.hpp"
 
+#include <assert.h>
 
 X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
                       X11Display &rDisplay, bool dragDrop, bool playOnDrop,
@@ -185,6 +186,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
 
     // initialize EWMH pid
     pid_t pid = getpid();
+    assert(  NET_WM_PID != None );
     XChangeProperty( XDISPLAY, m_wnd, NET_WM_PID, XA_CARDINAL, 32,
                      PropModeReplace, (unsigned char *)&pid, 1 );
 

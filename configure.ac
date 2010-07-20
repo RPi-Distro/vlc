@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2010 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.0)
+AC_INIT(vlc, 1.1.1)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
-VERSION_REVISION="0"
+VERSION_REVISION="1"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -268,6 +268,8 @@ case "${host_os}" in
         enable_asademux="yes"
         echo "  Assuming --enable-asademux"
 
+        enable_non_utf8="no"
+        echo "  Assuming --disable-non-utf8"
         enable_skins2="no"
         echo "  Assuming --disable-skins2"
         enable_xcb="no"
@@ -926,6 +928,17 @@ fi
 AM_CONDITIONAL(HAVE_MINIZIP, [ test "${have_minizip}" = "yes" ])
 
 
+dnl Manual switch for UTF-8
+AC_ARG_ENABLE(non-utf8,
+  [  --enable-non-utf8       Legacy non-UTF-8 systems support (default enabled)], [
+  enable_non_utf8="yes"
+])
+AS_IF([test "${enable_non_utf8}" != "no"], [
+  AC_DEFINE([ASSUME_UTF8], [1],
+            [Define to 1 if the operating system uses UTF-8 internally])
+])
+
+
 dnl Check for dbus
 AC_ARG_ENABLE(dbus,
   [  --enable-dbus           Linux D-BUS message bus system (default enabled)])
@@ -1560,13 +1573,13 @@ AS_IF([test "x${enable_debug}" = "xno"], [
 ])
 
 dnl
-dnl Allow runing as root (useful for people runing on embedded platforms)
+dnl Allow running as root (useful for people running on embedded platforms)
 dnl
 AC_ARG_ENABLE(run-as-root,
-[  --enable-run-as-root    allow runing VLC as root (default disabled)])
+[  --enable-run-as-root    allow running VLC as root (default disabled)])
 AS_IF([test "${enable_run_as_root}" = "yes"],[
     AC_DEFINE(ALLOW_RUN_AS_ROOT, 1,
-              [Define to 1 to allow runing VLC as root (uid 0).])
+              [Define to 1 to allow running VLC as root (uid 0).])
 ])
 
 dnl
@@ -1632,7 +1645,7 @@ then
   fi
   AC_ARG_VAR([LUAC], [LUA byte compiler])
   AC_PATH_PROGS(LUAC,[${LUAC} luac], [false])
-  AS_IF([test "${ac_cv_path_LUAC}" = "false"], [
+  AS_IF([test "${LUAC}" = "false"], [
     AC_MSG_ERROR([Could not find the LUA byte compiler.])
   ])
 fi
@@ -1713,7 +1726,11 @@ AC_ARG_ENABLE(taglib,
     PKG_CHECK_MODULES(TAGLIB, taglib >= 1.5,
       [ VLC_ADD_PLUGIN([taglib])
         VLC_ADD_LIBS([taglib],[$TAGLIB_LIBS -lz])
-       VLC_ADD_CXXFLAGS([taglib],[$TAGLIB_CFLAGS]) ],
+        VLC_ADD_CXXFLAGS([taglib],[$TAGLIB_CFLAGS])
+        AC_LANG_PUSH(C++)
+        AC_CHECK_HEADERS(taglib/mp4coverart.h)
+        AC_LANG_POP(C++)
+      ],
       [AC_MSG_WARN(TagLib library not found)])
   ])
 
@@ -2460,40 +2477,17 @@ dnl
 dnl  modplug demux plugin
 dnl
 AC_ARG_ENABLE(mod,
-  [  --enable-mod            Mod demux support (default enabled)])
-if test "${enable_mod}" != "no"
-then
-  AC_ARG_WITH(mod-tree,
-  [  --with-mod-tree=PATH    mod tree for static linking])
-  if test -n "${with_mod_tree}"
-  then
-    AC_MSG_CHECKING(for libmodplug.a in ${with_mod_tree})
-    real_mod_tree="`cd ${with_mod_tree} 2>/dev/null && pwd`"
-    if test -z "${real_mod_tree}"
-    then
-      dnl  The given directory can't be found
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([cannot cd to ${with_mod_tree}])
-    fi
-    if test -f "${real_mod_tree}/src/.libs/libmodplug.a"
-    then
-      dnl  Use a custom mod
-      AC_MSG_RESULT(${real_mod_tree}/src/.libs/libmodplug.a)
-      VLC_ADD_PLUGIN([mod])
-      VLC_ADD_LIBS([mod],[${real_mod_tree}/src/.libs/libmodplug.a -lstdc++])
-      VLC_ADD_CXXFLAGS([mod],[-I${real_mod_tree}/include])
-    else
-      dnl  The given mod wasn't built
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([cannot find ${real_mod_tree}/src/.libs/libmodplug.a, make sure you compiled mod in ${with_mod_tree}])
-    fi
-  else
-    PKG_CHECK_MODULES(LIBMODPLUG, libmodplug >= 0.8,
-        [ VLC_ADD_PLUGIN([mod])
+  [  --enable-mod            Mod demux support (default auto)])
+if test "${enable_mod}" != "no" ; then
+    PKG_CHECK_MODULES(LIBMODPLUG, [libmodplug >= 0.8.4 libmodplug != 0.8.8], [
+          VLC_ADD_PLUGIN([mod])
           VLC_ADD_CXXFLAGS([mod],[$LIBMODPLUG_CFLAGS])
           VLC_ADD_LIBS([mod],[$LIBMODPLUG_LIBS])
-        ],[AC_MSG_WARN([libmodplug not found!])])
-  fi
+    ],[
+       AS_IF([test x"${enable_mod}" = "xyes"],
+         [AC_MSG_ERROR(libmodplug not found or a broken version (0.8.8.0) was found!)],
+         [AC_MSG_WARN(libmodplug not found or a broken version (0.8.8.0) was found!)])
+    ])
 fi
 
 dnl
@@ -2648,7 +2642,7 @@ dnl
 dnl   libid3tag support (FIXME!!! doesn't work with new input)
 dnl
 AC_ARG_ENABLE( id3tag,
-[  --disable-id3tag        id3tag metadata reader plugin (default disabled)])
+[  --enable-id3tag         id3tag metadata reader plugin (default disabled)])
 AS_IF([test "${enable_id3tag}" = "yes"], [
   AC_CHECK_HEADERS(id3tag.h, [
       AS_IF([test "${have_zlib}" = "yes"],[
@@ -3328,7 +3322,7 @@ AS_IF([test "${enable_xcb}" != "no"], [
   dnl libxcb
   PKG_CHECK_MODULES(XCB, [xcb])
   PKG_CHECK_MODULES(XCB_SHM, [xcb-shm])
-  VLC_ADD_PLUGIN([screensaver xcb_x11 xcb_screen xcb_apps])
+  VLC_ADD_PLUGIN([screensaver xcb_x11 xcb_window xcb_screen xcb_apps])
 
   AS_IF([test "${enable_xvideo}" != "no"], [
     PKG_CHECK_MODULES(XCB_XV, [xcb-xv >= 1.1.90.1], [
@@ -3357,14 +3351,16 @@ AS_IF([test "${enable_xcb}" != "no"], [
     ], [
       have_xcb_keysyms="no"
       need_xid_provider="yes"
+      AC_MSG_WARN([libxcb-keysyms not found. Hotkeys will not be supported.])
     ])
   ])
 
   AS_IF([test "${have_xcb_keysyms}" = "yes"], [
     PKG_CHECK_MODULES(XPROTO, [xproto])
-    VLC_ADD_PLUGIN([xcb_window globalhotkeys])
+    VLC_ADD_PLUGIN([globalhotkeys])
     VLC_ADD_CFLAGS([globalhotkeys], [${XCB_KEYSYMS_CFLAGS} ${XCB_CFLAGS}])
     VLC_ADD_LIBS([globalhotkeys], [${XCB_KEYSYMS_LIBS} ${XCB_LIBS}])
+    VLC_ADD_CFLAGS([xcb_window], [-DHAVE_XCB_KEYSYMS])
   ])
   VLC_ADD_PLUGIN([xdg_screensaver])
 ])
@@ -3415,6 +3411,9 @@ then
       # SDL on Darwin is heavily patched and can only run SDL_image
       if test "${SYS}" != "darwin"; then
         VLC_ADD_PLUGIN([vout_sdl aout_sdl])
+      fi
+      if test "${SYS}" != "mingw32"; then
+        VLC_ADD_LIBS([vout_sdl],[${X_LIBS} ${X_PRE_LIBS} -lX11])
       fi
       VLC_ADD_CFLAGS([vout_sdl aout_sdl],[${SDL_CFLAGS}])
       VLC_ADD_LIBS([vout_sdl aout_sdl],[${SDL_LIBS}])
@@ -3719,6 +3718,9 @@ then
   then
     VLC_ADD_PLUGIN([aa])
     VLC_ADD_LIBS([aa],[-laa])
+    if test "${SYS}" != "mingw32"; then
+      VLC_ADD_LIBS([aa],[${X_LIBS} ${X_PRE_LIBS} -lX11])
+    fi
   fi
 fi
 

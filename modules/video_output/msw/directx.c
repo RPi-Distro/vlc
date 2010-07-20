@@ -2,7 +2,7 @@
  * directx.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 6b0a6df36ea956af38423b19d024ae360d920d24 $
+ * $Id: 4ff4e5fe2a6606a597cb7ca6709e4b7562eec7f4 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -127,6 +127,7 @@ vlc_module_end()
 struct picture_sys_t {
     LPDIRECTDRAWSURFACE2 surface;
     LPDIRECTDRAWSURFACE2 front_surface;
+    picture_t            *fallback;
 };
 
 /*****************************************************************************
@@ -193,6 +194,7 @@ static int Open(vlc_object_t *object)
     sys->use_wallpaper = var_CreateGetBool(vd, "video-wallpaper");
     /* FIXME */
     sys->use_overlay = false;//var_CreateGetBool(vd, "overlay"); /* FIXME */
+    sys->restore_overlay = false;
     var_Create(vd, "directx-device", VLC_VAR_STRING | VLC_VAR_DOINHERIT);
 
     /* Initialisation */
@@ -235,7 +237,11 @@ static int Open(vlc_object_t *object)
     return VLC_SUCCESS;
 
 error:
-    Close(VLC_OBJECT(vd));
+    DirectXClose(vd);
+    CommonClean(vd);
+    if (sys->hddraw_dll)
+        FreeLibrary(sys->hddraw_dll);
+    free(sys);
     return VLC_EGENERIC;
 }
 
@@ -280,6 +286,8 @@ static void Display(vout_display_t *vd, picture_t *picture)
                 DirectXUpdateOverlay(vd, NULL);
         }
     }
+    if (sys->restore_overlay)
+        DirectXUpdateOverlay(vd, NULL);
 
     /* */
     DirectXUnlock(picture);
@@ -374,6 +382,10 @@ static void Manage(vout_display_t *vd)
 
     if (ch_wallpaper)
         WallpaperChange(vd, wallpaper_requested);
+
+    /* */
+    if (sys->restore_overlay)
+        DirectXUpdateOverlay(vd, NULL);
 }
 
 /* */
@@ -1034,6 +1046,7 @@ static int DirectXCreatePictureResourceYuvOverlay(vout_display_t *vd,
     picture_resource_t *rsc = &sys->resource;
     rsc->p_sys->front_surface = front_surface;
     rsc->p_sys->surface       = surface;
+    rsc->p_sys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 static int DirectXCreatePictureResourceYuv(vout_display_t *vd,
@@ -1089,6 +1102,7 @@ static int DirectXCreatePictureResourceYuv(vout_display_t *vd,
     picture_resource_t *rsc = &sys->resource;
     rsc->p_sys->front_surface = surface;
     rsc->p_sys->surface       = surface;
+    rsc->p_sys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 static int DirectXCreatePictureResourceRgb(vout_display_t *vd,
@@ -1148,6 +1162,7 @@ static int DirectXCreatePictureResourceRgb(vout_display_t *vd,
     picture_resource_t *rsc = &sys->resource;
     rsc->p_sys->front_surface = surface;
     rsc->p_sys->surface       = surface;
+    rsc->p_sys->fallback      = NULL;
     return VLC_SUCCESS;
 }
 
@@ -1201,7 +1216,11 @@ static void DirectXDestroyPictureResource(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
 
+    if (sys->resource.p_sys->front_surface != sys->resource.p_sys->surface)
+        DirectXDestroySurface(sys->resource.p_sys->surface);
     DirectXDestroySurface(sys->resource.p_sys->front_surface);
+    if (sys->resource.p_sys->fallback)
+        picture_Release(sys->resource.p_sys->fallback);
 }
 
 static int DirectXLock(picture_t *picture)
@@ -1209,33 +1228,9 @@ static int DirectXLock(picture_t *picture)
     DDSURFACEDESC ddsd;
     if (DirectXLockSurface(picture->p_sys->front_surface,
                            picture->p_sys->surface, &ddsd))
-        return VLC_EGENERIC;
+        return CommonUpdatePicture(picture, &picture->p_sys->fallback, NULL, 0);
 
-    /* fill in buffer info in first plane */
-    picture->p->p_pixels = ddsd.lpSurface;
-    picture->p->i_pitch  = ddsd.lPitch;
-    picture->p->i_lines  = picture->format.i_height;
-
-    /*  Fill chroma planes for planar YUV */
-    if (picture->format.i_chroma == VLC_CODEC_I420 ||
-        picture->format.i_chroma == VLC_CODEC_J420 ||
-        picture->format.i_chroma == VLC_CODEC_YV12) {
-
-        for (int n = 1; n < picture->i_planes; n++) {
-            const plane_t *o = &picture->p[n-1];
-            plane_t *p = &picture->p[n];
-
-            p->p_pixels = o->p_pixels + o->i_lines * o->i_pitch;
-            p->i_pitch  = ddsd.lPitch / 2;
-            p->i_lines  = picture->format.i_height / 2;
-        }
-        /* The dx buffer is always allocated as YV12 */
-        if (vlc_fourcc_AreUVPlanesSwapped(picture->format.i_chroma, VLC_CODEC_YV12)) {
-            uint8_t *p_tmp = picture->p[1].p_pixels;
-            picture->p[1].p_pixels = picture->p[2].p_pixels;
-            picture->p[2].p_pixels = p_tmp;
-        }
-    }
+    CommonUpdatePicture(picture, NULL, ddsd.lpSurface, ddsd.lPitch);
     return VLC_SUCCESS;
 }
 static void DirectXUnlock(picture_t *picture)
@@ -1350,6 +1345,8 @@ static int DirectXUpdateOverlay(vout_display_t *vd, LPDIRECTDRAWSURFACE2 surface
     HRESULT hr = IDirectDrawSurface2_UpdateOverlay(surface,
                                                    &src, sys->display, &dst,
                                                    DDOVER_SHOW | DDOVER_KEYDESTOVERRIDE, &ddofx);
+    sys->restore_overlay = hr != DD_OK;
+
     if (hr != DD_OK) {
         msg_Warn(vd, "DirectDrawUpdateOverlay cannot move/resize overlay");
         return VLC_EGENERIC;

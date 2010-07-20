@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 13dbbfa86a924d4c4f736f2700162957174b6372 $
+ * $Id: 797b9edad339a69a50d46b30701427774d2010d8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -497,22 +497,27 @@ static void openDirectory( intf_thread_t *p_intf, bool pl, bool go )
 {
     QString dir = QFileDialog::getExistingDirectory( NULL, qtr( I_OP_DIR_WINTITLE ), p_intf->p_sys->filepath );
 
-    if (!dir.isEmpty() )
-    {
-        QString mrl = (dir.endsWith( "VIDEO_TS", Qt::CaseInsensitive ) ?
-                       "dvd://" : "directory://")
-                    + toNativeSeparators( dir );
-        input_item_t *p_input = input_item_New( THEPL, qtu( mrl ), NULL );
+    if( dir.isEmpty() )
+        return;
 
-        /* FIXME: playlist_AddInput() can fail */
-        playlist_AddInput( THEPL, p_input,
-                       go ? ( PLAYLIST_APPEND | PLAYLIST_GO ) : PLAYLIST_APPEND,
+    char *uri = make_URI( qtu( dir ) );
+    if( unlikely(uri == NULL) )
+        return;
+
+    RecentsMRL::getInstance( p_intf )->addRecent( qfu(uri) );
+
+    input_item_t *p_input = input_item_New( THEPL, uri, NULL );
+    free( uri );
+    if( unlikely( p_input == NULL ) )
+        return;
+
+    /* FIXME: playlist_AddInput() can fail */
+    playlist_AddInput( THEPL, p_input,
+                      go ? ( PLAYLIST_APPEND | PLAYLIST_GO ) : PLAYLIST_APPEND,
                        PLAYLIST_END, pl, pl_Unlocked );
-        RecentsMRL::getInstance( p_intf )->addRecent( mrl );
-        if( !go )
-            input_Read( THEPL, p_input );
-        vlc_gc_decref( p_input );
-    }
+    if( !go )
+        input_Read( THEPL, p_input );
+    vlc_gc_decref( p_input );
 }
 
 void DialogsProvider::PLOpenDir()

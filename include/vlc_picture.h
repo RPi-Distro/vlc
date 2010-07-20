@@ -2,7 +2,7 @@
  * vlc_picture.h: picture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 the VideoLAN team
- * $Id: 6ff0f5346257cacae58487b963d3997d58551782 $
+ * $Id: 52c23b280b2fd758b16d093f9ec1f04d0241f0db $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -136,7 +136,7 @@ VLC_EXPORT( picture_t *, picture_New, ( vlc_fourcc_t i_chroma, int i_width, int 
 /**
  * This function will create a new picture using the given format.
  *
- * When possible, it is prefered to use this function over picture_New
+ * When possible, it is preferred to use this function over picture_New
  * as more information about the format is kept.
  */
 VLC_EXPORT( picture_t *, picture_NewFromFormat, ( const video_format_t *p_fmt ) );

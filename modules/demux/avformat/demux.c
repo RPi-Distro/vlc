@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 3b5454b6ec42e5a8ae23f34d51c9eef0969160c2 $
+ * $Id: a3028a50c6ea6a7e2de55203d0914c3ef8080f3b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -272,6 +272,10 @@ int OpenDemux( vlc_object_t *p_this )
                 else
                     fmt.i_codec = fmt.video.i_chroma;
             }
+            /* We need this for the h264 packetizer */
+            else if( cc->codec_id == CODEC_ID_H264 && ( !strcmp( p_sys->fmt->name, "flv" ) ||
+                !strcmp( p_sys->fmt->name, "matroska" ) || !strcmp( p_sys->fmt->name, "mp4" ) ) )
+                fmt.i_original_fourcc = VLC_FOURCC( 'a', 'v', 'c', '1' );
 
             fmt.video.i_width = cc->width;
             fmt.video.i_height = cc->height;
@@ -281,6 +285,8 @@ int OpenDemux( vlc_object_t *p_this )
                 *fmt.video.p_palette = *(video_palette_t *)cc->palctrl;
             }
             psz_type = "video";
+            fmt.video.i_frame_rate = cc->time_base.den;
+            fmt.video.i_frame_rate_base = cc->time_base.num;
             break;
 
         case CODEC_TYPE_SUBTITLE:
@@ -735,13 +741,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_GET_META:
         {
             vlc_meta_t *p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
-
-            if( !p_sys->ic->title[0] || !p_sys->ic->author[0] ||
-                !p_sys->ic->copyright[0] || !p_sys->ic->comment[0] ||
-                /*!p_sys->ic->album[0] ||*/ !p_sys->ic->genre[0] )
-            {
-                return VLC_EGENERIC;
-            }
 
             if( p_sys->ic->title[0] )
                 vlc_meta_SetTitle( p_meta, p_sys->ic->title );

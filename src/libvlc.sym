@@ -13,12 +13,14 @@ libvlc_audio_output_list_release
 libvlc_audio_output_set
 libvlc_audio_output_set_device_type
 libvlc_audio_get_channel
+libvlc_audio_get_delay
 libvlc_audio_get_mute
 libvlc_audio_get_track
 libvlc_audio_get_track_count
 libvlc_audio_get_track_description
 libvlc_audio_get_volume
 libvlc_audio_set_channel
+libvlc_audio_set_delay
 libvlc_audio_set_mute
 libvlc_audio_set_track
 libvlc_audio_set_volume
@@ -129,6 +131,7 @@ libvlc_media_player_is_playing
 libvlc_media_player_new
 libvlc_media_player_new_from_media
 libvlc_media_player_next_chapter
+libvlc_media_player_set_pause
 libvlc_media_player_pause
 libvlc_media_player_play
 libvlc_media_player_previous_chapter
@@ -159,9 +162,12 @@ libvlc_release
 libvlc_retain
 libvlc_set_fullscreen
 libvlc_set_log_verbosity
+libvlc_set_user_agent
 libvlc_toggle_fullscreen
 libvlc_toggle_teletext
 libvlc_track_description_release
+libvlc_video_get_adjust_float
+libvlc_video_get_adjust_int
 libvlc_video_get_aspect_ratio
 libvlc_video_get_chapter_description
 libvlc_video_get_crop_geometry
@@ -181,6 +187,8 @@ libvlc_video_get_track
 libvlc_video_get_track_count
 libvlc_video_get_track_description
 libvlc_video_get_width
+libvlc_video_set_adjust_float
+libvlc_video_set_adjust_int
 libvlc_video_set_aspect_ratio
 libvlc_video_set_crop_geometry
 libvlc_video_set_deinterlace
@@ -196,6 +204,8 @@ libvlc_video_set_subtitle_file
 libvlc_video_set_teletext
 libvlc_video_set_track
 libvlc_video_take_snapshot
+libvlc_video_set_callbacks
+libvlc_video_set_format
 libvlc_vlm_add_broadcast
 libvlc_vlm_add_vod
 libvlc_vlm_add_input

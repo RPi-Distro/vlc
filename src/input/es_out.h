@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 89ece06ae337c42c1ab4c04576d493352e0fc5e1 $
+ * $Id: d0b8111929044767c4a52ec1cda91b0d65995221 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -80,6 +80,9 @@ enum es_out_query_private_e
 
     /* Set jitter */
     ES_OUT_SET_JITTER,                              /* arg1=mtime_t i_pts_delay arg2= mtime_t i_pts_jitter, arg2=int i_cr_average res=cannot fail */
+
+    /* Get forced group */
+    ES_OUT_GET_GROUP_FORCED,                        /* arg1=int * res=cannot fail */
 };
 
 static inline void es_out_SetMode( es_out_t *p_out, int i_mode )
@@ -152,6 +155,13 @@ static inline int es_out_GetEsObjects( es_out_t *p_out, int i_id,
                                        vlc_object_t **pp_decoder, vout_thread_t **pp_vout, aout_instance_t **pp_aout )
 {
     return es_out_Control( p_out, ES_OUT_GET_ES_OBJECTS_BY_ID, i_id, pp_decoder, pp_vout, pp_aout );
+}
+static inline int es_out_GetGroupForced( es_out_t *p_out )
+{
+    int i_group;
+    int i_ret = es_out_Control( p_out, ES_OUT_GET_GROUP_FORCED, &i_group );
+    assert( !i_ret );
+    return i_group;
 }
 
 es_out_t  *input_EsOutNew( input_thread_t *, int i_rate );

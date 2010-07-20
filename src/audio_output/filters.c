@@ -2,7 +2,7 @@
  * filters.c : audio output filters management
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 8a7bca54dbe9e5b2b6ed36584e76556327cfa348 $
+ * $Id: 5c144dcd1e7024ad68939ef9f0b2052f127e5493 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -186,7 +186,9 @@ int aout_FiltersCreatePipeline( aout_instance_t * p_aout,
     if ( !i_nb_conversions )
     {
         /* There was only one conversion to do, and we already failed. */
-        msg_Err( p_aout, "couldn't find a filter for the conversion" );
+        msg_Err( p_aout, "couldn't find a filter for the conversion "
+                "%4.4s -> %4.4s",
+                &p_input_format->i_format, &p_output_format->i_format );
         return -1;
     }
 
