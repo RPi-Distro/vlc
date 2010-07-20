@@ -102,6 +102,7 @@ confflags += \
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
 # libva -> needs a vaapi enabled avcodec
+# modplug -> #588465
 # osso_screensaver -> not targetting maemo
 # portaudio -> not needed
 # projectm -> broken
@@ -113,6 +114,7 @@ confflags += \
 	--disable-gnomevfs \
 	--disable-goom \
 	--disable-libva \
+        --disable-mod \
 	--disable-osso_screensaver \
 	--disable-portaudio \
 	--disable-projectm \
