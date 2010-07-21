@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 1f2f751006a093063c9086077f05d5e7b5408f5d $
+ * $Id: dc8a2aed73cccfdb081536804c4c84944b72d035 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -57,9 +57,6 @@
 #include <commctrl.h>
 #include <shlwapi.h>
 #include <d3d9.h>
-
-/* FIXME */
-#define CoTaskMemFree(x)
 
 /* */
 #define DXVA2_E_NOT_INITIALIZED     MAKE_HRESULT(1, 4, 4096)
@@ -131,6 +128,10 @@ static const GUID DXVA2_ModeVC1_C = {
 };
 static const GUID DXVA2_ModeVC1_D = {
     0x1b81beA3, 0xa0c7,0x11d3, {0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5}
+};
+
+static const GUID DXVA_NoEncrypt = {
+    0x1b81bed0, 0xa0c7,0x11d3, {0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5}
 };
 
 /* */
@@ -226,6 +227,8 @@ typedef struct
     /* */
     vlc_object_t *log;
     int          codec_id;
+    int          width;
+    int          height;
 
     /* DLL */
 	HINSTANCE             hd3d9_dll;
@@ -302,8 +305,7 @@ static int Setup(vlc_va_t *external, void **hw, vlc_fourcc_t *chroma,
 {
     vlc_va_dxva2_t *va = vlc_va_dxva2_Get(external);
 
-    if (va->surface_width  == width &&
-        va->surface_height == height)
+    if (va->width == width && va->height == height && va->decoder)
         goto ok;
 
     /* */
@@ -374,7 +376,7 @@ static int Extract(vlc_va_t *external, picture_t *picture, AVFrame *ff)
             lock.Pitch / 2,
         };
         CopyFromYv12(picture, plane, pitch,
-                     va->surface_width, va->surface_height,
+                     va->width, va->height,
                      &va->surface_cache);
     } else {
         assert(va->render == MAKEFOURCC('N','V','1','2'));
@@ -387,7 +389,7 @@ static int Extract(vlc_va_t *external, picture_t *picture, AVFrame *ff)
             lock.Pitch,
         };
         CopyFromNv12(picture, plane, pitch,
-                     va->surface_width, va->surface_height,
+                     va->width, va->height,
                      &va->surface_cache);
     }
 
@@ -825,7 +827,12 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
     msg_Dbg(va->log, "DxCreateVideoDecoder id %d %dx%d",
             codec_id, fmt->i_width, fmt->i_height);
 
+    va->width  = fmt->i_width;
+    va->height = fmt->i_height;
+
     /* Allocates all surfaces needed for the decoder */
+    va->surface_width  = (fmt->i_width  + 15) & ~15;
+    va->surface_height = (fmt->i_height + 15) & ~15;
     switch (codec_id) {
     case CODEC_ID_H264:
         va->surface_count = 16 + 1;
@@ -836,8 +843,8 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
     }
     LPDIRECT3DSURFACE9 surface_list[VA_DXVA2_MAX_SURFACE_COUNT];
     if (FAILED(IDirectXVideoDecoderService_CreateSurface(va->vs,
-                                                         fmt->i_width,
-                                                         fmt->i_height,
+                                                         va->surface_width,
+                                                         va->surface_height,
                                                          va->surface_count - 1,
                                                          va->render,
                                                          D3DPOOL_DEFAULT,
@@ -855,8 +862,6 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
         surface->refcount = 0;
         surface->order = 0;
     }
-    va->surface_width  = fmt->i_width;
-    va->surface_height = fmt->i_height;
     msg_Dbg(va->log, "IDirectXVideoAccelerationService_CreateSurface succeed with %d surfaces (%dx%d)",
             va->surface_count, fmt->i_width, fmt->i_height);
 
@@ -902,7 +907,7 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
     msg_Dbg(va->log, "we got %d decoder configurations", cfg_count);
 
     /* Select the best decoder configuration */
-    bool has_cfg = false;
+    int cfg_score = 0;
     for (unsigned i = 0; i < cfg_count; i++) {
         const DXVA2_ConfigPictureDecode *cfg = &cfg_list[i];
 
@@ -911,14 +916,23 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
                 i, cfg->ConfigBitstreamRaw);
 
         /* */
-        if ((!has_cfg && cfg->ConfigBitstreamRaw == 1) ||
-            (codec_id == CODEC_ID_H264 && cfg->ConfigBitstreamRaw == 2)) {
+        int score;
+        if (cfg->ConfigBitstreamRaw == 1)
+            score = 1;
+        else if (codec_id == CODEC_ID_H264 && cfg->ConfigBitstreamRaw == 2)
+            score = 2;
+        else
+            continue;
+        if (IsEqualGUID(&cfg->guidConfigBitstreamEncryption, &DXVA_NoEncrypt))
+            score += 16;
+
+        if (cfg_score < score) {
             va->cfg = *cfg;
-            has_cfg = true;
+            cfg_score = score;
         }
     }
     CoTaskMemFree(cfg_list);
-    if (!has_cfg) {
+    if (cfg_score <= 0) {
         msg_Err(va->log, "Failed to find a supported decoder configuration");
         return VLC_EGENERIC;
     }

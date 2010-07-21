@@ -2,7 +2,7 @@
  * meta.c: Get meta/artwork using lua scripts
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 9c8e943ee1d12010225fa6964c84bde075dd9eb6 $
+ * $Id: 01f262097b3ae60888eef8f6185c64c26337ccfb $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -111,14 +111,14 @@ static int run( vlc_object_t *p_this, const char * psz_filename,
 
     if( !lua_isfunction( L, lua_gettop( L ) ) )
     {
-        msg_Warn( p_this, "Error while runing script %s, "
+        msg_Warn( p_this, "Error while running script %s, "
                  "function %s() not found", psz_filename, luafunction );
         goto error;
     }
 
     if( lua_pcall( L, 0, 1, 0 ) )
     {
-        msg_Warn( p_this, "Error while runing script %s, "
+        msg_Warn( p_this, "Error while running script %s, "
                  "function %s(): %s", psz_filename, luafunction,
                  lua_tostring( L, lua_gettop( L ) ) );
         goto error;

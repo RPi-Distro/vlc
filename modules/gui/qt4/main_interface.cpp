@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 5c36be7ff17c96cec7a14c059670a3ef43b6fb15 $
+ * $Id: 91f014307b3a1e23fb98117f21380e821d28477b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -286,12 +286,7 @@ MainInterface::~MainInterface()
     settings->setValue( "pl-dock-status", b_plDocked );
     /* Save playlist state */
     if( playlistWidget )
-    {
-        settings->setValue( "playlist-visible",
-                            isPlDocked() ?
-                            playlistVisible :
-                            playlistWidget->isVisible() /* FIXME */ );
-    }
+        settings->setValue( "playlist-visible", playlistVisible );
 
     settings->setValue( "adv-controls",
                         getControlsVisibilityStatus() & CONTROLS_ADVANCED );

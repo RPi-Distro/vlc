@@ -1,9 +1,9 @@
 /*
- * DmxTools.cpp: functions to convert , or ; seperatered numbers into an integer array
+ * DmxTools.cpp: functions to convert , or ; separated numbers into an integer array
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 9854ceb3be3d33170e62b4790ac09ac4bf543d65 $
+ * $Id: fe4c0662e8a3c290860dd163a95483136547bb41 $
  */
 
 #include <stdlib.h>

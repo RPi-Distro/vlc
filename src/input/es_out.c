@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: afc8c47fecd1937eee46a122e01834b332ac76f8 $
+ * $Id: a45f02172e97196055261c27c3e65f58f8da141c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -130,7 +130,8 @@ struct es_out_sys_t
     int         i_video;
     int         i_sub;
 
-    /* es to select */
+    /* es/group to select */
+    int         i_group_id;
     int         i_audio_last, i_audio_id;
     int         i_sub_last, i_sub_id;
     int         i_default_sub_id;   /* As specified in container; if applicable */
@@ -259,6 +260,8 @@ es_out_t *input_EsOutNew( input_thread_t *p_input, int i_rate )
     p_sys->i_sub   = 0;
 
     /* */
+    p_sys->i_group_id = var_GetInteger( p_input, "program" );
+
     p_sys->i_audio_last = var_GetInteger( p_input, "audio-track" );
 
     p_sys->i_sub_last = var_GetInteger( p_input, "sub-track" );
@@ -978,6 +981,11 @@ static void EsOutESVarUpdate( es_out_t *out, es_out_id_t *es,
     EsOutESVarUpdateGeneric( out, es->i_id, &es->fmt, es->psz_language, b_delete );
 }
 
+static bool EsOutIsProgramVisible( es_out_t *out, int i_group )
+{
+    return out->p_sys->i_group_id == 0 || out->p_sys->i_group_id == i_group;
+}
+
 /* EsOutProgramSelect:
  *  Select a program and update the object variable
  */
@@ -1076,9 +1084,10 @@ static es_out_pgrm_t *EsOutProgramAdd( es_out_t *out, int i_group )
     TAB_APPEND( p_sys->i_pgrm, p_sys->pgrm, p_pgrm );
 
     /* Update "program" variable */
-    input_SendEventProgramAdd( p_input, i_group, NULL );
+    if( EsOutIsProgramVisible( out, i_group ) )
+        input_SendEventProgramAdd( p_input, i_group, NULL );
 
-    if( i_group == var_GetInteger( p_input, "program" ) )
+    if( i_group == p_sys->i_group_id || ( !p_sys->p_pgrm && p_sys->i_group_id == 0 ) )
         EsOutProgramSelect( out, p_pgrm );
 
     return p_pgrm;
@@ -1184,6 +1193,8 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, const vlc_meta_t *p_me
         return;
     }
     /* Find program */
+    if( !EsOutIsProgramVisible( out, i_group ) )
+        return;
     p_pgrm = EsOutProgramFind( out, i_group );
     if( !p_pgrm )
         return;
@@ -1275,6 +1286,8 @@ static void EsOutProgramEpg( es_out_t *out, int i_group, const vlc_epg_t *p_epg 
     char *psz_cat;
 
     /* Find program */
+    if( !EsOutIsProgramVisible( out, i_group ) )
+        return;
     p_pgrm = EsOutProgramFind( out, i_group );
     if( !p_pgrm )
         return;
@@ -2144,6 +2157,13 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
             return VLC_SUCCESS;
         }
 
+        case ES_OUT_GET_GROUP_FORCED:
+        {
+            int *pi_group = va_arg( args, int * );
+            *pi_group = p_sys->i_group_id;
+            return VLC_SUCCESS;
+        }
+
         case ES_OUT_SET_MODE:
         {
             const int i_mode = va_arg( args, int );
@@ -2351,7 +2371,7 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
         }
 
         case ES_OUT_RESET_PCR:
-            msg_Err( p_sys->p_input, "ES_OUT_RESET_PCR called" );
+            msg_Dbg( p_sys->p_input, "ES_OUT_RESET_PCR called" );
             EsOutChangePosition( out );
             return VLC_SUCCESS;
 

@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 37eb01194ee03617e5904c6bac39d2e399df8c0a $
+ * $Id: 35e101026a268c970bfacc89292387aeb43aa8c5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -821,7 +821,7 @@ static void PutSPS( decoder_t *p_dec, block_t *p_frag )
         /* chroma_format_idc */
         const int i_chroma_format_idc = bs_read_ue( &s );
         if( i_chroma_format_idc == 3 )
-            bs_skip( &s, 1 ); /* seperate_colour_plane_flag */
+            bs_skip( &s, 1 ); /* separate_colour_plane_flag */
         /* bit_depth_luma_minus8 */
         bs_read_ue( &s );
         /* bit_depth_chroma_minus8 */

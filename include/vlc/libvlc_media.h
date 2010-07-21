@@ -2,7 +2,7 @@
  * libvlc.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 52de810d2b0fffd2dfa54bef089fe6474b76ddd4 $
+ * $Id: 7efe4d2d6282a8590267372caf8a886276703dd8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -401,7 +401,7 @@ libvlc_media_parse(libvlc_media_t *media);
  * Parse a media.
  *
  * This fetches (local) meta data and tracks information.
- * The method is the asynchronous of libvlc_media_parse_async().
+ * The method is the asynchronous of libvlc_media_parse().
  *
  * To track when this is over you can listen to libvlc_MediaParsedChanged
  * event. However if the media was already parsed you will not receive this

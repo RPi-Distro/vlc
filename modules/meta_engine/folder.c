@@ -2,7 +2,7 @@
  * folder.c
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 3fb65ca8ad5f4ae52b2c02884c7eec6455d90608 $
+ * $Id: 81ed3712d5c17cdd7dab91778c7be944ea7b5e62 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -125,6 +125,7 @@ static int FindMeta( vlc_object_t *p_this )
             }
         }
     }
+    free( psz_path );
 
     return b_have_art ? VLC_SUCCESS : VLC_EGENERIC;
 }

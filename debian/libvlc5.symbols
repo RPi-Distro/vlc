@@ -1,6 +1,7 @@
 libvlc.so.5 libvlc5 #MINVER#
  libvlc_add_intf@Base 1.1.0
  libvlc_audio_get_channel@Base 1.1.0
+ libvlc_audio_get_delay@Base 1.1.1
  libvlc_audio_get_mute@Base 1.1.0
  libvlc_audio_get_track@Base 1.1.0
  libvlc_audio_get_track_count@Base 1.1.0
@@ -16,6 +17,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_audio_output_set@Base 1.1.0
  libvlc_audio_output_set_device_type@Base 1.1.0
  libvlc_audio_set_channel@Base 1.1.0
+ libvlc_audio_set_delay@Base 1.1.1
  libvlc_audio_set_mute@Base 1.1.0
  libvlc_audio_set_track@Base 1.1.0
  libvlc_audio_set_volume@Base 1.1.0
@@ -138,6 +140,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_player_set_hwnd@Base 1.1.0
  libvlc_media_player_set_media@Base 1.1.0
  libvlc_media_player_set_nsobject@Base 1.1.0
+ libvlc_media_player_set_pause@Base 1.1.1
  libvlc_media_player_set_position@Base 1.1.0
  libvlc_media_player_set_rate@Base 1.1.0
  libvlc_media_player_set_time@Base 1.1.0
@@ -159,9 +162,12 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_retain@Base 1.1.0
  libvlc_set_fullscreen@Base 1.1.0
  libvlc_set_log_verbosity@Base 1.1.0
+ libvlc_set_user_agent@Base 1.1.1
  libvlc_toggle_fullscreen@Base 1.1.0
  libvlc_toggle_teletext@Base 1.1.0
  libvlc_track_description_release@Base 1.1.0
+ libvlc_video_get_adjust_float@Base 1.1.1
+ libvlc_video_get_adjust_int@Base 1.1.1
  libvlc_video_get_aspect_ratio@Base 1.1.0
  libvlc_video_get_chapter_description@Base 1.1.0
  libvlc_video_get_crop_geometry@Base 1.1.0
@@ -181,9 +187,13 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_video_get_track_count@Base 1.1.0
  libvlc_video_get_track_description@Base 1.1.0
  libvlc_video_get_width@Base 1.1.0
+ libvlc_video_set_adjust_float@Base 1.1.1
+ libvlc_video_set_adjust_int@Base 1.1.1
  libvlc_video_set_aspect_ratio@Base 1.1.0
+ libvlc_video_set_callbacks@Base 1.1.1
  libvlc_video_set_crop_geometry@Base 1.1.0
  libvlc_video_set_deinterlace@Base 1.1.0
+ libvlc_video_set_format@Base 1.1.1
  libvlc_video_set_key_input@Base 1.1.0
  libvlc_video_set_logo_int@Base 1.1.0
  libvlc_video_set_logo_string@Base 1.1.0

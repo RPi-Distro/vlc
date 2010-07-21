@@ -102,6 +102,7 @@ confflags += \
 # dxva2 -> Windows only
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
+# modplug -> http://bugs.debian.org/588465
 # osso_screensaver -> not targetting maemo
 # portaudio -> not needed
 # projectm -> broken
@@ -112,6 +113,7 @@ confflags += \
 	--disable-dxva2 \
 	--disable-gnomevfs \
 	--disable-goom \
+	--disable-mod \
 	--disable-osso_screensaver \
 	--disable-portaudio \
 	--disable-projectm \
@@ -136,8 +138,8 @@ endif
 
 ifeq ($(DEB_HOST_ARCH_OS),kfreebsd)
 confflags += \
-       --disable-alsa \
-       $(NULL)
+	--disable-alsa \
+	$(NULL)
 endif
 
 # svgalib is only for x86 and x86-64 on Linux

@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 1cbfefaf94f5525a9986be56cc75aad4fcb21128 $
+ * $Id: 59d5cc539fb48cc8dbd3b139608aeea7fe2033f9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -1327,6 +1327,8 @@ int var_Inherit( vlc_object_t *p_this, const char *psz_name, int i_type,
             free( psz_orig );
             break;
         }
+        case VLC_VAR_ADDRESS:
+            return VLC_ENOOBJ;
         default:
             msg_Warn( p_this, "Could not inherit value for var %s "
                               "from config. Invalid Type", psz_name );

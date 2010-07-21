@@ -2,7 +2,7 @@
  * libmpeg2.c: mpeg2 video decoder module making use of libmpeg2.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 1189ee9dbcfd121e97cfdd30772abb77ad9e9faa $
+ * $Id: 62d359c74263cee99122edbb35a4cd3820c49691 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -213,7 +213,7 @@ static int OpenDecoder( vlc_object_t *p_this )
         i_accel |= MPEG2_ACCEL_PPC_ALTIVEC;
     }
 
-#elif defined(__arm__)
+#elif defined(__arm__) && defined(MPEG2_ACCEL_ARM)
     i_accel |= MPEG2_ACCEL_ARM;
 
 # ifdef MPEG2_ACCEL_ARM_NEON

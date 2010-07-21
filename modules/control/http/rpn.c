@@ -2,7 +2,7 @@
  * rpn.c : RPN evaluator for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 7d316229f72d89295aee619410da2f3ceb440484 $
+ * $Id: 320a4ffa99bff51e831aef6cee79aed73d00d87c $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -164,7 +164,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         /* 1. Integer function */
         if( !strcmp( s, "!" ) )
         {
-            SSPushN( st, ~SSPopN( st, vars ) );
+            SSPushN( st, !SSPopN( st, vars ) );
         }
         else if( !strcmp( s, "^" ) )
         {

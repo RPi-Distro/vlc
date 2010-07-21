@@ -2,7 +2,7 @@
  * aa.c: "vout display" module using aalib
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: b04468ea5c36b8bf3a1017de32a47f6cb153ece3 $
+ * $Id: 753f33481a5686897c21eb306a0ce8e388d0644c $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -37,6 +37,13 @@
 #include <assert.h>
 #include <aalib.h>
 
+#ifndef WIN32
+# ifdef X_DISPLAY_MISSING
+#  error Xlib required due to XInitThreads
+# endif
+# include <vlc_xlib.h>
+#endif
+
 /* TODO
  * - what about RGB palette ?
  */
@@ -61,7 +68,7 @@ vlc_module_end()
  *****************************************************************************/
 static picture_pool_t *Pool   (vout_display_t *, unsigned);
 static void            Prepare(vout_display_t *, picture_t *);
-static void            Display(vout_display_t *, picture_t *);
+static void            PictureDisplay(vout_display_t *, picture_t *);
 static int             Control(vout_display_t *, int, va_list);
 
 /* */
@@ -84,6 +91,11 @@ static int Open(vlc_object_t *object)
 {
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
+
+#ifndef WIN32
+    if (!vlc_xlib_init (object))
+        return VLC_EGENERIC;
+#endif
 
     /* Allocate structure */
     vd->sys = sys = calloc(1, sizeof(*sys));
@@ -119,7 +131,7 @@ static int Open(vlc_object_t *object)
 
     vd->pool    = Pool;
     vd->prepare = Prepare;
-    vd->display = Display;
+    vd->display = PictureDisplay;
     vd->control = Control;
     vd->manage  = Manage;
 
@@ -207,7 +219,7 @@ static void Prepare(vout_display_t *vd, picture_t *picture)
 /**
  * Display a picture
  */
-static void Display(vout_display_t *vd, picture_t *picture)
+static void PictureDisplay(vout_display_t *vd, picture_t *picture)
 {
     vout_display_sys_t *sys = vd->sys;
 

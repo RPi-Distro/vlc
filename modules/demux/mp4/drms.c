@@ -2,7 +2,7 @@
  * drms.c: DRMS
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 35d605729eeaca0ec7287d29e39a86084a448cbf $
+ * $Id: 9a29f7c1e982f7d7fd3c43356fa6229a48fc9ae8 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>
@@ -1751,6 +1751,7 @@ static int GetiPodID( int64_t *p_ipod_id )
             CFDictionarySetValue( match_dic,
                                   CFSTR(kIOPropertyMatchKey),
                                   smatch_dic );
+            CFRelease( smatch_dic );
 
             if( IOServiceGetMatchingServices( port, match_dic,
                                               &iterator ) == KERN_SUCCESS )
@@ -1782,8 +1783,15 @@ static int GetiPodID( int64_t *p_ipod_id )
 
                 IOObjectRelease( iterator );
             }
-            CFRelease( match_dic );
         }
+        else
+        {
+            if( match_dic )
+                CFRelease( match_dic );
+            if( smatch_dic )
+                CFRelease( smatch_dic );
+        }
+
 
         mach_port_deallocate( mach_task_self(), port );
     }

@@ -2,7 +2,7 @@
 * atmo.cpp : "Atmo Light" video filter
 *****************************************************************************
 * Copyright (C) 2000-2006 the VideoLAN team
-* $Id: 5bcf0ce03997d2155fc9539e9fbe7ba6f66ac00b $
+* $Id: 02a77d0622b7efe5747cd92aa4ac05ac15bb88bc $
 *
 * Authors: André Weber (WeberAndre@gmx.de)
 *
@@ -133,7 +133,7 @@ strings for settings menus and hints
  "in live action.")
 
 #define DRIVER_TEXT            N_("Device type")
-#define DRIVER_LONGTEXT        N_("Choose your prefered hardware from " \
+#define DRIVER_LONGTEXT        N_("Choose your preferred hardware from " \
                                   "the list, or choose AtmoWin Software " \
                                   "to delegate processing to the external " \
                                   "process - with more options")
@@ -164,7 +164,7 @@ static const char *const ppsz_device_type_descriptions[] = {
                                   "emulated with that DMX device")
 #define DMX_CHBASE_TEXT        N_("DMX address for each channel")
 #define DMX_CHBASE_LONGTEXT    N_("Define here the DMX base address for each " \
-                                  "channel use , or ; to seperate the values")
+                                  "channel use , or ; to separate the values")
 
 #define MOMO_CHANNELS_TEXT      N_("Count of channels")
 #define MOMO_CHANNELS_LONGTEXT  N_("Depending on your MoMoLight hardware " \
@@ -329,7 +329,7 @@ static const char *const ppsz_zone_assignment_descriptions[] = {
 #define CHANNELS_ASSIGN_TEXT        N_("Channel / Zone Assignment")
 #define CHANNELS_ASSIGN_LONGTEXT N_("for devices with more than five " \
                   "channels / zones write down here for each channel " \
-                  "the zone number to show and seperate the values with " \
+                  "the zone number to show and separate the values with " \
                   ", or ; and use -1 to not use some channels. For the " \
                   "classic AtmoLight the sequence 4,3,1,0,2 would set the " \
                   "default channel/zone mapping. " \
@@ -346,7 +346,7 @@ static const char *const ppsz_zone_assignment_descriptions[] = {
                                      "pixels, containing a grayscale gradient")
 
 #define GRADIENT_PATH_TEXT      N_("Gradient bitmap searchpath")
-#define GRADIENT_PATH_LONGTEXT  N_("Now prefered option to assign gradient "\
+#define GRADIENT_PATH_LONGTEXT  N_("Now preferred option to assign gradient "\
     "bitmaps, put them as zone_0.bmp, zone_1.bmp etc. into one folder and "\
     "set the foldername here")
 

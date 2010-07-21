@@ -649,8 +649,8 @@ EXTRA_DIST = $(skins2_default_vlt_FILES) $(DIST_rsrc) $(DIST_skins2) \
 	lua/intf/http.lua lua/intf/luac.lua \
 	lua/intf/modules/common.lua lua/intf/modules/host.lua \
 	lua/intf/rc.lua lua/intf/telnet.lua lua/meta/art/README.txt \
-	lua/meta/art/01_musicbrainz.lua lua/meta/art/02_frenchtv.lua \
-	lua/meta/art/03_lastfm.lua lua/meta/art/10_googleimage.lua \
+	lua/meta/art/04_musicbrainz.lua lua/meta/art/02_frenchtv.lua \
+	lua/meta/art/03_lastfm.lua lua/meta/art/01_googleimage.lua \
 	lua/meta/fetcher/README.txt lua/meta/fetcher/tvrage.lua \
 	lua/meta/reader/README.txt lua/meta/reader/filename.lua \
 	lua/modules/sandbox.lua lua/modules/simplexml.lua \
@@ -805,10 +805,10 @@ luac_verbose_0 = @echo "  LUAC   $@";
 @BUILD_LUA_TRUE@	lua/intf/modules/common.luac \
 @BUILD_LUA_TRUE@	lua/intf/modules/host.luac lua/intf/rc.luac \
 @BUILD_LUA_TRUE@	lua/intf/telnet.luac \
-@BUILD_LUA_TRUE@	lua/meta/art/01_musicbrainz.luac \
+@BUILD_LUA_TRUE@	lua/meta/art/04_musicbrainz.luac \
 @BUILD_LUA_TRUE@	lua/meta/art/02_frenchtv.luac \
 @BUILD_LUA_TRUE@	lua/meta/art/03_lastfm.luac \
-@BUILD_LUA_TRUE@	lua/meta/art/10_googleimage.luac \
+@BUILD_LUA_TRUE@	lua/meta/art/01_googleimage.luac \
 @BUILD_LUA_TRUE@	lua/meta/fetcher/tvrage.luac \
 @BUILD_LUA_TRUE@	lua/meta/reader/filename.luac \
 @BUILD_LUA_TRUE@	lua/modules/sandbox.luac \

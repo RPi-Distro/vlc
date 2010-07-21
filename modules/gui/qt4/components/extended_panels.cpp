@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 77e96b5d09e8a700939991c084820c72d5606396 $
+ * $Id: 9c0d19ad729e34621d616d37e9c5e776fa01a099 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -1205,8 +1205,7 @@ Spatializer::~Spatializer()
 void Spatializer::enable()
 {
     bool en = enableCheck->isChecked();
-    aout_EnableFilter( VLC_OBJECT( p_intf ), "spatializer",
-            en ? true : false );
+    aout_EnableFilter( THEPL, "spatializer", en );
     enable( en );
 }
 

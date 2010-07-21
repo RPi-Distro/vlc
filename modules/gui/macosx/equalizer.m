@@ -2,7 +2,7 @@
  * equalizer.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 7d16a50d818d057f29ce9562927f9620c5eb1eca $
+ * $Id: 1809b1f7ee0d29e3d0ad40b6e895927ccf97cbae $
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *          Felix Paul Kühne <fkuehne -at- videolan -dot- org>
@@ -113,7 +113,7 @@ static void ChangeFiltersString( intf_thread_t *p_intf,
 static bool GetFiltersStatus( intf_thread_t *p_intf,
                                  char *psz_name )
 {
-    char *psz_parser, *psz_string;
+    char *psz_parser, *psz_string = NULL;
     vlc_object_t *p_object = VLC_OBJECT(getAout());
     if( p_object == NULL )
         p_object = vlc_object_hold(pl_Get( p_intf ));

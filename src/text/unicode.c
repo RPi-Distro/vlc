@@ -42,11 +42,6 @@
 #endif
 #include <errno.h>
 
-#if defined (__APPLE__) || defined (HAVE_MAEMO)
-/* Define this if the OS always use UTF-8 internally */
-# define ASSUME_UTF8 1
-#endif
-
 #if defined (ASSUME_UTF8)
 /* Cool */
 #elif defined (WIN32) || defined (UNDER_CE)
@@ -57,38 +52,14 @@
 # error No UTF8 charset conversion implemented on this platform!
 #endif
 
-#if defined (USE_ICONV)
-# include <langinfo.h>
-static char charset[sizeof ("CSISO11SWEDISHFORNAMES")] = "";
-
-static void find_charset_once (void)
-{
-    strlcpy (charset, nl_langinfo (CODESET), sizeof (charset));
-    if (!strcasecmp (charset, "ASCII")
-     || !strcasecmp (charset, "ANSI_X3.4-1968"))
-        strcpy (charset, "UTF-8"); /* superset... */
-}
-
-static int find_charset (void)
-{
-    static pthread_once_t once = PTHREAD_ONCE_INIT;
-    pthread_once (&once, find_charset_once);
-    return !strcasecmp (charset, "UTF-8");
-}
-#endif
-
-
 static char *locale_fast (const char *string, bool from)
 {
     if( string == NULL )
         return NULL;
 
 #if defined (USE_ICONV)
-    if (find_charset ())
-        return (char *)string;
-
-    vlc_iconv_t hd = vlc_iconv_open (from ? "UTF-8" : charset,
-                                     from ? charset : "UTF-8");
+    vlc_iconv_t hd = vlc_iconv_open (from ? "UTF-8" : "",
+                                     from ? "" : "UTF-8");
     if (hd == (vlc_iconv_t)(-1))
         return NULL; /* Uho! */
 
@@ -144,8 +115,6 @@ static inline char *locale_dup (const char *string, bool from)
     assert( string );
 
 #if defined (USE_ICONV)
-    if (find_charset ())
-        return strdup (string);
     return locale_fast (string, from);
 #elif defined (USE_MB2MB)
     return locale_fast (string, from);
@@ -162,8 +131,7 @@ static inline char *locale_dup (const char *string, bool from)
 void LocaleFree (const char *str)
 {
 #if defined (USE_ICONV)
-    if (!find_charset ())
-        free ((char *)str);
+    free ((char *)str);
 #elif defined (USE_MB2MB)
     free ((char *)str);
 #else

@@ -2,7 +2,7 @@
  * alsa.c : alsa plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: dc48b917de801f4b3b6d149521710c7d89f356b8 $
+ * $Id: 3d1b613a6960121ce23ed2fe0dca1521ae4bcec7 $
  *
  * Authors: Henri Fallon <henri@videolan.org> - Original Author
  *          Jeffrey Baker <jwbaker@acm.org> - Port to ALSA 1.0 API
@@ -867,6 +867,7 @@ static void ALSAFill( aout_instance_t * p_aout )
     if( p_buffer == NULL )
         goto error;
 
+    block_cleanup_push( p_buffer );
     for (;;)
     {
         int n = snd_pcm_poll_descriptors_count(p_pcm);
@@ -912,7 +913,7 @@ static void ALSAFill( aout_instance_t * p_aout )
         msg_Err( p_aout, "cannot write: %s", snd_strerror( i_snd_rc ) );
 
     vlc_restorecancel(canc);
-    block_Release( p_buffer );
+    vlc_cleanup_run();
     return;
 
 error:

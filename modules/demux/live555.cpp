@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 2b2e4a67a1741448c6b5a1a2460f26f2a63e3048 $
+ * $Id: 69d9d9587bebdff2ed271ee6df5a87be0d393c3d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -913,6 +913,7 @@ static int SessionsSetup( demux_t *p_demux )
                 if( !strcmp( sub->codecName(), "MPV" ) )
                 {
                     tk->fmt.i_codec = VLC_CODEC_MPGV;
+                    tk->fmt.b_packetized = false;
                 }
                 else if( !strcmp( sub->codecName(), "H263" ) ||
                          !strcmp( sub->codecName(), "H263-1998" ) ||

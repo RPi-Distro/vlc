@@ -2,7 +2,7 @@
  * libvlc.c: libvlc instances creation and deletion, interfaces handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: b11f40fc1ef69ddb86bcd93c275bc0f8468864d6 $
+ * $Id: dd4412c5a3df59e40224853c2fd387bb34d5bd9d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -802,6 +802,10 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
     var_Create( p_libvlc, "snapshot-file", VLC_VAR_STRING );
     var_Create( p_libvlc, "record-file", VLC_VAR_STRING );
 
+    /* some default internal settings */
+    var_Create( p_libvlc, "user-agent", VLC_VAR_STRING );
+    var_SetString( p_libvlc, "user-agent", "(LibVLC "VERSION")" );
+
     /* Initialize playlist and get commandline files */
     p_playlist = playlist_Create( VLC_OBJECT(p_libvlc) );
     if( !p_playlist )
@@ -935,7 +939,7 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
         if( psz_codecs )
         {
             char *psz_morecodecs;
-            if( asprintf(&psz_morecodecs, "%s,dmo,quicktime", psz_codecs) != -1 )
+            if( asprintf(&psz_morecodecs, "%s,dmo", psz_codecs) != -1 )
             {
                 var_SetString( p_libvlc, "codec", psz_morecodecs);
                 free( psz_morecodecs );
@@ -943,10 +947,11 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
             free( psz_codecs );
         }
         else
-            var_SetString( p_libvlc, "codec", "dmo,quicktime");
+            var_SetString( p_libvlc, "codec", "dmo");
     }
 #endif
 
+#ifdef __APPLE__
     var_Create( p_libvlc, "drawable-view-top", VLC_VAR_INTEGER );
     var_Create( p_libvlc, "drawable-view-left", VLC_VAR_INTEGER );
     var_Create( p_libvlc, "drawable-view-bottom", VLC_VAR_INTEGER );
@@ -955,6 +960,7 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
     var_Create( p_libvlc, "drawable-clip-left", VLC_VAR_INTEGER );
     var_Create( p_libvlc, "drawable-clip-bottom", VLC_VAR_INTEGER );
     var_Create( p_libvlc, "drawable-clip-right", VLC_VAR_INTEGER );
+#endif
 #ifdef WIN32
     var_Create( p_libvlc, "drawable-hwnd", VLC_VAR_ADDRESS );
 #endif
