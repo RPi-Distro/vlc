@@ -1,11 +1,14 @@
-vlc (1.1.0-5~1.gbp235afa) UNRELEASED; urgency=low
+vlc (1.1.1-1) unstable; urgency=low
 
-  ** SNAPSHOT build @235afa34014ff06ea20a90b15d57836cf2a34663 **
-
+  * New upstream release
+    + Remove patches merged upstream
+    + Add new symbols in libvlc5
   * Explicit the split of vlc-plugin-zvbi in debian/changelog (Closes:
     #588468)
+  * Disable modplug as libmodplug in sid is buggy (see #588465)
+  * Add comment about merging in README.source
 
- -- Christophe Mutricy <xtophe@videolan.org>  Thu, 15 Jul 2010 23:52:19 +0100
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 22 Jul 2010 00:36:00 +0200
 
 vlc (1.1.0-4) unstable; urgency=low
 
