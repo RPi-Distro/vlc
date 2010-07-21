@@ -1,7 +1,7 @@
 libvlc.so.5 libvlc5 #MINVER#
  libvlc_add_intf@Base 1.1.0
  libvlc_audio_get_channel@Base 1.1.0
- libvlc_audio_get_delay@Base 1.1.
+ libvlc_audio_get_delay@Base 1.1.1
  libvlc_audio_get_mute@Base 1.1.0
  libvlc_audio_get_track@Base 1.1.0
  libvlc_audio_get_track_count@Base 1.1.0
