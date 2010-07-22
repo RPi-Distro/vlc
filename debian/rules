@@ -226,12 +226,14 @@ install: build
 
 
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
-	# Check that we did not install a plugin linked with libX11 in vlc-nox
+	# Check that we did not install a plugin linked with libX11 or 
+	# libxcb in vlc-nox
 	BORKED=no; \
 	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \
-	  if objdump -x $$file | egrep -q '^ +NEEDED +libX11\.so'; then \
+	  if objdump -x $$file | egrep -q -e '^ +NEEDED +libX11\.so' \
+	                                  -e '^ +NEEDED +libxcb\.so'; then \
 	    BORKED=yes; \
-	    echo $$file depends on libX11; \
+	    echo $$file depends on libX11 or libxcb; \
 	  fi; \
 	done; \
 	if test "$$BORKED" = yes; then exit 1; fi
