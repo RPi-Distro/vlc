@@ -1,7 +1,7 @@
 vlc (1.1.1-1+exp1) experimental; urgency=low
 
   * Depends on xulrunner-dev >= 1.9.2
-  * Activate VA-API (Closes: #587792)
+  * Activate VA-API (Closes: #587792, LP: #539406)
 
  -- Christophe Mutricy <xtophe@videolan.org>  Thu, 22 Jul 2010 01:31:04 +0200
 
