@@ -1,11 +1,10 @@
-vlc (1.1.1-1+exp1~3.gbp3949bb) UNRELEASED; urgency=low
-
-  ** SNAPSHOT build @3949bb65d022ae61e0069a42029405f942833bf2 **
+vlc (1.1.1-1+exp1) unstable; urgency=low
 
   * Depends on xulrunner-dev >= 1.9.2
   * Activate VA-API (Closes: #587792)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Sun, 18 Jul 2010 19:46:07 +0200
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 22 Jul 2010 01:31:04 +0200
+
 vlc (1.1.1-1) unstable; urgency=low
 
   * New upstream release
