@@ -1,4 +1,4 @@
-vlc (1.1.1-1+exp1) unstable; urgency=low
+vlc (1.1.1-1+exp1) experimental; urgency=low
 
   * Depends on xulrunner-dev >= 1.9.2
   * Activate VA-API (Closes: #587792)
