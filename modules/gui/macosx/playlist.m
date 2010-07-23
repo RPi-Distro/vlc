@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: db1b8e08f2eebe2105bf03b1b1474d525208124e $
+ * $Id: 1c19f7439a3c73324c0aa4c71c70c3619e0e536a $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -1161,7 +1161,7 @@
     }
 
     /* Recent documents menu */
-    o_true_file = [NSURL fileURLWithPath: o_uri];
+    o_true_file = [NSURL URLWithString: o_uri];
     if( o_true_file != nil && (BOOL)config_GetInt( p_playlist, "macosx-recentitems" ) == YES )
     {
         [[NSDocumentController sharedDocumentController]

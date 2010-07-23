@@ -2,7 +2,7 @@
  * sdl.c: SDL video output display method
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: fc372bfc1ad7a99502012af8caa87ce248a3dffb $
+ * $Id: beb01eff60081b4b1e8f6872a132fa30ee21359b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Pierre Baillet <oct@zoy.org>
@@ -41,6 +41,13 @@
 
 #include <SDL.h>
 
+#ifndef WIN32
+# ifdef X_DISPLAY_MISSING
+#  error Xlib required due to XInitThreads
+# endif
+# include <vlc_xlib.h>
+#endif
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -73,7 +80,7 @@ vlc_module_end()
  * Local prototypes
  *****************************************************************************/
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
-static void           Display(vout_display_t *, picture_t *);
+static void           PictureDisplay(vout_display_t *, picture_t *);
 static int            Control(vout_display_t *, int, va_list);
 static void           Manage(vout_display_t *);
 
@@ -110,6 +117,11 @@ static int Open(vlc_object_t *object)
 {
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
+
+#ifndef WIN32
+    if (!vlc_xlib_init (object))
+        return VLC_EGENERIC;
+#endif
 
     /* XXX: check for conflicts with the SDL audio output */
     vlc_mutex_lock(&sdl_lock);
@@ -327,7 +339,7 @@ static int Open(vlc_object_t *object)
 
     vd->pool    = Pool;
     vd->prepare = NULL;
-    vd->display = Display;
+    vd->display = PictureDisplay;
     vd->control = Control;
     vd->manage  = Manage;
 
@@ -431,7 +443,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
 /**
  * Display a picture
  */
-static void Display(vout_display_t *vd, picture_t *p_pic)
+static void PictureDisplay(vout_display_t *vd, picture_t *p_pic)
 {
     vout_display_sys_t *sys = vd->sys;
 

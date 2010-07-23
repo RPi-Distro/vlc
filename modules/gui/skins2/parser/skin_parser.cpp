@@ -2,7 +2,7 @@
  * skin_parser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 8cae5c512f6cdb27cd15cc81786e942f67de57f7 $
+ * $Id: 1b967136195c33ed86a460ae7a300f81a3d4125c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -458,8 +458,8 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
                 attr["lefttop"], attr["rightbottom"],
                 convertBoolean( attr["xkeepratio"] ),
                 convertBoolean( attr["ykeepratio"] ), attr["sequence"],
-                atoi( attr["nbImages"] ), atof( attr["minAngle"] ) * M_PI /180,
-                atof( attr["maxAngle"] ) * M_PI / 180, attr["value"],
+                atoi( attr["nbimages"] ), atof( attr["minangle"] ) * M_PI /180,
+                atof( attr["maxangle"] ) * M_PI / 180, attr["value"],
                 attr["tooltiptext"], attr["help"], m_curLayer, m_curWindowId,
                 m_curLayoutId, m_panelStack.back() );
         m_curLayer++;

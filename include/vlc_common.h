@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: c138d891f0e8af160fae3fa6ab3ebdc3ae9fc582 $
+ * $Id: 01a5acb2ecc669fc1f09b6f5976c331432cb2491 $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -856,10 +856,13 @@ VLC_EXPORT( void *, vlc_memset, ( void *, int, size_t ) );
  *****************************************************************************/
 VLC_EXPORT( char *, vlc_gettext, ( const char *msgid ) LIBVLC_FORMAT_ARG(1) );
 
+#define vlc_pgettext( ctx, id ) \
+        vlc_pgettext_aux( ctx "\004" id, id )
+
 LIBVLC_FORMAT_ARG(2)
-static inline const char *vlc_pgettext( const char *ctx, const char *id )
+static inline const char *vlc_pgettext_aux( const char *ctx, const char *id )
 {
-    const char *tr = vlc_gettext( id );
+    const char *tr = vlc_gettext( ctx );
     return (tr == ctx) ? id : tr;
 }
 

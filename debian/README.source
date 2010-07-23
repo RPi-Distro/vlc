@@ -13,3 +13,11 @@ Permanent patches
 Temporary patches
 4??-*.diff: Bugs fix most likely taken from upstream Git
 CVE-*-*.diff: Security fix
+
+
+This package uses Git-Buildpackage as a VCS to manage the packaging.
+You might experience troubles when merging the upstream branch in the sid or experimental branches.
+Try merging with -s recursive -X theirs
+Or use git checkout --theirs upstream/x.y.z -- <paths>  to sort the mess.
+
+

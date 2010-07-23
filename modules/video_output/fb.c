@@ -2,7 +2,7 @@
  * fb.c : framebuffer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2009 the VideoLAN team
- * $Id: 079f499e9a6a6ebe3acd0154d34431e454a61e07 $
+ * $Id: 822e74ef9bef66c4d12c7ac30b0f9b0638e603d7 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman
@@ -108,7 +108,9 @@ static void           Manage (vout_display_t *);
 /* */
 static int  OpenDisplay  (vout_display_t *, bool force_resolution);
 static void CloseDisplay (vout_display_t *);
+#if 0
 static void SwitchDisplay(int i_signal);
+#endif
 static void TextMode     (int tty);
 static void GfxMode      (int tty);
 
@@ -123,8 +125,10 @@ struct vout_display_sys_t {
     struct termios      old_termios;
 
     /* Original configuration information */
+#if 0
     struct sigaction            sig_usr1;           /* USR1 previous handler */
     struct sigaction            sig_usr2;           /* USR2 previous handler */
+#endif
     struct vt_mode              vt_mode;                 /* previous VT mode */
 
     /* Framebuffer information */
@@ -455,6 +459,7 @@ static int TtyInit(vout_display_t *vd)
 
     ioctl(sys->tty, VT_RELDISP, VT_ACKACQ);
 
+#if 0
     /* Set-up tty signal handler to be aware of tty changes */
     struct sigaction sig_tty;
     memset(&sig_tty, 0, sizeof(sig_tty));
@@ -466,6 +471,7 @@ static int TtyInit(vout_display_t *vd)
         /* FIXME SIGUSR1 could have succeed */
         goto error_signal;
     }
+#endif
 
     /* Set-up tty according to new signal handler */
     if (-1 == ioctl(sys->tty, VT_GETMODE, &sys->vt_mode)) {
@@ -485,9 +491,11 @@ static int TtyInit(vout_display_t *vd)
     return VLC_SUCCESS;
 
 error:
+#if 0
     sigaction(SIGUSR1, &sys->sig_usr1, NULL);
     sigaction(SIGUSR2, &sys->sig_usr2, NULL);
 error_signal:
+#endif
     tcsetattr(0, 0, &sys->old_termios);
     TextMode(sys->tty);
     return VLC_EGENERIC;
@@ -499,9 +507,11 @@ static void TtyExit(vout_display_t *vd)
     /* Reset the terminal */
     ioctl(sys->tty, VT_SETMODE, &sys->vt_mode);
 
+#if 0
     /* Remove signal handlers */
     sigaction(SIGUSR1, &sys->sig_usr1, NULL);
     sigaction(SIGUSR2, &sys->sig_usr2, NULL);
+#endif
 
     /* Reset the keyboard state */
     tcsetattr(0, 0, &sys->old_termios);
@@ -700,6 +710,7 @@ static void CloseDisplay(vout_display_t *vd)
     }
 }
 
+#if 0
 /*****************************************************************************
  * SwitchDisplay: VT change signal handler
  *****************************************************************************
@@ -708,8 +719,6 @@ static void CloseDisplay(vout_display_t *vd)
  *****************************************************************************/
 static void SwitchDisplay(int i_signal)
 {
-    VLC_UNUSED(i_signal);
-#if 0
     vout_display_t *vd;
 
     vlc_mutex_lock(&p_vout_bank->lock);
@@ -737,8 +746,8 @@ static void SwitchDisplay(int i_signal)
     }
 
     vlc_mutex_unlock(&p_vout_bank->lock);
-#endif
 }
+#endif
 
 /*****************************************************************************
  * TextMode and GfxMode : switch tty to text/graphic mode

@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 6ec8d8dbf8f4c0a7bc3ca2159f9bb9a2685ce1d6 $
+ * $Id: 9ddb26e331c99bf9b96208e7d08cc0e94a6aa698 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -321,7 +321,7 @@ static void ReadMetaFromXiph( Ogg::XiphComment* tag, demux_t* p_demux, demux_met
     vlc_meta_SetArtURL( p_meta, "attachment://cover" );
 }
 
-#ifdef TAGLIB_WITH_MP4
+#if defined(TAGLIB_WITH_MP4) && defined(HAVE_TAGLIB_MP4COVERART_H)
 static void ReadMetaFromMP4( MP4::Tag* tag, demux_t *p_demux, demux_meta_t *p_demux_meta, vlc_meta_t* p_meta )
 {
     if( tag->itemListMap().contains("covr") )
@@ -414,7 +414,7 @@ static int ReadMeta( vlc_object_t* p_this)
         else if( flac->xiphComment() )
             ReadMetaFromXiph( flac->xiphComment(), p_demux, p_demux_meta, p_meta );
     }
-#ifdef TAGLIB_WITH_MP4
+#if defined(TAGLIB_WITH_MP4) && defined(HAVE_TAGLIB_MP4COVERART_H)
     else if( MP4::File *mp4 = dynamic_cast<MP4::File*>(f.file()) )
     {
         if( mp4->tag() )

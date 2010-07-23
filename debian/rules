@@ -63,6 +63,7 @@ confflags += \
 	--enable-libass \
 	--enable-libmpeg2 \
 	--enable-libproxy \
+	--enable-libva \
 	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \
@@ -102,7 +103,7 @@ confflags += \
 # dxva2 -> Windows only
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
-# libva -> needs a vaapi enabled avcodec
+# modplug -> http://bugs.debian.org/588465
 # osso_screensaver -> not targetting maemo
 # portaudio -> not needed
 # projectm -> broken
@@ -112,7 +113,7 @@ confflags += \
 	--disable-dxva2 \
 	--disable-gnomevfs \
 	--disable-goom \
-	--disable-libva \
+	--disable-mod \
 	--disable-osso_screensaver \
 	--disable-portaudio \
 	--disable-projectm \
@@ -136,8 +137,8 @@ endif
 
 ifeq ($(DEB_HOST_ARCH_OS),kfreebsd)
 confflags += \
-       --disable-alsa \
-       $(NULL)
+	--disable-alsa \
+	$(NULL)
 endif
 
 # svgalib is only for x86 and x86-64 on Linux

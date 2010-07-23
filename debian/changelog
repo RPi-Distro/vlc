@@ -1,3 +1,22 @@
+vlc (1.1.1-1+exp1) experimental; urgency=low
+
+  * Depends on xulrunner-dev >= 1.9.2
+  * Activate VA-API (Closes: #587792, LP: #539406)
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 22 Jul 2010 01:31:04 +0200
+
+vlc (1.1.1-1) unstable; urgency=low
+
+  * New upstream release
+    + Remove patches merged upstream
+    + Add new symbols in libvlc5
+  * Explicit the split of vlc-plugin-zvbi in debian/changelog (Closes:
+    #588468)
+  * Disable modplug as libmodplug in sid is buggy (see #588465)
+  * Add comment about merging in README.source
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 22 Jul 2010 00:36:00 +0200
+
 vlc (1.1.0-4ubuntu2) maverick; urgency=low
 
   * No-change rebuild to pick up new j-a-c-k shlibs
@@ -110,6 +129,7 @@ vlc (1.1.0-1) unstable; urgency=low
   * Remove unused Build-Depends libid3tag0-dev, libsysfs-dev, and libxv-dev.
   * Provide VBI teletext plugin (Closes: #563873) - thanks to László
     Benedek <benedekl@gmail.com> for the patch.
+  * Split the VBI teletext module to its own package vlc-plugin-zvbi.
   * Enable atmo, fluidsynth (separate package), libproxy (Closes: #532110),
     kate (Closes: #563464), and mtp plugin.
   * Comment disabled features.

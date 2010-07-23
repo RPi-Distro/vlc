@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2009 the VideoLAN team
-* $Id: eb6c055349c89e5e5beb035945cedd6f799b8f1d $
+* $Id: a38642901785e97a4d83587ea0f4630ec8d19215 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -741,7 +741,6 @@ static inline void save_string_list( intf_thread_t * p_intf, id object, const ch
     if( p_stringobject )
     {
         config_PutPsz( p_intf, name, [p_stringobject UTF8String] );
-        [p_stringobject release];
     }
 }
 

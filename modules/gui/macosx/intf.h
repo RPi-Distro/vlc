@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 56d293b268bb3d0d96d4d3efcb0b52e60c96c5e4 $
+ * $Id: e975af8aa6bb03f593fd6d6ac70e9fd67388eac2 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -260,6 +260,8 @@ struct intf_sys_t
     IBOutlet NSMenuItem * o_mi_addSub;
     IBOutlet NSMenuItem * o_mi_deinterlace;
     IBOutlet NSMenu * o_mu_deinterlace;
+    IBOutlet NSMenu * o_mu_deinterlace_mode ;
+    IBOutlet NSMenuItem * o_mi_deinterlace_mode ;
     IBOutlet NSMenuItem * o_mi_ffmpeg_pp;
     IBOutlet NSMenu * o_mu_ffmpeg_pp;
     IBOutlet NSMenuItem * o_mi_teletext;

@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 37e8f10233c6442314615d2ec094c18a5cd402bd $
+ * $Id: 117dc0390139eab7fed2119590fd924e5407257e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -822,6 +822,11 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
                  !strcmp( tracks[i_track]->psz_codec, "V_MPEG2" ) )
         {
             tracks[i_track]->fmt.i_codec = VLC_CODEC_MPGV;
+            if( tracks[i_track]->fmt.i_extra > 0 )
+            {
+                tracks[i_track]->fmt.p_extra = xmalloc( tracks[i_track]->i_extra_data );
+                memcpy( tracks[i_track]->fmt.p_extra,tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
+            }
         }
         else if( !strncmp( tracks[i_track]->psz_codec, "V_THEORA", 8 ) )
         {
@@ -903,6 +908,10 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
                 free( p_box );
             }
             stream_Delete( p_mp4_stream );
+        }
+        else if( !strcmp( tracks[i_track]->psz_codec, "V_MJPEG" ) )
+        {
+            p_tk->fmt.i_codec = VLC_CODEC_MJPG;
         }
         else if( !strcmp( tracks[i_track]->psz_codec, "A_MS/ACM" ) )
         {

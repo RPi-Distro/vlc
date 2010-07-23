@@ -2,7 +2,7 @@
  * subtitles.c : subtitles detection
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 77816bd5a686508c682e82ba050affac685ddac5 $
+ * $Id: 2ca105ff08618b16702eea71c662e485639ebcd2 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  * This is adapted code from the GPL'ed MPlayer (http://mplayerhq.hu)
@@ -302,16 +302,6 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
     }
 
     i_fname_len = strlen( f_fname );
-
-    /* HACK: do not look for subtitles for Transport Streams */
-    /* This breaks the clock synchronization */
-    if( i_fname_len > 3 && !strcasecmp( f_fname + i_fname_len - 3, ".ts" ) )
-    {
-        free( f_fname );
-        free( f_dir );
-        free( psz_fname );
-        return NULL;
-    }
 
     f_fname_noext = malloc(i_fname_len + 1);
     f_fname_trim = malloc(i_fname_len + 1 );

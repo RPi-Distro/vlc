@@ -2,7 +2,7 @@
  * es_out_timeshift.c: Es Out timeshift.
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 4aa997feef1b801c42af8cc9c721988e8e87fccd $
+ * $Id: 3ac19d5abd660db7efdf1b2728c0c25205670ebe $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
@@ -633,7 +633,6 @@ static int ControlLocked( es_out_t *p_out, int i_query, va_list args )
         }
         return es_out_Control( p_sys->p_out, ES_OUT_GET_ES_STATE, p_es->p_es, pb_enabled );
     }
-
     /* Special internal input control */
     case ES_OUT_GET_EMPTY:
     {
@@ -694,6 +693,13 @@ static int ControlLocked( es_out_t *p_out, int i_query, va_list args )
 
         return es_out_ControlModifyPcrSystem( p_sys->p_out, b_absolute, i_system );
     }
+    case ES_OUT_GET_GROUP_FORCED:
+    {
+        int *pi_group = va_arg( args, int * );
+        return es_out_Control( p_sys->p_out, ES_OUT_GET_GROUP_FORCED, pi_group );
+    }
+
+
     default:
         msg_Err( p_sys->p_input, "Unknown es_out_Control query !" );
         assert(0);

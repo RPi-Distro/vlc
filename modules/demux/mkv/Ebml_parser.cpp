@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 5feafdf4bb3e631d92fbb57964fe47c8c2d4e9f4 $
+ * $Id: aeec50d13dab90597ac31bf254653343a15b46fd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -48,6 +48,13 @@ EbmlParser::EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux 
 
 EbmlParser::~EbmlParser( void )
 {
+    if( !mi_level )
+    {
+        assert( !mb_keep );
+        delete m_el[1];
+        return;
+    }
+
     int i;
 
     for( i = 1; i < mi_level; i++ )

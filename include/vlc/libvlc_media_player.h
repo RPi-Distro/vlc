@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2010 the VideoLAN team
- * $Id: 788197129b97a544ef5be06a4c601e31720d90c6 $
+ * $Id: d328e511ba7154eb18bc5163b69c9be5d7bbbbb9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -177,6 +177,16 @@ VLC_PUBLIC_API int libvlc_media_player_is_playing ( libvlc_media_player_t *p_mi 
 VLC_PUBLIC_API int libvlc_media_player_play ( libvlc_media_player_t *p_mi );
 
 /**
+ * Pause or resume (no effect if there is no media)
+ *
+ * \param mp the Media Player
+ * \param do_pause play/resume if zero, pause if non-zero
+ * \version LibVLC 1.1.1 or later
+ */
+VLC_PUBLIC_API void libvlc_media_player_set_pause ( libvlc_media_player_t *mp,
+                                                    int do_pause );
+
+/**
  * Toggle pause (no effect if there is no media)
  *
  * \param p_mi the Media Player
@@ -189,6 +199,53 @@ VLC_PUBLIC_API void libvlc_media_player_pause ( libvlc_media_player_t *p_mi );
  * \param p_mi the Media Player
  */
 VLC_PUBLIC_API void libvlc_media_player_stop ( libvlc_media_player_t *p_mi );
+
+/**
+ * Set callbacks and private data to render decoded video to a custom area
+ * in memory. Use libvlc_video_set_format() to configure the decoded format.
+ *
+ * Whenever a new video frame needs to be decoded, the lock callback is
+ * invoked. Depending on the video chroma, one or three pixel planes of
+ * adequate dimensions must be returned via the second parameter. Those
+ * planes must be aligned on 32-bytes boundaries.
+ *
+ * When the video frame is decoded, the unlock callback is invoked. The
+ * second parameter to the callback corresponds is the return value of the
+ * lock callback. The third parameter conveys the pixel planes for convenience.
+ *
+ * When the video frame needs to be shown, as determined by the media playback
+ * clock, the display callback is invoked. The second parameter also conveys
+ * the return value from the lock callback.
+ *
+ * \param mp the media player
+ * \param lock callback to allocate video memory
+ * \param unlock callback to release video memory
+ * \param opaque private pointer for the three callbacks (as first parameter)
+ * \version LibVLC 1.1.1 or later
+ */
+VLC_PUBLIC_API
+void libvlc_video_set_callbacks( libvlc_media_player_t *mp,
+    void *(*lock) (void *opaque, void **plane),
+    void (*unlock) (void *opaque, void *picture, void *const *plane),
+    void (*display) (void *opaque, void *picture),
+    void *opaque );
+
+/**
+ * Set decoded video chroma and dimensions. This only works in combination with
+ * libvlc_video_set_callbacks().
+ *
+ * \param mp the media player
+ * \param chroma a four-characters string identifying the chroma
+ *               (e.g. "RV32" or "I420")
+ * \param width pixel width
+ * \param height pixel height
+ * \param pitch line pitch (in bytes)
+ * \version LibVLC 1.1.1 or later
+ */
+VLC_PUBLIC_API
+void libvlc_video_set_format( libvlc_media_player_t *mp, const char *chroma,
+                              unsigned width, unsigned height,
+                              unsigned pitch );
 
 /**
  * Set the NSView handler where the media player should render its video output.
@@ -259,9 +316,6 @@ VLC_PUBLIC_API uint32_t libvlc_media_player_get_agl ( libvlc_media_player_t *p_m
  * X11 window. Pixmaps are <b>not</b> supported. The caller shall ensure that
  * the X11 server is the same as the one the VLC instance has been configured
  * with.
- * If XVideo is <b>not</b> used, it is assumed that the drawable has the
- * following properties in common with the default X11 screen: depth, scan line
- * pad, black pixel. This is a bug.
  *
  * \param p_mi the Media Player
  * \param drawable the ID of the X window
@@ -523,10 +577,10 @@ VLC_PUBLIC_API void libvlc_toggle_fullscreen( libvlc_media_player_t *p_mi );
  *
  * @warning With most window managers, only a top-level windows can be in
  * full-screen mode. Hence, this function will not operate properly if
- * libvlc_media_player_set_xid() was used to embed the video in a non-top-level
- * window. In that case, the embedding window must be reparented to the root
- * window <b>before</b> fullscreen mode is enabled. You will want to reparent
- * it back to its normal parent when disabling fullscreen.
+ * libvlc_media_player_set_xwindow() was used to embed the video in a
+ * non-top-level window. In that case, the embedding window must be reparented
+ * to the root window <b>before</b> fullscreen mode is enabled. You will want
+ * to reparent it back to its normal parent when disabling fullscreen.
  *
  * \param p_mi the media player
  * \param b_fullscreen boolean for fullscreen status
@@ -925,6 +979,62 @@ VLC_PUBLIC_API void libvlc_video_set_logo_string( libvlc_media_player_t *p_mi,
                                       unsigned option, const char *psz_value );
 
 
+/** option values for libvlc_video_{get,set}_adjust_{int,float,bool} */
+enum libvlc_video_adjust_option_t {
+    libvlc_adjust_Enable = 0,
+    libvlc_adjust_Contrast,
+    libvlc_adjust_Brightness,
+    libvlc_adjust_Hue,
+    libvlc_adjust_Saturation,
+    libvlc_adjust_Gamma,
+};
+
+/**
+ * Get integer adjust option.
+ *
+ * \param p_mi libvlc media player instance
+ * \param option adjust option to get, values of libvlc_video_adjust_option_t
+ * \version LibVLC 1.1.1 and later.
+ */
+VLC_PUBLIC_API int libvlc_video_get_adjust_int( libvlc_media_player_t *p_mi,
+                                                unsigned option );
+
+/**
+ * Set adjust option as integer. Options that take a different type value
+ * are ignored.
+ * Passing libvlc_adjust_enable as option value has the side effect of
+ * starting (arg !0) or stopping (arg 0) the adjust filter.
+ *
+ * \param p_mi libvlc media player instance
+ * \param option adust option to set, values of libvlc_video_adjust_option_t
+ * \param value adjust option value
+ * \version LibVLC 1.1.1 and later.
+ */
+VLC_PUBLIC_API void libvlc_video_set_adjust_int( libvlc_media_player_t *p_mi,
+                                                 unsigned option, int value );
+
+/**
+ * Get float adjust option.
+ *
+ * \param p_mi libvlc media player instance
+ * \param option adjust option to get, values of libvlc_video_adjust_option_t
+ * \version LibVLC 1.1.1 and later.
+ */
+VLC_PUBLIC_API float libvlc_video_get_adjust_float( libvlc_media_player_t *p_mi,
+                                                    unsigned option );
+
+/**
+ * Set adjust option as float. Options that take a different type value
+ * are ignored.
+ *
+ * \param p_mi libvlc media player instance
+ * \param option adust option to set, values of libvlc_video_adjust_option_t
+ * \param value adjust option value
+ * \version LibVLC 1.1.1 and later.
+ */
+VLC_PUBLIC_API void libvlc_video_set_adjust_float( libvlc_media_player_t *p_mi,
+                                                   unsigned option, float value );
+
 /** @} video */
 
 /** \defgroup libvlc_audio LibVLC audio controls
@@ -1145,6 +1255,25 @@ VLC_PUBLIC_API int libvlc_audio_get_channel( libvlc_media_player_t *p_mi );
  * \return 0 on success, -1 on error
  */
 VLC_PUBLIC_API int libvlc_audio_set_channel( libvlc_media_player_t *p_mi, int channel );
+
+/**
+ * Get current audio delay.
+ *
+ * \param p_mi media player
+ * \return the audio delay (microseconds)
+ * \version LibVLC 1.1.1 or later
+ */
+VLC_PUBLIC_API int64_t libvlc_audio_get_delay( libvlc_media_player_t *p_mi );
+
+/**
+ * Set current audio delay. The audio delay will be reset to zero each time the media changes.
+ *
+ * \param p_mi media player
+ * \param i_delay the audio delay (microseconds)
+ * \return 0 on success, -1 on error
+ * \version LibVLC 1.1.1 or later
+ */
+VLC_PUBLIC_API int libvlc_audio_set_delay( libvlc_media_player_t *p_mi, int64_t i_delay );
 
 /** @} audio */
 

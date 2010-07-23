@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlca\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-06-21 01:58+0200\n"
+"POT-Creation-Date: 2010-07-20 11:53+0200\n"
 "PO-Revision-Date: 2010-06-16 22:25+0100\n"
 "Last-Translator: Predrag <predragljubenovic@gmail.com>\n"
 "Language-Team: \n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "X-Poedit-Bookmarks: 3593,-1,-1,-1,-1,-1,-1,-1,-1,3591\n"
 
-#: include/vlc_common.h:916
+#: include/vlc_common.h:919
 #, fuzzy
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
@@ -64,7 +64,7 @@ msgstr "Главни интерфејси"
 msgid "Settings for the main interface"
 msgstr "Подешавања за главни интерфејс"
 
-#: include/vlc_config_cat.h:45 src/libvlc-module.c:185
+#: include/vlc_config_cat.h:45 src/libvlc-module.c:187
 msgid "Control interfaces"
 msgstr "Управљачки интерфејси"
 
@@ -77,8 +77,8 @@ msgstr "Подешавања за управљачки интерфејс VLC"
 msgid "Hotkeys settings"
 msgstr "Подешавање за пречице тастера"
 
-#: include/vlc_config_cat.h:52 src/input/es_out.c:2850 src/input/es_out.c:2891
-#: src/libvlc-module.c:1567 modules/access/imem.c:69
+#: include/vlc_config_cat.h:52 src/input/es_out.c:2870 src/input/es_out.c:2911
+#: src/libvlc-module.c:1569 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
 #: modules/gui/macosx/wizard.m:380
@@ -126,7 +126,7 @@ msgstr "Излазни модули"
 msgid "General settings for audio output modules."
 msgstr "Ово су општа подешавања за звучне излазе модуле."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2042
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2044
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Разноврсно"
@@ -135,8 +135,8 @@ msgstr "Разноврсно"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Разноврсна звучна подешавања и модули."
 
-#: include/vlc_config_cat.h:70 src/input/es_out.c:2853 src/input/es_out.c:2938
-#: src/libvlc-module.c:1620 modules/access/imem.c:69
+#: include/vlc_config_cat.h:70 src/input/es_out.c:2873 src/input/es_out.c:2958
+#: src/libvlc-module.c:1622 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
 #: modules/gui/macosx/wizard.m:381
@@ -260,7 +260,7 @@ msgstr "Опште"
 msgid "General input settings. Use with care..."
 msgstr "Општа подешавања улаза. Опрезно мењајте."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1962
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1964
 msgid "Stream output"
 msgstr "Излазни ток"
 
@@ -367,7 +367,7 @@ msgstr "VOD(Видео на захтев)"
 msgid "VLC's implementation of Video On Demand"
 msgstr "VLC-ијев проказ VOD (Видеа на захтев)"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2108
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2106
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -399,7 +399,7 @@ msgid ""
 "playlist."
 msgstr "Модули за откривање сервиса аутоматски додају ствари на листу."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1909
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1911
 msgid "Advanced"
 msgstr "Напредно"
 
@@ -555,10 +555,10 @@ msgstr "&О програму"
 #: include/vlc_intf_strings.h:65 modules/control/rc.c:72
 #: modules/gui/macosx/embeddedwindow.m:69
 #: modules/gui/macosx/embeddedwindow.m:173 modules/gui/macosx/intf.m:602
-#: modules/gui/macosx/intf.m:647 modules/gui/macosx/intf.m:737
-#: modules/gui/macosx/intf.m:744 modules/gui/macosx/intf.m:2020
-#: modules/gui/macosx/intf.m:2021 modules/gui/macosx/intf.m:2022
-#: modules/gui/macosx/intf.m:2023 modules/gui/macosx/playlist.m:466
+#: modules/gui/macosx/intf.m:647 modules/gui/macosx/intf.m:739
+#: modules/gui/macosx/intf.m:746 modules/gui/macosx/intf.m:2025
+#: modules/gui/macosx/intf.m:2026 modules/gui/macosx/intf.m:2027
+#: modules/gui/macosx/intf.m:2028 modules/gui/macosx/playlist.m:466
 #: modules/gui/qt4/components/controller.hpp:104 modules/gui/qt4/menus.cpp:790
 #: modules/gui/qt4/ui/open.h:256
 msgid "Play"
@@ -627,7 +627,7 @@ msgstr "Понављај Једно"
 msgid "No Repeat"
 msgstr "Понови све"
 
-#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1459
+#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1461
 #: modules/gui/macosx/controls.m:1038 modules/gui/macosx/intf.m:654
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:119
@@ -809,20 +809,20 @@ msgstr ""
 "Исто тако можеш дати средстава и материјал да нам помогнеш. И наравно, можеш "
 "<b>промовисати</b> VLC медија плејер.</p></body></html>"
 
-#: src/audio_output/filters.c:166 src/audio_output/filters.c:213
-#: src/audio_output/filters.c:236
+#: src/audio_output/filters.c:166 src/audio_output/filters.c:215
+#: src/audio_output/filters.c:238
 #, fuzzy
 msgid "Audio filtering failed"
 msgstr "Звучни филтери"
 
-#: src/audio_output/filters.c:167 src/audio_output/filters.c:214
-#: src/audio_output/filters.c:237
+#: src/audio_output/filters.c:167 src/audio_output/filters.c:216
+#: src/audio_output/filters.c:239
 #, c-format
 msgid "The maximum number of filters (%d) was reached."
 msgstr ""
 
 #: src/audio_output/input.c:110 src/audio_output/input.c:156
-#: src/input/es_out.c:931 src/libvlc-module.c:653
+#: src/input/es_out.c:934 src/libvlc-module.c:655
 #: src/video_output/video_output.c:1698 modules/video_filter/postproc.c:230
 msgid "Disable"
 msgstr "Искључи"
@@ -849,7 +849,7 @@ msgstr ""
 msgid "Equalizer"
 msgstr "Еквилајзер"
 
-#: src/audio_output/input.c:175 src/libvlc-module.c:318
+#: src/audio_output/input.c:175 src/libvlc-module.c:320
 msgid "Audio filters"
 msgstr "Звучни филтери"
 
@@ -875,9 +875,9 @@ msgid "Stereo"
 msgstr "Стерео"
 
 #: src/audio_output/output.c:106 src/audio_output/output.c:142
-#: src/libvlc-module.c:412 src/libvlc-module.c:493
+#: src/libvlc-module.c:414 src/libvlc-module.c:495
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
-#: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:78
+#: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -889,9 +889,9 @@ msgid "Left"
 msgstr "Лево"
 
 #: src/audio_output/output.c:108 src/audio_output/output.c:144
-#: src/libvlc-module.c:412 src/libvlc-module.c:493
+#: src/libvlc-module.c:414 src/libvlc-module.c:495
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
-#: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:78
+#: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -917,15 +917,15 @@ msgstr "тастер/кључ"
 msgid "boolean"
 msgstr "boolean"
 
-#: src/config/file.c:630 src/libvlc.c:1581
+#: src/config/file.c:630 src/libvlc.c:1587
 msgid "integer"
 msgstr "integer"
 
-#: src/config/file.c:639 src/libvlc.c:1611
+#: src/config/file.c:639 src/libvlc.c:1617
 msgid "float"
 msgstr "float"
 
-#: src/config/file.c:662 src/libvlc.c:1559
+#: src/config/file.c:662 src/libvlc.c:1565
 msgid "string"
 msgstr "string"
 
@@ -979,126 +979,126 @@ msgid ""
 "there is no way for you to fix this."
 msgstr ""
 
-#: src/input/es_out.c:951 src/input/es_out.c:956 src/libvlc-module.c:356
+#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:358
 #: modules/access/vcdx/access.c:460 modules/access/vcdx/info.c:226
-#: modules/gui/qt4/components/open_panels.cpp:398
+#: modules/gui/qt4/components/open_panels.cpp:402
 msgid "Track"
 msgstr "Трака"
 
-#: src/input/es_out.c:1156
+#: src/input/es_out.c:1165
 #, c-format
 msgid "%s [%s %d]"
 msgstr ""
 
-#: src/input/es_out.c:1156 src/input/es_out.c:1161 src/input/var.c:177
-#: src/libvlc-module.c:686 modules/gui/macosx/intf.m:661
+#: src/input/es_out.c:1165 src/input/es_out.c:1170 src/input/var.c:177
+#: src/libvlc-module.c:688 modules/gui/macosx/intf.m:661
 #: modules/gui/macosx/intf.m:662
 msgid "Program"
 msgstr "Програм"
 
-#: src/input/es_out.c:1355 src/input/es_out.c:1357
+#: src/input/es_out.c:1368 src/input/es_out.c:1370
 msgid "Scrambled"
 msgstr "Закључан"
 
-#: src/input/es_out.c:1355
+#: src/input/es_out.c:1368
 msgid "Yes"
 msgstr "Да"
 
-#: src/input/es_out.c:2012
+#: src/input/es_out.c:2025
 #, fuzzy, c-format
 msgid "Closed captions %u"
 msgstr "CMML декодер напомена"
 
-#: src/input/es_out.c:2840
+#: src/input/es_out.c:2860
 #, c-format
 msgid "Stream %d"
 msgstr "Ток %d"
 
-#: src/input/es_out.c:2856 src/input/es_out.c:2965 modules/access/imem.c:69
+#: src/input/es_out.c:2876 src/input/es_out.c:2985 modules/access/imem.c:69
 msgid "Subtitle"
 msgstr "Титл"
 
-#: src/input/es_out.c:2864 src/input/es_out.c:2891 src/input/es_out.c:2938
-#: src/input/es_out.c:2965 modules/gui/macosx/output.m:153
+#: src/input/es_out.c:2884 src/input/es_out.c:2911 src/input/es_out.c:2958
+#: src/input/es_out.c:2985 modules/gui/macosx/output.m:153
 msgid "Type"
 msgstr "Врста"
 
-#: src/input/es_out.c:2867
+#: src/input/es_out.c:2887
 #, fuzzy
 msgid "Original ID"
 msgstr "Укључи звук"
 
-#: src/input/es_out.c:2875 src/input/es_out.c:2878 modules/access/imem.c:72
+#: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
 #: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
 #: modules/gui/qt4/ui/profiles.h:489
 msgid "Codec"
 msgstr "Кодек"
 
-#: src/input/es_out.c:2882 src/input/meta.c:62 src/libvlc-module.c:212
+#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:214
 #: modules/access/imem.c:76 modules/gui/macosx/simple_prefs.m:269
 #: modules/gui/qt4/ui/sprefs_interface.h:386
 msgid "Language"
 msgstr "Језик"
 
-#: src/input/es_out.c:2885 src/input/meta.c:57
+#: src/input/es_out.c:2905 src/input/meta.c:57
 #: modules/gui/macosx/bookmarks.m:94 modules/gui/qt4/dialogs/bookmarks.cpp:65
 msgid "Description"
 msgstr "Опис"
 
-#: src/input/es_out.c:2894 src/input/es_out.c:2897
+#: src/input/es_out.c:2914 src/input/es_out.c:2917
 #: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
 msgid "Channels"
 msgstr "Канали"
 
-#: src/input/es_out.c:2902 modules/access/imem.c:80
+#: src/input/es_out.c:2922 modules/access/imem.c:80
 msgid "Sample rate"
 msgstr "Брзина узорка"
 
-#: src/input/es_out.c:2902
+#: src/input/es_out.c:2922
 #, fuzzy, c-format
 msgid "%u Hz"
 msgstr "%d Hz"
 
-#: src/input/es_out.c:2912
+#: src/input/es_out.c:2932
 msgid "Bits per sample"
 msgstr "Битови по узорку"
 
-#: src/input/es_out.c:2917 modules/access/pvr.c:96
+#: src/input/es_out.c:2937 modules/access/pvr.c:96
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:413
-#: modules/gui/qt4/components/open_panels.cpp:901
+#: modules/gui/qt4/components/open_panels.cpp:905
 #: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
 msgid "Bitrate"
 msgstr "Број битова у секунди"
 
-#: src/input/es_out.c:2917
+#: src/input/es_out.c:2937
 #, fuzzy, c-format
 msgid "%u kb/s"
 msgstr "%d kb/s"
 
-#: src/input/es_out.c:2929
+#: src/input/es_out.c:2949
 #, fuzzy
 msgid "Track replay gain"
 msgstr "Подразумевани ток"
 
-#: src/input/es_out.c:2931
+#: src/input/es_out.c:2951
 #, fuzzy
 msgid "Album replay gain"
 msgstr "Подразумевани ток"
 
-#: src/input/es_out.c:2932
+#: src/input/es_out.c:2952
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2941 modules/gui/qt4/ui/profiles.h:476
+#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:476
 msgid "Resolution"
 msgstr "Резолуција"
 
-#: src/input/es_out.c:2946
+#: src/input/es_out.c:2966
 msgid "Display resolution"
 msgstr "Резолуција приказа"
 
-#: src/input/es_out.c:2956 src/input/es_out.c:2959 modules/access/imem.c:98
+#: src/input/es_out.c:2976 src/input/es_out.c:2979 modules/access/imem.c:98
 #: modules/access/screen/screen.c:44 modules/access/screen/xcb.c:38
 msgid "Frame rate"
 msgstr "Брзина оквира"
@@ -1125,7 +1125,7 @@ msgstr ""
 #: src/input/meta.c:51 src/input/var.c:187 modules/gui/macosx/intf.m:663
 #: modules/gui/macosx/intf.m:664 modules/gui/macosx/open.m:190
 #: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
-#: modules/gui/qt4/components/open_panels.cpp:372 modules/mux/asf.c:56
+#: modules/gui/qt4/components/open_panels.cpp:376 modules/mux/asf.c:56
 #: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
 msgstr "Наслов"
@@ -1143,7 +1143,7 @@ msgstr "Врста"
 msgid "Copyright"
 msgstr "Право умножавања"
 
-#: src/input/meta.c:55 src/libvlc-module.c:356 modules/access/vcdx/info.c:63
+#: src/input/meta.c:55 src/libvlc-module.c:358 modules/access/vcdx/info.c:63
 msgid "Album"
 msgstr "Албум"
 
@@ -1194,7 +1194,7 @@ msgstr "Трака"
 msgid "Bookmark"
 msgstr "Обележивач"
 
-#: src/input/var.c:182 src/libvlc-module.c:692
+#: src/input/var.c:182 src/libvlc-module.c:694
 msgid "Programs"
 msgstr "Програми"
 
@@ -1285,17 +1285,17 @@ msgstr "Гестови миша"
 msgid "C"
 msgstr "sr"
 
-#: src/libvlc.c:1109
+#: src/libvlc.c:1115
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
 msgstr ""
 
-#: src/libvlc.c:1233
+#: src/libvlc.c:1239
 msgid "To get exhaustive help, use '-H'."
 msgstr ""
 
-#: src/libvlc.c:1237 src/libvlc-module.c:1515
+#: src/libvlc.c:1243 src/libvlc-module.c:1517
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1364,51 +1364,51 @@ msgstr ""
 "пуштање на одређено време\n"
 "   vlc:quit                       Посебна ставка за излазак из VLC-а\n"
 
-#: src/libvlc.c:1627
+#: src/libvlc.c:1633
 msgid " (default enabled)"
 msgstr " (подразумевано укључено)"
 
-#: src/libvlc.c:1628
+#: src/libvlc.c:1634
 msgid " (default disabled)"
 msgstr " (подразумевано искључено)"
 
-#: src/libvlc.c:1791 src/libvlc.c:1794 src/libvlc.c:1802 src/libvlc.c:1807
+#: src/libvlc.c:1797 src/libvlc.c:1800 src/libvlc.c:1808 src/libvlc.c:1813
 #, fuzzy
 msgid "Note:"
 msgstr "Ништа"
 
-#: src/libvlc.c:1792 src/libvlc.c:1795
+#: src/libvlc.c:1798 src/libvlc.c:1801
 msgid "add --advanced to your command line to see advanced options."
 msgstr ""
 
-#: src/libvlc.c:1803 src/libvlc.c:1808
+#: src/libvlc.c:1809 src/libvlc.c:1814
 #, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
 msgstr ""
 
-#: src/libvlc.c:1815 src/libvlc.c:1819
+#: src/libvlc.c:1821 src/libvlc.c:1825
 msgid ""
 "No matching module found. Use --list or --list-verbose to list available "
 "modules."
 msgstr ""
 
-#: src/libvlc.c:1909
+#: src/libvlc.c:1915
 #, fuzzy, c-format
 msgid "VLC version %s (%s)\n"
 msgstr "VLC верзија %s\n"
 
-#: src/libvlc.c:1911
+#: src/libvlc.c:1917
 #, fuzzy, c-format
 msgid "Compiled by %s on %s (%s)\n"
 msgstr "Компајлиран од %s@%s.%s\n"
 
-#: src/libvlc.c:1913
+#: src/libvlc.c:1919
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "Компајер: %s\n"
 
-#: src/libvlc.c:1948
+#: src/libvlc.c:1954
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
@@ -1416,7 +1416,7 @@ msgstr ""
 "\n"
 "Садржај је пребачен у vlc-help.txt фајл.\n"
 
-#: src/libvlc.c:1968
+#: src/libvlc.c:1974
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -1424,34 +1424,33 @@ msgstr ""
 "\n"
 "Притисните RETURN дугме за наставак...\n"
 
-#: src/libvlc.h:175 src/libvlc-module.c:1462 src/libvlc-module.c:1463
-#: src/libvlc-module.c:2642 src/video_output/vout_intf.c:195
+#: src/libvlc.h:175 src/libvlc-module.c:1464 src/libvlc-module.c:1465
+#: src/libvlc-module.c:2640 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Увеличај"
 
-#: src/libvlc.h:176 src/libvlc-module.c:1382 src/video_output/vout_intf.c:88
+#: src/libvlc.h:176 src/libvlc-module.c:1384 src/video_output/vout_intf.c:88
 msgid "1:4 Quarter"
 msgstr "1:4 Четвртина величине"
 
-#: src/libvlc.h:177 src/libvlc-module.c:1383 src/video_output/vout_intf.c:89
+#: src/libvlc.h:177 src/libvlc-module.c:1385 src/video_output/vout_intf.c:89
 msgid "1:2 Half"
 msgstr "1:2 Половина величине"
 
-#: src/libvlc.h:178 src/libvlc-module.c:1384 src/video_output/vout_intf.c:90
+#: src/libvlc.h:178 src/libvlc-module.c:1386 src/video_output/vout_intf.c:90
 msgid "1:1 Original"
 msgstr "1:1 Оригинална величина"
 
-#: src/libvlc.h:179 src/libvlc-module.c:1385 src/video_output/vout_intf.c:91
+#: src/libvlc.h:179 src/libvlc-module.c:1387 src/video_output/vout_intf.c:91
 msgid "2:1 Double"
 msgstr "2:1 Дупла величина"
 
-#: src/libvlc-module.c:101 src/libvlc-module.c:315 modules/access/bda/bda.c:69
-#: modules/codec/subtitles/subsdec.c:97
-#: modules/gui/qt4/components/open_panels.cpp:977
+#: src/libvlc-module.c:102 src/libvlc-module.c:317 modules/access/bda/bda.c:69
+#: modules/gui/qt4/components/open_panels.cpp:981
 msgid "Auto"
 msgstr "Аутоматско"
 
-#: src/libvlc-module.c:168
+#: src/libvlc-module.c:170
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
 "select the main interface, additional interface modules, and define various "
@@ -1461,11 +1460,11 @@ msgstr ""
 "да одаберете главни интерфејс, додатне модуле интерфејса и одредите разне "
 "опције које су повезане."
 
-#: src/libvlc-module.c:172
+#: src/libvlc-module.c:174
 msgid "Interface module"
 msgstr "Модул интерфејса"
 
-#: src/libvlc-module.c:174
+#: src/libvlc-module.c:176
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
@@ -1473,11 +1472,11 @@ msgstr ""
 "Ово је главни интерфејс који VLC користи. Подразумевано понашање је да се "
 "аутоматски одабере најбољи модул коју је доступан."
 
-#: src/libvlc-module.c:178 modules/control/ntservice.c:57
+#: src/libvlc-module.c:180 modules/control/ntservice.c:57
 msgid "Extra interface modules"
 msgstr "Модули додатних интерфејса"
 
-#: src/libvlc-module.c:180
+#: src/libvlc-module.c:182
 #, fuzzy
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
@@ -1490,16 +1489,16 @@ msgstr ""
 "раздвојени зарезом. (уобичајене вредности су \"rc\" (даљинска контрола), "
 "\"http\", \"gestures\" ...)"
 
-#: src/libvlc-module.c:187
+#: src/libvlc-module.c:189
 msgid "You can select control interfaces for VLC."
 msgstr "Можете да одаберете управљачке интерфејсе за VLC."
 
-#: src/libvlc-module.c:189
+#: src/libvlc-module.c:191
 #, fuzzy
 msgid "Verbosity (0,1,2)"
 msgstr "Опширност (0,1,2)"
 
-#: src/libvlc-module.c:191
+#: src/libvlc-module.c:193
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
@@ -1507,11 +1506,11 @@ msgstr ""
 "Ово је ниво детаљности (0=само грешке и стандардне поруке, 1=упозорења, "
 "1=отклањање грешака)."
 
-#: src/libvlc-module.c:194
+#: src/libvlc-module.c:196
 msgid "Choose which objects should print debug message"
 msgstr ""
 
-#: src/libvlc-module.c:197
+#: src/libvlc-module.c:199
 msgid ""
 "This is a ',' separated string, each objects should be prefixed by a '+' or "
 "a '-' to respectively enable or disable it. The keyword 'all' refers to all "
@@ -1521,23 +1520,23 @@ msgid ""
 "message."
 msgstr ""
 
-#: src/libvlc-module.c:204
+#: src/libvlc-module.c:206
 msgid "Be quiet"
 msgstr "Будите мирни"
 
-#: src/libvlc-module.c:206
+#: src/libvlc-module.c:208
 msgid "Turn off all warning and information messages."
 msgstr "Искључи сва упозорења и информативне поруке."
 
-#: src/libvlc-module.c:208
+#: src/libvlc-module.c:210
 msgid "Default stream"
 msgstr "Подразумевани ток"
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:212
 msgid "This stream will always be opened at VLC startup."
 msgstr "Овај ток ће увек бити отворан по покретању VLC-а."
 
-#: src/libvlc-module.c:213
+#: src/libvlc-module.c:215
 msgid ""
 "You can manually select a language for the interface. The system language is "
 "auto-detected if \"auto\" is specified here."
@@ -1545,11 +1544,11 @@ msgstr ""
 "Можете ручно да одаберете језик за интерфејс. Системски језик се користи ако "
 "је \"auto\" одабрано овде."
 
-#: src/libvlc-module.c:217
+#: src/libvlc-module.c:219
 msgid "Color messages"
 msgstr "Поруке у боји"
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:221
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
 "needs Linux color support for this to work."
@@ -1557,11 +1556,11 @@ msgstr ""
 "Ово омоћува бојење порука које се шаљу у конзолу. Терминалу је потребан "
 "Linux подршка за боје да би ово радило."
 
-#: src/libvlc-module.c:222
+#: src/libvlc-module.c:224
 msgid "Show advanced options"
 msgstr "Прикажи напредне опције"
 
-#: src/libvlc-module.c:224
+#: src/libvlc-module.c:226
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
 "available options, including those that most users should never touch."
@@ -1570,11 +1569,11 @@ msgstr ""
 "доступне опције укључујући и оне које већина корисника никада не би требало "
 "да мења."
 
-#: src/libvlc-module.c:228
+#: src/libvlc-module.c:230
 msgid "Interface interaction"
 msgstr "Интеракција интерфејса"
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:232
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
 "user input is required."
@@ -1582,7 +1581,7 @@ msgstr ""
 "Када је ово укључчено, интерфејс ће ориказати дијалог сваки пут када се "
 "тражи унос од корисника. "
 
-#: src/libvlc-module.c:240
+#: src/libvlc-module.c:242
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
 "to add audio filters which can be used for post processing or visual effects "
@@ -1594,11 +1593,11 @@ msgstr ""
 "анализатор, итд.). Укључите те филтере овде и подесите их у одељку модула "
 "\"audio filters\"."
 
-#: src/libvlc-module.c:246
+#: src/libvlc-module.c:248
 msgid "Audio output module"
 msgstr "Модул звучног излаза"
 
-#: src/libvlc-module.c:248
+#: src/libvlc-module.c:250
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1606,12 +1605,12 @@ msgstr ""
 "Ово је аудио излазни метод који VLC користи. Подразумевано понашање је да "
 "аутоматски одабере најбољи метод који је доступан."
 
-#: src/libvlc-module.c:252 modules/stream_out/display.c:41
+#: src/libvlc-module.c:254 modules/stream_out/display.c:41
 #: modules/gui/qt4/ui/sprefs_audio.h:404
 msgid "Enable audio"
 msgstr "Укључи звук"
 
-#: src/libvlc-module.c:254
+#: src/libvlc-module.c:256
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
 "not take place, thus saving some processing power."
@@ -1619,28 +1618,28 @@ msgstr ""
 "Можете у потпуности да искључите аудио излаз. Процес обраде звука се неће "
 "одиграти, те ће бити мање потребе за радом процесора."
 
-#: src/libvlc-module.c:258
+#: src/libvlc-module.c:260
 msgid "Force mono audio"
 msgstr "Приморај моно звук"
 
-#: src/libvlc-module.c:259
+#: src/libvlc-module.c:261
 msgid "This will force a mono audio output."
 msgstr "Ово ће проузроковати моно звучни излаз."
 
-#: src/libvlc-module.c:262
+#: src/libvlc-module.c:264
 msgid "Default audio volume"
 msgstr "Подразумевани ниво звука"
 
-#: src/libvlc-module.c:264
+#: src/libvlc-module.c:266
 msgid ""
 "You can set the default audio output volume here, in a range from 0 to 1024."
 msgstr "Овде можете подесити подразумевани звучни излаз у опсегу од 0 до 1024."
 
-#: src/libvlc-module.c:267
+#: src/libvlc-module.c:269
 msgid "Audio output saved volume"
 msgstr "Сачувани ниво аудио звука"
 
-#: src/libvlc-module.c:269
+#: src/libvlc-module.c:271
 msgid ""
 "This saves the audio output volume when you use the mute function. You "
 "should not change this option manually."
@@ -1648,21 +1647,21 @@ msgstr ""
 "Чува ниво излазног звука када користите опцију без звука. Не би требало да "
 "мењате ову опцију ручно."
 
-#: src/libvlc-module.c:272
+#: src/libvlc-module.c:274
 msgid "Audio output volume step"
 msgstr "Праг излазног аудио нивоа"
 
-#: src/libvlc-module.c:274
+#: src/libvlc-module.c:276
 msgid ""
 "The step size of the volume is adjustable using this option, in a range from "
 "0 to 1024."
 msgstr "Праг излазног аудио нивоа се може подесити у опсегу од 0 до 1024."
 
-#: src/libvlc-module.c:277
+#: src/libvlc-module.c:279
 msgid "Audio output frequency (Hz)"
 msgstr "Излазна аудио фреквенција (Hz)"
 
-#: src/libvlc-module.c:279
+#: src/libvlc-module.c:281
 msgid ""
 "You can force the audio output frequency here. Common values are -1 "
 "(default), 48000, 44100, 32000, 22050, 16000, 11025, 8000."
@@ -1670,11 +1669,11 @@ msgstr ""
 "Можете да подесите жељену фреквенцију овде. Честе вредности су -1 "
 "(подразумевано), 48000, 32000, 22050, 16000, 11025, 8000."
 
-#: src/libvlc-module.c:283
+#: src/libvlc-module.c:285
 msgid "High quality audio resampling"
 msgstr "Високи квалитет звучног преузорка."
 
-#: src/libvlc-module.c:285
+#: src/libvlc-module.c:287
 msgid ""
 "This uses a high quality audio resampling algorithm. High quality audio "
 "resampling can be processor intensive so you can disable it and a cheaper "
@@ -1685,11 +1684,11 @@ msgstr ""
 "ову опцију и уместо овог алгоритма ће се онда користити једноставнији "
 "алгоритам."
 
-#: src/libvlc-module.c:290
+#: src/libvlc-module.c:292
 msgid "Audio desynchronization compensation"
 msgstr "Надокнада аудио десинхронизације"
 
-#: src/libvlc-module.c:292
+#: src/libvlc-module.c:294
 msgid ""
 "This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
@@ -1697,11 +1696,11 @@ msgstr ""
 "Ово одлаже излазни звук. Кашњење се задаје у милисекундама. Ово може бити "
 "корисно ако приметите кашњење између видеа и звука."
 
-#: src/libvlc-module.c:295
+#: src/libvlc-module.c:297
 msgid "Audio output channels mode"
 msgstr "Мод аудио излазних канала"
 
-#: src/libvlc-module.c:297
+#: src/libvlc-module.c:299
 msgid ""
 "This sets the audio output channels mode that will be used by default when "
 "possible (ie. if your hardware supports it as well as the audio stream being "
@@ -1710,12 +1709,12 @@ msgstr ""
 "Ово подешава који ће се аудио излазни канали користити када је то могуће "
 "(нпр. ако ваш хардвер то подржава као и аудио ток који се репродукује)."
 
-#: src/libvlc-module.c:301 modules/gui/macosx/simple_prefs.m:237
+#: src/libvlc-module.c:303 modules/gui/macosx/simple_prefs.m:237
 #: modules/gui/qt4/ui/sprefs_audio.h:413
 msgid "Use S/PDIF when available"
 msgstr "Користи S/PDIF када је доступно"
 
-#: src/libvlc-module.c:303
+#: src/libvlc-module.c:305
 msgid ""
 "S/PDIF can be used by default when your hardware supports it as well as the "
 "audio stream being played."
@@ -1723,11 +1722,11 @@ msgstr ""
 "S/PDIF се може користити као подразумевано ако ваш хардвер то подржава као и "
 "аудио ток који се репродукује"
 
-#: src/libvlc-module.c:306 modules/gui/macosx/simple_prefs.m:227
+#: src/libvlc-module.c:308 modules/gui/macosx/simple_prefs.m:227
 msgid "Force detection of Dolby Surround"
 msgstr "Приморај откривање Dolby Surround"
 
-#: src/libvlc-module.c:308
+#: src/libvlc-module.c:310
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
 "Surround but fails to be detected as such. Even if the stream is not "
@@ -1739,43 +1738,43 @@ msgstr ""
 "Dolby Surround техници, укључивањем ове опције можете поправити "
 "репородукцију звука посебно када се укомбинује са Headphone Channel Mixer."
 
-#: src/libvlc-module.c:315 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:317 modules/access/bda/bda.c:69
 msgid "On"
 msgstr "Укључено"
 
-#: src/libvlc-module.c:315 modules/access/bda/bda.c:68
+#: src/libvlc-module.c:317 modules/access/bda/bda.c:68
 msgid "Off"
 msgstr "Искључено"
 
-#: src/libvlc-module.c:320
+#: src/libvlc-module.c:322
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
 "Ово додадје звучне филтере постобраде да би се изменило рендеровање звука."
 
-#: src/libvlc-module.c:323
+#: src/libvlc-module.c:325
 msgid "Audio visualizations "
 msgstr "Звучна визуелизација"
 
-#: src/libvlc-module.c:325
+#: src/libvlc-module.c:327
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr "Ово додаје модуле визуелизације (спектрални анализатор, итд.)"
 
-#: src/libvlc-module.c:329
+#: src/libvlc-module.c:331
 #, fuzzy
 msgid "Replay gain mode"
 msgstr "Преслушај Појачање тип"
 
-#: src/libvlc-module.c:331
+#: src/libvlc-module.c:333
 #, fuzzy
 msgid "Select the replay gain mode"
 msgstr "Изаберите тастер за репродукцију овог обележивача."
 
-#: src/libvlc-module.c:333
+#: src/libvlc-module.c:335
 #, fuzzy
 msgid "Replay preamp"
 msgstr "Преслушај Појачање тип"
 
-#: src/libvlc-module.c:335
+#: src/libvlc-module.c:337
 #, fuzzy
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
@@ -1783,43 +1782,43 @@ msgid ""
 msgstr ""
 "Ово Вам дозвољава да одредите подразумевани аудио порт за RTP пуштање тока."
 
-#: src/libvlc-module.c:338
+#: src/libvlc-module.c:340
 #, fuzzy
 msgid "Default replay gain"
 msgstr "Подразумевани ток"
 
-#: src/libvlc-module.c:340
+#: src/libvlc-module.c:342
 msgid "This is the gain used for stream without replay gain information"
 msgstr ""
 
-#: src/libvlc-module.c:342
+#: src/libvlc-module.c:344
 #, fuzzy
 msgid "Peak protection"
 msgstr "Редукција шума"
 
-#: src/libvlc-module.c:344
+#: src/libvlc-module.c:346
 msgid "Protect against sound clipping"
 msgstr ""
 
-#: src/libvlc-module.c:347
+#: src/libvlc-module.c:349
 #, fuzzy
 msgid "Enable time streching audio"
 msgstr "Укључи звук"
 
-#: src/libvlc-module.c:349
+#: src/libvlc-module.c:351
 msgid ""
 "This allows to play audio at lower or higher speed without affecting the "
 "audio pitch"
 msgstr ""
 
-#: src/libvlc-module.c:356 modules/access/dshow/dshow.cpp:82
+#: src/libvlc-module.c:358 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/codec/avcodec/avcodec.c:74
 #: modules/codec/kate.c:203
 #: modules/gui/qt4/components/interface_widgets.cpp:295
 msgid "None"
 msgstr "Ништа"
 
-#: src/libvlc-module.c:364
+#: src/libvlc-module.c:366
 msgid ""
 "These options allow you to modify the behavior of the video output "
 "subsystem. You can for example enable video filters (deinterlacing, image "
@@ -1832,11 +1831,11 @@ msgstr ""
 "филтере овде и подесите их у одљчку модула \"видео филтери\". Можете "
 "подесити и разоврсне видео опције."
 
-#: src/libvlc-module.c:370
+#: src/libvlc-module.c:372
 msgid "Video output module"
 msgstr "Модул видео излаза"
 
-#: src/libvlc-module.c:372
+#: src/libvlc-module.c:374
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1844,12 +1843,12 @@ msgstr ""
 "Ово је метод видео излаза који VLC користи. Подразумевано понашање је да се "
 "аутоматски одабере најбољи метод који је доступан."
 
-#: src/libvlc-module.c:375 modules/stream_out/display.c:43
+#: src/libvlc-module.c:377 modules/stream_out/display.c:43
 #: modules/gui/qt4/ui/sprefs_video.h:309
 msgid "Enable video"
 msgstr "Укључи видео"
 
-#: src/libvlc-module.c:377
+#: src/libvlc-module.c:379
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
 "not take place, thus saving some processing power."
@@ -1857,7 +1856,7 @@ msgstr ""
 "Можете употпуности да искључите видео излаз. Видео декодирање се неће "
 "извршити, те ће процесоров рад бити мањи."
 
-#: src/libvlc-module.c:380 modules/codec/fake.c:58
+#: src/libvlc-module.c:382 modules/codec/fake.c:58
 #: modules/stream_out/mosaic_bridge.c:109
 #: modules/stream_out/transcode/transcode.c:66
 #: modules/visualization/projectm.cpp:60
@@ -1865,7 +1864,7 @@ msgstr ""
 msgid "Video width"
 msgstr "Ширина видеа"
 
-#: src/libvlc-module.c:382
+#: src/libvlc-module.c:384
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
 "characteristics."
@@ -1873,7 +1872,7 @@ msgstr ""
 "Можете да прецизирате ширину видеа. Подразумевано (-1) је да VLС прилагоди "
 "видео особине."
 
-#: src/libvlc-module.c:385 modules/codec/fake.c:61
+#: src/libvlc-module.c:387 modules/codec/fake.c:61
 #: modules/stream_out/mosaic_bridge.c:112
 #: modules/stream_out/transcode/transcode.c:69
 #: modules/visualization/projectm.cpp:63
@@ -1881,7 +1880,7 @@ msgstr ""
 msgid "Video height"
 msgstr "Видео висина"
 
-#: src/libvlc-module.c:387
+#: src/libvlc-module.c:389
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
 "video characteristics."
@@ -1889,33 +1888,33 @@ msgstr ""
 "Можете да прецизирате висину видеа. Подразумевано (-1) је да VLС прилагоди "
 "видео особине."
 
-#: src/libvlc-module.c:390
+#: src/libvlc-module.c:392
 msgid "Video X coordinate"
 msgstr "X кордината видеа "
 
-#: src/libvlc-module.c:392
+#: src/libvlc-module.c:394
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
 "coordinate)."
 msgstr ""
 "Можете да прецизирате позицију горњег левог угла видео прозора (X кордината)."
 
-#: src/libvlc-module.c:395
+#: src/libvlc-module.c:397
 msgid "Video Y coordinate"
 msgstr "Y кордината видеа "
 
-#: src/libvlc-module.c:397
+#: src/libvlc-module.c:399
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
 "coordinate)."
 msgstr ""
 "Можете да прецизирате позицију горњег левог угла видео прозора (Y кордината)."
 
-#: src/libvlc-module.c:400
+#: src/libvlc-module.c:402
 msgid "Video title"
 msgstr "Наслов видеа"
 
-#: src/libvlc-module.c:402
+#: src/libvlc-module.c:404
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
@@ -1923,11 +1922,11 @@ msgstr ""
 "Прилагођени наслов за прозор видеа (у случају да видео није саставни део "
 "интерфејса)."
 
-#: src/libvlc-module.c:405
+#: src/libvlc-module.c:407
 msgid "Video alignment"
 msgstr "Центрирање видеа"
 
-#: src/libvlc-module.c:407
+#: src/libvlc-module.c:409
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
 "centered (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use "
@@ -1937,9 +1936,9 @@ msgstr ""
 "центриран (0=центар, 1=лево, 2=десно, 4=горе, 8=доле, можете и да уклапате "
 "ове вредности, 6=4+2 значи горе-десно)."
 
-#: src/libvlc-module.c:412 src/libvlc-module.c:493
+#: src/libvlc-module.c:414 src/libvlc-module.c:495
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
-#: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:78
+#: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/gui/fbosd.c:162 modules/video_filter/audiobargraph_v.c:74
 #: modules/video_filter/logo.c:79 modules/video_filter/marq.c:137
 #: modules/video_filter/mosaic.c:171 modules/video_filter/osdmenu.c:85
@@ -1947,7 +1946,7 @@ msgstr ""
 msgid "Center"
 msgstr "Центар"
 
-#: src/libvlc-module.c:412 src/libvlc-module.c:493 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:414 src/libvlc-module.c:495 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -1958,7 +1957,7 @@ msgstr "Центар"
 msgid "Top"
 msgstr "Врх"
 
-#: src/libvlc-module.c:412 src/libvlc-module.c:493 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:414 src/libvlc-module.c:495 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -1967,7 +1966,7 @@ msgstr "Врх"
 msgid "Bottom"
 msgstr "Дно"
 
-#: src/libvlc-module.c:413 src/libvlc-module.c:494 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:415 src/libvlc-module.c:496 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1975,7 +1974,7 @@ msgstr "Дно"
 msgid "Top-Left"
 msgstr "Горе лево"
 
-#: src/libvlc-module.c:413 src/libvlc-module.c:494 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:415 src/libvlc-module.c:496 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1983,7 +1982,7 @@ msgstr "Горе лево"
 msgid "Top-Right"
 msgstr "Горе десно"
 
-#: src/libvlc-module.c:413 src/libvlc-module.c:494 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:415 src/libvlc-module.c:496 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1991,7 +1990,7 @@ msgstr "Горе десно"
 msgid "Bottom-Left"
 msgstr "Доле лево"
 
-#: src/libvlc-module.c:413 src/libvlc-module.c:494 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:415 src/libvlc-module.c:496 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1999,20 +1998,20 @@ msgstr "Доле лево"
 msgid "Bottom-Right"
 msgstr "Доле десно"
 
-#: src/libvlc-module.c:415
+#: src/libvlc-module.c:417
 msgid "Zoom video"
 msgstr "Увећај видео"
 
-#: src/libvlc-module.c:417
+#: src/libvlc-module.c:419
 msgid "You can zoom the video by the specified factor."
 msgstr "Можете да увећате видео са унетим чиниоцем."
 
-#: src/libvlc-module.c:419
+#: src/libvlc-module.c:421
 #, fuzzy
 msgid "Grayscale video output"
 msgstr "Grayscale (сиви) видео излаз"
 
-#: src/libvlc-module.c:421
+#: src/libvlc-module.c:423
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
 "save some processing power."
@@ -2020,21 +2019,21 @@ msgstr ""
 "Излазни видео је grayscale (сиви). Пошто информација о боји није декодирана, "
 "ово може да сачува снагу за обраду."
 
-#: src/libvlc-module.c:424
+#: src/libvlc-module.c:426
 #, fuzzy
 msgid "Embedded video"
 msgstr "Уграђени видео излаз"
 
-#: src/libvlc-module.c:426
+#: src/libvlc-module.c:428
 #, fuzzy
 msgid "Embed the video output in the main interface."
 msgstr "Уграђени видео у интерфејс"
 
-#: src/libvlc-module.c:428 modules/video_output/ggi.c:57
+#: src/libvlc-module.c:430 modules/video_output/ggi.c:57
 msgid "X11 display"
 msgstr "X11 приказ"
 
-#: src/libvlc-module.c:430
+#: src/libvlc-module.c:432
 msgid ""
 "X11 hardware display to use. By default VLC will use the value of the "
 "DISPLAY environment variable."
@@ -2042,19 +2041,19 @@ msgstr ""
 "Хардверски приказ X11 који се користи. Подразумевано ће VLC користити "
 "вредност променљиве окружења DISPLAY."
 
-#: src/libvlc-module.c:433
+#: src/libvlc-module.c:435
 msgid "Fullscreen video output"
 msgstr "Пун екран видео излаза"
 
-#: src/libvlc-module.c:435
+#: src/libvlc-module.c:437
 msgid "Start video in fullscreen mode"
 msgstr "Покрени видео у режиму пуног екрана"
 
-#: src/libvlc-module.c:437
+#: src/libvlc-module.c:439
 msgid "Overlay video output"
 msgstr "Видео излаз преклапања"
 
-#: src/libvlc-module.c:439
+#: src/libvlc-module.c:441
 msgid ""
 "Overlay is the hardware acceleration capability of your video card (ability "
 "to render video directly). VLC will try to use it by default."
@@ -2062,20 +2061,20 @@ msgstr ""
 "Преклапање је способностграфичке картице да убрза хардверски (могућност да "
 "директно исцртава видео). VLC ће покушати да ово користи као подразумевано."
 
-#: src/libvlc-module.c:442 src/video_output/vout_intf.c:344
+#: src/libvlc-module.c:444 src/video_output/vout_intf.c:344
 #: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "Увек на врху"
 
-#: src/libvlc-module.c:444
+#: src/libvlc-module.c:446
 msgid "Always place the video window on top of other windows."
 msgstr "Увек прилажи видео прозор изнад других прозора."
 
-#: src/libvlc-module.c:446
+#: src/libvlc-module.c:448
 msgid "Enable wallpaper mode "
 msgstr "Укључи мод позадине"
 
-#: src/libvlc-module.c:448
+#: src/libvlc-module.c:450
 #, fuzzy
 msgid ""
 "The wallpaper mode allows you to display the video as the desktop background."
@@ -2084,106 +2083,107 @@ msgstr ""
 "Приметите да ова опција ради само у моду преклапања и да десктоп не сме да "
 "има постављену позадину."
 
-#: src/libvlc-module.c:451
+#: src/libvlc-module.c:453
 msgid "Show media title on video"
 msgstr "Додај назив датотеке на видео"
 
-#: src/libvlc-module.c:453
+#: src/libvlc-module.c:455
 #, fuzzy
 msgid "Display the title of the video on top of the movie."
 msgstr "Увек прилажи видео прозор изнад других прозора."
 
-#: src/libvlc-module.c:455
+#: src/libvlc-module.c:457
 #, fuzzy
 msgid "Show video title for x milliseconds"
 msgstr "Додај титлове на транскодовани видео "
 
-#: src/libvlc-module.c:457
+#: src/libvlc-module.c:459
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr ""
 
-#: src/libvlc-module.c:459
+#: src/libvlc-module.c:461
 #, fuzzy
 msgid "Position of video title"
 msgstr "Видео филтер откривања померања"
 
-#: src/libvlc-module.c:461
+#: src/libvlc-module.c:463
 msgid "Place on video where to display the title (default bottom center)."
 msgstr ""
 
-#: src/libvlc-module.c:463
+#: src/libvlc-module.c:465
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr ""
 
-#: src/libvlc-module.c:466
+#: src/libvlc-module.c:468
 msgid ""
 "Hide mouse cursor and fullscreen controller after n milliseconds, default is "
 "3000 ms (3 sec.)"
 msgstr ""
 
-#: src/libvlc-module.c:469 src/libvlc-module.c:471
+#: src/libvlc-module.c:471 src/libvlc-module.c:473
 #: src/video_output/video_output.c:1974 modules/gui/macosx/intf.m:700
 #: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/convert.cpp:86
 #: modules/video_filter/deinterlace.c:133
 msgid "Deinterlace"
 msgstr "Расплитање"
 
-#: src/libvlc-module.c:479 src/video_output/video_output.c:1990
+#: src/libvlc-module.c:481 src/video_output/video_output.c:1990
+#: modules/gui/macosx/intf.m:702 modules/gui/macosx/intf.m:703
 #: modules/video_filter/deinterlace.c:118
 msgid "Deinterlace mode"
 msgstr "Расплитање режим рада"
 
-#: src/libvlc-module.c:481
+#: src/libvlc-module.c:483
 #, fuzzy
 msgid "Deinterlace method to use for video processing."
 msgstr "Метод расплитања који ће се користити за ток."
 
-#: src/libvlc-module.c:487 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:489 modules/video_filter/deinterlace.c:129
 msgid "Discard"
 msgstr "Одбаци"
 
-#: src/libvlc-module.c:487 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:489 modules/video_filter/deinterlace.c:129
 msgid "Blend"
 msgstr "Уклапање"
 
-#: src/libvlc-module.c:487 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:489 modules/video_filter/deinterlace.c:129
 #, fuzzy
 msgid "Mean"
 msgstr "Просечан"
 
-#: src/libvlc-module.c:487 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:489 modules/video_filter/deinterlace.c:129
 #, fuzzy
 msgid "Bob"
 msgstr "Bob"
 
-#: src/libvlc-module.c:488 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:490 modules/video_filter/deinterlace.c:129
 msgid "Linear"
 msgstr "Линеарно"
 
-#: src/libvlc-module.c:496
+#: src/libvlc-module.c:498
 msgid "Disable screensaver"
 msgstr "Онемогући чувара екрана"
 
-#: src/libvlc-module.c:497
+#: src/libvlc-module.c:499
 msgid "Disable the screensaver during video playback."
 msgstr "Искључи чувара екрана током репродукције видеа."
 
-#: src/libvlc-module.c:499
+#: src/libvlc-module.c:501
 #, fuzzy
 msgid "Inhibit the power management daemon during playback"
 msgstr "Искључи чувара екрана током репродукције видеа."
 
-#: src/libvlc-module.c:500
+#: src/libvlc-module.c:502
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
 "computer being suspended because of inactivity."
 msgstr ""
 
-#: src/libvlc-module.c:503 modules/gui/qt4/ui/sprefs_video.h:316
+#: src/libvlc-module.c:505 modules/gui/qt4/ui/sprefs_video.h:316
 msgid "Window decorations"
 msgstr "Украаси прозора"
 
-#: src/libvlc-module.c:505
+#: src/libvlc-module.c:507
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
 "giving a \"minimal\" window."
@@ -2191,20 +2191,20 @@ msgstr ""
 "VLC може да прескочи прављење наслова прозоа, оквира, итд... око видеа, "
 "дајући ми \"минимални\" прозор."
 
-#: src/libvlc-module.c:508
+#: src/libvlc-module.c:510
 #, fuzzy
 msgid "Video output filter module"
 msgstr "Модул видео излаза"
 
-#: src/libvlc-module.c:510
+#: src/libvlc-module.c:512
 msgid "This adds video output filters like clone or wall"
 msgstr ""
 
-#: src/libvlc-module.c:512
+#: src/libvlc-module.c:514
 msgid "Video filter module"
 msgstr "Модул видео филтера"
 
-#: src/libvlc-module.c:514
+#: src/libvlc-module.c:516
 #, fuzzy
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
@@ -2213,71 +2213,71 @@ msgstr ""
 "Ово додаје филтере пост-обраде за поправљање квалитета слике, нпр. "
 "расплитање, или клонирање или изобличење видео прозора."
 
-#: src/libvlc-module.c:518
+#: src/libvlc-module.c:520
 msgid "Video snapshot directory (or filename)"
 msgstr "Директоријум ухваћених видео слика (или име фајла)"
 
-#: src/libvlc-module.c:520
+#: src/libvlc-module.c:522
 msgid "Directory where the video snapshots will be stored."
 msgstr "Директоријум где ће се чувати слике."
 
-#: src/libvlc-module.c:522 src/libvlc-module.c:524
+#: src/libvlc-module.c:524 src/libvlc-module.c:526
 msgid "Video snapshot file prefix"
 msgstr "Префикс фајла слика видеа"
 
-#: src/libvlc-module.c:526
+#: src/libvlc-module.c:528
 msgid "Video snapshot format"
 msgstr "Формат слика видеа"
 
-#: src/libvlc-module.c:528
+#: src/libvlc-module.c:530
 msgid "Image format which will be used to store the video snapshots"
 msgstr "Формат слике који се користи за чување слика видеа."
 
-#: src/libvlc-module.c:530
+#: src/libvlc-module.c:532
 msgid "Display video snapshot preview"
 msgstr "Прикажи сличице слика видеа"
 
-#: src/libvlc-module.c:532
+#: src/libvlc-module.c:534
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr "Прикажи сличице слика видеа у горњем левом углу екрана."
 
-#: src/libvlc-module.c:534
+#: src/libvlc-module.c:536
 msgid "Use sequential numbers instead of timestamps"
 msgstr "Користи бројеве у низу уместо датума сликања"
 
-#: src/libvlc-module.c:536
+#: src/libvlc-module.c:538
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr ""
 "Користи узастопне бројеве уместо временских марки за нумерисање слика екрана"
 
-#: src/libvlc-module.c:538
+#: src/libvlc-module.c:540
 #, fuzzy
 msgid "Video snapshot width"
 msgstr "Ширина видео слике"
 
-#: src/libvlc-module.c:540
+#: src/libvlc-module.c:542
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
 "original width (-1). Using 0 will scale the width to keep the aspect ratio."
 msgstr ""
 
-#: src/libvlc-module.c:544
+#: src/libvlc-module.c:546
 #, fuzzy
 msgid "Video snapshot height"
 msgstr "Висина видео слике"
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:548
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
 "the original height (-1). Using 0 will scale the height to keep the aspect "
 "ratio."
 msgstr ""
 
-#: src/libvlc-module.c:550
+#: src/libvlc-module.c:552
 msgid "Video cropping"
 msgstr "Исецање видеа"
 
-#: src/libvlc-module.c:552
+#: src/libvlc-module.c:554
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
@@ -2285,11 +2285,11 @@ msgstr ""
 "Ово приморава исецање изворног видеа. Дозвољени формати су x:y (4:3, 16:9, "
 "итд.) који изражавају целокупни однос слике."
 
-#: src/libvlc-module.c:556
+#: src/libvlc-module.c:558
 msgid "Source aspect ratio"
 msgstr "Изворна пропорција односа"
 
-#: src/libvlc-module.c:558
+#: src/libvlc-module.c:560
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
@@ -2304,31 +2304,31 @@ msgstr ""
 "float (реални број) вредност (1.25, 1.3333, итд.) за изражавање "
 "четвртастости пиксела."
 
-#: src/libvlc-module.c:565
+#: src/libvlc-module.c:567
 #, fuzzy
 msgid "Video Auto Scaling"
 msgstr "Видео размера"
 
-#: src/libvlc-module.c:567
+#: src/libvlc-module.c:569
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr ""
 
-#: src/libvlc-module.c:569
+#: src/libvlc-module.c:571
 #, fuzzy
 msgid "Video scaling factor"
 msgstr "Филтер видео размере"
 
-#: src/libvlc-module.c:571
+#: src/libvlc-module.c:573
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
 msgstr ""
 
-#: src/libvlc-module.c:574
+#: src/libvlc-module.c:576
 msgid "Custom crop ratios list"
 msgstr "Листа прилагођених односа за исецање"
 
-#: src/libvlc-module.c:576
+#: src/libvlc-module.c:578
 #, fuzzy
 msgid ""
 "Comma separated list of crop ratios which will be added in the interface's "
@@ -2337,11 +2337,11 @@ msgstr ""
 "Одвојите зарезом листу од односа исецања који ће се додати у листу "
 "интерфејса односа исецања."
 
-#: src/libvlc-module.c:579
+#: src/libvlc-module.c:581
 msgid "Custom aspect ratios list"
 msgstr "Листа прилагођених односа пропорција"
 
-#: src/libvlc-module.c:581
+#: src/libvlc-module.c:583
 #, fuzzy
 msgid ""
 "Comma separated list of aspect ratios which will be added in the interface's "
@@ -2350,11 +2350,11 @@ msgstr ""
 "Одвојите зарезом листу односа пропорција које ће се додати у листу "
 "интерфејса односа пропорција."
 
-#: src/libvlc-module.c:584
+#: src/libvlc-module.c:586
 msgid "Fix HDTV height"
 msgstr "Подеси висину HDTV"
 
-#: src/libvlc-module.c:586
+#: src/libvlc-module.c:588
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
 "incorrectly sets height to 1088 lines. You should only disable this option "
@@ -2365,11 +2365,11 @@ msgstr ""
 "да онемогућите само ако Ваш видео има не-стандардан формат који захтева свих "
 "1088 линија."
 
-#: src/libvlc-module.c:591
+#: src/libvlc-module.c:593
 msgid "Monitor pixel aspect ratio"
 msgstr "Однос пропорција пиксела монитора"
 
-#: src/libvlc-module.c:593
+#: src/libvlc-module.c:595
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
 "(1:1). If you have a 16:9 screen, you might need to change this to 4:3 in "
@@ -2379,12 +2379,12 @@ msgstr ""
 "четвртасте пикселе (1:1). Ако имате 16:9 екран, можда би требало да "
 "промените вредност у 4:3 како би задржали пропорције."
 
-#: src/libvlc-module.c:597 modules/gui/macosx/simple_prefs.m:297
+#: src/libvlc-module.c:599 modules/gui/macosx/simple_prefs.m:297
 #: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "Прескочи фрејмове"
 
-#: src/libvlc-module.c:599
+#: src/libvlc-module.c:601
 #, fuzzy
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
@@ -2393,11 +2393,11 @@ msgstr ""
 "Ово омогућава прескакње фрејмова у MPEG2 току. То се деси када процесор није "
 "довољно јак."
 
-#: src/libvlc-module.c:602
+#: src/libvlc-module.c:604
 msgid "Drop late frames"
 msgstr "Прескочи закаснале фрејмове"
 
-#: src/libvlc-module.c:604
+#: src/libvlc-module.c:606
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
 "intended display date)."
@@ -2405,11 +2405,11 @@ msgstr ""
 "Ово прескаче закаснела фрејмове (оне који су стигли до видео излаза пошто су "
 "требали да буду приказани)"
 
-#: src/libvlc-module.c:607
+#: src/libvlc-module.c:609
 msgid "Quiet synchro"
 msgstr "Тиха синхронизација"
 
-#: src/libvlc-module.c:609
+#: src/libvlc-module.c:611
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
 "synchronization mechanism."
@@ -2417,24 +2417,24 @@ msgstr ""
 "Ова опција избегава нагомилавање записника порука са излазом грешака од "
 "стране механизма синхронизације видео излаза."
 
-#: src/libvlc-module.c:612
+#: src/libvlc-module.c:614
 msgid "Key press events"
 msgstr ""
 
-#: src/libvlc-module.c:614
+#: src/libvlc-module.c:616
 msgid "This enables VLC hotkeys from the (non-embedded) video window."
 msgstr ""
 
-#: src/libvlc-module.c:616 modules/video_filter/remoteosd.c:94
+#: src/libvlc-module.c:618 modules/video_filter/remoteosd.c:94
 #, fuzzy
 msgid "Mouse events"
 msgstr "Гестови миша"
 
-#: src/libvlc-module.c:618
+#: src/libvlc-module.c:620
 msgid "This enables handling of mouse clicks on the video."
 msgstr ""
 
-#: src/libvlc-module.c:626
+#: src/libvlc-module.c:628
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
 "as the DVD or VCD device, the network interface settings or the subtitle "
@@ -2443,12 +2443,12 @@ msgstr ""
 "Ове опције вам омогућавају да подесите понашање улазног подсистема, као што "
 "је DVD или VCD уређај, подешавање мрежног интерфејса или канала за титл."
 
-#: src/libvlc-module.c:630
+#: src/libvlc-module.c:632
 #, fuzzy
 msgid "Clock reference average counter"
 msgstr "Осредњи бројач препоруке сата"
 
-#: src/libvlc-module.c:632
+#: src/libvlc-module.c:634
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
@@ -2456,11 +2456,11 @@ msgstr ""
 "Ако користите PVR улаз (или врло нередован улаз), треба да унесете овде "
 "10000."
 
-#: src/libvlc-module.c:635
+#: src/libvlc-module.c:637
 msgid "Clock synchronisation"
 msgstr "Синхронизација сата"
 
-#: src/libvlc-module.c:637
+#: src/libvlc-module.c:639
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
@@ -2469,22 +2469,22 @@ msgstr ""
 "времену. Користите ово ако имате потешкоћа са испрекиданим репродукцијама на "
 "мрежним токовима."
 
-#: src/libvlc-module.c:641
+#: src/libvlc-module.c:643
 #, fuzzy
 msgid "Clock jitter"
 msgstr "просторно"
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:645
 msgid ""
 "It tells the clock algorithms what is the maximal input jitter that is "
 "considered valid and can be compensated (in milliseconds)"
 msgstr ""
 
-#: src/libvlc-module.c:646 modules/control/netsync.c:72
+#: src/libvlc-module.c:648 modules/control/netsync.c:72
 msgid "Network synchronisation"
 msgstr "Синхронизација мреже"
 
-#: src/libvlc-module.c:647
+#: src/libvlc-module.c:649
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
@@ -2492,39 +2492,39 @@ msgstr ""
 "Ово вам омогћава да удаљено синхронизујете сатове за сервер и клијент. "
 "Детаљна подешавања су доступна у Advanced / Network Sync."
 
-#: src/libvlc-module.c:653 src/video_output/vout_intf.c:99
+#: src/libvlc-module.c:655 src/video_output/vout_intf.c:99
 #: src/video_output/vout_intf.c:117 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/access/dshow/dshow.cpp:87
 #: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:238
 #: modules/audio_output/alsa.c:107 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1305
 #: modules/gui/macosx/simple_prefs.m:415 modules/gui/macosx/simple_prefs.m:536
-#: modules/gui/macosx/simple_prefs.m:770 modules/gui/macosx/vout.m:212
+#: modules/gui/macosx/simple_prefs.m:769 modules/gui/macosx/vout.m:212
 #: modules/gui/qt4/components/preferences_widgets.cpp:619
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:72
 #: modules/video_filter/rss.c:185 modules/video_output/msw/directx.c:95
 msgid "Default"
 msgstr "Подразумевано"
 
-#: src/libvlc-module.c:653 modules/gui/macosx/equalizer.m:149
+#: src/libvlc-module.c:655 modules/gui/macosx/equalizer.m:149
 #: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Укључи"
 
-#: src/libvlc-module.c:655 modules/misc/notify/growl_udp.c:75
+#: src/libvlc-module.c:657 modules/misc/notify/growl_udp.c:75
 msgid "UDP port"
 msgstr "UDP порт"
 
-#: src/libvlc-module.c:657
+#: src/libvlc-module.c:659
 msgid "This is the default port used for UDP streams. Default is 1234."
 msgstr "Подразумевани порт за UDP токове. Подразумевани је 1234."
 
-#: src/libvlc-module.c:659
+#: src/libvlc-module.c:661
 msgid "MTU of the network interface"
 msgstr "MTU или мрежни интерфејс"
 
-#: src/libvlc-module.c:661
+#: src/libvlc-module.c:663
 #, fuzzy
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
@@ -2533,11 +2533,11 @@ msgstr ""
 "Максимална величина пакета који може да се пошаље преко мрежног интерфекса. "
 "На Етернету је то обично 1500 бајтова."
 
-#: src/libvlc-module.c:666 modules/stream_out/rtp.c:122
+#: src/libvlc-module.c:668 modules/stream_out/rtp.c:122
 msgid "Hop limit (TTL)"
 msgstr "Граница скока (TTL)"
 
-#: src/libvlc-module.c:668 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:670 modules/stream_out/rtp.c:124
 #, fuzzy
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
@@ -2548,23 +2548,23 @@ msgstr ""
 "пакета које шаље излани ток (0 = користи оперативни систем који је уграђен - "
 "подразумевана вредност)."
 
-#: src/libvlc-module.c:672
+#: src/libvlc-module.c:674
 #, fuzzy
 msgid "Multicast output interface"
 msgstr "IPv6 интерфејс вишеструког излаза"
 
-#: src/libvlc-module.c:674
+#: src/libvlc-module.c:676
 #, fuzzy
 msgid "Default multicast interface. This overrides the routing table."
 msgstr ""
 "Подразумевани IPv6 интерфејс вишеструког емитовања. Ово поништава утицај "
 "табеле за преусмеравање."
 
-#: src/libvlc-module.c:676
+#: src/libvlc-module.c:678
 msgid "IPv4 multicast output interface address"
 msgstr "IPv4 адреса излазног интерфејса за вишеструко емитовање"
 
-#: src/libvlc-module.c:678
+#: src/libvlc-module.c:680
 #, fuzzy
 msgid ""
 "IPv4 address for the default multicast interface. This overrides the routing "
@@ -2573,17 +2573,17 @@ msgstr ""
 "IPv4 адреса за подразумевани интерфејс вишеструког емитовања. Ово поништава "
 "утицај табеле за преусмеравање."
 
-#: src/libvlc-module.c:681
+#: src/libvlc-module.c:683
 msgid "DiffServ Code Point"
 msgstr ""
 
-#: src/libvlc-module.c:682
+#: src/libvlc-module.c:684
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
 msgstr ""
 
-#: src/libvlc-module.c:688
+#: src/libvlc-module.c:690
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
@@ -2591,7 +2591,7 @@ msgstr ""
 "Изаберите програм који ћете одабрати дајући му ID сервиса. Користите ову "
 "опцију само ако желите да гледате мулти-програмски ток (нпр. DVB ток)."
 
-#: src/libvlc-module.c:694
+#: src/libvlc-module.c:696
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
@@ -2601,27 +2601,27 @@ msgstr ""
 "одвејени зарезом. Користите ову опцију само ако желите да гледате мулти-"
 "програмски ток (нпр. DVB ток)."
 
-#: src/libvlc-module.c:700 modules/gui/qt4/ui/open_disk.h:305
+#: src/libvlc-module.c:702 modules/gui/qt4/ui/open_disk.h:305
 msgid "Audio track"
 msgstr "Аудио трака"
 
-#: src/libvlc-module.c:702
+#: src/libvlc-module.c:704
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Број тока аудио траке који се користи (од 0 до n)."
 
-#: src/libvlc-module.c:705 modules/gui/qt4/ui/open_disk.h:306
+#: src/libvlc-module.c:707 modules/gui/qt4/ui/open_disk.h:306
 msgid "Subtitles track"
 msgstr "Трака титла"
 
-#: src/libvlc-module.c:707
+#: src/libvlc-module.c:709
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr "Број тока титл траке који се користи (од 0 до n)."
 
-#: src/libvlc-module.c:710
+#: src/libvlc-module.c:712
 msgid "Audio language"
 msgstr "Језик звука"
 
-#: src/libvlc-module.c:712
+#: src/libvlc-module.c:714
 #, fuzzy
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
@@ -2631,11 +2631,11 @@ msgstr ""
 "Језик аудио траке који желите да користите (зарезом се одваја, дво или "
 "трослојна скраћеница државе)."
 
-#: src/libvlc-module.c:715
+#: src/libvlc-module.c:717
 msgid "Subtitle language"
 msgstr "Језик титла"
 
-#: src/libvlc-module.c:717
+#: src/libvlc-module.c:719
 #, fuzzy
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
@@ -2644,78 +2644,78 @@ msgstr ""
 "Језик титла који желите да користите (зарезом се одваја, дво или трослојна "
 "скраћеница државе)."
 
-#: src/libvlc-module.c:721
+#: src/libvlc-module.c:723
 msgid "Audio track ID"
 msgstr "ID аудио траке"
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:725
 msgid "Stream ID of the audio track to use."
 msgstr "ID тока аудио траке који се користи."
 
-#: src/libvlc-module.c:725
+#: src/libvlc-module.c:727
 msgid "Subtitles track ID"
 msgstr "ID титл траке"
 
-#: src/libvlc-module.c:727
+#: src/libvlc-module.c:729
 msgid "Stream ID of the subtitle track to use."
 msgstr "ID тока титл траке који се користи."
 
-#: src/libvlc-module.c:729
+#: src/libvlc-module.c:731
 msgid "Input repetitions"
 msgstr "Понављање улаза"
 
-#: src/libvlc-module.c:731
+#: src/libvlc-module.c:733
 msgid "Number of time the same input will be repeated"
 msgstr "Број пута колико ће се исти унос поновити"
 
-#: src/libvlc-module.c:733
+#: src/libvlc-module.c:735
 msgid "Start time"
 msgstr "Време почетка"
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:737
 msgid "The stream will start at this position (in seconds)."
 msgstr "Ток ће одпочети на овој позицији (у секундама)."
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:739
 msgid "Stop time"
 msgstr "Време заустављања"
 
-#: src/libvlc-module.c:739
+#: src/libvlc-module.c:741
 msgid "The stream will stop at this position (in seconds)."
 msgstr "Ток ће се зауставити на овој позицији (у секундама)."
 
-#: src/libvlc-module.c:741
+#: src/libvlc-module.c:743
 #, fuzzy
 msgid "Run time"
 msgstr "рунди"
 
-#: src/libvlc-module.c:743
+#: src/libvlc-module.c:745
 #, fuzzy
 msgid "The stream will run this duration (in seconds)."
 msgstr "Ток ће одпочети на овој позицији (у секундама)."
 
-#: src/libvlc-module.c:745
+#: src/libvlc-module.c:747
 #, fuzzy
 msgid "Fast seek"
 msgstr "Убрзано"
 
-#: src/libvlc-module.c:747
+#: src/libvlc-module.c:749
 msgid "Favor speed over precision while seeking"
 msgstr ""
 
-#: src/libvlc-module.c:749
+#: src/libvlc-module.c:751
 msgid "Playback speed"
 msgstr "Брзина репродукције"
 
-#: src/libvlc-module.c:751
+#: src/libvlc-module.c:753
 msgid "This defines the playback speed (nominal speed is 1.0)."
 msgstr ""
 
-#: src/libvlc-module.c:753
+#: src/libvlc-module.c:755
 msgid "Input list"
 msgstr "Списак уноса"
 
-#: src/libvlc-module.c:755
+#: src/libvlc-module.c:757
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
@@ -2723,12 +2723,12 @@ msgstr ""
 "Можете да задате списак уноса, одвојених зарезом, које ће бити повезане "
 "заједно после обичне."
 
-#: src/libvlc-module.c:758
+#: src/libvlc-module.c:760
 #, fuzzy
 msgid "Input slave (experimental)"
 msgstr "Улазни помоћни уређај (експериментално)"
 
-#: src/libvlc-module.c:760
+#: src/libvlc-module.c:762
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
 "is experimental, not all formats are supported. Use a '#' separated list of "
@@ -2738,11 +2738,11 @@ msgstr ""
 "време. Ова карактеристика је експериментална, и нису подржани сви формати. "
 "Користите листу улаза раздвајајући их са # знаком. "
 
-#: src/libvlc-module.c:764
+#: src/libvlc-module.c:766
 msgid "Bookmarks list for a stream"
 msgstr "Списак маркера за ток"
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:768
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
@@ -2751,42 +2751,42 @@ msgstr ""
 "Можете ручно да задате листу маркера за ток у форми \"{name=bookmark-name,"
 "time=optional-time-offset,bytes=optional-byte-offset},{...}\""
 
-#: src/libvlc-module.c:770 modules/gui/qt4/ui/sprefs_input.h:316
+#: src/libvlc-module.c:772 modules/gui/qt4/ui/sprefs_input.h:316
 #, fuzzy
 msgid "Record directory or filename"
 msgstr "Директоријум ухваћених видео слика (или име фајла)"
 
-#: src/libvlc-module.c:772
+#: src/libvlc-module.c:774
 #, fuzzy
 msgid "Directory or filename where the records will be stored"
 msgstr "Директоријум где ће се чувати снимци."
 
-#: src/libvlc-module.c:774
+#: src/libvlc-module.c:776
 #, fuzzy
 msgid "Prefer native stream recording"
 msgstr "Општа подешавања излазног тока"
 
-#: src/libvlc-module.c:776
+#: src/libvlc-module.c:778
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
 msgstr ""
 
-#: src/libvlc-module.c:779
+#: src/libvlc-module.c:781
 msgid "Timeshift directory"
 msgstr "Директоријум снимања за каснији преглед"
 
-#: src/libvlc-module.c:781
+#: src/libvlc-module.c:783
 msgid "Directory used to store the timeshift temporary files."
 msgstr ""
 "Директоријум који ће се користити за чување привремених фајлова снимака за "
 "каснији преглед."
 
-#: src/libvlc-module.c:783
+#: src/libvlc-module.c:785
 msgid "Timeshift granularity"
 msgstr "Грануларност снимања за каснији преглед"
 
-#: src/libvlc-module.c:785
+#: src/libvlc-module.c:787
 #, fuzzy
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
@@ -2795,7 +2795,7 @@ msgstr ""
 "Ово је величина привремених фајлова који ће се користити за чување снимака "
 "токова који су  за каснији преглед."
 
-#: src/libvlc-module.c:790
+#: src/libvlc-module.c:792
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures filters (logo, etc.). Enable these "
@@ -2807,11 +2807,11 @@ msgstr ""
 "филтере ове и подесите их у одељку \"филтери подслика\" модули. Можете да "
 "подесите и разне друге опције за подслике."
 
-#: src/libvlc-module.c:796 modules/gui/qt4/ui/sprefs_subtitles.h:213
+#: src/libvlc-module.c:798 modules/gui/qt4/ui/sprefs_subtitles.h:213
 msgid "Force subtitle position"
 msgstr "Приморај позицију титла"
 
-#: src/libvlc-module.c:798
+#: src/libvlc-module.c:800
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
@@ -2819,22 +2819,22 @@ msgstr ""
 "Овом опцијом можете да поставите превод испод филма, уместо на њему. "
 "Испробајте неколико позиција."
 
-#: src/libvlc-module.c:801
+#: src/libvlc-module.c:803
 msgid "Enable sub-pictures"
 msgstr "Омогући под-слике"
 
-#: src/libvlc-module.c:803
+#: src/libvlc-module.c:805
 msgid "You can completely disable the sub-picture processing."
 msgstr "Можете потпуно да онемогућите обраду под-слика."
 
-#: src/libvlc-module.c:805 src/libvlc-module.c:1761 src/text/iso-639_def.h:143
+#: src/libvlc-module.c:807 src/libvlc-module.c:1763 src/text/iso-639_def.h:143
 #: modules/gui/macosx/simple_prefs.m:286
 #: modules/stream_out/transcode/transcode.c:222
 #: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
 msgstr "Приказ на екрану"
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:809
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
@@ -2842,22 +2842,22 @@ msgstr ""
 "VLC може да прикаже поруке на видеу. То се назива OSD (On Screen Display - "
 "приказ на екрану)."
 
-#: src/libvlc-module.c:810
+#: src/libvlc-module.c:812
 msgid "Text rendering module"
 msgstr "Модул за рендеровање текста"
 
-#: src/libvlc-module.c:812
+#: src/libvlc-module.c:814
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
 msgstr ""
 "VLC обично користи Freetype за рендеровање, али можете да користите и svg."
 
-#: src/libvlc-module.c:814
+#: src/libvlc-module.c:816
 msgid "Subpictures filter module"
 msgstr "Модул филтера подслика"
 
-#: src/libvlc-module.c:816
+#: src/libvlc-module.c:818
 #, fuzzy
 msgid ""
 "This adds so-called \"subpicture filters\". These filters overlay some "
@@ -2867,11 +2867,11 @@ msgstr ""
 "преклапају неке слике или текст преко видеа (као на пример лого, помоћни "
 "текст...)."
 
-#: src/libvlc-module.c:819
+#: src/libvlc-module.c:821
 msgid "Autodetect subtitle files"
 msgstr "Сам пронађи титл фајлове"
 
-#: src/libvlc-module.c:821
+#: src/libvlc-module.c:823
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
@@ -2879,11 +2879,11 @@ msgstr ""
 "Сам проналази титл фајлове, ако није прецизиран ниједан (на основу имена "
 "филма)."
 
-#: src/libvlc-module.c:824
+#: src/libvlc-module.c:826
 msgid "Subtitle autodetection fuzziness"
 msgstr "Неслагање самооткривања титла"
 
-#: src/libvlc-module.c:826
+#: src/libvlc-module.c:828
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -2901,11 +2901,11 @@ msgstr ""
 "3 = име фајла титле се поклапа са именом филма плус додатни знаци\n"
 "4 = име фајла титле се поклапа са именом филма у потпуности"
 
-#: src/libvlc-module.c:834
+#: src/libvlc-module.c:836
 msgid "Subtitle autodetection paths"
 msgstr "Путање за самопроналажење титлова"
 
-#: src/libvlc-module.c:836
+#: src/libvlc-module.c:838
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
@@ -2913,11 +2913,11 @@ msgstr ""
 "Погледај за титл на овим путањама ако фајл са титлом није пронађен у "
 "тренутном директоријуму."
 
-#: src/libvlc-module.c:839
+#: src/libvlc-module.c:841
 msgid "Use subtitle file"
 msgstr "Користи фајл титла"
 
-#: src/libvlc-module.c:841
+#: src/libvlc-module.c:843
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
@@ -2925,11 +2925,11 @@ msgstr ""
 "Учитај овај фајл титла. Користи се кад самопроналажење не може да пронађе "
 "фајл."
 
-#: src/libvlc-module.c:844
+#: src/libvlc-module.c:846
 msgid "DVD device"
 msgstr "DVD уређај"
 
-#: src/libvlc-module.c:847
+#: src/libvlc-module.c:849
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
 "the drive letter (eg. D:)"
@@ -2937,55 +2937,55 @@ msgstr ""
 "Ово је подразумевани DVD уређај (или фајл) који се користе. Не забправите "
 "две тачке после слова уређаја (нпр. D:)"
 
-#: src/libvlc-module.c:851
+#: src/libvlc-module.c:853
 msgid "This is the default DVD device to use."
 msgstr "Ово је пордразумевани DVD уређај који се користи."
 
-#: src/libvlc-module.c:854
+#: src/libvlc-module.c:856
 msgid "VCD device"
 msgstr "VCD уређај"
 
-#: src/libvlc-module.c:856
+#: src/libvlc-module.c:858
 msgid "This is the default VCD device to use."
 msgstr "Ово је пордразумевани VCD уређај који се користи."
 
-#: src/libvlc-module.c:858
+#: src/libvlc-module.c:860
 msgid "Audio CD device"
 msgstr "Аудио CD уређај"
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:862
 msgid "This is the default Audio CD device to use."
 msgstr "Ово је пордразумевани Аудио CD уређај који се користи."
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:864
 msgid "Force IPv6"
 msgstr "Користи IPv6"
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:866
 msgid "IPv6 will be used by default for all connections."
 msgstr "IPv6 ће се користити као подразумевано за све везе."
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:868
 msgid "Force IPv4"
 msgstr "Користи IPv4"
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:870
 msgid "IPv4 will be used by default for all connections."
 msgstr "IPv4 ће се користити као подразумевано за све везе."
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:872
 msgid "TCP connection timeout"
 msgstr "Време чекања на TCP везу"
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:874
 msgid "Default TCP connection timeout (in milliseconds). "
 msgstr "Подразумевано време чекања на TCP везу (у милисекундама)."
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:876
 msgid "SOCKS server"
 msgstr "SOCKS сервер"
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:878
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
@@ -2993,88 +2993,88 @@ msgstr ""
 "SOCKS прокси сервер који се користи. Мора бити у формату адреса::порт. "
 "Користиће се за све TCP везе."
 
-#: src/libvlc-module.c:879
+#: src/libvlc-module.c:881
 msgid "SOCKS user name"
 msgstr "SOCKS корисничко име"
 
-#: src/libvlc-module.c:881
+#: src/libvlc-module.c:883
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr "Корисничко име које се користи за везу са SOCKS проксијем."
 
-#: src/libvlc-module.c:883
+#: src/libvlc-module.c:885
 msgid "SOCKS password"
 msgstr "SOCKS шифра"
 
-#: src/libvlc-module.c:885
+#: src/libvlc-module.c:887
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr "Шифра која се користи за везу са SOCKS проксијем."
 
-#: src/libvlc-module.c:887
+#: src/libvlc-module.c:889
 msgid "Title metadata"
 msgstr "Налсов мета података"
 
-#: src/libvlc-module.c:889
+#: src/libvlc-module.c:891
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr "Дозвољава вам да прецизирате \"наслов\" метаподатака за унос."
 
-#: src/libvlc-module.c:891
+#: src/libvlc-module.c:893
 msgid "Author metadata"
 msgstr "Аутор мета података"
 
-#: src/libvlc-module.c:893
+#: src/libvlc-module.c:895
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr "Дозвољава вам да прецизирате \"аутора\" метаподатака за унос."
 
-#: src/libvlc-module.c:895
+#: src/libvlc-module.c:897
 msgid "Artist metadata"
 msgstr "Извођач метаподатака"
 
-#: src/libvlc-module.c:897
+#: src/libvlc-module.c:899
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr "Дозвољава вам да прецизирате \"извођача\" метаподатака за унос."
 
-#: src/libvlc-module.c:899
+#: src/libvlc-module.c:901
 msgid "Genre metadata"
 msgstr "Жанр метаподатака"
 
-#: src/libvlc-module.c:901
+#: src/libvlc-module.c:903
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr "Дозвољава вам да прецизирате \"жанр\" метаподатака за унос."
 
-#: src/libvlc-module.c:903
+#: src/libvlc-module.c:905
 msgid "Copyright metadata"
 msgstr "Право умножавања мета података"
 
-#: src/libvlc-module.c:905
+#: src/libvlc-module.c:907
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr ""
 "Дозвољава вам да прецизирате \"право умножавања\" метаподатака за унос."
 
-#: src/libvlc-module.c:907
+#: src/libvlc-module.c:909
 msgid "Description metadata"
 msgstr "Опис мета података"
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:911
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr "Дозвољава вам да прецизирате \"опис\" метаподатака за унос."
 
-#: src/libvlc-module.c:911
+#: src/libvlc-module.c:913
 msgid "Date metadata"
 msgstr "Датум мета података"
 
-#: src/libvlc-module.c:913
+#: src/libvlc-module.c:915
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr "Дозвољава вам да прецизирате \"датум\" метаподатака за унос."
 
-#: src/libvlc-module.c:915
+#: src/libvlc-module.c:917
 msgid "URL metadata"
 msgstr "URL мета података"
 
-#: src/libvlc-module.c:917
+#: src/libvlc-module.c:919
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr "Дозвољава вам да прецизирате \"url\"метаподатака за унос."
 
-#: src/libvlc-module.c:921
+#: src/libvlc-module.c:923
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
@@ -3084,11 +3084,11 @@ msgstr ""
 "Само напредни корисници би требало да мењају ову опцију јер може да поквари "
 "начин емитовања свих ваших токова."
 
-#: src/libvlc-module.c:925
+#: src/libvlc-module.c:927
 msgid "Preferred decoders list"
 msgstr "Листа жељених декодера"
 
-#: src/libvlc-module.c:927
+#: src/libvlc-module.c:929
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
@@ -3099,39 +3099,39 @@ msgstr ""
 "корисници би требало да мењају ову опцију јер може да поквари начин "
 "емитовања свих ваших токова."
 
-#: src/libvlc-module.c:932
+#: src/libvlc-module.c:934
 msgid "Preferred encoders list"
 msgstr "Листа жељених енкодера"
 
-#: src/libvlc-module.c:934
+#: src/libvlc-module.c:936
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr ""
 "Ово вам омогућава да одаберете списак приоритетних енкодера које ће VLC "
 "користити."
 
-#: src/libvlc-module.c:937
+#: src/libvlc-module.c:939
 msgid "Prefer system plugins over VLC"
 msgstr ""
 
-#: src/libvlc-module.c:939
+#: src/libvlc-module.c:941
 msgid ""
 "Indicates whether VLC will prefer native plugins installed on system over "
 "VLC owns plugins whenever a choice is available."
 msgstr ""
 
-#: src/libvlc-module.c:948
+#: src/libvlc-module.c:950
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
 msgstr ""
 "Овде се подешавају подразумеване опште опције за подсистем тока излаза."
 
-#: src/libvlc-module.c:951
+#: src/libvlc-module.c:953
 msgid "Default stream output chain"
 msgstr "Подразумевани ланас тока излаза"
 
-#: src/libvlc-module.c:953
+#: src/libvlc-module.c:955
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
 "to learn how to build such chains. Warning: this chain will be enabled for "
@@ -3141,27 +3141,27 @@ msgstr ""
 "документацији како се праве такви ланци. Упозорење: овај ланац ће се "
 "користит за све токове."
 
-#: src/libvlc-module.c:957
+#: src/libvlc-module.c:959
 msgid "Enable streaming of all ES"
 msgstr "Укључи стриминг свих ES"
 
-#: src/libvlc-module.c:959
+#: src/libvlc-module.c:961
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr "Стримуј све основне токове (видео, звук и титл)"
 
-#: src/libvlc-module.c:961
+#: src/libvlc-module.c:963
 msgid "Display while streaming"
 msgstr "Прикажи док стримујеш"
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:965
 msgid "Play locally the stream while streaming it."
 msgstr "Локално репродукуј ток за време тока."
 
-#: src/libvlc-module.c:965
+#: src/libvlc-module.c:967
 msgid "Enable video stream output"
 msgstr "Укључи ток видео излаза"
 
-#: src/libvlc-module.c:967
+#: src/libvlc-module.c:969
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3169,11 +3169,11 @@ msgstr ""
 "Изаберите да ли ће видео ток бити преусмерен на излазни ток опреме када је "
 "ова последња опција омогућена."
 
-#: src/libvlc-module.c:970
+#: src/libvlc-module.c:972
 msgid "Enable audio stream output"
 msgstr "укључи ток аудио излаза"
 
-#: src/libvlc-module.c:972
+#: src/libvlc-module.c:974
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3181,11 +3181,11 @@ msgstr ""
 "Изаберите да ли ће аудио ток бити преусмерен на излазни ток опреме када је "
 "ова последња опција омогућена."
 
-#: src/libvlc-module.c:975
+#: src/libvlc-module.c:977
 msgid "Enable SPU stream output"
 msgstr "Укључи SPU ток излаза"
 
-#: src/libvlc-module.c:977
+#: src/libvlc-module.c:979
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3193,11 +3193,11 @@ msgstr ""
 "Изаберите да ли ће SPU токови бити преусмерени на излазни ток опреме када је "
 "ова последња опција омогућена."
 
-#: src/libvlc-module.c:980
+#: src/libvlc-module.c:982
 msgid "Keep stream output open"
 msgstr "задржи ток излаза отвореним"
 
-#: src/libvlc-module.c:982
+#: src/libvlc-module.c:984
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
@@ -3207,11 +3207,11 @@ msgstr ""
 "вишеструке листе за репродуковање (аутоматски убацује и скупља излазни ток "
 "ако није одређен)"
 
-#: src/libvlc-module.c:986
+#: src/libvlc-module.c:988
 msgid "Stream output muxer caching (ms)"
 msgstr ""
 
-#: src/libvlc-module.c:988
+#: src/libvlc-module.c:990
 #, fuzzy
 msgid ""
 "This allow you to configure the initial caching amount for stream output  "
@@ -3220,41 +3220,41 @@ msgstr ""
 "Дозвољава вам да промените подразимевану вредност за кеширање за RTSP "
 "токове. Ова вредност треба да буде у милисекундама."
 
-#: src/libvlc-module.c:991
+#: src/libvlc-module.c:993
 msgid "Preferred packetizer list"
 msgstr "Листа жељених паковаоца"
 
-#: src/libvlc-module.c:993
+#: src/libvlc-module.c:995
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr ""
 "Ова опција Вам омогућава да изаберете редослед којим ће VLC да бира "
 "паковаоце."
 
-#: src/libvlc-module.c:996
+#: src/libvlc-module.c:998
 msgid "Mux module"
 msgstr "Модул мултиплексера"
 
-#: src/libvlc-module.c:998
+#: src/libvlc-module.c:1000
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr ""
 "Ово је наслеђен улаз који Вам омогућава да подешавате модуле мултиплексера"
 
-#: src/libvlc-module.c:1000
+#: src/libvlc-module.c:1002
 msgid "Access output module"
 msgstr "Модул излаза"
 
-#: src/libvlc-module.c:1002
+#: src/libvlc-module.c:1004
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr ""
 "Ово је наслеђен улаз који Вам омогућава да подешавате модуле приступних "
 "излаза"
 
-#: src/libvlc-module.c:1004
+#: src/libvlc-module.c:1006
 msgid "Control SAP flow"
 msgstr "Управљај SAP током"
 
-#: src/libvlc-module.c:1006
+#: src/libvlc-module.c:1008
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
@@ -3263,11 +3263,11 @@ msgstr ""
 "бити контролисан. Ово је потребно ако желите да правите најављивања на  "
 "MBone-у."
 
-#: src/libvlc-module.c:1010
+#: src/libvlc-module.c:1012
 msgid "SAP announcement interval"
 msgstr "SAP интервал обавештавања"
 
-#: src/libvlc-module.c:1012
+#: src/libvlc-module.c:1014
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
@@ -3275,7 +3275,7 @@ msgstr ""
 "Када је контрола SAP протока онемогућена, можете да наместите фиксан "
 "интервал између SAP најава."
 
-#: src/libvlc-module.c:1021
+#: src/libvlc-module.c:1023
 msgid ""
 "These options allow you to enable special CPU optimizations. You should "
 "always leave all these enabled."
@@ -3283,11 +3283,11 @@ msgstr ""
 "Ове опције Вам дозвољавају да омогућите специјалне CPU оптимизације. Требало "
 "би ове опције да оставите омогућене."
 
-#: src/libvlc-module.c:1024
+#: src/libvlc-module.c:1026
 msgid "Enable CPU MMX support"
 msgstr "Укључи подршку за CPU MMX"
 
-#: src/libvlc-module.c:1026
+#: src/libvlc-module.c:1028
 msgid ""
 "If your processor supports the MMX instructions set, VLC can take advantage "
 "of them."
@@ -3295,11 +3295,11 @@ msgstr ""
 "Ако Ваш процесор подржава MMX скуп инструкција, VLC може да искористи ову "
 "карактеристику."
 
-#: src/libvlc-module.c:1029
+#: src/libvlc-module.c:1031
 msgid "Enable CPU 3D Now! support"
 msgstr "Укључи подршку за CPU 3D Now!"
 
-#: src/libvlc-module.c:1031
+#: src/libvlc-module.c:1033
 msgid ""
 "If your processor supports the 3D Now! instructions set, VLC can take "
 "advantage of them."
@@ -3307,11 +3307,11 @@ msgstr ""
 "Ако Ваш процесор подржава 3D Now! скуп инструкција, VLC може да искористи "
 "ову карактеристику."
 
-#: src/libvlc-module.c:1034
+#: src/libvlc-module.c:1036
 msgid "Enable CPU MMX EXT support"
 msgstr "Укључи подршку за CPU MMX EXT"
 
-#: src/libvlc-module.c:1036
+#: src/libvlc-module.c:1038
 msgid ""
 "If your processor supports the MMX EXT instructions set, VLC can take "
 "advantage of them."
@@ -3319,11 +3319,11 @@ msgstr ""
 "Ако Ваш процесор подржава MMX EXT скуп инструкција, VLC може да искористи "
 "ову карактеристику."
 
-#: src/libvlc-module.c:1039
+#: src/libvlc-module.c:1041
 msgid "Enable CPU SSE support"
 msgstr "Укључи подршку за  CPU SSE"
 
-#: src/libvlc-module.c:1041
+#: src/libvlc-module.c:1043
 msgid ""
 "If your processor supports the SSE instructions set, VLC can take advantage "
 "of them."
@@ -3331,23 +3331,23 @@ msgstr ""
 "Ако Ваш процесор подржава SSE скуп инструкција, VLC може да искористи ову "
 "опцију."
 
-#: src/libvlc-module.c:1044
+#: src/libvlc-module.c:1046
 msgid "Enable CPU SSE2 support"
 msgstr "Укључи подршку за CPU SSE2"
 
-#: src/libvlc-module.c:1046
+#: src/libvlc-module.c:1048
 msgid ""
 "If your processor supports the SSE2 instructions set, VLC can take advantage "
 "of them."
 msgstr ""
 "Ако Ваш процесор подржава скуп SSE2 инструкција, VLC може да их искористи."
 
-#: src/libvlc-module.c:1049
+#: src/libvlc-module.c:1051
 #, fuzzy
 msgid "Enable CPU SSE3 support"
 msgstr "Укључи подршку за  CPU SSE"
 
-#: src/libvlc-module.c:1051
+#: src/libvlc-module.c:1053
 #, fuzzy
 msgid ""
 "If your processor supports the SSE3 instructions set, VLC can take advantage "
@@ -3356,11 +3356,11 @@ msgstr ""
 "Ако Ваш процесор подржава SSE скуп инструкција, VLC може да искористи ову "
 "опцију."
 
-#: src/libvlc-module.c:1054
+#: src/libvlc-module.c:1056
 msgid "Enable CPU SSSE3 support"
 msgstr "Укључи подршку за  CPU SSE3"
 
-#: src/libvlc-module.c:1056
+#: src/libvlc-module.c:1058
 #, fuzzy
 msgid ""
 "If your processor supports the SSSE3 instructions set, VLC can take "
@@ -3369,12 +3369,12 @@ msgstr ""
 "Ако Ваш процесор подржава SSE скуп инструкција, VLC може да искористи ову "
 "опцију."
 
-#: src/libvlc-module.c:1059
+#: src/libvlc-module.c:1061
 #, fuzzy
 msgid "Enable CPU SSE4.1 support"
 msgstr "Укључи подршку за  CPU SSE"
 
-#: src/libvlc-module.c:1061
+#: src/libvlc-module.c:1063
 #, fuzzy
 msgid ""
 "If your processor supports the SSE4.1 instructions set, VLC can take "
@@ -3383,12 +3383,12 @@ msgstr ""
 "Ако Ваш процесор подржава SSE скуп инструкција, VLC може да искористи ову "
 "опцију."
 
-#: src/libvlc-module.c:1064
+#: src/libvlc-module.c:1066
 #, fuzzy
 msgid "Enable CPU SSE4.2 support"
 msgstr "Укључи подршку за CPU SSE2"
 
-#: src/libvlc-module.c:1066
+#: src/libvlc-module.c:1068
 #, fuzzy
 msgid ""
 "If your processor supports the SSE4.2 instructions set, VLC can take "
@@ -3396,18 +3396,18 @@ msgid ""
 msgstr ""
 "Ако Ваш процесор подржава скуп SSE2 инструкција, VLC може да их искористи."
 
-#: src/libvlc-module.c:1069
+#: src/libvlc-module.c:1071
 msgid "Enable CPU AltiVec support"
 msgstr "Укључи подршку за CPU AltiVec "
 
-#: src/libvlc-module.c:1071
+#: src/libvlc-module.c:1073
 msgid ""
 "If your processor supports the AltiVec instructions set, VLC can take "
 "advantage of them."
 msgstr ""
 "Ако Ваш процесор подржава скуп AltiVec инструкција, VLC може да их искористи."
 
-#: src/libvlc-module.c:1076
+#: src/libvlc-module.c:1078
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
@@ -3415,11 +3415,11 @@ msgstr ""
 "Ове опције вам омогућавају да одаберете подразумеване модуле. Оставите их "
 "какви јесу сем ако стварно не знате шта радите."
 
-#: src/libvlc-module.c:1079
+#: src/libvlc-module.c:1081
 msgid "Memory copy module"
 msgstr "Модул за пресликавање меморије"
 
-#: src/libvlc-module.c:1081
+#: src/libvlc-module.c:1083
 msgid ""
 "You can select which memory copy module you want to use. By default VLC will "
 "select the fastest one supported by your hardware."
@@ -3428,11 +3428,11 @@ msgstr ""
 "VLC ће као подразумеване вредности изабрати најбржи који Ваш хардвер "
 "подржава."
 
-#: src/libvlc-module.c:1084
+#: src/libvlc-module.c:1086
 msgid "Access module"
 msgstr "Приступни модул"
 
-#: src/libvlc-module.c:1086
+#: src/libvlc-module.c:1088
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
@@ -3442,23 +3442,23 @@ msgstr ""
 "ако није аутоматски откривен тачан приступ. Не би требало да поставите ово "
 "као глобалну опцију осим ако сте потпуно сигурни у Ваш избор."
 
-#: src/libvlc-module.c:1090
+#: src/libvlc-module.c:1092
 #, fuzzy
 msgid "Stream filter module"
 msgstr "Модул филтера подслика"
 
-#: src/libvlc-module.c:1092
+#: src/libvlc-module.c:1094
 #, fuzzy
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr ""
 "Приступни филтери се користе да промене ток који се тренутно чита. На пример "
 "за померање времена."
 
-#: src/libvlc-module.c:1094
+#: src/libvlc-module.c:1096
 msgid "Demux module"
 msgstr "Модул демултиплексера"
 
-#: src/libvlc-module.c:1096
+#: src/libvlc-module.c:1098
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3470,11 +3470,11 @@ msgstr ""
 "демултиплексер. Не би требало да постављате ову опцију као глобалну осим ако "
 "нисте сигурни у Ваш избор."
 
-#: src/libvlc-module.c:1101
+#: src/libvlc-module.c:1103
 msgid "Allow real-time priority"
 msgstr "Дозволи приоритет реалног времена"
 
-#: src/libvlc-module.c:1103
+#: src/libvlc-module.c:1105
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
@@ -3486,11 +3486,11 @@ msgstr ""
 "може да закључа цео рачунар или да га веома успори. Ову опцију активирајте "
 "само у случају да знате шта радите."
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1111
 msgid "Adjust VLC priority"
 msgstr "Подеси VLC приоритет"
 
-#: src/libvlc-module.c:1111
+#: src/libvlc-module.c:1113
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
@@ -3500,99 +3500,99 @@ msgstr ""
 "приоритете. Можете је користити да средите VLC приорит у односу на друге "
 "програме, или у односу на друге VLC примерке."
 
-#: src/libvlc-module.c:1115
+#: src/libvlc-module.c:1117
 msgid "(Experimental) Don't do caching at the access level."
 msgstr ""
 
-#: src/libvlc-module.c:1117
+#: src/libvlc-module.c:1119
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr ""
 
-#: src/libvlc-module.c:1120
+#: src/libvlc-module.c:1122
 msgid "Modules search path"
 msgstr "Путања за тражење модула"
 
-#: src/libvlc-module.c:1122
+#: src/libvlc-module.c:1124
 #, fuzzy
 msgid ""
 "Additional path for VLC to look for its modules. You can add several paths "
 "by concatenating them using \" PATH_SEP \" as separator"
 msgstr "Додатна путања у којој ће VLC тражити модуле."
 
-#: src/libvlc-module.c:1125
+#: src/libvlc-module.c:1127
 #, fuzzy
 msgid "Data search path"
 msgstr "Путања за тражење модула"
 
-#: src/libvlc-module.c:1127
+#: src/libvlc-module.c:1129
 msgid "Override the default data/share search path."
 msgstr ""
 
-#: src/libvlc-module.c:1129
+#: src/libvlc-module.c:1131
 msgid "VLM configuration file"
 msgstr "Фајл за подешавање VLM"
 
-#: src/libvlc-module.c:1131
+#: src/libvlc-module.c:1133
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr "Учитај фајл за подешавање VLM чим је VLM покренут."
 
-#: src/libvlc-module.c:1133
+#: src/libvlc-module.c:1135
 msgid "Use a plugins cache"
 msgstr "Користи кеш додатка"
 
-#: src/libvlc-module.c:1135
+#: src/libvlc-module.c:1137
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr "Користи кеш додатака што ће знатно побољшати време покретања VLC."
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1139
 #, fuzzy
 msgid "Locally collect statistics"
 msgstr "Прави статистику."
 
-#: src/libvlc-module.c:1139
+#: src/libvlc-module.c:1141
 #, fuzzy
 msgid "Collect miscellaneous local statistics about the playing media."
 msgstr "Прави разноврсну статистику."
 
-#: src/libvlc-module.c:1141
+#: src/libvlc-module.c:1143
 msgid "Run as daemon process"
 msgstr "Покрени као процес"
 
-#: src/libvlc-module.c:1143
+#: src/libvlc-module.c:1145
 msgid "Runs VLC as a background daemon process."
 msgstr "Покреће VLC као позадински демон процес."
 
-#: src/libvlc-module.c:1145
+#: src/libvlc-module.c:1147
 msgid "Write process id to file"
 msgstr ""
 
-#: src/libvlc-module.c:1147
+#: src/libvlc-module.c:1149
 msgid "Writes process id into specified file."
 msgstr ""
 
-#: src/libvlc-module.c:1149
+#: src/libvlc-module.c:1151
 msgid "Log to file"
 msgstr "Сачувај све поруке у фајл"
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1153
 msgid "Log all VLC messages to a text file."
 msgstr "Сачувај све поруке VLC у текстуалном фајлу."
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1155
 #, fuzzy
 msgid "Log to syslog"
 msgstr "Пријави се у syslog"
 
-#: src/libvlc-module.c:1155
+#: src/libvlc-module.c:1157
 msgid "Log all VLC messages to syslog (UNIX systems)."
 msgstr "Пријави све VLC поруке у syslog (UNIX системи)."
 
-#: src/libvlc-module.c:1157
+#: src/libvlc-module.c:1159
 msgid "Allow only one running instance"
 msgstr "Дозволи покретање само једног примерка"
 
-#: src/libvlc-module.c:1160
+#: src/libvlc-module.c:1162
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3606,7 +3606,7 @@ msgstr ""
 "фајл у претраживачу. Ова опција Вам дозвољава да пустите или додате фајл у "
 "већ покренутом примерку програма."
 
-#: src/libvlc-module.c:1167
+#: src/libvlc-module.c:1169
 #, fuzzy
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
@@ -3622,31 +3622,31 @@ msgstr ""
 "фајл у претраживачу. Ова опција Вам дозвољава да пустите или додате фајл у "
 "већ покренутом примерку програма."
 
-#: src/libvlc-module.c:1176
+#: src/libvlc-module.c:1178
 #, fuzzy
 msgid "VLC is started from file association"
 msgstr "VLC је покренут из придруженог фајла"
 
-#: src/libvlc-module.c:1178
+#: src/libvlc-module.c:1180
 #, fuzzy
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 "Обавестите VLC да је покренут захваљујући придруженом фајлу OС-а (Оперативни "
 "Систем)"
 
-#: src/libvlc-module.c:1181
+#: src/libvlc-module.c:1183
 msgid "One instance when started from file"
 msgstr "Један примерак програма при покретању са фајлом"
 
-#: src/libvlc-module.c:1183
+#: src/libvlc-module.c:1185
 msgid "Allow only one running instance when started from file."
 msgstr "Дозволи само један примерак програма када се покреће са фајлом."
 
-#: src/libvlc-module.c:1185
+#: src/libvlc-module.c:1187
 msgid "Increase the priority of the process"
 msgstr "Повећајте приоритет процеса"
 
-#: src/libvlc-module.c:1187
+#: src/libvlc-module.c:1189
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3661,13 +3661,13 @@ msgstr ""
 "околностима (грешке) VLC може да заузме доста процесорског времена и услови "
 "тиме поново покретање Ваше машине услед нереаговања Вашег система."
 
-#: src/libvlc-module.c:1195
+#: src/libvlc-module.c:1197
 msgid "Enqueue items to playlist when in one instance mode"
 msgstr ""
 "Уврсти ставке у листу за пуштање када се ради у режиму рада једног примерка "
 "програма"
 
-#: src/libvlc-module.c:1197
+#: src/libvlc-module.c:1199
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
@@ -3675,7 +3675,7 @@ msgstr ""
 "Када се користи опција једног примерка програма, уврсти ставке у листу за "
 "пуштање и настави са пуштањем тренутне ставке."
 
-#: src/libvlc-module.c:1206
+#: src/libvlc-module.c:1208
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
@@ -3683,11 +3683,11 @@ msgstr ""
 "Ове опције дефинишу понашање листе за пуштање. Неке од њих могу да се "
 "промене у дијалогу прозора листе за пуштање."
 
-#: src/libvlc-module.c:1209
+#: src/libvlc-module.c:1211
 msgid "Automatically preparse files"
 msgstr "Аутоматски припреми фајлове за анализу"
 
-#: src/libvlc-module.c:1211
+#: src/libvlc-module.c:1213
 msgid ""
 "Automatically preparse files added to the playlist (to retrieve some "
 "metadata)."
@@ -3695,31 +3695,31 @@ msgstr ""
 "Аутоматски припреми фајлове додане у листу за пуштање за анализу (због "
 "поновног узимања мета података)."
 
-#: src/libvlc-module.c:1214
+#: src/libvlc-module.c:1216
 msgid "Album art policy"
 msgstr ""
 
-#: src/libvlc-module.c:1216
+#: src/libvlc-module.c:1218
 msgid "Choose how album art will be downloaded."
 msgstr ""
 
-#: src/libvlc-module.c:1222
+#: src/libvlc-module.c:1224
 msgid "Manual download only"
 msgstr ""
 
-#: src/libvlc-module.c:1223
+#: src/libvlc-module.c:1225
 msgid "When track starts playing"
 msgstr ""
 
-#: src/libvlc-module.c:1224
+#: src/libvlc-module.c:1226
 msgid "As soon as track is added"
 msgstr ""
 
-#: src/libvlc-module.c:1226
+#: src/libvlc-module.c:1228
 msgid "Services discovery modules"
 msgstr "Модули за откривање сервиса"
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1230
 #, fuzzy
 msgid ""
 "Specifies the services discovery modules to load, separated by colons. "
@@ -3728,180 +3728,180 @@ msgstr ""
 "Одредите модуле за откривање сервиса за учитавање, одвојите их полу-"
 "колонама. Типичне вредности су sap, hal, ..."
 
-#: src/libvlc-module.c:1231
+#: src/libvlc-module.c:1233
 msgid "Play files randomly forever"
 msgstr "Пуштај фајлове насумице довека"
 
-#: src/libvlc-module.c:1233
+#: src/libvlc-module.c:1235
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr ""
 "VLC ће насумице пуштати фајлове из листе за пуштање док не буде обустављен."
 
-#: src/libvlc-module.c:1235
+#: src/libvlc-module.c:1237
 msgid "Repeat all"
 msgstr "Понови све"
 
-#: src/libvlc-module.c:1237
+#: src/libvlc-module.c:1239
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr "VLC ће пуштати фајлове из листе за пуштање неограничено."
 
-#: src/libvlc-module.c:1239
+#: src/libvlc-module.c:1241
 msgid "Repeat current item"
 msgstr "Понови тренутну ставку"
 
-#: src/libvlc-module.c:1241
+#: src/libvlc-module.c:1243
 msgid "VLC will keep playing the current playlist item."
 msgstr "VLC ће пуштати тренутну ставку из листе за пуштање."
 
-#: src/libvlc-module.c:1243
+#: src/libvlc-module.c:1245
 msgid "Play and stop"
 msgstr "Репродукуј и заустави се"
 
-#: src/libvlc-module.c:1245
+#: src/libvlc-module.c:1247
 msgid "Stop the playlist after each played playlist item."
 msgstr ""
 "Заустави листу за пуштање после сваке репродуковане ставке из листе за "
 "пуштање."
 
-#: src/libvlc-module.c:1247
+#: src/libvlc-module.c:1249
 #, fuzzy
 msgid "Play and exit"
 msgstr "Репродукуј и заустави се"
 
-#: src/libvlc-module.c:1249
+#: src/libvlc-module.c:1251
 #, fuzzy
 msgid "Exit if there are no more items in the playlist."
 msgstr "Нема ставки у листи за пуштање"
 
-#: src/libvlc-module.c:1251
+#: src/libvlc-module.c:1253
 #, fuzzy
 msgid "Play and pause"
 msgstr "Репродукуј и заустави се"
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1255
 #, fuzzy
 msgid "Pause each item in the playlist on the last frame."
 msgstr "Уводи кашњење у приказ тока."
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1257
 msgid "Use media library"
 msgstr "Користи библиотеку датотека"
 
-#: src/libvlc-module.c:1257
+#: src/libvlc-module.c:1259
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1260
+#: src/libvlc-module.c:1262
 #, fuzzy
 msgid "Display playlist tree"
 msgstr "Постојећа ставка листе за пуштање"
 
-#: src/libvlc-module.c:1262
+#: src/libvlc-module.c:1264
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
 msgstr ""
 
-#: src/libvlc-module.c:1271
+#: src/libvlc-module.c:1273
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 "Ова подешавања су опште VLC везе кључева, познате као \"hotkeys\" тј. "
 "пречице."
 
-#: src/libvlc-module.c:1274 src/video_output/vout_intf.c:357
+#: src/libvlc-module.c:1276 src/video_output/vout_intf.c:357
 #: modules/gui/macosx/controls.m:454 modules/gui/macosx/controls.m:510
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
-#: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:751
+#: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:753
 #: modules/gui/macosx/simple_prefs.m:294
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
 msgstr "Пун екран"
 
-#: src/libvlc-module.c:1275
+#: src/libvlc-module.c:1277
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr "Изаберите пречицу за пребацивање у стање пуног екрана."
 
-#: src/libvlc-module.c:1276
+#: src/libvlc-module.c:1278
 msgid "Leave fullscreen"
 msgstr "Искључи приказ преко целог екрана"
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1279
 #, fuzzy
 msgid "Select the hotkey to use to leave fullscreen state."
 msgstr "Изаберите пречицу за пребацивање у стање пуног екрана."
 
-#: src/libvlc-module.c:1278
+#: src/libvlc-module.c:1280
 msgid "Play/Pause"
 msgstr "Репродукуј/Паузирај"
 
-#: src/libvlc-module.c:1279
+#: src/libvlc-module.c:1281
 msgid "Select the hotkey to use to swap paused state."
 msgstr "Изабери дугме за прелазак из стања паузе."
 
-#: src/libvlc-module.c:1280
+#: src/libvlc-module.c:1282
 msgid "Pause only"
 msgstr "Само паузирај"
 
-#: src/libvlc-module.c:1281
+#: src/libvlc-module.c:1283
 msgid "Select the hotkey to use to pause."
 msgstr "Изаберите дугме за коришћење паузе."
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1284
 msgid "Play only"
 msgstr "Само репродукуј"
 
-#: src/libvlc-module.c:1283
+#: src/libvlc-module.c:1285
 msgid "Select the hotkey to use to play."
 msgstr "Изаберите дугме за репродуковање."
 
-#: src/libvlc-module.c:1284 modules/gui/macosx/controls.m:1010
+#: src/libvlc-module.c:1286 modules/gui/macosx/controls.m:1010
 #: modules/gui/macosx/intf.m:649 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Faster"
 msgstr "Убрзано"
 
-#: src/libvlc-module.c:1285 src/libvlc-module.c:1291
+#: src/libvlc-module.c:1287 src/libvlc-module.c:1293
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "Изаберите дугме за премотавње унапред."
 
-#: src/libvlc-module.c:1286 modules/gui/macosx/controls.m:1011
+#: src/libvlc-module.c:1288 modules/gui/macosx/controls.m:1011
 #: modules/gui/macosx/intf.m:650 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Slower"
 msgstr "Спорије"
 
-#: src/libvlc-module.c:1287 src/libvlc-module.c:1293
+#: src/libvlc-module.c:1289 src/libvlc-module.c:1295
 msgid "Select the hotkey to use for slow motion playback."
 msgstr "Изаберите дугме за репродукцију као споро кретање."
 
-#: src/libvlc-module.c:1288 modules/gui/macosx/controls.m:1012
+#: src/libvlc-module.c:1290 modules/gui/macosx/controls.m:1012
 #: modules/gui/macosx/intf.m:651
 #, fuzzy
 msgid "Normal rate"
 msgstr "Нормална Величина"
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1291
 #, fuzzy
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Изаберите тастер за постављање овог обележивача у листу за пуштање."
 
-#: src/libvlc-module.c:1290 modules/gui/qt4/menus.cpp:811
+#: src/libvlc-module.c:1292 modules/gui/qt4/menus.cpp:811
 msgid "Faster (fine)"
 msgstr "Убрзано (фино)"
 
-#: src/libvlc-module.c:1292 modules/gui/qt4/menus.cpp:819
+#: src/libvlc-module.c:1294 modules/gui/qt4/menus.cpp:819
 msgid "Slower (fine)"
 msgstr "Спорије (фино)"
 
-#: src/libvlc-module.c:1294 modules/control/hotkeys.c:696
+#: src/libvlc-module.c:1296 modules/control/hotkeys.c:696
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
-#: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:739
-#: modules/gui/macosx/intf.m:747 modules/gui/macosx/wizard.m:309
+#: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
+#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
@@ -3909,38 +3909,38 @@ msgstr "Спорије (фино)"
 msgid "Next"
 msgstr "Следеће"
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1297
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "Изаберите дугме за прескакање следеће ствари у листи за репродукцију."
 
-#: src/libvlc-module.c:1296 modules/control/hotkeys.c:702
+#: src/libvlc-module.c:1298 modules/control/hotkeys.c:702
 #: modules/gui/macosx/about.m:194 modules/gui/macosx/controls.m:1031
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
-#: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:740
-#: modules/gui/macosx/intf.m:746 modules/gui/qt4/components/controller.hpp:105
+#: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
+#: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
 #: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Претходно"
 
-#: src/libvlc-module.c:1297
+#: src/libvlc-module.c:1299
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr ""
 "Изаберите дугме за прескакање претходне ствари у листи за репродукцију."
 
-#: src/libvlc-module.c:1298 modules/gui/macosx/controls.m:1023
+#: src/libvlc-module.c:1300 modules/gui/macosx/controls.m:1023
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:603
-#: modules/gui/macosx/intf.m:648 modules/gui/macosx/intf.m:738
-#: modules/gui/macosx/intf.m:745 modules/gui/qt4/components/controller.hpp:104
+#: modules/gui/macosx/intf.m:648 modules/gui/macosx/intf.m:740
+#: modules/gui/macosx/intf.m:747 modules/gui/qt4/components/controller.hpp:104
 #: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr "Заустави"
 
-#: src/libvlc-module.c:1299
+#: src/libvlc-module.c:1301
 msgid "Select the hotkey to stop playback."
 msgstr "Изаберите дугме за заустављање репродукције."
 
-#: src/libvlc-module.c:1300 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
+#: src/libvlc-module.c:1302 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:70 modules/gui/macosx/intf.m:608
 #: modules/video_filter/marq.c:158 modules/video_filter/rss.c:201
@@ -3948,422 +3948,422 @@ msgstr "Изаберите дугме за заустављање репроду
 msgid "Position"
 msgstr "Позиција"
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1303
 msgid "Select the hotkey to display the position."
 msgstr "Изаберите пречицу за приказивање позиције."
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1305
 msgid "Very short backwards jump"
 msgstr "Веома кратак скок уназад"
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1307
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr "Изаберите пречицу за веома кратак скок уназад."
 
-#: src/libvlc-module.c:1306
+#: src/libvlc-module.c:1308
 msgid "Short backwards jump"
 msgstr "Кратак скок уназад"
 
-#: src/libvlc-module.c:1308
+#: src/libvlc-module.c:1310
 msgid "Select the hotkey to make a short backwards jump."
 msgstr "Изаберите пречицу за прављење кратког скока уназад."
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1311
 msgid "Medium backwards jump"
 msgstr "Средњи скок уназад"
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1313
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr "Изаберите пречицу за прављење средњег скока уназад."
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1314
 msgid "Long backwards jump"
 msgstr "Дугачак скок уназад"
 
-#: src/libvlc-module.c:1314
+#: src/libvlc-module.c:1316
 msgid "Select the hotkey to make a long backwards jump."
 msgstr "Изаберите пречицу за прављење дугачког скока уназад."
 
-#: src/libvlc-module.c:1316
+#: src/libvlc-module.c:1318
 msgid "Very short forward jump"
 msgstr "Веома кратак скок унапред"
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1320
 msgid "Select the hotkey to make a very short forward jump."
 msgstr "Изаберите пречицу за прављење веома кратког скока унапред."
 
-#: src/libvlc-module.c:1319
+#: src/libvlc-module.c:1321
 msgid "Short forward jump"
 msgstr "Кратак скок унапред"
 
-#: src/libvlc-module.c:1321
+#: src/libvlc-module.c:1323
 msgid "Select the hotkey to make a short forward jump."
 msgstr "Изаберите пречицу за прављење кратког скока унапред."
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1324
 msgid "Medium forward jump"
 msgstr "Средњи скок унапред"
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1326
 msgid "Select the hotkey to make a medium forward jump."
 msgstr "Изаберите пречицу за прављење средњег скока унапред."
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1327
 msgid "Long forward jump"
 msgstr "Дугачак скок унапред"
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1329
 msgid "Select the hotkey to make a long forward jump."
 msgstr "Изаберите пречицу за прављење дугачког скока унапред."
 
-#: src/libvlc-module.c:1328 modules/control/hotkeys.c:713
+#: src/libvlc-module.c:1330 modules/control/hotkeys.c:713
 msgid "Next frame"
 msgstr "Следећи фрејм"
 
-#: src/libvlc-module.c:1330
+#: src/libvlc-module.c:1332
 #, fuzzy
 msgid "Select the hotkey to got to the next video frame."
 msgstr "Изаберите тастер за бирање следећег DVD наслова "
 
-#: src/libvlc-module.c:1332
+#: src/libvlc-module.c:1334
 msgid "Very short jump length"
 msgstr "Веома кратка дужина скока"
 
-#: src/libvlc-module.c:1333
+#: src/libvlc-module.c:1335
 msgid "Very short jump length, in seconds."
 msgstr "Веома кратка дужина скока, у секундама."
 
-#: src/libvlc-module.c:1334
+#: src/libvlc-module.c:1336
 msgid "Short jump length"
 msgstr "Дужина кратког скока"
 
-#: src/libvlc-module.c:1335
+#: src/libvlc-module.c:1337
 msgid "Short jump length, in seconds."
 msgstr "Дужина кратког скока, у секундама."
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1338
 msgid "Medium jump length"
 msgstr "Средња дужина скока "
 
-#: src/libvlc-module.c:1337
+#: src/libvlc-module.c:1339
 msgid "Medium jump length, in seconds."
 msgstr "Средња дужина скока, у секундама."
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1340
 msgid "Long jump length"
 msgstr "Дугачка дужина скока"
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1341
 msgid "Long jump length, in seconds."
 msgstr "Дугачка дужина скока, у секундама."
 
-#: src/libvlc-module.c:1341 modules/control/hotkeys.c:179
+#: src/libvlc-module.c:1343 modules/control/hotkeys.c:179
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:118 modules/gui/qt4/menus.cpp:886
 #: modules/gui/skins2/commands/cmd_quit.cpp:40
 msgid "Quit"
 msgstr "Излаз"
 
-#: src/libvlc-module.c:1342
+#: src/libvlc-module.c:1344
 msgid "Select the hotkey to quit the application."
 msgstr "Изаберите пречицу за излазак из програма."
 
-#: src/libvlc-module.c:1343
+#: src/libvlc-module.c:1345
 msgid "Navigate up"
 msgstr "Управљање ка горе"
 
-#: src/libvlc-module.c:1344
+#: src/libvlc-module.c:1346
 msgid "Select the key to move the selector up in DVD menus."
 msgstr "Изаберите тастер за померање селектора на горе у DVD менијима."
 
-#: src/libvlc-module.c:1345
+#: src/libvlc-module.c:1347
 msgid "Navigate down"
 msgstr "Управљање ка доле"
 
-#: src/libvlc-module.c:1346
+#: src/libvlc-module.c:1348
 msgid "Select the key to move the selector down in DVD menus."
 msgstr "Изаберите тастер за померање селектора на доле у DVD менијима."
 
-#: src/libvlc-module.c:1347
+#: src/libvlc-module.c:1349
 msgid "Navigate left"
 msgstr "Управљање ка лево"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1350
 msgid "Select the key to move the selector left in DVD menus."
 msgstr "Изаберите тастер за померање селектора на лево у DVD менијима."
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1351
 msgid "Navigate right"
 msgstr "Управљање ка десно"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1352
 msgid "Select the key to move the selector right in DVD menus."
 msgstr "Изаберите тастер за померање селектора на десно у DVD менијима."
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1353
 msgid "Activate"
 msgstr "Активирај"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1354
 msgid "Select the key to activate selected item in DVD menus."
 msgstr "Изаберите тастер за активирање одређене ставке у DVD менијима."
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1355
 msgid "Go to the DVD menu"
 msgstr "Идите на DVD мени"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1356
 msgid "Select the key to take you to the DVD menu"
 msgstr "Изаберите тастер за померање ка DVD менију."
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1357
 msgid "Select previous DVD title"
 msgstr "Изаберите претходни DVD наслов"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1358
 msgid "Select the key to choose the previous title from the DVD"
 msgstr "Изаберите тастер за бирање претходних DVD наслова"
 
-#: src/libvlc-module.c:1357
+#: src/libvlc-module.c:1359
 msgid "Select next DVD title"
 msgstr "Изаберите следећи DVD наслов"
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1360
 msgid "Select the key to choose the next title from the DVD"
 msgstr "Изаберите тастер за бирање следећег DVD наслова "
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1361
 msgid "Select prev DVD chapter"
 msgstr "Изаберите претходно DVD поглавље"
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1362
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr "Изаберите тастер за бирање претходних DVD поглавља"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1363
 msgid "Select next DVD chapter"
 msgstr "Изаберите следеће DVD поглавље"
 
-#: src/libvlc-module.c:1362
+#: src/libvlc-module.c:1364
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "Изаберите тастер за бирање следећег DVD наслова"
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1365
 msgid "Volume up"
 msgstr "Појачајте јачину звука"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1366
 msgid "Select the key to increase audio volume."
 msgstr "Изаберите тастер за повећавање аудио јачине звука."
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1367
 msgid "Volume down"
 msgstr "Смањите јачину звука"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1368
 msgid "Select the key to decrease audio volume."
 msgstr "Изаберите тастер за смањивање јачине аудио звука."
 
-#: src/libvlc-module.c:1367 modules/access/v4l2.c:175
+#: src/libvlc-module.c:1369 modules/access/v4l2.c:175
 #: modules/gui/macosx/controls.m:1077 modules/gui/macosx/intf.m:671
-#: modules/gui/macosx/intf.m:741 modules/gui/macosx/intf.m:750
+#: modules/gui/macosx/intf.m:743 modules/gui/macosx/intf.m:752
 #: modules/gui/qt4/menus.cpp:575
 msgid "Mute"
 msgstr "Искључи звук"
 
-#: src/libvlc-module.c:1368
+#: src/libvlc-module.c:1370
 msgid "Select the key to mute audio."
 msgstr "Изаберите тастер за искључивање аудио звука."
 
-#: src/libvlc-module.c:1369
+#: src/libvlc-module.c:1371
 msgid "Subtitle delay up"
 msgstr "Повећај кашњење титла"
 
-#: src/libvlc-module.c:1370
+#: src/libvlc-module.c:1372
 msgid "Select the key to increase the subtitle delay."
 msgstr "Изаберите тастер за повећавање кашњења титла."
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1373
 msgid "Subtitle delay down"
 msgstr "Смањи кашњење титла"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1374
 msgid "Select the key to decrease the subtitle delay."
 msgstr "Изаберите тастер за смањивање кашњења титла."
 
-#: src/libvlc-module.c:1373
+#: src/libvlc-module.c:1375
 #, fuzzy
 msgid "Subtitle position up"
 msgstr "Опције титла"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1376
 #, fuzzy
 msgid "Select the key to move subtitles higher."
 msgstr "Изаберите тастер за искључивање аудио звука."
 
-#: src/libvlc-module.c:1375
+#: src/libvlc-module.c:1377
 #, fuzzy
 msgid "Subtitle position down"
 msgstr "Опције титла"
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1378
 #, fuzzy
 msgid "Select the key to move subtitles lower."
 msgstr "Изаберите тастер за искључивање аудио звука."
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1379
 msgid "Audio delay up"
 msgstr "Повећај кашњење аудио звука"
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1380
 msgid "Select the key to increase the audio delay."
 msgstr "Изаберите тастер за повећавање кашњења аудио звука."
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1381
 msgid "Audio delay down"
 msgstr "Смањи кашњење аудио звука"
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1382
 msgid "Select the key to decrease the audio delay."
 msgstr "Изаберите тастер за смањивање кашњења аудио звука."
 
-#: src/libvlc-module.c:1387
+#: src/libvlc-module.c:1389
 msgid "Play playlist bookmark 1"
 msgstr "Репродукуј из листе за пуштање обележивач 1"
 
-#: src/libvlc-module.c:1388
+#: src/libvlc-module.c:1390
 msgid "Play playlist bookmark 2"
 msgstr "Репродукуј из листе за пуштање обележивач 2"
 
-#: src/libvlc-module.c:1389
+#: src/libvlc-module.c:1391
 msgid "Play playlist bookmark 3"
 msgstr "Репродукуј из листе за пуштање обележивач 3"
 
-#: src/libvlc-module.c:1390
+#: src/libvlc-module.c:1392
 msgid "Play playlist bookmark 4"
 msgstr "Репродукуј из листе за пуштање обележивач 4"
 
-#: src/libvlc-module.c:1391
+#: src/libvlc-module.c:1393
 msgid "Play playlist bookmark 5"
 msgstr "Репродукуј из листе за пуштање обележивач 5"
 
-#: src/libvlc-module.c:1392
+#: src/libvlc-module.c:1394
 msgid "Play playlist bookmark 6"
 msgstr "Репродукуј из листе за пуштање обележивач 6"
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1395
 msgid "Play playlist bookmark 7"
 msgstr "Репродукуј из листе за пуштање обележивач 7"
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1396
 msgid "Play playlist bookmark 8"
 msgstr "Репродукуј из листе за пуштање обележивач 8"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1397
 msgid "Play playlist bookmark 9"
 msgstr "Репродукуј из листе за пуштање обележивач 9"
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1398
 msgid "Play playlist bookmark 10"
 msgstr "Репродукуј из листе за пуштање обележивач 10"
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1399
 msgid "Select the key to play this bookmark."
 msgstr "Изаберите тастер за репродукцију овог обележивача."
 
-#: src/libvlc-module.c:1398
+#: src/libvlc-module.c:1400
 msgid "Set playlist bookmark 1"
 msgstr "Постави у листу за пуштање обележивач 1"
 
-#: src/libvlc-module.c:1399
+#: src/libvlc-module.c:1401
 msgid "Set playlist bookmark 2"
 msgstr "Постави у листу за пуштање обележивач 2"
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1402
 msgid "Set playlist bookmark 3"
 msgstr "Постави у листу за пуштање обележивач 3"
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1403
 msgid "Set playlist bookmark 4"
 msgstr "Постави у листу за пуштање обележивач 4"
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1404
 msgid "Set playlist bookmark 5"
 msgstr "Постави у листу за пуштање обележивач 5"
 
-#: src/libvlc-module.c:1403
+#: src/libvlc-module.c:1405
 msgid "Set playlist bookmark 6"
 msgstr "Постави у листу за пуштање обележивач 6"
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1406
 msgid "Set playlist bookmark 7"
 msgstr "Постави у листу за пуштање обележивач 7"
 
-#: src/libvlc-module.c:1405
+#: src/libvlc-module.c:1407
 msgid "Set playlist bookmark 8"
 msgstr "Постави у листу за пуштање обележивач 8"
 
-#: src/libvlc-module.c:1406
+#: src/libvlc-module.c:1408
 msgid "Set playlist bookmark 9"
 msgstr "Постави у листу за пуштање обележивач 9"
 
-#: src/libvlc-module.c:1407
+#: src/libvlc-module.c:1409
 msgid "Set playlist bookmark 10"
 msgstr "Постави у листу за пуштање обележивач 10"
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1410
 msgid "Select the key to set this playlist bookmark."
 msgstr "Изаберите тастер за постављање овог обележивача у листу за пуштање."
 
-#: src/libvlc-module.c:1410
+#: src/libvlc-module.c:1412
 msgid "Playlist bookmark 1"
 msgstr "Листа за пуштање обележивач 1"
 
-#: src/libvlc-module.c:1411
+#: src/libvlc-module.c:1413
 msgid "Playlist bookmark 2"
 msgstr "Листа за пуштање обележивач 2"
 
-#: src/libvlc-module.c:1412
+#: src/libvlc-module.c:1414
 msgid "Playlist bookmark 3"
 msgstr "Листа за пуштање обележивач 3"
 
-#: src/libvlc-module.c:1413
+#: src/libvlc-module.c:1415
 msgid "Playlist bookmark 4"
 msgstr "Листа за пуштање обележивач 4"
 
-#: src/libvlc-module.c:1414
+#: src/libvlc-module.c:1416
 msgid "Playlist bookmark 5"
 msgstr "Листа за пуштање обележивач 5"
 
-#: src/libvlc-module.c:1415
+#: src/libvlc-module.c:1417
 msgid "Playlist bookmark 6"
 msgstr "Листа за пуштање обележивач 6"
 
-#: src/libvlc-module.c:1416
+#: src/libvlc-module.c:1418
 msgid "Playlist bookmark 7"
 msgstr "Листа за пуштање обележивач 7"
 
-#: src/libvlc-module.c:1417
+#: src/libvlc-module.c:1419
 msgid "Playlist bookmark 8"
 msgstr "Листа за пуштање обележивач 8"
 
-#: src/libvlc-module.c:1418
+#: src/libvlc-module.c:1420
 msgid "Playlist bookmark 9"
 msgstr "Листа за пуштање обележивач 9"
 
-#: src/libvlc-module.c:1419
+#: src/libvlc-module.c:1421
 msgid "Playlist bookmark 10"
 msgstr "Листа за пуштање обележивач 10"
 
-#: src/libvlc-module.c:1421
+#: src/libvlc-module.c:1423
 msgid "This allows you to define playlist bookmarks."
 msgstr "Ово Вам дозвољава да дефинишете маркере листе за пуштање."
 
-#: src/libvlc-module.c:1423
+#: src/libvlc-module.c:1425
 msgid "Go back in browsing history"
 msgstr "Врати се у историју претраживања"
 
-#: src/libvlc-module.c:1424
+#: src/libvlc-module.c:1426
 msgid ""
 "Select the key to go back (to the previous media item) in the browsing "
 "history."
@@ -4371,12 +4371,12 @@ msgstr ""
 "Изаберите тастер за враћање уназад (на претходну ставку медија) у историју "
 "претраживања."
 
-#: src/libvlc-module.c:1425
+#: src/libvlc-module.c:1427
 #, fuzzy
 msgid "Go forward in browsing history"
 msgstr "Иди унапред у историју претраживања"
 
-#: src/libvlc-module.c:1426
+#: src/libvlc-module.c:1428
 msgid ""
 "Select the key to go forward (to the next media item) in the browsing "
 "history."
@@ -4384,336 +4384,336 @@ msgstr ""
 "Изаберите тастер да идете унапред (на следећу ставку медија) у историју "
 "претраживања."
 
-#: src/libvlc-module.c:1428
+#: src/libvlc-module.c:1430
 #, fuzzy
 msgid "Cycle audio track"
 msgstr "Циклус аудио траке"
 
-#: src/libvlc-module.c:1429
+#: src/libvlc-module.c:1431
 msgid "Cycle through the available audio tracks(languages)."
 msgstr "Циклично прођи кроз доступне аудио траке (језике)"
 
-#: src/libvlc-module.c:1430
+#: src/libvlc-module.c:1432
 msgid "Cycle subtitle track"
 msgstr "Циклус титла траке"
 
-#: src/libvlc-module.c:1431
+#: src/libvlc-module.c:1433
 msgid "Cycle through the available subtitle tracks."
 msgstr "Прођи циклично кроз доступне титл траке."
 
-#: src/libvlc-module.c:1432
+#: src/libvlc-module.c:1434
 msgid "Cycle source aspect ratio"
 msgstr "Циклус пропорције извора"
 
-#: src/libvlc-module.c:1433
+#: src/libvlc-module.c:1435
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr "Порђи циклично кроз предефинисану листу пропорција извора."
 
-#: src/libvlc-module.c:1434
+#: src/libvlc-module.c:1436
 msgid "Cycle video crop"
 msgstr "Циклус видео исецања"
 
-#: src/libvlc-module.c:1435
+#: src/libvlc-module.c:1437
 msgid "Cycle through a predefined list of crop formats."
 msgstr "Прођи циклично кроз предефинисану листу исечених формата"
 
-#: src/libvlc-module.c:1436
+#: src/libvlc-module.c:1438
 #, fuzzy
 msgid "Toggle autoscaling"
 msgstr "Интерфејс Telnet-а"
 
-#: src/libvlc-module.c:1437
+#: src/libvlc-module.c:1439
 msgid "Activate or deactivate autoscaling."
 msgstr ""
 
-#: src/libvlc-module.c:1438
+#: src/libvlc-module.c:1440
 msgid "Increase scale factor"
 msgstr ""
 
-#: src/libvlc-module.c:1439
+#: src/libvlc-module.c:1441
 msgid "Increase scale factor."
 msgstr ""
 
-#: src/libvlc-module.c:1440
+#: src/libvlc-module.c:1442
 msgid "Decrease scale factor"
 msgstr ""
 
-#: src/libvlc-module.c:1441
+#: src/libvlc-module.c:1443
 msgid "Decrease scale factor."
 msgstr ""
 
-#: src/libvlc-module.c:1442
+#: src/libvlc-module.c:1444
 #, fuzzy
 msgid "Cycle deinterlace modes"
 msgstr "Режими рада циклуса расплитања"
 
-#: src/libvlc-module.c:1443
+#: src/libvlc-module.c:1445
 #, fuzzy
 msgid "Cycle through deinterlace modes."
 msgstr "Прођи циклично кроз режиме рада расплитања."
 
-#: src/libvlc-module.c:1444
+#: src/libvlc-module.c:1446
 msgid "Show interface"
 msgstr "Прикажи интерфејс"
 
-#: src/libvlc-module.c:1445
+#: src/libvlc-module.c:1447
 msgid "Raise the interface above all other windows."
 msgstr "Постави интерфејс преко свих других прозора."
 
-#: src/libvlc-module.c:1446
+#: src/libvlc-module.c:1448
 msgid "Hide interface"
 msgstr "Сакриј интерфејс"
 
-#: src/libvlc-module.c:1447
+#: src/libvlc-module.c:1449
 msgid "Lower the interface below all other windows."
 msgstr "Постави интерфејс испод свих других прозора."
 
-#: src/libvlc-module.c:1448
+#: src/libvlc-module.c:1450
 msgid "Take video snapshot"
 msgstr "Узми слику видеа"
 
-#: src/libvlc-module.c:1449
+#: src/libvlc-module.c:1451
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "Узима брзу слику видеа и пише је на диск."
 
-#: src/libvlc-module.c:1451 modules/gui/qt4/components/controller.hpp:107
+#: src/libvlc-module.c:1453 modules/gui/qt4/components/controller.hpp:107
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Снимање"
 
-#: src/libvlc-module.c:1452
+#: src/libvlc-module.c:1454
 msgid "Record access filter start/stop."
 msgstr "Сними приступни филтер почетак/крај."
 
-#: src/libvlc-module.c:1453
+#: src/libvlc-module.c:1455
 msgid "Dump"
 msgstr "Одбацивање"
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1456
 msgid "Media dump access filter trigger."
 msgstr "Активирање приступног филтера за одбацивање медија"
 
-#: src/libvlc-module.c:1456
+#: src/libvlc-module.c:1458
 msgid "Normal/Repeat/Loop"
 msgstr ""
 
-#: src/libvlc-module.c:1457
+#: src/libvlc-module.c:1459
 msgid "Toggle Normal/Repeat/Loop playlist modes"
 msgstr ""
 
-#: src/libvlc-module.c:1460
+#: src/libvlc-module.c:1462
 msgid "Toggle random playlist playback"
 msgstr ""
 
-#: src/libvlc-module.c:1465 src/libvlc-module.c:1466
+#: src/libvlc-module.c:1467 src/libvlc-module.c:1468
 #, fuzzy
 msgid "Un-Zoom"
 msgstr "Одувеличај"
 
-#: src/libvlc-module.c:1468 src/libvlc-module.c:1469
+#: src/libvlc-module.c:1470 src/libvlc-module.c:1471
 msgid "Crop one pixel from the top of the video"
 msgstr "Исеци један пиксел са врха видео снимка"
 
-#: src/libvlc-module.c:1470 src/libvlc-module.c:1471
+#: src/libvlc-module.c:1472 src/libvlc-module.c:1473
 msgid "Uncrop one pixel from the top of the video"
 msgstr "Врати исечени један пиксел са врха видео снимка"
 
-#: src/libvlc-module.c:1473 src/libvlc-module.c:1474
+#: src/libvlc-module.c:1475 src/libvlc-module.c:1476
 msgid "Crop one pixel from the left of the video"
 msgstr "Исеци један пиксел са леве стране видео снимка"
 
-#: src/libvlc-module.c:1475 src/libvlc-module.c:1476
+#: src/libvlc-module.c:1477 src/libvlc-module.c:1478
 msgid "Uncrop one pixel from the left of the video"
 msgstr "Врати исечени један пиксел са леве стране видео снимка"
 
-#: src/libvlc-module.c:1478 src/libvlc-module.c:1479
+#: src/libvlc-module.c:1480 src/libvlc-module.c:1481
 msgid "Crop one pixel from the bottom of the video"
 msgstr "Исеци један пиксел са дна видео снимка"
 
-#: src/libvlc-module.c:1480 src/libvlc-module.c:1481
+#: src/libvlc-module.c:1482 src/libvlc-module.c:1483
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr "Врати исечени један пиксел са дна видео снимка"
 
-#: src/libvlc-module.c:1483 src/libvlc-module.c:1484
+#: src/libvlc-module.c:1485 src/libvlc-module.c:1486
 msgid "Crop one pixel from the right of the video"
 msgstr "Исеци један пиксел са десне стране видео снимка"
 
-#: src/libvlc-module.c:1485 src/libvlc-module.c:1486
+#: src/libvlc-module.c:1487 src/libvlc-module.c:1488
 msgid "Uncrop one pixel from the right of the video"
 msgstr "Врати исечени један пиксел са десне стране видео снимка"
 
-#: src/libvlc-module.c:1488
+#: src/libvlc-module.c:1490
 #, fuzzy
 msgid "Toggle wallpaper mode in video output"
 msgstr "Укључи мод позадине"
 
-#: src/libvlc-module.c:1490
+#: src/libvlc-module.c:1492
 #, fuzzy
 msgid "Toggle wallpaper mode in video output."
 msgstr "Укључи мод позадине"
 
-#: src/libvlc-module.c:1492 src/libvlc-module.c:1493
+#: src/libvlc-module.c:1494 src/libvlc-module.c:1495
 msgid "Display OSD menu on top of video output"
 msgstr ""
 
-#: src/libvlc-module.c:1494
+#: src/libvlc-module.c:1496
 msgid "Do not display OSD menu on video output"
 msgstr ""
 
-#: src/libvlc-module.c:1495
+#: src/libvlc-module.c:1497
 msgid "Do not display OSD menu on top of video output"
 msgstr ""
 
-#: src/libvlc-module.c:1496
+#: src/libvlc-module.c:1498
 msgid "Highlight widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1498
+#: src/libvlc-module.c:1500
 msgid "Move OSD menu highlight to the widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1499
+#: src/libvlc-module.c:1501
 msgid "Highlight widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1501
+#: src/libvlc-module.c:1503
 msgid "Move OSD menu highlight to the widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1502
+#: src/libvlc-module.c:1504
 msgid "Highlight widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1504
+#: src/libvlc-module.c:1506
 msgid "Move OSD menu highlight to the widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1505
+#: src/libvlc-module.c:1507
 msgid "Highlight widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1507
+#: src/libvlc-module.c:1509
 msgid "Move OSD menu highlight to the widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1508
+#: src/libvlc-module.c:1510
 #, fuzzy
 msgid "Select current widget"
 msgstr "Понови тренутну ставку"
 
-#: src/libvlc-module.c:1510
+#: src/libvlc-module.c:1512
 msgid "Selecting current widget performs the associated action."
 msgstr ""
 
-#: src/libvlc-module.c:1512
+#: src/libvlc-module.c:1514
 #, fuzzy
 msgid "Cycle through audio devices"
 msgstr "Прођи циклично кроз режиме рада расплитања."
 
-#: src/libvlc-module.c:1513
+#: src/libvlc-module.c:1515
 #, fuzzy
 msgid "Cycle through available audio devices"
 msgstr "Циклично прођи кроз доступне аудио траке (језике)"
 
-#: src/libvlc-module.c:1686 src/video_output/vout_intf.c:363
+#: src/libvlc-module.c:1688 src/video_output/vout_intf.c:363
 #: modules/gui/macosx/controls.m:494 modules/gui/macosx/controls.m:1086
-#: modules/gui/macosx/intf.m:688 modules/gui/macosx/intf.m:752
+#: modules/gui/macosx/intf.m:688 modules/gui/macosx/intf.m:754
 #: modules/gui/qt4/components/controller.hpp:106
 #: modules/video_output/snapshot.c:73
 msgid "Snapshot"
 msgstr "Снимак слике"
 
-#: src/libvlc-module.c:1703
+#: src/libvlc-module.c:1705
 msgid "Window properties"
 msgstr "Особине Прозора"
 
-#: src/libvlc-module.c:1762
+#: src/libvlc-module.c:1764
 msgid "Subpictures"
 msgstr "Подслике"
 
-#: src/libvlc-module.c:1770 modules/codec/subtitles/subsdec.c:202
+#: src/libvlc-module.c:1772 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
 #: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
 #: modules/gui/qt4/ui/profiles.h:497
 msgid "Subtitles"
 msgstr "Титлови"
 
-#: src/libvlc-module.c:1788 modules/stream_out/transcode/transcode.c:115
+#: src/libvlc-module.c:1790 modules/stream_out/transcode/transcode.c:115
 msgid "Overlays"
 msgstr "Преклапања"
 
-#: src/libvlc-module.c:1796
+#: src/libvlc-module.c:1798
 msgid "Track settings"
 msgstr "Подешавања траке"
 
-#: src/libvlc-module.c:1826
+#: src/libvlc-module.c:1828
 msgid "Playback control"
 msgstr "Контрола преслушавања"
 
-#: src/libvlc-module.c:1853
+#: src/libvlc-module.c:1855
 msgid "Default devices"
 msgstr "Подразумевани уређаји"
 
-#: src/libvlc-module.c:1862
+#: src/libvlc-module.c:1864
 msgid "Network settings"
 msgstr "Подешавања Мреже"
 
-#: src/libvlc-module.c:1874
+#: src/libvlc-module.c:1876
 msgid "Socks proxy"
 msgstr "Socks прокси"
 
-#: src/libvlc-module.c:1883 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1885 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Мета подаци"
 
-#: src/libvlc-module.c:1934
+#: src/libvlc-module.c:1936
 msgid "Decoders"
 msgstr "Декодери"
 
-#: src/libvlc-module.c:1941 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1943 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Улаз"
 
-#: src/libvlc-module.c:1980
+#: src/libvlc-module.c:1982
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2012
+#: src/libvlc-module.c:2014
 msgid "CPU"
 msgstr "CPU"
 
-#: src/libvlc-module.c:2041
+#: src/libvlc-module.c:2043
 msgid "Special modules"
 msgstr "Специјални модули"
 
-#: src/libvlc-module.c:2047 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2049 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Додаци"
 
-#: src/libvlc-module.c:2062
+#: src/libvlc-module.c:2060
 msgid "Performance options"
 msgstr "Опције перформанси"
 
-#: src/libvlc-module.c:2210
+#: src/libvlc-module.c:2208
 msgid "Hot keys"
 msgstr "Пречице"
 
-#: src/libvlc-module.c:2652
+#: src/libvlc-module.c:2650
 msgid "Jump sizes"
 msgstr "Величине скокова"
 
-#: src/libvlc-module.c:2729
+#: src/libvlc-module.c:2727
 #, fuzzy
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr "штампај помоћ за VLC (може да се комбинује са --advanced)"
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2730
 msgid "Exhaustive help for VLC and its modules"
 msgstr ""
 
-#: src/libvlc-module.c:2734
+#: src/libvlc-module.c:2732
 #, fuzzy
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
@@ -4721,47 +4721,47 @@ msgid ""
 msgstr ""
 "штампај помоћ за VLC и све његове модуле (може да се комбинује са --advanced)"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2735
 msgid "ask for extra verbosity when displaying help"
 msgstr "питајте за додатну опширност при приказивању помоћи"
 
-#: src/libvlc-module.c:2739
+#: src/libvlc-module.c:2737
 msgid "print a list of available modules"
 msgstr "одштампај листу доступних модула"
 
-#: src/libvlc-module.c:2741
+#: src/libvlc-module.c:2739
 #, fuzzy
 msgid "print a list of available modules with extra detail"
 msgstr "одштампај листу доступних модула"
 
-#: src/libvlc-module.c:2743
+#: src/libvlc-module.c:2741
 #, fuzzy
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
 msgstr "штампај помоћ за одређени модул (може да се комбинује са --advanced)"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2745
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2747
 msgid "reset the current config to the default values"
 msgstr "подеси тренутна подешавања на подразумеване вредности"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2749
 msgid "use alternate config file"
 msgstr "користи алтернативни config фајл"
 
-#: src/libvlc-module.c:2753
+#: src/libvlc-module.c:2751
 msgid "resets the current plugins cache"
 msgstr "враћа на првобитне вредности кеш додатака"
 
-#: src/libvlc-module.c:2755
+#: src/libvlc-module.c:2753
 msgid "print version information"
 msgstr "одштампај информацију о верзији програма"
 
-#: src/libvlc-module.c:2793
+#: src/libvlc-module.c:2791
 msgid "main program"
 msgstr "главни програм"
 
@@ -4816,7 +4816,7 @@ msgstr "Growl Додатак за Обавештења"
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
 #: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:696
 #: modules/gui/macosx/wizard.m:320
-#: modules/gui/qt4/components/open_panels.cpp:1265
+#: modules/gui/qt4/components/open_panels.cpp:1269
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -5576,8 +5576,8 @@ msgstr "чуанг"
 msgid "Zulu"
 msgstr "зулу"
 
-#: src/video_output/video_output.c:1686 modules/gui/macosx/intf.m:702
-#: modules/gui/macosx/intf.m:703 modules/video_filter/postproc.c:196
+#: src/video_output/video_output.c:1686 modules/gui/macosx/intf.m:704
+#: modules/gui/macosx/intf.m:705 modules/video_filter/postproc.c:196
 msgid "Post processing"
 msgstr "Пост-процесирање"
 
@@ -5702,7 +5702,7 @@ msgstr ""
 "Кеширање вредности за DVB токове. Ова вредност треба да буде у милисекундама."
 
 #: modules/access/bda/bda.c:51 modules/access/dvb/access.c:88
-#: modules/gui/qt4/components/open_panels.cpp:928
+#: modules/gui/qt4/components/open_panels.cpp:932
 msgid "Adapter card to tune"
 msgstr "Адаптерска картица за тјунирање "
 
@@ -5719,8 +5719,8 @@ msgid "Device number to use on adapter"
 msgstr "Број уређаја који ће користити адаптер"
 
 #: modules/access/bda/bda.c:58 modules/access/dvb/access.c:94
-#: modules/gui/qt4/components/open_panels.cpp:684
-#: modules/gui/qt4/components/open_panels.cpp:950
+#: modules/gui/qt4/components/open_panels.cpp:688
+#: modules/gui/qt4/components/open_panels.cpp:954
 msgid "Transponder/multiplex frequency"
 msgstr "Одашиљач/вишеструка фреквенција"
 
@@ -5943,15 +5943,15 @@ msgstr "Земаљска ширина пропусног опсега"
 msgid "Terrestrial bandwidth [0=auto,6,7,8 in MHz]"
 msgstr "Земаљска ширина пропусног опсега [0=аутоматски,6,7,8 у MHz]"
 
-#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:978
+#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:982
 msgid "6 MHz"
 msgstr "6 MHz"
 
-#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:979
+#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:983
 msgid "7 MHz"
 msgstr "7 MHz"
 
-#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:980
+#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:984
 msgid "8 MHz"
 msgstr "8 MHz"
 
@@ -6182,8 +6182,8 @@ msgstr ""
 "милисекундама."
 
 #: modules/access/dshow/dshow.cpp:103 modules/access/v4l.c:81
-#: modules/gui/qt4/components/open_panels.cpp:737
-#: modules/gui/qt4/components/open_panels.cpp:772
+#: modules/gui/qt4/components/open_panels.cpp:741
+#: modules/gui/qt4/components/open_panels.cpp:776
 msgid "Video device name"
 msgstr "Име видео уређаја"
 
@@ -6196,8 +6196,8 @@ msgstr ""
 "ниједан, користиће се подразумевани уређај."
 
 #: modules/access/dshow/dshow.cpp:108
-#: modules/gui/qt4/components/open_panels.cpp:743
-#: modules/gui/qt4/components/open_panels.cpp:778
+#: modules/gui/qt4/components/open_panels.cpp:747
+#: modules/gui/qt4/components/open_panels.cpp:782
 msgid "Audio device name"
 msgstr "Име аудио уређаја"
 
@@ -6211,7 +6211,7 @@ msgstr ""
 "ниједан, користиће се подразумевани уређај."
 
 #: modules/access/dshow/dshow.cpp:113
-#: modules/gui/qt4/components/open_panels.cpp:647
+#: modules/gui/qt4/components/open_panels.cpp:651
 msgid "Video size"
 msgstr "Величина видеа"
 
@@ -6226,12 +6226,21 @@ msgstr ""
 "ниједан, користиће се подразумевани уређај. Можете да одредите стандардну "
 "величину (cif, d1, ...) или <width>x<height>"
 
-#: modules/access/dshow/dshow.cpp:118 modules/access/v4l.c:85
+#: modules/access/dshow/dshow.cpp:118 modules/access/v4l2.c:215
+#, fuzzy
+msgid "Picture aspect-ratio n:m"
+msgstr "Изворна пропорција односа"
+
+#: modules/access/dshow/dshow.cpp:119 modules/access/v4l2.c:216
+msgid "Define input picture aspect-ratio to use. Default is 4:3"
+msgstr ""
+
+#: modules/access/dshow/dshow.cpp:120 modules/access/v4l.c:85
 #: modules/access/v4l2.c:80
 msgid "Video input chroma format"
 msgstr "Формат сигнала боје видео улаза"
 
-#: modules/access/dshow/dshow.cpp:120
+#: modules/access/dshow/dshow.cpp:122
 msgid ""
 "Force the DirectShow video input to use a specific chroma format (eg. I420 "
 "(default), RV24, etc.)"
@@ -6239,11 +6248,11 @@ msgstr ""
 "Приморај DirectShow видео улаз да користи одређен формат нијансе боје (нпр. "
 "I420 (подразумевано), RV24, итд.)"
 
-#: modules/access/dshow/dshow.cpp:122
+#: modules/access/dshow/dshow.cpp:124
 msgid "Video input frame rate"
 msgstr "Брзина фрејмова видео улаза"
 
-#: modules/access/dshow/dshow.cpp:124
+#: modules/access/dshow/dshow.cpp:126
 msgid ""
 "Force the DirectShow video input to use a specific frame rate(eg. 0 means "
 "default, 25, 29.97, 50, 59.94, etc.)"
@@ -6251,37 +6260,37 @@ msgstr ""
 "Приморај DirectShow видео учаз да користи одређену брзони фрејмова(пример. 0 "
 "значи подразумевано, 25, 29.97, 50, 59.94, итд.)"
 
-#: modules/access/dshow/dshow.cpp:126
+#: modules/access/dshow/dshow.cpp:128
 msgid "Device properties"
 msgstr "Особине уређаја"
 
-#: modules/access/dshow/dshow.cpp:128
+#: modules/access/dshow/dshow.cpp:130
 msgid ""
 "Show the properties dialog of the selected device before starting the stream."
 msgstr "Покажи особине дијалога изабраног уређаја пре покретања тока."
 
-#: modules/access/dshow/dshow.cpp:130
+#: modules/access/dshow/dshow.cpp:132
 msgid "Tuner properties"
 msgstr "Особине тјунера"
 
-#: modules/access/dshow/dshow.cpp:132
+#: modules/access/dshow/dshow.cpp:134
 msgid "Show the tuner properties [channel selection] page."
 msgstr "Покажи страницу особина тјунера [бирање канала]."
 
-#: modules/access/dshow/dshow.cpp:133
+#: modules/access/dshow/dshow.cpp:135
 msgid "Tuner TV Channel"
 msgstr "Канал TV Тјунера"
 
-#: modules/access/dshow/dshow.cpp:135
+#: modules/access/dshow/dshow.cpp:137
 msgid "Set the TV channel the tuner will set to (0 means default)."
 msgstr "Подеси TV канал који ће тујнер подесити (0 значи подразумевано)."
 
-#: modules/access/dshow/dshow.cpp:137
+#: modules/access/dshow/dshow.cpp:139
 #, fuzzy
 msgid "Tuner country code"
 msgstr "Код земље тјунера"
 
-#: modules/access/dshow/dshow.cpp:139
+#: modules/access/dshow/dshow.cpp:141
 msgid ""
 "Set the tuner country code that establishes the current channel-to-frequency "
 "mapping (0 means default)."
@@ -6289,19 +6298,19 @@ msgstr ""
 "Подесите код земље за тјунер који успоставља тренутно мапирање канала у "
 "фреквенцију (0 је подразумевана вредност)."
 
-#: modules/access/dshow/dshow.cpp:141
+#: modules/access/dshow/dshow.cpp:143
 msgid "Tuner input type"
 msgstr "Улазни тип тјунера"
 
-#: modules/access/dshow/dshow.cpp:143
+#: modules/access/dshow/dshow.cpp:145
 msgid "Select the tuner input type (Cable/Antenna)."
 msgstr "Изаберите улазни тип тјунера (Кабл/Антена)."
 
-#: modules/access/dshow/dshow.cpp:144
+#: modules/access/dshow/dshow.cpp:146
 msgid "Video input pin"
 msgstr "Видео улазни пин"
 
-#: modules/access/dshow/dshow.cpp:146
+#: modules/access/dshow/dshow.cpp:148
 #, fuzzy
 msgid ""
 "Select the video input source, such as composite, s-video, or tuner. Since "
@@ -6314,108 +6323,108 @@ msgstr ""
 "пронађете добра подешавања у \"Device config\" области, и да користите те "
 "бројеве. -1 значи да подешавања неће бити промењена."
 
-#: modules/access/dshow/dshow.cpp:150
+#: modules/access/dshow/dshow.cpp:152
 msgid "Audio input pin"
 msgstr "Аудио улазни пин"
 
-#: modules/access/dshow/dshow.cpp:152
+#: modules/access/dshow/dshow.cpp:154
 msgid "Select the audio input source. See the \"video input\" option."
 msgstr "Изаберите извор аудио улаза. Погледајте \"video input\" опцију."
 
-#: modules/access/dshow/dshow.cpp:153
+#: modules/access/dshow/dshow.cpp:155
 msgid "Video output pin"
 msgstr "Видео излазни пин"
 
-#: modules/access/dshow/dshow.cpp:155
+#: modules/access/dshow/dshow.cpp:157
 msgid "Select the video output type. See the \"video input\" option."
 msgstr "Изаберите тип видео излаза. Погледајте \"video input\" опцију."
 
-#: modules/access/dshow/dshow.cpp:156
+#: modules/access/dshow/dshow.cpp:158
 msgid "Audio output pin"
 msgstr "Аудио излазни пин"
 
-#: modules/access/dshow/dshow.cpp:158
+#: modules/access/dshow/dshow.cpp:160
 msgid "Select the audio output type. See the \"video input\" option."
 msgstr "Изаберите тип аудио излаза. Погледајте \"video input\" опцију."
 
-#: modules/access/dshow/dshow.cpp:160
+#: modules/access/dshow/dshow.cpp:162
 #, fuzzy
 msgid "AM Tuner mode"
 msgstr "SMB корисничко име"
 
-#: modules/access/dshow/dshow.cpp:162
+#: modules/access/dshow/dshow.cpp:164
 msgid ""
 "AM Tuner mode. Can be one of Default (0), TV (1),AM Radio (2), FM Radio (3) "
 "or DSS (4)."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:165
+#: modules/access/dshow/dshow.cpp:167
 #, fuzzy
 msgid "Number of audio channels"
 msgstr "Број излазних канала"
 
-#: modules/access/dshow/dshow.cpp:167
+#: modules/access/dshow/dshow.cpp:169
 msgid ""
 "Select audio input format with the given number of audio channels (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:169
+#: modules/access/dshow/dshow.cpp:171
 #: modules/stream_out/transcode/transcode.c:93
 msgid "Audio sample rate"
 msgstr "Аудио брзина узорка"
 
-#: modules/access/dshow/dshow.cpp:171
+#: modules/access/dshow/dshow.cpp:173
 msgid "Select audio input format with the given sample rate (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:173
+#: modules/access/dshow/dshow.cpp:175
 #, fuzzy
 msgid "Audio bits per sample"
 msgstr "Битови по узорку"
 
-#: modules/access/dshow/dshow.cpp:175
+#: modules/access/dshow/dshow.cpp:177
 msgid "Select audio input format with the given bits/sample (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:187
+#: modules/access/dshow/dshow.cpp:189
 #, fuzzy
 msgid "DirectShow"
 msgstr "DirectShow"
 
-#: modules/access/dshow/dshow.cpp:188 modules/access/dshow/dshow.cpp:252
+#: modules/access/dshow/dshow.cpp:190 modules/access/dshow/dshow.cpp:256
 msgid "DirectShow input"
 msgstr "DirectShow улаз"
 
-#: modules/access/dshow/dshow.cpp:196 modules/access/dshow/dshow.cpp:201
+#: modules/access/dshow/dshow.cpp:198 modules/access/dshow/dshow.cpp:203
 #: modules/audio_output/alsa.c:117 modules/audio_output/directx.c:140
 #: modules/audio_output/waveout.c:109 modules/video_output/msw/directx.c:116
 msgid "Refresh list"
 msgstr "Освежи листу"
 
-#: modules/access/dshow/dshow.cpp:197 modules/access/dshow/dshow.cpp:202
+#: modules/access/dshow/dshow.cpp:199 modules/access/dshow/dshow.cpp:204
 msgid "Configure"
 msgstr "Подеси"
 
-#: modules/access/dshow/dshow.cpp:459 modules/access/dshow/dshow.cpp:533
-#: modules/access/dshow/dshow.cpp:968 modules/access/dshow/dshow.cpp:1021
+#: modules/access/dshow/dshow.cpp:464 modules/access/dshow/dshow.cpp:538
+#: modules/access/dshow/dshow.cpp:986 modules/access/dshow/dshow.cpp:1039
 #, fuzzy
 msgid "Capture failed"
 msgstr "са слушним потешкоћама"
 
-#: modules/access/dshow/dshow.cpp:460
+#: modules/access/dshow/dshow.cpp:465
 msgid "No video or audio device selected."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:534
+#: modules/access/dshow/dshow.cpp:539
 msgid "VLC cannot open ANY capture device.Check the error log for details."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:969
+#: modules/access/dshow/dshow.cpp:987
 #, c-format
 msgid "VLC cannot use the device \"%s\", because its type is not supported."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:1022
+#: modules/access/dshow/dshow.cpp:1040
 #, c-format
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr ""
@@ -6988,11 +6997,11 @@ msgstr "HTTP улаз"
 msgid "HTTP(S)"
 msgstr "HTTP(S)"
 
-#: modules/access/http.c:546
+#: modules/access/http.c:547
 msgid "HTTP authentication"
 msgstr ""
 
-#: modules/access/http.c:547
+#: modules/access/http.c:548
 #, c-format
 msgid "Please enter a valid login name and a password for realm %s."
 msgstr ""
@@ -7111,7 +7120,6 @@ msgid "Text identifier for the callback functions"
 msgstr "ID тока аудио траке који се користи."
 
 #: modules/access/imem.c:106 modules/codec/invmem.c:67
-#: modules/video_output/vmem.c:63
 msgid "Callback data"
 msgstr ""
 
@@ -7140,7 +7148,15 @@ msgstr "Псеудио демултиплексер функција"
 msgid "Address of the release callback function"
 msgstr "ID тока аудио траке који се користи."
 
-#: modules/access/imem.c:119 modules/access/imem.c:120
+#: modules/access/imem.c:118
+msgid "Size"
+msgstr "Величина"
+
+#: modules/access/imem.c:120
+msgid "Size of stream in bytes"
+msgstr ""
+
+#: modules/access/imem.c:123 modules/access/imem.c:124
 #, fuzzy
 msgid "Memory input"
 msgstr "Нема улаза"
@@ -7305,8 +7321,8 @@ msgid "PVR radio device"
 msgstr "PVR радио уређај"
 
 #: modules/access/pvr.c:70 modules/access/v4l.c:96
-#: modules/gui/qt4/components/open_panels.cpp:785
-#: modules/gui/qt4/components/open_panels.cpp:885
+#: modules/gui/qt4/components/open_panels.cpp:789
+#: modules/gui/qt4/components/open_panels.cpp:889
 msgid "Norm"
 msgstr "Норма"
 
@@ -7323,8 +7339,8 @@ msgid "Height of the stream to capture (-1 for autodetection)."
 msgstr "Висина тока за захватање (-1 за ауто-детекцију)."
 
 #: modules/access/pvr.c:82 modules/access/v4l.c:89 modules/access/v4l2.c:203
-#: modules/gui/qt4/components/open_panels.cpp:792
-#: modules/gui/qt4/components/open_panels.cpp:892
+#: modules/gui/qt4/components/open_panels.cpp:796
+#: modules/gui/qt4/components/open_panels.cpp:896
 msgid "Frequency"
 msgstr "Фреквенција"
 
@@ -7613,7 +7629,7 @@ msgstr ""
 "у милисекундама."
 
 #: modules/access/screen/screen.c:46
-#: modules/gui/qt4/components/open_panels.cpp:1016
+#: modules/gui/qt4/components/open_panels.cpp:1020
 msgid "Desired frame rate for the capture."
 msgstr "Жељена брзина фрејмова за захватање."
 
@@ -7970,7 +7986,7 @@ msgstr "Video4Linux"
 msgid "Video4Linux input"
 msgstr "Video4Linux улаз"
 
-#: modules/access/v4l2.c:77 modules/gui/qt4/components/open_panels.cpp:750
+#: modules/access/v4l2.c:77 modules/gui/qt4/components/open_panels.cpp:754
 #: modules/stream_out/standard.c:100
 msgid "Standard"
 msgstr "Стандард"
@@ -8273,15 +8289,6 @@ msgid ""
 "'v4l2:// :input-slave=alsa://' or 'v4l2:// :input-slave=oss://' instead."
 msgstr ""
 
-#: modules/access/v4l2.c:215
-#, fuzzy
-msgid "Picture aspect-ratio n:m"
-msgstr "Изворна пропорција односа"
-
-#: modules/access/v4l2.c:216
-msgid "Define input picture aspect-ratio to use. Default is 4:3"
-msgstr ""
-
 #: modules/access/v4l2.c:250
 msgid "AUTO"
 msgstr "АУТО"
@@ -8374,7 +8381,7 @@ msgstr "[vcd:][уређај][@[наслов][,[поглавље]]]"
 
 #: modules/access/vcdx/access.c:274 modules/access/vcdx/access.c:354
 #: modules/access/vcdx/access.c:676 modules/access/vcdx/info.c:229
-#: modules/gui/qt4/components/open_panels.cpp:385
+#: modules/gui/qt4/components/open_panels.cpp:389
 msgid "Entry"
 msgstr "Унос"
 
@@ -8400,7 +8407,7 @@ msgstr "Диск"
 msgid "VCD Format"
 msgstr "VCD Формат"
 
-#: modules/access/vcdx/info.c:64 modules/gui/qt4/dialogs/messages.cpp:296
+#: modules/access/vcdx/info.c:64 modules/gui/qt4/dialogs/messages.cpp:299
 msgid "Application"
 msgstr "Апликација"
 
@@ -9516,7 +9523,7 @@ msgstr ""
 msgid "The audio device \"%s\" is already in use."
 msgstr ""
 
-#: modules/audio_output/alsa.c:982
+#: modules/audio_output/alsa.c:983
 msgid "Unknown soundcard"
 msgstr "Непозната звучна картица"
 
@@ -9696,15 +9703,15 @@ msgstr "5.1"
 
 #: modules/audio_output/pulse.c:66 modules/gui/macosx/embeddedwindow.m:76
 #: modules/gui/macosx/intf.m:596 modules/gui/macosx/intf.m:597
-#: modules/gui/macosx/intf.m:2000 modules/gui/qt4/dialogs/help.cpp:99
-#: modules/gui/qt4/main_interface.cpp:869
-#: modules/gui/qt4/main_interface.cpp:873
-#: modules/gui/qt4/main_interface.cpp:913
-#: modules/gui/qt4/main_interface.cpp:915
-#: modules/gui/qt4/main_interface.cpp:983
-#: modules/gui/qt4/main_interface.cpp:1000
-#: modules/gui/qt4/main_interface.cpp:1007
-#: modules/gui/qt4/main_interface.cpp:1030
+#: modules/gui/macosx/intf.m:2005 modules/gui/qt4/dialogs/help.cpp:99
+#: modules/gui/qt4/main_interface.cpp:864
+#: modules/gui/qt4/main_interface.cpp:868
+#: modules/gui/qt4/main_interface.cpp:908
+#: modules/gui/qt4/main_interface.cpp:910
+#: modules/gui/qt4/main_interface.cpp:978
+#: modules/gui/qt4/main_interface.cpp:995
+#: modules/gui/qt4/main_interface.cpp:1002
+#: modules/gui/qt4/main_interface.cpp:1025
 #: modules/video_output/xcb/window.c:319
 msgid "VLC media player"
 msgstr "VLC медија плејер"
@@ -10406,7 +10413,7 @@ msgstr "Однос снимања"
 
 #: modules/codec/dirac.c:105
 msgid ""
-"Field coding is where interlaced fields are coded seperately as opposed to a "
+"Field coding is where interlaced fields are coded separately as opposed to a "
 "pseudo-progressive frame"
 msgstr ""
 
@@ -10419,7 +10426,7 @@ msgid "force coding frame as single picture"
 msgstr ""
 
 #: modules/codec/dirac.c:112
-msgid "force coding frame as seperate interlaced fields"
+msgid "force coding frame as separate interlaced fields"
 msgstr ""
 
 #: modules/codec/dirac.c:116
@@ -10600,7 +10607,7 @@ msgstr "Y координата енкодираног титла"
 msgid "DVB subtitles decoder"
 msgstr "DVB декодер титлова"
 
-#: modules/codec/dvbsub.c:119 modules/demux/ts.c:3493 modules/demux/ts.c:3551
+#: modules/codec/dvbsub.c:119 modules/demux/ts.c:3492 modules/demux/ts.c:3550
 msgid "DVB subtitles"
 msgstr "DVB титлови"
 
@@ -10742,7 +10749,7 @@ msgstr ""
 msgid "Video memory buffer height."
 msgstr "Видео висина"
 
-#: modules/codec/invmem.c:59 modules/video_output/vmem.c:55
+#: modules/codec/invmem.c:59
 msgid "Lock function"
 msgstr ""
 
@@ -10752,16 +10759,16 @@ msgid ""
 "memory address for use by the video renderer."
 msgstr ""
 
-#: modules/codec/invmem.c:64 modules/video_output/vmem.c:60
+#: modules/codec/invmem.c:64
 #, fuzzy
 msgid "Unlock function"
 msgstr "Синхронизација сата"
 
-#: modules/codec/invmem.c:65 modules/video_output/vmem.c:61
+#: modules/codec/invmem.c:65
 msgid "Address of the unlocking callback function"
 msgstr ""
 
-#: modules/codec/invmem.c:68 modules/video_output/vmem.c:64
+#: modules/codec/invmem.c:68
 msgid "Data for the locking and unlocking functions"
 msgstr ""
 
@@ -10782,7 +10789,7 @@ msgstr ""
 msgid "Memory video decoder"
 msgstr "Theora видео декодер"
 
-#: modules/codec/kate.c:195 modules/codec/subtitles/subsdec.c:196
+#: modules/codec/kate.c:195 modules/codec/subtitles/subsdec.c:200
 msgid "Formatted Subtitles"
 msgstr "Форматирани Титлови"
 
@@ -10841,7 +10848,7 @@ msgid "Maroon"
 msgstr "Кестењасто Браон"
 
 #: modules/codec/kate.c:212 modules/gui/fbosd.c:172
-#: modules/gui/macosx/controls.m:542 modules/gui/macosx/intf.m:707
+#: modules/gui/macosx/controls.m:542 modules/gui/macosx/intf.m:709
 #: modules/misc/freetype.c:143 modules/misc/quartztext.c:99
 #: modules/misc/win32text.c:89 modules/video_filter/ball.c:131
 #: modules/video_filter/colorthres.c:64 modules/video_filter/marq.c:61
@@ -10857,7 +10864,7 @@ msgid "Fuchsia"
 msgstr "Тамно љубичаста"
 
 #: modules/codec/kate.c:212 modules/gui/fbosd.c:173
-#: modules/gui/macosx/controls.m:546 modules/gui/macosx/intf.m:709
+#: modules/gui/macosx/controls.m:546 modules/gui/macosx/intf.m:711
 #: modules/misc/freetype.c:143 modules/misc/quartztext.c:99
 #: modules/misc/win32text.c:89 modules/video_filter/colorthres.c:64
 #: modules/video_filter/marq.c:62 modules/video_filter/rss.c:74
@@ -10872,7 +10879,7 @@ msgid "Olive"
 msgstr "Маслинасто зелена"
 
 #: modules/codec/kate.c:212 modules/gui/fbosd.c:173
-#: modules/gui/macosx/controls.m:544 modules/gui/macosx/intf.m:708
+#: modules/gui/macosx/controls.m:544 modules/gui/macosx/intf.m:710
 #: modules/misc/freetype.c:143 modules/misc/quartztext.c:99
 #: modules/misc/win32text.c:89 modules/video_filter/ball.c:131
 #: modules/video_filter/marq.c:62 modules/video_filter/rss.c:74
@@ -10908,7 +10915,7 @@ msgid "Navy"
 msgstr "Тамно Плава"
 
 #: modules/codec/kate.c:213 modules/gui/fbosd.c:174
-#: modules/gui/macosx/controls.m:548 modules/gui/macosx/intf.m:710
+#: modules/gui/macosx/controls.m:548 modules/gui/macosx/intf.m:712
 #: modules/misc/freetype.c:144 modules/misc/quartztext.c:100
 #: modules/misc/win32text.c:90 modules/video_filter/ball.c:132
 #: modules/video_filter/colorthres.c:64 modules/video_filter/marq.c:63
@@ -11262,199 +11269,208 @@ msgstr "DVD титлови"
 msgid "DVD subtitles packetizer"
 msgstr "DVD паковалац титлова"
 
-#: modules/codec/subtitles/subsdec.c:98
+#. xgettext:
+#. The character encoding name in parenthesis corresponds to that used for
+#. the GetACP translation. "Windows-1252" applies to Western European
+#. languages using the Latin alphabet.
+#: modules/codec/subtitles/subsdec.c:101
+#, fuzzy
+msgid "Default (Windows-1252)"
+msgstr "Ћирилица (Windows-1251)"
+
+#: modules/codec/subtitles/subsdec.c:102
 msgid "Universal (UTF-8)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:99
+#: modules/codec/subtitles/subsdec.c:103
 msgid "Universal (UTF-16)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:100
+#: modules/codec/subtitles/subsdec.c:104
 msgid "Universal (big endian UTF-16)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:101
+#: modules/codec/subtitles/subsdec.c:105
 msgid "Universal (little endian UTF-16)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:102
+#: modules/codec/subtitles/subsdec.c:106
 msgid "Universal, Chinese (GB18030)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:106
+#: modules/codec/subtitles/subsdec.c:110
 msgid "Western European (Latin-9)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:107
+#: modules/codec/subtitles/subsdec.c:111
 msgid "Western European (Windows-1252)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:109
+#: modules/codec/subtitles/subsdec.c:113
 msgid "Eastern European (Latin-2)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:110
+#: modules/codec/subtitles/subsdec.c:114
 msgid "Eastern European (Windows-1250)"
 msgstr "Српска латиница (Windows-1250)"
 
-#: modules/codec/subtitles/subsdec.c:112
+#: modules/codec/subtitles/subsdec.c:116
 #, fuzzy
 msgid "Esperanto (Latin-3)"
 msgstr "есперанто"
 
-#: modules/codec/subtitles/subsdec.c:114
+#: modules/codec/subtitles/subsdec.c:118
 msgid "Nordic (Latin-6)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:116
+#: modules/codec/subtitles/subsdec.c:120
 msgid "Cyrillic (Windows-1251)"
 msgstr "Ћирилица (Windows-1251)"
 
-#: modules/codec/subtitles/subsdec.c:117
+#: modules/codec/subtitles/subsdec.c:121
 #, fuzzy
 msgid "Russian (KOI8-R)"
 msgstr "руски"
 
-#: modules/codec/subtitles/subsdec.c:118
+#: modules/codec/subtitles/subsdec.c:122
 #, fuzzy
 msgid "Ukrainian (KOI8-U)"
 msgstr "украјински"
 
-#: modules/codec/subtitles/subsdec.c:120
+#: modules/codec/subtitles/subsdec.c:124
 msgid "Arabic (ISO 8859-6)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:121
+#: modules/codec/subtitles/subsdec.c:125
 msgid "Arabic (Windows-1256)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:123
+#: modules/codec/subtitles/subsdec.c:127
 msgid "Greek (ISO 8859-7)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:124
+#: modules/codec/subtitles/subsdec.c:128
 msgid "Greek (Windows-1253)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:126
+#: modules/codec/subtitles/subsdec.c:130
 msgid "Hebrew (ISO 8859-8)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:127
+#: modules/codec/subtitles/subsdec.c:131
 msgid "Hebrew (Windows-1255)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:129
+#: modules/codec/subtitles/subsdec.c:133
 msgid "Turkish (ISO 8859-9)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:130
+#: modules/codec/subtitles/subsdec.c:134
 msgid "Turkish (Windows-1254)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:133
+#: modules/codec/subtitles/subsdec.c:137
 msgid "Thai (TIS 620-2533/ISO 8859-11)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:134
+#: modules/codec/subtitles/subsdec.c:138
 msgid "Thai (Windows-874)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:136
+#: modules/codec/subtitles/subsdec.c:140
 msgid "Baltic (Latin-7)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:137
+#: modules/codec/subtitles/subsdec.c:141
 msgid "Baltic (Windows-1257)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:140
+#: modules/codec/subtitles/subsdec.c:144
 msgid "Celtic (Latin-8)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:143
+#: modules/codec/subtitles/subsdec.c:147
 msgid "South-Eastern European (Latin-10)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:145
+#: modules/codec/subtitles/subsdec.c:149
 #, fuzzy
 msgid "Simplified Chinese (ISO-2022-CN-EXT)"
 msgstr "поједностављен кинески"
 
-#: modules/codec/subtitles/subsdec.c:146
+#: modules/codec/subtitles/subsdec.c:150
 #, fuzzy
 msgid "Simplified Chinese Unix (EUC-CN)"
 msgstr "поједностављен кинески"
 
-#: modules/codec/subtitles/subsdec.c:147
+#: modules/codec/subtitles/subsdec.c:151
 msgid "Japanese (7-bits JIS/ISO-2022-JP-2)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:148
+#: modules/codec/subtitles/subsdec.c:152
 msgid "Japanese Unix (EUC-JP)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:149
+#: modules/codec/subtitles/subsdec.c:153
 msgid "Japanese (Shift JIS)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:150
+#: modules/codec/subtitles/subsdec.c:154
 msgid "Korean (EUC-KR/CP949)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:151
+#: modules/codec/subtitles/subsdec.c:155
 msgid "Korean (ISO-2022-KR)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:152
+#: modules/codec/subtitles/subsdec.c:156
 msgid "Traditional Chinese (Big5)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:153
+#: modules/codec/subtitles/subsdec.c:157
 msgid "Traditional Chinese Unix (EUC-TW)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:154
+#: modules/codec/subtitles/subsdec.c:158
 msgid "Hong-Kong Supplementary (HKSCS)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:156
+#: modules/codec/subtitles/subsdec.c:160
 #, fuzzy
 msgid "Vietnamese (VISCII)"
 msgstr "вијетнамски"
 
-#: modules/codec/subtitles/subsdec.c:157
+#: modules/codec/subtitles/subsdec.c:161
 msgid "Vietnamese (Windows-1258)"
 msgstr ""
 
-#: modules/codec/subtitles/subsdec.c:189
+#: modules/codec/subtitles/subsdec.c:193
 msgid "Subtitles text encoding"
 msgstr "Енкодирање текстуалних титлова"
 
-#: modules/codec/subtitles/subsdec.c:190
+#: modules/codec/subtitles/subsdec.c:194
 msgid "Set the encoding used in text subtitles"
 msgstr "Подеси енкодирање које је коришћено у текстуалним титловима"
 
-#: modules/codec/subtitles/subsdec.c:191
+#: modules/codec/subtitles/subsdec.c:195
 msgid "Subtitles justification"
 msgstr "Поравнање титлова"
 
-#: modules/codec/subtitles/subsdec.c:192
+#: modules/codec/subtitles/subsdec.c:196
 msgid "Set the justification of subtitles"
 msgstr "Подеси поравнање титлова"
 
-#: modules/codec/subtitles/subsdec.c:193
+#: modules/codec/subtitles/subsdec.c:197
 msgid "UTF-8 subtitles autodetection"
 msgstr "UTF-8 аутоматско откривање титлова"
 
-#: modules/codec/subtitles/subsdec.c:194
+#: modules/codec/subtitles/subsdec.c:198
 msgid ""
 "This enables automatic detection of UTF-8 encoding within subtitles files."
 msgstr ""
 "Ово омогућава аутоматску детекцију UTF-8 енкодирања у оквиру титл фајлова."
 
-#: modules/codec/subtitles/subsdec.c:197
+#: modules/codec/subtitles/subsdec.c:201
 msgid ""
 "Some subtitle formats allow for text formatting. VLC partly implements this, "
 "but you can choose to disable all formatting."
@@ -11462,7 +11478,7 @@ msgstr ""
 "Неки титл формати дозвољавају форматирање текста. VLC делимично имплементира "
 "ово, али можете да изаберете да онемогућите сва форматирања."
 
-#: modules/codec/subtitles/subsdec.c:203
+#: modules/codec/subtitles/subsdec.c:207
 msgid "Text subtitles decoder"
 msgstr "Декодер текстуалних титлова "
 
@@ -11476,10 +11492,10 @@ msgstr "Декодер текстуалних титлова "
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subtitles/subsdec.c:296
+#: modules/codec/subtitles/subsdec.c:300
 msgctxt "GetACP"
 msgid "CP1252"
-msgstr ""
+msgstr "CP1251"
 
 #: modules/codec/subtitles/subsusf.c:52
 msgid "USFSubs"
@@ -12633,7 +12649,7 @@ msgstr "Контрола звука"
 msgid "Position Control"
 msgstr "Позиција"
 
-#: modules/control/hotkeys.c:92 modules/gui/macosx/intf.m:2457
+#: modules/control/hotkeys.c:92 modules/gui/macosx/intf.m:2463
 #, fuzzy
 msgid "Ignore"
 msgstr "ништа"
@@ -12964,8 +12980,8 @@ msgid "Opening"
 msgstr "Отвори"
 
 #: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:167
-#: modules/gui/macosx/intf.m:2010 modules/gui/macosx/intf.m:2011
-#: modules/gui/macosx/intf.m:2012 modules/gui/macosx/intf.m:2013
+#: modules/gui/macosx/intf.m:2015 modules/gui/macosx/intf.m:2016
+#: modules/gui/macosx/intf.m:2017 modules/gui/macosx/intf.m:2018
 #: modules/gui/qt4/menus.cpp:796 modules/misc/notify/xosd.c:235
 msgid "Pause"
 msgstr "Пауза"
@@ -14633,7 +14649,7 @@ msgid "MPEG Transport Stream demuxer"
 msgstr "MPEG Transport Stream демултиплексер"
 
 #: modules/demux/ts.c:195 modules/gui/macosx/controls.m:1132
-#: modules/gui/macosx/intf.m:704 modules/gui/qt4/dialogs/toolbar.cpp:407
+#: modules/gui/macosx/intf.m:706 modules/gui/qt4/dialogs/toolbar.cpp:407
 msgid "Teletext"
 msgstr "Телетекст"
 
@@ -14657,20 +14673,20 @@ msgstr "Телетекст титл декодер"
 msgid "Teletext subtitles: hearing impaired"
 msgstr "са слушним потешкоћама"
 
-#: modules/demux/ts.c:3558
+#: modules/demux/ts.c:3557
 #, fuzzy
 msgid "DVB subtitles: hearing impaired"
 msgstr "4:3 са слушним потешкоћама"
 
-#: modules/demux/ts.c:3850 modules/demux/ts.c:3892
+#: modules/demux/ts.c:3849 modules/demux/ts.c:3891
 msgid "clean effects"
 msgstr "обриши ефекте"
 
-#: modules/demux/ts.c:3854 modules/demux/ts.c:3896
+#: modules/demux/ts.c:3853 modules/demux/ts.c:3895
 msgid "hearing impaired"
 msgstr "са слушним потешкоћама"
 
-#: modules/demux/ts.c:3858 modules/demux/ts.c:3900
+#: modules/demux/ts.c:3857 modules/demux/ts.c:3899
 msgid "visual impaired commentary"
 msgstr "са видним потешкоћама објашњење"
 
@@ -14907,7 +14923,7 @@ msgid "VLC was brought to you by:"
 msgstr ""
 
 #: modules/gui/macosx/about.m:114 modules/gui/macosx/about.m:179
-#: modules/gui/macosx/intf.m:730 modules/gui/qt4/dialogs/help.cpp:166
+#: modules/gui/macosx/intf.m:732 modules/gui/qt4/dialogs/help.cpp:166
 msgid "License"
 msgstr "Лиценца"
 
@@ -14916,7 +14932,7 @@ msgid "VLC media player Help"
 msgstr "VLC медија плејер помоћ"
 
 #: modules/gui/macosx/about.m:195 modules/gui/macosx/controls.m:540
-#: modules/gui/macosx/intf.m:706
+#: modules/gui/macosx/intf.m:708
 msgid "Index"
 msgstr "Индекс "
 
@@ -14968,7 +14984,7 @@ msgstr "Време"
 #: modules/gui/macosx/wizard.m:1154 modules/gui/macosx/wizard.m:1678
 #: modules/gui/macosx/wizard.m:1686 modules/gui/macosx/wizard.m:1867
 #: modules/gui/macosx/wizard.m:1878 modules/gui/macosx/wizard.m:1891
-#: modules/gui/qt4/components/open_panels.cpp:1264
+#: modules/gui/qt4/components/open_panels.cpp:1268
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
 msgid "OK"
@@ -15355,7 +15371,7 @@ msgstr "Отвори &уређај за снимање..."
 msgid "Open Recent"
 msgstr "Отвори Скорашње"
 
-#: modules/gui/macosx/intf.m:636 modules/gui/macosx/intf.m:2746
+#: modules/gui/macosx/intf.m:636 modules/gui/macosx/intf.m:2752
 msgid "Clear Menu"
 msgstr "Очисти Мени"
 
@@ -15397,119 +15413,119 @@ msgstr "Утишај звук"
 msgid "Fullscreen Video Device"
 msgstr "Пун екран видео излаза"
 
-#: modules/gui/macosx/intf.m:705
+#: modules/gui/macosx/intf.m:707
 #, fuzzy
 msgid "Transparent"
 msgstr "Провидност"
 
-#: modules/gui/macosx/intf.m:712
+#: modules/gui/macosx/intf.m:714
 msgid "Window"
 msgstr "Прозор"
 
-#: modules/gui/macosx/intf.m:713
+#: modules/gui/macosx/intf.m:715
 msgid "Minimize Window"
 msgstr "Минимизуј Прозор"
 
-#: modules/gui/macosx/intf.m:714
+#: modules/gui/macosx/intf.m:716
 msgid "Close Window"
 msgstr "Затвори Прозор"
 
-#: modules/gui/macosx/intf.m:715
+#: modules/gui/macosx/intf.m:717
 #, fuzzy
 msgid "Player..."
 msgstr "Репродукуј/Пусти"
 
-#: modules/gui/macosx/intf.m:716
+#: modules/gui/macosx/intf.m:718
 msgid "Controller..."
 msgstr "Контролер..."
 
-#: modules/gui/macosx/intf.m:717
+#: modules/gui/macosx/intf.m:719
 msgid "Equalizer..."
 msgstr "Еквилајзер..."
 
-#: modules/gui/macosx/intf.m:718
+#: modules/gui/macosx/intf.m:720
 msgid "Extended Controls..."
 msgstr "Проширене Контроле..."
 
-#: modules/gui/macosx/intf.m:719
+#: modules/gui/macosx/intf.m:721
 msgid "Bookmarks..."
 msgstr "Маркери..."
 
-#: modules/gui/macosx/intf.m:720
+#: modules/gui/macosx/intf.m:722
 msgid "Playlist..."
 msgstr "Листа за пуштање..."
 
-#: modules/gui/macosx/intf.m:721 modules/gui/macosx/playlist.m:470
+#: modules/gui/macosx/intf.m:723 modules/gui/macosx/playlist.m:470
 msgid "Media Information..."
 msgstr "Информациjе о медију..."
 
-#: modules/gui/macosx/intf.m:722
+#: modules/gui/macosx/intf.m:724
 msgid "Messages..."
 msgstr "Поруке..."
 
-#: modules/gui/macosx/intf.m:723
+#: modules/gui/macosx/intf.m:725
 msgid "Errors and Warnings..."
 msgstr "Грешке и Упозорења..."
 
-#: modules/gui/macosx/intf.m:725
+#: modules/gui/macosx/intf.m:727
 msgid "Bring All to Front"
 msgstr "Донеси све Напред"
 
-#: modules/gui/macosx/intf.m:727 modules/gui/qt4/dialogs/help.cpp:54
+#: modules/gui/macosx/intf.m:729 modules/gui/qt4/dialogs/help.cpp:54
 #: modules/gui/qt4/menus.cpp:882
 msgid "Help"
 msgstr "Помоћ"
 
-#: modules/gui/macosx/intf.m:728
+#: modules/gui/macosx/intf.m:730
 msgid "VLC media player Help..."
 msgstr "VLC медија плејер помоћ..."
 
-#: modules/gui/macosx/intf.m:729
+#: modules/gui/macosx/intf.m:731
 #, fuzzy
 msgid "ReadMe / FAQ..."
 msgstr "ПрочитајМе..."
 
-#: modules/gui/macosx/intf.m:731
+#: modules/gui/macosx/intf.m:733
 msgid "Online Documentation..."
 msgstr "Документација на Интернету..."
 
-#: modules/gui/macosx/intf.m:732
+#: modules/gui/macosx/intf.m:734
 #, fuzzy
 msgid "VideoLAN Website..."
 msgstr "VideoLAN Интернет Страница"
 
-#: modules/gui/macosx/intf.m:733
+#: modules/gui/macosx/intf.m:735
 msgid "Make a donation..."
 msgstr "Направи донацију..."
 
-#: modules/gui/macosx/intf.m:734
+#: modules/gui/macosx/intf.m:736
 #, fuzzy
 msgid "Online Forum..."
 msgstr "Интернет Форум"
 
-#: modules/gui/macosx/intf.m:748
+#: modules/gui/macosx/intf.m:750
 msgid "Volume Up"
 msgstr "Појачај Јачину Звука"
 
-#: modules/gui/macosx/intf.m:749
+#: modules/gui/macosx/intf.m:751
 msgid "Volume Down"
 msgstr "Смањи Јачину Звука"
 
-#: modules/gui/macosx/intf.m:755
+#: modules/gui/macosx/intf.m:757
 #, fuzzy
 msgid "Send"
 msgstr "крај"
 
-#: modules/gui/macosx/intf.m:756
+#: modules/gui/macosx/intf.m:758
 #, fuzzy
 msgid "Don't Send"
 msgstr "Величина фонта"
 
-#: modules/gui/macosx/intf.m:757 modules/gui/macosx/intf.m:758
+#: modules/gui/macosx/intf.m:759 modules/gui/macosx/intf.m:760
 msgid "VLC crashed previously"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:759
+#: modules/gui/macosx/intf.m:761
 msgid ""
 "Do you want to send details on the crash to VLC's development team?\n"
 "\n"
@@ -15523,53 +15539,53 @@ msgstr ""
 "са осталим помоћним информацијама: линк ка узорку фајла, URL мрежног "
 "тока, ..."
 
-#: modules/gui/macosx/intf.m:760
+#: modules/gui/macosx/intf.m:762
 msgid "I agree to be possibly contacted about this bugreport."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:761
+#: modules/gui/macosx/intf.m:763
 msgid ""
 "Only your default E-Mail address will be submitted, including no further "
 "information."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1843
+#: modules/gui/macosx/intf.m:1845
 #, c-format
 msgid "Volume: %d%%"
 msgstr "Јачина Звука: %d%%"
 
-#: modules/gui/macosx/intf.m:2337
+#: modules/gui/macosx/intf.m:2343
 msgid "Error when sending the Crash Report"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2428
+#: modules/gui/macosx/intf.m:2434
 #, fuzzy
 msgid "No CrashLog found"
 msgstr "Није пронађен ДневникГрешака"
 
-#: modules/gui/macosx/intf.m:2428 modules/gui/macosx/prefs.m:226
+#: modules/gui/macosx/intf.m:2434 modules/gui/macosx/prefs.m:226
 #: modules/gui/macosx/simple_prefs.m:697
 msgid "Continue"
 msgstr "Настави"
 
-#: modules/gui/macosx/intf.m:2428
+#: modules/gui/macosx/intf.m:2434
 msgid "Couldn't find any trace of a previous crash."
 msgstr "Не могу да пронађем никакав траг претходног пада програма."
 
-#: modules/gui/macosx/intf.m:2455
+#: modules/gui/macosx/intf.m:2461
 #, fuzzy
 msgid "Remove old preferences?"
 msgstr "Карактеристике врати на подразумеване вредности"
 
-#: modules/gui/macosx/intf.m:2456
+#: modules/gui/macosx/intf.m:2462
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2457
+#: modules/gui/macosx/intf.m:2463
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2591
+#: modules/gui/macosx/intf.m:2597
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr ""
@@ -15765,7 +15781,7 @@ msgid "Choose..."
 msgstr "Изаберите..."
 
 #: modules/gui/macosx/open.m:189
-#: modules/gui/qt4/components/open_panels.cpp:872
+#: modules/gui/qt4/components/open_panels.cpp:876
 msgid "Device name"
 msgstr "Име уређаја"
 
@@ -16215,7 +16231,7 @@ msgid "Lost frames"
 msgstr "Изгубљени фрејмови"
 
 #: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:363
-#: modules/gui/qt4/dialogs_provider.cpp:627
+#: modules/gui/qt4/dialogs_provider.cpp:632
 #: modules/video_filter/deinterlace.c:149
 msgid "Streaming"
 msgstr "Емитовање"
@@ -16536,7 +16552,7 @@ msgid "No check was performed yet."
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:572 modules/gui/macosx/simple_prefs.m:616
-#: modules/gui/macosx/simple_prefs.m:1224
+#: modules/gui/macosx/simple_prefs.m:1223
 #: modules/gui/qt4/components/simple_preferences.cpp:463
 #, fuzzy
 msgid "Custom"
@@ -16569,67 +16585,67 @@ msgstr ""
 msgid "Higher latency"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:815
+#: modules/gui/macosx/simple_prefs.m:814
 #, fuzzy
 msgid "Interface Settings not saved"
 msgstr "Општа подешавања интерфејса"
 
-#: modules/gui/macosx/simple_prefs.m:816 modules/gui/macosx/simple_prefs.m:890
-#: modules/gui/macosx/simple_prefs.m:923 modules/gui/macosx/simple_prefs.m:989
-#: modules/gui/macosx/simple_prefs.m:1029
-#: modules/gui/macosx/simple_prefs.m:1054
+#: modules/gui/macosx/simple_prefs.m:815 modules/gui/macosx/simple_prefs.m:889
+#: modules/gui/macosx/simple_prefs.m:922 modules/gui/macosx/simple_prefs.m:988
+#: modules/gui/macosx/simple_prefs.m:1028
+#: modules/gui/macosx/simple_prefs.m:1053
 #, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:889
+#: modules/gui/macosx/simple_prefs.m:888
 #, fuzzy
 msgid "Audio Settings not saved"
 msgstr "Подешавање за звук"
 
-#: modules/gui/macosx/simple_prefs.m:922
+#: modules/gui/macosx/simple_prefs.m:921
 #, fuzzy
 msgid "Video Settings not saved"
 msgstr "Видео подешавања"
 
-#: modules/gui/macosx/simple_prefs.m:988
+#: modules/gui/macosx/simple_prefs.m:987
 msgid "Input Settings not saved"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1028
+#: modules/gui/macosx/simple_prefs.m:1027
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1053
+#: modules/gui/macosx/simple_prefs.m:1052
 #, fuzzy
 msgid "Hotkeys not saved"
 msgstr "Пречице"
 
-#: modules/gui/macosx/simple_prefs.m:1154
+#: modules/gui/macosx/simple_prefs.m:1153
 #, fuzzy
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Изаберите овде Ваш улазни ток."
 
-#: modules/gui/macosx/simple_prefs.m:1156
+#: modules/gui/macosx/simple_prefs.m:1155
 msgid "Choose"
 msgstr "Изабери"
 
-#: modules/gui/macosx/simple_prefs.m:1242
+#: modules/gui/macosx/simple_prefs.m:1241
 msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1316
+#: modules/gui/macosx/simple_prefs.m:1315
 #, fuzzy
 msgid "Invalid combination"
 msgstr "Неисправна селекција"
 
-#: modules/gui/macosx/simple_prefs.m:1317
+#: modules/gui/macosx/simple_prefs.m:1316
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1335
+#: modules/gui/macosx/simple_prefs.m:1334
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
@@ -17796,39 +17812,39 @@ msgstr "dB"
 msgid "Enable spatializer"
 msgstr "просторно"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1284
+#: modules/gui/qt4/components/extended_panels.cpp:1283
 msgid "Audio/Video"
 msgstr "Аудио/Видео"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1300
+#: modules/gui/qt4/components/extended_panels.cpp:1299
 msgid "Advance of audio over video:"
 msgstr "Помери звук у односу на видео:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1309
+#: modules/gui/qt4/components/extended_panels.cpp:1308
 msgid ""
 "A positive value means that\n"
 "the audio is ahead of the video"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1317
+#: modules/gui/qt4/components/extended_panels.cpp:1316
 msgid "Subtitles/Video"
 msgstr "Титлови/Видео"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1333
+#: modules/gui/qt4/components/extended_panels.cpp:1332
 msgid "Advance of subtitles over video:"
 msgstr "Помери титлове у односу на видео:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1342
+#: modules/gui/qt4/components/extended_panels.cpp:1341
 msgid ""
 "A positive value means that\n"
 "the subtitles are ahead of the video"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1361
+#: modules/gui/qt4/components/extended_panels.cpp:1360
 msgid "Speed of the subtitles:"
 msgstr "Брзина титлова:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1394
+#: modules/gui/qt4/components/extended_panels.cpp:1393
 msgid "Force update of this dialog's values"
 msgstr "Форсирај ажурирање задатих вредности у овом прозору"
 
@@ -17998,71 +18014,71 @@ msgstr "Филтер:"
 msgid "Open subtitles file"
 msgstr "Отвори фајл титлова"
 
-#: modules/gui/qt4/components/open_panels.cpp:322
+#: modules/gui/qt4/components/open_panels.cpp:326
 msgid "Eject the disc"
 msgstr "Избаци диск"
 
-#: modules/gui/qt4/components/open_panels.cpp:668
-#: modules/gui/qt4/components/open_panels.cpp:929
+#: modules/gui/qt4/components/open_panels.cpp:672
+#: modules/gui/qt4/components/open_panels.cpp:933
 msgid "DVB Type:"
 msgstr "DVB Врста:"
 
-#: modules/gui/qt4/components/open_panels.cpp:694
-#: modules/gui/qt4/components/open_panels.cpp:960
+#: modules/gui/qt4/components/open_panels.cpp:698
+#: modules/gui/qt4/components/open_panels.cpp:964
 #, fuzzy
 msgid "Transponder symbol rate"
 msgstr "Брзина симбола одашиљача у kHz (килохерцима)"
 
-#: modules/gui/qt4/components/open_panels.cpp:703
-#: modules/gui/qt4/components/open_panels.cpp:969
+#: modules/gui/qt4/components/open_panels.cpp:707
+#: modules/gui/qt4/components/open_panels.cpp:973
 #, fuzzy
 msgid "Bandwidth"
 msgstr "Ширина оквира"
 
-#: modules/gui/qt4/components/open_panels.cpp:819
+#: modules/gui/qt4/components/open_panels.cpp:823
 msgid "Channels:"
 msgstr "Канали:"
 
-#: modules/gui/qt4/components/open_panels.cpp:830
+#: modules/gui/qt4/components/open_panels.cpp:834
 #, fuzzy
 msgid "Selected ports:"
 msgstr "Улазни Екран"
 
-#: modules/gui/qt4/components/open_panels.cpp:833
+#: modules/gui/qt4/components/open_panels.cpp:837
 msgid ".*"
 msgstr ".*"
 
-#: modules/gui/qt4/components/open_panels.cpp:840
+#: modules/gui/qt4/components/open_panels.cpp:844
 #, fuzzy
 msgid "Input caching:"
 msgstr "Улаз се променио"
 
-#: modules/gui/qt4/components/open_panels.cpp:850
+#: modules/gui/qt4/components/open_panels.cpp:854
 #, fuzzy
 msgid "Use VLC pace"
 msgstr "Користи SAP кеш"
 
-#: modules/gui/qt4/components/open_panels.cpp:854
+#: modules/gui/qt4/components/open_panels.cpp:858
 #, fuzzy
-msgid "Auto connnection"
+msgid "Auto connection"
 msgstr "Аутоматско поновно повезивање"
 
-#: modules/gui/qt4/components/open_panels.cpp:878
+#: modules/gui/qt4/components/open_panels.cpp:882
 #, fuzzy
 msgid "Radio device name"
 msgstr "Име аудио уређаја"
 
-#: modules/gui/qt4/components/open_panels.cpp:1010
+#: modules/gui/qt4/components/open_panels.cpp:1014
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr ""
 
 #. xgettext: frames per second
-#: modules/gui/qt4/components/open_panels.cpp:1024
+#: modules/gui/qt4/components/open_panels.cpp:1028
 #, fuzzy
 msgid " f/s"
 msgstr "2 Корак"
 
-#: modules/gui/qt4/components/open_panels.cpp:1237
+#: modules/gui/qt4/components/open_panels.cpp:1241
 msgid "Advanced Options"
 msgstr "Напредне опције"
 
@@ -18184,7 +18200,7 @@ msgid "Apply"
 msgstr "Примени"
 
 #: modules/gui/qt4/components/preferences_widgets.cpp:1363
-#: modules/gui/qt4/util/customwidgets.cpp:439
+#: modules/gui/qt4/util/customwidgets.cpp:448
 #, fuzzy
 msgid "Unset"
 msgstr "Корисник"
@@ -18737,15 +18753,15 @@ msgstr "Приступни филтери"
 msgid "&Update"
 msgstr "&Ажурирај"
 
-#: modules/gui/qt4/dialogs/messages.cpp:288
+#: modules/gui/qt4/dialogs/messages.cpp:291
 msgid "Save log file as..."
 msgstr "Сачувај извештак као..."
 
-#: modules/gui/qt4/dialogs/messages.cpp:290
+#: modules/gui/qt4/dialogs/messages.cpp:293
 msgid "Texts / Logs (*.log *.txt);; All (*.*) "
 msgstr ""
 
-#: modules/gui/qt4/dialogs/messages.cpp:297
+#: modules/gui/qt4/dialogs/messages.cpp:300
 msgid ""
 "Cannot write to file %1:\n"
 "%2."
@@ -19108,35 +19124,35 @@ msgstr "Отвори Директоријум"
 msgid "Open Folder"
 msgstr "Отвори фолдер"
 
-#: modules/gui/qt4/dialogs_provider.cpp:538
+#: modules/gui/qt4/dialogs_provider.cpp:543
 msgid "Open playlist..."
 msgstr "Отвори листу за пуштање..."
 
-#: modules/gui/qt4/dialogs_provider.cpp:553
+#: modules/gui/qt4/dialogs_provider.cpp:558
 #, fuzzy
 msgid "XSPF playlist (*.xspf)"
 msgstr "XSPF извоз листе за пуштање"
 
-#: modules/gui/qt4/dialogs_provider.cpp:554
+#: modules/gui/qt4/dialogs_provider.cpp:559
 #, fuzzy
 msgid "M3U8 playlist (*.m3u)"
 msgstr "XSPF извоз листе за пуштање"
 
-#: modules/gui/qt4/dialogs_provider.cpp:555
+#: modules/gui/qt4/dialogs_provider.cpp:560
 #, fuzzy
 msgid "M3U playlist (*.m3u)"
 msgstr "XSPF извоз листе за пуштање"
 
-#: modules/gui/qt4/dialogs_provider.cpp:556
+#: modules/gui/qt4/dialogs_provider.cpp:561
 #, fuzzy
 msgid "HTML playlist (*.html)"
 msgstr "Следећа ставка у листи за пуштање"
 
-#: modules/gui/qt4/dialogs_provider.cpp:568
+#: modules/gui/qt4/dialogs_provider.cpp:573
 msgid "Save playlist as..."
 msgstr "Сачувај листу за пуштање као..."
 
-#: modules/gui/qt4/dialogs_provider.cpp:677
+#: modules/gui/qt4/dialogs_provider.cpp:682
 msgid "Open subtitles..."
 msgstr "Отвори титлове..."
 
@@ -19153,11 +19169,11 @@ msgstr "Титлови"
 msgid "All Files"
 msgstr "Сви фајлови"
 
-#: modules/gui/qt4/main_interface.cpp:984
+#: modules/gui/qt4/main_interface.cpp:979
 msgid "Control menu for the player"
 msgstr ""
 
-#: modules/gui/qt4/main_interface.cpp:1027
+#: modules/gui/qt4/main_interface.cpp:1022
 msgid "Paused"
 msgstr "Паузирано"
 
@@ -21507,7 +21523,7 @@ msgid "Applications"
 msgstr "Апликације"
 
 #: modules/services_discovery/xcb_apps.c:348
-#: modules/video_output/msw/direct3d.c:164
+#: modules/video_output/msw/direct3d.c:165
 msgid "Desktop"
 msgstr "Радна површина"
 
@@ -22602,7 +22618,7 @@ msgstr "Уређај"
 
 #: modules/video_filter/atmo/atmo.cpp:136
 msgid ""
-"Choose your prefered hardware from the list, or choose AtmoWin Software to "
+"Choose your preferred hardware from the list, or choose AtmoWin Software to "
 "delegate processing to the external process - with more options"
 msgstr ""
 
@@ -22646,7 +22662,7 @@ msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:166
 msgid ""
-"Define here the DMX base address for each channel use , or ; to seperate the "
+"Define here the DMX base address for each channel use , or ; to separate the "
 "values"
 msgstr ""
 
@@ -23044,7 +23060,7 @@ msgstr ""
 #: modules/video_filter/atmo/atmo.cpp:330
 msgid ""
 "for devices with more than five channels / zones write down here for each "
-"channel the zone number to show and seperate the values with , or ; and use "
+"channel the zone number to show and separate the values with , or ; and use "
 "-1 to not use some channels. For the classic AtmoLight the sequence "
 "4,3,1,0,2 would set the default channel/zone mapping. Having only two zones "
 "on top, and one zone on left and right and no summary zone the mapping for "
@@ -23088,7 +23104,7 @@ msgstr "Тип преливања боја слике"
 
 #: modules/video_filter/atmo/atmo.cpp:349
 msgid ""
-"Now prefered option to assign gradient bitmaps, put them as zone_0.bmp, "
+"Now preferred option to assign gradient bitmaps, put them as zone_0.bmp, "
 "zone_1.bmp etc. into one folder and set the foldername here"
 msgstr ""
 
@@ -25331,11 +25347,11 @@ msgstr "Wall видео излаз"
 msgid "YUVP converter"
 msgstr "Користи YUVP рендер"
 
-#: modules/video_output/aa.c:50
+#: modules/video_output/aa.c:57
 msgid "ASCII Art"
 msgstr "ASCII Art"
 
-#: modules/video_output/aa.c:53
+#: modules/video_output/aa.c:60
 msgid "ASCII-art video output"
 msgstr "ASCII-art видео излаз"
 
@@ -25507,7 +25523,7 @@ msgstr ""
 msgid "DirectX (DirectDraw) video output"
 msgstr "DirectX 3D видео излаз"
 
-#: modules/video_output/msw/directx.c:222
+#: modules/video_output/msw/directx.c:224
 msgid "Wallpaper"
 msgstr "Тапета"
 
@@ -25567,12 +25583,12 @@ msgstr "OpenGL(GLX) provider"
 msgid "Allows you to modify what OpenGL provider should be used"
 msgstr ""
 
-#: modules/video_output/sdl.c:50
+#: modules/video_output/sdl.c:57
 #, fuzzy
 msgid "SDL chroma format"
 msgstr "XVimage хрома формат"
 
-#: modules/video_output/sdl.c:52
+#: modules/video_output/sdl.c:59
 #, fuzzy
 msgid ""
 "Force the SDL renderer to use a specific chroma format instead of trying to "
@@ -25581,7 +25597,7 @@ msgstr ""
 "Приморај XVideo рендер да користи одређени формат нијансе боје уместо "
 "побољшавања перформанси коришћењем најефикаснијег формата."
 
-#: modules/video_output/sdl.c:59
+#: modules/video_output/sdl.c:66
 msgid "Simple DirectMedia Layer video output"
 msgstr "Једноставан DirectMedia Layer видео излаз"
 
@@ -25633,18 +25649,12 @@ msgstr "Путања"
 msgid "Video memory buffer pitch in bytes."
 msgstr ""
 
-#: modules/video_output/vmem.c:56
-msgid ""
-"Address of the locking callback function. This function must fill in valid "
-"plane memory address information for use by the video renderer."
-msgstr ""
-
-#: modules/video_output/vmem.c:70
+#: modules/video_output/vmem.c:59
 #, fuzzy
 msgid "Video memory output"
 msgstr "Модул видео филтера"
 
-#: modules/video_output/vmem.c:71
+#: modules/video_output/vmem.c:60
 #, fuzzy
 msgid "Video memory"
 msgstr "Видео порт"
@@ -26197,7 +26207,7 @@ msgid ""
 "#838383;\">http://www.example.com/stream.avi</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">rtp://@1234</span></p>\n"
+"#838383;\">rtp://@:1234</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
 "#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
@@ -26541,8 +26551,9 @@ msgid "Use custom skin"
 msgstr "Изабери жељену маску"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:393
+#, fuzzy
 msgid "Skin resource file:"
-msgstr ""
+msgstr "Е-пошта сесије"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:395
 msgid "Resize interface to video size"
@@ -26561,7 +26572,7 @@ msgid "Embed video in interface"
 msgstr "Уграђени видео у интерфејс"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:399
-msgid " Systray popup when minimized"
+msgid "Systray popup when minimized"
 msgstr ""
 
 #: modules/gui/qt4/ui/sprefs_interface.h:400
@@ -27638,9 +27649,6 @@ msgstr "Више Информација"
 #~ msgid "Permissions"
 #~ msgstr "Дозволе"
 
-#~ msgid "Size"
-#~ msgstr "Величина"
-
 #~ msgid "Owner"
 #~ msgstr "Власник"
 
@@ -27989,10 +27997,6 @@ msgstr "Више Информација"
 #, fuzzy
 #~ msgid "Show a controller in fullscreen"
 #~ msgstr "Исеци граничнике у пуном екрану"
-
-#, fuzzy
-#~ msgid "Skin file"
-#~ msgstr "Е-пошта сесије"
 
 #~ msgid ""
 #~ "\n"

@@ -2,7 +2,7 @@
  * x11_display.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c28b521b7abbaf4c02c0a4f102fac7df4f89c709 $
+ * $Id: 84b0305763c1893e6f74a59d46cb71277b8e1698 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -253,6 +253,9 @@ X11Display::X11Display( intf_thread_t *pIntf ): SkinObject( pIntf ),
 
         // test EWMH capabilities
         testEWMH();
+
+        // Force _NET_WM_PID whatever the WM _NET_SUPPORTED says
+        m_net_wm_pid = XInternAtom( m_pDisplay, "_NET_WM_PID" , False );
     }
 }
 

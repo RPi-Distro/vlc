@@ -2,7 +2,7 @@
  * playlist.cpp : Custom widgets for the playlist
  ****************************************************************************
  * Copyright © 2007-2010 the VideoLAN team
- * $Id: ea5495abe703d325287fea2225825d20f32022cf $
+ * $Id: 5368bf0eb75777c50e97107fd561ed469a3e3c29 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -151,7 +151,7 @@ void PlaylistWidget::closeEvent( QCloseEvent *event )
 {
     if( THEDP->isDying() )
     {
-        /* FIXME is it needed ? */
+        p_intf->p_sys->p_mi->playlistVisible = true;
         event->accept();
     }
     else

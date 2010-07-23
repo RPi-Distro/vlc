@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: cf3deb26aa0c2e39d286e3c417c563350510ae35 $
+ * $Id: e41c5ea9e596841694d6166e74425d0e71c6fe99 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -96,7 +96,7 @@ static bool IsRemote (int fd)
     if (fstatvfs (fd, &stf))
         return false;
     /* fstatvfs() is in POSIX, but MNT_LOCAL is not */
-    return !(s.f_flag & MNT_LOCAL);
+    return !(stf.f_flag & MNT_LOCAL);
 
 #elif defined (HAVE_LINUX_MAGIC_H)
     struct statfs stf;
@@ -104,7 +104,7 @@ static bool IsRemote (int fd)
     if (fstatfs (fd, &stf))
         return false;
 
-    switch (stf.f_type)
+    switch ((unsigned long)stf.f_type)
     {
         case AFS_SUPER_MAGIC:
         case CODA_SUPER_MAGIC:

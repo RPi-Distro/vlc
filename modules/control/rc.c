@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: c8c93c55725244e6cc833d975996ec5966768187 $
+ * $Id: 386040e94d6c1c4d6b0cd3db81ddc85959e221f9 $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -1549,12 +1549,12 @@ static int VolumeMove( vlc_object_t *p_this, char const *psz_cmd,
 
     if ( !strcmp(psz_cmd, "volup") )
     {
-        if ( aout_VolumeUp( p_this, i_nb_steps, &i_volume ) < 0 )
+        if ( aout_VolumeUp( p_intf->p_sys->p_playlist, i_nb_steps, &i_volume ) < 0 )
             i_error = VLC_EGENERIC;
     }
     else
     {
-        if ( aout_VolumeDown( p_this, i_nb_steps, &i_volume ) < 0 )
+        if ( aout_VolumeDown( p_intf->p_sys->p_playlist, i_nb_steps, &i_volume ) < 0 )
             i_error = VLC_EGENERIC;
     }
     osd_Volume( p_this );

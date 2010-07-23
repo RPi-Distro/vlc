@@ -1,7 +1,7 @@
 /*
  * media_player.c - libvlc smoke test
  *
- * $Id: 53ba3d6ba4a28b7a8e017ca2f2494e76457230c0 $
+ * $Id: 258d825f0289c0870f843901ab459ea379586cb1 $
  */
 
 /**********************************************************************
@@ -34,6 +34,43 @@ static void wait_playing(libvlc_media_player_t *mp)
 
     state = libvlc_media_player_get_state (mp);
     assert(state == libvlc_Playing || state == libvlc_Ended);
+}
+
+static void wait_paused(libvlc_media_player_t *mp)
+{
+    libvlc_state_t state;
+    do {
+        state = libvlc_media_player_get_state (mp);
+    } while(state != libvlc_Paused &&
+            state != libvlc_Ended );
+
+    state = libvlc_media_player_get_state (mp);
+    assert(state == libvlc_Paused || state == libvlc_Ended);
+}
+
+/* Test a bunch of A/V properties. This most does nothing since the current
+ * test file contains a dummy audio track. This is a smoke test. */
+static void test_audio_video(libvlc_media_player_t *mp)
+{
+    bool fs = libvlc_get_fullscreen(mp);
+    libvlc_set_fullscreen(mp, true);
+    assert(libvlc_get_fullscreen(mp));
+    libvlc_set_fullscreen(mp, false);
+    assert(!libvlc_get_fullscreen(mp));
+    libvlc_toggle_fullscreen(mp);
+    assert(libvlc_get_fullscreen(mp));
+    libvlc_toggle_fullscreen(mp);
+    assert(!libvlc_get_fullscreen(mp));
+    libvlc_set_fullscreen(mp, fs);
+    assert(libvlc_get_fullscreen(mp) == fs);
+
+    assert(libvlc_video_get_scale(mp) == 0.); /* default */
+    libvlc_video_set_scale(mp, 0.); /* no-op */
+    libvlc_video_set_scale(mp, 2.5);
+    assert(libvlc_video_get_scale(mp) == 2.5);
+    libvlc_video_set_scale(mp, 0.);
+    libvlc_video_set_scale(mp, 0.); /* no-op */
+    assert(libvlc_video_get_scale(mp) == 0.);
 }
 
 static void test_media_player_set_media(const char** argv, int argc)
@@ -113,23 +150,21 @@ static void test_media_player_pause_stop(const char** argv, int argc)
 
     libvlc_media_release (md);
 
+    test_audio_video(mi);
+
     libvlc_media_player_play (mi);
-
     log ("Waiting for playing\n");
-
     wait_playing (mi);
+    test_audio_video(mi);
 
-#if 0
-    /* This can't work because under some condition (short file, this is the case) this will be
-     * equivalent to a play() */
-    libvlc_media_player_pause (mi);
-
+    libvlc_media_player_set_pause (mi, true);
     log ("Waiting for pause\n");
-
-    wait_paused (mp);
-#endif
+    wait_paused (mi);
+    test_audio_video(mi);
 
     libvlc_media_player_stop (mi);
+    test_audio_video(mi);
+
     libvlc_media_player_release (mi);
     libvlc_release (vlc);
 }

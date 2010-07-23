@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: efaccbcd3d3ce7e9d8a9394e05d521270cc9a194 $
+ * $Id: 445a77ed8234e5070968e56b13d5762e069e9605 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -84,6 +84,7 @@ static const char *const ppsz_language[] =
     "ro",
     "ru",
     "zh_CN",
+    "si",
     "sr",
     "sk",
     "sl",
@@ -136,6 +137,7 @@ static const char *const ppsz_language_text[] =
     "Română",
     "Русский",
     "简体中文",
+    "සිංහල",
     "српски",
     "Slovensky",
     "slovenščina",
@@ -1611,7 +1613,7 @@ vlc_module_begin ()
                          NULL, AUDIO_FILTER_TEXT,
                          AUDIO_FILTER_LONGTEXT, false )
     set_subcategory( SUBCAT_AUDIO_VISUAL )
-    add_module( "audio-visual", "visualization",NULL, NULL,AUDIO_VISUAL_TEXT,
+    add_module( "audio-visual", "visualization2",NULL, NULL,AUDIO_VISUAL_TEXT,
                 AUDIO_VISUAL_LONGTEXT, false )
 
 /* Video options */
@@ -2054,10 +2056,6 @@ vlc_module_begin ()
     add_directory( "data-path", NULL, NULL, DATA_PATH_TEXT,
                    DATA_PATH_LONGTEXT, true )
         change_need_restart ()
-
-    add_string( "user-agent", "(LibVLC "VERSION")", NULL, NULL, NULL, true )
-        change_safe ()
-        change_private ()
 
     set_section( N_("Performance options"), NULL )
     add_obsolete_bool( "minimize-threads" )

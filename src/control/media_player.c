@@ -2,7 +2,7 @@
  * media_player.c: Libvlc API Media Instance management functions
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: adbc8eb5d2d10a7086a3200b31449996a45f0321 $
+ * $Id: 0336f3c8eff5f6bec8dda91804e84242a674bb67 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -371,6 +371,15 @@ libvlc_media_player_new( libvlc_instance_t *instance )
     var_Create (mp, "rate", VLC_VAR_FLOAT|VLC_VAR_DOINHERIT);
 
     /* Video */
+    var_Create (mp, "vout", VLC_VAR_STRING|VLC_VAR_DOINHERIT);
+    var_Create (mp, "vmem-lock", VLC_VAR_ADDRESS);
+    var_Create (mp, "vmem-unlock", VLC_VAR_ADDRESS);
+    var_Create (mp, "vmem-display", VLC_VAR_ADDRESS);
+    var_Create (mp, "vmem-data", VLC_VAR_ADDRESS);
+    var_Create (mp, "vmem-chroma", VLC_VAR_STRING | VLC_VAR_DOINHERIT);
+    var_Create (mp, "vmem-width", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
+    var_Create (mp, "vmem-height", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
+    var_Create (mp, "vmem-pitch", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
     var_Create (mp, "drawable-xid", VLC_VAR_INTEGER);
 #ifdef WIN32
     var_Create (mp, "drawable-hwnd", VLC_VAR_ADDRESS);
@@ -414,6 +423,12 @@ libvlc_media_player_new( libvlc_instance_t *instance )
     var_Create (mp, "logo-repeat", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
     var_Create (mp, "logo-opacity", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
     var_Create (mp, "logo-position", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
+
+    var_Create (mp, "contrast", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
+    var_Create (mp, "brightness", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
+    var_Create (mp, "hue", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
+    var_Create (mp, "saturation", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
+    var_Create (mp, "gamma", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
 
      /* Audio */
     var_Create (mp, "aout", VLC_VAR_STRING | VLC_VAR_DOINHERIT);
@@ -687,10 +702,7 @@ int libvlc_media_player_play( libvlc_media_player_t *p_mi )
     return 0;
 }
 
-/**************************************************************************
- * Pause.
- **************************************************************************/
-void libvlc_media_player_pause( libvlc_media_player_t *p_mi )
+void libvlc_media_player_set_pause( libvlc_media_player_t *p_mi, int paused )
 {
     input_thread_t * p_input_thread = libvlc_get_input_thread( p_mi );
     if( !p_input_thread )
@@ -699,15 +711,32 @@ void libvlc_media_player_pause( libvlc_media_player_t *p_mi )
     libvlc_state_t state = libvlc_media_player_get_state( p_mi );
     if( state == libvlc_Playing || state == libvlc_Buffering )
     {
-        if( libvlc_media_player_can_pause( p_mi ) )
-            input_Control( p_input_thread, INPUT_SET_STATE, PAUSE_S );
-        else
-            libvlc_media_player_stop( p_mi );
+        if( paused )
+        {
+            if( libvlc_media_player_can_pause( p_mi ) )
+                input_Control( p_input_thread, INPUT_SET_STATE, PAUSE_S );
+            else
+                libvlc_media_player_stop( p_mi );
+        }
     }
     else
-        input_Control( p_input_thread, INPUT_SET_STATE, PLAYING_S );
+    {
+        if( !paused )
+            input_Control( p_input_thread, INPUT_SET_STATE, PLAYING_S );
+    }
 
     vlc_object_release( p_input_thread );
+}
+
+/**************************************************************************
+ * Toggle pause.
+ **************************************************************************/
+void libvlc_media_player_pause( libvlc_media_player_t *p_mi )
+{
+    libvlc_state_t state = libvlc_media_player_get_state( p_mi );
+    bool playing = (state == libvlc_Playing || state == libvlc_Buffering);
+
+    libvlc_media_player_set_pause( p_mi, playing );
 }
 
 /**************************************************************************
@@ -746,6 +775,29 @@ void libvlc_media_player_stop( libvlc_media_player_t *p_mi )
     if( p_mi->input.p_resource != NULL )
         input_resource_TerminateVout( p_mi->input.p_resource );
     unlock_input(p_mi);
+}
+
+
+void libvlc_video_set_callbacks( libvlc_media_player_t *mp,
+    void *(*lock_cb) (void *, void **),
+    void (*unlock_cb) (void *, void *, void *const *),
+    void (*display_cb) (void *, void *),
+    void *opaque )
+{
+    var_SetAddress( mp, "vmem-lock", lock_cb );
+    var_SetAddress( mp, "vmem-unlock", unlock_cb );
+    var_SetAddress( mp, "vmem-display", display_cb );
+    var_SetAddress( mp, "vmem-data", opaque );
+    var_SetString( mp, "vout", "vmem" );
+}
+
+void libvlc_video_set_format( libvlc_media_player_t *mp, const char *chroma,
+                              unsigned width, unsigned height, unsigned pitch )
+{
+    var_SetString( mp, "vmem-chroma", chroma );
+    var_SetInteger( mp, "vmem-width", width );
+    var_SetInteger( mp, "vmem-height", height );
+    var_SetInteger( mp, "vmem-pitch", pitch );
 }
 
 /**************************************************************************
