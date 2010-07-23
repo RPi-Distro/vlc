@@ -1,3 +1,12 @@
+vlc (1.1.1-1+exp1ubuntu1) maverick; urgency=low
+
+  * Merge from Debian experimental, remaining changes:
+    - build and install the libx264 plugin
+    - add Xb-Npp header to vlc package
+    - Add apport hook to include more vlc dependencies in bug reports
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Fri, 23 Jul 2010 10:41:59 +0200
+
 vlc (1.1.1-1+exp1) experimental; urgency=low
 
   * Depends on xulrunner-dev >= 1.9.2
