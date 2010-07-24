@@ -63,7 +63,6 @@ confflags += \
 	--enable-libass \
 	--enable-libmpeg2 \
 	--enable-libproxy \
-	--enable-libva \
 	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \
@@ -129,6 +128,7 @@ confflags += \
 	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv \
+	--enable-libva \
 	--enable-pvr \
 	--enable-udev \
 	--enable-v4l \
