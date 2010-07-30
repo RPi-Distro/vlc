@@ -2,7 +2,7 @@
  * fixed.c: Fixed-point audio format conversions
  *****************************************************************************
  * Copyright (C) 2002, 2006-2009 the VideoLAN team
- * $Id: c090a9e01396c853f0b87b2dad21712ae70b6fdf $
+ * $Id: b5b4c51bef367de49adb347377646c04fc7bd313 $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *          Marc Ariberti <marcari@videolan.org>
@@ -204,6 +204,7 @@ static block_t *Do_S16ToF32( filter_t * p_filter, block_t * p_in_buf )
         p_in++; p_out++;
     }
 
+    p_out_buf->i_dts = p_in_buf->i_dts;
     p_out_buf->i_pts = p_in_buf->i_pts;
     p_out_buf->i_length = p_in_buf->i_length;
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
@@ -233,6 +234,7 @@ static block_t *Do_U8ToF32( filter_t * p_filter, block_t * p_in_buf )
         *p_out = (vlc_fixed_t)( (int32_t)(*p_in - 128) * (FIXED32_ONE / 128) );
         p_in++; p_out++;
     }
+    p_out_buf->i_dts = p_in_buf->i_dts;
     p_out_buf->i_pts = p_in_buf->i_pts;
     p_out_buf->i_length = p_in_buf->i_length;
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;

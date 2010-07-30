@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 9320a6b11ebb152318fd081190a269017d37bcde $
+ * $Id: b29e6543841269ead8bf7981ae428441757b4357 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -213,17 +213,17 @@ static int Demux( demux_t *p_demux )
             b_cleanup = true;
             if( !psz_mrl )
             {
-                LocaleFree( psz_parse );
+                free( psz_parse );
                 goto error;
             }
 
             p_input = input_item_NewExt( p_demux, psz_mrl, psz_name,
                                         i_options, ppsz_options, 0, i_duration );
 
-            LocaleFree( psz_parse );
+            free( psz_parse );
             free( psz_mrl );
 
-            if ( psz_artist && *psz_artist )
+            if ( !EMPTY_STR(psz_artist) )
                 input_item_SetArtist( p_input, psz_artist );
             if( psz_name ) input_item_SetTitle( p_input, psz_name );
 
@@ -242,12 +242,10 @@ static int Demux( demux_t *p_demux )
         {
             /* Cleanup state */
             while( i_options-- ) free( (char*)ppsz_options[i_options] );
-            free( ppsz_options );
-            ppsz_options = NULL; i_options = 0;
-            free( psz_name );
-            psz_name = NULL;
-            free( psz_artist );
-            psz_artist = NULL;
+            FREENULL( ppsz_options );
+            i_options = 0;
+            FREENULL( psz_name );
+            FREENULL( psz_artist );
             i_parsed_duration = 0;
             i_duration = -1;
 

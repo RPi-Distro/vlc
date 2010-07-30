@@ -2,7 +2,7 @@
  * video.c: transcoding stream output module (video)
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 5bcc08a0442388f2a9440b453c4faf0c03bcd519 $
+ * $Id: 4ec192c9150e7a02f3b8024b695b72c7e4ddc1e1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -694,9 +694,8 @@ int transcode_video_process( sout_stream_t *p_stream, sout_stream_id_t *id,
             else
                 fmt = id->p_decoder->fmt_out.video;
 
-            /* FIXME the mdate() seems highly suspicious */
             spu_RenderSubpictures( p_sys->p_spu, p_pic, &fmt,
-                                   p_subpic, &id->p_decoder->fmt_out.video, mdate() );
+                                   p_subpic, &id->p_decoder->fmt_out.video, p_pic->date );
         }
 
         /* Run user specified filter chain */

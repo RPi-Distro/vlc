@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 49ff2eab1f5406c00efca2e133939393c853655f $
+ * $Id: 8ef7b944321cfec87b39595636c2e241c97cfa55 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -3992,12 +3992,6 @@ static void PMTCallBack( demux_t *p_demux, dvbpsi_pmt_t *p_pmt )
     {
         /* Set demux filter */
         SetPIDFilter( p_demux, prg->i_pid_pcr, true );
-    }
-    else
-    {
-        msg_Warn( p_demux, "skipping program (not selected)" );
-        dvbpsi_DeletePMT(p_pmt);
-        return;
     }
 
     /* Parse descriptor */

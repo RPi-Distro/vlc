@@ -1,3 +1,463 @@
+commit 7f01d51cc7e3471e03e403c9a4cc471e8482e8cb
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jul 29 11:36:09 2010 +0200
+
+    NEWS about 1.1.2
+
+commit 0f3f3d980abc4bcbed13975e38c51da58e9ef3b1
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Wed Jul 28 21:33:14 2010 +0200
+
+    Qt/EPG: Fix event deletion.
+    (cherry picked from commit c0dccd6f57da1f9a832aea1402c24c3c33c0da98)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 15c5d37ec7ae7455eb5271e17ccc8fe92e8e15a1
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Wed Jul 28 20:25:16 2010 +0200
+
+    Qt/EPG: Try to display intelligently the short and long event description with the dedicated widgets.
+    
+    It depends of the channels. Some use only the short one, others only the long one and others both.
+    (cherry picked from commit ec1859e9991185b43b3b05815654e8326dd6728c)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 145ca78f23050f6d536b1a9958624673cafa9297
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jul 29 11:29:40 2010 +0200
+
+    Add etix and chouquette to THANKS
+
+commit c1c476bcf4f670de9b3b99ad0fa77240e92c3b46
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jul 29 11:25:17 2010 +0200
+
+    Update po
+
+commit dd074f3068555ecf4334967281eb0086fa8cec99
+Author: Jakob Leben <jleben@videolan.org>
+Date:   Thu Jul 29 11:20:46 2010 +0200
+
+    playlist: refactor and fix #3932
+    
+    When an item gets sub-items, we have to run our own random-picking among
+    the new items.
+    
+    Cherry-picked from commit: 2a4a8f9a3f57087ac320a090442c876e94cda9c7
+
+commit 7945c2b3f78994c3a2f0e018ea13745252edccbf
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Jul 27 23:04:44 2010 +0200
+
+    koreus: use avformat demuxer.
+    (cherry picked from commit ebc429058fcc3ab1e5064bb381c4151a8149bc32)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit cc7164e93edf4490e30a27e69dbeeecce5ecd36c
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Jul 27 21:29:07 2010 +0200
+
+    QT4_vlm: really fix #3938.
+    (cherry picked from commit c8ab1739f952be53c7dfe9e96eaf309f69cafecf)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 5032c2daaf213492ac0c2df0fc9e2744b13f6106
+Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
+Date:   Tue Jul 27 00:08:28 2010 +0200
+
+    avcodec: encoder: Don't assume a maximum BPP of 24
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit e4b51d8d5700b18eb795e250c4b3a0daf29fef57)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a33d8caae3a6cd5912083bf2d01ea7999b57f9ca
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Mon Jul 26 22:16:15 2010 +0200
+
+    qt4_vlm: fix #3938 (options must be removed from the input)
+    (cherry picked from commit df316b5efcba5b2b50b9e27ba2f21574f21f5207)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 61644861ced2cf319da1136a4e7041da42e4c833
+Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
+Date:   Thu Jul 22 22:07:18 2010 +0200
+
+    avcodec: Allow usage of VLC_CODEC_RGBA
+    
+    PIX_FMT_RGBA is not a define, but an enum member.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit c23388a92310654a5547f66452981445182ef962)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bbe7d941884920f303d7db903a97c070d418db4c
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Mon Jul 26 18:59:51 2010 +0200
+
+    lua: fix koreus parsing.
+    (cherry picked from commit 8c826f3940e2af2001bd666febe69173792ee065)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 46eabaca7fcc225aaae18274df2d5431d186b65d
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Jul 27 00:55:30 2010 +0200
+
+    NEWS for VLC 1.1.2
+
+commit 9b2606c3870b8efdc0011bb177f03ddf2cafc9a0
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Mon Jul 26 21:34:22 2010 +0200
+
+    Fixed broken video with direct3d for some drivers.
+    (cherry picked from commit c05fa12539d7423fc0f833118c816eab72212df6)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5f1aa05da0e187a3b8a3a929d147310e69b94105
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Sun Jul 25 21:50:06 2010 +0300
+
+    Japanese translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit c6e3219920e157b4313e62fe00741b5b7d3c6d6d
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Mon Jul 26 20:29:57 2010 +0200
+
+    Fixed timestamps handling in various audio filters.
+    (cherry picked from commit 87c351e58ad9f47e75ed8c165df229655075466d)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit b1f013e7ab59206ab751c6bcc9103bef3373c6d1
+Author: Toralf Niebuhr <gmthor85@aim.com>
+Date:   Thu Jul 22 11:39:36 2010 +0200
+
+    use NSAutoreleasePool::drain instead of NSAutoreleasePool::release since VLCKit ist compiled with Objective-C Garbage Collection = Supported
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit b7508014f4b124bd1a98f32fbe59ef803198e7b9)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 7cc5ef0d9f32388c37a2be4e4945a8f7d23eb9da
+Author: Juho Vähä-Herttua <juhovh@iki.fi>
+Date:   Wed Jul 21 16:54:25 2010 +0300
+
+    osx: Fix a bug where glView frame doesn't get set if NSView parent is used
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 378c80277b249ab3c9545c0d11da29e464ccc48f)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 49cd341267ac0a9b4f52abc82d94ef3ac0e99c10
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Wed Jul 21 22:28:08 2010 +0200
+
+    m3u: fix a memory leak (the string is not allocated with FromLocale nor ToLocale but strdup).
+    (cherry picked from commit 5e33034d87a3e3258573410053f0bfc1e7925674)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 6345184e05cea06b712d45d1555be0de305d2fef
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Wed Jul 21 22:00:56 2010 +0200
+
+    m3u: factorize.
+    (cherry picked from commit d69171a2d863fad067d87df764d90572e3e509b4)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit f61620244e4bab2e3c1cfcb3b4e489d8288f2c84
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Wed Jul 21 21:49:37 2010 +0200
+
+    Qt4: fix memleak when album arts.
+    (cherry picked from commit d4c7ef27dd409c192fcfec571921bd7f892eb5af)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit a67f40577e79dda922b117527fdffedb043f54e1
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Wed Jul 21 18:32:28 2010 +0200
+
+    faad: fix potential memleak.
+    (cherry picked from commit ab9825861e7e51408d1addb1f1e77fb03f900abf)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 1ad2daeda6e50588b602e5b1ad85e5da50bac470
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jul 22 23:15:25 2010 +0300
+
+    typo
+    (cherry picked from commit 325f4e5be6d2e74969ee5ee41b91800907d73b27)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 94982a61357eaa059f9c7ccb682473c882c3fc1f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jul 22 22:43:59 2010 +0300
+
+    XCB/screen: fix misleading comments
+    (cherry picked from commit b6e0ca0b8d5a8d0bffdab06701cb7cb3a1ac60c2)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 50278f4d9cbd41d04f166c09319f827859ee3f5a
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sat Jul 24 18:02:14 2010 +0200
+
+    Fix advanced panel height saving. Fixes #3858
+    (cherry picked from commit 374372612fbea4edbe44aefedcb04a85971b8464)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit c5690de2f20c709520aff031e0aa8417eac5cea6
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Wed Jul 21 21:56:01 2010 +0200
+
+    Do not filter out program/epg at the TS demuxer level, part 2.
+    (cherry picked from commit d4663a4d65b6323aa3b5781dd99b404623d19624)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 80649c2cf8add12baf3bd82da3ca4dfacd2818e5
+Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
+Date:   Thu Jul 22 22:16:42 2010 +0200
+
+    smem: Allow usage of RGBA
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 1eb0e68191ef5187b4b15896a64b3b8db3ea7b9a)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ce4abeae3c121c6da617bd6db2682d36fe91e3ae
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jul 25 11:18:34 2010 +0300
+
+    libva-enabled avcodec needs X11
+    
+    (cherry picked from commit b4bf94e06761276859f4a1f36c303269fb7035fd)
+
+commit ada6a5250d1dc52f588dbf35d7123e66cb6cfb74
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jul 24 14:43:02 2010 +0200
+
+    WinCE: fix compilation
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c7cc7c255808360524281bb8dd3fb460ad3d9be3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 24 12:06:28 2010 +0300
+
+    Plus sign must not be decoded in URI
+    
+    This is different from HTTP forms.
+    (cherry picked from commit d2dd502e0a2709f52be26548a3deda5b08db8bb6)
+
+commit e288b59ba6bae2a4254af0655c86a589242e65d9
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 24 11:49:37 2010 +0300
+
+    XCB/XVideo: include XVideo error code in grab error debug message
+    
+    (cherry picked from commit 04b436b8b54cf0b08c510a0e28c0d77b0a880e3f)
+
+commit ad6ce9955ad7ee252fb4748d0c7c2b16ced5a94e
+Author: Benjamin Zores <ben@geexbox.org>
+Date:   Sat Jul 24 11:25:08 2010 +0300
+
+    OMAPFB: compile fix
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 11075f3ca4e78bb3d83f03978703a381da918256
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Jul 23 13:00:36 2010 +0200
+
+    ub.sh: Fixed 2 typos which prevented proper execution and added a bit more verbosity
+
+commit 6b9354c4234e69c499993c90217abe497e0c5324
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Jul 23 12:06:36 2010 +0200
+
+    Updated contrib package for Mac OS X
+    
+    This just updates libmodplug
+
+commit 0506ab81e7e18f03459b9230f647a85ccfa6a2c6
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jul 22 20:34:39 2010 +0300
+
+    Win32: use Unicode output for the console (fixes #3125)
+    
+    (cherry picked from commit 2b67ce72a9cbf2279bf8f6f769984aca968fe1f6)
+
+commit b589a5b5c10b1510e9322b53572d926e0ca7566a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jul 22 20:25:48 2010 +0300
+
+    logger: output to file in local character set
+    
+    (cherry picked from commit cc856b0f652a65dba308025ef3502abea1534d25)
+
+commit ebd7e0c3287a84e21b5e26da392cbe211e535e66
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Thu Jul 22 17:52:36 2010 +0300
+
+    fix youtube.lua
+    (cherry picked from commit 806169e33a349d5ccd2a7c42eceeeaab8e154281)
+    
+    Signed-off-by: Ilkka Ollakka <ileoo@videolan.org>
+
+commit fffbdafe99c64ab5e8a9ecc0c8ce8b42cfe933d4
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Thu Jul 22 14:29:39 2010 +0200
+
+    skins2: check missing files first thing ...
+    
+    ... and make user experience with skins2 less frightening !
+    
+    missing files in skins should never occur, but reality is quite different
+    (see vlc skins website). Yet, if a check is done before any other processing,
+    we can avoid the unfriendly error dialog boxes issued by vlc core, and those
+    skins often end up quite usable (missing files are either no longer used or
+    for ancillary functionalities, that go unnoticed)
+    (cherry picked from commit 3b35ca6d42b294a614a790032c24987a44a8c3c1)
+
+commit fb8b3ab31e3fe695d3772c11f00c85b23e9c3ee5
+Author: Thomas de Rocker <thomasderocker@yahoo.com>
+Date:   Thu Jul 22 00:13:04 2010 +0100
+
+    l10n: Dutch update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 81adec8109c07d027e0808c9746e8cbd97ea8bd3
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Wed Jul 21 00:07:47 2010 +0100
+
+    Fix include path
+    
+    We already use pkg-config in configure for the fist part
+    (cherry picked from commit a985ebd5cc1c73f885eb663707cb3daa995bdc29)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 0a882f594a957de7da7e1ef1ab9dae5a950f3562
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 21 23:55:27 2010 +0300
+
+    avformat demux needs -lavcodec (av_free_packet)
+    
+    (cherry picked from commit b35dc178d7d159a850ace7baec714c5759e40908)
+    
+    Conflicts:
+    
+    	configure.ac
+
+commit 619c02299c3bcf1761b1cb61ec96a937cd004017
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 21 20:25:59 2010 +0300
+
+    Disable swscale if avcodec is disabled
+    
+    (cherry picked from commit 964c7e91c0273447e3f830c9aec4d84d602851b9)
+
+commit 4bbbe32fb69cd892a6d37bc03f4a8fbca1dda62e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 21 23:54:41 2010 +0300
+
+    Disable avformat if avcodec is disabled
+    
+    (cherry picked from commit a81518d6c9f960b92fcafb24855398600c0765ee)
+    
+    Conflicts:
+    
+    	configure.ac
+
+commit 2acc282c4d03bee9dab928e4ee757d6d148cfa1d
+Author: Blake Livingston <blake.a.livingston@gmail.com>
+Date:   Tue Jul 20 22:42:32 2010 -0700
+
+    Setting b_subtitle on subpictures during transcode, and applying correct timing.
+    
+    Signed-off-by: Laurent Aimar <fenrir@videolan.org>
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit d374edaba97ee565a4b020b2fb24db7fd24ef1ec
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Tue Jul 20 15:21:49 2010 +0300
+
+    fix documentation INPUT_GET_VOUTS actually uses size_t* than int*
+    (cherry picked from commit e575df71f59dcc2d9ce7c694ed5fb2b1d307e0ec)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 62314d0159ecb17e3d4de9eefd5ded84de4412fb
+Author: Tristan Heaven <tristanheaven@gmail.com>
+Date:   Tue Jul 20 11:50:09 2010 +0100
+
+    qt4: Fix stack smash in InputManager::UpdateVout
+    
+    From http://bugs.gentoo.org/show_bug.cgi?id=328969
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 4332f5b4071f1cf3f459b3883e1fa1a11c0e58c2)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit c0a12564a3a2d4a5744eb3cd2f8de964badbedc4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 7 23:56:33 2010 +0300
+
+    Qt4: do not allow spaces in network URLs (fix #3870)
+    (cherry picked from commit f8d5652706916e4b7471a6d40f0d1c23854a79a4)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 675c29fae820cf1753892b8884810d519c29d794
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jul 21 18:21:47 2010 +0200
+
+    Avformat: correctly detect the fps
+    
+    Manual backport of c1cf203b27210576125cb7f23df93804c4598b39
+
+commit 8a659b0beb471a11ef653eb1f63d07805f9b47f2
+Author: Benoît Tuduri <benoit.tuduri@gmail.com>
+Date:   Wed Jul 21 18:34:12 2010 +0300
+
+    Fix typo for Save Playlist in french translation.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 8264bb3e5e10af11cebce39a50fc9624a9f043ff
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Jul 20 13:48:07 2010 +0200
+
+    Fix typo
+
+commit 82c39393d637001cf83b604fdeec29cf191b8b74
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Jul 20 13:36:40 2010 +0200
+
+    On the road to 1.1.2
+
 commit cbc8a0b0a1c6f9eacb980ee95f0a4d29e6fe336f
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Tue Jul 20 12:03:07 2010 +0200

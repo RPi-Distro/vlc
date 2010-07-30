@@ -2,7 +2,7 @@
  * spu.c: transcoding stream output module (spu)
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: e493b6ff62a05d747cd054fe7d12e18a18e02454 $
+ * $Id: 04325d98d59d99afd37d26d111ae02423edab8f4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -37,7 +37,9 @@
 static subpicture_t *spu_new_buffer( decoder_t *p_dec )
 {
     VLC_UNUSED( p_dec );
-    return subpicture_New();
+    subpicture_t *p_subpicture = subpicture_New();
+    p_subpicture->b_subtitle = true;
+    return p_subpicture;
 }
 
 static void spu_del_buffer( decoder_t *p_dec, subpicture_t *p_subpic )
