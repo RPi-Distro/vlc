@@ -2,7 +2,7 @@
  * decoder.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: 7bda944a86f328825f8e152a87437620dc694cb7 $
+ * $Id: 6d1c927f48e42a42faca4c22fe4b548aa1560767 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -131,6 +131,7 @@ static int Open( vlc_object_t *p_this )
     if( ( p_sys->hfaad = faacDecOpen() ) == NULL )
     {
         msg_Err( p_dec, "cannot initialize faad" );
+        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -158,6 +159,8 @@ static int Open( vlc_object_t *p_this )
                           &i_rate, &i_channels ) < 0 )
         {
             msg_Err( p_dec, "Failed to initialize faad using extra data" );
+            faacDecClose( p_sys->hfaad );
+            free( p_sys );
             return VLC_EGENERIC;
         }
 

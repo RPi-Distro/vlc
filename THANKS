@@ -151,6 +151,7 @@ Harris Dugal <dugalh at protoclea dot. co dot za > - ActiveX bug fixes
 Harry Sintonen <sintonen at iki.fi> - fix for MKV demuxer
 H.Shalitha Vikum <HSVIKUM at sinhalaya dot com> - Sinhala translation
 Heiko Panther <heiko.panther@web.de> - Mac OS X audio device selection framework
+Hugo Beauzée-Luyssen - smem improvements and fixes, invmem, Qt4 and libVLC fixes
 Igor Helman - VLM msecseek command
 Isaac Osunkunle - <osunkunle - at - gmail d0t com> - Spatializer (GSoc 2007)
 Ivo Ivanov <bestran at mail dot bg> - Bulgarian translation
@@ -203,7 +204,7 @@ Leo Spalteholz <leo dot spalteholz at gmail dot com> - Qt interface design
 Loox Thefuture <loox.thefuture at gmail dot com> - Media key in X11 vout
 Lorena Gomes - Catalan translation
 Luca Barbato <lu_zero -at- gentOo | org> - RTSP client fix
-Ludovic Fauvet <etix # l0cal dot com> - Qt4 patch
+Ludovic Fauvet <etix # l0cal dot com> - Qt4 fixes, EPG
 Lukas Durfina <lukas.durfina at gmail.com> - Qt4: full screen controller. Teletext button fix. Various fixes.
 Luqman Hakim <ovdl qt rocketmail dot com> - Indonesian translation
 Mahrazi Mohd Kamal <mahrazi at gmail.com> - Malay Translation

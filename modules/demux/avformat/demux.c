@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: a3028a50c6ea6a7e2de55203d0914c3ef8080f3b $
+ * $Id: 6d123d0b5345cb68340b81c5c34f08984674a3ba $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -286,7 +286,11 @@ int OpenDemux( vlc_object_t *p_this )
             }
             psz_type = "video";
             fmt.video.i_frame_rate = cc->time_base.den;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,20,0)
+            fmt.video.i_frame_rate_base = cc->time_base.num * __MAX( cc->ticks_per_frame, 1 );
+#else
             fmt.video.i_frame_rate_base = cc->time_base.num;
+#endif
             break;
 
         case CODEC_TYPE_SUBTITLE:

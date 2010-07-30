@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 7717cd2185c03c7b20fe50a5e92f9c1844bfc43f $
+ * $Id: 669a9dba3a292c1f79d6c49b21a3ab40eb37cfab $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -568,7 +568,7 @@ void InputManager::UpdateVout()
     if( hasInput() )
     {
         /* Get current vout lists from input */
-        int i_vout;
+        size_t i_vout;
         vout_thread_t **pp_vout;
         if( input_Control( p_input, INPUT_GET_VOUTS, &pp_vout, &i_vout ) )
         {
@@ -641,7 +641,10 @@ const QString InputManager::decodeArtURL( input_item_t *p_item )
     /* Taglib seems to define a attachment://, It won't work yet */
     url = url.replace( "attachment://", "" );
 #endif
-    return qfu( psz_art ? psz_art : "" );
+
+    QString path = qfu( psz_art ? psz_art : "" );
+    free( psz_art );
+    return path;
 }
 
 void InputManager::UpdateArt()

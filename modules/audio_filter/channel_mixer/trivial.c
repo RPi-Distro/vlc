@@ -2,7 +2,7 @@
  * trivial.c : trivial channel mixer plug-in (drops unwanted channels)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: b76aa90a64541c9fa2812bee859465c0d12b20d1 $
+ * $Id: 9211751e50044156bf759c11de7bc6b02f6374ba $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -115,6 +115,9 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
         if( !p_out_buf )
             goto out;
         p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
+        p_out_buf->i_dts        = p_in_buf->i_dts;
+        p_out_buf->i_pts        = p_in_buf->i_pts;
+        p_out_buf->i_length     = p_in_buf->i_length;
     }
 
     int32_t * p_dest = (int32_t *)p_out_buf->p_buffer;

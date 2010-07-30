@@ -2,7 +2,7 @@
  * logger.c : file logging plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 14c7197331a9c1528b32f350d1696ab26df57a0d $
+ * $Id: 3aa4da74a3133fc0e0ec98c81164c9580ac1de56 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -34,6 +34,7 @@
 #include <vlc_interface.h>
 #include <vlc_playlist.h>
 #include <vlc_fs.h>
+#include <vlc_charset.h>
 
 #include <assert.h>
 
@@ -406,8 +407,8 @@ static const char ppsz_type[4][11] = {
 
 static void TextPrint( const msg_item_t *p_msg, FILE *p_file )
 {
-    fprintf( p_file, "%s%s%s\n", p_msg->psz_module, ppsz_type[p_msg->i_type],
-             p_msg->psz_msg );
+    utf8_fprintf( p_file, "%s%s%s\n", p_msg->psz_module,
+                  ppsz_type[p_msg->i_type], p_msg->psz_msg );
 }
 
 #ifdef HAVE_SYSLOG_H

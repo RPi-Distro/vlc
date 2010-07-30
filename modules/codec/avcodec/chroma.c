@@ -2,7 +2,7 @@
  * chroma.c: libavutil <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 2a248b4dbb3d2a159bd4e34b9d278b3139e031ba $
+ * $Id: f857f09b3d8dc5250928abf5301838dd35023c4e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -105,9 +105,7 @@ static const struct
     VLC_RGB( VLC_CODEC_RGB32, PIX_FMT_RGB32, PIX_FMT_BGR32, 0x00ff0000, 0x0000ff00, 0x000000ff )
     VLC_RGB( VLC_CODEC_RGB32, PIX_FMT_RGB32_1, PIX_FMT_BGR32_1, 0xff000000, 0x00ff0000, 0x0000ff00 )
 
-#if defined(PIX_FMT_RGBA)
     {VLC_CODEC_RGBA, PIX_FMT_RGBA, 0xff000000, 0x00ff0000, 0x0000ff00},
-#endif
     {VLC_CODEC_GREY, PIX_FMT_GRAY8, 0, 0, 0},
 
      /* Paletized RGB */

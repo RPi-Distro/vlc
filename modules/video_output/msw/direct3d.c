@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- *$Id: 4728e7de3dfb80f5fce3791673077190a6bf447f $
+ *$Id: 37eaf1d61b141aeda02d23da955efae657cd400b $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -252,8 +252,6 @@ static void Prepare(vout_display_t *vd, picture_t *picture)
     Direct3DUnlockSurface(picture);
 
     Direct3DRenderScene(vd, surface);
-
-    Direct3DLockSurface(picture);
 #endif
 }
 
@@ -270,10 +268,12 @@ static void Display(vout_display_t *vd, picture_t *picture)
     if (FAILED(hr)) {
         msg_Dbg(vd, "%s:%d (hr=0x%0lX)", __FUNCTION__, __LINE__, hr);
     }
+
 #if 0
     VLC_UNUSED(picture);
 #else
     /* XXX See Prepare() */
+    Direct3DLockSurface(picture);
     picture_Release(picture);
 #endif
 
