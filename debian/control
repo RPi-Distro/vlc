@@ -178,7 +178,8 @@ Depends: ttf-dejavu-core,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
-Recommends: vlc-plugin-pulse (= ${binary:Version})
+Recommends: vlc-plugin-pulse (= ${binary:Version}),
+            vlc-plugin-notify (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
 Replaces: vlc-nox (<< 1.0.4-2)
@@ -359,6 +360,19 @@ Depends: vlc-nox (= ${binary:Version}),
          ${shlibs:Depends}
 Description: VBI teletext plugin for VLC
  This plugin adds support for VBI teletext to the VLC media player.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: vlc-plugin-notify
+Architecture: any
+Depends: vlc-nox (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: LibNotify plugin for VLC
+ This plugin adds support for libnotify track change notification to the 
+ VLC media player.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
