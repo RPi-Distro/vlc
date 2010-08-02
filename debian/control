@@ -182,7 +182,8 @@ Recommends: vlc-plugin-pulse (= ${binary:Version}),
             vlc-plugin-notify (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
-Replaces: vlc-nox (<< 1.0.4-2)
+Breaks: vlc-nox (<< 1.1.2)
+Replaces: vlc-nox (<< 1.1.2)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -370,6 +371,8 @@ Architecture: any
 Depends: vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
+Breaks: vlc-nox (<< 1.1.2)
+Replaces: vlc-nox (<< 1.1.2)
 Description: LibNotify plugin for VLC
  This plugin adds support for libnotify track change notification to the 
  VLC media player.
