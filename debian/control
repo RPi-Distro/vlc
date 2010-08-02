@@ -178,8 +178,8 @@ Depends: ttf-dejavu-core,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
-Recommends: vlc-plugin-pulse (= ${binary:Version}),
-            vlc-plugin-notify (= ${binary:Version})
+Recommends: vlc-plugin-notify (= ${binary:Version}),
+            vlc-plugin-pulse (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
 Breaks: vlc-nox (<< 1.1.2)
@@ -295,6 +295,21 @@ Description: Jack audio plugins for VLC
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
+Package: vlc-plugin-notify
+Architecture: any
+Depends: vlc-nox (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: vlc-nox (<< 1.1.2)
+Replaces: vlc-nox (<< 1.1.2)
+Description: LibNotify plugin for VLC
+ This plugin adds support for libnotify track change notification to the
+ VLC media player.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
 Package: vlc-plugin-pulse
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}),
@@ -361,21 +376,6 @@ Depends: vlc-nox (= ${binary:Version}),
          ${shlibs:Depends}
 Description: VBI teletext plugin for VLC
  This plugin adds support for VBI teletext to the VLC media player.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
-Package: vlc-plugin-notify
-Architecture: any
-Depends: vlc-nox (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
-Breaks: vlc-nox (<< 1.1.2)
-Replaces: vlc-nox (<< 1.1.2)
-Description: LibNotify plugin for VLC
- This plugin adds support for libnotify track change notification to the 
- VLC media player.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
