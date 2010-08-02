@@ -1,18 +1,21 @@
-vlc (1.1.2-1~1.gbp5f7854) UNRELEASED; urgency=low
+vlc (1.1.2-1) unstable; urgency=low
 
-  ** SNAPSHOT build @5f7854fa388c1ad0b56e6752e9ebfb93ccbf9d59 **
-
+  [ Christophe Mutricy ]
+  * New upstream release
   * Also check for libxcb
   * Move xcb_apps SD to vlc
-  * Imported Upstream version 1.1.2
-  * Re-enable the modplug module and require the fixed version (Closes:
-    #589890, #590787)
-  * Fix location of icons in vlc.menu (Closes: #590294) - thanks to
-    Juhapekka Tolvanen
-  * Split the notify plugin to not depend on gtk (Closes: #590504) -
+  * Re-enable the modplug module and require the fixed version
+    (Closes: #589890, #590787)
+  * Fix location of icons in vlc.menu (Closes: #590294)
+    thanks to Juhapekka Tolvanen
+  * Split the notify plugin to not depend on GTK+ (Closes: #590504)
     thanks to Viktar Vauchkevich
 
- -- Christophe Mutricy <xtophe@videolan.org>  Fri, 30 Jul 2010 20:17:47 +0200
+  [ Benjamin Drung ]
+  * Add proper Breaks and Replaces to vlc and vlc-plugin-notify.
+  * Bump Standards-Version to 3.9.1 (no changes required).
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 03 Aug 2010 01:38:17 +0200
 
 vlc (1.1.1-1) unstable; urgency=low
 
