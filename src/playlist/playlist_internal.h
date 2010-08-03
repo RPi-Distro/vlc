@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 959b8e3d9f1bf5cbd52e37be480fb131f187dd98 $
+ * $Id: a42c0460117a4594d12375d529786174ec11ad47 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -132,7 +132,7 @@ void playlist_SendAddNotify( playlist_t *p_playlist, int i_item_id,
 playlist_item_t * playlist_NodeAddInput( playlist_t *, input_item_t *,
         playlist_item_t *,int , int, bool );
 
-playlist_item_t * playlist_InsertInputItemTree ( playlist_t *,
+int playlist_InsertInputItemTree ( playlist_t *,
         playlist_item_t *, input_item_node_t *, int, bool );
 
 /* Tree walking */

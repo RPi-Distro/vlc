@@ -383,6 +383,7 @@ static void Demux (void *data)
         }
     }
 
+    /* Capture screen */
     xcb_get_image_reply_t *img;
     img = xcb_get_image_reply (conn,
         xcb_get_image (conn, XCB_IMAGE_FORMAT_Z_PIXMAP, root,
@@ -390,12 +391,12 @@ static void Demux (void *data)
     if (img == NULL)
         return;
 
-    /* Send block - zero copy */
     block_t *block = block_heap_Alloc (img, xcb_get_image_data (img),
                                        xcb_get_image_data_length (img));
     if (block == NULL)
         return;
 
+    /* Update elementary stream format (if needed) */
     vlc_mutex_lock (&p_sys->lock);
     if (w != p_sys->cur_w || h != p_sys->cur_h)
     {
@@ -409,7 +410,7 @@ static void Demux (void *data)
         }
     }
 
-    /* Capture screen */
+    /* Send block - zero copy */
     if (p_sys->es != NULL)
     {
         if (p_sys->pts == VLC_TS_INVALID)

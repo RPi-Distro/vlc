@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-07-20 11:53+0200\n"
+"POT-Creation-Date: 2010-07-29 12:11+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Tòni Galhard <tony.gaillard@supinfo.com>\n"
 "Language-Team: \n"
@@ -80,7 +80,6 @@ msgstr "Paramètres dels acorchis"
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:192
-#: modules/gui/qt4/ui/profiles.h:487
 msgid "Audio"
 msgstr "Àudio"
 
@@ -136,7 +135,6 @@ msgstr "Paramètres divèrses àudio e moduls"
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:101 modules/stream_out/transcode/transcode.c:161
-#: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Video"
 msgstr "Vidèo"
 
@@ -414,7 +412,6 @@ msgstr "Reglatges avançats"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:180
 #: modules/gui/macosx/open.m:459 modules/gui/macosx/simple_prefs.m:259
-#: modules/gui/qt4/ui/sprefs_input.h:318
 msgid "Network"
 msgstr "Ret"
 
@@ -546,7 +543,6 @@ msgstr "&A prepaus"
 #: modules/gui/macosx/intf.m:2026 modules/gui/macosx/intf.m:2027
 #: modules/gui/macosx/intf.m:2028 modules/gui/macosx/playlist.m:466
 #: modules/gui/qt4/components/controller.hpp:104 modules/gui/qt4/menus.cpp:790
-#: modules/gui/qt4/ui/open.h:256
 msgid "Play"
 msgstr "Legir"
 
@@ -700,7 +696,7 @@ msgstr ""
 "Grossir una partida de la video. Podètz causir quina partida de l'imatge deu "
 "èsser grossida."
 
-#: include/vlc_intf_strings.h:117 modules/gui/qt4/ui/video_effects.h:1141
+#: include/vlc_intf_strings.h:117
 msgid "Waves"
 msgstr "Èrsas"
 
@@ -875,9 +871,6 @@ msgstr "Esterèo"
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:85 modules/video_filter/rss.c:174
-#: modules/gui/qt4/ui/video_effects.h:1114
-#: modules/gui/qt4/ui/video_effects.h:1177
-#: modules/gui/qt4/ui/video_effects.h:1182
 msgid "Left"
 msgstr "Esquèrra"
 
@@ -889,7 +882,6 @@ msgstr "Esquèrra"
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:85 modules/video_filter/rss.c:174
-#: modules/gui/qt4/ui/video_effects.h:1116
 msgid "Right"
 msgstr "Drecha"
 
@@ -943,8 +935,8 @@ msgstr "Descodadors"
 
 #: src/input/decoder.c:278 src/input/decoder.c:430
 #: modules/codec/avcodec/encoder.c:224 modules/codec/avcodec/encoder.c:232
-#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:706
-#: modules/codec/avcodec/encoder.c:715 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:700
+#: modules/codec/avcodec/encoder.c:709 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr "Streaming* / Transcodatge a pas capitat"
@@ -1020,14 +1012,12 @@ msgid "Original ID"
 msgstr "ID original"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
-#: modules/gui/qt4/ui/profiles.h:489
+#: modules/gui/macosx/wizard.m:385
 msgid "Codec"
 msgstr "Codec"
 
 #: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:214
 #: modules/access/imem.c:76 modules/gui/macosx/simple_prefs.m:269
-#: modules/gui/qt4/ui/sprefs_interface.h:386
 msgid "Language"
 msgstr "Lengatge"
 
@@ -1037,7 +1027,7 @@ msgid "Description"
 msgstr "Descripcion"
 
 #: src/input/es_out.c:2914 src/input/es_out.c:2917
-#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
+#: modules/gui/macosx/output.m:176
 msgid "Channels"
 msgstr "Sortidas"
 
@@ -1056,8 +1046,7 @@ msgstr "Bits per escapolon"
 
 #: src/input/es_out.c:2937 modules/access/pvr.c:96
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:413
-#: modules/gui/qt4/components/open_panels.cpp:905
-#: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
+#: modules/gui/qt4/components/open_panels.cpp:921
 msgid "Bitrate"
 msgstr "Taus de bits"
 
@@ -1079,7 +1068,7 @@ msgstr ""
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:476
+#: src/input/es_out.c:2961
 msgid "Resolution"
 msgstr "Resolucion"
 
@@ -1116,7 +1105,6 @@ msgstr ""
 #: modules/gui/macosx/intf.m:664 modules/gui/macosx/open.m:190
 #: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
 #: modules/gui/qt4/components/open_panels.cpp:376 modules/mux/asf.c:56
-#: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
 msgstr "Títol"
 
@@ -1154,7 +1142,6 @@ msgid "Setting"
 msgstr "Paramètres"
 
 #: src/input/meta.c:61 modules/gui/macosx/open.m:203
-#: modules/gui/qt4/ui/podcast_configuration.h:103
 msgid "URL"
 msgstr "URL"
 
@@ -1188,7 +1175,6 @@ msgstr "Programas"
 
 #: src/input/var.c:192 modules/gui/macosx/intf.m:665
 #: modules/gui/macosx/intf.m:666 modules/gui/macosx/open.m:191
-#: modules/gui/qt4/ui/open_disk.h:303
 msgid "Chapter"
 msgstr "Capítol"
 
@@ -1404,7 +1390,7 @@ msgid "2:1 Double"
 msgstr "2:1 Doble"
 
 #: src/libvlc-module.c:102 src/libvlc-module.c:317 modules/access/bda/bda.c:69
-#: modules/gui/qt4/components/open_panels.cpp:981
+#: modules/gui/qt4/components/open_panels.cpp:997
 msgid "Auto"
 msgstr "Auto"
 
@@ -1559,7 +1545,6 @@ msgstr ""
 "defaut."
 
 #: src/libvlc-module.c:254 modules/stream_out/display.c:41
-#: modules/gui/qt4/ui/sprefs_audio.h:404
 msgid "Enable audio"
 msgstr "Activar audio"
 
@@ -1659,7 +1644,6 @@ msgid ""
 msgstr "Permet de causir los mòdes de sortida per defaut."
 
 #: src/libvlc-module.c:303 modules/gui/macosx/simple_prefs.m:237
-#: modules/gui/qt4/ui/sprefs_audio.h:413
 msgid "Use S/PDIF when available"
 msgstr "Utilizar S/PDIF quand es disponible"
 
@@ -1783,7 +1767,6 @@ msgid ""
 msgstr "Aquò's lo metòde utilizat per VLC. Per defaut lo melhor es causit."
 
 #: src/libvlc-module.c:377 modules/stream_out/display.c:43
-#: modules/gui/qt4/ui/sprefs_video.h:309
 msgid "Enable video"
 msgstr "Activar la video"
 
@@ -1886,9 +1869,6 @@ msgstr "Centrada"
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:85 modules/video_filter/rss.c:174
-#: modules/gui/qt4/ui/video_effects.h:1112
-#: modules/gui/qt4/ui/video_effects.h:1178
-#: modules/gui/qt4/ui/video_effects.h:1181
 msgid "Top"
 msgstr "Naut"
 
@@ -1897,7 +1877,6 @@ msgstr "Naut"
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:85 modules/video_filter/rss.c:174
-#: modules/gui/qt4/ui/video_effects.h:1118
 msgid "Bottom"
 msgstr "Bas"
 
@@ -1991,7 +1970,7 @@ msgstr ""
 "*to render video directly). VLC will try to use it by default.*"
 
 #: src/libvlc-module.c:444 src/video_output/vout_intf.c:344
-#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
+#: modules/gui/macosx/simple_prefs.m:295
 msgid "Always on top"
 msgstr "Totjorn davant"
 
@@ -2104,7 +2083,7 @@ msgstr ""
 "Desactivar lo mòde estalvida d'energia per que l'ordenador s'arresta pas a "
 "causa d'una inactivitat."
 
-#: src/libvlc-module.c:505 modules/gui/qt4/ui/sprefs_video.h:316
+#: src/libvlc-module.c:505
 msgid "Window decorations"
 msgstr "Decoracions de la fenèstra"
 
@@ -2294,7 +2273,6 @@ msgstr ""
 "per aver un aspècte normal."
 
 #: src/libvlc-module.c:599 modules/gui/macosx/simple_prefs.m:297
-#: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "Passar los frames"
 
@@ -2416,7 +2394,6 @@ msgstr "Defaut"
 
 #: src/libvlc-module.c:655 modules/gui/macosx/equalizer.m:149
 #: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
-#: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Activar"
 
@@ -2496,7 +2473,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:702 modules/gui/qt4/ui/open_disk.h:305
+#: src/libvlc-module.c:702
 msgid "Audio track"
 msgstr "Pista àudio"
 
@@ -2504,7 +2481,7 @@ msgstr "Pista àudio"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Numèro de la pista àudio d'utilizar (entre 0 e n)."
 
-#: src/libvlc-module.c:707 modules/gui/qt4/ui/open_disk.h:306
+#: src/libvlc-module.c:707
 msgid "Subtitles track"
 msgstr "Pista dels sostítols"
 
@@ -2644,7 +2621,7 @@ msgstr ""
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
 "{...}\""
 
-#: src/libvlc-module.c:772 modules/gui/qt4/ui/sprefs_input.h:316
+#: src/libvlc-module.c:772
 msgid "Record directory or filename"
 msgstr "Repertòri o nom de fichièr per las capturas video"
 
@@ -2688,7 +2665,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:798 modules/gui/qt4/ui/sprefs_subtitles.h:213
+#: src/libvlc-module.c:798
 msgid "Force subtitle position"
 msgstr "Impausar una posicion pels sostítols"
 
@@ -2709,7 +2686,6 @@ msgstr "Podètz desactivar del tot los sos-imatges."
 #: src/libvlc-module.c:807 src/libvlc-module.c:1763 src/text/iso-639_def.h:143
 #: modules/gui/macosx/simple_prefs.m:286
 #: modules/stream_out/transcode/transcode.c:222
-#: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
 msgstr "Messatges a l'ecran"
 
@@ -3643,7 +3619,6 @@ msgstr "Aquestes reglatges sont nomenats \"acorchis\" (hotkeys)."
 #: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:753
 #: modules/gui/macosx/simple_prefs.m:294
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
 msgstr "Plen ecran"
 
@@ -3727,8 +3702,7 @@ msgstr "Mai lentament (prim)"
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
-#: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
+#: modules/misc/notify/notify.c:321
 msgid "Next"
 msgstr "Seguent"
 
@@ -3742,8 +3716,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
-#: modules/gui/qt4/ui/sout.h:346
+#: modules/misc/notify/notify.c:319
 msgid "Previous"
 msgstr "Precedent"
 
@@ -3756,7 +3729,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:603
 #: modules/gui/macosx/intf.m:648 modules/gui/macosx/intf.m:740
 #: modules/gui/macosx/intf.m:747 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
+#: modules/misc/notify/xosd.c:231
 msgid "Stop"
 msgstr "Arrestar"
 
@@ -3768,7 +3741,6 @@ msgstr "Causissètz l'acorchi per arrestar."
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:70 modules/gui/macosx/intf.m:608
 #: modules/video_filter/marq.c:158 modules/video_filter/rss.c:201
-#: modules/gui/qt4/ui/video_effects.h:1167
 msgid "Position"
 msgstr "Posicion"
 
@@ -4449,8 +4421,7 @@ msgstr "Sosimatges"
 
 #: src/libvlc-module.c:1772 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
-#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
-#: modules/gui/qt4/ui/profiles.h:497
+#: modules/demux/subtitle.c:73
 msgid "Subtitles"
 msgstr "Sostítols"
 
@@ -4632,7 +4603,7 @@ msgstr "Telecargament ..."
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
 #: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:696
 #: modules/gui/macosx/wizard.m:320
-#: modules/gui/qt4/components/open_panels.cpp:1269
+#: modules/gui/qt4/components/open_panels.cpp:1285
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -5400,7 +5371,7 @@ msgstr ""
 
 #: src/video_output/vout_intf.c:228 modules/gui/macosx/intf.m:693
 #: modules/gui/macosx/intf.m:694 modules/video_filter/crop.c:107
-#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1122
+#: modules/video_filter/croppadd.c:86
 msgid "Crop"
 msgstr "Talh"
 
@@ -5509,7 +5480,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/bda/bda.c:51 modules/access/dvb/access.c:88
-#: modules/gui/qt4/components/open_panels.cpp:932
+#: modules/gui/qt4/components/open_panels.cpp:948
 msgid "Adapter card to tune"
 msgstr ""
 
@@ -5524,8 +5495,8 @@ msgid "Device number to use on adapter"
 msgstr ""
 
 #: modules/access/bda/bda.c:58 modules/access/dvb/access.c:94
-#: modules/gui/qt4/components/open_panels.cpp:688
-#: modules/gui/qt4/components/open_panels.cpp:954
+#: modules/gui/qt4/components/open_panels.cpp:704
+#: modules/gui/qt4/components/open_panels.cpp:970
 msgid "Transponder/multiplex frequency"
 msgstr ""
 
@@ -5738,15 +5709,16 @@ msgstr ""
 msgid "Terrestrial bandwidth [0=auto,6,7,8 in MHz]"
 msgstr ""
 
-#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:982
+#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:998
 msgid "6 MHz"
 msgstr "6 MHz"
 
-#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:983
+#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:999
 msgid "7 MHz"
 msgstr "7 MHz"
 
-#: modules/access/bda/bda.c:151 modules/gui/qt4/components/open_panels.cpp:984
+#: modules/access/bda/bda.c:151
+#: modules/gui/qt4/components/open_panels.cpp:1000
 msgid "8 MHz"
 msgstr "8 MHz"
 
@@ -5798,7 +5770,7 @@ msgstr ""
 msgid "Hierarchy alpha value [Undefined,1,2,4]"
 msgstr ""
 
-#: modules/access/bda/bda.c:169 modules/gui/qt4/ui/streampanel.h:170
+#: modules/access/bda/bda.c:169
 msgid "1"
 msgstr "1"
 
@@ -5898,7 +5870,6 @@ msgstr ""
 
 #: modules/access/cdda.c:67 modules/gui/macosx/open.m:198
 #: modules/gui/macosx/open.m:643 modules/gui/macosx/open.m:731
-#: modules/gui/qt4/ui/open_disk.h:293
 msgid "Audio CD"
 msgstr "CD Audio"
 
@@ -5967,8 +5938,8 @@ msgid ""
 msgstr "Valor per defaut pels fluxes UDP. Aquesta valor es en millisegondas."
 
 #: modules/access/dshow/dshow.cpp:103 modules/access/v4l.c:81
-#: modules/gui/qt4/components/open_panels.cpp:741
-#: modules/gui/qt4/components/open_panels.cpp:776
+#: modules/gui/qt4/components/open_panels.cpp:757
+#: modules/gui/qt4/components/open_panels.cpp:792
 msgid "Video device name"
 msgstr "Nom del periferic vidèo"
 
@@ -5982,8 +5953,8 @@ msgstr ""
 "aiçí, serà utilisat lo dispositiu per defaut."
 
 #: modules/access/dshow/dshow.cpp:108
-#: modules/gui/qt4/components/open_panels.cpp:747
-#: modules/gui/qt4/components/open_panels.cpp:782
+#: modules/gui/qt4/components/open_panels.cpp:763
+#: modules/gui/qt4/components/open_panels.cpp:798
 msgid "Audio device name"
 msgstr "Nom Dispositiu Audio"
 
@@ -5997,7 +5968,7 @@ msgstr ""
 "aiçí, serà utilisat lo dispositiu per defaut."
 
 #: modules/access/dshow/dshow.cpp:113
-#: modules/gui/qt4/components/open_panels.cpp:651
+#: modules/gui/qt4/components/open_panels.cpp:667
 msgid "Video size"
 msgstr "Talha video"
 
@@ -6548,7 +6519,7 @@ msgstr "Fichièr d'intrada"
 msgid "File"
 msgstr "Fichièr"
 
-#: modules/access/fs.c:78 modules/gui/qt4/ui/sprefs_video.h:327
+#: modules/access/fs.c:78
 #, fuzzy
 msgid "Directory"
 msgstr "Repertòri"
@@ -6790,7 +6761,7 @@ msgstr "Stream all elementary streams (video, audio and subtitles)*"
 #: modules/access/imem.c:88 modules/access/pvr.c:74 modules/access/v4l.c:102
 #: modules/access/v4l2.c:95 modules/codec/invmem.c:53
 #: modules/demux/rawvid.c:48 modules/video_filter/mosaic.c:95
-#: modules/video_output/vmem.c:42 modules/gui/qt4/ui/profiles.h:479
+#: modules/video_output/vmem.c:42
 msgid "Width"
 msgstr "Largor"
 
@@ -6802,7 +6773,7 @@ msgstr "Stream all elementary streams (video, audio and subtitles)*"
 #: modules/access/imem.c:91 modules/access/pvr.c:78 modules/access/v4l.c:105
 #: modules/access/v4l2.c:98 modules/codec/invmem.c:56
 #: modules/demux/rawvid.c:52 modules/video_filter/mosaic.c:93
-#: modules/video_output/vmem.c:45 modules/gui/qt4/ui/profiles.h:482
+#: modules/video_output/vmem.c:45
 msgid "Height"
 msgstr "Nautor"
 
@@ -7016,8 +6987,8 @@ msgid "PVR radio device"
 msgstr "Periferic ràdio (PVR)"
 
 #: modules/access/pvr.c:70 modules/access/v4l.c:96
-#: modules/gui/qt4/components/open_panels.cpp:789
-#: modules/gui/qt4/components/open_panels.cpp:889
+#: modules/gui/qt4/components/open_panels.cpp:805
+#: modules/gui/qt4/components/open_panels.cpp:905
 msgid "Norm"
 msgstr "Nòrma"
 
@@ -7034,8 +7005,8 @@ msgid "Height of the stream to capture (-1 for autodetection)."
 msgstr "Nautor del flux de capturar (-1 per automatic)."
 
 #: modules/access/pvr.c:82 modules/access/v4l.c:89 modules/access/v4l2.c:203
-#: modules/gui/qt4/components/open_panels.cpp:796
-#: modules/gui/qt4/components/open_panels.cpp:896
+#: modules/gui/qt4/components/open_panels.cpp:812
+#: modules/gui/qt4/components/open_panels.cpp:912
 msgid "Frequency"
 msgstr "Frequéncia"
 
@@ -7096,7 +7067,7 @@ msgstr ""
 #: modules/access/pvr.c:109 modules/access/v4l2.c:169
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/embeddedwindow.m:74
 #: modules/gui/macosx/intf.m:607 modules/gui/qt4/dialogs/toolbar.cpp:347
-#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:405
+#: modules/stream_out/raop.c:150
 msgid "Volume"
 msgstr "Volum"
 
@@ -7305,7 +7276,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/screen/screen.c:46
-#: modules/gui/qt4/components/open_panels.cpp:1020
+#: modules/gui/qt4/components/open_panels.cpp:1036
 msgid "Desired frame rate for the capture."
 msgstr ""
 
@@ -7558,7 +7529,6 @@ msgstr "Nautor del flux de capturar (-1 per que siá automatic)"
 
 #: modules/access/v4l.c:108 modules/access/v4l2.c:114
 #: modules/gui/macosx/extended.m:98 modules/video_filter/atmo/atmo.cpp:264
-#: modules/gui/qt4/ui/video_effects.h:1107
 msgid "Brightness"
 msgstr ""
 
@@ -7567,7 +7537,7 @@ msgid "Brightness of the video input."
 msgstr "Luminositat de l'intrada vidèo."
 
 #: modules/access/v4l.c:111 modules/access/v4l2.c:123
-#: modules/gui/macosx/extended.m:101 modules/gui/qt4/ui/video_effects.h:1109
+#: modules/gui/macosx/extended.m:101
 msgid "Hue"
 msgstr ""
 
@@ -7578,9 +7548,6 @@ msgstr "Tencha de l'intrada vidèo."
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
 #: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
-#: modules/gui/qt4/ui/video_effects.h:1132
-#: modules/gui/qt4/ui/video_effects.h:1138
-#: modules/gui/qt4/ui/video_effects.h:1150
 msgid "Color"
 msgstr "Color"
 
@@ -7589,7 +7556,7 @@ msgid "Color of the video input."
 msgstr "Color de l'intrada vidèo."
 
 #: modules/access/v4l.c:117 modules/access/v4l2.c:117
-#: modules/gui/macosx/extended.m:99 modules/gui/qt4/ui/video_effects.h:1106
+#: modules/gui/macosx/extended.m:99
 msgid "Contrast"
 msgstr "Contrast"
 
@@ -7605,7 +7572,7 @@ msgstr "Tuner*"
 msgid "Tuner to use, if there are several ones."
 msgstr "Los tuners* d'utilizar, se existís mai d'un."
 
-#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:466
+#: modules/access/v4l.c:122
 msgid "MJPEG"
 msgstr "MJPEG"
 
@@ -7644,7 +7611,7 @@ msgstr "Video4Linux"
 msgid "Video4Linux input"
 msgstr "Dintrada Video4Linux"
 
-#: modules/access/v4l2.c:77 modules/gui/qt4/components/open_panels.cpp:754
+#: modules/access/v4l2.c:77 modules/gui/qt4/components/open_panels.cpp:770
 #: modules/stream_out/standard.c:100
 msgid "Standard"
 msgstr "Estandard"
@@ -7718,8 +7685,6 @@ msgid "Contrast of the video input (if supported by the v4l2 driver)."
 msgstr ""
 
 #: modules/access/v4l2.c:120 modules/gui/macosx/extended.m:102
-#: modules/gui/qt4/ui/video_effects.h:1108
-#: modules/gui/qt4/ui/video_effects.h:1137
 msgid "Saturation"
 msgstr ""
 
@@ -7776,7 +7741,6 @@ msgid "Blue balance of the video input (if supported by the v4l2 driver)."
 msgstr ""
 
 #: modules/access/v4l2.c:143 modules/gui/macosx/extended.m:100
-#: modules/gui/qt4/ui/video_effects.h:1105
 msgid "Gamma"
 msgstr ""
 
@@ -8065,7 +8029,7 @@ msgstr "ID sistèma"
 msgid "Entries"
 msgstr "Dintradas"
 
-#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:421
+#: modules/access/vcdx/info.c:75
 msgid "Tracks"
 msgstr "Camins"
 
@@ -9747,7 +9711,7 @@ msgid ""
 "Do not contact the VideoLAN project about this issue.\n"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:707 modules/codec/avcodec/encoder.c:716
+#: modules/codec/avcodec/encoder.c:701 modules/codec/avcodec/encoder.c:710
 msgid "VLC could not open the encoder."
 msgstr "VLC pòt pas dobrir l'encodador"
 
@@ -10057,7 +10021,7 @@ msgstr "Encodador de sostítols DVB"
 msgid "AAC audio decoder (using libfaad2)"
 msgstr ""
 
-#: modules/codec/faad.c:388
+#: modules/codec/faad.c:391
 msgid "AAC extension"
 msgstr ""
 
@@ -10568,8 +10532,7 @@ msgid "MP3 fixed point audio encoder"
 msgstr "\"%s\" es pas un encoder audio."
 
 #: modules/codec/speex.c:57 modules/codec/speex.c:800
-#: modules/gui/macosx/open.m:209 modules/gui/qt4/ui/sprefs_video.h:324
-#: modules/gui/qt4/ui/video_effects.h:1149
+#: modules/gui/macosx/open.m:209
 msgid "Mode"
 msgstr "Mòde"
 
@@ -11711,7 +11674,6 @@ msgid "Quiet mode."
 msgstr ""
 
 #: modules/codec/x264.c:370 modules/gui/macosx/playlistinfo.m:82
-#: modules/gui/qt4/ui/streampanel.h:171
 msgid "Statistics"
 msgstr "Estatisticas"
 
@@ -13835,8 +13797,8 @@ msgid ""
 "fully opaque (255). (from 0 for full transparency to 255 for full opacity)"
 msgstr ""
 
-#: modules/gui/fbosd.c:118 modules/misc/logger.c:112
-#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1168
+#: modules/gui/fbosd.c:118 modules/misc/logger.c:113
+#: modules/video_filter/marq.c:87
 msgid "Text"
 msgstr "Tèxt"
 
@@ -13934,7 +13896,6 @@ msgstr ""
 #: modules/misc/freetype.c:92 modules/misc/notify/xosd.c:80
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
-#: modules/gui/qt4/ui/sprefs_subtitles.h:211
 msgid "Font"
 msgstr "Poliça"
 
@@ -13978,15 +13939,13 @@ msgid "Bookmarks"
 msgstr "Favorits"
 
 #: modules/gui/macosx/bookmarks.m:88
-#: modules/gui/qt4/ui/podcast_configuration.h:104
-#: modules/gui/qt4/ui/sout.h:331 modules/gui/qt4/ui/vlm.h:300
 msgid "Add"
 msgstr "Apondre"
 
 #: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:643
 #: modules/gui/macosx/simple_prefs.m:246
 #: modules/gui/qt4/components/preferences_widgets.cpp:1206
-#: modules/gui/qt4/dialogs/bookmarks.cpp:47 modules/gui/qt4/ui/vlm.h:301
+#: modules/gui/qt4/dialogs/bookmarks.cpp:47
 msgid "Clear"
 msgstr "Netejar"
 
@@ -13999,7 +13958,7 @@ msgstr "Editar"
 msgid "Extract"
 msgstr "Extraire"
 
-#: modules/gui/macosx/bookmarks.m:92 modules/gui/qt4/ui/open_file.h:224
+#: modules/gui/macosx/bookmarks.m:92
 msgid "Remove"
 msgstr "Levar"
 
@@ -14021,7 +13980,7 @@ msgstr "Temps"
 #: modules/gui/macosx/wizard.m:1154 modules/gui/macosx/wizard.m:1678
 #: modules/gui/macosx/wizard.m:1686 modules/gui/macosx/wizard.m:1867
 #: modules/gui/macosx/wizard.m:1878 modules/gui/macosx/wizard.m:1891
-#: modules/gui/qt4/components/open_panels.cpp:1268
+#: modules/gui/qt4/components/open_panels.cpp:1284
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
 msgid "OK"
@@ -14166,7 +14125,7 @@ msgstr "Tornar enrè"
 msgid "Fast Forward"
 msgstr "Lèu endavant"
 
-#: modules/gui/macosx/equalizer.m:146 modules/gui/qt4/ui/equalizer.h:128
+#: modules/gui/macosx/equalizer.m:146
 msgid "2 Pass"
 msgstr ""
 
@@ -14178,7 +14137,7 @@ msgstr ""
 msgid "Enable the equalizer. Bands can be set manually or using a preset."
 msgstr ""
 
-#: modules/gui/macosx/equalizer.m:152 modules/gui/qt4/ui/equalizer.h:130
+#: modules/gui/macosx/equalizer.m:152
 msgid "Preamp"
 msgstr ""
 
@@ -14200,12 +14159,11 @@ msgstr ""
 
 #: modules/gui/macosx/extended.m:72 modules/meta_engine/id3genres.h:95
 #: modules/video_filter/psychedelic.c:55
-#: modules/gui/qt4/ui/video_effects.h:1143
 msgid "Psychedelic"
 msgstr ""
 
 #: modules/gui/macosx/extended.m:73 modules/video_filter/gradient.c:76
-#: modules/video_filter/gradient.c:82 modules/gui/qt4/ui/video_effects.h:1148
+#: modules/video_filter/gradient.c:82
 msgid "Gradient"
 msgstr ""
 
@@ -14237,7 +14195,7 @@ msgstr ""
 msgid "Crops a defined part of the image"
 msgstr ""
 
-#: modules/gui/macosx/extended.m:83 modules/gui/qt4/ui/video_effects.h:1134
+#: modules/gui/macosx/extended.m:83
 msgid "Invert colors"
 msgstr "Inversar las colors"
 
@@ -14739,10 +14697,6 @@ msgstr "Captura"
 #: modules/gui/qt4/components/preferences_widgets.cpp:299
 #: modules/gui/qt4/components/simple_preferences.cpp:276
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
-#: modules/gui/qt4/ui/open.h:246 modules/gui/qt4/ui/open_disk.h:300
-#: modules/gui/qt4/ui/open_file.h:232 modules/gui/qt4/ui/sprefs_audio.h:412
-#: modules/gui/qt4/ui/sprefs_input.h:308 modules/gui/qt4/ui/sprefs_input.h:317
-#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Browse..."
 msgstr "Navegar..."
 
@@ -14756,16 +14710,15 @@ msgstr ""
 
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/macosx/wizard.m:346 modules/gui/macosx/wizard.m:414
-#: modules/gui/qt4/ui/sprefs_interface.h:394
 msgid "Choose..."
 msgstr "Causir..."
 
 #: modules/gui/macosx/open.m:189
-#: modules/gui/qt4/components/open_panels.cpp:876
+#: modules/gui/qt4/components/open_panels.cpp:892
 msgid "Device name"
 msgstr "Nom del periferic"
 
-#: modules/gui/macosx/open.m:193 modules/gui/qt4/ui/open_disk.h:298
+#: modules/gui/macosx/open.m:193
 msgid "No DVD menus"
 msgstr "Cap de menuts (DVD)"
 
@@ -14774,7 +14727,7 @@ msgid "VIDEO_TS folder"
 msgstr "Repertòri VIDEO_TS"
 
 #: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:739
-#: modules/services_discovery/udev.c:587 modules/gui/qt4/ui/open_disk.h:292
+#: modules/services_discovery/udev.c:587
 msgid "DVD"
 msgstr "DVD"
 
@@ -14909,7 +14862,7 @@ msgstr "FPS"
 msgid "Subtitles encoding"
 msgstr "Encodatge dels sostítols"
 
-#: modules/gui/macosx/open.m:316 modules/gui/qt4/ui/sprefs_subtitles.h:210
+#: modules/gui/macosx/open.m:316
 msgid "Font size"
 msgstr "Talha de la poliça"
 
@@ -14926,7 +14879,7 @@ msgid "Subtitle File"
 msgstr "Fichièr dels sostítols"
 
 #: modules/gui/macosx/open.m:587 modules/gui/macosx/open.m:953
-#: modules/gui/macosx/open.m:1196 modules/gui/qt4/ui/open_file.h:217
+#: modules/gui/macosx/open.m:1196
 msgid "Open File"
 msgstr "Dobrir un Fichièr"
 
@@ -14986,7 +14939,7 @@ msgstr ""
 msgid "Encapsulation Method"
 msgstr ""
 
-#: modules/gui/macosx/output.m:159 modules/gui/qt4/ui/sout.h:335
+#: modules/gui/macosx/output.m:159
 msgid "Transcoding options"
 msgstr ""
 
@@ -14995,7 +14948,7 @@ msgstr ""
 msgid "Bitrate (kb/s)"
 msgstr "Taus de bits (kb/s)"
 
-#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:478
+#: modules/gui/macosx/output.m:166
 msgid "Scale"
 msgstr ""
 
@@ -15003,7 +14956,7 @@ msgstr ""
 msgid "Stream Announcing"
 msgstr ""
 
-#: modules/gui/macosx/output.m:181 modules/gui/qt4/ui/sout.h:342
+#: modules/gui/macosx/output.m:181
 msgid "SAP announce"
 msgstr "Anóncia SAP"
 
@@ -15034,7 +14987,6 @@ msgstr "Salvar lo fichièr"
 #: modules/gui/macosx/output.m:526 modules/gui/macosx/playlist.m:747
 #: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:310
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
-#: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "Salvar"
 
@@ -15055,8 +15007,6 @@ msgid "Save Playlist..."
 msgstr "Salvar la Lista de Lectura..."
 
 #: modules/gui/macosx/playlist.m:467 modules/gui/qt4/dialogs/bookmarks.cpp:45
-#: modules/gui/qt4/ui/podcast_configuration.h:105
-#: modules/gui/qt4/ui/streampanel.h:173
 msgid "Delete"
 msgstr "Suprimir"
 
@@ -15240,7 +15190,6 @@ msgid "Reset All"
 msgstr "Tornar lançar totes"
 
 #: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:306
-#: modules/gui/qt4/ui/video_effects.h:1111
 msgid "Basic"
 msgstr "Basic"
 
@@ -15301,7 +15250,7 @@ msgstr "Dintrada & Codecs"
 msgid "Input & Codec settings"
 msgstr "Paramètres de Dintrada & Codec"
 
-#: modules/gui/macosx/simple_prefs.m:228 modules/gui/qt4/ui/sprefs_audio.h:414
+#: modules/gui/macosx/simple_prefs.m:228
 msgid "Effects"
 msgstr "Efièches"
 
@@ -15313,7 +15262,7 @@ msgstr "Activar àudio"
 msgid "General Audio"
 msgstr "General àudio"
 
-#: modules/gui/macosx/simple_prefs.m:231 modules/gui/qt4/ui/sprefs_audio.h:419
+#: modules/gui/macosx/simple_prefs.m:231
 msgid "Headphone surround effect"
 msgstr ""
 
@@ -15362,7 +15311,7 @@ msgstr "Reparar los fichièrs AVI"
 msgid "Default Caching Level"
 msgstr "Nivèl de taboisson per defaut"
 
-#: modules/gui/macosx/simple_prefs.m:254 modules/gui/qt4/ui/open.h:235
+#: modules/gui/macosx/simple_prefs.m:254
 msgid "Caching"
 msgstr "Taboisson"
 
@@ -15405,7 +15354,6 @@ msgid "Show Fullscreen Controller"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:270
-#: modules/gui/qt4/ui/sprefs_interface.h:376
 msgid "Privacy / Network Interaction"
 msgstr ""
 
@@ -15422,7 +15370,6 @@ msgid "Default Encoding"
 msgstr "Encodatge per defaut"
 
 #: modules/gui/macosx/simple_prefs.m:279
-#: modules/gui/qt4/ui/sprefs_subtitles.h:207
 msgid "Display Settings"
 msgstr "Mostrar los paramètres"
 
@@ -15452,7 +15399,6 @@ msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:292 modules/stream_out/display.c:54
 #: modules/video_filter/deinterlace.c:138
-#: modules/gui/qt4/ui/sprefs_video.h:310
 msgid "Display"
 msgstr "Mostrar"
 
@@ -15464,7 +15410,7 @@ msgstr "Activar la vidèo"
 msgid "Output module"
 msgstr "Modul de Sortida"
 
-#: modules/gui/macosx/simple_prefs.m:298 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/gui/macosx/simple_prefs.m:298
 msgid "Video snapshots"
 msgstr "Captura vidèo"
 
@@ -15472,15 +15418,15 @@ msgstr "Captura vidèo"
 msgid "Folder"
 msgstr "Repertòri"
 
-#: modules/gui/macosx/simple_prefs.m:301 modules/gui/qt4/ui/sprefs_video.h:330
+#: modules/gui/macosx/simple_prefs.m:301
 msgid "Format"
 msgstr "Format"
 
-#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:328
+#: modules/gui/macosx/simple_prefs.m:302
 msgid "Prefix"
 msgstr "Prefix"
 
-#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:331
+#: modules/gui/macosx/simple_prefs.m:303
 msgid "Sequential numbering"
 msgstr ""
 
@@ -15901,7 +15847,6 @@ msgid "In this page, a few additional streaming parameters can be set."
 msgstr ""
 
 #: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
-#: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr ""
 
@@ -16806,7 +16751,6 @@ msgid "File names:"
 msgstr "Nom dels fichièrs:"
 
 #: modules/gui/qt4/components/open_panels.cpp:149
-#: modules/gui/qt4/ui/sprefs_interface.h:382
 msgid "Filter:"
 msgstr "Filtres:"
 
@@ -16818,60 +16762,60 @@ msgstr "Dobrir un fichièr de sostítols"
 msgid "Eject the disc"
 msgstr "Ejectar lo disc"
 
-#: modules/gui/qt4/components/open_panels.cpp:672
-#: modules/gui/qt4/components/open_panels.cpp:933
+#: modules/gui/qt4/components/open_panels.cpp:688
+#: modules/gui/qt4/components/open_panels.cpp:949
 msgid "DVB Type:"
 msgstr "Tipe de DVB:"
 
-#: modules/gui/qt4/components/open_panels.cpp:698
-#: modules/gui/qt4/components/open_panels.cpp:964
+#: modules/gui/qt4/components/open_panels.cpp:714
+#: modules/gui/qt4/components/open_panels.cpp:980
 msgid "Transponder symbol rate"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:707
-#: modules/gui/qt4/components/open_panels.cpp:973
+#: modules/gui/qt4/components/open_panels.cpp:723
+#: modules/gui/qt4/components/open_panels.cpp:989
 msgid "Bandwidth"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:823
+#: modules/gui/qt4/components/open_panels.cpp:839
 msgid "Channels:"
 msgstr "Canals:"
 
-#: modules/gui/qt4/components/open_panels.cpp:834
+#: modules/gui/qt4/components/open_panels.cpp:850
 msgid "Selected ports:"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:837
+#: modules/gui/qt4/components/open_panels.cpp:853
 msgid ".*"
 msgstr ".*"
 
-#: modules/gui/qt4/components/open_panels.cpp:844
+#: modules/gui/qt4/components/open_panels.cpp:860
 msgid "Input caching:"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:854
+#: modules/gui/qt4/components/open_panels.cpp:870
 msgid "Use VLC pace"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:858
+#: modules/gui/qt4/components/open_panels.cpp:874
 msgid "Auto connection"
 msgstr "Connexion automatica"
 
-#: modules/gui/qt4/components/open_panels.cpp:882
+#: modules/gui/qt4/components/open_panels.cpp:898
 msgid "Radio device name"
 msgstr "Nom del periferic ràdio"
 
-#: modules/gui/qt4/components/open_panels.cpp:1014
+#: modules/gui/qt4/components/open_panels.cpp:1030
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr ""
 
 #. xgettext: frames per second
-#: modules/gui/qt4/components/open_panels.cpp:1028
+#: modules/gui/qt4/components/open_panels.cpp:1044
 #, fuzzy
 msgid " f/s"
 msgstr "%u kb/s"
 
-#: modules/gui/qt4/components/open_panels.cpp:1241
+#: modules/gui/qt4/components/open_panels.cpp:1257
 msgid "Advanced Options"
 msgstr "Opcions avançadas"
 
@@ -17127,7 +17071,6 @@ msgid "File/Folder"
 msgstr "Repertòri"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:46
-#: modules/gui/qt4/ui/sout.h:328
 #, fuzzy
 msgid "Source"
 msgstr "Dobrir la font"
@@ -17250,7 +17193,6 @@ msgid "Convert"
 msgstr "&Convertir"
 
 #: modules/gui/qt4/dialogs/convert.cpp:58
-#: modules/gui/qt4/ui/sprefs_audio.h:411
 #, fuzzy
 msgid "Destination file:"
 msgstr "Fichièr de configuracion"
@@ -17335,7 +17277,6 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt4/dialogs/firstrun.cpp:83
-#: modules/gui/qt4/ui/open_capture.h:103 modules/gui/qt4/ui/sout.h:347
 msgid "Options"
 msgstr "Opcions"
 
@@ -17550,17 +17491,17 @@ msgstr "Periferic de &Captura..."
 msgid "&Select"
 msgstr "&Causir"
 
-#: modules/gui/qt4/dialogs/open.cpp:117 modules/gui/qt4/dialogs/open.cpp:217
+#: modules/gui/qt4/dialogs/open.cpp:117 modules/gui/qt4/dialogs/open.cpp:227
 #: modules/gui/qt4/dialogs/openurl.cpp:57
 msgid "&Enqueue"
 msgstr ""
 
-#: modules/gui/qt4/dialogs/open.cpp:119 modules/gui/qt4/dialogs/open.cpp:221
+#: modules/gui/qt4/dialogs/open.cpp:119 modules/gui/qt4/dialogs/open.cpp:231
 #: modules/gui/qt4/dialogs/openurl.cpp:54
 msgid "&Play"
 msgstr "&Legir"
 
-#: modules/gui/qt4/dialogs/open.cpp:121 modules/gui/qt4/dialogs/open.cpp:211
+#: modules/gui/qt4/dialogs/open.cpp:121 modules/gui/qt4/dialogs/open.cpp:221
 #: modules/gui/qt4/dialogs/sout.cpp:96
 msgid "&Stream"
 msgstr "&Flux"
@@ -17569,7 +17510,7 @@ msgstr "&Flux"
 msgid "&Convert"
 msgstr "&Convertir"
 
-#: modules/gui/qt4/dialogs/open.cpp:214
+#: modules/gui/qt4/dialogs/open.cpp:224
 msgid "&Convert / Save"
 msgstr "&Convertir / Salvar"
 
@@ -17670,7 +17611,7 @@ msgstr "&Tornar lançar las preferéncias"
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "Sètz segur de voler tornar lançar las preferéncias de VLC ?"
 
-#: modules/gui/qt4/dialogs/sout.cpp:42 modules/gui/qt4/ui/sout.h:326
+#: modules/gui/qt4/dialogs/sout.cpp:42
 msgid "Stream Output"
 msgstr "Flux de sortida"
 
@@ -17773,7 +17714,7 @@ msgstr "Suprimir l'element seleccionat"
 msgid "Cl&ose"
 msgstr "Tampar"
 
-#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:455
+#: modules/gui/qt4/dialogs/toolbar.cpp:217
 #, fuzzy
 msgid "Profile Name"
 msgstr "Nom del fichièr d'istoric"
@@ -17845,7 +17786,6 @@ msgid "Repeat delay:"
 msgstr "Relambi de repeticion:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:112
-#: modules/gui/qt4/ui/sprefs_interface.h:379
 msgid " days"
 msgstr " jorns"
 
@@ -17861,23 +17801,23 @@ msgstr "Exportar"
 msgid "Save VLM configuration as..."
 msgstr "Salvar la configuracion de &VLM..."
 
-#: modules/gui/qt4/dialogs/vlm.cpp:269 modules/gui/qt4/dialogs/vlm.cpp:341
+#: modules/gui/qt4/dialogs/vlm.cpp:269 modules/gui/qt4/dialogs/vlm.cpp:343
 msgid "VLM conf (*.vlm);;All (*)"
 msgstr "VLM conf (*.vlm) ;; Totes (*.*)"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:339
+#: modules/gui/qt4/dialogs/vlm.cpp:341
 msgid "Open VLM configuration..."
 msgstr "Dobrir un configuracion de &VLM..."
 
-#: modules/gui/qt4/dialogs/vlm.cpp:533
+#: modules/gui/qt4/dialogs/vlm.cpp:536
 msgid "Broadcast: "
 msgstr "Broadcast: "
 
-#: modules/gui/qt4/dialogs/vlm.cpp:601
+#: modules/gui/qt4/dialogs/vlm.cpp:606
 msgid "Schedule: "
 msgstr ""
 
-#: modules/gui/qt4/dialogs/vlm.cpp:623
+#: modules/gui/qt4/dialogs/vlm.cpp:630
 msgid "VOD: "
 msgstr "VOD: "
 
@@ -18676,7 +18616,6 @@ msgid "Gospel"
 msgstr "Gospel"
 
 #: modules/meta_engine/id3genres.h:67 modules/video_filter/noise.c:52
-#: modules/gui/qt4/ui/video_effects.h:1144
 msgid "Noise"
 msgstr "Noise"
 
@@ -19141,56 +19080,56 @@ msgstr ""
 msgid "X Screensaver disabler"
 msgstr ""
 
-#: modules/misc/logger.c:118
+#: modules/misc/logger.c:119
 msgid "Log format"
 msgstr "Format de l'istoric"
 
-#: modules/misc/logger.c:120
+#: modules/misc/logger.c:121
 msgid ""
 "Specify the log format. Available choices are \"text\" (default) and \"html"
 "\"."
 msgstr ""
 
-#: modules/misc/logger.c:124
+#: modules/misc/logger.c:125
 msgid ""
 "Specify the log format. Available choices are \"text\" (default), \"html\", "
 "and \"syslog\" (special mode to send to syslog instead of file."
 msgstr ""
 
-#: modules/misc/logger.c:128
+#: modules/misc/logger.c:129
 msgid "Syslog facility"
 msgstr ""
 
-#: modules/misc/logger.c:129
+#: modules/misc/logger.c:130
 msgid ""
 "Select the syslog facility where logs will be forwarded. Available choices "
 "are \"user\" (default), \"daemon\", and \"local0\" through \"local7\"."
 msgstr ""
 
-#: modules/misc/logger.c:157
+#: modules/misc/logger.c:158
 #, fuzzy
 msgid "Verbosity"
 msgstr "Nivèl de Verbositat"
 
-#: modules/misc/logger.c:158
+#: modules/misc/logger.c:159
 msgid ""
 "Select the verbosity to use for log or -1 to use the same verbosity given by "
 "--verbose."
 msgstr ""
 
-#: modules/misc/logger.c:162
+#: modules/misc/logger.c:163
 msgid "Logging"
 msgstr "Se connectar"
 
-#: modules/misc/logger.c:163
+#: modules/misc/logger.c:164
 msgid "File logging"
 msgstr ""
 
-#: modules/misc/logger.c:169
+#: modules/misc/logger.c:170
 msgid "Log filename"
 msgstr "Nom del fichièr d'istoric"
 
-#: modules/misc/logger.c:169
+#: modules/misc/logger.c:170
 msgid "Specify the log filename."
 msgstr "Causir un fichièr per l'istoric"
 
@@ -19963,7 +19902,6 @@ msgid "MTP Device"
 msgstr "Periferic"
 
 #: modules/services_discovery/podcast.c:58
-#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "Podcast URLs list"
 msgstr ""
 
@@ -20397,7 +20335,6 @@ msgid ""
 msgstr ""
 
 #: modules/stream_out/mosaic_bridge.c:128 modules/video_filter/mosaic.c:88
-#: modules/gui/qt4/ui/video_effects.h:1176
 msgid "Transparency"
 msgstr "Transparéncia"
 
@@ -20756,7 +20693,7 @@ msgstr ""
 msgid "Standard stream output"
 msgstr ""
 
-#: modules/stream_out/switcher.c:90 modules/gui/qt4/ui/sprefs_input.h:314
+#: modules/stream_out/switcher.c:90
 msgid "Files"
 msgstr "Fichièrs"
 
@@ -21054,7 +20991,7 @@ msgstr ""
 msgid "AltiVec conversions from "
 msgstr ""
 
-#: modules/video_filter/adjust.c:64 modules/gui/qt4/ui/video_effects.h:1110
+#: modules/video_filter/adjust.c:64
 msgid "Brightness threshold"
 msgstr ""
 
@@ -21108,7 +21045,7 @@ msgstr "Causir lo gamma de l'imatge, entre 0.01 e 10. Per defaut es 1."
 msgid "Image properties filter"
 msgstr "Filtre de proprietats d'imatge"
 
-#: modules/video_filter/adjust.c:81 modules/gui/qt4/ui/video_effects.h:1104
+#: modules/video_filter/adjust.c:81
 msgid "Image adjust"
 msgstr ""
 
@@ -21457,7 +21394,6 @@ msgid "Sat windowing"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:275
-#: modules/gui/qt4/ui/video_effects.h:1159
 msgid "Filter length (ms)"
 msgstr "Longo del filtre (ms)"
 
@@ -21634,8 +21570,6 @@ msgid "AtmoLight Filter"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:368
-#: modules/gui/qt4/ui/video_effects.h:1153
-#: modules/gui/qt4/ui/video_effects.h:1162
 msgid "AtmoLight"
 msgstr ""
 
@@ -22017,7 +21951,7 @@ msgstr "Suprimir lo filtre video"
 msgid "Video filtering using a chain of video filter modules"
 msgstr ""
 
-#: modules/video_filter/clone.c:39 modules/gui/qt4/ui/video_effects.h:1173
+#: modules/video_filter/clone.c:39
 msgid "Number of clones"
 msgstr ""
 
@@ -22043,7 +21977,7 @@ msgstr ""
 msgid "Clone video filter"
 msgstr ""
 
-#: modules/video_filter/clone.c:57 modules/gui/qt4/ui/video_effects.h:1172
+#: modules/video_filter/clone.c:57
 msgid "Clone"
 msgstr ""
 
@@ -22065,7 +21999,6 @@ msgid "Color threshold filter"
 msgstr ""
 
 #: modules/video_filter/colorthres.c:70
-#: modules/gui/qt4/ui/video_effects.h:1135
 msgid "Color threshold"
 msgstr ""
 
@@ -22766,7 +22699,6 @@ msgid "The degree of blurring from 1 to 127."
 msgstr ""
 
 #: modules/video_filter/motionblur.c:59
-#: modules/gui/qt4/ui/video_effects.h:1146
 msgid "Motion blur"
 msgstr ""
 
@@ -22986,7 +22918,7 @@ msgstr ""
 msgid "Panoramix: wall with overlap video filter"
 msgstr ""
 
-#: modules/video_filter/panoramix.c:79 modules/gui/qt4/ui/video_effects.h:1169
+#: modules/video_filter/panoramix.c:79
 msgid "Panoramix"
 msgstr "Panoramix"
 
@@ -23321,7 +23253,7 @@ msgstr ""
 msgid "Rotate video filter"
 msgstr ""
 
-#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1128
+#: modules/video_filter/rotate.c:67
 msgid "Rotate"
 msgstr ""
 
@@ -23521,7 +23453,7 @@ msgstr ""
 msgid "Sharpen video filter"
 msgstr ""
 
-#: modules/video_filter/sharpen.c:67 modules/gui/qt4/ui/video_effects.h:1102
+#: modules/video_filter/sharpen.c:67
 #, fuzzy
 msgid "Sharpen"
 msgstr "Ecran"
@@ -23758,7 +23690,7 @@ msgstr ""
 msgid "Direct3D video output"
 msgstr "Sortida vidèo 3D DirectX"
 
-#: modules/video_output/msw/directx.c:68 modules/gui/qt4/ui/sprefs_video.h:317
+#: modules/video_output/msw/directx.c:68
 msgid "Use hardware YUV->RGB conversions"
 msgstr ""
 
@@ -24282,973 +24214,578 @@ msgstr ""
 msgid "Spectrum analyser"
 msgstr ""
 
-#: modules/gui/qt4/ui/equalizer.h:126 modules/gui/qt4/ui/open_disk.h:290
-#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:454
-#: modules/gui/qt4/ui/sprefs_audio.h:403 modules/gui/qt4/ui/sprefs_input.h:305
-#: modules/gui/qt4/ui/sprefs_interface.h:372
-#: modules/gui/qt4/ui/sprefs_subtitles.h:200
-#: modules/gui/qt4/ui/sprefs_video.h:308 modules/gui/qt4/ui/streampanel.h:168
-#: modules/gui/qt4/ui/v4l2.h:58
 #, fuzzy
-msgid "Form"
-msgstr "Format"
+#~ msgid "Form"
+#~ msgstr "Format"
 
-#: modules/gui/qt4/ui/equalizer.h:129
 #, fuzzy
-msgid "Preset"
-msgstr "Portugués"
+#~ msgid "Preset"
+#~ msgstr "Portugués"
 
-#: modules/gui/qt4/ui/open.h:230
-#: modules/gui/qt4/ui/podcast_configuration.h:101
 #, fuzzy
-msgid "Dialog"
-msgstr "Desactivat"
+#~ msgid "Dialog"
+#~ msgstr "Desactivat"
 
-#: modules/gui/qt4/ui/open.h:232
 #, fuzzy
-msgid "Show extended options"
-msgstr "Mostrar las paramètres espandits"
+#~ msgid "Show extended options"
+#~ msgstr "Mostrar las paramètres espandits"
 
-#: modules/gui/qt4/ui/open.h:234
-msgid "Show &more options"
-msgstr "Mostrar mai d'opcions"
+#~ msgid "Show &more options"
+#~ msgstr "Mostrar mai d'opcions"
 
-#: modules/gui/qt4/ui/open.h:237
-msgid "Change the caching for the media"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:239
 #, fuzzy
-msgid " ms"
-msgstr "mms"
+#~ msgid " ms"
+#~ msgstr "mms"
 
-#: modules/gui/qt4/ui/open.h:240
 #, fuzzy
-msgid "Start Time"
-msgstr "Temps de la partença"
-
-#: modules/gui/qt4/ui/open.h:241
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:242
-msgid "Extra media"
-msgstr ""
+#~ msgid "Start Time"
+#~ msgstr "Temps de la partença"
 
-#: modules/gui/qt4/ui/open.h:244
-msgid "Select the file"
-msgstr "Causir lo fichièr"
+#~ msgid "Select the file"
+#~ msgstr "Causir lo fichièr"
 
-#: modules/gui/qt4/ui/open.h:247
-msgid "MRL"
-msgstr "MRL"
+#~ msgid "MRL"
+#~ msgstr "MRL"
 
-#: modules/gui/qt4/ui/open.h:249
-msgid "Complete MRL for VLC internal"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:251
 #, fuzzy
-msgid "Edit Options"
-msgstr "Opcions"
-
-#: modules/gui/qt4/ui/open.h:253
-msgid "Change the start time for the media"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:255
-msgid "s"
-msgstr ""
+#~ msgid "Edit Options"
+#~ msgstr "Opcions"
 
-#: modules/gui/qt4/ui/open_capture.h:98
 #, fuzzy
-msgid "Capture mode"
-msgstr "Captura"
+#~ msgid "Capture mode"
+#~ msgstr "Captura"
 
-#: modules/gui/qt4/ui/open_capture.h:100
-msgid "Select the capture device type"
-msgstr "Causir lo tipe de periferic de captura"
+#~ msgid "Select the capture device type"
+#~ msgstr "Causir lo tipe de periferic de captura"
 
-#: modules/gui/qt4/ui/open_capture.h:102
 #, fuzzy
-msgid "Device Selection"
-msgstr "&Seleccion"
+#~ msgid "Device Selection"
+#~ msgstr "&Seleccion"
 
-#: modules/gui/qt4/ui/open_capture.h:105
-msgid "Access advanced options to tweak the device"
-msgstr ""
+#~ msgid "Advanced options..."
+#~ msgstr "Opcions avançadas..."
 
-#: modules/gui/qt4/ui/open_capture.h:107
-msgid "Advanced options..."
-msgstr "Opcions avançadas..."
-
-#: modules/gui/qt4/ui/open_disk.h:291
 #, fuzzy
-msgid "Disc Selection"
-msgstr "&Seleccion"
-
-#: modules/gui/qt4/ui/open_disk.h:294
-msgid "SVCD/VCD"
-msgstr ""
-
-#: modules/gui/qt4/ui/open_disk.h:296
-msgid "Disable DVD Menus (for compatibility)"
-msgstr ""
+#~ msgid "Disc Selection"
+#~ msgstr "&Seleccion"
 
-#: modules/gui/qt4/ui/open_disk.h:299
-msgid "Disc device"
-msgstr "Disc"
+#~ msgid "Disc device"
+#~ msgstr "Disc"
 
-#: modules/gui/qt4/ui/open_disk.h:301
 #, fuzzy
-msgid "Starting Position"
-msgstr "Posicion"
+#~ msgid "Starting Position"
+#~ msgstr "Posicion"
 
-#: modules/gui/qt4/ui/open_disk.h:304
-msgid "Audio and Subtitles"
-msgstr "Audio e Sostítols"
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Audio e Sostítols"
 
-#: modules/gui/qt4/ui/open_file.h:219
-msgid "Choose one or more media file to open"
-msgstr "Causir un o mai fichièr d'obrir"
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "Causir un o mai fichièr d'obrir"
 
-#: modules/gui/qt4/ui/open_file.h:221
 #, fuzzy
-msgid "File Selection"
-msgstr "&Seleccion"
+#~ msgid "File Selection"
+#~ msgstr "&Seleccion"
 
-#: modules/gui/qt4/ui/open_file.h:222
-msgid "You can select local files with the following list and buttons."
-msgstr ""
-
-#: modules/gui/qt4/ui/open_file.h:223
 #, fuzzy
-msgid "Add..."
-msgstr "Apondre un fichièr..."
+#~ msgid "Add..."
+#~ msgstr "Apondre un fichièr..."
 
-#: modules/gui/qt4/ui/open_file.h:226
-msgid "Add a subtitles file"
-msgstr "Apondre un fichièr de sostítols"
+#~ msgid "Add a subtitles file"
+#~ msgstr "Apondre un fichièr de sostítols"
 
-#: modules/gui/qt4/ui/open_file.h:228
-msgid "Use a sub&titles file"
-msgstr "Utilizar un fichièr de sostítols"
+#~ msgid "Use a sub&titles file"
+#~ msgstr "Utilizar un fichièr de sostítols"
 
-#: modules/gui/qt4/ui/open_file.h:230
-msgid "Select the subtitles file"
-msgstr "Causir lo fichièr de sostítols"
+#~ msgid "Select the subtitles file"
+#~ msgstr "Causir lo fichièr de sostítols"
 
-#: modules/gui/qt4/ui/open_file.h:233
 #, fuzzy
-msgid "Font size:"
-msgstr "Talha de la poliça"
+#~ msgid "Font size:"
+#~ msgstr "Talha de la poliça"
 
-#: modules/gui/qt4/ui/open_file.h:234
 #, fuzzy
-msgid "Text alignment:"
-msgstr "Alinhament de la vidèo"
+#~ msgid "Text alignment:"
+#~ msgstr "Alinhament de la vidèo"
 
-#: modules/gui/qt4/ui/open_net.h:92
-msgid "Network Protocol"
-msgstr "Protocòl del Ret"
+#~ msgid "Network Protocol"
+#~ msgstr "Protocòl del Ret"
 
-#: modules/gui/qt4/ui/open_net.h:93
 #, fuzzy
-msgid "Please enter a network URL:"
-msgstr "Mercé de picar un nom novèl pel nos."
+#~ msgid "Please enter a network URL:"
+#~ msgstr "Mercé de picar un nom novèl pel nos."
 
-#: modules/gui/qt4/ui/open_net.h:95
 #, fuzzy
-msgid "Enter the URL of the network stream here."
-msgstr "MTU de l'interfàcia ret"
+#~ msgid "Enter the URL of the network stream here."
+#~ msgstr "MTU de l'interfàcia ret"
 
-#: modules/gui/qt4/ui/open_net.h:97
-msgid ""
-"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-"REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
-"weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">http://www.example.com/stream.avi</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">rtp://@:1234</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">rtsp://server.example.org:8080/test.sdp</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:456
 #, fuzzy
-msgid "MPEG-TS"
-msgstr "MJPEG"
+#~ msgid "MPEG-TS"
+#~ msgstr "MJPEG"
 
-#: modules/gui/qt4/ui/profiles.h:457
 #, fuzzy
-msgid "MPEG-PS"
-msgstr "MJPEG"
+#~ msgid "MPEG-PS"
+#~ msgstr "MJPEG"
 
-#: modules/gui/qt4/ui/profiles.h:458
 #, fuzzy
-msgid "WAV"
-msgstr "AVI"
+#~ msgid "WAV"
+#~ msgstr "AVI"
 
-#: modules/gui/qt4/ui/profiles.h:459
 #, fuzzy
-msgid "ASF/WMV"
-msgstr "ASF"
-
-#: modules/gui/qt4/ui/profiles.h:460
-msgid "Ogg/Ogm"
-msgstr ""
+#~ msgid "ASF/WMV"
+#~ msgstr "ASF"
 
-#: modules/gui/qt4/ui/profiles.h:461
-msgid "RAW"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:462
 #, fuzzy
-msgid "MPEG 1"
-msgstr "MPEG1"
+#~ msgid "MPEG 1"
+#~ msgstr "MPEG1"
 
-#: modules/gui/qt4/ui/profiles.h:463
-msgid "FLV"
-msgstr ""
+#~ msgid "AVI"
+#~ msgstr "AVI"
 
-#: modules/gui/qt4/ui/profiles.h:464
-msgid "AVI"
-msgstr "AVI"
-
-#: modules/gui/qt4/ui/profiles.h:465
 #, fuzzy
-msgid "MP4/MOV"
-msgstr "MP4"
+#~ msgid "MP4/MOV"
+#~ msgstr "MP4"
 
-#: modules/gui/qt4/ui/profiles.h:467
 #, fuzzy
-msgid "MKV"
-msgstr "MOV"
+#~ msgid "MKV"
+#~ msgstr "MOV"
 
-#: modules/gui/qt4/ui/profiles.h:468
 #, fuzzy
-msgid "Encapsulation"
-msgstr "Visualizacion"
+#~ msgid "Encapsulation"
+#~ msgstr "Visualizacion"
 
-#: modules/gui/qt4/ui/profiles.h:472 modules/gui/qt4/ui/profiles.h:491
 #, fuzzy
-msgid " kb/s"
-msgstr "%u kb/s"
+#~ msgid " kb/s"
+#~ msgstr "%u kb/s"
 
-#: modules/gui/qt4/ui/profiles.h:473
 #, fuzzy
-msgid "Frame Rate"
-msgstr "Taus d'imatge"
+#~ msgid "Frame Rate"
+#~ msgstr "Taus d'imatge"
 
-#: modules/gui/qt4/ui/profiles.h:475
 #, fuzzy
-msgid " fps"
-msgstr "%u kb/s"
-
-#: modules/gui/qt4/ui/profiles.h:477
-msgid ""
-"You just need to fill one of the three following parameters, VLC will "
-"autodetect the other using the original aspect ratio"
-msgstr ""
+#~ msgid " fps"
+#~ msgstr "%u kb/s"
 
-#: modules/gui/qt4/ui/profiles.h:480 modules/gui/qt4/ui/profiles.h:483
 #, fuzzy
-msgid "00000; "
-msgstr "00:00:00"
+#~ msgid "00000; "
+#~ msgstr "00:00:00"
 
-#: modules/gui/qt4/ui/profiles.h:485
 #, fuzzy
-msgid "Keep original video track"
-msgstr "Cicle de la pista audio"
+#~ msgid "Keep original video track"
+#~ msgstr "Cicle de la pista audio"
 
-#: modules/gui/qt4/ui/profiles.h:486
-msgid "Video codec"
-msgstr "Codec vidèo"
+#~ msgid "Video codec"
+#~ msgstr "Codec vidèo"
 
-#: modules/gui/qt4/ui/profiles.h:488
 #, fuzzy
-msgid "Keep original audio track"
-msgstr "Cicle de la pista audio"
+#~ msgid "Keep original audio track"
+#~ msgstr "Cicle de la pista audio"
 
-#: modules/gui/qt4/ui/profiles.h:493
 #, fuzzy
-msgid "Sample Rate"
-msgstr "Taus d'escandalhatge"
+#~ msgid "Sample Rate"
+#~ msgstr "Taus d'escandalhatge"
 
-#: modules/gui/qt4/ui/profiles.h:494
-msgid "Audio codec"
-msgstr "Codec àudio"
+#~ msgid "Audio codec"
+#~ msgstr "Codec àudio"
 
-#: modules/gui/qt4/ui/profiles.h:496
 #, fuzzy
-msgid "Overlay subtitles on the video"
-msgstr "Mostrar l'intrada video"
+#~ msgid "Overlay subtitles on the video"
+#~ msgstr "Mostrar l'intrada video"
 
-#: modules/gui/qt4/ui/sout.h:329 modules/gui/qt4/ui/sout.h:339
 #, fuzzy
-msgid "Destinations"
-msgstr "Decimation*"
+#~ msgid "Destinations"
+#~ msgstr "Decimation*"
 
-#: modules/gui/qt4/ui/sout.h:330
 #, fuzzy
-msgid "New destination"
-msgstr "Pas de destinacion valida"
+#~ msgid "New destination"
+#~ msgstr "Pas de destinacion valida"
 
-#: modules/gui/qt4/ui/sout.h:332
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-
-#: modules/gui/qt4/ui/sout.h:333
 #, fuzzy
-msgid "Display locally"
-msgstr "Legir localament"
+#~ msgid "Display locally"
+#~ msgstr "Legir localament"
 
-#: modules/gui/qt4/ui/sout.h:336
 #, fuzzy
-msgid "Activate Transcoding"
-msgstr "Encodatge dels sostítols"
+#~ msgid "Activate Transcoding"
+#~ msgstr "Encodatge dels sostítols"
 
-#: modules/gui/qt4/ui/sout.h:340
 #, fuzzy
-msgid "Miscellaneous Options"
-msgstr "Divèrs"
+#~ msgid "Miscellaneous Options"
+#~ msgstr "Divèrs"
 
-#: modules/gui/qt4/ui/sout.h:341
 #, fuzzy
-msgid "Stream all elementary streams"
-msgstr "Stream all elementary streams (video, audio and subtitles)*"
+#~ msgid "Stream all elementary streams"
+#~ msgstr "Stream all elementary streams (video, audio and subtitles)*"
 
-#: modules/gui/qt4/ui/sout.h:343
-msgid "Group name"
-msgstr "Nom del grop"
+#~ msgid "Group name"
+#~ msgstr "Nom del grop"
 
-#: modules/gui/qt4/ui/sout.h:345
 #, fuzzy
-msgid "Generated stream output string"
-msgstr "Paramètres generals del flux de sortida"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:406
-msgid "Keep audio level between sessions"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_audio.h:407
-msgid "Always reset audio start level to:"
-msgstr ""
+#~ msgid "Generated stream output string"
+#~ msgstr "Paramètres generals del flux de sortida"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:408
 #, fuzzy
-msgid " %"
-msgstr " "
+#~ msgid " %"
+#~ msgstr " "
 
-#: modules/gui/qt4/ui/sprefs_audio.h:409 modules/gui/qt4/ui/sprefs_video.h:313
 #, fuzzy
-msgid "Output"
-msgstr "Sortidas"
+#~ msgid "Output"
+#~ msgstr "Sortidas"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:410
 #, fuzzy
-msgid "Output module:"
-msgstr "Modul de Sortida"
+#~ msgid "Output module:"
+#~ msgstr "Modul de Sortida"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:415
 #, fuzzy
-msgid "Dolby Surround:"
-msgstr "Dolby Surround"
+#~ msgid "Dolby Surround:"
+#~ msgstr "Dolby Surround"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:416
-msgid "Normalize volume to:"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_audio.h:417
 #, fuzzy
-msgid "Replay gain mode:"
-msgstr "Tornar jogar lo mòde aumentacion"
+#~ msgid "Replay gain mode:"
+#~ msgstr "Tornar jogar lo mòde aumentacion"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:418
 #, fuzzy
-msgid "Visualization:"
-msgstr "Visualizacion"
+#~ msgid "Visualization:"
+#~ msgstr "Visualizacion"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:420
 #, fuzzy
-msgid "Enable Time-Stretching audio"
-msgstr "Activar audio"
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "Activar audio"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:422
 #, fuzzy
-msgid "Preferred audio language:"
-msgstr "Lenga per l'audio"
+#~ msgid "Preferred audio language:"
+#~ msgstr "Lenga per l'audio"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:423
-msgid "Password:"
-msgstr "Senhal:"
+#~ msgid "Password:"
+#~ msgstr "Senhal:"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:424
 #, fuzzy
-msgid "Username:"
-msgstr "Nom d'utilizaire"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:425
-msgid "Submit played tracks stats to Last.fm"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:306
-msgid "Optical drive"
-msgstr ""
+#~ msgid "Username:"
+#~ msgstr "Nom d'utilizaire"
 
-#: modules/gui/qt4/ui/sprefs_input.h:307
 #, fuzzy
-msgid "Default optical device"
-msgstr "Periferic pels disques per defaut"
+#~ msgid "Default optical device"
+#~ msgstr "Periferic pels disques per defaut"
 
-#: modules/gui/qt4/ui/sprefs_input.h:309
 #, fuzzy
-msgid "Codecs"
-msgstr "Codec"
-
-#: modules/gui/qt4/ui/sprefs_input.h:310
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:311
-msgid "Video quality post-processing level"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:312
-msgid "Use GPU acceleration (experimental)"
-msgstr ""
+#~ msgid "Codecs"
+#~ msgstr "Codec"
 
-#: modules/gui/qt4/ui/sprefs_input.h:313
-msgid "Use system codecs if available (better quality, but dangerous)"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:315
 #, fuzzy
-msgid "Damaged or incomplete AVI file"
-msgstr "Filtre de proprietats d'imatge"
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "Filtre de proprietats d'imatge"
 
-#: modules/gui/qt4/ui/sprefs_input.h:319
 #, fuzzy
-msgid "Default port (server mode)"
-msgstr "Pòrt del servidor per defaut"
+#~ msgid "Default port (server mode)"
+#~ msgstr "Pòrt del servidor per defaut"
 
-#: modules/gui/qt4/ui/sprefs_input.h:320
 #, fuzzy
-msgid "HTTP proxy URL"
-msgstr "proxy HTTP"
+#~ msgid "HTTP proxy URL"
+#~ msgstr "proxy HTTP"
 
-#: modules/gui/qt4/ui/sprefs_input.h:321
 #, fuzzy
-msgid "Default caching policy"
-msgstr "Nivèl de taboisson per defaut"
+#~ msgid "Default caching policy"
+#~ msgstr "Nivèl de taboisson per defaut"
 
-#: modules/gui/qt4/ui/sprefs_input.h:322
 #, fuzzy
-msgid "HTTP (default)"
-msgstr "defaut"
-
-#: modules/gui/qt4/ui/sprefs_input.h:323
-msgid "RTP over RTSP (TCP)"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:324
-msgid "Live555 stream transport"
-msgstr ""
+#~ msgid "HTTP (default)"
+#~ msgstr "defaut"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:373
-msgid "Instances"
-msgstr "Instàncias"
+#~ msgid "Instances"
+#~ msgstr "Instàncias"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:374
-msgid "Allow only one instance"
-msgstr "Autorizar solament una instància"
+#~ msgid "Allow only one instance"
+#~ msgstr "Autorizar solament una instància"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:375
 #, fuzzy
-msgid "Enqueue files when in one instance mode"
-msgstr "Enqueue items to playlist when in one instance mode*"
+#~ msgid "Enqueue files when in one instance mode"
+#~ msgstr "Enqueue items to playlist when in one instance mode*"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:377
 #, fuzzy
-msgid "Album art download policy:"
-msgstr "Album art policy*"
+#~ msgid "Album art download policy:"
+#~ msgstr "Album art policy*"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:378
-msgid "Activate update notifier"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:380
-msgid "Every "
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:381
 #, fuzzy
-msgid "Save recently played items"
-msgstr "Salvar los elements recentament jogats dins lo menut"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:384
-msgid "Separate words by | (without space)"
-msgstr ""
+#~ msgid "Save recently played items"
+#~ msgstr "Salvar los elements recentament jogats dins lo menut"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:387
 #, fuzzy
-msgid "Menus language:"
-msgstr "Lenga per l'audio"
+#~ msgid "Menus language:"
+#~ msgstr "Lenga per l'audio"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:388
 #, fuzzy
-msgid "File associations"
-msgstr "Capturas tampadas"
+#~ msgid "File associations"
+#~ msgstr "Capturas tampadas"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:389
 #, fuzzy
-msgid "Set up associations..."
-msgstr "Capturas tampadas"
+#~ msgid "Set up associations..."
+#~ msgstr "Capturas tampadas"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:390
-msgid "Look and feel"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:391
-msgid "Use custom skin"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:393
 #, fuzzy
-msgid "Skin resource file:"
-msgstr "Filtres d'accès"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:395
-msgid "Resize interface to video size"
-msgstr ""
+#~ msgid "Skin resource file:"
+#~ msgstr "Filtres d'accès"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:396
 #, fuzzy
-msgid "Force window style:"
-msgstr "Títol seguent"
+#~ msgid "Force window style:"
+#~ msgstr "Títol seguent"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:397
 #, fuzzy
-msgid "Show systray icon"
-msgstr "Icòna dins la zòna de notificacion"
+#~ msgid "Show systray icon"
+#~ msgstr "Icòna dins la zòna de notificacion"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:398
-msgid "Embed video in interface"
-msgstr "Vidèo incrustada dins l'interfàcia"
+#~ msgid "Embed video in interface"
+#~ msgstr "Vidèo incrustada dins l'interfàcia"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:399
-msgid "Systray popup when minimized"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:400
 #, fuzzy
-msgid "Show controls in full screen mode"
-msgstr "Començar la vidèo en mòde plen ecran"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:401
-msgid "Minimal view mode (no toolbars)"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:403
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr ""
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Començar la vidèo en mòde plen ecran"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:405
 #, fuzzy
-msgid "Use native style"
-msgstr "Utilizar un fichièr de sostítols"
+#~ msgid "Use native style"
+#~ msgstr "Utilizar un fichièr de sostítols"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:202
 #, fuzzy
-msgid "Enable On Screen Display (OSD)"
-msgstr "Messatges a l'ecran"
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "Messatges a l'ecran"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:203
 #, fuzzy
-msgid "Show media title on video start"
-msgstr "Mostrar lo títol del mèdia"
+#~ msgid "Show media title on video start"
+#~ msgstr "Mostrar lo títol del mèdia"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:204
-msgid "Subtitles Language"
-msgstr "Lenga dels sostítols"
+#~ msgid "Subtitles Language"
+#~ msgstr "Lenga dels sostítols"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:205
-msgid "Preferred subtitles language"
-msgstr "Lenga preferida pels sostítols"
+#~ msgid "Preferred subtitles language"
+#~ msgstr "Lenga preferida pels sostítols"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:206
-msgid "Default encoding"
-msgstr "Encodatge per defaut"
+#~ msgid "Default encoding"
+#~ msgstr "Encodatge per defaut"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:208
-msgid "Effect"
-msgstr "Efièch"
+#~ msgid "Effect"
+#~ msgstr "Efièch"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:209
-msgid "Font color"
-msgstr "Color de la poliça"
+#~ msgid "Font color"
+#~ msgstr "Color de la poliça"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:212
-#: modules/gui/qt4/ui/video_effects.h:1113
-#: modules/gui/qt4/ui/video_effects.h:1115
-#: modules/gui/qt4/ui/video_effects.h:1117
-#: modules/gui/qt4/ui/video_effects.h:1119
-msgid " px"
-msgstr ""
+#~ msgid "DirectX"
+#~ msgstr "DirectX"
 
-#: modules/gui/qt4/ui/sprefs_video.h:314
-msgid "Accelerated video output (Overlay)"
-msgstr ""
+#~ msgid "Display device"
+#~ msgstr "Periferic d'afichatge"
 
-#: modules/gui/qt4/ui/sprefs_video.h:318
-msgid "DirectX"
-msgstr "DirectX"
-
-#: modules/gui/qt4/ui/sprefs_video.h:319
-msgid "Display device"
-msgstr "Periferic d'afichatge"
-
-#: modules/gui/qt4/ui/sprefs_video.h:320
 #, fuzzy
-msgid "Enable wallpaper mode"
-msgstr "Activar mòde fons de pagina"
+#~ msgid "Enable wallpaper mode"
+#~ msgstr "Activar mòde fons de pagina"
 
-#: modules/gui/qt4/ui/sprefs_video.h:322
 #, fuzzy
-msgid "Deinterlacing"
-msgstr "Desentreleçar"
+#~ msgid "Deinterlacing"
+#~ msgstr "Desentreleçar"
 
-#: modules/gui/qt4/ui/sprefs_video.h:323
 #, fuzzy
-msgid "Force Aspect Ratio"
-msgstr "Proporcion corrècta"
-
-#: modules/gui/qt4/ui/sprefs_video.h:329
-msgid "vlc-snap"
-msgstr ""
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Proporcion corrècta"
 
-#: modules/gui/qt4/ui/streampanel.h:172
 #, fuzzy
-msgid "Stuff"
-msgstr "&Aleatòri"
+#~ msgid "Stuff"
+#~ msgstr "&Aleatòri"
 
-#: modules/gui/qt4/ui/streampanel.h:174
-msgid "Edit settings"
-msgstr "Cambiar los paramètres"
+#~ msgid "Edit settings"
+#~ msgstr "Cambiar los paramètres"
 
-#: modules/gui/qt4/ui/streampanel.h:175
-msgid "Control"
-msgstr "Contraròtle"
+#~ msgid "Control"
+#~ msgstr "Contraròtle"
 
-#: modules/gui/qt4/ui/streampanel.h:176
-msgid "Run manually"
-msgstr ""
-
-#: modules/gui/qt4/ui/streampanel.h:177
 #, fuzzy
-msgid "Setup schedule"
-msgstr "Aleatòri"
+#~ msgid "Setup schedule"
+#~ msgstr "Aleatòri"
 
-#: modules/gui/qt4/ui/streampanel.h:178
 #, fuzzy
-msgid "Run on schedule"
-msgstr "Aleatòri"
+#~ msgid "Run on schedule"
+#~ msgstr "Aleatòri"
 
-#: modules/gui/qt4/ui/streampanel.h:179
-msgid "Status"
-msgstr "Estatut"
+#~ msgid "Status"
+#~ msgstr "Estatut"
 
-#: modules/gui/qt4/ui/streampanel.h:180
-msgid "P/P"
-msgstr "P/P"
+#~ msgid "P/P"
+#~ msgstr "P/P"
 
-#: modules/gui/qt4/ui/streampanel.h:183
-msgid "Prev"
-msgstr "Precedent"
+#~ msgid "Prev"
+#~ msgstr "Precedent"
 
-#: modules/gui/qt4/ui/streampanel.h:184
-msgid "Add Input"
-msgstr "Apondre una intrada"
+#~ msgid "Add Input"
+#~ msgstr "Apondre una intrada"
 
-#: modules/gui/qt4/ui/streampanel.h:185
-msgid "Edit Input"
-msgstr "Modificar l'intrada"
+#~ msgid "Edit Input"
+#~ msgstr "Modificar l'intrada"
 
-#: modules/gui/qt4/ui/streampanel.h:186
-msgid "Clear List"
-msgstr "Netejar la Lista"
+#~ msgid "Clear List"
+#~ msgstr "Netejar la Lista"
 
-#: modules/gui/qt4/ui/v4l2.h:59
 #, fuzzy
-msgid "Refresh"
-msgstr "Actualizar"
+#~ msgid "Refresh"
+#~ msgstr "Actualizar"
 
-#: modules/gui/qt4/ui/v4l2.h:60
-msgid "No v4l2 instance found. Press the refresh button to try again."
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1101
 #, fuzzy
-msgid "Transform"
-msgstr "Transformacion"
+#~ msgid "Transform"
+#~ msgstr "Transformacion"
 
-#: modules/gui/qt4/ui/video_effects.h:1103
 #, fuzzy
-msgid "Sigma"
-msgstr "Senhals"
+#~ msgid "Sigma"
+#~ msgstr "Senhals"
 
-#: modules/gui/qt4/ui/video_effects.h:1120
 #, fuzzy
-msgid "Synchronize top and bottom"
-msgstr "Sincronizacion"
+#~ msgid "Synchronize top and bottom"
+#~ msgstr "Sincronizacion"
 
-#: modules/gui/qt4/ui/video_effects.h:1121
 #, fuzzy
-msgid "Synchronize left and right"
-msgstr "Sincronizacion"
+#~ msgid "Synchronize left and right"
+#~ msgstr "Sincronizacion"
 
-#: modules/gui/qt4/ui/video_effects.h:1123
 #, fuzzy
-msgid "Magnification/Zoom"
-msgstr "Grossiment"
+#~ msgid "Magnification/Zoom"
+#~ msgstr "Grossiment"
 
-#: modules/gui/qt4/ui/video_effects.h:1124
 #, fuzzy
-msgid "Puzzle game"
-msgstr "Puzzle*"
+#~ msgid "Puzzle game"
+#~ msgstr "Puzzle*"
 
-#: modules/gui/qt4/ui/video_effects.h:1125
 #, fuzzy
-msgid "Black slot"
-msgstr "Negre"
+#~ msgid "Black slot"
+#~ msgstr "Negre"
 
-#: modules/gui/qt4/ui/video_effects.h:1126
-#: modules/gui/qt4/ui/video_effects.h:1165
-#: modules/gui/qt4/ui/video_effects.h:1171
-msgid "Columns"
-msgstr "Colomnas"
+#~ msgid "Columns"
+#~ msgstr "Colomnas"
 
-#: modules/gui/qt4/ui/video_effects.h:1127
-#: modules/gui/qt4/ui/video_effects.h:1164
-#: modules/gui/qt4/ui/video_effects.h:1170
-msgid "Rows"
-msgstr "Linhas"
+#~ msgid "Rows"
+#~ msgstr "Linhas"
 
-#: modules/gui/qt4/ui/video_effects.h:1129
 #, fuzzy
-msgid "Angle"
-msgstr "Jungle"
+#~ msgid "Angle"
+#~ msgstr "Jungle"
 
-#: modules/gui/qt4/ui/video_effects.h:1130
 #, fuzzy
-msgid "Geometry"
-msgstr "Espectromètre"
+#~ msgid "Geometry"
+#~ msgstr "Espectromètre"
 
-#: modules/gui/qt4/ui/video_effects.h:1131
 #, fuzzy
-msgid "Color extraction"
-msgstr " Informacion "
-
-#: modules/gui/qt4/ui/video_effects.h:1133
-#: modules/gui/qt4/ui/video_effects.h:1139
-msgid ">HHHHHH;#"
-msgstr ""
+#~ msgid "Color extraction"
+#~ msgstr " Informacion "
 
-#: modules/gui/qt4/ui/video_effects.h:1136
-msgid "Similarity"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1140
 #, fuzzy
-msgid "Color fun"
-msgstr "Color"
+#~ msgid "Color fun"
+#~ msgstr "Color"
 
-#: modules/gui/qt4/ui/video_effects.h:1142
-msgid "Water effect"
-msgstr "Efièch d'aiga"
+#~ msgid "Water effect"
+#~ msgstr "Efièch d'aiga"
 
-#: modules/gui/qt4/ui/video_effects.h:1145
-msgid "Motion detect"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1147
 #, fuzzy
-msgid "Factor"
-msgstr "Mai lèu"
+#~ msgid "Factor"
+#~ msgstr "Mai lèu"
 
-#: modules/gui/qt4/ui/video_effects.h:1151
 #, fuzzy
-msgid "Cartoon"
-msgstr "Marron"
-
-#: modules/gui/qt4/ui/video_effects.h:1152
-msgid "Image modification"
-msgstr "Modificacion de l'imatge"
+#~ msgid "Cartoon"
+#~ msgstr "Marron"
 
-#: modules/gui/qt4/ui/video_effects.h:1154
-msgid "Edge weightning"
-msgstr ""
+#~ msgid "Image modification"
+#~ msgstr "Modificacion de l'imatge"
 
-#: modules/gui/qt4/ui/video_effects.h:1155
 #, fuzzy
-msgid "Output Color Filtermode"
-msgstr "Modul de filtre de la sortida video"
+#~ msgid "Output Color Filtermode"
+#~ msgstr "Modul de filtre de la sortida video"
 
-#: modules/gui/qt4/ui/video_effects.h:1156
-msgid "Brightness (%)"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1157
-msgid "Darknesslimit"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1158
-msgid "Mark analyzed Pixels"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1160
 #, fuzzy
-msgid "Filter threshold (%)"
-msgstr "Longo del filtre (ms)"
+#~ msgid "Filter threshold (%)"
+#~ msgstr "Longo del filtre (ms)"
 
-#: modules/gui/qt4/ui/video_effects.h:1161
 #, fuzzy
-msgid "Filter smoothness (%)"
-msgstr "Mòde filtre"
+#~ msgid "Filter smoothness (%)"
+#~ msgstr "Mòde filtre"
 
-#: modules/gui/qt4/ui/video_effects.h:1163
-msgid "Wall"
-msgstr "Paret"
+#~ msgid "Wall"
+#~ msgstr "Paret"
 
-#: modules/gui/qt4/ui/video_effects.h:1166
-msgid "Add text"
-msgstr "Apondre de tèxt"
+#~ msgid "Add text"
+#~ msgstr "Apondre de tèxt"
 
-#: modules/gui/qt4/ui/video_effects.h:1174
 #, fuzzy
-msgid "Vout/Overlay"
-msgstr "Overlays*"
+#~ msgid "Vout/Overlay"
+#~ msgstr "Overlays*"
 
-#: modules/gui/qt4/ui/video_effects.h:1175
-msgid "Add logo"
-msgstr "Apondre un lògo"
+#~ msgid "Add logo"
+#~ msgstr "Apondre un lògo"
 
-#: modules/gui/qt4/ui/video_effects.h:1179
-#: modules/gui/qt4/ui/video_effects.h:1184
-msgid "Logo"
-msgstr "Lògo"
+#~ msgid "Logo"
+#~ msgstr "Lògo"
 
-#: modules/gui/qt4/ui/video_effects.h:1180
 #, fuzzy
-msgid "Logo erase"
-msgstr "Nom del fichièr d'istoric"
+#~ msgid "Logo erase"
+#~ msgstr "Nom del fichièr d'istoric"
 
-#: modules/gui/qt4/ui/video_effects.h:1183
-msgid "Mask"
-msgstr "Masca"
+#~ msgid "Mask"
+#~ msgstr "Masca"
 
-#: modules/gui/qt4/ui/video_effects.h:1185
 #, fuzzy
-msgid "Subpicture filters"
-msgstr "Filtres pels sos-imatges"
+#~ msgid "Subpicture filters"
+#~ msgstr "Filtres pels sos-imatges"
 
-#: modules/gui/qt4/ui/video_effects.h:1186
-msgid "Video filters"
-msgstr "Filtres video"
+#~ msgid "Video filters"
+#~ msgstr "Filtres video"
 
-#: modules/gui/qt4/ui/video_effects.h:1187
 #, fuzzy
-msgid "Vout filters"
-msgstr "Filtres video"
+#~ msgid "Vout filters"
+#~ msgstr "Filtres video"
 
-#: modules/gui/qt4/ui/video_effects.h:1188
 #, fuzzy
-msgid "Reset"
-msgstr "Tornar lançar totes"
+#~ msgid "Reset"
+#~ msgstr "Tornar lançar totes"
 
-#: modules/gui/qt4/ui/video_effects.h:1189
-msgid "Update"
-msgstr "Metre a jorn"
+#~ msgid "Update"
+#~ msgstr "Metre a jorn"
 
-#: modules/gui/qt4/ui/video_effects.h:1190
 #, fuzzy
-msgid "Advanced video filter controls"
-msgstr "&Contraròtles avançats"
+#~ msgid "Advanced video filter controls"
+#~ msgstr "&Contraròtles avançats"
 
-#: modules/gui/qt4/ui/vlm.h:287
 #, fuzzy
-msgid "VLM configurator"
-msgstr "Configuracion de &VLM..."
+#~ msgid "VLM configurator"
+#~ msgstr "Configuracion de &VLM..."
 
-#: modules/gui/qt4/ui/vlm.h:288
 #, fuzzy
-msgid "Media Manager Edition"
-msgstr "Informacion del mèdia"
+#~ msgid "Media Manager Edition"
+#~ msgstr "Informacion del mèdia"
 
-#: modules/gui/qt4/ui/vlm.h:289
-msgid "Name:"
-msgstr "Nom:"
+#~ msgid "Name:"
+#~ msgstr "Nom:"
 
-#: modules/gui/qt4/ui/vlm.h:291
-msgid "Input:"
-msgstr "Intrada:"
+#~ msgid "Input:"
+#~ msgstr "Intrada:"
 
-#: modules/gui/qt4/ui/vlm.h:292
-msgid "Select Input"
-msgstr "Causir d'intrada"
+#~ msgid "Select Input"
+#~ msgstr "Causir d'intrada"
 
-#: modules/gui/qt4/ui/vlm.h:293
-msgid "Output:"
-msgstr "Sortida:"
+#~ msgid "Output:"
+#~ msgstr "Sortida:"
 
-#: modules/gui/qt4/ui/vlm.h:294
-msgid "Select Output"
-msgstr "Causir una sortida"
+#~ msgid "Select Output"
+#~ msgstr "Causir una sortida"
 
-#: modules/gui/qt4/ui/vlm.h:295
 #, fuzzy
-msgid "Time Control"
-msgstr "Contraròtle del volum"
+#~ msgid "Time Control"
+#~ msgstr "Contraròtle del volum"
 
-#: modules/gui/qt4/ui/vlm.h:296
 #, fuzzy
-msgid "Mux Control"
-msgstr "Contraròtle"
+#~ msgid "Mux Control"
+#~ msgstr "Contraròtle"
 
-#: modules/gui/qt4/ui/vlm.h:297
 #, fuzzy
-msgid "Muxer:"
-msgstr "Muxers*"
-
-#: modules/gui/qt4/ui/vlm.h:298
-msgid "AAAA; "
-msgstr ""
+#~ msgid "Muxer:"
+#~ msgstr "Muxers*"
 
-#: modules/gui/qt4/ui/vlm.h:299
 #, fuzzy
-msgid "Loop"
-msgstr "[Bocla]"
+#~ msgid "Loop"
+#~ msgstr "[Bocla]"
 
-#: modules/gui/qt4/ui/vlm.h:303
 #, fuzzy
-msgid "Media Manager List"
-msgstr "Informacion del mèdia"
+#~ msgid "Media Manager List"
+#~ msgstr "Informacion del mèdia"
 
 #~ msgid "Devices"
 #~ msgstr "Periferics"

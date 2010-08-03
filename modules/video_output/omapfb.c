@@ -2,7 +2,7 @@
 * omapfb.c : omap framebuffer plugin for vlc
 *****************************************************************************
 * Copyright (C) 2008-2009 the VideoLAN team
-* $Id: 9646cbdfba57a7c68e0febcc1a89780a9818be1d $
+* $Id: 2021a5ab45319f488cf72c8534084c60c9c763bc $
 *
 * Authors: Antoine Lejeune <phytos @ videolan.org>
 *          Based on fb.c and work of Siarhei Siamashka on mplayer for Maemo
@@ -397,7 +397,7 @@ static int Manage( vout_thread_t *p_vout )
         var_SetBool( p_vout, "fullscreen", p_vout->b_fullscreen );
 
         if( p_vout->p_sys->owner_window )
-            vout_window_SetFullscreen( p_vout->p_sys->owner_window,
+            vout_window_SetFullScreen( p_vout->p_sys->owner_window,
                                        p_vout->b_fullscreen );
         p_vout->i_changes &= ~VOUT_FULLSCREEN_CHANGE;
     }

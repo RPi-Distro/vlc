@@ -2,7 +2,7 @@
  * bandlimited.c : band-limited interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: a71aa8ff459b27ed0d35482734990797bf384fdc $
+ * $Id: d0f447d79b78f64b01ca7a53f035728e0c5054e2 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -235,6 +235,7 @@ static block_t *Resample( filter_t * p_filter, block_t * p_in_buf )
 
         /* Finalize aout buffer */
         p_out_buf->i_nb_samples = i_out;
+        p_out_buf->i_dts =
         p_out_buf->i_pts = date_Get( &p_sys->end_date );
         p_out_buf->i_length = date_Increment( &p_sys->end_date,
                                       p_out_buf->i_nb_samples ) - p_out_buf->i_pts;

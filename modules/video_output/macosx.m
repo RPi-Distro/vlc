@@ -2,7 +2,7 @@
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 3394a77edea26ced7d39182d998d76793c86adb8 $
+ * $Id: ac1bd18561eae68266efd5a1af30c733ea724718 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -150,7 +150,7 @@ static int Open(vlc_object_t *this)
     {
         NSView *parentView = container;
         [parentView performSelectorOnMainThread:@selector(addSubview:) withObject:sys->glView waitUntilDone:NO];
-        [sys->glView performSelectorOnMainThread:@selector(setFrame:) withObject:[NSValue valueWithRect:[parentView bounds]] waitUntilDone:NO];
+        [sys->glView performSelectorOnMainThread:@selector(setFrameWithValue:) withObject:[NSValue valueWithRect:[parentView bounds]] waitUntilDone:NO];
     }
     else
     {
@@ -372,6 +372,14 @@ static void OpenglSwap(vout_opengl_t *gl)
 
     [self setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     return self;
+}
+
+/**
+ * Gets called by the Open() method.
+ */
+- setFrameWithValue:(NSValue *)value
+{
+    [self setFrame:[value rectValue]];
 }
 
 /**

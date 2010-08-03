@@ -4,7 +4,7 @@
  * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 4d2d05b0a24fa16e7562ab0223f25a3e4157eddc $
+ * $Id: 03ee5f408ea611a413bec68eff6d6bc4fd82c443 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -142,6 +142,15 @@ public slots:
     virtual void updateMRL();
 private slots:
     void updateCompleter();
+};
+
+class UrlValidator : public QValidator
+{
+   Q_OBJECT
+public:
+   UrlValidator( QObject *parent ) : QValidator( parent ) { }
+   void fixup( QString& ) const;
+   QValidator::State validate( QString&, int& ) const;
 };
 
 class DiscOpenPanel: public OpenPanel

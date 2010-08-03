@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2010 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.1)
+AC_INIT(vlc, 1.1.2)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
-VERSION_REVISION="1"
+VERSION_REVISION="2"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -2663,8 +2663,7 @@ dnl  avcodec decoder/encoder plugin
 dnl
 AC_ARG_ENABLE(avcodec,
 [  --enable-avcodec        libavcodec codec (default enabled)])
-if test "${enable_avcodec}" != "no"
-then
+AS_IF([test "${enable_avcodec}" != "no"], [
   PKG_CHECK_MODULES(AVCODEC,[libavcodec >= 51.48.0 libavutil],
     [
       VLC_SAVE_FLAGS
@@ -2680,7 +2679,9 @@ then
     ],[
       AC_MSG_ERROR([Could not find libavcodec or libavutil. Use --disable-avcodec to ignore this error.])
   ])
-fi
+], [
+  have_avcodec="no"
+])
 
 dnl
 dnl libva needs avcodec
@@ -2696,8 +2697,8 @@ AS_IF([test "${enable_libva}" != "no"], [
         CPPFLAGS="${CPPFLAGS} ${AVCODEC_CFLAGS}"
         CFLAGS="${CFLAGS} ${AVCODEC_CFLAGS}"
         AC_CHECK_HEADERS(libavcodec/vaapi.h, [
-           VLC_ADD_LIBS([avcodec],[$LIBVA_LIBS])
-           VLC_ADD_CFLAGS([avcodec],[$LIBVA_CFLAGS])
+           VLC_ADD_LIBS([avcodec],[$LIBVA_LIBS ${X_LIBS} ${X_PRE_LIBS} -lX11])
+           VLC_ADD_CFLAGS([avcodec],[$LIBVA_CFLAGS ${X_CFLAGS}])
            AC_DEFINE(HAVE_AVCODEC_VAAPI, 1, [Define if avcodec has to be built with VAAPI support.])
            echo "VAAPI acceleration activated"
         ],[
@@ -2772,10 +2773,12 @@ dnl  avformat demuxer/muxer plugin
 dnl
 
 AC_ARG_ENABLE(avformat,
-[  --enable-avformat       libavformat containers (default enabled)])
+[  --enable-avformat       libavformat containers (default enabled)],, [
+  enable_avformat="${have_avcodec}"
+])
 if test "${enable_avformat}" != "no"
 then
-  PKG_CHECK_MODULES(AVFORMAT,[libavformat libavutil],
+  PKG_CHECK_MODULES(AVFORMAT,[libavformat libavcodec libavutil],
     [
       VLC_SAVE_FLAGS
       CPPFLAGS="${CPPFLAGS} ${AVFORMAT_CFLAGS}"
@@ -2802,7 +2805,9 @@ dnl
 
 AC_ARG_ENABLE(swscale,
   AS_HELP_STRING([--enable-swscale],[libswscale image scaling and conversion
-		  (default enabled)]))
+		  (default enabled)]),, [
+  enable_swscale="${have_avcodec}"
+])
 if test "${enable_swscale}" != "no"
 then
   PKG_CHECK_MODULES(SWSCALE,[libswscale],

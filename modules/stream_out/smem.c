@@ -2,7 +2,7 @@
  * smem.c: stream output to memory buffer module
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 9d317ea45f67379650e69ba5ef436878df97e0d1 $
+ * $Id: 784c31b57a14c9b80214e21d8bf6b8c99b7470b0 $
  *
  * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
  *
@@ -230,6 +230,7 @@ static sout_stream_id_t *AddVideo( sout_stream_t *p_stream, es_format_t *p_fmt )
     switch( p_fmt->i_codec )
     {
         case VLC_CODEC_RGB32:
+        case VLC_CODEC_RGBA:
             i_bits_per_pixel = 32;
             break;
         case VLC_CODEC_I444:
