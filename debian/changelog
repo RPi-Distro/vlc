@@ -1,9 +1,13 @@
-vlc (1.1.2-1+exp1) UNRELEASED; urgency=low
+vlc (1.1.2-1+exp1) experimental; urgency=low
 
+  [ Christophe Mutricy ]
   * Depends on xulrunner-dev >= 1.9.2
   * Activate VA-API (Closes: #587792, LP: #539406)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Thu, 22 Jul 2010 01:31:04 +0200
+  [ Benjamin Drung ]
+  * Switch to dh7.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 04 Aug 2010 01:46:09 +0200
 
 vlc (1.1.2-1) unstable; urgency=low
 
