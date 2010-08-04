@@ -1,6 +1,7 @@
 usr/bin/qvlc
 usr/bin/svlc
 usr/lib/vlc/plugins/access/libxcb_screen_plugin.so
+usr/lib/vlc/plugins/codec/libavcodec_plugin.so
 usr/lib/vlc/plugins/codec/libsdl_image_plugin.so
 usr/lib/vlc/plugins/control/libglobalhotkeys_plugin.so
 usr/lib/vlc/plugins/gui/libqt4_plugin.so

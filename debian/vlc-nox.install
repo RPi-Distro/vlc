@@ -44,7 +44,6 @@ usr/lib/vlc/plugins/codec/liba52_plugin.so
 usr/lib/vlc/plugins/codec/libadpcm_plugin.so
 usr/lib/vlc/plugins/codec/libaes3_plugin.so
 usr/lib/vlc/plugins/codec/libaraw_plugin.so
-usr/lib/vlc/plugins/codec/libavcodec_plugin.so
 usr/lib/vlc/plugins/codec/libcc_plugin.so
 usr/lib/vlc/plugins/codec/libcdg_plugin.so
 usr/lib/vlc/plugins/codec/libcvdsub_plugin.so
