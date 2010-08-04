@@ -6,8 +6,9 @@ vlc (1.1.2-1+exp1) experimental; urgency=low
 
   [ Benjamin Drung ]
   * Switch to dh7.
+  * Move libavcodec plugin from vlc-nox to vlc.
 
- -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 04 Aug 2010 01:46:09 +0200
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 05 Aug 2010 01:42:50 +0200
 
 vlc (1.1.2-1) unstable; urgency=low
 
