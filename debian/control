@@ -45,6 +45,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                liblua5.1-0-dev,
                libmad0-dev,
                libmatroska-dev (>= 0.8.0),
+               libmodplug-dev (>= 1:0.8.8.1),
                libmpcdec-dev,
                libmpeg2-4-dev,
                libmtp-dev,
@@ -73,7 +74,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                libudev-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libupnp3-dev,
                libv4l-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
-               libva-dev,
+               libva-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libvcdinfo-dev,
                libvorbis-dev,
                libx11-dev,
@@ -95,7 +96,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                xulrunner-dev (>= 1.9.2),
                yasm [amd64 kfreebsd-amd64],
                zlib1g-dev
-Standards-Version: 3.9.0
+Standards-Version: 3.9.1
 Homepage: http://www.videolan.org/vlc/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=summary
@@ -211,10 +212,12 @@ Depends: ttf-dejavu-core,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
-Recommends: vlc-plugin-pulse (= ${binary:Version})
+Recommends: vlc-plugin-notify (= ${binary:Version}),
+            vlc-plugin-pulse (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
-Replaces: vlc-nox (<< 1.0.4-2)
+Breaks: vlc-nox (<< 1.1.2-1+exp1)
+Replaces: vlc-nox (<< 1.1.2-1+exp1)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -321,6 +324,21 @@ Description: Jack audio plugins for VLC
  activate the audio output module, use the `--aout jack' flag or
  select the `jack' audio output plugin from the preferences menu.
  For the jack input, use `vlc jack://channels=...:ports=...'
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: vlc-plugin-notify
+Architecture: any
+Depends: vlc-nox (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: vlc-nox (<< 1.1.2)
+Replaces: vlc-nox (<< 1.1.2)
+Description: LibNotify plugin for VLC
+ This plugin adds support for libnotify track change notification to the
+ VLC media player.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia

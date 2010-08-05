@@ -1,18 +1,42 @@
-vlc (1.1.1-1+exp1ubuntu1) maverick; urgency=low
+vlc (1.1.2-1+exp1ubuntu1) maverick; urgency=low
 
   * Merge from Debian experimental, remaining changes:
     - build and install the libx264 plugin
     - add Xb-Npp header to vlc package
     - Add apport hook to include more vlc dependencies in bug reports
 
- -- Benjamin Drung <bdrung@ubuntu.com>  Fri, 23 Jul 2010 10:41:59 +0200
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 05 Aug 2010 03:04:14 +0200
 
-vlc (1.1.1-1+exp1) experimental; urgency=low
+vlc (1.1.2-1+exp1) experimental; urgency=low
 
+  [ Christophe Mutricy ]
   * Depends on xulrunner-dev >= 1.9.2
   * Activate VA-API (Closes: #587792, LP: #539406)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Thu, 22 Jul 2010 01:31:04 +0200
+  [ Benjamin Drung ]
+  * Switch to dh7.
+  * Move libavcodec plugin from vlc-nox to vlc.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 05 Aug 2010 01:42:50 +0200
+
+vlc (1.1.2-1) unstable; urgency=low
+
+  [ Christophe Mutricy ]
+  * New upstream release
+  * Also check for libxcb
+  * Move xcb_apps SD to vlc
+  * Re-enable the modplug module and require the fixed version
+    (Closes: #589890, #590787)
+  * Fix location of icons in vlc.menu (Closes: #590294)
+    thanks to Juhapekka Tolvanen
+  * Split the notify plugin to not depend on GTK+ (Closes: #590504)
+    thanks to Viktar Vauchkevich
+
+  [ Benjamin Drung ]
+  * Add proper Breaks and Replaces to vlc and vlc-plugin-notify.
+  * Bump Standards-Version to 3.9.1 (no changes required).
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 03 Aug 2010 01:38:17 +0200
 
 vlc (1.1.1-1) unstable; urgency=low
 

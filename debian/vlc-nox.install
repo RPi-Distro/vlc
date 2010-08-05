@@ -44,7 +44,6 @@ usr/lib/vlc/plugins/codec/liba52_plugin.so
 usr/lib/vlc/plugins/codec/libadpcm_plugin.so
 usr/lib/vlc/plugins/codec/libaes3_plugin.so
 usr/lib/vlc/plugins/codec/libaraw_plugin.so
-usr/lib/vlc/plugins/codec/libavcodec_plugin.so
 usr/lib/vlc/plugins/codec/libcc_plugin.so
 usr/lib/vlc/plugins/codec/libcdg_plugin.so
 usr/lib/vlc/plugins/codec/libcvdsub_plugin.so
@@ -102,7 +101,13 @@ usr/lib/vlc/plugins/misc/libxml_plugin.so
 usr/lib/vlc/plugins/misc/libxtag_plugin.so
 usr/lib/vlc/plugins/mux
 usr/lib/vlc/plugins/packetizer
-usr/lib/vlc/plugins/services_discovery
+usr/lib/vlc/plugins/services_discovery/libsap_plugin.so
+usr/lib/vlc/plugins/services_discovery/libmtp_plugin.so
+usr/lib/vlc/plugins/services_discovery/libupnp_intel_plugin.so
+usr/lib/vlc/plugins/services_discovery/libbonjour_plugin.so
+usr/lib/vlc/plugins/services_discovery/libudev_plugin.so
+usr/lib/vlc/plugins/services_discovery/libpodcast_plugin.so
+usr/lib/vlc/plugins/services_discovery/libmediadirs_plugin.so
 usr/lib/vlc/plugins/stream_filter
 usr/lib/vlc/plugins/stream_out
 usr/lib/vlc/plugins/video_chroma

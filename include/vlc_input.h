@@ -2,7 +2,7 @@
  * vlc_input.h: Core input structures
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: 179fed6fceab7f8af0c2a8063f2f035dc8a0c5ef $
+ * $Id: 4b161b8ca903d938106c531abb8a0ecfaab6c89e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -512,7 +512,7 @@ enum input_query_e
     /* Input ressources
      * XXX You must call vlc_object_release as soon as possible */
     INPUT_GET_AOUT,         /* arg1=aout_instance_t **              res=can fail */
-    INPUT_GET_VOUTS,        /* arg1=vout_thread_t ***, int *        res=can fail */
+    INPUT_GET_VOUTS,        /* arg1=vout_thread_t ***, size_t *        res=can fail */
     INPUT_GET_ES_OBJECTS,   /* arg1=int id, vlc_object_t **dec, vout_thread_t **, aout_instance_t ** */
 
     /* External clock managments */

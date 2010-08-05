@@ -2,7 +2,7 @@
  * svg.c : Put SVG on the video
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 7c5ad64b8912b575280e0413673cea83d72c4e09 $
+ * $Id: fc54819134f47070b1b111dd5fa82b25c9ca2632 $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
@@ -48,7 +48,7 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>                                  /* g_object_unref( ) */
-#include <librsvg-2/librsvg/rsvg.h>
+#include <librsvg/rsvg.h>
 
 typedef struct svg_rendition_t svg_rendition_t;
 

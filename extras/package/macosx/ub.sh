@@ -46,6 +46,7 @@ rm -Rf $SRCROOT/build-fat/VLC.app/$PLUGINS/*
 function do_lipo {
     file="$1"
     files=""
+    echo "..."$file
     if [ "x$PPCROOT" != "x" ]; then
         if [ -e "$PPCROOT/$file" ]; then
             files="$PPCROOT/$file $files"
@@ -67,13 +68,13 @@ function do_lipo {
 }
 
 echo "Installing libs"
-for i in `ls $INTELROOT/$LIBS/ | grep *.dylib`
+for i in `ls $INTELROOT/$LIBS/ | grep .dylib`
 do
     do_lipo $LIBS/$i
 done
 
 echo "Installing modules"
-for i in `ls $INTELROOT/$PLUGINS/ | grep *.dylib`
+for i in `ls $INTELROOT/$PLUGINS/ | grep .dylib`
 do
     do_lipo $PLUGINS/$i
 done

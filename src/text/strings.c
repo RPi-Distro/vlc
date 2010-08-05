@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2008-2009 Rémi Denis-Courmont
- * $Id: 602f8d53d686541c4793831e202324d14c079115 $
+ * $Id: 23391d2b310e0b4793e544b1742c7b20a40b0340 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -94,10 +94,6 @@ char *decode_URI( char *psz )
                 *out++ = (unsigned char)strtoul( hex, NULL, 0x10 );
                 break;
             }
-
-            case '+': /* This is HTTP forms, not URI decoding... */
-                *out++ = ' ';
-                break;
 
             default:
                 /* Inserting non-ASCII or non-printable characters is unsafe,

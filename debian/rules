@@ -16,16 +16,6 @@ endif
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 confflags += --disable-optimizations --disable-mmx --disable-sse --disable-altivec
 endif
-ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-MAKEFLAGS += -j$(NUMJOBS)
-else
-# on i386 and amd64, we query the system unless overriden by DEB_BUILD_OPTIONS
-ifneq (,$(filter $(DEB_HOST_ARCH),i386 amd64))
-NUMJOBS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
-MAKEFLAGS += -j$(NUMJOBS)
-endif
-endif
 
 LDFLAGS = -Wl,--as-needed
 
@@ -63,7 +53,6 @@ confflags += \
 	--enable-libass \
 	--enable-libmpeg2 \
 	--enable-libproxy \
-	--enable-libva \
 	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \
@@ -103,7 +92,6 @@ confflags += \
 # dxva2 -> Windows only
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
-# modplug -> http://bugs.debian.org/588465
 # osso_screensaver -> not targetting maemo
 # portaudio -> not needed
 # projectm -> broken
@@ -113,7 +101,6 @@ confflags += \
 	--disable-dxva2 \
 	--disable-gnomevfs \
 	--disable-goom \
-	--disable-mod \
 	--disable-osso_screensaver \
 	--disable-portaudio \
 	--disable-projectm \
@@ -128,6 +115,7 @@ confflags += \
 	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv \
+	--enable-libva \
 	--enable-pvr \
 	--enable-udev \
 	--enable-v4l \
@@ -146,9 +134,18 @@ ifneq ($(filter $(DEB_HOST_ARCH), amd64 i386),)
 confflags += --enable-svgalib
 endif
 
-build: build-stamp
-build-stamp:
-	dh_testdir
+%:
+	dh $@ --parallel
+
+override_dh_auto_clean:
+	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak \
+		debian/vlc-nox.install
+	rm -f debian/vlc-nox.install.kfreebsd
+	rm -f debian/vlc-nox.install.hurd
+	rm -rf tmp/
+	dh_auto_clean
+
+override_dh_auto_configure:
 	# We need to build the static library apart
 	# Else it's a mess when we build the modules
 	./configure --enable-static $(confflags)
@@ -157,8 +154,9 @@ build-stamp:
 	mkdir -p tmp
 	cp src/.libs/libvlccore.a tmp/libvlccore.a
 	cp src/.libs/libvlc.a tmp/libvlc.a
-	./configure $(confflags)
-	$(MAKE)
+	dh_auto_configure -- $(confflags)
+
+override_dh_auto_test:
 ifeq ($(filter nocheck,$(DEB_BUILD_OPTIONS)),)
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check which plugins were built and whether they load properly.
@@ -171,36 +169,16 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	fi
 endif
 endif
-	touch $@
 
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp
-	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak \
-        debian/vlc-nox.install
-	rm -f debian/vlc-nox.install.kfreebsd
-	rm -f debian/vlc-nox.install.hurd
-	# Clean VLC
-	[ ! -f Makefile ] || $(MAKE) distclean
-	rm -rf tmp/
-	dh_clean
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_installdirs
-# Add the optimization dirs only if present
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
+override_dh_install:
 	cp debian/vlc-nox.install debian/vlc-nox.install.bak
 	for dir in sse2 3dnow altivec arm_neon mmx mmxext ; do \
 	        if test -d debian/tmp/usr/lib/vlc/plugins/$${dir}; then \
 	                echo usr/lib/vlc/plugins/$${dir} >> debian/vlc-nox.install ; \
 	        fi ; \
 	done
-# Remove some modules on non-linux arch
-	sed -e '/\(lib\|libaccess_\)\(alsa\|atmo\|dc1394\|dv\|dvb\|fb\|v4l\|v4l2\|pvr\)_/d' \
+	# Remove some modules on non-linux arch
+	sed -e '/\(lib\|libaccess_\)\(alsa\|atmo\|dc1394\|dv\|dvb\|fb\|v4l\|v4l2\|pvr\|udev\)_/d' \
 	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
 	sed -e '/\(lib\|libaccess_\)\(probe_hal\)_/d' \
 	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd
@@ -213,67 +191,40 @@ install: build
 	ln -sf /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	rm -f debian/tmp/usr/share/man/man1/vlc-config.1
 	# Install stuff
-	dh_install -si --fail-missing
+	dh_install --fail-missing
 	# move .hosts
-	mkdir -p debian/vlc-data/etc/vlc/http
-	mv debian/vlc-data/usr/share/vlc/http/.hosts debian/vlc-data/etc/vlc/http
-	ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/http/.hosts
-	mkdir -p debian/vlc-data/etc/vlc/lua/http
-	mv debian/vlc-data/usr/share/vlc/lua/http/.hosts debian/vlc-data/etc/vlc/lua/http
-	ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/lua/http/.hosts
-
-
+	if test -d debian/vlc-data; then \
+		mkdir -p debian/vlc-data/etc/vlc/http; \
+		mv debian/vlc-data/usr/share/vlc/http/.hosts debian/vlc-data/etc/vlc/http; \
+		ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/http/.hosts; \
+		mkdir -p debian/vlc-data/etc/vlc/lua/http; \
+		mv debian/vlc-data/usr/share/vlc/lua/http/.hosts debian/vlc-data/etc/vlc/lua/http; \
+		ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/lua/http/.hosts; \
+	fi
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
-	# Check that we did not install a plugin linked with libX11 in vlc-nox
+	# Check that we did not install a plugin linked with libX11 or 
+	# libxcb in vlc-nox
 	BORKED=no; \
 	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \
-	  if objdump -x $$file | egrep -q '^ +NEEDED +libX11\.so'; then \
+	  if objdump -x $$file | egrep -q -e '^ +NEEDED +libX11\.so' \
+	                                  -e '^ +NEEDED +libxcb\.so'; then \
 	    BORKED=yes; \
-	    echo $$file depends on libX11; \
+	    echo $$file depends on libX11 or libxcb; \
 	  fi; \
 	done; \
 	if test "$$BORKED" = yes; then exit 1; fi
 endif
-
-# Build architecture-independent files here.
-binary-indep: build install
-	dh_testdir
-	dh_testroot
-	dh_link -i
-	dh_installdocs -p vlc-data
-	dh_installchangelogs ChangeLog -p vlc-data
-	dh_compress -i
-	dh_fixperms -i
-	dh_installdeb -i
-	dh_gencontrol -i
-	dh_md5sums -i
-	dh_builddeb -i
-
-# Build architecture-dependent files here.
-binary-arch: build install
-	dh_testdir
-	dh_testroot
-	dh_installdocs -p vlc
-	dh_installdocs -p vlc-nox
-	dh_link -s
 	dh_buildinfo -p vlc-nox
-	dh_installmenu -s
-	dh_installmime -s
-	dh_installman -s
-	dh_installchangelogs ChangeLog -p vlc
-	dh_installchangelogs ChangeLog -p vlc-nox
-	dh_lintian 
-	dh_bugfiles
-	dh_strip -s --dbg-package=vlc-dbg
-	dh_compress -s
-	dh_fixperms -s
-	dh_makeshlibs -plibvlc5
-	dh_makeshlibs -plibvlccore4
-	dh_installdeb -s
-	dh_shlibdeps -s -ldebian/libvlc5/usr/lib:debian/libvlccore4/usr/lib
-	dh_gencontrol -s
-	dh_md5sums -s
-	dh_builddeb -s
 
-binary: binary-indep binary-arch
-.PHONY: build clean install binary-indep binary-arch binary
+override_dh_strip:
+	dh_strip --dbg-package=vlc-dbg
+
+override_dh_installdocs:
+	dh_installdocs -p vlc
+	dh_installdocs -p vlc-data
+	dh_installdocs -p vlc-nox
+
+override_dh_installchangelogs:
+	dh_installchangelogs ChangeLog -p vlc
+	dh_installchangelogs ChangeLog -p vlc-data
+	dh_installchangelogs ChangeLog -p vlc-nox
