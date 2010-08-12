@@ -2,11 +2,9 @@ Description: Make vlc compatible with xulrunner 1.9.1
 Author: Christophe Mutricy <xtophe@videolan.org>
 Forwarded: not-needed
 
-Index: debian.git/config.h.in
-===================================================================
---- debian.git.orig/config.h.in	2010-06-21 01:50:57.000000000 +0200
-+++ debian.git/config.h.in	2010-06-23 00:47:04.664226507 +0200
-@@ -501,6 +501,9 @@
+--- a/config.h.in
++++ b/config.h.in
+@@ -504,6 +504,9 @@
  /* Define to 1 if you have the <npapi.h> header file. */
  #undef HAVE_NPAPI_H
  
@@ -16,185 +14,9 @@ Index: debian.git/config.h.in
  /* Define to 1 if you have the <npruntime.h> header file. */
  #undef HAVE_NPRUNTIME_H
  
-Index: debian.git/configure
-===================================================================
---- debian.git.orig/configure	2010-06-21 01:50:55.000000000 +0200
-+++ debian.git/configure	2010-06-23 00:47:04.674226144 +0200
-@@ -47000,33 +47000,39 @@
-       found=1
-     else
-       if test -n "$PKG_CONFIG"; then
--        for i in "${with_mozilla_pkg}" libxul {seamonkey,iceape,xulrunner,firefox,iceweasel,mozilla}-plugin; do
-+	for i in "${with_mozilla_pkg}" libxul {seamonkey,iceape,xulrunner,firefox,iceweasel,mozilla}-plugin; do
-           if test -n "$i"
-           then
-             echo "Trying to find $i package" >&5
--            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $i >= 1.9.2" >&5
--$as_echo_n "checking for $i >= 1.9.2... " >&6; }
--            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.2" 2>&5
-+            if $PKG_CONFIG --exists --print-errors "$i" 2>&5
-             then
-               echo "Using $i pkg-config package." >&5
-               echo "Using $i package." >&6
-               found=1
-               MOZILLA_CFLAGS=$(eval $PKG_CONFIG --cflags "$i" )
-               MOZILLA_LIBS=$(eval $PKG_CONFIG --libs "$i" )
--              { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
--$as_echo "yes" >&6; }
-               break
-             fi
--            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
--$as_echo "no" >&6; }
-           fi
--        done
-+	done
-       fi
-     fi
-     if test $found = 1; then :
- 
-         CPPFLAGS="${CPPFLAGS_save} ${MOZILLA_CFLAGS}"
-         MOZILLA_REQUIRED_HEADERS=1
-+        for ac_header in npfunctions.h
-+do :
-+  ac_fn_cxx_check_header_mongrel "$LINENO" "npfunctions.h" "ac_cv_header_npfunctions_h" "$ac_includes_default"
-+if test "x$ac_cv_header_npfunctions_h" = x""yes; then :
-+  cat >>confdefs.h <<_ACEOF
-+#define HAVE_NPFUNCTIONS_H 1
-+_ACEOF
-+
-+fi
-+
-+done
-+
-         for ac_header in npapi.h
- do :
-   ac_fn_cxx_check_header_mongrel "$LINENO" "npapi.h" "ac_cv_header_npapi_h" "$ac_includes_default"
-@@ -47060,7 +47066,7 @@
- done
- 
-         if test "${MOZILLA_REQUIRED_HEADERS}" = "0"; then
--            as_fn_error "Please install the Firefox development tools; plugin/npapi.h and/or plugin/npruntime.h were not found." "$LINENO" 5
-+            as_fn_error "Please install the Firefox development tools; mozilla-config.h, plugin/npapi.h and plugin/npruntime.h were not found." "$LINENO" 5
-         fi
-         MOZILLA_REQUIRED_HEADERS=
-         mozilla=:
-@@ -47068,11 +47074,12 @@
- 
- 
- 
--    eval "CPPFLAGS_mozilla="'"$'"{CPPFLAGS_mozilla} -DXP_UNIX"'"'
-+
-+    eval "CPPFLAGS_mozilla="'"$'"{CPPFLAGS_mozilla} -DXP_UNIX -DOJI"'"'
-     am_modules_with_cppflags="${am_modules_with_cppflags} mozilla"
- 
- 
--           if  test "${SYS}" != "darwin"; then :
-+	   if  test "${SYS}" != "darwin"; then :
- 
- 
- pkg_failed=no
-@@ -47132,13 +47139,13 @@
- 	echo "$XPM_PKG_ERRORS" >&5
- 
- 
--                as_fn_error "Please install the libXpm and libXt development files." "$LINENO" 5
-+		as_fn_error "Please install the libXpm and libXt development files." "$LINENO" 5
- 
- elif test $pkg_failed = untried; then
-      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
- $as_echo "no" >&6; }
- 
--                as_fn_error "Please install the libXpm and libXt development files." "$LINENO" 5
-+		as_fn_error "Please install the libXpm and libXt development files." "$LINENO" 5
- 
- else
- 	XPM_CFLAGS=$pkg_cv_XPM_CFLAGS
-@@ -47154,11 +47161,6 @@
- 
- 
- fi
--             if test "${have_xcb_keysyms}" != "yes"; then :
--
--               as_fn_error "Please install xcb-keysyms from xcb-utils." "$LINENO" 5
--
--fi
- 
- fi
- 
-@@ -47234,7 +47236,7 @@
- done
- test -n "$MOZILLA_CONFIG" || MOZILLA_CONFIG="no"
- 
--            test "${MOZILLA_CONFIG}" = "no" && as_fn_error "Please install the Mozilla development tools (version 1.9.2 or higher) or use --disable-mozilla." "$LINENO" 5
-+            test "${MOZILLA_CONFIG}" = "no" && as_fn_error "Please install the Mozilla development tools. mozilla-config was not found." "$LINENO" 5
- 
- 
- fi
-@@ -47492,8 +47494,22 @@
-     fi
- 
-     real_mozilla_sdk="`cd ${with_mozilla_sdk_path} 2>/dev/null && pwd`"
--    CPPFLAGS="${CPPFLAGS_save} -I${real_mozilla_sdk}/include"
-+    CPPFLAGS="${CPPFLAGS_save} -I${real_mozilla_sdk} -I${real_mozilla_sdk}/include"
-     MOZILLA_REQUIRED_HEADERS=1
-+    for ac_header in mozilla-config.h
-+do :
-+  ac_fn_cxx_check_header_mongrel "$LINENO" "mozilla-config.h" "ac_cv_header_mozilla_config_h" "$ac_includes_default"
-+if test "x$ac_cv_header_mozilla_config_h" = x""yes; then :
-+  cat >>confdefs.h <<_ACEOF
-+#define HAVE_MOZILLA_CONFIG_H 1
-+_ACEOF
-+
-+else
-+  MOZILLA_REQUIRED_HEADERS=0
-+fi
-+
-+done
-+
-     for ac_header in npapi.h
- do :
-   ac_fn_cxx_check_header_mongrel "$LINENO" "npapi.h" "ac_cv_header_npapi_h" "$ac_includes_default"
-@@ -47535,10 +47551,29 @@
-     PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
- 
- 
--    eval "CPPFLAGS_mozilla="'"$'"{CPPFLAGS_mozilla} -DXPCOM_GLUE -DHAVE_CPP_MODERN_SPECIALIZE_TEMPLATE_SYNTAX -I${real_mozilla_sdk}/include"'"'
-+    eval "CPPFLAGS_mozilla="'"$'"{CPPFLAGS_mozilla} -DXPCOM_GLUE -DHAVE_CPP_MODERN_SPECIALIZE_TEMPLATE_SYNTAX -I${real_mozilla_sdk} -I${real_mozilla_sdk}/include -I${real_mozilla_sdk}/embedstring/include -I${real_mozilla_sdk}/xpcom/include -I${real_mozilla_sdk}/nspr/include -I${real_mozilla_sdk}/string/include -I${real_mozilla_sdk}/plugin/include -I${real_mozilla_sdk}/java/include"'"'
-     am_modules_with_cppflags="${am_modules_with_cppflags} mozilla"
- 
- 
-+    if ${need_xpcom_libs}; then
-+
-+
-+    eval "LIBS_mozilla="'"'"-L${real_mozilla_sdk}/embedstring/bin -L${real_mozilla_sdk}/xpcom/bin -L${real_mozilla_sdk}/nspr/bin -L${real_mozilla_sdk}/string/bin -L${real_mozilla_sdk}/lib -lnspr4 -lplds4 -lplc4 -lxpcomglue "'$'"{LIBS_mozilla}"'"'
-+    am_modules_with_libs="${am_modules_with_libs} mozilla"
-+
-+
-+      if test "${SYS}" = "mingw32"; then
-+                if test -d "${real_mozilla_sdk}/embedstring/bin"
-+        then
-+
-+
-+    eval "LIBS_mozilla="'"'"-lembedstring "'$'"{LIBS_mozilla}"'"'
-+    am_modules_with_libs="${am_modules_with_libs} mozilla"
-+
-+
-+        fi
-+      fi
-+    fi
-     MOZILLA_SDK_PATH="${real_mozilla_sdk}"
- 
-     if test -n "${CYGPATH}"; then
-Index: debian.git/configure.ac
-===================================================================
---- debian.git.orig/configure.ac	2010-06-20 22:17:11.000000000 +0200
-+++ debian.git/configure.ac	2010-06-23 00:47:04.684226299 +0200
-@@ -4550,29 +4550,27 @@
-       found=1
-     else
-       if test -n "$PKG_CONFIG"; then
--        for i in "${with_mozilla_pkg}" libxul {seamonkey,iceape,xulrunner,firefox,iceweasel,mozilla}-plugin; do
-+	for i in "${with_mozilla_pkg}" libxul {seamonkey,iceape,xulrunner,firefox,iceweasel,mozilla}-plugin; do
+--- a/configure.ac
++++ b/configure.ac
+@@ -4561,25 +4561,23 @@
            if test -n "$i"
            then
              echo "Trying to find $i package" >&AS_MESSAGE_LOG_FD
@@ -223,7 +45,7 @@ Index: debian.git/configure.ac
          AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
          AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
            [#if HAVE_NPAPI_H
-@@ -4580,24 +4578,22 @@
+@@ -4587,21 +4585,19 @@
             #endif
            ])
          if test "${MOZILLA_REQUIRED_HEADERS}" = "0"; then
@@ -253,24 +75,17 @@ Index: debian.git/configure.ac
 +	     ])
            ])
          ])
--        VLC_ADD_CPPFLAGS([mozilla],[${CPPFLAGS} ${XPM_CFLAGS}])
-+	VLC_ADD_CPPFLAGS([mozilla],[${CPPFLAGS} ${XPM_CFLAGS}])
-         VLC_ADD_LIBS([mozilla],[${MOZILLA_LIBS} ${XPM_LIBS}])
-         VLC_ADD_PLUGIN([mozilla])
-         PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
-@@ -4606,9 +4602,9 @@
-           ],
-           [
+         VLC_ADD_CPPFLAGS([mozilla],[${CPPFLAGS} ${XPM_CFLAGS}])
+@@ -4615,7 +4611,7 @@
              AC_PATH_PROGS(MOZILLA_CONFIG,
--            [mozilla-config seamonkey-config xulrunner-config],
-+	    [mozilla-config seamonkey-config xulrunner-config],
+             [mozilla-config seamonkey-config xulrunner-config],
          [no])
 -            test "${MOZILLA_CONFIG}" = "no" && AC_MSG_ERROR([Please install the Mozilla development tools (version 1.9.2 or higher) or use --disable-mozilla.])
 +            test "${MOZILLA_CONFIG}" = "no" && AC_MSG_ERROR([Please install the Mozilla development tools. mozilla-config was not found.])
            ]
          )
      dnl pkg-config failed but we might have found a mozilla-config
-@@ -4664,8 +4660,9 @@
+@@ -4671,8 +4667,9 @@
      fi
  
      real_mozilla_sdk="`cd ${with_mozilla_sdk_path} 2>/dev/null && pwd`"
@@ -281,7 +96,7 @@ Index: debian.git/configure.ac
      AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
      AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
          [#if HAVE_NPAPI_H
-@@ -4679,7 +4676,17 @@
+@@ -4686,7 +4683,17 @@
      MOZILLA_REQUIRED_HEADERS=
      mozilla=:
      PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
@@ -300,10 +115,8 @@ Index: debian.git/configure.ac
      MOZILLA_SDK_PATH="${real_mozilla_sdk}"
  
      if test -n "${CYGPATH}"; then
-Index: debian.git/projects/mozilla/Makefile.am
-===================================================================
---- debian.git.orig/projects/mozilla/Makefile.am	2010-04-27 23:44:27.000000000 +0200
-+++ debian.git/projects/mozilla/Makefile.am	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/Makefile.am
++++ b/projects/mozilla/Makefile.am
 @@ -67,7 +67,8 @@
  	-F/System/Library/Frameworks/CoreFoundation.framework $(moz_CFLAGS) \
  	-I/Developer/Headers/FlatCarbon -fno-common -fpascal-strings \
@@ -314,24 +127,8 @@ Index: debian.git/projects/mozilla/Makefile.am
  LDFLAGS_mozilla_EXTRA = -no-undefined -bundle -Wl,-read_only_relocs -Wl,suppress \
  	-Wl,-headerpad_max_install_names -shrext $(LIBEXT) -Wl,-framework,Carbon -Wl,-framework,System
  
-Index: debian.git/projects/mozilla/Makefile.in
-===================================================================
---- debian.git.orig/projects/mozilla/Makefile.in	2010-06-21 01:51:16.000000000 +0200
-+++ debian.git/projects/mozilla/Makefile.in	2010-06-23 00:47:04.684226299 +0200
-@@ -740,7 +740,8 @@
- @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-F/System/Library/Frameworks/CoreFoundation.framework $(moz_CFLAGS) \
- @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-I/Developer/Headers/FlatCarbon -fno-common -fpascal-strings \
- @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -DXP_MACOSX=1 \
--@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-DNO_X11=1 -DUSE_SYSTEM_CONSOLE=1 -pipe -fmessage-length=0 
-+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-DNO_X11=1 -DUSE_SYSTEM_CONSOLE=1 -pipe -fmessage-length=0 \
-+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-include mozilla-config.h
- 
- @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@CPPFLAGS_mozilla_EXTRA = -DXP_WIN -DXP_WIN32
- @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@LDFLAGS_mozilla_EXTRA = -no-undefined -bundle -Wl,-read_only_relocs -Wl,suppress \
-Index: debian.git/projects/mozilla/control/npolibvlc.cpp
-===================================================================
---- debian.git.orig/projects/mozilla/control/npolibvlc.cpp	2010-04-27 23:44:27.000000000 +0200
-+++ debian.git/projects/mozilla/control/npolibvlc.cpp	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/control/npolibvlc.cpp
++++ b/projects/mozilla/control/npolibvlc.cpp
 @@ -28,6 +28,11 @@
  #include <string.h>
  #include <stdlib.h>
@@ -409,10 +206,8 @@ Index: debian.git/projects/mozilla/control/npolibvlc.cpp
              h+=len;
          }
          *h='\0';
-Index: debian.git/projects/mozilla/control/nporuntime.cpp
-===================================================================
---- debian.git.orig/projects/mozilla/control/nporuntime.cpp	2010-04-27 23:44:27.000000000 +0200
-+++ debian.git/projects/mozilla/control/nporuntime.cpp	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/control/nporuntime.cpp
++++ b/projects/mozilla/control/nporuntime.cpp
 @@ -27,16 +27,21 @@
  #include <string.h>
  #include <stdlib.h>
@@ -438,10 +233,8 @@ Index: debian.git/projects/mozilla/control/nporuntime.cpp
      }
      return val;
  }
-Index: debian.git/projects/mozilla/support/npmac.cpp
-===================================================================
---- debian.git.orig/projects/mozilla/support/npmac.cpp	2010-04-27 23:44:55.000000000 +0200
-+++ debian.git/projects/mozilla/support/npmac.cpp	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/support/npmac.cpp
++++ b/projects/mozilla/support/npmac.cpp
 @@ -76,13 +76,10 @@
  #undef XP_UNIX
  #endif
@@ -925,10 +718,8 @@ Index: debian.git/projects/mozilla/support/npmac.cpp
          }
  
          //
-Index: debian.git/projects/mozilla/support/npunix.c
-===================================================================
---- debian.git.orig/projects/mozilla/support/npunix.c	2010-04-13 02:22:27.000000000 +0200
-+++ debian.git/projects/mozilla/support/npunix.c	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/support/npunix.c
++++ b/projects/mozilla/support/npunix.c
 @@ -46,12 +46,13 @@
  #include "config.h"
  
@@ -946,10 +737,8 @@ Index: debian.git/projects/mozilla/support/npunix.c
  #endif
  
  #include "../vlcshell.h"
-Index: debian.git/projects/mozilla/support/npwin.cpp
-===================================================================
---- debian.git.orig/projects/mozilla/support/npwin.cpp	2010-04-27 23:45:07.000000000 +0200
-+++ debian.git/projects/mozilla/support/npwin.cpp	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/support/npwin.cpp
++++ b/projects/mozilla/support/npwin.cpp
 @@ -30,15 +30,19 @@
  
  //#define OJI 1
@@ -983,10 +772,8 @@ Index: debian.git/projects/mozilla/support/npwin.cpp
  {
      return g_pNavigatorFuncs->memalloc(size);
  }
-Index: debian.git/projects/mozilla/vlcplugin.cpp
-===================================================================
---- debian.git.orig/projects/mozilla/vlcplugin.cpp	2010-06-08 00:57:45.000000000 +0200
-+++ debian.git/projects/mozilla/vlcplugin.cpp	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/vlcplugin.cpp
++++ b/projects/mozilla/vlcplugin.cpp
 @@ -28,11 +28,14 @@
   *****************************************************************************/
  #include "config.h"
@@ -1068,10 +855,8 @@ Index: debian.git/projects/mozilla/vlcplugin.cpp
                  }
              }
              NPN_ReleaseVariantValue(&result);
-Index: debian.git/projects/mozilla/vlcplugin.h
-===================================================================
---- debian.git.orig/projects/mozilla/vlcplugin.h	2010-05-20 18:25:11.000000000 +0200
-+++ debian.git/projects/mozilla/vlcplugin.h	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/vlcplugin.h
++++ b/projects/mozilla/vlcplugin.h
 @@ -30,16 +30,10 @@
  #define __VLCPLUGIN_H__
  
@@ -1137,10 +922,8 @@ Index: debian.git/projects/mozilla/vlcplugin.h
  
      /* plugin properties */
      int      b_stream;
-Index: debian.git/projects/mozilla/vlcshell.cpp
-===================================================================
---- debian.git.orig/projects/mozilla/vlcshell.cpp	2010-05-03 11:26:24.000000000 +0200
-+++ debian.git/projects/mozilla/vlcshell.cpp	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/vlcshell.cpp
++++ b/projects/mozilla/vlcshell.cpp
 @@ -31,6 +31,11 @@
  #include <string.h>
  #include <stdlib.h>
@@ -1215,10 +998,8 @@ Index: debian.git/projects/mozilla/vlcshell.cpp
  {
      /* TODO */
      return len;
-Index: debian.git/projects/mozilla/vlcshell.h
-===================================================================
---- debian.git.orig/projects/mozilla/vlcshell.h	2010-04-27 23:44:27.000000000 +0200
-+++ debian.git/projects/mozilla/vlcshell.h	2010-06-23 00:47:04.684226299 +0200
+--- a/projects/mozilla/vlcshell.h
++++ b/projects/mozilla/vlcshell.h
 @@ -27,20 +27,11 @@
  char * NPP_GetMIMEDescription( void );
  
