@@ -162,6 +162,37 @@ Depends: vlc,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
+Xb-Npp-Applications: 92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a,
+                     ec8030f7-c20a-464f-9b0e-13a3a9e97384
+Xb-Npp-Name: VLC Multimedia Plugin
+Xb-Npp-Description: play video and audio in Firefox using the VLC Multimedia Player
+Xb-Npp-File: libvlcplugin.so
+Xb-Npp-MimeType: application/mpeg4-iod,
+                 application/mpeg4-muxcodetable,
+                 application/ogg,
+                 application/x-google-vlc-plugin,
+                 application/x-mplayer2,
+                 application/x-ogg,
+                 application/x-vlc-plugin,
+                 audio/3gpp,
+                 audio/3gpp2,
+                 audio/mpeg,
+                 audio/mpeg4,
+                 audio/wav,
+                 audio/x-mpeg,
+                 audio/x-wav,
+                 video/3gpp,
+                 video/3gpp2,
+                 video/mpeg,
+                 video/mpeg-system,
+                 video/mpeg4,
+                 video/quicktime,
+                 video/x-mpeg,
+                 video/x-mpeg-system,
+                 video/x-ms-asf,
+                 video/x-ms-asf-plugin,
+                 video/x-ms-wmv,
+                 video/x-msvideo
 Description: multimedia plugin for web browsers based on VLC
  This plugin adds support for MPEG, MPEG2, DVD, DivX, Ogg/Vorbis and many
  more formats to your Gecko-based web browser (Firefox, Galeon, etc.). The
