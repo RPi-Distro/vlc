@@ -15,3 +15,4 @@
 524-Mozilla-More-fixes-for-XulRunner-1.9.2.patch
 525-Mozilla-more-fixes.patch
 600-drop-OJI-xul-192.patch
+CVE-2010-2937.patch

@@ -1,3 +1,13 @@
+vlc (1.0.6-1ubuntu1.2) lucid-security; urgency=low
+
+  * SECURITY UPDATE: Insufficient input validation in VLC TagLib plugin
+    (LP: #616510).
+    - debian/patches/CVE-2010-2937.patch: fix NULL deferences after dynamic
+      cast, thanks to Lukáš Lalinský
+    - CVE-2010-2937
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 17 Aug 2010 17:14:14 +0200
+
 vlc (1.0.6-1ubuntu1.1) lucid-proposed; urgency=low
 
   * debian/vlc{,-nox}.install:
