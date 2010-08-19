@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 51633b2bff13685e4ce1a02a4636988c3541f87a $
+ * $Id: 9b580e1e7766d513e5f68658a02f3cfae104b5ea $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -200,5 +200,8 @@ int main( int i_argc, const char *ppsz_argv[] )
     for (int i = 1; i < argc; i++)
         LocaleFree (argv[i]);
 
-    return 0;
+    /* Do not run exit handlers. Some of them are buggy (e.g. KDE IO scheduler)
+     * and crash. Also some will crash because their library may be already
+     * unloaded (dlclose()). */
+    _exit (0);
 }

@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 64fa4aed54d1130f1facb2d47c4118ea7c6f56d3 $
+ * $Id: e9e85de39cc8f67c7d0148623999a5afd5101c04 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -25,6 +25,7 @@
 #ifdef X11_SKINS
 
 #include <X11/Xatom.h>
+#include <limits.h>
 
 #include "../src/generic_window.hpp"
 #include "../src/vlcproc.hpp"

@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 97ab4c92f8091120930b1045e4fd907a3c7cd81b $
+ * $Id: abd2e5583ce31da066f6e4b05230747ac5a23dd4 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,6 +28,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <X11/Xlib.h>
+#include <limits.h>
 
 #include "x11_factory.hpp"
 #include "x11_display.hpp"
