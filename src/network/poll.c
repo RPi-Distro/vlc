@@ -2,7 +2,7 @@
  * poll.c: I/O event multiplexing
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: eb97c83db07749449b3dfac987ff927a6bf089fe $
+ * $Id: 575bb10745ef34c26bdd5c732bebb5c1a017da8e $
  *
  * Author: Rémi Denis-Courmont
  *
@@ -30,7 +30,7 @@
 #include <vlc_network.h>
 
 
-#if HAVE_MAEMO
+#ifdef HAVE_MAEMO
 # include <signal.h>
 # include <errno.h>
 # include <poll.h>

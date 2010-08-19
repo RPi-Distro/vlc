@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: 01a5acb2ecc669fc1f09b6f5976c331432cb2491 $
+ * $Id: 6855d335d6262706c4291a9f35d8cc797fa93f9a $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -80,7 +80,11 @@
 #     define LIBVLC_FORMAT(x,y) __attribute__ ((format(printf,x,y)))
 #   endif
 #   define LIBVLC_FORMAT_ARG(x) __attribute__ ((format_arg(x)))
-#   define LIBVLC_USED __attribute__ ((warn_unused_result))
+#   if __GNUC__ > 3 || (__GNUC__ == 3 && (__GNUC_MINOR__ >= 4))
+#     define LIBVLC_USED __attribute__ ((warn_unused_result))
+#   else
+#     define LIBVLC_USED
+#   endif
 #   define LIBVLC_MALLOC __attribute__ ((malloc))
 #else
 #   define LIBVLC_FORMAT(x,y)

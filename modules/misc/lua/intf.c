@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: bbed53bae8bc53a953265f0e5b6eedd8e9c646ba $
+ * $Id: eb87685a8e4ef56cf05c76ec9611946a86f0c185 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -73,7 +73,7 @@ static const struct
 } pp_shortcuts[] = {
     { "luarc", "rc" },
     { "rc", "rc" },
-    { "luahotkeys", "hotkeys" },
+    /* { "luahotkeys", "hotkeys" }, */
     /* { "hotkeys", "hotkeys" }, */
     { "luatelnet", "telnet" },
     { "telnet", "telnet" },

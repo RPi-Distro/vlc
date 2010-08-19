@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 386040e94d6c1c4d6b0cd3db81ddc85959e221f9 $
+ * $Id: 1e89dfbbe0b160aa88e530de30ae3da34004a64e $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -1077,7 +1077,7 @@ static int Input( vlc_object_t *p_this, char const *psz_cmd,
     }
     else if ( !strcmp( psz_cmd, "normal" ) )
     {
-        var_SetInteger( p_input, "rate", INPUT_RATE_DEFAULT );
+        var_SetFloat( p_input, "rate", 1. );
         i_error = VLC_SUCCESS;
     }
     else if ( !strcmp( psz_cmd, "frame" ) )

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: 0684a3880c527cc51e94ea988b1e8945ce7d5f9a $
+ * $Id: 4d217f392a0be5dc015c4b0c15bcc670efbf9bb8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -303,11 +303,16 @@ static int parseURL( vlc_url_t *url, const char *path )
     if( url->i_port <= 0 )
         url->i_port = IPPORT_FTP; /* default port */
 
+    if( url->psz_path == NULL )
+        return VLC_SUCCESS;
     /* FTP URLs are relative to user's default directory (RFC1738 §3.2)
     For absolute path use ftp://foo.bar//usr/local/etc/filename */
     /* FIXME: we should issue a series of CWD, one per slash */
-    if( url->psz_path == NULL )
-        return VLC_SUCCESS;
+    if( url->psz_path )
+    {
+        assert( url->psz_path[0] == '/' );
+        url->psz_path++;
+    }
 
     char *type = strstr( url->psz_path, ";type=" );
     if( type )
@@ -354,7 +359,7 @@ static int InOpen( vlc_object_t *p_this )
         msg_Dbg( p_access, "cannot get file size" );
         msg_Dbg( p_access, "will try to get directory contents" );
         if( ftp_SendCommand( p_this, p_sys, "CWD %s", p_sys->url.psz_path ) < 0
-         || ftp_ReadCommand( p_this, p_sys, NULL, &psz_arg ) != 2 )
+         || ftp_ReadCommand( p_this, p_sys, NULL, NULL ) != 2 )
         {
             msg_Err( p_access, "file or directory doesn't exist" );
             net_Close( p_sys->fd_cmd );
@@ -520,7 +525,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
         }
         else
         {
-            snprintf( (char*)p_buffer, i_len, "ftp://%s:%d%s/%s\n",
+            snprintf( (char*)p_buffer, i_len, "ftp://%s:%d/%s/%s\n",
                       p_sys->url.psz_host, p_sys->url.i_port,
                       p_sys->url.psz_path, psz_line );
             free( psz_line );
@@ -577,7 +582,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_CAN_SEEK:
             pb_bool = (bool*)va_arg( args, bool* );
-            *pb_bool = true;
+            *pb_bool = !p_access->p_sys->directory;
             break;
         case ACCESS_CAN_FASTSEEK:
             pb_bool = (bool*)va_arg( args, bool* );

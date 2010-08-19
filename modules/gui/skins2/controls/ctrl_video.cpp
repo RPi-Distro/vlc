@@ -2,7 +2,7 @@
  * ctrl_video.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 823cac46894955bf62fc484cef9de64c9bad1d90 $
+ * $Id: c079f9828873f23b1e35f22fc5eb6c4a12c89693 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -122,6 +122,9 @@ void CtrlVideo::unsetLayout()
 
 void CtrlVideo::resizeControl( int width, int height )
 {
+    if( !m_bAutoResize )
+        return;
+
     WindowManager &rWindowManager =
         getIntf()->p_sys->p_theme->getWindowManager();
 

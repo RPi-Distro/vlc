@@ -214,6 +214,7 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	done; \
 	if test "$$BORKED" = yes; then exit 1; fi
 endif
+	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-nox debian/source_vlc.py usr/share/apport/package-hooks/)
 	dh_buildinfo -p vlc-nox
 
 override_dh_strip:

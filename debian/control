@@ -23,7 +23,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                libcaca-dev (>= 0.99.beta4),
                libcddb2-dev,
                libcdio-dev,
-               libdc1394-22-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], 
+               libdc1394-22-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libdca-dev,
                libdirac-dev,
                libdvbpsi-dev | libdvbpsi5-dev,
@@ -80,11 +80,11 @@ Build-Depends: debhelper (>= 7.2.3~),
                libx11-dev,
                libx11-xcb-dev,
                libx264-dev,
-               libxcb1-dev,
                libxcb-keysyms1-dev,
                libxcb-randr0-dev,
                libxcb-shm0-dev,
                libxcb-xv0-dev,
+               libxcb1-dev,
                libxext-dev,
                libxml2-dev,
                libxpm-dev,
@@ -164,37 +164,37 @@ Depends: vlc,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
-Xb-Npp-Applications: ec8030f7-c20a-464f-9b0e-13a3a9e97384,
-                     92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a
+Xb-Npp-Applications: 92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a,
+                     ec8030f7-c20a-464f-9b0e-13a3a9e97384
 Xb-Npp-Name: VLC Multimedia Plugin
-Xb-Npp-Description: play video and audio in firefox using the VLC Multimedai Player
+Xb-Npp-Description: play video and audio in Firefox using the VLC Multimedia Player
 Xb-Npp-File: libvlcplugin.so
-Xb-Npp-MimeType: audio/mpeg,
-                 audio/x-mpeg,
-                 video/mpeg,
-                 video/x-mpeg,
-                 video/mpeg-system,
-                 video/x-mpeg-system,
-                 video/mpeg4,
-                 audio/mpeg4,
-                 application/mpeg4-iod,
+Xb-Npp-MimeType: application/mpeg4-iod,
                  application/mpeg4-muxcodetable,
-                 video/x-msvideo,
-                 video/quicktime,
-                 application/x-ogg,
                  application/ogg,
-                 application/x-vlc-plugin,
-                 video/x-ms-asf-plugin,
-                 video/x-ms-asf,
-                 application/x-mplayer2,
-                 video/x-ms-wmv,
                  application/x-google-vlc-plugin,
-                 audio/wav,
-                 audio/x-wav,
+                 application/x-mplayer2,
+                 application/x-ogg,
+                 application/x-vlc-plugin,
                  audio/3gpp,
-                 video/3gpp,
                  audio/3gpp2,
-                 video/3gpp2
+                 audio/mpeg,
+                 audio/mpeg4,
+                 audio/wav,
+                 audio/x-mpeg,
+                 audio/x-wav,
+                 video/3gpp,
+                 video/3gpp2,
+                 video/mpeg,
+                 video/mpeg-system,
+                 video/mpeg4,
+                 video/quicktime,
+                 video/x-mpeg,
+                 video/x-mpeg-system,
+                 video/x-ms-asf,
+                 video/x-ms-asf-plugin,
+                 video/x-ms-wmv,
+                 video/x-msvideo
 Description: multimedia plugin for web browsers based on VLC
  This plugin adds support for MPEG, MPEG2, DVD, DivX, Ogg/Vorbis and many
  more formats to your Gecko-based web browser (Firefox, Galeon, etc.). The
@@ -208,7 +208,7 @@ Description: multimedia plugin for web browsers based on VLC
 
 Package: vlc
 Architecture: any
-Depends: ttf-dejavu-core,
+Depends: ttf-freefont,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
@@ -265,7 +265,7 @@ Package: vlc-nox
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Replaces: vlc (<= 1.0.6-1ubuntu1)
+Replaces: vlc (<< 1.1.0)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,

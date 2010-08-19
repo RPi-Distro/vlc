@@ -2,7 +2,7 @@
  * vlm.c: Generic lua VLM wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 32f448e024fec9daf2abc836c1ca3380b340173d $
+ * $Id: d48755c1769fd6e644d536e4f5d20b5bd9cb2acd $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -100,7 +100,7 @@ static void push_message( lua_State *L, vlm_message_t *message )
         }
         lua_setfield( L, -2, "children" );
     }
-    else
+    if ( message->psz_value )
     {
         lua_pushstring( L, message->psz_value );
         lua_setfield( L, -2, "value" );

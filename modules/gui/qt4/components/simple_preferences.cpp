@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: ecbc26ab07ef98ac4d37688d092ba3f00021dc5c $
+ * $Id: 8b577789fef945216ece29f16a0ebcafd2568816 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -659,7 +659,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
             p_config = config_FindConfig( VLC_OBJECT(p_intf), "hotkeys-mousewheel-mode" );
             control = new IntegerListConfigControl( VLC_OBJECT(p_intf),
-                    p_config, false, this, gLayout, line );
+                    p_config, this, false, gLayout, line );
             controls.append( control );
 
             break;

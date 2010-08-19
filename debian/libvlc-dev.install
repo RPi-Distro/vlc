@@ -1,4 +1,4 @@
-usr/lib/libvlc.so
-usr/lib/libvlc.a
-usr/lib/pkgconfig/libvlc.pc
 usr/include/vlc/*.h
+usr/lib/libvlc.a
+usr/lib/libvlc.so
+usr/lib/pkgconfig/libvlc.pc

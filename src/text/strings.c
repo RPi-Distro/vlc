@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2008-2009 Rémi Denis-Courmont
- * $Id: 23391d2b310e0b4793e544b1742c7b20a40b0340 $
+ * $Id: 3f287ebf91843ae5e5a1d17315b274b869c75e42 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -1061,11 +1061,15 @@ char *make_URI (const char *path)
 
     char *buf;
 #ifdef WIN32
+    /* Drive letter */
     if (isalpha (path[0]) && (path[1] == ':'))
     {
         if (asprintf (&buf, "file:///%c:", path[0]) == -1)
             buf = NULL;
         path += 2;
+# warning Drive letter-relative path not implemented!
+        if (path[0] != DIR_SEP_CHAR)
+            return NULL;
     }
     else
 #endif
@@ -1098,6 +1102,9 @@ char *make_URI (const char *path)
             snprintf (buf, sizeof (SMB_SCHEME) + 3 + hostlen,
                       SMB_SCHEME"://%s", path + 2);
         path += 2 + hostlen;
+
+        if (path[0] == '\0')
+            return buf; /* Hostname without path */
     }
     else
     if (path[0] != DIR_SEP_CHAR)
