@@ -1,4 +1,4 @@
-vlc (1.1.3-1+exp1) UNRELEASED; urgency=low
+vlc (1.1.3-1+exp1) experimental; urgency=low
 
   [ Christophe Mutricy ]
   * Depends on xulrunner-dev >= 1.9.2
@@ -7,8 +7,12 @@ vlc (1.1.3-1+exp1) UNRELEASED; urgency=low
   [ Benjamin Drung ]
   * Switch to dh7.
   * Move libavcodec plugin from vlc-nox to vlc.
+  * Add Xb-Npp header to mozilla-plugin-vlc package. (Not doing anything
+    on Debian at the moment, see #484010)
+  * Add apport hook to include more VLC dependencies in bug reports and
+    install it on Ubuntu.
 
- -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 05 Aug 2010 01:42:50 +0200
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 19 Aug 2010 22:27:45 +0200
 
 vlc (1.1.3-1) unstable; urgency=medium
 
