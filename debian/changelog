@@ -1,22 +1,16 @@
-vlc (1.1.2-2~1.gbp86f815) UNRELEASED; urgency=medium
+vlc (1.1.3-1) unstable; urgency=medium
 
-  ** SNAPSHOT build @86f8157f878d77cefc35e672353dade8f3e432bd **
-
-  [ Benjamin Drung ]
-  * 502_xulrunner_191.diff: Shorten it and split it into two parts.
+  * New upstream release.
+    + Fix insufficient input validation in TagLib plugin.
+      (VideoLAN-SA-1004, CVE-2010-2937) (Closes: #592669, LP: #616510)
+    + Set urgency to medium
+  * 502_xulrunner_191.diff: Shorten, split into two parts, and refresh it.
   * Drop 102_dejavu_font.diff and depend on ttf-freefont instead of ttf-
     dejavu-core. ttf-freefont is very likely to be present on a Debian
     box, because cups depends on it.
   * Drop 501_decrease_alsa_buffer.diff. The pulseaudio output module has
     a higher priority than the ALSA output plugin and should be used on
     pulseaudio systems.
-
-  [Christophe Mutricy]
-  * Security: Fix insufficient input validation in TagLib plugin.
-    + Patch taken upstream - thanks to Lukáš Lalinský
-    + CVE-2010-2937, VideoLAN-SA-1004
-    + Closes: #592669, LP: #616510
-    + Set urgency to medium
 
  -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 19 Aug 2010 13:33:09 +0200
 
