@@ -16,7 +16,7 @@ Forwarded: not-needed
  
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4561,25 +4561,23 @@
+@@ -4568,25 +4568,23 @@
            if test -n "$i"
            then
              echo "Trying to find $i package" >&AS_MESSAGE_LOG_FD
@@ -45,7 +45,7 @@ Forwarded: not-needed
          AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
          AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
            [#if HAVE_NPAPI_H
-@@ -4587,21 +4585,19 @@
+@@ -4594,21 +4592,19 @@
             #endif
            ])
          if test "${MOZILLA_REQUIRED_HEADERS}" = "0"; then
@@ -76,7 +76,7 @@ Forwarded: not-needed
            ])
          ])
          VLC_ADD_CPPFLAGS([mozilla],[${CPPFLAGS} ${XPM_CFLAGS}])
-@@ -4615,7 +4611,7 @@
+@@ -4622,7 +4618,7 @@
              AC_PATH_PROGS(MOZILLA_CONFIG,
              [mozilla-config seamonkey-config xulrunner-config],
          [no])
@@ -85,7 +85,7 @@ Forwarded: not-needed
            ]
          )
      dnl pkg-config failed but we might have found a mozilla-config
-@@ -4671,8 +4667,9 @@
+@@ -4678,8 +4674,9 @@
      fi
  
      real_mozilla_sdk="`cd ${with_mozilla_sdk_path} 2>/dev/null && pwd`"
@@ -96,7 +96,7 @@ Forwarded: not-needed
      AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
      AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
          [#if HAVE_NPAPI_H
-@@ -4686,7 +4683,17 @@
+@@ -4693,7 +4690,17 @@
      MOZILLA_REQUIRED_HEADERS=
      mozilla=:
      PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
