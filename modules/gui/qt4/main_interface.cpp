@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 91f014307b3a1e23fb98117f21380e821d28477b $
+ * $Id: 5893d196b4fa552c7ab324649bec023fbdc1c254 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -465,6 +465,14 @@ inline void MainInterface::createStatusBar()
 
     CONNECT( THEMIM->getIM(), seekRequested( float ),
              timeLabel, setDisplayPosition( float ) );
+
+    /* This shouldn't be necessary, but for somehow reason, the statusBarr
+       starts at height of 20px and when a text is shown it needs more space.
+       But, as the QMainWindow policy doesn't allow statusBar to change QMW's
+       geometry, we need to force a height. If you have a better idea, please
+       tell me -- jb
+     */
+    statusBarr->setFixedHeight( statusBarr->sizeHint().height() + 2 );
 }
 
 /**********************************************************************

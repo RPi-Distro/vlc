@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 4eef5d82ed913b2695b34d740cebcaf75c3fabdc $
+ * $Id: 66a9b84f1ec3ae24a7c4769dde15a6f3ff7c6e7b $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -272,6 +272,11 @@ static void Close( vlc_object_t *p_this )
             if( tk->es ) es_out_Del( p_demux->out, tk->es );
         }
     }
+
+    /* Free the array of titles */
+    for( int i = 0; i < p_sys->i_titles; i++ )
+        vlc_input_title_Delete( p_sys->titles[i] );
+    TAB_CLEAN( p_sys->i_titles, p_sys->titles );
 
     /* Close libdvdread */
     if( p_sys->p_title ) DVDCloseFile( p_sys->p_title );

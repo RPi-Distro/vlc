@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 7ce6bd10eb5d17fdd418cbb128ce0e529f15e049 $
+ * $Id: f2d7df2f3eee46b46077d4772153ab5697739976 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -839,7 +839,7 @@ void matroska_segment_c::ParseChapterAtom( int i_level, KaxChapterAtom *ca, chap
         if( MKV_IS_ID( l, KaxChapterUID ) )
         {
             chapters.i_uid = uint64_t(*(KaxChapterUID*)l);
-            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterUID: %"PRId64"", chapters.i_uid );
+            msg_Dbg( &sys.demuxer, "|   |   |   |   + ChapterUID: %"PRIu64"", chapters.i_uid );
         }
         else if( MKV_IS_ID( l, KaxChapterFlagHidden ) )
         {

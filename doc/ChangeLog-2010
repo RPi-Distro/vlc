@@ -1,3 +1,688 @@
+commit 66f2507c454c1be686a05cfbf35373c149af27f8
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 18 14:52:59 2010 +0200
+
+    Update NEWS accordingly to i18n update
+
+commit 4da79ec244a09c13b03e405c02779f366802d15b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 18 14:51:34 2010 +0200
+
+    Update bn.po
+
+commit bc589a6d4bf54eac9c000b17a2fb2486c03d0040
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 18 14:12:09 2010 +0200
+
+    NEWS proof-reading
+
+commit d2dfbc15b0f7235f7d64e59ae32f888e78af2c04
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 18 14:01:06 2010 +0200
+
+    Update .po
+
+commit b1b6bf7e90de4b8506dcc51a8f4f65b8590a2ba9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 18 13:54:34 2010 +0200
+
+    NEWS about playlist and skins2
+
+commit 17165ed4ded6cf85b9b79abc7431a229c78d4376
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Tue Aug 17 19:23:13 2010 +0200
+
+    qadd is an armv5e instruction, check for an ARMv6+ instruction
+    (cherry picked from commit 552136938058e86d947a9eda6e63f2484e12dcea)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ca4319fd3dccb7e501033ac88e4442367301e498
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Aug 17 21:45:27 2010 +0200
+
+    lua_playlist: improve jamendo matching test.
+    (cherry picked from commit 252c7cf3f951c1d5043f10a97f0eaa71ed62a0f9)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4b5cdbb7560c9c2f022f94cf2383bd2ae2aa4e5c
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Aug 17 21:38:07 2010 +0200
+
+    jamendo: also get the artist along with the list of songs for one album.
+    (cherry picked from commit f22fba29ed8bf8258978481b30dec721475da97c)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 65b62c7b622b0424d269f92273df91ad5d617ab0
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Aug 17 20:23:51 2010 +0200
+
+    lua_sd: improve the jamendo script to load the content of an album only if asked for.
+    
+    The script is faster and decrease the load on the server.
+    (cherry picked from commit 8532c923b1467a66b95d377a2d93986251c1c53f)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b4a40fb8e676363514259cc4630ac412ce3d0c1a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Aug 17 19:44:14 2010 +0300
+
+    M3U export: use local paths if applicable (fix #4063)
+    
+    (cherry picked from commit bf472b10b5b217259a1d6fabcf438c5d196096c4)
+
+commit f51b6af2eed5baa2af6b14bbd3ba0ec9a4caf8c0
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Aug 17 15:51:40 2010 +0200
+
+    Qt4: fix a minor (but annoying) UI glitch on restart
+    
+    Close #4041
+    (cherry picked from commit 10c68b56f970e05729b30a1c0f42cfe87d5fc55d)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fedd27d44332c4540a7289dc6eb304276610ff72
+Author: Brad Smith <brad@comstyle.com>
+Date:   Wed Aug 11 19:24:49 2010 -0400
+
+    Only define LIBVLC_USED for GCC 3.4 or newer. GCC 3.3 does not support the warn_unused_result attribute.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 09a2365da0672be3e8401f6fcafd765b281db3ad)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e07cdf2fe817050d71b44edc25c0be6aac342201
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Aug 16 20:44:00 2010 +0300
+
+    ARM: check ARMv6 support at the same time as NEON
+    
+    Our NEON optimizations don't compile on ARMv5 and lower. It is
+    dubious that there would be any use for NEON on such processor anyway.
+    (cherry picked from commit bad7a2dd0b6758da05572dba4652b599ff621571)
+
+commit 0382ac451696a25f6ba84d4a0e925e927d192666
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Aug 16 15:40:52 2010 +0200
+
+    Fix snapshot height integer overflow creating mini-snapshots
+    
+    See http://forum.videolan.org/viewtopic.php?f=2&t=81103
+    http://forum.videolan.org/viewtopic.php?f=14&t=80008
+    http://forum.videolan.org/viewtopic.php?f=13&t=73500
+    (cherry picked from commit 2aef1c084bef4e127c7c15f6c75707b3b68fa4f4)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6ce175cf8e23ed3f2a09ec7e8c4af7936d125c34
+Author: Jakob Leben <jleben@videolan.org>
+Date:   Mon Aug 16 09:29:52 2010 +0200
+
+    playlist: refactor and fix #3932 (take 2)
+    
+    When an item gets sub-items, we have to run our own random-picking among
+    the new items.
+    
+    Cherry-picked from commit [59daa25896415df20977042d6bfe5e2635d145ff]
+
+commit e608525ee0d02b9ec49243fdfd22fb5732b954c1
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Sun Aug 15 19:22:55 2010 +0200
+
+    skins2(X11): add missing <limits.h>
+    
+    This fixes a compil problem on FreeBSD
+    
+    pointed out by jsa@FreeBSD.org
+    (cherry picked from commit e209d40a8614c9fbb4c89300f327146528eae397)
+
+commit 2af9bf569c8c521b52d702badcb69b977462bc35
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 15 19:09:21 2010 +0300
+
+    LUA: disable hotkeys interface
+
+commit 73d2916f1bcd8a660a2b99017d69e72b1b3007af
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 15 19:08:22 2010 +0300
+
+    LUA: unimplement unsafe OSD channel functions (refs #3927)
+    
+    (They are only used by LUA hotkeys anyway)
+
+commit aa401e54548ee368ef0ff6a2d9da4e4d6f1ce1a2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 15 18:28:13 2010 +0300
+
+    OSD: remove unused (and obtained unsafely) SPU parameter
+
+commit 15ad11f13fa9771a3c5ddf4a8c6abdb9705c5270
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Aug 15 14:28:38 2010 +0200
+
+    macosx: added the mt2s extension
+
+commit fbbb57edaaec87221206d5088f17443034e80b02
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Aug 15 13:18:11 2010 +0200
+
+    Updated Estonian translation by Mihkel Kirjutas
+
+commit 5bb0b91a7b733c16c2a2126c0e6553aca4aa2fe6
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Sat Aug 14 15:33:52 2010 +0200
+
+    skins2: Oops, autoresize (part 2)
+    
+    this patch completes 07bf40d589a3f4fa9a608c50d7599b8b9b7059bf
+    (cherry picked from commit 8079da513e4673acaca296e431ba5d7f39d25944)
+
+commit c873d764562ed1dd0bcfe81a28b63c2cde0ef4c3
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Sat Aug 14 11:49:18 2010 +0200
+
+    skins2: don't resize video if set up not to do so.
+    
+    This bug has become more conspicuous in vlc1.2, because of some enhancement in
+     the vout reuse (width/height no longer a limitation)
+    (cherry picked from commit 9346f23dd752eabf9c79bb588c267314d3fe34d9)
+
+commit bdc5380dc12dc395191d669ef7830c3572eef8fb
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Sat Aug 14 11:28:35 2010 +0200
+
+    skins2: fix video autoresize default when contradictory
+    
+    when parameters for a video control are contradictory (this occurs when the
+    skin developper only relies on default values), it is better not to resize,
+    since there is no easy means to check if the layout is really set up to handle
+    resizing properly.
+    
+    This fixes some ugly behavior for a few skins from the skin repository
+     on the website.
+    (cherry picked from commit 07bf40d589a3f4fa9a608c50d7599b8b9b7059bf)
+
+commit 0e04933d5b193b4cbb3ef75ea56350fd841c7a2c
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Fri Jul 30 11:24:19 2010 +0200
+
+    skins2: translate $F into local path instead of uri when possible
+    
+    Local paths are more user-friendly for display than full uri
+    when that makes sense
+    (cherry picked from commit 6e59bfe80fbbe314625d54ab74a4f7edbb28aef4)
+
+commit ecdc93dfb7ed01073bcf97535e374e3b3e82e806
+Author: Konstantin Pavlov <thresh@altlinux.org>
+Date:   Fri Aug 13 09:57:59 2010 +0400
+
+    Do not install vimeo lua playlist scripts.
+    (cherry picked from commit 6b9c7f2a35eb8e379e427a03110d9039d7ee756a)
+    
+    Signed-off-by: Konstantin Pavlov <thresh@altlinux.org>
+
+commit 7474f4b9afd5063cba2c0380fef724702f3f3b90
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Thu Aug 12 22:19:22 2010 +0300
+
+    XCB/XVideo: fix resolution with non multiple of 16x16 videos
+    
+    Fixes: #3928
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 447e29e9d8ece04c0a3d0942a14f4e89af5c5314)
+
+commit 655ebda418dd39e90f24308923ab3f6661f9e5a7
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Thu Aug 12 12:39:01 2010 +0200
+
+    Update the lua README.
+    (cherry picked from commit acca2657566e2b4e15fde222f6893b2c99453a3b)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 05f9a4cedf3b8678b7c684aecdf221a56f19af77
+Author: Brad Smith <brad@comstyle.com>
+Date:   Mon Aug 9 18:11:16 2010 -0400
+
+    Set CD_DEVICE and DVD_DEVICE to device names appropriate for OpenBSD.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 9adb17b9449595217b9e9a4c7e3c0c4bd8f2c1e3)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2e488ae57aadfa507fbfd48088519a172f120440
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Aug 12 11:58:39 2010 +0200
+
+    Fix typo
+
+commit 4a0c6d11575ef191a608198a7c3fd2ddc447ab91
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Aug 12 00:26:30 2010 +0200
+
+    1.1.3 is near
+
+commit 89406df6e30a88dc7c237fd31d66db01cd57ba32
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Aug 12 00:25:55 2010 +0200
+
+    Forgot to NEWS about the playlist change/fix
+
+commit fa1add927a3b175c6396a9533847103351b8493e
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Aug 12 11:23:23 2010 +0200
+
+    NEWS: be more positive about the wolrd
+
+commit a5880e3b0aaa7f8c697022cd60903d41dadcc3fe
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Aug 12 11:10:47 2010 +0200
+
+    NEWS: document changed update behavior on Mac
+
+commit 0b0378eac2ffe79a766b0e4f69d5bf6dabac422b
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Tue Aug 10 23:19:36 2010 +0200
+
+    Fixed colorthres/erase/extract/gaussianblur/gradient/motionblur/motiondetect/noise/psychedelic/sharpen filters.
+    
+    input and output picture pitches may not be equal (corruptions or segfaults).
+    (cherry picked from commit eb07c341123fd85843c56ded82bd1e323fc660cb)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 7659cde94d124b875f1e0e31c071e8fbc33e0a12
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Mon Aug 9 22:41:30 2010 +0200
+
+    skins2: playlist a few iterator issues
+    
+    - check validity before using iterators
+    - don't use iterator anymore once the item is erased
+    (cherry picked from commit 81652244c4049260892d4def1011c82cd3e303cb)
+
+commit 84b42f81906c0657c0c6e02c757dac419cf6bac1
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Thu Aug 5 15:56:08 2010 +0200
+
+    skins2: fix playlist arrows and enter no longer functioning
+    
+    This patch fixes a regression brought by 88ba4526d03285a10e9abd59b9053c9d6927661
+     that prevented arrows from being functional.
+    (cherry picked from commit 41f420438587fd47b1004b419ef75533dc05e75a)
+
+commit edfe448abf079fc00fe4144e23f625b1ae82a180
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 11 22:33:11 2010 +0200
+
+    Add CVE to NEWS
+
+commit e89ca0086cda0922887274859aafc2b51ae6cc96
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 11 21:22:18 2010 +0200
+
+    NEWS about taglib crash
+
+commit 24918843e57c7962e28fcb01845adce82bed6516
+Author: Lukáš Lalinský <lalinsky@gmail.com>
+Date:   Wed Aug 11 22:02:30 2010 +0300
+
+    taglib: fix NULL deferences after dynamic cast
+    
+    Reported-by: FortiGuard Lab
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 0a3d05b4058fe683e2ef49da8ece9214ade01870)
+
+commit 246a53cdef8f3bd32e93b165806089ae86dfbfa5
+Author: Denis Charmet <typx@dinauz.org>
+Date:   Wed Aug 11 09:58:40 2010 +0200
+
+    Fix lua telnet vlm_message_to_string
+    
+    In the current lua vlm implementation, messages can have value xor
+    children but not both. But the "show media" command gives media a
+    value : ( %d broadcast - %d vod ) and children (if any). (cf
+    src/input/vlmshell.c:1502)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+    (cherry picked from commit 1b67e3a69eb1fa93947d0b8f44fdd64e7899ff5f)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 9ef102a4dd4bfb7b469cda387126bcf4fc1e0d5d
+Author: Jai Menon <jmenon86@gmail.com>
+Date:   Fri Jul 30 23:40:54 2010 +0530
+
+    MKV : Fix format specifier for KaxChapterUID.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 86c01d643f8338050e0a5c7055469a3962e2a250)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2dfa275fa3fd63e88cbae506bce0dd05bf1cdae7
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Wed Aug 4 12:48:44 2010 +0200
+
+    Qt/EPG: Remove the update button. Improve the window layout.
+    (cherry picked from commit 86cf130e6fdf90afe4c04ec22f5736d2a6aa49ef)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 30c336461a10e97878cce4eca886e5d3c5688998
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Wed Aug 4 11:07:22 2010 +0200
+
+    Qt/EPG: Remove channels when they don't have any item.
+    (cherry picked from commit 4b897bbb5eca8beac7fa2a092a94513b985f83b3)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4f2eb277081a8212fc2d4b74d9ef6db892af945a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 4 18:12:16 2010 +0200
+
+    Qt: allow to select inexistent files from Prefs
+    
+     - for some reason, this worked on Linux (?!?)
+     - for some other reason, there doesn't seem to be 2 different modes for add_file
+    
+    Close #4004
+    (cherry picked from commit 0e3e62f3582ab6ee45462dc7b39fabab935a5e68)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fbe5c6b1927dbdfad0cea92dfa3294e1afbb36c1
+Author: Kaarlo Raiha <kaarlo.raiha@gmail.com>
+Date:   Tue Aug 10 17:18:14 2010 +0300
+
+    remove .ps from nsis again
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 81c74a989f9d3696e21f07f7211de9dd0dc794d1)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 400de3d46007303af7a0961c145ff487b5b2ea99
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Aug 11 16:09:59 2010 +0200
+
+    contribs: use updated binary package for Mac in preparation for 1.1.3
+
+commit 206a04116f697034e6c10e27b41e4716997d0697
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 11 13:27:16 2010 +0200
+
+    NEWS for 1.1.3
+
+commit 210795ef5b5eac9850cce8511c0cf808bc4806fd
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Mon Aug 9 23:15:52 2010 +0200
+
+    dvdnav: fix memory leak.
+    (cherry picked from commit 4d79e227ff00cd77567b27b02e8847d6774029ff)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 93ad17a6db7c54d639e6ecf39834581ed6ea3d26
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Mon Aug 9 23:12:24 2010 +0200
+
+    dvdread: fix typo (does not have any impact).
+    (cherry picked from commit c9e7c34b0feccc2f3f8a8afa047e6363bfcae6d5)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 74af47deb0a336233a1c61e1f75e664a11ad73c1
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Mon Aug 9 12:23:03 2010 +0200
+
+    dvdread: fix memory leak.
+    (cherry picked from commit 829f7b9600e048c8fcdec1eb1d90ba8386ab5cc3)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit c480e29bcdfef0a21ee7c3aca3174fcfcac2f646
+Author: Brad Smith <brad@comstyle.com>
+Date:   Sun Aug 8 19:58:51 2010 -0400
+
+    Also include sys/param.h when trying to detect the presence of sys/mount.h so that the test works on OpenBSD, as documented by mount(2).
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 3bc47647d909a49d80f06c6794eb54877523dc10)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 65fece53698915b408348295cb52175042d32716
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Aug 9 23:07:25 2010 +0200
+
+    Art: Do not crash if album is not null but empty
+    (cherry picked from commit 113cb9941052b4c8b08095f16e40050747d8565c)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0c6994a9d280a26ebdeb3df6b87fda95626fe3d0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Aug 9 21:25:01 2010 +0300
+
+    Old RC: "rate" is a float nowadays (fix #4088)
+    
+    (cherry picked from commit 68c78698a5e97cdf0c7e66960bb26d81f48eacb2)
+
+commit 06069941b6b77dedad6080c4c9373c0e1deef826
+Author: Brad Smith <brad@comstyle.com>
+Date:   Fri Aug 6 21:52:58 2010 -0400
+
+    Add AltiVec detection for OpenBSD/powerpc.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8918cf7802951308af497943cdae3f16999f486f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 8 23:07:47 2010 +0300
+
+    Always call _exit() at end to avoid buggy exit handlers
+    
+    Removes the KDE scheduler hack.
+    (cherry picked from commit 725cf4eb04ab02491301a83d8ce6a5c3f5d80794)
+    
+    Conflicts:
+    
+    	bin/vlc.c
+
+commit 7ab66da77d852b8e7301437f857aa1694642e9d9
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 8 21:38:17 2010 +0300
+
+    Revert "playlist: refactor and fix #3932"
+    
+    This fixes #3980, #4022 and #4025.
+    This reverts commit dd074f3068555ecf4334967281eb0086fa8cec99.
+
+commit 96f3254918b9e6db898e31d8817c83d1fdd1a274
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 8 18:50:47 2010 +0300
+
+    dvdnav: ps_pkt_size() requires at least 6 bytes (fixes #4015)
+    
+    The same check is already done in the dvdread, ps and vobsub modules.
+    (cherry picked from commit 8a497301054ccc2d9d470ade60264036d43e3fc0)
+
+commit ad68047e4b1e4ba65e67906b1d7b0f1c9181b182
+Author: Ajith Manjula <uthmax.sms@gmail.com>
+Date:   Sun Aug 8 17:58:48 2010 +0300
+
+    Sinhala l10n update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit f099cf307854c8eeb3eeea13fb30ddbd61d32ac2
+Author: Yaron Shahrabani <sh.yaron@gmail.com>
+Date:   Thu Aug 5 22:40:32 2010 +0300
+
+    Hebrew l10n update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit a42870d1ef5e256d6f00f31c05917e19f9e93d6d
+Author: Ajith Manjula <uthmax.sms@gmail.com>
+Date:   Thu Aug 5 22:38:23 2010 +0300
+
+    Sinhala l10 update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit f4b93f6bf85dd2ea3cd7c41255d02aa9972ec769
+Author: mihkel <turakas@gmail.com>
+Date:   Thu Aug 5 22:33:05 2010 +0300
+
+    Merge vlc-eesti
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 686480f266114fd8cfe727a08d06ff870b0c91cd
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Aug 5 22:19:27 2010 +0300
+
+    Remove DOS style endings
+
+commit 7227d47b59db20169775e1d9a9410d06319e7687
+Author: David González <pico.dev@gmail.com>
+Date:   Thu Aug 5 22:17:10 2010 +0300
+
+    Spanish l10n update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit ccb600f20ddeff65f23cbc598a2e32f7969ca246
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Aug 3 23:13:59 2010 +0200
+
+    lua: fix README.
+    (cherry picked from commit 638854386e24bc8b66bad667f8d7a9416ffab9a1)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 80db5ed75209c532cb2b2211e2ad5d7a41362c25
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Fri Jul 30 20:00:20 2010 +0200
+
+    SPrefsPanel : swapped 2 arguments
+    (cherry picked from commit 07471c3c2a74f8454fb736f00257584193a2cbbe)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 87c90a231acb14cd83a494e64e1d52c22fd39581
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon May 10 06:08:16 2010 +0200
+
+    "#if HAVE_MAEMO" -> "#ifdef HAVE_MAEMO"
+    
+    Fixes warning
+    (cherry picked from commit a9e82f63ae2c02ce5b8e33062565670ab5601207)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit f8797713ffb49c133e1e67961f0c2fd0b3084ed1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Aug 3 23:52:26 2010 +0300
+
+    FTP: directories cannot be sought
+    
+    (cherry picked from commit bfd061bbf3aaa9da2d648de8c79d9f0ee75bfac9)
+
+commit a864e0e4c1fd2b8c4c02f79dd46194c2e7e54eb4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Aug 3 23:55:53 2010 +0300
+
+    FTP: memory leak
+
+commit 2aa35fe903cdda7d6b3b09434804278aa38fe2bc
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Aug 3 23:51:51 2010 +0300
+
+    FTP: fix directory support
+    
+    (cherry picked from commit 421d5ae77d686b592aaa4fa45ac4a2c1c3629fe0)
+
+commit 3a31af06dbabd4e21a68e46249fdf3209cd8060a
+Author: David Menestrina <dmenest-vlc@ofb.net>
+Date:   Tue Aug 3 19:56:14 2010 +0300
+
+    Make xcb reject resize requests when embedded.  Fixes trac #3848.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 91f3903040298b89eac0a10d9a24ec51e478756b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Aug 2 21:42:22 2010 +0300
+
+    FTP: fix relative file paths (fix #3984)
+    
+    (cherry picked from commit 0ad85b8520873e54cd1e11c3494f0ec621497404)
+
+commit e2afc534620a991a5f19ab20be0356faf11b7f5e
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Aug 2 00:19:48 2010 +0200
+
+    Added Sparkle to list of used libraries
+
+commit ad570e8c359547c42daef2cff2536b031d95c597
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 1 13:42:42 2010 +0300
+
+    podcast: fix gettext parsing (cannot rely on CPP)
+    
+    (cherry picked from commit f3afae4fa71971a7a7d5359ec6f97a2925521f6a)
+
+commit 0f4d0f39dc8ab4278026037970d454071a45acf6
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Aug 1 12:18:27 2010 +0200
+
+    Updated Dutch translation by Thomas De Rocker
+
+commit 8a6a55026b6dd95766a0cbdce40ef614c2e749e8
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Jul 30 09:47:14 2010 +0300
+
+    make_URI: fix assertion failures (fix #3956)
+    
+    Handles "\\hostname" properly.
+    On Windows, error out on "X:directory" instead of aborting. Looking up
+    the current directory of the specified drive letter would be a better,
+    though.
+    (cherry picked from commit 615bcffe5297b99422ffec435228ac015ae12d64)
+    
+    Conflicts:
+    
+    	src/text/strings.c
+
+commit 51c3b78692187ee603056f66edd59d92d6d644fb
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jul 29 21:57:53 2010 +0200
+
+    Fix gallicism in NEWS
+
+commit e90a71395f26c55554263defa22c5367e037e433
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jul 29 16:26:27 2010 +0200
+
+    On the road to 1.1.3
+
+commit b871bacb1ea71e284b025e5f15e100562f776f55
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jul 29 16:25:22 2010 +0200
+
+    Synchronise NEWS wording with master
+
 commit 7f01d51cc7e3471e03e403c9a4cc471e8482e8cb
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Thu Jul 29 11:36:09 2010 +0200

@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d9c75838c684068a71ced4c5fbdde732a1b0a7e6 $
+ * $Id: ff9d4457a8f1f4e8db9e66168d78c9f8c2c3398d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -1014,23 +1014,30 @@ void Builder::addVideo( const BuilderData::Video &rData )
         return;
     }
 
+    BuilderData::Video Data = rData;
+    if( Data.m_autoResize )
+    {
+        // force autoresize to false if the control is not able to
+        // freely resize within its container
+        if( Data.m_xKeepRatio || Data.m_yKeepRatio ||
+            !( Data.m_leftTop == "lefttop" &&
+               Data.m_rightBottom == "rightbottom" ) )
+        {
+            msg_Err( getIntf(),
+                "video: resize policy and autoresize are not compatible" );
+            Data.m_autoResize = false;
+        }
+    }
+
     // Get the visibility variable
     // XXX check when it is null
     Interpreter *pInterpreter = Interpreter::instance( getIntf() );
-    VarBool *pVisible = pInterpreter->getVarBool( rData.m_visible, m_pTheme );
+    VarBool *pVisible = pInterpreter->getVarBool( Data.m_visible, m_pTheme );
 
     CtrlVideo *pVideo = new CtrlVideo( getIntf(), *pLayout,
-        rData.m_autoResize, UString( getIntf(), rData.m_help.c_str() ),
+        Data.m_autoResize, UString( getIntf(), Data.m_help.c_str() ),
         pVisible );
-    m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pVideo );
-
-    // if autoresize is true, force the control to resize
-    BuilderData::Video Data = rData;
-    if( rData.m_autoResize )
-    {
-        Data.m_leftTop = "lefttop";
-        Data.m_rightBottom = "rightbottom";
-    }
+    m_pTheme->m_controls[Data.m_id] = CtrlGenericPtr( pVideo );
 
     // Compute the position of the control
     const GenericRect *pRect;
@@ -1041,7 +1048,7 @@ void Builder::addVideo( const BuilderData::Video &rData )
                                        *pRect,
                                        Data.m_xKeepRatio, Data.m_yKeepRatio );
 
-    pLayout->addControl( pVideo, pos, rData.m_layer );
+    pLayout->addControl( pVideo, pos, Data.m_layer );
 }
 
 

@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 4a82cd4cbb29da7b7afeb1830e1122157957cb7f $
+ * $Id: ceae1a3f9ad6cc1bfce577a00c393c3c031c3df7 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -153,13 +153,14 @@ static void input_item_add_subitem_tree ( const vlc_event_t * p_event,
             }
             else
             {
-                p_play_item = playlist_GetNextLeaf( p_playlist,
-                                                    p_item,
-                                                    NULL,
-                                                    true,
-                                                    false );
-                char *psz_name = input_item_GetName(p_play_item->p_input);
-                free(psz_name);
+                p_play_item = p_item->pp_children[pos];
+                /* NOTE: this is a work around the general bug:
+                if node-to-be-played contains sub-nodes, then second instead
+                of first leaf starts playing (only in case the leafs have just
+                been instered and playlist has not yet been rebuilt.)
+                */
+                while( p_play_item->i_children > 0 )
+                    p_play_item = p_play_item->pp_children[0];
             }
 
             playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,

@@ -2,7 +2,7 @@
  * art.c : Art metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 315fd4e62b19ca5ed6678b132f25b52b6f101b65 $
+ * $Id: c29ef449d0655d7b61c8a66be7c741087ac23360 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org
@@ -122,7 +122,7 @@ static char *ArtCachePath( input_item_t *p_item )
     psz_album = vlc_meta_Get( p_item->p_meta, vlc_meta_Album );
     psz_arturl = vlc_meta_Get( p_item->p_meta, vlc_meta_ArtworkURL );
 
-    if( (!psz_artist || !psz_album ) && !psz_arturl )
+    if( (EMPTY_STR(psz_artist) || EMPTY_STR(psz_album) ) && !psz_arturl )
         goto end;
 
     psz_path = ArtCacheGetDirPath( psz_arturl, psz_artist, psz_album );
