@@ -2,7 +2,7 @@
  * EPGItem.cpp: EPGItem
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: ec2d1f9bf4de50b48877b3950e70499933ab1b83 $
+ * $Id: e9e59350a26c422b4739d21358ec5568fd9388d5 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -111,7 +111,12 @@ int EPGItem::duration() const
     return m_duration;
 }
 
-void EPGItem::setChannel( int channelNb )
+int EPGItem::getChannelNb() const
+{
+    return m_channelNb;
+}
+
+void EPGItem::setChannelNb( int channelNb )
 {
     //qDebug() << "Channel" << channelNb;
     m_channelNb = channelNb;

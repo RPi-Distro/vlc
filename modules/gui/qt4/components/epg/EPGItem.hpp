@@ -2,7 +2,7 @@
  * EPGItem.h : EPGItem
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 04f9909ef37e7560179a0c096e097bb4a588fbee $
+ * $Id: 057ff39201df635c0b37838c68b7c5316f44cc30 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -44,8 +44,9 @@ public:
     const QDateTime& start() const;
 
     int duration() const;
+    int getChannelNb() const;
 
-    void setChannel( int channelNb );
+    void setChannelNb( int channelNb );
     void setStart( const QDateTime& start );
     void setDuration( int duration );
     void setName( const QString& name );

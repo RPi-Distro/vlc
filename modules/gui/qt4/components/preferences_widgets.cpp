@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: e232f5df9ee5ae009ec6acf8f65412b362b41c48 $
+ * $Id: 3338e55e4d0387fe8e87cf073bfbf5b9d9e1f6dc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -340,7 +340,7 @@ FileConfigControl::FileConfigControl( vlc_object_t *_p_this,
 
 void FileConfigControl::updateField()
 {
-    QString file = QFileDialog::getOpenFileName( NULL,
+    QString file = QFileDialog::getSaveFileName( NULL,
                   qtr( "Select File" ), QVLCUserDir( VLC_HOME_DIR ) );
     if( file.isNull() ) return;
     text->setText( toNativeSeparators( file ) );

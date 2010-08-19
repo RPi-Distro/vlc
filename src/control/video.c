@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2010 the VideoLAN team
  *
- * $Id: 62cf5e40374bd05dce756be0c81c6b72b0a3b998 $
+ * $Id: 13597bb660ccf239503f3a342eaa21c7ac645c8c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -284,7 +284,7 @@ int libvlc_video_get_spu( libvlc_media_player_t *p_mi )
     if( i_ret < 0 )
     {
         vlc_object_release( p_input_thread );
-        libvlc_printerr( "Subtitle informations not found" );
+        libvlc_printerr( "Subtitle information not found" );
         return -1;
     }
 

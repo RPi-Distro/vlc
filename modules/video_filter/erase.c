@@ -2,7 +2,7 @@
  * erase.c : logo erase video filter
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: d69d92cf47f749170d11d1e0c623ba0992be3656 $
+ * $Id: cc292608e2570177e46c22390dec0cda91afc97d $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -243,13 +243,11 @@ static void FilterErase( filter_t *p_filter, picture_t *p_inpic,
 
     for( int i_plane = 0; i_plane < p_inpic->i_planes; i_plane++ )
     {
-        const int i_pitch = p_inpic->p[i_plane].i_pitch;
+        const int i_pitch = p_outpic->p[i_plane].i_pitch;
         const int i_2pitch = i_pitch<<1;
         const int i_visible_pitch = p_inpic->p[i_plane].i_visible_pitch;
-        const int i_lines = p_inpic->p[i_plane].i_lines;
         const int i_visible_lines = p_inpic->p[i_plane].i_visible_lines;
 
-        uint8_t *p_inpix = p_inpic->p[i_plane].p_pixels;
         uint8_t *p_outpix = p_outpic->p[i_plane].p_pixels;
         uint8_t *p_mask = p_sys->p_mask->A_PIXELS;
         int i_x = p_sys->i_x, i_y = p_sys->i_y;
@@ -276,7 +274,7 @@ static void FilterErase( filter_t *p_filter, picture_t *p_inpic,
         i_width  = __MIN( i_visible_pitch - i_x, i_width  );
 
         /* Copy original pixel buffer */
-        vlc_memcpy( p_outpix, p_inpix, i_pitch * i_lines );
+        plane_CopyPixels( &p_outpic->p[i_plane], &p_inpic->p[i_plane] );
 
         /* Horizontal linear interpolation of masked areas */
         p_outpix = p_outpic->p[i_plane].p_pixels + i_y*i_pitch + i_x;

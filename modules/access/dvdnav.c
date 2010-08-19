@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 90d915509335638dbcbb6cf261e5a1c7ec5ed156 $
+ * $Id: 409d9d4cf941b69d485b4def0e39da39fc49d640 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -417,6 +417,11 @@ static void Close( vlc_object_t *p_this )
             if( tk->es ) es_out_Del( p_demux->out, tk->es );
         }
     }
+
+    /* Free the array of titles */
+    for( int i = 0; i < p_sys->i_title; i++ )
+        vlc_input_title_Delete( p_sys->title[i] );
+    TAB_CLEAN( p_sys->i_title, p_sys->title );
 
     dvdnav_close( p_sys->dvdnav );
     free( p_sys );
@@ -1130,17 +1135,17 @@ static int DemuxBlock( demux_t *p_demux, const uint8_t *pkt, int i_pkt )
     demux_sys_t *p_sys = p_demux->p_sys;
     const uint8_t     *p = pkt;
 
-    while( p < &pkt[i_pkt] )
+    while( (p - pkt) <= (i_pkt - 6) )
     {
+        /* ps_pkt_size() needs at least 6 bytes */
         int i_size = ps_pkt_size( p, &pkt[i_pkt] - p );
-        block_t *p_pkt;
         if( i_size <= 0 )
         {
             break;
         }
 
         /* Create a block */
-        p_pkt = block_New( p_demux, i_size );
+        block_t *p_pkt = block_New( p_demux, i_size );
         memcpy( p_pkt->p_buffer, p, i_size);
 
         /* Parse it and send it */

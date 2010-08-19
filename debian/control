@@ -175,7 +175,7 @@ Description: multimedia plugin for web browsers based on VLC
 
 Package: vlc
 Architecture: any
-Depends: ttf-dejavu-core,
+Depends: ttf-freefont,
          vlc-nox (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}

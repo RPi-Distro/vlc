@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 9ddb26e331c99bf9b96208e7d08cc0e94a6aa698 $
+ * $Id: e92714807ce2f23b741d6becb1049b85eb766fea $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -131,6 +131,8 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_t* p_demux, demux_meta_t* 
     {
         ID3v2::UniqueFileIdentifierFrame* p_ufid =
                 dynamic_cast<ID3v2::UniqueFileIdentifierFrame*>(*iter);
+        if( !p_ufid )
+            continue;
         const char *owner = p_ufid->owner().toCString();
         if (!strcmp( owner, "http://musicbrainz.org" ))
         {
@@ -151,6 +153,8 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_t* p_demux, demux_meta_t* 
     {
         ID3v2::UserTextIdentificationFrame* p_txxx =
                 dynamic_cast<ID3v2::UserTextIdentificationFrame*>(*iter);
+        if( !p_txxx )
+            continue;
         vlc_meta_AddExtra( p_meta, p_txxx->description().toCString( true ),
                            p_txxx->fieldList().toString().toCString( true ) );
     }
@@ -207,6 +211,8 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_t* p_demux, demux_meta_t* 
     {
         ID3v2::AttachedPictureFrame* p_apic =
             dynamic_cast<ID3v2::AttachedPictureFrame*>(*iter);
+        if( !p_apic )
+            continue;
         input_attachment_t *p_attachment;
 
         const char *psz_mime;

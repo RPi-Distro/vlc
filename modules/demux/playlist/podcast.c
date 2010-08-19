@@ -2,7 +2,7 @@
  * podcast.c : podcast playlist imports
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: df6736e1ea498417079bb562dded31363611c4ca $
+ * $Id: 175573b6f1f69dc1a27ac848f1c3e05f6cd2834d $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -251,15 +251,13 @@ static int Demux( demux_t *p_demux )
                     }
 #define ADD_GINFO( info, name ) \
     else if( !strcmp( psz_elname, name ) ) \
-    { \
         input_item_AddInfo( p_current_input, _("Podcast Info"), \
-                                _( info ), "%s", psz_text ); \
-    }
-                    ADD_GINFO( "Podcast Link", "link" )
-                    ADD_GINFO( "Podcast Copyright", "copyright" )
-                    ADD_GINFO( "Podcast Category", "itunes:category" )
-                    ADD_GINFO( "Podcast Keywords", "itunes:keywords" )
-                    ADD_GINFO( "Podcast Subtitle", "itunes:subtitle" )
+                            info, "%s", psz_text );
+                    ADD_GINFO( _("Podcast Link"), "link" )
+                    ADD_GINFO( _("Podcast Copyright"), "copyright" )
+                    ADD_GINFO( _("Podcast Category"), "itunes:category" )
+                    ADD_GINFO( _("Podcast Keywords"), "itunes:keywords" )
+                    ADD_GINFO( _("Podcast Subtitle"), "itunes:subtitle" )
 #undef ADD_GINFO
                     else if( !strcmp( psz_elname, "itunes:summary" ) ||
                              !strcmp( psz_elname, "description" ) )
@@ -305,15 +303,15 @@ static int Demux( demux_t *p_demux )
                     if( p_input == NULL ) break;
 #define ADD_INFO( info, field ) \
     if( field ) { input_item_AddInfo( p_input, \
-                            _( "Podcast Info" ),  _( info ), "%s", field ); }
-                    ADD_INFO( "Podcast Publication Date", psz_item_date  );
-                    ADD_INFO( "Podcast Author", psz_item_author );
-                    ADD_INFO( "Podcast Subcategory", psz_item_category );
-                    ADD_INFO( "Podcast Duration", psz_item_duration );
-                    ADD_INFO( "Podcast Keywords", psz_item_keywords );
-                    ADD_INFO( "Podcast Subtitle", psz_item_subtitle );
-                    ADD_INFO( "Podcast Summary", psz_item_summary );
-                    ADD_INFO( "Podcast Type", psz_item_type );
+                            _( "Podcast Info" ),  info, "%s", field ); }
+                    ADD_INFO( _("Podcast Publication Date"), psz_item_date  );
+                    ADD_INFO( _("Podcast Author"), psz_item_author );
+                    ADD_INFO( _("Podcast Subcategory"), psz_item_category );
+                    ADD_INFO( _("Podcast Duration"), psz_item_duration );
+                    ADD_INFO( _("Podcast Keywords"), psz_item_keywords );
+                    ADD_INFO( _("Podcast Subtitle"), psz_item_subtitle );
+                    ADD_INFO( _("Podcast Summary"), psz_item_summary );
+                    ADD_INFO( _("Podcast Type"), psz_item_type );
 #undef ADD_INFO
 
                     /* Set the duration if available */
@@ -328,7 +326,7 @@ static int Demux( demux_t *p_demux )
                         input_item_AddInfo( p_input,
                                                 _( "Podcast Info" ),
                                                 _( "Podcast Size" ),
-                                                "%s bytes",
+                                                _("%s bytes"),
                                                 psz_item_size );
                     }
                     input_item_node_AppendItem( p_subitems, p_input );

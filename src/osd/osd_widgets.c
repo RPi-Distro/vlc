@@ -2,7 +2,7 @@
  * osd_widgets.c : OSD widgets manipulation functions
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: ef9dd7b738598896ded54f1db0f78e9737656f02 $
+ * $Id: 9e893f2480a69d0ac661d66c8dde4a4305f2d8ad $
  *
  * Author: Yoann Peronneau <yoann@videolan.org>
  *
@@ -42,7 +42,7 @@
 static void DrawRect( subpicture_t *, int, int, int, int, short );
 static void DrawTriangle( subpicture_t *, int, int, int, int, short );
 static int  CreatePicture( spu_t *, subpicture_t *, int, int, int, int );
-static subpicture_t *osd_CreateWidget( spu_t *, int );
+static subpicture_t *osd_CreateWidget( int );
 
 /*****************************************************************************
  * Draws a rectangle at the given position in the subpic.
@@ -190,12 +190,10 @@ static int CreatePicture( spu_t *p_spu, subpicture_t *p_subpic,
 /*****************************************************************************
  * Creates and initializes an OSD widget.
  *****************************************************************************/
-subpicture_t *osd_CreateWidget( spu_t *p_spu, int i_channel )
+static subpicture_t *osd_CreateWidget( int i_channel )
 {
     subpicture_t *p_subpic;
     mtime_t i_now = mdate();
-
-    VLC_UNUSED(p_spu);
 
     /* Create and initialize a subpicture */
     p_subpic = subpicture_New();
@@ -223,7 +221,7 @@ int osd_Slider( vlc_object_t *p_this, spu_t *p_spu,
     int i_x_margin, i_y_margin, i_x, i_y, i_width, i_height;
     (void)p_this;
 
-    p_subpic = osd_CreateWidget( p_spu, i_channel );
+    p_subpic = osd_CreateWidget( i_channel );
     if( p_subpic == NULL )
     {
         return VLC_EGENERIC;
@@ -286,7 +284,7 @@ int osd_Icon( vlc_object_t *p_this, spu_t *p_spu,
     int i_x_margin, i_y_margin, i_x, i_y, i_width, i_height;
     (void)p_this;
 
-    p_subpic = osd_CreateWidget( p_spu, i_channel );
+    p_subpic = osd_CreateWidget( i_channel );
     if( p_subpic == NULL )
     {
         return VLC_EGENERIC;

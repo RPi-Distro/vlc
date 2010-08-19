@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist export module
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: a5af0aca1fc80aa1963f8bda721a8eff2e4b2c53 $
+ * $Id: 5e69ae3f292a6e739e3ab3066de36f6c9f9274ba $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -34,6 +34,7 @@
 #include <vlc_input.h>
 #include <vlc_meta.h>
 #include <vlc_charset.h>
+#include <vlc_url.h>
 
 #include <assert.h>
 
@@ -105,6 +106,13 @@ static void DoChildren( playlist_export_t *p_export, playlist_item_t *p_root,
         }
         vlc_mutex_unlock( &p_current->p_input->lock );
 
+        /* Stupid third party players don't understand file: URIs. */
+        char *psz_path = make_path( psz_uri );
+        if( psz_path != NULL )
+        {
+            free( psz_uri );
+            psz_uri = psz_path;
+        }
         fprintf( p_export->p_file, "%s\n", psz_uri );
         free( psz_uri );
     }
