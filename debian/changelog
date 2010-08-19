@@ -4,11 +4,12 @@ vlc (1.1.2-2~1.gbp86f815) UNRELEASED; urgency=medium
 
   [ Benjamin Drung ]
   * 502_xulrunner_191.diff: Shorten it and split it into two parts.
-  * Add Xb-Npp header to mozilla-plugin-vlc package. (Not doing anything
-    at the moment, see #484010)
   * Drop 102_dejavu_font.diff and depend on ttf-freefont instead of ttf-
     dejavu-core. ttf-freefont is very likely to be present on a Debian
     box, because cups depends on it.
+  * Drop 501_decrease_alsa_buffer.diff. The pulseaudio output module has
+    a higher priority than the ALSA output plugin and should be used on
+    pulseaudio systems.
 
   [Christophe Mutricy]
   * Security: Fix insufficient input validation in TagLib plugin.
@@ -17,8 +18,7 @@ vlc (1.1.2-2~1.gbp86f815) UNRELEASED; urgency=medium
     + Closes: #592669, LP: #616510
     + Set urgency to medium
 
-
- -- Christophe Mutricy <xtophe@videolan.org>  Tue, 17 Aug 2010 22:22:51 +0100
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 19 Aug 2010 13:33:09 +0200
 
 vlc (1.1.2-1) unstable; urgency=low
 
