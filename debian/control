@@ -9,6 +9,7 @@ Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Christophe Mutricy <xtophe@videolan.org>,
            Mohammed Adnène Trojette <adn+deb@diwi.org>,
            Benjamin Drung <bdrung@ubuntu.com>
+DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.2.3~),
                dh-buildinfo,
                gettext,

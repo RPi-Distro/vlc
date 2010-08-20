@@ -1,11 +1,11 @@
-vlc (1.1.3-1+exp1ubuntu1) maverick; urgency=low
+vlc (1.1.3-2ubuntu1) maverick; urgency=low
 
   * Merge from Debian experimental, remaining changes:
     - build and install the libx264 plugin
 
  -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 19 Aug 2010 23:16:03 +0200
 
-vlc (1.1.3-1+exp1) experimental; urgency=low
+vlc (1.1.3-2) experimental; urgency=low
 
   [ Christophe Mutricy ]
   * Depends on xulrunner-dev >= 1.9.2
@@ -23,6 +23,7 @@ vlc (1.1.3-1+exp1) experimental; urgency=low
 
 vlc (1.1.3-1) unstable; urgency=medium
 
+  [ Benjamin Drung ]
   * New upstream release.
     + Fix insufficient input validation in TagLib plugin.
       (VideoLAN-SA-1004, CVE-2010-2937) (Closes: #592669, LP: #616510)
@@ -35,7 +36,10 @@ vlc (1.1.3-1) unstable; urgency=medium
     a higher priority than the ALSA output plugin and should be used on
     pulseaudio systems.
 
- -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 19 Aug 2010 13:33:09 +0200
+  [ Reinhard Tartler ]
+  * add DM-Upload-Allowed field to debian/control
+
+ -- Reinhard Tartler <siretart@tauware.de>  Fri, 20 Aug 2010 06:59:17 +0200
 
 vlc (1.1.2-1) unstable; urgency=low
 
