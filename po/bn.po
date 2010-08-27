@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bn\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-08-18 13:58+0200\n"
+"POT-Creation-Date: 2010-08-27 01:01+0200\n"
 "PO-Revision-Date: 2010-08-17 12:45+0600\n"
 "Last-Translator: israt <israt@ankur.org.bd>\n"
 "Language-Team: Bengali <ankur-bd-l10n@googlegroups.com>\n"
@@ -126,7 +126,7 @@ msgstr "আউটপুট মডিউল"
 msgid "General settings for audio output modules."
 msgstr "অডিও আউটপুট মডিউলের সাধারণ সেটিং।"
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2044
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2045
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "বিবিধ"
@@ -245,7 +245,7 @@ msgstr "সাধারণ ইনপুট"
 msgid "General input settings. Use with care..."
 msgstr "সাধারন ইনপুট সেটিং। সতর্কতার সাথে ব্যবহার করুন..."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1964
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1965
 msgid "Stream output"
 msgstr "স্ট্রীম আউটপুট"
 
@@ -353,7 +353,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "VLC-র ভিডিও অন-ডিমান্ড বাস্তবায়ন"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2106
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2107
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -387,7 +387,7 @@ msgstr ""
 "সার্ভিস ডিসকভারী মডিউলগুলো স্বয়ংক্রিয়ভাবে প্লেলিস্টে আইটেম যোগ করার সুবিধা প্রদান "
 "করে।"
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1911
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1912
 msgid "Advanced"
 msgstr "উন্নত"
 
@@ -1136,7 +1136,7 @@ msgstr "সেটিং"
 msgid "URL"
 msgstr "URL"
 
-#: src/input/meta.c:63 modules/misc/notify/notify.c:305
+#: src/input/meta.c:63 modules/misc/notify/notify.c:314
 msgid "Now Playing"
 msgstr "এখন চলছে"
 
@@ -1394,7 +1394,7 @@ msgstr ""
 "চালিয়ে যাওয়ার জন্য রিটার্ন কী চাপুন...\n"
 
 #: src/libvlc.h:175 src/libvlc-module.c:1464 src/libvlc-module.c:1465
-#: src/libvlc-module.c:2640 src/video_output/vout_intf.c:195
+#: src/libvlc-module.c:2641 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "বড় আকারে প্রদর্শন"
 
@@ -3814,7 +3814,7 @@ msgstr "ধীরতম (ভাল)"
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
+#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "পরবর্তী"
@@ -3828,7 +3828,7 @@ msgstr "প্লেলিস্টের পরবর্তী আইটেম�
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
+#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "পূর্ববর্তী"
@@ -4543,70 +4543,70 @@ msgstr "ট্র্যাক সেটিং"
 msgid "Playback control"
 msgstr "প্লেব্যাক কন্ট্রোল"
 
-#: src/libvlc-module.c:1855
+#: src/libvlc-module.c:1856
 msgid "Default devices"
 msgstr "পূর্বনির্ধারিত ডিভাইস"
 
-#: src/libvlc-module.c:1864
+#: src/libvlc-module.c:1865
 msgid "Network settings"
 msgstr "নেটওয়ার্ক সেটিং"
 
-#: src/libvlc-module.c:1876
+#: src/libvlc-module.c:1877
 msgid "Socks proxy"
 msgstr "সক্স প্রক্সি"
 
-#: src/libvlc-module.c:1885 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1886 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "মেটাডেটা"
 
-#: src/libvlc-module.c:1936
+#: src/libvlc-module.c:1937
 msgid "Decoders"
 msgstr "ডিকোডার"
 
-#: src/libvlc-module.c:1943 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1944 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "ইনপুট"
 
-#: src/libvlc-module.c:1982
+#: src/libvlc-module.c:1983
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2014
+#: src/libvlc-module.c:2015
 msgid "CPU"
 msgstr "CPU"
 
-#: src/libvlc-module.c:2043
+#: src/libvlc-module.c:2044
 msgid "Special modules"
 msgstr "বিশেষ মডিউল"
 
-#: src/libvlc-module.c:2049 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2050 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "প্লাগইন"
 
-#: src/libvlc-module.c:2060
+#: src/libvlc-module.c:2061
 msgid "Performance options"
 msgstr "কার্যকারিতা অপশন"
 
-#: src/libvlc-module.c:2208
+#: src/libvlc-module.c:2209
 msgid "Hot keys"
 msgstr "হট কী"
 
-#: src/libvlc-module.c:2650
+#: src/libvlc-module.c:2651
 msgid "Jump sizes"
 msgstr "স্থানান্তর করার পরিমাণ "
 
-#: src/libvlc-module.c:2727
+#: src/libvlc-module.c:2728
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "VLC-র সহায়তা মূদ্রণ করা হবে (--উন্নত এবং --সহায়তা-ভার্বোস এর সাথে সংযুক্ত থাকতে "
 "পারে)"
 
-#: src/libvlc-module.c:2730
+#: src/libvlc-module.c:2731
 msgid "Exhaustive help for VLC and its modules"
 msgstr "VLC এবং এর মডিউলগুলোর জন্য সম্পূর্ণ সহায়তা"
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2733
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4614,19 +4614,19 @@ msgstr ""
 "VLC এবং এর সব মডিউলের সহায়তা মুদ্রণ করা হবে (--উন্নত এবং --সহায়তা-ভার্বোস এর "
 "সাথে সংযুক্ত থাকতে পারে)"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2736
 msgid "ask for extra verbosity when displaying help"
 msgstr "সহায়তা প্রদর্শনের সময় অতিরিক্ত ভার্বোসিটির জন্য জিজ্ঞেস করা হবে"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2738
 msgid "print a list of available modules"
 msgstr "বিদ্যমান মডিউলসমূহের তালিকা মুদ্রণ করা হবে"
 
-#: src/libvlc-module.c:2739
+#: src/libvlc-module.c:2740
 msgid "print a list of available modules with extra detail"
 msgstr "অতিরিক্ত বিবরণসহ বিদ্যমান মডিউলসমূহের তালিকা মুদ্রণ করা হবে"
 
-#: src/libvlc-module.c:2741
+#: src/libvlc-module.c:2742
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -4635,27 +4635,27 @@ msgstr ""
 "সংযুক্ত থাকতে পারে)। স্ট্রিক্টম্যাচের জন্য উপসর্গ হিসেবে মডিউলের নামের আগে = দেয়া "
 "হবে।"
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2746
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr "কনফিগ ফাইলে কোনো কনফিগারেশন অপশন লোড বা সংরক্ষণ করা হবে না"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2748
 msgid "reset the current config to the default values"
 msgstr "বর্তমান কনফিগ পূর্বনির্ধারিত মানে পুনঃনির্ধারণ করা হবে"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2750
 msgid "use alternate config file"
 msgstr "বিকল্প কনফিগ ফাইল ব্যবহার করা হবে"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2752
 msgid "resets the current plugins cache"
 msgstr "বর্তমান প্লাগইন ক্যাশ পুনঃনির্ধারণ করা হবে"
 
-#: src/libvlc-module.c:2753
+#: src/libvlc-module.c:2754
 msgid "print version information"
 msgstr "সংস্করণ তথ্য মুদ্রণ করা হবে"
 
-#: src/libvlc-module.c:2791
+#: src/libvlc-module.c:2792
 msgid "main program"
 msgstr "প্রধান প্রোগ্রাম"
 
@@ -9582,7 +9582,7 @@ msgstr "কী নয়"
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
 #: modules/gui/macosx/simple_prefs.m:307
-#: modules/gui/qt4/dialogs/preferences.cpp:70
+#: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "সব"
 
@@ -15918,7 +15918,7 @@ msgid "Information"
 msgstr "তথ্য"
 
 #: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
-#: modules/gui/qt4/dialogs/preferences.cpp:46
+#: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "পছন্দসমূহ"
 
@@ -15933,7 +15933,7 @@ msgid "Basic"
 msgstr "ভিত্তি"
 
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/qt4/dialogs/preferences.cpp:312
+#: modules/gui/qt4/dialogs/preferences.cpp:317
 msgid "Reset Preferences"
 msgstr "পছন্দসমূহ রিসেট করা হবে"
 
@@ -17863,7 +17863,7 @@ msgstr "প্রয়োগ করা হবে (&A)"
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
 #: modules/gui/qt4/dialogs/openurl.cpp:60
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:37
-#: modules/gui/qt4/dialogs/preferences.cpp:85
+#: modules/gui/qt4/dialogs/preferences.cpp:86
 #: modules/gui/qt4/dialogs/sout.cpp:97 modules/gui/qt4/dialogs/toolbar.cpp:189
 msgid "&Cancel"
 msgstr "বাতিল (&C)"
@@ -18418,35 +18418,45 @@ msgstr "ওয়েবসাইট"
 msgid "Deletes the selected item"
 msgstr "নির্বাচিত উপাদান মুছে ফেলা হয়"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:63
+#: modules/gui/qt4/dialogs/preferences.cpp:64
 msgid "Show settings"
 msgstr "সেটিং প্রদর্শন করা হবে"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:67
+#: modules/gui/qt4/dialogs/preferences.cpp:68
 msgid "Simple"
 msgstr "সহজ"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:68
+#: modules/gui/qt4/dialogs/preferences.cpp:69
 msgid "Switch to simple preferences view"
 msgstr "সহজ পছন্দসমূহের প্রদর্শনে পরিবর্তন করা হবে"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:71
+#: modules/gui/qt4/dialogs/preferences.cpp:72
 msgid "Switch to full preferences view"
 msgstr "পূর্ণ পছন্দ প্রদর্শনে পরিবর্তন করা হবে"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:83
+#: modules/gui/qt4/dialogs/preferences.cpp:84
 msgid "&Save"
 msgstr "সংরক্ষণ করা হবে (&S)"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:84
+#: modules/gui/qt4/dialogs/preferences.cpp:85
 msgid "Save and close the dialog"
 msgstr "ডায়লগটি সংরক্ষণ করে বন্ধ করা হবে"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:86
+#: modules/gui/qt4/dialogs/preferences.cpp:87
 msgid "&Reset Preferences"
 msgstr "পছন্দসমূহ পুনঃনির্ধারণ করা হবে (&R)"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:313
+#: modules/gui/qt4/dialogs/preferences.cpp:300
+#, fuzzy
+msgid "Cannot save Configuration"
+msgstr "Lua ইন্টারফেস কনফিগারেশন"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:301
+#, fuzzy
+msgid "Preferences file could not be saved"
+msgstr "ফাইলটি যাচাই করা যায়নি"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:318
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr ""
 "আপনি কি নিশ্চিতভাবে আপনার VLC মিডিয়া প্লেয়ারের পছন্দসমূহ পুনঃনির্ধারণ করতে চান?"
@@ -18632,7 +18642,7 @@ msgstr "VLM কনফিগারেশন নতুন নামে সংর�
 
 #: modules/gui/qt4/dialogs/vlm.cpp:269 modules/gui/qt4/dialogs/vlm.cpp:343
 msgid "VLM conf (*.vlm);;All (*)"
-msgstr "VLM conf (*.vlm);;All (*)"
+msgstr ""
 
 #: modules/gui/qt4/dialogs/vlm.cpp:341
 msgid "Open VLM configuration..."
@@ -20158,19 +20168,19 @@ msgstr ""
 msgid "MSN Now-Playing"
 msgstr "MSN এ এখন বাজানো হচ্ছে"
 
-#: modules/misc/notify/notify.c:48
+#: modules/misc/notify/notify.c:49
 msgid "Timeout (ms)"
 msgstr "টাইমআউট (মিলিসেকেন্ড)"
 
-#: modules/misc/notify/notify.c:49
+#: modules/misc/notify/notify.c:50
 msgid "How long the notification will be displayed "
 msgstr "কতক্ষন ধরে ঘোষনাটি প্রদর্শিত হবে"
 
-#: modules/misc/notify/notify.c:54
+#: modules/misc/notify/notify.c:55
 msgid "Notify"
 msgstr "ঘোষনা করা হবে"
 
-#: modules/misc/notify/notify.c:55
+#: modules/misc/notify/notify.c:56
 msgid "LibNotify Notification Plugin"
 msgstr "LibNotify ঘোষনা প্লাগইন"
 

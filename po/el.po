@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-08-18 13:58+0200\n"
+"POT-Creation-Date: 2010-08-27 01:01+0200\n"
 "PO-Revision-Date: 2005-01-22 01:24+0000\n"
 "Last-Translator: Simos Xenitellis <simos74@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -125,7 +125,7 @@ msgstr "Modules εξαγωγής"
 msgid "General settings for audio output modules."
 msgstr "Αυτές είναι γενικές ρυθμίσεις για ηχητικές ενότητες εξαγωγής"
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2044
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2045
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Διάφορα"
@@ -262,7 +262,7 @@ msgstr "Γενικά"
 msgid "General input settings. Use with care..."
 msgstr "Γενικές ρυθμίσεις εισαγωγής. Προσοχή στην χρήση αυτών."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1964
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1965
 msgid "Stream output"
 msgstr "Ροή εξόδου"
 
@@ -376,7 +376,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "η υλοποίηση του VLC για το Video On Demand"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2106
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2107
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -412,7 +412,7 @@ msgstr ""
 "στοιχεία στην λίστα αναπαραγωγής."
 
 # #-#-#-#-#  gnome-system-tools.HEAD.el.po (gnome-system-tools.HEAD.el)  #-#-#-#-#
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1911
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1912
 msgid "Advanced"
 msgstr "Για προχωρημένους"
 
@@ -1191,7 +1191,7 @@ msgstr "Ρύθμιση"
 msgid "URL"
 msgstr "URL"
 
-#: src/input/meta.c:63 modules/misc/notify/notify.c:305
+#: src/input/meta.c:63 modules/misc/notify/notify.c:314
 msgid "Now Playing"
 msgstr "Τώρα Αναπαράγεται"
 
@@ -1436,7 +1436,7 @@ msgstr ""
 # #-#-#-#-#  nautilus.HEAD.el.po (el)  #-#-#-#-#
 #
 #: src/libvlc.h:175 src/libvlc-module.c:1464 src/libvlc-module.c:1465
-#: src/libvlc-module.c:2640 src/video_output/vout_intf.c:195
+#: src/libvlc-module.c:2641 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Μεγέθυνση"
 
@@ -3866,7 +3866,7 @@ msgstr "Πιο αργά"
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
+#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Επόμενο"
@@ -3882,7 +3882,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
+#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Προηγούμενο"
@@ -4664,69 +4664,69 @@ msgstr "Ρυθμίσεις κομματιού"
 msgid "Playback control"
 msgstr "Έλεγχος αναπαραγωγής"
 
-#: src/libvlc-module.c:1855
+#: src/libvlc-module.c:1856
 msgid "Default devices"
 msgstr "Προκαθορισμένες συσκευές"
 
-#: src/libvlc-module.c:1864
+#: src/libvlc-module.c:1865
 msgid "Network settings"
 msgstr "Ρυθμίσεις δικτύου"
 
-#: src/libvlc-module.c:1876
+#: src/libvlc-module.c:1877
 msgid "Socks proxy"
 msgstr ""
 
-#: src/libvlc-module.c:1885 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1886 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Metadata"
 
-#: src/libvlc-module.c:1936
+#: src/libvlc-module.c:1937
 msgid "Decoders"
 msgstr "Αποκωδικοποιητές"
 
-#: src/libvlc-module.c:1943 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1944 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Είσοδος"
 
-#: src/libvlc-module.c:1982
+#: src/libvlc-module.c:1983
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2014
+#: src/libvlc-module.c:2015
 msgid "CPU"
 msgstr "CPU"
 
-#: src/libvlc-module.c:2043
+#: src/libvlc-module.c:2044
 msgid "Special modules"
 msgstr "Ειδικά modules"
 
-#: src/libvlc-module.c:2049 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2050 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Πρόσθετες Λειτουργίες"
 
-#: src/libvlc-module.c:2060
+#: src/libvlc-module.c:2061
 msgid "Performance options"
 msgstr "Eπιλογές για την απόδοση"
 
-#: src/libvlc-module.c:2208
+#: src/libvlc-module.c:2209
 msgid "Hot keys"
 msgstr "Συντομεύσεις πληκτρολογίου"
 
-#: src/libvlc-module.c:2650
+#: src/libvlc-module.c:2651
 msgid "Jump sizes"
 msgstr "Μεγέθη μετατόπισης"
 
-#: src/libvlc-module.c:2727
+#: src/libvlc-module.c:2728
 #, fuzzy
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr "εκτύπωση βοηθείας για το VLC (μπορεί να συνδειαστεί με --προχωρημένα)"
 
-#: src/libvlc-module.c:2730
+#: src/libvlc-module.c:2731
 msgid "Exhaustive help for VLC and its modules"
 msgstr ""
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2733
 #, fuzzy
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
@@ -4735,20 +4735,20 @@ msgstr ""
 "εκτύπωση βοηθείας για το VLC και όλα του τα modules (μπορεί να συνδειαστεί "
 "με --προχωρημένα)"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2736
 msgid "ask for extra verbosity when displaying help"
 msgstr ""
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2738
 msgid "print a list of available modules"
 msgstr "εκτύπωση λίστας διαθέσιμων modules"
 
-#: src/libvlc-module.c:2739
+#: src/libvlc-module.c:2740
 #, fuzzy
 msgid "print a list of available modules with extra detail"
 msgstr "εκτύπωση λίστας διαθέσιμων modules"
 
-#: src/libvlc-module.c:2741
+#: src/libvlc-module.c:2742
 #, fuzzy
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
@@ -4757,27 +4757,27 @@ msgstr ""
 "εκτύπωση βοηθείας για ένα συγκεκριμένο module  (μπορεί να συνδειαστεί με --"
 "προχωρημένα)"
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2746
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2748
 msgid "reset the current config to the default values"
 msgstr "ανάκληση της τρέχουσας ρύθμισης στις προκαθορισμένες τιμές"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2750
 msgid "use alternate config file"
 msgstr "χρησιμοποίηση εναλλακτικού αρχείου ρυθμίσεων"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2752
 msgid "resets the current plugins cache"
 msgstr ""
 
-#: src/libvlc-module.c:2753
+#: src/libvlc-module.c:2754
 msgid "print version information"
 msgstr "Τύπωσε πληροφορίες έκδοσης"
 
-#: src/libvlc-module.c:2791
+#: src/libvlc-module.c:2792
 msgid "main program"
 msgstr "κύριο πρόγραμμα"
 
@@ -9808,7 +9808,7 @@ msgstr "Κανένα"
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
 #: modules/gui/macosx/simple_prefs.m:307
-#: modules/gui/qt4/dialogs/preferences.cpp:70
+#: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "Όλα"
 
@@ -16376,7 +16376,7 @@ msgid "Information"
 msgstr "Πληροφορίες"
 
 #: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
-#: modules/gui/qt4/dialogs/preferences.cpp:46
+#: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "Προτιμήσεις"
 
@@ -16391,7 +16391,7 @@ msgid "Basic"
 msgstr "Μπασκίρ"
 
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/qt4/dialogs/preferences.cpp:312
+#: modules/gui/qt4/dialogs/preferences.cpp:317
 msgid "Reset Preferences"
 msgstr "Αναίρεση προτιμήσεων"
 
@@ -18437,7 +18437,7 @@ msgstr "Εφαρμογή"
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
 #: modules/gui/qt4/dialogs/openurl.cpp:60
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:37
-#: modules/gui/qt4/dialogs/preferences.cpp:85
+#: modules/gui/qt4/dialogs/preferences.cpp:86
 #: modules/gui/qt4/dialogs/sout.cpp:97 modules/gui/qt4/dialogs/toolbar.cpp:189
 #, fuzzy
 msgid "&Cancel"
@@ -19055,44 +19055,54 @@ msgstr "Λευκό"
 msgid "Deletes the selected item"
 msgstr "Αναπαραγωγή επιλεγμένης ροής"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:63
+#: modules/gui/qt4/dialogs/preferences.cpp:64
 #, fuzzy
 msgid "Show settings"
 msgstr "Αποθήκευση ρυθμίσεων"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:67
+#: modules/gui/qt4/dialogs/preferences.cpp:68
 #, fuzzy
 msgid "Simple"
 msgstr "απλό"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:68
+#: modules/gui/qt4/dialogs/preferences.cpp:69
 #, fuzzy
 msgid "Switch to simple preferences view"
 msgstr "Επιλογή πρόσοψης"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:71
+#: modules/gui/qt4/dialogs/preferences.cpp:72
 #, fuzzy
 msgid "Switch to full preferences view"
 msgstr "Επιλογή πρόσοψης"
 
 # #-#-#-#-#  nautilus.HEAD.el.po (el)  #-#-#-#-#
 #
-#: modules/gui/qt4/dialogs/preferences.cpp:83
+#: modules/gui/qt4/dialogs/preferences.cpp:84
 #, fuzzy
 msgid "&Save"
 msgstr "Αποθήκευση"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:84
+#: modules/gui/qt4/dialogs/preferences.cpp:85
 #, fuzzy
 msgid "Save and close the dialog"
 msgstr "Εμφάνιση περισσότερων επιλογών"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:86
+#: modules/gui/qt4/dialogs/preferences.cpp:87
 #, fuzzy
 msgid "&Reset Preferences"
 msgstr "Αναίρεση προτιμήσεων"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:313
+#: modules/gui/qt4/dialogs/preferences.cpp:300
+#, fuzzy
+msgid "Cannot save Configuration"
+msgstr "Εισαγωγή Ρυθμίσεων"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:301
+#, fuzzy
+msgid "Preferences file could not be saved"
+msgstr "Απόκρυψη διεπαφής"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:318
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr ""
 
@@ -20969,20 +20979,20 @@ msgstr ""
 msgid "MSN Now-Playing"
 msgstr "Αναπαραγωγή"
 
-#: modules/misc/notify/notify.c:48
+#: modules/misc/notify/notify.c:49
 #, fuzzy
 msgid "Timeout (ms)"
 msgstr "Χρονική λήξη"
 
-#: modules/misc/notify/notify.c:49
+#: modules/misc/notify/notify.c:50
 msgid "How long the notification will be displayed "
 msgstr ""
 
-#: modules/misc/notify/notify.c:54
+#: modules/misc/notify/notify.c:55
 msgid "Notify"
 msgstr ""
 
-#: modules/misc/notify/notify.c:55
+#: modules/misc/notify/notify.c:56
 msgid "LibNotify Notification Plugin"
 msgstr ""
 
@@ -29502,9 +29512,6 @@ msgstr "Μετα-πληροφορίες"
 
 #~ msgid "Updates"
 #~ msgstr "Ενημερώσεις"
-
-#~ msgid "Load Configuration"
-#~ msgstr "Εισαγωγή Ρυθμίσεων"
 
 #, fuzzy
 #~ msgid "New broadcast"

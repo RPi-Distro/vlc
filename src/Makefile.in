@@ -99,7 +99,8 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
-	"$(DESTDIR)$(pkgincludedir)" "$(DESTDIR)$(pluginsincludedir)"
+	"$(DESTDIR)$(pkgincludedir)" "$(DESTDIR)$(pkgincludedir)" \
+	"$(DESTDIR)$(pluginsincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = control/libvlc_la-core.lo control/libvlc_la-error.lo \
@@ -343,8 +344,8 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	installcheck-recursive installdirs-recursive pdf-recursive \
 	ps-recursive uninstall-recursive
 DATA = $(noinst_DATA) $(pkgconfig_DATA)
-HEADERS = $(noinst_HEADERS) $(pkginclude_HEADERS) \
-	$(pluginsinclude_HEADERS)
+HEADERS = $(nodist_pkginclude_HEADERS) $(noinst_HEADERS) \
+	$(pkginclude_HEADERS) $(pluginsinclude_HEADERS)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -890,12 +891,13 @@ SUBDIRS = . test
 NULL = 
 EXTRA_DIST = extras/COPYING misc/beos_specific.cpp libvlc.pc.in \
 	vlc-plugin.pc.in libvlc.sym libvlccore.sym \
-	libvlc_win32_rc.rc.in
+	../include/vlc/libvlc_version.h.in libvlc_win32_rc.rc.in
 
 ###############################################################################
 # GIT revision
 ###############################################################################
-BUILT_SOURCES = ../include/vlc_about.h stamp-revision
+BUILT_SOURCES = $(nodist_pkginclude_HEADERS) ../include/vlc_about.h \
+	stamp-revision
 CLEANFILES = $(BUILT_SOURCES) $(pkgconfig_DATA) revision.txt \
 	revision.c $(check_DATA)
 SUFFIXES = .pc.in .pc .rc.in .rc
@@ -919,6 +921,7 @@ pkginclude_HEADERS = \
 	../include/vlc/libvlc_vlm.h \
 	$(NULL)
 
+nodist_pkginclude_HEADERS = ../include/vlc/libvlc_version.h
 pluginsinclude_HEADERS = \
 	../include/vlc_access.h \
 	../include/vlc_acl.h \
@@ -3473,6 +3476,26 @@ uninstall-pkgconfigDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(pkgconfigdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(pkgconfigdir)" && rm -f $$files
+install-nodist_pkgincludeHEADERS: $(nodist_pkginclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(pkgincludedir)"
+	@list='$(nodist_pkginclude_HEADERS)'; test -n "$(pkgincludedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(pkgincludedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(pkgincludedir)" || exit $$?; \
+	done
+
+uninstall-nodist_pkgincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nodist_pkginclude_HEADERS)'; test -n "$(pkgincludedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(pkgincludedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(pkgincludedir)" && rm -f $$files
 install-pkgincludeHEADERS: $(pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(pkgincludedir)"
@@ -3807,7 +3830,7 @@ check: $(BUILT_SOURCES)
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(pkgincludedir)" "$(DESTDIR)$(pluginsincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(pkgincludedir)" "$(DESTDIR)$(pkgincludedir)" "$(DESTDIR)$(pluginsincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -3891,7 +3914,8 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-pkgconfigDATA install-pkgincludeHEADERS \
+install-data-am: install-nodist_pkgincludeHEADERS \
+	install-pkgconfigDATA install-pkgincludeHEADERS \
 	install-pluginsincludeHEADERS
 
 install-dvi: install-dvi-recursive
@@ -3938,7 +3962,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgconfigDATA \
+uninstall-am: uninstall-libLTLIBRARIES \
+	uninstall-nodist_pkgincludeHEADERS uninstall-pkgconfigDATA \
 	uninstall-pkgincludeHEADERS uninstall-pluginsincludeHEADERS
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) all check \
@@ -3953,17 +3978,21 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgconfigDATA \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-pkgconfigDATA install-pkgincludeHEADERS \
+	install-info-am install-libLTLIBRARIES install-man \
+	install-nodist_pkgincludeHEADERS install-pdf install-pdf-am \
+	install-pkgconfigDATA install-pkgincludeHEADERS \
 	install-pluginsincludeHEADERS install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
 	installdirs-am maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
 	uninstall uninstall-am uninstall-libLTLIBRARIES \
-	uninstall-pkgconfigDATA uninstall-pkgincludeHEADERS \
-	uninstall-pluginsincludeHEADERS
+	uninstall-nodist_pkgincludeHEADERS uninstall-pkgconfigDATA \
+	uninstall-pkgincludeHEADERS uninstall-pluginsincludeHEADERS
 
+
+../include/vlc/libvlc_version.h: ../include/vlc/libvlc_version.h.in $(top_builddir)/config.status
+	$(SHELL) $(top_builddir)/config.status --file=$@
 
 ../include/vlc_about.h: Makefile.am $(top_srcdir)/COPYING $(top_srcdir)/THANKS $(top_srcdir)/AUTHORS
 	$(AM_V_at)rm -f -- "$@.tmp"

@@ -2,7 +2,7 @@
  * notify.c : libnotify notification plugin
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: c3862b06574154c14dd47a076d775da38f4872bb $
+ * $Id: f2d049abbba2a3565f718be26ba7b34960c06a46 $
  *
  * Authors: Christophe Mutricy <xtophe -at- videolan -dot- org>
  *
@@ -34,6 +34,7 @@
 #include <vlc_playlist.h>
 #include <vlc_url.h>
 
+#include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnotify/notify.h>
 
@@ -224,15 +225,23 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     }
     else /* else we show state-of-the art logo */
     {
-        GError *p_error = NULL;
-        char *psz_pixbuf;
-        char *psz_data = config_GetDataDir( p_this );
-        if( asprintf( &psz_pixbuf, "%s/vlc48x48.png", psz_data ) >= 0 )
+        /* First try to get an icon from the current theme. */
+        GtkIconTheme* p_theme = gtk_icon_theme_get_default();
+        pix = gtk_icon_theme_load_icon( p_theme, "vlc", 72, 0, NULL);
+
+        if( !pix )
         {
-            pix = gdk_pixbuf_new_from_file( psz_pixbuf, &p_error );
-            free( psz_pixbuf );
+        /* Load icon from share/ */
+            GError *p_error = NULL;
+            char *psz_pixbuf;
+            char *psz_data = config_GetDataDir( p_this );
+            if( asprintf( &psz_pixbuf, "%s/icons/48x48/vlc.png", psz_data ) >= 0 )
+            {
+                pix = gdk_pixbuf_new_from_file( psz_pixbuf, &p_error );
+                free( psz_pixbuf );
+            }
+            free( psz_data );
         }
-        free( psz_data );
     }
 
     free( psz_arturl );

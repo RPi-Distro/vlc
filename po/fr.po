@@ -3,7 +3,7 @@
 # $Id$
 #
 # Translation updated by
-#  Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} net> - June 2010
+#  Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} net> - August 2010
 # Previous Translators
 #  Samuel Hocevar <sam@zoy.org>
 #  Jean-Pierre Kuypers <Kuypers@sri.ucl.ac.be>
@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-08-18 13:58+0200\n"
-"PO-Revision-Date: 2010-06-11 11:37+0100\n"
+"POT-Creation-Date: 2010-08-27 01:01+0200\n"
+"PO-Revision-Date: 2010-08-26 01:02+0100\n"
 "Last-Translator: Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} "
 "net>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -127,7 +127,7 @@ msgstr "Modules de sortie"
 msgid "General settings for audio output modules."
 msgstr "Voici les paramètres pour les modules de sortie audio."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2044
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2045
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Divers"
@@ -252,7 +252,7 @@ msgstr "Général lecture"
 msgid "General input settings. Use with care..."
 msgstr "Réglages de lecture. À utiliser avec précaution."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1964
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1965
 msgid "Stream output"
 msgstr "Flux de sortie"
 
@@ -364,7 +364,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "Vidéo à la demande"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2106
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2107
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -399,7 +399,7 @@ msgstr ""
 "Les modules de découverte de services ajoutent automatiquement des éléments "
 "à la liste de lecture."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1911
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1912
 msgid "Advanced"
 msgstr "Avancé"
 
@@ -655,7 +655,7 @@ msgstr "Ajouter un dossier…"
 
 #: include/vlc_intf_strings.h:95
 msgid "Save Playlist to &File..."
-msgstr "&Enregistrer la liste de lecture…"
+msgstr "Enregistrer la liste de lecture…"
 
 #: include/vlc_intf_strings.h:96
 msgid "Open Play&list..."
@@ -1158,7 +1158,7 @@ msgstr "Paramètre"
 msgid "URL"
 msgstr "URL"
 
-#: src/input/meta.c:63 modules/misc/notify/notify.c:305
+#: src/input/meta.c:63 modules/misc/notify/notify.c:314
 msgid "Now Playing"
 msgstr "Actuellement"
 
@@ -1420,7 +1420,7 @@ msgstr ""
 "Appuyez sur [Entrée] pour continuer…\n"
 
 #: src/libvlc.h:175 src/libvlc-module.c:1464 src/libvlc-module.c:1465
-#: src/libvlc-module.c:2640 src/video_output/vout_intf.c:195
+#: src/libvlc-module.c:2641 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -2475,6 +2475,8 @@ msgid ""
 "It tells the clock algorithms what is the maximal input jitter that is "
 "considered valid and can be compensated (in milliseconds)"
 msgstr ""
+"Cette option définit la variance maximum du délai de réception que les "
+"algorithmes de synchronisation tentent de compenser (en millisecondes)."
 
 #: src/libvlc-module.c:648 modules/control/netsync.c:72
 msgid "Network synchronisation"
@@ -3875,7 +3877,7 @@ msgstr "Ralenti"
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
+#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Suivant"
@@ -3891,7 +3893,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
+#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Précédent"
@@ -4460,7 +4462,7 @@ msgstr "Diminuer le facteur d'échelle."
 
 #: src/libvlc-module.c:1444
 msgid "Cycle deinterlace modes"
-msgstr "Boucler le désentrelacement"
+msgstr "Boucler sur les modes de désentrelacement"
 
 #: src/libvlc-module.c:1445
 msgid "Cycle through deinterlace modes."
@@ -4659,70 +4661,70 @@ msgstr "Paramètres de la piste"
 msgid "Playback control"
 msgstr "Contrôle de lecture"
 
-#: src/libvlc-module.c:1855
+#: src/libvlc-module.c:1856
 msgid "Default devices"
 msgstr "Périphériques par défaut"
 
-#: src/libvlc-module.c:1864
+#: src/libvlc-module.c:1865
 msgid "Network settings"
 msgstr "Paramètres réseau"
 
-#: src/libvlc-module.c:1876
+#: src/libvlc-module.c:1877
 msgid "Socks proxy"
 msgstr "Proxy SOCKS"
 
-#: src/libvlc-module.c:1885 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1886 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Métadonnées"
 
-#: src/libvlc-module.c:1936
+#: src/libvlc-module.c:1937
 msgid "Decoders"
 msgstr "Décodeurs"
 
-#: src/libvlc-module.c:1943 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1944 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Entrée"
 
-#: src/libvlc-module.c:1982
+#: src/libvlc-module.c:1983
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2014
+#: src/libvlc-module.c:2015
 msgid "CPU"
 msgstr "Processeur"
 
-#: src/libvlc-module.c:2043
+#: src/libvlc-module.c:2044
 msgid "Special modules"
 msgstr "Modules spéciaux"
 
-#: src/libvlc-module.c:2049 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2050 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Modules"
 
-#: src/libvlc-module.c:2060
+#: src/libvlc-module.c:2061
 msgid "Performance options"
 msgstr "Options de performance"
 
-#: src/libvlc-module.c:2208
+#: src/libvlc-module.c:2209
 msgid "Hot keys"
 msgstr "Combinaisons de touches"
 
-#: src/libvlc-module.c:2650
+#: src/libvlc-module.c:2651
 msgid "Jump sizes"
 msgstr "Tailles des sauts"
 
-#: src/libvlc-module.c:2727
+#: src/libvlc-module.c:2728
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "Afficher l'aide de VLC (peut être combiné avec « --advanced » et « --help-"
 "verbose »)"
 
-#: src/libvlc-module.c:2730
+#: src/libvlc-module.c:2731
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Aide extensive pour VLC et ses modules"
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2733
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4730,19 +4732,19 @@ msgstr ""
 "Afficher l'aide de VLC et de ses modules (peut être combiné avec « --"
 "advanced » et « --help-verbose »)"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2736
 msgid "ask for extra verbosity when displaying help"
 msgstr "Afficher plus de détails dans l'aide"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2738
 msgid "print a list of available modules"
 msgstr "Affiche la liste des modules disponibles"
 
-#: src/libvlc-module.c:2739
+#: src/libvlc-module.c:2740
 msgid "print a list of available modules with extra detail"
 msgstr "Affiche la liste des modules disponibles avec tous les détails"
 
-#: src/libvlc-module.c:2741
+#: src/libvlc-module.c:2742
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -4751,29 +4753,29 @@ msgstr ""
 "advanced » et « --help-verbose »). Préfixez le nom du module avec « = » pour "
 "être plus précis."
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2746
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 "aucune option de configuration ne sera chargée ou enregistrée dans le "
 "fichier de configuration"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2748
 msgid "reset the current config to the default values"
 msgstr "Remet à zéro la configuration"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2750
 msgid "use alternate config file"
 msgstr "Utilise un autre fichier de configuration"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2752
 msgid "resets the current plugins cache"
 msgstr "Remet à zéro le cache des modules"
 
-#: src/libvlc-module.c:2753
+#: src/libvlc-module.c:2754
 msgid "print version information"
 msgstr "Affiche le numéro de version"
 
-#: src/libvlc-module.c:2791
+#: src/libvlc-module.c:2792
 msgid "main program"
 msgstr "Programme principal"
 
@@ -4928,681 +4930,663 @@ msgstr "Indéfini"
 
 #: src/text/iso-639_def.h:38
 msgid "Afar"
-msgstr ""
+msgstr "Afar"
 
 #: src/text/iso-639_def.h:39
 msgid "Abkhazian"
-msgstr ""
+msgstr "Abkhaze"
 
 #: src/text/iso-639_def.h:40
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikaans"
 
 #: src/text/iso-639_def.h:41
 msgid "Albanian"
-msgstr ""
+msgstr "Albanais"
 
 #: src/text/iso-639_def.h:42
 msgid "Amharic"
-msgstr ""
+msgstr "Amharique"
 
 #: src/text/iso-639_def.h:43
 msgid "Arabic"
-msgstr ""
+msgstr "Arabe"
 
 #: src/text/iso-639_def.h:44
 msgid "Armenian"
-msgstr ""
+msgstr "Arménien"
 
 #: src/text/iso-639_def.h:45
 msgid "Assamese"
-msgstr ""
+msgstr "Assamais"
 
 #: src/text/iso-639_def.h:46
 msgid "Avestan"
-msgstr ""
+msgstr "Avestique"
 
 #: src/text/iso-639_def.h:47
 msgid "Aymara"
-msgstr ""
+msgstr "Aymara"
 
 #: src/text/iso-639_def.h:48
 msgid "Azerbaijani"
-msgstr ""
+msgstr "Azéri"
 
 #: src/text/iso-639_def.h:49
 msgid "Bashkir"
-msgstr ""
+msgstr "Bachkir"
 
 #: src/text/iso-639_def.h:50
 msgid "Basque"
-msgstr ""
+msgstr "Basque"
 
 #: src/text/iso-639_def.h:51
 msgid "Belarusian"
-msgstr ""
+msgstr "Biélorusse"
 
 #: src/text/iso-639_def.h:52
 msgid "Bengali"
-msgstr ""
+msgstr "Bengalî"
 
 #: src/text/iso-639_def.h:53
 msgid "Bihari"
-msgstr ""
+msgstr "Bihari"
 
 #: src/text/iso-639_def.h:54
 msgid "Bislama"
-msgstr ""
+msgstr "Bichelamar"
 
 #: src/text/iso-639_def.h:55
 msgid "Bosnian"
-msgstr ""
+msgstr "Bosnien"
 
 #: src/text/iso-639_def.h:56
 msgid "Breton"
-msgstr ""
+msgstr "Breton"
 
 #: src/text/iso-639_def.h:57
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bulgare"
 
 #: src/text/iso-639_def.h:58
 msgid "Burmese"
-msgstr ""
+msgstr "Birman"
 
 #: src/text/iso-639_def.h:59
 msgid "Catalan"
-msgstr ""
+msgstr "Catalan"
 
 #: src/text/iso-639_def.h:60
 msgid "Chamorro"
-msgstr ""
+msgstr "Chamorro"
 
 #: src/text/iso-639_def.h:61
 msgid "Chechen"
-msgstr ""
+msgstr "Tchétchène"
 
 #: src/text/iso-639_def.h:62
 msgid "Chinese"
-msgstr ""
+msgstr "Chinois"
 
 #: src/text/iso-639_def.h:63
 msgid "Church Slavic"
-msgstr ""
+msgstr "Vieux slave"
 
 #: src/text/iso-639_def.h:64
 msgid "Chuvash"
-msgstr ""
+msgstr "Tchouvache"
 
 #: src/text/iso-639_def.h:65
-#, fuzzy
 msgid "Cornish"
-msgstr "Terminer"
+msgstr "Cornique"
 
 #: src/text/iso-639_def.h:66
 msgid "Corsican"
-msgstr ""
+msgstr "Corse"
 
 #: src/text/iso-639_def.h:67
 msgid "Czech"
-msgstr ""
+msgstr "Tchèque"
 
 #: src/text/iso-639_def.h:68
-#, fuzzy
 msgid "Danish"
-msgstr "Terminer"
+msgstr "Danois"
 
 #: src/text/iso-639_def.h:69
 msgid "Dutch"
-msgstr ""
+msgstr "Néerlandais"
 
 #: src/text/iso-639_def.h:70
 msgid "Dzongkha"
-msgstr ""
+msgstr "Dzongkha"
 
 #: src/text/iso-639_def.h:71
 msgid "English"
-msgstr ""
+msgstr "Anglais"
 
 #: src/text/iso-639_def.h:72
-#, fuzzy
 msgid "Esperanto"
-msgstr "Esperanto (Latin-3)"
+msgstr "Espéranto"
 
 #: src/text/iso-639_def.h:73
 msgid "Estonian"
-msgstr ""
+msgstr "Estonien"
 
 #: src/text/iso-639_def.h:74
 msgid "Faroese"
-msgstr ""
+msgstr "Féroïen"
 
 #: src/text/iso-639_def.h:75
 msgid "Fijian"
-msgstr ""
+msgstr "Fidjien"
 
 #: src/text/iso-639_def.h:76
-#, fuzzy
 msgid "Finnish"
-msgstr "Terminer"
+msgstr "Finnois"
 
 #: src/text/iso-639_def.h:77
-#, fuzzy
 msgid "French"
-msgstr "Télévision Française"
+msgstr "Français"
 
 #: src/text/iso-639_def.h:78
 msgid "Frisian"
-msgstr ""
+msgstr "Frison"
 
 #: src/text/iso-639_def.h:79
 msgid "Georgian"
-msgstr ""
+msgstr "Géorgien"
 
 #: src/text/iso-639_def.h:80
 msgid "German"
-msgstr ""
+msgstr "Allemand"
 
 #: src/text/iso-639_def.h:81
 msgid "Gaelic (Scots)"
-msgstr ""
+msgstr "Gaélique (Écossais)"
 
 #: src/text/iso-639_def.h:82
 msgid "Irish"
-msgstr ""
+msgstr "Irlandais"
 
 #: src/text/iso-639_def.h:83
 msgid "Gallegan"
-msgstr ""
+msgstr "Galician"
 
 #: src/text/iso-639_def.h:84
 msgid "Manx"
-msgstr ""
+msgstr "Mannois"
 
 #: src/text/iso-639_def.h:85
 msgid "Greek, Modern ()"
-msgstr ""
+msgstr "Grec (moderne)"
 
 #: src/text/iso-639_def.h:86
 msgid "Guarani"
-msgstr ""
+msgstr "Guarani"
 
 #: src/text/iso-639_def.h:87
-#, fuzzy
 msgid "Gujarati"
-msgstr "Durée"
+msgstr "Gujarâtî"
 
 #: src/text/iso-639_def.h:88
 msgid "Hebrew"
-msgstr ""
+msgstr "Hébreux"
 
 #: src/text/iso-639_def.h:89
 msgid "Herero"
-msgstr ""
+msgstr "Héréro"
 
 #: src/text/iso-639_def.h:90
 msgid "Hindi"
-msgstr ""
+msgstr "Hindî"
 
 #: src/text/iso-639_def.h:91
 msgid "Hiri Motu"
-msgstr ""
+msgstr "Hiri motu"
 
 #: src/text/iso-639_def.h:92
 msgid "Hungarian"
-msgstr ""
+msgstr "Hongrois"
 
 #: src/text/iso-639_def.h:93
 msgid "Icelandic"
-msgstr ""
+msgstr "Islandais"
 
 #: src/text/iso-639_def.h:94
 msgid "Inuktitut"
-msgstr ""
+msgstr "Inuktitut"
 
 #: src/text/iso-639_def.h:95
-#, fuzzy
 msgid "Interlingue"
-msgstr "Mode de désentrelacement"
+msgstr "Interlingue"
 
 #: src/text/iso-639_def.h:96
-#, fuzzy
 msgid "Interlingua"
-msgstr "Mode de désentrelacement"
+msgstr "Interlingua"
 
 #: src/text/iso-639_def.h:97
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonésien"
 
 #: src/text/iso-639_def.h:98
 msgid "Inupiaq"
-msgstr ""
+msgstr "Inupiak"
 
 #: src/text/iso-639_def.h:99
 msgid "Italian"
-msgstr ""
+msgstr "Italien"
 
 #: src/text/iso-639_def.h:100
 msgid "Javanese"
-msgstr ""
+msgstr "Javanais"
 
 #: src/text/iso-639_def.h:101
 msgid "Japanese"
-msgstr ""
+msgstr "Japonais"
 
 #: src/text/iso-639_def.h:102
 msgid "Kalaallisut (Greenlandic)"
-msgstr ""
+msgstr "Groenlandais"
 
 #: src/text/iso-639_def.h:103
 msgid "Kannada"
-msgstr ""
+msgstr "Kannada"
 
 #: src/text/iso-639_def.h:104
 msgid "Kashmiri"
-msgstr ""
+msgstr "Kashmiri"
 
 #: src/text/iso-639_def.h:105
 msgid "Kazakh"
-msgstr ""
+msgstr "Kazakhe"
 
 #: src/text/iso-639_def.h:106
 msgid "Khmer"
-msgstr ""
+msgstr "Khmer"
 
 #: src/text/iso-639_def.h:107
 msgid "Kikuyu"
-msgstr ""
+msgstr "Kikuyu"
 
 #: src/text/iso-639_def.h:108
 msgid "Kinyarwanda"
-msgstr ""
+msgstr "Kinyarwanda"
 
 #: src/text/iso-639_def.h:109
 msgid "Kirghiz"
-msgstr ""
+msgstr "Kirghize"
 
 #: src/text/iso-639_def.h:110
 msgid "Komi"
-msgstr ""
+msgstr "Komi"
 
 #: src/text/iso-639_def.h:111
 msgid "Korean"
-msgstr ""
+msgstr "Coréen"
 
 #: src/text/iso-639_def.h:112
 msgid "Kuanyama"
-msgstr ""
+msgstr "Kuanyama"
 
 #: src/text/iso-639_def.h:113
 msgid "Kurdish"
-msgstr ""
+msgstr "Kurde"
 
 #: src/text/iso-639_def.h:114
-#, fuzzy
 msgid "Lao"
-msgstr "Lanczos"
+msgstr "Laotien"
 
 #: src/text/iso-639_def.h:115
-#, fuzzy
 msgid "Latin"
-msgstr "Note"
+msgstr "Latin"
 
 #: src/text/iso-639_def.h:116
 msgid "Latvian"
-msgstr ""
+msgstr "Letton"
 
 #: src/text/iso-639_def.h:117
 msgid "Lingala"
-msgstr ""
+msgstr "Lingala"
 
 #: src/text/iso-639_def.h:118
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lituanien"
 
 #: src/text/iso-639_def.h:119
 msgid "Letzeburgesch"
-msgstr ""
+msgstr "Luxembourgeois"
 
 #: src/text/iso-639_def.h:120
 msgid "Macedonian"
-msgstr ""
+msgstr "Macédonien"
 
 #: src/text/iso-639_def.h:121
 msgid "Marshall"
-msgstr ""
+msgstr "Marshallais"
 
 #: src/text/iso-639_def.h:122
 msgid "Malayalam"
-msgstr ""
+msgstr "Malayâlam"
 
 #: src/text/iso-639_def.h:123
 msgid "Maori"
-msgstr ""
+msgstr "Maori (NZ)"
 
 #: src/text/iso-639_def.h:124
 msgid "Marathi"
-msgstr ""
+msgstr "Marathi"
 
 #: src/text/iso-639_def.h:125
 msgid "Malay"
-msgstr ""
+msgstr "Malais"
 
 #: src/text/iso-639_def.h:126
 msgid "Malagasy"
-msgstr ""
+msgstr "Malgace"
 
 #: src/text/iso-639_def.h:127
 msgid "Maltese"
-msgstr ""
+msgstr "Maltais"
 
 #: src/text/iso-639_def.h:128
 msgid "Moldavian"
-msgstr ""
+msgstr "Moldave"
 
 #: src/text/iso-639_def.h:129
 msgid "Mongolian"
-msgstr ""
+msgstr "Mongol"
 
 #: src/text/iso-639_def.h:130
 msgid "Nauru"
-msgstr ""
+msgstr "Nauruan"
 
 #: src/text/iso-639_def.h:131
 msgid "Navajo"
-msgstr ""
+msgstr "Navajo"
 
 #: src/text/iso-639_def.h:132
 msgid "Ndebele, South"
-msgstr ""
+msgstr "Nrebele"
 
 #: src/text/iso-639_def.h:133
 msgid "Ndebele, North"
-msgstr ""
+msgstr "Sindebele"
 
 #: src/text/iso-639_def.h:134
 msgid "Ndonga"
-msgstr ""
+msgstr "Ndonga"
 
 #: src/text/iso-639_def.h:135
 msgid "Nepali"
-msgstr ""
+msgstr "Népalais"
 
 #: src/text/iso-639_def.h:136
 msgid "Norwegian"
-msgstr ""
+msgstr "Norvégien"
 
 #: src/text/iso-639_def.h:137
 msgid "Norwegian Nynorsk"
-msgstr ""
+msgstr "Néo-norvégien"
 
 #: src/text/iso-639_def.h:138
 msgid "Norwegian Bokmaal"
-msgstr ""
+msgstr "Norvégien classique"
 
 #: src/text/iso-639_def.h:139
 msgid "Chichewa; Nyanja"
-msgstr ""
+msgstr "Chichewa"
 
 #: src/text/iso-639_def.h:140
 msgid "Occitan (post 1500); Provencal"
-msgstr ""
+msgstr "Provençal"
 
 #: src/text/iso-639_def.h:141
 msgid "Oriya"
-msgstr ""
+msgstr "Oriya"
 
 #: src/text/iso-639_def.h:142
 msgid "Oromo"
-msgstr ""
+msgstr "Oromo"
 
 #: src/text/iso-639_def.h:144
 msgid "Ossetian; Ossetic"
-msgstr ""
+msgstr "Ossète"
 
 #: src/text/iso-639_def.h:145
 msgid "Panjabi"
-msgstr ""
+msgstr "Penjâbî"
 
 #: src/text/iso-639_def.h:146
-#, fuzzy
 msgid "Persian"
-msgstr "Version"
+msgstr "Persan"
 
 #: src/text/iso-639_def.h:147
 msgid "Pali"
-msgstr ""
+msgstr "Pāli"
 
 #: src/text/iso-639_def.h:148
-#, fuzzy
 msgid "Polish"
-msgstr "Éditeur"
+msgstr "Polonais"
 
 #: src/text/iso-639_def.h:149
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugais"
 
 #: src/text/iso-639_def.h:150
 msgid "Pushto"
-msgstr ""
+msgstr "Pachto"
 
 #: src/text/iso-639_def.h:151
 msgid "Quechua"
-msgstr ""
+msgstr "Quechua"
 
 #: src/text/iso-639_def.h:152
-#, fuzzy
 msgid "Original audio"
-msgstr "Taille originale"
+msgstr "Audio original"
 
 #: src/text/iso-639_def.h:153
 msgid "Raeto-Romance"
-msgstr ""
+msgstr "Romanche"
 
 #: src/text/iso-639_def.h:154
 msgid "Romanian"
-msgstr ""
+msgstr "Roumain"
 
 #: src/text/iso-639_def.h:155
 msgid "Rundi"
-msgstr ""
+msgstr "Kirundi"
 
 #: src/text/iso-639_def.h:156
-#, fuzzy
 msgid "Russian"
-msgstr "Russe (KOI8-R)"
+msgstr "Russe"
 
 #: src/text/iso-639_def.h:157
 msgid "Sango"
-msgstr ""
+msgstr "Sango"
 
 #: src/text/iso-639_def.h:158
 msgid "Sanskrit"
-msgstr ""
+msgstr "Sanskrit"
 
 #: src/text/iso-639_def.h:159
 msgid "Serbian"
-msgstr ""
+msgstr "Serbe"
 
 #: src/text/iso-639_def.h:160
 msgid "Croatian"
-msgstr ""
+msgstr "Croate"
 
 #: src/text/iso-639_def.h:161
 msgid "Sinhalese"
-msgstr ""
+msgstr "Cingalais"
 
 #: src/text/iso-639_def.h:162
 msgid "Slovak"
-msgstr ""
+msgstr "Slovaque"
 
 #: src/text/iso-639_def.h:163
 msgid "Slovenian"
-msgstr ""
+msgstr "Slovénien"
 
 #: src/text/iso-639_def.h:164
 msgid "Northern Sami"
-msgstr ""
+msgstr "Same du Nord"
 
 #: src/text/iso-639_def.h:165
 msgid "Samoan"
-msgstr ""
+msgstr "Somoan"
 
 #: src/text/iso-639_def.h:166
 msgid "Shona"
-msgstr ""
+msgstr "Shona"
 
 #: src/text/iso-639_def.h:167
 msgid "Sindhi"
-msgstr ""
+msgstr "Sindhî"
 
 #: src/text/iso-639_def.h:168
 msgid "Somali"
-msgstr ""
+msgstr "Somali"
 
 #: src/text/iso-639_def.h:169
 msgid "Sotho, Southern"
-msgstr ""
+msgstr "Sotho du Sud"
 
 #: src/text/iso-639_def.h:170
-#, fuzzy
 msgid "Spanish"
-msgstr "Terminer"
+msgstr "Espagnol"
 
 #: src/text/iso-639_def.h:171
 msgid "Sardinian"
-msgstr ""
+msgstr "Sarde"
 
 #: src/text/iso-639_def.h:172
 msgid "Swati"
-msgstr ""
+msgstr "Swati"
 
 #: src/text/iso-639_def.h:173
 msgid "Sundanese"
-msgstr ""
+msgstr "Sumdanais"
 
 #: src/text/iso-639_def.h:174
 msgid "Swahili"
-msgstr ""
+msgstr "Swahili"
 
 #: src/text/iso-639_def.h:175
 msgid "Swedish"
-msgstr ""
+msgstr "Suédois"
 
 #: src/text/iso-639_def.h:176
 msgid "Tahitian"
-msgstr ""
+msgstr "Tahitien"
 
 #: src/text/iso-639_def.h:177
 msgid "Tamil"
-msgstr ""
+msgstr "Tamoul"
 
 #: src/text/iso-639_def.h:178
 msgid "Tatar"
-msgstr ""
+msgstr "Tatar"
 
 #: src/text/iso-639_def.h:179
 msgid "Telugu"
-msgstr ""
+msgstr "Télougou"
 
 #: src/text/iso-639_def.h:180
 msgid "Tajik"
-msgstr ""
+msgstr "Tadjik"
 
 #: src/text/iso-639_def.h:181
-#, fuzzy
 msgid "Tagalog"
-msgstr "Fenêtre de dialogue"
+msgstr "Tagalog"
 
 #: src/text/iso-639_def.h:182
 msgid "Thai"
-msgstr ""
+msgstr "Thaï"
 
 #: src/text/iso-639_def.h:183
 msgid "Tibetan"
-msgstr ""
+msgstr "Tibétain"
 
 #: src/text/iso-639_def.h:184
 msgid "Tigrinya"
-msgstr ""
+msgstr "Tigrinya"
 
 #: src/text/iso-639_def.h:185
 msgid "Tonga (Tonga Islands)"
-msgstr ""
+msgstr "Tumbuka"
 
 #: src/text/iso-639_def.h:186
 msgid "Tswana"
-msgstr ""
+msgstr "Tswana"
 
 #: src/text/iso-639_def.h:187
 msgid "Tsonga"
-msgstr ""
+msgstr "Tsonga"
 
 #: src/text/iso-639_def.h:188
 msgid "Turkish"
-msgstr ""
+msgstr "Turc"
 
 #: src/text/iso-639_def.h:189
 msgid "Turkmen"
-msgstr ""
+msgstr "Turkmène"
 
 #: src/text/iso-639_def.h:190
 msgid "Twi"
-msgstr ""
+msgstr "Akan"
 
 #: src/text/iso-639_def.h:191
 msgid "Uighur"
-msgstr ""
+msgstr "Ouïghour"
 
 #: src/text/iso-639_def.h:192
-#, fuzzy
 msgid "Ukrainian"
-msgstr "Ukrainien (KOI8-U)"
+msgstr "Ukrainien"
 
 #: src/text/iso-639_def.h:193
 msgid "Urdu"
-msgstr ""
+msgstr "Ourdou"
 
 #: src/text/iso-639_def.h:194
 msgid "Uzbek"
-msgstr ""
+msgstr "Ouzbek"
 
 #: src/text/iso-639_def.h:195
-#, fuzzy
 msgid "Vietnamese"
-msgstr "Vietnamien (VISCII)"
+msgstr "Vietnamien"
 
 #: src/text/iso-639_def.h:196
 msgid "Volapuk"
-msgstr ""
+msgstr "Volapük"
 
 #: src/text/iso-639_def.h:197
 msgid "Welsh"
-msgstr ""
+msgstr "Gallois"
 
 #: src/text/iso-639_def.h:198
 msgid "Wolof"
-msgstr ""
+msgstr "Wolof"
 
 #: src/text/iso-639_def.h:199
 msgid "Xhosa"
-msgstr ""
+msgstr "Xhosa"
 
 #: src/text/iso-639_def.h:200
 msgid "Yiddish"
-msgstr ""
+msgstr "Yiddish"
 
 #: src/text/iso-639_def.h:201
 msgid "Yoruba"
-msgstr ""
+msgstr "Yoruba"
 
 #: src/text/iso-639_def.h:202
 msgid "Zhuang"
-msgstr ""
+msgstr "Zhuang"
 
 #: src/text/iso-639_def.h:203
 msgid "Zulu"
-msgstr ""
+msgstr "Zoulou"
 
 #: src/video_output/video_output.c:1686 modules/gui/macosx/intf.m:704
 #: modules/gui/macosx/intf.m:705 modules/video_filter/postproc.c:196
@@ -5677,6 +5661,9 @@ msgid ""
 "available, they will be listed in the vlc debug output. To select hw:0,1 , "
 "use alsa://hw:0,1 ."
 msgstr ""
+"Spécifiez « alsa:// » pour ouvrir l’entrée audio par défaut. Si plusieurs "
+"entrées sont disponibles, elles seront listées dans la sortie de débogage de "
+"VLC. Pour choisir hw:0,1, spécifiez « alsa://hw:0,1 »."
 
 #: modules/access/alsa.c:89
 msgid "Alsa"
@@ -5684,7 +5671,7 @@ msgstr "ALSA"
 
 #: modules/access/alsa.c:90
 msgid "Alsa audio capture input"
-msgstr "Entrée audio « Alsa »"
+msgstr "Entrée audio « ALSA »"
 
 #: modules/access/attachment.c:44
 msgid "Attachment"
@@ -5696,12 +5683,11 @@ msgstr "Entrée d'attachement"
 
 #: modules/access/avio.h:34
 msgid "Avio"
-msgstr ""
+msgstr "Avio"
 
 #: modules/access/avio.h:35
-#, fuzzy
 msgid "FFmpeg access"
-msgstr "Accès Zip"
+msgstr "Entrée FFmpeg"
 
 #: modules/access/bd/bd.c:54
 msgid "Caching value for BDs. This value should be set in milliseconds."
@@ -7105,13 +7091,12 @@ msgid "Address of the release callback function"
 msgstr "Adresse de la fonction de retour pour le déblocage"
 
 #: modules/access/imem.c:118
-#, fuzzy
 msgid "Size"
-msgstr "Tailles"
+msgstr "Taille"
 
 #: modules/access/imem.c:120
 msgid "Size of stream in bytes"
-msgstr ""
+msgstr "Taille du flux en octets"
 
 #: modules/access/imem.c:123 modules/access/imem.c:124
 msgid "Memory input"
@@ -7460,7 +7445,7 @@ msgstr "RTMP"
 
 #: modules/access/rtp/rtp.c:44
 msgid "RTP de-jitter buffer length (msec)"
-msgstr ""
+msgstr "Durée du tampon de dé-jitter RTP (msec)"
 
 #: modules/access/rtp/rtp.c:46
 msgid "How long to wait for late RTP packets (and delay the performance)."
@@ -7494,15 +7479,15 @@ msgstr ""
 
 #: modules/access/rtp/rtp.c:58 modules/stream_out/rtp.c:147
 msgid "SRTP salt (hexadecimal)"
-msgstr "SRTP salt (hexadécimal)"
+msgstr "Salage SRTP (hexadécimal)"
 
 #: modules/access/rtp/rtp.c:60 modules/stream_out/rtp.c:149
 msgid "Secure RTP requires a (non-secret) master salt value."
-msgstr ""
+msgstr "Valeur de salage maître pour « Secure RTP »."
 
 #: modules/access/rtp/rtp.c:62
 msgid "Maximum RTP sources"
-msgstr "Max sources RTP"
+msgstr "Sources RTP maximum"
 
 #: modules/access/rtp/rtp.c:64
 msgid "How many distinct active RTP sources are allowed at a time."
@@ -7518,7 +7503,7 @@ msgstr "Durée d'attente d'un paquet avant expiration de la source."
 
 #: modules/access/rtp/rtp.c:70
 msgid "Maximum RTP sequence number dropout"
-msgstr ""
+msgstr "Dépassement maximal du numéro de séquence RTP"
 
 #: modules/access/rtp/rtp.c:72
 msgid ""
@@ -7528,13 +7513,15 @@ msgstr ""
 
 #: modules/access/rtp/rtp.c:75
 msgid "Maximum RTP sequence number misordering"
-msgstr ""
+msgstr "Désordre maximal du numéro de séquence RTP"
 
 #: modules/access/rtp/rtp.c:77
 msgid ""
 "RTP packets will be discarded if they are too far behind (i.e. in the past) "
 "by this many packets from the last received packet."
 msgstr ""
+"Les paquets RTP dont le retard par rapport au dernier paquet reçu excède "
+"cette valeur seront ignorés."
 
 #: modules/access/rtp/rtp.c:87 modules/stream_out/rtp.c:170
 msgid "RTP"
@@ -7712,7 +7699,7 @@ msgstr "Taille lue"
 
 #: modules/access/sftp.c:61
 msgid "Size of the request for reading access"
-msgstr ""
+msgstr "Taille de la requête pour les accès en lecture"
 
 #: modules/access/sftp.c:65
 msgid "SFTP input"
@@ -9721,7 +9708,7 @@ msgstr "Non-key"
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
 #: modules/gui/macosx/simple_prefs.m:307
-#: modules/gui/qt4/dialogs/preferences.cpp:70
+#: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "Tous"
 
@@ -10440,7 +10427,7 @@ msgstr ""
 
 #: modules/codec/dirac.c:174
 msgid "Enable spatial partitioning"
-msgstr ""
+msgstr "Réponse fréquentielle spaciale"
 
 #: modules/codec/dirac.c:178
 msgid "Disable arithmetic coding"
@@ -10597,7 +10584,7 @@ msgstr "Module de désentrelacement"
 
 #: modules/codec/fake.c:75
 msgid "Deinterlace module to use."
-msgstr "Module de désentrelacement"
+msgstr "Module de désentrelacement à utiliser"
 
 #: modules/codec/fake.c:76 modules/video_output/omapfb.c:82
 #: modules/video_output/yuv.c:44
@@ -11177,9 +11164,8 @@ msgstr "Empaqueteur de sous-titres DVD"
 #. the GetACP translation. "Windows-1252" applies to Western European
 #. languages using the Latin alphabet.
 #: modules/codec/subtitles/subsdec.c:101
-#, fuzzy
 msgid "Default (Windows-1252)"
-msgstr "Balte (Windows-1257)"
+msgstr "Par défaut (Windows-1252)"
 
 #: modules/codec/subtitles/subsdec.c:102
 msgid "Universal (UTF-8)"
@@ -11219,7 +11205,7 @@ msgstr "Europe de l'est (Windows-1250)"
 
 #: modules/codec/subtitles/subsdec.c:116
 msgid "Esperanto (Latin-3)"
-msgstr "Esperanto (Latin-3)"
+msgstr "Espéranto (Latin-3)"
 
 #: modules/codec/subtitles/subsdec.c:118
 msgid "Nordic (Latin-6)"
@@ -13675,6 +13661,8 @@ msgid ""
 "WMServer uses an unstandard dialect of RTSP. Selecting this parameter will "
 "tell VLC to assume some options contrary to RFC 2326 guidelines."
 msgstr ""
+"WMServer emploie un dialecte non-standard de RTSP. Ce paramètre active des "
+"options contraires aux recommendations de la RFC 2326."
 
 #: modules/demux/live555.cpp:90
 msgid "RTSP user name"
@@ -14069,67 +14057,57 @@ msgid "Podcast Info"
 msgstr "Informations Podcast"
 
 #: modules/demux/playlist/podcast.c:256
-#, fuzzy
 msgid "Podcast Link"
-msgstr "Informations Podcast"
+msgstr "Lien du Podcast"
 
 #: modules/demux/playlist/podcast.c:257
-#, fuzzy
 msgid "Podcast Copyright"
-msgstr "Copyright"
+msgstr "Droit d'auteurs Podcast"
 
 #: modules/demux/playlist/podcast.c:258
-#, fuzzy
 msgid "Podcast Category"
-msgstr "Parseur Podcast"
+msgstr "Catégorie du Podcast"
 
 #: modules/demux/playlist/podcast.c:259 modules/demux/playlist/podcast.c:311
-#, fuzzy
 msgid "Podcast Keywords"
-msgstr "Parseur Podcast"
+msgstr "Mot-clefs du Podcast"
 
 #: modules/demux/playlist/podcast.c:260 modules/demux/playlist/podcast.c:312
-#, fuzzy
 msgid "Podcast Subtitle"
-msgstr "Taille du Podcast"
+msgstr "Sous-titre du Podcast"
 
 #: modules/demux/playlist/podcast.c:266 modules/demux/playlist/podcast.c:313
 msgid "Podcast Summary"
-msgstr "Résumé Podcast"
+msgstr "Résumé du Podcast"
 
 #: modules/demux/playlist/podcast.c:307
-#, fuzzy
 msgid "Podcast Publication Date"
-msgstr "Type de modulation"
+msgstr "Date de publication du Podcast"
 
 #: modules/demux/playlist/podcast.c:308
-#, fuzzy
 msgid "Podcast Author"
-msgstr "Informations Podcast"
+msgstr "Auteur du Podcast"
 
 #: modules/demux/playlist/podcast.c:309
-#, fuzzy
 msgid "Podcast Subcategory"
-msgstr "Résumé Podcast"
+msgstr "Sous-catégorie du Podcast"
 
 #: modules/demux/playlist/podcast.c:310
-#, fuzzy
 msgid "Podcast Duration"
-msgstr "Saturation"
+msgstr "Durée du Podcast"
 
 #: modules/demux/playlist/podcast.c:314
-#, fuzzy
 msgid "Podcast Type"
-msgstr "Parseur Podcast"
+msgstr "Type de Podcast"
 
 #: modules/demux/playlist/podcast.c:328
 msgid "Podcast Size"
 msgstr "Taille du Podcast"
 
 #: modules/demux/playlist/podcast.c:329
-#, fuzzy, c-format
+#, c-format
 msgid "%s bytes"
-msgstr "Octets envoyés"
+msgstr "%s octets"
 
 #: modules/demux/playlist/shoutcast.c:410
 msgid "Shoutcast"
@@ -16054,7 +16032,7 @@ msgid "Information"
 msgstr "Informations"
 
 #: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
-#: modules/gui/qt4/dialogs/preferences.cpp:46
+#: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "Préférences"
 
@@ -16068,7 +16046,7 @@ msgid "Basic"
 msgstr "Basique"
 
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/qt4/dialogs/preferences.cpp:312
+#: modules/gui/qt4/dialogs/preferences.cpp:317
 msgid "Reset Preferences"
 msgstr "Rétablir"
 
@@ -17974,7 +17952,7 @@ msgstr ""
 
 #: modules/gui/qt4/components/simple_preferences.cpp:524
 msgid "VLC skins website"
-msgstr "le site des thèmes VLC"
+msgstr "site Web des thèmes VLC"
 
 #: modules/gui/qt4/components/simple_preferences.cpp:549
 msgid "System's default"
@@ -18009,7 +17987,7 @@ msgstr "&Appliquer"
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
 #: modules/gui/qt4/dialogs/openurl.cpp:60
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:37
-#: modules/gui/qt4/dialogs/preferences.cpp:85
+#: modules/gui/qt4/dialogs/preferences.cpp:86
 #: modules/gui/qt4/dialogs/sout.cpp:97 modules/gui/qt4/dialogs/toolbar.cpp:189
 msgid "&Cancel"
 msgstr "&Annuler"
@@ -18234,7 +18212,7 @@ msgstr "Vie privée / Réseau"
 
 #: modules/gui/qt4/dialogs/firstrun.cpp:69
 msgid "Privacy and Network Warning"
-msgstr "Vie privée / Réseau"
+msgstr "Information vie privée / Réseau"
 
 #: modules/gui/qt4/dialogs/firstrun.cpp:72
 msgid ""
@@ -18567,35 +18545,43 @@ msgstr "Site Web"
 msgid "Deletes the selected item"
 msgstr "Effacer l'élément sélectionné"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:63
+#: modules/gui/qt4/dialogs/preferences.cpp:64
 msgid "Show settings"
 msgstr "Paramètres"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:67
+#: modules/gui/qt4/dialogs/preferences.cpp:68
 msgid "Simple"
 msgstr "Simple"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:68
+#: modules/gui/qt4/dialogs/preferences.cpp:69
 msgid "Switch to simple preferences view"
 msgstr "Montrer les préférences simplifiées"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:71
+#: modules/gui/qt4/dialogs/preferences.cpp:72
 msgid "Switch to full preferences view"
 msgstr "Montrer les préférences avancées"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:83
+#: modules/gui/qt4/dialogs/preferences.cpp:84
 msgid "&Save"
 msgstr "&Enregistrer"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:84
+#: modules/gui/qt4/dialogs/preferences.cpp:85
 msgid "Save and close the dialog"
 msgstr "Enregistrer et fermer le dialogues."
 
-#: modules/gui/qt4/dialogs/preferences.cpp:86
+#: modules/gui/qt4/dialogs/preferences.cpp:87
 msgid "&Reset Preferences"
 msgstr "&Rétablir les préférences"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:313
+#: modules/gui/qt4/dialogs/preferences.cpp:300
+msgid "Cannot save Configuration"
+msgstr "Impossible d'enregistrer la configuration"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:301
+msgid "Preferences file could not be saved"
+msgstr "Le fichier de préférences ne peut pas être enregistré"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:318
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr ""
 "Attention, ceci va réinitialiser le fichier de configuration de VLC.\n"
@@ -18783,7 +18769,7 @@ msgstr "Enregistrer la configuration de VLM sous…"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:269 modules/gui/qt4/dialogs/vlm.cpp:343
 msgid "VLM conf (*.vlm);;All (*)"
-msgstr "conf VLM (*.vlm) ;; Tous (*.*)"
+msgstr "Configuration VLM (*.vlm);;Tous (*.*)"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:341
 msgid "Open VLM configuration..."
@@ -20100,7 +20086,7 @@ msgstr "OSSO"
 
 #: modules/misc/inhibit/osso.c:41
 msgid "OSSO screen unblanking"
-msgstr ""
+msgstr "Économiseur d'écran OSSO"
 
 #: modules/misc/inhibit/xdg.c:35
 msgid "XDG-screensaver"
@@ -20214,7 +20200,7 @@ msgstr "Lua HTTP"
 
 #: modules/misc/lua/vlc.c:109
 msgid "Lua Telnet"
-msgstr ""
+msgstr "Interface Lua telnet"
 
 #: modules/misc/lua/vlc.c:120
 msgid "Lua Meta Fetcher"
@@ -20315,19 +20301,19 @@ msgstr ""
 msgid "MSN Now-Playing"
 msgstr "MSN En cours de lecture"
 
-#: modules/misc/notify/notify.c:48
+#: modules/misc/notify/notify.c:49
 msgid "Timeout (ms)"
 msgstr "Délai d'expiration (ms)"
 
-#: modules/misc/notify/notify.c:49
+#: modules/misc/notify/notify.c:50
 msgid "How long the notification will be displayed "
 msgstr "Combien de temps la notification sera affichée"
 
-#: modules/misc/notify/notify.c:54
+#: modules/misc/notify/notify.c:55
 msgid "Notify"
 msgstr "Notifications"
 
-#: modules/misc/notify/notify.c:55
+#: modules/misc/notify/notify.c:56
 msgid "LibNotify Notification Plugin"
 msgstr "Plugin de notifications libnotify"
 
@@ -20478,7 +20464,7 @@ msgstr "MUX pour le transport RTSP brut"
 
 #: modules/misc/rtsp.c:74
 msgid "Sets the timeout option in the RTSP session string"
-msgstr ""
+msgstr "Définit le délai d'inactivité pour la session RTSP"
 
 #: modules/misc/rtsp.c:76
 msgid ""
@@ -20986,14 +20972,12 @@ msgid "My Pictures"
 msgstr "Mes Images"
 
 #: modules/services_discovery/mtp.c:45
-#, fuzzy
 msgid "MTP devices"
-msgstr "Périphérique DVD"
+msgstr "Gadgets MTP"
 
 #: modules/services_discovery/mtp.c:191
-#, fuzzy
 msgid "MTP Device"
-msgstr "Périphérique"
+msgstr "Gadget MTP"
 
 #: modules/services_discovery/podcast.c:58
 #: modules/gui/qt4/ui/podcast_configuration.h:102
@@ -21932,8 +21916,7 @@ msgstr "Désentrelacer la vidéo avant l'encodage."
 
 #: modules/stream_out/transcode/transcode.c:65
 msgid "Specify the deinterlace module to use."
-msgstr ""
-"Module de désentrelacement à utiliser (ffmpeg-deinterlace ou deinterlace)."
+msgstr "Module de désentrelacement à utiliser."
 
 #: modules/stream_out/transcode/transcode.c:72
 msgid "Maximum video width"
@@ -22295,7 +22278,7 @@ msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:173
 msgid "Count of fnordlicht's"
-msgstr "Nombre de leds  « fnordlicht »"
+msgstr "Nombre de leds pour fnordlicht"
 
 #: modules/video_filter/atmo/atmo.cpp:174
 msgid "Depending on the amount your fnordlicht hardware choose 1 to 4 channels"
@@ -22709,7 +22692,7 @@ msgstr "AtmoLight"
 
 #: modules/video_filter/atmo/atmo.cpp:375
 msgid "Choose Devicetype and Connection"
-msgstr ""
+msgstr "Choisir le type de périphérique et de connexion"
 
 #: modules/video_filter/atmo/atmo.cpp:400
 msgid "Illuminate the room with this color on pause"
@@ -22729,7 +22712,7 @@ msgstr "Options MoMoLight"
 
 #: modules/video_filter/atmo/atmo.cpp:440
 msgid "fnordlicht options"
-msgstr "Options « fnordlicht »"
+msgstr "Options fnordlicht"
 
 #: modules/video_filter/atmo/atmo.cpp:482
 msgid "Zone Layout for the build-in Atmo"
@@ -23047,6 +23030,8 @@ msgid ""
 "Set the canvas' picture aspect ratio. If omitted, the canvas is assumed to "
 "have the same SAR as the input."
 msgstr ""
+"Choisir le format de l'image. Si absent, l'image aura le même format que "
+"l'entrée."
 
 #: modules/video_filter/canvas.c:93
 msgid "Pad video"
@@ -23201,6 +23186,8 @@ msgid ""
 "from the previously detected ratio) to consider that ratio chnged and "
 "trigger recrop."
 msgstr ""
+"Le nombre d'images consécutives avec le même format détectées à prendre en "
+"compte pour considérer que le format a changé et lancer un reformatage."
 
 #: modules/video_filter/crop.c:91
 msgid "Number of lines for change"
@@ -23211,6 +23198,8 @@ msgid ""
 "The minimum difference in the number of detected black lines to consider "
 "that ratio changed and trigger recrop."
 msgstr ""
+"La différence minimale entre le nombre de lignes noires détectées à prendre "
+"en compte pour considérer que le format a changé et lancer un reformatage."
 
 #: modules/video_filter/crop.c:94
 msgid "Number of non black pixels "
@@ -23425,6 +23414,8 @@ msgid ""
 "Gaussian's standard deviation. The bluring will take into account pixels up "
 "to 3*sigma away in any direction."
 msgstr ""
+"Déviation standard gaussienne. Le flou prendra en compte jusqu'à 3*sigma de "
+"distance dans toutes les directions."
 
 #: modules/video_filter/gaussianblur.c:52
 msgid "Add a blurring effect"
@@ -24920,9 +24911,8 @@ msgid "HD1000 video output"
 msgstr "Sortie vidéo HD1000"
 
 #: modules/video_output/macosx.m:69
-#, fuzzy
 msgid "Mac OS X OpenGL video output (requires drawable-nsobject)"
-msgstr "Interface Mac OS X OpenGL minimale (fenêtre sans bordure)"
+msgstr "Sortie vidéo Mac OS X OpenGL (requiert un drawable-nsobject)"
 
 #: modules/video_output/msw/direct3d.c:57
 msgid "Enable desktop mode "
@@ -25652,7 +25642,6 @@ msgid "Enter the URL of the network stream here."
 msgstr "Veuillez entre l'URL du flux réseau ici."
 
 #: modules/gui/qt4/ui/open_net.h:97
-#, fuzzy
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -25689,7 +25678,7 @@ msgstr ""
 "#838383;\">http://www.example.com/stream.avi</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">rtp://@1234</span></p>\n"
+"#838383;\">rtp://@:1234</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
 "#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
@@ -26097,7 +26086,7 @@ msgstr "Activer le mode papier peint "
 
 #: modules/gui/qt4/ui/sprefs_video.h:322
 msgid "Deinterlacing"
-msgstr "Mode de désentrelacement"
+msgstr "Désentrelacement"
 
 #: modules/gui/qt4/ui/sprefs_video.h:323
 msgid "Force Aspect Ratio"
@@ -26386,6 +26375,7 @@ msgstr "Liste du gestionnaire de médias"
 #~ msgid "Webm"
 #~ msgstr "Webm"
 
+#, fuzzy
 #~ msgid ""
 #~ "Address of the locking callback function. This function must fill in "
 #~ "valid plane memory address information for use by the video renderer."
@@ -26394,7 +26384,9 @@ msgstr "Liste du gestionnaire de médias"
 #~ "retourner une adresse mémoire valide pour l'utilisation par le moteur de "
 #~ "rendu vidéo."
 
+#, fuzzy
 #~ msgid ""
 #~ "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 #~ msgstr ""
-#~ "Conteneurs (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
+#~ "Conteneurs (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *."
+#~ "webm)"

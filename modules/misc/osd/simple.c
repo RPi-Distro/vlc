@@ -2,7 +2,7 @@
  * simple.c - The OSD Menu simple parser code.
  *****************************************************************************
  * Copyright (C) 2005-2008 M2X
- * $Id: f76924217dc9fdb24e1fd655586180ab820c6523 $
+ * $Id: f8ea4b76a4ee4bbf1de940877a9aaf1a142d2b50 $
  *
  * Authors: Jean-Paul Saman
  *
@@ -504,7 +504,7 @@ int osd_parser_simpleOpen( vlc_object_t *p_this )
     return VLC_SUCCESS;
 
 error:
-    msg_Err( p_menu, "parsing file failed (returned %d)", result );
+    msg_Err( p_this, "parsing file failed (returned %d)", result );
     if( p_menu )
         osd_MenuFree( p_menu );
     fclose( fd );
