@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 797b9edad339a69a50d46b30701427774d2010d8 $
+ * $Id: 17fc0efdbfe841687d9be60a5005c3748524f5e8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -500,7 +500,7 @@ static void openDirectory( intf_thread_t *p_intf, bool pl, bool go )
     if( dir.isEmpty() )
         return;
 
-    char *uri = make_URI( qtu( dir ) );
+    char *uri = make_URI( qtu( toNativeSeparators( dir ) ) );
     if( unlikely(uri == NULL) )
         return;
 

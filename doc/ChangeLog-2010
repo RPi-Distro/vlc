@@ -1,3 +1,262 @@
+commit b6a8323ca2306e0b5ecf30056b696d117bdba04a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Aug 26 20:44:39 2010 +0200
+
+    Update NEWS
+
+commit e09660ed21901e08aa62c4a7bcac695d783bd043
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Thu Aug 26 19:37:26 2010 +0100
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 4ea01d7861b772a10b4a973b4ce8ebb0c34a656f
+Author: Mario Siegmann <mario_siegmann@web.de>
+Date:   Thu Aug 26 19:23:21 2010 +0100
+
+    l10n: German update
+    
+    And fix my mess in the previous commit
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 3bae54390933b980df671c89242d444644b7c9ae
+Author: Mario Siegmann <mario_siegmann@web.de>
+Date:   Thu Aug 26 19:04:09 2010 +0100
+
+    l10n: Small German update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit f944d644746c859dbe0a951aa777b1888636f01c
+Author: Éric Lassauge <lassauge@users.sourceforge.net>
+Date:   Thu Aug 26 18:11:13 2010 +0100
+
+    l10n: French update
+    
+    With some manual merges of previous commits (hopefully the right way round)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit e7a83af1fd40beacef4ed139e090b997d4199af7
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Thu Aug 26 18:00:46 2010 +0100
+
+    l10n: Polish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 8d8862654510e7db48694c3ffa9bf849ce4d4cbd
+Author: Gonçalo Cordeiro <gzcordeiro@gmail.com>
+Date:   Thu Aug 26 17:59:27 2010 +0100
+
+    l10n: Galician update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 670f4c16aa0b08d5fa157cfc96fc1b22e48f374d
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Wed Aug 25 23:27:19 2010 +0100
+
+    Fix loading of the VLC icon
+    
+    Both in installed and non-installed mode
+    (cherry picked from commit b58531219e04935846243955e8d6a448e809739a)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit b91b4c3af29e188847039bcaf8d3112ea2972dce
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Aug 26 12:58:30 2010 +0200
+
+    Update PO files.
+
+commit 8d728ffa1bfbef5430bffa78a1ace5d28a8b56f2
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 25 23:02:56 2010 +0200
+
+    On the road to 1.1.4
+
+commit 43a31df56c37bd62c691cdbe3c1f11babd164b56
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 25 22:56:38 2010 +0200
+
+    Win32: do not load DLL from cwd
+
+commit 2d366da738b19f8d761d7084746c6db6f52808c6
+Author: Mindaugas Baranauskas <embar@users.berlios.de>
+Date:   Tue Aug 24 23:04:12 2010 +0100
+
+    l10n: Lithuanian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 98792ce54a1ccaf98b2100eb1e0c09a469cbb763
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Aug 24 20:40:24 2010 +0300
+
+    Fix translations for the VLM import file types (fix #4104)
+
+commit 5996037361b1bea7175a6fb9fa37005ac75227ca
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Aug 23 21:01:41 2010 +0200
+
+    Updated Bengali translation by Jamil Ahmed
+
+commit 3fcd9c1f66a512cf2f2547062a4eeb28afcdabf6
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Aug 23 20:59:34 2010 +0200
+
+    Updated Slovak translation by Marián Hikaník
+
+commit 6cd86bc29ae431131543f659ae83b7a760c7455a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jul 11 13:59:29 2010 +0300
+
+    XCB: reset the X11 screen saver when displaying a picture
+    
+    (cherry picked from commit 48be35499d7545a31a160c7578ffa073f761e814)
+
+commit e0803c9ed23a0153ae2565b5e165e172a309be63
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Aug 23 18:58:47 2010 +0200
+
+    Qt: warn when we cannot save the configuration
+    
+    Close #3944
+    (cherry picked from commit 30a0d8c1592f781f49c64f12f972e5ba67b0a5e1)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d381e5a5f6a0d2bcd30ee9508524f5b584beac65
+Author: Alexandre Ferreira <alexandref75@gmail.com>
+Date:   Mon Aug 23 10:06:24 2010 +0200
+
+    Correct solid .desktop files
+    
+    https://bugs.gentoo.org/show_bug.cgi?id=333723
+    (cherry picked from commit 7087eb30bed167083dda8134159e0d05a4fdb4f7)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 541ac6dcd5e89b081915cf0dabb2ddd288016795
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Aug 22 23:13:33 2010 +0200
+
+    Updated Dutch translation by Thomas De Rocker
+
+commit ac4d9bcb391d31e84ac0025becc54e0665f2c168
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Aug 22 20:04:56 2010 +0300
+
+    Small French translation update
+
+commit 0ace3b6403f0b367003a7e20099de61093438e9c
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Wed Aug 18 22:29:14 2010 +0200
+
+    osd_simple: fix a potential null-deref (can only be triggered when OOM).
+    (cherry picked from commit 3b98bdf8955176015dd51233cd1d9228ab625d66)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 7291c9ebfeba0b04a0f79c1d87572fde45a02d51
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Aug 21 22:41:28 2010 +0200
+
+    Updated Dutch translation by Thomas De Rocker
+
+commit 25e117fb282fc90a78a45bdaa4823e8c745c2a45
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Aug 21 19:17:18 2010 +0300
+
+    libvlc_version.h: build-time version macros
+    
+    (cherry picked from commit 20703d1eb24516fd4cebadc038db3f30d14f5abc)
+
+commit 5ceaa5d2781f9a91c60428c3d2eb7e8f52c0497d
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Aug 2 18:06:17 2010 +0200
+
+    Mark bookmarks() as safe
+    
+    It isn't dangerous, helps people that use those features in playlists,
+    although those playlists are VLC-specific
+    (cherry picked from commit 3310dccd85dbe3c0ba8048c5236507c91d8a0e29)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit a7c789e7bb4d12d90c51302698a2fbce7b57de94
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Aug 20 00:49:27 2010 +0300
+
+    French translation update (languages and fuzzy strings)
+
+commit 4ebd4e0a7c47753c8d34de9ee680e653eef2045c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Aug 19 23:58:14 2010 +0300
+
+    Qt4: translate description text for configuration choices
+    
+    (cherry picked from commit 9896506ee513bcd89afcd1bc48bc238fa5ef1cf2)
+
+commit d90f9bb625867fddc258d14a66047dfddb856ed1
+Author: Oleksandr Natalenko <pfactum@gmail.com>
+Date:   Thu Aug 19 18:58:17 2010 +0100
+
+    l10n: Ukranian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 22a11575ba70e9785210fe126aee097465de2dc1
+Author: M. T <hippie_1968@hotmail.com>
+Date:   Thu Aug 19 20:38:59 2010 +0300
+
+    Polish translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 7a81d4d626eefe03b8862df88101a245f9afcc7f
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Thu Aug 19 20:37:31 2010 +0300
+
+    Simplified Chinese translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 92342ad477c8e8db162a8e92cfef5874332a5fc3
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Aug 19 01:50:17 2010 +0200
+
+    Qt: fix open folder
+    
+    Close #3956 and #4072
+
+commit 728fbc03102cd89f057d965b4d2d7d57b7726f5a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 18 17:41:35 2010 +0200
+
+    Win32: do not compile upnp module yet
+
+commit aea5a179413a20ded3b216470cbfa633b091a87c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 18 17:35:54 2010 +0200
+
+    Win32: correctly bump resource version
+    
+    Close #3996
+    (cherry picked from commit b7b88f91d07b1da032c5583f1ce9759e386b1bce)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d3ed06bf2b8b15f72cf8584c5332f45e9c1159d1
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Aug 18 17:40:06 2010 +0200
+
+    On the road to 1.1.4-git
+
 commit 66f2507c454c1be686a05cfbf35373c149af27f8
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Aug 18 14:52:59 2010 +0200
@@ -25882,3 +26141,9 @@ Author: Pierre d'Herbemont <pdherbemont@free.fr>
 Date:   Thu Dec 31 19:30:49 2009 +0100
 
     contrib: Build fat binary using binary contrib on Mac OS X.
+
+commit 40c3a9fd60956b814ca0ccd20068e96051cd5467
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Fri Jan 1 00:57:52 2010 +0100
+
+    logger: build fix

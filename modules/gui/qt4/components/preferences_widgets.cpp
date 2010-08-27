@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 3338e55e4d0387fe8e87cf073bfbf5b9d9e1f6dc $
+ * $Id: 54cf533af39084032a2dd1dfddcbd8c3b55c0731 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -525,7 +525,7 @@ void StringListConfigControl::finish(module_config_t *p_module_config, bool byca
         }
         combo->addItem( qfu((p_module_config->ppsz_list_text &&
                             p_module_config->ppsz_list_text[i_index])?
-                            p_module_config->ppsz_list_text[i_index] :
+                            _(p_module_config->ppsz_list_text[i_index]) :
                             p_module_config->ppsz_list[i_index] ),
                    QVariant( qfu(p_module_config->ppsz_list[i_index] )) );
         if( p_item->value.psz && !strcmp( p_module_config->value.psz,
@@ -565,7 +565,7 @@ void setfillVLCConfigCombo( const char *configname, intf_thread_t *p_intf,
 
         for ( int i_index = 0; i_index < p_config->i_list; i_index++ )
         {
-            combo->addItem( qfu( p_config->ppsz_list_text[i_index] ),
+            combo->addItem( qtr(p_config->ppsz_list_text[i_index]),
                     QVariant( p_config->pi_list[i_index] ) );
             if( p_config->value.i == p_config->pi_list[i_index] )
             {

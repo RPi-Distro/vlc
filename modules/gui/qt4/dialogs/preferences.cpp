@@ -2,7 +2,7 @@
  * preferences.cpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 32b6704fbbc81e95be1f8779d2e10fd62bef26fb $
+ * $Id: 2bfa9db793a3488580724f2b5ef0fa7256551e67 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -28,6 +28,7 @@
 
 #include "dialogs/preferences.hpp"
 #include "util/qvlcframe.hpp"
+#include "dialogs/errors.hpp"
 
 #include "components/complete_preferences.hpp"
 #include "components/simple_preferences.hpp"
@@ -294,7 +295,11 @@ void PrefsDialog::save()
     }
 
     /* Save to file */
-    config_SaveConfigFile( p_intf, NULL );
+    if( config_SaveConfigFile( p_intf, NULL ) != 0 )
+    {
+        ErrorsDialog::getInstance (p_intf)->addError( qtr( "Cannot save Configuration" ),
+            qtr("Preferences file could not be saved") );
+    }
     accept();
 }
 
