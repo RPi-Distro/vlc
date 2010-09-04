@@ -1,11 +1,13 @@
-vlc (1.1.4-1~1.gbp691088) UNRELEASED; urgency=low
+vlc (1.1.4-1) experimental; urgency=low
 
-  ** SNAPSHOT build @691088b894e47ab9a66c330fee621600fda1ca3a **
-
-  * New upstream bugfix release 
+  [ Christophe Mutricy ]
+  * New upstream bugfix release
     + Remove unneeded patch
 
- -- Christophe Mutricy <xtophe@videolan.org>  Fri, 27 Aug 2010 22:35:36 +0200
+  [ Benjamin Drung ]
+  * Symlink corresponding FreeSans system font instead of linking to DejaVu.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 05 Sep 2010 01:47:07 +0200
 
 vlc (1.1.3-2) experimental; urgency=low
 
