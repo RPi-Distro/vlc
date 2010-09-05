@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 445a77ed8234e5070968e56b13d5762e069e9605 $
+ * $Id: f4073443752b2f64132b95c44691ee4663ea318d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1851,6 +1851,7 @@ vlc_module_begin ()
 
     add_string( "bookmarks", NULL, NULL,
                  BOOKMARKS_TEXT, BOOKMARKS_LONGTEXT, true )
+        change_safe ()
 
     set_section( N_( "Default devices") , NULL )
 

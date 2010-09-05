@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-08-18 13:58+0200\n"
+"POT-Creation-Date: 2010-08-27 01:01+0200\n"
 "PO-Revision-Date: 2010-01-27 19:06+0100\n"
 "Last-Translator: Eirik U. Birkeland <eirbir@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -122,7 +122,7 @@ msgstr "Utdatamodular"
 msgid "General settings for audio output modules."
 msgstr "Generelle innstillingar for modular for lydutdata."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2044
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2045
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Ymse"
@@ -249,7 +249,7 @@ msgid "General input settings. Use with care..."
 msgstr "Generelle inndatainnstillingar. Bruk dei med varsemd …"
 
 # , fuzzy
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1964
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1965
 msgid "Stream output"
 msgstr "Straumutdata"
 
@@ -357,7 +357,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "VLC sitt grensesnitt for videotorg (VOD)"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2106
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2107
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -391,7 +391,7 @@ msgid ""
 msgstr ""
 "Modular for automatisk oppdaging legg automatisk til element i spelelista."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1911
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1912
 msgid "Advanced"
 msgstr "Avansert"
 
@@ -1160,7 +1160,7 @@ msgstr "Innstilling"
 msgid "URL"
 msgstr "Nettadresse"
 
-#: src/input/meta.c:63 modules/misc/notify/notify.c:305
+#: src/input/meta.c:63 modules/misc/notify/notify.c:314
 msgid "Now Playing"
 msgstr "Vert avspela no"
 
@@ -1419,7 +1419,7 @@ msgstr ""
 "Trykk «Enter» for å halda fram …\n"
 
 #: src/libvlc.h:175 src/libvlc-module.c:1464 src/libvlc-module.c:1465
-#: src/libvlc-module.c:2640 src/video_output/vout_intf.c:195
+#: src/libvlc-module.c:2641 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Forstørr"
 
@@ -3970,7 +3970,7 @@ msgstr "Seinare (jamt)"
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
+#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Neste"
@@ -3984,7 +3984,7 @@ msgstr "Vel snøggtast for å hoppa til neste element på spelelista."
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
+#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Førre"
@@ -4704,77 +4704,77 @@ msgstr "Lyd"
 msgid "Playback control"
 msgstr "Pause"
 
-#: src/libvlc-module.c:1855
+#: src/libvlc-module.c:1856
 msgid "Default devices"
 msgstr "Standardeiningar"
 
-#: src/libvlc-module.c:1864
+#: src/libvlc-module.c:1865
 #, fuzzy
 msgid "Network settings"
 msgstr "_Innstillinger"
 
-#: src/libvlc-module.c:1876
+#: src/libvlc-module.c:1877
 msgid "Socks proxy"
 msgstr "Socks-proxy"
 
-#: src/libvlc-module.c:1885 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1886 modules/demux/kate_categories.c:47
 #, fuzzy
 msgid "Metadata"
 msgstr "Fil"
 
-#: src/libvlc-module.c:1936
+#: src/libvlc-module.c:1937
 msgid "Decoders"
 msgstr "Dekodarar"
 
-#: src/libvlc-module.c:1943 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1944 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 #, fuzzy
 msgid "Input"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1982
+#: src/libvlc-module.c:1983
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2014
+#: src/libvlc-module.c:2015
 #, fuzzy
 msgid "CPU"
 msgstr "RTP"
 
-#: src/libvlc-module.c:2043
+#: src/libvlc-module.c:2044
 #, fuzzy
 msgid "Special modules"
 msgstr "Valg"
 
-#: src/libvlc-module.c:2049 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2050 modules/gui/qt4/dialogs/plugins.cpp:66
 #, fuzzy
 msgid "Plugins"
 msgstr "Spill"
 
-#: src/libvlc-module.c:2060
+#: src/libvlc-module.c:2061
 #, fuzzy
 msgid "Performance options"
 msgstr "Pause strøm"
 
-#: src/libvlc-module.c:2208
+#: src/libvlc-module.c:2209
 #, fuzzy
 msgid "Hot keys"
 msgstr "Adresse"
 
-#: src/libvlc-module.c:2650
+#: src/libvlc-module.c:2651
 msgid "Jump sizes"
 msgstr "Hoppstorleik"
 
-#: src/libvlc-module.c:2727
+#: src/libvlc-module.c:2728
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "skriv ut hjelp for VLC (kan verte kombinert med --advanced og --help-verbose)"
 
-#: src/libvlc-module.c:2730
+#: src/libvlc-module.c:2731
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Inngåande hjelp for VLC og modulane"
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2733
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4782,20 +4782,20 @@ msgstr ""
 "skriv ut hjelp for VLC og modulane (kan verte kombinert med --advanced og --"
 "help-verbose)"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2736
 msgid "ask for extra verbosity when displaying help"
 msgstr "spør etter utfyllande hjelp under vising av hjelp"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2738
 msgid "print a list of available modules"
 msgstr "skriv ut liste over tilgjengelege modular"
 
-#: src/libvlc-module.c:2739
+#: src/libvlc-module.c:2740
 #, fuzzy
 msgid "print a list of available modules with extra detail"
 msgstr "skriv ut liste av tilgjengelige moduler"
 
-#: src/libvlc-module.c:2741
+#: src/libvlc-module.c:2742
 #, fuzzy
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
@@ -4804,28 +4804,28 @@ msgstr ""
 "skriv ut hjelp for ein veld modul (kan verte kombinert med --advanced og --"
 "help-verbose). Set = foran modulnamnet for strikstreff."
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2746
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr "ingen oppsett vil verta lasta inn eller lagra i oppsettsfila"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2748
 msgid "reset the current config to the default values"
 msgstr "nullstill det gjeldande oppsettet"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2750
 msgid "use alternate config file"
 msgstr "bruk alternativ oppsettsfil"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2752
 #, fuzzy
 msgid "resets the current plugins cache"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:2753
+#: src/libvlc-module.c:2754
 msgid "print version information"
 msgstr "vis versjonsinformasjon"
 
-#: src/libvlc-module.c:2791
+#: src/libvlc-module.c:2792
 msgid "main program"
 msgstr "hovudprogrammet"
 
@@ -10079,7 +10079,7 @@ msgstr ""
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
 #: modules/gui/macosx/simple_prefs.m:307
-#: modules/gui/qt4/dialogs/preferences.cpp:70
+#: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "Alle"
 
@@ -16729,7 +16729,7 @@ msgid "Information"
 msgstr "oversettelse"
 
 #: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
-#: modules/gui/qt4/dialogs/preferences.cpp:46
+#: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "Innstillingar"
 
@@ -16745,7 +16745,7 @@ msgid "Basic"
 msgstr "Tilbake"
 
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/qt4/dialogs/preferences.cpp:312
+#: modules/gui/qt4/dialogs/preferences.cpp:317
 #, fuzzy
 msgid "Reset Preferences"
 msgstr "Innstillinger"
@@ -18735,7 +18735,7 @@ msgstr "&Bruk"
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
 #: modules/gui/qt4/dialogs/openurl.cpp:60
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:37
-#: modules/gui/qt4/dialogs/preferences.cpp:85
+#: modules/gui/qt4/dialogs/preferences.cpp:86
 #: modules/gui/qt4/dialogs/sout.cpp:97 modules/gui/qt4/dialogs/toolbar.cpp:189
 msgid "&Cancel"
 msgstr "&Avbryt"
@@ -19311,37 +19311,47 @@ msgstr "Tittel"
 msgid "Deletes the selected item"
 msgstr "Slettar det valde elementet"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:63
+#: modules/gui/qt4/dialogs/preferences.cpp:64
 msgid "Show settings"
 msgstr "Vis innstillingar:"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:67
+#: modules/gui/qt4/dialogs/preferences.cpp:68
 msgid "Simple"
 msgstr "Enkle"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:68
+#: modules/gui/qt4/dialogs/preferences.cpp:69
 msgid "Switch to simple preferences view"
 msgstr "Byt til enkel vising av innstillingar"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:71
+#: modules/gui/qt4/dialogs/preferences.cpp:72
 msgid "Switch to full preferences view"
 msgstr "Byt til fullstendig vising av innstillingar"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:83
+#: modules/gui/qt4/dialogs/preferences.cpp:84
 msgid "&Save"
 msgstr "&Lagra"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:84
+#: modules/gui/qt4/dialogs/preferences.cpp:85
 #, fuzzy
 msgid "Save and close the dialog"
 msgstr "vis avanserte alternativer"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:86
+#: modules/gui/qt4/dialogs/preferences.cpp:87
 #, fuzzy
 msgid "&Reset Preferences"
 msgstr "Innstillinger"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:313
+#: modules/gui/qt4/dialogs/preferences.cpp:300
+#, fuzzy
+msgid "Cannot save Configuration"
+msgstr "vis avanserte alternativer"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:301
+#, fuzzy
+msgid "Preferences file could not be saved"
+msgstr "_Gjem grensesnitt"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:318
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "Er du sikker på at du vil nullstilla innstillingane i VLC mediespelar?"
 
@@ -21095,20 +21105,20 @@ msgstr "Tittel Tittel."
 msgid "MSN Now-Playing"
 msgstr "Spill"
 
-#: modules/misc/notify/notify.c:48
+#: modules/misc/notify/notify.c:49
 #, fuzzy
 msgid "Timeout (ms)"
 msgstr "Valg"
 
-#: modules/misc/notify/notify.c:49
+#: modules/misc/notify/notify.c:50
 msgid "How long the notification will be displayed "
 msgstr ""
 
-#: modules/misc/notify/notify.c:54
+#: modules/misc/notify/notify.c:55
 msgid "Notify"
 msgstr ""
 
-#: modules/misc/notify/notify.c:55
+#: modules/misc/notify/notify.c:56
 msgid "LibNotify Notification Plugin"
 msgstr ""
 
@@ -29565,10 +29575,6 @@ msgstr "skriv ut versjonsinformasjon"
 #, fuzzy
 #~ msgid "Updates"
 #~ msgstr "Oppdater"
-
-#, fuzzy
-#~ msgid "Load Configuration"
-#~ msgstr "vis avanserte alternativer"
 
 #, fuzzy
 #~ msgid "New broadcast"

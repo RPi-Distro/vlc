@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc-lt-trunk\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-08-18 13:58+0200\n"
+"POT-Creation-Date: 2010-08-27 01:01+0200\n"
 "PO-Revision-Date: 2010-06-19 18:53+0300\n"
 "Last-Translator: Mindaugas Baranauskas <embar@users.berlios.de>\n"
-"Language-Team: Lithuanian <kde-i18n-doc@kde.org>\n"
+"Language-Team: Lithuanian <embar@users.berlios.de>\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -123,7 +123,7 @@ msgstr "Išvesties moduliai"
 msgid "General settings for audio output modules."
 msgstr "Garso išvesties modulių pagrindinės nuostatos."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2044
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2045
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Kita"
@@ -243,7 +243,7 @@ msgstr "Bendra įvestis"
 msgid "General input settings. Use with care..."
 msgstr "Įvesties bendrosios nuostatos. Naudokite atsargiai..."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1964
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1965
 msgid "Stream output"
 msgstr "Srauto išvestis"
 
@@ -353,7 +353,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "Vaizdo pagal pareikalavimą (angl. Video On Demand) VLC grotuve"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2106
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2107
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -387,7 +387,7 @@ msgid ""
 msgstr ""
 "Paslaugų aptikimo modulis leidžia automatiškai įkelti įrašus į grojaraštį."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1911
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1912
 msgid "Advanced"
 msgstr "Sudėtingiau"
 
@@ -1138,7 +1138,7 @@ msgstr "Nustatoma"
 msgid "URL"
 msgstr "URL"
 
-#: src/input/meta.c:63 modules/misc/notify/notify.c:305
+#: src/input/meta.c:63 modules/misc/notify/notify.c:314
 msgid "Now Playing"
 msgstr "Dabar grojama"
 
@@ -1399,7 +1399,7 @@ msgstr ""
 "Spauskite GRĮŽTI klavišą, norėdami tęsti...\n"
 
 #: src/libvlc.h:175 src/libvlc-module.c:1464 src/libvlc-module.c:1465
-#: src/libvlc-module.c:2640 src/video_output/vout_intf.c:195
+#: src/libvlc-module.c:2641 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Mastelis"
 
@@ -3811,7 +3811,7 @@ msgstr "Truputį lėčiau"
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:321 modules/gui/qt4/ui/sout.h:327
+#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Toliau"
@@ -3826,7 +3826,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:319 modules/gui/qt4/ui/sout.h:337
+#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Atgal"
@@ -4542,70 +4542,70 @@ msgstr "Takelio nuostatos"
 msgid "Playback control"
 msgstr "Grojimo valdymas"
 
-#: src/libvlc-module.c:1855
+#: src/libvlc-module.c:1856
 msgid "Default devices"
 msgstr "Numatytieji įrenginiai"
 
-#: src/libvlc-module.c:1864
+#: src/libvlc-module.c:1865
 msgid "Network settings"
 msgstr "Tinklo nuostatos"
 
-#: src/libvlc-module.c:1876
+#: src/libvlc-module.c:1877
 msgid "Socks proxy"
 msgstr "Socks įgaliotasis serveris"
 
-#: src/libvlc-module.c:1885 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1886 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Metaduomenys"
 
-#: src/libvlc-module.c:1936
+#: src/libvlc-module.c:1937
 msgid "Decoders"
 msgstr "Iškodavimas"
 
-#: src/libvlc-module.c:1943 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1944 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Įvestis"
 
-#: src/libvlc-module.c:1982
+#: src/libvlc-module.c:1983
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2014
+#: src/libvlc-module.c:2015
 msgid "CPU"
 msgstr "AK"
 
-#: src/libvlc-module.c:2043
+#: src/libvlc-module.c:2044
 msgid "Special modules"
 msgstr "Specialūs moduliai"
 
-#: src/libvlc-module.c:2049 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2050 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Įskiepiai"
 
-#: src/libvlc-module.c:2060
+#: src/libvlc-module.c:2061
 msgid "Performance options"
 msgstr "Našumo nuostatos"
 
-#: src/libvlc-module.c:2208
+#: src/libvlc-module.c:2209
 msgid "Hot keys"
 msgstr "Spartieji klavišai"
 
-#: src/libvlc-module.c:2650
+#: src/libvlc-module.c:2651
 msgid "Jump sizes"
 msgstr "Peršokimo dydžiai"
 
-#: src/libvlc-module.c:2727
+#: src/libvlc-module.c:2728
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "spausdina VLC pagalbą (gali būti naudojama kartu su  --advanced ir --help-"
 "verbose)"
 
-#: src/libvlc-module.c:2730
+#: src/libvlc-module.c:2731
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Išplėstinė VLC pagalba ir moduliai"
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2733
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4613,19 +4613,19 @@ msgstr ""
 "spausdinti VLC pagalbą ir visiems moduliams (gali būti naudojama kartu su  --"
 "advanced ir --help-verbose)"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2736
 msgid "ask for extra verbosity when displaying help"
 msgstr "klausti apie ypatingą detalumą rodant pagalbą"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2738
 msgid "print a list of available modules"
 msgstr "spausdinti galimų modulių sąrašą"
 
-#: src/libvlc-module.c:2739
+#: src/libvlc-module.c:2740
 msgid "print a list of available modules with extra detail"
 msgstr "spausdinti ypač detalų galimų modulių sąrašą"
 
-#: src/libvlc-module.c:2741
+#: src/libvlc-module.c:2742
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -4634,27 +4634,27 @@ msgstr ""
 "advanced“ ir --help-verbose). Priešdėlis modulio pavadinimui su = griežtam "
 "atitikimui."
 
-#: src/libvlc-module.c:2745
+#: src/libvlc-module.c:2746
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr "neįkels ir neįrašys jokių konfigūracijos parinkčių"
 
-#: src/libvlc-module.c:2747
+#: src/libvlc-module.c:2748
 msgid "reset the current config to the default values"
 msgstr "atstatyti numatytąsias konfigūracijos vertes"
 
-#: src/libvlc-module.c:2749
+#: src/libvlc-module.c:2750
 msgid "use alternate config file"
 msgstr "naudoti kitą konfigūracijos rinkmeną"
 
-#: src/libvlc-module.c:2751
+#: src/libvlc-module.c:2752
 msgid "resets the current plugins cache"
 msgstr "atstato dabartinių įskiepių podėlį"
 
-#: src/libvlc-module.c:2753
+#: src/libvlc-module.c:2754
 msgid "print version information"
 msgstr "spausdinti informaciją apie versiją"
 
-#: src/libvlc-module.c:2791
+#: src/libvlc-module.c:2792
 msgid "main program"
 msgstr "pagrindinė programa"
 
@@ -6967,9 +6967,8 @@ msgid "Address of the release callback function"
 msgstr "Naudotino srauto garso takelio ID."
 
 #: modules/access/imem.c:118
-#, fuzzy
 msgid "Size"
-msgstr "Dydžiai"
+msgstr "Dydis"
 
 #: modules/access/imem.c:120
 msgid "Size of stream in bytes"
@@ -9496,7 +9495,7 @@ msgstr ""
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
 #: modules/gui/macosx/simple_prefs.m:307
-#: modules/gui/qt4/dialogs/preferences.cpp:70
+#: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "Visi"
 
@@ -10865,9 +10864,8 @@ msgstr "DVD subtitrų įpaketintuvas"
 #. the GetACP translation. "Windows-1252" applies to Western European
 #. languages using the Latin alphabet.
 #: modules/codec/subtitles/subsdec.c:101
-#, fuzzy
 msgid "Default (Windows-1252)"
-msgstr "Baltų (Windows-1257)"
+msgstr "Numatytoji (Windows-1252)"
 
 #: modules/codec/subtitles/subsdec.c:102
 msgid "Universal (UTF-8)"
@@ -10879,11 +10877,11 @@ msgstr "Unikodas (UTF-16)"
 
 #: modules/codec/subtitles/subsdec.c:104
 msgid "Universal (big endian UTF-16)"
-msgstr ""
+msgstr "Unikodas (UTF-16 mažėjantys baitai)"
 
 #: modules/codec/subtitles/subsdec.c:105
 msgid "Universal (little endian UTF-16)"
-msgstr ""
+msgstr "Unikodas (UTF-16 didėjantys baitai)"
 
 #: modules/codec/subtitles/subsdec.c:106
 msgid "Universal, Chinese (GB18030)"
@@ -13585,24 +13583,20 @@ msgid "Podcast Info"
 msgstr "Prenumeruojamos laidos informacija"
 
 #: modules/demux/playlist/podcast.c:256
-#, fuzzy
 msgid "Podcast Link"
-msgstr "Prenumeruojamos laidos informacija"
+msgstr "Prenumeruojamos laidos nuoroda"
 
 #: modules/demux/playlist/podcast.c:257
-#, fuzzy
 msgid "Podcast Copyright"
-msgstr "Autorinės teisės"
+msgstr "Prenuomaruojamos laidos autorinės teisės"
 
 #: modules/demux/playlist/podcast.c:258
-#, fuzzy
 msgid "Podcast Category"
-msgstr "Prenumeruojamos laidos santrauka"
+msgstr "Prenumeruojamos laidos kategorija"
 
 #: modules/demux/playlist/podcast.c:259 modules/demux/playlist/podcast.c:311
-#, fuzzy
 msgid "Podcast Keywords"
-msgstr "Prenumeruojamos laidos"
+msgstr "Prenumeruojamos laidos raktažodžiai"
 
 #: modules/demux/playlist/podcast.c:260 modules/demux/playlist/podcast.c:312
 #, fuzzy
@@ -13614,14 +13608,12 @@ msgid "Podcast Summary"
 msgstr "Prenumeruojamos laidos santrauka"
 
 #: modules/demux/playlist/podcast.c:307
-#, fuzzy
 msgid "Podcast Publication Date"
-msgstr "Moduliacijos tipas"
+msgstr "Prenumeruojamos laidos paskelbimo data"
 
 #: modules/demux/playlist/podcast.c:308
-#, fuzzy
 msgid "Podcast Author"
-msgstr "Prenumeruojamos laidos informacija"
+msgstr "Prenumeruojamos laidos autorius"
 
 #: modules/demux/playlist/podcast.c:309
 #, fuzzy
@@ -13629,23 +13621,21 @@ msgid "Podcast Subcategory"
 msgstr "Prenumeruojamos laidos santrauka"
 
 #: modules/demux/playlist/podcast.c:310
-#, fuzzy
 msgid "Podcast Duration"
-msgstr "Sodrumas"
+msgstr "Prenumeruojamos laidos trukmė"
 
 #: modules/demux/playlist/podcast.c:314
-#, fuzzy
 msgid "Podcast Type"
-msgstr "Prenumeruojamos laidos dydis"
+msgstr "Prenumeruojamos laidos tipas"
 
 #: modules/demux/playlist/podcast.c:328
 msgid "Podcast Size"
 msgstr "Prenumeruojamos laidos dydis"
 
 #: modules/demux/playlist/podcast.c:329
-#, fuzzy, c-format
+#, c-format
 msgid "%s bytes"
-msgstr "Išsiųsta baitų"
+msgstr "baitų: %s"
 
 #: modules/demux/playlist/shoutcast.c:410
 msgid "Shoutcast"
@@ -15506,7 +15496,7 @@ msgid "Information"
 msgstr "Informacija"
 
 #: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
-#: modules/gui/qt4/dialogs/preferences.cpp:46
+#: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "Parinktys"
 
@@ -15520,7 +15510,7 @@ msgid "Basic"
 msgstr "Pagrindinis"
 
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/qt4/dialogs/preferences.cpp:312
+#: modules/gui/qt4/dialogs/preferences.cpp:317
 msgid "Reset Preferences"
 msgstr "Parinkčių atstatymas"
 
@@ -17362,7 +17352,7 @@ msgstr "Pri&taikyti"
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
 #: modules/gui/qt4/dialogs/openurl.cpp:60
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:37
-#: modules/gui/qt4/dialogs/preferences.cpp:85
+#: modules/gui/qt4/dialogs/preferences.cpp:86
 #: modules/gui/qt4/dialogs/sout.cpp:97 modules/gui/qt4/dialogs/toolbar.cpp:189
 msgid "&Cancel"
 msgstr "&Atšauti"
@@ -17915,35 +17905,45 @@ msgstr "Svetainė"
 msgid "Deletes the selected item"
 msgstr "Ištrinti pasirinktus"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:63
+#: modules/gui/qt4/dialogs/preferences.cpp:64
 msgid "Show settings"
 msgstr "Rodomi nustatymai"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:67
+#: modules/gui/qt4/dialogs/preferences.cpp:68
 msgid "Simple"
 msgstr "Paprasti"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:68
+#: modules/gui/qt4/dialogs/preferences.cpp:69
 msgid "Switch to simple preferences view"
 msgstr "Rodyti paprastas nuostatas"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:71
+#: modules/gui/qt4/dialogs/preferences.cpp:72
 msgid "Switch to full preferences view"
 msgstr "Rodyti visas galimas nuostatas"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:83
+#: modules/gui/qt4/dialogs/preferences.cpp:84
 msgid "&Save"
 msgstr "Į&rašyti"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:84
+#: modules/gui/qt4/dialogs/preferences.cpp:85
 msgid "Save and close the dialog"
 msgstr "Įrašyti ir užverti langą"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:86
+#: modules/gui/qt4/dialogs/preferences.cpp:87
 msgid "&Reset Preferences"
 msgstr "&Numatytosios VLC parinktys"
 
-#: modules/gui/qt4/dialogs/preferences.cpp:313
+#: modules/gui/qt4/dialogs/preferences.cpp:300
+#, fuzzy
+msgid "Cannot save Configuration"
+msgstr "Lua sąsajos konfigūracija"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:301
+#, fuzzy
+msgid "Preferences file could not be saved"
+msgstr "Rinkmena negali būti patikrinta"
+
+#: modules/gui/qt4/dialogs/preferences.cpp:318
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "Ar jūs tikrai norite atkurti numatytąsias VLC parinktis?"
 
@@ -19631,19 +19631,19 @@ msgstr ""
 msgid "MSN Now-Playing"
 msgstr "MSN dabar grojama"
 
-#: modules/misc/notify/notify.c:48
+#: modules/misc/notify/notify.c:49
 msgid "Timeout (ms)"
 msgstr "Užlaikymas (ms)"
 
-#: modules/misc/notify/notify.c:49
+#: modules/misc/notify/notify.c:50
 msgid "How long the notification will be displayed "
 msgstr "Kaip ilgai pranešimas bus rodomas "
 
-#: modules/misc/notify/notify.c:54
+#: modules/misc/notify/notify.c:55
 msgid "Notify"
 msgstr "Pranešti"
 
-#: modules/misc/notify/notify.c:55
+#: modules/misc/notify/notify.c:56
 msgid "LibNotify Notification Plugin"
 msgstr ""
 
@@ -20245,12 +20245,12 @@ msgstr "Bonjour paslaugos"
 #: modules/services_discovery/mediadirs.c:71
 #: modules/services_discovery/mediadirs.c:372
 msgid "My Videos"
-msgstr "Mano vaizdai"
+msgstr "Vaizdo įrašai"
 
 #: modules/services_discovery/mediadirs.c:78
 #: modules/services_discovery/mediadirs.c:374
 msgid "My Music"
-msgstr "Mano muzika"
+msgstr "Muzika"
 
 #: modules/services_discovery/mediadirs.c:84
 msgid "Picture"
@@ -20259,7 +20259,7 @@ msgstr "Paveikslėliai"
 #: modules/services_discovery/mediadirs.c:85
 #: modules/services_discovery/mediadirs.c:376
 msgid "My Pictures"
-msgstr "Mano paveikslėliai"
+msgstr "Paveikslėliai"
 
 #: modules/services_discovery/mtp.c:45
 msgid "MTP devices"
@@ -26245,4 +26245,7 @@ msgstr "Multimedijos tvarkytuvės sąrašas"
 #~ msgstr "Žvaigždučių skaičius piešimui atsitiktiniu efektu."
 
 #~ msgid "My Computer"
-#~ msgstr "Mano kompiuteris"
+#~ msgstr "Kompiuteris"
+
+#~ msgid "Internet"
+#~ msgstr "Internetas"
