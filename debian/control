@@ -212,7 +212,8 @@ Depends: ttf-freefont,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: vlc-plugin-notify (= ${binary:Version}),
-            vlc-plugin-pulse (= ${binary:Version})
+            vlc-plugin-pulse (= ${binary:Version}),
+            xdg-utils
 Suggests: mozilla-plugin-vlc,
           videolan-doc
 Breaks: vlc-nox (<< 1.1.2-1+exp1)
