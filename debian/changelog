@@ -1,3 +1,13 @@
+vlc (1.1.4-2) UNRELEASED; urgency=low
+
+  * Fix path typo in NEWS file. (Closes: #599314)
+  * Install all docs into /usr/share/doc/vlc-nox and link the vlc doc dir to it.
+  * Recommend xdg-utils, because xdg-screensaver is required for disabling
+    the screensaver. (Closes: #436339)
+  * Support VP8 / WebM format through FFmpeg 0.6 (Closes: #592103).
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 14 Nov 2010 15:56:01 +0100
+
 vlc (1.1.4-1) experimental; urgency=low
 
   [ Christophe Mutricy ]
