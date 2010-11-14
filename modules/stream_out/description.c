@@ -2,7 +2,7 @@
  * description.c: description stream output module (gathers ES info)
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: e1ebd6c1bb7e837d531eed2ae36bdef27b069bff $
+ * $Id: 693064251856e7392cc4ca35cf707e348af2abfe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -149,7 +149,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
         p_input = vlc_object_find( p_stream, VLC_OBJECT_INPUT, FIND_PARENT );
         if( p_input )
         {
-            p_input->b_eof = true;
+            input_Stop( p_input, true );
             vlc_object_release( p_input );
         }
     }

@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 46071ebed79607593822e31895a4ba600a9bc2b0 $
+ * $Id: d9d42f7a54e571574c4cad8a409761a5988d467f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -250,6 +250,7 @@ static int ProcessHeaders( decoder_t *p_dec )
     }
 
     /* Set output properties */
+    if( !p_sys->b_packetizer )
     switch( p_sys->ti.pixelformat )
     {
       case OC_PF_420:

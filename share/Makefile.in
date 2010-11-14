@@ -360,7 +360,6 @@ LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
-LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
 LTLIBshine = @LTLIBshine@
 LTLIBskins2 = @LTLIBskins2@
@@ -406,6 +405,7 @@ LTLIBxcb_xv = @LTLIBxcb_xv@
 LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
+LTLIBxscreensaver = @LTLIBxscreensaver@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
 LUAC = @LUAC@
@@ -662,11 +662,12 @@ EXTRA_DIST = $(skins2_default_vlt_FILES) $(DIST_rsrc) $(DIST_skins2) \
 	lua/playlist/jamendo.lua lua/playlist/joox.lua \
 	lua/playlist/katsomo.lua lua/playlist/koreus.lua \
 	lua/playlist/lelombrik.lua lua/playlist/megavideo.lua \
-	lua/playlist/metacafe.lua lua/playlist/mpora.lua \
-	lua/playlist/pinkbike.lua lua/playlist/rockbox_fm_presets.lua \
-	lua/playlist/youtube.lua lua/playlist/youtube_homepage.lua \
-	lua/sd/README.txt lua/sd/fmc.lua lua/sd/freebox.lua \
-	lua/sd/icecast.lua lua/sd/jamendo.lua
+	lua/playlist/metacafe.lua lua/playlist/metachannels.lua \
+	lua/playlist/mpora.lua lua/playlist/pinkbike.lua \
+	lua/playlist/rockbox_fm_presets.lua lua/playlist/youtube.lua \
+	lua/playlist/youtube_homepage.lua lua/sd/README.txt \
+	lua/sd/fmc.lua lua/sd/freebox.lua lua/sd/icecast.lua \
+	lua/sd/jamendo.lua lua/sd/metachannels.lua
 nobase_vlcdata_DATA = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_7)
 @KDE_SOLID_TRUE@soliddata_DATA = $(DIST_solid)
@@ -829,6 +830,7 @@ luac_verbose_0 = @echo "  LUAC   $@";
 @BUILD_LUA_TRUE@	lua/playlist/lelombrik.luac \
 @BUILD_LUA_TRUE@	lua/playlist/megavideo.luac \
 @BUILD_LUA_TRUE@	lua/playlist/metacafe.luac \
+@BUILD_LUA_TRUE@	lua/playlist/metachannels.luac \
 @BUILD_LUA_TRUE@	lua/playlist/mpora.luac \
 @BUILD_LUA_TRUE@	lua/playlist/pinkbike.luac \
 @BUILD_LUA_TRUE@	lua/playlist/rockbox_fm_presets.luac \
@@ -836,7 +838,8 @@ luac_verbose_0 = @echo "  LUAC   $@";
 @BUILD_LUA_TRUE@	lua/playlist/youtube_homepage.luac \
 @BUILD_LUA_TRUE@	lua/sd/fmc.luac lua/sd/freebox.luac \
 @BUILD_LUA_TRUE@	lua/sd/icecast.luac lua/sd/jamendo.luac \
-@BUILD_LUA_TRUE@	$(NULL) $(am__append_6)
+@BUILD_LUA_TRUE@	lua/sd/metachannels.luac $(NULL) \
+@BUILD_LUA_TRUE@	$(am__append_6)
 DIST_http_lua = \
 	lua/http/.hosts \
 	lua/http/custom.lua \

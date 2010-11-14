@@ -2,7 +2,7 @@
  * quartztext.c : Put text on the video, using Mac OS X Quartz Engine
  *****************************************************************************
  * Copyright (C) 2007, 2009 the VideoLAN team
- * $Id: 732f276f2c1d90a2af50fafd6e513ef089f332e6 $
+ * $Id: 17060ba885abf693731866182aab8ec4cd12e365 $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *
@@ -382,8 +382,8 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
                                              CFRangeMake( 0, len ), p_attrString);
 
         RenderYUVA( p_filter, p_region_out, p_attrString );
+        CFRelease( p_attrString );
     }
-    CFRelease(p_attrString);
 
     return VLC_SUCCESS;
 }

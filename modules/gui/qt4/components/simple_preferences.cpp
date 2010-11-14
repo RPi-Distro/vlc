@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 8b577789fef945216ece29f16a0ebcafd2568816 $
+ * $Id: ff1043c5cdcb18cafd4ff34ffae2e557d584aac4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -446,12 +446,17 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                 ui.live555TransportHTTPRadio->hide();
                 ui.live555TransportLabel->hide();
             }
+            CONFIG_BOOL( "ffmpeg-hw", hwAccelBox );
 #ifdef WIN32
             CONFIG_BOOL( "prefer-system-codecs", systemCodecBox );
+            HINSTANCE hdxva2_dll = LoadLibrary(TEXT("DXVA2.DLL") );
+            if( !hdxva2_dll )
+                ui.hwAccelBox->setEnabled( false );
+            else
+                FreeLibrary( hdxva2_dll );
 #else
             ui.systemCodecBox->hide();
 #endif
-            CONFIG_BOOL( "ffmpeg-hw", hwAccelBox );
             optionWidgets.append( ui.DVDDevice );
             optionWidgets.append( ui.cachingCombo );
             CONFIG_GENERIC( "ffmpeg-skiploopfilter", IntegerList, ui.filterLabel, loopFilterBox );

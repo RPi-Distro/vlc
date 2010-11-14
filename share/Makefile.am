@@ -240,6 +240,7 @@ nobase_vlclib_DATA = \
 	lua/playlist/lelombrik.luac \
 	lua/playlist/megavideo.luac \
 	lua/playlist/metacafe.luac \
+    lua/playlist/metachannels.luac \
 	lua/playlist/mpora.luac \
 	lua/playlist/pinkbike.luac \
 	lua/playlist/rockbox_fm_presets.luac \
@@ -249,6 +250,7 @@ nobase_vlclib_DATA = \
 	lua/sd/freebox.luac \
 	lua/sd/icecast.luac \
 	lua/sd/jamendo.luac \
+    lua/sd/metachannels.luac \
 	$(NULL)
 if BUILD_HTTPD
 nobase_vlclib_DATA += \
@@ -301,6 +303,7 @@ EXTRA_DIST += \
 	lua/playlist/lelombrik.lua \
 	lua/playlist/megavideo.lua \
 	lua/playlist/metacafe.lua \
+    lua/playlist/metachannels.lua \
 	lua/playlist/mpora.lua \
 	lua/playlist/pinkbike.lua \
 	lua/playlist/rockbox_fm_presets.lua \
@@ -310,7 +313,8 @@ EXTRA_DIST += \
 	lua/sd/fmc.lua \
 	lua/sd/freebox.lua \
 	lua/sd/icecast.lua \
-	lua/sd/jamendo.lua
+	lua/sd/jamendo.lua \
+    lua/sd/metachannels.lua
 
 DIST_http_lua = \
 	lua/http/.hosts \

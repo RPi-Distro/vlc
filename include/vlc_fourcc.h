@@ -2,7 +2,7 @@
  * vlc_fourcc.h: Definition of various FOURCC and helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: d3e52e29e2153cbfb4237fa216ba9ced9a253d38 $
+ * $Id: 4cb12ded2c3511e88057d2c5caf0c1b56e4324f4 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ com>
  *
@@ -147,7 +147,7 @@
 /* Palettized RGB with palette element R:G:B */
 #define VLC_CODEC_RGBP      VLC_FOURCC('R','G','B','P')
 /* 8 bits RGB */
-#define VLC_CODEC_RGB8      VLC_FOURCC('R','G','B','2')
+#define VLC_CODEC_RGB8      VLC_FOURCC('R','G','B','8')
 /* 15 bits RGB stored on 16 bits */
 #define VLC_CODEC_RGB15     VLC_FOURCC('R','V','1','5')
 /* 16 bits RGB store on a 16 bits */

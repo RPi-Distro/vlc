@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: e9c97cc83d59adb76b18b438f71da09927fa5807 $
+ * $Id: 3f260a2b4fd5dbf30e1d7f5c4bd41dec71dcd86a $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -686,7 +686,6 @@ static int OpenVCDImage( vlc_object_t * p_this, const char *psz_dev,
         char filename[1024];
         char type[16];
         int i_temp = sscanf( line, "FILE \"%1023[^\"]\" %15s", filename, type );
-        *p_pos = 0;
         switch( i_temp )
         {
             case 2:

@@ -354,6 +354,9 @@
 /* Define to 1 if you have the <libavformat/avformat.h> header file. */
 #undef HAVE_LIBAVFORMAT_AVFORMAT_H
 
+/* Define to 1 if you have the <libavformat/avio.h> header file. */
+#undef HAVE_LIBAVFORMAT_AVIO_H
+
 /* Define to 1 if you have the <libavutil/avutil.h> header file. */
 #undef HAVE_LIBAVUTIL_AVUTIL_H
 

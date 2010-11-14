@@ -2,7 +2,7 @@
  * shoutcast.c: Winamp >=5.2 shoutcast demuxer
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 14891d11467189b8e6fbcd1fbd452de81b8b7a5c $
+ * $Id: aa0f9d03c30bcf2fac5defa376d06d747003b74b $
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *          based on b4s.c by Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -188,7 +188,6 @@ static int DemuxGenre( demux_t *p_demux, xml_reader_t *p_xml_reader,
                         {
                             free( psz_attrname );
                             free( psz_attrvalue );
-                            free( psz_eltname );
                             break;
                         }
 

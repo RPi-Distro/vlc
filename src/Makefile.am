@@ -132,7 +132,8 @@ noinst_HEADERS = \
 	$(NULL)
 
 ../include/vlc/libvlc_version.h: ../include/vlc/libvlc_version.h.in $(top_builddir)/config.status
-	$(SHELL) $(top_builddir)/config.status --file=$@
+	$(AM_V_GEN)cd "$(top_builddir)" && \
+	$(SHELL) ./config.status --file=src/$@
 
 ../include/vlc_about.h: Makefile.am $(top_srcdir)/COPYING $(top_srcdir)/THANKS $(top_srcdir)/AUTHORS
 	$(AM_V_at)rm -f -- "$@.tmp"
@@ -201,7 +202,7 @@ libvlccore_la_CFLAGS = `$(VLC_CONFIG) --cflags libvlccore` \
 libvlccore_la_LDFLAGS = `$(VLC_CONFIG) --ldflags libvlccore` $(AM_LDFLAGS) \
 	-no-undefined \
 	-export-symbols $(srcdir)/libvlccore.sym \
-	-version-info 4:0:0
+	-version-info 4:1:0
 libvlccore_la_LIBADD = `$(VLC_CONFIG) -libs libvlccore` $(AM_LIBADD) \
 	$(LTLIBINTL) ../compat/libcompat.la
 libvlccore_la_DEPENDENCIES = libvlccore.sym
@@ -219,7 +220,7 @@ libvlc_la_LIBADD = `$(VLC_CONFIG) -libs libvlc` \
 	libvlccore.la ../compat/libcompat.la
 libvlc_la_CFLAGS = `$(VLC_CONFIG) --cflags libvlc`
 libvlc_la_LDFLAGS = $(AM_LDFLAGS) `$(VLC_CONFIG) --ldflags libvlc` \
-	-version-info 6:0:1 \
+	-version-info 7:0:2 \
 	-export-symbols $(srcdir)/libvlc.sym
 libvlc_la_DEPENDENCIES = libvlc.sym libvlccore.la
 if HAVE_WIN32

@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: c9302777fd33b49f92c2b039ae87db8c0187b8b0 $
+ * $Id: c615ace53ece5ce1faf353422074ea874858be0d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -173,6 +173,8 @@ void VideoWidget::release( void )
 {
     msg_Dbg( p_intf, "Video is not needed anymore" );
 
+    if(!stable)
+        return;
     assert( stable );
     layout->removeWidget( stable );
     stable->deleteLater();

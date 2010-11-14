@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: a45f02172e97196055261c27c3e65f58f8da141c $
+ * $Id: 839f18fa864ff68a95ac54a85be48564f8d5ae99 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -2712,7 +2712,7 @@ static char *LanguageGetName( const char *psz_code )
 {
     const iso639_lang_t *pl;
 
-    if( psz_code == NULL )
+    if( psz_code == NULL || !strcmp( psz_code, "und" ) )
     {
         return strdup( "" );
     }

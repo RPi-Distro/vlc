@@ -12,7 +12,7 @@ vlc (1.1.0-1) unstable; urgency=low
     + Telnet: Default is the new lua-implemented one. Use -I oldtelnet to
       use the C one.
 
-  For other changes, see /usr/share/vlc-nox/NEWS.gz
+  For other changes, see /usr/share/doc/vlc-nox/NEWS.gz
 
  -- Christophe Mutricy <xtophe@videolan.org>  Thu, 24 Jun 2010 22:01:26 +0100
 
@@ -31,7 +31,7 @@ vlc (1.0.0~rc2-1) experimental; urgency=low
 
     + Image video output has been rewritten into a video-filter named 'scene'.
  
-  For other changes, see /usr/share/vlc-nox/NEWS.gz
+  For other changes, see /usr/share/doc/vlc-nox/NEWS.gz
 
  -- Christophe Mutricy <xtophe@videolan.org>  Wed, 13 May 2009 14:36:54 +0200
 

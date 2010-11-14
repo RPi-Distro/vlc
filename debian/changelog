@@ -1,3 +1,15 @@
+vlc (1.1.5-1) experimental; urgency=low
+
+  * New upstream release.
+  * Fix path typo in NEWS file. (Closes: #599314)
+  * Install all docs into /usr/share/doc/vlc-nox and link the vlc doc dir to it.
+  * Recommend xdg-utils, because xdg-screensaver is required for disabling
+    the screensaver. (Closes: #436339)
+  * Add libxscreensaver plugin to vlc.
+  * Add new symbol to libvlc5.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 14 Nov 2010 21:27:56 +0100
+
 vlc (1.1.4-1ubuntu1) maverick; urgency=low
 
   * Merge from Debian experimental, remaining changes:

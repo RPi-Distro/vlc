@@ -2,7 +2,7 @@
  * media_player.c: Libvlc API Media Instance management functions
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 0336f3c8eff5f6bec8dda91804e84242a674bb67 $
+ * $Id: 3013bc064591225f382d1877f8ed6b515c506e9f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -1097,8 +1097,8 @@ void libvlc_media_player_next_chapter( libvlc_media_player_t *p_mi )
         return;
 
     int i_type = var_Type( p_input_thread, "next-chapter" );
-    var_SetBool( p_input_thread, (i_type & VLC_VAR_TYPE) != 0 ?
-                            "next-chapter":"next-title", true );
+    var_TriggerCallback( p_input_thread, (i_type & VLC_VAR_TYPE) != 0 ?
+                            "next-chapter":"next-title" );
 
     vlc_object_release( p_input_thread );
 }
@@ -1112,8 +1112,8 @@ void libvlc_media_player_previous_chapter( libvlc_media_player_t *p_mi )
         return;
 
     int i_type = var_Type( p_input_thread, "next-chapter" );
-    var_SetBool( p_input_thread, (i_type & VLC_VAR_TYPE) != 0 ?
-                            "prev-chapter":"prev-title", true );
+    var_TriggerCallback( p_input_thread, (i_type & VLC_VAR_TYPE) != 0 ?
+                            "prev-chapter":"prev-title" );
 
     vlc_object_release( p_input_thread );
 }

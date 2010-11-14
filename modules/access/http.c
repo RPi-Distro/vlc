@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 7a6746c1966e1f2490e8860f1aae11b69ff463b2 $
+ * $Id: 59aa2e6717f0b4a227a281778dc8792d51d9393e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1288,7 +1288,7 @@ static int Request( access_t *p_access, uint64_t i_tell )
     }
     /* User Agent */
     net_Printf( p_access, p_sys->fd, pvs,
-                "User-Agent: %s LibVLC/"VERSION"\r\n",
+                "User-Agent: %s\r\n",
                 p_sys->psz_user_agent );
     /* Offset */
     if( p_sys->i_version == 1 && ! p_sys->b_continuous )

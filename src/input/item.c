@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: df4e15967ef345a891f4ca769b4f7ee43a8e4a30 $
+ * $Id: 0d374afc22f77a0eff14fc4bcf3d80003573da32 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -743,6 +743,9 @@ void input_item_SetEpg( input_item_t *p_item, const vlc_epg_t *p_update )
         vlc_epg_Merge( p_epg, p_update );
 
     vlc_mutex_unlock( &p_item->lock );
+
+    if( !p_epg )
+        return;
 
 #ifdef EPG_DEBUG
     char *psz_epg;

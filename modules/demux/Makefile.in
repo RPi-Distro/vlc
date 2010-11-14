@@ -156,7 +156,7 @@ libflacsys_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libflacsys_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_8 = libgme_plugin_la-gme.lo
+am__objects_8 = libgme_plugin_la-gme.lo libgme_plugin_la-dummy.lo
 am_libgme_plugin_la_OBJECTS = $(am__objects_8)
 nodist_libgme_plugin_la_OBJECTS =
 libgme_plugin_la_OBJECTS = $(am_libgme_plugin_la_OBJECTS) \
@@ -778,7 +778,6 @@ LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
-LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
 LTLIBshine = @LTLIBshine@
 LTLIBskins2 = @LTLIBskins2@
@@ -824,6 +823,7 @@ LTLIBxcb_xv = @LTLIBxcb_xv@
 LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
+LTLIBxscreensaver = @LTLIBxscreensaver@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
 LUAC = @LUAC@
@@ -1061,7 +1061,7 @@ AM_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin $@`
 AM_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin $@`
 AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
-	-export-symbol-regex ^vlc_entry \
+	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-rpath "$(libvlcdir)" \
 	-no-undefined \
@@ -1097,11 +1097,11 @@ SOURCES_xa = xa.c
 SOURCES_nuv = nuv.c
 SOURCES_nsc = nsc.c
 SOURCES_mpc = mpc.c
-SOURCES_gme = gme.cpp
 SOURCES_tta = tta.c
 SOURCES_vc1 = vc1.c
 SOURCES_demux_cdg = cdg.c
 SOURCES_smf = smf.c
+SOURCES_gme = gme.c dummy.cpp
 SOURCES_dirac = dirac.c
 
 # The aiff plugin
@@ -1600,6 +1600,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdemuxdump_plugin_la-demuxdump.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirac_plugin_la-dirac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflacsys_plugin_la-flac.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgme_plugin_la-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgme_plugin_la-gme.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblive555_plugin_la-asf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblive555_plugin_la-buffer.Plo@am__quote@
@@ -1718,6 +1719,14 @@ libflacsys_plugin_la-flac.lo: flac.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='flac.c' object='libflacsys_plugin_la-flac.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflacsys_plugin_la_CFLAGS) $(CFLAGS) -c -o libflacsys_plugin_la-flac.lo `test -f 'flac.c' || echo '$(srcdir)/'`flac.c
+
+libgme_plugin_la-gme.lo: gme.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CFLAGS) $(CFLAGS) -MT libgme_plugin_la-gme.lo -MD -MP -MF $(DEPDIR)/libgme_plugin_la-gme.Tpo -c -o libgme_plugin_la-gme.lo `test -f 'gme.c' || echo '$(srcdir)/'`gme.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgme_plugin_la-gme.Tpo $(DEPDIR)/libgme_plugin_la-gme.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='gme.c' object='libgme_plugin_la-gme.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CFLAGS) $(CFLAGS) -c -o libgme_plugin_la-gme.lo `test -f 'gme.c' || echo '$(srcdir)/'`gme.c
 
 liblive555_plugin_la-asf.lo: ../access/mms/asf.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CFLAGS) $(CFLAGS) -MT liblive555_plugin_la-asf.lo -MD -MP -MF $(DEPDIR)/liblive555_plugin_la-asf.Tpo -c -o liblive555_plugin_la-asf.lo `test -f '../access/mms/asf.c' || echo '$(srcdir)/'`../access/mms/asf.c
@@ -1959,13 +1968,13 @@ libxa_plugin_la-xa.lo: xa.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
-libgme_plugin_la-gme.lo: gme.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libgme_plugin_la-gme.lo -MD -MP -MF $(DEPDIR)/libgme_plugin_la-gme.Tpo -c -o libgme_plugin_la-gme.lo `test -f 'gme.cpp' || echo '$(srcdir)/'`gme.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgme_plugin_la-gme.Tpo $(DEPDIR)/libgme_plugin_la-gme.Plo
+libgme_plugin_la-dummy.lo: dummy.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT libgme_plugin_la-dummy.lo -MD -MP -MF $(DEPDIR)/libgme_plugin_la-dummy.Tpo -c -o libgme_plugin_la-dummy.lo `test -f 'dummy.cpp' || echo '$(srcdir)/'`dummy.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgme_plugin_la-dummy.Tpo $(DEPDIR)/libgme_plugin_la-dummy.Plo
 @am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='gme.cpp' object='libgme_plugin_la-gme.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='dummy.cpp' object='libgme_plugin_la-dummy.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libgme_plugin_la-gme.lo `test -f 'gme.cpp' || echo '$(srcdir)/'`gme.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgme_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libgme_plugin_la-dummy.lo `test -f 'dummy.cpp' || echo '$(srcdir)/'`dummy.cpp
 
 liblive555_plugin_la-live555.lo: live555.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblive555_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT liblive555_plugin_la-live555.lo -MD -MP -MF $(DEPDIR)/liblive555_plugin_la-live555.Tpo -c -o liblive555_plugin_la-live555.lo `test -f 'live555.cpp' || echo '$(srcdir)/'`live555.cpp

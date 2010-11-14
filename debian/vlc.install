@@ -7,6 +7,7 @@ usr/lib/vlc/plugins/control/libglobalhotkeys_plugin.so
 usr/lib/vlc/plugins/gui/libqt4_plugin.so
 usr/lib/vlc/plugins/gui/libskins2_plugin.so
 usr/lib/vlc/plugins/misc/libxdg_screensaver_plugin.so
+usr/lib/vlc/plugins/misc/libxscreensaver_plugin.so
 usr/lib/vlc/plugins/services_discovery/libxcb_apps_plugin.so
 usr/lib/vlc/plugins/video_filter/libpanoramix_plugin.so
 usr/lib/vlc/plugins/video_output/libaa_plugin.so

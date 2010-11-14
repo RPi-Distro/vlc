@@ -2,7 +2,7 @@
  * qtl.c: QuickTime Media Link Importer
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: d10d4f5f23c8e5dad7384ab72e9317b98baf1132 $
+ * $Id: 226b2871e776aa02dd4dc1b44e89c239017c46ab $
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *
@@ -148,6 +148,7 @@ static int Demux( demux_t *p_demux )
         msg_Err( p_demux, "invalid root node %i, %s",
                  xml_ReaderNodeType( p_xml_reader ), psz_eltname );
         free( psz_eltname );
+        psz_eltname = NULL;
 
         /* second line has <?quicktime tag ... so we try to skip it */
         msg_Dbg( p_demux, "trying to read one more node" );

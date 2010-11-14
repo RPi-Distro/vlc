@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: 1f512f8d48db41c82d4158beaecbedff1232125b $
+ * $Id: 3ebb4b731dcfa88038f362710d27bc11c1e8f1c9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -34,6 +34,7 @@
 #include <QString>
 #include <QFileDialog>
 #include <QToolButton>
+#include <QSpinBox>
 #include <assert.h>
 
 SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& inputMRL )
@@ -224,9 +225,12 @@ void SoutDialog::updateMRL()
     for( int i = 1; i < ui.destTab->count(); i++ )
     {
         VirtualDestBox *vdb = qobject_cast<VirtualDestBox *>(ui.destTab->widget( i ));
-        QString tempMRL = vdb->getMRL( qs_mux );
+        if( !vdb )
+            continue;
 
+        QString tempMRL = vdb->getMRL( qs_mux );
         if( tempMRL.isEmpty() ) continue;
+
         if( multi )
             smrl.option( "dst", tempMRL );
         else
@@ -257,8 +261,8 @@ void SoutDialog::updateMRL()
 
         /* FIXME: This sucks. We should really return a QStringList instead of
          * (mis)quoting, concatainating and split input item paramters. */
-        name = name.replace( " ", " " );
-        group = group.replace( " ", " " );
+        name = name.replace( " ", " " );
+        group = group.replace( " ", " " );
 
         /* We need to add options for both standard and rtp targets */
         /* This is inelegant but simple and functional */
@@ -274,8 +278,9 @@ void SoutDialog::updateMRL()
         mrl.append( qfu( " :no-sout-standard-sap" ) );
     }
 
-    if( ui.soutAll->isChecked() )  mrl.append( " :sout-all" );
+    if( ui.soutAll->isChecked() ) mrl.append( " :sout-all" );
 
+    mrl.append( qfu( " :ttl=" ) + QString::number( ui.ttl->value() ) );
     mrl.append( " :sout-keep" );
 
     ui.mrlEdit->setPlainText( mrl );

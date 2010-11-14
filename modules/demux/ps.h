@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: ae778d6914c26e15352cedea03a71a271a4a33a7 $
+ * $Id: 8568124da4ba309bbb9db6f6cda6449cc45ed4d5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -299,13 +299,14 @@ static inline int ps_pkt_id( block_t *p_pkt )
     return p_pkt->p_buffer[3];
 }
 
-/* return the size of the next packet
- * You need to give him at least 14 bytes (and it need to start as a
- * valid packet) It does not handle less than 6 bytes */
+/* return the size of the next packet */
 static inline int ps_pkt_size( const uint8_t *p, int i_peek )
 {
-    assert( i_peek >= 6 );
-    if( p[3] == 0xb9 && i_peek >= 4 )
+    if( unlikely(i_peek < 4) )
+    {
+        return -1;
+    }
+    else if( p[3] == 0xb9 )
     {
         return 4;
     }

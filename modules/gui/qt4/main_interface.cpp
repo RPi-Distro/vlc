@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 5893d196b4fa552c7ab324649bec023fbdc1c254 $
+ * $Id: 1bd3e630c08f7f94e848e3909f1694a75c9cbdf2 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -223,6 +223,7 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
 
     CONNECT( THEDP, toolBarConfUpdated(), this, recreateToolbars() );
 
+    CONNECT( this, askToQuit(), THEDP, quit() );
     /** END of CONNECTS**/
 
 
@@ -263,6 +264,7 @@ MainInterface::~MainInterface()
     if( stackCentralOldWidget == videoWidget )
         showTab( bgWidget );
 
+    releaseVideoSlot();
 #ifdef WIN32
     if( himl )
         ImageList_Destroy( himl );
@@ -584,7 +586,8 @@ void MainInterface::releaseVideo( void )
 /* Function that is CONNECTED to the previous emit */
 void MainInterface::releaseVideoSlot( void )
 {
-    videoWidget->release();
+    if( videoWidget )
+        videoWidget->release();
     setVideoOnTop( false );
     setVideoFullScreen( false );
 
@@ -1130,9 +1133,9 @@ void MainInterface::wheelEvent( QWheelEvent *e )
 
 void MainInterface::closeEvent( QCloseEvent *e )
 {
-    e->accept();
-    hide();
-    THEDP->quit();
+    //hide();
+    e->ignore();
+    emit askToQuit();
 }
 
 void MainInterface::setInterfaceFullScreen( bool fs )

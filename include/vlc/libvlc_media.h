@@ -2,7 +2,7 @@
  * libvlc.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 7efe4d2d6282a8590267372caf8a886276703dd8 $
+ * $Id: 6df3061cfc684d053af52f30bc1eaa9b113e9c85 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -171,12 +171,18 @@ typedef struct libvlc_media_track_info_t
 
 
 /**
- * Create a media with a certain given media resource location.
+ * Create a media with a certain given media resource location,
+ * for instance a valid URL.
+ *
+ * \note To refer to a local file with this function,
+ * the file://... URI syntax <b>must</b> be used (see IETF RFC3986).
+ * We recommend using libvlc_media_new_path() instead when dealing with
+ * local files.
  *
  * \see libvlc_media_release
  *
  * \param p_instance the instance
- * \param psz_mrl the MRL to read
+ * \param psz_mrl the media location
  * \return the newly created media or NULL on error
  */
 VLC_PUBLIC_API libvlc_media_t *libvlc_media_new_location(
@@ -184,7 +190,7 @@ VLC_PUBLIC_API libvlc_media_t *libvlc_media_new_location(
                                    const char * psz_mrl );
 
 /**
- * Create a media with a certain file path.
+ * Create a media for a certain file path.
  *
  * \see libvlc_media_release
  *
@@ -195,6 +201,35 @@ VLC_PUBLIC_API libvlc_media_t *libvlc_media_new_location(
 VLC_PUBLIC_API libvlc_media_t *libvlc_media_new_path(
                                    libvlc_instance_t *p_instance,
                                    const char *path );
+
+/**
+ * Create a media for an already open file descriptor.
+ * The file descriptor shall be open for reading (or reading and writing).
+ *
+ * Regular file descriptors, pipe read descriptors and character device
+ * descriptors (including TTYs) are supported on all platforms.
+ * Block device descriptors are supported where available.
+ * Directory descriptors are supported on systems that provide fdopendir().
+ * Sockets are supported on all platforms where they are file descriptors,
+ * i.e. all except Windows.
+ *
+ * \note This library will <b>not</b> automatically close the file descriptor
+ * under any circumstance. Nevertheless, a file descriptor can usually only be
+ * rendered once in a media player. To render it a second time, the file
+ * descriptor should probably be rewound to the beginning with lseek().
+ *
+ * \see libvlc_media_release
+ *
+ * \version LibVLC 1.1.5 and later.
+ *
+ * \param p_instance the instance
+ * \param fd open file descriptor
+ * \return the newly created media or NULL on error
+ */
+VLC_PUBLIC_API libvlc_media_t *libvlc_media_new_fd(
+                                   libvlc_instance_t *p_instance,
+                                   int fd );
+
 
 /**
  * Create a media as an empty node with a given name.
@@ -459,7 +494,7 @@ VLC_PUBLIC_API void *
  *
  * @begincode
  * libvlc_media_player_t *player = libvlc_media_player_new_from_media(media);
- * libvlc_media_add_option_flag(media, "sout=\"#description\"");
+ * libvlc_media_add_option_flag(media, "sout=#description");
  * libvlc_media_player_play(player);
  * // ... wait until playing
  * libvlc_media_player_release(player);

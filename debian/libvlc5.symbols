@@ -100,6 +100,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_list_set_media@Base 1.1.0
  libvlc_media_list_unlock@Base 1.1.0
  libvlc_media_new_as_node@Base 1.1.0
+ libvlc_media_new_fd@Base 1.1.5
  libvlc_media_new_from_input_item@Base 1.1.0
  libvlc_media_new_location@Base 1.1.0
  libvlc_media_new_path@Base 1.1.0

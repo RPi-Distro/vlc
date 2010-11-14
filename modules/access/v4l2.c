@@ -2,7 +2,7 @@
  * v4l2.c : Video4Linux2 input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 791cccf4a368e20139182c20479efcbd243c96f2 $
+ * $Id: 4259a618d5f1d2df7dcb52b71b06a274d370fbe5 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -300,7 +300,7 @@ vlc_module_begin ()
     add_string( CFG_PREFIX "aspect-ratio", "4:3", NULL, ASPECT_TEXT,
               ASPECT_LONGTEXT, true )
     add_float( CFG_PREFIX "fps", 0, NULL, FPS_TEXT, FPS_LONGTEXT, true )
-    add_integer( CFG_PREFIX "caching", 50 /* ms */, NULL,
+    add_integer( CFG_PREFIX "caching", DEFAULT_PTS_DELAY / 1000, NULL,
                 CACHING_TEXT, CACHING_LONGTEXT, true )
 #ifdef HAVE_LIBV4L2
     add_bool( CFG_PREFIX "use-libv4l2", false, NULL, LIBV4L2_TEXT, LIBV4L2_LONGTEXT, true );
