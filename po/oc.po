@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2010-08-27 01:01+0200\n"
+"POT-Creation-Date: 2010-11-13 18:25+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Tòni Galhard <tony.gaillard@supinfo.com>\n"
 "Language-Team: \n"
@@ -58,7 +58,7 @@ msgstr "Interfàcias principalas"
 msgid "Settings for the main interface"
 msgstr "Paramètres de l'interfàcia principala"
 
-#: include/vlc_config_cat.h:45 src/libvlc-module.c:187
+#: include/vlc_config_cat.h:45 src/libvlc-module.c:191
 msgid "Control interfaces"
 msgstr "Reglatge de las interfàcias"
 
@@ -72,7 +72,7 @@ msgid "Hotkeys settings"
 msgstr "Paramètres dels acorchis"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2870 src/input/es_out.c:2911
-#: src/libvlc-module.c:1569 modules/access/imem.c:69
+#: src/libvlc-module.c:1573 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
 #: modules/gui/macosx/wizard.m:380
@@ -80,7 +80,6 @@ msgstr "Paramètres dels acorchis"
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:192
-#: modules/gui/qt4/ui/profiles.h:487
 msgid "Audio"
 msgstr "Àudio"
 
@@ -118,7 +117,7 @@ msgstr "Sortidas dels moduls"
 msgid "General settings for audio output modules."
 msgstr "Paramètres generals pels moduls de sortida àudio."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2045
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2049
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Divèrs"
@@ -128,7 +127,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "Paramètres divèrses àudio e moduls"
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2873 src/input/es_out.c:2958
-#: src/libvlc-module.c:1622 modules/access/imem.c:69
+#: src/libvlc-module.c:1626 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
 #: modules/gui/macosx/wizard.m:381
@@ -136,7 +135,6 @@ msgstr "Paramètres divèrses àudio e moduls"
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:101 modules/stream_out/transcode/transcode.c:161
-#: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Video"
 msgstr "Vidèo"
 
@@ -246,7 +244,7 @@ msgstr "Dintrada generala"
 msgid "General input settings. Use with care..."
 msgstr "Paramètres generals d'intrada. D'utilizar amb precaucions."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1965
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1969
 msgid "Stream output"
 msgstr "Flux de sortida"
 
@@ -353,11 +351,12 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "Mesa en òbra de la VOD amb VLC"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2107
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2111
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
 #: modules/gui/qt4/components/playlist/playlist.cpp:126
+#: modules/gui/qt4/components/playlist/selector.cpp:259
 #: modules/gui/qt4/dialogs/playlist.cpp:41
 msgid "Playlist"
 msgstr "Lista de lectura"
@@ -388,7 +387,7 @@ msgstr ""
 "Los servicis de descobèrta son moduls que permeton d'apondre d'un biais "
 "automatic d'objèctes a la lista de lectura."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1912
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1916
 msgid "Advanced"
 msgstr "Avançat"
 
@@ -414,7 +413,6 @@ msgstr "Reglatges avançats"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:180
 #: modules/gui/macosx/open.m:459 modules/gui/macosx/simple_prefs.m:259
-#: modules/gui/qt4/ui/sprefs_input.h:318
 msgid "Network"
 msgstr "Ret"
 
@@ -546,7 +544,6 @@ msgstr "&A prepaus"
 #: modules/gui/macosx/intf.m:2026 modules/gui/macosx/intf.m:2027
 #: modules/gui/macosx/intf.m:2028 modules/gui/macosx/playlist.m:466
 #: modules/gui/qt4/components/controller.hpp:104 modules/gui/qt4/menus.cpp:790
-#: modules/gui/qt4/ui/open.h:256
 msgid "Play"
 msgstr "Legir"
 
@@ -611,7 +608,7 @@ msgstr "Repetir un còp"
 msgid "No Repeat"
 msgstr "Pas tornar faire"
 
-#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1461
+#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1465
 #: modules/gui/macosx/controls.m:1038 modules/gui/macosx/intf.m:654
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:119
@@ -700,7 +697,7 @@ msgstr ""
 "Grossir una partida de la video. Podètz causir quina partida de l'imatge deu "
 "èsser grossida."
 
-#: include/vlc_intf_strings.h:117 modules/gui/qt4/ui/video_effects.h:1141
+#: include/vlc_intf_strings.h:117
 msgid "Waves"
 msgstr "Èrsas"
 
@@ -816,7 +813,7 @@ msgid "The maximum number of filters (%d) was reached."
 msgstr "Lo nombre maximal de filtres (%d) es atenh."
 
 #: src/audio_output/input.c:110 src/audio_output/input.c:156
-#: src/input/es_out.c:934 src/libvlc-module.c:655
+#: src/input/es_out.c:934 src/libvlc-module.c:659
 #: src/video_output/video_output.c:1698 modules/video_filter/postproc.c:230
 msgid "Disable"
 msgstr "Desactivat"
@@ -843,7 +840,7 @@ msgstr "VUmètre"
 msgid "Equalizer"
 msgstr "Egalizador"
 
-#: src/audio_output/input.c:175 src/libvlc-module.c:320
+#: src/audio_output/input.c:175 src/libvlc-module.c:324
 msgid "Audio filters"
 msgstr "Filtres audio"
 
@@ -868,28 +865,24 @@ msgid "Stereo"
 msgstr "Esterèo"
 
 #: src/audio_output/output.c:106 src/audio_output/output.c:142
-#: src/libvlc-module.c:414 src/libvlc-module.c:495
+#: src/libvlc-module.c:418 src/libvlc-module.c:499
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:85 modules/video_filter/rss.c:174
-#: modules/gui/qt4/ui/video_effects.h:1114
-#: modules/gui/qt4/ui/video_effects.h:1177
-#: modules/gui/qt4/ui/video_effects.h:1182
 msgid "Left"
 msgstr "Esquèrra"
 
 #: src/audio_output/output.c:108 src/audio_output/output.c:144
-#: src/libvlc-module.c:414 src/libvlc-module.c:495
+#: src/libvlc-module.c:418 src/libvlc-module.c:499
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:85 modules/video_filter/rss.c:174
-#: modules/gui/qt4/ui/video_effects.h:1116
 msgid "Right"
 msgstr "Drecha"
 
@@ -923,6 +916,7 @@ msgstr "cadena"
 
 #: src/control/media_list.c:254 src/playlist/engine.c:144
 #: src/playlist/loadsave.c:162
+#: modules/gui/qt4/components/playlist/selector.cpp:263
 msgid "Media Library"
 msgstr "Librariá de mèdia"
 
@@ -971,7 +965,7 @@ msgstr ""
 "VLC suporta pas lo format audio o video \"%4.4s\". Malurosament es pas "
 "possible de cambiar aquò."
 
-#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:358
+#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:362
 #: modules/access/vcdx/access.c:460 modules/access/vcdx/info.c:226
 #: modules/gui/qt4/components/open_panels.cpp:402
 msgid "Track"
@@ -983,7 +977,7 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1165 src/input/es_out.c:1170 src/input/var.c:177
-#: src/libvlc-module.c:688 modules/gui/macosx/intf.m:661
+#: src/libvlc-module.c:692 modules/gui/macosx/intf.m:661
 #: modules/gui/macosx/intf.m:662
 msgid "Program"
 msgstr "Programa"
@@ -1020,14 +1014,12 @@ msgid "Original ID"
 msgstr "ID original"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
-#: modules/gui/qt4/ui/profiles.h:489
+#: modules/gui/macosx/wizard.m:385
 msgid "Codec"
 msgstr "Codec"
 
-#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:214
+#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:218
 #: modules/access/imem.c:76 modules/gui/macosx/simple_prefs.m:269
-#: modules/gui/qt4/ui/sprefs_interface.h:386
 msgid "Language"
 msgstr "Lengatge"
 
@@ -1037,7 +1029,7 @@ msgid "Description"
 msgstr "Descripcion"
 
 #: src/input/es_out.c:2914 src/input/es_out.c:2917
-#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
+#: modules/gui/macosx/output.m:176
 msgid "Channels"
 msgstr "Sortidas"
 
@@ -1055,9 +1047,8 @@ msgid "Bits per sample"
 msgstr "Bits per escapolon"
 
 #: src/input/es_out.c:2937 modules/access/pvr.c:96
-#: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:413
+#: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:412
 #: modules/gui/qt4/components/open_panels.cpp:921
-#: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
 msgid "Bitrate"
 msgstr "Taus de bits"
 
@@ -1079,7 +1070,7 @@ msgstr ""
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:476
+#: src/input/es_out.c:2961
 msgid "Resolution"
 msgstr "Resolucion"
 
@@ -1116,7 +1107,6 @@ msgstr ""
 #: modules/gui/macosx/intf.m:664 modules/gui/macosx/open.m:190
 #: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
 #: modules/gui/qt4/components/open_panels.cpp:376 modules/mux/asf.c:56
-#: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
 msgstr "Títol"
 
@@ -1133,7 +1123,7 @@ msgstr "Genre"
 msgid "Copyright"
 msgstr "Proprietat"
 
-#: src/input/meta.c:55 src/libvlc-module.c:358 modules/access/vcdx/info.c:63
+#: src/input/meta.c:55 src/libvlc-module.c:362 modules/access/vcdx/info.c:63
 msgid "Album"
 msgstr "Album"
 
@@ -1154,7 +1144,6 @@ msgid "Setting"
 msgstr "Paramètres"
 
 #: src/input/meta.c:61 modules/gui/macosx/open.m:203
-#: modules/gui/qt4/ui/podcast_configuration.h:103
 msgid "URL"
 msgstr "URL"
 
@@ -1182,13 +1171,12 @@ msgstr "Pista ID"
 msgid "Bookmark"
 msgstr "Favorit"
 
-#: src/input/var.c:182 src/libvlc-module.c:694
+#: src/input/var.c:182 src/libvlc-module.c:698
 msgid "Programs"
 msgstr "Programas"
 
 #: src/input/var.c:192 modules/gui/macosx/intf.m:665
 #: modules/gui/macosx/intf.m:666 modules/gui/macosx/open.m:191
-#: modules/gui/qt4/ui/open_disk.h:303
 msgid "Chapter"
 msgstr "Capítol"
 
@@ -1285,7 +1273,7 @@ msgstr ""
 msgid "To get exhaustive help, use '-H'."
 msgstr "Per aver l'ajuda, utilizatz '-H'."
 
-#: src/libvlc.c:1243 src/libvlc-module.c:1517
+#: src/libvlc.c:1243 src/libvlc-module.c:1521
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1382,33 +1370,33 @@ msgstr ""
 "\n"
 "Apiejar sus la clau RETURN per continuar...\n"
 
-#: src/libvlc.h:175 src/libvlc-module.c:1464 src/libvlc-module.c:1465
-#: src/libvlc-module.c:2641 src/video_output/vout_intf.c:195
+#: src/libvlc.h:175 src/libvlc-module.c:1468 src/libvlc-module.c:1469
+#: src/libvlc-module.c:2645 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/libvlc.h:176 src/libvlc-module.c:1384 src/video_output/vout_intf.c:88
+#: src/libvlc.h:176 src/libvlc-module.c:1388 src/video_output/vout_intf.c:88
 msgid "1:4 Quarter"
 msgstr "1:4 Quart"
 
-#: src/libvlc.h:177 src/libvlc-module.c:1385 src/video_output/vout_intf.c:89
+#: src/libvlc.h:177 src/libvlc-module.c:1389 src/video_output/vout_intf.c:89
 msgid "1:2 Half"
 msgstr "1:2 Mitat"
 
-#: src/libvlc.h:178 src/libvlc-module.c:1386 src/video_output/vout_intf.c:90
+#: src/libvlc.h:178 src/libvlc-module.c:1390 src/video_output/vout_intf.c:90
 msgid "1:1 Original"
 msgstr "1:1 Original"
 
-#: src/libvlc.h:179 src/libvlc-module.c:1387 src/video_output/vout_intf.c:91
+#: src/libvlc.h:179 src/libvlc-module.c:1391 src/video_output/vout_intf.c:91
 msgid "2:1 Double"
 msgstr "2:1 Doble"
 
-#: src/libvlc-module.c:102 src/libvlc-module.c:317 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:104 src/libvlc-module.c:321 modules/access/bda/bda.c:69
 #: modules/gui/qt4/components/open_panels.cpp:997
 msgid "Auto"
 msgstr "Auto"
 
-#: src/libvlc-module.c:170
+#: src/libvlc-module.c:174
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
 "select the main interface, additional interface modules, and define various "
@@ -1417,11 +1405,11 @@ msgstr ""
 "Aquestas opcions vos permeton de configurar las interfàcias utilizadas per "
 "VLC"
 
-#: src/libvlc-module.c:174
+#: src/libvlc-module.c:178
 msgid "Interface module"
 msgstr "Modul de l'interfàcia"
 
-#: src/libvlc-module.c:176
+#: src/libvlc-module.c:180
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
@@ -1429,11 +1417,11 @@ msgstr ""
 "Es l'interfàcia principala utilizada per VLC. La melhore es seleccionada per "
 "defaut."
 
-#: src/libvlc-module.c:180 modules/control/ntservice.c:57
+#: src/libvlc-module.c:184 modules/control/ntservice.c:57
 msgid "Extra interface modules"
 msgstr "Moduls extrà d'interfàcia"
 
-#: src/libvlc-module.c:182
+#: src/libvlc-module.c:186
 #, fuzzy
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
@@ -1445,15 +1433,15 @@ msgstr ""
 "en mai d'aquela per defaut. Utilizatz una virgula per desseparar la lista "
 "d'interfàcias. ( \"rc\" , \"http\", \"gestures\" ...)"
 
-#: src/libvlc-module.c:189
+#: src/libvlc-module.c:193
 msgid "You can select control interfaces for VLC."
 msgstr "Podètz causir una interfàcia de contraròtle per VLC."
 
-#: src/libvlc-module.c:191
+#: src/libvlc-module.c:195
 msgid "Verbosity (0,1,2)"
 msgstr "Verbositat (0,1,2)"
 
-#: src/libvlc-module.c:193
+#: src/libvlc-module.c:197
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
@@ -1461,11 +1449,11 @@ msgstr ""
 " Nivèl de verbositat (0=solament las errors e los messatges estandards, "
 "1=avertiments, 2=debug)."
 
-#: src/libvlc-module.c:196
+#: src/libvlc-module.c:200
 msgid "Choose which objects should print debug message"
 msgstr ""
 
-#: src/libvlc-module.c:199
+#: src/libvlc-module.c:203
 msgid ""
 "This is a ',' separated string, each objects should be prefixed by a '+' or "
 "a '-' to respectively enable or disable it. The keyword 'all' refers to all "
@@ -1475,23 +1463,23 @@ msgid ""
 "message."
 msgstr ""
 
-#: src/libvlc-module.c:206
+#: src/libvlc-module.c:210
 msgid "Be quiet"
 msgstr "Esperatz"
 
-#: src/libvlc-module.c:208
+#: src/libvlc-module.c:212
 msgid "Turn off all warning and information messages."
 msgstr "Amagar los messatges d'informacions e d'avertiments"
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:214
 msgid "Default stream"
 msgstr "Flux per defaut"
 
-#: src/libvlc-module.c:212
+#: src/libvlc-module.c:216
 msgid "This stream will always be opened at VLC startup."
 msgstr "Aqueste flux va èstre totjorn dobèrt amb VLC."
 
-#: src/libvlc-module.c:215
+#: src/libvlc-module.c:219
 msgid ""
 "You can manually select a language for the interface. The system language is "
 "auto-detected if \"auto\" is specified here."
@@ -1499,11 +1487,11 @@ msgstr ""
 "Podètz causir una lenga per l'interfàcia. Lo lengatge es auto-causit se\"auto"
 "\" es causit aicí."
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:223
 msgid "Color messages"
 msgstr "Color dels messatges"
 
-#: src/libvlc-module.c:221
+#: src/libvlc-module.c:225
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
 "needs Linux color support for this to work."
@@ -1511,21 +1499,21 @@ msgstr ""
 "Aquò's permet d'aver una coloracion pels messatges mandats a la consòla, "
 "vòstre terminal a besonh d'èsser compatible."
 
-#: src/libvlc-module.c:224
+#: src/libvlc-module.c:228
 msgid "Show advanced options"
 msgstr "Opcions avançadas"
 
-#: src/libvlc-module.c:226
+#: src/libvlc-module.c:230
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
 "available options, including those that most users should never touch."
 msgstr "Aquò's permet de veire totas las opcions disponiblas."
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:234
 msgid "Interface interaction"
 msgstr "L'interfàcia d'interaccion"
 
-#: src/libvlc-module.c:232
+#: src/libvlc-module.c:236
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
 "user input is required."
@@ -1533,7 +1521,7 @@ msgstr ""
 "Quand es activat, l'interfàcia mostra una bóstia de dialòg cada còp qu'es "
 "necessari."
 
-#: src/libvlc-module.c:242
+#: src/libvlc-module.c:246
 #, fuzzy
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
@@ -1546,11 +1534,11 @@ msgstr ""
 "effects *(spectrum analyzer, etc.). Enable these filters here, and configure "
 "them in *the \"audio filters\" modules section.*"
 
-#: src/libvlc-module.c:248
+#: src/libvlc-module.c:252
 msgid "Audio output module"
 msgstr "Sortida audio"
 
-#: src/libvlc-module.c:250
+#: src/libvlc-module.c:254
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1558,40 +1546,39 @@ msgstr ""
 "Es lo metòde utilizat per la sortida audio per VLC. Lo melhor es causit per "
 "defaut."
 
-#: src/libvlc-module.c:254 modules/stream_out/display.c:41
-#: modules/gui/qt4/ui/sprefs_audio.h:404
+#: src/libvlc-module.c:258 modules/stream_out/display.c:41
 msgid "Enable audio"
 msgstr "Activar audio"
 
-#: src/libvlc-module.c:256
+#: src/libvlc-module.c:260
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
 "not take place, thus saving some processing power."
 msgstr ""
 "Podètz deactivar la sortida audio. Permet d'estalviar un pauc de processor."
 
-#: src/libvlc-module.c:260
+#: src/libvlc-module.c:264
 msgid "Force mono audio"
 msgstr "Impausar una sortida mòno"
 
-#: src/libvlc-module.c:261
+#: src/libvlc-module.c:265
 msgid "This will force a mono audio output."
 msgstr "Permet d'impausar una sortida mòno."
 
-#: src/libvlc-module.c:264
+#: src/libvlc-module.c:268
 msgid "Default audio volume"
 msgstr "Volum audio per defaut"
 
-#: src/libvlc-module.c:266
+#: src/libvlc-module.c:270
 msgid ""
 "You can set the default audio output volume here, in a range from 0 to 1024."
 msgstr "Podètz causir un volum per defaut, entre 0 e 1024."
 
-#: src/libvlc-module.c:269
+#: src/libvlc-module.c:273
 msgid "Audio output saved volume"
 msgstr "Salvar lo volum"
 
-#: src/libvlc-module.c:271
+#: src/libvlc-module.c:275
 msgid ""
 "This saves the audio output volume when you use the mute function. You "
 "should not change this option manually."
@@ -1599,21 +1586,21 @@ msgstr ""
 "Salva lo volum per defaut quand utilizatz la foncion copar lo son. Devètz "
 "pas cambiar aquò a la man."
 
-#: src/libvlc-module.c:274
+#: src/libvlc-module.c:278
 msgid "Audio output volume step"
 msgstr "Pas del volum audio"
 
-#: src/libvlc-module.c:276
+#: src/libvlc-module.c:280
 msgid ""
 "The step size of the volume is adjustable using this option, in a range from "
 "0 to 1024."
 msgstr "Lo pas del volum es entre 0 e 1024."
 
-#: src/libvlc-module.c:279
+#: src/libvlc-module.c:283
 msgid "Audio output frequency (Hz)"
 msgstr "Frequéncia de la sortida audio (Hz)"
 
-#: src/libvlc-module.c:281
+#: src/libvlc-module.c:285
 msgid ""
 "You can force the audio output frequency here. Common values are -1 "
 "(default), 48000, 44100, 32000, 22050, 16000, 11025, 8000."
@@ -1621,11 +1608,11 @@ msgstr ""
 "Podètz impausar una frequéncia de sortida audio. Per exemple -1 (defaut), "
 "48000, 44100, 32000, 22050, 16000, 11025, 8000."
 
-#: src/libvlc-module.c:285
+#: src/libvlc-module.c:289
 msgid "High quality audio resampling"
 msgstr "Nauta qualitat per la sortida audio"
 
-#: src/libvlc-module.c:287
+#: src/libvlc-module.c:291
 msgid ""
 "This uses a high quality audio resampling algorithm. High quality audio "
 "resampling can be processor intensive so you can disable it and a cheaper "
@@ -1635,11 +1622,11 @@ msgstr ""
 "*resampling can be processor intensive so you can disable it and a cheaper "
 "*resampling algorithm will be used instead.*"
 
-#: src/libvlc-module.c:292
+#: src/libvlc-module.c:296
 msgid "Audio desynchronization compensation"
 msgstr "Audio desynchronization compensation*"
 
-#: src/libvlc-module.c:294
+#: src/libvlc-module.c:298
 msgid ""
 "This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
@@ -1647,34 +1634,33 @@ msgstr ""
 "Permet de causir un relambi per la sortida audio en millisegondas. Es "
 "d'utilizar se ausissètz un decalatge entre la video e le son."
 
-#: src/libvlc-module.c:297
+#: src/libvlc-module.c:301
 msgid "Audio output channels mode"
 msgstr "Mòdes dels canals de sortida àudio"
 
-#: src/libvlc-module.c:299
+#: src/libvlc-module.c:303
 msgid ""
 "This sets the audio output channels mode that will be used by default when "
 "possible (ie. if your hardware supports it as well as the audio stream being "
 "played)."
 msgstr "Permet de causir los mòdes de sortida per defaut."
 
-#: src/libvlc-module.c:303 modules/gui/macosx/simple_prefs.m:237
-#: modules/gui/qt4/ui/sprefs_audio.h:413
+#: src/libvlc-module.c:307 modules/gui/macosx/simple_prefs.m:237
 msgid "Use S/PDIF when available"
 msgstr "Utilizar S/PDIF quand es disponible"
 
-#: src/libvlc-module.c:305
+#: src/libvlc-module.c:309
 msgid ""
 "S/PDIF can be used by default when your hardware supports it as well as the "
 "audio stream being played."
 msgstr ""
 "S/PDIF pòt èsser utilizat per defaut quand es suportat pel material vòstre."
 
-#: src/libvlc-module.c:308 modules/gui/macosx/simple_prefs.m:227
+#: src/libvlc-module.c:312 modules/gui/macosx/simple_prefs.m:227
 msgid "Force detection of Dolby Surround"
 msgstr "Impausar la deteccion de Dolby Surround"
 
-#: src/libvlc-module.c:310
+#: src/libvlc-module.c:314
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
 "Surround but fails to be detected as such. Even if the stream is not "
@@ -1685,39 +1671,39 @@ msgstr ""
 "Surround mas pas detectat. Pr'aquò se lo flux es pas encodat ambDolby "
 "Surround, es pas grèu subretot se avètz lo Headphone Channel Mixer."
 
-#: src/libvlc-module.c:317 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:321 modules/access/bda/bda.c:69
 msgid "On"
 msgstr "Òc"
 
-#: src/libvlc-module.c:317 modules/access/bda/bda.c:68
+#: src/libvlc-module.c:321 modules/access/bda/bda.c:68
 msgid "Off"
 msgstr "Non"
 
-#: src/libvlc-module.c:322
+#: src/libvlc-module.c:326
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr "Permet d'apondre de filtres de trataments audio per modificar lo son."
 
-#: src/libvlc-module.c:325
+#: src/libvlc-module.c:329
 msgid "Audio visualizations "
 msgstr "Visualizacions audio "
 
-#: src/libvlc-module.c:327
+#: src/libvlc-module.c:331
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr "Permet d'apondre de moduls de visualizacion (spectrum analyzer, etc.)"
 
-#: src/libvlc-module.c:331
+#: src/libvlc-module.c:335
 msgid "Replay gain mode"
 msgstr "Tornar jogar lo mòde aumentacion"
 
-#: src/libvlc-module.c:333
+#: src/libvlc-module.c:337
 msgid "Select the replay gain mode"
 msgstr "Causir de tornar jogar lo mòde aumentacion"
 
-#: src/libvlc-module.c:335
+#: src/libvlc-module.c:339
 msgid "Replay preamp"
 msgstr "Tornar jogar preamp"
 
-#: src/libvlc-module.c:337
+#: src/libvlc-module.c:341
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
 "replay gain information"
@@ -1725,41 +1711,41 @@ msgstr ""
 "Prrmet de cambiar lo nivèl per defaut (89 dB) pels fluxes amb una "
 "informacion d'aumentacion"
 
-#: src/libvlc-module.c:340
+#: src/libvlc-module.c:344
 msgid "Default replay gain"
 msgstr "Aumentacion per defaut"
 
-#: src/libvlc-module.c:342
+#: src/libvlc-module.c:346
 msgid "This is the gain used for stream without replay gain information"
 msgstr ""
 "Aquò's l'aumentacion utilizada per los fluxes sens aumentacion especificada"
 
-#: src/libvlc-module.c:344
+#: src/libvlc-module.c:348
 msgid "Peak protection"
 msgstr "Nauta proteccion"
 
-#: src/libvlc-module.c:346
+#: src/libvlc-module.c:350
 msgid "Protect against sound clipping"
 msgstr "Protegir contra las talhaduras de son"
 
-#: src/libvlc-module.c:349
+#: src/libvlc-module.c:353
 msgid "Enable time streching audio"
 msgstr ""
 
-#: src/libvlc-module.c:351
+#: src/libvlc-module.c:355
 msgid ""
 "This allows to play audio at lower or higher speed without affecting the "
 "audio pitch"
 msgstr ""
 
-#: src/libvlc-module.c:358 modules/access/dshow/dshow.cpp:82
+#: src/libvlc-module.c:362 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/codec/avcodec/avcodec.c:74
 #: modules/codec/kate.c:203
-#: modules/gui/qt4/components/interface_widgets.cpp:295
+#: modules/gui/qt4/components/interface_widgets.cpp:297
 msgid "None"
 msgstr "Cap"
 
-#: src/libvlc-module.c:366
+#: src/libvlc-module.c:370
 msgid ""
 "These options allow you to modify the behavior of the video output "
 "subsystem. You can for example enable video filters (deinterlacing, image "
@@ -1772,29 +1758,28 @@ msgstr ""
 "Activar aquestes filtres e cambiar los lors paramètres dins la seccion "
 "\"filtres videos\"."
 
-#: src/libvlc-module.c:372
+#: src/libvlc-module.c:376
 msgid "Video output module"
 msgstr "Modul de sortida vidèo"
 
-#: src/libvlc-module.c:374
+#: src/libvlc-module.c:378
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
 "automatically select the best method available."
 msgstr "Aquò's lo metòde utilizat per VLC. Per defaut lo melhor es causit."
 
-#: src/libvlc-module.c:377 modules/stream_out/display.c:43
-#: modules/gui/qt4/ui/sprefs_video.h:309
+#: src/libvlc-module.c:381 modules/stream_out/display.c:43
 msgid "Enable video"
 msgstr "Activar la video"
 
-#: src/libvlc-module.c:379
+#: src/libvlc-module.c:383
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
 "not take place, thus saving some processing power."
 msgstr ""
 "Podètz desactivar la video, Aquò's permet d'estalviar un pauc de processor."
 
-#: src/libvlc-module.c:382 modules/codec/fake.c:58
+#: src/libvlc-module.c:386 modules/codec/fake.c:58
 #: modules/stream_out/mosaic_bridge.c:109
 #: modules/stream_out/transcode/transcode.c:66
 #: modules/visualization/projectm.cpp:60
@@ -1802,14 +1787,14 @@ msgstr ""
 msgid "Video width"
 msgstr "Largor de la video"
 
-#: src/libvlc-module.c:384
+#: src/libvlc-module.c:388
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
 "characteristics."
 msgstr ""
 "Podètz impausar la largor de la video. Per defaut (-1) VLC causit la bona."
 
-#: src/libvlc-module.c:387 modules/codec/fake.c:61
+#: src/libvlc-module.c:391 modules/codec/fake.c:61
 #: modules/stream_out/mosaic_bridge.c:112
 #: modules/stream_out/transcode/transcode.c:69
 #: modules/visualization/projectm.cpp:63
@@ -1817,50 +1802,50 @@ msgstr ""
 msgid "Video height"
 msgstr "Nautor de la vidèo"
 
-#: src/libvlc-module.c:389
+#: src/libvlc-module.c:393
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
 "video characteristics."
 msgstr ""
 "Podètz impausar la nautor de la video. Per defaut (-1) VLC causit la bona."
 
-#: src/libvlc-module.c:392
+#: src/libvlc-module.c:396
 msgid "Video X coordinate"
 msgstr ""
 
-#: src/libvlc-module.c:394
+#: src/libvlc-module.c:398
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
 "coordinate)."
 msgstr ""
 "Podètz causir lo punt naut-esquèrra de la fenèstra vidèo (X coordinate)."
 
-#: src/libvlc-module.c:397
+#: src/libvlc-module.c:401
 msgid "Video Y coordinate"
 msgstr ""
 
-#: src/libvlc-module.c:399
+#: src/libvlc-module.c:403
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
 "coordinate)."
 msgstr ""
 "Podètz causir lo punt naut-esquèrra de la fenètra vidèo (Y coordinate)."
 
-#: src/libvlc-module.c:402
+#: src/libvlc-module.c:406
 msgid "Video title"
 msgstr "Títol de la vidèo"
 
-#: src/libvlc-module.c:404
+#: src/libvlc-module.c:408
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
 msgstr "Causir lo títol dins la fenèstra vidèo."
 
-#: src/libvlc-module.c:407
+#: src/libvlc-module.c:411
 msgid "Video alignment"
 msgstr "Alinhament de la vidèo"
 
-#: src/libvlc-module.c:409
+#: src/libvlc-module.c:413
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
 "centered (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use "
@@ -1871,7 +1856,7 @@ msgstr ""
 "utilizar los remembresdel primari per far d'addicions, per exemple 6=4+2 per "
 "naut-drecha)."
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:495
+#: src/libvlc-module.c:418 src/libvlc-module.c:499
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/gui/fbosd.c:162 modules/video_filter/audiobargraph_v.c:74
@@ -1881,27 +1866,23 @@ msgstr ""
 msgid "Center"
 msgstr "Centrada"
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:495 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:418 src/libvlc-module.c:499 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:85 modules/video_filter/rss.c:174
-#: modules/gui/qt4/ui/video_effects.h:1112
-#: modules/gui/qt4/ui/video_effects.h:1178
-#: modules/gui/qt4/ui/video_effects.h:1181
 msgid "Top"
 msgstr "Naut"
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:495 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:418 src/libvlc-module.c:499 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:85 modules/video_filter/rss.c:174
-#: modules/gui/qt4/ui/video_effects.h:1118
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:496 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1909,7 +1890,7 @@ msgstr "Bas"
 msgid "Top-Left"
 msgstr "Naut-Esquèrra"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:496 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1917,7 +1898,7 @@ msgstr "Naut-Esquèrra"
 msgid "Top-Right"
 msgstr "Naut-Drecha"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:496 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1925,7 +1906,7 @@ msgstr "Naut-Drecha"
 msgid "Bottom-Left"
 msgstr "Bas-Esquèrra"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:496 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1933,56 +1914,56 @@ msgstr "Bas-Esquèrra"
 msgid "Bottom-Right"
 msgstr "Bas-Drech"
 
-#: src/libvlc-module.c:417
+#: src/libvlc-module.c:421
 msgid "Zoom video"
 msgstr "Zoom video"
 
-#: src/libvlc-module.c:419
+#: src/libvlc-module.c:423
 msgid "You can zoom the video by the specified factor."
 msgstr "Podètz agrandir la video amb un indici especific."
 
-#: src/libvlc-module.c:421
+#: src/libvlc-module.c:425
 msgid "Grayscale video output"
 msgstr "Nivèl de gris dins la video"
 
-#: src/libvlc-module.c:423
+#: src/libvlc-module.c:427
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
 "save some processing power."
 msgstr ""
 "Vidèo en mòde \"nivèl de gris\". Permet de salvar un pauc de processor."
 
-#: src/libvlc-module.c:426
+#: src/libvlc-module.c:430
 msgid "Embedded video"
 msgstr "Vidèo integrada"
 
-#: src/libvlc-module.c:428
+#: src/libvlc-module.c:432
 msgid "Embed the video output in the main interface."
 msgstr "Integrar la sortida video dins l'interfàcia principala."
 
-#: src/libvlc-module.c:430 modules/video_output/ggi.c:57
+#: src/libvlc-module.c:434 modules/video_output/ggi.c:57
 msgid "X11 display"
 msgstr ""
 
-#: src/libvlc-module.c:432
+#: src/libvlc-module.c:436
 msgid ""
 "X11 hardware display to use. By default VLC will use the value of the "
 "DISPLAY environment variable."
 msgstr ""
 
-#: src/libvlc-module.c:435
+#: src/libvlc-module.c:439
 msgid "Fullscreen video output"
 msgstr "Sortida vidèo plen ecran"
 
-#: src/libvlc-module.c:437
+#: src/libvlc-module.c:441
 msgid "Start video in fullscreen mode"
 msgstr "Començar la vidèo en mòde plen ecran"
 
-#: src/libvlc-module.c:439
+#: src/libvlc-module.c:443
 msgid "Overlay video output"
 msgstr "Sortida vidèo Overlay*"
 
-#: src/libvlc-module.c:441
+#: src/libvlc-module.c:445
 msgid ""
 "Overlay is the hardware acceleration capability of your video card (ability "
 "to render video directly). VLC will try to use it by default."
@@ -1990,55 +1971,55 @@ msgstr ""
 "Overlay is the hardware acceleration capability of your video card (ability "
 "*to render video directly). VLC will try to use it by default.*"
 
-#: src/libvlc-module.c:444 src/video_output/vout_intf.c:344
-#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
+#: src/libvlc-module.c:448 src/video_output/vout_intf.c:344
+#: modules/gui/macosx/simple_prefs.m:295
 msgid "Always on top"
 msgstr "Totjorn davant"
 
-#: src/libvlc-module.c:446
+#: src/libvlc-module.c:450
 msgid "Always place the video window on top of other windows."
 msgstr "Totjorn plaçat la video davant las autras fenèstras."
 
-#: src/libvlc-module.c:448
+#: src/libvlc-module.c:452
 msgid "Enable wallpaper mode "
 msgstr "Activar mòde fons de pagina"
 
-#: src/libvlc-module.c:450
+#: src/libvlc-module.c:454
 msgid ""
 "The wallpaper mode allows you to display the video as the desktop background."
 msgstr ""
 
-#: src/libvlc-module.c:453
+#: src/libvlc-module.c:457
 msgid "Show media title on video"
 msgstr "Mostrar lo títol del mèdia"
 
-#: src/libvlc-module.c:455
+#: src/libvlc-module.c:459
 msgid "Display the title of the video on top of the movie."
 msgstr "Mòstra lo títol de la vidèo dins lo naut de la video."
 
-#: src/libvlc-module.c:457
+#: src/libvlc-module.c:461
 msgid "Show video title for x milliseconds"
 msgstr "Mostrar lo títol de la vidèo pendent x millisegondas"
 
-#: src/libvlc-module.c:459
+#: src/libvlc-module.c:463
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr ""
 "Mostrar lo títol de la vidèo pendent n millisegondas, per defaut es 5000 ms "
 "(5 s.)"
 
-#: src/libvlc-module.c:461
+#: src/libvlc-module.c:465
 msgid "Position of video title"
 msgstr "Posicion del títol"
 
-#: src/libvlc-module.c:463
+#: src/libvlc-module.c:467
 msgid "Place on video where to display the title (default bottom center)."
 msgstr "Causir un endrech ont plaçar lo títol (per defaut en naut al centre)."
 
-#: src/libvlc-module.c:465
+#: src/libvlc-module.c:469
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr "Amagar lo cursor e los contraròtles après x millisegondas"
 
-#: src/libvlc-module.c:468
+#: src/libvlc-module.c:472
 msgid ""
 "Hide mouse cursor and fullscreen controller after n milliseconds, default is "
 "3000 ms (3 sec.)"
@@ -2046,57 +2027,57 @@ msgstr ""
 "Amagar lo cursor e los contraròtles après x millisegondas, per defaut es "
 "3000 ms (3 sec.)"
 
-#: src/libvlc-module.c:471 src/libvlc-module.c:473
+#: src/libvlc-module.c:475 src/libvlc-module.c:477
 #: src/video_output/video_output.c:1974 modules/gui/macosx/intf.m:700
 #: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/convert.cpp:86
 #: modules/video_filter/deinterlace.c:133
 msgid "Deinterlace"
 msgstr "Desentreleçar"
 
-#: src/libvlc-module.c:481 src/video_output/video_output.c:1990
+#: src/libvlc-module.c:485 src/video_output/video_output.c:1990
 #: modules/gui/macosx/intf.m:702 modules/gui/macosx/intf.m:703
 #: modules/video_filter/deinterlace.c:118
 msgid "Deinterlace mode"
 msgstr ""
 
-#: src/libvlc-module.c:483
+#: src/libvlc-module.c:487
 #, fuzzy
 msgid "Deinterlace method to use for video processing."
 msgstr "Metòde de sortida pel flux."
 
-#: src/libvlc-module.c:489 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
 msgid "Discard"
 msgstr ""
 
-#: src/libvlc-module.c:489 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
 msgid "Blend"
 msgstr ""
 
-#: src/libvlc-module.c:489 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
 msgid "Mean"
 msgstr ""
 
-#: src/libvlc-module.c:489 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
 msgid "Bob"
 msgstr ""
 
-#: src/libvlc-module.c:490 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:494 modules/video_filter/deinterlace.c:129
 msgid "Linear"
 msgstr "Linear"
 
-#: src/libvlc-module.c:498
+#: src/libvlc-module.c:502
 msgid "Disable screensaver"
 msgstr "Desactivar lo screensaver*"
 
-#: src/libvlc-module.c:499
+#: src/libvlc-module.c:503
 msgid "Disable the screensaver during video playback."
 msgstr "Desactivar lo screensaver* pendent la lectura de la video."
 
-#: src/libvlc-module.c:501
+#: src/libvlc-module.c:505
 msgid "Inhibit the power management daemon during playback"
 msgstr "Desactivar lo mòde estalviada d'energia pendent la lectura"
 
-#: src/libvlc-module.c:502
+#: src/libvlc-module.c:506
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
 "computer being suspended because of inactivity."
@@ -2104,78 +2085,78 @@ msgstr ""
 "Desactivar lo mòde estalvida d'energia per que l'ordenador s'arresta pas a "
 "causa d'una inactivitat."
 
-#: src/libvlc-module.c:505 modules/gui/qt4/ui/sprefs_video.h:316
+#: src/libvlc-module.c:509
 msgid "Window decorations"
 msgstr "Decoracions de la fenèstra"
 
-#: src/libvlc-module.c:507
+#: src/libvlc-module.c:511
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
 "giving a \"minimal\" window."
 msgstr ""
 "VLC pòt crear un aspècte \"minimal\" per la fenèstra (un quadre simple)."
 
-#: src/libvlc-module.c:510
+#: src/libvlc-module.c:514
 msgid "Video output filter module"
 msgstr "Modul de filtre de la sortida video"
 
-#: src/libvlc-module.c:512
+#: src/libvlc-module.c:516
 msgid "This adds video output filters like clone or wall"
 msgstr "Permet d'apondre un filtre, coma un clòn o una paret"
 
-#: src/libvlc-module.c:514
+#: src/libvlc-module.c:518
 msgid "Video filter module"
 msgstr "Modul de filtre video"
 
-#: src/libvlc-module.c:516
+#: src/libvlc-module.c:520
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
 "instance deinterlacing, or distort the video."
 msgstr ""
 "Aquò apond un tratament amb de filtres per melhorar la qualitat de la video."
 
-#: src/libvlc-module.c:520
+#: src/libvlc-module.c:524
 msgid "Video snapshot directory (or filename)"
 msgstr "Repertòri per las capturas video"
 
-#: src/libvlc-module.c:522
+#: src/libvlc-module.c:526
 msgid "Directory where the video snapshots will be stored."
 msgstr "Repertòri ont las capturas seràn enregistradas."
 
-#: src/libvlc-module.c:524 src/libvlc-module.c:526
+#: src/libvlc-module.c:528 src/libvlc-module.c:530
 msgid "Video snapshot file prefix"
 msgstr "Prefix del fichièr de captura video"
 
-#: src/libvlc-module.c:528
+#: src/libvlc-module.c:532
 msgid "Video snapshot format"
 msgstr "Format de captura video"
 
-#: src/libvlc-module.c:530
+#: src/libvlc-module.c:534
 msgid "Image format which will be used to store the video snapshots"
 msgstr "Lo format que serà utilizat per enregistrar las capturas video"
 
-#: src/libvlc-module.c:532
+#: src/libvlc-module.c:536
 msgid "Display video snapshot preview"
 msgstr "D'en primièr mostrar la captura"
 
-#: src/libvlc-module.c:534
+#: src/libvlc-module.c:538
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr "Mòstra la captura dins lo canton naut-esquèrra"
 
-#: src/libvlc-module.c:536
+#: src/libvlc-module.c:540
 msgid "Use sequential numbers instead of timestamps"
 msgstr "Utilizar de numèros sequencial en luòc del timestamps*"
 
-#: src/libvlc-module.c:538
+#: src/libvlc-module.c:542
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr ""
 "Utilizar los numèros sequencial en luòc del timestamps per las capturas"
 
-#: src/libvlc-module.c:540
+#: src/libvlc-module.c:544
 msgid "Video snapshot width"
 msgstr "Largor de la captura video"
 
-#: src/libvlc-module.c:542
+#: src/libvlc-module.c:546
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
 "original width (-1). Using 0 will scale the width to keep the aspect ratio."
@@ -2183,11 +2164,11 @@ msgstr ""
 "Podètz impausar una largor per la captura de la video. Per defaut es aquela "
 "d'origina (-1). 0 garda lo rapòrt de talha de l'imatge."
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:550
 msgid "Video snapshot height"
 msgstr "Nautor de la captura video"
 
-#: src/libvlc-module.c:548
+#: src/libvlc-module.c:552
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
 "the original height (-1). Using 0 will scale the height to keep the aspect "
@@ -2196,11 +2177,11 @@ msgstr ""
 "Podètz impausar una nautor per la captura de la video. Per defaut es aquela "
 "d'origina (-1). 0 garda lo rapòrt de talha de l'imatge."
 
-#: src/libvlc-module.c:552
+#: src/libvlc-module.c:556
 msgid "Video cropping"
 msgstr "Rapòrt de talha de la video"
 
-#: src/libvlc-module.c:554
+#: src/libvlc-module.c:558
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
@@ -2208,11 +2189,11 @@ msgstr ""
 "Permet d'impausar un rapòrt de talha per la video. Per exemple : 4:3, 16:9, "
 "etc."
 
-#: src/libvlc-module.c:558
+#: src/libvlc-module.c:562
 msgid "Source aspect ratio"
 msgstr "Rapòrt de talha de la font"
 
-#: src/libvlc-module.c:560
+#: src/libvlc-module.c:564
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
@@ -2223,53 +2204,53 @@ msgstr ""
 "Permet d'impausar un rapòrt de talha per la font. Per exemple : 4:3, 16:9, "
 "etc."
 
-#: src/libvlc-module.c:567
+#: src/libvlc-module.c:571
 #, fuzzy
 msgid "Video Auto Scaling"
 msgstr "Dintrada vidèo pin"
 
-#: src/libvlc-module.c:569
+#: src/libvlc-module.c:573
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr ""
 
-#: src/libvlc-module.c:571
+#: src/libvlc-module.c:575
 #, fuzzy
 msgid "Video scaling factor"
 msgstr "Proporcion de la vidèo"
 
-#: src/libvlc-module.c:573
+#: src/libvlc-module.c:577
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
 msgstr ""
 
-#: src/libvlc-module.c:576
+#: src/libvlc-module.c:580
 msgid "Custom crop ratios list"
 msgstr "Lista de rapòrts de talha"
 
-#: src/libvlc-module.c:578
+#: src/libvlc-module.c:582
 #, fuzzy
 msgid ""
 "Comma separated list of crop ratios which will be added in the interface's "
 "crop ratios list."
 msgstr "Lista dels rapòrts desseparats per una virgula."
 
-#: src/libvlc-module.c:581
+#: src/libvlc-module.c:585
 msgid "Custom aspect ratios list"
 msgstr "Lista dels rapòrts de talha"
 
-#: src/libvlc-module.c:583
+#: src/libvlc-module.c:587
 #, fuzzy
 msgid ""
 "Comma separated list of aspect ratios which will be added in the interface's "
 "aspect ratio list."
 msgstr "Lista dels rapòrts desseparats per una virgula."
 
-#: src/libvlc-module.c:586
+#: src/libvlc-module.c:590
 msgid "Fix HDTV height"
 msgstr "Causir una nautor per HDTV"
 
-#: src/libvlc-module.c:588
+#: src/libvlc-module.c:592
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
 "incorrectly sets height to 1088 lines. You should only disable this option "
@@ -2279,11 +2260,11 @@ msgstr ""
 "*incorrectly sets height to 1088 lines. You should only disable this option "
 "*if your video has a non-standard format requiring all 1088 lines.*"
 
-#: src/libvlc-module.c:593
+#: src/libvlc-module.c:597
 msgid "Monitor pixel aspect ratio"
 msgstr "Rapòrt de talha dels pixels"
 
-#: src/libvlc-module.c:595
+#: src/libvlc-module.c:599
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
 "(1:1). If you have a 16:9 screen, you might need to change this to 4:3 in "
@@ -2293,12 +2274,11 @@ msgstr ""
 "(1:1). Se avètz un ecran 16:9, auriatz benlèu besonh de cambiar aquò en 4:3 "
 "per aver un aspècte normal."
 
-#: src/libvlc-module.c:599 modules/gui/macosx/simple_prefs.m:297
-#: modules/gui/qt4/ui/sprefs_video.h:315
+#: src/libvlc-module.c:603 modules/gui/macosx/simple_prefs.m:297
 msgid "Skip frames"
 msgstr "Passar los frames"
 
-#: src/libvlc-module.c:601
+#: src/libvlc-module.c:605
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
 "computer is not powerful enough"
@@ -2306,11 +2286,11 @@ msgstr ""
 "Activar lo framedropping* pels fluxes en MPEG2. Framedropping* pòt èsser "
 "util se vòstre ordenador es pas aital poderós"
 
-#: src/libvlc-module.c:604
+#: src/libvlc-module.c:608
 msgid "Drop late frames"
 msgstr "Passar los imatges tardièr"
 
-#: src/libvlc-module.c:606
+#: src/libvlc-module.c:610
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
 "intended display date)."
@@ -2318,11 +2298,11 @@ msgstr ""
 "This drops frames that are late (arrive to the video output after their "
 "*intended display date).*"
 
-#: src/libvlc-module.c:609
+#: src/libvlc-module.c:613
 msgid "Quiet synchro"
 msgstr "Quiet synchro*"
 
-#: src/libvlc-module.c:611
+#: src/libvlc-module.c:615
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
 "synchronization mechanism."
@@ -2330,23 +2310,23 @@ msgstr ""
 "Permet d'evitar de pas inondar l'istoric de messatges dempuèi la sortida "
 "video."
 
-#: src/libvlc-module.c:614
+#: src/libvlc-module.c:618
 msgid "Key press events"
 msgstr ""
 
-#: src/libvlc-module.c:616
+#: src/libvlc-module.c:620
 msgid "This enables VLC hotkeys from the (non-embedded) video window."
 msgstr ""
 
-#: src/libvlc-module.c:618 modules/video_filter/remoteosd.c:94
+#: src/libvlc-module.c:622 modules/video_filter/remoteosd.c:94
 msgid "Mouse events"
 msgstr ""
 
-#: src/libvlc-module.c:620
+#: src/libvlc-module.c:624
 msgid "This enables handling of mouse clicks on the video."
 msgstr ""
 
-#: src/libvlc-module.c:628
+#: src/libvlc-module.c:632
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
 "as the DVD or VCD device, the network interface settings or the subtitle "
@@ -2355,11 +2335,11 @@ msgstr ""
 "Permet de modificar lo compartament de las intradras coma lo perifericDVD o "
 "VCD, o los paramètres de l'interfàcia del ret e dels sostítols."
 
-#: src/libvlc-module.c:632
+#: src/libvlc-module.c:636
 msgid "Clock reference average counter"
 msgstr "Relòtge de referéncia"
 
-#: src/libvlc-module.c:634
+#: src/libvlc-module.c:638
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
@@ -2367,32 +2347,32 @@ msgstr ""
 "Quand utilizat l'intrada PVR (o una intrada pas regular), devètz cambiar "
 "aquò per 10000."
 
-#: src/libvlc-module.c:637
+#: src/libvlc-module.c:641
 msgid "Clock synchronisation"
 msgstr "Sincronizacion del relòtge"
 
-#: src/libvlc-module.c:639
+#: src/libvlc-module.c:643
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
 msgstr "Es possible de desactivar la sincronizacion del relòtge. "
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:647
 #, fuzzy
 msgid "Clock jitter"
 msgstr "Espectromètre"
 
-#: src/libvlc-module.c:645
+#: src/libvlc-module.c:649
 msgid ""
 "It tells the clock algorithms what is the maximal input jitter that is "
 "considered valid and can be compensated (in milliseconds)"
 msgstr ""
 
-#: src/libvlc-module.c:648 modules/control/netsync.c:72
+#: src/libvlc-module.c:652 modules/control/netsync.c:72
 msgid "Network synchronisation"
 msgstr "Sincronizacion del ret"
 
-#: src/libvlc-module.c:649
+#: src/libvlc-module.c:653
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
@@ -2400,7 +2380,7 @@ msgstr ""
 "Permet de sincronizar los relòtges del servidor e aquel del client. Per mai "
 "de paramètres, cal anar a Avançat / Sincronizacion del ret"
 
-#: src/libvlc-module.c:655 src/video_output/vout_intf.c:99
+#: src/libvlc-module.c:659 src/video_output/vout_intf.c:99
 #: src/video_output/vout_intf.c:117 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/access/dshow/dshow.cpp:87
 #: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:238
@@ -2414,25 +2394,24 @@ msgstr ""
 msgid "Default"
 msgstr "Defaut"
 
-#: src/libvlc-module.c:655 modules/gui/macosx/equalizer.m:149
+#: src/libvlc-module.c:659 modules/gui/macosx/equalizer.m:149
 #: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
-#: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Activar"
 
-#: src/libvlc-module.c:657 modules/misc/notify/growl_udp.c:75
+#: src/libvlc-module.c:661 modules/misc/notify/growl_udp.c:75
 msgid "UDP port"
 msgstr "Pòrt UDP"
 
-#: src/libvlc-module.c:659
+#: src/libvlc-module.c:663
 msgid "This is the default port used for UDP streams. Default is 1234."
 msgstr "Aquò's la pòrt utilizada pels fluxes UDP. Per defaut es 1234."
 
-#: src/libvlc-module.c:661
+#: src/libvlc-module.c:665
 msgid "MTU of the network interface"
 msgstr "MTU de l'interfàcia ret"
 
-#: src/libvlc-module.c:663
+#: src/libvlc-module.c:667
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
 "over the network (in bytes)."
@@ -2440,11 +2419,11 @@ msgstr ""
 "This is the maximum application-layer packet size that can be transmitted "
 "*over the network (in bytes).*"
 
-#: src/libvlc-module.c:668 modules/stream_out/rtp.c:122
+#: src/libvlc-module.c:672 modules/stream_out/rtp.c:122
 msgid "Hop limit (TTL)"
 msgstr "Nombre de saut (TTL)"
 
-#: src/libvlc-module.c:670 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:674 modules/stream_out/rtp.c:124
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -2453,70 +2432,70 @@ msgstr ""
 "Lo nombre de saut (en anglés \"Time-To-Live\" o TTL) es lo nombre depacas "
 "mandats per la sortida del flux (-1 = utilizar la valor per defaut."
 
-#: src/libvlc-module.c:674
+#: src/libvlc-module.c:678
 #, fuzzy
 msgid "Multicast output interface"
 msgstr "Multicast output interface*"
 
-#: src/libvlc-module.c:676
+#: src/libvlc-module.c:680
 msgid "Default multicast interface. This overrides the routing table."
 msgstr "Default multicast interface. This overrides the routing table.*"
 
-#: src/libvlc-module.c:678
+#: src/libvlc-module.c:682
 msgid "IPv4 multicast output interface address"
 msgstr "IPv4 multicast output interface address*"
 
-#: src/libvlc-module.c:680
+#: src/libvlc-module.c:684
 #, fuzzy
 msgid ""
 "IPv4 address for the default multicast interface. This overrides the routing "
 "table."
 msgstr "Default multicast interface. This overrides the routing table.*"
 
-#: src/libvlc-module.c:683
+#: src/libvlc-module.c:687
 msgid "DiffServ Code Point"
 msgstr ""
 
-#: src/libvlc-module.c:684
+#: src/libvlc-module.c:688
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
 msgstr ""
 
-#: src/libvlc-module.c:690
+#: src/libvlc-module.c:694
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:696
+#: src/libvlc-module.c:700
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:702 modules/gui/qt4/ui/open_disk.h:305
+#: src/libvlc-module.c:706
 msgid "Audio track"
 msgstr "Pista àudio"
 
-#: src/libvlc-module.c:704
+#: src/libvlc-module.c:708
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Numèro de la pista àudio d'utilizar (entre 0 e n)."
 
-#: src/libvlc-module.c:707 modules/gui/qt4/ui/open_disk.h:306
+#: src/libvlc-module.c:711
 msgid "Subtitles track"
 msgstr "Pista dels sostítols"
 
-#: src/libvlc-module.c:709
+#: src/libvlc-module.c:713
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr "Numèro de la pista dels sostítols d'utilizar (entre 0 e n)."
 
-#: src/libvlc-module.c:712
+#: src/libvlc-module.c:716
 msgid "Audio language"
 msgstr "Lenga per l'audio"
 
-#: src/libvlc-module.c:714
+#: src/libvlc-module.c:718
 #, fuzzy
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
@@ -2526,11 +2505,11 @@ msgstr ""
 "Lenga de la pista audio volètz utilizar (còde del país (2 O 3 letras) "
 "desseparat per una virgula."
 
-#: src/libvlc-module.c:717
+#: src/libvlc-module.c:721
 msgid "Subtitle language"
 msgstr "Lenga dels sostítols"
 
-#: src/libvlc-module.c:719
+#: src/libvlc-module.c:723
 #, fuzzy
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
@@ -2539,88 +2518,88 @@ msgstr ""
 "Lenga dels sostítols que volètz utilizar (còde del país (2 O 3 letras) "
 "desseparat per una virgula."
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:727
 msgid "Audio track ID"
 msgstr "Pista àudio (ID)"
 
-#: src/libvlc-module.c:725
+#: src/libvlc-module.c:729
 msgid "Stream ID of the audio track to use."
 msgstr "ID de la pista audio que volètz utilizar."
 
-#: src/libvlc-module.c:727
+#: src/libvlc-module.c:731
 msgid "Subtitles track ID"
 msgstr "ID de la pista dels sostítols"
 
-#: src/libvlc-module.c:729
+#: src/libvlc-module.c:733
 msgid "Stream ID of the subtitle track to use."
 msgstr "ID del flux o de la pista del sostítol que volètz utilizar."
 
-#: src/libvlc-module.c:731
+#: src/libvlc-module.c:735
 msgid "Input repetitions"
 msgstr "Repeticions de l'intrada"
 
-#: src/libvlc-module.c:733
+#: src/libvlc-module.c:737
 msgid "Number of time the same input will be repeated"
 msgstr "Nombre de còps ont la meteissa intrada es jodada"
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:739
 msgid "Start time"
 msgstr "Temps de la partença"
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:741
 msgid "The stream will start at this position (in seconds)."
 msgstr "Lo flux va començar a aquesta posicion (en segondas)."
 
-#: src/libvlc-module.c:739
+#: src/libvlc-module.c:743
 msgid "Stop time"
 msgstr "Temps de l'arrèst"
 
-#: src/libvlc-module.c:741
+#: src/libvlc-module.c:745
 msgid "The stream will stop at this position (in seconds)."
 msgstr "Lo flux va s'arrestar a aquesta posicion (en segondas)."
 
-#: src/libvlc-module.c:743
+#: src/libvlc-module.c:747
 msgid "Run time"
 msgstr "Durada de lectura"
 
-#: src/libvlc-module.c:745
+#: src/libvlc-module.c:749
 msgid "The stream will run this duration (in seconds)."
 msgstr "Lo flux va durar aquesta durada (en segondas)."
 
-#: src/libvlc-module.c:747
+#: src/libvlc-module.c:751
 #, fuzzy
 msgid "Fast seek"
 msgstr "Mai lèu"
 
-#: src/libvlc-module.c:749
+#: src/libvlc-module.c:753
 msgid "Favor speed over precision while seeking"
 msgstr ""
 
-#: src/libvlc-module.c:751
+#: src/libvlc-module.c:755
 #, fuzzy
 msgid "Playback speed"
 msgstr "Lectura"
 
-#: src/libvlc-module.c:753
+#: src/libvlc-module.c:757
 msgid "This defines the playback speed (nominal speed is 1.0)."
 msgstr ""
 
-#: src/libvlc-module.c:755
+#: src/libvlc-module.c:759
 msgid "Input list"
 msgstr "Lista de las intradas"
 
-#: src/libvlc-module.c:757
+#: src/libvlc-module.c:761
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
 msgstr ""
 "Podètz assabentar una lista d'intradas que seron aponduts après lo primièr."
 
-#: src/libvlc-module.c:760
+#: src/libvlc-module.c:764
 msgid "Input slave (experimental)"
 msgstr "Dintrada esclava (experimental)"
 
-#: src/libvlc-module.c:762
+#: src/libvlc-module.c:766
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
 "is experimental, not all formats are supported. Use a '#' separated list of "
@@ -2630,11 +2609,11 @@ msgstr ""
 "l'ensemble dels formats son pas suportats. Utilizats '#' per desseparar la "
 "lista delas intradas."
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:770
 msgid "Bookmarks list for a stream"
 msgstr "Lista dels favorits per un flux"
 
-#: src/libvlc-module.c:768
+#: src/libvlc-module.c:772
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
@@ -2644,43 +2623,43 @@ msgstr ""
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
 "{...}\""
 
-#: src/libvlc-module.c:772 modules/gui/qt4/ui/sprefs_input.h:316
+#: src/libvlc-module.c:776
 msgid "Record directory or filename"
 msgstr "Repertòri o nom de fichièr per las capturas video"
 
-#: src/libvlc-module.c:774
+#: src/libvlc-module.c:778
 msgid "Directory or filename where the records will be stored"
 msgstr "Repertòri o nom de fichièr ont las capturas seràn enregistradas."
 
-#: src/libvlc-module.c:776
+#: src/libvlc-module.c:780
 msgid "Prefer native stream recording"
 msgstr ""
 
-#: src/libvlc-module.c:778
+#: src/libvlc-module.c:782
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
 msgstr ""
 
-#: src/libvlc-module.c:781
+#: src/libvlc-module.c:785
 msgid "Timeshift directory"
 msgstr ""
 
-#: src/libvlc-module.c:783
+#: src/libvlc-module.c:787
 msgid "Directory used to store the timeshift temporary files."
 msgstr ""
 
-#: src/libvlc-module.c:785
+#: src/libvlc-module.c:789
 msgid "Timeshift granularity"
 msgstr ""
 
-#: src/libvlc-module.c:787
+#: src/libvlc-module.c:791
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
 msgstr ""
 
-#: src/libvlc-module.c:792
+#: src/libvlc-module.c:796
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures filters (logo, etc.). Enable these "
@@ -2688,32 +2667,31 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:798 modules/gui/qt4/ui/sprefs_subtitles.h:213
+#: src/libvlc-module.c:802
 msgid "Force subtitle position"
 msgstr "Impausar una posicion pels sostítols"
 
-#: src/libvlc-module.c:800
+#: src/libvlc-module.c:804
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
 msgstr "Podètz causir una posicion pels sostítols, aval, amont, etc.."
 
-#: src/libvlc-module.c:803
+#: src/libvlc-module.c:807
 msgid "Enable sub-pictures"
 msgstr "Activar los sos-imatges"
 
-#: src/libvlc-module.c:805
+#: src/libvlc-module.c:809
 msgid "You can completely disable the sub-picture processing."
 msgstr "Podètz desactivar del tot los sos-imatges."
 
-#: src/libvlc-module.c:807 src/libvlc-module.c:1763 src/text/iso-639_def.h:143
+#: src/libvlc-module.c:811 src/libvlc-module.c:1767 src/text/iso-639_def.h:143
 #: modules/gui/macosx/simple_prefs.m:286
 #: modules/stream_out/transcode/transcode.c:222
-#: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
 msgstr "Messatges a l'ecran"
 
-#: src/libvlc-module.c:809
+#: src/libvlc-module.c:813
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
@@ -2721,11 +2699,11 @@ msgstr ""
 "VLC pòt afichar de messatges sus una video. Es nomenat OSD (On Screen "
 "Display) en anglés."
 
-#: src/libvlc-module.c:812
+#: src/libvlc-module.c:816
 msgid "Text rendering module"
 msgstr "Aparéncia del tèxt"
 
-#: src/libvlc-module.c:814
+#: src/libvlc-module.c:818
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
@@ -2733,31 +2711,31 @@ msgstr ""
 "VLC utiliza Freetype per l'aparéncia del tèxt, pr'aquò podètz utilizar svg "
 "per far aquò."
 
-#: src/libvlc-module.c:816
+#: src/libvlc-module.c:820
 msgid "Subpictures filter module"
 msgstr "Filtres pels sos-imatges"
 
-#: src/libvlc-module.c:818
+#: src/libvlc-module.c:822
 msgid ""
 "This adds so-called \"subpicture filters\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
 msgstr ""
 
-#: src/libvlc-module.c:821
+#: src/libvlc-module.c:825
 msgid "Autodetect subtitle files"
 msgstr "Detectar los fichièrs de sostítols"
 
-#: src/libvlc-module.c:823
+#: src/libvlc-module.c:827
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
 msgstr "Permet de detectar lo fichièr dels sostítols amb lo nom del fichièr."
 
-#: src/libvlc-module.c:826
+#: src/libvlc-module.c:830
 msgid "Subtitle autodetection fuzziness"
 msgstr "Règlas de deteccion"
 
-#: src/libvlc-module.c:828
+#: src/libvlc-module.c:832
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -2774,11 +2752,11 @@ msgstr ""
 "3 = los fichièrs amb lo nom del film dedins e d'autres caractèrs\n"
 "4 = lo nom del fichièr es lo meteis"
 
-#: src/libvlc-module.c:836
+#: src/libvlc-module.c:840
 msgid "Subtitle autodetection paths"
 msgstr "Repertòris dels sostítols"
 
-#: src/libvlc-module.c:838
+#: src/libvlc-module.c:842
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
@@ -2786,21 +2764,21 @@ msgstr ""
 "L'endrech ont se tròba los fichièrs dels sostítols, se son pas dins lo "
 "meteis qu'aquel del film."
 
-#: src/libvlc-module.c:841
+#: src/libvlc-module.c:845
 msgid "Use subtitle file"
 msgstr "Utilizar un fichièr de sostítols"
 
-#: src/libvlc-module.c:843
+#: src/libvlc-module.c:847
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
 msgstr "Cargar aqueste fichièr. Se la deteccion a pas trobada un fichièr."
 
-#: src/libvlc-module.c:846
+#: src/libvlc-module.c:850
 msgid "DVD device"
 msgstr "Periferic DVD"
 
-#: src/libvlc-module.c:849
+#: src/libvlc-module.c:853
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
 "the drive letter (eg. D:)"
@@ -2808,56 +2786,56 @@ msgstr ""
 "Lector DVD o fichièr per defaut d'utilizar. Oblidatz pas lo \":\" après lo "
 "nom del lector (per exemple D:)"
 
-#: src/libvlc-module.c:853
+#: src/libvlc-module.c:857
 msgid "This is the default DVD device to use."
 msgstr "Aquò's lo periferic DVD d'utilizar per defaut."
 
-#: src/libvlc-module.c:856
+#: src/libvlc-module.c:860
 msgid "VCD device"
 msgstr "Periferic VCD"
 
-#: src/libvlc-module.c:858
+#: src/libvlc-module.c:862
 msgid "This is the default VCD device to use."
 msgstr "Aquò's lo periferic VCD d'utilizar per defaut."
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:864
 msgid "Audio CD device"
 msgstr "Periferic CD audio"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:866
 msgid "This is the default Audio CD device to use."
 msgstr "Aquò's lo periferic Audio CD d'utilizar per defaut."
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:868
 msgid "Force IPv6"
 msgstr "Impausar IPv6"
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:870
 msgid "IPv6 will be used by default for all connections."
 msgstr "IPv6 serà utilizat per defaut per totas las connexions."
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:872
 msgid "Force IPv4"
 msgstr "Impausar IPv4"
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:874
 msgid "IPv4 will be used by default for all connections."
 msgstr "IPv4 serà utilizat per defaut per totas las connexions."
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:876
 msgid "TCP connection timeout"
 msgstr "TCP connection timeout*"
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:878
 #, fuzzy
 msgid "Default TCP connection timeout (in milliseconds). "
 msgstr "Default TCP connection timeout (in milliseconds).*"
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:880
 msgid "SOCKS server"
 msgstr "Servidor SOCKS"
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:882
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
@@ -2865,88 +2843,88 @@ msgstr ""
 "Servidor SOCKS d'utilizar per defaut per las connexions TCP. Lo format deu "
 "èsser adreça:pòrt."
 
-#: src/libvlc-module.c:881
+#: src/libvlc-module.c:885
 msgid "SOCKS user name"
 msgstr "Nom d'utilizaire (SOCKS)"
 
-#: src/libvlc-module.c:883
+#: src/libvlc-module.c:887
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr "Nom d'utilizaire que serà utilizat per la connexion al servidor SOCKS."
 
-#: src/libvlc-module.c:885
+#: src/libvlc-module.c:889
 msgid "SOCKS password"
 msgstr "Senhal (SOCKS)"
 
-#: src/libvlc-module.c:887
+#: src/libvlc-module.c:891
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr "Senhal que serà utilizat per la connexion al servidor SOCKS."
 
-#: src/libvlc-module.c:889
+#: src/libvlc-module.c:893
 msgid "Title metadata"
 msgstr "Títol (metadonadas)"
 
-#: src/libvlc-module.c:891
+#: src/libvlc-module.c:895
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr "Permet d'assabentar un \"títol\" per una intrada (metadata)"
 
-#: src/libvlc-module.c:893
+#: src/libvlc-module.c:897
 msgid "Author metadata"
 msgstr "Autor (metadonadas)"
 
-#: src/libvlc-module.c:895
+#: src/libvlc-module.c:899
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr "Permet d'assabentar un \"autor\" per una intrada (metadonadas)."
 
-#: src/libvlc-module.c:897
+#: src/libvlc-module.c:901
 msgid "Artist metadata"
 msgstr "Artista (metadonadas)"
 
-#: src/libvlc-module.c:899
+#: src/libvlc-module.c:903
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr "Permet d'assabentar un \"artista\" per una intrada (metadonadas)."
 
-#: src/libvlc-module.c:901
+#: src/libvlc-module.c:905
 msgid "Genre metadata"
 msgstr "Genre (metadonadas)"
 
-#: src/libvlc-module.c:903
+#: src/libvlc-module.c:907
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr "Permet d'assabentar un \"genre\" per una intrada (metadonadas)."
 
-#: src/libvlc-module.c:905
+#: src/libvlc-module.c:909
 msgid "Copyright metadata"
 msgstr "Dreches d'autor (metadonadas)"
 
-#: src/libvlc-module.c:907
+#: src/libvlc-module.c:911
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr ""
 "Permet d'assabentar los \"dreches d'autor\" per una intrada (metadonadas)."
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:913
 msgid "Description metadata"
 msgstr "Descripcion (metadonadas)"
 
-#: src/libvlc-module.c:911
+#: src/libvlc-module.c:915
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr "Permet d'assabentar una \"description\" per una intrada (metadonadas)."
 
-#: src/libvlc-module.c:913
+#: src/libvlc-module.c:917
 msgid "Date metadata"
 msgstr "Data (metadonadas)"
 
-#: src/libvlc-module.c:915
+#: src/libvlc-module.c:919
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr "Permet d'assabentar una \"data\" per una intrada (metadonadas)."
 
-#: src/libvlc-module.c:917
+#: src/libvlc-module.c:921
 msgid "URL metadata"
 msgstr "URL (metadonadas)"
 
-#: src/libvlc-module.c:919
+#: src/libvlc-module.c:923
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr "Permet d'assabentar un \"URL\" per una intrada (metadonadas)."
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:927
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
@@ -2956,11 +2934,11 @@ msgstr ""
 "(decompression methods). Only advanced users should alter this option as it "
 "*can break playback of all your streams.*"
 
-#: src/libvlc-module.c:927
+#: src/libvlc-module.c:931
 msgid "Preferred decoders list"
 msgstr "Lista dels descodadors preferits"
 
-#: src/libvlc-module.c:929
+#: src/libvlc-module.c:933
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
@@ -2971,37 +2949,37 @@ msgstr ""
 "*users should alter this option as it can break playback of all your streams."
 "*"
 
-#: src/libvlc-module.c:934
+#: src/libvlc-module.c:938
 msgid "Preferred encoders list"
 msgstr "Lista dels encoders* preferits"
 
-#: src/libvlc-module.c:936
+#: src/libvlc-module.c:940
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr ""
 "Permet de causir una lista dels descodadors que VLC va utilizat en prioritat."
 
-#: src/libvlc-module.c:939
+#: src/libvlc-module.c:943
 msgid "Prefer system plugins over VLC"
 msgstr "Sistèma preferits d'ajustons"
 
-#: src/libvlc-module.c:941
+#: src/libvlc-module.c:945
 msgid ""
 "Indicates whether VLC will prefer native plugins installed on system over "
 "VLC owns plugins whenever a choice is available."
 msgstr "Indica se VLC aima mai los ajustons natius o los sieus."
 
-#: src/libvlc-module.c:950
+#: src/libvlc-module.c:954
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
 msgstr "Aquestas opcions permeton de causir las opcions globalas pels fluxes."
 
-#: src/libvlc-module.c:953
+#: src/libvlc-module.c:957
 msgid "Default stream output chain"
 msgstr "Default stream output chain*"
 
-#: src/libvlc-module.c:955
+#: src/libvlc-module.c:959
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
 "to learn how to build such chains. Warning: this chain will be enabled for "
@@ -3011,27 +2989,27 @@ msgstr ""
 "*to learn how to build such chains. Warning: this chain will be enabled for "
 "*all streams.*"
 
-#: src/libvlc-module.c:959
+#: src/libvlc-module.c:963
 msgid "Enable streaming of all ES"
 msgstr "Enable streaming of all ES*"
 
-#: src/libvlc-module.c:961
+#: src/libvlc-module.c:965
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr "Stream all elementary streams (video, audio and subtitles)*"
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:967
 msgid "Display while streaming"
 msgstr "Mostrar pendent lo streaming*"
 
-#: src/libvlc-module.c:965
+#: src/libvlc-module.c:969
 msgid "Play locally the stream while streaming it."
 msgstr "Jogar localament lo flux pendent que lo difusatz."
 
-#: src/libvlc-module.c:967
+#: src/libvlc-module.c:971
 msgid "Enable video stream output"
 msgstr "Activar la video pel flux de sortida"
 
-#: src/libvlc-module.c:969
+#: src/libvlc-module.c:973
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3039,11 +3017,11 @@ msgstr ""
 "Causissètz se le flux video deu èsser mandat al flux de sortida video quand "
 "es activat."
 
-#: src/libvlc-module.c:972
+#: src/libvlc-module.c:976
 msgid "Enable audio stream output"
 msgstr "Activar l'audio pel flux de sortida"
 
-#: src/libvlc-module.c:974
+#: src/libvlc-module.c:978
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3051,11 +3029,11 @@ msgstr ""
 "Causissètz se le flux audio deu èsser mandat al flux de sortida video quand "
 "es activat."
 
-#: src/libvlc-module.c:977
+#: src/libvlc-module.c:981
 msgid "Enable SPU stream output"
 msgstr "Activar lo flux de sortida SPU"
 
-#: src/libvlc-module.c:979
+#: src/libvlc-module.c:983
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3063,11 +3041,11 @@ msgstr ""
 "Causissètz se le flux SPU deu èsser mandat al flux de sortida video quand es "
 "activat."
 
-#: src/libvlc-module.c:982
+#: src/libvlc-module.c:986
 msgid "Keep stream output open"
 msgstr "Gardar lo flux de sortida dobrit"
 
-#: src/libvlc-module.c:984
+#: src/libvlc-module.c:988
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
@@ -3077,188 +3055,188 @@ msgstr ""
 "*playlist item (automatically insert the gather stream output if not "
 "*specified)*"
 
-#: src/libvlc-module.c:988
+#: src/libvlc-module.c:992
 msgid "Stream output muxer caching (ms)"
 msgstr "Durada del taboisson per la sortida del flux (ms)"
 
-#: src/libvlc-module.c:990
+#: src/libvlc-module.c:994
 msgid ""
 "This allow you to configure the initial caching amount for stream output  "
 "muxer. This value should be set in milliseconds."
 msgstr ""
 "Permet de causir la durada del taboisson per la sortida del flux en ms."
 
-#: src/libvlc-module.c:993
+#: src/libvlc-module.c:997
 msgid "Preferred packetizer list"
 msgstr "Lista dels packetizers* preferits"
 
-#: src/libvlc-module.c:995
+#: src/libvlc-module.c:999
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr "Permet de causir l'òrdre de preferéncia dels packetizers* de VLC."
 
-#: src/libvlc-module.c:998
+#: src/libvlc-module.c:1002
 msgid "Mux module"
 msgstr "Modul Mux*"
 
-#: src/libvlc-module.c:1000
+#: src/libvlc-module.c:1004
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr "This is a legacy entry to let you configure mux modules*"
 
-#: src/libvlc-module.c:1002
+#: src/libvlc-module.c:1006
 msgid "Access output module"
 msgstr ""
 
-#: src/libvlc-module.c:1004
+#: src/libvlc-module.c:1008
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr ""
 
-#: src/libvlc-module.c:1006
+#: src/libvlc-module.c:1010
 msgid "Control SAP flow"
 msgstr ""
 
-#: src/libvlc-module.c:1008
+#: src/libvlc-module.c:1012
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
 msgstr ""
 
-#: src/libvlc-module.c:1012
+#: src/libvlc-module.c:1016
 msgid "SAP announcement interval"
 msgstr ""
 
-#: src/libvlc-module.c:1014
+#: src/libvlc-module.c:1018
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
 msgstr ""
 
-#: src/libvlc-module.c:1023
+#: src/libvlc-module.c:1027
 msgid ""
 "These options allow you to enable special CPU optimizations. You should "
 "always leave all these enabled."
 msgstr ""
 
-#: src/libvlc-module.c:1026
+#: src/libvlc-module.c:1030
 msgid "Enable CPU MMX support"
 msgstr "Activar lo supòrt de CPU MMX"
 
-#: src/libvlc-module.c:1028
+#: src/libvlc-module.c:1032
 msgid ""
 "If your processor supports the MMX instructions set, VLC can take advantage "
 "of them."
 msgstr "Se vòstre processor a las instruccions MMX, VLC los pòt utilizar."
 
-#: src/libvlc-module.c:1031
+#: src/libvlc-module.c:1035
 msgid "Enable CPU 3D Now! support"
 msgstr "Activar lo supòrt de CPU 3D Now!"
 
-#: src/libvlc-module.c:1033
+#: src/libvlc-module.c:1037
 msgid ""
 "If your processor supports the 3D Now! instructions set, VLC can take "
 "advantage of them."
 msgstr "Se vòstre processor a las instruccions 3D Now!, VLC los pòt utilizar."
 
-#: src/libvlc-module.c:1036
+#: src/libvlc-module.c:1040
 msgid "Enable CPU MMX EXT support"
 msgstr "Activar lo supòrt de CPU MMX EXT "
 
-#: src/libvlc-module.c:1038
+#: src/libvlc-module.c:1042
 msgid ""
 "If your processor supports the MMX EXT instructions set, VLC can take "
 "advantage of them."
 msgstr "Se vòstre processor a las instruccions MMX EXT, VLC los pòt utilizar."
 
-#: src/libvlc-module.c:1041
+#: src/libvlc-module.c:1045
 msgid "Enable CPU SSE support"
 msgstr "Activar lo supòrt de SSE"
 
-#: src/libvlc-module.c:1043
+#: src/libvlc-module.c:1047
 msgid ""
 "If your processor supports the SSE instructions set, VLC can take advantage "
 "of them."
 msgstr "Se vòstre processor supòrta las intruccions SSE, VLC pòt se'n servir."
 
-#: src/libvlc-module.c:1046
+#: src/libvlc-module.c:1050
 msgid "Enable CPU SSE2 support"
 msgstr "Activar lo supòrt de SSE2"
 
-#: src/libvlc-module.c:1048
+#: src/libvlc-module.c:1052
 msgid ""
 "If your processor supports the SSE2 instructions set, VLC can take advantage "
 "of them."
 msgstr "Se vòstre processor supòrta las intruccions SSE2, VLC pòt se'n servir."
 
-#: src/libvlc-module.c:1051
+#: src/libvlc-module.c:1055
 #, fuzzy
 msgid "Enable CPU SSE3 support"
 msgstr "Activar lo supòrt de SSE"
 
-#: src/libvlc-module.c:1053
+#: src/libvlc-module.c:1057
 #, fuzzy
 msgid ""
 "If your processor supports the SSE3 instructions set, VLC can take advantage "
 "of them."
 msgstr "Se vòstre processor supòrta las intruccions SSE, VLC pòt se'n servir."
 
-#: src/libvlc-module.c:1056
+#: src/libvlc-module.c:1060
 #, fuzzy
 msgid "Enable CPU SSSE3 support"
 msgstr "Activar lo supòrt de SSE"
 
-#: src/libvlc-module.c:1058
+#: src/libvlc-module.c:1062
 #, fuzzy
 msgid ""
 "If your processor supports the SSSE3 instructions set, VLC can take "
 "advantage of them."
 msgstr "Se vòstre processor supòrta las intruccions SSE, VLC pòt se'n servir."
 
-#: src/libvlc-module.c:1061
+#: src/libvlc-module.c:1065
 #, fuzzy
 msgid "Enable CPU SSE4.1 support"
 msgstr "Activar lo supòrt de SSE"
 
-#: src/libvlc-module.c:1063
+#: src/libvlc-module.c:1067
 #, fuzzy
 msgid ""
 "If your processor supports the SSE4.1 instructions set, VLC can take "
 "advantage of them."
 msgstr "Se vòstre processor supòrta las intruccions SSE, VLC pòt se'n servir."
 
-#: src/libvlc-module.c:1066
+#: src/libvlc-module.c:1070
 #, fuzzy
 msgid "Enable CPU SSE4.2 support"
 msgstr "Activar lo supòrt de SSE2"
 
-#: src/libvlc-module.c:1068
+#: src/libvlc-module.c:1072
 #, fuzzy
 msgid ""
 "If your processor supports the SSE4.2 instructions set, VLC can take "
 "advantage of them."
 msgstr "Se vòstre processor supòrta las intruccions SSE2, VLC pòt se'n servir."
 
-#: src/libvlc-module.c:1071
+#: src/libvlc-module.c:1075
 msgid "Enable CPU AltiVec support"
 msgstr "Activar lo supòrt de AltiVec"
 
-#: src/libvlc-module.c:1073
+#: src/libvlc-module.c:1077
 msgid ""
 "If your processor supports the AltiVec instructions set, VLC can take "
 "advantage of them."
 msgstr ""
 "Se vòstre processor supòrta las intruccions AltiVec, VLC pòt se'n servir."
 
-#: src/libvlc-module.c:1078
+#: src/libvlc-module.c:1082
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
 msgstr "Aquestas ocpions vos permeton de causir un modul per defaut."
 
-#: src/libvlc-module.c:1081
+#: src/libvlc-module.c:1085
 msgid "Memory copy module"
 msgstr "Modul de còpia memòria"
 
-#: src/libvlc-module.c:1083
+#: src/libvlc-module.c:1087
 msgid ""
 "You can select which memory copy module you want to use. By default VLC will "
 "select the fastest one supported by your hardware."
@@ -3266,11 +3244,11 @@ msgstr ""
 "Podètz seleccionar lo modul de còpia memòria que volèzt utilizar. Per "
 "defaut  VLC utiliza lo melhor."
 
-#: src/libvlc-module.c:1086
+#: src/libvlc-module.c:1090
 msgid "Access module"
 msgstr "Modul d'accès"
 
-#: src/libvlc-module.c:1088
+#: src/libvlc-module.c:1092
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
@@ -3279,23 +3257,23 @@ msgstr ""
 "Permet d'impausar un modul d'accès. O podètz utilizar se l'accès es pas "
 "automaticament detectat."
 
-#: src/libvlc-module.c:1092
+#: src/libvlc-module.c:1096
 #, fuzzy
 msgid "Stream filter module"
 msgstr "Filtres pels sos-imatges"
 
-#: src/libvlc-module.c:1094
+#: src/libvlc-module.c:1098
 #, fuzzy
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr ""
 "Los filtres d'accès son utilizats per modificar lo flux qu'es legit. Es "
 "utilizat per exemple per lo timeshifting."
 
-#: src/libvlc-module.c:1096
+#: src/libvlc-module.c:1100
 msgid "Demux module"
 msgstr "Demux module*"
 
-#: src/libvlc-module.c:1098
+#: src/libvlc-module.c:1102
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3305,11 +3283,11 @@ msgstr ""
 "Los demultiplexers* son utilizats per desseparar los fluxes (audio e video). "
 "Los podètz utilizar se lo demuxer* corrècte es pas automaticament detectat."
 
-#: src/libvlc-module.c:1103
+#: src/libvlc-module.c:1107
 msgid "Allow real-time priority"
 msgstr "Autorisar la prioritat temps real"
 
-#: src/libvlc-module.c:1105
+#: src/libvlc-module.c:1109
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
@@ -3321,11 +3299,11 @@ msgstr ""
 "*however lock up your whole machine, or make it very very slow. You should "
 "*only activate this if you know what you're doing.*"
 
-#: src/libvlc-module.c:1111
+#: src/libvlc-module.c:1115
 msgid "Adjust VLC priority"
 msgstr "Ajustar la priotitat de VLC"
 
-#: src/libvlc-module.c:1113
+#: src/libvlc-module.c:1117
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
@@ -3335,21 +3313,21 @@ msgstr ""
 "*You can use it to tune VLC priority against other programs, or against "
 "other *VLC instances.*"
 
-#: src/libvlc-module.c:1117
+#: src/libvlc-module.c:1121
 msgid "(Experimental) Don't do caching at the access level."
 msgstr "(Experimental) Don't do caching at the access level.*"
 
-#: src/libvlc-module.c:1119
+#: src/libvlc-module.c:1123
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr ""
 "This option is useful if you want to lower the latency when reading a stream*"
 
-#: src/libvlc-module.c:1122
+#: src/libvlc-module.c:1126
 msgid "Modules search path"
 msgstr "Repertòri dels moduls"
 
-#: src/libvlc-module.c:1124
+#: src/libvlc-module.c:1128
 msgid ""
 "Additional path for VLC to look for its modules. You can add several paths "
 "by concatenating them using \" PATH_SEP \" as separator"
@@ -3357,79 +3335,79 @@ msgstr ""
 "Repertòris ont VLC cèrca los moduls. Podètz n'utilizatz mai d'un amb \" "
 "PATH_SEP \" entre los repertòris"
 
-#: src/libvlc-module.c:1127
+#: src/libvlc-module.c:1131
 #, fuzzy
 msgid "Data search path"
 msgstr "Repertòri dels moduls"
 
-#: src/libvlc-module.c:1129
+#: src/libvlc-module.c:1133
 msgid "Override the default data/share search path."
 msgstr ""
 
-#: src/libvlc-module.c:1131
+#: src/libvlc-module.c:1135
 msgid "VLM configuration file"
 msgstr "Fichièr de configuracion VLM"
 
-#: src/libvlc-module.c:1133
+#: src/libvlc-module.c:1137
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr "Legir lo fichièr de configuracion tanlèu que VLM es lançat."
 
-#: src/libvlc-module.c:1135
+#: src/libvlc-module.c:1139
 msgid "Use a plugins cache"
 msgstr "Use a plugins cache*"
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1141
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr ""
 "Use a plugins cache which will greatly improve the startup time of VLC.*"
 
-#: src/libvlc-module.c:1139
+#: src/libvlc-module.c:1143
 #, fuzzy
 msgid "Locally collect statistics"
 msgstr "Collectar las estatisticas"
 
-#: src/libvlc-module.c:1141
+#: src/libvlc-module.c:1145
 #, fuzzy
 msgid "Collect miscellaneous local statistics about the playing media."
 msgstr "Collectar las estatisticas divèrsas."
 
-#: src/libvlc-module.c:1143
+#: src/libvlc-module.c:1147
 msgid "Run as daemon process"
 msgstr "Lançar coma un process* demòni"
 
-#: src/libvlc-module.c:1145
+#: src/libvlc-module.c:1149
 msgid "Runs VLC as a background daemon process."
 msgstr "Lança VLC coma un process* demòni en rèireplan"
 
-#: src/libvlc-module.c:1147
+#: src/libvlc-module.c:1151
 msgid "Write process id to file"
 msgstr "Write process id to file*"
 
-#: src/libvlc-module.c:1149
+#: src/libvlc-module.c:1153
 msgid "Writes process id into specified file."
 msgstr "Writes process id into specified file.*"
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1155
 msgid "Log to file"
 msgstr "Enregistrar l'istoric dins un fichièr"
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1157
 msgid "Log all VLC messages to a text file."
 msgstr "Enregistrar los messatges de VLC dins un fichièr tèxt."
 
-#: src/libvlc-module.c:1155
+#: src/libvlc-module.c:1159
 msgid "Log to syslog"
 msgstr "Enregistrar l'istoric dins un syslog"
 
-#: src/libvlc-module.c:1157
+#: src/libvlc-module.c:1161
 msgid "Log all VLC messages to syslog (UNIX systems)."
 msgstr "Enregistrar los messatges de VLC dins un syslog (sistèmas UNIX)."
 
-#: src/libvlc-module.c:1159
+#: src/libvlc-module.c:1163
 msgid "Allow only one running instance"
 msgstr ""
 
-#: src/libvlc-module.c:1162
+#: src/libvlc-module.c:1166
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3443,7 +3421,7 @@ msgstr ""
 "the *explorer. This option will allow you to play the file with the already "
 "*running instance or enqueue it.*"
 
-#: src/libvlc-module.c:1169
+#: src/libvlc-module.c:1173
 #, fuzzy
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
@@ -3461,28 +3439,28 @@ msgstr ""
 "daemon to be *active and the running instance of VLC to use D-Bus control "
 "interface.*"
 
-#: src/libvlc-module.c:1178
+#: src/libvlc-module.c:1182
 msgid "VLC is started from file association"
 msgstr "VLC is started from file association*"
 
-#: src/libvlc-module.c:1180
+#: src/libvlc-module.c:1184
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 "Tell VLC that it is being launched due to a file association in the OS*"
 
-#: src/libvlc-module.c:1183
+#: src/libvlc-module.c:1187
 msgid "One instance when started from file"
 msgstr "One instance when started from file*"
 
-#: src/libvlc-module.c:1185
+#: src/libvlc-module.c:1189
 msgid "Allow only one running instance when started from file."
 msgstr "Allow only one running instance when started from file.*"
 
-#: src/libvlc-module.c:1187
+#: src/libvlc-module.c:1191
 msgid "Increase the priority of the process"
 msgstr "Aumentar la prioritat del process*"
 
-#: src/libvlc-module.c:1189
+#: src/libvlc-module.c:1193
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3498,11 +3476,11 @@ msgstr ""
 "*render the whole system unresponsive which might require a reboot of your "
 "*machine.*"
 
-#: src/libvlc-module.c:1197
+#: src/libvlc-module.c:1201
 msgid "Enqueue items to playlist when in one instance mode"
 msgstr "Enqueue items to playlist when in one instance mode*"
 
-#: src/libvlc-module.c:1199
+#: src/libvlc-module.c:1203
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
@@ -3510,7 +3488,7 @@ msgstr ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "*playing current item.*"
 
-#: src/libvlc-module.c:1208
+#: src/libvlc-module.c:1212
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
@@ -3518,11 +3496,11 @@ msgstr ""
 "These options define the behavior of the playlist. Some of them can be "
 "*overridden in the playlist dialog box.*"
 
-#: src/libvlc-module.c:1211
+#: src/libvlc-module.c:1215
 msgid "Automatically preparse files"
 msgstr "Automatically preparse files*"
 
-#: src/libvlc-module.c:1213
+#: src/libvlc-module.c:1217
 msgid ""
 "Automatically preparse files added to the playlist (to retrieve some "
 "metadata)."
@@ -3530,101 +3508,101 @@ msgstr ""
 "Automatically preparse files added to the playlist (to retrieve some "
 "*metadata).*"
 
-#: src/libvlc-module.c:1216
+#: src/libvlc-module.c:1220
 msgid "Album art policy"
 msgstr "Album art policy*"
 
-#: src/libvlc-module.c:1218
+#: src/libvlc-module.c:1222
 msgid "Choose how album art will be downloaded."
 msgstr "Choose how album art will be downloaded.*"
 
-#: src/libvlc-module.c:1224
+#: src/libvlc-module.c:1228
 msgid "Manual download only"
 msgstr "Telecargament manual solament"
 
-#: src/libvlc-module.c:1225
+#: src/libvlc-module.c:1229
 msgid "When track starts playing"
 msgstr "Quand la pista es jogada"
 
-#: src/libvlc-module.c:1226
+#: src/libvlc-module.c:1230
 msgid "As soon as track is added"
 msgstr "Quand la pista es aponduda"
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1232
 msgid "Services discovery modules"
 msgstr ""
 
-#: src/libvlc-module.c:1230
+#: src/libvlc-module.c:1234
 msgid ""
 "Specifies the services discovery modules to load, separated by colons. "
 "Typical values are sap, hal, ..."
 msgstr ""
 
-#: src/libvlc-module.c:1233
+#: src/libvlc-module.c:1237
 msgid "Play files randomly forever"
 msgstr "Jogar totjorn los fichièrs a l'azard."
 
-#: src/libvlc-module.c:1235
+#: src/libvlc-module.c:1239
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr "VLC will randomly play files in the playlist until interrupted.*"
 
-#: src/libvlc-module.c:1237
+#: src/libvlc-module.c:1241
 msgid "Repeat all"
 msgstr "Tot tornar far"
 
-#: src/libvlc-module.c:1239
+#: src/libvlc-module.c:1243
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr "VLC va jogar la lista de lectura a l'infinit."
 
-#: src/libvlc-module.c:1241
+#: src/libvlc-module.c:1245
 msgid "Repeat current item"
 msgstr "Tornar jogar l'element actual"
 
-#: src/libvlc-module.c:1243
+#: src/libvlc-module.c:1247
 msgid "VLC will keep playing the current playlist item."
 msgstr "VLC va gardar l'element qu'es en cors de lectura"
 
-#: src/libvlc-module.c:1245
+#: src/libvlc-module.c:1249
 msgid "Play and stop"
 msgstr "Legir e arrestar"
 
-#: src/libvlc-module.c:1247
+#: src/libvlc-module.c:1251
 msgid "Stop the playlist after each played playlist item."
 msgstr "Arrestar la lista de lectura cada còp qu'un element es legit."
 
-#: src/libvlc-module.c:1249
+#: src/libvlc-module.c:1253
 msgid "Play and exit"
 msgstr "Legir e sortir"
 
-#: src/libvlc-module.c:1251
+#: src/libvlc-module.c:1255
 msgid "Exit if there are no more items in the playlist."
 msgstr "Sortir se i a pas mai d'elements de legir."
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1257
 #, fuzzy
 msgid "Play and pause"
 msgstr "Legir e arrestar"
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1259
 #, fuzzy
 msgid "Pause each item in the playlist on the last frame."
 msgstr "Apondre un relambi dins l'afichage del flux."
 
-#: src/libvlc-module.c:1257
+#: src/libvlc-module.c:1261
 msgid "Use media library"
 msgstr "Utilizar la librariá de mèdia"
 
-#: src/libvlc-module.c:1259
+#: src/libvlc-module.c:1263
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
 msgstr "La librariá es enregistrada e tornada cargar cada còp que lançatz VLC."
 
-#: src/libvlc-module.c:1262
+#: src/libvlc-module.c:1266
 msgid "Display playlist tree"
 msgstr "Mostrar l'arbre de lectura"
 
-#: src/libvlc-module.c:1264
+#: src/libvlc-module.c:1268
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
@@ -3632,806 +3610,802 @@ msgstr ""
 "La lista de lectura pòt utilizar un arbre de lectura per classar los "
 "elements comalo contengut d'un repertòri."
 
-#: src/libvlc-module.c:1273
+#: src/libvlc-module.c:1277
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr "Aquestes reglatges sont nomenats \"acorchis\" (hotkeys)."
 
-#: src/libvlc-module.c:1276 src/video_output/vout_intf.c:357
+#: src/libvlc-module.c:1280 src/video_output/vout_intf.c:357
 #: modules/gui/macosx/controls.m:454 modules/gui/macosx/controls.m:510
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
 #: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:753
 #: modules/gui/macosx/simple_prefs.m:294
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
 msgstr "Plen ecran"
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1281
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr "Causir l'acorchi per passar en mòda plen ecran."
 
-#: src/libvlc-module.c:1278
+#: src/libvlc-module.c:1282
 msgid "Leave fullscreen"
 msgstr "Sortir del plen ecran"
 
-#: src/libvlc-module.c:1279
+#: src/libvlc-module.c:1283
 msgid "Select the hotkey to use to leave fullscreen state."
 msgstr "Causissètz l'acorchi per arrestar lo mòde plen ecran."
 
-#: src/libvlc-module.c:1280
+#: src/libvlc-module.c:1284
 msgid "Play/Pause"
 msgstr "Lectura/Pausa"
 
-#: src/libvlc-module.c:1281
+#: src/libvlc-module.c:1285
 msgid "Select the hotkey to use to swap paused state."
 msgstr "Causissètz l'acorchi per far \"pausa/lectura\"."
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1286
 msgid "Pause only"
 msgstr "Solament pausa"
 
-#: src/libvlc-module.c:1283
+#: src/libvlc-module.c:1287
 msgid "Select the hotkey to use to pause."
 msgstr "Causissètz l'acorchi per far pausa."
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1288
 msgid "Play only"
 msgstr "Solament lectura"
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1289
 msgid "Select the hotkey to use to play."
 msgstr "Causissètz l'acorchi per far lectura."
 
-#: src/libvlc-module.c:1286 modules/gui/macosx/controls.m:1010
+#: src/libvlc-module.c:1290 modules/gui/macosx/controls.m:1010
 #: modules/gui/macosx/intf.m:649 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Faster"
 msgstr "Mai lèu"
 
-#: src/libvlc-module.c:1287 src/libvlc-module.c:1293
+#: src/libvlc-module.c:1291 src/libvlc-module.c:1297
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "Causissètz l'acorchi per legir mai lèu."
 
-#: src/libvlc-module.c:1288 modules/gui/macosx/controls.m:1011
+#: src/libvlc-module.c:1292 modules/gui/macosx/controls.m:1011
 #: modules/gui/macosx/intf.m:650 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Slower"
 msgstr "Mai lentament"
 
-#: src/libvlc-module.c:1289 src/libvlc-module.c:1295
+#: src/libvlc-module.c:1293 src/libvlc-module.c:1299
 msgid "Select the hotkey to use for slow motion playback."
 msgstr "Causissètz l'acorchi per legir mai lentament."
 
-#: src/libvlc-module.c:1290 modules/gui/macosx/controls.m:1012
+#: src/libvlc-module.c:1294 modules/gui/macosx/controls.m:1012
 #: modules/gui/macosx/intf.m:651
 msgid "Normal rate"
 msgstr "Talha normale"
 
-#: src/libvlc-module.c:1291
+#: src/libvlc-module.c:1295
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Causissètz l'acorchi per aver un imatge de talha normala."
 
-#: src/libvlc-module.c:1292 modules/gui/qt4/menus.cpp:811
+#: src/libvlc-module.c:1296 modules/gui/qt4/menus.cpp:811
 msgid "Faster (fine)"
 msgstr "Mai lèu (prim)"
 
-#: src/libvlc-module.c:1294 modules/gui/qt4/menus.cpp:819
+#: src/libvlc-module.c:1298 modules/gui/qt4/menus.cpp:819
 msgid "Slower (fine)"
 msgstr "Mai lentament (prim)"
 
-#: src/libvlc-module.c:1296 modules/control/hotkeys.c:696
+#: src/libvlc-module.c:1300 modules/control/hotkeys.c:696
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
-#: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
+#: modules/misc/notify/notify.c:330
 msgid "Next"
 msgstr "Seguent"
 
-#: src/libvlc-module.c:1297
+#: src/libvlc-module.c:1301
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 "Causissètz l'acorchi per anar a l'element seguent de la lista de lectura."
 
-#: src/libvlc-module.c:1298 modules/control/hotkeys.c:702
+#: src/libvlc-module.c:1302 modules/control/hotkeys.c:702
 #: modules/gui/macosx/about.m:194 modules/gui/macosx/controls.m:1031
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
-#: modules/gui/qt4/ui/sout.h:346
+#: modules/misc/notify/notify.c:328
 msgid "Previous"
 msgstr "Precedent"
 
-#: src/libvlc-module.c:1299
+#: src/libvlc-module.c:1303
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr ""
 "Causissètz l'acorchi per anar a l'element precedent de la lista de lectura."
 
-#: src/libvlc-module.c:1300 modules/gui/macosx/controls.m:1023
+#: src/libvlc-module.c:1304 modules/gui/macosx/controls.m:1023
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:603
 #: modules/gui/macosx/intf.m:648 modules/gui/macosx/intf.m:740
 #: modules/gui/macosx/intf.m:747 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
+#: modules/misc/notify/xosd.c:231
 msgid "Stop"
 msgstr "Arrestar"
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1305
 msgid "Select the hotkey to stop playback."
 msgstr "Causissètz l'acorchi per arrestar."
 
-#: src/libvlc-module.c:1302 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
+#: src/libvlc-module.c:1306 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:70 modules/gui/macosx/intf.m:608
 #: modules/video_filter/marq.c:158 modules/video_filter/rss.c:201
-#: modules/gui/qt4/ui/video_effects.h:1167
 msgid "Position"
 msgstr "Posicion"
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1307
 msgid "Select the hotkey to display the position."
 msgstr "Causissètz l'acorchi per mostrar la posicion."
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1309
 msgid "Very short backwards jump"
 msgstr "Fòrça pichon saut enarrièr"
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1311
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr "Causissètz l'acorchi per far un fòrça pichon saut enarrièr."
 
-#: src/libvlc-module.c:1308
+#: src/libvlc-module.c:1312
 msgid "Short backwards jump"
 msgstr "Pichon saut enarrièr"
 
-#: src/libvlc-module.c:1310
+#: src/libvlc-module.c:1314
 msgid "Select the hotkey to make a short backwards jump."
 msgstr "Causissètz l'acorchi per far un pichon saut en abans."
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1315
 msgid "Medium backwards jump"
 msgstr "Saut mejan enarrièr"
 
-#: src/libvlc-module.c:1313
+#: src/libvlc-module.c:1317
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr "Causissètz l'acorchi per far un saut mejan enarrièr."
 
-#: src/libvlc-module.c:1314
+#: src/libvlc-module.c:1318
 msgid "Long backwards jump"
 msgstr "Saut long enarrièr"
 
-#: src/libvlc-module.c:1316
+#: src/libvlc-module.c:1320
 msgid "Select the hotkey to make a long backwards jump."
 msgstr "Causissètz l'acorchi per far un long saut enarrièr."
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1322
 msgid "Very short forward jump"
 msgstr "Fòrça pichon saut enarrièr"
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1324
 msgid "Select the hotkey to make a very short forward jump."
 msgstr "Causissètz l'acorchi per far un fòrça pichon saut enarrièr."
 
-#: src/libvlc-module.c:1321
+#: src/libvlc-module.c:1325
 msgid "Short forward jump"
 msgstr "Pichon saut en abans"
 
-#: src/libvlc-module.c:1323
+#: src/libvlc-module.c:1327
 msgid "Select the hotkey to make a short forward jump."
 msgstr "Causissètz l'acorchi per far un pichon saut en abans"
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1328
 msgid "Medium forward jump"
 msgstr "Saut mejan en abans"
 
-#: src/libvlc-module.c:1326
+#: src/libvlc-module.c:1330
 msgid "Select the hotkey to make a medium forward jump."
 msgstr "Causissètz l'acorchi per far un saut mejan en abans."
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1331
 msgid "Long forward jump"
 msgstr "Long saut en abans"
 
-#: src/libvlc-module.c:1329
+#: src/libvlc-module.c:1333
 msgid "Select the hotkey to make a long forward jump."
 msgstr "Causissètz l'acorchi per far un long en abans."
 
-#: src/libvlc-module.c:1330 modules/control/hotkeys.c:713
+#: src/libvlc-module.c:1334 modules/control/hotkeys.c:713
 msgid "Next frame"
 msgstr "Imatge seguent"
 
-#: src/libvlc-module.c:1332
+#: src/libvlc-module.c:1336
 msgid "Select the hotkey to got to the next video frame."
 msgstr "Causissètz l'acorchi per anar a l'imatge seguent."
 
-#: src/libvlc-module.c:1334
+#: src/libvlc-module.c:1338
 msgid "Very short jump length"
 msgstr "Fòrça pichona longor de saut"
 
-#: src/libvlc-module.c:1335
+#: src/libvlc-module.c:1339
 msgid "Very short jump length, in seconds."
 msgstr "Fòrça pichona longor de saut, en segondas."
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1340
 msgid "Short jump length"
 msgstr "Pichon saut en longor"
 
-#: src/libvlc-module.c:1337
+#: src/libvlc-module.c:1341
 msgid "Short jump length, in seconds."
 msgstr "Pichon saut en longor, en segondas."
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1342
 msgid "Medium jump length"
 msgstr "Mejan saut en longor"
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1343
 msgid "Medium jump length, in seconds."
 msgstr "Mejan saut en longor, en segondas."
 
-#: src/libvlc-module.c:1340
+#: src/libvlc-module.c:1344
 msgid "Long jump length"
 msgstr "Long saut en longor"
 
-#: src/libvlc-module.c:1341
+#: src/libvlc-module.c:1345
 msgid "Long jump length, in seconds."
 msgstr "Long saut en longor, en segondas."
 
-#: src/libvlc-module.c:1343 modules/control/hotkeys.c:179
+#: src/libvlc-module.c:1347 modules/control/hotkeys.c:179
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:118 modules/gui/qt4/menus.cpp:886
 #: modules/gui/skins2/commands/cmd_quit.cpp:40
 msgid "Quit"
 msgstr "Sortir"
 
-#: src/libvlc-module.c:1344
+#: src/libvlc-module.c:1348
 msgid "Select the hotkey to quit the application."
 msgstr "Causissètz l'acorchi per sortir del programa."
 
-#: src/libvlc-module.c:1345
+#: src/libvlc-module.c:1349
 msgid "Navigate up"
 msgstr "Navegar vèrs lo naut"
 
-#: src/libvlc-module.c:1346
+#: src/libvlc-module.c:1350
 msgid "Select the key to move the selector up in DVD menus."
 msgstr ""
 "Causissètz l'acorchi per navegar vèrs lo naut dins los menuts dels DVDs."
 
-#: src/libvlc-module.c:1347
+#: src/libvlc-module.c:1351
 msgid "Navigate down"
 msgstr "Navegar vèrs lo bas"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1352
 msgid "Select the key to move the selector down in DVD menus."
 msgstr ""
 "Causissètz l'acorchi per navegar vèrs lo bas dins los menuts dels DVDs."
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1353
 msgid "Navigate left"
 msgstr "Navegar vèrs l'esquèrra"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1354
 msgid "Select the key to move the selector left in DVD menus."
 msgstr ""
 "Causissètz l'acorchi per navegar vèrs l'esquèrra dins los menuts dels DVDs."
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1355
 msgid "Navigate right"
 msgstr "Navegar vèrs la drecha"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1356
 msgid "Select the key to move the selector right in DVD menus."
 msgstr ""
 "Causissètz l'acorchi per navegar vèrs la drecha dins los menuts dels DVDs."
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1357
 msgid "Activate"
 msgstr "Activar"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1358
 msgid "Select the key to activate selected item in DVD menus."
 msgstr ""
 "Causissètz l'acorchi per activar l'element seleccionat dins los menuts dels "
 "DVD."
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1359
 msgid "Go to the DVD menu"
 msgstr "Anar al menut del DVD"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1360
 msgid "Select the key to take you to the DVD menu"
 msgstr "Causissètz l'acorchi per anar al menut del DVD."
 
-#: src/libvlc-module.c:1357
+#: src/libvlc-module.c:1361
 msgid "Select previous DVD title"
 msgstr "Anar al títol precedent"
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1362
 msgid "Select the key to choose the previous title from the DVD"
 msgstr "Causissètz l'acorchi per anar al títol precedent"
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1363
 msgid "Select next DVD title"
 msgstr "Anar al títol seguent"
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1364
 msgid "Select the key to choose the next title from the DVD"
 msgstr "Causissètz l'acorchi per anar al títol seguent"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1365
 msgid "Select prev DVD chapter"
 msgstr "Anar al capítol precedent"
 
-#: src/libvlc-module.c:1362
+#: src/libvlc-module.c:1366
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr "Causissètz l'acorchi per anar al capítol precedent"
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1367
 msgid "Select next DVD chapter"
 msgstr "Capítol seguent"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1368
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "Causissètz l'acorchi per anar al capítol seguent"
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1369
 msgid "Volume up"
 msgstr "Aumentar lo volum"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1370
 msgid "Select the key to increase audio volume."
 msgstr "Causissètz l'acorchi per aumentar lo volum."
 
-#: src/libvlc-module.c:1367
+#: src/libvlc-module.c:1371
 msgid "Volume down"
 msgstr "Baissar lo volum"
 
-#: src/libvlc-module.c:1368
+#: src/libvlc-module.c:1372
 msgid "Select the key to decrease audio volume."
 msgstr "Causissètz l'acorchi per baissar lo volum."
 
-#: src/libvlc-module.c:1369 modules/access/v4l2.c:175
+#: src/libvlc-module.c:1373 modules/access/v4l2.c:175
 #: modules/gui/macosx/controls.m:1077 modules/gui/macosx/intf.m:671
 #: modules/gui/macosx/intf.m:743 modules/gui/macosx/intf.m:752
 #: modules/gui/qt4/menus.cpp:575
 msgid "Mute"
 msgstr "Copar lo son"
 
-#: src/libvlc-module.c:1370
+#: src/libvlc-module.c:1374
 msgid "Select the key to mute audio."
 msgstr "Causissètz l'acorchi per copar lo son."
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1375
 msgid "Subtitle delay up"
 msgstr "Aumentar lo relambi dels sostítols"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1376
 msgid "Select the key to increase the subtitle delay."
 msgstr "Causissètz l'acorchi per aumentar lo relambi dels sostítols."
 
-#: src/libvlc-module.c:1373
+#: src/libvlc-module.c:1377
 msgid "Subtitle delay down"
 msgstr "Baissar lo relambi dels sostítols"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1378
 msgid "Select the key to decrease the subtitle delay."
 msgstr "Causissètz l'acorchi per baissar lo relambi dels sostítols."
 
-#: src/libvlc-module.c:1375
+#: src/libvlc-module.c:1379
 #, fuzzy
 msgid "Subtitle position up"
 msgstr "Opcions Sostítols"
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1380
 #, fuzzy
 msgid "Select the key to move subtitles higher."
 msgstr "Causissètz l'acorchi per copar lo son."
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1381
 #, fuzzy
 msgid "Subtitle position down"
 msgstr "Opcions Sostítols"
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1382
 #, fuzzy
 msgid "Select the key to move subtitles lower."
 msgstr "Causissètz l'acorchi per copar lo son."
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1383
 msgid "Audio delay up"
 msgstr "Aumentar lo relambi del son"
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1384
 msgid "Select the key to increase the audio delay."
 msgstr "Causissètz l'acorchi per aumentar lo relambi del son."
 
-#: src/libvlc-module.c:1381
+#: src/libvlc-module.c:1385
 msgid "Audio delay down"
 msgstr "Baissar lo relambi del son"
 
-#: src/libvlc-module.c:1382
+#: src/libvlc-module.c:1386
 msgid "Select the key to decrease the audio delay."
 msgstr "Causissètz l'acorchi per baissar lo relambi del son."
 
-#: src/libvlc-module.c:1389
+#: src/libvlc-module.c:1393
 msgid "Play playlist bookmark 1"
 msgstr "Legir lo favorit 1 de la lista de lectura"
 
-#: src/libvlc-module.c:1390
+#: src/libvlc-module.c:1394
 msgid "Play playlist bookmark 2"
 msgstr "Legir lo favorit 2 de la lista de lectura"
 
-#: src/libvlc-module.c:1391
+#: src/libvlc-module.c:1395
 msgid "Play playlist bookmark 3"
 msgstr "Legir lo favorit 3 de la lista de lectura"
 
-#: src/libvlc-module.c:1392
+#: src/libvlc-module.c:1396
 msgid "Play playlist bookmark 4"
 msgstr "Legir lo favorit 4 de la lista de lectura"
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1397
 msgid "Play playlist bookmark 5"
 msgstr "Legir lo favorit 5 de la lista de lectura"
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1398
 msgid "Play playlist bookmark 6"
 msgstr "Legir lo favorit 6 de la lista de lectura"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1399
 msgid "Play playlist bookmark 7"
 msgstr "Legir lo favorit 7 de la lista de lectura"
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1400
 msgid "Play playlist bookmark 8"
 msgstr "Legir lo favorit 8 de la lista de lectura"
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1401
 msgid "Play playlist bookmark 9"
 msgstr "Legir lo favorit 9 de la lista de lectura"
 
-#: src/libvlc-module.c:1398
+#: src/libvlc-module.c:1402
 msgid "Play playlist bookmark 10"
 msgstr "Legir lo favorit 10 de la lista de lectura"
 
-#: src/libvlc-module.c:1399
+#: src/libvlc-module.c:1403
 msgid "Select the key to play this bookmark."
 msgstr "Causissètz l'acorchi per legir aqueste favorit."
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1404
 msgid "Set playlist bookmark 1"
 msgstr "Causir lo favorit 1"
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1405
 msgid "Set playlist bookmark 2"
 msgstr "Causir lo favorit 2"
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1406
 msgid "Set playlist bookmark 3"
 msgstr "Causir lo favorit 3"
 
-#: src/libvlc-module.c:1403
+#: src/libvlc-module.c:1407
 msgid "Set playlist bookmark 4"
 msgstr "Causir lo favorit 4"
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1408
 msgid "Set playlist bookmark 5"
 msgstr "Causir lo favorit 5"
 
-#: src/libvlc-module.c:1405
+#: src/libvlc-module.c:1409
 msgid "Set playlist bookmark 6"
 msgstr "Causir lo favorit 6"
 
-#: src/libvlc-module.c:1406
+#: src/libvlc-module.c:1410
 msgid "Set playlist bookmark 7"
 msgstr "Causir lo favorit 7"
 
-#: src/libvlc-module.c:1407
+#: src/libvlc-module.c:1411
 msgid "Set playlist bookmark 8"
 msgstr "Causir lo favorit 8"
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1412
 msgid "Set playlist bookmark 9"
 msgstr "Causir lo favorit 9"
 
-#: src/libvlc-module.c:1409
+#: src/libvlc-module.c:1413
 msgid "Set playlist bookmark 10"
 msgstr "Causir lo favorit 10"
 
-#: src/libvlc-module.c:1410
+#: src/libvlc-module.c:1414
 msgid "Select the key to set this playlist bookmark."
 msgstr "Causissètz l'acorchi per causir aqueste favorit."
 
-#: src/libvlc-module.c:1412
+#: src/libvlc-module.c:1416
 msgid "Playlist bookmark 1"
 msgstr "Favorit 1"
 
-#: src/libvlc-module.c:1413
+#: src/libvlc-module.c:1417
 msgid "Playlist bookmark 2"
 msgstr "Favorit 2"
 
-#: src/libvlc-module.c:1414
+#: src/libvlc-module.c:1418
 msgid "Playlist bookmark 3"
 msgstr "Favorit 3"
 
-#: src/libvlc-module.c:1415
+#: src/libvlc-module.c:1419
 msgid "Playlist bookmark 4"
 msgstr "Favorit 4"
 
-#: src/libvlc-module.c:1416
+#: src/libvlc-module.c:1420
 msgid "Playlist bookmark 5"
 msgstr "Favorit 5"
 
-#: src/libvlc-module.c:1417
+#: src/libvlc-module.c:1421
 msgid "Playlist bookmark 6"
 msgstr "Favorit 6"
 
-#: src/libvlc-module.c:1418
+#: src/libvlc-module.c:1422
 msgid "Playlist bookmark 7"
 msgstr "Favorit 7"
 
-#: src/libvlc-module.c:1419
+#: src/libvlc-module.c:1423
 msgid "Playlist bookmark 8"
 msgstr "Favorit 8"
 
-#: src/libvlc-module.c:1420
+#: src/libvlc-module.c:1424
 msgid "Playlist bookmark 9"
 msgstr "Favorit 9"
 
-#: src/libvlc-module.c:1421
+#: src/libvlc-module.c:1425
 msgid "Playlist bookmark 10"
 msgstr "Favorit 10"
 
-#: src/libvlc-module.c:1423
+#: src/libvlc-module.c:1427
 msgid "This allows you to define playlist bookmarks."
 msgstr "Permet de causir un favorit."
 
-#: src/libvlc-module.c:1425
+#: src/libvlc-module.c:1429
 msgid "Go back in browsing history"
 msgstr "Recuolar dins l'istoric"
 
-#: src/libvlc-module.c:1426
+#: src/libvlc-module.c:1430
 msgid ""
 "Select the key to go back (to the previous media item) in the browsing "
 "history."
 msgstr "Causissètz l'acorchi recuolar dins l'istoric."
 
-#: src/libvlc-module.c:1427
+#: src/libvlc-module.c:1431
 msgid "Go forward in browsing history"
 msgstr "Avançar dins l'istoric"
 
-#: src/libvlc-module.c:1428
+#: src/libvlc-module.c:1432
 msgid ""
 "Select the key to go forward (to the next media item) in the browsing "
 "history."
 msgstr "Causissètz l'acorchi per avançar dins l'istoric."
 
-#: src/libvlc-module.c:1430
+#: src/libvlc-module.c:1434
 msgid "Cycle audio track"
 msgstr "Cicle de la pista audio"
 
-#: src/libvlc-module.c:1431
+#: src/libvlc-module.c:1435
 msgid "Cycle through the available audio tracks(languages)."
 msgstr "Cicle per las pistas audios (Lengatges)."
 
-#: src/libvlc-module.c:1432
+#: src/libvlc-module.c:1436
 msgid "Cycle subtitle track"
 msgstr "Cicle de la pista dels sostítols"
 
-#: src/libvlc-module.c:1433
+#: src/libvlc-module.c:1437
 msgid "Cycle through the available subtitle tracks."
 msgstr "Cicle per los sostítols disponibles."
 
-#: src/libvlc-module.c:1434
+#: src/libvlc-module.c:1438
 msgid "Cycle source aspect ratio"
 msgstr "Cicle dels rapòrts de talha"
 
-#: src/libvlc-module.c:1435
+#: src/libvlc-module.c:1439
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr "Cicle per una lista de rapòrt de talha."
 
-#: src/libvlc-module.c:1436
+#: src/libvlc-module.c:1440
 msgid "Cycle video crop"
 msgstr "Cycle video crop*"
 
-#: src/libvlc-module.c:1437
+#: src/libvlc-module.c:1441
 msgid "Cycle through a predefined list of crop formats."
 msgstr "Cycle through a predefined list of crop formats.*"
 
-#: src/libvlc-module.c:1438
+#: src/libvlc-module.c:1442
 msgid "Toggle autoscaling"
 msgstr ""
 
-#: src/libvlc-module.c:1439
+#: src/libvlc-module.c:1443
 msgid "Activate or deactivate autoscaling."
 msgstr ""
 
-#: src/libvlc-module.c:1440
+#: src/libvlc-module.c:1444
 msgid "Increase scale factor"
 msgstr ""
 
-#: src/libvlc-module.c:1441
+#: src/libvlc-module.c:1445
 msgid "Increase scale factor."
 msgstr ""
 
-#: src/libvlc-module.c:1442
+#: src/libvlc-module.c:1446
 msgid "Decrease scale factor"
 msgstr ""
 
-#: src/libvlc-module.c:1443
+#: src/libvlc-module.c:1447
 msgid "Decrease scale factor."
 msgstr ""
 
-#: src/libvlc-module.c:1444
+#: src/libvlc-module.c:1448
 msgid "Cycle deinterlace modes"
 msgstr ""
 
-#: src/libvlc-module.c:1445
+#: src/libvlc-module.c:1449
 msgid "Cycle through deinterlace modes."
 msgstr ""
 
-#: src/libvlc-module.c:1446
+#: src/libvlc-module.c:1450
 msgid "Show interface"
 msgstr "Mostrar l'interfàcia"
 
-#: src/libvlc-module.c:1447
+#: src/libvlc-module.c:1451
 msgid "Raise the interface above all other windows."
 msgstr "Plaçar l'interfàçia dessús totas las autras fenèstras."
 
-#: src/libvlc-module.c:1448
+#: src/libvlc-module.c:1452
 msgid "Hide interface"
 msgstr "Amagar l'interfàcia"
 
-#: src/libvlc-module.c:1449
+#: src/libvlc-module.c:1453
 msgid "Lower the interface below all other windows."
 msgstr "Plaçar l'interfàcia dejós las autras fenèstras."
 
-#: src/libvlc-module.c:1450
+#: src/libvlc-module.c:1454
 msgid "Take video snapshot"
 msgstr "Far una captura video"
 
-#: src/libvlc-module.c:1451
+#: src/libvlc-module.c:1455
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "Far una captura video e l'enregistrar sul disc."
 
-#: src/libvlc-module.c:1453 modules/gui/qt4/components/controller.hpp:107
+#: src/libvlc-module.c:1457 modules/gui/qt4/components/controller.hpp:107
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Enregistrar"
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1458
 msgid "Record access filter start/stop."
 msgstr "Record access filter start/stop.*"
 
-#: src/libvlc-module.c:1455
+#: src/libvlc-module.c:1459
 msgid "Dump"
 msgstr "Dump*"
 
-#: src/libvlc-module.c:1456
+#: src/libvlc-module.c:1460
 msgid "Media dump access filter trigger."
 msgstr ""
 
-#: src/libvlc-module.c:1458
+#: src/libvlc-module.c:1462
 msgid "Normal/Repeat/Loop"
 msgstr ""
 
-#: src/libvlc-module.c:1459
+#: src/libvlc-module.c:1463
 msgid "Toggle Normal/Repeat/Loop playlist modes"
 msgstr ""
 
-#: src/libvlc-module.c:1462
+#: src/libvlc-module.c:1466
 msgid "Toggle random playlist playback"
 msgstr ""
 
-#: src/libvlc-module.c:1467 src/libvlc-module.c:1468
+#: src/libvlc-module.c:1471 src/libvlc-module.c:1472
 msgid "Un-Zoom"
 msgstr "Zoom -"
 
-#: src/libvlc-module.c:1470 src/libvlc-module.c:1471
+#: src/libvlc-module.c:1474 src/libvlc-module.c:1475
 msgid "Crop one pixel from the top of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1472 src/libvlc-module.c:1473
+#: src/libvlc-module.c:1476 src/libvlc-module.c:1477
 msgid "Uncrop one pixel from the top of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1475 src/libvlc-module.c:1476
+#: src/libvlc-module.c:1479 src/libvlc-module.c:1480
 msgid "Crop one pixel from the left of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1477 src/libvlc-module.c:1478
+#: src/libvlc-module.c:1481 src/libvlc-module.c:1482
 msgid "Uncrop one pixel from the left of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1480 src/libvlc-module.c:1481
+#: src/libvlc-module.c:1484 src/libvlc-module.c:1485
 msgid "Crop one pixel from the bottom of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1482 src/libvlc-module.c:1483
+#: src/libvlc-module.c:1486 src/libvlc-module.c:1487
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1485 src/libvlc-module.c:1486
+#: src/libvlc-module.c:1489 src/libvlc-module.c:1490
 msgid "Crop one pixel from the right of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1487 src/libvlc-module.c:1488
+#: src/libvlc-module.c:1491 src/libvlc-module.c:1492
 msgid "Uncrop one pixel from the right of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1490
+#: src/libvlc-module.c:1494
 msgid "Toggle wallpaper mode in video output"
 msgstr "Activar lo mòde fons de pagina"
 
-#: src/libvlc-module.c:1492
+#: src/libvlc-module.c:1496
 #, fuzzy
 msgid "Toggle wallpaper mode in video output."
 msgstr "Activar lo mòde fons de pagina"
 
-#: src/libvlc-module.c:1494 src/libvlc-module.c:1495
+#: src/libvlc-module.c:1498 src/libvlc-module.c:1499
 msgid "Display OSD menu on top of video output"
 msgstr "Mostrar lo menut OSD dessús la sortida video"
 
-#: src/libvlc-module.c:1496
+#: src/libvlc-module.c:1500
 msgid "Do not display OSD menu on video output"
 msgstr "Mostrar pas lo menut OSD dessús la sortida video"
 
-#: src/libvlc-module.c:1497
+#: src/libvlc-module.c:1501
 msgid "Do not display OSD menu on top of video output"
 msgstr "Mostrar pas lo menut OSD en naut la sortida video"
 
-#: src/libvlc-module.c:1498
+#: src/libvlc-module.c:1502
 msgid "Highlight widget on the right"
 msgstr "Highlight widget on the right*"
 
-#: src/libvlc-module.c:1500
+#: src/libvlc-module.c:1504
 msgid "Move OSD menu highlight to the widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1501
+#: src/libvlc-module.c:1505
 msgid "Highlight widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1503
+#: src/libvlc-module.c:1507
 msgid "Move OSD menu highlight to the widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1504
+#: src/libvlc-module.c:1508
 msgid "Highlight widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1506
+#: src/libvlc-module.c:1510
 msgid "Move OSD menu highlight to the widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1507
+#: src/libvlc-module.c:1511
 msgid "Highlight widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1509
+#: src/libvlc-module.c:1513
 msgid "Move OSD menu highlight to the widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1510
+#: src/libvlc-module.c:1514
 msgid "Select current widget"
 msgstr ""
 
-#: src/libvlc-module.c:1512
+#: src/libvlc-module.c:1516
 msgid "Selecting current widget performs the associated action."
 msgstr ""
 
-#: src/libvlc-module.c:1514
+#: src/libvlc-module.c:1518
 msgid "Cycle through audio devices"
 msgstr ""
 
-#: src/libvlc-module.c:1515
+#: src/libvlc-module.c:1519
 msgid "Cycle through available audio devices"
 msgstr ""
 
-#: src/libvlc-module.c:1688 src/video_output/vout_intf.c:363
+#: src/libvlc-module.c:1692 src/video_output/vout_intf.c:363
 #: modules/gui/macosx/controls.m:494 modules/gui/macosx/controls.m:1086
 #: modules/gui/macosx/intf.m:688 modules/gui/macosx/intf.m:754
 #: modules/gui/qt4/components/controller.hpp:106
@@ -4439,96 +4413,95 @@ msgstr ""
 msgid "Snapshot"
 msgstr "Captura d'ecran"
 
-#: src/libvlc-module.c:1705
+#: src/libvlc-module.c:1709
 msgid "Window properties"
 msgstr "Proprietats de la fenèstra"
 
-#: src/libvlc-module.c:1764
+#: src/libvlc-module.c:1768
 msgid "Subpictures"
 msgstr "Sosimatges"
 
-#: src/libvlc-module.c:1772 modules/codec/subtitles/subsdec.c:206
+#: src/libvlc-module.c:1776 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
-#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
-#: modules/gui/qt4/ui/profiles.h:497
+#: modules/demux/subtitle.c:73
 msgid "Subtitles"
 msgstr "Sostítols"
 
-#: src/libvlc-module.c:1790 modules/stream_out/transcode/transcode.c:115
+#: src/libvlc-module.c:1794 modules/stream_out/transcode/transcode.c:115
 msgid "Overlays"
 msgstr "Overlays*"
 
-#: src/libvlc-module.c:1798
+#: src/libvlc-module.c:1802
 msgid "Track settings"
 msgstr "Paramètres de la pista"
 
-#: src/libvlc-module.c:1828
+#: src/libvlc-module.c:1832
 msgid "Playback control"
 msgstr ""
 
-#: src/libvlc-module.c:1856
+#: src/libvlc-module.c:1860
 msgid "Default devices"
 msgstr "Periferic per defaut"
 
-#: src/libvlc-module.c:1865
+#: src/libvlc-module.c:1869
 msgid "Network settings"
 msgstr "Paramètres del Ret"
 
-#: src/libvlc-module.c:1877
+#: src/libvlc-module.c:1881
 msgid "Socks proxy"
 msgstr "Servidor Socks"
 
-#: src/libvlc-module.c:1886 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1890 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Metadonadas"
 
-#: src/libvlc-module.c:1937
+#: src/libvlc-module.c:1941
 msgid "Decoders"
 msgstr "Descodadors"
 
-#: src/libvlc-module.c:1944 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1948 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Intrada"
 
-#: src/libvlc-module.c:1983
+#: src/libvlc-module.c:1987
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2015
+#: src/libvlc-module.c:2019
 msgid "CPU"
 msgstr "CPU"
 
-#: src/libvlc-module.c:2044
+#: src/libvlc-module.c:2048
 msgid "Special modules"
 msgstr "Moduls especials"
 
-#: src/libvlc-module.c:2050 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2054 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Ajustons"
 
-#: src/libvlc-module.c:2061
+#: src/libvlc-module.c:2065
 msgid "Performance options"
 msgstr "Opcions de performança"
 
-#: src/libvlc-module.c:2209
+#: src/libvlc-module.c:2213
 msgid "Hot keys"
 msgstr "Acorchis"
 
-#: src/libvlc-module.c:2651
+#: src/libvlc-module.c:2655
 msgid "Jump sizes"
 msgstr "Talhas del saut"
 
-#: src/libvlc-module.c:2728
+#: src/libvlc-module.c:2732
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "mostrar l'ajuda de VLC (pòt èsser combinat amb --advanced e --help-verbose)"
 
-#: src/libvlc-module.c:2731
+#: src/libvlc-module.c:2735
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Ajuda exaustiva per VML e sos moduls"
 
-#: src/libvlc-module.c:2733
+#: src/libvlc-module.c:2737
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4536,19 +4509,19 @@ msgstr ""
 "mostrar l'ajuda de VLC e de moduls (pòt èsser combinat amb --advanced e --"
 "help-verbose)"
 
-#: src/libvlc-module.c:2736
+#: src/libvlc-module.c:2740
 msgid "ask for extra verbosity when displaying help"
 msgstr "demandar mai de verbositat quand l'ajuda s'aficha"
 
-#: src/libvlc-module.c:2738
+#: src/libvlc-module.c:2742
 msgid "print a list of available modules"
 msgstr "mostrar la lista dels moduls disponibles"
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2744
 msgid "print a list of available modules with extra detail"
 msgstr "mostrar la lista dels moduls amb mai de detalhs"
 
-#: src/libvlc-module.c:2742
+#: src/libvlc-module.c:2746
 #, fuzzy
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
@@ -4557,27 +4530,27 @@ msgstr ""
 "mostrar l'ajuda per un modul especific (pòt èsser combinat amb --advanced e "
 "--help-verbose)"
 
-#: src/libvlc-module.c:2746
+#: src/libvlc-module.c:2750
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 
-#: src/libvlc-module.c:2748
+#: src/libvlc-module.c:2752
 msgid "reset the current config to the default values"
 msgstr "suprimir la configuracion actuala per aquela per defaut"
 
-#: src/libvlc-module.c:2750
+#: src/libvlc-module.c:2754
 msgid "use alternate config file"
 msgstr "utilizar un fichièr de configuracion aternatiu"
 
-#: src/libvlc-module.c:2752
+#: src/libvlc-module.c:2756
 msgid "resets the current plugins cache"
 msgstr ""
 
-#: src/libvlc-module.c:2754
+#: src/libvlc-module.c:2758
 msgid "print version information"
 msgstr "estampar las informacions de la version"
 
-#: src/libvlc-module.c:2792
+#: src/libvlc-module.c:2796
 msgid "main program"
 msgstr "programa principal"
 
@@ -5400,7 +5373,7 @@ msgstr ""
 
 #: src/video_output/vout_intf.c:228 modules/gui/macosx/intf.m:693
 #: modules/gui/macosx/intf.m:694 modules/video_filter/crop.c:107
-#: modules/video_filter/croppadd.c:86 modules/gui/qt4/ui/video_effects.h:1122
+#: modules/video_filter/croppadd.c:86
 msgid "Crop"
 msgstr "Talh"
 
@@ -5482,11 +5455,11 @@ msgstr ""
 msgid "Attachment input"
 msgstr ""
 
-#: modules/access/avio.h:34
+#: modules/access/avio.h:37
 msgid "Avio"
 msgstr ""
 
-#: modules/access/avio.h:35
+#: modules/access/avio.h:38
 msgid "FFmpeg access"
 msgstr ""
 
@@ -5799,7 +5772,7 @@ msgstr ""
 msgid "Hierarchy alpha value [Undefined,1,2,4]"
 msgstr ""
 
-#: modules/access/bda/bda.c:169 modules/gui/qt4/ui/streampanel.h:170
+#: modules/access/bda/bda.c:169
 msgid "1"
 msgstr "1"
 
@@ -5899,7 +5872,6 @@ msgstr ""
 
 #: modules/access/cdda.c:67 modules/gui/macosx/open.m:198
 #: modules/gui/macosx/open.m:643 modules/gui/macosx/open.m:731
-#: modules/gui/qt4/ui/open_disk.h:293
 msgid "Audio CD"
 msgstr "CD Audio"
 
@@ -6362,12 +6334,12 @@ msgstr "DVD amb de menuts"
 msgid "DVDnav Input"
 msgstr ""
 
-#: modules/access/dvdnav.c:325 modules/access/dvdread.c:205
-#: modules/access/dvdread.c:470 modules/access/dvdread.c:532
+#: modules/access/dvdnav.c:331 modules/access/dvdread.c:212
+#: modules/access/dvdread.c:477 modules/access/dvdread.c:539
 msgid "Playback failure"
 msgstr ""
 
-#: modules/access/dvdnav.c:326
+#: modules/access/dvdnav.c:332
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6380,17 +6352,17 @@ msgstr "DVD sens los menuts"
 msgid "DVDRead Input (no menu support)"
 msgstr ""
 
-#: modules/access/dvdread.c:206
+#: modules/access/dvdread.c:213
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "DVDRead pòt pas dobrir lo disc \"%s\"."
 
-#: modules/access/dvdread.c:471
+#: modules/access/dvdread.c:478
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "DVDRead pòt pas legir lo blòc %d."
 
-#: modules/access/dvdread.c:533
+#: modules/access/dvdread.c:540
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "DVDRead pòt pas legir %d/%d blòcs a 0x%02x."
@@ -6544,12 +6516,12 @@ msgstr "Fichièr d'intrada"
 #: modules/audio_output/file.c:112 modules/gui/macosx/open.m:178
 #: modules/gui/macosx/open.m:451 modules/gui/macosx/output.m:142
 #: modules/gui/macosx/output.m:230 modules/gui/macosx/output.m:369
-#: modules/gui/qt4/dialogs/plugins.cpp:525 modules/gui/qt4/dialogs/sout.cpp:74
-#: modules/gui/qt4/dialogs/sout.cpp:152
+#: modules/gui/qt4/dialogs/plugins.cpp:525 modules/gui/qt4/dialogs/sout.cpp:75
+#: modules/gui/qt4/dialogs/sout.cpp:153
 msgid "File"
 msgstr "Fichièr"
 
-#: modules/access/fs.c:78 modules/gui/qt4/ui/sprefs_video.h:327
+#: modules/access/fs.c:78
 #, fuzzy
 msgid "Directory"
 msgstr "Repertòri"
@@ -6791,7 +6763,7 @@ msgstr "Stream all elementary streams (video, audio and subtitles)*"
 #: modules/access/imem.c:88 modules/access/pvr.c:74 modules/access/v4l.c:102
 #: modules/access/v4l2.c:95 modules/codec/invmem.c:53
 #: modules/demux/rawvid.c:48 modules/video_filter/mosaic.c:95
-#: modules/video_output/vmem.c:42 modules/gui/qt4/ui/profiles.h:479
+#: modules/video_output/vmem.c:42
 msgid "Width"
 msgstr "Largor"
 
@@ -6803,7 +6775,7 @@ msgstr "Stream all elementary streams (video, audio and subtitles)*"
 #: modules/access/imem.c:91 modules/access/pvr.c:78 modules/access/v4l.c:105
 #: modules/access/v4l2.c:98 modules/codec/invmem.c:56
 #: modules/demux/rawvid.c:52 modules/video_filter/mosaic.c:93
-#: modules/video_output/vmem.c:45 modules/gui/qt4/ui/profiles.h:482
+#: modules/video_output/vmem.c:45
 msgid "Height"
 msgstr "Nautor"
 
@@ -7097,7 +7069,7 @@ msgstr ""
 #: modules/access/pvr.c:109 modules/access/v4l2.c:169
 #: modules/access/vcdx/info.c:69 modules/gui/macosx/embeddedwindow.m:74
 #: modules/gui/macosx/intf.m:607 modules/gui/qt4/dialogs/toolbar.cpp:347
-#: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:405
+#: modules/stream_out/raop.c:150
 msgid "Volume"
 msgstr "Volum"
 
@@ -7559,7 +7531,6 @@ msgstr "Nautor del flux de capturar (-1 per que siá automatic)"
 
 #: modules/access/v4l.c:108 modules/access/v4l2.c:114
 #: modules/gui/macosx/extended.m:98 modules/video_filter/atmo/atmo.cpp:264
-#: modules/gui/qt4/ui/video_effects.h:1107
 msgid "Brightness"
 msgstr ""
 
@@ -7568,7 +7539,7 @@ msgid "Brightness of the video input."
 msgstr "Luminositat de l'intrada vidèo."
 
 #: modules/access/v4l.c:111 modules/access/v4l2.c:123
-#: modules/gui/macosx/extended.m:101 modules/gui/qt4/ui/video_effects.h:1109
+#: modules/gui/macosx/extended.m:101
 msgid "Hue"
 msgstr ""
 
@@ -7579,9 +7550,6 @@ msgstr "Tencha de l'intrada vidèo."
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
 #: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
-#: modules/gui/qt4/ui/video_effects.h:1132
-#: modules/gui/qt4/ui/video_effects.h:1138
-#: modules/gui/qt4/ui/video_effects.h:1150
 msgid "Color"
 msgstr "Color"
 
@@ -7590,7 +7558,7 @@ msgid "Color of the video input."
 msgstr "Color de l'intrada vidèo."
 
 #: modules/access/v4l.c:117 modules/access/v4l2.c:117
-#: modules/gui/macosx/extended.m:99 modules/gui/qt4/ui/video_effects.h:1106
+#: modules/gui/macosx/extended.m:99
 msgid "Contrast"
 msgstr "Contrast"
 
@@ -7606,7 +7574,7 @@ msgstr "Tuner*"
 msgid "Tuner to use, if there are several ones."
 msgstr "Los tuners* d'utilizar, se existís mai d'un."
 
-#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:466
+#: modules/access/v4l.c:122
 msgid "MJPEG"
 msgstr "MJPEG"
 
@@ -7719,8 +7687,6 @@ msgid "Contrast of the video input (if supported by the v4l2 driver)."
 msgstr ""
 
 #: modules/access/v4l2.c:120 modules/gui/macosx/extended.m:102
-#: modules/gui/qt4/ui/video_effects.h:1108
-#: modules/gui/qt4/ui/video_effects.h:1137
 msgid "Saturation"
 msgstr ""
 
@@ -7777,7 +7743,6 @@ msgid "Blue balance of the video input (if supported by the v4l2 driver)."
 msgstr ""
 
 #: modules/access/v4l2.c:143 modules/gui/macosx/extended.m:100
-#: modules/gui/qt4/ui/video_effects.h:1105
 msgid "Gamma"
 msgstr ""
 
@@ -8066,7 +8031,7 @@ msgstr "ID sistèma"
 msgid "Entries"
 msgstr "Dintradas"
 
-#: modules/access/vcdx/info.c:75 modules/gui/qt4/ui/sprefs_audio.h:421
+#: modules/access/vcdx/info.c:75
 msgid "Tracks"
 msgstr "Camins"
 
@@ -8227,8 +8192,8 @@ msgstr "Senhal"
 msgid "Password that will be requested to access the stream."
 msgstr "Senhal que serà necessari per legir lo flux."
 
-#: modules/access_output/http.c:71 modules/demux/playlist/qtl.c:312
-#: modules/demux/playlist/shoutcast.c:412
+#: modules/access_output/http.c:71 modules/demux/playlist/qtl.c:313
+#: modules/demux/playlist/shoutcast.c:411
 msgid "Mime"
 msgstr "Mime"
 
@@ -9235,14 +9200,14 @@ msgstr "5.1"
 #: modules/audio_output/pulse.c:66 modules/gui/macosx/embeddedwindow.m:76
 #: modules/gui/macosx/intf.m:596 modules/gui/macosx/intf.m:597
 #: modules/gui/macosx/intf.m:2005 modules/gui/qt4/dialogs/help.cpp:99
-#: modules/gui/qt4/main_interface.cpp:872
-#: modules/gui/qt4/main_interface.cpp:876
-#: modules/gui/qt4/main_interface.cpp:916
-#: modules/gui/qt4/main_interface.cpp:918
-#: modules/gui/qt4/main_interface.cpp:986
-#: modules/gui/qt4/main_interface.cpp:1003
-#: modules/gui/qt4/main_interface.cpp:1010
-#: modules/gui/qt4/main_interface.cpp:1033
+#: modules/gui/qt4/main_interface.cpp:875
+#: modules/gui/qt4/main_interface.cpp:879
+#: modules/gui/qt4/main_interface.cpp:919
+#: modules/gui/qt4/main_interface.cpp:921
+#: modules/gui/qt4/main_interface.cpp:989
+#: modules/gui/qt4/main_interface.cpp:1006
+#: modules/gui/qt4/main_interface.cpp:1013
+#: modules/gui/qt4/main_interface.cpp:1036
 #: modules/video_output/xcb/window.c:322
 msgid "VLC media player"
 msgstr ""
@@ -10569,8 +10534,7 @@ msgid "MP3 fixed point audio encoder"
 msgstr "\"%s\" es pas un encoder audio."
 
 #: modules/codec/speex.c:57 modules/codec/speex.c:800
-#: modules/gui/macosx/open.m:209 modules/gui/qt4/ui/sprefs_video.h:324
-#: modules/gui/qt4/ui/video_effects.h:1149
+#: modules/gui/macosx/open.m:209
 msgid "Mode"
 msgstr "Mòde"
 
@@ -11712,7 +11676,6 @@ msgid "Quiet mode."
 msgstr ""
 
 #: modules/codec/x264.c:370 modules/gui/macosx/playlistinfo.m:82
-#: modules/gui/qt4/ui/streampanel.h:171
 msgid "Statistics"
 msgstr "Estatisticas"
 
@@ -12273,11 +12236,11 @@ msgstr ""
 msgid "Accept commands over a Unix socket rather than stdin."
 msgstr ""
 
-#: modules/control/rc.c:171
+#: modules/control/rc.c:171 modules/misc/lua/vlc.c:85
 msgid "TCP command input"
 msgstr ""
 
-#: modules/control/rc.c:172
+#: modules/control/rc.c:172 modules/misc/lua/vlc.c:86
 msgid ""
 "Accept commands over a socket rather than stdin. You can set the address and "
 "port the interface will bind to."
@@ -12640,112 +12603,112 @@ msgstr ""
 msgid "Press menu select or pause to continue."
 msgstr ""
 
-#: modules/control/rc.c:1241 modules/control/rc.c:1482
-#: modules/control/rc.c:1540 modules/control/rc.c:1713
-#: modules/control/rc.c:1811
+#: modules/control/rc.c:1241 modules/control/rc.c:1481
+#: modules/control/rc.c:1539 modules/control/rc.c:1712
+#: modules/control/rc.c:1810
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr ""
 
-#: modules/control/rc.c:1333
+#: modules/control/rc.c:1332
 msgid "Error: `goto' needs an argument greater than zero."
 msgstr ""
 
-#: modules/control/rc.c:1344
+#: modules/control/rc.c:1343
 #, c-format
 msgid "Playlist has only %d elements"
 msgstr ""
 
-#: modules/control/rc.c:1796 modules/control/rc.c:1836
+#: modules/control/rc.c:1795 modules/control/rc.c:1835
 msgid "Please provide one of the following parameters:"
 msgstr ""
 
-#: modules/control/rc.c:1870 modules/gui/ncurses.c:1972
+#: modules/control/rc.c:1869 modules/gui/ncurses.c:1972
 msgid "+-[Incoming]"
 msgstr ""
 
-#: modules/control/rc.c:1871 modules/gui/ncurses.c:1975
+#: modules/control/rc.c:1870 modules/gui/ncurses.c:1975
 #, c-format
 msgid "| input bytes read : %8.0f KiB"
 msgstr ""
 
-#: modules/control/rc.c:1873 modules/gui/ncurses.c:1978
+#: modules/control/rc.c:1872 modules/gui/ncurses.c:1978
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/rc.c:1875 modules/gui/ncurses.c:1980
+#: modules/control/rc.c:1874 modules/gui/ncurses.c:1980
 #, c-format
 msgid "| demux bytes read : %8.0f KiB"
 msgstr ""
 
-#: modules/control/rc.c:1877 modules/gui/ncurses.c:1983
+#: modules/control/rc.c:1876 modules/gui/ncurses.c:1983
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/rc.c:1879
+#: modules/control/rc.c:1878
 #, c-format
 msgid "| demux corrupted  :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1881
+#: modules/control/rc.c:1880
 #, c-format
 msgid "| discontinuities  :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1885 modules/gui/ncurses.c:1993
+#: modules/control/rc.c:1884 modules/gui/ncurses.c:1993
 msgid "+-[Video Decoding]"
 msgstr ""
 
-#: modules/control/rc.c:1886 modules/gui/ncurses.c:1996
+#: modules/control/rc.c:1885 modules/gui/ncurses.c:1996
 #, c-format
 msgid "| video decoded    :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1888 modules/gui/ncurses.c:1999
+#: modules/control/rc.c:1887 modules/gui/ncurses.c:1999
 #, c-format
 msgid "| frames displayed :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1890 modules/gui/ncurses.c:2002
+#: modules/control/rc.c:1889 modules/gui/ncurses.c:2002
 #, c-format
 msgid "| frames lost      :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1894 modules/gui/ncurses.c:2012
+#: modules/control/rc.c:1893 modules/gui/ncurses.c:2012
 msgid "+-[Audio Decoding]"
 msgstr ""
 
-#: modules/control/rc.c:1895 modules/gui/ncurses.c:2015
+#: modules/control/rc.c:1894 modules/gui/ncurses.c:2015
 #, c-format
 msgid "| audio decoded    :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1897 modules/gui/ncurses.c:2018
+#: modules/control/rc.c:1896 modules/gui/ncurses.c:2018
 #, c-format
 msgid "| buffers played   :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1899 modules/gui/ncurses.c:2021
+#: modules/control/rc.c:1898 modules/gui/ncurses.c:2021
 #, c-format
 msgid "| buffers lost     :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1903 modules/gui/ncurses.c:2029
+#: modules/control/rc.c:1902 modules/gui/ncurses.c:2029
 msgid "+-[Streaming]"
 msgstr ""
 
-#: modules/control/rc.c:1904 modules/gui/ncurses.c:2032
+#: modules/control/rc.c:1903 modules/gui/ncurses.c:2032
 #, c-format
 msgid "| packets sent     :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1905 modules/gui/ncurses.c:2034
+#: modules/control/rc.c:1904 modules/gui/ncurses.c:2034
 #, c-format
 msgid "| bytes sent       : %8.0f KiB"
 msgstr ""
 
-#: modules/control/rc.c:1907
+#: modules/control/rc.c:1906
 #, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
 msgstr ""
@@ -12933,10 +12896,6 @@ msgstr "Encodador vidèo Dirac"
 msgid "FLAC demuxer"
 msgstr ""
 
-#: modules/demux/gme.cpp:55
-msgid "GME demuxer (Game_Music_Emu)"
-msgstr ""
-
 #: modules/demux/kate_categories.c:40
 msgid "Closed captions"
 msgstr "Capturas tampadas"
@@ -13077,11 +13036,11 @@ msgstr ""
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr ""
 
-#: modules/demux/live555.cpp:603
+#: modules/demux/live555.cpp:604
 msgid "RTSP authentication"
 msgstr ""
 
-#: modules/demux/live555.cpp:604
+#: modules/demux/live555.cpp:605
 msgid "Please enter a valid login name and a password."
 msgstr "Mercé d'assabentar un nom d'utilizaire e un senhal valid."
 
@@ -13460,16 +13419,16 @@ msgstr "Talha del podcast"
 msgid "%s bytes"
 msgstr "Octets"
 
-#: modules/demux/playlist/shoutcast.c:410
+#: modules/demux/playlist/shoutcast.c:409
 msgid "Shoutcast"
 msgstr "Shoutcast*"
 
-#: modules/demux/playlist/shoutcast.c:414
+#: modules/demux/playlist/shoutcast.c:413
 #, fuzzy
 msgid "Listeners"
 msgstr "Linear"
 
-#: modules/demux/playlist/shoutcast.c:415
+#: modules/demux/playlist/shoutcast.c:414
 msgid "Load"
 msgstr "Cargar"
 
@@ -13891,7 +13850,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/fbosd.c:118 modules/misc/logger.c:113
-#: modules/video_filter/marq.c:87 modules/gui/qt4/ui/video_effects.h:1168
+#: modules/video_filter/marq.c:87
 msgid "Text"
 msgstr "Tèxt"
 
@@ -13989,7 +13948,6 @@ msgstr ""
 #: modules/misc/freetype.c:92 modules/misc/notify/xosd.c:80
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
-#: modules/gui/qt4/ui/sprefs_subtitles.h:211
 msgid "Font"
 msgstr "Poliça"
 
@@ -14033,15 +13991,13 @@ msgid "Bookmarks"
 msgstr "Favorits"
 
 #: modules/gui/macosx/bookmarks.m:88
-#: modules/gui/qt4/ui/podcast_configuration.h:104
-#: modules/gui/qt4/ui/sout.h:331 modules/gui/qt4/ui/vlm.h:300
 msgid "Add"
 msgstr "Apondre"
 
 #: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:643
 #: modules/gui/macosx/simple_prefs.m:246
 #: modules/gui/qt4/components/preferences_widgets.cpp:1206
-#: modules/gui/qt4/dialogs/bookmarks.cpp:47 modules/gui/qt4/ui/vlm.h:301
+#: modules/gui/qt4/dialogs/bookmarks.cpp:47
 msgid "Clear"
 msgstr "Netejar"
 
@@ -14054,7 +14010,7 @@ msgstr "Editar"
 msgid "Extract"
 msgstr "Extraire"
 
-#: modules/gui/macosx/bookmarks.m:92 modules/gui/qt4/ui/open_file.h:224
+#: modules/gui/macosx/bookmarks.m:92
 msgid "Remove"
 msgstr "Levar"
 
@@ -14221,7 +14177,7 @@ msgstr "Tornar enrè"
 msgid "Fast Forward"
 msgstr "Lèu endavant"
 
-#: modules/gui/macosx/equalizer.m:146 modules/gui/qt4/ui/equalizer.h:128
+#: modules/gui/macosx/equalizer.m:146
 msgid "2 Pass"
 msgstr ""
 
@@ -14233,7 +14189,7 @@ msgstr ""
 msgid "Enable the equalizer. Bands can be set manually or using a preset."
 msgstr ""
 
-#: modules/gui/macosx/equalizer.m:152 modules/gui/qt4/ui/equalizer.h:130
+#: modules/gui/macosx/equalizer.m:152
 msgid "Preamp"
 msgstr ""
 
@@ -14255,12 +14211,11 @@ msgstr ""
 
 #: modules/gui/macosx/extended.m:72 modules/meta_engine/id3genres.h:95
 #: modules/video_filter/psychedelic.c:55
-#: modules/gui/qt4/ui/video_effects.h:1143
 msgid "Psychedelic"
 msgstr ""
 
 #: modules/gui/macosx/extended.m:73 modules/video_filter/gradient.c:76
-#: modules/video_filter/gradient.c:82 modules/gui/qt4/ui/video_effects.h:1148
+#: modules/video_filter/gradient.c:82
 msgid "Gradient"
 msgstr ""
 
@@ -14292,7 +14247,7 @@ msgstr ""
 msgid "Crops a defined part of the image"
 msgstr ""
 
-#: modules/gui/macosx/extended.m:83 modules/gui/qt4/ui/video_effects.h:1134
+#: modules/gui/macosx/extended.m:83
 msgid "Invert colors"
 msgstr "Inversar las colors"
 
@@ -14794,10 +14749,6 @@ msgstr "Captura"
 #: modules/gui/qt4/components/preferences_widgets.cpp:299
 #: modules/gui/qt4/components/simple_preferences.cpp:276
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
-#: modules/gui/qt4/ui/open.h:246 modules/gui/qt4/ui/open_disk.h:300
-#: modules/gui/qt4/ui/open_file.h:232 modules/gui/qt4/ui/sprefs_audio.h:412
-#: modules/gui/qt4/ui/sprefs_input.h:308 modules/gui/qt4/ui/sprefs_input.h:317
-#: modules/gui/qt4/ui/sprefs_video.h:326
 msgid "Browse..."
 msgstr "Navegar..."
 
@@ -14811,7 +14762,6 @@ msgstr ""
 
 #: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/macosx/wizard.m:346 modules/gui/macosx/wizard.m:414
-#: modules/gui/qt4/ui/sprefs_interface.h:394
 msgid "Choose..."
 msgstr "Causir..."
 
@@ -14820,7 +14770,7 @@ msgstr "Causir..."
 msgid "Device name"
 msgstr "Nom del periferic"
 
-#: modules/gui/macosx/open.m:193 modules/gui/qt4/ui/open_disk.h:298
+#: modules/gui/macosx/open.m:193
 msgid "No DVD menus"
 msgstr "Cap de menuts (DVD)"
 
@@ -14829,7 +14779,7 @@ msgid "VIDEO_TS folder"
 msgstr "Repertòri VIDEO_TS"
 
 #: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:739
-#: modules/services_discovery/udev.c:587 modules/gui/qt4/ui/open_disk.h:292
+#: modules/services_discovery/udev.c:587
 msgid "DVD"
 msgstr "DVD"
 
@@ -14964,7 +14914,7 @@ msgstr "FPS"
 msgid "Subtitles encoding"
 msgstr "Encodatge dels sostítols"
 
-#: modules/gui/macosx/open.m:316 modules/gui/qt4/ui/sprefs_subtitles.h:210
+#: modules/gui/macosx/open.m:316
 msgid "Font size"
 msgstr "Talha de la poliça"
 
@@ -14981,7 +14931,7 @@ msgid "Subtitle File"
 msgstr "Fichièr dels sostítols"
 
 #: modules/gui/macosx/open.m:587 modules/gui/macosx/open.m:953
-#: modules/gui/macosx/open.m:1196 modules/gui/qt4/ui/open_file.h:217
+#: modules/gui/macosx/open.m:1196
 msgid "Open File"
 msgstr "Dobrir un Fichièr"
 
@@ -15041,7 +14991,7 @@ msgstr ""
 msgid "Encapsulation Method"
 msgstr ""
 
-#: modules/gui/macosx/output.m:159 modules/gui/qt4/ui/sout.h:335
+#: modules/gui/macosx/output.m:159
 msgid "Transcoding options"
 msgstr ""
 
@@ -15050,7 +15000,7 @@ msgstr ""
 msgid "Bitrate (kb/s)"
 msgstr "Taus de bits (kb/s)"
 
-#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:478
+#: modules/gui/macosx/output.m:166
 msgid "Scale"
 msgstr ""
 
@@ -15058,7 +15008,7 @@ msgstr ""
 msgid "Stream Announcing"
 msgstr ""
 
-#: modules/gui/macosx/output.m:181 modules/gui/qt4/ui/sout.h:342
+#: modules/gui/macosx/output.m:181
 msgid "SAP announce"
 msgstr "Anóncia SAP"
 
@@ -15089,7 +15039,6 @@ msgstr "Salvar lo fichièr"
 #: modules/gui/macosx/output.m:526 modules/gui/macosx/playlist.m:747
 #: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:310
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
-#: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "Salvar"
 
@@ -15110,8 +15059,6 @@ msgid "Save Playlist..."
 msgstr "Salvar la Lista de Lectura..."
 
 #: modules/gui/macosx/playlist.m:467 modules/gui/qt4/dialogs/bookmarks.cpp:45
-#: modules/gui/qt4/ui/podcast_configuration.h:105
-#: modules/gui/qt4/ui/streampanel.h:173
 msgid "Delete"
 msgstr "Suprimir"
 
@@ -15295,7 +15242,6 @@ msgid "Reset All"
 msgstr "Tornar lançar totes"
 
 #: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:306
-#: modules/gui/qt4/ui/video_effects.h:1111
 msgid "Basic"
 msgstr "Basic"
 
@@ -15327,7 +15273,7 @@ msgid "Not Set"
 msgstr "Pas definit"
 
 #: modules/gui/macosx/simple_prefs.m:180
-#: modules/gui/qt4/components/simple_preferences.cpp:519
+#: modules/gui/qt4/components/simple_preferences.cpp:524
 msgid "Interface Settings"
 msgstr "Paramètres de l'interfàcia"
 
@@ -15344,7 +15290,7 @@ msgid "Subtitles & OSD"
 msgstr "Sostítols & OSD"
 
 #: modules/gui/macosx/simple_prefs.m:192
-#: modules/gui/qt4/components/simple_preferences.cpp:619
+#: modules/gui/qt4/components/simple_preferences.cpp:624
 msgid "Subtitles & On Screen Display Settings"
 msgstr "Paramètres de Sostítols & OSD"
 
@@ -15356,7 +15302,7 @@ msgstr "Dintrada & Codecs"
 msgid "Input & Codec settings"
 msgstr "Paramètres de Dintrada & Codec"
 
-#: modules/gui/macosx/simple_prefs.m:228 modules/gui/qt4/ui/sprefs_audio.h:414
+#: modules/gui/macosx/simple_prefs.m:228
 msgid "Effects"
 msgstr "Efièches"
 
@@ -15368,7 +15314,7 @@ msgstr "Activar àudio"
 msgid "General Audio"
 msgstr "General àudio"
 
-#: modules/gui/macosx/simple_prefs.m:231 modules/gui/qt4/ui/sprefs_audio.h:419
+#: modules/gui/macosx/simple_prefs.m:231
 msgid "Headphone surround effect"
 msgstr ""
 
@@ -15417,7 +15363,7 @@ msgstr "Reparar los fichièrs AVI"
 msgid "Default Caching Level"
 msgstr "Nivèl de taboisson per defaut"
 
-#: modules/gui/macosx/simple_prefs.m:254 modules/gui/qt4/ui/open.h:235
+#: modules/gui/macosx/simple_prefs.m:254
 msgid "Caching"
 msgstr "Taboisson"
 
@@ -15460,7 +15406,6 @@ msgid "Show Fullscreen Controller"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:270
-#: modules/gui/qt4/ui/sprefs_interface.h:376
 msgid "Privacy / Network Interaction"
 msgstr ""
 
@@ -15477,7 +15422,6 @@ msgid "Default Encoding"
 msgstr "Encodatge per defaut"
 
 #: modules/gui/macosx/simple_prefs.m:279
-#: modules/gui/qt4/ui/sprefs_subtitles.h:207
 msgid "Display Settings"
 msgstr "Mostrar los paramètres"
 
@@ -15507,7 +15451,6 @@ msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:292 modules/stream_out/display.c:54
 #: modules/video_filter/deinterlace.c:138
-#: modules/gui/qt4/ui/sprefs_video.h:310
 msgid "Display"
 msgstr "Mostrar"
 
@@ -15519,7 +15462,7 @@ msgstr "Activar la vidèo"
 msgid "Output module"
 msgstr "Modul de Sortida"
 
-#: modules/gui/macosx/simple_prefs.m:298 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/gui/macosx/simple_prefs.m:298
 msgid "Video snapshots"
 msgstr "Captura vidèo"
 
@@ -15527,15 +15470,15 @@ msgstr "Captura vidèo"
 msgid "Folder"
 msgstr "Repertòri"
 
-#: modules/gui/macosx/simple_prefs.m:301 modules/gui/qt4/ui/sprefs_video.h:330
+#: modules/gui/macosx/simple_prefs.m:301
 msgid "Format"
 msgstr "Format"
 
-#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:328
+#: modules/gui/macosx/simple_prefs.m:302
 msgid "Prefix"
 msgstr "Prefix"
 
-#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:331
+#: modules/gui/macosx/simple_prefs.m:303
 msgid "Sequential numbering"
 msgstr ""
 
@@ -15549,34 +15492,34 @@ msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:572 modules/gui/macosx/simple_prefs.m:616
 #: modules/gui/macosx/simple_prefs.m:1223
-#: modules/gui/qt4/components/simple_preferences.cpp:463
+#: modules/gui/qt4/components/simple_preferences.cpp:468
 msgid "Custom"
 msgstr "Personalizar"
 
 #: modules/gui/macosx/simple_prefs.m:572
-#: modules/gui/qt4/components/simple_preferences.cpp:464
+#: modules/gui/qt4/components/simple_preferences.cpp:469
 msgid "Lowest latency"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:572
-#: modules/gui/qt4/components/simple_preferences.cpp:465
+#: modules/gui/qt4/components/simple_preferences.cpp:470
 msgid "Low latency"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:572
-#: modules/gui/qt4/components/simple_preferences.cpp:466
+#: modules/gui/qt4/components/simple_preferences.cpp:471
 #: modules/misc/freetype.c:121 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:81
 msgid "Normal"
 msgstr "Normal"
 
 #: modules/gui/macosx/simple_prefs.m:573
-#: modules/gui/qt4/components/simple_preferences.cpp:467
+#: modules/gui/qt4/components/simple_preferences.cpp:472
 msgid "High latency"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:573
-#: modules/gui/qt4/components/simple_preferences.cpp:468
+#: modules/gui/qt4/components/simple_preferences.cpp:473
 msgid "Higher latency"
 msgstr ""
 
@@ -15956,7 +15899,6 @@ msgid "In this page, a few additional streaming parameters can be set."
 msgstr ""
 
 #: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
-#: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr ""
 
@@ -16811,11 +16753,11 @@ msgstr "Legir"
 msgid "buffers"
 msgstr "Muxers*"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:293
+#: modules/gui/qt4/components/interface_widgets.cpp:295
 msgid "Current visualization"
 msgstr "Visualizacion actuala"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:332
+#: modules/gui/qt4/components/interface_widgets.cpp:334
 #, fuzzy
 msgid ""
 "Current playback speed: %1\n"
@@ -16824,19 +16766,19 @@ msgstr ""
 "Velocitat de lectura.\n"
 "Clicar per ajustar"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:403
+#: modules/gui/qt4/components/interface_widgets.cpp:405
 msgid "Revert to normal play speed"
 msgstr "Anar en mòde lectura normala"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:477
+#: modules/gui/qt4/components/interface_widgets.cpp:479
 msgid "Download cover art"
 msgstr ""
 
-#: modules/gui/qt4/components/interface_widgets.cpp:520
+#: modules/gui/qt4/components/interface_widgets.cpp:522
 msgid "Click to toggle between elapsed and remaining time"
 msgstr ""
 
-#: modules/gui/qt4/components/interface_widgets.cpp:522
+#: modules/gui/qt4/components/interface_widgets.cpp:524
 #, fuzzy
 msgid "Double click to jump to a chosen time position"
 msgstr "Doble-clic per obténer las informacions del mèdia"
@@ -16861,7 +16803,6 @@ msgid "File names:"
 msgstr "Nom dels fichièrs:"
 
 #: modules/gui/qt4/components/open_panels.cpp:149
-#: modules/gui/qt4/ui/sprefs_interface.h:382
 msgid "Filter:"
 msgstr "Filtres:"
 
@@ -16974,6 +16915,24 @@ msgstr "Descodatge"
 #: modules/gui/qt4/components/playlist/selector.cpp:248
 msgid "Remove this podcast subscription"
 msgstr ""
+
+#: modules/gui/qt4/components/playlist/selector.cpp:267
+msgid "My Computer"
+msgstr ""
+
+#: modules/gui/qt4/components/playlist/selector.cpp:269
+msgid "Devices"
+msgstr "Periferics"
+
+#: modules/gui/qt4/components/playlist/selector.cpp:271
+#, fuzzy
+msgid "Local Network"
+msgstr "Ret"
+
+#: modules/gui/qt4/components/playlist/selector.cpp:273
+#, fuzzy
+msgid "Internet"
+msgstr "Interlingue"
 
 #: modules/gui/qt4/components/playlist/selector.cpp:295
 msgid "Subscribe to a podcast"
@@ -17094,50 +17053,50 @@ msgid ""
 "individually in the advanced preferences."
 msgstr ""
 
-#: modules/gui/qt4/components/simple_preferences.cpp:522
+#: modules/gui/qt4/components/simple_preferences.cpp:527
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 
-#: modules/gui/qt4/components/simple_preferences.cpp:524
+#: modules/gui/qt4/components/simple_preferences.cpp:529
 msgid "VLC skins website"
 msgstr ""
 
-#: modules/gui/qt4/components/simple_preferences.cpp:549
+#: modules/gui/qt4/components/simple_preferences.cpp:554
 #, fuzzy
 msgid "System's default"
 msgstr "ID sistèma"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:647
+#: modules/gui/qt4/components/simple_preferences.cpp:652
 msgid "Configure Hotkeys"
 msgstr "Configurar los acorchis"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:911
+#: modules/gui/qt4/components/simple_preferences.cpp:916
 #: modules/gui/qt4/dialogs_provider.hpp:51
 msgid "Audio Files"
 msgstr "Filtres audio"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:912
+#: modules/gui/qt4/components/simple_preferences.cpp:917
 #: modules/gui/qt4/dialogs_provider.hpp:46
 msgid "Video Files"
 msgstr "Fichièrs vidèo"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:913
+#: modules/gui/qt4/components/simple_preferences.cpp:918
 #: modules/gui/qt4/dialogs_provider.hpp:56
 msgid "Playlist Files"
 msgstr "Fichièrs de tipe lista de lectura"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:965
+#: modules/gui/qt4/components/simple_preferences.cpp:970
 msgid "&Apply"
 msgstr "&Aplicar"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:966
+#: modules/gui/qt4/components/simple_preferences.cpp:971
 #: modules/gui/qt4/dialogs/convert.cpp:96
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
 #: modules/gui/qt4/dialogs/openurl.cpp:60
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:37
 #: modules/gui/qt4/dialogs/preferences.cpp:86
-#: modules/gui/qt4/dialogs/sout.cpp:97 modules/gui/qt4/dialogs/toolbar.cpp:189
+#: modules/gui/qt4/dialogs/sout.cpp:98 modules/gui/qt4/dialogs/toolbar.cpp:189
 msgid "&Cancel"
 msgstr "&Anullar"
 
@@ -17182,7 +17141,6 @@ msgid "File/Folder"
 msgstr "Repertòri"
 
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:46
-#: modules/gui/qt4/ui/sout.h:328
 #, fuzzy
 msgid "Source"
 msgstr "Dobrir la font"
@@ -17305,7 +17263,6 @@ msgid "Convert"
 msgstr "&Convertir"
 
 #: modules/gui/qt4/dialogs/convert.cpp:58
-#: modules/gui/qt4/ui/sprefs_audio.h:411
 #, fuzzy
 msgid "Destination file:"
 msgstr "Fichièr de configuracion"
@@ -17390,7 +17347,6 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt4/dialogs/firstrun.cpp:83
-#: modules/gui/qt4/ui/open_capture.h:103 modules/gui/qt4/ui/sout.h:347
 msgid "Options"
 msgstr "Opcions"
 
@@ -17616,7 +17572,7 @@ msgid "&Play"
 msgstr "&Legir"
 
 #: modules/gui/qt4/dialogs/open.cpp:121 modules/gui/qt4/dialogs/open.cpp:221
-#: modules/gui/qt4/dialogs/sout.cpp:96
+#: modules/gui/qt4/dialogs/sout.cpp:97
 msgid "&Stream"
 msgstr "&Flux"
 
@@ -17735,11 +17691,11 @@ msgstr "Lo fichièr pòt pas èsser verificat"
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "Sètz segur de voler tornar lançar las preferéncias de VLC ?"
 
-#: modules/gui/qt4/dialogs/sout.cpp:42 modules/gui/qt4/ui/sout.h:326
+#: modules/gui/qt4/dialogs/sout.cpp:43
 msgid "Stream Output"
 msgstr "Flux de sortida"
 
-#: modules/gui/qt4/dialogs/sout.cpp:48
+#: modules/gui/qt4/dialogs/sout.cpp:49
 msgid ""
 "This dialog will allow you to stream or convert your media for use locally, "
 "on your private network, or on the Internet.\n"
@@ -17747,7 +17703,7 @@ msgid ""
 "be and then press the \"Next\" button to continue.\n"
 msgstr ""
 
-#: modules/gui/qt4/dialogs/sout.cpp:55
+#: modules/gui/qt4/dialogs/sout.cpp:56
 msgid ""
 "Stream output string.\n"
 "This is automatically generated when you change the above settings,\n"
@@ -17838,7 +17794,7 @@ msgstr "Suprimir l'element seleccionat"
 msgid "Cl&ose"
 msgstr "Tampar"
 
-#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:455
+#: modules/gui/qt4/dialogs/toolbar.cpp:217
 #, fuzzy
 msgid "Profile Name"
 msgstr "Nom del fichièr d'istoric"
@@ -17910,7 +17866,6 @@ msgid "Repeat delay:"
 msgstr "Relambi de repeticion:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:112
-#: modules/gui/qt4/ui/sprefs_interface.h:379
 msgid " days"
 msgstr " jorns"
 
@@ -17998,11 +17953,11 @@ msgstr "Fichièrs de sostítols"
 msgid "All Files"
 msgstr "Totes los fichièrs"
 
-#: modules/gui/qt4/main_interface.cpp:987
+#: modules/gui/qt4/main_interface.cpp:990
 msgid "Control menu for the player"
 msgstr ""
 
-#: modules/gui/qt4/main_interface.cpp:1030
+#: modules/gui/qt4/main_interface.cpp:1033
 msgid "Paused"
 msgstr "Arrestat"
 
@@ -18741,7 +18696,6 @@ msgid "Gospel"
 msgstr "Gospel"
 
 #: modules/meta_engine/id3genres.h:67 modules/video_filter/noise.c:52
-#: modules/gui/qt4/ui/video_effects.h:1144
 msgid "Noise"
 msgstr "Noise"
 
@@ -19286,75 +19240,79 @@ msgstr "Dintrada DirectShow"
 msgid "Allow to build directory index"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:89
+#: modules/misc/lua/vlc.c:92
 msgid "Lua Interface Module"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:90
+#: modules/misc/lua/vlc.c:93
 msgid "Interfaces implemented using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:105
+#: modules/misc/lua/vlc.c:108
 #, fuzzy
 msgid "Lua HTTP"
 msgstr "HTTP"
 
-#: modules/misc/lua/vlc.c:109
+#: modules/misc/lua/vlc.c:112
+msgid "Lua RC"
+msgstr ""
+
+#: modules/misc/lua/vlc.c:114
 msgid "Lua Telnet"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:120
+#: modules/misc/lua/vlc.c:125
 msgid "Lua Meta Fetcher"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:121
+#: modules/misc/lua/vlc.c:126
 msgid "Fetch meta data using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:126
+#: modules/misc/lua/vlc.c:131
 msgid "Lua Meta Reader"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:127
+#: modules/misc/lua/vlc.c:132
 msgid "Read meta data using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:133
+#: modules/misc/lua/vlc.c:138
 msgid "Lua Playlist"
 msgstr "Lista de lectura Lua"
 
-#: modules/misc/lua/vlc.c:134
+#: modules/misc/lua/vlc.c:139
 msgid "Lua Playlist Parser Interface"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:139
+#: modules/misc/lua/vlc.c:144
 #, fuzzy
 msgid "Lua Interface Module (shortcuts)"
 msgstr "Modul de l'interfàcia"
 
-#: modules/misc/lua/vlc.c:146
+#: modules/misc/lua/vlc.c:151
 msgid "Lua Art"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:147
+#: modules/misc/lua/vlc.c:152
 msgid "Fetch artwork using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:152
+#: modules/misc/lua/vlc.c:157
 #, fuzzy
 msgid "Lua Extension"
 msgstr "Ajustons e extensions"
 
-#: modules/misc/lua/vlc.c:158
+#: modules/misc/lua/vlc.c:163
 #, fuzzy
 msgid "Lua SD Module"
 msgstr "Modul Mux*"
 
-#: modules/misc/lua/vlc.c:168
+#: modules/misc/lua/vlc.c:173
 msgid "Freebox TV"
 msgstr "Freebox TV"
 
-#: modules/misc/lua/vlc.c:174
+#: modules/misc/lua/vlc.c:179
 msgid "French TV"
 msgstr "Television francesa"
 
@@ -20028,7 +19986,6 @@ msgid "MTP Device"
 msgstr "Periferic"
 
 #: modules/services_discovery/podcast.c:58
-#: modules/gui/qt4/ui/podcast_configuration.h:102
 msgid "Podcast URLs list"
 msgstr ""
 
@@ -20462,7 +20419,6 @@ msgid ""
 msgstr ""
 
 #: modules/stream_out/mosaic_bridge.c:128 modules/video_filter/mosaic.c:88
-#: modules/gui/qt4/ui/video_effects.h:1176
 msgid "Transparency"
 msgstr "Transparéncia"
 
@@ -20821,7 +20777,7 @@ msgstr ""
 msgid "Standard stream output"
 msgstr ""
 
-#: modules/stream_out/switcher.c:90 modules/gui/qt4/ui/sprefs_input.h:314
+#: modules/stream_out/switcher.c:90
 msgid "Files"
 msgstr "Fichièrs"
 
@@ -21119,7 +21075,7 @@ msgstr ""
 msgid "AltiVec conversions from "
 msgstr ""
 
-#: modules/video_filter/adjust.c:64 modules/gui/qt4/ui/video_effects.h:1110
+#: modules/video_filter/adjust.c:64
 msgid "Brightness threshold"
 msgstr ""
 
@@ -21173,7 +21129,7 @@ msgstr "Causir lo gamma de l'imatge, entre 0.01 e 10. Per defaut es 1."
 msgid "Image properties filter"
 msgstr "Filtre de proprietats d'imatge"
 
-#: modules/video_filter/adjust.c:81 modules/gui/qt4/ui/video_effects.h:1104
+#: modules/video_filter/adjust.c:81
 msgid "Image adjust"
 msgstr ""
 
@@ -21522,7 +21478,6 @@ msgid "Sat windowing"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:275
-#: modules/gui/qt4/ui/video_effects.h:1159
 msgid "Filter length (ms)"
 msgstr "Longo del filtre (ms)"
 
@@ -21699,8 +21654,6 @@ msgid "AtmoLight Filter"
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:368
-#: modules/gui/qt4/ui/video_effects.h:1153
-#: modules/gui/qt4/ui/video_effects.h:1162
 msgid "AtmoLight"
 msgstr ""
 
@@ -22082,7 +22035,7 @@ msgstr "Suprimir lo filtre video"
 msgid "Video filtering using a chain of video filter modules"
 msgstr ""
 
-#: modules/video_filter/clone.c:39 modules/gui/qt4/ui/video_effects.h:1173
+#: modules/video_filter/clone.c:39
 msgid "Number of clones"
 msgstr ""
 
@@ -22108,7 +22061,7 @@ msgstr ""
 msgid "Clone video filter"
 msgstr ""
 
-#: modules/video_filter/clone.c:57 modules/gui/qt4/ui/video_effects.h:1172
+#: modules/video_filter/clone.c:57
 msgid "Clone"
 msgstr ""
 
@@ -22130,7 +22083,6 @@ msgid "Color threshold filter"
 msgstr ""
 
 #: modules/video_filter/colorthres.c:70
-#: modules/gui/qt4/ui/video_effects.h:1135
 msgid "Color threshold"
 msgstr ""
 
@@ -22831,7 +22783,6 @@ msgid "The degree of blurring from 1 to 127."
 msgstr ""
 
 #: modules/video_filter/motionblur.c:58
-#: modules/gui/qt4/ui/video_effects.h:1146
 msgid "Motion blur"
 msgstr ""
 
@@ -23051,7 +23002,7 @@ msgstr ""
 msgid "Panoramix: wall with overlap video filter"
 msgstr ""
 
-#: modules/video_filter/panoramix.c:79 modules/gui/qt4/ui/video_effects.h:1169
+#: modules/video_filter/panoramix.c:79
 msgid "Panoramix"
 msgstr "Panoramix"
 
@@ -23386,7 +23337,7 @@ msgstr ""
 msgid "Rotate video filter"
 msgstr ""
 
-#: modules/video_filter/rotate.c:67 modules/gui/qt4/ui/video_effects.h:1128
+#: modules/video_filter/rotate.c:67
 msgid "Rotate"
 msgstr ""
 
@@ -23586,7 +23537,7 @@ msgstr ""
 msgid "Sharpen video filter"
 msgstr ""
 
-#: modules/video_filter/sharpen.c:67 modules/gui/qt4/ui/video_effects.h:1102
+#: modules/video_filter/sharpen.c:67
 #, fuzzy
 msgid "Sharpen"
 msgstr "Ecran"
@@ -23823,7 +23774,7 @@ msgstr ""
 msgid "Direct3D video output"
 msgstr "Sortida vidèo 3D DirectX"
 
-#: modules/video_output/msw/directx.c:68 modules/gui/qt4/ui/sprefs_video.h:317
+#: modules/video_output/msw/directx.c:68
 msgid "Use hardware YUV->RGB conversions"
 msgstr ""
 
@@ -24347,984 +24298,578 @@ msgstr ""
 msgid "Spectrum analyser"
 msgstr ""
 
-#: modules/gui/qt4/ui/equalizer.h:126 modules/gui/qt4/ui/open_disk.h:290
-#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:454
-#: modules/gui/qt4/ui/sprefs_audio.h:403 modules/gui/qt4/ui/sprefs_input.h:305
-#: modules/gui/qt4/ui/sprefs_interface.h:372
-#: modules/gui/qt4/ui/sprefs_subtitles.h:200
-#: modules/gui/qt4/ui/sprefs_video.h:308 modules/gui/qt4/ui/streampanel.h:168
-#: modules/gui/qt4/ui/v4l2.h:58
 #, fuzzy
-msgid "Form"
-msgstr "Format"
+#~ msgid "Form"
+#~ msgstr "Format"
 
-#: modules/gui/qt4/ui/equalizer.h:129
 #, fuzzy
-msgid "Preset"
-msgstr "Portugués"
+#~ msgid "Preset"
+#~ msgstr "Portugués"
 
-#: modules/gui/qt4/ui/open.h:230
-#: modules/gui/qt4/ui/podcast_configuration.h:101
 #, fuzzy
-msgid "Dialog"
-msgstr "Desactivat"
+#~ msgid "Dialog"
+#~ msgstr "Desactivat"
 
-#: modules/gui/qt4/ui/open.h:232
 #, fuzzy
-msgid "Show extended options"
-msgstr "Mostrar las paramètres espandits"
+#~ msgid "Show extended options"
+#~ msgstr "Mostrar las paramètres espandits"
 
-#: modules/gui/qt4/ui/open.h:234
-msgid "Show &more options"
-msgstr "Mostrar mai d'opcions"
+#~ msgid "Show &more options"
+#~ msgstr "Mostrar mai d'opcions"
 
-#: modules/gui/qt4/ui/open.h:237
-msgid "Change the caching for the media"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:239
 #, fuzzy
-msgid " ms"
-msgstr "mms"
+#~ msgid " ms"
+#~ msgstr "mms"
 
-#: modules/gui/qt4/ui/open.h:240
 #, fuzzy
-msgid "Start Time"
-msgstr "Temps de la partença"
-
-#: modules/gui/qt4/ui/open.h:241
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:242
-msgid "Extra media"
-msgstr ""
+#~ msgid "Start Time"
+#~ msgstr "Temps de la partença"
 
-#: modules/gui/qt4/ui/open.h:244
-msgid "Select the file"
-msgstr "Causir lo fichièr"
+#~ msgid "Select the file"
+#~ msgstr "Causir lo fichièr"
 
-#: modules/gui/qt4/ui/open.h:247
-msgid "MRL"
-msgstr "MRL"
+#~ msgid "MRL"
+#~ msgstr "MRL"
 
-#: modules/gui/qt4/ui/open.h:249
-msgid "Complete MRL for VLC internal"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:251
 #, fuzzy
-msgid "Edit Options"
-msgstr "Opcions"
-
-#: modules/gui/qt4/ui/open.h:253
-msgid "Change the start time for the media"
-msgstr ""
-
-#: modules/gui/qt4/ui/open.h:255
-msgid "s"
-msgstr ""
+#~ msgid "Edit Options"
+#~ msgstr "Opcions"
 
-#: modules/gui/qt4/ui/open_capture.h:98
 #, fuzzy
-msgid "Capture mode"
-msgstr "Captura"
+#~ msgid "Capture mode"
+#~ msgstr "Captura"
 
-#: modules/gui/qt4/ui/open_capture.h:100
-msgid "Select the capture device type"
-msgstr "Causir lo tipe de periferic de captura"
+#~ msgid "Select the capture device type"
+#~ msgstr "Causir lo tipe de periferic de captura"
 
-#: modules/gui/qt4/ui/open_capture.h:102
 #, fuzzy
-msgid "Device Selection"
-msgstr "&Seleccion"
+#~ msgid "Device Selection"
+#~ msgstr "&Seleccion"
 
-#: modules/gui/qt4/ui/open_capture.h:105
-msgid "Access advanced options to tweak the device"
-msgstr ""
+#~ msgid "Advanced options..."
+#~ msgstr "Opcions avançadas..."
 
-#: modules/gui/qt4/ui/open_capture.h:107
-msgid "Advanced options..."
-msgstr "Opcions avançadas..."
-
-#: modules/gui/qt4/ui/open_disk.h:291
 #, fuzzy
-msgid "Disc Selection"
-msgstr "&Seleccion"
-
-#: modules/gui/qt4/ui/open_disk.h:294
-msgid "SVCD/VCD"
-msgstr ""
-
-#: modules/gui/qt4/ui/open_disk.h:296
-msgid "Disable DVD Menus (for compatibility)"
-msgstr ""
+#~ msgid "Disc Selection"
+#~ msgstr "&Seleccion"
 
-#: modules/gui/qt4/ui/open_disk.h:299
-msgid "Disc device"
-msgstr "Disc"
+#~ msgid "Disc device"
+#~ msgstr "Disc"
 
-#: modules/gui/qt4/ui/open_disk.h:301
 #, fuzzy
-msgid "Starting Position"
-msgstr "Posicion"
+#~ msgid "Starting Position"
+#~ msgstr "Posicion"
 
-#: modules/gui/qt4/ui/open_disk.h:304
-msgid "Audio and Subtitles"
-msgstr "Audio e Sostítols"
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Audio e Sostítols"
 
-#: modules/gui/qt4/ui/open_file.h:219
-msgid "Choose one or more media file to open"
-msgstr "Causir un o mai fichièr d'obrir"
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "Causir un o mai fichièr d'obrir"
 
-#: modules/gui/qt4/ui/open_file.h:221
 #, fuzzy
-msgid "File Selection"
-msgstr "&Seleccion"
+#~ msgid "File Selection"
+#~ msgstr "&Seleccion"
 
-#: modules/gui/qt4/ui/open_file.h:222
-msgid "You can select local files with the following list and buttons."
-msgstr ""
-
-#: modules/gui/qt4/ui/open_file.h:223
 #, fuzzy
-msgid "Add..."
-msgstr "Apondre un fichièr..."
+#~ msgid "Add..."
+#~ msgstr "Apondre un fichièr..."
 
-#: modules/gui/qt4/ui/open_file.h:226
-msgid "Add a subtitles file"
-msgstr "Apondre un fichièr de sostítols"
+#~ msgid "Add a subtitles file"
+#~ msgstr "Apondre un fichièr de sostítols"
 
-#: modules/gui/qt4/ui/open_file.h:228
-msgid "Use a sub&titles file"
-msgstr "Utilizar un fichièr de sostítols"
+#~ msgid "Use a sub&titles file"
+#~ msgstr "Utilizar un fichièr de sostítols"
 
-#: modules/gui/qt4/ui/open_file.h:230
-msgid "Select the subtitles file"
-msgstr "Causir lo fichièr de sostítols"
+#~ msgid "Select the subtitles file"
+#~ msgstr "Causir lo fichièr de sostítols"
 
-#: modules/gui/qt4/ui/open_file.h:233
 #, fuzzy
-msgid "Font size:"
-msgstr "Talha de la poliça"
+#~ msgid "Font size:"
+#~ msgstr "Talha de la poliça"
 
-#: modules/gui/qt4/ui/open_file.h:234
 #, fuzzy
-msgid "Text alignment:"
-msgstr "Alinhament de la vidèo"
+#~ msgid "Text alignment:"
+#~ msgstr "Alinhament de la vidèo"
 
-#: modules/gui/qt4/ui/open_net.h:92
-msgid "Network Protocol"
-msgstr "Protocòl del Ret"
+#~ msgid "Network Protocol"
+#~ msgstr "Protocòl del Ret"
 
-#: modules/gui/qt4/ui/open_net.h:93
 #, fuzzy
-msgid "Please enter a network URL:"
-msgstr "Mercé de picar un nom novèl pel nos."
+#~ msgid "Please enter a network URL:"
+#~ msgstr "Mercé de picar un nom novèl pel nos."
 
-#: modules/gui/qt4/ui/open_net.h:95
 #, fuzzy
-msgid "Enter the URL of the network stream here."
-msgstr "MTU de l'interfàcia ret"
-
-#: modules/gui/qt4/ui/open_net.h:97
-msgid ""
-"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-"REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
-"weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">http://www.example.com/stream.avi</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">rtp://@:1234</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">mms://mms.examples.com/stream.asx</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">rtsp://server.example.org:8080/test.sdp</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
-"#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
-msgstr ""
+#~ msgid "Enter the URL of the network stream here."
+#~ msgstr "MTU de l'interfàcia ret"
 
-#: modules/gui/qt4/ui/profiles.h:456
 #, fuzzy
-msgid "MPEG-TS"
-msgstr "MJPEG"
+#~ msgid "MPEG-TS"
+#~ msgstr "MJPEG"
 
-#: modules/gui/qt4/ui/profiles.h:457
 #, fuzzy
-msgid "MPEG-PS"
-msgstr "MJPEG"
+#~ msgid "MPEG-PS"
+#~ msgstr "MJPEG"
 
-#: modules/gui/qt4/ui/profiles.h:458
 #, fuzzy
-msgid "WAV"
-msgstr "AVI"
+#~ msgid "WAV"
+#~ msgstr "AVI"
 
-#: modules/gui/qt4/ui/profiles.h:459
 #, fuzzy
-msgid "ASF/WMV"
-msgstr "ASF"
-
-#: modules/gui/qt4/ui/profiles.h:460
-msgid "Ogg/Ogm"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:461
-msgid "RAW"
-msgstr ""
+#~ msgid "ASF/WMV"
+#~ msgstr "ASF"
 
-#: modules/gui/qt4/ui/profiles.h:462
 #, fuzzy
-msgid "MPEG 1"
-msgstr "MPEG1"
+#~ msgid "MPEG 1"
+#~ msgstr "MPEG1"
 
-#: modules/gui/qt4/ui/profiles.h:463
-msgid "FLV"
-msgstr ""
+#~ msgid "AVI"
+#~ msgstr "AVI"
 
-#: modules/gui/qt4/ui/profiles.h:464
-msgid "AVI"
-msgstr "AVI"
-
-#: modules/gui/qt4/ui/profiles.h:465
 #, fuzzy
-msgid "MP4/MOV"
-msgstr "MP4"
+#~ msgid "MP4/MOV"
+#~ msgstr "MP4"
 
-#: modules/gui/qt4/ui/profiles.h:467
 #, fuzzy
-msgid "MKV"
-msgstr "MOV"
+#~ msgid "MKV"
+#~ msgstr "MOV"
 
-#: modules/gui/qt4/ui/profiles.h:468
 #, fuzzy
-msgid "Encapsulation"
-msgstr "Visualizacion"
+#~ msgid "Encapsulation"
+#~ msgstr "Visualizacion"
 
-#: modules/gui/qt4/ui/profiles.h:472 modules/gui/qt4/ui/profiles.h:491
 #, fuzzy
-msgid " kb/s"
-msgstr "%u kb/s"
+#~ msgid " kb/s"
+#~ msgstr "%u kb/s"
 
-#: modules/gui/qt4/ui/profiles.h:473
 #, fuzzy
-msgid "Frame Rate"
-msgstr "Taus d'imatge"
+#~ msgid "Frame Rate"
+#~ msgstr "Taus d'imatge"
 
-#: modules/gui/qt4/ui/profiles.h:475
 #, fuzzy
-msgid " fps"
-msgstr "%u kb/s"
+#~ msgid " fps"
+#~ msgstr "%u kb/s"
 
-#: modules/gui/qt4/ui/profiles.h:477
-msgid ""
-"You just need to fill one of the three following parameters, VLC will "
-"autodetect the other using the original aspect ratio"
-msgstr ""
-
-#: modules/gui/qt4/ui/profiles.h:480 modules/gui/qt4/ui/profiles.h:483
 #, fuzzy
-msgid "00000; "
-msgstr "00:00:00"
+#~ msgid "00000; "
+#~ msgstr "00:00:00"
 
-#: modules/gui/qt4/ui/profiles.h:485
 #, fuzzy
-msgid "Keep original video track"
-msgstr "Cicle de la pista audio"
+#~ msgid "Keep original video track"
+#~ msgstr "Cicle de la pista audio"
 
-#: modules/gui/qt4/ui/profiles.h:486
-msgid "Video codec"
-msgstr "Codec vidèo"
+#~ msgid "Video codec"
+#~ msgstr "Codec vidèo"
 
-#: modules/gui/qt4/ui/profiles.h:488
 #, fuzzy
-msgid "Keep original audio track"
-msgstr "Cicle de la pista audio"
+#~ msgid "Keep original audio track"
+#~ msgstr "Cicle de la pista audio"
 
-#: modules/gui/qt4/ui/profiles.h:493
 #, fuzzy
-msgid "Sample Rate"
-msgstr "Taus d'escandalhatge"
+#~ msgid "Sample Rate"
+#~ msgstr "Taus d'escandalhatge"
 
-#: modules/gui/qt4/ui/profiles.h:494
-msgid "Audio codec"
-msgstr "Codec àudio"
+#~ msgid "Audio codec"
+#~ msgstr "Codec àudio"
 
-#: modules/gui/qt4/ui/profiles.h:496
 #, fuzzy
-msgid "Overlay subtitles on the video"
-msgstr "Mostrar l'intrada video"
+#~ msgid "Overlay subtitles on the video"
+#~ msgstr "Mostrar l'intrada video"
 
-#: modules/gui/qt4/ui/sout.h:329 modules/gui/qt4/ui/sout.h:339
 #, fuzzy
-msgid "Destinations"
-msgstr "Decimation*"
+#~ msgid "Destinations"
+#~ msgstr "Decimation*"
 
-#: modules/gui/qt4/ui/sout.h:330
 #, fuzzy
-msgid "New destination"
-msgstr "Pas de destinacion valida"
-
-#: modules/gui/qt4/ui/sout.h:332
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
+#~ msgid "New destination"
+#~ msgstr "Pas de destinacion valida"
 
-#: modules/gui/qt4/ui/sout.h:333
 #, fuzzy
-msgid "Display locally"
-msgstr "Legir localament"
+#~ msgid "Display locally"
+#~ msgstr "Legir localament"
 
-#: modules/gui/qt4/ui/sout.h:336
 #, fuzzy
-msgid "Activate Transcoding"
-msgstr "Encodatge dels sostítols"
+#~ msgid "Activate Transcoding"
+#~ msgstr "Encodatge dels sostítols"
 
-#: modules/gui/qt4/ui/sout.h:340
 #, fuzzy
-msgid "Miscellaneous Options"
-msgstr "Divèrs"
+#~ msgid "Miscellaneous Options"
+#~ msgstr "Divèrs"
 
-#: modules/gui/qt4/ui/sout.h:341
 #, fuzzy
-msgid "Stream all elementary streams"
-msgstr "Stream all elementary streams (video, audio and subtitles)*"
+#~ msgid "Stream all elementary streams"
+#~ msgstr "Stream all elementary streams (video, audio and subtitles)*"
 
-#: modules/gui/qt4/ui/sout.h:343
-msgid "Group name"
-msgstr "Nom del grop"
+#~ msgid "Group name"
+#~ msgstr "Nom del grop"
 
-#: modules/gui/qt4/ui/sout.h:345
 #, fuzzy
-msgid "Generated stream output string"
-msgstr "Paramètres generals del flux de sortida"
+#~ msgid "Generated stream output string"
+#~ msgstr "Paramètres generals del flux de sortida"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:406
-msgid "Keep audio level between sessions"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_audio.h:407
-msgid "Always reset audio start level to:"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_audio.h:408
 #, fuzzy
-msgid " %"
-msgstr " "
+#~ msgid " %"
+#~ msgstr " "
 
-#: modules/gui/qt4/ui/sprefs_audio.h:409 modules/gui/qt4/ui/sprefs_video.h:313
 #, fuzzy
-msgid "Output"
-msgstr "Sortidas"
+#~ msgid "Output"
+#~ msgstr "Sortidas"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:410
 #, fuzzy
-msgid "Output module:"
-msgstr "Modul de Sortida"
+#~ msgid "Output module:"
+#~ msgstr "Modul de Sortida"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:415
 #, fuzzy
-msgid "Dolby Surround:"
-msgstr "Dolby Surround"
+#~ msgid "Dolby Surround:"
+#~ msgstr "Dolby Surround"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:416
-msgid "Normalize volume to:"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_audio.h:417
 #, fuzzy
-msgid "Replay gain mode:"
-msgstr "Tornar jogar lo mòde aumentacion"
+#~ msgid "Replay gain mode:"
+#~ msgstr "Tornar jogar lo mòde aumentacion"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:418
 #, fuzzy
-msgid "Visualization:"
-msgstr "Visualizacion"
+#~ msgid "Visualization:"
+#~ msgstr "Visualizacion"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:420
 #, fuzzy
-msgid "Enable Time-Stretching audio"
-msgstr "Activar audio"
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "Activar audio"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:422
 #, fuzzy
-msgid "Preferred audio language:"
-msgstr "Lenga per l'audio"
+#~ msgid "Preferred audio language:"
+#~ msgstr "Lenga per l'audio"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:423
-msgid "Password:"
-msgstr "Senhal:"
+#~ msgid "Password:"
+#~ msgstr "Senhal:"
 
-#: modules/gui/qt4/ui/sprefs_audio.h:424
 #, fuzzy
-msgid "Username:"
-msgstr "Nom d'utilizaire"
-
-#: modules/gui/qt4/ui/sprefs_audio.h:425
-msgid "Submit played tracks stats to Last.fm"
-msgstr ""
+#~ msgid "Username:"
+#~ msgstr "Nom d'utilizaire"
 
-#: modules/gui/qt4/ui/sprefs_input.h:306
-msgid "Optical drive"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:307
 #, fuzzy
-msgid "Default optical device"
-msgstr "Periferic pels disques per defaut"
+#~ msgid "Default optical device"
+#~ msgstr "Periferic pels disques per defaut"
 
-#: modules/gui/qt4/ui/sprefs_input.h:309
 #, fuzzy
-msgid "Codecs"
-msgstr "Codec"
-
-#: modules/gui/qt4/ui/sprefs_input.h:310
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:311
-msgid "Video quality post-processing level"
-msgstr ""
+#~ msgid "Codecs"
+#~ msgstr "Codec"
 
-#: modules/gui/qt4/ui/sprefs_input.h:312
-msgid "Use GPU acceleration (experimental)"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:313
-msgid "Use system codecs if available (better quality, but dangerous)"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:315
 #, fuzzy
-msgid "Damaged or incomplete AVI file"
-msgstr "Filtre de proprietats d'imatge"
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "Filtre de proprietats d'imatge"
 
-#: modules/gui/qt4/ui/sprefs_input.h:319
 #, fuzzy
-msgid "Default port (server mode)"
-msgstr "Pòrt del servidor per defaut"
+#~ msgid "Default port (server mode)"
+#~ msgstr "Pòrt del servidor per defaut"
 
-#: modules/gui/qt4/ui/sprefs_input.h:320
 #, fuzzy
-msgid "HTTP proxy URL"
-msgstr "proxy HTTP"
+#~ msgid "HTTP proxy URL"
+#~ msgstr "proxy HTTP"
 
-#: modules/gui/qt4/ui/sprefs_input.h:321
 #, fuzzy
-msgid "Default caching policy"
-msgstr "Nivèl de taboisson per defaut"
+#~ msgid "Default caching policy"
+#~ msgstr "Nivèl de taboisson per defaut"
 
-#: modules/gui/qt4/ui/sprefs_input.h:322
 #, fuzzy
-msgid "HTTP (default)"
-msgstr "defaut"
-
-#: modules/gui/qt4/ui/sprefs_input.h:323
-msgid "RTP over RTSP (TCP)"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_input.h:324
-msgid "Live555 stream transport"
-msgstr ""
+#~ msgid "HTTP (default)"
+#~ msgstr "defaut"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:373
-msgid "Instances"
-msgstr "Instàncias"
+#~ msgid "Instances"
+#~ msgstr "Instàncias"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:374
-msgid "Allow only one instance"
-msgstr "Autorizar solament una instància"
+#~ msgid "Allow only one instance"
+#~ msgstr "Autorizar solament una instància"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:375
 #, fuzzy
-msgid "Enqueue files when in one instance mode"
-msgstr "Enqueue items to playlist when in one instance mode*"
+#~ msgid "Enqueue files when in one instance mode"
+#~ msgstr "Enqueue items to playlist when in one instance mode*"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:377
 #, fuzzy
-msgid "Album art download policy:"
-msgstr "Album art policy*"
+#~ msgid "Album art download policy:"
+#~ msgstr "Album art policy*"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:378
-msgid "Activate update notifier"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:380
-msgid "Every "
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:381
 #, fuzzy
-msgid "Save recently played items"
-msgstr "Salvar los elements recentament jogats dins lo menut"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:384
-msgid "Separate words by | (without space)"
-msgstr ""
+#~ msgid "Save recently played items"
+#~ msgstr "Salvar los elements recentament jogats dins lo menut"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:387
 #, fuzzy
-msgid "Menus language:"
-msgstr "Lenga per l'audio"
+#~ msgid "Menus language:"
+#~ msgstr "Lenga per l'audio"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:388
 #, fuzzy
-msgid "File associations"
-msgstr "Capturas tampadas"
+#~ msgid "File associations"
+#~ msgstr "Capturas tampadas"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:389
 #, fuzzy
-msgid "Set up associations..."
-msgstr "Capturas tampadas"
+#~ msgid "Set up associations..."
+#~ msgstr "Capturas tampadas"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:390
-msgid "Look and feel"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:391
-msgid "Use custom skin"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:393
 #, fuzzy
-msgid "Skin resource file:"
-msgstr "Filtres d'accès"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:395
-msgid "Resize interface to video size"
-msgstr ""
+#~ msgid "Skin resource file:"
+#~ msgstr "Filtres d'accès"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:396
 #, fuzzy
-msgid "Force window style:"
-msgstr "Títol seguent"
+#~ msgid "Force window style:"
+#~ msgstr "Títol seguent"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:397
 #, fuzzy
-msgid "Show systray icon"
-msgstr "Icòna dins la zòna de notificacion"
+#~ msgid "Show systray icon"
+#~ msgstr "Icòna dins la zòna de notificacion"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:398
-msgid "Embed video in interface"
-msgstr "Vidèo incrustada dins l'interfàcia"
+#~ msgid "Embed video in interface"
+#~ msgstr "Vidèo incrustada dins l'interfàcia"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:399
-msgid "Systray popup when minimized"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:400
 #, fuzzy
-msgid "Show controls in full screen mode"
-msgstr "Començar la vidèo en mòde plen ecran"
-
-#: modules/gui/qt4/ui/sprefs_interface.h:401
-msgid "Minimal view mode (no toolbars)"
-msgstr ""
-
-#: modules/gui/qt4/ui/sprefs_interface.h:403
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr ""
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Començar la vidèo en mòde plen ecran"
 
-#: modules/gui/qt4/ui/sprefs_interface.h:405
 #, fuzzy
-msgid "Use native style"
-msgstr "Utilizar un fichièr de sostítols"
+#~ msgid "Use native style"
+#~ msgstr "Utilizar un fichièr de sostítols"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:202
 #, fuzzy
-msgid "Enable On Screen Display (OSD)"
-msgstr "Messatges a l'ecran"
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "Messatges a l'ecran"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:203
 #, fuzzy
-msgid "Show media title on video start"
-msgstr "Mostrar lo títol del mèdia"
+#~ msgid "Show media title on video start"
+#~ msgstr "Mostrar lo títol del mèdia"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:204
-msgid "Subtitles Language"
-msgstr "Lenga dels sostítols"
+#~ msgid "Subtitles Language"
+#~ msgstr "Lenga dels sostítols"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:205
-msgid "Preferred subtitles language"
-msgstr "Lenga preferida pels sostítols"
+#~ msgid "Preferred subtitles language"
+#~ msgstr "Lenga preferida pels sostítols"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:206
-msgid "Default encoding"
-msgstr "Encodatge per defaut"
+#~ msgid "Default encoding"
+#~ msgstr "Encodatge per defaut"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:208
-msgid "Effect"
-msgstr "Efièch"
+#~ msgid "Effect"
+#~ msgstr "Efièch"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:209
-msgid "Font color"
-msgstr "Color de la poliça"
+#~ msgid "Font color"
+#~ msgstr "Color de la poliça"
 
-#: modules/gui/qt4/ui/sprefs_subtitles.h:212
-#: modules/gui/qt4/ui/video_effects.h:1113
-#: modules/gui/qt4/ui/video_effects.h:1115
-#: modules/gui/qt4/ui/video_effects.h:1117
-#: modules/gui/qt4/ui/video_effects.h:1119
-msgid " px"
-msgstr ""
+#~ msgid "DirectX"
+#~ msgstr "DirectX"
 
-#: modules/gui/qt4/ui/sprefs_video.h:314
-msgid "Accelerated video output (Overlay)"
-msgstr ""
+#~ msgid "Display device"
+#~ msgstr "Periferic d'afichatge"
 
-#: modules/gui/qt4/ui/sprefs_video.h:318
-msgid "DirectX"
-msgstr "DirectX"
-
-#: modules/gui/qt4/ui/sprefs_video.h:319
-msgid "Display device"
-msgstr "Periferic d'afichatge"
-
-#: modules/gui/qt4/ui/sprefs_video.h:320
 #, fuzzy
-msgid "Enable wallpaper mode"
-msgstr "Activar mòde fons de pagina"
+#~ msgid "Enable wallpaper mode"
+#~ msgstr "Activar mòde fons de pagina"
 
-#: modules/gui/qt4/ui/sprefs_video.h:322
 #, fuzzy
-msgid "Deinterlacing"
-msgstr "Desentreleçar"
+#~ msgid "Deinterlacing"
+#~ msgstr "Desentreleçar"
 
-#: modules/gui/qt4/ui/sprefs_video.h:323
 #, fuzzy
-msgid "Force Aspect Ratio"
-msgstr "Proporcion corrècta"
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Proporcion corrècta"
 
-#: modules/gui/qt4/ui/sprefs_video.h:329
-msgid "vlc-snap"
-msgstr ""
-
-#: modules/gui/qt4/ui/streampanel.h:172
 #, fuzzy
-msgid "Stuff"
-msgstr "&Aleatòri"
-
-#: modules/gui/qt4/ui/streampanel.h:174
-msgid "Edit settings"
-msgstr "Cambiar los paramètres"
+#~ msgid "Stuff"
+#~ msgstr "&Aleatòri"
 
-#: modules/gui/qt4/ui/streampanel.h:175
-msgid "Control"
-msgstr "Contraròtle"
+#~ msgid "Edit settings"
+#~ msgstr "Cambiar los paramètres"
 
-#: modules/gui/qt4/ui/streampanel.h:176
-msgid "Run manually"
-msgstr ""
+#~ msgid "Control"
+#~ msgstr "Contraròtle"
 
-#: modules/gui/qt4/ui/streampanel.h:177
 #, fuzzy
-msgid "Setup schedule"
-msgstr "Aleatòri"
+#~ msgid "Setup schedule"
+#~ msgstr "Aleatòri"
 
-#: modules/gui/qt4/ui/streampanel.h:178
 #, fuzzy
-msgid "Run on schedule"
-msgstr "Aleatòri"
+#~ msgid "Run on schedule"
+#~ msgstr "Aleatòri"
 
-#: modules/gui/qt4/ui/streampanel.h:179
-msgid "Status"
-msgstr "Estatut"
+#~ msgid "Status"
+#~ msgstr "Estatut"
 
-#: modules/gui/qt4/ui/streampanel.h:180
-msgid "P/P"
-msgstr "P/P"
+#~ msgid "P/P"
+#~ msgstr "P/P"
 
-#: modules/gui/qt4/ui/streampanel.h:183
-msgid "Prev"
-msgstr "Precedent"
+#~ msgid "Prev"
+#~ msgstr "Precedent"
 
-#: modules/gui/qt4/ui/streampanel.h:184
-msgid "Add Input"
-msgstr "Apondre una intrada"
+#~ msgid "Add Input"
+#~ msgstr "Apondre una intrada"
 
-#: modules/gui/qt4/ui/streampanel.h:185
-msgid "Edit Input"
-msgstr "Modificar l'intrada"
+#~ msgid "Edit Input"
+#~ msgstr "Modificar l'intrada"
 
-#: modules/gui/qt4/ui/streampanel.h:186
-msgid "Clear List"
-msgstr "Netejar la Lista"
+#~ msgid "Clear List"
+#~ msgstr "Netejar la Lista"
 
-#: modules/gui/qt4/ui/v4l2.h:59
 #, fuzzy
-msgid "Refresh"
-msgstr "Actualizar"
+#~ msgid "Refresh"
+#~ msgstr "Actualizar"
 
-#: modules/gui/qt4/ui/v4l2.h:60
-msgid "No v4l2 instance found. Press the refresh button to try again."
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1101
 #, fuzzy
-msgid "Transform"
-msgstr "Transformacion"
+#~ msgid "Transform"
+#~ msgstr "Transformacion"
 
-#: modules/gui/qt4/ui/video_effects.h:1103
 #, fuzzy
-msgid "Sigma"
-msgstr "Senhals"
+#~ msgid "Sigma"
+#~ msgstr "Senhals"
 
-#: modules/gui/qt4/ui/video_effects.h:1120
 #, fuzzy
-msgid "Synchronize top and bottom"
-msgstr "Sincronizacion"
+#~ msgid "Synchronize top and bottom"
+#~ msgstr "Sincronizacion"
 
-#: modules/gui/qt4/ui/video_effects.h:1121
 #, fuzzy
-msgid "Synchronize left and right"
-msgstr "Sincronizacion"
+#~ msgid "Synchronize left and right"
+#~ msgstr "Sincronizacion"
 
-#: modules/gui/qt4/ui/video_effects.h:1123
 #, fuzzy
-msgid "Magnification/Zoom"
-msgstr "Grossiment"
+#~ msgid "Magnification/Zoom"
+#~ msgstr "Grossiment"
 
-#: modules/gui/qt4/ui/video_effects.h:1124
 #, fuzzy
-msgid "Puzzle game"
-msgstr "Puzzle*"
+#~ msgid "Puzzle game"
+#~ msgstr "Puzzle*"
 
-#: modules/gui/qt4/ui/video_effects.h:1125
 #, fuzzy
-msgid "Black slot"
-msgstr "Negre"
+#~ msgid "Black slot"
+#~ msgstr "Negre"
 
-#: modules/gui/qt4/ui/video_effects.h:1126
-#: modules/gui/qt4/ui/video_effects.h:1165
-#: modules/gui/qt4/ui/video_effects.h:1171
-msgid "Columns"
-msgstr "Colomnas"
+#~ msgid "Columns"
+#~ msgstr "Colomnas"
 
-#: modules/gui/qt4/ui/video_effects.h:1127
-#: modules/gui/qt4/ui/video_effects.h:1164
-#: modules/gui/qt4/ui/video_effects.h:1170
-msgid "Rows"
-msgstr "Linhas"
+#~ msgid "Rows"
+#~ msgstr "Linhas"
 
-#: modules/gui/qt4/ui/video_effects.h:1129
 #, fuzzy
-msgid "Angle"
-msgstr "Jungle"
+#~ msgid "Angle"
+#~ msgstr "Jungle"
 
-#: modules/gui/qt4/ui/video_effects.h:1130
 #, fuzzy
-msgid "Geometry"
-msgstr "Espectromètre"
+#~ msgid "Geometry"
+#~ msgstr "Espectromètre"
 
-#: modules/gui/qt4/ui/video_effects.h:1131
 #, fuzzy
-msgid "Color extraction"
-msgstr " Informacion "
-
-#: modules/gui/qt4/ui/video_effects.h:1133
-#: modules/gui/qt4/ui/video_effects.h:1139
-msgid ">HHHHHH;#"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1136
-msgid "Similarity"
-msgstr ""
+#~ msgid "Color extraction"
+#~ msgstr " Informacion "
 
-#: modules/gui/qt4/ui/video_effects.h:1140
 #, fuzzy
-msgid "Color fun"
-msgstr "Color"
+#~ msgid "Color fun"
+#~ msgstr "Color"
 
-#: modules/gui/qt4/ui/video_effects.h:1142
-msgid "Water effect"
-msgstr "Efièch d'aiga"
+#~ msgid "Water effect"
+#~ msgstr "Efièch d'aiga"
 
-#: modules/gui/qt4/ui/video_effects.h:1145
-msgid "Motion detect"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1147
 #, fuzzy
-msgid "Factor"
-msgstr "Mai lèu"
+#~ msgid "Factor"
+#~ msgstr "Mai lèu"
 
-#: modules/gui/qt4/ui/video_effects.h:1151
 #, fuzzy
-msgid "Cartoon"
-msgstr "Marron"
-
-#: modules/gui/qt4/ui/video_effects.h:1152
-msgid "Image modification"
-msgstr "Modificacion de l'imatge"
+#~ msgid "Cartoon"
+#~ msgstr "Marron"
 
-#: modules/gui/qt4/ui/video_effects.h:1154
-msgid "Edge weightning"
-msgstr ""
+#~ msgid "Image modification"
+#~ msgstr "Modificacion de l'imatge"
 
-#: modules/gui/qt4/ui/video_effects.h:1155
 #, fuzzy
-msgid "Output Color Filtermode"
-msgstr "Modul de filtre de la sortida video"
-
-#: modules/gui/qt4/ui/video_effects.h:1156
-msgid "Brightness (%)"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1157
-msgid "Darknesslimit"
-msgstr ""
+#~ msgid "Output Color Filtermode"
+#~ msgstr "Modul de filtre de la sortida video"
 
-#: modules/gui/qt4/ui/video_effects.h:1158
-msgid "Mark analyzed Pixels"
-msgstr ""
-
-#: modules/gui/qt4/ui/video_effects.h:1160
 #, fuzzy
-msgid "Filter threshold (%)"
-msgstr "Longo del filtre (ms)"
+#~ msgid "Filter threshold (%)"
+#~ msgstr "Longo del filtre (ms)"
 
-#: modules/gui/qt4/ui/video_effects.h:1161
 #, fuzzy
-msgid "Filter smoothness (%)"
-msgstr "Mòde filtre"
+#~ msgid "Filter smoothness (%)"
+#~ msgstr "Mòde filtre"
 
-#: modules/gui/qt4/ui/video_effects.h:1163
-msgid "Wall"
-msgstr "Paret"
+#~ msgid "Wall"
+#~ msgstr "Paret"
 
-#: modules/gui/qt4/ui/video_effects.h:1166
-msgid "Add text"
-msgstr "Apondre de tèxt"
+#~ msgid "Add text"
+#~ msgstr "Apondre de tèxt"
 
-#: modules/gui/qt4/ui/video_effects.h:1174
 #, fuzzy
-msgid "Vout/Overlay"
-msgstr "Overlays*"
+#~ msgid "Vout/Overlay"
+#~ msgstr "Overlays*"
 
-#: modules/gui/qt4/ui/video_effects.h:1175
-msgid "Add logo"
-msgstr "Apondre un lògo"
+#~ msgid "Add logo"
+#~ msgstr "Apondre un lògo"
 
-#: modules/gui/qt4/ui/video_effects.h:1179
-#: modules/gui/qt4/ui/video_effects.h:1184
-msgid "Logo"
-msgstr "Lògo"
+#~ msgid "Logo"
+#~ msgstr "Lògo"
 
-#: modules/gui/qt4/ui/video_effects.h:1180
 #, fuzzy
-msgid "Logo erase"
-msgstr "Nom del fichièr d'istoric"
+#~ msgid "Logo erase"
+#~ msgstr "Nom del fichièr d'istoric"
 
-#: modules/gui/qt4/ui/video_effects.h:1183
-msgid "Mask"
-msgstr "Masca"
+#~ msgid "Mask"
+#~ msgstr "Masca"
 
-#: modules/gui/qt4/ui/video_effects.h:1185
 #, fuzzy
-msgid "Subpicture filters"
-msgstr "Filtres pels sos-imatges"
+#~ msgid "Subpicture filters"
+#~ msgstr "Filtres pels sos-imatges"
 
-#: modules/gui/qt4/ui/video_effects.h:1186
-msgid "Video filters"
-msgstr "Filtres video"
+#~ msgid "Video filters"
+#~ msgstr "Filtres video"
 
-#: modules/gui/qt4/ui/video_effects.h:1187
 #, fuzzy
-msgid "Vout filters"
-msgstr "Filtres video"
+#~ msgid "Vout filters"
+#~ msgstr "Filtres video"
 
-#: modules/gui/qt4/ui/video_effects.h:1188
 #, fuzzy
-msgid "Reset"
-msgstr "Tornar lançar totes"
+#~ msgid "Reset"
+#~ msgstr "Tornar lançar totes"
 
-#: modules/gui/qt4/ui/video_effects.h:1189
-msgid "Update"
-msgstr "Metre a jorn"
+#~ msgid "Update"
+#~ msgstr "Metre a jorn"
 
-#: modules/gui/qt4/ui/video_effects.h:1190
 #, fuzzy
-msgid "Advanced video filter controls"
-msgstr "&Contraròtles avançats"
+#~ msgid "Advanced video filter controls"
+#~ msgstr "&Contraròtles avançats"
 
-#: modules/gui/qt4/ui/vlm.h:287
 #, fuzzy
-msgid "VLM configurator"
-msgstr "Configuracion de &VLM..."
+#~ msgid "VLM configurator"
+#~ msgstr "Configuracion de &VLM..."
 
-#: modules/gui/qt4/ui/vlm.h:288
 #, fuzzy
-msgid "Media Manager Edition"
-msgstr "Informacion del mèdia"
-
-#: modules/gui/qt4/ui/vlm.h:289
-msgid "Name:"
-msgstr "Nom:"
-
-#: modules/gui/qt4/ui/vlm.h:291
-msgid "Input:"
-msgstr "Intrada:"
+#~ msgid "Media Manager Edition"
+#~ msgstr "Informacion del mèdia"
 
-#: modules/gui/qt4/ui/vlm.h:292
-msgid "Select Input"
-msgstr "Causir d'intrada"
+#~ msgid "Name:"
+#~ msgstr "Nom:"
 
-#: modules/gui/qt4/ui/vlm.h:293
-msgid "Output:"
-msgstr "Sortida:"
+#~ msgid "Input:"
+#~ msgstr "Intrada:"
 
-#: modules/gui/qt4/ui/vlm.h:294
-msgid "Select Output"
-msgstr "Causir una sortida"
+#~ msgid "Select Input"
+#~ msgstr "Causir d'intrada"
 
-#: modules/gui/qt4/ui/vlm.h:295
-#, fuzzy
-msgid "Time Control"
-msgstr "Contraròtle del volum"
+#~ msgid "Output:"
+#~ msgstr "Sortida:"
 
-#: modules/gui/qt4/ui/vlm.h:296
-#, fuzzy
-msgid "Mux Control"
-msgstr "Contraròtle"
+#~ msgid "Select Output"
+#~ msgstr "Causir una sortida"
 
-#: modules/gui/qt4/ui/vlm.h:297
 #, fuzzy
-msgid "Muxer:"
-msgstr "Muxers*"
+#~ msgid "Time Control"
+#~ msgstr "Contraròtle del volum"
 
-#: modules/gui/qt4/ui/vlm.h:298
-msgid "AAAA; "
-msgstr ""
-
-#: modules/gui/qt4/ui/vlm.h:299
 #, fuzzy
-msgid "Loop"
-msgstr "[Bocla]"
+#~ msgid "Mux Control"
+#~ msgstr "Contraròtle"
 
-#: modules/gui/qt4/ui/vlm.h:303
 #, fuzzy
-msgid "Media Manager List"
-msgstr "Informacion del mèdia"
-
-#~ msgid "Devices"
-#~ msgstr "Periferics"
+#~ msgid "Muxer:"
+#~ msgstr "Muxers*"
 
 #, fuzzy
-#~ msgid "Local Network"
-#~ msgstr "Ret"
+#~ msgid "Loop"
+#~ msgstr "[Bocla]"
 
 #, fuzzy
-#~ msgid "Internet"
-#~ msgstr "Interlingue"
+#~ msgid "Media Manager List"
+#~ msgstr "Informacion del mèdia"
 
 #, fuzzy
 #~ msgid "SessionManager"

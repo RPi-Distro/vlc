@@ -2,7 +2,7 @@
  * smb.c: SMB input module
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: d2648a478f59889a3c1a8ca073b0421fa8c2174c $
+ * $Id: 2cc616fdb3a6cf0db6d47b561d1346ea350259f2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -362,7 +362,7 @@ static void Win32AddConnection( access_t *p_access, char *psz_path,
                                 char *psz_user, char *psz_pwd,
                                 char *psz_domain )
 {
-    DWORD (*OurWNetAddConnection2)( LPNETRESOURCE, LPCTSTR, LPCTSTR, DWORD );
+    DWORD WINAPI (*OurWNetAddConnection2)( LPNETRESOURCE, LPCTSTR, LPCTSTR, DWORD );
     char psz_remote[MAX_PATH], psz_server[MAX_PATH], psz_share[MAX_PATH];
     NETRESOURCE net_resource;
     DWORD i_result;

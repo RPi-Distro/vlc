@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 35e101026a268c970bfacc89292387aeb43aa8c5 $
+ * $Id: b71dbb5df45baa1034c397d832dad71c0d9159d4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -901,6 +901,7 @@ static void PutSPS( decoder_t *p_dec, block_t *p_frag )
 
     /* b_frame_mbs_only */
     p_sys->b_frame_mbs_only = bs_read( &s, 1 );
+    p_dec->fmt_out.video.i_height *=  ( 2 - p_sys->b_frame_mbs_only );
     if( p_sys->b_frame_mbs_only == 0 )
     {
         bs_skip( &s, 1 );

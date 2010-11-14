@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e9e85de39cc8f67c7d0148623999a5afd5101c04 $
+ * $Id: 7bf7b2f5768fb3799793519d51d9b5d6a15c1aaa $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -165,6 +165,14 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     classhint.res_name = (char*) "vlc";
     classhint.res_class = (char*) "Vlc";
     XSetClassHint( XDISPLAY, m_wnd, &classhint );
+
+    // copies WM_HINTS from the main window
+    XWMHints *wm = XGetWMHints( XDISPLAY, m_rDisplay.getMainWindow() );
+    if( wm )
+    {
+        XSetWMHints( XDISPLAY, m_wnd, wm );
+        XFree( wm );
+    }
 
     // initialize WM_CLIENT_MACHINE
     char* hostname = NULL;

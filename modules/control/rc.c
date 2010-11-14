@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 1e89dfbbe0b160aa88e530de30ae3da34004a64e $
+ * $Id: 62ca2a5fe9a391d0d2cd9b4a0eb05bad4042cf46 $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -1326,15 +1326,14 @@ static int Playlist( vlc_object_t *p_this, char const *psz_cmd,
     else if (!strcmp( psz_cmd, "goto" ) )
     {
         int i_pos = atoi( newval.psz_string );
-        /* The playlist stores 2 times the same item: onelevel & category */
-        int i_size = p_playlist->items.i_size / 2;
+        int i_size = p_playlist->items.i_size;
 
         if( i_pos <= 0 )
             msg_rc( "%s", _("Error: `goto' needs an argument greater than zero.") );
         else if( i_pos <= i_size )
         {
             playlist_item_t *p_item, *p_parent;
-            p_item = p_parent = p_playlist->items.p_elems[i_pos*2-1];
+            p_item = p_parent = p_playlist->items.p_elems[i_pos-1];
             while( p_parent->p_parent )
                 p_parent = p_parent->p_parent;
             playlist_Control( p_playlist, PLAYLIST_VIEWPLAY, pl_Unlocked,

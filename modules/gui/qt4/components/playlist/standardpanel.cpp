@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2009 VideoLAN
- * $Id: 45b9938fc2a584b6ba19a2aad9d7267bcd3c562b $
+ * $Id: ce0a23bbc3f8784bbf0b8b3fdff312c13c4ac738 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          JB Kempf <jb@videolan.org>
@@ -125,6 +125,9 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
     int i_viewMode = getSettings()->value( "view-mode", TREE_VIEW ).toInt();
 
     getSettings()->endGroup();
+    /* Limit the saved value to a possible one inside [0, VIEW_COUNT[ */
+    if(i_viewMode < 0 || i_viewMode >= VIEW_COUNT)
+        i_viewMode = 0;
 
     showView( i_viewMode );
 

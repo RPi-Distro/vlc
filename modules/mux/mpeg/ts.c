@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 34e4e3e902611dd49454308d777526fb88571113 $
+ * $Id: 02785564e231633870bb7da5cdd145e55720b658 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -254,10 +254,13 @@ vlc_module_end ()
  * Local data structures
  *****************************************************************************/
 static const char *const ppsz_sout_options[] = {
-    "pid-video", "pid-audio", "pid-spu", "pid-pmt", "tsid", "netid",
+    "pid-video", "pid-audio", "pid-spu", "pid-pmt", "tsid",
+#ifdef HAVE_DVBPSI_SDT
+    "netid", "sdtdesc",
+#endif
     "es-id-pid", "shaping", "pcr", "bmin", "bmax", "use-key-frames",
     "dts-delay", "csa-ck", "csa2-ck", "csa-use", "csa-pkt", "crypt-audio", "crypt-video",
-    "muxpmt", "sdtdesc", "program-pmt", "alignment",
+    "muxpmt", "program-pmt", "alignment",
     NULL
 };
 

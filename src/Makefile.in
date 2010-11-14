@@ -630,7 +630,6 @@ LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
-LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
 LTLIBshine = @LTLIBshine@
 LTLIBskins2 = @LTLIBskins2@
@@ -676,6 +675,7 @@ LTLIBxcb_xv = @LTLIBxcb_xv@
 LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
+LTLIBxscreensaver = @LTLIBxscreensaver@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
 LUAC = @LUAC@
@@ -1041,7 +1041,7 @@ libvlccore_la_CFLAGS = `$(VLC_CONFIG) --cflags libvlccore` \
 
 libvlccore_la_LDFLAGS = `$(VLC_CONFIG) --ldflags libvlccore` \
 	$(AM_LDFLAGS) -no-undefined -export-symbols \
-	$(srcdir)/libvlccore.sym -version-info 4:0:0 $(am__append_4)
+	$(srcdir)/libvlccore.sym -version-info 4:1:0 $(am__append_4)
 libvlccore_la_LIBADD = `$(VLC_CONFIG) -libs libvlccore` $(AM_LIBADD) \
 	$(LTLIBINTL) ../compat/libcompat.la
 
@@ -1053,7 +1053,7 @@ libvlc_la_LIBADD = `$(VLC_CONFIG) -libs libvlc` \
 
 libvlc_la_CFLAGS = `$(VLC_CONFIG) --cflags libvlc`
 libvlc_la_LDFLAGS = $(AM_LDFLAGS) `$(VLC_CONFIG) --ldflags libvlc` \
-	-version-info 6:0:1 -export-symbols $(srcdir)/libvlc.sym \
+	-version-info 7:0:2 -export-symbols $(srcdir)/libvlc.sym \
 	$(am__append_6)
 libvlc_la_DEPENDENCIES = libvlc.sym libvlccore.la $(am__append_5)
 EXTRA_libvlccore_la_SOURCES = \
@@ -3992,7 +3992,8 @@ uninstall-am: uninstall-libLTLIBRARIES \
 
 
 ../include/vlc/libvlc_version.h: ../include/vlc/libvlc_version.h.in $(top_builddir)/config.status
-	$(SHELL) $(top_builddir)/config.status --file=$@
+	$(AM_V_GEN)cd "$(top_builddir)" && \
+	$(SHELL) ./config.status --file=src/$@
 
 ../include/vlc_about.h: Makefile.am $(top_srcdir)/COPYING $(top_srcdir)/THANKS $(top_srcdir)/AUTHORS
 	$(AM_V_at)rm -f -- "$@.tmp"

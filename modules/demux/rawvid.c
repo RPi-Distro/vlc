@@ -2,7 +2,7 @@
  * rawvid.c : raw video input module for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 120c9e391ab77d7cbf9652d127641460c9a2b882 $
+ * $Id: 071b2b84af4c4954a4cbf4851b3a3ab5f4c35d5f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan d.t org>
@@ -131,7 +131,7 @@ static int Open( vlc_object_t * p_this )
     int i_width=-1, i_height=-1;
     unsigned u_fps_num=0, u_fps_den=1;
     char *psz_ext;
-    vlc_fourcc_t i_chroma;
+    vlc_fourcc_t i_chroma = 0;
     unsigned int i_sar_num = 0;
     unsigned int i_sar_den = 0;
     const struct preset_t *p_preset = NULL;
@@ -347,6 +347,12 @@ static int Open( vlc_object_t * p_this )
     if( !u_fps_num || !u_fps_den )
     {
         msg_Err( p_demux, "invalid or no framerate specified." );
+        goto error;
+    }
+
+    if( i_chroma == 0 )
+    {
+        msg_Err( p_demux, "invalid or no chroma specified." );
         goto error;
     }
 

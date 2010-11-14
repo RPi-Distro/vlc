@@ -2,7 +2,7 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: b7ebf34e31377bc441e53bfbaed4854404426e00 $
+ * $Id: 6a250229bdd5142e1efcee209ce711e2842669ea $
  *
  * Authors: Filippo Carone <filippo@carone.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
@@ -198,10 +198,11 @@ char * libvlc_audio_output_device_longname( libvlc_instance_t *p_instance,
                 VLC_OBJECT( p_instance->p_libvlc_int ), psz_config_name, val, val, NULL );
             free( val.psz_string );
         }
-        free( psz_config_name );
 
         if( i_device >= 0 && i_device < p_module_config->i_list )
         {
+            free( psz_config_name );
+
             if( p_module_config->ppsz_list_text[i_device] )
                 return strdup( p_module_config->ppsz_list_text[i_device] );
             else
@@ -241,11 +242,12 @@ char * libvlc_audio_output_device_id( libvlc_instance_t *p_instance,
                 VLC_OBJECT( p_instance->p_libvlc_int ), psz_config_name, val, val, NULL );
             free( val.psz_string );
         }
-        free( psz_config_name );
 
         if( i_device >= 0 && i_device < p_module_config->i_list )
+        {
+            free( psz_config_name );
             return strdup( p_module_config->ppsz_list[i_device] );
-
+        }
     }
 
     free( psz_config_name );

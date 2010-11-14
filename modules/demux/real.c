@@ -2,7 +2,7 @@
  * real.c: Real demuxer.
  *****************************************************************************
  * Copyright (C) 2004, 2006-2007 the VideoLAN team
- * $Id: 7ae46ad4d4cf4ddb216a79201888dfc0ebe7772b $
+ * $Id: dee5b52c1192ec609be01e2dab7d27ff89ead028 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1537,6 +1537,11 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
         break;
 
     case VLC_FOURCC('2','8','_','8'):
+        if( i_coded_frame_size <= 0 )
+        {
+            es_format_Clean( &fmt );
+            return VLC_EGENERIC;
+        }
         fmt.i_codec = VLC_CODEC_RA_288;
         fmt.audio.i_blockalign = i_coded_frame_size;
         break;

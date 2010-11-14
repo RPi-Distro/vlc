@@ -2,7 +2,7 @@
  * win32_graphics.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8a6536c8224330a4dbdf9b18ba2142a619ee7bb9 $
+ * $Id: 9ded675734b879af45cdd1a0b4cf23cf20091886 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -72,6 +72,7 @@ void Win32Graphics::clear( int xDest, int yDest, int width, int height )
         HRGN mask = CreateRectRgn( xDest, yDest,
                                    xDest + width, yDest + height );
         CombineRgn( m_mask, m_mask, mask, RGN_DIFF );
+        DeleteObject( mask );
     }
 }
 

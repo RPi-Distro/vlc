@@ -109,6 +109,7 @@ Douglas West <dwest at crystaldata dot com> - dynamicoverlay patch
 Dugal Harris <dugalh (at) protoclea .dot co dot. za> - DirectShow fixes, MJPEG patches and OpenCV video filter
 Dylan Aïssi <aissi dot dylan at free dot fr> - French translation
 Dylan Yudaken <dyudaken -- gmail # com> - hotkeys patch
+Eduard Babayan <edo248 at gmail dot com> - Armenian translation
 Eirik U. Birkeland <eirbir  at gmail  dot com> - Norwegian Nynorsk translation
 Emmanuel Blindauer <manu at agat.net> - aRts audio output
 Enrico Gueli <e_gueli at yahoo.it> - Brightness threshold in adjust video filter
@@ -191,6 +192,7 @@ K. Staring <qdk at quickdekay dot net> - RTSP rewind and fast-forward support
 Kai Hermann <kai.uwe.hermann@gmail.com> - German translation
 Kai Lauterbach <lauterbach.kai at web d0t de> - added atmo Fnordlicht support
 Kang Jeong-Hee <keizie at gmail dot com> - Korean translation
+Kaya Zeren - Turkish translation
 Kenneth Ostby <kenneo -at- idi -dot- ntnu -dot- no> - Audioscrobbler plugin
 Kevin H. Patterson <kevpatt at khptech dot com> - Theora framesize calculation 
 Koehler, Vitally <vkoehler AT telekom de> -  solves the problem of audio packet losses by the playback of MPEG2 transport stream.
@@ -240,6 +242,7 @@ Mickael Hoerdt <hoerdt at clarinet.u-strasbg.fr> - IPv6 SSM multicast patch
 Miguel Angel Cabrera <macabrera at solaiemes.com> - RTMP access patch
 Mike Schrag <mschrag at pobox dot com> - directx device selection
 Mikko Hirvonen <masse at astro dot helsinki dot fi> - Firefox-1.5.x development configure patch
+Mindaugas Baranauskas <embar at super dot lt> - Lithuanian translation
 Miroslav Oujeský <oujesky at mail dot muni dot cz> - Czech translation
 Mirsal Ennaime <mirsal.ennaime at gmail dot com> - D-Bus ameliorations
 Moritz Bunkus <moritz at bunkus dot org> - Matroska patches
@@ -334,6 +337,7 @@ William Hawkins - Speex RTP payload format
 Xavier Maillard <zedek at fxgsproject.org> - audio converters
 Xavier Marchesini <xav at alarue.net> - Win32 fixes
 Xènia Albà Cantero <xenia_alba at hotmail.com> - Catalan translation
+Xuacu Saturio - Asturian translation
 Yannick Bréhon <y.brehon at qiplay dot com> - VLC mozilla plugin event listerners.
 Ye zhang <yzhang90003 _at_ gmail dot com> - Fix for VLM RTSP concurent LEAVE make VLC crash
 Yuehua Zhao <zhao908@hotmail.com> - real video codec

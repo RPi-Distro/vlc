@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2010 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.4)
+AC_INIT(vlc, 1.1.5)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
-VERSION_REVISION="4"
+VERSION_REVISION="5"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -913,7 +913,7 @@ AC_CHECK_HEADERS(zlib.h, [ have_zlib=yes ], [ have_zlib=no ])
 AM_CONDITIONAL(HAVE_ZLIB, [ test "${have_zlib}" = "yes" ])
 if test "${have_zlib}" = "yes"
 then
-  VLC_ADD_LIBS([access_http gme mp4 skins2 sap mkv unzip zip],[-lz])
+  VLC_ADD_LIBS([access_http mp4 skins2 sap mkv unzip zip],[-lz])
   PKG_CHECK_MODULES([MINIZIP], [minizip] , [ have_minizip=yes ], [
     AC_CHECK_HEADERS([unzip.h], [ 
       have_minizip=yes
@@ -2414,6 +2414,23 @@ AC_CHECK_FUNCS(inet_ntop,[
 
 
 dnl
+dnl  GME demux plugin
+dnl
+AC_ARG_ENABLE(gme,
+  [  --enable-gme            Game Music Emu support (default auto)])
+AS_IF([test "${enable_gme}" != "no"], [
+  AC_CHECK_HEADER([gme/gme.h], [
+    VLC_ADD_LIBS([gme], [-lgme])
+    VLC_ADD_PLUGIN([gme])
+  ], [
+    AS_IF([test "x${enable_gme}" != "x"], [
+      AC_MSG_ERROR([GME cannot be found. Please install the development files.])
+    ])
+  ])
+])
+
+
+dnl
 dnl  ogg demux plugin
 dnl
 PKG_ENABLE_MODULES_VLC([OGG], [], [ogg >= 1.0], [Ogg demux support], [auto])
@@ -2510,44 +2527,6 @@ then
     [AC_CHECK_HEADERS([mpcdec/mpcdec.h], [
     VLC_ADD_PLUGIN([mpc])
     VLC_ADD_LIBS([mpc],[-lmpcdec])])])
-fi
-
-dnl
-dnl  game music emu demux plugin
-dnl
-AC_ARG_ENABLE(gme,
-  [  --enable-gme            Game Music Emu demux support (default enabled)])
-if test "${enable_gme}" != "no" -a "${CXX}" != "";
-then
-  AC_LANG_PUSH(C++)
-  AC_ARG_WITH(gme-tree,
-  [  --with-gme-tree=PATH    gme tree for static linking])
-  if test -n "${with_gme_tree}"
-  then
-    AC_MSG_CHECKING(for libgme.a in ${with_mod_tree})
-    real_gme_tree="`cd ${with_gme_tree} 2>/dev/null && pwd`"
-    if test -z "${real_gme_tree}"
-    then
-      dnl  The given directory can't be found
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([cannot cd to ${with_gme_tree}])
-    fi
-    if test -f "${real_gme_tree}/gme/libgme.a"
-    then
-      dnl  Use a custom gme
-      AC_MSG_RESULT(${real_gme_tree}/gme/libgme.a)
-      VLC_ADD_PLUGIN([gme])
-      VLC_ADD_LIBS([gme],[${real_gme_tree}/gme/libgme.a])
-      VLC_ADD_CXXFLAGS([gme],[-I${real_gme_tree}/gme])
-    else
-      dnl  The given gme wasn't built
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([cannot find ${real_mod_tree}/gme/libgme.a, make sure you compiled gme in ${with_gme_tree}])
-    fi
-  else
-      AC_MSG_WARN([only static linking is available, you must provide a gme-tree])
-  fi
-  AC_LANG_POP(C++)
 fi
 
 dnl
@@ -2790,7 +2769,7 @@ then
       VLC_SAVE_FLAGS
       CPPFLAGS="${CPPFLAGS} ${AVFORMAT_CFLAGS}"
       CFLAGS="${CFLAGS} ${AVFORMAT_CFLAGS}"
-      AC_CHECK_HEADERS(libavformat/avformat.h ffmpeg/avformat.h)
+      AC_CHECK_HEADERS(libavformat/avformat.h ffmpeg/avformat.h libavformat/avio.h)
       AC_CHECK_HEADERS(libavutil/avutil.h ffmpeg/avutil.h)
       AS_IF([test "$enable_merge_ffmpeg" = "no"], [
         VLC_ADD_PLUGIN([avformat access_avio])
@@ -3334,7 +3313,7 @@ AS_IF([test "${enable_xcb}" != "no"], [
   dnl libxcb
   PKG_CHECK_MODULES(XCB, [xcb])
   PKG_CHECK_MODULES(XCB_SHM, [xcb-shm])
-  VLC_ADD_PLUGIN([screensaver xcb_x11 xcb_window xcb_screen xcb_apps])
+  VLC_ADD_PLUGIN([xscreensaver xcb_x11 xcb_window xcb_screen xcb_apps])
 
   AS_IF([test "${enable_xvideo}" != "no"], [
     PKG_CHECK_MODULES(XCB_XV, [xcb-xv >= 1.1.90.1], [
@@ -3961,7 +3940,7 @@ if test "${enable_skins2}" = "yes" ||
     ALIASES="${ALIASES} svlc"
     VLC_ADD_CPPFLAGS([skins2],[-Imodules/gui/skins2 ${X_CFLAGS} -DX11_SKINS])
     VLC_ADD_CXXFLAGS([skins2],[-O2 -fno-rtti])
-    VLC_ADD_LIBS([skins2],[${X_LIBS} ${X_PRE_LIBS} -lXext -lX11])
+    VLC_ADD_LIBS([skins2],[${X_LIBS} ${X_PRE_LIBS} -lXext -lXpm -lX11])
     need_xid_provider="no"
   fi fi fi
 fi

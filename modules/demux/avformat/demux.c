@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 6d123d0b5345cb68340b81c5c34f08984674a3ba $
+ * $Id: 3279dad78f5fa292d29d4f8a084641f0e9b31bc2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -641,7 +641,7 @@ static block_t *BuildSsaFrame( const AVPacket *p_pkt, unsigned i_order )
 
     block_t *p_frame = block_heap_Alloc( p, p, strlen(p) + 1 );
     if( p_frame )
-        p_frame->i_length = CLOCK_FREQ * ((h1 - h1) * 3600 +
+        p_frame->i_length = CLOCK_FREQ * ((h1-h0) * 3600 +
                                           (m1-m0) * 60 +
                                           (s1-s0) * 1) +
                             CLOCK_FREQ * (c1-c0) / 100;

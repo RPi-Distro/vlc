@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 57a7af6de059360a458a136885b2d805da2ebf01 $
+ * $Id: 3d51f2228d1627e8b4f09216c923d45d03af5316 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damien@videolan.org>
@@ -241,11 +241,13 @@ static void I420_YUY2( filter_t *p_filter, picture_t *p_source,
             }
         }
     }
+#warning FIXME: converting widths % 16 but !widths % 32 is broken on altivec
+#if 0
     else if( !( ( p_filter->fmt_in.video.i_width % 16 ) |
                 ( p_filter->fmt_in.video.i_height % 4 ) ) )
     {
         /* Width is only a multiple of 16, we take 4 lines at a time */
-        for( i_y = p_filter->fmt_in.video.i_height / 4 ; i_y-- ; )
+		for( i_y = p_filter->fmt_in.video.i_height / 4 ; i_y-- ; )
         {
             /* Line 1 and 2, pixels 0 to ( width - 16 ) */
             VEC_NEXT_LINES( );
@@ -273,6 +275,7 @@ static void I420_YUY2( filter_t *p_filter, picture_t *p_source,
             }
         }
     }
+#endif
     else
     {
         /* Crap, use the C version */

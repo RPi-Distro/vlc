@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 66a9b84f1ec3ae24a7c4769dde15a6f3ff7c6e7b $
+ * $Id: af93fb39efb637f653ca576117ab091bda04fa93 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -157,7 +157,7 @@ struct demux_sys_t
 
 static int Control   ( demux_t *, int, va_list );
 static int Demux     ( demux_t * );
-static int DemuxBlock( demux_t *, uint8_t *, int );
+static int DemuxBlock( demux_t *, const uint8_t *, int );
 
 static void DemuxTitles( demux_t *, int * );
 static void ESNew( demux_t *, int, int );
@@ -174,8 +174,7 @@ static int Open( vlc_object_t *p_this )
 {
     demux_t      *p_demux = (demux_t*)p_this;
     demux_sys_t  *p_sys;
-    char         *psz_name;
-    dvd_reader_t *p_dvdread;
+    char         *psz_file;
     ifo_handle_t *p_vmg_file;
 
     if( !p_demux->psz_path || !*p_demux->psz_path )
@@ -184,30 +183,38 @@ static int Open( vlc_object_t *p_this )
         if( !p_demux->psz_access || !*p_demux->psz_access )
             return VLC_EGENERIC;
 
-        psz_name = var_CreateGetString( p_this, "dvd" );
-        if( !psz_name )
-        {
-            psz_name = strdup("");
-        }
+        psz_file = var_InheritString( p_this, "dvd" );
     }
     else
-        psz_name = ToLocaleDup( p_demux->psz_path );
+        psz_file = strdup( p_demux->psz_path );
 
 #ifdef WIN32
-    if( psz_name[0] && psz_name[1] == ':' &&
-        psz_name[2] == '\\' && psz_name[3] == '\0' ) psz_name[2] = '\0';
+    if( psz_file != NULL )
+    {
+        size_t flen = strlen( psz_file );
+        if( flen > 0 && psz_file[flen - 1] == '\\' )
+            psz_file[flen - 1] = '\0';
+    }
+    else
+        psz_file = strdup("");
 #endif
+    if( unlikely(psz_file == NULL) )
+        return VLC_EGENERIC;
 
     /* Open dvdread */
-    if( !(p_dvdread = DVDOpen( psz_name )) )
+    const char *psz_path = ToLocale( psz_file );
+    dvd_reader_t *p_dvdread = DVDOpen( psz_path );
+
+    LocaleFree( psz_path );
+    if( p_dvdread == NULL )
     {
-        msg_Err( p_demux, "DVDRead cannot open source: %s", psz_name );
+        msg_Err( p_demux, "DVDRead cannot open source: %s", psz_file );
         dialog_Fatal( p_demux, _("Playback failure"),
-                        _("DVDRead could not open the disc \"%s\"."), psz_name );
-        free( psz_name );
+                      _("DVDRead could not open the disc \"%s\"."), psz_file );
+        free( psz_file );
         return VLC_EGENERIC;
     }
-    free( psz_name );
+    free( psz_file );
 
     /* Ifo allocation & initialisation */
     if( !( p_vmg_file = ifoOpen( p_dvdread, 0 ) ) )
@@ -557,27 +564,20 @@ static int Demux( demux_t *p_demux )
 /*****************************************************************************
  * DemuxBlock: demux a given block
  *****************************************************************************/
-static int DemuxBlock( demux_t *p_demux, uint8_t *pkt, int i_pkt )
+static int DemuxBlock( demux_t *p_demux, const uint8_t *p, int len )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    uint8_t     *p = pkt;
 
-    while( p && p < &pkt[i_pkt] )
+    while( len > 0 )
     {
-        block_t *p_pkt;
-        int i_size = &pkt[i_pkt] - p;
-
-        if( i_size < 6 )
-            break;
- 
-        i_size = ps_pkt_size( p, i_size );
-        if( i_size <= 0 )
+        int i_size = ps_pkt_size( p, len );
+        if( i_size <= 0 || i_size > len )
         {
             break;
         }
 
         /* Create a block */
-        p_pkt = block_New( p_demux, i_size );
+        block_t *p_pkt = block_New( p_demux, i_size );
         memcpy( p_pkt->p_buffer, p, i_size);
 
         /* Parse it and send it */
@@ -642,6 +642,7 @@ static int DemuxBlock( demux_t *p_demux, uint8_t *pkt, int i_pkt )
         }
 
         p += i_size;
+        len -= i_size;
     }
 
     return VLC_SUCCESS;

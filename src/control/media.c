@@ -2,7 +2,7 @@
  * media.c: Libvlc API media descripor management
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 3fad99e283ff4cacc9f6935669fd11ac63968d8f $
+ * $Id: 5c5c4c59b901c0cb82703ef26e4241fbb23c0562 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont@videolan.org>
  *
@@ -338,6 +338,14 @@ libvlc_media_t *libvlc_media_new_path( libvlc_instance_t *p_instance,
     libvlc_media_t *m = libvlc_media_new_location( p_instance, mrl );
     free( mrl );
     return m;
+}
+
+libvlc_media_t *libvlc_media_new_fd( libvlc_instance_t *p_instance, int fd )
+{
+    char mrl[16];
+    snprintf( mrl, sizeof(mrl), "fd://%d", fd );
+
+    return libvlc_media_new_location( p_instance, mrl );
 }
 
 /**************************************************************************
@@ -691,7 +699,7 @@ libvlc_media_get_tracks_info( libvlc_media_t *p_md, libvlc_media_track_info_t **
     const int i_es = p_input_item->i_es;
     *pp_es = (i_es > 0) ? malloc( i_es * sizeof(libvlc_media_track_info_t) ) : NULL;
 
-    if( !pp_es ) /* no ES, or OOM */
+    if( !*pp_es ) /* no ES, or OOM */
     {
         vlc_mutex_unlock( &p_input_item->lock );
         return 0;

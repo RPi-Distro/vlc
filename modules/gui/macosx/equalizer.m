@@ -2,7 +2,7 @@
  * equalizer.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 1809b1f7ee0d29e3d0ad40b6e895927ccf97cbae $
+ * $Id: 2606673d6647c33fc34eefa88c179e0a80663c3e $
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *          Felix Paul Kühne <fkuehne -at- videolan -dot- org>
@@ -230,7 +230,7 @@ static bool GetFiltersStatus( intf_thread_t *p_intf,
         p_object = vlc_object_hold(pl_Get( p_intf ));
 
     const char *psz_values;
-    NSString *preset = [NSString stringWithFormat:@"%.1f", [o_slider_band1 floatValue] ];
+    NSString *preset = [NSString stringWithFormat:@"%.1f ", [o_slider_band1 floatValue] ];
     preset = [preset stringByAppendingFormat:@"%.1f ", [o_slider_band2 floatValue] ];
     preset = [preset stringByAppendingFormat:@"%.1f ", [o_slider_band3 floatValue] ];
     preset = [preset stringByAppendingFormat:@"%.1f ", [o_slider_band4 floatValue] ];

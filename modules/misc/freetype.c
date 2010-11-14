@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2007 the VideoLAN team
- * $Id: cff07a6b10eb9042e926a57d3f539da05b5f6db8 $
+ * $Id: 8f8011051ff406b316503fd6afb52130fdc43310 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -480,11 +480,11 @@ error:
 #ifdef HAVE_FONTCONFIG
     if( fontmatch ) FcPatternDestroy( fontmatch );
     if( fontpattern ) FcPatternDestroy( fontpattern );
-#endif
 
 #ifdef WIN32
     if( p_dialog )
         dialog_ProgressDestroy( p_dialog );
+#endif
 #endif
 
     if( p_sys->p_face ) FT_Done_Face( p_sys->p_face );

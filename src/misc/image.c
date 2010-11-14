@@ -2,7 +2,7 @@
  * image.c : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 497ed2bed947d8081c3c33f06ada7435c02a1dfb $
+ * $Id: 4c93a49373c737d1a8c06b8b34ca75e2a6de7104 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -609,7 +609,7 @@ static const struct
     { VLC_CODEC_PCX,               "image/pcx" },
     { VLC_CODEC_PNG,               "image/png" },
     { VLC_CODEC_TIFF,              "image/tiff" },
-    { VLC_CODEC_TARGA,             "iamge/x-tga" },
+    { VLC_CODEC_TARGA,             "image/x-tga" },
     { VLC_FOURCC('x','p','m',' '), "image/x-xpixmap" },
     { 0, NULL }
 };

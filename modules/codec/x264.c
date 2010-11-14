@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: 66fa49f018f202bb8c2ffc2577b065459981e49f $
+ * $Id: d82946309f0f1064953f6bab9bde0504177c5716 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Ilkka Ollakka <ileoo (at)videolan org>
@@ -619,7 +619,7 @@ vlc_module_begin ()
                  TRELLIS_LONGTEXT, false )
         change_integer_range( 0, 2 )
 
-    add_integer( SOUT_CFG_PREFIX "lookahead", 5, NULL, LOOKAHEAD_TEXT,
+    add_integer( SOUT_CFG_PREFIX "lookahead", 40, NULL, LOOKAHEAD_TEXT,
                  LOOKAHEAD_LONGTEXT, false )
         change_integer_range( 0, 60 )
 
@@ -1258,10 +1258,10 @@ static int  Open ( vlc_object_t *p_this )
     vlc_mutex_unlock( &pthread_win32_mutex );
 #endif
 
-    /* Set lookahead value to lower than default,
-     * as rtp-output without mux doesn't handle
-     * difference that well yet*/
-    p_sys->param.rc.i_lookahead= var_GetInteger( p_enc, SOUT_CFG_PREFIX "lookahead" );
+    if( var_GetInteger( p_enc, SOUT_CFG_PREFIX "lookahead" ) != 40 )
+    {
+       p_sys->param.rc.i_lookahead = var_GetInteger( p_enc, SOUT_CFG_PREFIX "lookahead" );
+    }
 
     /* We don't want repeated headers, we repeat p_extra ourself if needed */
     p_sys->param.b_repeat_headers = 0;

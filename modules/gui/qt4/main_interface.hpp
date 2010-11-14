@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: e2a59852f1bed0494d9d12aa2d2a5955c2e580e2 $
+ * $Id: 4f4d208cbeed52f1a54ecc3f19a745614931d1c9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -235,6 +235,7 @@ signals:
     void askVideoOnTop( bool );
     void minimalViewToggled( bool );
     void fullscreenInterfaceToggled( bool );
+    void askToQuit();
 
 };
 
