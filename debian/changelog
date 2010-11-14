@@ -5,9 +5,10 @@ vlc (1.1.5-1) UNRELEASED; urgency=low
   * Install all docs into /usr/share/doc/vlc-nox and link the vlc doc dir to it.
   * Recommend xdg-utils, because xdg-screensaver is required for disabling
     the screensaver. (Closes: #436339)
-  * Support VP8 / WebM format through FFmpeg 0.6 (Closes: #592103).
+  * Add libxscreensaver plugin to vlc.
+  * Add new symbol to libvlc5.
 
- -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 14 Nov 2010 19:31:46 +0100
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 14 Nov 2010 20:05:42 +0100
 
 vlc (1.1.4-1) experimental; urgency=low
 
