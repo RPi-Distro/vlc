@@ -1,4 +1,4 @@
-vlc (1.1.5-1) UNRELEASED; urgency=low
+vlc (1.1.5-1) experimental; urgency=low
 
   * New upstream release.
   * Fix path typo in NEWS file. (Closes: #599314)
@@ -8,7 +8,7 @@ vlc (1.1.5-1) UNRELEASED; urgency=low
   * Add libxscreensaver plugin to vlc.
   * Add new symbol to libvlc5.
 
- -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 14 Nov 2010 20:05:42 +0100
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 14 Nov 2010 21:27:56 +0100
 
 vlc (1.1.4-1) experimental; urgency=low
 
