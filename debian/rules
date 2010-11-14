@@ -27,6 +27,7 @@ confflags += \
 	--disable-update-check \
 	--enable-fast-install \
 	--prefix=/usr \
+	--docdir=/usr/share/doc/vlc-nox \
 	--sysconfdir=/etc \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	$(NULL)
@@ -222,11 +223,9 @@ override_dh_strip:
 	dh_strip --dbg-package=vlc-dbg
 
 override_dh_installdocs:
-	dh_installdocs -p vlc
 	dh_installdocs -p vlc-data
 	dh_installdocs -p vlc-nox
 
 override_dh_installchangelogs:
-	dh_installchangelogs ChangeLog -p vlc
 	dh_installchangelogs ChangeLog -p vlc-data
 	dh_installchangelogs ChangeLog -p vlc-nox
