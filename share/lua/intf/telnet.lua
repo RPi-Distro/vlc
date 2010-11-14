@@ -181,7 +181,7 @@ while not vlc.misc.should_die() do
 
     -- Handle reads
     for _, client in pairs(r) do
-        local str = client.cmds .. string.gsub(client:recv(1000), "\r", "\n")
+        local str = client.cmds .. client:recv(1000)
 
         if not str then -- the telnet client program has leave
             client.cmds = "quit"
@@ -192,9 +192,6 @@ while not vlc.misc.should_die() do
            or  (client.type == host.client_type.net and str == "\004")) then
             -- Caught a ^D
             client.cmds = "quit"
-        end
-        if client.type == host.client_type.net then
-            telnet_commands( client )
         end
 
         client.buffer = ""
@@ -208,6 +205,12 @@ while not vlc.misc.should_die() do
             client.buffer = string.gsub(string.sub(client.cmds, 0, index - 1), "^%s*(.-)%s*$", "%1")
             client.cmds = string.sub(client.cmds, index + 1)
 
+            -- Remove telnet commands from the command line
+            if client.type == host.client_type.net then
+                telnet_commands( client )
+            end
+
+            -- Run the command
             if client.status == host.status.password then
                 if client.buffer == password then
                     client:send( IAC..WONT..ECHO.."\r\nWelcome, Master\r\n" )

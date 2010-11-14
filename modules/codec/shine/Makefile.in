@@ -381,7 +381,6 @@ LTLIBrealvideo = @LTLIBrealvideo@
 LTLIBremoteosd = @LTLIBremoteosd@
 LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
-LTLIBscreensaver = @LTLIBscreensaver@
 LTLIBsdl_image = @LTLIBsdl_image@
 LTLIBshine = @LTLIBshine@
 LTLIBskins2 = @LTLIBskins2@
@@ -427,6 +426,7 @@ LTLIBxcb_xv = @LTLIBxcb_xv@
 LTLIBxdg_screensaver = @LTLIBxdg_screensaver@
 LTLIBxml = @LTLIBxml@
 LTLIBxosd = @LTLIBxosd@
+LTLIBxscreensaver = @LTLIBxscreensaver@
 LTLIBzip = @LTLIBzip@
 LTLIBzvbi = @LTLIBzvbi@
 LUAC = @LUAC@
@@ -654,7 +654,7 @@ AM_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin $@`
 AM_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin $@`
 AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
-	-export-symbol-regex ^vlc_entry \
+	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
 	-rpath "$(libvlcdir)" \
 	-no-undefined \

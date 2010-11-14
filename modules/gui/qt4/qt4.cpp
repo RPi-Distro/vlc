@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 387681d1f16223a73d8deaf4bfdcf65e75323f6a $
+ * $Id: 5ed768274c6080a3ce8ffbfe560008862c583714 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -365,8 +365,14 @@ static void Close( vlc_object_t *p_this )
     if( !p_sys->b_isDialogProvider )
         var_Destroy (pl_Get(p_this), "qt4-iface");
 
+    /* And quit */
+    msg_Dbg( p_intf, "Please die, die, die..." );
+    QApplication::closeAllWindows();
+
+//    QApplication::quit();
     QVLCApp::triggerQuit();
 
+    msg_Dbg( p_intf, "Please die, die, die 2..." );
     vlc_join (p_sys->thread, NULL);
 #ifdef Q_WS_X11
     free (x11_display);
@@ -455,7 +461,7 @@ static void *Thread( void *obj )
     vlc_sem_post (&ready);
 
     /* Last settings */
-    app.setQuitOnLastWindowClosed( false );
+    app.setQuitOnLastWindowClosed( true );
 
     /* Retrieve last known path used in file browsing */
     p_intf->p_sys->filepath =
@@ -469,9 +475,7 @@ static void *Thread( void *obj )
     /* Launch */
     app.exec();
 
-    /* And quit */
-    QApplication::closeAllWindows();
-
+    msg_Dbg( p_intf, "Exec finished()" );
     if (p_mi != NULL)
     {
 #warning BUG!

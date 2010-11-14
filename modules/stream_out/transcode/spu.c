@@ -2,7 +2,7 @@
  * spu.c: transcoding stream output module (spu)
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 04325d98d59d99afd37d26d111ae02423edab8f4 $
+ * $Id: 32b0608b35bf3734f98153295bdf1a3f2fa2eb00 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -100,8 +100,9 @@ int transcode_spu_new( sout_stream_t *p_stream, sout_stream_id_t *id )
     return VLC_SUCCESS;
 }
 
-void transcode_spu_close( sout_stream_id_t *id)
+void transcode_spu_close( sout_stream_t *p_stream, sout_stream_id_t *id)
 {
+    sout_stream_sys_t *p_sys = p_stream->p_sys;
     /* Close decoder */
     if( id->p_decoder->p_module )
         module_unneed( id->p_decoder, id->p_decoder->p_module );
@@ -111,6 +112,12 @@ void transcode_spu_close( sout_stream_id_t *id)
     /* Close encoder */
     if( id->p_encoder->p_module )
         module_unneed( id->p_encoder, id->p_encoder->p_module );
+
+    if( p_sys->p_spu )
+    {
+        spu_Destroy( p_sys->p_spu );
+        p_sys->p_spu = NULL;
+    }
 }
 
 int transcode_spu_process( sout_stream_t *p_stream,
@@ -180,7 +187,7 @@ bool transcode_spu_add( sout_stream_t *p_stream, es_format_t *p_fmt,
 
         if( !id->id )
         {
-            transcode_spu_close( id );
+            transcode_spu_close( p_stream, id );
             return false;
         }
     }

@@ -4,7 +4,7 @@
  * Copyright (C) 2003-2004 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
  *
- * $Id: a1cc95317051da7d790541f7943e66f8f86d9a59 $
+ * $Id: 47604781f763b5e3f83bd9fbfd36dbe13eae731e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -596,6 +596,7 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
                         {
                             answer->i_status = 454;
                             vlc_mutex_unlock( &rtsp->lock );
+                            net_Close( track.fd );
                             continue;
                         }
                     }

@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: e92714807ce2f23b741d6becb1049b85eb766fea $
+ * $Id: 9bc3235cb82f6f09947a86fdf1a2a482b407578c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -76,6 +76,8 @@
 #include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
 
+// taglib is not thread safe
+static vlc_mutex_t taglib_lock = VLC_STATIC_MUTEX;
 
 // Local functions
 static int ReadMeta    ( vlc_object_t * );
@@ -199,6 +201,7 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_t* p_demux, demux_meta_t* 
         3,  /* Logo of the band or performer. */
         2   /* Logo of the publisher (record company). */
     };
+    #define PI_COVER_SCORE_SIZE (sizeof (pi_cover_score) / sizeof (pi_cover_score[0]))
     int i_score = -1;
 
     // Try now to get embedded art
@@ -260,9 +263,13 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_t* p_demux, demux_meta_t* 
                              p_attachment );
         free( psz_description );
 
-        if( pi_cover_score[p_apic->type()] > i_score )
+        unsigned i_pic_type = p_apic->type();
+        if( i_pic_type >= PI_COVER_SCORE_SIZE )
+            i_pic_type = 0; // Defaults to "Other"
+
+        if( pi_cover_score[i_pic_type] > i_score )
         {
-            i_score = pi_cover_score[p_apic->type()];
+            i_score = pi_cover_score[i_pic_type];
             char *psz_url;
             if( asprintf( &psz_url, "attachment://%s",
                           p_attachment->psz_name ) == -1 )
@@ -354,6 +361,7 @@ static void ReadMetaFromMP4( MP4::Tag* tag, demux_t *p_demux, demux_meta_t *p_de
  */
 static int ReadMeta( vlc_object_t* p_this)
 {
+    vlc_mutex_locker locker (&taglib_lock);
     demux_meta_t*   p_demux_meta = (demux_meta_t *)p_this;
     demux_t*        p_demux = p_demux_meta->p_demux;
     vlc_meta_t*     p_meta;
@@ -564,6 +572,7 @@ static void WriteMetaToXiph( Ogg::XiphComment* tag, input_item_t* p_item )
 
 static int WriteMeta( vlc_object_t *p_this )
 {
+    vlc_mutex_locker locker (&taglib_lock);
     meta_export_t *p_export = (meta_export_t *)p_this;
     input_item_t *p_item = p_export->p_item;
     FileRef f;

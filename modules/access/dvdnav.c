@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 409d9d4cf941b69d485b4def0e39da39fc49d640 $
+ * $Id: af09f13c824986575bf16c7f55c5e9ce68016a97 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -187,7 +187,7 @@ static int Open( vlc_object_t *p_this )
     demux_sys_t *p_sys;
     dvdnav_t    *p_dvdnav;
     int         i_angle;
-    char        *psz_name;
+    char        *psz_file;
     char        *psz_code;
 
     if( !p_demux->psz_path || !*p_demux->psz_path )
@@ -196,38 +196,44 @@ static int Open( vlc_object_t *p_this )
         if( !p_demux->psz_access || !*p_demux->psz_access )
             return VLC_EGENERIC;
 
-        psz_name = var_CreateGetString( p_this, "dvd" );
-        if( !psz_name )
-        {
-            psz_name = strdup("");
-        }
+        psz_file = var_InheritString( p_this, "dvd" );
     }
     else
-        psz_name = ToLocaleDup( p_demux->psz_path );
+        psz_file = strdup( p_demux->psz_path );
 
 #ifdef WIN32
-    /* Remove trailing backslash, otherwise dvdnav_open will fail */
-    if( *psz_name && *(psz_name + strlen(psz_name) - 1) == '\\' )
+    if( psz_file != NULL )
     {
-        *(psz_name + strlen(psz_name) - 1) = '\0';
+        /* Remove trailing backslash, otherwise dvdnav_open will fail */
+        size_t flen = strlen( psz_file );
+        if( flen > 0 && psz_file[flen - 1] == '\\' )
+            psz_file[flen - 1] = '\0';
     }
+    else
+        psz_file = strdup("");
 #endif
+    if( unlikely(psz_file == NULL) )
+        return VLC_EGENERIC;
 
     /* Try some simple probing to avoid going through dvdnav_open too often */
-    if( ProbeDVD( p_demux, psz_name ) != VLC_SUCCESS )
+    if( ProbeDVD( p_demux, psz_file ) != VLC_SUCCESS )
     {
-        free( psz_name );
+        free( psz_file );
         return VLC_EGENERIC;
     }
 
     /* Open dvdnav */
-    if( dvdnav_open( &p_dvdnav, psz_name ) != DVDNAV_STATUS_OK )
+    const char *psz_path = ToLocale( psz_file );
+    if( dvdnav_open( &p_dvdnav, psz_path ) != DVDNAV_STATUS_OK )
+        p_dvdnav = NULL;
+    LocaleFree( psz_path );
+    if( p_dvdnav == NULL )
     {
-        msg_Warn( p_demux, "cannot open dvdnav" );
-        free( psz_name );
+        msg_Warn( p_demux, "cannot open DVD (%s)", psz_file);
+        free( psz_file );
         return VLC_EGENERIC;
     }
-    free( psz_name );
+    free( psz_file );
 
     /* Fill p_demux field */
     DEMUX_INIT_COMMON(); p_sys = p_demux->p_sys;
@@ -1130,16 +1136,14 @@ static void ESSubtitleUpdate( demux_t *p_demux )
 /*****************************************************************************
  * DemuxBlock: demux a given block
  *****************************************************************************/
-static int DemuxBlock( demux_t *p_demux, const uint8_t *pkt, int i_pkt )
+static int DemuxBlock( demux_t *p_demux, const uint8_t *p, int len )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    const uint8_t     *p = pkt;
 
-    while( (p - pkt) <= (i_pkt - 6) )
+    while( len > 0 )
     {
-        /* ps_pkt_size() needs at least 6 bytes */
-        int i_size = ps_pkt_size( p, &pkt[i_pkt] - p );
-        if( i_size <= 0 )
+        int i_size = ps_pkt_size( p, len );
+        if( i_size <= 0 || i_size > len )
         {
             break;
         }
@@ -1209,6 +1213,7 @@ static int DemuxBlock( demux_t *p_demux, const uint8_t *pkt, int i_pkt )
         }
 
         p += i_size;
+        len -= i_size;
     }
 
     return VLC_SUCCESS;

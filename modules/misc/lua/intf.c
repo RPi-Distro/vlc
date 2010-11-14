@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: eb87685a8e4ef56cf05c76ec9611946a86f0c185 $
+ * $Id: f79e0ef8892b3783cef3b322a4f442acdaf6c0a8 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -273,6 +273,18 @@ int Open_LuaIntf( vlc_object_t *p_this )
             free( psz_esc_passwd );
             free( psz_telnet_passwd );
             free( psz_telnet_host );
+        }
+        else if( !strcmp( psz_name, "rc" ) )
+        {
+            char *psz_rc_host = var_CreateGetNonEmptyString( p_intf, "rc-host" );
+            if( psz_rc_host )
+            {
+                char *psz_esc_host = config_StringEscape( psz_rc_host );
+                asprintf( &psz_config, "rc={host='%s'}", psz_esc_host );
+
+                free( psz_esc_host );
+                free( psz_rc_host );
+            }
         }
     }
 

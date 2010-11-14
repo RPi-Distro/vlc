@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: ee0b057ef254a56885f06bab1b67e5e34e136e98 $
+ * $Id: ba866caa152928f181bd3c4c1d3b958cd0d74a43 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -82,6 +82,9 @@
 #define TELNETPWD_LONGTEXT N_( "A single administration password is used " \
     "to protect this interface. The default value is \"admin\"." )
 #define TELNETPWD_DEFAULT "admin"
+#define RCHOST_TEXT N_("TCP command input")
+#define RCHOST_LONGTEXT N_("Accept commands over a socket rather than stdin. " \
+            "You can set the address and port the interface will bind to." )
 
 static int vlc_sd_probe_Open( vlc_object_t * );
 
@@ -106,6 +109,8 @@ vlc_module_begin ()
             add_string ( "http-host", NULL, NULL, HOST_TEXT, HOST_LONGTEXT, true )
             add_string ( "http-src",  NULL, NULL, SRC_TEXT,  SRC_LONGTEXT,  true )
             add_bool   ( "http-index", false, NULL, INDEX_TEXT, INDEX_LONGTEXT, true )
+        set_section( N_("Lua RC"), 0 )
+            add_string( "rc-host", NULL, NULL, RCHOST_TEXT, RCHOST_LONGTEXT, true )
         set_section( N_("Lua Telnet"), 0 )
             add_string( "telnet-host", "localhost", NULL, TELNETHOST_TEXT,
                         TELNETHOST_LONGTEXT, true )
@@ -576,6 +581,7 @@ int __vlclua_playlist_add_internal( vlc_object_t *p_this, lua_State *L,
                     /* Append item to playlist */
                     if( p_parent ) /* Add to node */
                     {
+                        input_item_CopyOptions( p_parent, p_input );
                         input_item_node_AppendItem( p_parent_node, p_input );
                     }
                     else /* Play or Enqueue (preparse) */

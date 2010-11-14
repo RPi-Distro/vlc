@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: fc13f7ab5cdb9c5789041b797283669cadf6521a $
+ * $Id: 7a51214a034030980df0730931d785710028062a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -643,7 +643,7 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
             if( p_sys->b_osd )
                 transcode_osd_close( p_stream, id );
             else
-                transcode_spu_close( id );
+                transcode_spu_close( p_stream, id );
             break;
         }
     }

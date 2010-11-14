@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 320267508fa7d25dc78df0b901173df8da27e663 $
+ * $Id: 010c25e47b99baba8f5466f562b4ab0fd9e61f93 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -209,13 +209,9 @@ int Import_LuaPlaylist( vlc_object_t *p_this )
     demux_t *p_demux = (demux_t *)p_this;
     int ret;
 
-    p_demux->p_sys = (demux_sys_t*)malloc( sizeof( demux_sys_t ) );
+    p_demux->p_sys = calloc( 1, sizeof( demux_sys_t ) );
     if( !p_demux->p_sys )
-    {
         return VLC_ENOMEM;
-    }
-
-    p_demux->p_sys->psz_filename = NULL;
 
     p_demux->pf_control = Control;
     p_demux->pf_demux = Demux;

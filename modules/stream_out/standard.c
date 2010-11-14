@@ -2,7 +2,7 @@
  * standard.c: standard stream output module
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 7210638dbf9da4be7df9ea0944bb8cbc16dda407 $
+ * $Id: 35d990e3d08b68ced7779b2bbd1f60b069e79ec0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -250,6 +250,7 @@ static int Open( vlc_object_t *p_this )
             { "ogg", "ogg" },
             { "ogm", "ogg" },
             { "ogv", "ogg" },
+            { "flac","raw" },
             { "mp3", "raw" },
             { "mp4", "mp4" },
             { "mov", "mov" },
