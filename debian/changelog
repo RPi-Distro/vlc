@@ -1,3 +1,9 @@
+vlc (1.1.5-1ubuntu2) natty; urgency=low
+
+  * Fixed wrong aspect ratio in transcoded image from webcam. (LP: #672304)
+
+ -- Nicola Ferralis <feranick@hotmail.com>  Fri, 19 Nov 2010 00:15:09 +0100
+
 vlc (1.1.5-1ubuntu1) natty; urgency=low
 
   * Merge from Debian experimental, remaining changes:
