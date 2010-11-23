@@ -1,2 +1,3 @@
 052_as-needed.diff
 200_osdmenu_paths.diff
+300_transcode_aspect_ratio.diff
