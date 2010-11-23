@@ -1,3 +1,15 @@
+vlc (1.1.5-2) experimental; urgency=low
+
+  [ Reinhard Tartler ]
+  * fix Breaks/Replaces for moving avcodec module around (Closes: #603912)
+
+  [ Benjamin Drung ]
+  * Fix KDE device action file locations. (LP: #542293) - thanks to Lari Natri
+  * Fixed wrong aspect ratio in transcoded image from webcam.
+    (Closes: #603888, LP: #672304)
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 24 Nov 2010 00:19:39 +0100
+
 vlc (1.1.5-1) experimental; urgency=low
 
   * New upstream release.
