@@ -1,5 +1,7 @@
 Description: Fixed wrong aspect ratio in transcoded image from webcam.
-Author: Nicola Ferralis <feranick@hotmail.com>
+Origin: upstream, https://trac.videolan.org/vlc/ticket/4312
+Bug-Debian: http://bugs.debian.org/603888
+Bug-Ubuntu: https://launchpad.net/bugs/672304
 Applied-Upstream: 1.1.6
 
 diff -Nru vlc-1.1.5.orig//modules/stream_out/transcode/video.c vlc-1.1.5/modules/stream_out/transcode/video.c
