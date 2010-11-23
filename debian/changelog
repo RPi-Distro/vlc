@@ -1,3 +1,10 @@
+vlc (1.1.5-2ubuntu1) natty; urgency=low
+
+  * Merge from Debian experimental, remaining changes:
+    - build and install the libx264 plugin
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 24 Nov 2010 00:51:28 +0100
+
 vlc (1.1.5-2) experimental; urgency=low
 
   [ Reinhard Tartler ]
