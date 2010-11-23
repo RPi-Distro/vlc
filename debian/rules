@@ -85,7 +85,7 @@ confflags += \
 	--enable-vcdx \
 	--enable-vorbis \
 	--enable-zvbi \
-	--with-kde-solid=/usr/share/kde4/apps/ \
+	--with-kde-solid \
 	--with-mozilla-pkg=libxul \
 	$(NULL)
 # Reasons for disabling features:
