@@ -1,3 +1,9 @@
+vlc (1.1.5-3) experimental; urgency=low
+
+  * Apply upstream fix for KDE device actions. (LP: #542293)
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Fri, 26 Nov 2010 00:26:15 +0100
+
 vlc (1.1.5-2) experimental; urgency=low
 
   [ Reinhard Tartler ]
