@@ -1,0 +1,57 @@
+From: Lari Natri <lari.natri@gmail.com>
+Subject: [PATCH] Fix for KDE device actions
+ This tiny patch enables opening of VideoCD/AudioCD/DVD discs with VLC in KDE
+ when inserted, which was broken before.
+Origin: upstream, http://git.videolan.org/?p=vlc.git;a=commitdiff;h=99ebae0c04aa2ce0b3085fbba78f4245c713d9c2
+Bug-Ubuntu: https://launchpad.net/bugs/542293
+Applied-Upstream: 1.2.0
+
+diff --git a/share/solid/vlc-opencda.desktop b/share/solid/vlc-opencda.desktop
+index 4bdd52a..866e85f 100644
+--- a/share/solid/vlc-opencda.desktop
++++ b/share/solid/vlc-opencda.desktop
+@@ -5,6 +5,6 @@ Actions=open;
+ 
+ [Desktop Action open]
+ Name=Open with VLC media player
+-Exec=vlc cdda://
++Exec=vlc cdda://%d
+ Icon=vlc
+ 
+diff --git a/share/solid/vlc-opendvd.desktop b/share/solid/vlc-opendvd.desktop
+index e86fa40..620a396 100644
+--- a/share/solid/vlc-opendvd.desktop
++++ b/share/solid/vlc-opendvd.desktop
+@@ -1,10 +1,10 @@
+ [Desktop Entry]
+-X-KDE-Solid-Predicate=[ StorageVolume.ignored == false AND OpticalDisc.availableContent & 'VideoDvd' ]
++X-KDE-Solid-Predicate=[ StorageVolume.ignored == false AND OpticalDisc.availableContent == 'Data|VideoDvd' ]
+ Type=Service
+ Actions=open;
+ 
+ [Desktop Action open]
+ Name=Open with VLC media player
+-Exec=vlc dvd://
++Exec=vlc dvd://%d
+ Icon=vlc
+ 
+diff --git a/share/solid/vlc-openvcd.desktop b/share/solid/vlc-openvcd.desktop
+index 4b75c7b..2965ea5 100644
+--- a/share/solid/vlc-openvcd.desktop
++++ b/share/solid/vlc-openvcd.desktop
+@@ -1,10 +1,10 @@
+ [Desktop Entry]
+-X-KDE-Solid-Predicate=[ StorageVolume.ignored == false AND OpticalDisc.availableContent & 'VideoCd|SuperVideoCd' ]
++X-KDE-Solid-Predicate=[ StorageVolume.ignored == false AND OpticalDisc.availableContent == 'VideoCd|SuperVideoCd' ]
+ Type=Service
+ Actions=open;
+ 
+ [Desktop Action open]
+ Name=Open with VLC media player
+-Exec=vlc vcd://
++Exec=vlc vcd://%d
+ Icon=vlc
+ 
+-- 
+1.7.1
+
