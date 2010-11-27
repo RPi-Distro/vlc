@@ -100,20 +100,6 @@ Homepage: http://www.videolan.org/vlc/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=summary
 
-Package: libvlc5
-Section: libs
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Replaces: vlc (<< 0.8.6.c-6)
-Description: multimedia player and streamer library
- This package contains the shared library required by applications using VLC
- features.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
 Package: libvlc-dev
 Section: libdevel
 Architecture: any
@@ -130,14 +116,15 @@ Description: development files for libvlc
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
-Package: libvlccore4
+Package: libvlc5
 Section: libs
 Architecture: any
-Depends: vlc-data (= ${source:Version}),
-         ${misc:Depends},
+Depends: ${misc:Depends},
          ${shlibs:Depends}
-Description: base library for VLC and its modules
- This package contains the shared library required by VLC modules and libvlc.
+Replaces: vlc (<< 0.8.6.c-6)
+Description: multimedia player and streamer library
+ This package contains the shared library required by applications using VLC
+ features.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
@@ -152,6 +139,19 @@ Depends: libvlccore4 (= ${binary:Version}),
 Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
  for VLC.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: libvlccore4
+Section: libs
+Architecture: any
+Depends: vlc-data (= ${source:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Description: base library for VLC and its modules
+ This package contains the shared library required by VLC modules and libvlc.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
