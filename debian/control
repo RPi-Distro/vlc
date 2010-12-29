@@ -7,7 +7,7 @@ Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Loic Minier <lool@dooz.org>,
            Christophe Mutricy <xtophe@videolan.org>,
            Mohammed Adnène Trojette <adn+deb@diwi.org>,
-           Benjamin Drung <bdrung@ubuntu.com>
+           Benjamin Drung <bdrung@debian.org>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.2.3~),
                dh-buildinfo,
