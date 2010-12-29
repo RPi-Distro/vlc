@@ -1,3 +1,13 @@
+vlc (1.1.4-1ubuntu1.2) maverick-security; urgency=low
+
+  * SECURITY UPDATE: Buffer overflow in Real demuxer (LP: #690173)
+    - modules/demux/real.c: Fix heap buffer overflow, thanks to Rémi
+      Denis-Courmont
+    - CVE-2010-3907
+    - VideoLAN-SA-1007
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 30 Dec 2010 00:46:50 +0100
+
 vlc (1.1.4-1ubuntu1.1) maverick-proposed; urgency=low
 
   * Fixed wrong aspect ratio in transcoded image from webcam. (LP: #672304)
