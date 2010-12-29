@@ -16,3 +16,4 @@
 525-Mozilla-more-fixes.patch
 600-drop-OJI-xul-192.patch
 CVE-2010-2937.patch
+CVE-2010-3907.diff
