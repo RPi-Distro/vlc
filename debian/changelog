@@ -1,3 +1,9 @@
+vlc (1.1.4-1ubuntu1.1) maverick-proposed; urgency=low
+
+  * Fixed wrong aspect ratio in transcoded image from webcam. (LP: #672304)
+
+ -- Nicola Ferralis <feranick@hotmail.com>  Fri, 19 Nov 2010 01:12:25 -0800
+
 vlc (1.1.4-1ubuntu1) maverick; urgency=low
 
   * Merge from Debian experimental, remaining changes:
