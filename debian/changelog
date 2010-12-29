@@ -1,5 +1,6 @@
 vlc (1.1.3-1squeeze1) unstable; urgency=medium
 
+  [ Christophe Mutricy ]
   * Security fix
     + Raise urgency
   * Fix heap buffer overflow (LP: #690173)
@@ -7,7 +8,10 @@ vlc (1.1.3-1squeeze1) unstable; urgency=medium
     + VideoLAN-SA-1007
     + Patch taken from upstream
 
- -- Christophe Mutricy <xtophe@videolan.org>  Wed, 29 Dec 2010 19:57:26 +0100
+  [ Benjamin Drung ]
+  * Update my email address.
+
+ -- Benjamin Drung <bdrung@debian.org>  Wed, 29 Dec 2010 22:40:07 +0100
 
 vlc (1.1.3-1) unstable; urgency=medium
 
