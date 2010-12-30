@@ -1,3 +1,13 @@
+vlc (1.0.6-1ubuntu1.3) lucid-security; urgency=low
+
+  * SECURITY UPDATE: Buffer overflow in Real demuxer (LP: #690173)
+    - modules/demux/real.c: Fix heap buffer overflow, thanks to Rémi
+      Denis-Courmont
+    - CVE-2010-3907
+    - VideoLAN-SA-1007
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 30 Dec 2010 01:14:56 +0100
+
 vlc (1.0.6-1ubuntu1.2) lucid-security; urgency=low
 
   * SECURITY UPDATE: Insufficient input validation in VLC TagLib plugin
