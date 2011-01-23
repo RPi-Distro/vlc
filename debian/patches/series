@@ -4,3 +4,4 @@
 502_xulrunner_191.diff
 503_autoreconf.diff
 CVE-2010-3907.diff
+cdg-heap-overflow.diff
