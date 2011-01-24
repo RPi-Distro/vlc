@@ -1,20 +1,16 @@
 Author: Dan Rosenberg <drosenberg@vsecurity.com>
 Subject: Fix heap overflows in CDG decoder
-
-    This patch resolves two heap corruption vulnerabilities in the CDG
-    decoder for VLC media player.  In both cases, a failure to properly
-    validate indexes into statically-sized arrays on the heap could allow a
-    maliciously crafted CDG video to corrupt the heap in a controlled
-    manner, potentially leading to code execution.
-    
-    The patch is against v1.1.5 from vlc git, but this decoder hasn't been
-    touched in awhile, so I'd expect it to cleanly apply to older versions.
-    I've tested it and confirmed it resolves the heap corruption issues and
-    does not break functionality.
-    
+ This patch resolves two heap corruption vulnerabilities in the CDG
+ decoder for VLC media player.  In both cases, a failure to properly
+ validate indexes into statically-sized arrays on the heap could allow a
+ maliciously crafted CDG video to corrupt the heap in a controlled
+ manner, potentially leading to code execution.
+ .
+ The patch is against v1.1.5 from vlc git, but this decoder hasn't been
+ touched in awhile, so I'd expect it to cleanly apply to older versions.
+ I've tested it and confirmed it resolves the heap corruption issues and
+ does not break functionality.
 Origin: upstream, http://git.videolan.org/gitweb.cgi?p=vlc/vlc-1.1.git;a=commit;h=d11fca8bf9dc058bcdf67d81c04f84f8905ad8b4
-Date:   Fri Jan 7 11:06:08 2011 -0500
-
 
 diff --git a/modules/codec/cdg.c b/modules/codec/cdg.c
 index 31ecd0e..fe7b62d 100644

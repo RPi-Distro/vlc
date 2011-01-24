@@ -1,5 +1,4 @@
 Author: Harry Sintonen <sintonen@iki.fi>
-Date:   Mon Jan 17 00:47:58 2011 +0200
 Subject: Handle early termination properly in StripTags
 Origin: upstream, http://git.videolan.org/gitweb.cgi?p=vlc/vlc-1.1.git;a=commit;h=dc14617f39c03bbe80c3cc4f92799dca840966eb
 
