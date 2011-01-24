@@ -5,7 +5,7 @@ vlc (1.1.6-1) UNRELEASED; urgency=low
 
   [ Benjamin Drung ]
   * New upstream release.
-    - Fix heap buffer overflow in Real demuxer (LP: #690173)
+    - Fix heap buffer overflow in Real demuxer (CVE-2010-3907)(LP: #690173)
     - Fix blue face issue with X11 ouput (LP: #665298)
     - Fix crash with SIGSEGV in QMetaObject::activate() (LP: #448082)
     - Fix heap overflow in CDG decoder and XML heap corruption (LP: #707154)
