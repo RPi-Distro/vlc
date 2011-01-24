@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 59aa2e6717f0b4a227a281778dc8792d51d9393e $
+ * $Id: f0d1879ae6e28e14b87b9c7e40cf04153bb2dede $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -831,7 +831,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
             if( ReadICYMeta( p_access ) )
             {
                 p_access->info.b_eof = true;
-                return -1;
+                return 0;
             }
         }
         if( i_len > i_next )

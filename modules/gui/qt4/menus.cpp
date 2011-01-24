@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 23025596d89eeb84f84d20509b9a372ae466cee7 $
+ * $Id: e95a5efd8bcf9a91709dc41ba24c1fc043ebc2a0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -484,13 +484,10 @@ QMenu *QVLCMenu::ViewMenu( intf_thread_t *p_intf, QMenu *current, MainInterface 
     action->setChecked( mi->isPlDocked() );
     CONNECT( action, triggered( bool ), mi, dockPlaylist( bool ) );
 
-    if( !current )
-    // I don't want to manage consistency between menus, so no popup-menu
-    {
-        action = menu->addAction( qtr( "Quit after Playback" ) );
-        action->setCheckable( true );
-        CONNECT( action, triggered( bool ), THEMIM, activatePlayQuit( bool ) );
-    }
+    action = menu->addAction( qtr( "Quit after Playback" ) );
+    action->setCheckable( true );
+    action->setChecked( THEMIM->getPlayExitState() );
+    CONNECT( action, triggered( bool ), THEMIM, activatePlayQuit( bool ) );
 
 #if 0 /* For Visualisations. Not yet working */
     adv = menu->addAction( qtr( "Visualizations selector" ),

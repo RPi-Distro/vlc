@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 482db7d4fc4708eb3416ce7b49e18ddc40d94b9c $
+ * $Id: ff498edb6feef2f9d02a2b71e71d34a70414f3ca $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -610,7 +610,7 @@ int rtp_packetize_t140( sout_stream_id_t *id, block_t *in )
         memcpy( out->p_buffer + 12, p_data, i_payload );
 
         out->i_buffer = 12 + i_payload;
-        out->i_dts    = out->i_pts;
+        out->i_dts    = in->i_pts;
         out->i_length = 0;
 
         rtp_packetize_send( id, out );

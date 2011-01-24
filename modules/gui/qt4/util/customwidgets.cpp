@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 5b460c3a6ba95b890c22eae6a43aefe4329af355 $
+ * $Id: 7bddffb1758b754fe1d6c3dada43172b76739eb1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -391,12 +391,13 @@ int qtEventToVLCKey( QKeyEvent *e )
     uint32_t i_vlck = 0;
 
     if( qtk <= 0xff )
-        /* VLC and X11 use lowercase whereas Qt uses uppercase */
-#if defined( __STDC_ISO_10646__ ) || defined( _WIN32 )
-        i_vlck = towlower( qtk );
-#else
-# error FIXME
-#endif
+    {
+        /* VLC and X11 use lowercase whereas Qt uses uppercase, this
+         * method should be equal to towlower in case of latin1 */
+        if( qtk >= 'A' && qtk <= 'Z' ) i_vlck = qtk+32;
+        else if( qtk >= 0xC0 && qtk <= 0xDE && qtk != 0xD7) i_vlck = qtk+32;
+        else i_vlck = qtk;
+    }
     else
     {
         const vlc_qt_key_t *map;

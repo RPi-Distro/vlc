@@ -1,18 +1,18 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 2002-2010 the VideoLAN team])
+AC_COPYRIGHT([Copyright 2002-2011 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.5)
+AC_INIT(vlc, 1.1.6)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
-VERSION_REVISION="5"
+VERSION_REVISION="6"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="The Luggage"
-COPYRIGHT_YEARS="1996-2010"
+COPYRIGHT_YEARS="1996-2011"
 
 AC_PREREQ(2.59c)
 AC_CONFIG_SRCDIR(src/libvlc.c)
@@ -341,9 +341,8 @@ case "${host_os}" in
         dnl
         AC_ARG_ENABLE(peflags,
           [  --enable-peflags        peflags use (default enabled on Windows)])
-        if test "${enable_peflags}" != "no"
-        then
-          AC_CHECK_TOOL(PEFLAGS, peflags, :)
+        if test "${enable_peflags}" != "no" ; then
+          AC_PATH_TOOL(PEFLAGS, peflags, :)
         fi
         AC_CHECK_PROGS(U2D, [unix2dos todos], unix2dos)
     fi
@@ -3743,17 +3742,25 @@ then
 fi
 
 dnl
-dnl  Pulseaudio module
+dnl  PulseAudio module
 dnl
-AS_IF([test "${no_x}" = "yes"], [
-  AS_IF([test "${enable_pulse}" = "yes"], [
-    AC_MSG_ERROR([Xlib is required for VLC PulseAudio support
-(see http://www.pulseaudio.org/ticket/799 for further reference).])
-  ])
-], [
-  PKG_ENABLE_MODULES_VLC([PULSE], [], [libpulse >= 0.9.11], [Pulseaudio support], [auto])
-  VLC_ADD_LIBS([pulse], [${X_LIBS} ${X_PRE_LIBS} -lX11])
+PKG_CHECK_MODULES( PULSE, [libpulse >= 0.9.22], [
+    VLC_ADD_CFLAGS([pulse],[${PULSE_CFLAGS}])
+    VLC_ADD_LIBS([pulse],[${PULSE_LIBS}])
+    VLC_ADD_PLUGIN([pulse])
+  ], [
+    AS_IF([test "${no_x}" = "yes"], [
+        AS_IF([test "${enable_pulse}" = "yes"], [
+            AC_MSG_ERROR([Xlib is required for VLC PulseAudio support
+            (see http://www.pulseaudio.org/ticket/799 for further reference).])
+        ])
+    ], [
+       PKG_ENABLE_MODULES_VLC([PULSE], [], [libpulse >= 0.9.11], [Pulseaudio support], [auto])
+       VLC_ADD_LIBS([pulse], [${X_LIBS} ${X_PRE_LIBS} -lX11])
+       AC_MSG_WARN(It is STRONGLY advised to update to pulse 0.9.22)
+    ])
 ])
+
 
 dnl
 dnl  Portaudio module

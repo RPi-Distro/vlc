@@ -34,10 +34,13 @@
 #include <vlc_cpu.h>
 
 #include <pulse/pulseaudio.h>
-#ifdef X_DISPLAY_MISSING
-# error Xlib required due to PulseAudio bug 799!
+
+#if !PA_CHECK_VERSION(0,9,22)
+    #ifdef X_DISPLAY_MISSING
+    # error Xlib required due to PulseAudio bug 799!
+    #endif
+    #include <vlc_xlib.h>
 #endif
-#include <vlc_xlib.h>
 
 #include <assert.h>
 
@@ -62,8 +65,6 @@ struct aout_sys_t
     size_t buffer_size;
     mtime_t start_date;
 };
-
-#define    PULSE_CLIENT_NAME N_("VLC media player")
 
 #if 0
 #define PULSE_DEBUG( ...) \
@@ -121,9 +122,12 @@ static int Open ( vlc_object_t *p_this )
     const struct pa_buffer_attr *buffer_attr;
     struct pa_buffer_attr a;
     struct pa_channel_map map;
+    char * p_client_name;
 
+#if !PA_CHECK_VERSION(0,9,22)
     if( !vlc_xlib_init( p_this ) )
         return VLC_EGENERIC;
+#endif
 
     /* Allocate structures */
     p_aout->output.p_sys = p_sys = calloc( 1, sizeof( aout_sys_t ) );
@@ -210,7 +214,15 @@ static int Open ( vlc_object_t *p_this )
         goto fail;
     }
 
-    if (!(p_sys->context = pa_context_new(pa_threaded_mainloop_get_api(p_sys->mainloop), _( PULSE_CLIENT_NAME )))) {
+    if ((p_client_name = var_InheritString(p_aout, "user-agent")) == NULL) {
+        msg_Err(p_aout, "No user-agent string available.");
+        goto fail;
+    }
+
+    p_sys->context = pa_context_new(pa_threaded_mainloop_get_api(p_sys->mainloop), p_client_name);
+    free(p_client_name);
+    if(!p_sys->context)
+    {
         msg_Err(p_aout, "Failed to allocate context");
         goto fail;
     }

@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- *$Id: 37eaf1d61b141aeda02d23da955efae657cd400b $
+ *$Id: 8efea7e90bef11fe73f0f7bdc8b9052741a72884 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -216,6 +216,7 @@ static void Close(vlc_object_t *object)
     vout_display_t * vd = (vout_display_t *)object;
 
     var_DelCallback(vd, "direct3d-desktop", DesktopCallback, NULL);
+    vlc_mutex_destroy(&vd->sys->lock);
 
     Direct3DClose(vd);
 

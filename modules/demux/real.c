@@ -2,7 +2,7 @@
  * real.c: Real demuxer.
  *****************************************************************************
  * Copyright (C) 2004, 2006-2007 the VideoLAN team
- * $Id: dee5b52c1192ec609be01e2dab7d27ff89ead028 $
+ * $Id: e3b6a07bba1fb887d9bc1b84dbecb1d530094fb8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -252,11 +252,8 @@ static void Close( vlc_object_t *p_this )
             if( tk->p_subpackets[ j ] )
                 block_Release( tk->p_subpackets[ j ] );
         }
-        if( tk->i_subpackets )
-        {
-            free( tk->p_subpackets );
-            free( tk->p_subpackets_timecode );
-        }
+        free( tk->p_subpackets );
+        free( tk->p_subpackets_timecode );
         if( tk->p_sipr_packet )
             block_Release( tk->p_sipr_packet );
         free( tk );
@@ -637,6 +634,11 @@ static void DemuxAudioMethod1( demux_t *p_demux, real_track_t *tk, mtime_t i_pts
 
         for( int i = 0; i < i_num; i++ )
         {
+            int i_index = tk->i_subpacket_h * i +
+                          ((tk->i_subpacket_h + 1) / 2) * (y&1) + (y>>1);
+            if( i_index >= tk->i_subpackets )
+                return;
+
             block_t *p_block = block_New( p_demux, tk->i_subpacket_size );
             if( !p_block )
                 return;
@@ -648,9 +650,6 @@ static void DemuxAudioMethod1( demux_t *p_demux, real_track_t *tk, mtime_t i_pts
             p_block->i_pts = VLC_TS_INVALID;
 
             p_buf += tk->i_subpacket_size;
-
-            int i_index = tk->i_subpacket_h * i +
-                          ((tk->i_subpacket_h + 1) / 2) * (y&1) + (y>>1);
 
             if( tk->p_subpackets[i_index] != NULL )
             {
@@ -671,13 +670,15 @@ static void DemuxAudioMethod1( demux_t *p_demux, real_track_t *tk, mtime_t i_pts
 
         for( int i = 0; i < tk->i_subpacket_h / 2; i++ )
         {
+            int i_index = (i * 2 * tk->i_frame_size / tk->i_coded_frame_size) + y;
+            if( i_index >= tk->i_subpackets )
+                return;
+
             block_t *p_block = block_New( p_demux, tk->i_coded_frame_size);
             if( !p_block )
                 return;
             if( &p_buf[tk->i_coded_frame_size] > &p_sys->buffer[p_sys->i_buffer] )
                 return;
-
-            int i_index = (i * 2 * tk->i_frame_size / tk->i_coded_frame_size) + y;
 
             memcpy( p_block->p_buffer, p_buf, tk->i_coded_frame_size );
             p_block->i_dts =

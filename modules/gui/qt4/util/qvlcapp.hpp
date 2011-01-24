@@ -2,7 +2,7 @@
  * qvlcapp.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: bfd8a90599fad8ae6b9f11a7774deba4fb54c92e $
+ * $Id: 3e016f2c73a297f1b4e7805072f71fe513706e0b $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -40,10 +40,17 @@ class QVLCApp : public QApplication
 {
     Q_OBJECT
 
+private slots:
+    void doQuit()
+    {
+        closeAllWindows();
+        quit();
+    }
+
 public:
     QVLCApp( int & argc, char ** argv ) : QApplication( argc, argv, true )
     {
-        connect( this, SIGNAL(quitSignal()), this, SLOT(quit()) );
+        connect( this, SIGNAL(quitSignal()), this, SLOT(doQuit()) );
     }
 
     static void triggerQuit()

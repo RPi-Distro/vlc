@@ -2,7 +2,7 @@
  * preferences.cpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 2bfa9db793a3488580724f2b5ef0fa7256551e67 $
+ * $Id: 57d612d2d734b644a7aa44f9882e51ee90da415a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -111,7 +111,7 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
     tree_panel_l->setMargin( 1 );
     main_panel_l->setContentsMargins( 6, 0, 0, 3 );
 
-    b_small = (p_intf->p_sys->i_screenHeight < 750);
+    b_small = (p_intf->p_sys->i_screenHeight < 850);
     if( b_small ) msg_Dbg( p_intf, "Small");
     setMaximumHeight( p_intf->p_sys->i_screenHeight );
     for( int i = 0; i < SPrefsMax ; i++ ) simple_panels[i] = NULL;

@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 669a9dba3a292c1f79d6c49b21a3ab40eb37cfab $
+ * $Id: 7961729f7b8e8aa954bac3615add3616df00934e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -1148,6 +1148,10 @@ void MainInputManager::activatePlayQuit( bool b_exit )
     var_SetBool( THEPL, "play-and-exit", b_exit );
 }
 
+bool MainInputManager::getPlayExitState()
+{
+    return var_GetBool( THEPL, "play-and-exit" );
+}
 
 /****************************
  * Static callbacks for MIM *
