@@ -12,11 +12,9 @@ Subject: Fix heap overflows in CDG decoder
  does not break functionality.
 Origin: upstream, http://git.videolan.org/gitweb.cgi?p=vlc/vlc-1.1.git;a=commit;h=d11fca8bf9dc058bcdf67d81c04f84f8905ad8b4
 
-diff --git a/modules/codec/cdg.c b/modules/codec/cdg.c
-index 31ecd0e..fe7b62d 100644
 --- a/modules/codec/cdg.c
 +++ b/modules/codec/cdg.c
-@@ -254,7 +254,13 @@ static int DecodeTileBlock( decoder_sys_t *p_cdg, const uint8_t *p_data, int doX
+@@ -255,7 +255,13 @@
          for( x = 0; x < 6; x++ )
          {
              const int idx = ( p_data[4+y] >> (5-x) ) & 0x01;
@@ -31,7 +29,7 @@ index 31ecd0e..fe7b62d 100644
              if( doXor )
                  *p ^= p_color[idx];
              else
-@@ -319,8 +325,8 @@ static int DecodeScroll( decoder_sys_t *p_cdg, const uint8_t *p_data, int b_copy
+@@ -320,8 +326,8 @@
  
              if( b_copy )
              {
