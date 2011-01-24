@@ -1,3 +1,14 @@
+vlc (1.1.4-1ubuntu1.3) maverick-security; urgency=low
+
+  * SECURITY UPDATE: heap overflow in CDG decoder (LP: #707154)
+    - debian/patches/cdg-heap-overflow.diff: Fix heap overflow in CDG
+      decoder, thanks to Dan Rosenberg
+  * SECURITY UPDATE: heap corruption in some XML based subtitles decoder
+    - debian/patches/xml-heap-corruption.diff: Handle early termination
+      properly in StripTags, thanks to Harry Sintonen
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Mon, 24 Jan 2011 22:50:22 +0100
+
 vlc (1.1.4-1ubuntu1.2) maverick-security; urgency=low
 
   * SECURITY UPDATE: Buffer overflow in Real demuxer (LP: #690173)
