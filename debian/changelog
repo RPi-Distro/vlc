@@ -1,11 +1,11 @@
-vlc (1.1.3-1squeeze2) UNRELEASED; urgency=medium
+vlc (1.1.3-1squeeze2) unstable; urgency=medium
 
   * Fix heap overflow in CDG decoder - thanks to Dan Rosenberg
   * Fix heap corruption in some XML based subtitles decoder - thanks to
     Harry Sintonen
   * Set urgency to medium
 
- -- Christophe Mutricy <xtophe@penduick>  Sun, 23 Jan 2011 20:48:27 +0000
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 24 Jan 2011 22:13:57 +0100
 
 vlc (1.1.3-1squeeze1) unstable; urgency=medium
 
