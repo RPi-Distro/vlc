@@ -1,0 +1,32 @@
+Author: Harry Sintonen <sintonen@iki.fi>
+Subject: Handle early termination properly in StripTags
+Origin: upstream, http://git.videolan.org/gitweb.cgi?p=vlc/vlc-1.1.git;a=commit;h=dc14617f39c03bbe80c3cc4f92799dca840966eb
+
+diff --git a/modules/codec/subtitles/subsdec.c b/modules/codec/subtitles/subsdec.c
+index 5c55a6e..bfdbb13 100644
+--- a/modules/codec/subtitles/subsdec.c
++++ b/modules/codec/subtitles/subsdec.c
+@@ -632,6 +632,9 @@ static char *StripTags( char *psz_subtitle )
+             *psz_text++ = *psz_subtitle;
+         }
+ 
++        /* Security fix: Account for the case where input ends early */
++        if( *psz_subtitle == '\0' ) break;
++
+         psz_subtitle++;
+     }
+     *psz_text = '\0';
+diff --git a/modules/codec/subtitles/subsusf.c b/modules/codec/subtitles/subsusf.c
+index 5754137..fc1cf07 100644
+--- a/modules/codec/subtitles/subsusf.c
++++ b/modules/codec/subtitles/subsusf.c
+@@ -1081,6 +1081,9 @@ static char *StripTags( char *psz_subtitle )
+             *psz_text++ = *psz_subtitle;
+         }
+ 
++        /* Security fix: Account for the case where input ends early */
++        if( *psz_subtitle == '\0' ) break;
++
+         psz_subtitle++;
+     }
+     *psz_text = '\0';
