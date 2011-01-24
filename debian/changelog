@@ -8,11 +8,15 @@ vlc (1.1.6-1) UNRELEASED; urgency=low
     - Fix heap buffer overflow in Real demuxer (LP: #690173)
     - Fix blue face issue with X11 ouput (LP: #665298)
     - Fix crash with SIGSEGV in QMetaObject::activate() (LP: #448082)
+    - Fix heap overflow in CDG decoder and XML heap corruption (LP: #707154)
   * Drop backported patches.
   * Tighten more build dependencies after reviewing configure.ac.
   * Update my email address.
+  * Add lirc build failure fix patch.
+  * Build depends on libgtk2.0-dev for notify module.
+  * Add backported notify GTK+ dependency patch.
 
- -- Benjamin Drung <bdrung@debian.org>  Mon, 24 Jan 2011 12:08:29 +0100
+ -- Benjamin Drung <bdrung@debian.org>  Mon, 24 Jan 2011 23:16:54 +0100
 
 vlc (1.1.5-3) experimental; urgency=low
 
