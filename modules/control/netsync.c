@@ -2,7 +2,7 @@
  * netsync.c: synchronisation between several network clients.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 455be184dcbb1f71c74630c12d707a43ecba0667 $
+ * $Id: 3a6f77b1f20ee3e40e8a3bf7961f5ca0d8db5cf0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -180,7 +180,7 @@ static void *Master(void *handle)
         struct pollfd ufd = { .fd = sys->fd, .events = POLLIN, };
         uint64_t data[2];
 
-        if (poll(&ufd, 1, -1) <= 0)
+        if (poll(&ufd, 1, -1) < 0)
             continue;
 
         /* We received something */
@@ -232,11 +232,8 @@ static void *Slave(void *handle)
             goto wait;
 
         /* Don't block */
-        int ret = poll(&ufd, 1, sys->timeout);
-        if (ret == 0)
+        if (poll(&ufd, 1, sys->timeout) <= 0)
             continue;
-        if (ret < 0)
-            goto wait;
 
         const mtime_t receive_date = mdate();
         if (recv(sys->fd, data, sizeof(data), 0) <= 0)

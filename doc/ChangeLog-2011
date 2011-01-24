@@ -1,0 +1,573 @@
+commit 3f8679d8cd738bee92fa59475f1ab53f34802cc5
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 23 21:56:01 2011 +0100
+
+    Doc: generate Changelog for 2011
+    (cherry picked from commit e697532e66ce7ad886fd2c526f7e2c777e88bcc9)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 67da7c6c08fd21af2161741d7de94323111ab085
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 23 21:44:37 2011 +0100
+
+    Update NEWS
+
+commit 63ffac517ac456b70843283dcecd485ecf4fb769
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Jan 23 20:57:30 2011 +0100
+
+    fixed fontconfig cache creation
+
+commit d53c5a0085579623fda8ce73112ce9b9eced630b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 19:29:52 2011 +0200
+
+    Fix "C" translation
+
+commit 6cd61f24d3d70a8ecbc93003a591fffeb5278701
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 23 18:11:58 2011 +0100
+
+    Contribs: fix regression in goom compilation
+
+commit 4bea5deb18cfd431628041d92e8cacb60b0fe54c
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Jan 23 17:54:12 2011 +0100
+
+    Updated contrib packages for Mac OS X with fixed goom MMX issues
+
+commit 9db743558f6be22dc830d6ca683c5cb018dbca3d
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 23 17:07:58 2011 +0100
+
+    Mention KDE fix
+
+commit 386f1f4fbb81595d6e56147b16f975f7b2f6fb27
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 23 16:35:38 2011 +0100
+
+    Update-po
+
+commit ac11f9c0e27905087afdfb46180ece227a4d76e7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 18:02:00 2011 +0200
+
+    Work around QProcess bug (KDE bug #260719)
+    
+    (cherry picked from commit 5094db41a412524093f99a7e8179f4364663d3e5)
+    
+    Conflicts:
+    
+    	bin/vlc.c
+
+commit 9b65c09fc19b653087bfd8ec1ab28a69c91029c8
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 17:40:50 2011 +0200
+
+    LUA: hide EINTR from scripts and remove the timeout feature
+    
+    Timeout makes it too easy to write crappy code.
+    It's also much easier to handle EINTR without timeout.
+    
+    This fixes a minor bug: revents was undefined if poll() failed.
+    (cherry picked from commit 314c242ab041d515c1b2f1a82ee1a3fe4fe715a5)
+
+commit c2b8728eef88f526b6db448c72da31d025d55896
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 17:43:34 2011 +0200
+
+    netsync: don't sleep on poll() EINTR
+    
+    (cherry picked from commit 028174606c60efaeb6621d26bbf58192adc0a5d1)
+
+commit 17795d9f9405144d922f77a7a62f5fe8930f2d64
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 17:45:14 2011 +0200
+
+    V4L2: don't whine in the logs on EINTR
+    
+    (cherry picked from commit 56cd0622eb3976ce055cc5dfb8b1ce480c60c438)
+
+commit 66d0503e15c79b57dc042bffd339b5c8756ce176
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 17:44:51 2011 +0200
+
+    V4L2: fix poll() error handling
+    
+    Do not read revents in case of error.
+    Do not busy loop if POLLERR or POLLHUP get set.
+    (cherry picked from commit f2757e09a8d867ac936372e80e22f760b8513d84)
+
+commit bbb16084f341a4dfd4383782805d42aead7348a4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 17:46:08 2011 +0200
+
+    LIRC: don't choke on EINTR
+    
+    (cherry picked from commit cf25b55a45ec72aa89ce7089124d860a6e9b2081)
+
+commit bd8e2d11e5bc20abb3834810ee6edbcba2f8d816
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 17:51:04 2011 +0200
+
+    PVR: don't choke on EINTR and fix/remove polling timer
+    
+    (cherry picked from commit e1ad2bf94fa81023c96db1f99e52d50efff5211c)
+    
+    Conflicts:
+    
+    	modules/access/pvr.c
+
+commit 719bc6ed47e8998c2a8f294643426dab6a57f3e9
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 17:36:15 2011 +0200
+
+    OSS access: don't choke on EINTR
+    
+    (cherry picked from commit 0169865b68c30b1505beae2489f8f08e9619a337)
+
+commit 059e3fc52867b8fee135b06cc4b6ad3a3f939c1e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 23 17:34:17 2011 +0200
+
+    DVB CAM: don't choke on EINTR
+    
+    (cherry picked from commit d8ddcbff798c8927bdc2656a74a5862386320ee9)
+
+commit 2821777b6db1ad276d3f5a9746173325ca7cbfb9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 23 15:52:44 2011 +0100
+
+    NEWS: mention goom crash fix
+
+commit a51eca957784db1ab174efae9cbeb0d1740d5839
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 23 15:46:53 2011 +0100
+
+    Goom: deactivate MMXEXT accelerations
+    
+    Close #2052, #4039, #4390, #2796
+    Apparently Goom developers don't understand SIMD registers...
+
+commit a3a90325064100063aaa3ab8397f86c61256c331
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Sun Oct 31 22:56:07 2010 +0100
+
+    contribs: goom2k4: don't build mac application
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 86e68e1b1020d149fc7f15bbc380eb7881ec8f33
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jan 22 23:57:49 2011 +0100
+
+    Update NEWS
+
+commit 6b54eb46b7f90568d5bc904ee6533bc583579e4a
+Author: Gabor Kelemen <kelemeng@gnome.hu>
+Date:   Sat Jan 22 22:42:18 2011 +0000
+
+    l10n: Hungarian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit f5818425e76af54eb41dd1dc211496fbbd69a817
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jan 22 23:01:21 2011 +0200
+
+    Bump libvlccore revision for 1.1.6
+    
+    (However it seems libvlc was not changed since 1.1.5)
+
+commit e1806404c06c9b64092e04ac2987ca82c8c00bf1
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Jan 22 19:14:44 2011 +0100
+
+    contribs: updated binary package for Mac OS X
+    
+    includes a fix to correctly link libmpcdec and latest contrib updates
+
+commit 8428ba67565134144ba481c1dbd62e792ca4375b
+Author: Sébastien Escudier <sebastien-devel@celeos.eu>
+Date:   Fri Jan 7 10:51:08 2011 +0100
+
+    live555 : fix typo
+    (cherry picked from commit 7ec013e0c9be7ff431e9823e745c2329a01db64d)
+
+commit abcc751ef3a22cb04444b9fa70bae17e9772d163
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jan 22 16:18:10 2011 +0200
+
+    rework PA version warning
+
+commit d5316cf77d50637879f8dd69923b36bc8880fed7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jan 22 16:15:55 2011 +0200
+
+    news
+
+commit efeb08f4bfccd917e4b6aec3c23d7bd6ebe0a892
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jan 22 16:14:39 2011 +0200
+
+    RTP output: add audio/L24 (untested)
+    
+    (manually backported from 32bc486f26a83ef383aabb0f80caf3e1334c7d5c)
+
+commit 079a42db16af9ad3ff9b8c5b0c33e11b81f98e35
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jan 6 18:52:57 2011 +0200
+
+    live: add audio/L24
+    
+    This requires a bleeding edge liblive555 - not tested.
+    (cherry picked from commit 4089fc27c4dad3b25f64eeb9773c9c8b5d982980)
+
+commit e776e115f68338d8130b3988b5e0f0c304fdff01
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Fri Dec 10 19:44:45 2010 +0100
+
+    qt4: fix skins2 crash after exiting the preferences dialog
+    
+    This fixes a regression brought by 7f485998dd63c9685f0a470439c9b2ea127ef5c5
+    
+    On skins2(tested on Linux), open and close the preferences dialog leads to a
+    crash, because the whole qt4 thread terminates unexpectedly.
+    
+    This is due to setQuitOnLastWindowClosed set to true. As a dialog provider,
+    qt4 doesn't run any windows, and therefore just closing the preferences
+     dialog box (via accept() or reject()) signals the qt4 thread to quit.
+    (cherry picked from commit 3326e7ef0e333e7a1aa6419c4547703dcbd23618)
+
+commit d6a88026ff7588010ba9ffb685051a1745c2442d
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Jan 19 05:29:31 2011 +0100
+
+    t140: fix RTP synchronization
+    (cherry picked from commit d272e598577e52364bdf349fbca97bc15219caa3)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 5f878986027d2d3c9d0076b0ea174d48b91c0b64
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jan 18 19:02:10 2011 +0200
+
+    fr: fix translation for X11 display
+
+commit d22da339d80979807266332726b7712cc3cbd4e2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jan 18 19:00:30 2011 +0200
+
+    Fix french translation
+
+commit 4f6082b6e13f7087f7397f617162fdab0fdb5fb3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jan 17 18:56:12 2011 +0200
+
+    Revert "Win32: always use the performance timers (fix #3918)"
+    
+    This reverts commit 6e0595fd66e7fe7b915467449ffcac74db274b03.
+
+commit c63918e32b822d6a3553a8e6f8e4f0320b23f23e
+Author: Jean-Philippe André <jpeg@videolan.org>
+Date:   Sat Jan 15 21:35:17 2011 +0100
+
+    Lua: fix Allocine extension
+    
+    It was broken a looong time ago because the XML structure
+    of their web page is broken
+    (cherry picked from commit e9196c3fc2ca2daf438c1fd90bd10f8404fd4f4a)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 765604712c4d5516ad8f76a7784b0083dd99d713
+Author: Sébastien Toque <xilasz@gmail.com>
+Date:   Sun Jan 9 21:40:52 2011 +0100
+
+    ProjectM/Milkdrop default presets path on windows using datadir
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a7e5148766c57f0b9655aea839f34ad4946cf4cc
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jan 17 17:23:02 2011 +0100
+
+    NEWS properly credit things
+
+commit 47b4c46f16c95cf0cd7572221e1f95fb1c1eac61
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jan 17 00:43:00 2011 +0100
+
+    Update NEWS for 1.1.6
+
+commit dc14617f39c03bbe80c3cc4f92799dca840966eb
+Author: Harry Sintonen <sintonen@iki.fi>
+Date:   Mon Jan 17 00:47:58 2011 +0200
+
+    Handle early termination properly in StripTags
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 2b790c3e8cbc3dfb7e8709027b7bea358c6f18ba)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3aab6e14b9d5ccafa9b88c9aad00423095dfeb8a
+Author: Mihkel Kirjutas <turakas@gmail.com>
+Date:   Sun Jan 16 00:23:59 2011 +0000
+
+    l10n: Estonian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 247e790e05984971bfdda706142c9ad9258ce268
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Sun Jan 16 00:22:03 2011 +0000
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 162e1415eb5ee9169735ffa7b539521d5d20b04e
+Author: David González <pico.dev@gmail.com>
+Date:   Fri Jan 14 20:00:17 2011 +0000
+
+    l10n: Spanish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 24e036b37362b778ea85f7ea5a12a6f2a4cdd0a4
+Author: Gonçalo Cordeiro <gzcordeiro@gmail.com>
+Date:   Fri Jan 14 19:59:20 2011 +0000
+
+    l10n: Galician update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 55fa57edf7b0613f38a8b65aa4040a3737f8ff9b
+Author: Daniel Nylander <po@danielnylander.se>
+Date:   Fri Jan 14 19:58:24 2011 +0000
+
+    l10n: Swedish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 72a2effcfdd9e90902cc7dc2dc1dc19c68f772f2
+Author: Ivo Ivanov <bestran@mail.bg>
+Date:   Thu Jan 13 23:03:06 2011 +0000
+
+    l10n: Bulgarian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 24677a45d81d269010fb3c941785e8393785d97f
+Author: Éric Lassauge <lassauge@user.sourceforge.net>
+Date:   Thu Jan 13 23:02:02 2011 +0000
+
+    l10n: French update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit b8e2bc9d6e59bf5eb6d5f44f6498d6b545ee1dce
+Author: Israt Jahan <israt@ankur.org.bd>
+Date:   Wed Jan 12 22:36:40 2011 +0000
+
+    l10n: Bengalese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit e6c33832bc2dbfd797ac26f055b745b969b1bcd4
+Author: Mario Siegmann <mario_siegmann@web.de>
+Date:   Wed Jan 12 22:34:42 2011 +0000
+
+    l10n: German update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 46a30d61b92e29954ade280eb952a7145a68e578
+Author: Marián Hikaník <podnety@mojepreklady.net>
+Date:   Tue Jan 11 23:13:54 2011 +0000
+
+    l10n: Slovak update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 9242fe190d394c4f22e8f157ec3792a972ca7e78
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Tue Jan 11 23:01:19 2011 +0000
+
+    l10n: Japanese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit ee6f2588b628e934ce7bab84fce4380129e38e4d
+Author: Thomas De Rocker <thomasderocker@hotmail.com>
+Date:   Tue Jan 11 23:00:08 2011 +0000
+
+    l10n: Dutch update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit d11fca8bf9dc058bcdf67d81c04f84f8905ad8b4
+Author: Dan Rosenberg <drosenberg@vsecurity.com>
+Date:   Fri Jan 7 11:06:08 2011 -0500
+
+    Fix heap overflows in CDG decoder
+    
+    This patch resolves two heap corruption vulnerabilities in the CDG
+    decoder for VLC media player.  In both cases, a failure to properly
+    validate indexes into statically-sized arrays on the heap could allow a
+    maliciously crafted CDG video to corrupt the heap in a controlled
+    manner, potentially leading to code execution.
+    
+    The patch is against v1.1.5 from vlc git, but this decoder hasn't been
+    touched in awhile, so I'd expect it to cleanly apply to older versions.
+    I've tested it and confirmed it resolves the heap corruption issues and
+    does not break functionality.
+    
+    (...)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit f9b664eac0e1a7bceed9d7b5854fd9fc351b4aab)
+
+commit 0bf669a3f59b636153ae4eb36fa1c57b588a48bf
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Tue Jan 11 00:04:31 2011 +0000
+
+    l10n: Polish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit b4176d6fca22f858832c9f06a3f8d8957ce6109c
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Mon Jan 10 23:12:52 2011 +0000
+
+    l10n: Sync .po with 1.1.6 vlc.pot
+
+commit 42935d2c0b71b5be0b261b96ad9025cb72f79f51
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Mon Jan 10 23:12:29 2011 +0000
+
+    l10n: Polish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 218661c53919a0166dbf6f78d6b3dece45af372d
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Mon Jan 10 22:16:25 2011 +0000
+
+    l10n: Update vlc.pot for 1.1.6
+    
+    6 new stings related to projectm module
+
+commit 1cf7d797485e137809aee5cb4a8f34874526159a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 9 19:44:49 2011 +0100
+
+    NEWS for 1.1.6
+
+commit bfa6b790c4db9d0d94c07a31d9704de22d34ccf6
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 8 22:56:24 2010 +0100
+
+    Contribs: fix MPC target
+    (cherry picked from commit b656bb75375d33740e53821071199f9ae58e427a)
+    
+    ---
+    Sure, naming a static library *_static.a is _VERY_ useful
+    (and helps the linker find it... not)
+    And of course, installing .svn on make install is clever
+    
+    Do not ask me why noone uses MPC these days...
+    (cherry picked from commit 10a05481f119a020742e235133cbd6f6593a05a2)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 777514e9acde8a2f382cfa71aedd9ec0084419b3
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 9 17:39:54 2011 +0100
+
+    We are in 2011
+
+commit a560071949f78548fba61f8e2630e3b0133b5aa3
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Jan 9 17:36:02 2011 +0100
+
+    Win32: do not delete preferences by default on install
+    (cherry picked from commit baa2d2c3b3f658e90d7ddf66e0e9c0eaa1a88446)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b2a69f7c6314d52e2f6d668a7ba07f7476bb7a0c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Dec 19 00:07:44 2010 +0100
+
+    Configure: Win32, store the path of peflags, since it will be provided by the contribs
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit cb1b4e5cb6d4b8d9e788b27d5d4f1f4a6a0e2236
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Thu Jan 6 20:44:33 2011 +0000
+
+    demux/asf: make sure we seek to keyframes
+    (cherry picked from commit 04ac17066a619084dd40d89b032f6411cfd39b87)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c58f5961ab462e2dc876ffc2144f6f7d27777851
+Author: Gildas Bazin <gbazin@videolan.org>
+Date:   Thu Jan 6 20:42:45 2011 +0000
+
+    codec/avcodec: fix late frames skipping with h264 (use AVDISCARD_NONREF instead of AVDISCARD_BIDIR)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 535fc4ea057cb803d355001001333d49911b5d8c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jan 9 18:38:09 2011 +0200
+
+    xlib: don't abort if autodetection fails
+    
+    (cherry picked from commit 3884bc644750dff5d9c29ca4d2c879ab9e8fd5eb)
+
+commit d206be7b247b4bf3d27873c8375bcc6c901d51d6
+Author: Sébastien Toque <xilasz@gmail.com>
+Date:   Sun Jan 9 10:47:08 2011 +0100
+
+    projectM: use add_directory for the preset directory.
+    (cherry picked from commit b4bfa0324c5ab04b957dbc258f3214c9e03612fb)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 2667431257e8e6df9e233601fa9eed0dce497a1a
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Thu Dec 2 21:41:53 2010 +0100
+
+    Fixed a vlc_mutex_t leak in direct3d video output.
+    (cherry picked from commit d61f3b7fc6d02a117c53d89e74e42dbe809b697a)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit ae072c46660bee28c6326a8b5a9616cd9838ce25
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Jan 8 18:57:54 2011 +0100
+
+    Makefile: fixed VLC-release.app creation with Xcode 3.1
+    
+    This breaks the compilation with Xcode4 again, but that's okay for now.
+
+commit c685c8107c97aa5cfcea20bb9825a1e640bdc2d0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Aug 23 21:41:48 2010 +0300
+
+    Flush standard output after help is written (fix #4102)
+    (cherry picked from commit f5ac248b3ab9a70dc43ec8f8b9063aa200d94136)
+    
+    Signed-off-by: Sébastien Escudier <sebastien-devel@celeos.eu>
+
+commit 5bd13bfeea83599a4eb2636302066e5039dec1fc
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon Jan 3 21:59:31 2011 +0100
+
+    projectm: build fix

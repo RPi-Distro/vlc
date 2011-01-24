@@ -1,3 +1,578 @@
+commit 3e929d5d263459b8456339a40b1e8f28a1e7a020
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Dec 31 18:51:42 2010 +0100
+
+    makefile: another Xcode4 fix
+
+commit 9072c6cf5354ca08ebf4b81a35644a67c76ef0a5
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Dec 31 17:43:05 2010 +0100
+
+    contribs: updated binary package for Mac OS X
+
+commit b0ec82a00da610d6c15b3408d4ceca2068bcccbc
+Author: Sébastien Toque <xilasz@gmail.com>
+Date:   Thu Dec 30 22:07:16 2010 +0100
+
+    Added 3 settings to projectm module and fix a crash
+    
+    3 setting to set meshx, meshy and texturesize
+    Fixed a crash if there is no available presets
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 8beb6e0f0c7235349c0715b8de1d1844b65d9e53)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 31f33f49a104f3704672ff485f2b5b2a6052b7b4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 29 22:41:05 2010 +0100
+
+    On the way to 1.1.6
+
+commit 5264082844c1deb05585c245525fd55f9a9cab41
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Dec 15 00:08:59 2010 +0200
+
+    Real: fix heap buffer overflow (CVE-2010-3907)
+    
+    Malformatted files may have a zero i_subpackets value. In this case,
+    we cannot use the array, but we still have to free it (calloc(0)).
+    
+    This should fix LP#690173.
+    
+    Reported-by: Dan Rosenberg <drosenberg@vsecurity.com>
+    (cherry picked from commit 6568965770f906d34d4aef83237842a5376adb55)
+
+commit eb1fe36da8466761cb2e4c037158b12b10065fb8
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Dec 29 00:08:16 2010 +0100
+
+    Fixed VLC.app creation with Xcode 4.2
+
+commit 8e351de8222ebbccbeb40543a7f2ee4e01895055
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 29 00:03:46 2010 +0100
+
+    lavc implements emu-edge in VP8 now
+    (cherry picked from commit 5a7825ca8ae47062a3299864262dda853856183a)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d5ae056bea1096b83f21858d019f1cc416067da9
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Wed Dec 22 01:35:01 2010 +0300
+
+    Maemo: fix icons paths.
+    (cherry picked from commit 86589cdbbcb1b661bf103e7b8fb311968f739658)
+    
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit 6afb4f6d5f46b58e124c307e9de50aafc6c532fc
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Mon Nov 22 23:38:44 2010 +0300
+
+    Contrib: point ACLOCAL to appropriate place for tremor.
+    (cherry picked from commit 01dbb084e4d7d2b56856d3637aea9c4a9ae26e0a)
+    
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit d41e06b4ed33a8b94220cf5dfa251dac8e9279ec
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Mon Nov 22 23:38:27 2010 +0300
+
+    Codec/vorbis: follow tremor API change.
+    (cherry picked from commit e7e6ff45689e3b1d17e057b1701b72c70af250d2)
+    
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit 6050bd14573d4f76f2ead6c6a73059c58fd27aad
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Oct 4 16:52:14 2010 +0200
+
+    Contribs: Update tremor to work with upstream
+    
+    They applied it upstream, almost completly
+    As discussed at FOMS
+    (cherry picked from commit c03f74b690598a7fe51b1589b8dbeac07805ca0d)
+    
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit 07cba77de33e3efeac4f83bf0fb2bdcd85cdec23
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Mon Nov 22 23:02:49 2010 +0300
+
+    Contribs: update live-inet_ntop patch.
+
+commit 5f25bf9fb8ca8606597fd897b5ec3946ac9aba15
+Author: Luqman Hakim <ovdl@rocketmail.com>
+Date:   Sun Dec 19 20:01:27 2010 +0000
+
+    l10n: Indonesian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit e675f5fe32d97537ed216a33bd30fd2923e0e69f
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon Dec 13 02:06:02 2010 +0100
+
+    rtp sout: destroy mutex
+    (cherry picked from commit 875531f7c312b14d372827f8fa55ed7c0a182c2f)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 9faef937bde6fe82839200c652666b08cced3d54
+Author: David González <pico.dev@gmail.com>
+Date:   Sun Dec 12 23:55:09 2010 +0000
+
+    l10n: Spanish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit e0b1281b8a83ceaa503cf1ea7e2b6607fee6ba46
+Author: Ajith Manjula <uthmax.sms@gmail.com>
+Date:   Sun Dec 12 23:54:33 2010 +0000
+
+    l10n: Sinhalese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 879b6278414d2370748ccd61cc8c970b04b28171
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sat Dec 11 00:58:18 2010 +0100
+
+    httpd: gracefully handle too large request bodies
+    
+    Return a 413 error instead of crashing
+    (cherry picked from commit 2e1b9e44719618eb97b3850d05096753fd7d3617)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit fc4d9d93f3692f562ffb030f8ff1292b9bbbf7c8
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sat Dec 11 00:41:08 2010 +0100
+
+    httpd: fix parsing of request body
+    
+    This caused genuine bugs like mangled bodies and corrupted requests
+    (usually leading to 501 errors), and possibly leaks of memory buffer
+    of the size of the Content-Length parameter. This is pretty bad since
+    crafted requests could easily exhaust the memory and/or trigger a crash.
+    Apart from the contents of the buffer of the involved request, there
+    doesn't seem to be any possible memory corruption.
+    (cherry picked from commit 8fae1e140a0bfc80666c41ce55255000c1fad440)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 237693544819918cdf25959390436c9c3967837c
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sat Dec 11 00:13:48 2010 +0100
+
+    httpd: fix grammar in comments
+    (cherry picked from commit 4c87b90bf458901e542e7d318ef4c58925421e76)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 40b2a20170a7b9674f243791dbb822984f0db1f0
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Dec 8 23:10:29 2010 +0100
+
+    contribs: use latest binary package on Mac OS X including FluidSynth
+
+commit 00358795ffd17cc8aaabdf3220f5bdbfeb305d8f
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Dec 8 23:09:55 2010 +0100
+
+    NEWS: updated for 1.1.6
+
+commit 5540e2deacf3b36ca2fc3f59df78d9760a231a73
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 8 22:54:35 2010 +0100
+
+    NEWS update for 1.1.6
+
+commit da4cae05e2ab4a0633009b78dcbf98a84832deb4
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Dec 7 19:01:44 2010 +0100
+
+    projectm: remove some variables from sys_t structures.
+    
+    They are only used by the thread and can be freed before the module closes.
+    (cherry picked from commit 682ed3b449c250eb523782c651b418c44201ac51)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e4048e1a6aa4cd566982eb14801514bbffdc69e8
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 2 19:45:13 2010 +0100
+
+    Contribs: move MPC to the modern SV7 & SV8 library
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 49c6bc96c6d34a24b6b1c2e13f020134d03fdefa
+Author: Kaarlo Raiha <kaarlo.raiha@gmail.com>
+Date:   Sat Dec 4 19:31:06 2010 +0200
+
+    support mce remote controllers record button in QT4 GUI win32
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 70526ce235650b7f39a8abc3c06682bd6a0d7d47)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0c9f902f177bec01592ed378b50feae1aac80601
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Dec 7 18:41:22 2010 +0100
+
+    projectm: randomly choose the first preset or projectM will always take the same.
+    (cherry picked from commit 27eefb90fcc90240adaa1cfee81be68f8a727295)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fc0ddff692490070ab287d1f8533d5b1574731a5
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Dec 6 00:44:53 2010 +0100
+
+    PulseAudio: differentiate between libpulse 0.9.22 and the versions before
+
+commit fde0206a1e94c950fc12007a19f53c0e465e4a10
+Author: Michael E <mapei_@hotmail.com>
+Date:   Sun Dec 5 19:45:18 2010 +0200
+
+    Fix scope alignment
+    
+    This sets the base level of the scope display back to the centre of
+    its channel. Has been broken for at least +1 year.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit e61ba5a72f46d5f67b361bd5f617f661f64e5fb7)
+
+commit 9cae22aa08134f15557ec49f46ad3613b4e16926
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Dec 5 01:26:43 2010 +0200
+
+    Typo
+
+commit 39468dd6cbfca20eb0b4b1f278f70a874248c6f5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Dec 5 01:17:10 2010 +0200
+
+    Xlib: check if we can call XInitThreads() before we do so
+    
+    Parental advisory: naked kludge and explicit hack
+    (cherry picked from commit abbdcb63d9f4161055e24faec1c7edcc9b83e44c)
+
+commit 94cd55833a7824fe9918790ef6dfd09aa6577655
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Dec 4 20:34:48 2010 +0100
+
+    NEWS: Forgotten about the CDDB fix for Win32
+
+commit bede4ad3a4a3bebfd80b730b237e6df5c487e33c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Nov 28 20:43:47 2010 +0100
+
+    Contribs: try to fix CDDB crash on Windows
+    
+    Ref #3804
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3ea134401d144db14b79a7b02e3950d83b26a41f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Dec 4 20:31:24 2010 +0100
+
+    1.1.6 NEWS
+
+commit 597d48c31f234e98c17432085b67606cb4e6d51d
+Author: Hannes Domani <ssbssa@yahoo.de>
+Date:   Wed Nov 17 12:46:42 2010 +0100
+
+    Qt: tell that vlc processed the media keys
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 636b4a6bd4ac196c8ad6b09fc738ea8e0535c6c5)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b1d6e1fc72a87064b60639e68a9d163e9a93b0e9
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Sun Jul 11 08:45:57 2010 +0200
+
+    pulse: fix a memory leak.
+    (cherry picked from commit 77dd16bace3e70599cab1a36fe94565bca717227)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 29a1f25235e2d9075f5ffe8e31cac4441bc0dab4
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Tue Jun 8 08:37:50 2010 +0300
+
+    pulse: no need to check null in free
+    (cherry picked from commit 5e969105d58499aed4dbf59c0bb45ded5cdbb072)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ad6d069c76ec99d098b98b4c8a17f296d777efad
+Author: Colin Guthrie <cguthrie@mandriva.org>
+Date:   Tue Jun 8 00:34:43 2010 +0100
+
+    pulse: Use the 'user-agent' variable for the client name.
+    
+    Signed-off-by: Ilkka Ollakka <ileoo@videolan.org>
+    (cherry picked from commit 6b710a60659752ef22f404bad116bd2d7c78ce1c)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 82b6b6311d2d54bbf0a45b380ebe3bb465c8551c
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Thu Dec 2 22:51:50 2010 +0000
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 441f305a285d5c70c0132cb1601d7f980aea26d8
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Thu Dec 2 22:35:02 2010 +0000
+
+    Add Irish translator
+
+commit c6cc4b3fc1864b7ccb6921e1557b7751e3e027a5
+Author: Seanán Ó Coistín <seananoc@gmail.com>
+Date:   Thu Dec 2 22:32:16 2010 +0000
+
+    l10n: Initial Irish translation
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 701dd237d0c43c8b1fd1822efabf0bb6db3501dd
+Author: TUDURI Benoît <benoit.tuduri@gmail.com>
+Date:   Tue Jul 20 19:40:13 2010 +0200
+
+    Fix typo for Save Playlist in french translation.
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+    (cherry picked from commit 383afad3ba992904042da2d59a03f0e8a1464c8f)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit 0d5068821c03c804730ef1f54e7f46b4274306bf
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Mon Nov 29 22:35:34 2010 +0200
+
+    NEWS: Mention projectm-fix
+
+commit 335126fac9729d0122f72591a324b4c7efde5339
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Mon Nov 29 22:06:40 2010 +0200
+
+    projectm: quick fix to get projectm visualisation to work on all locales
+    (cherry picked from commit 3b9074b2edc6aabd9e6f6408a7e14625b9b86912)
+    
+    Signed-off-by: Ilkka Ollakka <ileoo@videolan.org>
+
+commit 8fdaadb81f60cfac25ad3a2aac1edfbf75474bed
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Sun Nov 28 15:07:58 2010 +0200
+
+    Nippon translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 8b44c83c8d7d6a20ede05dc94998b105f12249e2
+Author: Marián Hikaník <podnety@mojepreklady.net>
+Date:   Sun Nov 28 15:05:35 2010 +0200
+
+    Slovak translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 9a4a56338586819d9ad2e787694fd719040fbbb4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Nov 27 11:20:57 2010 +0100
+
+    Win32: enable projectM
+    
+    Thanks to XilasZ and Laurent
+
+commit c857479296befeb42b9033417df4dc3c59771715
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Fri Nov 26 23:26:16 2010 +0100
+
+    Fixed win32 opengl provider.
+    
+    CommonDisplay() must be called at least once to ensure that the window
+    content is shown.
+    (cherry picked from commit f5d7ac64c863415aafcdd389a58d0004d7b4439c)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b9676bdf0353fb11d5c0bfa500b6aa9dab408a48
+Author: Lari Natri <lari.natri@gmail.com>
+Date:   Mon Nov 22 03:57:59 2010 +0200
+
+    Fix for KDE device actions
+    
+    This tiny patch enables opening of VideoCD/AudioCD/DVD discs with VLC in KDE when inserted, which was broken before.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 99ebae0c04aa2ce0b3085fbba78f4245c713d9c2)
+
+commit 6c437cbfd652d76e1335365e6ee447c51a659af8
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Fri Nov 19 00:47:26 2010 +0100
+
+    skins2(Win32): remove an unneeded WS_EX_TOOLWINDOW option
+    
+    This option prevents windows from being displayed in the alt-tab list.
+    This should fix trac #4343 for Vista and Win7  (to be tested)
+    (cherry picked from commit 6c74b935f99b9d46bb92b3ba01bfbaf4c7d52276)
+
+commit f4c7b04fe866fc5a3a18cd442889889b37e02dde
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 21 19:12:09 2010 +0200
+
+    XDG: wait for end of screensaver preemption before cancelling
+    (cherry picked from commit 66456370991dfd488260c1ee497e66304b17ee2d)
+
+commit 577e2a2b2df314ad60957773ef3a36530d0de30e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 21 19:12:32 2010 +0200
+
+    Disable screensaver preemption before destroying the module
+    (cherry picked from commit 79bb2f751a8a4a90d56d728828a82a462298bce7)
+
+commit c2447f7d0721d91e16aac3fde829152f8ca35359
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 21 18:13:06 2010 +0200
+
+    Qt4: fix crash regression in 1.1.5 closeAllWindows() not thread-safe
+    
+    All UI related operations in Qt4 must be done on the UI thread, as
+    QtGui is not thread-safe internally.
+    (cherry picked from commit 1c9669ac53e83beadcd112f909b239a9645b031c)
+    
+    Conflicts:
+    
+    	modules/gui/qt4/qt4.cpp
+
+commit 269b9f1bc1a31d5cc7f709f3398a6686cbb7bd45
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 21 14:08:14 2010 +0200
+
+    Qt4: do not crash if the video window is released after the interface
+    
+    This should fix #3359.
+    (cherry picked from commit 841eb240885cbea14245dfd832c9f1ab31d12bf4)
+    
+    Conflicts:
+    
+    	modules/gui/qt4/main_interface.cpp
+    	modules/gui/qt4/qt4.cpp
+
+commit 39caba70757051594d7aa876bd0673248b618f0c
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Thu Nov 18 11:25:58 2010 +0100
+
+    transcode: reduce decoder aspect ratio fraction
+    
+    avoids integer overflow with aspect ratio = BIG:BIG
+    fixes #4312
+    (cherry picked from commit 4cc2404ca5426f522822e4906572bfa7813669cd)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit 9f777cc695008fa6d4732a598100145192aa702d
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 15 23:04:51 2010 +0100
+
+    Subtitles: remove .txt for autodetection
+    
+    This lead to way too many false positive and complaints when VLC tried
+    to open a .txt file that had nothing to do with a subtitle
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 2afaacab847a7081f841cfd1c0dc3193c9e3e5bf)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d79c2ea8b55513acdc93b765002c12f98f6277d3
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 15 22:20:09 2010 +0100
+
+    Qt: correctly implement play-and-exit in menu
+    
+    This calls a var_GetBool each time a menu is redrawn. This may be not
+    optimal. Maybe a callback on "play-and-exit" would be better?
+    Do we care about the performance on that part (menu display)?
+    Close #3842
+    (cherry picked from commit 5e85bff1849e4391b6598bfbcc5a6c65cd1e151d)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 862bdbdee27819b97a90211ecfa745a42a6620bf
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 15 22:35:23 2010 +0100
+
+    Qt: Workaround the bug of preference height on small screens
+    
+    Close #3884
+
+commit 621c2e9779fd6481978ef9fc38b0332fbc24b2b6
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 14 18:26:19 2010 +0200
+
+    swscale: fix 15- and 16-bits RGB conversions
+    
+    This is tested with X11 and should fix LP#665298.
+    
+    This partially reverts commit fb7f014161f68c914e028adbea68b7ee9863c76e.
+    RV24 is left as is because I cannot test it on my GPU.
+    (cherry picked from commit 37e37fb11e1da56e02d79a973b7bc1ffff70223b)
+
+commit d627b7cc3eb0b716adaf656af72346f9a18af45f
+Author: Juho Vähä-Herttua <juhovh@iki.fi>
+Date:   Fri Nov 12 15:26:00 2010 +0200
+
+    qt4: Get rid of towlower in favor of portability
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    
+    (cherry picked from commit fb48e363450c0a56d1688a510528a246ae7c36a1)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 67f568c911c82e26f37dcf9e3e6c037c344b9c52
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 13 20:44:56 2010 +0200
+
+    FreeType: mark some options as safe
+    
+    Font is not safe because it uses the file system, and is dependent on
+    the local system anyway. YUVP is only for encoding, so it seems
+    irrelevant. Other options seem fine.
+    (cherry picked from commit 6b42661fb7142ad6f384abba3af930c81d58bb8c)
+    
+    Conflicts:
+    
+    	modules/misc/freetype.c
+
+commit 2cf367bf3cf002b007b6f6eb33bd8ffee2375229
+Author: Sven Petai <hadara@bsd.ee>
+Date:   Sat Nov 6 11:32:59 2010 +0200
+
+    Return fatal error to the upper layers when connection is lost while reading the ICY metadata. Otherwise we will end up with an endless loop since -1 is interpreted by AStreamRefillStream() as a temporary error.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 2a3e95d7b511fb627ac79a626068f4ba4271ad13)
+
+commit 264eb6d145507c0e6f152ce86cd26441bc4156d6
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Nov 13 19:39:58 2010 +0100
+
+    On the road to 1.1.6
+
 commit 6f4519c7c804a8f0e204ace4d130554c5da18d36
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Sat Nov 13 18:05:27 2010 +0100
@@ -27464,30 +28039,3 @@ Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Fri Jan 1 23:55:10 2010 +0100
 
     Win32: Be sure to strip axvlc.dll and npvlc.dll
-
-commit f40ec470c9a04e91c9102c764db5b92828ad1849
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Fri Jan 1 18:42:30 2010 +0100
-
-    macosx/framework: contrib are fat now.
-
-commit 5a20b90e8c6920a79d7d7b7ca56fb011b97dfc73
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 20:36:00 2009 +0100
-
-    macosx/framework: Support multiple architectures.
-    
-    Warning, building fat are not supported by automake if dependency-tracking is enabled.
-    That's why this fat build is disabled by default.
-
-commit 65ed93af7b623248bae389f656698248fe52bf8f
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 19:33:06 2009 +0100
-
-    configure: Detect fat contribs.
-
-commit 2e024847e1bbfad3ddf4aa9fcb01c90c0e41c854
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 19:30:49 2009 +0100
-
-    contrib: Build fat binary using binary contrib on Mac OS X.

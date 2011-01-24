@@ -2,7 +2,7 @@
  * win32_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d71c74c6e359c4342aaca94401be01cc80bc06a1 $
+ * $Id: b3d707cc359d7d48da64107407daa976673fcd3b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -75,7 +75,7 @@ Win32Window::Win32Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     {
         // top-level window (owned by the root window)
         HWND hWnd_owner = pFactory->getParentWindow();
-        m_hWnd = CreateWindowEx( WS_EX_TOOLWINDOW, "SkinWindowClass",
+        m_hWnd = CreateWindowEx( 0, "SkinWindowClass",
             "default name", WS_POPUP | WS_CLIPCHILDREN,
             0, 0, 0, 0, hWnd_owner, 0, hInst, NULL );
     }

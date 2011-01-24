@@ -2,7 +2,7 @@
  * chroma.c: libavutil <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: f857f09b3d8dc5250928abf5301838dd35023c4e $
+ * $Id: fd0cebfcd698c47712a7ace340e72506e4c04e0d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -98,8 +98,8 @@ static const struct
     VLC_RGB( VLC_FOURCC('R','G','B','4'), PIX_FMT_RGB4, PIX_FMT_BGR4, 0x10, 0x06, 0x01 )
     VLC_RGB( VLC_FOURCC('R','G','B','8'), PIX_FMT_RGB8, PIX_FMT_BGR8, 0xC0, 0x38, 0x07 )
 
-    VLC_RGB( VLC_CODEC_RGB15, PIX_FMT_BGR555, PIX_FMT_RGB555, 0x7c00, 0x03e0, 0x001f )
-    VLC_RGB( VLC_CODEC_RGB16, PIX_FMT_BGR565, PIX_FMT_RGB565, 0xf800, 0x07e0, 0x001f )
+    VLC_RGB( VLC_CODEC_RGB15, PIX_FMT_RGB555, PIX_FMT_BGR555, 0x7c00, 0x03e0, 0x001f )
+    VLC_RGB( VLC_CODEC_RGB16, PIX_FMT_RGB565, PIX_FMT_BGR565, 0xf800, 0x07e0, 0x001f )
     VLC_RGB( VLC_CODEC_RGB24, PIX_FMT_BGR24, PIX_FMT_RGB24, 0xff0000, 0x00ff00, 0x0000ff )
 
     VLC_RGB( VLC_CODEC_RGB32, PIX_FMT_RGB32, PIX_FMT_BGR32, 0x00ff0000, 0x0000ff00, 0x000000ff )

@@ -750,7 +750,7 @@ tremor: tremor-$(TREMOR_VERSION).tar.bz2
 endif
 
 .tremor: tremor .ogg
-	(cd $<; $(HOSTCC) ./autogen.sh $(HOSTCONF) --prefix=$(PREFIX) --disable-shared CFLAGS="$(NOTHUMB)" && make && make install)
+	(cd $<; ACLOCAL="aclocal -I $(PREFIX)/share/aclocal/" autoreconf && $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-shared CFLAGS="$(NOTHUMB)" && make && make install)
 	$(INSTALL_NAME)
 	touch $@
 
@@ -1321,6 +1321,10 @@ else
 endif
 	patch -p0 < Patches/goom2k4-0-memleaks.patch
 	patch -p0 < Patches/goom2k4-autotools.patch
+ifdef HAVE_DARWIN
+	patch -p0 < Patches/goom2k4-osx.patch
+endif
+	patch -p0 < Patches/goom2k4-noxmmx.patch
 	(cd $@; rm -f configure; ACLOCAL="aclocal -I m4/" autoreconf -ivf)
 
 .goom2k4: goom
@@ -1473,6 +1477,7 @@ libcddb: libcddb-$(CDDB_VERSION).tar.bz2
 ifdef HAVE_WIN32
 	(cd $@; patch -p0 < ../Patches/libcddb-win32.patch )
 endif
+	patch -p0 < Patches/libcddb-getenv-crash.patch
 	(cd $@; autoreconf -fisv)
 
 ifdef HAVE_WIN32
@@ -2038,22 +2043,14 @@ DISTCLEAN_PKG += SDL_image-$(SDL_IMAGE_VERSION).tar.gz
 # Musepack decoder library (libmpcdec)
 # ***************************************************************************
 
-libmpcdec-$(MUSE_VERSION).tar.bz2:
-	$(WGET) $(MUSE_URL)
-
-mpcdec: libmpcdec-$(MUSE_VERSION).tar.bz2
-	$(EXTRACT_BZ2)
-	patch -p0 < Patches/mpcdec.patch
-	(cd $@; autoreconf -ivf)
+mpcdec:
+	$(SVN) co $(MUSE_SVN) -r 468 mpcdec
+	cd $@; patch -p0 < ../Patches/libmpc-simple.patch
 
 .mpcdec: mpcdec
+	(cd $<; cmake . -DCMAKE_TOOLCHAIN_FILE=../../toolchain.cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) && make install)
 ifdef HAVE_WIN32
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS=-D_PTRDIFF_T=mpc_int32_t && make && make install)
-else
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) && make && make install)
-endif
-ifdef HAVE_DARWIN_OS
-	$(INSTALL_NAME)
+	(cd $<; cp libmpcdec/libmpcdec_static.a $(PREFIX)/lib/libmpcdec.a)
 endif
 	touch $@
 

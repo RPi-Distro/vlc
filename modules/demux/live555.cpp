@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: c83200c2d68f93c559ee141c79ff409fc29733b4 $
+ * $Id: f58541e00403fb49dcce77e31483db1de1f76929 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -812,6 +812,11 @@ static int SessionsSetup( demux_t *p_demux )
                 {
                     tk->fmt.i_codec = VLC_FOURCC( 't', 'w', 'o', 's' );
                     tk->fmt.audio.i_bitspersample = 16;
+                }
+                else if( !strcmp( sub->codecName(), "L24" ) )
+                {
+                    tk->fmt.i_codec = VLC_CODEC_S24B;
+                    tk->fmt.audio.i_bitspersample = 24;
                 }
                 else if( !strcmp( sub->codecName(), "L8" ) )
                 {

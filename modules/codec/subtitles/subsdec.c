@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 5c55a6e7fa5230acb3562f1b10a49b9d0a792a38 $
+ * $Id: bfdbb139070cbc5573f6639ea5943e8f68d55228 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -631,6 +631,9 @@ static char *StripTags( char *psz_subtitle )
         {
             *psz_text++ = *psz_subtitle;
         }
+
+        /* Security fix: Account for the case where input ends early */
+        if( *psz_subtitle == '\0' ) break;
 
         psz_subtitle++;
     }

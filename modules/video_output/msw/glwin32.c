@@ -2,7 +2,7 @@
  * glwin32.c: Windows OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 4619b7fff145076e8b613ac9cac4f6d1d86eeb7f $
+ * $Id: a3aa25b5952ac533a0427713e0e34405a18c352c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -199,6 +199,8 @@ static int Control(vout_display_t *vd, int query, va_list args)
     case VOUT_DISPLAY_GET_OPENGL: {
         vout_opengl_t **gl = va_arg(args, vout_opengl_t **);
         *gl = &vd->sys->gl;
+
+        CommonDisplay(vd);
         return VLC_SUCCESS;
     }
     default:

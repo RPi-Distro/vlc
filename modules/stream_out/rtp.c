@@ -504,6 +504,7 @@ static int Open( vlc_object_t *p_this )
             msg_Err( p_stream, "unsupported muxer type for RTP (only TS/PS)" );
             free( psz );
             vlc_mutex_destroy( &p_sys->lock_sdp );
+            vlc_mutex_destroy( &p_sys->lock_ts );
             vlc_mutex_destroy( &p_sys->lock_es );
             free( p_sys->psz_destination );
             free( p_sys );
@@ -519,6 +520,7 @@ static int Open( vlc_object_t *p_this )
             msg_Err( p_stream, "cannot create muxer" );
             sout_AccessOutDelete( p_sys->p_grab );
             vlc_mutex_destroy( &p_sys->lock_sdp );
+            vlc_mutex_destroy( &p_sys->lock_ts );
             vlc_mutex_destroy( &p_sys->lock_es );
             free( p_sys->psz_destination );
             free( p_sys );
@@ -531,6 +533,7 @@ static int Open( vlc_object_t *p_this )
             sout_MuxDelete( p_sys->p_mux );
             sout_AccessOutDelete( p_sys->p_grab );
             vlc_mutex_destroy( &p_sys->lock_sdp );
+            vlc_mutex_destroy( &p_sys->lock_ts );
             vlc_mutex_destroy( &p_sys->lock_es );
             free( p_sys->psz_destination );
             free( p_sys );
@@ -1118,6 +1121,10 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
             id->psz_enc = "PCMA";
             id->pf_packetize = rtp_packetize_split;
             rtp_set_ptime (id, 20, 1);
+            break;
+        case VLC_CODEC_S24B:
+            id->psz_enc = "L24";
+            id->pf_packetize = rtp_packetize_split;
             break;
         case VLC_CODEC_S16B:
         case VLC_CODEC_S16L:

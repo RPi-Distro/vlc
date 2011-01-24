@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2007 the VideoLAN team
- * $Id: 8f8011051ff406b316503fd6afb52130fdc43310 $
+ * $Id: 2bdb34d070d1704139f2bf6cba68d78d3e8493ec $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -154,22 +154,28 @@ vlc_module_begin ()
 
     add_integer( "freetype-fontsize", 0, NULL, FONTSIZE_TEXT,
                  FONTSIZE_LONGTEXT, true )
+        change_safe()
 
     /* opacity valid on 0..255, with default 255 = fully opaque */
     add_integer_with_range( "freetype-opacity", 255, 0, 255, NULL,
         OPACITY_TEXT, OPACITY_LONGTEXT, true )
+        change_safe()
 
     /* hook to the color values list, with default 0x00ffffff = white */
     add_integer( "freetype-color", 0x00FFFFFF, NULL, COLOR_TEXT,
                  COLOR_LONGTEXT, false )
         change_integer_list( pi_color_values, ppsz_color_descriptions, NULL )
+        change_safe()
 
     add_integer( "freetype-rel-fontsize", 16, NULL, FONTSIZER_TEXT,
                  FONTSIZER_LONGTEXT, false )
         change_integer_list( pi_sizes, ppsz_sizes_text, NULL )
+        change_safe()
+
     add_integer( "freetype-effect", 2, NULL, EFFECT_TEXT,
                  EFFECT_LONGTEXT, false )
         change_integer_list( pi_effects, ppsz_effects_text, NULL )
+        change_safe()
 
     add_bool( "freetype-yuvp", false, NULL, YUVP_TEXT,
               YUVP_LONGTEXT, true )
