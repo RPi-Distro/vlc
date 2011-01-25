@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: ddc6c1c1dc53b354068844419d18268422eff497 $
+ * $Id: f29899e675b458ebf26df8cbc2fedf4a843221d4 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -182,6 +182,7 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
             break;
         case WM_APPCOMMAND:
             cmd = GET_APPCOMMAND_LPARAM(msg->lParam);
+            *result = TRUE;
             switch(cmd)
             {
                 case APPCOMMAND_MEDIA_PLAY_PAUSE:
@@ -193,14 +194,19 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
                 case APPCOMMAND_MEDIA_PAUSE:
                     THEMIM->pause();
                     break;
+                case APPCOMMAND_MEDIA_CHANNEL_DOWN:
                 case APPCOMMAND_MEDIA_PREVIOUSTRACK:
                     THEMIM->prev();
                     break;
+                case APPCOMMAND_MEDIA_CHANNEL_UP:
                 case APPCOMMAND_MEDIA_NEXTTRACK:
                     THEMIM->next();
                     break;
                 case APPCOMMAND_MEDIA_STOP:
                     THEMIM->stop();
+                    break;
+                case APPCOMMAND_MEDIA_RECORD:
+                    THEAM->record();
                     break;
                 case APPCOMMAND_VOLUME_DOWN:
                     THEAM->AudioDown();
@@ -213,8 +219,10 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
                     break;
                 default:
                      msg_Dbg( p_intf, "unknown APPCOMMAND = %d", cmd);
+                     *result = FALSE;
                      break;
             }
+            if (*result) return true;
             break;
     }
     return false;

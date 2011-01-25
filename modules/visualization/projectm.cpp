@@ -2,7 +2,7 @@
  * projectm: visualization module based on libprojectM
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 90ca9c8eefc3752ca381b641f3ee1ad55d4565c6 $
+ * $Id: 7ccd4e7d2b2a1085483ffe17921d92d2267ea575 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -34,6 +34,7 @@
 #include <vlc_vout.h>
 #include <vlc_vout_wrapper.h>
 #include <vlc_filter.h>
+#include <vlc_rand.h>
 
 #include <libprojectM/projectM.hpp>
 
@@ -63,6 +64,15 @@ static void Close        ( vlc_object_t * );
 #define HEIGHT_TEXT N_("Video height")
 #define HEIGHT_LONGTEXT N_("The height of the video window, in pixels.")
 
+#define MESHX_TEXT N_("Mesh width")
+#define MESHX_LONGTEXT N_("The width of the mesh, in pixels.")
+
+#define MESHY_TEXT N_("Mesh height")
+#define MESHY_LONGTEXT N_("The height of the mesh, in pixels.")
+
+#define TEXTURE_TEXT N_("Texture size")
+#define TEXTURE_LONGTEXT N_("The size of the texture, in pixels.")
+
 vlc_module_begin ()
     set_shortname( N_("projectM"))
     set_description( N_("libprojectM effect") )
@@ -73,8 +83,12 @@ vlc_module_begin ()
     add_file( "projectm-config", "/usr/share/projectM/config.inp", NULL,
               CONFIG_TEXT, CONFIG_LONGTEXT, true )
 #else
-    add_file( "projectm-preset-path", "/usr/share/projectM/presets", NULL,
-              PRESET_PATH_TXT, PRESET_PATH_LONGTXT, true )
+#ifdef WIN32
+    add_directory( "projectm-preset-path", NULL, NULL,
+#else
+    add_directory( "projectm-preset-path", "/usr/share/projectM/presets", NULL,
+#endif
+                   PRESET_PATH_TXT, PRESET_PATH_LONGTXT, true )
     add_file( "projectm-title-font", "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf", NULL,
               TITLE_FONT_TXT, TITLE_FONT_LONGTXT, true )
     add_file( "projectm-menu-font", "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", NULL,
@@ -84,6 +98,12 @@ vlc_module_begin ()
                  false )
     add_integer( "projectm-height", 640, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT,
                  false )
+    add_integer( "projectm-meshx", 32, NULL, MESHX_TEXT, MESHX_LONGTEXT,
+                 false )
+    add_integer( "projectm-meshy", 24, NULL, MESHY_TEXT, MESHY_LONGTEXT,
+                 false )
+    add_integer( "projectm-texture-size", 1024, NULL, TEXTURE_TEXT,
+                 TEXTURE_LONGTEXT, false )
     add_shortcut( "projectm" )
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -102,16 +122,6 @@ struct filter_sys_t
     /* Opengl */
     vout_thread_t  *p_vout;
     vout_display_t *p_vd;
-
-    /* libprojectM objects */
-    projectM      *p_projectm;
-#ifndef HAVE_PROJECTM2
-    char          *psz_config;
-#else
-    char          *psz_preset_path;
-    char          *psz_title_font;
-    char          *psz_menu_font;
-#endif
 
     /* Window size */
     int i_width;
@@ -168,13 +178,6 @@ static int Open( vlc_object_t * p_this )
     p_sys->i_width  = var_InheritInteger( p_filter, "projectm-width" );
     p_sys->i_height = var_InheritInteger( p_filter, "projectm-height" );
     p_sys->i_channels = aout_FormatNbChannels( &p_filter->fmt_in.audio );
-#ifndef HAVE_PROJECTM2
-    p_sys->psz_config = var_InheritString( p_filter, "projectm-config" );
-#else
-    p_sys->psz_preset_path = var_InheritString( p_filter, "projectm-preset-path" );
-    p_sys->psz_title_font = var_InheritString( p_filter, "projectm-title-font" );
-    p_sys->psz_menu_font = var_InheritString( p_filter, "projectm-menu-font" );
-#endif
     vlc_mutex_init( &p_sys->lock );
     p_sys->p_buffer = NULL;
     p_sys->i_buffer_size = 0;
@@ -222,13 +225,6 @@ static void Close( vlc_object_t *p_this )
     vlc_sem_destroy( &p_sys->ready );
     vlc_mutex_destroy( &p_sys->lock );
     free( p_sys->p_buffer );
-#ifndef HAVE_PROJECTM2
-    free( p_sys->psz_config );
-#else
-    free( p_sys->psz_preset_path );
-    free( p_sys->psz_title_font );
-    free( p_sys->psz_menu_font );
-#endif
     free( p_sys );
 }
 
@@ -292,7 +288,16 @@ static void *Thread( void *p_data )
     vout_opengl_t *gl;
     int i_last_width  = 0;
     int i_last_height = 0;
-#ifdef HAVE_PROJECTM2
+    locale_t loc;
+    locale_t oldloc;
+
+    projectM *p_projectm;
+#ifndef HAVE_PROJECTM2
+    char *psz_config;
+#else
+    char *psz_preset_path;
+    char *psz_title_font;
+    char *psz_menu_font;
     projectM::Settings settings;
 #endif
 
@@ -339,35 +344,56 @@ static void *Thread( void *p_data )
         goto error;
     }
 
+    loc = newlocale (LC_NUMERIC_MASK, "C", NULL);
+    oldloc = uselocale (loc);
     /* Create the projectM object */
 #ifndef HAVE_PROJECTM2
-    p_sys->p_projectm = new projectM( p_sys->psz_config );
+    psz_config = var_InheritString( p_filter, "projectm-config" );
+    p_projectm = new projectM( psz_config );
+    free( psz_config );
 #else
-    settings.meshX = 32;
-    settings.meshY = 24;
+    psz_preset_path = var_InheritString( p_filter, "projectm-preset-path" );
+#ifdef WIN32
+    if ( psz_preset_path == NULL )
+    {
+        char *psz_data_path = config_GetDataDir( p_filter );
+        asprintf( &psz_preset_path, "%s" DIR_SEP "visualisation", psz_data_path );
+        free( psz_data_path );
+    }
+#endif
+    psz_title_font = var_InheritString( p_filter, "projectm-title-font" );
+    psz_menu_font = var_InheritString( p_filter, "projectm-menu-font" );
+
+    settings.meshX = var_InheritInteger( p_filter, "projectm-meshx" );
+    settings.meshY = var_InheritInteger( p_filter, "projectm-meshy" );
     settings.fps = 35;
-    settings.textureSize = 1024;
+    settings.textureSize = var_InheritInteger( p_filter, "projectm-texture-size" );
     settings.windowWidth = p_sys->i_width;
     settings.windowHeight = p_sys->i_height;
-    settings.presetURL = p_sys->psz_preset_path;
-    settings.titleFontURL =  p_sys->psz_title_font;
-    settings.menuFontURL = p_sys->psz_menu_font;
+    settings.presetURL = psz_preset_path;
+    settings.titleFontURL = psz_title_font;
+    settings.menuFontURL = psz_menu_font;
     settings.smoothPresetDuration = 5;
     settings.presetDuration = 30;
     settings.beatSensitivity = 10;
     settings.aspectCorrection = 1;
     settings.easterEgg = 1;
     settings.shuffleEnabled = 1;
-    p_sys->p_projectm = new projectM( settings );
+    p_projectm = new projectM( settings );
+
+    free( psz_menu_font );
+    free( psz_title_font );
+    free( psz_preset_path );
 #endif
-    p_sys->i_buffer_size = p_sys->p_projectm->pcm()->maxsamples;
+    p_sys->i_buffer_size = p_projectm->pcm()->maxsamples;
     p_sys->p_buffer = (float*)calloc( p_sys->i_buffer_size,
                                       sizeof( float ) );
 
     vlc_sem_post( &p_sys->ready );
 
-    /* TODO: Give to projectm the name of the input
-    p_sys->p_projectm->projectM_setTitle( "" ); */
+    /* Choose a preset randomly or projectM will always show the first one */
+    if ( p_projectm->getPlaylistSize() > 0 )
+        p_projectm->selectPreset( (unsigned)vlc_mrand48() % p_projectm->getPlaylistSize() );
 
     /* */
     for( ;; )
@@ -381,7 +407,7 @@ static void *Thread( void *p_data )
             /* FIXME it is not perfect as we will have black bands */
             vout_display_place_t place;
             vout_display_PlacePicture( &place, &p_sys->p_vd->source, p_sys->p_vd->cfg, false );
-            p_sys->p_projectm->projectM_resetGL( place.width, place.height );
+            p_projectm->projectM_resetGL( place.width, place.height );
 
             i_last_width  = p_sys->p_vd->cfg->display.width;
             i_last_height = p_sys->p_vd->cfg->display.height;
@@ -391,22 +417,27 @@ static void *Thread( void *p_data )
         vlc_mutex_lock( &p_sys->lock );
         if( p_sys->i_nb_samples > 0 )
         {
-            p_sys->p_projectm->pcm()->addPCMfloat( p_sys->p_buffer,
-                                                   p_sys->i_nb_samples );
+            p_projectm->pcm()->addPCMfloat( p_sys->p_buffer,
+                                            p_sys->i_nb_samples );
             p_sys->i_nb_samples = 0;
         }
         if( p_sys->b_quit )
         {
             vlc_mutex_unlock( &p_sys->lock );
 
-            delete p_sys->p_projectm;
+            delete p_projectm;
             vout_DeleteDisplay( p_sys->p_vd, NULL );
             vlc_object_release( p_sys->p_vout );
+            if (loc != (locale_t)0)
+            {
+                uselocale (oldloc);
+                freelocale (loc);
+            }
             return NULL;
         }
         vlc_mutex_unlock( &p_sys->lock );
 
-        p_sys->p_projectm->renderFrame();
+        p_projectm->renderFrame();
 
         /* */
         mwait( i_deadline );

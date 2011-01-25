@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: fb05481e0dc62d74c37a19329e17c2006632dfac $
+ * $Id: 4dbf06b7b52a28523e1c06e823dd30f558722e4f $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -85,11 +85,11 @@ public slots:
     void AudioUp();
     void AudioDown();
     void play();
+    void record();
 protected slots:
     void fullscreen();
     void snapshot();
     void playlist();
-    void record();
     void frame();
 
     virtual void doAction( int );

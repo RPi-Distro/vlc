@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 1bd3e630c08f7f94e848e3909f1694a75c9cbdf2 $
+ * $Id: a3ad19717753ea5bedc745de3e614a7c67a2ef2a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -264,7 +264,9 @@ MainInterface::~MainInterface()
     if( stackCentralOldWidget == videoWidget )
         showTab( bgWidget );
 
-    releaseVideoSlot();
+    if( videoWidget )
+        releaseVideoSlot();
+
 #ifdef WIN32
     if( himl )
         ImageList_Destroy( himl );
@@ -586,8 +588,11 @@ void MainInterface::releaseVideo( void )
 /* Function that is CONNECTED to the previous emit */
 void MainInterface::releaseVideoSlot( void )
 {
-    if( videoWidget )
-        videoWidget->release();
+    /* This function is called when the embedded video window is destroyed,
+     * or in the rare case that the embedded window is still here but the
+     * Qt4 interface exits. */
+    assert( videoWidget );
+    videoWidget->release();
     setVideoOnTop( false );
     setVideoFullScreen( false );
 

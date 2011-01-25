@@ -2,7 +2,7 @@
  * video.c: video decoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 234cd589f0c518c329f9249195f4cfdc51fc1f8a $
+ * $Id: c40fc94579677c3166469dca8e45baa24652c039 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -256,7 +256,7 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
             p_sys->p_context->skip_frame = AVDISCARD_DEFAULT;
             break;
         case 1:
-            p_sys->p_context->skip_frame = AVDISCARD_BIDIR;
+            p_sys->p_context->skip_frame = AVDISCARD_NONREF;
             break;
         case 2:
             p_sys->p_context->skip_frame = AVDISCARD_NONKEY;
@@ -279,7 +279,7 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
             p_sys->p_context->skip_idct = AVDISCARD_DEFAULT;
             break;
         case 1:
-            p_sys->p_context->skip_idct = AVDISCARD_BIDIR;
+            p_sys->p_context->skip_idct = AVDISCARD_NONREF;
             break;
         case 2:
             p_sys->p_context->skip_idct = AVDISCARD_NONKEY;
@@ -300,7 +300,7 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
        (p_sys->p_codec->capabilities & CODEC_CAP_DR1) &&
         /* No idea why ... but this fixes flickering on some TSCC streams */
         p_sys->i_codec_id != CODEC_ID_TSCC &&
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 68, 2 )
+#if (LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 68, 2 ) ) && (LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 52, 100, 1 ) )
         /* avcodec native vp8 decode doesn't handle EMU_EDGE flag, and I
            don't have idea howto implement fallback to libvpx decoder */
         p_sys->i_codec_id != CODEC_ID_VP8 &&
@@ -482,8 +482,8 @@ picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         if( p_sys->i_late_frames < 12 )
         {
             p_sys->p_context->skip_frame =
-                    (p_sys->i_skip_frame <= AVDISCARD_BIDIR) ?
-                    AVDISCARD_BIDIR : p_sys->i_skip_frame;
+                    (p_sys->i_skip_frame <= AVDISCARD_NONREF) ?
+                    AVDISCARD_NONREF : p_sys->i_skip_frame;
         }
         else
         {

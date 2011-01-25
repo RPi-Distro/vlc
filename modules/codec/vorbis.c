@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: b241bbf6bb36190b34670756fa9fdfda69ae95b4 $
+ * $Id: 8ef775f901866471425177ba8099279348a5ac41 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -486,11 +486,7 @@ static aout_buffer_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
 #endif
 
     if( p_oggpacket->bytes &&
-#ifdef MODULE_NAME_IS_tremor
-        vorbis_synthesis( &p_sys->vb, p_oggpacket, 1 ) == 0 )
-#else
         vorbis_synthesis( &p_sys->vb, p_oggpacket ) == 0 )
-#endif
         vorbis_synthesis_blockin( &p_sys->vd, &p_sys->vb );
 
     /* **pp_pcm is a multichannel float vector. In stereo, for

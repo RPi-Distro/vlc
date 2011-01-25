@@ -2,7 +2,7 @@
  * libvlc.c: libvlc instances creation and deletion, interfaces handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: dd4412c5a3df59e40224853c2fd387bb34d5bd9d $
+ * $Id: 4396d4b9adad32801e70bb7a89bc6cd362c831f7 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1303,6 +1303,7 @@ static void Help( libvlc_int_t *p_this, char const *psz_help_name )
 #ifdef WIN32        /* Pause the console because it's destroyed when we exit */
     PauseConsole();
 #endif
+    fflush( stdout );
 }
 
 /*****************************************************************************

@@ -2,7 +2,7 @@
  * subsusf.c : USF subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 57541374b0dac48906a4e3542ea32d338327a9fb $
+ * $Id: fc1cf078a6e52e716274dfb4ff0b0eea0a5c7595 $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *
@@ -1080,6 +1080,9 @@ static char *StripTags( char *psz_subtitle )
         {
             *psz_text++ = *psz_subtitle;
         }
+
+        /* Security fix: Account for the case where input ends early */
+        if( *psz_subtitle == '\0' ) break;
 
         psz_subtitle++;
     }

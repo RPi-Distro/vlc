@@ -49790,9 +49790,3 @@ Date:   Fri Jan 2 10:55:17 2009 +0200
 
     playlist: Don't assume that psz_name != NULL as GetName can return NULL and
      strcasecmp doesn't like comparing NULLs
-
-commit 8dca232ea871a54ee3089bddf6650a5a241532e9
-Author: Rémi Duraffort <ivoire@videolan.org>
-Date:   Thu Jan 1 21:39:37 2009 +0100
-
-    taglib: read and write some APE tags.
