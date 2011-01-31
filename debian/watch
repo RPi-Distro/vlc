@@ -1,2 +1,2 @@
 version=3
-http://download.videolan.org/pub/videolan/vlc/([\d][\d\.]+[a-z]?)/vlc-([\d][\d\.]+[a-z]?)\.tar\.bz2
+ftp://ftp.videolan.org/pub/vlc/([\d][\d\.]+[a-z]?)/vlc-([\d][\d\.]+[a-z]?)\.tar\.bz2
