@@ -1,11 +1,9 @@
 Description: Fix incorrect argument reordering
 Bug-Debian: http://bugs.debian.org/347650
 
-Index: vlc-debian/autotools/ltmain.sh
-===================================================================
---- vlc-debian.orig/autotools/ltmain.sh	2010-02-13 15:44:10.000000000 +0000
-+++ vlc-debian/autotools/ltmain.sh	2010-02-13 15:44:27.000000000 +0000
-@@ -4716,6 +4716,11 @@
+--- a/autotools/ltmain.sh
++++ b/autotools/ltmain.sh
+@@ -5041,6 +5041,11 @@
  	arg=$func_stripname_result
  	;;
  
@@ -17,7 +15,7 @@ Index: vlc-debian/autotools/ltmain.sh
        -Wl,*)
  	func_stripname '-Wl,' '' "$arg"
  	args=$func_stripname_result
-@@ -5070,6 +5075,15 @@
+@@ -5397,6 +5402,15 @@
  	lib=
  	found=no
  	case $deplib in
