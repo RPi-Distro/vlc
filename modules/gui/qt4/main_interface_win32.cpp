@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: f29899e675b458ebf26df8cbc2fedf4a843221d4 $
+ * $Id: 36a1206ced5ab75c90b2ee2aecd084b4599d67ea $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -182,7 +182,18 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
             break;
         case WM_APPCOMMAND:
             cmd = GET_APPCOMMAND_LPARAM(msg->lParam);
+
+            bool disable_volume_keys = var_InheritBool( p_intf, "qt-disable-volume-keys" );
+            if( disable_volume_keys &&
+                    (   cmd == APPCOMMAND_VOLUME_DOWN   ||
+                        cmd == APPCOMMAND_VOLUME_UP     ||
+                        cmd == APPCOMMAND_VOLUME_MUTE ) )
+            {
+                break;
+            }
+
             *result = TRUE;
+
             switch(cmd)
             {
                 case APPCOMMAND_MEDIA_PLAY_PAUSE:

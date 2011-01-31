@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-01-23 22:10+0100\n"
+"POT-Creation-Date: 2011-01-30 22:05+0100\n"
 "PO-Revision-Date: 2010-01-27 19:06+0100\n"
 "Last-Translator: Eirik U. Birkeland <eirbir@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -913,15 +913,15 @@ msgstr "tast"
 msgid "boolean"
 msgstr "boolsk"
 
-#: src/config/file.c:630 src/libvlc.c:1588
+#: src/config/file.c:630 src/libvlc.c:1595
 msgid "integer"
 msgstr "heiltal"
 
-#: src/config/file.c:639 src/libvlc.c:1618
+#: src/config/file.c:639 src/libvlc.c:1625
 msgid "float"
 msgstr "desimaltal"
 
-#: src/config/file.c:662 src/libvlc.c:1566
+#: src/config/file.c:662 src/libvlc.c:1573
 msgid "string"
 msgstr "tekst"
 
@@ -1277,7 +1277,7 @@ msgstr "Muserørsler"
 msgid "C"
 msgstr "nn"
 
-#: src/libvlc.c:1115
+#: src/libvlc.c:1122
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
@@ -1285,11 +1285,11 @@ msgstr ""
 "Køyrer VLC med standardgrensesnittet. Bruk «cvlc» for å bruka VLC utan "
 "grensesnitt."
 
-#: src/libvlc.c:1239
+#: src/libvlc.c:1246
 msgid "To get exhaustive help, use '-H'."
 msgstr "For å få inngåande hjelp, bruk «-H»."
 
-#: src/libvlc.c:1243 src/libvlc-module.c:1521
+#: src/libvlc.c:1250 src/libvlc-module.c:1521
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1358,29 +1358,29 @@ msgstr ""
 "i ei mengde sekund\n"
 "  vlc://quit                     Spesielt element til å avslutte VLC\n"
 
-#: src/libvlc.c:1634
+#: src/libvlc.c:1641
 msgid " (default enabled)"
 msgstr " (påslått som standard)"
 
-#: src/libvlc.c:1635
+#: src/libvlc.c:1642
 msgid " (default disabled)"
 msgstr " (avslått som standard)"
 
-#: src/libvlc.c:1798 src/libvlc.c:1801 src/libvlc.c:1809 src/libvlc.c:1814
+#: src/libvlc.c:1805 src/libvlc.c:1808 src/libvlc.c:1816 src/libvlc.c:1821
 msgid "Note:"
 msgstr "Merknad:"
 
-#: src/libvlc.c:1799 src/libvlc.c:1802
+#: src/libvlc.c:1806 src/libvlc.c:1809
 msgid "add --advanced to your command line to see advanced options."
 msgstr "legg til «--advanced» på kommandolinja for å sjå avanserte val."
 
-#: src/libvlc.c:1810 src/libvlc.c:1815
+#: src/libvlc.c:1817 src/libvlc.c:1822
 #, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
 msgstr "%d modul(ar) vart ikkje viste, fordi dei berre har avanserte val.\n"
 
-#: src/libvlc.c:1822 src/libvlc.c:1826
+#: src/libvlc.c:1829 src/libvlc.c:1833
 #, fuzzy
 msgid ""
 "No matching module found. Use --list or --list-verbose to list available "
@@ -1389,22 +1389,22 @@ msgstr ""
 "Fann ingen modular. Bruk «--list» eller «--list-verbose» for å lista opp "
 "tilgjengelege modular."
 
-#: src/libvlc.c:1916
+#: src/libvlc.c:1923
 #, fuzzy, c-format
 msgid "VLC version %s (%s)\n"
 msgstr "VLC versjon %s\n"
 
-#: src/libvlc.c:1918
+#: src/libvlc.c:1925
 #, fuzzy, c-format
 msgid "Compiled by %s on %s (%s)\n"
 msgstr "Kompilert av %s@%s.%s\n"
 
-#: src/libvlc.c:1920
+#: src/libvlc.c:1927
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "Kompileringsprogram: %s\n"
 
-#: src/libvlc.c:1955
+#: src/libvlc.c:1962
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
@@ -1412,7 +1412,7 @@ msgstr ""
 "\n"
 "Dumpa innhald til fila «vlc-help.txt».\n"
 
-#: src/libvlc.c:1975
+#: src/libvlc.c:1982
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -13145,23 +13145,23 @@ msgstr "Standard grensesnitt: "
 msgid "HTTP SSL"
 msgstr "HTTP"
 
-#: modules/control/lirc.c:46
+#: modules/control/lirc.c:47
 #, fuzzy
 msgid "Change the lirc configuration file"
 msgstr "vis avanserte alternativer"
 
-#: modules/control/lirc.c:48
+#: modules/control/lirc.c:49
 #, fuzzy
 msgid ""
 "Tell lirc to read this configuration file. By default it searches in the "
 "users home directory."
 msgstr "standard."
 
-#: modules/control/lirc.c:58
+#: modules/control/lirc.c:59
 msgid "Infrared"
 msgstr ""
 
-#: modules/control/lirc.c:61
+#: modules/control/lirc.c:62
 #, fuzzy
 msgid "Infrared remote control interface"
 msgstr "Standard grensesnitt: "
@@ -20118,7 +20118,19 @@ msgstr "lydstyrke på"
 msgid "Start in minimal view (without menus)"
 msgstr "nei"
 
-#: modules/gui/qt4/qt4.cpp:170
+#: modules/gui/qt4/qt4.cpp:167
+msgid "Ignore keyboard volume buttons."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:169
+msgid ""
+"With this option checked, the volume up, volume down and mute buttons on "
+"your keyboard will always change your system volume. With this option "
+"unchecked, the volume buttons will change VLC's volume when VLC is selected "
+"and change the system volume when VLC is not selected."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:176
 #, fuzzy
 msgid "Qt interface"
 msgstr "Standard grensesnitt: "

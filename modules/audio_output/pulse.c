@@ -35,7 +35,7 @@
 
 #include <pulse/pulseaudio.h>
 
-#if !PA_CHECK_VERSION(0,9,22)
+#if !defined(PA_CHECK_VERSION) || !PA_CHECK_VERSION(0,9,22)
     #ifdef X_DISPLAY_MISSING
     # error Xlib required due to PulseAudio bug 799!
     #endif
@@ -124,7 +124,7 @@ static int Open ( vlc_object_t *p_this )
     struct pa_channel_map map;
     char * p_client_name;
 
-#if !PA_CHECK_VERSION(0,9,22)
+#if !defined(PA_CHECK_VERSION) || !PA_CHECK_VERSION(0,9,22)
     if( !vlc_xlib_init( p_this ) )
         return VLC_EGENERIC;
 #endif

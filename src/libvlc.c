@@ -2,7 +2,7 @@
  * libvlc.c: libvlc instances creation and deletion, interfaces handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 4396d4b9adad32801e70bb7a89bc6cd362c831f7 $
+ * $Id: 73ca152234d5b5d3fb7b186daaf458e7b8ced8f1 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -604,8 +604,12 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
 
                 for( i_input = vlc_optind; i_input < i_argc;i_input++ )
                 {
+                    /* We need to resolve relative paths in this instance */
+                    char *psz_mrl = make_URI( ppsz_argv[i_input] );
+                    if( psz_mrl == NULL )
+                        continue;
                     msg_Dbg( p_libvlc, "Adds %s to the running Media Player",
-                            ppsz_argv[i_input] );
+                             psz_mrl );
 
                     p_dbus_msg = dbus_message_new_method_call(
                             "org.mpris.vlc", "/TrackList",
@@ -614,6 +618,7 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
                     if ( NULL == p_dbus_msg )
                     {
                         msg_Err( p_libvlc, "D-Bus problem" );
+                        free( psz_mrl );
                         system_End( p_libvlc );
                         exit( 1 );
                     }
@@ -621,12 +626,14 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
                     /* append MRLs */
                     dbus_message_iter_init_append( p_dbus_msg, &dbus_args );
                     if ( !dbus_message_iter_append_basic( &dbus_args,
-                                DBUS_TYPE_STRING, &ppsz_argv[i_input] ) )
+                                DBUS_TYPE_STRING, &psz_mrl ) )
                     {
                         dbus_message_unref( p_dbus_msg );
+                        free( psz_mrl );
                         system_End( p_libvlc );
                         exit( 1 );
                     }
+                    free( psz_mrl );
                     b_play = TRUE;
                     if( var_InheritBool( p_libvlc, "playlist-enqueue" ) )
                         b_play = FALSE;

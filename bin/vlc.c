@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 701a5e99ca56ad0f0a1a5f8d34398f49ac4f7543 $
+ * $Id: 51633b2bff13685e4ce1a02a4636988c3541f87a $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -63,11 +63,12 @@ static void dummy_handler (int signum)
 int main( int i_argc, const char *ppsz_argv[] )
 {
     /* The so-called POSIX-compliant MacOS X reportedly processes SIGPIPE even
-     * if it is blocked in all thread.
+     * if it is blocked in all thread. Also some libraries want SIGPIPE blocked
+     * as they have no clue about signal masks.
      * Note: this is NOT an excuse for not protecting against SIGPIPE. If
      * LibVLC runs outside of VLC, we cannot rely on this code snippet. */
     signal (SIGPIPE, SIG_IGN);
-    /* Restore SIGCHLD in case our parent process ignores it. */
+    /* Restore default for SIGCHLD in case parent ignores it. */
     signal (SIGCHLD, SIG_DFL);
 
 #ifdef HAVE_SETENV
@@ -104,38 +105,31 @@ int main( int i_argc, const char *ppsz_argv[] )
              libvlc_get_version(), libvlc_get_changeset() );
 #endif
 
-    /* VLC uses sigwait() to dequeue interesting signals.
-     * For this to work, those signals must be blocked in all threads,
-     * including the thread calling sigwait() (see the man page for details).
+    /* Synchronously intercepted POSIX signals.
      *
-     * There are two advantages to sigwait() over traditional signal handlers:
-     *  - delivery is synchronous: no need to worry about async-safety,
-     *  - EINTR is not generated: other threads need not handle that error.
-     * That being said, some LibVLC programs do not use sigwait(). Therefore
-     * EINTR must still be handled cleanly, notably from poll() calls.
+     * In a threaded program such as VLC, the only sane way to handle signals
+     * is to block them in all threads but one - this is the only way to
+     * predict which thread will receive them. If any piece of code depends
+     * on delivery of one of this signal it is intrinsically not thread-safe
+     * and MUST NOT be used in VLC, whether we like it or not.
+     * There is only one exception: if the signal is raised with
+     * pthread_kill() - we do not use this in LibVLC but some pthread
+     * implementations use them internally. You should really use conditions
+     * for thread synchronization anyway.
      *
-     * Signals that request a clean shutdown, and force an unclean shutdown
+     * Signal that request a clean shutdown, and force an unclean shutdown
      * if they are triggered again 2+ seconds later.
      * We have to handle SIGTERM cleanly because of daemon mode.
      * Note that we set the signals after the vlc_create call. */
     static const int sigs[] = {
         SIGINT, SIGHUP, SIGQUIT, SIGTERM,
-    /* SIGPIPE can happen and would crash the process. On modern systems,
-     * the MSG_NOSIGNAL flag protects socket write operations against SIGPIPE.
-     * But we still need to block SIGPIPE when:
-     *  - writing to pipes,
-     *  - using write() instead of send() for code not specific to sockets.
-     * LibVLC code assumes that SIGPIPE is blocked. Other LibVLC applications
-     * shall block it (or handle it somehow) too.
+    /* Signals that cause a no-op:
+     * - SIGPIPE might happen with sockets and would crash VLC. It MUST be
+     *   blocked by any LibVLC-dependent application, not just VLC.
+     * - SIGCHLD comes after exec*() (such as httpd CGI support) and must
+     *   be dequeued to cleanup zombie processes.
      */
-        SIGPIPE,
-    /* SIGCHLD must be dequeued to clean up zombie child processes.
-     * Furthermore the handler must not be set to SIG_IGN (see above). */
-    /* Unfortunately, the QProcess class from Qt4 has a bug. It installs a
-     * custom signal handlers and gets stuck if it is not called. So we cannot
-     * use sigwait() for SIGCHLD:
-     * http://bugs.kde.org/show_bug.cgi?id=260719 */
-        //SIGCHLD,
+        SIGPIPE, SIGCHLD
     };
 
     sigset_t set;
@@ -206,8 +200,5 @@ int main( int i_argc, const char *ppsz_argv[] )
     for (int i = 1; i < argc; i++)
         LocaleFree (argv[i]);
 
-    /* Do not run exit handlers. Some of them are buggy (e.g. KDE IO scheduler)
-     * and crash. Also some will crash because their library may be already
-     * unloaded (dlclose()). */
-    _exit (0);
+    return 0;
 }

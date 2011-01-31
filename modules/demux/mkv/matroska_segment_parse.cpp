@@ -539,7 +539,7 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
                     tk->f_fps = float( vfps );
                     msg_Dbg( &sys.demuxer, "   |   |   |   + fps=%f", float( vfps ) );
                 }
-                else if( EbmlId( *l ) == KaxVideoDisplayUnit::ClassInfos.GlobalId )
+                else if( MKV_IS_ID( l, KaxVideoDisplayUnit ) )
                 {
                     KaxVideoDisplayUnit &vdmode = *(KaxVideoDisplayUnit*)l;
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-01-23 22:10+0100\n"
+"POT-Creation-Date: 2011-01-30 22:05+0100\n"
 "PO-Revision-Date: 2010-09-21 15:58+0400\n"
 "Last-Translator: Eduard Babayan <edo248@gmail.com>\n"
 "Language-Team: VLC Armenian <edo248@gmail.com>\n"
@@ -953,15 +953,15 @@ msgstr "բանալի"
 msgid "boolean"
 msgstr "բուլյան"
 
-#: src/config/file.c:630 src/libvlc.c:1588
+#: src/config/file.c:630 src/libvlc.c:1595
 msgid "integer"
 msgstr "ամբողջ թիվ"
 
-#: src/config/file.c:639 src/libvlc.c:1618
+#: src/config/file.c:639 src/libvlc.c:1625
 msgid "float"
 msgstr "սահող"
 
-#: src/config/file.c:662 src/libvlc.c:1566
+#: src/config/file.c:662 src/libvlc.c:1573
 msgid "string"
 msgstr "տող"
 
@@ -1333,7 +1333,7 @@ msgstr "Մկնիկի Ակնարկ"
 msgid "C"
 msgstr "hy"
 
-#: src/libvlc.c:1115
+#: src/libvlc.c:1122
 #, fuzzy
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
@@ -1342,12 +1342,12 @@ msgstr ""
 "Տեւողություն vlc հետ լռությամբ ինտերֆեյսը. Օգտվեք\" cvlc 'օգտագործել vlc "
 "առանց ինտերֆեյսով."
 
-#: src/libvlc.c:1239
+#: src/libvlc.c:1246
 #, fuzzy
 msgid "To get exhaustive help, use '-H'."
 msgstr "ստանալու սպառիչ օգնության, օգտվել '-H\" \"."
 
-#: src/libvlc.c:1243 src/libvlc-module.c:1521
+#: src/libvlc.c:1250 src/libvlc-module.c:1521
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1415,24 +1415,24 @@ msgstr ""
 " vlc: / / դադար: <seconds> հատուկ կետ է դադար է երգացանկ որոշ ժամանակ \n"
 " vlc: / / հեռանալ հատուկ կետ թողնել VLC \n"
 
-#: src/libvlc.c:1634
+#: src/libvlc.c:1641
 msgid " (default enabled)"
 msgstr " (լռությամբ թույլտրված)"
 
-#: src/libvlc.c:1635
+#: src/libvlc.c:1642
 msgid " (default disabled)"
 msgstr " (լռությամբ չթույլտրված)"
 
-#: src/libvlc.c:1798 src/libvlc.c:1801 src/libvlc.c:1809 src/libvlc.c:1814
+#: src/libvlc.c:1805 src/libvlc.c:1808 src/libvlc.c:1816 src/libvlc.c:1821
 msgid "Note:"
 msgstr "Նշում."
 
-#: src/libvlc.c:1799 src/libvlc.c:1802
+#: src/libvlc.c:1806 src/libvlc.c:1809
 #, fuzzy
 msgid "add --advanced to your command line to see advanced options."
 msgstr "add - Ընդլայնված Ձեր հրամանի տող է տեսնել ընդլայնված ընտրանքներ\"."
 
-#: src/libvlc.c:1810 src/libvlc.c:1815
+#: src/libvlc.c:1817 src/libvlc.c:1822
 #, fuzzy, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
@@ -1440,7 +1440,7 @@ msgstr ""
 "%d մոդուլ (ներ) չեն ցուցադրվում, քանի որ նրանք միայն ունեն ընդլայնված "
 "ընտրանքներ. \n"
 
-#: src/libvlc.c:1822 src/libvlc.c:1826
+#: src/libvlc.c:1829 src/libvlc.c:1833
 #, fuzzy
 msgid ""
 "No matching module found. Use --list or --list-verbose to list available "
@@ -1449,22 +1449,22 @@ msgstr ""
 "Ոչ համապատասխան մոդուլային գտնվել. Օգտագործեք - ցուցակի կամ - ցուցակը-"
 "շատախոս է ցուցակում առկա մոդուլներ."
 
-#: src/libvlc.c:1916
+#: src/libvlc.c:1923
 #, c-format
 msgid "VLC version %s (%s)\n"
 msgstr "VLCի տարբերակ %s (%s) \n"
 
-#: src/libvlc.c:1918
+#: src/libvlc.c:1925
 #, c-format
 msgid "Compiled by %s on %s (%s)\n"
 msgstr "Կոմպիլացված է %s-ի կողմից %s (%s) -ի վրա\n"
 
-#: src/libvlc.c:1920
+#: src/libvlc.c:1927
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "Կոմպիլյատոր` %s \n"
 
-#: src/libvlc.c:1955
+#: src/libvlc.c:1962
 #, fuzzy
 msgid ""
 "\n"
@@ -1473,7 +1473,7 @@ msgstr ""
 "\n"
 " Տպված բովանդակություն vlc-help.txt ֆայլ. \n"
 
-#: src/libvlc.c:1975
+#: src/libvlc.c:1982
 #, fuzzy
 msgid ""
 "\n"
@@ -14151,12 +14151,12 @@ msgstr "HTTP Հեռակառավարման ինտերֆեյսի"
 msgid "HTTP SSL"
 msgstr "HTTP SSL"
 
-#: modules/control/lirc.c:46
+#: modules/control/lirc.c:47
 #, fuzzy
 msgid "Change the lirc configuration file"
 msgstr "Փոխել է lirc կոնֆիգուրացիայի ֆայլը"
 
-#: modules/control/lirc.c:48
+#: modules/control/lirc.c:49
 #, fuzzy
 msgid ""
 "Tell lirc to read this configuration file. By default it searches in the "
@@ -14165,11 +14165,11 @@ msgstr ""
 "Tell lirc կարդալ այս կոնֆիգուրացիայի ֆայլը. Լռությամբ այն փնտրումները "
 "օգտվողները տուն պանակ."
 
-#: modules/control/lirc.c:58
+#: modules/control/lirc.c:59
 msgid "Infrared"
 msgstr "Ինֆրակարմիր"
 
-#: modules/control/lirc.c:61
+#: modules/control/lirc.c:62
 msgid "Infrared remote control interface"
 msgstr "Ինֆրակարմիր Հեռակառավարման ինտերֆեյս"
 
@@ -21426,7 +21426,19 @@ msgstr "Ավտոմատ ներբեռնել ընդարձակման մոդուլի 
 msgid "Start in minimal view (without menus)"
 msgstr "Սկսել է նվազագույն դիտել (առանց ընտրացանկերում)"
 
-#: modules/gui/qt4/qt4.cpp:170
+#: modules/gui/qt4/qt4.cpp:167
+msgid "Ignore keyboard volume buttons."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:169
+msgid ""
+"With this option checked, the volume up, volume down and mute buttons on "
+"your keyboard will always change your system volume. With this option "
+"unchecked, the volume buttons will change VLC's volume when VLC is selected "
+"and change the system volume when VLC is not selected."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:176
 msgid "Qt interface"
 msgstr "Qt ինտերֆեյս"
 

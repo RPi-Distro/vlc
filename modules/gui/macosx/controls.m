@@ -2,7 +2,7 @@
  * controls.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: c64f2ef02ecb75cfa4b92574c6b36aba21a6b0e6 $
+ * $Id: 54462f4b70087fc66ad50247ed95e791baa84d56 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -584,7 +584,7 @@
     [openPanel setCanChooseFiles: YES];
     [openPanel setCanChooseDirectories: NO];
     [openPanel setAllowsMultipleSelection: YES];
-    i_returnValue = [openPanel runModalForDirectory: [NSString stringWithUTF8String: path] file: nil types: [NSArray arrayWithObjects: @"cdg",@"@idx",@"srt",@"sub",@"utf",@"ass",@"ssa",@"aqt",@"jss",@"psb",@"rt",@"smi", nil]];
+    i_returnValue = [openPanel runModalForDirectory: [NSString stringWithUTF8String: path] file: nil types: [NSArray arrayWithObjects: @"cdg",@"@idx",@"srt",@"sub",@"utf",@"ass",@"ssa",@"aqt",@"jss",@"psb",@"rt",@"smi",@"txt", nil]];
     free( path );
 
     if( i_returnValue == NSOKButton )

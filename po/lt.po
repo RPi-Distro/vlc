@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc-lt-trunk\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-01-23 22:10+0100\n"
+"POT-Creation-Date: 2011-01-30 22:05+0100\n"
 "PO-Revision-Date: 2010-11-07 18:53+0200\n"
 "Last-Translator: Mindaugas Baranauskas <embar@users.berlios.de>\n"
 "Language-Team: Lithuanian <embar@users.berlios.de>\n"
@@ -894,15 +894,15 @@ msgstr "klavišas"
 msgid "boolean"
 msgstr "loginė reikšmė"
 
-#: src/config/file.c:630 src/libvlc.c:1588
+#: src/config/file.c:630 src/libvlc.c:1595
 msgid "integer"
 msgstr "sveikasis skaičius"
 
-#: src/config/file.c:639 src/libvlc.c:1618
+#: src/config/file.c:639 src/libvlc.c:1625
 msgid "float"
 msgstr "trupmeninis skaičius"
 
-#: src/config/file.c:662 src/libvlc.c:1566
+#: src/config/file.c:662 src/libvlc.c:1573
 msgid "string"
 msgstr "žodis"
 
@@ -1256,7 +1256,7 @@ msgstr "Pelės gestai"
 msgid "C"
 msgstr "lt"
 
-#: src/libvlc.c:1115
+#: src/libvlc.c:1122
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
@@ -1264,11 +1264,11 @@ msgstr ""
 "VLC paleidžiama naudojant numatytąją sąsają. Norėdami naudoti grotuvą be "
 "sąsajos, naudokite „cvlc“."
 
-#: src/libvlc.c:1239
+#: src/libvlc.c:1246
 msgid "To get exhaustive help, use '-H'."
 msgstr "Norėdami gauti išsamią pagalbą, naudokite „-H“."
 
-#: src/libvlc.c:1243 src/libvlc-module.c:1521
+#: src/libvlc.c:1250 src/libvlc-module.c:1521
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1338,31 +1338,31 @@ msgstr ""
 "pristabdymui nurodytam laikui\n"
 "  vlc://quit                     Specialus įrašas darbo su VLC baigimui\n"
 
-#: src/libvlc.c:1634
+#: src/libvlc.c:1641
 msgid " (default enabled)"
 msgstr " (paprastai įjungta)"
 
-#: src/libvlc.c:1635
+#: src/libvlc.c:1642
 msgid " (default disabled)"
 msgstr " (paprastai išjungta)"
 
-#: src/libvlc.c:1798 src/libvlc.c:1801 src/libvlc.c:1809 src/libvlc.c:1814
+#: src/libvlc.c:1805 src/libvlc.c:1808 src/libvlc.c:1816 src/libvlc.c:1821
 msgid "Note:"
 msgstr "Pastaba:"
 
-#: src/libvlc.c:1799 src/libvlc.c:1802
+#: src/libvlc.c:1806 src/libvlc.c:1809
 msgid "add --advanced to your command line to see advanced options."
 msgstr ""
 "norėdami matyti sudėtingesnes parinktis, prie komandinės eilutės pridėkite "
 "„--advanced“."
 
-#: src/libvlc.c:1810 src/libvlc.c:1815
+#: src/libvlc.c:1817 src/libvlc.c:1822
 #, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
 msgstr "%d modulis(-iai) nerodomi, nes jie turi tik sudėtingesnes parinktis.\n"
 
-#: src/libvlc.c:1822 src/libvlc.c:1826
+#: src/libvlc.c:1829 src/libvlc.c:1833
 msgid ""
 "No matching module found. Use --list or --list-verbose to list available "
 "modules."
@@ -1370,22 +1370,22 @@ msgstr ""
 "Nerasta tinkamų modulių. Norėdami matyti prieinamus modulius, naudokite --"
 "list arba --list-verbose."
 
-#: src/libvlc.c:1916
+#: src/libvlc.c:1923
 #, c-format
 msgid "VLC version %s (%s)\n"
 msgstr "VLC versija %s (%s)\n"
 
-#: src/libvlc.c:1918
+#: src/libvlc.c:1925
 #, c-format
 msgid "Compiled by %s on %s (%s)\n"
 msgstr "Sukompiliavo %s su %s (%s)\n"
 
-#: src/libvlc.c:1920
+#: src/libvlc.c:1927
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "Kompiliatorius: %s\n"
 
-#: src/libvlc.c:1955
+#: src/libvlc.c:1962
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
@@ -1393,7 +1393,7 @@ msgstr ""
 "\n"
 "Turinys surašytas į rinkmeną vlc-help.txt.\n"
 
-#: src/libvlc.c:1975
+#: src/libvlc.c:1982
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -12248,21 +12248,21 @@ msgstr "HTTP nuotolinio valdymo sąsaja"
 msgid "HTTP SSL"
 msgstr "HTTP SSL"
 
-#: modules/control/lirc.c:46
+#: modules/control/lirc.c:47
 msgid "Change the lirc configuration file"
 msgstr "Keisti lirc nuostatų rinkmeną"
 
-#: modules/control/lirc.c:48
+#: modules/control/lirc.c:49
 msgid ""
 "Tell lirc to read this configuration file. By default it searches in the "
 "users home directory."
 msgstr ""
 
-#: modules/control/lirc.c:58
+#: modules/control/lirc.c:59
 msgid "Infrared"
 msgstr "Infraraudonųjų spindulių"
 
-#: modules/control/lirc.c:61
+#: modules/control/lirc.c:62
 msgid "Infrared remote control interface"
 msgstr "Infraraudonųjų spindulių nuotolinio valdymo sąsaja"
 
@@ -18710,7 +18710,19 @@ msgstr "Automatiškai įkelti įskiepių modulius paleidimo metu"
 msgid "Start in minimal view (without menus)"
 msgstr "Paleisti su minimaliu rodiniu (be meniu)"
 
-#: modules/gui/qt4/qt4.cpp:170
+#: modules/gui/qt4/qt4.cpp:167
+msgid "Ignore keyboard volume buttons."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:169
+msgid ""
+"With this option checked, the volume up, volume down and mute buttons on "
+"your keyboard will always change your system volume. With this option "
+"unchecked, the volume buttons will change VLC's volume when VLC is selected "
+"and change the system volume when VLC is not selected."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:176
 msgid "Qt interface"
 msgstr "Qt sąsaja"
 

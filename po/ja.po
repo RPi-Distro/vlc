@@ -1,15 +1,14 @@
 # translation of ja.po to Japanese
 # Japanese translation for VLC
-# Copyright (C) 2002, 2004 the VideoLAN team
-# Fumio Nakayama <fumio.n6a@gmail.com>, 2002,2009-2010.
+# Copyright (C) 2002, 2004-2011 the VideoLAN team
+# Fumio Nakayama <fumio.n6a@gmail.com>, 2002,2009-2011.
 # Tadashi Jokagi <elf@elf.no-ip.org>, 2004-2009.
-# $Id$
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.0\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-01-23 22:10+0100\n"
+"POT-Creation-Date: 2011-01-30 22:05+0100\n"
 "PO-Revision-Date: 2011-01-11 19:07+0900\n"
 "Last-Translator: Fumio Nakayama <fumio.n6a@gmail.com>\n"
 "Language-Team: VideoLAN's Translators <translators@videolan.org>\n"
@@ -894,15 +893,15 @@ msgstr "キー"
 msgid "boolean"
 msgstr "真偽値"
 
-#: src/config/file.c:630 src/libvlc.c:1588
+#: src/config/file.c:630 src/libvlc.c:1595
 msgid "integer"
 msgstr "整数"
 
-#: src/config/file.c:639 src/libvlc.c:1618
+#: src/config/file.c:639 src/libvlc.c:1625
 msgid "float"
 msgstr "浮動小数点"
 
-#: src/config/file.c:662 src/libvlc.c:1566
+#: src/config/file.c:662 src/libvlc.c:1573
 msgid "string"
 msgstr "文字列"
 
@@ -1257,7 +1256,7 @@ msgstr "マウスジェスチャー"
 msgid "C"
 msgstr "ja"
 
-#: src/libvlc.c:1115
+#: src/libvlc.c:1122
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
@@ -1265,11 +1264,11 @@ msgstr ""
 "vlcはデフォルトのインターフェースで実行しています。インターフェースのない "
 "vlc を使用するには'cvlc'を使用してください。"
 
-#: src/libvlc.c:1239
+#: src/libvlc.c:1246
 msgid "To get exhaustive help, use '-H'."
 msgstr "網羅的なヘルプを表示するためには、'-H'オプションを指定してください。"
 
-#: src/libvlc.c:1243 src/libvlc-module.c:1521
+#: src/libvlc.c:1250 src/libvlc-module.c:1521
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1340,30 +1339,30 @@ msgstr ""
 "定\n"
 "  vlc://quit                     VLCを終了させる特別な指定\n"
 
-#: src/libvlc.c:1634
+#: src/libvlc.c:1641
 msgid " (default enabled)"
 msgstr " (デフォルトで有効)"
 
-#: src/libvlc.c:1635
+#: src/libvlc.c:1642
 msgid " (default disabled)"
 msgstr " (デフォルトで無効)"
 
-#: src/libvlc.c:1798 src/libvlc.c:1801 src/libvlc.c:1809 src/libvlc.c:1814
+#: src/libvlc.c:1805 src/libvlc.c:1808 src/libvlc.c:1816 src/libvlc.c:1821
 msgid "Note:"
 msgstr "注釈:"
 
-#: src/libvlc.c:1799 src/libvlc.c:1802
+#: src/libvlc.c:1806 src/libvlc.c:1809
 msgid "add --advanced to your command line to see advanced options."
 msgstr "--advancedをコマンドラインに付加すると拡張オプションが表示されます。"
 
-#: src/libvlc.c:1810 src/libvlc.c:1815
+#: src/libvlc.c:1817 src/libvlc.c:1822
 #, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
 msgstr ""
 "拡張オプションしか持たないため、%dのモジュールが表示されませんでした。\n"
 
-#: src/libvlc.c:1822 src/libvlc.c:1826
+#: src/libvlc.c:1829 src/libvlc.c:1833
 msgid ""
 "No matching module found. Use --list or --list-verbose to list available "
 "modules."
@@ -1371,22 +1370,22 @@ msgstr ""
 "一致するモジュールが見つかりませんでした。--listまたは、--list-verboseオプ"
 "ションを指定して使用可能なモジュールを確認してください。"
 
-#: src/libvlc.c:1916
+#: src/libvlc.c:1923
 #, c-format
 msgid "VLC version %s (%s)\n"
 msgstr "VLCバージョン %s (%s)\n"
 
-#: src/libvlc.c:1918
+#: src/libvlc.c:1925
 #, c-format
 msgid "Compiled by %s on %s (%s)\n"
 msgstr "%sによって%s (%s)上でコンパイルされました\n"
 
-#: src/libvlc.c:1920
+#: src/libvlc.c:1927
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "コンパイラー: %s\n"
 
-#: src/libvlc.c:1955
+#: src/libvlc.c:1962
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
@@ -1394,7 +1393,7 @@ msgstr ""
 "\n"
 "vlc-help.txtファイルに内容を出力しました。\n"
 
-#: src/libvlc.c:1975
+#: src/libvlc.c:1982
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -1479,7 +1478,7 @@ msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
 msgstr ""
-"メッセージの出力レベル(0:エラーと標準メッセージのみ, 1:警告, 2=デバッグ)で"
+"メッセージの出力レベル(0:エラーと標準メッセージのみ, 1:警告, 2:デバッグ)で"
 "す。"
 
 #: src/libvlc-module.c:200
@@ -4485,7 +4484,7 @@ msgstr "OSDメニューのハイライトを上側のウィジェットに移動
 
 #: src/libvlc-module.c:1511
 msgid "Highlight widget below"
-msgstr "下側いにウィジェットをハイライト"
+msgstr "下側にウィジェットをハイライト"
 
 #: src/libvlc-module.c:1513
 msgid "Move OSD menu highlight to the widget below"
@@ -5650,7 +5649,7 @@ msgstr "DiSEqCシステムの衛星番号"
 
 #: modules/access/bda/bda.c:86 modules/access/dvb/access.c:108
 msgid "[0=no diseqc, 1-4=satellite number]."
-msgstr "[0=DiSQqCなし, 1-4=衛星番号]"
+msgstr "[0=DiSEqCなし, 1-4=衛星番号]"
 
 #: modules/access/bda/bda.c:89 modules/access/dvb/access.c:110
 msgid "LNB voltage"
@@ -6085,7 +6084,7 @@ msgid ""
 "don't specify anything the default size for your device will be used. You "
 "can specify a standard size (cif, d1, ...) or <width>x<height>."
 msgstr ""
-"DIrectShowプラグインで表示されるビデオサイズを指定します。もし何も指定されな"
+"DirectShowプラグインで表示されるビデオサイズを指定します。もし何も指定されな"
 "ければ、デバイスのデフォルトのサイズが使用されます。標準サイズ(cif, d1, ...)"
 "または、<幅>x<高さ>で指定します。"
 
@@ -6223,7 +6222,7 @@ msgid ""
 "AM Tuner mode. Can be one of Default (0), TV (1),AM Radio (2), FM Radio (3) "
 "or DSS (4)."
 msgstr ""
-"AMチューナーモードを0:デフォルト, 1:TV, 2:AMラジオ, 4:FMラジオ, 4:DSSから選択"
+"AMチューナーモードを0:デフォルト, 1:TV, 2:AMラジオ, 3:FMラジオ, 4:DSSから選択"
 "します。"
 
 #: modules/access/dshow/dshow.cpp:167
@@ -6497,7 +6496,7 @@ msgstr "DVDReadはブロック%dを読み込むことができませんでした
 #: modules/access/dvdread.c:540
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
-msgstr "DVDRead could not read %d/%d blocks at 0x%02x."
+msgstr "DVDReadは%d/%dブロックを0x%02xで読み込むことができませんでした。"
 
 #: modules/access/eyetv.m:56
 msgid "Channel number"
@@ -7835,7 +7834,7 @@ msgstr "libv4l2ラッパーを使用"
 
 #: modules/access/v4l2.c:111
 msgid "Reset v4l2 controls"
-msgstr "v412制御のリセット"
+msgstr "v4l2制御のリセット"
 
 #: modules/access/v4l2.c:113
 msgid "Reset controls to defaults provided by the v4l2 driver."
@@ -8023,7 +8022,7 @@ msgstr "V4L2キャプチャーのキャッシュ値をミリ秒で指定しま�
 
 #: modules/access/v4l2.c:192
 msgid "v4l2 driver controls"
-msgstr "v412ドライバ制御"
+msgstr "v4l2ドライバ制御"
 
 #: modules/access/v4l2.c:194
 msgid ""
@@ -12554,11 +12553,11 @@ msgstr "HTTPリモートコントロールインターフェース"
 msgid "HTTP SSL"
 msgstr "HTTP SSL"
 
-#: modules/control/lirc.c:46
+#: modules/control/lirc.c:47
 msgid "Change the lirc configuration file"
 msgstr "LIRC設定ファイルの変更"
 
-#: modules/control/lirc.c:48
+#: modules/control/lirc.c:49
 msgid ""
 "Tell lirc to read this configuration file. By default it searches in the "
 "users home directory."
@@ -12566,11 +12565,11 @@ msgstr ""
 "LIRCniこの設定ファイルを読み込むように指示します。デフォルトでは、ユーザーの"
 "ホームディレクトリを検索します。"
 
-#: modules/control/lirc.c:58
+#: modules/control/lirc.c:59
 msgid "Infrared"
 msgstr "赤外線"
 
-#: modules/control/lirc.c:61
+#: modules/control/lirc.c:62
 msgid "Infrared remote control interface"
 msgstr "HTTPリモートコントロールインターフェース"
 
@@ -18076,7 +18075,7 @@ msgstr "同期化"
 
 #: modules/gui/qt4/dialogs/extended.cpp:80
 msgid "v4l2 controls"
-msgstr "v412制御"
+msgstr "v4l2制御"
 
 #: modules/gui/qt4/dialogs/firstrun.cpp:61
 msgid "Privacy and Network Policies"
@@ -19181,7 +19180,7 @@ msgid ""
 " - a zone always present to show information as lyrics, album arts...\n"
 " - minimal mode with limited controls"
 msgstr ""
-"VLVの起動方法:\n"
+"VLCの起動方法:\n"
 "- ノーマルモード\n"
 "- 詩やアルバムアートを常にゾーンに表示\n"
 "- 最小化モード（最低限度の制御）"
@@ -19216,7 +19215,19 @@ msgstr "起動時にエクステンションモジュールを自動的にロー
 msgid "Start in minimal view (without menus)"
 msgstr "最小表示(メニューがない小さな外観)で起動"
 
-#: modules/gui/qt4/qt4.cpp:170
+#: modules/gui/qt4/qt4.cpp:167
+msgid "Ignore keyboard volume buttons."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:169
+msgid ""
+"With this option checked, the volume up, volume down and mute buttons on "
+"your keyboard will always change your system volume. With this option "
+"unchecked, the volume buttons will change VLC's volume when VLC is selected "
+"and change the system volume when VLC is not selected."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:176
 msgid "Qt interface"
 msgstr "Qtインターフェース"
 
@@ -23990,7 +24001,7 @@ msgstr ""
 "デフォルトでは、OSDメニューのピクチャーは200ミリ秒ごとに更新されます。更新間"
 "隔を短くすることは、変換エラーを生じる可能性があります。OSDメニューのエンコー"
 "ディングには非常に多くのCPU能力が必要なため、このオプションの設定は注意してく"
-"ださい。設定可能は値は、0～1000ミリ秒の範囲です。"
+"ださい。設定可能な値は、0～1000ミリ秒の範囲です。"
 
 #: modules/video_filter/osdmenu.c:76 modules/video_filter/remoteosd.c:102
 msgid "Alpha transparency value (default 255)"
@@ -24975,7 +24986,7 @@ msgid ""
 "improve performances by using the most efficient one."
 msgstr ""
 "最適なフォーマットを使用してパフォーマンスの改善を試みるかわりに、特定のクロ"
-"マフォーマットをSDLレンダラーを強制します。"
+"マフォーマットにSDLレンダラーを強制します。"
 
 #: modules/video_output/sdl.c:66
 msgid "Simple DirectMedia Layer video output"
@@ -25148,7 +25159,7 @@ msgstr "YUVフレームを書き込むデバイス、FIFOまたは、ファイ�
 
 #: modules/video_output/yuv.c:48
 msgid "YUV4MPEG2 header (default disabled)"
-msgstr "YUV5MPEG2ヘッダー(デフォルト 無効)"
+msgstr "YUV4MPEG2ヘッダー(デフォルト 無効)"
 
 #: modules/video_output/yuv.c:49
 msgid ""
