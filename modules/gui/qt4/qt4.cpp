@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: f55a6dc9ac2557f13f70f7124462057dd88766d5 $
+ * $Id: 8d8065824bce87b5c00d078ba6732efdd665e9fd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -164,6 +164,12 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
 
 #define QT_MINIMAL_MODE_TEXT N_("Start in minimal view (without menus)" )
 
+#define QT_DISABLE_VOLUME_KEYS_TEXT N_( "Ignore keyboard volume buttons." )
+#define QT_DISABLE_VOLUME_KEYS_LONGTEXT N_(                                             \
+    "With this option checked, the volume up, volume down and mute buttons on your "    \
+    "keyboard will always change your system volume. With this option unchecked, the "  \
+    "volume buttons will change VLC's volume when VLC is selected and change the "      \
+    "system volume when VLC is not selected." )
 /**********************************************************************/
 vlc_module_begin ()
     set_shortname( "Qt" )
@@ -235,6 +241,15 @@ vlc_module_begin ()
     add_bool( "qt-autoload-extensions", true, NULL,
               QT_AUTOLOAD_EXTENSIONS_TEXT, QT_AUTOLOAD_EXTENSIONS_LONGTEXT,
               false )
+
+#ifdef WIN32
+    add_bool( "qt-disable-volume-keys"             /* name */,
+              false                                /* default value */,
+              NULL,
+              QT_DISABLE_VOLUME_KEYS_TEXT          /* text */,
+              QT_DISABLE_VOLUME_KEYS_LONGTEXT      /* longtext */,
+              false                                /* advanced mode only */)
+#endif
 
     add_obsolete_bool( "qt-blingbling" ) /* Suppressed since 1.0.0 */
     add_obsolete_integer( "qt-display-mode" ) /* Suppressed since 1.1.0 */
