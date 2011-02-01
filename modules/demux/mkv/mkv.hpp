@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 1461d4a9cc15330637c236ede24a11efdae68df8 $
+ * $Id: 8e3ec9b9164e838154fb7c6ec801f4b8d4b4ee82 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -119,7 +119,7 @@ extern "C" {
 
 #define MKVD_TIMECODESCALE 1000000
 
-#define MKV_IS_ID( el, C ) ( EbmlId( (*el) ) == C::ClassInfos.GlobalId )
+#define MKV_IS_ID( el, C ) ( el != NULL && typeid( *el ) == typeid( C ) )
 
 
 using namespace LIBMATROSKA_NAMESPACE;

@@ -1,3 +1,30 @@
+Changes between 1.1.6 and 1.1.7:
+--------------------------------
+
+Linux port:
+ * Integration with the KDE GUI platform is disabled due to KDE bugs
+   #234484 and #260719.
+
+Mac OS X port:
+ * Updated live555 library to fix playback of RTSP and Freebox streams
+ * Running VLC in 64bit mode requires Mac OS X 10.6.0 or later for speed
+   and stability reasons
+
+Demuxers:
+ * Fix for Matroska / WebM remote code execution vulnerability.
+   VideoLAN-SA-1102
+
+Translations:
+ * Update for Hebrew, Japanese, Danish and Russian translations
+
+
+Changes between 1.1.6 and 1.1.6.1:
+----------------------------------
+
+Source:
+ * Fix libnotify, lirc, pulse compilation and packaging for Unix/Linux
+
+
 Changes between 1.1.5 and 1.1.6:
 ---------------------------------
 
@@ -14,9 +41,10 @@ Decoders:
  * Support for MPC SV7 and SV8 on Windows and Mac OS X (Unix was already working)
  * Enabled FluidSynth MIDI playback plugin on Mac OS X
  * Faster VP8/Webm decoding with recent codecs libraries
+ * Fix heap corruption in CD+G decoder - CVE-2011-0021 / VideoLAN-SA-1101
 
 Demuxers:
- * Fix Buffer overflow in Real demuxer CVE-2010-3907 / VideoLAN-SA-1007
+ * Fix Buffer overflow in Real demuxer - CVE-2010-3907 / VideoLAN-SA-1007
  * Fix some asf/wmv seeking issues, notably when seek didn't go to a keyframe
  * Support for 24-bits PCM over RTP (audio/L24)
 
@@ -25,7 +53,7 @@ Subtitles and renderer:
  * Mark more freetype options as safe
  * Mac OS X: fixed fontconfig cache creation
  * Fix heap corruption in subtitle decoders, potentially exploitable,
-   discovered by Harry Sintonen - sintonen at iki.fi
+   discovered by Harry Sintonen - sintonen at iki.fi - CVE-2011-0522
 
 Visualization:
  * Fix projectM visualization for Linux in all locales
@@ -36,7 +64,6 @@ Visualization:
 Interfaces:
  * Qt4: fixes for media keys processing and MCE remotes
  * Qt4: various fixes and portability improvements
- * KDE: work-around open dialog first slow opening because of KMimeTypeRepository
 
 Miscellaneous fixes:
  * KDE device solid actions

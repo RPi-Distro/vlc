@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.0\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-01-23 22:10+0100\n"
+"POT-Creation-Date: 2011-01-30 22:05+0100\n"
 "PO-Revision-Date: 2010-01-23 20:55+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -908,15 +908,15 @@ msgstr "Ključ"
 msgid "boolean"
 msgstr "boolova vrednost"
 
-#: src/config/file.c:630 src/libvlc.c:1588
+#: src/config/file.c:630 src/libvlc.c:1595
 msgid "integer"
 msgstr "celo število"
 
-#: src/config/file.c:639 src/libvlc.c:1618
+#: src/config/file.c:639 src/libvlc.c:1625
 msgid "float"
 msgstr "plavajoče"
 
-#: src/config/file.c:662 src/libvlc.c:1566
+#: src/config/file.c:662 src/libvlc.c:1573
 msgid "string"
 msgstr "niz"
 
@@ -1275,7 +1275,7 @@ msgstr "Gibi miške"
 msgid "C"
 msgstr "sl"
 
-#: src/libvlc.c:1115
+#: src/libvlc.c:1122
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
@@ -1283,11 +1283,11 @@ msgstr ""
 "Zagon predvajalnika s privzetim vmesnikom. Uporabite 'cvlc' za zagon brez "
 "vmesnika.'"
 
-#: src/libvlc.c:1239
+#: src/libvlc.c:1246
 msgid "To get exhaustive help, use '-H'."
 msgstr "Za podrobnejšo pomoč, uporabite zastavico '-H'."
 
-#: src/libvlc.c:1243 src/libvlc-module.c:1521
+#: src/libvlc.c:1250 src/libvlc-module.c:1521
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1356,29 +1356,29 @@ msgstr ""
 "  vlc:pause:<seconds>            Zaustavitev predvajanja za določen čas\n"
 "  vlc:quit                       Končaj program\n"
 
-#: src/libvlc.c:1634
+#: src/libvlc.c:1641
 msgid " (default enabled)"
 msgstr " (privzeto omogočeno)"
 
-#: src/libvlc.c:1635
+#: src/libvlc.c:1642
 msgid " (default disabled)"
 msgstr " (privzeto onemogočeno)"
 
-#: src/libvlc.c:1798 src/libvlc.c:1801 src/libvlc.c:1809 src/libvlc.c:1814
+#: src/libvlc.c:1805 src/libvlc.c:1808 src/libvlc.c:1816 src/libvlc.c:1821
 msgid "Note:"
 msgstr "Opomba:"
 
-#: src/libvlc.c:1799 src/libvlc.c:1802
+#: src/libvlc.c:1806 src/libvlc.c:1809
 msgid "add --advanced to your command line to see advanced options."
 msgstr "dodajte --advanced v ukazno vrstico za izpis naprednih možnosti."
 
-#: src/libvlc.c:1810 src/libvlc.c:1815
+#: src/libvlc.c:1817 src/libvlc.c:1822
 #, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
 msgstr "%d enote niso bile prikazane, saj imajo le napredne možnosti.\n"
 
-#: src/libvlc.c:1822 src/libvlc.c:1826
+#: src/libvlc.c:1829 src/libvlc.c:1833
 #, fuzzy
 msgid ""
 "No matching module found. Use --list or --list-verbose to list available "
@@ -1387,22 +1387,22 @@ msgstr ""
 "Ni mogoče najti ustreznik enot. Uporabite --list ali --list-verbose za "
 "podrobni izpis enot, ki so na voljo."
 
-#: src/libvlc.c:1916
+#: src/libvlc.c:1923
 #, fuzzy, c-format
 msgid "VLC version %s (%s)\n"
 msgstr "VLC različica %s\n"
 
-#: src/libvlc.c:1918
+#: src/libvlc.c:1925
 #, fuzzy, c-format
 msgid "Compiled by %s on %s (%s)\n"
 msgstr "Kodno prevedel %s@%s.%s\n"
 
-#: src/libvlc.c:1920
+#: src/libvlc.c:1927
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "Kodni prevajalnik: %s\n"
 
-#: src/libvlc.c:1955
+#: src/libvlc.c:1962
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
@@ -1410,7 +1410,7 @@ msgstr ""
 "\n"
 "Odlaganje vsebine v vlc-help.txt datoteko.\n"
 
-#: src/libvlc.c:1975
+#: src/libvlc.c:1982
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -12682,12 +12682,12 @@ msgstr "Vmesnik HTTP za oddaljeni nadzor"
 msgid "HTTP SSL"
 msgstr "HTTP SSL"
 
-#: modules/control/lirc.c:46
+#: modules/control/lirc.c:47
 #, fuzzy
 msgid "Change the lirc configuration file"
 msgstr "Spremeni lirc nastavitveno datoteko"
 
-#: modules/control/lirc.c:48
+#: modules/control/lirc.c:49
 msgid ""
 "Tell lirc to read this configuration file. By default it searches in the "
 "users home directory."
@@ -12695,11 +12695,11 @@ msgstr ""
 "Lirc naj nastavitve prevzame iz izbrane nastavitvene datoteke. Privzeto išče "
 "nastavitveno datoteko v domači mapi."
 
-#: modules/control/lirc.c:58
+#: modules/control/lirc.c:59
 msgid "Infrared"
 msgstr "Infrardeče"
 
-#: modules/control/lirc.c:61
+#: modules/control/lirc.c:62
 msgid "Infrared remote control interface"
 msgstr "Infrardeči vmesnik za oddaljeni nadzor"
 
@@ -19378,7 +19378,19 @@ msgstr "Samodejno shrani glasnost ob izhodu"
 msgid "Start in minimal view (without menus)"
 msgstr "Zagon v enostavnem pogledu (skriti meniji)."
 
-#: modules/gui/qt4/qt4.cpp:170
+#: modules/gui/qt4/qt4.cpp:167
+msgid "Ignore keyboard volume buttons."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:169
+msgid ""
+"With this option checked, the volume up, volume down and mute buttons on "
+"your keyboard will always change your system volume. With this option "
+"unchecked, the volume buttons will change VLC's volume when VLC is selected "
+"and change the system volume when VLC is not selected."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:176
 msgid "Qt interface"
 msgstr "Vmesnik Qt"
 

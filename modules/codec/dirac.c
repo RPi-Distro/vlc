@@ -7,7 +7,7 @@
  *          ##
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 2d5af1b5e5d9170de856d65c8fdc2e5d21a72769 $
+ * $Id: 5dae97ea899137d0020189b98a1a9558bcddc7d7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  * Rewritten: David Flynn <davidf at rd.bbc.co.uk>
@@ -205,7 +205,7 @@ vlc_module_begin()
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_description( N_("Dirac video encoder using dirac-research library") )
     set_shortname( "Dirac" )
-    set_capability( "encoder", 100 )
+    set_capability( "encoder", 110 )
     set_callbacks( OpenEncoder, CloseEncoder )
 
     add_float( ENC_CFG_PREFIX ENC_QUALITY_FACTOR, 5.5, NULL,

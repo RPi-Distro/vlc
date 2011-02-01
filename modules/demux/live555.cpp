@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: f58541e00403fb49dcce77e31483db1de1f76929 $
+ * $Id: b3f4de163dcba93bbfc97d3228a008eba548fbe1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -1819,7 +1819,8 @@ static void StreamRead( void *p_private, unsigned int i_size,
     }
 
     /* Update our global npt value */
-    if( tk->i_npt > 0 && tk->i_npt > p_sys->i_npt && tk->i_npt < p_sys->i_npt_length)
+    if( tk->i_npt > 0 && tk->i_npt > p_sys->i_npt &&
+        ( tk->i_npt < p_sys->i_npt_length || p_sys->i_npt_length <= 0 ) )
         p_sys->i_npt = tk->i_npt;
 
     if( p_block )
