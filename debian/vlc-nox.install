@@ -30,7 +30,6 @@ usr/lib/vlc/plugins/access/libfilesystem_plugin.so
 usr/lib/vlc/plugins/access/libpvr_plugin.so
 usr/lib/vlc/plugins/access/librtp_plugin.so
 usr/lib/vlc/plugins/access/libv4l2_plugin.so
-usr/lib/vlc/plugins/access/libv4l_plugin.so
 usr/lib/vlc/plugins/access/libvcd_plugin.so
 usr/lib/vlc/plugins/access/libvcdx_plugin.so
 usr/lib/vlc/plugins/access/libzip_plugin.so
