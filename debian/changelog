@@ -1,3 +1,11 @@
+vlc (1.1.7-1ubuntu1) natty; urgency=low
+
+  * Merge from Debian experimental, remaining changes:
+    - build and install the libx264 plugin
+  * v4l is gone from the kernel. Build only v4l2.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 01 Feb 2011 12:35:06 +0100
+
 vlc (1.1.7-1) experimental; urgency=low
 
   * New upstream release.
