@@ -120,7 +120,6 @@ confflags += \
 	--enable-libva \
 	--enable-pvr \
 	--enable-udev \
-	--enable-v4l \
 	--enable-v4l2 \
 	$(NULL)
 endif
