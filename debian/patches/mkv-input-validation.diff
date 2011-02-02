@@ -1,0 +1,17 @@
+Subject: the ID could be OK but the class mismatching
+Author: Steve Lhomme <slhomme@matroska.org>
+Origin: upstream, http://git.videolan.org/gitweb.cgi?p=vlc/vlc-1.1.git;a=commit;h=3101bb7ac8abf56080d943806d666a385c3e9e33
+
+diff --git a/modules/demux/mkv/mkv.hpp b/modules/demux/mkv/mkv.hpp
+index 1461d4a..8e3ec9b 100644
+--- a/modules/demux/mkv/mkv.hpp
++++ b/modules/demux/mkv/mkv.hpp
+@@ -119,7 +119,7 @@ extern "C" {
+ 
+ #define MKVD_TIMECODESCALE 1000000
+ 
+-#define MKV_IS_ID( el, C ) ( EbmlId( (*el) ) == C::ClassInfos.GlobalId )
++#define MKV_IS_ID( el, C ) ( el != NULL && typeid( *el ) == typeid( C ) )
+ 
+ 
+ using namespace LIBMATROSKA_NAMESPACE;
