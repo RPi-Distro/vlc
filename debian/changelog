@@ -1,6 +1,18 @@
+vlc (1.1.3-1squeeze3) UNRELEASED; urgency=high
+
+  * Fix MKV improper input validation 
+    - VideoLAN-SA-1102
+    - thanks to Steve Lhomme
+  * Add CVE reference to previous vulnerability
+  * Set urgency to high
+
+ -- Christophe Mutricy <xtophe@penduick>  Wed, 02 Feb 2011 22:36:57 +0000
+
 vlc (1.1.3-1squeeze2) unstable; urgency=medium
 
-  * Fix heap overflow in CDG decoder - thanks to Dan Rosenberg
+  * Fix heap overflow in CDG decoder
+    - CVE-2011-0021, VideoLAN-SA-1101
+    - thanks to Dan Rosenberg
   * Fix heap corruption in some XML based subtitles decoder - thanks to
     Harry Sintonen
   * Set urgency to medium
