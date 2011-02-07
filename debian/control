@@ -92,7 +92,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                lua5.1,
                nasm,
                pkg-config,
-               xulrunner-dev (>= 1.9.2),
+               xulrunner-dev (>= 1.9.1),
                yasm [amd64 kfreebsd-amd64],
                zlib1g-dev
 Standards-Version: 3.9.1

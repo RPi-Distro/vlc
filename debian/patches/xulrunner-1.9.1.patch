@@ -1,0 +1,54 @@
+Description: Make vlc compatible with xulrunner 1.9.1
+Author: Benjamin Drung <bdrung@debian.org>
+Forwarded: not-needed
+
+--- vlc-1.1.7.orig/configure
++++ vlc-1.1.7/configure
+@@ -47498,9 +47498,9 @@ $as_echo "$as_me: Checking for Mozilla"
+           if test -n "$i"
+           then
+             echo "Trying to find $i package" >&5
+-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $i >= 1.9.2" >&5
+-$as_echo_n "checking for $i >= 1.9.2... " >&6; }
+-            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.2" 2>&5
++            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $i >= 1.9.1" >&5
++$as_echo_n "checking for $i >= 1.9.1... " >&6; }
++            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.1" 2>&5
+             then
+               echo "Using $i pkg-config package." >&5
+               echo "Using $i package." >&6
+@@ -47728,7 +47728,7 @@ fi
+ done
+ test -n "$MOZILLA_CONFIG" || MOZILLA_CONFIG="no"
+ 
+-            test "${MOZILLA_CONFIG}" = "no" && as_fn_error $? "Please install the Mozilla development tools (version 1.9.2 or higher) or use --disable-mozilla." "$LINENO" 5
++            test "${MOZILLA_CONFIG}" = "no" && as_fn_error $? "Please install the Mozilla development tools (version 1.9.1 or higher) or use --disable-mozilla." "$LINENO" 5
+ 
+ 
+ fi
+--- vlc-1.1.7.orig/configure.ac
++++ vlc-1.1.7/configure.ac
+@@ -4554,8 +4554,8 @@ then
+           if test -n "$i"
+           then
+             echo "Trying to find $i package" >&AS_MESSAGE_LOG_FD
+-            AC_MSG_CHECKING([for $i >= 1.9.2])
+-            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.2" 2>&AS_MESSAGE_LOG_FD
++            AC_MSG_CHECKING([for $i >= 1.9.1])
++            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.1" 2>&AS_MESSAGE_LOG_FD
+             then
+               echo "Using $i pkg-config package." >&AS_MESSAGE_LOG_FD
+               echo "Using $i package." >&AS_MESSAGE_FD
+--- vlc-1.1.7.orig/projects/mozilla/vlcplugin.h
++++ vlc-1.1.7/projects/mozilla/vlcplugin.h
+@@ -29,6 +29,10 @@
+ #ifndef __VLCPLUGIN_H__
+ #define __VLCPLUGIN_H__
+ 
++// Changes for compatibility to xulrunner 1.9.1
++#define UTF8Characters utf8characters
++#define UTF8Length utf8length
++
+ #include <vlc/vlc.h>
+ 
+ // Setup XP_MACOSX, XP_UNIX, XP_WIN
