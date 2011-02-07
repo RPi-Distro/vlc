@@ -1,3 +1,10 @@
+vlc (1.1.7-2) unstable; urgency=low
+
+  * Upload to unstable.
+  * Make vlc compatible with xulrunner 1.9.1.
+
+ -- Benjamin Drung <bdrung@debian.org>  Mon, 07 Feb 2011 23:16:02 +0100
+
 vlc (1.1.7-1) experimental; urgency=low
 
   * New upstream release.
