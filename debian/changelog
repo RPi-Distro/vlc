@@ -1,3 +1,13 @@
+vlc (1.1.4-1ubuntu1.4) maverick-security; urgency=low
+
+  * SECURITY UPDATE: memory corruption, code execution (LP: #714089)
+    - debian/patches/mkv-input-validation.diff: Fix MKV improper input
+      validation, thanks to Steve Lhomme
+    - CVE-2011-0531
+    - VideoLAN-SA-1102
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 09 Feb 2011 23:52:19 +0100
+
 vlc (1.1.4-1ubuntu1.3) maverick-security; urgency=low
 
   * SECURITY UPDATE: heap overflow in CDG decoder (LP: #707154)
