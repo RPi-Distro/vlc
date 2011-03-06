@@ -1,8 +1,11 @@
-vlc (1.1.7-3) UNRELEASED; urgency=low
+vlc (1.1.7-3) unstable; urgency=low
 
-  * prepare new upload
+  * adjust debian/source/local-options to team guidelines
+  * Fix building against libmatroska 1.1, Closes: #614088
+  * Add myself to Uploaders.
+  * build against libmatroska 1.1.0
 
- -- Reinhard Tartler <siretart@tauware.de>  Sat, 19 Feb 2011 11:01:19 +0100
+ -- Reinhard Tartler <siretart@tauware.de>  Sun, 06 Mar 2011 11:16:48 +0100
 
 vlc (1.1.7-2) unstable; urgency=low
 
