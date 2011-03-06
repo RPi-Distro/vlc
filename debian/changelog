@@ -1,3 +1,19 @@
+vlc (1.1.7-3) unstable; urgency=low
+
+  * adjust debian/source/local-options to team guidelines
+  * Fix building against libmatroska 1.1, Closes: #614088
+  * Add myself to Uploaders.
+  * build against libmatroska 1.1.0
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sun, 06 Mar 2011 11:16:48 +0100
+
+vlc (1.1.7-2) unstable; urgency=low
+
+  * Upload to unstable.
+  * Make vlc compatible with xulrunner 1.9.1.
+
+ -- Benjamin Drung <bdrung@debian.org>  Mon, 07 Feb 2011 23:16:02 +0100
+
 vlc (1.1.7-1ubuntu1) natty; urgency=low
 
   * Merge from Debian experimental, remaining changes:
