@@ -1,3 +1,12 @@
+vlc (1.1.7-3ubuntu1) natty; urgency=low
+
+  * Merge from Debian unstable, remaining changes:
+    - build and install the libx264 plugin
+    - v4l is gone from the kernel. Build only v4l2.
+  * Disable xulrunner 1.9.1 patch.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 06 Mar 2011 13:01:24 +0100
+
 vlc (1.1.7-3) unstable; urgency=low
 
   * adjust debian/source/local-options to team guidelines
