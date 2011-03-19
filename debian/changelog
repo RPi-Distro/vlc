@@ -1,3 +1,9 @@
+vlc (1.1.7-4) unstable; urgency=low
+
+  * v4l is gone from the linux 2.6.38 kernel. Build only v4l2.
+
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 19 Mar 2011 22:29:04 +0100
+
 vlc (1.1.7-3) unstable; urgency=low
 
   * adjust debian/source/local-options to team guidelines
