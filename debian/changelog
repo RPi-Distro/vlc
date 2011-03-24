@@ -1,3 +1,12 @@
+vlc (1.1.8-1) unstable; urgency=low
+
+  * New upstream release.
+    - Fix a busy loop and socket leak in lua (Closes: #607869).
+  * Refresh xulrunner patch.
+  * Drop backported libmatroska 1.1 patch.
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 24 Mar 2011 14:14:36 +0100
+
 vlc (1.1.7-4) unstable; urgency=low
 
   * v4l is gone from the linux 2.6.38 kernel. Build only v4l2.
