@@ -181,17 +181,14 @@ while not vlc.misc.should_die() do
 
     -- Handle reads
     for _, client in pairs(r) do
-        local str = client.cmds .. client:recv(1000)
+        local str = client:recv(1000)
 
-        if not str then -- the telnet client program has leave
-            client.cmds = "quit"
-        elseif string.match(str,"\n") then
-            client.cmds = str
-        elseif client.buffer == ""
-           and ((client.type == host.client_type.stdio and str == "")
-           or  (client.type == host.client_type.net and str == "\004")) then
+        if not str or str == "" -- the telnet client program has left
+           or  (client.type == host.client_type.net and str == "\004") then
             -- Caught a ^D
-            client.cmds = "quit"
+            client.cmds = "quit\n"
+        else
+            client.cmds = client.cmds .. str
         end
 
         client.buffer = ""
@@ -216,6 +213,8 @@ while not vlc.misc.should_die() do
                     client:send( IAC..WONT..ECHO.."\r\nWelcome, Master\r\n" )
                     client.buffer = ""
                     client:switch_status( host.status.write )
+                elseif client.buffer == "quit" then
+                    client_command( client )
                 else
                     client:send( "\r\nWrong password\r\nPassword: " )
                     client.buffer = ""

@@ -66,6 +66,10 @@ module("host",package.seeall)
 status = { init = 0, read = 1, write = 2, password = 3 }
 client_type = { net = 1, stdio = 2, fifo = 3 }
 
+function is_flag_set(val, flag)
+    return (((val - (val % flag)) / flag) % 2 ~= 0)
+end
+
 function host()
     -- private data
     local clients = {}
@@ -235,7 +239,6 @@ function host()
         filter_client( pollfds, status.read, vlc.net.POLLIN )
         filter_client( pollfds, status.password, vlc.net.POLLIN )
         filter_client( pollfds, status.write, vlc.net.POLLOUT )
-
         if listeners.tcp then
             for _, listener in pairs(listeners.tcp.list) do
                 for _, fd in pairs({listener:fds()}) do
@@ -249,18 +252,20 @@ function host()
         local rclients = {}
         if ret > 0 then
             for _, client in pairs(clients) do
-                if pollfds[client:fd()] == vlc.net.POLLOUT then
+                if is_flag_set(pollfds[client:fd()], vlc.net.POLLERR)
+                or is_flag_set(pollfds[client:fd()], vlc.net.POLLHUP)
+                or is_flag_set(pollfds[client:fd()], vlc.net.POLLNVAL) then
+                    del_client(client)
+                elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLOUT) then
                     table.insert(wclients,client)
-                elseif pollfds[client:fd()] == vlc.net.POLLIN then
+                elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLIN) then
                     table.insert(rclients,client)
-                else
-                    del_client( client )
                 end
             end
             if listeners.tcp then
                 for _, listener in pairs(listeners.tcp.list) do
                     for _, fd in pairs({listener:fds()}) do
-                        if pollfds[fd] == vlc.net.POLLIN then
+                        if is_flag_set(pollfds[fd], vlc.net.POLLIN) then
                             local afd = listener:accept()
                             new_client( h, afd, afd, client_type.net )
                             break

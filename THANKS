@@ -34,6 +34,7 @@ Andrew Flintham <amf@cus.org.uk> - Text subtitler and font scripts
 Andrew Zaikin <andrew dot zaikin at gmail dot com> - Config saving fixes
 Andrey Brilevskiy <director at macwest.ru> - Russian translation
 Andrey Wolk <andywolk at  gmail . com> - Russian translation
+Andri Pálsson - Icelandic translation
 Andy Lindsay <andy_vl at ananam.com> - fixes in the TS demux
 Anh Phan <ppanhh at gmail d0t com> - Vietnamese translation
 Animesh Swar <animesh_swar@hotmail.co.uk> - Nepalese translation
@@ -82,6 +83,7 @@ Colin Simmonds <colin_simmonds at Mac.lover.org> - compile fix for Mac OS X
 Cristian Secară <cristi at secarica dot ro> - Romanian l10n
 Cyril Mathé <cmathe at actech-innovation dot com> - WebPlugin features and improvements
 Damian Ivereigh <damian at cisco.com> - ac3dec uninitialized data structure fix
+Damien Erambert <damien dot erambert at me dot com> - Mac OS X button graphics (v1.1.8)
 Daniel Dreibrodt, aka aLtgLasS <daniel d.t dreibrodt -@t- gmx d0t de> - VLC 0.8.5 default skin, skins, design and help on the forum and the wiki
 Daniel Fischer <dan at subsignal dot org> - Shoutcast output support
 Daniel Nylander <info @t danielnylander at se> - Swedish translation
@@ -96,6 +98,7 @@ David Thiel - security audit and report
 David Weber <david_weber at gmx.de> - Mac OS X interface design & graphics (v0.5.0)
 Davor Orel <syntheticamac at yahoo.it> - Mac OS X icons
 Dean Lee <xslidian at gmail dot com> - Chinese translation
+Denis Arnaud - Breton translation
 Dennis Lou <dlou99 at yahoo dot com> - ATSC support in the DVB module, MPEG2 support in the v4l2 module
 Dennis Perov - Hardware donation
 Dennis van Amerongen <Dennis dot vanAmerongen at nob dot nl> - x264 options unification
@@ -184,6 +187,7 @@ Jonas Larsen <jonas at vrt.dk> - Danish translation
 Jörg <vlc-ml at aab.noctis dot de> - VLM seek/show media functions
 Joseph Tulou <brezhoneg1 at yahoo.fr> - small dc1394 patch, image demuxer
 Jouni Kähkönen - Finnish translation
+Juha Jeronen - Finnish translation
 Julien Blache <jb at technologeek.org> - disc ejection code
 Julien Bouquillon <julien -- bouquillon ## com> - Forum support and a VLC JS library
 Julien Plissonneau Duquène - JACK audio input module 

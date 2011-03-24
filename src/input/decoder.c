@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 127376144f28834bc46c891c80be71359aaeacf6 $
+ * $Id: 15b377ac0e98d91e4963120a386af0a5490f9c6c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1600,6 +1600,7 @@ static void DecoderPlaySpu( decoder_t *p_dec, subpicture_t *p_subpic,
     }
 }
 
+#ifdef ENABLE_SOUT
 static void DecoderPlaySout( decoder_t *p_dec, block_t *p_sout_block,
                              bool b_telx )
 {
@@ -1670,6 +1671,7 @@ static void DecoderPlaySout( decoder_t *p_dec, block_t *p_sout_block,
         }
     }
 }
+#endif
 
 /* */
 static void DecoderFlushBuffering( decoder_t *p_dec )
@@ -1728,6 +1730,7 @@ static void DecoderFlushBuffering( decoder_t *p_dec )
     }
 }
 
+#ifdef ENABLE_SOUT
 /* This function process a block for sout
  */
 static void DecoderProcessSout( decoder_t *p_dec, block_t *p_block )
@@ -1784,6 +1787,7 @@ static void DecoderProcessSout( decoder_t *p_dec, block_t *p_block )
         }
     }
 }
+#endif
 
 /* This function process a video block
  */

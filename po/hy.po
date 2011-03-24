@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-01-30 22:05+0100\n"
+"POT-Creation-Date: 2011-03-23 01:33+0100\n"
 "PO-Revision-Date: 2010-09-21 15:58+0400\n"
 "Last-Translator: Eduard Babayan <edo248@gmail.com>\n"
 "Language-Team: VLC Armenian <edo248@gmail.com>\n"
-"Language: \n"
+"Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -67,7 +67,7 @@ msgstr "Գլխավոր ինտերֆեյսներ"
 msgid "Settings for the main interface"
 msgstr "Պարամետրեր համար հիմնական ինտերֆեյսի"
 
-#: include/vlc_config_cat.h:45 src/libvlc-module.c:191
+#: include/vlc_config_cat.h:45 src/libvlc-module.c:193
 msgid "Control interfaces"
 msgstr "Ղեկավարման ինտերֆեյսներ"
 
@@ -82,7 +82,7 @@ msgid "Hotkeys settings"
 msgstr "Կոճակների կարգավորումներ"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2870 src/input/es_out.c:2911
-#: src/libvlc-module.c:1573 modules/access/imem.c:69
+#: src/libvlc-module.c:1575 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
 #: modules/gui/macosx/wizard.m:380
@@ -129,7 +129,7 @@ msgstr "Ելքային մոդուլներ"
 msgid "General settings for audio output modules."
 msgstr "Ձայնի ելքի մոդուլների ընդհանուր ղեկավարում"
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2049
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2051
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Տարբեր"
@@ -139,7 +139,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "Տարբեր ձայնային կարգավորումներ եւ մոդուլներ"
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2873 src/input/es_out.c:2958
-#: src/libvlc-module.c:1626 modules/access/imem.c:69
+#: src/libvlc-module.c:1628 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
 #: modules/gui/macosx/wizard.m:381
@@ -264,7 +264,7 @@ msgstr "Ընդհանուր մուտք"
 msgid "General input settings. Use with care..."
 msgstr "Մուտքի կարգավորումներ. Օգտագործեք զգուշությամբ..."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1969
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1971
 msgid "Stream output"
 msgstr "Ելքի Հոսք"
 
@@ -384,7 +384,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "VLC ի իրականացման Վիդեո պահանջով`"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2111
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2113
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -421,7 +421,7 @@ msgstr ""
 "Ծառայությունների հայտնաբերման մոդուլները ավտոմատ կերպով ավելացնում են տարրե "
 "երգացանկում."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1916
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1918
 msgid "Advanced"
 msgstr "Ընդլայնված "
 
@@ -649,7 +649,7 @@ msgstr "Կրկնել Մեկը"
 msgid "No Repeat"
 msgstr "Չկրկնել"
 
-#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1465
+#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1467
 #: modules/gui/macosx/controls.m:1038 modules/gui/macosx/intf.m:654
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:119
@@ -859,7 +859,7 @@ msgid "The maximum number of filters (%d) was reached."
 msgstr "առավելագույն թիվը շուտով ֆիլտրերը (%d) ձեռք է բերվել."
 
 #: src/audio_output/input.c:110 src/audio_output/input.c:156
-#: src/input/es_out.c:934 src/libvlc-module.c:659
+#: src/input/es_out.c:934 src/libvlc-module.c:661
 #: src/video_output/video_output.c:1698 modules/video_filter/postproc.c:230
 msgid "Disable"
 msgstr "Անջատել"
@@ -886,7 +886,7 @@ msgstr "Vu Չափիչ"
 msgid "Equalizer"
 msgstr "Էկվալայզեր"
 
-#: src/audio_output/input.c:175 src/libvlc-module.c:324
+#: src/audio_output/input.c:175 src/libvlc-module.c:326
 msgid "Audio filters"
 msgstr "Ձայնի զտիչներ"
 
@@ -912,7 +912,7 @@ msgid "Stereo"
 msgstr "Ստերեո"
 
 #: src/audio_output/output.c:106 src/audio_output/output.c:142
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
@@ -926,7 +926,7 @@ msgid "Left"
 msgstr "Ձախ"
 
 #: src/audio_output/output.c:108 src/audio_output/output.c:144
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
@@ -1016,7 +1016,7 @@ msgstr ""
 "VLC չի պաշտպանում է աուդիո կամ վիդեո ֆորմատով \"% 4.4s  \". Ցավոք կա, ոչ մի "
 "կերպ համար Ձեզ սա վերանորոգել\"."
 
-#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:362
+#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:364
 #: modules/access/vcdx/access.c:460 modules/access/vcdx/info.c:226
 #: modules/gui/qt4/components/open_panels.cpp:402
 msgid "Track"
@@ -1028,7 +1028,7 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1165 src/input/es_out.c:1170 src/input/var.c:177
-#: src/libvlc-module.c:692 modules/gui/macosx/intf.m:661
+#: src/libvlc-module.c:694 modules/gui/macosx/intf.m:661
 #: modules/gui/macosx/intf.m:662
 msgid "Program"
 msgstr "Ծրագիր"
@@ -1072,7 +1072,7 @@ msgstr "բնօրինակը ID-ն"
 msgid "Codec"
 msgstr "Կոդեկ"
 
-#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:218
+#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:220
 #: modules/access/imem.c:76 modules/gui/macosx/simple_prefs.m:269
 #: modules/gui/qt4/ui/sprefs_interface.h:386
 msgid "Language"
@@ -1142,23 +1142,23 @@ msgstr "Ցույց տալ բանաձեւ"
 msgid "Frame rate"
 msgstr "Կադրերի արագութուն"
 
-#: src/input/input.c:2488
+#: src/input/input.c:2496
 msgid "Your input can't be opened"
 msgstr "Ձեր գրածը չի կարող բացվել"
 
-#: src/input/input.c:2489
+#: src/input/input.c:2497
 #, fuzzy, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 "VLC չի կարողանում բացել MRL '%s'. Ստուգեք տեղեկամատյանում Մանրամասների համար"
 "\"."
 
-#: src/input/input.c:2608
+#: src/input/input.c:2617
 #, fuzzy
 msgid "VLC can't recognize the input's format"
 msgstr "VLC չի կարող ճանաչել մուտքագրման ի ֆորմատ"
 
-#: src/input/input.c:2609
+#: src/input/input.c:2618
 #, fuzzy, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -1187,7 +1187,7 @@ msgstr "Ոճ"
 msgid "Copyright"
 msgstr "Հեղինակային իրավունք"
 
-#: src/input/meta.c:55 src/libvlc-module.c:362 modules/access/vcdx/info.c:63
+#: src/input/meta.c:55 src/libvlc-module.c:364 modules/access/vcdx/info.c:63
 msgid "Album"
 msgstr "Ալբոմ"
 
@@ -1212,7 +1212,7 @@ msgstr "Կարգավորումը"
 msgid "URL"
 msgstr "URL"
 
-#: src/input/meta.c:63 modules/misc/notify/notify.c:314
+#: src/input/meta.c:63 modules/misc/notify/notify.c:318
 msgid "Now Playing"
 msgstr "Ընթացիկ"
 
@@ -1237,7 +1237,7 @@ msgstr "Հետեւել ID-ն"
 msgid "Bookmark"
 msgstr "Էջանիշ"
 
-#: src/input/var.c:182 src/libvlc-module.c:698
+#: src/input/var.c:182 src/libvlc-module.c:700
 msgid "Programs"
 msgstr "Ծրագրեր"
 
@@ -1347,7 +1347,7 @@ msgstr ""
 msgid "To get exhaustive help, use '-H'."
 msgstr "ստանալու սպառիչ օգնության, օգտվել '-H\" \"."
 
-#: src/libvlc.c:1250 src/libvlc-module.c:1521
+#: src/libvlc.c:1250 src/libvlc-module.c:1523
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1482,33 +1482,33 @@ msgstr ""
 "\n"
 " Սեղմեք ՎԵՐԱԴԱՐՁԸ բանալին շարունակել ... \n"
 
-#: src/libvlc.h:175 src/libvlc-module.c:1468 src/libvlc-module.c:1469
-#: src/libvlc-module.c:2645 src/video_output/vout_intf.c:195
+#: src/libvlc.h:175 src/libvlc-module.c:1470 src/libvlc-module.c:1471
+#: src/libvlc-module.c:2647 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Խոշորացում"
 
-#: src/libvlc.h:176 src/libvlc-module.c:1388 src/video_output/vout_intf.c:88
+#: src/libvlc.h:176 src/libvlc-module.c:1390 src/video_output/vout_intf.c:88
 msgid "1:4 Quarter"
 msgstr "1:4 Քառորդ"
 
-#: src/libvlc.h:177 src/libvlc-module.c:1389 src/video_output/vout_intf.c:89
+#: src/libvlc.h:177 src/libvlc-module.c:1391 src/video_output/vout_intf.c:89
 msgid "1:2 Half"
 msgstr "1:2 Կեսը"
 
-#: src/libvlc.h:178 src/libvlc-module.c:1390 src/video_output/vout_intf.c:90
+#: src/libvlc.h:178 src/libvlc-module.c:1392 src/video_output/vout_intf.c:90
 msgid "1:1 Original"
 msgstr "1:1 Օրիգինալ"
 
-#: src/libvlc.h:179 src/libvlc-module.c:1391 src/video_output/vout_intf.c:91
+#: src/libvlc.h:179 src/libvlc-module.c:1393 src/video_output/vout_intf.c:91
 msgid "2:1 Double"
 msgstr "2:1 Կրկնակի"
 
-#: src/libvlc-module.c:104 src/libvlc-module.c:321 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:105 src/libvlc-module.c:323 modules/access/bda/bda.c:69
 #: modules/gui/qt4/components/open_panels.cpp:997
 msgid "Auto"
 msgstr "Ավտոմատ"
 
-#: src/libvlc-module.c:174
+#: src/libvlc-module.c:176
 #, fuzzy
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
@@ -1519,12 +1519,12 @@ msgstr ""
 "VLC. Դուք կարող եք ընտրել հիմնական ինտերֆեյս, լրացուցիչ ինտերֆեյսի "
 "մոդուլներ, եւ սահմանում է տարբեր առնչվող ընտրանքներ\"."
 
-#: src/libvlc-module.c:178
+#: src/libvlc-module.c:180
 #, fuzzy
 msgid "Interface module"
 msgstr "Ինտերֆեյս մոդուլը"
 
-#: src/libvlc-module.c:180
+#: src/libvlc-module.c:182
 #, fuzzy
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
@@ -1533,12 +1533,12 @@ msgstr ""
 "Սա է հիմնական միջերեսը օգտագործում է VLC. Լռությամբ վարքն է ավտոմատ կերպով "
 "ընտրել լավագույն մոդուլի հասանելի."
 
-#: src/libvlc-module.c:184 modules/control/ntservice.c:57
+#: src/libvlc-module.c:186 modules/control/ntservice.c:57
 #, fuzzy
 msgid "Extra interface modules"
 msgstr "Էքստրա ինտերֆեյսի մոդուլներ"
 
-#: src/libvlc-module.c:186
+#: src/libvlc-module.c:188
 #, fuzzy
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
@@ -1551,16 +1551,16 @@ msgstr ""
 "ինտերֆեյսի modules. (Ընդհանուր արժեքներն են \" rc  \"(հեռավոր հսկողության),  "
 "\"http \",  \"շարժումները \" ...)"
 
-#: src/libvlc-module.c:193
+#: src/libvlc-module.c:195
 #, fuzzy
 msgid "You can select control interfaces for VLC."
 msgstr "Դուք կարող եք ընտրել վերահսկման ինտերֆեյս համար VLC\"."
 
-#: src/libvlc-module.c:195
+#: src/libvlc-module.c:197
 msgid "Verbosity (0,1,2)"
 msgstr "Մանրամասնեցում (0,1,2)"
 
-#: src/libvlc-module.c:197
+#: src/libvlc-module.c:199
 #, fuzzy
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
@@ -1569,12 +1569,12 @@ msgstr ""
 "Սա է շատախոսություն մակարդակը (0 = միայն սխալների եւ ստանդարտ "
 "հաղորդագրությունները, 1 = զգուշացումները, 2 = debug)."
 
-#: src/libvlc-module.c:200
+#: src/libvlc-module.c:202
 #, fuzzy
 msgid "Choose which objects should print debug message"
 msgstr "Ընտրեք, որը օբյեկտները պետք է տպել debug հաղորդագրություն"
 
-#: src/libvlc-module.c:203
+#: src/libvlc-module.c:205
 #, fuzzy
 msgid ""
 "This is a ',' separated string, each objects should be prefixed by a '+' or "
@@ -1591,25 +1591,25 @@ msgstr ""
 "կանոնները դիմելով օբյեկտի տեսակների. Նկատի ունեցեք, որ դուք դեռ պետք է "
 "օգտագործենք-vvv իրականում ցուցադրելու debug հաղորդագրություն."
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:212
 #, fuzzy
 msgid "Be quiet"
 msgstr "Եղեք հանգիստ է"
 
-#: src/libvlc-module.c:212
+#: src/libvlc-module.c:214
 msgid "Turn off all warning and information messages."
 msgstr "Անջատեք բոլոր զգուշացումները եւ հաղորդագրությունները"
 
-#: src/libvlc-module.c:214
+#: src/libvlc-module.c:216
 msgid "Default stream"
 msgstr "Հիմնական հոսք"
 
-#: src/libvlc-module.c:216
+#: src/libvlc-module.c:218
 #, fuzzy
 msgid "This stream will always be opened at VLC startup."
 msgstr "Այս առու միշտ կլինի բացել է VLC նորաստեղծ."
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:221
 #, fuzzy
 msgid ""
 "You can manually select a language for the interface. The system language is "
@@ -1618,11 +1618,11 @@ msgstr ""
 "Դուք կարող եք ձեռքով ընտրել լեզուն միջերեսի. Համակարգը լեզուն է auto-"
 "հայտնաբերվել, եթե \" auto  \"հատուկ նշվում է այստեղ."
 
-#: src/libvlc-module.c:223
+#: src/libvlc-module.c:225
 msgid "Color messages"
 msgstr "Գունավորել հաղորդագրությունները"
 
-#: src/libvlc-module.c:225
+#: src/libvlc-module.c:227
 #, fuzzy
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
@@ -1632,11 +1632,11 @@ msgstr ""
 "է մխիթարել Ձեր տերմինալի անհրաժեշտ Linux գույնը աջակցությունը այս աշխատելու"
 "\"."
 
-#: src/libvlc-module.c:228
+#: src/libvlc-module.c:230
 msgid "Show advanced options"
 msgstr "Ցույց տալ ընդլայնված ընտրանքներ"
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:232
 #, fuzzy
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
@@ -1646,12 +1646,12 @@ msgstr ""
 "տարբերակներ, այդ թվում, նրանք, որոնք առավել օգտվողները երբեք չպետք է դիպչել"
 "\"."
 
-#: src/libvlc-module.c:234
+#: src/libvlc-module.c:236
 #, fuzzy
 msgid "Interface interaction"
 msgstr "Ինտերֆեյս փոխազդեցություն"
 
-#: src/libvlc-module.c:236
+#: src/libvlc-module.c:238
 #, fuzzy
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
@@ -1660,7 +1660,7 @@ msgstr ""
 "Երբ միացված է միջադեմի ցույց կտա պատուհան տուփ յուրաքանչյուր անգամ, երբ որոշ "
 "Օգտվողի ներդրում է պահանջվում."
 
-#: src/libvlc-module.c:246
+#: src/libvlc-module.c:248
 #, fuzzy
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
@@ -1673,12 +1673,12 @@ msgstr ""
 "մշակման կամ վիզուալ էֆեկտներ (սպեկտրի վերլուծիչ, եւ այլն). Թույլատրել այս "
 "ֆիլտրերի այստեղ, եւ կարգավորել դրանք  \"աուդիո ֆիլտրերի \" modules բաժինը."
 
-#: src/libvlc-module.c:252
+#: src/libvlc-module.c:254
 #, fuzzy
 msgid "Audio output module"
 msgstr "Ձայնային ելքային մոդուլը"
 
-#: src/libvlc-module.c:254
+#: src/libvlc-module.c:256
 #, fuzzy
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
@@ -1687,12 +1687,12 @@ msgstr ""
 "Սա է աուդիո արտադրությունը եղանակը օգտագործվում է VLC. Լռությամբ վարքն է "
 "ավտոմատ կերպով ընտրել լավագույն եղանակը հասանելի."
 
-#: src/libvlc-module.c:258 modules/stream_out/display.c:41
+#: src/libvlc-module.c:260 modules/stream_out/display.c:41
 #: modules/gui/qt4/ui/sprefs_audio.h:404
 msgid "Enable audio"
 msgstr "Միացնել ձայնը"
 
-#: src/libvlc-module.c:260
+#: src/libvlc-module.c:262
 #, fuzzy
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
@@ -1701,33 +1701,33 @@ msgstr ""
 "Դուք կարող եք լիովին անջատել աուդիո տողը. Ձայնային ապակոդավորման փուլը տեղի "
 "չի ունենա, այսպիսով փրկարար որոշ մշակման իշխանություն\"."
 
-#: src/libvlc-module.c:264
+#: src/libvlc-module.c:266
 #, fuzzy
 msgid "Force mono audio"
 msgstr "Force մոնո աուդիո"
 
-#: src/libvlc-module.c:265
+#: src/libvlc-module.c:267
 #, fuzzy
 msgid "This will force a mono audio output."
 msgstr "Սա ստիպում է մոնո ձայն տողը."
 
-#: src/libvlc-module.c:268
+#: src/libvlc-module.c:270
 msgid "Default audio volume"
 msgstr "Լռությամբ ձայնի բարձրությունը"
 
-#: src/libvlc-module.c:270
+#: src/libvlc-module.c:272
 #, fuzzy
 msgid ""
 "You can set the default audio output volume here, in a range from 0 to 1024."
 msgstr ""
 "Դուք կարող եք սահմանել հիմնական աուդիո ելքը ձայնը այստեղ, մի շարք ից 0 1024."
 
-#: src/libvlc-module.c:273
+#: src/libvlc-module.c:275
 #, fuzzy
 msgid "Audio output saved volume"
 msgstr "Ձայնի ելքը պահված ձայնը`"
 
-#: src/libvlc-module.c:275
+#: src/libvlc-module.c:277
 #, fuzzy
 msgid ""
 "This saves the audio output volume when you use the mute function. You "
@@ -1736,12 +1736,12 @@ msgstr ""
 "Այս պահպանում է աուդիո ելքը ձայնը, երբ դուք օգտագործում է համր ֆունկցիան. "
 "Դուք պետք չէ փոխել այս տարբերակը ձեռքով\"."
 
-#: src/libvlc-module.c:278
+#: src/libvlc-module.c:280
 #, fuzzy
 msgid "Audio output volume step"
 msgstr "Ձայնի ելքը ձայնը քայլ"
 
-#: src/libvlc-module.c:280
+#: src/libvlc-module.c:282
 #, fuzzy
 msgid ""
 "The step size of the volume is adjustable using this option, in a range from "
@@ -1749,12 +1749,12 @@ msgid ""
 msgstr ""
 "քայլի չափը ձայնը է շարժական օգտագործում այս տարբերակը, մի շարք ից 0 1024."
 
-#: src/libvlc-module.c:283
+#: src/libvlc-module.c:285
 #, fuzzy
 msgid "Audio output frequency (Hz)"
 msgstr "Ձայնի ելքը հաճախականության (Հց)"
 
-#: src/libvlc-module.c:285
+#: src/libvlc-module.c:287
 #, fuzzy
 msgid ""
 "You can force the audio output frequency here. Common values are -1 "
@@ -1763,12 +1763,12 @@ msgstr ""
 "Դուք կարող եք սահմանել է աուդիո տողը հաճախականությամբ այստեղ. Ընդհանուր "
 "արժեքներ են -1 (նախնական), 48000, 44100, 32000, 22050, 16000, 11025, 8000."
 
-#: src/libvlc-module.c:289
+#: src/libvlc-module.c:291
 #, fuzzy
 msgid "High quality audio resampling"
 msgstr "Բարձր որակի ձայնային resampling"
 
-#: src/libvlc-module.c:291
+#: src/libvlc-module.c:293
 #, fuzzy
 msgid ""
 "This uses a high quality audio resampling algorithm. High quality audio "
@@ -1779,12 +1779,12 @@ msgstr ""
 "resampling կարող մշակողը ինտենսիվ այնպես որ Դուք կարող եք անջատել այն եւ "
 "ավելի էժան resampling ալգորիթմը կօգտագործվի փոխարեն."
 
-#: src/libvlc-module.c:296
+#: src/libvlc-module.c:298
 #, fuzzy
 msgid "Audio desynchronization compensation"
 msgstr "Ձայնային desynchronization փոխհատուցում`"
 
-#: src/libvlc-module.c:298
+#: src/libvlc-module.c:300
 #, fuzzy
 msgid ""
 "This delays the audio output. The delay must be given in milliseconds. This "
@@ -1793,12 +1793,12 @@ msgstr ""
 "Այս ձգձգում է աուդիո տողը. Հետաձգումը պետք է տրվի միլիվարկյաններով. Սա "
 "կարելի է հարմար, եթե դուք նկատում է lag միջեւ վիդեո եւ աուդիո\"."
 
-#: src/libvlc-module.c:301
+#: src/libvlc-module.c:303
 #, fuzzy
 msgid "Audio output channels mode"
 msgstr "Ձայնի ելքը կանալների ռեժիմ`"
 
-#: src/libvlc-module.c:303
+#: src/libvlc-module.c:305
 #, fuzzy
 msgid ""
 "This sets the audio output channels mode that will be used by default when "
@@ -1809,13 +1809,13 @@ msgstr ""
 "ըստ լռելյայն, երբ հնարավոր է (ie., եթե Ձեր համակարգիչը պաշտպանում է այն, "
 "ինչպես նաեւ ձայնային հոսքի են խաղացել)."
 
-#: src/libvlc-module.c:307 modules/gui/macosx/simple_prefs.m:237
+#: src/libvlc-module.c:309 modules/gui/macosx/simple_prefs.m:237
 #: modules/gui/qt4/ui/sprefs_audio.h:413
 #, fuzzy
 msgid "Use S/PDIF when available"
 msgstr "Օգտագործել S / PDIF, երբ մատչելի է`"
 
-#: src/libvlc-module.c:309
+#: src/libvlc-module.c:311
 #, fuzzy
 msgid ""
 "S/PDIF can be used by default when your hardware supports it as well as the "
@@ -1824,12 +1824,12 @@ msgstr ""
 "Ս / PDIF կարող են օգտագործվել լռությամբ երբ ձեր համակարգիչը պաշտպանում է "
 "այն, ինչպես նաեւ ձայնային հոսքի են խաղում\"."
 
-#: src/libvlc-module.c:312 modules/gui/macosx/simple_prefs.m:227
+#: src/libvlc-module.c:314 modules/gui/macosx/simple_prefs.m:227
 #, fuzzy
 msgid "Force detection of Dolby Surround"
 msgstr "սահմանել բացահայտման Dolby շրջապատել"
 
-#: src/libvlc-module.c:314
+#: src/libvlc-module.c:316
 #, fuzzy
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
@@ -1842,47 +1842,47 @@ msgstr ""
 "չէ իրականում կոդավորված հետ Dolby շրջապատել, կվերածվի այս տարբերակը կարող է "
 "բարձրացնել ձեր փորձը, հատկապես, երբ համատեղել հետ Ականջակալ կանալ խառնիչ \"."
 
-#: src/libvlc-module.c:321 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:323 modules/access/bda/bda.c:69
 msgid "On"
 msgstr "Միացնել"
 
-#: src/libvlc-module.c:321 modules/access/bda/bda.c:68
+#: src/libvlc-module.c:323 modules/access/bda/bda.c:68
 msgid "Off"
 msgstr "Անջատել"
 
-#: src/libvlc-module.c:326
+#: src/libvlc-module.c:328
 #, fuzzy
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
 "Այս հավելում է աուդիո հաղորդագրություն վերամշակման ֆիլտրերը, փոփոխել ձայնի "
 "մատուցում է\"."
 
-#: src/libvlc-module.c:329
+#: src/libvlc-module.c:331
 #, fuzzy
 msgid "Audio visualizations "
 msgstr "Ձայնային Վիզուալիզացիաներ"
 
-#: src/libvlc-module.c:331
+#: src/libvlc-module.c:333
 #, fuzzy
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr "Այս հավելում Վիզուալիզացիայի modules (սպեկտրի վերլուծիչ, եւ այլն)."
 
-#: src/libvlc-module.c:335
+#: src/libvlc-module.c:337
 #, fuzzy
 msgid "Replay gain mode"
 msgstr "Replay ուժեղացում ռեժիմ`"
 
-#: src/libvlc-module.c:337
+#: src/libvlc-module.c:339
 #, fuzzy
 msgid "Select the replay gain mode"
 msgstr "Ընտրեք replay ուժեղացում ռեժիմը"
 
-#: src/libvlc-module.c:339
+#: src/libvlc-module.c:341
 #, fuzzy
 msgid "Replay preamp"
 msgstr "Replay preamp"
 
-#: src/libvlc-module.c:341
+#: src/libvlc-module.c:343
 #, fuzzy
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
@@ -1891,33 +1891,33 @@ msgstr ""
 "Սա թույլ է տալիս փոխել հիմնական նպատակային մակարդակը (89 DB) համար հոսքի հետ "
 "replay ստանալ տեղեկություններ"
 
-#: src/libvlc-module.c:344
+#: src/libvlc-module.c:346
 #, fuzzy
 msgid "Default replay gain"
 msgstr "Լռությամբ replay ուժեղացում`"
 
-#: src/libvlc-module.c:346
+#: src/libvlc-module.c:348
 #, fuzzy
 msgid "This is the gain used for stream without replay gain information"
 msgstr ""
 "Սա է ուժեղացում օգտագործվում է հոսքային առանց replay ստանալ տեղեկություններ"
 
-#: src/libvlc-module.c:348
+#: src/libvlc-module.c:350
 #, fuzzy
 msgid "Peak protection"
 msgstr "Պիկ պաշտպանություն"
 
-#: src/libvlc-module.c:350
+#: src/libvlc-module.c:352
 #, fuzzy
 msgid "Protect against sound clipping"
 msgstr "Protect դեմ հնչուն clipping"
 
-#: src/libvlc-module.c:353
+#: src/libvlc-module.c:355
 #, fuzzy
 msgid "Enable time streching audio"
 msgstr "Միացնել անգամ streching աուդիո"
 
-#: src/libvlc-module.c:355
+#: src/libvlc-module.c:357
 #, fuzzy
 msgid ""
 "This allows to play audio at lower or higher speed without affecting the "
@@ -1926,14 +1926,14 @@ msgstr ""
 "Սա թույլ է տրվում - թույլատրված է տալիս խաղալ աուդիո ավելի ցածր կամ ավելի "
 "բարձր արագությամբ, առանց վրա ազդող աուդիո շինել"
 
-#: src/libvlc-module.c:362 modules/access/dshow/dshow.cpp:82
-#: modules/access/dshow/dshow.cpp:84 modules/codec/avcodec/avcodec.c:74
+#: src/libvlc-module.c:364 modules/access/dshow/dshow.cpp:84
+#: modules/access/dshow/dshow.cpp:86 modules/codec/avcodec/avcodec.c:74
 #: modules/codec/kate.c:203
 #: modules/gui/qt4/components/interface_widgets.cpp:297
 msgid "None"
 msgstr "Ոչ մի"
 
-#: src/libvlc-module.c:370
+#: src/libvlc-module.c:372
 #, fuzzy
 msgid ""
 "These options allow you to modify the behavior of the video output "
@@ -1948,11 +1948,11 @@ msgstr ""
 "վիդեո ֆիլտրերի  \" modules բաժին. Դուք կարող եք նաեւ սահմանել շատ տարբեր "
 "վիդեո ընտրանքներ \"."
 
-#: src/libvlc-module.c:376
+#: src/libvlc-module.c:378
 msgid "Video output module"
 msgstr "Վիդեո ելքի մոդուլը"
 
-#: src/libvlc-module.c:378
+#: src/libvlc-module.c:380
 #, fuzzy
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
@@ -1961,12 +1961,12 @@ msgstr ""
 "Սա է այն տեսահոլովակը, արտադրությունը եղանակը օգտագործվում է VLC. Լռությամբ "
 "վարքն է ավտոմատ կերպով ընտրել լավագույն եղանակը հասանելի."
 
-#: src/libvlc-module.c:381 modules/stream_out/display.c:43
+#: src/libvlc-module.c:383 modules/stream_out/display.c:43
 #: modules/gui/qt4/ui/sprefs_video.h:309
 msgid "Enable video"
 msgstr "Միացնել վիդեոն"
 
-#: src/libvlc-module.c:383
+#: src/libvlc-module.c:385
 #, fuzzy
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
@@ -1975,7 +1975,7 @@ msgstr ""
 "Դուք կարող եք լիովին անջատել վիդեո տողը. Տեսաֆիլմը ապակոդավորման փուլը տեղի "
 "չի ունենա, այսպիսով փրկարար որոշ մշակման իշխանություն\"."
 
-#: src/libvlc-module.c:386 modules/codec/fake.c:58
+#: src/libvlc-module.c:388 modules/codec/fake.c:58
 #: modules/stream_out/mosaic_bridge.c:109
 #: modules/stream_out/transcode/transcode.c:66
 #: modules/visualization/projectm.cpp:61
@@ -1983,7 +1983,7 @@ msgstr ""
 msgid "Video width"
 msgstr "Վիդեոյի լայնությունը"
 
-#: src/libvlc-module.c:388
+#: src/libvlc-module.c:390
 #, fuzzy
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
@@ -1992,7 +1992,7 @@ msgstr ""
 "Դուք կարող եք Սահմանել վիդեո լայնություն. Ըստ լռությամբ (-1), VLC կլինի "
 "շտկել վիդեո հատկանիշներով."
 
-#: src/libvlc-module.c:391 modules/codec/fake.c:61
+#: src/libvlc-module.c:393 modules/codec/fake.c:61
 #: modules/stream_out/mosaic_bridge.c:112
 #: modules/stream_out/transcode/transcode.c:69
 #: modules/visualization/projectm.cpp:64
@@ -2000,7 +2000,7 @@ msgstr ""
 msgid "Video height"
 msgstr "Վիդեոյի բարձրություն"
 
-#: src/libvlc-module.c:393
+#: src/libvlc-module.c:395
 #, fuzzy
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
@@ -2009,11 +2009,11 @@ msgstr ""
 "Դուք կարող եք Սահմանել վիդեո բարձրությունը. Ըստ լռությամբ (-1), VLC կլինի "
 "շտկել վիդեո հատկանիշներով."
 
-#: src/libvlc-module.c:396
+#: src/libvlc-module.c:398
 msgid "Video X coordinate"
 msgstr "Վիդեոյի X կորդինատ"
 
-#: src/libvlc-module.c:398
+#: src/libvlc-module.c:400
 #, fuzzy
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
@@ -2022,11 +2022,11 @@ msgstr ""
 "Դուք կարող եք Սահմանել դիրքորոշումը, էջի վերեւի ձախ անկյունում վիդեո "
 "պատուհանի (X կորդինատով)."
 
-#: src/libvlc-module.c:401
+#: src/libvlc-module.c:403
 msgid "Video Y coordinate"
 msgstr "Վիդեոյի Y կորդինատ"
 
-#: src/libvlc-module.c:403
+#: src/libvlc-module.c:405
 #, fuzzy
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
@@ -2035,22 +2035,22 @@ msgstr ""
 "Դուք կարող եք Սահմանել դիրքորոշումը, էջի վերեւի ձախ անկյունում վիդեո "
 "պատուհանի (Y կորդինատով)."
 
-#: src/libvlc-module.c:406
+#: src/libvlc-module.c:408
 msgid "Video title"
 msgstr "Վիդեոյի վերնագիր"
 
-#: src/libvlc-module.c:408
+#: src/libvlc-module.c:410
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
 msgstr "Վիդեո պատուհանի անուն (եթե վիդեոն չկա)."
 
-#: src/libvlc-module.c:411
+#: src/libvlc-module.c:413
 #, fuzzy
 msgid "Video alignment"
 msgstr "Վիդեո settings"
 
-#: src/libvlc-module.c:413
+#: src/libvlc-module.c:415
 #, fuzzy
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
@@ -2062,7 +2062,7 @@ msgstr ""
 "կարող եք նաեւ օգտագործել համադրությունը այդ արժեքները, ինչպես 6 = 4 +2 "
 "իմաստը վերին աջ)."
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/gui/fbosd.c:162 modules/video_filter/audiobargraph_v.c:74
@@ -2072,7 +2072,7 @@ msgstr ""
 msgid "Center"
 msgstr "Կենտրոն"
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:420 src/libvlc-module.c:501 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -2083,7 +2083,7 @@ msgstr "Կենտրոն"
 msgid "Top"
 msgstr "Վերեւի"
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:420 src/libvlc-module.c:501 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -2092,7 +2092,7 @@ msgstr "Վերեւի"
 msgid "Bottom"
 msgstr "Ներքեւի"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -2100,7 +2100,7 @@ msgstr "Ներքեւի"
 msgid "Top-Left"
 msgstr "Վերևի-Ձախ"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -2108,7 +2108,7 @@ msgstr "Վերևի-Ձախ"
 msgid "Top-Right"
 msgstr "Վերևի-աջ"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -2116,7 +2116,7 @@ msgstr "Վերևի-աջ"
 msgid "Bottom-Left"
 msgstr "Ներքեւի-Ձախ"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -2124,21 +2124,21 @@ msgstr "Ներքեւի-Ձախ"
 msgid "Bottom-Right"
 msgstr "Ներքեւի-Աջ"
 
-#: src/libvlc-module.c:421
+#: src/libvlc-module.c:423
 msgid "Zoom video"
 msgstr "Խոշորացնել վիդեոն"
 
-#: src/libvlc-module.c:423
+#: src/libvlc-module.c:425
 #, fuzzy
 msgid "You can zoom the video by the specified factor."
 msgstr "Դուք կարող եք խոշորացում վիդեո կողմից նշված գործոնի\"."
 
-#: src/libvlc-module.c:425
+#: src/libvlc-module.c:427
 #, fuzzy
 msgid "Grayscale video output"
 msgstr "Grayscale վիդեո ելք"
 
-#: src/libvlc-module.c:427
+#: src/libvlc-module.c:429
 #, fuzzy
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
@@ -2147,21 +2147,21 @@ msgstr ""
 "Ելքային վիդեո է grayscale. Ինչպես գույնը տեղեկատվություն չեն decoded, սա "
 "կարող է պահպանել որոշ մշակման իշխանություն\"."
 
-#: src/libvlc-module.c:430
+#: src/libvlc-module.c:432
 #, fuzzy
 msgid "Embedded video"
 msgstr "Ներդրված վիդեո"
 
-#: src/libvlc-module.c:432
+#: src/libvlc-module.c:434
 #, fuzzy
 msgid "Embed the video output in the main interface."
 msgstr "Ներկառուցել վիդեո արտադրությունը է հիմնական ինտերֆեյսի."
 
-#: src/libvlc-module.c:434 modules/video_output/ggi.c:57
+#: src/libvlc-module.c:436 modules/video_output/ggi.c:57
 msgid "X11 display"
 msgstr "X11 display"
 
-#: src/libvlc-module.c:436
+#: src/libvlc-module.c:438
 #, fuzzy
 msgid ""
 "X11 hardware display to use. By default VLC will use the value of the "
@@ -2170,21 +2170,21 @@ msgstr ""
 "X11 սարք ցուցադրվող օգտագործել. Լռությամբ VLC կօգտագործի արժեքը էկրանի "
 "շրջակա միջավայրի փոփոխական."
 
-#: src/libvlc-module.c:439
+#: src/libvlc-module.c:441
 msgid "Fullscreen video output"
 msgstr "Ողջ էկրանով վիդեո ելք"
 
-#: src/libvlc-module.c:441
+#: src/libvlc-module.c:443
 #, fuzzy
 msgid "Start video in fullscreen mode"
 msgstr "Սկսել վիդեո է ողջ էկրանով ռեժիմում"
 
-#: src/libvlc-module.c:443
+#: src/libvlc-module.c:445
 #, fuzzy
 msgid "Overlay video output"
 msgstr "խուփ վիդեո ելք"
 
-#: src/libvlc-module.c:445
+#: src/libvlc-module.c:447
 #, fuzzy
 msgid ""
 "Overlay is the hardware acceleration capability of your video card (ability "
@@ -2193,22 +2193,22 @@ msgstr ""
 "պատել է սարք արագացմանը հնարավորությունների Ձեր վիդեո քարտի (ունակությունը "
 "մատուցել վիդեո ուղղակիորեն). VLC փորձելու է օգտագործել այն կողմից լռելյայն."
 
-#: src/libvlc-module.c:448 src/video_output/vout_intf.c:344
+#: src/libvlc-module.c:450 src/video_output/vout_intf.c:344
 #: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "Միշտ երևացող"
 
-#: src/libvlc-module.c:450
+#: src/libvlc-module.c:452
 #, fuzzy
 msgid "Always place the video window on top of other windows."
 msgstr "Միշտ տեղը վիդեո պատուհանի վերեւում այլ պատուհաններ."
 
-#: src/libvlc-module.c:452
+#: src/libvlc-module.c:454
 #, fuzzy
 msgid "Enable wallpaper mode "
 msgstr "Միացնել պաստառ ռեժիմ`"
 
-#: src/libvlc-module.c:454
+#: src/libvlc-module.c:456
 #, fuzzy
 msgid ""
 "The wallpaper mode allows you to display the video as the desktop background."
@@ -2216,44 +2216,44 @@ msgstr ""
 "Պաստառը ռեժիմ Ձեզ թույլ է տալիս ցույց տալ այն տեսահոլովակը, որպես desktop "
 "ֆոնի վրա\"."
 
-#: src/libvlc-module.c:457
+#: src/libvlc-module.c:459
 #, fuzzy
 msgid "Show media title on video"
 msgstr "Ցույց տալ մեդիա title մասին վիդեո"
 
-#: src/libvlc-module.c:459
+#: src/libvlc-module.c:461
 #, fuzzy
 msgid "Display the title of the video on top of the movie."
 msgstr "Ցույց տալ վերնագիրը վիդեո վերեւում չունիս."
 
-#: src/libvlc-module.c:461
+#: src/libvlc-module.c:463
 #, fuzzy
 msgid "Show video title for x milliseconds"
 msgstr "Ցույց տալ վիդեո կոչումը x միլիվարկյաններով"
 
-#: src/libvlc-module.c:463
+#: src/libvlc-module.c:465
 #, fuzzy
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr ""
 "Ցույց տալ վիդեո կոչումը n միլիվարկյաններով, լռությամբ է 5000 ms (5 վրկ.)"
 
-#: src/libvlc-module.c:465
+#: src/libvlc-module.c:467
 #, fuzzy
 msgid "Position of video title"
 msgstr "դիրքը վիդեո կոչում"
 
-#: src/libvlc-module.c:467
+#: src/libvlc-module.c:469
 #, fuzzy
 msgid "Place on video where to display the title (default bottom center)."
 msgstr ""
 "Տեղ նկարահանելու, որտեղ ցուցադրելու անվանումը (նախնական ներքեւի կենտրոնում)."
 
-#: src/libvlc-module.c:469
+#: src/libvlc-module.c:471
 #, fuzzy
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr "Թաքցնել կուրսորը եւ ողջ էկրանով ղեկավարումը հետո x միլիվարկյաններով"
 
-#: src/libvlc-module.c:472
+#: src/libvlc-module.c:474
 #, fuzzy
 msgid ""
 "Hide mouse cursor and fullscreen controller after n milliseconds, default is "
@@ -2262,7 +2262,7 @@ msgstr ""
 "Թաքցնել մկնիկի կուրսորը եւ ողջ էկրանով ղեկավարումը հետո n միլիվարկյաններով, "
 "լռությամբ է 3000 ms (3 վրկ.)"
 
-#: src/libvlc-module.c:475 src/libvlc-module.c:477
+#: src/libvlc-module.c:477 src/libvlc-module.c:479
 #: src/video_output/video_output.c:1974 modules/gui/macosx/intf.m:700
 #: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/convert.cpp:86
 #: modules/video_filter/deinterlace.c:133
@@ -2270,55 +2270,55 @@ msgstr ""
 msgid "Deinterlace"
 msgstr "Deinterlace"
 
-#: src/libvlc-module.c:485 src/video_output/video_output.c:1990
+#: src/libvlc-module.c:487 src/video_output/video_output.c:1990
 #: modules/gui/macosx/intf.m:702 modules/gui/macosx/intf.m:703
 #: modules/video_filter/deinterlace.c:118
 #, fuzzy
 msgid "Deinterlace mode"
 msgstr "Deinterlace ռեժիմ"
 
-#: src/libvlc-module.c:487
+#: src/libvlc-module.c:489
 #, fuzzy
 msgid "Deinterlace method to use for video processing."
 msgstr "Deinterlace միջոց օգտագործելու համար վիդեո վերամշակման."
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Discard"
 msgstr "Դեն նետել"
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Blend"
 msgstr "Խառնել"
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Mean"
 msgstr "Միջին"
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 #, fuzzy
 msgid "Bob"
 msgstr "Bob"
 
-#: src/libvlc-module.c:494 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:496 modules/video_filter/deinterlace.c:129
 msgid "Linear"
 msgstr "Գծային"
 
-#: src/libvlc-module.c:502
+#: src/libvlc-module.c:504
 #, fuzzy
 msgid "Disable screensaver"
 msgstr "Անջատել Էկրանապահ"
 
-#: src/libvlc-module.c:503
+#: src/libvlc-module.c:505
 #, fuzzy
 msgid "Disable the screensaver during video playback."
 msgstr "Արգելել են Էկրանապահ ընթացքում վիդեո ընթացք\"."
 
-#: src/libvlc-module.c:505
+#: src/libvlc-module.c:507
 #, fuzzy
 msgid "Inhibit the power management daemon during playback"
 msgstr "չխոչընդոտել, իշխանությունը կառավարման daemon ընթացքում ընթացք"
 
-#: src/libvlc-module.c:506
+#: src/libvlc-module.c:508
 #, fuzzy
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
@@ -2327,11 +2327,11 @@ msgstr ""
 "Inhibits իշխանության կառավարման daemon ընթացքում որեւէ ընթացք, խուսափել "
 "համակարգչային լինելով կասեցվել պատճառով անգործությունը."
 
-#: src/libvlc-module.c:509 modules/gui/qt4/ui/sprefs_video.h:316
+#: src/libvlc-module.c:511 modules/gui/qt4/ui/sprefs_video.h:316
 msgid "Window decorations"
 msgstr "Պատուհանի արտաքին դեսք"
 
-#: src/libvlc-module.c:511
+#: src/libvlc-module.c:513
 #, fuzzy
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
@@ -2340,20 +2340,20 @@ msgstr ""
 "VLC կարող խուսափել ստեղծման պատուհանի վերնագիր, շրջանակներ, եւ այլն .. շուրջ "
 "վիդեո, տալով a \", նվազագույն  \"պատուհան\"."
 
-#: src/libvlc-module.c:514
+#: src/libvlc-module.c:516
 msgid "Video output filter module"
 msgstr "Վիդեո ելքի զտիչ մոդուլ"
 
-#: src/libvlc-module.c:516
+#: src/libvlc-module.c:518
 #, fuzzy
 msgid "This adds video output filters like clone or wall"
 msgstr "Այս հավելում վիդեո ելք ֆիլտրերը, ինչպես կրկնօրինակ կամ պատի"
 
-#: src/libvlc-module.c:518
+#: src/libvlc-module.c:520
 msgid "Video filter module"
 msgstr "Վիդեո զտիչ մոդուլ"
 
-#: src/libvlc-module.c:520
+#: src/libvlc-module.c:522
 #, fuzzy
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
@@ -2362,52 +2362,52 @@ msgstr ""
 "Այս հավելում է հետընտրական վերամշակման ֆիլտրերը, Լիտվան նկարի որակը, օրինակ "
 "deinterlacing, կամ խեղաթյուրում է վիդեո."
 
-#: src/libvlc-module.c:524
+#: src/libvlc-module.c:526
 msgid "Video snapshot directory (or filename)"
 msgstr "Վիդեոյից արված նկարի պանակ (կամ ֆայլի անուն)"
 
-#: src/libvlc-module.c:526
+#: src/libvlc-module.c:528
 #, fuzzy
 msgid "Directory where the video snapshots will be stored."
 msgstr "պանակ, որտեղ վիդեո նկարներ կպահվեն\"."
 
-#: src/libvlc-module.c:528 src/libvlc-module.c:530
+#: src/libvlc-module.c:530 src/libvlc-module.c:532
 msgid "Video snapshot file prefix"
 msgstr "Վիդեոյից արված նկարի ֆայլի նախածանցը"
 
-#: src/libvlc-module.c:532
+#: src/libvlc-module.c:534
 msgid "Video snapshot format"
 msgstr "Վիդեոյից արված արված նկարի ֆորմատը"
 
-#: src/libvlc-module.c:534
+#: src/libvlc-module.c:536
 msgid "Image format which will be used to store the video snapshots"
 msgstr ""
 "Պատկերի ֆորմատը, որը կօգտագործվի վիդեոյից արված նկարները պահելու ժամանակ"
 
-#: src/libvlc-module.c:536
+#: src/libvlc-module.c:538
 #, fuzzy
 msgid "Display video snapshot preview"
 msgstr "Ցույց տալ վիդեո նկարի preview"
 
-#: src/libvlc-module.c:538
+#: src/libvlc-module.c:540
 #, fuzzy
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr "Ցույց է նկարի Նախադիտման է էկրանի ի վերին ձախ անկյունում\"."
 
-#: src/libvlc-module.c:540
+#: src/libvlc-module.c:542
 msgid "Use sequential numbers instead of timestamps"
 msgstr "Օգտագործել հաջորդական թվերի ամսաթվի փոխարեն"
 
-#: src/libvlc-module.c:542
+#: src/libvlc-module.c:544
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr ""
 "Օգտագործել հաջորդական թվերի ամսաթվի փոխարեն նկարների համարակալման համար"
 
-#: src/libvlc-module.c:544
+#: src/libvlc-module.c:546
 msgid "Video snapshot width"
 msgstr "Վիդեոյից արված նկարի բարձրություն"
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:548
 #, fuzzy
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
@@ -2417,11 +2417,11 @@ msgstr ""
 "բնօրինակը լայնությունը (-1). Օգտագործելով 0 կլինի մասշտաբի լայնությունը "
 "պահելու առումով հարաբերակցությունը."
 
-#: src/libvlc-module.c:550
+#: src/libvlc-module.c:552
 msgid "Video snapshot height"
 msgstr "Վիդեոյից արված նկարի բարձրություն"
 
-#: src/libvlc-module.c:552
+#: src/libvlc-module.c:554
 #, fuzzy
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
@@ -2432,11 +2432,11 @@ msgstr ""
 "բնօրինակը բարձրությունը (-1). Օգտագործելով 0 կլինի սանդղակի բարձրությունը "
 "պահելու առումով հարաբերակցությունը."
 
-#: src/libvlc-module.c:556
+#: src/libvlc-module.c:558
 msgid "Video cropping"
 msgstr "Վիդեոյի եզրերից կտրում"
 
-#: src/libvlc-module.c:558
+#: src/libvlc-module.c:560
 #, fuzzy
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
@@ -2445,11 +2445,11 @@ msgstr ""
 "Այս ուժերի է cropping աղբյուրի վիդեո. Ընդունված ֆորմատներ են, x, y (4.3, "
 "16:9, եւ այլն) հայտնելով գլոբալ պատկերի առումով\"."
 
-#: src/libvlc-module.c:562
+#: src/libvlc-module.c:564
 msgid "Source aspect ratio"
 msgstr "Օրիգինալ չափերի հարաբերություն"
 
-#: src/libvlc-module.c:564
+#: src/libvlc-module.c:566
 #, fuzzy
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
@@ -2465,21 +2465,21 @@ msgstr ""
 "առումով, կամ float արժեք (1.25, 1,3333, եւ այլն) հայտնելով կարող է անկախ "
 "ղեկավարվել squareness \"."
 
-#: src/libvlc-module.c:571
+#: src/libvlc-module.c:573
 #, fuzzy
 msgid "Video Auto Scaling"
 msgstr "Վիդեո Ավտո փոխում է խումբը"
 
-#: src/libvlc-module.c:573
+#: src/libvlc-module.c:575
 #, fuzzy
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr "Թող վիդեո սանդղակի տեղավորել տվյալ պատուհանը կամ ողջ էկրանով\"."
 
-#: src/libvlc-module.c:575
+#: src/libvlc-module.c:577
 msgid "Video scaling factor"
 msgstr "Վիդեո ձգման գործակից"
 
-#: src/libvlc-module.c:577
+#: src/libvlc-module.c:579
 #, fuzzy
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
@@ -2489,11 +2489,11 @@ msgstr ""
 "անջատված է. \n"
 " Լռելյայն արժեք է 1.0 (original վիդեո չափը)."
 
-#: src/libvlc-module.c:580
+#: src/libvlc-module.c:582
 msgid "Custom crop ratios list"
 msgstr "Հնարավոր եզրերից կտրման գործակիցների ցուցակ"
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:584
 #, fuzzy
 msgid ""
 "Comma separated list of crop ratios which will be added in the interface's "
@@ -2502,11 +2502,11 @@ msgstr ""
 "ստորակետով առանձնացված ցանկը բերքի ratios որը պետք է ավելացված է միջադեմի ի "
 "բերքի ratios պանակ."
 
-#: src/libvlc-module.c:585
+#: src/libvlc-module.c:587
 msgid "Custom aspect ratios list"
 msgstr "Հնարավոր չափերի հարաբերության ցուցակ"
 
-#: src/libvlc-module.c:587
+#: src/libvlc-module.c:589
 #, fuzzy
 msgid ""
 "Comma separated list of aspect ratios which will be added in the interface's "
@@ -2515,12 +2515,12 @@ msgstr ""
 "ստորակետով առանձնացված ցանկը չափերի հարաբերություն որը պետք է ավելացված է "
 "միջադեմի ի առումով հարաբերակցությունը պանակ."
 
-#: src/libvlc-module.c:590
+#: src/libvlc-module.c:592
 #, fuzzy
 msgid "Fix HDTV height"
 msgstr "վերանորոգել HDTV բարձրություն"
 
-#: src/libvlc-module.c:592
+#: src/libvlc-module.c:594
 #, fuzzy
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
@@ -2532,12 +2532,12 @@ msgstr ""
 "տողերը. Դուք պետք է միայն անջատել այդ տարբերակը, եթե Ձեր տեսահոլովակը ունի "
 "ոչ ստանդարտ ֆորմատի են պահանջում բոլոր 1088 գծեր\"."
 
-#: src/libvlc-module.c:597
+#: src/libvlc-module.c:599
 #, fuzzy
 msgid "Monitor pixel aspect ratio"
 msgstr "Մոնիտոր կարող է անկախ ղեկավարվել չափերի հարաբերությունը"
 
-#: src/libvlc-module.c:599
+#: src/libvlc-module.c:601
 #, fuzzy
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
@@ -2548,12 +2548,12 @@ msgstr ""
 "հրապարակում պիքսել (1.1). Եթե դուք ունեք 16:9 էկրանին, դուք կարող Անհրաժեշտ "
 "է փոխել այս է 4.3 պահելու համար համամասնություններով\"."
 
-#: src/libvlc-module.c:603 modules/gui/macosx/simple_prefs.m:297
+#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:297
 #: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "Շրջանցել կադրերը"
 
-#: src/libvlc-module.c:605
+#: src/libvlc-module.c:607
 #, fuzzy
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
@@ -2562,12 +2562,12 @@ msgstr ""
 "Թույլ է տրվում - թույլատրված է տալիս framedropping վրա MPEG2 առու. "
 "Framedropping է տեղի ունենում, երբ ձեր համակարգիչը չի հզոր բավարար`"
 
-#: src/libvlc-module.c:608
+#: src/libvlc-module.c:610
 #, fuzzy
 msgid "Drop late frames"
 msgstr "Մի կաթիլ ուշ շրջանակներ"
 
-#: src/libvlc-module.c:610
+#: src/libvlc-module.c:612
 #, fuzzy
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
@@ -2576,12 +2576,12 @@ msgstr ""
 "Այս կաթիլներ շրջանակներ, որոնք ուշ (կժամանի վիդեո արտադրությունը հետո "
 "նախատեսված է ցուցադրել ամսաթիվը)."
 
-#: src/libvlc-module.c:613
+#: src/libvlc-module.c:615
 #, fuzzy
 msgid "Quiet synchro"
 msgstr "Հանդարտ synchro"
 
-#: src/libvlc-module.c:615
+#: src/libvlc-module.c:617
 #, fuzzy
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
@@ -2590,30 +2590,30 @@ msgstr ""
 "Այս խուսափում flooding ուղերձը տեղեկամատյանում հետ debug թողարկման ից վիդեո "
 "տողը համաժամացման մեխանիզմը\"."
 
-#: src/libvlc-module.c:618
+#: src/libvlc-module.c:620
 #, fuzzy
 msgid "Key press events"
 msgstr "բանալի մամլո իրադարձությունները`"
 
-#: src/libvlc-module.c:620
+#: src/libvlc-module.c:622
 #, fuzzy
 msgid "This enables VLC hotkeys from the (non-embedded) video window."
 msgstr ""
 "Սա թույլ է տրվում - թույլատրված է տալիս VLC կոճակ ից (ոչ ներդրված) վիդեո "
 "պատուհանի\"."
 
-#: src/libvlc-module.c:622 modules/video_filter/remoteosd.c:94
+#: src/libvlc-module.c:624 modules/video_filter/remoteosd.c:94
 #, fuzzy
 msgid "Mouse events"
 msgstr "Մկնիկի իրադարձությունները"
 
-#: src/libvlc-module.c:624
+#: src/libvlc-module.c:626
 #, fuzzy
 msgid "This enables handling of mouse clicks on the video."
 msgstr ""
 "Սա թույլ է տրվում - թույլատրված է տալիս քննության մուկ Սեղմումներ վրա վիդեո."
 
-#: src/libvlc-module.c:632
+#: src/libvlc-module.c:634
 #, fuzzy
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
@@ -2624,12 +2624,12 @@ msgstr ""
 "օրինակ, DVD կամ VCD սարքի, ցանցի ինտերֆեյսը պարամետրերը կամ լուսագրային ալիքը"
 "\"."
 
-#: src/libvlc-module.c:636
+#: src/libvlc-module.c:638
 #, fuzzy
 msgid "Clock reference average counter"
 msgstr "Ժամացույց հղում միջին counter"
 
-#: src/libvlc-module.c:638
+#: src/libvlc-module.c:640
 #, fuzzy
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
@@ -2638,12 +2638,12 @@ msgstr ""
 "Երբ օգտագործելով PVR մուտքագրման (կամ, շատ անկանոն աղբյուր), դուք պետք է "
 "սահմանել սույն 10000\"."
 
-#: src/libvlc-module.c:641
+#: src/libvlc-module.c:643
 #, fuzzy
 msgid "Clock synchronisation"
 msgstr "Ժամացույց համաժամացման"
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:645
 #, fuzzy
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
@@ -2653,12 +2653,12 @@ msgstr ""
 "ժամանակի աղբյուրները. Օգտագործեք այս եթե ձեզ փորձը ընդհատ - ընդհատ ընթացք "
 "ցանցային հոսանքներին."
 
-#: src/libvlc-module.c:647
+#: src/libvlc-module.c:649
 #, fuzzy
 msgid "Clock jitter"
 msgstr "Ժամացույց jitter"
 
-#: src/libvlc-module.c:649
+#: src/libvlc-module.c:651
 #, fuzzy
 msgid ""
 "It tells the clock algorithms what is the maximal input jitter that is "
@@ -2667,12 +2667,12 @@ msgstr ""
 "Այն պատմում է ժամացույցի ալգորիթմներ, թե ինչ է առավելագույն ներդրում jitter, "
 "որ համարվում է վավերական է եւ կարող է փոխհատուցվել (in միլիվարկյաններով)"
 
-#: src/libvlc-module.c:652 modules/control/netsync.c:72
+#: src/libvlc-module.c:654 modules/control/netsync.c:72
 #, fuzzy
 msgid "Network synchronisation"
 msgstr "ցանց համաժամացման"
 
-#: src/libvlc-module.c:653
+#: src/libvlc-module.c:655
 #, fuzzy
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
@@ -2681,10 +2681,10 @@ msgstr ""
 "Սա թույլ է տալիս հեռակա միարժամանակ ժամացույցներ համար սերվերային եւ "
 "հաճախորդի. Մանրամասն պարամետրեր մատչելի են Ընդլայնված / Ցանց Սինքրոնացում\"."
 
-#: src/libvlc-module.c:659 src/video_output/vout_intf.c:99
-#: src/video_output/vout_intf.c:117 modules/access/dshow/dshow.cpp:82
-#: modules/access/dshow/dshow.cpp:84 modules/access/dshow/dshow.cpp:87
-#: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:238
+#: src/libvlc-module.c:661 src/video_output/vout_intf.c:99
+#: src/video_output/vout_intf.c:117 modules/access/dshow/dshow.cpp:84
+#: modules/access/dshow/dshow.cpp:86 modules/access/dshow/dshow.cpp:89
+#: modules/access/dshow/dshow.cpp:95 modules/access/v4l2.c:238
 #: modules/audio_output/alsa.c:107 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1305
 #: modules/gui/macosx/simple_prefs.m:415 modules/gui/macosx/simple_prefs.m:536
@@ -2695,29 +2695,29 @@ msgstr ""
 msgid "Default"
 msgstr "Հիմնական"
 
-#: src/libvlc-module.c:659 modules/gui/macosx/equalizer.m:149
+#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:149
 #: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Միացնել"
 
-#: src/libvlc-module.c:661 modules/misc/notify/growl_udp.c:75
+#: src/libvlc-module.c:663 modules/misc/notify/growl_udp.c:75
 msgid "UDP port"
 msgstr "UDP պորտ"
 
-#: src/libvlc-module.c:663
+#: src/libvlc-module.c:665
 #, fuzzy
 msgid "This is the default port used for UDP streams. Default is 1234."
 msgstr ""
 "Սա է հիմնական նավահանգստի համար օգտագործվող UDP հոսանքներին. Լռությամբ է "
 "1234."
 
-#: src/libvlc-module.c:665
+#: src/libvlc-module.c:667
 #, fuzzy
 msgid "MTU of the network interface"
 msgstr "MTU Ցանցի ինտերֆեյսի"
 
-#: src/libvlc-module.c:667
+#: src/libvlc-module.c:669
 #, fuzzy
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
@@ -2726,12 +2726,12 @@ msgstr ""
 "Սա առավելագույն դիմումը միաշերտ եւ փաթեթային չափ, որը կարող է փոխանցվել "
 "շուրջ ցանցի (in բայթեր)."
 
-#: src/libvlc-module.c:672 modules/stream_out/rtp.c:122
+#: src/libvlc-module.c:674 modules/stream_out/rtp.c:122
 #, fuzzy
 msgid "Hop limit (TTL)"
 msgstr "Hop սահմանաչափ (TTL)"
 
-#: src/libvlc-module.c:674 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:676 modules/stream_out/rtp.c:124
 #, fuzzy
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
@@ -2742,22 +2742,22 @@ msgstr ""
 "multicast փաթեթներ ուղարկել կողմից հոսք արտադրությունը (-1 = օգտագործել "
 "օպերացիոն համակարգը ներկառուցված լռությամբ)."
 
-#: src/libvlc-module.c:678
+#: src/libvlc-module.c:680
 #, fuzzy
 msgid "Multicast output interface"
 msgstr "Multicast ելքը ինտերֆեյսի"
 
-#: src/libvlc-module.c:680
+#: src/libvlc-module.c:682
 #, fuzzy
 msgid "Default multicast interface. This overrides the routing table."
 msgstr "Լռությամբ multicast ինտերֆեյսի. Այս overrides է մարշուտիզացիա սեղանի."
 
-#: src/libvlc-module.c:682
+#: src/libvlc-module.c:684
 #, fuzzy
 msgid "IPv4 multicast output interface address"
 msgstr "IPv4 multicast ելքը ինտերֆեյսի հասցեն`"
 
-#: src/libvlc-module.c:684
+#: src/libvlc-module.c:686
 #, fuzzy
 msgid ""
 "IPv4 address for the default multicast interface. This overrides the routing "
@@ -2766,12 +2766,12 @@ msgstr ""
 "IPv4 հասցեն համար լռությամբ multicast ինտերֆեյսը. Այս overrides է "
 "մարշուտիզացիա սեղանի\"."
 
-#: src/libvlc-module.c:687
+#: src/libvlc-module.c:689
 #, fuzzy
 msgid "DiffServ Code Point"
 msgstr "DiffServ օրենսգրքի կետ"
 
-#: src/libvlc-module.c:688
+#: src/libvlc-module.c:690
 #, fuzzy
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
@@ -2781,7 +2781,7 @@ msgstr ""
 "IPv4 տեսակը ծառայության, կամ IPv6 երթեւեկության Դուք փնտրել). Այս համար "
 "օգտագործվում է ցանցի սպասարկման որակի."
 
-#: src/libvlc-module.c:694
+#: src/libvlc-module.c:696
 #, fuzzy
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
@@ -2791,7 +2791,7 @@ msgstr ""
 "սա, եթե ցանկանում եք կարդալ բազմաբնույթ ծրագիր հոսքային (ինչպես DVB հոսքերի "
 "օրինակ)."
 
-#: src/libvlc-module.c:700
+#: src/libvlc-module.c:702
 #, fuzzy
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
@@ -2802,30 +2802,30 @@ msgstr ""
 "համարները (SIDs). Համար օգտագործեք միայն սա, եթե ցանկանում եք կարդալ "
 "բազմաբնույթ ծրագիր հոսքային (ինչպես DVB հոսքերի օրինակ)."
 
-#: src/libvlc-module.c:706 modules/gui/qt4/ui/open_disk.h:305
+#: src/libvlc-module.c:708 modules/gui/qt4/ui/open_disk.h:305
 msgid "Audio track"
 msgstr "Ձայնային գիծ"
 
-#: src/libvlc-module.c:708
+#: src/libvlc-module.c:710
 #, fuzzy
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "հոսք համարը ձայնային ալիքը օգտագործել են (0 n)."
 
-#: src/libvlc-module.c:711 modules/gui/qt4/ui/open_disk.h:306
+#: src/libvlc-module.c:713 modules/gui/qt4/ui/open_disk.h:306
 msgid "Subtitles track"
 msgstr "Ենթագրերի  գիծ"
 
-#: src/libvlc-module.c:713
+#: src/libvlc-module.c:715
 #, fuzzy
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr "հոսք համարը ենթագիր ալիքը օգտագործել են (0 n)."
 
-#: src/libvlc-module.c:716
+#: src/libvlc-module.c:718
 #, fuzzy
 msgid "Audio language"
 msgstr "Ձայնային լեզվի"
 
-#: src/libvlc-module.c:718
+#: src/libvlc-module.c:720
 #, fuzzy
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
@@ -2836,11 +2836,11 @@ msgstr ""
 "երկու կամ երեք նամակ երկրի կոդը, ապա կարող եք օգտագործել 'ոչ' խուսափելու "
 "fallback մեկ այլ լեզու)\"."
 
-#: src/libvlc-module.c:721
+#: src/libvlc-module.c:723
 msgid "Subtitle language"
 msgstr "Ենթագրի լեզուն"
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:725
 #, fuzzy
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
@@ -2850,88 +2850,88 @@ msgstr ""
 "երկու կամ երեք նամակ երկրի կոդը, ապա կարող եք օգտագործել 'ցանկացած' որպես "
 "fallback)."
 
-#: src/libvlc-module.c:727
+#: src/libvlc-module.c:729
 msgid "Audio track ID"
 msgstr "Ձայնային գծի ID-ն"
 
-#: src/libvlc-module.c:729
+#: src/libvlc-module.c:731
 #, fuzzy
 msgid "Stream ID of the audio track to use."
 msgstr "հոսք համարը ձայնային ալիքը օգտագործել\"."
 
-#: src/libvlc-module.c:731
+#: src/libvlc-module.c:733
 msgid "Subtitles track ID"
 msgstr "Ենթագրերի գծի ID-ն"
 
-#: src/libvlc-module.c:733
+#: src/libvlc-module.c:735
 #, fuzzy
 msgid "Stream ID of the subtitle track to use."
 msgstr "հոսք\" ID-ն է ենթագիր ալիքը օգտագործել \"."
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:737
 #, fuzzy
 msgid "Input repetitions"
 msgstr "մեւտքային repetitions"
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:739
 #, fuzzy
 msgid "Number of time the same input will be repeated"
 msgstr "Միավորների ժամանակ նույն մուտքի կլինի կրկնվել`"
 
-#: src/libvlc-module.c:739
+#: src/libvlc-module.c:741
 #, fuzzy
 msgid "Start time"
 msgstr "Սկսել ժամանակ"
 
-#: src/libvlc-module.c:741
+#: src/libvlc-module.c:743
 #, fuzzy
 msgid "The stream will start at this position (in seconds)."
 msgstr "ՀՀ հոսքի սկսվելու է այս պաշտոնը (վայրկյաններով)."
 
-#: src/libvlc-module.c:743
+#: src/libvlc-module.c:745
 #, fuzzy
 msgid "Stop time"
 msgstr "Վերջ ժամանակ"
 
-#: src/libvlc-module.c:745
+#: src/libvlc-module.c:747
 #, fuzzy
 msgid "The stream will stop at this position (in seconds)."
 msgstr "ՀՀ հոսքի դադարեցնում է այս պաշտոնը (վայրկյաններով)."
 
-#: src/libvlc-module.c:747
+#: src/libvlc-module.c:749
 #, fuzzy
 msgid "Run time"
 msgstr "Run ժամանակ"
 
-#: src/libvlc-module.c:749
+#: src/libvlc-module.c:751
 #, fuzzy
 msgid "The stream will run this duration (in seconds)."
 msgstr "ՀՀ հոսքի կշարունակվի այս տեւողությունը (վայրկյաններով)."
 
-#: src/libvlc-module.c:751
+#: src/libvlc-module.c:753
 msgid "Fast seek"
 msgstr "Արագ որոնում"
 
-#: src/libvlc-module.c:753
+#: src/libvlc-module.c:755
 #, fuzzy
 msgid "Favor speed over precision while seeking"
 msgstr "օգտին արագությունը ավելի բարձր ճշգրտության, իսկ ձգտում"
 
-#: src/libvlc-module.c:755
+#: src/libvlc-module.c:757
 msgid "Playback speed"
 msgstr "Ընթացքի արագություն"
 
-#: src/libvlc-module.c:757
+#: src/libvlc-module.c:759
 #, fuzzy
 msgid "This defines the playback speed (nominal speed is 1.0)."
 msgstr "Այս սահմանում է ընթացք արագություն (անվանական արագություն է 1.0)."
 
-#: src/libvlc-module.c:759
+#: src/libvlc-module.c:761
 #, fuzzy
 msgid "Input list"
 msgstr "մեւտքային ցուցակում"
 
-#: src/libvlc-module.c:761
+#: src/libvlc-module.c:763
 #, fuzzy
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
@@ -2940,12 +2940,12 @@ msgstr ""
 "Դուք կարող եք տալ ստորակետերով առանձնացված ցուցակը inputs, որ պետք է "
 "concatenated միասին հետո նորմալ է\"."
 
-#: src/libvlc-module.c:764
+#: src/libvlc-module.c:766
 #, fuzzy
 msgid "Input slave (experimental)"
 msgstr "մեւտքային գերի (փորձնական)"
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:768
 #, fuzzy
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
@@ -2956,11 +2956,11 @@ msgstr ""
 "փորձարարական, ոչ բոլոր ձեւաչափերի աջակցություն են. Օգտագործեք '#' "
 "առանձնացված ցուցակը inputs\"."
 
-#: src/libvlc-module.c:770
+#: src/libvlc-module.c:772
 msgid "Bookmarks list for a stream"
 msgstr "Էջանիշ ցուցակը հոսքի համար "
 
-#: src/libvlc-module.c:772
+#: src/libvlc-module.c:774
 #, fuzzy
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
@@ -2971,21 +2971,21 @@ msgstr ""
 "Էջանիշ-անունը, ժամանակին = պարտադիր չէ, անգամ `շեղում, բայթեր = "
 "հայեցողության-բայտ-շեղում },{...}  \""
 
-#: src/libvlc-module.c:776 modules/gui/qt4/ui/sprefs_input.h:316
+#: src/libvlc-module.c:778 modules/gui/qt4/ui/sprefs_input.h:316
 msgid "Record directory or filename"
 msgstr "Գրանցել պանակ կամ ֆայլ"
 
-#: src/libvlc-module.c:778
+#: src/libvlc-module.c:780
 #, fuzzy
 msgid "Directory or filename where the records will be stored"
 msgstr "պանակ կամ ֆայլի անվան, որտեղ գրառումները կպահվեն"
 
-#: src/libvlc-module.c:780
+#: src/libvlc-module.c:782
 #, fuzzy
 msgid "Prefer native stream recording"
 msgstr "նախընտրում մայրենի հոսք ձայնագրությունը`"
 
-#: src/libvlc-module.c:782
+#: src/libvlc-module.c:784
 #, fuzzy
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
@@ -2994,22 +2994,22 @@ msgstr ""
 "Երբ հնարավոր է, որ մուտքի հոսքի կգրանցվի փոխարեն օգտագործելով հոսքի ելքային "
 "մոդուլի"
 
-#: src/libvlc-module.c:785
+#: src/libvlc-module.c:787
 #, fuzzy
 msgid "Timeshift directory"
 msgstr "Timeshift պանակ"
 
-#: src/libvlc-module.c:787
+#: src/libvlc-module.c:789
 #, fuzzy
 msgid "Directory used to store the timeshift temporary files."
 msgstr "պանակ օգտագործվում է պահել timeshift ժամանակավոր ֆայլեր."
 
-#: src/libvlc-module.c:789
+#: src/libvlc-module.c:791
 #, fuzzy
 msgid "Timeshift granularity"
 msgstr "Timeshift granularity"
 
-#: src/libvlc-module.c:791
+#: src/libvlc-module.c:793
 #, fuzzy
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
@@ -3018,7 +3018,7 @@ msgstr ""
 "Սա առավելագույն չափերը բայթեր ժամանակավոր ֆայլեր, որոնք կօգտագործվեն է պահել "
 "timeshifted հոսանքներին."
 
-#: src/libvlc-module.c:796
+#: src/libvlc-module.c:798
 #, fuzzy
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
@@ -3032,11 +3032,11 @@ msgstr ""
 "\"modules բաժինը. Եք կարող են նաեւ սահմանել շատ տարբեր Ենթանկարներ "
 "ընտրանքներ \"."
 
-#: src/libvlc-module.c:802 modules/gui/qt4/ui/sprefs_subtitles.h:213
+#: src/libvlc-module.c:804 modules/gui/qt4/ui/sprefs_subtitles.h:213
 msgid "Force subtitle position"
 msgstr "Պարտադրել ենթագրի դիրքը"
 
-#: src/libvlc-module.c:804
+#: src/libvlc-module.c:806
 #, fuzzy
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
@@ -3045,24 +3045,24 @@ msgstr ""
 "Դուք կարող եք օգտագործել այս տարբերակը տեղի է տիտրերով տակ ֆիլմը, փոխարեն "
 "ավելի քան ֆիլմը. Փորձեք մի քանի պաշտոններ."
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:809
 #, fuzzy
 msgid "Enable sub-pictures"
 msgstr "Միացնել ենթա - նկարներ"
 
-#: src/libvlc-module.c:809
+#: src/libvlc-module.c:811
 #, fuzzy
 msgid "You can completely disable the sub-picture processing."
 msgstr "Դուք կարող եք լիովին անջատել ենթահանձնաժողով պատկերը վերամշակման."
 
-#: src/libvlc-module.c:811 src/libvlc-module.c:1767 src/text/iso-639_def.h:143
+#: src/libvlc-module.c:813 src/libvlc-module.c:1769 src/text/iso-639_def.h:143
 #: modules/gui/macosx/simple_prefs.m:286
 #: modules/stream_out/transcode/transcode.c:222
 #: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
 msgstr "On Screen Display"
 
-#: src/libvlc-module.c:813
+#: src/libvlc-module.c:815
 #, fuzzy
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
@@ -3071,12 +3071,12 @@ msgstr ""
 "VLC կարող հաղորդագրություններ վրա վիդեո. Սա կոչվում է OSD (ին Screen "
 "Display)."
 
-#: src/libvlc-module.c:816
+#: src/libvlc-module.c:818
 #, fuzzy
 msgid "Text rendering module"
 msgstr "տեքստ թարգմանելը մոդուլը"
 
-#: src/libvlc-module.c:818
+#: src/libvlc-module.c:820
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
@@ -3084,12 +3084,12 @@ msgstr ""
 "VLC սովորաբար օգտագործում է Freetype, բայց սա թույլ է տալիս օգտագործել "
 "օրինակ svg:"
 
-#: src/libvlc-module.c:820
+#: src/libvlc-module.c:822
 #, fuzzy
 msgid "Subpictures filter module"
 msgstr "Ենթանկարներ զտիչ մոդուլը"
 
-#: src/libvlc-module.c:822
+#: src/libvlc-module.c:824
 #, fuzzy
 msgid ""
 "This adds so-called \"subpicture filters\". These filters overlay some "
@@ -3099,11 +3099,11 @@ msgstr ""
 "որոշ պատկերների, կամ տեքստի շուրջ վիդեո (նման Տարբերանշանի, կամայական "
 "տեքստային, ...)."
 
-#: src/libvlc-module.c:825
+#: src/libvlc-module.c:827
 msgid "Autodetect subtitle files"
 msgstr "Autodetect ենթագրերի ֆայլեր"
 
-#: src/libvlc-module.c:827
+#: src/libvlc-module.c:829
 #, fuzzy
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
@@ -3112,11 +3112,11 @@ msgstr ""
 "Ավտոմատ բացահայտումը մի ենթագիր ֆայլ, եթե ոչ մի ենթագիր ֆայլի անվան, հատուկ "
 "նշվում է (հիման վրա ֆայլի անվան, ՀՀ ֆիլմից)."
 
-#: src/libvlc-module.c:830
+#: src/libvlc-module.c:832
 msgid "Subtitle autodetection fuzziness"
 msgstr "Ենթագրի ավտոմատ հայտնաբերման անճշտություն"
 
-#: src/libvlc-module.c:832
+#: src/libvlc-module.c:834
 #, fuzzy
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
@@ -3136,11 +3136,11 @@ msgstr ""
 "չգերազանցի \n"
 " 4 = ենթագիր ֆայլի համապատասխանող ֆիլմի անունը ճիշտ "
 
-#: src/libvlc-module.c:840
+#: src/libvlc-module.c:842
 msgid "Subtitle autodetection paths"
 msgstr "Ենթագրի ավտոմատ հայտնաբերման հասցեներ"
 
-#: src/libvlc-module.c:842
+#: src/libvlc-module.c:844
 #, fuzzy
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
@@ -3149,11 +3149,11 @@ msgstr ""
 "Նայեք համար ենթագիր ֆայլի այդ ճանապարհները եւս, եթե Ձեր ենթագիր ֆայլը չի "
 "գտնվել է ընթացիկ ցուցակում\"."
 
-#: src/libvlc-module.c:845
+#: src/libvlc-module.c:847
 msgid "Use subtitle file"
 msgstr "Օգտագործել ենթագրերով ֆայլ"
 
-#: src/libvlc-module.c:847
+#: src/libvlc-module.c:849
 #, fuzzy
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
@@ -3162,11 +3162,11 @@ msgstr ""
 "ՀԻշողության այս ենթագիր ֆայլի. Լինելու համար, որն օգտագործվում է autodetect "
 "չի կարող հայտնաբերել Ձեր ենթագիր ֆայլը\"."
 
-#: src/libvlc-module.c:850
+#: src/libvlc-module.c:852
 msgid "DVD device"
 msgstr "DVD սարք"
 
-#: src/libvlc-module.c:853
+#: src/libvlc-module.c:855
 #, fuzzy
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
@@ -3175,65 +3175,65 @@ msgstr ""
 "Սա է հիմնական DVD շարժակ (կամ ֆայլ) օգտագործել. Մի մոռացեք, որ աղիքի հետո "
 "քշել նամակը (eg. D:)"
 
-#: src/libvlc-module.c:857
+#: src/libvlc-module.c:859
 #, fuzzy
 msgid "This is the default DVD device to use."
 msgstr "Սա է հիմնական DVD սարքի օգտագործման համար."
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:862
 msgid "VCD device"
 msgstr "VCD սարք"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:864
 #, fuzzy
 msgid "This is the default VCD device to use."
 msgstr "Սա է հիմնական VCD սարքի օգտագործման համար."
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:866
 msgid "Audio CD device"
 msgstr "Աուդիո CD սարքի"
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:868
 #, fuzzy
 msgid "This is the default Audio CD device to use."
 msgstr "Սա է հիմնական Աուդիո CD սարքի օգտագործման համար."
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:870
 #, fuzzy
 msgid "Force IPv6"
 msgstr "սահմանել IPv6"
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:872
 #, fuzzy
 msgid "IPv6 will be used by default for all connections."
 msgstr "IPv6 միջոցները կուղղվեն լռությամբ համար բոլոր կապեր."
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:874
 #, fuzzy
 msgid "Force IPv4"
 msgstr "սահմանել IPv4"
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:876
 #, fuzzy
 msgid "IPv4 will be used by default for all connections."
 msgstr "IPv4 միջոցները կուղղվեն լռությամբ համար բոլոր կապեր."
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:878
 #, fuzzy
 msgid "TCP connection timeout"
 msgstr "TCP կապ առավելագույն սպասում"
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:880
 #, fuzzy
 msgid "Default TCP connection timeout (in milliseconds). "
 msgstr "Լռությամբ TCP կապ առավելագույն սպասում (in միլիվարկյաններով)."
 
-#: src/libvlc-module.c:880
+#: src/libvlc-module.c:882
 #, fuzzy
 msgid "SOCKS server"
 msgstr "գուլպաներ սերվեր"
 
-#: src/libvlc-module.c:882
+#: src/libvlc-module.c:884
 #, fuzzy
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
@@ -3242,92 +3242,92 @@ msgstr ""
 "գուլպաներ պրոքսի սերվեր օգտագործել. Սա պետք է լինի Ձեւի հասցեն` պորտ է. Այն "
 "կօգտագործվի բոլոր TCP կապեր `"
 
-#: src/libvlc-module.c:885
+#: src/libvlc-module.c:887
 #, fuzzy
 msgid "SOCKS user name"
 msgstr "գուլպաներ Օգտվողի անունը`"
 
-#: src/libvlc-module.c:887
+#: src/libvlc-module.c:889
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr "Ոգտագործող անուն, որ կօգտագործվի SOCKS պրոքսիի հետ կապի համար "
 
-#: src/libvlc-module.c:889
+#: src/libvlc-module.c:891
 #, fuzzy
 msgid "SOCKS password"
 msgstr "գուլպաներ գաղտնաբառը"
 
-#: src/libvlc-module.c:891
+#: src/libvlc-module.c:893
 #, fuzzy
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr "Գաղտնաբառը պետք է օգտագործվել կապ գուլպաներ պրոքսի անձին\"."
 
-#: src/libvlc-module.c:893
+#: src/libvlc-module.c:895
 msgid "Title metadata"
 msgstr "Վերնագրի մետատվյալներ"
 
-#: src/libvlc-module.c:895
+#: src/libvlc-module.c:897
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr "Թույլ է տալիս ներմուծել \"վերնագիր\" մետատվյալը մուտքի համար."
 
-#: src/libvlc-module.c:897
+#: src/libvlc-module.c:899
 msgid "Author metadata"
 msgstr "Հեղինակը մետատվյալները"
 
-#: src/libvlc-module.c:899
+#: src/libvlc-module.c:901
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr "Թույլ է տալիս ներմուծել \"հեղինակ\" մետատվյալը մուտքի համար."
 
-#: src/libvlc-module.c:901
+#: src/libvlc-module.c:903
 msgid "Artist metadata"
 msgstr "ՀԵղինակի մետատվյալները"
 
-#: src/libvlc-module.c:903
+#: src/libvlc-module.c:905
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr "Թույլ է տալիս ներմուծել \"կատարող\" մետատվյալը մուտքի համար."
 
-#: src/libvlc-module.c:905
+#: src/libvlc-module.c:907
 msgid "Genre metadata"
 msgstr "Ոճի մետատվյալներ"
 
-#: src/libvlc-module.c:907
+#: src/libvlc-module.c:909
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr "Թույլ է տալիս ներմուծել \"ոճ\" մետատվյալը մուտքի համար."
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:911
 msgid "Copyright metadata"
 msgstr "Հեղինակային իրավունքի մետատվյալները"
 
-#: src/libvlc-module.c:911
+#: src/libvlc-module.c:913
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr ""
 "Թույլ է տալիս ներմուծել \"հեղինակային իրավունք\" մետատվյալը մուտքի համար."
 
-#: src/libvlc-module.c:913
+#: src/libvlc-module.c:915
 msgid "Description metadata"
 msgstr "Նկարագրության մետատվյալներ"
 
-#: src/libvlc-module.c:915
+#: src/libvlc-module.c:917
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr "Թույլ է տալիս ներմուծել \"նկարագրություն\" մետատվյալը մուտքի համար."
 
-#: src/libvlc-module.c:917
+#: src/libvlc-module.c:919
 #, fuzzy
 msgid "Date metadata"
 msgstr "Ամսաթիվ մետատվյալները"
 
-#: src/libvlc-module.c:919
+#: src/libvlc-module.c:921
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr "Թույլ է տալիս ներմուծել \"ամսաթիվ\" մետատվյալը մուտքի համար."
 
-#: src/libvlc-module.c:921
+#: src/libvlc-module.c:923
 msgid "URL metadata"
 msgstr "URL մետատվյալներ"
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:925
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr "Թույլ է տալիս ներմուծել \"url\" մետատվյալը մուտքի համար."
 
-#: src/libvlc-module.c:927
+#: src/libvlc-module.c:929
 #, fuzzy
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
@@ -3338,12 +3338,12 @@ msgstr ""
 "(DECOMPRESSION մեթոդները). Միայն զարգացած օգտվողները պետք է փոխել այդ "
 "տարբերակը, քանի որ այն կարող է կոտրել ընթացք Ձեր բոլոր հոսանքներին."
 
-#: src/libvlc-module.c:931
+#: src/libvlc-module.c:933
 #, fuzzy
 msgid "Preferred decoders list"
 msgstr "Նախընտրած ապակոդավորիչներ ցուցակում"
 
-#: src/libvlc-module.c:933
+#: src/libvlc-module.c:935
 #, fuzzy
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
@@ -3355,12 +3355,12 @@ msgstr ""
 "զարգացած օգտվողները պետք է փոխել այդ տարբերակը, քանի որ այն կարող է կոտրել "
 "ընթացք Ձեր բոլոր հոսանքներին."
 
-#: src/libvlc-module.c:938
+#: src/libvlc-module.c:940
 #, fuzzy
 msgid "Preferred encoders list"
 msgstr "Նախընտրած կոդավորիչներ ցուցակում"
 
-#: src/libvlc-module.c:940
+#: src/libvlc-module.c:942
 #, fuzzy
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
@@ -3368,12 +3368,12 @@ msgstr ""
 "Սա թույլ է տալիս ընտրել ցուցակը, կոդավորիչներ որ VLC օգտագործելու է "
 "առաջնահերթություն."
 
-#: src/libvlc-module.c:943
+#: src/libvlc-module.c:945
 #, fuzzy
 msgid "Prefer system plugins over VLC"
 msgstr "նախընտրում համակարգի plugins շուրջ VLC"
 
-#: src/libvlc-module.c:945
+#: src/libvlc-module.c:947
 #, fuzzy
 msgid ""
 "Indicates whether VLC will prefer native plugins installed on system over "
@@ -3382,7 +3382,7 @@ msgstr ""
 "ցույց է տալիս, թե արդյոք VLC Նախապատմություն մայրենի plugins տեղադրված "
 "համակարգի շուրջ VLC ունի plugins երբ մի ընտրություն է հասանելի."
 
-#: src/libvlc-module.c:954
+#: src/libvlc-module.c:956
 #, fuzzy
 msgid ""
 "These options allow you to set default global options for the stream output "
@@ -3391,12 +3391,12 @@ msgstr ""
 "Այս ընտրանքներ թույլ են տալիս սահմանել հիմնական գլոբալ ընտրանքներ համար հոսք "
 "արտադրությունը ենթահամակարգ."
 
-#: src/libvlc-module.c:957
+#: src/libvlc-module.c:959
 #, fuzzy
 msgid "Default stream output chain"
 msgstr "Լռությամբ հոսքի ելքային շղթայի"
 
-#: src/libvlc-module.c:959
+#: src/libvlc-module.c:961
 #, fuzzy
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
@@ -3407,33 +3407,33 @@ msgstr ""
 "փաստաթղթերը սովորելու, թե ինչպես կառուցել նման շղթաներով. Զգուշացում: Այս "
 "շղթայում կկարողանաք համար բոլոր հոսանքներին."
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:965
 #, fuzzy
 msgid "Enable streaming of all ES"
 msgstr "Միացնել Հոսքային բոլոր es"
 
-#: src/libvlc-module.c:965
+#: src/libvlc-module.c:967
 #, fuzzy
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr ""
 "հոսք բոլոր տարրական հոսքերի (վիդեո, աուդիո եւ տեքստային բացատրություններով)"
 
-#: src/libvlc-module.c:967
+#: src/libvlc-module.c:969
 #, fuzzy
 msgid "Display while streaming"
 msgstr "Ցույց տալ ժամանակ Հոսքային"
 
-#: src/libvlc-module.c:969
+#: src/libvlc-module.c:971
 #, fuzzy
 msgid "Play locally the stream while streaming it."
 msgstr "Play տեղում է հոսքային իսկ ՀӀ¸սքային այն\"."
 
-#: src/libvlc-module.c:971
+#: src/libvlc-module.c:973
 #, fuzzy
 msgid "Enable video stream output"
 msgstr "Միացնել վիդեո հոսքի ելքային"
 
-#: src/libvlc-module.c:973
+#: src/libvlc-module.c:975
 #, fuzzy
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
@@ -3442,12 +3442,12 @@ msgstr ""
 "Ընտրեք, թե արդյոք վիդեո հոսքի պետք է Վերահղված է հոսք արտադրությունը "
 "բուժհաստատությունների, երբ այս վերջին մեկ միացված է."
 
-#: src/libvlc-module.c:976
+#: src/libvlc-module.c:978
 #, fuzzy
 msgid "Enable audio stream output"
 msgstr "Միացնել ձայնային հոսքի ելքային"
 
-#: src/libvlc-module.c:978
+#: src/libvlc-module.c:980
 #, fuzzy
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
@@ -3456,12 +3456,12 @@ msgstr ""
 "Ընտրեք, թե արդյոք ձայնային հոսքի պետք է Վերահղված է հոսք արտադրությունը "
 "բուժհաստատությունների, երբ այս վերջին մեկ միացված է."
 
-#: src/libvlc-module.c:981
+#: src/libvlc-module.c:983
 #, fuzzy
 msgid "Enable SPU stream output"
 msgstr "Միացնել SPU հոսք ելքային"
 
-#: src/libvlc-module.c:983
+#: src/libvlc-module.c:985
 #, fuzzy
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
@@ -3470,12 +3470,12 @@ msgstr ""
 "Ընտրեք, թե արդյոք SPU հոսքերի պետք է Վերահղված է հոսք արտադրությունը "
 "բուժհաստատությունների, երբ այս վերջին մեկ միացված է."
 
-#: src/libvlc-module.c:986
+#: src/libvlc-module.c:988
 #, fuzzy
 msgid "Keep stream output open"
 msgstr "Պահել հոսքի ելքային բաց է`"
 
-#: src/libvlc-module.c:988
+#: src/libvlc-module.c:990
 #, fuzzy
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
@@ -3485,12 +3485,12 @@ msgstr ""
 "Սա թույլ է տալիս պահել եզակի հոսք արտադրությունը, օրինակ ողջ բազմակի "
 "երգացանկ նյութ (ավտոմատ մտցրեք հավաքվում հոսք արտադրությունը, եթե նշված չեն)"
 
-#: src/libvlc-module.c:992
+#: src/libvlc-module.c:994
 #, fuzzy
 msgid "Stream output muxer caching (ms)"
 msgstr "հոսք\" տողը մուլտիպլեքսոր քեշացման (MS) "
 
-#: src/libvlc-module.c:994
+#: src/libvlc-module.c:996
 #, fuzzy
 msgid ""
 "This allow you to configure the initial caching amount for stream output  "
@@ -3499,43 +3499,43 @@ msgstr ""
 "Դա թույլ են տալիս կարգավորել նախնական քեշացման գումարը համար առու տողը "
 "մուլտիպլեքսոր. Այս արժեքը պետք է սահմանված միլիվարկյաններով\"."
 
-#: src/libvlc-module.c:997
+#: src/libvlc-module.c:999
 #, fuzzy
 msgid "Preferred packetizer list"
 msgstr "Նախընտրած փաթեթավորիչ ցուցակում"
 
-#: src/libvlc-module.c:999
+#: src/libvlc-module.c:1001
 #, fuzzy
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr ""
 "Սա թույլ է տալիս ընտրել այն կարգը, որը VLC կունենա ընտրել իր packetizers\"."
 
-#: src/libvlc-module.c:1002
+#: src/libvlc-module.c:1004
 msgid "Mux module"
 msgstr "Մուլտիպլեքսոր մոդուլը"
 
-#: src/libvlc-module.c:1004
+#: src/libvlc-module.c:1006
 #, fuzzy
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr "Սա ժառանգություն մուտքը Ձեզ կարգավորել մուլտիպլեքսոր մոդուլներ"
 
-#: src/libvlc-module.c:1006
+#: src/libvlc-module.c:1008
 #, fuzzy
 msgid "Access output module"
 msgstr "Մուտքի ելքային մոդուլը"
 
-#: src/libvlc-module.c:1008
+#: src/libvlc-module.c:1010
 #, fuzzy
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr "Սա ժառանգություն մուտքը Ձեզ կարգավորել մուտք ելքային մոդուլներ"
 
-#: src/libvlc-module.c:1010
+#: src/libvlc-module.c:1012
 #, fuzzy
 msgid "Control SAP flow"
 msgstr "Ղեկավարել SAP հոսքի"
 
-#: src/libvlc-module.c:1012
+#: src/libvlc-module.c:1014
 #, fuzzy
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
@@ -3544,12 +3544,12 @@ msgstr ""
 "Եթե այս տարբերակը միացված է հոսքը վրա SAP multicast հասցեն վերահսկողության "
 "տակ. Սա անհրաժեշտ է, եթե ցանկանում եք կատարել մասին հայտարարությամբ MBone\"."
 
-#: src/libvlc-module.c:1016
+#: src/libvlc-module.c:1018
 #, fuzzy
 msgid "SAP announcement interval"
 msgstr "SAP հայտարարության մասին"
 
-#: src/libvlc-module.c:1018
+#: src/libvlc-module.c:1020
 #, fuzzy
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
@@ -3558,7 +3558,7 @@ msgstr ""
 "Երբ SAP հոսքերի վերահսկողության անջատված է այս թույլ է տալիս սահմանել "
 "հիմնական ընդմիջումից միջեւ SAP հայտարարություններ."
 
-#: src/libvlc-module.c:1027
+#: src/libvlc-module.c:1029
 #, fuzzy
 msgid ""
 "These options allow you to enable special CPU optimizations. You should "
@@ -3568,12 +3568,12 @@ msgstr ""
 "պրոցեսորի optimizations. Դուք միշտ պետք է թողնել այս ամենը թույլ է տրվում - "
 "թույլատրված\"."
 
-#: src/libvlc-module.c:1030
+#: src/libvlc-module.c:1032
 #, fuzzy
 msgid "Enable CPU MMX support"
 msgstr "Միացնել պրոցեսորի MMX աջակցություն"
 
-#: src/libvlc-module.c:1032
+#: src/libvlc-module.c:1034
 #, fuzzy
 msgid ""
 "If your processor supports the MMX instructions set, VLC can take advantage "
@@ -3582,12 +3582,12 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է MMX հրահանգներին սահմանված, VLC կարող է օգտվել "
 "նրանց\"."
 
-#: src/libvlc-module.c:1035
+#: src/libvlc-module.c:1037
 #, fuzzy
 msgid "Enable CPU 3D Now! support"
 msgstr "Միացնել պրոցեսորի 3D հիմա աջակցություն`"
 
-#: src/libvlc-module.c:1037
+#: src/libvlc-module.c:1039
 #, fuzzy
 msgid ""
 "If your processor supports the 3D Now! instructions set, VLC can take "
@@ -3596,12 +3596,12 @@ msgstr ""
 "Եթե ձեր մշակողը պաշտպանում 3D հիմա հրահանգներ ճամփա, VLC կարող է օգտվել նրանց"
 "\"."
 
-#: src/libvlc-module.c:1040
+#: src/libvlc-module.c:1042
 #, fuzzy
 msgid "Enable CPU MMX EXT support"
 msgstr "Միացնել պրոցեսորի MMX EXT աջակցություն"
 
-#: src/libvlc-module.c:1042
+#: src/libvlc-module.c:1044
 #, fuzzy
 msgid ""
 "If your processor supports the MMX EXT instructions set, VLC can take "
@@ -3610,12 +3610,12 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է MMX EXT հրահանգներին ճամփա, VLC կարող է օգտվել "
 "նրանց\"."
 
-#: src/libvlc-module.c:1045
+#: src/libvlc-module.c:1047
 #, fuzzy
 msgid "Enable CPU SSE support"
 msgstr "Միացնել պրոցեսորի SSE աջակցություն"
 
-#: src/libvlc-module.c:1047
+#: src/libvlc-module.c:1049
 #, fuzzy
 msgid ""
 "If your processor supports the SSE instructions set, VLC can take advantage "
@@ -3624,12 +3624,12 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է SSE հրահանգներին սահմանված, VLC կարող է օգտվել "
 "նրանց\"."
 
-#: src/libvlc-module.c:1050
+#: src/libvlc-module.c:1052
 #, fuzzy
 msgid "Enable CPU SSE2 support"
 msgstr "Միացնել պրոցեսորի SSE2 աջակցություն"
 
-#: src/libvlc-module.c:1052
+#: src/libvlc-module.c:1054
 #, fuzzy
 msgid ""
 "If your processor supports the SSE2 instructions set, VLC can take advantage "
@@ -3638,12 +3638,12 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է SSE2 հրահանգներին սահմանված, VLC կարող է օգտվել "
 "նրանց\"."
 
-#: src/libvlc-module.c:1055
+#: src/libvlc-module.c:1057
 #, fuzzy
 msgid "Enable CPU SSE3 support"
 msgstr "Միացնել պրոցեսորի SSE3 աջակցություն"
 
-#: src/libvlc-module.c:1057
+#: src/libvlc-module.c:1059
 #, fuzzy
 msgid ""
 "If your processor supports the SSE3 instructions set, VLC can take advantage "
@@ -3652,12 +3652,12 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է SSE3 հրահանգներին սահմանված, VLC կարող է օգտվել "
 "նրանց\"."
 
-#: src/libvlc-module.c:1060
+#: src/libvlc-module.c:1062
 #, fuzzy
 msgid "Enable CPU SSSE3 support"
 msgstr "Միացնել պրոցեսորի SSSE3 աջակցություն"
 
-#: src/libvlc-module.c:1062
+#: src/libvlc-module.c:1064
 #, fuzzy
 msgid ""
 "If your processor supports the SSSE3 instructions set, VLC can take "
@@ -3666,12 +3666,12 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է SSSE3 հրահանգներին սահմանված, VLC կարող է օգտվել "
 "նրանց\"."
 
-#: src/libvlc-module.c:1065
+#: src/libvlc-module.c:1067
 #, fuzzy
 msgid "Enable CPU SSE4.1 support"
 msgstr "Միացնել պրոցեսորի SSE4.1 աջակցություն"
 
-#: src/libvlc-module.c:1067
+#: src/libvlc-module.c:1069
 #, fuzzy
 msgid ""
 "If your processor supports the SSE4.1 instructions set, VLC can take "
@@ -3680,12 +3680,12 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է SSE4.1 հրահանգներին սահմանված, VLC կարող է օգտվել "
 "նրանց\"."
 
-#: src/libvlc-module.c:1070
+#: src/libvlc-module.c:1072
 #, fuzzy
 msgid "Enable CPU SSE4.2 support"
 msgstr "Միացնել պրոցեսորի SSE4.2 աջակցություն"
 
-#: src/libvlc-module.c:1072
+#: src/libvlc-module.c:1074
 #, fuzzy
 msgid ""
 "If your processor supports the SSE4.2 instructions set, VLC can take "
@@ -3694,12 +3694,12 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է SSE4.2 հրահանգներին սահմանված, VLC կարող է օգտվել "
 "նրանց\"."
 
-#: src/libvlc-module.c:1075
+#: src/libvlc-module.c:1077
 #, fuzzy
 msgid "Enable CPU AltiVec support"
 msgstr "Միացնել պրոցեսորի AltiVec աջակցություն"
 
-#: src/libvlc-module.c:1077
+#: src/libvlc-module.c:1079
 #, fuzzy
 msgid ""
 "If your processor supports the AltiVec instructions set, VLC can take "
@@ -3708,7 +3708,7 @@ msgstr ""
 "Եթե ձեր մշակողը աջակցում է AltiVec հրահանգներին սահմանված, VLC կարող է "
 "օգտվել նրանց\"."
 
-#: src/libvlc-module.c:1082
+#: src/libvlc-module.c:1084
 #, fuzzy
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
@@ -3717,12 +3717,12 @@ msgstr ""
 "Այս ընտրանքներ թույլ է տալիս Ձեզ ընտրել լռությամբ modules. Թողնել այս մենակ, "
 "եթե դուք իսկապես իմանալ, թե ինչ եք անում\"."
 
-#: src/libvlc-module.c:1085
+#: src/libvlc-module.c:1087
 #, fuzzy
 msgid "Memory copy module"
 msgstr "հիշողությունը պատճեն մոդուլը"
 
-#: src/libvlc-module.c:1087
+#: src/libvlc-module.c:1089
 #, fuzzy
 msgid ""
 "You can select which memory copy module you want to use. By default VLC will "
@@ -3731,12 +3731,12 @@ msgstr ""
 "Դուք կարող եք ընտրել, որի հիշողության պատճեն մոդուլ ցանկանում եք օգտվել. "
 "Լռությամբ VLC կընտրի ամենաարագ մեկ ապահովվում է ձեր սարք."
 
-#: src/libvlc-module.c:1090
+#: src/libvlc-module.c:1092
 #, fuzzy
 msgid "Access module"
 msgstr "Մուտքի մոդուլը"
 
-#: src/libvlc-module.c:1092
+#: src/libvlc-module.c:1094
 #, fuzzy
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
@@ -3747,22 +3747,22 @@ msgstr ""
 "ճիշտ մուտքը չէ ինքնաբերաբար հայտնաբերվել. Դուք չպետք է սահմանել սույն որպես "
 "համաշխարհային տարբերակ, եթե դուք իսկապես իմանալ, թե ինչ եք անում\"."
 
-#: src/libvlc-module.c:1096
+#: src/libvlc-module.c:1098
 #, fuzzy
 msgid "Stream filter module"
 msgstr "հոսք զտիչ մոդուլը"
 
-#: src/libvlc-module.c:1098
+#: src/libvlc-module.c:1100
 #, fuzzy
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr "հոսք ֆիլտրերի օգտագործվում են փոփոխել հոսքի, որ է կարդալ."
 
-#: src/libvlc-module.c:1100
+#: src/libvlc-module.c:1102
 #, fuzzy
 msgid "Demux module"
 msgstr "Դեմուլտիպլեքսոր մոդուլը"
 
-#: src/libvlc-module.c:1102
+#: src/libvlc-module.c:1104
 #, fuzzy
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
@@ -3775,11 +3775,11 @@ msgstr ""
 "դեմուլտիպլեքսոր չէ ինքնաբերաբար հայտնաբերվել. Դուք չպետք է սահմանել սույն "
 "որպես համաշխարհային տարբերակ, եթե դուք իսկապես ճանաչում թե ինչ եք անում \"."
 
-#: src/libvlc-module.c:1107
+#: src/libvlc-module.c:1109
 msgid "Allow real-time priority"
 msgstr "Թուլատրել real-time առաջնահերթություն"
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1111
 #, fuzzy
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
@@ -3793,12 +3793,12 @@ msgstr ""
 "այն շատ շատ դանդաղ. Դուք պետք է միայն ակտիվացնել այդ, եթե դուք գիտենք, թե "
 "ինչ եք անում \"."
 
-#: src/libvlc-module.c:1115
+#: src/libvlc-module.c:1117
 #, fuzzy
 msgid "Adjust VLC priority"
 msgstr "Բացել VLC առաջնահերթություն"
 
-#: src/libvlc-module.c:1117
+#: src/libvlc-module.c:1119
 #, fuzzy
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
@@ -3809,12 +3809,12 @@ msgstr ""
 "հիմնական առաջնահերթություններից է. Դուք կարող եք օգտագործել այն "
 "համապատասխանեցնելով VLC գերակա դեմ, այլ ծրագրեր, դեմ կամ այլ VLC ատյաններում."
 
-#: src/libvlc-module.c:1121
+#: src/libvlc-module.c:1123
 #, fuzzy
 msgid "(Experimental) Don't do caching at the access level."
 msgstr "(փորձնական) չեն անում քեշացման է մուտք մակարդակով\"."
 
-#: src/libvlc-module.c:1123
+#: src/libvlc-module.c:1125
 #, fuzzy
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
@@ -3822,12 +3822,12 @@ msgstr ""
 "Այս տարբերակը օգտակար է, եթե ցանկանում եք ավելի ցածր է latency երբ "
 "ընթերցմամբ հոսք"
 
-#: src/libvlc-module.c:1126
+#: src/libvlc-module.c:1128
 #, fuzzy
 msgid "Modules search path"
 msgstr "մոդուլներ որոնման ճանապարհին`"
 
-#: src/libvlc-module.c:1128
+#: src/libvlc-module.c:1130
 #, fuzzy
 msgid ""
 "Additional path for VLC to look for its modules. You can add several paths "
@@ -3836,91 +3836,91 @@ msgstr ""
 "Լրացուցիչ ճանապարհը VLC փնտրելու իր modules. Դուք կարող եք ավելացնել մի քանի "
 "ուղիներ է concatenating նրանց օգտագործելով \" PATH_SEP  \"որպես SEPARATOR"
 
-#: src/libvlc-module.c:1131
+#: src/libvlc-module.c:1133
 #, fuzzy
 msgid "Data search path"
 msgstr "Տվյալների որոնման ճանապարհին`"
 
-#: src/libvlc-module.c:1133
+#: src/libvlc-module.c:1135
 #, fuzzy
 msgid "Override the default data/share search path."
 msgstr "Վերագրել նախնական տվյալների / մասնաբաժինը որոնում ճանապարհը\"."
 
-#: src/libvlc-module.c:1135
+#: src/libvlc-module.c:1137
 #, fuzzy
 msgid "VLM configuration file"
 msgstr "VLM կոնֆիգուրացիան ֆայլը"
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1139
 #, fuzzy
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr "Կարդացեք VLM կոնֆիգուրացիա ֆայլի չափ շուտ VLM է սկսվել\"."
 
-#: src/libvlc-module.c:1139
+#: src/libvlc-module.c:1141
 #, fuzzy
 msgid "Use a plugins cache"
 msgstr "Օգտագործեք plugins cache"
 
-#: src/libvlc-module.c:1141
+#: src/libvlc-module.c:1143
 #, fuzzy
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr ""
 "Օգտագործեք plugins cache որը մեծապես բարելավել նորաստեղծ ժամանակ VLC\"."
 
-#: src/libvlc-module.c:1143
+#: src/libvlc-module.c:1145
 #, fuzzy
 msgid "Locally collect statistics"
 msgstr "Տեղային հավաքել վիճակագրություն"
 
-#: src/libvlc-module.c:1145
+#: src/libvlc-module.c:1147
 msgid "Collect miscellaneous local statistics about the playing media."
 msgstr "Հավաքում է տարատեսակ վիճակագրությունն աշխատող մեդիայի մասին."
 
-#: src/libvlc-module.c:1147
+#: src/libvlc-module.c:1149
 #, fuzzy
 msgid "Run as daemon process"
 msgstr "առաջադրվել է որպես daemon գործընթացի"
 
-#: src/libvlc-module.c:1149
+#: src/libvlc-module.c:1151
 #, fuzzy
 msgid "Runs VLC as a background daemon process."
 msgstr " ասվում VLC որպես ֆոն daemon գործընթացը \"."
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1153
 #, fuzzy
 msgid "Write process id to file"
 msgstr "Գրել գործընթացը ինքն է ֆայլը"
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1155
 #, fuzzy
 msgid "Writes process id into specified file."
 msgstr " գրում գործընթացը id մեջ նշված ֆայլը \"."
 
-#: src/libvlc-module.c:1155
+#: src/libvlc-module.c:1157
 #, fuzzy
 msgid "Log to file"
 msgstr "Մուտք դեպի ֆայլը"
 
-#: src/libvlc-module.c:1157
+#: src/libvlc-module.c:1159
 #, fuzzy
 msgid "Log all VLC messages to a text file."
 msgstr "Մուտք բոլոր VLC հաղորդագրությունները տեքստային ֆայլ."
 
-#: src/libvlc-module.c:1159
+#: src/libvlc-module.c:1161
 #, fuzzy
 msgid "Log to syslog"
 msgstr "Մուտք դեպի syslog"
 
-#: src/libvlc-module.c:1161
+#: src/libvlc-module.c:1163
 #, fuzzy
 msgid "Log all VLC messages to syslog (UNIX systems)."
 msgstr "Մուտք բոլոր VLC հաղորդագրությունները syslog (UNIX համակարգեր)."
 
-#: src/libvlc-module.c:1163
+#: src/libvlc-module.c:1165
 msgid "Allow only one running instance"
 msgstr "Թույլ տալ միայն մեկ աշխատող օրինակ"
 
-#: src/libvlc-module.c:1166
+#: src/libvlc-module.c:1168
 #, fuzzy
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
@@ -3935,7 +3935,7 @@ msgstr ""
 "սեղմեք վրա ֆայլը որ explorer. Այս տարբերակը թույլ կտա ձեզ խաղալ ֆայլի հետ "
 "արդեն հոսող Օրինակ, կամ հերթի մեջ դնել այն \"."
 
-#: src/libvlc-module.c:1173
+#: src/libvlc-module.c:1175
 #, fuzzy
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
@@ -3953,31 +3953,31 @@ msgstr ""
 "daemon լինել ակտիվ եւ վարման ատյանի VLC օգտագործել D-Bus վերահսկողության "
 "ինտերֆեյսի."
 
-#: src/libvlc-module.c:1182
+#: src/libvlc-module.c:1184
 #, fuzzy
 msgid "VLC is started from file association"
 msgstr "VLC է սկսել ֆայլի միություն"
 
-#: src/libvlc-module.c:1184
+#: src/libvlc-module.c:1186
 #, fuzzy
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr "Tell VLC, որ դա է մեկնարկել պայմանավորված է մի ֆայլ ասոցիացիայի է OS"
 
-#: src/libvlc-module.c:1187
+#: src/libvlc-module.c:1189
 #, fuzzy
 msgid "One instance when started from file"
 msgstr "Մեկ օրինակ, երբ սկսել է ֆայլը"
 
-#: src/libvlc-module.c:1189
+#: src/libvlc-module.c:1191
 msgid "Allow only one running instance when started from file."
 msgstr "Թույլ տալ միայն մեկ աշխատող օրինակ, երբ միացվում է ֆայլից:"
 
-#: src/libvlc-module.c:1191
+#: src/libvlc-module.c:1193
 #, fuzzy
 msgid "Increase the priority of the process"
 msgstr "Բարձրացնել առաջնային գործընթացի"
 
-#: src/libvlc-module.c:1193
+#: src/libvlc-module.c:1195
 #, fuzzy
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
@@ -3994,12 +3994,12 @@ msgstr ""
 "ժամանակ, եւ ցույց է տրվում ամբողջ համակարգի unresponsive, որը կարող է "
 "պահանջում reboot ձեր մեքենայի ."
 
-#: src/libvlc-module.c:1201
+#: src/libvlc-module.c:1203
 #, fuzzy
 msgid "Enqueue items to playlist when in one instance mode"
 msgstr "Հերթի մեջ դնել տարրե¥ր է երգացանկ, եԀԡ¢ մեկ օրինակ ռեժիմում"
 
-#: src/libvlc-module.c:1203
+#: src/libvlc-module.c:1205
 #, fuzzy
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
@@ -4008,7 +4008,7 @@ msgstr ""
 "Երբ օգտագործելով մեկ օրինակ միայն տարբերակը, հերթի մեջ դնել իրեր են երգացանկ "
 "եւ պահել խաղալու ընթացիկ կետ."
 
-#: src/libvlc-module.c:1212
+#: src/libvlc-module.c:1214
 #, fuzzy
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
@@ -4017,12 +4017,12 @@ msgstr ""
 "Այս ընտրանքներ սահմանում պահվածքը երգացանկ. Նրանցից ոմանք կարող են "
 "overridden է երգացանկ երկխոսությունը արկղը\"."
 
-#: src/libvlc-module.c:1215
+#: src/libvlc-module.c:1217
 #, fuzzy
 msgid "Automatically preparse files"
 msgstr "Ավտոմատ preparse ֆայլեր"
 
-#: src/libvlc-module.c:1217
+#: src/libvlc-module.c:1219
 #, fuzzy
 msgid ""
 "Automatically preparse files added to the playlist (to retrieve some "
@@ -4031,33 +4031,33 @@ msgstr ""
 "Ավտոմատ preparse ֆայլեր ավելացված է երգացանկ (որոնում որոշ տվյալներ "
 "տվյալների մասին)."
 
-#: src/libvlc-module.c:1220
+#: src/libvlc-module.c:1222
 #, fuzzy
 msgid "Album art policy"
 msgstr "ալբոմը արվեստի քաղաքականությունը"
 
-#: src/libvlc-module.c:1222
+#: src/libvlc-module.c:1224
 #, fuzzy
 msgid "Choose how album art will be downloaded."
 msgstr "Ընտրեք, թե ինչպես ալբոմ արվեստի կլինի ստանալ\"."
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1230
 msgid "Manual download only"
 msgstr "Միայն ուղղակի բեռնում"
 
-#: src/libvlc-module.c:1229
+#: src/libvlc-module.c:1231
 msgid "When track starts playing"
 msgstr "Միացվելուն պես"
 
-#: src/libvlc-module.c:1230
+#: src/libvlc-module.c:1232
 msgid "As soon as track is added"
 msgstr "Ավելացվելուն պես"
 
-#: src/libvlc-module.c:1232
+#: src/libvlc-module.c:1234
 msgid "Services discovery modules"
 msgstr "Ծառայությունների հայտնաբերման մոդուլներ"
 
-#: src/libvlc-module.c:1234
+#: src/libvlc-module.c:1236
 #, fuzzy
 msgid ""
 "Specifies the services discovery modules to load, separated by colons. "
@@ -4067,66 +4067,66 @@ msgstr ""
 "առանձնանում են կիսա - colons. Տիպային արժեքները գտնվում են կենսունակություն, "
 "hal, ..."
 
-#: src/libvlc-module.c:1237
+#: src/libvlc-module.c:1239
 msgid "Play files randomly forever"
 msgstr "Աշխատացնել ֆայլեր պատահական ձևով՝ անընդհատ"
 
-#: src/libvlc-module.c:1239
+#: src/libvlc-module.c:1241
 #, fuzzy
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr ""
 "VLC կունենա պատահականորեն խաղալու ֆայլեր է երգացանկ մինչեւ ընդհատված\"."
 
-#: src/libvlc-module.c:1241
+#: src/libvlc-module.c:1243
 msgid "Repeat all"
 msgstr "Կրկնել բոլորը"
 
-#: src/libvlc-module.c:1243
+#: src/libvlc-module.c:1245
 #, fuzzy
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr "VLC կշարունակի խաղալ երգացանկ է անժամկետ."
 
-#: src/libvlc-module.c:1245
+#: src/libvlc-module.c:1247
 msgid "Repeat current item"
 msgstr "Կրկնել ընթացիկը"
 
-#: src/libvlc-module.c:1247
+#: src/libvlc-module.c:1249
 #, fuzzy
 msgid "VLC will keep playing the current playlist item."
 msgstr "VLC կշարունակի խաղալ ներկա երգացանկ կետ."
 
-#: src/libvlc-module.c:1249
+#: src/libvlc-module.c:1251
 msgid "Play and stop"
 msgstr "Աշխատացնել և կանգնել"
 
-#: src/libvlc-module.c:1251
+#: src/libvlc-module.c:1253
 #, fuzzy
 msgid "Stop the playlist after each played playlist item."
 msgstr "Կանգնեցրու երգացանկ հետո յուրաքանչյուր խաղում երգացանկ կետ."
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1255
 msgid "Play and exit"
 msgstr "Աշխատացնել և անջատվել"
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1257
 #, fuzzy
 msgid "Exit if there are no more items in the playlist."
 msgstr "Ելք եթե չկան այլ նյութերի երգացանկ\"."
 
-#: src/libvlc-module.c:1257
+#: src/libvlc-module.c:1259
 msgid "Play and pause"
 msgstr "Աշխատացնել և ընդմիջել"
 
-#: src/libvlc-module.c:1259
+#: src/libvlc-module.c:1261
 #, fuzzy
 msgid "Pause each item in the playlist on the last frame."
 msgstr "Դադարեցնել յուրաքանչյուր կետին, երգացանկ վերջին շրջանակի\"."
 
-#: src/libvlc-module.c:1261
+#: src/libvlc-module.c:1263
 msgid "Use media library"
 msgstr "Օգտագործել մեդիա գրադարան"
 
-#: src/libvlc-module.c:1263
+#: src/libvlc-module.c:1265
 #, fuzzy
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
@@ -4135,12 +4135,12 @@ msgstr ""
 "Լրատվության գրադարանի է ավտոմատ կերպով պահվում են եւ reloaded յուրաքանչյուր "
 "անգամ, երբ Դուք սկսում եք VLC\"."
 
-#: src/libvlc-module.c:1266
+#: src/libvlc-module.c:1268
 #, fuzzy
 msgid "Display playlist tree"
 msgstr "Ցույց տալ երգացանկ ծառ"
 
-#: src/libvlc-module.c:1268
+#: src/libvlc-module.c:1270
 #, fuzzy
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
@@ -4149,14 +4149,14 @@ msgstr ""
 "ՀՀ երգացանկ կարող եք օգտագործել ծառ է դասակարգումը որոշ իրեր, նման "
 "բովանդակությամբ մի պանակ."
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1279
 #, fuzzy
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 "Այս կայանքները են համաշխարհային VLC հիմնական bindings, որը հայտնի է որպես \" "
 "կոճակ  \"."
 
-#: src/libvlc-module.c:1280 src/video_output/vout_intf.c:357
+#: src/libvlc-module.c:1282 src/video_output/vout_intf.c:357
 #: modules/gui/macosx/controls.m:454 modules/gui/macosx/controls.m:510
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
@@ -4167,120 +4167,120 @@ msgstr ""
 msgid "Fullscreen"
 msgstr "Ողջ էկրանով"
 
-#: src/libvlc-module.c:1281
+#: src/libvlc-module.c:1283
 #, fuzzy
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr "Ընտրեք կոճակ օգտագործել է swap ողջ էկրանով վիճակ\"."
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1284
 msgid "Leave fullscreen"
 msgstr "Վերադառնալ ողջ էկրանով ռեժիմից"
 
-#: src/libvlc-module.c:1283
+#: src/libvlc-module.c:1285
 #, fuzzy
 msgid "Select the hotkey to use to leave fullscreen state."
 msgstr "Ընտրեք կոճակ օգտագործել թողնել ողջ էկրանով վիճակ\"."
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1286
 msgid "Play/Pause"
 msgstr "Միացնել / Ընդմիջել"
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1287
 #, fuzzy
 msgid "Select the hotkey to use to swap paused state."
 msgstr "Ընտրեք կոճակ օգտագործել է swap Ընդմիջված վիճակ\"."
 
-#: src/libvlc-module.c:1286
+#: src/libvlc-module.c:1288
 msgid "Pause only"
 msgstr "Միայն Ընդմիջել"
 
-#: src/libvlc-module.c:1287
+#: src/libvlc-module.c:1289
 #, fuzzy
 msgid "Select the hotkey to use to pause."
 msgstr "Ընտրեք կոճակ օգտագործել է դադար\"."
 
-#: src/libvlc-module.c:1288
+#: src/libvlc-module.c:1290
 msgid "Play only"
 msgstr "Միայն միացնել"
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1291
 #, fuzzy
 msgid "Select the hotkey to use to play."
 msgstr "Ընտրեք կոճակ օգտագործել է խաղալ\"."
 
-#: src/libvlc-module.c:1290 modules/gui/macosx/controls.m:1010
+#: src/libvlc-module.c:1292 modules/gui/macosx/controls.m:1010
 #: modules/gui/macosx/intf.m:649 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Faster"
 msgstr "Ավելի արագ "
 
-#: src/libvlc-module.c:1291 src/libvlc-module.c:1297
+#: src/libvlc-module.c:1293 src/libvlc-module.c:1299
 #, fuzzy
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "Ընտրեք կոճակ օգտագործելու համար արագ առաջ ընթացք\"."
 
-#: src/libvlc-module.c:1292 modules/gui/macosx/controls.m:1011
+#: src/libvlc-module.c:1294 modules/gui/macosx/controls.m:1011
 #: modules/gui/macosx/intf.m:650 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Slower"
 msgstr "Ավելի դանդաղ"
 
-#: src/libvlc-module.c:1293 src/libvlc-module.c:1299
+#: src/libvlc-module.c:1295 src/libvlc-module.c:1301
 #, fuzzy
 msgid "Select the hotkey to use for slow motion playback."
 msgstr "Ընտրեք կոճակ օգտագործելու համար դանդաղ միջնորդությունը ընթացք\"."
 
-#: src/libvlc-module.c:1294 modules/gui/macosx/controls.m:1012
+#: src/libvlc-module.c:1296 modules/gui/macosx/controls.m:1012
 #: modules/gui/macosx/intf.m:651
 msgid "Normal rate"
 msgstr "Նորմալ արագություն"
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1297
 #, fuzzy
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Ընտրեք կոճակ սահմանելու ընթացք փոխարժեքը ետ նորմալ\"."
 
-#: src/libvlc-module.c:1296 modules/gui/qt4/menus.cpp:808
+#: src/libvlc-module.c:1298 modules/gui/qt4/menus.cpp:808
 msgid "Faster (fine)"
 msgstr "Ավելի արագ (չնչին)"
 
-#: src/libvlc-module.c:1298 modules/gui/qt4/menus.cpp:816
+#: src/libvlc-module.c:1300 modules/gui/qt4/menus.cpp:816
 msgid "Slower (fine)"
 msgstr "Ավելի դանդաղ (չնչին)"
 
-#: src/libvlc-module.c:1300 modules/control/hotkeys.c:696
+#: src/libvlc-module.c:1302 modules/control/hotkeys.c:696
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
+#: modules/misc/notify/notify.c:339 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Հաջորդ"
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1303
 #, fuzzy
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "Ընտրեք կոճակ օգտագործել է ցատկանցելու հաջորդ կետին, երգացանկ\"."
 
-#: src/libvlc-module.c:1302 modules/control/hotkeys.c:702
+#: src/libvlc-module.c:1304 modules/control/hotkeys.c:702
 #: modules/gui/macosx/about.m:194 modules/gui/macosx/controls.m:1031
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
+#: modules/misc/notify/notify.c:337 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Նախորդ"
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1305
 #, fuzzy
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr "Ընտրեք կոճակ օգտագործել է ցատկանցելու նախորդ կետին, երգացանկ\"."
 
-#: src/libvlc-module.c:1304 modules/gui/macosx/controls.m:1023
+#: src/libvlc-module.c:1306 modules/gui/macosx/controls.m:1023
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:603
 #: modules/gui/macosx/intf.m:648 modules/gui/macosx/intf.m:740
 #: modules/gui/macosx/intf.m:747 modules/gui/qt4/components/controller.hpp:104
@@ -4288,12 +4288,12 @@ msgstr "Ընտրեք կոճակ օգտագործել է ցատկանցելու �
 msgid "Stop"
 msgstr "Կանգնեցնել"
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1307
 #, fuzzy
 msgid "Select the hotkey to stop playback."
 msgstr "Ընտրեք կոճակ դադարեցնել ընթացք\"."
 
-#: src/libvlc-module.c:1306 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
+#: src/libvlc-module.c:1308 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:70 modules/gui/macosx/intf.m:608
 #: modules/video_filter/marq.c:158 modules/video_filter/rss.c:201
@@ -4301,727 +4301,727 @@ msgstr "Ընտրեք կոճակ դադարեցնել ընթացք\"."
 msgid "Position"
 msgstr "Դիրք"
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1309
 #, fuzzy
 msgid "Select the hotkey to display the position."
 msgstr "Ընտրեք կոճակ ցուցադրելու դիրքորոշումը\"."
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1311
 msgid "Very short backwards jump"
 msgstr "Շատ քիչ ետ գնալ"
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1313
 #, fuzzy
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr "Ընտրեք կոճակ դարձնել մի շատ կարճ հետընթաց թռնել\"."
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1314
 msgid "Short backwards jump"
 msgstr "Մի փոքր ետ գնալ"
 
-#: src/libvlc-module.c:1314
+#: src/libvlc-module.c:1316
 #, fuzzy
 msgid "Select the hotkey to make a short backwards jump."
 msgstr "Ընտրեք կոճակ կատարել կարճ հետընթաց թռնել\"."
 
-#: src/libvlc-module.c:1315
+#: src/libvlc-module.c:1317
 msgid "Medium backwards jump"
 msgstr "Միջին չափով ետ տալ"
 
-#: src/libvlc-module.c:1317
+#: src/libvlc-module.c:1319
 #, fuzzy
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr "Ընտրեք կոճակ կատարել միջին հետընթաց թռնել\"."
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1320
 msgid "Long backwards jump"
 msgstr "Շատ ետ տալ"
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1322
 #, fuzzy
 msgid "Select the hotkey to make a long backwards jump."
 msgstr "Ընտրեք կոճակ կատարել երկար հետընթաց թռնել\"."
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1324
 msgid "Very short forward jump"
 msgstr "Շատ քիչ առաջ տալ"
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1326
 #, fuzzy
 msgid "Select the hotkey to make a very short forward jump."
 msgstr "Ընտրեք կոճակ դարձնել մի շատ կարճ առաջ թռնել\"."
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1327
 msgid "Short forward jump"
 msgstr "Մի փոքր առաջ տալ"
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1329
 #, fuzzy
 msgid "Select the hotkey to make a short forward jump."
 msgstr "Ընտրեք կոճակ կատարել կարճ առաջ թռնել\"."
 
-#: src/libvlc-module.c:1328
+#: src/libvlc-module.c:1330
 msgid "Medium forward jump"
 msgstr "Միջին չափով առաջ տալ"
 
-#: src/libvlc-module.c:1330
+#: src/libvlc-module.c:1332
 #, fuzzy
 msgid "Select the hotkey to make a medium forward jump."
 msgstr "Ընտրեք կոճակ կատարել միջին առաջ թռնել\"."
 
-#: src/libvlc-module.c:1331
+#: src/libvlc-module.c:1333
 msgid "Long forward jump"
 msgstr "Շատ առաջ տալ"
 
-#: src/libvlc-module.c:1333
+#: src/libvlc-module.c:1335
 #, fuzzy
 msgid "Select the hotkey to make a long forward jump."
 msgstr "Ընտրեք կոճակ կատարել երկար առաջ թռնել\"."
 
-#: src/libvlc-module.c:1334 modules/control/hotkeys.c:713
+#: src/libvlc-module.c:1336 modules/control/hotkeys.c:713
 msgid "Next frame"
 msgstr "Հաջորդ կադր"
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1338
 #, fuzzy
 msgid "Select the hotkey to got to the next video frame."
 msgstr "Ընտրեք կոճակ է ստացել հաջորդ վիդեո շրջանակի\"."
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1340
 msgid "Very short jump length"
 msgstr "ՇատՇատ քիչ առաջ տալու չափ"
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1341
 msgid "Very short jump length, in seconds."
 msgstr "Շատ քիչ առաջ տալու չափ, վայրկյաններով"
 
-#: src/libvlc-module.c:1340
+#: src/libvlc-module.c:1342
 msgid "Short jump length"
 msgstr "Մի փոքր առաջ գնալու չափ"
 
-#: src/libvlc-module.c:1341
+#: src/libvlc-module.c:1343
 msgid "Short jump length, in seconds."
 msgstr "Մի փոքր առաջ գնալու չափ, վայրկյաններով"
 
-#: src/libvlc-module.c:1342
+#: src/libvlc-module.c:1344
 msgid "Medium jump length"
 msgstr "Միջին չափով առաջ տալու չափ, վայրկյաններով"
 
-#: src/libvlc-module.c:1343
+#: src/libvlc-module.c:1345
 msgid "Medium jump length, in seconds."
 msgstr "Միջին չափով առաջ տալու չափ, վայրկյաններով"
 
-#: src/libvlc-module.c:1344
+#: src/libvlc-module.c:1346
 msgid "Long jump length"
 msgstr "Շատ առաջ տալու չափ"
 
-#: src/libvlc-module.c:1345
+#: src/libvlc-module.c:1347
 msgid "Long jump length, in seconds."
 msgstr "Շատ առաջ տալու չափ, վայրկյաններով"
 
-#: src/libvlc-module.c:1347 modules/control/hotkeys.c:179
+#: src/libvlc-module.c:1349 modules/control/hotkeys.c:179
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:118 modules/gui/qt4/menus.cpp:883
 #: modules/gui/skins2/commands/cmd_quit.cpp:40
 msgid "Quit"
 msgstr "Անջատել"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1350
 #, fuzzy
 msgid "Select the hotkey to quit the application."
 msgstr "Ընտրեք կոճակ թողնել դիմումը."
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1351
 msgid "Navigate up"
 msgstr "Գնալ վերև"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1352
 #, fuzzy
 msgid "Select the key to move the selector up in DVD menus."
 msgstr "Ընտրել բանալին տեղափոխել selector հայտնվում են DVD բաժիններում."
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1353
 msgid "Navigate down"
 msgstr "Գնալ ներքեւ"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1354
 #, fuzzy
 msgid "Select the key to move the selector down in DVD menus."
 msgstr "Ընտրել բանալին տեղափոխել selector ցած է DVD բաժիններում."
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1355
 msgid "Navigate left"
 msgstr "Գնալ ձախ"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1356
 #, fuzzy
 msgid "Select the key to move the selector left in DVD menus."
 msgstr "Ընտրել բանալին տեղափոխել selector մնացել DVD բաժիններում."
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1357
 msgid "Navigate right"
 msgstr "Գնալ աջ"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1358
 #, fuzzy
 msgid "Select the key to move the selector right in DVD menus."
 msgstr "Ընտրել բանալին տեղափոխել selector իրավունքից DVD բաժիններում."
 
-#: src/libvlc-module.c:1357
+#: src/libvlc-module.c:1359
 msgid "Activate"
 msgstr "Ակտիվացնել"
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1360
 #, fuzzy
 msgid "Select the key to activate selected item in DVD menus."
 msgstr "Ընտրել բանալին ակտիվացնելու համար ընտրված նյութ է DVD բաժիններում."
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1361
 msgid "Go to the DVD menu"
 msgstr "Գնալ դեպի DVDի ցանկ"
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1362
 #, fuzzy
 msgid "Select the key to take you to the DVD menu"
 msgstr "Ընտրել բանալին տանում են դեպի այն DVD ցանկի մեջ"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1363
 msgid "Select previous DVD title"
 msgstr "Ընտրել DVDի նախորդ վերնագիրը"
 
-#: src/libvlc-module.c:1362
+#: src/libvlc-module.c:1364
 #, fuzzy
 msgid "Select the key to choose the previous title from the DVD"
 msgstr "Ընտրել բանալին ընտրել նախորդ անվանումը ից DVD"
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1365
 msgid "Select next DVD title"
 msgstr "ԸԸնտրել DVDի հաջորդ վերնագիրը"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1366
 #, fuzzy
 msgid "Select the key to choose the next title from the DVD"
 msgstr "Ընտրել բանալին ընտրել հաջորդ անվանումը ից DVD"
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1367
 msgid "Select prev DVD chapter"
 msgstr "Ընտրել DVDի նախորդ բաժինը"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1368
 #, fuzzy
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr "Ընտրել բանալին ընտրել նախորդ գլխում է DVD"
 
-#: src/libvlc-module.c:1367
+#: src/libvlc-module.c:1369
 msgid "Select next DVD chapter"
 msgstr "Ընտրել DVDի հաջորդ բաժինը"
 
-#: src/libvlc-module.c:1368
+#: src/libvlc-module.c:1370
 #, fuzzy
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "Ընտրել բանալին ընտրել է հաջորդ գլխի են DVD"
 
-#: src/libvlc-module.c:1369
+#: src/libvlc-module.c:1371
 msgid "Volume up"
 msgstr "Ձայնը բարձրացնել"
 
-#: src/libvlc-module.c:1370
+#: src/libvlc-module.c:1372
 #, fuzzy
 msgid "Select the key to increase audio volume."
 msgstr "Ընտրել բանալին բարձրացմանը ձայն ծավալով\"."
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1373
 msgid "Volume down"
 msgstr "Ձայնը իջացնել"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1374
 #, fuzzy
 msgid "Select the key to decrease audio volume."
 msgstr "Ընտրել բանալին նվազում ձայն ծավալով\"."
 
-#: src/libvlc-module.c:1373 modules/access/v4l2.c:175
+#: src/libvlc-module.c:1375 modules/access/v4l2.c:175
 #: modules/gui/macosx/controls.m:1077 modules/gui/macosx/intf.m:671
 #: modules/gui/macosx/intf.m:743 modules/gui/macosx/intf.m:752
 #: modules/gui/qt4/menus.cpp:572
 msgid "Mute"
 msgstr "Անջատել ձայնը"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1376
 #, fuzzy
 msgid "Select the key to mute audio."
 msgstr "Ընտրել բանալին համր աուդիո\"."
 
-#: src/libvlc-module.c:1375
+#: src/libvlc-module.c:1377
 msgid "Subtitle delay up"
 msgstr "Ենթագրի հապաղումը մեծացնել"
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1378
 #, fuzzy
 msgid "Select the key to increase the subtitle delay."
 msgstr "Ընտրել բանալին բարձրացնել ենթագիր ուշացումով."
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1379
 msgid "Subtitle delay down"
 msgstr "Ենթագրի հապաղումը փոքրացնել"
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1380
 #, fuzzy
 msgid "Select the key to decrease the subtitle delay."
 msgstr "Ընտրել բանալին նվազեցնել ենթագիր ուշացումով."
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1381
 msgid "Subtitle position up"
 msgstr "Ենթագիրը բարձրացնել"
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1382
 #, fuzzy
 msgid "Select the key to move subtitles higher."
 msgstr "Ընտրել բանալին շարժվել ենթագրերով բարձր\"."
 
-#: src/libvlc-module.c:1381
+#: src/libvlc-module.c:1383
 msgid "Subtitle position down"
 msgstr "Ենթագիրը իջացնել"
 
-#: src/libvlc-module.c:1382
+#: src/libvlc-module.c:1384
 #, fuzzy
 msgid "Select the key to move subtitles lower."
 msgstr "Ընտրել բանալին շարժվել ենթագրերով ավելի ցածր."
 
-#: src/libvlc-module.c:1383
+#: src/libvlc-module.c:1385
 msgid "Audio delay up"
 msgstr "Ձայնի հապաղումը մեծացնել"
 
-#: src/libvlc-module.c:1384
+#: src/libvlc-module.c:1386
 #, fuzzy
 msgid "Select the key to increase the audio delay."
 msgstr "Ընտրել բանալին բարձրացնել աուդիո ուշացումով."
 
-#: src/libvlc-module.c:1385
+#: src/libvlc-module.c:1387
 msgid "Audio delay down"
 msgstr "Ձայնի հապաղումը փոքրացնել"
 
-#: src/libvlc-module.c:1386
+#: src/libvlc-module.c:1388
 #, fuzzy
 msgid "Select the key to decrease the audio delay."
 msgstr "Ընտրել բանալին նվազեցնել աուդիո ուշացումով."
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1395
 msgid "Play playlist bookmark 1"
 msgstr "Միացնել երգացանկի էջանիշ 1-ը"
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1396
 msgid "Play playlist bookmark 2"
 msgstr "Միացնել երգացանկի էջանիշ 2-ը"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1397
 msgid "Play playlist bookmark 3"
 msgstr "Միացնել երգացանկի էջանիշ 3-ը"
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1398
 msgid "Play playlist bookmark 4"
 msgstr "Միացնել երգացանկի էջանիշ 4-ը"
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1399
 msgid "Play playlist bookmark 5"
 msgstr "Միացնել երգացանկի էջանիշ 5-ը"
 
-#: src/libvlc-module.c:1398
+#: src/libvlc-module.c:1400
 msgid "Play playlist bookmark 6"
 msgstr "Միացնել երգացանկի էջանիշ 6-ը"
 
-#: src/libvlc-module.c:1399
+#: src/libvlc-module.c:1401
 msgid "Play playlist bookmark 7"
 msgstr "Միացնել երգացանկի էջանիշ 7-ը"
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1402
 msgid "Play playlist bookmark 8"
 msgstr "Միացնել երգացանկի էջանիշ 8-ը"
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1403
 msgid "Play playlist bookmark 9"
 msgstr "Միացնել երգացանկի էջանիշ 9-ը"
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1404
 msgid "Play playlist bookmark 10"
 msgstr "Միացնել երգացանկի էջանիշ 10-ը"
 
-#: src/libvlc-module.c:1403
+#: src/libvlc-module.c:1405
 #, fuzzy
 msgid "Select the key to play this bookmark."
 msgstr "Ընտրել բանալին խաղալ Այս էջանիշի\"."
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1406
 msgid "Set playlist bookmark 1"
 msgstr "Սահմանել երգացանկի էջանիշ 1"
 
-#: src/libvlc-module.c:1405
+#: src/libvlc-module.c:1407
 msgid "Set playlist bookmark 2"
 msgstr "Սահմանել երգացանկի էջանիշ 2"
 
-#: src/libvlc-module.c:1406
+#: src/libvlc-module.c:1408
 msgid "Set playlist bookmark 3"
 msgstr "Սահմանել երգացանկի էջանիշ 3"
 
-#: src/libvlc-module.c:1407
+#: src/libvlc-module.c:1409
 msgid "Set playlist bookmark 4"
 msgstr "Սահմանել երգացանկի էջանիշ 4"
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1410
 msgid "Set playlist bookmark 5"
 msgstr "Սահմանել երգացանկի էջանիշ 5"
 
-#: src/libvlc-module.c:1409
+#: src/libvlc-module.c:1411
 msgid "Set playlist bookmark 6"
 msgstr "Սահմանել երգացանկի էջանիշ 6"
 
-#: src/libvlc-module.c:1410
+#: src/libvlc-module.c:1412
 msgid "Set playlist bookmark 7"
 msgstr "Սահմանել երգացանկի էջանիշ 7"
 
-#: src/libvlc-module.c:1411
+#: src/libvlc-module.c:1413
 msgid "Set playlist bookmark 8"
 msgstr "Սահմանել երգացանկի էջանիշ 8"
 
-#: src/libvlc-module.c:1412
+#: src/libvlc-module.c:1414
 msgid "Set playlist bookmark 9"
 msgstr "Սահմանել երգացանկի էջանիշ 9"
 
-#: src/libvlc-module.c:1413
+#: src/libvlc-module.c:1415
 msgid "Set playlist bookmark 10"
 msgstr "Սահմանել երգացանկի էջանիշ 10"
 
-#: src/libvlc-module.c:1414
+#: src/libvlc-module.c:1416
 #, fuzzy
 msgid "Select the key to set this playlist bookmark."
 msgstr "Ընտրել բանալին սահմանել սույն երգացանկ Էջանիշ\"."
 
-#: src/libvlc-module.c:1416
+#: src/libvlc-module.c:1418
 msgid "Playlist bookmark 1"
 msgstr "Երգացանկի Էջանիշ 1"
 
-#: src/libvlc-module.c:1417
+#: src/libvlc-module.c:1419
 msgid "Playlist bookmark 2"
 msgstr "Երգացանկի Էջանիշ 2"
 
-#: src/libvlc-module.c:1418
+#: src/libvlc-module.c:1420
 msgid "Playlist bookmark 3"
 msgstr "Երգացանկի Էջանիշ 3"
 
-#: src/libvlc-module.c:1419
+#: src/libvlc-module.c:1421
 msgid "Playlist bookmark 4"
 msgstr "Երգացանկի Էջանիշ 4"
 
-#: src/libvlc-module.c:1420
+#: src/libvlc-module.c:1422
 msgid "Playlist bookmark 5"
 msgstr "Երգացանկի Էջանիշ 5"
 
-#: src/libvlc-module.c:1421
+#: src/libvlc-module.c:1423
 msgid "Playlist bookmark 6"
 msgstr "Երգացանկի Էջանիշ 6"
 
-#: src/libvlc-module.c:1422
+#: src/libvlc-module.c:1424
 msgid "Playlist bookmark 7"
 msgstr "Երգացանկի Էջանիշ 7"
 
-#: src/libvlc-module.c:1423
+#: src/libvlc-module.c:1425
 msgid "Playlist bookmark 8"
 msgstr "Երգացանկի Էջանիշ 8"
 
-#: src/libvlc-module.c:1424
+#: src/libvlc-module.c:1426
 msgid "Playlist bookmark 9"
 msgstr "Երգացանկի Էջանիշ 9"
 
-#: src/libvlc-module.c:1425
+#: src/libvlc-module.c:1427
 msgid "Playlist bookmark 10"
 msgstr "Երգացանկի Էջանիշ 10"
 
-#: src/libvlc-module.c:1427
+#: src/libvlc-module.c:1429
 #, fuzzy
 msgid "This allows you to define playlist bookmarks."
 msgstr "Սա թույլ է տալիս սահմանել երգացանկ էջանիշները\"."
 
-#: src/libvlc-module.c:1429
+#: src/libvlc-module.c:1431
 #, fuzzy
 msgid "Go back in browsing history"
 msgstr "Գնալ դեպի ետ է դիտում պատմության"
 
-#: src/libvlc-module.c:1430
+#: src/libvlc-module.c:1432
 #, fuzzy
 msgid ""
 "Select the key to go back (to the previous media item) in the browsing "
 "history."
 msgstr "Ընտրել բանալին վերադառնալ (նախորդ ԶԼՄ կետ) է դիտում պատմության\"."
 
-#: src/libvlc-module.c:1431
+#: src/libvlc-module.c:1433
 #, fuzzy
 msgid "Go forward in browsing history"
 msgstr "Գնալ առաջ դիտում պատմության"
 
-#: src/libvlc-module.c:1432
+#: src/libvlc-module.c:1434
 #, fuzzy
 msgid ""
 "Select the key to go forward (to the next media item) in the browsing "
 "history."
 msgstr "Ընտրել բանալին առաջ գնալ (հաջորդ ԶԼՄ կետ) է դիտում պատմության\"."
 
-#: src/libvlc-module.c:1434
+#: src/libvlc-module.c:1436
 msgid "Cycle audio track"
 msgstr "Հերթով անցնել ձայնային գծերով"
 
-#: src/libvlc-module.c:1435
+#: src/libvlc-module.c:1437
 msgid "Cycle through the available audio tracks(languages)."
 msgstr "Հերթով անցնել առկա ձայնի գծերով (լեզուներով)."
 
-#: src/libvlc-module.c:1436
+#: src/libvlc-module.c:1438
 msgid "Cycle subtitle track"
 msgstr "Հերթով անցնել ենթագրերի գծերով"
 
-#: src/libvlc-module.c:1437
+#: src/libvlc-module.c:1439
 msgid "Cycle through the available subtitle tracks."
 msgstr "Հերթով անցնել առկա ենթագրերի գծերով"
 
-#: src/libvlc-module.c:1438
+#: src/libvlc-module.c:1440
 msgid "Cycle source aspect ratio"
 msgstr "Փորձել աղբյուրի չափերի հարաբերությունները"
 
-#: src/libvlc-module.c:1439
+#: src/libvlc-module.c:1441
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr "Հերթով անցնել աղբյուրում եղած պատկերի չափերի հարաբերություններով"
 
-#: src/libvlc-module.c:1440
+#: src/libvlc-module.c:1442
 msgid "Cycle video crop"
 msgstr "Հերթով փորձել վիդեոյի կտրման ձևերը"
 
-#: src/libvlc-module.c:1441
+#: src/libvlc-module.c:1443
 msgid "Cycle through a predefined list of crop formats."
 msgstr "Հերթով անցնել եղած եզրերից կտրման ձևերով"
 
-#: src/libvlc-module.c:1442
+#: src/libvlc-module.c:1444
 #, fuzzy
 msgid "Toggle autoscaling"
 msgstr "Toggle autoscaling"
 
-#: src/libvlc-module.c:1443
+#: src/libvlc-module.c:1445
 #, fuzzy
 msgid "Activate or deactivate autoscaling."
 msgstr "ակտիվացնելու կամ ապաակտիվացնելու համար autoscaling\"."
 
-#: src/libvlc-module.c:1444
+#: src/libvlc-module.c:1446
 #, fuzzy
 msgid "Increase scale factor"
 msgstr "Մեծացնել ձգման գործակից"
 
-#: src/libvlc-module.c:1445
+#: src/libvlc-module.c:1447
 #, fuzzy
 msgid "Increase scale factor."
 msgstr "Մեծացնել ձգման գործակից\"."
 
-#: src/libvlc-module.c:1446
+#: src/libvlc-module.c:1448
 #, fuzzy
 msgid "Decrease scale factor"
 msgstr "նվազում ձգման գործակից"
 
-#: src/libvlc-module.c:1447
+#: src/libvlc-module.c:1449
 #, fuzzy
 msgid "Decrease scale factor."
 msgstr "նվազում ձգման գործակից\"."
 
-#: src/libvlc-module.c:1448
+#: src/libvlc-module.c:1450
 msgid "Cycle deinterlace modes"
 msgstr "Հերթով անցնել deinterlace ռեժիմներով"
 
-#: src/libvlc-module.c:1449
+#: src/libvlc-module.c:1451
 msgid "Cycle through deinterlace modes."
 msgstr "Հերթով անցնել deinterlace ռեժիմներով"
 
-#: src/libvlc-module.c:1450
+#: src/libvlc-module.c:1452
 msgid "Show interface"
 msgstr "Ցույց տալ ինտերֆեյսը"
 
-#: src/libvlc-module.c:1451
+#: src/libvlc-module.c:1453
 #, fuzzy
 msgid "Raise the interface above all other windows."
 msgstr "Բարձրացնել միջերեսի վերը նշված բոլոր մյուս պատուհանները\"."
 
-#: src/libvlc-module.c:1452
+#: src/libvlc-module.c:1454
 #, fuzzy
 msgid "Hide interface"
 msgstr "Թաքցնել ինտերֆեյսի"
 
-#: src/libvlc-module.c:1453
+#: src/libvlc-module.c:1455
 #, fuzzy
 msgid "Lower the interface below all other windows."
 msgstr "Ստորին միջերեսի ստորեւ բերված բոլոր մյուս պատուհանները\"."
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1456
 #, fuzzy
 msgid "Take video snapshot"
 msgstr "Take վիդեո նկարի"
 
-#: src/libvlc-module.c:1455
+#: src/libvlc-module.c:1457
 #, fuzzy
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "տանում վիդեո նկարի եւ գրում է այն դիսկ."
 
-#: src/libvlc-module.c:1457 modules/gui/qt4/components/controller.hpp:107
+#: src/libvlc-module.c:1459 modules/gui/qt4/components/controller.hpp:107
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Գրանցել"
 
-#: src/libvlc-module.c:1458
+#: src/libvlc-module.c:1460
 msgid "Record access filter start/stop."
 msgstr "Գրանցել մուտքի զտիչը սկսել/դադարացնել"
 
-#: src/libvlc-module.c:1459
+#: src/libvlc-module.c:1461
 #, fuzzy
 msgid "Dump"
 msgstr "Ինքնաթափներ"
 
-#: src/libvlc-module.c:1460
+#: src/libvlc-module.c:1462
 #, fuzzy
 msgid "Media dump access filter trigger."
 msgstr "Մեդիա աղբանոց մուտք զտիչ շնիկ."
 
-#: src/libvlc-module.c:1462
+#: src/libvlc-module.c:1464
 msgid "Normal/Repeat/Loop"
 msgstr "Նորմալ / Կրկնել / Ցիկլ"
 
-#: src/libvlc-module.c:1463
+#: src/libvlc-module.c:1465
 #, fuzzy
 msgid "Toggle Normal/Repeat/Loop playlist modes"
 msgstr "Toggle Սովորական / կրկնեք / Ցիկլ երգացանկ ռեժիմներ"
 
-#: src/libvlc-module.c:1466
+#: src/libvlc-module.c:1468
 #, fuzzy
 msgid "Toggle random playlist playback"
 msgstr "Toggle պատահական երգացանկ ընթացք"
 
-#: src/libvlc-module.c:1471 src/libvlc-module.c:1472
+#: src/libvlc-module.c:1473 src/libvlc-module.c:1474
 #, fuzzy
 msgid "Un-Zoom"
 msgstr "ՄԱԿ-Խոշորացնել"
 
-#: src/libvlc-module.c:1474 src/libvlc-module.c:1475
+#: src/libvlc-module.c:1476 src/libvlc-module.c:1477
 msgid "Crop one pixel from the top of the video"
 msgstr "Կրտրել մեկ պիքսել վիդեոյի վերևից"
 
-#: src/libvlc-module.c:1476 src/libvlc-module.c:1477
+#: src/libvlc-module.c:1478 src/libvlc-module.c:1479
 #, fuzzy
 msgid "Uncrop one pixel from the top of the video"
 msgstr "Uncrop մեկը կարող է անկախ ղեկավարվել է վերեւում գտնվող վիդեո"
 
-#: src/libvlc-module.c:1479 src/libvlc-module.c:1480
+#: src/libvlc-module.c:1481 src/libvlc-module.c:1482
 msgid "Crop one pixel from the left of the video"
 msgstr "Կրտրել մեկ պիքսել վիդեոյի ձախից"
 
-#: src/libvlc-module.c:1481 src/libvlc-module.c:1482
+#: src/libvlc-module.c:1483 src/libvlc-module.c:1484
 #, fuzzy
 msgid "Uncrop one pixel from the left of the video"
 msgstr "Uncrop մեկը կարող է անկախ ղեկավարվել ձախ է վիդեո"
 
-#: src/libvlc-module.c:1484 src/libvlc-module.c:1485
+#: src/libvlc-module.c:1486 src/libvlc-module.c:1487
 msgid "Crop one pixel from the bottom of the video"
 msgstr "Կրտրել մեկ պիքսել վիդեոյի ներքեւից"
 
-#: src/libvlc-module.c:1486 src/libvlc-module.c:1487
+#: src/libvlc-module.c:1488 src/libvlc-module.c:1489
 #, fuzzy
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr "Uncrop մեկը կարող է անկախ ղեկավարվել ից ներքեւում վիդեո"
 
-#: src/libvlc-module.c:1489 src/libvlc-module.c:1490
+#: src/libvlc-module.c:1491 src/libvlc-module.c:1492
 msgid "Crop one pixel from the right of the video"
 msgstr "Կրտրել մեկ պիքսել վիդեոյի աջից"
 
-#: src/libvlc-module.c:1491 src/libvlc-module.c:1492
+#: src/libvlc-module.c:1493 src/libvlc-module.c:1494
 #, fuzzy
 msgid "Uncrop one pixel from the right of the video"
 msgstr "Uncrop մեկը կարող է անկախ ղեկավարվել ից իրավունքն է վիդեո"
 
-#: src/libvlc-module.c:1494
+#: src/libvlc-module.c:1496
 #, fuzzy
 msgid "Toggle wallpaper mode in video output"
 msgstr "Toggle պաստառ ռեժիմ է վիդեո ելք"
 
-#: src/libvlc-module.c:1496
+#: src/libvlc-module.c:1498
 #, fuzzy
 msgid "Toggle wallpaper mode in video output."
 msgstr "Toggle պաստառ ռեժիմ է վիդեո տողը."
 
-#: src/libvlc-module.c:1498 src/libvlc-module.c:1499
+#: src/libvlc-module.c:1500 src/libvlc-module.c:1501
 #, fuzzy
 msgid "Display OSD menu on top of video output"
 msgstr "Ցույց տալ OSD ցանկի վերեւում վիդեո ելքը"
 
-#: src/libvlc-module.c:1500
+#: src/libvlc-module.c:1502
 #, fuzzy
 msgid "Do not display OSD menu on video output"
 msgstr "Մի ցուցադրվող OSD ցանկի վիդեո ելք"
 
-#: src/libvlc-module.c:1501
+#: src/libvlc-module.c:1503
 #, fuzzy
 msgid "Do not display OSD menu on top of video output"
 msgstr "Մի ցուցադրվող OSD ցանկի վերեւում վիդեո ելքը"
 
-#: src/libvlc-module.c:1502
+#: src/libvlc-module.c:1504
 #, fuzzy
 msgid "Highlight widget on the right"
 msgstr "Ընդգծել մանրուք է ճիշտ"
 
-#: src/libvlc-module.c:1504
+#: src/libvlc-module.c:1506
 #, fuzzy
 msgid "Move OSD menu highlight to the widget on the right"
 msgstr "Տեղաշարժել OSD ցանկի կարեւորում է մանրուք աջ"
 
-#: src/libvlc-module.c:1505
+#: src/libvlc-module.c:1507
 #, fuzzy
 msgid "Highlight widget on the left"
 msgstr "Ընդգծել մանրուք ձախ"
 
-#: src/libvlc-module.c:1507
+#: src/libvlc-module.c:1509
 #, fuzzy
 msgid "Move OSD menu highlight to the widget on the left"
 msgstr "Տեղաշարժել OSD ցանկի կարեւորում է մանրուք ձախ"
 
-#: src/libvlc-module.c:1508
+#: src/libvlc-module.c:1510
 #, fuzzy
 msgid "Highlight widget on top"
 msgstr "Ընդգծել մանրուք վերեւում"
 
-#: src/libvlc-module.c:1510
+#: src/libvlc-module.c:1512
 #, fuzzy
 msgid "Move OSD menu highlight to the widget on top"
 msgstr "Տեղաշարժել OSD ցանկի կարեւորում է մանրուք վերեւում"
 
-#: src/libvlc-module.c:1511
+#: src/libvlc-module.c:1513
 #, fuzzy
 msgid "Highlight widget below"
 msgstr "Ընդգծել մանրուք ստորեւ"
 
-#: src/libvlc-module.c:1513
+#: src/libvlc-module.c:1515
 #, fuzzy
 msgid "Move OSD menu highlight to the widget below"
 msgstr "Տեղաշարժել OSD ցանկի կարեւորում է մանրուք ստորեւ"
 
-#: src/libvlc-module.c:1514
+#: src/libvlc-module.c:1516
 #, fuzzy
 msgid "Select current widget"
 msgstr "Ընտրել ընթացիկ մանրուք`"
 
-#: src/libvlc-module.c:1516
+#: src/libvlc-module.c:1518
 #, fuzzy
 msgid "Selecting current widget performs the associated action."
 msgstr "ընտրությունը ներկայիս մանրուք իրականացնում է կապված ակցիան."
 
-#: src/libvlc-module.c:1518
+#: src/libvlc-module.c:1520
 msgid "Cycle through audio devices"
 msgstr "Հերթով անցնել ձայնային սարքերով"
 
-#: src/libvlc-module.c:1519
+#: src/libvlc-module.c:1521
 msgid "Cycle through available audio devices"
 msgstr "Հերթով անցնել  առկա ձայնային սարքերով"
 
-#: src/libvlc-module.c:1692 src/video_output/vout_intf.c:363
+#: src/libvlc-module.c:1694 src/video_output/vout_intf.c:363
 #: modules/gui/macosx/controls.m:494 modules/gui/macosx/controls.m:1086
 #: modules/gui/macosx/intf.m:688 modules/gui/macosx/intf.m:754
 #: modules/gui/qt4/components/controller.hpp:106
@@ -5029,105 +5029,105 @@ msgstr "Հերթով անցնել  առկա ձայնային սարքերով"
 msgid "Snapshot"
 msgstr "Վիդեոյից Նկար"
 
-#: src/libvlc-module.c:1709
+#: src/libvlc-module.c:1711
 msgid "Window properties"
 msgstr "Պատուհան հատկությունները"
 
-#: src/libvlc-module.c:1768
+#: src/libvlc-module.c:1770
 msgid "Subpictures"
 msgstr "Ենթանկարներ"
 
-#: src/libvlc-module.c:1776 modules/codec/subtitles/subsdec.c:206
+#: src/libvlc-module.c:1778 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
 #: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
 #: modules/gui/qt4/ui/profiles.h:497
 msgid "Subtitles"
 msgstr "Ենթագրեր "
 
-#: src/libvlc-module.c:1794 modules/stream_out/transcode/transcode.c:115
+#: src/libvlc-module.c:1796 modules/stream_out/transcode/transcode.c:115
 #, fuzzy
 msgid "Overlays"
 msgstr "Overlays"
 
-#: src/libvlc-module.c:1802
+#: src/libvlc-module.c:1804
 #, fuzzy
 msgid "Track settings"
 msgstr "Հետեւել կարգավորումներ"
 
-#: src/libvlc-module.c:1832
+#: src/libvlc-module.c:1834
 msgid "Playback control"
 msgstr "Ընթացքի վերահսկողության"
 
-#: src/libvlc-module.c:1860
+#: src/libvlc-module.c:1862
 msgid "Default devices"
 msgstr "Հիմնական սարքեր"
 
-#: src/libvlc-module.c:1869
+#: src/libvlc-module.c:1871
 msgid "Network settings"
 msgstr "Ցանցի կարգավորումներ"
 
-#: src/libvlc-module.c:1881
+#: src/libvlc-module.c:1883
 #, fuzzy
 msgid "Socks proxy"
 msgstr "գուլպաներ պրոքսի"
 
-#: src/libvlc-module.c:1890 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1892 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Մետատվյալներ"
 
-#: src/libvlc-module.c:1941
+#: src/libvlc-module.c:1943
 msgid "Decoders"
 msgstr "Ապակոդավորիչներ"
 
-#: src/libvlc-module.c:1948 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1950 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Մուտք"
 
-#: src/libvlc-module.c:1987
+#: src/libvlc-module.c:1989
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2019
+#: src/libvlc-module.c:2021
 msgid "CPU"
 msgstr "Պրոցեսոր"
 
-#: src/libvlc-module.c:2048
+#: src/libvlc-module.c:2050
 #, fuzzy
 msgid "Special modules"
 msgstr "Հատուկ մոդուլներ"
 
-#: src/libvlc-module.c:2054 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2056 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Պլագիններ"
 
-#: src/libvlc-module.c:2065
+#: src/libvlc-module.c:2067
 #, fuzzy
 msgid "Performance options"
 msgstr "կատարման ընտրանքներ"
 
-#: src/libvlc-module.c:2213
+#: src/libvlc-module.c:2215
 msgid "Hot keys"
 msgstr "Կոճակներ"
 
-#: src/libvlc-module.c:2655
+#: src/libvlc-module.c:2657
 #, fuzzy
 msgid "Jump sizes"
 msgstr "Անցնել, չափերը,"
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2734
 #, fuzzy
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "տպել օգնության համար VLC (կարող են միավորվել հետ - առաջադեմ եւ - help-"
 "շատախոս)"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2737
 #, fuzzy
 msgid "Exhaustive help for VLC and its modules"
 msgstr "սպառիչ օգնության համար VLC եւ նրա մոդուլներ"
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2739
 #, fuzzy
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
@@ -5136,22 +5136,22 @@ msgstr ""
 "տպել օգնության համար VLC եւ բոլոր իր modules (կարող են միավորվել հետ - "
 "առաջադեմ եւ - help-շատախոս)"
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2742
 #, fuzzy
 msgid "ask for extra verbosity when displaying help"
 msgstr "խնդրել է լրացուցիչ շատախոսություն, երբ դասավորությունը"
 
-#: src/libvlc-module.c:2742
+#: src/libvlc-module.c:2744
 #, fuzzy
 msgid "print a list of available modules"
 msgstr "տպել մի ցանկ, առկա մոդուլներ"
 
-#: src/libvlc-module.c:2744
+#: src/libvlc-module.c:2746
 #, fuzzy
 msgid "print a list of available modules with extra detail"
 msgstr "տպել ցուցակը հասանելի modules հետ լրացուցիչ մանրամասն"
 
-#: src/libvlc-module.c:2746
+#: src/libvlc-module.c:2748
 #, fuzzy
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
@@ -5160,32 +5160,32 @@ msgstr ""
 "տպել օգնություն է կոնկրետ մոդուլի (կարող են միավորվել հետ - առաջադեմ եւ - "
 "help-շատախոս). Բնորոշիչ մոդուլի անունը հետ = համար Ӏ­իստ խաղում\"."
 
-#: src/libvlc-module.c:2750
+#: src/libvlc-module.c:2752
 #, fuzzy
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr "ոչ կոնֆիգուրացիան տարբերակը կլինի բեռնված, ոչ էլ փրկվել է config file"
 
-#: src/libvlc-module.c:2752
+#: src/libvlc-module.c:2754
 #, fuzzy
 msgid "reset the current config to the default values"
 msgstr "վերագործարկել գործող config է հիմնական արժեքները`"
 
-#: src/libvlc-module.c:2754
+#: src/libvlc-module.c:2756
 #, fuzzy
 msgid "use alternate config file"
 msgstr "օգտագործման այլընտրանքային config file"
 
-#: src/libvlc-module.c:2756
+#: src/libvlc-module.c:2758
 #, fuzzy
 msgid "resets the current plugins cache"
 msgstr "resets ընթացիկ plugins cache"
 
-#: src/libvlc-module.c:2758
+#: src/libvlc-module.c:2760
 #, fuzzy
 msgid "print version information"
 msgstr "Տպագիր տարբերակ տեղեկություններ"
 
-#: src/libvlc-module.c:2796
+#: src/libvlc-module.c:2798
 msgid "main program"
 msgstr "գլխավոր ծրագիրը"
 
@@ -6053,7 +6053,7 @@ msgstr ""
 
 #: modules/access/alsa.c:75 modules/access/bd/bd.c:52
 #: modules/access/bda/bda.c:46 modules/access/cdda.c:61
-#: modules/access/dshow/dshow.cpp:99 modules/access/dv.c:59
+#: modules/access/dshow/dshow.cpp:101 modules/access/dv.c:59
 #: modules/access/dvb/access.c:83 modules/access/dvdnav.c:72
 #: modules/access/dvdread.c:74 modules/access/eyetv.m:61
 #: modules/access/fake.c:44 modules/access/ftp.c:58
@@ -6632,31 +6632,31 @@ msgstr "Աուդիո CD - Հետեւել% 02i"
 msgid "dc1394 input"
 msgstr "dc1394 մուտք"
 
-#: modules/access/dshow/dshow.cpp:87
+#: modules/access/dshow/dshow.cpp:89
 msgid "Cable"
 msgstr "Մալուխ"
 
-#: modules/access/dshow/dshow.cpp:87
+#: modules/access/dshow/dshow.cpp:89
 msgid "Antenna"
 msgstr "Ալեհավաք"
 
-#: modules/access/dshow/dshow.cpp:94
+#: modules/access/dshow/dshow.cpp:96
 msgid "TV"
 msgstr "TV"
 
-#: modules/access/dshow/dshow.cpp:95
+#: modules/access/dshow/dshow.cpp:97
 msgid "FM radio"
 msgstr "FM ռադիո"
 
-#: modules/access/dshow/dshow.cpp:96
+#: modules/access/dshow/dshow.cpp:98
 msgid "AM radio"
 msgstr "AM ռադիո"
 
-#: modules/access/dshow/dshow.cpp:97
+#: modules/access/dshow/dshow.cpp:99
 msgid "DSS"
 msgstr "DSS"
 
-#: modules/access/dshow/dshow.cpp:101
+#: modules/access/dshow/dshow.cpp:103
 #, fuzzy
 msgid ""
 "Caching value for DirectShow streams. This value should be set in "
@@ -6665,13 +6665,13 @@ msgstr ""
 "Քեշացման արժեքը համար DirectShow հոսանքներին. Այս արժեքը պետք է սահմանված "
 "միլիվարկյաններով\"."
 
-#: modules/access/dshow/dshow.cpp:103 modules/access/v4l.c:81
+#: modules/access/dshow/dshow.cpp:105 modules/access/v4l.c:81
 #: modules/gui/qt4/components/open_panels.cpp:757
 #: modules/gui/qt4/components/open_panels.cpp:792
 msgid "Video device name"
 msgstr "Վիդեո սարքի անունը"
 
-#: modules/access/dshow/dshow.cpp:105
+#: modules/access/dshow/dshow.cpp:107
 #, fuzzy
 msgid ""
 "Name of the video device that will be used by the DirectShow plugin. If you "
@@ -6680,13 +6680,13 @@ msgstr ""
 "անվանումը վիդեո սարքը, որ կօգտագործվեն կողմից DirectShow ներդրված ծրագիր. "
 "Եթե դուք չեք նշել ոչինչ, հիմնական սարքը կօգտագործվի."
 
-#: modules/access/dshow/dshow.cpp:108
+#: modules/access/dshow/dshow.cpp:110
 #: modules/gui/qt4/components/open_panels.cpp:763
 #: modules/gui/qt4/components/open_panels.cpp:798
 msgid "Audio device name"
 msgstr "Ձայնային սարքի անունը"
 
-#: modules/access/dshow/dshow.cpp:110
+#: modules/access/dshow/dshow.cpp:112
 #, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
@@ -6695,12 +6695,12 @@ msgstr ""
 "անվանումը ձայնային սարք, որ կօգտագործվեն կողմից DirectShow ներդրված ծրագիր. "
 "Եթե դուք չեք նշել ոչինչ, հիմնական սարքը կօգտագործվի."
 
-#: modules/access/dshow/dshow.cpp:113
+#: modules/access/dshow/dshow.cpp:115
 #: modules/gui/qt4/components/open_panels.cpp:667
 msgid "Video size"
 msgstr "Վիդեոյի չափ"
 
-#: modules/access/dshow/dshow.cpp:115
+#: modules/access/dshow/dshow.cpp:117
 #, fuzzy
 msgid ""
 "Size of the video that will be displayed by the DirectShow plugin. If you "
@@ -6711,24 +6711,24 @@ msgstr ""
 "դուք, թե կոնկրետ բան է հիմնական չափը Ձեր սարքը կօգտագործվի. Դուք կարող եք "
 "նշել ստանդարտ չափ (ՍԻՖ, d1, ...), կամ <width> x <height> \"."
 
-#: modules/access/dshow/dshow.cpp:118 modules/access/v4l2.c:215
+#: modules/access/dshow/dshow.cpp:120 modules/access/v4l2.c:215
 msgid "Picture aspect-ratio n:m"
 msgstr "Պատկերի չափերի հարաբերությունը n:m "
 
-#: modules/access/dshow/dshow.cpp:119 modules/access/v4l2.c:216
+#: modules/access/dshow/dshow.cpp:121 modules/access/v4l2.c:216
 #, fuzzy
 msgid "Define input picture aspect-ratio to use. Default is 4:3"
 msgstr ""
 "Սահմանել մուտքագրման նկար առումով-հարաբերակցությունը օգտագործել. Լռությամբ է "
 "4.3"
 
-#: modules/access/dshow/dshow.cpp:120 modules/access/v4l.c:85
+#: modules/access/dshow/dshow.cpp:122 modules/access/v4l.c:85
 #: modules/access/v4l2.c:80
 #, fuzzy
 msgid "Video input chroma format"
 msgstr "Վիդեո մուտքագրման chroma ֆորմատ"
 
-#: modules/access/dshow/dshow.cpp:122
+#: modules/access/dshow/dshow.cpp:124
 #, fuzzy
 msgid ""
 "Force the DirectShow video input to use a specific chroma format (eg. I420 "
@@ -6737,12 +6737,12 @@ msgstr ""
 "սահմանել է DirectShow վիդեո ներդրումն է օգտագործել կոնկրետ chroma ֆորմատ "
 "(eg. I420 (նախնական), RV24, եւ այլն)\","
 
-#: modules/access/dshow/dshow.cpp:124
+#: modules/access/dshow/dshow.cpp:126
 #, fuzzy
 msgid "Video input frame rate"
 msgstr "Վիդեո մուտքագրման շրջանակ փոխարժեքի"
 
-#: modules/access/dshow/dshow.cpp:126
+#: modules/access/dshow/dshow.cpp:128
 #, fuzzy
 msgid ""
 "Force the DirectShow video input to use a specific frame rate(eg. 0 means "
@@ -6751,41 +6751,41 @@ msgstr ""
 "սահմանել է DirectShow վիդեո ներդրումն է օգտագործել որոշակի շրջանակ չափը (eg. "
 "0 նշանակում է լռությամբ, 25, 29,97, 50, 59,94, եւ այլն)\","
 
-#: modules/access/dshow/dshow.cpp:128
+#: modules/access/dshow/dshow.cpp:130
 msgid "Device properties"
 msgstr "Սարքի հատկությունները"
 
-#: modules/access/dshow/dshow.cpp:130
+#: modules/access/dshow/dshow.cpp:132
 #, fuzzy
 msgid ""
 "Show the properties dialog of the selected device before starting the stream."
 msgstr ""
 "Ցույց տալ հատկությունների երկխոսությունը ընտրված սարքի առաջ սկսած է առվի\"."
 
-#: modules/access/dshow/dshow.cpp:132
+#: modules/access/dshow/dshow.cpp:134
 msgid "Tuner properties"
 msgstr "Տյուների հատկությունները"
 
-#: modules/access/dshow/dshow.cpp:134
+#: modules/access/dshow/dshow.cpp:136
 #, fuzzy
 msgid "Show the tuner properties [channel selection] page."
 msgstr "Ցույց տալ լարող հատկությունների [ալիքը ընտրությունը] էջը."
 
-#: modules/access/dshow/dshow.cpp:135
+#: modules/access/dshow/dshow.cpp:137
 msgid "Tuner TV Channel"
 msgstr "Տյուների հեռուստաալիք"
 
-#: modules/access/dshow/dshow.cpp:137
+#: modules/access/dshow/dshow.cpp:139
 #, fuzzy
 msgid "Set the TV channel the tuner will set to (0 means default)."
 msgstr ""
 "նախադրելը հեռուստաալիքի է լարող կլինի սահմանված է (0 միջոցներով լռությամբ)."
 
-#: modules/access/dshow/dshow.cpp:139
+#: modules/access/dshow/dshow.cpp:141
 msgid "Tuner country code"
 msgstr "Տյուների երկրի կոդը"
 
-#: modules/access/dshow/dshow.cpp:141
+#: modules/access/dshow/dshow.cpp:143
 #, fuzzy
 msgid ""
 "Set the tuner country code that establishes the current channel-to-frequency "
@@ -6794,21 +6794,21 @@ msgstr ""
 "նախադրելը լարող երկրի կոդը, որ սահմանում է ներկայիս ալիքը է հաճախականությամբ "
 "քարտեզագրման (0 նշանակում է լռելյայն)."
 
-#: modules/access/dshow/dshow.cpp:143
+#: modules/access/dshow/dshow.cpp:145
 msgid "Tuner input type"
 msgstr "Տյուների մուտքի տեսակ"
 
-#: modules/access/dshow/dshow.cpp:145
+#: modules/access/dshow/dshow.cpp:147
 #, fuzzy
 msgid "Select the tuner input type (Cable/Antenna)."
 msgstr "Ընտրեք լարող մուտքագրման տեսակը (մալուխային / Ալեհավաք)."
 
-#: modules/access/dshow/dshow.cpp:146
+#: modules/access/dshow/dshow.cpp:148
 #, fuzzy
 msgid "Video input pin"
 msgstr "Վիդեո մուտքի փին"
 
-#: modules/access/dshow/dshow.cpp:148
+#: modules/access/dshow/dshow.cpp:150
 #, fuzzy
 msgid ""
 "Select the video input source, such as composite, s-video, or tuner. Since "
@@ -6821,41 +6821,41 @@ msgstr ""
 "պարամետրերը \" Սարքի config  \"տարածքում, եւ օգտագործել այդ համարները "
 "այստեղ. -1 նշանակում է, որ կարգավորումներ չի փոխվել \"."
 
-#: modules/access/dshow/dshow.cpp:152
+#: modules/access/dshow/dshow.cpp:154
 #, fuzzy
 msgid "Audio input pin"
 msgstr "Ձայնային մուտքի փին"
 
-#: modules/access/dshow/dshow.cpp:154
+#: modules/access/dshow/dshow.cpp:156
 #, fuzzy
 msgid "Select the audio input source. See the \"video input\" option."
 msgstr ""
 "Ընտրեք աուդիո մուտքագրման աղբյուրը. Տես \" վիդեո մուտքագրման  \"տարբերակը."
 
-#: modules/access/dshow/dshow.cpp:155
+#: modules/access/dshow/dshow.cpp:157
 msgid "Video output pin"
 msgstr "Վիդեո ելքի ելուստ"
 
-#: modules/access/dshow/dshow.cpp:157
+#: modules/access/dshow/dshow.cpp:159
 #, fuzzy
 msgid "Select the video output type. See the \"video input\" option."
 msgstr "Ընտրեք վիդեո տողը տեսակը. Տես \" վիդեո մուտքագրման  \"տարբերակը."
 
-#: modules/access/dshow/dshow.cpp:158
+#: modules/access/dshow/dshow.cpp:160
 #, fuzzy
 msgid "Audio output pin"
 msgstr "Ձայնային ելքային քորոց"
 
-#: modules/access/dshow/dshow.cpp:160
+#: modules/access/dshow/dshow.cpp:162
 #, fuzzy
 msgid "Select the audio output type. See the \"video input\" option."
 msgstr "Ընտրեք աուդիո տողը տեսակը. Տես \" վիդեո մուտքագրման  \"տարբերակը."
 
-#: modules/access/dshow/dshow.cpp:162
+#: modules/access/dshow/dshow.cpp:164
 msgid "AM Tuner mode"
 msgstr "ԱՄ Տյուների ռեժիմ"
 
-#: modules/access/dshow/dshow.cpp:164
+#: modules/access/dshow/dshow.cpp:166
 #, fuzzy
 msgid ""
 "AM Tuner mode. Can be one of Default (0), TV (1),AM Radio (2), FM Radio (3) "
@@ -6864,80 +6864,80 @@ msgstr ""
 "ԱՄ լարող ռեժիմով. Կարող է լինել մեկը լռությամբ (0), հեռուստացույց (1), Ա.Մ. "
 "Ռադիո (2), FM ռադիոյի (3) կամ DSS (4)."
 
-#: modules/access/dshow/dshow.cpp:167
+#: modules/access/dshow/dshow.cpp:169
 #, fuzzy
 msgid "Number of audio channels"
 msgstr "Միավորների աուդիո կանալների"
 
-#: modules/access/dshow/dshow.cpp:169
+#: modules/access/dshow/dshow.cpp:171
 #, fuzzy
 msgid ""
 "Select audio input format with the given number of audio channels (if non 0)"
 msgstr ""
 "Ընտրել աուդիո ներդրման ֆորմատի հետ տվյալ թիվը Աուդիո կանալների (եթե ոչ 0)"
 
-#: modules/access/dshow/dshow.cpp:171
+#: modules/access/dshow/dshow.cpp:173
 #: modules/stream_out/transcode/transcode.c:93
 #, fuzzy
 msgid "Audio sample rate"
 msgstr "Ձայնային կտոր փոխարժեքի"
 
-#: modules/access/dshow/dshow.cpp:173
+#: modules/access/dshow/dshow.cpp:175
 #, fuzzy
 msgid "Select audio input format with the given sample rate (if non 0)"
 msgstr "Ընտրել աուդիո ներդրման ֆորմատի հետ տվյալ օրինակելի չափը (եթե ոչ 0)"
 
-#: modules/access/dshow/dshow.cpp:175
+#: modules/access/dshow/dshow.cpp:177
 #, fuzzy
 msgid "Audio bits per sample"
 msgstr "Ձայնային դուրեր մեկ կտոր"
 
-#: modules/access/dshow/dshow.cpp:177
+#: modules/access/dshow/dshow.cpp:179
 #, fuzzy
 msgid "Select audio input format with the given bits/sample (if non 0)"
 msgstr "Ընտրել աուդիո ներդրման ֆորմատի հետ տվյալ բիթ / կտոր (եթե ոչ 0)"
 
-#: modules/access/dshow/dshow.cpp:189
+#: modules/access/dshow/dshow.cpp:191
 msgid "DirectShow"
 msgstr "DirectShow"
 
-#: modules/access/dshow/dshow.cpp:190 modules/access/dshow/dshow.cpp:256
+#: modules/access/dshow/dshow.cpp:192 modules/access/dshow/dshow.cpp:268
 msgid "DirectShow input"
 msgstr "DirectShow մուտք"
 
-#: modules/access/dshow/dshow.cpp:198 modules/access/dshow/dshow.cpp:203
+#: modules/access/dshow/dshow.cpp:200 modules/access/dshow/dshow.cpp:205
 #: modules/audio_output/alsa.c:117 modules/audio_output/directx.c:140
 #: modules/audio_output/waveout.c:109 modules/video_output/msw/directx.c:116
 msgid "Refresh list"
 msgstr "Թարմացնել ցուցակը"
 
-#: modules/access/dshow/dshow.cpp:199 modules/access/dshow/dshow.cpp:204
+#: modules/access/dshow/dshow.cpp:201 modules/access/dshow/dshow.cpp:206
 msgid "Configure"
 msgstr " Կարգավորել"
 
-#: modules/access/dshow/dshow.cpp:464 modules/access/dshow/dshow.cpp:538
-#: modules/access/dshow/dshow.cpp:986 modules/access/dshow/dshow.cpp:1039
+#: modules/access/dshow/dshow.cpp:476 modules/access/dshow/dshow.cpp:550
+#: modules/access/dshow/dshow.cpp:998 modules/access/dshow/dshow.cpp:1051
 msgid "Capture failed"
 msgstr "Գրանցումը ձախողվեց"
 
-#: modules/access/dshow/dshow.cpp:465
+#: modules/access/dshow/dshow.cpp:477
 #, fuzzy
 msgid "No video or audio device selected."
 msgstr "Ոչ մի տեսագրություն կամ աուդիո սարքի ընտրված."
 
-#: modules/access/dshow/dshow.cpp:539
+#: modules/access/dshow/dshow.cpp:551
 #, fuzzy
 msgid "VLC cannot open ANY capture device.Check the error log for details."
 msgstr ""
 "VLC չի կարող բացել ՑԱՆԿԱՑԱԾ գրավել device.Check սխալի տեղեկամատյանում "
 "Մանրամասների համար\"."
 
-#: modules/access/dshow/dshow.cpp:987
+#: modules/access/dshow/dshow.cpp:999
 #, fuzzy, c-format
 msgid "VLC cannot use the device \"%s\", because its type is not supported."
 msgstr "VLC չի կարող օգտվել սարքը \"%s  \", քանի որ իր տեսակը չի ապահովվում\"."
 
-#: modules/access/dshow/dshow.cpp:1040
+#: modules/access/dshow/dshow.cpp:1052
 #, fuzzy, c-format
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr "ՀՀ գերում սարքը \"%s  \"չի պաշտպանում պահանջվող պարամետրերը."
@@ -7264,7 +7264,7 @@ msgid "Fake video input"
 msgstr "Կեղծ վիդեո մուտք"
 
 #: modules/access/file.c:170 modules/access/file.c:303
-#: modules/access/mmap.c:228 modules/access/mtp.c:216 modules/access/mtp.c:304
+#: modules/access/mmap.c:223 modules/access/mtp.c:216 modules/access/mtp.c:304
 msgid "File reading failed"
 msgstr "Ֆայլի ընթերցումը ձախողվեց"
 
@@ -7273,7 +7273,7 @@ msgstr "Ֆայլի ընթերցումը ձախողվեց"
 msgid "VLC could not open the file \"%s\"."
 msgstr "VLCն չի կարող բացել \"%s\" ֆայլը"
 
-#: modules/access/file.c:304 modules/access/mmap.c:229
+#: modules/access/file.c:304 modules/access/mmap.c:224
 #: modules/access/mtp.c:217
 msgid "VLC could not read the file."
 msgstr "VLCն չի կարող կարդալ ֆայլը"
@@ -9350,7 +9350,7 @@ msgstr "Ոգտագործող անուն, որ կպահանջվի Հոսք մու
 #: modules/access_output/http.c:68 modules/control/telnet.c:81
 #: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:234
 #: modules/gui/qt4/dialogs/external.cpp:125 modules/misc/audioscrobbler.c:136
-#: modules/misc/lua/vlc.c:81 modules/misc/notify/growl_udp.c:73
+#: modules/misc/lua/vlc.c:80 modules/misc/notify/growl_udp.c:73
 #: modules/stream_out/raop.c:154
 msgid "Password"
 msgstr "Գաղտնաբառ"
@@ -11377,27 +11377,27 @@ msgstr "գումարը prefiltering"
 msgid "Higher value implies more prefiltering"
 msgstr "բարձրագույն արժեք ենթադրում է ավելի prefiltering"
 
-#: modules/codec/dirac.c:87
+#: modules/codec/dirac.c:87 modules/codec/schroedinger.c:55
 #, fuzzy
 msgid "Chroma format"
 msgstr "Chroma ֆորմատ"
 
-#: modules/codec/dirac.c:88
+#: modules/codec/dirac.c:88 modules/codec/schroedinger.c:56
 #, fuzzy
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr ""
 "մնացորդներ chroma ձեւաչափը ստիպում է փոխակերպման է վիդեո մեջ, որ ֆորմատ"
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:2:0"
 msgstr "4:2:0"
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:2:2"
 msgstr "4:2:2"
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:4:4"
 msgstr "4:4:4"
 
@@ -12250,10 +12250,25 @@ msgstr "շուրջ raw վիդեո փաթեթավորիչ"
 msgid "RealVideo library decoder"
 msgstr "RealVideo գրադարանի ապակոդավորիչ"
 
-#: modules/codec/schroedinger.c:50
+#: modules/codec/schroedinger.c:65
+#, fuzzy
+msgid "Automate picture coding mode"
+msgstr "Լուսանկարը կոդավորմամբ ռեժիմ`"
+
+#: modules/codec/schroedinger.c:66
+msgid ""
+"Use the input picture to determine how to code it - interlaced or progressive"
+msgstr ""
+
+#: modules/codec/schroedinger.c:74
 #, fuzzy
 msgid "Schroedinger video decoder"
 msgstr "Schroedinger վիդեո ապակոդավորիչ"
+
+#: modules/codec/schroedinger.c:80
+#, fuzzy
+msgid "Dirac video encoder using libschroedinger"
+msgstr "Dirac վիդեո կոդավորիչ օգտագործելով dirac-research գրադարանը"
 
 #: modules/codec/sdl_image.c:60
 #, fuzzy
@@ -14361,12 +14376,12 @@ msgstr "UNIX ԱՊ հրաման մուտք"
 msgid "Accept commands over a Unix socket rather than stdin."
 msgstr "Ընդունել պատվիրում է, ավելի քան մեկ Unix ԱՊ ոչ թե stdin\"."
 
-#: modules/control/rc.c:171 modules/misc/lua/vlc.c:85
+#: modules/control/rc.c:171 modules/misc/lua/vlc.c:84
 #, fuzzy
 msgid "TCP command input"
 msgstr "TCP հրաման մուտք"
 
-#: modules/control/rc.c:172 modules/misc/lua/vlc.c:86
+#: modules/control/rc.c:172 modules/misc/lua/vlc.c:85
 #, fuzzy
 msgid ""
 "Accept commands over a socket rather than stdin. You can set the address and "
@@ -14402,565 +14417,565 @@ msgstr "RC"
 msgid "Remote control interface"
 msgstr "Հեռակառավարման ինտերֆեյսի"
 
-#: modules/control/rc.c:338
+#: modules/control/rc.c:341
 #, fuzzy
 msgid "Remote control interface initialized. Type `help' for help."
 msgstr ""
 "Հեռակառավարման ինտերֆեյսի սկզբնարժեքավորվում. Տեսակը` օգնություն "
 "\"օգնություն."
 
-#: modules/control/rc.c:775
+#: modules/control/rc.c:778
 #, c-format
 msgid "Unknown command `%s'. Type `help' for help."
 msgstr "Անհայտ հրաման`%s ': Տպեք `help' օգնության համար"
 
-#: modules/control/rc.c:798
+#: modules/control/rc.c:801
 #, fuzzy
 msgid "+----[ Remote control commands ]"
 msgstr "Remote Ղեկավարել Ինտերֆեյս"
 
-#: modules/control/rc.c:800
+#: modules/control/rc.c:803
 #, fuzzy
 msgid "| add XYZ  . . . . . . . . . . . . add XYZ to playlist"
 msgstr "| ավելացնել XYZ............ Ավելացրեք XYZ է երգացանկ"
 
-#: modules/control/rc.c:801
+#: modules/control/rc.c:804
 #, fuzzy
 msgid "| enqueue XYZ  . . . . . . . . . queue XYZ to playlist"
 msgstr "| հերթի մեջ դնել XYZ......... Հերթ XYZ է երգացանկ"
 
-#: modules/control/rc.c:802
+#: modules/control/rc.c:805
 #, fuzzy
 msgid "| playlist . . . . .  show items currently in playlist"
 msgstr "| երգացանկ..... Ցույց կետերը ներկայումս երգացանկ"
 
-#: modules/control/rc.c:803
+#: modules/control/rc.c:806
 #, fuzzy
 msgid "| play . . . . . . . . . . . . . . . . . . play stream"
 msgstr "| խաղում.................. Խաղ հոսք"
 
-#: modules/control/rc.c:804
+#: modules/control/rc.c:807
 #, fuzzy
 msgid "| stop . . . . . . . . . . . . . . . . . . stop stream"
 msgstr "| դադարում.................. Դադարեցնելու հոսք"
 
-#: modules/control/rc.c:805
+#: modules/control/rc.c:808
 #, fuzzy
 msgid "| next . . . . . . . . . . . . . .  next playlist item"
 msgstr "| հաջորդ.............. Next երգացանկ կետ`"
 
-#: modules/control/rc.c:806
+#: modules/control/rc.c:809
 #, fuzzy
 msgid "| prev . . . . . . . . . . . .  previous playlist item"
 msgstr "| prev............ Նախորդ երգացանկ կետ`"
 
-#: modules/control/rc.c:807
+#: modules/control/rc.c:810
 #, fuzzy
 msgid "| goto . . . . . . . . . . . . . .  goto item at index"
 msgstr "| Գովազդ կայքում.............. Գովազդ նյութը ինդեքս"
 
-#: modules/control/rc.c:808
+#: modules/control/rc.c:811
 #, fuzzy
 msgid "| repeat [on|off] . . . .  toggle playlist item repeat"
 msgstr "| կրկնել [մասին | անջատելու].... Toggle երգացանկ կետ կրկնում`"
 
-#: modules/control/rc.c:809
+#: modules/control/rc.c:812
 #, fuzzy
 msgid "| loop [on|off] . . . . . . . . . toggle playlist loop"
 msgstr "| հանգույց [մասին | անջատելու]......... Toggle երգացանկ հանգույց"
 
-#: modules/control/rc.c:810
+#: modules/control/rc.c:813
 #, fuzzy
 msgid "| random [on|off] . . . . . . .  toggle random jumping"
 msgstr "| պատահական [մասին | անջատելու]....... Toggle պատահական նոր պար`"
 
-#: modules/control/rc.c:811
+#: modules/control/rc.c:814
 #, fuzzy
 msgid "| clear . . . . . . . . . . . . . . clear the playlist"
 msgstr "| ակնհայտ է.............. Պարզ է երգացանկ"
 
-#: modules/control/rc.c:812
+#: modules/control/rc.c:815
 #, fuzzy
 msgid "| status . . . . . . . . . . . current playlist status"
 msgstr "| կարգավիճակի........... Ընթացիկ երգացանկ կարգավիճակ"
 
-#: modules/control/rc.c:813
+#: modules/control/rc.c:816
 #, fuzzy
 msgid "| title [X]  . . . . . . set/get title in current item"
 msgstr "| անվանումը [x]...... Սահմանված / ստանալ անվանումը ընթացիկ կետ"
 
-#: modules/control/rc.c:814
+#: modules/control/rc.c:817
 #, fuzzy
 msgid "| title_n  . . . . . . . .  next title in current item"
 msgstr "| title_n........ Next անվանումը ընթացիկ կետ"
 
-#: modules/control/rc.c:815
+#: modules/control/rc.c:818
 #, fuzzy
 msgid "| title_p  . . . . . .  previous title in current item"
 msgstr "| title_p...... Նախորդ անվանումը ընթացիկ կետ"
 
-#: modules/control/rc.c:816
+#: modules/control/rc.c:819
 #, fuzzy
 msgid "| chapter [X]  . . . . set/get chapter in current item"
 msgstr "| գլխում [x].... Սահմանված / ստանալ գլուխ ընթացիկ կետ"
 
-#: modules/control/rc.c:817
+#: modules/control/rc.c:820
 #, fuzzy
 msgid "| chapter_n  . . . . . .  next chapter in current item"
 msgstr "| chapter_n...... Next գլուխ ընթացիկ կետ"
 
-#: modules/control/rc.c:818
+#: modules/control/rc.c:821
 #, fuzzy
 msgid "| chapter_p  . . . .  previous chapter in current item"
 msgstr "| chapter_p.... Նախորդ գլուխ ընթացիկ կետ"
 
-#: modules/control/rc.c:820
+#: modules/control/rc.c:823
 #, fuzzy
 msgid "| seek X . . . seek in seconds, for instance `seek 12'"
 msgstr "| փնտրել X... Փնտրում են վայրկյան, օրինակ` ձգտում են 12 "
 
-#: modules/control/rc.c:821
+#: modules/control/rc.c:824
 #, fuzzy
 msgid "| pause  . . . . . . . . . . . . . . . .  toggle pause"
 msgstr "| դադար................ Toggle դադար`"
 
-#: modules/control/rc.c:822
+#: modules/control/rc.c:825
 #, fuzzy
 msgid "| fastforward  . . . . . . . .  .  set to maximum rate"
 msgstr "| fastforward......... Սահմանված է առավելագույն չափը`"
 
-#: modules/control/rc.c:823
+#: modules/control/rc.c:826
 #, fuzzy
 msgid "| rewind  . . . . . . . . . . . .  set to minimum rate"
 msgstr "| փաթաթելու............ Սահմանված է նվազագույն չափը`"
 
-#: modules/control/rc.c:824
+#: modules/control/rc.c:827
 #, fuzzy
 msgid "| faster . . . . . . . . . .  faster playing of stream"
 msgstr "| արագ.......... Ավելի արագ խաղում է հոսք"
 
-#: modules/control/rc.c:825
+#: modules/control/rc.c:828
 #, fuzzy
 msgid "| slower . . . . . . . . . .  slower playing of stream"
 msgstr "| դանդաղեցնում.......... Դանդաղեցնում խաղում է հոսք"
 
-#: modules/control/rc.c:826
+#: modules/control/rc.c:829
 #, fuzzy
 msgid "| normal . . . . . . . . . .  normal playing of stream"
 msgstr "| նորմալ.......... Նորմալ խաղում է հոսք"
 
-#: modules/control/rc.c:827
+#: modules/control/rc.c:830
 #, fuzzy
 msgid "| frame. . . . . . . . . .  play frame by frame"
 msgstr "| շրջանակ.......... Խաղ շրջանակ կողմից շրջանակ"
 
-#: modules/control/rc.c:828
+#: modules/control/rc.c:831
 #, fuzzy
 msgid "| f [on|off] . . . . . . . . . . . . toggle fullscreen"
 msgstr "| զ [մասին | անջատելու]............ Toggle ողջ էկրանով`"
 
-#: modules/control/rc.c:829
+#: modules/control/rc.c:832
 #, fuzzy
 msgid "| info . . . . .  information about the current stream"
 msgstr "| տվյալներ..... Տեղեկություններ ընթացիկ հոսք"
 
-#: modules/control/rc.c:830
+#: modules/control/rc.c:833
 #, fuzzy
 msgid "| stats  . . . . . . . .  show statistical information"
 msgstr "| վիճակագրությունը........ Ցույց վիճակագրական տեղեկություններ"
 
-#: modules/control/rc.c:831
+#: modules/control/rc.c:834
 #, fuzzy
 msgid "| get_time . . seconds elapsed since stream's beginning"
 msgstr "| get_time.. Վայրկյան անցել առվի ի սկիզբը,"
 
-#: modules/control/rc.c:832
+#: modules/control/rc.c:835
 #, fuzzy
 msgid "| is_playing . . . .  1 if a stream plays, 0 otherwise"
 msgstr "| is_playing.... 1 եթե առու է խաղում, 0 այլ բան նախատեսված չէ`"
 
-#: modules/control/rc.c:833
+#: modules/control/rc.c:836
 #, fuzzy
 msgid "| get_title . . . . .  the title of the current stream"
 msgstr "| get_title..... Վերնագիրը ընթացիկ հոսք"
 
-#: modules/control/rc.c:834
+#: modules/control/rc.c:837
 #, fuzzy
 msgid "| get_length . . . .  the length of the current stream"
 msgstr "| get_length.... Երկարությունը ընթացիկ հոսք"
 
-#: modules/control/rc.c:836
+#: modules/control/rc.c:839
 #, fuzzy
 msgid "| volume [X] . . . . . . . . . .  set/get audio volume"
 msgstr "| ձայնը [x].......... Սահմանված / ստանալ ձայնային ձայնը`"
 
-#: modules/control/rc.c:837
+#: modules/control/rc.c:840
 #, fuzzy
 msgid "| volup [X]  . . . . . . .  raise audio volume X steps"
 msgstr "| volup [x]....... Բարձրացնում ձայնային ձայնը X քայլերը`"
 
-#: modules/control/rc.c:838
+#: modules/control/rc.c:841
 #, fuzzy
 msgid "| voldown [X]  . . . . . .  lower audio volume X steps"
 msgstr "| voldown [x]...... Ավելի ցածր ձայնային ձայնը X քայլերը`"
 
-#: modules/control/rc.c:839
+#: modules/control/rc.c:842
 #, fuzzy
 msgid "| adev [X] . . . . . . . . . . .  set/get audio device"
 msgstr "| adev [x]........... Սահմանված / ստանալ ձայնային սարք`"
 
-#: modules/control/rc.c:840
+#: modules/control/rc.c:843
 #, fuzzy
 msgid "| achan [X]. . . . . . . . . .  set/get audio channels"
 msgstr "| achan [x].......... Սահմանված / ստանալ ձայնային կանալներ"
 
-#: modules/control/rc.c:841
+#: modules/control/rc.c:844
 #, fuzzy
 msgid "| atrack [X] . . . . . . . . . . . set/get audio track"
 msgstr "| atrack [x]........... Սահմանված / ստանալ աուդիո են տանում`"
 
-#: modules/control/rc.c:842
+#: modules/control/rc.c:845
 #, fuzzy
 msgid "| vtrack [X] . . . . . . . . . . . set/get video track"
 msgstr "| vtrack [x]........... Սահմանված / ստանալ վիդեո են տանում`"
 
-#: modules/control/rc.c:843
+#: modules/control/rc.c:846
 #, fuzzy
 msgid "| vratio [X]  . . . . . . . set/get video aspect ratio"
 msgstr "| vratio [x]....... Սահմանված / ստանալ վիդեո չափերի հարաբերությունը"
 
-#: modules/control/rc.c:844
+#: modules/control/rc.c:847
 #, fuzzy
 msgid "| vcrop [X]  . . . . . . . . . . .  set/get video crop"
 msgstr "| vcrop [x]........... Սահմանված / ստանալ վիդեո հունձք"
 
-#: modules/control/rc.c:845
+#: modules/control/rc.c:848
 #, fuzzy
 msgid "| vzoom [X]  . . . . . . . . . . .  set/get video zoom"
 msgstr "| vzoom [x]........... Սահմանված / ստանալ վիդեո խոշորացում"
 
-#: modules/control/rc.c:846
+#: modules/control/rc.c:849
 #, fuzzy
 msgid "| snapshot . . . . . . . . . . . . take video snapshot"
 msgstr "| նկարի լուսանկար............ Տեղի վիդեո նկարի"
 
-#: modules/control/rc.c:847
+#: modules/control/rc.c:850
 #, fuzzy
 msgid "| strack [X] . . . . . . . . . set/get subtitles track"
 msgstr ""
 "| strack [x]......... Սահմանված / ստանալ տեքստային բացատրություններով են "
 "տանում`"
 
-#: modules/control/rc.c:848
+#: modules/control/rc.c:851
 #, fuzzy
 msgid "| key [hotkey name] . . . . . .  simulate hotkey press"
 msgstr "| ստեղնը [կոճակ անունը]...... Ձեւացնել կոճակ սեղմեք"
 
-#: modules/control/rc.c:849
+#: modules/control/rc.c:852
 #, fuzzy
 msgid "| menu . . [on|off|up|down|left|right|select] use menu"
 msgstr ""
 "| ցանկում.. [Մասին | անջատելը | մինչեւ | վար | ձախ | իրավունք | ընտրել] "
 "օգտագործման ցանկի մեջ"
 
-#: modules/control/rc.c:854
+#: modules/control/rc.c:857
 #, fuzzy
 msgid "| @name marq-marquee  STRING  . . overlay STRING in video"
 msgstr "| @ անունը marq-վազող տող string.. Խուփ string է վիդեո"
 
-#: modules/control/rc.c:855
+#: modules/control/rc.c:858
 #, fuzzy
 msgid "| @name marq-x X . . . . . . . . . . . .offset from left"
 msgstr "| @ անունը marq-x X............ Շեղում ձախից"
 
-#: modules/control/rc.c:856
+#: modules/control/rc.c:859
 #, fuzzy
 msgid "| @name marq-y Y . . . . . . . . . . . . offset from top"
 msgstr "| @ անունը marq-y Y............ Շեղում վերեւից`"
 
-#: modules/control/rc.c:857
+#: modules/control/rc.c:860
 #, fuzzy
 msgid "| @name marq-position #. . .  .relative position control"
 msgstr ""
 "| @ անունը marq-դիրքորոշումը\" #:.... Հարաբերական դիրքորոշումը հսկողության "
 
-#: modules/control/rc.c:858
+#: modules/control/rc.c:861
 #, fuzzy
 msgid "| @name marq-color # . . . . . . . . . . font color, RGB"
 msgstr "| @ անունը marq-գույնը\" #:.......... Գույնը, RGB "
 
-#: modules/control/rc.c:859
+#: modules/control/rc.c:862
 #, fuzzy
 msgid "| @name marq-opacity # . . . . . . . . . . . . . opacity"
 msgstr ""
 "| @ անունը marq-անթափանցիկություն\" #:............. Անթափանցիկություն `"
 
-#: modules/control/rc.c:860
+#: modules/control/rc.c:863
 #, fuzzy
 msgid "| @name marq-timeout T. . . . . . . . . . timeout, in ms"
 msgstr "| @ անունը marq-առավելագույն սպասում Տ......... Timeout է, MS"
 
-#: modules/control/rc.c:861
+#: modules/control/rc.c:864
 #, fuzzy
 msgid "| @name marq-size # . . . . . . . . font size, in pixels"
 msgstr "| @ անունը marq չափսի\" #:........ Տառաչափը, թ պիքսել "
 
-#: modules/control/rc.c:863
+#: modules/control/rc.c:866
 #, fuzzy
 msgid "| @name logo-file STRING . . .the overlay file path/name"
 msgstr "| @ անվանումը Տարբերանշանի-ֆայլ string... Որ պատել երկատեղը / անունը"
 
-#: modules/control/rc.c:864
+#: modules/control/rc.c:867
 #, fuzzy
 msgid "| @name logo-x X . . . . . . . . . . . .offset from left"
 msgstr "| @ անվանումը Տարբերանշանի-x X............ Շեղում ձախից"
 
-#: modules/control/rc.c:865
+#: modules/control/rc.c:868
 #, fuzzy
 msgid "| @name logo-y Y . . . . . . . . . . . . offset from top"
 msgstr "| @ անվանումը Տարբերանշանի-y Y............ Շեղում վերեւից`"
 
-#: modules/control/rc.c:866
+#: modules/control/rc.c:869
 #, fuzzy
 msgid "| @name logo-position #. . . . . . . . relative position"
 msgstr ""
 "| @ անվանումը Տարբերանշանի-դիրքորոշումը\" #:........ Հարաբերական "
 "դիրքորոշումը `"
 
-#: modules/control/rc.c:867
+#: modules/control/rc.c:870
 #, fuzzy
 msgid "| @name logo-transparency #. . . . . . . . .transparency"
 msgstr ""
 "| @ անվանումը Տարբերանշանի-թափանցիկության\" #:......... Թափանցիկությունը :"
 
-#: modules/control/rc.c:869
+#: modules/control/rc.c:872
 #, fuzzy
 msgid "| @name mosaic-alpha # . . . . . . . . . . . . . . alpha"
 msgstr "| @ անունը mosaic-ալֆա\" #:.............. Ալֆա `"
 
-#: modules/control/rc.c:870
+#: modules/control/rc.c:873
 #, fuzzy
 msgid "| @name mosaic-height #. . . . . . . . . . . . . .height"
 msgstr "| @ անունը mosaic-բարձրություն\" #:.............. Բարձրությունը `"
 
-#: modules/control/rc.c:871
+#: modules/control/rc.c:874
 #, fuzzy
 msgid "| @name mosaic-width # . . . . . . . . . . . . . . width"
 msgstr "| @ անունը mosaic-բարձրություն\" #:.............. Բարձրություն "
 
-#: modules/control/rc.c:872
+#: modules/control/rc.c:875
 #, fuzzy
 msgid "| @name mosaic-xoffset # . . . .top left corner position"
 msgstr ""
 "| @ անունը mosaic-xoffset\" #:.... Էջի վերեւի ձախ անկյունում դիրքորոշումը `"
 
-#: modules/control/rc.c:873
+#: modules/control/rc.c:876
 #, fuzzy
 msgid "| @name mosaic-yoffset # . . . .top left corner position"
 msgstr ""
 "| @ անունը mosaic-yoffset\" #:.... Էջի վերեւի ձախ անկյունում դիրքորոշումը `"
 
-#: modules/control/rc.c:874
+#: modules/control/rc.c:877
 #, fuzzy
 msgid "| @name mosaic-offsets x,y(,x,y)*. . . . list of offsets"
 msgstr "| @ անունը mosaic-offsets x, y (, x, y) *.... Ցուցակը offsets"
 
-#: modules/control/rc.c:875
+#: modules/control/rc.c:878
 #, fuzzy
 msgid "| @name mosaic-align 0..2,4..6,8..10. . .mosaic alignment"
 msgstr ""
 "| @ անունը mosaic-align: 0 .. 2,4 .. 6,8 .. 10... Խճանկար հավասարեցում`"
 
-#: modules/control/rc.c:876
+#: modules/control/rc.c:879
 #, fuzzy
 msgid "| @name mosaic-vborder # . . . . . . . . vertical border"
 msgstr "| @ անունը mosaic-vborder\" #:........ Ուղղահայաց սահմանը :"
 
-#: modules/control/rc.c:877
+#: modules/control/rc.c:880
 #, fuzzy
 msgid "| @name mosaic-hborder # . . . . . . . horizontal border"
 msgstr "| @ անունը mosaic-hborder\" #:....... Հորիզոնական սահմանը `"
 
-#: modules/control/rc.c:878
+#: modules/control/rc.c:881
 #, fuzzy
 msgid "| @name mosaic-position {0=auto,1=fixed} . . . .position"
 msgstr ""
 "| @ անունը mosaic-դիրքորոշումը (0 = auto, 1 = ֆիքսված).... Դիրքորոշումը`"
 
-#: modules/control/rc.c:879
+#: modules/control/rc.c:882
 #, fuzzy
 msgid "| @name mosaic-rows #. . . . . . . . . . .number of rows"
 msgstr "| @ անունը mosaic-շարքերում\" #:........... Թիվը շարքերում `"
 
-#: modules/control/rc.c:880
+#: modules/control/rc.c:883
 #, fuzzy
 msgid "| @name mosaic-cols #. . . . . . . . . . .number of cols"
 msgstr "| @ անունը mosaic-cols\" #:........... Թիվը cols "
 
-#: modules/control/rc.c:881
+#: modules/control/rc.c:884
 #, fuzzy
 msgid "| @name mosaic-order id(,id)* . . . . order of pictures "
 msgstr "| @ անունը mosaic-կարգի id (, id) *.... Կարգը պատկերներ"
 
-#: modules/control/rc.c:882
+#: modules/control/rc.c:885
 #, fuzzy
 msgid "| @name mosaic-keep-aspect-ratio {0,1} . . .aspect ratio"
 msgstr ""
 "| @ անունը mosaic-պահել-առումով-հարաբերակցությունը (0,1)... Առումով "
 "հարաբերակցությունը`"
 
-#: modules/control/rc.c:885
+#: modules/control/rc.c:888
 #, fuzzy
 msgid "| help . . . . . . . . . . . . . . . this help message"
 msgstr "| օգնություն............... Այս Օգնության հաղորդագրություն"
 
-#: modules/control/rc.c:886
+#: modules/control/rc.c:889
 #, fuzzy
 msgid "| longhelp . . . . . . . . . . . a longer help message"
 msgstr "| longhelp........... Ավելի երկար օգնության հաղորդագրություն"
 
-#: modules/control/rc.c:887
+#: modules/control/rc.c:890
 #, fuzzy
 msgid "| logout . . . . . . .  exit (if in socket connection)"
 msgstr "| ելք....... Ելքի (եթե ԱՊ կապ)"
 
-#: modules/control/rc.c:888
+#: modules/control/rc.c:891
 #, fuzzy
 msgid "| quit . . . . . . . . . . . . . . . . . . .  quit vlc"
 msgstr "| դուրս................... Հեռանալ vlc`"
 
-#: modules/control/rc.c:890
+#: modules/control/rc.c:893
 #, fuzzy
 msgid "+----[ end of help ]"
 msgstr "Բաց վերջ"
 
-#: modules/control/rc.c:1016
+#: modules/control/rc.c:1019
 #, fuzzy
 msgid "Press menu select or pause to continue."
 msgstr "Պրես ցանկում ընտրեք կամ դադար շարունակել."
 
-#: modules/control/rc.c:1241 modules/control/rc.c:1481
-#: modules/control/rc.c:1539 modules/control/rc.c:1712
-#: modules/control/rc.c:1810
+#: modules/control/rc.c:1244 modules/control/rc.c:1484
+#: modules/control/rc.c:1542 modules/control/rc.c:1715
+#: modules/control/rc.c:1813
 #, fuzzy
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr "տեսակը\" ցանկում ընտրեք \"կամ\" ընդմիջում \"է շարունակել."
 
-#: modules/control/rc.c:1332
+#: modules/control/rc.c:1335
 #, fuzzy
 msgid "Error: `goto' needs an argument greater than zero."
 msgstr "Սխալ` Գովազդ կարիքները փաստարկ ավելի մեծ, քան զրոյական է \"."
 
-#: modules/control/rc.c:1343
+#: modules/control/rc.c:1346
 #, fuzzy, c-format
 msgid "Playlist has only %d elements"
 msgstr "երգացանկ ունի միայն%d տարրեր"
 
-#: modules/control/rc.c:1795 modules/control/rc.c:1835
+#: modules/control/rc.c:1798 modules/control/rc.c:1838
 #, fuzzy
 msgid "Please provide one of the following parameters:"
 msgstr "Խնդրում Ӏ¥նք տրամադրել մեկը հետեւյալ տվյալները`"
 
-#: modules/control/rc.c:1869 modules/gui/ncurses.c:1972
+#: modules/control/rc.c:1872 modules/gui/ncurses.c:1972
 #, fuzzy
 msgid "+-[Incoming]"
 msgstr "Ձայն կոդավորիչներ settings"
 
-#: modules/control/rc.c:1870 modules/gui/ncurses.c:1975
+#: modules/control/rc.c:1873 modules/gui/ncurses.c:1975
 #, fuzzy, c-format
 msgid "| input bytes read : %8.0f KiB"
 msgstr "| ներդրում բայթեր կարդալ,% 8.0f KiB"
 
-#: modules/control/rc.c:1872 modules/gui/ncurses.c:1978
+#: modules/control/rc.c:1875 modules/gui/ncurses.c:1978
 #, fuzzy, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr "| ներդրում բիթրեյթ:% 6.0f Կբ / վ"
 
-#: modules/control/rc.c:1874 modules/gui/ncurses.c:1980
+#: modules/control/rc.c:1877 modules/gui/ncurses.c:1980
 #, fuzzy, c-format
 msgid "| demux bytes read : %8.0f KiB"
 msgstr "| դեմուլտիպլեքսոր բայթեր կարդալ,% 8.0f KiB"
 
-#: modules/control/rc.c:1876 modules/gui/ncurses.c:1983
+#: modules/control/rc.c:1879 modules/gui/ncurses.c:1983
 #, fuzzy, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr "| դեմուլտիպլեքսոր բիթրեյթ:% 6.0f Կբ / վ"
 
-#: modules/control/rc.c:1878
+#: modules/control/rc.c:1881
 #, fuzzy, c-format
 msgid "| demux corrupted  :    %5i"
 msgstr "| դեմուլտիպլեքսոր կոռումպացված:% 5i"
 
-#: modules/control/rc.c:1880
+#: modules/control/rc.c:1883
 #, fuzzy, c-format
 msgid "| discontinuities  :    %5i"
 msgstr "| discontinuities:% 5i"
 
-#: modules/control/rc.c:1884 modules/gui/ncurses.c:1993
+#: modules/control/rc.c:1887 modules/gui/ncurses.c:1993
 #, fuzzy
 msgid "+-[Video Decoding]"
 msgstr "Վիդեո settings"
 
-#: modules/control/rc.c:1885 modules/gui/ncurses.c:1996
+#: modules/control/rc.c:1888 modules/gui/ncurses.c:1996
 #, fuzzy, c-format
 msgid "| video decoded    :    %5i"
 msgstr "| վիդեո decoded:% 5i"
 
-#: modules/control/rc.c:1887 modules/gui/ncurses.c:1999
+#: modules/control/rc.c:1890 modules/gui/ncurses.c:1999
 #, fuzzy, c-format
 msgid "| frames displayed :    %5i"
 msgstr "| շրջանակներում ցուցադրվել:% 5i"
 
-#: modules/control/rc.c:1889 modules/gui/ncurses.c:2002
+#: modules/control/rc.c:1892 modules/gui/ncurses.c:2002
 #, fuzzy, c-format
 msgid "| frames lost      :    %5i"
 msgstr "| շրջանակներ կորցրել:% 5i"
 
-#: modules/control/rc.c:1893 modules/gui/ncurses.c:2012
+#: modules/control/rc.c:1896 modules/gui/ncurses.c:2012
 #, fuzzy
 msgid "+-[Audio Decoding]"
 msgstr "Ձայն visualisations"
 
-#: modules/control/rc.c:1894 modules/gui/ncurses.c:2015
+#: modules/control/rc.c:1897 modules/gui/ncurses.c:2015
 #, fuzzy, c-format
 msgid "| audio decoded    :    %5i"
 msgstr "| աուդիո decoded:% 5i"
 
-#: modules/control/rc.c:1896 modules/gui/ncurses.c:2018
+#: modules/control/rc.c:1899 modules/gui/ncurses.c:2018
 #, fuzzy, c-format
 msgid "| buffers played   :    %5i"
 msgstr "| buffers խաղացել:% 5i"
 
-#: modules/control/rc.c:1898 modules/gui/ncurses.c:2021
+#: modules/control/rc.c:1901 modules/gui/ncurses.c:2021
 #, fuzzy, c-format
 msgid "| buffers lost     :    %5i"
 msgstr "| buffers կորցրել:% 5i"
 
-#: modules/control/rc.c:1902 modules/gui/ncurses.c:2029
+#: modules/control/rc.c:1905 modules/gui/ncurses.c:2029
 #, fuzzy
 msgid "+-[Streaming]"
 msgstr "Կոդեկ setting"
 
-#: modules/control/rc.c:1903 modules/gui/ncurses.c:2032
+#: modules/control/rc.c:1906 modules/gui/ncurses.c:2032
 #, fuzzy, c-format
 msgid "| packets sent     :    %5i"
 msgstr "| փաթեթներ ուղարկել:% 5i"
 
-#: modules/control/rc.c:1904 modules/gui/ncurses.c:2034
+#: modules/control/rc.c:1907 modules/gui/ncurses.c:2034
 #, fuzzy, c-format
 msgid "| bytes sent       : %8.0f KiB"
 msgstr "| բայթեր ուղարկել:% 8.0f KiB"
 
-#: modules/control/rc.c:1906
+#: modules/control/rc.c:1909
 #, fuzzy, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
 msgstr "| ուղարկելով բիթրեյթ:% 6.0f Կբ / վ"
 
-#: modules/control/signals.c:37
+#: modules/control/signals.c:40
 msgid "Signals"
 msgstr "Ազդանշաններ"
 
-#: modules/control/signals.c:40
+#: modules/control/signals.c:43
 #, fuzzy
 msgid "POSIX signals handling interface"
 msgstr "POSIX ազդանշանները քննության ինտերֆեյսի"
@@ -15001,7 +15016,7 @@ msgid ""
 msgstr ""
 "Սա է TCP նավահանգստում վրա, որը այդ ինտերֆեյսը կլսեն. Այն Նախնականը է 4212."
 
-#: modules/control/telnet.c:82 modules/misc/lua/vlc.c:82
+#: modules/control/telnet.c:82 modules/misc/lua/vlc.c:81
 #, fuzzy
 msgid ""
 "A single administration password is used to protect this interface. The "
@@ -15343,12 +15358,12 @@ msgstr "HTTP թունելի պորտից"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "Պորտ օգտագործելու համար tunneling է RTSP / RTP շուրջ HTTP\"."
 
-#: modules/demux/live555.cpp:604
+#: modules/demux/live555.cpp:603
 #, fuzzy
 msgid "RTSP authentication"
 msgstr "RTSP իսկությունը`"
 
-#: modules/demux/live555.cpp:605
+#: modules/demux/live555.cpp:604
 #, fuzzy
 msgid "Please enter a valid login name and a password."
 msgstr ", խնդրում ենք մուտքագրել վավեր մուտքի անունը եւ գաղտնաբառը. "
@@ -19979,26 +19994,26 @@ msgstr "Համակարգի հիմնական"
 msgid "Configure Hotkeys"
 msgstr "Կարգավորել Կոճակները"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:916
+#: modules/gui/qt4/components/simple_preferences.cpp:925
 #: modules/gui/qt4/dialogs_provider.hpp:51
 msgid "Audio Files"
 msgstr "Ձայնային Ֆայլեր"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:917
+#: modules/gui/qt4/components/simple_preferences.cpp:926
 #: modules/gui/qt4/dialogs_provider.hpp:46
 msgid "Video Files"
 msgstr "Վիդեո Ֆայլեր"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:918
+#: modules/gui/qt4/components/simple_preferences.cpp:927
 #: modules/gui/qt4/dialogs_provider.hpp:56
 msgid "Playlist Files"
 msgstr "Երգացանկի Ֆայլեր"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:970
+#: modules/gui/qt4/components/simple_preferences.cpp:979
 msgid "&Apply"
 msgstr "&Կիրառել"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:971
+#: modules/gui/qt4/components/simple_preferences.cpp:980
 #: modules/gui/qt4/dialogs/convert.cpp:96
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
@@ -20838,8 +20853,8 @@ msgid "XSPF playlist (*.xspf)"
 msgstr "XSPF երգացանկ (*. xspf)"
 
 #: modules/gui/qt4/dialogs_provider.cpp:559
-msgid "M3U8 playlist (*.m3u)"
-msgstr "M3U8 երգացանկ (*. m3u)"
+msgid "M3U8 playlist (*.m3u8)"
+msgstr "M3U8 երգացանկ (*. m3u8)"
 
 #: modules/gui/qt4/dialogs_provider.cpp:560
 msgid "M3U playlist (*.m3u)"
@@ -22332,91 +22347,91 @@ msgstr "պանակ մուտք"
 msgid "Allow to build directory index"
 msgstr "Թույլ տալ ստեղծել պանակների ցանկ"
 
-#: modules/misc/lua/vlc.c:92
+#: modules/misc/lua/vlc.c:91
 #, fuzzy
 msgid "Lua Interface Module"
 msgstr "Lua Ինտերֆեյս մոդուլի"
 
-#: modules/misc/lua/vlc.c:93
+#: modules/misc/lua/vlc.c:92
 #, fuzzy
 msgid "Interfaces implemented using lua scripts"
 msgstr "ինտերֆեյս իրականացվել օգտագործելով lua սցենար`"
 
-#: modules/misc/lua/vlc.c:108
+#: modules/misc/lua/vlc.c:107
 #, fuzzy
 msgid "Lua HTTP"
 msgstr "HTTP"
 
-#: modules/misc/lua/vlc.c:112
+#: modules/misc/lua/vlc.c:111
 #, fuzzy
 msgid "Lua RC"
 msgstr "Lua Արվեստ"
 
-#: modules/misc/lua/vlc.c:114
+#: modules/misc/lua/vlc.c:113
 #, fuzzy
 msgid "Lua Telnet"
 msgstr "Telnet"
 
-#: modules/misc/lua/vlc.c:125
+#: modules/misc/lua/vlc.c:124
 #, fuzzy
 msgid "Lua Meta Fetcher"
 msgstr "Lua Meta Fetcher"
 
-#: modules/misc/lua/vlc.c:126
+#: modules/misc/lua/vlc.c:125
 #, fuzzy
 msgid "Fetch meta data using lua scripts"
 msgstr "կանչը meta տվյալների` օգտագործելով lua սցենար `"
 
-#: modules/misc/lua/vlc.c:131
+#: modules/misc/lua/vlc.c:130
 #, fuzzy
 msgid "Lua Meta Reader"
 msgstr "Lua Meta Ընթերցարանի"
 
-#: modules/misc/lua/vlc.c:132
+#: modules/misc/lua/vlc.c:131
 #, fuzzy
 msgid "Read meta data using lua scripts"
 msgstr "Կարդալ meta տվյալների` օգտագործելով lua սցենար `"
 
-#: modules/misc/lua/vlc.c:138
+#: modules/misc/lua/vlc.c:137
 #, fuzzy
 msgid "Lua Playlist"
 msgstr "Lua երգացանկ"
 
-#: modules/misc/lua/vlc.c:139
+#: modules/misc/lua/vlc.c:138
 #, fuzzy
 msgid "Lua Playlist Parser Interface"
 msgstr "Lua երգացանկ Պարսեր Ինտերֆեյս"
 
-#: modules/misc/lua/vlc.c:144
+#: modules/misc/lua/vlc.c:143
 #, fuzzy
 msgid "Lua Interface Module (shortcuts)"
 msgstr "Lua Ինտերֆեյս Module (պրոֆիլներ)"
 
-#: modules/misc/lua/vlc.c:151
+#: modules/misc/lua/vlc.c:152
 #, fuzzy
 msgid "Lua Art"
 msgstr "Lua Արվեստ"
 
-#: modules/misc/lua/vlc.c:152
+#: modules/misc/lua/vlc.c:153
 #, fuzzy
 msgid "Fetch artwork using lua scripts"
 msgstr "կանչը աշխատանքների օգտագործելով lua սցենար`"
 
-#: modules/misc/lua/vlc.c:157
+#: modules/misc/lua/vlc.c:158
 #, fuzzy
 msgid "Lua Extension"
 msgstr "Lua Extension"
 
-#: modules/misc/lua/vlc.c:163
+#: modules/misc/lua/vlc.c:164
 #, fuzzy
 msgid "Lua SD Module"
 msgstr "Lua SD մոդուլի"
 
-#: modules/misc/lua/vlc.c:173
+#: modules/misc/lua/vlc.c:174
 msgid "Freebox TV"
 msgstr "Freebox TV"
 
-#: modules/misc/lua/vlc.c:179
+#: modules/misc/lua/vlc.c:180
 msgid "French TV"
 msgstr "Ֆրանսիական TV"
 
@@ -22476,22 +22491,22 @@ msgstr ""
 msgid "MSN Now-Playing"
 msgstr "MSN Այժմ-Կատարել"
 
-#: modules/misc/notify/notify.c:49
+#: modules/misc/notify/notify.c:53
 #, fuzzy
 msgid "Timeout (ms)"
 msgstr "Առավելագույն սպասում (MS)"
 
-#: modules/misc/notify/notify.c:50
+#: modules/misc/notify/notify.c:54
 #, fuzzy
 msgid "How long the notification will be displayed "
 msgstr "Որքան ծանուցումը կցուցադրվեն"
 
-#: modules/misc/notify/notify.c:55
+#: modules/misc/notify/notify.c:59
 #, fuzzy
 msgid "Notify"
 msgstr "Տեղեկացնել"
 
-#: modules/misc/notify/notify.c:56
+#: modules/misc/notify/notify.c:60
 #, fuzzy
 msgid "LibNotify Notification Plugin"
 msgstr "LibNotify ծանուցումը Ներդրված ծրագիր"
@@ -23411,7 +23426,7 @@ msgid "Unknown type"
 msgstr "Անհայտ տիպ"
 
 #: modules/services_discovery/upnp_cc.cpp:65
-#: modules/services_discovery/upnp_intel.cpp:64
+#: modules/services_discovery/upnp_intel.cpp:65
 msgid "Universal Plug'n'Play"
 msgstr "Universal Plug'n'Play"
 

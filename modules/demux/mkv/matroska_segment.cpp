@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 117dc0390139eab7fed2119590fd924e5407257e $
+ * $Id: 25c9971fbc4473c19302c61298ae7e814f4f9ac8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -220,6 +220,7 @@ void matroska_segment_c::LoadTags( KaxTags *tags )
                     }
                     ep->Up();
                 }
+#if LIBMATROSKA_VERSION < 0x010100
                 else if( MKV_IS_ID( el, KaxTagGeneral ) )
                 {
                     msg_Dbg( &sys.demuxer, "|   + General" );
@@ -288,6 +289,7 @@ void matroska_segment_c::LoadTags( KaxTags *tags )
                 {
                     msg_Dbg( &sys.demuxer, "|   + Multi Title" );
                 }
+#endif
                 else
                 {
                     msg_Dbg( &sys.demuxer, "|   + LoadTag Unknown (%s)", typeid( *el ).name() );

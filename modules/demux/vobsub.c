@@ -2,7 +2,7 @@
  * subtitle.c: Demux vobsub files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 8877da4f31d086af4d700285d6e80430be9a50c7 $
+ * $Id: fceebb89173c83c6c045fcfe2b30bdd771b392b4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -518,25 +518,25 @@ static int ParseVobSubIDX( demux_t *p_demux )
         }
         else if( !strncmp( "id:", line, 3 ) )
         {
-            char language[3];
+            char language[33]; /* Usually 2 or 3 letters, sometimes more.
+                                  Spec (or lack of) doesn't define any limit */
             int i_track_id;
             es_format_t fmt;
 
             /* Lets start a new track */
-            if( sscanf( line, "id: %2s, index: %d",
+            if( sscanf( line, "id: %32[^ ,], index: %d",
                         language, &i_track_id ) == 2 )
             {
                 p_sys->i_tracks++;
                 p_sys->track = xrealloc( p_sys->track,
                           sizeof( vobsub_track_t ) * (p_sys->i_tracks + 1 ) );
-                language[2] = '\0';
 
                 /* Init the track */
                 current_tk = &p_sys->track[p_sys->i_tracks - 1];
                 memset( current_tk, 0, sizeof( vobsub_track_t ) );
                 current_tk->i_current_subtitle = 0;
                 current_tk->i_subtitles = 0;
-                current_tk->p_subtitles = xmalloc( sizeof( subtitle_t ) );;
+                current_tk->p_subtitles = xmalloc( sizeof( subtitle_t ) );
                 current_tk->i_track_id = i_track_id;
                 current_tk->i_delay = (int64_t)0;
 

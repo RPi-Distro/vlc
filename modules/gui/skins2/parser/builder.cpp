@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ff9d4457a8f1f4e8db9e66168d78c9f8c2c3398d $
+ * $Id: f2b2e1596e1adbb4483dd66368ef30f08ffeb7d8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -277,41 +277,36 @@ void Builder::addBitmapFont( const BuilderData::BitmapFont &rData )
 
 void Builder::addFont( const BuilderData::Font &rData )
 {
-    string full_path = getFilePath( rData.m_fontFile );
-    if( !full_path.size() )
-        return;
-
     // Try to load the font from the theme directory
-    GenericFont *pFont = new FT2Font( getIntf(), full_path, rData.m_size );
-    if( pFont->init() )
+    string full_path = getFilePath( rData.m_fontFile );
+    if( full_path.size() )
     {
-        m_pTheme->m_fonts[rData.m_id] = GenericFontPtr( pFont );
-    }
-    else
-    {
-        delete pFont;
-
-        // Font not found; try in the resource path
-        OSFactory *pOSFactory = OSFactory::instance( getIntf() );
-        const list<string> &resPath = pOSFactory->getResourcePath();
-        const string &sep = pOSFactory->getDirSeparator();
-
-        list<string>::const_iterator it;
-        for( it = resPath.begin(); it != resPath.end(); it++ )
+        GenericFont *pFont = new FT2Font( getIntf(), full_path, rData.m_size );
+        if( pFont->init() )
         {
-            string path = (*it) + sep + "fonts" + sep + rData.m_fontFile;
-            pFont = new FT2Font( getIntf(), path, rData.m_size );
-            if( pFont->init() )
-            {
-                // Font loaded successfully
-                m_pTheme->m_fonts[rData.m_id] = GenericFontPtr( pFont );
-                break;
-            }
-            else
-            {
-                delete pFont;
-            }
+            m_pTheme->m_fonts[rData.m_id] = GenericFontPtr( pFont );
+            return;
         }
+        delete pFont;
+    }
+
+    // Font not found; try in the resource path
+    OSFactory *pOSFactory = OSFactory::instance( getIntf() );
+    const list<string> &resPath = pOSFactory->getResourcePath();
+    const string &sep = pOSFactory->getDirSeparator();
+
+    list<string>::const_iterator it;
+    for( it = resPath.begin(); it != resPath.end(); ++it )
+    {
+        string path = (*it) + sep + "fonts" + sep + rData.m_fontFile;
+        GenericFont *pFont = new FT2Font( getIntf(), path, rData.m_size );
+        if( pFont->init() )
+        {
+            // Font loaded successfully
+            m_pTheme->m_fonts[rData.m_id] = GenericFontPtr( pFont );
+            return;
+        }
+        delete pFont;
     }
 }
 

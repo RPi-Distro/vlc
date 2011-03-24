@@ -1402,7 +1402,10 @@ uninstall-am: uninstall-dist_appdataDATA uninstall-dist_icons128DATA \
 
 skins2/default.vlt: $(skins2_default_vlt_FILES)
 	mkdir -p skins2
-	tar cvvzf skins2/default.vlt --exclude .svn -C $(srcdir)/skins2 default/
+	(cd "$(srcdir)/skins2"; find default -print0 | \
+		LC_ALL=C sort -z | \
+		tar cvv --exclude .svn --no-recursion --null -T -) | \
+	gzip -n > skins2/default.vlt
 
 .lua.luac:
 	$(AM_V_at)for f in $(EXTRA_DIST); do \

@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: f79e0ef8892b3783cef3b322a4f442acdaf6c0a8 $
+ * $Id: 5efe76112ec874713f33b68cffa764cb342be80e $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -72,7 +72,9 @@ static const struct
     const char *psz_name;
 } pp_shortcuts[] = {
     { "luarc", "rc" },
+#ifndef WIN32
     { "rc", "rc" },
+#endif
     /* { "luahotkeys", "hotkeys" }, */
     /* { "hotkeys", "hotkeys" }, */
     { "luatelnet", "telnet" },
@@ -124,6 +126,58 @@ static char *GetModuleName( intf_thread_t *p_intf )
         return strdup( pp_shortcuts[i_candidate].psz_name );
 
     return var_CreateGetString( p_intf, "lua-intf" );
+}
+
+static char *StripPasswords( const char *psz_config )
+{
+    unsigned n = 0;
+    const char *p = psz_config;
+    while ((p = strstr(p, "password=")) != NULL)
+    {
+        n++;
+        p++;
+    }
+    if (n == 0)
+        return strdup(psz_config);
+ 
+    char *psz_log = malloc(strlen(psz_config) + n * strlen("******") + 1);
+    if (psz_log == NULL)
+        return NULL;
+    psz_log[0] = '\0';
+
+    for (p = psz_config; ; )
+    {
+        const char *pwd = strstr(p, "password=");
+        if (pwd == NULL)
+        {
+            /* Copy the last, ending bit */
+            strcat(psz_log, p);
+            break;
+        }
+        pwd += strlen("password=");
+
+        char delim[3] = ",}";
+        if (*pwd == '\'' || *pwd == '"')
+        {
+            delim[0] = *pwd++;
+            delim[1] = '\0';
+        }
+
+        strncat(psz_log, p, pwd - p);
+        strcat(psz_log, "******");
+
+        /* Advance to the delimiter at the end of the password */
+        p = pwd - 1;
+        do
+        {
+            p = strpbrk(p + 1, delim);
+            if (p == NULL)
+                /* Oops, unbalanced quotes or brackets */
+                return psz_log;
+        }
+        while (*(p - 1) == '\\');
+    }
+    return psz_log;
 }
 
 static const luaL_Reg p_reg[] = { { NULL, NULL } };
@@ -261,10 +315,20 @@ int Open_LuaIntf( vlc_object_t *p_this )
         else if( !strcmp( psz_name, "telnet" ) )
         {
             char *psz_telnet_host = var_CreateGetString( p_intf, "telnet-host" );
+            vlc_url_t url;
+            vlc_UrlParse( &url, psz_telnet_host, 0 );
             int i_telnet_port = var_CreateGetInteger( p_intf, "telnet-port" );
+            if ( url.i_port != 0 )
+            {
+                if ( i_telnet_port == TELNETPORT_DEFAULT )
+                    i_telnet_port = url.i_port;
+                else if ( url.i_port != i_telnet_port )
+                    msg_Warn( p_intf, "ignoring port %d (using %d)", url.i_port, i_telnet_port );
+            }
+
             char *psz_telnet_passwd = var_CreateGetString( p_intf, "telnet-password" );
 
-            char *psz_esc_host = config_StringEscape( psz_telnet_host );
+            char *psz_esc_host = config_StringEscape( url.psz_host );
             char *psz_esc_passwd = config_StringEscape( psz_telnet_passwd );
 
             asprintf( &psz_config, "telnet={host='%s:%d',password='%s'}", psz_esc_host ? psz_esc_host : "", i_telnet_port, psz_esc_passwd );
@@ -273,6 +337,7 @@ int Open_LuaIntf( vlc_object_t *p_this )
             free( psz_esc_passwd );
             free( psz_telnet_passwd );
             free( psz_telnet_host );
+            vlc_UrlClean( &url );
         }
         else if( !strcmp( psz_name, "rc" ) )
         {
@@ -293,7 +358,13 @@ int Open_LuaIntf( vlc_object_t *p_this )
         char *psz_buffer;
         if( asprintf( &psz_buffer, "config={%s}", psz_config ) != -1 )
         {
-            msg_Dbg( p_intf, "Setting config variable: %s", psz_buffer );
+            char *psz_log = StripPasswords( psz_buffer );
+            if( psz_log != NULL )
+            {
+                msg_Dbg( p_intf, "Setting config variable: %s", psz_log );
+                free( psz_log );
+            }
+
             if( luaL_dostring( L, psz_buffer ) == 1 )
                 msg_Err( p_intf, "Error while parsing \"lua-config\"." );
             free( psz_buffer );

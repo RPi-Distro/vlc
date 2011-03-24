@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 8d8065824bce87b5c00d078ba6732efdd665e9fd $
+ * $Id: b7ed417fbfae890441bb9cd06bc440ff6884369d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -244,7 +244,7 @@ vlc_module_begin ()
 
 #ifdef WIN32
     add_bool( "qt-disable-volume-keys"             /* name */,
-              false                                /* default value */,
+              true                                 /* default value */,
               NULL,
               QT_DISABLE_VOLUME_KEYS_TEXT          /* text */,
               QT_DISABLE_VOLUME_KEYS_LONGTEXT      /* longtext */,

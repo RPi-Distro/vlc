@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 9bc3235cb82f6f09947a86fdf1a2a482b407578c $
+ * $Id: 549e876304ffbb77cdf699f61cef132b078fad79 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -158,7 +158,7 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_t* p_demux, demux_meta_t* 
         if( !p_txxx )
             continue;
         vlc_meta_AddExtra( p_meta, p_txxx->description().toCString( true ),
-                           p_txxx->fieldList().toString().toCString( true ) );
+                           p_txxx->fieldList().back().toCString( true ) );
     }
 
     // Get some more informations

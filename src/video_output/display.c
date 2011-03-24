@@ -2,7 +2,7 @@
  * display.c: "vout display" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 99f548a64a35064b03c153cf130eed7fb28ac81f $
+ * $Id: 858fefb1a4aab69cf47d27860f36559838a3a2a5 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -414,11 +414,7 @@ static void VoutDisplayCreateRender(vout_display_t *vd)
             break;
     }
     if (!filter)
-    {
-        msg_Err(vd, "VoutDisplayCreateRender FAILED");
-        /* TODO */
-        assert(0);
-    }
+        msg_Err(vd, "Failed to adapt decoder format to display");
 }
 
 static void VoutDisplayDestroyRender(vout_display_t *vd)
@@ -993,6 +989,10 @@ picture_t *vout_FilterDisplay(vout_display_t *vd, picture_t *picture)
     vout_display_owner_sys_t *osys = vd->owner.sys;
 
     assert(osys->filters);
+    if (filter_chain_GetLength(osys->filters) <= 0) {
+        picture_Release(picture);
+        return NULL;
+    }
     return filter_chain_VideoFilter(osys->filters, picture);
 }
 

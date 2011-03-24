@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: e3fca8c697e1a56c815a46888e02ec06cd35403d $
+ * $Id: 631f1453e733949712fc0ebba244e628912c60fb $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -201,6 +201,9 @@ vlc_module_begin ()
     set_capability( "interface", 20 )
 
     set_callbacks( Activate, Deactivate )
+#ifdef WIN32
+    add_shortcut( "rc" )
+#endif
 vlc_module_end ()
 
 /*****************************************************************************

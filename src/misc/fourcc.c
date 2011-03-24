@@ -2,7 +2,7 @@
  * fourcc.c: fourcc helpers functions
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 2cecbd95d2e0738e321a8598977fa22808c6c618 $
+ * $Id: a44bee41b35b137a86a38f173c752f1bd50dfd2e $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -70,12 +70,14 @@ static const entry_t p_list_video[] = {
         E("PIM1", "Pinnacle DC1000 (MPEG-1 Video)"),
 
         E("hdv1", "HDV 720p30 (MPEG-2 Video)"),
-        E("hdv2", "Sony HDV (MPEG-2 Video)"),
-        E("hdv3", "FCP HDV (MPEG-2 Video)"),
+        E("hdv2", "Sony HDV 1080i60 (MPEG-2 Video)"),
+        E("hdv3", "FCP HDV 1080i50 (MPEG-2 Video)"),
+        E("hdv4", "HDV 720p24 (MPEG-2 Video)"),
         E("hdv5", "HDV 720p25 (MPEG-2 Video)"),
         E("hdv6", "HDV 1080p24 (MPEG-2 Video)"),
         E("hdv7", "HDV 1080p25 (MPEG-2 Video)"),
         E("hdv8", "HDV 1080p30 (MPEG-2 Video)"),
+        E("hdv9", "JVC HDV (MPEG-2 Video)"),
 
         E("mx5n", "MPEG2 IMX NTSC 525/60 50mb/s (FCP)"),
         E("mx5p", "MPEG2 IMX PAL 625/60 50mb/s (FCP)"),

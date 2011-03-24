@@ -2,7 +2,7 @@
  * pls.c : PLS playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 20a6f52a945b7b1662f9d4861a33fe9fed09af66 $
+ * $Id: 6925cc09d069eedf6b08d80e42dec000cea90a69 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -169,12 +169,7 @@ static int Demux( demux_t *p_demux )
             if( !strncasecmp( psz_key, "Ref", sizeof("Ref") -1 ) )
             {
                 if( !strncasecmp( psz_mrl, "http://", sizeof("http://") -1 ) )
-                {
-                    psz_mrl++;
-                    psz_mrl[0] = 'm';
-                    psz_mrl[1] = 'm';
-                    psz_mrl[2] = 's';
-                }
+                    memcpy( psz_mrl, "mmsh", 4 );
             }
         }
         else if( !strncasecmp( psz_key, "title", sizeof("title") -1 ) )

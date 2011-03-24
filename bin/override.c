@@ -33,7 +33,6 @@ void vlc_enable_override (void);
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <pthread.h>
@@ -239,26 +238,8 @@ error:
 #endif
 
 
-/*** Dynaminc linker ***/
-
-void *dlopen (const char *path, int flags)
-{
-    if (override && path != NULL)
-    {
-        /* Work around the KDE SIGCHLD and KDE D-Bus exit handler bugs */
-        if (strstr (path, "libkde") != NULL)
-        {
-            LOG("Blocked", "\"%s\", %d", path, flags);
-            return NULL;
-        }
-    }
-    return CALL(dlopen, path, flags);
-}
-
-
-/*** Locales ***/
-
-/* setlocale() is not thread-safe and has a tendency to crash other threads as
+/*** Locales ***
+ * setlocale() is not thread-safe and has a tendency to crash other threads as
  * quite many libc and libintl calls depend on the locale.
  * Use uselocale() instead for thread-safety.
  */

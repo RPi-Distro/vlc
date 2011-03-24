@@ -2,7 +2,7 @@
  * vlcproc.cpp
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: ad2624acbd80783c2ba0604afc9958982721e785 $
+ * $Id: 37cb3c4ad3abaa8138ebae1d7bba5f416933029e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -641,7 +641,7 @@ void VlcProc::on_volume_changed( vlc_object_t* p_obj, vlc_value_t newVal )
 
     audio_volume_t volume;
     aout_VolumeGet( pPlaylist, &volume );
-    SET_VOLUME( m_cVarVolume, (double)volume / AOUT_VOLUME_MAX, false );
+    SET_VOLUME( m_cVarVolume, volume, false );
     SET_BOOL( m_cVarMute, volume == 0 );
 }
 
@@ -737,7 +737,7 @@ void VlcProc::init_variables()
 
     audio_volume_t volume;
     aout_VolumeGet( pPlaylist, &volume );
-    SET_VOLUME( m_cVarVolume, (double)volume / AOUT_VOLUME_MAX, false );
+    SET_VOLUME( m_cVarVolume, volume, false );
     SET_BOOL( m_cVarMute, volume == 0 );
 
     update_equalizer();

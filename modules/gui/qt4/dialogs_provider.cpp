@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 17fc0efdbfe841687d9be60a5005c3748524f5e8 $
+ * $Id: 3482da9b5a705c3463ca301120394e3c174e310c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -556,7 +556,7 @@ void DialogsProvider::saveAPlaylist()
         char module[12];
     } types[] = {
         { N_("XSPF playlist (*.xspf)"), "export-xspf", },
-        { N_("M3U8 playlist (*.m3u)"), "export-m3u8", },
+        { N_("M3U8 playlist (*.m3u8)"), "export-m3u8", },
         { N_("M3U playlist (*.m3u)"), "export-m3u", },
         { N_("HTML playlist (*.html)"), "export-html", },
     };
