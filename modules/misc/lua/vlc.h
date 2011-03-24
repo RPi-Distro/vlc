@@ -2,7 +2,7 @@
  * vlc.h: VLC specific lua library functions.
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 71dfcc78114fb0d9f7d188f61b83def3c6e45e31 $
+ * $Id: a2221d47c536f0130acf686c3d6de78cc7b6dd93 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -50,6 +50,7 @@ int FindArt( vlc_object_t * );
 int Import_LuaPlaylist( vlc_object_t * );
 void Close_LuaPlaylist( vlc_object_t * );
 
+#define TELNETPORT_DEFAULT 4212
 int Open_LuaIntf( vlc_object_t * );
 void Close_LuaIntf( vlc_object_t * );
 

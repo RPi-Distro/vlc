@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 2a5b8e6f0e7e95c466e52eb4b343653fc70497d0 $
+ * $Id: c94cfbbd214cfdb09156f754f2467119761a8cf7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -114,6 +114,7 @@ typedef struct
 
     bool b_playing; /* is it in "play" state */
     bool b_paused; /* is it in "pause" state */
+    int i_port_raw;
 
     int i_es;
     rtsp_client_es_t **es;
@@ -981,7 +982,6 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
     const char *psz_session = NULL;
     const char *psz_cseq = NULL;
     rtsp_client_t *p_rtsp;
-    int i_port = 0;
     int i_cseq = 0;
 
     if( answer == NULL || query == NULL ) return VLC_SUCCESS;
@@ -1012,8 +1012,8 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             {
                 rtsp_client_t *p_rtsp = NULL;
                 char ip[NI_MAXNUMERICHOST];
-                i_port = atoi( strstr( psz_transport, "client_port=" ) +
-                                strlen("client_port=") );
+                int i_port = atoi( strstr( psz_transport, "client_port=" ) +
+                                   strlen("client_port=") );
 
                 if( strstr( psz_transport, "MP2T/H2221/UDP" ) ||
                     strstr( psz_transport, "RAW/RAW/UDP" ) )
@@ -1077,6 +1077,8 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
 
                 if( p_media->b_raw )
                 {
+                    p_rtsp->i_port_raw = i_port;
+
                     if( strstr( psz_transport, "MP2T/H2221/UDP" ) )
                     {
                         httpd_MsgAdd( answer, "Transport",
@@ -1209,7 +1211,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
                 {
                     if( asprintf( &psz_output,
                               "std{access=udp,dst=%s:%i,mux=%s}",
-                              ip, i_port, p_media->psz_mux ) < 0 )
+                              ip, p_rtsp->i_port_raw, p_media->psz_mux ) < 0 )
                         return VLC_ENOMEM;
                 }
                 else

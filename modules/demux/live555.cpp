@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: b3f4de163dcba93bbfc97d3228a008eba548fbe1 $
+ * $Id: 7e91c14d4e349aab9c1319224720f09293396267 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -586,9 +586,8 @@ describe:
                     &i_code );
         else
         {
-            const char *psz_tmp = strstr( psz_error, "RTSP" );
-            if( psz_tmp )
-                sscanf( psz_tmp, "RTSP/%*s%3u", &i_code );
+            if( strstr( psz_error, "401" ) )
+                i_code = 401;
             else
                 i_code = 0;
         }
@@ -739,10 +738,9 @@ static int SessionsSetup( demux_t *p_demux )
                 {
                     /* if we get an unsupported transport error, toggle TCP
                      * use and try again */
-                    if( !strstr(p_sys->env->getResultMsg(),
-                                "461 Unsupported Transport")
+                    if( !strstr(p_sys->env->getResultMsg(),"461")
                         || !p_sys->rtsp->setupMediaSubsession( *sub, False,
-                                               toBool( b_rtsp_tcp ), False ) )
+                                               !toBool( b_rtsp_tcp ), False ) )
                     {
                         msg_Err( p_demux, "SETUP of'%s/%s' failed %s",
                                  sub->mediumName(), sub->codecName(),
@@ -1508,6 +1506,10 @@ static int RollOverTcp( demux_t *p_demux )
     var_SetBool( p_demux, "rtsp-tcp", true );
 
     /* We close the old RTSP session */
+    p_sys->rtsp->teardownMediaSession( *p_sys->ms );
+    Medium::close( p_sys->ms );
+    RTSPClient::close( p_sys->rtsp );
+
     for( i = 0; i < p_sys->i_track; i++ )
     {
         live_track_t *tk = p_sys->track[i];
@@ -1521,10 +1523,6 @@ static int RollOverTcp( demux_t *p_demux )
     }
     if( p_sys->i_track ) free( p_sys->track );
     if( p_sys->p_out_asf ) stream_Delete( p_sys->p_out_asf );
-
-    p_sys->rtsp->teardownMediaSession( *p_sys->ms );
-    Medium::close( p_sys->ms );
-    RTSPClient::close( p_sys->rtsp );
 
     p_sys->ms = NULL;
     p_sys->rtsp = NULL;

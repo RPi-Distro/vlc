@@ -2,7 +2,7 @@
  * var_percent.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5f5ca3c6b96e4163876233ac5a6d5b9607b837fe $
+ * $Id: 829a12b1fd61887439e6de039b89dde9df2d8d4b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -44,6 +44,9 @@ public:
     /// Set the internal value
     virtual void set( float percentage );
     virtual float get() const { return m_value; }
+
+    /// Get the variable preferred step
+    virtual float getStep() const { return .05f; }
 
 private:
     /// Variable type

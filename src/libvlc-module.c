@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: e6d8e14cfc5ccf6e78d42b4cf4af2e52f36ff72e $
+ * $Id: d46d8bfa245791c24473de0e30d313ab853c79a7 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -69,6 +69,7 @@ static const char *const ppsz_language[] =
     "hu",
     "hy",
     "id",
+    "is",
     "it",
     "ja",
     "ko",
@@ -124,6 +125,7 @@ static const char *const ppsz_language_text[] =
     "Magyar",
     "հայերեն",
     "Bahasa Indonesia",
+    "Íslenska",
     "Italiano",
     "日本語",
     "한국어",
@@ -1646,7 +1648,7 @@ vlc_module_begin ()
     add_string( "x11-display", NULL, NULL,
                 DISPLAY_TEXT, DISPLAY_LONGTEXT, true )
         add_deprecated_alias( "xvideo-display" ) /* deprecated since 1.1.0 */
-        add_deprecated_alias( "glx-display" )
+        //add_deprecated_alias( "glx-display" ) cannot have more than one
     add_bool( "xlib", true, NULL, "", "", true )
         change_private ()
     add_bool( "drop-late-frames", 1, NULL, DROP_LATE_FRAMES_TEXT,

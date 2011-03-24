@@ -650,10 +650,17 @@ function call_libvlc_command(cmd,client,arg)
 end
 
 function call_object_command(cmd,client,arg)
-    local var, val = split_input(arg)
+    local var, val
+    if arg ~= nil then
+        var, val = split_input(arg)
+    end
     local ok, vlcmsg, vlcerr, vlcerrmsg = pcall( vlc.var.command, cmd, var, val )
     if not ok then
-        client:append("Error in `"..cmd.." "..var.." "..val.."' ".. vlcmsg) -- when pcall fails the 2nd arg is the error message
+        local v = var or ""
+        if v ~= "" then v = " " .. v end
+        local v2 = val or ""
+        if v2 ~= "" then v2 = " " .. v2 end
+        client:append("Error in `"..cmd..v..v2.."' ".. vlcmsg) -- when pcall fails the 2nd arg is the error message
     end
     if vlcmsg ~= "" then
         client:append(vlcmsg)
@@ -695,9 +702,8 @@ while not vlc.misc.should_die() do
         if string.match(input,"\n$") then
             client.buffer = string.gsub(client.buffer..input,"\r?\n$","")
             done = true
-        elseif client.buffer == ""
-           and ((client.type == host.client_type.stdio and input == "")
-           or  (client.type == host.client_type.net and input == "\004")) then
+        elseif input == ""
+           or  (client.type == host.client_type.net and input == "\004") then
             -- Caught a ^D
             client.buffer = "quit"
             done = true

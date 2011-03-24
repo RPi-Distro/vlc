@@ -2,7 +2,7 @@
  * mmap.c: memory-mapped file input
  *****************************************************************************
  * Copyright © 2007-2008 Rémi Denis-Courmont
- * $Id: 2a591558a96e76a8cb3264f945df5a1dd6216ae7 $
+ * $Id: c27f0487e9bfa8f185ee980a82bba28edccabf41 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,13 +57,8 @@ vlc_module_begin ()
     set_capability ("access", 52)
     add_shortcut ("file")
     set_callbacks (Open, Close)
-#ifdef __APPLE__
-    add_bool ("file-mmap", true, NULL,
-              FILE_MMAP_TEXT, FILE_MMAP_LONGTEXT, true)
-#else
     add_bool ("file-mmap", false, NULL,
               FILE_MMAP_TEXT, FILE_MMAP_LONGTEXT, true)
-#endif
 vlc_module_end ()
 
 static block_t *Block (access_t *);

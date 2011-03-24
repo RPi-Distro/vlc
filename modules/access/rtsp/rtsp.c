@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 3793c23e5b51f3396d7621a43d50588dd72537ad $
+ * $Id: 7b1e606df0d1d9363bd9757e616027f269d7c2fe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -138,7 +138,7 @@ static int rtsp_get_status_code( rtsp_client_t *rtsp, const char *psz_string )
         psz_buffer[3] = 0;
         i_code = atoi( psz_buffer );
     }
-    else if( !strncmp( psz_string, "SET_PARAMETER", 8 ) )
+    else if( !strncmp( psz_string, "SET_PARAMETER", sizeof("SET_PARAMETER") - 1 ) )
     {
         return RTSP_STATUS_SET_PARAMETER;
     }

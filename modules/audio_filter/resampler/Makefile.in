@@ -653,9 +653,8 @@ vlclibdir = @vlclibdir@
 basedir = audio_filter
 dir = audio_filter/resampler
 mods = bandlimited_resampler ugly_resampler
-libvlc_LTLIBRARIES = libbandlimited_resampler_plugin.la \
-	libugly_resampler_plugin.la $(NULL)
-EXTRA_LTLIBRARIES = 
+libvlc_LTLIBRARIES = libugly_resampler_plugin.la
+EXTRA_LTLIBRARIES = libbandlimited_resampler_plugin.la
 NULL = 
 SUFFIXES = 
 libvlcdir = $(vlclibdir)/plugins/$(basedir)
@@ -768,7 +767,7 @@ clean-libvlcLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libbandlimited_resampler_plugin.la: $(libbandlimited_resampler_plugin_la_OBJECTS) $(libbandlimited_resampler_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libbandlimited_resampler_plugin_la_LINK) -rpath $(libvlcdir) $(libbandlimited_resampler_plugin_la_OBJECTS) $(libbandlimited_resampler_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libbandlimited_resampler_plugin_la_LINK)  $(libbandlimited_resampler_plugin_la_OBJECTS) $(libbandlimited_resampler_plugin_la_LIBADD) $(LIBS)
 libugly_resampler_plugin.la: $(libugly_resampler_plugin_la_OBJECTS) $(libugly_resampler_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libugly_resampler_plugin_la_LINK) -rpath $(libvlcdir) $(libugly_resampler_plugin_la_OBJECTS) $(libugly_resampler_plugin_la_LIBADD) $(LIBS)
 

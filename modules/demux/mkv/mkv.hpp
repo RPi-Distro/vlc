@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 8e3ec9b9164e838154fb7c6ec801f4b8d4b4ee82 $
+ * $Id: 981ac2e5228b5eb48bee308e63b648f9ff3e4fab $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -92,13 +92,15 @@
 #include "matroska/KaxSegment.h"
 #include "matroska/KaxTag.h"
 #include "matroska/KaxTags.h"
+#include "matroska/KaxVersion.h"
+#if LIBMATROSKA_VERSION < 0x010100
 #include "matroska/KaxTagMulti.h"
+#endif
 #include "matroska/KaxTracks.h"
 #include "matroska/KaxTrackAudio.h"
 #include "matroska/KaxTrackVideo.h"
 #include "matroska/KaxTrackEntryData.h"
 #include "matroska/KaxContentEncoding.h"
-#include "matroska/KaxVersion.h"
 
 #include "ebml/StdIOCallback.h"
 
@@ -121,6 +123,12 @@ extern "C" {
 
 #define MKV_IS_ID( el, C ) ( el != NULL && typeid( *el ) == typeid( C ) )
 
+#if LIBEBML_VERSION < 0x010000
+#define EBML_INFO(ref)             ref::ClassInfos
+#define EBML_ID(ref)               ref::ClassInfos.GlobalId
+#define EBML_CLASS_CONTEXT(ref)    ref::ClassInfos.Context
+#define EBML_CONTEXT(e)            (e)->Generic().Context
+#endif
 
 using namespace LIBMATROSKA_NAMESPACE;
 using namespace std;

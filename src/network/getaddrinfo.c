@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
  * Copyright (C) 2002-2007 Rémi Denis-Courmont
- * $Id: 7d56c2dccf386ce23e3f4a820d6e971453ee9ded $
+ * $Id: d92fef42e7762ee2b8cb7a2e903a0f8112615664 $
  *
  * Author: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -166,7 +166,7 @@ stub_getnameinfo (const struct sockaddr *sa, socklen_t salen,
     return 0;
 }
 #undef getnameinfo
-#define getnameifo stub_getnameinfo
+#define getnameinfo stub_getnameinfo
 #endif /* if !HAVE_GETNAMEINFO */
 
 #ifndef HAVE_GETADDRINFO
@@ -439,9 +439,9 @@ stub_getaddrinfo (const char *node, const char *service,
     return 0;
 }
 #undef getaddrinfo
-#define getaddrifo stub_getaddrinfo
+#define getaddrinfo stub_getaddrinfo
 #undef freeaddrinfo
-#define freeaddrifo stub_freeaddrinfo
+#define freeaddrinfo stub_freeaddrinfo
 #endif /* if !HAVE_GETADDRINFO */
 
 #if defined( WIN32 ) && !defined( UNDER_CE )

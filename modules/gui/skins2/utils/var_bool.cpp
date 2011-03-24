@@ -2,7 +2,7 @@
  * var_bool.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6c004ee80500e40347c1e6868ef39ffaf792fa9b $
+ * $Id: f5cb12cbaa10fecd60bcd7536446ea5c8227c07e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -46,7 +46,8 @@ void VarBoolImpl::set( bool value )
 
 VarBoolAndBool::VarBoolAndBool( intf_thread_t *pIntf, VarBool &rVar1,
                                 VarBool &rVar2 ):
-    VarBool( pIntf ), m_rVar1( rVar1 ), m_rVar2( rVar2 )
+    VarBool( pIntf ), m_rVar1( rVar1 ), m_rVar2( rVar2 ),
+    m_value( rVar1.get() && rVar2.get() )
 {
     m_rVar1.addObserver( this );
     m_rVar2.addObserver( this );
@@ -62,13 +63,18 @@ VarBoolAndBool::~VarBoolAndBool()
 
 void VarBoolAndBool::onUpdate( Subject<VarBool> &rVariable, void *arg )
 {
-    notify();
+    if( m_value != ( m_rVar1.get() && m_rVar2.get() ) )
+    {
+        m_value = ( m_rVar1.get() && m_rVar2.get() );
+        notify();
+    }
 }
 
 
 VarBoolOrBool::VarBoolOrBool( intf_thread_t *pIntf, VarBool &rVar1,
                               VarBool &rVar2 ):
-    VarBool( pIntf ), m_rVar1( rVar1 ), m_rVar2( rVar2 )
+    VarBool( pIntf ), m_rVar1( rVar1 ), m_rVar2( rVar2 ),
+    m_value( rVar1.get() || rVar2.get() )
 {
     m_rVar1.addObserver( this );
     m_rVar2.addObserver( this );
@@ -84,7 +90,11 @@ VarBoolOrBool::~VarBoolOrBool()
 
 void VarBoolOrBool::onUpdate( Subject<VarBool> &rVariable , void*arg)
 {
-    notify();
+    if( m_value != ( m_rVar1.get() || m_rVar2.get() ) )
+    {
+        m_value = ( m_rVar1.get() || m_rVar2.get() );
+        notify();
+    }
 }
 
 

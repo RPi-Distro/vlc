@@ -1070,6 +1070,11 @@ ifdef HAVE_UCLIBC
 	patch -p0 < Patches/ffmpeg-svn-internal-define.patch
 	patch -p0 < Patches/ffmpeg-svn-libavformat.patch
 endif
+ifdef HAVE_WIN32
+	sed -i "s/std=c99/std=gnu99/" ffmpeg/configure
+endif
+	(cd ffmpeg; patch -p1 < ../Patches/libavformat-ape.c.patch )
+
 else
 ffmpeg-$(FFMPEG_VERSION).tar.gz:
 	echo "ffmpeg snapshot is too old, you MUST use subversion !"
@@ -2111,19 +2116,19 @@ DISTCLEAN_PKG += win32-dx7headers.tgz
 # *************************************************************************
 # DirectShow headers
 # *************************************************************************
-dshow-headers.tgz:
+dshow-headers-oss.tar.bz2:
 	$(WGET) $(DSHOW_HEADERS_URL)
 
 dxva2api.h:
 	$(WGET) $(DXVA2_URL)
 
-.dshow_headers: dshow-headers.tgz dxva2api.h
-	tar xzf $< -C $(PREFIX)/include
+.dshow_headers: dshow-headers-oss.tar.bz2 dxva2api.h
+	tar xjf $< -C $(PREFIX)/include
 	cp dxva2api.h $(PREFIX)/include
 	touch $@
 
 CLEAN_FILE += .dshow_headers
-DISTCLEAN_PKG += dshow-headers.tgz dxva2api.h
+DISTCLEAN_PKG += dshow-headers-oss.tar.bz2 dxva2api.h
 
 # ***************************************************************************
 # libexpat
