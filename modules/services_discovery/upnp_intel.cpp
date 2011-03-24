@@ -2,7 +2,7 @@
  * Upnp_intel.cpp :  UPnP discovery module (Intel SDK)
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 3fa459c8705d8629457f5dea235907d2598a1496 $
+ * $Id: 0b3acf90e8ac5b2ad16dd67035e3f0cad11288b8 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -39,6 +39,7 @@
 #include <vlc_plugin.h>
 #include <vlc_services_discovery.h>
 
+#include <assert.h>
 
 // Constants
 const char* MEDIA_SERVER_DEVICE_TYPE = "urn:schemas-upnp-org:device:MediaServer:1";

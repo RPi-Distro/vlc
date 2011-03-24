@@ -2,7 +2,7 @@
  * theme_loader.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 52457d116ec1e6256b16b7a01dedde9ceaadedf6 $
+ * $Id: 99d43ac4d3f176821e15c5ed6a81e7cb7505ac38 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -64,7 +64,7 @@ private:
     /**
      * Expects a string from the current locale.
      */
-    bool extractFileInZip( unzFile file, const string &rootDir );
+    bool extractFileInZip( unzFile file, const string &rootDir, bool isWsz );
 
     /// Clean up the temporary files created by the extraction
     /**

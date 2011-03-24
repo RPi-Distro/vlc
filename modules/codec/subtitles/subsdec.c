@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: bfdbb139070cbc5573f6639ea5943e8f68d55228 $
+ * $Id: d67145d5955e802130812b646cdb5aaa17f24090 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -973,7 +973,7 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
             /* Hide {\stupidity} */
             psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
         }
-        else if( psz_subtitle[0] == '{' && psz_subtitle[1] == 'Y'
+        else if( psz_subtitle[0] == '{' && ( psz_subtitle[1] == 'Y' || psz_subtitle[1] == 'y' )
                 && psz_subtitle[2] == ':' && strchr( psz_subtitle, '}' ) )
         {
             /* Hide {Y:stupidity} */

@@ -2,7 +2,7 @@
  * ini_file.cpp
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 7fe8282eb67ea4c417051f6ce7f1cb580b218f52 $
+ * $Id: 58478d2e4c1cc2cc22163061dca150c90bdd96cc $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -68,13 +68,11 @@ void IniFile::parseFile()
 
                 string name = m_name + "." + section + "." + var;
 
-#ifdef WIN32
                 // Convert to lower case because of some buggy winamp2 skins
-                for( size_t i=0; i< name.size(); i++)
+                for( size_t i = 0; i < name.size(); i++ )
                 {
                     name[i] = tolower( name[i] );
                 }
-#endif
 
                 // Register the value in the var manager
                 pVarManager->registerConst( name, val );

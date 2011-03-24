@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ms\n"
+"Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-01-30 22:05+0100\n"
+"POT-Creation-Date: 2011-03-23 01:33+0100\n"
 "PO-Revision-Date: 2009-05-24 22:14+0730\n"
 "Last-Translator: Mahrazi Mohd Kamal <mahrazi@gmail.com>\n"
 "Language-Team: Malay <ms@li.org>\n"
@@ -63,7 +63,7 @@ msgstr "Antamuka utama"
 msgid "Settings for the main interface"
 msgstr "Tetapan untuk antaramuka utama"
 
-#: include/vlc_config_cat.h:45 src/libvlc-module.c:191
+#: include/vlc_config_cat.h:45 src/libvlc-module.c:193
 msgid "Control interfaces"
 msgstr "Antaramuka kawalan"
 
@@ -77,7 +77,7 @@ msgid "Hotkeys settings"
 msgstr "Tetapan Hotkey"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2870 src/input/es_out.c:2911
-#: src/libvlc-module.c:1573 modules/access/imem.c:69
+#: src/libvlc-module.c:1575 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
 #: modules/gui/macosx/wizard.m:380
@@ -123,7 +123,7 @@ msgstr "Modul output"
 msgid "General settings for audio output modules."
 msgstr "Tetapan am untuk modul output audio."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2049
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2051
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "Lain-lain"
@@ -133,7 +133,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "Lain-lain tetapan audio dan modul."
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2873 src/input/es_out.c:2958
-#: src/libvlc-module.c:1626 modules/access/imem.c:69
+#: src/libvlc-module.c:1628 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
 #: modules/gui/macosx/wizard.m:381
@@ -245,7 +245,7 @@ msgstr "Input Am"
 msgid "General input settings. Use with care..."
 msgstr "Tetapan input am. Gunakan dengan cermat..."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1969
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1971
 msgid "Stream output"
 msgstr "Output strim"
 
@@ -354,7 +354,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "Implementasi Video atas Permintaan VLC"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2111
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2113
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -390,7 +390,7 @@ msgstr ""
 "Modul penemuan servis adalah kemudahan yang automatik menambah item kepada "
 "senarai tayang."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1916
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1918
 msgid "Advanced"
 msgstr "Lanjutan"
 
@@ -612,7 +612,7 @@ msgstr "Ulang Sekali"
 msgid "No Repeat"
 msgstr "Tiada Ulangan"
 
-#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1465
+#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1467
 #: modules/gui/macosx/controls.m:1038 modules/gui/macosx/intf.m:654
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:119
@@ -780,7 +780,7 @@ msgid "The maximum number of filters (%d) was reached."
 msgstr "Bilangan penapis maksimum (%d) telah dicapai."
 
 #: src/audio_output/input.c:110 src/audio_output/input.c:156
-#: src/input/es_out.c:934 src/libvlc-module.c:659
+#: src/input/es_out.c:934 src/libvlc-module.c:661
 #: src/video_output/video_output.c:1698 modules/video_filter/postproc.c:230
 msgid "Disable"
 msgstr "Dilumpuhkan"
@@ -807,7 +807,7 @@ msgstr "Meter VU"
 msgid "Equalizer"
 msgstr "Penyama"
 
-#: src/audio_output/input.c:175 src/libvlc-module.c:324
+#: src/audio_output/input.c:175 src/libvlc-module.c:326
 msgid "Audio filters"
 msgstr "Penapis audio"
 
@@ -832,7 +832,7 @@ msgid "Stereo"
 msgstr "Stereo"
 
 #: src/audio_output/output.c:106 src/audio_output/output.c:142
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
@@ -846,7 +846,7 @@ msgid "Left"
 msgstr "Kiri"
 
 #: src/audio_output/output.c:108 src/audio_output/output.c:144
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
@@ -936,7 +936,7 @@ msgstr ""
 "VLC tidak menyokong format audio atau video \"%4.4s\". Malangnya anda tidak "
 "mungkin dapat menyelesaikannya."
 
-#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:362
+#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:364
 #: modules/access/vcdx/access.c:460 modules/access/vcdx/info.c:226
 #: modules/gui/qt4/components/open_panels.cpp:402
 msgid "Track"
@@ -948,7 +948,7 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1165 src/input/es_out.c:1170 src/input/var.c:177
-#: src/libvlc-module.c:692 modules/gui/macosx/intf.m:661
+#: src/libvlc-module.c:694 modules/gui/macosx/intf.m:661
 #: modules/gui/macosx/intf.m:662
 msgid "Program"
 msgstr "Program"
@@ -990,7 +990,7 @@ msgstr "ID Asal"
 msgid "Codec"
 msgstr "Kodek"
 
-#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:218
+#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:220
 #: modules/access/imem.c:76 modules/gui/macosx/simple_prefs.m:269
 #: modules/gui/qt4/ui/sprefs_interface.h:386
 msgid "Language"
@@ -1057,20 +1057,20 @@ msgstr "Resolusi paparan"
 msgid "Frame rate"
 msgstr "Kadar kerangka"
 
-#: src/input/input.c:2488
+#: src/input/input.c:2496
 msgid "Your input can't be opened"
 msgstr "Input anda tidak dapat dibuka"
 
-#: src/input/input.c:2489
+#: src/input/input.c:2497
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr "VLC tidak dapat membuka MRL '%s'. Periksa log untuk perincian."
 
-#: src/input/input.c:2608
+#: src/input/input.c:2617
 msgid "VLC can't recognize the input's format"
 msgstr "VLC gagal mengecam format input"
 
-#: src/input/input.c:2609
+#: src/input/input.c:2618
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -1097,7 +1097,7 @@ msgstr "Genre"
 msgid "Copyright"
 msgstr "Hakcipta"
 
-#: src/input/meta.c:55 src/libvlc-module.c:362 modules/access/vcdx/info.c:63
+#: src/input/meta.c:55 src/libvlc-module.c:364 modules/access/vcdx/info.c:63
 msgid "Album"
 msgstr "Album"
 
@@ -1122,7 +1122,7 @@ msgstr "Tetapan"
 msgid "URL"
 msgstr "URL"
 
-#: src/input/meta.c:63 modules/misc/notify/notify.c:314
+#: src/input/meta.c:63 modules/misc/notify/notify.c:318
 msgid "Now Playing"
 msgstr "Kini Tayangkan"
 
@@ -1146,7 +1146,7 @@ msgstr "ID Trek"
 msgid "Bookmark"
 msgstr "Tandabuku"
 
-#: src/input/var.c:182 src/libvlc-module.c:698
+#: src/input/var.c:182 src/libvlc-module.c:700
 msgid "Programs"
 msgstr "Program"
 
@@ -1247,7 +1247,7 @@ msgstr ""
 msgid "To get exhaustive help, use '-H'."
 msgstr ""
 
-#: src/libvlc.c:1250 src/libvlc-module.c:1521
+#: src/libvlc.c:1250 src/libvlc-module.c:1523
 #, fuzzy, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1348,33 +1348,33 @@ msgstr ""
 "\n"
 "Tekan kunci RETURN untuk meneruskan...\n"
 
-#: src/libvlc.h:175 src/libvlc-module.c:1468 src/libvlc-module.c:1469
-#: src/libvlc-module.c:2645 src/video_output/vout_intf.c:195
+#: src/libvlc.h:175 src/libvlc-module.c:1470 src/libvlc-module.c:1471
+#: src/libvlc-module.c:2647 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "Zum"
 
-#: src/libvlc.h:176 src/libvlc-module.c:1388 src/video_output/vout_intf.c:88
+#: src/libvlc.h:176 src/libvlc-module.c:1390 src/video_output/vout_intf.c:88
 msgid "1:4 Quarter"
 msgstr "1:4 Suku"
 
-#: src/libvlc.h:177 src/libvlc-module.c:1389 src/video_output/vout_intf.c:89
+#: src/libvlc.h:177 src/libvlc-module.c:1391 src/video_output/vout_intf.c:89
 msgid "1:2 Half"
 msgstr "1:2 Separuh"
 
-#: src/libvlc.h:178 src/libvlc-module.c:1390 src/video_output/vout_intf.c:90
+#: src/libvlc.h:178 src/libvlc-module.c:1392 src/video_output/vout_intf.c:90
 msgid "1:1 Original"
 msgstr "1:1 Asal"
 
-#: src/libvlc.h:179 src/libvlc-module.c:1391 src/video_output/vout_intf.c:91
+#: src/libvlc.h:179 src/libvlc-module.c:1393 src/video_output/vout_intf.c:91
 msgid "2:1 Double"
 msgstr "2:1 Dwi"
 
-#: src/libvlc-module.c:104 src/libvlc-module.c:321 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:105 src/libvlc-module.c:323 modules/access/bda/bda.c:69
 #: modules/gui/qt4/components/open_panels.cpp:997
 msgid "Auto"
 msgstr "Auto"
 
-#: src/libvlc-module.c:174
+#: src/libvlc-module.c:176
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
 "select the main interface, additional interface modules, and define various "
@@ -1384,11 +1384,11 @@ msgstr ""
 "boleh pilih antaramuka utama, modul antaramuka tambahan, dan tentukan "
 "pelbagai pilihan berkaitan."
 
-#: src/libvlc-module.c:178
+#: src/libvlc-module.c:180
 msgid "Interface module"
 msgstr "Modul antaramuka"
 
-#: src/libvlc-module.c:180
+#: src/libvlc-module.c:182
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
@@ -1396,11 +1396,11 @@ msgstr ""
 "Ini adalah antaramuka utama yang diguna oleh VLC. Kelakuan lalai adalah "
 "untuk automatik pilih modul terbaik yang ada."
 
-#: src/libvlc-module.c:184 modules/control/ntservice.c:57
+#: src/libvlc-module.c:186 modules/control/ntservice.c:57
 msgid "Extra interface modules"
 msgstr "Modul antaramuka tambahan"
 
-#: src/libvlc-module.c:186
+#: src/libvlc-module.c:188
 #, fuzzy
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
@@ -1413,15 +1413,15 @@ msgstr ""
 "untuk modul antaramuka. (nilai koma adalah \"rc\" (kawalan jauh), \"http\", "
 "\"gerakan\" ...)"
 
-#: src/libvlc-module.c:193
+#: src/libvlc-module.c:195
 msgid "You can select control interfaces for VLC."
 msgstr "Anda boleh memilih antaramuka kawalan untuk VLC."
 
-#: src/libvlc-module.c:195
+#: src/libvlc-module.c:197
 msgid "Verbosity (0,1,2)"
 msgstr "Kemeleretan (0,1,2)"
 
-#: src/libvlc-module.c:197
+#: src/libvlc-module.c:199
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
@@ -1429,11 +1429,11 @@ msgstr ""
 "Ini adalah tahap kemeleretan (0-hanya ralat dan mesej piawai, 1=amaran, "
 "2=nyahpijat)."
 
-#: src/libvlc-module.c:200
+#: src/libvlc-module.c:202
 msgid "Choose which objects should print debug message"
 msgstr ""
 
-#: src/libvlc-module.c:203
+#: src/libvlc-module.c:205
 msgid ""
 "This is a ',' separated string, each objects should be prefixed by a '+' or "
 "a '-' to respectively enable or disable it. The keyword 'all' refers to all "
@@ -1443,23 +1443,23 @@ msgid ""
 "message."
 msgstr ""
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:212
 msgid "Be quiet"
 msgstr "Duduk diam"
 
-#: src/libvlc-module.c:212
+#: src/libvlc-module.c:214
 msgid "Turn off all warning and information messages."
 msgstr "Matikan segala amaran dan mesej maklumat."
 
-#: src/libvlc-module.c:214
+#: src/libvlc-module.c:216
 msgid "Default stream"
 msgstr "Strim lalai"
 
-#: src/libvlc-module.c:216
+#: src/libvlc-module.c:218
 msgid "This stream will always be opened at VLC startup."
 msgstr "Strim ini akan sentiasa dibuka ketika memulakan VLC."
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:221
 msgid ""
 "You can manually select a language for the interface. The system language is "
 "auto-detected if \"auto\" is specified here."
@@ -1467,11 +1467,11 @@ msgstr ""
 "Anda boleh pilih cara manual bahasa antaramuka. Bahasa sistem adalah auto "
 "kesan jika \"auto\" ditentukan di sini."
 
-#: src/libvlc-module.c:223
+#: src/libvlc-module.c:225
 msgid "Color messages"
 msgstr "Mesej warna"
 
-#: src/libvlc-module.c:225
+#: src/libvlc-module.c:227
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
 "needs Linux color support for this to work."
@@ -1479,11 +1479,11 @@ msgstr ""
 "Ini membolehkan pewarnaan mesej yang dihantar kepada konsol. Terminal anda "
 "memerlukan sokongan warna untuk melakukannya."
 
-#: src/libvlc-module.c:228
+#: src/libvlc-module.c:230
 msgid "Show advanced options"
 msgstr "Tunjuk pilihan lanjutan"
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:232
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
 "available options, including those that most users should never touch."
@@ -1492,11 +1492,11 @@ msgstr ""
 "pilihan yang ada, termasuk yang tidak sepatutnya disentuh oleh kebanyakan "
 "pengguna."
 
-#: src/libvlc-module.c:234
+#: src/libvlc-module.c:236
 msgid "Interface interaction"
 msgstr "Interaksi antaramuka"
 
-#: src/libvlc-module.c:236
+#: src/libvlc-module.c:238
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
 "user input is required."
@@ -1504,7 +1504,7 @@ msgstr ""
 "Apabila dibolehkan, antaramuka akan menunjukkan kotak dialog setiap kali "
 "input pengguna diperlukan."
 
-#: src/libvlc-module.c:246
+#: src/libvlc-module.c:248
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
 "to add audio filters which can be used for post processing or visual effects "
@@ -1516,11 +1516,11 @@ msgstr ""
 "kesan visual (penganalisa spektrum, dll.) Bolehkan penapis di sini, dan "
 "konfigur dalan seksyen modul \"penapis audio\"."
 
-#: src/libvlc-module.c:252
+#: src/libvlc-module.c:254
 msgid "Audio output module"
 msgstr "Modul output audio"
 
-#: src/libvlc-module.c:254
+#: src/libvlc-module.c:256
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1528,12 +1528,12 @@ msgstr ""
 "Ini adalah metod output audio yang digunakan oleh VLC. Kelakuan lalai adalah "
 "automatik pilih metod terbaik yang ada."
 
-#: src/libvlc-module.c:258 modules/stream_out/display.c:41
+#: src/libvlc-module.c:260 modules/stream_out/display.c:41
 #: modules/gui/qt4/ui/sprefs_audio.h:404
 msgid "Enable audio"
 msgstr "Benarkan audio"
 
-#: src/libvlc-module.c:260
+#: src/libvlc-module.c:262
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
 "not take place, thus saving some processing power."
@@ -1541,30 +1541,30 @@ msgstr ""
 "Anda boleh lumpuhkan terus output audio. Tahap mengkod audio tidak akan "
 "mengambil tempat, maka menjimatkan sedikit kuasa memproses."
 
-#: src/libvlc-module.c:264
+#: src/libvlc-module.c:266
 msgid "Force mono audio"
 msgstr "Paksa audio mono"
 
-#: src/libvlc-module.c:265
+#: src/libvlc-module.c:267
 msgid "This will force a mono audio output."
 msgstr "Ini akan memaksa output audio mono."
 
-#: src/libvlc-module.c:268
+#: src/libvlc-module.c:270
 msgid "Default audio volume"
 msgstr "Volum audio lalat"
 
-#: src/libvlc-module.c:270
+#: src/libvlc-module.c:272
 msgid ""
 "You can set the default audio output volume here, in a range from 0 to 1024."
 msgstr ""
 "Anda boleh tetapkan volum output audio lalai di sini, dalam julat dari 0 "
 "hingga 1024."
 
-#: src/libvlc-module.c:273
+#: src/libvlc-module.c:275
 msgid "Audio output saved volume"
 msgstr "Output audio volum disimpan"
 
-#: src/libvlc-module.c:275
+#: src/libvlc-module.c:277
 msgid ""
 "This saves the audio output volume when you use the mute function. You "
 "should not change this option manually."
@@ -1572,11 +1572,11 @@ msgstr ""
 "Ini akan menyimpan volum output audio apabila anda gunakan fungsi senyap. "
 "Anda tidak perlu mengubah pilihan ini secara manual."
 
-#: src/libvlc-module.c:278
+#: src/libvlc-module.c:280
 msgid "Audio output volume step"
 msgstr "Tangga volum output audio"
 
-#: src/libvlc-module.c:280
+#: src/libvlc-module.c:282
 msgid ""
 "The step size of the volume is adjustable using this option, in a range from "
 "0 to 1024."
@@ -1584,11 +1584,11 @@ msgstr ""
 "Saiz langkah untuk volum boleh laras menggunakan pilihan ini, dalam julat 0 "
 "hingga 1024."
 
-#: src/libvlc-module.c:283
+#: src/libvlc-module.c:285
 msgid "Audio output frequency (Hz)"
 msgstr "Frekuensi output audio (Hz)"
 
-#: src/libvlc-module.c:285
+#: src/libvlc-module.c:287
 msgid ""
 "You can force the audio output frequency here. Common values are -1 "
 "(default), 48000, 44100, 32000, 22050, 16000, 11025, 8000."
@@ -1596,11 +1596,11 @@ msgstr ""
 "boleh paksa frekuensi output audio di sini. Nilai biasa adalah -1 (lalai), "
 "48000, 44100, 32000, 22050, 16000, 11025, 8000."
 
-#: src/libvlc-module.c:289
+#: src/libvlc-module.c:291
 msgid "High quality audio resampling"
 msgstr "Pensampelan ulang audio kualiti tinggi"
 
-#: src/libvlc-module.c:291
+#: src/libvlc-module.c:293
 msgid ""
 "This uses a high quality audio resampling algorithm. High quality audio "
 "resampling can be processor intensive so you can disable it and a cheaper "
@@ -1610,11 +1610,11 @@ msgstr ""
 "ulang audio kualiti tinggi boleh jadi intensif pemproses maka anda boleh "
 "lumpuhkannya dan algoritma pensampelan ulang rendah akan digunakan pula."
 
-#: src/libvlc-module.c:296
+#: src/libvlc-module.c:298
 msgid "Audio desynchronization compensation"
 msgstr "Gantian nyahsegerak audio"
 
-#: src/libvlc-module.c:298
+#: src/libvlc-module.c:300
 msgid ""
 "This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
@@ -1622,11 +1622,11 @@ msgstr ""
 "Ini akan melengahkan output audio. Lengahan mestilah diberi dalam milisaat. "
 "Ini berguna jika anda melihat kelewatan video dan juga audio."
 
-#: src/libvlc-module.c:301
+#: src/libvlc-module.c:303
 msgid "Audio output channels mode"
 msgstr "Mod saluran output audio"
 
-#: src/libvlc-module.c:303
+#: src/libvlc-module.c:305
 msgid ""
 "This sets the audio output channels mode that will be used by default when "
 "possible (ie. if your hardware supports it as well as the audio stream being "
@@ -1636,12 +1636,12 @@ msgstr ""
 "lalai jika berkemungkinan (cth jika perkakasan anda menyokongnya begitu juga "
 "dengan strim audio yang dimainkan."
 
-#: src/libvlc-module.c:307 modules/gui/macosx/simple_prefs.m:237
+#: src/libvlc-module.c:309 modules/gui/macosx/simple_prefs.m:237
 #: modules/gui/qt4/ui/sprefs_audio.h:413
 msgid "Use S/PDIF when available"
 msgstr "Guna S/PDIF jika wujud"
 
-#: src/libvlc-module.c:309
+#: src/libvlc-module.c:311
 msgid ""
 "S/PDIF can be used by default when your hardware supports it as well as the "
 "audio stream being played."
@@ -1649,11 +1649,11 @@ msgstr ""
 "S/PDIF boleh digunakan dengan lalai apabila perkakasan anda menyokongnya "
 "begitu juga dengan strim audio yang dimainkan."
 
-#: src/libvlc-module.c:312 modules/gui/macosx/simple_prefs.m:227
+#: src/libvlc-module.c:314 modules/gui/macosx/simple_prefs.m:227
 msgid "Force detection of Dolby Surround"
 msgstr "Paksa mengesan Dolby Surround"
 
-#: src/libvlc-module.c:314
+#: src/libvlc-module.c:316
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
 "Surround but fails to be detected as such. Even if the stream is not "
@@ -1666,41 +1666,41 @@ msgstr ""
 "meningkatkan pengalaman anda, terutamanya apabila digabungkan dengan "
 "Pengadun Saluran Fon Kepala."
 
-#: src/libvlc-module.c:321 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:323 modules/access/bda/bda.c:69
 msgid "On"
 msgstr "On"
 
-#: src/libvlc-module.c:321 modules/access/bda/bda.c:68
+#: src/libvlc-module.c:323 modules/access/bda/bda.c:68
 msgid "Off"
 msgstr "Off"
 
-#: src/libvlc-module.c:326
+#: src/libvlc-module.c:328
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
 "Ini akan menambah penapis pasca memproses audio, untuk mengubahsuai "
 "persembahan bunyi."
 
-#: src/libvlc-module.c:329
+#: src/libvlc-module.c:331
 msgid "Audio visualizations "
 msgstr "Visualisasi audio"
 
-#: src/libvlc-module.c:331
+#: src/libvlc-module.c:333
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr "Ini akan menambah modul visualisasi (penganalisa spektrum, dll.)."
 
-#: src/libvlc-module.c:335
+#: src/libvlc-module.c:337
 msgid "Replay gain mode"
 msgstr "Mod gandaan ulang tayang"
 
-#: src/libvlc-module.c:337
+#: src/libvlc-module.c:339
 msgid "Select the replay gain mode"
 msgstr "Pilih mod gandaan ulang tayang"
 
-#: src/libvlc-module.c:339
+#: src/libvlc-module.c:341
 msgid "Replay preamp"
 msgstr "Preamp ulang tayang"
 
-#: src/libvlc-module.c:341
+#: src/libvlc-module.c:343
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
 "replay gain information"
@@ -1708,40 +1708,40 @@ msgstr ""
 "Ini akan membenarkan anda menukar paras sasaran lalai (89 dB) untuk strim "
 "dengan maklumat gandaan ulang tayang"
 
-#: src/libvlc-module.c:344
+#: src/libvlc-module.c:346
 msgid "Default replay gain"
 msgstr "Gandaan ulang tayang lalai"
 
-#: src/libvlc-module.c:346
+#: src/libvlc-module.c:348
 msgid "This is the gain used for stream without replay gain information"
 msgstr ""
 
-#: src/libvlc-module.c:348
+#: src/libvlc-module.c:350
 msgid "Peak protection"
 msgstr "Perlindungan puncak"
 
-#: src/libvlc-module.c:350
+#: src/libvlc-module.c:352
 msgid "Protect against sound clipping"
 msgstr ""
 
-#: src/libvlc-module.c:353
+#: src/libvlc-module.c:355
 msgid "Enable time streching audio"
 msgstr "Bolehkan audio regangan masa"
 
-#: src/libvlc-module.c:355
+#: src/libvlc-module.c:357
 msgid ""
 "This allows to play audio at lower or higher speed without affecting the "
 "audio pitch"
 msgstr ""
 
-#: src/libvlc-module.c:362 modules/access/dshow/dshow.cpp:82
-#: modules/access/dshow/dshow.cpp:84 modules/codec/avcodec/avcodec.c:74
+#: src/libvlc-module.c:364 modules/access/dshow/dshow.cpp:84
+#: modules/access/dshow/dshow.cpp:86 modules/codec/avcodec/avcodec.c:74
 #: modules/codec/kate.c:203
 #: modules/gui/qt4/components/interface_widgets.cpp:297
 msgid "None"
 msgstr "Tiada"
 
-#: src/libvlc-module.c:370
+#: src/libvlc-module.c:372
 msgid ""
 "These options allow you to modify the behavior of the video output "
 "subsystem. You can for example enable video filters (deinterlacing, image "
@@ -1754,11 +1754,11 @@ msgstr ""
 "dll.). Bolehkan penapis di sini dan konfigurnya dalam seksyen modul "
 "\"penapis video\". Anda juga boleh banyak lain-lain tetapkan pilihan video."
 
-#: src/libvlc-module.c:376
+#: src/libvlc-module.c:378
 msgid "Video output module"
 msgstr "Modul output video"
 
-#: src/libvlc-module.c:378
+#: src/libvlc-module.c:380
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1766,12 +1766,12 @@ msgstr ""
 "Ini adalah metod output video yang digunakan oleh VLC. Kelakuan lalai adalah "
 "automatik pilih metod terbaik yang ada."
 
-#: src/libvlc-module.c:381 modules/stream_out/display.c:43
+#: src/libvlc-module.c:383 modules/stream_out/display.c:43
 #: modules/gui/qt4/ui/sprefs_video.h:309
 msgid "Enable video"
 msgstr "Benarkan video"
 
-#: src/libvlc-module.c:383
+#: src/libvlc-module.c:385
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
 "not take place, thus saving some processing power."
@@ -1779,7 +1779,7 @@ msgstr ""
 "Anda boleh lumpuhkan terus output video. Tahap mengkod video tidak akan "
 "mengambil tempat, maka menjimatkan sedikit kuasa memproses."
 
-#: src/libvlc-module.c:386 modules/codec/fake.c:58
+#: src/libvlc-module.c:388 modules/codec/fake.c:58
 #: modules/stream_out/mosaic_bridge.c:109
 #: modules/stream_out/transcode/transcode.c:66
 #: modules/visualization/projectm.cpp:61
@@ -1787,7 +1787,7 @@ msgstr ""
 msgid "Video width"
 msgstr "Lebar video"
 
-#: src/libvlc-module.c:388
+#: src/libvlc-module.c:390
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
 "characteristics."
@@ -1795,7 +1795,7 @@ msgstr ""
 "Anda boleh melaksanakan lebar video. Dengan lalai (-1) VLC akan menyesuaikan "
 "kepada sifat video."
 
-#: src/libvlc-module.c:391 modules/codec/fake.c:61
+#: src/libvlc-module.c:393 modules/codec/fake.c:61
 #: modules/stream_out/mosaic_bridge.c:112
 #: modules/stream_out/transcode/transcode.c:69
 #: modules/visualization/projectm.cpp:64
@@ -1803,7 +1803,7 @@ msgstr ""
 msgid "Video height"
 msgstr "Tinggi video"
 
-#: src/libvlc-module.c:393
+#: src/libvlc-module.c:395
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
 "video characteristics."
@@ -1811,33 +1811,33 @@ msgstr ""
 "Anda boleh melaksanakan tinggi video. Dengan lalai (-1) VLC akan "
 "menyesuaikan kepada sifat video."
 
-#: src/libvlc-module.c:396
+#: src/libvlc-module.c:398
 msgid "Video X coordinate"
 msgstr "Kordinat X video"
 
-#: src/libvlc-module.c:398
+#: src/libvlc-module.c:400
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
 "coordinate)."
 msgstr ""
 "Anda boleh melaksanakan posisi tepi atas kiri tetingkap video (kordinat X)."
 
-#: src/libvlc-module.c:401
+#: src/libvlc-module.c:403
 msgid "Video Y coordinate"
 msgstr "Kordinat Y video"
 
-#: src/libvlc-module.c:403
+#: src/libvlc-module.c:405
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
 "coordinate)."
 msgstr ""
 "Anda boleh melaksanakan posisi tepi atas kiri tetingkap video (kordinat Y)."
 
-#: src/libvlc-module.c:406
+#: src/libvlc-module.c:408
 msgid "Video title"
 msgstr "Judul video"
 
-#: src/libvlc-module.c:408
+#: src/libvlc-module.c:410
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
@@ -1845,11 +1845,11 @@ msgstr ""
 "Judul adat untuk tetingkap video (jika video tidak tertanam dalam "
 "antaramuka)."
 
-#: src/libvlc-module.c:411
+#: src/libvlc-module.c:413
 msgid "Video alignment"
 msgstr "Jajaran video"
 
-#: src/libvlc-module.c:413
+#: src/libvlc-module.c:415
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
 "centered (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use "
@@ -1859,7 +1859,7 @@ msgstr ""
 "ditengah (0=tengah, 1-kiri, 2=kanan, 4=atas, 8=bawah, anda juga boleh "
 "gunakan kombinasi nilai ini, seperti 6=4+2 bermakna (atas+kanan)."
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/gui/fbosd.c:162 modules/video_filter/audiobargraph_v.c:74
@@ -1869,7 +1869,7 @@ msgstr ""
 msgid "Center"
 msgstr "Tengah"
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:420 src/libvlc-module.c:501 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -1880,7 +1880,7 @@ msgstr "Tengah"
 msgid "Top"
 msgstr "Atas"
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:420 src/libvlc-module.c:501 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -1889,7 +1889,7 @@ msgstr "Atas"
 msgid "Bottom"
 msgstr "Bawah"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1897,7 +1897,7 @@ msgstr "Bawah"
 msgid "Top-Left"
 msgstr "Atas-Kiri"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1905,7 +1905,7 @@ msgstr "Atas-Kiri"
 msgid "Top-Right"
 msgstr "Atas-Kanan"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1913,7 +1913,7 @@ msgstr "Atas-Kanan"
 msgid "Bottom-Left"
 msgstr "Bawah-Kiri"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1921,19 +1921,19 @@ msgstr "Bawah-Kiri"
 msgid "Bottom-Right"
 msgstr "Bawah-Kanan"
 
-#: src/libvlc-module.c:421
+#: src/libvlc-module.c:423
 msgid "Zoom video"
 msgstr "Zum video"
 
-#: src/libvlc-module.c:423
+#: src/libvlc-module.c:425
 msgid "You can zoom the video by the specified factor."
 msgstr "Anda boleh zum video dengan menentukan faktor."
 
-#: src/libvlc-module.c:425
+#: src/libvlc-module.c:427
 msgid "Grayscale video output"
 msgstr "Zum video"
 
-#: src/libvlc-module.c:427
+#: src/libvlc-module.c:429
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
 "save some processing power."
@@ -1941,19 +1941,19 @@ msgstr ""
 "Video output dalam skala kelabu. Sebagaimana maklumat warna tidak "
 "dinnyahkod, ini akan penjimatkan kuasa memproses."
 
-#: src/libvlc-module.c:430
+#: src/libvlc-module.c:432
 msgid "Embedded video"
 msgstr "Video tertanam"
 
-#: src/libvlc-module.c:432
+#: src/libvlc-module.c:434
 msgid "Embed the video output in the main interface."
 msgstr "Benam input video di dalam antaramuka utama."
 
-#: src/libvlc-module.c:434 modules/video_output/ggi.c:57
+#: src/libvlc-module.c:436 modules/video_output/ggi.c:57
 msgid "X11 display"
 msgstr "Paparan X11"
 
-#: src/libvlc-module.c:436
+#: src/libvlc-module.c:438
 msgid ""
 "X11 hardware display to use. By default VLC will use the value of the "
 "DISPLAY environment variable."
@@ -1961,19 +1961,19 @@ msgstr ""
 "Perkakasan paparan X11 untuk diguna. Secara lalai VLC akan menggunakan nilai "
 "pembolehubah persekitaran DISPLAY."
 
-#: src/libvlc-module.c:439
+#: src/libvlc-module.c:441
 msgid "Fullscreen video output"
 msgstr "Output video skrin penuh"
 
-#: src/libvlc-module.c:441
+#: src/libvlc-module.c:443
 msgid "Start video in fullscreen mode"
 msgstr "Mula video mod skrin penuh"
 
-#: src/libvlc-module.c:443
+#: src/libvlc-module.c:445
 msgid "Overlay video output"
 msgstr "Lapisan output video"
 
-#: src/libvlc-module.c:445
+#: src/libvlc-module.c:447
 msgid ""
 "Overlay is the hardware acceleration capability of your video card (ability "
 "to render video directly). VLC will try to use it by default."
@@ -1981,20 +1981,20 @@ msgstr ""
 "Lapisan adalah keupayaan pencepat perkakasan kad video anda (keupayaan untuk "
 "persembahkan terus video). VLC akan cuba menggunakannya sebagai lalai."
 
-#: src/libvlc-module.c:448 src/video_output/vout_intf.c:344
+#: src/libvlc-module.c:450 src/video_output/vout_intf.c:344
 #: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "Sentiasa di atas"
 
-#: src/libvlc-module.c:450
+#: src/libvlc-module.c:452
 msgid "Always place the video window on top of other windows."
 msgstr "Sentiasa tempatkan tetingkap video di atas tetingkap lain."
 
-#: src/libvlc-module.c:452
+#: src/libvlc-module.c:454
 msgid "Enable wallpaper mode "
 msgstr "Benarkan mod kertas dinding"
 
-#: src/libvlc-module.c:454
+#: src/libvlc-module.c:456
 #, fuzzy
 msgid ""
 "The wallpaper mode allows you to display the video as the desktop background."
@@ -2003,91 +2003,91 @@ msgstr ""
 "Ambil perhatian yang ciri-ciri ini hanya berfungsi dalam mod lapisan dan "
 "desktop mestilah belum ada kertas dinding."
 
-#: src/libvlc-module.c:457
+#: src/libvlc-module.c:459
 msgid "Show media title on video"
 msgstr "Tunjuk judul media pada video"
 
-#: src/libvlc-module.c:459
+#: src/libvlc-module.c:461
 msgid "Display the title of the video on top of the movie."
 msgstr "Paparkan judulk video pada atas movie."
 
-#: src/libvlc-module.c:461
+#: src/libvlc-module.c:463
 msgid "Show video title for x milliseconds"
 msgstr "Tunjuk judul video untuk x milisaat"
 
-#: src/libvlc-module.c:463
+#: src/libvlc-module.c:465
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr "Tunjuk judul video untuk n milisaat, lalai adalah 5000 ms (5 saat)"
 
-#: src/libvlc-module.c:465
+#: src/libvlc-module.c:467
 msgid "Position of video title"
 msgstr "Posisi judul video"
 
-#: src/libvlc-module.c:467
+#: src/libvlc-module.c:469
 msgid "Place on video where to display the title (default bottom center)."
 msgstr ""
 
-#: src/libvlc-module.c:469
+#: src/libvlc-module.c:471
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr ""
 
-#: src/libvlc-module.c:472
+#: src/libvlc-module.c:474
 msgid ""
 "Hide mouse cursor and fullscreen controller after n milliseconds, default is "
 "3000 ms (3 sec.)"
 msgstr ""
 
-#: src/libvlc-module.c:475 src/libvlc-module.c:477
+#: src/libvlc-module.c:477 src/libvlc-module.c:479
 #: src/video_output/video_output.c:1974 modules/gui/macosx/intf.m:700
 #: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/convert.cpp:86
 #: modules/video_filter/deinterlace.c:133
 msgid "Deinterlace"
 msgstr "Deinterlace"
 
-#: src/libvlc-module.c:485 src/video_output/video_output.c:1990
+#: src/libvlc-module.c:487 src/video_output/video_output.c:1990
 #: modules/gui/macosx/intf.m:702 modules/gui/macosx/intf.m:703
 #: modules/video_filter/deinterlace.c:118
 msgid "Deinterlace mode"
 msgstr "Mod merungkai"
 
-#: src/libvlc-module.c:487
+#: src/libvlc-module.c:489
 #, fuzzy
 msgid "Deinterlace method to use for video processing."
 msgstr "Metod mengurai diguna untuk striming."
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Discard"
 msgstr "Singkir"
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Blend"
 msgstr "Adun"
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Mean"
 msgstr "Mean"
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Bob"
 msgstr "Bob"
 
-#: src/libvlc-module.c:494 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:496 modules/video_filter/deinterlace.c:129
 msgid "Linear"
 msgstr "Linear"
 
-#: src/libvlc-module.c:502
+#: src/libvlc-module.c:504
 msgid "Disable screensaver"
 msgstr "Lumpuhkan penjimat skrin"
 
-#: src/libvlc-module.c:503
+#: src/libvlc-module.c:505
 msgid "Disable the screensaver during video playback."
 msgstr "Lumpuhkan penyelamat skrin semasa mainbalik video."
 
-#: src/libvlc-module.c:505
+#: src/libvlc-module.c:507
 msgid "Inhibit the power management daemon during playback"
 msgstr "Halang daemon pemngurusan kuasa semasa mainbalik"
 
-#: src/libvlc-module.c:506
+#: src/libvlc-module.c:508
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
 "computer being suspended because of inactivity."
@@ -2095,11 +2095,11 @@ msgstr ""
 "Halang daemon pengurusan kuasa semasa sebarang mainbalik, bagi mengelakkan "
 "komputer terhenti kerana ketiadaan aktiviti."
 
-#: src/libvlc-module.c:509 modules/gui/qt4/ui/sprefs_video.h:316
+#: src/libvlc-module.c:511 modules/gui/qt4/ui/sprefs_video.h:316
 msgid "Window decorations"
 msgstr "Dekorasi tetingkap"
 
-#: src/libvlc-module.c:511
+#: src/libvlc-module.c:513
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
 "giving a \"minimal\" window."
@@ -2107,19 +2107,19 @@ msgstr ""
 "VLC boleh elak mencipta judul tetingkap, kerangka, dll... sekeliling video, "
 "menjadikan tetingkap yang \"minima\"."
 
-#: src/libvlc-module.c:514
+#: src/libvlc-module.c:516
 msgid "Video output filter module"
 msgstr "Modul penapis output video"
 
-#: src/libvlc-module.c:516
+#: src/libvlc-module.c:518
 msgid "This adds video output filters like clone or wall"
 msgstr ""
 
-#: src/libvlc-module.c:518
+#: src/libvlc-module.c:520
 msgid "Video filter module"
 msgstr "Modul penapis video"
 
-#: src/libvlc-module.c:520
+#: src/libvlc-module.c:522
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
 "instance deinterlacing, or distort the video."
@@ -2127,47 +2127,47 @@ msgstr ""
 "Ini akan menambah penapis pasca-memproses untuk meningkatkan kualiti gambar, "
 "sebagai contoh mengurai, atau mengherotkan video."
 
-#: src/libvlc-module.c:524
+#: src/libvlc-module.c:526
 msgid "Video snapshot directory (or filename)"
 msgstr "Direktori snapshot video (atau nama fail)"
 
-#: src/libvlc-module.c:526
+#: src/libvlc-module.c:528
 msgid "Directory where the video snapshots will be stored."
 msgstr "Directori di mana snapshot video akan disimpan."
 
-#: src/libvlc-module.c:528 src/libvlc-module.c:530
+#: src/libvlc-module.c:530 src/libvlc-module.c:532
 msgid "Video snapshot file prefix"
 msgstr "Awalan fail snapshot video"
 
-#: src/libvlc-module.c:532
+#: src/libvlc-module.c:534
 msgid "Video snapshot format"
 msgstr "Format snapshot video"
 
-#: src/libvlc-module.c:534
+#: src/libvlc-module.c:536
 msgid "Image format which will be used to store the video snapshots"
 msgstr "Format imej di mana akan digunakan untuk menyimpan snapshot video"
 
-#: src/libvlc-module.c:536
+#: src/libvlc-module.c:538
 msgid "Display video snapshot preview"
 msgstr "Papar prebiu snapshot video"
 
-#: src/libvlc-module.c:538
+#: src/libvlc-module.c:540
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr "Papar prebiu snapshot dalam sudut atas-kiri skrin."
 
-#: src/libvlc-module.c:540
+#: src/libvlc-module.c:542
 msgid "Use sequential numbers instead of timestamps"
 msgstr "Guna nombor berjujukan bukannya stem masa"
 
-#: src/libvlc-module.c:542
+#: src/libvlc-module.c:544
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr "Guna nombor berjujukan bukannya stem masa untuk pernomboran snapshot"
 
-#: src/libvlc-module.c:544
+#: src/libvlc-module.c:546
 msgid "Video snapshot width"
 msgstr "Lebar snapshot video"
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:548
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
 "original width (-1). Using 0 will scale the width to keep the aspect ratio."
@@ -2176,11 +2176,11 @@ msgstr ""
 "kelebaran (-1). Gunakan 0 akan menskalakan kelebaran untuk mengekalkan "
 "nisbah aspek."
 
-#: src/libvlc-module.c:550
+#: src/libvlc-module.c:552
 msgid "Video snapshot height"
 msgstr "Tinggi snapshot cekupan"
 
-#: src/libvlc-module.c:552
+#: src/libvlc-module.c:554
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
 "the original height (-1). Using 0 will scale the height to keep the aspect "
@@ -2190,11 +2190,11 @@ msgstr ""
 "mengekalkan tinggi asal (-1). Gunakan 0 akan menskalakan tinggi kepada "
 "kepada nisbah aspek."
 
-#: src/libvlc-module.c:556
+#: src/libvlc-module.c:558
 msgid "Video cropping"
 msgstr "Mencantas video"
 
-#: src/libvlc-module.c:558
+#: src/libvlc-module.c:560
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
@@ -2202,11 +2202,11 @@ msgstr ""
 "Ini akan memaksa cantasan video sumber. Format diterima adalah x:y (4:3, "
 "16:9, dll.) menyatakan aspek imej global."
 
-#: src/libvlc-module.c:562
+#: src/libvlc-module.c:564
 msgid "Source aspect ratio"
 msgstr "Nisbah aspek sumber"
 
-#: src/libvlc-module.c:564
+#: src/libvlc-module.c:566
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
@@ -2220,29 +2220,29 @@ msgstr ""
 "Format yang diterima adalah x:y (4:3, 16:9, dll.) menyatakan aspek imej "
 "global, atau nilai apung (1.25, 1.3333, dll.) menyatakan kejituan piksel."
 
-#: src/libvlc-module.c:571
+#: src/libvlc-module.c:573
 msgid "Video Auto Scaling"
 msgstr "Penskalaan Auto Video"
 
-#: src/libvlc-module.c:573
+#: src/libvlc-module.c:575
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr ""
 
-#: src/libvlc-module.c:575
+#: src/libvlc-module.c:577
 msgid "Video scaling factor"
 msgstr "Faktor penskalaan video"
 
-#: src/libvlc-module.c:577
+#: src/libvlc-module.c:579
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
 msgstr ""
 
-#: src/libvlc-module.c:580
+#: src/libvlc-module.c:582
 msgid "Custom crop ratios list"
 msgstr "Senarai kadar cantasan.biasa"
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:584
 #, fuzzy
 msgid ""
 "Comma separated list of crop ratios which will be added in the interface's "
@@ -2251,11 +2251,11 @@ msgstr ""
 "Senarai dipisah koma nisbah cantasan yang akan ditambah di dalam antaramuka "
 "senarai nisbah cantasan."
 
-#: src/libvlc-module.c:585
+#: src/libvlc-module.c:587
 msgid "Custom aspect ratios list"
 msgstr "Senarai kadar akpek kebiasaan"
 
-#: src/libvlc-module.c:587
+#: src/libvlc-module.c:589
 #, fuzzy
 msgid ""
 "Comma separated list of aspect ratios which will be added in the interface's "
@@ -2264,11 +2264,11 @@ msgstr ""
 "Senarai nisbah aspek dipisah koma yang akan ditambah dalam antaramuka "
 "senarai nisbah aspek."
 
-#: src/libvlc-module.c:590
+#: src/libvlc-module.c:592
 msgid "Fix HDTV height"
 msgstr "Tetapkan tinggi HDTV"
 
-#: src/libvlc-module.c:592
+#: src/libvlc-module.c:594
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
 "incorrectly sets height to 1088 lines. You should only disable this option "
@@ -2279,11 +2279,11 @@ msgstr ""
 "lumpuhkan pilihan ini jika video anda memerlukan format bukan-piawai kesemua "
 "1088 garis."
 
-#: src/libvlc-module.c:597
+#: src/libvlc-module.c:599
 msgid "Monitor pixel aspect ratio"
 msgstr "Nisbah aspek peksel monitor"
 
-#: src/libvlc-module.c:599
+#: src/libvlc-module.c:601
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
 "(1:1). If you have a 16:9 screen, you might need to change this to 4:3 in "
@@ -2293,12 +2293,12 @@ msgstr ""
 "bersegi (1:1). Jika anda mempunyai skrin 16:9, anda mungkin perlu menukarnya "
 "kepada 4:3 untuk simpan ukuran."
 
-#: src/libvlc-module.c:603 modules/gui/macosx/simple_prefs.m:297
+#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:297
 #: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "Langkau kerangka"
 
-#: src/libvlc-module.c:605
+#: src/libvlc-module.c:607
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
 "computer is not powerful enough"
@@ -2306,11 +2306,11 @@ msgstr ""
 "Benarkan penjatuhan bingkai pada strim MPEG2. Penjatuhan bingkai berlaku "
 "apabila komputer anda tidak cukup berkuasa"
 
-#: src/libvlc-module.c:608
+#: src/libvlc-module.c:610
 msgid "Drop late frames"
 msgstr "Jatuhkan bingkai lewat"
 
-#: src/libvlc-module.c:610
+#: src/libvlc-module.c:612
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
 "intended display date)."
@@ -2318,11 +2318,11 @@ msgstr ""
 "Ini akan menjatuhkan bingkai yang lewat (sampai kepada output video yang "
 "sepatutnya memaparkan tarikh)."
 
-#: src/libvlc-module.c:613
+#: src/libvlc-module.c:615
 msgid "Quiet synchro"
 msgstr "Segerak senyap"
 
-#: src/libvlc-module.c:615
+#: src/libvlc-module.c:617
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
 "synchronization mechanism."
@@ -2330,24 +2330,24 @@ msgstr ""
 "Ini mengelakkan kebanjiran mesej log dengan output nyahpijatdaripada "
 "mekanisma penyegerakan output video."
 
-#: src/libvlc-module.c:618
+#: src/libvlc-module.c:620
 #, fuzzy
 msgid "Key press events"
 msgstr "Acara Kekunci"
 
-#: src/libvlc-module.c:620
+#: src/libvlc-module.c:622
 msgid "This enables VLC hotkeys from the (non-embedded) video window."
 msgstr ""
 
-#: src/libvlc-module.c:622 modules/video_filter/remoteosd.c:94
+#: src/libvlc-module.c:624 modules/video_filter/remoteosd.c:94
 msgid "Mouse events"
 msgstr "Acara Tetikus"
 
-#: src/libvlc-module.c:624
+#: src/libvlc-module.c:626
 msgid "This enables handling of mouse clicks on the video."
 msgstr ""
 
-#: src/libvlc-module.c:632
+#: src/libvlc-module.c:634
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
 "as the DVD or VCD device, the network interface settings or the subtitle "
@@ -2357,11 +2357,11 @@ msgstr ""
 "umpamanya DVD atau peranti VCD, tetapan antaramuka rangkaian atau saluran "
 "sarikata."
 
-#: src/libvlc-module.c:636
+#: src/libvlc-module.c:638
 msgid "Clock reference average counter"
 msgstr "Jam pembilang purata rujukan"
 
-#: src/libvlc-module.c:638
+#: src/libvlc-module.c:640
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
@@ -2369,11 +2369,11 @@ msgstr ""
 "Apabila menggunakan input PVR (atau sumber paling tidak biasa), anda perlu "
 "tetapkan kepada 10000."
 
-#: src/libvlc-module.c:641
+#: src/libvlc-module.c:643
 msgid "Clock synchronisation"
 msgstr "Penyegerakan jam"
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:645
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
@@ -2382,22 +2382,22 @@ msgstr ""
 "nyata. Gunakannya jika anda merasai mainbalik yang tersengguk pada strim "
 "rangkaian."
 
-#: src/libvlc-module.c:647
+#: src/libvlc-module.c:649
 #, fuzzy
 msgid "Clock jitter"
 msgstr "spatial"
 
-#: src/libvlc-module.c:649
+#: src/libvlc-module.c:651
 msgid ""
 "It tells the clock algorithms what is the maximal input jitter that is "
 "considered valid and can be compensated (in milliseconds)"
 msgstr ""
 
-#: src/libvlc-module.c:652 modules/control/netsync.c:72
+#: src/libvlc-module.c:654 modules/control/netsync.c:72
 msgid "Network synchronisation"
 msgstr "Penyegerakan rangkaian"
 
-#: src/libvlc-module.c:653
+#: src/libvlc-module.c:655
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
@@ -2405,10 +2405,10 @@ msgstr ""
 "Ini akan membernarkan anda untuk penyegerak jauh jam untuk pelayan dan "
 "klien. Perincian tetapan wujud pada Lanjutan/Segerak Rangkaian"
 
-#: src/libvlc-module.c:659 src/video_output/vout_intf.c:99
-#: src/video_output/vout_intf.c:117 modules/access/dshow/dshow.cpp:82
-#: modules/access/dshow/dshow.cpp:84 modules/access/dshow/dshow.cpp:87
-#: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:238
+#: src/libvlc-module.c:661 src/video_output/vout_intf.c:99
+#: src/video_output/vout_intf.c:117 modules/access/dshow/dshow.cpp:84
+#: modules/access/dshow/dshow.cpp:86 modules/access/dshow/dshow.cpp:89
+#: modules/access/dshow/dshow.cpp:95 modules/access/v4l2.c:238
 #: modules/audio_output/alsa.c:107 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1305
 #: modules/gui/macosx/simple_prefs.m:415 modules/gui/macosx/simple_prefs.m:536
@@ -2419,25 +2419,25 @@ msgstr ""
 msgid "Default"
 msgstr "Lalai"
 
-#: src/libvlc-module.c:659 modules/gui/macosx/equalizer.m:149
+#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:149
 #: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Benarkan"
 
-#: src/libvlc-module.c:661 modules/misc/notify/growl_udp.c:75
+#: src/libvlc-module.c:663 modules/misc/notify/growl_udp.c:75
 msgid "UDP port"
 msgstr "Port UDP"
 
-#: src/libvlc-module.c:663
+#: src/libvlc-module.c:665
 msgid "This is the default port used for UDP streams. Default is 1234."
 msgstr "Ini adalah port lalai diguna untuk strim UDP. Lalai adalah 1234."
 
-#: src/libvlc-module.c:665
+#: src/libvlc-module.c:667
 msgid "MTU of the network interface"
 msgstr "MTU antaramuka rangkaian "
 
-#: src/libvlc-module.c:667
+#: src/libvlc-module.c:669
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
 "over the network (in bytes)."
@@ -2445,11 +2445,11 @@ msgstr ""
 "Ini adalah saiz paket lapisan-aplikasi maksima yang boleh dihantar melalui "
 "rangkaian (dalam bait)."
 
-#: src/libvlc-module.c:672 modules/stream_out/rtp.c:122
+#: src/libvlc-module.c:674 modules/stream_out/rtp.c:122
 msgid "Hop limit (TTL)"
 msgstr "Had hop (TTL)"
 
-#: src/libvlc-module.c:674 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:676 modules/stream_out/rtp.c:124
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -2459,19 +2459,19 @@ msgstr ""
 "paket multicast yang dihantar oleh output strim (-1 = gunakan nilai lalai "
 "yang terbina dalam sistem pengoperasian)."
 
-#: src/libvlc-module.c:678
+#: src/libvlc-module.c:680
 msgid "Multicast output interface"
 msgstr "Antaramuka output multicast"
 
-#: src/libvlc-module.c:680
+#: src/libvlc-module.c:682
 msgid "Default multicast interface. This overrides the routing table."
 msgstr "Antaramuka multicast lalai. Ini akan menindan jadual laluan."
 
-#: src/libvlc-module.c:682
+#: src/libvlc-module.c:684
 msgid "IPv4 multicast output interface address"
 msgstr "Alamat antaramuka output multicast IPv4"
 
-#: src/libvlc-module.c:684
+#: src/libvlc-module.c:686
 #, fuzzy
 msgid ""
 "IPv4 address for the default multicast interface. This overrides the routing "
@@ -2479,17 +2479,17 @@ msgid ""
 msgstr ""
 "Alamat IPv4 untuk antaramuka multicast lalai. Akan menindih jadual laluan."
 
-#: src/libvlc-module.c:687
+#: src/libvlc-module.c:689
 msgid "DiffServ Code Point"
 msgstr "Titik Kod DiffServ "
 
-#: src/libvlc-module.c:688
+#: src/libvlc-module.c:690
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
 msgstr ""
 
-#: src/libvlc-module.c:694
+#: src/libvlc-module.c:696
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
@@ -2497,7 +2497,7 @@ msgstr ""
 "Pilih program dengan memberi ID Servis. Hanya guna pilihan ini jika anda "
 "ingin membaca strim multi-program (contohnya strim DVB)."
 
-#: src/libvlc-module.c:700
+#: src/libvlc-module.c:702
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
@@ -2507,27 +2507,27 @@ msgstr ""
 "Hanya gunakan pilihan ini jika anda ingin membaca strim multi-program "
 "(contohnya DVB strim)."
 
-#: src/libvlc-module.c:706 modules/gui/qt4/ui/open_disk.h:305
+#: src/libvlc-module.c:708 modules/gui/qt4/ui/open_disk.h:305
 msgid "Audio track"
 msgstr "Trek audio"
 
-#: src/libvlc-module.c:708
+#: src/libvlc-module.c:710
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Strim bilangan trek audio untuk guna (dari 0 hingga n)."
 
-#: src/libvlc-module.c:711 modules/gui/qt4/ui/open_disk.h:306
+#: src/libvlc-module.c:713 modules/gui/qt4/ui/open_disk.h:306
 msgid "Subtitles track"
 msgstr "Trek sarikata"
 
-#: src/libvlc-module.c:713
+#: src/libvlc-module.c:715
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr "Strim bilangan trek sarikata untuk guna (dari 0 hingga n)."
 
-#: src/libvlc-module.c:716
+#: src/libvlc-module.c:718
 msgid "Audio language"
 msgstr "Bahasa audio"
 
-#: src/libvlc-module.c:718
+#: src/libvlc-module.c:720
 #, fuzzy
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
@@ -2537,11 +2537,11 @@ msgstr ""
 "Bahasa trek audio yang anda ingin guna (dipisah koma, dua atau tiga huruf "
 "kod negara)."
 
-#: src/libvlc-module.c:721
+#: src/libvlc-module.c:723
 msgid "Subtitle language"
 msgstr "Bahasa sarikata"
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:725
 #, fuzzy
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
@@ -2550,76 +2550,76 @@ msgstr ""
 "Bahasa trek sarikata yang anda ingin gunakan (dipisah koma, dua atau tiga "
 "huruf kod negara)."
 
-#: src/libvlc-module.c:727
+#: src/libvlc-module.c:729
 msgid "Audio track ID"
 msgstr "Trek ID audio"
 
-#: src/libvlc-module.c:729
+#: src/libvlc-module.c:731
 msgid "Stream ID of the audio track to use."
 msgstr "ID Strim trek audio untuk diguna."
 
-#: src/libvlc-module.c:731
+#: src/libvlc-module.c:733
 msgid "Subtitles track ID"
 msgstr "Trek ID sarikata"
 
-#: src/libvlc-module.c:733
+#: src/libvlc-module.c:735
 msgid "Stream ID of the subtitle track to use."
 msgstr "ID Strim trek sarikata untuk diguna."
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:737
 msgid "Input repetitions"
 msgstr "Pengulangan input"
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:739
 msgid "Number of time the same input will be repeated"
 msgstr "Bilangan yang input sama akan diulang"
 
-#: src/libvlc-module.c:739
+#: src/libvlc-module.c:741
 msgid "Start time"
 msgstr "Masa mula"
 
-#: src/libvlc-module.c:741
+#: src/libvlc-module.c:743
 msgid "The stream will start at this position (in seconds)."
 msgstr "Strim ini akan dimulakan pada posisi (dalam saat)."
 
-#: src/libvlc-module.c:743
+#: src/libvlc-module.c:745
 msgid "Stop time"
 msgstr "Masa henti"
 
-#: src/libvlc-module.c:745
+#: src/libvlc-module.c:747
 msgid "The stream will stop at this position (in seconds)."
 msgstr "Strim ini akan dihentikan pada posisi (dalam saat)."
 
-#: src/libvlc-module.c:747
+#: src/libvlc-module.c:749
 msgid "Run time"
 msgstr "Masa Larian"
 
-#: src/libvlc-module.c:749
+#: src/libvlc-module.c:751
 msgid "The stream will run this duration (in seconds)."
 msgstr "Strim ini akan dimulakan dalam tempoh ini (dalam saat)."
 
-#: src/libvlc-module.c:751
+#: src/libvlc-module.c:753
 msgid "Fast seek"
 msgstr "Cari cepat"
 
-#: src/libvlc-module.c:753
+#: src/libvlc-module.c:755
 msgid "Favor speed over precision while seeking"
 msgstr ""
 
-#: src/libvlc-module.c:755
+#: src/libvlc-module.c:757
 #, fuzzy
 msgid "Playback speed"
 msgstr "Tayang semula"
 
-#: src/libvlc-module.c:757
+#: src/libvlc-module.c:759
 msgid "This defines the playback speed (nominal speed is 1.0)."
 msgstr ""
 
-#: src/libvlc-module.c:759
+#: src/libvlc-module.c:761
 msgid "Input list"
 msgstr "Senarai input"
 
-#: src/libvlc-module.c:761
+#: src/libvlc-module.c:763
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
@@ -2627,11 +2627,11 @@ msgstr ""
 "Anda boleh beri senarai dipisah-koma input yang akan dicantumkan bersama "
 "selepas yang normal."
 
-#: src/libvlc-module.c:764
+#: src/libvlc-module.c:766
 msgid "Input slave (experimental)"
 msgstr "Input hamba (eksperimen)"
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:768
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
 "is experimental, not all formats are supported. Use a '#' separated list of "
@@ -2641,11 +2641,11 @@ msgstr ""
 "ini adalah eksperimen, bukan semua format disokong. Guna senarai input "
 "dipisah '#'. "
 
-#: src/libvlc-module.c:770
+#: src/libvlc-module.c:772
 msgid "Bookmarks list for a stream"
 msgstr "Senarai tanda buku untuk strim"
 
-#: src/libvlc-module.c:772
+#: src/libvlc-module.c:774
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
@@ -2655,37 +2655,37 @@ msgstr ""
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
 "{...}\""
 
-#: src/libvlc-module.c:776 modules/gui/qt4/ui/sprefs_input.h:316
+#: src/libvlc-module.c:778 modules/gui/qt4/ui/sprefs_input.h:316
 msgid "Record directory or filename"
 msgstr "Direktori atau namafail rakaman"
 
-#: src/libvlc-module.c:778
+#: src/libvlc-module.c:780
 msgid "Directory or filename where the records will be stored"
 msgstr "Directori atau namafail di mana rakaman akan disimpan."
 
-#: src/libvlc-module.c:780
+#: src/libvlc-module.c:782
 msgid "Prefer native stream recording"
 msgstr "Utamakan rakaman strim natif"
 
-#: src/libvlc-module.c:782
+#: src/libvlc-module.c:784
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
 msgstr ""
 
-#: src/libvlc-module.c:785
+#: src/libvlc-module.c:787
 msgid "Timeshift directory"
 msgstr "Direktori masa ganti"
 
-#: src/libvlc-module.c:787
+#: src/libvlc-module.c:789
 msgid "Directory used to store the timeshift temporary files."
 msgstr "Direktori diguna untuk menyimpan fail sementara masa ganti."
 
-#: src/libvlc-module.c:789
+#: src/libvlc-module.c:791
 msgid "Timeshift granularity"
 msgstr "Butiran masa ganti"
 
-#: src/libvlc-module.c:791
+#: src/libvlc-module.c:793
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
@@ -2693,7 +2693,7 @@ msgstr ""
 "Ini adalah saiz maksimum dalam bait untuk fail sementara yang akan digunakan "
 "untuk menyimpan strim masa ganti."
 
-#: src/libvlc-module.c:796
+#: src/libvlc-module.c:798
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures filters (logo, etc.). Enable these "
@@ -2705,11 +2705,11 @@ msgstr ""
 "tetapan ini di sini dan konfigurnya dalam seksyen modul \"penapis subgambar"
 "\". Anda boleh juga tetapkan perlbagai pilihan subgambar."
 
-#: src/libvlc-module.c:802 modules/gui/qt4/ui/sprefs_subtitles.h:213
+#: src/libvlc-module.c:804 modules/gui/qt4/ui/sprefs_subtitles.h:213
 msgid "Force subtitle position"
 msgstr "Paksa posisi sarikata"
 
-#: src/libvlc-module.c:804
+#: src/libvlc-module.c:806
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
@@ -2717,33 +2717,33 @@ msgstr ""
 "Anda boleh guna pilihan ini untuk menempatkan sarikata dibawah wayang, "
 "gantian untuk di atas wayang. Cuba lain-lain posisi."
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:809
 msgid "Enable sub-pictures"
 msgstr "Benarkan sub-gambar"
 
-#: src/libvlc-module.c:809
+#: src/libvlc-module.c:811
 msgid "You can completely disable the sub-picture processing."
 msgstr "VLC boleh lumpuhkan keseluruhan memproses sub-gambar."
 
-#: src/libvlc-module.c:811 src/libvlc-module.c:1767 src/text/iso-639_def.h:143
+#: src/libvlc-module.c:813 src/libvlc-module.c:1769 src/text/iso-639_def.h:143
 #: modules/gui/macosx/simple_prefs.m:286
 #: modules/stream_out/transcode/transcode.c:222
 #: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
 msgstr "Paparan Atas Skrin (OSD)"
 
-#: src/libvlc-module.c:813
+#: src/libvlc-module.c:815
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
 msgstr ""
 "VLC boleh paparkan mesej pada video. Ini dipanggil OSD (Paparan Atas Skrin)."
 
-#: src/libvlc-module.c:816
+#: src/libvlc-module.c:818
 msgid "Text rendering module"
 msgstr "Modul mengemuka teks"
 
-#: src/libvlc-module.c:818
+#: src/libvlc-module.c:820
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
@@ -2751,11 +2751,11 @@ msgstr ""
 "VLC biasanya menggunakan Freetype untuk mengemuka, tetapi ini membenarkan "
 "anda untuk menggunakan svg sebagai misalan."
 
-#: src/libvlc-module.c:820
+#: src/libvlc-module.c:822
 msgid "Subpictures filter module"
 msgstr "Modul penapis subgambar"
 
-#: src/libvlc-module.c:822
+#: src/libvlc-module.c:824
 msgid ""
 "This adds so-called \"subpicture filters\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
@@ -2763,11 +2763,11 @@ msgstr ""
 "Ini akan menambah \"penapis subgambar\". Penapis ini melapisi sebahagian "
 "imej atau teks di atas video (seperti logo, teks pertimbangan...)."
 
-#: src/libvlc-module.c:825
+#: src/libvlc-module.c:827
 msgid "Autodetect subtitle files"
 msgstr "Auto kesan fail sarikata"
 
-#: src/libvlc-module.c:827
+#: src/libvlc-module.c:829
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
@@ -2775,11 +2775,11 @@ msgstr ""
 "Auto kesan fail sarikata, jika tiada nama fail sarikata ditentukan "
 "(berdasarkan pada nama fail wayang)."
 
-#: src/libvlc-module.c:830
+#: src/libvlc-module.c:832
 msgid "Subtitle autodetection fuzziness"
 msgstr "Kekaburan auto kesan sarikata"
 
-#: src/libvlc-module.c:832
+#: src/libvlc-module.c:834
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -2797,11 +2797,11 @@ msgstr ""
 "3 = fail sarikata sepapan dengan nama wayang dengan aksara tambahan\n"
 "4 = fail sarikata sepadan benar dengan nama wayang"
 
-#: src/libvlc-module.c:840
+#: src/libvlc-module.c:842
 msgid "Subtitle autodetection paths"
 msgstr "Laluan auto kesan sarikata"
 
-#: src/libvlc-module.c:842
+#: src/libvlc-module.c:844
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
@@ -2809,11 +2809,11 @@ msgstr ""
 "Lihat fail sarikata pada laluannya juga, jika fail sarikata anda tidak "
 "ditemui dalam direktori semasa."
 
-#: src/libvlc-module.c:845
+#: src/libvlc-module.c:847
 msgid "Use subtitle file"
 msgstr "Guna fail sarikata"
 
-#: src/libvlc-module.c:847
+#: src/libvlc-module.c:849
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
@@ -2821,11 +2821,11 @@ msgstr ""
 "Muat fail sarikata. Untuk digunakan apabila auto kesa tidak dapat mengesan "
 "fail sarikata anda."
 
-#: src/libvlc-module.c:850
+#: src/libvlc-module.c:852
 msgid "DVD device"
 msgstr "Peranti DVD"
 
-#: src/libvlc-module.c:853
+#: src/libvlc-module.c:855
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
 "the drive letter (eg. D:)"
@@ -2833,55 +2833,55 @@ msgstr ""
 "Ini adakah pemacu DVD lalai (atau fail) untuk diguna. Jangan lupa titik dua "
 "selepas huruf pemacu (cth. D:)"
 
-#: src/libvlc-module.c:857
+#: src/libvlc-module.c:859
 msgid "This is the default DVD device to use."
 msgstr "Ini adakah pemacu DVD lalai untuk diguna."
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:862
 msgid "VCD device"
 msgstr "Peranti VCD"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:864
 msgid "This is the default VCD device to use."
 msgstr "Ini adakah pemacu VCD lalai untuk diguna."
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:866
 msgid "Audio CD device"
 msgstr "Peranti CD Audio"
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:868
 msgid "This is the default Audio CD device to use."
 msgstr "Ini adakah pemacu CD audio lalai untuk diguna."
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:870
 msgid "Force IPv6"
 msgstr "Paksa IPv6"
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:872
 msgid "IPv6 will be used by default for all connections."
 msgstr "IPv6 akan diguna sebagai lalai untuk semua sambungan."
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:874
 msgid "Force IPv4"
 msgstr "Paksa IPv4"
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:876
 msgid "IPv4 will be used by default for all connections."
 msgstr "IPv4 akan diguna sebagai lalai untuk semua sambungan."
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:878
 msgid "TCP connection timeout"
 msgstr "Sambungan TCP masa tamat"
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:880
 msgid "Default TCP connection timeout (in milliseconds). "
 msgstr "Masa tamat sambungan TCP lalai (dalam milisaat)."
 
-#: src/libvlc-module.c:880
+#: src/libvlc-module.c:882
 msgid "SOCKS server"
 msgstr "Pelayan SOCKS"
 
-#: src/libvlc-module.c:882
+#: src/libvlc-module.c:884
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
@@ -2889,87 +2889,87 @@ msgstr ""
 "Pelayan proksi SOCKS untuk diguna. Ini mestilah dalam bentuk alamat:port. "
 "Ini akan diguna untuk semua sambungan TCP"
 
-#: src/libvlc-module.c:885
+#: src/libvlc-module.c:887
 msgid "SOCKS user name"
 msgstr "Nama pengguna SOCKS"
 
-#: src/libvlc-module.c:887
+#: src/libvlc-module.c:889
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr "Nama pengguna diguna untuk sambungan kepada proksi SOCKS."
 
-#: src/libvlc-module.c:889
+#: src/libvlc-module.c:891
 msgid "SOCKS password"
 msgstr "Kata laluan SOCKS"
 
-#: src/libvlc-module.c:891
+#: src/libvlc-module.c:893
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr "Katalaluan diguna untuk sambungan kepada proksi SOCKS."
 
-#: src/libvlc-module.c:893
+#: src/libvlc-module.c:895
 msgid "Title metadata"
 msgstr "Judul metadata"
 
-#: src/libvlc-module.c:895
+#: src/libvlc-module.c:897
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr "Benarkan anda menentukan \"judul\" metadata untuk input."
 
-#: src/libvlc-module.c:897
+#: src/libvlc-module.c:899
 msgid "Author metadata"
 msgstr "Pengarang metadata"
 
-#: src/libvlc-module.c:899
+#: src/libvlc-module.c:901
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr "Benarkan anda menentukan metadata \"pengarang\" untuk input."
 
-#: src/libvlc-module.c:901
+#: src/libvlc-module.c:903
 msgid "Artist metadata"
 msgstr "Metadata artis"
 
-#: src/libvlc-module.c:903
+#: src/libvlc-module.c:905
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr "Benarkan anda menentukan metadata \"artis\" untuk input."
 
-#: src/libvlc-module.c:905
+#: src/libvlc-module.c:907
 msgid "Genre metadata"
 msgstr "Metadata genre"
 
-#: src/libvlc-module.c:907
+#: src/libvlc-module.c:909
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr "Benarkan anda menentukan metadata \"genre\" untuk input."
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:911
 msgid "Copyright metadata"
 msgstr "Metadata hakcipta"
 
-#: src/libvlc-module.c:911
+#: src/libvlc-module.c:913
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr "Benarkan anda menentukan metadata \"hakcipta\" untuk input."
 
-#: src/libvlc-module.c:913
+#: src/libvlc-module.c:915
 msgid "Description metadata"
 msgstr "Huraian metadata"
 
-#: src/libvlc-module.c:915
+#: src/libvlc-module.c:917
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr "Benarkan anda menentukan metadata \"keterangan\" untuk input."
 
-#: src/libvlc-module.c:917
+#: src/libvlc-module.c:919
 msgid "Date metadata"
 msgstr "Tarikh metadata"
 
-#: src/libvlc-module.c:919
+#: src/libvlc-module.c:921
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr "Benarkan anda menentukan metadata \"tarikh\" untuk input."
 
-#: src/libvlc-module.c:921
+#: src/libvlc-module.c:923
 msgid "URL metadata"
 msgstr "URL metadata"
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:925
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr "Benarkan anda menentukan metadata \"url\" untuk input."
 
-#: src/libvlc-module.c:927
+#: src/libvlc-module.c:929
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
@@ -2979,11 +2979,11 @@ msgstr ""
 "nyahmampat). Hanya pengguna lanjutan patut menggantikan pilihan kerana ia "
 "boleh merosakkan mainbalik semua strim anda."
 
-#: src/libvlc-module.c:931
+#: src/libvlc-module.c:933
 msgid "Preferred decoders list"
 msgstr "Senarai dekoder dicadang"
 
-#: src/libvlc-module.c:933
+#: src/libvlc-module.c:935
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
@@ -2994,28 +2994,28 @@ msgstr ""
 "lanjutan yang patut mengggantikan pilihan ini kerana menyebabkan merosakkan "
 "mainbalik semua strim  anda."
 
-#: src/libvlc-module.c:938
+#: src/libvlc-module.c:940
 msgid "Preferred encoders list"
 msgstr "Senarai enkoder dicadang"
 
-#: src/libvlc-module.c:940
+#: src/libvlc-module.c:942
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr ""
 "Ini akan membenarkan anda memilih senarai enkoder yang VLC akan guna dalam "
 "kepentingan."
 
-#: src/libvlc-module.c:943
+#: src/libvlc-module.c:945
 msgid "Prefer system plugins over VLC"
 msgstr ""
 
-#: src/libvlc-module.c:945
+#: src/libvlc-module.c:947
 msgid ""
 "Indicates whether VLC will prefer native plugins installed on system over "
 "VLC owns plugins whenever a choice is available."
 msgstr ""
 
-#: src/libvlc-module.c:954
+#: src/libvlc-module.c:956
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
@@ -3023,11 +3023,11 @@ msgstr ""
 "Tetapan in membenarkan anda menetapkan pilihan global lalai untuk sussistem "
 "output strim."
 
-#: src/libvlc-module.c:957
+#: src/libvlc-module.c:959
 msgid "Default stream output chain"
 msgstr "Benarkan output strim lalai"
 
-#: src/libvlc-module.c:959
+#: src/libvlc-module.c:961
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
 "to learn how to build such chains. Warning: this chain will be enabled for "
@@ -3037,27 +3037,27 @@ msgstr ""
 "belajar bagaimana untuk membina rantai seumpamanya. Amaran: rantai ini akan "
 "dibolehkan untuk semua strim. "
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:965
 msgid "Enable streaming of all ES"
 msgstr "Benarkan striming untuk semua ES"
 
-#: src/libvlc-module.c:965
+#: src/libvlc-module.c:967
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr "Strim semua strim asas (video, audio dan sarikata)"
 
-#: src/libvlc-module.c:967
+#: src/libvlc-module.c:969
 msgid "Display while streaming"
 msgstr "Papar ketika striming"
 
-#: src/libvlc-module.c:969
+#: src/libvlc-module.c:971
 msgid "Play locally the stream while streaming it."
 msgstr "Tayang lokal strim semasa menstrimnya."
 
-#: src/libvlc-module.c:971
+#: src/libvlc-module.c:973
 msgid "Enable video stream output"
 msgstr "Benarkan output strim video"
 
-#: src/libvlc-module.c:973
+#: src/libvlc-module.c:975
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3065,11 +3065,11 @@ msgstr ""
 "Pilih sama ada strim video perlu diarahkan kepada kemudahan output strim "
 "apabila yang akhir ini dibolehkan."
 
-#: src/libvlc-module.c:976
+#: src/libvlc-module.c:978
 msgid "Enable audio stream output"
 msgstr "Benarkan output strim audio"
 
-#: src/libvlc-module.c:978
+#: src/libvlc-module.c:980
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3077,11 +3077,11 @@ msgstr ""
 "Pilih sama ada strim audio perlu diarahkan kepada kemudahan output strim "
 "apabila yang akhir ini dibolehkan."
 
-#: src/libvlc-module.c:981
+#: src/libvlc-module.c:983
 msgid "Enable SPU stream output"
 msgstr "Benarkan output strim SPU"
 
-#: src/libvlc-module.c:983
+#: src/libvlc-module.c:985
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3089,11 +3089,11 @@ msgstr ""
 "Pilih sama ada strim SPU perlu diarahkan kepada kemudahan output strim "
 "apabila yang akhir ini dibolehkan."
 
-#: src/libvlc-module.c:986
+#: src/libvlc-module.c:988
 msgid "Keep stream output open"
 msgstr "Sentiasa buka output strim"
 
-#: src/libvlc-module.c:988
+#: src/libvlc-module.c:990
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
@@ -3103,11 +3103,11 @@ msgstr ""
 "senarai tayang banyak (automatik selit output strim ditemui jika tidak "
 "ditentukan)"
 
-#: src/libvlc-module.c:992
+#: src/libvlc-module.c:994
 msgid "Stream output muxer caching (ms)"
 msgstr "Caching muxer output strim (ms)"
 
-#: src/libvlc-module.c:994
+#: src/libvlc-module.c:996
 msgid ""
 "This allow you to configure the initial caching amount for stream output  "
 "muxer. This value should be set in milliseconds."
@@ -3115,40 +3115,40 @@ msgstr ""
 "Benarkan anda mengubahsuai nilai permulaan caching lalai untuk muxer output "
 "strim. Nilai ini perlu ditetapkan dalam unit milisaat."
 
-#: src/libvlc-module.c:997
+#: src/libvlc-module.c:999
 msgid "Preferred packetizer list"
 msgstr "Senarai packetizer dicadang"
 
-#: src/libvlc-module.c:999
+#: src/libvlc-module.c:1001
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr ""
 "Ini akan membenarkan anda memilih urutan dalan VLC yang anda pilih "
 "packetizernya."
 
-#: src/libvlc-module.c:1002
+#: src/libvlc-module.c:1004
 msgid "Mux module"
 msgstr "Modul mux"
 
-#: src/libvlc-module.c:1004
+#: src/libvlc-module.c:1006
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr "Ini adalah masukan legasi untuk membolehkan anda monkonfigur modul mux"
 
-#: src/libvlc-module.c:1006
+#: src/libvlc-module.c:1008
 msgid "Access output module"
 msgstr "Modul output capaian"
 
-#: src/libvlc-module.c:1008
+#: src/libvlc-module.c:1010
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr ""
 "Ini adalah masukan legasi untuk membolehkan anda monkonfigur modul putput "
 "capaian"
 
-#: src/libvlc-module.c:1010
+#: src/libvlc-module.c:1012
 msgid "Control SAP flow"
 msgstr "Kawal aliran SAP"
 
-#: src/libvlc-module.c:1012
+#: src/libvlc-module.c:1014
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
@@ -3156,11 +3156,11 @@ msgstr ""
 "Jika pilihan ini dibolehkan, aliran pada alamat multicast SAP akan dikawal. "
 "Ini diperlukan jika anda ingin buat pengumumam pada MBone."
 
-#: src/libvlc-module.c:1016
+#: src/libvlc-module.c:1018
 msgid "SAP announcement interval"
 msgstr "Jeda pengumumam SAP"
 
-#: src/libvlc-module.c:1018
+#: src/libvlc-module.c:1020
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
@@ -3168,7 +3168,7 @@ msgstr ""
 "Apabila kawalan alilran dilumpuhkan, ini akan membolehkan anda tetapkan "
 "dalaman tetap antara pengumuman SAP."
 
-#: src/libvlc-module.c:1027
+#: src/libvlc-module.c:1029
 msgid ""
 "These options allow you to enable special CPU optimizations. You should "
 "always leave all these enabled."
@@ -3176,11 +3176,11 @@ msgstr ""
 "Pilihan ini akan membenarkan anda membolehkan pengoptima CPU istimewa. Anda "
 "perlu sentiasa biarkan kesemuanya dibolehkan."
 
-#: src/libvlc-module.c:1030
+#: src/libvlc-module.c:1032
 msgid "Enable CPU MMX support"
 msgstr "Bolehkan sokongan CPU MMX"
 
-#: src/libvlc-module.c:1032
+#: src/libvlc-module.c:1034
 msgid ""
 "If your processor supports the MMX instructions set, VLC can take advantage "
 "of them."
@@ -3188,11 +3188,11 @@ msgstr ""
 "Jika pemproses anda menyokong se suruhan MMX, VLC akan ambil kesempatan ke "
 "atasnya."
 
-#: src/libvlc-module.c:1035
+#: src/libvlc-module.c:1037
 msgid "Enable CPU 3D Now! support"
 msgstr "Benarkan sokongan CPU 3D Now!"
 
-#: src/libvlc-module.c:1037
+#: src/libvlc-module.c:1039
 msgid ""
 "If your processor supports the 3D Now! instructions set, VLC can take "
 "advantage of them."
@@ -3200,11 +3200,11 @@ msgstr ""
 "Jika pemproses anda menyokong set arahan 3D Now!, VLC boleh guna kelebihan "
 "ini."
 
-#: src/libvlc-module.c:1040
+#: src/libvlc-module.c:1042
 msgid "Enable CPU MMX EXT support"
 msgstr "Benarkan sokongan CPU MMX EXT"
 
-#: src/libvlc-module.c:1042
+#: src/libvlc-module.c:1044
 msgid ""
 "If your processor supports the MMX EXT instructions set, VLC can take "
 "advantage of them."
@@ -3212,11 +3212,11 @@ msgstr ""
 "Jika pemproses anda mempunyai sokongan set arahan MMX EXT, VLC boleh guna "
 "kelebihan ini."
 
-#: src/libvlc-module.c:1045
+#: src/libvlc-module.c:1047
 msgid "Enable CPU SSE support"
 msgstr "Bolehkan sokongan CPU SSE"
 
-#: src/libvlc-module.c:1047
+#: src/libvlc-module.c:1049
 msgid ""
 "If your processor supports the SSE instructions set, VLC can take advantage "
 "of them."
@@ -3224,11 +3224,11 @@ msgstr ""
 "Jika pemproses anda menyokong set suruhan SSE, VLC akan ambil kesempatan ke "
 "atasnya."
 
-#: src/libvlc-module.c:1050
+#: src/libvlc-module.c:1052
 msgid "Enable CPU SSE2 support"
 msgstr "Bolehkan sokongan CPU SSE2"
 
-#: src/libvlc-module.c:1052
+#: src/libvlc-module.c:1054
 msgid ""
 "If your processor supports the SSE2 instructions set, VLC can take advantage "
 "of them."
@@ -3236,12 +3236,12 @@ msgstr ""
 "Jika pemproses anda menyokong se suruhan SSE2, VLC akan ambil kesempatan ke "
 "atasnya."
 
-#: src/libvlc-module.c:1055
+#: src/libvlc-module.c:1057
 #, fuzzy
 msgid "Enable CPU SSE3 support"
 msgstr "Bolehkan sokongan CPU SSE"
 
-#: src/libvlc-module.c:1057
+#: src/libvlc-module.c:1059
 #, fuzzy
 msgid ""
 "If your processor supports the SSE3 instructions set, VLC can take advantage "
@@ -3250,12 +3250,12 @@ msgstr ""
 "Jika pemproses anda menyokong set suruhan SSE, VLC akan ambil kesempatan ke "
 "atasnya."
 
-#: src/libvlc-module.c:1060
+#: src/libvlc-module.c:1062
 #, fuzzy
 msgid "Enable CPU SSSE3 support"
 msgstr "Bolehkan sokongan CPU SSE"
 
-#: src/libvlc-module.c:1062
+#: src/libvlc-module.c:1064
 #, fuzzy
 msgid ""
 "If your processor supports the SSSE3 instructions set, VLC can take "
@@ -3264,12 +3264,12 @@ msgstr ""
 "Jika pemproses anda menyokong set suruhan SSE, VLC akan ambil kesempatan ke "
 "atasnya."
 
-#: src/libvlc-module.c:1065
+#: src/libvlc-module.c:1067
 #, fuzzy
 msgid "Enable CPU SSE4.1 support"
 msgstr "Bolehkan sokongan CPU SSE"
 
-#: src/libvlc-module.c:1067
+#: src/libvlc-module.c:1069
 #, fuzzy
 msgid ""
 "If your processor supports the SSE4.1 instructions set, VLC can take "
@@ -3278,12 +3278,12 @@ msgstr ""
 "Jika pemproses anda menyokong set suruhan SSE, VLC akan ambil kesempatan ke "
 "atasnya."
 
-#: src/libvlc-module.c:1070
+#: src/libvlc-module.c:1072
 #, fuzzy
 msgid "Enable CPU SSE4.2 support"
 msgstr "Bolehkan sokongan CPU SSE2"
 
-#: src/libvlc-module.c:1072
+#: src/libvlc-module.c:1074
 #, fuzzy
 msgid ""
 "If your processor supports the SSE4.2 instructions set, VLC can take "
@@ -3292,11 +3292,11 @@ msgstr ""
 "Jika pemproses anda menyokong se suruhan SSE2, VLC akan ambil kesempatan ke "
 "atasnya."
 
-#: src/libvlc-module.c:1075
+#: src/libvlc-module.c:1077
 msgid "Enable CPU AltiVec support"
 msgstr "Bolehkan sokongan CPU AltiVec"
 
-#: src/libvlc-module.c:1077
+#: src/libvlc-module.c:1079
 msgid ""
 "If your processor supports the AltiVec instructions set, VLC can take "
 "advantage of them."
@@ -3304,7 +3304,7 @@ msgstr ""
 "Jika pemproses anda menyokong se suruhan AltiVec, VLC akan ambil kesempatan "
 "ke atasnya."
 
-#: src/libvlc-module.c:1082
+#: src/libvlc-module.c:1084
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
@@ -3312,11 +3312,11 @@ msgstr ""
 "Pilihan ini benarkan anda memilih modul lalai. Biarkannya melainkan anda "
 "benar-benar anda tahu apa yang anda lakukan."
 
-#: src/libvlc-module.c:1085
+#: src/libvlc-module.c:1087
 msgid "Memory copy module"
 msgstr "Modul salin memori"
 
-#: src/libvlc-module.c:1087
+#: src/libvlc-module.c:1089
 msgid ""
 "You can select which memory copy module you want to use. By default VLC will "
 "select the fastest one supported by your hardware."
@@ -3324,11 +3324,11 @@ msgstr ""
 "Anda boleh pilih modul salinan memori yang mana anda ingin guna. Secara "
 "lalainya VLC akan pilih yang paling cepat disokong oleh perkakasan anda."
 
-#: src/libvlc-module.c:1090
+#: src/libvlc-module.c:1092
 msgid "Access module"
 msgstr "Modul capaian"
 
-#: src/libvlc-module.c:1092
+#: src/libvlc-module.c:1094
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
@@ -3338,19 +3338,19 @@ msgstr ""
 "capaian benar tidak automatik dikesan. Anda tidak perlu tetapkan pilihan "
 "global melainkan anda bena-benar tahu apa yang anda lakukan."
 
-#: src/libvlc-module.c:1096
+#: src/libvlc-module.c:1098
 msgid "Stream filter module"
 msgstr "Modul penapis strim"
 
-#: src/libvlc-module.c:1098
+#: src/libvlc-module.c:1100
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr "Penapis strim digunakan untuk mengubahsuai strim yang sedang dibaca."
 
-#: src/libvlc-module.c:1100
+#: src/libvlc-module.c:1102
 msgid "Demux module"
 msgstr "Modul demux"
 
-#: src/libvlc-module.c:1102
+#: src/libvlc-module.c:1104
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3362,11 +3362,11 @@ msgstr ""
 "automatik dikesan. Anda tidak perlu tetapkannya sebagai pilihan global "
 "melainkan anda benar-benar tahu apa yang anda lakukan."
 
-#: src/libvlc-module.c:1107
+#: src/libvlc-module.c:1109
 msgid "Allow real-time priority"
 msgstr "Benarkan keutamaan masa-nyata"
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1111
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
@@ -3379,11 +3379,11 @@ msgstr ""
 "menjadikannya terlalu perlahan. Anda patut mengaktifkannya jika benar-benar "
 "tahu apa yang anda lakukan."
 
-#: src/libvlc-module.c:1115
+#: src/libvlc-module.c:1117
 msgid "Adjust VLC priority"
 msgstr "Laras kepentingan VLC"
 
-#: src/libvlc-module.c:1117
+#: src/libvlc-module.c:1119
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
@@ -3393,20 +3393,20 @@ msgstr ""
 "VLC. Anda boleh gunakannya untuk menala keutamaan VLC terhadap program lain, "
 "atau terhadap misalan VLC lain."
 
-#: src/libvlc-module.c:1121
+#: src/libvlc-module.c:1123
 msgid "(Experimental) Don't do caching at the access level."
 msgstr ""
 
-#: src/libvlc-module.c:1123
+#: src/libvlc-module.c:1125
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr ""
 
-#: src/libvlc-module.c:1126
+#: src/libvlc-module.c:1128
 msgid "Modules search path"
 msgstr "Laluan carian modul"
 
-#: src/libvlc-module.c:1128
+#: src/libvlc-module.c:1130
 msgid ""
 "Additional path for VLC to look for its modules. You can add several paths "
 "by concatenating them using \" PATH_SEP \" as separator"
@@ -3414,78 +3414,78 @@ msgstr ""
 "Laluan tambahan untuk VLC mencari modulnya. Anda boleh menambah beberapa "
 "laluan dengan merangkaikannya menggunakan \" PATH_SEP\" sebagai pemisah"
 
-#: src/libvlc-module.c:1131
+#: src/libvlc-module.c:1133
 #, fuzzy
 msgid "Data search path"
 msgstr "Laluan carian modul"
 
-#: src/libvlc-module.c:1133
+#: src/libvlc-module.c:1135
 msgid "Override the default data/share search path."
 msgstr ""
 
-#: src/libvlc-module.c:1135
+#: src/libvlc-module.c:1137
 msgid "VLM configuration file"
 msgstr "Fail kongfigurasi VLM"
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1139
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr "Baca fail konfigurasi VLM sebaik sahaja VLM dimulakan."
 
-#: src/libvlc-module.c:1139
+#: src/libvlc-module.c:1141
 msgid "Use a plugins cache"
 msgstr "Guna plugin cache"
 
-#: src/libvlc-module.c:1141
+#: src/libvlc-module.c:1143
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr "Guna cache plugin yang mana akan meningkatkan masa mula VLC."
 
-#: src/libvlc-module.c:1143
+#: src/libvlc-module.c:1145
 #, fuzzy
 msgid "Locally collect statistics"
 msgstr "Kumpul Statistik"
 
-#: src/libvlc-module.c:1145
+#: src/libvlc-module.c:1147
 #, fuzzy
 msgid "Collect miscellaneous local statistics about the playing media."
 msgstr "Kumpul statistik sebarangan."
 
-#: src/libvlc-module.c:1147
+#: src/libvlc-module.c:1149
 msgid "Run as daemon process"
 msgstr "Larikan sebagai proses daemon"
 
-#: src/libvlc-module.c:1149
+#: src/libvlc-module.c:1151
 msgid "Runs VLC as a background daemon process."
 msgstr "Larikan VLC sebagai proses daemon latar."
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1153
 msgid "Write process id to file"
 msgstr "Tulis proses id kepada fail"
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1155
 msgid "Writes process id into specified file."
 msgstr "Tulis proses id ke dalam fail yang ditentukan."
 
-#: src/libvlc-module.c:1155
+#: src/libvlc-module.c:1157
 msgid "Log to file"
 msgstr "Log ke fail"
 
-#: src/libvlc-module.c:1157
+#: src/libvlc-module.c:1159
 msgid "Log all VLC messages to a text file."
 msgstr "Log semua mesej VLC pada fail teks."
 
-#: src/libvlc-module.c:1159
+#: src/libvlc-module.c:1161
 msgid "Log to syslog"
 msgstr "Log ke syslog"
 
-#: src/libvlc-module.c:1161
+#: src/libvlc-module.c:1163
 msgid "Log all VLC messages to syslog (UNIX systems)."
 msgstr "Log semua mesej VLC kepada syslog (sistem UNIX)."
 
-#: src/libvlc-module.c:1163
+#: src/libvlc-module.c:1165
 msgid "Allow only one running instance"
 msgstr "Hanya benarkan satu melarikan misalan"
 
-#: src/libvlc-module.c:1166
+#: src/libvlc-module.c:1168
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3499,7 +3499,7 @@ msgstr ""
 "pelungsur. Pilihan ini membenarkan anda memainkan fail dengan misalan yang "
 "sedia terbuka atau masuk dalam giliran."
 
-#: src/libvlc-module.c:1173
+#: src/libvlc-module.c:1175
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3516,29 +3516,29 @@ msgstr ""
 "sessi daemon D-Bus diaktifkan dan larikan misalan VLC dengan menggunakan "
 "antaramuka kawalan D-Bus."
 
-#: src/libvlc-module.c:1182
+#: src/libvlc-module.c:1184
 msgid "VLC is started from file association"
 msgstr "VLC dimulakan daripada perkaitan fail"
 
-#: src/libvlc-module.c:1184
+#: src/libvlc-module.c:1186
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 "Beritahu VLC yang ianya sedang dilancarkan disebabkan perkaitan fail di "
 "dalam OS"
 
-#: src/libvlc-module.c:1187
+#: src/libvlc-module.c:1189
 msgid "One instance when started from file"
 msgstr "Satu misalan apabila dimulakan daripada fail"
 
-#: src/libvlc-module.c:1189
+#: src/libvlc-module.c:1191
 msgid "Allow only one running instance when started from file."
 msgstr "Hanya benarkan satu misalan dilarikan apabila dimulakan daripada fail"
 
-#: src/libvlc-module.c:1191
+#: src/libvlc-module.c:1193
 msgid "Increase the priority of the process"
 msgstr "Tingkat kepentingan proses"
 
-#: src/libvlc-module.c:1193
+#: src/libvlc-module.c:1195
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3554,11 +3554,11 @@ msgstr ""
 "pemproses dan memberikan keseluruhan sistem tidak bertindak balas yang mana "
 "mungkin memerlukan but semual sistem anda."
 
-#: src/libvlc-module.c:1201
+#: src/libvlc-module.c:1203
 msgid "Enqueue items to playlist when in one instance mode"
 msgstr "Bariskan item kepada senarai tayang apabila mod satu misalan"
 
-#: src/libvlc-module.c:1203
+#: src/libvlc-module.c:1205
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
@@ -3566,7 +3566,7 @@ msgstr ""
 "Apabila menggunakan pilihan hanya satu misalan, bariskan item kepada senarai "
 "tayang dan kekal tayangkan item semasa."
 
-#: src/libvlc-module.c:1212
+#: src/libvlc-module.c:1214
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
@@ -3574,11 +3574,11 @@ msgstr ""
 "Pilihan ini menentukan kelakuan senarai tayang. Ada antaranya yang boleh "
 "mengatasi yang lain dalam kotak dialog senarai tayang."
 
-#: src/libvlc-module.c:1215
+#: src/libvlc-module.c:1217
 msgid "Automatically preparse files"
 msgstr "Automatik pra-hurai fail"
 
-#: src/libvlc-module.c:1217
+#: src/libvlc-module.c:1219
 msgid ""
 "Automatically preparse files added to the playlist (to retrieve some "
 "metadata)."
@@ -3586,31 +3586,31 @@ msgstr ""
 "Automatik fail pra hurai ditambah kepada senarai tayang (untuk dapatkan "
 "sedikit metadata)."
 
-#: src/libvlc-module.c:1220
+#: src/libvlc-module.c:1222
 msgid "Album art policy"
 msgstr "Polisi seni album"
 
-#: src/libvlc-module.c:1222
+#: src/libvlc-module.c:1224
 msgid "Choose how album art will be downloaded."
 msgstr ""
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1230
 msgid "Manual download only"
 msgstr "Hanya manual muaturun"
 
-#: src/libvlc-module.c:1229
+#: src/libvlc-module.c:1231
 msgid "When track starts playing"
 msgstr "Ketika trek mula menayagkan"
 
-#: src/libvlc-module.c:1230
+#: src/libvlc-module.c:1232
 msgid "As soon as track is added"
 msgstr ""
 
-#: src/libvlc-module.c:1232
+#: src/libvlc-module.c:1234
 msgid "Services discovery modules"
 msgstr "Modul penemuan servis"
 
-#: src/libvlc-module.c:1234
+#: src/libvlc-module.c:1236
 #, fuzzy
 msgid ""
 "Specifies the services discovery modules to load, separated by colons. "
@@ -3619,61 +3619,61 @@ msgstr ""
 "Tentukan modul penerokaan servis untuk dimuat, dipisahkan dengan semi-colon. "
 "Nilai kebiasaan adalah sap, hal, ..."
 
-#: src/libvlc-module.c:1237
+#: src/libvlc-module.c:1239
 msgid "Play files randomly forever"
 msgstr "Tayang fail rawak selamanya"
 
-#: src/libvlc-module.c:1239
+#: src/libvlc-module.c:1241
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr "VLC akan tayang rawak fail dalam senarai tayang sehingga diganggu."
 
-#: src/libvlc-module.c:1241
+#: src/libvlc-module.c:1243
 msgid "Repeat all"
 msgstr "Ulang semua"
 
-#: src/libvlc-module.c:1243
+#: src/libvlc-module.c:1245
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr "VLC akan sentiasa tayang senarai tayang cara tidak tentu."
 
-#: src/libvlc-module.c:1245
+#: src/libvlc-module.c:1247
 msgid "Repeat current item"
 msgstr "Ulang item semasa"
 
-#: src/libvlc-module.c:1247
+#: src/libvlc-module.c:1249
 msgid "VLC will keep playing the current playlist item."
 msgstr "VLC akan sentiasa memainkan item senarai tayang semasa."
 
-#: src/libvlc-module.c:1249
+#: src/libvlc-module.c:1251
 msgid "Play and stop"
 msgstr "Tayang dan henti"
 
-#: src/libvlc-module.c:1251
+#: src/libvlc-module.c:1253
 msgid "Stop the playlist after each played playlist item."
 msgstr "Henti senarai tayang selepas setiap item senarai tayang dimainkan."
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1255
 msgid "Play and exit"
 msgstr "Tayang dan keluar"
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1257
 msgid "Exit if there are no more items in the playlist."
 msgstr "Keluar apabila tiada lagi item dalam senarai tayang."
 
-#: src/libvlc-module.c:1257
+#: src/libvlc-module.c:1259
 #, fuzzy
 msgid "Play and pause"
 msgstr "Tayang dan henti"
 
-#: src/libvlc-module.c:1259
+#: src/libvlc-module.c:1261
 #, fuzzy
 msgid "Pause each item in the playlist on the last frame."
 msgstr "Perkenalkan lengahan dalam paparan strim."
 
-#: src/libvlc-module.c:1261
+#: src/libvlc-module.c:1263
 msgid "Use media library"
 msgstr "Guna pustaka media"
 
-#: src/libvlc-module.c:1263
+#: src/libvlc-module.c:1265
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
@@ -3681,11 +3681,11 @@ msgstr ""
 "Pustaka media automatik menyimpan dan memuat semula setiap kali anda "
 "memulakan VLC."
 
-#: src/libvlc-module.c:1266
+#: src/libvlc-module.c:1268
 msgid "Display playlist tree"
 msgstr "Paparkan pokok senarai tayang "
 
-#: src/libvlc-module.c:1268
+#: src/libvlc-module.c:1270
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
@@ -3693,12 +3693,12 @@ msgstr ""
 "Senarai tayang boleh menggunakan pepohon untuk mengkategorikan sebahagian "
 "item, seperti kandungan direktori."
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1279
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 "Tetapan ini adalah pengikat kunci VLC global, dikenali sebagai \"hotkey\"."
 
-#: src/libvlc-module.c:1280 src/video_output/vout_intf.c:357
+#: src/libvlc-module.c:1282 src/video_output/vout_intf.c:357
 #: modules/gui/macosx/controls.m:454 modules/gui/macosx/controls.m:510
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
@@ -3709,114 +3709,114 @@ msgstr ""
 msgid "Fullscreen"
 msgstr "Skrin Penuh"
 
-#: src/libvlc-module.c:1281
+#: src/libvlc-module.c:1283
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr "Pilih hotkey untuk diguna untuk swap keadaan skrin penuh."
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1284
 msgid "Leave fullscreen"
 msgstr "Tinggalkan skrin penuh"
 
-#: src/libvlc-module.c:1283
+#: src/libvlc-module.c:1285
 msgid "Select the hotkey to use to leave fullscreen state."
 msgstr "Pilih hotkey yang diguna untuk meninggalkan skrin penuh."
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1286
 msgid "Play/Pause"
 msgstr "Tayang/Jeda"
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1287
 msgid "Select the hotkey to use to swap paused state."
 msgstr "Pilih hotkey untuk diguna pada keadaan jeda swap."
 
-#: src/libvlc-module.c:1286
+#: src/libvlc-module.c:1288
 msgid "Pause only"
 msgstr "Jeda sahaja"
 
-#: src/libvlc-module.c:1287
+#: src/libvlc-module.c:1289
 msgid "Select the hotkey to use to pause."
 msgstr "Pilih hotkey untuk jeda."
 
-#: src/libvlc-module.c:1288
+#: src/libvlc-module.c:1290
 msgid "Play only"
 msgstr "Tayang Sahaja"
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1291
 msgid "Select the hotkey to use to play."
 msgstr "Pilih hotkey untuk tayang."
 
-#: src/libvlc-module.c:1290 modules/gui/macosx/controls.m:1010
+#: src/libvlc-module.c:1292 modules/gui/macosx/controls.m:1010
 #: modules/gui/macosx/intf.m:649 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Faster"
 msgstr "Percepat"
 
-#: src/libvlc-module.c:1291 src/libvlc-module.c:1297
+#: src/libvlc-module.c:1293 src/libvlc-module.c:1299
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "Pilih hotkey digunakan untuk mainbalik maju pantas."
 
-#: src/libvlc-module.c:1292 modules/gui/macosx/controls.m:1011
+#: src/libvlc-module.c:1294 modules/gui/macosx/controls.m:1011
 #: modules/gui/macosx/intf.m:650 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Slower"
 msgstr "Perlahan"
 
-#: src/libvlc-module.c:1293 src/libvlc-module.c:1299
+#: src/libvlc-module.c:1295 src/libvlc-module.c:1301
 msgid "Select the hotkey to use for slow motion playback."
 msgstr "Pilih hotkey digunakan untuk mainbalik gerak perlahan."
 
-#: src/libvlc-module.c:1294 modules/gui/macosx/controls.m:1012
+#: src/libvlc-module.c:1296 modules/gui/macosx/controls.m:1012
 #: modules/gui/macosx/intf.m:651
 msgid "Normal rate"
 msgstr "Kadar normal"
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1297
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Pilih kunci untuk tetapkan kadar tayangan kepada normal."
 
-#: src/libvlc-module.c:1296 modules/gui/qt4/menus.cpp:808
+#: src/libvlc-module.c:1298 modules/gui/qt4/menus.cpp:808
 msgid "Faster (fine)"
 msgstr "Terpantas (halus)"
 
-#: src/libvlc-module.c:1298 modules/gui/qt4/menus.cpp:816
+#: src/libvlc-module.c:1300 modules/gui/qt4/menus.cpp:816
 msgid "Slower (fine)"
 msgstr "Perlahan (halus)"
 
-#: src/libvlc-module.c:1300 modules/control/hotkeys.c:696
+#: src/libvlc-module.c:1302 modules/control/hotkeys.c:696
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
+#: modules/misc/notify/notify.c:339 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "Maju"
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1303
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 "Pilih hotkey digunakan untuk lompat kepada item kemudian dalam senarai "
 "tayang."
 
-#: src/libvlc-module.c:1302 modules/control/hotkeys.c:702
+#: src/libvlc-module.c:1304 modules/control/hotkeys.c:702
 #: modules/gui/macosx/about.m:194 modules/gui/macosx/controls.m:1031
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
+#: modules/misc/notify/notify.c:337 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "Terdahulu"
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1305
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr ""
 "Pilih hotkey digunakan untuk lompat kepada item terdahulu dalam senarai "
 "tayang."
 
-#: src/libvlc-module.c:1304 modules/gui/macosx/controls.m:1023
+#: src/libvlc-module.c:1306 modules/gui/macosx/controls.m:1023
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:603
 #: modules/gui/macosx/intf.m:648 modules/gui/macosx/intf.m:740
 #: modules/gui/macosx/intf.m:747 modules/gui/qt4/components/controller.hpp:104
@@ -3824,11 +3824,11 @@ msgstr ""
 msgid "Stop"
 msgstr "Henti"
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1307
 msgid "Select the hotkey to stop playback."
 msgstr "Pilih hotkey untuk henti."
 
-#: src/libvlc-module.c:1306 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
+#: src/libvlc-module.c:1308 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:70 modules/gui/macosx/intf.m:608
 #: modules/video_filter/marq.c:158 modules/video_filter/rss.c:201
@@ -3836,421 +3836,421 @@ msgstr "Pilih hotkey untuk henti."
 msgid "Position"
 msgstr "Posisi"
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1309
 msgid "Select the hotkey to display the position."
 msgstr "Pilih hotkey untuk papar pisisi."
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1311
 msgid "Very short backwards jump"
 msgstr "Lompat undur sangat pendek"
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1313
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr "Pilih hotkey digunakan untuk buat undur sangat cepat."
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1314
 msgid "Short backwards jump"
 msgstr "Lompat terbelakang pendek"
 
-#: src/libvlc-module.c:1314
+#: src/libvlc-module.c:1316
 msgid "Select the hotkey to make a short backwards jump."
 msgstr "Pilih hotkey untuk bina lompat undur pendek."
 
-#: src/libvlc-module.c:1315
+#: src/libvlc-module.c:1317
 msgid "Medium backwards jump"
 msgstr "Lompat terbelakang sedang"
 
-#: src/libvlc-module.c:1317
+#: src/libvlc-module.c:1319
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr "Pilih hotkey untuk diguna untuk bina lompat undur sedang."
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1320
 msgid "Long backwards jump"
 msgstr "Lompat terbelakang panjang"
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1322
 msgid "Select the hotkey to make a long backwards jump."
 msgstr "Pilih hotkey untuk diguna untuk bina lompat undur panjang."
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1324
 msgid "Very short forward jump"
 msgstr "Lompat maju sangat pendek"
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1326
 msgid "Select the hotkey to make a very short forward jump."
 msgstr "Pilih hotkey digunakan untuk maju sangat cepat."
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1327
 msgid "Short forward jump"
 msgstr "Lompat maju pendek"
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1329
 msgid "Select the hotkey to make a short forward jump."
 msgstr "Pilih hotkey untuk diguna untuk bina lompat maju pendek."
 
-#: src/libvlc-module.c:1328
+#: src/libvlc-module.c:1330
 msgid "Medium forward jump"
 msgstr "Lompat maju sedang"
 
-#: src/libvlc-module.c:1330
+#: src/libvlc-module.c:1332
 msgid "Select the hotkey to make a medium forward jump."
 msgstr "Pilih hotkey untuk diguna untuk bina lompat maju sedang."
 
-#: src/libvlc-module.c:1331
+#: src/libvlc-module.c:1333
 msgid "Long forward jump"
 msgstr "Lompat maju panjang"
 
-#: src/libvlc-module.c:1333
+#: src/libvlc-module.c:1335
 msgid "Select the hotkey to make a long forward jump."
 msgstr "Pilih hotkey untuk diguna untuk bina lompat undur panjang."
 
-#: src/libvlc-module.c:1334 modules/control/hotkeys.c:713
+#: src/libvlc-module.c:1336 modules/control/hotkeys.c:713
 msgid "Next frame"
 msgstr "Kerangka berikut"
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1338
 msgid "Select the hotkey to got to the next video frame."
 msgstr "Pilih hotkey untuk pergi ke kerangka video berikutnya."
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1340
 msgid "Very short jump length"
 msgstr "Panjang lompat sangat pendek"
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1341
 msgid "Very short jump length, in seconds."
 msgstr "Panjang lompat sangat pendek, dalam saat."
 
-#: src/libvlc-module.c:1340
+#: src/libvlc-module.c:1342
 msgid "Short jump length"
 msgstr "Panjang lompatan pendek"
 
-#: src/libvlc-module.c:1341
+#: src/libvlc-module.c:1343
 msgid "Short jump length, in seconds."
 msgstr "Panjang lompat pendek, dalam saat."
 
-#: src/libvlc-module.c:1342
+#: src/libvlc-module.c:1344
 msgid "Medium jump length"
 msgstr "Panjang lompatan sedang"
 
-#: src/libvlc-module.c:1343
+#: src/libvlc-module.c:1345
 msgid "Medium jump length, in seconds."
 msgstr "Panjang lompat sedang, dalam saat."
 
-#: src/libvlc-module.c:1344
+#: src/libvlc-module.c:1346
 msgid "Long jump length"
 msgstr "Panjang lompatan jauh"
 
-#: src/libvlc-module.c:1345
+#: src/libvlc-module.c:1347
 msgid "Long jump length, in seconds."
 msgstr "Panjang lompat panjang, dalam saat."
 
-#: src/libvlc-module.c:1347 modules/control/hotkeys.c:179
+#: src/libvlc-module.c:1349 modules/control/hotkeys.c:179
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:118 modules/gui/qt4/menus.cpp:883
 #: modules/gui/skins2/commands/cmd_quit.cpp:40
 msgid "Quit"
 msgstr "Keluar"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1350
 msgid "Select the hotkey to quit the application."
 msgstr "Pilih hotkey untuk keluar dari aplikasi."
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1351
 msgid "Navigate up"
 msgstr "Layari atas"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1352
 msgid "Select the key to move the selector up in DVD menus."
 msgstr "Pilih kunci untuk memindahkan pemilih ke atas dalam menu DVD."
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1353
 msgid "Navigate down"
 msgstr "Layari bawah"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1354
 msgid "Select the key to move the selector down in DVD menus."
 msgstr "Pilih kunci untuk memindahkan pemilih ke bawah dalam menu DVD."
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1355
 msgid "Navigate left"
 msgstr "Layari kiri"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1356
 msgid "Select the key to move the selector left in DVD menus."
 msgstr "Pilih kunci untuk memindahkan pemilih ke kiri dalam menu DVD."
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1357
 msgid "Navigate right"
 msgstr "Layari kanan"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1358
 msgid "Select the key to move the selector right in DVD menus."
 msgstr "Pilih kunci untuk memindahkan pemilih ke kanan dalam menu DVD."
 
-#: src/libvlc-module.c:1357
+#: src/libvlc-module.c:1359
 msgid "Activate"
 msgstr "Aktifkan"
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1360
 msgid "Select the key to activate selected item in DVD menus."
 msgstr "Pilih kunci untuk mengaktifkan item dipilih dalam menu DVD."
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1361
 msgid "Go to the DVD menu"
 msgstr "Pergi menu DVD"
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1362
 msgid "Select the key to take you to the DVD menu"
 msgstr "Pilih kunci untuk membawa anda kepada menu DVD"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1363
 msgid "Select previous DVD title"
 msgstr "Pilih judul DVD terdahulu"
 
-#: src/libvlc-module.c:1362
+#: src/libvlc-module.c:1364
 msgid "Select the key to choose the previous title from the DVD"
 msgstr "Pilih kunci untuk memilih judul terdahulu daripada menu DVD."
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1365
 msgid "Select next DVD title"
 msgstr "Pilih judul DVD berikut"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1366
 msgid "Select the key to choose the next title from the DVD"
 msgstr "Pilih kunci untuk memilih judul berikut daripada menu DVD."
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1367
 msgid "Select prev DVD chapter"
 msgstr "Pilih bab DVD terdahulu"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1368
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr "Pilih kunci untuk memilih bab daripada DVD."
 
-#: src/libvlc-module.c:1367
+#: src/libvlc-module.c:1369
 msgid "Select next DVD chapter"
 msgstr "Pilih bab DVD berikut"
 
-#: src/libvlc-module.c:1368
+#: src/libvlc-module.c:1370
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "Pilih kunci untuk memilih bab berikut daripada DVD."
 
-#: src/libvlc-module.c:1369
+#: src/libvlc-module.c:1371
 msgid "Volume up"
 msgstr "Volum naik"
 
-#: src/libvlc-module.c:1370
+#: src/libvlc-module.c:1372
 msgid "Select the key to increase audio volume."
 msgstr "Pilih kunci untuk menambah volum audio."
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1373
 msgid "Volume down"
 msgstr "Volum turun"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1374
 msgid "Select the key to decrease audio volume."
 msgstr "Pilih kunci untuk mengurangkan volum audio."
 
-#: src/libvlc-module.c:1373 modules/access/v4l2.c:175
+#: src/libvlc-module.c:1375 modules/access/v4l2.c:175
 #: modules/gui/macosx/controls.m:1077 modules/gui/macosx/intf.m:671
 #: modules/gui/macosx/intf.m:743 modules/gui/macosx/intf.m:752
 #: modules/gui/qt4/menus.cpp:572
 msgid "Mute"
 msgstr "Bisu"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1376
 msgid "Select the key to mute audio."
 msgstr "Pilih kunci untuk senyapkan audio."
 
-#: src/libvlc-module.c:1375
+#: src/libvlc-module.c:1377
 msgid "Subtitle delay up"
 msgstr "Volum naik"
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1378
 msgid "Select the key to increase the subtitle delay."
 msgstr "Pilih kunci untuk menambah lengahan sarikata."
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1379
 msgid "Subtitle delay down"
 msgstr "Lengahan sarikata diturunkan"
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1380
 msgid "Select the key to decrease the subtitle delay."
 msgstr "Pilih kunci untuk mengurangkan lengahan sarikata."
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1381
 #, fuzzy
 msgid "Subtitle position up"
 msgstr "Pilihan sarikata"
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1382
 #, fuzzy
 msgid "Select the key to move subtitles higher."
 msgstr "Pilih kunci untuk senyapkan audio."
 
-#: src/libvlc-module.c:1381
+#: src/libvlc-module.c:1383
 #, fuzzy
 msgid "Subtitle position down"
 msgstr "Pilihan sarikata"
 
-#: src/libvlc-module.c:1382
+#: src/libvlc-module.c:1384
 #, fuzzy
 msgid "Select the key to move subtitles lower."
 msgstr "Pilih kunci untuk senyapkan audio."
 
-#: src/libvlc-module.c:1383
+#: src/libvlc-module.c:1385
 msgid "Audio delay up"
 msgstr "Lengahan audio naik"
 
-#: src/libvlc-module.c:1384
+#: src/libvlc-module.c:1386
 msgid "Select the key to increase the audio delay."
 msgstr "Pilih kunci untuk menambah lengahan audio."
 
-#: src/libvlc-module.c:1385
+#: src/libvlc-module.c:1387
 msgid "Audio delay down"
 msgstr "Lengahan audio turun"
 
-#: src/libvlc-module.c:1386
+#: src/libvlc-module.c:1388
 msgid "Select the key to decrease the audio delay."
 msgstr "Pilih kunci untuk mengurangkan lengahan audio."
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1395
 msgid "Play playlist bookmark 1"
 msgstr "Tayang senarai tayang penanda buku 1"
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1396
 msgid "Play playlist bookmark 2"
 msgstr "Tayang senarai tayang penanda buku 2"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1397
 msgid "Play playlist bookmark 3"
 msgstr "Tayang senarai tayang penanda buku 3"
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1398
 msgid "Play playlist bookmark 4"
 msgstr "Tayang senarai tayang penanda buku 4"
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1399
 msgid "Play playlist bookmark 5"
 msgstr "Tayang senarai tayang penanda buku 5"
 
-#: src/libvlc-module.c:1398
+#: src/libvlc-module.c:1400
 msgid "Play playlist bookmark 6"
 msgstr "Tayang senarai tayang penanda buku 6"
 
-#: src/libvlc-module.c:1399
+#: src/libvlc-module.c:1401
 msgid "Play playlist bookmark 7"
 msgstr "Tayang senarai tayang penanda buku 7"
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1402
 msgid "Play playlist bookmark 8"
 msgstr "Tayang senarai tayang penanda buku 8"
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1403
 msgid "Play playlist bookmark 9"
 msgstr "Tayang senarai tayang penanda buku 9"
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1404
 msgid "Play playlist bookmark 10"
 msgstr "Tayang senarai tayang penanda buku 10"
 
-#: src/libvlc-module.c:1403
+#: src/libvlc-module.c:1405
 msgid "Select the key to play this bookmark."
 msgstr "Pilih kunci untuk tayangkan tandabuku ini."
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1406
 msgid "Set playlist bookmark 1"
 msgstr "Tetapkan senarai tayang penanda buku 1"
 
-#: src/libvlc-module.c:1405
+#: src/libvlc-module.c:1407
 msgid "Set playlist bookmark 2"
 msgstr "Tetapkan senarai tayang penanda buku 2"
 
-#: src/libvlc-module.c:1406
+#: src/libvlc-module.c:1408
 msgid "Set playlist bookmark 3"
 msgstr "Tetapkan senarai tayang penanda buku 3"
 
-#: src/libvlc-module.c:1407
+#: src/libvlc-module.c:1409
 msgid "Set playlist bookmark 4"
 msgstr "Tetapkan senarai tayang penanda buku 4"
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1410
 msgid "Set playlist bookmark 5"
 msgstr "Tetapkan senarai tayang penanda buku 5"
 
-#: src/libvlc-module.c:1409
+#: src/libvlc-module.c:1411
 msgid "Set playlist bookmark 6"
 msgstr "Tetapkan senarai tayang penanda buku 6"
 
-#: src/libvlc-module.c:1410
+#: src/libvlc-module.c:1412
 msgid "Set playlist bookmark 7"
 msgstr "Tetapkan senarai tayang penanda buku 7"
 
-#: src/libvlc-module.c:1411
+#: src/libvlc-module.c:1413
 msgid "Set playlist bookmark 8"
 msgstr "Tetapkan senarai tayang penanda buku 8"
 
-#: src/libvlc-module.c:1412
+#: src/libvlc-module.c:1414
 msgid "Set playlist bookmark 9"
 msgstr "Tetapkan senarai tayang penanda buku 9"
 
-#: src/libvlc-module.c:1413
+#: src/libvlc-module.c:1415
 msgid "Set playlist bookmark 10"
 msgstr "Tetapkan senarai tayang penanda buku 10"
 
-#: src/libvlc-module.c:1414
+#: src/libvlc-module.c:1416
 msgid "Select the key to set this playlist bookmark."
 msgstr "Pilih kunci untuk tetapkan senarai tayang tanda buku ini."
 
-#: src/libvlc-module.c:1416
+#: src/libvlc-module.c:1418
 msgid "Playlist bookmark 1"
 msgstr "Senarai tayang penanda buku 1"
 
-#: src/libvlc-module.c:1417
+#: src/libvlc-module.c:1419
 msgid "Playlist bookmark 2"
 msgstr "Senarai tayang penanda buku 2"
 
-#: src/libvlc-module.c:1418
+#: src/libvlc-module.c:1420
 msgid "Playlist bookmark 3"
 msgstr "Senarai tayang penanda buku 3"
 
-#: src/libvlc-module.c:1419
+#: src/libvlc-module.c:1421
 msgid "Playlist bookmark 4"
 msgstr "Senarai tayang penanda buku 4"
 
-#: src/libvlc-module.c:1420
+#: src/libvlc-module.c:1422
 msgid "Playlist bookmark 5"
 msgstr "Senarai tayang penanda buku 5"
 
-#: src/libvlc-module.c:1421
+#: src/libvlc-module.c:1423
 msgid "Playlist bookmark 6"
 msgstr "Senarai tayang penanda buku 6"
 
-#: src/libvlc-module.c:1422
+#: src/libvlc-module.c:1424
 msgid "Playlist bookmark 7"
 msgstr "Senarai tayang penanda buku 7"
 
-#: src/libvlc-module.c:1423
+#: src/libvlc-module.c:1425
 msgid "Playlist bookmark 8"
 msgstr "Senarai tayang penanda buku 8"
 
-#: src/libvlc-module.c:1424
+#: src/libvlc-module.c:1426
 msgid "Playlist bookmark 9"
 msgstr "Senarai tayang penanda buku 9"
 
-#: src/libvlc-module.c:1425
+#: src/libvlc-module.c:1427
 msgid "Playlist bookmark 10"
 msgstr "Senarai tayang penanda buku 10"
 
-#: src/libvlc-module.c:1427
+#: src/libvlc-module.c:1429
 msgid "This allows you to define playlist bookmarks."
 msgstr "Ini akan benarkan anda menetapkan senarai tayang tanda buku."
 
-#: src/libvlc-module.c:1429
+#: src/libvlc-module.c:1431
 msgid "Go back in browsing history"
 msgstr "Undur dalam sejarah melungsur"
 
-#: src/libvlc-module.c:1430
+#: src/libvlc-module.c:1432
 msgid ""
 "Select the key to go back (to the previous media item) in the browsing "
 "history."
@@ -4258,11 +4258,11 @@ msgstr ""
 "Pilih hotkey digunakan untuk undur (kepada item media terdahulu) dalam "
 "pelungsuran sejarah."
 
-#: src/libvlc-module.c:1431
+#: src/libvlc-module.c:1433
 msgid "Go forward in browsing history"
 msgstr "Maju dalam sejarah melungsur "
 
-#: src/libvlc-module.c:1432
+#: src/libvlc-module.c:1434
 msgid ""
 "Select the key to go forward (to the next media item) in the browsing "
 "history."
@@ -4270,230 +4270,230 @@ msgstr ""
 "Pilih hotkey digunakan untuk maju (kepada item media kemudian) dalam "
 "pelungsuran sejarah."
 
-#: src/libvlc-module.c:1434
+#: src/libvlc-module.c:1436
 msgid "Cycle audio track"
 msgstr "Putar trek audio"
 
-#: src/libvlc-module.c:1435
+#: src/libvlc-module.c:1437
 msgid "Cycle through the available audio tracks(languages)."
 msgstr "Kitar semula trek (bahasa) audio yang ada."
 
-#: src/libvlc-module.c:1436
+#: src/libvlc-module.c:1438
 msgid "Cycle subtitle track"
 msgstr "Kitar trek sarikata"
 
-#: src/libvlc-module.c:1437
+#: src/libvlc-module.c:1439
 msgid "Cycle through the available subtitle tracks."
 msgstr "Kitar lalu trek sarikata yang ada."
 
-#: src/libvlc-module.c:1438
+#: src/libvlc-module.c:1440
 msgid "Cycle source aspect ratio"
 msgstr "Nisbah aspek sumber kitar"
 
-#: src/libvlc-module.c:1439
+#: src/libvlc-module.c:1441
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr "Kitar semula senarai pra tentu nisbah aspek sumber."
 
-#: src/libvlc-module.c:1440
+#: src/libvlc-module.c:1442
 msgid "Cycle video crop"
 msgstr "Kitar cantas video"
 
-#: src/libvlc-module.c:1441
+#: src/libvlc-module.c:1443
 msgid "Cycle through a predefined list of crop formats."
 msgstr "Kitar semula senarai pra tentu format cantasan."
 
-#: src/libvlc-module.c:1442
+#: src/libvlc-module.c:1444
 msgid "Toggle autoscaling"
 msgstr "Togol autoskala"
 
-#: src/libvlc-module.c:1443
+#: src/libvlc-module.c:1445
 msgid "Activate or deactivate autoscaling."
 msgstr ""
 
-#: src/libvlc-module.c:1444
+#: src/libvlc-module.c:1446
 msgid "Increase scale factor"
 msgstr "Tingkatkan faktor skala"
 
-#: src/libvlc-module.c:1445
+#: src/libvlc-module.c:1447
 msgid "Increase scale factor."
 msgstr "Tingkatkan faktor skala."
 
-#: src/libvlc-module.c:1446
+#: src/libvlc-module.c:1448
 msgid "Decrease scale factor"
 msgstr "Kurangkan faktor skala"
 
-#: src/libvlc-module.c:1447
+#: src/libvlc-module.c:1449
 msgid "Decrease scale factor."
 msgstr "Kurangkan faktor skala."
 
-#: src/libvlc-module.c:1448
+#: src/libvlc-module.c:1450
 msgid "Cycle deinterlace modes"
 msgstr "Mod kitar nyahselang-seli"
 
-#: src/libvlc-module.c:1449
+#: src/libvlc-module.c:1451
 msgid "Cycle through deinterlace modes."
 msgstr "Mod kitar melalui nyahselang-seli."
 
-#: src/libvlc-module.c:1450
+#: src/libvlc-module.c:1452
 msgid "Show interface"
 msgstr "Tunjuk Antaramuka"
 
-#: src/libvlc-module.c:1451
+#: src/libvlc-module.c:1453
 msgid "Raise the interface above all other windows."
 msgstr "Naikkan antaramuka di atas semua tetingkap lain."
 
-#: src/libvlc-module.c:1452
+#: src/libvlc-module.c:1454
 msgid "Hide interface"
 msgstr "Sorok Antaramuka"
 
-#: src/libvlc-module.c:1453
+#: src/libvlc-module.c:1455
 msgid "Lower the interface below all other windows."
 msgstr "Turunkan antaramuka di atas semua tetingkap lain."
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1456
 msgid "Take video snapshot"
 msgstr "Ambil snapshot video"
 
-#: src/libvlc-module.c:1455
+#: src/libvlc-module.c:1457
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "Ambil snapshot video dan tulis pada cakera."
 
-#: src/libvlc-module.c:1457 modules/gui/qt4/components/controller.hpp:107
+#: src/libvlc-module.c:1459 modules/gui/qt4/components/controller.hpp:107
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Rekod"
 
-#: src/libvlc-module.c:1458
+#: src/libvlc-module.c:1460
 msgid "Record access filter start/stop."
 msgstr "Penapis capaian rekod mula/henti."
 
-#: src/libvlc-module.c:1459
+#: src/libvlc-module.c:1461
 msgid "Dump"
 msgstr "Mengeluarkan"
 
-#: src/libvlc-module.c:1460
+#: src/libvlc-module.c:1462
 msgid "Media dump access filter trigger."
 msgstr "Picu penapis capaian pengeluaran media "
 
-#: src/libvlc-module.c:1462
+#: src/libvlc-module.c:1464
 msgid "Normal/Repeat/Loop"
 msgstr "Normal/Ulang/Gelung"
 
-#: src/libvlc-module.c:1463
+#: src/libvlc-module.c:1465
 msgid "Toggle Normal/Repeat/Loop playlist modes"
 msgstr ""
 
-#: src/libvlc-module.c:1466
+#: src/libvlc-module.c:1468
 msgid "Toggle random playlist playback"
 msgstr ""
 
-#: src/libvlc-module.c:1471 src/libvlc-module.c:1472
+#: src/libvlc-module.c:1473 src/libvlc-module.c:1474
 msgid "Un-Zoom"
 msgstr "Nyahzum"
 
-#: src/libvlc-module.c:1474 src/libvlc-module.c:1475
+#: src/libvlc-module.c:1476 src/libvlc-module.c:1477
 msgid "Crop one pixel from the top of the video"
 msgstr "Cantas satu piksel daripada atas video"
 
-#: src/libvlc-module.c:1476 src/libvlc-module.c:1477
+#: src/libvlc-module.c:1478 src/libvlc-module.c:1479
 msgid "Uncrop one pixel from the top of the video"
 msgstr "Nyahcantas satu piksel daripada atas video."
 
-#: src/libvlc-module.c:1479 src/libvlc-module.c:1480
+#: src/libvlc-module.c:1481 src/libvlc-module.c:1482
 msgid "Crop one pixel from the left of the video"
 msgstr "Cantas satu piksel daripada kiri video"
 
-#: src/libvlc-module.c:1481 src/libvlc-module.c:1482
+#: src/libvlc-module.c:1483 src/libvlc-module.c:1484
 msgid "Uncrop one pixel from the left of the video"
 msgstr "Nyahcantas satu piksel daripada kiri video"
 
-#: src/libvlc-module.c:1484 src/libvlc-module.c:1485
+#: src/libvlc-module.c:1486 src/libvlc-module.c:1487
 msgid "Crop one pixel from the bottom of the video"
 msgstr "Cantas satu piksel daripada bawah video"
 
-#: src/libvlc-module.c:1486 src/libvlc-module.c:1487
+#: src/libvlc-module.c:1488 src/libvlc-module.c:1489
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr "Nyahcantas satu piksel daripada bawah video"
 
-#: src/libvlc-module.c:1489 src/libvlc-module.c:1490
+#: src/libvlc-module.c:1491 src/libvlc-module.c:1492
 msgid "Crop one pixel from the right of the video"
 msgstr "Cantas satu piksel daripada kanan video"
 
-#: src/libvlc-module.c:1491 src/libvlc-module.c:1492
+#: src/libvlc-module.c:1493 src/libvlc-module.c:1494
 msgid "Uncrop one pixel from the right of the video"
 msgstr "Nyahcantas satu piksel daripada kanan video"
 
-#: src/libvlc-module.c:1494
+#: src/libvlc-module.c:1496
 msgid "Toggle wallpaper mode in video output"
 msgstr "Togol mod wallpaper dalam output video"
 
-#: src/libvlc-module.c:1496
+#: src/libvlc-module.c:1498
 #, fuzzy
 msgid "Toggle wallpaper mode in video output."
 msgstr "Togol mod wallpaper dalam output video"
 
-#: src/libvlc-module.c:1498 src/libvlc-module.c:1499
+#: src/libvlc-module.c:1500 src/libvlc-module.c:1501
 msgid "Display OSD menu on top of video output"
 msgstr ""
 
-#: src/libvlc-module.c:1500
+#: src/libvlc-module.c:1502
 msgid "Do not display OSD menu on video output"
 msgstr "Jangan papar menu OSD pada output video"
 
-#: src/libvlc-module.c:1501
+#: src/libvlc-module.c:1503
 msgid "Do not display OSD menu on top of video output"
 msgstr "Jangan papar menu OSD pada atas output video"
 
-#: src/libvlc-module.c:1502
+#: src/libvlc-module.c:1504
 msgid "Highlight widget on the right"
 msgstr "Tonjolkan widget di kanan"
 
-#: src/libvlc-module.c:1504
+#: src/libvlc-module.c:1506
 msgid "Move OSD menu highlight to the widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1505
+#: src/libvlc-module.c:1507
 msgid "Highlight widget on the left"
 msgstr "Tonjolkan widget di kiri"
 
-#: src/libvlc-module.c:1507
+#: src/libvlc-module.c:1509
 msgid "Move OSD menu highlight to the widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1508
+#: src/libvlc-module.c:1510
 msgid "Highlight widget on top"
 msgstr "Tonjolkan widget di atas"
 
-#: src/libvlc-module.c:1510
+#: src/libvlc-module.c:1512
 msgid "Move OSD menu highlight to the widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1511
+#: src/libvlc-module.c:1513
 msgid "Highlight widget below"
 msgstr "Tonjolkan widget di bawah"
 
-#: src/libvlc-module.c:1513
+#: src/libvlc-module.c:1515
 msgid "Move OSD menu highlight to the widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1514
+#: src/libvlc-module.c:1516
 msgid "Select current widget"
 msgstr "Pilih widget semasa"
 
-#: src/libvlc-module.c:1516
+#: src/libvlc-module.c:1518
 msgid "Selecting current widget performs the associated action."
 msgstr ""
 
-#: src/libvlc-module.c:1518
+#: src/libvlc-module.c:1520
 msgid "Cycle through audio devices"
 msgstr "Kitar melalui peranti audio"
 
-#: src/libvlc-module.c:1519
+#: src/libvlc-module.c:1521
 msgid "Cycle through available audio devices"
 msgstr "Kitar melalui peranti audio tersedia"
 
-#: src/libvlc-module.c:1692 src/video_output/vout_intf.c:363
+#: src/libvlc-module.c:1694 src/video_output/vout_intf.c:363
 #: modules/gui/macosx/controls.m:494 modules/gui/macosx/controls.m:1086
 #: modules/gui/macosx/intf.m:688 modules/gui/macosx/intf.m:754
 #: modules/gui/qt4/components/controller.hpp:106
@@ -4501,96 +4501,96 @@ msgstr "Kitar melalui peranti audio tersedia"
 msgid "Snapshot"
 msgstr "Snapshot"
 
-#: src/libvlc-module.c:1709
+#: src/libvlc-module.c:1711
 msgid "Window properties"
 msgstr "Ciri-ciri Tetingkap"
 
-#: src/libvlc-module.c:1768
+#: src/libvlc-module.c:1770
 msgid "Subpictures"
 msgstr "Subgambar"
 
-#: src/libvlc-module.c:1776 modules/codec/subtitles/subsdec.c:206
+#: src/libvlc-module.c:1778 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
 #: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
 #: modules/gui/qt4/ui/profiles.h:497
 msgid "Subtitles"
 msgstr "Sarikata"
 
-#: src/libvlc-module.c:1794 modules/stream_out/transcode/transcode.c:115
+#: src/libvlc-module.c:1796 modules/stream_out/transcode/transcode.c:115
 msgid "Overlays"
 msgstr "Lapisan"
 
-#: src/libvlc-module.c:1802
+#: src/libvlc-module.c:1804
 msgid "Track settings"
 msgstr "Tetapan trek"
 
-#: src/libvlc-module.c:1832
+#: src/libvlc-module.c:1834
 msgid "Playback control"
 msgstr "Kawalan mainbalik"
 
-#: src/libvlc-module.c:1860
+#: src/libvlc-module.c:1862
 msgid "Default devices"
 msgstr "Peranti lalai"
 
-#: src/libvlc-module.c:1869
+#: src/libvlc-module.c:1871
 msgid "Network settings"
 msgstr "Tetapan rangkaian"
 
-#: src/libvlc-module.c:1881
+#: src/libvlc-module.c:1883
 msgid "Socks proxy"
 msgstr "Proksi Socks"
 
-#: src/libvlc-module.c:1890 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1892 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Metadata"
 
-#: src/libvlc-module.c:1941
+#: src/libvlc-module.c:1943
 msgid "Decoders"
 msgstr "Penyahkod"
 
-#: src/libvlc-module.c:1948 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1950 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "Input"
 
-#: src/libvlc-module.c:1987
+#: src/libvlc-module.c:1989
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2019
+#: src/libvlc-module.c:2021
 msgid "CPU"
 msgstr "CPU"
 
-#: src/libvlc-module.c:2048
+#: src/libvlc-module.c:2050
 msgid "Special modules"
 msgstr "Modul istimewa"
 
-#: src/libvlc-module.c:2054 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2056 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "Plugin"
 
-#: src/libvlc-module.c:2065
+#: src/libvlc-module.c:2067
 msgid "Performance options"
 msgstr "Pilihan pertunjukan"
 
-#: src/libvlc-module.c:2213
+#: src/libvlc-module.c:2215
 msgid "Hot keys"
 msgstr "Hotkey"
 
-#: src/libvlc-module.c:2655
+#: src/libvlc-module.c:2657
 msgid "Jump sizes"
 msgstr "Saiz lompat"
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2734
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "cetak bantuan VLC (boleh digabungkan dengan --advanced dan --help-verbose)"
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2737
 msgid "Exhaustive help for VLC and its modules"
 msgstr ""
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2739
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4598,19 +4598,19 @@ msgstr ""
 "cetak bantuan VLC dan semua modulnya (boleh digabungkan dengan --advanced "
 "dan --help-verbose)"
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2742
 msgid "ask for extra verbosity when displaying help"
 msgstr "minta lebih kemeleretan apabila memaparkan bantuan"
 
-#: src/libvlc-module.c:2742
+#: src/libvlc-module.c:2744
 msgid "print a list of available modules"
 msgstr "cetak senarai mdul yang wujud"
 
-#: src/libvlc-module.c:2744
+#: src/libvlc-module.c:2746
 msgid "print a list of available modules with extra detail"
 msgstr "cetak senarai modul yang tersedia dengan perincian tambahan"
 
-#: src/libvlc-module.c:2746
+#: src/libvlc-module.c:2748
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
@@ -4618,27 +4618,27 @@ msgstr ""
 "cetak bantuan pada modul tertentu (boleh digabungkan dengan --advanced dan --"
 "help-verbose). Awalan nama modul dengan = untuk  yang setara."
 
-#: src/libvlc-module.c:2750
+#: src/libvlc-module.c:2752
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 
-#: src/libvlc-module.c:2752
+#: src/libvlc-module.c:2754
 msgid "reset the current config to the default values"
 msgstr "Ulangtetap konfig semasa kepada nilai lalai"
 
-#: src/libvlc-module.c:2754
+#: src/libvlc-module.c:2756
 msgid "use alternate config file"
 msgstr "guna fail konfig gantian"
 
-#: src/libvlc-module.c:2756
+#: src/libvlc-module.c:2758
 msgid "resets the current plugins cache"
 msgstr "ulang tetap cache plugin semasa"
 
-#: src/libvlc-module.c:2758
+#: src/libvlc-module.c:2760
 msgid "print version information"
 msgstr "cetak maklumat versi"
 
-#: src/libvlc-module.c:2796
+#: src/libvlc-module.c:2798
 msgid "main program"
 msgstr "program utama"
 
@@ -5496,7 +5496,7 @@ msgstr ""
 
 #: modules/access/alsa.c:75 modules/access/bd/bd.c:52
 #: modules/access/bda/bda.c:46 modules/access/cdda.c:61
-#: modules/access/dshow/dshow.cpp:99 modules/access/dv.c:59
+#: modules/access/dshow/dshow.cpp:101 modules/access/dv.c:59
 #: modules/access/dvb/access.c:83 modules/access/dvdnav.c:72
 #: modules/access/dvdread.c:74 modules/access/eyetv.m:61
 #: modules/access/fake.c:44 modules/access/ftp.c:58
@@ -6005,31 +6005,31 @@ msgstr "CD Audio - Trek %02i"
 msgid "dc1394 input"
 msgstr "Input dc1394"
 
-#: modules/access/dshow/dshow.cpp:87
+#: modules/access/dshow/dshow.cpp:89
 msgid "Cable"
 msgstr "Kabel"
 
-#: modules/access/dshow/dshow.cpp:87
+#: modules/access/dshow/dshow.cpp:89
 msgid "Antenna"
 msgstr "Antenna"
 
-#: modules/access/dshow/dshow.cpp:94
+#: modules/access/dshow/dshow.cpp:96
 msgid "TV"
 msgstr "TV"
 
-#: modules/access/dshow/dshow.cpp:95
+#: modules/access/dshow/dshow.cpp:97
 msgid "FM radio"
 msgstr "Radio FM"
 
-#: modules/access/dshow/dshow.cpp:96
+#: modules/access/dshow/dshow.cpp:98
 msgid "AM radio"
 msgstr "Radio AM"
 
-#: modules/access/dshow/dshow.cpp:97
+#: modules/access/dshow/dshow.cpp:99
 msgid "DSS"
 msgstr "DSS"
 
-#: modules/access/dshow/dshow.cpp:101
+#: modules/access/dshow/dshow.cpp:103
 msgid ""
 "Caching value for DirectShow streams. This value should be set in "
 "milliseconds."
@@ -6037,13 +6037,13 @@ msgstr ""
 "Nilai caching untuk strim DirectShow. Nilai ini perlu ditetapkan dalam "
 "milisaat."
 
-#: modules/access/dshow/dshow.cpp:103 modules/access/v4l.c:81
+#: modules/access/dshow/dshow.cpp:105 modules/access/v4l.c:81
 #: modules/gui/qt4/components/open_panels.cpp:757
 #: modules/gui/qt4/components/open_panels.cpp:792
 msgid "Video device name"
 msgstr "Nama peranti video"
 
-#: modules/access/dshow/dshow.cpp:105
+#: modules/access/dshow/dshow.cpp:107
 msgid ""
 "Name of the video device that will be used by the DirectShow plugin. If you "
 "don't specify anything, the default device will be used."
@@ -6051,13 +6051,13 @@ msgstr ""
 "Nama peranti video yang akan digunakan oleh plugin DirectShow. Jika anda "
 "tidak menentukan apa-apa, peranti lalai akan digunakan."
 
-#: modules/access/dshow/dshow.cpp:108
+#: modules/access/dshow/dshow.cpp:110
 #: modules/gui/qt4/components/open_panels.cpp:763
 #: modules/gui/qt4/components/open_panels.cpp:798
 msgid "Audio device name"
 msgstr "Nama peranti audio"
 
-#: modules/access/dshow/dshow.cpp:110
+#: modules/access/dshow/dshow.cpp:112
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
 "don't specify anything, the default device will be used. "
@@ -6065,12 +6065,12 @@ msgstr ""
 "Nama peranti video yang akan digunakan oleh plugin DirectShow. Jika anda "
 "tidak menentukan apa-apa, peranti lalai akan digunakan. "
 
-#: modules/access/dshow/dshow.cpp:113
+#: modules/access/dshow/dshow.cpp:115
 #: modules/gui/qt4/components/open_panels.cpp:667
 msgid "Video size"
 msgstr "Saiz video"
 
-#: modules/access/dshow/dshow.cpp:115
+#: modules/access/dshow/dshow.cpp:117
 #, fuzzy
 msgid ""
 "Size of the video that will be displayed by the DirectShow plugin. If you "
@@ -6081,21 +6081,21 @@ msgstr ""
 "tidak menentukan apa-apa, peranti lalai akan digunakan. Anda boleh tentukan "
 "saiz piawai (cif, d1, ...) atau <lebar>x<tinggi>"
 
-#: modules/access/dshow/dshow.cpp:118 modules/access/v4l2.c:215
+#: modules/access/dshow/dshow.cpp:120 modules/access/v4l2.c:215
 #, fuzzy
 msgid "Picture aspect-ratio n:m"
 msgstr "Nisbah aspek sumber"
 
-#: modules/access/dshow/dshow.cpp:119 modules/access/v4l2.c:216
+#: modules/access/dshow/dshow.cpp:121 modules/access/v4l2.c:216
 msgid "Define input picture aspect-ratio to use. Default is 4:3"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:120 modules/access/v4l.c:85
+#: modules/access/dshow/dshow.cpp:122 modules/access/v4l.c:85
 #: modules/access/v4l2.c:80
 msgid "Video input chroma format"
 msgstr "Format kroma input video"
 
-#: modules/access/dshow/dshow.cpp:122
+#: modules/access/dshow/dshow.cpp:124
 msgid ""
 "Force the DirectShow video input to use a specific chroma format (eg. I420 "
 "(default), RV24, etc.)"
@@ -6103,11 +6103,11 @@ msgstr ""
 "Paksa input video DirectShow untuk gunakan format kroma tententu (cth I420 "
 "(lalai), RV24, dll.)"
 
-#: modules/access/dshow/dshow.cpp:124
+#: modules/access/dshow/dshow.cpp:126
 msgid "Video input frame rate"
 msgstr "Kadar bingkai input video"
 
-#: modules/access/dshow/dshow.cpp:126
+#: modules/access/dshow/dshow.cpp:128
 msgid ""
 "Force the DirectShow video input to use a specific frame rate(eg. 0 means "
 "default, 25, 29.97, 50, 59.94, etc.)"
@@ -6115,36 +6115,36 @@ msgstr ""
 "Paksa input video DirectShow untuk menggunakan kadar bingkai tertentu (cth. "
 "0 bermakna lalai, 25, 29.97, 50, 59,94, dll.)"
 
-#: modules/access/dshow/dshow.cpp:128
+#: modules/access/dshow/dshow.cpp:130
 msgid "Device properties"
 msgstr "Ciri-ciri peranti"
 
-#: modules/access/dshow/dshow.cpp:130
+#: modules/access/dshow/dshow.cpp:132
 msgid ""
 "Show the properties dialog of the selected device before starting the stream."
 msgstr "Tunjuk dialoh ciriperanti dipilih sebelum mmemulakan strim."
 
-#: modules/access/dshow/dshow.cpp:132
+#: modules/access/dshow/dshow.cpp:134
 msgid "Tuner properties"
 msgstr "Ciri-ciri penala"
 
-#: modules/access/dshow/dshow.cpp:134
+#: modules/access/dshow/dshow.cpp:136
 msgid "Show the tuner properties [channel selection] page."
 msgstr "Tunjuk laman ciri penala [pilihan saluran]."
 
-#: modules/access/dshow/dshow.cpp:135
+#: modules/access/dshow/dshow.cpp:137
 msgid "Tuner TV Channel"
 msgstr "Saluran TV penala"
 
-#: modules/access/dshow/dshow.cpp:137
+#: modules/access/dshow/dshow.cpp:139
 msgid "Set the TV channel the tuner will set to (0 means default)."
 msgstr "Tetapkan saluran TV penala akan tetapkan kepada 0 (0 bermakna lalai)."
 
-#: modules/access/dshow/dshow.cpp:139
+#: modules/access/dshow/dshow.cpp:141
 msgid "Tuner country code"
 msgstr "Kod negara penala"
 
-#: modules/access/dshow/dshow.cpp:141
+#: modules/access/dshow/dshow.cpp:143
 msgid ""
 "Set the tuner country code that establishes the current channel-to-frequency "
 "mapping (0 means default)."
@@ -6152,19 +6152,19 @@ msgstr ""
 "Tetapkan kod negara penala yang menubuhkan peta saluran-ke-frekuensi semasa "
 "(0 bermakna lalai)."
 
-#: modules/access/dshow/dshow.cpp:143
+#: modules/access/dshow/dshow.cpp:145
 msgid "Tuner input type"
 msgstr "Edit input penala"
 
-#: modules/access/dshow/dshow.cpp:145
+#: modules/access/dshow/dshow.cpp:147
 msgid "Select the tuner input type (Cable/Antenna)."
 msgstr "Tunjuk jenis input penala (Kabel/Antena)."
 
-#: modules/access/dshow/dshow.cpp:146
+#: modules/access/dshow/dshow.cpp:148
 msgid "Video input pin"
 msgstr "Pin input video"
 
-#: modules/access/dshow/dshow.cpp:148
+#: modules/access/dshow/dshow.cpp:150
 #, fuzzy
 msgid ""
 "Select the video input source, such as composite, s-video, or tuner. Since "
@@ -6177,35 +6177,35 @@ msgstr ""
 "dalam kawasan \"Device config\", dan gunakan nombor berkenaan di sini. -1 "
 "bermakna yang tetapan tidak akan diubah."
 
-#: modules/access/dshow/dshow.cpp:152
+#: modules/access/dshow/dshow.cpp:154
 msgid "Audio input pin"
 msgstr "Pin input audio"
 
-#: modules/access/dshow/dshow.cpp:154
+#: modules/access/dshow/dshow.cpp:156
 msgid "Select the audio input source. See the \"video input\" option."
 msgstr "Pilih sumber input audio. Lihat pilihan \"input video\"."
 
-#: modules/access/dshow/dshow.cpp:155
+#: modules/access/dshow/dshow.cpp:157
 msgid "Video output pin"
 msgstr "Pin output video"
 
-#: modules/access/dshow/dshow.cpp:157
+#: modules/access/dshow/dshow.cpp:159
 msgid "Select the video output type. See the \"video input\" option."
 msgstr "Pilih jenis output video. Lihat pilihan \"input video\"."
 
-#: modules/access/dshow/dshow.cpp:158
+#: modules/access/dshow/dshow.cpp:160
 msgid "Audio output pin"
 msgstr "Pin output audio"
 
-#: modules/access/dshow/dshow.cpp:160
+#: modules/access/dshow/dshow.cpp:162
 msgid "Select the audio output type. See the \"video input\" option."
 msgstr "Pilih jenis output audio. Lihat pilihan \"input video\"."
 
-#: modules/access/dshow/dshow.cpp:162
+#: modules/access/dshow/dshow.cpp:164
 msgid "AM Tuner mode"
 msgstr "Mod penala AM"
 
-#: modules/access/dshow/dshow.cpp:164
+#: modules/access/dshow/dshow.cpp:166
 #, fuzzy
 msgid ""
 "AM Tuner mode. Can be one of Default (0), TV (1),AM Radio (2), FM Radio (3) "
@@ -6214,73 +6214,73 @@ msgstr ""
 "Mod penala AM. Boleh jadi satu daripada LALAI, TV, RADIO_AM, RADIO_FM atau "
 "DSS."
 
-#: modules/access/dshow/dshow.cpp:167
+#: modules/access/dshow/dshow.cpp:169
 msgid "Number of audio channels"
 msgstr "Jumlah saluran audio"
 
-#: modules/access/dshow/dshow.cpp:169
+#: modules/access/dshow/dshow.cpp:171
 msgid ""
 "Select audio input format with the given number of audio channels (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:171
+#: modules/access/dshow/dshow.cpp:173
 #: modules/stream_out/transcode/transcode.c:93
 msgid "Audio sample rate"
 msgstr "Kadar persampelan audio"
 
-#: modules/access/dshow/dshow.cpp:173
+#: modules/access/dshow/dshow.cpp:175
 msgid "Select audio input format with the given sample rate (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:175
+#: modules/access/dshow/dshow.cpp:177
 msgid "Audio bits per sample"
 msgstr "Bit audio per sampel"
 
-#: modules/access/dshow/dshow.cpp:177
+#: modules/access/dshow/dshow.cpp:179
 msgid "Select audio input format with the given bits/sample (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:189
+#: modules/access/dshow/dshow.cpp:191
 msgid "DirectShow"
 msgstr "DirectShow"
 
-#: modules/access/dshow/dshow.cpp:190 modules/access/dshow/dshow.cpp:256
+#: modules/access/dshow/dshow.cpp:192 modules/access/dshow/dshow.cpp:268
 msgid "DirectShow input"
 msgstr "Input DirectShow"
 
-#: modules/access/dshow/dshow.cpp:198 modules/access/dshow/dshow.cpp:203
+#: modules/access/dshow/dshow.cpp:200 modules/access/dshow/dshow.cpp:205
 #: modules/audio_output/alsa.c:117 modules/audio_output/directx.c:140
 #: modules/audio_output/waveout.c:109 modules/video_output/msw/directx.c:116
 msgid "Refresh list"
 msgstr "Segar semula senarai "
 
-#: modules/access/dshow/dshow.cpp:199 modules/access/dshow/dshow.cpp:204
+#: modules/access/dshow/dshow.cpp:201 modules/access/dshow/dshow.cpp:206
 msgid "Configure"
 msgstr "Selaras"
 
-#: modules/access/dshow/dshow.cpp:464 modules/access/dshow/dshow.cpp:538
-#: modules/access/dshow/dshow.cpp:986 modules/access/dshow/dshow.cpp:1039
+#: modules/access/dshow/dshow.cpp:476 modules/access/dshow/dshow.cpp:550
+#: modules/access/dshow/dshow.cpp:998 modules/access/dshow/dshow.cpp:1051
 msgid "Capture failed"
 msgstr "Tangkapan gagal"
 
-#: modules/access/dshow/dshow.cpp:465
+#: modules/access/dshow/dshow.cpp:477
 msgid "No video or audio device selected."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:539
+#: modules/access/dshow/dshow.cpp:551
 msgid "VLC cannot open ANY capture device.Check the error log for details."
 msgstr ""
 "VLC tidak dapat membuka SEBARANG peranti tangkapan. Periksa log untuk "
 "perincian."
 
-#: modules/access/dshow/dshow.cpp:987
+#: modules/access/dshow/dshow.cpp:999
 #, fuzzy, c-format
 msgid "VLC cannot use the device \"%s\", because its type is not supported."
 msgstr ""
 "VLC tidak dapat menggunakan peranti \"%s\", kerana jenis perantinya tidak "
 "disokong."
 
-#: modules/access/dshow/dshow.cpp:1040
+#: modules/access/dshow/dshow.cpp:1052
 #, c-format
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr "Peranti pencekup \"%s\" tidak menyokong parameter diperlukan."
@@ -6567,7 +6567,7 @@ msgid "Fake video input"
 msgstr "Input palsu"
 
 #: modules/access/file.c:170 modules/access/file.c:303
-#: modules/access/mmap.c:228 modules/access/mtp.c:216 modules/access/mtp.c:304
+#: modules/access/mmap.c:223 modules/access/mtp.c:216 modules/access/mtp.c:304
 msgid "File reading failed"
 msgstr "Gagal membaca fail"
 
@@ -6576,7 +6576,7 @@ msgstr "Gagal membaca fail"
 msgid "VLC could not open the file \"%s\"."
 msgstr "VLC tidak dapat membuka fail \"%s\"."
 
-#: modules/access/file.c:304 modules/access/mmap.c:229
+#: modules/access/file.c:304 modules/access/mmap.c:224
 #: modules/access/mtp.c:217
 #, fuzzy
 msgid "VLC could not read the file."
@@ -8402,7 +8402,7 @@ msgstr "Nama pengguna yang akan meminta capaian strim."
 #: modules/access_output/http.c:68 modules/control/telnet.c:81
 #: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:234
 #: modules/gui/qt4/dialogs/external.cpp:125 modules/misc/audioscrobbler.c:136
-#: modules/misc/lua/vlc.c:81 modules/misc/notify/growl_udp.c:73
+#: modules/misc/lua/vlc.c:80 modules/misc/notify/growl_udp.c:73
 #: modules/stream_out/raop.c:154
 msgid "Password"
 msgstr "Katalaluan"
@@ -10135,24 +10135,24 @@ msgstr ""
 msgid "Higher value implies more prefiltering"
 msgstr ""
 
-#: modules/codec/dirac.c:87
+#: modules/codec/dirac.c:87 modules/codec/schroedinger.c:55
 msgid "Chroma format"
 msgstr "Format kroma"
 
-#: modules/codec/dirac.c:88
+#: modules/codec/dirac.c:88 modules/codec/schroedinger.c:56
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr ""
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:2:0"
 msgstr "4:2:0"
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:2:2"
 msgstr "4:2:2"
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:4:4"
 msgstr "4:4:4"
 
@@ -10873,10 +10873,25 @@ msgstr "Packetizer video raw pseudo"
 msgid "RealVideo library decoder"
 msgstr "Dekoder pustaka RealVideo"
 
-#: modules/codec/schroedinger.c:50
+#: modules/codec/schroedinger.c:65
+#, fuzzy
+msgid "Automate picture coding mode"
+msgstr "Mod pengkodan gambar"
+
+#: modules/codec/schroedinger.c:66
+msgid ""
+"Use the input picture to determine how to code it - interlaced or progressive"
+msgstr ""
+
+#: modules/codec/schroedinger.c:74
 #, fuzzy
 msgid "Schroedinger video decoder"
 msgstr "Dekoder video Cinepak"
+
+#: modules/codec/schroedinger.c:80
+#, fuzzy
+msgid "Dirac video encoder using libschroedinger"
+msgstr "Pengenkod video Dirac"
 
 #: modules/codec/sdl_image.c:60
 msgid "SDL Image decoder"
@@ -12745,11 +12760,11 @@ msgstr "Input arahan soket UNIX"
 msgid "Accept commands over a Unix socket rather than stdin."
 msgstr "Terima arahan di atas soket Unix bukannya stdin."
 
-#: modules/control/rc.c:171 modules/misc/lua/vlc.c:85
+#: modules/control/rc.c:171 modules/misc/lua/vlc.c:84
 msgid "TCP command input"
 msgstr "Input arahan TCP"
 
-#: modules/control/rc.c:172 modules/misc/lua/vlc.c:86
+#: modules/control/rc.c:172 modules/misc/lua/vlc.c:85
 msgid ""
 "Accept commands over a socket rather than stdin. You can set the address and "
 "port the interface will bind to."
@@ -12780,464 +12795,464 @@ msgstr "RC"
 msgid "Remote control interface"
 msgstr "Antaramuka kawalan jauh"
 
-#: modules/control/rc.c:338
+#: modules/control/rc.c:341
 msgid "Remote control interface initialized. Type `help' for help."
 msgstr "Antaramuka kawalan jauh dimulakan. Taip `help' untuk bantuan."
 
-#: modules/control/rc.c:775
+#: modules/control/rc.c:778
 #, c-format
 msgid "Unknown command `%s'. Type `help' for help."
 msgstr "Arahan tidak diketahui `%s'. Taip `help' untuk bantuan."
 
-#: modules/control/rc.c:798
+#: modules/control/rc.c:801
 msgid "+----[ Remote control commands ]"
 msgstr "+----[ Arahan kawalan jauh ]"
 
-#: modules/control/rc.c:800
+#: modules/control/rc.c:803
 msgid "| add XYZ  . . . . . . . . . . . . add XYZ to playlist"
 msgstr "| add XYZ  . . . . . . . . . . tambah XYZ kepada senarai tayang"
 
-#: modules/control/rc.c:801
+#: modules/control/rc.c:804
 #, fuzzy
 msgid "| enqueue XYZ  . . . . . . . . . queue XYZ to playlist"
 msgstr "| enqueue XYZ  . . . . . . . . . . gilirkan XYZ kepada senarai tayang"
 
-#: modules/control/rc.c:802
+#: modules/control/rc.c:805
 msgid "| playlist . . . . .  show items currently in playlist"
 msgstr "| playlist . . .  tunjuk item kini dalam senarai tayang"
 
-#: modules/control/rc.c:803
+#: modules/control/rc.c:806
 msgid "| play . . . . . . . . . . . . . . . . . . play stream"
 msgstr "| play . . . . . . . . . . . . . . . . tayang strim"
 
-#: modules/control/rc.c:804
+#: modules/control/rc.c:807
 msgid "| stop . . . . . . . . . . . . . . . . . . stop stream"
 msgstr "| stop . . . . . . . . . . . . . . . . henti strim"
 
-#: modules/control/rc.c:805
+#: modules/control/rc.c:808
 msgid "| next . . . . . . . . . . . . . .  next playlist item"
 msgstr "| next . . . . . . . . . . . .  item senarai tayang berikut"
 
-#: modules/control/rc.c:806
+#: modules/control/rc.c:809
 msgid "| prev . . . . . . . . . . . .  previous playlist item"
 msgstr "| prev . . . . . . . . . .  item senarai tayang terdahulu"
 
-#: modules/control/rc.c:807
+#: modules/control/rc.c:810
 msgid "| goto . . . . . . . . . . . . . .  goto item at index"
 msgstr "| goto  . . . . . . . . . . . . pergi item pada indeks"
 
-#: modules/control/rc.c:808
+#: modules/control/rc.c:811
 msgid "| repeat [on|off] . . . .  toggle playlist item repeat"
 msgstr "| repeat [on|off] . . . . . . . . . . tuil skrin penuh"
 
-#: modules/control/rc.c:809
+#: modules/control/rc.c:812
 msgid "| loop [on|off] . . . . . . . . . toggle playlist loop"
 msgstr "| loop [on|off] . . . . . . . . . tuil skrin penuh"
 
-#: modules/control/rc.c:810
+#: modules/control/rc.c:813
 msgid "| random [on|off] . . . . . . .  toggle random jumping"
 msgstr "| random [on|off] . . . . . . .  toggle random jumping"
 
-#: modules/control/rc.c:811
+#: modules/control/rc.c:814
 msgid "| clear . . . . . . . . . . . . . . clear the playlist"
 msgstr "| clear . . . . . . . . . . . . . . bersihkan senarai tayang"
 
-#: modules/control/rc.c:812
+#: modules/control/rc.c:815
 msgid "| status . . . . . . . . . . . current playlist status"
 msgstr "| status . . . . . . . . . status senarai tayang semasa "
 
-#: modules/control/rc.c:813
+#: modules/control/rc.c:816
 msgid "| title [X]  . . . . . . set/get title in current item"
 msgstr "| title [X]  . . . . . .  tetap/ambil judul dalam item semasa"
 
-#: modules/control/rc.c:814
+#: modules/control/rc.c:817
 msgid "| title_n  . . . . . . . .  next title in current item"
 msgstr "| title_n  . . . . . . . .  judul berikut dalam item semasa"
 
-#: modules/control/rc.c:815
+#: modules/control/rc.c:818
 msgid "| title_p  . . . . . .  previous title in current item"
 msgstr "| title_p  . . . . . .  judul terdahulu dalam item semasa"
 
-#: modules/control/rc.c:816
+#: modules/control/rc.c:819
 msgid "| chapter [X]  . . . . set/get chapter in current item"
 msgstr "| chapter [X]  . . . .  tetap/ambil bab dalam item semasa"
 
-#: modules/control/rc.c:817
+#: modules/control/rc.c:820
 msgid "| chapter_n  . . . . . .  next chapter in current item"
 msgstr "| chapter_n  . . . . . .  bab berikut dalam item semasa"
 
-#: modules/control/rc.c:818
+#: modules/control/rc.c:821
 msgid "| chapter_p  . . . .  previous chapter in current item"
 msgstr "| chapter_p . . . . . .  bab terdahulu dalam item semasa"
 
-#: modules/control/rc.c:820
+#: modules/control/rc.c:823
 msgid "| seek X . . . seek in seconds, for instance `seek 12'"
 msgstr "| seek X . cari dalam saat, sebagai contoh `seek 12'"
 
-#: modules/control/rc.c:821
+#: modules/control/rc.c:824
 msgid "| pause  . . . . . . . . . . . . . . . .  toggle pause"
 msgstr "| pause  . . . . . . . . . . . . . .  umpil henti"
 
-#: modules/control/rc.c:822
+#: modules/control/rc.c:825
 msgid "| fastforward  . . . . . . . .  .  set to maximum rate"
 msgstr "| fastforward  . . . . . .  .  tetapkan kepada kadar maksima"
 
-#: modules/control/rc.c:823
+#: modules/control/rc.c:826
 msgid "| rewind  . . . . . . . . . . . .  set to minimum rate"
 msgstr "| rewind  . . . . . . . . . .  tetapkan kepada kadar minima"
 
-#: modules/control/rc.c:824
+#: modules/control/rc.c:827
 msgid "| faster . . . . . . . . . .  faster playing of stream"
 msgstr "| faster . . . . . . . .  cepatkan tayangan strim"
 
-#: modules/control/rc.c:825
+#: modules/control/rc.c:828
 msgid "| slower . . . . . . . . . .  slower playing of stream"
 msgstr "| slower . . . . . . . .  lambatkan tayangan strim"
 
-#: modules/control/rc.c:826
+#: modules/control/rc.c:829
 msgid "| normal . . . . . . . . . .  normal playing of stream"
 msgstr "| normal . . . . . . . .  tayangan stim normal "
 
-#: modules/control/rc.c:827
+#: modules/control/rc.c:830
 #, fuzzy
 msgid "| frame. . . . . . . . . .  play frame by frame"
 msgstr "| faster . . . . . . . .  cepatkan tayangan strim"
 
-#: modules/control/rc.c:828
+#: modules/control/rc.c:831
 msgid "| f [on|off] . . . . . . . . . . . . toggle fullscreen"
 msgstr "| f [on|off] . . . . . . . . . . tuil skrin penuh"
 
-#: modules/control/rc.c:829
+#: modules/control/rc.c:832
 msgid "| info . . . . .  information about the current stream"
 msgstr "| info . . . . maklumat tentang strim semasa"
 
-#: modules/control/rc.c:830
+#: modules/control/rc.c:833
 msgid "| stats  . . . . . . . .  show statistical information"
 msgstr "| stats . . . . . . . . . status senarai tayang semasa"
 
-#: modules/control/rc.c:831
+#: modules/control/rc.c:834
 msgid "| get_time . . seconds elapsed since stream's beginning"
 msgstr "| get_time . . saat yang berlalu sejak memulakan strim"
 
-#: modules/control/rc.c:832
+#: modules/control/rc.c:835
 msgid "| is_playing . . . .  1 if a stream plays, 0 otherwise"
 msgstr "| is_playing . .  1 jika strim ditayangkan, 0 jika tidak"
 
-#: modules/control/rc.c:833
+#: modules/control/rc.c:836
 msgid "| get_title . . . . .  the title of the current stream"
 msgstr "| get_title . . . . .  judul strim semasa"
 
-#: modules/control/rc.c:834
+#: modules/control/rc.c:837
 msgid "| get_length . . . .  the length of the current stream"
 msgstr "| get_length . . . . panjang strim semasa"
 
-#: modules/control/rc.c:836
+#: modules/control/rc.c:839
 msgid "| volume [X] . . . . . . . . . .  set/get audio volume"
 msgstr "| volume [X] . . . . . . . .  tetap/ambil volum audio"
 
-#: modules/control/rc.c:837
+#: modules/control/rc.c:840
 msgid "| volup [X]  . . . . . . .  raise audio volume X steps"
 msgstr "| volup [X]  . . . .  tingkatkan volum audio X langkah"
 
-#: modules/control/rc.c:838
+#: modules/control/rc.c:841
 msgid "| voldown [X]  . . . . . .  lower audio volume X steps"
 msgstr "| voldown [X]  . . . . .  turunkan volum audio X langkah"
 
-#: modules/control/rc.c:839
+#: modules/control/rc.c:842
 msgid "| adev [X] . . . . . . . . . . .  set/get audio device"
 msgstr "| adev [X]  . . . . . .  tetapkan/ambil peranti audio"
 
-#: modules/control/rc.c:840
+#: modules/control/rc.c:843
 msgid "| achan [X]. . . . . . . . . .  set/get audio channels"
 msgstr "| achan [X]  . . . . . .  tetapkan/ambil saluran audio"
 
-#: modules/control/rc.c:841
+#: modules/control/rc.c:844
 msgid "| atrack [X] . . . . . . . . . . . set/get audio track"
 msgstr "| atrack [X]  . . . . . .  tetapkan/ambil trek audio"
 
-#: modules/control/rc.c:842
+#: modules/control/rc.c:845
 msgid "| vtrack [X] . . . . . . . . . . . set/get video track"
 msgstr "| vtrack [X]  . . . . .  . tetapkan/ambil trek video"
 
-#: modules/control/rc.c:843
+#: modules/control/rc.c:846
 msgid "| vratio [X]  . . . . . . . set/get video aspect ratio"
 msgstr "| vratio [X]  . . . . . .  tetapkan/ambil nisbah aspek"
 
-#: modules/control/rc.c:844
+#: modules/control/rc.c:847
 msgid "| vcrop [X]  . . . . . . . . . . .  set/get video crop"
 msgstr "| vcrop [X]  . . . . . .  tetapkan/ambil cantasan video"
 
-#: modules/control/rc.c:845
+#: modules/control/rc.c:848
 msgid "| vzoom [X]  . . . . . . . . . . .  set/get video zoom"
 msgstr "| vzoom [X] . . . . . . . .  tetap/ambil zum video"
 
-#: modules/control/rc.c:846
+#: modules/control/rc.c:849
 msgid "| snapshot . . . . . . . . . . . . take video snapshot"
 msgstr "| snapshot . . . . . . . . . . . . ambil snapshot video"
 
-#: modules/control/rc.c:847
+#: modules/control/rc.c:850
 msgid "| strack [X] . . . . . . . . . set/get subtitles track"
 msgstr "| strack [X]  . . . . . .  tetapkan/ambil trek sarikata"
 
-#: modules/control/rc.c:848
+#: modules/control/rc.c:851
 msgid "| key [hotkey name] . . . . . .  simulate hotkey press"
 msgstr "| kekunci [nama hotkey] . . . . . .  tekan hotkey simulasi"
 
-#: modules/control/rc.c:849
+#: modules/control/rc.c:852
 msgid "| menu . . [on|off|up|down|left|right|select] use menu"
 msgstr "| menu . . [on|off|up|down|left|right|select] guna menu"
 
-#: modules/control/rc.c:854
+#: modules/control/rc.c:857
 msgid "| @name marq-marquee  STRING  . . overlay STRING in video"
 msgstr "| @name marq-marquee  STRING  . . lapisan STRING dalam video"
 
-#: modules/control/rc.c:855
+#: modules/control/rc.c:858
 msgid "| @name marq-x X . . . . . . . . . . . .offset from left"
 msgstr "| @name marq-x X . . . . . . . . . . . .offset dari kiri"
 
-#: modules/control/rc.c:856
+#: modules/control/rc.c:859
 msgid "| @name marq-y Y . . . . . . . . . . . . offset from top"
 msgstr "| @name marq-y Y . . . . . . . . . . . . offset dari atas"
 
-#: modules/control/rc.c:857
+#: modules/control/rc.c:860
 msgid "| @name marq-position #. . .  .relative position control"
 msgstr "| @name marq-position #. . .  kawalan posisi relatif"
 
-#: modules/control/rc.c:858
+#: modules/control/rc.c:861
 msgid "| @name marq-color # . . . . . . . . . . font color, RGB"
 msgstr "| @name marq-color # . . . . . . . . . . warna fon, RGB"
 
-#: modules/control/rc.c:859
+#: modules/control/rc.c:862
 msgid "| @name marq-opacity # . . . . . . . . . . . . . opacity"
 msgstr "| @name marq-opacity # . . . . . . . . . . . . . kelegapan"
 
-#: modules/control/rc.c:860
+#: modules/control/rc.c:863
 msgid "| @name marq-timeout T. . . . . . . . . . timeout, in ms"
 msgstr "| @name marq-timeout T. . . . . . . . . . masa tamat, dalam ms"
 
-#: modules/control/rc.c:861
+#: modules/control/rc.c:864
 msgid "| @name marq-size # . . . . . . . . font size, in pixels"
 msgstr "| @name marq-size # . . . . . . . . saiz fon, dalam piksel"
 
-#: modules/control/rc.c:863
+#: modules/control/rc.c:866
 msgid "| @name logo-file STRING . . .the overlay file path/name"
 msgstr "| @name logo-file STRING . . .nama laluan/nama lapisan"
 
-#: modules/control/rc.c:864
+#: modules/control/rc.c:867
 msgid "| @name logo-x X . . . . . . . . . . . .offset from left"
 msgstr "| @name logo-x X . . . . . . . . . . . .offset dari kiri"
 
-#: modules/control/rc.c:865
+#: modules/control/rc.c:868
 msgid "| @name logo-y Y . . . . . . . . . . . . offset from top"
 msgstr "| @name logo-y Y . . . . . . . . . . . . offset dari atas"
 
-#: modules/control/rc.c:866
+#: modules/control/rc.c:869
 msgid "| @name logo-position #. . . . . . . . relative position"
 msgstr "| @name logo-position #. . . . . . . . posisi relatif"
 
-#: modules/control/rc.c:867
+#: modules/control/rc.c:870
 msgid "| @name logo-transparency #. . . . . . . . .transparency"
 msgstr "| @name logo-transparency #. . . . . . . . .ketelusan"
 
-#: modules/control/rc.c:869
+#: modules/control/rc.c:872
 msgid "| @name mosaic-alpha # . . . . . . . . . . . . . . alpha"
 msgstr "| @name mosaic-alpha # . . . . . . . . . . . . . . alfa"
 
-#: modules/control/rc.c:870
+#: modules/control/rc.c:873
 msgid "| @name mosaic-height #. . . . . . . . . . . . . .height"
 msgstr "| @name mosaic-height #. . . . . . . . . . . . . .tinggi"
 
-#: modules/control/rc.c:871
+#: modules/control/rc.c:874
 msgid "| @name mosaic-width # . . . . . . . . . . . . . . width"
 msgstr "| @name mosaic-width # . . . . . . . . . . . . . . lebar"
 
-#: modules/control/rc.c:872
+#: modules/control/rc.c:875
 msgid "| @name mosaic-xoffset # . . . .top left corner position"
 msgstr "| @name mosaic-xoffset # . . . .posisi sudut atas kiri"
 
-#: modules/control/rc.c:873
+#: modules/control/rc.c:876
 msgid "| @name mosaic-yoffset # . . . .top left corner position"
 msgstr "| @name mosaic-yoffset # . . . .posisi sudut atas kiri"
 
-#: modules/control/rc.c:874
+#: modules/control/rc.c:877
 msgid "| @name mosaic-offsets x,y(,x,y)*. . . . list of offsets"
 msgstr "| @name mosaic-offsets x,y(,x,y)*. . . . senarai offsets"
 
-#: modules/control/rc.c:875
+#: modules/control/rc.c:878
 msgid "| @name mosaic-align 0..2,4..6,8..10. . .mosaic alignment"
 msgstr "| @name mosaic-align 0..2,4..6,8..10. . .penjajaran mozek"
 
-#: modules/control/rc.c:876
+#: modules/control/rc.c:879
 msgid "| @name mosaic-vborder # . . . . . . . . vertical border"
 msgstr "| @name mosaic-vborder # . . . . . . . . sempadan menegak"
 
-#: modules/control/rc.c:877
+#: modules/control/rc.c:880
 msgid "| @name mosaic-hborder # . . . . . . . horizontal border"
 msgstr "| @name mosaic-hborder # . . . . . . . sempadan melintang"
 
-#: modules/control/rc.c:878
+#: modules/control/rc.c:881
 msgid "| @name mosaic-position {0=auto,1=fixed} . . . .position"
 msgstr "| @name mosaic-position {0=auto,1=fixed} . . . .posisi"
 
-#: modules/control/rc.c:879
+#: modules/control/rc.c:882
 msgid "| @name mosaic-rows #. . . . . . . . . . .number of rows"
 msgstr "| @name mosaic-rows #. . . . . . . . . . .bilangan lajur"
 
-#: modules/control/rc.c:880
+#: modules/control/rc.c:883
 msgid "| @name mosaic-cols #. . . . . . . . . . .number of cols"
 msgstr "| @name mosaic-cols #. . . . . . . . . . .bilangan kolum"
 
-#: modules/control/rc.c:881
+#: modules/control/rc.c:884
 msgid "| @name mosaic-order id(,id)* . . . . order of pictures "
 msgstr "| @name mosaic-order id(,id)* . . . . urutan gambar"
 
-#: modules/control/rc.c:882
+#: modules/control/rc.c:885
 msgid "| @name mosaic-keep-aspect-ratio {0,1} . . .aspect ratio"
 msgstr "| @name mosaic-keep-aspect-ratio {0,1} . . .nisbah aspek "
 
-#: modules/control/rc.c:885
+#: modules/control/rc.c:888
 msgid "| help . . . . . . . . . . . . . . . this help message"
 msgstr "| help . . . . . . . . . . . . . . . mesej bantuan ini"
 
-#: modules/control/rc.c:886
+#: modules/control/rc.c:889
 msgid "| longhelp . . . . . . . . . . . a longer help message"
 msgstr "| longhelp . . . . . . . . . . .  mesej bantuan lebih panjang"
 
-#: modules/control/rc.c:887
+#: modules/control/rc.c:890
 msgid "| logout . . . . . . .  exit (if in socket connection)"
 msgstr "| logout . . . . . . keluar (jika dalam sambungan soket)"
 
-#: modules/control/rc.c:888
+#: modules/control/rc.c:891
 msgid "| quit . . . . . . . . . . . . . . . . . . .  quit vlc"
 msgstr "| quit . . . . . . . . . . . . . . . . .  keluar vlc"
 
-#: modules/control/rc.c:890
+#: modules/control/rc.c:893
 msgid "+----[ end of help ]"
 msgstr "+----[ bantuan tamat ]"
 
-#: modules/control/rc.c:1016
+#: modules/control/rc.c:1019
 msgid "Press menu select or pause to continue."
 msgstr "Tekan kunci pilih atau henti sekeika untuk sambung."
 
-#: modules/control/rc.c:1241 modules/control/rc.c:1481
-#: modules/control/rc.c:1539 modules/control/rc.c:1712
-#: modules/control/rc.c:1810
+#: modules/control/rc.c:1244 modules/control/rc.c:1484
+#: modules/control/rc.c:1542 modules/control/rc.c:1715
+#: modules/control/rc.c:1813
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr "Taip 'menu select' atau 'pause' untuk sambung."
 
-#: modules/control/rc.c:1332
+#: modules/control/rc.c:1335
 msgid "Error: `goto' needs an argument greater than zero."
 msgstr ""
 
-#: modules/control/rc.c:1343
+#: modules/control/rc.c:1346
 #, fuzzy, c-format
 msgid "Playlist has only %d elements"
 msgstr "Senarai tayang kosong"
 
-#: modules/control/rc.c:1795 modules/control/rc.c:1835
+#: modules/control/rc.c:1798 modules/control/rc.c:1838
 msgid "Please provide one of the following parameters:"
 msgstr "Sila sediakan satu daripada parameter berikut:"
 
-#: modules/control/rc.c:1869 modules/gui/ncurses.c:1972
+#: modules/control/rc.c:1872 modules/gui/ncurses.c:1972
 #, fuzzy
 msgid "+-[Incoming]"
 msgstr "Maksima (masuk):"
 
-#: modules/control/rc.c:1870 modules/gui/ncurses.c:1975
+#: modules/control/rc.c:1873 modules/gui/ncurses.c:1975
 #, fuzzy, c-format
 msgid "| input bytes read : %8.0f KiB"
 msgstr "| baca bait input : %8.0f kB"
 
-#: modules/control/rc.c:1872 modules/gui/ncurses.c:1978
+#: modules/control/rc.c:1875 modules/gui/ncurses.c:1978
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr "| kadar bit input  :   %6.0f kb/s"
 
-#: modules/control/rc.c:1874 modules/gui/ncurses.c:1980
+#: modules/control/rc.c:1877 modules/gui/ncurses.c:1980
 #, fuzzy, c-format
 msgid "| demux bytes read : %8.0f KiB"
 msgstr "| baca bait demux : %8.0f kB"
 
-#: modules/control/rc.c:1876 modules/gui/ncurses.c:1983
+#: modules/control/rc.c:1879 modules/gui/ncurses.c:1983
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr "| kadar bit demux    :   %6.0f kb/s"
 
-#: modules/control/rc.c:1878
+#: modules/control/rc.c:1881
 #, fuzzy, c-format
 msgid "| demux corrupted  :    %5i"
 msgstr "Bunyi &amo; Video"
 
-#: modules/control/rc.c:1880
+#: modules/control/rc.c:1883
 #, fuzzy, c-format
 msgid "| discontinuities  :    %5i"
 msgstr "Penapis herotan"
 
-#: modules/control/rc.c:1884 modules/gui/ncurses.c:1993
+#: modules/control/rc.c:1887 modules/gui/ncurses.c:1993
 #, fuzzy
 msgid "+-[Video Decoding]"
 msgstr "Menyahkod kordinat X"
 
-#: modules/control/rc.c:1885 modules/gui/ncurses.c:1996
+#: modules/control/rc.c:1888 modules/gui/ncurses.c:1996
 #, fuzzy, c-format
 msgid "| video decoded    :    %5i"
 msgstr "Bunyi &amo; Video"
 
-#: modules/control/rc.c:1887 modules/gui/ncurses.c:1999
+#: modules/control/rc.c:1890 modules/gui/ncurses.c:1999
 #, fuzzy, c-format
 msgid "| frames displayed :    %5i"
 msgstr "Jatuhkan bingkai lewat"
 
-#: modules/control/rc.c:1889 modules/gui/ncurses.c:2002
+#: modules/control/rc.c:1892 modules/gui/ncurses.c:2002
 #, fuzzy, c-format
 msgid "| frames lost      :    %5i"
 msgstr "Jatuhkan bingkai lewat"
 
-#: modules/control/rc.c:1893 modules/gui/ncurses.c:2012
+#: modules/control/rc.c:1896 modules/gui/ncurses.c:2012
 #, fuzzy
 msgid "+-[Audio Decoding]"
 msgstr "Menyahkod kordinat X"
 
-#: modules/control/rc.c:1894 modules/gui/ncurses.c:2015
+#: modules/control/rc.c:1897 modules/gui/ncurses.c:2015
 #, fuzzy, c-format
 msgid "| audio decoded    :    %5i"
 msgstr "Tetapan audio am"
 
-#: modules/control/rc.c:1896 modules/gui/ncurses.c:2018
+#: modules/control/rc.c:1899 modules/gui/ncurses.c:2018
 #, fuzzy, c-format
 msgid "| buffers played   :    %5i"
 msgstr "Jumlah penimbal audio"
 
-#: modules/control/rc.c:1898 modules/gui/ncurses.c:2021
+#: modules/control/rc.c:1901 modules/gui/ncurses.c:2021
 #, fuzzy, c-format
 msgid "| buffers lost     :    %5i"
 msgstr "Jumlah penimbal audio"
 
-#: modules/control/rc.c:1902 modules/gui/ncurses.c:2029
+#: modules/control/rc.c:1905 modules/gui/ncurses.c:2029
 #, fuzzy
 msgid "+-[Streaming]"
 msgstr "Streaming"
 
-#: modules/control/rc.c:1903 modules/gui/ncurses.c:2032
+#: modules/control/rc.c:1906 modules/gui/ncurses.c:2032
 #, c-format
 msgid "| packets sent     :    %5i"
 msgstr "| paket dihantar     :    %5i"
 
-#: modules/control/rc.c:1904 modules/gui/ncurses.c:2034
+#: modules/control/rc.c:1907 modules/gui/ncurses.c:2034
 #, fuzzy, c-format
 msgid "| bytes sent       : %8.0f KiB"
 msgstr "| bait dihantar       : %8.0f kB"
 
-#: modules/control/rc.c:1906
+#: modules/control/rc.c:1909
 #, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
 msgstr "| padar bit penghantaran  :   %6.0f kb/s"
 
-#: modules/control/signals.c:37
+#: modules/control/signals.c:40
 msgid "Signals"
 msgstr "Isyarat"
 
-#: modules/control/signals.c:40
+#: modules/control/signals.c:43
 #, fuzzy
 msgid "POSIX signals handling interface"
 msgstr "file logging interface"
@@ -13275,7 +13290,7 @@ msgid ""
 msgstr ""
 "Ini adalah port TCP yang antaramuka ini akan didengar. Ia lalai kepada 4212."
 
-#: modules/control/telnet.c:82 modules/misc/lua/vlc.c:82
+#: modules/control/telnet.c:82 modules/misc/lua/vlc.c:81
 msgid ""
 "A single administration password is used to protect this interface. The "
 "default value is \"admin\"."
@@ -13579,11 +13594,11 @@ msgstr "Terowong port HTTP"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "Port digunakan untuk terowong RTSP/RTP atas HTTP."
 
-#: modules/demux/live555.cpp:604
+#: modules/demux/live555.cpp:603
 msgid "RTSP authentication"
 msgstr "Pengesahan RTSP"
 
-#: modules/demux/live555.cpp:605
+#: modules/demux/live555.cpp:604
 msgid "Please enter a valid login name and a password."
 msgstr "Sila masukkan nama login dan kata laluan yang sah."
 
@@ -17997,28 +18012,28 @@ msgstr "ID Sistem"
 msgid "Configure Hotkeys"
 msgstr "Tetapan Hotkey"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:916
+#: modules/gui/qt4/components/simple_preferences.cpp:925
 #: modules/gui/qt4/dialogs_provider.hpp:51
 #, fuzzy
 msgid "Audio Files"
 msgstr "%1 fail ditemui"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:917
+#: modules/gui/qt4/components/simple_preferences.cpp:926
 #: modules/gui/qt4/dialogs_provider.hpp:46
 msgid "Video Files"
 msgstr "Fail Video"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:918
+#: modules/gui/qt4/components/simple_preferences.cpp:927
 #: modules/gui/qt4/dialogs_provider.hpp:56
 #, fuzzy
 msgid "Playlist Files"
 msgstr "Fail Senarai Tayang"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:970
+#: modules/gui/qt4/components/simple_preferences.cpp:979
 msgid "&Apply"
 msgstr "&Terap"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:971
+#: modules/gui/qt4/components/simple_preferences.cpp:980
 #: modules/gui/qt4/dialogs/convert.cpp:96
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
@@ -18895,7 +18910,7 @@ msgstr "Senarai tayang XSPF"
 
 #: modules/gui/qt4/dialogs_provider.cpp:559
 #, fuzzy
-msgid "M3U8 playlist (*.m3u)"
+msgid "M3U8 playlist (*.m3u8)"
 msgstr "Import senarai tayang M3U"
 
 #: modules/gui/qt4/dialogs_provider.cpp:560
@@ -20286,85 +20301,85 @@ msgstr "Input DirectShow"
 msgid "Allow to build directory index"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:92
+#: modules/misc/lua/vlc.c:91
 #, fuzzy
 msgid "Lua Interface Module"
 msgstr "Modul antaramuka WinCE"
 
-#: modules/misc/lua/vlc.c:93
+#: modules/misc/lua/vlc.c:92
 msgid "Interfaces implemented using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:108
+#: modules/misc/lua/vlc.c:107
 #, fuzzy
 msgid "Lua HTTP"
 msgstr "HTTP"
 
-#: modules/misc/lua/vlc.c:112
+#: modules/misc/lua/vlc.c:111
 #, fuzzy
 msgid "Lua RC"
 msgstr "&Clip Art"
 
-#: modules/misc/lua/vlc.c:114
+#: modules/misc/lua/vlc.c:113
 msgid "Lua Telnet"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:125
+#: modules/misc/lua/vlc.c:124
 #, fuzzy
 msgid "Lua Meta Fetcher"
 msgstr "Metal"
 
-#: modules/misc/lua/vlc.c:126
+#: modules/misc/lua/vlc.c:125
 msgid "Fetch meta data using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:131
+#: modules/misc/lua/vlc.c:130
 #, fuzzy
 msgid "Lua Meta Reader"
 msgstr "Metal"
 
-#: modules/misc/lua/vlc.c:132
+#: modules/misc/lua/vlc.c:131
 msgid "Read meta data using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:138
+#: modules/misc/lua/vlc.c:137
 #, fuzzy
 msgid "Lua Playlist"
 msgstr "Papar Senarai Siar"
 
-#: modules/misc/lua/vlc.c:139
+#: modules/misc/lua/vlc.c:138
 msgid "Lua Playlist Parser Interface"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:144
+#: modules/misc/lua/vlc.c:143
 #, fuzzy
 msgid "Lua Interface Module (shortcuts)"
 msgstr "Modul antaramuka WinCE"
 
-#: modules/misc/lua/vlc.c:151
+#: modules/misc/lua/vlc.c:152
 #, fuzzy
 msgid "Lua Art"
 msgstr "&Clip Art"
 
-#: modules/misc/lua/vlc.c:152
+#: modules/misc/lua/vlc.c:153
 msgid "Fetch artwork using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:157
+#: modules/misc/lua/vlc.c:158
 #, fuzzy
 msgid "Lua Extension"
 msgstr "Sambungan AAC"
 
-#: modules/misc/lua/vlc.c:163
+#: modules/misc/lua/vlc.c:164
 #, fuzzy
 msgid "Lua SD Module"
 msgstr "Modul antaramuka WinCE"
 
-#: modules/misc/lua/vlc.c:173
+#: modules/misc/lua/vlc.c:174
 msgid "Freebox TV"
 msgstr "Freebox TV"
 
-#: modules/misc/lua/vlc.c:179
+#: modules/misc/lua/vlc.c:180
 msgid "French TV"
 msgstr "French TV"
 
@@ -20421,19 +20436,19 @@ msgstr ""
 msgid "MSN Now-Playing"
 msgstr "MSN Kini-Tayangkan"
 
-#: modules/misc/notify/notify.c:49
+#: modules/misc/notify/notify.c:53
 msgid "Timeout (ms)"
 msgstr "Masa tamat (ms)"
 
-#: modules/misc/notify/notify.c:50
+#: modules/misc/notify/notify.c:54
 msgid "How long the notification will be displayed "
 msgstr "Berapa lama pemberitahuan akan dipaparkan"
 
-#: modules/misc/notify/notify.c:55
+#: modules/misc/notify/notify.c:59
 msgid "Notify"
 msgstr "Beritahu"
 
-#: modules/misc/notify/notify.c:56
+#: modules/misc/notify/notify.c:60
 msgid "LibNotify Notification Plugin"
 msgstr "Plugin Pemberitahuan LibNotify"
 
@@ -21274,7 +21289,7 @@ msgid "Unknown type"
 msgstr "Jenis tidak diketahui"
 
 #: modules/services_discovery/upnp_cc.cpp:65
-#: modules/services_discovery/upnp_intel.cpp:64
+#: modules/services_discovery/upnp_intel.cpp:65
 #, fuzzy
 msgid "Universal Plug'n'Play"
 msgstr "Penerokaan Plug'n'Play Universal"
@@ -28216,9 +28231,6 @@ msgstr "Senarai Pengurus Media"
 
 #~ msgid "Cinepak video decoder"
 #~ msgstr "Dekoder video Cinepak"
-
-#~ msgid "Dirac video encoder"
-#~ msgstr "Pengenkod video Dirac"
 
 #~ msgid "%d Hz"
 #~ msgstr "%d  Hz"

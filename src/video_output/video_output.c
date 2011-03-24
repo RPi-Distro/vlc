@@ -297,7 +297,7 @@ vout_thread_t * vout_Create( vlc_object_t *p_parent, video_format_t *p_fmt )
     char *psz_parser;
     char *psz_name;
 
-    if( i_width <= 0 || i_height <= 0 )
+    if( i_width <= 0 || i_height <= 0 || i_width > 8192 || i_height > 8192 )
         return NULL;
 
     vlc_ureduce( &p_fmt->i_sar_num, &p_fmt->i_sar_den,

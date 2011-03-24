@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 7a0a92ce194a3c793ecf44893f0799bd109a7d91 $
+ * $Id: 55ebd59f4744a3b4262264faf15ce6af5f978557 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -302,10 +302,10 @@ static int Open( vlc_object_t * p_this )
     }
 
     /* I need to seek */
-    stream_Control( p_demux->s, STREAM_CAN_SEEK, &b_seekable );
+    stream_Control( p_demux->s, STREAM_CAN_FASTSEEK, &b_seekable );
     if( !b_seekable )
     {
-        msg_Warn( p_demux, "MP4 plugin discarded (unseekable)" );
+        msg_Warn( p_demux, "MP4 plugin discarded (not fastseekable)" );
         return VLC_EGENERIC;
     }
 

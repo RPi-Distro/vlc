@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: ff1043c5cdcb18cafd4ff34ffae2e557d584aac4 $
+ * $Id: 1abba1987896262ce37bc8a88c877c7818936296 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -433,7 +433,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             CONFIG_GENERIC_NO_BOOL( "server-port", Integer, ui.portLabel,
                                     UDPPort );
             CONFIG_GENERIC( "http-proxy", String , ui.httpProxyLabel, proxy );
-            CONFIG_GENERIC_NO_BOOL( "ffmpeg-pp-q", Integer, ui.ppLabel,
+            CONFIG_GENERIC_NO_BOOL( "postproc-q", Integer, ui.ppLabel,
                                     PostProcLevel );
             CONFIG_GENERIC( "avi-index", IntegerList, ui.aviLabel, AviRepair );
 
@@ -667,6 +667,14 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                     p_config, this, false, gLayout, line );
             controls.append( control );
 
+#ifdef WIN32
+            line++;
+
+            p_config = config_FindConfig( VLC_OBJECT(p_intf), "qt-disable-volume-keys" );
+            control = new BoolConfigControl( VLC_OBJECT(p_intf), p_config, this, gLayout, line );
+            controls.append( control );
+#endif
+
             break;
         }
     }
@@ -801,9 +809,10 @@ void SPrefsPanel::apply()
     case SPrefsInterface:
     {
         if( qobject_cast<QRadioButton *>(optionWidgets[skinRB])->isChecked() )
-            config_PutPsz( p_intf, "intf", "skins2" );
-        if( qobject_cast<QRadioButton *>(optionWidgets[qtRB])->isChecked() )
-            config_PutPsz( p_intf, "intf", "qt" );
+            config_PutPsz( p_intf, "intf", "skins2,any" );
+        else
+        //if( qobject_cast<QRadioButton *>(optionWidgets[qtRB])->isChecked() )
+            config_PutPsz( p_intf, "intf", "" );
         if( qobject_cast<QComboBox *>(optionWidgets[styleCB]) )
             getSettings()->setValue( "MainWindow/QtStyle",
                 qobject_cast<QComboBox *>(optionWidgets[styleCB])->currentText() );

@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: f2d7df2f3eee46b46077d4772153ab5697739976 $
+ * $Id: 3bcf259fe105b477757eade5ad41cd23892a3979 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -57,7 +57,7 @@ void matroska_segment_c::ParseSeekHead( KaxSeekHead *seekhead )
     {
         if( MKV_IS_ID( l, KaxSeek ) )
         {
-            EbmlId id = EbmlVoid::ClassInfos.GlobalId;
+            EbmlId id = EBML_ID(EbmlVoid);
             int64_t i_pos = -1;
 
             msg_Dbg( &sys.demuxer, "|   |   + Seek" );
@@ -86,40 +86,40 @@ void matroska_segment_c::ParseSeekHead( KaxSeekHead *seekhead )
 
             if( i_pos >= 0 )
             {
-                if( id == KaxCues::ClassInfos.GlobalId )
+                if( id == EBML_ID(KaxCues) )
                 {
                     msg_Dbg( &sys.demuxer, "|   - cues at %"PRId64, i_pos );
-                    LoadSeekHeadItem( KaxCues::ClassInfos, i_pos );
+                    LoadSeekHeadItem( EBML_INFO(KaxCues), i_pos );
                 }
-                else if( id == KaxInfo::ClassInfos.GlobalId )
+                else if( id == EBML_ID(KaxInfo) )
                 {
                     msg_Dbg( &sys.demuxer, "|   - info at %"PRId64, i_pos );
-                    LoadSeekHeadItem( KaxInfo::ClassInfos, i_pos );
+                    LoadSeekHeadItem( EBML_INFO(KaxInfo), i_pos );
                 }
-                else if( id == KaxChapters::ClassInfos.GlobalId )
+                else if( id == EBML_ID(KaxChapters) )
                 {
                     msg_Dbg( &sys.demuxer, "|   - chapters at %"PRId64, i_pos );
-                    LoadSeekHeadItem( KaxChapters::ClassInfos, i_pos );
+                    LoadSeekHeadItem(  EBML_INFO(KaxChapters), i_pos );
                 }
-                else if( id == KaxTags::ClassInfos.GlobalId )
+                else if( id == EBML_ID(KaxTags) )
                 {
                     msg_Dbg( &sys.demuxer, "|   - tags at %"PRId64, i_pos );
-                    LoadSeekHeadItem( KaxTags::ClassInfos, i_pos );
+                    LoadSeekHeadItem( EBML_INFO(KaxTags), i_pos );
                 }
-                else if( id == KaxSeekHead::ClassInfos.GlobalId )
+                else if( id == EBML_ID(KaxSeekHead) )
                 {
                     msg_Dbg( &sys.demuxer, "|   - chained seekhead at %"PRId64, i_pos );
-                    LoadSeekHeadItem( KaxSeekHead::ClassInfos, i_pos );
+                    LoadSeekHeadItem( EBML_INFO(KaxSeekHead), i_pos );
                 }
-                else if( id == KaxTracks::ClassInfos.GlobalId )
+                else if( id == EBML_ID(KaxTracks) )
                 {
                     msg_Dbg( &sys.demuxer, "|   - tracks at %"PRId64, i_pos );
-                    LoadSeekHeadItem( KaxTracks::ClassInfos, i_pos );
+                    LoadSeekHeadItem( EBML_INFO(KaxTracks), i_pos );
                 }
-                else if( id == KaxAttachments::ClassInfos.GlobalId )
+                else if( id == EBML_ID(KaxAttachments) )
                 {
                     msg_Dbg( &sys.demuxer, "|   - attachments at %"PRId64, i_pos );
-                    LoadSeekHeadItem( KaxAttachments::ClassInfos, i_pos );
+                    LoadSeekHeadItem( EBML_INFO(KaxAttachments), i_pos );
                 }
                 else
                     msg_Dbg( &sys.demuxer, "|   - unknown seekhead reference at %"PRId64, i_pos );
@@ -654,7 +654,7 @@ void matroska_segment_c::ParseTracks( KaxTracks *tracks )
     int i_upper_level = 0;
 
     /* Master elements */
-    tracks->Read( es, tracks->Generic().Context, i_upper_level, el, true );
+    tracks->Read( es, EBML_CONTEXT(tracks), i_upper_level, el, true );
 
     for( i = 0; i < tracks->ListSize(); i++ )
     {
@@ -683,7 +683,7 @@ void matroska_segment_c::ParseInfo( KaxInfo *info )
 
     /* Master elements */
     m = static_cast<EbmlMaster *>(info);
-    m->Read( es, info->Generic().Context, i_upper_level, el, true );
+    m->Read( es, EBML_CONTEXT(info), i_upper_level, el, true );
 
     for( i = 0; i < m->ListSize(); i++ )
     {
@@ -792,7 +792,7 @@ void matroska_segment_c::ParseInfo( KaxInfo *info )
             KaxChapterTranslate *p_trans = static_cast<KaxChapterTranslate*>( l );
             chapter_translation_c *p_translate = new chapter_translation_c();
 
-            p_trans->Read( es, p_trans->Generic().Context, i_upper_level, el, true );
+            p_trans->Read( es, EBML_CONTEXT(p_trans), i_upper_level, el, true );
             for( j = 0; j < p_trans->ListSize(); j++ )
             {
                 EbmlElement *l = (*p_trans)[j];
@@ -961,7 +961,7 @@ void matroska_segment_c::ParseAttachments( KaxAttachments *attachments )
     EbmlElement *el;
     int i_upper_level = 0;
 
-    attachments->Read( es, attachments->Generic().Context, i_upper_level, el, true );
+    attachments->Read( es, EBML_CONTEXT(attachments), i_upper_level, el, true );
 
     KaxAttached *attachedFile = FindChild<KaxAttached>( *attachments );
 
@@ -1006,7 +1006,7 @@ void matroska_segment_c::ParseChapters( KaxChapters *chapters )
     mtime_t i_dur;
 
     /* Master elements */
-    chapters->Read( es, chapters->Generic().Context, i_upper_level, el, true );
+    chapters->Read( es, EBML_CONTEXT(chapters), i_upper_level, el, true );
 
     for( i = 0; i < chapters->ListSize(); i++ )
     {
@@ -1078,7 +1078,7 @@ void matroska_segment_c::ParseCluster( )
 
     /* Master elements */
     m = static_cast<EbmlMaster *>( cluster );
-    m->Read( es, cluster->Generic().Context, i_upper_level, el, true );
+    m->Read( es, EBML_CONTEXT(cluster), i_upper_level, el, true );
 
     for( i = 0; i < m->ListSize(); i++ )
     {

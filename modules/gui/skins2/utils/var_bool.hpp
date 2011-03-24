@@ -2,7 +2,7 @@
  * var_bool.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 4b0618ff57ee80e1beafdfc9fcabcd98bff147b4 $
+ * $Id: 0ee7bcd8360844bd0236aa70b25bf61eec14766f $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -94,7 +94,7 @@ class VarBoolAndBool: public VarBool, public Observer<VarBool>
 public:
     VarBoolAndBool( intf_thread_t *pIntf, VarBool &rVar1, VarBool &rVar2 );
     virtual ~VarBoolAndBool();
-    virtual bool get() const { return m_rVar1.get() && m_rVar2.get(); }
+    virtual bool get() const { return m_value; }
 
     // Called when one of the observed variables is changed
     void onUpdate( Subject<VarBool> &rVariable, void* );
@@ -102,6 +102,7 @@ public:
 private:
     /// Boolean variables
     VarBool &m_rVar1, &m_rVar2;
+    bool m_value;
 };
 
 
@@ -111,7 +112,7 @@ class VarBoolOrBool: public VarBool, public Observer<VarBool>
 public:
     VarBoolOrBool( intf_thread_t *pIntf, VarBool &rVar1, VarBool &rVar2 );
     virtual ~VarBoolOrBool();
-    virtual bool get() const { return m_rVar1.get() || m_rVar2.get(); }
+    virtual bool get() const { return m_value; }
 
     // Called when one of the observed variables is changed
     void onUpdate( Subject<VarBool> &rVariable, void* );
@@ -119,6 +120,7 @@ public:
 private:
     /// Boolean variables
     VarBool &m_rVar1, &m_rVar2;
+    bool m_value;
 };
 
 

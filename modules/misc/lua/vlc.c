@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: ba866caa152928f181bd3c4c1d3b958cd0d74a43 $
+ * $Id: d3e4c12d1f78afeef7ae5c538c57383f832ef891 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -77,7 +77,6 @@
 #define TELNETPORT_TEXT N_( "Port" )
 #define TELNETPORT_LONGTEXT N_( "This is the TCP port on which this " \
     "interface will listen. It defaults to 4212." )
-#define TELNETPORT_DEFAULT 4212
 #define TELNETPWD_TEXT N_( "Password" )
 #define TELNETPWD_LONGTEXT N_( "A single administration password is used " \
     "to protect this interface. The default value is \"admin\"." )
@@ -143,7 +142,9 @@ vlc_module_begin ()
     add_submodule ()
         set_description( N_("Lua Interface Module (shortcuts)") )
         add_shortcut( "luarc" )
+#ifndef WIN32
         add_shortcut( "rc" )
+#endif
         set_capability( "interface", 25 )
         set_callbacks( Open_LuaIntf, Close_LuaIntf )
 

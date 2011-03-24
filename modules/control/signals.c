@@ -28,6 +28,9 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
+#ifdef __GLIBC__
+# include <dlfcn.h>
+#endif
 
 static int  Open (vlc_object_t *);
 static void Close (vlc_object_t *);
@@ -118,6 +121,30 @@ static void *SigThread (void *data)
          * cancellation point */
         vlc_testcancel();
 #endif
+
+       /* Hack for Qt QProcess */
+       if (signum == SIGCHLD)
+       {
+           struct sigaction act;
+
+           sigaction (signum, NULL, &act);
+           if ((act.sa_flags & SA_SIGINFO) || (act.sa_handler != SIG_DFL))
+           {
+               msg_Err (obj, "signal %d overriden (%p)", signum,
+                        act.sa_handler);
+#ifdef __GLIBC__
+               Dl_info info;
+
+               if (dladdr (act.sa_handler, &info))
+                   msg_Err (obj, " %s(%s)[%p]",
+                            info.dli_fname ? info.dli_fname : "?",
+                            info.dli_sname ? info.dli_sname : "?",
+                            info.dli_saddr);
+#endif
+               if (!(act.sa_flags & SA_SIGINFO) && (act.sa_handler != SIG_IGN))
+                   act.sa_handler (signum);
+           }
+       }
     }
     while (signum == SIGCHLD);
 

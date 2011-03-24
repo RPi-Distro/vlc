@@ -7,9 +7,9 @@
 # Ubuntu Georgian Translators https://launchpad.net/people/ubuntu-l10n-ka 2005, 2006.
 msgid ""
 msgstr ""
-"Project-Id-Version: ka\n"
+"Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-01-30 22:05+0100\n"
+"POT-Creation-Date: 2011-03-23 01:33+0100\n"
 "PO-Revision-Date: 2008-08-23 18:31+0200\n"
 "Last-Translator: Alexander Didebulidze <didebuli@in.tum.de>\n"
 "Language-Team: Georgian <geognome@googlegroups.com>\n"
@@ -59,7 +59,7 @@ msgstr "მთავარი ინტერფეისები"
 msgid "Settings for the main interface"
 msgstr "მთავარი ინტერფეისის პარამეტრები"
 
-#: include/vlc_config_cat.h:45 src/libvlc-module.c:191
+#: include/vlc_config_cat.h:45 src/libvlc-module.c:193
 msgid "Control interfaces"
 msgstr "მართვის ინტერფეისები"
 
@@ -73,7 +73,7 @@ msgid "Hotkeys settings"
 msgstr "ცხელი ღილაკების პარამეტრები"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2870 src/input/es_out.c:2911
-#: src/libvlc-module.c:1573 modules/access/imem.c:69
+#: src/libvlc-module.c:1575 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
 #: modules/gui/macosx/wizard.m:380
@@ -121,7 +121,7 @@ msgstr "გასავალის მოდულები"
 msgid "General settings for audio output modules."
 msgstr "სხვადასხვა აუდიო პარამეტრები და მოდულები."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:2049
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:2051
 #: modules/stream_out/transcode/transcode.c:226
 msgid "Miscellaneous"
 msgstr "სხვადასხვა"
@@ -131,7 +131,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "სხვადასხვა აუდიო პარამეტრები და მოდულები."
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2873 src/input/es_out.c:2958
-#: src/libvlc-module.c:1626 modules/access/imem.c:69
+#: src/libvlc-module.c:1628 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
 #: modules/gui/macosx/wizard.m:381
@@ -241,7 +241,7 @@ msgstr "ზოგადი"
 msgid "General input settings. Use with care..."
 msgstr "დამატებიტი პარამეტრები. სიფრთხილით მოექეცით."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1969
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1971
 msgid "Stream output"
 msgstr "ნაკადის გასავალი"
 
@@ -325,7 +325,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr ""
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2111
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2113
 #: src/playlist/engine.c:131 modules/demux/playlist/playlist.c:69
 #: modules/demux/playlist/playlist.c:70 modules/gui/macosx/embeddedwindow.m:75
 #: modules/gui/macosx/intf.m:609 modules/gui/qt4/components/controller.hpp:106
@@ -356,7 +356,7 @@ msgid ""
 "playlist."
 msgstr ""
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1916
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1918
 msgid "Advanced"
 msgstr "დამატებითი"
 
@@ -589,7 +589,7 @@ msgstr "გამეორება ერთი"
 msgid "No Repeat"
 msgstr "ყველას გამეორება"
 
-#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1465
+#: include/vlc_intf_strings.h:84 src/libvlc-module.c:1467
 #: modules/gui/macosx/controls.m:1038 modules/gui/macosx/intf.m:654
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:119
@@ -766,7 +766,7 @@ msgid "The maximum number of filters (%d) was reached."
 msgstr ""
 
 #: src/audio_output/input.c:110 src/audio_output/input.c:156
-#: src/input/es_out.c:934 src/libvlc-module.c:659
+#: src/input/es_out.c:934 src/libvlc-module.c:661
 #: src/video_output/video_output.c:1698 modules/video_filter/postproc.c:230
 msgid "Disable"
 msgstr "გამორთე"
@@ -794,7 +794,7 @@ msgstr "ვიდეო ფილტრები"
 msgid "Equalizer"
 msgstr "ეკვალაიზერი"
 
-#: src/audio_output/input.c:175 src/libvlc-module.c:324
+#: src/audio_output/input.c:175 src/libvlc-module.c:326
 msgid "Audio filters"
 msgstr "აუდიო ფილტრები"
 
@@ -820,7 +820,7 @@ msgid "Stereo"
 msgstr "სტერეო"
 
 #: src/audio_output/output.c:106 src/audio_output/output.c:142
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
@@ -834,7 +834,7 @@ msgid "Left"
 msgstr "მარცხენა"
 
 #: src/audio_output/output.c:108 src/audio_output/output.c:144
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/control/gestures.c:97 modules/gui/fbosd.c:162
@@ -924,7 +924,7 @@ msgid ""
 "there is no way for you to fix this."
 msgstr ""
 
-#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:362
+#: src/input/es_out.c:954 src/input/es_out.c:959 src/libvlc-module.c:364
 #: modules/access/vcdx/access.c:460 modules/access/vcdx/info.c:226
 #: modules/gui/qt4/components/open_panels.cpp:402
 msgid "Track"
@@ -936,7 +936,7 @@ msgid "%s [%s %d]"
 msgstr ""
 
 #: src/input/es_out.c:1165 src/input/es_out.c:1170 src/input/var.c:177
-#: src/libvlc-module.c:692 modules/gui/macosx/intf.m:661
+#: src/libvlc-module.c:694 modules/gui/macosx/intf.m:661
 #: modules/gui/macosx/intf.m:662
 msgid "Program"
 msgstr "პროგრამა"
@@ -980,7 +980,7 @@ msgstr "ჩართე აუდიო"
 msgid "Codec"
 msgstr "კოდეკი"
 
-#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:218
+#: src/input/es_out.c:2902 src/input/meta.c:62 src/libvlc-module.c:220
 #: modules/access/imem.c:76 modules/gui/macosx/simple_prefs.m:269
 #: modules/gui/qt4/ui/sprefs_interface.h:386
 msgid "Language"
@@ -1049,20 +1049,20 @@ msgstr "ეკრანის გარჩევადობა"
 msgid "Frame rate"
 msgstr "კადრი წამში"
 
-#: src/input/input.c:2488
+#: src/input/input.c:2496
 msgid "Your input can't be opened"
 msgstr ""
 
-#: src/input/input.c:2489
+#: src/input/input.c:2497
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 
-#: src/input/input.c:2608
+#: src/input/input.c:2617
 msgid "VLC can't recognize the input's format"
 msgstr ""
 
-#: src/input/input.c:2609
+#: src/input/input.c:2618
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
@@ -1089,7 +1089,7 @@ msgstr "ჟანრი"
 msgid "Copyright"
 msgstr "საავტორო უფლებები"
 
-#: src/input/meta.c:55 src/libvlc-module.c:362 modules/access/vcdx/info.c:63
+#: src/input/meta.c:55 src/libvlc-module.c:364 modules/access/vcdx/info.c:63
 msgid "Album"
 msgstr "ალბომი"
 
@@ -1115,7 +1115,7 @@ msgstr "პარამეტრი"
 msgid "URL"
 msgstr "URL"
 
-#: src/input/meta.c:63 modules/misc/notify/notify.c:314
+#: src/input/meta.c:63 modules/misc/notify/notify.c:318
 msgid "Now Playing"
 msgstr "ახლა ვუკრავ"
 
@@ -1141,7 +1141,7 @@ msgstr "კვალი"
 msgid "Bookmark"
 msgstr "სანიშნე"
 
-#: src/input/var.c:182 src/libvlc-module.c:698
+#: src/input/var.c:182 src/libvlc-module.c:700
 msgid "Programs"
 msgstr "პროგრამები"
 
@@ -1244,7 +1244,7 @@ msgstr ""
 msgid "To get exhaustive help, use '-H'."
 msgstr ""
 
-#: src/libvlc.c:1250 src/libvlc-module.c:1521
+#: src/libvlc.c:1250 src/libvlc-module.c:1523
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -1337,54 +1337,54 @@ msgid ""
 "Press the RETURN key to continue...\n"
 msgstr ""
 
-#: src/libvlc.h:175 src/libvlc-module.c:1468 src/libvlc-module.c:1469
-#: src/libvlc-module.c:2645 src/video_output/vout_intf.c:195
+#: src/libvlc.h:175 src/libvlc-module.c:1470 src/libvlc-module.c:1471
+#: src/libvlc-module.c:2647 src/video_output/vout_intf.c:195
 msgid "Zoom"
 msgstr "გადიდება"
 
-#: src/libvlc.h:176 src/libvlc-module.c:1388 src/video_output/vout_intf.c:88
+#: src/libvlc.h:176 src/libvlc-module.c:1390 src/video_output/vout_intf.c:88
 msgid "1:4 Quarter"
 msgstr "1:4 მეოთხედი"
 
-#: src/libvlc.h:177 src/libvlc-module.c:1389 src/video_output/vout_intf.c:89
+#: src/libvlc.h:177 src/libvlc-module.c:1391 src/video_output/vout_intf.c:89
 msgid "1:2 Half"
 msgstr "1:2 ნახევარი"
 
-#: src/libvlc.h:178 src/libvlc-module.c:1390 src/video_output/vout_intf.c:90
+#: src/libvlc.h:178 src/libvlc-module.c:1392 src/video_output/vout_intf.c:90
 msgid "1:1 Original"
 msgstr "1:1 ორიგინალი"
 
-#: src/libvlc.h:179 src/libvlc-module.c:1391 src/video_output/vout_intf.c:91
+#: src/libvlc.h:179 src/libvlc-module.c:1393 src/video_output/vout_intf.c:91
 msgid "2:1 Double"
 msgstr "2:1 ორმაგი"
 
-#: src/libvlc-module.c:104 src/libvlc-module.c:321 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:105 src/libvlc-module.c:323 modules/access/bda/bda.c:69
 #: modules/gui/qt4/components/open_panels.cpp:997
 msgid "Auto"
 msgstr "ავტო"
 
-#: src/libvlc-module.c:174
+#: src/libvlc-module.c:176
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
 "select the main interface, additional interface modules, and define various "
 "related options."
 msgstr ""
 
-#: src/libvlc-module.c:178
+#: src/libvlc-module.c:180
 msgid "Interface module"
 msgstr "ინტერფეისის მოდული"
 
-#: src/libvlc-module.c:180
+#: src/libvlc-module.c:182
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
 msgstr ""
 
-#: src/libvlc-module.c:184 modules/control/ntservice.c:57
+#: src/libvlc-module.c:186 modules/control/ntservice.c:57
 msgid "Extra interface modules"
 msgstr ""
 
-#: src/libvlc-module.c:186
+#: src/libvlc-module.c:188
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
@@ -1392,25 +1392,25 @@ msgid ""
 "\", \"gestures\" ...)"
 msgstr ""
 
-#: src/libvlc-module.c:193
+#: src/libvlc-module.c:195
 msgid "You can select control interfaces for VLC."
 msgstr ""
 
-#: src/libvlc-module.c:195
+#: src/libvlc-module.c:197
 msgid "Verbosity (0,1,2)"
 msgstr ""
 
-#: src/libvlc-module.c:197
+#: src/libvlc-module.c:199
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
 msgstr ""
 
-#: src/libvlc-module.c:200
+#: src/libvlc-module.c:202
 msgid "Choose which objects should print debug message"
 msgstr ""
 
-#: src/libvlc-module.c:203
+#: src/libvlc-module.c:205
 msgid ""
 "This is a ',' separated string, each objects should be prefixed by a '+' or "
 "a '-' to respectively enable or disable it. The keyword 'all' refers to all "
@@ -1420,59 +1420,59 @@ msgid ""
 "message."
 msgstr ""
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:212
 msgid "Be quiet"
 msgstr ""
 
-#: src/libvlc-module.c:212
+#: src/libvlc-module.c:214
 msgid "Turn off all warning and information messages."
 msgstr ""
 
-#: src/libvlc-module.c:214
+#: src/libvlc-module.c:216
 msgid "Default stream"
 msgstr ""
 
-#: src/libvlc-module.c:216
+#: src/libvlc-module.c:218
 msgid "This stream will always be opened at VLC startup."
 msgstr ""
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:221
 msgid ""
 "You can manually select a language for the interface. The system language is "
 "auto-detected if \"auto\" is specified here."
 msgstr ""
 
-#: src/libvlc-module.c:223
+#: src/libvlc-module.c:225
 msgid "Color messages"
 msgstr "ფერადი შეტყობინებები"
 
-#: src/libvlc-module.c:225
+#: src/libvlc-module.c:227
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
 "needs Linux color support for this to work."
 msgstr ""
 
-#: src/libvlc-module.c:228
+#: src/libvlc-module.c:230
 msgid "Show advanced options"
 msgstr "აჩვენე დამატებითი პარამეტრები"
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:232
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
 "available options, including those that most users should never touch."
 msgstr ""
 
-#: src/libvlc-module.c:234
+#: src/libvlc-module.c:236
 msgid "Interface interaction"
 msgstr ""
 
-#: src/libvlc-module.c:236
+#: src/libvlc-module.c:238
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
 "user input is required."
 msgstr ""
 
-#: src/libvlc-module.c:246
+#: src/libvlc-module.c:248
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
 "to add audio filters which can be used for post processing or visual effects "
@@ -1480,125 +1480,125 @@ msgid ""
 "the \"audio filters\" modules section."
 msgstr ""
 
-#: src/libvlc-module.c:252
+#: src/libvlc-module.c:254
 msgid "Audio output module"
 msgstr "აუდიო გასავალის მოდული"
 
-#: src/libvlc-module.c:254
+#: src/libvlc-module.c:256
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
 "automatically select the best method available."
 msgstr ""
 
-#: src/libvlc-module.c:258 modules/stream_out/display.c:41
+#: src/libvlc-module.c:260 modules/stream_out/display.c:41
 #: modules/gui/qt4/ui/sprefs_audio.h:404
 msgid "Enable audio"
 msgstr "ჩართე აუდიო"
 
-#: src/libvlc-module.c:260
+#: src/libvlc-module.c:262
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
 "not take place, thus saving some processing power."
 msgstr ""
 
-#: src/libvlc-module.c:264
+#: src/libvlc-module.c:266
 msgid "Force mono audio"
 msgstr "ძალდატანებით მონო აუდიო"
 
-#: src/libvlc-module.c:265
+#: src/libvlc-module.c:267
 msgid "This will force a mono audio output."
 msgstr ""
 
-#: src/libvlc-module.c:268
+#: src/libvlc-module.c:270
 #, fuzzy
 msgid "Default audio volume"
 msgstr "ნაგულისხმევი აუდიო ხმის სიმაღლე"
 
-#: src/libvlc-module.c:270
+#: src/libvlc-module.c:272
 msgid ""
 "You can set the default audio output volume here, in a range from 0 to 1024."
 msgstr ""
 
-#: src/libvlc-module.c:273
+#: src/libvlc-module.c:275
 #, fuzzy
 msgid "Audio output saved volume"
 msgstr "აუდიო ხმის სიმაღლე"
 
-#: src/libvlc-module.c:275
+#: src/libvlc-module.c:277
 msgid ""
 "This saves the audio output volume when you use the mute function. You "
 "should not change this option manually."
 msgstr ""
 
-#: src/libvlc-module.c:278
+#: src/libvlc-module.c:280
 #, fuzzy
 msgid "Audio output volume step"
 msgstr "აუდიო ხმის სიმაღლე"
 
-#: src/libvlc-module.c:280
+#: src/libvlc-module.c:282
 msgid ""
 "The step size of the volume is adjustable using this option, in a range from "
 "0 to 1024."
 msgstr ""
 
-#: src/libvlc-module.c:283
+#: src/libvlc-module.c:285
 msgid "Audio output frequency (Hz)"
 msgstr ""
 
-#: src/libvlc-module.c:285
+#: src/libvlc-module.c:287
 msgid ""
 "You can force the audio output frequency here. Common values are -1 "
 "(default), 48000, 44100, 32000, 22050, 16000, 11025, 8000."
 msgstr ""
 
-#: src/libvlc-module.c:289
+#: src/libvlc-module.c:291
 msgid "High quality audio resampling"
 msgstr "მაღალი ხარისხის აუდიოს რესემპლინგი"
 
-#: src/libvlc-module.c:291
+#: src/libvlc-module.c:293
 msgid ""
 "This uses a high quality audio resampling algorithm. High quality audio "
 "resampling can be processor intensive so you can disable it and a cheaper "
 "resampling algorithm will be used instead."
 msgstr ""
 
-#: src/libvlc-module.c:296
+#: src/libvlc-module.c:298
 msgid "Audio desynchronization compensation"
 msgstr "აუდიოს დესინქრონიზაციის კომპენსაცია"
 
-#: src/libvlc-module.c:298
+#: src/libvlc-module.c:300
 msgid ""
 "This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
 msgstr ""
 
-#: src/libvlc-module.c:301
+#: src/libvlc-module.c:303
 msgid "Audio output channels mode"
 msgstr "აუდიო გასავალის არხების რეჯიმი"
 
-#: src/libvlc-module.c:303
+#: src/libvlc-module.c:305
 msgid ""
 "This sets the audio output channels mode that will be used by default when "
 "possible (ie. if your hardware supports it as well as the audio stream being "
 "played)."
 msgstr ""
 
-#: src/libvlc-module.c:307 modules/gui/macosx/simple_prefs.m:237
+#: src/libvlc-module.c:309 modules/gui/macosx/simple_prefs.m:237
 #: modules/gui/qt4/ui/sprefs_audio.h:413
 msgid "Use S/PDIF when available"
 msgstr "თუ შესაზლებელია გაოიყენე S/PDIF"
 
-#: src/libvlc-module.c:309
+#: src/libvlc-module.c:311
 msgid ""
 "S/PDIF can be used by default when your hardware supports it as well as the "
 "audio stream being played."
 msgstr ""
 
-#: src/libvlc-module.c:312 modules/gui/macosx/simple_prefs.m:227
+#: src/libvlc-module.c:314 modules/gui/macosx/simple_prefs.m:227
 msgid "Force detection of Dolby Surround"
 msgstr ""
 
-#: src/libvlc-module.c:314
+#: src/libvlc-module.c:316
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
 "Surround but fails to be detected as such. Even if the stream is not "
@@ -1606,83 +1606,83 @@ msgid ""
 "your experience, especially when combined with the Headphone Channel Mixer."
 msgstr ""
 
-#: src/libvlc-module.c:321 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:323 modules/access/bda/bda.c:69
 msgid "On"
 msgstr "ჩართ."
 
-#: src/libvlc-module.c:321 modules/access/bda/bda.c:68
+#: src/libvlc-module.c:323 modules/access/bda/bda.c:68
 msgid "Off"
 msgstr "გათიშ."
 
-#: src/libvlc-module.c:326
+#: src/libvlc-module.c:328
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
 
-#: src/libvlc-module.c:329
+#: src/libvlc-module.c:331
 msgid "Audio visualizations "
 msgstr "აუდიოს ვიზუალიზაცია"
 
-#: src/libvlc-module.c:331
+#: src/libvlc-module.c:333
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr ""
 
-#: src/libvlc-module.c:335
+#: src/libvlc-module.c:337
 #, fuzzy
 msgid "Replay gain mode"
 msgstr "ტიპი"
 
-#: src/libvlc-module.c:337
+#: src/libvlc-module.c:339
 #, fuzzy
 msgid "Select the replay gain mode"
 msgstr "ფაილის არჩევა"
 
-#: src/libvlc-module.c:339
+#: src/libvlc-module.c:341
 #, fuzzy
 msgid "Replay preamp"
 msgstr "ტიპი"
 
-#: src/libvlc-module.c:341
+#: src/libvlc-module.c:343
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
 "replay gain information"
 msgstr ""
 
-#: src/libvlc-module.c:344
+#: src/libvlc-module.c:346
 msgid "Default replay gain"
 msgstr ""
 
-#: src/libvlc-module.c:346
+#: src/libvlc-module.c:348
 msgid "This is the gain used for stream without replay gain information"
 msgstr ""
 
-#: src/libvlc-module.c:348
+#: src/libvlc-module.c:350
 msgid "Peak protection"
 msgstr ""
 
-#: src/libvlc-module.c:350
+#: src/libvlc-module.c:352
 msgid "Protect against sound clipping"
 msgstr ""
 
-#: src/libvlc-module.c:353
+#: src/libvlc-module.c:355
 #, fuzzy
 msgid "Enable time streching audio"
 msgstr "ჩართე აუდიო"
 
-#: src/libvlc-module.c:355
+#: src/libvlc-module.c:357
 msgid ""
 "This allows to play audio at lower or higher speed without affecting the "
 "audio pitch"
 msgstr ""
 
-#: src/libvlc-module.c:362 modules/access/dshow/dshow.cpp:82
-#: modules/access/dshow/dshow.cpp:84 modules/codec/avcodec/avcodec.c:74
+#: src/libvlc-module.c:364 modules/access/dshow/dshow.cpp:84
+#: modules/access/dshow/dshow.cpp:86 modules/codec/avcodec/avcodec.c:74
 #: modules/codec/kate.c:203
 #: modules/gui/qt4/components/interface_widgets.cpp:297
 #, fuzzy
 msgid "None"
 msgstr "არაფერი"
 
-#: src/libvlc-module.c:370
+#: src/libvlc-module.c:372
 msgid ""
 "These options allow you to modify the behavior of the video output "
 "subsystem. You can for example enable video filters (deinterlacing, image "
@@ -1691,28 +1691,28 @@ msgid ""
 "options."
 msgstr ""
 
-#: src/libvlc-module.c:376
+#: src/libvlc-module.c:378
 msgid "Video output module"
 msgstr "ვიდეო გასავალის მოდული"
 
-#: src/libvlc-module.c:378
+#: src/libvlc-module.c:380
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
 "automatically select the best method available."
 msgstr ""
 
-#: src/libvlc-module.c:381 modules/stream_out/display.c:43
+#: src/libvlc-module.c:383 modules/stream_out/display.c:43
 #: modules/gui/qt4/ui/sprefs_video.h:309
 msgid "Enable video"
 msgstr "ჩართე ვიდეო"
 
-#: src/libvlc-module.c:383
+#: src/libvlc-module.c:385
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
 "not take place, thus saving some processing power."
 msgstr ""
 
-#: src/libvlc-module.c:386 modules/codec/fake.c:58
+#: src/libvlc-module.c:388 modules/codec/fake.c:58
 #: modules/stream_out/mosaic_bridge.c:109
 #: modules/stream_out/transcode/transcode.c:66
 #: modules/visualization/projectm.cpp:61
@@ -1720,13 +1720,13 @@ msgstr ""
 msgid "Video width"
 msgstr "ვიდეოს სიფართე"
 
-#: src/libvlc-module.c:388
+#: src/libvlc-module.c:390
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
 "characteristics."
 msgstr ""
 
-#: src/libvlc-module.c:391 modules/codec/fake.c:61
+#: src/libvlc-module.c:393 modules/codec/fake.c:61
 #: modules/stream_out/mosaic_bridge.c:112
 #: modules/stream_out/transcode/transcode.c:69
 #: modules/visualization/projectm.cpp:64
@@ -1734,54 +1734,54 @@ msgstr ""
 msgid "Video height"
 msgstr "ვიდეოს სიმაღლე"
 
-#: src/libvlc-module.c:393
+#: src/libvlc-module.c:395
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
 "video characteristics."
 msgstr ""
 
-#: src/libvlc-module.c:396
+#: src/libvlc-module.c:398
 msgid "Video X coordinate"
 msgstr "ვიდეოს X კოორდინატი"
 
-#: src/libvlc-module.c:398
+#: src/libvlc-module.c:400
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
 "coordinate)."
 msgstr ""
 
-#: src/libvlc-module.c:401
+#: src/libvlc-module.c:403
 msgid "Video Y coordinate"
 msgstr "ვიდეოს Y კოორდინატი"
 
-#: src/libvlc-module.c:403
+#: src/libvlc-module.c:405
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
 "coordinate)."
 msgstr ""
 
-#: src/libvlc-module.c:406
+#: src/libvlc-module.c:408
 msgid "Video title"
 msgstr "ვიდეოს სათაური"
 
-#: src/libvlc-module.c:408
+#: src/libvlc-module.c:410
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
 msgstr ""
 
-#: src/libvlc-module.c:411
+#: src/libvlc-module.c:413
 msgid "Video alignment"
 msgstr "ვიდეოს მდებარეობა"
 
-#: src/libvlc-module.c:413
+#: src/libvlc-module.c:415
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
 "centered (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use "
 "combinations of these values, like 6=4+2 meaning top-right)."
 msgstr ""
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499
+#: src/libvlc-module.c:420 src/libvlc-module.c:501
 #: modules/audio_filter/channel_mixer/mono.c:95 modules/codec/dvbsub.c:102
 #: modules/codec/subtitles/subsdec.c:191 modules/codec/zvbi.c:78
 #: modules/gui/fbosd.c:162 modules/video_filter/audiobargraph_v.c:74
@@ -1791,7 +1791,7 @@ msgstr ""
 msgid "Center"
 msgstr "ცენტრში"
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:420 src/libvlc-module.c:501 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -1802,7 +1802,7 @@ msgstr "ცენტრში"
 msgid "Top"
 msgstr "ზემოთ"
 
-#: src/libvlc-module.c:418 src/libvlc-module.c:499 modules/codec/dvbsub.c:102
+#: src/libvlc-module.c:420 src/libvlc-module.c:501 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:78 modules/gui/fbosd.c:162
 #: modules/video_filter/audiobargraph_v.c:74 modules/video_filter/logo.c:79
 #: modules/video_filter/marq.c:137 modules/video_filter/mosaic.c:171
@@ -1811,7 +1811,7 @@ msgstr "ზემოთ"
 msgid "Bottom"
 msgstr "ქვემოთ"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1819,7 +1819,7 @@ msgstr "ქვემოთ"
 msgid "Top-Left"
 msgstr "ზემოთ მარცხნივ"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1827,7 +1827,7 @@ msgstr "ზემოთ მარცხნივ"
 msgid "Top-Right"
 msgstr "ზემოთ მარჯვნივ"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1835,7 +1835,7 @@ msgstr "ზემოთ მარჯვნივ"
 msgid "Bottom-Left"
 msgstr "ქვემოთ მარცხნივ"
 
-#: src/libvlc-module.c:419 src/libvlc-module.c:500 modules/codec/dvbsub.c:103
+#: src/libvlc-module.c:421 src/libvlc-module.c:502 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:163
 #: modules/video_filter/audiobargraph_v.c:75 modules/video_filter/logo.c:80
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1843,281 +1843,281 @@ msgstr "ქვემოთ მარცხნივ"
 msgid "Bottom-Right"
 msgstr "ქვემოთ მარჯვნივ"
 
-#: src/libvlc-module.c:421
+#: src/libvlc-module.c:423
 msgid "Zoom video"
 msgstr "ვიდეოს გადიდება"
 
-#: src/libvlc-module.c:423
+#: src/libvlc-module.c:425
 msgid "You can zoom the video by the specified factor."
 msgstr ""
 
-#: src/libvlc-module.c:425
+#: src/libvlc-module.c:427
 msgid "Grayscale video output"
 msgstr "შავ-თეთრი ვიდეო გასავალი"
 
-#: src/libvlc-module.c:427
+#: src/libvlc-module.c:429
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
 "save some processing power."
 msgstr ""
 
-#: src/libvlc-module.c:430
+#: src/libvlc-module.c:432
 #, fuzzy
 msgid "Embedded video"
 msgstr "ვიდეო"
 
-#: src/libvlc-module.c:432
+#: src/libvlc-module.c:434
 #, fuzzy
 msgid "Embed the video output in the main interface."
 msgstr "ვიდეო დუიმი"
 
-#: src/libvlc-module.c:434 modules/video_output/ggi.c:57
+#: src/libvlc-module.c:436 modules/video_output/ggi.c:57
 msgid "X11 display"
 msgstr "X11 დისპლეი"
 
-#: src/libvlc-module.c:436
+#: src/libvlc-module.c:438
 msgid ""
 "X11 hardware display to use. By default VLC will use the value of the "
 "DISPLAY environment variable."
 msgstr ""
 
-#: src/libvlc-module.c:439
+#: src/libvlc-module.c:441
 msgid "Fullscreen video output"
 msgstr "მთლიან-ეკრანიანი ვიდეო გასავალი"
 
-#: src/libvlc-module.c:441
+#: src/libvlc-module.c:443
 msgid "Start video in fullscreen mode"
 msgstr "ვიდეოს გაშვება სრულეკრანიან რეჟიმში"
 
-#: src/libvlc-module.c:443
+#: src/libvlc-module.c:445
 msgid "Overlay video output"
 msgstr ""
 
-#: src/libvlc-module.c:445
+#: src/libvlc-module.c:447
 msgid ""
 "Overlay is the hardware acceleration capability of your video card (ability "
 "to render video directly). VLC will try to use it by default."
 msgstr ""
 
-#: src/libvlc-module.c:448 src/video_output/vout_intf.c:344
+#: src/libvlc-module.c:450 src/video_output/vout_intf.c:344
 #: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "მუდმივად წინა პლანზე"
 
-#: src/libvlc-module.c:450
+#: src/libvlc-module.c:452
 msgid "Always place the video window on top of other windows."
 msgstr ""
 
-#: src/libvlc-module.c:452
+#: src/libvlc-module.c:454
 #, fuzzy
 msgid "Enable wallpaper mode "
 msgstr "ჩართვა რეჟიმი "
 
-#: src/libvlc-module.c:454
+#: src/libvlc-module.c:456
 msgid ""
 "The wallpaper mode allows you to display the video as the desktop background."
 msgstr ""
 
-#: src/libvlc-module.c:457
+#: src/libvlc-module.c:459
 #, fuzzy
 msgid "Show media title on video"
 msgstr "ტიტრები"
 
-#: src/libvlc-module.c:459
+#: src/libvlc-module.c:461
 msgid "Display the title of the video on top of the movie."
 msgstr ""
 
-#: src/libvlc-module.c:461
+#: src/libvlc-module.c:463
 #, fuzzy
 msgid "Show video title for x milliseconds"
 msgstr "ტიტრები"
 
-#: src/libvlc-module.c:463
+#: src/libvlc-module.c:465
 #, fuzzy
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr "ტიტრები"
 
-#: src/libvlc-module.c:465
+#: src/libvlc-module.c:467
 #, fuzzy
 msgid "Position of video title"
 msgstr "კონტრასტი ის ვიდეო."
 
-#: src/libvlc-module.c:467
+#: src/libvlc-module.c:469
 msgid "Place on video where to display the title (default bottom center)."
 msgstr ""
 
-#: src/libvlc-module.c:469
+#: src/libvlc-module.c:471
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr ""
 
-#: src/libvlc-module.c:472
+#: src/libvlc-module.c:474
 msgid ""
 "Hide mouse cursor and fullscreen controller after n milliseconds, default is "
 "3000 ms (3 sec.)"
 msgstr ""
 
-#: src/libvlc-module.c:475 src/libvlc-module.c:477
+#: src/libvlc-module.c:477 src/libvlc-module.c:479
 #: src/video_output/video_output.c:1974 modules/gui/macosx/intf.m:700
 #: modules/gui/macosx/intf.m:701 modules/gui/qt4/dialogs/convert.cpp:86
 #: modules/video_filter/deinterlace.c:133
 msgid "Deinterlace"
 msgstr "დეინტერლაცია"
 
-#: src/libvlc-module.c:485 src/video_output/video_output.c:1990
+#: src/libvlc-module.c:487 src/video_output/video_output.c:1990
 #: modules/gui/macosx/intf.m:702 modules/gui/macosx/intf.m:703
 #: modules/video_filter/deinterlace.c:118
 #, fuzzy
 msgid "Deinterlace mode"
 msgstr "დეინტერლაცია რეჟიმი"
 
-#: src/libvlc-module.c:487
+#: src/libvlc-module.c:489
 #, fuzzy
 msgid "Deinterlace method to use for video processing."
 msgstr "დეინტერლაცია -სკენ."
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Discard"
 msgstr "უარყოფა"
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Blend"
 msgstr ""
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Mean"
 msgstr "საშუალო"
 
-#: src/libvlc-module.c:493 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:495 modules/video_filter/deinterlace.c:129
 msgid "Bob"
 msgstr "ბობ (Bob)"
 
-#: src/libvlc-module.c:494 modules/video_filter/deinterlace.c:129
+#: src/libvlc-module.c:496 modules/video_filter/deinterlace.c:129
 msgid "Linear"
 msgstr "ლინეარული(Linear)"
 
-#: src/libvlc-module.c:502
+#: src/libvlc-module.c:504
 msgid "Disable screensaver"
 msgstr "ეკრანდამცავის გამორთვა"
 
-#: src/libvlc-module.c:503
+#: src/libvlc-module.c:505
 msgid "Disable the screensaver during video playback."
 msgstr "ეკრანდამცავის გამორთვა ვიდეოს დაკვრის დროს."
 
-#: src/libvlc-module.c:505
+#: src/libvlc-module.c:507
 #, fuzzy
 msgid "Inhibit the power management daemon during playback"
 msgstr "ეკრანდამცავის გამორთვა ვიდეოს დაკვრის დროს."
 
-#: src/libvlc-module.c:506
+#: src/libvlc-module.c:508
 #, fuzzy
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
 "computer being suspended because of inactivity."
 msgstr "ეკრანდამცავის გამორთვა ვიდეოს დაკვრის დროს."
 
-#: src/libvlc-module.c:509 modules/gui/qt4/ui/sprefs_video.h:316
+#: src/libvlc-module.c:511 modules/gui/qt4/ui/sprefs_video.h:316
 msgid "Window decorations"
 msgstr "ფანჯრის დეკორაცია"
 
-#: src/libvlc-module.c:511
+#: src/libvlc-module.c:513
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
 "giving a \"minimal\" window."
 msgstr ""
 
-#: src/libvlc-module.c:514
+#: src/libvlc-module.c:516
 #, fuzzy
 msgid "Video output filter module"
 msgstr "ვიდეო გასავალის მოდული"
 
-#: src/libvlc-module.c:516
+#: src/libvlc-module.c:518
 msgid "This adds video output filters like clone or wall"
 msgstr ""
 
-#: src/libvlc-module.c:518
+#: src/libvlc-module.c:520
 msgid "Video filter module"
 msgstr "ვიდეო ფილტრის მოდული"
 
-#: src/libvlc-module.c:520
+#: src/libvlc-module.c:522
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
 "instance deinterlacing, or distort the video."
 msgstr ""
 
-#: src/libvlc-module.c:524
+#: src/libvlc-module.c:526
 msgid "Video snapshot directory (or filename)"
 msgstr "გადაღებული სურათების დირექტორია (ან ფაილის სახელი)"
 
-#: src/libvlc-module.c:526
+#: src/libvlc-module.c:528
 msgid "Directory where the video snapshots will be stored."
 msgstr ""
 
-#: src/libvlc-module.c:528 src/libvlc-module.c:530
+#: src/libvlc-module.c:530 src/libvlc-module.c:532
 msgid "Video snapshot file prefix"
 msgstr "გადაღებული სურათების ფაილების წინსართი"
 
-#: src/libvlc-module.c:532
+#: src/libvlc-module.c:534
 msgid "Video snapshot format"
 msgstr "გადაღებული სურათების ფორმატი"
 
-#: src/libvlc-module.c:534
+#: src/libvlc-module.c:536
 msgid "Image format which will be used to store the video snapshots"
 msgstr ""
 
-#: src/libvlc-module.c:536
+#: src/libvlc-module.c:538
 msgid "Display video snapshot preview"
 msgstr ""
 
-#: src/libvlc-module.c:538
+#: src/libvlc-module.c:540
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr ""
 
-#: src/libvlc-module.c:540
+#: src/libvlc-module.c:542
 msgid "Use sequential numbers instead of timestamps"
 msgstr ""
 
-#: src/libvlc-module.c:542
+#: src/libvlc-module.c:544
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr ""
 
-#: src/libvlc-module.c:544
+#: src/libvlc-module.c:546
 #, fuzzy
 msgid "Video snapshot width"
 msgstr "გადაღებული სურათების ფორმატი"
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:548
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
 "original width (-1). Using 0 will scale the width to keep the aspect ratio."
 msgstr ""
 
-#: src/libvlc-module.c:550
+#: src/libvlc-module.c:552
 #, fuzzy
 msgid "Video snapshot height"
 msgstr "ვიდეო ტილო სიმაღლე"
 
-#: src/libvlc-module.c:552
+#: src/libvlc-module.c:554
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
 "the original height (-1). Using 0 will scale the height to keep the aspect "
 "ratio."
 msgstr ""
 
-#: src/libvlc-module.c:556
+#: src/libvlc-module.c:558
 msgid "Video cropping"
 msgstr ""
 
-#: src/libvlc-module.c:558
+#: src/libvlc-module.c:560
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
 msgstr ""
 
-#: src/libvlc-module.c:562
+#: src/libvlc-module.c:564
 msgid "Source aspect ratio"
 msgstr ""
 
-#: src/libvlc-module.c:564
+#: src/libvlc-module.c:566
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
@@ -2126,168 +2126,168 @@ msgid ""
 "(1.25, 1.3333, etc.) expressing pixel squareness."
 msgstr ""
 
-#: src/libvlc-module.c:571
+#: src/libvlc-module.c:573
 #, fuzzy
 msgid "Video Auto Scaling"
 msgstr "ვიდეოს სკალირება"
 
-#: src/libvlc-module.c:573
+#: src/libvlc-module.c:575
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr ""
 
-#: src/libvlc-module.c:575
+#: src/libvlc-module.c:577
 #, fuzzy
 msgid "Video scaling factor"
 msgstr "ვიდეოს სკალირება"
 
-#: src/libvlc-module.c:577
+#: src/libvlc-module.c:579
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
 msgstr ""
 
-#: src/libvlc-module.c:580
+#: src/libvlc-module.c:582
 msgid "Custom crop ratios list"
 msgstr ""
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:584
 msgid ""
 "Comma separated list of crop ratios which will be added in the interface's "
 "crop ratios list."
 msgstr ""
 
-#: src/libvlc-module.c:585
+#: src/libvlc-module.c:587
 msgid "Custom aspect ratios list"
 msgstr ""
 
-#: src/libvlc-module.c:587
+#: src/libvlc-module.c:589
 msgid ""
 "Comma separated list of aspect ratios which will be added in the interface's "
 "aspect ratio list."
 msgstr ""
 
-#: src/libvlc-module.c:590
+#: src/libvlc-module.c:592
 msgid "Fix HDTV height"
 msgstr "HDTV სიმაღლის შესწორება"
 
-#: src/libvlc-module.c:592
+#: src/libvlc-module.c:594
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
 "incorrectly sets height to 1088 lines. You should only disable this option "
 "if your video has a non-standard format requiring all 1088 lines."
 msgstr ""
 
-#: src/libvlc-module.c:597
+#: src/libvlc-module.c:599
 msgid "Monitor pixel aspect ratio"
 msgstr ""
 
-#: src/libvlc-module.c:599
+#: src/libvlc-module.c:601
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
 "(1:1). If you have a 16:9 screen, you might need to change this to 4:3 in "
 "order to keep proportions."
 msgstr ""
 
-#: src/libvlc-module.c:603 modules/gui/macosx/simple_prefs.m:297
+#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:297
 #: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "გამოტოვე კადრები"
 
-#: src/libvlc-module.c:605
+#: src/libvlc-module.c:607
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
 "computer is not powerful enough"
 msgstr ""
 
-#: src/libvlc-module.c:608
+#: src/libvlc-module.c:610
 msgid "Drop late frames"
 msgstr ""
 
-#: src/libvlc-module.c:610
+#: src/libvlc-module.c:612
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
 "intended display date)."
 msgstr ""
 
-#: src/libvlc-module.c:613
+#: src/libvlc-module.c:615
 msgid "Quiet synchro"
 msgstr ""
 
-#: src/libvlc-module.c:615
+#: src/libvlc-module.c:617
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
 "synchronization mechanism."
 msgstr ""
 
-#: src/libvlc-module.c:618
+#: src/libvlc-module.c:620
 msgid "Key press events"
 msgstr ""
 
-#: src/libvlc-module.c:620
+#: src/libvlc-module.c:622
 msgid "This enables VLC hotkeys from the (non-embedded) video window."
 msgstr ""
 
-#: src/libvlc-module.c:622 modules/video_filter/remoteosd.c:94
+#: src/libvlc-module.c:624 modules/video_filter/remoteosd.c:94
 #, fuzzy
 msgid "Mouse events"
 msgstr "თაგვის ჟესტიკულირება"
 
-#: src/libvlc-module.c:624
+#: src/libvlc-module.c:626
 msgid "This enables handling of mouse clicks on the video."
 msgstr ""
 
-#: src/libvlc-module.c:632
+#: src/libvlc-module.c:634
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
 "as the DVD or VCD device, the network interface settings or the subtitle "
 "channel."
 msgstr ""
 
-#: src/libvlc-module.c:636
+#: src/libvlc-module.c:638
 msgid "Clock reference average counter"
 msgstr ""
 
-#: src/libvlc-module.c:638
+#: src/libvlc-module.c:640
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
 msgstr ""
 
-#: src/libvlc-module.c:641
+#: src/libvlc-module.c:643
 msgid "Clock synchronisation"
 msgstr "საათის სინქრონიზაცია"
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:645
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
 msgstr ""
 
-#: src/libvlc-module.c:647
+#: src/libvlc-module.c:649
 #, fuzzy
 msgid "Clock jitter"
 msgstr "ეკვალაიზერი"
 
-#: src/libvlc-module.c:649
+#: src/libvlc-module.c:651
 msgid ""
 "It tells the clock algorithms what is the maximal input jitter that is "
 "considered valid and can be compensated (in milliseconds)"
 msgstr ""
 
-#: src/libvlc-module.c:652 modules/control/netsync.c:72
+#: src/libvlc-module.c:654 modules/control/netsync.c:72
 msgid "Network synchronisation"
 msgstr "ქსელის სინქრონიზაცია"
 
-#: src/libvlc-module.c:653
+#: src/libvlc-module.c:655
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
 msgstr ""
 
-#: src/libvlc-module.c:659 src/video_output/vout_intf.c:99
-#: src/video_output/vout_intf.c:117 modules/access/dshow/dshow.cpp:82
-#: modules/access/dshow/dshow.cpp:84 modules/access/dshow/dshow.cpp:87
-#: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:238
+#: src/libvlc-module.c:661 src/video_output/vout_intf.c:99
+#: src/video_output/vout_intf.c:117 modules/access/dshow/dshow.cpp:84
+#: modules/access/dshow/dshow.cpp:86 modules/access/dshow/dshow.cpp:89
+#: modules/access/dshow/dshow.cpp:95 modules/access/v4l2.c:238
 #: modules/audio_output/alsa.c:107 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1305
 #: modules/gui/macosx/simple_prefs.m:415 modules/gui/macosx/simple_prefs.m:536
@@ -2299,259 +2299,259 @@ msgstr ""
 msgid "Default"
 msgstr "ნაგულისხმევი"
 
-#: src/libvlc-module.c:659 modules/gui/macosx/equalizer.m:149
+#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:149
 #: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "ჩართვა"
 
-#: src/libvlc-module.c:661 modules/misc/notify/growl_udp.c:75
+#: src/libvlc-module.c:663 modules/misc/notify/growl_udp.c:75
 msgid "UDP port"
 msgstr "UDP პორტი"
 
-#: src/libvlc-module.c:663
+#: src/libvlc-module.c:665
 msgid "This is the default port used for UDP streams. Default is 1234."
 msgstr ""
 
-#: src/libvlc-module.c:665
+#: src/libvlc-module.c:667
 msgid "MTU of the network interface"
 msgstr "ქსელის ინტერფეისის MTU"
 
-#: src/libvlc-module.c:667
+#: src/libvlc-module.c:669
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
 "over the network (in bytes)."
 msgstr ""
 
-#: src/libvlc-module.c:672 modules/stream_out/rtp.c:122
+#: src/libvlc-module.c:674 modules/stream_out/rtp.c:122
 msgid "Hop limit (TTL)"
 msgstr ""
 
-#: src/libvlc-module.c:674 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:676 modules/stream_out/rtp.c:124
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
 "in default)."
 msgstr ""
 
-#: src/libvlc-module.c:678
+#: src/libvlc-module.c:680
 #, fuzzy
 msgid "Multicast output interface"
 msgstr "მინიმალური"
 
-#: src/libvlc-module.c:680
+#: src/libvlc-module.c:682
 msgid "Default multicast interface. This overrides the routing table."
 msgstr ""
 
-#: src/libvlc-module.c:682
+#: src/libvlc-module.c:684
 msgid "IPv4 multicast output interface address"
 msgstr ""
 
-#: src/libvlc-module.c:684
+#: src/libvlc-module.c:686
 msgid ""
 "IPv4 address for the default multicast interface. This overrides the routing "
 "table."
 msgstr ""
 
-#: src/libvlc-module.c:687
+#: src/libvlc-module.c:689
 msgid "DiffServ Code Point"
 msgstr ""
 
-#: src/libvlc-module.c:688
+#: src/libvlc-module.c:690
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
 msgstr ""
 
-#: src/libvlc-module.c:694
+#: src/libvlc-module.c:696
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:700
+#: src/libvlc-module.c:702
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:706 modules/gui/qt4/ui/open_disk.h:305
+#: src/libvlc-module.c:708 modules/gui/qt4/ui/open_disk.h:305
 msgid "Audio track"
 msgstr "აუდიო კვალი"
 
-#: src/libvlc-module.c:708
+#: src/libvlc-module.c:710
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr ""
 
-#: src/libvlc-module.c:711 modules/gui/qt4/ui/open_disk.h:306
+#: src/libvlc-module.c:713 modules/gui/qt4/ui/open_disk.h:306
 msgid "Subtitles track"
 msgstr "ტიტრების კვალი"
 
-#: src/libvlc-module.c:713
+#: src/libvlc-module.c:715
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr ""
 
-#: src/libvlc-module.c:716
+#: src/libvlc-module.c:718
 msgid "Audio language"
 msgstr "აუდიოს ენა"
 
-#: src/libvlc-module.c:718
+#: src/libvlc-module.c:720
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
 "letter country code, you may use 'none' to avoid a fallback to another "
 "language)."
 msgstr ""
 
-#: src/libvlc-module.c:721
+#: src/libvlc-module.c:723
 msgid "Subtitle language"
 msgstr "ტიტრების ენა"
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:725
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
 "three letters country code, you may use 'any' as a fallback)."
 msgstr ""
 
-#: src/libvlc-module.c:727
+#: src/libvlc-module.c:729
 msgid "Audio track ID"
 msgstr "აუდიო კვალის ID"
 
-#: src/libvlc-module.c:729
+#: src/libvlc-module.c:731
 msgid "Stream ID of the audio track to use."
 msgstr ""
 
-#: src/libvlc-module.c:731
+#: src/libvlc-module.c:733
 msgid "Subtitles track ID"
 msgstr "ტიტრების კვალის ID"
 
-#: src/libvlc-module.c:733
+#: src/libvlc-module.c:735
 msgid "Stream ID of the subtitle track to use."
 msgstr ""
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:737
 msgid "Input repetitions"
 msgstr ""
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:739
 msgid "Number of time the same input will be repeated"
 msgstr ""
 
-#: src/libvlc-module.c:739
+#: src/libvlc-module.c:741
 msgid "Start time"
 msgstr "დაწყების დრო"
 
-#: src/libvlc-module.c:741
+#: src/libvlc-module.c:743
 msgid "The stream will start at this position (in seconds)."
 msgstr ""
 
-#: src/libvlc-module.c:743
+#: src/libvlc-module.c:745
 msgid "Stop time"
 msgstr ""
 
-#: src/libvlc-module.c:745
+#: src/libvlc-module.c:747
 msgid "The stream will stop at this position (in seconds)."
 msgstr ""
 
-#: src/libvlc-module.c:747
+#: src/libvlc-module.c:749
 #, fuzzy
 msgid "Run time"
 msgstr "რუნდი"
 
-#: src/libvlc-module.c:749
+#: src/libvlc-module.c:751
 msgid "The stream will run this duration (in seconds)."
 msgstr ""
 
-#: src/libvlc-module.c:751
+#: src/libvlc-module.c:753
 msgid "Fast seek"
 msgstr ""
 
-#: src/libvlc-module.c:753
+#: src/libvlc-module.c:755
 msgid "Favor speed over precision while seeking"
 msgstr ""
 
-#: src/libvlc-module.c:755
+#: src/libvlc-module.c:757
 #, fuzzy
 msgid "Playback speed"
 msgstr "გაშვება"
 
-#: src/libvlc-module.c:757
+#: src/libvlc-module.c:759
 msgid "This defines the playback speed (nominal speed is 1.0)."
 msgstr ""
 
-#: src/libvlc-module.c:759
+#: src/libvlc-module.c:761
 msgid "Input list"
 msgstr ""
 
-#: src/libvlc-module.c:761
+#: src/libvlc-module.c:763
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
 msgstr ""
 
-#: src/libvlc-module.c:764
+#: src/libvlc-module.c:766
 msgid "Input slave (experimental)"
 msgstr ""
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:768
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
 "is experimental, not all formats are supported. Use a '#' separated list of "
 "inputs."
 msgstr ""
 
-#: src/libvlc-module.c:770
+#: src/libvlc-module.c:772
 msgid "Bookmarks list for a stream"
 msgstr ""
 
-#: src/libvlc-module.c:772
+#: src/libvlc-module.c:774
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
 "{...}\""
 msgstr ""
 
-#: src/libvlc-module.c:776 modules/gui/qt4/ui/sprefs_input.h:316
+#: src/libvlc-module.c:778 modules/gui/qt4/ui/sprefs_input.h:316
 #, fuzzy
 msgid "Record directory or filename"
 msgstr "გადაღებული სურათების დირექტორია (ან ფაილის სახელი)"
 
-#: src/libvlc-module.c:778
+#: src/libvlc-module.c:780
 msgid "Directory or filename where the records will be stored"
 msgstr ""
 
-#: src/libvlc-module.c:780
+#: src/libvlc-module.c:782
 #, fuzzy
 msgid "Prefer native stream recording"
 msgstr "სტანდარტული"
 
-#: src/libvlc-module.c:782
+#: src/libvlc-module.c:784
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
 msgstr ""
 
-#: src/libvlc-module.c:785
+#: src/libvlc-module.c:787
 #, fuzzy
 msgid "Timeshift directory"
 msgstr "ვიდეო დირექტორია"
 
-#: src/libvlc-module.c:787
+#: src/libvlc-module.c:789
 msgid "Directory used to store the timeshift temporary files."
 msgstr ""
 
-#: src/libvlc-module.c:789
+#: src/libvlc-module.c:791
 msgid "Timeshift granularity"
 msgstr ""
 
-#: src/libvlc-module.c:791
+#: src/libvlc-module.c:793
 #, fuzzy
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
 msgstr "სიდიდე ის -სკენ."
 
-#: src/libvlc-module.c:796
+#: src/libvlc-module.c:798
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures filters (logo, etc.). Enable these "
@@ -2559,25 +2559,25 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:802 modules/gui/qt4/ui/sprefs_subtitles.h:213
+#: src/libvlc-module.c:804 modules/gui/qt4/ui/sprefs_subtitles.h:213
 msgid "Force subtitle position"
 msgstr ""
 
-#: src/libvlc-module.c:804
+#: src/libvlc-module.c:806
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
 msgstr ""
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:809
 msgid "Enable sub-pictures"
 msgstr "სუბ-სურათების ჩართვა"
 
-#: src/libvlc-module.c:809
+#: src/libvlc-module.c:811
 msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
-#: src/libvlc-module.c:811 src/libvlc-module.c:1767 src/text/iso-639_def.h:143
+#: src/libvlc-module.c:813 src/libvlc-module.c:1769 src/text/iso-639_def.h:143
 #: modules/gui/macosx/simple_prefs.m:286
 #: modules/stream_out/transcode/transcode.c:222
 #: modules/gui/qt4/ui/sprefs_subtitles.h:201
@@ -2585,47 +2585,47 @@ msgstr ""
 msgid "On Screen Display"
 msgstr "ჩართ. ეკრანი დისპლეი"
 
-#: src/libvlc-module.c:813
+#: src/libvlc-module.c:815
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
 msgstr ""
 
-#: src/libvlc-module.c:816
+#: src/libvlc-module.c:818
 msgid "Text rendering module"
 msgstr ""
 
-#: src/libvlc-module.c:818
+#: src/libvlc-module.c:820
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
 msgstr ""
 
-#: src/libvlc-module.c:820
+#: src/libvlc-module.c:822
 msgid "Subpictures filter module"
 msgstr ""
 
-#: src/libvlc-module.c:822
+#: src/libvlc-module.c:824
 msgid ""
 "This adds so-called \"subpicture filters\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
 msgstr ""
 
-#: src/libvlc-module.c:825
+#: src/libvlc-module.c:827
 msgid "Autodetect subtitle files"
 msgstr ""
 
-#: src/libvlc-module.c:827
+#: src/libvlc-module.c:829
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
 msgstr ""
 
-#: src/libvlc-module.c:830
+#: src/libvlc-module.c:832
 msgid "Subtitle autodetection fuzziness"
 msgstr ""
 
-#: src/libvlc-module.c:832
+#: src/libvlc-module.c:834
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -2636,489 +2636,489 @@ msgid ""
 "4 = subtitle file matching the movie name exactly"
 msgstr ""
 
-#: src/libvlc-module.c:840
+#: src/libvlc-module.c:842
 msgid "Subtitle autodetection paths"
 msgstr ""
 
-#: src/libvlc-module.c:842
+#: src/libvlc-module.c:844
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
 msgstr ""
 
-#: src/libvlc-module.c:845
+#: src/libvlc-module.c:847
 msgid "Use subtitle file"
 msgstr "ტიტრების ფაილის გამოყენება"
 
-#: src/libvlc-module.c:847
+#: src/libvlc-module.c:849
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
 msgstr ""
 
-#: src/libvlc-module.c:850
+#: src/libvlc-module.c:852
 msgid "DVD device"
 msgstr "DVD მოწყობილობა"
 
-#: src/libvlc-module.c:853
+#: src/libvlc-module.c:855
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
 "the drive letter (eg. D:)"
 msgstr ""
 
-#: src/libvlc-module.c:857
+#: src/libvlc-module.c:859
 #, fuzzy
 msgid "This is the default DVD device to use."
 msgstr "ნაგულისხმევი DVD -სკენ."
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:862
 msgid "VCD device"
 msgstr "VCD მოწყობილობა"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:864
 msgid "This is the default VCD device to use."
 msgstr ""
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:866
 msgid "Audio CD device"
 msgstr "აუდიო CD მოწყობილობა"
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:868
 msgid "This is the default Audio CD device to use."
 msgstr ""
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:870
 msgid "Force IPv6"
 msgstr "აიძულე გამოიყენოს IPv6"
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:872
 msgid "IPv6 will be used by default for all connections."
 msgstr ""
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:874
 msgid "Force IPv4"
 msgstr "აიძულე გამოიყენოს IPv4"
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:876
 msgid "IPv4 will be used by default for all connections."
 msgstr ""
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:878
 msgid "TCP connection timeout"
 msgstr ""
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:880
 msgid "Default TCP connection timeout (in milliseconds). "
 msgstr ""
 
-#: src/libvlc-module.c:880
+#: src/libvlc-module.c:882
 msgid "SOCKS server"
 msgstr "SOCKS სერვერი"
 
-#: src/libvlc-module.c:882
+#: src/libvlc-module.c:884
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
 msgstr ""
 
-#: src/libvlc-module.c:885
+#: src/libvlc-module.c:887
 msgid "SOCKS user name"
 msgstr "SOCKS მომხმარებლის სახელი"
 
-#: src/libvlc-module.c:887
+#: src/libvlc-module.c:889
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr ""
 
-#: src/libvlc-module.c:889
+#: src/libvlc-module.c:891
 msgid "SOCKS password"
 msgstr "SOCKS პაროლი"
 
-#: src/libvlc-module.c:891
+#: src/libvlc-module.c:893
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr ""
 
-#: src/libvlc-module.c:893
+#: src/libvlc-module.c:895
 msgid "Title metadata"
 msgstr ""
 
-#: src/libvlc-module.c:895
+#: src/libvlc-module.c:897
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:897
+#: src/libvlc-module.c:899
 msgid "Author metadata"
 msgstr "ავტორის მეტა ინფორმაცია"
 
-#: src/libvlc-module.c:899
+#: src/libvlc-module.c:901
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:901
+#: src/libvlc-module.c:903
 msgid "Artist metadata"
 msgstr "შემსრულებელის მეტა ინფორმაცია"
 
-#: src/libvlc-module.c:903
+#: src/libvlc-module.c:905
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:905
+#: src/libvlc-module.c:907
 msgid "Genre metadata"
 msgstr "ჟანრის მეტა ინფორმაცია"
 
-#: src/libvlc-module.c:907
+#: src/libvlc-module.c:909
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:911
 msgid "Copyright metadata"
 msgstr "საავტორო უფლებების მეტა ინფორმაცია"
 
-#: src/libvlc-module.c:911
+#: src/libvlc-module.c:913
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:913
+#: src/libvlc-module.c:915
 msgid "Description metadata"
 msgstr ""
 
-#: src/libvlc-module.c:915
+#: src/libvlc-module.c:917
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:917
+#: src/libvlc-module.c:919
 msgid "Date metadata"
 msgstr ""
 
-#: src/libvlc-module.c:919
+#: src/libvlc-module.c:921
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:921
+#: src/libvlc-module.c:923
 msgid "URL metadata"
 msgstr ""
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:925
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:927
+#: src/libvlc-module.c:929
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
 "can break playback of all your streams."
 msgstr ""
 
-#: src/libvlc-module.c:931
+#: src/libvlc-module.c:933
 msgid "Preferred decoders list"
 msgstr ""
 
-#: src/libvlc-module.c:933
+#: src/libvlc-module.c:935
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
 "users should alter this option as it can break playback of all your streams."
 msgstr ""
 
-#: src/libvlc-module.c:938
+#: src/libvlc-module.c:940
 msgid "Preferred encoders list"
 msgstr ""
 
-#: src/libvlc-module.c:940
+#: src/libvlc-module.c:942
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr ""
 
-#: src/libvlc-module.c:943
+#: src/libvlc-module.c:945
 msgid "Prefer system plugins over VLC"
 msgstr ""
 
-#: src/libvlc-module.c:945
+#: src/libvlc-module.c:947
 msgid ""
 "Indicates whether VLC will prefer native plugins installed on system over "
 "VLC owns plugins whenever a choice is available."
 msgstr ""
 
-#: src/libvlc-module.c:954
+#: src/libvlc-module.c:956
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
 msgstr ""
 
-#: src/libvlc-module.c:957
+#: src/libvlc-module.c:959
 msgid "Default stream output chain"
 msgstr ""
 
-#: src/libvlc-module.c:959
+#: src/libvlc-module.c:961
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
 "to learn how to build such chains. Warning: this chain will be enabled for "
 "all streams."
 msgstr ""
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:965
 msgid "Enable streaming of all ES"
 msgstr ""
 
-#: src/libvlc-module.c:965
+#: src/libvlc-module.c:967
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr ""
 
-#: src/libvlc-module.c:967
+#: src/libvlc-module.c:969
 msgid "Display while streaming"
 msgstr "ჩვენება სრიმინგის დროს"
 
-#: src/libvlc-module.c:969
+#: src/libvlc-module.c:971
 msgid "Play locally the stream while streaming it."
 msgstr ""
 
-#: src/libvlc-module.c:971
+#: src/libvlc-module.c:973
 msgid "Enable video stream output"
 msgstr ""
 
-#: src/libvlc-module.c:973
+#: src/libvlc-module.c:975
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
 "facility when this last one is enabled."
 msgstr ""
 
-#: src/libvlc-module.c:976
+#: src/libvlc-module.c:978
 msgid "Enable audio stream output"
 msgstr ""
 
-#: src/libvlc-module.c:978
+#: src/libvlc-module.c:980
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
 "facility when this last one is enabled."
 msgstr ""
 
-#: src/libvlc-module.c:981
+#: src/libvlc-module.c:983
 msgid "Enable SPU stream output"
 msgstr ""
 
-#: src/libvlc-module.c:983
+#: src/libvlc-module.c:985
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
 "facility when this last one is enabled."
 msgstr ""
 
-#: src/libvlc-module.c:986
+#: src/libvlc-module.c:988
 msgid "Keep stream output open"
 msgstr ""
 
-#: src/libvlc-module.c:988
+#: src/libvlc-module.c:990
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
 "specified)"
 msgstr ""
 
-#: src/libvlc-module.c:992
+#: src/libvlc-module.c:994
 msgid "Stream output muxer caching (ms)"
 msgstr ""
 
-#: src/libvlc-module.c:994
+#: src/libvlc-module.c:996
 #, fuzzy
 msgid ""
 "This allow you to configure the initial caching amount for stream output  "
 "muxer. This value should be set in milliseconds."
 msgstr "დუიმი მილიწამები."
 
-#: src/libvlc-module.c:997
+#: src/libvlc-module.c:999
 msgid "Preferred packetizer list"
 msgstr ""
 
-#: src/libvlc-module.c:999
+#: src/libvlc-module.c:1001
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr ""
 
-#: src/libvlc-module.c:1002
+#: src/libvlc-module.c:1004
 msgid "Mux module"
 msgstr ""
 
-#: src/libvlc-module.c:1004
+#: src/libvlc-module.c:1006
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr ""
 
-#: src/libvlc-module.c:1006
+#: src/libvlc-module.c:1008
 msgid "Access output module"
 msgstr ""
 
-#: src/libvlc-module.c:1008
+#: src/libvlc-module.c:1010
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr ""
 
-#: src/libvlc-module.c:1010
+#: src/libvlc-module.c:1012
 msgid "Control SAP flow"
 msgstr ""
 
-#: src/libvlc-module.c:1012
+#: src/libvlc-module.c:1014
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
 msgstr ""
 
-#: src/libvlc-module.c:1016
+#: src/libvlc-module.c:1018
 msgid "SAP announcement interval"
 msgstr ""
 
-#: src/libvlc-module.c:1018
+#: src/libvlc-module.c:1020
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
 msgstr ""
 
-#: src/libvlc-module.c:1027
+#: src/libvlc-module.c:1029
 msgid ""
 "These options allow you to enable special CPU optimizations. You should "
 "always leave all these enabled."
 msgstr ""
 
-#: src/libvlc-module.c:1030
+#: src/libvlc-module.c:1032
 msgid "Enable CPU MMX support"
 msgstr "ჩართე CPU MMX სუპორტი"
 
-#: src/libvlc-module.c:1032
+#: src/libvlc-module.c:1034
 msgid ""
 "If your processor supports the MMX instructions set, VLC can take advantage "
 "of them."
 msgstr ""
 
-#: src/libvlc-module.c:1035
+#: src/libvlc-module.c:1037
 msgid "Enable CPU 3D Now! support"
 msgstr "ჩართე CPU 3D Now!სუპორტი"
 
-#: src/libvlc-module.c:1037
+#: src/libvlc-module.c:1039
 msgid ""
 "If your processor supports the 3D Now! instructions set, VLC can take "
 "advantage of them."
 msgstr ""
 
-#: src/libvlc-module.c:1040
+#: src/libvlc-module.c:1042
 msgid "Enable CPU MMX EXT support"
 msgstr "ჩართე CPU MMX EXT სუპორტი"
 
-#: src/libvlc-module.c:1042
+#: src/libvlc-module.c:1044
 msgid ""
 "If your processor supports the MMX EXT instructions set, VLC can take "
 "advantage of them."
 msgstr ""
 
-#: src/libvlc-module.c:1045
+#: src/libvlc-module.c:1047
 msgid "Enable CPU SSE support"
 msgstr "ჩართე CPU SSE სუპორტი"
 
-#: src/libvlc-module.c:1047
+#: src/libvlc-module.c:1049
 msgid ""
 "If your processor supports the SSE instructions set, VLC can take advantage "
 "of them."
 msgstr ""
 
-#: src/libvlc-module.c:1050
+#: src/libvlc-module.c:1052
 msgid "Enable CPU SSE2 support"
 msgstr "ჩართე CPU SSE2 სუპორტი"
 
-#: src/libvlc-module.c:1052
+#: src/libvlc-module.c:1054
 msgid ""
 "If your processor supports the SSE2 instructions set, VLC can take advantage "
 "of them."
 msgstr ""
 
-#: src/libvlc-module.c:1055
+#: src/libvlc-module.c:1057
 #, fuzzy
 msgid "Enable CPU SSE3 support"
 msgstr "ჩართე CPU SSE სუპორტი"
 
-#: src/libvlc-module.c:1057
+#: src/libvlc-module.c:1059
 msgid ""
 "If your processor supports the SSE3 instructions set, VLC can take advantage "
 "of them."
 msgstr ""
 
-#: src/libvlc-module.c:1060
+#: src/libvlc-module.c:1062
 #, fuzzy
 msgid "Enable CPU SSSE3 support"
 msgstr "ჩართე CPU SSE სუპორტი"
 
-#: src/libvlc-module.c:1062
+#: src/libvlc-module.c:1064
 msgid ""
 "If your processor supports the SSSE3 instructions set, VLC can take "
 "advantage of them."
 msgstr ""
 
-#: src/libvlc-module.c:1065
+#: src/libvlc-module.c:1067
 #, fuzzy
 msgid "Enable CPU SSE4.1 support"
 msgstr "ჩართე CPU SSE სუპორტი"
 
-#: src/libvlc-module.c:1067
+#: src/libvlc-module.c:1069
 msgid ""
 "If your processor supports the SSE4.1 instructions set, VLC can take "
 "advantage of them."
 msgstr ""
 
-#: src/libvlc-module.c:1070
+#: src/libvlc-module.c:1072
 #, fuzzy
 msgid "Enable CPU SSE4.2 support"
 msgstr "ჩართე CPU SSE2 სუპორტი"
 
-#: src/libvlc-module.c:1072
+#: src/libvlc-module.c:1074
 msgid ""
 "If your processor supports the SSE4.2 instructions set, VLC can take "
 "advantage of them."
 msgstr ""
 
-#: src/libvlc-module.c:1075
+#: src/libvlc-module.c:1077
 msgid "Enable CPU AltiVec support"
 msgstr "ჩართე CPU AltiVec სუპორტი"
 
-#: src/libvlc-module.c:1077
+#: src/libvlc-module.c:1079
 msgid ""
 "If your processor supports the AltiVec instructions set, VLC can take "
 "advantage of them."
 msgstr ""
 
-#: src/libvlc-module.c:1082
+#: src/libvlc-module.c:1084
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
 msgstr ""
 
-#: src/libvlc-module.c:1085
+#: src/libvlc-module.c:1087
 msgid "Memory copy module"
 msgstr ""
 
-#: src/libvlc-module.c:1087
+#: src/libvlc-module.c:1089
 msgid ""
 "You can select which memory copy module you want to use. By default VLC will "
 "select the fastest one supported by your hardware."
 msgstr ""
 
-#: src/libvlc-module.c:1090
+#: src/libvlc-module.c:1092
 msgid "Access module"
 msgstr ""
 
-#: src/libvlc-module.c:1092
+#: src/libvlc-module.c:1094
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
 "option unless you really know what you are doing."
 msgstr ""
 
-#: src/libvlc-module.c:1096
+#: src/libvlc-module.c:1098
 #, fuzzy
 msgid "Stream filter module"
 msgstr "ვიდეო ფილტრის მოდული"
 
-#: src/libvlc-module.c:1098
+#: src/libvlc-module.c:1100
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr ""
 
-#: src/libvlc-module.c:1100
+#: src/libvlc-module.c:1102
 msgid "Demux module"
 msgstr ""
 
-#: src/libvlc-module.c:1102
+#: src/libvlc-module.c:1104
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3126,11 +3126,11 @@ msgid ""
 "you really know what you are doing."
 msgstr ""
 
-#: src/libvlc-module.c:1107
+#: src/libvlc-module.c:1109
 msgid "Allow real-time priority"
 msgstr ""
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1111
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
@@ -3138,105 +3138,105 @@ msgid ""
 "only activate this if you know what you're doing."
 msgstr ""
 
-#: src/libvlc-module.c:1115
+#: src/libvlc-module.c:1117
 msgid "Adjust VLC priority"
 msgstr ""
 
-#: src/libvlc-module.c:1117
+#: src/libvlc-module.c:1119
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
 "VLC instances."
 msgstr ""
 
-#: src/libvlc-module.c:1121
+#: src/libvlc-module.c:1123
 msgid "(Experimental) Don't do caching at the access level."
 msgstr ""
 
-#: src/libvlc-module.c:1123
+#: src/libvlc-module.c:1125
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr ""
 
-#: src/libvlc-module.c:1126
+#: src/libvlc-module.c:1128
 msgid "Modules search path"
 msgstr ""
 
-#: src/libvlc-module.c:1128
+#: src/libvlc-module.c:1130
 msgid ""
 "Additional path for VLC to look for its modules. You can add several paths "
 "by concatenating them using \" PATH_SEP \" as separator"
 msgstr ""
 
-#: src/libvlc-module.c:1131
+#: src/libvlc-module.c:1133
 msgid "Data search path"
 msgstr ""
 
-#: src/libvlc-module.c:1133
+#: src/libvlc-module.c:1135
 msgid "Override the default data/share search path."
 msgstr ""
 
-#: src/libvlc-module.c:1135
+#: src/libvlc-module.c:1137
 msgid "VLM configuration file"
 msgstr "VLM კონფიგურაციის ფაილი"
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1139
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr ""
 
-#: src/libvlc-module.c:1139
+#: src/libvlc-module.c:1141
 msgid "Use a plugins cache"
 msgstr "პლაგინის ქეშის გამოყენება"
 
-#: src/libvlc-module.c:1141
+#: src/libvlc-module.c:1143
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1143
+#: src/libvlc-module.c:1145
 msgid "Locally collect statistics"
 msgstr ""
 
-#: src/libvlc-module.c:1145
+#: src/libvlc-module.c:1147
 msgid "Collect miscellaneous local statistics about the playing media."
 msgstr ""
 
-#: src/libvlc-module.c:1147
+#: src/libvlc-module.c:1149
 msgid "Run as daemon process"
 msgstr ""
 
-#: src/libvlc-module.c:1149
+#: src/libvlc-module.c:1151
 msgid "Runs VLC as a background daemon process."
 msgstr ""
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1153
 msgid "Write process id to file"
 msgstr ""
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1155
 msgid "Writes process id into specified file."
 msgstr ""
 
-#: src/libvlc-module.c:1155
+#: src/libvlc-module.c:1157
 msgid "Log to file"
 msgstr "პროტოკოლირება ფაილში"
 
-#: src/libvlc-module.c:1157
+#: src/libvlc-module.c:1159
 msgid "Log all VLC messages to a text file."
 msgstr ""
 
-#: src/libvlc-module.c:1159
+#: src/libvlc-module.c:1161
 msgid "Log to syslog"
 msgstr "პროტოკოლირება syslog-ში"
 
-#: src/libvlc-module.c:1161
+#: src/libvlc-module.c:1163
 msgid "Log all VLC messages to syslog (UNIX systems)."
 msgstr ""
 
-#: src/libvlc-module.c:1163
+#: src/libvlc-module.c:1165
 msgid "Allow only one running instance"
 msgstr ""
 
-#: src/libvlc-module.c:1166
+#: src/libvlc-module.c:1168
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3245,7 +3245,7 @@ msgid ""
 "running instance or enqueue it."
 msgstr ""
 
-#: src/libvlc-module.c:1173
+#: src/libvlc-module.c:1175
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3255,27 +3255,27 @@ msgid ""
 "active and the running instance of VLC to use D-Bus control interface."
 msgstr ""
 
-#: src/libvlc-module.c:1182
+#: src/libvlc-module.c:1184
 msgid "VLC is started from file association"
 msgstr ""
 
-#: src/libvlc-module.c:1184
+#: src/libvlc-module.c:1186
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1187
+#: src/libvlc-module.c:1189
 msgid "One instance when started from file"
 msgstr ""
 
-#: src/libvlc-module.c:1189
+#: src/libvlc-module.c:1191
 msgid "Allow only one running instance when started from file."
 msgstr ""
 
-#: src/libvlc-module.c:1191
+#: src/libvlc-module.c:1193
 msgid "Increase the priority of the process"
 msgstr ""
 
-#: src/libvlc-module.c:1193
+#: src/libvlc-module.c:1195
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3285,141 +3285,141 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1201
+#: src/libvlc-module.c:1203
 msgid "Enqueue items to playlist when in one instance mode"
 msgstr ""
 
-#: src/libvlc-module.c:1203
+#: src/libvlc-module.c:1205
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
 msgstr ""
 
-#: src/libvlc-module.c:1212
+#: src/libvlc-module.c:1214
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
 msgstr ""
 
-#: src/libvlc-module.c:1215
+#: src/libvlc-module.c:1217
 msgid "Automatically preparse files"
 msgstr ""
 
-#: src/libvlc-module.c:1217
+#: src/libvlc-module.c:1219
 msgid ""
 "Automatically preparse files added to the playlist (to retrieve some "
 "metadata)."
 msgstr ""
 
-#: src/libvlc-module.c:1220
+#: src/libvlc-module.c:1222
 msgid "Album art policy"
 msgstr ""
 
-#: src/libvlc-module.c:1222
+#: src/libvlc-module.c:1224
 msgid "Choose how album art will be downloaded."
 msgstr ""
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1230
 msgid "Manual download only"
 msgstr ""
 
-#: src/libvlc-module.c:1229
+#: src/libvlc-module.c:1231
 msgid "When track starts playing"
 msgstr ""
 
-#: src/libvlc-module.c:1230
+#: src/libvlc-module.c:1232
 msgid "As soon as track is added"
 msgstr ""
 
-#: src/libvlc-module.c:1232
+#: src/libvlc-module.c:1234
 msgid "Services discovery modules"
 msgstr ""
 
-#: src/libvlc-module.c:1234
+#: src/libvlc-module.c:1236
 msgid ""
 "Specifies the services discovery modules to load, separated by colons. "
 "Typical values are sap, hal, ..."
 msgstr ""
 
-#: src/libvlc-module.c:1237
+#: src/libvlc-module.c:1239
 msgid "Play files randomly forever"
 msgstr ""
 
-#: src/libvlc-module.c:1239
+#: src/libvlc-module.c:1241
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr ""
 
-#: src/libvlc-module.c:1241
+#: src/libvlc-module.c:1243
 msgid "Repeat all"
 msgstr "ყველას გამეორება"
 
-#: src/libvlc-module.c:1243
+#: src/libvlc-module.c:1245
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr ""
 
-#: src/libvlc-module.c:1245
+#: src/libvlc-module.c:1247
 msgid "Repeat current item"
 msgstr "ახლანდელი ელემენტის გამეორება"
 
-#: src/libvlc-module.c:1247
+#: src/libvlc-module.c:1249
 msgid "VLC will keep playing the current playlist item."
 msgstr ""
 
-#: src/libvlc-module.c:1249
+#: src/libvlc-module.c:1251
 msgid "Play and stop"
 msgstr "დაკვრა და შეჩერება"
 
-#: src/libvlc-module.c:1251
+#: src/libvlc-module.c:1253
 msgid "Stop the playlist after each played playlist item."
 msgstr ""
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1255
 #, fuzzy
 msgid "Play and exit"
 msgstr "დაკვრა და შეჩერება"
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1257
 #, fuzzy
 msgid "Exit if there are no more items in the playlist."
 msgstr "არა დუიმი სია"
 
-#: src/libvlc-module.c:1257
+#: src/libvlc-module.c:1259
 #, fuzzy
 msgid "Play and pause"
 msgstr "დაკვრა და შეჩერება"
 
-#: src/libvlc-module.c:1259
+#: src/libvlc-module.c:1261
 #, fuzzy
 msgid "Pause each item in the playlist on the last frame."
 msgstr "a დუიმი ის."
 
-#: src/libvlc-module.c:1261
+#: src/libvlc-module.c:1263
 #, fuzzy
 msgid "Use media library"
 msgstr "VLC მედია დამკვრელი"
 
-#: src/libvlc-module.c:1263
+#: src/libvlc-module.c:1265
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1266
+#: src/libvlc-module.c:1268
 #, fuzzy
 msgid "Display playlist tree"
 msgstr "შემდეგი სია"
 
-#: src/libvlc-module.c:1268
+#: src/libvlc-module.c:1270
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
 msgstr ""
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1279
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1280 src/video_output/vout_intf.c:357
+#: src/libvlc-module.c:1282 src/video_output/vout_intf.c:357
 #: modules/gui/macosx/controls.m:454 modules/gui/macosx/controls.m:510
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
@@ -3430,114 +3430,114 @@ msgstr ""
 msgid "Fullscreen"
 msgstr "მთლიან ეკრანზე"
 
-#: src/libvlc-module.c:1281
+#: src/libvlc-module.c:1283
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr ""
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1284
 #, fuzzy
 msgid "Leave fullscreen"
 msgstr "მთლიან ეკრანზე"
 
-#: src/libvlc-module.c:1283
+#: src/libvlc-module.c:1285
 #, fuzzy
 msgid "Select the hotkey to use to leave fullscreen state."
 msgstr "ამოირჩიეთ ამ სანიშნის დასასმელი ღილაკი."
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1286
 msgid "Play/Pause"
 msgstr "დაკვრა/პაუზა"
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1287
 msgid "Select the hotkey to use to swap paused state."
 msgstr ""
 
-#: src/libvlc-module.c:1286
+#: src/libvlc-module.c:1288
 msgid "Pause only"
 msgstr "მხოლოდ დაპაუზება"
 
-#: src/libvlc-module.c:1287
+#: src/libvlc-module.c:1289
 msgid "Select the hotkey to use to pause."
 msgstr ""
 
-#: src/libvlc-module.c:1288
+#: src/libvlc-module.c:1290
 msgid "Play only"
 msgstr "მხოლოდ დაკვრა"
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1291
 msgid "Select the hotkey to use to play."
 msgstr ""
 
-#: src/libvlc-module.c:1290 modules/gui/macosx/controls.m:1010
+#: src/libvlc-module.c:1292 modules/gui/macosx/controls.m:1010
 #: modules/gui/macosx/intf.m:649 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Faster"
 msgstr ""
 
-#: src/libvlc-module.c:1291 src/libvlc-module.c:1297
+#: src/libvlc-module.c:1293 src/libvlc-module.c:1299
 msgid "Select the hotkey to use for fast forward playback."
 msgstr ""
 
-#: src/libvlc-module.c:1292 modules/gui/macosx/controls.m:1011
+#: src/libvlc-module.c:1294 modules/gui/macosx/controls.m:1011
 #: modules/gui/macosx/intf.m:650 modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:113
 msgid "Slower"
 msgstr ""
 
-#: src/libvlc-module.c:1293 src/libvlc-module.c:1299
+#: src/libvlc-module.c:1295 src/libvlc-module.c:1301
 msgid "Select the hotkey to use for slow motion playback."
 msgstr ""
 
-#: src/libvlc-module.c:1294 modules/gui/macosx/controls.m:1012
+#: src/libvlc-module.c:1296 modules/gui/macosx/controls.m:1012
 #: modules/gui/macosx/intf.m:651
 #, fuzzy
 msgid "Normal rate"
 msgstr "ნორმალური ზომა"
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1297
 #, fuzzy
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "ამოირჩიეთ ამ სანიშნის დასასმელი ღილაკი."
 
-#: src/libvlc-module.c:1296 modules/gui/qt4/menus.cpp:808
+#: src/libvlc-module.c:1298 modules/gui/qt4/menus.cpp:808
 msgid "Faster (fine)"
 msgstr ""
 
-#: src/libvlc-module.c:1298 modules/gui/qt4/menus.cpp:816
+#: src/libvlc-module.c:1300 modules/gui/qt4/menus.cpp:816
 msgid "Slower (fine)"
 msgstr ""
 
-#: src/libvlc-module.c:1300 modules/control/hotkeys.c:696
+#: src/libvlc-module.c:1302 modules/control/hotkeys.c:696
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
 #: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
 #: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:330 modules/gui/qt4/ui/sout.h:327
+#: modules/misc/notify/notify.c:339 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
 msgid "Next"
 msgstr "შემდეგი"
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1303
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 
-#: src/libvlc-module.c:1302 modules/control/hotkeys.c:702
+#: src/libvlc-module.c:1304 modules/control/hotkeys.c:702
 #: modules/gui/macosx/about.m:194 modules/gui/macosx/controls.m:1031
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:600
 #: modules/gui/macosx/intf.m:652 modules/gui/macosx/intf.m:742
 #: modules/gui/macosx/intf.m:748 modules/gui/qt4/components/controller.hpp:105
-#: modules/misc/notify/notify.c:328 modules/gui/qt4/ui/sout.h:337
+#: modules/misc/notify/notify.c:337 modules/gui/qt4/ui/sout.h:337
 #: modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
 msgstr "წინა"
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1305
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr ""
 
-#: src/libvlc-module.c:1304 modules/gui/macosx/controls.m:1023
+#: src/libvlc-module.c:1306 modules/gui/macosx/controls.m:1023
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:603
 #: modules/gui/macosx/intf.m:648 modules/gui/macosx/intf.m:740
 #: modules/gui/macosx/intf.m:747 modules/gui/qt4/components/controller.hpp:104
@@ -3545,11 +3545,11 @@ msgstr ""
 msgid "Stop"
 msgstr "შეჩერება"
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1307
 msgid "Select the hotkey to stop playback."
 msgstr ""
 
-#: src/libvlc-module.c:1306 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
+#: src/libvlc-module.c:1308 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:70 modules/gui/macosx/intf.m:608
 #: modules/video_filter/marq.c:158 modules/video_filter/rss.c:201
@@ -3557,680 +3557,680 @@ msgstr ""
 msgid "Position"
 msgstr "პოზიცია"
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1309
 msgid "Select the hotkey to display the position."
 msgstr ""
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1311
 msgid "Very short backwards jump"
 msgstr ""
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1313
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr ""
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1314
 msgid "Short backwards jump"
 msgstr ""
 
-#: src/libvlc-module.c:1314
+#: src/libvlc-module.c:1316
 msgid "Select the hotkey to make a short backwards jump."
 msgstr ""
 
-#: src/libvlc-module.c:1315
+#: src/libvlc-module.c:1317
 msgid "Medium backwards jump"
 msgstr ""
 
-#: src/libvlc-module.c:1317
+#: src/libvlc-module.c:1319
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr ""
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1320
 msgid "Long backwards jump"
 msgstr ""
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1322
 msgid "Select the hotkey to make a long backwards jump."
 msgstr ""
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1324
 msgid "Very short forward jump"
 msgstr ""
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1326
 msgid "Select the hotkey to make a very short forward jump."
 msgstr ""
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1327
 msgid "Short forward jump"
 msgstr ""
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1329
 msgid "Select the hotkey to make a short forward jump."
 msgstr ""
 
-#: src/libvlc-module.c:1328
+#: src/libvlc-module.c:1330
 msgid "Medium forward jump"
 msgstr ""
 
-#: src/libvlc-module.c:1330
+#: src/libvlc-module.c:1332
 msgid "Select the hotkey to make a medium forward jump."
 msgstr ""
 
-#: src/libvlc-module.c:1331
+#: src/libvlc-module.c:1333
 msgid "Long forward jump"
 msgstr ""
 
-#: src/libvlc-module.c:1333
+#: src/libvlc-module.c:1335
 msgid "Select the hotkey to make a long forward jump."
 msgstr ""
 
-#: src/libvlc-module.c:1334 modules/control/hotkeys.c:713
+#: src/libvlc-module.c:1336 modules/control/hotkeys.c:713
 #, fuzzy
 msgid "Next frame"
 msgstr "დაკარგული კადრები"
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1338
 #, fuzzy
 msgid "Select the hotkey to got to the next video frame."
 msgstr "ამოირჩიეთ ამ სანიშნის დასასმელი ღილაკი."
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1340
 msgid "Very short jump length"
 msgstr ""
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1341
 msgid "Very short jump length, in seconds."
 msgstr ""
 
-#: src/libvlc-module.c:1340
+#: src/libvlc-module.c:1342
 msgid "Short jump length"
 msgstr ""
 
-#: src/libvlc-module.c:1341
+#: src/libvlc-module.c:1343
 msgid "Short jump length, in seconds."
 msgstr ""
 
-#: src/libvlc-module.c:1342
+#: src/libvlc-module.c:1344
 msgid "Medium jump length"
 msgstr ""
 
-#: src/libvlc-module.c:1343
+#: src/libvlc-module.c:1345
 msgid "Medium jump length, in seconds."
 msgstr ""
 
-#: src/libvlc-module.c:1344
+#: src/libvlc-module.c:1346
 msgid "Long jump length"
 msgstr ""
 
-#: src/libvlc-module.c:1345
+#: src/libvlc-module.c:1347
 msgid "Long jump length, in seconds."
 msgstr ""
 
-#: src/libvlc-module.c:1347 modules/control/hotkeys.c:179
+#: src/libvlc-module.c:1349 modules/control/hotkeys.c:179
 #: modules/gui/qt4/components/controller.hpp:108
 #: modules/gui/qt4/components/controller.hpp:118 modules/gui/qt4/menus.cpp:883
 #: modules/gui/skins2/commands/cmd_quit.cpp:40
 msgid "Quit"
 msgstr "გამოსვლა"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1350
 msgid "Select the hotkey to quit the application."
 msgstr ""
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1351
 msgid "Navigate up"
 msgstr ""
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1352
 msgid "Select the key to move the selector up in DVD menus."
 msgstr ""
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1353
 msgid "Navigate down"
 msgstr ""
 
-#: src/libvlc-module.c:1352
-msgid "Select the key to move the selector down in DVD menus."
-msgstr ""
-
-#: src/libvlc-module.c:1353
-#, fuzzy
-msgid "Navigate left"
-msgstr "მარცხენა"
-
 #: src/libvlc-module.c:1354
-msgid "Select the key to move the selector left in DVD menus."
+msgid "Select the key to move the selector down in DVD menus."
 msgstr ""
 
 #: src/libvlc-module.c:1355
 #, fuzzy
-msgid "Navigate right"
-msgstr "მარჯვენა"
+msgid "Navigate left"
+msgstr "მარცხენა"
 
 #: src/libvlc-module.c:1356
-msgid "Select the key to move the selector right in DVD menus."
+msgid "Select the key to move the selector left in DVD menus."
 msgstr ""
 
 #: src/libvlc-module.c:1357
-msgid "Activate"
-msgstr "გააქტიურება"
+#, fuzzy
+msgid "Navigate right"
+msgstr "მარჯვენა"
 
 #: src/libvlc-module.c:1358
-msgid "Select the key to activate selected item in DVD menus."
+msgid "Select the key to move the selector right in DVD menus."
 msgstr ""
 
 #: src/libvlc-module.c:1359
-msgid "Go to the DVD menu"
-msgstr "გადადი DVD-ს მენიუში"
+msgid "Activate"
+msgstr "გააქტიურება"
 
 #: src/libvlc-module.c:1360
-msgid "Select the key to take you to the DVD menu"
+msgid "Select the key to activate selected item in DVD menus."
 msgstr ""
 
 #: src/libvlc-module.c:1361
-#, fuzzy
-msgid "Select previous DVD title"
-msgstr "არჩევა DVD სათაური"
+msgid "Go to the DVD menu"
+msgstr "გადადი DVD-ს მენიუში"
 
 #: src/libvlc-module.c:1362
-msgid "Select the key to choose the previous title from the DVD"
+msgid "Select the key to take you to the DVD menu"
 msgstr ""
 
 #: src/libvlc-module.c:1363
 #, fuzzy
-msgid "Select next DVD title"
+msgid "Select previous DVD title"
 msgstr "არჩევა DVD სათაური"
 
 #: src/libvlc-module.c:1364
-msgid "Select the key to choose the next title from the DVD"
+msgid "Select the key to choose the previous title from the DVD"
 msgstr ""
 
 #: src/libvlc-module.c:1365
 #, fuzzy
-msgid "Select prev DVD chapter"
-msgstr "არჩევა DVD"
+msgid "Select next DVD title"
+msgstr "არჩევა DVD სათაური"
 
 #: src/libvlc-module.c:1366
-msgid "Select the key to choose the previous chapter from the DVD"
+msgid "Select the key to choose the next title from the DVD"
 msgstr ""
 
 #: src/libvlc-module.c:1367
-msgid "Select next DVD chapter"
-msgstr "DVD-ს შემდეგი თავის ამორჩევა"
+#, fuzzy
+msgid "Select prev DVD chapter"
+msgstr "არჩევა DVD"
 
 #: src/libvlc-module.c:1368
-msgid "Select the key to choose the next chapter from the DVD"
+msgid "Select the key to choose the previous chapter from the DVD"
 msgstr ""
 
 #: src/libvlc-module.c:1369
-msgid "Volume up"
-msgstr "ხმის აწევა"
+msgid "Select next DVD chapter"
+msgstr "DVD-ს შემდეგი თავის ამორჩევა"
 
 #: src/libvlc-module.c:1370
-msgid "Select the key to increase audio volume."
+msgid "Select the key to choose the next chapter from the DVD"
 msgstr ""
 
 #: src/libvlc-module.c:1371
+msgid "Volume up"
+msgstr "ხმის აწევა"
+
+#: src/libvlc-module.c:1372
+msgid "Select the key to increase audio volume."
+msgstr ""
+
+#: src/libvlc-module.c:1373
 msgid "Volume down"
 msgstr "ხმის ჩაწევა"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1374
 msgid "Select the key to decrease audio volume."
 msgstr ""
 
-#: src/libvlc-module.c:1373 modules/access/v4l2.c:175
+#: src/libvlc-module.c:1375 modules/access/v4l2.c:175
 #: modules/gui/macosx/controls.m:1077 modules/gui/macosx/intf.m:671
 #: modules/gui/macosx/intf.m:743 modules/gui/macosx/intf.m:752
 #: modules/gui/qt4/menus.cpp:572
 msgid "Mute"
 msgstr "გააჩუმე"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1376
 msgid "Select the key to mute audio."
 msgstr ""
 
-#: src/libvlc-module.c:1375
+#: src/libvlc-module.c:1377
 msgid "Subtitle delay up"
 msgstr "ტიტრების დაგვიანება"
 
-#: src/libvlc-module.c:1376
-msgid "Select the key to increase the subtitle delay."
-msgstr ""
-
-#: src/libvlc-module.c:1377
-#, fuzzy
-msgid "Subtitle delay down"
-msgstr "ტიტრები"
-
 #: src/libvlc-module.c:1378
-msgid "Select the key to decrease the subtitle delay."
+msgid "Select the key to increase the subtitle delay."
 msgstr ""
 
 #: src/libvlc-module.c:1379
 #, fuzzy
-msgid "Subtitle position up"
-msgstr "ფილტრები"
+msgid "Subtitle delay down"
+msgstr "ტიტრები"
 
 #: src/libvlc-module.c:1380
-#, fuzzy
-msgid "Select the key to move subtitles higher."
-msgstr "ტიტრების ფაილის გამოყენება"
+msgid "Select the key to decrease the subtitle delay."
+msgstr ""
 
 #: src/libvlc-module.c:1381
 #, fuzzy
-msgid "Subtitle position down"
+msgid "Subtitle position up"
 msgstr "ფილტრები"
 
 #: src/libvlc-module.c:1382
 #, fuzzy
-msgid "Select the key to move subtitles lower."
+msgid "Select the key to move subtitles higher."
 msgstr "ტიტრების ფაილის გამოყენება"
 
 #: src/libvlc-module.c:1383
+#, fuzzy
+msgid "Subtitle position down"
+msgstr "ფილტრები"
+
+#: src/libvlc-module.c:1384
+#, fuzzy
+msgid "Select the key to move subtitles lower."
+msgstr "ტიტრების ფაილის გამოყენება"
+
+#: src/libvlc-module.c:1385
 msgid "Audio delay up"
 msgstr ""
 
-#: src/libvlc-module.c:1384
+#: src/libvlc-module.c:1386
 msgid "Select the key to increase the audio delay."
 msgstr ""
 
-#: src/libvlc-module.c:1385
+#: src/libvlc-module.c:1387
 msgid "Audio delay down"
 msgstr ""
 
-#: src/libvlc-module.c:1386
+#: src/libvlc-module.c:1388
 msgid "Select the key to decrease the audio delay."
 msgstr ""
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1395
 msgid "Play playlist bookmark 1"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 1"
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1396
 msgid "Play playlist bookmark 2"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 2"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1397
 msgid "Play playlist bookmark 3"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 3"
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1398
 msgid "Play playlist bookmark 4"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 4"
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1399
 msgid "Play playlist bookmark 5"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 5"
 
-#: src/libvlc-module.c:1398
+#: src/libvlc-module.c:1400
 msgid "Play playlist bookmark 6"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 6"
 
-#: src/libvlc-module.c:1399
+#: src/libvlc-module.c:1401
 msgid "Play playlist bookmark 7"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 7"
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1402
 msgid "Play playlist bookmark 8"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 8"
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1403
 msgid "Play playlist bookmark 9"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 9"
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1404
 msgid "Play playlist bookmark 10"
 msgstr "დაუკარი დაკვრის სიის სანიშნე 10"
 
-#: src/libvlc-module.c:1403
+#: src/libvlc-module.c:1405
 msgid "Select the key to play this bookmark."
 msgstr ""
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1406
 msgid "Set playlist bookmark 1"
 msgstr "დასვი დაკვრის სიის სანიშნე 1"
 
-#: src/libvlc-module.c:1405
+#: src/libvlc-module.c:1407
 msgid "Set playlist bookmark 2"
 msgstr "დასვი დაკვრის სიის სანიშნე 2"
 
-#: src/libvlc-module.c:1406
+#: src/libvlc-module.c:1408
 msgid "Set playlist bookmark 3"
 msgstr "დასვი დაკვრის სიის სანიშნე 3"
 
-#: src/libvlc-module.c:1407
+#: src/libvlc-module.c:1409
 msgid "Set playlist bookmark 4"
 msgstr "დასვი დაკვრის სიის სანიშნე 4"
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1410
 msgid "Set playlist bookmark 5"
 msgstr "დასვი დაკვრის სიის სანიშნე 5"
 
-#: src/libvlc-module.c:1409
+#: src/libvlc-module.c:1411
 msgid "Set playlist bookmark 6"
 msgstr "დასვი დაკვრის სიის სანიშნე 6"
 
-#: src/libvlc-module.c:1410
+#: src/libvlc-module.c:1412
 msgid "Set playlist bookmark 7"
 msgstr "დასვი დაკვრის სიის სანიშნე 7"
 
-#: src/libvlc-module.c:1411
+#: src/libvlc-module.c:1413
 msgid "Set playlist bookmark 8"
 msgstr "დასვი დაკვრის სიის სანიშნე 8"
 
-#: src/libvlc-module.c:1412
+#: src/libvlc-module.c:1414
 msgid "Set playlist bookmark 9"
 msgstr "დასვი დაკვრის სიის სანიშნე 9"
 
-#: src/libvlc-module.c:1413
+#: src/libvlc-module.c:1415
 msgid "Set playlist bookmark 10"
 msgstr "დასვი დაკვრის სიის სანიშნე 10"
 
-#: src/libvlc-module.c:1414
+#: src/libvlc-module.c:1416
 msgid "Select the key to set this playlist bookmark."
 msgstr "ამოირჩიეთ ამ სანიშნის დასასმელი ღილაკი."
 
-#: src/libvlc-module.c:1416
+#: src/libvlc-module.c:1418
 msgid "Playlist bookmark 1"
 msgstr "სანიშნე 1"
 
-#: src/libvlc-module.c:1417
+#: src/libvlc-module.c:1419
 msgid "Playlist bookmark 2"
 msgstr "სანიშნე 2"
 
-#: src/libvlc-module.c:1418
+#: src/libvlc-module.c:1420
 msgid "Playlist bookmark 3"
 msgstr "სანიშნე 3"
 
-#: src/libvlc-module.c:1419
+#: src/libvlc-module.c:1421
 msgid "Playlist bookmark 4"
 msgstr "სანიშნე 4"
 
-#: src/libvlc-module.c:1420
+#: src/libvlc-module.c:1422
 msgid "Playlist bookmark 5"
 msgstr "სანიშნე 5"
 
-#: src/libvlc-module.c:1421
+#: src/libvlc-module.c:1423
 msgid "Playlist bookmark 6"
 msgstr "სანიშნე 6"
 
-#: src/libvlc-module.c:1422
+#: src/libvlc-module.c:1424
 msgid "Playlist bookmark 7"
 msgstr "სანიშნე 7"
 
-#: src/libvlc-module.c:1423
+#: src/libvlc-module.c:1425
 msgid "Playlist bookmark 8"
 msgstr "სანიშნე 8"
 
-#: src/libvlc-module.c:1424
+#: src/libvlc-module.c:1426
 msgid "Playlist bookmark 9"
 msgstr "სანიშნე 9"
 
-#: src/libvlc-module.c:1425
+#: src/libvlc-module.c:1427
 msgid "Playlist bookmark 10"
 msgstr "სანიშნე 10"
 
-#: src/libvlc-module.c:1427
+#: src/libvlc-module.c:1429
 msgid "This allows you to define playlist bookmarks."
 msgstr ""
 
-#: src/libvlc-module.c:1429
+#: src/libvlc-module.c:1431
 #, fuzzy
 msgid "Go back in browsing history"
 msgstr "გადასვლა დუიმი"
 
-#: src/libvlc-module.c:1430
+#: src/libvlc-module.c:1432
 msgid ""
 "Select the key to go back (to the previous media item) in the browsing "
 "history."
 msgstr ""
 
-#: src/libvlc-module.c:1431
+#: src/libvlc-module.c:1433
 #, fuzzy
 msgid "Go forward in browsing history"
 msgstr "გადასვლა დუიმი"
 
-#: src/libvlc-module.c:1432
+#: src/libvlc-module.c:1434
 msgid ""
 "Select the key to go forward (to the next media item) in the browsing "
 "history."
 msgstr ""
 
-#: src/libvlc-module.c:1434
+#: src/libvlc-module.c:1436
 msgid "Cycle audio track"
 msgstr ""
 
-#: src/libvlc-module.c:1435
+#: src/libvlc-module.c:1437
 msgid "Cycle through the available audio tracks(languages)."
 msgstr ""
 
-#: src/libvlc-module.c:1436
+#: src/libvlc-module.c:1438
 msgid "Cycle subtitle track"
 msgstr ""
 
-#: src/libvlc-module.c:1437
+#: src/libvlc-module.c:1439
 msgid "Cycle through the available subtitle tracks."
 msgstr ""
 
-#: src/libvlc-module.c:1438
+#: src/libvlc-module.c:1440
 msgid "Cycle source aspect ratio"
 msgstr ""
 
-#: src/libvlc-module.c:1439
+#: src/libvlc-module.c:1441
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr ""
 
-#: src/libvlc-module.c:1440
+#: src/libvlc-module.c:1442
 msgid "Cycle video crop"
 msgstr ""
 
-#: src/libvlc-module.c:1441
+#: src/libvlc-module.c:1443
 msgid "Cycle through a predefined list of crop formats."
 msgstr ""
 
-#: src/libvlc-module.c:1442
+#: src/libvlc-module.c:1444
 #, fuzzy
 msgid "Toggle autoscaling"
 msgstr "Telnet ინტერფეისი"
 
-#: src/libvlc-module.c:1443
+#: src/libvlc-module.c:1445
 msgid "Activate or deactivate autoscaling."
 msgstr ""
 
-#: src/libvlc-module.c:1444
+#: src/libvlc-module.c:1446
 msgid "Increase scale factor"
 msgstr ""
 
-#: src/libvlc-module.c:1445
+#: src/libvlc-module.c:1447
 msgid "Increase scale factor."
 msgstr ""
 
-#: src/libvlc-module.c:1446
+#: src/libvlc-module.c:1448
 msgid "Decrease scale factor"
 msgstr ""
 
-#: src/libvlc-module.c:1447
+#: src/libvlc-module.c:1449
 msgid "Decrease scale factor."
 msgstr ""
 
-#: src/libvlc-module.c:1448
+#: src/libvlc-module.c:1450
 #, fuzzy
 msgid "Cycle deinterlace modes"
 msgstr "დეინტერლაცია"
 
-#: src/libvlc-module.c:1449
+#: src/libvlc-module.c:1451
 #, fuzzy
 msgid "Cycle through deinterlace modes."
 msgstr "ყველა"
 
-#: src/libvlc-module.c:1450
+#: src/libvlc-module.c:1452
 msgid "Show interface"
 msgstr "ინტერფეისის ჩვენება"
 
-#: src/libvlc-module.c:1451
+#: src/libvlc-module.c:1453
 #, fuzzy
 msgid "Raise the interface above all other windows."
 msgstr "ყველა სხვა."
 
-#: src/libvlc-module.c:1452
+#: src/libvlc-module.c:1454
 msgid "Hide interface"
 msgstr "ინტერფეისის დამალვა"
 
-#: src/libvlc-module.c:1453
+#: src/libvlc-module.c:1455
 #, fuzzy
 msgid "Lower the interface below all other windows."
 msgstr "უფრო დაბლა ყველა სხვა."
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1456
 msgid "Take video snapshot"
 msgstr "ვიდეოს სურათის გადაღება"
 
-#: src/libvlc-module.c:1455
+#: src/libvlc-module.c:1457
 msgid "Takes a video snapshot and writes it to disk."
 msgstr ""
 
-#: src/libvlc-module.c:1457 modules/gui/qt4/components/controller.hpp:107
+#: src/libvlc-module.c:1459 modules/gui/qt4/components/controller.hpp:107
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr ""
 
-#: src/libvlc-module.c:1458
+#: src/libvlc-module.c:1460
 msgid "Record access filter start/stop."
 msgstr ""
 
-#: src/libvlc-module.c:1459
+#: src/libvlc-module.c:1461
 #, fuzzy
 msgid "Dump"
 msgstr "ფიქტიური"
 
-#: src/libvlc-module.c:1460
+#: src/libvlc-module.c:1462
 msgid "Media dump access filter trigger."
 msgstr ""
 
-#: src/libvlc-module.c:1462
+#: src/libvlc-module.c:1464
 msgid "Normal/Repeat/Loop"
 msgstr ""
 
-#: src/libvlc-module.c:1463
+#: src/libvlc-module.c:1465
 msgid "Toggle Normal/Repeat/Loop playlist modes"
 msgstr ""
 
-#: src/libvlc-module.c:1466
+#: src/libvlc-module.c:1468
 msgid "Toggle random playlist playback"
 msgstr ""
 
-#: src/libvlc-module.c:1471 src/libvlc-module.c:1472
+#: src/libvlc-module.c:1473 src/libvlc-module.c:1474
 msgid "Un-Zoom"
 msgstr "დაპატარავება"
 
-#: src/libvlc-module.c:1474 src/libvlc-module.c:1475
+#: src/libvlc-module.c:1476 src/libvlc-module.c:1477
 msgid "Crop one pixel from the top of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1476 src/libvlc-module.c:1477
+#: src/libvlc-module.c:1478 src/libvlc-module.c:1479
 msgid "Uncrop one pixel from the top of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1479 src/libvlc-module.c:1480
+#: src/libvlc-module.c:1481 src/libvlc-module.c:1482
 msgid "Crop one pixel from the left of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1481 src/libvlc-module.c:1482
+#: src/libvlc-module.c:1483 src/libvlc-module.c:1484
 msgid "Uncrop one pixel from the left of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1484 src/libvlc-module.c:1485
+#: src/libvlc-module.c:1486 src/libvlc-module.c:1487
 msgid "Crop one pixel from the bottom of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1486 src/libvlc-module.c:1487
+#: src/libvlc-module.c:1488 src/libvlc-module.c:1489
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1489 src/libvlc-module.c:1490
+#: src/libvlc-module.c:1491 src/libvlc-module.c:1492
 msgid "Crop one pixel from the right of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1491 src/libvlc-module.c:1492
+#: src/libvlc-module.c:1493 src/libvlc-module.c:1494
 msgid "Uncrop one pixel from the right of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1494
+#: src/libvlc-module.c:1496
 #, fuzzy
 msgid "Toggle wallpaper mode in video output"
 msgstr "ჩართვა რეჟიმი "
 
-#: src/libvlc-module.c:1496
+#: src/libvlc-module.c:1498
 #, fuzzy
 msgid "Toggle wallpaper mode in video output."
 msgstr "ჩართვა რეჟიმი "
 
-#: src/libvlc-module.c:1498 src/libvlc-module.c:1499
+#: src/libvlc-module.c:1500 src/libvlc-module.c:1501
 msgid "Display OSD menu on top of video output"
 msgstr ""
 
-#: src/libvlc-module.c:1500
+#: src/libvlc-module.c:1502
 msgid "Do not display OSD menu on video output"
 msgstr ""
 
-#: src/libvlc-module.c:1501
+#: src/libvlc-module.c:1503
 msgid "Do not display OSD menu on top of video output"
 msgstr ""
 
-#: src/libvlc-module.c:1502
+#: src/libvlc-module.c:1504
 msgid "Highlight widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1504
+#: src/libvlc-module.c:1506
 msgid "Move OSD menu highlight to the widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1505
+#: src/libvlc-module.c:1507
 msgid "Highlight widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1507
+#: src/libvlc-module.c:1509
 msgid "Move OSD menu highlight to the widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1508
+#: src/libvlc-module.c:1510
 msgid "Highlight widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1510
+#: src/libvlc-module.c:1512
 msgid "Move OSD menu highlight to the widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1511
+#: src/libvlc-module.c:1513
 msgid "Highlight widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1513
+#: src/libvlc-module.c:1515
 msgid "Move OSD menu highlight to the widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1514
+#: src/libvlc-module.c:1516
 #, fuzzy
 msgid "Select current widget"
 msgstr "ახლანდელი ელემენტის გამეორება"
 
-#: src/libvlc-module.c:1516
+#: src/libvlc-module.c:1518
 msgid "Selecting current widget performs the associated action."
 msgstr ""
 
-#: src/libvlc-module.c:1518
+#: src/libvlc-module.c:1520
 #, fuzzy
 msgid "Cycle through audio devices"
 msgstr "ყველა"
 
-#: src/libvlc-module.c:1519
+#: src/libvlc-module.c:1521
 #, fuzzy
 msgid "Cycle through available audio devices"
 msgstr "ყველა"
 
-#: src/libvlc-module.c:1692 src/video_output/vout_intf.c:363
+#: src/libvlc-module.c:1694 src/video_output/vout_intf.c:363
 #: modules/gui/macosx/controls.m:494 modules/gui/macosx/controls.m:1086
 #: modules/gui/macosx/intf.m:688 modules/gui/macosx/intf.m:754
 #: modules/gui/qt4/components/controller.hpp:106
@@ -4238,140 +4238,140 @@ msgstr "ყველა"
 msgid "Snapshot"
 msgstr "სურათის გადაღება"
 
-#: src/libvlc-module.c:1709
+#: src/libvlc-module.c:1711
 msgid "Window properties"
 msgstr "ფანჯრის პარამეტრები"
 
-#: src/libvlc-module.c:1768
+#: src/libvlc-module.c:1770
 msgid "Subpictures"
 msgstr ""
 
-#: src/libvlc-module.c:1776 modules/codec/subtitles/subsdec.c:206
+#: src/libvlc-module.c:1778 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
 #: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
 #: modules/gui/qt4/ui/profiles.h:497
 msgid "Subtitles"
 msgstr "ტიტრები"
 
-#: src/libvlc-module.c:1794 modules/stream_out/transcode/transcode.c:115
+#: src/libvlc-module.c:1796 modules/stream_out/transcode/transcode.c:115
 msgid "Overlays"
 msgstr ""
 
-#: src/libvlc-module.c:1802
+#: src/libvlc-module.c:1804
 msgid "Track settings"
 msgstr "კვალის პარამეტრები"
 
-#: src/libvlc-module.c:1832
+#: src/libvlc-module.c:1834
 #, fuzzy
 msgid "Playback control"
 msgstr "დაკვრის კონტროლი"
 
-#: src/libvlc-module.c:1860
+#: src/libvlc-module.c:1862
 msgid "Default devices"
 msgstr ""
 
-#: src/libvlc-module.c:1869
+#: src/libvlc-module.c:1871
 msgid "Network settings"
 msgstr "ქსელის პარამეტრები"
 
-#: src/libvlc-module.c:1881
+#: src/libvlc-module.c:1883
 msgid "Socks proxy"
 msgstr "Socks პროქსი"
 
-#: src/libvlc-module.c:1890 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1892 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr ""
 
-#: src/libvlc-module.c:1941
+#: src/libvlc-module.c:1943
 msgid "Decoders"
 msgstr "დეკოდერები"
 
-#: src/libvlc-module.c:1948 modules/access/v4l2.c:86
+#: src/libvlc-module.c:1950 modules/access/v4l2.c:86
 #: modules/gui/macosx/playlistinfo.m:97
 msgid "Input"
 msgstr "შესავალი"
 
-#: src/libvlc-module.c:1987
+#: src/libvlc-module.c:1989
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:2019
+#: src/libvlc-module.c:2021
 msgid "CPU"
 msgstr "CPU"
 
-#: src/libvlc-module.c:2048
+#: src/libvlc-module.c:2050
 msgid "Special modules"
 msgstr "სპეციალური მოდულები"
 
-#: src/libvlc-module.c:2054 modules/gui/qt4/dialogs/plugins.cpp:66
+#: src/libvlc-module.c:2056 modules/gui/qt4/dialogs/plugins.cpp:66
 msgid "Plugins"
 msgstr "პლაგინები"
 
-#: src/libvlc-module.c:2065
+#: src/libvlc-module.c:2067
 msgid "Performance options"
 msgstr ""
 
-#: src/libvlc-module.c:2213
+#: src/libvlc-module.c:2215
 msgid "Hot keys"
 msgstr "ცხელი ღილაკები"
 
-#: src/libvlc-module.c:2655
+#: src/libvlc-module.c:2657
 msgid "Jump sizes"
 msgstr ""
 
-#: src/libvlc-module.c:2732
+#: src/libvlc-module.c:2734
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 
-#: src/libvlc-module.c:2735
+#: src/libvlc-module.c:2737
 msgid "Exhaustive help for VLC and its modules"
 msgstr ""
 
-#: src/libvlc-module.c:2737
+#: src/libvlc-module.c:2739
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
 msgstr ""
 
-#: src/libvlc-module.c:2740
+#: src/libvlc-module.c:2742
 msgid "ask for extra verbosity when displaying help"
 msgstr ""
 
-#: src/libvlc-module.c:2742
+#: src/libvlc-module.c:2744
 msgid "print a list of available modules"
 msgstr ""
 
-#: src/libvlc-module.c:2744
+#: src/libvlc-module.c:2746
 msgid "print a list of available modules with extra detail"
 msgstr ""
 
-#: src/libvlc-module.c:2746
+#: src/libvlc-module.c:2748
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strict matches."
 msgstr ""
 
-#: src/libvlc-module.c:2750
+#: src/libvlc-module.c:2752
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 
-#: src/libvlc-module.c:2752
+#: src/libvlc-module.c:2754
 msgid "reset the current config to the default values"
 msgstr ""
 
-#: src/libvlc-module.c:2754
+#: src/libvlc-module.c:2756
 msgid "use alternate config file"
 msgstr ""
 
-#: src/libvlc-module.c:2756
+#: src/libvlc-module.c:2758
 msgid "resets the current plugins cache"
 msgstr ""
 
-#: src/libvlc-module.c:2758
+#: src/libvlc-module.c:2760
 msgid "print version information"
 msgstr "აჩვენე ინფორმაცია ვერსიაზე"
 
-#: src/libvlc-module.c:2796
+#: src/libvlc-module.c:2798
 msgid "main program"
 msgstr "მთავარი პროგრამა"
 
@@ -5268,7 +5268,7 @@ msgstr "ნიმუში ის აუდიო."
 
 #: modules/access/alsa.c:75 modules/access/bd/bd.c:52
 #: modules/access/bda/bda.c:46 modules/access/cdda.c:61
-#: modules/access/dshow/dshow.cpp:99 modules/access/dv.c:59
+#: modules/access/dshow/dshow.cpp:101 modules/access/dv.c:59
 #: modules/access/dvb/access.c:83 modules/access/dvdnav.c:72
 #: modules/access/dvdread.c:74 modules/access/eyetv.m:61
 #: modules/access/fake.c:44 modules/access/ftp.c:58
@@ -5797,71 +5797,71 @@ msgstr "აუდიო CD - კვალი %i"
 msgid "dc1394 input"
 msgstr "აუდიო CD შესავალი"
 
-#: modules/access/dshow/dshow.cpp:87
+#: modules/access/dshow/dshow.cpp:89
 msgid "Cable"
 msgstr "კაბელი"
 
-#: modules/access/dshow/dshow.cpp:87
+#: modules/access/dshow/dshow.cpp:89
 msgid "Antenna"
 msgstr "ანტენა"
 
-#: modules/access/dshow/dshow.cpp:94
+#: modules/access/dshow/dshow.cpp:96
 msgid "TV"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:95
+#: modules/access/dshow/dshow.cpp:97
 #, fuzzy
 msgid "FM radio"
 msgstr "გააჩუმე აუდიო"
 
-#: modules/access/dshow/dshow.cpp:96
+#: modules/access/dshow/dshow.cpp:98
 #, fuzzy
 msgid "AM radio"
 msgstr "გააჩუმე აუდიო"
 
-#: modules/access/dshow/dshow.cpp:97
+#: modules/access/dshow/dshow.cpp:99
 msgid "DSS"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:101
+#: modules/access/dshow/dshow.cpp:103
 #, fuzzy
 msgid ""
 "Caching value for DirectShow streams. This value should be set in "
 "milliseconds."
 msgstr "დუიმი მილიწამები."
 
-#: modules/access/dshow/dshow.cpp:103 modules/access/v4l.c:81
+#: modules/access/dshow/dshow.cpp:105 modules/access/v4l.c:81
 #: modules/gui/qt4/components/open_panels.cpp:757
 #: modules/gui/qt4/components/open_panels.cpp:792
 msgid "Video device name"
 msgstr "ვიდეო მოწყობილობის სახელი"
 
-#: modules/access/dshow/dshow.cpp:105
+#: modules/access/dshow/dshow.cpp:107
 #, fuzzy
 msgid ""
 "Name of the video device that will be used by the DirectShow plugin. If you "
 "don't specify anything, the default device will be used."
 msgstr "ნაგულისხმევი VCD -სკენ a."
 
-#: modules/access/dshow/dshow.cpp:108
+#: modules/access/dshow/dshow.cpp:110
 #: modules/gui/qt4/components/open_panels.cpp:763
 #: modules/gui/qt4/components/open_panels.cpp:798
 msgid "Audio device name"
 msgstr "აუდიო მოწყობილობის სახელი"
 
-#: modules/access/dshow/dshow.cpp:110
+#: modules/access/dshow/dshow.cpp:112
 #, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
 "don't specify anything, the default device will be used. "
 msgstr "ნაგულისხმევი VCD -სკენ a."
 
-#: modules/access/dshow/dshow.cpp:113
+#: modules/access/dshow/dshow.cpp:115
 #: modules/gui/qt4/components/open_panels.cpp:667
 msgid "Video size"
 msgstr "ვიდეოს ზომა"
 
-#: modules/access/dshow/dshow.cpp:115
+#: modules/access/dshow/dshow.cpp:117
 #, fuzzy
 msgid ""
 "Size of the video that will be displayed by the DirectShow plugin. If you "
@@ -5869,85 +5869,85 @@ msgid ""
 "can specify a standard size (cif, d1, ...) or <width>x<height>."
 msgstr "ნაგულისხმევი VCD -სკენ a."
 
-#: modules/access/dshow/dshow.cpp:118 modules/access/v4l2.c:215
+#: modules/access/dshow/dshow.cpp:120 modules/access/v4l2.c:215
 #, fuzzy
 msgid "Picture aspect-ratio n:m"
 msgstr "ვიდეო ტილო"
 
-#: modules/access/dshow/dshow.cpp:119 modules/access/v4l2.c:216
+#: modules/access/dshow/dshow.cpp:121 modules/access/v4l2.c:216
 msgid "Define input picture aspect-ratio to use. Default is 4:3"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:120 modules/access/v4l.c:85
+#: modules/access/dshow/dshow.cpp:122 modules/access/v4l.c:85
 #: modules/access/v4l2.c:80
 msgid "Video input chroma format"
 msgstr "ვიდეო შესავალის chroma-ფორმატი"
 
-#: modules/access/dshow/dshow.cpp:122
+#: modules/access/dshow/dshow.cpp:124
 msgid ""
 "Force the DirectShow video input to use a specific chroma format (eg. I420 "
 "(default), RV24, etc.)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:124
+#: modules/access/dshow/dshow.cpp:126
 msgid "Video input frame rate"
 msgstr "ვიდეო შესავალის კადრი/წამში"
 
-#: modules/access/dshow/dshow.cpp:126
+#: modules/access/dshow/dshow.cpp:128
 msgid ""
 "Force the DirectShow video input to use a specific frame rate(eg. 0 means "
 "default, 25, 29.97, 50, 59.94, etc.)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:128
+#: modules/access/dshow/dshow.cpp:130
 msgid "Device properties"
 msgstr "მოწყობილობის პარამეტრები"
 
-#: modules/access/dshow/dshow.cpp:130
+#: modules/access/dshow/dshow.cpp:132
 msgid ""
 "Show the properties dialog of the selected device before starting the stream."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:132
+#: modules/access/dshow/dshow.cpp:134
 msgid "Tuner properties"
 msgstr "მიმღების პარამეტრები"
 
-#: modules/access/dshow/dshow.cpp:134
+#: modules/access/dshow/dshow.cpp:136
 msgid "Show the tuner properties [channel selection] page."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:135
+#: modules/access/dshow/dshow.cpp:137
 msgid "Tuner TV Channel"
 msgstr "მიმღების TV არხი"
 
-#: modules/access/dshow/dshow.cpp:137
+#: modules/access/dshow/dshow.cpp:139
 msgid "Set the TV channel the tuner will set to (0 means default)."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:139
+#: modules/access/dshow/dshow.cpp:141
 msgid "Tuner country code"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:141
+#: modules/access/dshow/dshow.cpp:143
 msgid ""
 "Set the tuner country code that establishes the current channel-to-frequency "
 "mapping (0 means default)."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:143
+#: modules/access/dshow/dshow.cpp:145
 msgid "Tuner input type"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:145
+#: modules/access/dshow/dshow.cpp:147
 msgid "Select the tuner input type (Cable/Antenna)."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:146
+#: modules/access/dshow/dshow.cpp:148
 #, fuzzy
 msgid "Video input pin"
 msgstr "ვიდეოს ოფციები"
 
-#: modules/access/dshow/dshow.cpp:148
+#: modules/access/dshow/dshow.cpp:150
 msgid ""
 "Select the video input source, such as composite, s-video, or tuner. Since "
 "these settings are hardware-specific, you should find good settings in the "
@@ -5955,112 +5955,112 @@ msgid ""
 "will not be changed."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:152
+#: modules/access/dshow/dshow.cpp:154
 #, fuzzy
 msgid "Audio input pin"
 msgstr "აუდიო CD შესავალი"
 
-#: modules/access/dshow/dshow.cpp:154
+#: modules/access/dshow/dshow.cpp:156
 msgid "Select the audio input source. See the \"video input\" option."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:155
+#: modules/access/dshow/dshow.cpp:157
 #, fuzzy
 msgid "Video output pin"
 msgstr "ვიდეო გასავალის URL"
 
-#: modules/access/dshow/dshow.cpp:157
+#: modules/access/dshow/dshow.cpp:159
 msgid "Select the video output type. See the \"video input\" option."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:158
+#: modules/access/dshow/dshow.cpp:160
 #, fuzzy
 msgid "Audio output pin"
 msgstr "აუდიო გასავალის URL"
 
-#: modules/access/dshow/dshow.cpp:160
+#: modules/access/dshow/dshow.cpp:162
 msgid "Select the audio output type. See the \"video input\" option."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:162
+#: modules/access/dshow/dshow.cpp:164
 #, fuzzy
 msgid "AM Tuner mode"
 msgstr "SMB მომხმარებელი"
 
-#: modules/access/dshow/dshow.cpp:164
+#: modules/access/dshow/dshow.cpp:166
 msgid ""
 "AM Tuner mode. Can be one of Default (0), TV (1),AM Radio (2), FM Radio (3) "
 "or DSS (4)."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:167
+#: modules/access/dshow/dshow.cpp:169
 #, fuzzy
 msgid "Number of audio channels"
 msgstr "ის"
 
-#: modules/access/dshow/dshow.cpp:169
+#: modules/access/dshow/dshow.cpp:171
 msgid ""
 "Select audio input format with the given number of audio channels (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:171
+#: modules/access/dshow/dshow.cpp:173
 #: modules/stream_out/transcode/transcode.c:93
 #, fuzzy
 msgid "Audio sample rate"
 msgstr "აუდიო"
 
-#: modules/access/dshow/dshow.cpp:173
+#: modules/access/dshow/dshow.cpp:175
 msgid "Select audio input format with the given sample rate (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:175
+#: modules/access/dshow/dshow.cpp:177
 #, fuzzy
 msgid "Audio bits per sample"
 msgstr "აუდიო"
 
-#: modules/access/dshow/dshow.cpp:177
+#: modules/access/dshow/dshow.cpp:179
 msgid "Select audio input format with the given bits/sample (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:189
+#: modules/access/dshow/dshow.cpp:191
 msgid "DirectShow"
 msgstr "DirectShow"
 
-#: modules/access/dshow/dshow.cpp:190 modules/access/dshow/dshow.cpp:256
+#: modules/access/dshow/dshow.cpp:192 modules/access/dshow/dshow.cpp:268
 #, fuzzy
 msgid "DirectShow input"
 msgstr "DirectShow"
 
-#: modules/access/dshow/dshow.cpp:198 modules/access/dshow/dshow.cpp:203
+#: modules/access/dshow/dshow.cpp:200 modules/access/dshow/dshow.cpp:205
 #: modules/audio_output/alsa.c:117 modules/audio_output/directx.c:140
 #: modules/audio_output/waveout.c:109 modules/video_output/msw/directx.c:116
 msgid "Refresh list"
 msgstr "სიის განახლება"
 
-#: modules/access/dshow/dshow.cpp:199 modules/access/dshow/dshow.cpp:204
+#: modules/access/dshow/dshow.cpp:201 modules/access/dshow/dshow.cpp:206
 msgid "Configure"
 msgstr "კონფიგურირება"
 
-#: modules/access/dshow/dshow.cpp:464 modules/access/dshow/dshow.cpp:538
-#: modules/access/dshow/dshow.cpp:986 modules/access/dshow/dshow.cpp:1039
+#: modules/access/dshow/dshow.cpp:476 modules/access/dshow/dshow.cpp:550
+#: modules/access/dshow/dshow.cpp:998 modules/access/dshow/dshow.cpp:1051
 #, fuzzy
 msgid "Capture failed"
 msgstr "ჩამოჭრა ვიდეო"
 
-#: modules/access/dshow/dshow.cpp:465
+#: modules/access/dshow/dshow.cpp:477
 msgid "No video or audio device selected."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:539
+#: modules/access/dshow/dshow.cpp:551
 msgid "VLC cannot open ANY capture device.Check the error log for details."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:987
+#: modules/access/dshow/dshow.cpp:999
 #, c-format
 msgid "VLC cannot use the device \"%s\", because its type is not supported."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:1040
+#: modules/access/dshow/dshow.cpp:1052
 #, c-format
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr ""
@@ -6342,7 +6342,7 @@ msgid "Fake video input"
 msgstr "ფაილ-შესავალი"
 
 #: modules/access/file.c:170 modules/access/file.c:303
-#: modules/access/mmap.c:228 modules/access/mtp.c:216 modules/access/mtp.c:304
+#: modules/access/mmap.c:223 modules/access/mtp.c:216 modules/access/mtp.c:304
 #, fuzzy
 msgid "File reading failed"
 msgstr "აუდიო ფილტრები"
@@ -6352,7 +6352,7 @@ msgstr "აუდიო ფილტრები"
 msgid "VLC could not open the file \"%s\"."
 msgstr "ფერი ის ვიდეო."
 
-#: modules/access/file.c:304 modules/access/mmap.c:229
+#: modules/access/file.c:304 modules/access/mmap.c:224
 #: modules/access/mtp.c:217
 #, fuzzy
 msgid "VLC could not read the file."
@@ -8203,7 +8203,7 @@ msgstr ""
 #: modules/access_output/http.c:68 modules/control/telnet.c:81
 #: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:234
 #: modules/gui/qt4/dialogs/external.cpp:125 modules/misc/audioscrobbler.c:136
-#: modules/misc/lua/vlc.c:81 modules/misc/notify/growl_udp.c:73
+#: modules/misc/lua/vlc.c:80 modules/misc/notify/growl_udp.c:73
 #: modules/stream_out/raop.c:154
 msgid "Password"
 msgstr "პაროლი"
@@ -9906,25 +9906,25 @@ msgstr ""
 msgid "Higher value implies more prefiltering"
 msgstr ""
 
-#: modules/codec/dirac.c:87
+#: modules/codec/dirac.c:87 modules/codec/schroedinger.c:55
 #, fuzzy
 msgid "Chroma format"
 msgstr "ფიქტიური ნახატი"
 
-#: modules/codec/dirac.c:88
+#: modules/codec/dirac.c:88 modules/codec/schroedinger.c:56
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr ""
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:2:0"
 msgstr ""
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:2:2"
 msgstr ""
 
-#: modules/codec/dirac.c:93
+#: modules/codec/dirac.c:93 modules/codec/schroedinger.c:61
 msgid "4:4:4"
 msgstr ""
 
@@ -10692,10 +10692,25 @@ msgstr "A აუდიო"
 msgid "RealVideo library decoder"
 msgstr "Speex აუდიო დეკოდერი"
 
-#: modules/codec/schroedinger.c:50
+#: modules/codec/schroedinger.c:65
+#, fuzzy
+msgid "Automate picture coding mode"
+msgstr "Y"
+
+#: modules/codec/schroedinger.c:66
+msgid ""
+"Use the input picture to determine how to code it - interlaced or progressive"
+msgstr ""
+
+#: modules/codec/schroedinger.c:74
 #, fuzzy
 msgid "Schroedinger video decoder"
 msgstr "Theora ვიდეო დეკოდერი"
+
+#: modules/codec/schroedinger.c:80
+#, fuzzy
+msgid "Dirac video encoder using libschroedinger"
+msgstr "Dirac ვიდეო ენკოდერი"
 
 #: modules/codec/sdl_image.c:60
 #, fuzzy
@@ -12501,12 +12516,12 @@ msgstr ""
 msgid "Accept commands over a Unix socket rather than stdin."
 msgstr ""
 
-#: modules/control/rc.c:171 modules/misc/lua/vlc.c:85
+#: modules/control/rc.c:171 modules/misc/lua/vlc.c:84
 #, fuzzy
 msgid "TCP command input"
 msgstr "TCP შესავალი"
 
-#: modules/control/rc.c:172 modules/misc/lua/vlc.c:86
+#: modules/control/rc.c:172 modules/misc/lua/vlc.c:85
 msgid ""
 "Accept commands over a socket rather than stdin. You can set the address and "
 "port the interface will bind to."
@@ -12535,529 +12550,529 @@ msgstr "ka"
 msgid "Remote control interface"
 msgstr "დაშორებული კონტროლის ინტერფეისი"
 
-#: modules/control/rc.c:338
+#: modules/control/rc.c:341
 msgid "Remote control interface initialized. Type `help' for help."
 msgstr ""
 
-#: modules/control/rc.c:775
+#: modules/control/rc.c:778
 #, c-format
 msgid "Unknown command `%s'. Type `help' for help."
 msgstr ""
 
-#: modules/control/rc.c:798
+#: modules/control/rc.c:801
 msgid "+----[ Remote control commands ]"
 msgstr ""
 
-#: modules/control/rc.c:800
+#: modules/control/rc.c:803
 #, fuzzy
 msgid "| add XYZ  . . . . . . . . . . . . add XYZ to playlist"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:801
+#: modules/control/rc.c:804
 #, fuzzy
 msgid "| enqueue XYZ  . . . . . . . . . queue XYZ to playlist"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:802
+#: modules/control/rc.c:805
 #, fuzzy
 msgid "| playlist . . . . .  show items currently in playlist"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:803
+#: modules/control/rc.c:806
 #, fuzzy
 msgid "| play . . . . . . . . . . . . . . . . . . play stream"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:804
+#: modules/control/rc.c:807
 #, fuzzy
 msgid "| stop . . . . . . . . . . . . . . . . . . stop stream"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:805
+#: modules/control/rc.c:808
 #, fuzzy
 msgid "| next . . . . . . . . . . . . . .  next playlist item"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:806
+#: modules/control/rc.c:809
 #, fuzzy
 msgid "| prev . . . . . . . . . . . .  previous playlist item"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:807
+#: modules/control/rc.c:810
 #, fuzzy
 msgid "| goto . . . . . . . . . . . . . .  goto item at index"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:808
+#: modules/control/rc.c:811
 #, fuzzy
 msgid "| repeat [on|off] . . . .  toggle playlist item repeat"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:809
+#: modules/control/rc.c:812
 #, fuzzy
 msgid "| loop [on|off] . . . . . . . . . toggle playlist loop"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:810
+#: modules/control/rc.c:813
 #, fuzzy
 msgid "| random [on|off] . . . . . . .  toggle random jumping"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:811
+#: modules/control/rc.c:814
 #, fuzzy
 msgid "| clear . . . . . . . . . . . . . . clear the playlist"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:812
+#: modules/control/rc.c:815
 #, fuzzy
 msgid "| status . . . . . . . . . . . current playlist status"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:813
+#: modules/control/rc.c:816
 #, fuzzy
 msgid "| title [X]  . . . . . . set/get title in current item"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:814
+#: modules/control/rc.c:817
 #, fuzzy
 msgid "| title_n  . . . . . . . .  next title in current item"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:815
+#: modules/control/rc.c:818
 #, fuzzy
 msgid "| title_p  . . . . . .  previous title in current item"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:816
+#: modules/control/rc.c:819
 #, fuzzy
 msgid "| chapter [X]  . . . . set/get chapter in current item"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:817
+#: modules/control/rc.c:820
 #, fuzzy
 msgid "| chapter_n  . . . . . .  next chapter in current item"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:818
+#: modules/control/rc.c:821
 msgid "| chapter_p  . . . .  previous chapter in current item"
 msgstr ""
 
-#: modules/control/rc.c:820
+#: modules/control/rc.c:823
 msgid "| seek X . . . seek in seconds, for instance `seek 12'"
 msgstr ""
 
-#: modules/control/rc.c:821
+#: modules/control/rc.c:824
 #, fuzzy
 msgid "| pause  . . . . . . . . . . . . . . . .  toggle pause"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:822
+#: modules/control/rc.c:825
 #, fuzzy
 msgid "| fastforward  . . . . . . . .  .  set to maximum rate"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:823
+#: modules/control/rc.c:826
 #, fuzzy
 msgid "| rewind  . . . . . . . . . . . .  set to minimum rate"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:824
+#: modules/control/rc.c:827
 #, fuzzy
 msgid "| faster . . . . . . . . . .  faster playing of stream"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:825
+#: modules/control/rc.c:828
 #, fuzzy
 msgid "| slower . . . . . . . . . .  slower playing of stream"
 msgstr "a დახმარება"
 
-#: modules/control/rc.c:826
+#: modules/control/rc.c:829
 #, fuzzy
 msgid "| normal . . . . . . . . . .  normal playing of stream"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:827
+#: modules/control/rc.c:830
 #, fuzzy
 msgid "| frame. . . . . . . . . .  play frame by frame"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:828
+#: modules/control/rc.c:831
 #, fuzzy
 msgid "| f [on|off] . . . . . . . . . . . . toggle fullscreen"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:829
+#: modules/control/rc.c:832
 msgid "| info . . . . .  information about the current stream"
 msgstr ""
 
-#: modules/control/rc.c:830
+#: modules/control/rc.c:833
 #, fuzzy
 msgid "| stats  . . . . . . . .  show statistical information"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:831
+#: modules/control/rc.c:834
 msgid "| get_time . . seconds elapsed since stream's beginning"
 msgstr ""
 
-#: modules/control/rc.c:832
+#: modules/control/rc.c:835
 msgid "| is_playing . . . .  1 if a stream plays, 0 otherwise"
 msgstr ""
 
-#: modules/control/rc.c:833
+#: modules/control/rc.c:836
 msgid "| get_title . . . . .  the title of the current stream"
 msgstr ""
 
-#: modules/control/rc.c:834
+#: modules/control/rc.c:837
 msgid "| get_length . . . .  the length of the current stream"
 msgstr ""
 
-#: modules/control/rc.c:836
+#: modules/control/rc.c:839
 #, fuzzy
 msgid "| volume [X] . . . . . . . . . .  set/get audio volume"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:837
+#: modules/control/rc.c:840
 #, fuzzy
 msgid "| volup [X]  . . . . . . .  raise audio volume X steps"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:838
+#: modules/control/rc.c:841
 #, fuzzy
 msgid "| voldown [X]  . . . . . .  lower audio volume X steps"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:839
+#: modules/control/rc.c:842
 #, fuzzy
 msgid "| adev [X] . . . . . . . . . . .  set/get audio device"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:840
+#: modules/control/rc.c:843
 #, fuzzy
 msgid "| achan [X]. . . . . . . . . .  set/get audio channels"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:841
+#: modules/control/rc.c:844
 #, fuzzy
 msgid "| atrack [X] . . . . . . . . . . . set/get audio track"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:842
+#: modules/control/rc.c:845
 #, fuzzy
 msgid "| vtrack [X] . . . . . . . . . . . set/get video track"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:843
+#: modules/control/rc.c:846
 #, fuzzy
 msgid "| vratio [X]  . . . . . . . set/get video aspect ratio"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:844
+#: modules/control/rc.c:847
 #, fuzzy
 msgid "| vcrop [X]  . . . . . . . . . . .  set/get video crop"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:845
+#: modules/control/rc.c:848
 #, fuzzy
 msgid "| vzoom [X]  . . . . . . . . . . .  set/get video zoom"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:846
+#: modules/control/rc.c:849
 #, fuzzy
 msgid "| snapshot . . . . . . . . . . . . take video snapshot"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:847
+#: modules/control/rc.c:850
 #, fuzzy
 msgid "| strack [X] . . . . . . . . . set/get subtitles track"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:848
+#: modules/control/rc.c:851
 msgid "| key [hotkey name] . . . . . .  simulate hotkey press"
 msgstr ""
 
-#: modules/control/rc.c:849
+#: modules/control/rc.c:852
 msgid "| menu . . [on|off|up|down|left|right|select] use menu"
 msgstr ""
 
-#: modules/control/rc.c:854
+#: modules/control/rc.c:857
 msgid "| @name marq-marquee  STRING  . . overlay STRING in video"
 msgstr ""
 
-#: modules/control/rc.c:855
+#: modules/control/rc.c:858
 #, fuzzy
 msgid "| @name marq-x X . . . . . . . . . . . .offset from left"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:856
+#: modules/control/rc.c:859
 #, fuzzy
 msgid "| @name marq-y Y . . . . . . . . . . . . offset from top"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:857
+#: modules/control/rc.c:860
 #, fuzzy
 msgid "| @name marq-position #. . .  .relative position control"
 msgstr "ზემოთ მარცხენა"
 
-#: modules/control/rc.c:858
+#: modules/control/rc.c:861
 #, fuzzy
 msgid "| @name marq-color # . . . . . . . . . . font color, RGB"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:859
+#: modules/control/rc.c:862
 #, fuzzy
 msgid "| @name marq-opacity # . . . . . . . . . . . . . opacity"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:860
+#: modules/control/rc.c:863
 #, fuzzy
 msgid "| @name marq-timeout T. . . . . . . . . . timeout, in ms"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:861
+#: modules/control/rc.c:864
 #, fuzzy
 msgid "| @name marq-size # . . . . . . . . font size, in pixels"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:863
+#: modules/control/rc.c:866
 msgid "| @name logo-file STRING . . .the overlay file path/name"
 msgstr ""
 
-#: modules/control/rc.c:864
+#: modules/control/rc.c:867
 #, fuzzy
 msgid "| @name logo-x X . . . . . . . . . . . .offset from left"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:865
+#: modules/control/rc.c:868
 #, fuzzy
 msgid "| @name logo-y Y . . . . . . . . . . . . offset from top"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:866
+#: modules/control/rc.c:869
 #, fuzzy
 msgid "| @name logo-position #. . . . . . . . relative position"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:867
+#: modules/control/rc.c:870
 #, fuzzy
 msgid "| @name logo-transparency #. . . . . . . . .transparency"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:869
+#: modules/control/rc.c:872
 #, fuzzy
 msgid "| @name mosaic-alpha # . . . . . . . . . . . . . . alpha"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:870
+#: modules/control/rc.c:873
 #, fuzzy
 msgid "| @name mosaic-height #. . . . . . . . . . . . . .height"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:871
+#: modules/control/rc.c:874
 #, fuzzy
 msgid "| @name mosaic-width # . . . . . . . . . . . . . . width"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:872
+#: modules/control/rc.c:875
 #, fuzzy
 msgid "| @name mosaic-xoffset # . . . .top left corner position"
 msgstr "ზემოთ მარცხენა"
 
-#: modules/control/rc.c:873
+#: modules/control/rc.c:876
 #, fuzzy
 msgid "| @name mosaic-yoffset # . . . .top left corner position"
 msgstr "ზემოთ მარცხენა"
 
-#: modules/control/rc.c:874
+#: modules/control/rc.c:877
 #, fuzzy
 msgid "| @name mosaic-offsets x,y(,x,y)*. . . . list of offsets"
 msgstr "ზემოთ მარცხენა"
 
-#: modules/control/rc.c:875
+#: modules/control/rc.c:878
 msgid "| @name mosaic-align 0..2,4..6,8..10. . .mosaic alignment"
 msgstr ""
 
-#: modules/control/rc.c:876
+#: modules/control/rc.c:879
 #, fuzzy
 msgid "| @name mosaic-vborder # . . . . . . . . vertical border"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:877
+#: modules/control/rc.c:880
 #, fuzzy
 msgid "| @name mosaic-hborder # . . . . . . . horizontal border"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:878
+#: modules/control/rc.c:881
 #, fuzzy
 msgid "| @name mosaic-position {0=auto,1=fixed} . . . .position"
 msgstr "ზემოთ მარცხენა"
 
-#: modules/control/rc.c:879
+#: modules/control/rc.c:882
 #, fuzzy
 msgid "| @name mosaic-rows #. . . . . . . . . . .number of rows"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:880
+#: modules/control/rc.c:883
 #, fuzzy
 msgid "| @name mosaic-cols #. . . . . . . . . . .number of cols"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:881
+#: modules/control/rc.c:884
 #, fuzzy
 msgid "| @name mosaic-order id(,id)* . . . . order of pictures "
 msgstr "ჰორიზონტალური"
 
-#: modules/control/rc.c:882
+#: modules/control/rc.c:885
 msgid "| @name mosaic-keep-aspect-ratio {0,1} . . .aspect ratio"
 msgstr ""
 
-#: modules/control/rc.c:885
+#: modules/control/rc.c:888
 #, fuzzy
 msgid "| help . . . . . . . . . . . . . . . this help message"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:886
+#: modules/control/rc.c:889
 #, fuzzy
 msgid "| longhelp . . . . . . . . . . . a longer help message"
 msgstr "a დახმარება"
 
-#: modules/control/rc.c:887
+#: modules/control/rc.c:890
 #, fuzzy
 msgid "| logout . . . . . . .  exit (if in socket connection)"
 msgstr "დუიმი"
 
-#: modules/control/rc.c:888
+#: modules/control/rc.c:891
 #, fuzzy
 msgid "| quit . . . . . . . . . . . . . . . . . . .  quit vlc"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:890
+#: modules/control/rc.c:893
 msgid "+----[ end of help ]"
 msgstr ""
 
-#: modules/control/rc.c:1016
+#: modules/control/rc.c:1019
 msgid "Press menu select or pause to continue."
 msgstr ""
 
-#: modules/control/rc.c:1241 modules/control/rc.c:1481
-#: modules/control/rc.c:1539 modules/control/rc.c:1712
-#: modules/control/rc.c:1810
+#: modules/control/rc.c:1244 modules/control/rc.c:1484
+#: modules/control/rc.c:1542 modules/control/rc.c:1715
+#: modules/control/rc.c:1813
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr ""
 
-#: modules/control/rc.c:1332
+#: modules/control/rc.c:1335
 msgid "Error: `goto' needs an argument greater than zero."
 msgstr ""
 
-#: modules/control/rc.c:1343
+#: modules/control/rc.c:1346
 #, fuzzy, c-format
 msgid "Playlist has only %d elements"
 msgstr "დასაკრავი სია ცარიელია"
 
-#: modules/control/rc.c:1795 modules/control/rc.c:1835
+#: modules/control/rc.c:1798 modules/control/rc.c:1838
 #, fuzzy
 msgid "Please provide one of the following parameters:"
 msgstr "ის:"
 
-#: modules/control/rc.c:1869 modules/gui/ncurses.c:1972
+#: modules/control/rc.c:1872 modules/gui/ncurses.c:1972
 #, fuzzy
 msgid "+-[Incoming]"
 msgstr "კოდირება"
 
-#: modules/control/rc.c:1870 modules/gui/ncurses.c:1975
+#: modules/control/rc.c:1873 modules/gui/ncurses.c:1975
 #, c-format
 msgid "| input bytes read : %8.0f KiB"
 msgstr ""
 
-#: modules/control/rc.c:1872 modules/gui/ncurses.c:1978
+#: modules/control/rc.c:1875 modules/gui/ncurses.c:1978
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/rc.c:1874 modules/gui/ncurses.c:1980
+#: modules/control/rc.c:1877 modules/gui/ncurses.c:1980
 #, c-format
 msgid "| demux bytes read : %8.0f KiB"
 msgstr ""
 
-#: modules/control/rc.c:1876 modules/gui/ncurses.c:1983
+#: modules/control/rc.c:1879 modules/gui/ncurses.c:1983
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/rc.c:1878
+#: modules/control/rc.c:1881
 #, c-format
 msgid "| demux corrupted  :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1880
+#: modules/control/rc.c:1883
 #, fuzzy, c-format
 msgid "| discontinuities  :    %5i"
 msgstr "ვიდეო"
 
-#: modules/control/rc.c:1884 modules/gui/ncurses.c:1993
+#: modules/control/rc.c:1887 modules/gui/ncurses.c:1993
 #, fuzzy
 msgid "+-[Video Decoding]"
 msgstr "ვიდეო ენკოდერი"
 
-#: modules/control/rc.c:1885 modules/gui/ncurses.c:1996
+#: modules/control/rc.c:1888 modules/gui/ncurses.c:1996
 #, c-format
 msgid "| video decoded    :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1887 modules/gui/ncurses.c:1999
+#: modules/control/rc.c:1890 modules/gui/ncurses.c:1999
 #, c-format
 msgid "| frames displayed :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1889 modules/gui/ncurses.c:2002
+#: modules/control/rc.c:1892 modules/gui/ncurses.c:2002
 #, c-format
 msgid "| frames lost      :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1893 modules/gui/ncurses.c:2012
+#: modules/control/rc.c:1896 modules/gui/ncurses.c:2012
 #, fuzzy
 msgid "+-[Audio Decoding]"
 msgstr "აუდიო"
 
-#: modules/control/rc.c:1894 modules/gui/ncurses.c:2015
+#: modules/control/rc.c:1897 modules/gui/ncurses.c:2015
 #, c-format
 msgid "| audio decoded    :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1896 modules/gui/ncurses.c:2018
+#: modules/control/rc.c:1899 modules/gui/ncurses.c:2018
 #, c-format
 msgid "| buffers played   :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1898 modules/gui/ncurses.c:2021
+#: modules/control/rc.c:1901 modules/gui/ncurses.c:2021
 #, c-format
 msgid "| buffers lost     :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1902 modules/gui/ncurses.c:2029
+#: modules/control/rc.c:1905 modules/gui/ncurses.c:2029
 msgid "+-[Streaming]"
 msgstr "+-[სტრიმინგი]"
 
-#: modules/control/rc.c:1903 modules/gui/ncurses.c:2032
+#: modules/control/rc.c:1906 modules/gui/ncurses.c:2032
 #, c-format
 msgid "| packets sent     :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:1904 modules/gui/ncurses.c:2034
+#: modules/control/rc.c:1907 modules/gui/ncurses.c:2034
 #, c-format
 msgid "| bytes sent       : %8.0f KiB"
 msgstr ""
 
-#: modules/control/rc.c:1906
+#: modules/control/rc.c:1909
 #, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/signals.c:37
+#: modules/control/signals.c:40
 #, fuzzy
 msgid "Signals"
 msgstr "სინჰალური"
 
-#: modules/control/signals.c:40
+#: modules/control/signals.c:43
 #, fuzzy
 msgid "POSIX signals handling interface"
 msgstr "მთავარი ინტერფეისის პარამეტრები"
@@ -13092,7 +13107,7 @@ msgid ""
 "4212."
 msgstr ""
 
-#: modules/control/telnet.c:82 modules/misc/lua/vlc.c:82
+#: modules/control/telnet.c:82 modules/misc/lua/vlc.c:81
 msgid ""
 "A single administration password is used to protect this interface. The "
 "default value is \"admin\"."
@@ -13412,12 +13427,12 @@ msgstr "HTTP ტუნელის პორტი"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr ""
 
-#: modules/demux/live555.cpp:604
+#: modules/demux/live555.cpp:603
 #, fuzzy
 msgid "RTSP authentication"
 msgstr "RTP მრავალმისამართიანი"
 
-#: modules/demux/live555.cpp:605
+#: modules/demux/live555.cpp:604
 msgid "Please enter a valid login name and a password."
 msgstr ""
 
@@ -17820,28 +17835,28 @@ msgstr "სისტემის ID"
 msgid "Configure Hotkeys"
 msgstr "კონფიგურირება"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:916
+#: modules/gui/qt4/components/simple_preferences.cpp:925
 #: modules/gui/qt4/dialogs_provider.hpp:51
 msgid "Audio Files"
 msgstr "აუდიო ფაილები"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:917
+#: modules/gui/qt4/components/simple_preferences.cpp:926
 #: modules/gui/qt4/dialogs_provider.hpp:46
 msgid "Video Files"
 msgstr "ვიდეო ფაილები"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:918
+#: modules/gui/qt4/components/simple_preferences.cpp:927
 #: modules/gui/qt4/dialogs_provider.hpp:56
 #, fuzzy
 msgid "Playlist Files"
 msgstr "დაკვრის სია"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:970
+#: modules/gui/qt4/components/simple_preferences.cpp:979
 #, fuzzy
 msgid "&Apply"
 msgstr "გამოყენება"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:971
+#: modules/gui/qt4/components/simple_preferences.cpp:980
 #: modules/gui/qt4/dialogs/convert.cpp:96
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/help.cpp:206 modules/gui/qt4/dialogs/open.cpp:110
@@ -18741,7 +18756,7 @@ msgstr "XSPF დასაკვრელი სია"
 
 #: modules/gui/qt4/dialogs_provider.cpp:559
 #, fuzzy
-msgid "M3U8 playlist (*.m3u)"
+msgid "M3U8 playlist (*.m3u8)"
 msgstr "XSPF დასაკვრელი სია"
 
 #: modules/gui/qt4/dialogs_provider.cpp:560
@@ -20214,80 +20229,80 @@ msgstr "DirectShow"
 msgid "Allow to build directory index"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:92
+#: modules/misc/lua/vlc.c:91
 #, fuzzy
 msgid "Lua Interface Module"
 msgstr "ინტერფეისის მოდული"
 
-#: modules/misc/lua/vlc.c:93
+#: modules/misc/lua/vlc.c:92
 msgid "Interfaces implemented using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:108
+#: modules/misc/lua/vlc.c:107
 #, fuzzy
 msgid "Lua HTTP"
 msgstr "HTTP"
 
-#: modules/misc/lua/vlc.c:112
+#: modules/misc/lua/vlc.c:111
 msgid "Lua RC"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:114
+#: modules/misc/lua/vlc.c:113
 msgid "Lua Telnet"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:125
+#: modules/misc/lua/vlc.c:124
 msgid "Lua Meta Fetcher"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:126
+#: modules/misc/lua/vlc.c:125
 msgid "Fetch meta data using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:131
+#: modules/misc/lua/vlc.c:130
 msgid "Lua Meta Reader"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:132
+#: modules/misc/lua/vlc.c:131
 msgid "Read meta data using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:138
+#: modules/misc/lua/vlc.c:137
 #, fuzzy
 msgid "Lua Playlist"
 msgstr "დაკვრის სია"
 
-#: modules/misc/lua/vlc.c:139
+#: modules/misc/lua/vlc.c:138
 msgid "Lua Playlist Parser Interface"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:144
+#: modules/misc/lua/vlc.c:143
 #, fuzzy
 msgid "Lua Interface Module (shortcuts)"
 msgstr "ინტერფეისის მოდული"
 
-#: modules/misc/lua/vlc.c:151
+#: modules/misc/lua/vlc.c:152
 msgid "Lua Art"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:152
+#: modules/misc/lua/vlc.c:153
 msgid "Fetch artwork using lua scripts"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:157
+#: modules/misc/lua/vlc.c:158
 msgid "Lua Extension"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:163
+#: modules/misc/lua/vlc.c:164
 #, fuzzy
 msgid "Lua SD Module"
 msgstr "ინტერფეისის მოდული"
 
-#: modules/misc/lua/vlc.c:173
+#: modules/misc/lua/vlc.c:174
 msgid "Freebox TV"
 msgstr ""
 
-#: modules/misc/lua/vlc.c:179
+#: modules/misc/lua/vlc.c:180
 #, fuzzy
 msgid "French TV"
 msgstr "ფრანგული"
@@ -20341,20 +20356,20 @@ msgstr ""
 msgid "MSN Now-Playing"
 msgstr "MSN ვუკრავ"
 
-#: modules/misc/notify/notify.c:49
+#: modules/misc/notify/notify.c:53
 #, fuzzy
 msgid "Timeout (ms)"
 msgstr "დაყოვნების დრო"
 
-#: modules/misc/notify/notify.c:50
+#: modules/misc/notify/notify.c:54
 msgid "How long the notification will be displayed "
 msgstr ""
 
-#: modules/misc/notify/notify.c:55
+#: modules/misc/notify/notify.c:59
 msgid "Notify"
 msgstr ""
 
-#: modules/misc/notify/notify.c:56
+#: modules/misc/notify/notify.c:60
 #, fuzzy
 msgid "LibNotify Notification Plugin"
 msgstr "შეტყობინება პლაგინი"
@@ -21193,7 +21208,7 @@ msgid "Unknown type"
 msgstr "უცნობი ტიპი"
 
 #: modules/services_discovery/upnp_cc.cpp:65
-#: modules/services_discovery/upnp_intel.cpp:64
+#: modules/services_discovery/upnp_intel.cpp:65
 #, fuzzy
 msgid "Universal Plug'n'Play"
 msgstr "უნივერსალური n დაკვრა"
@@ -27874,9 +27889,6 @@ msgstr "Meta-ინფორმაცია"
 #, fuzzy
 #~ msgid "Cinepak video decoder"
 #~ msgstr "ვიდეო"
-
-#~ msgid "Dirac video encoder"
-#~ msgstr "Dirac ვიდეო ენკოდერი"
 
 #~ msgid "%d Hz"
 #~ msgstr "%d Hz"
