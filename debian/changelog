@@ -1,3 +1,10 @@
+vlc (1.1.8-2) unstable; urgency=low
+
+  * Require libschroedinger >= 1.0.10 (Closes: #619858)
+  * Relax libmatroska-dev versionned b-depedency 
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 28 Mar 2011 23:18:04 +0100
+
 vlc (1.1.8-1) unstable; urgency=low
 
   * New upstream release.
