@@ -1,3 +1,10 @@
+vlc (1.1.8-2ubuntu1) natty; urgency=low
+
+  * Merge from Debian unstable, remaining changes:
+    - build and install the libx264 plugin
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 29 Mar 2011 13:49:02 +0200
+
 vlc (1.1.8-2) unstable; urgency=low
 
   * Require libschroedinger >= 1.0.10 (Closes: #619858)
