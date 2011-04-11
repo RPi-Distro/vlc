@@ -3,7 +3,8 @@ vlc (1.1.8-3) unstable; urgency=medium
   * Fix heap corruption in MP4 demuxer
     - VideoLAN-SA-1103
     - Thanks to Rémi Denis-Courmont
-  * Set urgency to high
+  * Set urgency to medium
+  * Set policy to 3.9.2 (no change needed) 
 
  -- Christophe Mutricy <xtophe@videolan.org>  Mon, 11 Apr 2011 22:12:15 +0100
 
