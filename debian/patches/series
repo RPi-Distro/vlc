@@ -8,3 +8,4 @@ cdg-heap-overflow.diff
 xml-heap-corruption.diff
 mkv-input-validation.diff
 CVE-2010-3275-CVE-2010-3276.diff
+debian-changes-1.1.3-1squeeze5
