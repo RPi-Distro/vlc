@@ -96,7 +96,7 @@ Build-Depends: debhelper (>= 7.2.3~),
                xulrunner-dev (>= 1.9.1),
                yasm [amd64 kfreebsd-amd64],
                zlib1g-dev
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Homepage: http://www.videolan.org/vlc/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=summary
