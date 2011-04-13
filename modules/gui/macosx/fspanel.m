@@ -2,7 +2,7 @@
  * fspanel.m: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 7b31e6ec34939feb8e90fc6f99f6b61b552a0d2b $
+ * $Id: 89f2b402bf967ef7d9b4eb51dea72739723abaa4 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -84,10 +84,10 @@
          object: NSApp];
 }
 
-/* Windows created with NSBorderlessWindowMask normally can't be key, but we want ours to be */
+/* make sure that we don't become key, since we can't handle hotkeys */
 - (BOOL)canBecomeKeyWindow
 {
-    return YES;
+    return NO;
 }
 
 - (BOOL)mouseDownCanMoveWindow
@@ -400,8 +400,8 @@
     [o_button setAction: @selector(action:)];                                                   \
     [self addSubview:o_button];
 
-#define addTextfield( o_text, align, font, color, size )                                    \
-    o_text = [[NSTextField alloc] initWithFrame: s_rc];                            \
+#define addTextfield( class, o_text, align, font, color, size )                                    \
+    o_text = [[class alloc] initWithFrame: s_rc];                            \
     [o_text setDrawsBackground: NO];                                                        \
     [o_text setBordered: NO];                                                               \
     [o_text setEditable: NO];                                                               \
@@ -463,11 +463,11 @@
     s_rc.origin.y = 64;
     s_rc.size.width = 352;
     s_rc.size.height = 14;
-    addTextfield( o_streamTitle_txt, NSCenterTextAlignment, systemFontOfSize, whiteColor, 0 );
-    s_rc.origin.x = 486;
+    addTextfield( NSTextField, o_streamTitle_txt, NSCenterTextAlignment, systemFontOfSize, whiteColor, 0 );
+    s_rc.origin.x = 481;
     s_rc.origin.y = 64;
-    s_rc.size.width = 50;
-    addTextfield( o_streamPosition_txt, NSRightTextAlignment, systemFontOfSize, whiteColor, 0 );
+    s_rc.size.width = 55;
+    addTextfield( VLCTimeField, o_streamPosition_txt, NSRightTextAlignment, systemFontOfSize, whiteColor, 0 );
 
     return view;
 }

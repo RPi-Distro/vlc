@@ -2,7 +2,7 @@
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id: 2c11578e6b4916fb0982b8963fe95b71e836a584 $
+* $Id: bb45244fbf1288c528689f1e1de8b7644d076094 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -98,6 +98,7 @@
     IBOutlet id o_intf_view;
     IBOutlet id o_intf_update_ckb;
     IBOutlet id o_intf_last_update_lbl;
+    IBOutlet id o_intf_enableGrowl_ckb;
 
     IBOutlet id o_osd_encoding_pop;
     IBOutlet id o_osd_encoding_txt;
@@ -156,6 +157,7 @@
     NSOpenPanel *o_selectFolderPanel;
     NSArray *o_hotkeyDescriptions;
     NSArray *o_hotkeysNonUseableKeys;
+    NSArray *o_hotkeyNames;
     NSMutableArray *o_hotkeySettings;
     NSNumber *o_keyInTransition;
 

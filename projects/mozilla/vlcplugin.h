@@ -2,7 +2,7 @@
  * vlcplugin.h: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 0d2609906631c49f810d2e86f78b4fcdcbd35b15 $
+ * $Id: 2ec8e576b1faf3a453f6b74e93f1ea6b94ecf823 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -418,6 +418,8 @@ private:
     "application/xspf+xml:xspf:Playlist xspf;" \
     /* Webm */ \
     "video/webm:webm:WebM video;" \
-    "audio/webm:webm:WebM audio;"
+    "audio/webm:webm:WebM audio;" \
+    /* AMR */ \
+    "audio/amr:amr:AMR audio;"
 
 #endif

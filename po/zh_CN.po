@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.x\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-03-23 01:33+0100\n"
+"POT-Creation-Date: 2011-04-12 01:57+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Dean Lee <xslidian@gmail.com>\n"
 "Language-Team: Simplified Chinese <xslidian+vlc@gmail.com>\n"
@@ -79,7 +79,7 @@ msgstr "热键设置"
 #: src/libvlc-module.c:1575 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
-#: modules/gui/macosx/wizard.m:380
+#: modules/gui/macosx/wizard.m:378
 #: modules/gui/qt4/components/info_panels.cpp:507
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
@@ -135,7 +135,7 @@ msgstr "其它音频设置与模块。"
 #: src/libvlc-module.c:1628 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
-#: modules/gui/macosx/wizard.m:381
+#: modules/gui/macosx/wizard.m:379
 #: modules/gui/qt4/components/info_panels.cpp:508
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
@@ -514,7 +514,7 @@ msgstr "关于(&A)"
 
 #: include/vlc_intf_strings.h:65 modules/control/rc.c:72
 #: modules/gui/macosx/embeddedwindow.m:69
-#: modules/gui/macosx/embeddedwindow.m:173 modules/gui/macosx/intf.m:602
+#: modules/gui/macosx/embeddedwindow.m:202 modules/gui/macosx/intf.m:602
 #: modules/gui/macosx/intf.m:647 modules/gui/macosx/intf.m:739
 #: modules/gui/macosx/intf.m:746 modules/gui/macosx/intf.m:2025
 #: modules/gui/macosx/intf.m:2026 modules/gui/macosx/intf.m:2027
@@ -788,8 +788,7 @@ msgid "Vu meter"
 msgstr "声量器"
 
 #: src/audio_output/input.c:153 modules/audio_filter/equalizer.c:76
-#: modules/gui/macosx/equalizer.m:144 modules/gui/macosx/equalizer.m:145
-#: modules/gui/macosx/equalizer.m:159
+#: modules/gui/macosx/equalizer.m:144 modules/gui/macosx/equalizer.m:158
 msgid "Equalizer"
 msgstr "均衡器"
 
@@ -967,7 +966,7 @@ msgid "Original ID"
 msgstr "原始 ID"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
+#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:470
 #: modules/gui/qt4/ui/profiles.h:489
 msgid "Codec"
 msgstr "编码"
@@ -1060,7 +1059,7 @@ msgstr "'%s' 的格式无法被检测。请查看日志获取详细信息。"
 
 #: src/input/meta.c:51 src/input/var.c:187 modules/gui/macosx/intf.m:663
 #: modules/gui/macosx/intf.m:664 modules/gui/macosx/open.m:190
-#: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
+#: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:346
 #: modules/gui/qt4/components/open_panels.cpp:376 modules/mux/asf.c:56
 #: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
@@ -1940,7 +1939,7 @@ msgstr ""
 "覆盖是您显卡的硬件加速功能 (直接渲染视频的能力)。VLC 将默认尝试使用它。"
 
 #: src/libvlc-module.c:450 src/video_output/vout_intf.c:344
-#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
+#: modules/gui/macosx/simple_prefs.m:296 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "总在最前"
 
@@ -2230,7 +2229,7 @@ msgstr ""
 "这可以强制设置高宽比。许多显示器有正方形的像素 (1:1)。如果您有一个 16:9 的屏"
 "幕，您就需要更改此为 4:3 来保持匀称。 "
 
-#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:297
+#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:298
 #: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "跳帧"
@@ -2334,16 +2333,16 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:95 modules/access/v4l2.c:238
 #: modules/audio_output/alsa.c:107 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1305
-#: modules/gui/macosx/simple_prefs.m:415 modules/gui/macosx/simple_prefs.m:536
-#: modules/gui/macosx/simple_prefs.m:769 modules/gui/macosx/vout.m:212
+#: modules/gui/macosx/simple_prefs.m:416 modules/gui/macosx/simple_prefs.m:544
+#: modules/gui/macosx/simple_prefs.m:791 modules/gui/macosx/vout.m:212
 #: modules/gui/qt4/components/preferences_widgets.cpp:619
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:72
 #: modules/video_filter/rss.c:185 modules/video_output/msw/directx.c:95
 msgid "Default"
 msgstr "默认"
 
-#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:149
-#: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
+#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:148
+#: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:352
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "开启"
@@ -2633,7 +2632,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr "您可以完全关闭子画面处理。"
 
 #: src/libvlc-module.c:813 src/libvlc-module.c:1769 src/text/iso-639_def.h:143
-#: modules/gui/macosx/simple_prefs.m:286
+#: modules/gui/macosx/simple_prefs.m:287
 #: modules/stream_out/transcode/transcode.c:222
 #: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
@@ -3512,7 +3511,7 @@ msgstr "这些设置被绑定为全局的 VLC 按键，也被称作 \"热键\"�
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
 #: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:753
-#: modules/gui/macosx/simple_prefs.m:294
+#: modules/gui/macosx/simple_prefs.m:295
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
@@ -3595,8 +3594,8 @@ msgstr "较慢 (好)"
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
-#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
-#: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
+#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:307
+#: modules/gui/macosx/wizard.m:319 modules/gui/macosx/wizard.m:1597
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/misc/notify/notify.c:339 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
@@ -4485,8 +4484,8 @@ msgstr "正在下载..."
 #: modules/gui/macosx/coredialogs.m:186 modules/gui/macosx/open.m:176
 #: modules/gui/macosx/open.m:206 modules/gui/macosx/prefs.m:204
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
-#: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/macosx/wizard.m:320
+#: modules/gui/macosx/simple_prefs.m:309 modules/gui/macosx/simple_prefs.m:718
+#: modules/gui/macosx/wizard.m:318
 #: modules/gui/qt4/components/open_panels.cpp:1285
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
@@ -5742,7 +5741,7 @@ msgid ""
 msgstr "音频 CD 的默认缓存值。此值的应该以毫秒为单位设置。"
 
 #: modules/access/cdda.c:67 modules/gui/macosx/open.m:198
-#: modules/gui/macosx/open.m:643 modules/gui/macosx/open.m:731
+#: modules/gui/macosx/open.m:644 modules/gui/macosx/open.m:732
 #: modules/gui/qt4/ui/open_disk.h:293
 msgid "Audio CD"
 msgstr "音频 CD"
@@ -7195,7 +7194,7 @@ msgstr "屏幕输入"
 
 #: modules/access/screen/screen.c:95 modules/access/screen/xcb.c:69
 #: modules/gui/macosx/open.m:223 modules/gui/macosx/open.m:426
-#: modules/gui/macosx/open.m:1021 modules/gui/macosx/simple_prefs.m:542
+#: modules/gui/macosx/open.m:1022 modules/gui/macosx/simple_prefs.m:550
 #: modules/gui/macosx/vout.m:223
 msgid "Screen"
 msgstr "屏幕"
@@ -7827,7 +7826,7 @@ msgid "Caching value for VCDs. This value should be set in milliseconds."
 msgstr "VCD 的缓存值，此值应该以毫秒为单位设置。"
 
 #: modules/access/vcd/vcd.c:52 modules/gui/macosx/open.m:197
-#: modules/gui/macosx/open.m:637 modules/gui/macosx/open.m:723
+#: modules/gui/macosx/open.m:638 modules/gui/macosx/open.m:724
 msgid "VCD"
 msgstr "VCD"
 
@@ -9175,7 +9174,7 @@ msgid "Non-key"
 msgstr "非关键"
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:307
+#: modules/gui/macosx/simple_prefs.m:308
 #: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "全部"
@@ -12211,7 +12210,7 @@ msgstr "正在初始化"
 msgid "Opening"
 msgstr "正在打开"
 
-#: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:167
+#: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:196
 #: modules/gui/macosx/intf.m:2015 modules/gui/macosx/intf.m:2016
 #: modules/gui/macosx/intf.m:2017 modules/gui/macosx/intf.m:2018
 #: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
@@ -13973,7 +13972,7 @@ msgid ""
 "All rendered images and text will be displayed on the overlay framebuffer."
 msgstr "所有已渲染的图像和文本将会在覆盖缓冲上显示。"
 
-#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
+#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:284
 #: modules/misc/freetype.c:92 modules/misc/notify/xosd.c:80
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
@@ -14059,11 +14058,11 @@ msgstr "时间"
 #: modules/gui/macosx/coredialogs.m:163 modules/gui/macosx/extended.m:518
 #: modules/gui/macosx/open.m:320 modules/gui/macosx/output.m:138
 #: modules/gui/macosx/playlistinfo.m:398 modules/gui/macosx/simple_prefs.m:245
-#: modules/gui/macosx/wizard.m:600 modules/gui/macosx/wizard.m:663
-#: modules/gui/macosx/wizard.m:1062 modules/gui/macosx/wizard.m:1147
-#: modules/gui/macosx/wizard.m:1154 modules/gui/macosx/wizard.m:1678
-#: modules/gui/macosx/wizard.m:1686 modules/gui/macosx/wizard.m:1867
-#: modules/gui/macosx/wizard.m:1878 modules/gui/macosx/wizard.m:1891
+#: modules/gui/macosx/wizard.m:598 modules/gui/macosx/wizard.m:661
+#: modules/gui/macosx/wizard.m:1034 modules/gui/macosx/wizard.m:1119
+#: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
+#: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
+#: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
 #: modules/gui/qt4/components/open_panels.cpp:1284
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
@@ -14100,7 +14099,7 @@ msgstr ""
 "输入已被更改，无法保存书签。在确认正在编辑的书签有相同的输入时通过 \"暂停\" "
 "终止播放。"
 
-#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1062
+#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1034
 msgid "Invalid selection"
 msgstr "无效的选择"
 
@@ -14223,19 +14222,19 @@ msgstr "快进"
 msgid "VLC media player"
 msgstr "VLC media player"
 
-#: modules/gui/macosx/equalizer.m:146 modules/gui/qt4/ui/equalizer.h:128
+#: modules/gui/macosx/equalizer.m:145 modules/gui/qt4/ui/equalizer.h:128
 msgid "2 Pass"
 msgstr "2 重"
 
-#: modules/gui/macosx/equalizer.m:147
+#: modules/gui/macosx/equalizer.m:146
 msgid "Apply the equalizer filter twice. The effect will be sharper."
 msgstr "应用两次均衡器滤镜。效果将会更清晰。"
 
-#: modules/gui/macosx/equalizer.m:150
+#: modules/gui/macosx/equalizer.m:149
 msgid "Enable the equalizer. Bands can be set manually or using a preset."
 msgstr "开启均衡器。波段可用设置设置或者使用一个预设。"
 
-#: modules/gui/macosx/equalizer.m:152 modules/gui/qt4/ui/equalizer.h:130
+#: modules/gui/macosx/equalizer.m:151 modules/gui/qt4/ui/equalizer.h:130
 msgid "Preamp"
 msgstr "前置放大"
 
@@ -14480,7 +14479,7 @@ msgid "Decrease Volume"
 msgstr "减小音量"
 
 #: modules/gui/macosx/intf.m:695 modules/gui/macosx/intf.m:696
-#: modules/gui/macosx/simple_prefs.m:291 modules/gui/macosx/vout.m:206
+#: modules/gui/macosx/simple_prefs.m:292 modules/gui/macosx/vout.m:206
 msgid "Fullscreen Video Device"
 msgstr "全屏幕视频设备"
 
@@ -14626,7 +14625,7 @@ msgid "No CrashLog found"
 msgstr "找不到崩溃日志"
 
 #: modules/gui/macosx/intf.m:2434 modules/gui/macosx/prefs.m:226
-#: modules/gui/macosx/simple_prefs.m:697
+#: modules/gui/macosx/simple_prefs.m:719
 msgid "Continue"
 msgstr "继续"
 
@@ -14789,8 +14788,8 @@ msgid "Media Resource Locator (MRL)"
 msgstr "媒体资源定位器 (MRL)"
 
 #: modules/gui/macosx/open.m:175 modules/gui/macosx/open.m:207
-#: modules/gui/macosx/open.m:588 modules/gui/macosx/open.m:779
-#: modules/gui/macosx/open.m:954 modules/gui/macosx/open.m:1197
+#: modules/gui/macosx/open.m:589 modules/gui/macosx/open.m:780
+#: modules/gui/macosx/open.m:955 modules/gui/macosx/open.m:1198
 #: modules/gui/qt4/components/controller.hpp:104
 msgid "Open"
 msgstr "打开"
@@ -14803,7 +14802,7 @@ msgstr "捕获"
 #: modules/gui/macosx/open.m:183 modules/gui/macosx/open.m:192
 #: modules/gui/macosx/open.m:308 modules/gui/macosx/output.m:145
 #: modules/gui/macosx/prefs_widgets.m:1189
-#: modules/gui/macosx/simple_prefs.m:299
+#: modules/gui/macosx/simple_prefs.m:300
 #: modules/gui/qt4/components/preferences_widgets.cpp:299
 #: modules/gui/qt4/components/simple_preferences.cpp:276
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
@@ -14822,8 +14821,8 @@ msgstr "目标传输代替作为一个文件"
 msgid "Play another media synchronously"
 msgstr "同时播放一个其它的媒体"
 
-#: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:280
-#: modules/gui/macosx/wizard.m:346 modules/gui/macosx/wizard.m:414
+#: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:281
+#: modules/gui/macosx/wizard.m:344 modules/gui/macosx/wizard.m:412
 #: modules/gui/qt4/ui/sprefs_interface.h:394
 msgid "Choose..."
 msgstr "选择..."
@@ -14837,11 +14836,11 @@ msgstr "设备名称"
 msgid "No DVD menus"
 msgstr "无 DVD 菜单"
 
-#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:626
+#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:627
 msgid "VIDEO_TS folder"
 msgstr "VIDEO_TS 文件夹"
 
-#: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:739
+#: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:740
 #: modules/services_discovery/udev.c:587 modules/gui/qt4/ui/open_disk.h:292
 msgid "DVD"
 msgstr "DVD"
@@ -14889,13 +14888,13 @@ msgstr "协议"
 msgid "Address"
 msgstr "地址"
 
-#: modules/gui/macosx/open.m:213 modules/gui/macosx/open.m:849
-#: modules/gui/macosx/open.m:907
+#: modules/gui/macosx/open.m:213 modules/gui/macosx/open.m:850
+#: modules/gui/macosx/open.m:908
 msgid "Unicast"
 msgstr "单播"
 
-#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:864
-#: modules/gui/macosx/open.m:922
+#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:865
+#: modules/gui/macosx/open.m:923
 msgid "Multicast"
 msgstr "多播"
 
@@ -14939,7 +14938,7 @@ msgstr "上一个频道"
 msgid "Next Channel"
 msgstr "下一个频道"
 
-#: modules/gui/macosx/open.m:236 modules/gui/macosx/open.m:1131
+#: modules/gui/macosx/open.m:236 modules/gui/macosx/open.m:1132
 msgid "Retrieving Channel Info..."
 msgstr "正在检索频道信息..."
 
@@ -14999,25 +14998,25 @@ msgstr "字体属性"
 msgid "Subtitle File"
 msgstr "字幕文件"
 
-#: modules/gui/macosx/open.m:587 modules/gui/macosx/open.m:953
-#: modules/gui/macosx/open.m:1196 modules/gui/qt4/ui/open_file.h:217
+#: modules/gui/macosx/open.m:588 modules/gui/macosx/open.m:954
+#: modules/gui/macosx/open.m:1197 modules/gui/qt4/ui/open_file.h:217
 msgid "Open File"
 msgstr "打开文件"
 
-#: modules/gui/macosx/open.m:674 modules/gui/macosx/open.m:726
-#: modules/gui/macosx/open.m:734 modules/gui/macosx/open.m:742
+#: modules/gui/macosx/open.m:675 modules/gui/macosx/open.m:727
+#: modules/gui/macosx/open.m:735 modules/gui/macosx/open.m:743
 msgid "No %@s found"
 msgstr "找不到 %@s"
 
-#: modules/gui/macosx/open.m:778
+#: modules/gui/macosx/open.m:779
 msgid "Open VIDEO_TS Directory"
 msgstr "打开 VIDEO_TS 目录"
 
-#: modules/gui/macosx/open.m:1034
+#: modules/gui/macosx/open.m:1035
 msgid "iSight Capture Input"
 msgstr "iSight 捕获输入"
 
-#: modules/gui/macosx/open.m:1035
+#: modules/gui/macosx/open.m:1036
 msgid ""
 "This facility allows you to process your iSight's input signal.\n"
 "\n"
@@ -15032,11 +15031,11 @@ msgstr ""
 "\n"
 "不支持实况音频输入。"
 
-#: modules/gui/macosx/open.m:1137
+#: modules/gui/macosx/open.m:1138
 msgid "Composite input"
 msgstr "混合输入"
 
-#: modules/gui/macosx/open.m:1140
+#: modules/gui/macosx/open.m:1141
 msgid "S-Video input"
 msgstr "S-Video 输入"
 
@@ -15070,7 +15069,7 @@ msgid "Transcoding options"
 msgstr "转码选项"
 
 #: modules/gui/macosx/output.m:163 modules/gui/macosx/output.m:173
-#: modules/gui/macosx/wizard.m:384
+#: modules/gui/macosx/wizard.m:382
 msgid "Bitrate (kb/s)"
 msgstr "位率 (kb/秒)"
 
@@ -15111,20 +15110,20 @@ msgid "Save File"
 msgstr "保存文件"
 
 #: modules/gui/macosx/output.m:526 modules/gui/macosx/playlist.m:747
-#: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:310
+#: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:311
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "保存"
 
 #: modules/gui/macosx/playlist.m:138 modules/gui/macosx/playlist.m:142
-#: modules/gui/macosx/wizard.m:350 modules/gui/qt4/dialogs/plugins.cpp:498
+#: modules/gui/macosx/wizard.m:348 modules/gui/qt4/dialogs/plugins.cpp:498
 #: modules/mux/asf.c:58
 msgid "Author"
 msgstr "作者"
 
 #: modules/gui/macosx/playlist.m:139 modules/gui/macosx/playlist.m:143
-#: modules/gui/macosx/wizard.m:352
+#: modules/gui/macosx/wizard.m:350
 #: modules/gui/qt4/components/playlist/sorting.h:51
 msgid "Duration"
 msgstr "持续时间"
@@ -15195,7 +15194,7 @@ msgstr "HTML 播放列表"
 
 #: modules/gui/macosx/playlist.m:529 modules/gui/macosx/playlist.m:532
 #: modules/gui/macosx/playlist.m:1545 modules/gui/macosx/playlist.m:1548
-#: modules/gui/macosx/wizard.m:1365
+#: modules/gui/macosx/wizard.m:1339
 #, c-format
 msgid "%i items"
 msgstr "%i 个项目"
@@ -15268,7 +15267,7 @@ msgstr "已显示的帧"
 msgid "Lost frames"
 msgstr "丢失的帧"
 
-#: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:363
+#: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:361
 #: modules/gui/qt4/dialogs_provider.cpp:632
 #: modules/video_filter/deinterlace.c:149
 msgid "Streaming"
@@ -15308,26 +15307,26 @@ msgstr "VLC 无法保存元数据。"
 msgid "Information"
 msgstr "信息"
 
-#: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
+#: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:312
 #: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "参数设置"
 
-#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:309
+#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:310
 msgid "Reset All"
 msgstr "全部重置"
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:306
+#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:307
 #: modules/gui/qt4/ui/video_effects.h:1111
 msgid "Basic"
 msgstr "基础"
 
-#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
+#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:718
 #: modules/gui/qt4/dialogs/preferences.cpp:317
 msgid "Reset Preferences"
 msgstr "重置首选项"
 
-#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:699
+#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:721
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -15497,155 +15496,160 @@ msgstr "...VLC 在后台运行时"
 msgid "Automatically check for updates"
 msgstr "自动检测更新"
 
-#: modules/gui/macosx/simple_prefs.m:278
+#: modules/gui/macosx/simple_prefs.m:276
+msgid "Enable Growl notifications (on playlist item change)"
+msgstr ""
+
+#: modules/gui/macosx/simple_prefs.m:279
 msgid "Default Encoding"
 msgstr "默认编码"
 
-#: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/qt4/ui/sprefs_subtitles.h:207
 msgid "Display Settings"
 msgstr "显示设置"
 
-#: modules/gui/macosx/simple_prefs.m:281
+#: modules/gui/macosx/simple_prefs.m:282
 msgid "Font Color"
 msgstr "字体颜色"
 
-#: modules/gui/macosx/simple_prefs.m:282
+#: modules/gui/macosx/simple_prefs.m:283
 msgid "Font Size"
 msgstr "字体大小"
 
-#: modules/gui/macosx/simple_prefs.m:284
+#: modules/gui/macosx/simple_prefs.m:285
 msgid "Subtitle Languages"
 msgstr "字幕语言"
 
-#: modules/gui/macosx/simple_prefs.m:285
+#: modules/gui/macosx/simple_prefs.m:286
 msgid "Preferred Subtitle Language"
 msgstr "首选的字幕语言"
 
-#: modules/gui/macosx/simple_prefs.m:287
+#: modules/gui/macosx/simple_prefs.m:288
 msgid "Enable OSD"
 msgstr "开启 OSD"
 
-#: modules/gui/macosx/simple_prefs.m:290
+#: modules/gui/macosx/simple_prefs.m:291
 msgid "Black screens in Fullscreen mode"
 msgstr "全屏幕模式中的黑屏"
 
-#: modules/gui/macosx/simple_prefs.m:292 modules/stream_out/display.c:54
+#: modules/gui/macosx/simple_prefs.m:293 modules/stream_out/display.c:54
 #: modules/video_filter/deinterlace.c:138
 #: modules/gui/qt4/ui/sprefs_video.h:310
 msgid "Display"
 msgstr "显示"
 
-#: modules/gui/macosx/simple_prefs.m:293
+#: modules/gui/macosx/simple_prefs.m:294
 msgid "Enable Video"
 msgstr "开启视频"
 
-#: modules/gui/macosx/simple_prefs.m:296
+#: modules/gui/macosx/simple_prefs.m:297
 msgid "Output module"
 msgstr "输出模式"
 
-#: modules/gui/macosx/simple_prefs.m:298 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/gui/macosx/simple_prefs.m:299 modules/gui/qt4/ui/sprefs_video.h:325
 msgid "Video snapshots"
 msgstr "显示截图"
 
-#: modules/gui/macosx/simple_prefs.m:300 modules/meta_engine/folder.c:66
+#: modules/gui/macosx/simple_prefs.m:301 modules/meta_engine/folder.c:66
 msgid "Folder"
 msgstr "文件夹"
 
-#: modules/gui/macosx/simple_prefs.m:301 modules/gui/qt4/ui/sprefs_video.h:330
+#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:330
 msgid "Format"
 msgstr "格式"
 
-#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:328
+#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Prefix"
 msgstr "前缀"
 
-#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:331
+#: modules/gui/macosx/simple_prefs.m:304 modules/gui/qt4/ui/sprefs_video.h:331
 msgid "Sequential numbering"
 msgstr "顺序编码"
 
-#: modules/gui/macosx/simple_prefs.m:466
+#: modules/gui/macosx/simple_prefs.m:467
 msgid "Last check on: %@"
 msgstr "上次检查于: %@"
 
-#: modules/gui/macosx/simple_prefs.m:468
+#: modules/gui/macosx/simple_prefs.m:469
 msgid "No check was performed yet."
 msgstr "尚未执行检查。"
 
-#: modules/gui/macosx/simple_prefs.m:572 modules/gui/macosx/simple_prefs.m:616
-#: modules/gui/macosx/simple_prefs.m:1223
+#: modules/gui/macosx/simple_prefs.m:580 modules/gui/macosx/simple_prefs.m:624
+#: modules/gui/macosx/simple_prefs.m:1261
 #: modules/gui/qt4/components/simple_preferences.cpp:468
 msgid "Custom"
 msgstr "自定义"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:469
 msgid "Lowest latency"
 msgstr "最低潜伏时间"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:470
 msgid "Low latency"
 msgstr "低潜伏"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:471
 #: modules/misc/freetype.c:121 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:81
 msgid "Normal"
 msgstr "普通"
 
-#: modules/gui/macosx/simple_prefs.m:573
+#: modules/gui/macosx/simple_prefs.m:581
 #: modules/gui/qt4/components/simple_preferences.cpp:472
 msgid "High latency"
 msgstr "高潜伏时间"
 
-#: modules/gui/macosx/simple_prefs.m:573
+#: modules/gui/macosx/simple_prefs.m:581
 #: modules/gui/qt4/components/simple_preferences.cpp:473
 msgid "Higher latency"
 msgstr "较高潜伏时间"
 
-#: modules/gui/macosx/simple_prefs.m:814
+#: modules/gui/macosx/simple_prefs.m:859
 msgid "Interface Settings not saved"
 msgstr "界面设置未被保存"
 
-#: modules/gui/macosx/simple_prefs.m:815 modules/gui/macosx/simple_prefs.m:889
-#: modules/gui/macosx/simple_prefs.m:922 modules/gui/macosx/simple_prefs.m:988
-#: modules/gui/macosx/simple_prefs.m:1028
-#: modules/gui/macosx/simple_prefs.m:1053
+#: modules/gui/macosx/simple_prefs.m:860 modules/gui/macosx/simple_prefs.m:932
+#: modules/gui/macosx/simple_prefs.m:965
+#: modules/gui/macosx/simple_prefs.m:1031
+#: modules/gui/macosx/simple_prefs.m:1071
+#: modules/gui/macosx/simple_prefs.m:1091
 #, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr "在通过 SimplePrefs (%i) 保存您的设置时发生一个错误。"
 
-#: modules/gui/macosx/simple_prefs.m:888
+#: modules/gui/macosx/simple_prefs.m:931
 msgid "Audio Settings not saved"
 msgstr "未保存音频设置"
 
-#: modules/gui/macosx/simple_prefs.m:921
+#: modules/gui/macosx/simple_prefs.m:964
 msgid "Video Settings not saved"
 msgstr "未保存视频设置"
 
-#: modules/gui/macosx/simple_prefs.m:987
+#: modules/gui/macosx/simple_prefs.m:1030
 msgid "Input Settings not saved"
 msgstr "未保存输入设置"
 
-#: modules/gui/macosx/simple_prefs.m:1027
+#: modules/gui/macosx/simple_prefs.m:1070
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr "屏幕显示/字幕设置不保存"
 
-#: modules/gui/macosx/simple_prefs.m:1052
+#: modules/gui/macosx/simple_prefs.m:1090
 msgid "Hotkeys not saved"
 msgstr "热键未保存"
 
-#: modules/gui/macosx/simple_prefs.m:1153
+#: modules/gui/macosx/simple_prefs.m:1191
 msgid "Choose the folder to save your video snapshots to."
 msgstr "选择您的视频截图要保存的文件夹。"
 
-#: modules/gui/macosx/simple_prefs.m:1155
+#: modules/gui/macosx/simple_prefs.m:1193
 msgid "Choose"
 msgstr "选择"
 
-#: modules/gui/macosx/simple_prefs.m:1241
+#: modules/gui/macosx/simple_prefs.m:1279
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -15653,15 +15657,15 @@ msgstr ""
 "请为下述功能按新键\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1315
+#: modules/gui/macosx/simple_prefs.m:1353
 msgid "Invalid combination"
 msgstr "无效的组合"
 
-#: modules/gui/macosx/simple_prefs.m:1316
+#: modules/gui/macosx/simple_prefs.m:1354
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "很遗憾，这些按键无法被分配为热键快捷方式。"
 
-#: modules/gui/macosx/simple_prefs.m:1334
+#: modules/gui/macosx/simple_prefs.m:1372
 msgid "This combination is already taken by \"%@\"."
 msgstr "此组合已经被 \"%@\" 使用。"
 
@@ -15761,19 +15765,19 @@ msgstr "一个用于压缩语音的免费音频编解码器 (用于 OGG)"
 msgid "Uncompressed audio samples (useable with WAV)"
 msgstr "未压缩音频采样 (用于 WAV)"
 
-#: modules/gui/macosx/wizard.m:234
+#: modules/gui/macosx/wizard.m:233
 msgid "MPEG Program Stream"
 msgstr "MPEG 程序流"
 
-#: modules/gui/macosx/wizard.m:236
+#: modules/gui/macosx/wizard.m:235
 msgid "MPEG Transport Stream"
 msgstr "MPEG 传输流"
 
-#: modules/gui/macosx/wizard.m:238
+#: modules/gui/macosx/wizard.m:237
 msgid "MPEG 1 Format"
 msgstr "MPEG 1 格式"
 
-#: modules/gui/macosx/wizard.m:257
+#: modules/gui/macosx/wizard.m:255
 msgid ""
 "Enter the local addresses you want to listen requests on. Do not enter "
 "anything if you want to listen on all the network interfaces. This is "
@@ -15784,7 +15788,7 @@ msgstr ""
 "西。这通常是最佳的做法。其它计算机在默认情况下可以通过 http://您的 ip:8080 访"
 "问流。"
 
-#: modules/gui/macosx/wizard.m:261
+#: modules/gui/macosx/wizard.m:259
 msgid ""
 "Use this to stream to several computers. This method is not the most "
 "efficient, as the server needs to send the stream several times, but "
@@ -15793,7 +15797,7 @@ msgstr ""
 "使用此将流传送至多台计算机。此模式不是最有效的，作为服务器需要许多时间才能发"
 "送流，但是它却有最佳的兼容性"
 
-#: modules/gui/macosx/wizard.m:264
+#: modules/gui/macosx/wizard.m:262
 msgid ""
 "Enter the local addresses you want to listen requests on. Do not enter "
 "anything if you want to listen on all the network interfaces. This is "
@@ -15804,7 +15808,7 @@ msgstr ""
 "西。这通常是最佳的做法。其它计算机在默认情况下可以通过 mms://您的 ip:8080 访"
 "问流。"
 
-#: modules/gui/macosx/wizard.m:268
+#: modules/gui/macosx/wizard.m:266
 msgid ""
 "Use this to stream to several computers using the Microsoft MMS protocol. "
 "This protocol is used as transport method by many Microsoft's softwares. "
@@ -15815,15 +15819,15 @@ msgstr ""
 "Microsoft 软件的传输方式。主机仅支持很小一部分的 MMS 协议 (嵌入 HTTP 的 "
 "MMS)。"
 
-#: modules/gui/macosx/wizard.m:273 modules/gui/macosx/wizard.m:283
+#: modules/gui/macosx/wizard.m:271 modules/gui/macosx/wizard.m:281
 msgid "Enter the address of the computer to stream to."
 msgstr "请输入计算机要发布流的地址。"
 
-#: modules/gui/macosx/wizard.m:274 modules/gui/macosx/wizard.m:372
+#: modules/gui/macosx/wizard.m:272 modules/gui/macosx/wizard.m:370
 msgid "Use this to stream to a single computer."
 msgstr "使用此选项将流发布到单一的计算机上。"
 
-#: modules/gui/macosx/wizard.m:276 modules/gui/macosx/wizard.m:286
+#: modules/gui/macosx/wizard.m:274 modules/gui/macosx/wizard.m:284
 msgid ""
 "Enter the multicast address to stream to in this field. This must be an IP "
 "address between 224.0.0.0 and 239.255.255.255. For a private use, enter an "
@@ -15833,7 +15837,7 @@ msgstr ""
 "239.255.255.255 之间的 IP 地址。要用于私人用途请输入一个从 239.225. 开始的地"
 "址。"
 
-#: modules/gui/macosx/wizard.m:279
+#: modules/gui/macosx/wizard.m:277
 msgid ""
 "Use this to stream to a dynamic group of computers on a multicast-enabled "
 "network. This is the most efficient method to stream to several computers, "
@@ -15842,13 +15846,13 @@ msgstr ""
 "使用此选项将流发送至在开启多播网络上的动态组计算机。这是一种最有效的将流发送"
 "到多台计算机的模式，但是它不能通过 Internet 工作。"
 
-#: modules/gui/macosx/wizard.m:284
+#: modules/gui/macosx/wizard.m:282
 msgid ""
 "Use this to stream to a single computer. RTP headers will be added to the "
 "stream"
 msgstr "使用此流发送到一个单一的计算机。RTP 头部将被加到流中"
 
-#: modules/gui/macosx/wizard.m:289
+#: modules/gui/macosx/wizard.m:287
 msgid ""
 "Use this to stream to a dynamic group of computers on a multicast-enabled "
 "network. This is the most efficient method to stream to several computers, "
@@ -15857,26 +15861,26 @@ msgstr ""
 "使用此选项将流发送至在开启多播网络上的动态组计算机。这是一种最有效的将流发送"
 "到多台计算机的模式，但是它不能通过 Internet 工作。RTP 头部将被加到流中"
 
-#: modules/gui/macosx/wizard.m:319
+#: modules/gui/macosx/wizard.m:317
 msgid "Back"
 msgstr "返回"
 
-#: modules/gui/macosx/wizard.m:322 modules/gui/macosx/wizard.m:325
-#: modules/gui/macosx/wizard.m:1273
+#: modules/gui/macosx/wizard.m:320 modules/gui/macosx/wizard.m:323
+#: modules/gui/macosx/wizard.m:1245
 msgid "Streaming/Transcoding Wizard"
 msgstr "流/转码向导"
 
-#: modules/gui/macosx/wizard.m:326
+#: modules/gui/macosx/wizard.m:324
 msgid "This wizard allows to configure simple streaming or transcoding setups."
 msgstr "此向导允许设置简单的流或转码设置。"
 
-#: modules/gui/macosx/wizard.m:328 modules/gui/macosx/wizard.m:329
-#: modules/gui/macosx/wizard.m:402 modules/gui/macosx/wizard.m:404
-#: modules/gui/macosx/wizard.m:406 modules/gui/macosx/wizard.m:421
+#: modules/gui/macosx/wizard.m:326 modules/gui/macosx/wizard.m:327
+#: modules/gui/macosx/wizard.m:400 modules/gui/macosx/wizard.m:402
+#: modules/gui/macosx/wizard.m:404 modules/gui/macosx/wizard.m:419
 msgid "More Info"
 msgstr "更多信息"
 
-#: modules/gui/macosx/wizard.m:330
+#: modules/gui/macosx/wizard.m:328
 msgid ""
 "This wizard only gives access to a small subset of VLC's streaming and "
 "transcoding capabilities. The Open and 'Saving/Streaming' dialogs will give "
@@ -15885,37 +15889,37 @@ msgstr ""
 "此向导仅提供访问了 VLC 流和转码功能中的很小一部分。打开 '保存/流' 对话框将能"
 "访问到更多的功能。"
 
-#: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:493
-#: modules/gui/macosx/wizard.m:1677
+#: modules/gui/macosx/wizard.m:333 modules/gui/macosx/wizard.m:491
+#: modules/gui/macosx/wizard.m:1651
 msgid "Stream to network"
 msgstr "将流发布到网络中"
 
-#: modules/gui/macosx/wizard.m:337 modules/gui/macosx/wizard.m:1685
+#: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:1659
 msgid "Transcode/Save to file"
 msgstr "转码/保存到文件"
 
-#: modules/gui/macosx/wizard.m:340
+#: modules/gui/macosx/wizard.m:338
 msgid "Choose input"
 msgstr "选择输入"
 
-#: modules/gui/macosx/wizard.m:341
+#: modules/gui/macosx/wizard.m:339
 msgid "Choose here your input stream."
 msgstr "在这里选择您的输入流。"
 
-#: modules/gui/macosx/wizard.m:343 modules/gui/macosx/wizard.m:531
-#: modules/gui/macosx/wizard.m:1719
+#: modules/gui/macosx/wizard.m:341 modules/gui/macosx/wizard.m:529
+#: modules/gui/macosx/wizard.m:1693
 msgid "Select a stream"
 msgstr "选择一个流"
 
-#: modules/gui/macosx/wizard.m:345
+#: modules/gui/macosx/wizard.m:343
 msgid "Existing playlist item"
 msgstr "已存在的播放列表项目"
 
-#: modules/gui/macosx/wizard.m:353 modules/gui/macosx/wizard.m:433
+#: modules/gui/macosx/wizard.m:351 modules/gui/macosx/wizard.m:431
 msgid "Partial Extract"
 msgstr "部分释放"
 
-#: modules/gui/macosx/wizard.m:355
+#: modules/gui/macosx/wizard.m:353
 msgid ""
 "This can be used to read only a part of the stream. It must be possible to "
 "control the incoming stream (for example, a file or a disc, but not an UDP "
@@ -15924,157 +15928,157 @@ msgstr ""
 "这仅能被用作读取一部分的流。它必须可能控制入站流 (例如，一个文件或一张光盘，"
 "但是不能是一个 UDP 网络流。) 必须以秒为单位给出开始和结束的时间。"
 
-#: modules/gui/macosx/wizard.m:359
+#: modules/gui/macosx/wizard.m:357
 msgid "From"
 msgstr "从"
 
-#: modules/gui/macosx/wizard.m:360
+#: modules/gui/macosx/wizard.m:358
 msgid "To"
 msgstr "到"
 
-#: modules/gui/macosx/wizard.m:364
+#: modules/gui/macosx/wizard.m:362
 msgid "This page allows to select how the input stream will be sent."
 msgstr "此页将选择输入流将如何被发送。"
 
-#: modules/gui/macosx/wizard.m:366 modules/gui/macosx/wizard.m:427
+#: modules/gui/macosx/wizard.m:364 modules/gui/macosx/wizard.m:425
 #: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:74
 msgid "Destination"
 msgstr "目标"
 
-#: modules/gui/macosx/wizard.m:367 modules/gui/macosx/wizard.m:439
+#: modules/gui/macosx/wizard.m:365 modules/gui/macosx/wizard.m:437
 msgid "Streaming method"
 msgstr "流模式"
 
-#: modules/gui/macosx/wizard.m:368
+#: modules/gui/macosx/wizard.m:366
 msgid "Address of the computer to stream to."
 msgstr "要发送流的目标计算机地址。"
 
-#: modules/gui/macosx/wizard.m:370
+#: modules/gui/macosx/wizard.m:368
 msgid "UDP Unicast"
 msgstr "UDP 单播"
 
-#: modules/gui/macosx/wizard.m:371
+#: modules/gui/macosx/wizard.m:369
 msgid "UDP Multicast"
 msgstr "UDP 多播"
 
-#: modules/gui/macosx/wizard.m:376
+#: modules/gui/macosx/wizard.m:374
 #: modules/stream_out/transcode/transcode.c:154
 msgid "Transcode"
 msgstr "转码"
 
-#: modules/gui/macosx/wizard.m:377
+#: modules/gui/macosx/wizard.m:375
 msgid ""
 "This page allows to change the compression format of the audio or video "
 "tracks. To change only the container format, proceed to next page."
 msgstr ""
 "此页将允许更改音频或视频轨道的压缩格式。要仅更改容器的格式, 请转到下一页。"
 
-#: modules/gui/macosx/wizard.m:382 modules/gui/macosx/wizard.m:441
+#: modules/gui/macosx/wizard.m:380 modules/gui/macosx/wizard.m:439
 msgid "Transcode audio"
 msgstr "转码音频"
 
-#: modules/gui/macosx/wizard.m:383 modules/gui/macosx/wizard.m:443
+#: modules/gui/macosx/wizard.m:381 modules/gui/macosx/wizard.m:441
 msgid "Transcode video"
 msgstr "转码视频"
 
-#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1821
+#: modules/gui/macosx/wizard.m:384 modules/gui/macosx/wizard.m:1795
 msgid ""
 "Enabling this allows to transcode the audio track if one is present in the "
 "stream."
 msgstr "开启此选项将允许转码已经在流中的音频轨道。"
 
-#: modules/gui/macosx/wizard.m:388 modules/gui/macosx/wizard.m:1838
+#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1812
 msgid ""
 "Enabling this allows to transcode the video track if one is present in the "
 "stream."
 msgstr "开启此选项将允许转码已经在流中的视频轨道。"
 
-#: modules/gui/macosx/wizard.m:392
+#: modules/gui/macosx/wizard.m:390
 msgid "Encapsulation format"
 msgstr "封装格式"
 
-#: modules/gui/macosx/wizard.m:393
+#: modules/gui/macosx/wizard.m:391
 msgid ""
 "This page allows to select how the stream will be encapsulated. Depending on "
 "previously chosen settings all formats won't be available."
 msgstr "此页允许您选择流将被如何封装。依据先前的设置，可能不是所有格式都可用。"
 
-#: modules/gui/macosx/wizard.m:398
+#: modules/gui/macosx/wizard.m:396
 msgid "Additional streaming options"
 msgstr "附加流选项"
 
-#: modules/gui/macosx/wizard.m:399
+#: modules/gui/macosx/wizard.m:397
 msgid "In this page, a few additional streaming parameters can be set."
 msgstr "在此页中，可以设置一些附加的流参数。"
 
-#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
+#: modules/gui/macosx/wizard.m:399 modules/gui/macosx/wizard.m:1840
 #: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr "实时 (TTL)"
 
-#: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:435
-#: modules/gui/macosx/wizard.m:1877
+#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:433
+#: modules/gui/macosx/wizard.m:1851
 msgid "SAP Announce"
 msgstr "SAP 广播"
 
-#: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:415
-#: modules/gui/macosx/wizard.m:447 modules/gui/macosx/wizard.m:1890
+#: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:413
+#: modules/gui/macosx/wizard.m:445 modules/gui/macosx/wizard.m:1864
 msgid "Local playback"
 msgstr "本地播放"
 
-#: modules/gui/macosx/wizard.m:407 modules/gui/macosx/wizard.m:416
+#: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:414
 msgid "Add Subtitles to transcoded video"
 msgstr "添加字幕到已转换的视频"
 
-#: modules/gui/macosx/wizard.m:410
+#: modules/gui/macosx/wizard.m:408
 msgid "Additional transcode options"
 msgstr "附加转码选项"
 
-#: modules/gui/macosx/wizard.m:411
+#: modules/gui/macosx/wizard.m:409
 msgid "In this page, a few additional transcoding parameters can be set."
 msgstr "在此页中，可以设置一些附加的转码参数。"
 
-#: modules/gui/macosx/wizard.m:413 modules/gui/macosx/wizard.m:1095
+#: modules/gui/macosx/wizard.m:411 modules/gui/macosx/wizard.m:1067
 msgid "Select the file to save to"
 msgstr "选择要保存的文件"
 
-#: modules/gui/macosx/wizard.m:417
+#: modules/gui/macosx/wizard.m:415
 msgid ""
 "Adds available subtitles directly to the video. These cannot be disabled by "
 "the receiving user as they become part of the image."
 msgstr "添加要直接用于视频的字幕。这些不会显示给接收用户而是作为图像的一部分。"
 
-#: modules/gui/macosx/wizard.m:424
+#: modules/gui/macosx/wizard.m:422
 msgid ""
 "This page lists all the settings. Click \"Finish\" to start streaming or "
 "transcoding."
 msgstr "此页列出所有设置。单击 \"完成\" 开始串流或转码。"
 
-#: modules/gui/macosx/wizard.m:426
+#: modules/gui/macosx/wizard.m:424
 msgid "Summary"
 msgstr "摘要"
 
-#: modules/gui/macosx/wizard.m:429
+#: modules/gui/macosx/wizard.m:427
 msgid "Encap. format"
 msgstr "Encap. 格式"
 
-#: modules/gui/macosx/wizard.m:431
+#: modules/gui/macosx/wizard.m:429
 msgid "Input stream"
 msgstr "输入流"
 
-#: modules/gui/macosx/wizard.m:437
+#: modules/gui/macosx/wizard.m:435
 msgid "Save file to"
 msgstr "保存文件到"
 
-#: modules/gui/macosx/wizard.m:445
+#: modules/gui/macosx/wizard.m:443
 msgid "Include subtitles"
 msgstr "包含字幕"
 
-#: modules/gui/macosx/wizard.m:599
+#: modules/gui/macosx/wizard.m:597
 msgid "No input selected"
 msgstr "未选择输入"
 
-#: modules/gui/macosx/wizard.m:601
+#: modules/gui/macosx/wizard.m:599
 msgid ""
 "No new stream or valid playlist item has been selected.\n"
 "\n"
@@ -16084,11 +16088,11 @@ msgstr ""
 "\n"
 "在转到下一页之前选择一个项目。"
 
-#: modules/gui/macosx/wizard.m:662
+#: modules/gui/macosx/wizard.m:660
 msgid "No valid destination"
 msgstr "无有效的目标"
 
-#: modules/gui/macosx/wizard.m:664
+#: modules/gui/macosx/wizard.m:662
 msgid ""
 "A valid destination has to be selected Enter either a Unicast-IP or a "
 "Multicast-IP.\n"
@@ -16100,7 +16104,7 @@ msgstr ""
 "\n"
 "如果您不知道这意味着什么，请查看此窗口中有关的 VLC 流的如何帮助文本。"
 
-#: modules/gui/macosx/wizard.m:1063
+#: modules/gui/macosx/wizard.m:1035
 msgid ""
 "The chosen codecs are not compatible with each other. For example: It is "
 "impossibleto  mix uncompressed audio with any video codec.\n"
@@ -16111,65 +16115,65 @@ msgstr ""
 "\n"
 "请更正您的选择再试。"
 
-#: modules/gui/macosx/wizard.m:1090
+#: modules/gui/macosx/wizard.m:1062
 msgid "Select the directory to save to"
 msgstr "请选择要保存到的目录"
 
-#: modules/gui/macosx/wizard.m:1146
+#: modules/gui/macosx/wizard.m:1118
 msgid "No folder selected"
 msgstr "未选择文件夹"
 
-#: modules/gui/macosx/wizard.m:1148
+#: modules/gui/macosx/wizard.m:1120
 msgid "A directory where to save the files has to be selected."
 msgstr "要选择一个保存文件的目录。"
 
-#: modules/gui/macosx/wizard.m:1150
+#: modules/gui/macosx/wizard.m:1122
 msgid ""
 "Enter either a valid path or use the \"Choose...\" button to select a "
 "location."
 msgstr "请输入一个有效的逻辑或通过 \"选择...\" 按钮选择一个位置。"
 
-#: modules/gui/macosx/wizard.m:1153
+#: modules/gui/macosx/wizard.m:1125
 msgid "No file selected"
 msgstr "未选择文件"
 
-#: modules/gui/macosx/wizard.m:1155
+#: modules/gui/macosx/wizard.m:1127
 msgid "A file where to save the stream has to be selected."
 msgstr "要选择一个保存流的文件。"
 
-#: modules/gui/macosx/wizard.m:1157
+#: modules/gui/macosx/wizard.m:1129
 msgid ""
 "Enter either a valid path or use the \"Choose\" button to select a location."
 msgstr "请输入一个有效的逻辑或通过 \"选择...\" 按钮选择一个位置。"
 
-#: modules/gui/macosx/wizard.m:1360
+#: modules/gui/macosx/wizard.m:1334
 msgid "Finish"
 msgstr "完成"
 
-#: modules/gui/macosx/wizard.m:1373 modules/gui/macosx/wizard.m:1402
-#: modules/gui/macosx/wizard.m:1432
+#: modules/gui/macosx/wizard.m:1347 modules/gui/macosx/wizard.m:1376
+#: modules/gui/macosx/wizard.m:1406
 msgid "yes"
 msgstr "是"
 
-#: modules/gui/macosx/wizard.m:1375 modules/gui/macosx/wizard.m:1385
-#: modules/gui/macosx/wizard.m:1398 modules/gui/macosx/wizard.m:1404
-#: modules/gui/macosx/wizard.m:1416 modules/gui/macosx/wizard.m:1435
+#: modules/gui/macosx/wizard.m:1349 modules/gui/macosx/wizard.m:1359
+#: modules/gui/macosx/wizard.m:1372 modules/gui/macosx/wizard.m:1378
+#: modules/gui/macosx/wizard.m:1390 modules/gui/macosx/wizard.m:1409
 msgid "no"
 msgstr "否"
 
-#: modules/gui/macosx/wizard.m:1381
+#: modules/gui/macosx/wizard.m:1355
 msgid "yes: from %@ to %@ secs"
 msgstr "是: 从 %@ 到 %@ 秒"
 
-#: modules/gui/macosx/wizard.m:1391 modules/gui/macosx/wizard.m:1409
+#: modules/gui/macosx/wizard.m:1365 modules/gui/macosx/wizard.m:1383
 msgid "yes: %@ @ %@ kb/s"
 msgstr "是: %@ @ %@ kb/s"
 
-#: modules/gui/macosx/wizard.m:1679
+#: modules/gui/macosx/wizard.m:1653
 msgid "This allows to stream on a network."
 msgstr "这里允许通过网络发布流。"
 
-#: modules/gui/macosx/wizard.m:1687
+#: modules/gui/macosx/wizard.m:1661
 msgid ""
 "This allows to save a stream to a file. The can be reencoded on the fly. "
 "Whatever VLC can read can be saved.\n"
@@ -16180,15 +16184,15 @@ msgstr ""
 "保存。\n"
 "请注意 VLC 不是非常适合进行文件到文件的转码。它的转码功能是用于保存网络流的。"
 
-#: modules/gui/macosx/wizard.m:1816
+#: modules/gui/macosx/wizard.m:1790
 msgid "Select your audio codec. Click one to get more information."
 msgstr "请选择您的音频编解码器。点击获取更多信息。"
 
-#: modules/gui/macosx/wizard.m:1833
+#: modules/gui/macosx/wizard.m:1807
 msgid "Select your video codec. Click one to get more information."
 msgstr "请选择您的视频编解码器。点击获取更多信息。"
 
-#: modules/gui/macosx/wizard.m:1868
+#: modules/gui/macosx/wizard.m:1842
 msgid ""
 "This allows to define the TTL (Time-To-Live) of the stream. This parameter "
 "is the maximum number of routers your stream can go through. If you don't "
@@ -16198,7 +16202,7 @@ msgstr ""
 "这允许您定义流的 TTL (存活时间)。此参数是您的流可以在路由中被传送的最大数。如"
 "果您不知道这意味这什么或者您希望流仅在您的本地网络中传送，请保持此设置为 1。"
 
-#: modules/gui/macosx/wizard.m:1879
+#: modules/gui/macosx/wizard.m:1853
 msgid ""
 "When streaming using UDP, the streams can be announced using the SAP/SDP "
 "announcing protocol. This way, the clients won't have to type in the "
@@ -16211,7 +16215,7 @@ msgstr ""
 "入多播地址，如果它们开启了 SAP 扩展界面，那么将会自动出现在播放列表中。\n"
 "如果您想给您的流取个名字，请在这里输入，否则将使用默认的名称。"
 
-#: modules/gui/macosx/wizard.m:1892
+#: modules/gui/macosx/wizard.m:1866
 msgid ""
 "When this option is enabled, the stream will be both played and transcoded/"
 "streamed.\n"
@@ -16572,31 +16576,31 @@ msgstr "查找: %s"
 msgid "Open: %s"
 msgstr "打开: %s"
 
-#: modules/gui/qt4/components/controller.cpp:281
+#: modules/gui/qt4/components/controller.cpp:282
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt4/components/controller.cpp:378
+#: modules/gui/qt4/components/controller.cpp:379
 msgid "Click to toggle between loop one, loop all"
 msgstr "单击可切换循环单首/循环全部"
 
-#: modules/gui/qt4/components/controller.cpp:441
+#: modules/gui/qt4/components/controller.cpp:442
 msgid "Previous Chapter/Title"
 msgstr "上一个章节/标题"
 
-#: modules/gui/qt4/components/controller.cpp:447
+#: modules/gui/qt4/components/controller.cpp:448
 msgid "Menu"
 msgstr "菜单"
 
-#: modules/gui/qt4/components/controller.cpp:453
+#: modules/gui/qt4/components/controller.cpp:454
 msgid "Next Chapter/Title"
 msgstr "下一个章节/标题"
 
-#: modules/gui/qt4/components/controller.cpp:486
+#: modules/gui/qt4/components/controller.cpp:487
 msgid "Teletext Activation"
 msgstr "Teletext 激活"
 
-#: modules/gui/qt4/components/controller.cpp:502
+#: modules/gui/qt4/components/controller.cpp:503
 msgid "Toggle Transparency "
 msgstr "打开或关闭透明度"
 
@@ -19429,11 +19433,11 @@ msgstr "Freebox TV"
 msgid "French TV"
 msgstr "法国 TV"
 
-#: modules/misc/notify/growl.m:97
+#: modules/misc/notify/growl.m:98
 msgid "Growl Notification Plugin"
 msgstr "Growl 提示插件按"
 
-#: modules/misc/notify/growl.m:279
+#: modules/misc/notify/growl.m:308
 msgid "Now playing"
 msgstr "现在正在播放"
 

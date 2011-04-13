@@ -306,9 +306,6 @@
 /* Define to 1 if you have the `gmtime_r' function. */
 #undef HAVE_GMTIME_R
 
-/* Define to 1 if you have the <Growl/GrowlDefines.h> header file. */
-#undef HAVE_GROWL_GROWLDEFINES_H
-
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
 

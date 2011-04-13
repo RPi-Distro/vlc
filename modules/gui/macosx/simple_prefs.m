@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2009 the VideoLAN team
-* $Id: a38642901785e97a4d83587ea0f4630ec8d19215 $
+* $Id: d5b4d8a7fa6ed9ff2a88f1f68154d36d7b0b8cbe $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -273,6 +273,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [o_intf_mediakeys_bg_ckb setTitle: _NS("...when VLC is in background")];
     [o_intf_update_ckb setTitle: _NS("Automatically check for updates")];
     [o_intf_last_update_lbl setStringValue: @""];
+    [o_intf_enableGrowl_ckb setStringValue: _NS("Enable Growl notifications (on playlist item change)")];
 
     /* Subtitles and OSD */
     [o_osd_encoding_txt setStringValue: _NS("Default Encoding")];
@@ -466,6 +467,13 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
         [o_intf_last_update_lbl setStringValue: [NSString stringWithFormat: _NS("Last check on: %@"), [[[SUUpdater sharedUpdater] lastUpdateCheckDate] descriptionWithLocale: [[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]]];
     else
         [o_intf_last_update_lbl setStringValue: _NS("No check was performed yet.")];
+    psz_tmp = config_GetPsz( p_intf, "control" );
+    if (psz_tmp) {
+        [o_intf_enableGrowl_ckb setState: (NSInteger)strstr( psz_tmp, "growl")];
+        free( psz_tmp );
+    }
+    else
+        [o_intf_enableGrowl_ckb setState: NSOffState];
 
     /******************
      * audio settings *
@@ -645,26 +653,40 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
     /********************
      * hotkeys settings *
      ********************/
-    const struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
     [o_hotkeySettings release];
     o_hotkeySettings = [[NSMutableArray alloc] init];
     NSMutableArray *o_tempArray_desc = [[NSMutableArray alloc] init];
-    i = 1;
+    NSMutableArray *o_tempArray_names = [[NSMutableArray alloc] init];
 
-    while( i < 100 )
+    module_t *p_main = module_get_main();
+    assert( p_main );
+    unsigned confsize;
+    module_config_t *p_config;
+
+    p_config = module_config_get (p_main, &confsize);
+    
+    for (size_t i = 0; i < confsize; i++)
     {
-        p_item = config_FindConfig( VLC_OBJECT(p_intf), p_hotkeys[i].psz_action );
-        if( !p_item )
-            break;
-
-        [o_tempArray_desc addObject: _NS( p_item->psz_text )];
-        [o_hotkeySettings addObject: [NSNumber numberWithInt: p_item->value.i]];
-
-        i++;
+        module_config_t *p_item = p_config + i;
+        
+        if( (p_item->i_type & CONFIG_ITEM) && p_item->psz_name != NULL
+           && !strncmp( p_item->psz_name , "key-", 4 )
+           && !EMPTY_STR( p_item->psz_text ) )
+        {
+            [o_tempArray_desc addObject: _NS( p_item->psz_text )];
+            [o_tempArray_names addObject: [NSString stringWithUTF8String:p_item->psz_name]];
+            [o_hotkeySettings addObject: [NSNumber numberWithInt:p_item->value.i]];
+        }
     }
+    module_config_free (p_config);
+    module_release (p_main);
+
     [o_hotkeyDescriptions release];
     o_hotkeyDescriptions = [[NSArray alloc] initWithArray: o_tempArray_desc copyItems: YES];
+    [o_hotkeyNames release];
+    o_hotkeyNames = [[NSArray alloc] initWithArray: o_tempArray_names copyItems: YES];
     [o_tempArray_desc release];
+    [o_tempArray_names release];
     [o_hotkeys_listbox reloadData];
 }
 
@@ -794,6 +816,29 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 		config_PutInt( p_intf, "macosx-appleremote", [o_intf_appleremote_ckb state] );
 		config_PutInt( p_intf, "macosx-mediakeys", [o_intf_mediakeys_ckb state] );
         config_PutInt( p_intf, "macosx-mediakeys-background", [o_intf_mediakeys_bg_ckb state] );
+        if( [o_intf_enableGrowl_ckb state] == NSOnState )
+        {
+            psz_tmp = config_GetPsz( p_intf, "control" );
+            if(! psz_tmp)
+                config_PutPsz( p_intf, "control", "growl" );
+            else if( (NSInteger)strstr( psz_tmp, "control" ) == NO )
+            {
+                psz_tmp = (char *)[[NSString stringWithFormat: @"%s:growl", psz_tmp] UTF8String];
+                config_PutPsz( p_intf, "control", psz_tmp );
+                free( psz_tmp );
+            }
+        }
+        else
+        {
+            psz_tmp = config_GetPsz( p_intf, "control" );
+            if( psz_tmp )
+            {
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@":growl"]] UTF8String];
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"growl:"]] UTF8String];
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"growl"]] UTF8String];
+                config_PutPsz( p_intf, "control", psz_tmp );
+            }
+        }
 
 		/* activate stuff without restart */
 		if( [o_intf_appleremote_ckb state] == YES )
@@ -840,7 +885,6 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
                 config_PutPsz( p_intf, "audio-filter", "volnorm" );
             else if( (NSInteger)strstr( psz_tmp, "normvol" ) == NO )
             {
-                /* work-around a GCC 4.0.1 bug */
                 psz_tmp = (char *)[[NSString stringWithFormat: @"%s:volnorm", psz_tmp] UTF8String];
                 config_PutPsz( p_intf, "audio-filter", psz_tmp );
                 free( psz_tmp );
@@ -851,11 +895,10 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
             psz_tmp = config_GetPsz( p_intf, "audio-filter" );
             if( psz_tmp )
             {
-                char *psz_tmp2 = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@":volnorm"]] UTF8String];
-                psz_tmp2 = (char *)[[[NSString stringWithUTF8String: psz_tmp2] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"volnorm:"]] UTF8String];
-                psz_tmp2 = (char *)[[[NSString stringWithUTF8String: psz_tmp2] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"volnorm"]] UTF8String];
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@":volnorm"]] UTF8String];
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"volnorm:"]] UTF8String];
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"volnorm"]] UTF8String];
                 config_PutPsz( p_intf, "audio-filter", psz_tmp );
-                free( psz_tmp );
             }
         }
         config_PutFloat( p_intf, "norm-max-level", [o_audio_norm_fld floatValue] );
@@ -1036,13 +1079,8 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
      ********************/
     if( b_hotkeyChanged )
     {
-        const struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
-        i = 1;
-        while( i < [o_hotkeySettings count] )
-        {
-            config_PutInt( p_intf, p_hotkeys[i].psz_action, [[o_hotkeySettings objectAtIndex: i-1] intValue] );
-            i++;
-        }
+        for (size_t i = 0; i < [o_hotkeySettings count]; i++)
+            config_PutInt( p_intf, [[o_hotkeyNames objectAtIndex: i] UTF8String], [[o_hotkeySettings objectAtIndex: i] intValue] );
 
         i = config_SaveConfigFile( p_intf, "main" );
 

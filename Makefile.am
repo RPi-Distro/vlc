@@ -456,6 +456,8 @@ VLC-release.app: vlc
 	done
 	mkdir -p $(top_builddir)/tmp/extras/contrib/Sparkle
 	cp -R $(CONTRIB_DIR)/Sparkle/Sparkle.framework $(top_builddir)/tmp/extras/contrib/Sparkle
+	mkdir -p $(top_builddir)/tmp/extras/contrib/Growl
+	cp -R $(CONTRIB_DIR)/Growl/Growl.framework $(top_builddir)/tmp/extras/contrib/Growl
 	mkdir -p $(top_builddir)/tmp/modules/audio_output
 	mkdir -p $(top_builddir)/tmp/modules/gui/macosx
 	for i in \
@@ -575,6 +577,7 @@ VLC-release.app: vlc
 	  $(INSTALL) -m 644 $${i} $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/requests/`basename $${i}` ; \
 	done
 	$(INSTALL) -m 644 $(srcdir)/share/http/requests/readme $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/requests/readme.txt
+	$(INSTALL) -m 644 $(srcdir)/share/vlc512x512.png $(top_builddir)/VLC-release.app/Contents/MacOS/share/vlc512x512.png
 	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/locale
 	cat $(top_srcdir)/po/LINGUAS | while read i; do \
 	  $(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/locale/$${i}/LC_MESSAGES ; \
@@ -609,6 +612,8 @@ VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.lib
 	done
 	mkdir -p $(top_builddir)/tmp/extras/contrib/Sparkle
 	cp -R $(CONTRIB_DIR)/Sparkle/Sparkle.framework $(top_builddir)/tmp/extras/contrib/Sparkle
+	mkdir -p $(top_builddir)/tmp/extras/contrib/Growl
+	cp -R $(CONTRIB_DIR)/Growl/Growl.framework $(top_builddir)/tmp/extras/contrib/Growl
 	mkdir -p $(top_builddir)/tmp/modules/audio_output
 	mkdir -p $(top_builddir)/tmp/modules/gui/macosx
 	for i in \

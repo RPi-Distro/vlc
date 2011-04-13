@@ -2,7 +2,7 @@
  * equalizer.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 2606673d6647c33fc34eefa88c179e0a80663c3e $
+ * $Id: ce8d26af48c875b63e0ea83da912b6e967076866 $
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *          Felix Paul Kühne <fkuehne -at- videolan -dot- org>
@@ -142,7 +142,6 @@ static bool GetFiltersStatus( intf_thread_t *p_intf,
 {
     int i;
     [o_btn_equalizer setToolTip: _NS("Equalizer")];
-    [o_btn_equalizer_embedded setToolTip: _NS("Equalizer")];
     [o_ckb_2pass setTitle: _NS("2 Pass")];
     [o_ckb_2pass setToolTip: _NS("Apply the "
         "equalizer filter twice. The effect will be sharper.")];
@@ -330,13 +329,11 @@ static bool GetFiltersStatus( intf_thread_t *p_intf,
     {
         [o_window orderOut:sender];
         [o_btn_equalizer setState:NSOffState];
-        [o_btn_equalizer_embedded setState:NSOffState];
     }
     else
     {
         [o_window makeKeyAndOrderFront:sender];
         [o_btn_equalizer setState:NSOnState];
-        [o_btn_equalizer_embedded setState:NSOnState];
     }
 }
 
@@ -366,6 +363,11 @@ static bool GetFiltersStatus( intf_thread_t *p_intf,
 - (void)windowWillClose:(NSNotification *)aNotification
 {
     [o_btn_equalizer setState: NSOffState];
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)aNotification
+{
+    [o_btn_equalizer setState: NSOnState];
 }
 
 - (void)awakeFromNib
