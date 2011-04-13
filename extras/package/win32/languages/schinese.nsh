@@ -32,7 +32,7 @@ StrCpy $Desc_Section08 \
 
 StrCpy $Message_AlreadyInstalled  \
 "已安装 VLC media player。$\n是否希望在安装 \
-移除先前版本 $(^Name) ?"
+$(^Name) 之前移除先前的版本?"
 
 StrCpy $Name_Section91 "卸载"
 StrCpy $Name_Section92 "删除首选项与缓存"
@@ -54,3 +54,8 @@ StrCpy $Name_InstTypeFull "完整"
 
 StrCpy $Action_OnArrivalDVD "播放 DVD 影片"
 StrCpy $Action_OnArrivalAudioCD "播放音频 CD"
+StrCpy $Action_OnArrivalVCDMovie "播放 VCD 影片"
+StrCpy $Action_OnArrivalSVCDMovie "播放 SVCD 影片"
+StrCpy $Action_OnArrivalVideoFiles "播放视频文件"
+StrCpy $Action_OnArrivalMusicFiles "播放音频文件"
+StrCpy $Action_OnArrivalDVDAudio "播放音频 DVD"

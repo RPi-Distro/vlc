@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 116023f4f1e41face91816eeddbeabb685204046 $
+ * $Id: 6ec961f79917ff1ea4a6a8e4b8bc690975be78e5 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -2932,6 +2932,7 @@ end:
 // see [af97f24d528acab89969d6541d83f17ce1ecd580] that introduced the removal of setjmp() and longjmp() 
 - (void)terminate:(id)sender
 {
+    [self activateIgnoringOtherApps:YES];
     [self stop:sender];
 }
 

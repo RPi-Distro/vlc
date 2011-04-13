@@ -2,7 +2,7 @@
  * libmp4.c : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004, 2010 the VideoLAN team
- * $Id: 0a1829f976718629cfc0c27f78b4ef80f9813ada $
+ * $Id: c3f468e10ffd3c956293996983473791c4cdf011 $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -2247,7 +2247,7 @@ static int MP4_ReadBox_frma( stream_t *p_stream, MP4_Box_t *p_box )
 
 static int MP4_ReadBox_skcr( stream_t *p_stream, MP4_Box_t *p_box )
 {
-    MP4_READBOX_ENTER( MP4_Box_data_frma_t );
+    MP4_READBOX_ENTER( MP4_Box_data_skcr_t );
 
     MP4_GET4BYTES( p_box->data.p_skcr->i_init );
     MP4_GET4BYTES( p_box->data.p_skcr->i_encr );

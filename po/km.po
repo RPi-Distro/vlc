@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-03-23 01:33+0100\n"
+"POT-Creation-Date: 2011-04-12 01:57+0200\n"
 "PO-Revision-Date: 2010-04-07 09:04+0700\n"
 "Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
 "Language-Team: Khmer <support@khmeros.info>\n"
@@ -79,7 +79,7 @@ msgstr "ការ​កំណត់​គ្រាប់ចុច​រហ័ស
 #: src/libvlc-module.c:1575 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
-#: modules/gui/macosx/wizard.m:380
+#: modules/gui/macosx/wizard.m:378
 #: modules/gui/qt4/components/info_panels.cpp:507
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
@@ -135,7 +135,7 @@ msgstr "ម៉ូឌុល និង​ការ​កំណត់​អូឌ�
 #: src/libvlc-module.c:1628 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
-#: modules/gui/macosx/wizard.m:381
+#: modules/gui/macosx/wizard.m:379
 #: modules/gui/qt4/components/info_panels.cpp:508
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
@@ -523,7 +523,7 @@ msgstr "អំពី"
 
 #: include/vlc_intf_strings.h:65 modules/control/rc.c:72
 #: modules/gui/macosx/embeddedwindow.m:69
-#: modules/gui/macosx/embeddedwindow.m:173 modules/gui/macosx/intf.m:602
+#: modules/gui/macosx/embeddedwindow.m:202 modules/gui/macosx/intf.m:602
 #: modules/gui/macosx/intf.m:647 modules/gui/macosx/intf.m:739
 #: modules/gui/macosx/intf.m:746 modules/gui/macosx/intf.m:2025
 #: modules/gui/macosx/intf.m:2026 modules/gui/macosx/intf.m:2027
@@ -799,8 +799,7 @@ msgid "Vu meter"
 msgstr "វូ ម៉ែត្រ"
 
 #: src/audio_output/input.c:153 modules/audio_filter/equalizer.c:76
-#: modules/gui/macosx/equalizer.m:144 modules/gui/macosx/equalizer.m:145
-#: modules/gui/macosx/equalizer.m:159
+#: modules/gui/macosx/equalizer.m:144 modules/gui/macosx/equalizer.m:158
 msgid "Equalizer"
 msgstr "អេហ្គុយ"
 
@@ -980,7 +979,7 @@ msgid "Original ID"
 msgstr "លេខ​សម្គាល់​ដើម"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
+#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:470
 #: modules/gui/qt4/ui/profiles.h:489
 msgid "Codec"
 msgstr "កូដិក"
@@ -1073,7 +1072,7 @@ msgstr "មិនអាច​លុប​ទ្រង់ទ្រាយ '%s' ប
 
 #: src/input/meta.c:51 src/input/var.c:187 modules/gui/macosx/intf.m:663
 #: modules/gui/macosx/intf.m:664 modules/gui/macosx/open.m:190
-#: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
+#: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:346
 #: modules/gui/qt4/components/open_panels.cpp:376 modules/mux/asf.c:56
 #: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
@@ -1983,7 +1982,7 @@ msgstr ""
 "ផ្ទាល់) ។ VLC នឹង​ប្រើ​វា​ជា​លំនាំដើម ។"
 
 #: src/libvlc-module.c:450 src/video_output/vout_intf.c:344
-#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
+#: modules/gui/macosx/simple_prefs.m:296 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "នៅលើ​គេ​ជានិច្ច"
 
@@ -2281,7 +2280,7 @@ msgstr ""
 "វា​តម្រូវ​ឲ្យ​ប្រើ​សមាមាត្រ​ទិដ្ឋភាព​ម៉ូនីទ័រ ។ ម៉ូនីទ័រ​ភាគច្រើន​មាន​ភីកសែល​ការ៉េ (1:1) ។ ប្រសិន​បើ​អ្នក​មាន​"
 "អេក្រង់ 16:9 អ្នក​អាច​ត្រូវការ​ផ្លាស់ប្ដូរ​វា​ទៅកាន់ 4:3 ដើម្បី​រក្សា​នូវ​សមាមាត្រ ។"
 
-#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:297
+#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:298
 #: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "រំលង​ស៊ុម"
@@ -2391,16 +2390,16 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:95 modules/access/v4l2.c:238
 #: modules/audio_output/alsa.c:107 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1305
-#: modules/gui/macosx/simple_prefs.m:415 modules/gui/macosx/simple_prefs.m:536
-#: modules/gui/macosx/simple_prefs.m:769 modules/gui/macosx/vout.m:212
+#: modules/gui/macosx/simple_prefs.m:416 modules/gui/macosx/simple_prefs.m:544
+#: modules/gui/macosx/simple_prefs.m:791 modules/gui/macosx/vout.m:212
 #: modules/gui/qt4/components/preferences_widgets.cpp:619
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:72
 #: modules/video_filter/rss.c:185 modules/video_output/msw/directx.c:95
 msgid "Default"
 msgstr "លំនាំដើម"
 
-#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:149
-#: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
+#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:148
+#: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:352
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "អនុញ្ញាត"
@@ -2698,7 +2697,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr "អ្នក​អាច​បិទ​ដំណើរការ​រូបភាព​រង​ទាំងស្រុង ។"
 
 #: src/libvlc-module.c:813 src/libvlc-module.c:1769 src/text/iso-639_def.h:143
-#: modules/gui/macosx/simple_prefs.m:286
+#: modules/gui/macosx/simple_prefs.m:287
 #: modules/stream_out/transcode/transcode.c:222
 #: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
@@ -3610,7 +3609,7 @@ msgstr "ការ​កំណត់​ទាំងនេះ​គឺ​ជា​
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
 #: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:753
-#: modules/gui/macosx/simple_prefs.m:294
+#: modules/gui/macosx/simple_prefs.m:295
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
@@ -3693,8 +3692,8 @@ msgstr "យឺត​ជាង (ល្អ)"
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
-#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
-#: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
+#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:307
+#: modules/gui/macosx/wizard.m:319 modules/gui/macosx/wizard.m:1597
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/misc/notify/notify.c:339 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
@@ -4583,8 +4582,8 @@ msgstr "កំពុង​ទាញយក..."
 #: modules/gui/macosx/coredialogs.m:186 modules/gui/macosx/open.m:176
 #: modules/gui/macosx/open.m:206 modules/gui/macosx/prefs.m:204
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
-#: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/macosx/wizard.m:320
+#: modules/gui/macosx/simple_prefs.m:309 modules/gui/macosx/simple_prefs.m:718
+#: modules/gui/macosx/wizard.m:318
 #: modules/gui/qt4/components/open_panels.cpp:1285
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
@@ -5863,7 +5862,7 @@ msgid ""
 msgstr "តម្លៃ​ឃ្លាំង​លំនាំដើម​សម្រាប់​ស៊ីឌី​អូឌីយ៉ូ ។ តម្លៃ​នេះ​គួរតែ​ត្រូវបាន​កំណត់​ជា​មិល្លី​វិនាទី ។"
 
 #: modules/access/cdda.c:67 modules/gui/macosx/open.m:198
-#: modules/gui/macosx/open.m:643 modules/gui/macosx/open.m:731
+#: modules/gui/macosx/open.m:644 modules/gui/macosx/open.m:732
 #: modules/gui/qt4/ui/open_disk.h:293
 msgid "Audio CD"
 msgstr "ស៊ីឌី​អូឌីយ៉ូ"
@@ -7362,7 +7361,7 @@ msgstr "ព័ត៌មាន​បញ្ចូល​អេក្រង់"
 
 #: modules/access/screen/screen.c:95 modules/access/screen/xcb.c:69
 #: modules/gui/macosx/open.m:223 modules/gui/macosx/open.m:426
-#: modules/gui/macosx/open.m:1021 modules/gui/macosx/simple_prefs.m:542
+#: modules/gui/macosx/open.m:1022 modules/gui/macosx/simple_prefs.m:550
 #: modules/gui/macosx/vout.m:223
 msgid "Screen"
 msgstr "អេក្រង់"
@@ -8001,7 +8000,7 @@ msgid "Caching value for VCDs. This value should be set in milliseconds."
 msgstr "តម្លៃ​ឃ្លាំង​សម្ងាត់​សម្រាប់​វីស៊ីឌី ។ តម្លៃ​នេះ​គួរតែ​ត្រូវ​បាន​កំណត់​ទៅ​ជា​មិល្លីវិនាទី ។"
 
 #: modules/access/vcd/vcd.c:52 modules/gui/macosx/open.m:197
-#: modules/gui/macosx/open.m:637 modules/gui/macosx/open.m:723
+#: modules/gui/macosx/open.m:638 modules/gui/macosx/open.m:724
 msgid "VCD"
 msgstr "វីស៊ីឌី"
 
@@ -9363,7 +9362,7 @@ msgid "Non-key"
 msgstr "Non-key"
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:307
+#: modules/gui/macosx/simple_prefs.m:308
 #: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "ទាំងអស់"
@@ -12452,7 +12451,7 @@ msgstr "ការ​ចាប់ផ្ដើម"
 msgid "Opening"
 msgstr "បើក"
 
-#: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:167
+#: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:196
 #: modules/gui/macosx/intf.m:2015 modules/gui/macosx/intf.m:2016
 #: modules/gui/macosx/intf.m:2017 modules/gui/macosx/intf.m:2018
 #: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
@@ -14249,7 +14248,7 @@ msgid ""
 "All rendered images and text will be displayed on the overlay framebuffer."
 msgstr "រូបភាព និង​អត្ថបទ​ដែល​បាន​បង្ហាញ​នឹង​ត្រូវបាន​បង្ហាញ​​ណោលើ​សតិ​បណ្ដោះ​អាសន្ន​ស៊ុម​ត្រួត​គ្នា ។"
 
-#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
+#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:284
 #: modules/misc/freetype.c:92 modules/misc/notify/xosd.c:80
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
@@ -14335,11 +14334,11 @@ msgstr "ពេលវេលា"
 #: modules/gui/macosx/coredialogs.m:163 modules/gui/macosx/extended.m:518
 #: modules/gui/macosx/open.m:320 modules/gui/macosx/output.m:138
 #: modules/gui/macosx/playlistinfo.m:398 modules/gui/macosx/simple_prefs.m:245
-#: modules/gui/macosx/wizard.m:600 modules/gui/macosx/wizard.m:663
-#: modules/gui/macosx/wizard.m:1062 modules/gui/macosx/wizard.m:1147
-#: modules/gui/macosx/wizard.m:1154 modules/gui/macosx/wizard.m:1678
-#: modules/gui/macosx/wizard.m:1686 modules/gui/macosx/wizard.m:1867
-#: modules/gui/macosx/wizard.m:1878 modules/gui/macosx/wizard.m:1891
+#: modules/gui/macosx/wizard.m:598 modules/gui/macosx/wizard.m:661
+#: modules/gui/macosx/wizard.m:1034 modules/gui/macosx/wizard.m:1119
+#: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
+#: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
+#: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
 #: modules/gui/qt4/components/open_panels.cpp:1284
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
@@ -14377,7 +14376,7 @@ msgstr ""
 "បាន​ផ្លាស់ប្ដូរ​ព័ត៌មាន​បញ្ចូល ដែល​មិន​អាច​រក្សាទុក​ចំណាំបានទេ ។ ការ​ផ្អាក​ការ​ចាក់​ឡើងវិញ​ដោយប្រើ \"ផ្អាក"
 "\" នៅខណៈ​ដែល​កំពុង​កែសម្រួល​ចំណាំ ដែល​ត្រូវ​រក្សាទុក​ព័ត៌មាន​បញ្ចូល​ដូចគ្នា ។"
 
-#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1062
+#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1034
 msgid "Invalid selection"
 msgstr "ជម្រើស​មិន​ត្រឹមត្រូវ"
 
@@ -14500,19 +14499,19 @@ msgstr "ខា​ទៅមុខ​រហ័ស"
 msgid "VLC media player"
 msgstr "កម្មវិធី​ចាក់​មេឌៀ VLC"
 
-#: modules/gui/macosx/equalizer.m:146 modules/gui/qt4/ui/equalizer.h:128
+#: modules/gui/macosx/equalizer.m:145 modules/gui/qt4/ui/equalizer.h:128
 msgid "2 Pass"
 msgstr "2 Pass"
 
-#: modules/gui/macosx/equalizer.m:147
+#: modules/gui/macosx/equalizer.m:146
 msgid "Apply the equalizer filter twice. The effect will be sharper."
 msgstr "អនុវត្ត​តម្រង​អេហ្គុយ​ពីរ​ដង ។ ប្រសិទ្ធភាព​នឹង​កាន់​តែ​ខ្លាំង ។"
 
-#: modules/gui/macosx/equalizer.m:150
+#: modules/gui/macosx/equalizer.m:149
 msgid "Enable the equalizer. Bands can be set manually or using a preset."
 msgstr "បើក​អេហ្គុយ ។ ក្រុម​អាច​ត្រូវ​បាន​កំណត់​ដោយ​ដៃ ឬ​ដោយប្រើ​ការ​កំណត់​ជា​មុន ។"
 
-#: modules/gui/macosx/equalizer.m:152 modules/gui/qt4/ui/equalizer.h:130
+#: modules/gui/macosx/equalizer.m:151 modules/gui/qt4/ui/equalizer.h:130
 msgid "Preamp"
 msgstr "អាំភ្លី​អេឡិចត្រូនិក"
 
@@ -14758,7 +14757,7 @@ msgid "Decrease Volume"
 msgstr "បន្ថយ​កម្រិត​សំឡេង"
 
 #: modules/gui/macosx/intf.m:695 modules/gui/macosx/intf.m:696
-#: modules/gui/macosx/simple_prefs.m:291 modules/gui/macosx/vout.m:206
+#: modules/gui/macosx/simple_prefs.m:292 modules/gui/macosx/vout.m:206
 msgid "Fullscreen Video Device"
 msgstr "ឧបករណ៍​វីដេអូ​ពេញ​អេក្រង់"
 
@@ -14906,7 +14905,7 @@ msgid "No CrashLog found"
 msgstr "គ្មាន​កំណត់ហេតុ​ការ​គាំង​ដែល​បានរកឃើញ​ទេ"
 
 #: modules/gui/macosx/intf.m:2434 modules/gui/macosx/prefs.m:226
-#: modules/gui/macosx/simple_prefs.m:697
+#: modules/gui/macosx/simple_prefs.m:719
 msgid "Continue"
 msgstr "បន្ត"
 
@@ -15073,8 +15072,8 @@ msgid "Media Resource Locator (MRL)"
 msgstr "កម្មវិធី​ដាក់​ទីតាំង​ធនធាន​មេឌៀ (MRL)"
 
 #: modules/gui/macosx/open.m:175 modules/gui/macosx/open.m:207
-#: modules/gui/macosx/open.m:588 modules/gui/macosx/open.m:779
-#: modules/gui/macosx/open.m:954 modules/gui/macosx/open.m:1197
+#: modules/gui/macosx/open.m:589 modules/gui/macosx/open.m:780
+#: modules/gui/macosx/open.m:955 modules/gui/macosx/open.m:1198
 #: modules/gui/qt4/components/controller.hpp:104
 msgid "Open"
 msgstr "បើក"
@@ -15087,7 +15086,7 @@ msgstr "ចាប់យក"
 #: modules/gui/macosx/open.m:183 modules/gui/macosx/open.m:192
 #: modules/gui/macosx/open.m:308 modules/gui/macosx/output.m:145
 #: modules/gui/macosx/prefs_widgets.m:1189
-#: modules/gui/macosx/simple_prefs.m:299
+#: modules/gui/macosx/simple_prefs.m:300
 #: modules/gui/qt4/components/preferences_widgets.cpp:299
 #: modules/gui/qt4/components/simple_preferences.cpp:276
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
@@ -15106,8 +15105,8 @@ msgstr "ចាត់ទុក​ជា​បំពង់ ប្រសើរ​�
 msgid "Play another media synchronously"
 msgstr "ចាក់​មេឌៀ​ផ្សេង​ទៀត​ដំណាល​គ្នា"
 
-#: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:280
-#: modules/gui/macosx/wizard.m:346 modules/gui/macosx/wizard.m:414
+#: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:281
+#: modules/gui/macosx/wizard.m:344 modules/gui/macosx/wizard.m:412
 #: modules/gui/qt4/ui/sprefs_interface.h:394
 msgid "Choose..."
 msgstr "ជ្រើស..."
@@ -15121,11 +15120,11 @@ msgstr "ឈ្មោះ​ឧបករណ៍"
 msgid "No DVD menus"
 msgstr "គ្មាន​ម៉ឺនុយ​ឌីវីឌី​ទេ"
 
-#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:626
+#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:627
 msgid "VIDEO_TS folder"
 msgstr "ថត VIDEO_TS"
 
-#: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:739
+#: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:740
 #: modules/services_discovery/udev.c:587 modules/gui/qt4/ui/open_disk.h:292
 msgid "DVD"
 msgstr "ឌីវីឌី"
@@ -15173,13 +15172,13 @@ msgstr "ពិធីការ"
 msgid "Address"
 msgstr "អាសយដ្ឋាន"
 
-#: modules/gui/macosx/open.m:213 modules/gui/macosx/open.m:849
-#: modules/gui/macosx/open.m:907
+#: modules/gui/macosx/open.m:213 modules/gui/macosx/open.m:850
+#: modules/gui/macosx/open.m:908
 msgid "Unicast"
 msgstr "Unicast"
 
-#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:864
-#: modules/gui/macosx/open.m:922
+#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:865
+#: modules/gui/macosx/open.m:923
 msgid "Multicast"
 msgstr "ម៉ាល់ធីខាស់"
 
@@ -15223,7 +15222,7 @@ msgstr "ឆានែល​មុន"
 msgid "Next Channel"
 msgstr "ឆានែល​បន្ទាប់"
 
-#: modules/gui/macosx/open.m:236 modules/gui/macosx/open.m:1131
+#: modules/gui/macosx/open.m:236 modules/gui/macosx/open.m:1132
 msgid "Retrieving Channel Info..."
 msgstr "កំពុង​ប្រមូល​យក​ព័ត៌មាន​ឆានែល..."
 
@@ -15283,25 +15282,25 @@ msgstr "លក្ខណៈ​សម្បត្តិ​ពុម្ព​អក
 msgid "Subtitle File"
 msgstr "ឯកសារ​ចំណងជើង​រង"
 
-#: modules/gui/macosx/open.m:587 modules/gui/macosx/open.m:953
-#: modules/gui/macosx/open.m:1196 modules/gui/qt4/ui/open_file.h:217
+#: modules/gui/macosx/open.m:588 modules/gui/macosx/open.m:954
+#: modules/gui/macosx/open.m:1197 modules/gui/qt4/ui/open_file.h:217
 msgid "Open File"
 msgstr "បើក​ឯកសារ"
 
-#: modules/gui/macosx/open.m:674 modules/gui/macosx/open.m:726
-#: modules/gui/macosx/open.m:734 modules/gui/macosx/open.m:742
+#: modules/gui/macosx/open.m:675 modules/gui/macosx/open.m:727
+#: modules/gui/macosx/open.m:735 modules/gui/macosx/open.m:743
 msgid "No %@s found"
 msgstr "គ្មាន %@s ដែល​បាន​រក​ទេ"
 
-#: modules/gui/macosx/open.m:778
+#: modules/gui/macosx/open.m:779
 msgid "Open VIDEO_TS Directory"
 msgstr "បើក​ថត VIDEO_TS"
 
-#: modules/gui/macosx/open.m:1034
+#: modules/gui/macosx/open.m:1035
 msgid "iSight Capture Input"
 msgstr "ព័ត៌​មាន​បញ្ចូល​ការ​ចាប់យក iSight"
 
-#: modules/gui/macosx/open.m:1035
+#: modules/gui/macosx/open.m:1036
 msgid ""
 "This facility allows you to process your iSight's input signal.\n"
 "\n"
@@ -15316,11 +15315,11 @@ msgstr ""
 "\n"
 "ព័ត៌មាន​បញ្ចូល Live Audio មិនត្រូវបាន​គាំទ្រ​ទេ ។"
 
-#: modules/gui/macosx/open.m:1137
+#: modules/gui/macosx/open.m:1138
 msgid "Composite input"
 msgstr "ព័ត៌មាន​បញ្ចូល​សមាសធាតុ"
 
-#: modules/gui/macosx/open.m:1140
+#: modules/gui/macosx/open.m:1141
 msgid "S-Video input"
 msgstr "ព័ត៌មាន​បញ្ចូល S-Video"
 
@@ -15354,7 +15353,7 @@ msgid "Transcoding options"
 msgstr "ជម្រើស Transcoding"
 
 #: modules/gui/macosx/output.m:163 modules/gui/macosx/output.m:173
-#: modules/gui/macosx/wizard.m:384
+#: modules/gui/macosx/wizard.m:382
 msgid "Bitrate (kb/s)"
 msgstr "អត្រាប៊ីត (kb/s)"
 
@@ -15395,20 +15394,20 @@ msgid "Save File"
 msgstr "រក្សាទុក​ឯកសារ"
 
 #: modules/gui/macosx/output.m:526 modules/gui/macosx/playlist.m:747
-#: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:310
+#: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:311
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "រក្សាទុក"
 
 #: modules/gui/macosx/playlist.m:138 modules/gui/macosx/playlist.m:142
-#: modules/gui/macosx/wizard.m:350 modules/gui/qt4/dialogs/plugins.cpp:498
+#: modules/gui/macosx/wizard.m:348 modules/gui/qt4/dialogs/plugins.cpp:498
 #: modules/mux/asf.c:58
 msgid "Author"
 msgstr "អ្នក​និពន្ធ"
 
 #: modules/gui/macosx/playlist.m:139 modules/gui/macosx/playlist.m:143
-#: modules/gui/macosx/wizard.m:352
+#: modules/gui/macosx/wizard.m:350
 #: modules/gui/qt4/components/playlist/sorting.h:51
 msgid "Duration"
 msgstr "ថិរវេលា"
@@ -15479,7 +15478,7 @@ msgstr "បញ្ជី​ចាក់ HTML"
 
 #: modules/gui/macosx/playlist.m:529 modules/gui/macosx/playlist.m:532
 #: modules/gui/macosx/playlist.m:1545 modules/gui/macosx/playlist.m:1548
-#: modules/gui/macosx/wizard.m:1365
+#: modules/gui/macosx/wizard.m:1339
 #, c-format
 msgid "%i items"
 msgstr "%i ធាតុ"
@@ -15552,7 +15551,7 @@ msgstr "បាន​បង្ហាញ​ស៊ុម"
 msgid "Lost frames"
 msgstr "បាត់បង់​ស៊ុម"
 
-#: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:363
+#: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:361
 #: modules/gui/qt4/dialogs_provider.cpp:632
 #: modules/video_filter/deinterlace.c:149
 msgid "Streaming"
@@ -15592,26 +15591,26 @@ msgstr "VLC មិន​អាច​រក្សាទុក​ទិន្ន�
 msgid "Information"
 msgstr "ព័ត៌មាន"
 
-#: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
+#: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:312
 #: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "ចំណូល​ចិត្ត"
 
-#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:309
+#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:310
 msgid "Reset All"
 msgstr "កំណត់​ឡើងវិញ​ទាំងអស់"
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:306
+#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:307
 #: modules/gui/qt4/ui/video_effects.h:1111
 msgid "Basic"
 msgstr "មូលដ្ឋាន"
 
-#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
+#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:718
 #: modules/gui/qt4/dialogs/preferences.cpp:317
 msgid "Reset Preferences"
 msgstr "កំណត់​ចំណង់ចំណូលចិត្ត​ឡើងវិញ"
 
-#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:699
+#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:721
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -15783,155 +15782,160 @@ msgstr "...នៅពេល VLC នៅ​ក្នុង​ផ្ទៃ​ខា�
 msgid "Automatically check for updates"
 msgstr "ពិនិត្យ​រក​ភាព​ទាន់សម័យ​ដោយ​ស្វ័យប្រវត្តិ"
 
-#: modules/gui/macosx/simple_prefs.m:278
+#: modules/gui/macosx/simple_prefs.m:276
+msgid "Enable Growl notifications (on playlist item change)"
+msgstr ""
+
+#: modules/gui/macosx/simple_prefs.m:279
 msgid "Default Encoding"
 msgstr "ការ​អ៊ិនកូដ​លំនាំដើម"
 
-#: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/qt4/ui/sprefs_subtitles.h:207
 msgid "Display Settings"
 msgstr "កំណត់​ការ​បង្ហាញ"
 
-#: modules/gui/macosx/simple_prefs.m:281
+#: modules/gui/macosx/simple_prefs.m:282
 msgid "Font Color"
 msgstr "ពណ៌​ពុម្ពអក្សរ"
 
-#: modules/gui/macosx/simple_prefs.m:282
+#: modules/gui/macosx/simple_prefs.m:283
 msgid "Font Size"
 msgstr "ទំហំ​ពុម្ពអក្សរ"
 
-#: modules/gui/macosx/simple_prefs.m:284
+#: modules/gui/macosx/simple_prefs.m:285
 msgid "Subtitle Languages"
 msgstr "ភាសា​ចំណងជើង​រង"
 
-#: modules/gui/macosx/simple_prefs.m:285
+#: modules/gui/macosx/simple_prefs.m:286
 msgid "Preferred Subtitle Language"
 msgstr "ភាសា​ចំណងជើង​រង​ដែល​ចូលចិត្ត"
 
-#: modules/gui/macosx/simple_prefs.m:287
+#: modules/gui/macosx/simple_prefs.m:288
 msgid "Enable OSD"
 msgstr "បើក OSD"
 
-#: modules/gui/macosx/simple_prefs.m:290
+#: modules/gui/macosx/simple_prefs.m:291
 msgid "Black screens in Fullscreen mode"
 msgstr "អេក្រង់​ខ្មៅ​នៅ​ក្នុង​របៀប​ពេញ​អេក្រង់"
 
-#: modules/gui/macosx/simple_prefs.m:292 modules/stream_out/display.c:54
+#: modules/gui/macosx/simple_prefs.m:293 modules/stream_out/display.c:54
 #: modules/video_filter/deinterlace.c:138
 #: modules/gui/qt4/ui/sprefs_video.h:310
 msgid "Display"
 msgstr "បង្ហាញ"
 
-#: modules/gui/macosx/simple_prefs.m:293
+#: modules/gui/macosx/simple_prefs.m:294
 msgid "Enable Video"
 msgstr "បើក​វីដេអូ"
 
-#: modules/gui/macosx/simple_prefs.m:296
+#: modules/gui/macosx/simple_prefs.m:297
 msgid "Output module"
 msgstr "ម៉ូឌុល​លទ្ធផល"
 
-#: modules/gui/macosx/simple_prefs.m:298 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/gui/macosx/simple_prefs.m:299 modules/gui/qt4/ui/sprefs_video.h:325
 msgid "Video snapshots"
 msgstr "ថត​យក​រូបភាព​អេក្រង់​វីដេអូ"
 
-#: modules/gui/macosx/simple_prefs.m:300 modules/meta_engine/folder.c:66
+#: modules/gui/macosx/simple_prefs.m:301 modules/meta_engine/folder.c:66
 msgid "Folder"
 msgstr "ថត"
 
-#: modules/gui/macosx/simple_prefs.m:301 modules/gui/qt4/ui/sprefs_video.h:330
+#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:330
 msgid "Format"
 msgstr "ទ្រង់ទ្រាយ"
 
-#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:328
+#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Prefix"
 msgstr "បុព្វបទ"
 
-#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:331
+#: modules/gui/macosx/simple_prefs.m:304 modules/gui/qt4/ui/sprefs_video.h:331
 msgid "Sequential numbering"
 msgstr "ការ​ដាក់​លេខរៀងតាម​លំដាប់"
 
-#: modules/gui/macosx/simple_prefs.m:466
+#: modules/gui/macosx/simple_prefs.m:467
 msgid "Last check on: %@"
 msgstr "បាន​ពិនិត្យ​មើល​ចុងក្រោយ​នៅ ៖ %@"
 
-#: modules/gui/macosx/simple_prefs.m:468
+#: modules/gui/macosx/simple_prefs.m:469
 msgid "No check was performed yet."
 msgstr "គ្មាន​ការ​ត្រួតពិនិត្យ​ត្រូវ​បាន​អនុវត្ត​នៅ​ឡើយ​ទេ ។"
 
-#: modules/gui/macosx/simple_prefs.m:572 modules/gui/macosx/simple_prefs.m:616
-#: modules/gui/macosx/simple_prefs.m:1223
+#: modules/gui/macosx/simple_prefs.m:580 modules/gui/macosx/simple_prefs.m:624
+#: modules/gui/macosx/simple_prefs.m:1261
 #: modules/gui/qt4/components/simple_preferences.cpp:468
 msgid "Custom"
 msgstr "ផ្ទាល់ខ្លួន"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:469
 msgid "Lowest latency"
 msgstr "ភាព​មើល​មិន​ឃើញ​ទាប​បំផុត"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:470
 msgid "Low latency"
 msgstr "ភាព​មើលមិនឃើញ​ទាប"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:471
 #: modules/misc/freetype.c:121 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:81
 msgid "Normal"
 msgstr "ធម្មតា"
 
-#: modules/gui/macosx/simple_prefs.m:573
+#: modules/gui/macosx/simple_prefs.m:581
 #: modules/gui/qt4/components/simple_preferences.cpp:472
 msgid "High latency"
 msgstr "ភាព​មើល​មិន​ឃើញ​ខ្ពស់"
 
-#: modules/gui/macosx/simple_prefs.m:573
+#: modules/gui/macosx/simple_prefs.m:581
 #: modules/gui/qt4/components/simple_preferences.cpp:473
 msgid "Higher latency"
 msgstr "ភាព​មើល​មិនឃើញ​ខ្ពស់​ជាង"
 
-#: modules/gui/macosx/simple_prefs.m:814
+#: modules/gui/macosx/simple_prefs.m:859
 msgid "Interface Settings not saved"
 msgstr "មិន​បាន​រក្សាទុក​ការ​កំណត់​ចំណុច​ប្រទាក់​ទេ"
 
-#: modules/gui/macosx/simple_prefs.m:815 modules/gui/macosx/simple_prefs.m:889
-#: modules/gui/macosx/simple_prefs.m:922 modules/gui/macosx/simple_prefs.m:988
-#: modules/gui/macosx/simple_prefs.m:1028
-#: modules/gui/macosx/simple_prefs.m:1053
+#: modules/gui/macosx/simple_prefs.m:860 modules/gui/macosx/simple_prefs.m:932
+#: modules/gui/macosx/simple_prefs.m:965
+#: modules/gui/macosx/simple_prefs.m:1031
+#: modules/gui/macosx/simple_prefs.m:1071
+#: modules/gui/macosx/simple_prefs.m:1091
 #, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr "មាន​កំហុស​កើតឡើង​នៅពេល​ដែល​រក្សាទុក​ការ​កំណត់​របស់​អ្នក​តាមរយៈ SimplePrefs (%i) ។"
 
-#: modules/gui/macosx/simple_prefs.m:888
+#: modules/gui/macosx/simple_prefs.m:931
 msgid "Audio Settings not saved"
 msgstr "មិនបាន​រក្សាទុក​ការ​កំណត់​អូឌីយ៉ូ​ទេ"
 
-#: modules/gui/macosx/simple_prefs.m:921
+#: modules/gui/macosx/simple_prefs.m:964
 msgid "Video Settings not saved"
 msgstr "មិនបាន​រក្សាទុក​ការ​កំណត់​វីដេអូ"
 
-#: modules/gui/macosx/simple_prefs.m:987
+#: modules/gui/macosx/simple_prefs.m:1030
 msgid "Input Settings not saved"
 msgstr "មិនបាន​រក្សាទុក​ការ​កំណត់​ព័ត៌មាន​បញ្ចូល"
 
-#: modules/gui/macosx/simple_prefs.m:1027
+#: modules/gui/macosx/simple_prefs.m:1070
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr "មិនបាន​រក្សាទុក​ការ​កំណត់​ចំណងជើង​/​ការ​បង្ហាញ​លើ​អេក្រង់"
 
-#: modules/gui/macosx/simple_prefs.m:1052
+#: modules/gui/macosx/simple_prefs.m:1090
 msgid "Hotkeys not saved"
 msgstr "មិនបាន​រក្សាទុក​គ្រាប់​ចុច​រហ័ស"
 
-#: modules/gui/macosx/simple_prefs.m:1153
+#: modules/gui/macosx/simple_prefs.m:1191
 msgid "Choose the folder to save your video snapshots to."
 msgstr "ជ្រើស​ថត​ដែលត្រូវ​រក្សាទុក​រូបថត​អក្រង់​វីដេអូ​របស់​អ្នក ។"
 
-#: modules/gui/macosx/simple_prefs.m:1155
+#: modules/gui/macosx/simple_prefs.m:1193
 msgid "Choose"
 msgstr "ជ្រើស"
 
-#: modules/gui/macosx/simple_prefs.m:1241
+#: modules/gui/macosx/simple_prefs.m:1279
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -15939,15 +15943,15 @@ msgstr ""
 "ចុង​គ្រាប់ចុច​ថ្មី​សម្រាប់\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1315
+#: modules/gui/macosx/simple_prefs.m:1353
 msgid "Invalid combination"
 msgstr "បន្សំ​មិនត្រឹមត្រូវ"
 
-#: modules/gui/macosx/simple_prefs.m:1316
+#: modules/gui/macosx/simple_prefs.m:1354
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "គួរ​ឲ្យ​ស្ដាយ គ្រាប់ចុច​ទាំងនេះ​មិនអាច​កំណត់​ជា​ផ្លូវ​កាត់​គ្រាប់ចុច​រហ័ស​បានទេ ។"
 
-#: modules/gui/macosx/simple_prefs.m:1334
+#: modules/gui/macosx/simple_prefs.m:1372
 msgid "This combination is already taken by \"%@\"."
 msgstr "ការ​បន្សំ​នេះ​គឺ​ត្រូវបាន​ជ្រើស​រួចហើយ \"%@\" ។"
 
@@ -16053,19 +16057,19 @@ msgstr "កូដិក​អូឌីយ៉ូសេរី​​ដែលបា
 msgid "Uncompressed audio samples (useable with WAV)"
 msgstr "គំរូ​អូឌីយ៉ូ​ដែល​មិនបាន​បង្ហាប់ (អាច​ប្រើបាន​ជាមួយ WAV)"
 
-#: modules/gui/macosx/wizard.m:234
+#: modules/gui/macosx/wizard.m:233
 msgid "MPEG Program Stream"
 msgstr "ស្ទ្រីម​កម្មវិធី MPEGam"
 
-#: modules/gui/macosx/wizard.m:236
+#: modules/gui/macosx/wizard.m:235
 msgid "MPEG Transport Stream"
 msgstr "ស្ទ្រីម​បញ្ជូន MPEG"
 
-#: modules/gui/macosx/wizard.m:238
+#: modules/gui/macosx/wizard.m:237
 msgid "MPEG 1 Format"
 msgstr "ទ្រង់ទ្រាយ MPEG 1"
 
-#: modules/gui/macosx/wizard.m:257
+#: modules/gui/macosx/wizard.m:255
 msgid ""
 "Enter the local addresses you want to listen requests on. Do not enter "
 "anything if you want to listen on all the network interfaces. This is "
@@ -16076,7 +16080,7 @@ msgstr ""
 "ប្រទាក់​បណ្ដាញ​ទាំងអស់ ។ ជាទូទៅ វា​ជា​ការងារ​ដ៏​ល្អ​ដែល​ត្រូវ​ធ្វើ ។ កុំព្យូទ័រ​ផ្សេងទៀត​អាច​ចូលដំណើរ​ការ​ស្ទ្រីម​"
 "នៅ http://yourip:8080 តាម​លំនាំដើម ។"
 
-#: modules/gui/macosx/wizard.m:261
+#: modules/gui/macosx/wizard.m:259
 msgid ""
 "Use this to stream to several computers. This method is not the most "
 "efficient, as the server needs to send the stream several times, but "
@@ -16085,7 +16089,7 @@ msgstr ""
 "ប្រើ​វា​ដើម្បី​ស្ទ្រីម​កុំព្យូទ័រ​ច្រើន ។ វិធីសាស្ដ្រ​នេះ គឺ​មិន​គ្រាប់គ្រាន់​ណាស់ណា​នោះ​ទេ ព្រោះ​ម៉ាស៊ីន​បម្រើ​ត្រូវការ​"
 "ផ្ញើ​ស្ទ្រីម​ជា​ច្រើន​ដង ប៉ុន្តែ​ជាទូទៅ​​គឺ​ឆបគ្នា​បំផុត"
 
-#: modules/gui/macosx/wizard.m:264
+#: modules/gui/macosx/wizard.m:262
 msgid ""
 "Enter the local addresses you want to listen requests on. Do not enter "
 "anything if you want to listen on all the network interfaces. This is "
@@ -16096,7 +16100,7 @@ msgstr ""
 "បណ្ដាញ​ទាំងអស់ ។ ជាទូទៅ វា​ជា​ការងារ​ល្អបំផុត​ដែល​ត្រូវ​ធ្វើ ។ កុំព្យូទ័រ​ផ្សេងទៀត​អាច​ចូល​ដំណើរការ​ស្ទ្រីម​នោះ​"
 "តាម mms://yourip:8080 តាម​លំនាំដើម ។"
 
-#: modules/gui/macosx/wizard.m:268
+#: modules/gui/macosx/wizard.m:266
 msgid ""
 "Use this to stream to several computers using the Microsoft MMS protocol. "
 "This protocol is used as transport method by many Microsoft's softwares. "
@@ -16107,15 +16111,15 @@ msgstr ""
 "វិធីសាស្ដ្រ​បញ្ជូន​​ដោយ​កម្មវិធី​របស់ Microsoft ជាច្រើន ។ចំណាំថា តែ​ផ្នែក​តូច​មួយ​របស់​ពិធីការ MMS ប៉ុណ្ណោះ​"
 "ដែល​បាន​គាំទ្រ (MMS បាន​ស្រោប​នៅ​ក្នុង HTTP) ។"
 
-#: modules/gui/macosx/wizard.m:273 modules/gui/macosx/wizard.m:283
+#: modules/gui/macosx/wizard.m:271 modules/gui/macosx/wizard.m:281
 msgid "Enter the address of the computer to stream to."
 msgstr "បញ្ចូល​អាសយដ្ឋាន​កុំព្យូទ័​រ​ដែល​ត្រូវ​ស្ទ្រីម​ទៅ​កាន់ ។"
 
-#: modules/gui/macosx/wizard.m:274 modules/gui/macosx/wizard.m:372
+#: modules/gui/macosx/wizard.m:272 modules/gui/macosx/wizard.m:370
 msgid "Use this to stream to a single computer."
 msgstr "ប្រើ​វា​ដើម្បី​ស្ទ្រីម​ទៅកាន់​កុំព្យូទ័​រ​ទោល ។"
 
-#: modules/gui/macosx/wizard.m:276 modules/gui/macosx/wizard.m:286
+#: modules/gui/macosx/wizard.m:274 modules/gui/macosx/wizard.m:284
 msgid ""
 "Enter the multicast address to stream to in this field. This must be an IP "
 "address between 224.0.0.0 and 239.255.255.255. For a private use, enter an "
@@ -16125,7 +16129,7 @@ msgstr ""
 "224.0.0.0 និង 239.255.255.255 ។ សម្រាប់​ការ​ប្រើ​ឯកជន បញ្ចូល​អាសយដ្ឋាន​ដែល​ចាប់ផ្ដើម​ដោយ "
 "239.255 ។"
 
-#: modules/gui/macosx/wizard.m:279
+#: modules/gui/macosx/wizard.m:277
 msgid ""
 "Use this to stream to a dynamic group of computers on a multicast-enabled "
 "network. This is the most efficient method to stream to several computers, "
@@ -16134,13 +16138,13 @@ msgstr ""
 "ប្រើ​វា ដើម្បី​ស្ទ្រីម​ទៅកាន់​ក្រុម​ថាមវន្ដ​របស់​កុំព្យូទ័រ​នៅលើ​បណ្ដាញ multicast ដែល​បាន​បើក ។ នេះ​ជា​"
 "វិធីសាស្ដ្រ​សមរម្យ​បំផុត​ដែល​ត្រូវ​ស្ទ្រីម​​កុំព្យូទ័រ​ជាច្រើន ប៉ុន្តែ​វា​មិន​ដំណើរការ​នៅលើ​អ៊ីនធឺណិត​ទេ ។"
 
-#: modules/gui/macosx/wizard.m:284
+#: modules/gui/macosx/wizard.m:282
 msgid ""
 "Use this to stream to a single computer. RTP headers will be added to the "
 "stream"
 msgstr "ប្រើ​វា ដើម្បី​ស្ទ្រីម​ទៅកាន់​កុំព្យូទរ័រ​ទោល ។ បឋមកថា RTP នឹង​ត្រូវបាន​បន្ថែម​ទៅកាន់​ស្ទ្រីម"
 
-#: modules/gui/macosx/wizard.m:289
+#: modules/gui/macosx/wizard.m:287
 msgid ""
 "Use this to stream to a dynamic group of computers on a multicast-enabled "
 "network. This is the most efficient method to stream to several computers, "
@@ -16150,26 +16154,26 @@ msgstr ""
 "មាន​ប្រសិទ្ធភាព​​ក្នុង​ការ​ស្ទ្រីម​កុំព្យូទ័រ​ជា​ច្រើន ប៉ុន្តែ​វា​នឹង​មិន​ដំណើរការ​នៅលើ​អ៊ីនធឺណិត​ទេ ។ បឋមកថា RTP នឹង​"
 "ត្រូវបាន​បន្ថែម​ទៅកាន់​ស្ទ្រីម"
 
-#: modules/gui/macosx/wizard.m:319
+#: modules/gui/macosx/wizard.m:317
 msgid "Back"
 msgstr "ថយក្រោយ"
 
-#: modules/gui/macosx/wizard.m:322 modules/gui/macosx/wizard.m:325
-#: modules/gui/macosx/wizard.m:1273
+#: modules/gui/macosx/wizard.m:320 modules/gui/macosx/wizard.m:323
+#: modules/gui/macosx/wizard.m:1245
 msgid "Streaming/Transcoding Wizard"
 msgstr "កម្មវិធី​ជំនួយ​ស្ទ្រីម/Transcoding"
 
-#: modules/gui/macosx/wizard.m:326
+#: modules/gui/macosx/wizard.m:324
 msgid "This wizard allows to configure simple streaming or transcoding setups."
 msgstr "កម្មវិធី​ជំនួយ​នេះ អនុញ្ញាត​ឲ្យ​កំណត់​រចនាសម្ព័ន្ធ​ការ​ដំឡើង​ស្ទ្រីម ឬ transcoding ធម្មតា ។"
 
-#: modules/gui/macosx/wizard.m:328 modules/gui/macosx/wizard.m:329
-#: modules/gui/macosx/wizard.m:402 modules/gui/macosx/wizard.m:404
-#: modules/gui/macosx/wizard.m:406 modules/gui/macosx/wizard.m:421
+#: modules/gui/macosx/wizard.m:326 modules/gui/macosx/wizard.m:327
+#: modules/gui/macosx/wizard.m:400 modules/gui/macosx/wizard.m:402
+#: modules/gui/macosx/wizard.m:404 modules/gui/macosx/wizard.m:419
 msgid "More Info"
 msgstr "ព័ត៌មាន​បន្ថែម"
 
-#: modules/gui/macosx/wizard.m:330
+#: modules/gui/macosx/wizard.m:328
 msgid ""
 "This wizard only gives access to a small subset of VLC's streaming and "
 "transcoding capabilities. The Open and 'Saving/Streaming' dialogs will give "
@@ -16178,37 +16182,37 @@ msgstr ""
 "កម្មវិធី​ជំនួយ​នេះ ផ្ដល់​ដំណើរការ​ទៅកាន់​សំណុំរង​តូច​របស់​​សមត្ថភាព​ស្ទ្រីម និង transcoding របស់ VLC ។ "
 "ប្រអប់ 'បើក និង​រក្សាទុក​/ស្ទ្រីម' នឹង​ផ្ដល់​ការ​ចូល​ដំណើរការ​ទៅកាន់​លក្ខណៈ​ពិសេស​ច្រើន ។"
 
-#: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:493
-#: modules/gui/macosx/wizard.m:1677
+#: modules/gui/macosx/wizard.m:333 modules/gui/macosx/wizard.m:491
+#: modules/gui/macosx/wizard.m:1651
 msgid "Stream to network"
 msgstr "ស្ទ្រីម​ទៅកាន់​បណ្ដាញ"
 
-#: modules/gui/macosx/wizard.m:337 modules/gui/macosx/wizard.m:1685
+#: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:1659
 msgid "Transcode/Save to file"
 msgstr "Transcode/​រក្សាទុក​ទៅកាន់​ឯកសារ"
 
-#: modules/gui/macosx/wizard.m:340
+#: modules/gui/macosx/wizard.m:338
 msgid "Choose input"
 msgstr "ជ្រើស​ព័ត៌មាន​បញ្ចូល"
 
-#: modules/gui/macosx/wizard.m:341
+#: modules/gui/macosx/wizard.m:339
 msgid "Choose here your input stream."
 msgstr "ជ្រើស​ស្ទ្រីម​ព័ត៌មាន​បញ្ចូល​របស់​អ្នក​នៅ​ទីនេះ ។"
 
-#: modules/gui/macosx/wizard.m:343 modules/gui/macosx/wizard.m:531
-#: modules/gui/macosx/wizard.m:1719
+#: modules/gui/macosx/wizard.m:341 modules/gui/macosx/wizard.m:529
+#: modules/gui/macosx/wizard.m:1693
 msgid "Select a stream"
 msgstr "ជ្រើស​ស្ទ្រីម"
 
-#: modules/gui/macosx/wizard.m:345
+#: modules/gui/macosx/wizard.m:343
 msgid "Existing playlist item"
 msgstr "ធាតុ​បញ្ជីចាក់​មាន​ស្រាប់"
 
-#: modules/gui/macosx/wizard.m:353 modules/gui/macosx/wizard.m:433
+#: modules/gui/macosx/wizard.m:351 modules/gui/macosx/wizard.m:431
 msgid "Partial Extract"
 msgstr "ស្រង់ចេញ​ដោយ​ផ្នែក"
 
-#: modules/gui/macosx/wizard.m:355
+#: modules/gui/macosx/wizard.m:353
 msgid ""
 "This can be used to read only a part of the stream. It must be possible to "
 "control the incoming stream (for example, a file or a disc, but not an UDP "
@@ -16218,45 +16222,45 @@ msgstr ""
 "ឯកសារ ឬ​ថាស, ប៉ុន្តែ​មិនមែន​ជាស្ទ្រីម​បណ្ដាញ UDP ។) ពេលវេលា​ចាប់ផ្ដើម និង​បញ្ចប់ អាច​ត្រូវ​បាន​ផ្ដល់​ជា​"
 "វិនាទី ។"
 
-#: modules/gui/macosx/wizard.m:359
+#: modules/gui/macosx/wizard.m:357
 msgid "From"
 msgstr "ពី"
 
-#: modules/gui/macosx/wizard.m:360
+#: modules/gui/macosx/wizard.m:358
 msgid "To"
 msgstr "ជូន​ចំពោះ"
 
-#: modules/gui/macosx/wizard.m:364
+#: modules/gui/macosx/wizard.m:362
 msgid "This page allows to select how the input stream will be sent."
 msgstr "ទំព័រ​នេះ​អនុញ្ញាត​ឲ្យ​ជ្រើស​របៀប​ផ្ញើ​ស្ទ្រីម​ព័ត៌មាន​បញ្ចូល ។"
 
-#: modules/gui/macosx/wizard.m:366 modules/gui/macosx/wizard.m:427
+#: modules/gui/macosx/wizard.m:364 modules/gui/macosx/wizard.m:425
 #: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:74
 msgid "Destination"
 msgstr "ទៅ"
 
-#: modules/gui/macosx/wizard.m:367 modules/gui/macosx/wizard.m:439
+#: modules/gui/macosx/wizard.m:365 modules/gui/macosx/wizard.m:437
 msgid "Streaming method"
 msgstr "វិធី​សាស្ដ្រ​ស្ទ្រីម"
 
-#: modules/gui/macosx/wizard.m:368
+#: modules/gui/macosx/wizard.m:366
 msgid "Address of the computer to stream to."
 msgstr "អាសយដ្ឋាន​កុំព្យូទ័រ​ដែល​ត្រូវ​ស្ទ្រីម​ទៅ​កាន់ ។"
 
-#: modules/gui/macosx/wizard.m:370
+#: modules/gui/macosx/wizard.m:368
 msgid "UDP Unicast"
 msgstr "UDP Unicast"
 
-#: modules/gui/macosx/wizard.m:371
+#: modules/gui/macosx/wizard.m:369
 msgid "UDP Multicast"
 msgstr "UDP Multicast"
 
-#: modules/gui/macosx/wizard.m:376
+#: modules/gui/macosx/wizard.m:374
 #: modules/stream_out/transcode/transcode.c:154
 msgid "Transcode"
 msgstr "Transcode"
 
-#: modules/gui/macosx/wizard.m:377
+#: modules/gui/macosx/wizard.m:375
 msgid ""
 "This page allows to change the compression format of the audio or video "
 "tracks. To change only the container format, proceed to next page."
@@ -16264,31 +16268,31 @@ msgstr ""
 "ទំព័រ​នេះ​អនុញ្ញាត​ឲ្យ​​ផ្លាស់ប្ដូរ​ទ្រង់ទ្រាយ​បង្ហាប់​របស់​បទ​អូឌីយ៉ូ និងវីដេអូ ។ ដើម្បី​ផ្លាស់ប្ដូរ​ទ្រង់ទ្រាយ​ផ្ទុក "
 "ទៅកាន់​ទំព័រ​បន្ទាប់ ។"
 
-#: modules/gui/macosx/wizard.m:382 modules/gui/macosx/wizard.m:441
+#: modules/gui/macosx/wizard.m:380 modules/gui/macosx/wizard.m:439
 msgid "Transcode audio"
 msgstr "Transcode អូឌីយ៉ូ"
 
-#: modules/gui/macosx/wizard.m:383 modules/gui/macosx/wizard.m:443
+#: modules/gui/macosx/wizard.m:381 modules/gui/macosx/wizard.m:441
 msgid "Transcode video"
 msgstr "Transcode វីដេអូ"
 
-#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1821
+#: modules/gui/macosx/wizard.m:384 modules/gui/macosx/wizard.m:1795
 msgid ""
 "Enabling this allows to transcode the audio track if one is present in the "
 "stream."
 msgstr "ការ​បើក​វា អនុញ្ញាត​ឲ្យ​ transcode បទ​អូឌីយ៉ូ នៅពេល​ដែល​មាន​វា​មួយ​នៅ​ក្នុង​ស្ទ្រីម ។"
 
-#: modules/gui/macosx/wizard.m:388 modules/gui/macosx/wizard.m:1838
+#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1812
 msgid ""
 "Enabling this allows to transcode the video track if one is present in the "
 "stream."
 msgstr "ការ​ដែល​បើក​វា អនុញ្ញាត​ឲ្យ transcode បទ​វីដេអូ ប្រសិន​បើ​មាន​នៅ​ក្នុង​ស្ទ្រីម ។"
 
-#: modules/gui/macosx/wizard.m:392
+#: modules/gui/macosx/wizard.m:390
 msgid "Encapsulation format"
 msgstr "ទ្រង់ទ្រាយ​ស្រោប"
 
-#: modules/gui/macosx/wizard.m:393
+#: modules/gui/macosx/wizard.m:391
 msgid ""
 "This page allows to select how the stream will be encapsulated. Depending on "
 "previously chosen settings all formats won't be available."
@@ -16296,46 +16300,46 @@ msgstr ""
 "ទំព័រ​នេះ អនុញ្ញាត​ឲ្យ​ជ្រើស​របៀប​ដោះ​ស្រោប​ស្ទ្រីម ។ ដោយ​ផ្អែក​លើ​ការ​កំណត់​ដែល​បាន​ជ្រើស​ពី​មុន ដែល​ទ្រង់ទ្រាយ​"
 "ទាំងអស់​នឹង​មិន​មាន ។"
 
-#: modules/gui/macosx/wizard.m:398
+#: modules/gui/macosx/wizard.m:396
 msgid "Additional streaming options"
 msgstr "ជម្រើស​ស្ទ្រីម​បន្ថែម"
 
-#: modules/gui/macosx/wizard.m:399
+#: modules/gui/macosx/wizard.m:397
 msgid "In this page, a few additional streaming parameters can be set."
 msgstr "នៅ​ទំព័រ​នេះ មាន​ប៉ារ៉ាម៉ែត្រ​ស្ទ្រីម​បន្ថែម​មួយ​ចំនួន​ដែល​អាច​កំណត់​បាន ។"
 
-#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
+#: modules/gui/macosx/wizard.m:399 modules/gui/macosx/wizard.m:1840
 #: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr "Time-To-Live (TTL)"
 
-#: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:435
-#: modules/gui/macosx/wizard.m:1877
+#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:433
+#: modules/gui/macosx/wizard.m:1851
 msgid "SAP Announce"
 msgstr "សេចក្ដី​ប្រកាស SAP"
 
-#: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:415
-#: modules/gui/macosx/wizard.m:447 modules/gui/macosx/wizard.m:1890
+#: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:413
+#: modules/gui/macosx/wizard.m:445 modules/gui/macosx/wizard.m:1864
 msgid "Local playback"
 msgstr "ការ​ចាក់​ឡើងវិញ​មូលដ្ឋាន"
 
-#: modules/gui/macosx/wizard.m:407 modules/gui/macosx/wizard.m:416
+#: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:414
 msgid "Add Subtitles to transcoded video"
 msgstr "បន្ថែម​ចំណងជើង​រង​ទៅកាន់​វីដេអូ​ដែល​បាន transcode"
 
-#: modules/gui/macosx/wizard.m:410
+#: modules/gui/macosx/wizard.m:408
 msgid "Additional transcode options"
 msgstr "ជម្រើស transcode បន្ថែម"
 
-#: modules/gui/macosx/wizard.m:411
+#: modules/gui/macosx/wizard.m:409
 msgid "In this page, a few additional transcoding parameters can be set."
 msgstr "នៅ​ក្នុង​ទំព័រ​នេះ ប៉ារ៉ាម៉ែត្រ transcoding បន្ថែម​មួយ​ចំនួន​គឺ​អាច​កំណត់​បាន ។"
 
-#: modules/gui/macosx/wizard.m:413 modules/gui/macosx/wizard.m:1095
+#: modules/gui/macosx/wizard.m:411 modules/gui/macosx/wizard.m:1067
 msgid "Select the file to save to"
 msgstr "ជ្រើស​ឯកសារ​ដែល​ត្រូវ​រក្សាទុក​ទៅ"
 
-#: modules/gui/macosx/wizard.m:417
+#: modules/gui/macosx/wizard.m:415
 msgid ""
 "Adds available subtitles directly to the video. These cannot be disabled by "
 "the receiving user as they become part of the image."
@@ -16343,37 +16347,37 @@ msgstr ""
 "បន្ថែម​ចំណងជើង​រង​ទៅកាន់​វីដេអូ​ដោយ​ផ្ទាល់ ។ វា​មិន​អាច​បិទ​​​ដោយ​អ្នក​ប្រើ​ដែល​ទទួល​នោះ​ទេ ព្រោះ​វា​ក្លាយ​ជា​"
 "ផ្នែក​របស់​រូបភាព ។"
 
-#: modules/gui/macosx/wizard.m:424
+#: modules/gui/macosx/wizard.m:422
 msgid ""
 "This page lists all the settings. Click \"Finish\" to start streaming or "
 "transcoding."
 msgstr "ទំព័រ​នេះ​រាយ​ការ​កំណត់​ទាំង​អស់ ។ ចុច \"បញ្ចប់\" ដើម្បី​ចាប់ផ្ដើម​ស្ទ្រីម ឬ​បម្លែង​ត្រឡប់ ។"
 
-#: modules/gui/macosx/wizard.m:426
+#: modules/gui/macosx/wizard.m:424
 msgid "Summary"
 msgstr "សេចក្ដី​សង្ខេប"
 
-#: modules/gui/macosx/wizard.m:429
+#: modules/gui/macosx/wizard.m:427
 msgid "Encap. format"
 msgstr "ទ្រង់ទ្រាយ​ស្រោប"
 
-#: modules/gui/macosx/wizard.m:431
+#: modules/gui/macosx/wizard.m:429
 msgid "Input stream"
 msgstr "ស្ទ្រីម​ព័ត៌មាន​បញ្ចូល"
 
-#: modules/gui/macosx/wizard.m:437
+#: modules/gui/macosx/wizard.m:435
 msgid "Save file to"
 msgstr "រក្សាទុក​ឯកសារ​ទៅ"
 
-#: modules/gui/macosx/wizard.m:445
+#: modules/gui/macosx/wizard.m:443
 msgid "Include subtitles"
 msgstr "រួម​បញ្ចូល​ចំណង​ជើង​រង"
 
-#: modules/gui/macosx/wizard.m:599
+#: modules/gui/macosx/wizard.m:597
 msgid "No input selected"
 msgstr "គ្មាន​ព័ត៌មាន​បញ្ចូល​ដែល​បាន​ជ្រើស​ទេ"
 
-#: modules/gui/macosx/wizard.m:601
+#: modules/gui/macosx/wizard.m:599
 msgid ""
 "No new stream or valid playlist item has been selected.\n"
 "\n"
@@ -16383,11 +16387,11 @@ msgstr ""
 "\n"
 "ជ្រើស​យក​មួយ មិនពេល​ទៅ​ទំព័រ​បន្ទាប់ ។"
 
-#: modules/gui/macosx/wizard.m:662
+#: modules/gui/macosx/wizard.m:660
 msgid "No valid destination"
 msgstr "គ្មាន​ទិសដៅ​ត្រឹមត្រូវ​ទេ"
 
-#: modules/gui/macosx/wizard.m:664
+#: modules/gui/macosx/wizard.m:662
 msgid ""
 "A valid destination has to be selected Enter either a Unicast-IP or a "
 "Multicast-IP.\n"
@@ -16400,7 +16404,7 @@ msgstr ""
 "ប្រសិន​បើ​អ្នក​មិន​ដឹង​ថា​វា​មានន័យ​ដូចម្ដេច​ទេ​នោះ សូម​មើល VLC Streaming HOWTO និង​អត្ថបទ​ជំនួយ​នៅ​ក្នុង​"
 "បង្អួច​នេះ ។"
 
-#: modules/gui/macosx/wizard.m:1063
+#: modules/gui/macosx/wizard.m:1035
 msgid ""
 "The chosen codecs are not compatible with each other. For example: It is "
 "impossibleto  mix uncompressed audio with any video codec.\n"
@@ -16412,65 +16416,65 @@ msgstr ""
 "\n"
 "កែ​ជម្រើស​របស់​អ្នក ហើយ​ព្យាយាម​ម្ដងទៀត ។"
 
-#: modules/gui/macosx/wizard.m:1090
+#: modules/gui/macosx/wizard.m:1062
 msgid "Select the directory to save to"
 msgstr "ជ្រើស​ថត​ដែល​ត្រូវ​រក្សាទុក​ឯកសារ​ទៅ"
 
-#: modules/gui/macosx/wizard.m:1146
+#: modules/gui/macosx/wizard.m:1118
 msgid "No folder selected"
 msgstr "គ្មាន​ថត​ដែល​បាន​ជ្រើស​ទេ"
 
-#: modules/gui/macosx/wizard.m:1148
+#: modules/gui/macosx/wizard.m:1120
 msgid "A directory where to save the files has to be selected."
 msgstr "ថត​ដែល​ត្រូវ​រក្សាទុក​ឯកសារ​ត្រូវបាន​ជ្រើស​ ។"
 
-#: modules/gui/macosx/wizard.m:1150
+#: modules/gui/macosx/wizard.m:1122
 msgid ""
 "Enter either a valid path or use the \"Choose...\" button to select a "
 "location."
 msgstr "បញ្ចូល​ផ្លូវ​ដែល​ត្រឹមត្រូវ ឬ​ប្រើ​ប៊ូតុង \"ជ្រើស...\" ដើម្បី​ជ្រើស​ទីតាំង ។"
 
-#: modules/gui/macosx/wizard.m:1153
+#: modules/gui/macosx/wizard.m:1125
 msgid "No file selected"
 msgstr "គ្មាន​ឯកសារ​ដែល​បាន​ជ្រើស"
 
-#: modules/gui/macosx/wizard.m:1155
+#: modules/gui/macosx/wizard.m:1127
 msgid "A file where to save the stream has to be selected."
 msgstr "ឯកសារ​ដែល​ត្រូវ​រក្សាទុក​ស្ទ្រីម ត្រូវបាន​ជ្រើស ។"
 
-#: modules/gui/macosx/wizard.m:1157
+#: modules/gui/macosx/wizard.m:1129
 msgid ""
 "Enter either a valid path or use the \"Choose\" button to select a location."
 msgstr "អាច​បញ្ចូល​ផ្លូវ​ឲ្យ​ត្រឹមត្រូវ ឬ​ប្រើ​ប៊ូតុង \"ជ្រើស\" ដើម្បី​ជ្រើស​ទីតាំង ។"
 
-#: modules/gui/macosx/wizard.m:1360
+#: modules/gui/macosx/wizard.m:1334
 msgid "Finish"
 msgstr "បញ្ចប់​"
 
-#: modules/gui/macosx/wizard.m:1373 modules/gui/macosx/wizard.m:1402
-#: modules/gui/macosx/wizard.m:1432
+#: modules/gui/macosx/wizard.m:1347 modules/gui/macosx/wizard.m:1376
+#: modules/gui/macosx/wizard.m:1406
 msgid "yes"
 msgstr "បាទ/ចាស"
 
-#: modules/gui/macosx/wizard.m:1375 modules/gui/macosx/wizard.m:1385
-#: modules/gui/macosx/wizard.m:1398 modules/gui/macosx/wizard.m:1404
-#: modules/gui/macosx/wizard.m:1416 modules/gui/macosx/wizard.m:1435
+#: modules/gui/macosx/wizard.m:1349 modules/gui/macosx/wizard.m:1359
+#: modules/gui/macosx/wizard.m:1372 modules/gui/macosx/wizard.m:1378
+#: modules/gui/macosx/wizard.m:1390 modules/gui/macosx/wizard.m:1409
 msgid "no"
 msgstr "ទេ"
 
-#: modules/gui/macosx/wizard.m:1381
+#: modules/gui/macosx/wizard.m:1355
 msgid "yes: from %@ to %@ secs"
 msgstr "បាទ​​/ចាស ៖ ពី %@ ទៅ %@ វិ."
 
-#: modules/gui/macosx/wizard.m:1391 modules/gui/macosx/wizard.m:1409
+#: modules/gui/macosx/wizard.m:1365 modules/gui/macosx/wizard.m:1383
 msgid "yes: %@ @ %@ kb/s"
 msgstr "បាទ​/​​ចាស ៖ %@ @ %@ kb/s"
 
-#: modules/gui/macosx/wizard.m:1679
+#: modules/gui/macosx/wizard.m:1653
 msgid "This allows to stream on a network."
 msgstr "វា​អនុញ្ញាត​ឲ្យ​ស្ទ្រីម​នៅ​លើ​បណ្ដាញ ។"
 
-#: modules/gui/macosx/wizard.m:1687
+#: modules/gui/macosx/wizard.m:1661
 msgid ""
 "This allows to save a stream to a file. The can be reencoded on the fly. "
 "Whatever VLC can read can be saved.\n"
@@ -16482,15 +16486,15 @@ msgstr ""
 "សូម​ចំណាំថា VLC គឺ​មិន​​​ត្រូវ​សម្រាប់​ឯកសារ​ដែល​ត្រូវ​ចងក្រង​ការ​ transcode ទេ ។ លក្ខណៈ​ពិសេស​នៃ​ការ "
 "transcode របស់វា​គឺ​មាន​ប្រយោជន៍​ក្នុងការរក្សាទុក​ស្ទ្រីម​បណ្ដាញ ។"
 
-#: modules/gui/macosx/wizard.m:1816
+#: modules/gui/macosx/wizard.m:1790
 msgid "Select your audio codec. Click one to get more information."
 msgstr "ជ្រើស​កូដិក​អូឌីយ៉ូ​របស់​អ្នក ។ ចុច​លើ​វា​មួយ ដើម្បី​មើល​ព័ត៌មាន​បន្ថែម ។"
 
-#: modules/gui/macosx/wizard.m:1833
+#: modules/gui/macosx/wizard.m:1807
 msgid "Select your video codec. Click one to get more information."
 msgstr "ជ្រើស​កូដិក​វីដេអូ​របស់​អ្នក ។ ចុច​លើ​វា​មួយ ដើម្បី​មើល​ព័ត៌មាន​បន្ថែម ។"
 
-#: modules/gui/macosx/wizard.m:1868
+#: modules/gui/macosx/wizard.m:1842
 msgid ""
 "This allows to define the TTL (Time-To-Live) of the stream. This parameter "
 "is the maximum number of routers your stream can go through. If you don't "
@@ -16501,7 +16505,7 @@ msgstr ""
 "ដែល​ស្ទ្រីម​របស់​អ្នក​អាច​ឆ្លងកាត់​បាន ។ ប្រសិន​បើ​អ្នក​មិន​ដឹង​ថា​វា​មានន័យ​ដូចម្ដេច​នោះ​ទេ ឬ​ប្រសិន​បើ​អ្នក​ចង់​"
 "ស្ទ្រីម​តែ​លើ​បណ្ដាញ​មូលដ្ឋាន​របស់​អ្នក​ សូម​កំណត់​វា​ទៅ ១ ។"
 
-#: modules/gui/macosx/wizard.m:1879
+#: modules/gui/macosx/wizard.m:1853
 msgid ""
 "When streaming using UDP, the streams can be announced using the SAP/SDP "
 "announcing protocol. This way, the clients won't have to type in the "
@@ -16516,7 +16520,7 @@ msgstr ""
 "ប្រសិន​បើ​អ្នក​ចង់​ដាក់​ឈ្មោះ​ឲ្យ​ស្ទ្រីម​របស់​អ្នក សូម​បញ្ចូល​វា​នៅ​ទីនេះ បើ​មិន​បញ្ចូល​ទេ ឈ្មោះ​លំនាំដើម​នឹង​ត្រូវបាន​"
 "ប្រើ ។"
 
-#: modules/gui/macosx/wizard.m:1892
+#: modules/gui/macosx/wizard.m:1866
 msgid ""
 "When this option is enabled, the stream will be both played and transcoded/"
 "streamed.\n"
@@ -16878,31 +16882,31 @@ msgstr "រក ៖ %s"
 msgid "Open: %s"
 msgstr "បើក ៖ %s"
 
-#: modules/gui/qt4/components/controller.cpp:281
+#: modules/gui/qt4/components/controller.cpp:282
 msgid "Shift+L"
 msgstr "ប្ដូរ(Shift)+L"
 
-#: modules/gui/qt4/components/controller.cpp:378
+#: modules/gui/qt4/components/controller.cpp:379
 msgid "Click to toggle between loop one, loop all"
 msgstr "ចុច​ដើម្បី​បិទ/បើក​រវាង​រង្វិលជុំ​មួយ រង្វិល​ជុំ​ទាំង​អស់"
 
-#: modules/gui/qt4/components/controller.cpp:441
+#: modules/gui/qt4/components/controller.cpp:442
 msgid "Previous Chapter/Title"
 msgstr "ចំណង​ជង/ជំពូក​មុន"
 
-#: modules/gui/qt4/components/controller.cpp:447
+#: modules/gui/qt4/components/controller.cpp:448
 msgid "Menu"
 msgstr "ម៉ឺនុយ"
 
-#: modules/gui/qt4/components/controller.cpp:453
+#: modules/gui/qt4/components/controller.cpp:454
 msgid "Next Chapter/Title"
 msgstr "ចំណង​ជើង/ជំពូក​បន្ទាប់"
 
-#: modules/gui/qt4/components/controller.cpp:486
+#: modules/gui/qt4/components/controller.cpp:487
 msgid "Teletext Activation"
 msgstr "កា​រធ្វើ​ឲ្យ​អត្ថបទ​សកម្ម"
 
-#: modules/gui/qt4/components/controller.cpp:502
+#: modules/gui/qt4/components/controller.cpp:503
 msgid "Toggle Transparency "
 msgstr "បិទ/បើក​ភាព​ថ្លា"
 
@@ -19763,11 +19767,11 @@ msgstr "Freebox TV"
 msgid "French TV"
 msgstr "ទូរទស្សន៍​​បារាំង"
 
-#: modules/misc/notify/growl.m:97
+#: modules/misc/notify/growl.m:98
 msgid "Growl Notification Plugin"
 msgstr "កម្មវិធី​ជំនួយ​ការ​ជូន​ដំណឹង Growl"
 
-#: modules/misc/notify/growl.m:279
+#: modules/misc/notify/growl.m:308
 msgid "Now playing"
 msgstr "កំពុង​ចាក់"
 

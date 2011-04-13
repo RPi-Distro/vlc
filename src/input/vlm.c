@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: facc49c001dc0bd751a379e73300b1f84faf5c3a $
+ * $Id: fe36742591c0247107b10d43b67751d4927e2ffc $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -218,7 +218,7 @@ static void vlm_Destructor( vlm_t *p_vlm )
     TAB_CLEAN( p_vlm->i_media, p_vlm->media );
 
     vlm_ControlInternal( p_vlm, VLM_CLEAR_SCHEDULES );
-    TAB_CLEAN( p_vlm->schedule, p_vlm->schedule );
+    TAB_CLEAN( p_vlm->i_schedule, p_vlm->schedule );
     vlc_mutex_unlock( &p_vlm->lock );
 
     libvlc_priv(p_vlm->p_libvlc)->p_vlm = NULL;
@@ -472,7 +472,7 @@ static void* Manage( void* p_object )
                         }
                     }
                 }
-                else
+                else if( i_nextschedule == 0 || i_real_date < i_nextschedule )
                 {
                     i_nextschedule = i_real_date;
                 }

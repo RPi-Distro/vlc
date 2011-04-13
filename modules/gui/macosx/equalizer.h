@@ -2,7 +2,7 @@
  * equalizer.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 2d5967003cb0420df2660d882b0df1a7ced9cebc $
+ * $Id: e736be44f475c76f1459e7a506b5d4e1d6836fba $
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *
@@ -27,7 +27,6 @@
 @interface VLCEqualizer : NSObject
 {
     IBOutlet id o_btn_equalizer;
-    IBOutlet id o_btn_equalizer_embedded;
     IBOutlet id o_ckb_2pass;
     IBOutlet id o_ckb_enable;
     IBOutlet id o_fld_preamp;
