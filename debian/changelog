@@ -1,3 +1,13 @@
+vlc (1.1.9-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Fix heap corruption in MP4 demuxer (LP: #756368).
+    - Fix fullscreen controller has no background in KDE4 (LP: #661020).
+  * Refresh patches and drop backported VideoLAN-SA-1103.patch.
+  * Adjust the vlc lintian-overrides for the latest lintian version.
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 14 Apr 2011 11:18:57 +0200
+
 vlc (1.1.8-3) unstable; urgency=medium
 
   * Fix heap corruption in MP4 demuxer
