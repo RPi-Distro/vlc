@@ -3,7 +3,7 @@ Bug-Debian: http://bugs.debian.org/347650
 
 --- a/autotools/ltmain.sh
 +++ b/autotools/ltmain.sh
-@@ -5041,6 +5041,11 @@
+@@ -5787,6 +5787,11 @@
  	arg=$func_stripname_result
  	;;
  
@@ -15,7 +15,7 @@ Bug-Debian: http://bugs.debian.org/347650
        -Wl,*)
  	func_stripname '-Wl,' '' "$arg"
  	args=$func_stripname_result
-@@ -5397,6 +5402,15 @@
+@@ -6150,6 +6155,15 @@
  	lib=
  	found=no
  	case $deplib in

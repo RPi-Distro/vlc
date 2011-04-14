@@ -1,4 +1,4 @@
 # The vlc executable is in vlc-nox but the .desktop file is only relevant to vlc(-with-x)
-vlc binary: desktop-command-not-in-package /usr/share/applications/vlc.desktop vlc
+vlc binary: desktop-command-not-in-package usr/share/applications/vlc.desktop vlc
 # The icon is in vlc-data (the arch=all package)
-vlc binary: menu-icon-missing /usr/share/icons/hicolor/32x32/apps/vlc.xpm
+vlc binary: menu-icon-missing usr/share/icons/hicolor/32x32/apps/vlc.xpm

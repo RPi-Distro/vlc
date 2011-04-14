@@ -4,7 +4,7 @@ Forwarded: not-needed
 
 --- a/configure
 +++ b/configure
-@@ -47504,9 +47504,9 @@
+@@ -48354,9 +48354,9 @@
            if test -n "$i"
            then
              echo "Trying to find $i package" >&5
@@ -17,7 +17,7 @@ Forwarded: not-needed
              then
                echo "Using $i pkg-config package." >&5
                echo "Using $i package." >&6
-@@ -47734,7 +47734,7 @@
+@@ -48584,7 +48584,7 @@
  done
  test -n "$MOZILLA_CONFIG" || MOZILLA_CONFIG="no"
  
@@ -28,7 +28,7 @@ Forwarded: not-needed
  fi
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4556,8 +4556,8 @@
+@@ -4562,8 +4562,8 @@
            if test -n "$i"
            then
              echo "Trying to find $i package" >&AS_MESSAGE_LOG_FD

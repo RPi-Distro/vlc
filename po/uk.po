@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.0\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-03-23 01:33+0100\n"
+"POT-Creation-Date: 2011-04-12 01:57+0200\n"
 "PO-Revision-Date: 2010-11-07 19:50+0200\n"
 "Last-Translator: Oleksandr Natalenko <pfactum@gmail.com>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
@@ -78,7 +78,7 @@ msgstr "Налаштування гарячих клавіш"
 #: src/libvlc-module.c:1575 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
-#: modules/gui/macosx/wizard.m:380
+#: modules/gui/macosx/wizard.m:378
 #: modules/gui/qt4/components/info_panels.cpp:507
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
@@ -134,7 +134,7 @@ msgstr "Інші налаштування звуку та модулі."
 #: src/libvlc-module.c:1628 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
-#: modules/gui/macosx/wizard.m:381
+#: modules/gui/macosx/wizard.m:379
 #: modules/gui/qt4/components/info_panels.cpp:508
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
@@ -536,7 +536,7 @@ msgstr "Про програму"
 
 #: include/vlc_intf_strings.h:65 modules/control/rc.c:72
 #: modules/gui/macosx/embeddedwindow.m:69
-#: modules/gui/macosx/embeddedwindow.m:173 modules/gui/macosx/intf.m:602
+#: modules/gui/macosx/embeddedwindow.m:202 modules/gui/macosx/intf.m:602
 #: modules/gui/macosx/intf.m:647 modules/gui/macosx/intf.m:739
 #: modules/gui/macosx/intf.m:746 modules/gui/macosx/intf.m:2025
 #: modules/gui/macosx/intf.m:2026 modules/gui/macosx/intf.m:2027
@@ -818,8 +818,7 @@ msgid "Vu meter"
 msgstr "Vu-метр"
 
 #: src/audio_output/input.c:153 modules/audio_filter/equalizer.c:76
-#: modules/gui/macosx/equalizer.m:144 modules/gui/macosx/equalizer.m:145
-#: modules/gui/macosx/equalizer.m:159
+#: modules/gui/macosx/equalizer.m:144 modules/gui/macosx/equalizer.m:158
 msgid "Equalizer"
 msgstr "Еквалайзер"
 
@@ -999,7 +998,7 @@ msgid "Original ID"
 msgstr "Оригінальний ID"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
+#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:470
 #: modules/gui/qt4/ui/profiles.h:489
 msgid "Codec"
 msgstr "Кодек"
@@ -1092,7 +1091,7 @@ msgstr "Формат '%s' неможливо визначити. Дивітьс�
 
 #: src/input/meta.c:51 src/input/var.c:187 modules/gui/macosx/intf.m:663
 #: modules/gui/macosx/intf.m:664 modules/gui/macosx/open.m:190
-#: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
+#: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:346
 #: modules/gui/qt4/components/open_panels.cpp:376 modules/mux/asf.c:56
 #: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
@@ -2036,7 +2035,7 @@ msgstr ""
 "відеопотік напряму. VLC буде намагатися використовувати це за змовчуванням."
 
 #: src/libvlc-module.c:450 src/video_output/vout_intf.c:344
-#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
+#: modules/gui/macosx/simple_prefs.m:296 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "Зверху всіх вікон"
 
@@ -2354,7 +2353,7 @@ msgstr ""
 "можливо, варто змінити це налаштування на 4:3, щоб пропорції залишалися "
 "вірними."
 
-#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:297
+#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:298
 #: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "Пропускати кадри"
@@ -2471,16 +2470,16 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:95 modules/access/v4l2.c:238
 #: modules/audio_output/alsa.c:107 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1305
-#: modules/gui/macosx/simple_prefs.m:415 modules/gui/macosx/simple_prefs.m:536
-#: modules/gui/macosx/simple_prefs.m:769 modules/gui/macosx/vout.m:212
+#: modules/gui/macosx/simple_prefs.m:416 modules/gui/macosx/simple_prefs.m:544
+#: modules/gui/macosx/simple_prefs.m:791 modules/gui/macosx/vout.m:212
 #: modules/gui/qt4/components/preferences_widgets.cpp:619
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:72
 #: modules/video_filter/rss.c:185 modules/video_output/msw/directx.c:95
 msgid "Default"
 msgstr "За змовчуванням"
 
-#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:149
-#: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
+#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:148
+#: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:352
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Увімкнути"
@@ -2792,7 +2791,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr "Можна повністю вимкнути обробку шарів."
 
 #: src/libvlc-module.c:813 src/libvlc-module.c:1769 src/text/iso-639_def.h:143
-#: modules/gui/macosx/simple_prefs.m:286
+#: modules/gui/macosx/simple_prefs.m:287
 #: modules/stream_out/transcode/transcode.c:222
 #: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
@@ -3751,7 +3750,7 @@ msgstr ""
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
 #: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:753
-#: modules/gui/macosx/simple_prefs.m:294
+#: modules/gui/macosx/simple_prefs.m:295
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
@@ -3835,8 +3834,8 @@ msgstr "Повільніше (точно)"
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
-#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
-#: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
+#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:307
+#: modules/gui/macosx/wizard.m:319 modules/gui/macosx/wizard.m:1597
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/misc/notify/notify.c:339 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
@@ -4738,8 +4737,8 @@ msgstr "Завантаження…"
 #: modules/gui/macosx/coredialogs.m:186 modules/gui/macosx/open.m:176
 #: modules/gui/macosx/open.m:206 modules/gui/macosx/prefs.m:204
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
-#: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/macosx/wizard.m:320
+#: modules/gui/macosx/simple_prefs.m:309 modules/gui/macosx/simple_prefs.m:718
+#: modules/gui/macosx/wizard.m:318
 #: modules/gui/qt4/components/open_panels.cpp:1285
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
@@ -6010,7 +6009,7 @@ msgid ""
 msgstr "Розмір кеша для Аудіо CD. Значення вказується в мілісекундах."
 
 #: modules/access/cdda.c:67 modules/gui/macosx/open.m:198
-#: modules/gui/macosx/open.m:643 modules/gui/macosx/open.m:731
+#: modules/gui/macosx/open.m:644 modules/gui/macosx/open.m:732
 #: modules/gui/qt4/ui/open_disk.h:293
 msgid "Audio CD"
 msgstr "Аудіо CD"
@@ -7519,7 +7518,7 @@ msgstr "Ввід з екрана"
 
 #: modules/access/screen/screen.c:95 modules/access/screen/xcb.c:69
 #: modules/gui/macosx/open.m:223 modules/gui/macosx/open.m:426
-#: modules/gui/macosx/open.m:1021 modules/gui/macosx/simple_prefs.m:542
+#: modules/gui/macosx/open.m:1022 modules/gui/macosx/simple_prefs.m:550
 #: modules/gui/macosx/vout.m:223
 msgid "Screen"
 msgstr "Екран"
@@ -8167,7 +8166,7 @@ msgid "Caching value for VCDs. This value should be set in milliseconds."
 msgstr "Розмір кеша для VCD. Значення вказується в мілісекундах."
 
 #: modules/access/vcd/vcd.c:52 modules/gui/macosx/open.m:197
-#: modules/gui/macosx/open.m:637 modules/gui/macosx/open.m:723
+#: modules/gui/macosx/open.m:638 modules/gui/macosx/open.m:724
 msgid "VCD"
 msgstr "VCD"
 
@@ -9578,7 +9577,7 @@ msgid "Non-key"
 msgstr "Без ключа"
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:307
+#: modules/gui/macosx/simple_prefs.m:308
 #: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "Усі"
@@ -12776,7 +12775,7 @@ msgstr "Ініціалізація"
 msgid "Opening"
 msgstr "Відкриття"
 
-#: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:167
+#: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:196
 #: modules/gui/macosx/intf.m:2015 modules/gui/macosx/intf.m:2016
 #: modules/gui/macosx/intf.m:2017 modules/gui/macosx/intf.m:2018
 #: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
@@ -14609,7 +14608,7 @@ msgstr ""
 "Усі рендеровані зображення та текст будуть відображені на оверлеї "
 "фреймбуфера."
 
-#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
+#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:284
 #: modules/misc/freetype.c:92 modules/misc/notify/xosd.c:80
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
@@ -14695,11 +14694,11 @@ msgstr "Час"
 #: modules/gui/macosx/coredialogs.m:163 modules/gui/macosx/extended.m:518
 #: modules/gui/macosx/open.m:320 modules/gui/macosx/output.m:138
 #: modules/gui/macosx/playlistinfo.m:398 modules/gui/macosx/simple_prefs.m:245
-#: modules/gui/macosx/wizard.m:600 modules/gui/macosx/wizard.m:663
-#: modules/gui/macosx/wizard.m:1062 modules/gui/macosx/wizard.m:1147
-#: modules/gui/macosx/wizard.m:1154 modules/gui/macosx/wizard.m:1678
-#: modules/gui/macosx/wizard.m:1686 modules/gui/macosx/wizard.m:1867
-#: modules/gui/macosx/wizard.m:1878 modules/gui/macosx/wizard.m:1891
+#: modules/gui/macosx/wizard.m:598 modules/gui/macosx/wizard.m:661
+#: modules/gui/macosx/wizard.m:1034 modules/gui/macosx/wizard.m:1119
+#: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
+#: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
+#: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
 #: modules/gui/qt4/components/open_panels.cpp:1284
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
@@ -14738,7 +14737,7 @@ msgstr ""
 "Вхідний потік був змінений, неможливо зберегти закладку. Використовуйте "
 "режим паузи для редагування закладки."
 
-#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1062
+#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1034
 msgid "Invalid selection"
 msgstr "Неправильне виділення"
 
@@ -14862,22 +14861,22 @@ msgstr "Прискорити"
 msgid "VLC media player"
 msgstr "Медіаплеєр VLC"
 
-#: modules/gui/macosx/equalizer.m:146 modules/gui/qt4/ui/equalizer.h:128
+#: modules/gui/macosx/equalizer.m:145 modules/gui/qt4/ui/equalizer.h:128
 msgid "2 Pass"
 msgstr "2 проходи"
 
-#: modules/gui/macosx/equalizer.m:147
+#: modules/gui/macosx/equalizer.m:146
 msgid "Apply the equalizer filter twice. The effect will be sharper."
 msgstr ""
 "Застосовує фільтр еквалайзеру двічі. У результаті ефект буде більш гострим."
 
-#: modules/gui/macosx/equalizer.m:150
+#: modules/gui/macosx/equalizer.m:149
 msgid "Enable the equalizer. Bands can be set manually or using a preset."
 msgstr ""
 "Увімкнення еквалайзера. Ви можете вручну змінювати смуги або використовувати "
 "передустановки (меню Аудіо->Еквалайзер)"
 
-#: modules/gui/macosx/equalizer.m:152 modules/gui/qt4/ui/equalizer.h:130
+#: modules/gui/macosx/equalizer.m:151 modules/gui/qt4/ui/equalizer.h:130
 msgid "Preamp"
 msgstr "Попередній підсилювач"
 
@@ -15124,7 +15123,7 @@ msgid "Decrease Volume"
 msgstr "Зменшити гучність"
 
 #: modules/gui/macosx/intf.m:695 modules/gui/macosx/intf.m:696
-#: modules/gui/macosx/simple_prefs.m:291 modules/gui/macosx/vout.m:206
+#: modules/gui/macosx/simple_prefs.m:292 modules/gui/macosx/vout.m:206
 msgid "Fullscreen Video Device"
 msgstr "Пристрій повноекранного відео"
 
@@ -15273,7 +15272,7 @@ msgid "No CrashLog found"
 msgstr "Журнал збою не знайдено"
 
 #: modules/gui/macosx/intf.m:2434 modules/gui/macosx/prefs.m:226
-#: modules/gui/macosx/simple_prefs.m:697
+#: modules/gui/macosx/simple_prefs.m:719
 msgid "Continue"
 msgstr "Продовжити"
 
@@ -15455,8 +15454,8 @@ msgid "Media Resource Locator (MRL)"
 msgstr "Шукач медіаресурсів (MRL)"
 
 #: modules/gui/macosx/open.m:175 modules/gui/macosx/open.m:207
-#: modules/gui/macosx/open.m:588 modules/gui/macosx/open.m:779
-#: modules/gui/macosx/open.m:954 modules/gui/macosx/open.m:1197
+#: modules/gui/macosx/open.m:589 modules/gui/macosx/open.m:780
+#: modules/gui/macosx/open.m:955 modules/gui/macosx/open.m:1198
 #: modules/gui/qt4/components/controller.hpp:104
 msgid "Open"
 msgstr "Відкрити"
@@ -15469,7 +15468,7 @@ msgstr "Заголовок"
 #: modules/gui/macosx/open.m:183 modules/gui/macosx/open.m:192
 #: modules/gui/macosx/open.m:308 modules/gui/macosx/output.m:145
 #: modules/gui/macosx/prefs_widgets.m:1189
-#: modules/gui/macosx/simple_prefs.m:299
+#: modules/gui/macosx/simple_prefs.m:300
 #: modules/gui/qt4/components/preferences_widgets.cpp:299
 #: modules/gui/qt4/components/simple_preferences.cpp:276
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
@@ -15488,8 +15487,8 @@ msgstr "Вважати трубою замість файлу"
 msgid "Play another media synchronously"
 msgstr "Відтворити синхронно інше медіа"
 
-#: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:280
-#: modules/gui/macosx/wizard.m:346 modules/gui/macosx/wizard.m:414
+#: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:281
+#: modules/gui/macosx/wizard.m:344 modules/gui/macosx/wizard.m:412
 #: modules/gui/qt4/ui/sprefs_interface.h:394
 msgid "Choose..."
 msgstr "Вибрати…"
@@ -15503,11 +15502,11 @@ msgstr "Ім'я пристрою"
 msgid "No DVD menus"
 msgstr "Немає DVD-меню"
 
-#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:626
+#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:627
 msgid "VIDEO_TS folder"
 msgstr "Каталог VIDEO_TS"
 
-#: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:739
+#: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:740
 #: modules/services_discovery/udev.c:587 modules/gui/qt4/ui/open_disk.h:292
 msgid "DVD"
 msgstr "DVD"
@@ -15558,13 +15557,13 @@ msgstr "Протокол"
 msgid "Address"
 msgstr "Адреса"
 
-#: modules/gui/macosx/open.m:213 modules/gui/macosx/open.m:849
-#: modules/gui/macosx/open.m:907
+#: modules/gui/macosx/open.m:213 modules/gui/macosx/open.m:850
+#: modules/gui/macosx/open.m:908
 msgid "Unicast"
 msgstr "Негруповий"
 
-#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:864
-#: modules/gui/macosx/open.m:922
+#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:865
+#: modules/gui/macosx/open.m:923
 msgid "Multicast"
 msgstr "Груповий"
 
@@ -15608,7 +15607,7 @@ msgstr "Попередній канал"
 msgid "Next Channel"
 msgstr "Наступний канал"
 
-#: modules/gui/macosx/open.m:236 modules/gui/macosx/open.m:1131
+#: modules/gui/macosx/open.m:236 modules/gui/macosx/open.m:1132
 msgid "Retrieving Channel Info..."
 msgstr "Отримання інформації каналу…"
 
@@ -15668,25 +15667,25 @@ msgstr "Властивості шрифту"
 msgid "Subtitle File"
 msgstr "Файл субтитрів"
 
-#: modules/gui/macosx/open.m:587 modules/gui/macosx/open.m:953
-#: modules/gui/macosx/open.m:1196 modules/gui/qt4/ui/open_file.h:217
+#: modules/gui/macosx/open.m:588 modules/gui/macosx/open.m:954
+#: modules/gui/macosx/open.m:1197 modules/gui/qt4/ui/open_file.h:217
 msgid "Open File"
 msgstr "Відкрити файл"
 
-#: modules/gui/macosx/open.m:674 modules/gui/macosx/open.m:726
-#: modules/gui/macosx/open.m:734 modules/gui/macosx/open.m:742
+#: modules/gui/macosx/open.m:675 modules/gui/macosx/open.m:727
+#: modules/gui/macosx/open.m:735 modules/gui/macosx/open.m:743
 msgid "No %@s found"
 msgstr "%@s не знайдений"
 
-#: modules/gui/macosx/open.m:778
+#: modules/gui/macosx/open.m:779
 msgid "Open VIDEO_TS Directory"
 msgstr "Відкрити каталог VIDEO_TS"
 
-#: modules/gui/macosx/open.m:1034
+#: modules/gui/macosx/open.m:1035
 msgid "iSight Capture Input"
 msgstr "Захоплення входу iSight"
 
-#: modules/gui/macosx/open.m:1035
+#: modules/gui/macosx/open.m:1036
 msgid ""
 "This facility allows you to process your iSight's input signal.\n"
 "\n"
@@ -15702,11 +15701,11 @@ msgstr ""
 "\n"
 "Вхід живого аудіо недоступний."
 
-#: modules/gui/macosx/open.m:1137
+#: modules/gui/macosx/open.m:1138
 msgid "Composite input"
 msgstr "Композитний вхід"
 
-#: modules/gui/macosx/open.m:1140
+#: modules/gui/macosx/open.m:1141
 msgid "S-Video input"
 msgstr "Вхід S-Video"
 
@@ -15740,7 +15739,7 @@ msgid "Transcoding options"
 msgstr "Налаштування перекодування"
 
 #: modules/gui/macosx/output.m:163 modules/gui/macosx/output.m:173
-#: modules/gui/macosx/wizard.m:384
+#: modules/gui/macosx/wizard.m:382
 msgid "Bitrate (kb/s)"
 msgstr "Бітрейт (кб/с)"
 
@@ -15781,20 +15780,20 @@ msgid "Save File"
 msgstr "Зберегти файл"
 
 #: modules/gui/macosx/output.m:526 modules/gui/macosx/playlist.m:747
-#: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:310
+#: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:311
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "Зберегти"
 
 #: modules/gui/macosx/playlist.m:138 modules/gui/macosx/playlist.m:142
-#: modules/gui/macosx/wizard.m:350 modules/gui/qt4/dialogs/plugins.cpp:498
+#: modules/gui/macosx/wizard.m:348 modules/gui/qt4/dialogs/plugins.cpp:498
 #: modules/mux/asf.c:58
 msgid "Author"
 msgstr "Автор"
 
 #: modules/gui/macosx/playlist.m:139 modules/gui/macosx/playlist.m:143
-#: modules/gui/macosx/wizard.m:352
+#: modules/gui/macosx/wizard.m:350
 #: modules/gui/qt4/components/playlist/sorting.h:51
 msgid "Duration"
 msgstr "Тривалість"
@@ -15865,7 +15864,7 @@ msgstr "Список відтворення HTML"
 
 #: modules/gui/macosx/playlist.m:529 modules/gui/macosx/playlist.m:532
 #: modules/gui/macosx/playlist.m:1545 modules/gui/macosx/playlist.m:1548
-#: modules/gui/macosx/wizard.m:1365
+#: modules/gui/macosx/wizard.m:1339
 #, c-format
 msgid "%i items"
 msgstr "%i елемент(и, ів)"
@@ -15938,7 +15937,7 @@ msgstr "Показано кадрів"
 msgid "Lost frames"
 msgstr "Загублено кадрів"
 
-#: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:363
+#: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:361
 #: modules/gui/qt4/dialogs_provider.cpp:632
 #: modules/video_filter/deinterlace.c:149
 msgid "Streaming"
@@ -15978,26 +15977,26 @@ msgstr "VLC не зміг зберегти метадані."
 msgid "Information"
 msgstr "Інформація"
 
-#: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
+#: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:312
 #: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "Налаштування"
 
-#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:309
+#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:310
 msgid "Reset All"
 msgstr "Скинути все"
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:306
+#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:307
 #: modules/gui/qt4/ui/video_effects.h:1111
 msgid "Basic"
 msgstr "Основне"
 
-#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
+#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:718
 #: modules/gui/qt4/dialogs/preferences.cpp:317
 msgid "Reset Preferences"
 msgstr "Скинути налаштування"
 
-#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:699
+#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:721
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -16169,156 +16168,161 @@ msgstr "…коли VLC у фоні"
 msgid "Automatically check for updates"
 msgstr "Автоматично перевіряти оновлення"
 
-#: modules/gui/macosx/simple_prefs.m:278
+#: modules/gui/macosx/simple_prefs.m:276
+msgid "Enable Growl notifications (on playlist item change)"
+msgstr ""
+
+#: modules/gui/macosx/simple_prefs.m:279
 msgid "Default Encoding"
 msgstr "Кодування за змовчуванням"
 
-#: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/qt4/ui/sprefs_subtitles.h:207
 msgid "Display Settings"
 msgstr "Налаштування дисплею"
 
-#: modules/gui/macosx/simple_prefs.m:281
+#: modules/gui/macosx/simple_prefs.m:282
 msgid "Font Color"
 msgstr "Колір шрифту"
 
-#: modules/gui/macosx/simple_prefs.m:282
+#: modules/gui/macosx/simple_prefs.m:283
 msgid "Font Size"
 msgstr "Розмір шрифту"
 
-#: modules/gui/macosx/simple_prefs.m:284
+#: modules/gui/macosx/simple_prefs.m:285
 msgid "Subtitle Languages"
 msgstr "Мова субтитрів"
 
-#: modules/gui/macosx/simple_prefs.m:285
+#: modules/gui/macosx/simple_prefs.m:286
 msgid "Preferred Subtitle Language"
 msgstr "Бажана мова субтитрів"
 
-#: modules/gui/macosx/simple_prefs.m:287
+#: modules/gui/macosx/simple_prefs.m:288
 msgid "Enable OSD"
 msgstr "Увімкнути OSD"
 
-#: modules/gui/macosx/simple_prefs.m:290
+#: modules/gui/macosx/simple_prefs.m:291
 msgid "Black screens in Fullscreen mode"
 msgstr "Робити чорним екран для повноекранного режиму"
 
-#: modules/gui/macosx/simple_prefs.m:292 modules/stream_out/display.c:54
+#: modules/gui/macosx/simple_prefs.m:293 modules/stream_out/display.c:54
 #: modules/video_filter/deinterlace.c:138
 #: modules/gui/qt4/ui/sprefs_video.h:310
 msgid "Display"
 msgstr "Дисплей"
 
-#: modules/gui/macosx/simple_prefs.m:293
+#: modules/gui/macosx/simple_prefs.m:294
 msgid "Enable Video"
 msgstr "Увімкнути відео"
 
-#: modules/gui/macosx/simple_prefs.m:296
+#: modules/gui/macosx/simple_prefs.m:297
 msgid "Output module"
 msgstr "Модуль виводу"
 
-#: modules/gui/macosx/simple_prefs.m:298 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/gui/macosx/simple_prefs.m:299 modules/gui/qt4/ui/sprefs_video.h:325
 msgid "Video snapshots"
 msgstr "Стоп-кадри"
 
-#: modules/gui/macosx/simple_prefs.m:300 modules/meta_engine/folder.c:66
+#: modules/gui/macosx/simple_prefs.m:301 modules/meta_engine/folder.c:66
 msgid "Folder"
 msgstr "Каталог"
 
-#: modules/gui/macosx/simple_prefs.m:301 modules/gui/qt4/ui/sprefs_video.h:330
+#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:330
 msgid "Format"
 msgstr "Формат"
 
-#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:328
+#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Prefix"
 msgstr "Префікс"
 
-#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:331
+#: modules/gui/macosx/simple_prefs.m:304 modules/gui/qt4/ui/sprefs_video.h:331
 msgid "Sequential numbering"
 msgstr "Послідовна нумерація"
 
-#: modules/gui/macosx/simple_prefs.m:466
+#: modules/gui/macosx/simple_prefs.m:467
 msgid "Last check on: %@"
 msgstr "Остання перевірка: %@"
 
-#: modules/gui/macosx/simple_prefs.m:468
+#: modules/gui/macosx/simple_prefs.m:469
 msgid "No check was performed yet."
 msgstr "Ще не було перевірки."
 
-#: modules/gui/macosx/simple_prefs.m:572 modules/gui/macosx/simple_prefs.m:616
-#: modules/gui/macosx/simple_prefs.m:1223
+#: modules/gui/macosx/simple_prefs.m:580 modules/gui/macosx/simple_prefs.m:624
+#: modules/gui/macosx/simple_prefs.m:1261
 #: modules/gui/qt4/components/simple_preferences.cpp:468
 msgid "Custom"
 msgstr "Довільно"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:469
 msgid "Lowest latency"
 msgstr "Найнижча затримка"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:470
 msgid "Low latency"
 msgstr "Низька затримка"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:471
 #: modules/misc/freetype.c:121 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:81
 msgid "Normal"
 msgstr "Звичайна"
 
-#: modules/gui/macosx/simple_prefs.m:573
+#: modules/gui/macosx/simple_prefs.m:581
 #: modules/gui/qt4/components/simple_preferences.cpp:472
 msgid "High latency"
 msgstr "Висока затримка"
 
-#: modules/gui/macosx/simple_prefs.m:573
+#: modules/gui/macosx/simple_prefs.m:581
 #: modules/gui/qt4/components/simple_preferences.cpp:473
 msgid "Higher latency"
 msgstr "Вища затримка"
 
-#: modules/gui/macosx/simple_prefs.m:814
+#: modules/gui/macosx/simple_prefs.m:859
 msgid "Interface Settings not saved"
 msgstr "Налаштування інтерфейсу не збережені"
 
-#: modules/gui/macosx/simple_prefs.m:815 modules/gui/macosx/simple_prefs.m:889
-#: modules/gui/macosx/simple_prefs.m:922 modules/gui/macosx/simple_prefs.m:988
-#: modules/gui/macosx/simple_prefs.m:1028
-#: modules/gui/macosx/simple_prefs.m:1053
+#: modules/gui/macosx/simple_prefs.m:860 modules/gui/macosx/simple_prefs.m:932
+#: modules/gui/macosx/simple_prefs.m:965
+#: modules/gui/macosx/simple_prefs.m:1031
+#: modules/gui/macosx/simple_prefs.m:1071
+#: modules/gui/macosx/simple_prefs.m:1091
 #, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr ""
 "Сталася помилка під час збереження Ваших налаштувань через SimplePrefs (%i)."
 
-#: modules/gui/macosx/simple_prefs.m:888
+#: modules/gui/macosx/simple_prefs.m:931
 msgid "Audio Settings not saved"
 msgstr "Налаштування звуку не збережено"
 
-#: modules/gui/macosx/simple_prefs.m:921
+#: modules/gui/macosx/simple_prefs.m:964
 msgid "Video Settings not saved"
 msgstr "Налаштування відео не збережено"
 
-#: modules/gui/macosx/simple_prefs.m:987
+#: modules/gui/macosx/simple_prefs.m:1030
 msgid "Input Settings not saved"
 msgstr "Налаштування входу не збережено"
 
-#: modules/gui/macosx/simple_prefs.m:1027
+#: modules/gui/macosx/simple_prefs.m:1070
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr "Налаштування OSD/субтитрів не збережено"
 
-#: modules/gui/macosx/simple_prefs.m:1052
+#: modules/gui/macosx/simple_prefs.m:1090
 msgid "Hotkeys not saved"
 msgstr "Гарячі клавіші не збережені"
 
-#: modules/gui/macosx/simple_prefs.m:1153
+#: modules/gui/macosx/simple_prefs.m:1191
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Оберіть каталог, до якого зберігати стоп-кадри"
 
-#: modules/gui/macosx/simple_prefs.m:1155
+#: modules/gui/macosx/simple_prefs.m:1193
 msgid "Choose"
 msgstr "Вибрати"
 
-#: modules/gui/macosx/simple_prefs.m:1241
+#: modules/gui/macosx/simple_prefs.m:1279
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -16326,15 +16330,15 @@ msgstr ""
 "Натисніть клавішу для\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1315
+#: modules/gui/macosx/simple_prefs.m:1353
 msgid "Invalid combination"
 msgstr "Неправильна комбінація"
 
-#: modules/gui/macosx/simple_prefs.m:1316
+#: modules/gui/macosx/simple_prefs.m:1354
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "На жаль, ці клавіші не можуть бути комбінацією гарячих клавіш."
 
-#: modules/gui/macosx/simple_prefs.m:1334
+#: modules/gui/macosx/simple_prefs.m:1372
 msgid "This combination is already taken by \"%@\"."
 msgstr "Ця комбінація вже зайнята \"%@\"."
 
@@ -16451,19 +16455,19 @@ msgstr "Вільний аудіо кодек для стискання голо�
 msgid "Uncompressed audio samples (useable with WAV)"
 msgstr "Нестиснений звук (використовується з WAV)"
 
-#: modules/gui/macosx/wizard.m:234
+#: modules/gui/macosx/wizard.m:233
 msgid "MPEG Program Stream"
 msgstr "Програмний потік MPEG"
 
-#: modules/gui/macosx/wizard.m:236
+#: modules/gui/macosx/wizard.m:235
 msgid "MPEG Transport Stream"
 msgstr "Транспортний потік MPEG"
 
-#: modules/gui/macosx/wizard.m:238
+#: modules/gui/macosx/wizard.m:237
 msgid "MPEG 1 Format"
 msgstr "Формат MPEG 1"
 
-#: modules/gui/macosx/wizard.m:257
+#: modules/gui/macosx/wizard.m:255
 msgid ""
 "Enter the local addresses you want to listen requests on. Do not enter "
 "anything if you want to listen on all the network interfaces. This is "
@@ -16474,7 +16478,7 @@ msgstr ""
 "бажаєте слухати всі адреси або якщо Ви не розумієте, що це. Інші комп'ютери "
 "можуть тоді звернутися до потоку в http://yourip:8080 за змовчуванням"
 
-#: modules/gui/macosx/wizard.m:261
+#: modules/gui/macosx/wizard.m:259
 msgid ""
 "Use this to stream to several computers. This method is not the most "
 "efficient, as the server needs to send the stream several times, but "
@@ -16484,7 +16488,7 @@ msgstr ""
 "ефективний, оскільки сервер повинен послати потік кілька раз, але загалом, "
 "така поведінка сумісна з багатьма випадками"
 
-#: modules/gui/macosx/wizard.m:264
+#: modules/gui/macosx/wizard.m:262
 msgid ""
 "Enter the local addresses you want to listen requests on. Do not enter "
 "anything if you want to listen on all the network interfaces. This is "
@@ -16495,7 +16499,7 @@ msgstr ""
 "бажаєте слухати всі адреси або якщо Ви не розумієте, що це. Інші комп'ютери "
 "зможуть тоді звернутися до потоку в http://yourip:8080 за змовчуванням."
 
-#: modules/gui/macosx/wizard.m:268
+#: modules/gui/macosx/wizard.m:266
 msgid ""
 "Use this to stream to several computers using the Microsoft MMS protocol. "
 "This protocol is used as transport method by many Microsoft's softwares. "
@@ -16507,15 +16511,15 @@ msgstr ""
 "багатьма програмами Microsoft. Зауважте, що підтримується лише маленька "
 "частина протоколу MMS (MMS в контейнері HTTP)."
 
-#: modules/gui/macosx/wizard.m:273 modules/gui/macosx/wizard.m:283
+#: modules/gui/macosx/wizard.m:271 modules/gui/macosx/wizard.m:281
 msgid "Enter the address of the computer to stream to."
 msgstr "Введіть адресу комп'ютера, на яку необхідно вести мовлення."
 
-#: modules/gui/macosx/wizard.m:274 modules/gui/macosx/wizard.m:372
+#: modules/gui/macosx/wizard.m:272 modules/gui/macosx/wizard.m:370
 msgid "Use this to stream to a single computer."
 msgstr "Використовуйте це, щоб вести мовлення на єдиний комп'ютер."
 
-#: modules/gui/macosx/wizard.m:276 modules/gui/macosx/wizard.m:286
+#: modules/gui/macosx/wizard.m:274 modules/gui/macosx/wizard.m:284
 msgid ""
 "Enter the multicast address to stream to in this field. This must be an IP "
 "address between 224.0.0.0 and 239.255.255.255. For a private use, enter an "
@@ -16525,7 +16529,7 @@ msgstr ""
 "адресою IP між 224.0.0.0 і 239.255.255.255. Для приватного використання "
 "введіть адресу, що починається 239.255."
 
-#: modules/gui/macosx/wizard.m:279
+#: modules/gui/macosx/wizard.m:277
 msgid ""
 "Use this to stream to a dynamic group of computers on a multicast-enabled "
 "network. This is the most efficient method to stream to several computers, "
@@ -16535,7 +16539,7 @@ msgstr ""
 "груповій мережі. Це — найефективніший метод, щоб вести мовлення на кілька "
 "комп'ютерів, але це не працює в Інтернеті."
 
-#: modules/gui/macosx/wizard.m:284
+#: modules/gui/macosx/wizard.m:282
 msgid ""
 "Use this to stream to a single computer. RTP headers will be added to the "
 "stream"
@@ -16543,7 +16547,7 @@ msgstr ""
 "Використовуйте це, щоб вести мовлення на єдиний комп'ютер. До потоку будуть "
 "додані заголовки RTP."
 
-#: modules/gui/macosx/wizard.m:289
+#: modules/gui/macosx/wizard.m:287
 msgid ""
 "Use this to stream to a dynamic group of computers on a multicast-enabled "
 "network. This is the most efficient method to stream to several computers, "
@@ -16554,27 +16558,27 @@ msgstr ""
 "комп'ютерів, але це не працює в Інтернеті. До потоку будуть додані заголовки "
 "RTP."
 
-#: modules/gui/macosx/wizard.m:319
+#: modules/gui/macosx/wizard.m:317
 msgid "Back"
 msgstr "Назад"
 
-#: modules/gui/macosx/wizard.m:322 modules/gui/macosx/wizard.m:325
-#: modules/gui/macosx/wizard.m:1273
+#: modules/gui/macosx/wizard.m:320 modules/gui/macosx/wizard.m:323
+#: modules/gui/macosx/wizard.m:1245
 msgid "Streaming/Transcoding Wizard"
 msgstr "Майстер мовлення/перекодування"
 
-#: modules/gui/macosx/wizard.m:326
+#: modules/gui/macosx/wizard.m:324
 msgid "This wizard allows to configure simple streaming or transcoding setups."
 msgstr ""
 "Цей майстер дозволяє налаштувати просте мовлення чи перекодування потоків."
 
-#: modules/gui/macosx/wizard.m:328 modules/gui/macosx/wizard.m:329
-#: modules/gui/macosx/wizard.m:402 modules/gui/macosx/wizard.m:404
-#: modules/gui/macosx/wizard.m:406 modules/gui/macosx/wizard.m:421
+#: modules/gui/macosx/wizard.m:326 modules/gui/macosx/wizard.m:327
+#: modules/gui/macosx/wizard.m:400 modules/gui/macosx/wizard.m:402
+#: modules/gui/macosx/wizard.m:404 modules/gui/macosx/wizard.m:419
 msgid "More Info"
 msgstr "Більше інформації"
 
-#: modules/gui/macosx/wizard.m:330
+#: modules/gui/macosx/wizard.m:328
 msgid ""
 "This wizard only gives access to a small subset of VLC's streaming and "
 "transcoding capabilities. The Open and 'Saving/Streaming' dialogs will give "
@@ -16584,37 +16588,37 @@ msgstr ""
 "перекодування VLC. Використовуйте діалоги відкриття та налаштування "
 "мовлення, щоб отримати доступ до більшої кількості можливостей."
 
-#: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:493
-#: modules/gui/macosx/wizard.m:1677
+#: modules/gui/macosx/wizard.m:333 modules/gui/macosx/wizard.m:491
+#: modules/gui/macosx/wizard.m:1651
 msgid "Stream to network"
 msgstr "Мовлення в мережу"
 
-#: modules/gui/macosx/wizard.m:337 modules/gui/macosx/wizard.m:1685
+#: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:1659
 msgid "Transcode/Save to file"
 msgstr "Перекодувати/зберегти у файл"
 
-#: modules/gui/macosx/wizard.m:340
+#: modules/gui/macosx/wizard.m:338
 msgid "Choose input"
 msgstr "Виберіть вхід"
 
-#: modules/gui/macosx/wizard.m:341
+#: modules/gui/macosx/wizard.m:339
 msgid "Choose here your input stream."
 msgstr "Оберіть ваш вхідний потік тут."
 
-#: modules/gui/macosx/wizard.m:343 modules/gui/macosx/wizard.m:531
-#: modules/gui/macosx/wizard.m:1719
+#: modules/gui/macosx/wizard.m:341 modules/gui/macosx/wizard.m:529
+#: modules/gui/macosx/wizard.m:1693
 msgid "Select a stream"
 msgstr "Виберіть потік"
 
-#: modules/gui/macosx/wizard.m:345
+#: modules/gui/macosx/wizard.m:343
 msgid "Existing playlist item"
 msgstr "Існуючий елемент списку відтворення"
 
-#: modules/gui/macosx/wizard.m:353 modules/gui/macosx/wizard.m:433
+#: modules/gui/macosx/wizard.m:351 modules/gui/macosx/wizard.m:431
 msgid "Partial Extract"
 msgstr "Часткове видобування"
 
-#: modules/gui/macosx/wizard.m:355
+#: modules/gui/macosx/wizard.m:353
 msgid ""
 "This can be used to read only a part of the stream. It must be possible to "
 "control the incoming stream (for example, a file or a disc, but not an UDP "
@@ -16624,45 +16628,45 @@ msgstr ""
 "(наприклад, файл чи диск, але не мережеві UDP-потоки). Час початку та кінця "
 "може задаватися у секундах."
 
-#: modules/gui/macosx/wizard.m:359
+#: modules/gui/macosx/wizard.m:357
 msgid "From"
 msgstr "Від"
 
-#: modules/gui/macosx/wizard.m:360
+#: modules/gui/macosx/wizard.m:358
 msgid "To"
 msgstr "До"
 
-#: modules/gui/macosx/wizard.m:364
+#: modules/gui/macosx/wizard.m:362
 msgid "This page allows to select how the input stream will be sent."
 msgstr "На цій сторінці можливо вибрати метод надсилання вхідного потоку."
 
-#: modules/gui/macosx/wizard.m:366 modules/gui/macosx/wizard.m:427
+#: modules/gui/macosx/wizard.m:364 modules/gui/macosx/wizard.m:425
 #: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:74
 msgid "Destination"
 msgstr "Призначення"
 
-#: modules/gui/macosx/wizard.m:367 modules/gui/macosx/wizard.m:439
+#: modules/gui/macosx/wizard.m:365 modules/gui/macosx/wizard.m:437
 msgid "Streaming method"
 msgstr "Метод мовлення"
 
-#: modules/gui/macosx/wizard.m:368
+#: modules/gui/macosx/wizard.m:366
 msgid "Address of the computer to stream to."
 msgstr "Введіть адресу комп'ютера для мовлення."
 
-#: modules/gui/macosx/wizard.m:370
+#: modules/gui/macosx/wizard.m:368
 msgid "UDP Unicast"
 msgstr "Негруповий UDP"
 
-#: modules/gui/macosx/wizard.m:371
+#: modules/gui/macosx/wizard.m:369
 msgid "UDP Multicast"
 msgstr "Груповий UDP"
 
-#: modules/gui/macosx/wizard.m:376
+#: modules/gui/macosx/wizard.m:374
 #: modules/stream_out/transcode/transcode.c:154
 msgid "Transcode"
 msgstr "Перекодування"
 
-#: modules/gui/macosx/wizard.m:377
+#: modules/gui/macosx/wizard.m:375
 msgid ""
 "This page allows to change the compression format of the audio or video "
 "tracks. To change only the container format, proceed to next page."
@@ -16671,31 +16675,31 @@ msgstr ""
 "використовуйте цю сторінку. Якщо Ви тільки бажаєте змінити контейнерний "
 "формат, перейдіть до наступної сторінки."
 
-#: modules/gui/macosx/wizard.m:382 modules/gui/macosx/wizard.m:441
+#: modules/gui/macosx/wizard.m:380 modules/gui/macosx/wizard.m:439
 msgid "Transcode audio"
 msgstr "Перекодувати звук"
 
-#: modules/gui/macosx/wizard.m:383 modules/gui/macosx/wizard.m:443
+#: modules/gui/macosx/wizard.m:381 modules/gui/macosx/wizard.m:441
 msgid "Transcode video"
 msgstr "Перекодувати відео"
 
-#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1821
+#: modules/gui/macosx/wizard.m:384 modules/gui/macosx/wizard.m:1795
 msgid ""
 "Enabling this allows to transcode the audio track if one is present in the "
 "stream."
 msgstr "Це дозволяє перекодувати аудіодоріжку, якщо такий присутній у потоці."
 
-#: modules/gui/macosx/wizard.m:388 modules/gui/macosx/wizard.m:1838
+#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1812
 msgid ""
 "Enabling this allows to transcode the video track if one is present in the "
 "stream."
 msgstr "Це дозволяє перекодувати відеодоріжку, якщо така присутній у потоці."
 
-#: modules/gui/macosx/wizard.m:392
+#: modules/gui/macosx/wizard.m:390
 msgid "Encapsulation format"
 msgstr "Формат контейнера"
 
-#: modules/gui/macosx/wizard.m:393
+#: modules/gui/macosx/wizard.m:391
 msgid ""
 "This page allows to select how the stream will be encapsulated. Depending on "
 "previously chosen settings all formats won't be available."
@@ -16703,46 +16707,46 @@ msgstr ""
 "Визначає метод інкапсуляції потоку. Залежно від попередніх вибраних "
 "параметрів деякі формати можуть бути недоступні."
 
-#: modules/gui/macosx/wizard.m:398
+#: modules/gui/macosx/wizard.m:396
 msgid "Additional streaming options"
 msgstr "Додаткові параметри мовлення"
 
-#: modules/gui/macosx/wizard.m:399
+#: modules/gui/macosx/wizard.m:397
 msgid "In this page, a few additional streaming parameters can be set."
 msgstr "Тут можуть бути задані кілька додаткових параметрів."
 
-#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
+#: modules/gui/macosx/wizard.m:399 modules/gui/macosx/wizard.m:1840
 #: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr "«Час життя» (TTL)"
 
-#: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:435
-#: modules/gui/macosx/wizard.m:1877
+#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:433
+#: modules/gui/macosx/wizard.m:1851
 msgid "SAP Announce"
 msgstr "Оповіщення SAP"
 
-#: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:415
-#: modules/gui/macosx/wizard.m:447 modules/gui/macosx/wizard.m:1890
+#: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:413
+#: modules/gui/macosx/wizard.m:445 modules/gui/macosx/wizard.m:1864
 msgid "Local playback"
 msgstr "Відтворювати локально"
 
-#: modules/gui/macosx/wizard.m:407 modules/gui/macosx/wizard.m:416
+#: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:414
 msgid "Add Subtitles to transcoded video"
 msgstr "Додати субтитри до перекодовуваного відео"
 
-#: modules/gui/macosx/wizard.m:410
+#: modules/gui/macosx/wizard.m:408
 msgid "Additional transcode options"
 msgstr "Додаткові параметри перекодування"
 
-#: modules/gui/macosx/wizard.m:411
+#: modules/gui/macosx/wizard.m:409
 msgid "In this page, a few additional transcoding parameters can be set."
 msgstr "Тут можуть бути задані кілька додаткових параметрів перекодування."
 
-#: modules/gui/macosx/wizard.m:413 modules/gui/macosx/wizard.m:1095
+#: modules/gui/macosx/wizard.m:411 modules/gui/macosx/wizard.m:1067
 msgid "Select the file to save to"
 msgstr "Виберіть файл для збереження"
 
-#: modules/gui/macosx/wizard.m:417
+#: modules/gui/macosx/wizard.m:415
 msgid ""
 "Adds available subtitles directly to the video. These cannot be disabled by "
 "the receiving user as they become part of the image."
@@ -16750,7 +16754,7 @@ msgstr ""
 "Додає доступні субтитри прямо до відео. Вони не можуть бути відключені "
 "кінцевим користувачем, бо стають частиною картинки."
 
-#: modules/gui/macosx/wizard.m:424
+#: modules/gui/macosx/wizard.m:422
 msgid ""
 "This page lists all the settings. Click \"Finish\" to start streaming or "
 "transcoding."
@@ -16758,31 +16762,31 @@ msgstr ""
 "Ця сторінка містить усі налаштування. Натисніть «Закінчити» для початку "
 "мовлення чи перекодування."
 
-#: modules/gui/macosx/wizard.m:426
+#: modules/gui/macosx/wizard.m:424
 msgid "Summary"
 msgstr "Загальні дані"
 
-#: modules/gui/macosx/wizard.m:429
+#: modules/gui/macosx/wizard.m:427
 msgid "Encap. format"
 msgstr "Формат формування пакета"
 
-#: modules/gui/macosx/wizard.m:431
+#: modules/gui/macosx/wizard.m:429
 msgid "Input stream"
 msgstr "Вхідний потік"
 
-#: modules/gui/macosx/wizard.m:437
+#: modules/gui/macosx/wizard.m:435
 msgid "Save file to"
 msgstr "Зберегти файл до"
 
-#: modules/gui/macosx/wizard.m:445
+#: modules/gui/macosx/wizard.m:443
 msgid "Include subtitles"
 msgstr "Включати субтитри"
 
-#: modules/gui/macosx/wizard.m:599
+#: modules/gui/macosx/wizard.m:597
 msgid "No input selected"
 msgstr "Не вибраний вхідний потік"
 
-#: modules/gui/macosx/wizard.m:601
+#: modules/gui/macosx/wizard.m:599
 msgid ""
 "No new stream or valid playlist item has been selected.\n"
 "\n"
@@ -16792,11 +16796,11 @@ msgstr ""
 "\n"
 "Оберіть щось перед переходом до наступної сторінки."
 
-#: modules/gui/macosx/wizard.m:662
+#: modules/gui/macosx/wizard.m:660
 msgid "No valid destination"
 msgstr "Призначення недійсне"
 
-#: modules/gui/macosx/wizard.m:664
+#: modules/gui/macosx/wizard.m:662
 msgid ""
 "A valid destination has to be selected Enter either a Unicast-IP or a "
 "Multicast-IP.\n"
@@ -16810,7 +16814,7 @@ msgstr ""
 "Якщо Ви не знаєте, що це означає, прочитайте «HOWTO мовлення у VLC» та "
 "допоміжні тексти у цьому вікні."
 
-#: modules/gui/macosx/wizard.m:1063
+#: modules/gui/macosx/wizard.m:1035
 msgid ""
 "The chosen codecs are not compatible with each other. For example: It is "
 "impossibleto  mix uncompressed audio with any video codec.\n"
@@ -16822,19 +16826,19 @@ msgstr ""
 "\n"
 "Відкоригуйте вибір та спробуйте знову."
 
-#: modules/gui/macosx/wizard.m:1090
+#: modules/gui/macosx/wizard.m:1062
 msgid "Select the directory to save to"
 msgstr "Вибрати каталог для збереження"
 
-#: modules/gui/macosx/wizard.m:1146
+#: modules/gui/macosx/wizard.m:1118
 msgid "No folder selected"
 msgstr "Каталог не вибраний"
 
-#: modules/gui/macosx/wizard.m:1148
+#: modules/gui/macosx/wizard.m:1120
 msgid "A directory where to save the files has to be selected."
 msgstr "Каталог, куди будуть збережені файли, повинен бути вибраний."
 
-#: modules/gui/macosx/wizard.m:1150
+#: modules/gui/macosx/wizard.m:1122
 msgid ""
 "Enter either a valid path or use the \"Choose...\" button to select a "
 "location."
@@ -16842,49 +16846,49 @@ msgstr ""
 "Введіть правильний шлях або натисніть кнопку «Обрати…» для того, щоб обрати "
 "місцезнаходження."
 
-#: modules/gui/macosx/wizard.m:1153
+#: modules/gui/macosx/wizard.m:1125
 msgid "No file selected"
 msgstr "Файл не вибраний"
 
-#: modules/gui/macosx/wizard.m:1155
+#: modules/gui/macosx/wizard.m:1127
 msgid "A file where to save the stream has to be selected."
 msgstr "Повинен бути вибраний файл для збереження потоку."
 
-#: modules/gui/macosx/wizard.m:1157
+#: modules/gui/macosx/wizard.m:1129
 msgid ""
 "Enter either a valid path or use the \"Choose\" button to select a location."
 msgstr ""
 "Введіть правильний шлях або натисніть кнопку «Обрати» для того, щоб обрати "
 "місцезнаходження."
 
-#: modules/gui/macosx/wizard.m:1360
+#: modules/gui/macosx/wizard.m:1334
 msgid "Finish"
 msgstr "Закінчити"
 
-#: modules/gui/macosx/wizard.m:1373 modules/gui/macosx/wizard.m:1402
-#: modules/gui/macosx/wizard.m:1432
+#: modules/gui/macosx/wizard.m:1347 modules/gui/macosx/wizard.m:1376
+#: modules/gui/macosx/wizard.m:1406
 msgid "yes"
 msgstr "так"
 
-#: modules/gui/macosx/wizard.m:1375 modules/gui/macosx/wizard.m:1385
-#: modules/gui/macosx/wizard.m:1398 modules/gui/macosx/wizard.m:1404
-#: modules/gui/macosx/wizard.m:1416 modules/gui/macosx/wizard.m:1435
+#: modules/gui/macosx/wizard.m:1349 modules/gui/macosx/wizard.m:1359
+#: modules/gui/macosx/wizard.m:1372 modules/gui/macosx/wizard.m:1378
+#: modules/gui/macosx/wizard.m:1390 modules/gui/macosx/wizard.m:1409
 msgid "no"
 msgstr "ні"
 
-#: modules/gui/macosx/wizard.m:1381
+#: modules/gui/macosx/wizard.m:1355
 msgid "yes: from %@ to %@ secs"
 msgstr "так: від %@ до %@ с"
 
-#: modules/gui/macosx/wizard.m:1391 modules/gui/macosx/wizard.m:1409
+#: modules/gui/macosx/wizard.m:1365 modules/gui/macosx/wizard.m:1383
 msgid "yes: %@ @ %@ kb/s"
 msgstr "так: %@ @ %@ кб/с"
 
-#: modules/gui/macosx/wizard.m:1679
+#: modules/gui/macosx/wizard.m:1653
 msgid "This allows to stream on a network."
 msgstr "Дозволяє вести мовлення в мережу."
 
-#: modules/gui/macosx/wizard.m:1687
+#: modules/gui/macosx/wizard.m:1661
 msgid ""
 "This allows to save a stream to a file. The can be reencoded on the fly. "
 "Whatever VLC can read can be saved.\n"
@@ -16897,16 +16901,16 @@ msgstr ""
 "можливості кодування більш підходять, наприклад, для збереження мережевих "
 "потоків."
 
-#: modules/gui/macosx/wizard.m:1816
+#: modules/gui/macosx/wizard.m:1790
 msgid "Select your audio codec. Click one to get more information."
 msgstr ""
 "Виберіть Ваш звуковий кодек. Клацніть, щоб отримати докладну інформацію."
 
-#: modules/gui/macosx/wizard.m:1833
+#: modules/gui/macosx/wizard.m:1807
 msgid "Select your video codec. Click one to get more information."
 msgstr "Виберіть Ваш відеокодек. Клацніть, щоб отримати докладну інформацію."
 
-#: modules/gui/macosx/wizard.m:1868
+#: modules/gui/macosx/wizard.m:1842
 msgid ""
 "This allows to define the TTL (Time-To-Live) of the stream. This parameter "
 "is the maximum number of routers your stream can go through. If you don't "
@@ -16918,7 +16922,7 @@ msgstr ""
 "бажаєте вести мовлення тільки у Вашій локальній мережі, залишіть значення "
 "цього параметра 1."
 
-#: modules/gui/macosx/wizard.m:1879
+#: modules/gui/macosx/wizard.m:1853
 msgid ""
 "When streaming using UDP, the streams can be announced using the SAP/SDP "
 "announcing protocol. This way, the clients won't have to type in the "
@@ -16934,7 +16938,7 @@ msgstr ""
 "Якщо Ви бажаєте дати назву вашому потоку, напишіть його тут. Інакше буде "
 "використане ім'я за змовчуванням."
 
-#: modules/gui/macosx/wizard.m:1892
+#: modules/gui/macosx/wizard.m:1866
 msgid ""
 "When this option is enabled, the stream will be both played and transcoded/"
 "streamed.\n"
@@ -17301,31 +17305,31 @@ msgstr "Знайти: %s"
 msgid "Open: %s"
 msgstr "Відкрити: %s"
 
-#: modules/gui/qt4/components/controller.cpp:281
+#: modules/gui/qt4/components/controller.cpp:282
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt4/components/controller.cpp:378
+#: modules/gui/qt4/components/controller.cpp:379
 msgid "Click to toggle between loop one, loop all"
 msgstr "Клацніть для перемикання між повторенням одного та повторенням всього"
 
-#: modules/gui/qt4/components/controller.cpp:441
+#: modules/gui/qt4/components/controller.cpp:442
 msgid "Previous Chapter/Title"
 msgstr "Попередній розділ/заголовок"
 
-#: modules/gui/qt4/components/controller.cpp:447
+#: modules/gui/qt4/components/controller.cpp:448
 msgid "Menu"
 msgstr "Меню"
 
-#: modules/gui/qt4/components/controller.cpp:453
+#: modules/gui/qt4/components/controller.cpp:454
 msgid "Next Chapter/Title"
 msgstr "Наступний розділ/заголовок"
 
-#: modules/gui/qt4/components/controller.cpp:486
+#: modules/gui/qt4/components/controller.cpp:487
 msgid "Teletext Activation"
 msgstr "Активація телетексту"
 
-#: modules/gui/qt4/components/controller.cpp:502
+#: modules/gui/qt4/components/controller.cpp:503
 msgid "Toggle Transparency "
 msgstr "Перемкнути прозорість "
 
@@ -20205,11 +20209,11 @@ msgstr "ТБ Freebox"
 msgid "French TV"
 msgstr "Французьке ТБ"
 
-#: modules/misc/notify/growl.m:97
+#: modules/misc/notify/growl.m:98
 msgid "Growl Notification Plugin"
 msgstr "Плагін оповіщення Growl"
 
-#: modules/misc/notify/growl.m:279
+#: modules/misc/notify/growl.m:308
 msgid "Now playing"
 msgstr "Зараз відтворюється"
 

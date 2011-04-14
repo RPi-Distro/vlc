@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: d444d176fdb29af7604d2e01dac18f87c3ca34b4 $
+ * $Id: 323063408e4b07197e7448d967dbdafb389b4588 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -2187,7 +2187,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     }
     module_list_free( p_list );
 
-    mainFrame.size.height = 30 + 18 * [o_modulearray count];
+    mainFrame.size.height = 30 + 20 * [o_modulearray count];
     mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN;
     mainFrame.origin.x = LEFTMARGIN;
     mainFrame.origin.y = 0;
@@ -2260,7 +2260,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         initWithIdentifier:@"Module"];
     [o_tableColumn setHeaderCell: o_headerCell];
     [o_tableColumn setDataCell: o_dataCell];
-    [o_tableColumn setWidth:388 - 17];
+    [o_tableColumn setWidth:s_rc.size.width - 34];
     [o_tableview addTableColumn: o_tableColumn];
     [o_tableview registerForDraggedTypes:[NSArray arrayWithObjects:
             @"VLC media player module", nil]];
@@ -2273,6 +2273,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     [o_scrollview setDocumentView: o_tableview];
 }
     [o_scrollview setAutoresizingMask:NSViewWidthSizable ];
+    [o_scrollview setAutohidesScrollers:YES];
     [self addSubview: o_scrollview];
 
 

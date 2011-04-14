@@ -5,18 +5,18 @@
 # This file is distributed under the same license as the VLC package.
 #
 # Eero <eerove gmail com> 2009.
-# Mihkel <turakas gmail com> 2010-2011.
+# Mihkel <turakas gmail com> 2010,2011.
 # Mattias Põldaru <mahfiaz gmail com> 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.8\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-03-23 01:33+0100\n"
-"PO-Revision-Date: 2011-03-02 17:31+0200\n"
+"POT-Creation-Date: 2011-04-12 01:57+0200\n"
+"PO-Revision-Date: 2011-03-23 13:28+0200\n"
 "Last-Translator: mihkel <turakas gmail com>\n"
 "Language-Team: Estonian\n"
-"Language: \n"
+"Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -81,7 +81,7 @@ msgstr "Kiirklahvide seadeid"
 #: src/libvlc-module.c:1575 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:668 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:184
-#: modules/gui/macosx/wizard.m:380
+#: modules/gui/macosx/wizard.m:378
 #: modules/gui/qt4/components/info_panels.cpp:507
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
@@ -137,7 +137,7 @@ msgstr "Mitmesugused audio seaded ja moodulid."
 #: src/libvlc-module.c:1628 modules/access/imem.c:69
 #: modules/gui/macosx/intf.m:681 modules/gui/macosx/output.m:160
 #: modules/gui/macosx/playlistinfo.m:103 modules/gui/macosx/simple_prefs.m:188
-#: modules/gui/macosx/wizard.m:381
+#: modules/gui/macosx/wizard.m:379
 #: modules/gui/qt4/components/info_panels.cpp:508
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
@@ -538,7 +538,7 @@ msgstr "&Programmist"
 
 #: include/vlc_intf_strings.h:65 modules/control/rc.c:72
 #: modules/gui/macosx/embeddedwindow.m:69
-#: modules/gui/macosx/embeddedwindow.m:173 modules/gui/macosx/intf.m:602
+#: modules/gui/macosx/embeddedwindow.m:202 modules/gui/macosx/intf.m:602
 #: modules/gui/macosx/intf.m:647 modules/gui/macosx/intf.m:739
 #: modules/gui/macosx/intf.m:746 modules/gui/macosx/intf.m:2025
 #: modules/gui/macosx/intf.m:2026 modules/gui/macosx/intf.m:2027
@@ -821,8 +821,7 @@ msgid "Vu meter"
 msgstr "Vu-meeter"
 
 #: src/audio_output/input.c:153 modules/audio_filter/equalizer.c:76
-#: modules/gui/macosx/equalizer.m:144 modules/gui/macosx/equalizer.m:145
-#: modules/gui/macosx/equalizer.m:159
+#: modules/gui/macosx/equalizer.m:144 modules/gui/macosx/equalizer.m:158
 msgid "Equalizer"
 msgstr "Ekvalaiser..."
 
@@ -1002,7 +1001,7 @@ msgid "Original ID"
 msgstr "Originaal ID"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:385 modules/gui/qt4/ui/profiles.h:470
+#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:470
 #: modules/gui/qt4/ui/profiles.h:489
 msgid "Codec"
 msgstr "Koodek"
@@ -1096,7 +1095,7 @@ msgstr ""
 
 #: src/input/meta.c:51 src/input/var.c:187 modules/gui/macosx/intf.m:663
 #: modules/gui/macosx/intf.m:664 modules/gui/macosx/open.m:190
-#: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
+#: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:346
 #: modules/gui/qt4/components/open_panels.cpp:376 modules/mux/asf.c:56
 #: modules/gui/qt4/ui/open_disk.h:302
 msgid "Title"
@@ -2036,7 +2035,7 @@ msgstr ""
 "renderdada videot otse). Vaikimisi üritab VLC seda kasutada."
 
 #: src/libvlc-module.c:450 src/video_output/vout_intf.c:344
-#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:312
+#: modules/gui/macosx/simple_prefs.m:296 modules/gui/qt4/ui/sprefs_video.h:312
 msgid "Always on top"
 msgstr "Alati pealmine"
 
@@ -2344,7 +2343,7 @@ msgstr ""
 "pikslid (1:1). Kui sul on 16:9 ekraan, siis võid muuta selle siin 4:3-ks, et "
 "säilitada proportsioone."
 
-#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:297
+#: src/libvlc-module.c:605 modules/gui/macosx/simple_prefs.m:298
 #: modules/gui/qt4/ui/sprefs_video.h:315
 msgid "Skip frames"
 msgstr "Kaadrite vahelejätmine"
@@ -2460,16 +2459,16 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:95 modules/access/v4l2.c:238
 #: modules/audio_output/alsa.c:107 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1305
-#: modules/gui/macosx/simple_prefs.m:415 modules/gui/macosx/simple_prefs.m:536
-#: modules/gui/macosx/simple_prefs.m:769 modules/gui/macosx/vout.m:212
+#: modules/gui/macosx/simple_prefs.m:416 modules/gui/macosx/simple_prefs.m:544
+#: modules/gui/macosx/simple_prefs.m:791 modules/gui/macosx/vout.m:212
 #: modules/gui/qt4/components/preferences_widgets.cpp:619
 #: modules/video_filter/marq.c:60 modules/video_filter/rss.c:72
 #: modules/video_filter/rss.c:185 modules/video_output/msw/directx.c:95
 msgid "Default"
 msgstr "Vaikimisi"
 
-#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:149
-#: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:354
+#: src/libvlc-module.c:661 modules/gui/macosx/equalizer.m:148
+#: modules/gui/macosx/extended.m:97 modules/gui/macosx/wizard.m:352
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Lubatud"
@@ -2777,7 +2776,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr "Sa saad täielikult keelata pildipealdiste töötlemise."
 
 #: src/libvlc-module.c:813 src/libvlc-module.c:1769 src/text/iso-639_def.h:143
-#: modules/gui/macosx/simple_prefs.m:286
+#: modules/gui/macosx/simple_prefs.m:287
 #: modules/stream_out/transcode/transcode.c:222
 #: modules/gui/qt4/ui/sprefs_subtitles.h:201
 msgid "On Screen Display"
@@ -3720,7 +3719,7 @@ msgstr "Need seaded on globaalsed VLC klahviseosed e kiirklahvid."
 #: modules/gui/macosx/controls.m:1087 modules/gui/macosx/controls.m:1120
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:606
 #: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:753
-#: modules/gui/macosx/simple_prefs.m:294
+#: modules/gui/macosx/simple_prefs.m:295
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/ui/sprefs_video.h:311
 msgid "Fullscreen"
@@ -3803,8 +3802,8 @@ msgstr "Pisut aeglasemalt"
 #: modules/gui/macosx/about.m:193 modules/gui/macosx/controls.m:1032
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:741
-#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:309
-#: modules/gui/macosx/wizard.m:321 modules/gui/macosx/wizard.m:1623
+#: modules/gui/macosx/intf.m:749 modules/gui/macosx/wizard.m:307
+#: modules/gui/macosx/wizard.m:319 modules/gui/macosx/wizard.m:1597
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/misc/notify/notify.c:339 modules/gui/qt4/ui/sout.h:327
 #: modules/gui/qt4/ui/sout.h:338 modules/gui/qt4/ui/streampanel.h:182
@@ -4698,8 +4697,8 @@ msgstr "Allalaadimine..."
 #: modules/gui/macosx/coredialogs.m:186 modules/gui/macosx/open.m:176
 #: modules/gui/macosx/open.m:206 modules/gui/macosx/prefs.m:204
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
-#: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:696
-#: modules/gui/macosx/wizard.m:320
+#: modules/gui/macosx/simple_prefs.m:309 modules/gui/macosx/simple_prefs.m:718
+#: modules/gui/macosx/wizard.m:318
 #: modules/gui/qt4/components/open_panels.cpp:1285
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
@@ -5971,7 +5970,7 @@ msgid ""
 msgstr "Vaikimisi audio-CD-de puhvri pikkus millisekundites."
 
 #: modules/access/cdda.c:67 modules/gui/macosx/open.m:198
-#: modules/gui/macosx/open.m:643 modules/gui/macosx/open.m:731
+#: modules/gui/macosx/open.m:644 modules/gui/macosx/open.m:732
 #: modules/gui/qt4/ui/open_disk.h:293
 msgid "Audio CD"
 msgstr "Audio-CD"
@@ -7469,7 +7468,7 @@ msgstr "Ekraani sisend"
 
 #: modules/access/screen/screen.c:95 modules/access/screen/xcb.c:69
 #: modules/gui/macosx/open.m:223 modules/gui/macosx/open.m:426
-#: modules/gui/macosx/open.m:1021 modules/gui/macosx/simple_prefs.m:542
+#: modules/gui/macosx/open.m:1022 modules/gui/macosx/simple_prefs.m:550
 #: modules/gui/macosx/vout.m:223
 msgid "Screen"
 msgstr "Ekraan"
@@ -8114,7 +8113,7 @@ msgid "Caching value for VCDs. This value should be set in milliseconds."
 msgstr "VCD-de puhvri pikkus millisekundites."
 
 #: modules/access/vcd/vcd.c:52 modules/gui/macosx/open.m:197
-#: modules/gui/macosx/open.m:637 modules/gui/macosx/open.m:723
+#: modules/gui/macosx/open.m:638 modules/gui/macosx/open.m:724
 msgid "VCD"
 msgstr "VCD"
 
@@ -8160,7 +8159,7 @@ msgstr "Rakendus"
 
 #: modules/access/vcdx/info.c:65
 msgid "Preparer"
-msgstr ""
+msgstr "Preparer"
 
 #: modules/access/vcdx/info.c:66
 msgid "Vol #"
@@ -8596,7 +8595,7 @@ msgstr ""
 
 #: modules/audio_filter/audiobargraph_a.c:59
 msgid "Time window to use in ms (default 5000)"
-msgstr ""
+msgstr "Kasutatav ajaaken millisekundites (vaikimisi 5000)"
 
 #: modules/audio_filter/audiobargraph_a.c:60
 msgid ""
@@ -9496,7 +9495,7 @@ msgid "Non-key"
 msgstr "Mitte-klahv"
 
 #: modules/codec/avcodec/avcodec.c:74 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:307
+#: modules/gui/macosx/simple_prefs.m:308
 #: modules/gui/qt4/dialogs/preferences.cpp:71
 msgid "All"
 msgstr "Kõik"
@@ -9685,6 +9684,8 @@ msgid ""
 "Skipping the loop filter (aka deblocking) usually has a detrimental effect "
 "on quality. However it provides a big speedup for high definition streams."
 msgstr ""
+"Kordustefiltri vahelejätmisel (aka deblokkimisel) on kahjulik efekt "
+"kvaliteedile. Kuigi kõrge eraldusvõimega voogudel on tuntav kiirusevõit."
 
 #: modules/codec/avcodec/avcodec.h:138
 msgid "Hardware decoding"
@@ -10806,23 +10807,23 @@ msgid "RealVideo library decoder"
 msgstr "RealVideo teegi dekooder"
 
 #: modules/codec/schroedinger.c:65
-#, fuzzy
 msgid "Automate picture coding mode"
-msgstr "Pildi kodeerimise režiim"
+msgstr "Automatiseeri pildi kodeerimise režiimi"
 
 #: modules/codec/schroedinger.c:66
 msgid ""
 "Use the input picture to determine how to code it - interlaced or progressive"
 msgstr ""
+"Kasuta sisndpilti otsustamaks, kuidas teda kodeerida - ülerealaotus või "
+"progressiivne"
 
 #: modules/codec/schroedinger.c:74
 msgid "Schroedinger video decoder"
 msgstr "Schroedinger video dekooder"
 
 #: modules/codec/schroedinger.c:80
-#, fuzzy
 msgid "Dirac video encoder using libschroedinger"
-msgstr "Dirac video enkooder kasutades dirac-research teeki"
+msgstr "Dirac video enkooder kasutades libschroedinger teeki"
 
 #: modules/codec/sdl_image.c:60
 msgid "SDL Image decoder"
@@ -12602,7 +12603,7 @@ msgstr "Lähtestamine"
 msgid "Opening"
 msgstr "Avamine"
 
-#: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:167
+#: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:196
 #: modules/gui/macosx/intf.m:2015 modules/gui/macosx/intf.m:2016
 #: modules/gui/macosx/intf.m:2017 modules/gui/macosx/intf.m:2018
 #: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
@@ -13295,7 +13296,7 @@ msgstr "Faili salvestaja"
 
 #: modules/demux/dirac.c:41
 msgid "Value to adjust dts by"
-msgstr ""
+msgstr "Väärtus, mille järgi dts-i kohandada"
 
 #: modules/demux/dirac.c:54
 msgid "Dirac video demuxer"
@@ -13397,6 +13398,8 @@ msgid ""
 "Sets the username for the connection, if no username or password are set in "
 "the url."
 msgstr ""
+"Määrab ühenduse jaoks kasutajanime, kui kasutajanime ega salasõna ei ole url-"
+"is määratud."
 
 #: modules/demux/live555.cpp:93
 msgid "RTSP password"
@@ -13407,6 +13410,8 @@ msgid ""
 "Sets the password for the connection, if no username or password are set in "
 "the url."
 msgstr ""
+"Määrab ühenduse jaoks salasõna, kui ühtegi kasutajanime ega salasõna ei ole "
+"url-is määratud."
 
 #: modules/demux/live555.cpp:98
 msgid "RTP/RTSP/SDP demuxer (using Live555)"
@@ -13464,6 +13469,8 @@ msgid ""
 "This is the desired frame rate when playing MJPEG from a file. Use 0 (this "
 "is the default value) for a live stream (from a camera)."
 msgstr ""
+"See on soovitud kaadrikiirus MJPEG faili esitamisel. kasuta 0-i (mis on ka "
+"vaikeväärtus) live voogude jaoks kaamerast."
 
 #: modules/demux/mjpeg.c:54
 msgid "M-JPEG camera demuxer"
@@ -14387,7 +14394,7 @@ msgid ""
 "All rendered images and text will be displayed on the overlay framebuffer."
 msgstr "Kõik renderdatud pildid a tekst kuvatakse ülekatte kaadripuhvris."
 
-#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
+#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:284
 #: modules/misc/freetype.c:92 modules/misc/notify/xosd.c:80
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
@@ -14473,11 +14480,11 @@ msgstr "Aeg"
 #: modules/gui/macosx/coredialogs.m:163 modules/gui/macosx/extended.m:518
 #: modules/gui/macosx/open.m:320 modules/gui/macosx/output.m:138
 #: modules/gui/macosx/playlistinfo.m:398 modules/gui/macosx/simple_prefs.m:245
-#: modules/gui/macosx/wizard.m:600 modules/gui/macosx/wizard.m:663
-#: modules/gui/macosx/wizard.m:1062 modules/gui/macosx/wizard.m:1147
-#: modules/gui/macosx/wizard.m:1154 modules/gui/macosx/wizard.m:1678
-#: modules/gui/macosx/wizard.m:1686 modules/gui/macosx/wizard.m:1867
-#: modules/gui/macosx/wizard.m:1878 modules/gui/macosx/wizard.m:1891
+#: modules/gui/macosx/wizard.m:598 modules/gui/macosx/wizard.m:661
+#: modules/gui/macosx/wizard.m:1034 modules/gui/macosx/wizard.m:1119
+#: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
+#: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
+#: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
 #: modules/gui/qt4/components/open_panels.cpp:1284
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
@@ -14516,7 +14523,7 @@ msgstr ""
 "Sisendit muudeti, järjehoidja salvestamine nurjus. Peatan esitamise \"Paus\"-"
 "ga kuniks muudan järjehoidjaid, et hoida sma sisendit."
 
-#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1062
+#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1034
 msgid "Invalid selection"
 msgstr "Vigane valik"
 
@@ -14639,21 +14646,21 @@ msgstr "Edasikerimine"
 msgid "VLC media player"
 msgstr "VLC meediaesitaja"
 
-#: modules/gui/macosx/equalizer.m:146 modules/gui/qt4/ui/equalizer.h:128
+#: modules/gui/macosx/equalizer.m:145 modules/gui/qt4/ui/equalizer.h:128
 msgid "2 Pass"
 msgstr "2 käiguline"
 
-#: modules/gui/macosx/equalizer.m:147
+#: modules/gui/macosx/equalizer.m:146
 msgid "Apply the equalizer filter twice. The effect will be sharper."
 msgstr "Rakenda ekvalaiseri filtrit kaks korda. Tulemus on teravam."
 
-#: modules/gui/macosx/equalizer.m:150
+#: modules/gui/macosx/equalizer.m:149
 msgid "Enable the equalizer. Bands can be set manually or using a preset."
 msgstr ""
 "Ekvalaiseri lubamine. Sagedusi saab sättida käsitsi või kasutades "
 "eelseadistust."
 
-#: modules/gui/macosx/equalizer.m:152 modules/gui/qt4/ui/equalizer.h:130
+#: modules/gui/macosx/equalizer.m:151 modules/gui/qt4/ui/equalizer.h:130
 msgid "Preamp"
 msgstr "Eelvõim"
 
@@ -14900,7 +14907,7 @@ msgid "Decrease Volume"
 msgstr "Heli vaiksemaks"
 
 #: modules/gui/macosx/intf.m:695 modules/gui/macosx/intf.m:696
-#: modules/gui/macosx/simple_prefs.m:291 modules/gui/macosx/vout.m:206
+#: modules/gui/macosx/simple_prefs.m:292 modules/gui/macosx/vout.m:206
 msgid "Fullscreen Video Device"
 msgstr "Täisekraan-videoseade"
 
@@ -15047,7 +15054,7 @@ msgid "No CrashLog found"
 msgstr "CrashLog-i ei leitud"
 
 #: modules/gui/macosx/intf.m:2434 modules/gui/macosx/prefs.m:226
-#: modules/gui/macosx/simple_prefs.m:697
+#: modules/gui/macosx/simple_prefs.m:719
 msgid "Continue"
 msgstr "Jätka"
 
@@ -15219,8 +15226,8 @@ msgid "Media Resource Locator (MRL)"
 msgstr "Media Resource Locator (MRL)"
 
 #: modules/gui/macosx/open.m:175 modules/gui/macosx/open.m:207
-#: modules/gui/macosx/open.m:588 modules/gui/macosx/open.m:779
-#: modules/gui/macosx/open.m:954 modules/gui/macosx/open.m:1197
+#: modules/gui/macosx/open.m:589 modules/gui/macosx/open.m:780
+#: modules/gui/macosx/open.m:955 modules/gui/macosx/open.m:1198
 #: modules/gui/qt4/components/controller.hpp:104
 msgid "Open"
 msgstr "Ava"
@@ -15233,7 +15240,7 @@ msgstr "Hõiva"
 #: modules/gui/macosx/open.m:183 modules/gui/macosx/open.m:192
 #: modules/gui/macosx/open.m:308 modules/gui/macosx/output.m:145
 #: modules/gui/macosx/prefs_widgets.m:1189
-#: modules/gui/macosx/simple_prefs.m:299
+#: modules/gui/macosx/simple_prefs.m:300
 #: modules/gui/qt4/components/preferences_widgets.cpp:299
 #: modules/gui/qt4/components/simple_preferences.cpp:276
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
@@ -15252,8 +15259,8 @@ msgstr "Kohtle kui toru, mitte kui faili"
 msgid "Play another media synchronously"
 msgstr "Esita mõnda teist meediat sünkroonselt"
 
-#: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:280
-#: modules/gui/macosx/wizard.m:346 modules/gui/macosx/wizard.m:414
+#: modules/gui/macosx/open.m:186 modules/gui/macosx/simple_prefs.m:281
+#: modules/gui/macosx/wizard.m:344 modules/gui/macosx/wizard.m:412
 #: modules/gui/qt4/ui/sprefs_interface.h:394
 msgid "Choose..."
 msgstr "Vali..."
@@ -15267,11 +15274,11 @@ msgstr "Seadme nimi"
 msgid "No DVD menus"
 msgstr "Ilma DVD menüüta"
 
-#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:626
+#: modules/gui/macosx/open.m:195 modules/gui/macosx/open.m:627
 msgid "VIDEO_TS folder"
 msgstr "VIDEO_TS kataloog"
 
-#: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:739
+#: modules/gui/macosx/open.m:196 modules/gui/macosx/open.m:740
 #: modules/services_discovery/udev.c:587 modules/gui/qt4/ui/open_disk.h:292
 msgid "DVD"
 msgstr "DVD"
@@ -15320,13 +15327,13 @@ msgstr "Protokoll"
 msgid "Address"
 msgstr "Aadress"
 
-#: modules/gui/macosx/open.m:213 modules/gui/macosx/open.m:849
-#: modules/gui/macosx/open.m:907
+#: modules/gui/macosx/open.m:213 modules/gui/macosx/open.m:850
+#: modules/gui/macosx/open.m:908
 msgid "Unicast"
 msgstr "Unicast"
 
-#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:864
-#: modules/gui/macosx/open.m:922
+#: modules/gui/macosx/open.m:214 modules/gui/macosx/open.m:865
+#: modules/gui/macosx/open.m:923
 msgid "Multicast"
 msgstr "Multicast"
 
@@ -15370,7 +15377,7 @@ msgstr "Eelmine kanal"
 msgid "Next Channel"
 msgstr "Järgmine kanal"
 
-#: modules/gui/macosx/open.m:236 modules/gui/macosx/open.m:1131
+#: modules/gui/macosx/open.m:236 modules/gui/macosx/open.m:1132
 msgid "Retrieving Channel Info..."
 msgstr "Kanali info hankimine..."
 
@@ -15430,25 +15437,25 @@ msgstr "Kirja omadused"
 msgid "Subtitle File"
 msgstr "Subtiitrite fail"
 
-#: modules/gui/macosx/open.m:587 modules/gui/macosx/open.m:953
-#: modules/gui/macosx/open.m:1196 modules/gui/qt4/ui/open_file.h:217
+#: modules/gui/macosx/open.m:588 modules/gui/macosx/open.m:954
+#: modules/gui/macosx/open.m:1197 modules/gui/qt4/ui/open_file.h:217
 msgid "Open File"
 msgstr "Ava fail"
 
-#: modules/gui/macosx/open.m:674 modules/gui/macosx/open.m:726
-#: modules/gui/macosx/open.m:734 modules/gui/macosx/open.m:742
+#: modules/gui/macosx/open.m:675 modules/gui/macosx/open.m:727
+#: modules/gui/macosx/open.m:735 modules/gui/macosx/open.m:743
 msgid "No %@s found"
 msgstr "%@s ei leitud"
 
-#: modules/gui/macosx/open.m:778
+#: modules/gui/macosx/open.m:779
 msgid "Open VIDEO_TS Directory"
 msgstr "VIDEO_TS kataloogi avamine"
 
-#: modules/gui/macosx/open.m:1034
+#: modules/gui/macosx/open.m:1035
 msgid "iSight Capture Input"
 msgstr "iSight hõive sisend"
 
-#: modules/gui/macosx/open.m:1035
+#: modules/gui/macosx/open.m:1036
 msgid ""
 "This facility allows you to process your iSight's input signal.\n"
 "\n"
@@ -15464,11 +15471,11 @@ msgstr ""
 "\n"
 "Live Audio sisend ei ole toetatud."
 
-#: modules/gui/macosx/open.m:1137
+#: modules/gui/macosx/open.m:1138
 msgid "Composite input"
 msgstr "Komposiitsisend"
 
-#: modules/gui/macosx/open.m:1140
+#: modules/gui/macosx/open.m:1141
 msgid "S-Video input"
 msgstr "S-video sisend"
 
@@ -15502,7 +15509,7 @@ msgid "Transcoding options"
 msgstr "Ümberkodeerimise valikud"
 
 #: modules/gui/macosx/output.m:163 modules/gui/macosx/output.m:173
-#: modules/gui/macosx/wizard.m:384
+#: modules/gui/macosx/wizard.m:382
 msgid "Bitrate (kb/s)"
 msgstr "Bitikiirus (kb/s)"
 
@@ -15543,20 +15550,20 @@ msgid "Save File"
 msgstr "Faili salvestamine"
 
 #: modules/gui/macosx/output.m:526 modules/gui/macosx/playlist.m:747
-#: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:310
+#: modules/gui/macosx/prefs.m:203 modules/gui/macosx/simple_prefs.m:311
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
 msgstr "Salvesta"
 
 #: modules/gui/macosx/playlist.m:138 modules/gui/macosx/playlist.m:142
-#: modules/gui/macosx/wizard.m:350 modules/gui/qt4/dialogs/plugins.cpp:498
+#: modules/gui/macosx/wizard.m:348 modules/gui/qt4/dialogs/plugins.cpp:498
 #: modules/mux/asf.c:58
 msgid "Author"
 msgstr "Autor"
 
 #: modules/gui/macosx/playlist.m:139 modules/gui/macosx/playlist.m:143
-#: modules/gui/macosx/wizard.m:352
+#: modules/gui/macosx/wizard.m:350
 #: modules/gui/qt4/components/playlist/sorting.h:51
 msgid "Duration"
 msgstr "Kestus"
@@ -15627,7 +15634,7 @@ msgstr "HTML esitusloend"
 
 #: modules/gui/macosx/playlist.m:529 modules/gui/macosx/playlist.m:532
 #: modules/gui/macosx/playlist.m:1545 modules/gui/macosx/playlist.m:1548
-#: modules/gui/macosx/wizard.m:1365
+#: modules/gui/macosx/wizard.m:1339
 #, c-format
 msgid "%i items"
 msgstr "%i kirjet"
@@ -15700,7 +15707,7 @@ msgstr "Kuvatud kaadrid"
 msgid "Lost frames"
 msgstr "Kaotatud kaadrid"
 
-#: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:363
+#: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:361
 #: modules/gui/qt4/dialogs_provider.cpp:632
 #: modules/video_filter/deinterlace.c:149
 msgid "Streaming"
@@ -15740,26 +15747,26 @@ msgstr "Metaandmete salvestamine ebaõnnestus."
 msgid "Information"
 msgstr "Teave"
 
-#: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:311
+#: modules/gui/macosx/prefs.m:202 modules/gui/macosx/simple_prefs.m:312
 #: modules/gui/qt4/dialogs/preferences.cpp:47
 msgid "Preferences"
 msgstr "Eelistused"
 
-#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:309
+#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:310
 msgid "Reset All"
 msgstr "Taasta kõik"
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:306
+#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:307
 #: modules/gui/qt4/ui/video_effects.h:1111
 msgid "Basic"
 msgstr "Peamine"
 
-#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:696
+#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:718
 #: modules/gui/qt4/dialogs/preferences.cpp:317
 msgid "Reset Preferences"
 msgstr "Taasta seaded"
 
-#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:699
+#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:721
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -15931,155 +15938,160 @@ msgstr "... kui VLC on taustal"
 msgid "Automatically check for updates"
 msgstr "Kontrolli uuendusi automaatselt"
 
-#: modules/gui/macosx/simple_prefs.m:278
+#: modules/gui/macosx/simple_prefs.m:276
+msgid "Enable Growl notifications (on playlist item change)"
+msgstr ""
+
+#: modules/gui/macosx/simple_prefs.m:279
 msgid "Default Encoding"
 msgstr "Vaikimisi kodeering"
 
-#: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/qt4/ui/sprefs_subtitles.h:207
 msgid "Display Settings"
 msgstr "Kuva seaded"
 
-#: modules/gui/macosx/simple_prefs.m:281
+#: modules/gui/macosx/simple_prefs.m:282
 msgid "Font Color"
 msgstr "Kirja värv"
 
-#: modules/gui/macosx/simple_prefs.m:282
+#: modules/gui/macosx/simple_prefs.m:283
 msgid "Font Size"
 msgstr "Kirja suurus"
 
-#: modules/gui/macosx/simple_prefs.m:284
+#: modules/gui/macosx/simple_prefs.m:285
 msgid "Subtitle Languages"
 msgstr "Subtiitrite keeled"
 
-#: modules/gui/macosx/simple_prefs.m:285
+#: modules/gui/macosx/simple_prefs.m:286
 msgid "Preferred Subtitle Language"
 msgstr "Subtiitrite eelistatud keel"
 
-#: modules/gui/macosx/simple_prefs.m:287
+#: modules/gui/macosx/simple_prefs.m:288
 msgid "Enable OSD"
 msgstr "OSD lubatud"
 
-#: modules/gui/macosx/simple_prefs.m:290
+#: modules/gui/macosx/simple_prefs.m:291
 msgid "Black screens in Fullscreen mode"
 msgstr "Mustad ekraanid täisekraanrežiimis"
 
-#: modules/gui/macosx/simple_prefs.m:292 modules/stream_out/display.c:54
+#: modules/gui/macosx/simple_prefs.m:293 modules/stream_out/display.c:54
 #: modules/video_filter/deinterlace.c:138
 #: modules/gui/qt4/ui/sprefs_video.h:310
 msgid "Display"
 msgstr "Kuva"
 
-#: modules/gui/macosx/simple_prefs.m:293
+#: modules/gui/macosx/simple_prefs.m:294
 msgid "Enable Video"
 msgstr "Video lubamine"
 
-#: modules/gui/macosx/simple_prefs.m:296
+#: modules/gui/macosx/simple_prefs.m:297
 msgid "Output module"
 msgstr "Väljundi moodul"
 
-#: modules/gui/macosx/simple_prefs.m:298 modules/gui/qt4/ui/sprefs_video.h:325
+#: modules/gui/macosx/simple_prefs.m:299 modules/gui/qt4/ui/sprefs_video.h:325
 msgid "Video snapshots"
 msgstr "Video kaadripilt"
 
-#: modules/gui/macosx/simple_prefs.m:300 modules/meta_engine/folder.c:66
+#: modules/gui/macosx/simple_prefs.m:301 modules/meta_engine/folder.c:66
 msgid "Folder"
 msgstr "Kaust"
 
-#: modules/gui/macosx/simple_prefs.m:301 modules/gui/qt4/ui/sprefs_video.h:330
+#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:330
 msgid "Format"
 msgstr "Vorming"
 
-#: modules/gui/macosx/simple_prefs.m:302 modules/gui/qt4/ui/sprefs_video.h:328
+#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:328
 msgid "Prefix"
 msgstr "Eesliide"
 
-#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:331
+#: modules/gui/macosx/simple_prefs.m:304 modules/gui/qt4/ui/sprefs_video.h:331
 msgid "Sequential numbering"
 msgstr "Järjestnumbrid"
 
-#: modules/gui/macosx/simple_prefs.m:466
+#: modules/gui/macosx/simple_prefs.m:467
 msgid "Last check on: %@"
 msgstr "Viimati kontrolliti: %@"
 
-#: modules/gui/macosx/simple_prefs.m:468
+#: modules/gui/macosx/simple_prefs.m:469
 msgid "No check was performed yet."
 msgstr "Pole veel kontrollitud"
 
-#: modules/gui/macosx/simple_prefs.m:572 modules/gui/macosx/simple_prefs.m:616
-#: modules/gui/macosx/simple_prefs.m:1223
+#: modules/gui/macosx/simple_prefs.m:580 modules/gui/macosx/simple_prefs.m:624
+#: modules/gui/macosx/simple_prefs.m:1261
 #: modules/gui/qt4/components/simple_preferences.cpp:468
 msgid "Custom"
 msgstr "Oma"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:469
 msgid "Lowest latency"
 msgstr "Madalam latentsus"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:470
 msgid "Low latency"
 msgstr "Madal latentsus"
 
-#: modules/gui/macosx/simple_prefs.m:572
+#: modules/gui/macosx/simple_prefs.m:580
 #: modules/gui/qt4/components/simple_preferences.cpp:471
 #: modules/misc/freetype.c:121 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:81
 msgid "Normal"
 msgstr "Tavaline"
 
-#: modules/gui/macosx/simple_prefs.m:573
+#: modules/gui/macosx/simple_prefs.m:581
 #: modules/gui/qt4/components/simple_preferences.cpp:472
 msgid "High latency"
 msgstr "Kõrge latentsus"
 
-#: modules/gui/macosx/simple_prefs.m:573
+#: modules/gui/macosx/simple_prefs.m:581
 #: modules/gui/qt4/components/simple_preferences.cpp:473
 msgid "Higher latency"
 msgstr "Kõrgem latentsus"
 
-#: modules/gui/macosx/simple_prefs.m:814
+#: modules/gui/macosx/simple_prefs.m:859
 msgid "Interface Settings not saved"
 msgstr "Liidese seadeid ei salvestatud"
 
-#: modules/gui/macosx/simple_prefs.m:815 modules/gui/macosx/simple_prefs.m:889
-#: modules/gui/macosx/simple_prefs.m:922 modules/gui/macosx/simple_prefs.m:988
-#: modules/gui/macosx/simple_prefs.m:1028
-#: modules/gui/macosx/simple_prefs.m:1053
+#: modules/gui/macosx/simple_prefs.m:860 modules/gui/macosx/simple_prefs.m:932
+#: modules/gui/macosx/simple_prefs.m:965
+#: modules/gui/macosx/simple_prefs.m:1031
+#: modules/gui/macosx/simple_prefs.m:1071
+#: modules/gui/macosx/simple_prefs.m:1091
 #, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr "Tekkis tõrge sinu seadistuste salvestamisel SimplePref-ga (%i)."
 
-#: modules/gui/macosx/simple_prefs.m:888
+#: modules/gui/macosx/simple_prefs.m:931
 msgid "Audio Settings not saved"
 msgstr "Audio seadeid ei salvestatud"
 
-#: modules/gui/macosx/simple_prefs.m:921
+#: modules/gui/macosx/simple_prefs.m:964
 msgid "Video Settings not saved"
 msgstr "Video seadeid ei salvestatud"
 
-#: modules/gui/macosx/simple_prefs.m:987
+#: modules/gui/macosx/simple_prefs.m:1030
 msgid "Input Settings not saved"
 msgstr "Sisendi seadeid ei salvestatud"
 
-#: modules/gui/macosx/simple_prefs.m:1027
+#: modules/gui/macosx/simple_prefs.m:1070
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr "OSD/subtiitrite seadeid ei salvestatud"
 
-#: modules/gui/macosx/simple_prefs.m:1052
+#: modules/gui/macosx/simple_prefs.m:1090
 msgid "Hotkeys not saved"
 msgstr "kiirklahve ei salvestatud"
 
-#: modules/gui/macosx/simple_prefs.m:1153
+#: modules/gui/macosx/simple_prefs.m:1191
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Vali kataloog, kuhu video hetktõmmiseid salvestada."
 
-#: modules/gui/macosx/simple_prefs.m:1155
+#: modules/gui/macosx/simple_prefs.m:1193
 msgid "Choose"
 msgstr "Vali"
 
-#: modules/gui/macosx/simple_prefs.m:1241
+#: modules/gui/macosx/simple_prefs.m:1279
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -16087,15 +16099,15 @@ msgstr ""
 "Vajuta uued klahvid\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1315
+#: modules/gui/macosx/simple_prefs.m:1353
 msgid "Invalid combination"
 msgstr "Vigane kombinatsioon"
 
-#: modules/gui/macosx/simple_prefs.m:1316
+#: modules/gui/macosx/simple_prefs.m:1354
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Kahjuks ei saa neid klahve kasutada kiirklahvidena."
 
-#: modules/gui/macosx/simple_prefs.m:1334
+#: modules/gui/macosx/simple_prefs.m:1372
 msgid "This combination is already taken by \"%@\"."
 msgstr "Seda kombinatsiooni kasutab juba \"%@\"."
 
@@ -16212,19 +16224,19 @@ msgstr ""
 msgid "Uncompressed audio samples (useable with WAV)"
 msgstr "Pakkimata audio diskreedid (kasutatav koos WAV-ga)"
 
-#: modules/gui/macosx/wizard.m:234
+#: modules/gui/macosx/wizard.m:233
 msgid "MPEG Program Stream"
 msgstr "MPEG programmivoog"
 
-#: modules/gui/macosx/wizard.m:236
+#: modules/gui/macosx/wizard.m:235
 msgid "MPEG Transport Stream"
 msgstr "MPEG transpordivoog"
 
-#: modules/gui/macosx/wizard.m:238
+#: modules/gui/macosx/wizard.m:237
 msgid "MPEG 1 Format"
 msgstr "MPEG 1 vorming"
 
-#: modules/gui/macosx/wizard.m:257
+#: modules/gui/macosx/wizard.m:255
 msgid ""
 "Enter the local addresses you want to listen requests on. Do not enter "
 "anything if you want to listen on all the network interfaces. This is "
@@ -16235,7 +16247,7 @@ msgstr ""
 "soovid kuulata kõiki võrguliideseid. Tavaliselt on nii parem. Teised arvutid "
 "pääsevad voole ligi aadressilt http://sinuIP:8080."
 
-#: modules/gui/macosx/wizard.m:261
+#: modules/gui/macosx/wizard.m:259
 msgid ""
 "Use this to stream to several computers. This method is not the most "
 "efficient, as the server needs to send the stream several times, but "
@@ -16245,7 +16257,7 @@ msgstr ""
 "efektiivsem, kuna seerver peab saatma voogu mitmel korral, aga on üldiselt "
 "kõige ühilduvam"
 
-#: modules/gui/macosx/wizard.m:264
+#: modules/gui/macosx/wizard.m:262
 msgid ""
 "Enter the local addresses you want to listen requests on. Do not enter "
 "anything if you want to listen on all the network interfaces. This is "
@@ -16256,7 +16268,7 @@ msgstr ""
 "soovid kuulata kõiki võrguliideseid. Tavaliselt on nii parem. Teised arvutid "
 "pääsevad voole ligi aadressilt http://sinuIP:8080."
 
-#: modules/gui/macosx/wizard.m:268
+#: modules/gui/macosx/wizard.m:266
 msgid ""
 "Use this to stream to several computers using the Microsoft MMS protocol. "
 "This protocol is used as transport method by many Microsoft's softwares. "
@@ -16268,15 +16280,15 @@ msgstr ""
 "Microsofti tarkvarades. Pea meeles, et ainult väike osa MMS protokollist on "
 "toetatud (MMS HTTP sees)."
 
-#: modules/gui/macosx/wizard.m:273 modules/gui/macosx/wizard.m:283
+#: modules/gui/macosx/wizard.m:271 modules/gui/macosx/wizard.m:281
 msgid "Enter the address of the computer to stream to."
 msgstr "Sisesta arvuti aadress, kuhu voog saadetakse."
 
-#: modules/gui/macosx/wizard.m:274 modules/gui/macosx/wizard.m:372
+#: modules/gui/macosx/wizard.m:272 modules/gui/macosx/wizard.m:370
 msgid "Use this to stream to a single computer."
 msgstr "Kasuta seda, et voogedastada ühte arvutisse."
 
-#: modules/gui/macosx/wizard.m:276 modules/gui/macosx/wizard.m:286
+#: modules/gui/macosx/wizard.m:274 modules/gui/macosx/wizard.m:284
 msgid ""
 "Enter the multicast address to stream to in this field. This must be an IP "
 "address between 224.0.0.0 and 239.255.255.255. For a private use, enter an "
@@ -16286,7 +16298,7 @@ msgstr ""
 "IP aadress vahemikus 224.0.0.0 ja 239.255.255.255. Isiklikuks kasutamiseks "
 "sisesta aadress, mis algab 239.255."
 
-#: modules/gui/macosx/wizard.m:279
+#: modules/gui/macosx/wizard.m:277
 msgid ""
 "Use this to stream to a dynamic group of computers on a multicast-enabled "
 "network. This is the most efficient method to stream to several computers, "
@@ -16296,14 +16308,14 @@ msgstr ""
 "multiedastusvõrgus. See on kõige efektiivsem viis voogedaastada mitmesse "
 "arvutisse, aga ta ei tööta üle Interneti."
 
-#: modules/gui/macosx/wizard.m:284
+#: modules/gui/macosx/wizard.m:282
 msgid ""
 "Use this to stream to a single computer. RTP headers will be added to the "
 "stream"
 msgstr ""
 "Kasuta seda, et saata voog ainult ühte arvutisse. Voole lisatakse RTP päised"
 
-#: modules/gui/macosx/wizard.m:289
+#: modules/gui/macosx/wizard.m:287
 msgid ""
 "Use this to stream to a dynamic group of computers on a multicast-enabled "
 "network. This is the most efficient method to stream to several computers, "
@@ -16313,28 +16325,28 @@ msgstr ""
 "multiedastusvõrgus. See on kõige efektiivsem viis voogedaastada mitmesse "
 "arvutisse, aga ta ei tööta üle Interneti. Voole lisatakse RTP päised."
 
-#: modules/gui/macosx/wizard.m:319
+#: modules/gui/macosx/wizard.m:317
 msgid "Back"
 msgstr "Tagasi"
 
-#: modules/gui/macosx/wizard.m:322 modules/gui/macosx/wizard.m:325
-#: modules/gui/macosx/wizard.m:1273
+#: modules/gui/macosx/wizard.m:320 modules/gui/macosx/wizard.m:323
+#: modules/gui/macosx/wizard.m:1245
 msgid "Streaming/Transcoding Wizard"
 msgstr "Voogedastuse/ümberkodeerimise nõustaja"
 
-#: modules/gui/macosx/wizard.m:326
+#: modules/gui/macosx/wizard.m:324
 msgid "This wizard allows to configure simple streaming or transcoding setups."
 msgstr ""
 "See nõustaja lubab sul seadistada lihtsaid voodedastuse või transkodeerimise "
 "seadistusi."
 
-#: modules/gui/macosx/wizard.m:328 modules/gui/macosx/wizard.m:329
-#: modules/gui/macosx/wizard.m:402 modules/gui/macosx/wizard.m:404
-#: modules/gui/macosx/wizard.m:406 modules/gui/macosx/wizard.m:421
+#: modules/gui/macosx/wizard.m:326 modules/gui/macosx/wizard.m:327
+#: modules/gui/macosx/wizard.m:400 modules/gui/macosx/wizard.m:402
+#: modules/gui/macosx/wizard.m:404 modules/gui/macosx/wizard.m:419
 msgid "More Info"
 msgstr "Veel infot"
 
-#: modules/gui/macosx/wizard.m:330
+#: modules/gui/macosx/wizard.m:328
 msgid ""
 "This wizard only gives access to a small subset of VLC's streaming and "
 "transcoding capabilities. The Open and 'Saving/Streaming' dialogs will give "
@@ -16344,37 +16356,37 @@ msgstr ""
 "transkodeerimise võimalustest. Avamine ja 'Salvestamine/Voogedastamine' "
 "annab sulle rohkem valikuid."
 
-#: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:493
-#: modules/gui/macosx/wizard.m:1677
+#: modules/gui/macosx/wizard.m:333 modules/gui/macosx/wizard.m:491
+#: modules/gui/macosx/wizard.m:1651
 msgid "Stream to network"
 msgstr "Voogedastus võrku"
 
-#: modules/gui/macosx/wizard.m:337 modules/gui/macosx/wizard.m:1685
+#: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:1659
 msgid "Transcode/Save to file"
 msgstr "Ümberkodeerimine/salvestamine faili"
 
-#: modules/gui/macosx/wizard.m:340
+#: modules/gui/macosx/wizard.m:338
 msgid "Choose input"
 msgstr "Vali sisend"
 
-#: modules/gui/macosx/wizard.m:341
+#: modules/gui/macosx/wizard.m:339
 msgid "Choose here your input stream."
 msgstr "Siin vali oma sisendi voog."
 
-#: modules/gui/macosx/wizard.m:343 modules/gui/macosx/wizard.m:531
-#: modules/gui/macosx/wizard.m:1719
+#: modules/gui/macosx/wizard.m:341 modules/gui/macosx/wizard.m:529
+#: modules/gui/macosx/wizard.m:1693
 msgid "Select a stream"
 msgstr "Vali voog"
 
-#: modules/gui/macosx/wizard.m:345
+#: modules/gui/macosx/wizard.m:343
 msgid "Existing playlist item"
 msgstr "Olemasolev esitusloendi kirje"
 
-#: modules/gui/macosx/wizard.m:353 modules/gui/macosx/wizard.m:433
+#: modules/gui/macosx/wizard.m:351 modules/gui/macosx/wizard.m:431
 msgid "Partial Extract"
 msgstr "Osaline ekstrakt"
 
-#: modules/gui/macosx/wizard.m:355
+#: modules/gui/macosx/wizard.m:353
 msgid ""
 "This can be used to read only a part of the stream. It must be possible to "
 "control the incoming stream (for example, a file or a disc, but not an UDP "
@@ -16384,45 +16396,45 @@ msgstr ""
 "sissetulevat voogu. (näiteks, fail või ketas, aga mitte UDP voog.) Alguse ja "
 "lõpu ajad antakse sekundites."
 
-#: modules/gui/macosx/wizard.m:359
+#: modules/gui/macosx/wizard.m:357
 msgid "From"
 msgstr "Kust"
 
-#: modules/gui/macosx/wizard.m:360
+#: modules/gui/macosx/wizard.m:358
 msgid "To"
 msgstr "Kuhu"
 
-#: modules/gui/macosx/wizard.m:364
+#: modules/gui/macosx/wizard.m:362
 msgid "This page allows to select how the input stream will be sent."
 msgstr "See leht lubab sul valida, kuidas sisendi voog saadetakse."
 
-#: modules/gui/macosx/wizard.m:366 modules/gui/macosx/wizard.m:427
+#: modules/gui/macosx/wizard.m:364 modules/gui/macosx/wizard.m:425
 #: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:74
 msgid "Destination"
 msgstr "Sihtkoht"
 
-#: modules/gui/macosx/wizard.m:367 modules/gui/macosx/wizard.m:439
+#: modules/gui/macosx/wizard.m:365 modules/gui/macosx/wizard.m:437
 msgid "Streaming method"
 msgstr "Voogedastuse meetod"
 
-#: modules/gui/macosx/wizard.m:368
+#: modules/gui/macosx/wizard.m:366
 msgid "Address of the computer to stream to."
 msgstr "Arvuti aadress, kuhu voog edastada."
 
-#: modules/gui/macosx/wizard.m:370
+#: modules/gui/macosx/wizard.m:368
 msgid "UDP Unicast"
 msgstr "UDP Unicast"
 
-#: modules/gui/macosx/wizard.m:371
+#: modules/gui/macosx/wizard.m:369
 msgid "UDP Multicast"
 msgstr "UDP Multicast"
 
-#: modules/gui/macosx/wizard.m:376
+#: modules/gui/macosx/wizard.m:374
 #: modules/stream_out/transcode/transcode.c:154
 msgid "Transcode"
 msgstr "Ümberkodeerimine"
 
-#: modules/gui/macosx/wizard.m:377
+#: modules/gui/macosx/wizard.m:375
 msgid ""
 "This page allows to change the compression format of the audio or video "
 "tracks. To change only the container format, proceed to next page."
@@ -16430,15 +16442,15 @@ msgstr ""
 "See leht lubab sul muuta audio ja video radade pakkimise vormingut. Muutmaks "
 "ainult konteinerit, liigu järgmisele lehele."
 
-#: modules/gui/macosx/wizard.m:382 modules/gui/macosx/wizard.m:441
+#: modules/gui/macosx/wizard.m:380 modules/gui/macosx/wizard.m:439
 msgid "Transcode audio"
 msgstr "Heli ümberkodeerimine"
 
-#: modules/gui/macosx/wizard.m:383 modules/gui/macosx/wizard.m:443
+#: modules/gui/macosx/wizard.m:381 modules/gui/macosx/wizard.m:441
 msgid "Transcode video"
 msgstr "Video ümberkodeerimine"
 
-#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1821
+#: modules/gui/macosx/wizard.m:384 modules/gui/macosx/wizard.m:1795
 msgid ""
 "Enabling this allows to transcode the audio track if one is present in the "
 "stream."
@@ -16446,7 +16458,7 @@ msgstr ""
 "Selle võimaldamine lubab sul audio radasi ümber kodeerida, kui ta on voo "
 "sees olemas."
 
-#: modules/gui/macosx/wizard.m:388 modules/gui/macosx/wizard.m:1838
+#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1812
 msgid ""
 "Enabling this allows to transcode the video track if one is present in the "
 "stream."
@@ -16454,11 +16466,11 @@ msgstr ""
 "Selle võimaldamine lubab sul video radasi ümber kodeerida, kui ta on voo "
 "sees olemas."
 
-#: modules/gui/macosx/wizard.m:392
+#: modules/gui/macosx/wizard.m:390
 msgid "Encapsulation format"
 msgstr "Kapselduse vorming"
 
-#: modules/gui/macosx/wizard.m:393
+#: modules/gui/macosx/wizard.m:391
 msgid ""
 "This page allows to select how the stream will be encapsulated. Depending on "
 "previously chosen settings all formats won't be available."
@@ -16466,83 +16478,83 @@ msgstr ""
 "See leht lubab sul valida, kuidas voog kapseldatakse. Sõltuvalt eelnevalt "
 "tehtud valikutest ei pruugi kõik vormingud saadaval olla."
 
-#: modules/gui/macosx/wizard.m:398
+#: modules/gui/macosx/wizard.m:396
 msgid "Additional streaming options"
 msgstr "Täiendavad voo valikud"
 
-#: modules/gui/macosx/wizard.m:399
+#: modules/gui/macosx/wizard.m:397
 msgid "In this page, a few additional streaming parameters can be set."
 msgstr "Sellel lehel saab määrata paari voogedastuse lisaparameetrit."
 
-#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
+#: modules/gui/macosx/wizard.m:399 modules/gui/macosx/wizard.m:1840
 #: modules/gui/qt4/ui/sout.h:344
 msgid "Time-To-Live (TTL)"
 msgstr "Time-To-Live (TTL)"
 
-#: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:435
-#: modules/gui/macosx/wizard.m:1877
+#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:433
+#: modules/gui/macosx/wizard.m:1851
 msgid "SAP Announce"
 msgstr "SAP-teavitus"
 
-#: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:415
-#: modules/gui/macosx/wizard.m:447 modules/gui/macosx/wizard.m:1890
+#: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:413
+#: modules/gui/macosx/wizard.m:445 modules/gui/macosx/wizard.m:1864
 msgid "Local playback"
 msgstr "Lokaalne taasesitus"
 
-#: modules/gui/macosx/wizard.m:407 modules/gui/macosx/wizard.m:416
+#: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:414
 msgid "Add Subtitles to transcoded video"
 msgstr "Lisa subtiitrid ümberkodeeritud videole"
 
-#: modules/gui/macosx/wizard.m:410
+#: modules/gui/macosx/wizard.m:408
 msgid "Additional transcode options"
 msgstr "Täiendavad ümberkodeerimise valikud"
 
-#: modules/gui/macosx/wizard.m:411
+#: modules/gui/macosx/wizard.m:409
 msgid "In this page, a few additional transcoding parameters can be set."
 msgstr ""
 "Selle lehel saab seada mõningaid täiendavaid ümberkodeerimise parameetreid."
 
-#: modules/gui/macosx/wizard.m:413 modules/gui/macosx/wizard.m:1095
+#: modules/gui/macosx/wizard.m:411 modules/gui/macosx/wizard.m:1067
 msgid "Select the file to save to"
 msgstr "Vali fail, kuhu salvestada"
 
-#: modules/gui/macosx/wizard.m:417
+#: modules/gui/macosx/wizard.m:415
 msgid ""
 "Adds available subtitles directly to the video. These cannot be disabled by "
 "the receiving user as they become part of the image."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:424
+#: modules/gui/macosx/wizard.m:422
 msgid ""
 "This page lists all the settings. Click \"Finish\" to start streaming or "
 "transcoding."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:426
+#: modules/gui/macosx/wizard.m:424
 msgid "Summary"
 msgstr "Kokkuvõte"
 
-#: modules/gui/macosx/wizard.m:429
+#: modules/gui/macosx/wizard.m:427
 msgid "Encap. format"
 msgstr "Kapselduse vorming"
 
-#: modules/gui/macosx/wizard.m:431
+#: modules/gui/macosx/wizard.m:429
 msgid "Input stream"
 msgstr "Sisendi voog"
 
-#: modules/gui/macosx/wizard.m:437
+#: modules/gui/macosx/wizard.m:435
 msgid "Save file to"
 msgstr "Salvesta faili"
 
-#: modules/gui/macosx/wizard.m:445
+#: modules/gui/macosx/wizard.m:443
 msgid "Include subtitles"
 msgstr "Kaasa subtiitrid"
 
-#: modules/gui/macosx/wizard.m:599
+#: modules/gui/macosx/wizard.m:597
 msgid "No input selected"
 msgstr "Ühtegi sisendit pole valitud"
 
-#: modules/gui/macosx/wizard.m:601
+#: modules/gui/macosx/wizard.m:599
 msgid ""
 "No new stream or valid playlist item has been selected.\n"
 "\n"
@@ -16552,11 +16564,11 @@ msgstr ""
 "\n"
 "Vali mõni enne järgmisele lehele minemist."
 
-#: modules/gui/macosx/wizard.m:662
+#: modules/gui/macosx/wizard.m:660
 msgid "No valid destination"
 msgstr "Sobiv sihtmärk puudub"
 
-#: modules/gui/macosx/wizard.m:664
+#: modules/gui/macosx/wizard.m:662
 msgid ""
 "A valid destination has to be selected Enter either a Unicast-IP or a "
 "Multicast-IP.\n"
@@ -16565,7 +16577,7 @@ msgid ""
 "and the help texts in this window."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1063
+#: modules/gui/macosx/wizard.m:1035
 msgid ""
 "The chosen codecs are not compatible with each other. For example: It is "
 "impossibleto  mix uncompressed audio with any video codec.\n"
@@ -16573,65 +16585,65 @@ msgid ""
 "Correct your selection and try again."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1090
+#: modules/gui/macosx/wizard.m:1062
 msgid "Select the directory to save to"
 msgstr "Vali kataloog, kuhu salvestada"
 
-#: modules/gui/macosx/wizard.m:1146
+#: modules/gui/macosx/wizard.m:1118
 msgid "No folder selected"
 msgstr "Ühtegi kataloogi pole valitud"
 
-#: modules/gui/macosx/wizard.m:1148
+#: modules/gui/macosx/wizard.m:1120
 msgid "A directory where to save the files has to be selected."
 msgstr "Kataloog, kuhu failid salvestada, tuleb valida."
 
-#: modules/gui/macosx/wizard.m:1150
+#: modules/gui/macosx/wizard.m:1122
 msgid ""
 "Enter either a valid path or use the \"Choose...\" button to select a "
 "location."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1153
+#: modules/gui/macosx/wizard.m:1125
 msgid "No file selected"
 msgstr "Ühtegi faili pole valitud"
 
-#: modules/gui/macosx/wizard.m:1155
+#: modules/gui/macosx/wizard.m:1127
 msgid "A file where to save the stream has to be selected."
 msgstr "Fail, kuhu voog salvestada, tuleb valida."
 
-#: modules/gui/macosx/wizard.m:1157
+#: modules/gui/macosx/wizard.m:1129
 msgid ""
 "Enter either a valid path or use the \"Choose\" button to select a location."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1360
+#: modules/gui/macosx/wizard.m:1334
 msgid "Finish"
 msgstr "Lõpp"
 
-#: modules/gui/macosx/wizard.m:1373 modules/gui/macosx/wizard.m:1402
-#: modules/gui/macosx/wizard.m:1432
+#: modules/gui/macosx/wizard.m:1347 modules/gui/macosx/wizard.m:1376
+#: modules/gui/macosx/wizard.m:1406
 msgid "yes"
 msgstr "jah"
 
-#: modules/gui/macosx/wizard.m:1375 modules/gui/macosx/wizard.m:1385
-#: modules/gui/macosx/wizard.m:1398 modules/gui/macosx/wizard.m:1404
-#: modules/gui/macosx/wizard.m:1416 modules/gui/macosx/wizard.m:1435
+#: modules/gui/macosx/wizard.m:1349 modules/gui/macosx/wizard.m:1359
+#: modules/gui/macosx/wizard.m:1372 modules/gui/macosx/wizard.m:1378
+#: modules/gui/macosx/wizard.m:1390 modules/gui/macosx/wizard.m:1409
 msgid "no"
 msgstr "ei"
 
-#: modules/gui/macosx/wizard.m:1381
+#: modules/gui/macosx/wizard.m:1355
 msgid "yes: from %@ to %@ secs"
 msgstr "jah: %@ kuni %@ sekundit"
 
-#: modules/gui/macosx/wizard.m:1391 modules/gui/macosx/wizard.m:1409
+#: modules/gui/macosx/wizard.m:1365 modules/gui/macosx/wizard.m:1383
 msgid "yes: %@ @ %@ kb/s"
 msgstr "jah: %@ @ %@ kb/s"
 
-#: modules/gui/macosx/wizard.m:1679
+#: modules/gui/macosx/wizard.m:1653
 msgid "This allows to stream on a network."
 msgstr "See lubab voogedastada võrku."
 
-#: modules/gui/macosx/wizard.m:1687
+#: modules/gui/macosx/wizard.m:1661
 msgid ""
 "This allows to save a stream to a file. The can be reencoded on the fly. "
 "Whatever VLC can read can be saved.\n"
@@ -16639,15 +16651,15 @@ msgid ""
 "transcoding features are however useful to save network streams, for example."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1816
+#: modules/gui/macosx/wizard.m:1790
 msgid "Select your audio codec. Click one to get more information."
 msgstr "Vali audiokoodek. Klõpsa mõnel lisa info saamiseks."
 
-#: modules/gui/macosx/wizard.m:1833
+#: modules/gui/macosx/wizard.m:1807
 msgid "Select your video codec. Click one to get more information."
 msgstr "Vali videokoodek. Klõpsa mõnel lisa info saamiseks."
 
-#: modules/gui/macosx/wizard.m:1868
+#: modules/gui/macosx/wizard.m:1842
 msgid ""
 "This allows to define the TTL (Time-To-Live) of the stream. This parameter "
 "is the maximum number of routers your stream can go through. If you don't "
@@ -16655,7 +16667,7 @@ msgid ""
 "leave this setting to 1."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1879
+#: modules/gui/macosx/wizard.m:1853
 msgid ""
 "When streaming using UDP, the streams can be announced using the SAP/SDP "
 "announcing protocol. This way, the clients won't have to type in the "
@@ -16665,7 +16677,7 @@ msgid ""
 "name will be used."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1892
+#: modules/gui/macosx/wizard.m:1866
 msgid ""
 "When this option is enabled, the stream will be both played and transcoded/"
 "streamed.\n"
@@ -17023,31 +17035,31 @@ msgstr "Otsi: %s"
 msgid "Open: %s"
 msgstr "Ava: %s"
 
-#: modules/gui/qt4/components/controller.cpp:281
+#: modules/gui/qt4/components/controller.cpp:282
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt4/components/controller.cpp:378
+#: modules/gui/qt4/components/controller.cpp:379
 msgid "Click to toggle between loop one, loop all"
 msgstr "Lülitamine ühe ja kõigi kordamisele"
 
-#: modules/gui/qt4/components/controller.cpp:441
+#: modules/gui/qt4/components/controller.cpp:442
 msgid "Previous Chapter/Title"
 msgstr "Eelmine peatükk/pealkiri"
 
-#: modules/gui/qt4/components/controller.cpp:447
+#: modules/gui/qt4/components/controller.cpp:448
 msgid "Menu"
 msgstr "Menüü"
 
-#: modules/gui/qt4/components/controller.cpp:453
+#: modules/gui/qt4/components/controller.cpp:454
 msgid "Next Chapter/Title"
 msgstr "Järgmine peatükk/pealkiri"
 
-#: modules/gui/qt4/components/controller.cpp:486
+#: modules/gui/qt4/components/controller.cpp:487
 msgid "Teletext Activation"
 msgstr "Teleteksti aktiveerimine"
 
-#: modules/gui/qt4/components/controller.cpp:502
+#: modules/gui/qt4/components/controller.cpp:503
 msgid "Toggle Transparency "
 msgstr "Läbipaistvuse lüliti"
 
@@ -17609,6 +17621,10 @@ msgid ""
 "You can define a unique one or configure them \n"
 "individually in the advanced preferences."
 msgstr ""
+"Kui see valik on tühi, siis kasutatakse\n"
+"erinevaid väärtusi DVD, VCD ja CDDA jaoks.\n"
+"Võid määrata unikaalse väärtuse või seadistada\n"
+"neid individuaalselt peamiste eelistuste alt."
 
 #: modules/gui/qt4/components/simple_preferences.cpp:527
 msgid "This is VLC's skinnable interface. You can download other skins at"
@@ -18461,9 +18477,8 @@ msgid "XSPF playlist (*.xspf)"
 msgstr "XSPF esitusloend (*.xspf)"
 
 #: modules/gui/qt4/dialogs_provider.cpp:559
-#, fuzzy
 msgid "M3U8 playlist (*.m3u8)"
-msgstr "M3U8 esitusloend (*.m3u)"
+msgstr "M3U8 esitusloend (*.m3u8)"
 
 #: modules/gui/qt4/dialogs_provider.cpp:560
 msgid "M3U playlist (*.m3u)"
@@ -19101,13 +19116,15 @@ msgstr "Kasuta rüüga esitusloendit"
 
 #: modules/gui/skins2/src/skin_main.cpp:550
 msgid "Display video in a skinned window if any"
-msgstr "Kuva video võimalusel rüüga aknas"
+msgstr "Võimalusel kuva video rüüga aknas"
 
 #: modules/gui/skins2/src/skin_main.cpp:552
 msgid ""
 "When set to 'no', this parameter is intended to give old skins a chance to "
 "play back video even though no video tag is implemented"
 msgstr ""
+"Kui seatud väärtusele 'ei', siis see parameeter peaks andma vanale rüüle "
+"võimaluse esitada videot, kuigi video silti pole implementeeritud."
 
 #: modules/gui/skins2/src/skin_main.cpp:578
 msgid "Skins"
@@ -19498,6 +19515,8 @@ msgid ""
 "Save the raw codec data if you have selected/forced the dummy decoder in the "
 "main options."
 msgstr ""
+"Salvesta raw koodeki andmed, kui sa oled valinud/sundinud liba koodeki "
+"valikute alt."
 
 #: modules/misc/dummy/dummy.c:56
 msgid ""
@@ -19505,6 +19524,9 @@ msgid ""
 "the quiet mode will not bring this command box but can also be pretty "
 "annoying when you want to stop VLC and no video window is open."
 msgstr ""
+"Vaikimisi avab libaliidese plugin DOS akna. Akent ei kuvata, kui võimaldad "
+"vaikse režiimi. Samas võib see olla üsna häiriv, kui soovid VLC-d peatada, "
+"aga ühtegi akent pole."
 
 #: modules/misc/dummy/dummy.c:64
 msgid "Dummy interface function"
@@ -19584,12 +19606,16 @@ msgid ""
 "set to something different than 0 this option will override the relative "
 "font size."
 msgstr ""
+"See on fondi vaikesuurus, mis videol renderdatakse. Kui väärtuseks on "
+"määratud midagi muud peale nulli, siis tühistatakse suhteline fondi suurus."
 
 #: modules/misc/freetype.c:106 modules/misc/win32text.c:66
 msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
 "the video. 0 = transparent, 255 = totally opaque. "
 msgstr ""
+"Renderdatava teksti läbipaistmatus (läbipaistvuse vastand) videol. 0 = "
+"läbipaistev, 255 = täiesti läbipaistmatu."
 
 #: modules/misc/freetype.c:109 modules/misc/quartztext.c:86
 #: modules/misc/win32text.c:69
@@ -19604,6 +19630,10 @@ msgid ""
 "then blue. #000000 = black, #FF0000 = red, #00FF00 = green, #FFFF00 = yellow "
 "(red + green), #FFFFFF = white"
 msgstr ""
+"Videol renderdatava teksti värv. Väärtus peab olema 16nd koodis (nagu HTML "
+"värvid). Kaks esimest märki on punase jaoks, siis roheline ja sinine. "
+"#000000 = must, #FF0000 = punane, #00FF00 = roheline, #FFFF00 = kollane "
+"(punane + roheline), #FFFFFF = valge"
 
 #: modules/misc/freetype.c:114 modules/misc/quartztext.c:82
 #: modules/misc/win32text.c:74
@@ -19615,6 +19645,8 @@ msgid ""
 "This is the relative default size of the fonts that will be rendered on the "
 "video. If absolute font size is set, relative size will be overridden."
 msgstr ""
+"See on videol rendertatava teksti fondi suhteline suurus. Kui absoluutne "
+"fondi suurus on määratud, siis suhteline suurus tühistatakse."
 
 #: modules/misc/freetype.c:121 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:81
@@ -19645,6 +19677,8 @@ msgid ""
 "This renders the font using \"paletized YUV\". This option is only needed if "
 "you want to encode into DVB subtitles"
 msgstr ""
+"See renderdab fonte kasutades \"paletitud YUV-d\". Seda valikut kasutatakse "
+"ainult siis, kui soovid kodeerida DVB subtiitritesse"
 
 #: modules/misc/freetype.c:125
 msgid "Font Effect"
@@ -19897,11 +19931,11 @@ msgstr "Freebox TV"
 msgid "French TV"
 msgstr "French TV"
 
-#: modules/misc/notify/growl.m:97
+#: modules/misc/notify/growl.m:98
 msgid "Growl Notification Plugin"
 msgstr "Growl märguande plugin"
 
-#: modules/misc/notify/growl.m:279
+#: modules/misc/notify/growl.m:308
 msgid "Now playing"
 msgstr "Hetkel mängib"
 
@@ -20050,13 +20084,15 @@ msgstr "HTML esitusloendi eksport"
 
 #: modules/misc/quartztext.c:81
 msgid "Name for the font you want to use"
-msgstr "Fondi nimi, mida soovid kasutada"
+msgstr "Soovitud fondi nimi"
 
 #: modules/misc/quartztext.c:83 modules/misc/win32text.c:75
 msgid ""
 "This is the relative default size of the fonts that will be rendered on the "
 "video. If absolute font size is set, relative size will be overriden."
 msgstr ""
+"See on videol rendetatava teksti fondi suhteline suurus. Kui absoluutne "
+"fondi suurus on määraud, siis suhteline suurus tühistatakse."
 
 #: modules/misc/quartztext.c:107
 msgid "Text renderer for Mac"
@@ -20149,7 +20185,7 @@ msgstr "SVG mallifail"
 #: modules/misc/svg.c:69
 msgid ""
 "Location of a file holding a SVG template for automatic string conversion"
-msgstr ""
+msgstr "Automaatse stringiteisenduse jaoks kasutatava SVG mallifaili asukoht"
 
 #: modules/misc/win32text.c:59
 msgid "Filename for the font you want to use"
@@ -20347,7 +20383,7 @@ msgstr ""
 
 #: modules/mux/mpeg/ts.c:120
 msgid "SDT Descriptors (requires --sout-ts-es-id-pid)"
-msgstr ""
+msgstr "SDT deskriptorid (vajab --sout-ts-es-id-pid)"
 
 #: modules/mux/mpeg/ts.c:121
 msgid ""
@@ -20627,6 +20663,8 @@ msgstr "SAP aegumine (sekundit)"
 msgid ""
 "Delay after which SAP items get deleted if no new announcement is received."
 msgstr ""
+"Aeg, mille järel SAP teated kustutatakse, kui ühtegi uut teadet pole vastu "
+"võetud."
 
 #: modules/services_discovery/sap.c:96
 msgid "Try to parse the announce"
@@ -21040,6 +21078,8 @@ msgid ""
 "Output volume for analog output: 0 for silence, 1..255 from almost silent to "
 "very loud."
 msgstr ""
+"Analoogväljundi helitase: 0 on vaikus, 1..255 peaagu vaikusest kuni väga "
+"valjuni."
 
 #: modules/stream_out/raop.c:155
 msgid "Password for target device."
@@ -22027,6 +22067,8 @@ msgstr "Kasuta tarkvaralist valge kohandamist"
 msgid ""
 "Should the buildin driver do a white adjust or your LED stripes? recommend."
 msgstr ""
+"Kas sisseehitatud draiver peaks tegema valge korrigeerimist või sinu LED "
+"triibud? Soovitatav."
 
 #: modules/video_filter/atmo/atmo.cpp:245
 msgid "White Red"
@@ -22034,7 +22076,7 @@ msgstr "Valge punane"
 
 #: modules/video_filter/atmo/atmo.cpp:246
 msgid "Red value of a pure white on your LED stripes."
-msgstr ""
+msgstr "Punase väärtus puhtal valgel sinu LED triipudel."
 
 #: modules/video_filter/atmo/atmo.cpp:248
 msgid "White Green"
@@ -22042,7 +22084,7 @@ msgstr "Valge roheline"
 
 #: modules/video_filter/atmo/atmo.cpp:249
 msgid "Green value of a pure white on your LED stripes."
-msgstr ""
+msgstr "Rohelise väärtus puhtal valgel sinu LED triipudel."
 
 #: modules/video_filter/atmo/atmo.cpp:251
 msgid "White Blue"
@@ -22050,7 +22092,7 @@ msgstr "Valge sinine"
 
 #: modules/video_filter/atmo/atmo.cpp:252
 msgid "Blue value of a pure white on your LED stripes."
-msgstr ""
+msgstr "Sinise väärtus puhtal valgel sinu LED triipudel."
 
 #: modules/video_filter/atmo/atmo.cpp:255
 msgid "Serial Port/Device"
@@ -22061,6 +22103,8 @@ msgid ""
 "Name of the serial port where the AtmoLight controller is attached to.\n"
 "On Windows usually something like COM1 or COM2. On Linux /dev/ttyS01 f.e."
 msgstr ""
+"Jadapordi nimi, kuhu AtmoLight kontroller on ühendatud.\n"
+"Windowsis on ta COM1 või COM2 vms, linuxis /dev/ttyS01"
 
 #: modules/video_filter/atmo/atmo.cpp:261
 msgid "Edge Weightning"
@@ -22074,7 +22118,7 @@ msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:265
 msgid "Overall brightness of your LED stripes"
-msgstr ""
+msgstr "Sinu LED triipude üleüldine heledus"
 
 #: modules/video_filter/atmo/atmo.cpp:266
 msgid "Darkness Limit"
@@ -22279,11 +22323,11 @@ msgstr "Vali seadme tüüp ja ühendus"
 
 #: modules/video_filter/atmo/atmo.cpp:400
 msgid "Illuminate the room with this color on pause"
-msgstr ""
+msgstr "Pausi ajal valgusta tuba selle värviga"
 
 #: modules/video_filter/atmo/atmo.cpp:416
 msgid "Illuminate the room with this color on shutdown"
-msgstr ""
+msgstr "Seiskamise ajal valgusta tuba selle värviga"
 
 #: modules/video_filter/atmo/atmo.cpp:427
 msgid "DMX options"
@@ -22311,7 +22355,7 @@ msgstr "Muuda kanali määratlust (paranda vale kaabelduse)"
 
 #: modules/video_filter/atmo/atmo.cpp:568
 msgid "Adjust the white light to your LED stripes"
-msgstr ""
+msgstr "Kohanda valget valgust sinu LED triipudel"
 
 #: modules/video_filter/atmo/atmo.cpp:590
 msgid "Change gradients"
@@ -22464,7 +22508,7 @@ msgstr "Pilt, millesse sulanduda"
 
 #: modules/video_filter/blendbench.c:58
 msgid "The image which will be used to blend onto"
-msgstr ""
+msgstr "Pilt, mida kastatakse sisse sulandumiseks"
 
 #: modules/video_filter/blendbench.c:60
 msgid "Chroma for the base image"
@@ -22472,7 +22516,7 @@ msgstr "Baaspildi värviformaat"
 
 #: modules/video_filter/blendbench.c:61
 msgid "Chroma which the base image will be loaded in"
-msgstr ""
+msgstr "Värviformaat, millesse baaspilt laetakse"
 
 #: modules/video_filter/blendbench.c:63
 msgid "Image which will be blended"
@@ -22760,7 +22804,7 @@ msgstr ""
 
 #: modules/video_filter/crop.c:101
 msgid "Luminance threshold "
-msgstr ""
+msgstr "Heleduse künnis "
 
 #: modules/video_filter/crop.c:102
 msgid "Maximum luminance to consider a pixel as black (0-255)."
@@ -22776,39 +22820,39 @@ msgstr "Kärpimine nurjus"
 
 #: modules/video_filter/crop.c:380 modules/video_filter/crop.c:471
 msgid "VLC could not open the video output module."
-msgstr ""
+msgstr "VLC ei suutnud avada videoväljuni moodulit."
 
 #: modules/video_filter/croppadd.c:46
 msgid "Pixels to crop from top"
-msgstr ""
+msgstr "Ülevalt kärbitavate pikslite arv"
 
 #: modules/video_filter/croppadd.c:48
 msgid "Number of pixels to crop from the top of the image."
-msgstr ""
+msgstr "Pildi ülevalt servast kärbitavate pikslite arv."
 
 #: modules/video_filter/croppadd.c:49
 msgid "Pixels to crop from bottom"
-msgstr ""
+msgstr "Alt kärbitavate pikslite arv"
 
 #: modules/video_filter/croppadd.c:51
 msgid "Number of pixels to crop from the bottom of the image."
-msgstr ""
+msgstr "Pildi alt servast kärbitavate pikslite arv."
 
 #: modules/video_filter/croppadd.c:52
 msgid "Pixels to crop from left"
-msgstr ""
+msgstr "Vasakult kärbitatavate pikslite arv"
 
 #: modules/video_filter/croppadd.c:54
 msgid "Number of pixels to crop from the left of the image."
-msgstr ""
+msgstr "Pildi vasakust servast kärbitavate pikslite arv."
 
 #: modules/video_filter/croppadd.c:55
 msgid "Pixels to crop from right"
-msgstr ""
+msgstr "Paremalt kärbitavate pikslite arv"
 
 #: modules/video_filter/croppadd.c:57
 msgid "Number of pixels to crop from the right of the image."
-msgstr ""
+msgstr "Pildi paremast servast kärbitavate pikslite arv."
 
 #: modules/video_filter/croppadd.c:59
 msgid "Pixels to padd to top"
@@ -22877,7 +22921,7 @@ msgstr "Sisendi FIFO"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:61
 msgid "FIFO which will be read for commands"
-msgstr ""
+msgstr "FIFO, mida loetakse käskude jaoks"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:63
 msgid "Output FIFO"
@@ -22885,7 +22929,7 @@ msgstr "Väljundi FIFO"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:64
 msgid "FIFO which will be written to for responses"
-msgstr ""
+msgstr "FIFO, mida kirjutatakse vastu"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:67
 msgid "Dynamic video overlay"
@@ -22901,7 +22945,7 @@ msgstr "Pildi mask"
 
 #: modules/video_filter/erase.c:55
 msgid "Image mask. Pixels with an alpha value greater than 50% will be erased."
-msgstr ""
+msgstr "Pildi mask. Pikslid alfa väärtusega enam kui 50%, kustutatakse."
 
 #: modules/video_filter/erase.c:58
 msgid "X coordinate of the mask."
@@ -22913,7 +22957,7 @@ msgstr "Maski Y-koordinaat."
 
 #: modules/video_filter/erase.c:62
 msgid "Remove zones of the video using a picture as mask"
-msgstr ""
+msgstr "Eemalda video tsoonid, kasutades pilti maskina"
 
 #: modules/video_filter/erase.c:67
 msgid "Erase video filter"
@@ -22929,7 +22973,7 @@ msgstr "Eemaldatav RGB komponent"
 
 #: modules/video_filter/extract.c:63
 msgid "RGB component to extract. 0 for Red, 1 for Green and 2 for Blue."
-msgstr ""
+msgstr "Eemaldatav RGB komponent. 0 punase, 1 rohelise ja 2 sinise jaoks."
 
 #: modules/video_filter/extract.c:74
 msgid "Extract RGB component video filter"
@@ -22969,13 +23013,14 @@ msgstr ""
 
 #: modules/video_filter/gradient.c:65
 msgid "Gradient image type"
-msgstr ""
+msgstr "Ülemineku pildi tüüp"
 
 #: modules/video_filter/gradient.c:66
 msgid ""
 "Gradient image type (0 or 1). 0 will turn the image to white while 1 will "
 "keep colors."
 msgstr ""
+"Ülemineku pildi tüüp (0 või 1). 0 muudab pildi valgeks, 1 säilitab värvid."
 
 #: modules/video_filter/gradient.c:69
 msgid "Apply cartoon effect"
@@ -22983,7 +23028,7 @@ msgstr "Multika efekti rakendamine"
 
 #: modules/video_filter/gradient.c:70
 msgid "Apply cartoon effect. It is only used by \"gradient\" and \"edge\"."
-msgstr ""
+msgstr "Rakenda multika efekt. Seda kasutavad ainult \"üleminek\" ja \"serv\"."
 
 #: modules/video_filter/gradient.c:73
 msgid "Apply color gradient or edge detection effects"
@@ -23015,11 +23060,11 @@ msgstr "Teralisus"
 
 #: modules/video_filter/invert.c:50
 msgid "Invert video filter"
-msgstr ""
+msgstr "Invertimise videofilter"
 
 #: modules/video_filter/invert.c:51
 msgid "Color inversion"
-msgstr ""
+msgstr "Värvi invertimine"
 
 #: modules/video_filter/logo.c:48
 msgid "Logo filenames"
@@ -23034,27 +23079,27 @@ msgstr ""
 
 #: modules/video_filter/logo.c:52
 msgid "Logo animation # of loops"
-msgstr ""
+msgstr "Logo animatsiooni korduste arv"
 
 #: modules/video_filter/logo.c:53
 msgid "Number of loops for the logo animation.-1 = continuous, 0 = disabled"
-msgstr ""
+msgstr "Logo animatsiooni korduste arv. -1 = pidev, 0 = keelatud"
 
 #: modules/video_filter/logo.c:55
 msgid "Logo individual image time in ms"
-msgstr ""
+msgstr "Logo individuaalne pildi aeg millisekundites"
 
 #: modules/video_filter/logo.c:56
 msgid "Individual image display time of 0 - 60000 ms."
-msgstr ""
+msgstr "Individuaalne pildi kuvamise aeg 0 - 60000 ms."
 
 #: modules/video_filter/logo.c:59
 msgid "X coordinate of the logo. You can move the logo by left-clicking it."
-msgstr ""
+msgstr "Logo x-koordinaat. Vasaku klõpsuga saad logo asukohta muuta."
 
 #: modules/video_filter/logo.c:62
 msgid "Y coordinate of the logo. You can move the logo by left-clicking it."
-msgstr ""
+msgstr "Logo y-koordinaat. Vasaku klõpsuga saad logo asukohta muuta."
 
 #: modules/video_filter/logo.c:64
 msgid "Opacity of the logo"
@@ -23064,6 +23109,8 @@ msgstr "Logo katvus"
 msgid ""
 "Logo opacity value (from 0 for full transparency to 255 for full opacity)."
 msgstr ""
+"Logo katvuse väärtus (nullist, kui täiesti läbipaistvast 255-ni, kui täiesti "
+"läbipaistmatust)."
 
 #: modules/video_filter/logo.c:67
 msgid "Logo position"

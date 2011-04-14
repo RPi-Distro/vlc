@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.h
  * AppleRemote
- * $Id: 12e8ca3bd01e21dc22a7b8cc7e85fcbb04f3ee74 $
+ * $Id: fbc96742814bdcfc52808b8d42633420ad816ead $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -32,7 +32,7 @@
  * or (at your option) any later version.
  * Thus, the following statements apply to our changes:
  *
- * Copyright (C) 2006-2007 the VideoLAN team
+ * Copyright (C) 2006-2011 the VideoLAN team
  * Authors: Eric Petit <titer@m0k.org>
  *          Felix Kühne <fkuehne at videolan dot org>
  *
@@ -74,38 +74,40 @@ enum AppleRemoteEventIdentifier
     kRemoteControl_Switched         =1<<11,
     kRemoteButtonVolume_Plus_Hold   =1<<12,
     kRemoteButtonVolume_Minus_Hold  =1<<13,
-    k2009RemoteButtonPlay			=1<<14,
-    k2009RemoteButtonFullscreen		=1<<15
+    k2009RemoteButtonPlay           =1<<14,
+    k2009RemoteButtonFullscreen     =1<<15,
+    k2009RemoteButtonSwitched       =1<<16
 };
 typedef enum AppleRemoteEventIdentifier AppleRemoteEventIdentifier;
 
 /*  Encapsulates usage of the apple remote control
-This class is implemented as a singleton as there is exactly one remote per machine (until now)
-The class is not thread safe
-*/
+ This class is implemented as a singleton as there is exactly one remote per machine (until now)
+ The class is not thread safe
+ */
 @interface AppleRemote : NSObject {
     IOHIDDeviceInterface** hidDeviceInterface;
     IOHIDQueueInterface**  queue;
     NSMutableArray*        allCookies;
     NSMutableDictionary*   cookieToButtonMapping;
+    NSString*              switchCookie;
     CFRunLoopSourceRef     eventSource;
-
+    
     BOOL openInExclusiveMode;
     BOOL simulatePlusMinusHold;
     BOOL processesBacklog;
-
+    
     /* state for simulating plus/minus hold */
     BOOL lastEventSimulatedHold;
     AppleRemoteEventIdentifier lastPlusMinusEvent;
     NSTimeInterval lastPlusMinusEventTime;
-
+    
     int remoteId;
     unsigned int clickCountEnabledButtons;
     NSTimeInterval maxClickTimeDifference;
     NSTimeInterval lastClickCountEventTime;
     AppleRemoteEventIdentifier lastClickCountEvent;
     unsigned int eventClickCount;
-
+    
     IBOutlet id delegate;
 }
 
@@ -178,6 +180,7 @@ The class is not thread safe
 @interface AppleRemote (PrivateMethods)
 - (void) setRemoteId: (int) aValue;
 - (NSDictionary*) cookieToButtonMapping;
+- (NSString *) switchCookie;
 - (IOHIDQueueInterface**) queue;
 - (IOHIDDeviceInterface**) hidDeviceInterface;
 - (void) handleEventWithCookieString: (NSString*) cookieString sumOfValues: (SInt32) sumOfValues;

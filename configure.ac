@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2011 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.8)
+AC_INIT(vlc, 1.1.9)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
-VERSION_REVISION="8"
+VERSION_REVISION="9"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -236,10 +236,6 @@ case "${host_os}" in
     then
         echo ""
         echo "Building with Mac OS X defaults:"
-        with_macosx_version_min="10.5"
-        echo "  Assuming --with-macosx-version-min=10.5"
-        with_macosx_sdk="/Developer/SDKs/MacOSX${with_macosx_version_min}.sdk"
-        echo "  Assuming --with-macosx-sdk=/Developer/SDKs/MacOSX${with_macosx_version_min}.sdk"
         build_dir=`pwd`
         echo "  Assuming --prefix=${build_dir}/vlc_install_dir"
         ac_default_prefix="${build_dir}/vlc_install_dir"
@@ -286,6 +282,15 @@ case "${host_os}" in
         CXX="${CXX} -isysroot ${with_macosx_sdk}"
         OBJC="${OBJC} -isysroot ${with_macosx_sdk}"
         LD="${LD} -syslibroot ${with_macosx_sdk}"
+    else
+        echo "  No desired SDK version given, falling back to 10.5"
+        CPP="${CPP} -isysroot /Developer/SDKs/MacOSX10.5.sdk"
+        CC="${CC} -isysroot /Developer/SDKs/MacOSX10.5.sdk"
+        CXX="${CXX} -isysroot /Developer/SDKs/MacOSX10.5.sdk"
+        OBJC="${OBJC} -isysroot /Developer/SDKs/MacOSX10.5.sdk"
+        LD="${LD} -syslibroot /Developer/SDKs/MacOSX10.5.sdk"
+        with_macosx_version_min="10.5"
+        echo "  Assuming --with-macosx-version-min=10.5"
     fi
     AC_ARG_WITH(macosx-version-min,
        [  --with-macosx-version-min=VERSION compile for MacOSX VERSION and above])
@@ -447,12 +452,12 @@ VLC_ADD_LIBS([libvlccore],[${LTLIBICONV}])
 dnl Check for broken versions of mingw-runtime compatability library
 AS_IF([test "${SYS}" = "mingw32" -o "${SYS}" = "mingwce"], [
     AC_MSG_CHECKING(for broken mingw-runtime)
-    AC_PREPROC_IFELSE([
+    AC_PREPROC_IFELSE([AC_LANG_SOURCE([
 #include <_mingw.h>
 #if (__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 15)
 # error Attempting to use mingw-runtime with broken vsnprintf support
 #endif
-], [
+])], [
         AC_MSG_RESULT([ok])
 ], [
         AC_MSG_RESULT([present])
@@ -519,13 +524,13 @@ dnl See sourceware.org bugs 5058 and 5443.
 dnl Ubuntu alone has 20 bug numbers for this...
 dnl
 AC_MSG_CHECKING(for buggy GNU/libc versions)
-AC_PREPROC_IFELSE([
+AC_PREPROC_IFELSE([AC_LANG_SOURCE([
 #include <limits.h>
 #if defined (__GLIBC__) && (__GLIBC__ == 2) \
   && (__GLIBC_MINOR__ >= 5) && (__GLIBC_MINOR__ <= 7)
 # error GNU/libc with dcgettext killer bug!
 #endif
-], [
+])], [
   AC_MSG_RESULT([not present])
 ], [
   AC_MSG_RESULT([found])
@@ -1534,7 +1539,7 @@ AS_IF([test "${CFLAGS_TUNING}"],
     CFLAGS="${CFLAGS} ${CFLAGS_TUNING}"
 
     AC_MSG_CHECKING([whether $CC accepts ${CFLAGS_TUNING}])
-    AC_COMPILE_IFELSE([ ],
+    AC_COMPILE_IFELSE([AC_LANG_SOURCE([])],
                       [tuning="yes"],
                       [CFLAGS_TUNING=""; tuning="no"
                        AS_IF([test "${with_tuning}"],
@@ -1712,9 +1717,10 @@ AC_ARG_ENABLE(growl,
   [enable_growl=no])
 AS_IF([test "${enable_growl}" != "no"], [
     VLC_ADD_PLUGIN([growl_udp])
-    AC_CHECK_HEADERS(Growl/GrowlDefines.h, [
+    AC_CHECK_HEADERS(${CONTRIB_DIR}/Growl/Growl.framework/Versions/A/Headers/GrowlDefines.h, [
       VLC_ADD_PLUGIN([growl])
-      VLC_ADD_LDFLAGS([growl], [-Wl,-framework,Growl,-framework,AppKit])
+      VLC_ADD_LDFLAGS([growl], [-F${CONTRIB_DIR}/Growl -Wl,-framework,Growl,-framework,CoreFoundation])
+      VLC_ADD_OBJCFLAGS([growl], [-F${CONTRIB_DIR}/Growl])
       VLC_ADD_OBJCFLAGS([growl], [-fobjc-exceptions] )
     ])
   ]

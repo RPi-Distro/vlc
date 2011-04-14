@@ -68,6 +68,11 @@ resource 'STR#' (127)
         /* MkV */
         "MKV video",
         "MKV audio",
+        /* WebM */
+        "WebM video",
+        "WebM audio",
+        /* AMR */
+        "AMR audio",
     };
 };
 
@@ -122,6 +127,11 @@ resource 'STR#' (128,"MIME Type")
         "audio/x-matroska", "mka",
         /* XSPF */
         "application/xspf+xml", "xspf",
+        /* WebM */
+        "video/webm", "webm",
+        "audio/webm", "webm",
+        /* AMR */
+        "audio/amr", "amr",
 
     };
 };
