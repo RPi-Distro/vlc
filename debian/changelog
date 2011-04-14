@@ -1,3 +1,10 @@
+vlc (1.1.9-1ubuntu1) natty; urgency=low
+
+  * Merge from Debian unstable (LP: #760510), remaining changes:
+    - build and install the libx264 plugin
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 14 Apr 2011 11:51:25 +0200
+
 vlc (1.1.9-1) unstable; urgency=medium
 
   * New upstream release.
