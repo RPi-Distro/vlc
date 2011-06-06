@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 236ae0c27c57b8ad191111cb800e2033b8b16a24 $
+ * $Id: 7547a6cc2fe9f1727acac3bea7a60f475a41ea2d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -37,6 +37,8 @@ extern const struct action libvlc_actions[];
 extern const size_t libvlc_actions_count;
 extern int vlc_InitActions (libvlc_int_t *);
 extern void vlc_DeinitActions (libvlc_int_t *);
+
+size_t vlc_towc (const char *str, uint32_t *restrict pwc);
 
 /*
  * OS-specific initialization

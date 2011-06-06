@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: 7eb4decbd2ed378ab901e58591426028c72b80ee $
+ * $Id: cae41b4a462f297711e6a4e60524269da19d196a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -98,8 +98,8 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
         return VLC_ENOMEM;
     }
 
-    p_codec->type = CODEC_TYPE_AUDIO;
-    p_context->codec_type = CODEC_TYPE_AUDIO;
+    p_codec->type = AVMEDIA_TYPE_AUDIO;
+    p_context->codec_type = AVMEDIA_TYPE_AUDIO;
     p_context->codec_id = i_codec_id;
     p_sys->p_context = p_context;
     p_sys->p_codec = p_codec;
@@ -330,7 +330,14 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
             p_sys->p_output = av_realloc( p_sys->p_output, i_output );
         }
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 0, 0 )
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 0, 0 )
+        AVPacket pkt;
+        av_init_packet( &pkt );
+        pkt.data = p_block->p_buffer;
+        pkt.size = p_block->i_buffer;
+        i_used = avcodec_decode_audio3( p_sys->p_context,
+                (int16_t*)p_sys->p_output, &i_output, &pkt );
+#elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 0, 0 )
         i_used = avcodec_decode_audio2( p_sys->p_context,
                                        (int16_t*)p_sys->p_output, &i_output,
                                        p_block->p_buffer, p_block->i_buffer );

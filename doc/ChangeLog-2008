@@ -53601,3 +53601,99 @@ Author: Pierre d'Herbemont <pdherbemont@videolan.org>
 Date:   Tue Jan 1 21:28:24 2008 +0000
 
     MacOSX/VLC_app/VLCController.m: Remove dead category.
+
+commit 9fe304603a31b2c01b910ab0977bd8f72e3133df
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 20:38:24 2008 +0000
+
+    VLC_app/VLC.xcodeproj: Correctly add a dependancy for the VLC.framework. (Thanks to Julien Robert).
+
+commit a3d1163009fd3b54dfa094521961317c25d7039a
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 19:24:58 2008 +0000
+
+    extras/MacOSX: Dead code removal. Not working code removal.
+
+commit b92ad8fc4b6c67a3a57859aee10525c2b705304d
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 19:16:38 2008 +0000
+
+    VLCController.m: Remove unneeded code.
+
+commit 0a73fb583e66d2c9e4ef0917ffe8353c812871d8
+Author: Damien Fouilleul <damienf@videolan.org>
+Date:   Tue Jan 1 18:48:24 2008 +0000
+
+    configure: reworked MacOS X SDK options, now use --with-macosx-sdk=DIR and --with-macosx-version-min=VERSION
+
+commit a4b0c7d0ff346bb1c9fc3e94e26928864816a9e5
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jan 1 18:26:08 2008 +0000
+
+    macosx: fixed on-the-fly-changing of the adjust filter. code cleanup. Thanks to Antoine for pointing in the correct direction
+
+commit 99f6722d6c42bd408e50c43e7ab397cbb0b33667
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 18:03:56 2008 +0000
+
+    Revert [23949].
+
+commit 054a2b0615657a039bd8bbf257a68df1b59ed43e
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 17:06:40 2008 +0000
+
+    svn:keywords.
+
+commit b83ae6b44b26c3db50a9875b30479da954f4d72c
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 16:46:55 2008 +0000
+
+    VLCExceptionHandler.m: -initialize to -load. initialize gets called to late or never.
+
+commit 8d5d2f839b28e3aebe560463cf5b3a977c6ef385
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Jan 1 16:43:09 2008 +0000
+
+    Little correction of the double-clicks detection under sdl
+
+commit bace31c80180283b84d4794e54d6521cf838e969
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 16:23:38 2008 +0000
+
+    MacOSX/VLC_app: Add MainWindow.xib.
+
+commit 77d74ab447b6d78f765ea35e5eddf820d6e3f156
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Jan 1 16:19:50 2008 +0000
+
+    Happy new year (2)
+
+commit b6dd543eb1394707708274a7686d1b07c9c6b98c
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Jan 1 16:19:02 2008 +0000
+
+    Happy new year
+
+commit 9cd8c3cac199bb326c3e6fb84851855aa7ac4470
+Author: Antoine Cellerier <dionoea@videolan.org>
+Date:   Tue Jan 1 16:17:42 2008 +0000
+
+    Fix the video controls extended panels (make extensive use of the object's name).
+
+commit 2b69849b1228b2453fcea3c9f8a19893a93a0462
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 16:15:23 2008 +0000
+
+    Fix previous commit.
+
+commit 991f12499f32b787c23b3a77cd0279ea2bd2994d
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 16:13:58 2008 +0000
+
+    VLC_app/VLCMainWindow.h: Fix a warning, about the wrong type of the slider outlet.
+
+commit 9b675d98d239a28d1db37486b711b2107763be56
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 16:08:00 2008 +0000
+
+    VLCMediaList.m: Don't mess between node hierachical and hierarchical cached copy of the MediaListAspect.

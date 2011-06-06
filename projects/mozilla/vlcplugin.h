@@ -379,6 +379,7 @@ private:
     "audio/x-m4a:m4a:MPEG-4 audio;" \
     "application/mpeg4-iod:mp4,mpg4:MPEG-4 video;" \
     "application/mpeg4-muxcodetable:mp4,mpg4:MPEG-4 video;" \
+    "video/x-m4v:m4v:MPEG-4 video;" \
     /* AVI */ \
     "video/x-msvideo:avi:AVI video;" \
     /* QuickTime */ \
@@ -386,6 +387,7 @@ private:
     /* OGG */ \
     "application/x-ogg:ogg:Ogg stream;" \
     "application/ogg:ogg:Ogg stream;" \
+    "video/ogg:ogv:Ogg video;" \
     /* VLC */ \
     "application/x-vlc-plugin:vlc:VLC plug-in;" \
     /* Windows Media */ \

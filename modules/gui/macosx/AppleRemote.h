@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.h
  * AppleRemote
- * $Id: fbc96742814bdcfc52808b8d42633420ad816ead $
+ * $Id: 84777789a5787eeebd7e4e9cbf73e66bbd29cc98 $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -110,6 +110,7 @@ typedef enum AppleRemoteEventIdentifier AppleRemoteEventIdentifier;
     
     IBOutlet id delegate;
 }
++ (AppleRemote *)sharedInstance;
 
 - (int) remoteId;
 

@@ -2,7 +2,7 @@
  * v4l2.c : Video4Linux2 input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 02cf1a6685e7e410fb993c7698d18174e2c1e519 $
+ * $Id: d29aec63bbbca00f90dbc51ae5d38d96b89200df $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -249,12 +249,13 @@ static const int i_iomethod_list[] =
 static const char *const psz_iomethod_list_text[] =
     { N_("AUTO"), N_("READ"), N_("MMAP"),  N_("USERPTR") };
 
-static const int i_tuner_audio_modes_list[] =
-    { V4L2_TUNER_MODE_MONO, V4L2_TUNER_MODE_STEREO,
+static const int i_tuner_audio_modes_list[] = {
+      -1, V4L2_TUNER_MODE_MONO, V4L2_TUNER_MODE_STEREO,
       V4L2_TUNER_MODE_LANG1, V4L2_TUNER_MODE_LANG2,
       V4L2_TUNER_MODE_SAP, V4L2_TUNER_MODE_LANG1_LANG2 };
-static const char *const psz_tuner_audio_modes_list_text[] =
-    { N_( "Mono" ),
+static const char *const psz_tuner_audio_modes_list_text[] = {
+      N_("Undefined"),
+      N_( "Mono" ),
       N_( "Stereo" ),
       N_( "Primary language (Analog TV tuners only)" ),
       N_( "Secondary language (Analog TV tuners only)" ),
@@ -711,8 +712,7 @@ static void GetV4L2Params( demux_sys_t *p_sys, vlc_object_t *p_obj )
     p_sys->i_video_pts = -1;
 
     p_sys->i_selected_standard_id =
-        i_standards_list[var_CreateGetInteger( p_obj, "v4l2-standard" )];
-
+        var_CreateGetInteger( p_obj, "v4l2-standard" );
     p_sys->i_selected_input = var_CreateGetInteger( p_obj, "v4l2-input" );
     p_sys->i_selected_audio_input =
         var_CreateGetInteger( p_obj, "v4l2-audio-input" );

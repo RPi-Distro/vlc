@@ -2,7 +2,7 @@
  * transforms_yuvmmx.h: MMX YUV transformation assembly
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 587ba33ea6502434d06af1bb355b698319d3dae2 $
+ * $Id: cd1155b4ba230e0c6142938df501df0c0376b499 $
  *
  * Authors: Olie Lho <ollie@sis.com.tw>
  *          Gaël Hendryckx <jimmy@via.ecp.fr>
@@ -27,26 +27,18 @@
 #ifdef MODULE_NAME_IS_i420_rgb_mmx
 
 /* hope these constant values are cache line aligned */
-#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
-#define USED_U64(foo) \
-    static const uint64_t foo __asm__ (#foo) __attribute__((used))
-#else
-#define USED_U64(foo) \
-    static const uint64_t foo __asm__ (#foo) __attribute__((unused))
-#endif
-USED_U64(mmx_80w)     = 0x0080008000800080ULL; /* Will be referenced as %4 in inline asm */
-USED_U64(mmx_10w)     = 0x1010101010101010ULL; /* -- as %5 */
-USED_U64(mmx_00ffw)   = 0x00ff00ff00ff00ffULL; /* -- as %6 */
-USED_U64(mmx_Y_coeff) = 0x253f253f253f253fULL; /* -- as %7 */
+static const uint64_t mmx_80w     = 0x0080008000800080ULL; /* Will be referenced as %4 in inline asm */
+static const uint64_t mmx_10w     = 0x1010101010101010ULL; /* -- as %5 */
+static const uint64_t mmx_00ffw   = 0x00ff00ff00ff00ffULL; /* -- as %6 */
+static const uint64_t mmx_Y_coeff = 0x253f253f253f253fULL; /* -- as %7 */
 
-USED_U64(mmx_U_green) = 0xf37df37df37df37dULL; /* -- as %8 */
-USED_U64(mmx_U_blue)  = 0x4093409340934093ULL; /* -- as %9 */
-USED_U64(mmx_V_red)   = 0x3312331233123312ULL; /* -- as %10 */
-USED_U64(mmx_V_green) = 0xe5fce5fce5fce5fcULL; /* -- as %11 */
+static const uint64_t mmx_U_green = 0xf37df37df37df37dULL; /* -- as %8 */
+static const uint64_t mmx_U_blue  = 0x4093409340934093ULL; /* -- as %9 */
+static const uint64_t mmx_V_red   = 0x3312331233123312ULL; /* -- as %10 */
+static const uint64_t mmx_V_green = 0xe5fce5fce5fce5fcULL; /* -- as %11 */
 
-USED_U64(mmx_mask_f8) = 0xf8f8f8f8f8f8f8f8ULL; /* -- as %12 */
-USED_U64(mmx_mask_fc) = 0xfcfcfcfcfcfcfcfcULL; /* -- as %13 */
-#undef USED_U64
+static const uint64_t mmx_mask_f8 = 0xf8f8f8f8f8f8f8f8ULL; /* -- as %12 */
+static const uint64_t mmx_mask_fc = 0xfcfcfcfcfcfcfcfcULL; /* -- as %13 */
 
 #if defined(CAN_COMPILE_MMX)
 

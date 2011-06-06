@@ -2,7 +2,7 @@
  * mms.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 45e363d2d2bbf00725d206dde07aa626cae93d1c $
+ * $Id: 655038f1e1582c78f76ffc667542d2a351f13687 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -628,7 +628,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
 
     /* media file path shouldn't start with / character */
     mediapath = p_url->psz_path;
-    if ( *mediapath == '/' )
+    if ( mediapath && *mediapath == '/' )
     {
         mediapath++;
     }

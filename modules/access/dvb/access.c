@@ -89,7 +89,7 @@ static void Close( vlc_object_t *p_this );
 #define ADAPTER_LONGTEXT N_("Adapter cards have a device file in directory named /dev/dvb/adapter[n] with n>=0.")
 
 #define DEVICE_TEXT N_("Device number to use on adapter")
-#define DEVICE_LONGTEXT ""
+#define DEVICE_LONGTEXT DEVICE_TEXT
 
 #define FREQ_TEXT N_("Transponder/multiplex frequency")
 #define FREQ_LONGTEXT N_("In kHz for DVB-S or Hz for DVB-C/T")
@@ -121,16 +121,16 @@ static void Close( vlc_object_t *p_this );
 #define FEC_LONGTEXT N_("FEC=Forward Error Correction mode [9=auto].")
 
 #define SRATE_TEXT N_("Transponder symbol rate in kHz")
-#define SRATE_LONGTEXT ""
+#define SRATE_LONGTEXT SRATE_TEXT
 
 #define LNB_LOF1_TEXT N_("Antenna lnb_lof1 (kHz)")
-#define LNB_LOF1_LONGTEXT ""
+#define LNB_LOF1_LONGTEXT LNB_LOF1_TEXT
 
 #define LNB_LOF2_TEXT N_("Antenna lnb_lof2 (kHz)")
-#define LNB_LOF2_LONGTEXT ""
+#define LNB_LOF2_LONGTEXT LNB_LOF2_TEXT
 
 #define LNB_SLOF_TEXT N_("Antenna lnb_slof (kHz)")
-#define LNB_SLOF_LONGTEXT ""
+#define LNB_SLOF_LONGTEXT LNB_SLOF_TEXT
 
 /* Cable */
 #define MODULATION_TEXT N_("Modulation type")
@@ -138,22 +138,22 @@ static void Close( vlc_object_t *p_this );
 
 /* Terrestrial */
 #define CODE_RATE_HP_TEXT N_("Terrestrial high priority stream code rate (FEC)")
-#define CODE_RATE_HP_LONGTEXT ""
+#define CODE_RATE_HP_LONGTEXT CODE_RATE_HP_TEXT
 
 #define CODE_RATE_LP_TEXT N_("Terrestrial low priority stream code rate (FEC)")
-#define CODE_RATE_LP_LONGTEXT ""
+#define CODE_RATE_LP_LONGTEXT CODE_RATE_LP_TEXT
 
 #define BANDWIDTH_TEXT N_("Terrestrial bandwidth")
 #define BANDWIDTH_LONGTEXT N_("Terrestrial bandwidth [0=auto,6,7,8 in MHz]")
 
 #define GUARD_TEXT N_("Terrestrial guard interval")
-#define GUARD_LONGTEXT ""
+#define GUARD_LONGTEXT GUARD_TEXT
 
 #define TRANSMISSION_TEXT N_("Terrestrial transmission mode")
-#define TRANSMISSION_LONGTEXT ""
+#define TRANSMISSION_LONGTEXT TRANSMISSION_TEXT
 
 #define HIERARCHY_TEXT N_("Terrestrial hierarchy mode")
-#define HIERARCHY_LONGTEXT ""
+#define HIERARCHY_LONGTEXT HIERARCHY_TEXT
 
 #define HOST_TEXT N_( "HTTP Host address" )
 #define HOST_LONGTEXT N_( \

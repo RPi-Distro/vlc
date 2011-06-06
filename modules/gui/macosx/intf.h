@@ -1,8 +1,8 @@
 /*****************************************************************************
  * intf.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: e975af8aa6bb03f593fd6d6ac70e9fd67388eac2 $
+ * Copyright (C) 2002-2011 the VideoLAN team
+ * $Id: 7e14eea4c537ceb5fda174d7fb2fff510330d391 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -36,6 +36,7 @@
 #include <vlc_input.h>
 
 #include <Cocoa/Cocoa.h>
+#import "SPMediaKeyTap.h"                   /* for the media key support */
 
 /*****************************************************************************
  * Local prototypes.
@@ -49,11 +50,6 @@ unsigned int CocoaKeyToVLC( unichar i_key );
  * This string is stored as '1:string' but when displayed it only displays
  * the translated string. the translation should be '1:translatedstring' though */
 #define _ANS(s) [[[VLCMain sharedInstance] localizedString: _(s)] substringFromIndex:2]
-
-#define MACOS_VERSION [[[NSDictionary dictionaryWithContentsOfFile: \
-            @"/System/Library/CoreServices/SystemVersion.plist"] \
-            objectForKey: @"ProductVersion"] floatValue]
-
 
 // You need to release those objects after use
 input_thread_t *getInput(void);
@@ -337,14 +333,17 @@ struct intf_sys_t
 
     AppleRemote * o_remote;
     BOOL b_remote_button_hold; /* true as long as the user holds the left,right,plus or minus on the remote control */
+
+    /* media key support */
+    BOOL b_mediaKeySupport;
+    BOOL b_mediakeyJustJumped;
+    SPMediaKeyTap * o_mediaKeyController;
 }
 
 + (VLCMain *)sharedInstance;
 
 - (intf_thread_t *)intf;
 - (void)setIntf:(intf_thread_t *)p_mainintf;
-
-- (void)controlTintChanged;
 
 - (id)controls;
 - (id)simplePreferences;
@@ -418,10 +417,13 @@ struct intf_sys_t
 
 - (void)windowDidBecomeKey:(NSNotification *)o_notification;
 
+- (void)mediaKeyTap:(SPMediaKeyTap*)keyTap receivedMediaKeyEvent:(NSEvent*)event;
 @end
 
 @interface VLCMain (Internal)
 - (void)handlePortMessage:(NSPortMessage *)o_msg;
+- (void)resetMediaKeyJump;
+- (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification;
 @end
 
 /*****************************************************************************
@@ -430,14 +432,5 @@ struct intf_sys_t
 
 @interface VLCApplication : NSApplication
 {
-    BOOL b_justJumped;
-	BOOL b_mediaKeySupport;
-    BOOL b_activeInBackground;
-    BOOL b_active;
 }
-
-- (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification;
-- (void)sendEvent: (NSEvent*)event;
-- (void)resetJump;
-
 @end

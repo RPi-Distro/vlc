@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 1c19f7439a3c73324c0aa4c71c70c3619e0e536a $
+ * $Id: d544eb0c527fe26f9105dc5a60d67693304053a6 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -706,7 +706,7 @@
                     inNode: (playlist_item_t *)p_node
                     checkItemExistence:(BOOL)b_check
 {
-    [self isItem:p_item inNode:p_node checkItemExistence:b_check locked:NO];
+    return [self isItem:p_item inNode:p_node checkItemExistence:b_check locked:NO];
 }
 
 /* This method is useful for instance to remove the selected children of an
@@ -891,7 +891,7 @@
     if(! p_item || !p_item->p_input )
         return;
     
-    char *psz_uri = input_item_GetURI( p_item->p_input );
+    char *psz_uri = decode_URI( input_item_GetURI( p_item->p_input ) );
     if( psz_uri )
         o_mrl = [NSMutableString stringWithUTF8String: psz_uri];
 
@@ -1586,11 +1586,8 @@
 
         /* Refuse to move items that are not in the General Node
            (Service Discovery) */
-        if( ![self isItem: [o_item pointerValue] inNode:
-                        p_playlist->p_local_category checkItemExistence: NO] &&
-            var_CreateGetBool( p_playlist, "media-library" ) &&
-            ![self isItem: [o_item pointerValue] inNode:
-                        p_playlist->p_ml_category checkItemExistence: NO] ||
+        if( (![self isItem: [o_item pointerValue] inNode: p_playlist->p_local_category checkItemExistence: NO] &&
+            var_CreateGetBool( p_playlist, "media-library" ) && ![self isItem: [o_item pointerValue] inNode: p_playlist->p_ml_category checkItemExistence: NO]) ||
             [o_item pointerValue] == p_playlist->p_local_category ||
             [o_item pointerValue] == p_playlist->p_ml_category )
         {

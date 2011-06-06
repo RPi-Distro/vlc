@@ -19,7 +19,7 @@ SOURCES_mozilla_common = \
 	support/classinfo.h
 
 DIST_sources = $(SOURCES_mozilla_common) \
-	support/npwin.cpp support/npmac.cpp support/npunix.c
+	support/npwin.cpp support/npmac.cpp support/npunix.cpp
 
 if BUILD_MOZILLA
 
@@ -30,7 +30,7 @@ if HAVE_WIN32
 
 # Under Win32, Mozilla plugins need to be named NP******.DLL, but under Unix
 # the common naming scheme is lib******plugin.so. Also, we need npwin.cpp
-# under Win32 and npunix.c under Unix.
+# under Win32 and npunix.cpp under Unix.
 #
 lib_LTLIBRARIES = npvlc.la
 
@@ -135,7 +135,7 @@ npvlc_LTLIBRARIES = libvlcplugin.la
 
 npvlc = libvlcplugin$(LIBEXT)
 npvlcdir = $(libdir)/mozilla/plugins
-SOURCES_support = support/npunix.c
+SOURCES_support = support/npunix.cpp
 
 libvlcplugin_la_SOURCES = $(SOURCES_mozilla_common) $(SOURCES_support)
 libvlcplugin_la_CFLAGS = `$(VLC_CONFIG) --cflags mozilla` $(CPPFLAGS_mozilla_EXTRA)

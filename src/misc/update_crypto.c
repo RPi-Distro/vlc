@@ -2,7 +2,7 @@
  * update_crypto.c: DSA/SHA1 related functions used for updating
  *****************************************************************************
  * Copyright © 2008-2009 the VideoLAN team
- * $Id: f16cb0fe10ebdf571dad46a53adadb4a2559ec2b $
+ * $Id: 5bcea770fb5e56bcd701bcd4ff9c9c47de680dd3 $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -730,15 +730,18 @@ uint8_t *hash_sha1_from_text( const char *psz_string,
     while( *psz_string )
     {
         size_t i_len = strcspn( psz_string, "\r\n" );
-        if( !i_len )
-            break;
 
-        gcry_md_write( hd, psz_string, i_len );
+        if( i_len )
+        {
+            gcry_md_write( hd, psz_string, i_len );
+            psz_string += i_len;
+        }
         gcry_md_putc( hd, '\r' );
         gcry_md_putc( hd, '\n' );
 
-        psz_string += i_len;
-        while( *psz_string == '\r' || *psz_string == '\n' )
+        if( *psz_string == '\r' )
+            psz_string++;
+        if( *psz_string == '\n' )
             psz_string++;
     }
     else

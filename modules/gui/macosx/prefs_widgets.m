@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 323063408e4b07197e7448d967dbdafb389b4588 $
+ * $Id: 9859e8a331066f965f93b89aec6767e443da29b3 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -846,11 +846,14 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                         withView: o_parent_view];
         }
         break;
+    /* don't display keys in the advanced settings, since the current controls 
+     are broken by design. The user is required to change hotkeys in the sprefs
+     and can only change really advanced stuff here..
     case CONFIG_ITEM_KEY:
         p_control = [[KeyConfigControl alloc]
                         initWithItem: _p_item
                         withView: o_parent_view];
-        break;
+        break; */
     case CONFIG_ITEM_MODULE_LIST:
     case CONFIG_ITEM_MODULE_LIST_CAT:
         p_control = [[ModuleListConfigControl alloc]
@@ -1108,11 +1111,14 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 
 - (char *)stringValue
 {
-    if( [o_combo indexOfSelectedItem] >= 0 )
-        return strdup( p_item->ppsz_list[[o_combo indexOfSelectedItem]] );
-    else
-        return strdup( [[VLCMain sharedInstance]
-                            delocalizeString: [o_combo stringValue]] );
+    if( [o_combo indexOfSelectedItem] >= 0 ) {
+        if( p_item->ppsz_list[[o_combo indexOfSelectedItem]] != NULL )
+            return strdup( p_item->ppsz_list[[o_combo indexOfSelectedItem]] );
+    } else {
+        if( [[VLCMain sharedInstance] delocalizeString: [o_combo stringValue]] != NULL )
+            return strdup( [[VLCMain sharedInstance] delocalizeString: [o_combo stringValue]] );
+    }
+    return NULL;
 }
 
 - (void)resetValues
