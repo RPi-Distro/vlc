@@ -1,7 +1,7 @@
 From: siretart@tauware.de
 Subject: Weaken dependencies on libschroedinger
-
-This allows vlc to build on debian/squeeze.
+ This allows vlc to build on debian/squeeze.
+Forwarded: not-needed
 
 diff --git a/configure.ac b/configure.ac
 index f961846..a958d20 100644

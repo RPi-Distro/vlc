@@ -2,30 +2,6 @@ Description: Make vlc compatible with xulrunner 1.9.1
 Author: Benjamin Drung <bdrung@debian.org>
 Forwarded: not-needed
 
---- a/configure
-+++ b/configure
-@@ -48354,9 +48354,9 @@
-           if test -n "$i"
-           then
-             echo "Trying to find $i package" >&5
--            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $i >= 1.9.2" >&5
--$as_echo_n "checking for $i >= 1.9.2... " >&6; }
--            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.2" 2>&5
-+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $i >= 1.9.1" >&5
-+$as_echo_n "checking for $i >= 1.9.1... " >&6; }
-+            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.1" 2>&5
-             then
-               echo "Using $i pkg-config package." >&5
-               echo "Using $i package." >&6
-@@ -48584,7 +48584,7 @@
- done
- test -n "$MOZILLA_CONFIG" || MOZILLA_CONFIG="no"
- 
--            test "${MOZILLA_CONFIG}" = "no" && as_fn_error $? "Please install the Mozilla development tools (version 1.9.2 or higher) or use --disable-mozilla." "$LINENO" 5
-+            test "${MOZILLA_CONFIG}" = "no" && as_fn_error $? "Please install the Mozilla development tools (version 1.9.1 or higher) or use --disable-mozilla." "$LINENO" 5
- 
- 
- fi
 --- a/configure.ac
 +++ b/configure.ac
 @@ -4562,8 +4562,8 @@
