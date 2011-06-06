@@ -2,7 +2,7 @@
  * mod.c: MOD file demuxer (using libmodplug)
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 37deaa496a059b230b99705121868e255dc6d837 $
+ * $Id: 587dde609bb52678c30ed684436998005d9c6a8f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  * Konstanty Bialkowski <konstanty@ieee.org>
@@ -106,6 +106,7 @@ vlc_module_end ()
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
+static vlc_mutex_t libmodplug_lock = VLC_STATIC_MUTEX;
 
 struct demux_sys_t
 {
@@ -196,6 +197,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* Configure modplug before loading the file */
+    vlc_mutex_lock( &libmodplug_lock );
     ModPlug_GetSettings( &settings );
     settings.mFlags = MODPLUG_ENABLE_OVERSAMPLING;
     settings.mChannels = 2;
@@ -223,7 +225,10 @@ static int Open( vlc_object_t *p_this )
 
     ModPlug_SetSettings( &settings );
 
-    if( ( p_sys->f = ModPlug_Load( p_sys->p_data, p_sys->i_data ) ) == NULL )
+    p_sys->f = ModPlug_Load( p_sys->p_data, p_sys->i_data );
+    vlc_mutex_unlock( &libmodplug_lock );
+
+    if( !p_sys->f )
     {
         msg_Err( p_demux, "failed to understand the file" );
         /* we try to seek to recover for other plugin */

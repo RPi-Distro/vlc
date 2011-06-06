@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 0d36a269ac4d6989fbca26138151707a37c5e8f2 $
+ * $Id: 7e902f09efd8fe3935e8636fd10c2fe635b03e3d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -417,7 +417,9 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             memcpy( p_stream->p_oggds_header->stream_type, "audio", 5 );
 
             memset( p_stream->p_oggds_header->sub_type, 0, 4 );
-            sprintf( p_stream->p_oggds_header->sub_type, "%-x", i_tag );
+            char buf[5];
+            snprintf( buf, sizeof(buf), "%"PRIx16, i_tag );
+            strncpy( p_stream->p_oggds_header->sub_type, buf, 4 );
 
             SetQWLE( &p_stream->p_oggds_header->i_time_unit, INT64_C(10000000) );
             SetDWLE( &p_stream->p_oggds_header->i_default_len, 1 );

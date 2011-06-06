@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.m
  * AppleRemote
- * $Id: 418cc08859228bbfc5e536cb61d2a527b96e3b3b $
+ * $Id: 3099e8450195b0daceb7379a5550659f85365cf8 $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -66,8 +66,19 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 
 #pragma public interface
 
-- (id) init {
-    if(( self = [super init])) {
+static AppleRemote *_o_sharedInstance = nil;
+
++ (AppleRemote *)sharedInstance
+{
+    return _o_sharedInstance ? _o_sharedInstance : [[self alloc] init];
+}
+
+- (id)init
+{
+    if (_o_sharedInstance) {
+        [self dealloc];
+    } else {
+        _o_sharedInstance = [super init];
         openInExclusiveMode = YES;
         queue = NULL;
         hidDeviceInterface = NULL;
@@ -130,13 +141,13 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
             [cookieToButtonMapping setObject:[NSNumber numberWithInt:k2009RemoteButtonFullscreen] forKey:@"33_21_20_3_2_33_21_20_3_2_"];
             switchCookie = @"42_33_23_21_20_2_33_23_21_20_2_";
         }
+
+        /* defaults */
+        [self setSimulatesPlusMinusHold: YES];
+        maxClickTimeDifference = DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE;
     }
     
-    /* defaults */
-    [self setSimulatesPlusMinusHold: YES];
-    maxClickTimeDifference = DEFAULT_MAXIMUM_CLICK_TIME_DIFFERENCE;
-    
-    return self;
+    return _o_sharedInstance;
 }
 
 - (void) dealloc {

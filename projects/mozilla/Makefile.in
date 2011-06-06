@@ -90,7 +90,7 @@ am__libvlcplugin_la_SOURCES_DIST = vlcshell.cpp vlcshell.h \
 	vlcplugin.cpp vlcplugin.h control/npolibvlc.cpp \
 	control/npolibvlc.h control/nporuntime.cpp \
 	control/nporuntime.h control/position.h support/classinfo.h \
-	support/npunix.c support/npmac.cpp support/npwin.cpp
+	support/npunix.cpp support/npmac.cpp support/npwin.cpp
 am__objects_1 = libvlcplugin_la-vlcshell.lo \
 	libvlcplugin_la-vlcplugin.lo libvlcplugin_la-npolibvlc.lo \
 	libvlcplugin_la-nporuntime.lo
@@ -113,7 +113,7 @@ libvlcplugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 am__npvlc_la_SOURCES_DIST = vlcshell.cpp vlcshell.h vlcplugin.cpp \
 	vlcplugin.h control/npolibvlc.cpp control/npolibvlc.h \
 	control/nporuntime.cpp control/nporuntime.h control/position.h \
-	support/classinfo.h support/npunix.c support/npmac.cpp \
+	support/classinfo.h support/npunix.cpp support/npmac.cpp \
 	support/npwin.cpp
 am__objects_3 = npvlc_la-vlcshell.lo npvlc_la-vlcplugin.lo \
 	npvlc_la-npolibvlc.lo npvlc_la-nporuntime.lo
@@ -138,25 +138,6 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CFLAGS) $(CFLAGS)
-AM_V_CC = $(am__v_CC_$(V))
-am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
-am__v_CC_0 = @echo "  CC    " $@;
-AM_V_at = $(am__v_at_$(V))
-am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
-am__v_at_0 = @
-CCLD = $(CC)
-LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-AM_V_CCLD = $(am__v_CCLD_$(V))
-am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
-am__v_CCLD_0 = @echo "  CCLD  " $@;
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -166,6 +147,9 @@ LTCXXCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 AM_V_CXX = $(am__v_CXX_$(V))
 am__v_CXX_ = $(am__v_CXX_$(AM_DEFAULT_VERBOSITY))
 am__v_CXX_0 = @echo "  CXX   " $@;
+AM_V_at = $(am__v_at_$(V))
+am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
+am__v_at_0 = @
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -173,6 +157,22 @@ CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 AM_V_CXXLD = $(am__v_CXXLD_$(V))
 am__v_CXXLD_ = $(am__v_CXXLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CXXLD_0 = @echo "  CXXLD " $@;
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_$(V))
+am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))
+am__v_CC_0 = @echo "  CC    " $@;
+CCLD = $(CC)
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_$(V))
+am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
+am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
@@ -704,7 +704,7 @@ SOURCES_mozilla_common = \
 	support/classinfo.h
 
 DIST_sources = $(SOURCES_mozilla_common) \
-	support/npwin.cpp support/npmac.cpp support/npunix.c
+	support/npwin.cpp support/npmac.cpp support/npunix.cpp
 
 @BUILD_MOZILLA_TRUE@LIBRARIES_libvlc = $(top_builddir)/src/libvlc.la \
 @BUILD_MOZILLA_TRUE@				   $(top_builddir)/src/libvlccore.la
@@ -717,10 +717,10 @@ DIST_sources = $(SOURCES_mozilla_common) \
 
 # Under Win32, Mozilla plugins need to be named NP******.DLL, but under Unix
 # the common naming scheme is lib******plugin.so. Also, we need npwin.cpp
-# under Win32 and npunix.c under Unix.
+# under Win32 and npunix.cpp under Unix.
 #
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@lib_LTLIBRARIES = npvlc.la
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@SOURCES_support = support/npunix.c
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@SOURCES_support = support/npunix.cpp
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@SOURCES_support = support/npmac.cpp
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@SOURCES_support = support/npwin.cpp
 
@@ -781,7 +781,7 @@ DIST_sources = $(SOURCES_mozilla_common) \
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .lo .o .obj
+.SUFFIXES: .cpp .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -908,46 +908,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-vlcplugin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-vlcshell.Plo@am__quote@
 
-.c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
-
-.c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-.c.lo:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-
-libvlcplugin_la-npunix.lo: support/npunix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CFLAGS) $(CFLAGS) -MT libvlcplugin_la-npunix.lo -MD -MP -MF $(DEPDIR)/libvlcplugin_la-npunix.Tpo -c -o libvlcplugin_la-npunix.lo `test -f 'support/npunix.c' || echo '$(srcdir)/'`support/npunix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvlcplugin_la-npunix.Tpo $(DEPDIR)/libvlcplugin_la-npunix.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='support/npunix.c' object='libvlcplugin_la-npunix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CFLAGS) $(CFLAGS) -c -o libvlcplugin_la-npunix.lo `test -f 'support/npunix.c' || echo '$(srcdir)/'`support/npunix.c
-
-npvlc_la-npunix.lo: support/npunix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CFLAGS) $(CFLAGS) -MT npvlc_la-npunix.lo -MD -MP -MF $(DEPDIR)/npvlc_la-npunix.Tpo -c -o npvlc_la-npunix.lo `test -f 'support/npunix.c' || echo '$(srcdir)/'`support/npunix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/npvlc_la-npunix.Tpo $(DEPDIR)/npvlc_la-npunix.Plo
-@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='support/npunix.c' object='npvlc_la-npunix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CFLAGS) $(CFLAGS) -c -o npvlc_la-npunix.lo `test -f 'support/npunix.c' || echo '$(srcdir)/'`support/npunix.c
-
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
@@ -1004,6 +964,14 @@ libvlcplugin_la-nporuntime.lo: control/nporuntime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-nporuntime.lo `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp
 
+libvlcplugin_la-npunix.lo: support/npunix.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npunix.lo -MD -MP -MF $(DEPDIR)/libvlcplugin_la-npunix.Tpo -c -o libvlcplugin_la-npunix.lo `test -f 'support/npunix.cpp' || echo '$(srcdir)/'`support/npunix.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvlcplugin_la-npunix.Tpo $(DEPDIR)/libvlcplugin_la-npunix.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='support/npunix.cpp' object='libvlcplugin_la-npunix.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-npunix.lo `test -f 'support/npunix.cpp' || echo '$(srcdir)/'`support/npunix.cpp
+
 libvlcplugin_la-npmac.lo: support/npmac.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npmac.lo -MD -MP -MF $(DEPDIR)/libvlcplugin_la-npmac.Tpo -c -o libvlcplugin_la-npmac.lo `test -f 'support/npmac.cpp' || echo '$(srcdir)/'`support/npmac.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvlcplugin_la-npmac.Tpo $(DEPDIR)/libvlcplugin_la-npmac.Plo
@@ -1051,6 +1019,14 @@ npvlc_la-nporuntime.lo: control/nporuntime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/nporuntime.cpp' object='npvlc_la-nporuntime.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CXXFLAGS) $(CXXFLAGS) -c -o npvlc_la-nporuntime.lo `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp
+
+npvlc_la-npunix.lo: support/npunix.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CXXFLAGS) $(CXXFLAGS) -MT npvlc_la-npunix.lo -MD -MP -MF $(DEPDIR)/npvlc_la-npunix.Tpo -c -o npvlc_la-npunix.lo `test -f 'support/npunix.cpp' || echo '$(srcdir)/'`support/npunix.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/npvlc_la-npunix.Tpo $(DEPDIR)/npvlc_la-npunix.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='support/npunix.cpp' object='npvlc_la-npunix.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CXXFLAGS) $(CXXFLAGS) -c -o npvlc_la-npunix.lo `test -f 'support/npunix.cpp' || echo '$(srcdir)/'`support/npunix.cpp
 
 npvlc_la-npmac.lo: support/npmac.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CXXFLAGS) $(CXXFLAGS) -MT npvlc_la-npmac.lo -MD -MP -MF $(DEPDIR)/npvlc_la-npmac.Tpo -c -o npvlc_la-npmac.lo `test -f 'support/npmac.cpp' || echo '$(srcdir)/'`support/npmac.cpp

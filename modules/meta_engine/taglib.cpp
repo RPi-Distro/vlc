@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 549e876304ffbb77cdf699f61cef132b078fad79 $
+ * $Id: 80ba18f905ca41e83a3ae92f79fb2a2e1e902ac1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -630,11 +630,11 @@ static int WriteMeta( vlc_object_t *p_this )
 #undef SET
 
     psz_meta = input_item_GetDate( p_item );
-    if( psz_meta ) p_tag->setYear( atoi( psz_meta ) );
+    if( !EMPTY_STR(psz_meta) ) p_tag->setYear( atoi( psz_meta ) );
     free( psz_meta );
 
     psz_meta = input_item_GetTrackNum( p_item );
-    if( psz_meta ) p_tag->setTrack( atoi( psz_meta ) );
+    if( !EMPTY_STR(psz_meta) ) p_tag->setTrack( atoi( psz_meta ) );
     free( psz_meta );
 
 

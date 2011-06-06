@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 0bfa70e5682f8bd297b5c42c19be0c118fd2fc7d $
+ * $Id: 5ba97d4419f1edb5aa2143364e191c85ae49451e $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -265,6 +265,7 @@ private:
     QTimer *p_slowHideTimer;
     bool b_slow_hide_begin;
     int  i_slow_hide_timeout;
+    float f_opacity;
 #endif
 
     int i_mouse_last_x, i_mouse_last_y;

@@ -12,9 +12,10 @@
     </object>
     <object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
       <bool key="EncodedWithXMLCoder">YES</bool>
+      <integer value="2"/>
+      <integer value="2197"/>
+      <integer value="2416"/>
       <integer value="3568"/>
-      <integer value="21"/>
-      <integer value="2417"/>
     </object>
     <object class="NSArray" key="IBDocument.PluginDependencies">
       <bool key="EncodedWithXMLCoder">YES</bool>
@@ -74,7 +75,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">stop_blue</string>
+                  <string key="NSResourceName">stop_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <object class="NSMutableString" key="NSKeyEquivalent">
@@ -104,7 +105,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">next_blue</string>
+                  <string key="NSResourceName">next_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <string key="NSKeyEquivalent"/>
@@ -160,7 +161,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">playlistdrawer_blue</string>
+                  <string key="NSResourceName">playlistdrawer_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <object class="NSMutableString" key="NSKeyEquivalent">
@@ -190,7 +191,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">previous_blue</string>
+                  <string key="NSResourceName">previous_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <object class="NSMutableString" key="NSKeyEquivalent">
@@ -274,7 +275,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">equalizerdrawer_blue</string>
+                  <string key="NSResourceName">equalizerdrawer_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <object class="NSMutableString" key="NSKeyEquivalent">
@@ -2940,7 +2941,7 @@
         <string key="NSClassName">VLCEqualizer</string>
       </object>
       <object class="NSCustomView" id="593327595">
-        <nil key="NSNextResponder"/>
+        <reference key="NSNextResponder"/>
         <int key="NSvFlags">274</int>
         <object class="NSMutableArray" key="NSSubviews">
           <bool key="EncodedWithXMLCoder">YES</bool>
@@ -2967,11 +2968,10 @@
                       <reference key="NSSuperview" ref="576307303"/>
                       <reference key="NSTableView" ref="23448837"/>
                     </object>
-                    <object class="_NSCornerView" key="NSCornerView" id="617495504">
-                      <reference key="NSNextResponder" ref="915491793"/>
+                    <object class="_NSCornerView" key="NSCornerView">
+                      <nil key="NSNextResponder"/>
                       <int key="NSvFlags">-2147483392</int>
                       <string key="NSFrame">{{-26, 0}, {16, 17}}</string>
-                      <reference key="NSSuperview" ref="915491793"/>
                     </object>
                     <object class="NSMutableArray" key="NSTableColumns">
                       <bool key="EncodedWithXMLCoder">YES</bool>
@@ -3166,7 +3166,6 @@
                 <reference key="NSBGColor" ref="885475112"/>
                 <int key="NScvFlags">4</int>
               </object>
-              <reference ref="617495504"/>
             </object>
             <string key="NSFrame">{{0, 30}, {576, 51}}</string>
             <reference key="NSSuperview" ref="593327595"/>
@@ -3218,7 +3217,7 @@
               </object>
               <object class="NSCustomResource" key="NSAlternateImage">
                 <string key="NSClassName">NSImage</string>
-                <string key="NSResourceName">add_embedded_blue</string>
+                <string key="NSResourceName">add_embedded_graphite</string>
               </object>
               <string key="NSAlternateContents"/>
               <string key="NSKeyEquivalent"/>
@@ -3317,7 +3316,7 @@
               </object>
               <object class="NSCustomResource" key="NSAlternateImage">
                 <string key="NSClassName">NSImage</string>
-                <string key="NSResourceName">repeat_single_embedded_blue</string>
+                <string key="NSResourceName">repeat_single_embedded_graphite</string>
               </object>
               <string key="NSAlternateContents"/>
               <string key="NSKeyEquivalent"/>
@@ -3345,7 +3344,7 @@
               </object>
               <object class="NSCustomResource" key="NSAlternateImage">
                 <string key="NSClassName">NSImage</string>
-                <string key="NSResourceName">shuffle_embedded_blue</string>
+                <string key="NSResourceName">shuffle_embedded_graphite</string>
               </object>
               <string key="NSAlternateContents"/>
               <string key="NSKeyEquivalent"/>
@@ -3355,6 +3354,7 @@
           </object>
         </object>
         <string key="NSFrameSize">{576, 81}</string>
+        <reference key="NSSuperview"/>
         <string key="NSClassName">VLBrushedMetalImageView</string>
         <string key="NSExtension">NSImageView</string>
       </object>
@@ -3399,7 +3399,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">pause_embedded_blue</string>
+                  <string key="NSResourceName">pause_embedded_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <string key="NSKeyEquivalent"/>
@@ -3427,7 +3427,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">skip_previous_embedded_blue</string>
+                  <string key="NSResourceName">skip_previous_embedded_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <object class="NSMutableString" key="NSKeyEquivalent">
@@ -3457,7 +3457,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">skip_forward_embedded_blue</string>
+                  <string key="NSResourceName">skip_forward_embedded_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <object class="NSMutableString" key="NSKeyEquivalent">
@@ -3543,7 +3543,7 @@
                 </object>
                 <object class="NSCustomResource" key="NSAlternateImage">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">fullscreen_blue</string>
+                  <string key="NSResourceName">fullscreen_graphite</string>
                 </object>
                 <string key="NSAlternateContents"/>
                 <object class="NSMutableString" key="NSKeyEquivalent">
@@ -4484,7 +4484,7 @@
               </object>
               <object class="NSCustomResource" key="NSAlternateImage">
                 <string key="NSClassName">NSImage</string>
-                <string key="NSResourceName">skip_previous_blue</string>
+                <string key="NSResourceName">skip_previous_graphite</string>
               </object>
               <string key="NSAlternateContents"/>
               <object class="NSMutableString" key="NSKeyEquivalent">
@@ -4514,7 +4514,7 @@
               </object>
               <object class="NSCustomResource" key="NSAlternateImage">
                 <string key="NSClassName">NSImage</string>
-                <string key="NSResourceName">play_blue</string>
+                <string key="NSResourceName">play_graphite</string>
               </object>
               <string key="NSAlternateContents"/>
               <string key="NSKeyEquivalent"/>
@@ -4542,7 +4542,7 @@
               </object>
               <object class="NSCustomResource" key="NSAlternateImage">
                 <string key="NSClassName">NSImage</string>
-                <string key="NSResourceName">skip_forward_blue</string>
+                <string key="NSResourceName">skip_forward_graphite</string>
               </object>
               <string key="NSAlternateContents"/>
               <object class="NSMutableString" key="NSKeyEquivalent">
@@ -15774,12 +15774,12 @@ LCAuLi4</string>
         <string>NSMenuMixedState</string>
         <string>NSSwitch</string>
         <string>add_embedded</string>
-        <string>add_embedded_blue</string>
+        <string>add_embedded_graphite</string>
         <string>display_left</string>
         <string>display_middle</string>
         <string>display_right</string>
         <string>equalizerdrawer_active</string>
-        <string>equalizerdrawer_blue</string>
+        <string>equalizerdrawer_graphite</string>
         <string>fs_background</string>
         <string>fs_exit_fullscreen</string>
         <string>fs_forward</string>
@@ -15792,31 +15792,31 @@ LCAuLi4</string>
         <string>fs_volume_mute</string>
         <string>fs_volume_slider_bar</string>
         <string>fullscreen_active</string>
-        <string>fullscreen_blue</string>
+        <string>fullscreen_graphite</string>
         <string>next_active</string>
-        <string>next_blue</string>
+        <string>next_graphite</string>
         <string>pause_embedded</string>
-        <string>pause_embedded_blue</string>
+        <string>pause_embedded_graphite</string>
         <string>play</string>
-        <string>play_blue</string>
+        <string>play_graphite</string>
         <string>playlistdrawer_active</string>
-        <string>playlistdrawer_blue</string>
+        <string>playlistdrawer_graphite</string>
         <string>previous_active</string>
-        <string>previous_blue</string>
+        <string>previous_graphite</string>
         <string>repeat_embedded</string>
-        <string>repeat_single_embedded_blue</string>
+        <string>repeat_single_embedded_graphite</string>
         <string>shuffle_embedded</string>
-        <string>shuffle_embedded_blue</string>
+        <string>shuffle_embedded_graphite</string>
         <string>skip_forward_active</string>
         <string>skip_forward_active_embedded</string>
-        <string>skip_forward_blue</string>
-        <string>skip_forward_embedded_blue</string>
+        <string>skip_forward_embedded_graphite</string>
+        <string>skip_forward_graphite</string>
         <string>skip_previous_active</string>
         <string>skip_previous_active_embedded</string>
-        <string>skip_previous_blue</string>
-        <string>skip_previous_embedded_blue</string>
+        <string>skip_previous_embedded_graphite</string>
+        <string>skip_previous_graphite</string>
         <string>stop</string>
-        <string>stop_blue</string>
+        <string>stop_graphite</string>
         <string>volume_high</string>
         <string>volume_low</string>
       </object>
@@ -15827,12 +15827,12 @@ LCAuLi4</string>
         <string>{7, 2}</string>
         <string>{15, 15}</string>
         <string>{33, 20}</string>
-        <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{8, 36}</string>
         <string>{8, 36}</string>
         <string>{8, 36}</string>
         <string>{33, 20}</string>
-        <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{549, 87}</string>
         <string>{26, 20}</string>
         <string>{43, 19}</string>
@@ -15845,31 +15845,31 @@ LCAuLi4</string>
         <string>{7, 11}</string>
         <string>{95, 2}</string>
         <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{33, 20}</string>
-        <string>{33, 20}</string>
-        <string>{33, 20}</string>
-        <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{39, 39}</string>
-        <string>{39, 39}</string>
+        <string>{128, 128}</string>
         <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{33, 20}</string>
-        <string>{33, 20}</string>
-        <string>{33, 20}</string>
-        <string>{33, 20}</string>
-        <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{31, 31}</string>
         <string>{33, 20}</string>
+        <string>{128, 128}</string>
+        <string>{128, 128}</string>
         <string>{31, 31}</string>
         <string>{33, 20}</string>
-        <string>{31, 31}</string>
+        <string>{128, 128}</string>
+        <string>{128, 128}</string>
         <string>{33, 20}</string>
-        <string>{31, 31}</string>
-        <string>{33, 20}</string>
-        <string>{33, 20}</string>
-        <string>{33, 20}</string>
+        <string>{128, 128}</string>
         <string>{13, 13}</string>
         <string>{6, 11}</string>
       </object>

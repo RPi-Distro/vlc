@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 25fcd90fe60fa31b0669cdf51f42a11046c15de2 $
+ * $Id: 14c5e0580589cd001c711c3850e8ad0cf00d2839 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -289,20 +289,20 @@ int OpenEncoder( vlc_object_t *p_this )
     p_context->dsp_mask = 0;
     if( !(i_cpu & CPU_CAPABILITY_MMX) )
     {
-        p_context->dsp_mask |= FF_MM_MMX;
+        p_context->dsp_mask |= AV_CPU_FLAG_MMX;
     }
     if( !(i_cpu & CPU_CAPABILITY_MMXEXT) )
     {
-        p_context->dsp_mask |= FF_MM_MMXEXT;
+        p_context->dsp_mask |= AV_CPU_FLAG_MMX2;
     }
     if( !(i_cpu & CPU_CAPABILITY_3DNOW) )
     {
-        p_context->dsp_mask |= FF_MM_3DNOW;
+        p_context->dsp_mask |= AV_CPU_FLAG_3DNOW;
     }
     if( !(i_cpu & CPU_CAPABILITY_SSE) )
     {
-        p_context->dsp_mask |= FF_MM_SSE;
-        p_context->dsp_mask |= FF_MM_SSE2;
+        p_context->dsp_mask |= AV_CPU_FLAG_SSE;
+        p_context->dsp_mask |= AV_CPU_FLAG_SSE2;
     }
 
     config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
@@ -397,7 +397,7 @@ int OpenEncoder( vlc_object_t *p_this )
             return VLC_EGENERIC;
         }
 
-        p_context->codec_type = CODEC_TYPE_VIDEO;
+        p_context->codec_type = AVMEDIA_TYPE_VIDEO;
 
         p_context->width = p_enc->fmt_in.video.i_width;
         p_context->height = p_enc->fmt_in.video.i_height;
@@ -516,12 +516,12 @@ int OpenEncoder( vlc_object_t *p_this )
 
         if( p_sys->i_qmin > 0 )
         {
-            p_context->mb_qmin = p_context->qmin = p_sys->i_qmin;
+            p_context->qmin = p_sys->i_qmin;
             p_context->mb_lmin = p_context->lmin = p_sys->i_qmin * FF_QP2LAMBDA;
         }
         if( p_sys->i_qmax > 0 )
         {
-            p_context->mb_qmax = p_context->qmax = p_sys->i_qmax;
+            p_context->qmax = p_sys->i_qmax;
             p_context->mb_lmax = p_context->lmax = p_sys->i_qmax * FF_QP2LAMBDA;
         }
         p_context->max_qdiff = 3;
@@ -551,7 +551,7 @@ int OpenEncoder( vlc_object_t *p_this )
         if( i_codec_id == CODEC_ID_MP3 && p_enc->fmt_in.audio.i_channels > 2 )
             p_enc->fmt_in.audio.i_channels = 2;
 
-        p_context->codec_type  = CODEC_TYPE_AUDIO;
+        p_context->codec_type  = AVMEDIA_TYPE_AUDIO;
         p_context->sample_fmt  = p_codec->sample_fmts ?
                                     p_codec->sample_fmts[0] :
                                     SAMPLE_FMT_S16;
@@ -593,20 +593,20 @@ int OpenEncoder( vlc_object_t *p_this )
            /* Check that we don't overrun users qmin/qmax values */
            if( !var_GetInteger( p_enc, ENC_CFG_PREFIX "qmin" ) )
            {
-              p_context->mb_qmin = p_context->qmin = 10;
+              p_context->qmin = 10;
               p_context->mb_lmin = p_context->lmin = 10 * FF_QP2LAMBDA;
            }
 
            if( !var_GetInteger( p_enc, ENC_CFG_PREFIX "qmax" ) )
            {
-              p_context->mb_qmax = p_context->qmax = 42;
+              p_context->qmax = 42;
               p_context->mb_lmax = p_context->lmax = 42 * FF_QP2LAMBDA;
            }
 
         } else {
            if( !var_GetInteger( p_enc, ENC_CFG_PREFIX "qmin" ) )
            {
-              p_context->mb_qmin = p_context->qmin = 1;
+              p_context->qmin = 1;
               p_context->mb_lmin = p_context->lmin = FF_QP2LAMBDA;
            }
         }

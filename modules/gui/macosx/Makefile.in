@@ -110,7 +110,8 @@ am__objects_2 = libmacosx_plugin_la-AppleRemote.lo \
 	libmacosx_plugin_la-sidebarview.lo \
 	libmacosx_plugin_la-sidestatusview.lo \
 	libmacosx_plugin_la-fspanel.lo libmacosx_plugin_la-eyetv.lo \
-	$(am__objects_1)
+	libmacosx_plugin_la-SPInvocationGrabbing.lo \
+	libmacosx_plugin_la-SPMediaKeyTap.lo $(am__objects_1)
 am_libmacosx_plugin_la_OBJECTS = $(am__objects_2)
 nodist_libmacosx_plugin_la_OBJECTS =
 libmacosx_plugin_la_OBJECTS = $(am_libmacosx_plugin_la_OBJECTS) \
@@ -756,6 +757,10 @@ SOURCES_macosx = \
 	fspanel.h \
 	eyetv.h \
 	eyetv.m \
+	SPInvocationGrabbing.h \
+	SPInvocationGrabbing.m \
+	SPMediaKeyTap.h \
+	SPMediaKeyTap.m \
 	$(NULL)
 
 
@@ -845,6 +850,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-AppleRemote.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-SPInvocationGrabbing.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-SPMediaKeyTap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-about.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-applescript.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-bookmarks.Plo@am__quote@
@@ -1102,6 +1109,22 @@ libmacosx_plugin_la-eyetv.lo: eyetv.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='eyetv.m' object='libmacosx_plugin_la-eyetv.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-eyetv.lo `test -f 'eyetv.m' || echo '$(srcdir)/'`eyetv.m
+
+libmacosx_plugin_la-SPInvocationGrabbing.lo: SPInvocationGrabbing.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-SPInvocationGrabbing.lo -MD -MP -MF $(DEPDIR)/libmacosx_plugin_la-SPInvocationGrabbing.Tpo -c -o libmacosx_plugin_la-SPInvocationGrabbing.lo `test -f 'SPInvocationGrabbing.m' || echo '$(srcdir)/'`SPInvocationGrabbing.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmacosx_plugin_la-SPInvocationGrabbing.Tpo $(DEPDIR)/libmacosx_plugin_la-SPInvocationGrabbing.Plo
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='SPInvocationGrabbing.m' object='libmacosx_plugin_la-SPInvocationGrabbing.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-SPInvocationGrabbing.lo `test -f 'SPInvocationGrabbing.m' || echo '$(srcdir)/'`SPInvocationGrabbing.m
+
+libmacosx_plugin_la-SPMediaKeyTap.lo: SPMediaKeyTap.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-SPMediaKeyTap.lo -MD -MP -MF $(DEPDIR)/libmacosx_plugin_la-SPMediaKeyTap.Tpo -c -o libmacosx_plugin_la-SPMediaKeyTap.lo `test -f 'SPMediaKeyTap.m' || echo '$(srcdir)/'`SPMediaKeyTap.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmacosx_plugin_la-SPMediaKeyTap.Tpo $(DEPDIR)/libmacosx_plugin_la-SPMediaKeyTap.Plo
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='SPMediaKeyTap.m' object='libmacosx_plugin_la-SPMediaKeyTap.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-SPMediaKeyTap.lo `test -f 'SPMediaKeyTap.m' || echo '$(srcdir)/'`SPMediaKeyTap.m
 
 mostlyclean-libtool:
 	-rm -f *.lo

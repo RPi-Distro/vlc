@@ -635,7 +635,7 @@ void Private_URLNotify(NPP instance, const char* url,
                        NPReason reason, void* notifyData);
 void Private_Print(NPP instance, NPPrint* platformPrint);
 NPError Private_GetValue(NPP instance, NPPVariable variable, void *r_value);
-NPError Private_SetValue(NPP instance, NPPVariable variable, void *r_value);
+NPError Private_SetValue(NPP instance, NPNVariable variable, void *r_value);
 #ifdef OJI
 JRIGlobalRef Private_GetJavaClass(void);
 #endif
@@ -736,7 +736,7 @@ Private_GetValue(NPP instance, NPPVariable variable, void *r_value)
 }
 
 NPError
-Private_SetValue(NPP instance, NPPVariable variable, void *r_value)
+Private_SetValue(NPP instance, NPNVariable variable, void *r_value)
 {
     PLUGINDEBUGSTR("SetValue");
     return NPP_SetValue(instance, variable, r_value);
@@ -782,7 +782,7 @@ NP_GetMIMEDescription(void)
 NPError
 NP_GetValue(void* future, NPPVariable variable, void *value)
 {
-    return NPP_GetValue(future, variable, value);
+    return NPP_GetValue((NPP)future, variable, value);
 }
 
 /*

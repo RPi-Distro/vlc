@@ -2,7 +2,7 @@
  * embeddedwindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id: 395023dc55d7a991bd3fc08d06a5b91ad798efa5 $
+ * $Id: 9db6c226859e67d2c2ec857e1583cc0ac662bb44 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -78,12 +78,6 @@
     o_img_play = [NSImage imageNamed: @"play_embedded"];
     o_img_pause = [NSImage imageNamed: @"pause_embedded"];
 
-    [self controlTintChanged];
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector( controlTintChanged )
-                                                 name: NSControlTintDidChangeNotification
-                                               object: nil];
-
     /* Set color of sidebar to Leopard's "Sidebar Blue" */
     [o_sidebar_list setBackgroundColor: [NSColor colorWithCalibratedRed:0.820
                                                                   green:0.843
@@ -141,6 +135,10 @@
                                      view_rect.size.width,
                                      view_rect.size.height )];
     }
+
+    /* we don't want this window to be restored on relaunch */
+    if ([self respondsToSelector:@selector(setRestorable:)])
+        [self setRestorable:NO];
 }
 
 - (void)controlTintChanged
@@ -431,22 +429,24 @@
     vout_thread_t *p_vout = getVout();
     BOOL blackout_other_displays = config_GetInt( VLCIntf, "macosx-black" );
 
-    screen = [NSScreen screenWithDisplayID:(CGDirectDisplayID)var_GetInteger( p_vout, "video-device" )];
+    if( p_vout )
+        screen = [NSScreen screenWithDisplayID:(CGDirectDisplayID)var_GetInteger( p_vout, "video-device" )];
 
     [self lockFullscreenAnimation];
 
     if (!screen)
     {
-        msg_Dbg( p_vout, "chosen screen isn't present, using current screen for fullscreen mode" );
+        msg_Dbg( VLCIntf, "chosen screen isn't present, using current screen for fullscreen mode" );
         screen = [self screen];
     }
     if (!screen)
     {
-        msg_Dbg( p_vout, "Using deepest screen" );
+        msg_Dbg( VLCIntf, "Using deepest screen" );
         screen = [NSScreen deepestScreen];
     }
 
-    vlc_object_release( p_vout );
+    if( p_vout )
+        vlc_object_release( p_vout );
 
     screen_rect = [screen frame];
 

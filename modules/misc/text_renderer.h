@@ -2,7 +2,7 @@
  * text_renderer.h: common text renderer code
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 319f82246b1e0ab1aa5a48711669d7cbe4c095bf $
+ * $Id: 56f81c0dc656fbe30713c5b51b95646d45ca6530 $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *          Laurent Aimar < fenrir AT videolan DOT org >
@@ -545,7 +545,7 @@ static int ProcessNodes( filter_t *p_filter,
         if( p_font_style->i_style_flags & STYLE_STRIKEOUT )
             b_through = true;
     }
-#ifdef HAVE_FONTCONFIG
+#ifdef HAVE_STYLES
     else
     {
         rv = PushFont( &p_fonts,

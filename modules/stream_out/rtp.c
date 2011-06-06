@@ -1663,6 +1663,7 @@ static void* ThreadSend( void *data )
             switch( net_errno )
             {
                 /* Soft errors (e.g. ICMP): */
+                case EPERM:        /* Prohibited */
                 case ECONNREFUSED: /* Port unreachable */
                 case ENOPROTOOPT:
 #ifdef EPROTO

@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: a3ad19717753ea5bedc745de3e614a7c67a2ef2a $
+ * $Id: 32f6c496f2935f9a97ee18e8da319121b51bdaba $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -564,6 +564,10 @@ WId MainInterface::getVideo( int *pi_x, int *pi_y,
 void MainInterface::getVideoSlot( WId *p_id, int *pi_x, int *pi_y,
                                   unsigned *pi_width, unsigned *pi_height )
 {
+    /* Hidden or minimized, activate */
+    if( isHidden() || isMinimized() )
+        toggleUpdateSystrayMenu();
+
     /* Request the videoWidget */
     WId ret = videoWidget->request( pi_x, pi_y,
                                     pi_width, pi_height, !b_autoresize );
@@ -659,8 +663,8 @@ void MainInterface::setVideoOnTop( bool on_top )
         newflags = oldflags | Qt::WindowStaysOnTopHint;
     else
         newflags = oldflags & ~Qt::WindowStaysOnTopHint;
+    if( newflags != oldflags && !b_videoFullScreen )
 
-    if( newflags != oldflags )
     {
         setWindowFlags( newflags );
         show(); /* necessary to apply window flags */

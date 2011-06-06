@@ -2,7 +2,7 @@
  * video.c: video decoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: c40fc94579677c3166469dca8e45baa24652c039 $
+ * $Id: d0b90c9bb85f625528513a218d1f8f941bde51a4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -201,8 +201,8 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
     if( ( p_dec->p_sys = p_sys = calloc( 1, sizeof(decoder_sys_t) ) ) == NULL )
         return VLC_ENOMEM;
 
-    p_codec->type = CODEC_TYPE_VIDEO;
-    p_context->codec_type = CODEC_TYPE_VIDEO;
+    p_codec->type = AVMEDIA_TYPE_VIDEO;
+    p_context->codec_type = AVMEDIA_TYPE_VIDEO;
     p_context->codec_id = i_codec_id;
     p_sys->p_context = p_context;
     p_sys->p_codec = p_codec;
@@ -547,9 +547,18 @@ picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         picture_t *p_pic;
 
         p_sys->p_ff_pic->pts = p_sys->input_pts;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,23,0)
+        AVPacket pkt;
+        av_init_packet( &pkt );
+        pkt.data = p_block->p_buffer;
+        pkt.size = p_block->i_buffer;
+        i_used = avcodec_decode_video2( p_sys->p_context, p_sys->p_ff_pic,
+                                        &b_gotpicture, &pkt );
+#else
         i_used = avcodec_decode_video( p_sys->p_context, p_sys->p_ff_pic,
                                        &b_gotpicture,
                                        p_block->i_buffer <= 0 && p_sys->b_flush ? NULL : p_block->p_buffer, p_block->i_buffer );
+#endif
 
         if( b_null_size && p_sys->p_context->width > 0 &&
             p_sys->p_context->height > 0 &&
@@ -559,9 +568,14 @@ picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
             b_null_size = false;
             if( p_sys->b_hurry_up )
                 p_sys->p_context->skip_frame = p_sys->i_skip_frame;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,23,0)
+            i_used = avcodec_decode_video2( p_sys->p_context, p_sys->p_ff_pic,
+                                            &b_gotpicture, &pkt );
+#else
             i_used = avcodec_decode_video( p_sys->p_context, p_sys->p_ff_pic,
                                            &b_gotpicture, p_block->p_buffer,
                                            p_block->i_buffer );
+#endif
         }
 
         if( p_sys->b_flush )

@@ -2,7 +2,7 @@
  * about.m: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: d56ed7f59ed5596f9c8194b6e5e57c188e56100b $
+ * $Id: e0ebf78c6aff8e839baba1a31f1c507489e47c13 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -57,7 +57,7 @@ static VLAboutBox *_o_sharedInstance = nil;
     } else {
         _o_sharedInstance = [super init];
     }
- 
+
     return _o_sharedInstance;
 }
 
@@ -68,8 +68,8 @@ static VLAboutBox *_o_sharedInstance = nil;
 }
 
 /*****************************************************************************
-* VLC About Window
-*****************************************************************************/
+ * VLC About Window
+ *****************************************************************************/
 
 - (void)showAbout
 {
@@ -92,18 +92,26 @@ static VLAboutBox *_o_sharedInstance = nil;
         [o_about_window setTitle: _NS("About VLC media player")];
 
         /* setup the creator / revision field */
+        NSString *compiler;
+#ifdef __clang__
+        compiler = [NSString stringWithFormat:@"clang %s", __clang_version__];
+#elif __llvm__
+        compiler = [NSString stringWithFormat:@"llvm-gcc %s", __VERSION__];
+#else
+        compiler = [NSString stringWithFormat:@"gcc %s", __VERSION__];
+#endif
         [o_revision_field setStringValue: 
-            [NSString stringWithFormat: _NS("Compiled by %s"), VLC_CompileBy()]];
- 
+         [NSString stringWithFormat: _NS("Compiled by %s with %@"), VLC_CompileBy(), compiler]];
+
         /* Setup the nameversion field */
         [o_name_version_field setStringValue: [NSString stringWithFormat:@"Version %s (%s)", VLC_Version(), PLATFORM]];
 
         /* setup the authors and thanks field */
         [o_credits_textview setString: [NSString stringWithFormat: @"%@\n\n\n\n%@\n%@\n\n%@", 
-                                            _NS(INTF_ABOUT_MSG), 
-                                            _NS("VLC was brought to you by:"),
-                                            [NSString stringWithUTF8String: psz_authors], 
-                                            [NSString stringWithUTF8String: psz_thanks]]];
+                                        _NS(INTF_ABOUT_MSG), 
+                                        _NS("VLC was brought to you by:"),
+                                        [NSString stringWithUTF8String: psz_authors], 
+                                        [NSString stringWithUTF8String: psz_thanks]]];
 
         /* Setup the window */
         [o_credits_textview setDrawsBackground: NO];
@@ -115,7 +123,7 @@ static VLAboutBox *_o_sharedInstance = nil;
         
         b_isSetUp = YES;
     }
- 
+
     /* Show the window */
     b_restart = YES;
     [o_credits_textview scrollPoint:NSMakePoint( 0, 0 )];
@@ -151,15 +159,21 @@ static VLAboutBox *_o_sharedInstance = nil;
     {
         /* Scroll to the position */
         [o_credits_textview scrollPoint:NSMakePoint( 0, f_current )];
- 
+
         /* Increment the scroll position */
         f_current += 0.005;
- 
+
         /* If at end, restart at the top */
         if( f_current >= f_end )
         {
-            [o_credits_textview scrollPoint:NSMakePoint( 0, 0 )];
-            b_restart = YES;
+            /* f_end may be wrong on first run, so don't trust it too much */
+            if( f_end == [o_credits_textview bounds].size.height - [o_credits_scrollview bounds].size.height ) 
+            {
+                b_restart = YES;
+                [o_credits_textview scrollPoint:NSMakePoint( 0, 0 )];
+            }
+            else
+                f_end = [o_credits_textview bounds].size.height - [o_credits_scrollview bounds].size.height;
         }
     }
 }
@@ -171,8 +185,8 @@ static VLAboutBox *_o_sharedInstance = nil;
 }
 
 /*****************************************************************************
-* VLC GPL Window, action called from the about window and the help menu
-*****************************************************************************/
+ * VLC GPL Window, action called from the about window and the help menu
+ *****************************************************************************/
 
 - (IBAction)showGPL:(id)sender
 {
@@ -184,8 +198,8 @@ static VLAboutBox *_o_sharedInstance = nil;
 }
 
 /*****************************************************************************
-* VLC Generic Help Window
-*****************************************************************************/
+ * VLC Generic Help Window
+ *****************************************************************************/
 
 - (void)showHelp
 {
@@ -195,7 +209,7 @@ static VLAboutBox *_o_sharedInstance = nil;
     [o_help_home_btn setToolTip: _NS("Index")];
 
     [o_help_window makeKeyAndOrderFront: self];
-    
+
     [[o_help_web_view mainFrame] loadHTMLString: _NS(I_LONGHELP)
                                         baseURL: [NSURL URLWithString:@"http://videolan.org"]];
 }

@@ -2,7 +2,7 @@
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: d72291443307eb8d903004475bc82bbee754d1d7 $
+ * $Id: 0f887ef8912e89ce8d4cbb78a460442651a34ffb $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -649,12 +649,7 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
 
     vout.clear();
 
-#ifdef Q_WS_X11
-    setWindowFlags( Qt::Window | Qt::FramelessWindowHint );
-    setWindowModality( Qt::ApplicationModal );
-#else
     setWindowFlags( Qt::ToolTip );
-#endif
     setMinimumWidth( 600 );
 
     setFrameShape( QFrame::StyledPanel );
@@ -682,6 +677,7 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
 #if HAVE_TRANSPARENCY
     p_slowHideTimer = new QTimer( this );
     CONNECT( p_slowHideTimer, timeout(), this, slowHideFSC() );
+    f_opacity = var_InheritFloat( p_intf, "qt-fs-opacity" );
 #endif
 
     vlc_mutex_init_recursive( &lock );
@@ -750,7 +746,7 @@ void FullscreenControllerWidget::showFSC()
     }
 
 #if HAVE_TRANSPARENCY
-    setWindowOpacity( var_InheritFloat( p_intf, "qt-fs-opacity" )  );
+    setWindowOpacity( f_opacity );
 #endif
 
 #ifdef Q_WS_X11
@@ -911,7 +907,7 @@ void FullscreenControllerWidget::enterEvent( QEvent *event )
     p_hideTimer->stop();
 #if HAVE_TRANSPARENCY
     p_slowHideTimer->stop();
-    setWindowOpacity( DEFAULT_OPACITY );
+    setWindowOpacity( f_opacity );
 #endif
     event->accept();
 }
