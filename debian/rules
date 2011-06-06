@@ -136,7 +136,7 @@ confflags += --enable-svgalib
 endif
 
 %:
-	dh --with autoreconf $@ --parallel
+	dh $@ --parallel --with autoreconf
 
 override_dh_auto_clean:
 	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak \
