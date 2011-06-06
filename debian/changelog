@@ -2,19 +2,22 @@ vlc (1.1.10-1) UNRELEASED; urgency=low
 
   [ Benjamin Drung ]
   * New upstream release.
-    - Added smb as supported protocol to .desktop file (Closes: #622879,
-      LP: #737192)
+    - Improve .desktop file:
+      - Add smb as supported protocol (Closes: #622879, LP: #737192)
+      - add video/webm to supported MIME formats (LP: #769463)
     - Fix libdvdread errors while playing ogg files (Closes: #622935)
     - Support three channels in pulseaudio output plugin (LP: 743478)
     - PulseAudio output re-written due to unstability of the current one
       (LP: #743323)
     - Fix crashes (LP: #754497, #785979)
+  * Refresh patches.
+  * Drop as-needed patch due to autoreconf run.
 
   [ Reinhard Tartler ]
   * run autoreconf on the buildds
   * Weaken dependencies on libschroedinger
 
- -- Benjamin Drung <bdrung@debian.org>  Mon, 06 Jun 2011 23:15:12 +0200
+ -- Benjamin Drung <bdrung@debian.org>  Mon, 06 Jun 2011 23:50:18 +0200
 
 vlc (1.1.9-1) unstable; urgency=medium
 
