@@ -1,3 +1,11 @@
+vlc (1.1.3-1squeeze6) stable-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Fix integer overflow in demux/playlist/xspf.c leading to heap
+    overflow (CVE-2011-2194). 
+
+ -- Nico Golde <nion@debian.org>  Wed, 08 Jun 2011 21:38:25 +0000
+
 vlc (1.1.3-1squeeze5) stable-security; urgency=high
 
   * Non-maintainer upload by the Security Team.
