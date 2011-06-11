@@ -1,3 +1,17 @@
+vlc (1.0.6-1ubuntu1.6) lucid-security; urgency=low
+
+  * SECURITY UPDATE: arbitrary code execution via crafted width
+    - debian/patches/CVE-2010-327x.patch: limit video size to 8192x8192 in
+      src/video_output/video_output.c.
+    - CVE-2010-3275
+    - CVE-2010-3276
+  * SECURITY UPDATE: arbitrary code execution via mp4 file (LP: #756368)
+    - debian/patches/CVE-2011-1684.patch: fix buffer overflow in
+      modules/demux/mp4/libmp4.c.
+    - CVE-2011-1684
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Wed, 13 Apr 2011 23:27:23 -0400
+
 vlc (1.0.6-1ubuntu1.5) lucid-security; urgency=low
 
   * SECURITY UPDATE: memory corruption, code execution (LP: #714089)
