@@ -1,7 +1,8 @@
-vlc (1.1.10-1) UNRELEASED; urgency=low
+vlc (1.1.10-1) unstable; urgency=high
 
   [ Benjamin Drung ]
   * New upstream release.
+    - Security: Fix XSPF integer overflow (CVE-2011-2194) (LP: #795410)
     - Improve .desktop file:
       - Add smb as supported protocol (Closes: #622879, LP: #737192)
       - add video/webm to supported MIME formats (LP: #769463)
@@ -11,15 +12,18 @@ vlc (1.1.10-1) UNRELEASED; urgency=low
       (LP: #743323)
     - Fix crashes (LP: #754497, #785979)
     - Qt: allow drag and drop of any URL, not just a local file (LP: #664030)
+    - Fix libvlcplugin.so: undefined symbol: NPP_Initialize (LP: #722690)
   * Refresh patches.
   * Drop as-needed patch due to autoreconf run.
   * Backport PulseAudio build fix.
+  * Add GNOME MIME types for Ogg Vorbis and Ogg Theora (Closes: #629619).
+  * Mention potcast support in package description (Closes: #488771).
 
   [ Reinhard Tartler ]
   * run autoreconf on the buildds
   * Weaken dependencies on libschroedinger
 
- -- Benjamin Drung <bdrung@debian.org>  Tue, 07 Jun 2011 01:35:42 +0200
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 11 Jun 2011 19:32:24 +0200
 
 vlc (1.1.9-1) unstable; urgency=medium
 
