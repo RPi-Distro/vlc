@@ -1,3 +1,4 @@
 052_as-needed.patch
 200_osdmenu_paths.patch
 xulrunner-1.9.1.patch
+fix-xspf-integer-overflow.patch
