@@ -249,12 +249,29 @@ static void check_crashdump()
                     swprintf( remote_file, L"/crashes-win32/%04d%02d%02d%02d%02d%02d",
                             now.wYear, now.wMonth, now.wDay, now.wHour, now.wMinute, now.wSecond );
 
-                    FtpPutFile( ftp, wdir, remote_file, FTP_TRANSFER_TYPE_BINARY, 0);
+                    if( FtpPutFile( ftp, wdir, remote_file, FTP_TRANSFER_TYPE_BINARY, 0) )
+                        MessageBox( NULL, L"Report sent correctly. Thanks a lot for the help.",
+                                    L"Report sent", MB_OK);
+                    else
+                        MessageBox( NULL, L"There was an error while transferring to the FTP server. "\
+                                    "Thanks a lot for the help anyway.",
+                                    L"Report sending failed", MB_OK);
                     InternetCloseHandle(ftp);
                 }
                 else
+                {
+                    MessageBox( NULL, L"There was an error while connecting to the FTP server. "\
+                                    "Thanks a lot for the help anyway.",
+                                    L"Report sending failed", MB_OK);
                     fprintf(stderr,"Can't connect to FTP server%d\n",GetLastError());
+                }
                 InternetCloseHandle(Hint);
+            }
+            else
+            {
+                  MessageBox( NULL, L"There was an error while connecting to Internet. "\
+                                    "Thanks a lot for the help anyway.",
+                                    L"Reporting sending failed", MB_OK);
             }
         }
 
@@ -308,7 +325,7 @@ LONG WINAPI vlc_exception_filter(struct _EXCEPTION_POINTERS *lpExceptionInfo)
         {
             unsigned int i;
             for( i = 0; i < pException->NumberParameters; i++ )
-                fprintf( fd, " | %08x", pException->ExceptionInformation[i] );
+                fwprintf( fd, L" | %08x", pException->ExceptionInformation[i] );
         }
 
         fwprintf( fd, L"\n\n[context]\nEDI:%08x\nESI:%08x\n" \

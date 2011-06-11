@@ -1,3 +1,30 @@
+vlc (1.1.10-1) unstable; urgency=high
+
+  [ Benjamin Drung ]
+  * New upstream release.
+    - Security: Fix XSPF integer overflow (CVE-2011-2194) (LP: #795410)
+    - Improve .desktop file:
+      - Add smb as supported protocol (Closes: #622879, LP: #737192)
+      - add video/webm to supported MIME formats (LP: #769463)
+    - Fix libdvdread errors while playing ogg files (Closes: #622935)
+    - Support three channels in pulseaudio output plugin (LP: 743478)
+    - PulseAudio output re-written due to unstability of the current one
+      (LP: #743323)
+    - Fix crashes (LP: #754497, #785979)
+    - Qt: allow drag and drop of any URL, not just a local file (LP: #664030)
+    - Fix libvlcplugin.so: undefined symbol: NPP_Initialize (LP: #722690)
+  * Refresh patches.
+  * Drop as-needed patch due to autoreconf run.
+  * Backport PulseAudio build fix.
+  * Add GNOME MIME types for Ogg Vorbis and Ogg Theora (Closes: #629619).
+  * Mention potcast support in package description (Closes: #488771).
+
+  [ Reinhard Tartler ]
+  * run autoreconf on the buildds
+  * Weaken dependencies on libschroedinger
+
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 11 Jun 2011 19:32:24 +0200
+
 vlc (1.1.9-1ubuntu1) natty; urgency=low
 
   * Merge from Debian unstable (LP: #760510), remaining changes:

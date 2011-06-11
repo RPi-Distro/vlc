@@ -2,7 +2,7 @@
  * misc.h: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: a27f87cc529a7763bfbc3ef0eea13067d4466c31 $
+ * $Id: 8569d27cd3ce86821012c5c76ab945c578d35cee $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -150,6 +150,5 @@
     NSImage *_knobOn;
     BOOL b_mouse_down;
 }
-- (void)controlTintChanged;
 
 @end

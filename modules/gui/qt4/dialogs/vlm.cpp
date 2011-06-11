@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 9ee946751184aa61612b31416054a7b01e2c82b0 $
+ * $Id: 8347cae2acacb3f7d2714ec8a95a076ff4d1efaf $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -391,7 +391,10 @@ void VLMDialog::selectOutput()
 {
     SoutDialog *s = new SoutDialog( this, p_intf );
     if( s->exec() == QDialog::Accepted )
-        ui.outputLedit->setText( s->getMrl() );
+    {
+        int i = s->getMrl().indexOf( " " );
+        ui.outputLedit->setText( s->getMrl().left( i ) );
+    }
 }
 
 /* Object Modification */

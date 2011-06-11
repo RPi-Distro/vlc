@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: a19b11f1c2e7f66beb32f15551fbd339cc0df315 $
+ * $Id: 70257faac3fea7f726c56764a516d9db532c6379 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -36,6 +36,9 @@
 #include "dialogs_provider.hpp" /* Open Subtitle file */
 #include "util/qt_dirs.hpp"
 #include <vlc_intf_strings.h>
+#ifdef WIN32
+  #include <vlc_charset.h> /* FromWide for Win32 */
+#endif
 
 #include <QFileDialog>
 #include <QDialogButtonBox>
@@ -295,16 +298,26 @@ DiscOpenPanel::DiscOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
     ui.deviceCombo->setToolTip( qtr(I_DEVICE_TOOLTIP) );
 
 #ifdef WIN32 /* Disc drives probing for Windows */
-    char szDrives[512];
+    wchar_t szDrives[512];
     szDrives[0] = '\0';
-    if( GetLogicalDriveStringsA( sizeof( szDrives ) - 1, szDrives ) )
+    if( GetLogicalDriveStringsW( sizeof( szDrives ) - 1, szDrives ) )
     {
-        char *drive = szDrives;
+        wchar_t *drive = szDrives;
         UINT oldMode = SetErrorMode( SEM_FAILCRITICALERRORS );
         while( *drive )
         {
-            if( GetDriveTypeA(drive) == DRIVE_CDROM )
-                ui.deviceCombo->addItem( drive );
+            if( GetDriveTypeW(drive) == DRIVE_CDROM )
+            {
+                wchar_t psz_name[512] = L"";
+                GetVolumeInformationW( drive, psz_name, 511, NULL, NULL, NULL, NULL, 0 );
+
+                QString displayName = FromWide( drive );
+                if( !EMPTY_STR(psz_name) ) {
+                    displayName = displayName + " - "  + FromWide( psz_name );
+                }
+
+                ui.deviceCombo->addItem( displayName, FromWide( drive ) );
+            }
 
             /* go to next drive */
             while( *(drive++) );
@@ -414,17 +427,23 @@ void DiscOpenPanel::updateButtons()
 /* Update the current MRL */
 void DiscOpenPanel::updateMRL()
 {
-    QString mrl = "";
+    QString mrl;
+    QString discPath;
     QStringList fileList;
+
+    if( ui.deviceCombo->itemData( ui.deviceCombo->currentIndex() ) != QVariant::Invalid )
+        discPath = ui.deviceCombo->itemData( ui.deviceCombo->currentIndex() ).toString();
+    else
+        discPath = ui.deviceCombo->currentText();
 
     /* CDDAX and VCDX not implemented. TODO ? No. */
     /* DVD */
     if( ui.dvdRadioButton->isChecked() ) {
         if( !ui.dvdsimple->isChecked() )
-            mrl = "dvd://";
+            mrl = "dvd://" + discPath;
         else
-            mrl = "dvdsimple://";
-        mrl += ui.deviceCombo->currentText();
+            mrl = "dvdsimple://" + discPath;
+
         if( !ui.dvdsimple->isChecked() )
             emit methodChanged( "dvdnav-caching" );
         else
@@ -439,7 +458,7 @@ void DiscOpenPanel::updateMRL()
 
     /* VCD */
     } else if ( ui.vcdRadioButton->isChecked() ) {
-        mrl = "vcd://" + ui.deviceCombo->currentText();
+        mrl = "vcd://" + discPath;
         emit methodChanged( "vcd-caching" );
 
         if( ui.titleSpin->value() > 0 ) {
@@ -448,7 +467,7 @@ void DiscOpenPanel::updateMRL()
 
     /* CDDA */
     } else {
-        mrl = "cdda://" + ui.deviceCombo->currentText();
+        mrl = "cdda://" + discPath;
         emit methodChanged( "cdda-caching" );
     }
 
@@ -1153,7 +1172,7 @@ void CaptureOpenPanel::updateMRL()
 
         mrl += " :dvb-adapter=" + QString::number( dvbCard->value() );
         if( dvbs->isChecked() || dvbc->isChecked() )
-            mrl += " :dvb-srate=" + QString::number( dvbSrate->value() );
+            mrl += " :dvb-srate=" + QString::number( dvbSrate->value() ) + "000";
         else if( dvbt->isChecked() )
             mrl += " :dvb-bandwidth=" +
                 QString::number( dvbBandBox->itemData(

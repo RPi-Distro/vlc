@@ -23,6 +23,7 @@ Alexey Salmin <alexey dot salmin at gmail dot com> - Russian localisation
 Alexis Ballier <aballlier at gentoo dot org> - Additional options in configure
 Alexis de Lattre <alexis at videolan dot org> - Documentation, packaging, IGMPv3 support and various fixes
 Alexis Guillard <alexis.guillard@bt.com> - IPv6 support
+Alfred John - Acoli translation
 Amanpreet Singh Alam <aalam at users dot sf dot net> - Punjabi translation
 Amir Gouini <a.gouini at qiplay dot com> - VLC mozilla plugin event listerners.
 Andrea Guzzo <xant at xant dot net> - dc1394 firewire support
@@ -125,12 +126,14 @@ Espen Skoglund <esk at ira.uka.de> - FreeBSD autoconf and Makefile patches
 Ethan C. Baldridge <BaldridgeE at cadmus.com> - directory browsing code
 Eurodata Computer Club <retron.info> - VLC icon design (v0.8.4)
 Farzaneh Sarafraz <farzaneh at farsiweb dot info> - Persian localisation
+Florence Tushabe - Chiga translation
 Fouzia Bourai <fbourai at cerist dot dz> - Arabic localisation
 François Cartegnie <fcvlcdev at free.fr> - multiple Qt improvements and usability advise
 François Seingier <francois.seingier at club-internet.fr> - TTL setting in the wx stream output dialog
 Frank Chao <frank0624 at gmail.com> - Chinese Traditional translation
 Frans van Veen <f.m.j.c.vanveen at student.hhs.nl> - Mozilla plugin toolbar
 Frédéric Ruget <frederic.ruget@free.fr> - Portaudio audio output
+Friedel Wolff - Afrikaans translation
 Fumio Nakayama <endymion at ca2.so-net.ne.jp> - Japanese translation
 Gabor Kelemen <kelemeng at gnome dot hu> - Hungarian translation
 Gaëtan Rousseaux <garousseau@voo.be> - Walloon translation
@@ -156,7 +159,8 @@ Harry Sintonen <sintonen at iki.fi> - fix for MKV demuxer
 H.Shalitha Vikum <HSVIKUM at sinhalaya dot com> - Sinhala translation
 Heiko Panther <heiko.panther@web.de> - Mac OS X audio device selection framework
 Hugo Beauzée-Luyssen - smem improvements and fixes, invmem, Qt4 and libVLC fixes
-Igor Helman - VLM msecseek command
+Ibrahima Sarr - Peul translation
+igor Helman - VLM msecseek command
 Isaac Osunkunle - <osunkunle - at - gmail d0t com> - Spatializer (GSoc 2007)
 Ivo Ivanov <bestran at mail dot bg> - Bulgarian translation
 James Olweny <sjolweny85 at yahoo dot co dot uk> - Luganda translation
@@ -299,6 +303,8 @@ Sebastien Zwickert (aka dilaroga) <dilaroga chez free> - Multiple Mac OS fixes a
 Shane Harper <shanegh@optusnet.com.au> - SDL fixes, XVideo video output and Gtk+ interface enhancements
 Sidney Doria <ssdoria qt gmail.com> - Brazilian Portuguese localisation
 Simon Damkjær Andersen <simondamkjaer at gmail.com> - playmode icons and the entire Fullscreen Panel design for the OSX GUI (v0.8.6)
+Sipho Sibiya - Zulu translation
+Solomon Gizaw - Amharic translation
 Søren Bøg <avacore at videolan dot org> - dynamicoverlays
 Sreejith P <sreejithpro at gmail dot com> - Malayalam translation
 Srikanth Raju - Chorus flanger audio filter
@@ -340,6 +346,7 @@ Wang Bo <silencewang at msn d0t com> - Real support improvements.
 Watanabe Go <go at dsl.gr.jp> - fix for non-ASCII filenames
 Wei Mingzhi <whistler_wmz at users.sourceforge.net> - Simplied Chinese translation
 William Hawkins - Speex RTP payload format
+Xabier Aramendi - Basque translation
 Xavier Maillard <zedek at fxgsproject.org> - audio converters
 Xavier Marchesini <xav at alarue.net> - Win32 fixes
 Xènia Albà Cantero <xenia_alba at hotmail.com> - Catalan translation

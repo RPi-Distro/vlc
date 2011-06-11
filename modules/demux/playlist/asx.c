@@ -2,7 +2,7 @@
  * asx.c : ASX playlist format import
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: 02e445b3bf31cc1dd367339538f550ec2a965d18 $
+ * $Id: caf85771d9743e63cc197198f26a9287cc66a619 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -439,11 +439,15 @@ static int Demux( demux_t *p_demux )
                     }
                     else continue;
                 }
-                if( ( psz_parse = strcasestr( psz_parse, "/>" ) ) )
-                    psz_parse += 2;
-                else if( ( psz_parse = strcasestr( psz_parse, "</MoreInfo>") ) )
-                    psz_parse += 11;
-                else continue;
+                if( ( psz_backup = strcasestr( psz_parse, "/>" ) ) )
+                    psz_parse = psz_backup + 2;
+                else if( ( psz_backup = strcasestr( psz_parse, "</MoreInfo>") ) )
+                    psz_parse = psz_backup + 11;
+                else
+                {
+                    psz_parse = NULL;
+                    continue;
+                }
             }
             else if( !strncasecmp( psz_parse, "<ABSTRACT>", 10 ) )
             {
@@ -483,7 +487,6 @@ static int Demux( demux_t *p_demux )
                 }
                 if( ( psz_parse = strcasestr( psz_parse, "/>" ) ) )
                     psz_parse += 2;
-                else continue;
             }
             else if( !strncasecmp( psz_parse, "</Entry>", 8 ) )
             {

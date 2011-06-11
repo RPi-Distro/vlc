@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 5346b0a2a4e04f564d91c74228cc45a57bb9bf4d $
+ * $Id: 84c13865e6ff39a95af8403a48579d31562783cc $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -95,10 +95,6 @@ void CloseVideoGL ( vlc_object_t * );
 #define USE_MEDIAKEYS_LONGTEXT N_("By default, VLC can be controlled using the media keys on modern Apple " \
                                   "keyboards.")
 
-#define USE_MEDIAKEYS_BACKGROUND_TEXT N_("Use media key control when VLC is in background")
-#define USE_MEDIAKEYS_BACKGROUND_LONGTEXT N_("By default, VLC will accept media key events also when being " \
-                                                                                            "in background.")
-
 vlc_module_begin ()
     set_description( N_("Mac OS X interface") )
     set_capability( "interface", 200 )
@@ -117,8 +113,6 @@ vlc_module_begin ()
     add_bool( "macosx-appleremote", true, NULL, USE_APPLE_REMOTE_TEXT, USE_APPLE_REMOTE_LONGTEXT,
              false )
     add_bool( "macosx-mediakeys", true, NULL, USE_MEDIAKEYS_TEXT, USE_MEDIAKEYS_LONGTEXT,
-             false )
-    add_bool( "macosx-mediakeys-background", true, NULL, USE_MEDIAKEYS_BACKGROUND_TEXT, USE_MEDIAKEYS_BACKGROUND_LONGTEXT,
              false )
 
     add_submodule ()

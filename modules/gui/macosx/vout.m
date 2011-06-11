@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vout.m: MacOS X video output module
  *****************************************************************************
- * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: d68c415e3ba0184842b42be6b1a91c60df9b350a $
+ * Copyright (C) 2001-2011 the VideoLAN team
+ * $Id: b5a33ff75f33e4427615cf8e753183d2e74838d1 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -52,6 +52,7 @@
 
 #include <vlc_common.h>
 #include <vlc_keys.h>
+#include <vlc_url.h>
 
 /*****************************************************************************
  * DeviceCallback: Callback triggered when the video-device variable is changed
@@ -178,7 +179,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
     if( [o_screens count] <= 0 )
     {
-        msg_Err( p_vout, "no OSX screens available" );
+        msg_Err( VLCIntf, "no OSX screens available" );
         return NO;
     }
 
@@ -300,7 +301,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     if( psz_title )
         o_title = [NSString stringWithUTF8String: psz_title];
 
-    char *psz_uri = input_item_GetURI( p_item );
+    char *psz_uri = decode_URI( input_item_GetURI( p_item ) );
     if( psz_uri )
         o_mrl = [NSMutableString stringWithUTF8String: psz_uri];
 
@@ -506,7 +507,8 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
                 val.i_int |= (int)CocoaKeyToVLC( key );
             var_Set( p_vout->p_libvlc, "key-pressed", val );
         }
-        else msg_Warn( p_vout, "could not send keyevent to VLC core" );
+        else
+            msg_Dbg( VLCIntf, "could not send keyevent to VLC core" );
     }
     else
         [super keyDown: o_event];
@@ -664,7 +666,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
             }
             var_SetCoords( p_vout, "mouse-moved", x, y );
         }
-        if( [self isFullscreen] )
+        if( self && [self isFullscreen] )
             [[[[VLCMain sharedInstance] controls] fspanel] fadeIn];
     }
 

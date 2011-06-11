@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: b7ed417fbfae890441bb9cd06bc440ff6884369d $
+ * $Id: f50154197ea7f215f317da93d876f2be5cf98a19 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -508,8 +508,11 @@ static void *Thread( void *obj )
     /* Delete the recentsMRL object before the configuration */
     RecentsMRL::killInstance();
 
-    /* Save the path */
-    getSettings()->setValue( "filedialog-path", p_intf->p_sys->filepath );
+    /* Save the path or delete if recent play are disabled */
+    if( var_InheritBool( p_intf, "qt-recentplay" ) )
+        getSettings()->setValue( "filedialog-path", p_intf->p_sys->filepath );
+    else
+        getSettings()->remove( "filedialog-path" );
 
     /* Delete the configuration. Application has to be deleted after that. */
     delete p_intf->p_sys->mainSettings;

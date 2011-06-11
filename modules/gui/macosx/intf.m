@@ -1,8 +1,8 @@
 /*****************************************************************************
  * intf.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 6ec961f79917ff1ea4a6a8e4b8bc690975be78e5 $
+ * Copyright (C) 2002-2011 the VideoLAN team
+ * $Id: 8abc6be69899d757a8384481bb04be05b4d0883a $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -55,7 +55,6 @@
 #import "simple_prefs.h"
 
 #import <AddressBook/AddressBook.h>         /* for crashlog send mechanism */
-#import <IOKit/hidsystem/ev_keymap.h>         /* for the media key support */
 #import <Sparkle/Sparkle.h>                 /* we're the update delegate */
 
 /*****************************************************************************
@@ -366,7 +365,6 @@ static VLCMain *_o_sharedMainInstance = nil;
                                                                    object: @"VLCEyeTVSupport"
                                                                  userInfo: NULL
                                                        deliverImmediately: YES];
-
     return _o_sharedMainInstance;
 }
 
@@ -543,11 +541,6 @@ static VLCMain *_o_sharedMainInstance = nil;
     /* take care of tint changes during runtime */
     o_img_play = [NSImage imageNamed: @"play"];
     o_img_pause = [NSImage imageNamed: @"pause"];
-    [self controlTintChanged];
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector( controlTintChanged )
-                                                 name: NSControlTintDidChangeNotification
-                                               object: nil];
 
     /* init Apple Remote support */
     o_remote = [[AppleRemote alloc] init];
@@ -579,6 +572,16 @@ static VLCMain *_o_sharedMainInstance = nil;
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     if( !p_intf ) return;
+
+    /* init media key support */
+    o_mediaKeyController = [[SPMediaKeyTap alloc] initWithDelegate:self];
+    b_mediaKeySupport = config_GetInt( VLCIntf, "macosx-mediakeys" );
+    [o_mediaKeyController startWatchingMediaKeys];
+    [o_mediaKeyController setShouldInterceptMediaKeyEvents:b_mediaKeySupport];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(coreChangedMediaKeySupportSetting:) name: @"VLCMediaKeySupportSettingChanged" object: nil];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                             [SPMediaKeyTap defaultMediaKeyUserBundleIdentifiers], kMediaKeyUsingBundleIdentifiersDefaultsKey,
+                                                             nil]];
 
     [self _removeOldPreferences];
 
@@ -973,49 +976,54 @@ static NSString * VLCToolbarMediaControl     = @"VLCToolbarMediaControl";
 }
 
 #pragma mark -
-#pragma mark Other notification
+#pragma mark Media Key support
 
-- (void)controlTintChanged
+-(void)mediaKeyTap:(SPMediaKeyTap*)keyTap receivedMediaKeyEvent:(NSEvent*)event
 {
-    BOOL b_playing = NO;
+    if( b_mediaKeySupport )
+       {
+        assert([event type] == NSSystemDefined && [event subtype] == SPSystemDefinedEventMediaKeys);
 
-    if( [o_btn_play alternateImage] == o_img_play_pressed )
-        b_playing = YES;
+        int keyCode = (([event data1] & 0xFFFF0000) >> 16);
+        int keyFlags = ([event data1] & 0x0000FFFF);
+        int keyState = (((keyFlags & 0xFF00) >> 8)) == 0xA;
+        int keyRepeat = (keyFlags & 0x1);
 
-    if( [NSColor currentControlTint] == NSGraphiteControlTint )
-    {
-        o_img_play_pressed = [NSImage imageNamed: @"play_graphite"];
-        o_img_pause_pressed = [NSImage imageNamed: @"pause_graphite"];
+        if( keyCode == NX_KEYTYPE_PLAY && keyState == 0 )
+            var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_PLAY_PAUSE );
 
-        [o_btn_prev setAlternateImage: [NSImage imageNamed: @"previous_graphite"]];
-        [o_btn_rewind setAlternateImage: [NSImage imageNamed: @"skip_previous_graphite"]];
-        [o_btn_stop setAlternateImage: [NSImage imageNamed: @"stop_graphite"]];
-        [o_btn_ff setAlternateImage: [NSImage imageNamed: @"skip_forward_graphite"]];
-        [o_btn_next setAlternateImage: [NSImage imageNamed: @"next_graphite"]];
-        [o_btn_fullscreen setAlternateImage: [NSImage imageNamed: @"fullscreen_graphite"]];
-        [o_btn_playlist setAlternateImage: [NSImage imageNamed: @"playlistdrawer_graphite"]];
-        [o_btn_equalizer setAlternateImage: [NSImage imageNamed: @"equalizerdrawer_graphite"]];
+        if( keyCode == NX_KEYTYPE_FAST && !b_mediakeyJustJumped )
+        {
+            if( keyState == 0 && keyRepeat == 0 )
+                var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_NEXT );
+            else if( keyRepeat == 1 )
+            {
+                var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_JUMP_FORWARD_SHORT );
+                b_mediakeyJustJumped = YES;
+                [self performSelector:@selector(resetMediaKeyJump)
+                           withObject: NULL
+                           afterDelay:0.25];
+            }
+        }
+
+        if( keyCode == NX_KEYTYPE_REWIND && !b_mediakeyJustJumped )
+        {
+            if( keyState == 0 && keyRepeat == 0 )
+                var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_PREV );
+            else if( keyRepeat == 1 )
+            {
+                var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_JUMP_BACKWARD_SHORT );
+                b_mediakeyJustJumped = YES;
+                [self performSelector:@selector(resetMediaKeyJump)
+                           withObject: NULL
+                           afterDelay:0.25];
+            }
+        }
     }
-    else
-    {
-        o_img_play_pressed = [NSImage imageNamed: @"play_blue"];
-        o_img_pause_pressed = [NSImage imageNamed: @"pause_blue"];
-
-        [o_btn_prev setAlternateImage: [NSImage imageNamed: @"previous_blue"]];
-        [o_btn_rewind setAlternateImage: [NSImage imageNamed: @"skip_previous_blue"]];
-        [o_btn_stop setAlternateImage: [NSImage imageNamed: @"stop_blue"]];
-        [o_btn_ff setAlternateImage: [NSImage imageNamed: @"skip_forward_blue"]];
-        [o_btn_next setAlternateImage: [NSImage imageNamed: @"next_blue"]];
-        [o_btn_fullscreen setAlternateImage: [NSImage imageNamed: @"fullscreen_blue"]];
-        [o_btn_playlist setAlternateImage: [NSImage imageNamed: @"playlistdrawer_blue"]];
-        [o_btn_equalizer setAlternateImage: [NSImage imageNamed: @"equalizerdrawer_blue"]];
-    }
-
-    if( b_playing )
-        [o_btn_play setAlternateImage: o_img_play_pressed];
-    else
-        [o_btn_play setAlternateImage: o_img_pause_pressed];
 }
+
+#pragma mark -
+#pragma mark Other notification
 
 /* Listen to the remote in exclusive mode, only when VLC is the active
    application */
@@ -2828,103 +2836,23 @@ end:
     [o_inv invoke];
     [o_lock unlockWithCondition: 1];
 }
+- (void)resetMediaKeyJump
+{
+    b_mediakeyJustJumped = NO;
+}
+- (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification
+{
+    b_mediaKeySupport = config_GetInt( VLCIntf, "macosx-mediakeys" );
+    [o_mediaKeyController setShouldInterceptMediaKeyEvents:b_mediaKeySupport];
+}
 
 @end
 
 /*****************************************************************************
  * VLCApplication interface
- * exclusively used to implement media key support on Al Apple keyboards
- *   b_justJumped is required as the keyboard send its events faster than
- *    the user can actually jump through his media
  *****************************************************************************/
 
 @implementation VLCApplication
-
-- (void)awakeFromNib
-{
-	b_active = b_mediaKeySupport = config_GetInt( VLCIntf, "macosx-mediakeys" );
-    b_activeInBackground = config_GetInt( VLCIntf, "macosx-mediakeys-background" );
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(coreChangedMediaKeySupportSetting:) name: @"VLCMediaKeySupportSettingChanged" object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(appGotActiveOrInactive:) name: @"NSApplicationDidBecomeActiveNotification" object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(appGotActiveOrInactive:) name: @"NSApplicationWillResignActiveNotification" object: nil];
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-    [super dealloc];
-}
-
-- (void)appGotActiveOrInactive: (NSNotification *)o_notification
-{
-    if(( [[o_notification name] isEqualToString: @"NSApplicationWillResignActiveNotification"] && !b_activeInBackground ) || !b_mediaKeySupport)
-        b_active = NO;
-    else
-        b_active = YES;
-}
-
-- (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification
-{
-    b_active = b_mediaKeySupport = config_GetInt( VLCIntf, "macosx-mediakeys" );
-    b_activeInBackground = config_GetInt( VLCIntf, "macosx-mediakeys-background" );
-}
-
-
-- (void)sendEvent: (NSEvent*)event
-{
-    if( b_active )
-	{
-        if( [event type] == NSSystemDefined && [event subtype] == 8 )
-        {
-            int keyCode = (([event data1] & 0xFFFF0000) >> 16);
-            int keyFlags = ([event data1] & 0x0000FFFF);
-            int keyState = (((keyFlags & 0xFF00) >> 8)) == 0xA;
-            int keyRepeat = (keyFlags & 0x1);
-
-            if( keyCode == NX_KEYTYPE_PLAY && keyState == 0 )
-                var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_PLAY_PAUSE );
-
-            if( keyCode == NX_KEYTYPE_FAST && !b_justJumped )
-            {
-                if( keyState == 0 && keyRepeat == 0 )
-                {
-                    var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_NEXT );
-                }
-                else if( keyRepeat == 1 )
-                {
-                    var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_JUMP_FORWARD_SHORT );
-                    b_justJumped = YES;
-                    [self performSelector:@selector(resetJump)
-                               withObject: NULL
-                               afterDelay:0.25];
-                }
-            }
-
-            if( keyCode == NX_KEYTYPE_REWIND && !b_justJumped )
-            {
-                if( keyState == 0 && keyRepeat == 0 )
-                {
-                    var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_PREV );
-                }
-                else if( keyRepeat == 1 )
-                {
-                    var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_JUMP_BACKWARD_SHORT );
-                    b_justJumped = YES;
-                    [self performSelector:@selector(resetJump)
-                               withObject: NULL
-                               afterDelay:0.25];
-                }
-            }
-        }
-    }
-	[super sendEvent: event];
-}
-
-- (void)resetJump
-{
-    b_justJumped = NO;
-}
-
 // when user selects the quit menu from dock it sends a terminate:
 // but we need to send a stop: to properly exits libvlc.
 // However, we are not able to change the action-method sent by this standard menu item.
