@@ -1,3 +1,10 @@
+vlc (1.1.10-1ubuntu1) oneiric; urgency=low
+
+  * Merge from Debian unstable, remaining changes:
+    - build and install the libx264 plugin
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sat, 11 Jun 2011 19:56:27 +0200
+
 vlc (1.1.10-1) unstable; urgency=high
 
   [ Benjamin Drung ]
