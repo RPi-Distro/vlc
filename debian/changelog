@@ -1,3 +1,9 @@
+vlc (1.1.9-1ubuntu1.2) natty-proposed; urgency=low
+
+  * Backport PulseAudio output plugin rewrite to fix memory leak. (LP: #743323)
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sat, 11 Jun 2011 22:58:00 +0200
+
 vlc (1.1.9-1ubuntu1.1) natty-security; urgency=low
 
   * SECURITY UPDATE: Integer overflow in XSPF playlist parser (LP: #795410)
