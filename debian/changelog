@@ -1,3 +1,13 @@
+vlc (1.1.4-1ubuntu1.6) maverick-security; urgency=low
+
+  * SECURITY UPDATE: Integer overflow in XSPF playlist parser (LP: #795410)
+    - debian/patches/fix-xspf-integer-overflow.patch: Fix realloc() integer
+      overflow, thanks to Rémi Denis-Courmont
+    - CVE-2011-2194
+    - VideoLAN-SA-1104
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sat, 11 Jun 2011 21:17:55 +0200
+
 vlc (1.1.4-1ubuntu1.5) maverick-security; urgency=low
 
   * SECURITY UPDATE: arbitrary code execution via crafted width
