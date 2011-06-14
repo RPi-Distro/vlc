@@ -5,3 +5,4 @@ fix-xspf-integer-overflow.patch
 backport-pulse-rewrite.patch
 backport-fix-NULL-derefence.patch
 backport-fullscreen-fix.patch
+backport-firefox-4-compatibility.patch
