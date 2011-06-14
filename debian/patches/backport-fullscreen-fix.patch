@@ -12,16 +12,14 @@ Applied-Upstream: 1.1.10
 Origin: upstream, http://git.videolan.org/?p=vlc%2Fvlc-1.1.git;h=d119e5414b7519894f336180bebfd1f160a9c378
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/774581
 
-diff --git a/modules/gui/qt4/components/controller.cpp b/modules/gui/qt4/components/controller.cpp
-index 28ba75d..0f887ef 100644
 --- a/modules/gui/qt4/components/controller.cpp
 +++ b/modules/gui/qt4/components/controller.cpp
-@@ -649,12 +649,7 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
+@@ -649,12 +649,7 @@
  
      vout.clear();
  
 -#ifdef Q_WS_X11
--    setWindowFlags( Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint );
+-    setWindowFlags( Qt::Window | Qt::FramelessWindowHint );
 -    setWindowModality( Qt::ApplicationModal );
 -#else
      setWindowFlags( Qt::ToolTip );
