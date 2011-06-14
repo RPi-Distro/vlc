@@ -1,8 +1,11 @@
 vlc (1.1.9-1ubuntu1.2) natty-proposed; urgency=low
 
   * Backport PulseAudio output plugin rewrite to fix memory leak. (LP: #743323)
+  * ASX: fix NULL derefence (LP: #785979)
+  * Qt: undo the FSC/KDE workaround (LP: #774581)
+  * Add Firefox 4 compatibility (LP: #722690)
 
- -- Benjamin Drung <bdrung@ubuntu.com>  Sat, 11 Jun 2011 22:58:00 +0200
+ -- Benjamin Drung <bdrung@ubuntu.com>  Tue, 14 Jun 2011 03:04:10 +0200
 
 vlc (1.1.9-1ubuntu1.1) natty-security; urgency=low
 
