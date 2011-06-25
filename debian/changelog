@@ -1,3 +1,9 @@
+vlc (1.1.10-1ubuntu2) oneiric; urgency=low
+
+  * No-change rebuild against newer libswscale.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sat, 25 Jun 2011 18:21:14 +0200
+
 vlc (1.1.10-1ubuntu1) oneiric; urgency=low
 
   * Merge from Debian unstable, remaining changes:
