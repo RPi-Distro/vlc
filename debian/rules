@@ -138,6 +138,9 @@ endif
 %:
 	dh $@ --parallel --with autoreconf
 
+override_dh_autoreconf:
+	dh_autoreconf --as-needed
+
 override_dh_auto_clean:
 	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak \
 		debian/vlc-nox.install
