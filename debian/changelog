@@ -1,3 +1,13 @@
+vlc (1.0.6-1ubuntu1.8) lucid-security; urgency=low
+
+  * SECURITY UPDATE: Heap overflow in AVI demuxer (LP: #807488)
+    - debian/patches/CVE-2011-2588.patch: AVI: fix heap buffer overflow,
+      thanks to Rémi Denis-Courmont
+    - CVE-2011-2588
+    - VideoLAN-SA-1106
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Mon, 18 Jul 2011 16:15:19 +0200
+
 vlc (1.0.6-1ubuntu1.7) lucid-security; urgency=low
 
   * SECURITY UPDATE: Integer overflow in XSPF playlist parser (LP: #795410)
