@@ -1,3 +1,18 @@
+vlc (1.1.4-1ubuntu1.7) maverick-security; urgency=low
+
+  * SECURITY UPDATE: Heap overflow in RealMedia demuxer (LP: #807486)
+    - debian/patches/CVE-2011-2587.patch: real: fix heap buffer overflow,
+      thanks to Rémi Denis-Courmont
+    - CVE-2011-2587
+    - VideoLAN-SA-1105
+  * SECURITY UPDATE: Heap overflow in AVI demuxer (LP: #807488)
+    - debian/patches/CVE-2011-2588.patch: AVI: fix heap buffer overflow,
+      thanks to Rémi Denis-Courmont
+    - CVE-2011-2588
+    - VideoLAN-SA-1106
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Mon, 18 Jul 2011 16:10:28 +0200
+
 vlc (1.1.4-1ubuntu1.6) maverick-security; urgency=low
 
   * SECURITY UPDATE: Integer overflow in XSPF playlist parser (LP: #795410)
