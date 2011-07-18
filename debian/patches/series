@@ -23,3 +23,4 @@ mkv-input-validation.diff
 CVE-2010-327x.patch
 CVE-2011-1684.patch
 fix-xspf-integer-overflow.patch
+CVE-2011-2588.patch
