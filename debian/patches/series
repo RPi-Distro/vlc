@@ -1,5 +1,2 @@
 200_osdmenu_paths.patch
 xulrunner-1.9.1.patch
-900_weaken_schroedinger_deps.diff
-bp-pulseaudio-build-fix.patch
-bp-gnome-mime-types.patch

@@ -25,6 +25,11 @@ BEGIN
 END
 
 2 BITMAP DISCARDABLE "inplace.bmp"
+3 BITMAP DISCARDABLE "pixmaps/defullscreen.bmp"
+4 BITMAP DISCARDABLE "pixmaps/play.bmp"
+5 BITMAP DISCARDABLE "pixmaps/pause.bmp"
+6 BITMAP DISCARDABLE "pixmaps/volume.bmp"
+7 BITMAP DISCARDABLE "pixmaps/volume-muted.bmp"
 
 1 TYPELIB "axvlc.tlb"
 

@@ -2,7 +2,7 @@
 # Building the Mozilla plugin
 ###############################################################################
 
-MOSTLYCLEANFILES = 
+MOSTLYCLEANFILES =
 CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = $(DIST_sources) npvlc_rc.rc.in COPYING npvlc.dll.manifest
 
@@ -27,6 +27,10 @@ LIBRARIES_libvlc = $(top_builddir)/src/libvlc.la \
 				   $(top_builddir)/src/libvlccore.la
 
 if HAVE_WIN32
+
+SOURCES_mozilla_common += \
+	vlc_win32_fullscreen.cpp \
+	vlc_win32_fullscreen.h
 
 # Under Win32, Mozilla plugins need to be named NP******.DLL, but under Unix
 # the common naming scheme is lib******plugin.so. Also, we need npwin.cpp
@@ -67,13 +71,13 @@ CPPFLAGS_mozilla_EXTRA = -I. -I$(top_builddir) -I$(srcdir)/../include -c \
 	-F/System/Library/Frameworks/CoreFoundation.framework $(moz_CFLAGS) \
 	-I/Developer/Headers/FlatCarbon -fno-common -fpascal-strings \
 	-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -DXP_MACOSX=1 \
-	-DNO_X11=1 -DUSE_SYSTEM_CONSOLE=1 -pipe -fmessage-length=0 
+	-DNO_X11=1 -DUSE_SYSTEM_CONSOLE=1 -pipe -fmessage-length=0
 LDFLAGS_mozilla_EXTRA = -no-undefined -bundle -Wl,-read_only_relocs -Wl,suppress \
 	-Wl,-headerpad_max_install_names -shrext $(LIBEXT) -Wl,-framework,Carbon -Wl,-framework,System
 
 npvlc_la_SOURCES = $(SOURCES_mozilla_common) $(SOURCES_support)
 npvlc_la_CFLAGS = `$(VLC_CONFIG) --cflags mozilla` $(CPPFLAGS_mozilla_EXTRA)
-npvlc_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags mozilla` $(CPPFLAGS_mozilla_EXTRA) 
+npvlc_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags mozilla` $(CPPFLAGS_mozilla_EXTRA)
 npvlc_la_DEPENDENCIES = $(LIBRARIES_libvlc)
 npvlc_la_LDFLAGS = `$(VLC_CONFIG) --ldflags mozilla` -module -avoid-version \
 				   $(LDFLAGS_mozilla_EXTRA)
@@ -143,7 +147,7 @@ libvlcplugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags mozilla` $(CPPFLAGS_mozilla
 libvlcplugin_la_LDFLAGS = `$(VLC_CONFIG) --ldflags mozilla` -module -avoid-version -shrext $(LIBEXT)
 libvlcplugin_la_LIBADD = $(LIBRARIES_libvlc) `$(VLC_CONFIG) -libs mozilla`
 # automake gets confused by the ../..
-libvlcplugin_la_DEPENDENCIES = $(AM_LIBADD) 
+libvlcplugin_la_DEPENDENCIES = $(AM_LIBADD)
 endif
 endif
 endif

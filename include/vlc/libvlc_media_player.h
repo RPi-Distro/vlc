@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2010 the VideoLAN team
- * $Id: d328e511ba7154eb18bc5163b69c9be5d7bbbbb9 $
+ * $Id: cf5196d662ada3afe57a71b794a058170681b961 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -1094,7 +1094,7 @@ VLC_PUBLIC_API void libvlc_audio_output_list_release( libvlc_audio_output_t *p_l
  * \param p_mi media player
  * \param psz_name name of audio output,
  *               use psz_name of \see libvlc_audio_output_t
- * \return true if function succeded
+ * \return 0 if function succeded, -1 on error
  */
 VLC_PUBLIC_API int libvlc_audio_output_set( libvlc_media_player_t *p_mi,
                                             const char *psz_name );

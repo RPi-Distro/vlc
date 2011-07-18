@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2009 the VideoLAN team
-* $Id: 72f43a87315624e93a338190eacc0991086ef976 $
+* $Id: f87b80762acdbfd3037b4ae1459bdbc1d1afe953 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -844,9 +844,6 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 			[[[VLCMain sharedInstance] appleRemoteController] startListening: [VLCMain sharedInstance]];
 		else
 			[[[VLCMain sharedInstance] appleRemoteController] stopListening: [VLCMain sharedInstance]];
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"VLCMediaKeySupportSettingChanged"
-                                                            object: nil
-                                                          userInfo: nil];
 
         /* okay, let's save our changes to vlcrc */
         i = config_SaveConfigFile( p_intf, "main" );
@@ -1092,6 +1089,10 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         }
         b_hotkeyChanged = NO;
     }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName: @"VLCMediaKeySupportSettingChanged"
+                                                        object: nil
+                                                      userInfo: nil];
 }
 
 - (void)showSettingsForCategory: (id)o_new_category_view

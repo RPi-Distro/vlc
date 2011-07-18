@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: 0d374afc22f77a0eff14fc4bcf3d80003573da32 $
+ * $Id: 67950e1a029d9b5f0d2d274b5d6b9106c5546cd8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -928,18 +928,25 @@ static int GuessType( const input_item_t *p_item )
         { "bd",     ITEM_TYPE_DISC },
         { "cable",  ITEM_TYPE_CARD },
         { "cdda",   ITEM_TYPE_CDDA },
+        { "cqam",   ITEM_TYPE_CARD },
         { "dc1394", ITEM_TYPE_CARD },
         { "dccp",   ITEM_TYPE_NET },
+        { "deckli", ITEM_TYPE_CARD }, /* decklink */
         { "dir",    ITEM_TYPE_DIRECTORY },
         { "dshow",  ITEM_TYPE_CARD },
         { "dv",     ITEM_TYPE_CARD },
         { "dvb",    ITEM_TYPE_CARD },
         { "dvd",    ITEM_TYPE_DISC },
+        { "dtv",    ITEM_TYPE_CARD },
+        { "eyetv",  ITEM_TYPE_CARD },
+        { "fd",     ITEM_TYPE_UNKNOWN },
         { "ftp",    ITEM_TYPE_NET },
         { "http",   ITEM_TYPE_NET },
         { "icyx",   ITEM_TYPE_NET },
+        { "imem",   ITEM_TYPE_UNKNOWN },
         { "itpc",   ITEM_TYPE_NET },
         { "jack",   ITEM_TYPE_CARD },
+        { "linsys", ITEM_TYPE_CARD },
         { "live",   ITEM_TYPE_NET }, /* livedotcom */
         { "mms",    ITEM_TYPE_NET },
         { "mtp",    ITEM_TYPE_DISC },
@@ -955,6 +962,8 @@ static int GuessType( const input_item_t *p_item )
         { "satell", ITEM_TYPE_CARD }, /* sattelite */
         { "screen", ITEM_TYPE_CARD },
         { "sdp",    ITEM_TYPE_NET },
+        { "sftp",   ITEM_TYPE_NET },
+        { "shm",    ITEM_TYPE_CARD },
         { "smb",    ITEM_TYPE_NET },
         { "svcd",   ITEM_TYPE_DISC },
         { "tcp",    ITEM_TYPE_NET },

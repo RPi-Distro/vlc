@@ -1,3 +1,42 @@
+Changes between 1.1.10 and 1.1.11:
+----------------------------------
+
+Security:
+ * Fix buffer overflows in the RealMedia demuxer (CVE-2011-2587)
+   and the AVI one (CVE-2011-2588).
+
+Mac OS X:
+ * Fixed scrolling direction if the input device's signal is inverted
+ * Update Auhal audio output to the latest API
+ * Fix images disappearing issue on the interface
+ * Reduced installation size by up to 30 MB
+ * Resolved conflict between iTunes and VLC wrt Media Key handling
+
+Mozilla/ActiveX webplugin:
+ * Fullscreen mode is fixed on Win32
+ * Very simple fullscreen controller is visible on Win32
+
+Demuxers/Meta Readers:
+ * Better support for cover art embedded in mp4, wma
+
+Muxers/Output:
+ * Fix AVI muxer so the generated files are readable on other players
+
+Extensions:
+ * Multiple fixes for crashes and malfunctionning issues
+
+Qt Interface:
+ * Fix quitting on Linux
+ * Fix opening of VIDEO_TS folders through the open disc dialog on Windows
+ * Miscellaneous
+
+Win32 port:
+ * Update of codecs, fixing the mpeg-2 decoder crash
+
+Translations:
+ * Update of Slovak, Lithunanian, Russian, Brazillian Portuguese, Serbian
+
+
 Changes between 1.1.9 and 1.1.10:
 ---------------------------------
 

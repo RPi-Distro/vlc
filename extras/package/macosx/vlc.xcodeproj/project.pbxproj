@@ -127,28 +127,6 @@
 		CC62B8D80FC5787D0077BB8C /* rm.icns in Resources */ = {isa = PBXBuildFile; fileRef = CC62B8CD0FC5787D0077BB8C /* rm.icns */; };
 		CC62B8D90FC5787D0077BB8C /* subtitle.icns in Resources */ = {isa = PBXBuildFile; fileRef = CC62B8CE0FC5787D0077BB8C /* subtitle.icns */; };
 		CC62B8DA0FC5787D0077BB8C /* wav.icns in Resources */ = {isa = PBXBuildFile; fileRef = CC62B8CF0FC5787D0077BB8C /* wav.icns */; };
-		CC62B93E0FC600CB0077BB8C /* sidebarAdd.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9360FC600CB0077BB8C /* sidebarAdd.png */; };
-		CC62B93F0FC600CB0077BB8C /* sidebarRepeat.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9370FC600CB0077BB8C /* sidebarRepeat.png */; };
-		CC62B9400FC600CB0077BB8C /* sidebarRepeatOn.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9380FC600CB0077BB8C /* sidebarRepeatOn.png */; };
-		CC62B9410FC600CB0077BB8C /* sidebarRepeatOneOn.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9390FC600CB0077BB8C /* sidebarRepeatOneOn.png */; };
-		CC62B9420FC600CB0077BB8C /* sidebarResizeWidget.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B93A0FC600CB0077BB8C /* sidebarResizeWidget.png */; };
-		CC62B9430FC600CB0077BB8C /* sidebarShuffle.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B93B0FC600CB0077BB8C /* sidebarShuffle.png */; };
-		CC62B9440FC600CB0077BB8C /* sidebarShuffleOn.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B93C0FC600CB0077BB8C /* sidebarShuffleOn.png */; };
-		CC62B9450FC600CB0077BB8C /* sidebarStatusAreaBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B93D0FC600CB0077BB8C /* sidebarStatusAreaBackground.png */; };
-		CC62B94C0FC600D20077BB8C /* eq_sm.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9460FC600D20077BB8C /* eq_sm.pdf */; };
-		CC62B94D0FC600D20077BB8C /* fs_sm.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9470FC600D20077BB8C /* fs_sm.pdf */; };
-		CC62B94E0FC600D20077BB8C /* list_sm.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9480FC600D20077BB8C /* list_sm.pdf */; };
-		CC62B94F0FC600D20077BB8C /* next_sm.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9490FC600D20077BB8C /* next_sm.pdf */; };
-		CC62B9500FC600D20077BB8C /* prev_sm.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CC62B94A0FC600D20077BB8C /* prev_sm.pdf */; };
-		CC62B9510FC600D20077BB8C /* stop_sm.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CC62B94B0FC600D20077BB8C /* stop_sm.pdf */; };
-		CC62B95A0FC600E90077BB8C /* backward_big_down.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9520FC600E90077BB8C /* backward_big_down.png */; };
-		CC62B95B0FC600E90077BB8C /* backward_big.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9530FC600E90077BB8C /* backward_big.png */; };
-		CC62B95C0FC600E90077BB8C /* forward_big_down.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9540FC600E90077BB8C /* forward_big_down.png */; };
-		CC62B95D0FC600E90077BB8C /* forward_big.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9550FC600E90077BB8C /* forward_big.png */; };
-		CC62B95E0FC600E90077BB8C /* pause_big_down.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9560FC600E90077BB8C /* pause_big_down.png */; };
-		CC62B95F0FC600E90077BB8C /* pause_big.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9570FC600E90077BB8C /* pause_big.png */; };
-		CC62B9600FC600E90077BB8C /* play_big_down.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9580FC600E90077BB8C /* play_big_down.png */; };
-		CC62B9610FC600E90077BB8C /* play_big.png in Resources */ = {isa = PBXBuildFile; fileRef = CC62B9590FC600E90077BB8C /* play_big.png */; };
 		CC8062641021F8790021EB9A /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = CC8062631021F8790021EB9A /* dsa_pub.pem */; };
 		CCBE999F0F922C51000705F8 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCBE999E0F922C51000705F8 /* CoreServices.framework */; };
 		CCF11B540F8BFB520088542D /* ErrorPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CCF11B520F8BFB520088542D /* ErrorPanel.nib */; };
@@ -818,6 +796,7 @@
 			isa = PBXProject;
 			buildConfigurationList = C2F2A6EA09588F1B00018C74 /* Build configuration list for PBXProject "vlc" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -840,28 +819,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC8062641021F8790021EB9A /* dsa_pub.pem in Resources */,
-				CC62B95A0FC600E90077BB8C /* backward_big_down.png in Resources */,
-				CC62B95B0FC600E90077BB8C /* backward_big.png in Resources */,
-				CC62B95C0FC600E90077BB8C /* forward_big_down.png in Resources */,
-				CC62B95D0FC600E90077BB8C /* forward_big.png in Resources */,
-				CC62B95E0FC600E90077BB8C /* pause_big_down.png in Resources */,
-				CC62B95F0FC600E90077BB8C /* pause_big.png in Resources */,
-				CC62B9600FC600E90077BB8C /* play_big_down.png in Resources */,
-				CC62B9610FC600E90077BB8C /* play_big.png in Resources */,
-				CC62B94C0FC600D20077BB8C /* eq_sm.pdf in Resources */,
-				CC62B94D0FC600D20077BB8C /* fs_sm.pdf in Resources */,
-				CC62B94E0FC600D20077BB8C /* list_sm.pdf in Resources */,
-				CC62B94F0FC600D20077BB8C /* next_sm.pdf in Resources */,
-				CC62B9500FC600D20077BB8C /* prev_sm.pdf in Resources */,
-				CC62B9510FC600D20077BB8C /* stop_sm.pdf in Resources */,
-				CC62B93E0FC600CB0077BB8C /* sidebarAdd.png in Resources */,
-				CC62B93F0FC600CB0077BB8C /* sidebarRepeat.png in Resources */,
-				CC62B9400FC600CB0077BB8C /* sidebarRepeatOn.png in Resources */,
-				CC62B9410FC600CB0077BB8C /* sidebarRepeatOneOn.png in Resources */,
-				CC62B9420FC600CB0077BB8C /* sidebarResizeWidget.png in Resources */,
-				CC62B9430FC600CB0077BB8C /* sidebarShuffle.png in Resources */,
-				CC62B9440FC600CB0077BB8C /* sidebarShuffleOn.png in Resources */,
-				CC62B9450FC600CB0077BB8C /* sidebarStatusAreaBackground.png in Resources */,
 				CC62B8D00FC5787D0077BB8C /* aiff.icns in Resources */,
 				CC62B8D10FC5787D0077BB8C /* audio.icns in Resources */,
 				CC62B8D20FC5787D0077BB8C /* flv.icns in Resources */,

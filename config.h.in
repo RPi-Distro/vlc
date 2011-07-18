@@ -675,9 +675,6 @@
 /* Define to 1 if you have the <sys/videoio.h> header file. */
 #undef HAVE_SYS_VIDEOIO_H
 
-/* Define to 1 if you have the <taglib/mp4coverart.h> header file. */
-#undef HAVE_TAGLIB_MP4COVERART_H
-
 /* Define to 1 if you have the `tdestroy' function. */
 #undef HAVE_TDESTROY
 

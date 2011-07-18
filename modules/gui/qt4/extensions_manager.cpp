@@ -2,7 +2,7 @@
  * extensions_manager.cpp: Extensions manager for Qt
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 35589c84c7cfd6d35d0cad42461e44d9ec7b28f7 $
+ * $Id: 8499b72d0564fed60102fb417c4df1377df824f2 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -50,6 +50,8 @@ ExtensionsManager::ExtensionsManager( intf_thread_t *_p_intf, QObject *parent )
     CONNECT( THEMIM->getIM(), statusChanged( int ), this, playingChanged( int ) );
     DCONNECT( THEMIM, inputChanged( input_thread_t* ),
               this, inputChanged( input_thread_t* ) );
+    CONNECT( THEMIM->getIM(), metaChanged( input_item_t* ),
+             this, metaChanged( input_item_t* ) );
     b_unloading = false;
     b_failed = false;
 }
@@ -295,5 +297,23 @@ void ExtensionsManager::playingChanged( int state )
     }
     FOREACH_END()
 
+    vlc_mutex_unlock( &p_extensions_manager->lock );
+}
+
+void ExtensionsManager::metaChanged( input_item_t* )
+{
+    //This is unlikely, but can happen if no extension modules can be loaded.
+    if ( p_extensions_manager == NULL )
+        return ;
+    vlc_mutex_lock( &p_extensions_manager->lock );
+    extension_t *p_ext;
+    FOREACH_ARRAY( p_ext, p_extensions_manager->extensions )
+    {
+        if( extension_IsActivated( p_extensions_manager, p_ext ) )
+        {
+            extension_MetaChanged( p_extensions_manager, p_ext );
+        }
+    }
+    FOREACH_END()
     vlc_mutex_unlock( &p_extensions_manager->lock );
 }

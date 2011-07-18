@@ -2,7 +2,7 @@
  * win32text.c : Text drawing routines using the TextOut win32 API
  *****************************************************************************
  * Copyright (C) 2002 - 2009 the VideoLAN team
- * $Id: e3464674ed26ea50961fd1afe1b8455918d1fc0e $
+ * $Id: 40e1057135bd135a68e1afeb76087280b0f77447 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Pierre Ynard
@@ -74,7 +74,7 @@ static int SetFont( filter_t *, int );
 #define FONTSIZER_TEXT N_("Relative font size")
 #define FONTSIZER_LONGTEXT N_("This is the relative default size of the " \
   "fonts that will be rendered on the video. If absolute font size is set, "\
-   "relative size will be overriden." )
+   "relative size will be overridden." )
 
 static int const pi_sizes[] = { 20, 18, 16, 12, 6 };
 static char *const ppsz_sizes_text[] = {

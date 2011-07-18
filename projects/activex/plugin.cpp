@@ -75,7 +75,20 @@ static LRESULT CALLBACK VLCInPlaceClassWndProc(HWND hWnd, UINT uMsg, WPARAM wPar
                 EndPaint(hWnd, &ps);
             }
             return 0L;
-
+        case WM_SIZE:{
+            int new_client_width = LOWORD(lParam);
+            int new_client_height = HIWORD(lParam);
+            //first child will be resized to client area
+            HWND hChildWnd = GetWindow(hWnd, GW_CHILD);
+            if(hChildWnd){
+                MoveWindow(hChildWnd, 0, 0, new_client_width, new_client_height, FALSE);
+            }
+            return 0L;
+        }
+        case WM_LBUTTONDBLCLK:{
+            p_instance->toggleFullscreen();
+            return 0L;
+        }
         default:
             return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
@@ -202,6 +215,7 @@ STDMETHODIMP VLCPluginClass::LockServer(BOOL fLock)
 };
 
 ////////////////////////////////////////////////////////////////////////
+extern HMODULE DllGetModule();
 
 VLCPlugin::VLCPlugin(VLCPluginClass *p_class, LPUNKNOWN pUnkOuter) :
     _inplacewnd(NULL),
@@ -212,7 +226,8 @@ VLCPlugin::VLCPlugin(VLCPluginClass *p_class, LPUNKNOWN pUnkOuter) :
     _p_mplayer(NULL),
     _i_midx(-1),
     _i_codepage(CP_ACP),
-    _b_usermode(TRUE)
+    _b_usermode(TRUE),
+    _WindowsManager(DllGetModule())
 {
     /*
     ** bump refcount to avoid recursive release from
@@ -705,6 +720,8 @@ HRESULT VLCPlugin::onActivateInPlace(LPMSG lpMesg, HWND hwndParent, LPCRECT lprc
     HRGN clipRgn = CreateRectRgnIndirect(&clipRect);
     SetWindowRgn(_inplacewnd, clipRgn, TRUE);
 
+    _WindowsManager.CreateWindows(this->getInPlaceWindow());
+
     if( _b_usermode )
     {
         /* will run vlc if not done already */
@@ -726,6 +743,11 @@ HRESULT VLCPlugin::onActivateInPlace(LPMSG lpMesg, HWND hwndParent, LPCRECT lprc
     return S_OK;
 };
 
+void VLCPlugin::toggleFullscreen()
+{
+    _WindowsManager.ToggleFullScreen();
+}
+
 HRESULT VLCPlugin::onInPlaceDeactivate(void)
 {
     if( isPlaying() )
@@ -733,6 +755,8 @@ HRESULT VLCPlugin::onInPlaceDeactivate(void)
         playlist_stop();
         fireOnStopEvent();
     }
+
+    _WindowsManager.DestroyWindows();
 
     DestroyWindow(_inplacewnd);
     _inplacewnd = NULL;
@@ -1237,8 +1261,7 @@ bad_unlock:
 
 void VLCPlugin::set_player_window()
 {
-    // XXX FIXME no idea if this is correct or not
-    libvlc_media_player_set_hwnd(_p_mplayer,getInPlaceWindow());
+    _WindowsManager.LibVlcAttach(_p_mplayer);
 }
 
 void VLCPlugin::player_register_events()

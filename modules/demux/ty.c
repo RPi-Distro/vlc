@@ -6,7 +6,7 @@
  * based on code by Christopher Wingert for tivo-mplayer
  * tivo(at)wingert.org, February 2003
  *
- * $Id: 9c27d97e0a848c2d1c0acd42ab2a70e33f05d3cb $
+ * $Id: b2375928c3146fa8ca32c88c7aa5f5dd176603a2 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,12 +319,16 @@ static int Open(vlc_object_t *p_this)
 	/* at this point, we assume we have a valid TY stream */  
     msg_Dbg( p_demux, "valid TY stream detected" );
 
+    p_sys = malloc(sizeof(demux_sys_t));
+    if( unlikely(p_sys == NULL) )
+        return VLC_ENOMEM;
+
     /* Set exported functions */
     p_demux->pf_demux = Demux;
     p_demux->pf_control = Control;
 
     /* create our structure that will hold all data */
-    p_demux->p_sys = p_sys = malloc(sizeof(demux_sys_t));
+    p_demux->p_sys = p_sys;
     memset(p_sys, 0, sizeof(demux_sys_t));
 
     /* set up our struct (most were zero'd out with the memset above) */
@@ -1895,7 +1899,7 @@ static int get_chunk_header(demux_t *p_demux)
     stream_Read( p_demux->s, NULL, 4 );
 
     /* read the record headers into a temp buffer */
-    p_hdr_buf = malloc(i_num_recs * 16);
+    p_hdr_buf = xmalloc(i_num_recs * 16);
     if (stream_Read(p_demux->s, p_hdr_buf, i_num_recs * 16) < i_num_recs * 16) {
         free( p_hdr_buf );
         p_sys->eof = true;
@@ -1922,7 +1926,7 @@ static ty_rec_hdr_t *parse_chunk_headers( const uint8_t *p_buf,
     ty_rec_hdr_t *p_hdrs, *p_rec_hdr;
 
     *pi_payload_size = 0;
-    p_hdrs = malloc(i_num_recs * sizeof(ty_rec_hdr_t));
+    p_hdrs = xmalloc(i_num_recs * sizeof(ty_rec_hdr_t));
 
     for (i = 0; i < i_num_recs; i++)
     {

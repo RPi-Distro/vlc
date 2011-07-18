@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2011 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.10)
+AC_INIT(vlc, 1.1.11)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
-VERSION_REVISION="10"
+VERSION_REVISION="11"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -1741,9 +1741,6 @@ AC_ARG_ENABLE(taglib,
       [ VLC_ADD_PLUGIN([taglib])
         VLC_ADD_LIBS([taglib],[$TAGLIB_LIBS -lz])
         VLC_ADD_CXXFLAGS([taglib],[$TAGLIB_CFLAGS])
-        AC_LANG_PUSH(C++)
-        AC_CHECK_HEADERS(taglib/mp4coverart.h)
-        AC_LANG_POP(C++)
       ],
       [AC_MSG_WARN(TagLib library not found)])
   ])
@@ -3068,7 +3065,7 @@ PKG_ENABLE_MODULES_VLC([DIRAC], [], [dirac >= 0.10.0], [dirac encoder], [auto])
 dnl
 dnl  schroedinger decoder plugin (for dirac format video)
 dnl
-PKG_ENABLE_MODULES_VLC([SCHROEDINGER], [], [schroedinger-1.0 >= 1.0.10], [dirac decoder and encoder using schroedinger], [auto])
+PKG_ENABLE_MODULES_VLC([SCHROEDINGER], [], [schroedinger-1.0 >= 1.0.6], [dirac decoder using schroedinger], [auto])
 
 dnl
 dnl  PNG decoder module

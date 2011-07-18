@@ -2,7 +2,7 @@
  * extensions.cpp: Extensions manager for Qt: dialogs manager
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 65bb77590d6341c881dc3d4472774eda792483d2 $
+ * $Id: 0af50271acb0590b0d411901fe2306a214f63736 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -519,6 +519,8 @@ void ExtensionDialog::UpdateWidgets()
                 widget->resize( p_widget->i_width, p_widget->i_height );
             p_widget->p_sys_intf = widget;
             this->resize( sizeHint() );
+            /* If an update was required, cancel it as we just created the widget */
+            p_widget->b_update = false;
         }
         else if( p_widget->p_sys_intf && !p_widget->b_kill
                  && p_widget->b_update )
@@ -607,19 +609,19 @@ QWidget* ExtensionDialog::UpdateWidget( extension_widget_t *p_widget )
 
         case EXTENSION_WIDGET_DROPDOWN:
             comboBox = static_cast< QComboBox* >( p_widget->p_sys_intf );
-            comboBox->clear();
+            // method widget:clear()
+            if ( p_widget->p_values == NULL )
+            {
+                comboBox->clear();
+                return comboBox;
+            }
+            // method widget:addvalue()
             for( p_value = p_widget->p_values;
                  p_value != NULL;
                  p_value = p_value->p_next )
             {
-                comboBox->addItem( qfu( p_value->psz_text ), p_value->i_id );
-            }
-            /* Set current item */
-            if( p_widget->psz_text )
-            {
-                int idx = comboBox->findText( qfu( p_widget->psz_text ) );
-                if( idx >= 0 )
-                    comboBox->setCurrentIndex( idx );
+                if ( comboBox->findText( qfu( p_value->psz_text ) ) < 0 )
+                    comboBox->addItem( qfu( p_value->psz_text ), p_value->i_id );
             }
             return comboBox;
 

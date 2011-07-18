@@ -18,6 +18,7 @@ Alex Antropoff <alant at transtelecom dot md> - RFC3016 (LATM) RTP packetizer ex
 Alex Izvorski <aizvorski at gmail dot com> - some more x264 options
 Alexander Didebulidze <alexander.didebulidze at stusta dot mhn dot de> - Georgian localization
 Alexander Gall <gall at switch dot ch> - Solaris fixes and CDDB fixes
+Alexander Law <exclusion _@_ gmail d0t com> - Russian translation
 Alexey Lugin <alex at ukrlocal dot info> - Ukrainian translation
 Alexey Salmin <alexey dot salmin at gmail dot com> - Russian localisation
 Alexis Ballier <aballlier at gentoo dot org> - Additional options in configure
@@ -280,6 +281,7 @@ Pierre-Luc Beaudoin - Vorbis 9 channels patch, Jack input fixes.
 Pierre Marc Dumuid <pierre.dumuid at adelaide dot edu dot au> - Playlist patches
 Pierre Ynard <linkfanel at yahoo dot fr> - WinCE and win32 fixes
 Pittayakom Saingtong <develop5 qt datawiz dot co dot th> - Thai localisation
+Predrag Ljubenović <predragljubenovic@gmail.com> - Serbian localisation
 Przemyslaw Fiala <bl4 a playker dot info> - MMS/TCP fix
 Régis Duchesne <regis at via.ecp.fr> - original VLC code
 Remco Poortinga <poortinga at telin.nl> - IPv6 multicast patch

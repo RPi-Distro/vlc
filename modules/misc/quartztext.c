@@ -2,7 +2,7 @@
  * quartztext.c : Put text on the video, using Mac OS X Quartz Engine
  *****************************************************************************
  * Copyright (C) 2007, 2009 the VideoLAN team
- * $Id: 17060ba885abf693731866182aab8ec4cd12e365 $
+ * $Id: bcebfa5ba1955f132b918dc65c9ea1a98acfcd6b $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *
@@ -82,7 +82,7 @@ static void setFontAttibutes( char *psz_fontname, int i_font_size, uint32_t i_fo
 #define FONTSIZER_TEXT N_("Relative font size")
 #define FONTSIZER_LONGTEXT N_("This is the relative default size of the " \
     "fonts that will be rendered on the video. If absolute font size is set, "\
-    "relative size will be overriden." )
+    "relative size will be overridden." )
 #define COLOR_TEXT N_("Text default color")
 #define COLOR_LONGTEXT N_("The color of the text that will be rendered on "\
     "the video. This must be an hexadecimal (like HTML colors). The first two "\

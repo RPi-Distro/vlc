@@ -2,7 +2,7 @@
  * extension.c: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 7fa4ca2fc2b3f38d5871f84da2008973c3f74e29 $
+ * $Id: bd9375a78eaac79d9c6d91e5d45d242350cb4fda $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -558,6 +558,13 @@ static int Control( extensions_manager_t *p_mgr, int i_control, va_list args )
             }
             break;
         }
+        case EXTENSION_META_CHANGED:
+        {
+            extension_t *p_ext;
+            p_ext = ( extension_t* ) va_arg( args, extension_t* );
+            PushCommand( p_ext, CMD_UPDATE_META );
+            break;
+        }
         default:
             msg_Warn( p_mgr, "Control '%d' not yet implemented in Extension",
                       i_control );
@@ -590,6 +597,7 @@ int lua_ExtensionDeactivate( extensions_manager_t *p_mgr, extension_t *p_ext )
             vlc_gc_decref( p_item );
         }
         vlc_object_release( p_ext->p_sys->p_input );
+        p_ext->p_sys->p_input = NULL;
     }
 
     int i_ret = lua_ExecuteFunction( p_mgr, p_ext, "deactivate", LUA_END );

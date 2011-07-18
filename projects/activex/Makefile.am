@@ -46,6 +46,8 @@ SOURCES_activex = \
     axvlc_idl.c \
     axvlc_idl.h \
     guiddef.h \
+    vlc_win32_fullscreen.cpp \
+    vlc_win32_fullscreen.h \
     $(NULL)
 
 DIST_rsrc = \
@@ -62,6 +64,11 @@ DIST_misc = \
     inplace.bmp \
     vlc16x16.bmp \
     test.html \
+    pixmaps/defullscreen.bmp \
+    pixmaps/play.bmp \
+    pixmaps/pause.bmp \
+    pixmaps/volume.bmp \
+    pixmaps/volume-muted.bmp \
     $(NULL)
 
 if BUILD_ACTIVEX

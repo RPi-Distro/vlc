@@ -1098,7 +1098,7 @@ STDMETHODIMP VLCVideo::toggleFullscreen()
     HRESULT hr = getMD(&p_md);
     if( SUCCEEDED(hr) )
     {
-        libvlc_toggle_fullscreen(p_md);
+        Instance()->toggleFullscreen();
     }
     return hr;
 };

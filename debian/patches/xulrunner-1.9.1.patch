@@ -4,7 +4,7 @@ Forwarded: not-needed
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4562,8 +4562,8 @@
+@@ -4559,8 +4559,8 @@
            if test -n "$i"
            then
              echo "Trying to find $i package" >&AS_MESSAGE_LOG_FD

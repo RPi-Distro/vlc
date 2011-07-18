@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: 00871e4a98612afad9fd8f0c2882b5ad4b2ad5fc $
+ * $Id: 729953587204886dc54fe6db80ed22ec081894be $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -87,10 +87,14 @@ int intf_Create( vlc_object_t *p_this, const char *psz_module )
                 VLC_VAR_HASCHOICE | VLC_VAR_ISCOMMAND );
     text.psz_string = _("Add Interface");
     var_Change( p_intf, "intf-add", VLC_VAR_SETTEXT, &text, NULL );
-
-    val.psz_string = (char *)"rc";
-    text.psz_string = (char *)_("Console");
-    var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
+#if !defined(WIN32) && defined(HAVE_ISATTY)
+    if( isatty( 0 ) )
+#endif
+    {
+        val.psz_string = (char *)"rc";
+        text.psz_string = (char *)_("Console");
+        var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
+    }
     val.psz_string = (char *)"telnet";
     text.psz_string = (char *)_("Telnet Interface");
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );

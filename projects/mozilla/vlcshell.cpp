@@ -2,7 +2,7 @@
  * vlcshell.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 883205b5311dc9de343e7e94592ab28ddba5519d $
+ * $Id: 9a3caa7d2e082f913264940c03884659c3eb3b98 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -751,6 +751,20 @@ static LRESULT CALLBACK Manage( HWND p_hwnd, UINT i_msg, WPARAM wpar, LPARAM lpa
                           DT_CENTER|DT_VCENTER|DT_SINGLELINE);
 
             EndPaint( p_hwnd, &paintstruct );
+            return 0L;
+        }
+        case WM_SIZE:{
+            int new_client_width = LOWORD(lpar);
+            int new_client_height = HIWORD(lpar);
+            //first child will be resized to client area
+            HWND hChildWnd = GetWindow(p_hwnd, GW_CHILD);
+            if(hChildWnd){
+                MoveWindow(hChildWnd, 0, 0, new_client_width, new_client_height, FALSE);
+            }
+            return 0L;
+        }
+        case WM_LBUTTONDBLCLK:{
+            p_plugin->toggle_fullscreen();
             return 0L;
         }
         default:

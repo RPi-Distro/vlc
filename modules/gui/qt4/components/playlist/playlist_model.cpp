@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 65348688772f46a4d548c09ba4b310bd410a975a $
+ * $Id: d19f523badafb6905e39217a5931d8ec48415ec5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakkka <ileoo (at) videolan dot org>
@@ -883,9 +883,8 @@ void PLModel::search( const QString& search_text, const QModelIndex & idx, bool 
         playlist_item_t *p_root = playlist_ItemGetById( p_playlist,
                                                         itemId( idx ) );
         assert( p_root );
-        const char *psz_name = qtu( search_text );
-        playlist_LiveSearchUpdate( p_playlist , p_root, psz_name, b_recursive );
-
+        playlist_LiveSearchUpdate( p_playlist , p_root, qtu( search_text ),
+                                   b_recursive );
         if( idx.isValid() )
         {
             PLItem *searchRoot = getItem( idx );

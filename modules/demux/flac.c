@@ -2,7 +2,7 @@
  * flac.c : FLAC demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: f402e272a5b3c635e2ab9efc73b8f04367a573e5 $
+ * $Id: 01e5be1fc1c9e429e091db18888fd033a7baea1c $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -118,9 +118,13 @@ static int Open( vlc_object_t * p_this )
                  "continuing anyway" );
     }
 
+    p_sys = malloc( sizeof( demux_sys_t ) );
+    if( unlikely(p_sys == NULL) )
+        return VLC_ENOMEM;
+
     p_demux->pf_demux   = Demux;
     p_demux->pf_control = Control;
-    p_demux->p_sys      = p_sys = malloc( sizeof( demux_sys_t ) );
+    p_demux->p_sys      = p_sys;
     p_sys->b_start = true;
     p_sys->p_meta = NULL;
     memset( &p_sys->replay_gain, 0, sizeof(p_sys->replay_gain) );
@@ -401,7 +405,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_EGENERIC;
 
         *pi_int = p_sys->i_attachments;;
-        *ppp_attach = malloc( sizeof(input_attachment_t**) * p_sys->i_attachments );
+        *ppp_attach = xmalloc( sizeof(input_attachment_t**) * p_sys->i_attachments );
         for( i = 0; i < p_sys->i_attachments; i++ )
             (*ppp_attach)[i] = vlc_input_attachment_Duplicate( p_sys->attachments[i] );
         return VLC_SUCCESS;
