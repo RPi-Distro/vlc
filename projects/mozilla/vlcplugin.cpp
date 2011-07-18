@@ -2,7 +2,7 @@
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2010 the VideoLAN team
- * $Id: dea87e6a8ef98256f1c131057f1afab7d7220b66 $
+ * $Id: fb6e00f43d716e99f73f9344c6b574328f2b283e $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -45,6 +45,34 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
+
+
+#ifdef XP_WIN
+#include "vlc_win32_fullscreen.h"
+
+static HMODULE hDllModule= 0;
+
+HMODULE DllGetModule()
+{
+    return hDllModule;
+};
+
+extern "C"
+BOOL WINAPI DllMain(HANDLE hModule, DWORD fdwReason, LPVOID lpReserved )
+{
+    switch( fdwReason )
+    {
+        case DLL_PROCESS_ATTACH:
+            hDllModule = (HMODULE)hModule;
+            break;
+        default:
+            break;
+    }
+    return TRUE;
+};
+
+#endif
+
 
 /*****************************************************************************
  * utilitiy functions
@@ -124,6 +152,7 @@ VlcPlugin::VlcPlugin( NPP instance, uint16_t mode ) :
     psz_baseURL(NULL)
 #if defined(XP_WIN)
     ,pf_wndproc(NULL)
+    ,_WindowsManager(DllGetModule())
 #endif
 #if defined(XP_UNIX)
     ,i_width((unsigned)-1)
@@ -510,6 +539,14 @@ VlcPlugin::~VlcPlugin()
         libvlc_release(libvlc_instance);
 }
 
+void VlcPlugin::setWindow(const NPWindow &window)
+{
+    npwindow = window;
+#ifdef XP_WIN
+    _WindowsManager.CreateWindows((HWND)(getWindow().window));
+#endif
+};
+
 /*****************************************************************************
  * VlcPlugin playlist replacement methods
  *****************************************************************************/
@@ -523,8 +560,7 @@ void VlcPlugin::set_player_window()
     // XXX FIXME insert appropriate call here
 #endif
 #ifdef XP_WIN
-    libvlc_media_player_set_hwnd(libvlc_media_player,
-                                 getWindow().window);
+    _WindowsManager.LibVlcAttach(libvlc_media_player);
 #endif
 }
 
@@ -645,22 +681,47 @@ int VlcPlugin::playlist_count()
 
 void VlcPlugin::toggle_fullscreen()
 {
+#ifdef XP_WIN
+    if(!get_fullscreen()){//now in windowed mode
+        set_fullscreen(true);
+    }
+    else if(get_fullscreen()){//now in fullscreen mode
+        set_fullscreen(false);
+    }
+    else {
+        //and what it meen?
+    }
+#else
     if( playlist_isplaying() )
         libvlc_toggle_fullscreen(libvlc_media_player);
+#endif
 }
 
 void VlcPlugin::set_fullscreen( int yes )
 {
+#ifdef XP_WIN
+    if(yes){
+        _WindowsManager.StartFullScreen();
+    }
+    else{
+        _WindowsManager.EndFullScreen();
+    }
+#else
     if( playlist_isplaying() )
         libvlc_set_fullscreen(libvlc_media_player,yes);
+#endif
 }
 
 int  VlcPlugin::get_fullscreen()
 {
+#ifdef XP_WIN
+    return _WindowsManager.IsFullScreen();
+#else
     int r = 0;
     if( playlist_isplaying() )
         r = libvlc_get_fullscreen(libvlc_media_player);
     return r;
+#endif
 }
 
 bool  VlcPlugin::player_has_vout()

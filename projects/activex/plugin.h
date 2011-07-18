@@ -29,6 +29,7 @@
 
 #include <vlc/vlc.h>
 
+#include "vlc_win32_fullscreen.h"
 extern "C" const GUID CLSID_VLCPlugin;
 extern "C" const GUID CLSID_VLCPlugin2;
 extern "C" const GUID LIBID_AXVLC;
@@ -213,6 +214,9 @@ public:
     // control geometry within container
     RECT getPosRect(void) { return _posRect; };
     inline HWND getInPlaceWindow(void) const { return _inplacewnd; };
+    void toggleFullscreen();
+
+
     BOOL isInPlaceActive(void);
 
     /*
@@ -355,6 +359,7 @@ private:
 
     // in place activated window (Plugin window)
     HWND _inplacewnd;
+    VLCWindowsManager _WindowsManager;
 
     VLCPluginClass* _p_class;
     ULONG _i_ref;

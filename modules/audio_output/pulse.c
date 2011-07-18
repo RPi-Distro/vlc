@@ -273,7 +273,7 @@ static int Open(vlc_object_t *obj)
     aout_instance_t *aout = (aout_instance_t *)obj;
 
 #if !defined(PA_CHECK_VERSION) || !PA_CHECK_VERSION(0,9,22)
-    if( !vlc_xlib_init( p_this ) )
+    if( !vlc_xlib_init( obj ) )
         return VLC_EGENERIC;
 #endif
 

@@ -2,7 +2,7 @@
  * libvlc.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: a24d6eb6d02564e4e16fbb534c82ee2d9a2a2dcd $
+ * $Id: 0cc92f073455bd4ea7823564de9e332ad19b6a32 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -89,21 +89,21 @@ VLC_PUBLIC_API const char *libvlc_errmsg (void);
 
 /**
  * Clears the LibVLC error status for the current thread. This is optional.
- * By default, the error status is automatically overriden when a new error
+ * By default, the error status is automatically overridden when a new error
  * occurs, and destroyed when the thread exits.
  */
 VLC_PUBLIC_API void libvlc_clearerr (void);
 
 /**
  * Sets the LibVLC error status and message for the current thread.
- * Any previous error is overriden.
+ * Any previous error is overridden.
  * @return a nul terminated string in any case
  */
 const char *libvlc_vprinterr (const char *fmt, va_list ap);
 
 /**
  * Sets the LibVLC error status and message for the current thread.
- * Any previous error is overriden.
+ * Any previous error is overridden.
  * @return a nul terminated string in any case
  */
 const char *libvlc_printerr (const char *fmt, ...);

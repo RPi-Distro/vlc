@@ -2,7 +2,7 @@
  * cdg.c : cdg file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: 6cc401fc5737bef64d3b4ebb29e5853a4c7a8b63 $
+ * $Id: ef9125ee4cd26a54f3c81dc0e7653fef09f983d1 $
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
@@ -89,9 +89,13 @@ static int Open( vlc_object_t * p_this )
 //        return VLC_EGENERIC;
 //    }
 
+    p_sys = malloc( sizeof( demux_sys_t ) );
+    if( unlikely(p_sys == NULL) )
+        return VLC_ENOMEM;
+
     p_demux->pf_demux   = Demux;
     p_demux->pf_control = Control;
-    p_demux->p_sys      = p_sys = malloc( sizeof( demux_sys_t ) );
+    p_demux->p_sys      = p_sys;
 
     /* */
     es_format_Init( &p_sys->fmt, VIDEO_ES, VLC_CODEC_CDG );

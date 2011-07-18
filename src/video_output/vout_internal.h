@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: ffbe222366cb2acb43803783ea0f865405438896 $
+ * $Id: ec02e1f1b38ad803d97bd40b6de6a0e68305abfa $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -107,12 +107,12 @@ struct vout_thread_sys_t
     vlc_mouse_t     mouse;
 };
 
-/* DO NOT use vout_RenderPicture unless you are in src/video_ouput */
+/* DO NOT use vout_RenderPicture unless you are in src/video_output */
 picture_t *vout_RenderPicture( vout_thread_t *, picture_t *,
                                subpicture_t *,
                                mtime_t render_date );
 
-/* DO NOT use vout_UsePictureLocked unless you are in src/video_ouput
+/* DO NOT use vout_UsePictureLocked unless you are in src/video_output
  *
  * This function supposes that you call it with picture_lock taken.
  */

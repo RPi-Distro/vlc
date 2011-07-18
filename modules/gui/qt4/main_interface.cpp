@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 32f6c496f2935f9a97ee18e8da319121b51bdaba $
+ * $Id: 4a85795a7658a251b9d89bfb87bf8652c7f14aad $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -1143,8 +1143,9 @@ void MainInterface::wheelEvent( QWheelEvent *e )
 void MainInterface::closeEvent( QCloseEvent *e )
 {
     //hide();
-    e->ignore();
     emit askToQuit();
+    /* Accept session quit. Otherwise we break the desktop mamager. */
+    e->accept();
 }
 
 void MainInterface::setInterfaceFullScreen( bool fs )

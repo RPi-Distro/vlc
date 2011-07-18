@@ -1,3 +1,655 @@
+commit e4974acd30cd55d87841ab1e9d027d88831f6e79
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Jul 12 15:45:43 2011 +0200
+
+    lua: fix vlc.msg.dbg with multiple parameters
+    (cherry picked from commit 00d43bb27c4c6e3b4dbcd8aa43b3af58536b3c5b)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit db1a0b4396e3ddd2b81c1466caf23a937aec6a6f
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Thu Jul 14 10:41:35 2011 +0400
+
+    LUA: Fix MPORA playlist parser.
+    (cherry picked from commit 04d461bceab027028f6df19e8032e0df517f071c)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e2dea275294ad3db93217b5a5dac039a61a53a4e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Jul 14 13:14:26 2011 +0200
+
+    Update NEWS
+
+commit 4d35f1349c5c64accd1b8966a32053483c421c2a
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Jul 13 16:05:46 2011 +0200
+
+    contribs: updated binary package for Mac including latest libav, libass and libfreetype
+
+commit 2730f9016fa514eeb75e670b49254a3b991adb60
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jul 12 21:12:03 2011 +0300
+
+    News for CVE-2011-2587 and CVE-2588
+
+commit 0d5af8cab21ab2acefc6e2c978a95ee0c6476565
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jul 10 23:22:21 2011 +0300
+
+    AVI: abort on allocation failure
+    
+    (cherry picked from commit fb4754ad766a93452068416a5c9eca5b1bd632b4)
+    
+    Conflicts:
+    
+    	modules/demux/avi/libavi.c
+
+commit 6953ce0862161d09c2b7ca8686a550527a11b9a2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jul 10 23:14:40 2011 +0300
+
+    AVI: fix heap buffer overflow (CVE-2011-2588)
+    
+    (cherry picked from commit 9c14964bd11482d5c1d6c0e223440f9f1e5b1831)
+
+commit 3e7f0de57218f76a77f6b1759970e8740fd6ef0c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jul 10 23:36:31 2011 +0300
+
+    real: fix heap buffer overflow (CVE-2011-2587)
+    
+    (cherry picked from commit 1bce40644cddee93b4b1877a94a6ce345f32852c)
+
+commit d5f6738c0ff194ff92f73eafed1471f399a820ad
+Author: Éric Lassauge <lassauge@users.sourceforge.net>
+Date:   Mon Jul 11 22:01:37 2011 +0100
+
+    l10n: French update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit be62ddf7b0ab09f86d6b9848cde1d9f59f160528
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jul 11 22:49:54 2011 +0300
+
+    Update input item type guesses
+    
+    (cherry picked from commit 8b85c017186a2591e9be223c2efef64419051256)
+    
+    Some schemes are not supported in VLC 1.1, but this is not an issue.
+
+commit 6314bbca4f31c46cf34d819c206dd640935fffc8
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jul 10 23:40:14 2011 +0300
+
+    Abort an demux allocation failures
+    
+    (cherry picked from commit 566fe8b1e12e6f1442c51359b33f061b16327055)
+    
+    Conflicts:
+    
+    	modules/demux/oggseek.c
+    	modules/demux/stl.c
+
+commit f38f9dbc6a4b783b2d6cf1867846d2fc641e6e9f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jul 11 22:28:28 2011 +0300
+
+    Check most demux_t.p_sys allocations
+    
+    (cherry picked from commit 1cdbc7b6f2294024815f3d28128c8a7bf21156cb)
+
+commit 7402eee9430fedd258934a4a3e5bd38b21de129d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Jul 10 23:21:23 2011 +0300
+
+    Add xcalloc(). Do not use this in new code!
+    
+    (cherry picked from commit c1f0e3ce2323f66c99f34065fad62de2c3cbe8d8)
+
+commit 99fbdecc596055536b61739414d98d819d7643a4
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Jul 11 16:01:21 2011 +0200
+
+    macosx: make sure that we don't block media keys for iTunes in case the user doesn't want to use them within VLC
+    
+    Changing this option requires a relaunch now, which is automatically offered when needed.
+
+commit df23caf7a0620aa8987d8d57bf97d427fdd98d4f
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Jul 11 15:23:54 2011 +0200
+
+    auhal: fixed detection of available output stream formats
+
+commit aa947c54ca4415c96e3d8c32722047cfc76679af
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jul 11 09:54:13 2011 +0200
+
+    Update NEWS
+
+commit 00947ef061c6750c7210356744958e32af30cd0e
+Author: Ron Frederick <ronf@timeheart.net>
+Date:   Sat Jul 9 14:02:05 2011 -0700
+
+    MacOS GUI: Tie display fade to "Black out" preference
+    
+    Change the MacOS GUI to trigger the fade of all the displays to black
+    when entering & leaving full screen mode only if the "Black out other
+    displays" preference is set.
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 3a3937f7d87fb3eaae8ea7503da45195be866b46
+Author: Sergey Radionov <rsatom@gmail.com>
+Date:   Sat Jul 9 12:51:44 2011 +0700
+
+    Win32: NPAPI Fullscreen support
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c9dfaf20a5ba035292c30a8fed206719c6bb8d62
+Author: Sergey Radionov <rsatom@gmail.com>
+Date:   Fri Jun 17 22:42:42 2011 +0700
+
+    ActiveX: Fullscreen support
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 112fe1492e4a515ce405af6ea2c0fdc9c5fc8101
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Jul 9 17:50:12 2011 +0200
+
+    Taglib: more debug about Cover Art
+
+commit 898d23492d49455a638c269678f981f9736cac84
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Sat May 14 14:09:10 2011 +0300
+
+    Taglib: support for wma/ape and improve mp4 support
+    
+    Notably for Cover Art support
+    
+    (cherry picked from commit c21bb29ae63d827b24396a5fd0d024768709dd85)
+    (cherry picked from commit 277eb4cfbc9c7b37752b781029899177caade0dd)
+    (cherry picked from commit c405205e9a82ad0b1b63556f718580ef8ccd0205)
+    (cherry picked from commit 01cf70073fb52a2a8a7e504eaa2fe8a22c9e382b)
+    (cherry picked from commit b4b357ee09e5a99373b99d5c609bf832f484f748)
+    (cherry picked from commit 599eee103d3b6d597b8e5a4f3c9cd86df931e7cf)
+    (cherry picked from commit d158270ed7e2a3c1aea9fa137e65a42600e94f44)
+    (cherry picked from commit 57333f5920db4a41a2d9a7965bb4d7a1df7e61c2)
+    (cherry picked from commit 449b78e85a7867e38dc1fafe1b10f8339faea418)
+    (cherry picked from commit 7bdcc742148598bb17ebfb2eaeb4eeb378d13d81)
+    (cherry picked from commit 10ca2d59677fc9e6d551f420fe87887b050f354a)
+    (cherry picked from commit 4bdaae499b63956393104639300747fc25de28af)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 436d36ccdb6c3658eab34697ec8a3805ef243cbc
+Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
+Date:   Fri Jul 8 15:55:28 2011 +0200
+
+    lua: Propagate meta_changed events.
+    
+    Fixes #5026
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 006127ff5a7121e3faebf0d947f570713718ea9c)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 7045ed74382196e92b65c99cdfd512cfedf268db
+Author: Alexey Sokolov <alexey@alexeysokolov.co.cc>
+Date:   Sat Jul 9 10:54:46 2011 +0700
+
+    Fix doxygen for libvlc_audio_output_set
+    
+    Tests show that current docs are wrong.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit fd4a0ddc54b4571272e68d29c9ad733b9544d811)
+
+commit bc5cfadd31c483e2b97fbb46d907a6d24dc893ba
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Jul 8 23:14:11 2011 +0300
+
+    Revert "Add Dirac encoding support to VLC using the Schroedinger library."
+    
+    This reverts commit fd6caa6481f3501a3a5f387000834a5e59938890.
+
+commit a3215878c3abfa181a22b934abb6b91f17180404
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Fri Jul 8 18:31:09 2011 +0100
+
+    Add Russian translator
+
+commit c213cab22eb0e05e70ade28f518f409dc43af52d
+Author: Sidney Doria <ssdoria@gmail.com>
+Date:   Fri Jul 8 18:29:08 2011 +0100
+
+    l10n: Brazillian Portuguese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit b8fbc25c7e98d385fb8bd7b52e8ee6efb8b1ca85
+Author: Alexander Law <exclusion@gmail.com>
+Date:   Fri Jul 8 18:12:41 2011 +0100
+
+    l10n: Russian update
+    
+    Reached 100%
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 36e7d201945a62781110b962264498cfe2a54dde
+Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
+Date:   Thu Jul 7 12:26:25 2011 +0200
+
+    lua: qt4: Fixing dropdown update function.
+    
+    This closes #5000
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 7c9fdd3c59815196f9fc4cdfa7f7f2bc09cbfd67)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f7b9cb963d959c9b3d2919a9dab6cefa4b3e8c0c
+Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
+Date:   Wed Jul 6 18:27:30 2011 +0200
+
+    lua: Don't update a widget that was just created.
+    
+    Ref: #5000
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 797a7fe2e200fbe8ae478f62e530e2a03226a5e2)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3b336d0435d4195af946c05a78b26a7d28acbd12
+Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
+Date:   Tue Jul 5 14:19:59 2011 +0200
+
+    lua: Fixing a comment.
+    
+    Since set_text can be called on a label, it seems to be an editable
+    label.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 16567ae5c71c4d003a658bcde1782deae4ee5207)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c85aa861334a2693ee404301541a64d8941dd9eb
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 6 19:17:14 2011 +0300
+
+    Qt4: accept close event on main interface (fix #4606)
+    
+    If the event is ignored, the Qt4-X11 will reject the quit ICCM request.
+    This annoyingly caused VLC to inhibit logging out.
+    (cherry picked from commit 96fce709b0615071b5ddc17d8560a9c5794cc3b9)
+    
+    Conflicts:
+    
+    	modules/gui/qt4/main_interface.cpp
+
+commit 483e293e09ed24065ff0b9ebce93825e717354a7
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jul 5 14:36:04 2011 +0200
+
+    auhal: forgot to unlock a lock..
+
+commit 6471e0ed7219f8315c0fc7b8d45cf6332d869da0
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jul 5 14:14:59 2011 +0200
+
+    auhal: updated to the latest API
+    
+    the newly used API was introduced in OS X 10.5, while we still tried to use an older one
+    
+    note that optical audio output is completely untested
+
+commit 925b22558cb7ffa3f6fea1db4bcbddd4586b53bb
+Author: Hugo Beauzée-Luyssen <beauze.h@gmail.com>
+Date:   Mon Jul 4 17:59:55 2011 +0200
+
+    lua: Don't crash when reactivating an extension.
+    
+    Close #5019
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 0bade2cde2129fb7b719fd48a89190bcd3d5c650)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ba1684f7e5ca3dff1117f4574c2e2581aa5285e5
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Jul 3 20:25:54 2011 +0200
+
+    macosx: invert scrolling direction if the devices inverts its event
+    
+    aka if you scroll to the right, you want the movie to skip to the right, etc.
+
+commit 15f4f967e4a339ff1423f2dac44aa9ff11b41250
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 8 02:49:57 2011 +0200
+
+    Qt4: add the browsed folder to the device combo
+    (cherry picked from commit af6a6b2b5b918b55e93083889f72cf970770e82d)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b0c5a17dde7d2585a32cbf8eafed7f64e04d010e
+Author: Ashok Bhat <ashok.bhat@gmail.com>
+Date:   Thu Jun 9 19:07:05 2011 +0530
+
+    Fixed bugs in AVI mux module
+    
+    Closes #21 (partly, at least), #4288 and #4304
+    
+    Description
+    ===================
+    Fixed bugs in AVI mux to support creation of AVI files with following popular video/audio combinations
+    (a) MPEG4 video (aka XVID) with MP3/AC3/PCM Audio
+    (b) MJPEG video with PCM audio.
+    AVI as such is not used for storing other formats like H.264, AAC etc
+    
+    Bug fix details
+    ===================
+    (a) 'hdrl' list size was wrong. It incorrectly included some parts of MOVI list, size taken by hdrl LIST tag and its size and Size of 'RIFF', File size and 'AVI ' type.
+    (b) Block Align was set to 0 in case of MP3/AC3. It has to be non-zero. It has to been set to 1.
+    (c) XVID video decoders expect header to present as part of first frame. Added code to append header present at end of BITMAPINFOHEADER to beginning of the first video frame in case of XVID video.
+    (d) nAvgBytesPerSec of Waveformatex was not properly being set in case of PCM audio.
+    (e) Last index entry value was set to garbage due to incorrect index size calculation.
+    
+    Test PC configuration
+    ===================
+    Tested with Windows Media Player 11 installed on Windows XP Service pack 3 machine with following directshow filters installed
+    (a) XVID MPEG4 video decoder filter for MPEG4 video decoding
+    (b) LAME MP3 codec for MP3 audio decoding
+    
+    Combinations tested
+    ====================
+    (a) MPEG4/MP3 transcode
+    vlc -I dummy "Mr_MrsSmith-h264_aac.mp4" :sout="#transcode{vcodec=mp4v,vb=1024,fps=25,acodec=mpga,ab=128}:standard{mux=avi,access=file,dst=out.avi}" vlc://quit
+    
+    (b) MPEG4/AC3 transcode
+    vlc -I dummy "Mr_MrsSmith-h264_aac.mp4" :sout="#transcode{vcodec=mp4v,vb=1024,fps=25,acodec=a52, ab=128}:standard{mux=avi,access=file,dst=out.avi}" vlc://quit
+    
+    (c) MPEG4/PCM(16bit) transcode
+    vlc -I dummy "Mr_MrsSmith-h264_aac.mp4" :sout="#transcode{vcodec=mp4v,vb=1024,fps=25,acodec=s16l}:standard{mux=avi,access=file,dst=out.avi}" vlc://quit
+    
+    (d) MPEG4/PCM(24 bit) transcode
+    vlc -I dummy "Mr_MrsSmith-h264_aac.mp4" :sout="#transcode{vcodec=mp4v,vb=1024,fps=25,acodec=s24l}:standard{mux=avi,access=file,dst=out.avi}" vlc://quit
+    
+    (e) MPEG4/PCM(32bit) transcode
+    vlc -I dummy "Mr_MrsSmith-h264_aac.mp4" :sout="#transcode{vcodec=mp4v,vb=1024,fps=25,acodec=s32l}:standard{mux=avi,access=file,dst=out.avi}" vlc://quit
+    
+    (f) MJPEG/PCM(32bit) transcode
+    vlc -I dummy "Mr_MrsSmith-h264_aac.mp4" :sout="#transcode{vcodec=mjpeg,vb=1024,fps=25,acodec=s32l}:standard{mux=avi,access=file,dst=out.avi}" vlc://quit
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 1e6d1f3cb3d0ee4b36a939b17eb3a1de2131d34d)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 219806e43685f9de9b20069189d05608eb009afa
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jun 27 19:15:00 2011 +0300
+
+    Mark srtp-key and srtp-salt safe
+    (cherry picked from commit 73cadb239d790835d81a83e53069fbe768a2d260)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4b36e6a15759496bd8ad0b990cab37ce59194f9c
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Jun 22 02:28:46 2011 +0200
+
+    Makefile: kludge for libtool quirk with WinCE packages
+
+commit 5c7b2b5b8c36c0cec4d4a7df2baf95a7ee21b4bd
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Jun 22 01:01:46 2011 +0200
+
+    intf-add: list CLI on win32 regardless of stdin
+    
+    Win32 spawns its own console so this is irrelevant
+    (cherry picked from commit f1433011c2cae9e25cfcb56d64cc92b2f523df4e)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 5d6caeb00f16c3a65ce117a2085d3b25aa71f4d4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Jun 21 21:16:58 2011 +0200
+
+    Update NEWS and configure.ac for 1.1.11
+
+commit 9ab44d92cad62da0bc330b5620aa6c3ca49636d8
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Mon Jun 20 23:05:17 2011 +0100
+
+    Comment 1.2 only line until we move l10n to 1.2
+
+commit 2bc38992a6bdcf4eea681b390e199b2874124b12
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jun 20 20:07:48 2011 +0300
+
+    intf-add: do not list CLI if stdin is not a TTY (fix #4955)
+    
+    (cherry picked from commit 8ac466488795c555fb32978509eb62df40ad57f0)
+
+commit 146dedfd039a3f592d40ccb00b1e9e2a136d5228
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jun 20 19:54:06 2011 +0300
+
+    Respect --no-playlist-autostart (fix #3541)
+    
+    (cherry picked from commit 2562696be3f12bf080dea6fa6a0b690bbd761e30)
+
+commit 543827e1560d6549aa7344ad3c93334dee14b658
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jun 20 19:51:51 2011 +0300
+
+    Playlist: create playlist-autostart just once
+    
+    (cherry picked from commit da59205e44a1d105ad020cd9a94f8e37e6a012c7)
+
+commit 3629cc2b792c132414fb8608d57aaf9e9ee0cee1
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Sat Jun 18 17:35:45 2011 +0100
+
+    Fix serbian.nsh
+    
+    Blind commit
+
+commit abb7520a0ef3a066acffdf67740ffff02c2aae51
+Author: Mindaugas Baranauskas <embar@super.lt>
+Date:   Sat Jun 18 17:23:35 2011 +0100
+
+    l10n: Lithuanian fixes
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 68c97e840fd70e0306db616a407d30e56afe2e94
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jun 18 12:57:56 2011 +0300
+
+    Qt4: don't keep reference to toAscii() temporary array
+    
+    (See also previous commit)
+    (cherry picked from commit cf190075bda0c39e2a203104d9095c450e283def)
+
+commit 0259254ca63344f2b94fbc0e153c332c9a65f54d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jun 18 12:53:35 2011 +0300
+
+    Qt4: never assign qtu() to a variable
+    
+    As far as I understand, this breaks C++ object scoping. qtu() creates
+    a temporary anonymous QByteArray from its QString parameter. That array
+    is destroyed at the end of the expression, thus the return value of
+    qtu() becomes a dangling pointer.
+    (cherry picked from commit 41c3dd9b229c44cb313786f96cc2089a9d5197cc)
+
+commit 44e61560bee67d741ed4278fbcac310cb2cb6bf5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jun 18 12:05:28 2011 +0300
+
+    dvdnav: also white-list *.img files (fixes #4951)
+    
+    (cherry picked from commit 00eb305f2afebf28dd649d507aca4901d0ad1e8a)
+
+commit 16a0bf72be3471801e2d6c5ea7b2ae6077d52a1c
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sat Jun 18 03:12:40 2011 +0200
+
+    Fix copy-paste typo in installer
+
+commit 9e26d8d3b6ddf539355b010886bac70b46f90ade
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sat Jun 18 02:32:11 2011 +0200
+
+    Fix typo in installer
+
+commit a98b28dc5e782f87ab9ec89b164841697be6db22
+Author: Mindaugas Baranauskas <embar@super.lt>
+Date:   Thu Jun 16 23:52:32 2011 +0100
+
+    l10n: Minor Lithuanian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 071f0c94b3f0ac9b0c483c92fc741cb13e4f9a81
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Thu Jun 16 23:46:41 2011 +0100
+
+    add Serbian translator
+
+commit cf2d2aa46641b0d76f722e999a235097621e20d1
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Thu Jun 16 23:39:01 2011 +0100
+
+    Activate installer serbian translation
+
+commit a0869e9af5311cbbe477bc026fdeba1c08e817cb
+Author: Predrag Ljubenović <predragljubenovic@gmail.com>
+Date:   Thu Jun 16 23:38:35 2011 +0100
+
+    Add serbian translation of win installer
+
+commit f8801c6e5be899293b7cc82745669828c67c80f8
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jun 13 23:56:41 2011 +0300
+
+    Partially revert overridden spelling correction
+    
+    This caused duplciate strings in PO
+
+commit b52ad92158a4d43b28472b491ab4927b2f6f7f8f
+Author: Mike Cardillo <mcardillo55@gmail.com>
+Date:   Sun Jun 12 15:44:27 2011 +0200
+
+    Mac: Fixed bug #3312
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 78e38bbe3b6539792e93838950b56e366d488a20
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jun 11 22:43:33 2011 +0300
+
+    Spell overridden correctly
+
+commit 9f4f826b66d70f1d3f3df0410a22c0c5d68419ff
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jun 11 22:37:57 2011 +0300
+
+    Spell output correctly
+
+commit 48997070b31d66c2826e4dd15687ddacebf9134a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jun 9 19:36:31 2011 +0300
+
+    Add GNOME MIME types for Ogg Vorbis and Ogg Theora
+    
+    Pointed-out-by: Fabian Greffrath <fabian@greffrath.com> (Debian BTS)
+    (cherry picked from commit c5e166c05a49cacbabc52a32ee612533e909e882)
+    
+    Conflicts:
+    
+    	share/vlc.desktop
+
+commit e708af53ecfd97cd9e3244d48b19fe146b83fbd2
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Jun 8 18:48:22 2011 +0200
+
+    macosx: don't distribute images from the non-displayed dudiak intf
+
+commit 4829bb06f13d0e5287f951566ca9a99b0a706a79
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Jun 8 18:39:38 2011 +0200
+
+    macosx: fixed disappearing repeat button images introduced in [8f79caa3e4b56c73c719bfa7c444cccbf203aa19]
+    
+    Closes #4886
+
+commit 0fada6d7076e7229e01eb037de6b06fbb05f481a
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Wed Feb 10 13:19:42 2010 +0100
+
+    Win32(core): do not duplicate handle
+    
+    Unlike _endthread and ExitThread, _endthreadex doesn't close the handle.
+    It is therefore up to the caller to close it. Hence no need for an extra
+    handle duplication (that mostly amounted to a memory leak when the normal
+     path was used, i.e normal return from thread with implicit _endthreadex)
+    (cherry picked from commit afe774e0b19c7dcad8d0ae248480df1b0660a380)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 81c01f6f09ffe5e7928bdc38ba87f3e246f341fd
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Wed Feb 10 13:15:00 2010 +0100
+
+    Win32(core): _endthreadex(0) instead of _endthread()
+    
+    According to msdn doc, _endthreadex(0) is to be used when thread is
+     launched with _beginthreadex().
+    
+    Note that when returning from the normal path, an implicit _endthreadex is
+    issued anyway.  It is important to be consistent whatever the path, since
+    those final functions (_endthread, ExitThread, _endthreadex) don't have
+    the same deallocation policy.
+    (cherry picked from commit 99f71e5a62fdd14b031fdc89f452d873e3509c74)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 21260bbb732d9de5540f809e1a54bde740f12a95
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Tue Jun 7 00:43:56 2011 +0200
+
+    Fix ByteIOContext init on recent libavformat
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 4fc3bd15a3844e41a75760fa8e100feecea969a5)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bf764f7f0d60e88ab45a25cfb15f786533283f9e
+Author: Marian Hikanik <mhikanik@users.sourceforge.net>
+Date:   Mon Jun 6 22:42:49 2011 +0100
+
+    l10n: Slovak update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 90c91a987009701df006265185d29b1fbda134b7
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon Jun 6 23:31:05 2011 +0200
+
+    PulseAudio: build fix
+
 commit 09305aacb51cd138b76b3de61783284d838fd370
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Mon Jun 6 01:33:51 2011 +0200

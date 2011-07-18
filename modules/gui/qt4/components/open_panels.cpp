@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 70257faac3fea7f726c56764a516d9db532c6379 $
+ * $Id: b32108e25da89e43f043eeb09b98dc16a75d6e41 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -296,6 +296,7 @@ DiscOpenPanel::DiscOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
 
     ui.browseDiscButton->setToolTip( qtr( I_DEVICE_TOOLTIP ));
     ui.deviceCombo->setToolTip( qtr(I_DEVICE_TOOLTIP) );
+    ui.deviceCombo->setInsertPolicy( QComboBox::InsertAtTop );
 
 #ifdef WIN32 /* Disc drives probing for Windows */
     wchar_t szDrives[512];
@@ -496,8 +497,12 @@ void DiscOpenPanel::browseDevice()
 {
     QString dir = QFileDialog::getExistingDirectory( this,
             qtr( I_DEVICE_TOOLTIP ) );
-    if (!dir.isEmpty())
-        ui.deviceCombo->setEditText( toNativeSepNoSlash( dir ) );
+    if( !dir.isEmpty() )
+    {
+        ui.deviceCombo->addItem( toNativeSepNoSlash( dir ) );
+        ui.deviceCombo->setCurrentIndex( ui.deviceCombo->findText( toNativeSepNoSlash( dir ) ) );
+        updateMRL();
+    }
 
     updateMRL();
 }

@@ -2,7 +2,7 @@
  * vlc_video.h: common video definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2008 the VideoLAN team
- * $Id: e739d93611b9fa43335963ba4735d2a6a0126fb3 $
+ * $Id: 24c780c4983d3ef0994799f04c69b35079f6f028 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -93,7 +93,7 @@ VLC_EXPORT( int, vout_AllocatePicture,( vlc_object_t *p_this, picture_t *p_pic, 
  */
 
 /**
- * Video ouput thread private structure
+ * Video output thread private structure
  */
 typedef struct vout_thread_sys_t vout_thread_sys_t;
 
