@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: 6855d335d6262706c4291a9f35d8cc797fa93f9a $
+ * $Id: 2c36a969752524448f9e738fa298274d9009dff1 $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -887,6 +887,14 @@ static inline void *xrealloc (void *ptr, size_t len)
     if (unlikely (nptr == NULL))
         abort ();
     return nptr;
+}
+
+static inline void *xcalloc (size_t n, size_t size)
+{
+    void *ptr = calloc (n, size);
+    if (unlikely (ptr == NULL))
+        abort ();
+    return ptr;
 }
 
 /*****************************************************************************

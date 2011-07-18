@@ -2,7 +2,7 @@
  * alsa.c : alsa plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: 3d1b613a6960121ce23ed2fe0dca1521ae4bcec7 $
+ * $Id: 0a1f0f4d8b1b0a469d8d7ed847b11544dce13d50 $
  *
  * Authors: Henri Fallon <henri@videolan.org> - Original Author
  *          Jeffrey Baker <jwbaker@acm.org> - Port to ALSA 1.0 API
@@ -356,7 +356,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* Choose the IEC device for S/PDIF output:
-       if the device is overriden by the user then it will be the one
+       if the device is overridden by the user then it will be the one
        otherwise we compute the default device based on the output format. */
     if( AOUT_FMT_NON_LINEAR( &p_aout->output.output )
         && !strcmp( psz_device, DEFAULT_ALSA_DEVICE ) )

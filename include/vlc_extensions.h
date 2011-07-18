@@ -2,7 +2,7 @@
  * vlc_extension.h: Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 07c6221ae744008b426989cd1184ae17ee3ff513 $
+ * $Id: fa193a0e43952deef3c43885de35652c402ca625 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -74,8 +74,9 @@ enum
     EXTENSION_TRIGGER_ONLY,   /**< arg1: extension_t*, arg2: bool* */
     EXTENSION_TRIGGER,        /**< arg1: extension_t* */
     EXTENSION_TRIGGER_MENU,   /**< arg1: extension_t*, int (uint16_t) */
-    EXTENSION_SET_INPUT,      /**< arg1: extension_t*, arg2 (input_thread_t) */
+    EXTENSION_SET_INPUT,      /**< arg1: extension_t*, arg2 (input_thread_t*) */
     EXTENSION_PLAYING_CHANGED, /**< arg1: extension_t*, arg2 int( playing status ) */
+    EXTENSION_META_CHANGED,   /**< arg1: extension_t*, arg2 (input_item_t*) */
 };
 
 /**
@@ -159,6 +160,12 @@ static inline int extension_PlayingChanged( extensions_manager_t *p_mgr,
                                             int state )
 {
     return extension_Control( p_mgr, EXTENSION_PLAYING_CHANGED, p_ext, state );
+}
+
+static inline int extension_MetaChanged( extensions_manager_t *p_mgr,
+                                         extension_t *p_ext )
+{
+    return extension_Control( p_mgr, EXTENSION_META_CHANGED, p_ext );
 }
 
 /** Can this extension only be triggered but not activated?
@@ -246,7 +253,7 @@ static inline int extension_DialogCommand( extension_dialog_t* p_dialog,
 /// Widget types
 typedef enum
 {
-    EXTENSION_WIDGET_LABEL,      ///< Non editable text label
+    EXTENSION_WIDGET_LABEL,      ///< Text label
     EXTENSION_WIDGET_BUTTON,     ///< Clickable button
     EXTENSION_WIDGET_IMAGE,      ///< Image label (psz_text is local URI)
     EXTENSION_WIDGET_HTML,       ///< HTML or rich text area (non editable)

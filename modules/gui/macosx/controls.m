@@ -1,8 +1,8 @@
 /*****************************************************************************
  * controls.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: c6c94c907194267656ade07131e699d36e411cde $
+ * Copyright (C) 2002-2011 the VideoLAN team
+ * $Id: 01050f0ed1230cf66f67d3d2ba25063683f0a0db $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -61,9 +61,6 @@
     [o_specificTime_ok_btn setTitle: _NS("OK")];
     [o_specificTime_sec_lbl setStringValue: _NS("sec.")];
     [o_specificTime_goTo_lbl setStringValue: _NS("Jump to time")];
-
-    o_repeat_off = [NSImage imageNamed:@"repeat_embedded"];
-
 }
 
 
@@ -72,9 +69,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
     [o_fs_panel release];
-    [o_repeat_single release];
-    [o_repeat_all release];
-    [o_repeat_off release];
 
     [super dealloc];
 }
@@ -188,21 +182,18 @@
 /* three little ugly helpers */
 - (void)repeatOne
 {
-    [o_btn_repeat setImage: o_repeat_single];
-    [o_btn_repeat setAlternateImage: o_repeat_all];
-    [o_btn_repeat_embed setImage: [NSImage imageNamed:@"sidebarRepeatOneOn"]];
+    [o_btn_repeat setImage: [NSImage imageNamed:@"repeat_single_embedded_graphite"]];
+    [o_btn_repeat setAlternateImage: [NSImage imageNamed:@"repeat_embedded_graphite"]];
 }
 - (void)repeatAll
 {
-    [o_btn_repeat setImage: o_repeat_all];
-    [o_btn_repeat setAlternateImage: o_repeat_off];
-    [o_btn_repeat_embed setImage: [NSImage imageNamed:@"sidebarRepeatOn"]];
+    [o_btn_repeat setImage: [NSImage imageNamed:@"repeat_embedded_graphite"]];
+    [o_btn_repeat setAlternateImage: [NSImage imageNamed:@"repeat_embedded"]];
 }
 - (void)repeatOff
 {
-    [o_btn_repeat setImage: o_repeat_off];
-    [o_btn_repeat setAlternateImage: o_repeat_single];
-    [o_btn_repeat_embed setImage: [NSImage imageNamed:@"sidebarRepeat"]];
+    [o_btn_repeat setImage: [NSImage imageNamed:@"repeat_embedded"]];
+    [o_btn_repeat setAlternateImage: [NSImage imageNamed:@"repeat_embedded_graphite"]];
 }
 - (void)shuffle
 {
@@ -211,9 +202,9 @@
     var_Get( p_playlist, "random", &val );
     [o_btn_shuffle setState: val.b_bool];
 	if(val.b_bool)
-        [o_btn_shuffle_embed setImage: [NSImage imageNamed:@"sidebarShuffleOn"]];
+        [o_btn_shuffle_embed setImage: [NSImage imageNamed:@"shuffle_embedded_graphite"]];
 	else
-        [o_btn_shuffle_embed setImage: [NSImage imageNamed:@"sidebarShuffle"]];
+        [o_btn_shuffle_embed setImage: [NSImage imageNamed:@"shuffle_embedded"]];
 }
 
 - (IBAction)repeatButtonAction:(id)sender
@@ -568,19 +559,41 @@
 - (void)scrollWheel:(NSEvent *)theEvent
 {
     intf_thread_t * p_intf = VLCIntf;
+    BOOL b_invertedEventFromDevice = NO;
+    if ([theEvent respondsToSelector:@selector(isDirectionInvertedFromDevice)] )
+    {
+        if ([theEvent isDirectionInvertedFromDevice] )
+            b_invertedEventFromDevice = YES;
+    }
+
     float f_yabsvalue = [theEvent deltaY] > 0.0f ? [theEvent deltaY] : -[theEvent deltaY];
     float f_xabsvalue = [theEvent deltaX] > 0.0f ? [theEvent deltaX] : -[theEvent deltaX];
     int i, i_yvlckey, i_xvlckey;
 
-    if ([theEvent deltaY] < 0.0f)
-        i_yvlckey = KEY_MOUSEWHEELDOWN;
-    else
-        i_yvlckey = KEY_MOUSEWHEELUP;
+    if (b_invertedEventFromDevice )
+    {
+        if ([theEvent deltaY] > 0.0f)
+            i_yvlckey = KEY_MOUSEWHEELDOWN;
+        else
+            i_yvlckey = KEY_MOUSEWHEELUP;
 
-    if ([theEvent deltaX] < 0.0f)
-        i_xvlckey = KEY_MOUSEWHEELRIGHT;
+        if ([theEvent deltaX] > 0.0f)
+            i_xvlckey = KEY_MOUSEWHEELRIGHT;
+        else
+            i_xvlckey = KEY_MOUSEWHEELLEFT;
+    }
     else
-        i_xvlckey = KEY_MOUSEWHEELLEFT;
+    {
+        if ([theEvent deltaY] < 0.0f)
+            i_yvlckey = KEY_MOUSEWHEELDOWN;
+        else
+            i_yvlckey = KEY_MOUSEWHEELUP;
+
+        if ([theEvent deltaX] < 0.0f)
+            i_xvlckey = KEY_MOUSEWHEELRIGHT;
+        else
+            i_xvlckey = KEY_MOUSEWHEELLEFT;
+    }
 
     /* Send multiple key event, depending on the intensity of the event */
     for (i = 0; i < (int)(f_yabsvalue/4.+1.) && f_yabsvalue > 0.05 ; i++)
@@ -894,7 +907,7 @@
         input_thread_t * p_input = pl_CurrentInput( VLCIntf );
         if( p_input )
         {
-            unsigned int timeInSec = 0;
+            int64_t timeInSec = 0;
             NSString * fieldContent = [o_specificTime_enter_fld stringValue];
             if( [[fieldContent componentsSeparatedByString: @":"] count] > 1 &&
                 [[fieldContent componentsSeparatedByString: @":"] count] <= 3 )

@@ -2,7 +2,7 @@
  * real.c: Real demuxer.
  *****************************************************************************
  * Copyright (C) 2004, 2006-2007 the VideoLAN team
- * $Id: e3b6a07bba1fb887d9bc1b84dbecb1d530094fb8 $
+ * $Id: b0e267716e632f41762bd8d65c0c1ac79d11c01e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -841,7 +841,8 @@ static void DemuxAudioSipr( demux_t *p_demux, real_track_t *tk, mtime_t i_pts )
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t *p_block = tk->p_sipr_packet;
 
-    if( p_sys->i_buffer < tk->i_frame_size )
+    if( p_sys->i_buffer < tk->i_frame_size
+     || tk->i_sipr_subpacket_count >= tk->i_subpacket_h )
         return;
 
     if( !p_block )
@@ -851,7 +852,6 @@ static void DemuxAudioSipr( demux_t *p_demux, real_track_t *tk, mtime_t i_pts )
             return;
         tk->p_sipr_packet = p_block;
     }
-
     memcpy( p_block->p_buffer + tk->i_sipr_subpacket_count * tk->i_frame_size,
             p_sys->buffer, tk->i_frame_size );
     if (!tk->i_sipr_subpacket_count)
@@ -964,7 +964,7 @@ static char *StreamReadString2( stream_t *s )
     if( i_length <= 0 )
         return NULL;
 
-    char *psz_string = calloc( 1, i_length + 1 );
+    char *psz_string = xcalloc( 1, i_length + 1 );
 
     stream_Read( s, psz_string, i_length ); /* Valid even if !psz_string */
 
@@ -1657,18 +1657,18 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
         tk->i_subpackets =
             i_subpacket_h * i_frame_size / tk->i_subpacket_size;
         tk->p_subpackets =
-            calloc( tk->i_subpackets, sizeof(block_t *) );
+            xcalloc( tk->i_subpackets, sizeof(block_t *) );
         tk->p_subpackets_timecode =
-            calloc( tk->i_subpackets , sizeof( int64_t ) );
+            xcalloc( tk->i_subpackets , sizeof( int64_t ) );
     }
     else if( fmt.i_codec == VLC_CODEC_RA_288 )
     {
         tk->i_subpackets =
             i_subpacket_h * i_frame_size / tk->i_coded_frame_size;
         tk->p_subpackets =
-            calloc( tk->i_subpackets, sizeof(block_t *) );
+            xcalloc( tk->i_subpackets, sizeof(block_t *) );
         tk->p_subpackets_timecode =
-            calloc( tk->i_subpackets , sizeof( int64_t ) );
+            xcalloc( tk->i_subpackets , sizeof( int64_t ) );
     }
 
     /* Check if the calloc went correctly */

@@ -39,8 +39,12 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__append_1 = npvlc.rsrc
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__append_2 = VLC\ Plugin.plugin
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@am__append_1 = \
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@	vlc_win32_fullscreen.cpp \
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@	vlc_win32_fullscreen.h
+
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__append_2 = npvlc.rsrc
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__append_3 = VLC\ Plugin.plugin
 subdir = projects/mozilla
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/install.js.in $(srcdir)/install.rdf.in \
@@ -90,16 +94,18 @@ am__libvlcplugin_la_SOURCES_DIST = vlcshell.cpp vlcshell.h \
 	vlcplugin.cpp vlcplugin.h control/npolibvlc.cpp \
 	control/npolibvlc.h control/nporuntime.cpp \
 	control/nporuntime.h control/position.h support/classinfo.h \
+	vlc_win32_fullscreen.cpp vlc_win32_fullscreen.h \
 	support/npunix.cpp support/npmac.cpp support/npwin.cpp
-am__objects_1 = libvlcplugin_la-vlcshell.lo \
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@am__objects_1 = libvlcplugin_la-vlc_win32_fullscreen.lo
+am__objects_2 = libvlcplugin_la-vlcshell.lo \
 	libvlcplugin_la-vlcplugin.lo libvlcplugin_la-npolibvlc.lo \
-	libvlcplugin_la-nporuntime.lo
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__objects_2 = libvlcplugin_la-npunix.lo
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__objects_2 = libvlcplugin_la-npmac.lo
-@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@am__objects_2 =  \
+	libvlcplugin_la-nporuntime.lo $(am__objects_1)
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__objects_3 = libvlcplugin_la-npunix.lo
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__objects_3 = libvlcplugin_la-npmac.lo
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@am__objects_3 =  \
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@	libvlcplugin_la-npwin.lo
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am_libvlcplugin_la_OBJECTS = $(am__objects_1) \
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@	$(am__objects_2)
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am_libvlcplugin_la_OBJECTS = $(am__objects_2) \
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@	$(am__objects_3)
 libvlcplugin_la_OBJECTS = $(am_libvlcplugin_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -113,19 +119,21 @@ libvlcplugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 am__npvlc_la_SOURCES_DIST = vlcshell.cpp vlcshell.h vlcplugin.cpp \
 	vlcplugin.h control/npolibvlc.cpp control/npolibvlc.h \
 	control/nporuntime.cpp control/nporuntime.h control/position.h \
-	support/classinfo.h support/npunix.cpp support/npmac.cpp \
+	support/classinfo.h vlc_win32_fullscreen.cpp \
+	vlc_win32_fullscreen.h support/npunix.cpp support/npmac.cpp \
 	support/npwin.cpp
-am__objects_3 = npvlc_la-vlcshell.lo npvlc_la-vlcplugin.lo \
-	npvlc_la-npolibvlc.lo npvlc_la-nporuntime.lo
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__objects_4 = npvlc_la-npunix.lo
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__objects_4 = npvlc_la-npmac.lo
-@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@am__objects_4 =  \
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@am__objects_4 = npvlc_la-vlc_win32_fullscreen.lo
+am__objects_5 = npvlc_la-vlcshell.lo npvlc_la-vlcplugin.lo \
+	npvlc_la-npolibvlc.lo npvlc_la-nporuntime.lo $(am__objects_4)
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__objects_6 = npvlc_la-npunix.lo
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__objects_6 = npvlc_la-npmac.lo
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@am__objects_6 =  \
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@	npvlc_la-npwin.lo
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am_npvlc_la_OBJECTS = $(am__objects_3) \
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(am__objects_4)
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am_npvlc_la_OBJECTS = $(am__objects_5) \
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(am__objects_6)
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@am_npvlc_la_OBJECTS =  \
-@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@	$(am__objects_3) \
-@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@	$(am__objects_4)
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@	$(am__objects_5) \
+@BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@	$(am__objects_6)
 npvlc_la_OBJECTS = $(am_npvlc_la_OBJECTS)
 npvlc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(npvlc_la_CXXFLAGS) \
@@ -688,21 +696,13 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
-MOSTLYCLEANFILES = $(am__append_1)
-CLEANFILES = $(BUILT_SOURCES) $(am__append_2)
+MOSTLYCLEANFILES = $(am__append_2)
+CLEANFILES = $(BUILT_SOURCES) $(am__append_3)
 EXTRA_DIST = $(DIST_sources) npvlc_rc.rc.in COPYING npvlc.dll.manifest
-SOURCES_mozilla_common = \
-	vlcshell.cpp \
-	vlcshell.h \
-	vlcplugin.cpp \
-	vlcplugin.h \
-	control/npolibvlc.cpp \
-	control/npolibvlc.h \
-	control/nporuntime.cpp \
-	control/nporuntime.h \
-	control/position.h \
-	support/classinfo.h
-
+SOURCES_mozilla_common = vlcshell.cpp vlcshell.h vlcplugin.cpp \
+	vlcplugin.h control/npolibvlc.cpp control/npolibvlc.h \
+	control/nporuntime.cpp control/nporuntime.h control/position.h \
+	support/classinfo.h $(am__append_1)
 DIST_sources = $(SOURCES_mozilla_common) \
 	support/npwin.cpp support/npmac.cpp support/npunix.cpp
 
@@ -741,7 +741,7 @@ DIST_sources = $(SOURCES_mozilla_common) \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-F/System/Library/Frameworks/CoreFoundation.framework $(moz_CFLAGS) \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-I/Developer/Headers/FlatCarbon -fno-common -fpascal-strings \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-Wmost -Wno-four-char-constants -Wno-unknown-pragmas -DXP_MACOSX=1 \
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-DNO_X11=1 -DUSE_SYSTEM_CONSOLE=1 -pipe -fmessage-length=0 
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	-DNO_X11=1 -DUSE_SYSTEM_CONSOLE=1 -pipe -fmessage-length=0
 
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@CPPFLAGS_mozilla_EXTRA = -DXP_WIN -DXP_WIN32
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@LDFLAGS_mozilla_EXTRA = -no-undefined -bundle -Wl,-read_only_relocs -Wl,suppress \
@@ -752,7 +752,7 @@ DIST_sources = $(SOURCES_mozilla_common) \
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@npvlc_la_SOURCES = $(SOURCES_mozilla_common) $(SOURCES_support)
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@npvlc_la_CFLAGS = `$(VLC_CONFIG) --cflags mozilla` $(CPPFLAGS_mozilla_EXTRA)
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@npvlc_la_CFLAGS = `$(VLC_CONFIG) --cflags mozilla` $(CPPFLAGS_mozilla_extra)
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@npvlc_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags mozilla` $(CPPFLAGS_mozilla_EXTRA) 
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@npvlc_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags mozilla` $(CPPFLAGS_mozilla_EXTRA)
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@npvlc_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags mozilla` $(CPPFLAGS_mozilla_extra)
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@npvlc_la_DEPENDENCIES = $(LIBRARIES_libvlc)
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@npvlc_la_DEPENDENCIES = $(DATA_npvlc_rc) $(LIBRARIES_libvlc)
@@ -777,7 +777,7 @@ DIST_sources = $(SOURCES_mozilla_common) \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@libvlcplugin_la_LDFLAGS = `$(VLC_CONFIG) --ldflags mozilla` -module -avoid-version -shrext $(LIBEXT)
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@libvlcplugin_la_LIBADD = $(LIBRARIES_libvlc) `$(VLC_CONFIG) -libs mozilla`
 # automake gets confused by the ../..
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@libvlcplugin_la_DEPENDENCIES = $(AM_LIBADD) 
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@libvlcplugin_la_DEPENDENCIES = $(AM_LIBADD)
 all: all-am
 
 .SUFFIXES:
@@ -898,6 +898,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-nporuntime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-npunix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-npwin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-vlc_win32_fullscreen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-vlcplugin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-vlcshell.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-npmac.Plo@am__quote@
@@ -905,6 +906,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-nporuntime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-npunix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-npwin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-vlc_win32_fullscreen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-vlcplugin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npvlc_la-vlcshell.Plo@am__quote@
 
@@ -964,6 +966,14 @@ libvlcplugin_la-nporuntime.lo: control/nporuntime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-nporuntime.lo `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp
 
+libvlcplugin_la-vlc_win32_fullscreen.lo: vlc_win32_fullscreen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-vlc_win32_fullscreen.lo -MD -MP -MF $(DEPDIR)/libvlcplugin_la-vlc_win32_fullscreen.Tpo -c -o libvlcplugin_la-vlc_win32_fullscreen.lo `test -f 'vlc_win32_fullscreen.cpp' || echo '$(srcdir)/'`vlc_win32_fullscreen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvlcplugin_la-vlc_win32_fullscreen.Tpo $(DEPDIR)/libvlcplugin_la-vlc_win32_fullscreen.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlc_win32_fullscreen.cpp' object='libvlcplugin_la-vlc_win32_fullscreen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-vlc_win32_fullscreen.lo `test -f 'vlc_win32_fullscreen.cpp' || echo '$(srcdir)/'`vlc_win32_fullscreen.cpp
+
 libvlcplugin_la-npunix.lo: support/npunix.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npunix.lo -MD -MP -MF $(DEPDIR)/libvlcplugin_la-npunix.Tpo -c -o libvlcplugin_la-npunix.lo `test -f 'support/npunix.cpp' || echo '$(srcdir)/'`support/npunix.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libvlcplugin_la-npunix.Tpo $(DEPDIR)/libvlcplugin_la-npunix.Plo
@@ -1019,6 +1029,14 @@ npvlc_la-nporuntime.lo: control/nporuntime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/nporuntime.cpp' object='npvlc_la-nporuntime.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CXXFLAGS) $(CXXFLAGS) -c -o npvlc_la-nporuntime.lo `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp
+
+npvlc_la-vlc_win32_fullscreen.lo: vlc_win32_fullscreen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CXXFLAGS) $(CXXFLAGS) -MT npvlc_la-vlc_win32_fullscreen.lo -MD -MP -MF $(DEPDIR)/npvlc_la-vlc_win32_fullscreen.Tpo -c -o npvlc_la-vlc_win32_fullscreen.lo `test -f 'vlc_win32_fullscreen.cpp' || echo '$(srcdir)/'`vlc_win32_fullscreen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/npvlc_la-vlc_win32_fullscreen.Tpo $(DEPDIR)/npvlc_la-vlc_win32_fullscreen.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlc_win32_fullscreen.cpp' object='npvlc_la-vlc_win32_fullscreen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CXXFLAGS) $(CXXFLAGS) -c -o npvlc_la-vlc_win32_fullscreen.lo `test -f 'vlc_win32_fullscreen.cpp' || echo '$(srcdir)/'`vlc_win32_fullscreen.cpp
 
 npvlc_la-npunix.lo: support/npunix.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(npvlc_la_CXXFLAGS) $(CXXFLAGS) -MT npvlc_la-npunix.lo -MD -MP -MF $(DEPDIR)/npvlc_la-npunix.Tpo -c -o npvlc_la-npunix.lo `test -f 'support/npunix.cpp' || echo '$(srcdir)/'`support/npunix.cpp

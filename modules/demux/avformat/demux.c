@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: fbb0b2870f8914729d01f8b75059c6cf73e95896 $
+ * $Id: bd7c16666e3414a1c1df973dca1630273493cbc2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -210,6 +210,9 @@ int OpenDemux( vlc_object_t *p_this )
        */
        p_sys->url.is_streamed = 1;
        p_sys->io.is_streamed = 1;
+#if defined(AVIO_SEEKABLE_NORMAL)
+       p_sys->io.seekable = 0;
+#endif
     }
 
 

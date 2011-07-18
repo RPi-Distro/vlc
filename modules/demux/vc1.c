@@ -2,7 +2,7 @@
  * vc1.c : VC1 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: f01ffa3d8fc0839ff960e36c0ee4418c5621c72e $
+ * $Id: 2e53edc34cc5293158dd1fd05d38f9d0f8882b83 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -96,9 +96,13 @@ static int Open( vlc_object_t * p_this )
                  "continuing anyway" );
     }
 
+    p_sys = malloc( sizeof( demux_sys_t ) );
+    if( unlikely(p_sys == NULL) )
+        return VLC_ENOMEM;
+
     p_demux->pf_demux  = Demux;
     p_demux->pf_control= Control;
-    p_demux->p_sys     = p_sys = malloc( sizeof( demux_sys_t ) );
+    p_demux->p_sys     = p_sys;
     p_sys->p_es        = NULL;
     p_sys->i_dts       = 0;
     p_sys->f_fps = var_CreateGetFloat( p_demux, "vc1-fps" );

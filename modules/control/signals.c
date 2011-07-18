@@ -130,7 +130,7 @@ static void *SigThread (void *data)
            sigaction (signum, NULL, &act);
            if ((act.sa_flags & SA_SIGINFO) || (act.sa_handler != SIG_DFL))
            {
-               msg_Err (obj, "signal %d overriden (%p)", signum,
+               msg_Err (obj, "signal %d overridden (%p)", signum,
                         act.sa_handler);
 #ifdef __GLIBC__
                Dl_info info;

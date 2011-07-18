@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 9c0d19ad729e34621d616d37e9c5e776fa01a099 $
+ * $Id: 3fcbd2ae361115b81597821ebb50b8dc8f363a10 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -1026,13 +1026,12 @@ void Equalizer::setCoreBands()
         band_texts[i]->setText( band_frequencies[i] + "\n" + val + "dB" );
         values += " " + val;
     }
-    const char *psz_values = values.toAscii().constData();
 
     aout_instance_t *p_aout = THEMIM->getAout();
     if( p_aout )
     {
         //delCallbacks( p_aout );
-        var_SetString( p_aout, "equalizer-bands", psz_values );
+        var_SetString( p_aout, "equalizer-bands", qtu( values ) );
         //addCallbacks( p_aout );
         vlc_object_release( p_aout );
     }

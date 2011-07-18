@@ -95,7 +95,8 @@ am__axvlc_la_SOURCES_DIST = main.cpp utils.cpp utils.h olecontrol.cpp \
 	objectsafety.h dataobject.cpp dataobject.h viewobject.cpp \
 	viewobject.h supporterrorinfo.cpp supporterrorinfo.h \
 	vlccontrol.cpp vlccontrol.h vlccontrol2.cpp vlccontrol2.h \
-	plugin.cpp plugin.h axvlc_idl.c axvlc_idl.h guiddef.h
+	plugin.cpp plugin.h axvlc_idl.c axvlc_idl.h guiddef.h \
+	vlc_win32_fullscreen.cpp vlc_win32_fullscreen.h
 am__objects_1 = axvlc_la-main.lo axvlc_la-utils.lo \
 	axvlc_la-olecontrol.lo axvlc_la-oleinplaceactiveobject.lo \
 	axvlc_la-oleinplaceobject.lo axvlc_la-oleobject.lo \
@@ -105,7 +106,7 @@ am__objects_1 = axvlc_la-main.lo axvlc_la-utils.lo \
 	axvlc_la-dataobject.lo axvlc_la-viewobject.lo \
 	axvlc_la-supporterrorinfo.lo axvlc_la-vlccontrol.lo \
 	axvlc_la-vlccontrol2.lo axvlc_la-plugin.lo \
-	axvlc_la-axvlc_idl.lo
+	axvlc_la-axvlc_idl.lo axvlc_la-vlc_win32_fullscreen.lo
 @BUILD_ACTIVEX_TRUE@am_axvlc_la_OBJECTS = $(am__objects_1)
 axvlc_la_OBJECTS = $(am_axvlc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -711,6 +712,8 @@ SOURCES_activex = \
     axvlc_idl.c \
     axvlc_idl.h \
     guiddef.h \
+    vlc_win32_fullscreen.cpp \
+    vlc_win32_fullscreen.h \
     $(NULL)
 
 DIST_rsrc = \
@@ -727,6 +730,11 @@ DIST_misc = \
     inplace.bmp \
     vlc16x16.bmp \
     test.html \
+    pixmaps/defullscreen.bmp \
+    pixmaps/play.bmp \
+    pixmaps/pause.bmp \
+    pixmaps/volume.bmp \
+    pixmaps/volume-muted.bmp \
     $(NULL)
 
 @BUILD_ACTIVEX_TRUE@lib_LTLIBRARIES = axvlc.la
@@ -846,6 +854,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axvlc_la-supporterrorinfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axvlc_la-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axvlc_la-viewobject.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axvlc_la-vlc_win32_fullscreen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axvlc_la-vlccontrol.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/axvlc_la-vlccontrol2.Plo@am__quote@
 
@@ -1048,6 +1057,14 @@ axvlc_la-plugin.lo: plugin.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='plugin.cpp' object='axvlc_la-plugin.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(axvlc_la_CXXFLAGS) $(CXXFLAGS) -c -o axvlc_la-plugin.lo `test -f 'plugin.cpp' || echo '$(srcdir)/'`plugin.cpp
+
+axvlc_la-vlc_win32_fullscreen.lo: vlc_win32_fullscreen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(axvlc_la_CXXFLAGS) $(CXXFLAGS) -MT axvlc_la-vlc_win32_fullscreen.lo -MD -MP -MF $(DEPDIR)/axvlc_la-vlc_win32_fullscreen.Tpo -c -o axvlc_la-vlc_win32_fullscreen.lo `test -f 'vlc_win32_fullscreen.cpp' || echo '$(srcdir)/'`vlc_win32_fullscreen.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/axvlc_la-vlc_win32_fullscreen.Tpo $(DEPDIR)/axvlc_la-vlc_win32_fullscreen.Plo
+@am__fastdepCXX_FALSE@	$(AM_V_CXX) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlc_win32_fullscreen.cpp' object='axvlc_la-vlc_win32_fullscreen.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(axvlc_la_CXXFLAGS) $(CXXFLAGS) -c -o axvlc_la-vlc_win32_fullscreen.lo `test -f 'vlc_win32_fullscreen.cpp' || echo '$(srcdir)/'`vlc_win32_fullscreen.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

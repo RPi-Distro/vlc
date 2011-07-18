@@ -2,7 +2,7 @@
  * playlist.c: libvlc new API playlist handling functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 79f274cda5757fe50a677005e1ac9d836776f2d6 $
+ * $Id: 72a78f264e46720f06116b80c72b97207cb40b65 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -45,7 +45,8 @@ void libvlc_playlist_play( libvlc_instance_t *p_instance, int i_id,
     VLC_UNUSED(i_id); VLC_UNUSED(i_options); VLC_UNUSED(ppsz_options);
 
     assert( pl );
-    if( pl->items.i_size == 0 )
+    if( !var_GetBool( pl, "playlist-autostart" )
+     || pl->items.i_size == 0 )
         return;
     playlist_Control( pl, PLAYLIST_PLAY, false );
 }
