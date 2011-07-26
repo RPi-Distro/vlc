@@ -70,6 +70,7 @@ usr/lib/vlc/plugins/codec/libt140_plugin.so
 usr/lib/vlc/plugins/codec/libtheora_plugin.so
 usr/lib/vlc/plugins/codec/libtwolame_plugin.so
 usr/lib/vlc/plugins/codec/libvorbis_plugin.so
+usr/lib/vlc/plugins/codec/libx264_plugin.so
 usr/lib/vlc/plugins/control/libdbus_plugin.so
 usr/lib/vlc/plugins/control/libgestures_plugin.so
 usr/lib/vlc/plugins/control/libhotkeys_plugin.so
