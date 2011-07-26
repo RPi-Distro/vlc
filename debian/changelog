@@ -1,3 +1,15 @@
+vlc (1.1.11-2) unstable; urgency=low
+
+  * Use linux-any instead of hardcoded list of non-Linux architectures.
+    (Closes: #634726)
+  * Build and install the libx264 plugin.
+  * Add firefox-dev as alternative build dependency to xulrunner-dev for Ubuntu.
+  * Build with "--with-mozilla-pkg=mozilla-plugin" rather than
+    "--with-mozilla-pkg=libxul". The plugin doesn't appear to be using XPCOM,
+    and shouldn't be linking against Mozilla libs. Thanks to Chris Coulson.
+
+ -- Benjamin Drung <bdrung@debian.org>  Tue, 26 Jul 2011 20:11:10 +0200
+
 vlc (1.1.11-1) unstable; urgency=high
 
   * New upstream release.
