@@ -87,7 +87,7 @@ confflags += \
 	--enable-x264 \
 	--enable-zvbi \
 	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
-	--with-mozilla-pkg=libxul \
+	--with-mozilla-pkg=mozilla-plugin \
 	$(NULL)
 # Reasons for disabling features:
 # dxva2 -> Windows only
