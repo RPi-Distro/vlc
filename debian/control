@@ -96,7 +96,7 @@ Build-Depends: autopoint,
                lua5.1,
                nasm,
                pkg-config,
-               xulrunner-dev (>= 1.9.1),
+               xulrunner-dev (>= 1.9.1) | firefox-dev (>= 4.0),
                yasm [amd64 kfreebsd-amd64],
                zlib1g-dev
 Standards-Version: 3.9.2
