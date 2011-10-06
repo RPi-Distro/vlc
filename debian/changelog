@@ -1,3 +1,19 @@
+vlc (1.1.12-1) unstable; urgency=low
+
+  * New upstream release.
+    - Multiple fixes and improved synchronization for PulseAudio support
+      (Closes: #601826, LP: #805807).
+    - Fix segmentation fault (LP: #803006).
+    - Addd GenericName entries to desktop file (Closes: #640911).
+    - Do not ignore the --quiet flag (Closes: #531975).
+    - Fix vlc runs xdg-screensaver with signal child blocked (Closes: #640245).
+    - Fix crashes when trying to play youtube URLs (Closes: #641507).
+  * Drop xulrunner-1.9.1.patch (accepted upstream).
+  * Refresh 200_osdmenu_paths.patch.
+  * Fix typo in vlc.desktop: Name[nn] -> GenericName[nn].
+
+ -- Benjamin Drung <bdrung@debian.org>  Fri, 07 Oct 2011 01:21:06 +0200
+
 vlc (1.1.11-2) unstable; urgency=low
 
   * Use linux-any instead of hardcoded list of non-Linux architectures.
