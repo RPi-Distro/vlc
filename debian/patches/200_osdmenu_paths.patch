@@ -9,14 +9,13 @@ Description: Use the installed files for osdmenu rather than the ones in the
  action	key-play-pause (0,0)
  	unselect unselected.png
  	select   selection/play_pause.png
---- a/modules/video_filter/osdmenu.c
-+++ b/modules/video_filter/osdmenu.c
-@@ -105,7 +105,7 @@
- #if defined( WIN32 ) || defined( UNDER_CE )
- #define OSD_DEFAULT_CFG "osdmenu/default.cfg"
- #else
--#define OSD_DEFAULT_CFG "share/osdmenu/default.cfg"
-+#define OSD_DEFAULT_CFG "/usr/share/vlc/osdmenu/default.cfg"
- #endif
+--- a/modules/video_filter/Modules.am
++++ b/modules/video_filter/Modules.am
+@@ -24,6 +24,7 @@
+ libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
+ libosdmenu_plugin_la_DEPENDENCIES =
+ EXTRA_LTLIBRARIES += libosdmenu_plugin.la
++libvlc_LTLIBRARIES += $(LTLIBosdmenu)
  
- #define OSD_UPDATE_MIN     0
+ SOURCES_remoteosd = remoteosd.c remoteosd_rfbproto.h
+ SOURCES_magnify = magnify.c
