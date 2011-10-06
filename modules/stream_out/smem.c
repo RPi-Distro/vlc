@@ -2,7 +2,7 @@
  * smem.c: stream output to memory buffer module
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 784c31b57a14c9b80214e21d8bf6b8c99b7470b0 $
+ * $Id: 59f27cf577d3b198572de4e10115ae64d7d182f3 $
  *
  * Authors: Christophe Courtaut <christophe.courtaut@gmail.com>
  *
@@ -369,6 +369,13 @@ static int SendAudio( sout_stream_t *p_stream, sout_stream_id_t *id,
     int i_samples = 0;
 
     i_size = p_buffer->i_buffer;
+    if (id->format->audio.i_channels <= 0)
+    {
+        msg_Warn( p_stream, "No buffer given!" );
+        block_ChainRelease( p_buffer );
+        return VLC_EGENERIC;
+    }
+
     i_samples = i_size / ( ( id->format->audio.i_bitspersample / 8 ) * id->format->audio.i_channels );
     /* Calling the prerender callback to get user buffer */
     p_sys->pf_audio_prerender_callback( id->p_data, &p_pcm_buffer, i_size );

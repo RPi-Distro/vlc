@@ -10,13 +10,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC 1.1.10 (Basque Translation)\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-07-14 14:38+0200\n"
-"PO-Revision-Date: 2011-05-27 12:45+0100\n"
+"POT-Creation-Date: 2011-10-06 20:33+0300\n"
+"PO-Revision-Date: 2011-09-28 18:58+0100\n"
 "Last-Translator: Xabier Aramendi <azpidatziak@gmail.com>\n"
 "Language-Team: (EUS_Xabier Aramendi) <azpidatziak@gmail.com>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Language: Basque (Euskara)\n"
@@ -86,7 +86,7 @@ msgstr "Lastertekla ezarpenak"
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:192
-#: modules/gui/qt4/ui/profiles.h:487
+#: modules/gui/qt4/ui/profiles.h:494
 msgid "Audio"
 msgstr "Audioa"
 
@@ -142,7 +142,7 @@ msgstr "Askotarikoen audio ezarpenak eta moduloak."
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:101 modules/stream_out/transcode/transcode.c:161
-#: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:321
+#: modules/gui/qt4/ui/profiles.h:476 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Video"
 msgstr "Bideoa"
 
@@ -650,7 +650,7 @@ msgstr "Gehitu Agiritegia..."
 
 #: include/vlc_intf_strings.h:95
 msgid "Save Playlist to &File..."
-msgstr "Gorde Irakur-zerrenda &Agirian..."
+msgstr "Gorde Irakur-&zerrenda Agirian..."
 
 #: include/vlc_intf_strings.h:96
 msgid "Open Play&list..."
@@ -935,8 +935,8 @@ msgstr "dekodeatzailea"
 
 #: src/input/decoder.c:278 src/input/decoder.c:430
 #: modules/codec/avcodec/encoder.c:224 modules/codec/avcodec/encoder.c:232
-#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:700
-#: modules/codec/avcodec/encoder.c:709 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:711
+#: modules/codec/avcodec/encoder.c:720 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr "Jariotze / Transkodeatze hutsegitea"
@@ -1012,8 +1012,8 @@ msgid "Original ID"
 msgstr "Jatorrizko ID -a"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:470
-#: modules/gui/qt4/ui/profiles.h:489
+#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:477
+#: modules/gui/qt4/ui/profiles.h:496
 msgid "Codec"
 msgstr "Kodeka"
 
@@ -1029,7 +1029,7 @@ msgid "Description"
 msgstr "Azalpena"
 
 #: src/input/es_out.c:2914 src/input/es_out.c:2917
-#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
+#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:499
 msgid "Channels"
 msgstr "Bideak"
 
@@ -1049,7 +1049,7 @@ msgstr "Bit lagineko"
 #: src/input/es_out.c:2937 modules/access/pvr.c:96
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:412
 #: modules/gui/qt4/components/open_panels.cpp:945
-#: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
+#: modules/gui/qt4/ui/profiles.h:478 modules/gui/qt4/ui/profiles.h:497
 msgid "Bitrate"
 msgstr "Bitneurria"
 
@@ -1071,7 +1071,7 @@ msgstr "Bilduma birrirakurketa irabazia"
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:476
+#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:483
 msgid "Resolution"
 msgstr "Bereizmena"
 
@@ -2517,11 +2517,11 @@ msgstr ""
 "Hau sarean igorri daitekeen gehienezko aplikazio-geruza pakete neurria da "
 "(byte-tan)."
 
-#: src/libvlc-module.c:678 modules/stream_out/rtp.c:122
+#: src/libvlc-module.c:678 modules/stream_out/rtp.c:124
 msgid "Hop limit (TTL)"
 msgstr "Jauzi muga (TTL)"
 
-#: src/libvlc-module.c:680 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:680 modules/stream_out/rtp.c:126
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -3858,7 +3858,7 @@ msgid "Slower (fine)"
 msgstr "Astiroago (zehatza)"
 
 #: src/libvlc-module.c:1306 modules/control/hotkeys.c:696
-#: modules/gui/macosx/about.m:207 modules/gui/macosx/controls.m:1006
+#: modules/gui/macosx/about.m:206 modules/gui/macosx/controls.m:1006
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:610
 #: modules/gui/macosx/intf.m:658 modules/gui/macosx/intf.m:746
 #: modules/gui/macosx/intf.m:754 modules/gui/macosx/wizard.m:307
@@ -3874,7 +3874,7 @@ msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "Hautatu irakur-zerrendan hurrengo gaira jauzi egiteko lastertekla. "
 
 #: src/libvlc-module.c:1308 modules/control/hotkeys.c:702
-#: modules/gui/macosx/about.m:208 modules/gui/macosx/controls.m:1005
+#: modules/gui/macosx/about.m:207 modules/gui/macosx/controls.m:1005
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:657 modules/gui/macosx/intf.m:747
 #: modules/gui/macosx/intf.m:753 modules/gui/qt4/components/controller.hpp:105
@@ -4576,8 +4576,8 @@ msgstr "Azpi-irudiak"
 
 #: src/libvlc-module.c:1782 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
-#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
-#: modules/gui/qt4/ui/profiles.h:497
+#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:502
+#: modules/gui/qt4/ui/profiles.h:504
 msgid "Subtitles"
 msgstr "Azpi-irudiak"
 
@@ -4754,7 +4754,7 @@ msgid "Downloading ..."
 msgstr "Jeisten..."
 
 #: src/misc/update.c:606 src/misc/update.c:736 modules/access/dvb/scan.c:327
-#: modules/demux/avi/avi.c:656 modules/demux/avi/avi.c:2358
+#: modules/demux/avi/avi.c:656 modules/demux/avi/avi.c:2361
 #: modules/gui/macosx/bookmarks.m:102 modules/gui/macosx/controls.m:60
 #: modules/gui/macosx/coredialogs.m:66 modules/gui/macosx/coredialogs.m:68
 #: modules/gui/macosx/coredialogs.m:186 modules/gui/macosx/open.m:177
@@ -6556,12 +6556,12 @@ msgstr "DVDRead Sarrera (menu gabe)"
 #: modules/access/dvdread.c:213
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
-msgstr "DVDRead-ek ezin izandu diska ireki \"%s\"."
+msgstr "DVDRead-ek ezin izan du diska ireki \"%s\"."
 
 #: modules/access/dvdread.c:478
 #, c-format
 msgid "DVDRead could not read block %d."
-msgstr "DVDRead-ek ezin izandu irakurri blokea %d."
+msgstr "DVDRead-ek ezin izan du irakurri blokea %d."
 
 #: modules/access/dvdread.c:540
 #, c-format
@@ -6660,7 +6660,7 @@ msgstr "VLC-k ezin izan du agiria irakurri."
 
 #: modules/access/fs.c:33 modules/access/rtsp/access.c:46
 #: modules/access_output/udp.c:64 modules/demux/live555.cpp:75
-#: modules/stream_out/rtp.c:133
+#: modules/stream_out/rtp.c:135
 msgid "Caching value (ms)"
 msgstr "Katxe balioa (sm)"
 
@@ -6983,7 +6983,7 @@ msgstr "Bideen kontua ohinarrizko audio jario batean"
 #: modules/access/imem.c:88 modules/access/pvr.c:74 modules/access/v4l.c:102
 #: modules/access/v4l2.c:95 modules/codec/invmem.c:53
 #: modules/demux/rawvid.c:48 modules/video_filter/mosaic.c:95
-#: modules/video_output/vmem.c:42 modules/gui/qt4/ui/profiles.h:479
+#: modules/video_output/vmem.c:42 modules/gui/qt4/ui/profiles.h:486
 msgid "Width"
 msgstr "Zabalera"
 
@@ -6994,7 +6994,7 @@ msgstr "Ohinarrizko jarioen bideoaren edo azpidatzi zabalera"
 #: modules/access/imem.c:91 modules/access/pvr.c:78 modules/access/v4l.c:105
 #: modules/access/v4l2.c:98 modules/codec/invmem.c:56
 #: modules/demux/rawvid.c:52 modules/video_filter/mosaic.c:93
-#: modules/video_output/vmem.c:45 modules/gui/qt4/ui/profiles.h:482
+#: modules/video_output/vmem.c:45 modules/gui/qt4/ui/profiles.h:489
 msgid "Height"
 msgstr "Garaiera"
 
@@ -7403,19 +7403,19 @@ msgstr "RTMP sarrera"
 msgid "RTMP"
 msgstr "RTMP"
 
-#: modules/access/rtp/rtp.c:44
+#: modules/access/rtp/rtp.c:46
 msgid "RTP de-jitter buffer length (msec)"
 msgstr "RTP de-jitter buffer luzera (sm)"
 
-#: modules/access/rtp/rtp.c:46
+#: modules/access/rtp/rtp.c:48
 msgid "How long to wait for late RTP packets (and delay the performance)."
 msgstr "Zenbat denbora itxaron RTP pakete atzeratuei (eta egintza atzeratu)"
 
-#: modules/access/rtp/rtp.c:48
+#: modules/access/rtp/rtp.c:50
 msgid "RTCP (local) port"
 msgstr "RTCP (tokikoa) ataka"
 
-#: modules/access/rtp/rtp.c:50
+#: modules/access/rtp/rtp.c:52
 msgid ""
 "RTCP packets will be received on this transport protocol port. If zero, "
 "multiplexed RTP/RTCP is used."
@@ -7423,11 +7423,11 @@ msgstr ""
 "RCTP paketeak garraio protokolo ataka honetan jasoko dira. 0 bada, RTP/RTCP "
 "multiplexaketa erabiltzen da."
 
-#: modules/access/rtp/rtp.c:53 modules/stream_out/rtp.c:142
+#: modules/access/rtp/rtp.c:55 modules/stream_out/rtp.c:144
 msgid "SRTP key (hexadecimal)"
 msgstr "SRTP giltza (hexadezimala)"
 
-#: modules/access/rtp/rtp.c:55
+#: modules/access/rtp/rtp.c:57
 msgid ""
 "RTP packets will be authenticated and deciphered with this Secure RTP master "
 "shared secret key."
@@ -7435,35 +7435,35 @@ msgstr ""
 "RTP paketeak RTP Segurtasun giltza-maixu ezkutuko honekin egiaztatu eta "
 "deszifratuko dira."
 
-#: modules/access/rtp/rtp.c:58 modules/stream_out/rtp.c:147
+#: modules/access/rtp/rtp.c:60 modules/stream_out/rtp.c:149
 msgid "SRTP salt (hexadecimal)"
 msgstr "SRTP gatza (hexadezimala)"
 
-#: modules/access/rtp/rtp.c:60 modules/stream_out/rtp.c:149
+#: modules/access/rtp/rtp.c:62 modules/stream_out/rtp.c:151
 msgid "Secure RTP requires a (non-secret) master salt value."
 msgstr "RTP segurtasunak (ez-ezkutuko) gazi-maixu balio bat eskatzen du."
 
-#: modules/access/rtp/rtp.c:62
+#: modules/access/rtp/rtp.c:64
 msgid "Maximum RTP sources"
 msgstr "Gehienezko RTP iturburu"
 
-#: modules/access/rtp/rtp.c:64
+#: modules/access/rtp/rtp.c:66
 msgid "How many distinct active RTP sources are allowed at a time."
 msgstr "Zenbat RTP iturburu ezberdin eraginda aldiberean ahalbidetzen diren."
 
-#: modules/access/rtp/rtp.c:66
+#: modules/access/rtp/rtp.c:68
 msgid "RTP source timeout (sec)"
 msgstr "RTP iturburu itxaronaldia (seg)"
 
-#: modules/access/rtp/rtp.c:68
+#: modules/access/rtp/rtp.c:70
 msgid "How long to wait for any packet before a source is expired."
 msgstr "Zenbateko itxaronaldia pakete batentzat iturburua iraungitu aurretik."
 
-#: modules/access/rtp/rtp.c:70
+#: modules/access/rtp/rtp.c:72
 msgid "Maximum RTP sequence number dropout"
 msgstr "Gehienezko RTP sekuentzia zenbatekoa baztertzeko."
 
-#: modules/access/rtp/rtp.c:72
+#: modules/access/rtp/rtp.c:74
 msgid ""
 "RTP packets will be discarded if they are too much ahead (i.e. in the "
 "future) by this many packets from the last received packet."
@@ -7471,11 +7471,11 @@ msgstr ""
 "RTP paketeak baztertu egingo dira aurreratuegi badaude (adib. etorikizunean) "
 "honen arabera hainbat pakete jasotako azken paketetik."
 
-#: modules/access/rtp/rtp.c:75
+#: modules/access/rtp/rtp.c:77
 msgid "Maximum RTP sequence number misordering"
 msgstr "Gehienezko RTP sekuentzia zenbateko ordenatugabe"
 
-#: modules/access/rtp/rtp.c:77
+#: modules/access/rtp/rtp.c:79
 msgid ""
 "RTP packets will be discarded if they are too far behind (i.e. in the past) "
 "by this many packets from the last received packet."
@@ -7483,11 +7483,11 @@ msgstr ""
 "RTP paketeak baztertu egingo dira atzeratuegi badaude (adib. etorikizunean) "
 "honen arabera hainbat pakete jasotako azken paketetik."
 
-#: modules/access/rtp/rtp.c:87 modules/stream_out/rtp.c:170
+#: modules/access/rtp/rtp.c:89 modules/stream_out/rtp.c:172
 msgid "RTP"
 msgstr "RTP"
 
-#: modules/access/rtp/rtp.c:88
+#: modules/access/rtp/rtp.c:90
 msgid "Real-Time Protocol (RTP) input"
 msgstr "Egizko-Denborako Protokoloa (RTP) sarrera"
 
@@ -7832,7 +7832,7 @@ msgstr "Sintonizagailua"
 msgid "Tuner to use, if there are several ones."
 msgstr "Erabili beharreko Sintonizagailua, bat baino gehiago badago."
 
-#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:466
+#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:473
 msgid "MJPEG"
 msgstr "MJPEG"
 
@@ -9348,7 +9348,7 @@ msgid "ALSA Device Name"
 msgstr "ALSA Gailuaren Izena"
 
 #: modules/audio_output/alsa.c:135 modules/audio_output/auhal.c:137
-#: modules/audio_output/auhal.c:973 modules/audio_output/directx.c:351
+#: modules/audio_output/auhal.c:982 modules/audio_output/directx.c:351
 #: modules/audio_output/oss.c:129 modules/audio_output/portaudio.c:389
 #: modules/audio_output/sdl.c:174 modules/audio_output/sdl.c:192
 #: modules/audio_output/waveout.c:374 modules/gui/macosx/intf.m:681
@@ -9428,7 +9428,7 @@ msgstr ""
 "erabiliz /Aplikazioak/Erabilgarriak-en. Estereo modua orain erabilia izaten "
 "ari da."
 
-#: modules/audio_output/auhal.c:1016
+#: modules/audio_output/auhal.c:1025
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr "%s (Irteera kodeatua)"
@@ -9573,7 +9573,7 @@ msgstr "PORTAUDIO audio irteera"
 msgid "5.1"
 msgstr "5.1"
 
-#: modules/audio_output/pulse.c:47
+#: modules/audio_output/pulse.c:49
 msgid "Pulseaudio audio output"
 msgstr "Pulseaudio audio irteera"
 
@@ -10154,7 +10154,7 @@ msgstr ""
 "Hau ez da VLC multimedia irakurgailuaren barneko akats bat\n"
 "Ez jarri harremanetan VideoLAN egitasmoarekin gertaera honengaitik.\n"
 
-#: modules/codec/avcodec/encoder.c:701 modules/codec/avcodec/encoder.c:710
+#: modules/codec/avcodec/encoder.c:712 modules/codec/avcodec/encoder.c:721
 msgid "VLC could not open the encoder."
 msgstr "VLC-k ezin izan du kodeatzailea ireki."
 
@@ -10874,26 +10874,26 @@ msgstr ""
 
 #: modules/codec/kate.c:251
 msgid "Default background color"
-msgstr "Berezko hondo margoa"
+msgstr "Berezko barren margoa"
 
 #: modules/codec/kate.c:252
 msgid ""
 "Default background color if the Kate stream does not specify a background "
 "color to use."
 msgstr ""
-"Berezko hondo margoa Kate jarioak ez badu adierazten hondo margo bereizi "
+"Berezko barren margoa Kate jarioak ez badu adierazten hondo margo bereizi "
 "baten erabilpena."
 
 #: modules/codec/kate.c:256
 msgid "Default background alpha"
-msgstr "Berezko hondo alpha"
+msgstr "Berezko barren alpha"
 
 #: modules/codec/kate.c:257
 msgid ""
 "Transparency of the default background color if the Kate stream does not "
 "specify a particular background color to use."
 msgstr ""
-"Berezko hondo margoaren gardentasuna Kate jarioak ez badu adierazten hondo "
+"Berezko barren margoaren gardentasuna Kate jarioak ez badu adierazten hondo "
 "margo bereizi baten erabilpena."
 
 #: modules/codec/kate.c:263
@@ -12517,7 +12517,7 @@ msgid "Position Control"
 msgstr "Kokapen Agintea"
 
 #: modules/control/hotkeys.c:92 modules/gui/macosx/intf.m:2476
-#: modules/gui/macosx/intf.m:2860
+#: modules/gui/macosx/intf.m:2859
 msgid "Ignore"
 msgstr "Baztertu"
 
@@ -13395,7 +13395,7 @@ msgstr ""
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:260
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:310
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:404
-#: modules/misc/lua/vlc.c:77 modules/stream_out/rtp.c:112
+#: modules/misc/lua/vlc.c:77 modules/stream_out/rtp.c:114
 msgid "Port"
 msgstr "Ataka"
 
@@ -13511,13 +13511,13 @@ msgstr ""
 
 #: modules/demux/avi/avi.c:656
 msgid "Repair"
-msgstr "Paranda"
+msgstr "Konpondu"
 
 #: modules/demux/avi/avi.c:656
 msgid "Don't repair"
 msgstr "Ez konpondu"
 
-#: modules/demux/avi/avi.c:2357
+#: modules/demux/avi/avi.c:2360
 msgid "Fixing AVI Index..."
 msgstr "Zuzendu AVI Aurkibidea..."
 
@@ -14206,7 +14206,7 @@ msgstr "Behartu margoa (Kontuz erabili)"
 msgid "Force chroma. This is a four character string."
 msgstr "Behartu margoa. Hau u hizkiko kate bat da."
 
-#: modules/demux/rawvid.c:59 modules/stream_out/switcher.c:96
+#: modules/demux/rawvid.c:59 modules/stream_out/switcher.c:98
 msgid "Aspect ratio"
 msgstr "Ikuspegi maila"
 
@@ -14684,24 +14684,24 @@ msgstr "GNU/Linux osd/gainjarpen framebuffer interfazea"
 msgid "About VLC media player"
 msgstr "VLC multimedia irakurgailuari buruz"
 
-#: modules/gui/macosx/about.m:104
-msgid "Compiled by %s with %@"
-msgstr "Biltzailea %s"
+#: modules/gui/macosx/about.m:103
+msgid "Compiled by %@ with %@"
+msgstr "Biltzailea %@ %@-rekin"
 
-#: modules/gui/macosx/about.m:112
+#: modules/gui/macosx/about.m:111
 msgid "VLC was brought to you by:"
 msgstr "VLC ekartzailea:"
 
-#: modules/gui/macosx/about.m:122 modules/gui/macosx/about.m:193
+#: modules/gui/macosx/about.m:121 modules/gui/macosx/about.m:192
 #: modules/gui/macosx/intf.m:737 modules/gui/qt4/dialogs/help.cpp:166
 msgid "License"
 msgstr "Baimena"
 
-#: modules/gui/macosx/about.m:206
+#: modules/gui/macosx/about.m:205
 msgid "VLC media player Help"
 msgstr "VLC multimedia irakurgailu Laguntza"
 
-#: modules/gui/macosx/about.m:209 modules/gui/macosx/controls.m:492
+#: modules/gui/macosx/about.m:208 modules/gui/macosx/controls.m:492
 #: modules/gui/macosx/intf.m:713
 msgid "Index"
 msgstr "Aurkibidea"
@@ -15143,7 +15143,7 @@ msgstr "Ireki Irudi Hargailua..."
 msgid "Open Recent"
 msgstr "Ireki Berrikia"
 
-#: modules/gui/macosx/intf.m:641 modules/gui/macosx/intf.m:2765
+#: modules/gui/macosx/intf.m:641 modules/gui/macosx/intf.m:2764
 msgid "Clear Menu"
 msgstr "Garbitu Menua"
 
@@ -15349,22 +15349,22 @@ msgstr "VLC-ren hobespen agirien bertsio zaharrago bat aurkitu dugu."
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Mugitu Zakarrontzira eta Birrabiarazi VLC"
 
-#: modules/gui/macosx/intf.m:2610
+#: modules/gui/macosx/intf.m:2609
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr "VLC  Garbiketa Oharra (%s).rtfd"
 
-#: modules/gui/macosx/intf.m:2858
+#: modules/gui/macosx/intf.m:2857
 msgid "Relaunch required"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2859
+#: modules/gui/macosx/intf.m:2858
 msgid ""
 "To make sure that VLC no longer listens to your media key events, it needs "
 "to be restarted."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2860
+#: modules/gui/macosx/intf.m:2859
 msgid "Relaunch VLC"
 msgstr ""
 
@@ -15801,7 +15801,7 @@ msgstr "Transkodeaketa aukerak"
 msgid "Bitrate (kb/s)"
 msgstr "Bitneurria (kb/s)"
 
-#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:478
+#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:485
 msgid "Scale"
 msgstr "Neurria"
 
@@ -16705,7 +16705,7 @@ msgstr ""
 "Orrialde honek ahalbidtezen du hautatzea nola bidaliko den sarrera jarioa."
 
 #: modules/gui/macosx/wizard.m:364 modules/gui/macosx/wizard.m:425
-#: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:74
+#: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:76
 msgid "Destination"
 msgstr "Helbidea"
 
@@ -17528,29 +17528,29 @@ msgstr "Klikatu B puntua ezartzeko"
 msgid "Stop the A to B loop"
 msgstr "Gelditu A-tik B-rako bigizta"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1004
-#: modules/gui/qt4/components/extended_panels.cpp:1060
+#: modules/gui/qt4/components/extended_panels.cpp:1007
+#: modules/gui/qt4/components/extended_panels.cpp:1063
 msgid "Preamp\n"
 msgstr "Aurrehand\n"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1005
-#: modules/gui/qt4/components/extended_panels.cpp:1061
+#: modules/gui/qt4/components/extended_panels.cpp:1008
+#: modules/gui/qt4/components/extended_panels.cpp:1064
 msgid "dB"
 msgstr "dB"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1142
+#: modules/gui/qt4/components/extended_panels.cpp:1145
 msgid "Enable spatializer"
 msgstr "Gaitu hedatzailea"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1282
+#: modules/gui/qt4/components/extended_panels.cpp:1285
 msgid "Audio/Video"
 msgstr "Audioa/Bideoa"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1298
+#: modules/gui/qt4/components/extended_panels.cpp:1301
 msgid "Advance of audio over video:"
 msgstr "Aurreratu audioa bideoarekiko:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1307
+#: modules/gui/qt4/components/extended_panels.cpp:1310
 msgid ""
 "A positive value means that\n"
 "the audio is ahead of the video"
@@ -17558,15 +17558,15 @@ msgstr ""
 "+ balio batek esanahi du\n"
 "audioa bideoaren aurretik doala"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1315
+#: modules/gui/qt4/components/extended_panels.cpp:1318
 msgid "Subtitles/Video"
 msgstr "Azpidatziak/Bideoa"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1331
+#: modules/gui/qt4/components/extended_panels.cpp:1334
 msgid "Advance of subtitles over video:"
 msgstr "Aurreratu azpidatziak bideoarekiko:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1340
+#: modules/gui/qt4/components/extended_panels.cpp:1343
 msgid ""
 "A positive value means that\n"
 "the subtitles are ahead of the video"
@@ -17574,11 +17574,11 @@ msgstr ""
 "- balio batek esanahi du\n"
 "azpidatziak bideoaren aurretik doazela"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1359
+#: modules/gui/qt4/components/extended_panels.cpp:1362
 msgid "Speed of the subtitles:"
 msgstr "Azpidatzien abiadura:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1392
+#: modules/gui/qt4/components/extended_panels.cpp:1395
 msgid "Force update of this dialog's values"
 msgstr "Behartu elkarrizketa honen balioak eguneratzea"
 
@@ -18709,7 +18709,7 @@ msgstr "Ezabatu oraingo profila"
 msgid "Cl&ose"
 msgstr "It&xi"
 
-#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:455
+#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:461
 msgid "Profile Name"
 msgstr "Profil Izena"
 
@@ -18908,7 +18908,7 @@ msgstr "Ireki &Sare Jarioa..."
 
 #: modules/gui/qt4/menus.cpp:325 modules/gui/qt4/menus.cpp:872
 msgid "Open &Capture Device..."
-msgstr "Ireki &Irudi Hargailua..."
+msgstr "Ireki I&rudi Hargailua..."
 
 #: modules/gui/qt4/menus.cpp:330
 msgid "Open &Location from clipboard"
@@ -18920,7 +18920,7 @@ msgstr "&Berrikiko Multimediak"
 
 #: modules/gui/qt4/menus.cpp:346
 msgid "Conve&rt / Save..."
-msgstr "Bihur&tu / Gorde..."
+msgstr "Bihurtu / &Gorde..."
 
 #: modules/gui/qt4/menus.cpp:348
 msgid "&Streaming..."
@@ -18928,7 +18928,7 @@ msgstr "&Jariotu..."
 
 #: modules/gui/qt4/menus.cpp:354 modules/gui/qt4/menus.cpp:1099
 msgid "&Quit"
-msgstr "&Irten"
+msgstr "Ir&ten"
 
 #: modules/gui/qt4/menus.cpp:364
 msgid "&Effects and Filters"
@@ -18996,7 +18996,7 @@ msgstr "Audio &Bidea"
 
 #: modules/gui/qt4/menus.cpp:559
 msgid "Audio &Channels"
-msgstr "Audio &Bideak"
+msgstr "Audio Bidea&k"
 
 #: modules/gui/qt4/menus.cpp:560
 msgid "Audio &Device"
@@ -19032,7 +19032,7 @@ msgstr "Direct3D Mahigain modua"
 
 #: modules/gui/qt4/menus.cpp:624
 msgid "Sna&pshot"
-msgstr "&Berehalako bat hartu"
+msgstr "Be&rehalako bat hartu"
 
 #: modules/gui/qt4/menus.cpp:628
 msgid "&Zoom"
@@ -19040,11 +19040,11 @@ msgstr "&Handitu"
 
 #: modules/gui/qt4/menus.cpp:629
 msgid "Sca&le"
-msgstr "Neu&rritu"
+msgstr "&Neurritu"
 
 #: modules/gui/qt4/menus.cpp:630
 msgid "&Aspect Ratio"
-msgstr "&Ikuspegi Maila"
+msgstr "Iku&spegi Maila"
 
 #: modules/gui/qt4/menus.cpp:631
 msgid "&Crop"
@@ -19056,7 +19056,7 @@ msgstr "&Ez-elkarlotu"
 
 #: modules/gui/qt4/menus.cpp:633
 msgid "&Deinterlace mode"
-msgstr "&Ez-elkarlotu modua"
+msgstr "E&z-elkarlotu modua"
 
 #: modules/gui/qt4/menus.cpp:634
 msgid "&Post processing"
@@ -19068,7 +19068,7 @@ msgstr "Kudeatu &lastermarkak"
 
 #: modules/gui/qt4/menus.cpp:668
 msgid "T&itle"
-msgstr "I&zenburua"
+msgstr "&Izenburua"
 
 #: modules/gui/qt4/menus.cpp:669
 msgid "&Chapter"
@@ -19096,7 +19096,7 @@ msgstr "Egiaztatu &Eguneraketak..."
 
 #: modules/gui/qt4/menus.cpp:803
 msgid "&Faster"
-msgstr "&Azkarrago"
+msgstr "A&zkarrago"
 
 #: modules/gui/qt4/menus.cpp:812
 msgid "N&ormal Speed"
@@ -19104,7 +19104,7 @@ msgstr "A&biadura Arrunta"
 
 #: modules/gui/qt4/menus.cpp:820
 msgid "Slo&wer"
-msgstr "Ast&iroago"
+msgstr "A&stiroago"
 
 #: modules/gui/qt4/menus.cpp:827
 msgid "&Jump Forward"
@@ -19120,11 +19120,11 @@ msgstr "&Gelditu"
 
 #: modules/gui/qt4/menus.cpp:854
 msgid "Pre&vious"
-msgstr "Aur&rekoa"
+msgstr "A&urrekoa"
 
 #: modules/gui/qt4/menus.cpp:856
 msgid "Ne&xt"
-msgstr "Hu&rrengoa"
+msgstr "&Hurrengoa"
 
 #: modules/gui/qt4/menus.cpp:870
 msgid "Open &Network..."
@@ -21550,15 +21550,15 @@ msgstr "Berezgaitasunez sortutako helmuga agiriaren aurrezenbakia"
 msgid "Record stream output"
 msgstr "Grabaketa jario irteera"
 
-#: modules/stream_out/rtp.c:76
+#: modules/stream_out/rtp.c:78
 msgid "This is the output URL that will be used."
 msgstr "Hau da erabiliko den URL-a."
 
-#: modules/stream_out/rtp.c:77
+#: modules/stream_out/rtp.c:79
 msgid "SDP"
 msgstr "SDP"
 
-#: modules/stream_out/rtp.c:79
+#: modules/stream_out/rtp.c:81
 msgid ""
 "This allows you to specify how the SDP (Session Descriptor) for this RTP "
 "session will be made available. You must use an url: http://location to "
@@ -21570,19 +21570,19 @@ msgstr ""
 "rea HTTP bidez sartzeko helbidea, rtsp://RTSP sarrera helbidea, eta sap:// "
 "SDP-a SAP bidez iragarria izateko."
 
-#: modules/stream_out/rtp.c:83 modules/stream_out/standard.c:91
+#: modules/stream_out/rtp.c:85 modules/stream_out/standard.c:91
 msgid "SAP announcing"
 msgstr "SAP iragarpena"
 
-#: modules/stream_out/rtp.c:84 modules/stream_out/standard.c:92
+#: modules/stream_out/rtp.c:86 modules/stream_out/standard.c:92
 msgid "Announce this session with SAP."
 msgstr "Iragarri saio hau SAP-ekin."
 
-#: modules/stream_out/rtp.c:85
+#: modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr "Multiplexatzailea"
 
-#: modules/stream_out/rtp.c:87
+#: modules/stream_out/rtp.c:89
 msgid ""
 "This allows you to specify the muxer used for the streaming output. Default "
 "is to use no muxer (standard RTP stream)."
@@ -21591,21 +21591,21 @@ msgstr ""
 "multiplexatzailea. Berezko multiplexatzailerik ez erabiltzea da (RTP jario "
 "estandarra)"
 
-#: modules/stream_out/rtp.c:90 modules/stream_out/standard.c:62
+#: modules/stream_out/rtp.c:92 modules/stream_out/standard.c:62
 msgid "Session name"
 msgstr "Saioaren izena"
 
-#: modules/stream_out/rtp.c:92 modules/stream_out/standard.c:64
+#: modules/stream_out/rtp.c:94 modules/stream_out/standard.c:64
 msgid ""
 "This is the name of the session that will be announced in the SDP (Session "
 "Descriptor)."
 msgstr "Hau da SDP-an iragarriko den saioaren izena da (Saio Azaltzailea)."
 
-#: modules/stream_out/rtp.c:94 modules/stream_out/standard.c:72
+#: modules/stream_out/rtp.c:96 modules/stream_out/standard.c:72
 msgid "Session description"
 msgstr "Saioaren azalpena"
 
-#: modules/stream_out/rtp.c:96 modules/stream_out/standard.c:74
+#: modules/stream_out/rtp.c:98 modules/stream_out/standard.c:74
 msgid ""
 "This allows you to give a short description with details about the stream, "
 "that will be announced in the SDP (Session Descriptor)."
@@ -21613,11 +21613,11 @@ msgstr ""
 "Honek ahalbidetzen dizu jarioari buruzko azalpen labur bat xehatasunekin "
 "ematea, SDP-an iragarriko dena (Saio Azaltzailea)."
 
-#: modules/stream_out/rtp.c:98 modules/stream_out/standard.c:76
+#: modules/stream_out/rtp.c:100 modules/stream_out/standard.c:76
 msgid "Session URL"
 msgstr "Saioaren URL-a"
 
-#: modules/stream_out/rtp.c:100 modules/stream_out/standard.c:78
+#: modules/stream_out/rtp.c:102 modules/stream_out/standard.c:78
 msgid ""
 "This allows you to give an URL with more details about the stream (often the "
 "website of the streaming organization), that will be announced in the SDP "
@@ -21627,11 +21627,11 @@ msgstr ""
 "(sarri jario erakundearen webgunea), SDP-an iragarriko dena (Saio "
 "Azaltzailea)."
 
-#: modules/stream_out/rtp.c:103 modules/stream_out/standard.c:81
+#: modules/stream_out/rtp.c:105 modules/stream_out/standard.c:81
 msgid "Session email"
 msgstr "Saioaren emaila"
 
-#: modules/stream_out/rtp.c:105 modules/stream_out/standard.c:83
+#: modules/stream_out/rtp.c:107 modules/stream_out/standard.c:83
 msgid ""
 "This allows you to give a contact mail address for the stream, that will be "
 "announced in the SDP (Session Descriptor)."
@@ -21639,11 +21639,11 @@ msgstr ""
 "Honek ahalbidtzen dizu ematea posta helbide bat jarioarentzat, SDP-an "
 "iragarriko dena (Saio Azaltzailea)."
 
-#: modules/stream_out/rtp.c:107 modules/stream_out/standard.c:85
+#: modules/stream_out/rtp.c:109 modules/stream_out/standard.c:85
 msgid "Session phone number"
 msgstr "Saioaren urrutizkin zenbakia"
 
-#: modules/stream_out/rtp.c:109 modules/stream_out/standard.c:87
+#: modules/stream_out/rtp.c:111 modules/stream_out/standard.c:87
 msgid ""
 "This allows you to give a contact telephone number for the stream, that will "
 "be announced in the SDP (Session Descriptor)."
@@ -21651,35 +21651,35 @@ msgstr ""
 "Honek ahalbidtzen dizu ematea harremanetarako urrutizkin zenbaki bat "
 "jarioarentzat, SDP-an iragarriko dena (Saio Azaltzailea)."
 
-#: modules/stream_out/rtp.c:114
+#: modules/stream_out/rtp.c:116
 msgid "This allows you to specify the base port for the RTP streaming."
 msgstr "Honek ahalbidtzen dizu adieraztea ohinarri ataka RTP jarioarentzat."
 
-#: modules/stream_out/rtp.c:115
+#: modules/stream_out/rtp.c:117
 msgid "Audio port"
 msgstr "Audio ataka"
 
-#: modules/stream_out/rtp.c:117
+#: modules/stream_out/rtp.c:119
 msgid ""
 "This allows you to specify the default audio port for the RTP streaming."
 msgstr ""
 "Honek ahalbidtzen dizu adieraztea berezko audio ataka RTP jarioarentzat."
 
-#: modules/stream_out/rtp.c:118
+#: modules/stream_out/rtp.c:120
 msgid "Video port"
 msgstr "Bideo ataka"
 
-#: modules/stream_out/rtp.c:120
+#: modules/stream_out/rtp.c:122
 msgid ""
 "This allows you to specify the default video port for the RTP streaming."
 msgstr ""
 "Honek ahalbidtzen dizu adieraztea berezko bideo ataka RTP jarioarentzat."
 
-#: modules/stream_out/rtp.c:128
+#: modules/stream_out/rtp.c:130
 msgid "RTP/RTCP multiplexing"
 msgstr "RTP/RTCP multiplexa"
 
-#: modules/stream_out/rtp.c:130
+#: modules/stream_out/rtp.c:132
 msgid ""
 "This sends and receives RTCP packet multiplexed over the same port as RTP "
 "packets."
@@ -21687,7 +21687,7 @@ msgstr ""
 "Honek bidaltzen ditu eta jasotzen ditu RTCP pakete multiplexatuak RTP "
 "paketeen ataka beraren gainean."
 
-#: modules/stream_out/rtp.c:135
+#: modules/stream_out/rtp.c:137
 msgid ""
 "Default caching value for outbound RTP streams. This value should be set in "
 "milliseconds."
@@ -21695,15 +21695,15 @@ msgstr ""
 "Berezko katxe balioa kanporako RTP jarioentzat. Balio hau segundumilaenetan "
 "ezarria izan behar da."
 
-#: modules/stream_out/rtp.c:138
+#: modules/stream_out/rtp.c:140
 msgid "Transport protocol"
 msgstr "Garraio protokoloa"
 
-#: modules/stream_out/rtp.c:140
+#: modules/stream_out/rtp.c:142
 msgid "This selects which transport protocol to use for RTP."
 msgstr "Honek hautatzen du zein garraio protokolo erabili RTP-rako."
 
-#: modules/stream_out/rtp.c:144
+#: modules/stream_out/rtp.c:146
 msgid ""
 "RTP packets will be integrity-protected and ciphered with this Secure RTP "
 "master shared secret key."
@@ -21711,16 +21711,16 @@ msgstr ""
 "RTP paketeak osoki-babestuta eta zifratuta daude RTP Segurtasun maixuarekin "
 "ezkutuko giltza parketatuz. "
 
-#: modules/stream_out/rtp.c:159
+#: modules/stream_out/rtp.c:161
 msgid "MP4A LATM"
 msgstr "MP4A LATM"
 
-#: modules/stream_out/rtp.c:161
+#: modules/stream_out/rtp.c:163
 msgid "This allows you to stream MPEG4 LATM audio streams (see RFC3016)."
 msgstr ""
 "Honek ahalbidetzen dizu jariotzea MPEG4 LATM audio jarioak (ikusi RFC3016)."
 
-#: modules/stream_out/rtp.c:171
+#: modules/stream_out/rtp.c:173
 msgid "RTP stream output"
 msgstr "RTP jario irteera"
 
@@ -21868,67 +21868,67 @@ msgstr ""
 msgid "Standard stream output"
 msgstr "Jario estandarraren irteera"
 
-#: modules/stream_out/switcher.c:90 modules/gui/qt4/ui/sprefs_input.h:314
+#: modules/stream_out/switcher.c:92 modules/gui/qt4/ui/sprefs_input.h:314
 msgid "Files"
 msgstr "Agiriak"
 
-#: modules/stream_out/switcher.c:92
+#: modules/stream_out/switcher.c:94
 msgid "Full paths of the files separated by colons."
 msgstr "Agirien helburu osoak kakotxaz bananduta."
 
-#: modules/stream_out/switcher.c:93
+#: modules/stream_out/switcher.c:95
 msgid "Sizes"
 msgstr "Neurriak"
 
-#: modules/stream_out/switcher.c:95
+#: modules/stream_out/switcher.c:97
 msgid "List of sizes separated by colons (720x576:480x576)."
 msgstr "Neurrien zerrenda kakotxaz bananduta (720x576:480x576)."
 
-#: modules/stream_out/switcher.c:98
+#: modules/stream_out/switcher.c:100
 msgid "Aspect ratio (4:3, 16:9)."
 msgstr "Ikuspegi maila (4:3, 16:9)."
 
-#: modules/stream_out/switcher.c:99
+#: modules/stream_out/switcher.c:101
 msgid "Command UDP port"
 msgstr "UDP ataka komandoa"
 
-#: modules/stream_out/switcher.c:101
+#: modules/stream_out/switcher.c:103
 msgid "UDP port to listen to for commands."
 msgstr "Komandoak aditzeko UDP ataka."
 
-#: modules/stream_out/switcher.c:102
+#: modules/stream_out/switcher.c:104
 msgid "Command"
 msgstr "Komandoa"
 
-#: modules/stream_out/switcher.c:104
+#: modules/stream_out/switcher.c:106
 msgid "Initial command to execute."
 msgstr "Ekiteko hasierako komandoa."
 
-#: modules/stream_out/switcher.c:105
+#: modules/stream_out/switcher.c:107
 msgid "GOP size"
 msgstr "GOP neurria"
 
-#: modules/stream_out/switcher.c:107
+#: modules/stream_out/switcher.c:109
 msgid "Number of P frames between two I frames."
 msgstr "P frame zenbatekoa bi I frame artean."
 
-#: modules/stream_out/switcher.c:108
+#: modules/stream_out/switcher.c:110
 msgid "Quantizer scale"
 msgstr "Zenbatekotzaile neurria"
 
-#: modules/stream_out/switcher.c:110
+#: modules/stream_out/switcher.c:112
 msgid "Fixed quantizer scale to use."
 msgstr "Erabiltzeko zenbatekotzaile neurri finkoa."
 
-#: modules/stream_out/switcher.c:111
+#: modules/stream_out/switcher.c:113
 msgid "Mute audio"
 msgstr "Mututu audioa"
 
-#: modules/stream_out/switcher.c:113
+#: modules/stream_out/switcher.c:115
 msgid "Mute audio when command is not 0."
 msgstr "Mututu audioa komandoa 0=ean ez dagoenean."
 
-#: modules/stream_out/switcher.c:116
+#: modules/stream_out/switcher.c:118
 msgid "MPEG2 video switcher stream output"
 msgstr "MPEG2 video aldagailu jario irteera"
 
@@ -25361,9 +25361,9 @@ msgid ""
 "requires YV12/I420 fourcc. By default vlc writes the fourcc of the picture "
 "frame into the output destination."
 msgstr ""
-"YUV4MPEG2 burutresna bateragarria da mplayer yuv bideo irteerarekin eta "
-"behar du YV12/I420 fourcc-a. Berez vlc-k irudiaren frame-aren fourcc-a "
-"idazten du irteera helbidean."
+"YUV4MPEG2 goiburua bateragarria da mplayer yuv bideo irteerarekin eta YV12/"
+"I420 fourcc behar du. Berez vlc-k irudiaren framearen fourcc-a  idazten du "
+"irteera helbidean."
 
 #: modules/video_output/yuv.c:59
 msgid "YUV output"
@@ -25572,7 +25572,7 @@ msgstr "Zehazten du zilerdi neurria pixeletan, banda ohina (hasieran)."
 
 #: modules/visualization/visual/visual.c:90
 msgid "Spectral sections"
-msgstr "Azgilitza atalak"
+msgstr "Argilitza atalak"
 
 #: modules/visualization/visual/visual.c:92
 msgid "Determines how many sections of spectrum will exist."
@@ -25615,7 +25615,7 @@ msgid "Spectrum analyser"
 msgstr "Argilitza aztergailua"
 
 #: modules/gui/qt4/ui/equalizer.h:126 modules/gui/qt4/ui/open_disk.h:290
-#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:454
+#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:460
 #: modules/gui/qt4/ui/sprefs_audio.h:403 modules/gui/qt4/ui/sprefs_input.h:305
 #: modules/gui/qt4/ui/sprefs_interface.h:372
 #: modules/gui/qt4/ui/sprefs_subtitles.h:200
@@ -25825,67 +25825,71 @@ msgstr ""
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
 "#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
 
-#: modules/gui/qt4/ui/profiles.h:456
+#: modules/gui/qt4/ui/profiles.h:462
 msgid "MPEG-TS"
 msgstr "MPEG-TS "
 
-#: modules/gui/qt4/ui/profiles.h:457
+#: modules/gui/qt4/ui/profiles.h:463
 msgid "MPEG-PS"
 msgstr "MPEG-PS "
 
-#: modules/gui/qt4/ui/profiles.h:458
+#: modules/gui/qt4/ui/profiles.h:464
 msgid "WAV"
 msgstr "WAV "
 
-#: modules/gui/qt4/ui/profiles.h:459
+#: modules/gui/qt4/ui/profiles.h:465
+msgid "Webm"
+msgstr "Webm"
+
+#: modules/gui/qt4/ui/profiles.h:466
 msgid "ASF/WMV"
 msgstr "ASF/WMV "
 
-#: modules/gui/qt4/ui/profiles.h:460
+#: modules/gui/qt4/ui/profiles.h:467
 msgid "Ogg/Ogm"
 msgstr "Ogg/Ogm "
 
-#: modules/gui/qt4/ui/profiles.h:461
+#: modules/gui/qt4/ui/profiles.h:468
 msgid "RAW"
 msgstr "RAW "
 
-#: modules/gui/qt4/ui/profiles.h:462
+#: modules/gui/qt4/ui/profiles.h:469
 msgid "MPEG 1"
 msgstr "MPEG 1"
 
-#: modules/gui/qt4/ui/profiles.h:463
+#: modules/gui/qt4/ui/profiles.h:470
 msgid "FLV"
 msgstr "FLV "
 
-#: modules/gui/qt4/ui/profiles.h:464
+#: modules/gui/qt4/ui/profiles.h:471
 msgid "AVI"
 msgstr "AVI "
 
-#: modules/gui/qt4/ui/profiles.h:465
+#: modules/gui/qt4/ui/profiles.h:472
 msgid "MP4/MOV"
 msgstr "MP4/MOV"
 
-#: modules/gui/qt4/ui/profiles.h:467
+#: modules/gui/qt4/ui/profiles.h:474
 msgid "MKV"
 msgstr "MKV"
 
-#: modules/gui/qt4/ui/profiles.h:468
+#: modules/gui/qt4/ui/profiles.h:475
 msgid "Encapsulation"
 msgstr "Estalkipena"
 
-#: modules/gui/qt4/ui/profiles.h:472 modules/gui/qt4/ui/profiles.h:491
+#: modules/gui/qt4/ui/profiles.h:479 modules/gui/qt4/ui/profiles.h:498
 msgid " kb/s"
 msgstr " kb/s"
 
-#: modules/gui/qt4/ui/profiles.h:473
+#: modules/gui/qt4/ui/profiles.h:480
 msgid "Frame Rate"
 msgstr "Frame Neurria"
 
-#: modules/gui/qt4/ui/profiles.h:475
+#: modules/gui/qt4/ui/profiles.h:482
 msgid " fps"
 msgstr " k/s"
 
-#: modules/gui/qt4/ui/profiles.h:477
+#: modules/gui/qt4/ui/profiles.h:484
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -25893,31 +25897,31 @@ msgstr ""
 "Hurrengo hiru paremetroetako bat bete behar duzu, VLC-k berez-atzemango du "
 "bestea jatorrizko ikuspegi maila erabiliz"
 
-#: modules/gui/qt4/ui/profiles.h:480 modules/gui/qt4/ui/profiles.h:483
+#: modules/gui/qt4/ui/profiles.h:487 modules/gui/qt4/ui/profiles.h:490
 msgid "00000; "
 msgstr "00000; "
 
-#: modules/gui/qt4/ui/profiles.h:485
+#: modules/gui/qt4/ui/profiles.h:492
 msgid "Keep original video track"
 msgstr "Heutsi jatorrizko bideo bideari"
 
-#: modules/gui/qt4/ui/profiles.h:486
+#: modules/gui/qt4/ui/profiles.h:493
 msgid "Video codec"
 msgstr "Bideo kodeka"
 
-#: modules/gui/qt4/ui/profiles.h:488
+#: modules/gui/qt4/ui/profiles.h:495
 msgid "Keep original audio track"
 msgstr "Heutsi jatorrizko audio bideari"
 
-#: modules/gui/qt4/ui/profiles.h:493
+#: modules/gui/qt4/ui/profiles.h:500
 msgid "Sample Rate"
 msgstr "Lagin Neurria"
 
-#: modules/gui/qt4/ui/profiles.h:494
+#: modules/gui/qt4/ui/profiles.h:501
 msgid "Audio codec"
 msgstr "Audio kodeka"
 
-#: modules/gui/qt4/ui/profiles.h:496
+#: modules/gui/qt4/ui/profiles.h:503
 msgid "Overlay subtitles on the video"
 msgstr "Gainjarri azpidatziak bideoan"
 
@@ -26527,8 +26531,294 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ "Hizkiaren neurri osoa ezartzen bada, neurri erlatiboa baliogabetua izango "
 #~ "da. "
 
-#~ msgid "Webm"
-#~ msgstr "Webm"
+#~ msgid "%s: option `%s' is ambiguous\n"
+#~ msgstr "%s: aukera `%s' okerra\n"
+
+#~ msgid "%s: option `--%s' doesn't allow an argument\n"
+#~ msgstr "%s: `--%s' aukera ez da ahalbidetua argumentuan\n"
+
+#~ msgid "%s: option `%c%s' doesn't allow an argument\n"
+#~ msgstr "%s: `%c%s' aukera ez da ahalbidetua argumentuan\n"
+
+#~ msgid "%s: option `%s' requires an argument\n"
+#~ msgstr "%s: `%s' aukerak argumentua behar du\n"
+
+#~ msgid "%s: unrecognized option `%s%s'\n"
+#~ msgstr "%s: aukera ezezaguna `%s%s'\n"
+
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s: legezkanpoko aukera -- %c\n"
+
+#~ msgid "%s: invalid option -- %c\n"
+#~ msgstr "%s: baliogabeko aukera -- %c\n"
+
+#~ msgid "%s: option requires an argument -- %c\n"
+#~ msgstr "%s:  -- %c aukerak argumentua behar du\n"
+
+#~ msgid "%s: option `-W %s' is ambiguous\n"
+#~ msgstr "%s: `-W %s' aukera okerra da\n"
+
+#~ msgid "%s: option `-W %s' doesn't allow an argument\n"
+#~ msgstr "%s: `-W %s' aukera ez da ahalbidetua argumentuan\n"
+
+#~ msgid "URL:"
+#~ msgstr "URL-a:"
+
+#~ msgid "%s: unrecognized option `--%s'\n"
+#~ msgstr "%s: aukera ezezaguna `--%s'\n"
+
+#~ msgid "Use media key control when VLC is in background"
+#~ msgstr "Erabili multimedia tekla agintea VLC leihobarrenean dagoenean"
+
+#~ msgid ""
+#~ "By default, VLC will accept media key events also when being in "
+#~ "background."
+#~ msgstr ""
+#~ "Berez, VLC-k onartuko ditu multimedia tekla gertaerak baita "
+#~ "leihobarrenean hasitakoan."
+
+#~ msgid "...when VLC is in background"
+#~ msgstr "...VLC leihobarrenean dagoenean"
+
+#~ msgid "GME demuxer (Game_Music_Emu)"
+#~ msgstr "GME desnahastzailea (Game_Music_Emu)"
+
+#~ msgid "Force a specific SDL video output driver."
+#~ msgstr "Behartzen du SDL bideo irteera gidagailu bereizi bat"
+
+#~ msgid "full"
+#~ msgstr "osoa"
+
+#~ msgid ""
+#~ "This integer when viewed in binary is a debugging mask\n"
+#~ "meta info          1\n"
+#~ "events             2\n"
+#~ "MRL                4\n"
+#~ "external call      8\n"
+#~ "all calls (0x10)  16\n"
+#~ "LSN       (0x20)  32\n"
+#~ "seek      (0x40)  64\n"
+#~ "libcdio   (0x80) 128\n"
+#~ "libcddb  (0x100) 256\n"
+#~ msgstr ""
+#~ "Oso hau binarioan ikusitakoan garbiketa mozorro bat da\n"
+#~ "meta argib         1\n"
+#~ "gertaerak          2\n"
+#~ "MRL                4\n"
+#~ "kanpo deiak        8\n"
+#~ "dei denak (0x10)  16\n"
+#~ "LSN       (0x20)  32\n"
+#~ "bila      (0x40)  64\n"
+#~ "libcdio   (0x80) 128\n"
+#~ "libcddb  (0x100) 256\n"
+
+#~ msgid "Enable CD paranoia?"
+#~ msgstr "Gaitu CD paranoia?"
+
+#~ msgid "Compact Disc Digital Audio (CD-DA) input"
+#~ msgstr "Diska Konpakto Audio Digitala (CD-DA) sarrera"
+
+#~ msgid "Ask"
+#~ msgstr "Eskatu"
+
+#~ msgid "50%"
+#~ msgstr "%50"
+
+#~ msgid "100%"
+#~ msgstr "%100"
+
+#~ msgid "200%"
+#~ msgstr "%200"
+
+#~ msgid "Your version of Mac OS X is no longer supported"
+#~ msgstr "Zure Mac OS X bertsioa ez da jadanik sostengatua"
+
+#~ msgid ""
+#~ "VLC media player %s requires Mac OS X 10.5 or higher.\n"
+#~ "\n"
+#~ "%@"
+#~ msgstr ""
+#~ "VLC multimedia irakurgailuak %s beharrezka du Mac OS X 10.5 edo "
+#~ "handiagoa.\n"
+#~ "\n"
+#~ "%@"
+
+#~ msgid "Checking for updates was not enabled in this build."
+#~ msgstr "Eguneraketak egiaztatzea ez dago gaituta eraiketa honetan."
+
+#~ msgid "Crash Report successfully sent"
+#~ msgstr "Matxura Jakinarazpena ongi bidali da"
+
+#~ msgid "Thanks for your report!"
+#~ msgstr "Mila esker zure jakinarazpenagaitik!"
+
+#~ msgid "Do you want VLC to check for updates automatically?"
+#~ msgstr "Nahi duzu VLC-k eguneratzeak berezgaitasunez egiaztatzea?"
+
+#~ msgid "The current release is %d.%d.%d%c."
+#~ msgstr "Uneko argitalpena da %d.%d.%d%c."
+
+#~ msgid "Owner"
+#~ msgstr "Jabea"
+
+#~ msgid "00:00:00"
+#~ msgstr "00:00:00"
+
+#~ msgid "MRL:"
+#~ msgstr "MRL:"
+
+#~ msgid "udp"
+#~ msgstr "udp"
+
+#~ msgid "udp6"
+#~ msgstr "udp6"
+
+#~ msgid "rtp"
+#~ msgstr "rtp"
+
+#~ msgid "rtp4"
+#~ msgstr "rtp4"
+
+#~ msgid "ftp"
+#~ msgstr "ftp"
+
+#~ msgid "http"
+#~ msgstr "http"
+
+#~ msgid "sout"
+#~ msgstr "sout"
+
+#~ msgid "ntsc"
+#~ msgstr "ntsc"
+
+#~ msgid "secam"
+#~ msgstr "secam"
+
+#~ msgid "240x192"
+#~ msgstr "240x192"
+
+#~ msgid "320x240"
+#~ msgstr "320x240"
+
+#~ msgid "qsif"
+#~ msgstr "qsif"
+
+#~ msgid "qcif"
+#~ msgstr "qcif"
+
+#~ msgid "sif"
+#~ msgstr "sif"
+
+#~ msgid "cif"
+#~ msgstr "cif"
+
+#~ msgid "vga"
+#~ msgstr "vga"
+
+#~ msgid "kHz"
+#~ msgstr "kHz"
+
+#~ msgid "Hz/s"
+#~ msgstr "Hz/s"
+
+#~ msgid "huffyuv"
+#~ msgstr "huffyuv"
+
+#~ msgid "mp1v"
+#~ msgstr "mp1v"
+
+#~ msgid "mp2v"
+#~ msgstr "mp2v"
+
+#~ msgid "mp4v"
+#~ msgstr "mp4v"
+
+#~ msgid "H263"
+#~ msgstr "H263"
+
+#~ msgid "WMV1"
+#~ msgstr "WMV1"
+
+#~ msgid "WMV2"
+#~ msgstr "WMV2"
+
+#~ msgid "127.0.0.1"
+#~ msgstr "127.0.0.1"
+
+#~ msgid "localhost"
+#~ msgstr "localhost"
+
+#~ msgid "localhost.localdomain"
+#~ msgstr "localhost.localdomain"
+
+#~ msgid "239.0.0.42"
+#~ msgstr "239.0.0.42"
+
+#~ msgid "OGG"
+#~ msgstr "OGG"
+
+#~ msgid "alaw"
+#~ msgstr "alaw"
+
+#~ msgid "ulaw"
+#~ msgstr "ulaw"
+
+#~ msgid "mpga"
+#~ msgstr "mpga"
+
+#~ msgid "mp3"
+#~ msgstr "mp3"
+
+#~ msgid "a52"
+#~ msgstr "a52"
+
+#~ msgid "vorb"
+#~ msgstr "vorb"
+
+#~ msgid ""
+#~ "VLC media player is an MPEG, MPEG 2, MP3 and DivX player that accepts "
+#~ "input from local or network sources and is licensed under the GPL (http://"
+#~ "www.gnu.org/copyleft/gpl.html)."
+#~ msgstr ""
+#~ "VLC multimedia irakurgailua MPEG, MPEG 2, MP3 eta  DivX irakurgailu bat "
+#~ "da onartzen dituena sarrerak tokiko edo sare iturrietatik eta GPL baimena "
+#~ "du (http://www.gnu.org/copyleft/gpl.html)."
+
+#~ msgid "Authors: the VideoLAN Team, http://www.videolan.org/team/"
+#~ msgstr "Egileak: VideoLAN Taldea, http://www.videolan.org/team/"
+
+#~ msgid "(c) 1996-2004 the the VideoLAN team team"
+#~ msgstr "(c) 1996-2004 VideoLAN taldea taldea"
+
+#~ msgid "Couldn't find pixmap file: %s"
+#~ msgstr "Ezinezkoa pixmap agiria aurkitu: %s"
+
+#~ msgid "Statistics about the currently playing media or stream."
+#~ msgstr "Uneko multimedia edo jarioaren estatistikak."
+
+#~ msgid "Complete look with information area"
+#~ msgstr "Ikusaldi osoa argibide eremuakin"
+
+#~ msgid "256 corresponds to 100%, 1024 to 400%"
+#~ msgstr "256 da %100, 1024 da %400"
+
+#~ msgid "last.fm"
+#~ msgstr "last.fm"
+
+#~ msgid "Association Setup"
+#~ msgstr "Elkarketa Ezarpena"
+
+#~ msgid ""
+#~ "Embed the video inside the interface instead of having it in a separate "
+#~ "window."
+#~ msgstr ""
+#~ "Bideoa interfazean barneratzen du banandutako leiho batean eduki ordez."
+
+#~ msgid "Gtk+ GUI helper"
+#~ msgstr "Gtk+ GUI laguntzailea"
+
+#~ msgid "Number of stars to draw with random effect."
+#~ msgstr "Zorizko eraginarekin margotzeko izar zenbatekoa."
 
 #~ msgid "Do CD-Text lookups?"
 #~ msgstr "Egin CD-Text gainbegiradak?"
@@ -26600,71 +26890,53 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ msgid "ISO-9660 Volume"
 #~ msgstr "ISO-9660 Bolumena"
 
+#, fuzzy
 #~ msgid "SessionManager"
-#~ msgstr "Sessioonihaldur"
+#~ msgstr "Saioaren izena"
 
+#, fuzzy
 #~ msgid "title"
-#~ msgstr "pealkiri"
+#~ msgstr "Izenburua"
 
+#, fuzzy
 #~ msgid "Set"
-#~ msgstr "Määra"
+#~ msgstr "bidalita"
 
+#, fuzzy
 #~ msgid "SDL video driver name"
-#~ msgstr "SDL video tüüleri nimi"
+#~ msgstr "Bideo gailuaren izena"
 
+#, fuzzy
 #~ msgid "Select the protocol for the URL."
-#~ msgstr "Vali URL-i protokoll"
+#~ msgstr "Hautatu margo bat bideoan"
 
+#, fuzzy
 #~ msgid "Select the port used"
-#~ msgstr "Vali kasutatav port"
+#~ msgstr "Hautatutako atakak:"
 
+#, fuzzy
 #~ msgid "Use host codecs if available"
-#~ msgstr "Kasuta masina koodekeid, kui saadaval"
+#~ msgstr "Erabili S/PDIF eskuragarri dagoenean"
 
+#, fuzzy
 #~ msgid "Other codecs"
-#~ msgstr "Muud koodekid"
+#~ msgstr "Atal kodekak"
 
+#, fuzzy
 #~ msgid "Settings for audio+video and miscellaneous decoders and encoders."
-#~ msgstr "Seaded audio+video ja teiste dekoodrite ja enkoodrite jaoks."
+#~ msgstr "Ezarpenak audioa-bakarrik dekodeaketentzat eta kodeaketentzak."
 
+#, fuzzy
 #~ msgid "Add Node"
-#~ msgstr "Lisa sõlm"
+#~ msgstr "Gehitu Agiritegia..."
 
+#, fuzzy
 #~ msgid "Add to playlist"
-#~ msgstr "Lisa esitusloendisse"
+#~ msgstr "Gehitu Irakur-zerrendara"
 
+#, fuzzy
 #~ msgid "Advanced open..."
-#~ msgstr "Täiustatud avamine..."
-
-#~ msgid "%s: option `%s' is ambiguous\n"
-#~ msgstr "%s: võti `%s' on segane\n"
-
-#~ msgid "%s: option `--%s' doesn't allow an argument\n"
-#~ msgstr "%s: võti `--%s' ei luba argumenti\n"
-
-#~ msgid "%s: option `%c%s' doesn't allow an argument\n"
-#~ msgstr "%s: võti `%c%s' ei luba argumenti\n"
-
-#~ msgid "%s: option `%s' requires an argument\n"
-#~ msgstr "%s: võti `%s' nõuab argumenti\n"
-
-#~ msgid "%s: unrecognized option `%s%s'\n"
-#~ msgstr "%s: tundmatu võti `%s%s'\n"
-
-#~ msgid "%s: illegal option -- %c\n"
-#~ msgstr "%s: lubamatu võti -- %c\n"
-
-#~ msgid "%s: invalid option -- %c\n"
-#~ msgstr "%s: vigane võti -- %c\n"
-
-#~ msgid "%s: option requires an argument -- %c\n"
-#~ msgstr "%s: võti nõuab argumenti -- %c\n"
-
-#~ msgid "%s: option `-W %s' is ambiguous\n"
-#~ msgstr "%s: võti `-W %s' on segane\n"
-
-#~ msgid "%s: option `-W %s' doesn't allow an argument\n"
-#~ msgstr "%s: võti `-W %s' ei luba argumenti\n"
+#~ msgstr "Irekitze Aurreratua..."
 
 #, fuzzy
 #~ msgid "Show interface with mouse"
@@ -26678,37 +26950,45 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ "Gaituta dagoenean, interfazeak elkarrizketa kutxa bat erakutsiko du "
 #~ "erabiltzaile sarreraren bat beharrezkoa den bakoitzean."
 
+#, fuzzy
 #~ msgid "Fullscreen-only"
-#~ msgstr "Ainult täisekraan"
+#~ msgstr "Ikusleiho-osoan"
 
+#, fuzzy
 #~ msgid "CD reading failed"
-#~ msgstr "CD lugemine ebaõnnestus"
+#~ msgstr "Agiri irakurketa hutsegitea"
 
+#, fuzzy
 #~ msgid "Audio Compact Disc"
-#~ msgstr "Audio CD"
+#~ msgstr "Audio irteera pina"
 
 #, fuzzy
 #~ msgid "Additional debug"
 #~ msgstr "Gaitu garbiketa"
 
+#, fuzzy
 #~ msgid "CDDB"
-#~ msgstr "CDDB"
+#~ msgstr "CDDB ataka"
 
+#, fuzzy
 #~ msgid "CDDB server"
-#~ msgstr "CDDB server"
+#~ msgstr "CDDB Zerbitzaria"
 
+#, fuzzy
 #~ msgid "CDDB server port"
-#~ msgstr "CDDB serveri port"
+#~ msgstr "Erabili beharreko CDDB Zerbitzariaren ataka."
 
 #, fuzzy
 #~ msgid "CDDB server timeout"
-#~ msgstr "CDDB serveri port"
+#~ msgstr "CDDB Zerbitzaria"
 
+#, fuzzy
 #~ msgid "Track %i"
-#~ msgstr "Rada %i"
+#~ msgstr "Bidea"
 
+#, fuzzy
 #~ msgid "Tarkin decoder"
-#~ msgstr "Tarkin dekooder"
+#~ msgstr "Bideo kodeatzaile ustela"
 
 #, fuzzy
 #~ msgid "Deinterlace mode: %s"
@@ -26726,11 +27006,13 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ msgid "BeOS standard API interface"
 #~ msgstr "Gehitu Interfazea"
 
+#, fuzzy
 #~ msgid "Open Disc"
-#~ msgstr "Ava ketas"
+#~ msgstr "Ireki Diska..."
 
+#, fuzzy
 #~ msgid "Open Subtitles"
-#~ msgstr "Ava subtiitrid"
+#~ msgstr "Ireki azpidatziak..."
 
 #, fuzzy
 #~ msgid "Prev Title"
@@ -26748,21 +27030,25 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ msgid "Go to Chapter"
 #~ msgstr "Atala"
 
+#, fuzzy
 #~ msgid "Speed"
-#~ msgstr "Kiirus"
+#~ msgstr "Speex"
 
+#, fuzzy
 #~ msgid "playlist"
-#~ msgstr "esitusloend"
+#~ msgstr "irakur zerrenda"
 
+#, fuzzy
 #~ msgid "Close"
-#~ msgstr "Sulge"
+#~ msgstr "&Itxi"
 
 #, fuzzy
 #~ msgid "Select None"
 #~ msgstr "Hautatu Agiritegia"
 
+#, fuzzy
 #~ msgid "Defaults"
-#~ msgstr "Vaikeväärtused"
+#~ msgstr "Berezkoa"
 
 #, fuzzy
 #~ msgid "Show Interface"
@@ -26780,144 +27066,181 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ msgid "Check for Updates"
 #~ msgstr "Egiaztatu eguneraketak"
 
+#, fuzzy
 #~ msgid "PDA Linux Gtk2+ interface"
-#~ msgstr "PDA Linux Gtk2+ liides"
+#~ msgstr "Lua Interfazea"
 
+#, fuzzy
 #~ msgid "Forward"
-#~ msgstr "Keri edasi"
+#~ msgstr "Urratsa aurrera"
 
+#, fuzzy
 #~ msgid "Port:"
-#~ msgstr "Port:"
+#~ msgstr "Ataka"
 
+#, fuzzy
 #~ msgid "Network: "
-#~ msgstr "Võrk: "
+#~ msgstr "Sarea"
 
+#, fuzzy
 #~ msgid "Protocol:"
-#~ msgstr "Protokoll:"
+#~ msgstr "Protokoloa"
 
+#, fuzzy
 #~ msgid "Transcode:"
-#~ msgstr "Transkodeeri:"
+#~ msgstr "Transkodeatu"
 
+#, fuzzy
 #~ msgid "enable"
-#~ msgstr "võimalda"
+#~ msgstr "Gaitu"
 
+#, fuzzy
 #~ msgid "Video:"
-#~ msgstr "Video:"
+#~ msgstr "Bideoa"
 
+#, fuzzy
 #~ msgid "Audio:"
-#~ msgstr "Audio:"
+#~ msgstr "Audioa"
 
 #, fuzzy
 #~ msgid "Channel:"
 #~ msgstr "Bideak:"
 
+#, fuzzy
 #~ msgid "Frequency:"
-#~ msgstr "Sagedus:"
+#~ msgstr "Maiztasuna"
 
+#, fuzzy
 #~ msgid "Samplerate:"
-#~ msgstr "Diskreetimissagedus"
+#~ msgstr "Lagin-neurria"
 
 #, fuzzy
 #~ msgid "Decimation:"
 #~ msgstr "Hamarrendapena"
 
+#, fuzzy
 #~ msgid "mono"
-#~ msgstr "Mono"
+#~ msgstr "Mono duala"
 
+#, fuzzy
 #~ msgid "stereo"
-#~ msgstr "stereo"
+#~ msgstr "Estereoa"
 
+#, fuzzy
 #~ msgid "Camera"
-#~ msgstr "Kaamera"
+#~ msgstr "Frame-neurria"
 
 #, fuzzy
 #~ msgid "Video Codec:"
 #~ msgstr "Bideo kodeka"
 
+#, fuzzy
 #~ msgid "Video Bitrate:"
-#~ msgstr "Video bitikiirus:"
+#~ msgstr "Bideo bitneurria"
 
+#, fuzzy
 #~ msgid "Bitrate Tolerance:"
-#~ msgstr "Bitikiiruse tolerants"
+#~ msgstr "Bideo bitneurri jasangarritasuna"
 
+#, fuzzy
 #~ msgid "Audio Codec:"
-#~ msgstr "Audio koodek:"
+#~ msgstr "Audio kodeka"
 
+#, fuzzy
 #~ msgid "Deinterlace:"
-#~ msgstr "Ülerealaotus:"
+#~ msgstr "Ez-elkarlotze"
 
+#, fuzzy
 #~ msgid "Access:"
-#~ msgstr "Pääsuõigused:"
-
-#~ msgid "URL:"
-#~ msgstr "URL:"
+#~ msgstr "Sarbide irteera"
 
 #, fuzzy
 #~ msgid "Audio Bitrate :"
 #~ msgstr "Audio bitneuria"
 
+#, fuzzy
 #~ msgid "SAP Announce:"
-#~ msgstr "SAP teatamine:"
+#~ msgstr "SAP Iragarlea"
 
+#, fuzzy
 #~ msgid "SLP Announce:"
-#~ msgstr "SLP teatamine:"
+#~ msgstr "SAP Iragarlea"
 
+#, fuzzy
 #~ msgid "Announce Channel:"
-#~ msgstr "Teatamise kanal:"
+#~ msgstr "TB Sintonizagailu Bidea"
 
+#, fuzzy
 #~ msgid " Clear "
-#~ msgstr "Puhasta"
+#~ msgstr "Garbitu"
 
+#, fuzzy
 #~ msgid " Save "
-#~ msgstr "Salvesta"
+#~ msgstr "Gorde"
 
+#, fuzzy
 #~ msgid " Cancel "
-#~ msgstr "Katkesta"
+#~ msgstr "Ezeztatu"
 
+#, fuzzy
 #~ msgid "Preference"
-#~ msgstr "Eelistus"
+#~ msgstr "Hobespenak"
 
+#, fuzzy
 #~ msgid "Corrupted"
-#~ msgstr "Vigane"
+#~ msgstr "Agiri ustela"
 
+#, fuzzy
 #~ msgid "Show the current item"
-#~ msgstr "Kuva aktiivne kirje"
+#~ msgstr "Birrirakurri oraingo gaia"
 
+#, fuzzy
 #~ msgid "Audio Port"
-#~ msgstr "Audio port"
+#~ msgstr "Audio ataka"
 
+#, fuzzy
 #~ msgid "Video Port"
-#~ msgstr "Video port"
+#~ msgstr "Bideo ataka"
 
+#, fuzzy
 #~ msgid "Select play mode"
-#~ msgstr "Vali esitamise režiim"
+#~ msgstr "Hautatu birrirakurketa irabazi modua"
 
+#, fuzzy
 #~ msgid "Alignment:"
-#~ msgstr "Paigutus."
+#~ msgstr "Idazki lerrokapena:"
 
+#, fuzzy
 #~ msgid "Default volume"
-#~ msgstr "Vaikimisi helitugevus"
+#~ msgstr "Berezko Bolumena"
 
+#, fuzzy
 #~ msgid "Disc Devices"
-#~ msgstr "Kettaseadmed"
+#~ msgstr "Diska Gailua"
 
+#, fuzzy
 #~ msgid "Post-Processing quality"
-#~ msgstr "Järeltöötluse kvaliteet"
+#~ msgstr "Prozasatze-ondorengo Ontasuna"
 
+#, fuzzy
 #~ msgid "Filter"
-#~ msgstr "Filter"
+#~ msgstr "Iragazkiak"
 
+#, fuzzy
 #~ msgid "Interface Type"
-#~ msgstr "Kasutajaliidese tüüp"
+#~ msgstr "Interfazea"
 
+#, fuzzy
 #~ msgid "Native"
-#~ msgstr "Loomulik"
+#~ msgstr "Jatorrizko irriskaria"
 
+#, fuzzy
 #~ msgid "Display mode"
-#~ msgstr "Kuvarežiim"
+#~ msgstr "Erakutsi gailua"
 
+#, fuzzy
 #~ msgid "Show a controller in fullscreen"
-#~ msgstr "Kuva juhtelemente täisekraanis"
+#~ msgstr "Erakusten du agintea ikusleiho-osoko moduan"
 
 #, fuzzy
 #~ msgid "Skin file"
@@ -26928,37 +27251,43 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ "\n"
 #~ "(WinCE interface)\n"
 #~ "\n"
-#~ msgstr "WinCE liides"
+#~ msgstr "Interfaze nagusiak"
 
+#, fuzzy
 #~ msgid "Compiled by "
-#~ msgstr "Kompileerinud "
+#~ msgstr "Biltzailea:"
 
+#, fuzzy
 #~ msgid "Choose directory"
-#~ msgstr "Vali kataloog"
+#~ msgstr "Iturburu zuzenbidea"
 
+#, fuzzy
 #~ msgid "WinCE interface"
-#~ msgstr "WinCE liides"
+#~ msgstr "Interfaze nagusiak"
 
+#, fuzzy
 #~ msgid "Old playlist export"
-#~ msgstr "Vana esitusloendi eksport"
+#~ msgstr "M3U irakur-zerrenda esportapena"
 
 #, fuzzy
 #~ msgid "video"
 #~ msgstr "Bideoa"
 
+#, fuzzy
 #~ msgid "Mac Text renderer"
-#~ msgstr "Mac teksti renderdaja"
+#~ msgstr "Idatzi aurkezlea"
 
 #, fuzzy
 #~ msgid "Miscellaneous stress tests"
 #~ msgstr "Askotariko Aukerak"
 
+#, fuzzy
 #~ msgid "Shoutcast Radio"
-#~ msgstr "Shoutcast Raadio"
+#~ msgstr "Shoutcast"
 
 #, fuzzy
 #~ msgid "Shoutcast radio listings"
-#~ msgstr "Shoutcast Raadio"
+#~ msgstr "Norbererarako ikuspegi mailen zerrenda"
 
 #, fuzzy
 #~ msgid "right"
@@ -27022,14 +27351,15 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "(Experimental) XCB video output"
-#~ msgstr "OpenGL bideo irteera"
+#~ msgstr "(Esperimental) XCB bideo leihoa"
 
 #, fuzzy
 #~ msgid "GaLaktos visualization"
 #~ msgstr "Audio ikuspenak"
 
+#, fuzzy
 #~ msgid "Number of stars"
-#~ msgstr "Tähekeste arv"
+#~ msgstr "Lerro zenbatekoa"
 
 #, fuzzy
 #~ msgid "Spatialization"
@@ -27047,8 +27377,9 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ msgid "Transrate"
 #~ msgstr "Transkipzioak"
 
+#, fuzzy
 #~ msgid "Video On Demand"
-#~ msgstr "VOD"
+#~ msgstr "Bideoa Eskabide Pean (BEP)"
 
 #, fuzzy
 #~ msgid "FFmpeg video filter"
@@ -27101,7 +27432,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "&Load Playlist File..."
-#~ msgstr "Gorde Irakur-zerrenda &Agirian..."
+#~ msgstr "Gorde Irakur-&zerrenda Agirian..."
 
 #, fuzzy
 #~ msgid "Additional &Sources"
@@ -27189,7 +27520,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "Save As:"
-#~ msgstr "Salvesta"
+#~ msgstr "Gorde"
 
 #, fuzzy
 #~ msgid "Login"
@@ -27245,7 +27576,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "WinCE interface module"
-#~ msgstr "WinCE liides"
+#~ msgstr "Interfaze modulu gehigarriak"
 
 #, fuzzy
 #~ msgid "RRD output file"
@@ -27333,10 +27664,6 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ msgstr "Gehitu Interfazea"
 
 #, fuzzy
-#~ msgid "%s: unrecognized option `--%s'\n"
-#~ msgstr "%s: tundmatu võti `%s%s'\n"
-
-#, fuzzy
 #~ msgid "Subscreen height."
 #~ msgstr "Azpileiho garaiera"
 
@@ -27350,7 +27677,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "close"
-#~ msgstr "Sulge"
+#~ msgstr "&Itxi"
 
 #, fuzzy
 #~ msgid "Check for updates..."
@@ -27358,7 +27685,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "Disk Device"
-#~ msgstr "Kettaseadmed"
+#~ msgstr "Diska Gailua"
 
 #, fuzzy
 #~ msgid "Skip Frames"
@@ -27522,7 +27849,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "Aspect Ratio"
-#~ msgstr "&Ikuspegi Maila"
+#~ msgstr "Iku&spegi Maila"
 
 #, fuzzy
 #~ msgid ""
@@ -27568,7 +27895,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "Embedded playlist"
-#~ msgstr "Lisa esitusloendisse"
+#~ msgstr "Ireki irakur-zerrenda"
 
 #, fuzzy
 #~ msgid "Previous playlist item"
@@ -27649,7 +27976,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "Network policy"
-#~ msgstr "Võrk: "
+#~ msgstr "Sare Aldiberetzea"
 
 #, fuzzy
 #~ msgid "Switch interface"
@@ -27721,7 +28048,7 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "CD-Text Arranger"
-#~ msgstr "Idatzi aurkezlea"
+#~ msgstr "CD-Text Abestidazlea"
 
 #, fuzzy
 #~ msgid "CD-Text Message"
@@ -27729,11 +28056,11 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 
 #, fuzzy
 #~ msgid "CD-Text Performer"
-#~ msgstr "Idatzi aurkezlea"
+#~ msgstr "CD-Text Abestidazlea"
 
 #, fuzzy
 #~ msgid "CD-Text Title"
-#~ msgstr "Hurrengo izenburua"
+#~ msgstr "CD-Text Abestidazlea"
 
 #, fuzzy
 #~ msgid "ISO-9660 Publisher"
@@ -27753,415 +28080,220 @@ msgstr "Multimedia Kudeatzaile Zerrenda"
 #~ msgid "Extra Audio File"
 #~ msgstr "Audio Agiriak"
 
-#~ msgid "Use media key control when VLC is in background"
-#~ msgstr "Kasuta meedia juhtklahve, kui VLC on taustal"
-
-#~ msgid ""
-#~ "By default, VLC will accept media key events also when being in "
-#~ "background."
-#~ msgstr ""
-#~ "Vaikimisi aktsepteerib VLC multimeedia juhtklahve, kui ta on taustal."
-
-#~ msgid "...when VLC is in background"
-#~ msgstr "... kui VLC on taustal"
-
-#~ msgid "GME demuxer (Game_Music_Emu)"
-#~ msgstr "GME demukser (Game_Music_Emu)"
-
+#, fuzzy
 #~ msgid ""
 #~ "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 #~ msgstr ""
-#~ "Konteinerid (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
+#~ "Edukiontziak (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 
+#, fuzzy
 #~ msgid "Key"
-#~ msgstr "Võti"
+#~ msgstr "Tekla:"
 
-#~ msgid "Force a specific SDL video output driver."
-#~ msgstr "Jõuga kasuta spetsiifilist SDL video väljundi tüülerit."
-
+#, fuzzy
 #~ msgid "%.2fx"
-#~ msgstr "%.2fx"
+#~ msgstr "%.2f dB"
 
+#, fuzzy
 #~ msgid "Random off"
-#~ msgstr "Juhuslik välja"
+#~ msgstr "Aldizka Ez"
 
+#, fuzzy
 #~ msgid "%.1f kB"
-#~ msgstr "%.1f kB"
+#~ msgstr "%.1f GB"
 
+#, fuzzy
 #~ msgid "overlap"
-#~ msgstr "ülekate"
+#~ msgstr "Gainjarpena"
 
-#~ msgid "full"
-#~ msgstr "Täis"
-
-#~ msgid ""
-#~ "This integer when viewed in binary is a debugging mask\n"
-#~ "meta info          1\n"
-#~ "events             2\n"
-#~ "MRL                4\n"
-#~ "external call      8\n"
-#~ "all calls (0x10)  16\n"
-#~ "LSN       (0x20)  32\n"
-#~ "seek      (0x40)  64\n"
-#~ "libcdio   (0x80) 128\n"
-#~ "libcddb  (0x100) 256\n"
-#~ msgstr ""
-#~ "See arv vaadatuna binaaris on silumise mask\n"
-#~ "meta info          1\n"
-#~ "events             2\n"
-#~ "MRL                4\n"
-#~ "external call      8\n"
-#~ "all calls (0x10)  16\n"
-#~ "LSN       (0x20)  32\n"
-#~ "seek      (0x40)  64\n"
-#~ "libcdio   (0x80) 128\n"
-#~ "libcddb  (0x100) 256\n"
-
-#~ msgid "Enable CD paranoia?"
-#~ msgstr "Võimalda CD paranoia"
-
+#, fuzzy
 #~ msgid "cddax://[device-or-file][@[T]track]"
-#~ msgstr "cddax://[seade-või-fail][@[T]rada]"
+#~ msgstr "[cdda:][gailua][@[bidea]]"
 
-#~ msgid "Compact Disc Digital Audio (CD-DA) input"
-#~ msgstr "Compact Disc Digital Audio (CD-DA) sisend"
-
+#, fuzzy
 #~ msgid "email address reported to CDDB server"
-#~ msgstr "e-posti aadress, mis saadetakse CDDB serverisse"
+#~ msgstr "Erabili behar den CDDB zerbitzariaren helbidea."
 
+#, fuzzy
 #~ msgid "Unknown command!"
-#~ msgstr "Tundmatu käsk!"
+#~ msgstr "Soinu-txartel ezezaguna"
 
+#, fuzzy
 #~ msgid "Threshold"
-#~ msgstr "Lävi"
+#~ msgstr "Margo muga"
 
-#~ msgid "Ask"
-#~ msgstr "Küsi"
-
+#, fuzzy
 #~ msgid "Use DVD Menus"
-#~ msgstr "Kasuta DVD menüüsid"
+#~ msgstr "DVD menuak"
 
+#, fuzzy
 #~ msgid "Remove All"
-#~ msgstr "Eemalda kõik"
+#~ msgstr "Kendu"
 
-#~ msgid "50%"
-#~ msgstr "50%"
-
-#~ msgid "100%"
-#~ msgstr "100%"
-
-#~ msgid "200%"
-#~ msgstr "200%"
-
-#~ msgid "Your version of Mac OS X is no longer supported"
-#~ msgstr "Sinu Mac OS X versioon ei ole anam toetatud"
-
-#~ msgid ""
-#~ "VLC media player %s requires Mac OS X 10.5 or higher.\n"
-#~ "\n"
-#~ "%@"
-#~ msgstr ""
-#~ "VLC meedia esitaja %s vajab Mac OS X 10.5 või uuemat\n"
-#~ "\n"
-#~ "%@"
-
+#, fuzzy
 #~ msgid "Update check failed"
-#~ msgstr "Uuneduse kontrollimine ebaõnnestus"
+#~ msgstr "Hartze hutsegitea"
 
-#~ msgid "Checking for updates was not enabled in this build."
-#~ msgstr "Uuenduste kontrollimine ei ole võimaldatud selles versioonis."
-
-#~ msgid "Crash Report successfully sent"
-#~ msgstr "Kokkujooksmise aruanne edukalt saadetud"
-
-#~ msgid "Thanks for your report!"
-#~ msgstr "Täneme aruande eest!"
-
+#, fuzzy
 #~ msgid "VIDEO_TS directory"
-#~ msgstr "VIDEO_TS kataloog"
+#~ msgstr "Ireki VIDEO_TS Zuzenbidea"
 
+#, fuzzy
 #~ msgid "Download now"
-#~ msgstr "Laadi kohe alla"
+#~ msgstr "Jeitsi plugina"
 
-#~ msgid "Do you want VLC to check for updates automatically?"
-#~ msgstr "Kas soovid, et VLC kontrollib uuendusi automaatselt?"
-
+#, fuzzy
 #~ msgid "No"
-#~ msgstr "Ei"
+#~ msgstr "Bat ere ez"
 
+#, fuzzy
 #~ msgid "This version of VLC is the latest available."
-#~ msgstr "See VLC versioon on kõige uuem."
+#~ msgstr ""
+#~ "VLC-ren bertsio hau honek bildua da:\n"
+#~ " "
 
+#, fuzzy
 #~ msgid "This version of VLC is outdated."
-#~ msgstr "Sinu VLC versioon on vananenud."
+#~ msgstr ""
+#~ "VLC-ren bertsio hau honek bildua da:\n"
+#~ " "
 
-#~ msgid "The current release is %d.%d.%d%c."
-#~ msgstr "Hetke väljalase on %d.%d.%d%c."
-
+#, fuzzy
 #~ msgid "Autoplay selected file"
-#~ msgstr "Automaatselt esita valitud fail"
+#~ msgstr "Editatu hautatutako profila"
 
+#, fuzzy
 #~ msgid "Permissions"
-#~ msgstr "Õigused"
+#~ msgstr "Saioa"
 
-#~ msgid "Owner"
-#~ msgstr "Omanik"
-
-#~ msgid "00:00:00"
-#~ msgstr "00:00:00"
-
-#~ msgid "MRL:"
-#~ msgstr "MRL:"
-
+#, fuzzy
 #~ msgid "Address:"
-#~ msgstr "Aadress:"
+#~ msgstr "Helbidea"
 
+#, fuzzy
 #~ msgid "unicast"
-#~ msgstr "unicast"
+#~ msgstr "Igorpen-bakarra"
 
+#, fuzzy
 #~ msgid "multicast"
-#~ msgstr "multicast"
+#~ msgstr "Igorpen-anitza"
 
-#~ msgid "udp"
-#~ msgstr "udp"
-
-#~ msgid "udp6"
-#~ msgstr "udp6"
-
-#~ msgid "rtp"
-#~ msgstr "rtp"
-
-#~ msgid "rtp4"
-#~ msgstr "rtp4"
-
-#~ msgid "ftp"
-#~ msgstr "ftp"
-
-#~ msgid "http"
-#~ msgstr "http"
-
-#~ msgid "sout"
-#~ msgstr "sout"
-
+#, fuzzy
 #~ msgid "mms"
-#~ msgstr "mms"
+#~ msgstr " sm"
 
+#, fuzzy
 #~ msgid "Norm:"
-#~ msgstr "Norm:"
+#~ msgstr "Araua"
 
+#, fuzzy
 #~ msgid "Size:"
-#~ msgstr "Mõõtmed:"
+#~ msgstr "Neurria"
 
+#, fuzzy
 #~ msgid "Quality:"
-#~ msgstr "Kvaliteet:"
+#~ msgstr "Ontasuna"
 
+#, fuzzy
 #~ msgid "Tuner:"
-#~ msgstr "Tuuner:"
+#~ msgstr "Sintonizagailua"
 
+#, fuzzy
 #~ msgid "Sound:"
-#~ msgstr "Heli:"
+#~ msgstr "Ingurasoinua"
 
+#, fuzzy
 #~ msgid "MJPEG:"
-#~ msgstr "MJPEG:"
+#~ msgstr "MJPEG"
 
+#, fuzzy
 #~ msgid "pal"
-#~ msgstr "pal"
+#~ msgstr "dena"
 
-#~ msgid "ntsc"
-#~ msgstr "ntsc"
-
-#~ msgid "secam"
-#~ msgstr "secam"
-
-#~ msgid "240x192"
-#~ msgstr "240x192"
-
-#~ msgid "320x240"
-#~ msgstr "320x240"
-
-#~ msgid "qsif"
-#~ msgstr "qsif"
-
-#~ msgid "qcif"
-#~ msgstr "qcif"
-
-#~ msgid "sif"
-#~ msgstr "sif"
-
-#~ msgid "cif"
-#~ msgstr "cif"
-
-#~ msgid "vga"
-#~ msgstr "vga"
-
-#~ msgid "kHz"
-#~ msgstr "kHz"
-
-#~ msgid "Hz/s"
-#~ msgstr "Hz/s"
-
-#~ msgid "huffyuv"
-#~ msgstr "huffyuv"
-
-#~ msgid "mp1v"
-#~ msgstr "mp1v"
-
-#~ msgid "mp2v"
-#~ msgstr "mp2v"
-
-#~ msgid "mp4v"
-#~ msgstr "mp4v"
-
-#~ msgid "H263"
-#~ msgstr "H263"
-
-#~ msgid "WMV1"
-#~ msgstr "WMV1"
-
-#~ msgid "WMV2"
-#~ msgstr "WMV2"
-
+#, fuzzy
 #~ msgid "Keyframe Interval:"
-#~ msgstr "Võtmekaadri intervall:"
+#~ msgstr "Giltza aldizkapena"
 
+#, fuzzy
 #~ msgid "Time To Live (TTL):"
-#~ msgstr "Elushoidmise aeg (TTL):"
+#~ msgstr "Bizitza Iraupena (BI)"
 
-#~ msgid "127.0.0.1"
-#~ msgstr "127.0.0.1"
-
-#~ msgid "localhost"
-#~ msgstr "localhost"
-
-#~ msgid "localhost.localdomain"
-#~ msgstr "localhost.localdomain"
-
-#~ msgid "239.0.0.42"
-#~ msgstr "239.0.0.42"
-
+#, fuzzy
 #~ msgid "TS"
-#~ msgstr "TS"
+#~ msgstr "NTSC"
 
+#, fuzzy
 #~ msgid "MPEG1"
-#~ msgstr "MPEG1"
+#~ msgstr "MPEG 1"
 
-#~ msgid "OGG"
-#~ msgstr "OGG"
-
+#, fuzzy
 #~ msgid "MOV"
-#~ msgstr "MOV"
+#~ msgstr "MKV"
 
+#, fuzzy
 #~ msgid "ASF"
-#~ msgstr "ASF"
+#~ msgstr "ASF/WMV "
 
+#, fuzzy
 #~ msgid "kbits/s"
-#~ msgstr "kbits/s"
+#~ msgstr "bit"
 
-#~ msgid "alaw"
-#~ msgstr "alaw"
-
-#~ msgid "ulaw"
-#~ msgstr "ulaw"
-
-#~ msgid "mpga"
-#~ msgstr "mpga"
-
-#~ msgid "mp3"
-#~ msgstr "mp3"
-
-#~ msgid "a52"
-#~ msgstr "a52"
-
-#~ msgid "vorb"
-#~ msgstr "vorb"
-
+#, fuzzy
 #~ msgid "bits/s"
-#~ msgstr "bits/s"
+#~ msgstr "bit"
 
+#, fuzzy
 #~ msgid " Apply "
-#~ msgstr "Rakenda"
+#~ msgstr "Ezarri"
 
-#~ msgid ""
-#~ "VLC media player is an MPEG, MPEG 2, MP3 and DivX player that accepts "
-#~ "input from local or network sources and is licensed under the GPL (http://"
-#~ "www.gnu.org/copyleft/gpl.html)."
-#~ msgstr ""
-#~ "VLC meedia esitaja on MPEG, MPEG 2, MP3 ja DivX esitaja, mis tunnistab "
-#~ "siendina kohalikke või võrgust faile ja on GPL litsentsi all (http://www."
-#~ "gnu.\"\n"
-#~ "\"org/copyleft/gpl.html)"
-
-#~ msgid "Authors: the VideoLAN Team, http://www.videolan.org/team/"
-#~ msgstr "Autorid: VideoLANi meeskond, http://www.videolan.org/team/"
-
-#~ msgid "(c) 1996-2004 the the VideoLAN team team"
-#~ msgstr "(c) 1996-2004 VideoLANi meeskond"
-
-#~ msgid "Couldn't find pixmap file: %s"
-#~ msgstr "Ei suutnud leida pildifaili: %s"
-
+#, fuzzy
 #~ msgid "QNX RTOS video and audio output"
-#~ msgstr "QNX RTOS video ja audio väljund"
+#~ msgstr "UNIX OSS audio irteera"
 
-#~ msgid "Statistics about the currently playing media or stream."
-#~ msgstr "Hetkel esitatava meedia või voo statistika"
-
+#, fuzzy
 #~ msgid "VLC media player "
-#~ msgstr "VLC meediaesitaja"
+#~ msgstr "VLC multimedia irakurgailua"
 
+#, fuzzy
 #~ msgid "Path to use in openfile dialog"
-#~ msgstr "Teekond, mida kasutada faili avamise dialoogis"
+#~ msgstr "Barneratu agiri bilatzailea ireki elkarrizketan"
 
-#~ msgid "Complete look with information area"
-#~ msgstr "Täielik välimus koos info alaga"
-
-#~ msgid "256 corresponds to 100%, 1024 to 400%"
-#~ msgstr "256 vastab 100%-le, 1024 400%-le"
-
+#, fuzzy
 #~ msgid "Save volume on exit"
-#~ msgstr "Salvesta väljumisel helitugevus"
+#~ msgstr "Berezgaitasunez gorde bolumena irteterakoan"
 
-#~ msgid "last.fm"
-#~ msgstr "last.fm"
-
+#, fuzzy
 #~ msgid "Enable last.fm submission"
-#~ msgstr "Võimalda last.fm-i saatmine"
+#~ msgstr "Gaitu Last.fm eskaintzak"
 
+#, fuzzy
 #~ msgid "Server default port"
-#~ msgstr "Serveri vaikimisi port"
+#~ msgstr "Hizkien berezko margoa"
 
+#, fuzzy
 #~ msgid "Repair AVI files"
-#~ msgstr "Paranda AVI failid"
+#~ msgstr "Konpondu AVI agiriak"
 
-#~ msgid "Association Setup"
-#~ msgstr "Seoste häälestus"
-
+#, fuzzy
 #~ msgid "Open:"
-#~ msgstr "Ava:"
+#~ msgstr "Ireki"
 
+#, fuzzy
 #~ msgid "Choose file"
-#~ msgstr "Vali fail"
+#~ msgstr "Hautatu"
 
-#~ msgid ""
-#~ "Embed the video inside the interface instead of having it in a separate "
-#~ "window."
-#~ msgstr ""
-#~ "Põimi video liidese sisse, selle asemel, et kuvada kahte eraldi akent."
-
+#, fuzzy
 #~ msgid "Dummy access function"
-#~ msgstr "Liba ligipääsu funktsioon"
+#~ msgstr "Irudizko interfaze eginkizuna"
 
-#~ msgid "Gtk+ GUI helper"
-#~ msgstr "Gtk+ GUI abistaja"
-
+#, fuzzy
 #~ msgid "HAL devices detection"
-#~ msgstr "HAL-seadmete tuvastamine"
+#~ msgstr "Gailu Hautapena"
 
+#, fuzzy
 #~ msgid "Quartz font renderer"
-#~ msgstr "Quartz teksti renderdaja"
+#~ msgstr "CoreText hizki aurkezlea"
 
+#, fuzzy
 #~ msgid "Shoutcast TV"
-#~ msgstr "Shoutcast TV"
-
-#~ msgid "Number of stars to draw with random effect."
-#~ msgstr "Mitu tähekest juhuslikus korras joonistada."
+#~ msgstr "Shoutcast"

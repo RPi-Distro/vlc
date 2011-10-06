@@ -130,16 +130,16 @@ static void *SigThread (void *data)
            sigaction (signum, NULL, &act);
            if ((act.sa_flags & SA_SIGINFO) || (act.sa_handler != SIG_DFL))
            {
-               msg_Err (obj, "signal %d overridden (%p)", signum,
-                        act.sa_handler);
+               msg_Warn (obj, "signal %d overridden (%p)", signum,
+                         act.sa_handler);
 #ifdef __GLIBC__
                Dl_info info;
 
                if (dladdr (act.sa_handler, &info))
-                   msg_Err (obj, " %s(%s)[%p]",
-                            info.dli_fname ? info.dli_fname : "?",
-                            info.dli_sname ? info.dli_sname : "?",
-                            info.dli_saddr);
+                   msg_Warn (obj, " %s(%s)[%p]",
+                             info.dli_fname ? info.dli_fname : "?",
+                             info.dli_sname ? info.dli_sname : "?",
+                             info.dli_saddr);
 #endif
                if (!(act.sa_flags & SA_SIGINFO) && (act.sa_handler != SIG_IGN))
                    act.sa_handler (signum);

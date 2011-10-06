@@ -2,7 +2,7 @@
  * v4l2.c : Video4Linux2 input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: d29aec63bbbca00f90dbc51ae5d38d96b89200df $
+ * $Id: d0e14db71d9ec2e043324f1e42176ae77a9478d0 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -792,7 +792,7 @@ static void ParseMRL( demux_sys_t *p_sys, char *psz_path, vlc_object_t *p_obj )
                 }
 
                 if( i == ARRAY_SIZE(psz_standards_list_text) )
-                    p_sys->i_selected_standard_id = i_standards_list[strtol( psz_parser, &psz_parser, 0 )];
+                    p_sys->i_selected_standard_id = strtol( psz_parser, &psz_parser, 0 );
             }
             else if( !strncmp( psz_parser, "chroma=", strlen( "chroma=" ) ) )
             {

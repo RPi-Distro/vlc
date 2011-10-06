@@ -2,7 +2,7 @@
  * vlc_win32_fullscreen.h: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2011 the VideoLAN team
- * $Id: e33705389bcb4e3be776fd1dc7796abb130d8531 $
+ * $Id: fd0803056dd37a2e7fd706ff059e6f6b730d1994 $
  *
  * Authors: Sergey Radionov <rsatom@gmail.com>
  *
@@ -804,7 +804,7 @@ void VLCFullScreenWnd::UnRegisterEvents()
 //VLCWindowsManager
 ///////////////////////
 VLCWindowsManager::VLCWindowsManager(HMODULE hModule)
-    :_hModule(hModule), _hWindowedParentWnd(0), _HolderWnd(0), _FSWnd(0), _p_md(0)
+    :_hModule(hModule), _hWindowedParentWnd(0), _HolderWnd(0), _FSWnd(0), _p_md(0), _b_new_messages_flag(false)
 {
     VLCHolderWnd::RegisterWndClassName(hModule);
     VLCFullScreenWnd::RegisterWndClassName(hModule);
@@ -831,27 +831,45 @@ void VLCWindowsManager::CreateWindows(HWND hWindowedParentWnd)
 
 void VLCWindowsManager::DestroyWindows()
 {
-    _FSWnd->DestroyWindow();
+    if(_FSWnd){
+        _FSWnd->DestroyWindow();
+    }
     _FSWnd = 0;
 
-    _HolderWnd->DestroyWindow();
+    if(_HolderWnd){
+        _HolderWnd->DestroyWindow();
+    }
     _HolderWnd = 0;
 }
 
 void VLCWindowsManager::LibVlcAttach(libvlc_media_player_t* p_md)
 {
+    if(!_HolderWnd)
+        return;//VLCWindowsManager::CreateWindows was not called
+
     _p_md=p_md;
     libvlc_media_player_set_hwnd(p_md, _HolderWnd->getHWND());
 }
 
 void VLCWindowsManager::LibVlcDetach()
 {
+    if(_p_md){
+        libvlc_media_player_set_hwnd(_p_md, 0);
+    }
+
     _p_md=0;
 }
 
 void VLCWindowsManager::StartFullScreen()
 {
+    if(!_HolderWnd)
+        return;//VLCWindowsManager::CreateWindows was not called
+
     if(getMD()&&!IsFullScreen()){
+        if(!_FSWnd){
+            _FSWnd= VLCFullScreenWnd::CreateFSWindow(this);
+        }
+
         SetParent(_HolderWnd->getHWND(), _FSWnd->getHWND());
         SetWindowPos(_FSWnd->getHWND(), HWND_TOPMOST, 0, 0,
                      GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0/** /SWP_NOZORDER/**/);
@@ -863,6 +881,9 @@ void VLCWindowsManager::StartFullScreen()
 
 void VLCWindowsManager::EndFullScreen()
 {
+    if(!_HolderWnd)
+        return;//VLCWindowsManager::CreateWindows was not called
+
     if(IsFullScreen()){
         SetParent(_HolderWnd->getHWND(), _hWindowedParentWnd);
 
@@ -872,7 +893,12 @@ void VLCWindowsManager::EndFullScreen()
 
         ShowWindow(_hWindowedParentWnd, SW_SHOW);
         ShowWindow(_FSWnd->getHWND(), SW_HIDE);
-    }
+
+        if(_FSWnd){
+            _FSWnd->DestroyWindow();
+        }
+        _FSWnd = 0;
+   }
 }
 
 void VLCWindowsManager::ToggleFullScreen()
@@ -887,5 +913,5 @@ void VLCWindowsManager::ToggleFullScreen()
 
 bool VLCWindowsManager::IsFullScreen()
 {
-    return 0!=_FSWnd && GetParent(_HolderWnd->getHWND())==_FSWnd->getHWND();
+    return 0!=_FSWnd && 0!=_HolderWnd && GetParent(_HolderWnd->getHWND())==_FSWnd->getHWND();
 }

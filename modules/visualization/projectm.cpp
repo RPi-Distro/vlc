@@ -2,7 +2,7 @@
  * projectm: visualization module based on libprojectM
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 7ccd4e7d2b2a1085483ffe17921d92d2267ea575 $
+ * $Id: a0545196a00079e9965507f875ccd8a85bab29bf $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *

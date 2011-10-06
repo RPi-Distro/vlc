@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2011 the VideoLAN team
- * $Id: 535e9b9ca1e0f85c116f4a4318d2eec472683218 $
+ * $Id: d5e411756e36e5447428cda304e12fb955c18b1a $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -265,7 +265,7 @@ void updateProgressPanel (void *priv, const char *text, float value)
 void destroyProgressPanel (void *priv)
 {
     NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
-    [[[VLCMain sharedInstance] coreDialogProvider] destroyProgressPanel];
+    [[[VLCMain sharedInstance] coreDialogProvider] performSelectorOnMainThread:@selector(destroyProgressPanel) withObject: nil waitUntilDone: NO];
     [o_pool release];
 }
 
@@ -2589,9 +2589,8 @@ end:
 
     o_attr = [NSDictionary dictionaryWithObject: pp_color[i_type]
                                          forKey: NSForegroundColorAttributeName];
-    o_msg = [[[o_notification userInfo] objectForKey: @"Message"] stringByAppendingString: @"\n"];
-    o_msg_color = [[NSAttributedString alloc]
-                   initWithString: o_msg attributes: o_attr];
+    o_msg = [NSString stringWithFormat:@"%@\n", [[o_notification userInfo] objectForKey: @"Message"]];
+    o_msg_color = [[NSAttributedString alloc] initWithString: o_msg attributes: o_attr];
     [o_msg_arr addObject: [o_msg_color autorelease]];
 
     b_msg_arr_changed = YES;

@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 8ef775f901866471425177ba8099279348a5ac41 $
+ * $Id: d8a0cd513fc97a965767429730f2bd8f0018ba45 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -569,6 +569,10 @@ static void ParseVorbisComments( decoder_t *p_dec )
         {
             *psz_value = '\0';
             psz_value++;
+
+            /* Don't add empty values */
+            if( *psz_value == '\0' )
+                break;
 
             if( !p_dec->p_description )
                 p_dec->p_description = vlc_meta_New();

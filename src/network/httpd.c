@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: ddcbb3d1e49ff2c33e27c3f97961a63dfe87599b $
+ * $Id: c63f593de1dba372387c26f0d73c1e7270a945e7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -1755,16 +1755,27 @@ static void httpd_ClientRecv( httpd_client_t *cl )
                             *p2++ = '\0';
                         }
                         if( !strncasecmp( p, ( cl->query.i_proto
-                                   == HTTPD_PROTO_HTTP ) ? "http" : "rtsp", 4 )
-                         && p[4 + !!strchr( "sS", p[4] )] == ':' )
+                             == HTTPD_PROTO_HTTP ) ? "http:" : "rtsp:", 5 ) )
                         {   /* Skip hier-part of URL (if present) */
-                            p = strchr( p, ':' ) + 1; /* skip URI scheme */
+                            p += 5;
                             if( !strncmp( p, "//", 2 ) ) /* skip authority */
                             {   /* see RFC3986 §3.2 */
                                 p += 2;
-                                while( *p && !strchr( "/?#", *p ) ) p++;
+                                p += strcspn( p, "/?#" );
                             }
                         }
+                        else
+                        if( !strncasecmp( p, ( cl->query.i_proto
+                             == HTTPD_PROTO_HTTP ) ? "https:" : "rtsps:", 6 ) )
+                        {   /* Skip hier-part of URL (if present) */
+                            p += 6;
+                            if( !strncmp( p, "//", 2 ) ) /* skip authority */
+                            {   /* see RFC3986 §3.2 */
+                                p += 2;
+                                p += strcspn( p, "/?#" );
+                            }
+                        }
+
                         cl->query.psz_url = strdup( p );
                         if( ( p3 = strchr( cl->query.psz_url, '?' ) )  )
                         {

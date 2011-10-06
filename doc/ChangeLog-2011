@@ -1,3 +1,878 @@
+commit 63a4ce20d8cb94efa4bebd66106a2961eb300b50
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Oct 6 21:03:40 2011 +0300
+
+    Fix make distcheck
+
+commit 582b2ce089f2a23c7efbc124b3ed212c023a7f4e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Oct 6 20:30:06 2011 +0300
+
+    Sync PO files
+
+commit 6937bd3ace59c9618c70e2fc4df01672c49e49f7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Oct 6 20:31:34 2011 +0300
+
+    Fix version number
+
+commit 1bae512aab3b52296cf6ed826c3bad393bba0cc3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Oct 6 20:56:09 2011 +0300
+
+    Update news
+
+commit 1b2d090e137214efb86198d6db4ad6862c8d265d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Sep 26 18:28:19 2011 +0300
+
+    Fix HTTP/RTSP crash on invalid request URI
+    
+    (cherry picked from commit a03617089bc045e343f94921f257cf71436f4812)
+
+commit 2e33823b24bfea87183c2f165f32d05fa907b31d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Oct 5 23:29:15 2011 +0300
+
+    Set TryExec in desktop entry
+    
+    (cherry picked from commit da1f02dfe90333d849e61c1bd664036a6b3022c5)
+
+commit 8821d45f8a738f9b4d05f61abeb05bc62367ea34
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Oct 5 23:28:49 2011 +0300
+
+    Set GenericName, "Media player" in desktop entry
+
+commit ca07c9bf9e855cde4f43043b7cc5ca675b8e6181
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Wed Oct 5 22:40:55 2011 +0200
+
+    Used the nearest available frame rate in avcodec encoder.
+    
+    It fixes #1965.
+    (cherry picked from commit bbc85f4b6db94f5d5c81d6e98c43d42931f846ef)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 128896a7252fd7ae6cbc32cccd36f507d64096d0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Oct 5 20:40:54 2011 +0300
+
+    Reset signals for xdg-screensaver (fix #5414)
+    
+    (cherry picked from commit 9468ddbd1c00447d1ea71e3b044b23201b9151e9)
+
+commit ca6fef116ff10e2e3485028d56b646b909885bde
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Oct 5 17:55:07 2011 +0300
+
+    Fix build failure with --enable-skins2
+
+commit b9ebabd7412c5b1b9447109ab259579f5687ce4d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Oct 4 23:52:42 2011 +0300
+
+    Skip output-only XVideo adapters
+    
+    We need PutImage meaning the Input and the Image bits in type mask.
+    Output adapters are rather rare (the _exotic_ Xorg V4L2 driver is one).
+    (cherry picked from commit 6b389f7b27df05ba4700a1b5f578d643782238aa)
+
+commit 220d1714c65e711587872a5e7f3f672c8550822d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Oct 4 20:29:53 2011 +0300
+
+    News
+
+commit 3367e357d8c416d14871c8f2bc5b02f3ab325c7a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Sep 27 20:36:04 2011 +0300
+
+    PulseAudio: negotiate digital pass-through for A/52 and DTS
+    
+    (cherry picked from commit 5b24e072c971c5984ba29a16f029e36f13b3d5d1)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit 4b45387383843b7fe244f6da977b205aed446830
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Oct 3 20:12:35 2011 +0300
+
+    Use a timer rather zero padding to trigger the PulseAudio stream
+    
+    (cherry picked from commit 01ec282c28ddf128a4d43d65a1f7d05c408bda4c)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit 87e64d0dd10339c3ab10d7ca27061218f5878885
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Feb 15 18:24:50 2011 +0200
+
+    configure: skins2 checks for Xpm ad Xext
+    
+    (not cherry picked from commit 66a9759e76f1041743e14bd245092fbb743bf9e4)
+
+commit e838d579f211858ed19517881e3eb6c756cd11a3
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Fri Sep 30 18:36:28 2011 +0100
+
+    l10n: update polish installer
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit a4d81ed7ed96a6a41b072a4c606a86f5a5b9ea07
+Author: Ajith Manjula <uthmax.sms@gmail.com>
+Date:   Fri Sep 30 15:38:25 2011 +0100
+
+    l10n: Sinhala update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 30059f692201fe668ae7a5c43cba7ad246613cb4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Sep 29 23:41:56 2011 +0200
+
+    NEWS: update for 1.1.12
+
+commit 9ba3e5ec530efa1d51eb5dfe59db2e100e126b08
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Wed Sep 21 09:57:10 2011 +0400
+
+    Stream out switcher: use existing kludges to port to new FFMpeg/Libav
+    API.
+    
+    Also, distinguish between SSE and SSE2 CPUs.
+    (cherry picked from commit 8e0d48c860f46914e0115a21fd4a7dae4f270959)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9f9a30c039a3e08f91f4ee9f0d8bf1958efe701a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Sep 29 23:28:32 2011 +0300
+
+    Qt4: fix invalid pointer on unknown V4L2 control type (fix #5391)
+    
+    var_Change(VLC_VAR_GETTEXT) fails if there is no text. In that case,
+    the value is undefined.
+    
+    (not cherry picked from commit 9551501fcb7089342c36395cb54a387594e73601)
+
+commit 1807bee50537cc9829403d1ff10e51060d7b30ac
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Thu Sep 29 19:43:12 2011 +0300
+
+    Update Chinese Simplified translation
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit ab45b1dfceff40ed7daf794bb62d44967c178a45
+Author: Denis ARNAUD <denisarnuad@yahoo.fr>
+Date:   Thu Sep 29 19:35:02 2011 +0300
+
+    Update Breton translation
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 5d1b7f295a8a20af5f4ade2159e6508a938f39b7
+Author: Xabier Aramendi <azpidatziak@gmail.com>
+Date:   Wed Sep 28 22:55:28 2011 +0100
+
+    l10n: Basque update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 936edc609143a395728f4fbec8b5273fcc689d61
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Sep 26 19:16:41 2011 +0200
+
+    macosx: fixed l10n of the Growl setting
+
+commit 077a0b5892a1e8c159e394bb794d3df6d9dd249c
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Sep 26 19:00:55 2011 +0200
+
+    NEWS: wording
+
+commit 11b4b72a1bff1f6cecd569a9a63ec5333a76efc6
+Author: Denis Arnaud <denisarnuad@yahoo.fr>
+Date:   Mon Sep 26 18:02:14 2011 +0300
+
+    Breton translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 817937e83a869b70ab427234fc2f110484a93e21
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Sep 25 12:05:16 2011 +0200
+
+    macosx: don't do AppKit stuff from non-main threads (fixes #5139)
+
+commit 9a4d1e7ca731173acad7b1184e50512f2a5619ed
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Sep 25 11:40:42 2011 +0200
+
+    auhal: merge fixes from the unstable branch
+
+commit f3ff5d429d5b5bd9680903433726557ba6094c8f
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Sep 25 11:28:02 2011 +0200
+
+    auhal: fixed white spacing errors
+
+commit bed38cfc2123df1cd6150ba9427c839dc928a2a7
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sat Sep 24 20:12:43 2011 +0200
+
+    auhal: select the right stream as the current one, fix crash when changing stream format
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 5bb67a8696d09a529f55908984eb534fa1623f5f
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Sat Sep 24 15:57:28 2011 +0200
+
+    fix non working optical audio out on mac os lion
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 56a89678821483ba0cc9eb2da00f17b32197e382
+Author: Lorenzo Pistone <lorenzo.pistone@studenti.unito.it>
+Date:   Sun Sep 18 12:28:34 2011 +0200
+
+    cue.lua: fix double URL encoding of directory name
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+    (cherry picked from commit 7ffe01c7df0cca88e71b9079b961d05aee9b08de)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit dd7b0d6d45f0181892e295e751bd360bd7152acb
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sat Sep 17 21:56:42 2011 +0200
+
+    dailymotion.lua: partially decode video title and description
+    (cherry picked from commit 553fa2da4ecc8a55cbaaefdc6ad4ed2b3eb7f48f)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit dc5a376a80b03b7621d2788bc50009015eb93d0a
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Sep 16 22:01:54 2011 +0200
+
+    macosx: removed grphics we actually don't use.
+
+commit 6878f58dbaa0f81bd6f7a89220b80c85a5eb65a5
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Sep 16 22:01:54 2011 +0200
+
+    macosx: removed grphics we actually don't use.
+
+commit 4b6ec77d3d1d1976ec14fe9ba5d7afe5d356753e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Sep 1 17:36:02 2011 +0200
+
+    Win32: Don't leak a HICON
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5a5d51551e68d57a2f93d13a5bce21c4c7c66554
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Sun Sep 4 14:44:37 2011 +0200
+
+    Add Basque translation in Win32 installer
+    
+    Translation from Xabier Aramendi <azpidatziak@gmail.com>
+    
+    Conflicts:
+    
+    	extras/package/win32/vlc.win32.nsi.in
+
+commit 2280f5586b994771ac121c9f16c2fba3bdbdaf51
+Author: Christophe Mutricy <xtophe@chewa.net>
+Date:   Sun Sep 4 14:46:26 2011 +0200
+
+    Distribute lithuanian.nsh
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit dc78752279b601371598704a2ba68d8a6c03031a
+Author: Xabier Aramendi <azpidatziak@gmail.com>
+Date:   Sun Sep 4 12:41:30 2011 +0200
+
+    l10n: Basque update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 79bb6258086845d08fa1db5861dffd371e85c44c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Sep 1 18:11:17 2011 +0300
+
+    V4L2: parse v4l2://:standard=XXX like --v4l2-standard=XXX...
+    
+    ...and fix buffer read overflow.
+
+commit 852d47d8c4eb90273e0e770839c360b23a7a7bbb
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Aug 22 15:27:59 2011 +0200
+
+    Smem: don't divide by 0
+    
+    Fix #4479
+    See https://bugs.kde.org/show_bug.cgi?id=279973
+    (cherry picked from commit 9285476128051fd0b5ae2983d619289d110b12eb)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b49dc66d42aa9d587876c08296dbf02a0a9db6b9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Aug 25 15:59:52 2011 +0200
+
+    Vorbis: don't add empty tags to codec details
+    
+    Close #4926
+    (cherry picked from commit f778aeaecf50a5a69ada15714effe331d8905340)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2e08b83452ceb8e51176422c477a8d34df51ec47
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Wed Aug 17 18:19:51 2011 +0300
+
+    Update Japanese translation
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit b67654a0b695bfdcf94f7d14b529bb054484969c
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Tue Aug 16 22:27:10 2011 +0300
+
+    Fix polish installer locale encoding
+
+commit 842be95f059aea2bc93c78917e3f27c2e50920ac
+Author: Denis ARNAUD <denisarnuad@yahoo.fr>
+Date:   Tue Aug 16 22:23:49 2011 +0300
+
+    Update breton locale
+
+commit 8e2b5d8d6cb3db2ad4139f6a9b4452720ccc122a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Aug 11 18:09:16 2011 +0300
+
+    PulseAudio: improve resampling formula
+    
+    ...for good this time (yeah right).
+    (cherry picked from commit 3e00fa130e30266dcb6b6ae75384ae69d46f50f3)
+
+commit 0d5a7d4b5bb56a0cdcf2ce395cb8660fe6c9b7e0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Aug 10 22:44:16 2011 +0300
+
+    PulseAudio: don't print an error when latency returns no data
+    
+    This happens almost all the time, and is unfortunately normal behavior.
+    (cherry picked from commit e51fad4ca63581c99a4e7dd663e04e0f5be18d58)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit 18f4dcd11438861831ca09ebf72d73fa902d511c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Aug 10 22:27:23 2011 +0300
+
+    PulseAudio: destroy context like stream
+    
+    (not cherry picked from commit 6b43a1d3cdd2047bbe86d0b584e550e1fda060e0)
+
+commit 36ea215ddf20f96ae052c08dc72ff7130285629a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Aug 10 22:24:43 2011 +0300
+
+    PulseAudio: clear all stream callbacks before disconnection
+    
+    This should fix the infrequent assertions failures at exit.
+    (cherry picked from commit 2e09a58d867f214a18c964684712842a971d1919)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit 5634da127f032010fddf182d9b0c007f04fbb469
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Aug 6 16:23:18 2011 +0300
+
+    AVI: fix potential crash on seek (Closes: LP#803006)
+    
+    If all activated streams are EOF ones, 'i_stream' was incorrectly set
+    to p_sys->i_track. Then AVI_StreamChunkSet() crashes.
+    (cherry picked from commit 2344ab6ae1f2db7e1c079edeecaec410ad52b119)
+
+commit 9cb117783bb9dc4e361facf4d6da2378f07a759e
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Fri Aug 5 21:37:48 2011 +0200
+
+    youtube.lua: update to new website changes
+    (cherry picked from commit 7158aaea585c198a4e536af1be9f3cbbe2e62f74)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 60399cc420fbf89e87116cc6fc88b25a17a6059e
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Thu Aug 4 13:38:25 2011 +0200
+
+    msw(Win32): give libvlc users access to input events (mouse/keyboard)
+    
+    if libvlc users disable both mouse and keyboard events, chances are they're
+    trying to regain control over them. The WS_DISABLED flag exactly fits this need.
+    
+    The only thing is that it is an overall flag that doesn't differentiate mouse and keyboard.
+
+commit c77c2f1cacdef05c0c87b452da62e9a4748bd843
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Aug 4 20:32:00 2011 +0200
+
+    youtube.lua: avoid parsing a nil variable
+    (cherry picked from commit 90dfae907387cd136de35b1da4feab46d10a1a52)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 28ba660bf413b9a5cfaa8e4fbe353f4279f54961
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Aug 2 18:06:36 2011 +0300
+
+    Correct variable name in libvlc_audio_output_device_set()
+    (cherry picked from commit d792d6842f586129fb2fa144e138800fb83241c0)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 21d1febbed773a5346af6018a7038151b55d7616
+Author: Florian Hubold <doktor5000@arcor.de>
+Date:   Tue Aug 2 21:25:50 2011 +0300
+
+    Proper MIME support for Matroska & XSPF
+    
+    (not cherry-picked from commit 0084be7d529ac3ca3d7fb6649a3b9fa93e7d9296)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 32bbddc2e9a5bc8b093280b275c7da6464a30fcb
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Aug 1 13:07:34 2011 +0200
+
+    On the road to 1.1.12
+
+commit 16f626ff7c82c3699758334c03c4390f804a6a1c
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Sun Jul 31 20:10:44 2011 -0400
+
+    audioscrobbler: fix invalid memory access (Closes #5147)
+    
+    The metadata structure would not be zeroed when title or artist were missing
+    (cherry picked from commit b357472ac5a4887a97909ba8c7d14227ae1d3d8b)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit 9507795a67c86de9e15a58e694219e38d812ab52
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Sun Jul 31 17:12:47 2011 -0400
+
+    audioscrobbler: fix object leak in error path
+    (cherry picked from commit ae3390dc8dc90eab07ef8fff8218939f01aafb60)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit 7bacf54f81997e398bb5411d38c77f4e4355b496
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 27 23:18:08 2011 +0300
+
+    PulseAudio: more conservative and stable resampling
+    
+    This time, it should work (famous last words).
+    (cherry picked from commit 7dc50c98a523b9a2dc0e0255868f1a17757c1a10)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit 429558a97d89a16f316bc2817e8ce38d0dd7b6a0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 27 21:19:41 2011 +0300
+
+    PulseAudio: limit resampling to 1% variation at a time
+    
+    1kHz is way too much for human perception.
+    (cherry picked from commit a97f3aa7dab9f58b55dbf489677c9a1ab22875f1)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit 65ca2b7854317cf0c144d9a32e2d536d13c8e145
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 27 21:15:12 2011 +0300
+
+    PulseAudio: improve sync upon resuming from pause
+    
+    This unfortunately inserts silence shortly after resuming, right after
+    the samples that were held in the buffer during pause. This can possibly
+    be avoided with prebuffering (not tested).
+    (cherry picked from commit 819065990b37da8491d82c3538eca6b8a4d516f3)
+    
+    This commit is only backported to ease further backports. Audio output
+    plugins have no notion of "resuming from pause" in VLC 1.1.
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit bc317a623a9029e2c7ca774de1c2568a03d2af0c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 23 20:14:18 2011 +0300
+
+    PulseAudio: more stable resampling scheme
+    
+    (cherry picked from commit 37d21af0eb0be93fead5b91fa63e99c01fc9994d)
+    (cherry picked from commit a21dd90dfd943e6ff6d04fbf8508bef01a38e22d)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit cf96d40a26097e1b59c746a0608ac8b6141f9798
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 20 23:55:00 2011 +0300
+
+    PulseAudio: resync and keep in sync with PulseAudio resampling
+    
+    (cherry picked from commit ccb049c1f3e71a5303181e690ac5b06339021bd9)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit c364f66e2e835a9c8081cccdf8d7df9cdf8b5625
+Author: Sergey Radionov <RSATom@gmail.com>
+Date:   Fri Jul 29 23:10:35 2011 +0700
+
+    .gitignore: added files genereated under windows
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 454713654ba8713dcef60b2a9e66b17ab90189a4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 30 09:31:20 2011 +0300
+
+    configure: use portable shell equality operator
+    
+    (cherry picked from commit 6b216e7e31a0e11d5fa6f0773bb49644aaa86ab7)
+    
+    Conflicts:
+    
+    	configure.ac
+
+commit ebd94835ce7cbb5476e6a2181f83aee40d559d92
+Author: Sergey Radionov <RSATom@gmail.com>
+Date:   Fri Jul 29 21:49:20 2011 +0700
+
+    ActiveX: Added checking of correct using of fullscreen support.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 55fe4f34bbf9e6ed9bff0caf8bcc2a7fd310f909
+Author: Sergey Radionov <RSATom@gmail.com>
+Date:   Fri Jul 29 21:48:35 2011 +0700
+
+    NPAPI: Win32, Added checking of correct using of fullscreen support.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit d7164794a59f1f07258fe997ec8894e5dec5ea6e
+Author: Sergey Radionov <RSATom@gmail.com>
+Date:   Fri Jul 29 19:41:42 2011 +0700
+
+    ActiveX: Fullscreen window now created only when needed.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 81c0dfc8a4293b3098577a69f94cf1439b057a2f
+Author: Sergey Radionov <RSATom@gmail.com>
+Date:   Fri Jul 29 19:41:06 2011 +0700
+
+    NPAPI: Win32, Fullscreen window now created only when needed.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit c456a74975543c2d207d76f77c5531431d98250f
+Author: Sergey Radionov <RSATom@gmail.com>
+Date:   Fri Jul 29 19:36:04 2011 +0700
+
+    NPAPI: Win32, fixed crash on plugin unload.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 09e9ef3281fb9e135365c4f3e24d5f62c58afcda
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Fri Jul 29 22:40:16 2011 +0200
+
+    macosx: fixed rare crash, which could be triggered by optical stream format descriptions output by the auhal module
+    
+    and fixed a compiler warning
+
+commit 6cd692b9a13dee0a6c6051b0212cc7772b43df29
+Author: Ron Frederick <ronf@timeheart.net>
+Date:   Sat Jul 23 19:34:48 2011 -0700
+
+    auhal: Fix SPDIF support
+    
+    The recent changes to auhal had it using an AudioStreamBasicDescription
+    array when looking at the stream properties. However, the proper type is
+    AudioStreamRangedDescription. This patch corrects that, and then accesses
+    the AudioStreamBasicDescription inside it as necessary.
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit e81b0c97c3ffe81e24ba998a81cf01ee94894d1e
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Jul 28 17:44:06 2011 +0200
+
+    youtube.lua: update to new website changes
+    (cherry picked from commit 5cadaf8779f1db7fa0174e851cd9e2afd68e2153)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 93c89345a839ddb82e9a8b64b3d3b4d49d6cb7ec
+Author: Sergey Radionov <rsatom@gmail.com>
+Date:   Sun Jul 24 19:01:08 2011 +0700
+
+    ActiveX: fix unnecessary blinking of "defullscreen" button.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8ad2339b458a0ce95a4a65bcaf373c975e7c95aa
+Author: Sergey Radionov <rsatom@gmail.com>
+Date:   Sun Jul 24 18:59:48 2011 +0700
+
+    NPAPI: win32, fix unnecessary blinking of "defullscreen" button.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 47abd61159c47e08476b0ea094dd24e3ee4b7a50
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 23 14:02:31 2011 +0300
+
+    GnuTLS: fix invalid free when adding a CRL
+    
+    (cherry picked from commit 378456a65441a465440a62ee40bfea53ff2d905d)
+
+commit f8eedf5e04d8f622030982fb59389d07816a5a44
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 23 14:01:54 2011 +0300
+
+    GnuTLS: fix server assertion failure in client certificate verification
+    
+    (cherry picked from commit 72c07065860ad8e70674714532da05e373acdc88)
+    
+    Plus an extra security check.
+
+commit 9dd4633a4c8fa30db4ad57cd180a5324406df16d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 23 11:17:38 2011 +0300
+
+    Fix conflict resolution error
+
+commit 865010ec397ecbc94e06d449dba8b1860cfc38b5
+Author: Dominique Leuenberger <dimstar@opensuse.org>
+Date:   Mon Jul 18 21:30:37 2011 +0200
+
+    taglib: In case of taglib < 1.6, include id3v2tag.h.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit c684f60a227d61dbe0d0b49577934512524867ee)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a1ba0abd61ed980cf7d766c47070f2c9cbfc7f75
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jul 21 23:34:53 2011 +0300
+
+    osdmenu: fix data path on Linux
+    
+    Optimize for installed VLC rather than running from $(top_srcdir).
+    This patch does not support relocation, so there is potential for
+    further improvements.
+    (cherry picked from commit 09e0d5d7d3c23b61fd225423894a70a15f1925c2)
+    
+    Conflicts:
+    
+    	modules/video_filter/Modules.am
+
+commit e4eae3142ecce987ec248b29d23d8e26470318b8
+Author: Benjamin Drung <bdrung@debian.org>
+Date:   Thu Jul 21 23:24:29 2011 +0300
+
+    Make vlc compatible with xulrunner 1.9.1
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 3c345df202d6b6e0755e89fab1521ada35f91611
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Jul 20 18:08:59 2011 +0300
+
+    PulseAudio: use channel map name rather than pretty name in debug
+    
+    (cherry picked from commit 25f179e1f61d9a10bcf210c9a1bfe73fae43879a)
+
+commit 541a18d06d7477d1d97a867fd25a3979d8235834
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jul 19 18:11:11 2011 +0300
+
+    PulseAudio: correct tlength value w.r.t. to VLC behavior
+    
+    (cherry picked from commit 981005b0e1d9c015166280e7509305c5951c1518)
+
+commit a9acf5f96f43b8f783dbc053ed805c90d89ce0d2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Jul 18 18:32:31 2011 +0300
+
+    PulseAudio: sync at start
+    
+    (cherry picked from commit 2aea47cfbe916a57b8775f8463f5ffaa32df1eef)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit 73700b78e4a319872af7047fdb44f5413e019d6c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 16 19:56:48 2011 +0300
+
+    PulseAudio: buffer metrics are buffer metrics not overall metrics
+    
+    This should fix buffer underflows in most cases.
+    (cherry picked from commit 01d9caa19dcca42211d9763517b77b28857ca07f)
+
+commit f3d6e5a1ecdc990a5e69c5ee8c75ad44c5a335a7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jul 19 18:01:52 2011 +0300
+
+    SRTP: remove dedicated gcrypt initialization, use VLC one
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit f1a8ab79baee2aa7fbce87f4479b6f0557d9e2a5)
+
+commit d1fbab4dea6da812d00c6e45156c90bb99743e09
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jul 19 17:52:35 2011 +0300
+
+    SRTP: fix flags mask and document enumerations
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit dc24a3361a77122bdac93168c77814c9484247bb)
+
+commit 668dd4f8a3d3d926e9afc9641d58a2d468ad47e8
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jul 19 17:43:34 2011 +0300
+
+    Fix SRTCP MAC
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit d7e4901bea30333f151de763ae72eaff9984e1e9)
+
+commit 33aa2c493d81135704104f9f473415d3e2392256
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jul 19 17:45:03 2011 +0300
+
+    Fix CSA copyright statements
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 61859210ee7ee4c997651992733fd8a23872e5c7)
+
+commit 0d2c6ce99cbe81d80f0e4da6ff9024a4d52f3e4c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Jul 19 18:19:08 2011 +0300
+
+    GnuTLS: update version check (consistent with configure.ac)
+
+commit 671876a521f169c68e3ba743116f6c14d2acf8fc
+Author: Luc Saillard <luc.saillard@sfr.com>
+Date:   Mon Jul 18 10:29:19 2011 +0200
+
+    Skip all id3tag in the demuxer, not just the first one.
+    
+    Some audio file can contains severall id3tag. Apple use it to insert a
+    jpeg in an audio only stream to display an image. So just iterate others
+    all id3tag, and discard them.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit ab6aece328aa884cdfde44b0081d3d252db325e1)
+
+commit 5dd01059ecca18a1e50094c70a72006c3332e1da
+Author: Luc Saillard <luc.saillard@sfr.com>
+Date:   Mon Jul 18 12:05:05 2011 +0200
+
+    Fix gcrypt warning when building win32 application
+    
+    We must defined all members to NULL (select, waitpid, ...)
+    
+    In file included from gnutls.c:63:
+    ../../include/vlc_gcrypt.h:81: warning: missing initializer
+    ../../include/vlc_gcrypt.h:81: warning: (near initialization for 'gcry_threads_vlc.read')
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit bd90ac8411f60fbade18ad47ac63b42dd1097916)
+
+commit 70d6012367a80d90ebe15ff9e551b6f7e5f877f6
+Author: Can Wu <wu.canus@gmail.com>
+Date:   Mon Jul 18 18:57:24 2011 +0800
+
+    vo/xcb: fix a memory leak in Open()
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit be82d4c1415c9490ecdccdd4bb2b61cd69499365)
+
+commit 35169cb4b7ee041492490d325b988043883009c2
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Jul 18 12:05:08 2011 +0200
+
+    auhal: fixed another improper use of AudioObjectHasProperty
+
+commit dafb5dd1715895761c51720e8bb035866981c33f
+Author: David Fuhrmann <david.fuhrmann@googlemail.com>
+Date:   Mon Jul 18 08:35:07 2011 +0200
+
+    auhal: fixed digital audio output
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 787d493458316a8d43ec9c42ea3a183d7081675b
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Jul 17 15:53:31 2011 +0200
+
+    macosx: work-around crash in stringWithFormat when using the Japanese locale
+    
+    manually updated the po files accordingly
+
+commit 801bc148783910c4f77f2891de06432a48c19f76
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 16 13:01:06 2011 +0300
+
+    Demote SIGCHLD error to a warning
+
+commit bc3e52940ad26da0cc22b9f34985ffd50a293422
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Jul 16 11:51:18 2011 +0300
+
+    Do not print start banner if stderr is not a TTY.
+    
+    The user is not going to see the banner, and this tends to clutter
+    error logs (X server, cron jobs...) - not only on MacOS.
+    (cherry picked from commit 62f348b047c0c691c4a47970072522a66633f486)
+
 commit e4974acd30cd55d87841ab1e9d027d88831f6e79
 Author: Rémi Duraffort <ivoire@videolan.org>
 Date:   Tue Jul 12 15:45:43 2011 +0200

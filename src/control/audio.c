@@ -2,7 +2,7 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: edde5b7fb3b0d0c9a3f67e5599fc19a39dbcc7e7 $
+ * $Id: 90333a8f4cbc2323fc8e5d9680b3690321017230 $
  *
  * Authors: Filippo Carone <filippo@carone.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
@@ -266,9 +266,9 @@ void libvlc_audio_output_device_set( libvlc_media_player_t *mp,
         return;
     if( asprintf( &psz_config_name, "%s-audio-device", psz_audio_output ) == -1 )
         return;
-    if( !var_Type( mp, psz_audio_output ) )
+    if( !var_Type( mp, psz_config_name ) )
         /* Don't recreate the same variable over and over and over... */
-        var_Create( mp, psz_audio_output, VLC_VAR_STRING );
+        var_Create( mp, psz_config_name, VLC_VAR_STRING );
     var_SetString( mp, psz_config_name, psz_device_id );
     free( psz_config_name );
 }

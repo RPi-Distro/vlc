@@ -297,10 +297,11 @@ FindFormat (vout_display_t *vd,
 static int Open (vlc_object_t *obj)
 {
     vout_display_t *vd = (vout_display_t *)obj;
-    vout_display_sys_t *p_sys = malloc (sizeof (*p_sys));
+    vout_display_sys_t *p_sys;
 
     if (!var_CreateGetBool (obj, "overlay"))
         return VLC_EGENERIC;
+    p_sys = malloc (sizeof (*p_sys));
     if (p_sys == NULL)
         return VLC_ENOMEM;
 
@@ -358,7 +359,8 @@ static int Open (vlc_object_t *obj)
             continue;
         }
 
-        if (!(a->type & XCB_XV_TYPE_IMAGE_MASK))
+        if (!(a->type & XCB_XV_TYPE_INPUT_MASK)
+         || !(a->type & XCB_XV_TYPE_IMAGE_MASK))
             continue;
 
         xcb_xv_list_image_formats_reply_t *r =

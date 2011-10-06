@@ -2,7 +2,7 @@
  * osdmenu.c: osd filter module
  *****************************************************************************
  * Copyright (C) 2004-2007 M2X
- * $Id: 377f7407b23d657002931dac12b9d1c0af06c98b $
+ * $Id: 87416bfebeadfe1b513917f56886bf0c5bfd2d56 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -105,7 +105,7 @@ static int MouseEvent( vlc_object_t *, char const *,
 #if defined( WIN32 ) || defined( UNDER_CE )
 #define OSD_DEFAULT_CFG "osdmenu/default.cfg"
 #else
-#define OSD_DEFAULT_CFG "share/osdmenu/default.cfg"
+#define OSD_DEFAULT_CFG PKGDATADIR"/osdmenu/default.cfg"
 #endif
 
 #define OSD_UPDATE_MIN     0

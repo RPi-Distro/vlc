@@ -2,7 +2,7 @@
  * demux.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 981799ff2d7da30693b11f4065824f186f64c405 $
+ * $Id: ab01a13b32b63121b06c6ccbaf6be343cb119823 $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -162,8 +162,9 @@ demux_t *__demux_New( vlc_object_t *p_obj, input_thread_t *p_parent_input,
         /* ID3/APE tags will mess-up demuxer probing so we skip it here.
          * ID3/APE parsers will called later on in the demuxer to access the
          * skipped info. */
-        if( !SkipID3Tag( p_demux ) )
-            SkipAPETag( p_demux );
+        while (SkipID3Tag( p_demux ))
+          ;
+        SkipAPETag( p_demux );
 
         p_demux->p_module =
             module_need( p_demux, "demux", psz_module,

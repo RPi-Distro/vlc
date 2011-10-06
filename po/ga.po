@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-07-14 14:38+0200\n"
+"POT-Creation-Date: 2011-10-06 20:33+0300\n"
 "PO-Revision-Date: 2011-05-23 03:13-0000\n"
 "Last-Translator: Seanán Ó Coistín <seananoc@gmail.com>\n"
 "Language-Team: Irish\n"
@@ -82,7 +82,7 @@ msgstr "Socruithe na heochara aicearra"
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:192
-#: modules/gui/qt4/ui/profiles.h:487
+#: modules/gui/qt4/ui/profiles.h:494
 msgid "Audio"
 msgstr "Fuaim"
 
@@ -138,7 +138,7 @@ msgstr "Socruithe fuaime agus modúil ilghnéitheacha."
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:101 modules/stream_out/transcode/transcode.c:161
-#: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:321
+#: modules/gui/qt4/ui/profiles.h:476 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Video"
 msgstr "Físeán"
 
@@ -868,8 +868,8 @@ msgstr "díchódóir"
 
 #: src/input/decoder.c:278 src/input/decoder.c:430
 #: modules/codec/avcodec/encoder.c:224 modules/codec/avcodec/encoder.c:232
-#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:700
-#: modules/codec/avcodec/encoder.c:709 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:711
+#: modules/codec/avcodec/encoder.c:720 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr "Theip ar an Sruthú / Traschódú"
@@ -945,8 +945,8 @@ msgid "Original ID"
 msgstr "Aitheantas bunaidh"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:470
-#: modules/gui/qt4/ui/profiles.h:489
+#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:477
+#: modules/gui/qt4/ui/profiles.h:496
 msgid "Codec"
 msgstr "Comhbhrúite/díchomhbhrúite"
 
@@ -962,7 +962,7 @@ msgid "Description"
 msgstr "Cur síos"
 
 #: src/input/es_out.c:2914 src/input/es_out.c:2917
-#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
+#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:499
 msgid "Channels"
 msgstr "Bealaí"
 
@@ -982,7 +982,7 @@ msgstr ""
 #: src/input/es_out.c:2937 modules/access/pvr.c:96
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:412
 #: modules/gui/qt4/components/open_panels.cpp:945
-#: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
+#: modules/gui/qt4/ui/profiles.h:478 modules/gui/qt4/ui/profiles.h:497
 msgid "Bitrate"
 msgstr "Beartluas"
 
@@ -1004,7 +1004,7 @@ msgstr ""
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:476
+#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:483
 msgid "Resolution"
 msgstr "Taifeach"
 
@@ -2284,11 +2284,11 @@ msgid ""
 "over the network (in bytes)."
 msgstr ""
 
-#: src/libvlc-module.c:678 modules/stream_out/rtp.c:122
+#: src/libvlc-module.c:678 modules/stream_out/rtp.c:124
 msgid "Hop limit (TTL)"
 msgstr ""
 
-#: src/libvlc-module.c:680 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:680 modules/stream_out/rtp.c:126
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -3451,7 +3451,7 @@ msgid "Slower (fine)"
 msgstr "Níos moille (mín)"
 
 #: src/libvlc-module.c:1306 modules/control/hotkeys.c:696
-#: modules/gui/macosx/about.m:207 modules/gui/macosx/controls.m:1006
+#: modules/gui/macosx/about.m:206 modules/gui/macosx/controls.m:1006
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:610
 #: modules/gui/macosx/intf.m:658 modules/gui/macosx/intf.m:746
 #: modules/gui/macosx/intf.m:754 modules/gui/macosx/wizard.m:307
@@ -3467,7 +3467,7 @@ msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 
 #: src/libvlc-module.c:1308 modules/control/hotkeys.c:702
-#: modules/gui/macosx/about.m:208 modules/gui/macosx/controls.m:1005
+#: modules/gui/macosx/about.m:207 modules/gui/macosx/controls.m:1005
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:657 modules/gui/macosx/intf.m:747
 #: modules/gui/macosx/intf.m:753 modules/gui/qt4/components/controller.hpp:105
@@ -4167,8 +4167,8 @@ msgstr "Foíomhánna"
 
 #: src/libvlc-module.c:1782 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
-#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
-#: modules/gui/qt4/ui/profiles.h:497
+#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:502
+#: modules/gui/qt4/ui/profiles.h:504
 msgid "Subtitles"
 msgstr "Fotheidil"
 
@@ -4336,7 +4336,7 @@ msgid "Downloading ..."
 msgstr "Ag íosluchtú ..."
 
 #: src/misc/update.c:606 src/misc/update.c:736 modules/access/dvb/scan.c:327
-#: modules/demux/avi/avi.c:656 modules/demux/avi/avi.c:2358
+#: modules/demux/avi/avi.c:656 modules/demux/avi/avi.c:2361
 #: modules/gui/macosx/bookmarks.m:102 modules/gui/macosx/controls.m:60
 #: modules/gui/macosx/coredialogs.m:66 modules/gui/macosx/coredialogs.m:68
 #: modules/gui/macosx/coredialogs.m:186 modules/gui/macosx/open.m:177
@@ -6165,7 +6165,7 @@ msgstr "Níorbh fhéidir le VLC an comhad a léamh."
 
 #: modules/access/fs.c:33 modules/access/rtsp/access.c:46
 #: modules/access_output/udp.c:64 modules/demux/live555.cpp:75
-#: modules/stream_out/rtp.c:133
+#: modules/stream_out/rtp.c:135
 msgid "Caching value (ms)"
 msgstr ""
 
@@ -6460,7 +6460,7 @@ msgstr ""
 #: modules/access/imem.c:88 modules/access/pvr.c:74 modules/access/v4l.c:102
 #: modules/access/v4l2.c:95 modules/codec/invmem.c:53
 #: modules/demux/rawvid.c:48 modules/video_filter/mosaic.c:95
-#: modules/video_output/vmem.c:42 modules/gui/qt4/ui/profiles.h:479
+#: modules/video_output/vmem.c:42 modules/gui/qt4/ui/profiles.h:486
 msgid "Width"
 msgstr "Leithead"
 
@@ -6471,7 +6471,7 @@ msgstr ""
 #: modules/access/imem.c:91 modules/access/pvr.c:78 modules/access/v4l.c:105
 #: modules/access/v4l2.c:98 modules/codec/invmem.c:56
 #: modules/demux/rawvid.c:52 modules/video_filter/mosaic.c:93
-#: modules/video_output/vmem.c:45 modules/gui/qt4/ui/profiles.h:482
+#: modules/video_output/vmem.c:45 modules/gui/qt4/ui/profiles.h:489
 msgid "Height"
 msgstr "Airde"
 
@@ -6851,83 +6851,83 @@ msgstr "Ionchr RTMP"
 msgid "RTMP"
 msgstr "RTMP"
 
-#: modules/access/rtp/rtp.c:44
+#: modules/access/rtp/rtp.c:46
 msgid "RTP de-jitter buffer length (msec)"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:46
+#: modules/access/rtp/rtp.c:48
 msgid "How long to wait for late RTP packets (and delay the performance)."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:48
+#: modules/access/rtp/rtp.c:50
 msgid "RTCP (local) port"
 msgstr "Port RTCP (logánta)"
 
-#: modules/access/rtp/rtp.c:50
+#: modules/access/rtp/rtp.c:52
 msgid ""
 "RTCP packets will be received on this transport protocol port. If zero, "
 "multiplexed RTP/RTCP is used."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:53 modules/stream_out/rtp.c:142
+#: modules/access/rtp/rtp.c:55 modules/stream_out/rtp.c:144
 msgid "SRTP key (hexadecimal)"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:55
+#: modules/access/rtp/rtp.c:57
 msgid ""
 "RTP packets will be authenticated and deciphered with this Secure RTP master "
 "shared secret key."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:58 modules/stream_out/rtp.c:147
+#: modules/access/rtp/rtp.c:60 modules/stream_out/rtp.c:149
 msgid "SRTP salt (hexadecimal)"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:60 modules/stream_out/rtp.c:149
+#: modules/access/rtp/rtp.c:62 modules/stream_out/rtp.c:151
 msgid "Secure RTP requires a (non-secret) master salt value."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:62
+#: modules/access/rtp/rtp.c:64
 msgid "Maximum RTP sources"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:64
+#: modules/access/rtp/rtp.c:66
 msgid "How many distinct active RTP sources are allowed at a time."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:66
+#: modules/access/rtp/rtp.c:68
 msgid "RTP source timeout (sec)"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:68
+#: modules/access/rtp/rtp.c:70
 msgid "How long to wait for any packet before a source is expired."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:70
+#: modules/access/rtp/rtp.c:72
 msgid "Maximum RTP sequence number dropout"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:72
+#: modules/access/rtp/rtp.c:74
 msgid ""
 "RTP packets will be discarded if they are too much ahead (i.e. in the "
 "future) by this many packets from the last received packet."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:75
+#: modules/access/rtp/rtp.c:77
 msgid "Maximum RTP sequence number misordering"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:77
+#: modules/access/rtp/rtp.c:79
 msgid ""
 "RTP packets will be discarded if they are too far behind (i.e. in the past) "
 "by this many packets from the last received packet."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:87 modules/stream_out/rtp.c:170
+#: modules/access/rtp/rtp.c:89 modules/stream_out/rtp.c:172
 msgid "RTP"
 msgstr "RTP"
 
-#: modules/access/rtp/rtp.c:88
+#: modules/access/rtp/rtp.c:90
 msgid "Real-Time Protocol (RTP) input"
 msgstr ""
 
@@ -7250,7 +7250,7 @@ msgstr "Tiúnóir"
 msgid "Tuner to use, if there are several ones."
 msgstr "An tiúnóir le feidhm a bhaint as, má tá cinn éagsúla ann."
 
-#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:466
+#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:473
 msgid "MJPEG"
 msgstr "MJPEG"
 
@@ -8658,7 +8658,7 @@ msgid "ALSA Device Name"
 msgstr ""
 
 #: modules/audio_output/alsa.c:135 modules/audio_output/auhal.c:137
-#: modules/audio_output/auhal.c:973 modules/audio_output/directx.c:351
+#: modules/audio_output/auhal.c:982 modules/audio_output/directx.c:351
 #: modules/audio_output/oss.c:129 modules/audio_output/portaudio.c:389
 #: modules/audio_output/sdl.c:174 modules/audio_output/sdl.c:192
 #: modules/audio_output/waveout.c:374 modules/gui/macosx/intf.m:681
@@ -8732,7 +8732,7 @@ msgid ""
 "utility in /Applications/Utilities. Stereo mode is being used now."
 msgstr ""
 
-#: modules/audio_output/auhal.c:1016
+#: modules/audio_output/auhal.c:1025
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr ""
@@ -8864,7 +8864,7 @@ msgstr "Aschur fuaime PORTAUDIO"
 msgid "5.1"
 msgstr "5.1"
 
-#: modules/audio_output/pulse.c:47
+#: modules/audio_output/pulse.c:49
 msgid "Pulseaudio audio output"
 msgstr "Aschur fuaime Pulseaudio"
 
@@ -9364,7 +9364,7 @@ msgid ""
 "Do not contact the VideoLAN project about this issue.\n"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:701 modules/codec/avcodec/encoder.c:710
+#: modules/codec/avcodec/encoder.c:712 modules/codec/avcodec/encoder.c:721
 msgid "VLC could not open the encoder."
 msgstr "Níorbh fhéidir le VLC an t-ionchódóir a oscailt."
 
@@ -11510,7 +11510,7 @@ msgid "Position Control"
 msgstr ""
 
 #: modules/control/hotkeys.c:92 modules/gui/macosx/intf.m:2476
-#: modules/gui/macosx/intf.m:2860
+#: modules/gui/macosx/intf.m:2859
 msgid "Ignore"
 msgstr "Ná bac leis"
 
@@ -12358,7 +12358,7 @@ msgstr ""
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:260
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:310
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:404
-#: modules/misc/lua/vlc.c:77 modules/stream_out/rtp.c:112
+#: modules/misc/lua/vlc.c:77 modules/stream_out/rtp.c:114
 msgid "Port"
 msgstr "Port"
 
@@ -12472,7 +12472,7 @@ msgstr "Deisigh"
 msgid "Don't repair"
 msgstr "Ná deisigh"
 
-#: modules/demux/avi/avi.c:2357
+#: modules/demux/avi/avi.c:2360
 msgid "Fixing AVI Index..."
 msgstr "Ag deisiú an treorán AVI..."
 
@@ -13130,7 +13130,7 @@ msgstr ""
 msgid "Force chroma. This is a four character string."
 msgstr ""
 
-#: modules/demux/rawvid.c:59 modules/stream_out/switcher.c:96
+#: modules/demux/rawvid.c:59 modules/stream_out/switcher.c:98
 msgid "Aspect ratio"
 msgstr "Cóimheas treoíochta"
 
@@ -13569,24 +13569,24 @@ msgstr ""
 msgid "About VLC media player"
 msgstr "Maidir le seinnteoir meán VLC"
 
-#: modules/gui/macosx/about.m:104
-msgid "Compiled by %s with %@"
-msgstr "Tiomsaithe ag %s le %@"
+#: modules/gui/macosx/about.m:103
+msgid "Compiled by %@ with %@"
+msgstr "Tiomsaithe ag %@ le %@"
 
-#: modules/gui/macosx/about.m:112
+#: modules/gui/macosx/about.m:111
 msgid "VLC was brought to you by:"
 msgstr "Chuir na daoine seo a leanas VLC ar fáil duit:"
 
-#: modules/gui/macosx/about.m:122 modules/gui/macosx/about.m:193
+#: modules/gui/macosx/about.m:121 modules/gui/macosx/about.m:192
 #: modules/gui/macosx/intf.m:737 modules/gui/qt4/dialogs/help.cpp:166
 msgid "License"
 msgstr "Ceadúnas"
 
-#: modules/gui/macosx/about.m:206
+#: modules/gui/macosx/about.m:205
 msgid "VLC media player Help"
 msgstr "Cabhair do sheinnteoir meán VLC"
 
-#: modules/gui/macosx/about.m:209 modules/gui/macosx/controls.m:492
+#: modules/gui/macosx/about.m:208 modules/gui/macosx/controls.m:492
 #: modules/gui/macosx/intf.m:713
 msgid "Index"
 msgstr "Treorán"
@@ -14021,7 +14021,7 @@ msgstr "Oscail gléas gabhála..."
 msgid "Open Recent"
 msgstr "Oscail Le Déanaí"
 
-#: modules/gui/macosx/intf.m:641 modules/gui/macosx/intf.m:2765
+#: modules/gui/macosx/intf.m:641 modules/gui/macosx/intf.m:2764
 msgid "Clear Menu"
 msgstr "Glan an Roghchlár"
 
@@ -14222,22 +14222,22 @@ msgstr "Aimsíodh sean leagan de chomhaid shainroghanna VLC."
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2610
+#: modules/gui/macosx/intf.m:2609
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2858
+#: modules/gui/macosx/intf.m:2857
 msgid "Relaunch required"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2859
+#: modules/gui/macosx/intf.m:2858
 msgid ""
 "To make sure that VLC no longer listens to your media key events, it needs "
 "to be restarted."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2860
+#: modules/gui/macosx/intf.m:2859
 msgid "Relaunch VLC"
 msgstr ""
 
@@ -14655,7 +14655,7 @@ msgstr ""
 msgid "Bitrate (kb/s)"
 msgstr ""
 
-#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:478
+#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:485
 msgid "Scale"
 msgstr ""
 
@@ -15496,7 +15496,7 @@ msgstr ""
 "Ceadaíonn an leathanach seo conas mar a sheolfar an sruth ionchuir a roghnú."
 
 #: modules/gui/macosx/wizard.m:364 modules/gui/macosx/wizard.m:425
-#: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:74
+#: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:76
 msgid "Destination"
 msgstr "Sprioc"
 
@@ -16264,53 +16264,53 @@ msgstr "Brúigh chun ionad B a shocrú"
 msgid "Stop the A to B loop"
 msgstr "Stad an lúb A go B"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1004
-#: modules/gui/qt4/components/extended_panels.cpp:1060
+#: modules/gui/qt4/components/extended_panels.cpp:1007
+#: modules/gui/qt4/components/extended_panels.cpp:1063
 msgid "Preamp\n"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1005
-#: modules/gui/qt4/components/extended_panels.cpp:1061
+#: modules/gui/qt4/components/extended_panels.cpp:1008
+#: modules/gui/qt4/components/extended_panels.cpp:1064
 msgid "dB"
 msgstr "dB"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1142
+#: modules/gui/qt4/components/extended_panels.cpp:1145
 msgid "Enable spatializer"
 msgstr "Cumasaigh an fuaimshuiteoir"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1282
+#: modules/gui/qt4/components/extended_panels.cpp:1285
 msgid "Audio/Video"
 msgstr "Fuaim/Físeán"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1298
+#: modules/gui/qt4/components/extended_panels.cpp:1301
 msgid "Advance of audio over video:"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1307
+#: modules/gui/qt4/components/extended_panels.cpp:1310
 msgid ""
 "A positive value means that\n"
 "the audio is ahead of the video"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1315
+#: modules/gui/qt4/components/extended_panels.cpp:1318
 msgid "Subtitles/Video"
 msgstr "Fotheidil/Físeán"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1331
+#: modules/gui/qt4/components/extended_panels.cpp:1334
 msgid "Advance of subtitles over video:"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1340
+#: modules/gui/qt4/components/extended_panels.cpp:1343
 msgid ""
 "A positive value means that\n"
 "the subtitles are ahead of the video"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1359
+#: modules/gui/qt4/components/extended_panels.cpp:1362
 msgid "Speed of the subtitles:"
 msgstr "Luas na bhfotheideal:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1392
+#: modules/gui/qt4/components/extended_panels.cpp:1395
 msgid "Force update of this dialog's values"
 msgstr ""
 
@@ -17401,7 +17401,7 @@ msgstr "Scrios an bheathaisnéisín reatha"
 msgid "Cl&ose"
 msgstr "Dún"
 
-#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:455
+#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:461
 msgid "Profile Name"
 msgstr ""
 
@@ -20058,15 +20058,15 @@ msgstr ""
 msgid "Record stream output"
 msgstr ""
 
-#: modules/stream_out/rtp.c:76
+#: modules/stream_out/rtp.c:78
 msgid "This is the output URL that will be used."
 msgstr "Seo é an tURL aschurtha a bhainfear feidhm as."
 
-#: modules/stream_out/rtp.c:77
+#: modules/stream_out/rtp.c:79
 msgid "SDP"
 msgstr "SDP"
 
-#: modules/stream_out/rtp.c:79
+#: modules/stream_out/rtp.c:81
 msgid ""
 "This allows you to specify how the SDP (Session Descriptor) for this RTP "
 "session will be made available. You must use an url: http://location to "
@@ -20074,136 +20074,136 @@ msgid ""
 "SDP to be announced via SAP."
 msgstr ""
 
-#: modules/stream_out/rtp.c:83 modules/stream_out/standard.c:91
+#: modules/stream_out/rtp.c:85 modules/stream_out/standard.c:91
 msgid "SAP announcing"
 msgstr ""
 
-#: modules/stream_out/rtp.c:84 modules/stream_out/standard.c:92
+#: modules/stream_out/rtp.c:86 modules/stream_out/standard.c:92
 msgid "Announce this session with SAP."
 msgstr ""
 
-#: modules/stream_out/rtp.c:85
+#: modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr "Ilphléascóir"
 
-#: modules/stream_out/rtp.c:87
+#: modules/stream_out/rtp.c:89
 msgid ""
 "This allows you to specify the muxer used for the streaming output. Default "
 "is to use no muxer (standard RTP stream)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:90 modules/stream_out/standard.c:62
+#: modules/stream_out/rtp.c:92 modules/stream_out/standard.c:62
 msgid "Session name"
 msgstr ""
 
-#: modules/stream_out/rtp.c:92 modules/stream_out/standard.c:64
+#: modules/stream_out/rtp.c:94 modules/stream_out/standard.c:64
 msgid ""
 "This is the name of the session that will be announced in the SDP (Session "
 "Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:94 modules/stream_out/standard.c:72
+#: modules/stream_out/rtp.c:96 modules/stream_out/standard.c:72
 msgid "Session description"
 msgstr ""
 
-#: modules/stream_out/rtp.c:96 modules/stream_out/standard.c:74
+#: modules/stream_out/rtp.c:98 modules/stream_out/standard.c:74
 msgid ""
 "This allows you to give a short description with details about the stream, "
 "that will be announced in the SDP (Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:98 modules/stream_out/standard.c:76
+#: modules/stream_out/rtp.c:100 modules/stream_out/standard.c:76
 msgid "Session URL"
 msgstr ""
 
-#: modules/stream_out/rtp.c:100 modules/stream_out/standard.c:78
+#: modules/stream_out/rtp.c:102 modules/stream_out/standard.c:78
 msgid ""
 "This allows you to give an URL with more details about the stream (often the "
 "website of the streaming organization), that will be announced in the SDP "
 "(Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:103 modules/stream_out/standard.c:81
+#: modules/stream_out/rtp.c:105 modules/stream_out/standard.c:81
 msgid "Session email"
 msgstr ""
 
-#: modules/stream_out/rtp.c:105 modules/stream_out/standard.c:83
+#: modules/stream_out/rtp.c:107 modules/stream_out/standard.c:83
 msgid ""
 "This allows you to give a contact mail address for the stream, that will be "
 "announced in the SDP (Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:107 modules/stream_out/standard.c:85
+#: modules/stream_out/rtp.c:109 modules/stream_out/standard.c:85
 msgid "Session phone number"
 msgstr ""
 
-#: modules/stream_out/rtp.c:109 modules/stream_out/standard.c:87
+#: modules/stream_out/rtp.c:111 modules/stream_out/standard.c:87
 msgid ""
 "This allows you to give a contact telephone number for the stream, that will "
 "be announced in the SDP (Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:114
+#: modules/stream_out/rtp.c:116
 msgid "This allows you to specify the base port for the RTP streaming."
 msgstr ""
 
-#: modules/stream_out/rtp.c:115
+#: modules/stream_out/rtp.c:117
 msgid "Audio port"
 msgstr "Port fuaime"
 
-#: modules/stream_out/rtp.c:117
+#: modules/stream_out/rtp.c:119
 msgid ""
 "This allows you to specify the default audio port for the RTP streaming."
 msgstr ""
 
-#: modules/stream_out/rtp.c:118
+#: modules/stream_out/rtp.c:120
 msgid "Video port"
 msgstr "Port físeáin"
 
-#: modules/stream_out/rtp.c:120
+#: modules/stream_out/rtp.c:122
 msgid ""
 "This allows you to specify the default video port for the RTP streaming."
 msgstr ""
 
-#: modules/stream_out/rtp.c:128
+#: modules/stream_out/rtp.c:130
 msgid "RTP/RTCP multiplexing"
 msgstr "Ilphléacsú RTP/RTCP"
 
-#: modules/stream_out/rtp.c:130
+#: modules/stream_out/rtp.c:132
 msgid ""
 "This sends and receives RTCP packet multiplexed over the same port as RTP "
 "packets."
 msgstr ""
 
-#: modules/stream_out/rtp.c:135
+#: modules/stream_out/rtp.c:137
 msgid ""
 "Default caching value for outbound RTP streams. This value should be set in "
 "milliseconds."
 msgstr ""
 
-#: modules/stream_out/rtp.c:138
+#: modules/stream_out/rtp.c:140
 msgid "Transport protocol"
 msgstr ""
 
-#: modules/stream_out/rtp.c:140
+#: modules/stream_out/rtp.c:142
 msgid "This selects which transport protocol to use for RTP."
 msgstr ""
 
-#: modules/stream_out/rtp.c:144
+#: modules/stream_out/rtp.c:146
 msgid ""
 "RTP packets will be integrity-protected and ciphered with this Secure RTP "
 "master shared secret key."
 msgstr ""
 
-#: modules/stream_out/rtp.c:159
+#: modules/stream_out/rtp.c:161
 msgid "MP4A LATM"
 msgstr "MP4A LATM"
 
-#: modules/stream_out/rtp.c:161
+#: modules/stream_out/rtp.c:163
 msgid "This allows you to stream MPEG4 LATM audio streams (see RFC3016)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:171
+#: modules/stream_out/rtp.c:173
 msgid "RTP stream output"
 msgstr "Aschur an tsrutha RTP"
 
@@ -20332,67 +20332,67 @@ msgstr ""
 msgid "Standard stream output"
 msgstr "Aschur srutha caighdeánach"
 
-#: modules/stream_out/switcher.c:90 modules/gui/qt4/ui/sprefs_input.h:314
+#: modules/stream_out/switcher.c:92 modules/gui/qt4/ui/sprefs_input.h:314
 msgid "Files"
 msgstr "Comhaid"
 
-#: modules/stream_out/switcher.c:92
+#: modules/stream_out/switcher.c:94
 msgid "Full paths of the files separated by colons."
 msgstr "Conairí iomlána na gcomhad scartha le colúin."
 
-#: modules/stream_out/switcher.c:93
+#: modules/stream_out/switcher.c:95
 msgid "Sizes"
 msgstr "Méideanna"
 
-#: modules/stream_out/switcher.c:95
+#: modules/stream_out/switcher.c:97
 msgid "List of sizes separated by colons (720x576:480x576)."
 msgstr ""
 
-#: modules/stream_out/switcher.c:98
+#: modules/stream_out/switcher.c:100
 msgid "Aspect ratio (4:3, 16:9)."
 msgstr "Cóimheas treoíochta (4:3, 16:9)"
 
-#: modules/stream_out/switcher.c:99
+#: modules/stream_out/switcher.c:101
 msgid "Command UDP port"
 msgstr ""
 
-#: modules/stream_out/switcher.c:101
+#: modules/stream_out/switcher.c:103
 msgid "UDP port to listen to for commands."
 msgstr ""
 
-#: modules/stream_out/switcher.c:102
+#: modules/stream_out/switcher.c:104
 msgid "Command"
 msgstr ""
 
-#: modules/stream_out/switcher.c:104
+#: modules/stream_out/switcher.c:106
 msgid "Initial command to execute."
 msgstr ""
 
-#: modules/stream_out/switcher.c:105
+#: modules/stream_out/switcher.c:107
 msgid "GOP size"
 msgstr "Méid GOP"
 
-#: modules/stream_out/switcher.c:107
+#: modules/stream_out/switcher.c:109
 msgid "Number of P frames between two I frames."
 msgstr ""
 
-#: modules/stream_out/switcher.c:108
+#: modules/stream_out/switcher.c:110
 msgid "Quantizer scale"
 msgstr ""
 
-#: modules/stream_out/switcher.c:110
+#: modules/stream_out/switcher.c:112
 msgid "Fixed quantizer scale to use."
 msgstr ""
 
-#: modules/stream_out/switcher.c:111
+#: modules/stream_out/switcher.c:113
 msgid "Mute audio"
 msgstr "Balbhaigh an fhuaim"
 
-#: modules/stream_out/switcher.c:113
+#: modules/stream_out/switcher.c:115
 msgid "Mute audio when command is not 0."
 msgstr ""
 
-#: modules/stream_out/switcher.c:116
+#: modules/stream_out/switcher.c:118
 msgid "MPEG2 video switcher stream output"
 msgstr ""
 
@@ -23795,7 +23795,7 @@ msgid "Spectrum analyser"
 msgstr ""
 
 #: modules/gui/qt4/ui/equalizer.h:126 modules/gui/qt4/ui/open_disk.h:290
-#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:454
+#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:460
 #: modules/gui/qt4/ui/sprefs_audio.h:403 modules/gui/qt4/ui/sprefs_input.h:305
 #: modules/gui/qt4/ui/sprefs_interface.h:372
 #: modules/gui/qt4/ui/sprefs_subtitles.h:200
@@ -23822,8 +23822,9 @@ msgid "Show &more options"
 msgstr "Taispeáin tuilleadh roghanna"
 
 #: modules/gui/qt4/ui/open.h:237
+#, fuzzy
 msgid "Change the caching for the media"
-msgstr ""
+msgstr "Athraigh am tosaithe don meán"
 
 #: modules/gui/qt4/ui/open.h:239
 msgid " ms"
@@ -23987,100 +23988,104 @@ msgid ""
 "#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
 msgstr ""
 
-#: modules/gui/qt4/ui/profiles.h:456
+#: modules/gui/qt4/ui/profiles.h:462
 msgid "MPEG-TS"
 msgstr "MPEG-TS"
 
-#: modules/gui/qt4/ui/profiles.h:457
+#: modules/gui/qt4/ui/profiles.h:463
 msgid "MPEG-PS"
 msgstr "MPEG-PS"
 
-#: modules/gui/qt4/ui/profiles.h:458
+#: modules/gui/qt4/ui/profiles.h:464
 msgid "WAV"
 msgstr "WAV"
 
-#: modules/gui/qt4/ui/profiles.h:459
+#: modules/gui/qt4/ui/profiles.h:465
+msgid "Webm"
+msgstr "Webm"
+
+#: modules/gui/qt4/ui/profiles.h:466
 msgid "ASF/WMV"
 msgstr "ASF/WMV"
 
-#: modules/gui/qt4/ui/profiles.h:460
+#: modules/gui/qt4/ui/profiles.h:467
 msgid "Ogg/Ogm"
 msgstr "Ogg/Ogm"
 
-#: modules/gui/qt4/ui/profiles.h:461
+#: modules/gui/qt4/ui/profiles.h:468
 msgid "RAW"
 msgstr "RAW"
 
-#: modules/gui/qt4/ui/profiles.h:462
+#: modules/gui/qt4/ui/profiles.h:469
 msgid "MPEG 1"
 msgstr "MPEG 1"
 
-#: modules/gui/qt4/ui/profiles.h:463
+#: modules/gui/qt4/ui/profiles.h:470
 msgid "FLV"
 msgstr "FLV"
 
-#: modules/gui/qt4/ui/profiles.h:464
+#: modules/gui/qt4/ui/profiles.h:471
 msgid "AVI"
 msgstr "AVI"
 
-#: modules/gui/qt4/ui/profiles.h:465
+#: modules/gui/qt4/ui/profiles.h:472
 msgid "MP4/MOV"
 msgstr "MP4/MOV"
 
-#: modules/gui/qt4/ui/profiles.h:467
+#: modules/gui/qt4/ui/profiles.h:474
 msgid "MKV"
 msgstr "MKV"
 
-#: modules/gui/qt4/ui/profiles.h:468
+#: modules/gui/qt4/ui/profiles.h:475
 #, fuzzy
 msgid "Encapsulation"
 msgstr "Sáithiúchán"
 
-#: modules/gui/qt4/ui/profiles.h:472 modules/gui/qt4/ui/profiles.h:491
+#: modules/gui/qt4/ui/profiles.h:479 modules/gui/qt4/ui/profiles.h:498
 msgid " kb/s"
 msgstr " kb/s"
 
-#: modules/gui/qt4/ui/profiles.h:473
+#: modules/gui/qt4/ui/profiles.h:480
 msgid "Frame Rate"
 msgstr ""
 
-#: modules/gui/qt4/ui/profiles.h:475
+#: modules/gui/qt4/ui/profiles.h:482
 msgid " fps"
 msgstr ""
 
-#: modules/gui/qt4/ui/profiles.h:477
+#: modules/gui/qt4/ui/profiles.h:484
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 
-#: modules/gui/qt4/ui/profiles.h:480 modules/gui/qt4/ui/profiles.h:483
+#: modules/gui/qt4/ui/profiles.h:487 modules/gui/qt4/ui/profiles.h:490
 msgid "00000; "
 msgstr "00000; "
 
-#: modules/gui/qt4/ui/profiles.h:485
+#: modules/gui/qt4/ui/profiles.h:492
 msgid "Keep original video track"
 msgstr "Coinnigh an físrian bunaidh"
 
-#: modules/gui/qt4/ui/profiles.h:486
+#: modules/gui/qt4/ui/profiles.h:493
 #, fuzzy
 msgid "Video codec"
 msgstr "Oideasraí comhbhrúite/díchomhbhrúite físeáin"
 
-#: modules/gui/qt4/ui/profiles.h:488
+#: modules/gui/qt4/ui/profiles.h:495
 msgid "Keep original audio track"
 msgstr "Coinnigh an fuaimrian bunaidh"
 
-#: modules/gui/qt4/ui/profiles.h:493
+#: modules/gui/qt4/ui/profiles.h:500
 msgid "Sample Rate"
 msgstr ""
 
-#: modules/gui/qt4/ui/profiles.h:494
+#: modules/gui/qt4/ui/profiles.h:501
 #, fuzzy
 msgid "Audio codec"
 msgstr "Oideasraí comhbhrúite/díchomhbhrúite físeáin"
 
-#: modules/gui/qt4/ui/profiles.h:496
+#: modules/gui/qt4/ui/profiles.h:503
 msgid "Overlay subtitles on the video"
 msgstr "Forluí na fotheidil ar an bhfíseán"
 
@@ -24115,8 +24120,9 @@ msgid "Stream all elementary streams"
 msgstr ""
 
 #: modules/gui/qt4/ui/sout.h:343
+#, fuzzy
 msgid "Group name"
-msgstr ""
+msgstr "Ainm úsáideora"
 
 #: modules/gui/qt4/ui/sout.h:345
 #, fuzzy
@@ -24690,9 +24696,6 @@ msgstr "Meán go dtí Zip"
 #, fuzzy
 #~ msgid "Automate picture coding mode"
 #~ msgstr "Bearradh uathoibríoch"
-
-#~ msgid "Webm"
-#~ msgstr "Webm"
 
 #~ msgid "...when VLC is in background"
 #~ msgstr "...nuair atá VLC sa chúlra"

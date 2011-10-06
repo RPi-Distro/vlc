@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2011 the VideoLAN team
- * $Id: c041c16df0bf8b2cdb2e9af7cf24454be13304cf $
+ * $Id: 6a0567ae50f842df302864a314969617da0d8776 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -74,6 +74,8 @@
 # define TAGLIB_HAVE_AIFF_WAV_H
 # include <aifffile.h>
 # include <wavfile.h>
+#else
+# include <id3v2tag.h>
 #endif
 
 #if TAGLIB_VERSION >= VERSION_INT(1,6,1) && defined(TAGLIB_WITH_MP4)

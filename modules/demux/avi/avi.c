@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: ebb8f565c42f16634b94743ce580ddbdcd6f00a9 $
+ * $Id: 20ae0e74ffe68465d5dfe8652ef7f4e8b23c9bdf $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1280,15 +1280,16 @@ static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent )
 {
 
     demux_sys_t *p_sys = p_demux->p_sys;
-    unsigned int i_stream;
     msg_Dbg( p_demux, "seek requested: %"PRId64" seconds %d%%",
              i_date / 1000000, i_percent );
 
     if( p_sys->b_seekable )
     {
+        unsigned i_stream;
+
         if( !p_sys->i_length )
         {
-            avi_track_t *p_stream;
+            avi_track_t *p_stream = NULL;
             int64_t i_pos;
 
             /* use i_percent to create a true i_date */
@@ -1304,17 +1305,19 @@ static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent )
             /* try to find chunk that is at i_percent or the file */
             i_pos = __MAX( i_percent * stream_Size( p_demux->s ) / 100,
                            p_sys->i_movi_begin );
-            /* search first selected stream (and prefer non eof ones) */
-            for( i_stream = 0, p_stream = NULL;
-                        i_stream < p_sys->i_track; i_stream++ )
+            /* search first selected stream (and prefer non-EOF ones) */
+            for( unsigned i = 0; i < p_sys->i_track; i++ )
             {
-                if( !p_stream || p_stream->b_eof )
-                    p_stream = p_sys->track[i_stream];
+                avi_track_t *p_track = p_sys->track[i];
+                if( !p_track->b_activated )
+                    continue;
 
-                if( p_stream->b_activated && !p_stream->b_eof )
+                p_stream = p_track;
+                i_stream = i;
+                if( !p_track->b_eof )
                     break;
             }
-            if( !p_stream || !p_stream->b_activated )
+            if( p_stream == NULL )
             {
                 msg_Warn( p_demux, "cannot find any selected stream" );
                 return VLC_EGENERIC;

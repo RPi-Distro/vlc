@@ -1,20 +1,20 @@
 # Translation to Simplified Chinese.
-# Copyright (C) 2008-2011 the VideoLAN team
+# Copyright (C) 2008-2010 the VideoLAN team
 # This file is distributed under the same license as the VLC package.
 #
 # Yoyo <admin@wisestudio.org>, 2008.
 # Wei Mingzhi <whistler@openoffice.org>, 2009.
-# Dean Lee <xslidian@gmail.com>, 2010, 2011.
+# Dean Lee <xslidian@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.x\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-07-14 14:38+0200\n"
+"POT-Creation-Date: 2011-10-06 20:33+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Dean Lee <xslidian@gmail.com>\n"
 "Language-Team: Simplified Chinese <xslidian+vlc@gmail.com>\n"
-"Language: zh_CN\n"
+"Language: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -84,7 +84,7 @@ msgstr "热键设置"
 #: modules/gui/qt4/components/simple_preferences.cpp:83
 #: modules/services_discovery/mediadirs.c:77 modules/stream_out/es.c:93
 #: modules/stream_out/transcode/transcode.c:192
-#: modules/gui/qt4/ui/profiles.h:487
+#: modules/gui/qt4/ui/profiles.h:494
 msgid "Audio"
 msgstr "音频"
 
@@ -140,7 +140,7 @@ msgstr "其它音频设置与模块。"
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 #: modules/misc/dummy/dummy.c:106 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:101 modules/stream_out/transcode/transcode.c:161
-#: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:321
+#: modules/gui/qt4/ui/profiles.h:476 modules/gui/qt4/ui/sprefs_video.h:321
 msgid "Video"
 msgstr "视频"
 
@@ -891,8 +891,8 @@ msgstr "解码器"
 
 #: src/input/decoder.c:278 src/input/decoder.c:430
 #: modules/codec/avcodec/encoder.c:224 modules/codec/avcodec/encoder.c:232
-#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:700
-#: modules/codec/avcodec/encoder.c:709 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:254 modules/codec/avcodec/encoder.c:711
+#: modules/codec/avcodec/encoder.c:720 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr "流 / 编码转换失败"
@@ -966,8 +966,8 @@ msgid "Original ID"
 msgstr "原始 ID"
 
 #: src/input/es_out.c:2895 src/input/es_out.c:2898 modules/access/imem.c:72
-#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:470
-#: modules/gui/qt4/ui/profiles.h:489
+#: modules/gui/macosx/wizard.m:383 modules/gui/qt4/ui/profiles.h:477
+#: modules/gui/qt4/ui/profiles.h:496
 msgid "Codec"
 msgstr "编码"
 
@@ -983,7 +983,7 @@ msgid "Description"
 msgstr "描述"
 
 #: src/input/es_out.c:2914 src/input/es_out.c:2917
-#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
+#: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:499
 msgid "Channels"
 msgstr "声道"
 
@@ -1003,7 +1003,7 @@ msgstr "位每采样"
 #: src/input/es_out.c:2937 modules/access/pvr.c:96
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:412
 #: modules/gui/qt4/components/open_panels.cpp:945
-#: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
+#: modules/gui/qt4/ui/profiles.h:478 modules/gui/qt4/ui/profiles.h:497
 msgid "Bitrate"
 msgstr "位率"
 
@@ -1025,7 +1025,7 @@ msgstr "专辑回放增益"
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:476
+#: src/input/es_out.c:2961 modules/gui/qt4/ui/profiles.h:483
 msgid "Resolution"
 msgstr "分辨率"
 
@@ -1216,7 +1216,7 @@ msgstr "鼠标手势"
 #. xgettext: Translate "C" to the language code: "fr", "en_GB", "nl", "ru"...
 #: src/libvlc.c:337 src/libvlc.c:441
 msgid "C"
-msgstr "zh_CN"
+msgstr "C"
 
 #: src/libvlc.c:1122
 msgid ""
@@ -2365,11 +2365,11 @@ msgid ""
 "over the network (in bytes)."
 msgstr "这是可以通过网络传输的最大应用程序层数据包大小 (以字节为单位)。"
 
-#: src/libvlc-module.c:678 modules/stream_out/rtp.c:122
+#: src/libvlc-module.c:678 modules/stream_out/rtp.c:124
 msgid "Hop limit (TTL)"
 msgstr "跳跃限制 (TTL)"
 
-#: src/libvlc-module.c:680 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:680 modules/stream_out/rtp.c:126
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -3591,7 +3591,7 @@ msgid "Slower (fine)"
 msgstr "较慢 (好)"
 
 #: src/libvlc-module.c:1306 modules/control/hotkeys.c:696
-#: modules/gui/macosx/about.m:207 modules/gui/macosx/controls.m:1006
+#: modules/gui/macosx/about.m:206 modules/gui/macosx/controls.m:1006
 #: modules/gui/macosx/embeddedwindow.m:73 modules/gui/macosx/intf.m:610
 #: modules/gui/macosx/intf.m:658 modules/gui/macosx/intf.m:746
 #: modules/gui/macosx/intf.m:754 modules/gui/macosx/wizard.m:307
@@ -3607,7 +3607,7 @@ msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "选择用于跳到下一个播放列表项目的热键。"
 
 #: src/libvlc-module.c:1308 modules/control/hotkeys.c:702
-#: modules/gui/macosx/about.m:208 modules/gui/macosx/controls.m:1005
+#: modules/gui/macosx/about.m:207 modules/gui/macosx/controls.m:1005
 #: modules/gui/macosx/embeddedwindow.m:71 modules/gui/macosx/intf.m:605
 #: modules/gui/macosx/intf.m:657 modules/gui/macosx/intf.m:747
 #: modules/gui/macosx/intf.m:753 modules/gui/qt4/components/controller.hpp:105
@@ -4306,8 +4306,8 @@ msgstr "子画面"
 
 #: src/libvlc-module.c:1782 modules/codec/subtitles/subsdec.c:206
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
-#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:495
-#: modules/gui/qt4/ui/profiles.h:497
+#: modules/demux/subtitle.c:73 modules/gui/qt4/ui/profiles.h:502
+#: modules/gui/qt4/ui/profiles.h:504
 msgid "Subtitles"
 msgstr "字幕"
 
@@ -4478,7 +4478,7 @@ msgid "Downloading ..."
 msgstr "正在下载..."
 
 #: src/misc/update.c:606 src/misc/update.c:736 modules/access/dvb/scan.c:327
-#: modules/demux/avi/avi.c:656 modules/demux/avi/avi.c:2358
+#: modules/demux/avi/avi.c:656 modules/demux/avi/avi.c:2361
 #: modules/gui/macosx/bookmarks.m:102 modules/gui/macosx/controls.m:60
 #: modules/gui/macosx/coredialogs.m:66 modules/gui/macosx/coredialogs.m:68
 #: modules/gui/macosx/coredialogs.m:186 modules/gui/macosx/open.m:177
@@ -6323,7 +6323,7 @@ msgstr "VLC 无法读取文件。"
 
 #: modules/access/fs.c:33 modules/access/rtsp/access.c:46
 #: modules/access_output/udp.c:64 modules/demux/live555.cpp:75
-#: modules/stream_out/rtp.c:133
+#: modules/stream_out/rtp.c:135
 msgid "Caching value (ms)"
 msgstr "缓存值 (毫秒)"
 
@@ -6630,7 +6630,7 @@ msgstr "音频通量流的声道数目"
 #: modules/access/imem.c:88 modules/access/pvr.c:74 modules/access/v4l.c:102
 #: modules/access/v4l2.c:95 modules/codec/invmem.c:53
 #: modules/demux/rawvid.c:48 modules/video_filter/mosaic.c:95
-#: modules/video_output/vmem.c:42 modules/gui/qt4/ui/profiles.h:479
+#: modules/video_output/vmem.c:42 modules/gui/qt4/ui/profiles.h:486
 msgid "Width"
 msgstr "宽度"
 
@@ -6641,7 +6641,7 @@ msgstr "视频或字幕通量流的宽度"
 #: modules/access/imem.c:91 modules/access/pvr.c:78 modules/access/v4l.c:105
 #: modules/access/v4l2.c:98 modules/codec/invmem.c:56
 #: modules/demux/rawvid.c:52 modules/video_filter/mosaic.c:93
-#: modules/video_output/vmem.c:45 modules/gui/qt4/ui/profiles.h:482
+#: modules/video_output/vmem.c:45 modules/gui/qt4/ui/profiles.h:489
 msgid "Height"
 msgstr "高度"
 
@@ -7022,63 +7022,63 @@ msgstr "RTMP 输入"
 msgid "RTMP"
 msgstr "RTMP"
 
-#: modules/access/rtp/rtp.c:44
+#: modules/access/rtp/rtp.c:46
 msgid "RTP de-jitter buffer length (msec)"
 msgstr "RTP 反抖动缓冲长度 (毫秒)"
 
-#: modules/access/rtp/rtp.c:46
+#: modules/access/rtp/rtp.c:48
 msgid "How long to wait for late RTP packets (and delay the performance)."
 msgstr "为迟到的 RTP 数据包等待多长时间 (并推迟执行)。"
 
-#: modules/access/rtp/rtp.c:48
+#: modules/access/rtp/rtp.c:50
 msgid "RTCP (local) port"
 msgstr "RTCP (本地) 端口"
 
-#: modules/access/rtp/rtp.c:50
+#: modules/access/rtp/rtp.c:52
 msgid ""
 "RTCP packets will be received on this transport protocol port. If zero, "
 "multiplexed RTP/RTCP is used."
 msgstr "RTCP 包将由此传输协议端口接收。如果为零，将使用多路 RTP/RTCP。"
 
-#: modules/access/rtp/rtp.c:53 modules/stream_out/rtp.c:142
+#: modules/access/rtp/rtp.c:55 modules/stream_out/rtp.c:144
 msgid "SRTP key (hexadecimal)"
 msgstr "SRTP 密匙 (十六进制)"
 
-#: modules/access/rtp/rtp.c:55
+#: modules/access/rtp/rtp.c:57
 msgid ""
 "RTP packets will be authenticated and deciphered with this Secure RTP master "
 "shared secret key."
 msgstr "RTP 数据包将使用此安全 RTP 主共享密匙进行验证并解码。"
 
-#: modules/access/rtp/rtp.c:58 modules/stream_out/rtp.c:147
+#: modules/access/rtp/rtp.c:60 modules/stream_out/rtp.c:149
 msgid "SRTP salt (hexadecimal)"
 msgstr "SRTP 独立终端 (十六进制)"
 
-#: modules/access/rtp/rtp.c:60 modules/stream_out/rtp.c:149
+#: modules/access/rtp/rtp.c:62 modules/stream_out/rtp.c:151
 msgid "Secure RTP requires a (non-secret) master salt value."
 msgstr "安全 RTP 需要一个 (非秘密) 主独立终端值。"
 
-#: modules/access/rtp/rtp.c:62
+#: modules/access/rtp/rtp.c:64
 msgid "Maximum RTP sources"
 msgstr "最大 RTP 源"
 
-#: modules/access/rtp/rtp.c:64
+#: modules/access/rtp/rtp.c:66
 msgid "How many distinct active RTP sources are allowed at a time."
 msgstr "在同一时间内允许多少独立的活动 RTP 源。"
 
-#: modules/access/rtp/rtp.c:66
+#: modules/access/rtp/rtp.c:68
 msgid "RTP source timeout (sec)"
 msgstr "RTP 源超时 (秒)"
 
-#: modules/access/rtp/rtp.c:68
+#: modules/access/rtp/rtp.c:70
 msgid "How long to wait for any packet before a source is expired."
 msgstr "在一个源过期之前等待任意数据包多长时间。"
 
-#: modules/access/rtp/rtp.c:70
+#: modules/access/rtp/rtp.c:72
 msgid "Maximum RTP sequence number dropout"
 msgstr "最大 RTP 丢弃序号"
 
-#: modules/access/rtp/rtp.c:72
+#: modules/access/rtp/rtp.c:74
 msgid ""
 "RTP packets will be discarded if they are too much ahead (i.e. in the "
 "future) by this many packets from the last received packet."
@@ -7086,11 +7086,11 @@ msgstr ""
 "如果 RTP 数据包太靠前就将按此从最后接收的数据包开始的数量被废弃 (例如在将"
 "来)。"
 
-#: modules/access/rtp/rtp.c:75
+#: modules/access/rtp/rtp.c:77
 msgid "Maximum RTP sequence number misordering"
 msgstr "最大 RTP 混淆序号"
 
-#: modules/access/rtp/rtp.c:77
+#: modules/access/rtp/rtp.c:79
 msgid ""
 "RTP packets will be discarded if they are too far behind (i.e. in the past) "
 "by this many packets from the last received packet."
@@ -7098,11 +7098,11 @@ msgstr ""
 "如果 RTP 数据包被绑定的太远将按此从最后接收的数据包开始的数量被废弃 (例如在将"
 "来)。"
 
-#: modules/access/rtp/rtp.c:87 modules/stream_out/rtp.c:170
+#: modules/access/rtp/rtp.c:89 modules/stream_out/rtp.c:172
 msgid "RTP"
 msgstr "RTP"
 
-#: modules/access/rtp/rtp.c:88
+#: modules/access/rtp/rtp.c:90
 msgid "Real-Time Protocol (RTP) input"
 msgstr "实时协议 (RTP) 输入"
 
@@ -7427,7 +7427,7 @@ msgstr "调谐器"
 msgid "Tuner to use, if there are several ones."
 msgstr "要使用的调谐器，如果有多个设备。"
 
-#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:466
+#: modules/access/v4l.c:122 modules/gui/qt4/ui/profiles.h:473
 msgid "MJPEG"
 msgstr "MJPEG"
 
@@ -8880,7 +8880,7 @@ msgid "ALSA Device Name"
 msgstr "ALSA 设备名称"
 
 #: modules/audio_output/alsa.c:135 modules/audio_output/auhal.c:137
-#: modules/audio_output/auhal.c:973 modules/audio_output/directx.c:351
+#: modules/audio_output/auhal.c:982 modules/audio_output/directx.c:351
 #: modules/audio_output/oss.c:129 modules/audio_output/portaudio.c:389
 #: modules/audio_output/sdl.c:174 modules/audio_output/sdl.c:192
 #: modules/audio_output/waveout.c:374 modules/gui/macosx/intf.m:681
@@ -8956,7 +8956,7 @@ msgstr ""
 "您应该在 /应用程序/工具中的 \"音频 midi 设置\" 中设置您的扬声器摆放位置。现在"
 "将使用立体声模式。"
 
-#: modules/audio_output/auhal.c:1016
+#: modules/audio_output/auhal.c:1025
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr "%s (已编码的输出)"
@@ -9092,7 +9092,7 @@ msgstr "PORTAUDIO 音频输出"
 msgid "5.1"
 msgstr "5.1"
 
-#: modules/audio_output/pulse.c:47
+#: modules/audio_output/pulse.c:49
 msgid "Pulseaudio audio output"
 msgstr "Pulseaudio 音频输出"
 
@@ -9642,7 +9642,7 @@ msgstr ""
 "这不是一个 VLC media player 内部的错误。\n"
 "请不要向 VideoLAN 项目报告此问题。\n"
 
-#: modules/codec/avcodec/encoder.c:701 modules/codec/avcodec/encoder.c:710
+#: modules/codec/avcodec/encoder.c:712 modules/codec/avcodec/encoder.c:721
 msgid "VLC could not open the encoder."
 msgstr "VLC 无法打开编码器。"
 
@@ -11889,7 +11889,7 @@ msgid "Position Control"
 msgstr "位置控制"
 
 #: modules/control/hotkeys.c:92 modules/gui/macosx/intf.m:2476
-#: modules/gui/macosx/intf.m:2860
+#: modules/gui/macosx/intf.m:2859
 msgid "Ignore"
 msgstr "忽略"
 
@@ -12745,7 +12745,7 @@ msgstr ""
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:260
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:310
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:404
-#: modules/misc/lua/vlc.c:77 modules/stream_out/rtp.c:112
+#: modules/misc/lua/vlc.c:77 modules/stream_out/rtp.c:114
 msgid "Port"
 msgstr "端口"
 
@@ -12865,7 +12865,7 @@ msgstr "修复"
 msgid "Don't repair"
 msgstr "不修复"
 
-#: modules/demux/avi/avi.c:2357
+#: modules/demux/avi/avi.c:2360
 msgid "Fixing AVI Index..."
 msgstr "正在修复 AVI 索引..."
 
@@ -13530,7 +13530,7 @@ msgstr "强制色度 (谨慎使用)"
 msgid "Force chroma. This is a four character string."
 msgstr "强制色度。这是一个四字节的字串。"
 
-#: modules/demux/rawvid.c:59 modules/stream_out/switcher.c:96
+#: modules/demux/rawvid.c:59 modules/stream_out/switcher.c:98
 msgid "Aspect ratio"
 msgstr "高宽比"
 
@@ -13980,24 +13980,24 @@ msgstr "GNU/Linux osd/覆盖缓冲界面"
 msgid "About VLC media player"
 msgstr "关于 VLC media player"
 
-#: modules/gui/macosx/about.m:104
-msgid "Compiled by %s with %@"
-msgstr "由 %s 通过 %@ 编译"
+#: modules/gui/macosx/about.m:103
+msgid "Compiled by %@ with %@"
+msgstr "由 %@ 通过 %@ 编译"
 
-#: modules/gui/macosx/about.m:112
+#: modules/gui/macosx/about.m:111
 msgid "VLC was brought to you by:"
 msgstr "VLC 因他们而来:"
 
-#: modules/gui/macosx/about.m:122 modules/gui/macosx/about.m:193
+#: modules/gui/macosx/about.m:121 modules/gui/macosx/about.m:192
 #: modules/gui/macosx/intf.m:737 modules/gui/qt4/dialogs/help.cpp:166
 msgid "License"
 msgstr "许可"
 
-#: modules/gui/macosx/about.m:206
+#: modules/gui/macosx/about.m:205
 msgid "VLC media player Help"
 msgstr "VLC media player 帮助"
 
-#: modules/gui/macosx/about.m:209 modules/gui/macosx/controls.m:492
+#: modules/gui/macosx/about.m:208 modules/gui/macosx/controls.m:492
 #: modules/gui/macosx/intf.m:713
 msgid "Index"
 msgstr "索引"
@@ -14429,7 +14429,7 @@ msgstr "打开捕获设备..."
 msgid "Open Recent"
 msgstr "打开历史"
 
-#: modules/gui/macosx/intf.m:641 modules/gui/macosx/intf.m:2765
+#: modules/gui/macosx/intf.m:641 modules/gui/macosx/intf.m:2764
 msgid "Clear Menu"
 msgstr "清除菜单"
 
@@ -14632,22 +14632,22 @@ msgstr "我们发现了一个旧版本的 VLC 参数文件。"
 msgid "Move To Trash and Relaunch VLC"
 msgstr "移动到回收站并重新启动 VLC"
 
-#: modules/gui/macosx/intf.m:2610
+#: modules/gui/macosx/intf.m:2609
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr "VLC 调试记录 (%s).rtfd"
 
-#: modules/gui/macosx/intf.m:2858
+#: modules/gui/macosx/intf.m:2857
 msgid "Relaunch required"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2859
+#: modules/gui/macosx/intf.m:2858
 msgid ""
 "To make sure that VLC no longer listens to your media key events, it needs "
 "to be restarted."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2860
+#: modules/gui/macosx/intf.m:2859
 msgid "Relaunch VLC"
 msgstr ""
 
@@ -15065,7 +15065,7 @@ msgstr "转码选项"
 msgid "Bitrate (kb/s)"
 msgstr "位率 (kb/秒)"
 
-#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:478
+#: modules/gui/macosx/output.m:166 modules/gui/qt4/ui/profiles.h:485
 msgid "Scale"
 msgstr "比例"
 
@@ -15929,7 +15929,7 @@ msgid "This page allows to select how the input stream will be sent."
 msgstr "此页将选择输入流将如何被发送。"
 
 #: modules/gui/macosx/wizard.m:364 modules/gui/macosx/wizard.m:425
-#: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:74
+#: modules/gui/qt4/dialogs/convert.cpp:55 modules/stream_out/rtp.c:76
 msgid "Destination"
 msgstr "目标"
 
@@ -16716,29 +16716,29 @@ msgstr "单击设置点 B"
 msgid "Stop the A to B loop"
 msgstr "停止 A 到 B 循环"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1004
-#: modules/gui/qt4/components/extended_panels.cpp:1060
+#: modules/gui/qt4/components/extended_panels.cpp:1007
+#: modules/gui/qt4/components/extended_panels.cpp:1063
 msgid "Preamp\n"
 msgstr "预放大\n"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1005
-#: modules/gui/qt4/components/extended_panels.cpp:1061
+#: modules/gui/qt4/components/extended_panels.cpp:1008
+#: modules/gui/qt4/components/extended_panels.cpp:1064
 msgid "dB"
 msgstr "dB"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1142
+#: modules/gui/qt4/components/extended_panels.cpp:1145
 msgid "Enable spatializer"
 msgstr "开启空间化"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1282
+#: modules/gui/qt4/components/extended_panels.cpp:1285
 msgid "Audio/Video"
 msgstr "音频/视频"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1298
+#: modules/gui/qt4/components/extended_panels.cpp:1301
 msgid "Advance of audio over video:"
 msgstr "通过视频的高级音频:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1307
+#: modules/gui/qt4/components/extended_panels.cpp:1310
 msgid ""
 "A positive value means that\n"
 "the audio is ahead of the video"
@@ -16746,15 +16746,15 @@ msgstr ""
 "一个积极值意味这\n"
 "音频在视频的头部"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1315
+#: modules/gui/qt4/components/extended_panels.cpp:1318
 msgid "Subtitles/Video"
 msgstr "字幕/视频"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1331
+#: modules/gui/qt4/components/extended_panels.cpp:1334
 msgid "Advance of subtitles over video:"
 msgstr "通过视频的高级字幕:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1340
+#: modules/gui/qt4/components/extended_panels.cpp:1343
 msgid ""
 "A positive value means that\n"
 "the subtitles are ahead of the video"
@@ -16762,11 +16762,11 @@ msgstr ""
 "一个积极值意味这\n"
 "字幕在视频的头部"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1359
+#: modules/gui/qt4/components/extended_panels.cpp:1362
 msgid "Speed of the subtitles:"
 msgstr "字幕速度:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1392
+#: modules/gui/qt4/components/extended_panels.cpp:1395
 msgid "Force update of this dialog's values"
 msgstr "强制更新此对话框的值"
 
@@ -17875,7 +17875,7 @@ msgstr "删除当前档案"
 msgid "Cl&ose"
 msgstr "关闭(&O)"
 
-#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:455
+#: modules/gui/qt4/dialogs/toolbar.cpp:217 modules/gui/qt4/ui/profiles.h:461
 msgid "Profile Name"
 msgstr "档案名称"
 
@@ -20619,15 +20619,15 @@ msgstr "自动创建的目标文件的前缀"
 msgid "Record stream output"
 msgstr "录制串流输出"
 
-#: modules/stream_out/rtp.c:76
+#: modules/stream_out/rtp.c:78
 msgid "This is the output URL that will be used."
 msgstr "这是将被使用的输出 URL。"
 
-#: modules/stream_out/rtp.c:77
+#: modules/stream_out/rtp.c:79
 msgid "SDP"
 msgstr "SDP"
 
-#: modules/stream_out/rtp.c:79
+#: modules/stream_out/rtp.c:81
 msgid ""
 "This allows you to specify how the SDP (Session Descriptor) for this RTP "
 "session will be made available. You must use an url: http://location to "
@@ -20638,49 +20638,49 @@ msgstr ""
 "URL http://地址通过 HTTP 访问 SDP，rtsp:// 地址用于 RTSP 访问，而 sap:// 用于"
 "通过 SAP 的 SDP 广播。"
 
-#: modules/stream_out/rtp.c:83 modules/stream_out/standard.c:91
+#: modules/stream_out/rtp.c:85 modules/stream_out/standard.c:91
 msgid "SAP announcing"
 msgstr "SAP 宣告"
 
-#: modules/stream_out/rtp.c:84 modules/stream_out/standard.c:92
+#: modules/stream_out/rtp.c:86 modules/stream_out/standard.c:92
 msgid "Announce this session with SAP."
 msgstr "使用 SAP 宣告此会话。"
 
-#: modules/stream_out/rtp.c:85
+#: modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr "复用器"
 
-#: modules/stream_out/rtp.c:87
+#: modules/stream_out/rtp.c:89
 msgid ""
 "This allows you to specify the muxer used for the streaming output. Default "
 "is to use no muxer (standard RTP stream)."
 msgstr "这将允许您指定用于流输出的复用器。默认不使用复用器 (标准 RTP 流)。"
 
-#: modules/stream_out/rtp.c:90 modules/stream_out/standard.c:62
+#: modules/stream_out/rtp.c:92 modules/stream_out/standard.c:62
 msgid "Session name"
 msgstr "会话名称"
 
-#: modules/stream_out/rtp.c:92 modules/stream_out/standard.c:64
+#: modules/stream_out/rtp.c:94 modules/stream_out/standard.c:64
 msgid ""
 "This is the name of the session that will be announced in the SDP (Session "
 "Descriptor)."
 msgstr "这是将被在 SDP (会话描述符) 中宣告的会话名称。"
 
-#: modules/stream_out/rtp.c:94 modules/stream_out/standard.c:72
+#: modules/stream_out/rtp.c:96 modules/stream_out/standard.c:72
 msgid "Session description"
 msgstr "会话描述"
 
-#: modules/stream_out/rtp.c:96 modules/stream_out/standard.c:74
+#: modules/stream_out/rtp.c:98 modules/stream_out/standard.c:74
 msgid ""
 "This allows you to give a short description with details about the stream, "
 "that will be announced in the SDP (Session Descriptor)."
 msgstr "这将允许您给予一个将被在 SDP (会话描述符) 中宣告的短描述的详细流信息。"
 
-#: modules/stream_out/rtp.c:98 modules/stream_out/standard.c:76
+#: modules/stream_out/rtp.c:100 modules/stream_out/standard.c:76
 msgid "Session URL"
 msgstr "会话 URL"
 
-#: modules/stream_out/rtp.c:100 modules/stream_out/standard.c:78
+#: modules/stream_out/rtp.c:102 modules/stream_out/standard.c:78
 msgid ""
 "This allows you to give an URL with more details about the stream (often the "
 "website of the streaming organization), that will be announced in the SDP "
@@ -20689,87 +20689,87 @@ msgstr ""
 "这将允许您给予一个将被在 SDP (会话描述符) 中宣告的短描述的详细流信息 (通常是"
 "发布流的组织)。"
 
-#: modules/stream_out/rtp.c:103 modules/stream_out/standard.c:81
+#: modules/stream_out/rtp.c:105 modules/stream_out/standard.c:81
 msgid "Session email"
 msgstr "会话电子邮件"
 
-#: modules/stream_out/rtp.c:105 modules/stream_out/standard.c:83
+#: modules/stream_out/rtp.c:107 modules/stream_out/standard.c:83
 msgid ""
 "This allows you to give a contact mail address for the stream, that will be "
 "announced in the SDP (Session Descriptor)."
 msgstr "这将允许您为要在 SDP (会话描述符) 中宣告的流给予一个联系的邮件。"
 
-#: modules/stream_out/rtp.c:107 modules/stream_out/standard.c:85
+#: modules/stream_out/rtp.c:109 modules/stream_out/standard.c:85
 msgid "Session phone number"
 msgstr "会话电话号码"
 
-#: modules/stream_out/rtp.c:109 modules/stream_out/standard.c:87
+#: modules/stream_out/rtp.c:111 modules/stream_out/standard.c:87
 msgid ""
 "This allows you to give a contact telephone number for the stream, that will "
 "be announced in the SDP (Session Descriptor)."
 msgstr "这将允许您为要在 SDP (会话描述符) 中宣告的流给予一个联系的电话号码。"
 
-#: modules/stream_out/rtp.c:114
+#: modules/stream_out/rtp.c:116
 msgid "This allows you to specify the base port for the RTP streaming."
 msgstr "这将允许您为 RTP 流指定一个基础端口。"
 
-#: modules/stream_out/rtp.c:115
+#: modules/stream_out/rtp.c:117
 msgid "Audio port"
 msgstr "音频端口"
 
-#: modules/stream_out/rtp.c:117
+#: modules/stream_out/rtp.c:119
 msgid ""
 "This allows you to specify the default audio port for the RTP streaming."
 msgstr "这将允许您为 RTP 流指定一个默认的音频端口。"
 
-#: modules/stream_out/rtp.c:118
+#: modules/stream_out/rtp.c:120
 msgid "Video port"
 msgstr "视频端口"
 
-#: modules/stream_out/rtp.c:120
+#: modules/stream_out/rtp.c:122
 msgid ""
 "This allows you to specify the default video port for the RTP streaming."
 msgstr "这将允许您为 RTP 流指定一个默认的视频端口。"
 
-#: modules/stream_out/rtp.c:128
+#: modules/stream_out/rtp.c:130
 msgid "RTP/RTCP multiplexing"
 msgstr "RTP/RTCP 多路技术"
 
-#: modules/stream_out/rtp.c:130
+#: modules/stream_out/rtp.c:132
 msgid ""
 "This sends and receives RTCP packet multiplexed over the same port as RTP "
 "packets."
 msgstr "这将通过同一端口作为 RTP 数据包发送被接收 RTCP 数据包。"
 
-#: modules/stream_out/rtp.c:135
+#: modules/stream_out/rtp.c:137
 msgid ""
 "Default caching value for outbound RTP streams. This value should be set in "
 "milliseconds."
 msgstr "默认出站 RTP 流的缓存值。此值应该以毫秒为单位设置。"
 
-#: modules/stream_out/rtp.c:138
+#: modules/stream_out/rtp.c:140
 msgid "Transport protocol"
 msgstr "传输协议"
 
-#: modules/stream_out/rtp.c:140
+#: modules/stream_out/rtp.c:142
 msgid "This selects which transport protocol to use for RTP."
 msgstr "这将选择 RTP 要使用的传输协议。"
 
-#: modules/stream_out/rtp.c:144
+#: modules/stream_out/rtp.c:146
 msgid ""
 "RTP packets will be integrity-protected and ciphered with this Secure RTP "
 "master shared secret key."
 msgstr "RTP 数据包将被完整的保护并使用此安全 RTP 主共享密匙进行加密。"
 
-#: modules/stream_out/rtp.c:159
+#: modules/stream_out/rtp.c:161
 msgid "MP4A LATM"
 msgstr "MP4A LATM"
 
-#: modules/stream_out/rtp.c:161
+#: modules/stream_out/rtp.c:163
 msgid "This allows you to stream MPEG4 LATM audio streams (see RFC3016)."
 msgstr "这将允许您流式 MPEG4 LATM 音频流 (查看 RFC3016)。"
 
-#: modules/stream_out/rtp.c:171
+#: modules/stream_out/rtp.c:173
 msgid "RTP stream output"
 msgstr "RTP 流输出"
 
@@ -20900,67 +20900,67 @@ msgstr "如果您选择了 SAP 的话这将允许您为宣告指定一组会话�
 msgid "Standard stream output"
 msgstr "标准流输出"
 
-#: modules/stream_out/switcher.c:90 modules/gui/qt4/ui/sprefs_input.h:314
+#: modules/stream_out/switcher.c:92 modules/gui/qt4/ui/sprefs_input.h:314
 msgid "Files"
 msgstr "文件"
 
-#: modules/stream_out/switcher.c:92
+#: modules/stream_out/switcher.c:94
 msgid "Full paths of the files separated by colons."
 msgstr "由冒号分隔的文件完整路径。"
 
-#: modules/stream_out/switcher.c:93
+#: modules/stream_out/switcher.c:95
 msgid "Sizes"
 msgstr "大小"
 
-#: modules/stream_out/switcher.c:95
+#: modules/stream_out/switcher.c:97
 msgid "List of sizes separated by colons (720x576:480x576)."
 msgstr "由冒号分隔的完整尺寸列表 (720x576:480x576)。"
 
-#: modules/stream_out/switcher.c:98
+#: modules/stream_out/switcher.c:100
 msgid "Aspect ratio (4:3, 16:9)."
 msgstr "高宽比 (4:3, 16:9)。"
 
-#: modules/stream_out/switcher.c:99
+#: modules/stream_out/switcher.c:101
 msgid "Command UDP port"
 msgstr "命令 UDP 端口"
 
-#: modules/stream_out/switcher.c:101
+#: modules/stream_out/switcher.c:103
 msgid "UDP port to listen to for commands."
 msgstr "用于监听命令的  UDP 端口。"
 
-#: modules/stream_out/switcher.c:102
+#: modules/stream_out/switcher.c:104
 msgid "Command"
 msgstr "命令"
 
-#: modules/stream_out/switcher.c:104
+#: modules/stream_out/switcher.c:106
 msgid "Initial command to execute."
 msgstr "要执行的初始命令。"
 
-#: modules/stream_out/switcher.c:105
+#: modules/stream_out/switcher.c:107
 msgid "GOP size"
 msgstr "GOP 大小"
 
-#: modules/stream_out/switcher.c:107
+#: modules/stream_out/switcher.c:109
 msgid "Number of P frames between two I frames."
 msgstr "在两个 I 帧之间的 P 帧数量。"
 
-#: modules/stream_out/switcher.c:108
+#: modules/stream_out/switcher.c:110
 msgid "Quantizer scale"
 msgstr "量化器比例"
 
-#: modules/stream_out/switcher.c:110
+#: modules/stream_out/switcher.c:112
 msgid "Fixed quantizer scale to use."
 msgstr "固定要使用的量化器比例。"
 
-#: modules/stream_out/switcher.c:111
+#: modules/stream_out/switcher.c:113
 msgid "Mute audio"
 msgstr "静音"
 
-#: modules/stream_out/switcher.c:113
+#: modules/stream_out/switcher.c:115
 msgid "Mute audio when command is not 0."
 msgstr "在命令不是 0 时静音。"
 
-#: modules/stream_out/switcher.c:116
+#: modules/stream_out/switcher.c:118
 msgid "MPEG2 video switcher stream output"
 msgstr "MPEG2 视频切换器流输出"
 
@@ -24224,7 +24224,7 @@ msgid ""
 "frame into the output destination."
 msgstr ""
 "mplayer yuv 视频输出兼容 YUV4MPEG2 头，要求 fourcc 为 YV12/I420。vlc 默认将帧"
-"的 fourcc 写入输出处。"
+"的 fourcc 写入输出目标处。"
 
 #: modules/video_output/yuv.c:59
 msgid "YUV output"
@@ -24472,7 +24472,7 @@ msgid "Spectrum analyser"
 msgstr "光谱分析器"
 
 #: modules/gui/qt4/ui/equalizer.h:126 modules/gui/qt4/ui/open_disk.h:290
-#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:454
+#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:460
 #: modules/gui/qt4/ui/sprefs_audio.h:403 modules/gui/qt4/ui/sprefs_input.h:305
 #: modules/gui/qt4/ui/sprefs_interface.h:372
 #: modules/gui/qt4/ui/sprefs_subtitles.h:200
@@ -24682,98 +24682,102 @@ msgstr ""
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:"
 "#838383;\">http://www.yourtube.com/watch?v=gg64x</span></p></body></html>"
 
-#: modules/gui/qt4/ui/profiles.h:456
+#: modules/gui/qt4/ui/profiles.h:462
 msgid "MPEG-TS"
 msgstr "MPEG-TS"
 
-#: modules/gui/qt4/ui/profiles.h:457
+#: modules/gui/qt4/ui/profiles.h:463
 msgid "MPEG-PS"
 msgstr "MPEG-PS"
 
-#: modules/gui/qt4/ui/profiles.h:458
+#: modules/gui/qt4/ui/profiles.h:464
 msgid "WAV"
 msgstr "WAV"
 
-#: modules/gui/qt4/ui/profiles.h:459
+#: modules/gui/qt4/ui/profiles.h:465
+msgid "Webm"
+msgstr "WebM"
+
+#: modules/gui/qt4/ui/profiles.h:466
 msgid "ASF/WMV"
 msgstr "ASF/WMV"
 
-#: modules/gui/qt4/ui/profiles.h:460
+#: modules/gui/qt4/ui/profiles.h:467
 msgid "Ogg/Ogm"
 msgstr "Ogg/Ogm"
 
-#: modules/gui/qt4/ui/profiles.h:461
+#: modules/gui/qt4/ui/profiles.h:468
 msgid "RAW"
 msgstr "RAW"
 
-#: modules/gui/qt4/ui/profiles.h:462
+#: modules/gui/qt4/ui/profiles.h:469
 msgid "MPEG 1"
 msgstr "MPEG 1"
 
-#: modules/gui/qt4/ui/profiles.h:463
+#: modules/gui/qt4/ui/profiles.h:470
 msgid "FLV"
 msgstr "FLV"
 
-#: modules/gui/qt4/ui/profiles.h:464
+#: modules/gui/qt4/ui/profiles.h:471
 msgid "AVI"
 msgstr "AVI"
 
-#: modules/gui/qt4/ui/profiles.h:465
+#: modules/gui/qt4/ui/profiles.h:472
 msgid "MP4/MOV"
 msgstr "MP4/MOV"
 
-#: modules/gui/qt4/ui/profiles.h:467
+#: modules/gui/qt4/ui/profiles.h:474
 msgid "MKV"
 msgstr "MKV"
 
-#: modules/gui/qt4/ui/profiles.h:468
+#: modules/gui/qt4/ui/profiles.h:475
 msgid "Encapsulation"
 msgstr "封装"
 
-#: modules/gui/qt4/ui/profiles.h:472 modules/gui/qt4/ui/profiles.h:491
+#: modules/gui/qt4/ui/profiles.h:479 modules/gui/qt4/ui/profiles.h:498
 msgid " kb/s"
 msgstr " kb/s"
 
-#: modules/gui/qt4/ui/profiles.h:473
+#: modules/gui/qt4/ui/profiles.h:480
 msgid "Frame Rate"
 msgstr "帧率"
 
-#: modules/gui/qt4/ui/profiles.h:475
+#: modules/gui/qt4/ui/profiles.h:482
 msgid " fps"
 msgstr " 帧/秒"
 
-#: modules/gui/qt4/ui/profiles.h:477
+#: modules/gui/qt4/ui/profiles.h:484
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 "您只需填写下列三个参数中的任意一个，VLC 将使用原始宽高比自动确定其他两项"
 
-#: modules/gui/qt4/ui/profiles.h:480 modules/gui/qt4/ui/profiles.h:483
+#: modules/gui/qt4/ui/profiles.h:487 modules/gui/qt4/ui/profiles.h:490
 msgid "00000; "
 msgstr "00000; "
 
-#: modules/gui/qt4/ui/profiles.h:485
+#: modules/gui/qt4/ui/profiles.h:492
 msgid "Keep original video track"
 msgstr "保持原视频轨"
 
-#: modules/gui/qt4/ui/profiles.h:486
+#: modules/gui/qt4/ui/profiles.h:493
 msgid "Video codec"
 msgstr "视频编解码器"
 
-#: modules/gui/qt4/ui/profiles.h:488
+#: modules/gui/qt4/ui/profiles.h:495
 msgid "Keep original audio track"
 msgstr "保持原音频轨"
 
-#: modules/gui/qt4/ui/profiles.h:493
+#: modules/gui/qt4/ui/profiles.h:500
 msgid "Sample Rate"
 msgstr "采样率"
 
-#: modules/gui/qt4/ui/profiles.h:494
+#: modules/gui/qt4/ui/profiles.h:501
 msgid "Audio codec"
 msgstr "音频编解码器"
 
-#: modules/gui/qt4/ui/profiles.h:496
+#: modules/gui/qt4/ui/profiles.h:503
 msgid "Overlay subtitles on the video"
 msgstr "将字幕覆盖在视频上"
 
@@ -25377,8 +25381,8 @@ msgstr "媒体管理器列表"
 #~ "这是一个将要在视频上渲染的相对字体默认大小。如果设置了绝对字体大小，相对大"
 #~ "小将被覆盖。"
 
-#~ msgid "Webm"
-#~ msgstr "WebM"
+#~ msgid "Compiled by %s"
+#~ msgstr "由 %s 编译"
 
 #~ msgid "Use media key control when VLC is in background"
 #~ msgstr "当 VLC 在后台运行时使用媒体键操控"
@@ -25390,6 +25394,9 @@ msgstr "媒体管理器列表"
 
 #~ msgid "...when VLC is in background"
 #~ msgstr "...VLC 在后台运行时"
+
+#~ msgid "M3U8 playlist (*.m3u)"
+#~ msgstr "M3U8 播放列表 (*.m3u)"
 
 #~ msgid "GME demuxer (Game_Music_Emu)"
 #~ msgstr "GME 去复用器 (Game_Music_Emu)"
@@ -27405,9 +27412,3 @@ msgstr "媒体管理器列表"
 
 #~ msgid "Grouping"
 #~ msgstr "分组"
-
-#~ msgid "Compiled by %s"
-#~ msgstr "由 %s 编译"
-
-#~ msgid "M3U8 playlist (*.m3u)"
-#~ msgstr "M3U8 播放列表 (*.m3u)"
