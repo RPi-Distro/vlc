@@ -1,9 +1,0 @@
-#! /bin/bash
-rm -f .error$$
-ERROR=0
-export PATH=/home/remi/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/games:/sbin:/usr/sbin:/usr/local/sbin:~/bin:/opt/intel_cc_80/bin:/usr/lib/j2se/1.4/bin LANG=C
-(make V=1 $@ 2>&1 || touch .error$$)| \
-`sed -ne "s/^top_srcdir *= *//p" < Makefile`/extras/buildsystem/make.pl
-test -f .error$$ && ERROR=1
-rm -f .error$$
-exit $ERROR
