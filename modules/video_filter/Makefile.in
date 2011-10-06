@@ -401,17 +401,14 @@ libopencv_wrapper_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libopencv_wrapper_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_32 = libosdmenu_plugin_la-osdmenu.lo
-am_libosdmenu_plugin_la_OBJECTS = $(am__objects_32)
-nodist_libosdmenu_plugin_la_OBJECTS =
-libosdmenu_plugin_la_OBJECTS = $(am_libosdmenu_plugin_la_OBJECTS) \
-	$(nodist_libosdmenu_plugin_la_OBJECTS)
+am_libosdmenu_plugin_la_OBJECTS = libosdmenu_plugin_la-osdmenu.lo
+libosdmenu_plugin_la_OBJECTS = $(am_libosdmenu_plugin_la_OBJECTS)
 libosdmenu_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libosdmenu_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_33 = libpanoramix_plugin_la-panoramix.lo
-am_libpanoramix_plugin_la_OBJECTS = $(am__objects_33)
+am__objects_32 = libpanoramix_plugin_la-panoramix.lo
+am_libpanoramix_plugin_la_OBJECTS = $(am__objects_32)
 nodist_libpanoramix_plugin_la_OBJECTS =
 libpanoramix_plugin_la_OBJECTS = $(am_libpanoramix_plugin_la_OBJECTS) \
 	$(nodist_libpanoramix_plugin_la_OBJECTS)
@@ -419,8 +416,8 @@ libpanoramix_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpanoramix_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_34 = libpostproc_plugin_la-postproc.lo
-am_libpostproc_plugin_la_OBJECTS = $(am__objects_34)
+am__objects_33 = libpostproc_plugin_la-postproc.lo
+am_libpostproc_plugin_la_OBJECTS = $(am__objects_33)
 nodist_libpostproc_plugin_la_OBJECTS =
 libpostproc_plugin_la_OBJECTS = $(am_libpostproc_plugin_la_OBJECTS) \
 	$(nodist_libpostproc_plugin_la_OBJECTS)
@@ -428,8 +425,8 @@ libpostproc_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpostproc_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_35 = libpsychedelic_plugin_la-psychedelic.lo
-am_libpsychedelic_plugin_la_OBJECTS = $(am__objects_35)
+am__objects_34 = libpsychedelic_plugin_la-psychedelic.lo
+am_libpsychedelic_plugin_la_OBJECTS = $(am__objects_34)
 nodist_libpsychedelic_plugin_la_OBJECTS =
 libpsychedelic_plugin_la_OBJECTS =  \
 	$(am_libpsychedelic_plugin_la_OBJECTS) \
@@ -438,8 +435,8 @@ libpsychedelic_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpsychedelic_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_36 = libpuzzle_plugin_la-puzzle.lo
-am_libpuzzle_plugin_la_OBJECTS = $(am__objects_36)
+am__objects_35 = libpuzzle_plugin_la-puzzle.lo
+am_libpuzzle_plugin_la_OBJECTS = $(am__objects_35)
 nodist_libpuzzle_plugin_la_OBJECTS =
 libpuzzle_plugin_la_OBJECTS = $(am_libpuzzle_plugin_la_OBJECTS) \
 	$(nodist_libpuzzle_plugin_la_OBJECTS)
@@ -447,8 +444,8 @@ libpuzzle_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpuzzle_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_37 = libremoteosd_plugin_la-remoteosd.lo
-am_libremoteosd_plugin_la_OBJECTS = $(am__objects_37)
+am__objects_36 = libremoteosd_plugin_la-remoteosd.lo
+am_libremoteosd_plugin_la_OBJECTS = $(am__objects_36)
 nodist_libremoteosd_plugin_la_OBJECTS =
 libremoteosd_plugin_la_OBJECTS = $(am_libremoteosd_plugin_la_OBJECTS) \
 	$(nodist_libremoteosd_plugin_la_OBJECTS)
@@ -456,8 +453,8 @@ libremoteosd_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libremoteosd_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_38 = libripple_plugin_la-ripple.lo
-am_libripple_plugin_la_OBJECTS = $(am__objects_38)
+am__objects_37 = libripple_plugin_la-ripple.lo
+am_libripple_plugin_la_OBJECTS = $(am__objects_37)
 nodist_libripple_plugin_la_OBJECTS =
 libripple_plugin_la_OBJECTS = $(am_libripple_plugin_la_OBJECTS) \
 	$(nodist_libripple_plugin_la_OBJECTS)
@@ -465,8 +462,8 @@ libripple_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libripple_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_39 = librotate_plugin_la-rotate.lo
-am_librotate_plugin_la_OBJECTS = $(am__objects_39)
+am__objects_38 = librotate_plugin_la-rotate.lo
+am_librotate_plugin_la_OBJECTS = $(am__objects_38)
 nodist_librotate_plugin_la_OBJECTS =
 librotate_plugin_la_OBJECTS = $(am_librotate_plugin_la_OBJECTS) \
 	$(nodist_librotate_plugin_la_OBJECTS)
@@ -474,8 +471,8 @@ librotate_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(librotate_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_40 = librss_plugin_la-rss.lo
-am_librss_plugin_la_OBJECTS = $(am__objects_40)
+am__objects_39 = librss_plugin_la-rss.lo
+am_librss_plugin_la_OBJECTS = $(am__objects_39)
 nodist_librss_plugin_la_OBJECTS =
 librss_plugin_la_OBJECTS = $(am_librss_plugin_la_OBJECTS) \
 	$(nodist_librss_plugin_la_OBJECTS)
@@ -483,8 +480,8 @@ librss_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(librss_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-am__objects_41 = librv32_plugin_la-rv32.lo
-am_librv32_plugin_la_OBJECTS = $(am__objects_41)
+am__objects_40 = librv32_plugin_la-rv32.lo
+am_librv32_plugin_la_OBJECTS = $(am__objects_40)
 nodist_librv32_plugin_la_OBJECTS =
 librv32_plugin_la_OBJECTS = $(am_librv32_plugin_la_OBJECTS) \
 	$(nodist_librv32_plugin_la_OBJECTS)
@@ -492,8 +489,8 @@ librv32_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(librv32_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-am__objects_42 = libscale_plugin_la-scale.lo
-am_libscale_plugin_la_OBJECTS = $(am__objects_42)
+am__objects_41 = libscale_plugin_la-scale.lo
+am_libscale_plugin_la_OBJECTS = $(am__objects_41)
 nodist_libscale_plugin_la_OBJECTS =
 libscale_plugin_la_OBJECTS = $(am_libscale_plugin_la_OBJECTS) \
 	$(nodist_libscale_plugin_la_OBJECTS)
@@ -501,8 +498,8 @@ libscale_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libscale_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_43 = libscene_plugin_la-scene.lo
-am_libscene_plugin_la_OBJECTS = $(am__objects_43)
+am__objects_42 = libscene_plugin_la-scene.lo
+am_libscene_plugin_la_OBJECTS = $(am__objects_42)
 nodist_libscene_plugin_la_OBJECTS =
 libscene_plugin_la_OBJECTS = $(am_libscene_plugin_la_OBJECTS) \
 	$(nodist_libscene_plugin_la_OBJECTS)
@@ -510,8 +507,8 @@ libscene_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libscene_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_44 = libsharpen_plugin_la-sharpen.lo
-am_libsharpen_plugin_la_OBJECTS = $(am__objects_44)
+am__objects_43 = libsharpen_plugin_la-sharpen.lo
+am_libsharpen_plugin_la_OBJECTS = $(am__objects_43)
 nodist_libsharpen_plugin_la_OBJECTS =
 libsharpen_plugin_la_OBJECTS = $(am_libsharpen_plugin_la_OBJECTS) \
 	$(nodist_libsharpen_plugin_la_OBJECTS)
@@ -519,9 +516,9 @@ libsharpen_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libsharpen_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_45 = libswscale_omap_plugin_la-swscale_omap.lo \
+am__objects_44 = libswscale_omap_plugin_la-swscale_omap.lo \
 	libswscale_omap_plugin_la-arm_jit_swscale.lo arm_colorconv.lo
-am_libswscale_omap_plugin_la_OBJECTS = $(am__objects_45)
+am_libswscale_omap_plugin_la_OBJECTS = $(am__objects_44)
 nodist_libswscale_omap_plugin_la_OBJECTS =
 libswscale_omap_plugin_la_OBJECTS =  \
 	$(am_libswscale_omap_plugin_la_OBJECTS) \
@@ -530,9 +527,9 @@ libswscale_omap_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libswscale_omap_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_46 = libswscale_plugin_la-swscale.lo \
+am__objects_45 = libswscale_plugin_la-swscale.lo \
 	libswscale_plugin_la-chroma.lo
-am_libswscale_plugin_la_OBJECTS = $(am__objects_46)
+am_libswscale_plugin_la_OBJECTS = $(am__objects_45)
 nodist_libswscale_plugin_la_OBJECTS =
 libswscale_plugin_la_OBJECTS = $(am_libswscale_plugin_la_OBJECTS) \
 	$(nodist_libswscale_plugin_la_OBJECTS)
@@ -540,8 +537,8 @@ libswscale_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libswscale_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_47 = libtransform_plugin_la-transform.lo
-am_libtransform_plugin_la_OBJECTS = $(am__objects_47)
+am__objects_46 = libtransform_plugin_la-transform.lo
+am_libtransform_plugin_la_OBJECTS = $(am__objects_46)
 nodist_libtransform_plugin_la_OBJECTS =
 libtransform_plugin_la_OBJECTS = $(am_libtransform_plugin_la_OBJECTS) \
 	$(nodist_libtransform_plugin_la_OBJECTS)
@@ -549,8 +546,8 @@ libtransform_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libtransform_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_48 = libvideo_filter_wrapper_plugin_la-wrapper.lo
-am_libvideo_filter_wrapper_plugin_la_OBJECTS = $(am__objects_48)
+am__objects_47 = libvideo_filter_wrapper_plugin_la-wrapper.lo
+am_libvideo_filter_wrapper_plugin_la_OBJECTS = $(am__objects_47)
 nodist_libvideo_filter_wrapper_plugin_la_OBJECTS =
 libvideo_filter_wrapper_plugin_la_OBJECTS =  \
 	$(am_libvideo_filter_wrapper_plugin_la_OBJECTS) \
@@ -559,8 +556,8 @@ libvideo_filter_wrapper_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) \
 	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
 	$(CCLD) $(libvideo_filter_wrapper_plugin_la_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_49 = libwall_plugin_la-wall.lo
-am_libwall_plugin_la_OBJECTS = $(am__objects_49)
+am__objects_48 = libwall_plugin_la-wall.lo
+am_libwall_plugin_la_OBJECTS = $(am__objects_48)
 nodist_libwall_plugin_la_OBJECTS =
 libwall_plugin_la_OBJECTS = $(am_libwall_plugin_la_OBJECTS) \
 	$(nodist_libwall_plugin_la_OBJECTS)
@@ -568,8 +565,8 @@ libwall_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libwall_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-am__objects_50 = libwave_plugin_la-wave.lo
-am_libwave_plugin_la_OBJECTS = $(am__objects_50)
+am__objects_49 = libwave_plugin_la-wave.lo
+am_libwave_plugin_la_OBJECTS = $(am__objects_49)
 nodist_libwave_plugin_la_OBJECTS =
 libwave_plugin_la_OBJECTS = $(am_libwave_plugin_la_OBJECTS) \
 	$(nodist_libwave_plugin_la_OBJECTS)
@@ -577,8 +574,8 @@ libwave_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libwave_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-am__objects_51 = libyuvp_plugin_la-yuvp.lo
-am_libyuvp_plugin_la_OBJECTS = $(am__objects_51)
+am__objects_50 = libyuvp_plugin_la-yuvp.lo
+am_libyuvp_plugin_la_OBJECTS = $(am__objects_50)
 nodist_libyuvp_plugin_la_OBJECTS =
 libyuvp_plugin_la_OBJECTS = $(am_libyuvp_plugin_la_OBJECTS) \
 	$(nodist_libyuvp_plugin_la_OBJECTS)
@@ -700,7 +697,6 @@ SOURCES = $(libadjust_plugin_la_SOURCES) \
 	$(libopencv_wrapper_plugin_la_SOURCES) \
 	$(nodist_libopencv_wrapper_plugin_la_SOURCES) \
 	$(libosdmenu_plugin_la_SOURCES) \
-	$(nodist_libosdmenu_plugin_la_SOURCES) \
 	$(libpanoramix_plugin_la_SOURCES) \
 	$(nodist_libpanoramix_plugin_la_SOURCES) \
 	$(libpostproc_plugin_la_SOURCES) \
@@ -1250,6 +1246,8 @@ XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
 XCB_XV_LIBS = @XCB_XV_LIBS@
+XEXT_CFLAGS = @XEXT_CFLAGS@
+XEXT_LIBS = @XEXT_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
@@ -1325,13 +1323,13 @@ vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 basedir = video_filter
 dir = video_filter
-mods = adjust alphamask atmo audiobargraph_v ball blend blendbench bluescreen canvas chain clone colorthres crop croppadd deinterlace erase extract gaussianblur gradient grain invert logo magnify marq mirror mosaic motionblur motiondetect noise opencv_example opencv_wrapper osdmenu panoramix postproc psychedelic puzzle remoteosd ripple rotate rss rv32 scale scene sharpen swscale swscale_omap transform video_filter_wrapper wall wave yuvp
+mods = adjust alphamask atmo audiobargraph_v ball blend blendbench bluescreen canvas chain clone colorthres crop croppadd deinterlace erase extract gaussianblur gradient grain invert logo magnify marq mirror mosaic motionblur motiondetect noise opencv_example opencv_wrapper panoramix postproc psychedelic puzzle remoteosd ripple rotate rss rv32 scale scene sharpen swscale swscale_omap transform video_filter_wrapper wall wave yuvp
 libvlc_LTLIBRARIES = $(LTLIBatmo) $(LTLIBopencv_example) \
-	$(LTLIBopencv_wrapper) $(LTLIBosdmenu) $(LTLIBpanoramix) \
-	$(LTLIBpostproc) $(LTLIBremoteosd) $(LTLIBswscale) \
-	$(LTLIBswscale_omap) libadjust_plugin.la \
-	libalphamask_plugin.la libaudiobargraph_v_plugin.la \
-	libball_plugin.la libblend_plugin.la libblendbench_plugin.la \
+	$(LTLIBopencv_wrapper) $(LTLIBpanoramix) $(LTLIBpostproc) \
+	$(LTLIBremoteosd) $(LTLIBswscale) $(LTLIBswscale_omap) \
+	libadjust_plugin.la libalphamask_plugin.la \
+	libaudiobargraph_v_plugin.la libball_plugin.la \
+	libblend_plugin.la libblendbench_plugin.la \
 	libbluescreen_plugin.la libcanvas_plugin.la libchain_plugin.la \
 	libclone_plugin.la libcolorthres_plugin.la libcrop_plugin.la \
 	libcroppadd_plugin.la libdeinterlace_plugin.la \
@@ -1346,7 +1344,11 @@ libvlc_LTLIBRARIES = $(LTLIBatmo) $(LTLIBopencv_example) \
 	libscene_plugin.la libsharpen_plugin.la libtransform_plugin.la \
 	libwall_plugin.la libwave_plugin.la libyuvp_plugin.la \
 	libvideo_filter_wrapper_plugin.la
-EXTRA_LTLIBRARIES = libatmo_plugin.la libopencv_example_plugin.la libopencv_wrapper_plugin.la libosdmenu_plugin.la libpanoramix_plugin.la libpostproc_plugin.la libremoteosd_plugin.la libswscale_plugin.la libswscale_omap_plugin.la
+EXTRA_LTLIBRARIES = libatmo_plugin.la libopencv_example_plugin.la \
+	libopencv_wrapper_plugin.la libpanoramix_plugin.la \
+	libpostproc_plugin.la libremoteosd_plugin.la \
+	libswscale_plugin.la libswscale_omap_plugin.la \
+	libosdmenu_plugin.la
 NULL = 
 SUFFIXES = 
 libvlcdir = $(vlclibdir)/plugins/$(basedir)
@@ -1387,7 +1389,10 @@ SOURCES_marq = marq.c
 SOURCES_rss = rss.c
 SOURCES_motiondetect = motiondetect.c
 SOURCES_rv32 = rv32.c
-SOURCES_osdmenu = osdmenu.c
+libosdmenu_plugin_la_SOURCES = osdmenu.c
+libosdmenu_plugin_la_CFLAGS = $(AM_CFLAGS) -DPKGDATADIR=\"$(vlcdatadir)\"
+libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
+libosdmenu_plugin_la_DEPENDENCIES = 
 SOURCES_remoteosd = remoteosd.c remoteosd_rfbproto.h
 SOURCES_magnify = magnify.c
 SOURCES_wave = wave.c
@@ -1788,17 +1793,6 @@ libopencv_wrapper_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libopencv_wrapper_plugin_la_LIBADD = $(AM_LIBADD)
 libopencv_wrapper_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The osdmenu plugin
-libosdmenu_plugin_la_SOURCES = $(SOURCES_osdmenu)
-nodist_libosdmenu_plugin_la_SOURCES = $(nodist_SOURCES_osdmenu)
-# Force per-target objects:
-libosdmenu_plugin_la_CFLAGS = $(AM_CFLAGS)
-libosdmenu_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libosdmenu_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
-libosdmenu_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The panoramix plugin
 libpanoramix_plugin_la_SOURCES = $(SOURCES_panoramix)

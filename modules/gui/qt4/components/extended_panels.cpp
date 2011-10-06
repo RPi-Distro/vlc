@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 3fcbd2ae361115b81597821ebb50b8dc8f363a10 $
+ * $Id: 1214d348061d4b45361188eecc751ef59336615b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -689,7 +689,10 @@ void ExtV4l2::Refresh( void )
         for( int i = 0; i < val.p_list->i_count; i++ )
         {
             const char *psz_var = text.p_list->p_values[i].psz_string;
-            var_Change( p_obj, psz_var, VLC_VAR_GETTEXT, &name, NULL );
+
+            if( var_Change( p_obj, psz_var, VLC_VAR_GETTEXT, &name, NULL ) )
+                continue;
+
             const char *psz_label = name.psz_string;
             msg_Dbg( p_intf, "v4l2 control \"%x\": %s (%s)",
                      val.p_list->p_values[i].i_int, psz_var, name.psz_string );

@@ -3,9 +3,9 @@
 
 basedir = video_filter
 dir = video_filter
-mods = adjust alphamask atmo audiobargraph_v ball blend blendbench bluescreen canvas chain clone colorthres crop croppadd deinterlace erase extract gaussianblur gradient grain invert logo magnify marq mirror mosaic motionblur motiondetect noise opencv_example opencv_wrapper osdmenu panoramix postproc psychedelic puzzle remoteosd ripple rotate rss rv32 scale scene sharpen swscale swscale_omap transform video_filter_wrapper wall wave yuvp
-libvlc_LTLIBRARIES =  $(LTLIBatmo) $(LTLIBopencv_example) $(LTLIBopencv_wrapper) $(LTLIBosdmenu) $(LTLIBpanoramix) $(LTLIBpostproc) $(LTLIBremoteosd) $(LTLIBswscale) $(LTLIBswscale_omap)
-EXTRA_LTLIBRARIES =  libatmo_plugin.la libopencv_example_plugin.la libopencv_wrapper_plugin.la libosdmenu_plugin.la libpanoramix_plugin.la libpostproc_plugin.la libremoteosd_plugin.la libswscale_plugin.la libswscale_omap_plugin.la
+mods = adjust alphamask atmo audiobargraph_v ball blend blendbench bluescreen canvas chain clone colorthres crop croppadd deinterlace erase extract gaussianblur gradient grain invert logo magnify marq mirror mosaic motionblur motiondetect noise opencv_example opencv_wrapper panoramix postproc psychedelic puzzle remoteosd ripple rotate rss rv32 scale scene sharpen swscale swscale_omap transform video_filter_wrapper wall wave yuvp
+libvlc_LTLIBRARIES =  $(LTLIBatmo) $(LTLIBopencv_example) $(LTLIBopencv_wrapper) $(LTLIBpanoramix) $(LTLIBpostproc) $(LTLIBremoteosd) $(LTLIBswscale) $(LTLIBswscale_omap)
+EXTRA_LTLIBRARIES =  libatmo_plugin.la libopencv_example_plugin.la libopencv_wrapper_plugin.la libpanoramix_plugin.la libpostproc_plugin.la libremoteosd_plugin.la libswscale_plugin.la libswscale_omap_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -349,17 +349,6 @@ libopencv_wrapper_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libopencv_wrapper_plugin_la_LIBADD = $(AM_LIBADD)
 libopencv_wrapper_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The osdmenu plugin
-libosdmenu_plugin_la_SOURCES = $(SOURCES_osdmenu)
-nodist_libosdmenu_plugin_la_SOURCES = $(nodist_SOURCES_osdmenu)
-# Force per-target objects:
-libosdmenu_plugin_la_CFLAGS = $(AM_CFLAGS)
-libosdmenu_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libosdmenu_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
-libosdmenu_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The panoramix plugin
 libpanoramix_plugin_la_SOURCES = $(SOURCES_panoramix)

@@ -2,7 +2,7 @@
  * about.m: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: e0ebf78c6aff8e839baba1a31f1c507489e47c13 $
+ * $Id: 551d19ba1d575450990ca519b50305dcb70fb51a $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -100,8 +100,7 @@ static VLAboutBox *_o_sharedInstance = nil;
 #else
         compiler = [NSString stringWithFormat:@"gcc %s", __VERSION__];
 #endif
-        [o_revision_field setStringValue: 
-         [NSString stringWithFormat: _NS("Compiled by %s with %@"), VLC_CompileBy(), compiler]];
+        [o_revision_field setStringValue: [NSString stringWithFormat: _NS("Compiled by %@ with %@"), [NSString stringWithUTF8String:VLC_CompileBy()], compiler]];
 
         /* Setup the nameversion field */
         [o_name_version_field setStringValue: [NSString stringWithFormat:@"Version %s (%s)", VLC_Version(), PLATFORM]];

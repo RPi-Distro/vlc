@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 14c5e0580589cd001c711c3850e8ad0cf00d2839 $
+ * $Id: 1be7a0e48f31bd97d79f7a3de58f9ecd0a3fdaec $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -404,6 +404,17 @@ int OpenEncoder( vlc_object_t *p_this )
 
         p_context->time_base.num = p_enc->fmt_in.video.i_frame_rate_base;
         p_context->time_base.den = p_enc->fmt_in.video.i_frame_rate;
+        if( p_codec->supported_framerates )
+        {
+            AVRational target = {
+                .num = p_enc->fmt_in.video.i_frame_rate,
+                .den = p_enc->fmt_in.video.i_frame_rate_base,
+            };
+            int idx = av_find_nearest_q_idx(target, p_codec->supported_framerates);
+
+            p_context->time_base.num = p_codec->supported_framerates[idx].den;
+            p_context->time_base.den = p_codec->supported_framerates[idx].num;
+        }
 
         /* Defaults from ffmpeg.c */
         p_context->qblur = 0.5;

@@ -2,7 +2,7 @@
  * switcher.c: MPEG2 video switcher module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 929ab9958b6d0c94f3f64360b60a0a087fec6e38 $
+ * $Id: 3eee587047128062344da389bce9c33b32d42d3f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -56,6 +56,8 @@
 #else
 #   include <libpostproc/postprocess.h>
 #endif
+
+#include "../codec/avcodec/avcodec.h"
 
 #define SOUT_CFG_PREFIX "sout-switcher-"
 #define MAX_PICTURES 10
@@ -362,20 +364,23 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
         id->ff_enc_c->dsp_mask = 0;
         if( !(i_cpu & CPU_CAPABILITY_MMX) )
         {
-            id->ff_enc_c->dsp_mask |= FF_MM_MMX;
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_MMX;
         }
         if( !(i_cpu & CPU_CAPABILITY_MMXEXT) )
         {
-            id->ff_enc_c->dsp_mask |= FF_MM_MMXEXT;
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_MMX2;
         }
         if( !(i_cpu & CPU_CAPABILITY_3DNOW) )
         {
-            id->ff_enc_c->dsp_mask |= FF_MM_3DNOW;
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_3DNOW;
         }
         if( !(i_cpu & CPU_CAPABILITY_SSE) )
         {
-            id->ff_enc_c->dsp_mask |= FF_MM_SSE;
-            id->ff_enc_c->dsp_mask |= FF_MM_SSE2;
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_SSE;
+        }
+        if( !(i_cpu & CPU_CAPABILITY_SSE2) )
+        {
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_SSE2;
         }
 
         id->ff_enc_c->sample_rate = p_fmt->audio.i_rate;
@@ -751,20 +756,23 @@ static mtime_t VideoCommand( sout_stream_t *p_stream, sout_stream_id_t *id )
         id->ff_enc_c->dsp_mask = 0;
         if( !(i_cpu & CPU_CAPABILITY_MMX) )
         {
-            id->ff_enc_c->dsp_mask |= FF_MM_MMX;
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_MMX;
         }
         if( !(i_cpu & CPU_CAPABILITY_MMXEXT) )
         {
-            id->ff_enc_c->dsp_mask |= FF_MM_MMXEXT;
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_MMX2;
         }
         if( !(i_cpu & CPU_CAPABILITY_3DNOW) )
         {
-            id->ff_enc_c->dsp_mask |= FF_MM_3DNOW;
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_3DNOW;
         }
         if( !(i_cpu & CPU_CAPABILITY_SSE) )
         {
-            id->ff_enc_c->dsp_mask |= FF_MM_SSE;
-            id->ff_enc_c->dsp_mask |= FF_MM_SSE2;
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_SSE;
+        }
+        if( !(i_cpu & CPU_CAPABILITY_SSE2) )
+        {
+            id->ff_enc_c->dsp_mask |= AV_CPU_FLAG_SSE2;
         }
 
         id->ff_enc_c->width = p_sys->p_pictures[p_sys->i_cmd-1].format.i_width;

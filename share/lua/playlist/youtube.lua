@@ -80,23 +80,22 @@ function parse()
             -- OLD 1: var swfArgs = {hl:'en',BASE_YT_URL:'http://youtube.com/',video_id:'XPJ7d8dq0t8',l:'292',t:'OEgsToPDskLFdOYrrlDm3FQPoQBYaCP1',sk:'0gnr-AE6QZJEZmCMd3lq_AC'};
             -- OLD 2: var swfArgs = { "BASE_YT_URL": "http://youtube.com", "video_id": "OHVvVmUNBFc", "l": 88, "sk": "WswKuJzDBsdD6oG3IakCXgC", "t": "OEgsToPDskK3zO44y0QN8Fr5ZSAZwCQp", "plid": "AARGnwWMrmGkbpOxAAAA4AT4IAA", "tk": "mEL4E7PqHeaZp5OG19NQThHt9mXJU4PbRTOw6lz9osHi4Hixp7RE1w=="};
             -- OLD 3: 'SWF_ARGS': { [a lot of stuff...], "video_id": "OHVvVmUNBFc", "sk": "WswKuJzDBsdD6oG3IakCXgC", "t": "OEgsToPDskK3zO44y0QN8Fr5ZSAZwCQp", "plid": "AARGnwWMrmGkbpOxAAAA4AT4IAA"};
-            if ( string.match( line, "swfConfig" ) or string.match( line, "SWF_ARGS" ) or string.match( line, "swfArgs" ) ) and string.match( line, "video_id" ) then
+            if ( string.match( line, "PLAYER_CONFIG" ) or string.match( line, "swfConfig" ) or string.match( line, "SWF_ARGS" ) or string.match( line, "swfArgs" ) ) and string.match( line, "video_id" ) then
                 if string.match( line, "BASE_YT_URL" ) then
                     _,_,base_yt_url = string.find( line, "\"BASE_YT_URL\": \"(.-)\"" )
                 end
                 _,_,t = string.find( line, "\"t\": \"(.-)\"" )
                 -- vlc.msg.err( t )
                 -- video_id = string.gsub( line, ".*&video_id:'([^']*)'.*", "%1" )
-                fmt_url_map = string.match( line, "\"fmt_url_map\": \"(.-)\"" )
-                -- FIXME: do this properly
-                fmt_url_map = string.gsub( fmt_url_map, "\\u0026", "&" )
+                fmt_url_map = string.match( line, "\"url_encoded_fmt_stream_map\": \"(.-)\"" )
                 if fmt_url_map then
-                    for itag,url in string.gmatch( fmt_url_map, "(%d+)|([^,]+)" ) do
+                    -- FIXME: do this properly
+                    fmt_url_map = string.gsub( fmt_url_map, "\\u0026", "&" )
+                    for url,itag in string.gmatch( fmt_url_map, "url=([^&,]+).-&itag=(%d+)" ) do
                         -- Apparently formats are listed in quality order,
                         -- so we can afford to simply take the first one
                         if not fmt or tonumber( itag ) == tonumber( fmt ) then
-                            -- do unescaping of /
-                            url = string.gsub( url, '\\/','/' )
+                            url = vlc.strings.decode_uri( url )
                             path = url
                             break
                         end

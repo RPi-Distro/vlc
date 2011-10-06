@@ -2,11 +2,11 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2011 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.11)
+AC_INIT(vlc, 1.1.12)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
-VERSION_REVISION="11"
-VERSION_EXTRA=""
+VERSION_REVISION="12"
+VERSION_EXTRA="-git"
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
@@ -2692,13 +2692,13 @@ AS_IF([test "${enable_libva}" != "no"], [
            AC_DEFINE(HAVE_AVCODEC_VAAPI, 1, [Define if avcodec has to be built with VAAPI support.])
            echo "VAAPI acceleration activated"
         ],[
-	AS_IF([test "${enable_libva}" == "yes"],
+	AS_IF([test "${enable_libva}" = "yes"],
 	      [AC_MSG_ERROR([libva is present but libavcodec/vaapi.h is missing])],
               [AC_MSG_WARN([libva is present but libavcodec/vaapi.h is missing ])])
         ])
         VLC_RESTORE_FLAGS
       ],[
-	AS_IF([test "${enable_libva}" == "yes"],
+	AS_IF([test "${enable_libva}" = "yes"],
               [AC_MSG_ERROR([Could not find required libva.])],
               [AC_MSG_WARN([libva not found  ])])
       ])
@@ -2725,12 +2725,12 @@ AS_IF([test "${enable_dxva2}" != "no"], [
            AC_DEFINE(HAVE_AVCODEC_DXVA2, 1, [Define if avcodec has to be built with DxVA2 support.])
            echo "DxVA2 acceleration activated"
         ],[
-	AS_IF([test "${enable_dxva2}" == "yes"],
+	AS_IF([test "${enable_dxva2}" = "yes"],
 	      [AC_MSG_ERROR([dxva2 is present but libavcodec/dxva2.h is missing])],
               [AC_MSG_WARN([dxva2 is present but libavcodec/dxva2.h is missing ])])
         ])
       ],[
-	AS_IF([test "${enable_dxva2}" == "yes"],
+	AS_IF([test "${enable_dxva2}" = "yes"],
               [AC_MSG_ERROR([Could not find required dxva2api.h])],
               [AC_MSG_WARN([dxva2api.h not found])])
       ])
@@ -3933,6 +3933,14 @@ if test "${enable_skins2}" = "yes" ||
     fi
   fi
 
+  if test "${SYS}" != "mingw32" -a "${SYS}" != "darwin"; then
+    PKG_CHECK_MODULES([XPM], [xpm],, [skins2_missing_lib="yes"])
+    PKG_CHECK_MODULES([XEXT], [xext],, [skins2_missing_lib="yes"])
+    if test "${skins2_missing_lib}" = "yes" -a "${enable_skins2}" = "yes"; then
+      AC_MSG_ERROR([Could not find Xpm and/or Xext (required for skins2)])
+    fi
+  fi
+
   if test "${skins2_missing_lib}" = "no" && (test "${SYS}" = "mingw32"); then
     VLC_ADD_PLUGIN([skins2])
     ALIASES="${ALIASES} svlc"
@@ -3950,9 +3958,9 @@ if test "${enable_skins2}" = "yes" ||
   else if test "${skins2_missing_lib}" = "no"; then
     VLC_ADD_PLUGIN([skins2])
     ALIASES="${ALIASES} svlc"
-    VLC_ADD_CPPFLAGS([skins2],[-Imodules/gui/skins2 ${X_CFLAGS} -DX11_SKINS])
+    VLC_ADD_CPPFLAGS([skins2],[-Imodules/gui/skins2 ${X_CFLAGS} ${XEXT_XFLAGS} ${XPM_CLFAGS} -DX11_SKINS])
     VLC_ADD_CXXFLAGS([skins2],[-O2 -fno-rtti])
-    VLC_ADD_LIBS([skins2],[${X_LIBS} ${X_PRE_LIBS} -lXext -lXpm -lX11])
+    VLC_ADD_LIBS([skins2],[${X_LIBS} ${X_PRE_LIBS} ${XEXT_LIBS} ${XPM_LIBS} -lX11])
     need_xid_provider="no"
   fi fi fi
 fi
@@ -4559,8 +4567,8 @@ then
           if test -n "$i"
           then
             echo "Trying to find $i package" >&AS_MESSAGE_LOG_FD
-            AC_MSG_CHECKING([for $i >= 1.9.2])
-            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.2" 2>&AS_MESSAGE_LOG_FD
+            AC_MSG_CHECKING([for $i >= 1.9.1])
+            if $PKG_CONFIG --exists --print-errors "$i >= 1.9.1" 2>&AS_MESSAGE_LOG_FD
             then
               echo "Using $i pkg-config package." >&AS_MESSAGE_LOG_FD
               echo "Using $i package." >&AS_MESSAGE_FD

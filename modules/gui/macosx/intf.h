@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2011 the VideoLAN team
- * $Id: 7e14eea4c537ceb5fda174d7fb2fff510330d391 $
+ * $Id: e7e0511f4f30af1affa3119bdc2101e7928eeeb5 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -104,7 +104,7 @@ struct intf_sys_t
     id o_bookmarks;             /* VLCBookmarks   */
     id o_embedded_list;         /* VLCEmbeddedList*/
     id o_coredialogs;           /* VLCCoreDialogProvider */
-    VLCInformation * o_info;    /* VLCInformation */
+    id o_info;                /* VLCInfo */
     id o_eyetv;                 /* VLCEyeTVController */
     BOOL nib_main_loaded;       /* main nibfile */
     BOOL nib_open_loaded;       /* open nibfile */

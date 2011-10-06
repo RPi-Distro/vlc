@@ -59,7 +59,8 @@ DIST_COMMON = README $(am__configure_deps) $(dist_noinst_SCRIPTS) \
 	AUTHORS COPYING ChangeLog INSTALL NEWS THANKS \
 	autotools/compile autotools/config.guess \
 	autotools/config.rpath autotools/config.sub autotools/depcomp \
-	autotools/install-sh autotools/ltmain.sh autotools/missing
+	autotools/install-sh autotools/ltmain.sh autotools/missing \
+	compile
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
@@ -599,6 +600,8 @@ XCB_SHM_CFLAGS = @XCB_SHM_CFLAGS@
 XCB_SHM_LIBS = @XCB_SHM_LIBS@
 XCB_XV_CFLAGS = @XCB_XV_CFLAGS@
 XCB_XV_LIBS = @XCB_XV_LIBS@
+XEXT_CFLAGS = @XEXT_CFLAGS@
+XEXT_LIBS = @XEXT_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
@@ -706,6 +709,7 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/package/win32/UAC.dll \
 	extras/package/win32/languages/declaration.nsh \
 	extras/package/win32/languages/bengali.nsh \
+	extras/package/win32/languages/basque.nsh \
 	extras/package/win32/languages/brazilian_portuguese.nsh \
 	extras/package/win32/languages/bulgarian.nsh \
 	extras/package/win32/languages/catalan.nsh \
@@ -719,6 +723,7 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/package/win32/languages/hungarian.nsh \
 	extras/package/win32/languages/italian.nsh \
 	extras/package/win32/languages/japanese.nsh \
+	extras/package/win32/languages/lithuanian.nsh \
 	extras/package/win32/languages/occitan.nsh \
 	extras/package/win32/languages/polish.nsh \
 	extras/package/win32/languages/punjabi.nsh \
@@ -847,28 +852,6 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/package/macosx/Resources/skip_previous_graphite.png \
 	extras/package/macosx/Resources/stop_graphite.png \
 	extras/package/macosx/Resources/volumeslider_graphite.png \
-	extras/package/macosx/Resources/backward_big_down.png \
-	extras/package/macosx/Resources/backward_big.png \
-	extras/package/macosx/Resources/eq_sm.pdf \
-	extras/package/macosx/Resources/forward_big_down.png \
-	extras/package/macosx/Resources/forward_big.png \
-	extras/package/macosx/Resources/fs_sm.pdf \
-	extras/package/macosx/Resources/list_sm.pdf \
-	extras/package/macosx/Resources/next_sm.pdf \
-	extras/package/macosx/Resources/pause_big_down.png \
-	extras/package/macosx/Resources/pause_big.png \
-	extras/package/macosx/Resources/play_big_down.png \
-	extras/package/macosx/Resources/play_big.png \
-	extras/package/macosx/Resources/prev_sm.pdf \
-	extras/package/macosx/Resources/sidebarAdd.png \
-	extras/package/macosx/Resources/sidebarRepeat.png \
-	extras/package/macosx/Resources/sidebarRepeatOn.png \
-	extras/package/macosx/Resources/sidebarRepeatOneOn.png \
-	extras/package/macosx/Resources/sidebarResizeWidget.png \
-	extras/package/macosx/Resources/sidebarShuffle.png \
-	extras/package/macosx/Resources/sidebarShuffleOn.png \
-	extras/package/macosx/Resources/sidebarStatusAreaBackground.png \
-	extras/package/macosx/Resources/stop_sm.pdf \
 	extras/package/macosx/Resources/noart.png \
 	extras/package/macosx/Resources/spref_cone_Audio_64.png \
 	extras/package/macosx/Resources/spref_cone_Hotkeys_64.png \
@@ -920,7 +903,7 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--disable-faad --disable-skins2 \
 	--disable-live555 \
 	--disable-fribidi --disable-glx \
-	--with-kde-solid='$(datadir)/kde4/apps'
+	--without-kde-solid
 
 ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = \

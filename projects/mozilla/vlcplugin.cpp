@@ -2,7 +2,7 @@
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2010 the VideoLAN team
- * $Id: fb6e00f43d716e99f73f9344c6b574328f2b283e $
+ * $Id: 8620217cd300e31dcfee2f5cb43d074191bdbf22 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -522,6 +522,10 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
 
 VlcPlugin::~VlcPlugin()
 {
+#ifdef XP_WIN
+    _WindowsManager.DestroyWindows();
+#endif
+
     free(psz_baseURL);
     free(psz_target);
     free(psz_text);

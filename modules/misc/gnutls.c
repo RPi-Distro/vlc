@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id: 71876b5f678a1d16c14163a71281f6082a1d248b $
+ * $Id: 328e01992b8d5ecabd0a10cf987f0346c84c4052 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -130,7 +130,7 @@ static int gnutls_Init (vlc_object_t *p_this)
         goto error;
     }
 
-    const char *psz_version = gnutls_check_version ("1.3.3");
+    const char *psz_version = gnutls_check_version ("1.7.4");
     if (psz_version == NULL)
     {
         msg_Err (p_this, "unsupported GnuTLS version");
@@ -356,8 +356,8 @@ gnutls_HandshakeAndValidate( tls_session_t *session )
         goto error;
     }
 
-    assert( p_sys->psz_hostname != NULL );
-    if ( !gnutls_x509_crt_check_hostname( cert, p_sys->psz_hostname ) )
+    if( p_sys->psz_hostname != NULL
+     && !gnutls_x509_crt_check_hostname( cert, p_sys->psz_hostname ) )
     {
         msg_Err( session, "Certificate does not match \"%s\"",
                  p_sys->psz_hostname );
@@ -731,7 +731,7 @@ static int OpenClient (vlc_object_t *obj)
 
     char *servername = var_GetNonEmptyString (p_session, "tls-server-name");
     if (servername == NULL )
-        msg_Err (p_session, "server name missing for TLS session");
+        abort ();
     else
         gnutls_server_name_set (p_sys->session.session, GNUTLS_NAME_DNS,
                                 servername, strlen (servername));
@@ -1046,7 +1046,7 @@ gnutls_ServerAddCRL( tls_server_t *p_server, const char *psz_crl_path )
                                                 (p_server->p_sys))->x509_cred,
                                                 psz_local_path,
                                                 GNUTLS_X509_FMT_PEM );
-    LocaleFree( psz_crl_path );
+    LocaleFree( psz_local_path );
     if( val < 0 )
     {
         msg_Err( p_server, "cannot add CRL (%s): %s", psz_crl_path,

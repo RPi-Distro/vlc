@@ -2,7 +2,7 @@
  * vlcplugin.h: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 0a40670289fb84ab5da4bf6e431788905633d87d $
+ * $Id: e81fb7d285b8c4cd021e64fdf044ce6335a49df2 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -28,6 +28,10 @@
  ******************************************************************************/
 #ifndef __VLCPLUGIN_H__
 #define __VLCPLUGIN_H__
+
+// Changes for compatibility to xulrunner 1.9.1
+#define UTF8Characters utf8characters
+#define UTF8Length utf8length
 
 #include <vlc/vlc.h>
 
