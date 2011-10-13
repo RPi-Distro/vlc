@@ -1,2 +1,9 @@
 200_osdmenu_paths.patch
 fix-typo-in-vlc.desktop.patch
+bp-xvideo-color-key-automatic-painting.patch
+bp-polish-update.patch
+bp-simplified-chinese-update.patch
+bp-estonian-update.patch
+bp-estonian-update2.patch
+bp-german-update.patch
+bp-set-channel-map-pulseaudio-1.0.patch

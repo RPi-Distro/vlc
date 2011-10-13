@@ -1,0 +1,42 @@
+From 18b259d44300c4a090fa96fb3cfee1fca7d68c6f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?R=C3=A9mi=20Denis-Courmont?= <remi@remlab.net>
+Date: Fri, 7 Oct 2011 20:47:26 +0300
+Subject: Turn on XVideo color key automatic painting (fix #4643)
+
+(cherry picked from commit 136b09ae7215ae28098c91c76b04486c5498c5b1)
+---
+ modules/video_output/xcb/xvideo.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+diff --git a/modules/video_output/xcb/xvideo.c b/modules/video_output/xcb/xvideo.c
+index 1afccfd..1f3813f 100644
+--- a/modules/video_output/xcb/xvideo.c
++++ b/modules/video_output/xcb/xvideo.c
+@@ -509,7 +509,7 @@ static int Open (vlc_object_t *obj)
+         msg_Err (vd, "no available XVideo adaptor");
+         goto error;
+     }
+-    else
++    /* Compute video (window) placement within the parent window */
+     {
+         xcb_map_window (conn, p_sys->window);
+ 
+@@ -535,6 +535,15 @@ static int Open (vlc_object_t *obj)
+     xcb_create_gc (conn, p_sys->gc, p_sys->window, 0, NULL);
+     msg_Dbg (vd, "using X11 graphic context 0x%08"PRIx32, p_sys->gc);
+ 
++    /* Disable color keying if applicable */
++    {
++        xcb_intern_atom_reply_t *r =
++            xcb_intern_atom_reply (conn,
++                xcb_intern_atom (conn, 1, 21, "XV_AUTOPAINT_COLORKEY"), NULL);
++        if (r != NULL && r->atom != 0)
++            xcb_xv_set_port_attribute(conn, p_sys->port, r->atom, 1);
++    }
++
+     /* Create cursor */
+     p_sys->cursor = CreateBlankCursor (conn, screen);
+ 
+-- 
+1.7.4.1
+
