@@ -1,3 +1,12 @@
+vlc (1.1.12-2) unstable; urgency=low
+
+  * Apply patches from upstream's 1.1 maintenance branch.
+    - Turn on XVideo color key automatic painting (fix upstream #4643)
+    - Set channel map when using PulseAudio 1.0
+    - Translation updates
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 13 Oct 2011 20:17:03 +0200
+
 vlc (1.1.12-1) unstable; urgency=low
 
   * New upstream release.
