@@ -1,3 +1,11 @@
+vlc (1.1.12-2.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Add a preinst to vlc to drop it's doc directory before unpacking a
+    symlink to vlc-nox's over it. (Closes: #613121)
+
+ -- Didier Raboud <odyx@debian.org>  Mon, 07 Nov 2011 16:40:10 +0100
+
 vlc (1.1.12-2) unstable; urgency=low
 
   * Apply patches from upstream's 1.1 maintenance branch.
