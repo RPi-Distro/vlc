@@ -181,9 +181,9 @@ override_dh_install:
 	        fi ; \
 	done
 	# Remove some modules on non-linux arch
-	sed -e '/\(lib\|libaccess_\)\(alsa\|atmo\|dc1394\|dv\|dvb\|fb\|v4l\|v4l2\|pvr\|udev\)_/d' \
+	sed -e '/\(lib\|libaccess_\)\(alsa\|atmo\|dc1394\|dv\|dvb\|fb\|v4l\|pvr\|udev\)_/d' \
 	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
-	sed -e '/\(lib\|libaccess_\)\(probe_hal\)_/d' \
+	sed -e '/\(lib\|libaccess_\)\(probe_hal\|v4l2\)_/d' \
 	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd
 	cp tmp/libvlc.a debian/tmp/usr/lib
 	cp tmp/libvlccore.a debian/tmp/usr/lib
