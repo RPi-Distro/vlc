@@ -1,3 +1,13 @@
+vlc (1.1.12-3) UNRELEASED; urgency=low
+
+  [ Didier Raboud ]
+  * Install v4l2 modules on kfreebsd-*. (Closes: #648090)
+
+  [ Benjamin Drung ]
+  * Explicitly enable v4l2 on kfreebsd.
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 10 Nov 2011 20:52:30 +0100
+
 vlc (1.1.12-2.1) unstable; urgency=low
 
   * Non-maintainer upload.
