@@ -126,6 +126,7 @@ endif
 ifeq ($(DEB_HOST_ARCH_OS),kfreebsd)
 confflags += \
 	--disable-alsa \
+	--enable-v4l2 \
 	$(NULL)
 endif
 
