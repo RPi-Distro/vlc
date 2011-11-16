@@ -1,12 +1,14 @@
-vlc (1.1.12-3) UNRELEASED; urgency=low
+vlc (1.1.12-3) unstable; urgency=low
 
   [ Didier Raboud ]
   * Install v4l2 modules on kfreebsd-*. (Closes: #648090)
 
   [ Benjamin Drung ]
-  * Explicitly enable v4l2 on kfreebsd.
+  * Explicitly enable v4l2 on kfreebsd and build depend on libv4l-dev.
+  * Fix build failure with Iceweasel/Firefox 8.0. Thanks to Mathieu
+    Trudel-Lapierre for backporting the upstream patch.
 
- -- Benjamin Drung <bdrung@debian.org>  Thu, 10 Nov 2011 20:52:30 +0100
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 17 Nov 2011 00:10:53 +0100
 
 vlc (1.1.12-2.1) unstable; urgency=low
 
