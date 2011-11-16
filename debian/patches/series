@@ -7,3 +7,4 @@ bp-estonian-update.patch
 bp-estonian-update2.patch
 bp-german-update.patch
 bp-set-channel-map-pulseaudio-1.0.patch
+bp-xulrunner-npapi-mime.patch
