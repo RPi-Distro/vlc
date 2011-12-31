@@ -1,5 +1,5 @@
 # German translation of VLC
-# (c) 2002-2010 the VideoLAN team
+# (c) 2002-2011 the VideoLAN team
 # $Id$
 #
 # Thanks to Thomas Graf <tgr at reeler.org> for starting a translation in 2002.
@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC 1.1.x\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-10-06 20:33+0300\n"
-"PO-Revision-Date: 2011-05-20 22:29+0100\n"
+"POT-Creation-Date: 2011-12-20 17:56+0200\n"
+"PO-Revision-Date: 2011-10-06 21:25+0100\n"
 "Last-Translator: Mario Siegmann <mario_siegmann@web.de>\n"
 "Language-Team: German\n"
 "Language: \n"
@@ -3941,7 +3941,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:608
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:745
 #: modules/gui/macosx/intf.m:752 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
+#: modules/misc/notify/xosd.c:235 modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr "Stopp"
 
@@ -4815,7 +4815,7 @@ msgstr "Herunterladen..."
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
 #: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:715
 #: modules/gui/macosx/wizard.m:318
-#: modules/gui/qt4/components/open_panels.cpp:1309
+#: modules/gui/qt4/components/open_panels.cpp:1310
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -7882,7 +7882,7 @@ msgid "Hue of the video input."
 msgstr "Farbton des Video-Inputs."
 
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
-#: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
+#: modules/misc/notify/xosd.c:83 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
 #: modules/gui/qt4/ui/video_effects.h:1132
 #: modules/gui/qt4/ui/video_effects.h:1138
@@ -12960,7 +12960,7 @@ msgstr "Öffnen"
 #: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:194
 #: modules/gui/macosx/intf.m:2028 modules/gui/macosx/intf.m:2029
 #: modules/gui/macosx/intf.m:2030 modules/gui/macosx/intf.m:2031
-#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
+#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:239
 msgid "Pause"
 msgstr "Pause"
 
@@ -14800,7 +14800,7 @@ msgstr ""
 "angezeigt."
 
 #: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
-#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:80
+#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:81
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
 #: modules/gui/qt4/ui/sprefs_subtitles.h:211
@@ -14889,7 +14889,7 @@ msgstr "Zeit"
 #: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
 #: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
 #: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
-#: modules/gui/qt4/components/open_panels.cpp:1308
+#: modules/gui/qt4/components/open_panels.cpp:1309
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
 msgid "OK"
@@ -15495,17 +15495,19 @@ msgstr "VLC Debug-Protokoll (%s).rtfd"
 
 #: modules/gui/macosx/intf.m:2857
 msgid "Relaunch required"
-msgstr ""
+msgstr "Neustart erforderlich"
 
 #: modules/gui/macosx/intf.m:2858
 msgid ""
 "To make sure that VLC no longer listens to your media key events, it needs "
 "to be restarted."
 msgstr ""
+"Um sicher zu gehen, dass der VLC nicht länger auf Ereignisse der "
+"Medientasten wartet, ist ein Neustart notwendig."
 
 #: modules/gui/macosx/intf.m:2859
 msgid "Relaunch VLC"
-msgstr ""
+msgstr "VLC Neustarten"
 
 #: modules/gui/macosx/macosx.m:53
 msgid "Video device"
@@ -16370,8 +16372,7 @@ msgstr "Automatisch nach Updates suchen"
 
 #: modules/gui/macosx/simple_prefs.m:275
 msgid "Enable Growl notifications (on playlist item change)"
-msgstr ""
-"Growl-Benachrichtigungen aktivieren (nach Wechsel des Wiedergabeobjekts)"
+msgstr "Growl-Nachrichten aktivieren (nach Wechsel des Wiedergabeobjekts)"
 
 #: modules/gui/macosx/simple_prefs.m:278
 msgid "Default Encoding"
@@ -17941,7 +17942,7 @@ msgstr ""
 msgid " f/s"
 msgstr " f/s"
 
-#: modules/gui/qt4/components/open_panels.cpp:1281
+#: modules/gui/qt4/components/open_panels.cpp:1282
 msgid "Advanced Options"
 msgstr "Erweiterte Optionen"
 
@@ -20295,11 +20296,11 @@ msgstr "OSSO"
 msgid "OSSO screen unblanking"
 msgstr "OSSO-Bildschirm unblanking"
 
-#: modules/misc/inhibit/xdg.c:36
+#: modules/misc/inhibit/xdg.c:37
 msgid "XDG-screensaver"
 msgstr "XDG-Bildschirmschoner"
 
-#: modules/misc/inhibit/xdg.c:37
+#: modules/misc/inhibit/xdg.c:38
 msgid "XDG screen saver inhibition"
 msgstr "XDG-Bildschirmschoner sperren"
 
@@ -20555,19 +20556,19 @@ msgstr ""
 msgid "Telepathy \"Now Playing\" (MissionControl)"
 msgstr "Telepathy \"Spielt gerade\" (MissionControl)"
 
-#: modules/misc/notify/xosd.c:67
+#: modules/misc/notify/xosd.c:68
 msgid "Flip vertical position"
 msgstr "Vertikale Position vertauschen"
 
-#: modules/misc/notify/xosd.c:68
+#: modules/misc/notify/xosd.c:69
 msgid "Display XOSD output at the bottom of the screen instead of the top."
 msgstr "Die XOSD-Ausgabe auf dem Bildschirm unten statt oben anzeigen."
 
-#: modules/misc/notify/xosd.c:71
+#: modules/misc/notify/xosd.c:72
 msgid "Vertical offset"
 msgstr "Vertikaler Versatz"
 
-#: modules/misc/notify/xosd.c:72
+#: modules/misc/notify/xosd.c:73
 msgid ""
 "Vertical offset between the border of the screen and the displayed text (in "
 "pixels, defaults to 30 pixels)."
@@ -20575,27 +20576,27 @@ msgstr ""
 "Vertikaler Versatz zwischen dem Bildschirmrand und dem angezeigten Text (in "
 "Pixeln, Standardwert: 30 Pixel)"
 
-#: modules/misc/notify/xosd.c:76
+#: modules/misc/notify/xosd.c:77
 msgid "Shadow offset"
 msgstr "Schattenversatz"
 
-#: modules/misc/notify/xosd.c:77
+#: modules/misc/notify/xosd.c:78
 msgid ""
 "Offset between the text and the shadow (in pixels, defaults to 2 pixels)."
 msgstr ""
 "Versatz zwischen Text und dessen Schatten (in Pixel, Standard ist 2 Pixel)."
 
-#: modules/misc/notify/xosd.c:81
+#: modules/misc/notify/xosd.c:82
 msgid "Font used to display text in the XOSD output."
 msgstr ""
 "Die Schrift, die zur Anzeige des Textes in der XOSD-Ausgabe benutzt wird."
 
-#: modules/misc/notify/xosd.c:83
+#: modules/misc/notify/xosd.c:84
 msgid "Color used to display text in the XOSD output."
 msgstr ""
 "Die Farbe, die zur Anzeige des Textes in der XOSD-Ausgabe benutzt wird."
 
-#: modules/misc/notify/xosd.c:88
+#: modules/misc/notify/xosd.c:89
 msgid "XOSD interface"
 msgstr "XOSD-Interface"
 
@@ -25594,11 +25595,11 @@ msgstr "XVideo"
 msgid "XVideo output (XCB)"
 msgstr "XVideoausgabe (XCB)"
 
-#: modules/video_output/xcb/xvideo.c:274
+#: modules/video_output/xcb/xvideo.c:273
 msgid "Video acceleration not available"
 msgstr "Videobeschleunigung nicht verfügbar"
 
-#: modules/video_output/xcb/xvideo.c:275
+#: modules/video_output/xcb/xvideo.c:274
 #, c-format
 msgid ""
 "Your video output acceleration driver does not support the required "
@@ -25632,9 +25633,9 @@ msgid ""
 "requires YV12/I420 fourcc. By default vlc writes the fourcc of the picture "
 "frame into the output destination."
 msgstr ""
-"Der YUV4MPEG2 Header ist kompatibel mit der mplayer yuv Video Ausgabe und "
-"benötigt YV12/I420 fourcc. Standardmäßig schreibt VLC den fourcc des Picture "
-"Frames in das Ausgabeziel. "
+"Der YUV4MPEG2-Header ist kompatibel mit der mplayer yuv Video-Ausgabe und "
+"benötigt YV12/I420 fourcc. Standardmäßig schreibt VLC den fourcc des Picture-"
+"Frames in das Ausgabeziel."
 
 #: modules/video_output/yuv.c:59
 msgid "YUV output"

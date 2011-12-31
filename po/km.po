@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-10-06 20:33+0300\n"
+"POT-Creation-Date: 2011-12-20 17:56+0200\n"
 "PO-Revision-Date: 2010-04-07 09:04+0700\n"
 "Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
 "Language-Team: Khmer <support@khmeros.info>\n"
@@ -3722,7 +3722,7 @@ msgstr "ជ្រើស​គ្រប់ចុច​រហ័ស​ដើម្
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:608
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:745
 #: modules/gui/macosx/intf.m:752 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
+#: modules/misc/notify/xosd.c:235 modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr "បញ្ឈប់"
 
@@ -4584,7 +4584,7 @@ msgstr "កំពុង​ទាញយក..."
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
 #: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:715
 #: modules/gui/macosx/wizard.m:318
-#: modules/gui/qt4/components/open_panels.cpp:1309
+#: modules/gui/qt4/components/open_panels.cpp:1310
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -7566,7 +7566,7 @@ msgid "Hue of the video input."
 msgstr "ភាព​លាំៗ​នៃ​ពណ៌​របស់​ព័ត៌មាន​បញ្ចូល​វីដេអូ ។"
 
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
-#: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
+#: modules/misc/notify/xosd.c:83 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
 #: modules/gui/qt4/ui/video_effects.h:1132
 #: modules/gui/qt4/ui/video_effects.h:1138
@@ -12442,7 +12442,7 @@ msgstr "បើក"
 #: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:194
 #: modules/gui/macosx/intf.m:2028 modules/gui/macosx/intf.m:2029
 #: modules/gui/macosx/intf.m:2030 modules/gui/macosx/intf.m:2031
-#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
+#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:239
 msgid "Pause"
 msgstr "ផ្អាក"
 
@@ -14237,7 +14237,7 @@ msgid ""
 msgstr "រូបភាព និង​អត្ថបទ​ដែល​បាន​បង្ហាញ​នឹង​ត្រូវបាន​បង្ហាញ​​ណោលើ​សតិ​បណ្ដោះ​អាសន្ន​ស៊ុម​ត្រួត​គ្នា ។"
 
 #: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
-#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:80
+#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:81
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
 #: modules/gui/qt4/ui/sprefs_subtitles.h:211
@@ -14327,7 +14327,7 @@ msgstr "ពេលវេលា"
 #: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
 #: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
 #: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
-#: modules/gui/qt4/components/open_panels.cpp:1308
+#: modules/gui/qt4/components/open_panels.cpp:1309
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
 msgid "OK"
@@ -17281,7 +17281,7 @@ msgstr "កា​របង្ហាញ​របស់​អ្នក​នឹង
 msgid " f/s"
 msgstr " f/s"
 
-#: modules/gui/qt4/components/open_panels.cpp:1281
+#: modules/gui/qt4/components/open_panels.cpp:1282
 msgid "Advanced Options"
 msgstr "ជម្រើស​កម្រិត​ខ្ពស់"
 
@@ -19583,11 +19583,11 @@ msgstr "OSSO"
 msgid "OSSO screen unblanking"
 msgstr "អេក្រង់ OSSO ដែលមិនលោត​ភ្លឹបភ្លែត"
 
-#: modules/misc/inhibit/xdg.c:36
+#: modules/misc/inhibit/xdg.c:37
 msgid "XDG-screensaver"
 msgstr "ធាតុ​រក្សា​អេក្រង់ XDG"
 
-#: modules/misc/inhibit/xdg.c:37
+#: modules/misc/inhibit/xdg.c:38
 msgid "XDG screen saver inhibition"
 msgstr "ការ​ហាមឃាត់​ធាតុរក្សាអេក្រង់ XDG"
 
@@ -19841,19 +19841,19 @@ msgstr ""
 msgid "Telepathy \"Now Playing\" (MissionControl)"
 msgstr "Telepathy \"ចាក់ឥឡូវ\" (MissionControl)"
 
-#: modules/misc/notify/xosd.c:67
+#: modules/misc/notify/xosd.c:68
 msgid "Flip vertical position"
 msgstr "ទីតាំង​​បញ្ឈរ​ត្រឡប់"
 
-#: modules/misc/notify/xosd.c:68
+#: modules/misc/notify/xosd.c:69
 msgid "Display XOSD output at the bottom of the screen instead of the top."
 msgstr "បង្ហាញ​លទ្ធផល XOSD នៅ​បាត​របស់​អេក្រង់​ជំនួស​កំពូល ។"
 
-#: modules/misc/notify/xosd.c:71
+#: modules/misc/notify/xosd.c:72
 msgid "Vertical offset"
 msgstr "អុហ្វសិត​បញ្ឈរ"
 
-#: modules/misc/notify/xosd.c:72
+#: modules/misc/notify/xosd.c:73
 msgid ""
 "Vertical offset between the border of the screen and the displayed text (in "
 "pixels, defaults to 30 pixels)."
@@ -19861,24 +19861,24 @@ msgstr ""
 "អុហ្វសិត​បញ្ឈរ​រវាង​រវាង​ស៊ុម​របស់​អេក្រង់ និង​អត្ថបទ​ដែល​បាន​បង្ហាញ (គិត​ជា​ភីកសែល, កំណត់​លំនាំដើម​​ទៅ ៣០ "
 "ភីកសែល) ។"
 
-#: modules/misc/notify/xosd.c:76
+#: modules/misc/notify/xosd.c:77
 msgid "Shadow offset"
 msgstr "អុហ្វសិត​ស្រមោល"
 
-#: modules/misc/notify/xosd.c:77
+#: modules/misc/notify/xosd.c:78
 msgid ""
 "Offset between the text and the shadow (in pixels, defaults to 2 pixels)."
 msgstr "អុហ្វសិត​រវាង​អត្ថបទ និង​ស្រមោល (គិត​ជា​ភីកសែល កំណត់​លំនាំដើម​ទៅ ២ ភីកសែល) ។"
 
-#: modules/misc/notify/xosd.c:81
+#: modules/misc/notify/xosd.c:82
 msgid "Font used to display text in the XOSD output."
 msgstr "ពុម្ពអក្សរ​ដែល​បាន​ប្រើ​ដើម្បី​បង្ហាញ​អត្ថបទ​នៅក្នុង​ការ​បង្ហាញ XOSD ។"
 
-#: modules/misc/notify/xosd.c:83
+#: modules/misc/notify/xosd.c:84
 msgid "Color used to display text in the XOSD output."
 msgstr "ពណ៌​ដែល​បាន​ប្រើ​ដើម្បី​បង្ហាញ​អត្ថបទ​នៅ​ក្នុង​លទ្ធផល XOSD ។"
 
-#: modules/misc/notify/xosd.c:88
+#: modules/misc/notify/xosd.c:89
 msgid "XOSD interface"
 msgstr "ចំណុច​ប្រទាក់ XOSD"
 
@@ -24650,11 +24650,11 @@ msgstr "XVideo"
 msgid "XVideo output (XCB)"
 msgstr "លទ្ធផល XVideo (XCB)"
 
-#: modules/video_output/xcb/xvideo.c:274
+#: modules/video_output/xcb/xvideo.c:273
 msgid "Video acceleration not available"
 msgstr "ការ​បង្កើន​ល្បឿន​វីដេអូ​មិន​អាច​ប្រើបាន"
 
-#: modules/video_output/xcb/xvideo.c:275
+#: modules/video_output/xcb/xvideo.c:274
 #, c-format
 msgid ""
 "Your video output acceleration driver does not support the required "

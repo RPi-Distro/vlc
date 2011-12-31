@@ -134,9 +134,6 @@ static bool CheckXVideo (vout_display_t *vd, xcb_connection_t *conn)
 static vlc_fourcc_t ParseFormat (vout_display_t *vd,
                                  const xcb_xv_image_format_info_t *restrict f)
 {
-    if (f->byte_order != ORDER && f->bpp != 8)
-        return 0; /* Argh! */
-
     switch (f->type)
     {
       case XCB_XV_IMAGE_FORMAT_INFO_TYPE_RGB:
@@ -156,6 +153,8 @@ static vlc_fourcc_t ParseFormat (vout_display_t *vd,
                     return VLC_CODEC_RGB24;
                 break;
               case 16:
+                if (f->byte_order != ORDER)
+                    return 0; /* Mixed endian! */
                 if (f->depth == 16)
                     return VLC_CODEC_RGB16;
                 if (f->depth == 15)
@@ -399,6 +398,7 @@ static int Open (vlc_object_t *obj)
                 continue; /* OMAP framebuffer sucks at YUV 4:2:0 */
             }
 
+            free (p_sys->att);
             xfmt = FindFormat (vd, chroma, &fmt, a->base_id, r, &p_sys->att);
             if (xfmt != NULL)
             {
@@ -415,6 +415,8 @@ static int Open (vlc_object_t *obj)
                 }
                 break;
             }
+            else
+                p_sys->att = NULL;
         }
         free (r);
         if (xfmt == NULL) /* No acceptable image formats */
@@ -509,7 +511,7 @@ static int Open (vlc_object_t *obj)
         msg_Err (vd, "no available XVideo adaptor");
         goto error;
     }
-    else
+    /* Compute video (window) placement within the parent window */
     {
         xcb_map_window (conn, p_sys->window);
 
@@ -534,6 +536,15 @@ static int Open (vlc_object_t *obj)
     p_sys->gc = xcb_generate_id (conn);
     xcb_create_gc (conn, p_sys->gc, p_sys->window, 0, NULL);
     msg_Dbg (vd, "using X11 graphic context 0x%08"PRIx32, p_sys->gc);
+
+    /* Disable color keying if applicable */
+    {
+        xcb_intern_atom_reply_t *r =
+            xcb_intern_atom_reply (conn,
+                xcb_intern_atom (conn, 1, 21, "XV_AUTOPAINT_COLORKEY"), NULL);
+        if (r != NULL && r->atom != 0)
+            xcb_xv_set_port_attribute(conn, p_sys->port, r->atom, 1);
+    }
 
     /* Create cursor */
     p_sys->cursor = CreateBlankCursor (conn, screen);

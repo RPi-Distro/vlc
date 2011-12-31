@@ -6,7 +6,7 @@
  * based on code by Christopher Wingert for tivo-mplayer
  * tivo(at)wingert.org, February 2003
  *
- * $Id: b2375928c3146fa8ca32c88c7aa5f5dd176603a2 $
+ * $Id: 627ca94e4c0c4a9c348fe712b330c77fadd7cbcc $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1894,6 +1894,7 @@ static int get_chunk_header(demux_t *p_demux)
     /*msg_Dbg( p_demux, "chunk has %d records", i_num_recs );*/
 
     free(p_sys->rec_hdrs);
+    p_sys->rec_hdrs = NULL;
 
     /* skip past the 4 bytes we "peeked" earlier */
     stream_Read( p_demux->s, NULL, 4 );

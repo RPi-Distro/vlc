@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-10-06 20:33+0300\n"
+"POT-Creation-Date: 2011-12-20 17:56+0200\n"
 "PO-Revision-Date: 2005-12-12 16:05+0000\n"
 "Last-Translator: Kola <eltonkola@gmail.com>\n"
 "Language-Team: Albanian <sq@li.org>\n"
@@ -3469,7 +3469,7 @@ msgstr ""
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:608
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:745
 #: modules/gui/macosx/intf.m:752 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
+#: modules/misc/notify/xosd.c:235 modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr ""
 
@@ -4334,7 +4334,7 @@ msgstr ""
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
 #: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:715
 #: modules/gui/macosx/wizard.m:318
-#: modules/gui/qt4/components/open_panels.cpp:1309
+#: modules/gui/qt4/components/open_panels.cpp:1310
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -7261,7 +7261,7 @@ msgid "Hue of the video input."
 msgstr "Fitltri i treguesit"
 
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
-#: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
+#: modules/misc/notify/xosd.c:83 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
 #: modules/gui/qt4/ui/video_effects.h:1132
 #: modules/gui/qt4/ui/video_effects.h:1138
@@ -11984,7 +11984,7 @@ msgstr "Fitltri i treguesit"
 #: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:194
 #: modules/gui/macosx/intf.m:2028 modules/gui/macosx/intf.m:2029
 #: modules/gui/macosx/intf.m:2030 modules/gui/macosx/intf.m:2031
-#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
+#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:239
 msgid "Pause"
 msgstr ""
 
@@ -13768,7 +13768,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
-#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:80
+#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:81
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
 #: modules/gui/qt4/ui/sprefs_subtitles.h:211
@@ -13858,7 +13858,7 @@ msgstr ""
 #: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
 #: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
 #: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
-#: modules/gui/qt4/components/open_panels.cpp:1308
+#: modules/gui/qt4/components/open_panels.cpp:1309
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
 msgid "OK"
@@ -16862,7 +16862,7 @@ msgstr ""
 msgid " f/s"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:1281
+#: modules/gui/qt4/components/open_panels.cpp:1282
 #, fuzzy
 msgid "Advanced Options"
 msgstr "Fitltri i treguesit"
@@ -19226,11 +19226,11 @@ msgstr ""
 msgid "OSSO screen unblanking"
 msgstr ""
 
-#: modules/misc/inhibit/xdg.c:36
+#: modules/misc/inhibit/xdg.c:37
 msgid "XDG-screensaver"
 msgstr ""
 
-#: modules/misc/inhibit/xdg.c:37
+#: modules/misc/inhibit/xdg.c:38
 msgid "XDG screen saver inhibition"
 msgstr ""
 
@@ -19472,42 +19472,42 @@ msgstr ""
 msgid "Telepathy \"Now Playing\" (MissionControl)"
 msgstr ""
 
-#: modules/misc/notify/xosd.c:67
+#: modules/misc/notify/xosd.c:68
 msgid "Flip vertical position"
 msgstr ""
 
-#: modules/misc/notify/xosd.c:68
+#: modules/misc/notify/xosd.c:69
 msgid "Display XOSD output at the bottom of the screen instead of the top."
 msgstr ""
 
-#: modules/misc/notify/xosd.c:71
+#: modules/misc/notify/xosd.c:72
 msgid "Vertical offset"
 msgstr ""
 
-#: modules/misc/notify/xosd.c:72
+#: modules/misc/notify/xosd.c:73
 msgid ""
 "Vertical offset between the border of the screen and the displayed text (in "
 "pixels, defaults to 30 pixels)."
 msgstr ""
 
-#: modules/misc/notify/xosd.c:76
+#: modules/misc/notify/xosd.c:77
 msgid "Shadow offset"
 msgstr ""
 
-#: modules/misc/notify/xosd.c:77
+#: modules/misc/notify/xosd.c:78
 msgid ""
 "Offset between the text and the shadow (in pixels, defaults to 2 pixels)."
 msgstr ""
 
-#: modules/misc/notify/xosd.c:81
+#: modules/misc/notify/xosd.c:82
 msgid "Font used to display text in the XOSD output."
 msgstr ""
 
-#: modules/misc/notify/xosd.c:83
+#: modules/misc/notify/xosd.c:84
 msgid "Color used to display text in the XOSD output."
 msgstr ""
 
-#: modules/misc/notify/xosd.c:88
+#: modules/misc/notify/xosd.c:89
 #, fuzzy
 msgid "XOSD interface"
 msgstr "Pamja grafike"
@@ -24163,12 +24163,12 @@ msgstr "Video"
 msgid "XVideo output (XCB)"
 msgstr "Opcionet video"
 
-#: modules/video_output/xcb/xvideo.c:274
+#: modules/video_output/xcb/xvideo.c:273
 #, fuzzy
 msgid "Video acceleration not available"
 msgstr "Opcionet video"
 
-#: modules/video_output/xcb/xvideo.c:275
+#: modules/video_output/xcb/xvideo.c:274
 #, c-format
 msgid ""
 "Your video output acceleration driver does not support the required "

@@ -313,9 +313,13 @@ static void stream_moved_cb(pa_stream *s, void *userdata)
 static void stream_overflow_cb(pa_stream *s, void *userdata)
 {
     aout_instance_t *aout = userdata;
+    pa_operation *op;
 
-    msg_Err(aout, "overflow");
-    (void) s;
+    msg_Err(aout, "overflow, flushing");
+    op = pa_stream_flush(s, NULL, NULL);
+    if (likely(op != NULL))
+        pa_operation_unref(op);
+    stream_reset_sync(s, aout);
 }
 
 static void stream_started_cb(pa_stream *s, void *userdata)
@@ -640,6 +644,7 @@ static int Open(vlc_object_t *obj)
         formatv[formatc]->encoding = encoding;
         pa_format_info_set_rate(formatv[formatc], ss.rate);
         pa_format_info_set_channels(formatv[formatc], ss.channels);
+        pa_format_info_set_channel_map(formatv[formatc], &map);
         formatc++;
     }
 
@@ -649,6 +654,7 @@ static int Open(vlc_object_t *obj)
     pa_format_info_set_sample_format(formatv[formatc], ss.format);
     pa_format_info_set_rate(formatv[formatc], ss.rate);
     pa_format_info_set_channels(formatv[formatc], ss.channels);
+    pa_format_info_set_channel_map(formatv[formatc], &map);
     formatc++;
 
     /* Create a playback stream */

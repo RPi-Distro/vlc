@@ -2,7 +2,7 @@
  * xosd.c : X On Screen Display interface
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 2cea9331817b45745388df5723b5d70869dda7a4 $
+ * $Id: 5241036b7b9243c0aae9d770140633d35cbcaa59 $
  *
  * Authors: Loïc Minier <lool@videolan.org>
  *
@@ -34,6 +34,7 @@
 #include <vlc_playlist.h>
 #include <vlc_input.h>
 #include <vlc_interface.h>
+#include <vlc_xlib.h>
 
 #include <xosd.h>
 
@@ -109,6 +110,9 @@ static int Open( vlc_object_t *p_this )
     intf_sys_t *p_sys;
     xosd *p_osd;
     char *psz_font, *psz_colour;
+
+    if (!vlc_xlib_init(p_this))
+        return VLC_EGENERIC;
 
     if( getenv( "DISPLAY" ) == NULL )
     {

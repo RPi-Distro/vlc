@@ -265,6 +265,7 @@ static int Open (vlc_object_t *obj)
     p_sys->max_dropout  = var_CreateGetInteger (obj, "rtp-max-dropout");
     p_sys->max_misorder = var_CreateGetInteger (obj, "rtp-max-misorder");
     p_sys->framed_rtp   = (tp == IPPROTO_TCP);
+    p_sys->thread_ready = false;
 
     demux->pf_demux   = NULL;
     demux->pf_control = Control;

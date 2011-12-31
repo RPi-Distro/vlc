@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2011 the VideoLAN team])
 
-AC_INIT(vlc, 1.1.12)
+AC_INIT(vlc, 1.1.13)
 VERSION_MAJOR="1"
 VERSION_MINOR="1"
-VERSION_REVISION="12"
+VERSION_REVISION="13"
 VERSION_EXTRA="-git"
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -4160,8 +4160,13 @@ if test "${enable_xosd}" = "yes"
 then
   AC_CHECK_HEADERS(xosd.h,
     AC_CHECK_LIB(xosd, xosd_set_horizontal_offset, [
-      VLC_ADD_PLUGIN([xosd])
-      VLC_ADD_LIBS([xosd],[-lxosd])
+      AS_IF([test "${no_x}" != "yes"], [
+          VLC_ADD_PLUGIN([xosd])
+          VLC_ADD_LIBS([xosd],[-lxosd ${X_LIBS} ${X_PRE_LIBS} -lX11])
+          VLC_ADD_CFLAGS([xosd],[${X_CFLAGS}])
+        ],[
+          AC_MSG_ERROR([Xlib is required with xosd.])
+        ])
     ])
   )
 fi
