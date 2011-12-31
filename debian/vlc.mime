@@ -35,9 +35,10 @@ application/ogg; vlc %s; nametemplate=%s.ogg; description="Ogg stream"; test=tes
 application/ogg; vlc -I rc -V caca %s; nametemplate=%s.ogg; needsterminal; description="Ogg stream"; priority=3
 application/x-ogg; vlc %s; nametemplate=%s.ogg; description="Ogg stream"; test=test -n "$DISPLAY"; priority=4
 application/x-ogg; vlc -I rc -V caca %s; nametemplate=%s.ogg; needsterminal; description="Ogg stream"; priority=3
+video/ogg; vlc %s; description="Ogg Video"; test=test -n "$DISPLAY"; priority=4
+video/ogg; vlc -I rc -V caca %s; needsterminal; description="Ogg Video"; priority=3
 
 application/x-ms-asf-plugin; vlc %s; description="Windows Media Video"; test=test -n "$DISPLAY"; priority=4
 application/x-ms-asf-plugin; vlc -I rc -V caca %s; needsterminal; description="Windows Media Video"; priority=3
 application/x-mplayer2; vlc %s; description="Windows Media"; test=test -n "$DISPLAY"; priority=4
 application/x-mplayer2; vlc -I rc -V caca %s; needsterminal; description="Windows Media"; priority=3
-
