@@ -1,3 +1,278 @@
+commit 37a290923afe5158684bcb3cb5141b03ec36b926
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 20 17:57:57 2011 +0200
+
+    Sync translation tables for 1.1.13
+
+commit 0a547a5dccdb25b179d5cd5c50eadcad6138ed38
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 20 17:57:44 2011 +0200
+
+    Update news
+
+commit 208b290a50178a505212abcc71b27f80244869a0
+Author: Clement Lecigne <clecigne@google.com>
+Date:   Tue Dec 20 17:44:10 2011 +0200
+
+    TiVo: fix double free
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 7d282fac1cc455b5a5eca2bb56375efcbf879b06)
+
+commit 1b81952e57ac1d732597ffceaa7b2d877c281d4c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 20 17:21:18 2011 +0200
+
+    News for 1.1.13
+
+commit 52fc7c4031db4db938ba96ee28d3ac29eaffe949
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 20 17:21:33 2011 +0200
+
+    Bump version to 1.1.13
+
+commit 199e3d8adf2878354472c10de219bf00371e22ad
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Dec 6 16:38:07 2011 +0100
+
+    vaapi: fix profiles detection.
+    
+    The selected profile wasn't checked against card's ones.
+    (ex: resulting in sending MPEG2 to a VC1/h264 only card)
+    
+    Signed-off-by: Jean-Paul Saman <jpsaman@videolan.org>
+    (cherry picked from commit b1ae79cc89d54aa36556d46f71bd1becab6c1645)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 62b976e3e1b2e0fc3e69ee0e8f8cacf46f26f606
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 20 00:30:59 2011 +0100
+
+    Version should be 1.1.13-git
+    
+    If anyone needs a build from HEAD, fix the version for them.
+
+commit 5125f8d5297be3e9dbb248ca345b642a33947a24
+Author: Alexis Ballier <aballier@gentoo.org>
+Date:   Fri Dec 9 16:10:10 2011 -0300
+
+    xosd: require and link against Xlib.
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 3254502d3b2995908a06387a397f14c89e76621d)
+
+commit 248d1f533acb4144f361db7ceb32b637f28f7cd7
+Author: Alexis Ballier <aballier@gentoo.org>
+Date:   Thu Dec 8 19:37:15 2011 -0300
+
+    xosd: call vlc_xlib_init first
+    
+    See: https://bugs.gentoo.org/show_bug.cgi?id=393439
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 9b40c48c8aa69e71abb0263b1814ede7a370f7c9)
+
+commit 82e23c96e700b6cbf344028a3f57c00d76c745e0
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sat Nov 26 03:43:29 2011 +0100
+
+    rtp: fix crash on initialization error
+    
+    Due to an uninitialized variable. Untested.
+
+commit d1fa49f6659d0fa38f3f953bc46a2eabdcbc1cf2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 22 22:29:07 2011 +0200
+
+    XDG needs <signal.h>
+    
+    Reported-by: Joseph Atkinson <jsa@freebsd.org>
+    (cherry picked from commit ad81f3760bba308ba33f52eb12abbdb43ebc296e)
+
+commit e3c16907daedfe675c08fc55740e6516bb4cbf0e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 1 20:39:48 2011 +0200
+
+    Protect AJAX files like the HTML ones
+
+commit 059ec20607227190f1e2a91ab98b4f13046bebe7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 1 19:22:36 2011 +0200
+
+    XCB/XVideo: fix memory leak
+    
+    This was fixed VLC 1.2 in 8fdf5c8af8693274c03f1453b6be14ce0d5d1237.
+
+commit f446b78142ba85b20f5f7ce515ae4459e4640423
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 1 18:11:45 2011 +0200
+
+    Qt4: correct v4l2-standard values (fix #5500)
+
+commit fe2492499859ea31dd386163a1508ecef21de1fd
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Oct 31 22:21:23 2011 +0200
+
+    XCB/XVideo: allow mixed endian format if 8 or 4 bits per component
+    
+    Mixed endianess is only an issue if the component values are not
+    aligned inside octets. This fixes Debian #604687.
+    (cherry picked from commit aa1d564909d15463bab3f737269633fb39820fab)
+    
+    Conflicts:
+    
+    	modules/video_output/xcb/xvideo.c
+
+commit 200e74d795028aec579f16013648a36a78279325
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Sat Oct 29 10:41:51 2011 +0200
+
+    mux/asf.c: Workaround for playback of WMV in WMP12 and Silverlight.
+    
+    The maximum bitrate of the file is not allowed to become zero. If it
+    is then playback in WMP12 and Silverlight does not work. The actual
+    value for maximum bitrate does not really matter in these cases as
+    long as it is not 0.
+
+commit 60388e2fd92b267486e1fb356d78c06a28416348
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Sat Oct 29 10:23:04 2011 +0200
+
+    mux/asf.c: typo
+
+commit 73af767572dfeff67345589ec07f848134c20fee
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Fri Jul 15 21:41:49 2011 -0400
+
+    fix vlclua_var_toggle_or_set
+    
+    argument is a string ("on" or "off") not a bool
+    (cherry picked from commit e292947855ae11068c34a1e27dbf919e3abc85c6)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 49b302c5c858d77f78f25806eea9d1ff3b539a53
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Tue Nov 2 17:27:59 2010 +0100
+
+    lua: use var_ToggleBool.
+    (cherry picked from commit a50d13ab0ce72363e9ca37ca305fadf171729b64)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 58a5a56e4becca62fed8fb211da229609e73b060
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Oct 25 01:11:39 2011 +0200
+
+    lua: remove tautology
+
+commit 70940f34b62c7d5c7f5558f4974ba34f4342824c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Oct 18 18:55:16 2011 +0300
+
+    Flush PulseAudio stream on overflow (fix #5464)
+    
+    (cherry picked from commit 836d970806b986949b9b2f847d16cf73f8bdadca)
+    
+    Conflicts:
+    
+    	modules/audio_output/pulse.c
+
+commit c809cde7ec0ce8ae21f6d4d8addb49a2b046204a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Oct 13 23:53:27 2011 +0200
+
+    Avcodec: deactivate DR for Camtasia
+    
+    Close #4166
+    (cherry picked from commit 066e381ff4047e994ad2335d55e5cce33c5c90a1)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 7f8fdffe5b9cf3bf04c95d356ee0d39e2153d678
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Oct 13 23:05:35 2011 +0200
+
+    Qt: fill NULL-deref in jumping forward
+    
+    Close #5446
+    (cherry picked from commit 4f921a591453707451bbbf6c2a14f58d3264e2a6)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 15a821886296a8efe5f8b9015b6e9c5ae5e3ae79
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Oct 11 19:19:21 2011 +0300
+
+    Set channel map when using PulseAudio 1.0
+    
+    (cherry picked from commit ca2cb5f01340252a85ad5bed877e84407f092b21)
+
+commit fae6303598131ae6e1ca1987e07c83f77760b4ef
+Author: Mario Siegmann <Mario_Siegmann@web.de>
+Date:   Sun Oct 9 20:51:45 2011 +0100
+
+    l10n: German update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit e3b5535b5903152eb3b3fdacb1e4a4d47482e2d0
+Author: Mihkel Kirjutas <turakas@gmail.com>
+Date:   Sun Oct 9 20:50:50 2011 +0100
+
+    l10n: Fix previous Estonian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 4aed8dbe26619badc5310c51e4a664d0605e6987
+Author: Mihkel Kirjutas <turakas@gmail.com>
+Date:   Sun Oct 9 17:09:23 2011 +0100
+
+    l10n: Estonian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit da320692ffdb340c589a9b8de80879732519b57e
+Author: Dean Lee <xslidian@gmail.com>
+Date:   Sun Oct 9 15:36:00 2011 +0100
+
+    l10n: Simplified Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 7074c7a75f7a62fad687a1f0ad015fa21cc08156
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Sun Oct 9 15:31:40 2011 +0100
+
+    l10n: Polish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@chewa.net>
+
+commit 18b259d44300c4a090fa96fb3cfee1fca7d68c6f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Oct 7 20:47:26 2011 +0300
+
+    Turn on XVideo color key automatic painting (fix #4643)
+    
+    (cherry picked from commit 136b09ae7215ae28098c91c76b04486c5498c5b1)
+
+commit fb5ab4523ef9fed3a7576cee5df1970e0e1412c0
+Author: Benjamin Drung <bdrung@debian.org>
+Date:   Fri Oct 7 00:31:51 2011 +0200
+
+    Build osdmenu plugin again (fix #5111).
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit e026ed8f26885234716bd201ddedbb0e26b5bf7b
+Author: Benjamin Drung <bdrung@debian.org>
+Date:   Fri Oct 7 00:31:50 2011 +0200
+
+    Fix typo in vlc.desktop: Name[nn] -> GenericName[nn].
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
 commit 63a4ce20d8cb94efa4bebd66106a2961eb300b50
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Thu Oct 6 21:03:40 2011 +0300

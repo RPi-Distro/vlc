@@ -5,15 +5,15 @@
 # This file is distributed under the same license as the VLC package.
 #
 # Eero <eerove gmail com> 2009.
-# Mihkel <turakas gmail com> 2010 - 2011
+# Mihkel <turakas gmail com> 2010 - 2011.
 # Mattias Põldaru <mahfiaz gmail com> 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 1.1.10\n"
+"Project-Id-Version: vlc 1.1.12\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-10-06 20:33+0300\n"
-"PO-Revision-Date: 2011-05-20 13:40+0300\n"
+"POT-Creation-Date: 2011-12-20 17:56+0200\n"
+"PO-Revision-Date: 2011-10-09 20:32+0300\n"
 "Last-Translator: mihkel <turakas gmail com>\n"
 "Language-Team: Estonian\n"
 "Language: et\n"
@@ -3832,7 +3832,7 @@ msgstr "Vali kiirklahv, mis hüppab esitusloendi eelmisele kirjele."
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:608
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:745
 #: modules/gui/macosx/intf.m:752 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
+#: modules/misc/notify/xosd.c:235 modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr "Peata"
 
@@ -4699,7 +4699,7 @@ msgstr "Allalaadimine..."
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
 #: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:715
 #: modules/gui/macosx/wizard.m:318
-#: modules/gui/qt4/components/open_panels.cpp:1309
+#: modules/gui/qt4/components/open_panels.cpp:1310
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -7675,7 +7675,7 @@ msgid "Hue of the video input."
 msgstr "Videosisendi värvitoon"
 
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
-#: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
+#: modules/misc/notify/xosd.c:83 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
 #: modules/gui/qt4/ui/video_effects.h:1132
 #: modules/gui/qt4/ui/video_effects.h:1138
@@ -8161,7 +8161,7 @@ msgstr "Rakendus"
 
 #: modules/access/vcdx/info.c:65
 msgid "Preparer"
-msgstr "Preparer"
+msgstr ""
 
 #: modules/access/vcdx/info.c:66
 msgid "Vol #"
@@ -9687,7 +9687,7 @@ msgid ""
 "on quality. However it provides a big speedup for high definition streams."
 msgstr ""
 "Kordustefiltri vahelejätmisel (aka deblokkimisel) on kahjulik efekt "
-"kvaliteedile. Kuigi kõrge eraldusvõimega voogudel on tuntav kiirusevõit."
+"kvaliteedile. Kuigi kõrge eraldusvõimega voogudel on kiirusevõit tuntav."
 
 #: modules/codec/avcodec/avcodec.h:138
 msgid "Hardware decoding"
@@ -12085,11 +12085,11 @@ msgstr ""
 
 #: modules/codec/x264.c:377
 msgid "Access unit delimiters"
-msgstr ""
+msgstr "Ligipääs ühiku eraldajatele"
 
 #: modules/codec/x264.c:378
 msgid "Generate access unit delimiter NAL units."
-msgstr ""
+msgstr "Genereeri ligipääsu ühiku eraldaja NAL ühikud"
 
 #: modules/codec/x264.c:380
 msgid "Framecount to use on frametype lookahead"
@@ -12486,17 +12486,17 @@ msgstr "Kasuta video pööramise filtrit teisendamise asemel"
 
 #: modules/control/motion.c:78
 msgid "motion"
-msgstr "Liikumine"
+msgstr "liikumine"
 
 #: modules/control/motion.c:81
 msgid "motion control interface"
-msgstr "Liikumise kontrollliides"
+msgstr "liikumise kontrolli liides"
 
 #: modules/control/motion.c:82
 msgid ""
 "Use HDAPS, AMS, APPLESMC or UNIMOTION motion sensors to rotate the video"
 msgstr ""
-"Kasuta HDAPS, AMS, APPLESMC või UNIMOTION liikumise sensoreid video "
+"Kasuta HDAPS, AMS, APPLESMC või UNIMOTION liikumise seonsoreid video "
 "pööramiseks"
 
 #: modules/control/netsync.c:57
@@ -12594,7 +12594,7 @@ msgstr "Avamine"
 #: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:194
 #: modules/gui/macosx/intf.m:2028 modules/gui/macosx/intf.m:2029
 #: modules/gui/macosx/intf.m:2030 modules/gui/macosx/intf.m:2031
-#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
+#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:239
 msgid "Pause"
 msgstr "Pausi"
 
@@ -14383,7 +14383,7 @@ msgid ""
 msgstr "Kõik renderdatud pildid a tekst kuvatakse ülekatte kaadripuhvris."
 
 #: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
-#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:80
+#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:81
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
 #: modules/gui/qt4/ui/sprefs_subtitles.h:211
@@ -14404,7 +14404,7 @@ msgstr "VLC meediaesitajast"
 
 #: modules/gui/macosx/about.m:103
 msgid "Compiled by %@ with %@"
-msgstr "Kompileeris %@ võtmetega %@"
+msgstr "Kompileerinud %@, võtmetega %@"
 
 #: modules/gui/macosx/about.m:111
 msgid "VLC was brought to you by:"
@@ -14472,7 +14472,7 @@ msgstr "Aeg"
 #: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
 #: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
 #: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
-#: modules/gui/qt4/components/open_panels.cpp:1308
+#: modules/gui/qt4/components/open_panels.cpp:1309
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
 msgid "OK"
@@ -15068,7 +15068,7 @@ msgstr "VLC silumise Logi (%s).rtfd"
 
 #: modules/gui/macosx/intf.m:2857
 msgid "Relaunch required"
-msgstr ""
+msgstr "Vajalik taaskäivtus"
 
 #: modules/gui/macosx/intf.m:2858
 msgid ""
@@ -15078,7 +15078,7 @@ msgstr ""
 
 #: modules/gui/macosx/intf.m:2859
 msgid "Relaunch VLC"
-msgstr ""
+msgstr "Taaskäivita VLC"
 
 #: modules/gui/macosx/macosx.m:53
 msgid "Video device"
@@ -15928,7 +15928,7 @@ msgstr "Kontrolli uuendusi automaatselt"
 
 #: modules/gui/macosx/simple_prefs.m:275
 msgid "Enable Growl notifications (on playlist item change)"
-msgstr "Võimallda Growl teated (esitusloendi kirje muutmisel)"
+msgstr "Võimalda Growl teated (esitusloendi kirje muutmisel)"
 
 #: modules/gui/macosx/simple_prefs.m:278
 msgid "Default Encoding"
@@ -16594,8 +16594,7 @@ msgid ""
 "Enter either a valid path or use the \"Choose...\" button to select a "
 "location."
 msgstr ""
-"Sisesta kas korrektne asukoht või kasuta \"Vali...\" nuppu asukoha "
-"määramiseks."
+"Sisesta kas õige asukoht või kasuta \"Valimine...\" nuppu asukoha valimiseks."
 
 #: modules/gui/macosx/wizard.m:1125
 msgid "No file selected"
@@ -16608,8 +16607,7 @@ msgstr "Fail, kuhu voog salvestada, tuleb valida."
 #: modules/gui/macosx/wizard.m:1129
 msgid ""
 "Enter either a valid path or use the \"Choose\" button to select a location."
-msgstr ""
-"Sisesta kas korrektne asukoht või kasuta \"Vali\" nuppu asukoha määramiseks."
+msgstr "Sisesta kas õige asukoht või kasuta \"Vali\" nuppu asukoha valimiseks."
 
 #: modules/gui/macosx/wizard.m:1334
 msgid "Finish"
@@ -16684,11 +16682,6 @@ msgid ""
 "Note that this requires much more CPU power than simple transcoding or "
 "streaming."
 msgstr ""
-"Kui see valik on võimaldatud, siis voogu esitatakse ja transkodeeritakse/"
-"voogedastatakse.\n"
-"\n"
-"Märkus. See nõuab palju rohkem CPU võimsust, kui lihtne transkodeerimine või "
-"voogedastamine."
 
 #: modules/gui/macosx_dialog_provider/dialogProvider.m:85
 msgid "Hide no user action dialogs"
@@ -17455,7 +17448,7 @@ msgstr ""
 msgid " f/s"
 msgstr " k/s"
 
-#: modules/gui/qt4/components/open_panels.cpp:1281
+#: modules/gui/qt4/components/open_panels.cpp:1282
 msgid "Advanced Options"
 msgstr "Täpsemad valikud"
 
@@ -19126,7 +19119,7 @@ msgstr "Kasuta rüüga esitusloendit"
 
 #: modules/gui/skins2/src/skin_main.cpp:550
 msgid "Display video in a skinned window if any"
-msgstr "Võimalusel kuva video rüüga aknas"
+msgstr "Kuva video võimalusel rüüga aknas"
 
 #: modules/gui/skins2/src/skin_main.cpp:552
 msgid ""
@@ -19690,8 +19683,8 @@ msgid ""
 "This renders the font using \"paletized YUV\". This option is only needed if "
 "you want to encode into DVB subtitles"
 msgstr ""
-"See renderdab fonte kasutades \"paletitud YUV-d\". Seda valikut kasutatakse "
-"ainult siis, kui soovid kodeerida DVB subtiitritesse"
+"See renderdab fonte kasutades \\\"paletitud YUV-d\\\". Seda valikut "
+"kasutatakse ainult siis, kui soovid kodeerida DVB subtiitritesse"
 
 #: modules/misc/freetype.c:135
 msgid "Font Effect"
@@ -19773,11 +19766,11 @@ msgstr "OSSO"
 msgid "OSSO screen unblanking"
 msgstr "OSSO ekraani tühjendamise keelaja"
 
-#: modules/misc/inhibit/xdg.c:36
+#: modules/misc/inhibit/xdg.c:37
 msgid "XDG-screensaver"
 msgstr "XDG-ekraanisäästja"
 
-#: modules/misc/inhibit/xdg.c:37
+#: modules/misc/inhibit/xdg.c:38
 msgid "XDG screen saver inhibition"
 msgstr "XDG ekraanisäästja tõkestamine"
 
@@ -20030,19 +20023,19 @@ msgstr ""
 msgid "Telepathy \"Now Playing\" (MissionControl)"
 msgstr "Telepathy \"Hetkel mängib\" (MissionControl)"
 
-#: modules/misc/notify/xosd.c:67
+#: modules/misc/notify/xosd.c:68
 msgid "Flip vertical position"
 msgstr "Peegelda vertikaalne positsioon"
 
-#: modules/misc/notify/xosd.c:68
+#: modules/misc/notify/xosd.c:69
 msgid "Display XOSD output at the bottom of the screen instead of the top."
 msgstr "Kuva XOSD väljund ekraani all servas, mitte üleval."
 
-#: modules/misc/notify/xosd.c:71
+#: modules/misc/notify/xosd.c:72
 msgid "Vertical offset"
 msgstr "Vertikaalne nihe"
 
-#: modules/misc/notify/xosd.c:72
+#: modules/misc/notify/xosd.c:73
 msgid ""
 "Vertical offset between the border of the screen and the displayed text (in "
 "pixels, defaults to 30 pixels)."
@@ -20050,24 +20043,24 @@ msgstr ""
 "Vertikaalne nihe ekraani ääre ja kuvatud teksti vahel pikslites. Vaikimisi "
 "30 pikslit."
 
-#: modules/misc/notify/xosd.c:76
+#: modules/misc/notify/xosd.c:77
 msgid "Shadow offset"
 msgstr "Varju nihe"
 
-#: modules/misc/notify/xosd.c:77
+#: modules/misc/notify/xosd.c:78
 msgid ""
 "Offset between the text and the shadow (in pixels, defaults to 2 pixels)."
 msgstr "Nihe teksti ja varju vahel (pikslites, vaikimisi 2 pikslit)."
 
-#: modules/misc/notify/xosd.c:81
+#: modules/misc/notify/xosd.c:82
 msgid "Font used to display text in the XOSD output."
 msgstr "XOSD väljundil kasutatav teksti font."
 
-#: modules/misc/notify/xosd.c:83
+#: modules/misc/notify/xosd.c:84
 msgid "Color used to display text in the XOSD output."
 msgstr "XOSD väljundil kasutatav teksti värv."
 
-#: modules/misc/notify/xosd.c:88
+#: modules/misc/notify/xosd.c:89
 msgid "XOSD interface"
 msgstr "XOSD liides"
 
@@ -20097,7 +20090,7 @@ msgstr "HTML esitusloendi eksport"
 
 #: modules/misc/quartztext.c:81
 msgid "Name for the font you want to use"
-msgstr "Soovitud fondi nimi"
+msgstr "Fondi nimi, mida soovid kasutada"
 
 #: modules/misc/quartztext.c:107
 msgid "Text renderer for Mac"
@@ -20382,8 +20375,8 @@ msgid ""
 "Assign a program number to each PMT. This requires \"Set PID to ID of ES\" "
 "to be enabled."
 msgstr ""
-"Omista programmi number igale PMT-le. Nõuab, et \"Määra ES-i PID ID-le\" "
-"oleks võimaldatud."
+"Määra igale PMT-le programmi number. See nõuab, et \"Määra ES-i ID-le PID\" "
+"oleks lubatud."
 
 #: modules/mux/mpeg/ts.c:116
 msgid "Mux PMT (requires --sout-ts-es-id-pid)"
@@ -20394,8 +20387,8 @@ msgid ""
 "Define the pids to add to each pmt. This requires \"Set PID to ID of ES\" to "
 "be enabled."
 msgstr ""
-"Määra pid-id, mida lisada igale pmt-le. Nõuab, et \"Määra ES-i PID ID-le\" "
-"oleks võimaldatud."
+"Defineeri pid-id lisamaks igale pmt-le. See nõuab, et \"Määra ES-i ID-le PID"
+"\" oleks lubatud."
 
 #: modules/mux/mpeg/ts.c:120
 msgid "SDT Descriptors (requires --sout-ts-es-id-pid)"
@@ -20411,7 +20404,7 @@ msgstr ""
 
 #: modules/mux/mpeg/ts.c:124
 msgid "Set PID to ID of ES"
-msgstr "Määra ES-i PID ID-le"
+msgstr "Määra ES-i ID-le PID"
 
 #: modules/mux/mpeg/ts.c:125
 msgid ""
@@ -20433,7 +20426,7 @@ msgstr ""
 
 #: modules/mux/mpeg/ts.c:133
 msgid "Shaping delay (ms)"
-msgstr ""
+msgstr "Vormimise viivitus (ms)"
 
 #: modules/mux/mpeg/ts.c:134
 msgid ""
@@ -22371,11 +22364,11 @@ msgstr "Sisseehitatud Atmo tsooni paigutus"
 
 #: modules/video_filter/atmo/atmo.cpp:498
 msgid "Settings for the built-in Live Video Processor only"
-msgstr "Seaded ainnult sisseehitatud Live Video Protsessorile"
+msgstr "Seaded ainult sisseehitatud Live Video Protsessorile"
 
 #: modules/video_filter/atmo/atmo.cpp:535
 msgid "Change channel assignment (fixes wrong wiring)"
-msgstr "Muuda kanali määratlust (paranda valet kaabeldust)"
+msgstr "Muuda kanali määratlust (paranda vale kaabelduse)"
 
 #: modules/video_filter/atmo/atmo.cpp:568
 msgid "Adjust the white light to your LED stripes"
@@ -22394,7 +22387,7 @@ msgid ""
 "Value of the audio level of each channels between 0 and 1Each level should "
 "be separated with ':'."
 msgstr ""
-"Iga audioi kanali helinivoo väärtus vahemikus 0 ja 1. Iga nivoo peaks olema "
+"Iga audio kanali helinivoo väärtus vahemikus 0 ja 1. Iga nivoo peaks olema "
 "eraldatud ':'."
 
 #: modules/video_filter/audiobargraph_v.c:52
@@ -22512,15 +22505,15 @@ msgstr "Pall"
 
 #: modules/video_filter/blend.c:44
 msgid "Video pictures blending"
-msgstr "Videopiltide sulandamine"
+msgstr "Videopiltide sulamine"
 
 #: modules/video_filter/blendbench.c:51
 msgid "Number of time to blend"
-msgstr "Mitu korda sulandada"
+msgstr "Mitu korda sulada"
 
 #: modules/video_filter/blendbench.c:52
 msgid "The number of time the blend will be performed"
-msgstr "Mitu korda sulandamist teostatakse"
+msgstr "Mitu korda sulamist teostatakse"
 
 #: modules/video_filter/blendbench.c:54
 msgid "Alpha of the blended image"
@@ -22536,7 +22529,7 @@ msgstr "Pilt, millesse sulanduda"
 
 #: modules/video_filter/blendbench.c:58
 msgid "The image which will be used to blend onto"
-msgstr "Pilt, mida kastatakse sisse sulandumiseks"
+msgstr "Pilt, mida kasutatakse sisse sulandumiseks"
 
 #: modules/video_filter/blendbench.c:60
 msgid "Chroma for the base image"
@@ -22775,7 +22768,7 @@ msgstr "Eemalda video servad ja asenda nad mustade servadega"
 
 #: modules/video_filter/crop.c:82
 msgid "Ratio max (x 1000)"
-msgstr ""
+msgstr "Maksimaalne külgedesuhe (x 1000)"
 
 #: modules/video_filter/crop.c:83
 msgid ""
@@ -22850,7 +22843,7 @@ msgstr "Kärpimine nurjus"
 
 #: modules/video_filter/crop.c:380 modules/video_filter/crop.c:471
 msgid "VLC could not open the video output module."
-msgstr "VLC ei suutnud avada videoväljuni moodulit."
+msgstr "VLC ei suuda avada videoväljundi moodulit."
 
 #: modules/video_filter/croppadd.c:46
 msgid "Pixels to crop from top"
@@ -22870,7 +22863,7 @@ msgstr "Pildi alt servast kärbitavate pikslite arv."
 
 #: modules/video_filter/croppadd.c:52
 msgid "Pixels to crop from left"
-msgstr "Vasakult kärbitatavate pikslite arv"
+msgstr "Vasakult kärbitavate pikslite arv"
 
 #: modules/video_filter/croppadd.c:54
 msgid "Number of pixels to crop from the left of the image."
@@ -22959,7 +22952,7 @@ msgstr "Väljundi FIFO"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:64
 msgid "FIFO which will be written to for responses"
-msgstr "FIFO, mida kirjutatakse vastu"
+msgstr "FIFO, mida kirjutatakse vastustes"
 
 #: modules/video_filter/dynamicoverlay/dynamicoverlay.c:67
 msgid "Dynamic video overlay"
@@ -23044,7 +23037,7 @@ msgstr ""
 
 #: modules/video_filter/gradient.c:65
 msgid "Gradient image type"
-msgstr "Ülemineku pildi tüüp"
+msgstr "Gradiendi pildi tüüp"
 
 #: modules/video_filter/gradient.c:66
 msgid ""
@@ -23059,7 +23052,7 @@ msgstr "Multika efekti rakendamine"
 
 #: modules/video_filter/gradient.c:70
 msgid "Apply cartoon effect. It is only used by \"gradient\" and \"edge\"."
-msgstr "Rakenda multika efekt. Seda kasutavad ainult \"üleminek\" ja \"serv\"."
+msgstr "Rakenda multika efekt. Seda kasutavad ainult \"gradient\" ja \"edge\"."
 
 #: modules/video_filter/gradient.c:73
 msgid "Apply color gradient or edge detection effects"
@@ -24755,11 +24748,11 @@ msgstr "XVideo"
 msgid "XVideo output (XCB)"
 msgstr "XVideo väljund (XCB)"
 
-#: modules/video_output/xcb/xvideo.c:274
+#: modules/video_output/xcb/xvideo.c:273
 msgid "Video acceleration not available"
 msgstr "Videokiirendus pole saadaval"
 
-#: modules/video_output/xcb/xvideo.c:275
+#: modules/video_output/xcb/xvideo.c:274
 #, c-format
 msgid ""
 "Your video output acceleration driver does not support the required "
@@ -24792,7 +24785,7 @@ msgid ""
 "requires YV12/I420 fourcc. By default vlc writes the fourcc of the picture "
 "frame into the output destination."
 msgstr ""
-"YUV4MPEG2 päis on mplayer-i yuv video väljundiga ühildus ja nõuab YV12/I420 "
+"YUV4MPEG2 päis on mplayer-i yuv video väljundiga ühilduv ja nõuab YV12/I420 "
 "fourcc-d. Vaikimisi kirjutab vlc pildikaadri fourcc määratud väljundisse."
 
 #: modules/video_output/yuv.c:59
@@ -25936,6 +25929,14 @@ msgstr "Korduv"
 msgid "Media Manager List"
 msgstr "Meediahalduri loend"
 
+#, fuzzy
+#~ msgid ""
+#~ "This is the relative default size of the fonts that will be rendered on "
+#~ "the video. If absolute font size is set, relative size will be overriden."
+#~ msgstr ""
+#~ "See on videol rendertatava teksti fondi suhteline suurus. Kui absoluutne "
+#~ "fondi suurus on määratud, siis suhteline suurus tühistatakse."
+
 #~ msgid "Automate picture coding mode"
 #~ msgstr "Automatiseeri pildi kodeerimise režiimi"
 
@@ -25943,18 +25944,11 @@ msgstr "Meediahalduri loend"
 #~ "Use the input picture to determine how to code it - interlaced or "
 #~ "progressive"
 #~ msgstr ""
-#~ "Kasuta sisndpilti otsustamaks, kuidas teda kodeerida - ülerealaotus või "
-#~ "progressiivne"
+#~ "Kasuta sisendpilti otsustamaks, kuidas teda kodeerida - ülerea või "
+#~ "progressivselt"
 
 #~ msgid "Dirac video encoder using libschroedinger"
 #~ msgstr "Dirac video enkooder kasutades libschroedinger teeki"
-
-#~ msgid ""
-#~ "This is the relative default size of the fonts that will be rendered on "
-#~ "the video. If absolute font size is set, relative size will be overriden."
-#~ msgstr ""
-#~ "See on videol rendetatava teksti fondi suhteline suurus. Kui absoluutne "
-#~ "fondi suurus on määraud, siis suhteline suurus tühistatakse."
 
 #~ msgid "Use media key control when VLC is in background"
 #~ msgstr "Kasuta meedia juhtklahve, kui VLC on taustal"

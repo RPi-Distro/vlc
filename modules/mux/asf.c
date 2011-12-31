@@ -2,7 +2,7 @@
  * asf.c: asf muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2004, 2006 the VideoLAN team
- * $Id: c790104ecbefb65f2b449fa062db06164508914b $
+ * $Id: 6dfb5d691d29c8383d86c90449a5ab5c15a786d5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -641,7 +641,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
  *****************************************************************************/
 static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
-    /* if bitrate ain't defined in commanline, reduce it when tracks are deleted
+    /* if bitrate ain't defined in commandline, reduce it when tracks are deleted
      */
     sout_mux_sys_t   *p_sys = p_mux->p_sys;
     asf_track_t      *tk = p_input->p_sys;
@@ -982,7 +982,10 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
     bo_addle_u32( &bo, b_broadcast ? 0x01 : 0x02 /* seekable */ ); /* flags */
     bo_addle_u32( &bo, p_sys->i_packet_size );  /* packet size min */
     bo_addle_u32( &bo, p_sys->i_packet_size );  /* packet size max */
-    bo_addle_u32( &bo, p_sys->i_bitrate );      /* maxbitrate */
+    /* NOTE: According to p6-9 of the ASF specification the bitrate cannot be 0,
+     * therefor apply this workaround to make sure it is not 0. If the bitrate is
+     * 0 the file will play in WMP11, but not in Sliverlight and WMP12 */
+    bo_addle_u32( &bo, p_sys->i_bitrate > 0 ? p_sys->i_bitrate : 1 ); /* maxbitrate */
 
     /* header extension */
     bo_add_guid ( &bo, &asf_object_header_extension_guid );

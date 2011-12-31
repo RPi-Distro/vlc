@@ -1,16 +1,16 @@
 # Translation to Simplified Chinese.
-# Copyright (C) 2008-2010 the VideoLAN team
+# Copyright (C) 2008-2011 the VideoLAN team
 # This file is distributed under the same license as the VLC package.
 #
 # Yoyo <admin@wisestudio.org>, 2008.
 # Wei Mingzhi <whistler@openoffice.org>, 2009.
-# Dean Lee <xslidian@gmail.com>, 2010.
+# Dean Lee <xslidian@gmail.com>, 2010-2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.x\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2011-10-06 20:33+0300\n"
+"POT-Creation-Date: 2011-12-20 17:56+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Dean Lee <xslidian@gmail.com>\n"
 "Language-Team: Simplified Chinese <xslidian+vlc@gmail.com>\n"
@@ -3624,7 +3624,7 @@ msgstr "选择用于跳到上一个播放列表项目的热键。"
 #: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:608
 #: modules/gui/macosx/intf.m:653 modules/gui/macosx/intf.m:745
 #: modules/gui/macosx/intf.m:752 modules/gui/qt4/components/controller.hpp:104
-#: modules/misc/notify/xosd.c:231 modules/gui/qt4/ui/streampanel.h:181
+#: modules/misc/notify/xosd.c:235 modules/gui/qt4/ui/streampanel.h:181
 msgid "Stop"
 msgstr "停止"
 
@@ -4486,7 +4486,7 @@ msgstr "正在下载..."
 #: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:244
 #: modules/gui/macosx/simple_prefs.m:308 modules/gui/macosx/simple_prefs.m:715
 #: modules/gui/macosx/wizard.m:318
-#: modules/gui/qt4/components/open_panels.cpp:1309
+#: modules/gui/qt4/components/open_panels.cpp:1310
 #: modules/gui/qt4/components/preferences_widgets.cpp:1427
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -7398,7 +7398,7 @@ msgid "Hue of the video input."
 msgstr "视频输入的色调。"
 
 #: modules/access/v4l.c:114 modules/gui/fbosd.c:141
-#: modules/misc/notify/xosd.c:82 modules/video_filter/colorthres.c:54
+#: modules/misc/notify/xosd.c:83 modules/video_filter/colorthres.c:54
 #: modules/video_filter/marq.c:123 modules/video_filter/rss.c:155
 #: modules/gui/qt4/ui/video_effects.h:1132
 #: modules/gui/qt4/ui/video_effects.h:1138
@@ -12201,7 +12201,7 @@ msgstr "正在打开"
 #: modules/control/rc.c:73 modules/gui/macosx/embeddedwindow.m:194
 #: modules/gui/macosx/intf.m:2028 modules/gui/macosx/intf.m:2029
 #: modules/gui/macosx/intf.m:2030 modules/gui/macosx/intf.m:2031
-#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:235
+#: modules/gui/qt4/menus.cpp:793 modules/misc/notify/xosd.c:239
 msgid "Pause"
 msgstr "暂停"
 
@@ -13961,7 +13961,7 @@ msgid ""
 msgstr "所有已渲染的图像和文本将会在覆盖缓冲上显示。"
 
 #: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:283
-#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:80
+#: modules/misc/freetype.c:102 modules/misc/notify/xosd.c:81
 #: modules/misc/quartztext.c:80 modules/misc/win32text.c:58
 #: modules/video_filter/marq.c:164 modules/video_filter/rss.c:207
 #: modules/gui/qt4/ui/sprefs_subtitles.h:211
@@ -14050,7 +14050,7 @@ msgstr "时间"
 #: modules/gui/macosx/wizard.m:1126 modules/gui/macosx/wizard.m:1652
 #: modules/gui/macosx/wizard.m:1660 modules/gui/macosx/wizard.m:1841
 #: modules/gui/macosx/wizard.m:1852 modules/gui/macosx/wizard.m:1865
-#: modules/gui/qt4/components/open_panels.cpp:1308
+#: modules/gui/qt4/components/open_panels.cpp:1309
 #: modules/gui/qt4/components/preferences_widgets.cpp:1426
 #: modules/gui/qt4/dialogs/firstrun.cpp:100
 msgid "OK"
@@ -14639,17 +14639,17 @@ msgstr "VLC 调试记录 (%s).rtfd"
 
 #: modules/gui/macosx/intf.m:2857
 msgid "Relaunch required"
-msgstr ""
+msgstr "需要重启"
 
 #: modules/gui/macosx/intf.m:2858
 msgid ""
 "To make sure that VLC no longer listens to your media key events, it needs "
 "to be restarted."
-msgstr ""
+msgstr "要确保 VLC 不再监听您的媒体键事件，需要重新启动 VLC。"
 
 #: modules/gui/macosx/intf.m:2859
 msgid "Relaunch VLC"
-msgstr ""
+msgstr "重新启动 VLC"
 
 #: modules/gui/macosx/macosx.m:53
 msgid "Video device"
@@ -16974,7 +16974,7 @@ msgstr "您计算机上显示的内容将被打开播放以进行流化处理或
 msgid " f/s"
 msgstr " 帧/秒"
 
-#: modules/gui/qt4/components/open_panels.cpp:1281
+#: modules/gui/qt4/components/open_panels.cpp:1282
 msgid "Advanced Options"
 msgstr "高级选项"
 
@@ -19253,11 +19253,11 @@ msgstr "OSSO"
 msgid "OSSO screen unblanking"
 msgstr "OSSO 屏幕增辉"
 
-#: modules/misc/inhibit/xdg.c:36
+#: modules/misc/inhibit/xdg.c:37
 msgid "XDG-screensaver"
 msgstr "XDG-屏幕保护"
 
-#: modules/misc/inhibit/xdg.c:37
+#: modules/misc/inhibit/xdg.c:38
 msgid "XDG screen saver inhibition"
 msgstr "XDG 屏幕保护禁止器"
 
@@ -19504,42 +19504,42 @@ msgstr ""
 msgid "Telepathy \"Now Playing\" (MissionControl)"
 msgstr "Telepathy \"现在播放\" (MissionControl)"
 
-#: modules/misc/notify/xosd.c:67
+#: modules/misc/notify/xosd.c:68
 msgid "Flip vertical position"
 msgstr "倒转垂直位置"
 
-#: modules/misc/notify/xosd.c:68
+#: modules/misc/notify/xosd.c:69
 msgid "Display XOSD output at the bottom of the screen instead of the top."
 msgstr "在屏幕底部显示 XOSD 输出代替在顶部显示。"
 
-#: modules/misc/notify/xosd.c:71
+#: modules/misc/notify/xosd.c:72
 msgid "Vertical offset"
 msgstr "垂直偏移"
 
-#: modules/misc/notify/xosd.c:72
+#: modules/misc/notify/xosd.c:73
 msgid ""
 "Vertical offset between the border of the screen and the displayed text (in "
 "pixels, defaults to 30 pixels)."
 msgstr "在屏幕边框和显示文本之间的垂直偏移 (以像素为单位，默认为 30 像素)。"
 
-#: modules/misc/notify/xosd.c:76
+#: modules/misc/notify/xosd.c:77
 msgid "Shadow offset"
 msgstr "阴影偏移"
 
-#: modules/misc/notify/xosd.c:77
+#: modules/misc/notify/xosd.c:78
 msgid ""
 "Offset between the text and the shadow (in pixels, defaults to 2 pixels)."
 msgstr "在文本和阴影之间的偏移 (以像素为单位，默认为 2 像素)。"
 
-#: modules/misc/notify/xosd.c:81
+#: modules/misc/notify/xosd.c:82
 msgid "Font used to display text in the XOSD output."
 msgstr "在 OSD 输出中使用显示文本的字体。"
 
-#: modules/misc/notify/xosd.c:83
+#: modules/misc/notify/xosd.c:84
 msgid "Color used to display text in the XOSD output."
 msgstr "在 XOSD 中用于显示文本的颜色。"
 
-#: modules/misc/notify/xosd.c:88
+#: modules/misc/notify/xosd.c:89
 msgid "XOSD interface"
 msgstr "XOSD 界面"
 
@@ -24188,11 +24188,11 @@ msgstr "XVideo"
 msgid "XVideo output (XCB)"
 msgstr "XVideo 输出 (XCB)"
 
-#: modules/video_output/xcb/xvideo.c:274
+#: modules/video_output/xcb/xvideo.c:273
 msgid "Video acceleration not available"
 msgstr "无可用视频加速"
 
-#: modules/video_output/xcb/xvideo.c:275
+#: modules/video_output/xcb/xvideo.c:274
 #, c-format
 msgid ""
 "Your video output acceleration driver does not support the required "

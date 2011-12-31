@@ -24,6 +24,7 @@ libosdmenu_plugin_la_CFLAGS = $(AM_CFLAGS) -DPKGDATADIR=\"$(vlcdatadir)\"
 libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
 libosdmenu_plugin_la_DEPENDENCIES =
 EXTRA_LTLIBRARIES += libosdmenu_plugin.la
+libvlc_LTLIBRARIES += $(LTLIBosdmenu)
 
 SOURCES_remoteosd = remoteosd.c remoteosd_rfbproto.h
 SOURCES_magnify = magnify.c

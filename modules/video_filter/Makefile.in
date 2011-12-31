@@ -1327,7 +1327,7 @@ mods = adjust alphamask atmo audiobargraph_v ball blend blendbench bluescreen ca
 libvlc_LTLIBRARIES = $(LTLIBatmo) $(LTLIBopencv_example) \
 	$(LTLIBopencv_wrapper) $(LTLIBpanoramix) $(LTLIBpostproc) \
 	$(LTLIBremoteosd) $(LTLIBswscale) $(LTLIBswscale_omap) \
-	libadjust_plugin.la libalphamask_plugin.la \
+	$(LTLIBosdmenu) libadjust_plugin.la libalphamask_plugin.la \
 	libaudiobargraph_v_plugin.la libball_plugin.la \
 	libblend_plugin.la libblendbench_plugin.la \
 	libbluescreen_plugin.la libcanvas_plugin.la libchain_plugin.la \
