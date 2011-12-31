@@ -9,13 +9,3 @@ Description: Use the installed files for osdmenu rather than the ones in the
  action	key-play-pause (0,0)
  	unselect unselected.png
  	select   selection/play_pause.png
---- a/modules/video_filter/Modules.am
-+++ b/modules/video_filter/Modules.am
-@@ -24,6 +24,7 @@
- libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
- libosdmenu_plugin_la_DEPENDENCIES =
- EXTRA_LTLIBRARIES += libosdmenu_plugin.la
-+libvlc_LTLIBRARIES += $(LTLIBosdmenu)
- 
- SOURCES_remoteosd = remoteosd.c remoteosd_rfbproto.h
- SOURCES_magnify = magnify.c
