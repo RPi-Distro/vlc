@@ -1,7 +1,7 @@
 Source: vlc
 Section: video
 Priority: optional
-Maintainer: Debian multimedia packages maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
+Maintainer: Debian Multimedia Maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
 Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Clément Stenac <zorglub@debian.org>,
            Loic Minier <lool@dooz.org>,
