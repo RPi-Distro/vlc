@@ -3,119 +3,113 @@
 
 basedir = control
 dir = control
-mods = dbus gestures hotkeys lirc motion netsync ntservice oldrc oldtelnet signals
-libvlc_LTLIBRARIES =  $(LTLIBdbus) $(LTLIBlirc) $(LTLIBoldtelnet)
-EXTRA_LTLIBRARIES =  libdbus_plugin.la liblirc_plugin.la liboldtelnet_plugin.la
+mods = dummy gestures hotkeys lirc motion netsync ntservice oldrc
+libvlc_LTLIBRARIES =  $(LTLIBlirc)
+EXTRA_LTLIBRARIES =  liblirc_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
-# The dbus plugin
-libdbus_plugin_la_SOURCES = $(SOURCES_dbus)
-nodist_libdbus_plugin_la_SOURCES = $(nodist_SOURCES_dbus)
+# The dummy plugin
+libdummy_plugin_la_SOURCES = $(SOURCES_dummy)
+nodist_libdummy_plugin_la_SOURCES = $(nodist_SOURCES_dummy)
 # Force per-target objects:
-libdbus_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdbus_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdbus_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dummy)
+libdummy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dummy)
+libdummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dummy)
+libdummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dummy)
 # Set LIBADD and DEPENDENCIES manually:
-libdbus_plugin_la_LIBADD = $(AM_LIBADD)
-libdbus_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdummy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dummy)
+libdummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dummy)
+libdummy_plugin_la_DEPENDENCIES =
 
 # The gestures plugin
 libgestures_plugin_la_SOURCES = $(SOURCES_gestures)
 nodist_libgestures_plugin_la_SOURCES = $(nodist_SOURCES_gestures)
 # Force per-target objects:
-libgestures_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgestures_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgestures_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libgestures_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_gestures)
+libgestures_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_gestures)
+libgestures_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_gestures)
+libgestures_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_gestures)
 # Set LIBADD and DEPENDENCIES manually:
-libgestures_plugin_la_LIBADD = $(AM_LIBADD)
-libgestures_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libgestures_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_gestures)
+libgestures_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_gestures)
+libgestures_plugin_la_DEPENDENCIES =
 
 # The hotkeys plugin
 libhotkeys_plugin_la_SOURCES = $(SOURCES_hotkeys)
 nodist_libhotkeys_plugin_la_SOURCES = $(nodist_SOURCES_hotkeys)
 # Force per-target objects:
-libhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS)
-libhotkeys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libhotkeys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libhotkeys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_hotkeys)
+libhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_hotkeys)
+libhotkeys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_hotkeys)
+libhotkeys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_hotkeys)
 # Set LIBADD and DEPENDENCIES manually:
-libhotkeys_plugin_la_LIBADD = $(AM_LIBADD)
-libhotkeys_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libhotkeys_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_hotkeys)
+libhotkeys_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_hotkeys)
+libhotkeys_plugin_la_DEPENDENCIES =
 
 # The lirc plugin
 liblirc_plugin_la_SOURCES = $(SOURCES_lirc)
 nodist_liblirc_plugin_la_SOURCES = $(nodist_SOURCES_lirc)
 # Force per-target objects:
-liblirc_plugin_la_CFLAGS = $(AM_CFLAGS)
-liblirc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liblirc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liblirc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_lirc)
+liblirc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_lirc)
+liblirc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_lirc)
+liblirc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_lirc)
 # Set LIBADD and DEPENDENCIES manually:
-liblirc_plugin_la_LIBADD = $(AM_LIBADD)
-liblirc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liblirc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_lirc)
+liblirc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_lirc)
+liblirc_plugin_la_DEPENDENCIES =
 
 # The motion plugin
 libmotion_plugin_la_SOURCES = $(SOURCES_motion)
 nodist_libmotion_plugin_la_SOURCES = $(nodist_SOURCES_motion)
 # Force per-target objects:
-libmotion_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmotion_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmotion_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmotion_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_motion)
+libmotion_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_motion)
+libmotion_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_motion)
+libmotion_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_motion)
 # Set LIBADD and DEPENDENCIES manually:
-libmotion_plugin_la_LIBADD = $(AM_LIBADD)
-libmotion_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmotion_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_motion)
+libmotion_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_motion)
+libmotion_plugin_la_DEPENDENCIES =
 
 # The netsync plugin
 libnetsync_plugin_la_SOURCES = $(SOURCES_netsync)
 nodist_libnetsync_plugin_la_SOURCES = $(nodist_SOURCES_netsync)
 # Force per-target objects:
-libnetsync_plugin_la_CFLAGS = $(AM_CFLAGS)
-libnetsync_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libnetsync_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libnetsync_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_netsync)
+libnetsync_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_netsync)
+libnetsync_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_netsync)
+libnetsync_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_netsync)
 # Set LIBADD and DEPENDENCIES manually:
-libnetsync_plugin_la_LIBADD = $(AM_LIBADD)
-libnetsync_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libnetsync_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_netsync)
+libnetsync_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_netsync)
+libnetsync_plugin_la_DEPENDENCIES =
 
 # The ntservice plugin
 libntservice_plugin_la_SOURCES = $(SOURCES_ntservice)
 nodist_libntservice_plugin_la_SOURCES = $(nodist_SOURCES_ntservice)
 # Force per-target objects:
-libntservice_plugin_la_CFLAGS = $(AM_CFLAGS)
-libntservice_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libntservice_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libntservice_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ntservice)
+libntservice_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ntservice)
+libntservice_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ntservice)
+libntservice_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ntservice)
 # Set LIBADD and DEPENDENCIES manually:
-libntservice_plugin_la_LIBADD = $(AM_LIBADD)
-libntservice_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libntservice_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ntservice)
+libntservice_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ntservice)
+libntservice_plugin_la_DEPENDENCIES =
 
 # The oldrc plugin
 liboldrc_plugin_la_SOURCES = $(SOURCES_oldrc)
 nodist_liboldrc_plugin_la_SOURCES = $(nodist_SOURCES_oldrc)
 # Force per-target objects:
-liboldrc_plugin_la_CFLAGS = $(AM_CFLAGS)
-liboldrc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liboldrc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liboldrc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_oldrc)
+liboldrc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_oldrc)
+liboldrc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_oldrc)
+liboldrc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_oldrc)
 # Set LIBADD and DEPENDENCIES manually:
-liboldrc_plugin_la_LIBADD = $(AM_LIBADD)
-liboldrc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The oldtelnet plugin
-liboldtelnet_plugin_la_SOURCES = $(SOURCES_oldtelnet)
-nodist_liboldtelnet_plugin_la_SOURCES = $(nodist_SOURCES_oldtelnet)
-# Force per-target objects:
-liboldtelnet_plugin_la_CFLAGS = $(AM_CFLAGS)
-liboldtelnet_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liboldtelnet_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-liboldtelnet_plugin_la_LIBADD = $(AM_LIBADD)
-liboldtelnet_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The signals plugin
-libsignals_plugin_la_SOURCES = $(SOURCES_signals)
-nodist_libsignals_plugin_la_SOURCES = $(nodist_SOURCES_signals)
-# Force per-target objects:
-libsignals_plugin_la_CFLAGS = $(AM_CFLAGS)
-libsignals_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsignals_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libsignals_plugin_la_LIBADD = $(AM_LIBADD)
-libsignals_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liboldrc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_oldrc)
+liboldrc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_oldrc)
+liboldrc_plugin_la_DEPENDENCIES =
 

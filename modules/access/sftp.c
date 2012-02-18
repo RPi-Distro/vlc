@@ -2,7 +2,7 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 51d4b6712d33c867ec1f71fc8a48ce69ac65a6d7 $
+ * $Id: 2e8cc57148a2592e515aa2d434c02413ff493fa4 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -48,9 +48,6 @@
 static int  Open ( vlc_object_t* );
 static void Close( vlc_object_t* );
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-  "Caching value for SFTP streams. This value should be set in milliseconds." )
 #define USER_TEXT N_("SFTP user name")
 #define USER_LONGTEXT N_("User name that will be used for the connection.")
 #define PASS_TEXT N_("SFTP password")
@@ -66,10 +63,8 @@ vlc_module_begin ()
     set_capability( "access", 0 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-    add_integer( "sftp-caching", 2 * DEFAULT_PTS_DELAY / 1000, NULL,
-                     CACHING_TEXT, CACHING_LONGTEXT, true );
-    add_integer( "sftp-readsize", 8192, NULL, MTU_TEXT, MTU_LONGTEXT, true )
-    add_integer( "sftp-port", 22, NULL, PORT_TEXT, PORT_LONGTEXT, true )
+    add_integer( "sftp-readsize", 8192, MTU_TEXT, MTU_LONGTEXT, true )
+    add_integer( "sftp-port", 22, PORT_TEXT, PORT_LONGTEXT, true )
     add_shortcut( "sftp" )
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -108,14 +103,16 @@ static int Open( vlc_object_t* p_this )
     int i_port;
     int i_ret;
     vlc_url_t url;
+    size_t i_len;
+    int i_type;
 
-    if( !p_access->psz_path )
+    if( !p_access->psz_location )
         return VLC_EGENERIC;
 
     STANDARD_BLOCK_ACCESS_INIT;
 
     /* Parse the URL */
-    char* path = p_access->psz_path;
+    const char* path = p_access->psz_location;
     vlc_UrlParse( &url, path, 0 );
 
     /* Check for some parameters */
@@ -142,7 +139,7 @@ static int Open( vlc_object_t* p_this )
     }
 
     if( url.i_port <= 0 )
-        i_port = var_CreateGetInteger( p_access, "sftp-port" );
+        i_port = var_InheritInteger( p_access, "sftp-port" );
     else
         i_port = url.i_port;
 
@@ -151,7 +148,9 @@ static int Open( vlc_object_t* p_this )
     p_sys->i_socket = net_Connect( p_access, url.psz_host, i_port, SOCK_STREAM, 0 );
 
     /* Create the ssh connexion and wait until the server answer */
-    p_sys->ssh_session = libssh2_session_init();
+    if( ( p_sys->ssh_session = libssh2_session_init() ) == NULL )
+        goto error;
+
     while( ( i_ret = libssh2_session_startup( p_sys->ssh_session,
                                               p_sys->i_socket ) )
            == LIBSSH2_ERROR_EAGAIN );
@@ -162,15 +161,46 @@ static int Open( vlc_object_t* p_this )
         goto error;
     }
 
-    /* Ask for the fingerprint ... */
-    // TODO: check it
+    /* Set the socket in non-blocking mode */
     libssh2_session_set_blocking( p_sys->ssh_session, 1 );
-    const char* fingerprint = libssh2_hostkey_hash( p_sys->ssh_session, LIBSSH2_HOSTKEY_HASH_MD5 );
-    fprintf(stderr, "Fingerprint: ");
-    for( int i = 0; i < 16; i++) {
-        fprintf(stderr, "%02X ", (unsigned char)fingerprint[i]);
+
+    /* List the know hosts */
+    LIBSSH2_KNOWNHOSTS *ssh_knownhosts = libssh2_knownhost_init( p_sys->ssh_session );
+    if( !ssh_knownhosts )
+        goto error;
+
+    char *psz_home = config_GetUserDir( VLC_HOME_DIR );
+    char *psz_knownhosts_file;
+    asprintf( &psz_knownhosts_file, "%s/.ssh/known_hosts", psz_home );
+    libssh2_knownhost_readfile( ssh_knownhosts, psz_knownhosts_file,
+                                LIBSSH2_KNOWNHOST_FILE_OPENSSH );
+    free( psz_knownhosts_file );
+    free( psz_home );
+
+    const char *fingerprint = libssh2_session_hostkey( p_sys->ssh_session, &i_len, &i_type );
+    struct libssh2_knownhost *host;
+    int check = libssh2_knownhost_check( ssh_knownhosts, url.psz_host,
+                                         fingerprint, i_len,
+                                         LIBSSH2_KNOWNHOST_TYPE_PLAIN |
+                                         LIBSSH2_KNOWNHOST_KEYENC_RAW,
+                                         &host );
+
+    libssh2_knownhost_free( ssh_knownhosts );
+
+    /* Check that it does match or at least that the host is unkown */
+    switch(check)
+    {
+    case LIBSSH2_KNOWNHOST_CHECK_FAILURE:
+    case LIBSSH2_KNOWNHOST_CHECK_NOTFOUND:
+        msg_Dbg( p_access, "Unable to check the remote host" );
+        break;
+    case LIBSSH2_KNOWNHOST_CHECK_MATCH:
+        msg_Dbg( p_access, "Succesfuly matched the host" );
+        break;
+    case LIBSSH2_KNOWNHOST_CHECK_MISMATCH:
+        msg_Err( p_access, "The host does not match !! The remote key changed !!" );
+        goto error;
     }
-    fprintf(stderr, "\n");
 
     //TODO: ask for the available auth methods
 
@@ -198,18 +228,16 @@ static int Open( vlc_object_t* p_this )
         goto error;
     }
 
-    /* Get some informations */
+    /* Get some information */
     LIBSSH2_SFTP_ATTRIBUTES attributes;
     if( libssh2_sftp_stat( p_sys->sftp_session, url.psz_path, &attributes ) )
     {
-        msg_Err( p_access, "Impossible to get informations about the remote file %s", url.psz_path );
+        msg_Err( p_access, "Impossible to get information about the remote file %s", url.psz_path );
         goto error;
     }
     p_access->info.i_size = attributes.filesize;
 
-    /* Create the two variables */
-    var_Create( p_access, "sftp-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    p_sys->i_read_size = var_CreateGetInteger( p_access, "sftp-readsize" );
+    p_sys->i_read_size = var_InheritInteger( p_access, "sftp-readsize" );
 
     free( psz_password );
     free( psz_username );
@@ -217,6 +245,8 @@ static int Open( vlc_object_t* p_this )
     return VLC_SUCCESS;
 
 error:
+    if( p_sys->ssh_session )
+        libssh2_session_free( p_sys->ssh_session );
     free( psz_password );
     free( psz_username );
     vlc_UrlClean( &url );
@@ -309,7 +339,8 @@ static int Control( access_t* p_access, int i_query, va_list args )
 
     case ACCESS_GET_PTS_DELAY:
         pi_64 = (int64_t*)va_arg( args, int64_t* );
-        *pi_64 = (int64_t)var_GetInteger( p_access, "sftp-caching" ) * INT64_C(1000);
+        *pi_64 = INT64_C(1000)
+               * var_InheritInteger( p_access, "network-caching" );
         break;
 
     case ACCESS_SET_PAUSE_STATE:

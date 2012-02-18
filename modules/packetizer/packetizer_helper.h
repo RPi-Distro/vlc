@@ -2,7 +2,7 @@
  * packetizer.h: Packetizer helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: b46b4657fcfb1fe16f15aaf4f861bffaa375b5cb $
+ * $Id: 87f5b05d70411aa8f5e4293967e58904c18291bf $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -29,7 +29,11 @@
 enum
 {
     STATE_NOSYNC,
-    STATE_NEXT_SYNC
+    STATE_SYNC,
+    STATE_HEADER,
+    STATE_NEXT_SYNC,
+    STATE_GET_DATA,
+    STATE_SEND_DATA
 };
 
 typedef void (*packetizer_reset_t)( void *p_private, bool b_broken );
@@ -68,7 +72,7 @@ static inline void packetizer_Init( packetizer_t *p_pack,
                                     void *p_private )
 {
     p_pack->i_state = STATE_NOSYNC;
-    p_pack->bytestream = block_BytestreamInit();
+    block_BytestreamInit( &p_pack->bytestream );
     p_pack->i_offset = 0;
     p_pack->b_flushing = false;
 

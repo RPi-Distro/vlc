@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: abd2e5583ce31da066f6e4b05230747ac5a23dd4 $
+ * $Id: 1e2330012fb2b485606435957aa2e879c565a649 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,7 +28,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <X11/Xlib.h>
-#include <limits.h>
+#include <X11/extensions/Xinerama.h>
 
 #include "x11_factory.hpp"
 #include "x11_display.hpp"
@@ -61,7 +61,7 @@ X11Factory::~X11Factory()
 bool X11Factory::init()
 {
     // make sure xlib is safe-thread
-    if( !vlc_xlib_init( VLC_OBJECT(getIntf()) ) )
+    if( !vlc_xlib_init( VLC_OBJECT( getIntf() ) ) )
     {
         msg_Err( getIntf(), "initializing xlib for multi-threading failed" );
         return false;
@@ -90,6 +90,9 @@ bool X11Factory::init()
     datadir = config_GetDataDir( getIntf() );
     m_resourcePath.push_back( (string)datadir + "/skins2" );
     free( datadir );
+
+    // Determine the monitor geometry
+    getDefaultGeometry( &m_screenWidth, &m_screenHeight );
 
     return true;
 }
@@ -172,17 +175,133 @@ OSPopup *X11Factory::createOSPopup()
 
 int X11Factory::getScreenWidth() const
 {
-    Display *pDisplay = m_pDisplay->getDisplay();
-    int screen = DefaultScreen( pDisplay );
-    return DisplayWidth( pDisplay, screen );
+    return m_screenWidth;
 }
 
 
 int X11Factory::getScreenHeight() const
 {
+    return m_screenHeight;
+}
+
+
+void X11Factory::getMonitorInfo( const GenericWindow &rWindow,
+                                 int* p_x, int* p_y,
+                                 int* p_width, int* p_height ) const
+{
+    // initialize to default geometry
+    *p_x = 0;
+    *p_y = 0;
+    *p_width = getScreenWidth();
+    *p_height = getScreenHeight();
+
+    // Use Xinerama to determine the monitor where the video
+    // mostly resides (biggest surface)
     Display *pDisplay = m_pDisplay->getDisplay();
+    Window wnd = (Window)rWindow.getOSHandle();
+    Window root = DefaultRootWindow( pDisplay );
+    Window child_wnd;
+
+    int x, y;
+    unsigned int w, h, border, depth;
+    XGetGeometry( pDisplay, wnd, &root, &x, &y, &w, &h, &border, &depth );
+    XTranslateCoordinates( pDisplay, wnd, root, 0, 0, &x, &y, &child_wnd );
+
+    int num;
+    XineramaScreenInfo* info = XineramaQueryScreens( pDisplay, &num );
+    if( info )
+    {
+        Region reg1 = XCreateRegion();
+        XRectangle rect1 = { x, y, w, h };
+        XUnionRectWithRegion( &rect1, reg1, reg1 );
+
+        unsigned int surface = 0;
+        for( int i = 0; i < num; i++ )
+        {
+            Region reg2 = XCreateRegion();
+            XRectangle rect2 = { info[i].x_org, info[i].y_org,
+                                 info[i].width, info[i].height };
+            XUnionRectWithRegion( &rect2, reg2, reg2 );
+
+            Region reg = XCreateRegion();
+            XIntersectRegion( reg1, reg2, reg );
+            XRectangle rect;
+            XClipBox( reg, &rect );
+            unsigned int surf = rect.width * rect.height;
+            if( surf > surface )
+            {
+               surface = surf;
+               *p_x = info[i].x_org;
+               *p_y = info[i].y_org;
+               *p_width = info[i].width;
+               *p_height = info[i].height;
+            }
+            XDestroyRegion( reg );
+            XDestroyRegion( reg2 );
+        }
+        XDestroyRegion( reg1 );
+        XFree( info );
+    }
+}
+
+
+void X11Factory::getMonitorInfo( int numScreen,
+                                 int* p_x, int* p_y,
+                                 int* p_width, int* p_height ) const
+{
+    // initialize to default geometry
+    *p_x = 0;
+    *p_y = 0;
+    *p_width = getScreenWidth();
+    *p_height = getScreenHeight();
+
+    // try to detect the requested screen via Xinerama
+    if( numScreen >= 0 )
+    {
+        int num;
+        Display *pDisplay = m_pDisplay->getDisplay();
+        XineramaScreenInfo* info = XineramaQueryScreens( pDisplay, &num );
+        if( info )
+        {
+            if( numScreen < num )
+            {
+                *p_x = info[numScreen].x_org;
+                *p_y = info[numScreen].y_org;
+                *p_width = info[numScreen].width;
+                *p_height = info[numScreen].height;
+            }
+            XFree( info );
+        }
+    }
+}
+
+
+void X11Factory::getDefaultGeometry( int* p_width, int* p_height ) const
+{
+    Display *pDisplay = m_pDisplay->getDisplay();
+
+    // Initialize to defaults
     int screen = DefaultScreen( pDisplay );
-    return DisplayHeight( pDisplay, screen );
+    *p_width = DisplayWidth( pDisplay, screen );
+    *p_height = DisplayHeight( pDisplay, screen );
+
+    // Use Xinerama to restrain to the first monitor instead of the full
+    // virtual screen
+    int num;
+    XineramaScreenInfo* info = XineramaQueryScreens( pDisplay, &num );
+    if( info )
+    {
+        for( int i = 0; i < num; i++ )
+        {
+            if( info[i].x_org == 0 && info[i].y_org == 0 )
+            {
+                *p_width = info[i].width;
+                *p_height = info[i].height;
+                break;
+            }
+        }
+        XFree( info );
+    }
 }
 
 
@@ -208,11 +327,6 @@ void X11Factory::getMousePos( int &rXPos, int &rYPos ) const
 
 void X11Factory::rmDir( const string &rPath )
 {
-    struct
-    {
-        struct dirent ent;
-        char buf[NAME_MAX + 1];
-    } buf;
     struct dirent *file;
     DIR *dir;
 
@@ -220,7 +334,7 @@ void X11Factory::rmDir( const string &rPath )
     if( !dir ) return;
 
     // Parse the directory and remove everything it contains
-    while( readdir_r( dir, &buf.ent, &file ) == 0 && file != NULL )
+    while( (file = readdir( dir )) )
     {
         struct stat statbuf;
         string filename = file->d_name;
@@ -233,7 +347,7 @@ void X11Factory::rmDir( const string &rPath )
 
         filename = rPath + "/" + filename;
 
-        if( !stat( filename.c_str(), &statbuf ) && S_ISDIR(statbuf.st_mode) )
+        if( !stat( filename.c_str(), &statbuf ) && statbuf.st_mode & S_IFDIR )
         {
             rmDir( filename );
         }
@@ -249,6 +363,5 @@ void X11Factory::rmDir( const string &rPath )
     // And delete it
     rmdir( rPath.c_str() );
 }
-
 
 #endif

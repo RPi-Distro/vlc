@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: f6ae1722faaae93013a48241eac1c9b3d3987691 $
+ * $Id: af00625e264abcac77605282028d1b010156cb79 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire -at- videolan -dot- org>
@@ -40,7 +40,6 @@
 
 #include <vlc_filter.h>
 #include <vlc_block.h>
-#include <vlc_osd.h>
 
 #include <vlc_stream.h>
 #include <vlc_xml.h>
@@ -190,42 +189,41 @@ static const char *const ppsz_title_modes[] =
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-    set_capability( "sub filter", 1 )
+    set_capability( "sub source", 1 )
     set_shortname( N_("RSS / Atom") )
     set_help(RSS_HELP)
     set_callbacks( CreateFilter, DestroyFilter )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_SUBPIC )
-    add_string( CFG_PREFIX "urls", NULL, NULL, MSG_TEXT, MSG_LONGTEXT, false )
+    add_string( CFG_PREFIX "urls", NULL, MSG_TEXT, MSG_LONGTEXT, false )
 
     set_section( N_("Position"), NULL )
-    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true )
-    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true )
-    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false )
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
+    add_integer( CFG_PREFIX "x", 0, POSX_TEXT, POSX_LONGTEXT, true )
+    add_integer( CFG_PREFIX "y", 0, POSY_TEXT, POSY_LONGTEXT, true )
+    add_integer( CFG_PREFIX "position", -1, POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions )
 
     set_section( N_("Font"), NULL )
     /* 5 sets the default to top [1] left [4] */
-    add_integer_with_range( CFG_PREFIX "opacity", 255, 0, 255, NULL,
+    add_integer_with_range( CFG_PREFIX "opacity", 255, 0, 255,
         OPACITY_TEXT, OPACITY_LONGTEXT, false )
-    add_integer( CFG_PREFIX "color", 0xFFFFFF, NULL, COLOR_TEXT, COLOR_LONGTEXT,
+    add_rgb( CFG_PREFIX "color", 0xFFFFFF, COLOR_TEXT, COLOR_LONGTEXT,
                   false )
-        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL )
-    add_integer( CFG_PREFIX "size", -1, NULL, SIZE_TEXT, SIZE_LONGTEXT, false )
+        change_integer_list( pi_color_values, ppsz_color_descriptions )
+    add_integer( CFG_PREFIX "size", -1, SIZE_TEXT, SIZE_LONGTEXT, false )
 
     set_section( N_("Misc"), NULL )
-    add_integer( CFG_PREFIX "speed", 100000, NULL, SPEED_TEXT, SPEED_LONGTEXT,
+    add_integer( CFG_PREFIX "speed", 100000, SPEED_TEXT, SPEED_LONGTEXT,
                  false )
-    add_integer( CFG_PREFIX "length", 60, NULL, LENGTH_TEXT, LENGTH_LONGTEXT,
+    add_integer( CFG_PREFIX "length", 60, LENGTH_TEXT, LENGTH_LONGTEXT,
                  false )
-    add_integer( CFG_PREFIX "ttl", 1800, NULL, TTL_TEXT, TTL_LONGTEXT, false )
-    add_bool( CFG_PREFIX "images", true, NULL, IMAGE_TEXT, IMAGE_LONGTEXT, false )
-    add_integer( CFG_PREFIX "title", default_title, NULL, TITLE_TEXT, TITLE_LONGTEXT, false )
-        change_integer_list( pi_title_modes, ppsz_title_modes, NULL )
+    add_integer( CFG_PREFIX "ttl", 1800, TTL_TEXT, TTL_LONGTEXT, false )
+    add_bool( CFG_PREFIX "images", true, IMAGE_TEXT, IMAGE_LONGTEXT, false )
+    add_integer( CFG_PREFIX "title", default_title, TITLE_TEXT, TITLE_LONGTEXT, false )
+        change_integer_list( pi_title_modes, ppsz_title_modes )
 
     set_description( N_("RSS and Atom feed display") )
-    add_shortcut( "rss" )
-    add_shortcut( "atom" )
+    add_shortcut( "rss", "atom" )
 vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
@@ -304,7 +302,7 @@ static int CreateFilter( vlc_object_t *p_this )
 
     /* Misc init */
     vlc_mutex_init( &p_sys->lock );
-    p_filter->pf_sub_filter = Filter;
+    p_filter->pf_sub_source = Filter;
     p_sys->last_date = (mtime_t)0;
     p_sys->b_fetched = false;
 
@@ -484,7 +482,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     /*  where to locate the string: */
     if( p_sys->i_pos < 0 )
     {   /*  set to an absolute xy */
-        p_spu->p_region->i_align = OSD_ALIGN_LEFT | OSD_ALIGN_TOP;
+        p_spu->p_region->i_align = SUBPICTURE_ALIGN_LEFT | SUBPICTURE_ALIGN_TOP;
         p_spu->b_absolute = true;
     }
     else
@@ -681,32 +679,29 @@ static bool ParseFeed( filter_t *p_filter, xml_reader_t *p_xml_reader,
                       rss_feed_t *p_feed )
 {
     VLC_UNUSED(p_filter);
+    const char *node;
     char *psz_eltname = NULL;
 
     bool b_is_item = false;
     bool b_is_image = false;
 
     int i_item = 0;
+    int type;
 
-    while( xml_ReaderRead( p_xml_reader ) == 1 )
+    while( (type = xml_ReaderNextNode( p_xml_reader, &node )) > 0 )
     {
-        switch( xml_ReaderNodeType( p_xml_reader ) )
+        switch( type )
         {
-        // Error
-        case -1:
-            goto end;
-
         case XML_READER_STARTELEM:
-            free( psz_eltname );
-            psz_eltname = xml_ReaderName( p_xml_reader );
-            if( !psz_eltname )
+#ifdef RSS_DEBUG
+            msg_Dbg( p_filter, "element <%s>", node );
+#endif
+            psz_eltname = strdup( node );
+            if( unlikely(!psz_eltname) )
                 goto end;
 
-#ifdef RSS_DEBUG
-            msg_Dbg( p_filter, "element name: %s", psz_eltname );
-#endif
             /* rss or atom */
-            if( !strcmp( psz_eltname, "item" ) || !strcmp( psz_eltname, "entry" ) )
+            if( !strcmp( node, "item" ) || !strcmp( node, "entry" ) )
             {
                 b_is_item = true;
                 p_feed->i_items++;
@@ -717,34 +712,29 @@ static bool ParseFeed( filter_t *p_filter, xml_reader_t *p_xml_reader,
                 p_feed->p_items[p_feed->i_items-1].psz_link = NULL;
             }
             /* rss */
-            else if( !strcmp( psz_eltname, "image" ) )
+            else if( !strcmp( node, "image" ) )
             {
                 b_is_image = true;
             }
             /* atom */
-            else if( !strcmp( psz_eltname, "link" ) )
+            else if( !strcmp( node, "link" ) )
             {
+                const char *name, *value;
                 char *psz_href = NULL;
                 char *psz_rel = NULL;
-                while( xml_ReaderNextAttr( p_xml_reader ) == VLC_SUCCESS )
+
+                while( (name = xml_ReaderNextAttr( p_xml_reader, &value )) != NULL )
                 {
-                    char *psz_name = xml_ReaderName( p_xml_reader );
-                    char *psz_value = xml_ReaderValue( p_xml_reader );
-                    if( !strcmp( psz_name, "rel" ) )
+                    if( !strcmp( name, "rel" ) )
                     {
                         free( psz_rel );
-                        psz_rel = psz_value;
+                        psz_rel = strdup( value );
                     }
-                    else if( !strcmp( psz_name, "href" ) )
+                    else if( !strcmp( name, "href" ) )
                     {
                         free( psz_href );
-                        psz_href = psz_value;
+                        psz_href = strdup( value );
                     }
-                    else
-                    {
-                        free( psz_value );
-                    }
-                    free( psz_name );
                 }
 
                 /* "rel" and "href" must be defined */
@@ -777,42 +767,32 @@ static bool ParseFeed( filter_t *p_filter, xml_reader_t *p_xml_reader,
             break;
 
         case XML_READER_ENDELEM:
-            free( psz_eltname );
-            psz_eltname = xml_ReaderName( p_xml_reader );
-            if( !psz_eltname )
-                goto end;
-
+            FREENULL( psz_eltname );
 #ifdef RSS_DEBUG
-            msg_Dbg( p_filter, "element end : %s", psz_eltname );
+            msg_Dbg( p_filter, "element end </%s>", node );
 #endif
             /* rss or atom */
-            if( !strcmp( psz_eltname, "item" ) || !strcmp( psz_eltname, "entry" ) )
+            if( !strcmp( node, "item" ) || !strcmp( node, "entry" ) )
             {
                 b_is_item = false;
                 i_item++;
             }
             /* rss */
-            else if( !strcmp( psz_eltname, "image" ) )
+            else if( !strcmp( node, "image" ) )
             {
                 b_is_image = false;
             }
-            FREENULL( psz_eltname );
             break;
 
         case XML_READER_TEXT:
         {
             if( !psz_eltname )
                 break;
-            char *psz_eltvalue = xml_ReaderValue( p_xml_reader );
-            if( !psz_eltvalue )
-                goto end;
 
-            char *psz_clean = removeWhiteChars( psz_eltvalue );
-            free( psz_eltvalue );
-            psz_eltvalue = psz_clean;
+            char *psz_eltvalue = removeWhiteChars( node );
 
 #ifdef RSS_DEBUG
-            msg_Dbg( p_filter, "  text : <%s>", psz_eltvalue );
+            msg_Dbg( p_filter, "  text : \"%s\"", psz_eltvalue );
 #endif
             /* Is it an item ? */
             if( b_is_item )
@@ -969,7 +949,7 @@ static rss_feed_t* FetchRSS( filter_t *p_filter )
         }
 
         msg_Dbg( p_filter, "done with %s RSS/Atom feed", p_feed->psz_url );
-        xml_ReaderDelete( p_xml, p_xml_reader );
+        xml_ReaderDelete( p_xml_reader );
         stream_Delete( p_stream );
     }
 
@@ -979,7 +959,7 @@ static rss_feed_t* FetchRSS( filter_t *p_filter )
 error:
     FreeRSS( p_feeds, i_feed + 1 );
     if( p_xml_reader )
-        xml_ReaderDelete( p_xml, p_xml_reader );
+        xml_ReaderDelete( p_xml_reader );
     if( p_stream )
         stream_Delete( p_stream );
     if( p_xml )

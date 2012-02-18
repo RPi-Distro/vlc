@@ -2,7 +2,7 @@
  * rawdv.c : raw DV input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 9b9611d85d70e89389d689f78c4bc3072b680ea9 $
+ * $Id: 26c5b4532ed5fc3be1d73280ab1fcda27bd41b7c $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Paul Corke <paul dot corke at datatote dot co dot uk>
@@ -50,7 +50,7 @@ vlc_module_begin ()
     set_capability( "demux", 3 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
-    add_bool( "rawdv-hurry-up", false, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT, false )
+    add_bool( "rawdv-hurry-up", false, HURRYUP_TEXT, HURRYUP_LONGTEXT, false )
     set_callbacks( Open, Close )
     add_shortcut( "rawdv" )
 vlc_module_end ()

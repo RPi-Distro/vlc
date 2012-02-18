@@ -2,7 +2,7 @@
  * vlcproc.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 13d12f350c303ba70ca0cbdcb1b063801cf86172 $
+ * $Id: b004c0b8cf40aededcb27293627cd6bcb111e08b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -36,12 +36,12 @@
 #include "../vars/volume.hpp"
 #include "../utils/position.hpp"
 #include "../utils/var_text.hpp"
+#include "../utils/var_string.hpp"
 #include "../commands/cmd_generic.hpp"
 #include "../controls/ctrl_video.hpp"
 
 class OSTimer;
 class VarBool;
-struct aout_instance_t;
 struct vout_window_t;
 
 
@@ -81,6 +81,10 @@ public:
     VarText &getStreamSampleRateVar()
         { return *((VarText*)(m_cVarStreamSampleRate.get())); }
 
+    /// Getter for the stream Art url variable
+    VarString &getStreamArtVar()
+       { return *((VarString*)(m_cVarStreamArt.get())); }
+
     /// Getter/Setter for the fullscreen variable
     VarBool &getFullscreenVar() { return *((VarBool*)(m_cVarFullscreen.get())); }
     void setFullscreenVar( bool );
@@ -106,6 +110,8 @@ public:
 
     void on_intf_show_changed( vlc_object_t* p_obj, vlc_value_t newVal );
 
+    void on_mouse_moved_changed( vlc_object_t* p_obj, vlc_value_t newVal );
+
 protected:
     // Protected because it is a singleton
     VlcProc( intf_thread_t *pIntf );
@@ -128,6 +134,7 @@ private:
     VariablePtr m_cVarStreamURI;
     VariablePtr m_cVarStreamBitRate;
     VariablePtr m_cVarStreamSampleRate;
+    VariablePtr m_cVarStreamArt;
     /// Variable for the "mute" state
     VariablePtr m_cVarMute;
     /// Variables related to the input
@@ -152,7 +159,7 @@ private:
     /// Vout thread
     vout_thread_t *m_pVout;
     /// Audio output
-    aout_instance_t *m_pAout;
+    audio_output_t *m_pAout;
     bool m_bEqualizer_started;
 
     /**
@@ -198,11 +205,6 @@ private:
                              vlc_value_t oldVal, vlc_value_t newVal,
                              void *pParam );
 
-    /// Callback for skins2-to-load variable
-    static int onSkinToLoad( vlc_object_t *pObj, const char *pVariable,
-                             vlc_value_t oldVal, vlc_value_t newVal,
-                             void *pParam );
-
     static int onInteraction( vlc_object_t *pObj, const char *pVariable,
                               vlc_value_t oldVal, vlc_value_t newVal,
                               void *pParam );
@@ -220,6 +222,10 @@ private:
                                   vlc_value_t oldVal, vlc_value_t newVal,
                                   void *pParam );
 
+    /// Generic Callback for intf-event
+    static int onGenericCallback2( vlc_object_t *pObj, const char *pVariable,
+                                   vlc_value_t oldVal, vlc_value_t newVal,
+                                   void *pParam );
 };
 
 

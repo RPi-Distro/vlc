@@ -2,7 +2,7 @@
  * a52.c: parse A/52 audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2002 the VideoLAN team
- * $Id: 8ba2d25fae2d5de060b1d803b9e37c252ef901e3 $
+ * $Id: 554b00789b7486a38c381f3d137de3a45e5a47f5 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -35,8 +35,11 @@
 #include <vlc_codec.h>
 #include <vlc_aout.h>
 #include <vlc_block_helper.h>
+#include <vlc_modules.h>
 
 #include "a52.h"
+
+#include "../packetizer/packetizer_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -84,20 +87,10 @@ struct decoder_sys_t
     vlc_a52_header_t frame;
 };
 
-enum {
-
-    STATE_NOSYNC,
-    STATE_SYNC,
-    STATE_HEADER,
-    STATE_NEXT_SYNC,
-    STATE_GET_DATA,
-    STATE_SEND_DATA
-};
-
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
-static void *DecodeBlock  ( decoder_t *, block_t ** );
+static block_t *DecodeBlock  ( decoder_t *, block_t ** );
 
 static uint8_t       *GetOutBuffer ( decoder_t *, block_t ** );
 static aout_buffer_t *GetAoutBuffer( decoder_t * );
@@ -139,7 +132,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
     date_Set( &p_sys->end_date, 0 );
     p_sys->i_pts = VLC_TS_INVALID;
 
-    p_sys->bytestream = block_BytestreamInit();
+    block_BytestreamInit( &p_sys->bytestream );
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
@@ -149,11 +142,9 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
 
     /* Set callback */
     if( b_packetizer )
-        p_dec->pf_packetize    = (block_t *(*)(decoder_t *, block_t **))
-            DecodeBlock;
+        p_dec->pf_packetize    = DecodeBlock;
     else
-        p_dec->pf_decode_audio = (aout_buffer_t *(*)(decoder_t *, block_t **))
-            DecodeBlock;
+        p_dec->pf_decode_audio = DecodeBlock;
     return VLC_SUCCESS;
 }
 
@@ -175,7 +166,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
  ****************************************************************************
  * This function is called just after the thread is launched.
  ****************************************************************************/
-static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t p_header[VLC_A52_HEADER_SIZE];
@@ -325,8 +316,6 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             return p_out_buffer;
         }
     }
-
-    return NULL;
 }
 
 /*****************************************************************************
@@ -393,14 +382,14 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
 static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    aout_buffer_t *p_buf;
 
-    p_buf = decoder_NewAudioBuffer( p_dec, p_sys->frame.i_samples );
-    if( p_buf == NULL ) return NULL;
-
-    p_buf->i_pts = date_Get( &p_sys->end_date );
-    p_buf->i_length = date_Increment( &p_sys->end_date,
-                                      p_sys->frame.i_samples ) - p_buf->i_pts;
+    aout_buffer_t *p_buf = decoder_NewAudioBuffer( p_dec, p_sys->frame.i_samples );
+    if( p_buf )
+    {
+        p_buf->i_pts = date_Get( &p_sys->end_date );
+        p_buf->i_length = date_Increment( &p_sys->end_date,
+                                          p_sys->frame.i_samples ) - p_buf->i_pts;
+    }
 
     return p_buf;
 }
@@ -411,15 +400,14 @@ static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
 static block_t *GetSoutBuffer( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    block_t *p_block;
 
-    p_block = block_New( p_dec, p_sys->frame.i_size );
-    if( p_block == NULL ) return NULL;
-
-    p_block->i_pts = p_block->i_dts = date_Get( &p_sys->end_date );
-
-    p_block->i_length =
-        date_Increment( &p_sys->end_date, p_sys->frame.i_samples ) - p_block->i_pts;
+    block_t *p_block = block_New( p_dec, p_sys->frame.i_size );
+    if( p_block )
+    {
+        p_block->i_pts = p_block->i_dts = date_Get( &p_sys->end_date );
+        p_block->i_length =
+            date_Increment( &p_sys->end_date, p_sys->frame.i_samples ) - p_block->i_pts;
+    }
 
     return p_block;
 }

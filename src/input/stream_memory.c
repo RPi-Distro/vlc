@@ -1,24 +1,24 @@
 /*****************************************************************************
  * stream_memory.c: stream_t wrapper around memory buffer
  *****************************************************************************
- * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: d73d846cdf17bb2c2bb59788eb9729988ef4f578 $
+ * Copyright (C) 1999-2008 VLC authors and VideoLAN
+ * $Id: 43b8f4e752ec2e6a91feff44f7ec14e0f865496e $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -76,14 +76,7 @@ stream_t *stream_MemoryNew( vlc_object_t *p_this, uint8_t *p_buffer,
     s->pf_peek    = Peek;
     s->pf_control = Control;
     s->pf_destroy = Delete;
-
-    vlc_object_attach( s, p_this );
-
-    /* Get a weak link to the parent input */
-    /* FIXME: The usage of vlc_object_find has to be removed. */
-    s->p_input = (input_thread_t *)vlc_object_find( p_this, VLC_OBJECT_INPUT, FIND_PARENT );
-    if(s->p_input)
-        vlc_object_release((vlc_object_t*)s->p_input);
+    s->p_input = NULL;
 
     return s;
 }
@@ -104,7 +97,6 @@ static int Control( stream_t *s, int i_query, va_list args )
 
     bool *p_bool;
     uint64_t   *pi_64, i_64;
-    int        i_int;
 
     switch( i_query )
     {
@@ -138,7 +130,6 @@ static int Control( stream_t *s, int i_query, va_list args )
             return VLC_EGENERIC;
 
         case STREAM_CONTROL_ACCESS:
-            i_int = (int) va_arg( args, int );
             msg_Err( s, "Hey, what are you thinking ?"
                      "DON'T USE STREAM_CONTROL_ACCESS !!!" );
             return VLC_EGENERIC;

@@ -2,21 +2,21 @@
  * utf8.c: Test for UTF-8 encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: f34a953c9ce95d2e95a38f1871b1d8ccfb111aff $
+ * $Id: d8bb381d7430f200339b709f8e4c1ed4964b8ae9 $
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -24,7 +24,7 @@
 #endif
 
 #include <vlc_common.h>
-#include "vlc_charset.h"
+#include <vlc_charset.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,6 +68,37 @@ static void test (const char *in, const char *out)
     free (str);
 }
 
+static void test_strcasestr (const char *h, const char *n, ssize_t offset)
+{
+    printf ("\"%s\" should %sbe found in \"%s\"...\n", n,
+            (offset != -1) ? "" : "not ", h);
+
+    const char *ret = vlc_strcasestr (h, n);
+    if (offset == -1)
+    {
+        if (ret != NULL)
+        {
+            printf ("ERROR: got \"%s\"\n", ret);
+            exit (10);
+        }
+    }
+    else
+    {
+        if (ret == NULL)
+        {
+            printf ("ERROR: not found\n");
+            exit (11);
+        }
+        if ((ret - h) != offset)
+        {
+            printf ("ERROR: got \"%s\" instead of \"%s\"\n",
+                    ret, h + offset);
+            exit (12);
+        }
+    }
+}
+
+
 int main (void)
 {
     (void)setvbuf (stdout, NULL, _IONBF, 0);
@@ -85,5 +116,18 @@ int main (void)
     test ("\xC1\x94\xC3\xa9l\xC3\xA9vision", "??élévision"); /* overlong */
 
     test ("Hel\xF0\x83\x85\x87lo", "Hel????lo"); /* more overlong */
+
+    test_strcasestr ("", "", 0);
+    test_strcasestr ("", "a", -1);
+    test_strcasestr ("a", "", 0);
+    test_strcasestr ("heLLo", "l", 2);
+    test_strcasestr ("heLLo", "lo", 3);
+    test_strcasestr ("heLLo", "llo", 2);
+    test_strcasestr ("heLLo", "la", -1);
+    test_strcasestr ("heLLo", "oa", -1);
+    test_strcasestr ("Télé", "é", 1);
+    test_strcasestr ("Télé", "élé", 1);
+    test_strcasestr ("Télé", "léé", -1);
+
     return 0;
 }

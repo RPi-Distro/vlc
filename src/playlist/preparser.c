@@ -1,25 +1,25 @@
 /*****************************************************************************
  * preparse.c: Preparser thread.
  *****************************************************************************
- * Copyright © 1999-2009 the VideoLAN team
- * $Id: 64182e3fca893b1c6326fa08924466b766ae3690 $
+ * Copyright © 1999-2009 VLC authors and VideoLAN
+ * $Id: ba9a8d979c7046d8ed7f78396c02d2d5c5c51b87 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -83,16 +83,12 @@ void playlist_preparser_Push( playlist_preparser_t *p_preparser, input_item_t *p
                  p_preparser->i_waiting, p_item );
     if( !p_preparser->b_live )
     {
-        vlc_thread_t th;
-
-        if( vlc_clone( &th, Thread, p_preparser, VLC_THREAD_PRIORITY_LOW ) )
+        if( vlc_clone_detach( NULL, Thread, p_preparser,
+                              VLC_THREAD_PRIORITY_LOW ) )
             msg_Warn( p_preparser->p_playlist,
                       "cannot spawn pre-parser thread" );
         else
-        {
-            vlc_detach( th );
             p_preparser->b_live = true;
-        }
     }
     vlc_mutex_unlock( &p_preparser->lock );
 }
@@ -130,7 +126,10 @@ static void Preparse( playlist_t *p_playlist, input_item_t *p_item )
     vlc_mutex_unlock( &p_item->lock );
 
     if( i_type != ITEM_TYPE_FILE )
+    {
+        input_item_SetPreparsed( p_item, true );
         return;
+    }
 
     stats_TimerStart( p_playlist, "Preparse run", STATS_TIMER_PREPARSE );
 
@@ -168,7 +167,9 @@ static void Art( playlist_preparser_t *p_preparser, input_item_t *p_item )
         const char *psz_name = vlc_meta_Get( p_item->p_meta, vlc_meta_Title );
 
         if( p_preparser->i_art_policy == ALBUM_ART_ALL &&
-            ( !psz_arturl || strncmp( psz_arturl, "file://", 7 ) ) )
+                ( !psz_arturl ||
+                  ( strncmp( psz_arturl, "file://", 7 ) &&
+                    strncmp( psz_arturl, "attachment://", 13 ) ) ) )
         {
             msg_Dbg( p_playlist, "meta ok for %s, need to fetch art",
                      psz_name ? psz_name : "(null)" );
@@ -220,6 +221,7 @@ static void *Thread( void *data )
         Preparse( p_playlist, p_current );
 
         Art( p_preparser, p_current );
+        vlc_gc_decref(p_current);
     }
     return NULL;
 }

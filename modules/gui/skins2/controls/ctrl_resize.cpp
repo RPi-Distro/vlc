@@ -2,7 +2,7 @@
  * ctrl_resize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1fb37b72bf9ffe6c7aaccbf067c7f52686d59418 $
+ * $Id: 7992d4b0fef4b983f731c09962b182da87fe4d14 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -75,9 +75,9 @@ bool CtrlResize::mouseOver( int x, int y ) const
 }
 
 
-void CtrlResize::draw( OSGraphics &rImage, int xDest, int yDest )
+void CtrlResize::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
 {
-    m_rCtrl.draw( rImage, xDest, yDest );
+    m_rCtrl.draw( rImage, xDest, yDest, w, h );
 }
 
 

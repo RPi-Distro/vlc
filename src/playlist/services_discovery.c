@@ -1,24 +1,24 @@
 /*****************************************************************************
  * services_discovery.c : Manage playlist services_discovery modules
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 1155779385b3b5d448cef2d4a0eb1ccde06a4c1b $
+ * Copyright (C) 1999-2004 VLC authors and VideoLAN
+ * $Id: d8b93d6f12209a043d1d1fd673c94885698d0198 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -30,6 +30,7 @@
 #include "vlc_events.h"
 #include <vlc_services_discovery.h>
 #include <vlc_probe.h>
+#include <vlc_modules.h>
 #include "playlist_internal.h"
 #include "../libvlc.h"
 
@@ -102,35 +103,32 @@ static void services_discovery_Destructor ( vlc_object_t *p_obj );
  * That's how the playlist get's Service Discovery information
  */
 
-/***********************************************************************
- * Create
+/*******************************************************************//**
+ * Create a Service discovery
  ***********************************************************************/
 services_discovery_t *vlc_sd_Create( vlc_object_t *p_super,
                                      const char *cfg )
 {
     services_discovery_t *p_sd;
 
-    p_sd = vlc_custom_create( p_super, sizeof( *p_sd ), VLC_OBJECT_GENERIC,
-                              "services discovery" );
+    p_sd = vlc_custom_create( p_super, sizeof( *p_sd ), "services discovery" );
     if( !p_sd )
         return NULL;
     free(config_ChainCreate( &p_sd->psz_name, &p_sd->p_cfg, cfg ));
 
     vlc_event_manager_t *em = &p_sd->event_manager;
-    vlc_event_manager_init( em, p_sd, (vlc_object_t *)p_sd );
+    vlc_event_manager_init( em, p_sd );
     vlc_event_manager_register_event_type(em, vlc_ServicesDiscoveryItemAdded);
     vlc_event_manager_register_event_type(em, vlc_ServicesDiscoveryItemRemoved);
     vlc_event_manager_register_event_type(em, vlc_ServicesDiscoveryStarted);
     vlc_event_manager_register_event_type(em, vlc_ServicesDiscoveryEnded);
 
     vlc_object_set_destructor( p_sd, services_discovery_Destructor );
-    vlc_object_attach( p_sd, p_super );
-
     return p_sd;
 }
 
-/***********************************************************************
- * Stop
+/*******************************************************************//**
+ * Start a Service Discovery
  ***********************************************************************/
 bool vlc_sd_Start ( services_discovery_t * p_sd )
 {
@@ -151,8 +149,8 @@ bool vlc_sd_Start ( services_discovery_t * p_sd )
     return true;
 }
 
-/***********************************************************************
- * Stop
+/*******************************************************************//**
+ * Stop a Service Discovery
  ***********************************************************************/
 void vlc_sd_Stop ( services_discovery_t * p_sd )
 {
@@ -166,6 +164,9 @@ void vlc_sd_Stop ( services_discovery_t * p_sd )
     p_sd->p_module = NULL;
 }
 
+/*******************************************************************//**
+ * Destroy a Service Discovery
+ ***********************************************************************/
 void vlc_sd_Destroy( services_discovery_t *p_sd )
 {
     config_ChainDestroy( p_sd->p_cfg );
@@ -173,8 +174,8 @@ void vlc_sd_Destroy( services_discovery_t *p_sd )
     vlc_object_release( p_sd );
 }
 
-/***********************************************************************
- * Destructor
+/*******************************************************************//**
+ * Destructor of the Service Discovery
  ***********************************************************************/
 static void services_discovery_Destructor ( vlc_object_t *p_obj )
 {
@@ -183,8 +184,10 @@ static void services_discovery_Destructor ( vlc_object_t *p_obj )
     vlc_event_manager_fini( &p_sd->event_manager );
 }
 
-/***********************************************************************
- * GetLocalizedName
+/*******************************************************************//**
+ * Get the Localized Name
+ *
+ * This is useful for interfaces and libVLC
  ***********************************************************************/
 char *
 services_discovery_GetLocalizedName ( services_discovery_t * p_sd )
@@ -192,8 +195,11 @@ services_discovery_GetLocalizedName ( services_discovery_t * p_sd )
     return strdup( module_get_name( p_sd->p_module, true ) );
 }
 
-/***********************************************************************
- * EventManager
+/*******************************************************************//**
+ * Getter for the EventManager
+ *
+ * You can receive event notification
+ * This is the preferred way to get new items
  ***********************************************************************/
 vlc_event_manager_t *
 services_discovery_EventManager ( services_discovery_t * p_sd )
@@ -201,8 +207,8 @@ services_discovery_EventManager ( services_discovery_t * p_sd )
     return &p_sd->event_manager;
 }
 
-/***********************************************************************
- * AddItem
+/*******************************************************************//**
+ * Add an item to the Service Discovery listing
  ***********************************************************************/
 void
 services_discovery_AddItem ( services_discovery_t * p_sd, input_item_t * p_item,
@@ -216,8 +222,8 @@ services_discovery_AddItem ( services_discovery_t * p_sd, input_item_t * p_item,
     vlc_event_send( &p_sd->event_manager, &event );
 }
 
-/***********************************************************************
- * RemoveItem
+/*******************************************************************//**
+ * Remove an item from the Service Discovery listing
  ***********************************************************************/
 void
 services_discovery_RemoveItem ( services_discovery_t * p_sd, input_item_t * p_item )
@@ -437,6 +443,32 @@ bool playlist_IsServicesDiscoveryLoaded( playlist_t * p_playlist,
     }
     PL_UNLOCK;
     return found;
+}
+
+int playlist_ServicesDiscoveryControl( playlist_t *p_playlist, const char *psz_name, int i_control, ... )
+{
+    playlist_private_t *priv = pl_priv( p_playlist );
+    int i_ret = VLC_EGENERIC;
+    int i;
+
+    PL_LOCK;
+    for( i = 0; i < priv->i_sds; i++ )
+    {
+        vlc_sd_internal_t *sd = priv->pp_sds[i];
+        if( sd->psz_name && !strcmp( psz_name, sd->psz_name ) )
+        {
+            va_list args;
+            va_start( args, i_control );
+            i_ret = vlc_sd_control( sd->p_sd, i_control, args );
+            va_end( args );
+            break;
+        }
+    }
+
+    assert( i != priv->i_sds );
+    PL_UNLOCK;
+
+    return i_ret;
 }
 
 void playlist_ServicesDiscoveryKillAll( playlist_t *p_playlist )

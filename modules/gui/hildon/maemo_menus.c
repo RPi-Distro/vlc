@@ -2,7 +2,7 @@
  * maemo_menus.c : menus creation for the maemo plugin
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: 77d2b323bd8bb22cc8912bcba8a603abddd67e8c $
+ * $Id: 71f17fcb147806d374a2b345f5e0ce0218df248a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -623,7 +623,7 @@ static int CreateChoicesMenu( intf_thread_t *p_intf, GtkMenu *submenu, const cha
             case VLC_VAR_INTEGER:
                 var_Get( p_object, psz_var, &val );
                 if( CURTEXT ) menutext = CURTEXT;
-                else snprintf( menutext, sizeof(string)-1, "%d", CURVAL.i_int );
+                else snprintf( menutext, sizeof(string)-1, "%"PRId64, CURVAL.i_int );
                 CreateAndConnect( p_intf, submenu, psz_var, menutext, "",
                                   ITEM_RADIO, p_object, CURVAL, i_type,
                         ( CURVAL.i_int == val.i_int )

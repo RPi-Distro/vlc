@@ -1,26 +1,26 @@
 /*****************************************************************************
  * vlc_picture.h: picture definitions
  *****************************************************************************
- * Copyright (C) 1999 - 2009 the VideoLAN team
- * $Id: 52c23b280b2fd758b16d093f9ec1f04d0241f0db $
+ * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
+ * $Id: 75502cab11099d73441f6912c383d0dafe91c7ba $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
  *          Olivier Aubert <oaubert 47 videolan d07 org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_PICTURE_H
@@ -63,11 +63,6 @@ typedef struct picture_release_sys_t picture_release_sys_t;
 
 /**
  * Video picture
- *
- * Any picture destined to be displayed by a video output thread should be
- * stored in this structure from it's creation to it's effective display.
- * Picture type and flags should only be modified by the output thread. Note
- * that an empty picture MUST have its flags set to 0.
  */
 struct picture_t
 {
@@ -76,21 +71,9 @@ struct picture_t
      */
     video_frame_format_t format;
 
-    /** Picture data - data can always be freely modified, but p_data may
-     * NEVER be modified. A direct buffer can be handled as the plugin
-     * wishes, it can even swap p_pixels buffers. */
-    uint8_t        *p_data;
     void           *p_data_orig;                /**< pointer before memalign */
     plane_t         p[PICTURE_PLANE_MAX];     /**< description of the planes */
     int             i_planes;                /**< number of allocated planes */
-
-    /** \name Type and flags
-     * Should NOT be modified except by the vout thread
-     * @{*/
-    int             i_status;                             /**< picture flags */
-    int             i_type;                /**< is picture a direct buffer ? */
-    bool            b_slow;                 /**< is picture in slow memory ? */
-    /**@}*/
 
     /** \name Picture management properties
      * These properties can be modified using the video output thread API,
@@ -131,7 +114,7 @@ struct picture_t
  * with picture_Hold and picture_Release. This default management will release
  * p_sys, p_q, p_data_orig fields if non NULL.
  */
-VLC_EXPORT( picture_t *, picture_New, ( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den ) );
+VLC_API picture_t * picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den ) VLC_USED;
 
 /**
  * This function will create a new picture using the given format.
@@ -139,7 +122,7 @@ VLC_EXPORT( picture_t *, picture_New, ( vlc_fourcc_t i_chroma, int i_width, int 
  * When possible, it is preferred to use this function over picture_New
  * as more information about the format is kept.
  */
-VLC_EXPORT( picture_t *, picture_NewFromFormat, ( const video_format_t *p_fmt ) );
+VLC_API picture_t * picture_NewFromFormat( const video_format_t *p_fmt ) VLC_USED;
 
 /**
  * Resource for a picture.
@@ -165,7 +148,7 @@ typedef struct
  *
  * If the resource is NULL then a plain picture_NewFromFormat is returned.
  */
-VLC_EXPORT( picture_t *, picture_NewFromResource, ( const video_format_t *, const picture_resource_t * ) );
+VLC_API picture_t * picture_NewFromResource( const video_format_t *, const picture_resource_t * ) VLC_USED;
 
 /**
  * This function will force the destruction a picture.
@@ -174,7 +157,7 @@ VLC_EXPORT( picture_t *, picture_NewFromResource, ( const video_format_t *, cons
  * Unless used for reimplementing pf_release, you should not use this
  * function but picture_Release.
  */
-VLC_EXPORT( void, picture_Delete, ( picture_t * ) );
+VLC_API void picture_Delete( picture_t * );
 
 /**
  * This function will increase the picture reference count.
@@ -237,18 +220,18 @@ static inline void picture_CopyProperties( picture_t *p_dst, const picture_t *p_
 }
 
 /**
- * This function will reset a picture informations (properties and quantizers).
+ * This function will reset a picture information (properties and quantizers).
  * It is sometimes useful for reusing pictures (like from a pool).
  */
-VLC_EXPORT( void, picture_Reset, ( picture_t * ) );
+VLC_API void picture_Reset( picture_t * );
 
 /**
  * This function will copy the picture pixels.
  * You can safely copy between pictures that do not have the same size,
  * only the compatible(smaller) part will be copied.
  */
-VLC_EXPORT( void, picture_CopyPixels, ( picture_t *p_dst, const picture_t *p_src ) );
-VLC_EXPORT( void, plane_CopyPixels, ( plane_t *p_dst, const plane_t *p_src ) );
+VLC_API void picture_CopyPixels( picture_t *p_dst, const picture_t *p_src );
+VLC_API void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src );
 
 /**
  * This function will copy both picture dynamic properties and pixels.
@@ -281,7 +264,7 @@ static inline void picture_Copy( picture_t *p_dst, const picture_t *p_src )
  *  - if strictly higher than 0, it will override the dimension.
  * If at most one of them is > 0 then the picture aspect ratio will be kept.
  */
-VLC_EXPORT( int, picture_Export, ( vlc_object_t *p_obj, block_t **pp_image, video_format_t *p_fmt, picture_t *p_picture, vlc_fourcc_t i_format, int i_override_width, int i_override_height ) );
+VLC_API int picture_Export( vlc_object_t *p_obj, block_t **pp_image, video_format_t *p_fmt, picture_t *p_picture, vlc_fourcc_t i_format, int i_override_width, int i_override_height );
 
 /**
  * This function will setup all fields of a picture_t without allocating any
@@ -294,30 +277,24 @@ VLC_EXPORT( int, picture_Export, ( vlc_object_t *p_obj, block_t **pp_image, vide
  *
  * It can be useful to get the properties of planes.
  */
-VLC_EXPORT( int, picture_Setup, ( picture_t *, vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den ) );
+VLC_API int picture_Setup( picture_t *, vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den );
+
+
+/**
+ * This function will blend a given subpicture onto a picture.
+ *
+ * The subpicture and all its region must:
+ *  - be absolute.
+ *  - not be ephemere.
+ *  - not have the fade flag.
+ *  - contains only picture (no text rendering).
+ */
+VLC_API void picture_BlendSubpicture( picture_t *, filter_t *p_blend, subpicture_t * );
+
 
 /*****************************************************************************
  * Flags used to describe the status of a picture
  *****************************************************************************/
-
-/* Picture type
- * FIXME are the values meaningfull ? */
-enum
-{
-    EMPTY_PICTURE = 0,                             /* empty buffer */
-    MEMORY_PICTURE = 100,                 /* heap-allocated buffer */
-    DIRECT_PICTURE = 200,                         /* direct buffer */
-};
-
-/* Picture status */
-enum
-{
-    FREE_PICTURE,                              /* free and not allocated */
-    RESERVED_PICTURE,                          /* allocated and reserved */
-    READY_PICTURE,                                  /* ready for display */
-    DISPLAYED_PICTURE,                   /* been displayed but is linked */
-    DESTROYED_PICTURE,                     /* allocated but no more used */
-};
 
 /* Quantification type */
 enum

@@ -1,10 +1,11 @@
 /*****************************************************************************
  * wizard.m: MacOS X Streaming Wizard
  *****************************************************************************
- * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 1b8c9801d04cb47e2565edefd2ed99aec806d9d4 $
+ * Copyright (C) 2005-2012 VLC authors and VideoLAN
+ * $Id: 53f03aee527cc4f209a1d448006e3e12848b089d $
  *
- * Authors: Felix Kühne <fkuehne at videolan dot org>
+ * Authors: Felix Kühne <fkuehne at videolan dot org>,
+ *          Brendon Justin <brendonjustin at gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +32,7 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#import "CompatibilityFixes.h"
 #import "wizard.h"
 #import "intf.h"
 #import "playlist.h"
@@ -71,6 +73,9 @@ static VLCWizard *_o_sharedInstance = nil;
 
 - (void)awakeFromNib
 {
+    if (OSX_LION)
+        [o_wizard_window setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
+
     /* some minor cleanup */
     [o_t2_tbl_plst setEnabled:NO];
     o_userSelections = [[NSMutableDictionary alloc] init];
@@ -321,7 +326,7 @@ static VLCWizard *_o_sharedInstance = nil;
 
     /* page one ("Hello") */
     [o_t1_txt_title setStringValue: _NS("Streaming/Transcoding Wizard")];
-    [o_t1_txt_text setStringValue: _NS("This wizard allows to configure "
+    [o_t1_txt_text setStringValue: _NS("This wizard allows configuring "
         "simple streaming or transcoding setups.")];
     [o_t1_btn_mrInfo_strmg setTitle: _NS("More Info")];
     [o_t1_btn_mrInfo_trnscd setTitle: _NS("More Info")];
@@ -359,7 +364,7 @@ static VLCWizard *_o_sharedInstance = nil;
 
     /* page three ("Streaming 1") */
     [o_t3_txt_title setStringValue: _NS("Streaming")];
-    [o_t3_txt_text setStringValue: _NS("This page allows to select how "
+    [o_t3_txt_text setStringValue: _NS("This page allows selecting how "
         "the input stream will be sent.")];
     [o_t3_box_dest setTitle: _NS("Destination")];
     [o_t3_box_strmgMthd setTitle: _NS("Streaming method")];
@@ -372,7 +377,7 @@ static VLCWizard *_o_sharedInstance = nil;
 
     /* page four ("Transcode 1") */
     [o_t4_title setStringValue: _NS("Transcode")];
-    [o_t4_text setStringValue: _NS("This page allows to change the compression "
+    [o_t4_text setStringValue: _NS("This page allows changing the compression "
         "format of the audio or video tracks. To change only "
         "the container format, proceed to next page.")];
     [o_t4_box_audio setTitle: _NS("Audio")];
@@ -381,14 +386,14 @@ static VLCWizard *_o_sharedInstance = nil;
     [o_t4_ckb_video setTitle: _NS("Transcode video")];
     [o_t4_txt_videoBitrate setStringValue: _NS("Bitrate (kb/s)")];
     [o_t4_txt_videoCodec setStringValue: _NS("Codec")];
-    [o_t4_txt_hintAudio setStringValue: _NS("Enabling this allows to transcode "\
+    [o_t4_txt_hintAudio setStringValue: _NS("Enabling this allows transcoding "\
     "the audio track if one is present in the stream.")];
-    [o_t4_txt_hintVideo setStringValue: _NS("Enabling this allows to transcode "\
+    [o_t4_txt_hintVideo setStringValue: _NS("Enabling this allows transcoding "\
     "the video track if one is present in the stream.")];
 
     /* page five ("Encap") */
     [o_t5_title setStringValue: _NS("Encapsulation format")];
-    [o_t5_text setStringValue: _NS("This page allows to select how the "
+    [o_t5_text setStringValue: _NS("This page allows selecting how the "
         "stream will be encapsulated. Depending on previously chosen settings "
         "all formats won't be available.")];
 
@@ -1150,9 +1155,9 @@ static VLCWizard *_o_sharedInstance = nil;
                     /* check whether the extension is hidden or not.
                      * if not, remove it
                      * we need the casting to make GCC4 happy */
-                    if( [[[NSFileManager defaultManager] fileAttributesAtPath:
+                    if( [[[NSFileManager defaultManager] attributesOfItemAtPath:
                         [[o_userSelections objectForKey:@"pathToStrm"]
-                        objectAtIndex: x] traverseLink: NO] objectForKey:
+                         objectAtIndex: x] error:nil] objectForKey:
                         NSFileExtensionHidden] )
                         fileNameToUse = [NSString stringWithString:
                             [[NSFileManager defaultManager] displayNameAtPath:
@@ -1244,13 +1249,14 @@ static VLCWizard *_o_sharedInstance = nil;
             NSString *tempString = [NSString stringWithFormat:
                 @"%@ (%i/%i)", _NS("Streaming/Transcoding Wizard"),
                 ( x + 1 ), y];
-            input_item_t *p_input = input_item_New( p_playlist,
+            input_item_t *p_input = input_item_New(
                 [[[o_userSelections objectForKey:@"pathToStrm"]
                 objectAtIndex:x] UTF8String],
                 [tempString UTF8String] );
-            input_item_AddOption( p_input, [[[o_userSelections
-                objectForKey:@"opts"] objectAtIndex: x] UTF8String],
-                VLC_INPUT_OPTION_TRUSTED );
+
+            /* use the MRL from the text field, in case the user
+             * modified it */
+            input_item_AddOption( p_input, [[o_t8_fld_mrl stringValue] UTF8String], VLC_INPUT_OPTION_TRUSTED );
 
             if(! [[o_userSelections objectForKey:@"partExtractFrom"]
                 isEqualToString:@""] )
@@ -1258,7 +1264,7 @@ static VLCWizard *_o_sharedInstance = nil;
                 input_item_AddOption( p_input, [[NSString
                     stringWithFormat: @"start-time=%@", [o_userSelections
                     objectForKey: @"partExtractFrom"]] UTF8String],
-					VLC_INPUT_OPTION_TRUSTED );
+                    VLC_INPUT_OPTION_TRUSTED );
             }
 
             if(! [[o_userSelections objectForKey:@"partExtractTo"]
@@ -1650,7 +1656,7 @@ static VLCWizard *_o_sharedInstance = nil;
     /* show a sheet for the help */
     NSBeginInformationalAlertSheet(_NS("Stream to network"),
         _NS("OK"), @"", @"", o_wizard_window, nil, nil, nil, nil,
-        _NS("This allows to stream on a network."));
+        _NS("This allows streaming on a network."));
 }
 
 - (IBAction)t1_mrInfo_transcode:(id)sender
@@ -1658,7 +1664,7 @@ static VLCWizard *_o_sharedInstance = nil;
     /* show a sheet for the help */
     NSBeginInformationalAlertSheet(_NS("Transcode/Save to file"),
         _NS("OK"), @"", @"", o_wizard_window, nil, nil, nil, nil,
-        _NS("This allows to save a stream to a file. The "
+        _NS("This allows saving a stream to a file. The "
         "can be reencoded on the fly. Whatever "
         "VLC can read can be saved.\nPlease note that VLC is not very suited "
         "for file to file transcoding. Its transcoding "
@@ -1679,8 +1685,7 @@ static VLCWizard *_o_sharedInstance = nil;
 {
     if (returnCode == NSOKButton)
     {
-        [o_t2_fld_pathToNewStrm setStringValue: [@"file://"
-            stringByAppendingString: [sheet filename]]];
+        [o_t2_fld_pathToNewStrm setStringValue: [[sheet URL] absoluteString]];
     }
 }
 
@@ -1777,7 +1782,7 @@ static VLCWizard *_o_sharedInstance = nil;
 {
     /* update codec info */
     [o_t4_txt_hintAudio setStringValue:[[o_audioCodecs objectAtIndex:
-        [[o_t4_pop_audioCodec selectedItem] tag]] objectAtIndex:2]];
+        [[o_t4_pop_audioCodec selectedItem]tag]] objectAtIndex:2]];
 }
 
 - (IBAction)t4_enblAudTrnscd:(id)sender
@@ -1792,7 +1797,7 @@ static VLCWizard *_o_sharedInstance = nil;
     } else {
         [o_t4_pop_audioCodec setEnabled:NO];
         [o_t4_pop_audioBitrate setEnabled:NO];
-        [o_t4_txt_hintAudio setStringValue: _NS("Enabling this allows to transcode "
+        [o_t4_txt_hintAudio setStringValue: _NS("Enabling this allows transcoding "
         "the audio track if one is present in the stream.")];
     }
 }
@@ -1809,7 +1814,7 @@ static VLCWizard *_o_sharedInstance = nil;
     } else {
         [o_t4_pop_videoCodec setEnabled:NO];
         [o_t4_pop_videoBitrate setEnabled:NO];
-        [o_t4_txt_hintVideo setStringValue: _NS("Enabling this allows to transcode "
+        [o_t4_txt_hintVideo setStringValue: _NS("Enabling this allows transcoding "
         "the video track if one is present in the stream.")];
 
     }
@@ -1839,7 +1844,7 @@ static VLCWizard *_o_sharedInstance = nil;
     /* show a sheet for the help */
     NSBeginInformationalAlertSheet(_NS("Time-To-Live (TTL)"),
         _NS("OK"), @"", @"", o_wizard_window, nil, nil, nil, nil,
-        _NS("This allows to define the TTL (Time-To-Live) of the stream. "
+        _NS("This allows defining the TTL (Time-To-Live) of the stream. "
             "This parameter is the maximum number of routers your stream can "
             "go through. If you don't know what it means, or if you want to "
             "stream on your local network only, leave this setting to 1."));
@@ -1898,9 +1903,9 @@ static VLCWizard *_o_sharedInstance = nil;
         [[o_userSelections objectForKey:@"encapFormat"] intValue]]
         objectAtIndex:0];
         if( theEncapFormat != @"ps" )
-            [saveFilePanel setRequiredFileType: theEncapFormat];
+            [saveFilePanel setAllowedFileTypes: [NSArray arrayWithObject:theEncapFormat]];
         else
-            [saveFilePanel setRequiredFileType: @"mpg"];
+            [saveFilePanel setAllowedFileTypes: [NSArray arrayWithObject:@"mpg"]];
 
         [saveFilePanel setCanSelectHiddenExtension: YES];
         [saveFilePanel setCanCreateDirectories: YES];
@@ -1918,9 +1923,9 @@ static VLCWizard *_o_sharedInstance = nil;
          * selected a folder */
         if( [[o_userSelections objectForKey:@"pathToStrm"] count] > 1 )
             [o_t7_fld_filePath setStringValue: [NSString stringWithFormat:
-                @"%@/", [sheet filename]]];
+                @"%@/", [[sheet URL] path]]];
         else
-            [o_t7_fld_filePath setStringValue:[sheet filename]];
+            [o_t7_fld_filePath setStringValue:[[sheet URL] path]];
     }
     [sheet release];
 }

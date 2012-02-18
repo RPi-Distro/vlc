@@ -2,7 +2,7 @@
  * qvlcapp.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 3e016f2c73a297f1b4e7805072f71fe513706e0b $
+ * $Id: 722a12d7c8265f77279e403fe8073c539cec6dc1 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -29,10 +29,8 @@
 #include <QEvent>
 
 #if defined(Q_WS_WIN)
-#   include <windows.h>
-#   include <vlc_common.h>
-#   include <vlc_interface.h>
 #   include "qt4.hpp"
+#   include <windows.h>
 #   include "input_manager.hpp"
 #endif
 
@@ -55,22 +53,13 @@ public:
 
     static void triggerQuit()
     {
-         QVLCApp *app = qobject_cast<QVLCApp*>( instance() );
-         if ( app )
-             emit app->quitSignal();
+        QVLCApp *app = qobject_cast<QVLCApp*>( instance() );
+        if( app )
+            emit app->quitSignal();
     }
-
-#if defined (Q_WS_X11)
-     QVLCApp( Display *dp, int & argc, char ** argv )
-         : QApplication( dp, argc, argv )
-     {
-        connect( this, SIGNAL(quitSignal()), this, SLOT(quit()) );
-     }
-#endif
 
 signals:
     void quitSignal();
 
 };
-
 #endif

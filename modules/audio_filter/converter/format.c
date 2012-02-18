@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
  * Copyright (C) 2010 Laurent Aimar
- * $Id: bef50b2248170022dc48f7f25d901f9bb1d2002d $
+ * $Id: 44e26ffc50d6834a2cf5bc10673fdeda5a5f2d84 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -184,7 +184,6 @@ static block_t *Filter(filter_t *filter, block_t *block)
             out->i_dts        = block->i_dts;
             out->i_pts        = block->i_pts;
             out->i_length     = block->i_length;
-            out->i_rate       = block->i_rate;
 
             sys->indirects[i](out, block);
 
@@ -481,42 +480,38 @@ static void S24toFl32(block_t *bdst, const block_t *bsrc)
 }
 
 /* */
-#define XCHG(type, a, b) \
-    do { type _tmp = a; a = b; b = _tmp; } while(0)
 static void Swap64(block_t *b)
 {
-    uint8_t *data = (uint8_t *)b->p_buffer;
+    uint64_t *data = (uint64_t *)b->p_buffer;
     for (size_t i = 0; i < b->i_buffer / 8; i++) {
-        XCHG(uint8_t, data[0], data[7]);
-        XCHG(uint8_t, data[1], data[6]);
-        XCHG(uint8_t, data[2], data[5]);
-        XCHG(uint8_t, data[3], data[4]);
-        data += 8;
+        *data = bswap64 (*data);
+        data++;
     }
 }
 static void Swap32(block_t *b)
 {
-    uint8_t *data = (uint8_t *)b->p_buffer;
+    uint32_t *data = (uint32_t *)b->p_buffer;
     for (size_t i = 0; i < b->i_buffer / 4; i++) {
-        XCHG(uint8_t, data[0], data[3]);
-        XCHG(uint8_t, data[1], data[2]);
-        data += 4;
+        *data = bswap32 (*data);
+        data++;
     }
 }
 static void Swap24(block_t *b)
 {
     uint8_t *data = (uint8_t *)b->p_buffer;
     for (size_t i = 0; i < b->i_buffer / 3; i++) {
-        XCHG(uint8_t, data[0], data[2]);
+        uint8_t buf = data[0];
+        data[0] = data[2];
+        data[2] = buf;
         data += 3;
     }
 }
 static void Swap16(block_t *b)
 {
-    uint8_t *data = (uint8_t *)b->p_buffer;
+    uint16_t *data = (uint16_t *)b->p_buffer;
     for (size_t i = 0; i < b->i_buffer / 2; i++) {
-        XCHG(uint8_t, data[0], data[1]);
-        data += 2;
+        *data = bswap16 (*data);
+        data++;
     }
 }
 

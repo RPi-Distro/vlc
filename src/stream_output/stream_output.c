@@ -1,26 +1,26 @@
 /*****************************************************************************
  * stream_output.c : stream output module
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 103d69089916e0c2ca6b52449beb47719c12d9b3 $
+ * Copyright (C) 2002-2007 VLC authors and VideoLAN
+ * $Id: 0749c165456725d8f16d54564eeecec86fa01540 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -46,6 +46,7 @@
 #include <vlc_meta.h>
 #include <vlc_block.h>
 #include <vlc_codec.h>
+#include <vlc_modules.h>
 
 #include "input/input_interface.h"
 
@@ -74,12 +75,13 @@ static int  mrl_Parse( mrl_t *p_mrl, const char *psz_mrl );
 /* mrl_Clean: clean p_mrl  after a call to mrl_Parse */
 static void mrl_Clean( mrl_t *p_mrl );
 
+#undef sout_NewInstance
+
 /*****************************************************************************
  * sout_NewInstance: creates a new stream output instance
  *****************************************************************************/
-sout_instance_t *__sout_NewInstance( vlc_object_t *p_parent, const char *psz_dest )
+sout_instance_t *sout_NewInstance( vlc_object_t *p_parent, const char *psz_dest )
 {
-    static const char typename[] = "stream output";
     sout_instance_t *p_sout;
 
     char *psz_chain;
@@ -96,8 +98,7 @@ sout_instance_t *__sout_NewInstance( vlc_object_t *p_parent, const char *psz_des
         return NULL;
 
     /* *** Allocate descriptor *** */
-    p_sout = vlc_custom_create( p_parent, sizeof( *p_sout ),
-                                VLC_OBJECT_GENERIC, typename );
+    p_sout = vlc_custom_create( p_parent, sizeof( *p_sout ), "stream output" );
     if( p_sout == NULL )
         return NULL;
 
@@ -111,9 +112,6 @@ sout_instance_t *__sout_NewInstance( vlc_object_t *p_parent, const char *psz_des
 
     vlc_mutex_init( &p_sout->lock );
     p_sout->p_stream = NULL;
-
-    /* attach it for inherit */
-    vlc_object_attach( p_sout, p_parent );
 
     var_Create( p_sout, "sout-mux-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
 
@@ -156,50 +154,6 @@ void sout_DeleteInstance( sout_instance_t * p_sout )
     vlc_object_release( p_sout );
 }
 
-/*****************************************************************************
- * 
- *****************************************************************************/
-void sout_UpdateStatistic( sout_instance_t *p_sout, sout_statistic_t i_type, int i_delta )
-{
-    if( !libvlc_stats( p_sout ) )
-        return;
-
-    /* */
-    input_thread_t *p_input = vlc_object_find( p_sout, VLC_OBJECT_INPUT, FIND_PARENT );
-    if( !p_input )
-        return;
-
-    int i_input_type;
-    switch( i_type )
-    {
-    case SOUT_STATISTIC_DECODED_VIDEO:
-        i_input_type = SOUT_STATISTIC_DECODED_VIDEO;
-        break;
-    case SOUT_STATISTIC_DECODED_AUDIO:
-        i_input_type = SOUT_STATISTIC_DECODED_AUDIO;
-        break;
-    case SOUT_STATISTIC_DECODED_SUBTITLE:
-        i_input_type = SOUT_STATISTIC_DECODED_SUBTITLE;
-        break;
-
-    case SOUT_STATISTIC_SENT_PACKET:
-        i_input_type = SOUT_STATISTIC_SENT_PACKET;
-        break;
-
-    case SOUT_STATISTIC_SENT_BYTE:
-        i_input_type = SOUT_STATISTIC_SENT_BYTE;
-        break;
-
-    default:
-        msg_Err( p_sout, "Not yet supported statistic type %d", i_type );
-        vlc_object_release( p_input );
-        return;
-    }
-
-    input_UpdateStatistic( p_input, i_input_type, i_delta );
-
-    vlc_object_release( p_input );
-}
 /*****************************************************************************
  * Packetizer/Input
  *****************************************************************************/
@@ -294,12 +248,10 @@ int sout_InputSendBuffer( sout_packetizer_input_t *p_input,
 sout_access_out_t *sout_AccessOutNew( vlc_object_t *p_sout,
                                       const char *psz_access, const char *psz_name )
 {
-    static const char typename[] = "access out";
     sout_access_out_t *p_access;
     char              *psz_next;
 
-    p_access = vlc_custom_create( p_sout, sizeof( *p_access ),
-                                  VLC_OBJECT_GENERIC, typename );
+    p_access = vlc_custom_create( p_sout, sizeof( *p_access ), "access out" );
     if( !p_access )
         return NULL;
 
@@ -316,8 +268,6 @@ sout_access_out_t *sout_AccessOutNew( vlc_object_t *p_sout,
 
     p_access->i_writes = 0;
     p_access->i_sent_bytes = 0;
-
-    vlc_object_attach( p_access, p_sout );
 
     p_access->p_module   =
         module_need( p_access, "sout access", p_access->psz_access, true );
@@ -372,17 +322,6 @@ ssize_t sout_AccessOutRead( sout_access_out_t *p_access, block_t *p_buffer )
  *****************************************************************************/
 ssize_t sout_AccessOutWrite( sout_access_out_t *p_access, block_t *p_buffer )
 {
-#if 0
-    const unsigned i_packets_gather = 30;
-    p_access->i_writes++;
-    p_access->i_sent_bytes += p_buffer->i_buffer;
-    if( (p_access->i_writes % i_packets_gather) == 0 )
-    {
-        sout_UpdateStatistic( p_access->p_sout, SOUT_STATISTIC_SENT_PACKET, i_packets_gather );
-        sout_UpdateStatistic( p_access->p_sout, SOUT_STATISTIC_SENT_BYTE, p_access->i_sent_bytes );
-        p_access->i_sent_bytes = 0;
-    }
-#endif
     return p_access->pf_write( p_access, p_buffer );
 }
 
@@ -409,12 +348,10 @@ int sout_AccessOutControl (sout_access_out_t *access, int query, ...)
 sout_mux_t * sout_MuxNew( sout_instance_t *p_sout, const char *psz_mux,
                           sout_access_out_t *p_access )
 {
-    static const char typename[] = "mux";
     sout_mux_t *p_mux;
     char       *psz_next;
 
-    p_mux = vlc_custom_create( p_sout, sizeof( *p_mux ), VLC_OBJECT_GENERIC,
-                               typename);
+    p_mux = vlc_custom_create( p_sout, sizeof( *p_mux ), "mux" );
     if( p_mux == NULL )
         return NULL;
 
@@ -436,8 +373,6 @@ sout_mux_t * sout_MuxNew( sout_instance_t *p_sout, const char *psz_mux,
     p_mux->b_add_stream_any_time = false;
     p_mux->b_waiting_stream = true;
     p_mux->i_add_stream_start = -1;
-
-    vlc_object_attach( p_mux, p_sout );
 
     p_mux->p_module =
         module_need( p_mux, "sout mux", p_mux->psz_mux, true );
@@ -682,7 +617,7 @@ static int mrl_Parse( mrl_t *p_mrl, const char *psz_mrl )
             psz_parser++;
         }
     }
-#if defined( WIN32 ) || defined( UNDER_CE )
+#if defined( WIN32 ) || defined( UNDER_CE ) || defined( __OS2__ )
     if( psz_parser - psz_dup == 1 )
     {
         /* msg_Warn( p_sout, "drive letter %c: found in source string",
@@ -830,13 +765,11 @@ void sout_StreamChainDelete(sout_stream_t *p_first, sout_stream_t *p_last)
 static sout_stream_t *sout_StreamNew( sout_instance_t *p_sout, char *psz_name,
                                config_chain_t *p_cfg, sout_stream_t *p_next)
 {
-    static const char typename[] = "stream out";
     sout_stream_t *p_stream;
 
     assert(psz_name);
 
-    p_stream = vlc_custom_create( p_sout, sizeof( *p_stream ),
-                                  VLC_OBJECT_GENERIC, typename );
+    p_stream = vlc_custom_create( p_sout, sizeof( *p_stream ), "stream out" );
     if( !p_stream )
         return NULL;
 
@@ -847,8 +780,6 @@ static sout_stream_t *sout_StreamNew( sout_instance_t *p_sout, char *psz_name,
     p_stream->p_next   = p_next;
 
     msg_Dbg( p_sout, "stream=`%s'", p_stream->psz_name );
-
-    vlc_object_attach( p_stream, p_sout );
 
     p_stream->p_module =
         module_need( p_stream, "sout stream", p_stream->psz_name, true );
@@ -1016,7 +947,5 @@ rtp:
 #undef sout_EncoderCreate
 encoder_t *sout_EncoderCreate( vlc_object_t *p_this )
 {
-    static const char type[] = "encoder";
-    return vlc_custom_create( p_this, sizeof( encoder_t ), VLC_OBJECT_GENERIC,
-                              type );
+    return vlc_custom_create( p_this, sizeof( encoder_t ), "encoder" );
 }

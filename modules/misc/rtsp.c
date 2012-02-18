@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: c94cfbbd214cfdb09156f754f2467119761a8cf7 $
+ * $Id: d7eaf135225a976949f9b6869258c25036d246de $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -58,13 +58,6 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-#define HOST_TEXT N_( "RTSP host address" )
-#define HOST_LONGTEXT N_( \
-    "This defines the address, port and path the RTSP VOD server will listen " \
-    "on.\nSyntax is address:port/path. The default is to listen on all "\
-    "interfaces (address 0.0.0.0), on port 554, with no path.\nTo listen " \
-    "only on the local interface, use \"localhost\" as address." )
-
 #define THROTTLE_TEXT N_( "Maximum number of connections" )
 #define THROTTLE_LONGTEXT N_( "This limits the maximum number of clients " \
     "that can connect to the RTSP VOD. 0 means no limit."  )
@@ -86,12 +79,11 @@ vlc_module_begin ()
     set_capability( "vod server", 1 )
     set_callbacks( Open, Close )
     add_shortcut( "rtsp" )
-    add_string ( "rtsp-host", NULL, NULL, HOST_TEXT, HOST_LONGTEXT, true )
-    add_string( "rtsp-raw-mux", "ts", NULL, RAWMUX_TEXT,
+    add_string( "rtsp-raw-mux", "ts", RAWMUX_TEXT,
                 RAWMUX_TEXT, true )
-    add_integer( "rtsp-throttle-users", 0, NULL, THROTTLE_TEXT,
+    add_integer( "rtsp-throttle-users", 0, THROTTLE_TEXT,
                  THROTTLE_LONGTEXT, true )
-    add_integer( "rtsp-session-timeout", 5, NULL, SESSION_TIMEOUT_TEXT,
+    add_integer( "rtsp-session-timeout", 5, SESSION_TIMEOUT_TEXT,
                  SESSION_TIMEOUT_LONGTEXT, true )
 vlc_module_end ()
 
@@ -113,7 +105,6 @@ typedef struct
     char *psz_session;
 
     bool b_playing; /* is it in "play" state */
-    bool b_paused; /* is it in "pause" state */
     int i_port_raw;
 
     int i_es;
@@ -153,8 +144,6 @@ struct vod_media_t
     char         *psz_rtsp_control_v6;
     char         *psz_rtsp_path;
 
-    int  i_payload_type;
-
     vlc_mutex_t lock;
 
     /* ES list */
@@ -176,7 +165,6 @@ struct vod_sys_t
     /* RTSP server */
     httpd_host_t *p_rtsp_host;
     char *psz_path;
-    int i_port;
     int i_throttle_users;
     int i_connections;
 
@@ -185,12 +173,12 @@ struct vod_sys_t
     int i_session_timeout;
 
     /* List of media */
-    vlc_mutex_t lock_media;
     int i_media_id;
     int i_media;
     vod_media_t **media;
 
     /* */
+    vlc_thread_t thread;
     block_fifo_t *p_fifo_cmd;
 };
 
@@ -218,6 +206,7 @@ typedef struct
     vod_media_t *p_media;
     char *psz_session;
     char *psz_arg;
+    int64_t i_arg;
     double f_arg;
 } rtsp_cmd_t;
 
@@ -227,8 +216,9 @@ static void         MediaAskDel ( vod_t *, vod_media_t * );
 static int          MediaAddES( vod_t *, vod_media_t *, es_format_t * );
 static void         MediaDelES( vod_t *, vod_media_t *, es_format_t * );
 
-static void* CommandThread( vlc_object_t *p_this );
-static void  CommandPush( vod_t *, rtsp_cmd_type_t, vod_media_t *, const char *psz_session,
+static void* CommandThread( void * );
+static void  CommandPush( vod_t *, rtsp_cmd_type_t, vod_media_t *,
+                          const char *psz_session, int64_t i_arg,
                           double f_arg, const char *psz_arg );
 
 static rtsp_client_t *RtspClientNew( vod_media_t *, char * );
@@ -245,9 +235,8 @@ static char *SDPGenerate( const vod_media_t *, httpd_client_t *cl );
 static void sprintf_hexa( char *s, uint8_t *p_data, int i_data )
 {
     static const char hex[16] = "0123456789abcdef";
-    int i;
 
-    for( i = 0; i < i_data; i++ )
+    for( int i = 0; i < i_data; i++ )
     {
         s[2*i+0] = hex[(p_data[i]>>4)&0xf];
         s[2*i+1] = hex[(p_data[i]   )&0xf];
@@ -269,8 +258,6 @@ static int Open( vlc_object_t *p_this )
     vlc_UrlParse( &url, psz_url, 0 );
     free( psz_url );
 
-    if( url.i_port <= 0 ) url.i_port = 554;
-
     p_vod->p_sys = p_sys = malloc( sizeof( vod_sys_t ) );
     if( !p_sys ) goto error;
     p_sys->p_rtsp_host = 0;
@@ -283,33 +270,25 @@ static int Open( vlc_object_t *p_this )
 
     p_sys->psz_raw_mux = var_CreateGetString( p_this, "rtsp-raw-mux" );
 
-    p_sys->p_rtsp_host =
-        httpd_HostNew( VLC_OBJECT(p_vod), url.psz_host, url.i_port );
+    p_sys->p_rtsp_host = vlc_rtsp_HostNew( VLC_OBJECT(p_vod) );
     if( !p_sys->p_rtsp_host )
     {
-        msg_Err( p_vod, "cannot create RTSP server (%s:%i)",
-                 url.psz_host, url.i_port );
+        msg_Err( p_vod, "cannot create RTSP server" );
         goto error;
     }
 
     p_sys->psz_path = strdup( url.psz_path ? url.psz_path : "/" );
-    p_sys->i_port = url.i_port;
 
     vlc_UrlClean( &url );
-
-    vlc_mutex_init( &p_sys->lock_media );
 
     TAB_INIT( p_sys->i_media, p_sys->media );
     p_sys->i_media_id = 0;
 
     p_vod->pf_media_new = MediaNew;
     p_vod->pf_media_del = MediaAskDel;
-    p_vod->pf_media_add_es = MediaAddES;
-    p_vod->pf_media_del_es = MediaDelES;
 
     p_sys->p_fifo_cmd = block_FifoNew();
-    if( vlc_thread_create( p_vod, "rtsp vod thread", CommandThread,
-                           VLC_THREAD_PRIORITY_LOW ) )
+    if( vlc_clone( &p_sys->thread, CommandThread, p_vod, VLC_THREAD_PRIORITY_LOW ) )
     {
         msg_Err( p_vod, "cannot spawn rtsp vod thread" );
         block_FifoRelease( p_sys->p_fifo_cmd );
@@ -338,23 +317,21 @@ static void Close( vlc_object_t * p_this )
 {
     vod_t *p_vod = (vod_t *)p_this;
     vod_sys_t *p_sys = p_vod->p_sys;
-    block_t *p_block_cmd;
-    rtsp_cmd_t cmd;
 
     /* Stop command thread */
-    vlc_object_kill( p_vod );
-    CommandPush( p_vod, RTSP_CMD_TYPE_NONE, NULL, NULL, 0.0, NULL );
-    vlc_thread_join( p_vod );
+    CommandPush( p_vod, RTSP_CMD_TYPE_NONE, NULL, NULL, 0, 0.0, NULL );
+    vlc_join( p_sys->thread, NULL );
 
     while( block_FifoCount( p_sys->p_fifo_cmd ) > 0 )
     {
-         p_block_cmd = block_FifoGet( p_sys->p_fifo_cmd );
-         memcpy( &cmd, p_block_cmd->p_buffer, sizeof(cmd) );
-         block_Release( p_block_cmd );
-         if ( cmd.i_type == RTSP_CMD_TYPE_DEL )
-             MediaDel(p_vod, cmd.p_media);
-         free( cmd.psz_session );
-         free( cmd.psz_arg );
+        rtsp_cmd_t cmd;
+        block_t *p_block_cmd = block_FifoGet( p_sys->p_fifo_cmd );
+        memcpy( &cmd, p_block_cmd->p_buffer, sizeof(cmd) );
+        block_Release( p_block_cmd );
+        if ( cmd.i_type == RTSP_CMD_TYPE_DEL )
+            MediaDel(p_vod, cmd.p_media);
+        free( cmd.psz_session );
+        free( cmd.psz_arg );
     }
     block_FifoRelease( p_sys->p_fifo_cmd );
 
@@ -368,8 +345,6 @@ static void Close( vlc_object_t * p_this )
         msg_Err( p_vod, "rtsp vod leaking %d medias", p_sys->i_media );
     TAB_CLEAN( p_sys->i_media, p_sys->media );
 
-    vlc_mutex_destroy( &p_sys->lock_media );
-
     free( p_sys->psz_path );
     free( p_sys->psz_raw_mux );
     free( p_sys );
@@ -381,7 +356,6 @@ static void Close( vlc_object_t * p_this )
 static vod_media_t *MediaNew( vod_t *p_vod, const char *psz_name,
                               input_item_t *p_item )
 {
-    int i;
     vod_sys_t *p_sys = p_vod->p_sys;
 
     vod_media_t *p_media = calloc( 1, sizeof(vod_media_t) );
@@ -412,8 +386,8 @@ static vod_media_t *MediaNew( vod_t *p_vod, const char *psz_name,
     msg_Dbg( p_vod, "created RTSP url: %s", p_media->psz_rtsp_path );
 
     if( asprintf( &p_media->psz_rtsp_control_v4,
-               "rtsp://%%s:%d%s/trackID=%%d",
-               p_sys->i_port, p_media->psz_rtsp_path ) < 0 )
+                  "rtsp://%%s:%%d%s/trackID=%%d",
+                  p_media->psz_rtsp_path ) < 0 )
     {
         httpd_UrlDelete( p_media->p_rtsp_url );
         free( p_media->psz_rtsp_path );
@@ -421,8 +395,8 @@ static vod_media_t *MediaNew( vod_t *p_vod, const char *psz_name,
         return NULL;
     }
     if( asprintf( &p_media->psz_rtsp_control_v6,
-               "rtsp://[%%s]:%d%s/trackID=%%d",
-              p_sys->i_port, p_media->psz_rtsp_path ) < 0 )
+                  "rtsp://[%%s]:%%d%s/trackID=%%d",
+                  p_media->psz_rtsp_path ) < 0 )
     {
         httpd_UrlDelete( p_media->p_rtsp_url );
         free( p_media->psz_rtsp_path );
@@ -447,25 +421,23 @@ static vod_media_t *MediaNew( vod_t *p_vod, const char *psz_name,
 
     vlc_mutex_init( &p_media->lock );
 
-    p_media->i_payload_type = 96;
-
     p_media->i_length = input_item_GetDuration( p_item );
 
     vlc_mutex_lock( &p_item->lock );
     msg_Dbg( p_vod, "media has %i declared ES", p_item->i_es );
-    for( i = 0; i < p_item->i_es; i++ )
+    for( int i = 0; i < p_item->i_es; i++ )
     {
         MediaAddES( p_vod, p_media, p_item->es[i] );
     }
     vlc_mutex_unlock( &p_item->lock );
 
-    CommandPush( p_vod, RTSP_CMD_TYPE_ADD, p_media, NULL, 0.0, NULL );
+    CommandPush( p_vod, RTSP_CMD_TYPE_ADD, p_media, NULL, 0, 0.0, NULL );
     return p_media;
 }
 
 static void MediaAskDel ( vod_t *p_vod, vod_media_t *p_media )
 {
-    CommandPush( p_vod, RTSP_CMD_TYPE_DEL, p_media, NULL, 0.0, NULL );
+    CommandPush( p_vod, RTSP_CMD_TYPE_DEL, p_media, NULL, 0, 0.0, NULL );
 }
 
 static void MediaDel( vod_t *p_vod, vod_media_t *p_media )
@@ -474,9 +446,7 @@ static void MediaDel( vod_t *p_vod, vod_media_t *p_media )
 
     msg_Dbg( p_vod, "deleting media: %s", p_media->psz_rtsp_path );
 
-    vlc_mutex_lock( &p_sys->lock_media );
     TAB_REMOVE( p_sys->i_media, p_sys->media, p_media );
-    vlc_mutex_unlock( &p_sys->lock_media );
 
     httpd_UrlDelete( p_media->p_rtsp_url );
 
@@ -500,6 +470,7 @@ static void MediaDel( vod_t *p_vod, vod_media_t *p_media )
 static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
 {
     char *psz_urlc;
+
     media_es_t *p_es = calloc( 1, sizeof(media_es_t) );
     if( !p_es )
         return VLC_ENOMEM;
@@ -515,6 +486,9 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
     }
     msg_Dbg( p_vod, "  - ES %4.4s (%s)", (char *)&p_fmt->i_codec, psz_urlc );
 
+    /* Dynamic payload. No conflict since we put each ES in its own
+     * RTP session */
+    p_es->i_payload_type = 96;
     p_es->i_clock_rate = 90000;
     p_es->i_channels = 1;
 
@@ -530,16 +504,11 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             {
                 p_es->i_payload_type = 10;
             }
-            else
-            {
-                p_es->i_payload_type = p_media->i_payload_type++;
-            }
             p_es->psz_ptname = "L16";
             p_es->i_clock_rate = p_fmt->audio.i_rate;
             p_es->i_channels = p_fmt->audio.i_channels;
             break;
         case VLC_CODEC_U8:
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "L8";
             p_es->i_clock_rate = p_fmt->audio.i_rate;
             p_es->i_channels = p_fmt->audio.i_channels;
@@ -553,16 +522,13 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             p_es->psz_ptname = "MPV";
             break;
         case VLC_CODEC_A52:
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "ac3";
             p_es->i_clock_rate = p_fmt->audio.i_rate;
             break;
         case VLC_CODEC_H263:
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "H263-1998";
             break;
         case VLC_CODEC_H264:
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "H264";
             p_es->psz_fmtp = NULL;
             /* FIXME AAAAAAAAAAAARRRRRRRRGGGG copied from stream_out/rtp.c */
@@ -653,7 +619,6 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
                 p_es->psz_fmtp = strdup( "packetization-mode=1" );
             break;
         case VLC_CODEC_MP4V:
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "MP4V-ES";
             if( p_fmt->i_extra > 0 )
             {
@@ -666,7 +631,6 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             }
             break;
         case VLC_CODEC_MP4A:
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "mpeg4-generic";
             p_es->i_clock_rate = p_fmt->audio.i_rate;
             if( p_fmt->i_extra > 0 )
@@ -688,11 +652,9 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             break;
         case VLC_FOURCC( 'm', 'p', '2', 'p' ):
             p_media->psz_mux = "ps";
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "MP2P";
             break;
         case VLC_CODEC_AMR_NB:
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "AMR";
             p_es->i_clock_rate = 8000;
             if(p_fmt->audio.i_channels == 2 )
@@ -700,7 +662,6 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             p_es->psz_fmtp = strdup( "octet-align=1" );
             break;
         case VLC_CODEC_AMR_WB:
-            p_es->i_payload_type = p_media->i_payload_type++;
             p_es->psz_ptname = "AMR-WB";
             p_es->i_clock_rate = 16000;
             if(p_fmt->audio.i_channels == 2 )
@@ -752,10 +713,9 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
 static void MediaDelES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt)
 {
     media_es_t *p_es = NULL;
-    int i;
 
     /* Find the ES */
-    for( i = 0; i < p_media->i_es; i++ )
+    for( int i = 0; i < p_media->i_es; i++ )
     {
         if( p_media->es[i]->fmt.i_cat == p_fmt->i_cat &&
             p_media->es[i]->fmt.i_codec == p_fmt->i_codec &&
@@ -779,7 +739,7 @@ static void MediaDelES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt)
     free( p_es );
 }
 
-static void CommandPush( vod_t *p_vod, rtsp_cmd_type_t i_type, vod_media_t *p_media, const char *psz_session,
+static void CommandPush( vod_t *p_vod, rtsp_cmd_type_t i_type, vod_media_t *p_media, const char *psz_session, int64_t i_arg,
                          double f_arg, const char *psz_arg )
 {
     rtsp_cmd_t cmd;
@@ -792,6 +752,7 @@ static void CommandPush( vod_t *p_vod, rtsp_cmd_type_t i_type, vod_media_t *p_me
         cmd.i_media_id = p_media->id;
     if( psz_session )
         cmd.psz_session = strdup(psz_session);
+    cmd.i_arg = i_arg;
     cmd.f_arg = f_arg;
     if( psz_arg )
         cmd.psz_arg = strdup(psz_arg);
@@ -802,13 +763,13 @@ static void CommandPush( vod_t *p_vod, rtsp_cmd_type_t i_type, vod_media_t *p_me
     block_FifoPut( p_vod->p_sys->p_fifo_cmd, p_cmd );
 }
 
-static void* CommandThread( vlc_object_t *p_this )
+static void* CommandThread( void *obj )
 {
-    vod_t *p_vod = (vod_t*)p_this;
+    vod_t *p_vod = (vod_t*)obj;
     vod_sys_t *p_sys = p_vod->p_sys;
     int canc = vlc_savecancel ();
 
-    while( vlc_object_alive (p_vod) )
+    for( ;; )
     {
         block_t *p_block_cmd = block_FifoGet( p_sys->p_fifo_cmd );
         rtsp_cmd_t cmd;
@@ -826,9 +787,7 @@ static void* CommandThread( vlc_object_t *p_this )
 
         if ( cmd.i_type == RTSP_CMD_TYPE_ADD )
         {
-            vlc_mutex_lock( &p_sys->lock_media );
             TAB_APPEND( p_sys->i_media, p_sys->media, cmd.p_media );
-            vlc_mutex_unlock( &p_sys->lock_media );
             goto next;
         }
 
@@ -839,7 +798,6 @@ static void* CommandThread( vlc_object_t *p_this )
         }
 
         /* */
-        vlc_mutex_lock( &p_sys->lock_media );
         for( i = 0; i < p_sys->i_media; i++ )
         {
             if( p_sys->media[i]->id == cmd.i_media_id )
@@ -847,7 +805,6 @@ static void* CommandThread( vlc_object_t *p_this )
         }
         if( i >= p_sys->i_media )
         {
-            vlc_mutex_unlock( &p_sys->lock_media );
             goto next;
         }
         p_media = p_sys->media[i];
@@ -855,12 +812,14 @@ static void* CommandThread( vlc_object_t *p_this )
         switch( cmd.i_type )
         {
         case RTSP_CMD_TYPE_PLAY:
+            cmd.i_arg = -1;
             vod_MediaControl( p_vod, p_media, cmd.psz_session,
-                              VOD_MEDIA_PLAY, cmd.psz_arg );
+                              VOD_MEDIA_PLAY, cmd.psz_arg, &cmd.i_arg );
             break;
         case RTSP_CMD_TYPE_PAUSE:
+            cmd.i_arg = -1;
             vod_MediaControl( p_vod, p_media, cmd.psz_session,
-                              VOD_MEDIA_PAUSE );
+                              VOD_MEDIA_PAUSE, &cmd.i_arg );
             break;
 
         case RTSP_CMD_TYPE_STOP:
@@ -869,7 +828,7 @@ static void* CommandThread( vlc_object_t *p_this )
 
         case RTSP_CMD_TYPE_SEEK:
             vod_MediaControl( p_vod, p_media, cmd.psz_session,
-                              VOD_MEDIA_SEEK, cmd.f_arg );
+                              VOD_MEDIA_SEEK, cmd.i_arg );
             break;
 
         case RTSP_CMD_TYPE_REWIND:
@@ -885,7 +844,6 @@ static void* CommandThread( vlc_object_t *p_this )
         default:
             break;
         }
-        vlc_mutex_unlock( &p_sys->lock_media );
 
     next:
         free( cmd.psz_session );
@@ -919,9 +877,7 @@ static rtsp_client_t *RtspClientNew( vod_media_t *p_media, char *psz_session )
 
 static rtsp_client_t *RtspClientGet( vod_media_t *p_media, const char *psz_session )
 {
-    int i;
-
-    for( i = 0; psz_session && i < p_media->i_rtsp; i++ )
+    for( int i = 0; psz_session && i < p_media->i_rtsp; i++ )
     {
         if( !strcmp( p_media->rtsp[i]->psz_session, psz_session ) )
             return p_media->rtsp[i];
@@ -950,25 +906,25 @@ static void RtspClientDel( vod_media_t *p_media, rtsp_client_t *p_rtsp )
 }
 
 
-static float ParseNPT (const char *str)
+static int64_t ParseNPT (const char *str)
 {
-     locale_t loc = newlocale (LC_NUMERIC_MASK, "C", NULL);
-     locale_t oldloc = uselocale (loc);
-     unsigned hour, min;
-     float sec;
+    locale_t loc = newlocale (LC_NUMERIC_MASK, "C", NULL);
+    locale_t oldloc = uselocale (loc);
+    unsigned hour, min;
+    float sec;
 
-     if (sscanf (str, "%u:%u:%f", &hour, &min, &sec) == 3)
-         sec += ((hour * 60) + min) * 60;
-     else
-     if (sscanf (str, "%f", &sec) != 1)
-         sec = 0.;
+    if (sscanf (str, "%u:%u:%f", &hour, &min, &sec) == 3)
+        sec += ((hour * 60) + min) * 60;
+    else
+    if (sscanf (str, "%f", &sec) != 1)
+        sec = 0.;
 
-     if (loc != (locale_t)0)
-     {
-         uselocale (oldloc);
-         freelocale (loc);
-     }
-     return sec;
+    if (loc != (locale_t)0)
+    {
+        uselocale (oldloc);
+        freelocale (loc);
+    }
+    return sec * CLOCK_FREQ;
 }
 
 
@@ -1022,7 +978,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
                     p_media->b_raw = true;
                 }
 
-                if( httpd_ClientIP( cl, ip ) == NULL )
+                if( httpd_ClientIP( cl, ip, NULL ) == NULL )
                 {
                     answer->i_status = 500;
                     answer->i_body = 0;
@@ -1112,7 +1068,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
         case HTTPD_MSG_PLAY:
         {
             char *psz_output, ip[NI_MAXNUMERICHOST];
-            int i, i_port_audio = 0, i_port_video = 0;
+            int i_port_audio = 0, i_port_video = 0;
 
             /* for now only multicast so easy */
             if( !psz_playnow )
@@ -1143,11 +1099,10 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
                     psz_position = strstr( psz_position, "npt=" );
                 if( psz_position && !psz_scale )
                 {
-                    double f_pos = ParseNPT (psz_position + 4);
+                    int64_t i_time = ParseNPT (psz_position + 4);
                     msg_Dbg( p_vod, "seeking request: %s", psz_position );
-                    f_pos /= ((double)(p_media->i_length))/1000 /1000 / 100;
                     CommandPush( p_vod, RTSP_CMD_TYPE_SEEK, p_media,
-                                 psz_session, f_pos, NULL );
+                                 psz_session, i_time, 0.0, NULL );
                 }
                 else if( psz_scale )
                 {
@@ -1162,42 +1117,29 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
                         {
                             msg_Dbg( p_vod, "rewind request: %s", psz_scale );
                             CommandPush( p_vod, RTSP_CMD_TYPE_REWIND, p_media,
-                                         psz_session, f_scale, NULL );
+                                         psz_session, 0, f_scale, NULL );
                         }
                         else if(psz_scale[0] != '1' ) /* fast-forward */
                         {
                             msg_Dbg( p_vod, "fastforward request: %s",
                                      psz_scale );
                             CommandPush( p_vod, RTSP_CMD_TYPE_FORWARD, p_media,
-                                         psz_session, f_scale, NULL );
-                        }
-
-                        if( p_rtsp->b_paused == true )
-                        {
-                            p_rtsp->b_paused = false;
-                            CommandPush( p_vod, RTSP_CMD_TYPE_PAUSE, p_media,
-                                         psz_session, 0, NULL );
+                                         psz_session, 0, f_scale, NULL );
                         }
                     }
-                    break;
                 }
-            }
-
-            if( p_rtsp->b_playing && p_rtsp->b_paused )
-            {
-                CommandPush( p_vod, RTSP_CMD_TYPE_PAUSE, p_media,
-                             psz_session, 0, NULL );
-                p_rtsp->b_paused = false;
+                /* unpause, in case it's paused */
+                CommandPush( p_vod, RTSP_CMD_TYPE_PLAY, p_media, psz_session,
+                             0, 0.0, "" );
                 break;
             }
-            else if( p_rtsp->b_playing ) break;
 
-            if( httpd_ClientIP( cl, ip ) == NULL ) break;
+            if( httpd_ClientIP( cl, ip, NULL ) == NULL ) break;
 
             p_rtsp->b_playing = true;
 
             /* FIXME for != 1 video and 1 audio */
-            for( i = 0; i < p_rtsp->i_es; i++ )
+            for( int i = 0; i < p_rtsp->i_es; i++ )
             {
                 if( p_rtsp->es[i]->p_media_es->fmt.i_cat == AUDIO_ES )
                     i_port_audio = p_rtsp->es[i]->i_port;
@@ -1231,7 +1173,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             }
 
             CommandPush( p_vod, RTSP_CMD_TYPE_PLAY, p_media, psz_session,
-                         0, psz_output );
+                         0, 0.0, psz_output );
             free( psz_output );
             break;
         }
@@ -1267,8 +1209,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             if( !p_rtsp ) break;
 
             CommandPush( p_vod, RTSP_CMD_TYPE_PAUSE, p_media, psz_session,
-                         0, NULL );
-            p_rtsp->b_paused = true;
+                         0, 0.0, NULL );
 
             answer->i_status = 200;
             answer->i_body = 0;
@@ -1288,7 +1229,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             if( !p_rtsp ) break;
 
             CommandPush( p_vod, RTSP_CMD_TYPE_STOP, p_media, psz_session,
-                         0, NULL );
+                         0, 0.0, NULL );
             RtspClientDel( p_media, p_rtsp );
             break;
 
@@ -1335,7 +1276,6 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
     const char *psz_position = NULL;
     const char *psz_cseq = NULL;
     int i_cseq = 0;
-    int i;
 
     if( answer == NULL || query == NULL ) return VLC_SUCCESS;
 
@@ -1364,7 +1304,7 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
                 int i_port = atoi( strstr( psz_transport, "client_port=" ) +
                                    strlen("client_port=") );
 
-                if( httpd_ClientIP( cl, ip ) == NULL )
+                if( httpd_ClientIP( cl, ip, NULL ) == NULL )
                 {
                     answer->i_status = 500;
                     answer->i_body = 0;
@@ -1474,11 +1414,10 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             if( psz_position ) psz_position = strstr( psz_position, "npt=" );
             if( psz_position )
             {
-                double f_pos = ParseNPT (psz_position + 4);
+                int64_t i_time = ParseNPT (psz_position + 4);
                 msg_Dbg( p_vod, "seeking request: %s", psz_position );
-                f_pos /= ((double)(p_media->i_length))/1000 /1000 / 100;
                 CommandPush( p_vod, RTSP_CMD_TYPE_SEEK, p_media,
-                             psz_session, f_pos, NULL );
+                             psz_session, i_time, 0.0, NULL );
             }
 
             if( !psz_playnow )
@@ -1500,7 +1439,7 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             p_rtsp = RtspClientGet( p_media, psz_session );
             if( !p_rtsp ) break;
 
-            for( i = 0; i < p_rtsp->i_es; i++ )
+            for( int i = 0; i < p_rtsp->i_es; i++ )
             {
                 if( p_rtsp->es[i]->p_media_es == p_es )
                 {
@@ -1512,7 +1451,7 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             if( !p_rtsp->i_es )
             {
                 CommandPush( p_vod, RTSP_CMD_TYPE_STOP, p_media, psz_session,
-                             0, NULL );
+                             0, 0.0, NULL );
                 RtspClientDel( p_media, p_rtsp );
             }
             break;
@@ -1527,8 +1466,7 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             if( !p_rtsp ) break;
 
             CommandPush( p_vod, RTSP_CMD_TYPE_PAUSE, p_media, psz_session,
-                         0, NULL );
-            p_rtsp->b_paused = true;
+                         0, 0.0, NULL );
 
             answer->i_status = 200;
             answer->i_body = 0;
@@ -1564,8 +1502,9 @@ static char *SDPGenerate( const vod_media_t *p_media, httpd_client_t *cl )
 {
     char *psz_sdp, ip[NI_MAXNUMERICHOST];
     const char *psz_control;
+    int port;
 
-    if( httpd_ServerIP( cl, ip ) == NULL )
+    if( httpd_ServerIP( cl, ip, &port ) == NULL )
         return NULL;
 
     bool ipv6 = ( strchr( ip, ':' ) != NULL );
@@ -1591,7 +1530,7 @@ static char *SDPGenerate( const vod_media_t *p_media, httpd_client_t *cl )
     if( p_media->i_length > 0 )
     {
         lldiv_t d = lldiv( p_media->i_length / 1000, 1000 );
-        sdp_AddAttribute( &psz_sdp, "range"," npt=0-%lld.%03u", d.quot,
+        sdp_AddAttribute( &psz_sdp, "range","npt=0-%lld.%03u", d.quot,
                           (unsigned)d.rem );
     }
 
@@ -1620,7 +1559,7 @@ static char *SDPGenerate( const vod_media_t *p_media, httpd_client_t *cl )
                       p_es->psz_ptname, p_es->i_clock_rate, p_es->i_channels,
                       p_es->psz_fmtp );
 
-        sdp_AddAttribute( &psz_sdp, "control", psz_control, ip, i );
+        sdp_AddAttribute( &psz_sdp, "control", psz_control, ip, port, i );
     }
 
     return psz_sdp;

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * libvlc_media_list.h:  libvlc_media_list API
  *****************************************************************************
- * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: bd7563585547ddd87484dc96516f7c3a7f904578 $
+ * Copyright (C) 1998-2008 VLC authors and VideoLAN
+ * $Id: c037843c15177eebd12053c0a21118afa8333e06 $
  *
  * Authors: Pierre d'Herbemont
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef LIBVLC_MEDIA_LIST_PLAYER_H
@@ -64,16 +64,29 @@ typedef enum libvlc_playback_mode_t
  * \param p_instance libvlc instance
  * \return media list player instance or NULL on error
  */
-VLC_PUBLIC_API libvlc_media_list_player_t *
+LIBVLC_API libvlc_media_list_player_t *
     libvlc_media_list_player_new( libvlc_instance_t * p_instance );
 
 /**
- * Release media_list_player.
+ * Release a media_list_player after use
+ * Decrement the reference count of a media player object. If the
+ * reference count is 0, then libvlc_media_list_player_release() will
+ * release the media player object. If the media player object
+ * has been released, then it should not be used again.
  *
  * \param p_mlp media list player instance
  */
-VLC_PUBLIC_API void
+LIBVLC_API void
     libvlc_media_list_player_release( libvlc_media_list_player_t * p_mlp );
+
+/**
+ * Retain a reference to a media player list object. Use
+ * libvlc_media_list_player_release() to decrement reference count.
+ *
+ * \param p_mlp media player list object
+ */
+LIBVLC_API void
+    libvlc_media_list_player_retain( libvlc_media_list_player_t *p_mlp );
 
 /**
  * Return the event manager of this media_list_player.
@@ -81,7 +94,7 @@ VLC_PUBLIC_API void
  * \param p_mlp media list player instance
  * \return the event manager
  */
-VLC_PUBLIC_API libvlc_event_manager_t *
+LIBVLC_API libvlc_event_manager_t *
     libvlc_media_list_player_event_manager(libvlc_media_list_player_t * p_mlp);
 
 /**
@@ -90,7 +103,7 @@ VLC_PUBLIC_API libvlc_event_manager_t *
  * \param p_mlp media list player instance
  * \param p_mi media player instance
  */
-VLC_PUBLIC_API void
+LIBVLC_API void
     libvlc_media_list_player_set_media_player(
                                      libvlc_media_list_player_t * p_mlp,
                                      libvlc_media_player_t * p_mi );
@@ -101,7 +114,7 @@ VLC_PUBLIC_API void
  * \param p_mlp media list player instance
  * \param p_mlist list of media
  */
-VLC_PUBLIC_API void
+LIBVLC_API void
     libvlc_media_list_player_set_media_list(
                                      libvlc_media_list_player_t * p_mlp,
                                      libvlc_media_list_t * p_mlist );
@@ -111,7 +124,7 @@ VLC_PUBLIC_API void
  *
  * \param p_mlp media list player instance
  */
-VLC_PUBLIC_API
+LIBVLC_API
 void libvlc_media_list_player_play(libvlc_media_list_player_t * p_mlp);
 
 /**
@@ -119,7 +132,7 @@ void libvlc_media_list_player_play(libvlc_media_list_player_t * p_mlp);
  *
  * \param p_mlp media list player instance
  */
-VLC_PUBLIC_API
+LIBVLC_API
 void libvlc_media_list_player_pause(libvlc_media_list_player_t * p_mlp);
 
 /**
@@ -127,8 +140,10 @@ void libvlc_media_list_player_pause(libvlc_media_list_player_t * p_mlp);
  *
  * \param p_mlp media list player instance
  * \return true for playing and false for not playing
+ *
+ * \libvlc_return_bool
  */
-VLC_PUBLIC_API int
+LIBVLC_API int
     libvlc_media_list_player_is_playing( libvlc_media_list_player_t * p_mlp );
 
 /**
@@ -137,7 +152,7 @@ VLC_PUBLIC_API int
  * \param p_mlp media list player instance
  * \return libvlc_state_t for media list player
  */
-VLC_PUBLIC_API libvlc_state_t
+LIBVLC_API libvlc_state_t
     libvlc_media_list_player_get_state( libvlc_media_list_player_t * p_mlp );
 
 /**
@@ -147,7 +162,7 @@ VLC_PUBLIC_API libvlc_state_t
  * \param i_index index in media list to play
  * \return 0 upon success -1 if the item wasn't found
  */
-VLC_PUBLIC_API
+LIBVLC_API
 int libvlc_media_list_player_play_item_at_index(libvlc_media_list_player_t * p_mlp,
                                                 int i_index);
 
@@ -158,7 +173,7 @@ int libvlc_media_list_player_play_item_at_index(libvlc_media_list_player_t * p_m
  * \param p_md the media instance
  * \return 0 upon success, -1 if the media is not part of the media list
  */
-VLC_PUBLIC_API
+LIBVLC_API
 int libvlc_media_list_player_play_item(libvlc_media_list_player_t * p_mlp,
                                        libvlc_media_t * p_md);
 
@@ -167,7 +182,7 @@ int libvlc_media_list_player_play_item(libvlc_media_list_player_t * p_mlp,
  *
  * \param p_mlp media list player instance
  */
-VLC_PUBLIC_API void
+LIBVLC_API void
     libvlc_media_list_player_stop( libvlc_media_list_player_t * p_mlp);
 
 /**
@@ -176,7 +191,7 @@ VLC_PUBLIC_API void
  * \param p_mlp media list player instance
  * \return 0 upon success -1 if there is no next item
  */
-VLC_PUBLIC_API
+LIBVLC_API
 int libvlc_media_list_player_next(libvlc_media_list_player_t * p_mlp);
 
 /**
@@ -185,7 +200,7 @@ int libvlc_media_list_player_next(libvlc_media_list_player_t * p_mlp);
  * \param p_mlp media list player instance
  * \return 0 upon success -1 if there is no previous item
  */
-VLC_PUBLIC_API
+LIBVLC_API
 int libvlc_media_list_player_previous(libvlc_media_list_player_t * p_mlp);
 
 
@@ -196,7 +211,7 @@ int libvlc_media_list_player_previous(libvlc_media_list_player_t * p_mlp);
  * \param p_mlp media list player instance
  * \param e_mode playback mode specification
  */
-VLC_PUBLIC_API
+LIBVLC_API
 void libvlc_media_list_player_set_playback_mode(libvlc_media_list_player_t * p_mlp,
                                                 libvlc_playback_mode_t e_mode );
 

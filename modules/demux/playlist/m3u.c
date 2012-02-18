@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: b29e6543841269ead8bf7981ae428441757b4357 $
+ * $Id: 5c34aa386beb469ec52daa6dc77211f966ddb1fd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -97,7 +97,7 @@ static bool ContainsURL( demux_t *p_demux )
 
     while( p_peek + sizeof( "https://" ) < p_peek_end )
     {
-        /* One line starting with an URL is enough */
+        /* One line starting with a URL is enough */
         if( !strncasecmp( (const char *)p_peek, "http://", 7 ) ||
             !strncasecmp( (const char *)p_peek, "mms://", 6 ) ||
             !strncasecmp( (const char *)p_peek, "rtsp://", 7 ) ||
@@ -136,6 +136,7 @@ static int Demux( demux_t *p_demux )
     char       *psz_line;
     char       *psz_name = NULL;
     char       *psz_artist = NULL;
+    char       *psz_album_art = NULL;
     int        i_parsed_duration = 0;
     mtime_t    i_duration = -1;
     const char**ppsz_options = NULL;
@@ -194,6 +195,14 @@ static int Demux( demux_t *p_demux )
                     INSERT_ELEM( ppsz_options, i_options, i_options,
                                  psz_option );
             }
+            /* Special case for jamendo which provide the albumart */
+            else if( !strncasecmp( psz_parse, "EXTALBUMARTURL:",
+                     sizeof( "EXTALBUMARTURL:" ) -1 ) )
+            {
+                psz_parse += sizeof( "EXTALBUMARTURL:" ) - 1;
+                free( psz_album_art );
+                psz_album_art = pf_dup( psz_parse );
+            }
         }
         else if( !strncasecmp( psz_parse, "RTSPtext", sizeof("RTSPtext") -1 ) )
         {
@@ -217,7 +226,7 @@ static int Demux( demux_t *p_demux )
                 goto error;
             }
 
-            p_input = input_item_NewExt( p_demux, psz_mrl, psz_name,
+            p_input = input_item_NewExt( psz_mrl, psz_name,
                                         i_options, ppsz_options, 0, i_duration );
 
             free( psz_parse );
@@ -226,6 +235,8 @@ static int Demux( demux_t *p_demux )
             if ( !EMPTY_STR(psz_artist) )
                 input_item_SetArtist( p_input, psz_artist );
             if( psz_name ) input_item_SetTitle( p_input, psz_name );
+            if( !EMPTY_STR(psz_album_art) )
+                input_item_SetArtURL( p_input, psz_album_art );
 
             input_item_node_AppendItem( p_subitems, p_input );
             vlc_gc_decref( p_input );
@@ -246,6 +257,7 @@ static int Demux( demux_t *p_demux )
             i_options = 0;
             FREENULL( psz_name );
             FREENULL( psz_artist );
+            FREENULL( psz_album_art );
             i_parsed_duration = 0;
             i_duration = -1;
 

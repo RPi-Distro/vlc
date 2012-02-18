@@ -28,7 +28,10 @@
 #include <assert.h>
 
 #include <sys/types.h>
-#include <sys/shm.h>
+#ifdef HAVE_SYS_SHM_H
+# include <sys/shm.h>
+# include <sys/stat.h>
+#endif
 
 #include <xcb/xcb.h>
 #include <xcb/shm.h>
@@ -158,25 +161,26 @@ error:
 }
 
 /** Check MIT-SHM shared memory support */
-void CheckSHM (vlc_object_t *obj, xcb_connection_t *conn, bool *restrict pshm)
+bool CheckSHM (vlc_object_t *obj, xcb_connection_t *conn)
 {
-    bool shm = var_CreateGetBool (obj, "x11-shm") > 0;
-    if (shm)
-    {
-        xcb_shm_query_version_cookie_t ck;
-        xcb_shm_query_version_reply_t *r;
+#ifdef HAVE_SYS_SHM_H
+    xcb_shm_query_version_cookie_t ck;
+    xcb_shm_query_version_reply_t *r;
 
-        ck = xcb_shm_query_version (conn);
-        r = xcb_shm_query_version_reply (conn, ck, NULL);
-        if (!r)
-        {
-            msg_Err (obj, "shared memory (MIT-SHM) not available");
-            msg_Warn (obj, "display will be slow");
-            shm = false;
-        }
+    ck = xcb_shm_query_version (conn);
+    r = xcb_shm_query_version_reply (conn, ck, NULL);
+    if (r != NULL)
+    {
         free (r);
+        return true;
     }
-    *pshm = shm;
+    msg_Err (obj, "shared memory (MIT-SHM) not available");
+    msg_Warn (obj, "display will be slow");
+#else
+    msg_Warn (obj, "shared memory (MIT-SHM) not implemented");
+    (void) conn;
+#endif
+    return false;
 }
 
 /**
@@ -191,8 +195,9 @@ int PictureResourceAlloc (vout_display_t *vd, picture_resource_t *res, size_t si
     if (!res->p_sys)
         return VLC_EGENERIC;
 
+#ifdef HAVE_SYS_SHM_H
     /* Allocate shared memory segment */
-    int id = shmget (IPC_PRIVATE, size, IPC_CREAT | 0700);
+    int id = shmget (IPC_PRIVATE, size, IPC_CREAT | S_IRWXU);
     if (id == -1)
     {
         msg_Err (vd, "shared memory allocation error: %m");
@@ -219,18 +224,47 @@ int PictureResourceAlloc (vout_display_t *vd, picture_resource_t *res, size_t si
         segment = xcb_generate_id (conn);
         ck = xcb_shm_attach_checked (conn, segment, id, 1);
 
-        if (CheckError (vd, conn, "shared memory server-side error", ck))
+        switch (CheckError (vd, conn, "shared memory server-side error", ck))
         {
-            msg_Info (vd, "using buggy X11 server - SSH proxying?");
-            segment = 0;
+            case 0:
+                break;
+
+            case XCB_ACCESS:
+            {
+                struct shmid_ds buf;
+                /* Retry with promiscuous permissions */
+                shmctl (id, IPC_STAT, &buf);
+                buf.shm_perm.mode |= S_IRGRP|S_IROTH;
+                shmctl (id, IPC_SET, &buf);
+                ck = xcb_shm_attach_checked (conn, segment, id, 1);
+                if (CheckError (vd, conn, "same error on retry", ck) == 0)
+                    break;
+                /* fall through */
+            }
+
+            default:
+                msg_Info (vd, "using buggy X11 server - SSH proxying?");
+                segment = 0;
         }
     }
     else
         segment = 0;
 
-    shmctl (id, IPC_RMID, 0);
+    shmctl (id, IPC_RMID, NULL);
     res->p_sys->segment = segment;
     res->p->p_pixels = shm;
+#else
+    assert (!attach);
+    res->p_sys->segment = 0;
+
+    /* XXX: align on 32 bytes for VLC chroma filters */
+    res->p->p_pixels = malloc (size);
+    if (unlikely(res->p->p_pixels == NULL))
+    {
+        free (res->p_sys);
+        return VLC_EGENERIC;
+    }
+#endif
     return VLC_SUCCESS;
 }
 
@@ -239,10 +273,14 @@ int PictureResourceAlloc (vout_display_t *vd, picture_resource_t *res, size_t si
  */
 void PictureResourceFree (picture_resource_t *res, xcb_connection_t *conn)
 {
+#ifdef HAVE_SYS_SHM_H
     xcb_shm_seg_t segment = res->p_sys->segment;
 
     if (conn != NULL && segment != 0)
         xcb_shm_detach (conn, segment);
     shmdt (res->p->p_pixels);
+#else
+    free (res->p->p_pixels);
+#endif
 }
 

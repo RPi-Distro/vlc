@@ -2,7 +2,7 @@
  * normvol.c: volume normalizer
  *****************************************************************************
  * Copyright (C) 2001, 2006 the VideoLAN team
- * $Id: 6a9dc2700bb1c0023a563a834b6c0380d7b3ffa6 $
+ * $Id: 173f58fe153bbe5c593746df25fb2e70e27f060b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -80,9 +80,9 @@ vlc_module_begin ()
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AFILTER )
     add_shortcut( "volnorm" )
-    add_integer( "norm-buff-size", 20 ,NULL ,BUFF_TEXT, BUFF_LONGTEXT,
+    add_integer( "norm-buff-size", 20  ,BUFF_TEXT, BUFF_LONGTEXT,
                  true )
-    add_float( "norm-max-level", 2.0, NULL, LEVEL_TEXT,
+    add_float( "norm-max-level", 2.0, LEVEL_TEXT,
                LEVEL_LONGTEXT, true )
     set_capability( "audio filter", 0 )
     set_callbacks( Open, Close )

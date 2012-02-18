@@ -17,15 +17,14 @@
 
 struct sout_stream_sys_t
 {
-    VLC_COMMON_MEMBERS
-
     sout_stream_id_t *id_video;
     block_t         *p_buffers;
     vlc_mutex_t     lock_out;
     vlc_cond_t      cond;
+    bool            b_abort;
     picture_t *     pp_pics[PICTURE_RING_SIZE];
     int             i_first_pic, i_last_pic;
-    bool            b_error;
+    vlc_thread_t    thread;
 
     /* Audio */
     vlc_fourcc_t    i_acodec;   /* codec audio (0 if not transcode) */
@@ -62,6 +61,7 @@ struct sout_stream_sys_t
     bool            b_soverlay;
     config_chain_t  *p_spu_cfg;
     spu_t           *p_spu;
+    filter_t        *p_spu_blend;
 
     /* OSD Menu */
     vlc_fourcc_t    i_osdcodec; /* codec osd menu (0 if not transcode) */

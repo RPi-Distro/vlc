@@ -2,7 +2,7 @@
  * dirac.c
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 63010d602c8c96668cdc2c4e48629e1324d2301b $
+ * $Id: 858867475787bea3daa4c6bc81012f01f7184a3b $
  *
  * Authors: David Flynn <davidf@rd.bbc.co.uk>
  *
@@ -23,7 +23,7 @@
 
 /* Dirac packetizer, formed of three parts:
  *  1) Bitstream synchroniser (dirac_DoSync)
- *      - Given an arbitary sequence of bytes, extract whole Dirac Data Units
+ *      - Given an arbitrary sequence of bytes, extract whole Dirac Data Units
  *      - Maps timestamps in supplied block_t's to the extracted Data Unit
  *        A time stamp applies to the next Data Unit to commence at, or after
  *        the first byte of the block_t with the timestamp.
@@ -170,7 +170,6 @@ typedef struct {
 } parse_info_t;
 
 typedef struct {
-    block_free_t pf_blk_release;
     /*> next_parse_offset of the final data unit in associated block_t */
     uint32_t u_last_next_offset;
     /*> picture number is invalid if block has flags DIRAC_NON_DATED */
@@ -216,38 +215,44 @@ enum {
 typedef struct {
     block_t fake;
     block_t *p_orig;
-    void *p_priv;
+    dirac_block_encap_t *p_dbe;
 } fake_block_t;
 
 static dirac_block_encap_t *dirac_RemoveBlockEncap( block_t *p_block )
 {
     fake_block_t *p_fake = (fake_block_t *)p_block;
-    dirac_block_encap_t *p_dbe = p_fake->p_priv;
-    if( !p_dbe ) return NULL;
-    p_fake->p_priv = NULL;
-    p_dbe->pf_blk_release = NULL;
+    dirac_block_encap_t *p_dbe = p_fake->p_dbe;
+
+    p_fake->p_dbe = NULL;
     return p_dbe;
 }
 
 static void dirac_ReleaseBlockAndEncap( block_t *p_block )
 {
     fake_block_t *p_fake = (fake_block_t *)p_block;
+
     free( dirac_RemoveBlockEncap( p_block ) );
-    p_fake->p_orig->pf_release( p_fake->p_orig );
+    block_Release( p_fake->p_orig );
     free( p_fake );
 }
 
 static void dirac_AddBlockEncap( block_t **pp_block, dirac_block_encap_t *p_dbe )
 {
-    fake_block_t *p_fake = calloc( 1, sizeof( *p_fake ) );
-    assert( p_fake ); /* must not fail, fixby: adding a p_priv to block_t */
-    p_fake->p_orig = *pp_block;
-    memcpy( &p_fake->fake, *pp_block, sizeof( block_t ) );
-    *pp_block = &p_fake->fake;
+    /* must not fail, fixby: adding a p_priv to block_t */
+    fake_block_t *p_fake = xcalloc( 1, sizeof( *p_fake ) );
+    block_t *in = *pp_block, *out = &p_fake->fake;
 
-    p_fake->p_priv = p_dbe;
-    p_dbe->pf_blk_release = p_fake->p_orig->pf_release;
-    p_fake->fake.pf_release = dirac_ReleaseBlockAndEncap;
+    block_Init( out, in->p_buffer, in->i_buffer );
+    out->i_flags = in->i_flags;
+    out->i_nb_samples = in->i_nb_samples;
+    out->i_pts = in->i_pts;
+    out->i_dts = in->i_dts;
+    out->i_length = in->i_length;
+    out->pf_release = dirac_ReleaseBlockAndEncap;
+    p_fake->p_orig = in;
+    p_fake->p_dbe = p_dbe;
+
+    *pp_block = out;
 }
 
 static dirac_block_encap_t *dirac_NewBlockEncap( block_t **pp_block )
@@ -259,7 +264,7 @@ static dirac_block_encap_t *dirac_NewBlockEncap( block_t **pp_block )
 
 static dirac_block_encap_t *dirac_GetBlockEncap( block_t *p_block )
 {
-    return (dirac_block_encap_t*) ((fake_block_t *)p_block)->p_priv;
+    return ((fake_block_t *)p_block)->p_dbe;
 }
 
 /***
@@ -1365,7 +1370,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_dts_last_out = p_sys->i_pts_last_out = VLC_TS_INVALID;
 
     p_sys->i_state = NOT_SYNCED;
-    p_sys->bytestream = block_BytestreamInit();
+    block_BytestreamInit( &p_sys->bytestream );
 
     p_sys->pp_outqueue_last = &p_sys->p_outqueue;
     p_sys->pp_eu_last = &p_sys->p_eu;

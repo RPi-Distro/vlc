@@ -1,8 +1,8 @@
 /*****************************************************************************
  * output.m: MacOS X Output Dialog
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 14ff97b768d3136a167695b04c08b2967d5afc90 $
+ * Copyright (C) 2002-2007 VLC authors and VideoLAN
+ * $Id: 5271cf34ec7341f21dd95b65ece33b0f80b93309 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -416,27 +416,21 @@
             /* split up the hostname and the following path to paste the
              * port correctly. Not need, if there isn't any path following the
              * hostname. */
-            NSArray * o_urlItems = [[o_stream_address stringValue] \
-                componentsSeparatedByString: @"/"];
+            NSArray * o_urlItems = [[o_stream_address stringValue] componentsSeparatedByString: @"/"];
             NSMutableString * o_finalStreamAddress;
             o_finalStreamAddress = [[NSMutableString alloc] init];
  
             if ([o_urlItems count] == 1)
             {
-                [o_finalStreamAddress appendFormat: @"\"%@:%@\"", \
-                    [o_stream_address stringValue],[o_stream_port stringValue]];
+                [o_finalStreamAddress appendFormat: @"\"%@:%@\"", [o_stream_address stringValue],[o_stream_port stringValue]];
             }
             else
             {
-                [o_finalStreamAddress appendFormat: @"\"%@:%@", [o_urlItems \
-                    objectAtIndex: 0], [o_stream_port stringValue]];
-                unsigned int x;
-                x = 1;
-                while (x != [o_urlItems count])
+                [o_finalStreamAddress appendFormat: @"\"%@:%@", [o_urlItems objectAtIndex: 0], [o_stream_port stringValue]];
+                NSUInteger itemCount = [o_urlItems count];
+                for (NSUInteger x = 0; x < itemCount; x++)
                 {
-                    [o_finalStreamAddress appendFormat: @"/%@", [o_urlItems \
-                        objectAtIndex: x]];
-                    x = (x + 1);
+                    [o_finalStreamAddress appendFormat: @"/%@", [o_urlItems objectAtIndex: x]];
                 }
                 [o_finalStreamAddress appendString: @"\""];
             }
@@ -528,7 +522,7 @@
     if( [o_save_panel runModalForDirectory: nil
             file: o_name] == NSOKButton )
     {
-        NSString *o_filename = [o_save_panel filename];
+        NSString *o_filename = [[o_save_panel URL] path];
         [o_file_field setStringValue: o_filename];
         [self outputInfoChanged: nil];
     }

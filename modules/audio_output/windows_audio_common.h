@@ -2,7 +2,7 @@
  * windows_common.h: Windows Audio common code
  *****************************************************************************
  * Copyright (C) 2001-2009 VideoLAN
- * $Id: cd5e36684426bf4d9de35fab4170237c59e2f489 $
+ * $Id: b1acd06caf9087de53da7c02de67190ec3cc8e5f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -71,6 +71,9 @@ typedef struct {
 } WAVEFORMATEXTENSIBLE, *PWAVEFORMATEXTENSIBLE;
 #endif
 
+#ifndef UNDER_CE
+#   include <dsound.h>
+#endif
 
 #ifndef SPEAKER_FRONT_LEFT
 #   define SPEAKER_FRONT_LEFT             0x1

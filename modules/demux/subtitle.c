@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 9bf09d2d19ad0405336f2fbb362d495ee13d2b39 $
+ * $Id: 6c2f9afea548feb8c52c62b00a7688be9ddaccf2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -75,16 +75,16 @@ vlc_module_begin ()
     set_capability( "demux", 0 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
-    add_float( "sub-fps", 0.0, NULL,
+    add_float( "sub-fps", 0.0,
                N_("Frames per second"),
                SUB_FPS_LONGTEXT, true )
-    add_integer( "sub-delay", 0, NULL,
+    add_integer( "sub-delay", 0,
                N_("Subtitles delay"),
                SUB_DELAY_LONGTEXT, true )
-    add_string( "sub-type", "auto", NULL, N_("Subtitles format"),
+    add_string( "sub-type", "auto", N_("Subtitles format"),
                 SUB_TYPE_LONGTEXT, true )
         change_string_list( ppsz_sub_type, NULL, NULL )
-    add_string( "sub-description", NULL, NULL, N_("Subtitles description"),
+    add_string( "sub-description", NULL, N_("Subtitles description"),
                 SUB_DESCRIPTION_LONGTEXT, true )
     set_callbacks( Open, Close )
 
@@ -636,6 +636,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             p_sys->i_next_demux_date = (int64_t)va_arg( args, int64_t );
             return VLC_SUCCESS;
 
+        case DEMUX_GET_PTS_DELAY:
         case DEMUX_GET_FPS:
         case DEMUX_GET_META:
         case DEMUX_GET_ATTACHMENTS:
@@ -1625,10 +1626,10 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
 
             strcpy( psz_text, s );
 
-            switch( toupper( psz_text[1] ) )
+            switch( toupper( (unsigned char)psz_text[1] ) )
             {
             case 'S':
-                 shift = isalpha( psz_text[2] ) ? 6 : 2 ;
+                 shift = isalpha( (unsigned char)psz_text[2] ) ? 6 : 2 ;
 
                  if( sscanf( &psz_text[shift], "%d", &h ) )
                  {
@@ -1665,7 +1666,7 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
                  break;
 
             case 'T':
-                shift = isalpha( psz_text[2] ) ? 8 : 2 ;
+                shift = isalpha( (unsigned char)psz_text[2] ) ? 8 : 2 ;
 
                 sscanf( &psz_text[shift], "%d", &p_sys->jss.i_time_resolution );
                 break;
@@ -1680,7 +1681,7 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
             continue;
         }
     }
-	
+
     while( psz_text[ strlen( psz_text ) - 1 ] == '\\' )
     {
         const char *s2 = TextGetLine( txt );
@@ -1701,7 +1702,7 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
         if( !psz_text )
              return VLC_ENOMEM;
 
-		psz_orig = psz_text;
+        psz_orig = psz_text;
         strcat( psz_text, s2 );
     }
 
@@ -1709,7 +1710,7 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
     while( *psz_text == ' ' || *psz_text == '\t' ) psz_text++;
 
     /* Parse the directives */
-    if( isalpha( *psz_text ) || *psz_text == '[' )
+    if( isalpha( (unsigned char)*psz_text ) || *psz_text == '[' )
     {
         while( *psz_text != ' ' )
         { psz_text++ ;};
@@ -1766,8 +1767,8 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
                 psz_text2++;
                 break;
             }
-            if( ( toupper(*(psz_text + 1 ) ) == 'C' ) ||
-                    ( toupper(*(psz_text + 1 ) ) == 'F' ) )
+            if( ( toupper((unsigned char)*(psz_text + 1 ) ) == 'C' ) ||
+                    ( toupper((unsigned char)*(psz_text + 1 ) ) == 'F' ) )
             {
                 psz_text++; psz_text++;
                 break;
@@ -1786,7 +1787,7 @@ static int ParseJSS( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
             else if( *(psz_text + 1 ) == '\r' ||  *(psz_text + 1 ) == '\n' ||
                      *(psz_text + 1 ) == '\0' )
             {
-				psz_text++;
+                psz_text++;
             }
             break;
         default:
@@ -1853,7 +1854,7 @@ static int ParsePSB( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
 
 static int64_t ParseRealTime( char *psz, int *h, int *m, int *s, int *f )
 {
-    if( strlen( psz ) == 0 ) return 0;
+    if( *psz == '\0' ) return 0;
     if( sscanf( psz, "%d:%d:%d.%d", h, m, s, f ) == 4 ||
             sscanf( psz, "%d:%d.%d", m, s, f ) == 3 ||
             sscanf( psz, "%d.%d", s, f ) == 2 ||

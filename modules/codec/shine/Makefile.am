@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libshine_plugin_la_SOURCES = $(SOURCES_shine)
 nodist_libshine_plugin_la_SOURCES = $(nodist_SOURCES_shine)
 # Force per-target objects:
-libshine_plugin_la_CFLAGS = $(AM_CFLAGS)
-libshine_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libshine_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libshine_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_shine)
+libshine_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_shine)
+libshine_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_shine)
+libshine_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_shine)
 # Set LIBADD and DEPENDENCIES manually:
-libshine_plugin_la_LIBADD = $(AM_LIBADD)
-libshine_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libshine_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_shine)
+libshine_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_shine)
+libshine_plugin_la_DEPENDENCIES =
 

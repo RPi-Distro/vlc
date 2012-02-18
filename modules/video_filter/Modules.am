@@ -4,32 +4,49 @@ SOURCES_mosaic = mosaic.c mosaic.h
 SOURCES_transform = transform.c
 SOURCES_invert = invert.c
 SOURCES_mirror = mirror.c
-SOURCES_adjust = adjust.c
+SOURCES_adjust = adjust.c adjust_sat_hue.c adjust_sat_hue.h
 SOURCES_wall = wall.c
 SOURCES_clone = clone.c
 SOURCES_crop = crop.c
 SOURCES_motionblur = motionblur.c
 SOURCES_logo = logo.c
 SOURCES_audiobargraph_v = audiobargraph_v.c
-SOURCES_deinterlace = deinterlace.c yadif.h mmx.h
-SOURCES_blend = blend.c
+SOURCES_deinterlace = deinterlace/deinterlace.c deinterlace/deinterlace.h \
+	deinterlace/mmx.h deinterlace/common.h \
+	deinterlace/merge.c deinterlace/merge.h \
+	deinterlace/helpers.c deinterlace/helpers.h \
+	deinterlace/algo_basic.c deinterlace/algo_basic.h \
+	deinterlace/algo_x.c deinterlace/algo_x.h \
+	deinterlace/algo_yadif.c deinterlace/algo_yadif.h \
+	deinterlace/yadif.h deinterlace/yadif_template.h \
+	deinterlace/algo_phosphor.c deinterlace/algo_phosphor.h \
+	deinterlace/algo_ivtc.c deinterlace/algo_ivtc.h
+SOURCES_blend = blend.cpp
 SOURCES_scale = scale.c
 SOURCES_marq = marq.c
 SOURCES_rss = rss.c
 SOURCES_motiondetect = motiondetect.c
-SOURCES_rv32 = rv32.c
 
 libosdmenu_plugin_la_SOURCES = osdmenu.c
 libosdmenu_plugin_la_CFLAGS = $(AM_CFLAGS) -DPKGDATADIR=\"$(vlcdatadir)\"
 libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
 libosdmenu_plugin_la_DEPENDENCIES =
-EXTRA_LTLIBRARIES += libosdmenu_plugin.la
-libvlc_LTLIBRARIES += $(LTLIBosdmenu)
+if BUILD_OSDMENU
+libvlc_LTLIBRARIES += libosdmenu_plugin.la
+endif
 
-SOURCES_remoteosd = remoteosd.c remoteosd_rfbproto.h
+libremoteosd_plugin_la_SOURCES = remoteosd.c remoteosd_rfbproto.h
+libremoteosd_plugin_la_CFLAGS = $(AM_CFLAGS) $(GCRYPT_CFLAGS)
+libremoteosd_plugin_la_LIBADD = $(AM_LIBADD) $(GCRYPT_LIBS) $(LIBS_remoteosd)
+libremoteosd_plugin_la_DEPENDENCIES =
+if HAVE_GCRYPT
+libvlc_LTLIBRARIES += libremoteosd_plugin.la
+endif
+
 SOURCES_magnify = magnify.c
 SOURCES_wave = wave.c
 SOURCES_ripple = ripple.c
+SOURCES_posterize = posterize.c
 SOURCES_psychedelic = psychedelic.c
 SOURCES_gradient = gradient.c
 SOURCES_ball = ball.c
@@ -37,7 +54,6 @@ SOURCES_panoramix = panoramix.c
 SOURCES_opencv_wrapper = opencv_wrapper.c
 SOURCES_opencv_example = opencv_example.c filter_event_info.h
 SOURCES_rotate = rotate.c
-SOURCES_noise = noise.c
 SOURCES_puzzle = puzzle.c
 SOURCES_colorthres = colorthres.c
 SOURCES_extract = extract.c
@@ -53,13 +69,10 @@ SOURCES_blendbench = blendbench.c
 SOURCES_chain = chain.c
 SOURCES_postproc = postproc.c
 SOURCES_swscale = swscale.c ../codec/avcodec/chroma.c
-SOURCES_swscale_omap = swscale_omap.c \
-	libswscale_nokia770/arm_jit_swscale.c \
-	libswscale_nokia770/arm_colorconv.S \
-	libswscale_nokia770/arm_jit_swscale.h \
-	libswscale_nokia770/arm_colorconv.h
 SOURCES_scene = scene.c
+SOURCES_sepia = sepia.c
 SOURCES_yuvp = yuvp.c
+SOURCES_antiflicker = antiflicker.c
 SOURCES_atmo = atmo/atmo.cpp \
 	atmo/AtmoDefs.h \
 	atmo/AtmoCalculations.cpp atmo/AtmoCalculations.h \
@@ -81,8 +94,10 @@ SOURCES_atmo = atmo/atmo.cpp \
 	atmo/MoMoConnection.cpp atmo/MoMoConnection.h \
 	atmo/FnordlichtConnection.cpp atmo/FnordlichtConnection.h \
 	atmo/AtmoPacketQueue.cpp atmo/AtmoPacketQueue.h
-SOURCES_video_filter_wrapper = wrapper.c
-noinst_HEADERS = filter_common.h filter_picture.h
+SOURCES_gradfun = gradfun.c gradfun.h
+SOURCES_subsdelay = subsdelay.c
+SOURCES_hqdn3d = hqdn3d.c hqdn3d.h
+noinst_HEADERS = filter_picture.h
 
 libvlc_LTLIBRARIES += \
 	libadjust_plugin.la \
@@ -96,7 +111,6 @@ libvlc_LTLIBRARIES += \
 	libchain_plugin.la \
 	libclone_plugin.la \
 	libcolorthres_plugin.la \
-	libcrop_plugin.la \
 	libcroppadd_plugin.la \
 	libdeinterlace_plugin.la \
 	liberase_plugin.la \
@@ -112,18 +126,21 @@ libvlc_LTLIBRARIES += \
 	libmosaic_plugin.la \
 	libmotionblur_plugin.la \
 	libmotiondetect_plugin.la \
-	libnoise_plugin.la \
+	libposterize_plugin.la \
 	libpsychedelic_plugin.la \
 	libpuzzle_plugin.la \
 	libripple_plugin.la \
 	librotate_plugin.la \
 	librss_plugin.la \
-	librv32_plugin.la \
 	libscale_plugin.la \
 	libscene_plugin.la \
+	libsepia_plugin.la \
 	libsharpen_plugin.la \
+	libsubsdelay_plugin.la \
 	libtransform_plugin.la \
 	libwall_plugin.la \
 	libwave_plugin.la \
+	libgradfun_plugin.la \
 	libyuvp_plugin.la \
-	libvideo_filter_wrapper_plugin.la
+	libantiflicker_plugin.la \
+	libhqdn3d_plugin.la

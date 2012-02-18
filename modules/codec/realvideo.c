@@ -45,13 +45,8 @@ int WINAPI FreeLibrary( void *handle );
 #   define WINAPI
 #endif
 
-#if defined(HAVE_DL_DLOPEN)
-#   if defined(HAVE_DLFCN_H) /* Linux, BSD, Hurd */
-#       include <dlfcn.h>
-#   endif
-#   if defined(HAVE_SYS_DL_H)
-#       include <sys/dl.h>
-#   endif
+#ifndef WIN32
+#   include <dlfcn.h>
 #endif
 
 typedef struct cmsg_data_s
@@ -466,7 +461,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         dp_hdr_t dp_hdr;
         transform_in_t transform_in;
         uint32_t pkg_len = ((uint32_t*)p_block->p_buffer)[0];
-        unsigned char* dp_data=((unsigned char*)p_block->p_buffer)+8;
+        char* dp_data=((char*)p_block->p_buffer)+8;
         uint32_t* extra=(uint32_t*)(((char*)p_block->p_buffer)+8+pkg_len);
         uint32_t img_size;
 

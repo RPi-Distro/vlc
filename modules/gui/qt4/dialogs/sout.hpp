@@ -2,7 +2,7 @@
  * sout.hpp : Stream output dialog ( old-style, ala WX )
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 85c1284ca30df23e1bdd2d45bf83bc143347852b $
+ * $Id: 53895ff1d77a5e1f94bc244d89ec04d0be0c3a8c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -32,6 +32,8 @@
 
 #include "ui/sout.h"
 #include "util/qvlcframe.hpp"
+
+#include <QWizard>
 
 class QPushButton;
 class QToolButton;

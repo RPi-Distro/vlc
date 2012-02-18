@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libskins2_plugin_la_SOURCES = $(SOURCES_skins2)
 nodist_libskins2_plugin_la_SOURCES = $(nodist_SOURCES_skins2)
 # Force per-target objects:
-libskins2_plugin_la_CFLAGS = $(AM_CFLAGS)
-libskins2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libskins2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libskins2_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_skins2)
+libskins2_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_skins2)
+libskins2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_skins2)
+libskins2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_skins2)
 # Set LIBADD and DEPENDENCIES manually:
-libskins2_plugin_la_LIBADD = $(AM_LIBADD)
-libskins2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libskins2_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_skins2)
+libskins2_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_skins2)
+libskins2_plugin_la_DEPENDENCIES =
 

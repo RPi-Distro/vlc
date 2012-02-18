@@ -2,7 +2,7 @@
  * fourcc.c: libavcodec <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2009 the VideoLAN team
- * $Id: bee9b10d94e7d4c72baa74b4f42001b93e92c6b3 $
+ * $Id: ccccb2f5cdcf8cc0de3ef701b6496846e23ddd9e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -31,8 +31,6 @@
 
 #ifdef HAVE_LIBAVCODEC_AVCODEC_H
 #   include <libavcodec/avcodec.h>
-#elif defined(HAVE_FFMPEG_AVCODEC_H)
-#   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
 #endif
@@ -89,6 +87,9 @@ static const struct
     { VLC_CODEC_WMV1, CODEC_ID_WMV1, VIDEO_ES },
     { VLC_CODEC_WMV2, CODEC_ID_WMV2, VIDEO_ES },
     { VLC_CODEC_WMV3, CODEC_ID_WMV3, VIDEO_ES },
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 90, 1 )
+    { VLC_CODEC_WMVP, CODEC_ID_WMV3, VIDEO_ES },
+#endif
 
     { VLC_CODEC_VC1,  CODEC_ID_VC1, VIDEO_ES },
     { VLC_CODEC_WMVA, CODEC_ID_VC1, VIDEO_ES },
@@ -128,12 +129,8 @@ static const struct
     { VLC_CODEC_RV10, CODEC_ID_RV10, VIDEO_ES },
     { VLC_CODEC_RV13, CODEC_ID_RV10, VIDEO_ES },
     { VLC_CODEC_RV20, CODEC_ID_RV20, VIDEO_ES },
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 8, 0 )
     { VLC_CODEC_RV30, CODEC_ID_RV30, VIDEO_ES },
-#endif
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 5, 0 )
     { VLC_CODEC_RV40, CODEC_ID_RV40, VIDEO_ES },
-#endif
 
     { VLC_CODEC_RPZA, CODEC_ID_RPZA, VIDEO_ES },
 
@@ -185,13 +182,9 @@ static const struct
     { VLC_CODEC_DNXHD, CODEC_ID_DNXHD, VIDEO_ES },
     { VLC_CODEC_8BPS, CODEC_ID_8BPS, VIDEO_ES },
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 52, 0 )
     { VLC_CODEC_MIMIC, CODEC_ID_MIMIC, VIDEO_ES },
-#endif
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 55, 0 )
     { VLC_CODEC_DIRAC, CODEC_ID_DIRAC, VIDEO_ES },
-#endif
 
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 29, 0 )
     { VLC_CODEC_V210, CODEC_ID_V210, VIDEO_ES },
@@ -209,6 +202,10 @@ static const struct
     { VLC_CODEC_VP8, CODEC_ID_VP8, VIDEO_ES },
 #endif
 
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 108, 2 )
+    { VLC_CODEC_LAGARITH, CODEC_ID_LAGARITH, VIDEO_ES },
+#endif
+
     /* Videogames Codecs */
 
     { VLC_CODEC_INTERPLAY, CODEC_ID_INTERPLAY_VIDEO, VIDEO_ES },
@@ -224,6 +221,19 @@ static const struct
     { VLC_CODEC_VMDVIDEO, CODEC_ID_VMDVIDEO, VIDEO_ES },
 
     { VLC_CODEC_AMV, CODEC_ID_AMV, VIDEO_ES },
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 7, 0 )
+    { VLC_CODEC_FLASHSV2, CODEC_ID_FLASHSV2, VIDEO_ES },
+#endif
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 9, 0 )
+    { VLC_CODEC_WMVP, CODEC_ID_WMV3IMAGE, VIDEO_ES },
+    { VLC_CODEC_WMVP2, CODEC_ID_VC1IMAGE, VIDEO_ES },
+#endif
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 15, 0 )
+    { VLC_CODEC_PRORES, CODEC_ID_PRORES, VIDEO_ES },
+#endif
 
 
 #if 0
@@ -266,6 +276,7 @@ static const struct
     { VLC_CODEC_GIF, CODEC_ID_GIF, VIDEO_ES },
     { VLC_CODEC_TARGA, CODEC_ID_TARGA, VIDEO_ES },
     { VLC_CODEC_SGI, CODEC_ID_SGI, VIDEO_ES },
+    { VLC_CODEC_JPEG2000, CODEC_ID_JPEG2000, VIDEO_ES },
 
     /*
      *  Audio Codecs
@@ -292,9 +303,7 @@ static const struct
     { VLC_CODEC_RA_288, CODEC_ID_RA_288, AUDIO_ES },
 
     { VLC_CODEC_A52, CODEC_ID_AC3, AUDIO_ES },
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 0, 0 )
     { VLC_CODEC_EAC3, CODEC_ID_EAC3, AUDIO_ES },
-#endif
 
     { VLC_CODEC_DTS, CODEC_ID_DTS, AUDIO_ES },
 
@@ -304,6 +313,9 @@ static const struct
     { VLC_CODEC_MP4A, CODEC_ID_AAC, AUDIO_ES },
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 26, 0 )
     { VLC_CODEC_ALS, CODEC_ID_MP4ALS, AUDIO_ES },
+#endif
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 94, 0 )
+    { VLC_CODEC_MP4A, CODEC_ID_AAC_LATM, AUDIO_ES },
 #endif
 
     { VLC_CODEC_INTERPLAY_DPCM, CODEC_ID_INTERPLAY_DPCM, AUDIO_ES },
@@ -352,12 +364,8 @@ static const struct
 
     { VLC_CODEC_VORBIS, CODEC_ID_VORBIS, AUDIO_ES },
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 6, 0 )
     { VLC_CODEC_QCELP, CODEC_ID_QCELP, AUDIO_ES },
-#endif
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 50, 1 )
     { VLC_CODEC_SPEEX, CODEC_ID_SPEEX, AUDIO_ES },
-#endif
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 34, 0 )
     { VLC_CODEC_TWINVQ, CODEC_ID_TWINVQ, AUDIO_ES },
 #endif
@@ -366,6 +374,9 @@ static const struct
 #endif
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 47, 0 )
     { VLC_CODEC_SIPR, CODEC_ID_SIPR, AUDIO_ES },
+#endif
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 91, 0 )
+    { VLC_CODEC_ADPCM_G722, CODEC_ID_ADPCM_G722, AUDIO_ES },
 #endif
 
     /* Lossless */
@@ -377,12 +388,8 @@ static const struct
 
     { VLC_CODEC_SHORTEN, CODEC_ID_SHORTEN, AUDIO_ES },
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 22, 0 )
     { VLC_CODEC_TRUEHD, CODEC_ID_TRUEHD, AUDIO_ES },
-#endif
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 58, 0 )
     { VLC_CODEC_MLP, CODEC_ID_MLP, AUDIO_ES },
-#endif
 
 
     /* PCM */
@@ -403,14 +410,12 @@ static const struct
     { VLC_CODEC_ALAW, CODEC_ID_PCM_ALAW, AUDIO_ES },
     { VLC_CODEC_MULAW, CODEC_ID_PCM_MULAW, AUDIO_ES },
     { VLC_CODEC_S24DAUD, CODEC_ID_PCM_S24DAUD, AUDIO_ES },
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 66, 0 )
 #if ( !defined( WORDS_BIGENDIAN ) )
     { VLC_CODEC_FL32, CODEC_ID_PCM_F32LE, AUDIO_ES },
     { VLC_CODEC_FL64, CODEC_ID_PCM_F64LE, AUDIO_ES },
 #else
     { VLC_CODEC_FL32, CODEC_ID_PCM_F32BE, AUDIO_ES },
     { VLC_CODEC_FL64, CODEC_ID_PCM_F64BE, AUDIO_ES },
-#endif
 #endif
 
     /* Subtitle streams */
@@ -421,8 +426,9 @@ static const struct
     { VLC_CODEC_DVBS, CODEC_ID_DVB_SUBTITLE, SPU_ES },
     { VLC_CODEC_SUBT, CODEC_ID_TEXT, SPU_ES },
     { VLC_CODEC_XSUB, CODEC_ID_XSUB, SPU_ES },
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 50, 0 )
     { VLC_CODEC_SSA, CODEC_ID_SSA, SPU_ES },
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 38, 0 )
+    { VLC_CODEC_TELETEXT, CODEC_ID_DVB_TELETEXT, SPU_ES },
 #endif
 
     { 0, 0, UNKNOWN_ES }

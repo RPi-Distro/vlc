@@ -2,7 +2,7 @@
  * extended.hpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 0c651da8d887db96f2fa5027c15a8bdb6011502d $
+ * $Id: ae5be3fe6fbbc3dbd847c88fff9c0d6b1e6bc27d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -31,7 +31,7 @@
 
 class QTabWidget;
 
-class ExtendedDialog : public QVLCFrame, public Singleton<ExtendedDialog>
+class ExtendedDialog : public QVLCDialog, public Singleton<ExtendedDialog>
 {
     Q_OBJECT
 public:

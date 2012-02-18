@@ -2,7 +2,7 @@
  * omxil_utils.h: helper functions
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: e4aad8d72eacb590360b4f0ebb63fcc3758485ad $
+ * $Id: f57feeecabbaadee186d8ca3c1d39f04b584729a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -76,16 +76,7 @@ typedef struct OmxPort
 
 struct decoder_sys_t
 {
-    void *dll_handle;
     OMX_HANDLETYPE omx_handle;
-
-    OMX_ERRORTYPE (*pf_init) (void);
-    OMX_ERRORTYPE (*pf_deinit) (void);
-    OMX_ERRORTYPE (*pf_get_handle) (OMX_HANDLETYPE *, OMX_STRING,
-                                    OMX_PTR, OMX_CALLBACKTYPE *);
-    OMX_ERRORTYPE (*pf_free_handle) (OMX_HANDLETYPE);
-    OMX_ERRORTYPE (*pf_component_enum)(OMX_STRING, OMX_U32, OMX_U32);
-    OMX_ERRORTYPE (*pf_get_roles_of_component)(OMX_STRING, OMX_U32 *, OMX_U8 **);
 
     bool b_enc;
     bool b_init;
@@ -111,4 +102,6 @@ struct decoder_sys_t
     date_t end_date;
 
     int i_nal_size_length; /* Length of the NAL size field for H264 */
+
+    OMX_BUFFERHEADERTYPE sentinel_buffer;
 };

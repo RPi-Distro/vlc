@@ -2,7 +2,7 @@
  * simple_preferences.hpp : Simple prefs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 626de8279bd38084013990262409ecb0f38166a8 $
+ * $Id: 50996fbaf8bbaa75654a3bfe69c304baccf49b3e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -59,13 +59,15 @@ enum {
     CachingLowest = 100,
     CachingLow    = 200,
     CachingNormal = 300,
-    CachingHigh   = 750,
-    CachingHigher = 2500
+    CachingHigh   = 500,
+    CachingHigher = 1000
 };
 
 enum {
 #ifdef WIN32
        directxW,
+#elif defined( __OS2__)
+       kaiW,
 #else
        alsaW,
        ossW,
@@ -79,6 +81,7 @@ enum {
 };
 enum { inputLE, cachingCoB };
 enum { skinRB, qtRB, styleCB };
+enum { shadowCB, backgroundCB };
 
 class ConfigControl;
 class QComboBox;
@@ -113,14 +116,16 @@ public:
     virtual ~SPrefsPanel();
     void apply();
     void clean();
+
 private:
     intf_thread_t *p_intf;
     QList<ConfigControl *> controls;
 
     int number;
 
-    QList<QWidget *> optionWidgets;
+    QWidgetList optionWidgets;
     QStringList qs_filter;
+    QButtonGroup *radioGroup;
 
 #ifdef WIN32
     QList<QTreeWidgetItem *> listAsso;
@@ -132,10 +137,11 @@ private slots:
     void lastfm_Changed( int );
     void updateAudioOptions( int );
     void updateAudioVolume( int );
-#ifdef SYS_MINGW32
+#ifdef WIN32
     void assoDialog();
     void saveAsso();
 #endif
+    void configML();
     void changeStyle( QString );
 };
 

@@ -2,7 +2,7 @@
  * win32_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 49d8596c981b26243ba7c81ed52b5c784c1928a3 $
+ * $Id: c192cd26a0b88e95eab0422ffb1baa0335efa4ed $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -25,8 +25,8 @@
 #ifndef WIN32_FACTORY_HPP
 #define WIN32_FACTORY_HPP
 
-#ifndef _WIN32_WINNT
-#   define _WIN32_WINNT 0x0500
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
 
 #include <windows.h>
@@ -101,6 +101,14 @@ public:
     virtual int getScreenWidth() const;
     virtual int getScreenHeight() const;
 
+    /// Get Monitor Information
+    virtual void getMonitorInfo( const GenericWindow &rWindow,
+                                 int* x, int* y,
+                                 int* width, int* height ) const;
+    virtual void getMonitorInfo( int numScreen,
+                                 int* x, int* y,
+                                 int* width, int* height ) const;
+
     /// Get the work area (screen area without taskbars)
     virtual SkinsRect getWorkArea() const;
 
@@ -116,20 +124,15 @@ public:
     /// Map to find the GenericWindow associated with a Win32Window
     map<HWND, GenericWindow*> m_windowMap;
 
-    /// Functions dynamically loaded from the dll, because they don't exist
-    /// on Win9x/NT4
-    // We dynamically load msimg32.dll to get a pointer to TransparentBlt()
-    BOOL (WINAPI *TransparentBlt)( HDC, int, int, int, int,
-                                   HDC, int, int, int, int, UINT );
-    BOOL (WINAPI *AlphaBlend)( HDC, int, int, int, int,
-                               HDC, int, int, int, int, BLENDFUNCTION );
-
-    // Idem for user32.dll and SetLayeredWindowAttributes()
-    BOOL (WINAPI *SetLayeredWindowAttributes)( HWND, COLORREF,
-                                               BYTE, DWORD );
-
     HWND getParentWindow() { return m_hParentWindow; }
 
+    /// Callback function (Windows Procedure)
+    static LRESULT CALLBACK Win32Proc( HWND hwnd, UINT uMsg,
+                                       WPARAM wParam, LPARAM lParam );
+
+    /// Callback (enumerate multiple screens)
+    static BOOL CALLBACK MonitorEnumProc( HMONITOR hMonitor, HDC hdcMonitor,
+                                          LPRECT lprcMonitor, LPARAM dwData );
 private:
     /// Handle of the instance
     HINSTANCE m_hInst;
@@ -145,6 +148,8 @@ private:
     const string m_dirSep;
     /// Resource path
     list<string> m_resourcePath;
+    /// Monitors detected
+    list<HMONITOR> m_monitorList;
 };
 
 

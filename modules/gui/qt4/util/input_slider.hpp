@@ -1,11 +1,12 @@
 /*****************************************************************************
- * input_slider.hpp : A slider that controls an input
+ * input_slider.hpp : VolumeSlider and SeekSlider
  ****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 08800f1ded9f986890322bee77405fe1fd6816ef $
+ * Copyright (C) 2006-2011 the VideoLAN team
+ * $Id: 4a2b1daf0f32be3746f178ba2ed3699276b8f616 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
+ *          Ludovic Fauvet <etix@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,46 +19,78 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _INPUTSLIDER_H_
 #define _INPUTSLIDER_H_
 
-#include "qt4.hpp"
+#include <vlc_common.h>
+#include "timetooltip.hpp"
 
 #include <QSlider>
 
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QTimer>
+#define MSTRTIME_MAX_SIZE 22
+
+class QMouseEvent;
+class QWheelEvent;
+class QHideEvent;
+class QTimer;
+class SeekPoints;
+class QPropertyAnimation;
 
 /* Input Slider derived from QSlider */
-class InputSlider : public QSlider
+class SeekSlider : public QSlider
 {
     Q_OBJECT
+    Q_PROPERTY(qreal handleOpacity READ handleOpacity WRITE setHandleOpacity)
 public:
-    InputSlider( QWidget *_parent );
-    InputSlider( Qt::Orientation q, QWidget *_parent );
-    virtual ~InputSlider() {};
+    SeekSlider( Qt::Orientation q, QWidget *_parent );
+    ~SeekSlider();
+    void setChapters( SeekPoints * );
+
 protected:
-    virtual void mouseMoveEvent(QMouseEvent *event);
-    virtual void mousePressEvent(QMouseEvent* event);
-    virtual void mouseReleaseEvent(QMouseEvent* event);
-    virtual void wheelEvent(QWheelEvent *event);
+    virtual void mouseMoveEvent( QMouseEvent *event );
+    virtual void mousePressEvent( QMouseEvent* event );
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+    virtual void wheelEvent( QWheelEvent *event );
+    virtual void enterEvent( QEvent * );
+    virtual void leaveEvent( QEvent * );
+    virtual void hideEvent( QHideEvent * );
+
+    virtual void paintEvent( QPaintEvent* event );
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
+    QSize handleSize() const;
+    QSize sizeHint() const;
+    bool isAnimationRunning() const;
+    qreal handleOpacity() const;
+    void setHandleOpacity( qreal opacity );
+
 private:
-    bool b_isSliding; /* Whether we are currently sliding by user action */
-    int inputLength;  /* InputLength that can change */
+    bool b_isSliding;       /* Whether we are currently sliding by user action */
+    bool b_is_jumping;      /* if we requested a jump to another chapter */
+    int inputLength;        /* InputLength that can change */
     char psz_length[MSTRTIME_MAX_SIZE]; /* Used for the ToolTip */
-    int lastSeeked;
-    QTimer *timer;
+    QTimer *seekLimitTimer;
+    TimeTooltip *mTimeTooltip;
+    float f_buffering;
+    SeekPoints* chapters;
+
+    /* Handle's animation */
+    qreal mHandleOpacity;
+    QPropertyAnimation *animHandle;
+    QTimer *hideHandleTimer;
 
 public slots:
     void setPosition( float, int64_t, int );
+    void updateBuffering( float );
+    void hideHandle();
+
 private slots:
-    void userDrag( int );
-    void seekTick();
+    void startSeekTimer();
+    void updatePos();
 
 signals:
     void sliderDragged( float );
@@ -72,14 +105,13 @@ class SoundSlider : public QAbstractSlider
     Q_OBJECT
 public:
     SoundSlider( QWidget *_parent, int _i_step, bool b_softamp, char * );
-    virtual ~SoundSlider() {};
     void setMuted( bool ); /* Set Mute status */
 
 protected:
     const static int paddingL = 3;
     const static int paddingR = 2;
 
-    virtual void paintEvent(QPaintEvent *);
+    virtual void paintEvent( QPaintEvent *);
     virtual void wheelEvent( QWheelEvent *event );
     virtual void mousePressEvent( QMouseEvent * );
     virtual void mouseMoveEvent( QMouseEvent * );

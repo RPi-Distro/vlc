@@ -2,38 +2,41 @@
  * vlc_mouse.h: mouse related structures and functions
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: dff2129424d7f9c8f5c342f175572058d8b002f9 $
+ * $Id: b48853570a09ad1d77cc95cda0c5b04b5028ee80 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef _VLC_MOUSE_H
 #define _VLC_MOUSE_H 1
 
 /**
- * Mouse button
+ * Mouse buttons
  */
 enum
 {
-	MOUSE_BUTTON_LEFT,
-	MOUSE_BUTTON_CENTER,
-	MOUSE_BUTTON_RIGHT,
-	MOUSE_BUTTON_WHEEL_UP,
-	MOUSE_BUTTON_WHEEL_DOWN,
+    MOUSE_BUTTON_LEFT=0,
+    MOUSE_BUTTON_CENTER,
+    MOUSE_BUTTON_RIGHT,
+    MOUSE_BUTTON_WHEEL_UP,
+    MOUSE_BUTTON_WHEEL_DOWN,
+    MOUSE_BUTTON_WHEEL_LEFT,
+    MOUSE_BUTTON_WHEEL_RIGHT,
+    MOUSE_BUTTON_MAX
 };
 
 /**
@@ -114,7 +117,7 @@ static inline void vlc_mouse_GetMotion( int *pi_x, int *pi_y,
 static inline bool vlc_mouse_HasChanged( const vlc_mouse_t *p_old,
                                          const vlc_mouse_t *p_new )
 {
-    return p_old->i_x != p_new->i_x || p_old->i_x != p_new->i_x ||
+    return p_old->i_x != p_new->i_x || p_old->i_y != p_new->i_y ||
            p_old->i_pressed != p_new->i_pressed;
 }
 static inline bool vlc_mouse_HasMoved( const vlc_mouse_t *p_old,

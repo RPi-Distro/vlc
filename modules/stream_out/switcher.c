@@ -2,7 +2,7 @@
  * switcher.c: MPEG2 video switcher module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3eee587047128062344da389bce9c33b32d42d3f $
+ * $Id: 372eef81c9ae3b9ee5b1405bdd5b7be8254fd3f0 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -120,21 +120,21 @@ vlc_module_begin ()
     add_shortcut( "switcher" )
     set_callbacks( Open, Close )
 
-    add_string( SOUT_CFG_PREFIX "files", "", NULL, FILES_TEXT,
+    add_string( SOUT_CFG_PREFIX "files", "", FILES_TEXT,
                 FILES_LONGTEXT, false )
-    add_string( SOUT_CFG_PREFIX "sizes", "", NULL, SIZES_TEXT,
+    add_string( SOUT_CFG_PREFIX "sizes", "", SIZES_TEXT,
                 SIZES_LONGTEXT, false )
-    add_string( SOUT_CFG_PREFIX "aspect-ratio", "4:3", NULL, RATIO_TEXT,
+    add_string( SOUT_CFG_PREFIX "aspect-ratio", "4:3", RATIO_TEXT,
                 RATIO_LONGTEXT, false )
-    add_integer( SOUT_CFG_PREFIX "port", 5001, NULL,
+    add_integer( SOUT_CFG_PREFIX "port", 5001,
                  PORT_TEXT, PORT_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "command", 0, NULL,
+    add_integer( SOUT_CFG_PREFIX "command", 0,
                  COMMAND_TEXT, COMMAND_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "gop", 8, NULL,
+    add_integer( SOUT_CFG_PREFIX "gop", 8,
                  GOP_TEXT, GOP_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "qscale", 5, NULL,
+    add_integer( SOUT_CFG_PREFIX "qscale", 5,
                  QSCALE_TEXT, QSCALE_LONGTEXT, true )
-    add_bool( SOUT_CFG_PREFIX "mute-audio", true, NULL,
+    add_bool( SOUT_CFG_PREFIX "mute-audio", true,
               AUDIO_TEXT, AUDIO_LONGTEXT, true )
 vlc_module_end ()
 
@@ -149,7 +149,7 @@ struct sout_stream_sys_t
     int             i_qscale;
     int             i_aspect;
     sout_stream_id_t *pp_audio_ids[MAX_AUDIO];
-    bool      b_audio;
+    bool            b_audio;
 
     /* Pictures */
     picture_t       p_pictures[MAX_PICTURES];
@@ -163,8 +163,8 @@ struct sout_stream_sys_t
 struct sout_stream_id_t
 {
     void            *id;
-    bool      b_switcher_video;
-    bool      b_switcher_audio;
+    bool            b_switcher_video;
+    bool            b_switcher_audio;
     es_format_t     f_src;
     block_t         *p_queued;
 
@@ -321,9 +321,7 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     if( !id )
         return NULL;
 
-    if( p_fmt->i_cat == VIDEO_ES &&
-        ( p_fmt->i_codec == VLC_CODEC_MPGV ||
-          p_fmt->i_codec == VLC_FOURCC('f', 'a', 'k', 'e') ) )
+    if( p_fmt->i_cat == VIDEO_ES && p_fmt->i_codec == VLC_CODEC_MPGV )
     {
         id->b_switcher_video = true;
         p_fmt->i_codec = VLC_CODEC_MPGV;
@@ -384,6 +382,8 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
         }
 
         id->ff_enc_c->sample_rate = p_fmt->audio.i_rate;
+        id->ff_enc_c->time_base.num = 1;
+        id->ff_enc_c->time_base.den = p_fmt->audio.i_rate;
         id->ff_enc_c->channels    = p_fmt->audio.i_channels;
         id->ff_enc_c->bit_rate    = p_fmt->i_bitrate;
 
@@ -511,8 +511,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
 
         while ( id->p_queued != NULL )
         {
-            mtime_t i_dts;
-            int i;
+            mtime_t i_dts = 0;
 
             if ( p_sys->i_old_cmd != p_sys->i_cmd )
             {
@@ -521,7 +520,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
 
             i_dts = Process( p_stream, id, i_dts );
 
-            for ( i = 0; i < MAX_AUDIO; i++ )
+            for ( int i = 0; i < MAX_AUDIO; i++ )
             {
                 if ( p_sys->pp_audio_ids[i] != NULL )
                     Process( p_stream, p_sys->pp_audio_ids[i], i_dts );
@@ -924,7 +923,6 @@ static block_t *VideoGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
     p_out->i_length = p_buffer->i_length;
     p_out->i_pts = p_buffer->i_dts;
     p_out->i_dts = p_buffer->i_dts;
-    p_out->i_rate = p_buffer->i_rate;
 
     switch ( id->ff_enc_c->coded_frame->pict_type )
     {
@@ -968,7 +966,6 @@ static block_t *AudioGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
     p_out->i_length = p_buffer->i_length;
     p_out->i_pts = p_buffer->i_dts;
     p_out->i_dts = p_buffer->i_dts;
-    p_out->i_rate = p_buffer->i_rate;
 
     block_Release( p_buffer );
 

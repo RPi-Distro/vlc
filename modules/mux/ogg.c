@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 7e902f09efd8fe3935e8636fd10c2fe635b03e3d $
+ * $Id: b02c1edfc03c282a6c68dd6d3266d4d61ab6a0b1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -52,8 +52,7 @@ vlc_module_begin ()
     set_capability( "sout mux", 10 )
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_MUX )
-    add_shortcut( "ogg" )
-    add_shortcut( "ogm" )
+    add_shortcut( "ogg", "ogm" )
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -993,6 +992,8 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
         /* granulepos is in millisec */
         op.granulepos = ( p_data->i_dts - p_sys->i_start_dts ) / 1000;
     }
+    else
+        return VLC_EGENERIC;
 
     p_stream->u_last_granulepos = op.granulepos;
     ogg_stream_packetin( &p_stream->os, &op );

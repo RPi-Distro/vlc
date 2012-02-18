@@ -2,7 +2,7 @@
  * win32_timer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 93411da17b171886b9ffc11f9612a45236ed3678 $
+ * $Id: afe15509553092840b144c58b402f8d3351e5d1d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -31,6 +31,7 @@
 void CALLBACK CallbackTimer( HWND hwnd, UINT uMsg,
                              UINT_PTR idEvent, DWORD dwTime )
 {
+    (void)hwnd; (void)uMsg; (void)dwTime;
     Win32Timer *pTimer = (Win32Timer*)idEvent;
     if( pTimer != NULL )
     {

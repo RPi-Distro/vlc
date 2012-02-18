@@ -1,38 +1,38 @@
 /*****************************************************************************
  * decoder.h: Input decoder functions
  *****************************************************************************
- * Copyright (C) 1998-2008 the VideoLAN team
+ * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: b113d22fcde4bea0370643a223e6eab478564d4d $
+ * $Id: 1c9e1b61e5969145b930175374c6c74e2d12b097 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
-
-#ifndef _INPUT_DECODER_H
-#define _INPUT_DECODER_H 1
+#ifndef LIBVLC_INPUT_DECODER_H
+#define LIBVLC_INPUT_DECODER_H 1
 
 #include <vlc_common.h>
 #include <vlc_codec.h>
 
 #define BLOCK_FLAG_CORE_FLUSH (1 <<BLOCK_FLAG_CORE_PRIVATE_SHIFT)
+#define BLOCK_FLAG_CORE_EOS   (1 <<(BLOCK_FLAG_CORE_PRIVATE_SHIFT + 1))
+
+decoder_t *input_DecoderNew( input_thread_t *, es_format_t *, input_clock_t *,
+                             sout_instance_t * ) VLC_USED;
 
 /**
  * This function changes the pause state.
@@ -109,6 +109,6 @@ size_t input_DecoderGetFifoSize( decoder_t *p_dec );
  *
  * They must be released using vlc_object_release().
  */
-void input_DecoderGetObjects( decoder_t *, vout_thread_t **, aout_instance_t ** );
+void input_DecoderGetObjects( decoder_t *, vout_thread_t **, audio_output_t ** );
 
 #endif

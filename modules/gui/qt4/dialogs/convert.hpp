@@ -2,7 +2,7 @@
  * GotoTime.hpp : GotoTime dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 1df5186dd1ddf70eb8acd9239601062c507ef3a7 $
+ * $Id: b23ae208a7725cebd79c075c66c13cedc3e0b309 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -49,6 +49,7 @@ private slots:
     virtual void close();
     virtual void cancel();
     void fileBrowse();
+    void dumpChecked(bool);
 };
 
 #endif

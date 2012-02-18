@@ -1,26 +1,26 @@
 /*****************************************************************************
  * update.c: VLC update checking and downloading
  *****************************************************************************
- * Copyright © 2005-2008 the VideoLAN team
- * $Id: 79e011056cbf0ee1475a151dc466f97361200e60 $
+ * Copyright © 2005-2008 VLC authors and VideoLAN
+ * $Id: 41050bb2a64b6dda79f1f787d34f3ac4abb3a8cf $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire at via.ecp.fr>
             Rafaël Carré <funman@videolanorg>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either release 2 of the License, or
  * (at your option) any later release.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /**
@@ -64,28 +64,24 @@
 
 /*
  * Here is the format of these "status files" :
- * First line is the last version: "X.Y.Ze" where:
+ * First line is the last version: "X.Y.Z.E" where:
  *      * X is the major number
  *      * Y is the minor number
  *      * Z is the revision number
- *      * e is an OPTIONAL extra letter
- *      * AKA "0.8.6d" or "0.9.0"
- * Second line is an url of the binary for this last version
+ *      * .E is an OPTIONAL extra number
+ *      * IE "1.2.0" or "1.1.10.1"
+ * Second line is a url of the binary for this last version
  * Remaining text is a required description of the update
  */
 
 #if defined( UNDER_CE )
 #   define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status-ce"
 #elif defined( WIN32 )
-#   define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status-win-x86"
-#elif defined( __APPLE__ )
-#   if defined( __powerpc__ ) || defined( __ppc__ ) || defined( __ppc64__ )
-#       define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status-mac-ppc"
-#   else
-#       define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status-mac-x86"
-#   endif
-#elif defined( SYS_BEOS )
-#       define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status-beos-x86"
+#  ifndef NDEBUG
+#    define UPDATE_VLC_STATUS_URL "http://update-test.videolan.org/vlc/status-win-x86"
+#  else
+#    define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status-win-x86"
+#  endif
 #else
 #   define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status"
 #endif
@@ -138,15 +134,14 @@ void update_Delete( update_t *p_update )
 
     if( p_update->p_check )
     {
-        vlc_object_kill( p_update->p_check );
-        vlc_thread_join( p_update->p_check );
-        vlc_object_release( p_update->p_check );
+        vlc_join( p_update->p_check->thread, NULL );
+        free( p_update->p_check );
     }
 
     if( p_update->p_download )
     {
         vlc_object_kill( p_update->p_download );
-        vlc_thread_join( p_update->p_download );
+        vlc_join( p_update->p_download->thread, NULL );
         vlc_object_release( p_update->p_download );
     }
 
@@ -185,10 +180,6 @@ static void EmptyRelease( update_t *p_update )
 static bool GetUpdateFile( update_t *p_update )
 {
     stream_t *p_stream = NULL;
-    int i_major = 0;
-    int i_minor = 0;
-    int i_revision = 0;
-    unsigned char extra;
     char *psz_version_line = NULL;
     char *psz_update_data = NULL;
 
@@ -228,18 +219,12 @@ static bool GetUpdateFile( update_t *p_update )
     strncpy( psz_version_line, psz_update_data, i_len );
     psz_version_line[i_len] = '\0';
 
-    p_update->release.extra = 0;
-    switch( sscanf( psz_version_line, "%i.%i.%i%c",
-                    &i_major, &i_minor, &i_revision, &extra ) )
+    p_update->release.i_extra = 0;
+    int ret = sscanf( psz_version_line, "%i.%i.%i.%i",
+                    &p_update->release.i_major, &p_update->release.i_minor,
+                    &p_update->release.i_revision, &p_update->release.i_extra);
+    if( ret != 3 && ret != 4 )
     {
-        case 4:
-            p_update->release.extra = extra;
-        case 3:
-            p_update->release.i_major = i_major;
-            p_update->release.i_minor = i_minor;
-            p_update->release.i_revision = i_revision;
-            break;
-        default:
             msg_Err( p_update->p_libvlc, "Update version false formated" );
             goto error;
     }
@@ -341,7 +326,7 @@ static bool GetUpdateFile( update_t *p_update )
         else
         {
             free( p_hash );
-            msg_Err( p_update->p_libvlc, "Key signature invalid !\n" );
+            msg_Err( p_update->p_libvlc, "Key signature invalid !" );
             goto error;
         }
     }
@@ -381,7 +366,7 @@ error:
     return false;
 }
 
-static void* update_CheckReal( vlc_object_t *p_this );
+static void* update_CheckReal( void * );
 
 /**
  * Check for updates
@@ -398,14 +383,11 @@ void update_Check( update_t *p_update, void (*pf_callback)( void*, bool ), void 
     // If the object already exist, destroy it
     if( p_update->p_check )
     {
-        vlc_object_kill( p_update->p_check );
-        vlc_thread_join( p_update->p_check );
-        vlc_object_release( p_update->p_check );
+        vlc_join( p_update->p_check->thread, NULL );
+        free( p_update->p_check );
     }
 
-    update_check_thread_t *p_uct =
-        vlc_custom_create( p_update->p_libvlc, sizeof( *p_uct ),
-                           VLC_OBJECT_GENERIC, "update check" );
+    update_check_thread_t *p_uct = calloc( 1, sizeof( *p_uct ) );
     if( !p_uct ) return;
 
     p_uct->p_update = p_update;
@@ -413,13 +395,12 @@ void update_Check( update_t *p_update, void (*pf_callback)( void*, bool ), void 
     p_uct->pf_callback = pf_callback;
     p_uct->p_data = p_data;
 
-    vlc_thread_create( p_uct, "check for update", update_CheckReal,
-                       VLC_THREAD_PRIORITY_LOW );
+    vlc_clone( &p_uct->thread, update_CheckReal, p_uct, VLC_THREAD_PRIORITY_LOW );
 }
 
-void* update_CheckReal( vlc_object_t* p_this )
+void* update_CheckReal( void *obj )
 {
-    update_check_thread_t *p_uct = (update_check_thread_t *)p_this;
+    update_check_thread_t *p_uct = (update_check_thread_t *)obj;
     bool b_ret;
     int canc;
 
@@ -437,40 +418,39 @@ void* update_CheckReal( vlc_object_t* p_this )
     return NULL;
 }
 
-/**
- * Compare a given release's version number to the current VLC's one
- *
- * \param p_update structure
- * \return true if we have to upgrade to the given version to be up to date
- */
-static bool is_strictly_greater( int * a, int * b, int n)
-{
-    if( n <= 0 ) return false;
-    if(a[0] > b[0] ) return true;
-    if(a[0] == b[0] ) return is_strictly_greater( a+1, b+1, n-1 );
-    /* a[0] < b[0] */ return false;
-}
-
 bool update_NeedUpgrade( update_t *p_update )
 {
     assert( p_update );
 
-    int current_version[] = {
-        *PACKAGE_VERSION_MAJOR - '0',
-        *PACKAGE_VERSION_MINOR - '0',
-        atoi(PACKAGE_VERSION_REVISION),
-        /* extra string of development versions is "-git", "-rc" ..
-         * so make sure version a.b.c is newer than a.b.c-XXX */
-        (*PACKAGE_VERSION_EXTRA == '-') ? -1 : *PACKAGE_VERSION_EXTRA
+    static const int current[4] = {
+        PACKAGE_VERSION_MAJOR,
+        PACKAGE_VERSION_MINOR,
+        PACKAGE_VERSION_REVISION,
+        PACKAGE_VERSION_EXTRA
     };
-    int latest_version[] = {
+    const int latest[4] = {
         p_update->release.i_major,
         p_update->release.i_minor,
         p_update->release.i_revision,
-        p_update->release.extra
+        p_update->release.i_extra
     };
 
-    return is_strictly_greater( latest_version, current_version, 4 );
+    for (unsigned i = 0; i < sizeof latest / sizeof *latest; i++) {
+        /* there is a new version available */
+        if (latest[i] > current[i])
+            return true;
+
+        /* current version is more recent than the latest version ?! */
+        if (latest[i] < current[i])
+            return false;
+    }
+
+    /* current version is not a release, it's a -git or -rc version */
+    if (*PACKAGE_VERSION_DEV)
+        return true;
+
+    /* current version is latest version */
+    return false;
 }
 
 /**
@@ -495,7 +475,7 @@ static char *size_str( long int l_size )
     return i_retval == -1 ? NULL : psz_tmp;
 }
 
-static void* update_DownloadReal( vlc_object_t *p_this );
+static void* update_DownloadReal( void * );
 
 /**
  * Download the file given in the update_t
@@ -512,13 +492,13 @@ void update_Download( update_t *p_update, const char *psz_destdir )
     if( p_update->p_download )
     {
         vlc_object_kill( p_update->p_download );
-        vlc_thread_join( p_update->p_download );
+        vlc_join( p_update->p_download->thread, NULL );
         vlc_object_release( p_update->p_download );
     }
 
     update_download_thread_t *p_udt =
         vlc_custom_create( p_update->p_libvlc, sizeof( *p_udt ),
-                           VLC_OBJECT_GENERIC, "update download" );
+                           "update download" );
     if( !p_udt )
         return;
 
@@ -526,18 +506,17 @@ void update_Download( update_t *p_update, const char *psz_destdir )
     p_update->p_download = p_udt;
     p_udt->psz_destdir = psz_destdir ? strdup( psz_destdir ) : NULL;
 
-    vlc_thread_create( p_udt, "download update", update_DownloadReal,
-                       VLC_THREAD_PRIORITY_LOW );
+    vlc_clone( &p_udt->thread, update_DownloadReal, p_udt, VLC_THREAD_PRIORITY_LOW );
 }
 
-static void* update_DownloadReal( vlc_object_t *p_this )
+static void* update_DownloadReal( void *obj )
 {
-    update_download_thread_t *p_udt = (update_download_thread_t *)p_this;
+    update_download_thread_t *p_udt = (update_download_thread_t *)obj;
     dialog_progress_bar_t *p_progress = NULL;
     long int l_size;
     long int l_downloaded = 0;
     float f_progress;
-    char *psz_status = NULL;
+    char *psz_status;
     char *psz_downloaded = NULL;
     char *psz_size = NULL;
     char *psz_destfile = NULL;
@@ -638,13 +617,8 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     if( vlc_object_alive( p_udt ) &&
         !dialog_ProgressCancelled( p_progress ) )
     {
-        if( asprintf( &psz_status, _("%s\nDone %s (100.0%%)"),
-            p_update->release.psz_url, psz_size ) != -1 )
-        {
-            dialog_ProgressDestroy( p_progress );
-            p_progress = NULL;
-            free( psz_status );
-        }
+        dialog_ProgressDestroy( p_progress );
+        p_progress = NULL;
     }
     else
     {
@@ -739,9 +713,9 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     {
         wchar_t psz_wdestfile[MAX_PATH];
         MultiByteToWideChar( CP_UTF8, 0, psz_destfile, -1, psz_wdestfile, MAX_PATH );
-        answer = ShellExecuteW( NULL, L"open", psz_wdestfile, NULL, NULL, SW_SHOW);
+        answer = (int)ShellExecuteW( NULL, L"open", psz_wdestfile, NULL, NULL, SW_SHOW);
         if(answer > 32)
-            libvlc_Quit(p_this->p_libvlc);
+            libvlc_Quit(p_udt->p_libvlc);
     }
 #endif
 end:

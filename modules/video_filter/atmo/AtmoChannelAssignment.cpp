@@ -4,8 +4,13 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 7acb133ba1e39b173f839ee599561ae85ee4b870 $
+ * $Id: f79c9aa8d69c49638ec3326cb36f15af978f38f0 $
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <string.h>
 #include <stdlib.h>
 #include <malloc.h>

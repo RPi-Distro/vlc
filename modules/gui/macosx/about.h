@@ -1,8 +1,8 @@
 /*****************************************************************************
  * about.h: MacOS X About Panel
  *****************************************************************************
- * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: b04355f7eda1742f9053111e6708c9a12e0bfc63 $
+ * Copyright (C) 2001-2007 VLC authors and VideoLAN
+ * $Id: 731c308c1f5c7c754b1e06a1d0e1e8d51601466d $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -60,7 +60,6 @@
 
 + (VLAboutBox *)sharedInstance;
 - (void)showAbout;
-- (void)VLCWillTerminate;
 - (void)showHelp;
 - (IBAction)showGPL:(id)sender;
 - (IBAction)helpGoHome:(id)sender;

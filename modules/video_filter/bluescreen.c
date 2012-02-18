@@ -2,7 +2,7 @@
  * bluescreen.c : Bluescreen (weather channel like) video filter for vlc
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: 378219168dc021cd2f2df4da2998fe332f0e7e74 $
+ * $Id: 3d5828e7c9a5b67eb571af3aa203a59ee9367247 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -83,14 +83,14 @@ vlc_module_begin ()
     add_shortcut( "bluescreen" )
     set_callbacks( Create, Destroy )
 
-    add_integer_with_range( CFG_PREFIX "u", 120, 0, 255, NULL,
+    add_integer_with_range( CFG_PREFIX "u", 120, 0, 255,
                             BLUESCREENU_TEXT, BLUESCREENU_LONGTEXT, false )
-    add_integer_with_range( CFG_PREFIX "v", 90, 0, 255, NULL,
+    add_integer_with_range( CFG_PREFIX "v", 90, 0, 255,
                             BLUESCREENV_TEXT, BLUESCREENV_LONGTEXT, false )
-    add_integer_with_range( CFG_PREFIX "ut", 17, 0, 255, NULL,
+    add_integer_with_range( CFG_PREFIX "ut", 17, 0, 255,
                             BLUESCREENUTOL_TEXT, BLUESCREENUTOL_LONGTEXT,
                             false )
-    add_integer_with_range( CFG_PREFIX "vt", 17, 0, 255, NULL,
+    add_integer_with_range( CFG_PREFIX "vt", 17, 0, 255,
                             BLUESCREENVTOL_TEXT, BLUESCREENVTOL_LONGTEXT,
                             false )
 vlc_module_end ()
@@ -133,7 +133,7 @@ static int Create( vlc_object_t *p_this )
     vlc_mutex_init( &p_sys->lock );
 #define GET_VAR( name, min, max )                                           \
     val = var_CreateGetIntegerCommand( p_filter, CFG_PREFIX #name );        \
-    p_sys->i_##name = __MIN( max, __MAX( min, val ) );                      \
+    p_sys->i_##name = VLC_CLIP( val, min, max );                                \
     var_AddCallback( p_filter, CFG_PREFIX #name, BluescreenCallback, p_sys );
 
     GET_VAR( u, 0x00, 0xff );
@@ -267,13 +267,13 @@ static int BluescreenCallback( vlc_object_t *p_this, char const *psz_var,
     vlc_mutex_lock( &p_sys->lock );
 #define VAR_IS( a ) !strcmp( psz_var, CFG_PREFIX a )
     if( VAR_IS( "u" ) )
-        p_sys->i_u = __MAX( 0, __MIN( 255, newval.i_int ) );
+        p_sys->i_u = VLC_CLIP( newval.i_int, 0, 255 );
     else if( VAR_IS( "v" ) )
-        p_sys->i_v = __MAX( 0, __MIN( 255, newval.i_int ) );
+        p_sys->i_v = VLC_CLIP( newval.i_int, 0, 255 );
     else if( VAR_IS( "ut" ) )
-        p_sys->i_ut = __MAX( 0, __MIN( 255, newval.i_int ) );
+        p_sys->i_ut = VLC_CLIP( newval.i_int, 0, 255 );
     else if( VAR_IS( "vt" ) )
-        p_sys->i_vt = __MAX( 0, __MIN( 255, newval.i_int ) );
+        p_sys->i_vt = VLC_CLIP( newval.i_int, 0, 255 );
     vlc_mutex_unlock( &p_sys->lock );
 
     return VLC_SUCCESS;

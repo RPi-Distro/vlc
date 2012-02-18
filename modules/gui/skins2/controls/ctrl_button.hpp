@@ -2,7 +2,7 @@
  * ctrl_button.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6e4581a8c983fbd47a8f0006a2e61df822f7ef8b $
+ * $Id: b6a8652da797d1738eba9a3a8089d5d39afc1af1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -57,7 +57,7 @@ public:
     virtual bool mouseOver( int x, int y ) const;
 
     /// Draw the control on the given graphics
-    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Get the text of the tooltip
     virtual UString getTooltipText() const { return m_tooltip; }

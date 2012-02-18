@@ -2,7 +2,7 @@
  * VLCProgressPanel.h: A Generic Progress Indicator Panel created for VLC
  *****************************************************************************
  * Copyright (C) 2009-2010 the VideoLAN team
- * $Id: 725f2ce5cea15f11dfa4ab00d0b4e155469ac6ee $
+ * $Id: 0c1dde476c80b5231abd8ab1a1700aa94bfb760c $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -35,10 +35,10 @@
 }
 - (void)createContentView;
 
-- setDialogTitle:(NSString *)title;
-- setDialogMessage:(NSString *)message;
-- setCancelButtonLabel:(NSString *)cancelLabel;
-- setProgressAsDouble:(double)value;
+- (void)setDialogTitle:(NSString *)title;
+- (void)setDialogMessage:(NSString *)message;
+- (void)setCancelButtonLabel:(NSString *)cancelLabel;
+- (void)setProgressAsDouble:(double)value;
 - (BOOL)isCancelled;
 
 - (IBAction)cancelDialog:(id)sender;

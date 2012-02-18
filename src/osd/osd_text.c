@@ -1,24 +1,24 @@
 /*****************************************************************************
  * osd_text.c : text manipulation functions
  *****************************************************************************
- * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 8b73c4c67240dcf2f2ee4eaa355380264b7d7d90 $
+ * Copyright (C) 1999-2007 VLC authors and VideoLAN
+ * $Id: 577fbccea84965ef92637a170830629463f6f4fd $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -78,7 +78,7 @@ int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
 
     if( !psz_string ) return VLC_EGENERIC;
 
-    p_spu = subpicture_New();
+    p_spu = subpicture_New( NULL );
     if( !p_spu )
         return VLC_EGENERIC;
 
@@ -106,7 +106,7 @@ int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
     p_spu->p_region->i_x = i_hmargin;
     p_spu->p_region->i_y = i_vmargin;
 
-    spu_DisplaySubpicture( p_spu_channel, p_spu );
+    spu_PutSubpicture( p_spu_channel, p_spu );
 
     return VLC_SUCCESS;
 }
@@ -131,7 +131,7 @@ void osd_Message( spu_t *p_spu, int i_channel,
         if( vasprintf( &psz_string, psz_format, args ) != -1 )
         {
             osd_ShowTextRelative( p_spu, i_channel, psz_string, NULL,
-                    OSD_ALIGN_TOP|OSD_ALIGN_RIGHT, 30,20,1000000 );
+                    SUBPICTURE_ALIGN_TOP|SUBPICTURE_ALIGN_RIGHT, 30,20,1000000 );
 
             free( psz_string );
         }

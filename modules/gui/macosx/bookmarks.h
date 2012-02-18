@@ -1,8 +1,8 @@
 /*****************************************************************************
  * bookmarks.h: MacOS X Bookmarks window
  *****************************************************************************
- * Copyright (C) 2005, 2007 the VideoLAN team
- * $Id: 2b255fc2db3732987f578d5befcd047743286880 $
+ * Copyright (C) 2005, 2007 VLC authors and VideoLAN
+ * $Id: 4e83c5fc77e566b9d1af5e9cb9b2c029364b6a6c $
  *
  * Authors: Felix Kühne <fkuehne at videolan dot org>
  *

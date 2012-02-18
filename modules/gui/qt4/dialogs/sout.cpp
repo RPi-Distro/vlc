@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: 3ebb4b731dcfa88038f362710d27bc11c1e8f1c9 $
+ * $Id: c9241e64dd69b6614c4bddbff3f04d6d427429e9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -67,6 +67,7 @@ SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& 
     closeTabButton->hide();
     closeTabButton->setAutoRaise( true );
     closeTabButton->setIcon( QIcon( ":/toolbar/clear" ) );
+    closeTabButton->setToolTip( qtr("Clear") );
     BUTTONACT( closeTabButton, closeTab() );
 #endif
     CONNECT( ui.destTab, currentChanged( int ), this, tabChanged( int ) );
@@ -228,7 +229,10 @@ void SoutDialog::updateMRL()
         if( !vdb )
             continue;
 
-        QString tempMRL = vdb->getMRL( qs_mux );
+        QString tempMRL = vdb->getMRL( qs_mux, ui.ttl->value(),
+                                       ui.sap->isChecked(),
+                                       ui.sapName->text(),
+                                       ui.sapGroup->text() );
         if( tempMRL.isEmpty() ) continue;
 
         if( multi )
@@ -254,33 +258,7 @@ void SoutDialog::updateMRL()
 
     mrl = smrl.getMrl();
 
-    if( ui.sap->isChecked() )
-    {
-        QString group = ui.sapGroup->text();
-        QString name = ui.sapName->text();
-
-        /* FIXME: This sucks. We should really return a QStringList instead of
-         * (mis)quoting, concatainating and split input item paramters. */
-        name = name.replace( " ", " " );
-        group = group.replace( " ", " " );
-
-        /* We need to add options for both standard and rtp targets */
-        /* This is inelegant but simple and functional */
-        mrl.append( qfu( " :sout-rtp-sap" ) );
-        mrl.append( qfu( " :sout-rtp-name=" ) + name );
-        mrl.append( qfu( " :sout-standard-sap" ) );
-        mrl.append( qfu( " :sout-standard-name=" ) + name );
-        mrl.append( qfu( " :sout-standard-group=" ) + group );
-    }
-    else
-    {
-        mrl.append( qfu( " :no-sout-rtp-sap" ) );
-        mrl.append( qfu( " :no-sout-standard-sap" ) );
-    }
-
     if( ui.soutAll->isChecked() ) mrl.append( " :sout-all" );
-
-    mrl.append( qfu( " :ttl=" ) + QString::number( ui.ttl->value() ) );
     mrl.append( " :sout-keep" );
 
     ui.mrlEdit->setPlainText( mrl );

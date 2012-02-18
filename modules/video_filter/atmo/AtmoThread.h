@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: fb279ee46ed27cdf4f459141ff5d61950ed178e1 $
+ * $Id: 1fbcdf03f7ecac1143e9488ba14d2308b232d05b $
  */
 #ifndef _AtmoThread_h_
 #define _AtmoThread_h_
@@ -15,13 +15,6 @@
 // use threading stuff from videolan!
 #   include <vlc_common.h>
 #   include <vlc_threads.h>
-
-    typedef struct
-    {
-      VLC_COMMON_MEMBERS
-      void *p_thread; /* cast to CThread * */
-    } atmo_thread_t;
-
 #else
 #   include <windows.h>
 #endif
@@ -32,10 +25,11 @@ protected:
 
 #if defined(_ATMO_VLC_PLUGIN_)
 
-    atmo_thread_t *m_pAtmoThread;
     vlc_mutex_t  m_TerminateLock;
     vlc_cond_t   m_TerminateCond;
     vlc_object_t *m_pOwner;
+    ATMO_BOOL    m_HasThread;
+    vlc_thread_t m_Thread;
 
 #else
 
@@ -50,7 +44,7 @@ protected:
 private:
 
 #if defined(_ATMO_VLC_PLUGIN_)
-    static void *ThreadProc(vlc_object_t *);
+    static void *ThreadProc(void *);
 #else
 	static DWORD WINAPI ThreadProc(LPVOID lpParameter);
 #endif

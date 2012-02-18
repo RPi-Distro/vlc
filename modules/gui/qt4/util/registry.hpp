@@ -2,7 +2,7 @@
  * registry.hpp: Windows Registry Manipulation
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 361211ac465baa50084171ae7a08defc47d6de2b $
+ * $Id: 3cac7db1817a96180e20b726ff7f6df30a9ef23d $
  *
  * Authors: Andre Weber <WeberAndre # gmx - de>
  *
@@ -39,7 +39,7 @@ public:
     void WriteRegistryDouble( const char *path, const char *valueName, double value);
 
     int ReadRegistryInt( const char *path, const char *valueName, int default_value);
-    char * ReadRegistryString( const char *path, const char *valueName, char *default_value);
+    char * ReadRegistryString( const char *path, const char *valueName, const char *default_value);
     double ReadRegistryDouble( const char *path, const char *valueName, double default_value);
 
     bool RegistryKeyExists( const char *path);

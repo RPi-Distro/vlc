@@ -2,7 +2,7 @@
  * var_bool.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f5cb12cbaa10fecd60bcd7536446ea5c8227c07e $
+ * $Id: ebbaab8362dd551b5274ac5a62225a794d65fcf6 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -63,6 +63,7 @@ VarBoolAndBool::~VarBoolAndBool()
 
 void VarBoolAndBool::onUpdate( Subject<VarBool> &rVariable, void *arg )
 {
+    (void)rVariable; (void)arg;
     if( m_value != ( m_rVar1.get() && m_rVar2.get() ) )
     {
         m_value = ( m_rVar1.get() && m_rVar2.get() );
@@ -88,8 +89,9 @@ VarBoolOrBool::~VarBoolOrBool()
 }
 
 
-void VarBoolOrBool::onUpdate( Subject<VarBool> &rVariable , void*arg)
+void VarBoolOrBool::onUpdate( Subject<VarBool> &rVariable, void *arg )
 {
+    (void)rVariable; (void)arg;
     if( m_value != ( m_rVar1.get() || m_rVar2.get() ) )
     {
         m_value = ( m_rVar1.get() || m_rVar2.get() );
@@ -111,8 +113,9 @@ VarNotBool::~VarNotBool()
 }
 
 
-void VarNotBool::onUpdate( Subject<VarBool> &rVariable, void*arg )
+void VarNotBool::onUpdate( Subject<VarBool> &rVariable, void *arg )
 {
+    (void)rVariable; (void)arg;
     notify();
 }
 

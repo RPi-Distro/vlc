@@ -2,23 +2,23 @@
  * es_out_timeshift.c: Es Out timeshift.
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 3ac19d5abd660db7efdf1b2728c0c25205670ebe $
+ * $Id: ca4d8d01ecca28b20235f7086b0264d29af1f103 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -36,6 +36,9 @@
 #endif
 #ifdef HAVE_SYS_STAT_H
 #   include <sys/stat.h>
+#endif
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
 #endif
 
 #include <vlc_common.h>
@@ -172,9 +175,7 @@ struct ts_storage_t
 
 typedef struct
 {
-    VLC_COMMON_MEMBERS
-
-    /* */
+    vlc_thread_t   thread;
     input_thread_t *p_input;
     es_out_t       *p_out;
     int64_t        i_tmp_size_max;
@@ -224,7 +225,7 @@ struct es_out_sys_t
 
     /* */
     bool           b_delayed;
-    ts_thread_t   *p_thread;
+    ts_thread_t   *p_ts;
 
     /* */
     bool           b_input_paused;
@@ -254,7 +255,7 @@ static bool         TsIsUnused( ts_thread_t * );
 static int          TsChangePause( ts_thread_t *, bool b_source_paused, bool b_paused, mtime_t i_date );
 static int          TsChangeRate( ts_thread_t *, int i_src_rate, int i_rate );
 
-static void         *TsRun( vlc_object_t * );
+static void         *TsRun( void * );
 
 static ts_storage_t *TsStorageNew( const char *psz_path, int64_t i_tmp_size_max );
 static void         TsStorageDelete( ts_storage_t * );
@@ -322,7 +323,7 @@ es_out_t *input_EsOutTimeshiftNew( input_thread_t *p_input, es_out_t *p_next_out
     vlc_mutex_init_recursive( &p_sys->lock );
 
     p_sys->b_delayed = false;
-    p_sys->p_thread = NULL;
+    p_sys->p_ts = NULL;
 
     TAB_INIT( p_sys->i_es, p_sys->pp_es );
 
@@ -332,12 +333,12 @@ es_out_t *input_EsOutTimeshiftNew( input_thread_t *p_input, es_out_t *p_next_out
         p_sys->i_tmp_size_max = 50*1024*1024;
     else
         p_sys->i_tmp_size_max = __MAX( i_tmp_size_max, 1*1024*1024 );
-    msg_Dbg( p_input, "using timeshift granularity of %d MiB",
-             (int)p_sys->i_tmp_size_max/(1024*1024) );
 
     char *psz_tmp_path = var_CreateGetNonEmptyString( p_input, "input-timeshift-path" );
     p_sys->psz_tmp_path = GetTmpPath( psz_tmp_path );
-    msg_Dbg( p_input, "using timeshift path '%s'", p_sys->psz_tmp_path );
+
+    msg_Dbg( p_input, "using timeshift granularity of %d MiB, in path '%s'",
+             (int)p_sys->i_tmp_size_max/(1024*1024), p_sys->psz_tmp_path );
 
 #if 0
 #define S(t) msg_Err( p_input, "SIZEOF("#t")=%d", sizeof(t) )
@@ -361,7 +362,7 @@ static void Destroy( es_out_t *p_out )
 
     if( p_sys->b_delayed )
     {
-        TsStop( p_sys->p_thread );
+        TsStop( p_sys->p_ts );
         p_sys->b_delayed = false;
     }
 
@@ -398,7 +399,7 @@ static es_out_id_t *Add( es_out_t *p_out, const es_format_t *p_fmt )
     TAB_APPEND( p_sys->i_es, p_sys->pp_es, p_es );
 
     if( p_sys->b_delayed )
-        TsPushCmd( p_sys->p_thread, &cmd );
+        TsPushCmd( p_sys->p_ts, &cmd );
     else
         CmdExecuteAdd( p_sys->p_out, &cmd );
 
@@ -418,7 +419,7 @@ static int Send( es_out_t *p_out, es_out_id_t *p_es, block_t *p_block )
 
     CmdInitSend( &cmd, p_es, p_block );
     if( p_sys->b_delayed )
-        TsPushCmd( p_sys->p_thread, &cmd );
+        TsPushCmd( p_sys->p_ts, &cmd );
     else
         i_ret = CmdExecuteSend( p_sys->p_out, &cmd) ;
 
@@ -437,7 +438,7 @@ static void Del( es_out_t *p_out, es_out_id_t *p_es )
 
     CmdInitDel( &cmd, p_es );
     if( p_sys->b_delayed )
-        TsPushCmd( p_sys->p_thread, &cmd );
+        TsPushCmd( p_sys->p_ts, &cmd );
     else
         CmdExecuteDel( p_sys->p_out, &cmd );
 
@@ -450,7 +451,7 @@ static int ControlLockedGetEmpty( es_out_t *p_out, bool *pb_empty )
 {
     es_out_sys_t *p_sys = p_out->p_sys;
 
-    if( p_sys->b_delayed && TsHasCmd( p_sys->p_thread ) )
+    if( p_sys->b_delayed && TsHasCmd( p_sys->p_ts ) )
         *pb_empty = false;
     else
         *pb_empty = es_out_GetEmpty( p_sys->p_out );
@@ -501,7 +502,7 @@ static int ControlLockedSetPauseState( es_out_t *p_out, bool b_source_paused, bo
             if( !p_sys->b_delayed )
                 TsStart( p_out );
             if( p_sys->b_delayed )
-                i_ret = TsChangePause( p_sys->p_thread, b_source_paused, b_paused, i_date );
+                i_ret = TsChangePause( p_sys->p_ts, b_source_paused, b_paused, i_date );
         }
         else
         {
@@ -536,7 +537,7 @@ static int ControlLockedSetRate( es_out_t *p_out, int i_src_rate, int i_rate )
             if( !p_sys->b_delayed )
                 TsStart( p_out );
             if( p_sys->b_delayed )
-                i_ret = TsChangeRate( p_sys->p_thread, i_src_rate, i_rate );
+                i_ret = TsChangeRate( p_sys->p_ts, i_src_rate, i_rate );
         }
         else
         {
@@ -608,13 +609,14 @@ static int ControlLocked( es_out_t *p_out, int i_query, va_list args )
     case ES_OUT_SET_ES_FMT:
     case ES_OUT_SET_TIMES:
     case ES_OUT_SET_JITTER:
+    case ES_OUT_SET_EOS:
     {
         ts_cmd_t cmd;
         if( CmdInitControl( &cmd, i_query, args, p_sys->b_delayed ) )
             return VLC_EGENERIC;
         if( p_sys->b_delayed )
         {
-            TsPushCmd( p_sys->p_thread, &cmd );
+            TsPushCmd( p_sys->p_ts, &cmd );
             return VLC_SUCCESS;
         }
         return CmdExecuteControl( p_sys->p_out, &cmd );
@@ -725,12 +727,11 @@ static int Control( es_out_t *p_out, int i_query, va_list args )
 /*****************************************************************************
  *
  *****************************************************************************/
-static void TsDestructor( vlc_object_t *p_this )
+static void TsDestroy( ts_thread_t *p_ts )
 {
-    ts_thread_t *p_ts = (ts_thread_t*)p_this;
-
     vlc_cond_destroy( &p_ts->wait );
     vlc_mutex_destroy( &p_ts->lock );
+    free( p_ts );
 }
 static int TsStart( es_out_t *p_out )
 {
@@ -739,8 +740,7 @@ static int TsStart( es_out_t *p_out )
 
     assert( !p_sys->b_delayed );
 
-    p_sys->p_thread = p_ts = vlc_custom_create( p_sys->p_input, sizeof(ts_thread_t),
-                                                VLC_OBJECT_GENERIC, "es out timeshift" );
+    p_sys->p_ts = p_ts = calloc(1, sizeof(*p_ts));
     if( !p_ts )
         return VLC_EGENERIC;
 
@@ -761,15 +761,12 @@ static int TsStart( es_out_t *p_out )
     p_ts->p_storage_r = NULL;
     p_ts->p_storage_w = NULL;
 
-    vlc_object_set_destructor( p_ts, TsDestructor );
-
     p_sys->b_delayed = true;
-    if( vlc_thread_create( p_ts, "es out timeshift",
-                           TsRun, VLC_THREAD_PRIORITY_INPUT ) )
+    if( vlc_clone( &p_ts->thread, TsRun, p_ts, VLC_THREAD_PRIORITY_INPUT ) )
     {
-        msg_Err( p_sys->p_input, "cannot create input thread" );
+        msg_Err( p_sys->p_input, "cannot create timeshift thread" );
 
-        vlc_object_release( p_ts );
+        TsDestroy( p_ts );
 
         p_sys->b_delayed = false;
         return VLC_EGENERIC;
@@ -781,18 +778,18 @@ static void TsAutoStop( es_out_t *p_out )
 {
     es_out_sys_t *p_sys = p_out->p_sys;
 
-    if( !p_sys->b_delayed || !TsIsUnused( p_sys->p_thread ) )
+    if( !p_sys->b_delayed || !TsIsUnused( p_sys->p_ts ) )
         return;
 
     msg_Warn( p_sys->p_input, "es out timeshift: auto stop" );
-    TsStop( p_sys->p_thread );
+    TsStop( p_sys->p_ts );
 
     p_sys->b_delayed = false;
 }
 static void TsStop( ts_thread_t *p_ts )
 {
-    vlc_object_kill( p_ts );
-    vlc_thread_join( p_ts );
+    vlc_cancel( p_ts->thread );
+    vlc_join( p_ts->thread, NULL );
 
     vlc_mutex_lock( &p_ts->lock );
     for( ;; )
@@ -809,7 +806,7 @@ static void TsStop( ts_thread_t *p_ts )
         TsStorageDelete( p_ts->p_storage_r );
     vlc_mutex_unlock( &p_ts->lock );
 
-    vlc_object_release( p_ts );
+    TsDestroy( p_ts );
 }
 static void TsPushCmd( ts_thread_t *p_ts, ts_cmd_t *p_cmd )
 {
@@ -939,9 +936,9 @@ static int TsChangeRate( ts_thread_t *p_ts, int i_src_rate, int i_rate )
     return i_ret;
 }
 
-static void *TsRun( vlc_object_t *p_thread )
+static void *TsRun( void *p_data )
 {
-    ts_thread_t *p_ts = (ts_thread_t*)p_thread;
+    ts_thread_t *p_ts = p_data;
     mtime_t i_buffering_date = -1;
 
     for( ;; )
@@ -1197,7 +1194,6 @@ static void TsStoragePopCmd( ts_storage_t *p_storage, ts_cmd_t *p_cmd, bool b_fl
                 p_block->i_pts      = block.i_pts;
                 p_block->i_flags    = block.i_flags;
                 p_block->i_length   = block.i_length;
-                p_block->i_rate     = block.i_rate;
                 p_block->i_nb_samples = block.i_nb_samples;
                 p_block->i_buffer = fread( p_block->p_buffer, 1, block.i_buffer, p_storage->p_filer );
             }
@@ -1335,6 +1331,7 @@ static int CmdInitControl( ts_cmd_t *p_cmd, int i_query, va_list args, bool b_co
         break;
 
     case ES_OUT_RESET_PCR:           /* no arg */
+    case ES_OUT_SET_EOS:
         break;
 
     case ES_OUT_SET_META:        /* arg1=const vlc_meta_t* */
@@ -1470,6 +1467,7 @@ static int CmdExecuteControl( es_out_t *p_out, ts_cmd_t *p_cmd )
                                                p_cmd->u.control.u.int_i64.i_i64 );
 
     case ES_OUT_RESET_PCR:           /* no arg */
+    case ES_OUT_SET_EOS:
         return es_out_Control( p_out, i_query );
 
     case ES_OUT_SET_GROUP_META:  /* arg1=int i_group arg2=const vlc_meta_t* */
@@ -1585,7 +1583,7 @@ static char *GetTmpPath( char *psz_path )
         return strdup( "C:" );
     }
 #else
-    psz_path = strdup( "/tmp" );
+    psz_path = strdup( DIR_SEP"tmp" );
 #endif
 
     return psz_path;

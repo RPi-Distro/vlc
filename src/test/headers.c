@@ -2,27 +2,27 @@
  * headers.c: Test for public headers usability
  *****************************************************************************
  * Copyright (C) 2007 Rémi Denis-Courmont
- * $Id: 900f47d8c52c0bec9c48992bc4a31ddf2fde4293 $
+ * $Id: 305d73e7ec5954f5adbc4f67edd9fe656770f0e5 $
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /* config.h is NOT installed, headers MUST NOT depend on it.
  # include <config.h> */
 /* One thing we don't check is the CPPFLAGS - these MUST be exposed publicly,
- * e.g. using pkg-config or the broken old vlc-config. */
+ * e.g. using pkg-config. */
 
 #define PACKAGE "vlc"
 

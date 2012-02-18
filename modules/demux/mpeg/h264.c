@@ -2,7 +2,7 @@
  * h264.c : H264 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: a0e57b814e92fefc49aecddfe81ca32137db66b5 $
+ * $Id: b46723534280ee166748db1864ff97810246b42b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -50,7 +50,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_DEMUX )
     set_description( N_("H264 video demuxer" ) )
     set_capability( "demux", 0 )
-    add_float( "h264-fps", 25.0, NULL, FPS_TEXT, FPS_LONGTEXT, true )
+    add_float( "h264-fps", 25.0, FPS_TEXT, FPS_LONGTEXT, true )
     set_callbacks( Open, Close )
     add_shortcut( "h264" )
 vlc_module_end ()

@@ -1,25 +1,25 @@
 /*****************************************************************************
  * es_out.c: Es Out handler for input.
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 839f18fa864ff68a95ac54a85be48564f8d5ae99 $
+ * Copyright (C) 2003-2004 VLC authors and VideoLAN
+ * $Id: 9ae8b36170a570264cbcdb10a0ac753ab1e2fad8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -45,6 +45,7 @@
 #include "es_out.h"
 #include "event.h"
 #include "info.h"
+#include "item.h"
 
 #include "../stream_output/stream_output.h"
 
@@ -113,7 +114,6 @@ struct es_out_sys_t
     /* all programs */
     int           i_pgrm;
     es_out_pgrm_t **pgrm;
-    es_out_pgrm_t **pp_selected_pgrm; /* --programs */
     es_out_pgrm_t *p_pgrm;  /* Master program */
 
     /* all es */
@@ -405,7 +405,8 @@ static mtime_t EsOutGetWakeup( es_out_t *out )
     /* We do not have a wake up date if the input cannot have its speed
      * controlled or sout is imposing its own or while buffering
      *
-     * FIXME for !p_input->p->b_can_pace_control a wkeup time is still needed to avoid too strong buffering */
+     * FIXME for !p_input->p->b_can_pace_control a wake-up time is still needed
+     * to avoid too heavy buffering */
     if( !p_input->p->b_can_pace_control ||
         p_input->p->b_out_pace_control ||
         p_sys->b_buffering )
@@ -767,14 +768,13 @@ static void EsOutDecoderChangeDelay( es_out_t *out, es_out_id_t *p_es )
         i_delay = p_sys->i_audio_delay;
     else if( p_es->fmt.i_cat == SPU_ES )
         i_delay = p_sys->i_spu_delay;
+    else
+        return;
 
-    if( i_delay != 0 )
-    {
-        if( p_es->p_dec )
-            input_DecoderChangeDelay( p_es->p_dec, i_delay );
-        if( p_es->p_dec_record )
-            input_DecoderChangeDelay( p_es->p_dec_record, i_delay );
-    }
+    if( p_es->p_dec )
+        input_DecoderChangeDelay( p_es->p_dec, i_delay );
+    if( p_es->p_dec_record )
+        input_DecoderChangeDelay( p_es->p_dec_record, i_delay );
 }
 static void EsOutProgramsChangeRate( es_out_t *out )
 {
@@ -951,12 +951,12 @@ static void EsOutESVarUpdateGeneric( es_out_t *out, int i_id,
     {
         if( psz_language && *psz_language )
         {
-            if( asprintf( &text.psz_string, "%s %i - [%s]", _( "Track" ), val.i_int, psz_language ) == -1 )
+            if( asprintf( &text.psz_string, "%s %"PRId64" - [%s]", _( "Track" ), val.i_int, psz_language ) == -1 )
                 text.psz_string = NULL;
         }
         else
         {
-            if( asprintf( &text.psz_string, "%s %i", _( "Track" ), val.i_int ) == -1 )
+            if( asprintf( &text.psz_string, "%s %"PRId64, _( "Track" ), val.i_int ) == -1 )
                 text.psz_string = NULL;
         }
     }
@@ -1958,8 +1958,6 @@ static int EsOutSend( es_out_t *out, es_out_id_t *es, block_t *p_block )
             p_block->i_flags |= BLOCK_FLAG_PREROLL;
     }
 
-    p_block->i_rate = 0;
-
     if( !es->p_dec )
     {
         block_Release( p_block );
@@ -2371,7 +2369,7 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
         }
 
         case ES_OUT_RESET_PCR:
-            msg_Dbg( p_sys->p_input, "ES_OUT_RESET_PCR called" );
+            msg_Err( p_sys->p_input, "ES_OUT_RESET_PCR called" );
             EsOutChangePosition( out );
             return VLC_SUCCESS;
 
@@ -2521,7 +2519,7 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
 
             vlc_object_t    **pp_decoder = va_arg( args, vlc_object_t ** );
             vout_thread_t   **pp_vout    = va_arg( args, vout_thread_t ** );
-            aout_instance_t **pp_aout    = va_arg( args, aout_instance_t ** );
+            audio_output_t **pp_aout    = va_arg( args, audio_output_t ** );
             if( p_es->p_dec )
             {
                 if( pp_decoder )
@@ -2685,6 +2683,22 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
             const bool    b_absolute = va_arg( args, int );
             const mtime_t i_system   = va_arg( args, mtime_t );
             input_clock_ChangeSystemOrigin( p_pgrm->p_clock, b_absolute, i_system );
+            return VLC_SUCCESS;
+        }
+        case ES_OUT_SET_EOS:
+        {
+            for (int i = 0; i < p_sys->i_es; i++) {
+                es_out_id_t *id = p_sys->es[i];
+                decoder_t *p_dec = id->p_dec;
+                if (!p_dec)
+                    continue;
+                block_t *p_block = block_Alloc(0);
+                if( !p_block )
+                    break;
+
+                p_block->i_flags |= BLOCK_FLAG_CORE_EOS;
+                input_DecoderDecode(p_dec, p_block, false);
+            }
             return VLC_SUCCESS;
         }
 
@@ -2855,6 +2869,15 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
     const es_format_t *p_fmt_es = &es->fmt;
     lldiv_t         div;
 
+    if( es->fmt.i_cat == fmt->i_cat )
+    {
+        es_format_t update = *fmt;
+        update.i_id = es->i_meta_id;
+        update.i_codec = es->fmt.i_codec;
+        update.i_original_fourcc = es->fmt.i_original_fourcc;
+        input_item_UpdateTracksInfo(input_GetItem(p_input), &update);
+    }
+
     /* Create category */
     char psz_cat[128];
     snprintf( psz_cat, sizeof(psz_cat),_("Stream %d"), es->i_meta_id );
@@ -2862,7 +2885,7 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
     if( !p_cat )
         return;
 
-    /* Add informations */
+    /* Add information */
     const char *psz_type;
     switch( fmt->i_cat )
     {
@@ -2979,6 +3002,15 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
                info_category_AddInfo( p_cat, _("Frame rate"), "%"PRId64,
                                       div.quot );
        }
+       if( fmt->i_codec != p_fmt_es->i_codec )
+       {
+           const char *psz_chroma_description =
+                vlc_fourcc_GetDescription( VIDEO_ES, fmt->i_codec );
+           if( psz_chroma_description )
+               info_category_AddInfo( p_cat, _("Decoded format"), "%s",
+                                      psz_chroma_description );
+       }
+
        break;
 
     case SPU_ES:
@@ -3008,4 +3040,3 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
     /* */
     input_Control( p_input, INPUT_REPLACE_INFOS, p_cat );
 }
-

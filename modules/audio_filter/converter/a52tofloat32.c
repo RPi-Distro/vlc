@@ -4,7 +4,7 @@
  *   (http://liba52.sf.net/).
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: d108cb11022a1e0dffa0d7cb5f106cdb52a3dc06 $
+ * $Id: 2980dd8e8198a9ebb576832fe96d427159e1b73d $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -95,8 +95,8 @@ vlc_module_begin ()
     set_description( N_("ATSC A/52 (AC-3) audio decoder") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACODEC )
-    add_bool( "a52-dynrng", true, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
-    add_bool( "a52-upmix", false, NULL, UPMIX_TEXT, UPMIX_LONGTEXT, true )
+    add_bool( "a52-dynrng", true, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
+    add_bool( "a52-upmix", false, UPMIX_TEXT, UPMIX_LONGTEXT, true )
     set_capability( "audio filter", 100 )
     set_callbacks( OpenFilter, CloseFilter )
 vlc_module_end ()
@@ -105,14 +105,15 @@ vlc_module_end ()
  * Open:
  *****************************************************************************/
 static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
-                 audio_format_t input, audio_format_t output )
+                 const audio_format_t *restrict input,
+                 const audio_format_t *restrict output )
 {
     p_sys->b_dynrng = var_InheritBool( p_this, "a52-dynrng" );
     p_sys->b_dontwarn = 0;
 
     /* No upmixing: it's not necessary and some other filters may want to do
      * it themselves. */
-    if ( aout_FormatNbChannels( &output ) > aout_FormatNbChannels( &input ) )
+    if ( aout_FormatNbChannels( output ) > aout_FormatNbChannels( input ) )
     {
         if ( ! var_InheritBool( p_this, "a52-upmix" ) )
         {
@@ -121,18 +122,18 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
     }
 
     /* We'll do our own downmixing, thanks. */
-    p_sys->i_nb_channels = aout_FormatNbChannels( &output );
-    switch ( (output.i_physical_channels & AOUT_CHAN_PHYSMASK)
+    p_sys->i_nb_channels = aout_FormatNbChannels( output );
+    switch ( (output->i_physical_channels & AOUT_CHAN_PHYSMASK)
               & ~AOUT_CHAN_LFE )
     {
     case AOUT_CHAN_CENTER:
-        if ( (output.i_original_channels & AOUT_CHAN_CENTER)
-              || (output.i_original_channels
+        if ( (output->i_original_channels & AOUT_CHAN_CENTER)
+              || (output->i_original_channels
                    & (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT)) )
         {
             p_sys->i_flags = A52_MONO;
         }
-        else if ( output.i_original_channels & AOUT_CHAN_LEFT )
+        else if ( output->i_original_channels & AOUT_CHAN_LEFT )
         {
             p_sys->i_flags = A52_CHANNEL1;
         }
@@ -143,23 +144,23 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
         break;
 
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT:
-        if ( output.i_original_channels & AOUT_CHAN_DOLBYSTEREO )
+        if ( output->i_original_channels & AOUT_CHAN_DOLBYSTEREO )
         {
             p_sys->i_flags = A52_DOLBY;
         }
-        else if ( input.i_original_channels == AOUT_CHAN_CENTER )
+        else if ( input->i_original_channels == AOUT_CHAN_CENTER )
         {
             p_sys->i_flags = A52_MONO;
         }
-        else if ( input.i_original_channels & AOUT_CHAN_DUALMONO )
+        else if ( input->i_original_channels & AOUT_CHAN_DUALMONO )
         {
             p_sys->i_flags = A52_CHANNEL;
         }
-        else if ( !(output.i_original_channels & AOUT_CHAN_RIGHT) )
+        else if ( !(output->i_original_channels & AOUT_CHAN_RIGHT) )
         {
             p_sys->i_flags = A52_CHANNEL1;
         }
-        else if ( !(output.i_original_channels & AOUT_CHAN_LEFT) )
+        else if ( !(output->i_original_channels & AOUT_CHAN_LEFT) )
         {
             p_sys->i_flags = A52_CHANNEL2;
         }
@@ -197,7 +198,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
         free( p_sys );
         return VLC_EGENERIC;
     }
-    if ( output.i_physical_channels & AOUT_CHAN_LFE )
+    if ( output->i_physical_channels & AOUT_CHAN_LFE )
     {
         p_sys->i_flags |= A52_LFE;
     }
@@ -213,7 +214,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
     }
 
     aout_CheckChannelReorder( pi_channels_in, NULL,
-                              output.i_physical_channels & AOUT_CHAN_PHYSMASK,
+                              output->i_physical_channels & AOUT_CHAN_PHYSMASK,
                               p_sys->i_nb_channels,
                               p_sys->pi_chan_table );
 
@@ -353,21 +354,14 @@ static int OpenFilter( vlc_object_t *p_this )
     filter_sys_t *p_sys;
     int i_ret;
 
-    if( p_filter->fmt_in.i_codec != VLC_CODEC_A52 ||
-        p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFB ||
-        p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFL )
-    {
+    if( p_filter->fmt_in.i_codec != VLC_CODEC_A52 )
         return VLC_EGENERIC;
-    }
-
-    p_filter->fmt_out.audio.i_format =
 #ifdef LIBA52_FIXED
-        p_filter->fmt_out.i_codec = VLC_CODEC_FI32;
+    if( p_filter->fmt_out.audio.i_format != VLC_CODEC_FI32 )
 #else
-        p_filter->fmt_out.i_codec = VLC_CODEC_FL32;
+    if( p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
 #endif
-    p_filter->fmt_out.audio.i_bitspersample =
-        aout_BitsPerSample( p_filter->fmt_out.i_codec );
+        return VLC_EGENERIC;
 
     /* Allocate the memory needed to store the module's structure */
     p_filter->p_sys = p_sys = malloc( sizeof(filter_sys_t) );
@@ -375,7 +369,7 @@ static int OpenFilter( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     i_ret = Open( VLC_OBJECT(p_filter), p_sys,
-                  p_filter->fmt_in.audio, p_filter->fmt_out.audio );
+                  &p_filter->fmt_in.audio, &p_filter->fmt_out.audio );
 
     p_filter->pf_audio_filter = Convert;
     p_filter->fmt_out.audio.i_rate = p_filter->fmt_in.audio.i_rate;

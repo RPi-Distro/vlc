@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: dc8a2aed73cccfdb081536804c4c84944b72d035 $
+ * $Id: 6d47a419cf69b8ef738ca92ce5175c8444fa0704 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -39,8 +39,6 @@
 #       define DXVA2API_USE_BITFIELDS
 #       include <libavcodec/dxva2.h>
 #   endif
-#elif defined(HAVE_FFMPEG_AVCODEC_H)
-#   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
 #endif
@@ -65,13 +63,19 @@
 #define DXVA2_E_NOT_AVAILABLE       MAKE_HRESULT(1, 4, 4099)
 
 static const GUID DXVA2_ModeMPEG2_MoComp = {
-    0xe6a9f44b, 0x61b0, 0x4563, {0x9e,0xa4,0x63,0xd2,0xa3,0xc6,0xfe,0x66}
+    0xe6a9f44b, 0x61b0,0x4563, {0x9e,0xa4,0x63,0xd2,0xa3,0xc6,0xfe,0x66}
 };
 static const GUID DXVA2_ModeMPEG2_IDCT = {
-  0xbf22ad00, 0x03ea, 0x4690, {0x80,0x77,0x47,0x33,0x46,0x20,0x9b,0x7e}
+    0xbf22ad00, 0x03ea,0x4690, {0x80,0x77,0x47,0x33,0x46,0x20,0x9b,0x7e}
 };
 static const GUID DXVA2_ModeMPEG2_VLD = {
-   0xee27417f, 0x5e28, 0x4e65, {0xbe,0xea,0x1d,0x26,0xb5,0x08,0xad,0xc9}
+    0xee27417f, 0x5e28,0x4e65, {0xbe,0xea,0x1d,0x26,0xb5,0x08,0xad,0xc9}
+};
+static const GUID DXVA2_ModeMPEG2and1_VLD = {
+    0x86695f12, 0x340e,0x4f04, {0x9f,0xd3,0x92,0x53,0xdd,0x32,0x74,0x60}
+};
+static const GUID DXVA2_ModeMPEG1_VLD = {
+    0x6f3ec719, 0x3735,0x42cc, {0x80,0x63,0x65,0xcc,0x3c,0xb3,0x66,0x16}
 };
 
 static const GUID DXVA2_ModeH264_A = {
@@ -92,15 +96,22 @@ static const GUID DXVA2_ModeH264_E = {
 static const GUID DXVA2_ModeH264_F = {
     0x1b81be69, 0xa0c7,0x11d3, {0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5}
 };
+static const GUID DXVA_ModeH264_VLD_WithFMOASO_NoFGT = {
+    0xd5f04ff9, 0x3418,0x45d8, {0x95,0x61,0x32,0xa7,0x6a,0xae,0x2d,0xdd}
+};
 static const GUID DXVADDI_Intel_ModeH264_A = {
     0x604F8E64, 0x4951,0x4c54, {0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6}
 };
 static const GUID DXVADDI_Intel_ModeH264_C = {
-    0x604F8E66,0x4951, 0x4c54, {0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6}
+    0x604F8E66, 0x4951,0x4c54, {0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6}
 };
-static const GUID DXVADDI_Intel_ModeH264_E = {
-    0x604F8E68,0x4951, 0x4c54, {0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6}
+static const GUID DXVADDI_Intel_ModeH264_E = { // DXVA_Intel_H264_NoFGT_ClearVideo
+    0x604F8E68, 0x4951,0x4c54, {0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6}
 };
+static const GUID DXVA_ModeH264_VLD_NoFGT_Flash = {
+    0x4245F676, 0x2BBC,0x4166, {0xa0,0xBB,0x54,0xE7,0xB8,0x49,0xC3,0x80}
+};
+
 static const GUID DXVA2_ModeWMV8_A = {
     0x1b81be80, 0xa0c7,0x11d3, {0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5}
 };
@@ -129,9 +140,42 @@ static const GUID DXVA2_ModeVC1_C = {
 static const GUID DXVA2_ModeVC1_D = {
     0x1b81beA3, 0xa0c7,0x11d3, {0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5}
 };
+/* Conformity to the August 2010 update of the specification, ModeVC1_VLD2010 */
+static const GUID DXVA2_ModeVC1_D2010 = {
+    0x1b81beA4, 0xa0c7,0x11d3, {0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5}
+};
 
 static const GUID DXVA_NoEncrypt = {
     0x1b81bed0, 0xa0c7,0x11d3, {0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5}
+};
+
+static const GUID DXVA_Intel_VC1_ClearVideo = {
+    0xBCC5DB6D, 0xA2B6,0x4AF0, {0xAC,0xE4,0xAD,0xB1,0xF7,0x87,0xBC,0x89}
+};
+static const GUID DXVA_Intel_VC1_ClearVideo_2 = {
+    0xE07EC519, 0xE651,0x4CD6, {0xAC,0x84,0x13,0x70,0xCC,0xEE,0xC8,0x51}
+};
+
+
+static const GUID DXVA_nVidia_MPEG4_ASP = {
+    0x9947EC6F, 0x689B,0x11DC, {0xA3,0x20,0x00,0x19,0xDB,0xBC,0x41,0x84}
+};
+static const GUID DXVA_ModeMPEG4pt2_VLD_Simple = {
+    0xefd64d74, 0xc9e8,0x41d7, {0xa5,0xe9,0xe9,0xb0,0xe3,0x9f,0xa3,0x19}
+};
+static const GUID DXVA_ModeMPEG4pt2_VLD_AdvSimple_NoGMC = {
+    0xed418a9f, 0x10d,0x4eda,  {0x9a,0xe3,0x9a,0x65,0x35,0x8d,0x8d,0x2e}
+};
+static const GUID DXVA_ModeMPEG4pt2_VLD_AdvSimple_GMC = {
+    0xab998b5b, 0x4258,0x44a9, {0x9f,0xeb,0x94,0xe5,0x97,0xa6,0xba,0xae}
+};
+static const GUID DXVA_ModeMPEG4pt2_VLD_AdvSimple_Avivo = {
+    0x7C74ADC6, 0xe2ba,0x4ade, {0x86,0xde,0x30,0xbe,0xab,0xb4,0x0c,0xc1}
+};
+
+/* MVC */
+static const GUID DXVA_ModeH264_VLD_Multiview = {
+    0x9901CCD3, 0xca12,0x4b7e, {0x86,0x7a,0xe2,0x22,0x3d,0x92,0x55,0xc3}
 };
 
 /* */
@@ -142,32 +186,55 @@ typedef struct {
 } dxva2_mode_t;
 /* XXX Prefered modes must come first */
 static const dxva2_mode_t dxva2_modes[] = {
-    { "DXVA2_ModeMPEG2_VLD",    &DXVA2_ModeMPEG2_VLD,     CODEC_ID_MPEG2VIDEO },
-    { "DXVA2_ModeMPEG2_MoComp", &DXVA2_ModeMPEG2_MoComp,  0 },
-    { "DXVA2_ModeMPEG2_IDCT",   &DXVA2_ModeMPEG2_IDCT,    0 },
+    /* MPEG-1/2 */
+    { "MPEG-2 variable-length decoder",                                               &DXVA2_ModeMPEG2_VLD,                   CODEC_ID_MPEG2VIDEO },
+    { "MPEG-2 & MPEG-1 variable-length decoder",                                      &DXVA2_ModeMPEG2and1_VLD,               CODEC_ID_MPEG2VIDEO },
+    { "MPEG-2 motion compensation",                                                   &DXVA2_ModeMPEG2_MoComp,                0 },
+    { "MPEG-2 inverse discrete cosine transform",                                     &DXVA2_ModeMPEG2_IDCT,                  0 },
 
-    { "H.264 variable-length decoder (VLD), FGT",               &DXVA2_ModeH264_F,         CODEC_ID_H264 },
-    { "H.264 VLD, no FGT",                                      &DXVA2_ModeH264_E,         CODEC_ID_H264 },
-    { "H.264 VLD, no FGT (Intel)",                              &DXVADDI_Intel_ModeH264_E, CODEC_ID_H264 },
-    { "H.264 IDCT, FGT",                                        &DXVA2_ModeH264_D,         0             },
-    { "H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVA2_ModeH264_C,         0             },
-    { "H.264 inverse discrete cosine transform (IDCT), no FGT (Intel)", &DXVADDI_Intel_ModeH264_C, 0     },
-    { "H.264 MoComp, FGT",                                      &DXVA2_ModeH264_B,         0             },
-    { "H.264 motion compensation (MoComp), no FGT",             &DXVA2_ModeH264_A,         0             },
-    { "H.264 motion compensation (MoComp), no FGT (Intel)",     &DXVADDI_Intel_ModeH264_A, 0             },
+    { "MPEG-1 variable-length decoder",                                               &DXVA2_ModeMPEG1_VLD,                   0 },
 
-    { "Windows Media Video 8 MoComp",           &DXVA2_ModeWMV8_B, 0 },
-    { "Windows Media Video 8 post processing",  &DXVA2_ModeWMV8_A, 0 },
+    /* H.264 */
+    { "H.264 variable-length decoder, film grain technology",                         &DXVA2_ModeH264_F,                      CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology",                      &DXVA2_ModeH264_E,                      CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology (Intel ClearVideo)",   &DXVADDI_Intel_ModeH264_E,              CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology, FMO/ASO",             &DXVA_ModeH264_VLD_WithFMOASO_NoFGT,    CODEC_ID_H264 },
+    { "H.264 variable-length decoder, no film grain technology, Flash",               &DXVA_ModeH264_VLD_NoFGT_Flash,         CODEC_ID_H264 },
 
-    {  "Windows Media Video 9 IDCT",            &DXVA2_ModeWMV9_C, 0 },
-    {  "Windows Media Video 9 MoComp",          &DXVA2_ModeWMV9_B, 0 },
-    {  "Windows Media Video 9 post processing", &DXVA2_ModeWMV9_A, 0 },
+    { "H.264 inverse discrete cosine transform, film grain technology",               &DXVA2_ModeH264_D,                      0 },
+    { "H.264 inverse discrete cosine transform, no film grain technology",            &DXVA2_ModeH264_C,                      0 },
+    { "H.264 inverse discrete cosine transform, no film grain technology (Intel)",    &DXVADDI_Intel_ModeH264_C,              0 },
 
-    { "VC-1 VLD",             &DXVA2_ModeVC1_D, CODEC_ID_VC1 },
-    { "VC-1 VLD",             &DXVA2_ModeVC1_D, CODEC_ID_WMV3 },
-    { "VC-1 IDCT",            &DXVA2_ModeVC1_C, 0 },
-    { "VC-1 MoComp",          &DXVA2_ModeVC1_B, 0 },
-    { "VC-1 post processing", &DXVA2_ModeVC1_A, 0 },
+    { "H.264 motion compensation, film grain technology",                             &DXVA2_ModeH264_B,                      0 },
+    { "H.264 motion compensation, no film grain technology",                          &DXVA2_ModeH264_A,                      0 },
+    { "H.264 motion compensation, no film grain technology (Intel)",                  &DXVADDI_Intel_ModeH264_A,              0 },
+
+    /* WMV */
+    { "Windows Media Video 8 motion compensation",                                    &DXVA2_ModeWMV8_B,                      0 },
+    { "Windows Media Video 8 post processing",                                        &DXVA2_ModeWMV8_A,                      0 },
+
+    { "Windows Media Video 9 IDCT",                                                   &DXVA2_ModeWMV9_C,                      0 },
+    { "Windows Media Video 9 motion compensation",                                    &DXVA2_ModeWMV9_B,                      0 },
+    { "Windows Media Video 9 post processing",                                        &DXVA2_ModeWMV9_A,                      0 },
+
+    /* VC-1 */
+    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D,                       CODEC_ID_VC1 },
+    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D,                       CODEC_ID_WMV3 },
+    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D2010,                   CODEC_ID_VC1 },
+    { "VC-1 variable-length decoder",                                                 &DXVA2_ModeVC1_D2010,                   CODEC_ID_WMV3 },
+    { "VC-1 variable-length decoder 2 (Intel)",                                       &DXVA_Intel_VC1_ClearVideo_2,           0 },
+    { "VC-1 variable-length decoder (Intel)",                                         &DXVA_Intel_VC1_ClearVideo,             0 },
+
+    { "VC-1 inverse discrete cosine transform",                                       &DXVA2_ModeVC1_C,                       0 },
+    { "VC-1 motion compensation",                                                     &DXVA2_ModeVC1_B,                       0 },
+    { "VC-1 post processing",                                                         &DXVA2_ModeVC1_A,                       0 },
+
+    /* Xvid/Divx: TODO */
+    { "MPEG-4 Part 2 nVidia bitstream decoder",                                       &DXVA_nVidia_MPEG4_ASP,                 0 },
+    { "MPEG-4 Part 2 variable-length decoder, Simple Profile",                        &DXVA_ModeMPEG4pt2_VLD_Simple,          0 },
+    { "MPEG-4 Part 2 variable-length decoder, Simple&Advanced Profile, no GMC",       &DXVA_ModeMPEG4pt2_VLD_AdvSimple_NoGMC, 0 },
+    { "MPEG-4 Part 2 variable-length decoder, Simple&Advanced Profile, GMC",          &DXVA_ModeMPEG4pt2_VLD_AdvSimple_GMC,   0 },
+    { "MPEG-4 Part 2 variable-length decoder, Simple&Advanced Profile, Avivo",        &DXVA_ModeMPEG4pt2_VLD_AdvSimple_Avivo, 0 },
 
     { NULL, NULL, 0 }
 };
@@ -191,6 +258,7 @@ typedef struct {
 static const d3d_format_t d3d_formats[] = {
     { "YV12",   MAKEFOURCC('Y','V','1','2'),    VLC_CODEC_YV12 },
     { "NV12",   MAKEFOURCC('N','V','1','2'),    VLC_CODEC_NV12 },
+    { "IMC3",   MAKEFOURCC('I','M','C','3'),    VLC_CODEC_YV12 },
 
     { NULL, 0, 0 }
 };
@@ -231,7 +299,7 @@ typedef struct
     int          height;
 
     /* DLL */
-	HINSTANCE             hd3d9_dll;
+    HINSTANCE             hd3d9_dll;
     HINSTANCE             hdxva2_dll;
 
     /* Direct3D */
@@ -363,18 +431,29 @@ static int Extract(vlc_va_t *external, picture_t *picture, AVFrame *ff)
         return VLC_EGENERIC;
     }
 
-    if (va->render == MAKEFOURCC('Y','V','1','2')) {
-        uint8_t *plane[3] = {
-            lock.pBits,
-            (uint8_t*)lock.pBits + lock.Pitch * va->surface_height,
-            (uint8_t*)lock.pBits + lock.Pitch * va->surface_height
-                                 + (lock.Pitch/2) * (va->surface_height/2)
-        };
-        size_t  pitch[3] = {
+    if (va->render == MAKEFOURCC('Y','V','1','2') ||
+        va->render == MAKEFOURCC('I','M','C','3')) {
+        bool imc3 = va->render == MAKEFOURCC('I','M','C','3');
+        size_t chroma_pitch = imc3 ? lock.Pitch : (lock.Pitch / 2);
+
+        size_t pitch[3] = {
             lock.Pitch,
-            lock.Pitch / 2,
-            lock.Pitch / 2,
+            chroma_pitch,
+            chroma_pitch,
         };
+
+        uint8_t *plane[3] = {
+            (uint8_t*)lock.pBits,
+            (uint8_t*)lock.pBits + pitch[0] * va->surface_height,
+            (uint8_t*)lock.pBits + pitch[0] * va->surface_height
+                                 + pitch[1] * va->surface_height / 2,
+        };
+
+        if (imc3) {
+            uint8_t *V = plane[1];
+            plane[1] = plane[2];
+            plane[2] = V;
+        }
         CopyFromYv12(picture, plane, pitch,
                      va->width, va->height,
                      &va->surface_cache);
@@ -651,7 +730,7 @@ static int D3dCreateDeviceManager(vlc_va_dxva2_t *va)
                              TEXT("DXVA2CreateDirect3DDeviceManager9"));
 
     if (!CreateDeviceManager9) {
-        msg_Err(va->log, "cannot load function\n");
+        msg_Err(va->log, "cannot load function");
         return VLC_EGENERIC;
     }
     msg_Dbg(va->log, "OurDirect3DCreateDeviceManager9 Success!");
@@ -695,7 +774,7 @@ static int DxCreateVideoService(vlc_va_dxva2_t *va)
                              TEXT("DXVA2CreateVideoService"));
 
     if (!CreateVideoService) {
-        msg_Err(va->log, "cannot load function\n");
+        msg_Err(va->log, "cannot load function");
         return 4;
     }
     msg_Info(va->log, "DXVA2CreateVideoService Success!");
@@ -713,7 +792,7 @@ static int DxCreateVideoService(vlc_va_dxva2_t *va)
     IDirectXVideoDecoderService *vs;
     hr = IDirect3DDeviceManager9_GetVideoService(va->devmng, device,
                                                  &IID_IDirectXVideoDecoderService,
-                                                 &vs);
+                                                 (void**)&vs);
     if (FAILED(hr)) {
         msg_Err(va->log, "GetVideoService failed");
         return VLC_EGENERIC;
@@ -852,7 +931,7 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
                                                          DXVA2_VideoDecoderRenderTarget,
                                                          surface_list,
                                                          NULL))) {
-        msg_Err(va->log, "IDirectXVideoAccelerationService_CreateSurface failed\n");
+        msg_Err(va->log, "IDirectXVideoAccelerationService_CreateSurface failed");
         va->surface_count = 0;
         return VLC_EGENERIC;
     }
@@ -901,7 +980,7 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
                                                                     NULL,
                                                                     &cfg_count,
                                                                     &cfg_list))) {
-        msg_Err(va->log, "IDirectXVideoDecoderService_GetDecoderConfigurations failed\n");
+        msg_Err(va->log, "IDirectXVideoDecoderService_GetDecoderConfigurations failed");
         return VLC_EGENERIC;
     }
     msg_Dbg(va->log, "we got %d decoder configurations", cfg_count);
@@ -946,7 +1025,7 @@ static int DxCreateVideoDecoder(vlc_va_dxva2_t *va,
                                                               surface_list,
                                                               va->surface_count,
                                                               &decoder))) {
-        msg_Err(va->log, "IDirectXVideoDecoderService_CreateVideoDecoder failed\n");
+        msg_Err(va->log, "IDirectXVideoDecoderService_CreateVideoDecoder failed");
         return VLC_EGENERIC;
     }
     va->decoder = decoder;
@@ -973,6 +1052,7 @@ static void DxCreateVideoConversion(vlc_va_dxva2_t *va)
 {
     switch (va->render) {
     case MAKEFOURCC('N','V','1','2'):
+    case MAKEFOURCC('I','M','C','3'):
         va->output = MAKEFOURCC('Y','V','1','2');
         break;
     default:

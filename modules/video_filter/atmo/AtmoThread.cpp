@@ -3,8 +3,14 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 5aea76706326c9a56a063bd20a10f4da571aa952 $
+ * $Id: 50c9c4b574cf3409b74b6f3b777df23d3fbade7a $
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+#include <assert.h>
+
 #include "AtmoThread.h"
 
 #if defined(_ATMO_VLC_PLUGIN_)
@@ -12,18 +18,10 @@
 CThread::CThread(vlc_object_t *pOwner)
 {
     m_bTerminated  = ATMO_FALSE;
-    m_pAtmoThread = (atmo_thread_t *)vlc_object_create( pOwner,
-                                                        sizeof(atmo_thread_t) );
-    if(m_pAtmoThread)
-    {
-        m_pAtmoThread->p_thread = this;
-        this->m_pOwner = pOwner;
-
-        vlc_object_attach( m_pAtmoThread, m_pOwner);
-
-        vlc_mutex_init( &m_TerminateLock );
-        vlc_cond_init( &m_TerminateCond );
-    }
+    vlc_mutex_init( &m_TerminateLock );
+    vlc_cond_init( &m_TerminateCond );
+    m_pOwner = pOwner;
+    m_HasThread = ATMO_FALSE;
 }
 
 #else
@@ -46,12 +44,9 @@ CThread::CThread(void)
 
 CThread::~CThread(void)
 {
-  if(m_pAtmoThread)
-  {
-      vlc_mutex_destroy( &m_TerminateLock );
-      vlc_cond_destroy( &m_TerminateCond );
-      vlc_object_release(m_pAtmoThread);
-  }
+  assert(m_HasThread == ATMO_FALSE);
+  vlc_mutex_destroy( &m_TerminateLock );
+  vlc_cond_destroy( &m_TerminateCond );
 }
 
 #else
@@ -66,17 +61,14 @@ CThread::~CThread(void)
 
 #if defined(_ATMO_VLC_PLUGIN_)
 
-void *CThread::ThreadProc(vlc_object_t *obj)
+void *CThread::ThreadProc(void *obj)
 {
-      atmo_thread_t *pAtmoThread = (atmo_thread_t *)obj;
-      CThread *pThread = (CThread *)pAtmoThread->p_thread;
-      if(pThread) {
-         int canc;
+      CThread *pThread = static_cast<CThread*>(obj);
 
-         canc = vlc_savecancel ();
-         pThread->Execute();
-         vlc_restorecancel (canc);
-      }
+      int canc = vlc_savecancel ();
+      pThread->Execute();
+      vlc_restorecancel (canc);
+
       return NULL;
 }
 
@@ -112,15 +104,15 @@ void CThread::Terminate(void)
    // and wait for Termination
 
 #if defined(_ATMO_VLC_PLUGIN_)
-   if(m_pAtmoThread)
+   if(m_HasThread != ATMO_FALSE)
    {
       vlc_mutex_lock( &m_TerminateLock );
       m_bTerminated = ATMO_TRUE;
       vlc_cond_signal( &m_TerminateCond  );
       vlc_mutex_unlock( &m_TerminateLock );
 
-      vlc_object_kill( m_pAtmoThread );
-      vlc_thread_join( m_pAtmoThread );
+      vlc_cancel( m_Thread );
+      vlc_join( m_Thread, NULL );
    }
 #else
    m_bTerminated = ATMO_TRUE;
@@ -134,13 +126,14 @@ void CThread::Run()
    m_bTerminated = ATMO_FALSE;
 
 #if defined(_ATMO_VLC_PLUGIN_)
-   m_pAtmoThread->b_die = false;
-   if(vlc_thread_create( m_pAtmoThread,
-                         "Atmo-CThread-Class",
-                         CThread::ThreadProc,
-                         VLC_THREAD_PRIORITY_LOW ))
+   if (vlc_clone( &m_Thread, CThread::ThreadProc, this, VLC_THREAD_PRIORITY_LOW))
    {
-      msg_Err( m_pOwner, "cannot launch one of the AtmoLight threads");
+       m_HasThread = ATMO_FALSE;
+       msg_Err( m_pOwner, "cannot launch one of the AtmoLight threads");
+   }
+   else
+   {
+       m_HasThread = ATMO_TRUE;;
    }
 
 #else

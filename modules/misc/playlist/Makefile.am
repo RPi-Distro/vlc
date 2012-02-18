@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libexport_plugin_la_SOURCES = $(SOURCES_export)
 nodist_libexport_plugin_la_SOURCES = $(nodist_SOURCES_export)
 # Force per-target objects:
-libexport_plugin_la_CFLAGS = $(AM_CFLAGS)
-libexport_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libexport_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libexport_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_export)
+libexport_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_export)
+libexport_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_export)
+libexport_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_export)
 # Set LIBADD and DEPENDENCIES manually:
-libexport_plugin_la_LIBADD = $(AM_LIBADD)
-libexport_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libexport_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_export)
+libexport_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_export)
+libexport_plugin_la_DEPENDENCIES =
 

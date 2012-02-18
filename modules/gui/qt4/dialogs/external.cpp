@@ -190,6 +190,8 @@ QVLCProgressDialog::QVLCProgressDialog (DialogHandler *parent,
 {
     setLabelText( qfu(data->message) );
     setRange( 0, 0 );
+    if ( data->cancel )
+        setWindowModality ( Qt::ApplicationModal );
 
     if( data->cancel )
         setCancelButton( new QPushButton( "&" + qfu(data->cancel) ) );
@@ -197,7 +199,7 @@ QVLCProgressDialog::QVLCProgressDialog (DialogHandler *parent,
         setWindowTitle (qfu(data->title));
 
     setWindowRole ("vlc-progress");
-    setMinimumDuration (300);
+    setMinimumDuration (1200);
     setValue( 0 );
 
     connect (this, SIGNAL(progressed(int)), SLOT(setValue(int)));

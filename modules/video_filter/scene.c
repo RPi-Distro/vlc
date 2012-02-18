@@ -2,7 +2,7 @@
  * scene.c : scene video filter (based on modules/video_output/image.c)
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: ae6d78ab2c1e9344b10600f7de00a62457ac7b1e $
+ * $Id: 86749936f68cd83bfeea1699397f7d600a05a269 $
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -98,21 +98,21 @@ vlc_module_begin ()
     set_capability( "video filter2", 0 )
 
     /* General options */
-    add_string(  CFG_PREFIX "format", "png", NULL,
+    add_string(  CFG_PREFIX "format", "png",
                  FORMAT_TEXT, FORMAT_LONGTEXT, false )
-    add_integer( CFG_PREFIX "width", -1, NULL,
+    add_integer( CFG_PREFIX "width", -1,
                  WIDTH_TEXT, WIDTH_LONGTEXT, true )
-    add_integer( CFG_PREFIX "height", -1, NULL,
+    add_integer( CFG_PREFIX "height", -1,
                  HEIGHT_TEXT, HEIGHT_LONGTEXT, true )
-    add_string(  CFG_PREFIX "prefix", "scene", NULL,
+    add_string(  CFG_PREFIX "prefix", "scene",
                  PREFIX_TEXT, PREFIX_LONGTEXT, false )
-    add_string(  CFG_PREFIX "path", NULL, NULL,
+    add_string(  CFG_PREFIX "path", NULL,
                  PATH_TEXT, PATH_LONGTEXT, false )
-    add_bool(    CFG_PREFIX "replace", false, NULL,
+    add_bool(    CFG_PREFIX "replace", false,
                  REPLACE_TEXT, REPLACE_LONGTEXT, false )
 
     /* Snapshot method */
-    add_integer( CFG_PREFIX "ratio", 50, NULL,
+    add_integer( CFG_PREFIX "ratio", 50,
                  RATIO_TEXT, RATIO_LONGTEXT, false )
 
     set_callbacks( Create, Destroy )
@@ -319,7 +319,7 @@ static void SavePicture( filter_t *p_filter, picture_t *p_pic )
     else
     {
         /* switch to the final destination */
-#if defined (WIN32)
+#if defined (WIN32) || defined(__OS2__)
         vlc_unlink( psz_filename );
 #endif
         i_ret = vlc_rename( psz_temp, psz_filename );

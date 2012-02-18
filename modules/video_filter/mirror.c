@@ -2,7 +2,7 @@
  * mirror.c : Mirror video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 46b821674b3b582fc7b19df6e869d975fc94bab5 $
+ * $Id: 543ee31f3a0f7c3e97028aa940346e7de978ecfd $
  *
  * Authors: Branko Kokanovic <branko.kokanovic@gmail.com>
  *
@@ -81,14 +81,13 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
     set_capability( "video filter2", 0 )
-    add_integer( CFG_PREFIX "split", 0, NULL, ORIENTATION_TEXT,
+    add_integer( CFG_PREFIX "split", 0, ORIENTATION_TEXT,
                 ORIENTATION_LONGTEXT, false )
         change_integer_list( pi_orientation_values,
-                            ppsz_orientation_descriptions, NULL )
-    add_integer( CFG_PREFIX "direction", 0, NULL, DIRECTION_TEXT,
+                            ppsz_orientation_descriptions )
+    add_integer( CFG_PREFIX "direction", 0, DIRECTION_TEXT,
                 DIRECTION_LONGTEXT, false )
-        change_integer_list( pi_direction_values, ppsz_direction_descriptions,
-                            NULL )
+        change_integer_list( pi_direction_values, ppsz_direction_descriptions )
     set_callbacks( Create, Destroy )
 vlc_module_end ()
 

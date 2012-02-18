@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: af93fb39efb637f653ca576117ab091bda04fa93 $
+ * $Id: d56527937f96c36a5019c173b0299b1979cb5f8f $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -48,19 +48,11 @@
 
 #include <sys/types.h>
 
-#ifdef HAVE_DVDREAD_DVD_READER_H
-  #include <dvdread/dvd_reader.h>
-  #include <dvdread/ifo_types.h>
-  #include <dvdread/ifo_read.h>
-  #include <dvdread/nav_read.h>
-  #include <dvdread/nav_print.h>
-#else
-  #include <libdvdread/dvd_reader.h>
-  #include <libdvdread/ifo_types.h>
-  #include <libdvdread/ifo_read.h>
-  #include <libdvdread/nav_read.h>
-  #include <libdvdread/nav_print.h>
-#endif
+#include <dvdread/dvd_reader.h>
+#include <dvdread/ifo_types.h>
+#include <dvdread/ifo_read.h>
+#include <dvdread/nav_read.h>
+#include <dvdread/nav_print.h>
 
 #include <assert.h>
 
@@ -71,11 +63,6 @@
 #define ANGLE_LONGTEXT N_( \
     "Default DVD angle." )
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for DVDs. " \
-    "This value should be set in milliseconds." )
-
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
@@ -84,15 +71,11 @@ vlc_module_begin ()
     set_description( N_("DVDRead Input (no menu support)") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-    add_integer( "dvdread-angle", 1, NULL, ANGLE_TEXT,
+    add_integer( "dvdread-angle", 1, ANGLE_TEXT,
         ANGLE_LONGTEXT, false )
-    add_integer( "dvdread-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-        CACHING_TEXT, CACHING_LONGTEXT, true )
     add_obsolete_string( "dvdread-css-method" ) /* obsolete since 1.1.0 */
     set_capability( "access_demux", 0 )
-    add_shortcut( "dvd" )
-    add_shortcut( "dvdread" )
-    add_shortcut( "dvdsimple" )
+    add_shortcut( "dvd", "dvdread", "dvdsimple" )
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -177,7 +160,7 @@ static int Open( vlc_object_t *p_this )
     char         *psz_file;
     ifo_handle_t *p_vmg_file;
 
-    if( !p_demux->psz_path || !*p_demux->psz_path )
+    if( !p_demux->psz_file || !*p_demux->psz_file )
     {
         /* Only when selected */
         if( !p_demux->psz_access || !*p_demux->psz_access )
@@ -186,9 +169,9 @@ static int Open( vlc_object_t *p_this )
         psz_file = var_InheritString( p_this, "dvd" );
     }
     else
-        psz_file = strdup( p_demux->psz_path );
+        psz_file = strdup( p_demux->psz_file );
 
-#ifdef WIN32
+#if defined( WIN32 ) || defined( __OS2__ )
     if( psz_file != NULL )
     {
         size_t flen = strlen( psz_file );
@@ -253,10 +236,6 @@ static int Open( vlc_object_t *p_this )
                  p_sys->i_angle );
         return VLC_EGENERIC;
     }
-
-    /* Update default_pts to a suitable value for dvdread access */
-    var_Create( p_demux, "dvdread-caching",
-                VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
 
     return VLC_SUCCESS;
 }
@@ -440,7 +419,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_GET_PTS_DELAY:
             pi64 = (int64_t*)va_arg( args, int64_t * );
-            *pi64 = (int64_t)var_GetInteger( p_demux, "dvdread-caching" )*1000;
+            *pi64 =
+                INT64_C(1000) * var_InheritInteger( p_demux, "disc-caching" );
             return VLC_SUCCESS;
 
         /* TODO implement others */
@@ -680,6 +660,7 @@ static void ESNew( demux_t *p_demux, int i_id, int i_lang )
     }
     else if( tk->fmt.i_cat == AUDIO_ES )
     {
+#if 0
         int i_audio = -1;
         /* find the audio number PLEASE find another way */
         if( (i_id&0xbdf8) == 0xbd88 )       /* dts */
@@ -698,6 +679,7 @@ static void ESNew( demux_t *p_demux, int i_id, int i_lang )
         {
             i_audio = i_id&0x1f;
         }
+#endif
 
         if( psz_language[0] ) tk->fmt.psz_language = strdup( psz_language );
     }

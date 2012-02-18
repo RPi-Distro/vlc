@@ -2,7 +2,7 @@
  * asf.c: asf muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2004, 2006 the VideoLAN team
- * $Id: 6dfb5d691d29c8383d86c90449a5ab5c15a786d5 $
+ * $Id: ceec09abc4e0b10506750ac8e920934ed7c25f15 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -40,7 +40,7 @@
 #include <vlc_arrays.h>
 #include <vlc_rand.h>
 
-typedef GUID guid_t;
+#include "../demux/asf/libasf_guid.h"
 
 #define MAX_ASF_TRACKS 128
 #define ASF_DATA_PACKET_SIZE 4096  // deprecated -- added sout-asf-packet-size
@@ -76,23 +76,22 @@ vlc_module_begin ()
     set_shortname( "ASF" )
 
     set_capability( "sout mux", 5 )
-    add_shortcut( "asf" )
-    add_shortcut( "asfh" )
+    add_shortcut( "asf", "asfh" )
     set_callbacks( Open, Close )
 
-    add_string( SOUT_CFG_PREFIX "title", "", NULL, TITLE_TEXT, TITLE_LONGTEXT,
+    add_string( SOUT_CFG_PREFIX "title", "", TITLE_TEXT, TITLE_LONGTEXT,
                                  true )
-    add_string( SOUT_CFG_PREFIX "author",   "", NULL, AUTHOR_TEXT,
+    add_string( SOUT_CFG_PREFIX "author",   "", AUTHOR_TEXT,
                                  AUTHOR_LONGTEXT, true )
-    add_string( SOUT_CFG_PREFIX "copyright","", NULL, COPYRIGHT_TEXT,
+    add_string( SOUT_CFG_PREFIX "copyright","", COPYRIGHT_TEXT,
                                  COPYRIGHT_LONGTEXT, true )
-    add_string( SOUT_CFG_PREFIX "comment",  "", NULL, COMMENT_TEXT,
+    add_string( SOUT_CFG_PREFIX "comment",  "", COMMENT_TEXT,
                                  COMMENT_LONGTEXT, true )
-    add_string( SOUT_CFG_PREFIX "rating",  "", NULL, RATING_TEXT,
+    add_string( SOUT_CFG_PREFIX "rating",  "", RATING_TEXT,
                                  RATING_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "packet-size", 4096, NULL, PACKETSIZE_TEXT,
+    add_integer( SOUT_CFG_PREFIX "packet-size", 4096, PACKETSIZE_TEXT,
                                  PACKETSIZE_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "bitrate-override", 0, NULL, BITRATE_TEXT,
+    add_integer( SOUT_CFG_PREFIX "bitrate-override", 0, BITRATE_TEXT,
                                  BITRATE_LONGTEXT, true )
 
 vlc_module_end ()
@@ -191,7 +190,6 @@ static int Open( vlc_object_t *p_this )
 {
     sout_mux_t     *p_mux = (sout_mux_t*)p_this;
     sout_mux_sys_t *p_sys;
-    int i;
 
     msg_Dbg( p_mux, "asf muxer opened" );
     config_ChainParse( p_mux, SOUT_CFG_PREFIX, ppsz_sout_options, p_mux->p_cfg );
@@ -257,7 +255,6 @@ static void Close( vlc_object_t * p_this )
     sout_mux_t     *p_mux = (sout_mux_t*)p_this;
     sout_mux_sys_t *p_sys = p_mux->p_sys;
     block_t  *out;
-    int i;
 
     msg_Dbg( p_mux, "Asf muxer closed" );
 
@@ -280,7 +277,7 @@ static void Close( vlc_object_t * p_this )
     }
 
 
-    for( i = 0; i < vlc_array_count( p_sys->p_tracks ); i++ )
+    for( int i = 0; i < vlc_array_count( p_sys->p_tracks ); i++ )
     {
         asf_track_t *track = (asf_track_t *)vlc_array_item_at_index( p_sys->p_tracks, i );
         free( track->p_extra );
@@ -819,50 +816,14 @@ static void bo_addle_str16_nosize( bo_t *bo, const char *str )
  ****************************************************************************/
 static void bo_add_guid( bo_t *p_bo, const guid_t *id )
 {
-    int i;
     bo_addle_u32( p_bo, id->Data1 );
     bo_addle_u16( p_bo, id->Data2 );
     bo_addle_u16( p_bo, id->Data3 );
-    for( i = 0; i < 8; i++ )
+    for( int i = 0; i < 8; i++ )
     {
         bo_add_u8( p_bo, id->Data4[i] );
     }
 }
-
-static const guid_t asf_object_header_guid =
-{0x75B22630, 0x668E, 0x11CF, {0xA6, 0xD9, 0x00, 0xAA, 0x00, 0x62, 0xCE, 0x6C}};
-static const guid_t asf_object_data_guid =
-{0x75B22636, 0x668E, 0x11CF, {0xA6, 0xD9, 0x00, 0xAA, 0x00, 0x62, 0xCE, 0x6C}};
-static const guid_t asf_object_file_properties_guid =
-{0x8cabdca1, 0xa947, 0x11cf, {0x8e, 0xe4, 0x00, 0xC0, 0x0C, 0x20, 0x53, 0x65}};
-static const guid_t asf_object_stream_properties_guid =
-{0xB7DC0791, 0xA9B7, 0x11CF, {0x8E, 0xE6, 0x00, 0xC0, 0x0C, 0x20, 0x53, 0x65}};
-static const guid_t asf_object_header_extension_guid =
-{0x5FBF03B5, 0xA92E, 0x11CF, {0x8E, 0xE3, 0x00, 0xC0, 0x0C, 0x20, 0x53, 0x65}};
-static const guid_t asf_object_stream_type_audio =
-{0xF8699E40, 0x5B4D, 0x11CF, {0xA8, 0xFD, 0x00, 0x80, 0x5F, 0x5C, 0x44, 0x2B}};
-static const guid_t asf_object_stream_type_video =
-{0xbc19efc0, 0x5B4D, 0x11CF, {0xA8, 0xFD, 0x00, 0x80, 0x5F, 0x5C, 0x44, 0x2B}};
-static const guid_t asf_guid_audio_conceal_none =
-{0x20FB5700, 0x5B55, 0x11CF, {0xA8, 0xFD, 0x00, 0x80, 0x5F, 0x5C, 0x44, 0x2B}};
-static const guid_t asf_guid_audio_conceal_spread =
-{0xBFC3CD50, 0x618F, 0x11CF, {0x8B, 0xB2, 0x00, 0xAA, 0x00, 0xB4, 0xE2, 0x20}};
-static const guid_t asf_guid_video_conceal_none =
-{0x20FB5700, 0x5B55, 0x11CF, {0xA8, 0xFD, 0x00, 0x80, 0x5F, 0x5C, 0x44, 0x2B}};
-static const guid_t asf_guid_reserved_1 =
-{0xABD3D211, 0xA9BA, 0x11cf, {0x8E, 0xE6, 0x00, 0xC0, 0x0C ,0x20, 0x53, 0x65}};
-static const guid_t asf_object_codec_list_guid =
-{0x86D15240, 0x311D, 0x11D0, {0xA3, 0xA4, 0x00, 0xA0, 0xC9, 0x03, 0x48, 0xF6}};
-static const guid_t asf_object_codec_list_reserved_guid =
-{0x86D15241, 0x311D, 0x11D0, {0xA3, 0xA4, 0x00, 0xA0, 0xC9, 0x03, 0x48, 0xF6}};
-static const guid_t asf_object_content_description_guid =
-{0x75B22633, 0x668E, 0x11CF, {0xa6, 0xd9, 0x00, 0xaa, 0x00, 0x62, 0xce, 0x6c}};
-static const guid_t asf_object_index_guid =
-{0x33000890, 0xE5B1, 0x11CF, {0x89, 0xF4, 0x00, 0xA0, 0xC9, 0x03, 0x49, 0xCB}};
-static const guid_t asf_object_metadata_guid =
-{0xC5F8CBEA, 0x5BAF, 0x4877, {0x84, 0x67, 0xAA, 0x8C, 0x44, 0xFA, 0x4C, 0xCA}};
-static const guid_t asf_object_extended_stream_properties_guid =
-{0x14E6A5CB, 0xC672, 0x4332, {0x83, 0x99, 0xA9, 0x69, 0x52, 0x06, 0x5B, 0x5A}};
 
 /****************************************************************************
  * Misc
@@ -1103,12 +1064,12 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
             if( tk->b_audio_correction )
                 bo_add_guid( &bo, &asf_guid_audio_conceal_spread );
             else
-                bo_add_guid( &bo, &asf_guid_audio_conceal_none );
+                bo_add_guid( &bo, &asf_no_error_correction_guid );
         }
         else if( tk->i_cat == VIDEO_ES )
         {
             bo_add_guid( &bo, &asf_object_stream_type_video );
-            bo_add_guid( &bo, &asf_guid_video_conceal_none );
+            bo_add_guid( &bo, &asf_no_error_correction_guid );
         }
         bo_addle_u64( &bo, 0 );         /* time offset */
         bo_addle_u32( &bo, tk->i_extra );
@@ -1132,7 +1093,7 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
     /* Codec Infos */
     bo_add_guid ( &bo, &asf_object_codec_list_guid );
     bo_addle_u64( &bo, i_ci_size );
-    bo_add_guid ( &bo, &asf_object_codec_list_reserved_guid );
+    bo_add_guid ( &bo, &asf_guid_reserved_2 );
     bo_addle_u32( &bo, vlc_array_count( p_sys->p_tracks ) );
     for( i = 0; i < vlc_array_count( p_sys->p_tracks ); i++ )
     {

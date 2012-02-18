@@ -2,7 +2,7 @@
  * openurl.cpp: Open a MRL or clipboard content
  *****************************************************************************
  * Copyright © 2009 the VideoLAN team
- * $Id: e9a549cb80d785cea3343d2b70a9feae2d08997e $
+ * $Id: 56ab915b86efa9ea7f608663da5a75c5b876ba7b $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -26,7 +26,7 @@
 #endif
 
 #include "dialogs/openurl.hpp"
-#include "util/customwidgets.hpp"
+#include "util/searchlineedit.hpp"
 
 #include <QPushButton>
 #include <QDialogButtonBox>
@@ -103,7 +103,7 @@ bool OpenUrlDialog::shouldEnqueue() const
 }
 
 /** Show Event:
- * When the dialog is shown, try to extract an URL from the clipboard
+ * When the dialog is shown, try to extract a URL from the clipboard
  * and paste it in the Edit box.
  * showEvent can happen not only on exec() but I think it's cool to
  * actualize the URL on showEvent (eg. change virtual desktop...)

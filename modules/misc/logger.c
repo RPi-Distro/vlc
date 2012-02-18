@@ -2,7 +2,7 @@
  * logger.c : file logging plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 3aa4da74a3133fc0e0ec98c81164c9580ac1de56 $
+ * $Id: 9ee7cde23ec9d05c67dc95a7d03fea3bb72b197c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -32,24 +32,20 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
-#include <vlc_playlist.h>
 #include <vlc_fs.h>
 #include <vlc_charset.h>
 
+#include <stdarg.h>
 #include <assert.h>
 
-#define MODE_TEXT 0
-#define MODE_HTML 1
-#define MODE_SYSLOG 2
-
-#ifdef __APPLE__
-#define LOG_DIR "Library/Logs/"
+#ifdef __ANDROID__
+# include <android/log.h>
 #endif
 
 #define LOG_FILE_TEXT "vlc-log.txt"
 #define LOG_FILE_HTML "vlc-log.html"
 
-#define TEXT_HEADER "-- logger module started --\n"
+#define TEXT_HEADER "\xEF\xBB\xBF-- logger module started --\n"
 #define TEXT_FOOTER "-- logger module stopped --\n"
 
 #define HTML_HEADER \
@@ -62,9 +58,9 @@
     "  </head>\n" \
     "  <body style=\"background-color: #000000; color: #aaaaaa;\">\n" \
     "    <pre>\n" \
-    "      <b>-- logger module started --</b>\n"
+    "      <strong>-- logger module started --</strong>\n"
 #define HTML_FOOTER \
-    "      <b>-- logger module stopped --</b>\n" \
+    "      <strong>-- logger module stopped --</strong>\n" \
     "    </pre>\n" \
     "  </body>\n" \
     "</html>\n"
@@ -73,20 +69,14 @@
 #include <syslog.h>
 #endif
 
-struct msg_cb_data_t
-{
-    intf_thread_t *p_intf;
-    FILE *p_file;
-    int   i_mode;
-};
-
 /*****************************************************************************
  * intf_sys_t: description and status of log interface
  *****************************************************************************/
 struct intf_sys_t
 {
     msg_subscription_t *p_sub;
-    msg_cb_data_t msg;
+    FILE *p_file;
+    const char *footer;
 };
 
 /*****************************************************************************
@@ -95,11 +85,14 @@ struct intf_sys_t
 static int  Open    ( vlc_object_t * );
 static void Close   ( vlc_object_t * );
 
-static void Overflow (msg_cb_data_t *p_sys, msg_item_t *p_item, unsigned overruns);
-static void TextPrint         ( const msg_item_t *, FILE * );
-static void HtmlPrint         ( const msg_item_t *, FILE * );
+static void TextPrint(void *, int, const msg_item_t *, const char *, va_list);
+static void HtmlPrint(void *, int, const msg_item_t *, const char *, va_list);
 #ifdef HAVE_SYSLOG_H
-static void SyslogPrint       ( const msg_item_t *);
+static void SyslogPrint(void *, int, const msg_item_t *, const char *,
+                        va_list);
+#endif
+#ifdef __ANDROID__
+static void AndroidPrint(void *, int, const msg_item_t *, const char *, va_list);
 #endif
 
 /*****************************************************************************
@@ -109,10 +102,16 @@ static const char *const mode_list[] = { "text", "html"
 #ifdef HAVE_SYSLOG_H
 ,"syslog"
 #endif
+#ifdef __ANDROID__
+,"android"
+#endif
 };
 static const char *const mode_list_text[] = { N_("Text"), "HTML"
 #ifdef HAVE_SYSLOG_H
 , "syslog"
+#endif
+#ifdef __ANDROID__
+,"android"
 #endif
 };
 
@@ -123,8 +122,9 @@ static const char *const mode_list_text[] = { N_("Text"), "HTML"
 #else
 
 #define LOGMODE_LONGTEXT N_("Specify the log format. Available choices are " \
-  "\"text\" (default), \"html\", and \"syslog\" (special mode to send to " \
-  "syslog instead of file.")
+  "\"text\" (default), \"html\", \"syslog\" (special mode to send to " \
+  "syslog instead of file), and \"android\" (special mode to send to " \
+  "android logging facility).")
 
 #define SYSLOG_FACILITY_TEXT N_("Syslog facility")
 #define SYSLOG_FACILITY_LONGTEXT N_("Select the syslog facility where logs " \
@@ -166,17 +166,17 @@ vlc_module_begin ()
     set_category( CAT_ADVANCED )
     set_subcategory( SUBCAT_ADVANCED_MISC )
 
-    add_file( "logfile", NULL, NULL,
+    add_savefile( "logfile", NULL,
              N_("Log filename"), N_("Specify the log filename."), false )
-    add_string( "logmode", "text", NULL, LOGMODE_TEXT, LOGMODE_LONGTEXT,
+    add_string( "logmode", "text", LOGMODE_TEXT, LOGMODE_LONGTEXT,
                 false )
         change_string_list( mode_list, mode_list_text, 0 )
 #ifdef HAVE_SYSLOG_H
-    add_string( "syslog-facility", fac_name[0], NULL, SYSLOG_FACILITY_TEXT,
+    add_string( "syslog-facility", fac_name[0], SYSLOG_FACILITY_TEXT,
                 SYSLOG_FACILITY_LONGTEXT, true )
         change_string_list( fac_name, fac_name, 0 )
 #endif
-    add_integer( "log-verbose", -1, NULL, LOGVERBOSE_TEXT, LOGVERBOSE_LONGTEXT,
+    add_integer( "log-verbose", -1, LOGVERBOSE_TEXT, LOGVERBOSE_LONGTEXT,
            false )
     
     add_obsolete_string( "rrd-file" )
@@ -192,7 +192,6 @@ static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     intf_sys_t *p_sys;
-    char *psz_mode;
 
     CONSOLE_INTRO_MSG;
     msg_Info( p_intf, "using logger." );
@@ -202,96 +201,38 @@ static int Open( vlc_object_t *p_this )
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
-    p_sys->msg.p_intf = p_intf;
-    p_sys->msg.i_mode = MODE_TEXT;
-    psz_mode = var_CreateGetString( p_intf, "logmode" );
-    if( psz_mode )
+    p_sys->p_file = NULL;
+    msg_callback_t cb = TextPrint;
+    const char *filename = LOG_FILE_TEXT, *header = TEXT_HEADER;
+    p_sys->footer = TEXT_FOOTER;
+
+    char *mode = var_InheritString( p_intf, "logmode" );
+    if( mode != NULL )
     {
-        if( !strcmp( psz_mode, "text" ) )
-            ;
-        else if( !strcmp( psz_mode, "html" ) )
+        if( !strcmp( mode, "html" ) )
         {
-            p_sys->msg.i_mode = MODE_HTML;
+            p_sys->footer = HTML_FOOTER;
+            header = HTML_HEADER;
+            cb = HtmlPrint;
         }
 #ifdef HAVE_SYSLOG_H
-        else if( !strcmp( psz_mode, "syslog" ) )
-        {
-            p_sys->msg.i_mode = MODE_SYSLOG;
-        }
+        else if( !strcmp( mode, "syslog" ) )
+            cb = SyslogPrint;
 #endif
-        else
-        {
-            msg_Warn( p_intf, "invalid log mode `%s', using `text'", psz_mode );
-            p_sys->msg.i_mode = MODE_TEXT;
-        }
-        free( psz_mode );
-    }
-    else
-    {
-        msg_Warn( p_intf, "no log mode specified, using `text'" );
-    }
-
-    if( p_sys->msg.i_mode != MODE_SYSLOG )
-    {
-        char *psz_file = var_InheritString( p_intf, "logfile" );
-        if( !psz_file )
-        {
-#ifdef __APPLE__
-            char *home = config_GetUserDir(VLC_DOCUMENTS_DIR);
-            if( home == NULL
-             || asprintf( &psz_file, "%s/"LOG_DIR"/%s", home,
-                (p_sys->msg.i_mode == MODE_HTML) ? LOG_FILE_HTML
-                                             : LOG_FILE_TEXT ) == -1 )
-                psz_file = NULL;
-            free(home);
-#else
-            switch( p_sys->msg.i_mode )
-            {
-            case MODE_HTML:
-                psz_file = strdup( LOG_FILE_HTML );
-                break;
-            case MODE_TEXT:
-            default:
-                psz_file = strdup( LOG_FILE_TEXT );
-                break;
-            }
+#ifdef __ANDROID__
+        else if( !strcmp( mode, "android" ) )
+            cb = AndroidPrint;
 #endif
-            msg_Warn( p_intf, "no log filename provided, using `%s'",
-                               psz_file );
-        }
-
-        /* Open the log file and remove any buffering for the stream */
-        msg_Dbg( p_intf, "opening logfile `%s'", psz_file );
-        p_sys->msg.p_file = vlc_fopen( psz_file, "at" );
-        if( p_sys->msg.p_file == NULL )
-        {
-            msg_Err( p_intf, "error opening logfile `%s'", psz_file );
-            free( p_sys );
-            free( psz_file );
-            return -1;
-        }
-        setvbuf( p_sys->msg.p_file, NULL, _IONBF, 0 );
-
-        free( psz_file );
-
-        switch( p_sys->msg.i_mode )
-        {
-        case MODE_HTML:
-            fputs( HTML_HEADER, p_sys->msg.p_file );
-            break;
-        case MODE_TEXT:
-        default:
-            fputs( TEXT_HEADER, p_sys->msg.p_file );
-            break;
-        }
-
+        else if( strcmp( mode, "text" ) )
+            msg_Warn( p_intf, "invalid log mode `%s', using `text'", mode );
+        free( mode );
     }
-    else
-    {
-        p_sys->msg.p_file = NULL;
+
 #ifdef HAVE_SYSLOG_H
+    if( cb == SyslogPrint )
+    {
         int i_facility;
-        char *psz_facility = var_CreateGetString( p_intf, "syslog-facility" );
+        char *psz_facility = var_InheritString( p_intf, "syslog-facility" );
         if( psz_facility )
         {
             bool b_valid = 0;
@@ -320,12 +261,53 @@ static int Open( vlc_object_t *p_this )
         }
 
         openlog( "vlc", LOG_PID|LOG_NDELAY, i_facility );
+        p_sys->p_file = NULL;
+    }
+    else
 #endif
+#ifdef __ANDROID__
+    if( cb == AndroidPrint )
+    {
+        /* nothing to do */
+    }
+    else
+#endif
+    {
+        char *psz_file = var_InheritString( p_intf, "logfile" );
+        if( !psz_file )
+        {
+#ifdef __APPLE__
+# define LOG_DIR "Library/Logs/"
+            char *home = config_GetUserDir(VLC_DOCUMENTS_DIR);
+            if( home == NULL
+             || asprintf( &psz_file, "%s/"LOG_DIR"/%s", home,
+                          filename ) == -1 )
+                psz_file = NULL;
+            free(home);
+            filename = psz_file;
+#endif
+            msg_Warn( p_intf, "no log filename provided, using `%s'",
+                      filename );
+        }
+        else
+            filename = psz_file;
+
+        /* Open the log file and remove any buffering for the stream */
+        msg_Dbg( p_intf, "opening logfile `%s'", filename );
+        p_sys->p_file = vlc_fopen( filename, "at" );
+        free( psz_file );
+        if( p_sys->p_file == NULL )
+        {
+            msg_Err( p_intf, "error opening logfile `%s': %m", filename );
+            free( p_sys );
+            return VLC_EGENERIC;
+        }
+        setvbuf( p_sys->p_file, NULL, _IONBF, 0 );
+        fputs( header, p_sys->p_file );
     }
 
-    p_sys->p_sub = msg_Subscribe( p_intf->p_libvlc, Overflow, &p_sys->msg );
-
-    return 0;
+    p_sys->p_sub = vlc_Subscribe( cb, p_intf );
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -337,106 +319,132 @@ static void Close( vlc_object_t *p_this )
     intf_sys_t *p_sys = p_intf->p_sys;
 
     /* Flush the queue and unsubscribe from the message queue */
-    /* FIXME: flush */
-    msg_Unsubscribe( p_sys->p_sub );
-
-    switch( p_sys->msg.i_mode )
-    {
-    case MODE_HTML:
-        fputs( HTML_FOOTER, p_sys->msg.p_file );
-        break;
-#ifdef HAVE_SYSLOG_H
-    case MODE_SYSLOG:
-        closelog();
-        break;
-#endif
-    case MODE_TEXT:
-    default:
-        fputs( TEXT_FOOTER, p_sys->msg.p_file );
-        break;
-    }
+    vlc_Unsubscribe( p_sys->p_sub );
 
     /* Close the log file */
-    if( p_sys->msg.p_file )
-        fclose( p_sys->msg.p_file );
+#ifdef HAVE_SYSLOG_H
+    if( p_sys->p_file == NULL )
+        closelog();
+    else
+#endif
+    if( p_sys->p_file )
+    {
+        fputs( p_sys->footer, p_sys->p_file );
+        fclose( p_sys->p_file );
+    }
 
     /* Destroy structure */
     free( p_sys );
 }
 
-/**
- * Log a message
- */
-static void Overflow (msg_cb_data_t *p_sys, msg_item_t *p_item, unsigned overruns)
+static bool IgnoreMessage( intf_thread_t *p_intf, int type )
 {
-    VLC_UNUSED(overruns);
-    int verbosity = var_CreateGetInteger( p_sys->p_intf, "log-verbose" );
+    /* TODO: cache value... */
+    int verbosity = var_InheritInteger( p_intf, "log-verbose" );
     if (verbosity == -1)
-        verbosity = var_CreateGetInteger( p_sys->p_intf, "verbose" );
+        verbosity = var_InheritInteger( p_intf, "verbose" );
 
-    if (verbosity < p_item->i_type)
+    return verbosity < 0 || verbosity < (type - VLC_MSG_ERR);
+}
+
+/*
+ * Logging callbacks
+ */
+
+static const char ppsz_type[4][9] = {
+    "",
+    " error",
+    " warning",
+    " debug",
+};
+
+#ifdef __ANDROID__
+static const android_LogPriority prioritytype[4] = {
+    ANDROID_LOG_INFO,
+    ANDROID_LOG_ERROR,
+    ANDROID_LOG_WARN,
+    ANDROID_LOG_DEBUG
+};
+
+static void AndroidPrint( void *opaque, int type, const msg_item_t *item,
+                       const char *fmt, va_list ap )
+{
+    (void)item;
+    intf_thread_t *p_intf = opaque;
+
+    if( IgnoreMessage( p_intf, type ) )
         return;
 
     int canc = vlc_savecancel();
-
-    switch( p_sys->i_mode )
-    {
-        case MODE_HTML:
-            HtmlPrint( p_item, p_sys->p_file );
-            break;
-#ifdef HAVE_SYSLOG_H
-        case MODE_SYSLOG:
-            SyslogPrint( p_item );
-            break;
+    __android_log_vprint(prioritytype[type], "vlc", fmt, ap);
+    vlc_restorecancel( canc );
+}
 #endif
-        case MODE_TEXT:
-        default:
-            TextPrint( p_item, p_sys->p_file );
-            break;
-    }
 
+static void TextPrint( void *opaque, int type, const msg_item_t *item,
+                       const char *fmt, va_list ap )
+{
+    intf_thread_t *p_intf = opaque;
+    FILE *stream = p_intf->p_sys->p_file;
+
+    if( IgnoreMessage( p_intf, type ) )
+        return;
+
+    int canc = vlc_savecancel();
+    flockfile( stream );
+    fprintf( stream, "%s%s: ", item->psz_module, ppsz_type[type] );
+    vfprintf( stream, fmt, ap );
+    putc_unlocked( '\n', stream );
+    funlockfile( stream );
     vlc_restorecancel( canc );
 }
 
-static const char ppsz_type[4][11] = {
-    ": ",
-    " error: ",
-    " warning: ",
-    " debug: ",
-};
-
-static void TextPrint( const msg_item_t *p_msg, FILE *p_file )
-{
-    utf8_fprintf( p_file, "%s%s%s\n", p_msg->psz_module,
-                  ppsz_type[p_msg->i_type], p_msg->psz_msg );
-}
-
 #ifdef HAVE_SYSLOG_H
-static void SyslogPrint( const msg_item_t *p_msg )
+static void SyslogPrint( void *opaque, int type, const msg_item_t *item,
+                         const char *fmt, va_list ap )
 {
     static const int i_prio[4] = { LOG_INFO, LOG_ERR, LOG_WARNING, LOG_DEBUG };
-    int i_priority = i_prio[p_msg->i_type];
 
-    if( p_msg->psz_header )
-        syslog( i_priority, "%s %s%s%s", p_msg->psz_header, p_msg->psz_module,
-                ppsz_type[p_msg->i_type], p_msg->psz_msg );
+    intf_thread_t *p_intf = opaque;
+    char *str;
+    int i_priority = i_prio[type];
+
+    if( IgnoreMessage( p_intf, type )
+     || unlikely(vasprintf( &str, fmt, ap ) == -1) )
+        return;
+
+    int canc = vlc_savecancel();
+    if( item->psz_header != NULL )
+        syslog( i_priority, "[%s] %s%s: %s", item->psz_header,
+                item->psz_module, ppsz_type[type], str );
     else
-        syslog( i_priority, "%s%s%s", p_msg->psz_module, 
-                ppsz_type[p_msg->i_type], p_msg->psz_msg );
- 
+        syslog( i_priority, "%s%s: %s",
+                item->psz_module, ppsz_type[type], str );
+    vlc_restorecancel( canc );
+    free( str );
 }
 #endif
 
-static void HtmlPrint( const msg_item_t *p_msg, FILE *p_file )
+static void HtmlPrint( void *opaque, int type, const msg_item_t *item,
+                       const char *fmt, va_list ap )
 {
-    static const char ppsz_color[4][30] = {
-        "<span style=\"color: #ffffff\">",
-        "<span style=\"color: #ff6666\">",
-        "<span style=\"color: #ffff66\">",
-        "<span style=\"color: #aaaaaa\">",
+    static const unsigned color[4] = {
+        0xffffff, 0xff6666, 0xffff66, 0xaaaaaa,
     };
 
-    fprintf( p_file, "%s%s%s%s</span>\n", p_msg->psz_module,
-             ppsz_type[p_msg->i_type], ppsz_color[p_msg->i_type],
-             p_msg->psz_msg );
+    intf_thread_t *p_intf = opaque;
+    FILE *stream = p_intf->p_sys->p_file;
+
+    if( IgnoreMessage( p_intf, type ) )
+        return;
+
+    int canc = vlc_savecancel();
+    flockfile( stream );
+    fprintf( stream, "%s%s: <span style=\"color: #%06x\">",
+             item->psz_module, ppsz_type[type], color[type] );
+    /* FIXME: encode special ASCII characters */
+    fprintf( stream, fmt, ap );
+    fputs( "</span>\n", stream );
+    funlockfile( stream );
+    vlc_restorecancel( canc );
 }

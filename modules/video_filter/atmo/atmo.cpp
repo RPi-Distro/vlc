@@ -2,7 +2,7 @@
 * atmo.cpp : "Atmo Light" video filter
 *****************************************************************************
 * Copyright (C) 2000-2006 the VideoLAN team
-* $Id: 02a77d0622b7efe5747cd92aa4ac05ac15bb88bc $
+* $Id: cd32fb288d7a60125a1480cfd94c0decdb46605c $
 *
 * Authors: André Weber (WeberAndre@gmx.de)
 *
@@ -21,17 +21,18 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 /*****************************************************************************
 * Preamble
 *****************************************************************************/
+#define __STDC_FORMAT_MACROS 1
 #include <stdlib.h>                                      /* malloc(), free() */
 #include <string.h>
 #include <math.h>                                            /* sin(), cos() */
 #include <assert.h>
-
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
 
 // #define __ATMO_DEBUG__
 
@@ -42,6 +43,9 @@
 
 #include <vlc_playlist.h>
 #include <vlc_filter.h>
+#include <vlc_atomic.h>
+
+#include "filter_picture.h"
 
 #include "AtmoDefs.h"
 #include "AtmoDynData.h"
@@ -66,12 +70,6 @@ static void AddStateVariableCallback( filter_t *);
 static void DelStateVariableCallback( filter_t *);
 static int StateCallback(vlc_object_t *, char const *,
                          vlc_value_t, vlc_value_t, void *);
-
-/* callback for variable crop-update */
-static void AddCropVariableCallback( filter_t *);
-static void DelCropVariableCallback( filter_t *);
-static int CropCallback(vlc_object_t *, char const *,
-                        vlc_value_t, vlc_value_t, void *);
 
 /* callback for atmo settings variables whose change
    should be immediately realized and applied to output
@@ -121,7 +119,7 @@ void SaveBitmap(filter_sys_t *p_sys, uint8_t *p_pixels, char *psz_filename);
 strings for settings menus and hints
 */
 #define MODULE_DESCRIPTION N_ ( \
- "This module allows to control an so called AtmoLight device "\
+ "This module allows controlling an so called AtmoLight device "\
  "connected to your computer.\n"\
  "AtmoLight is the homegrown version of what Philips calls AmbiLight.\n"\
  "If you need further information feel free to visit us at\n\n"\
@@ -173,7 +171,7 @@ static const char *const ppsz_device_type_descriptions[] = {
 #define FNORDLICHT_AMOUNT_TEXT      N_("Count of fnordlicht's")
 #define FNORDLICHT_AMOUNT_LONGTEXT  N_("Depending on the amount your " \
                                    "fnordlicht hardware " \
-                                   "choose 1 to 4 channels")
+                                   "choose 1 to 254 channels")
 
 #if defined( WIN32 )
 #  define DEFAULT_DEVICE   0
@@ -231,7 +229,7 @@ static const char *const ppsz_device_type_descriptions[] = {
 #define ZONE_BOTTOM_TEXT       N_("Number of zones on bottom")
 #define ZONE_BOTTOM_LONGTEXT   N_("Number of zones on the bottom of the screen")
 #define ZONE_LR_TEXT           N_("Zones on left / right side")
-#define ZONE_LR_LONGTEXT       N_("left and right side having allways the " \
+#define ZONE_LR_LONGTEXT       N_("left and right side having always the " \
                                   "same number of zones")
 #define ZONE_SUMMARY_TEXT      N_("Calculate a average zone")
 #define ZONE_SUMMARY_LONGTEXT  N_("it contains the average of all pixels " \
@@ -374,22 +372,22 @@ set_capability( "video filter2", 0 )
 
 set_section( N_("Choose Devicetype and Connection" ), 0 )
 
-add_integer( CFG_PREFIX "device", DEFAULT_DEVICE, NULL,
+add_integer( CFG_PREFIX "device", DEFAULT_DEVICE,
             DRIVER_TEXT, DRIVER_LONGTEXT, false )
 change_integer_list( pi_device_type_values,
-                     ppsz_device_type_descriptions, 0 )
+                     ppsz_device_type_descriptions )
 
 #if defined(WIN32)
-add_string(CFG_PREFIX "serialdev", "COM1", NULL,
+add_string(CFG_PREFIX "serialdev", "COM1",
            SERIALDEV_TEXT, SERIALDEV_LONGTEXT, false )
 /*
     on win32 the executeable external driver application
     for automatic start if needed
 */
-add_file(CFG_PREFIX "atmowinexe", NULL, NULL,
-         ATMOWINEXE_TEXT, ATMOWINEXE_LONGTEXT, false )
+add_loadfile(CFG_PREFIX "atmowinexe", NULL,
+             ATMOWINEXE_TEXT, ATMOWINEXE_LONGTEXT, false )
 #else
-add_string(CFG_PREFIX "serialdev", "/dev/ttyUSB0", NULL,
+add_string(CFG_PREFIX "serialdev", "/dev/ttyUSB0",
            SERIALDEV_TEXT, SERIALDEV_LONGTEXT, false )
 #endif
 
@@ -398,15 +396,15 @@ add_string(CFG_PREFIX "serialdev", "/dev/ttyUSB0", NULL,
     your movie ... used for both buildin / external
 */
 set_section( N_("Illuminate the room with this color on pause" ), 0 )
-add_bool(CFG_PREFIX "usepausecolor", false, NULL,
+add_bool(CFG_PREFIX "usepausecolor", false,
          PCOLOR_TEXT, PCOLOR_LONGTEXT, false)
-add_integer_with_range(CFG_PREFIX "pcolor-red",   0, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "pcolor-red",   0, 0, 255,
                        PCOLOR_RED_TEXT, PCOLOR_RED_LONGTEXT, false)
-add_integer_with_range(CFG_PREFIX "pcolor-green", 0, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "pcolor-green", 0, 0, 255,
                        PCOLOR_GREEN_TEXT, PCOLOR_GREEN_LONGTEXT, false)
-add_integer_with_range(CFG_PREFIX "pcolor-blue",  192, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "pcolor-blue",  192, 0, 255,
                        PCOLOR_BLUE_TEXT, PCOLOR_BLUE_LONGTEXT, false)
-add_integer_with_range(CFG_PREFIX "fadesteps", 50, 1, 250, NULL,
+add_integer_with_range(CFG_PREFIX "fadesteps", 50, 1, 250,
                        FADESTEPS_TEXT, FADESTEPS_LONGTEXT, false)
 
 /*
@@ -414,31 +412,31 @@ add_integer_with_range(CFG_PREFIX "fadesteps", 50, 1, 250, NULL,
     used for both buildin / external
 */
 set_section( N_("Illuminate the room with this color on shutdown" ), 0 )
-add_integer_with_range(CFG_PREFIX "ecolor-red",   192, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "ecolor-red",   192, 0, 255,
                        ECOLOR_RED_TEXT,   ECOLOR_RED_LONGTEXT,   false)
-add_integer_with_range(CFG_PREFIX "ecolor-green", 192, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "ecolor-green", 192, 0, 255,
                        ECOLOR_GREEN_TEXT, ECOLOR_GREEN_LONGTEXT, false)
-add_integer_with_range(CFG_PREFIX "ecolor-blue",  192, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "ecolor-blue",  192, 0, 255,
                        ECOLOR_BLUE_TEXT,  ECOLOR_BLUE_LONGTEXT,  false)
-add_integer_with_range(CFG_PREFIX "efadesteps",    50, 1, 250, NULL,
+add_integer_with_range(CFG_PREFIX "efadesteps",    50, 1, 250,
                        EFADESTEPS_TEXT,   EFADESTEPS_LONGTEXT,    false)
 
 
 set_section( N_("DMX options" ), 0 )
-add_integer_with_range(CFG_PREFIX "dmx-channels",   5, 1, 64, NULL,
+add_integer_with_range(CFG_PREFIX "dmx-channels",   5, 1, 64,
                        DMX_CHANNELS_TEXT, DMX_CHANNELS_LONGTEXT, false)
-add_string(CFG_PREFIX "dmx-chbase", "0,3,6,9,12", NULL,
+add_string(CFG_PREFIX "dmx-chbase", "0,3,6,9,12",
                        DMX_CHBASE_TEXT, DMX_CHBASE_LONGTEXT, false )
 
 set_section( N_("MoMoLight options" ), 0 )
-add_integer_with_range(CFG_PREFIX "momo-channels",   3, 3, 4, NULL,
+add_integer_with_range(CFG_PREFIX "momo-channels",   3, 3, 4,
                        MOMO_CHANNELS_TEXT, MOMO_CHANNELS_LONGTEXT, false)
 
 /* 2,2,4 means 2 is the default value, 1 minimum amount,
    4 maximum amount
 */
 set_section( N_("fnordlicht options" ), 0 )
-add_integer_with_range(CFG_PREFIX "fnordlicht-amount",   2, 1, 4, NULL,
+add_integer_with_range(CFG_PREFIX "fnordlicht-amount",   2, 1, 254,
                        FNORDLICHT_AMOUNT_TEXT,
                        FNORDLICHT_AMOUNT_LONGTEXT, false)
 
@@ -480,13 +478,13 @@ add_integer_with_range(CFG_PREFIX "fnordlicht-amount",   2, 1, 4, NULL,
 */
 
 set_section( N_("Zone Layout for the build-in Atmo" ), 0 )
-add_integer_with_range(CFG_PREFIX "zones-top",   1, 0, 16, NULL,
+add_integer_with_range(CFG_PREFIX "zones-top",   1, 0, 16,
                        ZONE_TOP_TEXT, ZONE_TOP_LONGTEXT, false)
-add_integer_with_range(CFG_PREFIX "zones-bottom",   1, 0, 16, NULL,
+add_integer_with_range(CFG_PREFIX "zones-bottom",   1, 0, 16,
                        ZONE_BOTTOM_TEXT, ZONE_BOTTOM_LONGTEXT, false)
-add_integer_with_range(CFG_PREFIX "zones-lr",   1, 0, 16, NULL,
+add_integer_with_range(CFG_PREFIX "zones-lr",   1, 0, 16,
                        ZONE_LR_TEXT, ZONE_LR_LONGTEXT, false)
-add_bool(CFG_PREFIX "zone-summary", false, NULL,
+add_bool(CFG_PREFIX "zone-summary", false,
          ZONE_SUMMARY_TEXT, ZONE_SUMMARY_LONGTEXT, false)
 
 /*
@@ -497,68 +495,68 @@ add_bool(CFG_PREFIX "zone-summary", false, NULL,
 */
 set_section( N_("Settings for the built-in Live Video Processor only" ), 0 )
 
-add_integer_with_range(CFG_PREFIX "edgeweightning",   3, 1, 30, NULL,
+add_integer_with_range(CFG_PREFIX "edgeweightning",   3, 1, 30,
                        EDGE_TEXT, EDGE_LONGTEXT, false)
 
-add_integer_with_range(CFG_PREFIX "brightness",   100, 50, 300, NULL,
+add_integer_with_range(CFG_PREFIX "brightness",   100, 50, 300,
                        BRIGHTNESS_TEXT, BRIGHTNESS_LONGTEXT, false)
 
-add_integer_with_range(CFG_PREFIX "darknesslimit",   3, 0, 10, NULL,
+add_integer_with_range(CFG_PREFIX "darknesslimit",   3, 0, 10,
                        DARKNESS_TEXT, DARKNESS_LONGTEXT, false)
 
-add_integer_with_range(CFG_PREFIX "huewinsize",   3, 0, 5, NULL,
+add_integer_with_range(CFG_PREFIX "huewinsize",   3, 0, 5,
                        HUEWINSIZE_TEXT, HUEWINSIZE_LONGTEXT, false)
 
-add_integer_with_range(CFG_PREFIX "satwinsize",   3, 0, 5, NULL,
+add_integer_with_range(CFG_PREFIX "satwinsize",   3, 0, 5,
                        SATWINSIZE_TEXT, SATWINSIZE_LONGTEXT, false)
 
-add_integer(CFG_PREFIX "filtermode", (int)afmCombined, NULL,
+add_integer(CFG_PREFIX "filtermode", (int)afmCombined,
             FILTERMODE_TEXT, FILTERMODE_LONGTEXT, false )
 
-change_integer_list(pi_filtermode_values, ppsz_filtermode_descriptions, NULL )
+change_integer_list(pi_filtermode_values, ppsz_filtermode_descriptions )
 
-add_integer_with_range(CFG_PREFIX "meanlength",    300, 300, 5000, NULL,
+add_integer_with_range(CFG_PREFIX "meanlength",    300, 300, 5000,
                        MEANLENGTH_TEXT, MEANLENGTH_LONGTEXT, false)
 
-add_integer_with_range(CFG_PREFIX "meanthreshold",  40, 1, 100, NULL,
+add_integer_with_range(CFG_PREFIX "meanthreshold",  40, 1, 100,
                        MEANTHRESHOLD_TEXT, MEANTHRESHOLD_LONGTEXT, false)
 
-add_integer_with_range(CFG_PREFIX "percentnew", 50, 1, 100, NULL,
+add_integer_with_range(CFG_PREFIX "percentnew", 50, 1, 100,
                       MEANPERCENTNEW_TEXT, MEANPERCENTNEW_LONGTEXT, false)
 
-add_integer_with_range(CFG_PREFIX "framedelay", 18, 0, 200, NULL,
+add_integer_with_range(CFG_PREFIX "framedelay", 18, 0, 200,
                        FRAMEDELAY_TEXT, FRAMEDELAY_LONGTEXT, false)
 
 /*
   output channel reordering
 */
 set_section( N_("Change channel assignment (fixes wrong wiring)" ), 0 )
-add_integer( CFG_PREFIX "channel_0", 4, NULL,
+add_integer( CFG_PREFIX "channel_0", 4,
             CHANNEL_0_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_zone_assignment_values,
-                     ppsz_zone_assignment_descriptions, 0 )
+                     ppsz_zone_assignment_descriptions )
 
-add_integer( CFG_PREFIX "channel_1", 3, NULL,
+add_integer( CFG_PREFIX "channel_1", 3,
             CHANNEL_1_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_zone_assignment_values,
-                     ppsz_zone_assignment_descriptions, 0 )
+                     ppsz_zone_assignment_descriptions )
 
-add_integer( CFG_PREFIX "channel_2", 1, NULL,
+add_integer( CFG_PREFIX "channel_2", 1,
             CHANNEL_2_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_zone_assignment_values,
-                     ppsz_zone_assignment_descriptions, 0 )
+                     ppsz_zone_assignment_descriptions )
 
-add_integer( CFG_PREFIX "channel_3", 0, NULL,
+add_integer( CFG_PREFIX "channel_3", 0,
             CHANNEL_3_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_zone_assignment_values,
-                     ppsz_zone_assignment_descriptions, 0 )
+                     ppsz_zone_assignment_descriptions )
 
-add_integer( CFG_PREFIX "channel_4", 2, NULL,
+add_integer( CFG_PREFIX "channel_4", 2,
             CHANNEL_4_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_zone_assignment_values,
-                     ppsz_zone_assignment_descriptions, 0 )
+                     ppsz_zone_assignment_descriptions )
 
-add_string(CFG_PREFIX "channels", NULL, NULL,
+add_string(CFG_PREFIX "channels", "",
            CHANNELS_ASSIGN_TEXT, CHANNELS_ASSIGN_LONGTEXT, false )
 
 
@@ -566,15 +564,15 @@ add_string(CFG_PREFIX "channels", NULL, NULL,
   LED color white calibration
 */
 set_section( N_("Adjust the white light to your LED stripes" ), 0 )
-add_bool(CFG_PREFIX "whiteadj", true, NULL,
+add_bool(CFG_PREFIX "whiteadj", true,
          USEWHITEADJ_TEXT, USEWHITEADJ_LONGTEXT, false)
-add_integer_with_range(CFG_PREFIX "white-red",   255, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "white-red",   255, 0, 255,
                        WHITE_RED_TEXT,   WHITE_RED_LONGTEXT,   false)
 
-add_integer_with_range(CFG_PREFIX "white-green", 255, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "white-green", 255, 0, 255,
                        WHITE_GREEN_TEXT, WHITE_GREEN_LONGTEXT, false)
 
-add_integer_with_range(CFG_PREFIX "white-blue",  255, 0, 255, NULL,
+add_integer_with_range(CFG_PREFIX "white-blue",  255, 0, 255,
                        WHITE_BLUE_TEXT,  WHITE_BLUE_LONGTEXT,  false)
 /* end of definition of parameter for the buildin filter ... part 1 */
 
@@ -588,34 +586,34 @@ effects with this...) the images MUST not compressed, should have 24-bit per
 pixel, or a simple 256 color grayscale palette
 */
 set_section( N_("Change gradients" ), 0 )
-add_file(CFG_PREFIX "gradient_zone_0", NULL, NULL,
-         ZONE_0_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
-add_file(CFG_PREFIX "gradient_zone_1", NULL, NULL,
-         ZONE_1_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
-add_file(CFG_PREFIX "gradient_zone_2", NULL, NULL,
-         ZONE_2_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
-add_file(CFG_PREFIX "gradient_zone_3", NULL, NULL,
-         ZONE_3_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
-add_file(CFG_PREFIX "gradient_zone_4", NULL, NULL,
-         ZONE_4_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
-add_directory(CFG_PREFIX "gradient_path", NULL, NULL,
+add_loadfile(CFG_PREFIX "gradient_zone_0", NULL,
+             ZONE_0_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
+add_loadfile(CFG_PREFIX "gradient_zone_1", NULL,
+             ZONE_1_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
+add_loadfile(CFG_PREFIX "gradient_zone_2", NULL,
+             ZONE_2_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
+add_loadfile(CFG_PREFIX "gradient_zone_3", NULL,
+             ZONE_3_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
+add_loadfile(CFG_PREFIX "gradient_zone_4", NULL,
+             ZONE_4_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
+add_directory(CFG_PREFIX "gradient_path", NULL,
            GRADIENT_PATH_TEXT, GRADIENT_PATH_LONGTEXT, false )
 
 #if defined(__ATMO_DEBUG__)
-add_bool(CFG_PREFIX "saveframes", false, NULL,
+add_bool(CFG_PREFIX "saveframes", false,
          SAVEFRAMES_TEXT, SAVEFRAMES_LONGTEXT, false)
-add_string(CFG_PREFIX "framepath", "", NULL,
+add_string(CFG_PREFIX "framepath", "",
            FRAMEPATH_TEXT, FRAMEPATH_LONGTEXT, false )
 #endif
 /*
    may be later if computers gets more power ;-) than now we increase
    the samplesize from which we do the stats for output color calculation
 */
-add_integer_with_range(CFG_PREFIX "width",  64, 64, 512, NULL,
+add_integer_with_range(CFG_PREFIX "width",  64, 64, 512,
                        WIDTH_TEXT,  WIDTH_LONGTEXT, true)
-add_integer_with_range(CFG_PREFIX "height", 48, 48, 384, NULL,
+add_integer_with_range(CFG_PREFIX "height", 48, 48, 384,
                        HEIGHT_TEXT,  HEIGHT_LONGTEXT, true)
-add_bool(CFG_PREFIX "showdots", false, NULL,
+add_bool(CFG_PREFIX "showdots", false,
                    SHOW_DOTS_TEXT, SHOW_DOTS_LONGTEXT, false)
 add_shortcut( "atmo" )
 set_callbacks( CreateFilter, DestroyFilter  )
@@ -702,8 +700,10 @@ static const char *const ppsz_filter_options[] = {
 */
 typedef struct
 {
-    VLC_COMMON_MEMBERS
-        filter_t *p_filter;
+    filter_t *p_filter;
+    vlc_thread_t thread;
+    vlc_atomic_t abort;
+
     /* tell the thread which color should be the target of fading */
     uint8_t ui_red;
     uint8_t ui_green;
@@ -713,7 +713,7 @@ typedef struct
 
 } fadethread_t;
 
-static void *FadeToColorThread(vlc_object_t *);
+static void *FadeToColorThread(void *);
 
 
 /*****************************************************************************
@@ -734,6 +734,8 @@ struct filter_sys_t
     bool b_pause_live;
     bool b_show_dots;
     int32_t i_device_type;
+
+    bool b_swap_uv;
 
     int32_t i_atmo_width;
     int32_t i_atmo_height;
@@ -819,7 +821,7 @@ static int32_t AtmoInitialize(filter_t *p_filter, bool b_for_thread)
     filter_sys_t *p_sys = p_filter->p_sys;
     if(p_sys->p_atmo_config)
     {
-        if(b_for_thread == false)
+        if(!b_for_thread)
         {
             /* open com port */
             /* setup Output Threads ... */
@@ -1089,7 +1091,7 @@ static void Atmo_Shutdown(filter_t *p_filter)
 {
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    if(p_sys->b_enabled == true)
+    if(p_sys->b_enabled)
     {
         msg_Dbg( p_filter, "shut down atmo!");
         /*
@@ -1108,9 +1110,7 @@ static void Atmo_Shutdown(filter_t *p_filter)
         p_sys->b_pause_live = true;
 
 
-        p_sys->p_fadethread = (fadethread_t *)vlc_object_create( p_filter,
-                                                    sizeof(fadethread_t) );
-
+        p_sys->p_fadethread = (fadethread_t *)calloc( 1, sizeof(fadethread_t) );
         p_sys->p_fadethread->p_filter = p_filter;
         p_sys->p_fadethread->ui_red   = p_sys->ui_endcolor_red;
         p_sys->p_fadethread->ui_green = p_sys->ui_endcolor_green;
@@ -1119,14 +1119,15 @@ static void Atmo_Shutdown(filter_t *p_filter)
           p_sys->p_fadethread->i_steps  = 1;
         else
           p_sys->p_fadethread->i_steps  = p_sys->i_endfadesteps;
+        vlc_atomic_set(&p_sys->p_fadethread->abort, 0);
 
-        if( vlc_thread_create( p_sys->p_fadethread,
-            "AtmoLight fadeing",
-            FadeToColorThread,
-            VLC_THREAD_PRIORITY_LOW ) )
+        if( vlc_clone( &p_sys->p_fadethread->thread,
+                       FadeToColorThread,
+                       p_sys->p_fadethread,
+                       VLC_THREAD_PRIORITY_LOW ) )
         {
             msg_Err( p_filter, "cannot create FadeToColorThread" );
-            vlc_object_release( p_sys->p_fadethread );
+            free( p_sys->p_fadethread );
             p_sys->p_fadethread = NULL;
             vlc_mutex_unlock( &p_sys->filter_lock );
 
@@ -1135,9 +1136,9 @@ static void Atmo_Shutdown(filter_t *p_filter)
             vlc_mutex_unlock( &p_sys->filter_lock );
 
             /* wait for the thread... */
-            vlc_thread_join(p_sys->p_fadethread);
+            vlc_join(p_sys->p_fadethread->thread, NULL);
 
-            vlc_object_release(p_sys->p_fadethread);
+            free(p_sys->p_fadethread);
 
             p_sys->p_fadethread = NULL;
         }
@@ -1237,7 +1238,7 @@ static void Atmo_SetupBuildZones(filter_t *p_filter)
               p_filter,
               CFG_PREFIX "channels"
             );
-    if( psz_channels && strlen(psz_channels) > 0 )
+    if( !EMPTY_STR(psz_channels) )
     {
         msg_Dbg( p_filter, "deal with new zone mapping %s", psz_channels );
         int channel = 0;
@@ -1321,7 +1322,7 @@ static void Atmo_SetupBuildZones(filter_t *p_filter)
             p_filter,
             psz_gradient_var_name
             );
-        if(psz_gradient_file && strlen(psz_gradient_file)>0)
+        if( !EMPTY_STR(psz_gradient_file) )
         {
             msg_Dbg( p_filter, "loading gradientfile %s for "\
                                 "zone %d", psz_gradient_file, i);
@@ -1353,7 +1354,7 @@ static void Atmo_SetupBuildZones(filter_t *p_filter)
               p_filter,
               CFG_PREFIX "gradient_path"
             );
-    if( psz_gradient_path && strlen(psz_gradient_path) > 0 )
+    if( EMPTY_STR(psz_gradient_path) )
     {
         char *psz_file_name = (char *)malloc( strlen(psz_gradient_path) + 16 );
         assert( psz_file_name );
@@ -1402,7 +1403,7 @@ static void Atmo_SetupConfig(filter_t *p_filter, CAtmoConfig *p_atmo_config)
                                                       CFG_PREFIX "serialdev" );
     char *psz_temp = psz_serialdev;
 
-    if( psz_temp && strlen(psz_temp) > 0 )
+    if( !EMPTY_STR(psz_serialdev) )
     {
         char *psz_token;
         int i_port = 0;
@@ -1533,7 +1534,7 @@ static void Atmo_SetupConfig(filter_t *p_filter, CAtmoConfig *p_atmo_config)
 
     char *psz_chbase = var_CreateGetStringCommand( p_filter,
                                                    CFG_PREFIX "dmx-chbase" );
-    if( psz_chbase && strlen(psz_chbase) > 0 )
+    if( !EMPTY_STR(psz_chbase) )
         p_atmo_config->setDMX_BaseChannels( psz_chbase );
 
     free( psz_chbase );
@@ -1562,7 +1563,6 @@ if this fails fallback to the buildin software
 */
 static void Atmo_SetupParameters(filter_t *p_filter)
 {
-    char *psz_path;
     filter_sys_t *p_sys =  p_filter->p_sys;
 
 
@@ -1603,7 +1603,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
             */
             char *psz_path = var_CreateGetStringCommand( p_filter,
                                                CFG_PREFIX "atmowinexe" );
-            if( psz_path && strlen(psz_path) > 0 )
+            if( !EMPTY_STR(psz_path) )
             {
                 char *psz_bs = strrchr( psz_path , '\\');
                 if( psz_bs )
@@ -1738,24 +1738,18 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     switch( p_filter->fmt_in.video.i_chroma )
     {
     case VLC_CODEC_I420:
+        p_sys->pf_extract_mini_image = ExtractMiniImage_YUV;
+        p_sys->b_swap_uv = false;
+        break;
     case VLC_CODEC_YV12:
         p_sys->pf_extract_mini_image = ExtractMiniImage_YUV;
+        p_sys->b_swap_uv = true;
         break;
     default:
         msg_Warn( p_filter, "InitFilter-unsupported chroma: %4.4s",
                             (char *)&p_filter->fmt_in.video.i_chroma);
         p_sys->pf_extract_mini_image = NULL;
     }
-
-    p_sys->i_crop_x_offset  = 0;
-    p_sys->i_crop_y_offset  = 0;
-    p_sys->i_crop_width     = p_filter->fmt_in.video.i_visible_width;
-    p_sys->i_crop_height    = p_filter->fmt_in.video.i_visible_height;
-
-    msg_Dbg( p_filter, "set default crop %d,%d %dx%d",p_sys->i_crop_x_offset,
-        p_sys->i_crop_y_offset,
-        p_sys->i_crop_width,
-        p_sys->i_crop_height );
 
     /*
     for debugging purpose show the samplinggrid on each frame as
@@ -1779,7 +1773,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
     if(psz_path != NULL)
     {
         strcpy(p_sys->sz_framepath, psz_path);
-#if defined( WIN32 )
+#if defined( WIN32 ) || defined( __OS2__ )
         size_t i_strlen = strlen(p_sys->sz_framepath);
         if((i_strlen>0) && (p_sys->sz_framepath[i_strlen-1] != '\\'))
         {
@@ -1853,7 +1847,7 @@ static void Atmo_SetupParameters(filter_t *p_filter)
           COM Server for AtmoLight not running ?
           if the exe path is configured try to start the "userspace" driver
         */
-        psz_path = var_CreateGetStringCommand( p_filter,
+        char *psz_path = var_CreateGetStringCommand( p_filter,
                                                CFG_PREFIX "atmowinexe" );
         if(psz_path != NULL)
         {
@@ -1958,8 +1952,6 @@ static int CreateFilter( vlc_object_t *p_this )
 
     AddStateVariableCallback(p_filter);
 
-    AddCropVariableCallback(p_filter);
-
     AddAtmoSettingsVariablesCallbacks(p_filter);
 
     Atmo_SetupParameters(p_filter);
@@ -1984,7 +1976,7 @@ static void DestroyFilter( vlc_object_t *p_this )
     msg_Dbg( p_filter, "Destroy Atmo Filter");
 
     DelStateVariableCallback(p_filter);
-    DelCropVariableCallback(p_filter);
+
     DelAtmoSettingsVariablesCallbacks(p_filter);
 
     Atmo_Shutdown(p_filter);
@@ -2038,7 +2030,7 @@ static inline void yuv_to_rgb( uint8_t *r, uint8_t *g, uint8_t *b,
 * p_sys is a pointer to
 * p_inpic is the source frame
 * p_transfer_dest is the target buffer for the picture must be big enough!
-* (in win32 enviroment this buffer comes from the external DLL where it is
+* (in win32 environment this buffer comes from the external DLL where it is
 * create as "variant array" and returned through the AtmoLockTransferbuffer
 */
 static void ExtractMiniImage_YUV(filter_sys_t *p_sys,
@@ -2118,6 +2110,16 @@ static void ExtractMiniImage_YUV(filter_sys_t *p_sys,
             p_inpic->p[U_PLANE].i_pitch * i_u_row;
         p_src_v = p_inpic->p[V_PLANE].p_pixels +
             p_inpic->p[V_PLANE].i_pitch * i_v_row;
+
+        if(p_sys->b_swap_uv)
+        {
+          /*
+           swap u and v plane for YV12 images
+          */
+          uint8_t *p_temp_plane = p_src_u;
+          p_src_u = p_src_v;
+          p_src_v = p_temp_plane;
+        }
 
         for(i_col = 1; i_col < i_col_count; i_col++)
         {
@@ -2268,7 +2270,7 @@ static void CreateMiniImage( filter_t *p_filter, picture_t *p_inpic)
     /*
     if debugging enabled save every 128th image to disk
     */
-    if((p_sys->b_saveframes == true) && (p_sys->sz_framepath[0] != 0 ))
+    if(p_sys->b_saveframes && p_sys->sz_framepath[0] != 0 )
     {
 
         if((p_sys->ui_frame_counter & 127) == 0)
@@ -2307,20 +2309,31 @@ static picture_t * Filter( filter_t *p_filter, picture_t *p_pic )
     filter_sys_t *p_sys = p_filter->p_sys;
     if( !p_pic ) return NULL;
 
+    picture_t *p_outpic = filter_NewPicture( p_filter );
+    if( !p_outpic )
+    {
+        picture_Release( p_pic );
+        return NULL;
+    }
+    picture_CopyPixels( p_outpic, p_pic );
+
     vlc_mutex_lock( &p_sys->filter_lock );
 
-    if((p_sys->b_enabled == true) &&
-        (p_sys->pf_extract_mini_image != NULL) &&
-        (p_sys->b_pause_live == false))
+    if(p_sys->b_enabled && p_sys->pf_extract_mini_image &&
+       !p_sys->b_pause_live)
     {
-        CreateMiniImage(p_filter, p_pic);
+        p_sys->i_crop_x_offset  = p_filter->fmt_in.video.i_x_offset;
+        p_sys->i_crop_y_offset  = p_filter->fmt_in.video.i_y_offset;
+        p_sys->i_crop_width     = p_filter->fmt_in.video.i_visible_width;
+        p_sys->i_crop_height    = p_filter->fmt_in.video.i_visible_height;
+
+        CreateMiniImage(p_filter, p_outpic);
     }
 
     vlc_mutex_unlock( &p_sys->filter_lock );
 
 
-
-    return p_pic;
+    return CopyInfoAndRelease( p_outpic, p_pic );
 }
 
 
@@ -2329,7 +2342,7 @@ static picture_t * Filter( filter_t *p_filter, picture_t *p_pic )
 * to a target color defined in p_fadethread struct
 * use for: Fade to Pause Color,  and Fade to End Color
 *****************************************************************************/
-static void *FadeToColorThread(vlc_object_t *obj)
+static void *FadeToColorThread(void *obj)
 {
     fadethread_t *p_fadethread = (fadethread_t *)obj;
     filter_sys_t *p_sys = (filter_sys_t *)p_fadethread->p_filter->p_sys;
@@ -2372,7 +2385,7 @@ static void *FadeToColorThread(vlc_object_t *obj)
             /* send the same pixel data again... to unlock the buffer! */
             AtmoSendPixelData( p_fadethread->p_filter );
 
-            while( (vlc_object_alive (p_fadethread)) &&
+            while( (!vlc_atomic_get (&p_fadethread->abort)) &&
                 (i_steps_done < p_fadethread->i_steps))
             {
                 p_transfer = AtmoLockTransferBuffer( p_fadethread->p_filter );
@@ -2385,7 +2398,7 @@ static void *FadeToColorThread(vlc_object_t *obj)
                 thread improvements wellcome!
                 */
                 for(i_index = 0;
-                    (i_index < i_size) && (vlc_object_alive (p_fadethread));
+                    (i_index < i_size) && (!vlc_atomic_get (&p_fadethread->abort));
                     i_index+=4)
                 {
                     i_src_blue  = p_source[i_index+0];
@@ -2441,11 +2454,10 @@ static void CheckAndStopFadeThread(filter_t *p_filter)
     {
         msg_Dbg(p_filter, "kill still running fadeing thread...");
 
-        p_sys->p_fadethread->b_die = true;
+        vlc_atomic_set(&p_sys->p_fadethread->abort, 1);
 
-        vlc_thread_join(p_sys->p_fadethread);
-
-        vlc_object_release(p_sys->p_fadethread);
+        vlc_join(p_sys->p_fadethread->thread, NULL);
+        free(p_sys->p_fadethread);
         p_sys->p_fadethread = NULL;
     }
     vlc_mutex_unlock( &p_sys->filter_lock );
@@ -2455,16 +2467,16 @@ static void CheckAndStopFadeThread(filter_t *p_filter)
 * StateCallback: Callback for the inputs variable "State" to get notified
 * about Pause and Continue Playback events.
 *****************************************************************************/
-static int StateCallback( vlc_object_t *p_this, char const *psz_cmd,
+static int StateCallback( vlc_object_t *, char const *,
                          vlc_value_t oldval, vlc_value_t newval,
                          void *p_data )
 {
     filter_t *p_filter = (filter_t *)p_data;
     filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
 
-    if((p_sys->b_usepausecolor == true) && (p_sys->b_enabled == true))
+    if(p_sys->b_usepausecolor && p_sys->b_enabled)
     {
-        msg_Dbg(p_filter, "state change from: %d to %d", oldval.i_int,
+        msg_Dbg(p_filter, "state change from: %"PRId64" to %"PRId64, oldval.i_int,
             newval.i_int);
 
         if((newval.i_int == PAUSE_S) && (oldval.i_int == PLAYING_S))
@@ -2484,23 +2496,21 @@ static int StateCallback( vlc_object_t *p_this, char const *psz_cmd,
             */
             if(p_sys->p_fadethread == NULL)
             {
-                p_sys->p_fadethread = (fadethread_t *)vlc_object_create(
-                     p_filter,
-                     sizeof(fadethread_t) );
-
+                p_sys->p_fadethread = (fadethread_t *)calloc( 1, sizeof(fadethread_t) );
                 p_sys->p_fadethread->p_filter = p_filter;
                 p_sys->p_fadethread->ui_red   = p_sys->ui_pausecolor_red;
                 p_sys->p_fadethread->ui_green = p_sys->ui_pausecolor_green;
                 p_sys->p_fadethread->ui_blue  = p_sys->ui_pausecolor_blue;
                 p_sys->p_fadethread->i_steps  = p_sys->i_fadesteps;
+                vlc_atomic_set(&p_sys->p_fadethread->abort, 0);
 
-                if( vlc_thread_create( p_sys->p_fadethread,
-                    "AtmoLight fadeing",
-                    FadeToColorThread,
-                    VLC_THREAD_PRIORITY_LOW ) )
+                if( vlc_clone( &p_sys->p_fadethread->thread,
+                               FadeToColorThread,
+                               p_sys->p_fadethread,
+                               VLC_THREAD_PRIORITY_LOW ) )
                 {
                     msg_Err( p_filter, "cannot create FadeToColorThread" );
-                    vlc_object_release( p_sys->p_fadethread );
+                    free( p_sys->p_fadethread );
                     p_sys->p_fadethread = NULL;
                 }
             }
@@ -2541,7 +2551,7 @@ static void AddStateVariableCallback(filter_t *p_filter)
 *****************************************************************************
 * Delete the callback function to the "state" variable of the input thread...
 * first find the PlayList and get the input thread from there to attach
-* my callback? is vlc_object_find the right way for this??
+* my callback.
 *****************************************************************************/
 static void DelStateVariableCallback( filter_t *p_filter )
 {
@@ -2553,76 +2563,11 @@ static void DelStateVariableCallback( filter_t *p_filter )
     }
 }
 
-
-static int CropCallback(vlc_object_t *p_this, char const *psz_cmd,
-                        vlc_value_t oldval, vlc_value_t newval,
-                        void *p_data)
-{
-    vout_thread_t *p_vout = (vout_thread_t *)p_this;
-    filter_t *p_filter = (filter_t *)p_data;
-    filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
-
-    /*
-    //if the handler is attache to crop variable directly!
-    int i_visible_width, i_visible_height, i_x_offset, i_y_offset;
-    atmo_parse_crop(newval.psz_string, p_vout->fmt_render,
-    p_vout->fmt_render,
-    i_visible_width, i_visible_height,
-    i_x_offset, i_y_offset);
-    p_sys->i_crop_x_offset  = i_x_offset;
-    p_sys->i_crop_y_offset  = i_y_offset;
-    p_sys->i_crop_width     = i_visible_width;
-    p_sys->i_crop_height    = i_visible_height;
-    */
-
-    p_sys->i_crop_x_offset  = p_vout->fmt_in.i_x_offset;
-    p_sys->i_crop_y_offset  = p_vout->fmt_in.i_y_offset;
-    p_sys->i_crop_width     = p_vout->fmt_in.i_visible_width;
-    p_sys->i_crop_height    = p_vout->fmt_in.i_visible_height;
-
-    msg_Dbg(p_filter, "cropping picture %ix%i to %i,%i,%ix%i",
-        p_vout->fmt_in.i_width,
-        p_vout->fmt_in.i_height,
-        p_sys->i_crop_x_offset,
-        p_sys->i_crop_y_offset,
-        p_sys->i_crop_width,
-        p_sys->i_crop_height
-        );
-
-    return VLC_SUCCESS;
-}
-
-
-static void AddCropVariableCallback( filter_t *p_filter)
-{
-    vout_thread_t *p_vout = (vout_thread_t *)vlc_object_find( p_filter,
-        VLC_OBJECT_VOUT,
-        FIND_ANYWHERE );
-    if( p_vout )
-    {
-        var_AddCallback( p_vout, "crop-update", CropCallback, p_filter );
-        vlc_object_release( p_vout );
-    }
-}
-
-static void DelCropVariableCallback( filter_t *p_filter)
-{
-    vout_thread_t *p_vout = (vout_thread_t *)vlc_object_find( p_filter,
-        VLC_OBJECT_VOUT,
-        FIND_ANYWHERE );
-    if( p_vout )
-    {
-        var_DelCallback( p_vout, "crop-update", CropCallback, p_filter );
-        vlc_object_release( p_vout );
-    }
-}
-
-
 /****************************************************************************
 * StateCallback: Callback for the inputs variable "State" to get notified
 * about Pause and Continue Playback events.
 *****************************************************************************/
-static int AtmoSettingsCallback( vlc_object_t *p_this, char const *psz_var,
+static int AtmoSettingsCallback( vlc_object_t *, char const *psz_var,
                                  vlc_value_t oldval, vlc_value_t newval,
                                  void *p_data )
 {
@@ -2640,7 +2585,7 @@ static int AtmoSettingsCallback( vlc_object_t *p_this, char const *psz_var,
     if(p_atmo_config)
     {
 
-       msg_Dbg(p_filter, "apply AtmoSettingsCallback %s (int: %d -> %d)",
+       msg_Dbg(p_filter, "apply AtmoSettingsCallback %s (int: %"PRId64" -> %"PRId64")",
              psz_var,
              oldval.i_int,
              newval.i_int

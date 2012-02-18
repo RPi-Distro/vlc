@@ -2,7 +2,7 @@
  * mlp.c: packetize MLP/TrueHD audio
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: d466e77102904dc67cd37495eb6655c5a9e78a45 $
+ * $Id: de4c3f58009de143ca637c38a78fcd47a3c18ae6 $
  *
  * Authors: Laurent Aimar < fenrir _AT videolan _DOT_ org >
  *
@@ -35,6 +35,8 @@
 #include <vlc_block_helper.h>
 #include <vlc_bits.h>
 #include <assert.h>
+
+#include "packetizer_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -89,16 +91,6 @@ struct decoder_sys_t
     mlp_header_t mlp;
 };
 
-enum {
-
-    STATE_NOSYNC,
-    STATE_SYNC,
-    STATE_HEADER,
-    STATE_NEXT_SYNC,
-    STATE_GET_DATA,
-    STATE_SEND_DATA
-};
-
 #define MLP_MAX_SUBSTREAMS (16)
 #define MLP_HEADER_SYNC (28)
 #define MLP_HEADER_SIZE (4 + MLP_HEADER_SYNC + 4 * MLP_MAX_SUBSTREAMS)
@@ -133,7 +125,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_state = STATE_NOSYNC;
     date_Set( &p_sys->end_date, 0 );
 
-    p_sys->bytestream = block_BytestreamInit();
+    block_BytestreamInit( &p_sys->bytestream );
     p_sys->b_mlp = false;
 
     /* Set output properties */

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * search.c : Search functions
  *****************************************************************************
- * Copyright (C) 1999-2009 the VideoLAN team
- * $Id: 773496e033ab3cc2e913451a85fd717177d4db66 $
+ * Copyright (C) 1999-2009 VLC authors and VideoLAN
+ * $Id: 0c711ca9ac61fc2045de1be3fc4e0586632f5d0a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -26,7 +26,8 @@
 #include <assert.h>
 
 #include <vlc_common.h>
-#include "vlc_playlist.h"
+#include <vlc_playlist.h>
+#include <vlc_charset.h>
 #include "playlist_internal.h"
 
 /***************************************************************************
@@ -134,12 +135,12 @@ static bool playlist_LiveSearchUpdateInternal( playlist_item_t *p_root,
                     psz_title = p_item->p_input->psz_name;
                 const char *psz_album = vlc_meta_Get( p_item->p_input->p_meta, vlc_meta_Album );
                 const char *psz_artist = vlc_meta_Get( p_item->p_input->p_meta, vlc_meta_Artist );
-                b_enable = ( psz_title && strcasestr( psz_title, psz_string ) ) ||
-                           ( psz_album && strcasestr( psz_album, psz_string ) ) ||
-                           ( psz_artist && strcasestr( psz_artist, psz_string ) );
+                b_enable = ( psz_title && vlc_strcasestr( psz_title, psz_string ) ) ||
+                           ( psz_album && vlc_strcasestr( psz_album, psz_string ) ) ||
+                           ( psz_artist && vlc_strcasestr( psz_artist, psz_string ) );
             }
             else
-                b_enable = p_item->p_input->psz_name && strcasestr( p_item->p_input->psz_name, psz_string );
+                b_enable = p_item->p_input->psz_name && vlc_strcasestr( p_item->p_input->psz_name, psz_string );
             vlc_mutex_unlock( &p_item->p_input->lock );
         }
 

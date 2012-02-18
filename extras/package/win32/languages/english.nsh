@@ -59,3 +59,5 @@ StrCpy $Action_OnArrivalSVCDMovie "Play SVCD movie"
 StrCpy $Action_OnArrivalVideoFiles "Play video files"
 StrCpy $Action_OnArrivalMusicFiles "Play audio files"
 StrCpy $Action_OnArrivalDVDAudio "Play audio DVD"
+
+StrCpy $License_NextText "You are now aware of your rights. Click Next to continue."

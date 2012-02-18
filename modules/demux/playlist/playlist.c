@@ -2,7 +2,7 @@
  * playlist.c :  Playlist import module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 8446fe44007b122ecda0b5a6ad0968dfa6d4dace $
+ * $Id: 00b44a38787b2dbd2e349423af9287fc8cb2d5b0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -35,16 +35,13 @@
 #ifdef WIN32
 # include <ctype.h>
 #endif
+#include <assert.h>
 
 #include "playlist.h"
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define AUTOSTART_TEXT N_( "Auto start" )
-#define AUTOSTART_LONGTEXT N_( "Automatically start playing the playlist " \
-                "content once it's loaded." )
-
 #define SHOW_ADULT_TEXT N_( "Show shoutcast adult content" )
 #define SHOW_ADULT_LONGTEXT N_( "Show NC17 rated video streams when " \
                 "using shoutcast video playlists." )
@@ -58,91 +55,73 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
 
-    add_bool( "playlist-autostart", true, NULL,
-              AUTOSTART_TEXT, AUTOSTART_LONGTEXT, false )
-
     add_obsolete_integer( "parent-item" ) /* removed since 1.1.0 */
 
-    add_bool( "playlist-skip-ads", true, NULL,
+    add_bool( "playlist-skip-ads", true,
               SKIP_ADS_TEXT, SKIP_ADS_LONGTEXT, false )
 
     set_shortname( N_("Playlist") )
     set_description( N_("Playlist") )
     add_submodule ()
         set_description( N_("M3U playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "m3u" )
-        add_shortcut( "m3u8" )
-        add_shortcut( "m3u-open" )
+        add_shortcut( "playlist", "m3u", "m3u8", "m3u-open" )
         set_capability( "demux", 10 )
         set_callbacks( Import_M3U, Close_M3U )
     add_submodule ()
         set_description( N_("RAM playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "ram-open" )
+        add_shortcut( "playlist", "ram-open" )
         set_capability( "demux", 10 )
         set_callbacks( Import_RAM, Close_RAM )
     add_submodule ()
         set_description( N_("PLS playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "pls-open" )
+        add_shortcut( "playlist", "pls-open" )
         set_capability( "demux", 10 )
         set_callbacks( Import_PLS, Close_PLS )
     add_submodule ()
         set_description( N_("B4S playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "b4s-open" )
-        add_shortcut( "shout-b4s" )
+        add_shortcut( "playlist", "b4s-open", "shout-b4s" )
         set_capability( "demux", 10 )
         set_callbacks( Import_B4S, Close_B4S )
     add_submodule ()
         set_description( N_("DVB playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "dvb-open" )
+        add_shortcut( "playlist", "dvb-open" )
         set_capability( "demux", 10 )
         set_callbacks( Import_DVB, Close_DVB )
     add_submodule ()
         set_description( N_("Podcast parser") )
-        add_shortcut( "playlist" )
-        add_shortcut( "podcast" )
+        add_shortcut( "playlist", "podcast" )
         set_capability( "demux", 10 )
         set_callbacks( Import_podcast, Close_podcast )
     add_submodule ()
         set_description( N_("XSPF playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "xspf-open" )
+        add_shortcut( "playlist", "xspf-open" )
         set_capability( "demux", 10 )
         set_callbacks( Import_xspf, Close_xspf )
     add_submodule ()
         set_description( N_("New winamp 5.2 shoutcast import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "shout-winamp" )
+        add_shortcut( "playlist", "shout-winamp" )
         set_capability( "demux", 10 )
         set_callbacks( Import_Shoutcast, Close_Shoutcast )
-        add_bool( "shoutcast-show-adult", false, NULL,
+        add_bool( "shoutcast-show-adult", false,
                    SHOW_ADULT_TEXT, SHOW_ADULT_LONGTEXT, false )
     add_submodule ()
         set_description( N_("ASX playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "asx-open" )
+        add_shortcut( "playlist", "asx-open" )
         set_capability( "demux", 10 )
         set_callbacks( Import_ASX, Close_ASX )
     add_submodule ()
         set_description( N_("Kasenna MediaBase parser") )
-        add_shortcut( "playlist" )
-        add_shortcut( "sgimb" )
+        add_shortcut( "playlist", "sgimb" )
         set_capability( "demux", 10 )
         set_callbacks( Import_SGIMB, Close_SGIMB )
     add_submodule ()
         set_description( N_("QuickTime Media Link importer") )
-        add_shortcut( "playlist" )
-        add_shortcut( "qtl" )
+        add_shortcut( "playlist", "qtl" )
         set_capability( "demux", 10 )
         set_callbacks( Import_QTL, Close_QTL )
     add_submodule ()
         set_description( N_("Google Video Playlist importer") )
-        add_shortcut( "playlist" )
-        add_shortcut( "gvp" )
+        add_shortcut( "playlist", "gvp" )
         set_capability( "demux", 10 )
         set_callbacks( Import_GVP, Close_GVP )
     add_submodule ()
@@ -152,20 +131,17 @@ vlc_module_begin ()
         set_callbacks( Import_IFO, Close_IFO )
     add_submodule ()
         set_description( N_("iTunes Music Library importer") )
-        add_shortcut( "playlist" )
-        add_shortcut( "itml" )
+        add_shortcut( "playlist", "itml" )
         set_capability( "demux", 10 )
         set_callbacks( Import_iTML, Close_iTML )
     add_submodule ()
         set_description( N_("WPL playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "wpl" )
+        add_shortcut( "playlist", "wpl" )
         set_capability( "demux", 10 )
         set_callbacks( Import_WPL, Close_WPL )
     add_submodule ()
         set_description( N_("ZPL playlist import") )
-        add_shortcut( "playlist" )
-        add_shortcut( "zpl" )
+        add_shortcut( "playlist", "zpl" )
         set_capability( "demux", 10 )
         set_callbacks( Import_ZPL, Close_ZPL )
 vlc_module_end ()
@@ -185,36 +161,17 @@ input_item_t * GetCurrentItem(demux_t *p_demux)
  */
 char *FindPrefix( demux_t *p_demux )
 {
-    char *psz_file;
-    char *psz_prefix;
-    char *psz_path;
+    char *psz_url;
 
-    if( p_demux->psz_access && *p_demux->psz_access
-     && strcasecmp( p_demux->psz_access, "file" ) )
-    {
-        if( asprintf( &psz_path,"%s://%s", p_demux->psz_access, p_demux->psz_path ) == -1 )
-            return NULL;
-    }
-    else
-    {
-        psz_path = make_URI( p_demux->psz_path );
-        if( psz_path == NULL )
-            return NULL;
-    }
+    if( asprintf( &psz_url, "%s://%s", p_demux->psz_access,
+                  p_demux->psz_location ) == -1 )
+        return NULL;
 
-#ifdef WIN32
-    psz_file = strrchr( psz_path, '\\' );
-    if( !psz_file )
-#endif
-    psz_file = strrchr( psz_path, '/' );
+    char *psz_file = strrchr( psz_url, '/' );
+    assert( psz_file != NULL );
+    psz_file[1] = '\0';
 
-    if( psz_file )
-        psz_prefix = strndup( psz_path, psz_file - psz_path + 1 );
-    else
-        psz_prefix = strdup( "" );
-    free( psz_path );
-
-    return psz_prefix;
+    return psz_url;
 }
 
 /**
@@ -239,9 +196,9 @@ char *ProcessMRL( const char *psz_mrl, const char *psz_prefix )
     /* FIXME: that's wrong if the playlist is not a local file */
     if( *psz_mrl == DIR_SEP_CHAR )
         goto uri;
-#ifdef WIN32
+#if defined( WIN32 ) || defined( __OS2__ )
     /* Drive letter (this assumes URL scheme are not a single character) */
-    if( isalpha(psz_mrl[0]) && psz_mrl[1] == ':' )
+    if( isalpha((unsigned char)psz_mrl[0]) && psz_mrl[1] == ':' )
         goto uri;
 #endif
     if( strstr( psz_mrl, "://" ) )
@@ -258,5 +215,5 @@ char *ProcessMRL( const char *psz_mrl, const char *psz_prefix )
     return ret;
 
 uri:
-    return make_URI( psz_mrl );
+    return make_URI( psz_mrl, NULL );
 }

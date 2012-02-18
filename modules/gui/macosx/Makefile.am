@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libmacosx_plugin_la_SOURCES = $(SOURCES_macosx)
 nodist_libmacosx_plugin_la_SOURCES = $(nodist_SOURCES_macosx)
 # Force per-target objects:
-libmacosx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmacosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmacosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmacosx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_macosx)
+libmacosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_macosx)
+libmacosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_macosx)
+libmacosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_macosx)
 # Set LIBADD and DEPENDENCIES manually:
-libmacosx_plugin_la_LIBADD = $(AM_LIBADD)
-libmacosx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmacosx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_macosx)
+libmacosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_macosx)
+libmacosx_plugin_la_DEPENDENCIES =
 

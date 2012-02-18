@@ -27,13 +27,14 @@
 
 void vlc_enable_override (void);
 
-#if defined (__GNUC__) /* typeof and statement-expression */ \
+#if defined (__GNUC__) \
  && (defined (__ELF__) && !defined (__sun__))
 /* Solaris crashes on printf("%s", NULL); which is legal, but annoying. */
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <dlfcn.h>
 #include <pthread.h>
 #ifdef HAVE_EXECINFO_H
@@ -108,9 +109,12 @@ static void *getsym (const char *name)
         logbug(&counter, level, __func__, __VA_ARGS__); \
     } while (0)
 
+/* Evil non-standard GNU C macro ;)
+ *  typeof keyword,
+ *  statement-expression
+ */
 #define CALL(func, ...) \
-    ({ typeof (func) *sym = getsym ( # func); sym (__VA_ARGS__); })
-
+({ typeof (func) *sym = getsym ( # func); sym (__VA_ARGS__); })
 
 /*** Environment ***
  *
@@ -213,7 +217,8 @@ void (*signal (int signum, void (*handler) (int))) (int)
         if (!blocked_signal (signum))
             goto error;
         /* For our blocked signals, the handler won't matter much... */
-        LOG("Warning", "%d, %p", signum, handler);
+        if (handler == SIG_DFL)
+            LOG("Warning", "%d, SIG_DFL", signum, handler);
     }
     return CALL(signal, signum, handler);
 error:
@@ -228,7 +233,8 @@ int sigaction (int signum, const struct sigaction *act, struct sigaction *old)
         if ((act->sa_flags & SA_SIGINFO)
          || (act->sa_handler != SIG_IGN && act->sa_handler != SIG_DFL))
             goto error;
-        LOG("Warning", "%d, %p, %p", signum, act, old);
+        if (act->sa_handler == SIG_DFL)
+            LOG("Warning", "%d, %p, SIG_DFL", signum, act);
     }
     return CALL(sigaction, signum, act, old);
 error:
@@ -255,6 +261,20 @@ char *setlocale (int cat, const char *locale)
     return CALL(setlocale, cat, locale);
 }
 
+
+/* strerror() is not thread-safe in theory (POSIX), nor in practice (glibc).
+ * This caused quite nasty crashes in the history of VLC/Linux. */
+char *strerror (int val)
+{
+    if (override)
+    {
+        static const char msg[] =
+            "Error message unavailable (use strerror_r instead of strerror)!";
+        LOG("Blocked", "%d", val);
+        return (char *)msg;
+    }
+    return CALL(strerror, val);
+}
 
 /*** Xlib ****/
 #ifdef HAVE_X11_XLIB_H
@@ -293,7 +313,6 @@ int (*XSetIOErrorHandler (int (*handler) (Display *))) (Display *)
     return CALL(XSetIOErrorHandler, handler);
 }
 #endif
-
 #else
 void vlc_enable_override (void)
 {

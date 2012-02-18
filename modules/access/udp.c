@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
  * Copyright (C) 2007 Remi Denis-Courmont
- * $Id: 765c2d03eae42cad937c42384dd46247a8007296 $
+ * $Id: 0f5f3cc3e5e9d7681fc287961fc1dd890415ca43 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>
@@ -46,11 +46,6 @@
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for UDP streams. This " \
-    "value should be set in milliseconds." )
-
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
@@ -60,17 +55,10 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
 
-    add_integer( "udp-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true )
-        change_safe()
-    add_obsolete_integer( "rtp-late" )
-    add_obsolete_bool( "udp-auto-mtu" )
+    add_obsolete_integer( "server-port" ) /* since 2.0.0 */
 
     set_capability( "access", 0 )
-    add_shortcut( "udp" )
-    add_shortcut( "udpstream" )
-    add_shortcut( "udp4" )
-    add_shortcut( "udp6" )
+    add_shortcut( "udp", "udpstream", "udp4", "udp6" )
 
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -78,8 +66,6 @@ vlc_module_end ()
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-#define RTP_HEADER_LEN 12
-
 static block_t *BlockUDP( access_t * );
 static int Control( access_t *, int, va_list );
 
@@ -90,32 +76,15 @@ static int Open( vlc_object_t *p_this )
 {
     access_t     *p_access = (access_t*)p_this;
 
-    char *psz_name = strdup( p_access->psz_path );
+    char *psz_name = strdup( p_access->psz_location );
     char *psz_parser;
     const char *psz_server_addr, *psz_bind_addr = "";
-    int  i_bind_port, i_server_port = 0;
-    int fam = AF_UNSPEC;
+    int  i_bind_port = 1234, i_server_port = 0;
     int fd;
 
     /* Set up p_access */
     access_InitFields( p_access );
     ACCESS_SET_CALLBACKS( NULL, BlockUDP, Control, NULL );
-
-    if (strlen (p_access->psz_access) > 0)
-    {
-        switch (p_access->psz_access[strlen (p_access->psz_access) - 1])
-        {
-            case '4':
-                fam = AF_INET;
-                break;
-
-            case '6':
-                fam = AF_INET6;
-                break;
-        }
-    }
-
-    i_bind_port = var_CreateGetInteger( p_access, "server-port" );
 
     /* Parse psz_name syntax :
      * [serveraddr[:serverport]][@[bindaddr]:[bindport]] */
@@ -160,7 +129,7 @@ static int Open( vlc_object_t *p_this )
              psz_server_addr, i_server_port, psz_bind_addr, i_bind_port );
 
     fd = net_OpenDgram( p_access, psz_bind_addr, i_bind_port,
-                        psz_server_addr, i_server_port, fam, IPPROTO_UDP );
+                        psz_server_addr, i_server_port, IPPROTO_UDP );
     free (psz_name);
     if( fd == -1 )
     {
@@ -169,8 +138,6 @@ static int Open( vlc_object_t *p_this )
     }
     p_access->p_sys = (void *)(intptr_t)fd;
 
-    /* Update default_pts to a suitable value for udp access */
-    var_Create( p_access, "udp-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     return VLC_SUCCESS;
 }
 
@@ -205,7 +172,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t)var_GetInteger(p_access,"udp-caching") * 1000;
+            *pi_64 = INT64_C(1000)
+                   * var_InheritInteger(p_access, "network-caching");
             break;
 
         /* */

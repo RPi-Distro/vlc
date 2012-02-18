@@ -2,7 +2,7 @@
  * interpreter.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9f695aafffff9a9a2e9fe4d1c5d82f5cdf3675a9 $
+ * $Id: 75f75302a770648dda4ee2e1fcf06a0d340dbbcc $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -507,6 +507,7 @@ VarBool *Interpreter::getVarBool( const string &rName, Theme *pTheme )
 
 VarPercent *Interpreter::getVarPercent( const string &rName, Theme *pTheme )
 {
+    (void)pTheme;
     VarManager *pVarManager = VarManager::instance( getIntf() );
     return static_cast<VarPercent*>(pVarManager->getVar( rName, "percent" ));
 }
@@ -514,6 +515,7 @@ VarPercent *Interpreter::getVarPercent( const string &rName, Theme *pTheme )
 
 VarList *Interpreter::getVarList( const string &rName, Theme *pTheme )
 {
+    (void)pTheme;
     VarManager *pVarManager = VarManager::instance( getIntf() );
     return static_cast<VarList*>(pVarManager->getVar( rName, "list" ));
 }
@@ -521,6 +523,7 @@ VarList *Interpreter::getVarList( const string &rName, Theme *pTheme )
 
 VarTree *Interpreter::getVarTree( const string &rName, Theme *pTheme )
 {
+    (void)pTheme;
     VarManager *pVarManager = VarManager::instance( getIntf() );
     return static_cast<VarTree*>(pVarManager->getVar( rName, "tree" ));
 }

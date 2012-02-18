@@ -2,7 +2,7 @@
  * wall.c : Wall video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2009 the VideoLAN team
- * $Id: 12141c547bd3f09cc1f6856c7bf68f093a0a2576 $
+ * $Id: 6b207cd1c8cf9aca8cfbc9ba3651400781bd0b97 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -68,11 +68,11 @@ vlc_module_begin()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    add_integer( CFG_PREFIX "cols", 3, NULL, COLS_TEXT, COLS_LONGTEXT, false )
-    add_integer( CFG_PREFIX "rows", 3, NULL, ROWS_TEXT, ROWS_LONGTEXT, false )
-    add_string( CFG_PREFIX "active", NULL, NULL, ACTIVE_TEXT, ACTIVE_LONGTEXT,
+    add_integer( CFG_PREFIX "cols", 3, COLS_TEXT, COLS_LONGTEXT, false )
+    add_integer( CFG_PREFIX "rows", 3, ROWS_TEXT, ROWS_LONGTEXT, false )
+    add_string( CFG_PREFIX "active", NULL, ACTIVE_TEXT, ACTIVE_LONGTEXT,
                  true )
-    add_string( CFG_PREFIX "element-aspect", "4:3", NULL, ASPECT_TEXT, ASPECT_LONGTEXT, false )
+    add_string( CFG_PREFIX "element-aspect", "16:9", ASPECT_TEXT, ASPECT_LONGTEXT, false )
 
     add_shortcut( "wall" )
     set_callbacks( Open, Close )
@@ -129,10 +129,10 @@ static int Open( vlc_object_t *p_this )
 
     /* */
     p_sys->i_col = var_CreateGetInteger( p_splitter, CFG_PREFIX "cols" );
-    p_sys->i_col = __MAX( 1, __MIN( COL_MAX, p_sys->i_col ) );
+    p_sys->i_col = VLC_CLIP( COL_MAX, 1, p_sys->i_col );
 
     p_sys->i_row = var_CreateGetInteger( p_splitter, CFG_PREFIX "rows" );
-    p_sys->i_row = __MAX( 1, __MIN( ROW_MAX, p_sys->i_row ) );
+    p_sys->i_row = VLC_CLIP( ROW_MAX, 1, p_sys->i_row );
 
     msg_Dbg( p_splitter, "opening a %i x %i wall",
              p_sys->i_col, p_sys->i_row );

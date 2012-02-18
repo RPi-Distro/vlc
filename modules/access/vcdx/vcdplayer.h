@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright (C) 2003, 2004 Rocky Bernstein (for the VideoLAN team)
- * $Id: 21f77e62784a273def4b77e4ac1914307603982a $
+ * $Id: e7f38f81ff468dcde1a121091160eec8c02d5890 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -154,7 +154,6 @@ typedef struct vcdplayer_input_s
   input_title_t *p_title[CDIO_CD_MAX_TRACKS+2];
 
   /* Probably gets moved into another structure...*/
-  intf_thread_t *p_intf;
   int            i_audio_nb;
   int            i_still;
   bool           b_end_of_cell;

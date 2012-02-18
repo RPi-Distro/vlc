@@ -2,7 +2,7 @@
  * ctrl_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a6c90a03886824238f498f019d0dc5135eb0a7e1 $
+ * $Id: 61d41ae97e42f741950a6525aad951d39ca3d531 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -42,14 +42,14 @@
 
 CtrlText::CtrlText( intf_thread_t *pIntf, VarText &rVariable,
                     const GenericFont &rFont, const UString &rHelp,
-                    uint32_t color, VarBool *pVisible, Scrolling_t scrollMode,
-                    Align_t alignment ):
+                    uint32_t color, VarBool *pVisible, VarBool *pFocus,
+                    Scrolling_t scrollMode, Align_t alignment ):
     CtrlGeneric( pIntf, rHelp, pVisible ), m_fsm( pIntf ),
     m_rVariable( rVariable ), m_cmdToManual( this ),
     m_cmdManualMoving( this ), m_cmdManualStill( this ),
     m_cmdMove( this ), m_pEvt( NULL ), m_rFont( rFont ),
     m_color( color ), m_scrollMode( scrollMode ), m_alignment( alignment ),
-    m_pImg( NULL ), m_pImgDouble( NULL ),
+    m_pFocus( pFocus), m_pImg( NULL ), m_pImgDouble( NULL ),
     m_pCurrImg( NULL ), m_xPos( 0 ), m_xOffset( 0 ),
     m_cmdUpdateText( this )
 {
@@ -121,6 +121,9 @@ void CtrlText::handleEvent( EvtGeneric &rEvent )
 
 bool CtrlText::mouseOver( int x, int y ) const
 {
+    if( !m_pFocus->get() )
+        return false;
+
     if( m_pCurrImg )
     {
         // We have 3 different ways of deciding when to return true here:
@@ -150,8 +153,10 @@ bool CtrlText::mouseOver( int x, int y ) const
 }
 
 
-void CtrlText::draw( OSGraphics &rImage, int xDest, int yDest )
+void CtrlText::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
 {
+    rect clip( xDest, yDest, w, h );
+    const Position *pPos = getPosition();
     if( m_pCurrImg )
     {
         // Compute the dimensions to draw
@@ -178,12 +183,18 @@ void CtrlText::draw( OSGraphics &rImage, int xDest, int yDest )
             else if( m_alignment == kCenter &&
                      width < getPosition()->getWidth() )
             {
-                    // The text is shorter than the width of the control, so we
-                    // can center it
+                // The text is shorter than the width of the control, so we
+                // can center it
                 offset = (getPosition()->getWidth() - width) / 2;
             }
-            rImage.drawBitmap( *m_pCurrImg, -m_xPos, 0, xDest + offset,
-                               yDest, width, height, true );
+            rect region( pPos->getLeft() + offset,
+                         pPos->getTop(), width, height );
+            rect inter;
+            if( rect::intersect( region, clip, &inter ) )
+                rImage.drawBitmap( *m_pCurrImg, -m_xPos + inter.x - region.x,
+                                   inter.y - region.y,
+                                   inter.x, inter.y,
+                                   inter.width, inter.height, true );
         }
     }
 }
@@ -204,21 +215,25 @@ void CtrlText::setText( const UString &rText, uint32_t color )
 
 void CtrlText::onUpdate( Subject<VarText> &rVariable, void* arg )
 {
+    (void)rVariable; (void)arg;
     if( isVisible() )
     {
         displayText( m_rVariable.get() );
+        notifyLayout( getPosition()->getWidth(), getPosition()->getHeight() );
     }
 }
 
 
 void CtrlText::onUpdate( Subject<VarBool> &rVariable, void *arg  )
 {
+    (void)arg;
     // Visibility changed
     if( &rVariable == m_pVisible )
     {
         if( isVisible() )
         {
             displayText( m_rVariable.get() );
+            notifyLayout( getPosition()->getWidth(), getPosition()->getHeight() );
         }
         else
         {
@@ -278,7 +293,6 @@ void CtrlText::displayText( const UString &rText )
                 m_pTimer->stop();
             }
         }
-        notifyLayout( getPosition()->getWidth(), getPosition()->getHeight() );
     }
 }
 

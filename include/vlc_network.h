@@ -1,27 +1,27 @@
 /*****************************************************************************
  * vlc_network.h: interface to communicate with network plug-ins
  *****************************************************************************
- * Copyright (C) 2002-2005 the VideoLAN team
+ * Copyright (C) 2002-2005 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 075562561a9cc39da7f6d8a3bea587eefe4a729f $
+ * $Id: c1769b16f94954838edb4617fd7d477593794ebc $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_NETWORK_H
@@ -64,23 +64,28 @@ struct msghdr
 #       define IPV6_V6ONLY 27
 #   endif
 #else
+#   include <sys/types.h>
+#   include <unistd.h>
 #   include <sys/socket.h>
-#   ifdef HAVE_NETINET_IN_H
-#      include <netinet/in.h>
-#   endif
-#   ifdef HAVE_ARPA_INET_H
-#      include <arpa/inet.h>
-#   elif defined( SYS_BEOS )
-#      include <net/netdb.h>
-#   endif
+#   include <netinet/in.h>
 #   include <netdb.h>
 #   define net_errno errno
 #endif
 
-int vlc_socket (int, int, int, bool nonblock) LIBVLC_USED;
+#if defined( __SYMBIAN32__ )
+#   undef AF_INET6
+#   undef IN6_IS_ADDR_MULTICAST
+#   undef IPV6_V6ONLY
+#   undef IPV6_MULTICAST_HOPS
+#   undef IPV6_MULTICAST_IF
+#   undef IPV6_TCLASS
+#   undef IPV6_JOIN_GROUP
+#endif
+
+int vlc_socket (int, int, int, bool nonblock) VLC_USED;
 
 struct sockaddr;
-VLC_EXPORT( int, vlc_accept, ( int, struct sockaddr *, socklen_t *, bool ) LIBVLC_USED );
+VLC_API int vlc_accept( int, struct sockaddr *, socklen_t *, bool ) VLC_USED;
 
 # ifdef __cplusplus
 extern "C" {
@@ -89,10 +94,10 @@ extern "C" {
 /* Portable networking layer communication */
 int net_Socket (vlc_object_t *obj, int family, int socktype, int proto);
 
-VLC_EXPORT( int, net_Connect, (vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol) );
+VLC_API int net_Connect(vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol);
 #define net_Connect(a, b, c, d, e) net_Connect(VLC_OBJECT(a), b, c, d, e)
 
-VLC_EXPORT( int *, net_Listen, (vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol) );
+VLC_API int * net_Listen(vlc_object_t *p_this, const char *psz_host, int i_port, int socktype, int protocol);
 
 #define net_ListenTCP(a, b, c) net_Listen(VLC_OBJECT(a), b, c, \
                                           SOCK_STREAM, IPPROTO_TCP)
@@ -103,13 +108,13 @@ static inline int net_ConnectTCP (vlc_object_t *obj, const char *host, int port)
 }
 #define net_ConnectTCP(a, b, c) net_ConnectTCP(VLC_OBJECT(a), b, c)
 
-VLC_EXPORT( int, net_AcceptSingle, (vlc_object_t *obj, int lfd) );
+VLC_API int net_AcceptSingle(vlc_object_t *obj, int lfd);
 
-VLC_EXPORT( int, net_Accept, ( vlc_object_t *, int * ) );
+VLC_API int net_Accept( vlc_object_t *, int * );
 #define net_Accept(a, b) \
         net_Accept(VLC_OBJECT(a), b)
 
-VLC_EXPORT( int, net_ConnectDgram, ( vlc_object_t *p_this, const char *psz_host, int i_port, int hlim, int proto ) );
+VLC_API int net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port, int hlim, int proto );
 #define net_ConnectDgram(a, b, c, d, e ) \
         net_ConnectDgram(VLC_OBJECT(a), b, c, d, e)
 
@@ -118,48 +123,45 @@ static inline int net_ConnectUDP (vlc_object_t *obj, const char *host, int port,
     return net_ConnectDgram (obj, host, port, hlim, IPPROTO_UDP);
 }
 
-VLC_EXPORT( int, net_OpenDgram, ( vlc_object_t *p_this, const char *psz_bind, int i_bind, const char *psz_server, int i_server, int family, int proto ) );
-#define net_OpenDgram( a, b, c, d, e, g, h ) \
-        net_OpenDgram(VLC_OBJECT(a), b, c, d, e, g, h)
+VLC_API int net_OpenDgram( vlc_object_t *p_this, const char *psz_bind, int i_bind, const char *psz_server, int i_server, int proto );
+#define net_OpenDgram( a, b, c, d, e, g ) \
+        net_OpenDgram(VLC_OBJECT(a), b, c, d, e, g)
 
 static inline int net_ListenUDP1 (vlc_object_t *obj, const char *host, int port)
 {
-    return net_OpenDgram (obj, host, port, NULL, 0, 0, IPPROTO_UDP);
+    return net_OpenDgram (obj, host, port, NULL, 0, IPPROTO_UDP);
 }
 
-VLC_EXPORT( void, net_ListenClose, ( int *fd ) );
+VLC_API void net_ListenClose( int *fd );
 
 int net_Subscribe (vlc_object_t *obj, int fd, const struct sockaddr *addr,
                    socklen_t addrlen);
 
-VLC_EXPORT( int, net_SetCSCov, ( int fd, int sendcov, int recvcov ) );
+VLC_API int net_SetCSCov( int fd, int sendcov, int recvcov );
 
 /* Functions to read from or write to the networking layer */
 struct virtual_socket_t
 {
     void *p_sys;
-    int (*pf_recv) ( void *, void *, int );
-    int (*pf_send) ( void *, const void *, int );
+    int (*pf_recv) ( void *, void *, size_t );
+    int (*pf_send) ( void *, const void *, size_t );
 };
 
-VLC_EXPORT( ssize_t, net_Read, ( vlc_object_t *p_this, int fd, const v_socket_t *, void *p_data, size_t i_data, bool b_retry ) );
+VLC_API ssize_t net_Read( vlc_object_t *p_this, int fd, const v_socket_t *, void *p_data, size_t i_data, bool b_retry );
 #define net_Read(a,b,c,d,e,f) net_Read(VLC_OBJECT(a),b,c,d,e,f)
-VLC_EXPORT( ssize_t, net_Write, ( vlc_object_t *p_this, int fd, const v_socket_t *, const void *p_data, size_t i_data ) );
+VLC_API ssize_t net_Write( vlc_object_t *p_this, int fd, const v_socket_t *, const void *p_data, size_t i_data );
 #define net_Write(a,b,c,d,e) net_Write(VLC_OBJECT(a),b,c,d,e)
-VLC_EXPORT( char *, net_Gets, ( vlc_object_t *p_this, int fd, const v_socket_t * ) );
+VLC_API char * net_Gets( vlc_object_t *p_this, int fd, const v_socket_t * );
 #define net_Gets(a,b,c) net_Gets(VLC_OBJECT(a),b,c)
 
 
-VLC_EXPORT( ssize_t, net_Printf, ( vlc_object_t *p_this, int fd, const v_socket_t *, const char *psz_fmt, ... ) LIBVLC_FORMAT( 4, 5 ) );
+VLC_API ssize_t net_Printf( vlc_object_t *p_this, int fd, const v_socket_t *, const char *psz_fmt, ... ) VLC_FORMAT( 4, 5 );
 #define net_Printf(o,fd,vs,...) net_Printf(VLC_OBJECT(o),fd,vs, __VA_ARGS__)
-VLC_EXPORT( ssize_t, net_vaPrintf, ( vlc_object_t *p_this, int fd, const v_socket_t *, const char *psz_fmt, va_list args ) );
+VLC_API ssize_t net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *, const char *psz_fmt, va_list args );
 #define net_vaPrintf(a,b,c,d,e) net_vaPrintf(VLC_OBJECT(a),b,c,d,e)
 
-VLC_EXPORT (int, vlc_inet_pton, (int af, const char *src, void *dst) );
-VLC_EXPORT (const char *, vlc_inet_ntop, (int af, const void *src,
-                                          char *dst, socklen_t cnt) );
 struct pollfd;
-VLC_EXPORT (int, vlc_poll, (struct pollfd *fds, unsigned nfds, int timeout));
+VLC_API int vlc_poll(struct pollfd *fds, unsigned nfds, int timeout);
 
 
 #ifdef WIN32
@@ -169,9 +171,11 @@ VLC_EXPORT (int, vlc_poll, (struct pollfd *fds, unsigned nfds, int timeout));
 # define SHUT_RDWR SD_BOTH
 # define net_Close( fd ) closesocket ((SOCKET)fd)
 #else
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+# ifdef __OS2__
+#  define SHUT_RD    0
+#  define SHUT_WR    1
+#  define SHUT_RDWR  2
+# endif
 # define net_Close( fd ) (void)close (fd)
 #endif
 
@@ -222,6 +226,11 @@ VLC_EXPORT (int, vlc_poll, (struct pollfd *fds, unsigned nfds, int timeout));
 # endif
 # define NI_MAXNUMERICHOST 64
 
+#ifndef AI_NUMERICSERV
+# define AI_NUMERICSERV 0
+#endif
+
+#ifdef __OS2__
 # ifndef NI_NUMERICHOST
 #  define NI_NUMERICHOST 0x01
 #  define NI_NUMERICSERV 0x02
@@ -230,7 +239,6 @@ VLC_EXPORT (int, vlc_poll, (struct pollfd *fds, unsigned nfds, int timeout));
 #  define NI_DGRAM       0x10
 # endif
 
-# ifndef HAVE_STRUCT_ADDRINFO
 struct addrinfo
 {
     int ai_flags;
@@ -242,20 +250,46 @@ struct addrinfo
     char *ai_canonname;
     struct addrinfo *ai_next;
 };
-#  define AI_PASSIVE     1
-#  define AI_CANONNAME   2
-#  define AI_NUMERICHOST 4
-# endif /* if !HAVE_STRUCT_ADDRINFO */
 
-#ifndef AI_NUMERICSERV
-# define AI_NUMERICSERV 0
+# define AI_PASSIVE     1
+# define AI_CANONNAME   2
+# define AI_NUMERICHOST 4
+
+VLC_API const char *gai_strerror( int errnum );
+
+VLC_API int  getaddrinfo ( const char *, const char *,
+                           const struct addrinfo *, struct addrinfo ** );
+VLC_API void freeaddrinfo( struct addrinfo * );
+VLC_API int  getnameinfo ( const struct sockaddr *, socklen_t,
+                           char *, int, char *, int, int );
 #endif
 
-VLC_EXPORT( const char *, vlc_gai_strerror, ( int ) );
-VLC_EXPORT( int, vlc_getnameinfo, ( const struct sockaddr *, int, char *, int, int *, int ) );
-VLC_EXPORT( int, vlc_getaddrinfo, ( vlc_object_t *, const char *, int, const struct addrinfo *, struct addrinfo ** ) );
-VLC_EXPORT( void, vlc_freeaddrinfo, ( struct addrinfo * ) );
+VLC_API int vlc_getnameinfo( const struct sockaddr *, int, char *, int, int *, int );
+VLC_API int vlc_getaddrinfo( vlc_object_t *, const char *, int, const struct addrinfo *, struct addrinfo ** );
 
+
+#ifdef __OS2__
+/* OS/2 does not support IPv6, yet. But declare these only for compilation */
+struct in6_addr
+{
+    uint8_t s6_addr[16];
+};
+
+struct sockaddr_in6
+{
+    uint8_t         sin6_len;
+    uint8_t         sin6_family;
+    uint16_t        sin6_port;
+    uint32_t        sin6_flowinfo;
+    struct in6_addr sin6_addr;
+    uint32_t        sin6_scope_id;
+};
+
+# define IN6_IS_ADDR_MULTICAST(a)   (((__const uint8_t *) (a))[0] == 0xff)
+
+static const struct in6_addr in6addr_any =
+    { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+#endif
 
 static inline bool
 net_SockAddrIsMulticast (const struct sockaddr *addr, socklen_t len)

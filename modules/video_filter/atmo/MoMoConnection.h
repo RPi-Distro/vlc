@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 2a0315b4da41e0239e085289a68171b8b26f9084 $
+ * $Id: b742e48bbbeed7b4fbd6fb034d02a0fdd1fa0542 $
  */
 #ifndef _MoMoConnection_h_
 #define _MoMoConnection_h_
@@ -39,16 +39,6 @@ class CMoMoConnection : public CAtmoConnection {
        virtual ATMO_BOOL isOpen(void);
 
        virtual ATMO_BOOL SendData(pColorPacket data);
-
-       virtual ATMO_BOOL HardwareWhiteAdjust(int global_gamma,
-                                             int global_contrast,
-                                             int contrast_red,
-                                             int contrast_green,
-                                             int contrast_blue,
-                                             int gamma_red,
-                                             int gamma_green,
-                                             int gamma_blue,
-                                             ATMO_BOOL storeToEeprom);
 
        virtual int getNumChannels();
 

@@ -1,25 +1,25 @@
 /*****************************************************************************
  * deprecated.h:  libvlc deprecated API
  *****************************************************************************
- * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 216b1caba458403370a2aad252bcd63a6f5ca33d $
+ * Copyright (C) 1998-2008 VLC authors and VideoLAN
+ * $Id: 7f55090fcd482489ceed9145ce2253e78fa6fd2a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef LIBVLC_DEPRECATED_H
@@ -27,7 +27,7 @@
 
 /**
  * \file
- * This file defines libvlc depreceated API
+ * This file defines libvlc deprecated API
  */
 
 # ifdef __cplusplus
@@ -56,9 +56,9 @@ extern "C" {
  * \param i_options the number of options to add to the item
  * \param ppsz_options the options to add to the item
  */
-VLC_DEPRECATED_API void libvlc_playlist_play( libvlc_instance_t *p_instance,
-                                              int i_id, int i_options,
-                                              char **ppsz_options );
+LIBVLC_DEPRECATED LIBVLC_API
+void libvlc_playlist_play( libvlc_instance_t *p_instance, int i_id,
+                           int i_options, char **ppsz_options );
 
 /** @}*/
 

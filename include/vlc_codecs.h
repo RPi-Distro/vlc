@@ -1,24 +1,24 @@
 /*****************************************************************************
  * codecs.h: codec related structures needed by the demuxers and decoders
  *****************************************************************************
- * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 14d7af4fb60604dd2105961a71428363c59c6a37 $
+ * Copyright (C) 1999-2001 VLC authors and VideoLAN
+ * $Id: 096d6ec767a185766b101f0418c0415dd2a898a8 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_CODECS_H
@@ -29,12 +29,6 @@
  * \file
  * This file defines codec related structures needed by the demuxers and decoders
  */
-
-#ifdef HAVE_ATTRIBUTE_PACKED
-#   define ATTR_PACKED __attribute__((__packed__))
-#else
-#   error FIXME
-#endif
 
 /* Structures exported to the demuxers and decoders */
 
@@ -48,6 +42,17 @@ typedef struct _GUID
     uint8_t  Data4[8];
 } GUID, *REFGUID, *LPGUID;
 #endif /* GUID_DEFINED */
+
+typedef GUID guid_t;
+
+#ifdef HAVE_ATTRIBUTE_PACKED
+#   define ATTR_PACKED __attribute__((__packed__))
+#elif defined(__SUNPRO_C)
+#   pragma pack(1)
+#   define ATTR_PACKED
+#else
+#   error FIXME
+#endif
 
 #ifndef _WAVEFORMATEX_
 #define _WAVEFORMATEX_
@@ -199,7 +204,12 @@ ATTR_PACKED
 } VIDEOINFO;
 #endif
 
+#if defined(__SUNPRO_C)
+#   pragma pack()
+#endif
+
 /* WAVE format wFormatTag IDs */
+/* See http://msdn.microsoft.com/en-us/library/aa904731%28v=vs.80%29.aspx */
 #define WAVE_FORMAT_UNKNOWN             0x0000 /* Microsoft Corporation */
 #define WAVE_FORMAT_PCM                 0x0001 /* Microsoft Corporation */
 #define WAVE_FORMAT_ADPCM               0x0002 /* Microsoft Corporation */
@@ -215,17 +225,25 @@ ATTR_PACKED
 #define WAVE_FORMAT_G726                0x0045 /* ITU-T standard  */
 #define WAVE_FORMAT_MPEG                0x0050 /* Microsoft Corporation */
 #define WAVE_FORMAT_MPEGLAYER3          0x0055 /* ISO/MPEG Layer3 Format Tag */
+#define WAVE_FORMAT_AMR_NB              0x0057 /* AMR NB */
+#define WAVE_FORMAT_AMR_WB              0x0058 /* AMR Wideband */
 #define WAVE_FORMAT_DOLBY_AC3_SPDIF     0x0092 /* Sonic Foundry */
 
-#define WAVE_FORMAT_A52                 0x2000
-#define WAVE_FORMAT_DTS                 0x2001
+#define WAVE_FORMAT_AAC                 0x00FF /* */
+#define WAVE_FORMAT_SIPRO               0x0130 /* Sipro Lab Telecom Inc. */
+
 #define WAVE_FORMAT_WMA1                0x0160 /* WMA version 1 */
 #define WAVE_FORMAT_WMA2                0x0161 /* WMA (v2) 7, 8, 9 Series */
 #define WAVE_FORMAT_WMAP                0x0162 /* WMA 9 Professional */
 #define WAVE_FORMAT_WMAL                0x0163 /* WMA 9 Lossless */
-#define WAVE_FORMAT_DIVIO_AAC           0x4143
-#define WAVE_FORMAT_AAC                 0x00FF
+
+#define WAVE_FORMAT_AAC_2               0x1601 /* Other AAC */
+#define WAVE_FORMAT_AAC_LATM            0x1602 /* AAC/LATM */
+
+#define WAVE_FORMAT_A52                 0x2000 /* a52 */
+#define WAVE_FORMAT_DTS                 0x2001 /* DTS */
 #define WAVE_FORMAT_FFMPEG_AAC          0x706D
+#define WAVE_FORMAT_DIVIO_AAC           0x4143 /* Divio's AAC */
 
 /* Need to check these */
 #define WAVE_FORMAT_DK3                 0x0061
@@ -251,9 +269,8 @@ ATTR_PACKED
 
 #define WAVE_FORMAT_SPEEX               0xa109 /* Speex audio */
 
-
 #if !defined(WAVE_FORMAT_EXTENSIBLE)
-#define WAVE_FORMAT_EXTENSIBLE          0xFFFE /* Microsoft */
+  #define WAVE_FORMAT_EXTENSIBLE          0xFFFE /* Microsoft */
 #endif
 
 /* GUID SubFormat IDs */
@@ -302,8 +319,14 @@ static const struct
 wave_format_tag_to_fourcc[] =
 {
     { WAVE_FORMAT_PCM,        VLC_FOURCC( 'a', 'r', 'a', 'w' ), "Raw audio" },
+    { WAVE_FORMAT_PCM,        VLC_CODEC_S8,                     "PCM S8 audio" },
+    { WAVE_FORMAT_PCM,        VLC_CODEC_S16L,                   "PCM S16L audio" },
+    { WAVE_FORMAT_PCM,        VLC_CODEC_S24L,                   "PCM S24L audio" },
+    { WAVE_FORMAT_PCM,        VLC_CODEC_S32L,                   "PCM S32L audio" },
     { WAVE_FORMAT_ADPCM,      VLC_CODEC_ADPCM_MS,               "ADPCM" },
     { WAVE_FORMAT_IEEE_FLOAT, VLC_FOURCC( 'a', 'f', 'l', 't' ), "IEEE Float audio" },
+    { WAVE_FORMAT_IEEE_FLOAT, VLC_CODEC_F32L,                   "PCM 32 (Float) audio" },
+    { WAVE_FORMAT_IEEE_FLOAT, VLC_CODEC_F64L,                   "PCM 64 (Float) audio" },
     { WAVE_FORMAT_ALAW,       VLC_CODEC_ALAW,                   "A-Law" },
     { WAVE_FORMAT_MULAW,      VLC_CODEC_MULAW,                  "Mu-Law" },
     { WAVE_FORMAT_IMA_ADPCM,  VLC_CODEC_ADPCM_IMA_WAV,          "Ima-ADPCM" },
@@ -312,6 +335,9 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_G726,       VLC_CODEC_ADPCM_G726,             "G.726 ADPCM" },
     { WAVE_FORMAT_MPEGLAYER3, VLC_CODEC_MPGA,                   "Mpeg Audio" },
     { WAVE_FORMAT_MPEG,       VLC_CODEC_MPGA,                   "Mpeg Audio" },
+    { WAVE_FORMAT_AMR_NB,     VLC_CODEC_AMR_NB,                 "AMR NB" },
+    { WAVE_FORMAT_AMR_WB,     VLC_CODEC_AMR_WB,                 "AMR Wideband" },
+    { WAVE_FORMAT_SIPRO,      VLC_CODEC_SIPR,                   "Sipr Audio" },
     { WAVE_FORMAT_A52,        VLC_CODEC_A52,                    "A/52" },
     { WAVE_FORMAT_WMA1,       VLC_CODEC_WMA1,                   "Window Media Audio v1" },
     { WAVE_FORMAT_WMA2,       VLC_CODEC_WMA2,                   "Window Media Audio v2" },
@@ -324,6 +350,8 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_DTS_MS,     VLC_CODEC_DTS,                    "DTS Coherent Acoustics" },
     { WAVE_FORMAT_DIVIO_AAC,  VLC_CODEC_MP4A,                   "MPEG-4 Audio (Divio)" },
     { WAVE_FORMAT_AAC,        VLC_CODEC_MP4A,                   "MPEG-4 Audio" },
+    { WAVE_FORMAT_AAC_2,      VLC_CODEC_MP4A,                   "MPEG-4 Audio" },
+    { WAVE_FORMAT_AAC_LATM,   VLC_CODEC_MP4A,                   "MPEG-4 Audio" },
     { WAVE_FORMAT_FFMPEG_AAC, VLC_CODEC_MP4A,                   "MPEG-4 Audio" },
     { WAVE_FORMAT_VORBIS,     VLC_CODEC_VORBIS,                 "Vorbis Audio" },
     { WAVE_FORMAT_VORB_1,     VLC_FOURCC( 'v', 'o', 'r', '1' ), "Vorbis 1 Audio" },

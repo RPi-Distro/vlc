@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7bf7b2f5768fb3799793519d51d9b5d6a15c1aaa $
+ * $Id: 76b24affd29f21f8054a49dacf8a0b25f205274d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -25,10 +25,10 @@
 #ifdef X11_SKINS
 
 #include <X11/Xatom.h>
-#include <limits.h>
 
 #include "../src/generic_window.hpp"
 #include "../src/vlcproc.hpp"
+#include "../src/vout_manager.hpp"
 #include "x11_window.hpp"
 #include "x11_display.hpp"
 #include "x11_graphics.hpp"
@@ -41,7 +41,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
                       X11Display &rDisplay, bool dragDrop, bool playOnDrop,
                       X11Window *pParentWindow, GenericWindow::WindowType_t type ):
     OSWindow( pIntf ), m_rDisplay( rDisplay ), m_pParent( pParentWindow ),
-    m_dragDrop( dragDrop ), m_type ( type )
+    m_dragDrop( dragDrop ), m_pDropTarget( NULL ), m_type ( type )
 {
     XSetWindowAttributes attr;
     unsigned long valuemask;
@@ -78,6 +78,15 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
         valuemask = CWBackingStore | CWBackPixel | CWEventMask;
 
         name_type = "VoutWindow";
+    }
+    else if( type == GenericWindow::FscWindow )
+    {
+        m_wnd_parent = DefaultRootWindow( XDISPLAY );
+
+        attr.event_mask = ExposureMask | StructureNotifyMask;
+        valuemask = CWEventMask;
+
+        name_type = "FscWindow";
     }
     else
     {
@@ -141,7 +150,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     {
         // Create a Dnd object for this window
         m_pDropTarget = new X11DragDrop( getIntf(), m_rDisplay, m_wnd,
-                                         playOnDrop );
+                                         playOnDrop, &rWindow );
 
         // Register the window as a drop target
         Atom xdndAtom = XInternAtom( XDISPLAY, "XdndAware", False );
@@ -157,8 +166,20 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     string name_window = "VLC (" + name_type + ")";
     XStoreName( XDISPLAY, m_wnd, name_window.c_str() );
 
-    // Associate the window to the main "parent" window
-    XSetTransientForHint( XDISPLAY, m_wnd, m_rDisplay.getMainWindow() );
+    // Set the WM_TRANSIENT_FOR property
+    if( type == GenericWindow::FscWindow )
+    {
+        // Associate the fsc window to the fullscreen window
+        VoutManager* pVoutManager = VoutManager::instance( getIntf() );
+        GenericWindow* pWin = pVoutManager->getVoutMainWindow();
+        Window wnd = (Window) pWin->getOSHandle();
+        XSetTransientForHint( XDISPLAY, m_wnd, wnd );
+    }
+    else
+    {
+        // Associate the regular top-level window to the offscren main window
+        XSetTransientForHint( XDISPLAY, m_wnd, m_rDisplay.getMainWindow() );
+    }
 
     // initialize Class Hint
     XClassHint classhint;
@@ -208,15 +229,13 @@ X11Window::~X11Window()
     pFactory->m_windowMap[m_wnd] = NULL;
     pFactory->m_dndMap[m_wnd] = NULL;
 
-    if( m_dragDrop )
-    {
-        delete m_pDropTarget;
-    }
+    delete m_pDropTarget;
+
     XDestroyWindow( XDISPLAY, m_wnd );
     XSync( XDISPLAY, False );
 }
 
-void X11Window::reparent( void* OSHandle, int x, int y, int w, int h )
+void X11Window::reparent( uint32_t OSHandle, int x, int y, int w, int h )
 {
     // Reparent the window
     Window new_parent =
@@ -242,7 +261,12 @@ void X11Window::show() const
     {
         XMapRaised( XDISPLAY, m_wnd );
         setFullscreen();
-        // toggleOnTop( true );
+        toggleOnTop( true );
+    }
+    else if(  m_type == GenericWindow::FscWindow )
+    {
+        XMapRaised( XDISPLAY, m_wnd );
+        toggleOnTop( true );
     }
     else
     {
@@ -348,6 +372,13 @@ void X11Window::toggleOnTop( bool onTop ) const
         XSendEvent( XDISPLAY, DefaultRootWindow( XDISPLAY ),
                     False, SubstructureNotifyMask|SubstructureRedirectMask, (XEvent*)&event );
     }
+}
+
+
+bool X11Window::invalidateRect( int x, int y, int w, int h ) const
+{
+    XClearArea( XDISPLAY, m_wnd, x, y, w, h, True );
+    return true;
 }
 
 #endif

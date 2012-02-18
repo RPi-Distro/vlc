@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_stream.h: Stream (between access and demux) descriptor and methods
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 1d499890c3f69355966afccc066f5bbd74065d30 $
+ * Copyright (C) 1999-2004 VLC authors and VideoLAN
+ * $Id: c9298367b3249ea233e62262695d09bc450a28e4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_STREAM_H
@@ -57,6 +57,7 @@ struct stream_t
     /* Module properties for stream filter */
     module_t    *p_module;
 
+    char        *psz_access;
     /* Real or virtual path (it can only be changed during stream_t opening) */
     char        *psz_path;
 
@@ -112,13 +113,14 @@ enum stream_query_e
     STREAM_SET_RECORD_STATE,     /**< arg1=bool, arg2=const char *psz_ext (if arg1 is true)  res=can fail */
 };
 
-VLC_EXPORT( int, stream_Read, ( stream_t *s, void *p_read, int i_read ) );
-VLC_EXPORT( int, stream_Peek, ( stream_t *s, const uint8_t **pp_peek, int i_peek ) );
-VLC_EXPORT( int, stream_vaControl, ( stream_t *s, int i_query, va_list args ) );
-VLC_EXPORT( void, stream_Delete, ( stream_t *s ) );
-VLC_EXPORT( int, stream_Control, ( stream_t *s, int i_query, ... ) );
-VLC_EXPORT( block_t *, stream_Block, ( stream_t *s, int i_size ) );
-VLC_EXPORT( char *, stream_ReadLine, ( stream_t * ) );
+VLC_API int stream_Read( stream_t *s, void *p_read, int i_read );
+VLC_API int stream_Peek( stream_t *s, const uint8_t **pp_peek, int i_peek );
+VLC_API int stream_vaControl( stream_t *s, int i_query, va_list args );
+VLC_API void stream_Delete( stream_t *s );
+VLC_API int stream_Control( stream_t *s, int i_query, ... );
+VLC_API block_t * stream_Block( stream_t *s, int i_size );
+VLC_API block_t * stream_BlockRemaining( stream_t *s, int i_max_size );
+VLC_API char * stream_ReadLine( stream_t * );
 
 /**
  * Get the current position in a stream
@@ -165,25 +167,25 @@ static inline char *stream_ContentType( stream_t *s )
  * Create a special stream and a demuxer, this allows chaining demuxers
  * You must delete it using stream_Delete.
  */
-VLC_EXPORT( stream_t *, stream_DemuxNew, ( demux_t *p_demux, const char *psz_demux, es_out_t *out ) );
+VLC_API stream_t * stream_DemuxNew( demux_t *p_demux, const char *psz_demux, es_out_t *out );
 
 /**
  * Send data to a stream_t handle created by stream_DemuxNew.
  */
-VLC_EXPORT( void,      stream_DemuxSend,  ( stream_t *s, block_t *p_block ) );
+VLC_API void stream_DemuxSend( stream_t *s, block_t *p_block );
 
 /**
  * Create a stream_t reading from memory.
  * You must delete it using stream_Delete.
  */
-VLC_EXPORT( stream_t *, stream_MemoryNew, (vlc_object_t *p_obj, uint8_t *p_buffer, uint64_t i_size, bool b_preserve_memory ) );
+VLC_API stream_t * stream_MemoryNew(vlc_object_t *p_obj, uint8_t *p_buffer, uint64_t i_size, bool b_preserve_memory );
 #define stream_MemoryNew( a, b, c, d ) stream_MemoryNew( VLC_OBJECT(a), b, c, d )
 
 /**
- * Create a stream_t reading from an URL.
+ * Create a stream_t reading from a URL.
  * You must delete it using stream_Delete.
  */
-VLC_EXPORT( stream_t *, stream_UrlNew, (vlc_object_t *p_this, const char *psz_url ) );
+VLC_API stream_t * stream_UrlNew(vlc_object_t *p_this, const char *psz_url );
 #define stream_UrlNew( a, b ) stream_UrlNew( VLC_OBJECT(a), b )
 
 
@@ -191,7 +193,7 @@ VLC_EXPORT( stream_t *, stream_UrlNew, (vlc_object_t *p_this, const char *psz_ur
  * Try to add a stream filter to an open stream.
  * @return New stream to use, or NULL if the filter could not be added.
  **/
-VLC_EXPORT( stream_t*, stream_FilterNew, ( stream_t *p_source, const char *psz_stream_filter ) );
+VLC_API stream_t* stream_FilterNew( stream_t *p_source, const char *psz_stream_filter );
 /**
  * @}
  */

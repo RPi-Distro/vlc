@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libmp4_plugin_la_SOURCES = $(SOURCES_mp4)
 nodist_libmp4_plugin_la_SOURCES = $(nodist_SOURCES_mp4)
 # Force per-target objects:
-libmp4_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmp4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmp4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmp4_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mp4)
+libmp4_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mp4)
+libmp4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mp4)
+libmp4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mp4)
 # Set LIBADD and DEPENDENCIES manually:
-libmp4_plugin_la_LIBADD = $(AM_LIBADD)
-libmp4_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmp4_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mp4)
+libmp4_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mp4)
+libmp4_plugin_la_DEPENDENCIES =
 

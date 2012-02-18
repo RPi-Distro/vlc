@@ -2,23 +2,23 @@
  * filter.c : filter_t helpers.
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: d769b60265b992d8f41c3006ef0e920a620e6494 $
+ * $Id: 36f1ba444c60808ace989215e50e38be3e400c4e $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -28,12 +28,12 @@
 #include <vlc_common.h>
 #include <libvlc.h>
 #include <vlc_filter.h>
+#include <vlc_modules.h>
 
 filter_t *filter_NewBlend( vlc_object_t *p_this,
                            const video_format_t *p_dst_chroma )
 {
-    filter_t *p_blend = vlc_custom_create( p_this, sizeof(*p_blend),
-                                           VLC_OBJECT_GENERIC, "blend" );
+    filter_t *p_blend = vlc_custom_create( p_this, sizeof(*p_blend), "blend" );
     if( !p_blend )
         return NULL;
 
@@ -56,9 +56,6 @@ filter_t *filter_NewBlend( vlc_object_t *p_this,
     /* The blend module will be loaded when needed with the real
     * input format */
     p_blend->p_module = NULL;
-
-    /* */
-    vlc_object_attach( p_blend, p_this );
 
     return p_blend;
 }
@@ -121,16 +118,14 @@ video_splitter_t *video_splitter_New( vlc_object_t *p_this,
                                       const char *psz_name,
                                       const video_format_t *p_fmt )
 {
-    video_splitter_t *p_splitter = vlc_custom_create( p_this, sizeof(*p_splitter),
-                                           VLC_OBJECT_GENERIC, "video splitter" );
+    video_splitter_t *p_splitter = vlc_custom_create( p_this,
+                                       sizeof(*p_splitter), "video splitter" );
     if( !p_splitter )
         return NULL;
 
     video_format_Copy( &p_splitter->fmt, p_fmt );
 
     /* */
-    vlc_object_attach( p_splitter, p_this );
-
     p_splitter->p_module = module_need( p_splitter, "video splitter", psz_name, true );
     if( ! p_splitter->p_module )
     {

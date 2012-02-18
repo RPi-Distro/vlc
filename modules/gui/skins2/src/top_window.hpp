@@ -2,7 +2,7 @@
  * top_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 254bdc7cb009bfcec8962f82b2d8682502564806 $
+ * $Id: a64dd49d593bb8f814c6cf9defb5a0f1c53ffa7d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -44,7 +44,8 @@ private:
 public:
     TopWindow( intf_thread_t *pIntf, int xPos, int yPos,
                WindowManager &rWindowManager,
-               bool dragDrop, bool playOnDrop, bool visible );
+               bool dragDrop, bool playOnDrop, bool visible,
+               GenericWindow::WindowType_t type = GenericWindow::TopWindow );
     virtual ~TopWindow();
 
     /// Methods to process OS events.
@@ -55,6 +56,9 @@ public:
     virtual void processEvent( EvtLeave &rEvtLeave );
     virtual void processEvent( EvtKey &rEvtKey );
     virtual void processEvent( EvtScroll &rEvtScroll );
+    virtual void processEvent( EvtDragDrop &rEvtDragDrop );
+    virtual void processEvent( EvtDragOver &rEvtDragOver );
+    virtual void processEvent( EvtDragLeave &rEvtDragLeave );
 
     /// Forward an event to a control
     virtual void forwardEvent( EvtGeneric &rEvt, CtrlGeneric &rCtrl );
@@ -81,7 +85,7 @@ public:
     VarBool &getMaximizedVar() { return *m_pVarMaximized; }
 
     /// Get the initial visibility status
-    bool isVisible() const { return m_visible; }
+    bool getInitialVisibility() const { return m_initialVisibility; }
 
 protected:
     /// Actually show the window
@@ -100,7 +104,9 @@ private:
     //@}
 
     /// Initial visibility status
-    bool m_visible;
+    bool m_initialVisibility;
+    /// indicator if playback is requested on drag&drop
+    bool m_playOnDrop;
     /// Window manager
     WindowManager &m_rWindowManager;
     /// Current active layout of the window
@@ -111,6 +117,8 @@ private:
     CtrlGeneric *m_pCapturingControl;
     /// Control that has the focus
     CtrlGeneric *m_pFocusControl;
+    /// Control over which drag&drop is hovering
+    CtrlGeneric *m_pDragControl;
     /// Current key modifier (also used for mouse)
     int m_currModifier;
 

@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: d8a0cd513fc97a965767429730f2bd8f0018ba45 $
+ * $Id: 3f4c802679b01dea7e079ff4c2c6f03f4915911f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -129,7 +129,7 @@ static const uint32_t pi_6channels_in[] =
 
 /* recommended vorbis channel order for 4 channels */
 static const uint32_t pi_4channels_in[] =
-{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0 };
+{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, 0 };
 
 /* recommended vorbis channel order for 3 channels */
 static const uint32_t pi_3channels_in[] =
@@ -141,7 +141,7 @@ static const uint32_t pi_3channels_in[] =
 static int  OpenDecoder   ( vlc_object_t * );
 static int  OpenPacketizer( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
-static void *DecodeBlock  ( decoder_t *, block_t ** );
+static block_t *DecodeBlock  ( decoder_t *, block_t ** );
 
 static int  ProcessHeaders( decoder_t * );
 static void *ProcessPacket ( decoder_t *, ogg_packet *, block_t ** );
@@ -206,14 +206,14 @@ vlc_module_begin ()
     set_capability( "encoder", 130 )
     set_callbacks( OpenEncoder, CloseEncoder )
 
-    add_integer( ENC_CFG_PREFIX "quality", 0, NULL, ENC_QUALITY_TEXT,
+    add_integer( ENC_CFG_PREFIX "quality", 0, ENC_QUALITY_TEXT,
                  ENC_QUALITY_LONGTEXT, false )
         change_integer_range( 0, 10 )
-    add_integer( ENC_CFG_PREFIX "max-bitrate", 0, NULL, ENC_MAXBR_TEXT,
+    add_integer( ENC_CFG_PREFIX "max-bitrate", 0, ENC_MAXBR_TEXT,
                  ENC_MAXBR_LONGTEXT, false )
-    add_integer( ENC_CFG_PREFIX "min-bitrate", 0, NULL, ENC_MINBR_TEXT,
+    add_integer( ENC_CFG_PREFIX "min-bitrate", 0, ENC_MINBR_TEXT,
                  ENC_MINBR_LONGTEXT, false )
-    add_bool( ENC_CFG_PREFIX "cbr", false, NULL, ENC_CBR_TEXT,
+    add_bool( ENC_CFG_PREFIX "cbr", false, ENC_CBR_TEXT,
                  ENC_CBR_LONGTEXT, false )
 #endif
 
@@ -261,10 +261,8 @@ static int OpenDecoder( vlc_object_t *p_this )
 #endif
 
     /* Set callbacks */
-    p_dec->pf_decode_audio = (aout_buffer_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
-    p_dec->pf_packetize    = (block_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
+    p_dec->pf_decode_audio = DecodeBlock;
+    p_dec->pf_packetize    = DecodeBlock;
 
     return VLC_SUCCESS;
 }
@@ -289,7 +287,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
  ****************************************************************************
  * This function must be fed with ogg packets.
  ****************************************************************************/
-static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     ogg_packet oggpacket;

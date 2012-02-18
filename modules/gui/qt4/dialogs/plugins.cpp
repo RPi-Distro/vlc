@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008-2010 the VideoLAN team
- * $Id: 5199c95b7c6a3ffa71ccad4dd469156c20a25a9b $
+ * $Id: dd265b60faacc9776bb48d44d58049d5b60e39d8 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Jean-Philippe André <jpeg (at) videolan.org>
@@ -28,12 +28,12 @@
 
 #include "plugins.hpp"
 
-#include "util/customwidgets.hpp"
+#include "util/searchlineedit.hpp"
 #include "extensions_manager.hpp"
 
 #include <assert.h>
 
-//#include <vlc_modules.h>
+#include <vlc_modules.h>
 
 #include <QTreeWidget>
 #include <QStringList>
@@ -51,6 +51,10 @@
 #include <QPainter>
 #include <QStyleOptionViewItem>
 #include <QKeyEvent>
+#include <QPushButton>
+#include <QPixmap>
+
+static QPixmap *loadPixmapFromData( char *, int size );
 
 
 PluginDialog::PluginDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
@@ -165,6 +169,15 @@ PluginTab::~PluginTab()
                              treePlugins->header()->saveState() );
 }
 
+void PluginTab::keyPressEvent( QKeyEvent *keyEvent )
+{
+    if( keyEvent->key() == Qt::Key_Return ||
+        keyEvent->key() == Qt::Key_Enter )
+        keyEvent->accept();
+    else
+        keyEvent->ignore();
+}
+
 bool PluginTreeItem::operator< ( const QTreeWidgetItem & other ) const
 {
     int col = treeWidget()->sortColumn();
@@ -232,7 +245,11 @@ ExtensionTab::~ExtensionTab()
 // Do not close on ESC or ENTER
 void ExtensionTab::keyPressEvent( QKeyEvent *keyEvent )
 {
-    keyEvent->ignore();
+    if( keyEvent->key() == Qt::Key_Return ||
+        keyEvent->key() == Qt::Key_Enter )
+        keyEvent->accept();
+    else
+        keyEvent->ignore();
 }
 
 // Show more information
@@ -271,10 +288,12 @@ public:
         author = qfu( p_ext->psz_author );
         version = qfu( p_ext->psz_version );
         url = qfu( p_ext->psz_url );
+        icon = loadPixmapFromData( p_ext->p_icondata, p_ext->i_icondata_size );
     }
     ~ExtensionCopy() {}
 
     QString name, title, description, shortdesc, author, version, url;
+    QPixmap *icon;
 };
 
 /* Extensions list model for the QListView */
@@ -319,7 +338,7 @@ void ExtensionListModel::updateList()
     FOREACH_ARRAY( p_ext, p_mgr->extensions )
     {
         ext = new ExtensionCopy( p_ext );
-        extensions.push_back( ext );
+        extensions.append( ext );
     }
     FOREACH_END()
     vlc_mutex_unlock( &p_mgr->lock );
@@ -328,7 +347,7 @@ void ExtensionListModel::updateList()
     emit dataChanged( index( 0 ), index( rowCount() - 1 ) );
 }
 
-int ExtensionListModel::rowCount( const QModelIndex& parent ) const
+int ExtensionListModel::rowCount( const QModelIndex& ) const
 {
     int count = 0;
     ExtensionsManager *EM = ExtensionsManager::getInstance( p_intf );
@@ -357,11 +376,11 @@ QVariant ExtensionListModel::data( const QModelIndex& index, int role ) const
 }
 
 QModelIndex ExtensionListModel::index( int row, int column,
-                                       const QModelIndex& parent ) const
+                                       const QModelIndex& ) const
 {
     if( column != 0 )
         return QModelIndex();
-    if( row < 0 || row >= extensions.size() )
+    if( row < 0 || row >= extensions.count() )
         return QModelIndex();
 
     return createIndex( row, 0, extensions.at( row ) );
@@ -387,7 +406,6 @@ void ExtensionItemDelegate::paint( QPainter *painter,
     assert( ext != NULL );
 
     int width = option.rect.width();
-    int height = option.rect.height();
 
     // Pixmap: buffer where to draw
     QPixmap pix(option.rect.size());
@@ -417,25 +435,29 @@ void ExtensionItemDelegate::paint( QPainter *painter,
     pixpaint->setPen( pen );
     QFontMetrics metrics = option.fontMetrics;
 
-    /// @todo Add extension's icon
+    // Icon
+    if( ext->icon != NULL )
+    {
+        pixpaint->drawPixmap( 7, 7, 2*metrics.height(), 2*metrics.height(),
+                              *ext->icon );
+    }
 
     // Title: bold
+    pixpaint->setRenderHint( QPainter::TextAntialiasing );
     font.setBold( true );
     pixpaint->setFont( font );
-    pixpaint->drawText( QRect( 10, 7, width - 70, metrics.height() ),
+    pixpaint->drawText( QRect( 17 + 2 * metrics.height(), 7,
+                               width - 40 - 2 * metrics.height(),
+                               metrics.height() ),
                         Qt::AlignLeft, ext->title );
 
     // Short description: normal
     font.setBold( false );
     pixpaint->setFont( font );
-    pixpaint->drawText( QRect( 10, 7 + metrics.height(), width - 40,
+    pixpaint->drawText( QRect( 17 + 2 * metrics.height(),
+                               7 + metrics.height(), width - 40,
                                metrics.height() ),
                         Qt::AlignLeft, ext->shortdesc );
-
-    // Version: italic
-    font.setItalic( true );
-    pixpaint->setFont( font );
-    pixpaint->drawText( width - 40, 7 + metrics.height(), ext->version );
 
     // Flush paint operations
     delete pixpaint;
@@ -474,10 +496,18 @@ ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
     QGridLayout *layout = new QGridLayout( this );
 
     // Icon
-    /// @todo Use the extension's icon, when extensions will support icons :)
     QLabel *icon = new QLabel( this );
-    QPixmap pix( ":/logo/vlc48.png" );
-    icon->setPixmap( pix );
+    if( !extension.icon )
+    {
+        QPixmap pix( ":/logo/vlc48.png" );
+        icon->setPixmap( pix );
+    }
+    else
+    {
+        icon->setPixmap( *extension.icon );
+    }
+    icon->setAlignment( Qt::AlignCenter );
+    icon->setFixedSize( 48, 48 );
     layout->addWidget( icon, 1, 0, 2, 1 );
 
     // Title
@@ -544,4 +574,17 @@ ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
 ExtensionInfoDialog::~ExtensionInfoDialog()
 {
     delete extension;
+}
+
+static QPixmap *loadPixmapFromData( char *data, int size )
+{
+    if( !data || size <= 0 )
+        return NULL;
+    QPixmap *pixmap = new QPixmap();
+    if( !pixmap->loadFromData( (const uchar*) data, (uint) size ) )
+    {
+        delete pixmap;
+        return NULL;
+    }
+    return pixmap;
 }

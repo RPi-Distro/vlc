@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_keys.h: keycode defines
  *****************************************************************************
- * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: b647b56c61e8568a881cf3397cdeb12b035760a5 $
+ * Copyright (C) 2003-2009 VLC authors and VideoLAN
+ * $Id: f08243bddf0f2b06752bba8665ce50b2dc5d57bb $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_KEYS_H
@@ -86,10 +86,10 @@
 #define KEY_MOUSEWHEELLEFT   0x00F20000
 #define KEY_MOUSEWHEELRIGHT  0x00F30000
 
-VLC_EXPORT( char *, KeyToString, (uint_fast32_t i_key) ) LIBVLC_USED;
-VLC_EXPORT( uint_fast32_t, StringToKey,  (char *psz_key) ) LIBVLC_USED;
+VLC_API char *vlc_keycode2str(uint_fast32_t i_key) VLC_USED;
+VLC_API uint_fast32_t vlc_str2keycode(const char *str) VLC_USED;
 
-typedef enum vlc_key {
+typedef enum vlc_action {
     ACTIONID_NONE = 0,
     ACTIONID_QUIT,
     ACTIONID_PLAY_PAUSE,
@@ -145,14 +145,11 @@ typedef enum vlc_key {
     ACTIONID_SUBDELAY_DOWN,
     ACTIONID_SUBPOS_UP,
     ACTIONID_SUBPOS_DOWN,
-    ACTIONID_HISTORY_BACK,
-    ACTIONID_HISTORY_FORWARD,
     ACTIONID_AUDIO_TRACK,
     ACTIONID_SUBTITLE_TRACK,
-    ACTIONID_CUBESPEED_UP,
-    ACTIONID_CUBESPEED_DOWN,
-    ACTIONID_INTF_SHOW,
+    ACTIONID_INTF_TOGGLE_FSC,
     ACTIONID_INTF_HIDE,
+    ACTIONID_INTF_BOSS,
     /* chapter and title navigation */
     ACTIONID_TITLE_PREV,
     ACTIONID_TITLE_NEXT,
@@ -177,7 +174,6 @@ typedef enum vlc_key {
     ACTIONID_UNCROP_BOTTOM,
     ACTIONID_CROP_RIGHT,
     ACTIONID_UNCROP_RIGHT,
-    ACTIONID_DUMP,
     ACTIONID_RANDOM,
     ACTIONID_LOOP,
     ACTIONID_WALLPAPER,
@@ -205,15 +201,13 @@ typedef enum vlc_key {
     ACTIONID_RATE_SLOWER_FINE,
     ACTIONID_RATE_FASTER_FINE,
 
-} vlc_key_t;
+} vlc_action_t;
 
-VLC_EXPORT( vlc_key_t, vlc_GetActionId, (const char *psz_key) ) LIBVLC_USED;
+VLC_API vlc_action_t vlc_GetActionId(const char *psz_key) VLC_USED;
 
 struct hotkey
 {
     const char *psz_action;
-    vlc_key_t i_action;
-    uint_fast32_t i_key;
 };
 
 #endif

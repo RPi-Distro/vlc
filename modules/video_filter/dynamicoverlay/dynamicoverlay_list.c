@@ -2,7 +2,7 @@
  * dynamicoverlay_list.h : dynamic overlay list
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 66ad130a1b4c644c2dea294adce25256609b852b $
+ * $Id: 72ee5f65788e22a93aaee637799a47b254f37e00 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
@@ -36,7 +36,7 @@
  * list_t: Command queue
  *****************************************************************************/
 
-int ListInit( list_t *p_list )
+int do_ListInit( list_t *p_list )
 {
     p_list->pp_head = calloc( 16, sizeof( overlay_t * ) );
     if( p_list->pp_head == NULL )
@@ -46,7 +46,7 @@ int ListInit( list_t *p_list )
     return VLC_SUCCESS;
 }
 
-int ListDestroy( list_t *p_list )
+int do_ListDestroy( list_t *p_list )
 {
     for( overlay_t **pp_cur = p_list->pp_head;
          pp_cur < p_list->pp_tail;
@@ -130,7 +130,7 @@ overlay_t *ListWalk( list_t *p_list )
     for( ; pp_cur < p_list->pp_tail; ++pp_cur )
     {
         if( ( *pp_cur != NULL ) &&
-            ( (*pp_cur)->b_active == true )&&
+            ( (*pp_cur)->b_active )&&
             ( (*pp_cur)->format.i_chroma != VLC_FOURCC( '\0','\0','\0','\0') ) )
         {
             return *pp_cur;

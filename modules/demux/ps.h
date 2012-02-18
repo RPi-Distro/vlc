@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 8568124da4ba309bbb9db6f6cda6449cc45ed4d5 $
+ * $Id: 939d04cbf971f6c09c2946e6187178a278d5ee70 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -112,11 +112,11 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm, int i_id )
         }
         else if( ( i_id&0xff ) == 0x70 )
         {
-            es_format_Init( &tk->fmt, SPU_ES, VLC_FOURCC('o','g','t',' ') );
+            es_format_Init( &tk->fmt, SPU_ES, VLC_CODEC_OGT );
         }
         else if( ( i_id&0xfc ) == 0x00 )
         {
-            es_format_Init( &tk->fmt, SPU_ES, VLC_FOURCC('c','v','d',' ') );
+            es_format_Init( &tk->fmt, SPU_ES, VLC_CODEC_CVD );
         }
         else if( ( i_id&0xff ) == 0x10 )
         {
@@ -312,11 +312,11 @@ static inline int ps_pkt_size( const uint8_t *p, int i_peek )
     }
     else if( p[3] == 0xba )
     {
-        if( (p[4] >> 6) == 0x01 && i_peek >= 14 )
+        if( i_peek >= 14 && (p[4] >> 6) == 0x01 )
         {
             return 14 + (p[13]&0x07);
         }
-        else if( (p[4] >> 4) == 0x02 && i_peek >= 12 )
+        else if( i_peek >= 12 && (p[4] >> 4) == 0x02 )
         {
             return 12;
         }
@@ -577,15 +577,15 @@ static inline int ps_psm_fill( ps_psm_t *p_psm, block_t *p_pkt,
 {
     int i_buffer = p_pkt->i_buffer;
     uint8_t *p_buffer = p_pkt->p_buffer;
-    int i_length, i_version, i_info_length, i_esm_length, i_es_base;
+    int i_length, i_version, i_info_length, i_es_base;
 
     if( !p_psm || p_buffer[3] != 0xbc ) return VLC_EGENERIC;
 
     i_length = (uint16_t)(p_buffer[4] << 8) + p_buffer[5] + 6;
     if( i_length > i_buffer ) return VLC_EGENERIC;
 
-    //i_current_next_indicator = (p_buffer[6] && 0x01);
-    i_version = (p_buffer[6] && 0xf8);
+    //i_current_next_indicator = (p_buffer[6] & 0x01);
+    i_version = (p_buffer[6] & 0xf8);
 
     if( p_psm->i_version == i_version ) return VLC_EGENERIC;
 
@@ -595,8 +595,8 @@ static inline int ps_psm_fill( ps_psm_t *p_psm, block_t *p_pkt,
     if( i_info_length + 10 > i_length ) return VLC_EGENERIC;
 
     /* Elementary stream map */
-    i_esm_length = (uint16_t)(p_buffer[ 10 + i_info_length ] << 8) +
-        p_buffer[ 11 + i_info_length];
+    /* int i_esm_length = (uint16_t)(p_buffer[ 10 + i_info_length ] << 8) +
+        p_buffer[ 11 + i_info_length]; */
     i_es_base = 12 + i_info_length;
 
     while( i_es_base + 4 < i_length )

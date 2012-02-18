@@ -2,7 +2,7 @@
  * EPGView.h : EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 6c26be11f202a0409c2a988a95b1e56acd3bf61c $
+ * $Id: 738857d9916166b94059b52790ff2201bc8d1355 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -24,45 +24,69 @@
 #ifndef EPGVIEW_H
 #define EPGVIEW_H
 
-#include "EPGEvent.hpp"
+#include "EPGItem.hpp"
 
 #include <QGraphicsView>
+#include <QGraphicsScene>
 #include <QList>
+#include <QMap>
+#include <QMutex>
+#include <QDateTime>
 
 #define TRACKS_HEIGHT 60
 
-class QDateTime;
+typedef QMap<QDateTime, EPGItem *> EPGEventByTimeQMap;
+typedef QMap<QString, EPGEventByTimeQMap* > EPGTimeMapByChannelQMap;
+
+class EPGGraphicsScene : public QGraphicsScene
+{
+Q_OBJECT
+public:
+    explicit EPGGraphicsScene( QObject *parent = 0 );
+protected:
+    void drawBackground ( QPainter *, const QRectF &);
+};
+
 class EPGView : public QGraphicsView
 {
 Q_OBJECT
 
 public:
     explicit EPGView( QWidget *parent = 0 );
+    ~EPGView();
 
     void            setScale( double scaleFactor );
 
     void            updateStartTime();
     const QDateTime& startTime();
+    const QDateTime& baseTime();
 
-    void            addEvent( EPGEvent* event );
-    void            delEvent( EPGEvent* event );
+    bool            addEPGEvent( vlc_epg_event_t*, QString, bool );
+    void            removeEPGEvent( vlc_epg_event_t*, QString );
     void            updateDuration();
-
-    QList<QString>  getChannelList();
+    void            reset();
+    void            cleanup();
+    bool            hasValidData() const;
 
 signals:
     void            startTimeChanged( const QDateTime& startTime );
     void            durationChanged( int seconds );
-    void            eventFocusedChanged( EPGEvent * );
+    void            itemFocused( EPGItem * );
+    void            channelAdded( QString );
+    void            channelRemoved( QString );
 protected:
 
-    QList<QString>  m_channels;
     QDateTime       m_startTime;
+    QDateTime       m_baseTime;
     int             m_scaleFactor;
     int             m_duration;
 
 public slots:
-    void eventFocused( EPGEvent * );
+    void            focusItem( EPGItem * );
+private:
+    EPGTimeMapByChannelQMap epgitemsByChannel;
+    void updateChannels();
+    QMutex mutex;
 };
 
 #endif // EPGVIEW_H

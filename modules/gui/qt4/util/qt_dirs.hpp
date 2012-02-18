@@ -2,7 +2,7 @@
  * dirs.hpp : String Directory helpers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 08cad1cae7c9d9900bf2f31599268db12cd0250e $
+ * $Id: a6ea07cea116e79d8f3abf73ee7c6bf0527b4564 $
  *
  * Authors:       Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -47,5 +47,6 @@ static inline QString colon_unescape( QString s )
 {
     return s.replace( "\\:", ":" ).trimmed();
 }
-#endif
 
+QString toURI( const QString& s );
+#endif

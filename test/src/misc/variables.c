@@ -2,7 +2,7 @@
  * variables.c: test for variables
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 15e7fc5d0df865ecee61f43b1601b1ec3ad618e1 $
+ * $Id: d5091f43e0937fd4769a9d9d55f5a3186434b587 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -24,7 +24,7 @@
 #include <limits.h>
 
 #include "../../libvlc/test.h"
-#include <../src/control/libvlc_internal.h>
+#include "../lib/libvlc_internal.h"
 
 const char *psz_var_name[] = { "a", "abcdef", "abcdefg", "abc123", "abc-123", "é€!!" };
 const int i_var_count = 6;
@@ -324,11 +324,11 @@ static void test_change( libvlc_int_t *p_libvlc )
 
     /* Test everything is right */
     var_Change( p_libvlc, "bla", VLC_VAR_GETMIN, &val, NULL );
-    assert( val.i_int = i_min );
+    assert( val.i_int == i_min );
     var_Change( p_libvlc, "bla", VLC_VAR_GETMAX, &val, NULL );
-    assert( val.i_int = i_max );
+    assert( val.i_int == i_max );
     var_Change( p_libvlc, "bla", VLC_VAR_GETSTEP, &val, NULL );
-    assert( val.i_int = i_step );
+    assert( val.i_int == i_step );
 
     var_Destroy( p_libvlc, "bla" );
 }

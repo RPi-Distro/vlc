@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 #define _XPG4_2 /* ancilliary data on Solaris */
@@ -34,7 +34,9 @@
 #include <sys/socket.h>
 #include <sys/uio.h>
 #include <sys/resource.h> /* getrlimit() */
+#ifdef RLIMIT_RTPRIO
 #include <sched.h>
+#endif
 #include <errno.h>
 #include <netinet/in.h>
 

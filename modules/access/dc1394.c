@@ -8,20 +8,20 @@
  *          Frederic Benoist <fridorik@gmail.com> - updates from Rob's work
  *
  *****************************************************************************
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation;
- * version 2 of the License.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -80,7 +80,6 @@ struct demux_sys_t
     dc1394camera_t      *camera;
     int                 selected_camera;
     uint64_t            selected_uid;
-    picture_t           pic;
     uint32_t            dma_buffers;
     dc1394featureset_t  features;
     quadlet_t           supported_framerates;
@@ -156,7 +155,7 @@ static int FindCamera( demux_sys_t *sys, demux_t *p_demux )
         }
         if( !found )
         {
-            msg_Err( p_demux, "Can't find camera with uid : 0x%llx.",
+            msg_Err( p_demux, "Can't find camera with uid : 0x%"PRIx64".",
                      sys->selected_uid );
             goto end;
         }
@@ -194,8 +193,6 @@ static int Open( vlc_object_t *p_this )
     demux_sys_t  *p_sys;
     es_format_t   fmt;
     dc1394error_t res;
-    int           i_width;
-    int           i_height;
 
     if( strncmp(p_demux->psz_access, "dc1394", 6) != 0 )
         return VLC_EGENERIC;
@@ -232,7 +229,7 @@ static int Open( vlc_object_t *p_this )
     {
         msg_Err( p_demux, "Bad MRL, please check the option line "
                           "(MRL was: %s)",
-                          p_demux->psz_path );
+                          p_demux->psz_location );
         free( p_sys );
         return VLC_EGENERIC;
     }
@@ -378,21 +375,10 @@ static int Open( vlc_object_t *p_this )
     /* TODO - UYV444 chroma converter is missing, when it will be available
      * fourcc will become variable (and not just a fixed value for UYVY)
      */
-    i_width = p_sys->width;
-    i_height = p_sys->height;
-
-    if( picture_Setup( &p_sys->pic, VLC_CODEC_UYVY,
-                       i_width, i_height, 1, 1 ) )
-    {
-        msg_Err( p_demux ,"unknown chroma" );
-        Close( p_this );
-        return VLC_EGENERIC;
-    }
-
     es_format_Init( &fmt, VIDEO_ES, VLC_CODEC_UYVY );
 
-    fmt.video.i_width = i_width;
-    fmt.video.i_height = i_height;
+    fmt.video.i_width = p_sys->width;
+    fmt.video.i_height = p_sys->height;
 
     msg_Dbg( p_demux, "Added new video es %4.4s %dx%d",
              (char*)&fmt.i_codec, fmt.video.i_width, fmt.video.i_height );
@@ -715,7 +701,7 @@ static int process_options( demux_t *p_demux )
     const char *in_fmt = NULL;
     float rate_f;
 
-    psz_dup = strdup( p_demux->psz_path );
+    psz_dup = strdup( p_demux->psz_location );
     psz_parser = psz_dup;
     for( token = strtok_r( psz_parser,":",&state); token;
          token = strtok_r( NULL, ":", &state ) )

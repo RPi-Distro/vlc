@@ -13,21 +13,25 @@ include $(top_srcdir)/modules/common.am
 libfbosd_plugin_la_SOURCES = $(SOURCES_fbosd)
 nodist_libfbosd_plugin_la_SOURCES = $(nodist_SOURCES_fbosd)
 # Force per-target objects:
-libfbosd_plugin_la_CFLAGS = $(AM_CFLAGS)
-libfbosd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libfbosd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libfbosd_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_fbosd)
+libfbosd_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_fbosd)
+libfbosd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_fbosd)
+libfbosd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_fbosd)
 # Set LIBADD and DEPENDENCIES manually:
-libfbosd_plugin_la_LIBADD = $(AM_LIBADD)
-libfbosd_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libfbosd_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_fbosd)
+libfbosd_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_fbosd)
+libfbosd_plugin_la_DEPENDENCIES =
 
 # The ncurses plugin
 libncurses_plugin_la_SOURCES = $(SOURCES_ncurses)
 nodist_libncurses_plugin_la_SOURCES = $(nodist_SOURCES_ncurses)
 # Force per-target objects:
-libncurses_plugin_la_CFLAGS = $(AM_CFLAGS)
-libncurses_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libncurses_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libncurses_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ncurses)
+libncurses_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ncurses)
+libncurses_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ncurses)
+libncurses_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ncurses)
 # Set LIBADD and DEPENDENCIES manually:
-libncurses_plugin_la_LIBADD = $(AM_LIBADD)
-libncurses_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libncurses_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ncurses)
+libncurses_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ncurses)
+libncurses_plugin_la_DEPENDENCIES =
 

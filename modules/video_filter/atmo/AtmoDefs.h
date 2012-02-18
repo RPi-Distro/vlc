@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 739978a6fdc82becf4b8e0946b0b402cdff6616e $
+ * $Id: a7719a0133149529f19c0d15cf2546b22dc6d9ed $
  */
 
 #ifndef _AtmoDefs_h_
@@ -13,7 +13,6 @@
 
 #if defined(__LIBVLC__)
 
-#   include "config.h"
 #   include <vlc_common.h>
 
 /* some things need to be changed if this code is used inside VideoLan Filter Module */
@@ -79,7 +78,7 @@ typedef struct
 
 
 
-// maximal Anzahl Kan‰le... original 5!
+// maximal Anzahl Kan√§le... original 5!
 #define CAP_MAX_NUM_ZONES  64
 // only for classic to avoid changing too much code!
 // #define ATMO_MAX_NUM_CHANNELS 5
@@ -117,7 +116,7 @@ enum AtmoConnectionType
       actMoMoLight = 6,
       actFnordlicht = 7
 };
-static const char *AtmoDeviceTypes[] = {
+static const char AtmoDeviceTypes[8][16] = {
       "Atmo-Classic",
       "Dummy",
       "DMX",

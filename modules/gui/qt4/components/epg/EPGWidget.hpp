@@ -2,7 +2,7 @@
  * EPGWidget.h : EPGWidget
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: ad03eac465e2cadb942a9b8fc53473f2d7e8b92d $
+ * $Id: f9b059620be42c1137ba0587954b181f73c3ff2c $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -25,7 +25,7 @@
 #define EPGWIDGET_H
 
 #include "EPGView.hpp"
-#include "EPGEvent.hpp"
+#include "EPGItem.hpp"
 #include "EPGRuler.hpp"
 #include "EPGChannels.hpp"
 
@@ -33,7 +33,7 @@
 #include <vlc_epg.h>
 
 #include <QWidget>
-#include <QMultiMap>
+#include <QStackedWidget>
 
 class QDateTime;
 
@@ -42,20 +42,23 @@ class EPGWidget : public QWidget
     Q_OBJECT
 public:
     explicit EPGWidget( QWidget* parent = 0 );
+    void reset();
 
 public slots:
     void setZoom( int level );
-    void updateEPG( vlc_epg_t **pp_epg, int i_epg );
+    void updateEPG( input_item_t * );
 
 private:
     EPGRuler* m_rulerWidget;
     EPGView* m_epgView;
     EPGChannels *m_channelsWidget;
+    QStackedWidget *rootWidget;
 
-    QMultiMap<QString, EPGEvent*> m_events;
+    uint8_t i_event_source_type;
+    bool b_input_type_known;
 
 signals:
-    void itemSelectionChanged( EPGEvent * );
+    void itemSelectionChanged( EPGItem * );
 };
 
 #endif // EPGWIDGET_H

@@ -2,7 +2,7 @@
  * macosx.m: minimal Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: d7c95ea408d72ae24407191818717e7b86fcffd4 $
+ * $Id: c3afae0c7989037a26aa45f6087ac68e6e1e68b2 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -53,8 +53,7 @@ void CloseVideoGL ( vlc_object_t * );
 vlc_module_begin ()
     /* Minimal interface. see intf.m */
     set_shortname( "Minimal Macosx" )
-    add_shortcut( "minimal_macosx" )
-    add_shortcut( "miosx" )
+    add_shortcut( "minimal_macosx", "miosx" )
     set_description( N_("Minimal Mac OS X interface") )
     set_capability( "interface", 50 )
     set_callbacks( OpenIntf, CloseIntf )
@@ -63,8 +62,7 @@ vlc_module_begin ()
 
     add_submodule ()
         /* Will be loaded even without interface module. see voutgl.m */
-        add_shortcut( "minimal_macosx" )
-        add_shortcut( "miosx" )
+        add_shortcut( "minimal_macosx", "miosx" )
         set_description( N_("Minimal Mac OS X OpenGL video output (opens a borderless window)") )
         set_capability( "opengl provider", 50 )
         set_category( CAT_VIDEO)

@@ -2,7 +2,7 @@
  * mms.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 655038f1e1582c78f76ffc667542d2a351f13687 $
+ * $Id: 15586cc9a48145a6008bef926ca12851695f20a7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -106,7 +106,7 @@ int  MMSTUOpen( access_t *p_access )
     vlc_mutex_init( &p_sys->lock_netwrite );
 
     /* *** Parse URL and get server addr/port and path *** */
-    vlc_UrlParse( &p_sys->url, p_access->psz_path, 0 );
+    vlc_UrlParse( &p_sys->url, p_access->psz_location, 0 );
     if( p_sys->url.psz_host == NULL || *p_sys->url.psz_host == '\0' )
     {
         msg_Err( p_access, "invalid server name" );
@@ -253,7 +253,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t)var_GetInteger( p_access, "mms-caching" ) * INT64_C(1000);
+            *pi_64 = INT64_C(1000)
+                   * var_InheritInteger( p_access, "network-caching" );
             break;
 
         case ACCESS_GET_PRIVATE_ID_STATE:
@@ -1554,6 +1555,7 @@ static int mms_HeaderMediaRead( access_t *p_access, int i_type )
     return -1;
 }
 
+VLC_NORETURN
 static void *KeepAliveThread( void *p_data )
 {
     access_t *p_access = p_data;

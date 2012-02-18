@@ -2,7 +2,7 @@
  * float32.c : precise float32 audio mixer implementation
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: f35a6a5ea561aa781657a37d279caab6f9cc040c $
+ * $Id: f148b33bb45f23f1583d250f5eed4236e4890682 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -33,13 +33,13 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
+#include <vlc_aout_mixer.h>
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int  Create    ( vlc_object_t * );
-
-static void DoWork    ( aout_mixer_t *, aout_buffer_t * );
+static int Create( vlc_object_t * );
+static void DoWork( audio_mixer_t *, aout_buffer_t *, float );
 
 /*****************************************************************************
  * Module descriptor
@@ -52,145 +52,32 @@ vlc_module_begin ()
     set_callbacks( Create, NULL )
 vlc_module_end ()
 
-/*****************************************************************************
- * Create: allocate mixer
- *****************************************************************************/
+/**
+ * Initializes the mixer
+ */
 static int Create( vlc_object_t *p_this )
 {
-    aout_mixer_t * p_mixer = (aout_mixer_t *)p_this;
+    audio_mixer_t *p_mixer = (audio_mixer_t *)p_this;
 
-    if ( p_mixer->fmt.i_format != VLC_CODEC_FL32 )
+    if (p_mixer->format != VLC_CODEC_FL32)
         return -1;
-
-    /* Use the trivial mixer when we can */
-    if ( p_mixer->input_count == 1 && p_mixer->multiplier == 1.0 )
-    {
-        int i;
-        for( i = 0; i < p_mixer->input_count; i++ )
-        {
-            if( p_mixer->input[i]->multiplier != 1.0 )
-                break;
-        }
-        if( i >= p_mixer->input_count )
-            return -1;
-    }
 
     p_mixer->mix = DoWork;
     return 0;
 }
 
-/*****************************************************************************
- * ScaleWords: prepare input words for averaging
- *****************************************************************************/
-static void ScaleWords( float * p_out, const float * p_in, size_t i_nb_words,
-                        int i_nb_inputs, float f_multiplier )
+/**
+ * Mixes a new output buffer
+ */
+static void DoWork( audio_mixer_t * p_mixer, aout_buffer_t *p_buffer,
+                    float f_multiplier )
 {
-    int i;
-    f_multiplier /= i_nb_inputs;
+    if( f_multiplier == 1.0 )
+        return; /* nothing to do */
 
-    for ( i = i_nb_words; i--; )
-    {
-        *p_out++ = *p_in++ * f_multiplier;
-    }
+    float *p = (float *)p_buffer->p_buffer;
+    for( size_t i = p_buffer->i_buffer / sizeof(float); i > 0; i-- )
+        *(p++) *= f_multiplier;
+
+    (void) p_mixer;
 }
-
-/*****************************************************************************
- * MeanWords: average input words
- *****************************************************************************/
-static void MeanWords( float * p_out, const float * p_in, size_t i_nb_words,
-                       int i_nb_inputs, float f_multiplier )
-{
-    int i;
-    f_multiplier /= i_nb_inputs;
-
-    for ( i = i_nb_words; i--; )
-    {
-        *p_out++ += *p_in++ * f_multiplier;
-    }
-}
-
-/*****************************************************************************
- * DoWork: mix a new output buffer
- *****************************************************************************
- * Terminology : in this function a word designates a single float32, eg.
- * a stereo sample is consituted of two words.
- *****************************************************************************/
-static void DoWork( aout_mixer_t * p_mixer, aout_buffer_t * p_buffer )
-{
-    const int i_nb_inputs = p_mixer->input_count;
-    const float f_multiplier_global = p_mixer->multiplier;
-    const int i_nb_channels = aout_FormatNbChannels( &p_mixer->fmt );
-    int i_input;
-
-    for ( i_input = 0; i_input < i_nb_inputs; i_input++ )
-    {
-        int i_nb_words = p_buffer->i_nb_samples * i_nb_channels;
-        aout_mixer_input_t * p_input = p_mixer->input[i_input];
-        float f_multiplier = f_multiplier_global * p_input->multiplier;
-
-        float * p_out = (float *)p_buffer->p_buffer;
-        float * p_in = (float *)p_input->begin;
-
-        if ( p_input->is_invalid )
-            continue;
-
-        for ( ; ; )
-        {
-            ptrdiff_t i_available_words = (
-                 (float *)p_input->fifo.p_first->p_buffer - p_in)
-                                   + p_input->fifo.p_first->i_nb_samples
-                                   * i_nb_channels;
-
-            if ( i_available_words < i_nb_words )
-            {
-                aout_buffer_t * p_old_buffer;
-
-                if ( i_available_words > 0 )
-                {
-                    if ( !i_input )
-                    {
-                        ScaleWords( p_out, p_in, i_available_words,
-                                    i_nb_inputs, f_multiplier );
-                    }
-                    else
-                    {
-                        MeanWords( p_out, p_in, i_available_words,
-                                   i_nb_inputs, f_multiplier );
-                    }
-                }
-
-                i_nb_words -= i_available_words;
-                p_out += i_available_words;
-
-                /* Next buffer */
-                p_old_buffer = aout_FifoPop( NULL, &p_input->fifo );
-                aout_BufferFree( p_old_buffer );
-                if ( p_input->fifo.p_first == NULL )
-                {
-                    msg_Err( p_mixer, "internal amix error" );
-                    return;
-                }
-                p_in = (float *)p_input->fifo.p_first->p_buffer;
-            }
-            else
-            {
-                if ( i_nb_words > 0 )
-                {
-                    if ( !i_input )
-                    {
-                        ScaleWords( p_out, p_in, i_nb_words, i_nb_inputs,
-                                    f_multiplier );
-                    }
-                    else
-                    {
-                        MeanWords( p_out, p_in, i_nb_words, i_nb_inputs,
-                                   f_multiplier );
-                    }
-                }
-                p_input->begin = (void *)(p_in + i_nb_words);
-                break;
-            }
-        }
-    }
-}
-

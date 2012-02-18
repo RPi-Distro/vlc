@@ -25,6 +25,7 @@
 #endif
 
 #include <stdlib.h>
+#include <limits.h>
 #include <assert.h>
 
 #include <xcb/xcb.h>
@@ -44,9 +45,10 @@
     "XVideo hardware adaptor to use. By default, VLC will " \
     "use the first functional adaptor.")
 
-#define SHM_TEXT N_("Use shared memory")
-#define SHM_LONGTEXT N_( \
-    "Use shared memory to communicate between VLC and the X server.")
+#define FORMAT_TEXT N_("XVideo format id")
+#define FORMAT_LONGTEXT N_( \
+    "XVideo image format id to use. By default, VLC will " \
+    "try to use the best match for the video being played.")
 
 static int  Open (vlc_object_t *);
 static void Close (vlc_object_t *);
@@ -59,19 +61,18 @@ vlc_module_begin ()
     set_description (N_("XVideo output (XCB)"))
     set_category (CAT_VIDEO)
     set_subcategory (SUBCAT_VIDEO_VOUT)
-    set_capability ("vout display", 155)
+    set_capability ("vout display", 200)
     set_callbacks (Open, Close)
 
-    add_integer ("xvideo-adaptor", -1, NULL,
+    add_integer ("xvideo-adaptor", -1,
                  ADAPTOR_TEXT, ADAPTOR_LONGTEXT, true)
-    add_bool ("x11-shm", true, NULL, SHM_TEXT, SHM_LONGTEXT, true)
-        add_deprecated_alias ("xvideo-shm")
-    add_shortcut ("xcb-xv")
-    add_shortcut ("xv")
-    add_shortcut ("xvideo")
+    add_integer ("xvideo-format-id", 0,
+                 FORMAT_TEXT, FORMAT_LONGTEXT, true)
+    add_obsolete_bool ("xvideo-shm") /* removed in 2.0.0 */
+    add_shortcut ("xcb-xv", "xv", "xvideo", "xid")
 vlc_module_end ()
 
-#define MAX_PICTURES (VOUT_MAX_PICTURES)
+#define MAX_PICTURES (128)
 
 struct vout_display_sys_t
 {
@@ -96,7 +97,7 @@ struct vout_display_sys_t
 };
 
 static picture_pool_t *Pool (vout_display_t *, unsigned);
-static void Display (vout_display_t *, picture_t *);
+static void Display (vout_display_t *, picture_t *, subpicture_t *subpicture);
 static int Control (vout_display_t *, int, va_list);
 static void Manage (vout_display_t *);
 
@@ -131,7 +132,7 @@ static bool CheckXVideo (vout_display_t *vd, xcb_connection_t *conn)
     return ok;
 }
 
-static vlc_fourcc_t ParseFormat (vout_display_t *vd,
+static vlc_fourcc_t ParseFormat (vlc_object_t *obj,
                                  const xcb_xv_image_format_info_t *restrict f)
 {
     switch (f->type)
@@ -140,36 +141,45 @@ static vlc_fourcc_t ParseFormat (vout_display_t *vd,
         switch (f->num_planes)
         {
           case 1:
-            switch (f->bpp)
+            switch (popcount (f->red_mask | f->green_mask | f->blue_mask))
             {
-              case 32:
-                if (f->depth == 24)
-                    return VLC_CODEC_RGB32;
-                if (f->depth == 32)
-                    return 0; /* ARGB -> VLC cannot do that currently */
-                break;
               case 24:
-                if (f->depth == 24)
+                if (f->bpp == 32 && f->depth == 32)
+                    return VLC_CODEC_RGBA;
+                if (f->bpp == 32 && f->depth == 24)
+                    return VLC_CODEC_RGB32;
+                if (f->bpp == 24 && f->depth == 24)
                     return VLC_CODEC_RGB24;
                 break;
               case 16:
                 if (f->byte_order != ORDER)
                     return 0; /* Mixed endian! */
-                if (f->depth == 16)
+                if (f->bpp == 16 && f->depth == 16)
                     return VLC_CODEC_RGB16;
-                if (f->depth == 15)
+                break;
+              case 15:
+                if (f->byte_order != ORDER)
+                    return 0; /* Mixed endian! */
+                if (f->bpp == 16 && f->depth == 16)
+                    return VLC_CODEC_RGBT;
+                if (f->bpp == 16 && f->depth == 15)
                     return VLC_CODEC_RGB15;
                 break;
+              case 12:
+                if (f->bpp == 16 && f->depth == 16)
+                    return VLC_CODEC_RGBA16;
+                if (f->bpp == 16 && f->depth == 12)
+                    return VLC_CODEC_RGB12;
               case 8:
-                if (f->depth == 8)
+                if (f->bpp == 8 && f->depth == 8)
                     return VLC_CODEC_RGB8;
                 break;
             }
             break;
         }
-        msg_Err (vd, "unknown XVideo RGB format %"PRIx32" (%.4s)",
+        msg_Err (obj, "unknown XVideo RGB format %"PRIx32" (%.4s)",
                  f->id, f->guid);
-        msg_Dbg (vd, " %"PRIu8" planes, %"PRIu8" bits/pixel, "
+        msg_Dbg (obj, " %"PRIu8" planes, %"PRIu8" bits/pixel, "
                  "depth %"PRIu8, f->num_planes, f->bpp, f->depth);
         break;
 
@@ -215,41 +225,94 @@ static vlc_fourcc_t ParseFormat (vout_display_t *vd,
             break;
         }
     bad:
-        msg_Err (vd, "unknown XVideo YUV format %"PRIx32" (%.4s)", f->id,
+        msg_Err (obj, "unknown XVideo YUV format %"PRIx32" (%.4s)", f->id,
                  f->guid);
-        msg_Dbg (vd, " %"PRIu8" planes, %"PRIu32" bits/pixel, "
+        msg_Dbg (obj, " %"PRIu8" planes, %"PRIu32" bits/pixel, "
                  "%"PRIu32"/%"PRIu32"/%"PRIu32" bits/sample", f->num_planes,
                  f->bpp, f->y_sample_bits, f->u_sample_bits, f->v_sample_bits);
-        msg_Dbg (vd, " period: %"PRIu32"/%"PRIu32"/%"PRIu32"x"
+        msg_Dbg (obj, " period: %"PRIu32"/%"PRIu32"/%"PRIu32"x"
                  "%"PRIu32"/%"PRIu32"/%"PRIu32,
                  f->vhorz_y_period, f->vhorz_u_period, f->vhorz_v_period,
                  f->vvert_y_period, f->vvert_u_period, f->vvert_v_period);
-        msg_Warn (vd, " order: %.32s", f->vcomp_order);
+        msg_Warn (obj, " order: %.32s", f->vcomp_order);
         break;
     }
     return 0;
 }
 
-
-static const xcb_xv_image_format_info_t *
-FindFormat (vout_display_t *vd,
-            vlc_fourcc_t chroma, const video_format_t *fmt,
-            xcb_xv_port_t port,
-            const xcb_xv_list_image_formats_reply_t *list,
-            xcb_xv_query_image_attributes_reply_t **restrict pa)
+static bool BetterFormat (vlc_fourcc_t a, const vlc_fourcc_t *tab,
+                          unsigned *rankp)
 {
-    xcb_connection_t *conn = vd->sys->conn;
-    const xcb_xv_image_format_info_t *f, *end;
+    for (unsigned i = 0, max = *rankp; i < max && tab[i] != 0; i++)
+        if (tab[i] == a)
+        {
+            *rankp = i;
+            return true;
+        }
+    return false;
+}
 
-#ifndef XCB_XV_OLD
-    f = xcb_xv_list_image_formats_format (list);
-#else
-    f = (xcb_xv_image_format_info_t *) (list + 1);
-#endif
-    end = f + xcb_xv_list_image_formats_format_length (list);
-    for (; f < end; f++)
+static xcb_xv_query_image_attributes_reply_t *
+FindFormat (vlc_object_t *obj, xcb_connection_t *conn, video_format_t *fmt,
+            const xcb_xv_adaptor_info_t *a, uint32_t *idp)
+{
+    /* Order chromas by preference */
+    vlc_fourcc_t tab[7];
+    const vlc_fourcc_t *chromav = tab;
+
+    vlc_fourcc_t chroma = var_InheritInteger (obj, "xvideo-format-id");
+    if (chroma != 0) /* Forced chroma */
     {
-        if (chroma != ParseFormat (vd, f))
+        tab[0] = chroma;
+        tab[1] = 0;
+    }
+    else if (vlc_fourcc_IsYUV (fmt->i_chroma)) /* YUV chroma */
+    {
+        chromav = vlc_fourcc_GetYUVFallback (fmt->i_chroma);
+    }
+    else /* RGB chroma */
+    {
+        tab[0] = fmt->i_chroma;
+        tab[1] = VLC_CODEC_RGB32;
+        tab[2] = VLC_CODEC_RGB24;
+        tab[3] = VLC_CODEC_RGB16;
+        tab[4] = VLC_CODEC_RGB15;
+        tab[5] = VLC_CODEC_YUYV;
+        tab[6] = 0;
+    }
+
+    /* Get available image formats */
+    xcb_xv_list_image_formats_reply_t *list =
+        xcb_xv_list_image_formats_reply (conn,
+            xcb_xv_list_image_formats (conn, a->base_id), NULL);
+    if (list == NULL)
+        return NULL;
+
+    /* Check available XVideo chromas */
+    xcb_xv_query_image_attributes_reply_t *attr = NULL;
+    unsigned rank = UINT_MAX;
+
+    for (const xcb_xv_image_format_info_t *f =
+             xcb_xv_list_image_formats_format (list),
+                                          *f_end =
+             f + xcb_xv_list_image_formats_format_length (list);
+         f < f_end;
+         f++)
+    {
+        chroma = ParseFormat (obj, f);
+        if (chroma == 0)
+            continue;
+
+        /* Oink oink! */
+        if ((chroma == VLC_CODEC_I420 || chroma == VLC_CODEC_YV12)
+         && a->name_size >= 4
+         && !memcmp ("OMAP", xcb_xv_adaptor_info_name (a), 4))
+        {
+            msg_Dbg (obj, "skipping slow I420 format");
+            continue; /* OMAP framebuffer sucks at YUV 4:2:0 */
+        }
+
+        if (!BetterFormat (chroma, chromav, &rank))
             continue;
 
         /* VLC pads scanline to 16 pixels internally */
@@ -257,20 +320,20 @@ FindFormat (vout_display_t *vd,
         unsigned height = fmt->i_height;
         xcb_xv_query_image_attributes_reply_t *i;
         i = xcb_xv_query_image_attributes_reply (conn,
-            xcb_xv_query_image_attributes (conn, port, f->id,
+            xcb_xv_query_image_attributes (conn, a->base_id, f->id,
                                            width, height), NULL);
         if (i == NULL)
             continue;
 
         if (i->width != width || i->height != height)
         {
-            msg_Warn (vd, "incompatible size %ux%u -> %"PRIu32"x%"PRIu32,
+            msg_Warn (obj, "incompatible size %ux%u -> %"PRIu32"x%"PRIu32,
                       fmt->i_width, fmt->i_height,
                       i->width, i->height);
-            var_Create (vd->p_libvlc, "xvideo-resolution-error", VLC_VAR_BOOL);
-            if (!var_GetBool (vd->p_libvlc, "xvideo-resolution-error"))
+            var_Create (obj->p_libvlc, "xvideo-res-error", VLC_VAR_BOOL);
+            if (!var_GetBool (obj->p_libvlc, "xvideo-res-error"))
             {
-                dialog_FatalWait (vd, _("Video acceleration not available"),
+                dialog_FatalWait (obj, _("Video acceleration not available"),
                     _("Your video output acceleration driver does not support "
                       "the required resolution: %ux%u pixels. The maximum "
                       "supported resolution is %"PRIu32"x%"PRIu32".\n"
@@ -278,15 +341,28 @@ FindFormat (vout_display_t *vd,
                       "rendering videos with overly large resolution "
                       "may cause severe performance degration."),
                                   width, height, i->width, i->height);
-                var_SetBool (vd->p_libvlc, "xvideo-resolution-error", true);
+                var_SetBool (obj->p_libvlc, "xvideo-res-error", true);
             }
             free (i);
             continue;
         }
-        *pa = i;
-        return f;
+
+        fmt->i_chroma = chroma;
+        if (f->type == XCB_XV_IMAGE_FORMAT_INFO_TYPE_RGB)
+        {
+            fmt->i_rmask = f->red_mask;
+            fmt->i_gmask = f->green_mask;
+            fmt->i_bmask = f->blue_mask;
+        }
+        *idp = f->id;
+        free (attr);
+        attr = i;
+        if (rank == 0)
+            break; /* shortcut for perfect match */
     }
-    return NULL;
+
+    free (list);
+    return attr;
 }
 
 
@@ -298,7 +374,7 @@ static int Open (vlc_object_t *obj)
     vout_display_t *vd = (vout_display_t *)obj;
     vout_display_sys_t *p_sys;
 
-    if (!var_CreateGetBool (obj, "overlay"))
+    if (!var_InheritBool (obj, "overlay"))
         return VLC_EGENERIC;
     p_sys = malloc (sizeof (*p_sys));
     if (p_sys == NULL)
@@ -320,7 +396,6 @@ static int Open (vlc_object_t *obj)
     p_sys->conn = conn;
     p_sys->att = NULL;
     p_sys->pool = NULL;
-    p_sys->swap_uv = false;
 
     if (!CheckXVideo (vd, conn))
     {
@@ -338,15 +413,15 @@ static int Open (vlc_object_t *obj)
     if (adaptors == NULL)
         goto error;
 
-    int forced_adaptor = var_CreateGetInteger (obj, "xvideo-adaptor");
+    int forced_adaptor = var_InheritInteger (obj, "xvideo-adaptor");
 
     /* */
-    video_format_t fmt = vd->fmt;
-    bool found_adaptor = false;
+    video_format_t fmt;
+    p_sys->port = 0;
 
     xcb_xv_adaptor_info_iterator_t it;
     for (it = xcb_xv_query_adaptors_info_iterator (adaptors);
-         it.rem > 0 && !found_adaptor;
+         it.rem > 0;
          xcb_xv_adaptor_info_next (&it))
     {
         const xcb_xv_adaptor_info_t *a = it.data;
@@ -362,64 +437,11 @@ static int Open (vlc_object_t *obj)
          || !(a->type & XCB_XV_TYPE_IMAGE_MASK))
             continue;
 
-        xcb_xv_list_image_formats_reply_t *r =
-            xcb_xv_list_image_formats_reply (conn,
-                xcb_xv_list_image_formats (conn, a->base_id), NULL);
-        if (r == NULL)
-            continue;
-
         /* Look for an image format */
-        const xcb_xv_image_format_info_t *xfmt = NULL;
-        const vlc_fourcc_t *chromas, chromas_default[] = {
-            fmt.i_chroma,
-            VLC_CODEC_RGB32,
-            VLC_CODEC_RGB24,
-            VLC_CODEC_RGB16,
-            VLC_CODEC_RGB15,
-            VLC_CODEC_YUYV,
-            0
-        };
-        if (vlc_fourcc_IsYUV (fmt.i_chroma))
-            chromas = vlc_fourcc_GetYUVFallback (fmt.i_chroma);
-        else
-            chromas = chromas_default;
-
-        vlc_fourcc_t chroma;
-        for (size_t i = 0; chromas[i]; i++)
-        {
-            chroma = chromas[i];
-
-            /* Oink oink! */
-            if ((chroma == VLC_CODEC_I420 || chroma == VLC_CODEC_YV12)
-             && a->name_size >= 4
-             && !memcmp ("OMAP", xcb_xv_adaptor_info_name (a), 4))
-            {
-                msg_Dbg (vd, "skipping slow I420 format");
-                continue; /* OMAP framebuffer sucks at YUV 4:2:0 */
-            }
-
-            free (p_sys->att);
-            xfmt = FindFormat (vd, chroma, &fmt, a->base_id, r, &p_sys->att);
-            if (xfmt != NULL)
-            {
-                p_sys->id = xfmt->id;
-                p_sys->swap_uv = vlc_fourcc_AreUVPlanesSwapped (fmt.i_chroma,
-                                                                chroma);
-                if (!p_sys->swap_uv)
-                    fmt.i_chroma = chroma;
-                if (xfmt->type == XCB_XV_IMAGE_FORMAT_INFO_TYPE_RGB)
-                {
-                    fmt.i_rmask = xfmt->red_mask;
-                    fmt.i_gmask = xfmt->green_mask;
-                    fmt.i_bmask = xfmt->blue_mask;
-                }
-                break;
-            }
-            else
-                p_sys->att = NULL;
-        }
-        free (r);
-        if (xfmt == NULL) /* No acceptable image formats */
+        fmt = vd->fmt;
+        free (p_sys->att);
+        p_sys->att = FindFormat (obj, conn, &fmt, a, &p_sys->id);
+        if (p_sys->att == NULL) /* No acceptable image formats */
             continue;
 
         /* Grab a port */
@@ -498,15 +520,15 @@ static int Open (vlc_object_t *obj)
             }
         }
         xcb_xv_ungrab_port (conn, p_sys->port, XCB_CURRENT_TIME);
+        p_sys->port = 0;
         msg_Dbg (vd, "no usable X11 visual");
         continue; /* No workable XVideo format (visual/depth) */
 
     created_window:
-        found_adaptor = true;
         break;
     }
     free (adaptors);
-    if (!found_adaptor)
+    if (!p_sys->port)
     {
         msg_Err (vd, "no available XVideo adaptor");
         goto error;
@@ -549,13 +571,18 @@ static int Open (vlc_object_t *obj)
     /* Create cursor */
     p_sys->cursor = CreateBlankCursor (conn, screen);
 
-    CheckSHM (obj, conn, &p_sys->shm);
+    p_sys->shm = CheckSHM (obj, conn);
 
     /* */
     vout_display_info_t info = vd->info;
     info.has_pictures_invalid = false;
+    info.has_event_thread = true;
 
     /* Setup vout_display_t once everything is fine */
+    p_sys->swap_uv = vlc_fourcc_AreUVPlanesSwapped (fmt.i_chroma,
+                                                    vd->fmt.i_chroma);
+    if (p_sys->swap_uv)
+        fmt.i_chroma = vd->fmt.i_chroma;
     vd->fmt = fmt;
     vd->info = info;
 
@@ -566,10 +593,13 @@ static int Open (vlc_object_t *obj)
     vd->manage = Manage;
 
     /* */
-    vout_display_SendEventFullscreen (vd, false);
+    bool is_fullscreen = vd->cfg->is_fullscreen;
+    if (is_fullscreen && vout_window_SetFullScreen (p_sys->embed, true))
+        is_fullscreen = false;
+    vout_display_SendEventFullscreen (vd, is_fullscreen);
     unsigned width, height;
     if (!GetWindowSize (p_sys->embed, conn, &width, &height))
-        vout_display_SendEventDisplaySize (vd, width, height, false);
+        vout_display_SendEventDisplaySize (vd, width, height, is_fullscreen);
 
     return VLC_SUCCESS;
 
@@ -611,68 +641,76 @@ static void Close (vlc_object_t *obj)
     free (p_sys);
 }
 
+static void PoolAlloc (vout_display_t *vd, unsigned requested_count)
+{
+    vout_display_sys_t *p_sys = vd->sys;
+
+    memset (p_sys->resource, 0, sizeof(p_sys->resource));
+
+    const uint32_t *pitches= xcb_xv_query_image_attributes_pitches (p_sys->att);
+    const uint32_t *offsets= xcb_xv_query_image_attributes_offsets (p_sys->att);
+    const unsigned num_planes= __MIN(p_sys->att->num_planes, PICTURE_PLANE_MAX);
+    p_sys->data_size = p_sys->att->data_size;
+
+    picture_t *pic_array[MAX_PICTURES];
+    requested_count = __MIN(requested_count, MAX_PICTURES);
+
+    unsigned count;
+    for (count = 0; count < requested_count; count++)
+    {
+        picture_resource_t *res = &p_sys->resource[count];
+
+        for (unsigned i = 0; i < num_planes; i++)
+        {
+            uint32_t data_size;
+            data_size = (i < num_planes - 1) ? offsets[i+1] : p_sys->data_size;
+
+            res->p[i].i_lines = (data_size - offsets[i]) / pitches[i];
+            res->p[i].i_pitch = pitches[i];
+        }
+
+        if (PictureResourceAlloc (vd, res, p_sys->att->data_size,
+                                  p_sys->conn, p_sys->shm))
+            break;
+
+        /* Allocate further planes as specified by XVideo */
+        /* We assume that offsets[0] is zero */
+        for (unsigned i = 1; i < num_planes; i++)
+            res->p[i].p_pixels = res->p[0].p_pixels + offsets[i];
+
+        if (p_sys->swap_uv)
+        {   /* YVU: swap U and V planes */
+            uint8_t *buf = res->p[2].p_pixels;
+            res->p[2].p_pixels = res->p[1].p_pixels;
+            res->p[1].p_pixels = buf;
+        }
+
+        pic_array[count] = picture_NewFromResource (&vd->fmt, res);
+        if (!pic_array[count])
+        {
+            PictureResourceFree (res, p_sys->conn);
+            memset (res, 0, sizeof(*res));
+            break;
+        }
+    }
+
+    if (count == 0)
+        return;
+
+    p_sys->pool = picture_pool_New (count, pic_array);
+    /* TODO release picture resources if NULL */
+    xcb_flush (p_sys->conn);
+}
+
 /**
  * Return a direct buffer
  */
 static picture_pool_t *Pool (vout_display_t *vd, unsigned requested_count)
 {
     vout_display_sys_t *p_sys = vd->sys;
-    (void)requested_count;
 
     if (!p_sys->pool)
-    {
-        memset (p_sys->resource, 0, sizeof(p_sys->resource));
-
-        const uint32_t *pitches =
-            xcb_xv_query_image_attributes_pitches (p_sys->att);
-        const uint32_t *offsets =
-            xcb_xv_query_image_attributes_offsets (p_sys->att);
-        p_sys->data_size = p_sys->att->data_size;
-
-        unsigned count;
-        picture_t *pic_array[MAX_PICTURES];
-        for (count = 0; count < MAX_PICTURES; count++)
-        {
-            picture_resource_t *res = &p_sys->resource[count];
-
-            for (int i = 0; i < __MIN (p_sys->att->num_planes, PICTURE_PLANE_MAX); i++)
-            {
-                res->p[i].i_lines =
-                    ((i + 1 < p_sys->att->num_planes ? offsets[i+1] :
-                                                       p_sys->data_size) - offsets[i]) / pitches[i];
-                res->p[i].i_pitch = pitches[i];
-            }
-            if (PictureResourceAlloc (vd, res, p_sys->att->data_size,
-                                      p_sys->conn, p_sys->shm))
-                break;
-
-            /* Allocate further planes as specified by XVideo */
-            /* We assume that offsets[0] is zero */
-            for (int i = 1; i < __MIN (p_sys->att->num_planes, PICTURE_PLANE_MAX); i++)
-                res->p[i].p_pixels = res->p[0].p_pixels + offsets[i];
-            if (p_sys->swap_uv)
-            {   /* YVU: swap U and V planes */
-                uint8_t *buf = res->p[2].p_pixels;
-                res->p[2].p_pixels = res->p[1].p_pixels;
-                res->p[1].p_pixels = buf;
-            }
-
-            pic_array[count] = picture_NewFromResource (&vd->fmt, res);
-            if (!pic_array[count])
-            {
-                PictureResourceFree (res, p_sys->conn);
-                memset (res, 0, sizeof(*res));
-                break;
-            }
-        }
-
-        if (count == 0)
-            return NULL;
-
-        p_sys->pool = picture_pool_New (count, pic_array);
-        /* TODO release picture resources if NULL */
-        xcb_flush (p_sys->conn);
-    }
+        PoolAlloc (vd, requested_count);
 
     return p_sys->pool;
 }
@@ -680,7 +718,7 @@ static picture_pool_t *Pool (vout_display_t *vd, unsigned requested_count)
 /**
  * Sends an image to the X server.
  */
-static void Display (vout_display_t *vd, picture_t *pic)
+static void Display (vout_display_t *vd, picture_t *pic, subpicture_t *subpicture)
 {
     vout_display_sys_t *p_sys = vd->sys;
     xcb_shm_seg_t segment = pic->p_sys->segment;
@@ -719,6 +757,7 @@ static void Display (vout_display_t *vd, picture_t *pic)
     }
 out:
     picture_Release (pic);
+    (void)subpicture;
 }
 
 static int Control (vout_display_t *vd, int query, va_list ap)

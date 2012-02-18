@@ -1,11 +1,12 @@
 /*****************************************************************************
  * twolame.c: libtwolame encoder (MPEG-1/2 layer II) module
- *            (using libtwolame from http://users.tpg.com.au/adslblvi/)
+ *            (using libtwolame from http://www.twolame.org/)
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 9b0649ee6704d73193301b81e42720a0ab753927 $
+ * $Id: 440e152e41e853dd4aa73b68d6b801363ae3cf2d $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
+ *          Gildas Bazin
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +19,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -32,8 +33,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
-#include <vlc_sout.h>
-#include <vlc_aout.h>
 
 #include <twolame.h>
 
@@ -79,14 +78,14 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACODEC )
 
-    add_float( ENC_CFG_PREFIX "quality", 0.0, NULL, ENC_QUALITY_TEXT,
+    add_float( ENC_CFG_PREFIX "quality", 0.0, ENC_QUALITY_TEXT,
                ENC_QUALITY_LONGTEXT, false )
-    add_integer( ENC_CFG_PREFIX "mode", 0, NULL, ENC_MODE_TEXT,
+    add_integer( ENC_CFG_PREFIX "mode", 0, ENC_MODE_TEXT,
                  ENC_MODE_LONGTEXT, false )
-        change_integer_list( pi_stereo_values, ppsz_stereo_descriptions, NULL );
-    add_bool( ENC_CFG_PREFIX "vbr", false, NULL, ENC_VBR_TEXT,
+        change_integer_list( pi_stereo_values, ppsz_stereo_descriptions );
+    add_bool( ENC_CFG_PREFIX "vbr", false, ENC_VBR_TEXT,
               ENC_VBR_LONGTEXT, false )
-    add_integer( ENC_CFG_PREFIX "psy", 3, NULL, ENC_PSY_TEXT,
+    add_integer( ENC_CFG_PREFIX "psy", 3, ENC_PSY_TEXT,
                  ENC_PSY_LONGTEXT, false )
 vlc_module_end ()
 
@@ -131,9 +130,8 @@ static int OpenEncoder( vlc_object_t *p_this )
     encoder_sys_t *p_sys;
     int i_frequency;
 
-    if( p_enc->fmt_out.i_codec != VLC_CODEC_MPGA &&
-        p_enc->fmt_out.i_codec != VLC_FOURCC('m','p','2','a') &&
-        p_enc->fmt_out.i_codec != VLC_FOURCC('m','p','2',' ') &&
+    if( p_enc->fmt_out.i_codec != VLC_CODEC_MP2 &&
+        p_enc->fmt_out.i_codec != VLC_CODEC_MPGA &&
         !p_enc->b_force )
     {
         return VLC_EGENERIC;

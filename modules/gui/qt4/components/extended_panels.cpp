@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 1214d348061d4b45361188eecc751ef59336615b $
+ * $Id: 1fd21ea316995a429132b19e88002b45e3dbc0c7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -22,6 +22,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#define __STDC_FORMAT_MACROS 1
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -33,19 +35,25 @@
 #include <QGridLayout>
 #include <QSignalMapper>
 #include <QComboBox>
+#include <QTimer>
+#include <QFileDialog>
 
 #include "components/extended_panels.hpp"
 #include "dialogs/preferences.hpp"
 #include "qt4.hpp"
 #include "input_manager.hpp"
+#include "util/qt_dirs.hpp"
 
 #include "../../audio_filter/equalizer_presets.h"
-#include <vlc_aout.h>
+#include <vlc_aout_intf.h>
 #include <vlc_intf_strings.h>
 #include <vlc_vout.h>
 #include <vlc_osd.h>
+#include <vlc_modules.h>
 
 #include <vlc_charset.h> /* us_strtod */
+
+static void ChangeVFiltersString( struct intf_thread_t *p_intf, const char *psz_name, bool b_add );
 
 #if 0
 class ConfClickHandler : public QObject
@@ -70,7 +78,7 @@ private:
 };
 #endif
 
-QString ModuleFromWidgetName( QObject *obj )
+const QString ModuleFromWidgetName( QObject *obj )
 {
     return obj->objectName().replace( "Enable","" );
 }
@@ -96,29 +104,29 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
             QObject( _parent ), p_intf( _p_intf )
 {
     ui.setupUi( _parent );
-    p_vout = NULL;
 
 #define SETUP_VFILTER( widget ) \
     { \
         vlc_object_t *p_obj = ( vlc_object_t * ) \
             vlc_object_find_name( p_intf->p_libvlc, \
-                                  #widget, \
-                                  FIND_CHILD ); \
+                                  #widget ); \
         QCheckBox *checkbox = qobject_cast<QCheckBox*>( ui.widget##Enable ); \
         QGroupBox *groupbox = qobject_cast<QGroupBox*>( ui.widget##Enable ); \
         if( p_obj ) \
         { \
             vlc_object_release( p_obj ); \
             if( checkbox ) checkbox->setChecked( true ); \
-            else groupbox->setChecked( true ); \
+            else if (groupbox) groupbox->setChecked( true ); \
         } \
         else \
         { \
             if( checkbox ) checkbox->setChecked( false ); \
-            else groupbox->setChecked( false ); \
+            else if (groupbox)  groupbox->setChecked( false ); \
         } \
     } \
     CONNECT( ui.widget##Enable, clicked(), this, updateFilters() );
+
+
 #define SETUP_VFILTER_OPTION( widget, signal ) \
     initComboBoxItems( ui.widget ); \
     setWidgetValue( ui.widget ); \
@@ -135,10 +143,15 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     SETUP_VFILTER( extract )
     SETUP_VFILTER_OPTION( extractComponentText, textChanged( const QString& ) )
 
+    SETUP_VFILTER( posterize )
+
     SETUP_VFILTER( colorthres )
     SETUP_VFILTER_OPTION( colorthresColorText, textChanged( const QString& ) )
     SETUP_VFILTER_OPTION( colorthresSaturationthresSlider, valueChanged( int ) )
     SETUP_VFILTER_OPTION( colorthresSimilaritythresSlider, valueChanged( int ) )
+
+    SETUP_VFILTER( sepia )
+    SETUP_VFILTER_OPTION( sepiaIntensitySpin, valueChanged( int ) )
 
     SETUP_VFILTER( invert )
 
@@ -151,8 +164,6 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     SETUP_VFILTER_OPTION( blurFactorSlider, valueChanged( int ) )
 
     SETUP_VFILTER( motiondetect )
-
-    SETUP_VFILTER( noise )
 
     SETUP_VFILTER( psychedelic )
 
@@ -185,15 +196,12 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     SETUP_VFILTER_OPTION( wallRowsSpin, valueChanged( int ) )
     SETUP_VFILTER_OPTION( wallColsSpin, valueChanged( int ) )
 
-    SETUP_VFILTER( panoramix )
-    SETUP_VFILTER_OPTION( panoramixRowsSpin, valueChanged( int ) )
-    SETUP_VFILTER_OPTION( panoramixColsSpin, valueChanged( int ) )
-
 
     SETUP_VFILTER( erase )
     SETUP_VFILTER_OPTION( eraseMaskText, editingFinished() )
     SETUP_VFILTER_OPTION( eraseYSpin, valueChanged( int ) )
     SETUP_VFILTER_OPTION( eraseXSpin, valueChanged( int ) )
+    BUTTONACT( ui.eraseBrowseBtn, browseEraseFile() );
 
     SETUP_VFILTER( marq )
     SETUP_VFILTER_OPTION( marqMarqueeText, textChanged( const QString& ) )
@@ -204,6 +212,22 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     SETUP_VFILTER_OPTION( logoYSpin, valueChanged( int ) )
     SETUP_VFILTER_OPTION( logoXSpin, valueChanged( int ) )
     SETUP_VFILTER_OPTION( logoOpacitySlider, valueChanged( int ) )
+    BUTTONACT( ui.logoBrowseBtn, browseLogo() );
+
+    SETUP_VFILTER( gradfun )
+    SETUP_VFILTER_OPTION( gradfunRadiusSlider, valueChanged( int ) )
+
+    SETUP_VFILTER( grain )
+    SETUP_VFILTER_OPTION( grainVarianceSlider, valueChanged( int ) )
+
+    SETUP_VFILTER( mirror )
+
+    SETUP_VFILTER( gaussianblur )
+    SETUP_VFILTER_OPTION( gaussianbluSigmaSlider, valueChanged( int ) )
+
+    SETUP_VFILTER( antiflicker )
+    SETUP_VFILTER_OPTION( antiflickerSofteningSizeSlider, valueChanged( int ) )
+
 
     if( module_exists( "atmo" ) )
     {
@@ -237,10 +261,6 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
              ui.cropRightPx, setDisabled( bool ) );
 }
 
-ExtVideo::~ExtVideo()
-{
-}
-
 void ExtVideo::cropChange()
 {
     if( ui.topBotCropSync->isChecked() )
@@ -248,7 +268,7 @@ void ExtVideo::cropChange()
     if( ui.leftRightCropSync->isChecked() )
         ui.cropRightPx->setValue( ui.cropLeftPx->value() );
 
-    p_vout = THEMIM->getVout();
+    vout_thread_t *p_vout = THEMIM->getVout();
     if( p_vout )
     {
         var_SetInteger( p_vout, "crop-top", ui.cropTopPx->value() );
@@ -267,35 +287,29 @@ void ExtVideo::clean()
     ui.cropRightPx->setValue( 0 );
 }
 
-void ExtVideo::ChangeVFiltersString( const char *psz_name, bool b_add )
+static void ChangeVFiltersString( struct intf_thread_t *p_intf, const char *psz_name, bool b_add )
 {
     char *psz_parser, *psz_string;
     const char *psz_filter_type;
 
-    /* FIXME temporary hack */
-    const char *psz_module_name = psz_name;
-    if( !strcmp( psz_name, "magnify" ) ||
-        !strcmp( psz_name, "puzzle" ) ||
-        !strcmp( psz_name, "logo" ) ||
-        !strcmp( psz_name, "wall" ) ||
-        !strcmp( psz_name, "panoramix" ) ||
-        !strcmp( psz_name, "clone" ) )
-        psz_module_name = "video_filter_wrapper";
-
-    module_t *p_obj = module_find( psz_module_name );
+    module_t *p_obj = module_find( psz_name );
     if( !p_obj )
     {
         msg_Err( p_intf, "Unable to find filter module \"%s\".", psz_name );
         return;
     }
 
-    if( module_provides( p_obj, "video filter" ) )
+    if( module_provides( p_obj, "video splitter" ) )
     {
-        psz_filter_type = "vout-filter";
+        psz_filter_type = "video-splitter";
     }
     else if( module_provides( p_obj, "video filter2" ) )
     {
         psz_filter_type = "video-filter";
+    }
+    else if( module_provides( p_obj, "sub source" ) )
+    {
+        psz_filter_type = "sub-source";
     }
     else if( module_provides( p_obj, "sub filter" ) )
     {
@@ -303,11 +317,9 @@ void ExtVideo::ChangeVFiltersString( const char *psz_name, bool b_add )
     }
     else
     {
-        module_release (p_obj);
         msg_Err( p_intf, "Unknown video filter type." );
         return;
     }
-    module_release (p_obj);
 
     psz_string = config_GetPsz( p_intf, psz_filter_type );
 
@@ -330,6 +342,7 @@ void ExtVideo::ChangeVFiltersString( const char *psz_name, bool b_add )
         }
         else
         {
+            free( psz_string );
             return;
         }
     }
@@ -362,22 +375,21 @@ void ExtVideo::ChangeVFiltersString( const char *psz_name, bool b_add )
     }
     /* Vout is not kept, so put that in the config */
     config_PutPsz( p_intf, psz_filter_type, psz_string );
-    if( !strcmp( psz_filter_type, "video-filter" ) )
-        ui.videoFilterText->setText( psz_string );
-    else if( !strcmp( psz_filter_type, "vout-filter" ) )
-        ui.voutFilterText->setText( psz_string );
-    else if( !strcmp( psz_filter_type, "sub-filter" ) )
-        ui.subpictureFilterText->setText( psz_string );
 
     /* Try to set on the fly */
-    p_vout = THEMIM->getVout();
-    if( p_vout )
+    if( !strcmp( psz_filter_type, "video-splitter" ) )
     {
-        if( !strcmp( psz_filter_type, "sub-filter" ) )
-            var_SetString( vout_GetSpu( p_vout ), psz_filter_type, psz_string );
-        else
+        playlist_t *p_playlist = pl_Get( p_intf );
+        var_SetString( p_playlist, psz_filter_type, psz_string );
+    }
+    else
+    {
+        vout_thread_t *p_vout = THEMIM->getVout();
+        if( p_vout )
+        {
             var_SetString( p_vout, psz_filter_type, psz_string );
-        vlc_object_release( p_vout );
+            vlc_object_release( p_vout );
+        }
     }
 
     free( psz_string );
@@ -390,21 +402,36 @@ void ExtVideo::updateFilters()
     QCheckBox *checkbox = qobject_cast<QCheckBox*>( sender() );
     QGroupBox *groupbox = qobject_cast<QGroupBox*>( sender() );
 
-    ChangeVFiltersString( qtu( module ),
+    ChangeVFiltersString( p_intf, qtu( module ),
                           checkbox ? checkbox->isChecked()
                                    : groupbox->isChecked() );
+}
+
+void ExtVideo::browseLogo()
+{
+    QString file = QFileDialog::getOpenFileName( NULL, qtr( "Logo filenames" ),
+                   p_intf->p_sys->filepath, "Images (*.png *.jpg);;All (*)" );
+    ui.logoFileText->setText( toNativeSeparators( file ) );
+}
+
+void ExtVideo::browseEraseFile()
+{
+    QString file = QFileDialog::getOpenFileName( NULL, qtr( "Image mask" ),
+                   p_intf->p_sys->filepath, "Images (*.png *.jpg);;All (*)" );
+    ui.eraseMaskText->setText( toNativeSeparators( file ) );
 }
 
 void ExtVideo::initComboBoxItems( QObject *widget )
 {
     QComboBox *combobox = qobject_cast<QComboBox*>( widget );
     if( !combobox ) return;
+
     QString option = OptionFromWidgetName( widget );
     module_config_t *p_item = config_FindConfig( VLC_OBJECT( p_intf ),
                                                  qtu( option ) );
     if( p_item )
     {
-        int i_type = p_item->i_type & CONFIG_ITEM;
+        int i_type = p_item->i_type;
         for( int i_index = 0; i_index < p_item->i_list; i_index++ )
         {
             if( i_type == CONFIG_ITEM_INTEGER
@@ -431,9 +458,7 @@ void ExtVideo::setWidgetValue( QObject *widget )
     //std::cout << "Option name: " << option.toStdString() << std::endl;
 
     vlc_object_t *p_obj = ( vlc_object_t * )
-        vlc_object_find_name( p_intf->p_libvlc,
-                              qtu( module ),
-                              FIND_CHILD );
+        vlc_object_find_name( p_intf->p_libvlc, qtu( module ) );
     int i_type;
     vlc_value_t val;
 
@@ -486,11 +511,11 @@ void ExtVideo::setWidgetValue( QObject *widget )
         else if( lineedit )
         {
             char str[30];
-            snprintf( str, sizeof(str), "%06X", val.i_int );
+            snprintf( str, sizeof(str), "%06"PRIX64, val.i_int );
             lineedit->setText( str );
         }
         else if( combobox ) combobox->setCurrentIndex(
-                            combobox->findData( val.i_int ) );
+                            combobox->findData( qlonglong(val.i_int) ) );
         else msg_Warn( p_intf, "Oops %s %s %d", __FILE__, __func__, __LINE__ );
     }
     else if( i_type == VLC_VAR_FLOAT )
@@ -508,11 +533,12 @@ void ExtVideo::setWidgetValue( QObject *widget )
         free( val.psz_string );
     }
     else
-        msg_Err( p_intf,
-                 "Module %s's %s variable is of an unsupported type ( %d )",
-                 qtu( module ),
-                 qtu( option ),
-                 i_type );
+        if( p_obj )
+            msg_Err( p_intf,
+                     "Module %s's %s variable is of an unsupported type ( %d )",
+                     qtu( module ),
+                     qtu( option ),
+                     i_type );
 }
 
 void ExtVideo::updateFilterOptions()
@@ -523,9 +549,7 @@ void ExtVideo::updateFilterOptions()
     //std::cout << "Option name: " << option.toStdString() << std::endl;
 
     vlc_object_t *p_obj = ( vlc_object_t * )
-        vlc_object_find_name( p_intf->p_libvlc,
-                              qtu( module ),
-                              FIND_CHILD );
+        vlc_object_find_name( p_intf->p_libvlc, qtu( module ) );
     int i_type;
     bool b_is_command;
     if( !p_obj )
@@ -537,15 +561,9 @@ void ExtVideo::updateFilterOptions()
     else
     {
         i_type = var_Type( p_obj, qtu( option ) );
+        if( i_type == 0 )
+            i_type = config_GetType( p_intf, qtu( option ) );
         b_is_command = ( i_type & VLC_VAR_ISCOMMAND );
-    }
-
-    if( !b_is_command )
-    {
-        msg_Warn( p_intf, "Module %s's %s variable isn't a command. You'll need to restart the filter to take change into account.",
-                 qtu( module ),
-                 qtu( option ) );
-        /* FIXME: restart automatically somewhere near the end of this function */
     }
 
     /* Try to cast to all the widgets we're likely to encounter. Only
@@ -592,15 +610,16 @@ void ExtVideo::updateFilterOptions()
     }
     else if( i_type == VLC_VAR_STRING )
     {
-        char *psz_string = NULL;
-        if( lineedit ) psz_string = strdup( qtu( lineedit->text() ) );
-        else if( combobox ) psz_string = strdup( qtu( combobox->itemData(
-                                       combobox->currentIndex() ).toString() ) );
-        else msg_Warn( p_intf, "Oops %s %s %d", __FILE__, __func__, __LINE__ );
-        config_PutPsz( p_intf, qtu( option ), psz_string );
+        QString val;
+        if( lineedit )
+            val = lineedit->text();
+        else if( combobox )
+            val = combobox->itemData( combobox->currentIndex() ).toString();
+        else
+            msg_Warn( p_intf, "Oops %s %s %d", __FILE__, __func__, __LINE__ );
+        config_PutPsz( p_intf, qtu( option ), qtu( val ) );
         if( b_is_command )
-            var_SetString( p_obj, qtu( option ), psz_string );
-        free( psz_string );
+            var_SetString( p_obj, qtu( option ), qtu( val ) );
     }
     else
         msg_Err( p_intf,
@@ -608,6 +627,15 @@ void ExtVideo::updateFilterOptions()
                  qtu( module ),
                  qtu( option ),
                  i_type );
+
+    if( !b_is_command )
+    {
+        msg_Warn( p_intf, "Module %s's %s variable isn't a command. Brute-restarting the filter.",
+                 qtu( module ),
+                 qtu( option ) );
+        ChangeVFiltersString( p_intf, qtu( module ), false );
+        ChangeVFiltersString( p_intf, qtu( module ), true );
+    }
 
     if( p_obj ) vlc_object_release( p_obj );
 }
@@ -638,18 +666,16 @@ void ExtVideo::gotoConf( QObject* src )
  **********************************************************************/
 
 ExtV4l2::ExtV4l2( intf_thread_t *_p_intf, QWidget *_parent )
-    : QWidget( _parent ), p_intf( _p_intf )
+    : QWidget( _parent ), p_intf( _p_intf ), box( NULL )
 {
-    ui.setupUi( this );
-
-    BUTTONACT( ui.refresh, Refresh() );
-
-    box = NULL;
-}
-
-ExtV4l2::~ExtV4l2()
-{
-    delete box;
+    QVBoxLayout *layout = new QVBoxLayout( this );
+    help = new QLabel( qtr("No v4l2 instance found.\n"
+      "Please check that the device has been opened with VLC and is playing.\n\n"
+      "Controls will automatically appear here.")
+      , this );
+    help->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
+    layout->addWidget( help );
+    setLayout( layout );
 }
 
 void ExtV4l2::showEvent( QShowEvent *event )
@@ -660,56 +686,58 @@ void ExtV4l2::showEvent( QShowEvent *event )
 
 void ExtV4l2::Refresh( void )
 {
-    vlc_object_t *p_obj = (vlc_object_t*)vlc_object_find_name( p_intf, "v4l2", FIND_ANYWHERE );
-    ui.help->hide();
+    vlc_object_t *p_obj = (vlc_object_t*)vlc_object_find_name( pl_Get(p_intf), "v4l2" );
+    help->hide();
     if( box )
     {
-        ui.vboxLayout->removeWidget( box );
+        layout()->removeWidget( box );
         delete box;
         box = NULL;
     }
     if( p_obj )
     {
-        vlc_value_t val, text, name;
+        vlc_value_t val, text;
         int i_ret = var_Change( p_obj, "controls", VLC_VAR_GETCHOICES,
                                 &val, &text );
         if( i_ret < 0 )
         {
             msg_Err( p_intf, "Oops, v4l2 object doesn't have a 'controls' variable." );
-            ui.help->show();
+            help->show();
             vlc_object_release( p_obj );
             return;
         }
 
         box = new QGroupBox( this );
-        ui.vboxLayout->addWidget( box );
+        layout()->addWidget( box );
         QVBoxLayout *layout = new QVBoxLayout( box );
         box->setLayout( layout );
 
         for( int i = 0; i < val.p_list->i_count; i++ )
         {
+            vlc_value_t vartext;
             const char *psz_var = text.p_list->p_values[i].psz_string;
 
-            if( var_Change( p_obj, psz_var, VLC_VAR_GETTEXT, &name, NULL ) )
+            if( var_Change( p_obj, psz_var, VLC_VAR_GETTEXT, &vartext, NULL ) )
                 continue;
 
-            const char *psz_label = name.psz_string;
-            msg_Dbg( p_intf, "v4l2 control \"%x\": %s (%s)",
-                     val.p_list->p_values[i].i_int, psz_var, name.psz_string );
+            QString name = qtr( vartext.psz_string );
+            free( vartext.psz_string );
+            msg_Dbg( p_intf, "v4l2 control \"%"PRIx64"\": %s (%s)",
+                     val.p_list->p_values[i].i_int, psz_var, qtu( name ) );
 
             int i_type = var_Type( p_obj, psz_var );
             switch( i_type & VLC_VAR_TYPE )
             {
                 case VLC_VAR_INTEGER:
                 {
-                    QLabel *label = new QLabel( psz_label, box );
+                    QLabel *label = new QLabel( name, box );
                     QHBoxLayout *hlayout = new QHBoxLayout();
                     hlayout->addWidget( label );
                     int i_val = var_GetInteger( p_obj, psz_var );
                     if( i_type & VLC_VAR_HASCHOICE )
                     {
                         QComboBox *combobox = new QComboBox( box );
-                        combobox->setObjectName( psz_var );
+                        combobox->setObjectName( qfu( psz_var ) );
 
                         vlc_value_t val2, text2;
                         var_Change( p_obj, psz_var, VLC_VAR_GETCHOICES,
@@ -718,7 +746,7 @@ void ExtV4l2::Refresh( void )
                         {
                             combobox->addItem(
                                        text2.p_list->p_values[j].psz_string,
-                                       val2.p_list->p_values[j].i_int );
+                                       qlonglong( val2.p_list->p_values[j].i_int) );
                             if( i_val == val2.p_list->p_values[j].i_int )
                                 combobox->setCurrentIndex( j );
                         }
@@ -729,33 +757,48 @@ void ExtV4l2::Refresh( void )
                         hlayout->addWidget( combobox );
                     }
                     else
+                    if( (i_type & VLC_VAR_HASMIN) && (i_type & VLC_VAR_HASMAX) )
                     {
                         QSlider *slider = new QSlider( box );
-                        slider->setObjectName( psz_var );
+                        slider->setObjectName( qfu( psz_var ) );
                         slider->setOrientation( Qt::Horizontal );
                         vlc_value_t val2;
                         var_Change( p_obj, psz_var, VLC_VAR_GETMIN,
                                     &val2, NULL );
+                        if( val2.i_int < INT_MIN )
+                            val2.i_int = INT_MIN; /* FIXME */
                         slider->setMinimum( val2.i_int );
                         var_Change( p_obj, psz_var, VLC_VAR_GETMAX,
                                     &val2, NULL );
+                        if( val2.i_int > INT_MAX )
+                            val2.i_int = INT_MAX; /* FIXME */
                         slider->setMaximum( val2.i_int );
-                        var_Change( p_obj, psz_var, VLC_VAR_GETSTEP,
-                                    &val2, NULL );
-                        slider->setSingleStep( val2.i_int );
+                        if( !var_Change( p_obj, psz_var, VLC_VAR_GETSTEP,
+                                         &val2, NULL ) )
+                            slider->setSingleStep( val2.i_int );
                         slider->setValue( i_val );
-
                         CONNECT( slider, valueChanged( int ), this,
                                  ValueChange( int ) );
                         hlayout->addWidget( slider );
+                    }
+                    else
+                    {
+                        QSpinBox *spinBox = new QSpinBox( box );
+                        spinBox->setObjectName( qfu( psz_var ) );
+                        spinBox->setMinimum( INT_MIN );
+                        spinBox->setMaximum( INT_MAX );
+                        spinBox->setValue( i_val );
+                        CONNECT( spinBox, valueChanged( int ), this,
+                                 ValueChange( int ) );
+                        hlayout->addWidget( spinBox );
                     }
                     layout->addLayout( hlayout );
                     break;
                 }
                 case VLC_VAR_BOOL:
                 {
-                    QCheckBox *button = new QCheckBox( psz_label, box );
-                    button->setObjectName( psz_var );
+                    QCheckBox *button = new QCheckBox( name, box );
+                    button->setObjectName( qfu( psz_var ) );
                     button->setChecked( var_GetBool( p_obj, psz_var ) );
 
                     CONNECT( button, clicked( bool ), this,
@@ -767,8 +810,8 @@ void ExtV4l2::Refresh( void )
                 {
                     if( i_type & VLC_VAR_ISCOMMAND )
                     {
-                        QPushButton *button = new QPushButton( psz_label, box );
-                        button->setObjectName( psz_var );
+                        QPushButton *button = new QPushButton( name, box );
+                        button->setObjectName( qfu( psz_var ) );
 
                         CONNECT( button, clicked( bool ), this,
                                  ValueChange( bool ) );
@@ -776,7 +819,7 @@ void ExtV4l2::Refresh( void )
                     }
                     else
                     {
-                        QLabel *label = new QLabel( psz_label, box );
+                        QLabel *label = new QLabel( name, box );
                         layout->addWidget( label );
                     }
                     break;
@@ -785,7 +828,6 @@ void ExtV4l2::Refresh( void )
                     msg_Warn( p_intf, "Unhandled var type for %s", psz_var );
                     break;
             }
-            free( name.psz_string );
         }
         var_FreeList( &val, &text );
         vlc_object_release( p_obj );
@@ -793,7 +835,9 @@ void ExtV4l2::Refresh( void )
     else
     {
         msg_Dbg( p_intf, "Couldn't find v4l2 instance" );
-        ui.help->show();
+        help->show();
+        if ( isVisible() )
+            QTimer::singleShot( 2000, this, SLOT(Refresh()) );
     }
 }
 
@@ -805,11 +849,11 @@ void ExtV4l2::ValueChange( bool value )
 void ExtV4l2::ValueChange( int value )
 {
     QObject *s = sender();
-    vlc_object_t *p_obj = (vlc_object_t*)vlc_object_find_name( p_intf, "v4l2", FIND_ANYWHERE );
+    vlc_object_t *p_obj = (vlc_object_t*)vlc_object_find_name( pl_Get(p_intf), "v4l2" );
     if( p_obj )
     {
-        char *psz_var = strdup( qtu( s->objectName() ) );
-        int i_type = var_Type( p_obj, psz_var );
+        QString var = s->objectName();
+        int i_type = var_Type( p_obj, qtu( var ) );
         switch( i_type & VLC_VAR_TYPE )
         {
             case VLC_VAR_INTEGER:
@@ -818,16 +862,15 @@ void ExtV4l2::ValueChange( int value )
                     QComboBox *combobox = qobject_cast<QComboBox*>( s );
                     value = combobox->itemData( value ).toInt();
                 }
-                var_SetInteger( p_obj, psz_var, value );
+                var_SetInteger( p_obj, qtu( var ), value );
                 break;
             case VLC_VAR_BOOL:
-                var_SetBool( p_obj, psz_var, value );
+                var_SetBool( p_obj, qtu( var ), value );
                 break;
             case VLC_VAR_VOID:
-                var_TriggerCallback( p_obj, psz_var );
+                var_TriggerCallback( p_obj, qtu( var ) );
                 break;
         }
-        free( psz_var );
         vlc_object_release( p_obj );
     }
     else
@@ -850,7 +893,7 @@ static const QString band_frequencies[] =
 Equalizer::Equalizer( intf_thread_t *_p_intf, QWidget *_parent ) :
                             QWidget( _parent ) , p_intf( _p_intf )
 {
-    QFont smallFont = QApplication::font( static_cast<QWidget*>( 0 ) );
+    QFont smallFont = QApplication::font();
     smallFont.setPointSize( smallFont.pointSize() - 3 );
 
     ui.setupUi( this );
@@ -868,9 +911,10 @@ Equalizer::Equalizer( intf_thread_t *_p_intf, QWidget *_parent ) :
         bands[i] = new QSlider( Qt::Vertical );
         bands[i]->setMaximum( 400 );
         bands[i]->setValue( 200 );
+        bands[i]->setMinimumWidth(34);
         CONNECT( bands[i], valueChanged( int ), this, setCoreBands() );
 
-        band_texts[i] = new QLabel( band_frequencies[i] + "\n0.0dB" );
+        band_texts[i] = new QLabel( band_frequencies[i] + "\n00.0dB" );
         band_texts[i]->setFont( smallFont );
 
         grid->addWidget( bands[i], 0, i );
@@ -893,14 +937,6 @@ Equalizer::Equalizer( intf_thread_t *_p_intf, QWidget *_parent ) :
     updateUIFromCore();
 }
 
-Equalizer::~Equalizer()
-{
-}
-
-void Equalizer::clean()
-{
-    enable();
-}
 /* Write down initial values */
 void Equalizer::updateUIFromCore()
 {
@@ -908,7 +944,7 @@ void Equalizer::updateUIFromCore()
     float f_preamp;
     int i_preset;
 
-    aout_instance_t *p_aout = THEMIM->getAout();
+    vlc_object_t *p_aout = (vlc_object_t *)THEMIM->getAout();
     if( p_aout )
     {
         psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
@@ -940,7 +976,7 @@ void Equalizer::updateUIFromCore()
 
     if( psz_bands && strlen( psz_bands ) > 1 )
     {
-    	char *psz_bands_orig = psz_bands;
+        char *psz_bands_orig = psz_bands;
         for( int i = 0; i < BANDS; i++ )
         {
             const float f = us_strtod(psz_bands, &psz_bands );
@@ -987,7 +1023,7 @@ void Equalizer::enable( bool en )
 /* Function called when the set2Pass button is activated */
 void Equalizer::set2Pass()
 {
-    aout_instance_t *p_aout= THEMIM->getAout();
+    vlc_object_t *p_aout= (vlc_object_t *)THEMIM->getAout();
     bool b_2p = ui.eq2PassCheck->isChecked();
 
     if( p_aout )
@@ -1002,7 +1038,7 @@ void Equalizer::set2Pass()
 void Equalizer::setPreamp()
 {
     const float f = ( float )(  ui.preampSlider->value() ) /10 - 20;
-    aout_instance_t *p_aout = THEMIM->getAout();
+    vlc_object_t *p_aout = (vlc_object_t *)THEMIM->getAout();
 
     ui.preampLabel->setText( qtr( "Preamp\n" ) + QString::number( f, 'f', 1 )
                                                + qtr( "dB" ) );
@@ -1030,7 +1066,7 @@ void Equalizer::setCoreBands()
         values += " " + val;
     }
 
-    aout_instance_t *p_aout = THEMIM->getAout();
+    vlc_object_t *p_aout = (vlc_object_t *)THEMIM->getAout();
     if( p_aout )
     {
         //delCallbacks( p_aout );
@@ -1046,7 +1082,7 @@ char * Equalizer::createValuesFromPreset( int i_preset )
 
     /* Create the QString in Qt */
     for( int i = 0 ; i< BANDS ;i++ )
-        values += QString( " %1" ).arg( eqz_preset_10b[i_preset]->f_amp[i] );
+        values += QString( " %1" ).arg( eqz_preset_10b[i_preset].f_amp[i], 5, 'f', 1 );
 
     /* Convert it to char * */
     return strdup( values.toAscii().constData() );
@@ -1058,7 +1094,7 @@ void Equalizer::setCorePreset( int i_preset )
         return;
 
     /* Update pre-amplification in the UI */
-    float f_preamp = eqz_preset_10b[i_preset]->f_preamp;
+    float f_preamp = eqz_preset_10b[i_preset].f_preamp;
     ui.preampSlider->setValue( (int)( ( f_preamp + 20 ) * 10 ) );
     ui.preampLabel->setText( qtr( "Preamp\n" )
                    + QString::number( f_preamp, 'f', 1 ) + qtr( "dB" ) );
@@ -1079,26 +1115,28 @@ void Equalizer::setCorePreset( int i_preset )
     }
 
     /* Apply presets to audio output */
-    aout_instance_t *p_aout= THEMIM->getAout();
+    vlc_object_t *p_aout = (vlc_object_t *)THEMIM->getAout();
     if( p_aout )
     {
         var_SetString( p_aout , "equalizer-preset" , preset_list[i_preset] );
 
         var_SetString( p_aout, "equalizer-bands", psz_values );
         var_SetFloat( p_aout, "equalizer-preamp",
-                      eqz_preset_10b[i_preset]->f_preamp );
+                      eqz_preset_10b[i_preset].f_preamp );
         vlc_object_release( p_aout );
     }
     config_PutPsz( p_intf, "equalizer-bands", psz_values );
     config_PutPsz( p_intf, "equalizer-preset", preset_list[i_preset] );
     config_PutFloat( p_intf, "equalizer-preamp",
-                    eqz_preset_10b[i_preset]->f_preamp );
+                    eqz_preset_10b[i_preset].f_preamp );
     free( psz_values );
 }
 
 static int PresetCallback( vlc_object_t *p_this, char const *psz_cmd,
                          vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
+    VLC_UNUSED( p_this ); VLC_UNUSED( psz_cmd ); VLC_UNUSED( oldval );
+
     char *psz_preset = newval.psz_string;
     Equalizer *eq = ( Equalizer * )p_data;
     int i_preset = eq->presetsComboBox->findData( QVariant( psz_preset ) );
@@ -1106,14 +1144,14 @@ static int PresetCallback( vlc_object_t *p_this, char const *psz_cmd,
     return VLC_SUCCESS;
 }
 
-void Equalizer::delCallbacks( aout_instance_t *p_aout )
+void Equalizer::delCallbacks( vlc_object_t *p_aout )
 {
     //var_DelCallback( p_aout, "equalizer-bands", EqzCallback, this );
     //var_DelCallback( p_aout, "equalizer-preamp", EqzCallback, this );
     var_DelCallback( p_aout, "equalizer-preset", PresetCallback, this );
 }
 
-void Equalizer::addCallbacks( aout_instance_t *p_aout )
+void Equalizer::addCallbacks( vlc_object_t *p_aout )
 {
     //var_AddCallback( p_aout, "equalizer-bands", EqzCallback, this );
     //var_AddCallback( p_aout, "equalizer-preamp", EqzCallback, this );
@@ -1125,22 +1163,192 @@ void Equalizer::addCallbacks( aout_instance_t *p_aout )
  **********************************************************************/
 
 /**********************************************************************
- * Spatializer
+ * Dynamic range compressor
  **********************************************************************/
-static const char *psz_control_names[] =
+
+typedef struct
 {
-    "spatializer-roomsize", "spatializer-width",
-    "spatializer-wet", "spatializer-dry", "spatializer-damp"
+    const char *psz_name;
+    const char *psz_descs;
+    const char *psz_units;
+    const float f_min;      // min
+    const float f_max;      // max
+    const float f_value;    // value
+    const float f_resolution; // resolution
+} comp_controls_t;
+
+static const comp_controls_t comp_controls[] =
+{
+    { "compressor-rms-peak",    _("RMS/peak"),       "",       0.0f,   1.0f,   0.00f, 0.001f },
+    { "compressor-attack",      _("Attack"),       _(" ms"),   1.5f, 400.0f,  25.00f, 0.100f },
+    { "compressor-release",     _("Release"),      _(" ms"),   2.0f, 800.0f, 100.00f, 0.100f },
+    { "compressor-threshold",   _("Threshold"),    _(" dB"), -30.0f,   0.0f, -11.00f, 0.010f },
+    { "compressor-ratio",       _("Ratio"),          ":1",     1.0f,  20.0f,   8.00f, 0.010f },
+    { "compressor-knee",        _("Knee\nradius"), _(" dB"),   1.0f,  10.0f,   2.50f, 0.010f },
+    { "compressor-makeup-gain", _("Makeup\ngain"), _(" dB"),   0.0f,  24.0f,   7.00f, 0.010f },
 };
 
-Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent ) :
-    QWidget( _parent ) , p_intf( _p_intf )
+Compressor::Compressor( intf_thread_t *_p_intf, QWidget *_parent )
+           : QWidget( _parent ) , p_intf( _p_intf )
 {
-    QFont smallFont = QApplication::font( static_cast<QWidget*>( 0 ) );
-    smallFont.setPointSize( smallFont.pointSize() - 3 );
+    QFont smallFont = QApplication::font();
+    smallFont.setPointSize( smallFont.pointSize() - 2 );
 
     QGridLayout *layout = new QGridLayout( this );
-    layout->setMargin( 0 );
+
+    enableCheck = new QCheckBox( qtr( "Enable dynamic range compressor" ) );
+    layout->addWidget( enableCheck, 0, 0, 1, NUM_CP_CTRL );
+
+    for( int i = 0 ; i < NUM_CP_CTRL ; i++ )
+    {
+        const int i_min = (int)( comp_controls[i].f_min
+                               / comp_controls[i].f_resolution );
+        const int i_max = (int)( comp_controls[i].f_max
+                               / comp_controls[i].f_resolution );
+        const int i_val = (int)( comp_controls[i].f_value
+                               / comp_controls[i].f_resolution );
+
+        compCtrl[i] = new QSlider( Qt::Vertical );
+        compCtrl[i]->setMinimum( i_min );
+        compCtrl[i]->setMaximum( i_max );
+        compCtrl[i]->setValue(   i_val );
+
+        oldControlVars[i] = comp_controls[i].f_value;
+
+        CONNECT( compCtrl[i], valueChanged( int ), this, setInitValues() );
+
+        ctrl_texts[i] = new QLabel( qtr( comp_controls[i].psz_descs ) + "\n" );
+        ctrl_texts[i]->setFont( smallFont );
+        ctrl_texts[i]->setAlignment( Qt::AlignHCenter );
+
+        ctrl_readout[i] = new QLabel;
+        ctrl_readout[i]->setFont( smallFont );
+        ctrl_readout[i]->setAlignment( Qt::AlignHCenter );
+
+        layout->addWidget( compCtrl[i],     1, i, Qt::AlignHCenter );
+        layout->addWidget( ctrl_readout[i], 2, i, Qt::AlignHCenter );
+        layout->addWidget( ctrl_texts[i],   3, i, Qt::AlignHCenter );
+    }
+
+    BUTTONACT( enableCheck, enable() );
+
+    /* Write down initial values */
+    vlc_object_t *p_aout = (vlc_object_t *)THEMIM->getAout();
+    char *psz_af;
+
+    if( p_aout )
+    {
+        psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
+        for( int i = 0; i < NUM_CP_CTRL; i++ )
+        {
+            controlVars[i] = var_GetFloat( p_aout,
+                                           comp_controls[i].psz_name );
+        }
+        vlc_object_release( p_aout );
+    }
+    else
+    {
+        psz_af = config_GetPsz( p_intf, "audio-filter" );
+        for( int i = 0; i < NUM_CP_CTRL; i++ )
+        {
+            controlVars[i] = config_GetFloat( p_intf,
+                                              comp_controls[i].psz_name );
+        }
+    }
+    if( psz_af && strstr( psz_af, "compressor" ) != NULL )
+    {
+        enableCheck->setChecked( true );
+    }
+    free( psz_af );
+    enable( enableCheck->isChecked() );
+    updateSliders( controlVars );
+    setValues();
+}
+
+void Compressor::enable()
+{
+    bool en = enableCheck->isChecked();
+    aout_EnableFilter( THEPL, "compressor", en );
+    enable( en );
+}
+
+void Compressor::enable( bool en )
+{
+    for( int i = 0 ; i < NUM_CP_CTRL ; i++ )
+    {
+        compCtrl[i]->setEnabled( en );
+        ctrl_texts[i]->setEnabled( en );
+        ctrl_readout[i]->setEnabled( en );
+    }
+}
+
+void Compressor::updateSliders( float * controlVars )
+{
+    for( int i = 0 ; i < NUM_CP_CTRL ; i++ )
+    {
+        if( oldControlVars[i] != controlVars[i] )
+        {
+            compCtrl[i]->setValue(
+                    (int)( controlVars[i] / comp_controls[i].f_resolution ) );
+        }
+    }
+}
+
+void Compressor::setInitValues()
+{
+    setValues();
+}
+
+void Compressor::setValues()
+{
+    vlc_object_t *p_aout = (vlc_object_t *)THEMIM->getAout();
+
+    for( int i = 0 ; i < NUM_CP_CTRL ; i++ )
+    {
+        float f = (float)( compCtrl[i]->value() ) * ( comp_controls[i].f_resolution );
+        ctrl_readout[i]->setText( QString::number( f, 'f', 1 )
+                                + qtr( comp_controls[i].psz_units ) );
+        if( oldControlVars[i] != f )
+        {
+            if( p_aout )
+            {
+                var_SetFloat( p_aout, comp_controls[i].psz_name, f );
+            }
+            config_PutFloat( p_intf, comp_controls[i].psz_name, f );
+            oldControlVars[i] = f;
+        }
+    }
+    if( p_aout )
+    {
+        vlc_object_release( p_aout );
+    }
+}
+
+/**********************************************************************
+ * Spatializer
+ **********************************************************************/
+typedef struct
+{
+    const char *psz_name;
+    const char *psz_desc;
+} spat_controls_t;
+
+static const spat_controls_t spat_controls[] =
+{
+    { "spatializer-roomsize", _("Size") },
+    { "spatializer-width",    _("Width") },
+    { "spatializer-wet",      _("Wet") },
+    { "spatializer-dry",      _("Dry") },
+    { "spatializer-damp",     _("Damp") },
+};
+
+Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent )
+            : QWidget( _parent ) , p_intf( _p_intf )
+{
+    QFont smallFont = QApplication::font();
+    smallFont.setPointSize( smallFont.pointSize() - 2 );
+
+    QGridLayout *layout = new QGridLayout( this );
 
     enableCheck = new QCheckBox( qtr( "Enable spatializer" ) );
     layout->addWidget( enableCheck, 0, 0, 1, NUM_SP_CTRL );
@@ -1159,21 +1367,26 @@ Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent ) :
             spatCtrl[i]->setValue( 0 );
             spatCtrl[i]->setMinimum( -10 );
         }
+
         oldControlVars[i] = spatCtrl[i]->value();
+
         CONNECT( spatCtrl[i], valueChanged( int ), this, setInitValues() );
-        ctrl_texts[i] = new QLabel( qfu( psz_control_names[i] ) + "\n" );
+
+        ctrl_texts[i] = new QLabel( qtr( spat_controls[i].psz_desc ) + "\n" );
         ctrl_texts[i]->setFont( smallFont );
-        ctrl_readout[i] = new QLabel( "" );
+
+        ctrl_readout[i] = new QLabel;
         ctrl_readout[i]->setFont( smallFont );
-        layout->addWidget( spatCtrl[i], 1, i );
-        layout->addWidget( ctrl_readout[i], 2, i );
-        layout->addWidget( ctrl_texts[i], 3, i );
+
+        layout->addWidget( spatCtrl[i],     1, i, Qt::AlignHCenter );
+        layout->addWidget( ctrl_readout[i], 2, i, Qt::AlignHCenter );
+        layout->addWidget( ctrl_texts[i],   3, i, Qt::AlignHCenter );
     }
 
     BUTTONACT( enableCheck, enable() );
 
     /* Write down initial values */
-    aout_instance_t *p_aout = THEMIM->getAout();
+    vlc_object_t *p_aout = (vlc_object_t *)THEMIM->getAout();
     char *psz_af;
 
     if( p_aout )
@@ -1181,7 +1394,7 @@ Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent ) :
         psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
         for( int i = 0; i < NUM_SP_CTRL ; i++ )
         {
-            controlVars[i] = var_GetFloat( p_aout, psz_control_names[i] );
+            controlVars[i] = var_GetFloat( p_aout, spat_controls[i].psz_name );
         }
         vlc_object_release( p_aout );
     }
@@ -1190,18 +1403,14 @@ Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent ) :
         psz_af = config_GetPsz( p_intf, "audio-filter" );
         for( int i = 0; i < NUM_SP_CTRL ; i++ )
         {
-            controlVars[i] = config_GetFloat( p_intf, psz_control_names[i] );
+            controlVars[i] = config_GetFloat( p_intf, spat_controls[i].psz_name );
         }
     }
     if( psz_af && strstr( psz_af, "spatializer" ) != NULL )
         enableCheck->setChecked( true );
     free( psz_af );
     enable( enableCheck->isChecked() );
-    setValues( controlVars );
-}
-
-Spatializer::~Spatializer()
-{
+    setValues();
 }
 
 void Spatializer::enable()
@@ -1222,12 +1431,12 @@ void Spatializer::enable( bool en )
 }
 void Spatializer::setInitValues()
 {
-    setValues( controlVars );
+    setValues();
 }
 
-void Spatializer::setValues( float *controlVars )
+void Spatializer::setValues()
 {
-    aout_instance_t *p_aout = THEMIM->getAout();
+    vlc_object_t *p_aout = (vlc_object_t *)THEMIM->getAout();
 
     for( int i = 0 ; i < NUM_SP_CTRL ; i++ )
     {
@@ -1240,9 +1449,9 @@ void Spatializer::setValues( float *controlVars )
         {
             if( oldControlVars[i] != spatCtrl[i]->value() )
             {
-                var_SetFloat( p_aout, psz_control_names[i],
+                var_SetFloat( p_aout, spat_controls[i].psz_name,
                         ( float )spatCtrl[i]->value() );
-                config_PutFloat( p_intf, psz_control_names[i],
+                config_PutFloat( p_intf, spat_controls[i].psz_name,
                         ( float ) spatCtrl[i]->value() );
                 oldControlVars[i] = ( float ) spatCtrl[i]->value();
             }
@@ -1251,14 +1460,16 @@ void Spatializer::setValues( float *controlVars )
     }
 
 }
-void Spatializer::delCallbacks( aout_instance_t *p_aout )
+void Spatializer::delCallbacks( vlc_object_t *p_aout )
 {
+    VLC_UNUSED( p_aout );
     //    var_DelCallback( p_aout, "Spatializer-bands", EqzCallback, this );
     //    var_DelCallback( p_aout, "Spatializer-preamp", EqzCallback, this );
 }
 
-void Spatializer::addCallbacks( aout_instance_t *p_aout )
+void Spatializer::addCallbacks( vlc_object_t *p_aout )
 {
+    VLC_UNUSED( p_aout );
     //    var_AddCallback( p_aout, "Spatializer-bands", EqzCallback, this );
     //    var_AddCallback( p_aout, "Spatializer-preamp", EqzCallback, this );
 }
@@ -1266,15 +1477,49 @@ void Spatializer::addCallbacks( aout_instance_t *p_aout )
 #include <QToolButton>
 #include <QGridLayout>
 
+#define SUBSDELAY_CFG_MODE                     "subsdelay-mode"
+#define SUBSDELAY_CFG_FACTOR                   "subsdelay-factor"
+#define SUBSDELAY_MODE_ABSOLUTE                0
+#define SUBSDELAY_MODE_RELATIVE_SOURCE_DELAY   1
+#define SUBSDELAY_MODE_RELATIVE_SOURCE_CONTENT 2
+
+SyncWidget::SyncWidget( QWidget *_parent ) : QWidget( _parent )
+{
+    QHBoxLayout *layout = new QHBoxLayout;
+    spinBox.setAlignment( Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter );
+    spinBox.setDecimals( 3 );
+    spinBox.setMinimum( -600.0 );
+    spinBox.setMaximum( 600.0 );
+    spinBox.setSingleStep( 0.1 );
+    spinBox.setSuffix( " s" );
+    spinBox.setButtonSymbols( QDoubleSpinBox::PlusMinus );
+    CONNECT( &spinBox, valueChanged( double ), this, valueChangedHandler( double ) );
+    layout->addWidget( &spinBox );
+    layout->addWidget( &spinLabel );
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    setLayout( layout );
+}
+
+void SyncWidget::valueChangedHandler( double d )
+{
+    if ( d < 0 )
+        spinLabel.setText( qtr("(Hastened)") );
+    else if ( d > 0 )
+        spinLabel.setText( qtr("(Delayed)") );
+    else
+        spinLabel.setText( "" );
+    emit valueChanged( d );
+}
+
+void SyncWidget::setValue( double d )
+{
+    spinBox.setValue( d );
+}
+
 SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
                             QWidget( _parent ) , p_intf( _p_intf )
 {
     QGroupBox *AVBox, *subsBox;
-
-    QToolButton *moinsAV, *plusAV;
-    QToolButton *moinssubs, *plussubs;
-    QToolButton *moinssubSpeed, *plussubSpeed;
-
     QToolButton *updateButton;
 
     b_userAction = true;
@@ -1285,81 +1530,27 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
     AVBox = new QGroupBox( qtr( "Audio/Video" ) );
     QGridLayout *AVLayout = new QGridLayout( AVBox );
 
-    moinsAV = new QToolButton;
-    moinsAV->setToolButtonStyle( Qt::ToolButtonTextOnly );
-    moinsAV->setAutoRaise( true );
-    moinsAV->setText( "-" );
-    AVLayout->addWidget( moinsAV, 0, 1, 1, 1 );
-
-    plusAV = new QToolButton;
-    plusAV->setToolButtonStyle( Qt::ToolButtonTextOnly );
-    plusAV->setAutoRaise( true );
-    plusAV->setText( "+" );
-    AVLayout->addWidget( plusAV, 0, 3, 1, 1 );
-
     QLabel *AVLabel = new QLabel;
-    AVLabel->setText( qtr( "Advance of audio over video:" ) );
+    AVLabel->setText( qtr( "Audio track synchronization:" ) );
     AVLayout->addWidget( AVLabel, 0, 0, 1, 1 );
 
-    AVSpin = new QDoubleSpinBox;
-    AVSpin->setAlignment( Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter );
-    AVSpin->setDecimals( 3 );
-    AVSpin->setMinimum( -100.0 );
-    AVSpin->setMaximum( 100.0 );
-    AVSpin->setSingleStep( 0.1 );
-    AVSpin->setToolTip( qtr( "A positive value means that\n"
-                             "the audio is ahead of the video" ) );
-    AVSpin->setSuffix( " s" );
+    AVSpin = new SyncWidget( this );
     AVLayout->addWidget( AVSpin, 0, 2, 1, 1 );
     mainLayout->addWidget( AVBox, 1, 0, 1, 5 );
-
 
     /* Subs */
     subsBox = new QGroupBox( qtr( "Subtitles/Video" ) );
     QGridLayout *subsLayout = new QGridLayout( subsBox );
 
-    moinssubs = new QToolButton;
-    moinssubs->setToolButtonStyle( Qt::ToolButtonTextOnly );
-    moinssubs->setAutoRaise( true );
-    moinssubs->setText( "-" );
-    subsLayout->addWidget( moinssubs, 0, 1, 1, 1 );
-
-    plussubs = new QToolButton;
-    plussubs->setToolButtonStyle( Qt::ToolButtonTextOnly );
-    plussubs->setAutoRaise( true );
-    plussubs->setText( "+" );
-    subsLayout->addWidget( plussubs, 0, 3, 1, 1 );
-
     QLabel *subsLabel = new QLabel;
-    subsLabel->setText( qtr( "Advance of subtitles over video:" ) );
+    subsLabel->setText( qtr( "Subtitle track syncronization:" ) );
     subsLayout->addWidget( subsLabel, 0, 0, 1, 1 );
 
-    subsSpin = new QDoubleSpinBox;
-    subsSpin->setAlignment( Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter );
-    subsSpin->setDecimals( 3 );
-    subsSpin->setMinimum( -100.0 );
-    subsSpin->setMaximum( 100.0 );
-    subsSpin->setSingleStep( 0.1 );
-    subsSpin->setToolTip( qtr( "A positive value means that\n"
-                             "the subtitles are ahead of the video" ) );
-    subsSpin->setSuffix( " s" );
+    subsSpin = new SyncWidget( this );
     subsLayout->addWidget( subsSpin, 0, 2, 1, 1 );
 
-
-    moinssubSpeed = new QToolButton;
-    moinssubSpeed->setToolButtonStyle( Qt::ToolButtonTextOnly );
-    moinssubSpeed->setAutoRaise( true );
-    moinssubSpeed->setText( "-" );
-    subsLayout->addWidget( moinssubSpeed, 1, 1, 1, 1 );
-
-    plussubSpeed = new QToolButton;
-    plussubSpeed->setToolButtonStyle( Qt::ToolButtonTextOnly );
-    plussubSpeed->setAutoRaise( true );
-    plussubSpeed->setText( "+" );
-    subsLayout->addWidget( plussubSpeed, 1, 3, 1, 1 );
-
     QLabel *subSpeedLabel = new QLabel;
-    subSpeedLabel->setText( qtr( "Speed of the subtitles:" ) );
+    subSpeedLabel->setText( qtr( "Subtitles speed:" ) );
     subsLayout->addWidget( subSpeedLabel, 1, 0, 1, 1 );
 
     subSpeedSpin = new QDoubleSpinBox;
@@ -1369,7 +1560,21 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
     subSpeedSpin->setMaximum( 100 );
     subSpeedSpin->setSingleStep( 0.2 );
     subSpeedSpin->setSuffix( " fps" );
+    subSpeedSpin->setButtonSymbols( QDoubleSpinBox::PlusMinus );
     subsLayout->addWidget( subSpeedSpin, 1, 2, 1, 1 );
+
+    QLabel *subDurationLabel = new QLabel;
+    subDurationLabel->setText( qtr( "Subtitles duration factor:" ) );
+    subsLayout->addWidget( subDurationLabel, 2, 0, 1, 1 );
+
+    subDurationSpin = new QDoubleSpinBox;
+    subDurationSpin->setAlignment( Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter );
+    subDurationSpin->setDecimals( 3 );
+    subDurationSpin->setMinimum( 0 );
+    subDurationSpin->setMaximum( 20 );
+    subDurationSpin->setSingleStep( 0.2 );
+    subDurationSpin->setButtonSymbols( QDoubleSpinBox::PlusMinus );
+    subsLayout->addWidget( subDurationSpin, 2, 2, 1, 1 );
 
     mainLayout->addWidget( subsBox, 2, 0, 2, 5 );
 
@@ -1377,25 +1582,27 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
     updateButton->setAutoRaise( true );
     mainLayout->addWidget( updateButton, 0, 4, 1, 1 );
 
-
     /* Various Connects */
-    CONNECT( moinsAV, clicked(), AVSpin, stepDown () );
-    CONNECT( plusAV, clicked(), AVSpin, stepUp () );
-    CONNECT( moinssubs, clicked(), subsSpin, stepDown () );
-    CONNECT( plussubs, clicked(), subsSpin, stepUp () );
-    CONNECT( moinssubSpeed, clicked(), subSpeedSpin, stepDown () );
-    CONNECT( plussubSpeed, clicked(), subSpeedSpin, stepUp () );
     CONNECT( AVSpin, valueChanged ( double ), this, advanceAudio( double ) ) ;
     CONNECT( subsSpin, valueChanged ( double ), this, advanceSubs( double ) ) ;
     CONNECT( subSpeedSpin, valueChanged ( double ),
              this, adjustSubsSpeed( double ) );
+    CONNECT( subDurationSpin, valueChanged ( double ),
+             this, adjustSubsDuration( double ) );
 
     CONNECT( THEMIM->getIM(), synchroChanged(), this, update() );
     BUTTON_SET_ACT_I( updateButton, "", update,
             qtr( "Force update of this dialog's values" ), update() );
 
+    initSubsDuration();
+
     /* Set it */
     update();
+}
+
+SyncControls::~SyncControls()
+{
+    subsdelayClean();
 }
 
 void SyncControls::clean()
@@ -1404,6 +1611,7 @@ void SyncControls::clean()
     AVSpin->setValue( 0.0 );
     subsSpin->setValue( 0.0 );
     subSpeedSpin->setValue( 1.0 );
+    subsdelayClean();
     b_userAction = true;
 }
 
@@ -1419,6 +1627,7 @@ void SyncControls::update()
         i_delay = var_GetTime( THEMIM->getInput(), "spu-delay" );
         subsSpin->setValue( ( (double)i_delay ) / 1000000 );
         subSpeedSpin->setValue( var_GetFloat( THEMIM->getInput(), "sub-fps" ) );
+        subDurationSpin->setValue( var_InheritFloat( p_intf, SUBSDELAY_CFG_FACTOR ) );
     }
     b_userAction = true;
 }
@@ -1448,6 +1657,62 @@ void SyncControls::adjustSubsSpeed( double f_fps )
         var_SetFloat( THEMIM->getInput(), "sub-fps", f_fps );
     }
 }
+
+void SyncControls::adjustSubsDuration( double f_factor )
+{
+    if( THEMIM->getInput() && b_userAction )
+    {
+        subsdelaySetFactor( f_factor );
+        ChangeVFiltersString( p_intf, "subsdelay", f_factor > 0 );
+    }
+}
+
+void SyncControls::initSubsDuration()
+{
+    int i_mode = var_InheritInteger( p_intf, SUBSDELAY_CFG_MODE );
+
+    switch (i_mode)
+    {
+    default:
+    case SUBSDELAY_MODE_ABSOLUTE:
+        subDurationSpin->setToolTip( qtr( "Extend subtitles duration by this value.\n"
+                                          "Set 0 to disable." ) );
+        subDurationSpin->setSuffix( " s" );
+        break;
+    case SUBSDELAY_MODE_RELATIVE_SOURCE_DELAY:
+        subDurationSpin->setToolTip( qtr( "Multiply subtitles duration by this value.\n"
+                                          "Set 0 to disable." ) );
+        subDurationSpin->setSuffix( "" );
+        break;
+    case SUBSDELAY_MODE_RELATIVE_SOURCE_CONTENT:
+        subDurationSpin->setToolTip( qtr( "Recalculate subtitles duration according\n"
+                                          "to their content and this value.\n"
+                                          "Set 0 to disable." ) );
+        subDurationSpin->setSuffix( "" );
+        break;
+    }
+}
+
+void SyncControls::subsdelayClean()
+{
+    /* Remove subsdelay filter */
+    ChangeVFiltersString( p_intf, "subsdelay", false );
+}
+
+void SyncControls::subsdelaySetFactor( double f_factor )
+{
+    /* Set the factor in the preferences */
+    config_PutFloat( p_intf, SUBSDELAY_CFG_FACTOR, f_factor );
+
+    /* Try to find an instance of subsdelay, and set its factor */
+    vlc_object_t *p_obj = ( vlc_object_t * ) vlc_object_find_name( p_intf->p_libvlc, "subsdelay" );
+    if( p_obj )
+    {
+        var_SetFloat( p_obj, SUBSDELAY_CFG_FACTOR, f_factor );
+        vlc_object_release( p_obj );
+    }
+}
+
 
 /**********************************************************************
  * Video filters / Adjust

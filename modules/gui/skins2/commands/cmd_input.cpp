@@ -2,7 +2,7 @@
  * cmd_input.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9262c0d36a9e013a983d61405b65b8344d082806 $
+ * $Id: 63f4f470feeef9c50a0c756bb0239b635f451587 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -24,7 +24,7 @@
 
 #include "cmd_input.hpp"
 #include "cmd_dialogs.hpp"
-#include <vlc_aout.h>
+#include <vlc_aout_intf.h>
 #include <vlc_input.h>
 #include <vlc_playlist.h>
 
@@ -38,7 +38,7 @@ void CmdPlay::execute()
     input_thread_t *pInput = playlist_CurrentInput( pPlaylist );
     if( pInput )
     {
-        var_SetFloat( pInput, "rate", 1.0 );
+        var_SetFloat( pPlaylist, "rate", 1.0 );
         vlc_object_release( pInput );
     }
 
@@ -81,7 +81,7 @@ void CmdSlower::execute()
 
     if( pInput )
     {
-        var_TriggerCallback( pInput, "rate-slower" );
+        var_TriggerCallback( pPlaylist, "rate-slower" );
         vlc_object_release( pInput );
     }
 }
@@ -94,7 +94,7 @@ void CmdFaster::execute()
 
     if( pInput )
     {
-        var_TriggerCallback( pInput, "rate-faster" );
+        var_TriggerCallback( pPlaylist, "rate-faster" );
         vlc_object_release( pInput );
     }
 }

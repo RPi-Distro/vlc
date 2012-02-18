@@ -2,7 +2,7 @@
  * dynamicoverlay.h : dynamic overlay plugin for vlc
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: e9058381fa4c33cc505a0959c3597be6522dc68b $
+ * $Id: d8cc8daf36391f967e0515b3484b48f313c8383f $
  *
  * Author: Jean-Paul Saman <jpsaman@videolan.org>
  *
@@ -26,6 +26,7 @@
 
 #include <vlc_common.h>
 #include <vlc_filter.h>
+#include <vlc_text_style.h>
 
 /*****************************************************************************
  * buffer_t: Command and response buffer
@@ -66,7 +67,7 @@ typedef struct commandparams_t
 
     int32_t i_alpha;    /*< alpha value of overlay */
 
-    struct text_style_t fontstyle; /*< text style */
+    text_style_t fontstyle; /*< text style */
 
     bool b_visible; /*< visibility flag of overlay */
 } commandparams_t;
@@ -133,7 +134,7 @@ typedef struct overlay_t
     bool b_active;
 
     video_format_t format;
-    struct text_style_t *p_fontstyle;
+    text_style_t *p_fontstyle;
     union {
         picture_t *p_pic;
         char *p_text;
@@ -152,8 +153,8 @@ typedef struct list_t
     overlay_t **pp_head, **pp_tail;
 } list_t;
 
-int ListInit( list_t *p_list );
-int ListDestroy( list_t *p_list );
+int do_ListInit( list_t *p_list );
+int do_ListDestroy( list_t *p_list );
 ssize_t ListAdd( list_t *p_list, overlay_t *p_new );
 int ListRemove( list_t *p_list, size_t i_idx );
 overlay_t *ListGet( list_t *p_list, size_t i_idx );

@@ -2,7 +2,7 @@
  * ctrl_move.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 67e813fe2bd9103c783721bfdb57985045daf471 $
+ * $Id: 13fbcfaf7c4a3cf412d0690bc5d31eeebab4eca5 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -49,7 +49,7 @@ public:
     virtual bool mouseOver( int x, int y ) const;
 
     /// Draw the control on the given graphics
-    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Set the position and the associated layout of the decorated control
     virtual void setLayout( GenericLayout *pLayout,

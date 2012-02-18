@@ -1,27 +1,27 @@
 /*****************************************************************************
  * vlc_http.h: Shared code for HTTP clients
  *****************************************************************************
- * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 1b119202709ac4c284fba66111f269555186ccc2 $
+ * Copyright (C) 2001-2008 VLC authors and VideoLAN
+ * $Id: ddde13efed1e11a15632f17e1da4437f59750988 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_HTTP_H
@@ -49,19 +49,19 @@ typedef struct http_auth_t
 } http_auth_t;
 
 
-VLC_EXPORT( void, http_auth_Init, ( http_auth_t * ) );
-VLC_EXPORT( void, http_auth_Reset, ( http_auth_t * ) );
-VLC_EXPORT( void, http_auth_ParseWwwAuthenticateHeader,
+VLC_API void http_auth_Init( http_auth_t * );
+VLC_API void http_auth_Reset( http_auth_t * );
+VLC_API void http_auth_ParseWwwAuthenticateHeader
             ( vlc_object_t *, http_auth_t * ,
-              const char * ) );
-VLC_EXPORT( int, http_auth_ParseAuthenticationInfoHeader,
+              const char * );
+VLC_API int http_auth_ParseAuthenticationInfoHeader
             ( vlc_object_t *, http_auth_t *,
               const char *, const char *,
               const char *, const char *,
-              const char * ) );
-VLC_EXPORT( char *, http_auth_FormatAuthorizationHeader,
+              const char * );
+VLC_API char *http_auth_FormatAuthorizationHeader
             ( vlc_object_t *, http_auth_t *,
               const char *, const char *,
-              const char *, const char * ) );
+              const char *, const char * ) VLC_USED;
 
 #endif /* VLC_HTTP_H */

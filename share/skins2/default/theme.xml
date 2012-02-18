@@ -1,5 +1,5 @@
 <!DOCTYPE Theme PUBLIC "-//VideoLAN//DTD VLC Skins V2.0//EN" "skin.dtd">
-<Theme version="2.0">
+<Theme version="2.0" alpha="255" movealpha="200">
   <ThemeInfo name="subX" author="Martin Poehlmann" email="" webpage="http://www.skinconsortium.com"/>
 
   <!-- Created using the VLC Skin Editor 0.8.0.dev (http://www.videolan.org/vlc/skineditor.html)-->
@@ -176,7 +176,7 @@
     <SubBitmap id="item" x="16" y="0" height="8" width="8"/>
   </Bitmap>
 
-  <Window id="main">
+  <Window id="main" position="Center">
     <Layout id="normal" width="500" height="350" minwidth="500" maxwidth="99999" minheight="126" maxheight="99999">
       <Panel id="main.normal.titlebar" width="0" height="24" rightbottom="righttop">
         <Image id="main.normal.titlebar.left" image="main.png.titlebar.left" action="move" action2="main.maximize()"/>
@@ -195,7 +195,8 @@
       </Panel>
       <Panel id="main.normal.component" y="24" width="0" height="0" rightbottom="rightbottom">
         <Image id="main.normal.component.background" image="main.png.background" resize="scale" rightbottom="rightbottom"/>
-        <Video id="main.normal.component.video" width="500" height="224" rightbottom="rightbottom"/>
+        <Image id="main.normal.component.art" image="main.png.background" resize="scale2" rightbottom="rightbottom" art="true"/>
+        <Video id="main.normal.component.video" width="500" height="224" rightbottom="rightbottom" visible="vlc.hasVout"/>
       </Panel>
       <Panel id="main.normal.controls" y="248" width="0" height="0" lefttop="leftbottom" rightbottom="rightbottom">
         <Image id="main.normal.controls.bg.left" image="main.png.controls.bg.left" action="move"/>
@@ -232,9 +233,9 @@
         </Slider>
         <Panel id="main.normal.display" width="0" height="0" rightbottom="righttop">
           <Text text="$T / $D" font="defaultfont" alignment="right" color="#CCCCCC" id="time1" x="325" y="7" width="100" lefttop="rightbottom" rightbottom="rightbottom" visible="dvd.isActive"/>
-          <Text text="$N" font="defaultfont" color="#CCCCCC" id="songticker1" x="26" y="7" width="300" rightbottom="righttop" visible="dvd.isActive"/>
+          <Text text="$N" font="defaultfont" color="#CCCCCC" id="songticker1" x="26" y="7" width="299" rightbottom="righttop" visible="dvd.isActive"/>
           <Text text="$T / $D" font="defaultfont" alignment="right" color="#CCCCCC" id="time2" x="390" y="7" width="100" lefttop="rightbottom" rightbottom="rightbottom" visible="not dvd.isActive"/>
-          <Text text="$N" font="defaultfont" color="#CCCCCC" id="songticker2" x="26" y="7" width="365" rightbottom="righttop" visible="not dvd.isActive"/>
+          <Text text="$N" font="defaultfont" color="#CCCCCC" id="songticker2" x="26" y="7" width="364" rightbottom="righttop" visible="not dvd.isActive"/>
           <Button up="main.png.dbuttons.info.normal" down="main.png.dbuttons.info.down" over="main.png.dbuttons.info.hover" action="dialogs.fileInfo()" id="main.normal.dbuttons.info1" x="9" y="7" tooltiptext="Show File Information"/>
           <Button up="main.png.dbuttons.ptitle.normal" down="main.png.dbuttons.ptitle.down" over="main.png.dbuttons.ptitle.hover" action="dvd.previousTitle()" id="main.normal.dbuttons.ptitle" x="431" y="7" lefttop="rightbottom" rightbottom="rightbottom" visible="dvd.isActive" tooltiptext="Play Previous Title on DVD"/>
           <Button up="main.png.dbuttons.pchap.normal" down="main.png.dbuttons.pchap.down" over="main.png.dbuttons.pchap.hover" action="dvd.previousChapter()" id="main.normal.dbuttons.pchap" x="443" y="7" lefttop="rightbottom" rightbottom="rightbottom" visible="dvd.isActive" tooltiptext="Go to Previous Chapter of Title"/>
@@ -246,7 +247,7 @@
       </Panel>
     </Layout>
   </Window>
-  <Window id="eqwin" visible="false">
+  <Window id="eqwin" visible="false" position="Center">
     <Layout id="eqwin-main" width="330" height="171" minwidth="330" maxwidth="330" minheight="171" maxheight="171">
       <Image id="eq.normal.eq" image="eq.png.bg" action="move"/>
       <Button up="sysbuttons.png.menu.normal" down="sysbuttons.png.menu.down" over="sysbuttons.png.menu.hover" action="dialogs.popup()" id="eqwin.normal.titlebar.menu" x="6" y="3" tooltiptext="VLC Menu"/>
@@ -266,7 +267,7 @@
       <Checkbox state="equalizer.isEnabled" up1="eq.png.knob.normal" up2="eq.png.knob.normal" down1="eq.png.knob.down" down2="eq.png.knob.down" over1="eq.png.knob.hover" over2="eq.png.knob.hover" action1="equalizer.enable()" action2="equalizer.disable()" tooltiptext1="Enable Equalizer" tooltiptext2="Disable Equalizer" id="eq.onoff.lef2" x="18" y="86"/>
     </Layout>
   </Window>
-  <Window id="plwin" visible="false">
+  <Window id="plwin" position="Center" xoffset="5%" yoffset="5%" visible="false">
     <Layout id="plwin-normal" width="500" height="350" minwidth="170" maxwidth="99999" minheight="200" maxheight="99999">
       <Panel id="pl.normal.titlebar" width="0" height="24" rightbottom="righttop">
         <Image id="pl.normal.titlebar.left" image="pl.png.titlebar.left" action="move"/>
@@ -297,12 +298,12 @@
       </Panel>
     </Layout>
   </Window>
-  <Window id="aboutwin" visible="false">
+  <Window id="aboutwin" visible="false" position="Center">
     <Layout id="aboutwinwin-main" width="330" height="171" minwidth="330" maxwidth="330" minheight="171" maxheight="171">
       <Image id="about.normal.eq" image="about.png" action="move" action2="aboutwin.hide()"/>
     </Layout>
   </Window>
-  <Window id="fullscreenController" x="30" y="30">
+  <Window id="fullscreenController" position="South" ymargin="3%">
     <Layout id="plwin-fsc-normal" width="500" height="350" minwidth="170" maxwidth="99999" minheight="200" maxheight="99999">
       <Panel id="fsc.pl.normal.titlebar" width="0" height="24" rightbottom="righttop">
         <Image id="fsc.pl.normal.titlebar.left" image="pl.png.titlebar.left" action="move"/>
@@ -350,7 +351,7 @@
       <Checkbox state="equalizer.isEnabled" up1="eq.png.led.off" up2="eq.png.led.on" down1="none" down2="none" over1="none" over2="none" action1="equalizer.enable()" action2="equalizer.disable()" tooltiptext1="Enable Equalizer" tooltiptext2="Disable Equalizer" id="fsc.eq.onoff.lef1" x="29" y="72"/>
       <Checkbox state="equalizer.isEnabled" up1="eq.png.knob.normal" up2="eq.png.knob.normal" down1="eq.png.knob.down" down2="eq.png.knob.down" over1="eq.png.knob.hover" over2="eq.png.knob.hover" action1="equalizer.enable()" action2="equalizer.disable()" tooltiptext1="Enable Equalizer" tooltiptext2="Disable Equalizer" id="fsc.eq.onoff.lef2" x="18" y="86"/>
     </Layout>
-    <Layout id="fsc_normal" width="500" height="500" minwidth="500" maxwidth="500" minheight="500" maxheight="500">
+    <Layout id="fsc_normal" width="500" height="130" minwidth="500" maxwidth="500" minheight="130" maxheight="130">
       <Panel id="fsc.normal.titlebar" width="0" height="24" rightbottom="righttop">
         <Image id="fsc.normal.titlebar.left" image="main.png.titlebar.left" action="move"/>
         <Image id="fsc.normal.titlebar.right" x="480" image="main.png.titlebar.right" action="move" lefttop="righttop" rightbottom="righttop"/>
@@ -398,9 +399,9 @@
         </Slider>
         <Panel id="fsc.normal.display" width="0" height="0" rightbottom="righttop">
           <Text text="$T / $D" font="defaultfont" alignment="right" color="#CCCCCC" id="fsc.time1" x="325" y="7" width="100" lefttop="rightbottom" rightbottom="rightbottom" visible="dvd.isActive"/>
-          <Text text="$N" font="defaultfont" color="#CCCCCC" id="fsc.songticker1" x="26" y="7" width="300" rightbottom="righttop" visible="dvd.isActive"/>
+          <Text text="$N" font="defaultfont" color="#CCCCCC" id="fsc.songticker1" x="26" y="7" width="299" rightbottom="righttop" visible="dvd.isActive"/>
           <Text text="$T / $D" font="defaultfont" alignment="right" color="#CCCCCC" id="fsc.time2" x="390" y="7" width="100" lefttop="rightbottom" rightbottom="rightbottom" visible="not dvd.isActive"/>
-          <Text text="$N" font="defaultfont" color="#CCCCCC" id="fsc.songticker2" x="26" y="7" width="365" rightbottom="righttop" visible="not dvd.isActive"/>
+          <Text text="$N" font="defaultfont" color="#CCCCCC" id="fsc.songticker2" x="26" y="7" width="364" rightbottom="righttop" visible="not dvd.isActive"/>
           <Button up="main.png.dbuttons.ptitle.normal" down="main.png.dbuttons.ptitle.down" over="main.png.dbuttons.ptitle.hover" action="dvd.previousTitle()" id="fsc.normal.dbuttons.ptitle" x="431" y="7" lefttop="rightbottom" rightbottom="rightbottom" visible="dvd.isActive" tooltiptext="Play Previous Title on DVD"/>
           <Button up="main.png.dbuttons.pchap.normal" down="main.png.dbuttons.pchap.down" over="main.png.dbuttons.pchap.hover" action="dvd.previousChapter()" id="fsc.normal.dbuttons.pchap" x="443" y="7" lefttop="rightbottom" rightbottom="rightbottom" visible="dvd.isActive" tooltiptext="Go to Previous Chapter of Title"/>
           <Button up="main.png.dbuttons.menu.normal" down="main.png.dbuttons.menu.down" over="main.png.dbuttons.menu.hover" action="dvd.rootMenu()" id="fsc.normal.dbuttons.info" x="455" y="7" lefttop="rightbottom" rightbottom="rightbottom" visible="dvd.isActive" tooltiptext="Go to the DVD Title Menu"/>

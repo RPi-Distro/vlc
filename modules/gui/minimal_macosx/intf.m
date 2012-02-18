@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: aa88eab9804ef81f146163fe8d68b70ecca56d9f $
+ * $Id: b9a13ef93ccefab45efd5fff53ff9eb345826c01 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -124,11 +124,6 @@ static void * KillerThread( void *user_data )
 static void Run( intf_thread_t *p_intf )
 {
     sigset_t set;
-
-    /* Do it again - for some unknown reason, vlc_thread_create() often
-     * fails to go to real-time priority with the first launched thread
-     * (???) --Meuuh */
-    vlc_thread_set_priority( p_intf, VLC_THREAD_PRIORITY_LOW );
 
     /* Make sure the "force quit" menu item does quit instantly.
      * VLC overrides SIGTERM which is sent by the "force quit"

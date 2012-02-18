@@ -3,42 +3,35 @@
 
 basedir = audio_mixer
 dir = audio_mixer
-mods = float32_mixer spdif_mixer trivial_mixer
+mods = fixed32_mixer float32_mixer
 libvlc_LTLIBRARIES = 
 EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
+# The fixed32_mixer plugin
+libfixed32_mixer_plugin_la_SOURCES = $(SOURCES_fixed32_mixer)
+nodist_libfixed32_mixer_plugin_la_SOURCES = $(nodist_SOURCES_fixed32_mixer)
+# Force per-target objects:
+libfixed32_mixer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_fixed32_mixer)
+libfixed32_mixer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_fixed32_mixer)
+libfixed32_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_fixed32_mixer)
+libfixed32_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_fixed32_mixer)
+# Set LIBADD and DEPENDENCIES manually:
+libfixed32_mixer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_fixed32_mixer)
+libfixed32_mixer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_fixed32_mixer)
+libfixed32_mixer_plugin_la_DEPENDENCIES =
+
 # The float32_mixer plugin
 libfloat32_mixer_plugin_la_SOURCES = $(SOURCES_float32_mixer)
 nodist_libfloat32_mixer_plugin_la_SOURCES = $(nodist_SOURCES_float32_mixer)
 # Force per-target objects:
-libfloat32_mixer_plugin_la_CFLAGS = $(AM_CFLAGS)
-libfloat32_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libfloat32_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libfloat32_mixer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_float32_mixer)
+libfloat32_mixer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_float32_mixer)
+libfloat32_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_float32_mixer)
+libfloat32_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_float32_mixer)
 # Set LIBADD and DEPENDENCIES manually:
-libfloat32_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libfloat32_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The spdif_mixer plugin
-libspdif_mixer_plugin_la_SOURCES = $(SOURCES_spdif_mixer)
-nodist_libspdif_mixer_plugin_la_SOURCES = $(nodist_SOURCES_spdif_mixer)
-# Force per-target objects:
-libspdif_mixer_plugin_la_CFLAGS = $(AM_CFLAGS)
-libspdif_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libspdif_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libspdif_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libspdif_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The trivial_mixer plugin
-libtrivial_mixer_plugin_la_SOURCES = $(SOURCES_trivial_mixer)
-nodist_libtrivial_mixer_plugin_la_SOURCES = $(nodist_SOURCES_trivial_mixer)
-# Force per-target objects:
-libtrivial_mixer_plugin_la_CFLAGS = $(AM_CFLAGS)
-libtrivial_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libtrivial_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libtrivial_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libtrivial_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libfloat32_mixer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_float32_mixer)
+libfloat32_mixer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_float32_mixer)
+libfloat32_mixer_plugin_la_DEPENDENCIES =
 

@@ -2,7 +2,7 @@
  * extended.cpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 8fa16537f533d87a9c63f3541e07e86a9f7bbfbc $
+ * $Id: 2740f9daf71320e938f959ef33994027c5906219 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -32,15 +32,24 @@
 
 #include <QTabWidget>
 #include <QGridLayout>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <vlc_modules.h>
 
-ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
+ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf )
+               : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
 {
+#ifdef __APPLE__
+    setWindowFlags( Qt::Drawer );
+#else
     setWindowFlags( Qt::Tool );
+#endif
+
     setWindowOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
     setWindowTitle( qtr( "Adjustments and Effects" ) );
     setWindowRole( "vlc-extended" );
 
-    QGridLayout *layout = new QGridLayout( this );
+    QVBoxLayout *layout = new QVBoxLayout( this );
     layout->setContentsMargins( 0, 2, 0, 1 );
     layout->setSpacing( 3 );
 
@@ -53,6 +62,9 @@ ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
 
     equal = new Equalizer( p_intf, audioTab );
     audioTab->addTab( equal, qtr( "Graphic Equalizer" ) );
+
+    Compressor *compres = new Compressor( p_intf, audioTab );
+    audioTab->addTab( compres, qtr( "Compressor" ) );
 
     Spatializer *spatial = new Spatializer( p_intf, audioTab );
     audioTab->addTab( spatial, qtr( "Spatializer" ) );
@@ -80,11 +92,13 @@ ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
         mainTabW->addTab( v4l2, qtr( "v4l2 controls" ) );
     }
 
-    layout->addWidget( mainTabW, 0, 0, 1, 5 );
+    layout->addWidget( mainTabW );
 
-    QPushButton *closeButton = new QPushButton( qtr( "&Close" ) );
-    layout->addWidget( closeButton, 1, 4, 1, 1 );
-    CONNECT( closeButton, clicked(), this, close() );
+    QDialogButtonBox *closeButtonBox = new QDialogButtonBox( Qt::Horizontal, this );
+    closeButtonBox->addButton(
+        new QPushButton( qtr("&Close"), this ), QDialogButtonBox::RejectRole );
+    layout->addWidget( closeButtonBox );
+    CONNECT( closeButtonBox, rejected(), this, close() );
 
     /* Restore geometry or move this dialog on the left pane of the MI */
     if( !restoreGeometry( getSettings()->value("EPanel/geometry").toByteArray() ) )
@@ -98,12 +112,12 @@ ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
             move ( 450 , 0 );
     }
 
-    CONNECT( THEMIM->getIM(), statusChanged( int ), this, changedItem( int ) );
+    CONNECT( THEMIM->getIM(), playingStatusChanged( int ), this, changedItem( int ) );
 }
 
 ExtendedDialog::~ExtendedDialog()
 {
-    writeSettings( "EPanel" );
+    getSettings()->setValue("Epanel/geometry", saveGeometry());
 }
 
 void ExtendedDialog::showTab( int i )

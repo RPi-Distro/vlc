@@ -2,7 +2,7 @@
  * araw.c: Pseudo audio decoder; for raw pcm data
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: c441e82964bc0883666971a86f10a310fdf240e2 $
+ * $Id: 30c7d15d561b86bf0c8763d73f78c276f3a978e8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -71,9 +71,7 @@ static block_t *EncoderEncode( encoder_t *, aout_buffer_t * );
 
 struct decoder_sys_t
 {
-    const int16_t *p_logtos16;  /* used with m/alaw to int16_t */
-    int i_bytespersample;
-
+    void (*decode) (void *, const uint8_t *, unsigned);
     date_t end_date;
 };
 
@@ -169,6 +167,11 @@ static const int16_t alawtos16[256] =
        944,    912,   1008,    976,    816,    784,    880,    848
 };
 
+static void DecodeAlaw( void *, const uint8_t *, unsigned );
+static void DecodeUlaw( void *, const uint8_t *, unsigned );
+static void DecodeS20B( void *, const uint8_t *, unsigned );
+static void DecodeDAT12( void *, const uint8_t *, unsigned );
+
 /*****************************************************************************
  * DecoderOpen: probe the decoder and return score
  *****************************************************************************/
@@ -190,6 +193,7 @@ static int DecoderOpen( vlc_object_t *p_this )
 
     case VLC_CODEC_ALAW:
     case VLC_CODEC_MULAW:
+    case VLC_CODEC_DAT12:
 
     case VLC_CODEC_F64L:
     case VLC_CODEC_F64B:
@@ -199,6 +203,7 @@ static int DecoderOpen( vlc_object_t *p_this )
     case VLC_CODEC_S32B:
     case VLC_CODEC_S24L:
     case VLC_CODEC_S24B:
+    case VLC_CODEC_S20B:
     case VLC_CODEC_S16L:
     case VLC_CODEC_S16B:
     case VLC_CODEC_S8:
@@ -228,7 +233,7 @@ static int DecoderOpen( vlc_object_t *p_this )
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
         return VLC_ENOMEM;
 
-    p_sys->p_logtos16 = NULL;
+    p_sys->decode = NULL;
 
     msg_Dbg( p_dec, "samplerate:%dHz channels:%d bits/sample:%d",
              p_dec->fmt_in.audio.i_rate, p_dec->fmt_in.audio.i_channels,
@@ -258,11 +263,25 @@ static int DecoderOpen( vlc_object_t *p_this )
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 24;
     }
+    else if( p_dec->fmt_in.i_codec == VLC_CODEC_S20B )
+    {
+        p_dec->fmt_out.i_codec = VLC_CODEC_S32N;
+        p_dec->fmt_out.audio.i_bitspersample = 32;
+        p_sys->decode = DecodeS20B;
+        p_dec->fmt_in.audio.i_bitspersample = 20;
+    }
     else if( p_dec->fmt_in.i_codec == VLC_CODEC_S16L ||
              p_dec->fmt_in.i_codec == VLC_CODEC_S16B )
     {
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 16;
+    }
+    else if( p_dec->fmt_in.i_codec == VLC_CODEC_DAT12 )
+    {
+        p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
+        p_dec->fmt_out.audio.i_bitspersample = 16;
+        p_sys->decode = DecodeDAT12;
+        p_dec->fmt_in.audio.i_bitspersample = 12;
     }
     else if( p_dec->fmt_in.i_codec == VLC_CODEC_S8 ||
              p_dec->fmt_in.i_codec == VLC_CODEC_U8 )
@@ -273,13 +292,15 @@ static int DecoderOpen( vlc_object_t *p_this )
     else if( p_dec->fmt_in.i_codec == VLC_CODEC_ALAW )
     {
         p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
-        p_sys->p_logtos16  = alawtos16;
+        p_dec->fmt_out.audio.i_bitspersample = 16;
+        p_sys->decode = DecodeAlaw;
         p_dec->fmt_in.audio.i_bitspersample = 8;
     }
     else if( p_dec->fmt_in.i_codec == VLC_CODEC_MULAW )
     {
         p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
-        p_sys->p_logtos16  = ulawtos16;
+        p_dec->fmt_out.audio.i_bitspersample = 16;
+        p_sys->decode = DecodeUlaw;
         p_dec->fmt_in.audio.i_bitspersample = 8;
     }
     else
@@ -309,15 +330,8 @@ static int DecoderOpen( vlc_object_t *p_this )
         p_dec->fmt_out.audio.i_original_channels =
             p_dec->fmt_in.audio.i_original_channels;
 
-    if( p_dec->fmt_in.i_codec == VLC_CODEC_ALAW ||
-        p_dec->fmt_in.i_codec == VLC_CODEC_MULAW )
-    {
-        p_dec->fmt_out.audio.i_bitspersample = 16;
-    }
-
     date_Init( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
     date_Set( &p_sys->end_date, 0 );
-    p_sys->i_bytespersample = ( p_dec->fmt_in.audio.i_bitspersample + 7 ) / 8;
 
     p_dec->pf_decode_audio = DecodeBlock;
 
@@ -332,13 +346,10 @@ static int DecoderOpen( vlc_object_t *p_this )
 static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    block_t *p_block;
-    aout_buffer_t *p_out;
-    int i_samples;
 
     if( !pp_block || !*pp_block ) return NULL;
 
-    p_block = *pp_block;
+    block_t *p_block = *pp_block;
 
     if( p_block->i_pts > VLC_TS_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
@@ -355,19 +366,19 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     /* Don't re-use the same pts twice */
     p_block->i_pts = VLC_TS_INVALID;
 
-    i_samples = p_block->i_buffer / p_sys->i_bytespersample /
-        p_dec->fmt_in.audio.i_channels;
-
-    if( i_samples <= 0 )
+    const unsigned framebits =
+        p_dec->fmt_in.audio.i_bitspersample * p_dec->fmt_in.audio.i_channels;
+    unsigned samples = (8 * p_block->i_buffer) / framebits;
+    if( samples == 0 )
     {
         block_Release( p_block );
         return NULL;
     }
 
     /* Create chunks of max 1024 samples */
-    i_samples = __MIN( i_samples, 1024 );
+    if( samples > 1024 ) samples = 1024;
 
-    p_out = decoder_NewAudioBuffer( p_dec, i_samples );
+    block_t *p_out = decoder_NewAudioBuffer( p_dec, samples );
     if( p_out == NULL )
     {
         block_Release( p_block );
@@ -375,28 +386,83 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
 
     p_out->i_pts = date_Get( &p_sys->end_date );
-    p_out->i_length = date_Increment( &p_sys->end_date, i_samples )
+    p_out->i_length = date_Increment( &p_sys->end_date, samples )
                       - p_out->i_pts;
 
-    if( p_sys->p_logtos16 )
-    {
-        int16_t *s = (int16_t*)p_out->p_buffer;
-        unsigned int i;
-
-        for( i = 0; i < p_out->i_buffer / 2; i++ )
-        {
-            *s++ = p_sys->p_logtos16[*p_block->p_buffer++];
-            p_block->i_buffer--;
-        }
-    }
+    if( p_sys->decode != NULL )
+        p_sys->decode( p_out->p_buffer, p_block->p_buffer,
+                       samples * p_dec->fmt_in.audio.i_channels );
     else
-    {
         memcpy( p_out->p_buffer, p_block->p_buffer, p_out->i_buffer );
-        p_block->p_buffer += p_out->i_buffer;
-        p_block->i_buffer -= p_out->i_buffer;
-    }
+
+    samples = (samples * framebits) / 8;
+    p_block->p_buffer += samples;
+    p_block->i_buffer -= samples;
 
     return p_out;
+}
+
+static void DecodeAlaw( void *outp, const uint8_t *in, unsigned samples )
+{
+    int16_t *out = outp;
+
+    for( unsigned i = 0; i < samples; i++ )
+       *(out++) = alawtos16[*(in++)];
+}
+
+static void DecodeUlaw( void *outp, const uint8_t *in, unsigned samples )
+{
+    int16_t *out = outp;
+
+    for( unsigned i = 0; i < samples; i++ )
+       *(out++) = ulawtos16[*(in++)];
+}
+
+static void DecodeS20B( void *outp, const uint8_t *in, unsigned samples )
+{
+    int32_t *out = outp;
+
+    while( samples >= 2 )
+    {
+        uint32_t dw = U32_AT(in);
+        in += 4;
+        *(out++) = dw & ~0xFFF;
+        *(out++) = (dw << 20) | (*in << 12);
+        in++;
+        samples -= 2;
+    }
+
+    /* No U32_AT() for the last odd sample: avoid off-by-one overflow! */
+    if( samples )
+        *(out++) = (U16_AT(in) << 16) | ((in[2] & 0xF0) << 8);
+}
+
+static int16_t dat12tos16( uint16_t y )
+{
+    static const uint16_t diff[16] = {
+       0x0000, 0x0000, 0x0100, 0x0200, 0x0300, 0x0400, 0x0500, 0x0600,
+       0x0A00, 0x0B00, 0x0C00, 0x0D00, 0x0E00, 0x0F00, 0x1000, 0x1000 };
+    static const uint8_t shift[16] = {
+        0, 0, 1, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2, 1, 0, 0 };
+
+    int d = y >> 8;
+    return (y - diff[d]) << shift[d];
+}
+
+static void DecodeDAT12( void *outp, const uint8_t *in, unsigned samples )
+{
+    int32_t *out = outp;
+
+    while( samples >= 2 )
+    {
+        *(out++) = dat12tos16(U16_AT(in) >> 4);
+        *(out++) = dat12tos16(U16_AT(in + 1) & ~0xF000);
+        in += 3;
+        samples -= 2;
+    }
+
+    if( samples )
+        *(out++) = dat12tos16(U16_AT(in) >> 4);
 }
 
 /*****************************************************************************

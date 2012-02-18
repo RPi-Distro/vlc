@@ -2,7 +2,7 @@
  * selector.hpp : Playlist source selector
  ****************************************************************************
  * Copyright (C) 2000-2009 the VideoLAN team
- * $Id: 976e60725655da44a9c1e94947fcf78117364639 $
+ * $Id: 68db8103bd8733029b9b09f5ccc469b15ba929b7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf
@@ -29,25 +29,22 @@
 # include "config.h"
 #endif
 
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QStyledItemDelegate>
-#include <QPainter>
-#include <QPushButton>
-#include <QLabel>
-#include <QHBoxLayout>
-#include "util/customwidgets.hpp"
-
-#include <vlc_playlist.h>
-
 #include "qt4.hpp"
+#include "util/customwidgets.hpp" /* QFramelessButton */
 
+#include <QTreeWidget>
+
+class QHBoxLayout;
+class QPainter;
+class QTreeWidgetItem;
 class PlaylistWidget;
+class QLabel;
 
 enum SelectorItemType {
     CATEGORY_TYPE,
     SD_TYPE,
-    PL_ITEM_TYPE
+    PL_ITEM_TYPE,
+    SQL_ML_TYPE,
 };
 
 enum SpecialData {
@@ -57,13 +54,14 @@ enum SpecialData {
 };
 
 enum {
-    TYPE_ROLE = Qt::UserRole,
-    NAME_ROLE, //QString
-    LONGNAME_ROLE, //QString
-    PL_ITEM_ROLE, //playlist_item_t*
-    PL_ITEM_ID_ROLE, //playlist_item_t->i_id
-    IN_ITEM_ROLE, //input_item_t->i_id
-    SPECIAL_ROLE //SpecialData
+    TYPE_ROLE = Qt::UserRole + 1,
+    NAME_ROLE,           //QString
+    LONGNAME_ROLE,       //QString
+    PL_ITEM_ROLE,        //playlist_item_t*
+    PL_ITEM_ID_ROLE,     //playlist_item_t->i_id
+    IN_ITEM_ROLE,        //input_item_t->i_id
+    SPECIAL_ROLE,        //SpecialData
+    CAP_SEARCH_ROLE,
 };
 
 enum ItemAction {
@@ -72,13 +70,10 @@ enum ItemAction {
 };
 
 
-class SelectorActionButton : public QVLCFramelessButton
+class SelectorActionButton : public QFramelessButton
 {
-public:
-    SelectorActionButton( QWidget *parent = NULL )
-        : QVLCFramelessButton( parent ) {}
-private:
-    void paintEvent( QPaintEvent * );
+protected:
+    virtual void paintEvent( QPaintEvent * );
 };
 
 class PLSelItem : public QWidget
@@ -86,24 +81,31 @@ class PLSelItem : public QWidget
     Q_OBJECT
 public:
     PLSelItem( QTreeWidgetItem*, const QString& );
-    void setText( const QString& );
+
+    void setText( const QString& text ) { lbl->setText( text ); }
+    QString text() const { return lbl->text(); }
+
     void addAction( ItemAction, const QString& toolTip = 0 );
     QTreeWidgetItem *treeItem() { return qitem; }
-    QString text() { return lbl->text(); }
+
 public slots:
-    void showAction();
-    void hideAction();
+    void showAction() { if( lblAction ) lblAction->show();  }
+    void hideAction() { if( lblAction ) lblAction->hide(); }
+
 private slots:
     void triggerAction() { emit action( this ); }
+
 signals:
     void action( PLSelItem* );
+
 private:
-    void enterEvent( QEvent* );
-    void leaveEvent( QEvent* );
-    QTreeWidgetItem* qitem;
-    QVLCFramelessButton *lblAction;
-    QLabel *lbl;
-    QHBoxLayout *layout;
+    inline void enterEvent( QEvent* ){ showAction(); }
+    inline void leaveEvent( QEvent* ){ hideAction(); }
+
+    QTreeWidgetItem*     qitem;
+    QFramelessButton* lblAction;
+    QLabel*              lbl;
+    QHBoxLayout*         layout;
 };
 
 Q_DECLARE_METATYPE( playlist_item_t *);
@@ -114,22 +116,30 @@ class PLSelector: public QTreeWidget
 public:
     PLSelector( QWidget *p, intf_thread_t *_p_intf );
     virtual ~PLSelector();
+
+    void getCurrentItemInfos( int *type, bool *delayedSearch, QString *name );
+    int getCurrentItemCategory();
+
 protected:
-    friend class PlaylistWidget;
+    virtual void drawBranches ( QPainter *, const QRect &, const QModelIndex & ) const;
+    virtual void dragMoveEvent ( QDragMoveEvent * event );
+    virtual bool dropMimeData ( QTreeWidgetItem *, int, const QMimeData *, Qt::DropAction );
+    virtual QStringList mimeTypes () const;
+    virtual void wheelEvent(QWheelEvent *e);
+
 private:
-    QStringList mimeTypes () const;
-    bool dropMimeData ( QTreeWidgetItem *, int, const QMimeData *, Qt::DropAction );
-    void dragMoveEvent ( QDragMoveEvent * event );
     void createItems();
-    void drawBranches ( QPainter *, const QRect &, const QModelIndex & ) const;
-    PLSelItem * addItem (
-        SelectorItemType type, const char* str, bool drop,
-        QTreeWidgetItem* parentItem = 0 );
+    PLSelItem * addItem ( SelectorItemType type, const char* str,
+            bool drop = false, QTreeWidgetItem* parentItem = 0 );
     PLSelItem * addPodcastItem( playlist_item_t *p_item );
+
     inline PLSelItem * itemWidget( QTreeWidgetItem * );
-    intf_thread_t *p_intf;
-    QTreeWidgetItem *podcastsParent;
-    int podcastsParentId;
+
+    intf_thread_t    *p_intf;
+    QTreeWidgetItem  *podcastsParent;
+    int               podcastsParentId;
+    QTreeWidgetItem  *curItem;
+
 private slots:
     void setSource( QTreeWidgetItem *item );
     void plItemAdded( int, int );
@@ -139,7 +149,7 @@ private slots:
     void podcastRemove( PLSelItem* );
 
 signals:
-    void activated( playlist_item_t * );
+    void categoryActivated( playlist_item_t *, bool );
 };
 
 #endif

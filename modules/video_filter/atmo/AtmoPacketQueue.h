@@ -6,7 +6,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 31ad98dc405af3990f0933ec292cd7fb418e6d81 $
+ * $Id: f58f420a087475088b6a4414da621776e1b8f140 $
  */
 
 #ifndef _AtmoPacketQueue_
@@ -87,8 +87,8 @@ public:
 
     // timecode = GetTickCount() - framedelay;
 #if defined(_ATMO_VLC_PLUGIN_)
-    void ShowQueueStatus(atmo_thread_t *p_this);
-    pColorPacket GetNextPacket(mtime_t timecode, ATMO_BOOL withWait, atmo_thread_t *p_this, mtime_t &packet_time );
+    void ShowQueueStatus(vlc_object_t *p_this);
+    pColorPacket GetNextPacket(mtime_t timecode, ATMO_BOOL withWait, vlc_object_t *p_this, mtime_t &packet_time );
 #else
     pColorPacket GetNextPacket(DWORD timecode, ATMO_BOOL withWait, DWORD &packet_time );
 #endif

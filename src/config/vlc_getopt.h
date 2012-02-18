@@ -2,17 +2,17 @@
  * Declarations for getopt_long()
  *****************************************************************************
  * Copyright (C) 1987-1997 Free Software Foundation, Inc.
- * Copyright (C) 2005-2010 the VideoLAN team
+ * Copyright (C) 2005-2010 VLC authors and VideoLAN
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software Foundation,
@@ -28,7 +28,7 @@ typedef struct vlc_getopt_s
    When `getopt' finds an option that takes an argument,
    the argument value is returned here.  */
 
-    char *optarg;
+    char *arg;
 
 /* Index in ARGV of the next element to be scanned.
    This is used for communication to and from the caller
@@ -42,11 +42,11 @@ typedef struct vlc_getopt_s
    Otherwise, `optind' communicates from one call to the next
    how much of ARGV has been scanned so far.  */
 
-    int optind;
+    int ind;
 
 /* Set to an option character which was unrecognized.  */
 
-    int optopt;
+    int opt;
 
 /* The next char to be scanned in the option-element
    in which the last option character we returned was found.

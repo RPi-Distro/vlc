@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_es.h: Elementary stream formats descriptions
  *****************************************************************************
- * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 3d1ec2fc04e60fde3c4476c0c365a76e07409a73 $
+ * Copyright (C) 1999-2001 VLC authors and VideoLAN
+ * $Id: d80ec4d0bdf24100fcafd3536cee346e8dbd060d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_ES_H
@@ -167,16 +167,31 @@ static inline void video_format_Clean( video_format_t *p_src )
 }
 
 /**
- * It will fill up a video_format_tvideo_format_t using the given arguments.
- * Becarefull that the video_format_t must already be initialized.
+ * It will fill up a video_format_t using the given arguments.
+ * Note that the video_format_t must already be initialized.
  */
-VLC_EXPORT( void, video_format_Setup, ( video_format_t *, vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den ) );
+VLC_API void video_format_Setup( video_format_t *, vlc_fourcc_t i_chroma, int i_width, int i_height, int i_sar_num, int i_sar_den );
+
+/**
+ * It will copy the crop properties from a video_format_t to another.
+ */
+VLC_API void video_format_CopyCrop( video_format_t *, const video_format_t * );
+
+/**
+ * It will compute the crop/ar properties when scaling.
+ */
+VLC_API void video_format_ScaleCropAr( video_format_t *, const video_format_t * );
 
 /**
  * This function will check if the first video format is similar
  * to the second one.
  */
-VLC_EXPORT( bool, video_format_IsSimilar, ( const video_format_t *, const video_format_t * ) );
+VLC_API bool video_format_IsSimilar( const video_format_t *, const video_format_t * );
+
+/**
+ * It prints details about the given video_format_t
+ */
+VLC_API void video_format_Print( vlc_object_t *, const char *, const video_format_t * );
 
 /**
  * subtitles format description
@@ -277,29 +292,29 @@ enum es_format_category_e
 /**
  * This function will fill all RGB shift from RGB masks.
  */
-VLC_EXPORT( void, video_format_FixRgb, ( video_format_t * ) );
+VLC_API void video_format_FixRgb( video_format_t * );
 
 /**
  * This function will initialize a es_format_t structure.
  */
-VLC_EXPORT( void, es_format_Init, ( es_format_t *, int i_cat, vlc_fourcc_t i_codec ) );
+VLC_API void es_format_Init( es_format_t *, int i_cat, vlc_fourcc_t i_codec );
 
 /**
  * This function will initialize a es_format_t structure from a video_format_t.
  */
-VLC_EXPORT( void, es_format_InitFromVideo, ( es_format_t *, const video_format_t * ) );
+VLC_API void es_format_InitFromVideo( es_format_t *, const video_format_t * );
 
 /**
  * This functions will copy a es_format_t.
  */
-VLC_EXPORT( int, es_format_Copy, ( es_format_t *p_dst, const es_format_t *p_src ) );
+VLC_API int es_format_Copy( es_format_t *p_dst, const es_format_t *p_src );
 
 /**
- * This function will clean up a es_format_t and relasing all associated
+ * This function will clean up a es_format_t and release all associated
  * resources.
  * You can call it multiple times on the same structure.
  */
-VLC_EXPORT( void, es_format_Clean, ( es_format_t *fmt ) );
+VLC_API void es_format_Clean( es_format_t *fmt );
 
 /**
  * This function will check if the first ES format is similar
@@ -307,6 +322,6 @@ VLC_EXPORT( void, es_format_Clean, ( es_format_t *fmt ) );
  *
  * All descriptive fields are ignored.
  */
-VLC_EXPORT( bool, es_format_IsSimilar, ( const es_format_t *, const es_format_t * ) );
+VLC_API bool es_format_IsSimilar( const es_format_t *, const es_format_t * );
 
 #endif

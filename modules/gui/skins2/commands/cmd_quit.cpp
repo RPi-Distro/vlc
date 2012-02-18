@@ -2,7 +2,7 @@
  * cmd_quit.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 356c00a092be88613916c09894dc2c159df0a053 $
+ * $Id: b6d49fa6478cb575e77d53960166e446a03d2030 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -36,8 +36,15 @@
 
 void CmdQuit::execute()
 {
-    // Stop the playlist
-    vout_OSDMessage( getIntf(), DEFAULT_CHAN, "%s", _( "Quit" ) );
+    if( getIntf()->p_sys->p_input )
+    {
+        vout_thread_t *pVout = input_GetVout( getIntf()->p_sys->p_input );
+        if( pVout )
+        {
+            vout_OSDMessage( pVout, SPU_DEFAULT_CHANNEL, "%s", _( "Quit" ) );
+            vlc_object_release( pVout );
+        }
+    }
 
     // Kill libvlc
     libvlc_Quit( getIntf()->p_libvlc );

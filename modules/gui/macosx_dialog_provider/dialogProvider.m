@@ -1,8 +1,8 @@
 /*****************************************************************************
  * dialogProvider.m: Minimal Dialog Provider for Mac OS X
  *****************************************************************************
- * Copyright (C) 2009-2010 the VideoLAN team
- * $Id: 113f60a84528258d201e37fa3c22bf87d45fd850 $
+ * Copyright (C) 2009-2011 the VideoLAN team
+ * $Id: 785fe00b1e63c4d5939a12751ae67a9eeff909cb $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          Pierre d'Herbemont <pdherbemont # videolan dot>
@@ -36,6 +36,7 @@
 #import <vlc_plugin.h>
 #import <vlc_dialog.h>
 #import <vlc_extensions.h>
+#import <vlc_modules.h>
 
 #import "dialogProvider.h"
 #import "VLCUIWidgets.h"
@@ -78,7 +79,7 @@ struct intf_sys_t
 
     vlc_mutex_t lock;
     vlc_cond_t wait;
-    bool is_hidding_noaction_dialogs;
+    bool is_hiding_noaction_dialogs;
 };
 
 
@@ -93,8 +94,7 @@ struct intf_sys_t
 vlc_module_begin()
     /* Minimal interface. see intf.m */
     set_shortname("Mac OS X Dialogs")
-    add_shortcut("macosx_dialog_provider")
-    add_shortcut("miosx")
+    add_shortcut("macosx_dialog_provider", "miosx")
     set_description("Minimal Mac OS X Dialog Provider")
     set_capability("interface", 0)
 
@@ -102,7 +102,7 @@ vlc_module_begin()
      * it's almost certain that the client program will display error by
      * itself. Moreover certain action might end up in an error, but
      * the client wants to ignored them completely. */
-    add_bool(prefix "hide-no-user-action-dialogs", true, NULL, T_HIDE_NOACTION, LT_HIDE_NOACTION, false)
+    add_bool(prefix "hide-no-user-action-dialogs", true, T_HIDE_NOACTION, LT_HIDE_NOACTION, false)
 
     set_callbacks(OpenIntf, CloseIntf)
     set_category(CAT_INTERFACE)
@@ -126,7 +126,7 @@ int OpenIntf(vlc_object_t *p_this)
     [p_intf->p_sys->displayer setIntf:p_intf];
 
     bool hide = var_CreateGetBool(p_intf, prefix "hide-no-user-action-dialogs");
-    p_intf->p_sys->is_hidding_noaction_dialogs = hide;
+    p_intf->p_sys->is_hiding_noaction_dialogs = hide;
 
     /* subscribe to various interactive dialogues */
 
@@ -169,7 +169,7 @@ void CloseIntf(vlc_object_t *p_this)
     /* unsubscribe from the interactive dialogues */
     dialog_Unregister(p_intf);
 
-    if (!p_intf->p_sys->is_hidding_noaction_dialogs)
+    if (!p_intf->p_sys->is_hiding_noaction_dialogs)
     {
         var_DelCallback(p_intf,"dialog-error",DisplayError,p_intf);
         var_DelCallback(p_intf,"dialog-critical",DisplayCritical,p_intf);
@@ -463,7 +463,6 @@ bool checkProgressPanel (void *priv)
 #pragma mark Last.FM support
 - (void)globalNotificationReceived: (NSNotification *)theNotification
 {
-    NSLog(@"globalNotificationReceived");
     NSDictionary *userData = [theNotification userInfo];
     BOOL lastFMEnabled = [[userData objectForKey:@"enabled"] intValue];
     NSString *lastFMUsername = [userData objectForKey:@"username"];
@@ -477,8 +476,6 @@ bool checkProgressPanel (void *priv)
 
         config_PutPsz(p_intf, "lastfm-username", [lastFMUsername UTF8String]);
         config_PutPsz(p_intf, "lastfm-password", [lastFMPassword UTF8String]);
-        config_SaveConfigFile(p_intf, "main");
-        config_SaveConfigFile(p_intf, "audioscrobbler");
     }
     else
         msg_Err(p_intf,"Last.FM module not found, no action");
@@ -493,7 +490,6 @@ bool checkProgressPanel (void *priv)
     VLCDialogButton *button = sender;
     extension_widget_t *widget = [button widget];
 
-    NSLog(@"(triggerClick)");
     vlc_mutex_lock(&widget->p_dialog->lock);
     extension_WidgetClicked(widget->p_dialog, widget);
     vlc_mutex_unlock(&widget->p_dialog->lock);
@@ -647,6 +643,15 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
             [imageView setImageScaling:NSImageScaleProportionallyUpOrDown];
             return imageView;
         }
+        case EXTENSION_WIDGET_SPIN_ICON:
+        {
+            NSProgressIndicator *spinner = [[NSProgressIndicator alloc] init];
+            [spinner setUsesThreadedAnimation:YES];
+            [spinner setStyle:NSProgressIndicatorSpinningStyle];
+            [spinner setDisplayedWhenStopped:YES];
+            [spinner startAnimation:self];
+            return spinner;
+        }
         default:
             assert(0);
             return nil;
@@ -668,9 +673,8 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
 //            assert([control isKindOfClass:[NSTextView class]]);
 //            NSTextView *textView = (NSTextView *)control;
 //            NSString *string = [NSString stringWithUTF8String:widget->psz_text];
-//            NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL];
+//            NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSISOLatin1StringEncoding] documentAttributes:NULL];
 //            [[textView textStorage] setAttributedString:[[NSAttributedString alloc] initWithString:@"Hello"]];
-//            NSLog(@"%@", string);
 //            [textView setNeedsDisplay:YES];
 //            [textView scrollRangeToVisible:NSMakeRange(0, 0)];
 //            [attrString release];
@@ -681,7 +685,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
             assert([control isKindOfClass:[NSTextView class]]);
             NSTextView *textView = (NSTextView *)control;
             NSString *string = [NSString stringWithUTF8String:widget->psz_text];
-            NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL];
+            NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSISOLatin1StringEncoding] documentAttributes:NULL];
             [[textView textStorage] setAttributedString:attrString];
             [textView setNeedsDisplay:YES];
             [textView scrollRangeToVisible:NSMakeRange(0, 0)];
@@ -698,11 +702,12 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
             assert([control isKindOfClass:[NSControl class]]);
             NSControl *field = (NSControl *)control;
             NSString *string = [NSString stringWithUTF8String:widget->psz_text];
-            NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL];
+            NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding:NSISOLatin1StringEncoding] documentAttributes:NULL];
             [field setAttributedStringValue:attrString];
             [attrString release];
             break;
         }
+        case EXTENSION_WIDGET_CHECK_BOX:
         case EXTENSION_WIDGET_BUTTON:
         {
             assert([control isKindOfClass:[NSButton class]]);
@@ -754,11 +759,20 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
             NSImageView *imageView = (NSImageView *)control;
             NSString *string = widget->psz_text ? [NSString stringWithUTF8String:widget->psz_text] : nil;
             NSImage *image = nil;
-            NSLog(@"Setting image to %@", string);
             if (string)
                 image = [[NSImage alloc] initWithContentsOfURL:[NSURL fileURLWithPath:string]];
             [imageView setImage:image];
             [image release];
+            break;
+        }
+        case EXTENSION_WIDGET_SPIN_ICON:
+        {
+            assert([control isKindOfClass:[NSProgressIndicator class]]);
+            NSProgressIndicator *progressIndicator = (NSProgressIndicator *)control;
+            if( widget->i_spin_loops != 0 )
+                [progressIndicator startAnimation:self];
+            else
+                [progressIndicator stopAnimation:self];
             break;
         }
     }

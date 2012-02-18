@@ -13,21 +13,25 @@ include $(top_srcdir)/modules/common.am
 libgoom_plugin_la_SOURCES = $(SOURCES_goom)
 nodist_libgoom_plugin_la_SOURCES = $(nodist_SOURCES_goom)
 # Force per-target objects:
-libgoom_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgoom_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgoom_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libgoom_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_goom)
+libgoom_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_goom)
+libgoom_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_goom)
+libgoom_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_goom)
 # Set LIBADD and DEPENDENCIES manually:
-libgoom_plugin_la_LIBADD = $(AM_LIBADD)
-libgoom_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libgoom_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_goom)
+libgoom_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_goom)
+libgoom_plugin_la_DEPENDENCIES =
 
 # The projectm plugin
 libprojectm_plugin_la_SOURCES = $(SOURCES_projectm)
 nodist_libprojectm_plugin_la_SOURCES = $(nodist_SOURCES_projectm)
 # Force per-target objects:
-libprojectm_plugin_la_CFLAGS = $(AM_CFLAGS)
-libprojectm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libprojectm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libprojectm_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_projectm)
+libprojectm_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_projectm)
+libprojectm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_projectm)
+libprojectm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_projectm)
 # Set LIBADD and DEPENDENCIES manually:
-libprojectm_plugin_la_LIBADD = $(AM_LIBADD)
-libprojectm_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libprojectm_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_projectm)
+libprojectm_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_projectm)
+libprojectm_plugin_la_DEPENDENCIES =
 

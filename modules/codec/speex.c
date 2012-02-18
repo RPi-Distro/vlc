@@ -2,7 +2,7 @@
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: b8a99a37815f99a837f24465f73286cc49215dec $
+ * $Id: 5f3284a9f96a5907b667c14e7493d7a352393af9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -108,28 +108,28 @@ vlc_module_begin ()
     set_capability( "encoder", 100 )
     set_callbacks( OpenEncoder, CloseEncoder )
 
-    add_integer( ENC_CFG_PREFIX "mode", 0, NULL, ENC_MODE_TEXT,
+    add_integer( ENC_CFG_PREFIX "mode", 0, ENC_MODE_TEXT,
                  ENC_MODE_LONGTEXT, false )
-        change_integer_list( pi_enc_mode_values, ppsz_enc_mode_descriptions, NULL )
+        change_integer_list( pi_enc_mode_values, ppsz_enc_mode_descriptions )
 
-    add_integer( ENC_CFG_PREFIX "complexity", 3, NULL, ENC_COMPLEXITY_TEXT,
+    add_integer( ENC_CFG_PREFIX "complexity", 3, ENC_COMPLEXITY_TEXT,
                  ENC_COMPLEXITY_LONGTEXT, false )
         change_integer_range( 1, 10 )
 
-    add_bool( ENC_CFG_PREFIX "cbr", false, NULL, ENC_CBR_TEXT,
+    add_bool( ENC_CFG_PREFIX "cbr", false, ENC_CBR_TEXT,
                  ENC_CBR_LONGTEXT, false )
 
-    add_float( ENC_CFG_PREFIX "quality", 8.0, NULL, ENC_QUALITY_TEXT,
+    add_float( ENC_CFG_PREFIX "quality", 8.0, ENC_QUALITY_TEXT,
                ENC_QUALITY_LONGTEXT, false )
         change_float_range( 0.0, 10.0 )
 
-    add_integer( ENC_CFG_PREFIX "max-bitrate", 0, NULL, ENC_MAXBITRATE_TEXT,
+    add_integer( ENC_CFG_PREFIX "max-bitrate", 0, ENC_MAXBITRATE_TEXT,
                  ENC_MAXBITRATE_LONGTEXT, false )
 
-    add_bool( ENC_CFG_PREFIX "vad", true, NULL, ENC_VAD_TEXT,
+    add_bool( ENC_CFG_PREFIX "vad", true, ENC_VAD_TEXT,
                  ENC_VAD_LONGTEXT, false )
 
-    add_bool( ENC_CFG_PREFIX "dtx", false, NULL, ENC_DTX_TEXT,
+    add_bool( ENC_CFG_PREFIX "dtx", false, ENC_DTX_TEXT,
                  ENC_DTX_LONGTEXT, false )
 
     /* TODO agc, noise suppression, */
@@ -185,7 +185,7 @@ static const int pi_channels_maps[6] =
  * Local prototypes
  ****************************************************************************/
 
-static void *DecodeBlock  ( decoder_t *, block_t ** );
+static block_t *DecodeBlock  ( decoder_t *, block_t ** );
 static aout_buffer_t *DecodeRtpSpeexPacket( decoder_t *, block_t **);
 static int  ProcessHeaders( decoder_t * );
 static int  ProcessInitialHeader ( decoder_t *, ogg_packet * );
@@ -233,16 +233,13 @@ static int OpenDecoder( vlc_object_t *p_this )
     {
         msg_Dbg( p_dec, "Using RTP version of Speex decoder @ rate %d.", 
 	    p_dec->fmt_in.audio.i_rate );
-        p_dec->pf_decode_audio = (aout_buffer_t *(*)(decoder_t *, block_t **))
-            DecodeRtpSpeexPacket;
+        p_dec->pf_decode_audio = DecodeRtpSpeexPacket;
     }
     else
     {
-        p_dec->pf_decode_audio = (aout_buffer_t *(*)(decoder_t *, block_t **))
-            DecodeBlock;
+        p_dec->pf_decode_audio = DecodeBlock;
     }
-    p_dec->pf_packetize    = (block_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
+    p_dec->pf_packetize    = DecodeBlock;
 
     p_sys->p_state = NULL;
     p_sys->p_header = NULL;
@@ -271,7 +268,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
  ****************************************************************************
  * This function must be fed with ogg packets.
  ****************************************************************************/
-static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     ogg_packet oggpacket;

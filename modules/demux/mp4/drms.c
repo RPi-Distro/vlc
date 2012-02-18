@@ -2,7 +2,7 @@
  * drms.c: DRMS
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 9a29f7c1e982f7d7fd3c43356fa6229a48fc9ae8 $
+ * $Id: 39f4225f30f66088e37b8c17ae2029154c79f5c5 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>
@@ -57,6 +57,13 @@
 #include <limits.h>
 
 #ifdef __APPLE__
+#include "TargetConditionals.h"
+#ifndef TARGET_OS_IPHONE
+#define HAVE_MACOS_IOKIT
+#endif
+#endif
+
+#ifdef HAVE_MACOS_IOKIT
 #   include <mach/mach.h>
 #   include <IOKit/IOKitLib.h>
 #   include <CoreFoundation/CFNumber.h>
@@ -274,7 +281,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
 
     switch( i_type )
     {
-        case FOURCC_user:
+        case ATOM_user:
             if( i_len < sizeof(p_drms->i_user) )
             {
                 i_ret = -2;
@@ -284,7 +291,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
             p_drms->i_user = U32_AT( p_info );
             break;
 
-        case FOURCC_key:
+        case ATOM_key:
             if( i_len < sizeof(p_drms->i_key) )
             {
                 i_ret = -2;
@@ -294,7 +301,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
             p_drms->i_key = U32_AT( p_info );
             break;
 
-        case FOURCC_iviv:
+        case ATOM_iviv:
             if( i_len < sizeof(p_drms->p_key) )
             {
                 i_ret = -2;
@@ -304,7 +311,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
             memcpy( p_drms->p_iviv, p_info, 16 );
             break;
 
-        case FOURCC_name:
+        case ATOM_name:
             p_drms->p_name = (uint8_t*) strdup( (char *)p_info );
 
             if( p_drms->p_name == NULL )
@@ -313,7 +320,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
             }
             break;
 
-        case FOURCC_priv:
+        case ATOM_priv:
         {
             uint32_t p_priv[ 64 ];
             struct md5_s md5;
@@ -347,7 +354,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
             InitAES( &p_drms->aes, p_drms->p_key );
 
             memcpy( p_priv, p_info, 64 );
-            memcpy( p_drms->p_key, md5.p_digest, 16 );
+            memcpy( p_drms->p_key, md5.buf, 16 );
             drms_decrypt( p_drms, p_priv, 64, NULL );
             REVERSE( p_priv, 64 );
 
@@ -504,8 +511,8 @@ static void InitShuffle( struct shuffle_s *p_shuffle, uint32_t *p_sys_key,
 
         p_secret1[ 3 ]++;
 
-        REVERSE( md5.p_digest, 1 );
-        i_hash = ((int32_t)U32_AT(md5.p_digest)) % 1024;
+        REVERSE( (void *)md5.buf, 1 ); /* FIXME */
+        i_hash = ((int32_t)U32_AT(md5.buf)) % 1024;
 
         p_shuffle->p_commands[ i ] = i_hash < 0 ? i_hash * -1 : i_hash;
     }
@@ -617,7 +624,7 @@ static void DoShuffle( struct shuffle_s *p_shuffle,
     /* XOR our buffer with the computed checksum */
     for( i = 0; i < i_size; i++ )
     {
-        p_buffer[ i ] ^= md5.p_digest[ i ];
+        p_buffer[ i ] ^= U32_AT(md5.buf + (4 * i));
     }
 }
 
@@ -1323,7 +1330,7 @@ static int GetSystemKey( uint32_t *p_sys_key, bool b_ipod )
 
     EndMD5( &md5 );
 
-    memcpy( p_sys_key, md5.p_digest, 16 );
+    memcpy( p_sys_key, md5.buf, 16 );
 
     return 0;
 }
@@ -1559,7 +1566,7 @@ static int GetSCIData( char *psz_ipod, uint32_t **pp_sci,
 #ifdef WIN32
         const char *SCIfile =
         "\\Apple Computer\\iTunes\\SC Info\\SC Info.sidb";
-        strncpy(p_tmp, config_GetConfDir(), sizeof(p_tmp -1));
+        strncpy( p_tmp, config_GetConfDir(), sizeof(p_tmp) - 1 );
         if( strlen( p_tmp ) + strlen( SCIfile ) >= PATH_MAX )
             return -1;
         strcat(p_tmp, SCIfile);
@@ -1700,7 +1707,7 @@ static int HashSystemInfo( uint32_t *p_system_hash )
 #endif
 
     EndMD5( &md5 );
-    memcpy( p_system_hash, md5.p_digest, 16 );
+    memcpy( p_system_hash, md5.buf, 16 );
 
     return i_ret;
 }
@@ -1724,7 +1731,7 @@ static int GetiPodID( int64_t *p_ipod_id )
         return 0;
     }
 
-#ifdef __APPLE__
+#ifdef HAVE_MACOS_IOKIT
     CFTypeRef value;
     mach_port_t port;
     io_object_t device;

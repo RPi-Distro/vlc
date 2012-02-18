@@ -130,9 +130,6 @@ static void Close( vlc_object_t *p_this )
 static void *Thread( void *p_data )
 {
     MSG message;
-    UINT i_key, i_keyMod, i_vk;
-    ATOM atom;
-    char *psz_hotkey = NULL;
 
     intf_thread_t *p_intf = p_data;
     intf_sys_t *p_sys = p_intf->p_sys;
@@ -168,18 +165,23 @@ static void *Thread( void *p_data )
             (LONG_PTR)p_intf );
 
     /* Registering of Hotkeys */
-    for( struct hotkey *p_hotkey = p_intf->p_libvlc->p_hotkeys;
+    for( const struct hotkey *p_hotkey = p_intf->p_libvlc->p_hotkeys;
             p_hotkey->psz_action != NULL;
             p_hotkey++ )
     {
-        if( asprintf( &psz_hotkey, "global-%s", p_hotkey->psz_action ) < 0 )
-            break;
+        char varname[12 + strlen( p_hotkey->psz_action )];
+        sprintf( varname, "global-key-%s", p_hotkey->psz_action );
 
-        i_key = var_InheritInteger( p_intf, psz_hotkey );
+        char *key = var_InheritString( p_intf, varname );
+        if( key == NULL )
+            continue;
 
-        free( psz_hotkey );
+        UINT i_key = vlc_str2keycode( key );
+        free( key );
+        if( i_key == KEY_UNSET )
+            continue;
 
-        i_keyMod = 0;
+        UINT i_keyMod = 0;
         if( i_key & KEY_MODIFIER_SHIFT ) i_keyMod |= MOD_SHIFT;
         if( i_key & KEY_MODIFIER_ALT ) i_keyMod |= MOD_ALT;
         if( i_key & KEY_MODIFIER_CTRL ) i_keyMod |= MOD_CONTROL;
@@ -206,7 +208,7 @@ static void *Thread( void *p_data )
 #define VK_PAGEDOWN             0x22
 #endif
 
-        i_vk = 0;
+        UINT i_vk = 0;
         switch( i_key & ~KEY_MODIFIER )
         {
             HANDLE( LEFT );
@@ -242,7 +244,7 @@ static void *Thread( void *p_data )
             HANDLE( MEDIA_NEXT_TRACK );
 
             default:
-                i_vk = toupper( i_key & ~KEY_MODIFIER );
+                i_vk = toupper( (uint8_t)(i_key & ~KEY_MODIFIER) );
                 break;
         }
         if( !i_vk ) continue;
@@ -250,7 +252,7 @@ static void *Thread( void *p_data )
 #undef HANDLE
 #undef HANDLE2
 
-        atom = GlobalAddAtomA( p_hotkey->psz_action );
+        ATOM atom = GlobalAddAtomA( p_hotkey->psz_action );
         if( !atom ) continue;
 
         if( !RegisterHotKey( p_sys->hotkeyWindow, atom, i_keyMod, i_vk ) )
@@ -262,11 +264,11 @@ static void *Thread( void *p_data )
         DispatchMessage( &message );
 
     /* Unregistering of Hotkeys */
-    for( struct hotkey *p_hotkey = p_intf->p_libvlc->p_hotkeys;
+    for( const struct hotkey *p_hotkey = p_intf->p_libvlc->p_hotkeys;
             p_hotkey->psz_action != NULL;
             p_hotkey++ )
     {
-        atom = GlobalFindAtomA( p_hotkey->psz_action );
+        ATOM atom = GlobalFindAtomA( p_hotkey->psz_action );
         if( !atom ) continue;
 
         if( UnregisterHotKey( p_sys->hotkeyWindow, atom ) )
@@ -292,25 +294,23 @@ LRESULT CALLBACK WMHOTKEYPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
     {
         case WM_HOTKEY:
             {
-                char psz_atomName[40];
+                char psz_atomName[44];
 
                 LONG_PTR ret = GetWindowLongPtr( hwnd, GWLP_USERDATA );
                 intf_thread_t *p_intf = (intf_thread_t*)ret;
-                struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
+                strcpy( psz_atomName, "key-" );
 
                 if( !GlobalGetAtomNameA(
-                        wParam, psz_atomName, sizeof( psz_atomName ) ) )
+                        wParam, psz_atomName + 4,
+                        sizeof( psz_atomName ) - 4 ) )
                     return 0;
 
                 /* search for key associated with VLC */
-                for( int i = 0; p_hotkeys[i].psz_action != NULL; i++ )
+                vlc_action_t action = vlc_GetActionId( psz_atomName );
+                if( action != ACTIONID_NONE )
                 {
-                    if( strcmp( p_hotkeys[i].psz_action, psz_atomName ) )
-                        continue;
-
                     var_SetInteger( p_intf->p_libvlc,
-                            "key-action", p_hotkeys[i].i_action );
-
+                            "key-action", action );
                     return 1;
                 }
             }

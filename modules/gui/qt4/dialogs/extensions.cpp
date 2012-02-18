@@ -2,7 +2,7 @@
  * extensions.cpp: Extensions manager for Qt: dialogs manager
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 0af50271acb0590b0d411901fe2306a214f63736 $
+ * $Id: ea82bdbf248dd1a38bb1c4cd8806ec96c470b079 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -22,7 +22,7 @@
  *****************************************************************************/
 
 #include "extensions.hpp"
-#include "../extensions_manager.hpp" // for isUnloading()
+#include "extensions_manager.hpp" // for isUnloading()
 
 #include <vlc_dialog.h>
 
@@ -38,6 +38,8 @@
 #include <QComboBox>
 #include <QCloseEvent>
 #include <QCoreApplication>
+#include <QKeyEvent>
+#include "util/customwidgets.hpp"
 
 ExtensionsDialogProvider *ExtensionsDialogProvider::instance = NULL;
 
@@ -184,13 +186,8 @@ ExtensionDialog::ExtensionDialog( intf_thread_t *_p_intf,
              this, parentDestroyed() );
 
     msg_Dbg( p_intf, "Creating a new dialog: '%s'", p_dialog->psz_title );
-#if HAS_QT45
     this->setWindowFlags( Qt::WindowMinMaxButtonsHint
                         | Qt::WindowCloseButtonHint );
-#else
-    this->setWindowFlags( Qt::WindowMinMaxButtonsHint );
-#endif
-
     this->setWindowTitle( qfu( p_dialog->psz_title ) );
 
     layout = new QGridLayout( this );
@@ -218,6 +215,7 @@ QWidget* ExtensionDialog::CreateWidget( extension_widget_t *p_widget )
     QCheckBox *checkBox = NULL;
     QComboBox *comboBox = NULL;
     QListWidget *list = NULL;
+    SpinningIcon *spinIcon = NULL;
     struct extension_widget_t::extension_widget_value_t *p_value = NULL;
 
     assert( p_widget->p_sys_intf == NULL );
@@ -326,6 +324,12 @@ QWidget* ExtensionDialog::CreateWidget( extension_widget_t *p_widget )
             CONNECT( list, itemSelectionChanged(),
                      selectMapper, map() );
             return list;
+
+        case EXTENSION_WIDGET_SPIN_ICON:
+            spinIcon = new SpinningIcon( this );
+            spinIcon->play( p_widget->i_spin_loops );
+            p_widget->p_sys_intf = spinIcon;
+            return spinIcon;
 
         default:
             msg_Err( p_intf, "Widget type %d unknown", p_widget->type );
@@ -561,6 +565,7 @@ QWidget* ExtensionDialog::UpdateWidget( extension_widget_t *p_widget )
     QCheckBox *checkBox = NULL;
     QComboBox *comboBox = NULL;
     QListWidget *list = NULL;
+    SpinningIcon *spinIcon = NULL;
     struct extension_widget_t::extension_widget_value_t *p_value = NULL;
 
     assert( p_widget->p_sys_intf != NULL );
@@ -639,6 +644,15 @@ QWidget* ExtensionDialog::UpdateWidget( extension_widget_t *p_widget )
             }
             return list;
 
+        case EXTENSION_WIDGET_SPIN_ICON:
+            spinIcon = static_cast< SpinningIcon* >( p_widget->p_sys_intf );
+            if( !spinIcon->isPlaying() && p_widget->i_spin_loops != 0 )
+                spinIcon->play( p_widget->i_spin_loops );
+            else if( spinIcon->isPlaying() && p_widget->i_spin_loops == 0 )
+                spinIcon->stop();
+            p_widget->i_height = p_widget->i_width = 16;
+            return spinIcon;
+
         default:
             msg_Err( p_intf, "Widget type %d unknown", p_widget->type );
             return NULL;
@@ -657,12 +671,27 @@ void ExtensionDialog::DestroyWidget( extension_widget_t *p_widget,
 }
 
 /** Implement closeEvent() in order to intercept the event */
-void ExtensionDialog::closeEvent( QCloseEvent *event )
+void ExtensionDialog::closeEvent( QCloseEvent * )
 {
     assert( p_dialog != NULL );
     msg_Dbg( p_intf, "Dialog '%s' received a closeEvent",
              p_dialog->psz_title );
     extension_DialogClosed( p_dialog );
+}
+
+/** Grab some keyboard input (ESC, ...) and handle actions manually */
+void ExtensionDialog::keyPressEvent( QKeyEvent *event )
+{
+    assert( p_dialog != NULL );
+    switch( event->key() )
+    {
+    case Qt::Key_Escape:
+        close();
+        return;
+    default:
+        QDialog::keyPressEvent( event );
+        return;
+    }
 }
 
 void ExtensionDialog::parentDestroyed()

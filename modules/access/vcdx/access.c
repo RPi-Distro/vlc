@@ -3,7 +3,7 @@
  *         vlc-specific things tend to go here.
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 8414089f50dcfbd9afc0912ad153bb68365104ae $
+ * $Id: 0638533e65a8b2d961ec653eb942d99ddacac42b $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *   Some code is based on the non-libcdio VCD plugin (as there really
@@ -198,8 +198,6 @@ VCDReadBlock( access_t * p_access )
                          p_vcdplayer->i_track, &(p_vcdplayer->play_item));
             // p_vcd->in_still = false;
             dbg_print(INPUT_DBG_STILL, "still wait time done");
-#else
-            vcdIntfStillTime(p_vcdplayer->p_intf, *p_buf);
 #endif
 
             block_Release( p_block );
@@ -361,9 +359,9 @@ VCDEntryPoints( access_t * p_access )
                              - vcdinfo_get_track_lsn(p_vcdplayer->vcd,i_track))
                              * M2F2_SECTOR_SIZE;
     
-            dbg_print( INPUT_DBG_MRL, "%s, lsn %d,  byte_offset %ld",
+            dbg_print( INPUT_DBG_MRL, "%s, lsn %d,  byte_offset %"PRId64"",
                        s->psz_name, p_vcdplayer->p_entries[i],
-                       (unsigned long int) s->i_byte_offset);
+                       s->i_byte_offset);
             TAB_APPEND( p_vcdplayer->p_title[i_track-1]->i_seekpoint,
                         p_vcdplayer->p_title[i_track-1]->seekpoint, s );
 
@@ -563,12 +561,12 @@ VCDParse( access_t * p_access, /*out*/ vcdinfo_itemid_t * p_itemid,
     if( !p_access->psz_access || !*p_access->psz_access ) return NULL;
 #endif
 
-    if( !p_access->psz_path )
+    if( !p_access->psz_location )
     {
         return NULL;
     }
 
-    psz_parser = psz_source = strdup( p_access->psz_path );
+    psz_parser = psz_source = strdup( p_access->psz_location );
 
     /* Parse input string :
      * [device][@[type][title]] */
@@ -884,7 +882,7 @@ VCDOpen ( vlc_object_t *p_this )
     }
 
     dbg_print( (INPUT_DBG_CALL|INPUT_DBG_EXT), "source: %s: mrl: %s",
-               psz_source, p_access->psz_path );
+               psz_source, p_access->psz_location );
 
     p_vcdplayer->psz_source        = strdup(psz_source);
     p_vcdplayer->i_blocks_per_read = var_InheritInteger( p_this, MODULE_STRING
@@ -953,10 +951,6 @@ VCDOpen ( vlc_object_t *p_this )
         VCDFixupPlayList(p_access,p_vcd,psz_source,&itemid,play_single_item);
 #endif
 
-#ifdef FIXED
-    p_vcdplayer->p_intf = intf_Create( p_access, "vcdx" );
-    p_vcdplayer->p_intf->b_block = false;
-#endif
     p_vcdplayer->p_access = p_access;
 
     free( psz_source );
@@ -1051,7 +1045,7 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
     /* */
     case ACCESS_GET_PTS_DELAY:
         *(int64_t*)va_arg(args,int64_t *) = INT64_C(1000) *
-                         var_GetInteger( p_access, MODULE_STRING "-caching" );
+                                var_InheritInteger( p_access, "disc-caching" );
         dbg_print( INPUT_DBG_EVENT, "GET PTS DELAY" );
         return VLC_SUCCESS;
 

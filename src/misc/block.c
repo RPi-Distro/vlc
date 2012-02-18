@@ -1,24 +1,24 @@
 /*****************************************************************************
  * block.c: Data blocks management functions
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
+ * Copyright (C) 2003-2004 VLC authors and VideoLAN
  * Copyright (C) 2007-2009 Rémi Denis-Courmont
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -32,6 +32,10 @@
 #include <sys/stat.h>
 #include <assert.h>
 #include <errno.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
 #include "vlc_block.h"
 
 /**
@@ -60,14 +64,13 @@ void block_Init( block_t *restrict b, void *buf, size_t size )
 {
     /* Fill all fields to their default */
     b->p_next = NULL;
+    b->p_buffer = buf;
+    b->i_buffer = size;
     b->i_flags = 0;
+    b->i_nb_samples = 0;
     b->i_pts =
     b->i_dts = VLC_TS_INVALID;
     b->i_length = 0;
-    b->i_rate = 0;
-    b->i_nb_samples = 0;
-    b->p_buffer = buf;
-    b->i_buffer = size;
 #ifndef NDEBUG
     b->pf_release = BlockNoRelease;
 #endif
@@ -81,12 +84,11 @@ static void BlockRelease( block_t *p_block )
 static void BlockMetaCopy( block_t *restrict out, const block_t *in )
 {
     out->p_next    = in->p_next;
+    out->i_nb_samples = in->i_nb_samples;
     out->i_dts     = in->i_dts;
     out->i_pts     = in->i_pts;
     out->i_flags   = in->i_flags;
     out->i_length  = in->i_length;
-    out->i_rate    = in->i_rate;
-    out->i_nb_samples = in->i_nb_samples;
 }
 
 /* Memory alignment (must be a multiple of sizeof(void*) and a power of two) */
@@ -104,13 +106,14 @@ block_t *block_Alloc( size_t i_size )
      */
     block_sys_t *p_sys;
     uint8_t *buf;
-
 #define ALIGN(x) (((x) + BLOCK_ALIGN - 1) & ~(BLOCK_ALIGN - 1))
 #if 0 /*def HAVE_POSIX_MEMALIGN */
     /* posix_memalign(,16,) is much slower than malloc() on glibc.
      * -- Courmisch, September 2009, glibc 2.5 & 2.9 */
     const size_t i_alloc = ALIGN(sizeof(*p_sys)) + (2 * BLOCK_PADDING)
                          + ALIGN(i_size);
+    if( unlikely(i_alloc <= i_size) )
+        return NULL;
     void *ptr;
 
     if( posix_memalign( &ptr, BLOCK_ALIGN, i_alloc ) )
@@ -122,6 +125,9 @@ block_t *block_Alloc( size_t i_size )
 #else
     const size_t i_alloc = sizeof(*p_sys) + BLOCK_ALIGN + (2 * BLOCK_PADDING)
                          + ALIGN(i_size);
+    if( unlikely(i_alloc <= i_size) )
+        return NULL;
+
     p_sys = malloc( i_alloc );
     if( p_sys == NULL )
         return NULL;
@@ -141,7 +147,6 @@ block_t *block_Alloc( size_t i_size )
 
 block_t *block_Realloc( block_t *p_block, ssize_t i_prebody, size_t i_body )
 {
-    block_sys_t *p_sys = (block_sys_t *)p_block;
     size_t requested = i_prebody + i_body;
 
     /* Corner case: empty block requested */
@@ -161,9 +166,9 @@ block_t *block_Realloc( block_t *p_block, ssize_t i_prebody, size_t i_body )
             return NULL;
 
         p_block = p_dup;
-        p_sys = (block_sys_t *)p_block;
     }
 
+    block_sys_t *p_sys = (block_sys_t *)p_block;
     uint8_t *p_start = p_sys->p_allocated_buffer;
     uint8_t *p_end = p_sys->p_allocated_buffer + p_sys->i_allocated_buffer;
 
@@ -362,9 +367,10 @@ block_t *block_mmap_Alloc (void *addr, size_t length)
 
 
 #ifdef WIN32
-#ifdef UNDER_CE
-#define _get_osfhandle(a) ((long) (a))
-#endif
+# include <io.h>
+# ifdef UNDER_CE
+#  define _get_osfhandle(a) ((long) (a))
+# endif
 
 static
 ssize_t pread (int fd, void *buf, size_t count, off_t offset)
@@ -381,6 +387,28 @@ ssize_t pread (int fd, void *buf, size_t count, off_t offset)
     if (ReadFile (handle, buf, count, &written, &olap))
         return written;
     return -1;
+}
+#elif !defined( HAVE_PREAD )
+static
+ssize_t pread(int fd, const void * buf, size_t size, off_t offset) {
+    off_t offs0;
+    ssize_t rd;
+    if ((offs0 = lseek(fd, 0, SEEK_CUR)) == (off_t)-1) return -1;
+    if (lseek(fd, offset, SEEK_SET) == (off_t)-1) return -1;
+    rd = read(fd, (void *)buf, size);
+    if (lseek(fd, offs0, SEEK_SET) == (off_t)-1) return -1;
+    return rd;
+}
+
+static
+ssize_t pwrite(int fd, const void * buf, size_t size, off_t offset) {
+    off_t offs0;
+    ssize_t wr;
+    if ((offs0 = lseek(fd, 0, SEEK_CUR)) == (off_t)-1) return -1;
+    if (lseek(fd, offset, SEEK_SET) == (off_t)-1) return -1;
+    wr = write(fd, (void *)buf, size);
+    if (lseek(fd, offs0, SEEK_SET) == (off_t)-1) return -1;
+    return wr;
 }
 #endif
 

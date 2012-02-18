@@ -2,7 +2,7 @@
  * asx.c : ASX playlist format import
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: caf85771d9743e63cc197198f26a9287cc66a619 $
+ * $Id: 03bac21fe73d80ffda0798ca0664c565484336c6 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -125,7 +125,7 @@ static int ParseTime(char *s, size_t i_strlen)
     s = SkipBlanks(s, i_strlen);
 
     val = 0;
-    while( (s < end) && isdigit(*s) )
+    while( (s < end) && isdigit((unsigned char)*s) )
     {
         int newval = val*10 + (*s - '0');
         if( newval < val )
@@ -145,7 +145,7 @@ static int ParseTime(char *s, size_t i_strlen)
         s = SkipBlanks(s, end-s);
         result = result * 60;
         val = 0;
-        while( (s < end) && isdigit(*s) )
+        while( (s < end) && isdigit((unsigned char)*s) )
         {
             int newval = val*10 + (*s - '0');
             if( newval < val )
@@ -165,7 +165,7 @@ static int ParseTime(char *s, size_t i_strlen)
             s = SkipBlanks(s, end-s);
             result = result * 60;
             val = 0;
-            while( (s < end) && isdigit(*s) )
+            while( (s < end) && isdigit((unsigned char)*s) )
             {
                 int newval = val*10 + (*s - '0');
                 if( newval < val )
@@ -475,7 +475,7 @@ static int Demux( demux_t *p_demux )
                             memcpy( psz_string, psz_backup, i_strlen );
                             psz_string[i_strlen] = '\0';
                             input_item_t *p_input;
-                            p_input = input_item_New( p_demux, psz_string, psz_title_asx );
+                            p_input = input_item_New( psz_string, psz_title_asx );
                             input_item_CopyOptions( p_current_input, p_input );
                             input_item_node_AppendItem( p_subitems, p_input );
                             vlc_gc_decref( p_input );
@@ -543,7 +543,7 @@ static int Demux( demux_t *p_demux )
                     if( asprintf( &psz_name, "%d %s", i_entry_count, ( psz_title_entry ? psz_title_entry : psz_current_input_name ) ) != -1 )
                     {
                         char *psz_mrl = ProcessMRL( psz_href, p_demux->p_sys->psz_prefix );
-                        p_entry = input_item_NewExt( p_demux, psz_mrl, psz_name,
+                        p_entry = input_item_NewExt( psz_mrl, psz_name,
                                                      i_options, (const char * const *)ppsz_options, VLC_INPUT_OPTION_TRUSTED, -1 );
                         free( psz_name );
                         free( psz_mrl );
@@ -642,7 +642,7 @@ static int Demux( demux_t *p_demux )
                                 char *psz_name = input_item_GetName( p_current_input );
 
                                 char *psz_mrl = ProcessMRL( psz_href, p_demux->p_sys->psz_prefix );
-                                p_entry = input_item_NewExt( p_demux, psz_mrl, psz_name,
+                                p_entry = input_item_NewExt( psz_mrl, psz_name,
                                                      0, NULL, VLC_INPUT_OPTION_TRUSTED, -1 );
                                 free( psz_mrl );
                                 input_item_CopyOptions( p_current_input, p_entry );

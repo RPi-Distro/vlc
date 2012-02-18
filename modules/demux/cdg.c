@@ -2,7 +2,7 @@
  * cdg.c : cdg file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: ef9125ee4cd26a54f3c81dc0e7653fef09f983d1 $
+ * $Id: e0087571357d2d0119c2ee54ae020a062e53e175 $
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
@@ -33,8 +33,6 @@
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
 
-#include <vlc_codecs.h>
-
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -47,8 +45,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_DEMUX )
     set_capability( "demux", 3 )
     set_callbacks( Open, Close )
-    add_shortcut( "cdg" )
-    add_shortcut( "subtitle" )
+    add_shortcut( "cdg", "subtitle" )
 vlc_module_end ()
 
 /*****************************************************************************

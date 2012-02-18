@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 0b62bc2592ea89c7a97d991a9a8a5a7fbee14861 $
+ * $Id: debb05f9378f5a21ec133ebac812eb4b99dd4fec $
  *
  * Author: Johan Bilien <jobi@via.ecp.fr>
  *
@@ -43,11 +43,6 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for VCDs. This " \
-    "value should be set in milliseconds." )
-
 vlc_module_begin ()
     set_shortname( N_("VCD"))
     set_description( N_("VCD input") )
@@ -57,10 +52,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_ACCESS )
 
     add_usage_hint( N_("[vcd:][device][@[title][,[chapter]]]") )
-    add_integer( "vcd-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true )
-    add_shortcut( "vcd" )
-    add_shortcut( "svcd" )
+    add_shortcut( "vcd", "svcd" )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -96,7 +88,10 @@ static int Open( vlc_object_t *p_this )
 {
     access_t     *p_access = (access_t *)p_this;
     access_sys_t *p_sys;
-    char *psz_dup = ToLocaleDup( p_access->psz_path );
+    if( p_access->psz_filepath == NULL )
+        return VLC_EGENERIC;
+
+    char *psz_dup = ToLocaleDup( p_access->psz_filepath );
     char *psz;
     int i_title = 0;
     int i_chapter = 0;
@@ -130,7 +125,7 @@ static int Open( vlc_object_t *p_this )
         }
     }
 
-#ifdef WIN32
+#if defined( WIN32 ) || defined( __OS2__ )
     if( psz_dup[0] && psz_dup[1] == ':' &&
         psz_dup[2] == '\\' && psz_dup[3] == '\0' ) psz_dup[2] = '\0';
 #endif
@@ -254,8 +249,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
         /* */
         case ACCESS_GET_PTS_DELAY:
-            *va_arg( args, int64_t * )
-                     = (int64_t)var_GetInteger(p_access,"vcd-caching") * 1000;
+            *va_arg( args, int64_t * ) = INT64_C(1000)
+                * var_InheritInteger(p_access, "disc-caching");
             break;
 
         /* */
@@ -329,7 +324,6 @@ static block_t *Block( access_t *p_access )
     access_sys_t *p_sys = p_access->p_sys;
     int i_blocks = VCD_BLOCKS_ONCE;
     block_t *p_block;
-    int i_read;
 
     /* Check end of file */
     if( p_access->info.b_eof ) return NULL;
@@ -347,8 +341,7 @@ static block_t *Block( access_t *p_access )
             INPUT_UPDATE_TITLE | INPUT_UPDATE_SEEKPOINT | INPUT_UPDATE_SIZE;
         p_access->info.i_title++;
         p_access->info.i_seekpoint = 0;
-        p_access->info.i_size =
-            p_sys->title[p_access->info.i_title]->i_size;
+        p_access->info.i_size = p_sys->title[p_access->info.i_title]->i_size;
         p_access->info.i_pos = 0;
     }
 
@@ -356,12 +349,11 @@ static block_t *Block( access_t *p_access )
     if( p_sys->i_sector + i_blocks >=
         p_sys->p_sectors[p_access->info.i_title + 2] )
     {
-        i_blocks = p_sys->p_sectors[p_access->info.i_title + 2 ] -
-                   p_sys->i_sector;
+        i_blocks = p_sys->p_sectors[p_access->info.i_title + 2 ] - p_sys->i_sector;
     }
 
     /* Do the actual reading */
-    if( !( p_block = block_New( p_access, i_blocks * VCD_DATA_SIZE ) ) )
+    if( i_blocks < 0 || !( p_block = block_New( p_access, i_blocks * VCD_DATA_SIZE ) ) )
     {
         msg_Err( p_access, "cannot get a new block of size: %i",
                  i_blocks * VCD_DATA_SIZE );
@@ -381,13 +373,14 @@ static block_t *Block( access_t *p_access )
     }
 
     /* Update seekpoints */
-    for( i_read = 0; i_read < i_blocks; i_read++ )
+    for( int i_read = 0; i_read < i_blocks; i_read++ )
     {
         input_title_t *t = p_sys->title[p_access->info.i_title];
 
         if( t->i_seekpoint > 0 &&
             p_access->info.i_seekpoint + 1 < t->i_seekpoint &&
-            p_access->info.i_pos + i_read * VCD_DATA_SIZE >=
+            (int64_t) /* Unlikely to go over 8192 PetaB */
+                (p_access->info.i_pos + i_read * VCD_DATA_SIZE) >=
             t->seekpoint[p_access->info.i_seekpoint+1]->i_byte_offset )
         {
             msg_Dbg( p_access, "seekpoint change" );
@@ -421,7 +414,8 @@ static int Seek( access_t *p_access, uint64_t i_pos )
     for( i_seekpoint = 0; i_seekpoint < t->i_seekpoint; i_seekpoint++ )
     {
         if( i_seekpoint + 1 >= t->i_seekpoint ) break;
-        if( i_pos < t->seekpoint[i_seekpoint + 1]->i_byte_offset ) break;
+        if( 0 < t->seekpoint[i_seekpoint + 1]->i_byte_offset &&
+            i_pos < (uint64_t)t->seekpoint[i_seekpoint + 1]->i_byte_offset ) break;
     }
 
     if( i_seekpoint != p_access->info.i_seekpoint )

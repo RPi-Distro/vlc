@@ -1,8 +1,9 @@
 /*****************************************************************************
- * filter.h : DirectShow access module for vlc
+ * filter.h : DirectShow access module for vlc:
+ * CapturePin, CaptureFilter, CaptureEnumPins implementations
  *****************************************************************************
- * Copyright (C) 2002 the VideoLAN team
- * $Id: ce7e6261db1dac6a9185f2f56bb0fc5682100342 $
+ * Copyright (C) 2002-2004, 2008 the VideoLAN team
+ * $Id: c573a6a2f9eec62af37343dee39f7db0364ab888 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,8 +25,7 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <string>
-#include <list>
+
 #include <deque>
 using namespace std;
 
@@ -48,9 +48,7 @@ using namespace std;
 #endif
 
 #include <dshow.h>
-
-extern const GUID MEDIASUBTYPE_I420;
-extern const GUID MEDIASUBTYPE_PREVIEW_VIDEO;
+#include "vlc_dshow.h"
 
 typedef struct VLCMediaSample
 {
@@ -59,8 +57,7 @@ typedef struct VLCMediaSample
 
 } VLCMediaSample;
 
-class CaptureFilter;
-
+/* */
 void WINAPI FreeMediaType( AM_MEDIA_TYPE& mt );
 HRESULT WINAPI CopyMediaType( AM_MEDIA_TYPE *pmtTarget,
                               const AM_MEDIA_TYPE *pmtSource );
@@ -70,6 +67,7 @@ int GetFourCCFromMediaType(const AM_MEDIA_TYPE &media_type);
 /****************************************************************************
  * Declaration of our dummy directshow filter pin class
  ****************************************************************************/
+class CaptureFilter;
 class CapturePin: public IPin, public IMemInputPin
 {
     friend class CaptureEnumMediaTypes;

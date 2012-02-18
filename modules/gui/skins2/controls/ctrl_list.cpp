@@ -2,7 +2,7 @@
  * ctrl_list.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 4bf7d1e757115cd5a8df703bfbc933c48e7b2751 $
+ * $Id: 015c7b86d253f43f73e8b9ac20e620a5b29957eb $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -68,6 +68,7 @@ CtrlList::~CtrlList()
 
 void CtrlList::onUpdate( Subject<VarList> &rList, void *arg  )
 {
+    (void)rList; (void)arg;
     autoScroll();
     m_pLastSelected = NULL;
 }
@@ -75,6 +76,7 @@ void CtrlList::onUpdate( Subject<VarList> &rList, void *arg  )
 
 void CtrlList::onUpdate( Subject<VarPercent> &rPercent, void *arg  )
 {
+    (void)rPercent; (void)arg;
     // Get the size of the control
     const Position *pPos = getPosition();
     if( !pPos )
@@ -212,7 +214,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         {
             // Flag to know if the current item must be selected
             bool select = false;
-            for( it = m_rList.begin(); it != m_rList.end(); it++ )
+            for( it = m_rList.begin(); it != m_rList.end(); ++it )
             {
                 bool nextSelect = select;
                 if( index == yPos || &*it == m_pLastSelected )
@@ -236,7 +238,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         else if( rEvent.getAsString().find( "mouse:left:down:ctrl" ) !=
                  string::npos )
         {
-            for( it = m_rList.begin(); it != m_rList.end(); it++ )
+            for( it = m_rList.begin(); it != m_rList.end(); ++it )
             {
                 if( index == yPos )
                 {
@@ -253,7 +255,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         {
             // Flag to know if the current item must be selected
             bool select = false;
-            for( it = m_rList.begin(); it != m_rList.end(); it++ )
+            for( it = m_rList.begin(); it != m_rList.end(); ++it )
             {
                 bool nextSelect = select;
                 if( index == yPos ||  &*it == m_pLastSelected )
@@ -277,7 +279,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         else if( rEvent.getAsString().find( "mouse:left:down" ) !=
                  string::npos )
         {
-            for( it = m_rList.begin(); it != m_rList.end(); it++ )
+            for( it = m_rList.begin(); it != m_rList.end(); ++it )
             {
                 if( index == yPos )
                 {
@@ -295,7 +297,7 @@ void CtrlList::handleEvent( EvtGeneric &rEvent )
         else if( rEvent.getAsString().find( "mouse:left:dblclick" ) !=
                  string::npos )
         {
-            for( it = m_rList.begin(); it != m_rList.end(); it++ )
+            for( it = m_rList.begin(); it != m_rList.end(); ++it )
             {
                 if( index == yPos )
                 {
@@ -349,11 +351,19 @@ bool CtrlList::mouseOver( int x, int y ) const
 }
 
 
-void CtrlList::draw( OSGraphics &rImage, int xDest, int yDest )
+void CtrlList::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
 {
-    if( m_pImage )
+    const Position *pPos = getPosition();
+    rect region( pPos->getLeft(), pPos->getTop(),
+                 pPos->getWidth(), pPos->getHeight() );
+    rect clip( xDest, yDest, w, h );
+    rect inter;
+    if( rect::intersect( region, clip, &inter ) && m_pImage )
     {
-        rImage.drawGraphics( *m_pImage, 0, 0, xDest, yDest );
+        rImage.drawGraphics( *m_pImage,
+                      inter.x - pPos->getLeft(),
+                      inter.y - pPos->getTop(),
+                      inter.x, inter.y, inter.width, inter.height );
     }
 }
 
@@ -375,7 +385,7 @@ void CtrlList::autoScroll()
     // Find the current playing stream
     int playIndex = 0;
     VarList::ConstIterator it;
-    for( it = m_rList.begin(); it != m_rList.end(); it++ )
+    for( it = m_rList.begin(); it != m_rList.end(); ++it )
     {
         if( (*it).m_playing )
         {
@@ -438,7 +448,7 @@ void CtrlList::makeImage()
                     m_pImage->fillRect( 0, yPos, width, rectHeight,
                                         m_selColor );
                 }
-                it++;
+                ++it;
             }
         }
     }
@@ -454,7 +464,7 @@ void CtrlList::makeImage()
             {
                 uint32_t color = ( (*it).m_selected ? m_selColor : bgColor );
                 m_pImage->fillRect( 0, yPos, width, rectHeight, color );
-                it++;
+                ++it;
             }
             else
             {
@@ -467,7 +477,7 @@ void CtrlList::makeImage()
 
     // Draw the items
     int yPos = 0;
-    for( it = m_rList[m_lastPos]; it != m_rList.end() && yPos < height; it++ )
+    for( it = m_rList[m_lastPos]; it != m_rList.end() && yPos < height; ++it )
     {
         UString *pStr = (UString*)(it->m_cString.get());
         uint32_t color = ( it->m_playing ? m_playColor : m_fgColor );

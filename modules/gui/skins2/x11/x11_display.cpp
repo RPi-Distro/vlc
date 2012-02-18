@@ -2,7 +2,7 @@
  * x11_display.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1b489e6c46a49a51d46ca2bed700e480ddbfcda2 $
+ * $Id: ac02312cf7994210a7adca806d3ab0faea3eb829 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -59,14 +59,11 @@ type X11Display::blendPixel(type v,type r, type g, type b, type a) const
 X11Display::X11Display( intf_thread_t *pIntf ): SkinObject( pIntf ),
     m_mainWindow( 0 ), m_gc( NULL ), m_colormap( 0 )
 {
-    char *psz_display = var_CreateGetNonEmptyString( pIntf, "x11-display" );
     // Open a connection to the X Server
-    m_pDisplay = XOpenDisplay( psz_display );
-    free( psz_display );
-
+    m_pDisplay = XOpenDisplay( NULL );
     if( m_pDisplay == NULL )
     {
-        MSG_ERR( "Cannot open display" );
+        msg_Dbg( pIntf, "Cannot open X display" );
         return;
     }
 
@@ -189,7 +186,7 @@ X11Display::X11Display( intf_thread_t *pIntf ): SkinObject( pIntf ),
         break;
 
     default:
-        msg_Err( getIntf(), "unsupported depth: %d bpp\n", depth );
+        msg_Err( getIntf(), "unsupported depth: %d bpp", depth );
         m_pDisplay = NULL;
         break;
     }
@@ -319,7 +316,7 @@ void X11Display::testEWMH()
 #define TEST_EWMH( name, value ) \
 {\
     name = XInternAtom( m_pDisplay, value, False );\
-    int i;\
+    unsigned int i;\
     for( i = 0; i < i_items; i++ )\
     {\
         if( p_args.p_atom[i] == name ) break;\
@@ -431,6 +428,7 @@ void X11Display::blendPixel32LSB( uint8_t *pPixel, uint8_t r, uint8_t g,
 void X11Display::putPixel8( uint8_t *pPixel, uint8_t r, uint8_t g,
                             uint8_t b, uint8_t a ) const
 {
+    (void)a;
     *pPixel = 255 - putPixel<uint8_t>(r,g,b);
 }
 
@@ -438,6 +436,7 @@ void X11Display::putPixel8( uint8_t *pPixel, uint8_t r, uint8_t g,
 void X11Display::putPixel16MSB( uint8_t *pPixel, uint8_t r, uint8_t g,
                                 uint8_t b, uint8_t a ) const
 {
+    (void)a;
     uint16_t value = putPixel<uint16_t>(r, g, b);
 
     pPixel[1] = value; value >>= 8;
@@ -448,6 +447,7 @@ void X11Display::putPixel16MSB( uint8_t *pPixel, uint8_t r, uint8_t g,
 void X11Display::putPixel16LSB( uint8_t *pPixel, uint8_t r, uint8_t g,
                                 uint8_t b, uint8_t a ) const
 {
+    (void)a;
     uint16_t value = putPixel<uint16_t>(r,g,b);
     pPixel[0] = value; value >>= 8;
     pPixel[1] = value;
@@ -457,6 +457,7 @@ void X11Display::putPixel16LSB( uint8_t *pPixel, uint8_t r, uint8_t g,
 void X11Display::putPixel32MSB( uint8_t *pPixel, uint8_t r, uint8_t g,
                                 uint8_t b, uint8_t a ) const
 {
+    (void)a;
     uint32_t value = putPixel<uint32_t>(r,g,b);
 
     pPixel[3] = value; value >>= 8;
@@ -469,6 +470,7 @@ void X11Display::putPixel32MSB( uint8_t *pPixel, uint8_t r, uint8_t g,
 void X11Display::putPixel32LSB( uint8_t *pPixel, uint8_t r, uint8_t g,
                                 uint8_t b, uint8_t a ) const
 {
+    (void)a;
     uint32_t value = putPixel<uint32_t>(r,g,b);
 
     pPixel[0] = value; value >>= 8;

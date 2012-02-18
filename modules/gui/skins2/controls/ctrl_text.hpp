@@ -2,7 +2,7 @@
  * ctrl_text.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: eafdb8e1b9083d1bbda04dc156f90646b3bf3289 $
+ * $Id: 828cb2a9a2cd0ef36409a5a450c60cfe418746af $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -63,8 +63,8 @@ public:
     /// Create a text control with the optional given color
     CtrlText( intf_thread_t *pIntf, VarText &rVariable,
               const GenericFont &rFont, const UString &rHelp,
-              uint32_t color, VarBool *pVisible, Scrolling_t scrollMode,
-              Align_t alignment);
+              uint32_t color, VarBool *pVisible, VarBool *pFocus,
+              Scrolling_t scrollMode, Align_t alignment);
     virtual ~CtrlText();
 
     /// Handle an event
@@ -74,7 +74,7 @@ public:
     virtual bool mouseOver( int x, int y ) const;
 
     /// Draw the control on the given graphics
-    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Set the text of the control, with an optional color
     /// This takes effect immediatly
@@ -103,6 +103,8 @@ private:
     Scrolling_t m_scrollMode;
     /// Type of alignment
     Align_t m_alignment;
+    /// indicate if control is focusable
+    VarBool *m_pFocus;
     /// Image of the text
     GenericBitmap *m_pImg;
     /// Image of the text, repeated twice and with some blank between;

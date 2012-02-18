@@ -1,37 +1,29 @@
 /*****************************************************************************
  * vout_control.h : Vout control function definitions
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
+ * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: d44b06d6331a8bb7835e22a001aa3c5d3a52dc13 $
+ * $Id: 12b057d1f77185ddb2c92a0d1437edf48d86d961 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
-
-#ifndef _VOUT_CONTROL_H
-#define _VOUT_CONTROL_H 1
-
-/* DO NOT use vout_CountPictureAvailable unless your are in src/input/decoder.c (no exception) */
-int vout_CountPictureAvailable( vout_thread_t * );
+#ifndef LIBVLC_VOUT_CONTROL_H
+#define LIBVLC_VOUT_CONTROL_H 1
 
 /**
  * This function will (un)pause the display of pictures.
@@ -61,12 +53,12 @@ void vout_Flush( vout_thread_t *p_vout, mtime_t i_date );
  *
  * XXX This function is there to workaround bugs in decoder
  */
-void vout_FixLeaks( vout_thread_t *p_vout, bool b_forced );
+void vout_FixLeaks( vout_thread_t *p_vout );
 
-/**
- * This functions will drop a picture retreived by vout_CreatePicture.
+/*
+ * Reset the states of the vout.
  */
-void vout_DropPicture( vout_thread_t *p_vout, picture_t * );
+void vout_Reset( vout_thread_t *p_vout );
 
 /**
  * This function will force to display the next picture while paused
@@ -78,5 +70,9 @@ void vout_NextPicture( vout_thread_t *p_vout, mtime_t *pi_duration );
  */
 void vout_DisplayTitle( vout_thread_t *p_vout, const char *psz_title );
 
-#endif
+/**
+ * This function will return true if no more pictures are to be displayed.
+ */
+bool vout_IsEmpty( vout_thread_t *p_vout );
 
+#endif

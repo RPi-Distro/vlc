@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_epg.h: Electronic Program Guide
  *****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: ded3f7f09ffda3c734db3ee33b03af974a9b955c $
+ * Copyright (C) 2007 VLC authors and VideoLAN
+ * $Id: 25d8ed275d918e16bf5b12ba494d234ed379cb19 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_EPG_H
@@ -54,43 +54,43 @@ typedef struct
  *
  * You must call vlc_epg_Clean to release the associated resource.
  */
-VLC_EXPORT(void, vlc_epg_Init, (vlc_epg_t *p_epg, const char *psz_name));
+VLC_API void vlc_epg_Init(vlc_epg_t *p_epg, const char *psz_name);
 
 /**
  * It releases all resources associated to a vlc_epg_t
  */
-VLC_EXPORT(void, vlc_epg_Clean, (vlc_epg_t *p_epg));
+VLC_API void vlc_epg_Clean(vlc_epg_t *p_epg);
 
 /**
  * It creates and appends a new vlc_epg_event_t to a vlc_epg_t.
  *
  * \see vlc_epg_t for the definitions of the parameters.
  */
-VLC_EXPORT(void, vlc_epg_AddEvent, (vlc_epg_t *p_epg, int64_t i_start, int i_duration, const char *psz_name, const char *psz_short_description, const char *psz_description));
+VLC_API void vlc_epg_AddEvent(vlc_epg_t *p_epg, int64_t i_start, int i_duration, const char *psz_name, const char *psz_short_description, const char *psz_description);
 
 /**
  * It creates a new vlc_epg_t*
  *
  * You must call vlc_epg_Delete to release the associated resource.
  */
-VLC_EXPORT(vlc_epg_t *, vlc_epg_New, (const char *psz_name));
+VLC_API vlc_epg_t * vlc_epg_New(const char *psz_name) VLC_USED;
 
 /**
  * It releases a vlc_epg_t*.
  */
-VLC_EXPORT(void, vlc_epg_Delete, (vlc_epg_t *p_epg));
+VLC_API void vlc_epg_Delete(vlc_epg_t *p_epg);
 
 /**
  * It set the current event of a vlc_epg_t given a start time
  */
-VLC_EXPORT(void, vlc_epg_SetCurrent, (vlc_epg_t *p_epg, int64_t i_start));
+VLC_API void vlc_epg_SetCurrent(vlc_epg_t *p_epg, int64_t i_start);
 
 /**
  * It merges all the event of \p p_src and \p p_dst into \p p_dst.
  *
  * \p p_src is not modified.
  */
-VLC_EXPORT(void, vlc_epg_Merge, (vlc_epg_t *p_dst, const vlc_epg_t *p_src));
+VLC_API void vlc_epg_Merge(vlc_epg_t *p_dst, const vlc_epg_t *p_src);
 
 #endif
 

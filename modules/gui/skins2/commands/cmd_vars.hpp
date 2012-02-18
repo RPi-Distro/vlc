@@ -2,7 +2,7 @@
  * cmd_vars.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: c4e83c4a266b5b551a0f6e5dec7a61f7fddaa80b $
+ * $Id: 3246f9aa2780e8de5a74bcc7704868d8918381b5 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -23,6 +23,10 @@
 
 #ifndef CMD_VARS_HPP
 #define CMD_VARS_HPP
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <vlc_common.h>
 #include <vlc_playlist.h>

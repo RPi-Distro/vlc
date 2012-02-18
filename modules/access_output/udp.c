@@ -2,7 +2,7 @@
  * udp.c
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 21ff9a4de49f2423a6150c2508f3a296c546b0f7 $
+ * $Id: d996d749279694007e17d2158912c6ed7ec60c0e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -78,11 +78,9 @@ vlc_module_begin ()
     set_shortname( "UDP" )
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_ACO )
-    add_integer( SOUT_CFG_PREFIX "caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT, CACHING_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "group", 1, NULL, GROUP_TEXT, GROUP_LONGTEXT,
+    add_integer( SOUT_CFG_PREFIX "caching", DEFAULT_PTS_DELAY / 1000, CACHING_TEXT, CACHING_LONGTEXT, true )
+    add_integer( SOUT_CFG_PREFIX "group", 1, GROUP_TEXT, GROUP_LONGTEXT,
                                  true )
-    add_obsolete_integer( SOUT_CFG_PREFIX "late" )
-    add_obsolete_bool( SOUT_CFG_PREFIX "raw" )
 
     set_capability( "sout access", 0 )
     add_shortcut( "udp" )
@@ -104,7 +102,6 @@ static const char *const ppsz_core_options[] = {
     "dscp",
     "ttl",
     "miface",
-    "miface-addr",
     NULL
 };
 

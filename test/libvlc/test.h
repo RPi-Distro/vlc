@@ -1,7 +1,7 @@
 /*
  * test.h - libvlc smoke test common definitions
  *
- * $Id: 2a6c84b6e85b6fa48dcca730075998b4ddf9727e $
+ * $Id: fc41f51582bc03b25ada367d2591405c2f3f576e $
  */
 
 /**********************************************************************
@@ -53,7 +53,6 @@ static const char * test_defaults_args[] = {
     "-I",
     "dummy",
     "--no-media-library",
-    "--plugin-path=../modules",
     "--vout=dummy",
     "--aout=dummy"
 };
@@ -75,6 +74,7 @@ static inline void test_init (void)
 {
     (void)test_default_sample; /* This one may not be used */
     alarm (10); /* Make sure "make check" does not get stuck */
+    setenv( "VLC_PLUGIN_PATH", "../modules", 1 );
 }
 
 #endif /* TEST_H */

@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libavi_plugin_la_SOURCES = $(SOURCES_avi)
 nodist_libavi_plugin_la_SOURCES = $(nodist_SOURCES_avi)
 # Force per-target objects:
-libavi_plugin_la_CFLAGS = $(AM_CFLAGS)
-libavi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libavi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libavi_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_avi)
+libavi_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_avi)
+libavi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_avi)
+libavi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_avi)
 # Set LIBADD and DEPENDENCIES manually:
-libavi_plugin_la_LIBADD = $(AM_LIBADD)
-libavi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libavi_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_avi)
+libavi_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_avi)
+libavi_plugin_la_DEPENDENCIES =
 

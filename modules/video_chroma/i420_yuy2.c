@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 3d51f2228d1627e8b4f09216c923d45d03af5316 $
+ * $Id: 1d36b06f36a6930524d8f074a1ab2d80e4e6c519 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damien@videolan.org>
@@ -33,6 +33,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_cpu.h>
 
 #if defined (MODULE_NAME_IS_i420_yuy2_altivec) && defined(HAVE_ALTIVEC_H)
 #   include <altivec.h>
@@ -87,16 +88,20 @@ vlc_module_begin ()
 #if defined (MODULE_NAME_IS_i420_yuy2)
     set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 80 )
+# define CPU_CAPABILITY 0
 #elif defined (MODULE_NAME_IS_i420_yuy2_mmx)
     set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 160 )
+# define CPU_CAPABILITY CPU_CAPABILITY_MMX
 #elif defined (MODULE_NAME_IS_i420_yuy2_sse2)
     set_description( N_("SSE2 conversions from " SRC_FOURCC " to " DEST_FOURCC) )
     set_capability( "video filter2", 250 )
+# define CPU_CAPABILITY CPU_CAPABILITY_SSE2
 #elif defined (MODULE_NAME_IS_i420_yuy2_altivec)
     set_description(
             _("AltiVec conversions from " SRC_FOURCC " to " DEST_FOURCC) );
     set_capability( "video filter2", 250 )
+# define CPU_CAPABILITY CPU_CAPABILITY_ALTIVEC
 #endif
     set_callbacks( Activate, NULL )
 vlc_module_end ()
@@ -110,6 +115,10 @@ static int Activate( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
 
+#if CPU_CAPABILITY
+    if( !(vlc_CPU() & CPU_CAPABILITY) )
+        return VLC_EGENERIC;
+#endif
     if( p_filter->fmt_in.video.i_width & 1
      || p_filter->fmt_in.video.i_height & 1 )
     {
@@ -247,7 +256,7 @@ static void I420_YUY2( filter_t *p_filter, picture_t *p_source,
                 ( p_filter->fmt_in.video.i_height % 4 ) ) )
     {
         /* Width is only a multiple of 16, we take 4 lines at a time */
-		for( i_y = p_filter->fmt_in.video.i_height / 4 ; i_y-- ; )
+        for( i_y = p_filter->fmt_in.video.i_height / 4 ; i_y-- ; )
         {
             /* Line 1 and 2, pixels 0 to ( width - 16 ) */
             VEC_NEXT_LINES( );

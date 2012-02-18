@@ -1,35 +1,38 @@
 /*****************************************************************************
  * meta.c : Metadata handling
  *****************************************************************************
- * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: f6eaed6fa6123dc3c60520c611a5ba79fb96f238 $
+ * Copyright (C) 1998-2004 VLC authors and VideoLAN
+ * $Id: 1fc7f07bf99047008a48c2a7491a56f61fb37ccd $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
+#include <assert.h>
+
 #include <vlc_common.h>
 #include <vlc_playlist.h>
 #include <vlc_url.h>
 #include <vlc_arrays.h>
+#include <vlc_modules.h>
 
 #include "input_internal.h"
 #include "../playlist/art.h"
@@ -46,28 +49,29 @@ struct vlc_meta_t
 /* FIXME bad name convention */
 const char * vlc_meta_TypeToLocalizedString( vlc_meta_type_t meta_type )
 {
-    switch( meta_type )
+    static const char posix_names[][16] =
     {
-    case vlc_meta_Title:        return _("Title");
-    case vlc_meta_Artist:       return _("Artist");
-    case vlc_meta_Genre:        return _("Genre");
-    case vlc_meta_Copyright:    return _("Copyright");
-    case vlc_meta_Album:        return _("Album");
-    case vlc_meta_TrackNumber:  return _("Track number");
-    case vlc_meta_Description:  return _("Description");
-    case vlc_meta_Rating:       return _("Rating");
-    case vlc_meta_Date:         return _("Date");
-    case vlc_meta_Setting:      return _("Setting");
-    case vlc_meta_URL:          return _("URL");
-    case vlc_meta_Language:     return _("Language");
-    case vlc_meta_NowPlaying:   return _("Now Playing");
-    case vlc_meta_Publisher:    return _("Publisher");
-    case vlc_meta_EncodedBy:    return _("Encoded by");
-    case vlc_meta_ArtworkURL:   return _("Artwork URL");
-    case vlc_meta_TrackID:      return _("Track ID");
+        [vlc_meta_Title]       = N_("Title"),
+        [vlc_meta_Artist]      = N_("Artist"),
+        [vlc_meta_Genre]       = N_("Genre"),
+        [vlc_meta_Copyright]   = N_("Copyright"),
+        [vlc_meta_Album]       = N_("Album"),
+        [vlc_meta_TrackNumber] = N_("Track number"),
+        [vlc_meta_Description] = N_("Description"),
+        [vlc_meta_Rating]      = N_("Rating"),
+        [vlc_meta_Date]        = N_("Date"),
+        [vlc_meta_Setting]     = N_("Setting"),
+        [vlc_meta_URL]         = N_("URL"),
+        [vlc_meta_Language]    = N_("Language"),
+        [vlc_meta_NowPlaying]  = N_("Now Playing"),
+        [vlc_meta_Publisher]   = N_("Publisher"),
+        [vlc_meta_EncodedBy]   = N_("Encoded by"),
+        [vlc_meta_ArtworkURL]  = N_("Artwork URL"),
+        [vlc_meta_TrackID]     = N_("Track ID"),
+    };
 
-    default: abort();
-    }
+    assert (meta_type < (sizeof(posix_names) / sizeof(posix_names[0])));
+    return vlc_gettext (posix_names[meta_type]);
 };
 
 
@@ -259,11 +263,9 @@ exit:
 int input_item_WriteMeta( vlc_object_t *obj, input_item_t *p_item )
 {
     meta_export_t *p_export =
-        vlc_custom_create( obj, sizeof( *p_export ), VLC_OBJECT_GENERIC,
-                           "meta writer" );
+        vlc_custom_create( obj, sizeof( *p_export ), "meta writer" );
     if( p_export == NULL )
         return VLC_ENOMEM;
-    vlc_object_attach( p_export, obj );
     p_export->p_item = p_item;
 
     int type;

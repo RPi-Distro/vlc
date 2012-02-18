@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: f0d1879ae6e28e14b87b9c7e40cf04153bb2dede $
+ * $Id: cc1ec8227d596063a256430e1372bad58f59c5ed $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -53,6 +53,7 @@
 #endif
 
 #include <assert.h>
+#include <limits.h>
 
 #ifdef HAVE_LIBPROXY
 #    include <proxy.h>
@@ -78,15 +79,6 @@ static void Close( vlc_object_t * );
 #define PROXY_PASS_LONGTEXT N_( \
     "If your HTTP proxy requires a password, set it here." )
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for HTTP streams. This " \
-    "value should be set in milliseconds." )
-
-#define AGENT_TEXT N_("HTTP user agent")
-#define AGENT_LONGTEXT N_("User agent that will be " \
-    "used for the connection.")
-
 #define RECONNECT_TEXT N_("Auto re-connect")
 #define RECONNECT_LONGTEXT N_( \
     "Automatically try to reconnect to the stream in case of a sudden " \
@@ -101,13 +93,11 @@ static void Close( vlc_object_t * );
 #define FORWARD_COOKIES_TEXT N_("Forward Cookies")
 #define FORWARD_COOKIES_LONGTEXT N_("Forward Cookies across http redirections.")
 
-#define MAX_REDIRECT_TEXT N_("Max number of redirection")
-#define MAX_REDIRECT_LONGTEXT N_("Limit the number of redirection to follow.")
+#define REFERER_TEXT N_("HTTP referer value")
+#define REFERER_LONGTEXT N_("Customize the HTTP referer, simulating a previous document")
 
-#define USE_IE_PROXY_TEXT N_("Use Internet Explorer entered HTTP proxy server")
-#define USE_IE_PROXY_LONGTEXT N_("Use Internet Explorer entered HTTP proxy " \
-    "server for all URL. Don't take into account bypasses settings and auto " \
-    "configuration scripts.")
+#define UA_TEXT N_("User Agent")
+#define UA_LONGTEXT N_("You can use a custom User agent or use a known one")
 
 vlc_module_begin ()
     set_description( N_("HTTP input") )
@@ -116,37 +106,24 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
 
-    add_string( "http-proxy", NULL, NULL, PROXY_TEXT, PROXY_LONGTEXT,
+    add_string( "http-proxy", NULL, PROXY_TEXT, PROXY_LONGTEXT,
                 false )
-    add_password( "http-proxy-pwd", NULL, NULL,
+    add_password( "http-proxy-pwd", NULL,
                   PROXY_PASS_TEXT, PROXY_PASS_LONGTEXT, false )
-    add_integer( "http-caching", 4 * DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, true )
+    add_string( "http-referrer", NULL, REFERER_TEXT, REFERER_LONGTEXT, false )
         change_safe()
-    add_string( "http-user-agent", PACKAGE_NAME"/"PACKAGE_VERSION, NULL,
-                AGENT_TEXT, AGENT_LONGTEXT, true )
+    add_string( "http-user-agent", NULL, UA_TEXT, UA_LONGTEXT, false )
         change_safe()
-        change_need_restart()
-    add_bool( "http-reconnect", false, NULL, RECONNECT_TEXT,
+        change_private()
+    add_bool( "http-reconnect", false, RECONNECT_TEXT,
               RECONNECT_LONGTEXT, true )
-    add_bool( "http-continuous", false, NULL, CONTINUOUS_TEXT,
+    add_bool( "http-continuous", false, CONTINUOUS_TEXT,
               CONTINUOUS_LONGTEXT, true )
         change_safe()
-    add_bool( "http-forward-cookies", true, NULL, FORWARD_COOKIES_TEXT,
+    add_bool( "http-forward-cookies", true, FORWARD_COOKIES_TEXT,
               FORWARD_COOKIES_LONGTEXT, true )
-    add_integer( "http-max-redirect", 5, NULL, MAX_REDIRECT_TEXT,
-                 MAX_REDIRECT_LONGTEXT, true )
-#ifdef WIN32
-    add_bool( "http-use-IE-proxy", false, NULL, USE_IE_PROXY_TEXT,
-              USE_IE_PROXY_LONGTEXT, true )
-#endif
-    add_obsolete_string("http-user")
-    add_obsolete_string("http-pwd")
-    add_shortcut( "http" )
-    add_shortcut( "https" )
-    add_shortcut( "unsv" )
-    add_shortcut( "itpc" ) /* iTunes Podcast */
-    add_shortcut( "icyx" )
+    /* 'itpc' = iTunes Podcast */
+    add_shortcut( "http", "https", "unsv", "itpc", "icyx" )
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -158,12 +135,13 @@ struct access_sys_t
 {
     int fd;
     bool b_error;
-    tls_session_t *p_tls;
-    v_socket_t    *p_vs;
+    vlc_tls_t  *p_tls;
+    v_socket_t *p_vs;
 
     /* From uri */
     vlc_url_t url;
     char    *psz_user_agent;
+    char    *psz_referrer;
     http_auth_t auth;
 
     /* Proxy */
@@ -215,8 +193,7 @@ struct access_sys_t
 
 /* */
 static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
-                            int i_nb_redirect, int i_max_redirect,
-                            vlc_array_t *cookies );
+                            unsigned i_redirect, vlc_array_t *cookies );
 
 /* */
 static ssize_t Read( access_t *, uint8_t *, size_t );
@@ -247,8 +224,7 @@ static int AuthCheckReply( access_t *p_access, const char *psz_header,
 static int Open( vlc_object_t *p_this )
 {
     access_t *p_access = (access_t*)p_this;
-    return OpenWithCookies( p_this, p_access->psz_access, 0,
-                var_CreateGetInteger( p_access, "http-max-redirect" ), NULL );
+    return OpenWithCookies( p_this, p_access->psz_access, 5, NULL );
 }
 
 /**
@@ -256,21 +232,19 @@ static int Open( vlc_object_t *p_this )
  * @param p_this: the vlc object
  * @psz_access: the acces to use (http, https, ...) (this value must be used
  *              instead of p_access->psz_access)
- * @i_nb_redirect: the number of redirection already done
- * @i_max_redirect: limit to the number of redirection to follow
+ * @i_redirect: number of redirections remaining
  * @cookies: the available cookies
  * @return vlc error codes
  */
 static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
-                            int i_nb_redirect, int i_max_redirect,
-                            vlc_array_t *cookies )
+                            unsigned i_redirect, vlc_array_t *cookies )
 {
     access_t     *p_access = (access_t*)p_this;
     access_sys_t *p_sys;
     char         *psz, *p;
 
     /* Only forward an store cookies if the corresponding option is activated */
-    bool   b_forward_cookies = var_CreateGetBool( p_access, "http-forward-cookies" );
+    bool   b_forward_cookies = var_InheritBool( p_access, "http-forward-cookies" );
     vlc_array_t * saved_cookies = b_forward_cookies ? (cookies ? cookies : vlc_array_new()) : NULL;
 
     /* Set up p_access */
@@ -289,6 +263,7 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
     p_sys->b_icecast = false;
     p_sys->psz_location = NULL;
     p_sys->psz_user_agent = NULL;
+    p_sys->psz_referrer = NULL;
     p_sys->b_pace_control = true;
     p_sys->b_ssl = false;
 #ifdef HAVE_ZLIB_H
@@ -321,7 +296,7 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
     http_auth_Init( &p_sys->proxy_auth );
 
     /* Parse URI - remove spaces */
-    p = psz = strdup( p_access->psz_path );
+    p = psz = strdup( p_access->psz_location );
     while( (p = strchr( p, ' ' )) != NULL )
         *p = '+';
     vlc_UrlParse( &p_sys->url, psz, 0 );
@@ -346,17 +321,47 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
     }
 
     /* Determine the HTTP user agent */
-    /* See RFC2616 §2.2 token definition and §3.8 user-agent header */
-    p_sys->psz_user_agent = var_CreateGetString( p_access, "http-user-agent" );
-    for( char *p = p_sys->psz_user_agent; *p; p++ )
+    /* See RFC2616 §2.2 token and comment definition, and §3.8 and
+     * §14.43 user-agent header */
+    p_sys->psz_user_agent = var_InheritString( p_access, "http-user-agent" );
+    if (p_sys->psz_user_agent)
     {
-        uint8_t c = *p;
-        if( c < 32 || strchr( "()<>@,;:\\\"[]?={}", c ) )
-            *p = '_'; /* remove potentially harmful characters */
+        unsigned comment_level = 0;
+        for( char *p = p_sys->psz_user_agent; *p; p++ )
+        {
+            uint8_t c = *p;
+            if (comment_level == 0)
+            {
+                if( c < 32 || strchr( ")<>@,;:\\\"[]?={}", c ) )
+                    *p = '_'; /* remove potentially harmful characters */
+            }
+            else
+            {
+                if (c == ')')
+                    comment_level--;
+                else if( c < 32 && strchr( "\t\r\n", c ) == NULL)
+                    *p = '_'; /* remove potentially harmful characters */
+            }
+            if (c == '(')
+            {
+                if (comment_level == UINT_MAX)
+                    break;
+                comment_level++;
+            }
+        }
+        /* truncate evil unclosed comments */
+        if (comment_level > 0)
+        {
+            char *p = strchr(p_sys->psz_user_agent, '(');
+            *p = '\0';
+        }
     }
 
+    /* HTTP referrer */
+    p_sys->psz_referrer = var_InheritString( p_access, "http-referrer" );
+
     /* Check proxy */
-    psz = var_CreateGetNonEmptyString( p_access, "http-proxy" );
+    psz = var_InheritString( p_access, "http-proxy" );
     if( psz )
     {
         p_sys->b_proxy = true;
@@ -371,7 +376,7 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
         {
             char *buf;
             int i;
-            i=asprintf(&buf, "%s://%s", psz_access, p_access->psz_path);
+            i=asprintf(&buf, "%s://%s", psz_access, p_access->psz_location);
             if (i >= 0)
             {
                 msg_Dbg(p_access, "asking libproxy about url '%s'", buf);
@@ -399,65 +404,55 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
 #elif defined( WIN32 )
     else
     {
-        if( var_CreateGetBool( p_access, "http-use-IE-proxy" ) )
+        /* Try to get the proxy server address from Windows internet settings using registry. */
+        HKEY h_key;
+        /* Open the key */
+        if( RegOpenKeyEx( HKEY_CURRENT_USER, "Software\\Microsoft"
+                          "\\Windows\\CurrentVersion\\Internet Settings",
+                          0, KEY_READ, &h_key ) == ERROR_SUCCESS )
         {
-            /* Try to get the proxy server address from Windows internet settings using registry. */
-            HKEY h_key;
-            /* Open the key */
-            if( RegOpenKeyEx( HKEY_CURRENT_USER, "Software\\Microsoft" \
-                              "\\Windows\\CurrentVersion\\Internet Settings",
-                              0, KEY_READ, &h_key ) == ERROR_SUCCESS )
+            DWORD len = sizeof( DWORD );
+            BYTE proxyEnable;
+
+            /* Get the proxy enable value */
+            if( RegQueryValueEx( h_key, "ProxyEnable", NULL, NULL,
+                                 &proxyEnable, &len ) == ERROR_SUCCESS
+             && proxyEnable )
             {
-                DWORD i_dataReadSize = 4; /* sizeof( DWORD ); */
-                DWORD proxyEnable = 0;
-                /* Get the proxy enable value */
-                if( RegQueryValueEx( h_key, "ProxyEnable", NULL, NULL,
-                                     (char *)&proxyEnable, &i_dataReadSize )
-                                     == ERROR_SUCCESS )
+                /* Proxy is enabled */
+                /* Get the proxy URL :
+                   Proxy server value in the registry can be something like "address:port"
+                   or "ftp=address1:port1;http=address2:port2 ..." depending of the
+                   confirguration. */
+                unsigned char key[256];
+
+                len = sizeof( key );
+                if( RegQueryValueEx( h_key, "ProxyServer", NULL, NULL,
+                                     key, &len ) == ERROR_SUCCESS )
                 {
-                    if( proxyEnable )
+                    /* FIXME: This is lame. The string should be tokenized. */
+#warning FIXME.
+                    char *psz_proxy = strstr( (char *)key, "http=" );
+                    if( psz_proxy != NULL )
                     {
-                        /* Proxy is enable */
-                        char psz_key[256];
-                        i_dataReadSize = 256;
-                        if( RegQueryValueEx( h_key, "ProxyServer",
-                                             NULL, NULL, psz_key,
-                                             &i_dataReadSize )
-                                             == ERROR_SUCCESS )
-                        {
-                            /* Get the proxy URL :
-                            Proxy server value in the registry can be something like "address:port"
-                            or "ftp=address1:port1;http=address2:port2 ..." depending of the
-                            confirguration. */
-                            char *psz_proxy;
-                            psz_proxy = strstr( psz_key, "http=" );
-                            if( psz_proxy != NULL )
-                            {
-                                psz_proxy += strlen( "http=" );
-                                char *psz_endUrl = strchr( psz_proxy, ';' );
-                                if( psz_endUrl != NULL )
-                                    *psz_endUrl = '\0';
-                            }
-                            else
-                                psz_proxy = psz_key;
-                            /* Set proxy enable for this connection. */
-                            p_sys->b_proxy = true;
-                            vlc_UrlParse( &p_sys->proxy, psz_proxy, 0 );
-                        }
-                        msg_Warn( p_access, "Couldn't read in registry " \
-                                  "the proxy server address." );
+                        psz_proxy += 5;
+                        char *end = strchr( psz_proxy, ';' );
+                        if( end != NULL )
+                            *end = '\0';
                     }
+                    else
+                        psz_proxy = (char *)key;
+                    /* Set proxy enable for this connection. */
+                    p_sys->b_proxy = true;
+                    vlc_UrlParse( &p_sys->proxy, psz_proxy, 0 );
                 }
-                else
-                    msg_Warn( p_access, "Couldn't read in registry if the " \
-                              "proxy is enable or not." );
             }
             else
-                msg_Warn( p_access, "Couldn't open internet settings key " \
-                          "in registry." );
+                msg_Dbg( p_access, "HTTP proxy disabled (MSIE)" );
+            RegCloseKey( h_key );
         }
     }
-#elif HAVE_GETENV
+#else
     else
     {
         psz = getenv( "http_proxy" );
@@ -471,7 +466,7 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
 
     if( psz ) /* No, this is NOT a use-after-free error */
     {
-        psz = var_CreateGetNonEmptyString( p_access, "http-proxy-pwd" );
+        psz = var_InheritString( p_access, "http-proxy-pwd" );
         if( psz )
             p_sys->proxy.psz_password = p_sys->psz_proxy_passbuf = psz;
     }
@@ -502,8 +497,8 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
         msg_Dbg( p_access, "      user='%s'", p_sys->url.psz_username );
     }
 
-    p_sys->b_reconnect = var_CreateGetBool( p_access, "http-reconnect" );
-    p_sys->b_continuous = var_CreateGetBool( p_access, "http-continuous" );
+    p_sys->b_reconnect = var_InheritBool( p_access, "http-reconnect" );
+    p_sys->b_continuous = var_InheritBool( p_access, "http-continuous" );
 
 connect:
     /* Connect */
@@ -521,14 +516,11 @@ connect:
             if( !vlc_object_alive (p_access) || Connect( p_access, 0 ) )
                 goto error;
 
-#ifndef NDEBUG
         case 0:
             break;
 
         default:
-            msg_Err( p_access, "You should not be here" );
-            abort();
-#endif
+            assert(0);
     }
 
     if( p_sys->i_code == 401 )
@@ -570,7 +562,7 @@ connect:
         msg_Dbg( p_access, "redirection to %s", p_sys->psz_location );
 
         /* Check the number of redirection already done */
-        if( i_nb_redirect >= i_max_redirect )
+        if( i_redirect == 0 )
         {
             msg_Err( p_access, "Too many redirection: break potential infinite"
                      "loop" );
@@ -589,8 +581,8 @@ connect:
             msg_Err( p_access, "insecure redirection ignored" );
             goto error;
         }
-        free( p_access->psz_path );
-        p_access->psz_path = strdup( p_sys->psz_location );
+        free( p_access->psz_location );
+        p_access->psz_location = strdup( p_sys->psz_location );
         /* Clean up current Open() run */
         vlc_UrlClean( &p_sys->url );
         http_auth_Reset( &p_sys->auth );
@@ -601,6 +593,7 @@ connect:
         free( p_sys->psz_pragma );
         free( p_sys->psz_location );
         free( p_sys->psz_user_agent );
+        free( p_sys->psz_referrer );
 
         Disconnect( p_access );
         cookies = p_sys->cookies;
@@ -610,8 +603,8 @@ connect:
         free( p_sys );
 
         /* Do new Open() run with new data */
-        return OpenWithCookies( p_this, psz_protocol, i_nb_redirect + 1,
-                                i_max_redirect, cookies );
+        return OpenWithCookies( p_this, psz_protocol, i_redirect - 1,
+                                cookies );
     }
 
     if( p_sys->b_mms )
@@ -682,9 +675,6 @@ connect:
 
     if( p_sys->b_reconnect ) msg_Dbg( p_access, "auto re-connect enabled" );
 
-    /* PTS delay */
-    var_Create( p_access, "http-caching", VLC_VAR_INTEGER |VLC_VAR_DOINHERIT );
-
     return VLC_SUCCESS;
 
 error:
@@ -695,6 +685,7 @@ error:
     free( p_sys->psz_pragma );
     free( p_sys->psz_location );
     free( p_sys->psz_user_agent );
+    free( p_sys->psz_referrer );
 
     Disconnect( p_access );
 
@@ -735,6 +726,7 @@ static void Close( vlc_object_t *p_this )
     free( p_sys->psz_icy_title );
 
     free( p_sys->psz_user_agent );
+    free( p_sys->psz_referrer );
 
     Disconnect( p_access );
 
@@ -754,6 +746,56 @@ static void Close( vlc_object_t *p_this )
     free( p_sys );
 }
 
+/* Read data from the socket taking care of chunked transfer if needed */
+static int ReadData( access_t *p_access, int *pi_read,
+                     uint8_t *p_buffer, size_t i_len )
+{
+    access_sys_t *p_sys = p_access->p_sys;
+    if( p_sys->b_chunked )
+    {
+        if( p_sys->i_chunk < 0 )
+            return VLC_EGENERIC;
+
+        if( p_sys->i_chunk <= 0 )
+        {
+            char *psz = net_Gets( p_access, p_sys->fd, p_sys->p_vs );
+            /* read the chunk header */
+            if( psz == NULL )
+            {
+                /* fatal error - end of file */
+                msg_Dbg( p_access, "failed reading chunk-header line" );
+                return VLC_EGENERIC;
+            }
+            p_sys->i_chunk = strtoll( psz, NULL, 16 );
+            free( psz );
+
+            if( p_sys->i_chunk <= 0 )   /* eof */
+            {
+                p_sys->i_chunk = -1;
+                return VLC_EGENERIC;
+            }
+        }
+
+        if( i_len > p_sys->i_chunk )
+            i_len = p_sys->i_chunk;
+    }
+    *pi_read = net_Read( p_access, p_sys->fd, p_sys->p_vs, p_buffer, i_len, false );
+    if( *pi_read <= 0 )
+        return VLC_SUCCESS;
+
+    if( p_sys->b_chunked )
+    {
+        p_sys->i_chunk -= *pi_read;
+        if( p_sys->i_chunk <= 0 )
+        {
+            /* read the empty line */
+            char *psz = net_Gets( p_access, p_sys->fd, p_sys->p_vs );
+            free( psz );
+        }
+    }
+    return VLC_SUCCESS;
+}
+
 /*****************************************************************************
  * Read: Read up to i_len bytes from the http connection and place in
  * p_buffer. Return the actual number of bytes read
@@ -765,10 +807,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     int i_read;
 
     if( p_sys->fd == -1 )
-    {
-        p_access->info.b_eof = true;
-        return 0;
-    }
+        goto fatal;
 
     if( p_sys->b_has_size )
     {
@@ -781,45 +820,8 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
         if( p_sys->i_remaining < i_len )
             i_len = p_sys->i_remaining;
     }
-
-    if( p_sys->b_chunked )
-    {
-        if( p_sys->i_chunk < 0 )
-        {
-            p_access->info.b_eof = true;
-            return 0;
-        }
-
-        if( p_sys->i_chunk <= 0 )
-        {
-            char *psz = net_Gets( p_access, p_sys->fd, p_sys->p_vs );
-            /* read the chunk header */
-            if( psz == NULL )
-            {
-                /* fatal error - end of file */
-                msg_Dbg( p_access, "failed reading chunk-header line" );
-                return 0;
-            }
-            p_sys->i_chunk = strtoll( psz, NULL, 16 );
-            free( psz );
-
-            if( p_sys->i_chunk <= 0 )   /* eof */
-            {
-                p_sys->i_chunk = -1;
-                p_access->info.b_eof = true;
-                return 0;
-            }
-        }
-
-        if( i_len > p_sys->i_chunk )
-            i_len = p_sys->i_chunk;
-    }
-
     if( i_len == 0 )
-    {
-        p_access->info.b_eof = true;
-        return 0;
-    }
+        goto fatal;
 
     if( p_sys->i_icy_meta > 0 && p_access->info.i_pos-p_sys->i_icy_offset > 0 )
     {
@@ -829,31 +831,16 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
         if( i_next == p_sys->i_icy_meta )
         {
             if( ReadICYMeta( p_access ) )
-            {
-                p_access->info.b_eof = true;
-                return 0;
-            }
+                goto fatal;
         }
         if( i_len > i_next )
             i_len = i_next;
     }
 
-    i_read = net_Read( p_access, p_sys->fd, p_sys->p_vs, p_buffer, i_len, false );
+    if( ReadData( p_access, &i_read, p_buffer, i_len ) )
+        goto fatal;
 
-    if( i_read > 0 )
-    {
-        if( p_sys->b_chunked )
-        {
-            p_sys->i_chunk -= i_read;
-            if( p_sys->i_chunk <= 0 )
-            {
-                /* read the empty line */
-                char *psz = net_Gets( p_access, p_sys->fd, p_sys->p_vs );
-                free( psz );
-            }
-        }
-    }
-    else
+    if( i_read <= 0 )
     {
         /*
          * I very much doubt that this will work.
@@ -888,10 +875,9 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
 
         if( i_read <= 0 )
         {
-            p_access->info.b_eof = true;
             if( i_read < 0 )
                 p_sys->b_error = true;
-            return 0;
+            goto fatal;
         }
     }
 
@@ -905,6 +891,10 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     }
 
     return i_read;
+
+fatal:
+    p_access->info.b_eof = true;
+    return 0;
 }
 
 static int ReadICYMeta( access_t *p_access )
@@ -916,24 +906,26 @@ static int ReadICYMeta( access_t *p_access )
     int i_read;
 
     /* Read meta data length */
-    i_read = net_Read( p_access, p_sys->fd, p_sys->p_vs, &buffer, 1,
-                       true );
-    if( i_read <= 0 )
+    if( ReadData( p_access, &i_read, &buffer, 1 ) )
         return VLC_EGENERIC;
-    if( buffer == 0 )
-        return VLC_SUCCESS;
+    if( i_read != 1 )
+        return VLC_EGENERIC;
+    const int i_size = buffer << 4;
+    /* msg_Dbg( p_access, "ICY meta size=%u", i_size); */
 
-    i_read = buffer << 4;
-    /* msg_Dbg( p_access, "ICY meta size=%u", i_read); */
-
-    psz_meta = malloc( i_read + 1 );
-    if( net_Read( p_access, p_sys->fd, p_sys->p_vs,
-                  (uint8_t *)psz_meta, i_read, true ) != i_read )
+    psz_meta = malloc( i_size + 1 );
+    for( i_read = 0; i_read < i_size; )
     {
-        free( psz_meta );
-        return VLC_EGENERIC;
+        int i_tmp;
+        if( ReadData( p_access, &i_tmp, (uint8_t *)&psz_meta[i_read], i_size - i_read ) )
+        {
+            free( psz_meta );
+            return VLC_EGENERIC;
+        }
+        if( i_tmp <= 0 )
+            return VLC_EGENERIC;
+        i_read += i_tmp;
     }
-
     psz_meta[i_read] = '\0'; /* Just in case */
 
     /* msg_Dbg( p_access, "icy-meta=%s", psz_meta ); */
@@ -992,7 +984,7 @@ static ssize_t ReadCompressed( access_t *p_access, uint8_t *p_buffer,
 
         if( p_sys->inflate.stream.avail_in == 0 )
         {
-            ssize_t i_read = Read( p_access, p_sys->inflate.p_buffer + p_sys->inflate.stream.avail_in, 256 * 1024 );
+            ssize_t i_read = Read( p_access, p_sys->inflate.p_buffer, 256 * 1024 );
             if( i_read <= 0 ) return i_read;
             p_sys->inflate.stream.next_in = p_sys->inflate.p_buffer;
             p_sys->inflate.stream.avail_in = i_read;
@@ -1077,7 +1069,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t)var_GetInteger( p_access, "http-caching" ) * 1000;
+            *pi_64 = INT64_C(1000)
+                * var_InheritInteger( p_access, "network-caching" );
             break;
 
         /* */
@@ -1161,7 +1154,7 @@ static int Connect( access_t *p_access, uint64_t i_tell )
     setsockopt (p_sys->fd, SOL_SOCKET, SO_KEEPALIVE, &(int){ 1 }, sizeof (int));
 
     /* Initialize TLS/SSL session */
-    if( p_sys->b_ssl == true )
+    if( p_sys->b_ssl )
     {
         /* CONNECT to establish TLS tunnel through HTTP proxy */
         if( p_sys->b_proxy )
@@ -1225,8 +1218,8 @@ static int Connect( access_t *p_access, uint64_t i_tell )
         }
 
         /* TLS/SSL handshake */
-        p_sys->p_tls = tls_ClientCreate( VLC_OBJECT(p_access), p_sys->fd,
-                                         p_sys->url.psz_host );
+        p_sys->p_tls = vlc_tls_ClientCreate( VLC_OBJECT(p_access), p_sys->fd,
+                                             p_sys->url.psz_host );
         if( p_sys->p_tls == NULL )
         {
             msg_Err( p_access, "cannot establish HTTP/TLS session" );
@@ -1290,12 +1283,20 @@ static int Request( access_t *p_access, uint64_t i_tell )
     net_Printf( p_access, p_sys->fd, pvs,
                 "User-Agent: %s\r\n",
                 p_sys->psz_user_agent );
+    /* Referrer */
+    if (p_sys->psz_referrer)
+    {
+        net_Printf( p_access, p_sys->fd, pvs,
+                    "Referer: %s\r\n",
+                    p_sys->psz_referrer);
+    }
     /* Offset */
     if( p_sys->i_version == 1 && ! p_sys->b_continuous )
     {
         p_sys->b_persist = true;
         net_Printf( p_access, p_sys->fd, pvs,
                     "Range: bytes=%"PRIu64"-\r\n", i_tell );
+        net_Printf( p_access, p_sys->fd, pvs, "Connection: close\r\n" );
     }
 
     /* Cookies */
@@ -1441,7 +1442,7 @@ static int Request( access_t *p_access, uint64_t i_tell )
                 p_access->info.i_pos = i_ntell;
                 p_sys->i_icy_offset  = i_ntell;
                 p_sys->i_remaining = i_nend+1-i_ntell;
-                int64_t i_size = (i_nsize > i_nend) ? i_nsize : (i_nend + 1);
+                uint64_t i_size = (i_nsize > i_nend) ? i_nsize : (i_nend + 1);
                 if(i_size > p_access->info.i_size) {
                     p_sys->b_has_size = true;
                     p_access->info.i_size = i_size;
@@ -1618,6 +1619,11 @@ static int Request( access_t *p_access, uint64_t i_tell )
             if( AuthCheckReply( p_access, p, &p_sys->proxy, &p_sys->proxy_auth ) )
                 goto error;
         }
+        else if( !strcasecmp( psz, "Accept-Ranges" ) )
+        {
+            if( !strcasecmp( p, "bytes" ) )
+                p_sys->b_seekable = true;
+        }
 
         free( psz );
     }
@@ -1643,7 +1649,7 @@ static void Disconnect( access_t *p_access )
 
     if( p_sys->p_tls != NULL)
     {
-        tls_ClientDelete( p_sys->p_tls );
+        vlc_tls_ClientDelete( p_sys->p_tls );
         p_sys->p_tls = NULL;
         p_sys->p_vs = NULL;
     }

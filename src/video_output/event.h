@@ -2,28 +2,24 @@
  * event.h: vout event
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 0cb1042c556d8a2ee639925774c994e2d800ec4e $
+ * $Id: 38c7be40bda53fa6d38c87aa3ae6ba4455492486 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
 
 #include <vlc_common.h>
 #include <vlc_playlist.h>
@@ -60,6 +56,7 @@ static inline void vout_SendEventMouseMoved(vout_thread_t *vout, int x, int y)
 }
 static inline void vout_SendEventMousePressed(vout_thread_t *vout, int button)
 {
+    int key;
     var_OrInteger(vout, "mouse-button-down", 1 << button);
 
     switch (button)
@@ -71,21 +68,20 @@ static inline void vout_SendEventMousePressed(vout_thread_t *vout, int button)
         var_GetCoords(vout, "mouse-moved", &x, &y);
         var_SetCoords(vout, "mouse-clicked", x, y);
         var_SetBool(vout->p_libvlc, "intf-popupmenu", false);
-        break;
+        return;
     }
     case MOUSE_BUTTON_CENTER:
-        var_ToggleBool(vout->p_libvlc, "intf-show");
-        break;
+        var_ToggleBool(vout->p_libvlc, "intf-toggle-fscontrol");
+        return;
     case MOUSE_BUTTON_RIGHT:
         var_SetBool(vout->p_libvlc, "intf-popupmenu", true);
-        break;
-    case MOUSE_BUTTON_WHEEL_UP:
-        vout_SendEventKey(vout, KEY_MOUSEWHEELUP);
-        break;
-    case MOUSE_BUTTON_WHEEL_DOWN:
-        vout_SendEventKey(vout, KEY_MOUSEWHEELDOWN);
-        break;
+        return;
+    case MOUSE_BUTTON_WHEEL_UP:    key = KEY_MOUSEWHEELUP;    break;
+    case MOUSE_BUTTON_WHEEL_DOWN:  key = KEY_MOUSEWHEELDOWN;  break;
+    case MOUSE_BUTTON_WHEEL_LEFT:  key = KEY_MOUSEWHEELLEFT;  break;
+    case MOUSE_BUTTON_WHEEL_RIGHT: key = KEY_MOUSEWHEELRIGHT; break;
     }
+    vout_SendEventKey(vout, key);
 }
 static inline void vout_SendEventMouseReleased(vout_thread_t *vout, int button)
 {

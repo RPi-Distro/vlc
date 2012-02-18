@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libhildon_plugin_la_SOURCES = $(SOURCES_hildon)
 nodist_libhildon_plugin_la_SOURCES = $(nodist_SOURCES_hildon)
 # Force per-target objects:
-libhildon_plugin_la_CFLAGS = $(AM_CFLAGS)
-libhildon_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libhildon_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libhildon_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_hildon)
+libhildon_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_hildon)
+libhildon_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_hildon)
+libhildon_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_hildon)
 # Set LIBADD and DEPENDENCIES manually:
-libhildon_plugin_la_LIBADD = $(AM_LIBADD)
-libhildon_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libhildon_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_hildon)
+libhildon_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_hildon)
+libhildon_plugin_la_DEPENDENCIES =
 

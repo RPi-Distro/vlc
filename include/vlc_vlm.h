@@ -1,25 +1,25 @@
 /*****************************************************************************
  * vlc_vlm.h: VLM core structures
  *****************************************************************************
- * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: c9f68f257177cd835f18bd81005455fe62fa61f7 $
+ * Copyright (C) 2000, 2001 VLC authors and VideoLAN
+ * $Id: 12a0eda4979b1e1bc507794d89e5794e6911e97a $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_VLM_H
@@ -184,16 +184,16 @@ struct vlm_message_t
 extern "C" {
 #endif
 
-VLC_EXPORT( vlm_t *, vlm_New, ( vlc_object_t * ) );
+VLC_API vlm_t * vlm_New( vlc_object_t * );
 #define vlm_New( a ) vlm_New( VLC_OBJECT(a) )
-VLC_EXPORT( void,      vlm_Delete, ( vlm_t * ) );
-VLC_EXPORT( int,       vlm_ExecuteCommand, ( vlm_t *, const char *, vlm_message_t ** ) );
-VLC_EXPORT( int,       vlm_Control, ( vlm_t *p_vlm, int i_query, ... ) );
+VLC_API void vlm_Delete( vlm_t * );
+VLC_API int vlm_ExecuteCommand( vlm_t *, const char *, vlm_message_t ** );
+VLC_API int vlm_Control( vlm_t *p_vlm, int i_query, ... );
 
-VLC_EXPORT( vlm_message_t *, vlm_MessageSimpleNew, ( const char * ) );
-VLC_EXPORT( vlm_message_t *, vlm_MessageNew, ( const char *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
-VLC_EXPORT( vlm_message_t *, vlm_MessageAdd, ( vlm_message_t *, vlm_message_t * ) );
-VLC_EXPORT( void,            vlm_MessageDelete, ( vlm_message_t * ) );
+VLC_API vlm_message_t * vlm_MessageSimpleNew( const char * );
+VLC_API vlm_message_t * vlm_MessageNew( const char *, const char *, ... ) VLC_FORMAT( 2, 3 );
+VLC_API vlm_message_t * vlm_MessageAdd( vlm_message_t *, vlm_message_t * );
+VLC_API void vlm_MessageDelete( vlm_message_t * );
 
 /* media helpers */
 
@@ -236,9 +236,9 @@ vlm_media_Copy( vlm_media_t *p_dst, const vlm_media_t *p_src )
         p_dst->psz_name = strdup( p_src->psz_name );
 
     for( i = 0; i < p_src->i_input; i++ )
-        TAB_APPEND_CPP( char, p_dst->i_input, p_dst->ppsz_input, strdup(p_src->ppsz_input[i]) );
+        TAB_APPEND_CAST( (char**), p_dst->i_input, p_dst->ppsz_input, strdup(p_src->ppsz_input[i]) );
     for( i = 0; i < p_src->i_option; i++ )
-        TAB_APPEND_CPP( char, p_dst->i_option, p_dst->ppsz_option, strdup(p_src->ppsz_option[i]) );
+        TAB_APPEND_CAST( (char**), p_dst->i_option, p_dst->ppsz_option, strdup(p_src->ppsz_option[i]) );
 
     if( p_src->psz_output )
         p_dst->psz_output = strdup( p_src->psz_output );
@@ -266,11 +266,11 @@ static inline void vlm_media_Clean( vlm_media_t *p_media )
     free( p_media->psz_name );
 
     for( i = 0; i < p_media->i_input; i++ )
-        free( p_media->ppsz_input[i]) ;
+        free( p_media->ppsz_input[i]);
     TAB_CLEAN(p_media->i_input, p_media->ppsz_input );
 
     for( i = 0; i < p_media->i_option; i++ )
-        free( p_media->ppsz_option[i]) ;
+        free( p_media->ppsz_option[i]);
     TAB_CLEAN(p_media->i_option, p_media->ppsz_option );
 
     free( p_media->psz_output );

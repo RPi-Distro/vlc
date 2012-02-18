@@ -2,7 +2,7 @@
  * var_list.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 49d70e636a44482febc95c069472eb8160c757b6 $
+ * $Id: 7d3c681409e5f6a4651c50319788551081bd2af2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -85,7 +85,7 @@ public:
     ConstIterator operator[]( int n ) const;
 
     /// Execute the action associated to this item
-    virtual void action( Elem_t *pItem ) { }
+    virtual void action( Elem_t *pItem ) { (void)pItem; }
 
     /// Get a reference on the position variable
     VarPercent &getPositionVar() const

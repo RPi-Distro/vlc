@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 0116190ee78dead4ed4fd5b43fad58ac425a4760 $
+ * $Id: c5399ab69ee412d6afd006e4ea2409055f774a7e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,16 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include "chroma.h"
 /* VLC <-> avcodec tables */
 int GetFfmpegCodec( vlc_fourcc_t i_fourcc, int *pi_cat,
                     int *pi_ffmpeg_codec, const char **ppsz_name );
 int GetVlcFourcc( int i_ffmpeg_codec, int *pi_cat,
                   vlc_fourcc_t *pi_fourcc, const char **ppsz_name );
-int TestFfmpegChroma( const int i_ffmpeg_id, const vlc_fourcc_t i_vlc_fourcc );
-int GetFfmpegChroma( int *i_ffmpeg_chroma, const video_format_t fmt );
-int GetVlcChroma( video_format_t *fmt, const int i_ffmpeg_chroma );
 void GetVlcAudioFormat( vlc_fourcc_t *, unsigned *pi_bits, int i_sample_fmt );
-
 
 picture_t * DecodeVideo    ( decoder_t *, block_t ** );
 aout_buffer_t * DecodeAudio( decoder_t *, block_t ** );
@@ -65,6 +62,8 @@ int InitSubtitleDec( decoder_t *p_dec, AVCodecContext *p_context,
                      AVCodec *p_codec, int i_codec_id, const char *psz_namecodec );
 void EndSubtitleDec( decoder_t *p_dec );
 
+/* Initialize decoder */
+int ffmpeg_OpenCodec( decoder_t *p_dec );
 
 /*****************************************************************************
  * Module descriptor help strings
@@ -116,6 +115,9 @@ void EndSubtitleDec( decoder_t *p_dec );
 #define DEBUG_TEXT N_( "Debug mask" )
 #define DEBUG_LONGTEXT N_( "Set FFmpeg debug mask" )
 
+#define CODEC_TEXT N_( "Codec name" )
+#define CODEC_LONGTEXT N_( "Internal libavcodec codec name" )
+
 /* TODO: Use a predefined list, with 0,1,2,4,7 */
 #define VISMV_TEXT N_( "Visualize motion vectors" )
 #define VISMV_LONGTEXT N_( \
@@ -137,6 +139,9 @@ void EndSubtitleDec( decoder_t *p_dec );
 
 #define HW_TEXT N_("Hardware decoding")
 #define HW_LONGTEXT N_("This allows hardware decoding when available.")
+
+#define THREADS_TEXT N_( "Threads" )
+#define THREADS_LONGTEXT N_( "Number of threads used for decoding, 0 meaning auto" )
 
 /*
  * Encoder options
@@ -254,7 +259,7 @@ void EndSubtitleDec( decoder_t *p_dec );
    "for encoding the audio bitstream. It takes the following options: " \
    "main, low, ssr (not supported) and ltp (default: main)" )
 
-#define FFMPEG_COMMON_MEMBERS   \
+#define AVCODEC_COMMON_MEMBERS   \
     int i_cat;                  \
     int i_codec_id;             \
     const char *psz_namecodec;  \
@@ -266,11 +271,14 @@ void EndSubtitleDec( decoder_t *p_dec );
 #   define AV_VERSION_INT(a, b, c) ((a)<<16 | (b)<<8 | (c))
 #endif
 
+#if defined(FF_THREAD_FRAME)
+#   define HAVE_AVCODEC_MT
+#endif
+
 /* Uncomment it to enable compilation with vaapi/dxva2 (you also must change the build
  * system) */
 //#define HAVE_AVCODEC_VAAPI 1
 //#define HAVE_AVCODEC_DXVA2 1
-
 
 /* Ugly ifdefinitions to provide backwards compatibility with older ffmpeg/libav
  * versions */

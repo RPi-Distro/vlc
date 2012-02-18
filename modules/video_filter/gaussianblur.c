@@ -2,7 +2,7 @@
  * gaussianblur.c : gaussian blur video filter
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id: c736c8c213bc5a552f3d24480e5af8f203e3f5e8 $
+ * $Id: ec3b43d8f317c0557248200e438db79307b4dcf7 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -46,7 +46,7 @@ static void Destroy   ( vlc_object_t * );
 
 #define SIGMA_TEXT N_("Gaussian's std deviation")
 #define SIGMA_LONGTEXT N_( \
-    "Gaussian's standard deviation. The bluring will take " \
+    "Gaussian's standard deviation. The blurring will take " \
     "into account pixels up to 3*sigma away in any direction.")
 
 #define GAUSSIAN_HELP N_("Add a blurring effect")
@@ -61,7 +61,7 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    add_float( FILTER_PREFIX "sigma", 2., NULL, SIGMA_TEXT, SIGMA_LONGTEXT,
+    add_float( FILTER_PREFIX "sigma", 2., SIGMA_TEXT, SIGMA_LONGTEXT,
                false )
 
     set_callbacks( Create, Destroy )

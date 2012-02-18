@@ -31,15 +31,14 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
+#include <vlc_modules.h>
 
 #include <math.h>
 #include <time.h>
 
 #include <vlc_filter.h>
-#include "filter_common.h"
 #include <vlc_image.h>
 #include <vlc_input.h>
-#include <vlc_playlist.h>
 
 #include <cxcore.h>
 #include <cv.h>
@@ -82,23 +81,23 @@ vlc_module_begin ()
     set_capability( "video filter", 0 )
     add_shortcut( "opencv_wrapper" )
     set_callbacks( Create, Destroy )
-    add_float_with_range( "opencv-scale", 1.0, 0.1, 2.0, NULL,
+    add_float_with_range( "opencv-scale", 1.0, 0.1, 2.0,
                           N_("Scale factor (0.1-2.0)"),
                           N_("Ammount by which to scale the picture before sending it to the internal OpenCV filter"),
                           false )
-    add_string( "opencv-chroma", "input", NULL,
+    add_string( "opencv-chroma", "input",
                           N_("OpenCV filter chroma"),
                           N_("Chroma to convert picture to before sending it to the internal OpenCV filter"), false);
         change_string_list( chroma_list, chroma_list_text, 0);
-    add_string( "opencv-output", "input", NULL,
+    add_string( "opencv-output", "input",
                           N_("Wrapper filter output"),
                           N_("Determines what (if any) video is displayed by the wrapper filter"), false);
         change_string_list( output_list, output_list_text, 0);
-    add_string( "opencv-verbosity", "error", NULL,
+    add_string( "opencv-verbosity", "error",
                           N_("Wrapper filter verbosity"),
                           N_("Determines wrapper filter verbosity level"), false);
         change_string_list( verbosity_list, verbosity_list_text, 0);
-    add_string( "opencv-filter-name", "none", NULL,
+    add_string( "opencv-filter-name", "none",
                           N_("OpenCV internal filter name"),
                           N_("Name of internal OpenCV plugin filter to use"), false);
 vlc_module_end ()
@@ -327,7 +326,6 @@ static int Init( vout_thread_t *p_vout )
     /* Load the internal opencv filter */
     /* We don't need to set up video formats for this filter as it not actually using a picture_t */
     p_sys->p_opencv = vlc_object_create( p_vout, sizeof(filter_t) );
-    vlc_object_attach( p_sys->p_opencv, p_vout );
 
     if (p_vout->p_sys->psz_inner_name)
         p_sys->p_opencv->p_module =
@@ -510,7 +508,6 @@ static void VlcPictureToIplImage( vout_thread_t *p_vout, picture_t *p_in )
 
     //Hack the above opencv image array into a picture_t so that it can be sent to
     //another video filter
-    p_sys->hacked_pic.p_data_orig = p_sys->p_cv_image;
     p_sys->hacked_pic.i_planes = planes;
     p_sys->hacked_pic.format.i_chroma = fmt_out.i_chroma;
 
@@ -563,7 +560,7 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
         if ((p_vout->p_sys->p_opencv) && (p_vout->p_sys->p_opencv->p_module))
             p_vout->p_sys->p_opencv->pf_video_filter( p_vout->p_sys->p_opencv, &(p_vout->p_sys->hacked_pic));
         //copy the processed image into the output image
-        if ((p_vout->p_sys->p_proc_image) && (p_vout->p_sys->p_proc_image->p_data))
+        if ((p_vout->p_sys->p_proc_image) && (p_vout->p_sys->p_proc_image->i_planes > 0))
             picture_Copy( p_outpic, p_vout->p_sys->p_proc_image );
     }
 

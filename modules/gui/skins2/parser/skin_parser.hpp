@@ -2,7 +2,7 @@
  * skin_parser.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 4d6ab63a68ac82aafcc54c191b70f18a1ab57578 $
+ * $Id: f9d955097983f4c695c550c3c276a2b9e854118d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -33,9 +33,18 @@
 class SkinParser: public XMLParser
 {
 public:
+
+    enum {
+        POS_UNDEF  = 0,
+        POS_CENTER = 1,
+        POS_LEFT   = 2,
+        POS_RIGHT  = 4,
+        POS_TOP    = 8,
+        POS_BOTTOM = 16,
+    };
+
     SkinParser( intf_thread_t *pIntf, const string &rFileName,
-                const string &rPath, bool useDTD = true,
-                BuilderData *pData = NULL );
+                const string &rPath, BuilderData *pData = NULL );
     virtual ~SkinParser();
 
     const BuilderData &getData() const { return *m_pData; }
@@ -87,6 +96,19 @@ private:
 
     /// Check if the id is unique, and if not generate a new one
     const string uniqueId( const string &id );
+
+    /// Management of relative positions
+    int getRefWidth( bool toScreen );
+    int getRefHeight( bool toScreen );
+    int getDimension( string value, int refDimension );
+    int getPosition( string value );
+    void updateWindowPos( int width, int height );
+
+    void convertPosition( string position,
+                          string xOffset, string yOffset,
+                          string xMargin, string yMargin,
+                          int width, int height, int refWidth, int refHeight,
+                          int* p_x, int* p_y );
 
     /// Helper for handleBeginElement: Provide default attribute if missing.
     static void DefaultAttr( AttrList_t &attr, const char *a, const char *b )

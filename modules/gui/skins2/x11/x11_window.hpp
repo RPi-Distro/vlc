@@ -2,7 +2,7 @@
  * x11_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 58be247891b144b20a7b5a55c7ba66db1cf8324e $
+ * $Id: c8ffa96e490d19f3ac15d58daf4b941ccef88c43 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -68,13 +68,16 @@ public:
     Window getDrawable() const { return m_wnd; }
 
     /// Getter for the handler
-    void* getOSHandle() const { return (void*) m_wnd; }
+    uint32_t getOSHandle() const { return m_wnd; }
 
     /// Getter for the handler
-    void* getParentOSHandle() const { return (void*) m_wnd_parent; }
+    uint32_t getParentOSHandle() const { return m_wnd_parent; }
 
     /// reparent the window
-    void reparent( void* OSHandle, int x, int y, int w, int h );
+    void reparent( uint32_t OSHandle, int x, int y, int w, int h );
+
+    /// invalidate a window surface
+    bool invalidateRect( int x, int y, int w, int h ) const;
 
     void setFullscreen() const;
 

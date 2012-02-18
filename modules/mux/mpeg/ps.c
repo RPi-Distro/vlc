@@ -3,7 +3,7 @@
  *       multiplexer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: b80c287349aabc81ddd407893961cdc44837e6de $
+ * $Id: 4a3ab9328f83a4a8aae6dfe7b864bae3c7c44e0b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -35,7 +35,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
-#include <vlc_codecs.h>
 #include <vlc_block.h>
 
 #include "bits.h"
@@ -67,14 +66,12 @@ vlc_module_begin ()
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_MUX )
     set_capability( "sout mux", 50 )
-    add_shortcut( "ps" )
-    add_shortcut( "mpeg1" )
-    add_shortcut( "dvd" )
+    add_shortcut( "ps", "mpeg1", "dvd" )
     set_callbacks( Open, Close )
 
-    add_integer( SOUT_CFG_PREFIX "dts-delay", 200, NULL, DTS_TEXT,
+    add_integer( SOUT_CFG_PREFIX "dts-delay", 200, DTS_TEXT,
                  DTS_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "pes-max-size", PES_PAYLOAD_SIZE_MAX, NULL,
+    add_integer( SOUT_CFG_PREFIX "pes-max-size", PES_PAYLOAD_SIZE_MAX,
                  PES_SIZE_TEXT, PES_SIZE_LONGTEXT, true )
 vlc_module_end ()
 

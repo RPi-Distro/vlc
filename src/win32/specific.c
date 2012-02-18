@@ -1,24 +1,24 @@
 /*****************************************************************************
  * specific.c: Win32 specific initilization
  *****************************************************************************
- * Copyright (C) 2001-2004, 2010 the VideoLAN team
+ * Copyright (C) 2001-2004, 2010 VLC authors and VideoLAN
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -34,8 +34,6 @@
 #include "../config/vlc_getopt.h"
 
 #if !defined( UNDER_CE )
-#   include <io.h>
-#   include <fcntl.h>
 #   include  <mmsystem.h>
 #endif
 
@@ -44,9 +42,8 @@
 /*****************************************************************************
  * system_Init: initialize winsock and misc other things.
  *****************************************************************************/
-void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
+void system_Init( void )
 {
-    VLC_UNUSED( p_this ); VLC_UNUSED( pi_argc ); VLC_UNUSED( ppsz_argv );
     WSADATA Data;
     MEMORY_BASIC_INFORMATION mbi;
 
@@ -83,14 +80,8 @@ void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
 
     /* Set the default file-translation mode */
 #if !defined( UNDER_CE )
-    _fmode = _O_BINARY;
-    _setmode( _fileno( stdin ), _O_BINARY ); /* Needed for pipes */
-
     timeBeginPeriod(5);
 #endif
-
-    /* Call mdate() once to make sure it is initialized properly */
-    mdate();
 
     /* WinSock Library Init. */
     if( !WSAStartup( MAKEWORD( 2, 2 ), &Data ) )
@@ -131,9 +122,9 @@ static HANDLE hIPCHelperReady;
 
 typedef struct
 {
-  int argc;
-  int enqueue;
-  char data[];
+    int argc;
+    int enqueue;
+    char data[];
 } vlc_ipc_data_t;
 
 void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_argv[] )
@@ -177,10 +168,8 @@ void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_
         if( GetLastError() != ERROR_ALREADY_EXISTS )
         {
             /* We are the 1st instance. */
-            static const char typename[] = "ipc helper";
             p_helper =
-                vlc_custom_create( p_this, sizeof(vlc_object_t),
-                                   VLC_OBJECT_GENERIC, typename );
+                vlc_custom_create( p_this, sizeof(*p_helper), "ipc helper" );
 
             /* Run the helper thread */
             hIPCHelperReady = CreateEvent( NULL, FALSE, FALSE, NULL );
@@ -195,7 +184,6 @@ void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_
                 vlc_object_release (p_helper);
                 p_helper = NULL;
             }
-            vlc_object_attach (p_helper, p_this);
             CloseHandle( hIPCHelperReady );
 
             /* Initialization done.
@@ -264,7 +252,7 @@ void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_
             ReleaseMutex( hmutex );
 
             /* Bye bye */
-            system_End( p_this );
+            system_End( );
             exit( 0 );
         }
     }
@@ -351,7 +339,7 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
                     i_options++;
                 }
 
-                char *psz_URI = make_URI( ppsz_argv[i_opt] );
+                char *psz_URI = make_URI( ppsz_argv[i_opt], NULL );
                 playlist_AddExt( p_playlist, psz_URI,
                         NULL, PLAYLIST_APPEND |
                         ( ( i_opt || p_data->enqueue ) ? 0 : PLAYLIST_GO ),
@@ -375,26 +363,20 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
 /*****************************************************************************
  * system_End: terminate winsock.
  *****************************************************************************/
-void system_End( libvlc_int_t *p_this )
+void system_End( void )
 {
     HWND ipcwindow;
-    if( p_this )
-    {
-        free( psz_vlcpath );
-        psz_vlcpath = NULL;
-    }
 
-    if (p_helper && p_helper->p_parent == VLC_OBJECT(p_this) )
+    free( psz_vlcpath );
+    psz_vlcpath = NULL;
+
+    /* FIXME: thread-safety... */
+    if (p_helper)
     {
-        /* this is the first instance (in a one-instance system)
-         * it is the owner of the helper thread
-         */
         if( ( ipcwindow = FindWindow( 0, L"VLC ipc "VERSION ) ) != 0 )
         {
             SendMessage( ipcwindow, WM_QUIT, 0, 0 );
         }
-
-        /* FIXME: thread-safety... */
         vlc_object_release (p_helper);
         p_helper = NULL;
     }

@@ -2,7 +2,7 @@
  * Convert.cpp : Convertion dialogs
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: e2de2f8c5873901f0cbd8e0e928738ccb82295eb $
+ * $Id: 94f5fe15312a983a38135418b651ba91a82138c7 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -102,8 +102,10 @@ ConvertDialog::ConvertDialog( QWidget *parent, intf_thread_t *_p_intf,
 
     mainLayout->addWidget( buttonBox, 5, 3 );
 
-    BUTTONACT( okButton, close() );
-    BUTTONACT( cancelButton, cancel() );
+    BUTTONACT(okButton,close());
+    BUTTONACT(cancelButton,cancel());
+
+    CONNECT(dumpBox,toggled(bool),this,dumpChecked(bool));
 }
 
 void ConvertDialog::fileBrowse()
@@ -138,7 +140,8 @@ void ConvertDialog::close()
         mrl += ":";
         if( displayBox->isChecked() )
             mrl += "duplicate{dst=display,dst=";
-        mrl += "file{dst='" + fileLine->text() + "'}";
+        mrl += "std{access=file,mux=" + profile->getMux()
+             + ",dst='" + fileLine->text() + "'}";
         if( displayBox->isChecked() )
             mrl += "}";
     }
@@ -147,3 +150,9 @@ void ConvertDialog::close()
     accept();
 }
 
+void ConvertDialog::dumpChecked( bool checked )
+{
+    deinterBox->setEnabled( !checked );
+    displayBox->setEnabled( !checked );
+    profile->setEnabled( !checked );
+}

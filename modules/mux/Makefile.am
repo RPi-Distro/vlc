@@ -13,76 +13,90 @@ include $(top_srcdir)/modules/common.am
 libmux_asf_plugin_la_SOURCES = $(SOURCES_mux_asf)
 nodist_libmux_asf_plugin_la_SOURCES = $(nodist_SOURCES_mux_asf)
 # Force per-target objects:
-libmux_asf_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_asf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_asf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmux_asf_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mux_asf)
+libmux_asf_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mux_asf)
+libmux_asf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mux_asf)
+libmux_asf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mux_asf)
 # Set LIBADD and DEPENDENCIES manually:
-libmux_asf_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_asf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmux_asf_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mux_asf)
+libmux_asf_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mux_asf)
+libmux_asf_plugin_la_DEPENDENCIES =
 
 # The mux_avi plugin
 libmux_avi_plugin_la_SOURCES = $(SOURCES_mux_avi)
 nodist_libmux_avi_plugin_la_SOURCES = $(nodist_SOURCES_mux_avi)
 # Force per-target objects:
-libmux_avi_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_avi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_avi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmux_avi_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mux_avi)
+libmux_avi_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mux_avi)
+libmux_avi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mux_avi)
+libmux_avi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mux_avi)
 # Set LIBADD and DEPENDENCIES manually:
-libmux_avi_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_avi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmux_avi_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mux_avi)
+libmux_avi_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mux_avi)
+libmux_avi_plugin_la_DEPENDENCIES =
 
 # The mux_dummy plugin
 libmux_dummy_plugin_la_SOURCES = $(SOURCES_mux_dummy)
 nodist_libmux_dummy_plugin_la_SOURCES = $(nodist_SOURCES_mux_dummy)
 # Force per-target objects:
-libmux_dummy_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_dummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_dummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmux_dummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mux_dummy)
+libmux_dummy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mux_dummy)
+libmux_dummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mux_dummy)
+libmux_dummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mux_dummy)
 # Set LIBADD and DEPENDENCIES manually:
-libmux_dummy_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_dummy_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmux_dummy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mux_dummy)
+libmux_dummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mux_dummy)
+libmux_dummy_plugin_la_DEPENDENCIES =
 
 # The mux_mp4 plugin
 libmux_mp4_plugin_la_SOURCES = $(SOURCES_mux_mp4)
 nodist_libmux_mp4_plugin_la_SOURCES = $(nodist_SOURCES_mux_mp4)
 # Force per-target objects:
-libmux_mp4_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_mp4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_mp4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmux_mp4_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mux_mp4)
+libmux_mp4_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mux_mp4)
+libmux_mp4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mux_mp4)
+libmux_mp4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mux_mp4)
 # Set LIBADD and DEPENDENCIES manually:
-libmux_mp4_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_mp4_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmux_mp4_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mux_mp4)
+libmux_mp4_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mux_mp4)
+libmux_mp4_plugin_la_DEPENDENCIES =
 
 # The mux_mpjpeg plugin
 libmux_mpjpeg_plugin_la_SOURCES = $(SOURCES_mux_mpjpeg)
 nodist_libmux_mpjpeg_plugin_la_SOURCES = $(nodist_SOURCES_mux_mpjpeg)
 # Force per-target objects:
-libmux_mpjpeg_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_mpjpeg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_mpjpeg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmux_mpjpeg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mux_mpjpeg)
+libmux_mpjpeg_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mux_mpjpeg)
+libmux_mpjpeg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mux_mpjpeg)
+libmux_mpjpeg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mux_mpjpeg)
 # Set LIBADD and DEPENDENCIES manually:
-libmux_mpjpeg_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_mpjpeg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmux_mpjpeg_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mux_mpjpeg)
+libmux_mpjpeg_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mux_mpjpeg)
+libmux_mpjpeg_plugin_la_DEPENDENCIES =
 
 # The mux_ogg plugin
 libmux_ogg_plugin_la_SOURCES = $(SOURCES_mux_ogg)
 nodist_libmux_ogg_plugin_la_SOURCES = $(nodist_SOURCES_mux_ogg)
 # Force per-target objects:
-libmux_ogg_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_ogg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_ogg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmux_ogg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mux_ogg)
+libmux_ogg_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mux_ogg)
+libmux_ogg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mux_ogg)
+libmux_ogg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mux_ogg)
 # Set LIBADD and DEPENDENCIES manually:
-libmux_ogg_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_ogg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmux_ogg_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mux_ogg)
+libmux_ogg_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mux_ogg)
+libmux_ogg_plugin_la_DEPENDENCIES =
 
 # The mux_wav plugin
 libmux_wav_plugin_la_SOURCES = $(SOURCES_mux_wav)
 nodist_libmux_wav_plugin_la_SOURCES = $(nodist_SOURCES_mux_wav)
 # Force per-target objects:
-libmux_wav_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_wav_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_wav_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmux_wav_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mux_wav)
+libmux_wav_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mux_wav)
+libmux_wav_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mux_wav)
+libmux_wav_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mux_wav)
 # Set LIBADD and DEPENDENCIES manually:
-libmux_wav_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_wav_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmux_wav_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mux_wav)
+libmux_wav_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mux_wav)
+libmux_wav_plugin_la_DEPENDENCIES =
 

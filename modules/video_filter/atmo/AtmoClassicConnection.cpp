@@ -4,9 +4,12 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 74f1f67b7a94f3f24ebf4bd44c423b785f0280c6 $
+ * $Id: edd37fb84029decae0236b3f1d787d16c779591e $
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "AtmoDefs.h"
 #include "AtmoClassicConnection.h"
@@ -58,7 +61,7 @@ ATMO_BOOL CAtmoClassicConnection::OpenConnection() {
 	    return ATMO_FALSE;
      }
      /* change serial settings (Speed, stopbits etc.) */
-     DCB dcb; // für comport-parameter
+     DCB dcb; // fÃ¼r comport-parameter
      dcb.DCBlength = sizeof(DCB);
      GetCommState (m_hComport, &dcb); // ger current serialport settings
      dcb.BaudRate  = 38400;        // set speed

@@ -2,7 +2,7 @@
  * vorbis.h: Vorbis Comment parser
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 21fbb353b98df72b0029c047f94490fb8a6787c4 $
+ * $Id: b3d42a3f63d9be36ccef18d96b888546439d2997 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -58,6 +58,15 @@ static inline void vorbis_ParseComment( vlc_meta_t **pp_meta, const uint8_t *p_d
     if( !p_meta )
         return;
 
+    bool hasTitle = false;
+    bool hasAlbum = false;
+    bool hasTrackNumber = false;
+    bool hasArtist = false;
+    bool hasCopyright = false;
+    bool hasDescription = false;
+    bool hasGenre = false;
+    bool hasDate = false;
+
     for( ; i_comment > 0; i_comment-- )
     {
         char *psz;
@@ -78,7 +87,7 @@ static inline void vorbis_ParseComment( vlc_meta_t **pp_meta, const uint8_t *p_d
     if( !strncasecmp(psz, txt, strlen(txt)) ) \
     { \
         const char *oldval = vlc_meta_Get( p_meta, vlc_meta_ ## var ); \
-        if( oldval ) \
+        if( oldval && has##var) \
         { \
             char * newval; \
             if( asprintf( &newval, "%s,%s", oldval, &psz[strlen(txt)] ) == -1 ) \
@@ -88,6 +97,7 @@ static inline void vorbis_ParseComment( vlc_meta_t **pp_meta, const uint8_t *p_d
         } \
         else \
             vlc_meta_Set( p_meta, vlc_meta_ ## var, &psz[strlen(txt)] ); \
+        has##var = true; \
     }
         IF_EXTRACT("TITLE=", Title )
         else IF_EXTRACT("ALBUM=", Album )

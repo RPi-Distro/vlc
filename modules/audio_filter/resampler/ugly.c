@@ -2,7 +2,7 @@
  * ugly.c : ugly resampler (changes pitch)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: a1a46cf3bb94c63251e08df9067f61281d964f04 $
+ * $Id: 4d3e228ba714a5bf5d875953203c99aa3c1895aa $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -45,7 +45,7 @@ static block_t *DoWork( filter_t *, block_t * );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-    set_description( N_("Audio filter for ugly resampling") )
+    set_description( N_("Nearest-neighbor audio resampler") )
     set_capability( "audio filter", 2 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_MISC )
@@ -59,17 +59,14 @@ static int Create( vlc_object_t *p_this )
 {
     filter_t * p_filter = (filter_t *)p_this;
 
-    if ( p_filter->fmt_in.audio.i_rate == p_filter->fmt_out.audio.i_rate
-          || p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format
-          || p_filter->fmt_in.audio.i_physical_channels
-              != p_filter->fmt_out.audio.i_physical_channels
-          || p_filter->fmt_in.audio.i_original_channels
-              != p_filter->fmt_out.audio.i_original_channels
-          || (p_filter->fmt_in.audio.i_format != VLC_CODEC_FL32
-               && p_filter->fmt_in.audio.i_format != VLC_CODEC_FI32) )
-    {
+    if( p_filter->fmt_in.audio.i_rate == p_filter->fmt_out.audio.i_rate
+     || p_filter->fmt_in.audio.i_format != p_filter->fmt_out.audio.i_format
+     || p_filter->fmt_in.audio.i_physical_channels
+                                 != p_filter->fmt_out.audio.i_physical_channels
+     || p_filter->fmt_in.audio.i_original_channels
+                                 != p_filter->fmt_out.audio.i_original_channels
+     || !AOUT_FMT_LINEAR( &p_filter->fmt_in.audio ) )
         return VLC_EGENERIC;
-    }
 
     p_filter->pf_audio_filter = DoWork;
     return VLC_SUCCESS;
@@ -87,12 +84,12 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
     block_t *p_out_buf = p_in_buf;
     unsigned int i_out_nb = p_in_buf->i_nb_samples
         * p_filter->fmt_out.audio.i_rate / p_filter->fmt_in.audio.i_rate;
-    const unsigned int i_sample_bytes =
-        aout_FormatNbChannels( &p_filter->fmt_in.audio ) * sizeof(int32_t);
+    const unsigned framesize = (p_filter->fmt_in.audio.i_bitspersample / 8)
+        * aout_FormatNbChannels( &p_filter->fmt_in.audio );
 
     if( p_filter->fmt_out.audio.i_rate > p_filter->fmt_in.audio.i_rate )
     {
-        p_out_buf = block_Alloc( i_out_nb * i_sample_bytes );
+        p_out_buf = block_Alloc( i_out_nb * framesize );
         if( !p_out_buf )
             goto out;
     }
@@ -102,7 +99,7 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
     unsigned int i_remainder = 0;
 
     p_out_buf->i_nb_samples = i_out_nb;
-    p_out_buf->i_buffer = i_out_nb * i_sample_bytes;
+    p_out_buf->i_buffer = i_out_nb * framesize;
     p_out_buf->i_pts = p_in_buf->i_pts;
     p_out_buf->i_length = p_out_buf->i_nb_samples *
         1000000 / p_filter->fmt_out.audio.i_rate;
@@ -110,14 +107,14 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
     while( i_out_nb )
     {
         if( p_out != p_in )
-            memcpy( p_out, p_in, i_sample_bytes );
-        p_out += i_sample_bytes;
+            memcpy( p_out, p_in, framesize );
+        p_out += framesize;
         i_out_nb--;
 
         i_remainder += p_filter->fmt_in.audio.i_rate;
         while( i_remainder >= p_filter->fmt_out.audio.i_rate )
         {
-            p_in += i_sample_bytes;
+            p_in += framesize;
             i_remainder -= p_filter->fmt_out.audio.i_rate;
         }
     }

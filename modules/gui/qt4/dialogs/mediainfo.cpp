@@ -2,7 +2,7 @@
  * mediainfo.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d0062c935bbc764f98df3d6855b84178dc470fbd $
+ * $Id: d5a015b047c7bc33795789091524430483840cb5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -51,19 +51,21 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
     setWindowTitle( qtr( "Media Information" ) );
     setWindowRole( "vlc-media-info" );
 
+    setWindowFlags( Qt::Window | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
+
     /* TabWidgets and Tabs creation */
     infoTabW = new QTabWidget;
 
     MP = new MetaPanel( infoTabW, p_intf );
     infoTabW->addTab( MP, qtr( "&General" ) );
     EMP = new ExtraMetaPanel( infoTabW, p_intf );
-    infoTabW->addTab( EMP, qtr( "&Extra Metadata" ) );
+    infoTabW->addTab( EMP, qtr( "&Metadata" ) );
     IP = new InfoPanel( infoTabW, p_intf );
-    infoTabW->addTab( IP, qtr( "&Codec Details" ) );
+    infoTabW->addTab( IP, qtr( "&Codec" ) );
     if( isMainInputInfo )
     {
         ISP = new InputStatsPanel( infoTabW, p_intf );
-        infoTabW->addTab( ISP, qtr( "&Statistics" ) );
+        infoTabW->addTab( ISP, qtr( "S&tatistics" ) );
     }
 
     QGridLayout *layout = new QGridLayout( this );
@@ -76,6 +78,7 @@ MediaInfoDialog::MediaInfoDialog( intf_thread_t *_p_intf,
 
     QLabel *uriLabel = new QLabel( qtr( "Location:" ) );
     uriLine = new QLineEdit;
+    uriLine->setReadOnly( true );
 
     layout->addWidget( infoTabW, 0, 0, 1, 8 );
     layout->addWidget( uriLabel, 1, 0, 1, 1 );

@@ -2,7 +2,7 @@
  * xmlparser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: dd7279b9b00017680c11ad84d3c6dc9d80a7b919 $
+ * $Id: f660e28afebd131fe8b7a369db2cc36897e0c4a1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -23,44 +23,34 @@
 
 #include "xmlparser.hpp"
 #include "../src/os_factory.hpp"
+#include <vlc_url.h>
 
 #ifdef HAVE_SYS_STAT_H
 #   include <sys/stat.h>
 #endif
 
-// Static variable to avoid initializing catalogs twice
-static bool m_initialized = false;
-
-XMLParser::XMLParser( intf_thread_t *pIntf, const string &rFileName,
-                      bool useDTD ):
-    SkinObject( pIntf )
+XMLParser::XMLParser( intf_thread_t *pIntf, const string &rFileName )
+    : SkinObject( pIntf ), m_pXML( NULL ), m_pReader( NULL ), m_pStream( NULL )
 {
-    m_pReader = NULL;
-    m_pStream = NULL;
-
     m_pXML = xml_Create( pIntf );
     if( !m_pXML )
     {
-        msg_Err( getIntf(), "failed to open XML parser" );
+        msg_Err( getIntf(), "cannot initialize xml" );
         return;
     }
 
-    // Avoid duplicate initialization (mutex needed ?) -> doesn't work
-    // Reinitialization required for a new XMLParser
-    // if( !m_initialized )
-    // {
-    //    LoadCatalog();
-    //    m_initialized = true;
-    // }
     LoadCatalog();
 
-    m_pStream = stream_UrlNew( pIntf, rFileName.c_str() );
+    char* psz_uri = make_URI( rFileName.c_str(), NULL );
+    m_pStream = stream_UrlNew( pIntf, psz_uri );
+    free( psz_uri );
     if( !m_pStream )
     {
         msg_Err( getIntf(), "failed to open %s for reading",
                  rFileName.c_str() );
         return;
     }
+
     m_pReader = xml_ReaderCreate( m_pXML, m_pStream );
     if( !m_pReader )
     {
@@ -69,13 +59,13 @@ XMLParser::XMLParser( intf_thread_t *pIntf, const string &rFileName,
         return;
     }
 
-    xml_ReaderUseDTD( m_pReader, useDTD );
+    xml_ReaderUseDTD( m_pReader );
 }
 
 
 XMLParser::~XMLParser()
 {
-    if( m_pReader && m_pXML ) xml_ReaderDelete( m_pXML, m_pReader );
+    if( m_pReader ) xml_ReaderDelete( m_pReader );
     if( m_pXML ) xml_Delete( m_pXML );
     if( m_pStream ) stream_Delete( m_pStream );
 }
@@ -94,7 +84,7 @@ void XMLParser::LoadCatalog()
 
     // Try to load the catalog first (needed at least on win32 where
     // we don't have a default catalog)
-    for( it = resPath.begin(); it != resPath.end(); it++ )
+    for( it = resPath.begin(); it != resPath.end(); ++it )
     {
         string catalog_path = (*it) + sep + "skin.catalog";
         if( !stat( catalog_path.c_str(), &statBuf ) )
@@ -107,10 +97,10 @@ void XMLParser::LoadCatalog()
     if( it == resPath.end() )
     {
         // Ok, try the default one
-        xml_CatalogLoad( m_pXML, 0 );
+        xml_CatalogLoad( m_pXML, NULL );
     }
 
-    for( it = resPath.begin(); it != resPath.end(); it++ )
+    for( it = resPath.begin(); it != resPath.end(); ++it )
     {
         string path = (*it) + sep + "skin.dtd";
         if( !stat( path.c_str(), &statBuf ) )
@@ -134,47 +124,28 @@ void XMLParser::LoadCatalog()
 
 bool XMLParser::parse()
 {
+    const char *node;
+    int type;
+
     if( !m_pReader ) return false;
 
     m_errors = false;
 
-    int ret = xml_ReaderRead( m_pReader );
-    while( ret == 1 )
+    while( (type = xml_ReaderNextNode( m_pReader, &node )) > 0 )
     {
         if( m_errors ) return false;
 
-        // Get the node type
-        int type = xml_ReaderNodeType( m_pReader );
         switch( type )
         {
-            // Error
-            case -1:
-                return false;
-                break;
-
             case XML_READER_STARTELEM:
             {
-                // Read the element name
-                char *eltName = xml_ReaderName( m_pReader );
-                if( !eltName ) return false;
-
                 // Read the attributes
                 AttrList_t attributes;
-                while( xml_ReaderNextAttr( m_pReader ) == VLC_SUCCESS )
-                {
-                    char *name = xml_ReaderName( m_pReader );
-                    char *value = xml_ReaderValue( m_pReader );
-                    if( !name || !value )
-                    {
-                        free( name );
-                        free( value );
-                        return false;
-                    }
-                    attributes[name] = value;
-                }
+                const char *name, *value;
+                while( (name = xml_ReaderNextAttr( m_pReader, &value )) != NULL )
+                    attributes[strdup(name)] = strdup(value);
 
-                handleBeginElement( eltName, attributes );
-                free( eltName );
+                handleBeginElement( node, attributes );
 
                 map<const char*, const char*, ltstr> ::iterator it =
                     attributes.begin();
@@ -182,7 +153,7 @@ bool XMLParser::parse()
                 {
                     free( (char *)it->first );
                     free( (char *)it->second );
-                    it++;
+                    ++it;
                 }
                 break;
             }
@@ -190,16 +161,10 @@ bool XMLParser::parse()
             // End element
             case XML_READER_ENDELEM:
             {
-                // Read the element name
-                char *eltName = xml_ReaderName( m_pReader );
-                if( !eltName ) return false;
-
-                handleEndElement( eltName );
-                free( eltName );
+                handleEndElement( node );
                 break;
             }
         }
-        ret = xml_ReaderRead( m_pReader );
     }
-    return (ret == 0 && !m_errors );
+    return (type == 0 && !m_errors );
 }

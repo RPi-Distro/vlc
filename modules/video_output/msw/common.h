@@ -2,7 +2,7 @@
  * common.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: e023ef4315481cb8665e7290c25c1f28530caa87 $
+ * $Id: e7bed61c84c0ab9db9b2dd0c191dea8bcda000b6 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -114,8 +114,6 @@ struct vout_display_sys_t
     /* Multi-monitor support */
     HMONITOR             hmonitor;          /* handle of the current monitor */
     GUID                 *display_driver;
-    HMONITOR             (WINAPI* MonitorFromWindow)(HWND, DWORD);
-    BOOL                 (WINAPI* GetMonitorInfo)(HMONITOR, LPMONITORINFO);
 
     /* Overlay alignment restrictions */
     int          i_align_src_boundary;
@@ -153,8 +151,15 @@ struct vout_display_sys_t
 #ifdef MODULE_NAME_IS_glwin32
     HDC                   hGLDC;
     HGLRC                 hGLRC;
-    vout_opengl_t         gl;
-    vout_display_opengl_t vgl;
+    vlc_gl_t              gl;
+    vout_display_opengl_t *vgl;
+#endif
+
+#ifdef MODULE_NAME_IS_direct2d
+    HINSTANCE              d2_dll;            /* handle of the opened d2d1 dll */
+    ID2D1Factory           *d2_factory;                         /* D2D factory */
+    ID2D1HwndRenderTarget  *d2_render_target;          /* D2D rendering target */
+    ID2D1Bitmap            *d2_bitmap;                            /* D2 bitmap */
 #endif
 
 #ifdef MODULE_NAME_IS_direct3d
@@ -171,17 +176,22 @@ struct vout_display_sys_t
     // core objects
     HINSTANCE               hd3d9_dll;       /* handle of the opened d3d9 dll */
     LPDIRECT3D9             d3dobj;
+    D3DCAPS9                d3dcaps;
     LPDIRECT3DDEVICE9       d3ddev;
     D3DPRESENT_PARAMETERS   d3dpp;
     // scene objects
     LPDIRECT3DTEXTURE9      d3dtex;
     LPDIRECT3DVERTEXBUFFER9 d3dvtc;
+    D3DFORMAT               d3dregion_format;
+    int                     d3dregion_count;
+    struct d3d_region_t     *d3dregion;
 
     picture_resource_t      resource;
 
     /* */
     bool                    reset_device;
     bool                    reopen_device;
+    bool                    clear_scene;
 
     /* It protects the following variables */
     vlc_mutex_t    lock;

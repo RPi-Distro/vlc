@@ -3,24 +3,24 @@
  * This library provides basic functions for threads to interact with user
  * interface, such as message output.
  *****************************************************************************
- * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: 16566eb3a4246762b33cfa92111a2c0e44b70d71 $
+ * Copyright (C) 1999, 2000 VLC authors and VideoLAN
+ * $Id: 2880d7339947804e9661e833625df15eba1e16d8 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_INTF_H_
@@ -52,8 +52,9 @@ typedef struct intf_thread_t
     VLC_COMMON_MEMBERS
 
     struct intf_thread_t *p_next; /** LibVLC interfaces book keeping */
+    vlc_thread_t thread; /** LibVLC thread */
     /* Thread properties and locks */
-#if defined( __APPLE__ ) || defined( WIN32 )
+#if defined( __APPLE__ )
     bool          b_should_run_on_first_thread;
 #endif
 
@@ -99,13 +100,10 @@ struct intf_dialog_args_t
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-VLC_EXPORT( int, intf_Create, ( vlc_object_t *, const char * ) );
+VLC_API int intf_Create( vlc_object_t *, const char * );
 #define intf_Create(a,b) intf_Create(VLC_OBJECT(a),b)
 
-VLC_EXPORT( int, intf_Eject, ( vlc_object_t *, const char * ) );
-#define intf_Eject(a,b) intf_Eject(VLC_OBJECT(a),b)
-
-VLC_EXPORT( void, libvlc_Quit, ( libvlc_int_t * ) );
+VLC_API void libvlc_Quit( libvlc_int_t * );
 
 /*@}*/
 
@@ -114,7 +112,7 @@ VLC_EXPORT( void, libvlc_Quit, ( libvlc_int_t * ) );
  *****************************************************************************/
 #if defined( WIN32 ) && !defined( UNDER_CE )
 #    define CONSOLE_INTRO_MSG \
-         if( !getenv( "PWD" ) || !getenv( "PS1" ) ) /* detect cygwin shell */ \
+         if( !getenv( "PWD" ) ) /* detect Cygwin shell or Wine */ \
          { \
          AllocConsole(); \
          freopen( "CONOUT$", "w", stdout ); \
@@ -123,12 +121,12 @@ VLC_EXPORT( void, libvlc_Quit, ( libvlc_int_t * ) );
          } \
          msg_Info( p_intf, "VLC media player - %s", VERSION_MESSAGE ); \
          msg_Info( p_intf, "%s", COPYRIGHT_MESSAGE ); \
-         msg_Info( p_intf, _("\nWarning: if you can't access the GUI " \
+         msg_Info( p_intf, _("\nWarning: if you cannot access the GUI " \
                              "anymore, open a command-line window, go to the " \
                              "directory where you installed VLC and run " \
                              "\"vlc -I qt\"\n") )
 #else
-#    define CONSOLE_INTRO_MSG
+#    define CONSOLE_INTRO_MSG (void)0
 #endif
 
 /* Interface dialog ids for dialog providers */
@@ -168,6 +166,18 @@ typedef enum vlc_dialog {
 /* Useful text messages shared by interfaces */
 #define INTF_ABOUT_MSG LICENSE_MSG
 
+#define EXTENSIONS_AUDIO_CSV "a52", "aac", "ac3", "ape", "awb", "dts", "flac", "it", \
+                         "m4a", "m4p", "mka", "mlp", "mod", "mp1", "mp2", "mp3",\
+                         "oga", "ogg", "oma", "s3m", "spx", "thd", "tta", \
+                         "wav", "wma", "wv", "xm"
+
+#define EXTENSIONS_VIDEO_CSV "asf", "avi", "divx", "dv", "f4v", "flv", "gxf", "iso", \
+                             "m1v", "m2v", "m2t", "m2ts", "m4v", "mkv", "mov",\
+                             "mp2", "mp4", "mpeg", "mpeg1", \
+                             "mpeg2", "mpeg4", "mpg", "mts", "mtv", "mxf", "nuv", \
+                             "ogg", "ogm", "ogv", "ogx", "ps", \
+                             "rec", "rm", "rmvb", "ts", "vob", "wmv"
+
 #define EXTENSIONS_AUDIO \
     "*.a52;" \
     "*.aac;" \
@@ -180,6 +190,8 @@ typedef enum vlc_dialog {
     "*.amr;" \
     "*.aob;" \
     "*.ape;" \
+    "*.awb;" \
+    "*.caf;" \
     "*.cda;" \
     "*.dts;" \
     "*.flac;"\
@@ -200,6 +212,7 @@ typedef enum vlc_dialog {
     "*.rmi;" \
     "*.s3m;" \
     "*.spx;" \
+    "*.thd;" \
     "*.tta;" \
     "*.voc;" \
     "*.vqf;" \
@@ -210,19 +223,24 @@ typedef enum vlc_dialog {
     "*.xa;"  \
     "*.xm"
 
-#define EXTENSIONS_VIDEO "*.3g2;*.3gp;*.3gp2;*.3gpp;*.amv;*.asf;*.avi;*.bin;*.cue;*.divx;*.dv;*.flv;*.gxf;*.iso;*.m1v;*.m2v;" \
+#define EXTENSIONS_VIDEO "*.3g2;*.3gp;*.3gp2;*.3gpp;*.amv;*.asf;*.avi;*.bin;*.divx;*.dv;*f4v;*.flv;*.gxf;*.iso;*.m1v;*.m2v;" \
                          "*.m2t;*.m2ts;*.m4v;*.mkv;*.mov;*.mp2;*.mp2v;*.mp4;*.mp4v;*.mpa;*.mpe;*.mpeg;*.mpeg1;" \
-                         "*.mpeg2;*.mpeg4;*.mpg;*.mpv2;*.mts;*.mxf;*.nsv;*.nuv;" \
+                         "*.mpeg2;*.mpeg4;*.mpg;*.mpv2;*.mts;*.mtv;*.mxf;*.nsv;*.nuv;" \
                          "*.ogg;*.ogm;*.ogv;*.ogx;*.ps;" \
                          "*.rec;*.rm;*.rmvb;*.tod;*.ts;*.tts;*.vob;*.vro;*.webm;*.wmv"
 
-#define EXTENSIONS_PLAYLIST "*.asx;*.b4s;*.ifo;*.m3u;*.m3u8;*.pls;*.ram;*.rar;*.sdp;*.vlc;*.xspf;*.zip"
+#define EXTENSIONS_PLAYLIST "*.asx;*.b4s;*.cue;*.ifo;*.m3u;*.m3u8;*.pls;*.ram;*.rar;*.sdp;*.vlc;*.xspf;*.zip;*.conf"
 
 #define EXTENSIONS_MEDIA EXTENSIONS_VIDEO ";" EXTENSIONS_AUDIO ";" \
                           EXTENSIONS_PLAYLIST
 
-#define EXTENSIONS_SUBTITLE "*.cdg;*.idx;*.srt;*.sub;*.utf;*.ass;*.ssa;*.aqt;" \
-                            "*.jss;*.psb;*.rt;*.smi;*.txt"
+#define EXTENSIONS_SUBTITLE "*.cdg;*.idx;*.srt;" \
+                            "*.sub;*.utf;*.ass;" \
+                            "*.ssa;*.aqt;" \
+                            "*.jss;*.psb;" \
+                            "*.rt;*.smi;*.txt;" \
+                            "*.smil;*.stl;*.usf" \
+                            "*.dks;*.pjs;*.mpl2"
 
 /** \defgroup vlc_interaction Interaction
  * \ingroup vlc_interface

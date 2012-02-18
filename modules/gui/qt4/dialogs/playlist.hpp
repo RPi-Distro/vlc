@@ -2,7 +2,7 @@
  * playlist.hpp: Playlist dialog
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 9b0c63f2f87900b014fd9e35d3c7f6eeb212a449 $
+ * $Id: e3215df78a54ac2d7b5b99360687095afade119f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -25,7 +25,7 @@
 #define QVLC_PLAYLIST_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
-#include "../components/playlist/playlist.hpp"
+#include "components/playlist/playlist.hpp"
 #include "util/singleton.hpp"
 
 #include <QModelIndex>

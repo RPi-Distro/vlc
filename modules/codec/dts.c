@@ -2,7 +2,7 @@
  * dts.c: parse DTS audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: a2325546e615528892799e5501ac789f0af8688d $
+ * $Id: 50240ea3cb8ed36c3250e8db7e8ab646f39fe8b4 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -37,6 +37,10 @@
 #include <vlc_aout.h>
 #include <vlc_block_helper.h>
 #include <vlc_bits.h>
+#include <vlc_modules.h>
+#include <vlc_cpu.h>
+
+#include "../packetizer/packetizer_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -87,23 +91,13 @@ struct decoder_sys_t
     unsigned int i_channels_conf;
 };
 
-enum {
-
-    STATE_NOSYNC,
-    STATE_SYNC,
-    STATE_HEADER,
-    STATE_NEXT_SYNC,
-    STATE_GET_DATA,
-    STATE_SEND_DATA
-};
-
 #define DTS_HEADER_SIZE 14
 
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
 static int OpenCommon( vlc_object_t *, bool b_packetizer );
-static void *DecodeBlock( decoder_t *, block_t ** );
+static block_t *DecodeBlock( decoder_t *, block_t ** );
 
 static inline int SyncCode( const uint8_t * );
 static int  SyncInfo( const uint8_t *, bool *, unsigned int *, unsigned int *,
@@ -119,7 +113,7 @@ static block_t       *GetSoutBuffer( decoder_t * );
 static int OpenDecoder( vlc_object_t *p_this )
 {
     /* HACK: Don't use this codec if we don't have an dts audio filter */
-    if( !module_exists( "dtstofloat32" ) )
+    if( !HAVE_FPU || !module_exists( "dtstofloat32" ) )
         return VLC_EGENERIC;
 
     return OpenCommon( p_this, false );
@@ -155,7 +149,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
     p_sys->b_dts_hd = false;
     p_sys->i_pts = VLC_TS_INVALID;
 
-    p_sys->bytestream = block_BytestreamInit();
+    block_BytestreamInit( &p_sys->bytestream );
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
@@ -163,10 +157,8 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
     p_dec->fmt_out.audio.i_rate = 0; /* So end_date gets initialized */
 
     /* Set callback */
-    p_dec->pf_decode_audio = (aout_buffer_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
-    p_dec->pf_packetize    = (block_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
+    p_dec->pf_decode_audio = DecodeBlock;
+    p_dec->pf_packetize    = DecodeBlock;
 
     return VLC_SUCCESS;
 }
@@ -174,7 +166,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
 /****************************************************************************
  * DecodeBlock: the whole thing
  ****************************************************************************/
-static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t p_header[DTS_HEADER_SIZE];

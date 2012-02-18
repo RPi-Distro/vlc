@@ -2,7 +2,7 @@
  * visual.h : Header for the visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: d1b20c42bfcb32365d4fa00438306f98cbb6ce88 $
+ * $Id: d065db0eaf8bcca324947caf3413e06290de86fb $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -87,5 +87,5 @@ int spectrometer_Run
         (visual_effect_t * , vlc_object_t *, const block_t *, picture_t *);
 
 /* Default vout size */
-#define VOUT_WIDTH 800
-#define VOUT_HEIGHT 640
+#define VOUT_WIDTH  800
+#define VOUT_HEIGHT 500

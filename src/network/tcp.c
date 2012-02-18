@@ -1,26 +1,26 @@
 /*****************************************************************************
  * tcp.c:
  *****************************************************************************
- * Copyright (C) 2004-2005 the VideoLAN team
+ * Copyright (C) 2004-2005 VLC authors and VideoLAN
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: 81e42deac4efd30df67ee1f6d1a49e303e23b7d6 $
+ * $Id: 9e0442c905a13e209739dc951e6cf75c00aad4a2 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -88,7 +88,7 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
     hints.ai_socktype = type;
     hints.ai_protocol = proto;
 
-    psz_socks = var_CreateGetNonEmptyString( p_this, "socks" );
+    psz_socks = var_InheritString( p_this, "socks" );
     if( psz_socks != NULL )
     {
         char *psz = strchr( psz_socks, ':' );
@@ -143,7 +143,7 @@ int net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
     if( i_val )
     {
         msg_Err( p_this, "cannot resolve %s port %d : %s", psz_realhost,
-                 i_realport, vlc_gai_strerror( i_val ) );
+                 i_realport, gai_strerror( i_val ) );
         return -1;
     }
 
@@ -216,7 +216,7 @@ next_ai: /* failure */
         continue;
     }
 
-    vlc_freeaddrinfo( res );
+    freeaddrinfo( res );
 
     if( i_handle == -1 )
         return -1;
@@ -224,8 +224,8 @@ next_ai: /* failure */
     if( psz_socks != NULL )
     {
         /* NOTE: psz_socks already free'd! */
-        char *psz_user = var_CreateGetNonEmptyString( p_this, "socks-user" );
-        char *psz_pwd  = var_CreateGetNonEmptyString( p_this, "socks-pwd" );
+        char *psz_user = var_InheritString( p_this, "socks-user" );
+        char *psz_pwd  = var_InheritString( p_this, "socks-pwd" );
 
         if( SocksHandshakeTCP( p_this, i_handle, 5, psz_user, psz_pwd,
                                psz_host, i_port ) )
@@ -460,7 +460,7 @@ static int SocksHandshakeTCP( vlc_object_t *p_obj,
         SetWBE( &buffer[2], i_port );   /* Port */
         memcpy( &buffer[4],             /* Address */
                 &((struct sockaddr_in *)(p_res->ai_addr))->sin_addr, 4 );
-        vlc_freeaddrinfo( p_res );
+        freeaddrinfo( p_res );
 
         buffer[8] = 0;                  /* Empty user id */
 

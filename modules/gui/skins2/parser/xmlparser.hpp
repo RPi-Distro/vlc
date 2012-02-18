@@ -2,7 +2,7 @@
  * xmlparser.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: aa5f9e22ad17dcafa84e732a5f98221759636e66 $
+ * $Id: 19c30b70496393b17db8bb7347fbdd5b08908c04 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -37,8 +37,7 @@
 class XMLParser: public SkinObject
 {
 public:
-    XMLParser( intf_thread_t *pIntf, const string &rFileName,
-               bool useDTD = true );
+    XMLParser( intf_thread_t *pIntf, const string &rFileName );
     virtual ~XMLParser();
 
     /// Parse the file. Returns true on success
@@ -60,9 +59,9 @@ protected:
     bool m_errors;
 
     /// Callbacks
-    virtual void handleBeginElement( const string &rName,
-                                     AttrList_t &attr ) { }
-    virtual void handleEndElement( const string &rName ) { }
+    virtual void handleBeginElement( const string &rName, AttrList_t &attr )
+        { (void)rName; (void)attr; }
+    virtual void handleEndElement( const string &rName ) { (void)rName; }
 
 private:
     void LoadCatalog();

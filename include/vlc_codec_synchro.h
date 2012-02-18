@@ -1,26 +1,26 @@
 /*****************************************************************************
  * vlc_codec_synchro.h: frame-dropping structures
  *****************************************************************************
- * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: fefab4e173d93393b4787bf0d1a596712b7afd19 $
+ * Copyright (C) 1999-2005 VLC authors and VideoLAN
+ * $Id: ee6c86af8dc8baaac7c2a9068a9dc8fa6cf7fe64 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Marc Dressler <polux@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -37,13 +37,13 @@
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-VLC_EXPORT( decoder_synchro_t *, decoder_SynchroInit, ( decoder_t *, int ) LIBVLC_USED );
-VLC_EXPORT( void, decoder_SynchroRelease,        ( decoder_synchro_t * ) );
-VLC_EXPORT( void, decoder_SynchroReset,          ( decoder_synchro_t * ) );
-VLC_EXPORT( bool, decoder_SynchroChoose,   ( decoder_synchro_t *, int, int, bool ) );
-VLC_EXPORT( void, decoder_SynchroTrash,          ( decoder_synchro_t * ) );
-VLC_EXPORT( void, decoder_SynchroDecode,         ( decoder_synchro_t * ) );
-VLC_EXPORT( void, decoder_SynchroEnd,            ( decoder_synchro_t *, int, bool ) );
-VLC_EXPORT( mtime_t, decoder_SynchroDate,        ( decoder_synchro_t * ) LIBVLC_USED );
-VLC_EXPORT( void, decoder_SynchroNewPicture,     ( decoder_synchro_t *, int, int, mtime_t, mtime_t, bool ) );
+VLC_API decoder_synchro_t * decoder_SynchroInit( decoder_t *, int ) VLC_USED;
+VLC_API void decoder_SynchroRelease( decoder_synchro_t * );
+VLC_API void decoder_SynchroReset( decoder_synchro_t * );
+VLC_API bool decoder_SynchroChoose( decoder_synchro_t *, int, int, bool );
+VLC_API void decoder_SynchroTrash( decoder_synchro_t * );
+VLC_API void decoder_SynchroDecode( decoder_synchro_t * );
+VLC_API void decoder_SynchroEnd( decoder_synchro_t *, int, bool );
+VLC_API mtime_t decoder_SynchroDate( decoder_synchro_t * ) VLC_USED;
+VLC_API void decoder_SynchroNewPicture( decoder_synchro_t *, int, int, mtime_t, mtime_t, bool );
 

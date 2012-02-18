@@ -2,7 +2,7 @@
  * win32_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b3d707cc359d7d48da64107407daa976673fcd3b $
+ * $Id: 6eb2b0c75999f027535b832b394b3d216e5c5128 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -26,6 +26,7 @@
 
 #include "../src/generic_window.hpp"
 #include "../src/vlcproc.hpp"
+#include "../src/vout_manager.hpp"
 #include "win32_window.hpp"
 #include "win32_dragdrop.hpp"
 #include "win32_factory.hpp"
@@ -51,7 +52,11 @@ Win32Window::Win32Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     OSWindow( pIntf ), m_dragDrop( dragDrop ), m_isLayered( false ),
     m_pParent( pParentWindow ), m_type ( type )
 {
+    (void)hParentWindow;
     Win32Factory *pFactory = (Win32Factory*)Win32Factory::instance( getIntf() );
+
+    const char* vlc_name =  "VlC Media Player";
+    const char* vlc_class =  "SkinWindowClass";
 
     // Create the window
     if( type == GenericWindow::VoutWindow )
@@ -59,25 +64,46 @@ Win32Window::Win32Window( intf_thread_t *pIntf, GenericWindow &rWindow,
         // Child window (for vout)
         m_hWnd_parent = pParentWindow->getHandle();
         m_hWnd = CreateWindowEx( WS_EX_TOOLWINDOW | WS_EX_NOPARENTNOTIFY,
-                     "SkinWindowClass", "default name",
+                     vlc_class, vlc_name,
                      WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
                      0, 0, 0, 0, m_hWnd_parent, 0, hInst, NULL );
     }
     else if( type == GenericWindow::FullscreenWindow )
     {
         // top-level window
-        m_hWnd = CreateWindowEx( WS_EX_APPWINDOW, "SkinWindowClass",
-            "default name", WS_POPUP | WS_CLIPCHILDREN,
-            0, 0, 0, 0, NULL, 0, hInst, NULL );
-    }
+        m_hWnd = CreateWindowEx( WS_EX_APPWINDOW, vlc_class,
+                                 vlc_name, WS_POPUP | WS_CLIPCHILDREN,
+                                 0, 0, 0, 0, NULL, 0, hInst, NULL );
 
+        // Store with it a pointer to the interface thread
+        SetWindowLongPtr( m_hWnd, GWLP_USERDATA, (LONG_PTR)getIntf() );
+    }
+    else if( type == GenericWindow::FscWindow )
+    {
+        VoutManager* pVoutManager = VoutManager::instance( getIntf() );
+        GenericWindow* pParent =
+           (GenericWindow*)pVoutManager->getVoutMainWindow();
+
+        m_hWnd_parent = (HWND)pParent->getOSHandle();
+
+        // top-level window
+        m_hWnd = CreateWindowEx( WS_EX_APPWINDOW, vlc_class, vlc_name,
+                                 WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+                                 0, 0, 0, 0, m_hWnd_parent, 0, hInst, NULL );
+
+        // Store with it a pointer to the interface thread
+        SetWindowLongPtr( m_hWnd, GWLP_USERDATA, (LONG_PTR)getIntf() );
+    }
     else
     {
         // top-level window (owned by the root window)
         HWND hWnd_owner = pFactory->getParentWindow();
-        m_hWnd = CreateWindowEx( 0, "SkinWindowClass",
-            "default name", WS_POPUP | WS_CLIPCHILDREN,
-            0, 0, 0, 0, hWnd_owner, 0, hInst, NULL );
+        m_hWnd = CreateWindowEx( 0, vlc_class, vlc_name,
+                                 WS_POPUP | WS_CLIPCHILDREN,
+                                 0, 0, 0, 0, hWnd_owner, 0, hInst, NULL );
+
+        // Store with it a pointer to the interface thread
+        SetWindowLongPtr( m_hWnd, GWLP_USERDATA, (LONG_PTR)getIntf() );
     }
 
     if( !m_hWnd )
@@ -92,8 +118,8 @@ Win32Window::Win32Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     // Drag & drop
     if( m_dragDrop )
     {
-        m_pDropTarget = (LPDROPTARGET) new Win32DragDrop( getIntf(),
-                                                          playOnDrop );
+        m_pDropTarget = (LPDROPTARGET)
+            new Win32DragDrop( getIntf(), playOnDrop, &rWindow );
         // Register the window as a drop target
         RegisterDragDrop( m_hWnd, m_pDropTarget );
     }
@@ -122,15 +148,19 @@ Win32Window::~Win32Window()
 void Win32Window::reparent( void* OSHandle, int x, int y, int w, int h )
 {
     // Reparent the window
+    if( !SetParent( m_hWnd, (HWND)OSHandle ) )
+        msg_Err( getIntf(), "SetParent failed (%lu)", GetLastError() );
+    MoveWindow( m_hWnd, x, y, w, h, TRUE );
+}
 
-    if( m_type == GenericWindow::TopWindow )
-    {
-       // fullscreen controller
-       SetWindowLongPtr( m_hWnd, GWL_STYLE, WS_CHILD );
-    }
 
-    SetParent( m_hWnd, (HWND)OSHandle );
-    MoveWindow( m_hWnd, x, y, w, h, true );
+bool Win32Window::invalidateRect( int x, int y, int w, int h) const
+{
+    RECT rect = { x, y, x + w , y + h };
+    InvalidateRect( m_hWnd, &rect, FALSE );
+    UpdateWindow( m_hWnd );
+
+    return true;
 }
 
 
@@ -160,7 +190,7 @@ void Win32Window::hide() const
 
 void Win32Window::moveResize( int left, int top, int width, int height ) const
 {
-    MoveWindow( m_hWnd, left, top, width, height, true );
+    MoveWindow( m_hWnd, left, top, width, height, TRUE );
 }
 
 
@@ -173,49 +203,17 @@ void Win32Window::raise() const
 
 void Win32Window::setOpacity( uint8_t value ) const
 {
-    Win32Factory *pFactory = (Win32Factory*)Win32Factory::instance( getIntf() );
-
-    if( value == 255 )
+    if( !m_isLayered )
     {
-        // If the window is opaque, we remove the WS_EX_LAYERED attribute
-        // which slows down resizing for nothing
-        if( m_isLayered )
-        {
-            SetWindowLongPtr( m_hWnd, GWL_EXSTYLE,
-                GetWindowLongPtr( m_hWnd, GWL_EXSTYLE ) & ~WS_EX_LAYERED );
+        // add the WS_EX_LAYERED attribute.
+        SetWindowLongPtr( m_hWnd, GWL_EXSTYLE,
+            GetWindowLongPtr( m_hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
 
-            // Redraw the window, otherwise we may end up with a grey rectangle
-            // for some strange reason
-            RedrawWindow(m_hWnd, NULL, NULL,
-                RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
-
-            m_isLayered = false;
-        }
+        m_isLayered = true;
     }
-    else
-    {
-        if( pFactory->SetLayeredWindowAttributes )
-        {
-            if( ! m_isLayered )
-            {
-                // (Re)Add the WS_EX_LAYERED attribute.
-                // Resizing will be very slow, now :)
-                SetWindowLongPtr( m_hWnd, GWL_EXSTYLE,
-                    GetWindowLongPtr( m_hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
 
-                // Redraw the window, otherwise we may end up with a grey
-                // rectangle for some strange reason
-                RedrawWindow(m_hWnd, NULL, NULL,
-                    RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
-
-                m_isLayered = true;
-            }
-
-            // Change the opacity
-            pFactory->SetLayeredWindowAttributes(
-                m_hWnd, 0, value, LWA_ALPHA|LWA_COLORKEY );
-        }
-    }
+    // Change the opacity
+    SetLayeredWindowAttributes( m_hWnd, 0, value, LWA_ALPHA );
 }
 
 

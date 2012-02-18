@@ -3,8 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: 66b0a2609e20ac48df81c08c18f5b9e607ed2908 $
+ * $Id: dd59374e429c24226713fd86f84a32b93021ecca $
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -70,7 +75,7 @@ CAtmoColorCalculator::~CAtmoColorCalculator(void)
 void CAtmoColorCalculator::UpdateParameters()
 {
   // Zonen Definition neu laden
-  // diverse Vorberechnungen neu ausführen
+  // diverse Vorberechnungen neu ausfÃ¼hren
   // Speicherbuffer neu allokieren!
 }
 

@@ -1,61 +1,61 @@
-StrCpy $Name_Section01 "Medieafspiller (nødvendig)"
-StrCpy $Name_Section02a "Startmenu-genvej"
-StrCpy $Name_Section02b "Skrivebordsgenvej"
-StrCpy $Name_Section03 "Mozilla-plugin"
-StrCpy $Name_Section04 "ActiveX-plugin"
-StrCpy $Name_Section05 "Afspilning af diske"
-StrCpy $Name_Section06 "Filtype-associationer"
-StrCpy $Name_SectionGroupAudio "Lydfiler"
-StrCpy $Name_SectionGroupVideo "Videofiler"
+StrCpy $Name_Section01 "Media Player (Nødvendig)"
+StrCpy $Name_Section02a "Start Menu Genvej"
+StrCpy $Name_Section02b "Skrivebord Genvej"
+StrCpy $Name_Section03 "Mozilla plugin"
+StrCpy $Name_Section04 "ActiveX plugin"
+StrCpy $Name_Section05 "Discs afspilning"
+StrCpy $Name_Section06 "Filtype foreninger"
+StrCpy $Name_SectionGroupAudio "Lyd Filer"
+StrCpy $Name_SectionGroupVideo "Video Filer"
 StrCpy $Name_SectionGroupOther "Andre"
-StrCpy $Name_Section07 "Kontekstmenu"
+StrCpy $Name_Section07 "Kontekst menu"
 StrCpy $Name_Section08 "Slet præferencer og cache"
 
 StrCpy $Desc_Section01 \
-    "Selve medieafspilleren"
+    "Media Player selv"
 StrCpy $Desc_Section02a \
-    "Tilføjer genveje til din startmenu for nem adgang"
+    "Tilføjer genveje til din start menu for nem adgang"
 StrCpy $Desc_Section02b \
     "Tilføjer ikon til skrivebordet for let adgang"
 StrCpy $Desc_Section03 \
-    "VLC Mozilla og Mozilla Firefox-plugin"
+    "VLC Mozilla og Mozilla Firefox plugin"
 StrCpy $Desc_Section04 \
-    "VLC ActiveX-plugin"
+    "VLC ActiveX plugin"
 StrCpy $Desc_Section05 \
-    "Registrering af DVD og CD-afspilning"
+    "DVD og CD-afspilning registrering"
 StrCpy $Desc_Section06 \
-    "Sætter VLC medieafspiller som standardprogram for de angivne filtyper"
+    "Sætter VLC Media Player som standard program for de angivne filtype"
 StrCpy $Desc_Section07 \
-    "Tilføj kontekstmenu-elementer ('Afspil med VLC medieafspiller' og 'Tilføj til VLC's afspilningsliste')"
+    "Tilføj kontekst menu artikler ('Afspil med VLC Media Player' og 'Tilføj til VLC's Afspilningsliste')"
 StrCpy $Desc_Section08 \
-    "Sletter VLC medieafspiller-præferencer og cache filer, levn fra tidligere installationer"
+    "Sletter VLC Media Player præferencer og cache filer, levn fra tidligere installationer"
 
 StrCpy $Message_AlreadyInstalled  \
-"VLC medieafspiller er allerede installeret. $\nVil du fjerne \
+"VLC Media Player er allerede blevet installeret. $\nVil du fjerne \
 den tidligere version, før du installerer $(^Name) ?"
 
 StrCpy $Name_Section91 "Afinstaller"
 StrCpy $Name_Section92 "Slet præferencer og cache"
 
 StrCpy $Desc_Section91 \
-"Afinstaller VLC medieafspiller og alle dens komponenter"
+"Afinstaller VLC Media Player og alle dens komponenter"
 StrCpy $Desc_Section92 \
-"Sletter VLC medieafspiller-præferencer og cache filer"
+"Sletter VLC Media Player præferencer og cache filer"
 
 StrCpy $ShellAssociation_Play "Afspil"
-StrCpy $ContextMenuEntry_PlayWith "Afspil med VLC medieafspiller"
-StrCpy $ContextMenuEntry_AddToPlaylist "Tilføj til VLC's afspilningsliste"
+StrCpy $ContextMenuEntry_PlayWith "Afspil med VLC Media Player"
+StrCpy $ContextMenuEntry_AddToPlaylist "Tilføj til VLC's Afspilningsliste"
 
-StrCpy $Link_VisitWebsite "Besøg VideoLAN VLC medieafspiller-hjemmesiden"
+StrCpy $Link_VisitWebsite "Besøg VideoLAN VLC Media Player Webside"
 
 StrCpy $Name_InstTypeRecommended "Anbefalet"
 StrCpy $Name_InstTypeMinimum "Minimum"
 StrCpy $Name_InstTypeFull "Fuld"
 
-StrCpy $Action_OnArrivalDVD "Afspil DVD-film"
-StrCpy $Action_OnArrivalAudioCD "Afspil lyd-CD"
-StrCpy $Action_OnArrivalVCDMovie "Afspil VCD-film"
-StrCpy $Action_OnArrivalSVCDMovie "Afspil SVCD-film"
-StrCpy $Action_OnArrivalVideoFiles "Afspil videofiler"
-StrCpy $Action_OnArrivalMusicFiles "Afspil lydfiler"
-StrCpy $Action_OnArrivalDVDAudio "Afspil lyd-DVD"
+StrCpy $Action_OnArrivalDVD "Afspil DVD film"
+StrCpy $Action_OnArrivalAudioCD "Afspil lyd CD"
+StrCpy $Action_OnArrivalVCDMovie "Afspil VCD film"
+StrCpy $Action_OnArrivalSVCDMovie "Afspil SVCD film"
+StrCpy $Action_OnArrivalVideoFiles "Afspil video filer"
+StrCpy $Action_OnArrivalMusicFiles "Afspil lyd filer"
+StrCpy $Action_OnArrivalDVDAudio "Afspil lyd DVD"

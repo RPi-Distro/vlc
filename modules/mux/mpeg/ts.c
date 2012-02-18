@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 02785564e231633870bb7da5cdd145e55720b658 $
+ * $Id: 0ba3a21402651e46dc12c2555435a149b26b5ba0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -37,7 +37,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
-#include <vlc_codecs.h>
 #include <vlc_block.h>
 #include <vlc_rand.h>
 
@@ -47,25 +46,14 @@
 #include "pes.h"
 #include "csa.h"
 
-#ifdef HAVE_DVBPSI_DR_H
-#   include <dvbpsi/dvbpsi.h>
-#   include <dvbpsi/demux.h>
-#   include <dvbpsi/descriptor.h>
-#   include <dvbpsi/pat.h>
-#   include <dvbpsi/pmt.h>
-#   include <dvbpsi/sdt.h>
-#   include <dvbpsi/dr.h>
-#   include <dvbpsi/psi.h>
-#else
-#   include "dvbpsi.h"
-#   include "demux.h"
-#   include "descriptor.h"
-#   include "tables/pat.h"
-#   include "tables/pmt.h"
-#   include "tables/sdt.h"
-#   include "descriptors/dr.h"
-#   include "psi.h"
-#endif
+# include <dvbpsi/dvbpsi.h>
+# include <dvbpsi/demux.h>
+# include <dvbpsi/descriptor.h>
+# include <dvbpsi/pat.h>
+# include <dvbpsi/pmt.h>
+# include <dvbpsi/sdt.h>
+# include <dvbpsi/dr.h>
+# include <dvbpsi/psi.h>
 
 /*
  * TODO:
@@ -123,7 +111,7 @@ static void    Close  ( vlc_object_t * );
 
 #define PID_TEXT N_("Set PID to ID of ES")
 #define PID_LONGTEXT N_("Sets PID to the ID if the incoming ES. This is for " \
-  "use with --ts-es-id-pid, and allows to have the same PIDs in the input " \
+  "use with --ts-es-id-pid, and allows having the same PIDs in the input " \
   "and output streams.")
 
 #define ALIGNMENT_TEXT N_("Data alignment")
@@ -184,8 +172,8 @@ static void    Close  ( vlc_object_t * );
     "encrypting." )
 
 #define SOUT_CFG_PREFIX "sout-ts-"
-#define MAX_PMT 64       /* Maximum number of programs. FIXME: I just chose an arbitary number. Where is the maximum in the spec? */
-#define MAX_PMT_PID 64       /* Maximum pids in each pmt.  FIXME: I just chose an arbitary number. Where is the maximum in the spec? */
+#define MAX_PMT 64       /* Maximum number of programs. FIXME: I just chose an arbitrary number. Where is the maximum in the spec? */
+#define MAX_PMT_PID 64       /* Maximum pids in each pmt.  FIXME: I just chose an arbitrary number. Where is the maximum in the spec? */
 
 vlc_module_begin ()
     set_description( N_("TS muxer (libdvbpsi)") )
@@ -195,57 +183,57 @@ vlc_module_begin ()
     set_capability( "sout mux", 120 )
     add_shortcut( "ts" )
 
-    add_integer( SOUT_CFG_PREFIX "pid-video", 0, NULL,VPID_TEXT, VPID_LONGTEXT,
+    add_integer( SOUT_CFG_PREFIX "pid-video", 0,VPID_TEXT, VPID_LONGTEXT,
                                   true )
-    add_integer( SOUT_CFG_PREFIX "pid-audio", 0, NULL, APID_TEXT,
+    add_integer( SOUT_CFG_PREFIX "pid-audio", 0, APID_TEXT,
                  APID_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "pid-spu", 0, NULL, SPUPID_TEXT,
+    add_integer( SOUT_CFG_PREFIX "pid-spu", 0, SPUPID_TEXT,
                  SPUPID_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "pid-pmt", 0, NULL, PMTPID_TEXT,
+    add_integer( SOUT_CFG_PREFIX "pid-pmt", 0, PMTPID_TEXT,
                  PMTPID_LONGTEXT, true )
-    add_integer( SOUT_CFG_PREFIX "tsid", 0, NULL, TSID_TEXT,
+    add_integer( SOUT_CFG_PREFIX "tsid", 0, TSID_TEXT,
                  TSID_LONGTEXT, true )
 #ifdef HAVE_DVBPSI_SDT
-    add_integer( SOUT_CFG_PREFIX "netid", 0, NULL, NETID_TEXT,
+    add_integer( SOUT_CFG_PREFIX "netid", 0, NETID_TEXT,
                  NETID_LONGTEXT, true )
 #endif
-    add_string( SOUT_CFG_PREFIX "program-pmt", NULL, NULL, PMTPROG_TEXT,
+    add_string( SOUT_CFG_PREFIX "program-pmt", NULL, PMTPROG_TEXT,
                 PMTPROG_LONGTEXT, true )
-    add_bool( SOUT_CFG_PREFIX "es-id-pid", false, NULL, PID_TEXT, PID_LONGTEXT,
+    add_bool( SOUT_CFG_PREFIX "es-id-pid", false, PID_TEXT, PID_LONGTEXT,
               true )
-    add_string( SOUT_CFG_PREFIX "muxpmt", NULL, NULL, MUXPMT_TEXT, MUXPMT_LONGTEXT, true )
+    add_string( SOUT_CFG_PREFIX "muxpmt", NULL, MUXPMT_TEXT, MUXPMT_LONGTEXT, true )
 #ifdef HAVE_DVBPSI_SDT
-    add_string( SOUT_CFG_PREFIX "sdtdesc", NULL, NULL, SDTDESC_TEXT, SDTDESC_LONGTEXT, true )
+    add_string( SOUT_CFG_PREFIX "sdtdesc", NULL, SDTDESC_TEXT, SDTDESC_LONGTEXT, true )
 #endif
-    add_bool( SOUT_CFG_PREFIX "alignment", true, NULL, ALIGNMENT_TEXT,
+    add_bool( SOUT_CFG_PREFIX "alignment", true, ALIGNMENT_TEXT,
               ALIGNMENT_LONGTEXT, true )
 
-    add_integer( SOUT_CFG_PREFIX "shaping", 200, NULL, SHAPING_TEXT,
+    add_integer( SOUT_CFG_PREFIX "shaping", 200, SHAPING_TEXT,
                  SHAPING_LONGTEXT, true )
-    add_bool( SOUT_CFG_PREFIX "use-key-frames", false, NULL, KEYF_TEXT,
+    add_bool( SOUT_CFG_PREFIX "use-key-frames", false, KEYF_TEXT,
               KEYF_LONGTEXT, true )
 
-    add_integer( SOUT_CFG_PREFIX "pcr", 70, NULL, PCR_TEXT, PCR_LONGTEXT,
+    add_integer( SOUT_CFG_PREFIX "pcr", 70, PCR_TEXT, PCR_LONGTEXT,
                  true )
-    add_integer( SOUT_CFG_PREFIX "bmin", 0, NULL, BMIN_TEXT, BMIN_LONGTEXT,
+    add_integer( SOUT_CFG_PREFIX "bmin", 0, BMIN_TEXT, BMIN_LONGTEXT,
                  true )
-    add_integer( SOUT_CFG_PREFIX "bmax", 0, NULL, BMAX_TEXT, BMAX_LONGTEXT,
+    add_integer( SOUT_CFG_PREFIX "bmax", 0, BMAX_TEXT, BMAX_LONGTEXT,
                  true )
-    add_integer( SOUT_CFG_PREFIX "dts-delay", 400, NULL, DTS_TEXT,
+    add_integer( SOUT_CFG_PREFIX "dts-delay", 400, DTS_TEXT,
                  DTS_LONGTEXT, true )
 
-    add_bool( SOUT_CFG_PREFIX "crypt-audio", true, NULL, ACRYPT_TEXT,
+    add_bool( SOUT_CFG_PREFIX "crypt-audio", true, ACRYPT_TEXT,
               ACRYPT_LONGTEXT, true )
-    add_bool( SOUT_CFG_PREFIX "crypt-video", true, NULL, VCRYPT_TEXT,
+    add_bool( SOUT_CFG_PREFIX "crypt-video", true, VCRYPT_TEXT,
               VCRYPT_LONGTEXT, true )
 
-    add_string( SOUT_CFG_PREFIX "csa-ck", NULL, NULL, CK_TEXT, CK_LONGTEXT,
+    add_string( SOUT_CFG_PREFIX "csa-ck", NULL, CK_TEXT, CK_LONGTEXT,
                 true )
-    add_string( SOUT_CFG_PREFIX "csa2-ck", NULL, NULL, CK2_TEXT, CK2_LONGTEXT,
+    add_string( SOUT_CFG_PREFIX "csa2-ck", NULL, CK2_TEXT, CK2_LONGTEXT,
                 true )
-    add_string( SOUT_CFG_PREFIX "csa-use", "1", NULL, CU_TEXT, CU_LONGTEXT,
+    add_string( SOUT_CFG_PREFIX "csa-use", "1", CU_TEXT, CU_LONGTEXT,
                 true )
-    add_integer( SOUT_CFG_PREFIX "csa-pkt", 188, NULL, CPKT_TEXT, CPKT_LONGTEXT, true )
+    add_integer( SOUT_CFG_PREFIX "csa-pkt", 188, CPKT_TEXT, CPKT_LONGTEXT, true )
 
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -550,7 +538,7 @@ static int Open( vlc_object_t *p_this )
         {
             i_pid = strtoul( psz, &psz_next, 0 );
 
-            if ( strlen(psz_next) > 0 )
+            if ( psz_next[0] != '\0' )
                 psz = &psz_next[1];
             if ( i_pid == 0 )
             {
@@ -669,7 +657,7 @@ static int Open( vlc_object_t *p_this )
         while ( psz != NULL )
         {
             i_pid = strtoul( psz, &psz_next, 0 );
-            if( strlen(psz_next) > 0 )
+            if( psz_next[0] != '\0' )
                 psz = &psz_next[1];
             else
                 psz = NULL;
@@ -834,7 +822,8 @@ static int Open( vlc_object_t *p_this )
             var_Get( p_mux, SOUT_CFG_PREFIX "csa-pkt", &pkt_val );
             if( pkt_val.i_int < 12 || pkt_val.i_int > 188 )
             {
-                msg_Err( p_mux, "wrong packet size %d specified.", pkt_val.i_int );
+                msg_Err( p_mux, "wrong packet size %"PRId64" specified.",
+                         pkt_val.i_int );
                 msg_Warn( p_mux, "using default packet size of 188 bytes" );
                 p_sys->i_csa_pkt_size = 188;
             }
@@ -2022,6 +2011,12 @@ static block_t *TSNew( sout_mux_t *p_mux, ts_stream_t *p_stream,
     }
 
     p_ts = block_New( p_mux, 188 );
+
+    if (b_new_pes && !(p_pes->i_flags & BLOCK_FLAG_NO_KEYFRAME) && p_pes->i_flags & BLOCK_FLAG_TYPE_I)
+    {
+        p_ts->i_flags |= BLOCK_FLAG_TYPE_I;
+    }
+
     p_ts->i_dts = p_pes->i_dts;
 
     p_ts->p_buffer[0] = 0x47;
@@ -2718,7 +2713,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
                                            p_stream->i_decoder_specific_info,
                                            p_stream->p_decoder_specific_info );
             }
-#ifdef _DVBPSI_DR_59_H_
             else
             {
                 /* from the dvbsub transcoder */
@@ -2739,7 +2733,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
                 dvbpsi_PMTESAddDescriptor( p_es, p_descr->i_tag,
                                            p_descr->i_length, p_descr->p_data );
             }
-#endif /* _DVBPSI_DR_59_H_ */
             continue;
         }
 

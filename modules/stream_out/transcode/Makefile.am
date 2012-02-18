@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libstream_out_transcode_plugin_la_SOURCES = $(SOURCES_stream_out_transcode)
 nodist_libstream_out_transcode_plugin_la_SOURCES = $(nodist_SOURCES_stream_out_transcode)
 # Force per-target objects:
-libstream_out_transcode_plugin_la_CFLAGS = $(AM_CFLAGS)
-libstream_out_transcode_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libstream_out_transcode_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libstream_out_transcode_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_stream_out_transcode)
+libstream_out_transcode_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_stream_out_transcode)
+libstream_out_transcode_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_stream_out_transcode)
+libstream_out_transcode_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_stream_out_transcode)
 # Set LIBADD and DEPENDENCIES manually:
-libstream_out_transcode_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_transcode_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libstream_out_transcode_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_stream_out_transcode)
+libstream_out_transcode_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_stream_out_transcode)
+libstream_out_transcode_plugin_la_DEPENDENCIES =
 

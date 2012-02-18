@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: cae41b4a462f297711e6a4e60524269da19d196a $
+ * $Id: 33e7418bf85bd998ef90e1701da03365a207ee70 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -37,8 +37,6 @@
 /* ffmpeg header */
 #ifdef HAVE_LIBAVCODEC_AVCODEC_H
 #   include <libavcodec/avcodec.h>
-#elif defined(HAVE_FFMPEG_AVCODEC_H)
-#   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
 #endif
@@ -50,7 +48,7 @@
  *****************************************************************************/
 struct decoder_sys_t
 {
-    FFMPEG_COMMON_MEMBERS
+    AVCODEC_COMMON_MEMBERS
 
     /* Temporary buffer for libavcodec */
     int     i_output_max;
@@ -82,43 +80,8 @@ struct decoder_sys_t
 
 static void SetupOutputFormat( decoder_t *p_dec, bool b_trust );
 
-/*****************************************************************************
- * InitAudioDec: initialize audio decoder
- *****************************************************************************
- * The ffmpeg codec will be opened, some memory allocated.
- *****************************************************************************/
-int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
-                      AVCodec *p_codec, int i_codec_id, const char *psz_namecodec )
+static void InitDecoderConfig( decoder_t *p_dec, AVCodecContext *p_context )
 {
-    decoder_sys_t *p_sys;
-
-    /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_dec->p_sys = p_sys = malloc(sizeof(*p_sys)) ) == NULL )
-    {
-        return VLC_ENOMEM;
-    }
-
-    p_codec->type = AVMEDIA_TYPE_AUDIO;
-    p_context->codec_type = AVMEDIA_TYPE_AUDIO;
-    p_context->codec_id = i_codec_id;
-    p_sys->p_context = p_context;
-    p_sys->p_codec = p_codec;
-    p_sys->i_codec_id = i_codec_id;
-    p_sys->psz_namecodec = psz_namecodec;
-    p_sys->b_delayed_open = false;
-
-    /* ***** Fill p_context with init values ***** */
-    p_sys->p_context->sample_rate = p_dec->fmt_in.audio.i_rate;
-    p_sys->p_context->channels = p_dec->fmt_in.audio.i_channels;
-
-    p_sys->p_context->block_align = p_dec->fmt_in.audio.i_blockalign;
-    p_sys->p_context->bit_rate = p_dec->fmt_in.i_bitrate;
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 52, 0, 0 )
-    p_sys->p_context->bits_per_sample = p_dec->fmt_in.audio.i_bitspersample;
-#else
-    p_sys->p_context->bits_per_coded_sample = p_dec->fmt_in.audio.i_bitspersample;
-#endif
-
     if( p_dec->fmt_in.i_extra > 0 )
     {
         const uint8_t * const p_src = p_dec->fmt_in.p_extra;
@@ -151,13 +114,13 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
 
         if( i_size > 0 )
         {
-            p_sys->p_context->extradata =
+            p_context->extradata =
                 malloc( i_size + FF_INPUT_BUFFER_PADDING_SIZE );
-            if( p_sys->p_context->extradata )
+            if( p_context->extradata )
             {
-                uint8_t *p_dst = p_sys->p_context->extradata;
+                uint8_t *p_dst = p_context->extradata;
 
-                p_sys->p_context->extradata_size = i_size;
+                p_context->extradata_size = i_size;
 
                 memcpy( &p_dst[0],            &p_src[i_offset], i_size );
                 memset( &p_dst[i_size], 0, FF_INPUT_BUFFER_PADDING_SIZE );
@@ -166,24 +129,47 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
     }
     else
     {
-        p_sys->p_context->extradata_size = 0;
-        p_sys->p_context->extradata = NULL;
+        p_context->extradata_size = 0;
+        p_context->extradata = NULL;
+    }
+}
+
+/*****************************************************************************
+ * InitAudioDec: initialize audio decoder
+ *****************************************************************************
+ * The ffmpeg codec will be opened, some memory allocated.
+ *****************************************************************************/
+int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
+                      AVCodec *p_codec, int i_codec_id, const char *psz_namecodec )
+{
+    decoder_sys_t *p_sys;
+
+    /* Allocate the memory needed to store the decoder's structure */
+    if( ( p_dec->p_sys = p_sys = malloc(sizeof(*p_sys)) ) == NULL )
+    {
+        return VLC_ENOMEM;
     }
 
+    p_codec->type = AVMEDIA_TYPE_AUDIO;
+    p_context->codec_type = AVMEDIA_TYPE_AUDIO;
+    p_context->codec_id = i_codec_id;
+    p_sys->p_context = p_context;
+    p_sys->p_codec = p_codec;
+    p_sys->i_codec_id = i_codec_id;
+    p_sys->psz_namecodec = psz_namecodec;
+    p_sys->b_delayed_open = true;
+
+    // Initialize decoder extradata
+    InitDecoderConfig( p_dec, p_context);
+
     /* ***** Open the codec ***** */
-    int ret;
-    vlc_avcodec_lock();
-    ret = avcodec_open( p_sys->p_context, p_sys->p_codec );
-    vlc_avcodec_unlock();
-    if( ret < 0 )
+    if( ffmpeg_OpenCodec( p_dec ) < 0 )
     {
         msg_Err( p_dec, "cannot open codec (%s)", p_sys->psz_namecodec );
         free( p_sys->p_context->extradata );
         free( p_sys );
         return VLC_EGENERIC;
     }
-
-    msg_Dbg( p_dec, "ffmpeg codec (%s) started", p_sys->psz_namecodec );
 
     switch( i_codec_id )
     {
@@ -219,7 +205,7 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
 
     /* */
     p_dec->fmt_out.i_cat = AUDIO_ES;
-    /* Try to set as much informations as possible but do not trust it */
+    /* Try to set as much information as possible but do not trust it */
     SetupOutputFormat( p_dec, false );
 
     date_Set( &p_sys->end_date, 0 );
@@ -272,10 +258,24 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
     int i_used, i_output;
     aout_buffer_t *p_buffer;
     block_t *p_block;
+    AVPacket pkt;
 
     if( !pp_block || !*pp_block ) return NULL;
 
     p_block = *pp_block;
+
+    if( !p_sys->p_context->extradata_size && p_dec->fmt_in.i_extra &&
+        p_sys->b_delayed_open)
+    {
+        InitDecoderConfig( p_dec, p_sys->p_context);
+        if( ffmpeg_OpenCodec( p_dec ) )
+            msg_Err( p_dec, "Cannot open decoder %s", p_sys->psz_namecodec );
+    }
+    if( p_sys->b_delayed_open )
+    {
+        block_Release( p_block );
+        return NULL;
+    }
 
     if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
     {
@@ -330,22 +330,12 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
             p_sys->p_output = av_realloc( p_sys->p_output, i_output );
         }
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 53, 0, 0 )
-        AVPacket pkt;
         av_init_packet( &pkt );
         pkt.data = p_block->p_buffer;
         pkt.size = p_block->i_buffer;
         i_used = avcodec_decode_audio3( p_sys->p_context,
-                (int16_t*)p_sys->p_output, &i_output, &pkt );
-#elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 0, 0 )
-        i_used = avcodec_decode_audio2( p_sys->p_context,
                                        (int16_t*)p_sys->p_output, &i_output,
-                                       p_block->p_buffer, p_block->i_buffer );
-#else
-        i_used = avcodec_decode_audio( p_sys->p_context,
-                                       (int16_t*)p_sys->p_output, &i_output,
-                                       p_block->p_buffer, p_block->i_buffer );
-#endif
+                                       &pkt );
 
         if( i_used < 0 || i_output < 0 )
         {
@@ -420,61 +410,6 @@ void EndAudioDec( decoder_t *p_dec )
 /*****************************************************************************
  *
  *****************************************************************************/
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 2, 0 )
-#   define LIBAVCODEC_AUDIO_LAYOUT
-#else
-#   warning "Audio channel layout is unsupported by your avcodec version."
-#endif
-
-#if defined(LIBAVCODEC_AUDIO_LAYOUT)
-static const uint64_t pi_channels_map[][2] =
-{
-    { CH_FRONT_LEFT,        AOUT_CHAN_LEFT },
-    { CH_FRONT_RIGHT,       AOUT_CHAN_RIGHT },
-    { CH_FRONT_CENTER,      AOUT_CHAN_CENTER },
-    { CH_LOW_FREQUENCY,     AOUT_CHAN_LFE },
-    { CH_BACK_LEFT,         AOUT_CHAN_REARLEFT },
-    { CH_BACK_RIGHT,        AOUT_CHAN_REARRIGHT },
-    { CH_FRONT_LEFT_OF_CENTER, 0 },
-    { CH_FRONT_RIGHT_OF_CENTER, 0 },
-    { CH_BACK_CENTER,       AOUT_CHAN_REARCENTER },
-    { CH_SIDE_LEFT,         AOUT_CHAN_MIDDLELEFT },
-    { CH_SIDE_RIGHT,        AOUT_CHAN_MIDDLERIGHT },
-    { CH_TOP_CENTER,        0 },
-    { CH_TOP_FRONT_LEFT,    0 },
-    { CH_TOP_FRONT_CENTER,  0 },
-    { CH_TOP_FRONT_RIGHT,   0 },
-    { CH_TOP_BACK_LEFT,     0 },
-    { CH_TOP_BACK_CENTER,   0 },
-    { CH_TOP_BACK_RIGHT,    0 },
-    { CH_STEREO_LEFT,       0 },
-    { CH_STEREO_RIGHT,      0 },
-};
-#else
-static const uint64_t pi_channels_map[][2] =
-{
-    { 0, AOUT_CHAN_LEFT },
-    { 0, AOUT_CHAN_RIGHT },
-    { 0, AOUT_CHAN_CENTER },
-    { 0, AOUT_CHAN_LFE },
-    { 0, AOUT_CHAN_REARLEFT },
-    { 0, AOUT_CHAN_REARRIGHT },
-    { 0, 0 },
-    { 0, 0 },
-    { 0, AOUT_CHAN_REARCENTER },
-    { 0, AOUT_CHAN_MIDDLELEFT },
-    { 0, AOUT_CHAN_MIDDLERIGHT },
-    { 0, 0 },
-    { 0, 0 },
-    { 0, 0 },
-    { 0, 0 },
-    { 0, 0 },
-    { 0, 0 },
-    { 0, 0 },
-    { 0, 0 },
-    { 0, 0 },
-};
-#endif
 
 void GetVlcAudioFormat( vlc_fourcc_t *pi_codec, unsigned *pi_bits, int i_sample_fmt )
 {
@@ -504,49 +439,57 @@ void GetVlcAudioFormat( vlc_fourcc_t *pi_codec, unsigned *pi_bits, int i_sample_
         break;
     }
 }
+
+static const uint64_t pi_channels_map[][2] =
+{
+    { CH_FRONT_LEFT,        AOUT_CHAN_LEFT },
+    { CH_FRONT_RIGHT,       AOUT_CHAN_RIGHT },
+    { CH_FRONT_CENTER,      AOUT_CHAN_CENTER },
+    { CH_LOW_FREQUENCY,     AOUT_CHAN_LFE },
+    { CH_BACK_LEFT,         AOUT_CHAN_REARLEFT },
+    { CH_BACK_RIGHT,        AOUT_CHAN_REARRIGHT },
+    { CH_FRONT_LEFT_OF_CENTER, 0 },
+    { CH_FRONT_RIGHT_OF_CENTER, 0 },
+    { CH_BACK_CENTER,       AOUT_CHAN_REARCENTER },
+    { CH_SIDE_LEFT,         AOUT_CHAN_MIDDLELEFT },
+    { CH_SIDE_RIGHT,        AOUT_CHAN_MIDDLERIGHT },
+    { CH_TOP_CENTER,        0 },
+    { CH_TOP_FRONT_LEFT,    0 },
+    { CH_TOP_FRONT_CENTER,  0 },
+    { CH_TOP_FRONT_RIGHT,   0 },
+    { CH_TOP_BACK_LEFT,     0 },
+    { CH_TOP_BACK_CENTER,   0 },
+    { CH_TOP_BACK_RIGHT,    0 },
+    { CH_STEREO_LEFT,       0 },
+    { CH_STEREO_RIGHT,      0 },
+};
+
 static void SetupOutputFormat( decoder_t *p_dec, bool b_trust )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 65, 0 )
     GetVlcAudioFormat( &p_dec->fmt_out.i_codec,
                        &p_dec->fmt_out.audio.i_bitspersample,
                        p_sys->p_context->sample_fmt );
-#else
-    p_dec->fmt_out.i_codec = VLC_CODEC_S16N;
-    p_dec->fmt_out.audio.i_bitspersample = 16;
-#endif
     p_dec->fmt_out.audio.i_rate = p_sys->p_context->sample_rate;
 
     /* */
-#if defined(LIBAVCODEC_AUDIO_LAYOUT)
     if( p_sys->i_previous_channels == p_sys->p_context->channels &&
         p_sys->i_previous_layout == p_sys->p_context->channel_layout )
         return;
-#else
-    if( p_sys->i_previous_channels == p_sys->p_context->channels )
-        return;
-#endif
     if( b_trust )
     {
         p_sys->i_previous_channels = p_sys->p_context->channels;
-#if defined(LIBAVCODEC_AUDIO_LAYOUT)
         p_sys->i_previous_layout = p_sys->p_context->channel_layout;
-#endif
     }
 
     /* Specified order
      * FIXME should we use fmt_in.audio.i_physical_channels or not ?
      */
-#if defined(LIBAVCODEC_AUDIO_LAYOUT)
     const unsigned i_order_max = 8 * sizeof(p_sys->p_context->channel_layout);
-#else
-    const unsigned i_order_max = 64;
-#endif
     uint32_t pi_order_src[i_order_max];
     int i_channels_src = 0;
 
-#if defined(LIBAVCODEC_AUDIO_LAYOUT)
     if( p_sys->p_context->channel_layout )
     {
         for( unsigned i = 0; i < sizeof(pi_channels_map)/sizeof(*pi_channels_map); i++ )
@@ -556,7 +499,6 @@ static void SetupOutputFormat( decoder_t *p_dec, bool b_trust )
         }
     }
     else
-#endif
     {
         /* Create default order  */
         if( b_trust )

@@ -2,7 +2,7 @@
  * cvd.c : CVD Subtitle decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: 90635d7498ff9671e6d4f353c7e6b4b958977748 $
+ * $Id: b56d7bc3ccdf4cd39ed96a81b9053ba1af19f703 $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -214,7 +214,6 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
 static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    uint8_t *p_buffer;
 
     if( p_block->i_buffer < SPU_HEADER_LEN )
     {
@@ -223,8 +222,6 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
         block_Release( p_block );
         return NULL;
     }
-
-    p_buffer = p_block->p_buffer;
 
     /* From the scant data on the format, there is only only way known
      * to detect the first packet in a subtitle.  The first packet
@@ -500,7 +497,7 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     int i;
 
     /* Allocate the subpicture internal data. */
-    p_spu = decoder_NewSubpicture( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec, NULL );
     if( !p_spu ) return NULL;
 
     p_spu->i_start = p_data->i_pts;

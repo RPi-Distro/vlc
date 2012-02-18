@@ -2,7 +2,7 @@
  * GotoTime.hpp : GotoTime dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: a173d104af82557b831057bd653112f1320ce34c $
+ * $Id: 38b0676a3f1f7ea558da9dae4a1231255fb631d0 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -39,8 +39,11 @@ private:
 private slots:
     void close();
     void cancel();
+    void reset();
 
     friend class    Singleton<GotoTimeDialog>;
+public:
+    void toggleVisible();
 };
 
 #endif

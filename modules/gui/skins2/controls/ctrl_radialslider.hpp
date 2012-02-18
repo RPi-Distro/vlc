@@ -2,7 +2,7 @@
  * ctrl_radialslider.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a528c2cab5261db80a0d7c99779d9b0955918076 $
+ * $Id: e17852b0a23aa82bbb689a41c8b985622fe334f0 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -55,7 +55,7 @@ public:
     virtual bool mouseOver( int x, int y ) const;
 
     /// Draw the control on the given graphics
-    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Get the type of control (custom RTTI)
     virtual string getType() const { return "radial_slider"; }

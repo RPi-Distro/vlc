@@ -2,7 +2,7 @@
  * ctrl_move.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f4cf8880fdb7b3c07d27183357d41fe728ac133a $
+ * $Id: 39700c839b270c110318596b40ff117d07fd9d07 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -66,9 +66,9 @@ bool CtrlMove::mouseOver( int x, int y ) const
 }
 
 
-void CtrlMove::draw( OSGraphics &rImage, int xDest, int yDest )
+void CtrlMove::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
 {
-    m_rCtrl.draw( rImage, xDest, yDest );
+    m_rCtrl.draw( rImage, xDest, yDest, w, h );
 }
 
 

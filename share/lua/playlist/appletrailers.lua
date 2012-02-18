@@ -3,7 +3,7 @@
    movie URL
 
  $Id$
- Copyright © 2007 the VideoLAN team
+ Copyright © 2007-2010 the VideoLAN team
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 -- Probe function.
 function probe()
     return vlc.access == "http"
-        and string.match( vlc.path, "www.apple.com/trailers" ) 
+        and string.match( vlc.path, "trailers.apple.com" )
 end
 
 function find( haystack, needle )
@@ -31,38 +31,62 @@ function find( haystack, needle )
     return r
 end
 
+function sort(a, b)
+    if(a == nil) then return false end
+    if(b == nil) then return false end
+
+    local str_a
+    local str_b
+
+    if(string.find(a.name, '%(') == 1) then
+        str_a = tonumber(string.sub(a.name, 2, string.find(a.name, 'p') - 1))
+        str_b = tonumber(string.sub(b.name, 2, string.find(b.name, 'p') - 1))
+    else
+        str_a = string.sub(a.name, 1, string.find(a.name, '%(') - 2)
+        str_b = string.sub(b.name, 1, string.find(b.name, '%(') - 2)
+        if(str_a == str_b) then
+            str_a = tonumber(string.sub(a.name, string.len(str_a) + 3, string.find(a.name, 'p', string.len(str_a) + 3) - 1))
+            str_b = tonumber(string.sub(b.name, string.len(str_b) + 3, string.find(b.name, 'p', string.len(str_b) + 3) - 1))
+        end
+    end
+    if(str_a > str_b) then return false else return true end
+end
+
 -- Parse function.
 function parse()
-    p = {}
+    local playlist = {}
+    local description = ''
+    local art_url = ''
+
     while true
     do 
         line = vlc.readline()
         if not line then break end
-        for path in string.gmatch( line, "http://movies.apple.com/movies/.-%.mov" ) do
-            path = vlc.strings.decode_uri( path )
-            if string.match( path, "320" ) then
-                extraname = " (320p)"
-            elseif string.match( path, "480" ) then
-                extraname = " (480p)"
-            elseif string.match( path, "640" ) then
-                extraname = " (640p)"
-            elseif string.match( path, "720" ) then
-                extraname = " (720p)"
-            elseif string.match( path, "1080" ) then
-                extraname = " (1080p)"
-            else
-                extraname = ""
+
+        if string.match( line, "class=\".-first" ) then
+            description = find( line, "h%d.->(.-)</h%d") .. ' '
+        end
+        if string.match( line, 'img src=') then
+            for img in string.gmatch(line, '<img src="(http://.*\.jpg)" ') do
+                art_url = img
             end
-            table.insert( p, { path = path; name = title..extraname; description = description; url = vlc.path; options = ":http-user-agent=\"QuickTime\"" } )
+            for i,value in pairs(playlist) do
+                if value.arturl == '' then
+                    playlist[i].arturl = art_url
+                else break end
+            end
         end
-        if string.match( line, "<title>" )
-        then
-            title = vlc.strings.decode_uri( find( line, "<title>(.-)<" ) )
-        end
-        if string.match( line, "<meta name=\"Description\"" )
-        then
-            description = vlc.strings.resolve_xml_special_chars( find( line, "name=\"Description\" content=\"(.-)\"" ) )
+        if string.match( line, "class=\"hd\".-\.mov") then
+            for urlline,resolution in string.gmatch(line, "class=\"hd\".-href=\"(.-.mov)\".-(%d+.-p)") do
+                urlline = string.gsub( urlline, "_"..resolution, "_h"..resolution )
+                table.insert( playlist, { path = urlline,
+                                          name = description ..  '(' .. resolution .. ')',
+                                          arturl = art_url,
+                                          options = {":http-user-agent=QuickTime/7.5", ":play-and-pause"} } )
+            end
         end
     end
-    return p
+
+    table.sort(playlist, sort)
+    return playlist
 end

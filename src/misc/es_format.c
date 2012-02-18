@@ -1,24 +1,24 @@
 /*****************************************************************************
  * es_format.c : es_format_t helpers.
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id: cad689af8f8267c107e1aed2959e9ea9c1832509 $
+ * Copyright (C) 2008 VLC authors and VideoLAN
+ * $Id: 51741fecadc20bbe4a3aff70d28b1f250d175fca $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -206,6 +206,33 @@ void video_format_Setup( video_format_t *p_fmt, vlc_fourcc_t i_chroma,
         break;
     }
 }
+
+void video_format_CopyCrop( video_format_t *p_dst, const video_format_t *p_src )
+{
+    p_dst->i_x_offset       = p_src->i_x_offset;
+    p_dst->i_y_offset       = p_src->i_y_offset;
+    p_dst->i_visible_width  = p_src->i_visible_width;
+    p_dst->i_visible_height = p_src->i_visible_height;
+}
+
+void video_format_ScaleCropAr( video_format_t *p_dst, const video_format_t *p_src )
+{
+    p_dst->i_x_offset       = (uint64_t)p_src->i_x_offset       * p_dst->i_width  / p_src->i_width;
+    p_dst->i_y_offset       = (uint64_t)p_src->i_y_offset       * p_dst->i_height / p_src->i_height;
+    p_dst->i_visible_width  = (uint64_t)p_src->i_visible_width  * p_dst->i_width  / p_src->i_width;
+    p_dst->i_visible_height = (uint64_t)p_src->i_visible_height * p_dst->i_height / p_src->i_height;
+
+    p_dst->i_sar_num *= p_src->i_width;
+    p_dst->i_sar_den *= p_dst->i_width;
+    vlc_ureduce(&p_dst->i_sar_num, &p_dst->i_sar_den,
+                p_dst->i_sar_num, p_dst->i_sar_den, 65536);
+
+    p_dst->i_sar_num *= p_dst->i_height;
+    p_dst->i_sar_den *= p_src->i_height;
+    vlc_ureduce(&p_dst->i_sar_num, &p_dst->i_sar_den,
+                p_dst->i_sar_num, p_dst->i_sar_den, 65536);
+}
+
 bool video_format_IsSimilar( const video_format_t *p_fmt1, const video_format_t *p_fmt2 )
 {
     video_format_t v1 = *p_fmt1;
@@ -218,6 +245,8 @@ bool video_format_IsSimilar( const video_format_t *p_fmt1, const video_format_t 
         v1.i_visible_width != v2.i_visible_width ||
         v1.i_visible_height != v2.i_visible_height ||
         v1.i_x_offset != v2.i_x_offset || v1.i_y_offset != v2.i_y_offset )
+        return false;
+    if( v1.i_sar_num * v2.i_sar_den != v2.i_sar_num * v1.i_sar_den )
         return false;
 
     if( v1.i_chroma == VLC_CODEC_RGB15 ||
@@ -234,6 +263,18 @@ bool video_format_IsSimilar( const video_format_t *p_fmt1, const video_format_t 
             return false;
     }
     return true;
+}
+void video_format_Print( vlc_object_t *p_this,
+                         const char *psz_text, const video_format_t *fmt )
+{
+    msg_Dbg( p_this,
+             "%s sz %ix%i, of (%i,%i), vsz %ix%i, 4cc %4.4s, sar %i:%i, msk r0x%x g0x%x b0x%x",
+             psz_text,
+             fmt->i_width, fmt->i_height, fmt->i_x_offset, fmt->i_y_offset,
+             fmt->i_visible_width, fmt->i_visible_height,
+             (char*)&fmt->i_chroma,
+             fmt->i_sar_num, fmt->i_sar_den,
+             fmt->i_rmask, fmt->i_gmask, fmt->i_bmask );
 }
 
 void es_format_Init( es_format_t *fmt,

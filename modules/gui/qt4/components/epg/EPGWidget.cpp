@@ -2,7 +2,7 @@
  * EPGWidget.h : EPGWidget
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 3bc91ac7a16fa68eea5ced50f4bf95300a5b4973 $
+ * $Id: ddb10d458680619fd2d3ab4309f3c80b9dfe08a9 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -27,14 +27,25 @@
 
 #include "EPGWidget.hpp"
 
+#include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QScrollBar>
-#include <QDebug>
 #include <QLabel>
+#include <QStringList>
 #include "qt4.hpp"
+#include "input_manager.hpp"
+#include <vlc_common.h>
+#include <vlc_epg.h>
+
+enum
+{
+    EPGVIEW_WIDGET = 0,
+    NOEPG_WIDGET = 1
+};
 
 EPGWidget::EPGWidget( QWidget *parent ) : QWidget( parent )
 {
+    b_input_type_known = false;
     m_rulerWidget = new EPGRuler( this );
     m_epgView = new EPGView( this );
     m_channelsWidget = new EPGChannels( this, m_epgView );
@@ -44,23 +55,45 @@ EPGWidget::EPGWidget( QWidget *parent ) : QWidget( parent )
     m_epgView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setZoom( 1 );
 
+    rootWidget = new QStackedWidget( this );
+
+    QWidget *containerWidget = new QWidget( this );
     QGridLayout* layout = new QGridLayout( this );
     layout->addWidget( m_rulerWidget, 0, 1 );
     layout->addWidget( m_channelsWidget, 1, 0 );
     layout->addWidget( m_epgView, 1, 1 );
     layout->setSpacing( 0 );
+    containerWidget->setLayout( layout );
+    rootWidget->insertWidget( EPGVIEW_WIDGET, containerWidget );
+
+    QLabel *noepgLabel = new QLabel( qtr("No EPG Data Available"), this );
+    noepgLabel->setAlignment( Qt::AlignCenter );
+    rootWidget->insertWidget( NOEPG_WIDGET, noepgLabel );
+
+    rootWidget->setCurrentIndex( 1 );
+    layout = new QGridLayout( this );
+    layout->addWidget( rootWidget );
     setLayout( layout );
 
-    connect( m_epgView, SIGNAL( startTimeChanged(QDateTime) ),
-             m_rulerWidget, SLOT( setStartTime(QDateTime) ) );
-    connect( m_epgView, SIGNAL( durationChanged(int) ),
-             m_rulerWidget, SLOT( setDuration(int) ) );
-    connect( m_epgView->horizontalScrollBar(), SIGNAL( valueChanged(int) ),
-             m_rulerWidget, SLOT( setOffset(int) ) );
-    connect( m_epgView->verticalScrollBar(), SIGNAL( valueChanged(int) ),
-             m_channelsWidget, SLOT( setOffset(int) ) );
-    connect( m_epgView, SIGNAL( eventFocusedChanged(EPGEvent*)),
-             this, SIGNAL(itemSelectionChanged(EPGEvent*)) );
+    CONNECT( m_epgView, startTimeChanged(QDateTime),
+             m_rulerWidget, setStartTime(QDateTime) );
+    CONNECT( m_epgView, durationChanged(int),
+             m_rulerWidget, setDuration(int) );
+    CONNECT( m_epgView->horizontalScrollBar(), valueChanged(int),
+             m_rulerWidget, setOffset(int) );
+    CONNECT( m_epgView->verticalScrollBar(), valueChanged(int),
+             m_channelsWidget, setOffset(int) );
+    connect( m_epgView, SIGNAL( itemFocused(EPGItem*)),
+             this, SIGNAL(itemSelectionChanged(EPGItem*)) );
+    CONNECT( m_epgView, channelAdded(QString), m_channelsWidget, addChannel(QString) );
+    CONNECT( m_epgView, channelRemoved(QString), m_channelsWidget, removeChannel(QString) );
+}
+
+void EPGWidget::reset()
+{
+    m_epgView->reset();
+    m_epgView->updateDuration();
+    m_epgView->updateStartTime();
 }
 
 void EPGWidget::setZoom( int level )
@@ -70,73 +103,39 @@ void EPGWidget::setZoom( int level )
     m_rulerWidget->setScale( scale );
 }
 
-void EPGWidget::updateEPG( vlc_epg_t **pp_epg, int i_epg )
+void EPGWidget::updateEPG( input_item_t *p_input_item )
 {
-    for ( int i = 0; i < i_epg; ++i )
-    {
-        vlc_epg_t *p_epg = pp_epg[i];
-        QString channelName = qfu( p_epg->psz_name );
+    if( !p_input_item ) return;
 
+    /* flush our EPG data if input type has changed */
+    if ( b_input_type_known && p_input_item->i_type != i_event_source_type ) m_epgView->reset();
+    i_event_source_type = p_input_item->i_type;
+    b_input_type_known = true;
+
+    m_epgView->cleanup(); /* expire items and flags */
+    /* Fixme: input could have dissapeared */
+    vlc_mutex_lock(  & p_input_item->lock );
+
+    for ( int i = 0; i < p_input_item->i_epg; ++i )
+    {
+        vlc_epg_t *p_epg = p_input_item->pp_epg[i];
+
+        /* Read current epg events from libvlc and try to insert them */
         for ( int j = 0; j < p_epg->i_event; ++j )
         {
             vlc_epg_event_t *p_event = p_epg->pp_event[j];
-            QString eventName = qfu( p_event->psz_name );
-            QDateTime eventStart = QDateTime::fromTime_t( p_event->i_start );
-
-            QList<EPGEvent*> events = m_events.values( channelName );
-
-            EPGEvent *item = new EPGEvent( eventName );
-            item->description = qfu( p_event->psz_description );
-            item->shortDescription = qfu( p_event->psz_short_description );
-            item->start = eventStart;
-            item->duration = p_event->i_duration;
-            item->channelName = channelName;
-            item->current = ( p_epg->p_current == p_event ) ? true : false;
-
-            bool alreadyIn = false;
-
-            for ( int k = 0; k < events.count(); ++k )
-            {
-                if ( *events.at( k ) == *item )
-                {
-                    alreadyIn = true;
-                    events.at( k )->updated = true;
-                    break;
-                }
-            }
-
-            if ( !alreadyIn )
-            {
-                m_events.insert( channelName, item );
-                m_epgView->addEvent( item );
-            }
-            else
-                delete item;
+            m_epgView->addEPGEvent( p_event, qfu( p_epg->psz_name ),
+                                    ( p_epg->p_current == p_event ) );
         }
     }
+    vlc_mutex_unlock( & p_input_item->lock );
 
-    // Remove old items
-    QMultiMap<QString, EPGEvent*>::iterator i = m_events.begin();
-    while ( i != m_events.end() )
-    {
-        EPGEvent* item = i.value();
-        if ( !item->updated )
-        {
-            m_epgView->delEvent( item );
-            delete item;
-            i--;
-            m_events.erase( i + 1 );
-        }
-        else
-            item->updated = false;
-
-        ++i;
-    }
+    /* toggle our widget view */
+    rootWidget->setCurrentIndex(
+            m_epgView->hasValidData() ? EPGVIEW_WIDGET : NOEPG_WIDGET );
 
     // Update the global duration and start time.
     m_epgView->updateDuration();
     m_epgView->updateStartTime();
-    // Udate the channel list.
-    m_channelsWidget->update();
 }
 

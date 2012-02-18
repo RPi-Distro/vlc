@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2007 Vincent Penne
  * Some code converted from ProjectX java dvb decoder (c) 2001-2005 by dvb.matt
- * $Id: d3aeb83d4fab800fdfd9fa241ae326d6d6250289 $
+ * $Id: 2b01e6a460b7c3693bccd690e3dbc018832d2777 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,11 +75,11 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_SCODEC )
     set_callbacks( Open, Close )
 
-    add_integer( "telx-override-page", -1, NULL,
+    add_integer( "telx-override-page", -1,
                  OVERRIDE_PAGE_TEXT, OVERRIDE_PAGE_LONGTEXT, true )
-    add_bool( "telx-ignore-subtitle-flag", false, NULL,
+    add_bool( "telx-ignore-subtitle-flag", false,
               IGNORE_SUB_FLAG_TEXT, IGNORE_SUB_FLAG_LONGTEXT, true )
-    add_bool( "telx-french-workaround", false, NULL,
+    add_bool( "telx-french-workaround", false,
               FRENCH_WORKAROUND_TEXT, FRENCH_WORKAROUND_LONGTEXT, true )
 
 vlc_module_end ()
@@ -685,7 +685,7 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     strcpy( p_sys->psz_prev_text, psz_text );
 
     /* Create the subpicture unit */
-    p_spu = decoder_NewSubpicture( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec, NULL );
     if( !p_spu )
     {
         msg_Warn( p_dec, "can't get spu buffer" );

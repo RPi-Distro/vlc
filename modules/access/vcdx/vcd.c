@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 4d94ed0d3ac687de2fec3177eb3fda32c92102e4 $
+ * $Id: ea9a4ae98b0a5f1aaf593e3dd5a2cf50883e4682 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -92,44 +92,38 @@ vlc_module_begin ()
     set_callbacks( VCDOpen, VCDClose )
 
     /* Configuration options */
-    add_integer ( MODULE_STRING "-debug", 0, NULL,
+    add_integer ( MODULE_STRING "-debug", 0,
                   N_("If nonzero, this gives additional debug information."),
                   DEBUG_LONGTEXT, true )
 
     add_integer ( MODULE_STRING "-blocks-per-read", 20,
-          NULL,
                   N_("Number of CD blocks to get in a single read."),
                   N_("Number of CD blocks to get in a single read."),
           true )
 
-    add_bool( MODULE_STRING "-PBC", false, NULL,
+    add_bool( MODULE_STRING "-PBC", false,
               N_("Use playback control?"),
               N_("If VCD is authored with playback control, use it. "
                  "Otherwise we play by tracks."),
               false )
 
     add_bool( MODULE_STRING "-track-length", true,
-          NULL,
               N_("Use track length as maximum unit in seek?"),
               N_("If set, the length of the seek bar is the track rather than "
          "the length of an entry."),
               false )
 
-    add_bool( MODULE_STRING "-extended-info", false, NULL,
+    add_bool( MODULE_STRING "-extended-info", false,
               N_("Show extended VCD info?"),
               N_("Show the maximum amount of information under Stream and "
                  "Media Info. Shows for example playback control navigation."),
               false )
 
-    add_string( MODULE_STRING "-author-format",
-                "%v - %F disc %c of %C",
-                NULL,
+    add_string( MODULE_STRING "-author-format", "%v - %F disc %c of %C",
                 N_("Format to use in the playlist's \"author\" field."),
                 VCD_TITLE_FMT_LONGTEXT, true )
 
-    add_string( MODULE_STRING "-title-format",
-                "%I %N %L%S - %M %A %v - disc %c of %C %F",
-                NULL,
+    add_string( MODULE_STRING "-title-format", "%I %N %L%S - %M %A %v - disc %c of %C %F",
                 N_("Format to use in the playlist's \"title\" field."),
                 VCD_TITLE_FMT_LONGTEXT, false )
 

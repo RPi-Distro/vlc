@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: c36adefcfc41aee18fa14cc1687408b74fabc7c4 $
+ * $Id: 8850f5d511f15a043a8944fb46b37f5d2ae701d9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -66,15 +66,15 @@ vlc_module_begin ()
     set_description( N_("Windows Service interface") )
     set_category( CAT_INTERFACE )
     set_subcategory( SUBCAT_INTERFACE_CONTROL )
-    add_bool( "ntservice-install", false, NULL,
+    add_bool( "ntservice-install", false,
               INSTALL_TEXT, INSTALL_LONGTEXT, true )
-    add_bool( "ntservice-uninstall", false, NULL,
+    add_bool( "ntservice-uninstall", false,
               UNINSTALL_TEXT, UNINSTALL_LONGTEXT, true )
-    add_string ( "ntservice-name", VLCSERVICENAME, NULL,
+    add_string ( "ntservice-name", VLCSERVICENAME,
                  NAME_TEXT, NAME_LONGTEXT, true )
-    add_string ( "ntservice-options", NULL, NULL,
+    add_string ( "ntservice-options", NULL,
                  OPTIONS_TEXT, OPTIONS_LONGTEXT, true )
-    add_string ( "ntservice-extraintf", NULL, NULL,
+    add_string ( "ntservice-extraintf", NULL,
                  EXTRAINTF_TEXT, EXTRAINTF_LONGTEXT, true )
 
     set_capability( "interface", 0 )

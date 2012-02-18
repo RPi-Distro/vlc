@@ -7,7 +7,7 @@
  *          ##
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 5dae97ea899137d0020189b98a1a9558bcddc7d7 $
+ * $Id: 6301535d0b68d9638c4a4d07b3b0e4fd4db61156 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  * Rewritten: David Flynn <davidf at rd.bbc.co.uk>
@@ -205,106 +205,106 @@ vlc_module_begin()
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_description( N_("Dirac video encoder using dirac-research library") )
     set_shortname( "Dirac" )
-    set_capability( "encoder", 110 )
+    set_capability( "encoder", 100 )
     set_callbacks( OpenEncoder, CloseEncoder )
 
-    add_float( ENC_CFG_PREFIX ENC_QUALITY_FACTOR, 5.5, NULL,
+    add_float( ENC_CFG_PREFIX ENC_QUALITY_FACTOR, 5.5,
                ENC_QUALITY_FACTOR_TEXT, ENC_QUALITY_FACTOR_LONGTEXT, false )
     change_float_range(0., 10.);
 
-    add_integer( ENC_CFG_PREFIX ENC_TARGETRATE, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_TARGETRATE, -1,
                  ENC_TARGETRATE_TEXT, ENC_TARGETRATE_LONGTEXT, false )
     change_integer_range(-1, INT_MAX);
 
-    add_bool( ENC_CFG_PREFIX ENC_LOSSLESS, false, NULL,
+    add_bool( ENC_CFG_PREFIX ENC_LOSSLESS, false,
               ENC_LOSSLESS_TEXT, ENC_LOSSLESS_LONGTEXT, false )
 
-    add_string( ENC_CFG_PREFIX ENC_PREFILTER, "diaglp", NULL,
+    add_string( ENC_CFG_PREFIX ENC_PREFILTER, "diaglp",
                 ENC_PREFILTER_TEXT, ENC_PREFILTER_LONGTEXT, false )
     change_string_list( enc_prefilter_list, enc_prefilter_list_text, 0 );
 
-    add_integer( ENC_CFG_PREFIX ENC_PREFILTER_STRENGTH, 1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_PREFILTER_STRENGTH, 1,
                  ENC_PREFILTER_STRENGTH_TEXT, ENC_PREFILTER_STRENGTH_LONGTEXT, false )
     change_integer_range(0, 10);
 
-    add_string( ENC_CFG_PREFIX ENC_CHROMAFMT, "420", NULL,
+    add_string( ENC_CFG_PREFIX ENC_CHROMAFMT, "420",
                 ENC_CHROMAFMT_TEXT, ENC_CHROMAFMT_LONGTEXT, false )
     change_string_list( enc_chromafmt_list, enc_chromafmt_list_text, 0 );
 
-    add_integer( ENC_CFG_PREFIX ENC_L1SEP, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_L1SEP, -1,
                  ENC_L1SEP_TEXT, ENC_L1SEP_LONGTEXT, false )
     change_integer_range(-1, INT_MAX);
 
-    add_integer( ENC_CFG_PREFIX ENC_L1NUM, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_L1NUM, -1,
                  ENC_L1NUM_TEXT, ENC_L1NUM_LONGTEXT, false )
     change_integer_range(-1, INT_MAX);
 
-    add_string( ENC_CFG_PREFIX ENC_CODINGMODE, "auto", NULL,
+    add_string( ENC_CFG_PREFIX ENC_CODINGMODE, "auto",
                 ENC_CODINGMODE_TEXT, ENC_CODINGMODE_LONGTEXT, false )
     change_string_list( enc_codingmode_list, enc_codingmode_list_text, 0 );
 
-    add_string( ENC_CFG_PREFIX ENC_MVPREC, "1/2", NULL,
+    add_string( ENC_CFG_PREFIX ENC_MVPREC, "1/2",
                 ENC_MVPREC_TEXT, ENC_MVPREC_LONGTEXT, false )
     change_string_list( enc_mvprec_list, enc_mvprec_list, 0 );
 
-    add_integer( ENC_CFG_PREFIX ENC_MCBLK_WIDTH, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_MCBLK_WIDTH, -1,
                  ENC_MCBLK_WIDTH_TEXT, ENC_MCBLK_WIDTH_LONGTEXT, false )
     change_integer_range(-1, INT_MAX);
 
-    add_integer( ENC_CFG_PREFIX ENC_MCBLK_HEIGHT, -1, NULL,
-                 ENC_MCBLK_HEIGHT, ENC_MCBLK_HEIGHT_LONGTEXT, false )
+    add_integer( ENC_CFG_PREFIX ENC_MCBLK_HEIGHT, -1,
+                 ENC_MCBLK_HEIGHT_TEXT, ENC_MCBLK_HEIGHT_LONGTEXT, false )
     change_integer_range(-1, INT_MAX);
 
-    add_integer( ENC_CFG_PREFIX ENC_MCBLK_OVERLAP, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_MCBLK_OVERLAP, -1,
                  ENC_MCBLK_OVERLAP_TEXT, ENC_MCBLK_OVERLAP_LONGTEXT, false )
     change_integer_range(-1, 100);
 
     /* advanced option only */
-    add_integer( ENC_CFG_PREFIX ENC_MCBLK_XBLEN, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_MCBLK_XBLEN, -1,
                  ENC_MCBLK_XBLEN_TEXT, ENC_MCBLK_XBLEN_LONGTEXT, true )
     change_integer_range(-1, INT_MAX);
     /* advanced option only */
-    add_integer( ENC_CFG_PREFIX ENC_MCBLK_YBLEN, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_MCBLK_YBLEN, -1,
                  ENC_MCBLK_YBLEN_TEXT, ENC_MCBLK_YBLEN_LONGTEXT, true )
     change_integer_range(-1, INT_MAX);
 
-    add_string( ENC_CFG_PREFIX ENC_ME_SIMPLESEARCH, "", NULL,
+    add_string( ENC_CFG_PREFIX ENC_ME_SIMPLESEARCH, "",
               ENC_ME_SIMPLESEARCH_TEXT, ENC_ME_SIMPLESEARCH_LONGTEXT, false )
 
 #if DIRAC_RESEARCH_VERSION_ATLEAST(1,0,1)
-    add_bool( ENC_CFG_PREFIX ENC_ME_COMBINED, true, NULL,
+    add_bool( ENC_CFG_PREFIX ENC_ME_COMBINED, true,
               ENC_ME_COMBINED_TEXT, ENC_ME_COMBINED_LONGTEXT, false )
 #endif
 
-    add_integer( ENC_CFG_PREFIX ENC_DWTINTRA, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_DWTINTRA, -1,
                  ENC_DWTINTRA_TEXT, ENC_DWTINTRA_LONGTEXT, false )
     change_integer_range(-1, 6);
 
-    add_integer( ENC_CFG_PREFIX ENC_DWTINTER, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_DWTINTER, -1,
                  ENC_DWTINTER_TEXT, ENC_DWTINTER_LONGTEXT, false )
     change_integer_range(-1, 6);
 
-    add_integer( ENC_CFG_PREFIX ENC_DWTDEPTH, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_DWTDEPTH, -1,
                  ENC_DWTDEPTH_TEXT, ENC_DWTDEPTH_LONGTEXT, false )
     change_integer_range(-1, 4);
 
     /* advanced option only */
     /* NB, unforunately vlc doesn't have a concept of 'dont care' */
-    add_integer( ENC_CFG_PREFIX ENC_MULTIQUANT, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_MULTIQUANT, -1,
                  ENC_MULTIQUANT_TEXT, ENC_MULTIQUANT_LONGTEXT, true )
     change_integer_range(-1, 1);
 
     /* advanced option only */
     /* NB, unforunately vlc doesn't have a concept of 'dont care' */
-    add_integer( ENC_CFG_PREFIX ENC_SPARTITION, -1, NULL,
+    add_integer( ENC_CFG_PREFIX ENC_SPARTITION, -1,
                  ENC_SPARTITION_TEXT, ENC_SPARTITION_LONGTEXT, true )
     change_integer_range(-1, 1);
 
-    add_bool( ENC_CFG_PREFIX ENC_NOAC, false, NULL,
+    add_bool( ENC_CFG_PREFIX ENC_NOAC, false,
               ENC_NOAC_TEXT, ENC_NOAC_LONGTEXT, false )
 
     /* advanced option only */
-    add_float( ENC_CFG_PREFIX ENC_CPD, -1, NULL,
+    add_float( ENC_CFG_PREFIX ENC_CPD, -1,
                ENC_CPD_TEXT, ENC_CPD_LONGTEXT, true )
     change_integer_range(-1, INT_MAX);
 vlc_module_end()
@@ -781,6 +781,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
     int i_plane, i_line, i_width, i_src_stride;
     uint8_t *p_dst;
 
+    if( !p_pic ) return NULL;
     /* we only know if the sequence is interlaced when the first
      * picture arrives, so final setup is done here */
     /* XXX todo, detect change of interlace */

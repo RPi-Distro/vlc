@@ -3,7 +3,7 @@
  *         using libcdio, libvcd and libvcdinfo
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: caf31ad69f16e05508f8e158ce0f835192a3d737 $
+ * $Id: 392f3090501d9100054fe5d6b5070935f9f9184e $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -34,7 +34,6 @@ typedef struct {
 #ifdef FINISHED
     vcdplay_ptr             vmg;
 #endif
-    intf_thread_t *         p_intf;
 
 #ifdef DEMUX_FINISHED
     int                     i_audio_nb;

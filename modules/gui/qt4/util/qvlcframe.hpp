@@ -2,7 +2,7 @@
  * qvlcframe.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 6bb960fccce5f7ffb98a734aca0c72b57bc90f3d $
+ * $Id: 832a5bdcfb34e76ae75713e531e8b3d46c6fc0ac $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -42,7 +42,7 @@ class QVLCTools
        /*
         use this function to save a widgets screen position
         only for windows / dialogs which are floating, if a
-        window is docked into an other - don't all this function
+        window is docked into another - don't all this function
         or it may write garbage to position info!
        */
        static void saveWidgetPosition( QSettings *settings, QWidget *widget)
@@ -101,11 +101,7 @@ class QVLCTools
 class QVLCFrame : public QWidget
 {
 public:
-#ifdef __APPLE__
-    QVLCFrame( intf_thread_t *_p_intf ) : QWidget( NULL, Qt::Window ), p_intf( _p_intf )
-#else
     QVLCFrame( intf_thread_t *_p_intf ) : QWidget( NULL ), p_intf( _p_intf )
-#endif
     {};
     virtual ~QVLCFrame()   {};
 
@@ -192,9 +188,7 @@ protected:
 class QVLCMW : public QMainWindow
 {
 public:
-    QVLCMW( intf_thread_t *_p_intf ) : QMainWindow( NULL ), p_intf( _p_intf )
-    {    }
-    virtual ~QVLCMW() {};
+    QVLCMW( intf_thread_t *_p_intf ) : QMainWindow( NULL ), p_intf( _p_intf ){}
     void toggleVisible()
     {
         if( isVisible() ) hide();

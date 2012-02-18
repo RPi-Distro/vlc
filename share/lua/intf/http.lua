@@ -23,7 +23,6 @@
 
 --[==========================================================================[
 Configuration options:
- * host: A host to listen on.
  * dir: Directory to use as the http interface's root.
  * no_error_detail: If set, do not print the Lua error message when generating
                     a page fails.
@@ -41,6 +40,7 @@ close_tag = "?>"
 -- TODO: use internal VLC mime lookup function for mimes not included here
 local mimes = {
     txt = "text/plain",
+    json = "text/plain",
     html = "text/html",
     xml = "text/xml",
     js = "text/javascript",
@@ -211,7 +211,7 @@ function rawfile(h,path,url,acl_)
             else
                 vlc.msg.dbg("Reloading `"..filename.."'")
             end
-            page = io.open(filename):read("*a")
+            page = io.open(filename,"rb"):read("*a")
             mtime = new_mtime
         end
         return page
@@ -311,8 +311,13 @@ local function load_dir(dir,root,parent_acl)
     return my_acl
 end
 
-local u = vlc.net.url_parse( config.host or "0.0.0.0:8080" )
-h = vlc.httpd(u.host,u.port)
+if config.host then
+    vlc.msg.err("\""..config.host.."\" HTTP host ignored")
+    local port = string.match(config.host, ":(%d+)[^]]*$")
+    vlc.msg.info("Pass --http-host=IP "..(port and "and --http-port="..port.." " or "").."on the command line instead.")
+end
+
+h = vlc.httpd()
 local root_acl = load_dir( http_dir )
 local a = h:handler("/art",nil,nil,root_acl,callback_art,nil)
 

@@ -3,130 +3,113 @@
 
 basedir = audio_output
 dir = audio_output
-mods = alsa aout_directx aout_file aout_sdl auhal hd1000a jack oss portaudio pulse waveout
-libvlc_LTLIBRARIES =  $(LTLIBalsa) $(LTLIBaout_directx) $(LTLIBaout_sdl) $(LTLIBauhal) $(LTLIBhd1000a) $(LTLIBjack) $(LTLIBoss) $(LTLIBportaudio) $(LTLIBpulse) $(LTLIBwaveout)
-EXTRA_LTLIBRARIES =  libalsa_plugin.la libaout_directx_plugin.la libaout_sdl_plugin.la libauhal_plugin.la libhd1000a_plugin.la libjack_plugin.la liboss_plugin.la libportaudio_plugin.la libpulse_plugin.la libwaveout_plugin.la
+mods = aout_directx aout_file audioqueue auhal jack opensles_android portaudio waveout
+libvlc_LTLIBRARIES =  $(LTLIBaout_directx) $(LTLIBaudioqueue) $(LTLIBauhal) $(LTLIBjack) $(LTLIBopensles_android) $(LTLIBportaudio) $(LTLIBwaveout)
+EXTRA_LTLIBRARIES =  libaout_directx_plugin.la libaudioqueue_plugin.la libauhal_plugin.la libjack_plugin.la libopensles_android_plugin.la libportaudio_plugin.la libwaveout_plugin.la
 
 include $(top_srcdir)/modules/common.am
-
-# The alsa plugin
-libalsa_plugin_la_SOURCES = $(SOURCES_alsa)
-nodist_libalsa_plugin_la_SOURCES = $(nodist_SOURCES_alsa)
-# Force per-target objects:
-libalsa_plugin_la_CFLAGS = $(AM_CFLAGS)
-libalsa_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libalsa_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libalsa_plugin_la_LIBADD = $(AM_LIBADD)
-libalsa_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The aout_directx plugin
 libaout_directx_plugin_la_SOURCES = $(SOURCES_aout_directx)
 nodist_libaout_directx_plugin_la_SOURCES = $(nodist_SOURCES_aout_directx)
 # Force per-target objects:
-libaout_directx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaout_directx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaout_directx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaout_directx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_aout_directx)
+libaout_directx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_aout_directx)
+libaout_directx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_aout_directx)
+libaout_directx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_aout_directx)
 # Set LIBADD and DEPENDENCIES manually:
-libaout_directx_plugin_la_LIBADD = $(AM_LIBADD)
-libaout_directx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaout_directx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_aout_directx)
+libaout_directx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_aout_directx)
+libaout_directx_plugin_la_DEPENDENCIES =
 
 # The aout_file plugin
 libaout_file_plugin_la_SOURCES = $(SOURCES_aout_file)
 nodist_libaout_file_plugin_la_SOURCES = $(nodist_SOURCES_aout_file)
 # Force per-target objects:
-libaout_file_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaout_file_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaout_file_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaout_file_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_aout_file)
+libaout_file_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_aout_file)
+libaout_file_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_aout_file)
+libaout_file_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_aout_file)
 # Set LIBADD and DEPENDENCIES manually:
-libaout_file_plugin_la_LIBADD = $(AM_LIBADD)
-libaout_file_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaout_file_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_aout_file)
+libaout_file_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_aout_file)
+libaout_file_plugin_la_DEPENDENCIES =
 
-# The aout_sdl plugin
-libaout_sdl_plugin_la_SOURCES = $(SOURCES_aout_sdl)
-nodist_libaout_sdl_plugin_la_SOURCES = $(nodist_SOURCES_aout_sdl)
+# The audioqueue plugin
+libaudioqueue_plugin_la_SOURCES = $(SOURCES_audioqueue)
+nodist_libaudioqueue_plugin_la_SOURCES = $(nodist_SOURCES_audioqueue)
 # Force per-target objects:
-libaout_sdl_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaout_sdl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaout_sdl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaudioqueue_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_audioqueue)
+libaudioqueue_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_audioqueue)
+libaudioqueue_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_audioqueue)
+libaudioqueue_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_audioqueue)
 # Set LIBADD and DEPENDENCIES manually:
-libaout_sdl_plugin_la_LIBADD = $(AM_LIBADD)
-libaout_sdl_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaudioqueue_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_audioqueue)
+libaudioqueue_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_audioqueue)
+libaudioqueue_plugin_la_DEPENDENCIES =
 
 # The auhal plugin
 libauhal_plugin_la_SOURCES = $(SOURCES_auhal)
 nodist_libauhal_plugin_la_SOURCES = $(nodist_SOURCES_auhal)
 # Force per-target objects:
-libauhal_plugin_la_CFLAGS = $(AM_CFLAGS)
-libauhal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libauhal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libauhal_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_auhal)
+libauhal_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_auhal)
+libauhal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_auhal)
+libauhal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_auhal)
 # Set LIBADD and DEPENDENCIES manually:
-libauhal_plugin_la_LIBADD = $(AM_LIBADD)
-libauhal_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The hd1000a plugin
-libhd1000a_plugin_la_SOURCES = $(SOURCES_hd1000a)
-nodist_libhd1000a_plugin_la_SOURCES = $(nodist_SOURCES_hd1000a)
-# Force per-target objects:
-libhd1000a_plugin_la_CFLAGS = $(AM_CFLAGS)
-libhd1000a_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libhd1000a_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libhd1000a_plugin_la_LIBADD = $(AM_LIBADD)
-libhd1000a_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libauhal_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_auhal)
+libauhal_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_auhal)
+libauhal_plugin_la_DEPENDENCIES =
 
 # The jack plugin
 libjack_plugin_la_SOURCES = $(SOURCES_jack)
 nodist_libjack_plugin_la_SOURCES = $(nodist_SOURCES_jack)
 # Force per-target objects:
-libjack_plugin_la_CFLAGS = $(AM_CFLAGS)
-libjack_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libjack_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libjack_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_jack)
+libjack_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_jack)
+libjack_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_jack)
+libjack_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_jack)
 # Set LIBADD and DEPENDENCIES manually:
-libjack_plugin_la_LIBADD = $(AM_LIBADD)
-libjack_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libjack_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_jack)
+libjack_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_jack)
+libjack_plugin_la_DEPENDENCIES =
 
-# The oss plugin
-liboss_plugin_la_SOURCES = $(SOURCES_oss)
-nodist_liboss_plugin_la_SOURCES = $(nodist_SOURCES_oss)
+# The opensles_android plugin
+libopensles_android_plugin_la_SOURCES = $(SOURCES_opensles_android)
+nodist_libopensles_android_plugin_la_SOURCES = $(nodist_SOURCES_opensles_android)
 # Force per-target objects:
-liboss_plugin_la_CFLAGS = $(AM_CFLAGS)
-liboss_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liboss_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libopensles_android_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_opensles_android)
+libopensles_android_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_opensles_android)
+libopensles_android_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_opensles_android)
+libopensles_android_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_opensles_android)
 # Set LIBADD and DEPENDENCIES manually:
-liboss_plugin_la_LIBADD = $(AM_LIBADD)
-liboss_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libopensles_android_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_opensles_android)
+libopensles_android_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_opensles_android)
+libopensles_android_plugin_la_DEPENDENCIES =
 
 # The portaudio plugin
 libportaudio_plugin_la_SOURCES = $(SOURCES_portaudio)
 nodist_libportaudio_plugin_la_SOURCES = $(nodist_SOURCES_portaudio)
 # Force per-target objects:
-libportaudio_plugin_la_CFLAGS = $(AM_CFLAGS)
-libportaudio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libportaudio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libportaudio_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_portaudio)
+libportaudio_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_portaudio)
+libportaudio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_portaudio)
+libportaudio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_portaudio)
 # Set LIBADD and DEPENDENCIES manually:
-libportaudio_plugin_la_LIBADD = $(AM_LIBADD)
-libportaudio_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The pulse plugin
-libpulse_plugin_la_SOURCES = $(SOURCES_pulse)
-nodist_libpulse_plugin_la_SOURCES = $(nodist_SOURCES_pulse)
-# Force per-target objects:
-libpulse_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpulse_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpulse_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libpulse_plugin_la_LIBADD = $(AM_LIBADD)
-libpulse_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libportaudio_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_portaudio)
+libportaudio_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_portaudio)
+libportaudio_plugin_la_DEPENDENCIES =
 
 # The waveout plugin
 libwaveout_plugin_la_SOURCES = $(SOURCES_waveout)
 nodist_libwaveout_plugin_la_SOURCES = $(nodist_SOURCES_waveout)
 # Force per-target objects:
-libwaveout_plugin_la_CFLAGS = $(AM_CFLAGS)
-libwaveout_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libwaveout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libwaveout_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_waveout)
+libwaveout_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_waveout)
+libwaveout_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_waveout)
+libwaveout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_waveout)
 # Set LIBADD and DEPENDENCIES manually:
-libwaveout_plugin_la_LIBADD = $(AM_LIBADD)
-libwaveout_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libwaveout_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_waveout)
+libwaveout_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_waveout)
+libwaveout_plugin_la_DEPENDENCIES =
 

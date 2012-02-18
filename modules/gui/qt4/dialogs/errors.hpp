@@ -2,7 +2,7 @@
  * errors.hpp : Errors
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 8db1d3dd2626935c746fba8a726c90bc13a99d0b $
+ * $Id: 2288aee725470647da11875a497d429889e62737 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -40,7 +40,7 @@ public:
     void addError( const QString&, const QString& );
     /*void addWarning( QString, QString );*/
 private:
-    virtual ~ErrorsDialog() {};
+    virtual ~ErrorsDialog() {}
     ErrorsDialog( intf_thread_t * );
     void add( bool, const QString&, const QString& );
 

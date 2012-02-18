@@ -133,14 +133,6 @@ input.item(): Get the current input item. Input item methods are:
     .played_abuffers
     .lost_abuffers
 
-MD5
----
-md5( str ): return the string's hash
-md5(): create an md5 object with the following methods:
-  :add( str ): add a string to the hash
-  :end_(): finish hashing
-  :hash(): return the hash
-
 Messages
 --------
 msg.dbg( [str1, [str2, [...]]] ): Output debug messages (-vv).
@@ -172,6 +164,10 @@ misc.lock_and_wait(): Lock our object thread and wait for a wake up signal.
 
 misc.should_die(): Returns true if the interface should quit.
 misc.quit(): Quit VLC.
+
+misc.timer(callback): Create a timer which call the callback function
+  :schedule(relative, value, interval): schedule the timer
+  :getoverrun(): number of time the timer got overrun (normally 0)
 
 Net
 ---
@@ -217,25 +213,20 @@ Objects
 object.input(): Get the current input object.
 object.playlist(): Get the playlist object.
 object.libvlc(): Get the libvlc object.
+object.aout(): Get the audio output object.
+object.vout(): Get the video output object.
 
-object.find( object, type, mode ): Find an object of given type. mode can
-  be any of "parent", "child" and "anywhere". If set to "parent", it will
-  look in "object"'s parent objects. If set to "child" it will look in
-  "object"'s children. If set to "anywhere", it will look in all the
-  objects. If object is unset, the current module's object will be used.
-  Type can be: "libvlc", "playlist", "input", "decoder",
-  "vout", "aout", "packetizer", "generic".
-  This function is deprecated and slow and should be avoided.
-object.find_name( object, name, mode ): Same as above except that it matches
-  on the object's name and not type. This function is also slow and should
-  be avoided if possible.
+object.find( object, type, mode ): Return nil. DO NOT USE.
 
 OSD
 ---
 osd.icon( type, [id] ): Display an icon on the given OSD channel. Uses the
   default channel is none is given. Icon types are: "pause", "play",
   "speaker" and "mute".
-osd.message( string, [id] ): Display text message on the given OSD channel.
+osd.message( string, [id], [position], [duration] ): Display the text message on
+  the given OSD channel. Position types are: "center", "left", "right", "top",
+  "bottom", "top-left", "top-right", "bottom-left" or "bottom-right". The
+  duration is set in microseconds.
 osd.slider( position, type, [id] ): Display slider. Position is an integer
   from 0 to 100. Type can be "horizontal" or "vertical".
 osd.channel_register(): Register a new OSD channel. Returns the channel id.
@@ -287,9 +278,8 @@ playlist.add( ... ): Add a bunch of items to the playlist.
                 example: .options = { "fullscreen" }
       .duration: stream duration in seconds (OPTIONAL)
       .meta: custom meta data (OPTIONAL, meta data)
-             A .meta field is a table of custom meta categories which
-             each have custom meta properties.
-             example: .meta = { ["Google video"] = { ["docid"] = "-5784010886294950089"; ["GVP version"] = "1.1" }; ["misc"] = { "Hello" = "World!" } }
+             A .meta field is a table of custom meta key value pairs.
+             example: .meta = { ["GVP docid"] = "-5784010886294950089", ["GVP version] = "1.1", Hello = "World!" }
   Invalid playlist items will be discarded by VLC.
 playlist.enqueue( ... ): like playlist.add() except that track isn't played.
 playlist.get( [what, [tree]] ): Get the playlist.
@@ -339,14 +329,36 @@ sd.add_node( ... ): Add a node to the service discovery.
   The node object has the following members:
       .title: the node's name
       .arturl: the node's ArtURL (OPTIONAL)
+      .category: the node's category (OPTIONAL)
 sd.add_item( ... ): Add an item to the service discovery.
-  The item object has the same members as the one in playlist.add().
+  The item object has the same members as the one in playlist.add() along with:
+      .category: the item's category (OPTIONAL)
   Returns the input item.
 sd.remove_item( item ): remove the item.
 
 n = vlc.sd.add_node( {title="Node"} )
 n:add_subitem( ... ): Same as sd.add_item(), but as a subitem of n.
 n:add_node( ... ): Same as sd.add_node(), but as a subnode of n.
+
+d = vlc.sd.add_item( ... ) Get an item object to perform following set operations on it:
+d:set_name(): the item's name in playlist
+d:set_title(): the item's Title (OPTIONAL, meta data)
+d:set_artist(): the item's Artist (OPTIONAL, meta data)
+d:set_genre(): the item's Genre (OPTIONAL, meta data)
+d:set_copyright(): the item's Copyright (OPTIONAL, meta data)
+d:set_album(): the item's Album (OPTIONAL, meta data)
+d:set_tracknum(): the item's Tracknum (OPTIONAL, meta data)
+d:set_description(): the item's Description (OPTIONAL, meta data)
+d:set_rating(): the item's Rating (OPTIONAL, meta data)
+d:set_date(): the item's Date (OPTIONAL, meta data)
+d:set_setting(): the item's Setting (OPTIONAL, meta data)
+d:set_url(): the item's URL (OPTIONAL, meta data)
+d:set_language(): the item's Language (OPTIONAL, meta data)
+d:set_nowplaying(): the item's NowPlaying (OPTIONAL, meta data)
+d:set_publisher(): the item's Publisher (OPTIONAL, meta data)
+d:set_encodedby(): the item's EncodedBy (OPTIONAL, meta data)
+d:set_arturl(): the item's ArtURL (OPTIONAL, meta data)
+d:set_trackid(): the item's TrackID (OPTIONAL, meta data)
 
 Stream
 ------
@@ -366,20 +378,26 @@ strings.decode_uri( [uri1, [uri2, [...]]] ): Decode a list of URIs. This
   function returns as many variables as it had arguments.
 strings.encode_uri_component( [uri1, [uri2, [...]]] ): Encode a list of URI
   components. This function returns as many variables as it had arguments.
+strings.make_uri( path, [scheme] ): Convert a file path to a URI.
 strings.resolve_xml_special_chars( [str1, [str2, [...]]] ): Resolve XML
   special characters in a list of strings. This function returns as many
   variables as it had arguments.
 strings.convert_xml_special_chars( [str1, [str2, [...]]] ): Do the inverse
   operation.
+strings.from_charset( charset, str ): convert a string from a specified
+  character encoding into UTF-8.
 
 Variables
 ---------
+var.inherit( object, name ): Find the variable "name"'s value inherited by
+  the object. If object is unset, the current module's object will be used.
 var.get( object, name ): Get the object's variable "name"'s value.
 var.get_list( object, name ): Get the object's variable "name"'s value list.
   1st return value is the value list, 2nd return value is the text list.
 var.set( object, name, value ): Set the object's variable "name" to "value".
 var.create( object, name, value ): Create and set the object's variable "name"
-  to "value". Created vars can be of type float, string or bool.
+  to "value". Created vars can be of type float, string, bool or void.
+  For a void variable the value has to be 'nil'.
 
 var.add_callback( object, name, function, data ): Add a callback to the
   object's "name" variable. Callback functions take 4 arguments: the
@@ -394,6 +412,11 @@ var.command( object name, name, argument ): Issue "object name"'s "name"
   command with argument "argument".
 var.libvlc_command( name, argument ): Issue libvlc's "name" command with
   argument "argument".
+
+var.inc_integer( name ): Increment the given integer.
+var.dec_integer( name ): Decrement the given integer.
+var.count_choices( name ): Return the number of choices.
+var.toggle_bool( name ): Toggle the given boolean.
 
 Video
 -----
@@ -420,3 +443,14 @@ volume.set( level ): Set volume to an absolute level between 0 and 1024.
 volume.up( [n] ): Increment volume by n steps of 32. n defaults to 1.
 volume.down( [n] ): Decrement volume by n steps of 32. n defaults to 1.
 
+XML
+---
+xml = vlc.xml(): Create an xml object.
+reader = xml:create_reader( stream ): create an xml reader that use the given stream.
+reader:read(): read some data, return -1 on error, 0 on EOF, 1 on start of XML
+  element, 2 on end of XML element, 3 on text
+reader:name(): name of the element
+reader:value(): value of the element
+reader:next_attr(): next attribute of the element
+
+The simplexml module can also be used to parse XML documents easily.

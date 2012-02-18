@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_image.h : wrapper for image reading/writing facilities
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 06d484d9e05156f2ffbe1e072f828038ca9526f3 $
+ * Copyright (C) 2004 VLC authors and VideoLAN
+ * $Id: 52bce1f24495ffdbadfb6d0aef0953577992b9a2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_IMAGE_H
@@ -59,9 +59,9 @@ struct image_handler_t
     filter_t  *p_filter;
 };
 
-VLC_EXPORT( image_handler_t *, image_HandlerCreate, ( vlc_object_t * ) );
+VLC_API image_handler_t * image_HandlerCreate( vlc_object_t * ) VLC_USED;
 #define image_HandlerCreate( a ) image_HandlerCreate( VLC_OBJECT(a) )
-VLC_EXPORT( void, image_HandlerDelete, ( image_handler_t * ) );
+VLC_API void image_HandlerDelete( image_handler_t * );
 
 #define image_Read( a, b, c, d ) a->pf_read( a, b, c, d )
 #define image_ReadUrl( a, b, c, d ) a->pf_read_url( a, b, c, d )
@@ -70,9 +70,9 @@ VLC_EXPORT( void, image_HandlerDelete, ( image_handler_t * ) );
 #define image_Convert( a, b, c, d ) a->pf_convert( a, b, c, d )
 #define image_Filter( a, b, c, d ) a->pf_filter( a, b, c, d )
 
-VLC_EXPORT( vlc_fourcc_t, image_Type2Fourcc, ( const char *psz_name ) );
-VLC_EXPORT( vlc_fourcc_t, image_Ext2Fourcc, ( const char *psz_name ) );
-VLC_EXPORT( vlc_fourcc_t, image_Mime2Fourcc, ( const char *psz_mime ) );
+VLC_API vlc_fourcc_t image_Type2Fourcc( const char *psz_name );
+VLC_API vlc_fourcc_t image_Ext2Fourcc( const char *psz_name );
+VLC_API vlc_fourcc_t image_Mime2Fourcc( const char *psz_mime );
 
 # ifdef __cplusplus
 }

@@ -2,7 +2,7 @@
  * theme_repository.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1dc83b1c594b4be84a159f4c208a3ef3e759ffac $
+ * $Id: 68e7daeada555964e069d1c7013aca1df4112c1b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -29,9 +29,6 @@
 #   include <unistd.h>
 #elif defined( WIN32 ) && !defined( UNDER_CE )
 #   include <direct.h>
-#endif
-#ifdef HAVE_DIRENT_H
-#   include <dirent.h>
 #endif
 
 #include <fstream>
@@ -69,14 +66,14 @@ ThemeRepository::ThemeRepository( intf_thread_t *pIntf ): SkinObject( pIntf )
     OSFactory *pOsFactory = OSFactory::instance( pIntf );
     list<string> resPath = pOsFactory->getResourcePath();
     list<string>::const_iterator it;
-    for( it = resPath.begin(); it != resPath.end(); it++ )
+    for( it = resPath.begin(); it != resPath.end(); ++it )
     {
         parseDirectory( *it );
     }
 
     // retrieve skins from skins directories and locate default skins
     map<string,string>::const_iterator itmap, itdefault;
-    for( itmap = m_skinsMap.begin(); itmap != m_skinsMap.end(); itmap++ )
+    for( itmap = m_skinsMap.begin(); itmap != m_skinsMap.end(); ++itmap )
     {
         string name = itmap->first;
         string path = itmap->second;
@@ -141,7 +138,6 @@ void ThemeRepository::parseDirectory( const string &rDir_locale )
 {
     DIR *pDir;
     char *pszDirContent;
-    vlc_value_t val, text;
     // Path separator
     const string &sep = OSFactory::instance( getIntf() )->getDirSeparator();
 
@@ -170,10 +166,10 @@ void ThemeRepository::parseDirectory( const string &rDir_locale )
         {
             string path = rDir + sep + name;
             string shortname = name.substr( 0, name.size() - 4 );
-            for( int i = 0; i < shortname.size(); i++ )
+            for( string::size_type i = 0; i < shortname.size(); i++ )
                 shortname[i] = ( i == 0 ) ?
-                               toupper( shortname[i] ) :
-                               tolower( shortname[i] );
+                               toupper( (unsigned char)shortname[i] ) :
+                               tolower( (unsigned char)shortname[i] );
             m_skinsMap[shortname] = path;
 
             msg_Dbg( getIntf(), "found skin %s", path.c_str() );
@@ -191,6 +187,7 @@ int ThemeRepository::changeSkin( vlc_object_t *pIntf, char const *pVariable,
                                  vlc_value_t oldval, vlc_value_t newval,
                                  void *pData )
 {
+    (void)pIntf; (void)oldval;
     ThemeRepository *pThis = (ThemeRepository*)(pData);
 
     if( !strcmp( pVariable, "intf-skins-interactive" ) )
@@ -226,7 +223,7 @@ void ThemeRepository::updateRepository()
     // add this new skins if not yet present in repository
     string current( psz_current );
     map<string,string>::const_iterator it;
-    for( it = m_skinsMap.begin(); it != m_skinsMap.end(); it++ )
+    for( it = m_skinsMap.begin(); it != m_skinsMap.end(); ++it )
     {
         if( it->second == current )
             break;

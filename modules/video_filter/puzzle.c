@@ -2,7 +2,7 @@
  * puzzle.c : Puzzle game
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: b50fd49d195b8ed3b0f5b64ef7f152f342793a18 $
+ * $Id: b9b6bf8742ca8b6040d4867335e60df17e3aa8c1 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -59,11 +59,11 @@ vlc_module_begin()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    add_integer_with_range( CFG_PREFIX "rows", 4, 2, 16, NULL,
+    add_integer_with_range( CFG_PREFIX "rows", 4, 2, 16,
                             ROWS_TEXT, ROWS_LONGTEXT, false )
-    add_integer_with_range( CFG_PREFIX "cols", 4, 2, 16, NULL,
+    add_integer_with_range( CFG_PREFIX "cols", 4, 2, 16,
                             COLS_TEXT, COLS_LONGTEXT, false )
-    add_bool( CFG_PREFIX "black-slot", false, NULL,
+    add_bool( CFG_PREFIX "black-slot", false,
               BLACKSLOT_TEXT, BLACKSLOT_LONGTEXT, false )
 
     set_callbacks( Open, Close )
@@ -442,7 +442,7 @@ static void Shuffle( filter_sys_t *p_sys )
     {
         for( unsigned i = 0; i < i_count; i++ )
         {
-            if( p_sys->pi_order[i] == i_count - 1 )
+            if( p_sys->pi_order[i] == (int)i_count - 1 )
             {
                 p_sys->i_selected = i;
                 break;
@@ -454,4 +454,3 @@ static void Shuffle( filter_sys_t *p_sys )
         p_sys->i_selected = -1;
     }
 }
-

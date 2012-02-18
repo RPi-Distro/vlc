@@ -2,7 +2,7 @@
  * imem.c : Memory input for VLC
  *****************************************************************************
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 25cd4fbbb271c86f1e10aa280208fb260f7938e6 $
+ * $Id: 8442a430a30d73eef8886a424b32a07aac150d2b $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT org>
  *
@@ -45,11 +45,6 @@ static void CloseAccess(vlc_object_t *);
 
 static int  OpenDemux (vlc_object_t *);
 static void CloseDemux(vlc_object_t *);
-
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_(\
-    "Caching value for imem streams. This " \
-    "value should be set in milliseconds.")
 
 #define ID_TEXT N_("ID")
 #define ID_LONGTEXT N_(\
@@ -125,56 +120,54 @@ vlc_module_begin()
     set_category(CAT_INPUT)
     set_subcategory(SUBCAT_INPUT_ACCESS)
 
-    add_integer("imem-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT, CACHING_LONGTEXT, true)
-        change_private()
-    add_string ("imem-get", "0", NULL, GET_TEXT, GET_LONGTEXT, true)
+    add_string ("imem-get", "0", GET_TEXT, GET_LONGTEXT, true)
         change_volatile()
-    add_string ("imem-release", "0", NULL, RELEASE_TEXT, RELEASE_LONGTEXT, true)
+    add_string ("imem-release", "0", RELEASE_TEXT, RELEASE_LONGTEXT, true)
         change_volatile()
-    add_string ("imem-cookie", NULL, NULL, COOKIE_TEXT, COOKIE_LONGTEXT, true)
+    add_string ("imem-cookie", NULL, COOKIE_TEXT, COOKIE_LONGTEXT, true)
         change_volatile()
         change_safe()
-    add_string ("imem-data", "0", NULL, DATA_TEXT, DATA_LONGTEXT, true)
+    add_string ("imem-data", "0", DATA_TEXT, DATA_LONGTEXT, true)
         change_volatile()
 
-    add_integer("imem-id", -1, NULL, ID_TEXT, ID_LONGTEXT, true)
+    add_integer("imem-id", -1, ID_TEXT, ID_LONGTEXT, true)
         change_private()
         change_safe()
-    add_integer("imem-group", 0, NULL, GROUP_TEXT, GROUP_LONGTEXT, true)
+    add_integer("imem-group", 0, GROUP_TEXT, GROUP_LONGTEXT, true)
         change_private()
         change_safe()
-    add_integer("imem-cat", 0, NULL, CAT_TEXT, CAT_LONGTEXT, true)
-        change_integer_list(cat_values, cat_texts, NULL)
+    add_integer("imem-cat", 0, CAT_TEXT, CAT_LONGTEXT, true)
+        change_integer_list(cat_values, cat_texts)
         change_private()
         change_safe()
-    add_string ("imem-codec", NULL, NULL, CODEC_TEXT, CODEC_LONGTEXT, true)
+    add_string ("imem-codec", NULL, CODEC_TEXT, CODEC_LONGTEXT, true)
         change_private()
         change_safe()
-    add_string( "imem-language", NULL, NULL, LANGUAGE_TEXT, LANGUAGE_LONGTEXT, false)
+    add_string( "imem-language", NULL, LANGUAGE_TEXT, LANGUAGE_LONGTEXT, false)
         change_private()
         change_safe()
 
-    add_integer("imem-samplerate", 0, NULL, SAMPLERATE_TEXT, SAMPLERATE_LONGTEXT, true)
+    add_integer("imem-samplerate", 0, SAMPLERATE_TEXT, SAMPLERATE_LONGTEXT, true)
         change_private()
         change_safe()
-    add_integer("imem-channels", 0, NULL, CHANNELS_TEXT, CHANNELS_LONGTEXT, true)
-        change_private()
-        change_safe()
-
-    add_integer("imem-width", 0, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true)
-        change_private()
-        change_safe()
-    add_integer("imem-height", 0, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, true)
-        change_private()
-        change_safe()
-    add_string ("imem-dar", NULL, NULL, DAR_TEXT, DAR_LONGTEXT, true)
-        change_private()
-        change_safe()
-    add_string ("imem-fps", NULL, NULL, FPS_TEXT, FPS_LONGTEXT, true)
+    add_integer("imem-channels", 0, CHANNELS_TEXT, CHANNELS_LONGTEXT, true)
         change_private()
         change_safe()
 
-    add_integer ("imem-size", 0, NULL, SIZE_TEXT, SIZE_LONGTEXT, true)
+    add_integer("imem-width", 0, WIDTH_TEXT, WIDTH_LONGTEXT, true)
+        change_private()
+        change_safe()
+    add_integer("imem-height", 0, HEIGHT_TEXT, HEIGHT_LONGTEXT, true)
+        change_private()
+        change_safe()
+    add_string ("imem-dar", NULL, DAR_TEXT, DAR_LONGTEXT, true)
+        change_private()
+        change_safe()
+    add_string ("imem-fps", NULL, FPS_TEXT, FPS_LONGTEXT, true)
+        change_private()
+        change_safe()
+
+    add_integer ("imem-size", 0, SIZE_TEXT, SIZE_LONGTEXT, true)
         change_private()
         change_safe()
 
@@ -224,18 +217,12 @@ typedef struct {
 
     es_out_id_t  *es;
 
-    mtime_t      pts_delay;
-
     mtime_t      dts;
 
     mtime_t      deadline;
 } imem_sys_t;
 
 static void ParseMRL(vlc_object_t *, const char *);
-#define var_InheritRational(a,b,c,d) var_InheritRational(VLC_OBJECT(a),b,c,d)
-static int (var_InheritRational)(vlc_object_t *,
-                                 unsigned *num, unsigned *den,
-                                 const char *var);
 
 /**
  * It closes the common part of the access and access_demux
@@ -253,10 +240,10 @@ static int OpenCommon(vlc_object_t *object, imem_sys_t **sys_ptr, const char *ps
 {
     char *tmp;
 
-	/* */
+    /* */
     imem_sys_t *sys = calloc(1, sizeof(*sys));
-	if (!sys)
-		return VLC_ENOMEM;
+    if (!sys)
+        return VLC_ENOMEM;
 
     /* Read the user functions */
     tmp = var_InheritString(object, "imem-get");
@@ -292,7 +279,6 @@ static int OpenCommon(vlc_object_t *object, imem_sys_t **sys_ptr, const char *ps
             sys->source.cookie ? sys->source.cookie : "(null)");
 
     /* */
-    sys->pts_delay = var_InheritInteger(object, "imem-caching") * INT64_C(1000);
     sys->dts       = 0;
     sys->deadline  = VLC_TS_INVALID;
 
@@ -308,7 +294,7 @@ static int OpenAccess(vlc_object_t *object)
     access_t   *access = (access_t *)object;
     imem_sys_t *sys;
 
-    if (OpenCommon(object, &sys, access->psz_path))
+    if (OpenCommon(object, &sys, access->psz_location))
         return VLC_EGENERIC;
 
     if (var_InheritInteger(object, "imem-cat") != 4) {
@@ -343,8 +329,7 @@ static void CloseAccess(vlc_object_t *object)
  */
 static int ControlAccess(access_t *access, int i_query, va_list args)
 {
-    imem_sys_t *sys = (imem_sys_t*)access->p_sys;
-
+    (void) access;
     switch (i_query)
     {
     case ACCESS_CAN_SEEK:
@@ -361,7 +346,7 @@ static int ControlAccess(access_t *access, int i_query, va_list args)
     }
     case ACCESS_GET_PTS_DELAY: {
         int64_t *delay = va_arg(args, int64_t *);
-        *delay = sys->pts_delay;
+        *delay = DEFAULT_PTS_DELAY; /* FIXME? */
         return VLC_SUCCESS;
     }
     case ACCESS_SET_PAUSE_STATE:
@@ -417,12 +402,12 @@ static int OpenDemux(vlc_object_t *object)
     demux_t    *demux = (demux_t *)object;
     imem_sys_t *sys;
 
-    if (OpenCommon(object, &sys, demux->psz_path))
+    if (OpenCommon(object, &sys, demux->psz_location))
         return VLC_EGENERIC;
 
-	/* ES format */
+    /* ES format */
     es_format_t fmt;
-	es_format_Init(&fmt, UNKNOWN_ES, 0);
+    es_format_Init(&fmt, UNKNOWN_ES, 0);
 
     fmt.i_id = var_InheritInteger(object, "imem-id");
     fmt.i_group = var_InheritInteger(object, "imem-group");
@@ -449,13 +434,13 @@ static int OpenDemux(vlc_object_t *object)
         fmt.video.i_width  = var_InheritInteger(object, "imem-width");
         fmt.video.i_height = var_InheritInteger(object, "imem-height");
         unsigned num, den;
-        if (!var_InheritRational(object, &num, &den, "imem-dar") && num > 0 && den > 0) {
+        if (!var_InheritURational(object, &num, &den, "imem-dar") && num > 0 && den > 0) {
             if (fmt.video.i_width > 0 && fmt.video.i_height > 0) {
                 fmt.video.i_sar_num = num * fmt.video.i_height;
                 fmt.video.i_sar_den = den * fmt.video.i_width;
             }
         }
-        if (!var_InheritRational(object, &num, &den, "imem-fps") && num > 0 && den > 0) {
+        if (!var_InheritURational(object, &num, &den, "imem-fps") && num > 0 && den > 0) {
             fmt.video.i_frame_rate      = num;
             fmt.video.i_frame_rate_base = den;
         }
@@ -488,7 +473,7 @@ static int OpenDemux(vlc_object_t *object)
 
     fmt.psz_language = var_InheritString(object, "imem-language");
 
-	sys->es = es_out_Add(demux->out, &fmt);
+    sys->es = es_out_Add(demux->out, &fmt);
     es_format_Clean(&fmt);
 
     if (!sys->es) {
@@ -537,7 +522,7 @@ static int ControlDemux(demux_t *demux, int i_query, va_list args)
 
     case DEMUX_GET_PTS_DELAY: {
         int64_t *delay = va_arg(args, int64_t *);
-        *delay = sys->pts_delay;
+        *delay = DEFAULT_PTS_DELAY; /* FIXME? */
         return VLC_SUCCESS;
     }
     case DEMUX_GET_POSITION: {
@@ -620,55 +605,6 @@ static int Demux(demux_t *demux)
 }
 
 /**
- * It parses a rational number (it also accepts basic float number).
- *
- * It returns an error if the rational number cannot be parsed (0/0 is valid).
- */
-static int (var_InheritRational)(vlc_object_t *object,
-                                 unsigned *num, unsigned *den,
-                                 const char *var)
-{
-    /* */
-    *num = 0;
-    *den = 0;
-
-    /* */
-    char *tmp = var_InheritString(object, var);
-    if (!tmp)
-        goto error;
-
-    char *next;
-    unsigned n = strtol(tmp,  &next, 0);
-    unsigned d = strtol(*next ? &next[1] : "0", NULL, 0);
-
-    if (*next == '.') {
-        /* Interpret as a float number */
-        double r = us_atof(tmp);
-        double c = ceil(r);
-        if (c >= UINT_MAX)
-            goto error;
-        unsigned m = c;
-        if (m > 0) {
-            d = UINT_MAX / m;
-            n = r * d;
-        } else {
-            n = 0;
-            d = 0;
-        }
-    }
-
-    if (n > 0 && d > 0)
-        vlc_ureduce(num, den, n, d, 0);
-
-    free(tmp);
-    return VLC_SUCCESS;
-
-error:
-    free(tmp);
-    return VLC_EGENERIC;
-}
-
-/**
  * Parse the MRL and extract configuration from it.
  *
  * Syntax: option1=value1[:option2=value2[...]]
@@ -681,7 +617,6 @@ static void ParseMRL(vlc_object_t *object, const char *psz_path)
         const char *name;
         int        type;
     } options[] = {
-        { "caching",    VLC_VAR_INTEGER },
         { "id",         VLC_VAR_INTEGER },
         { "group",      VLC_VAR_INTEGER },
         { "cat",        VLC_VAR_INTEGER },

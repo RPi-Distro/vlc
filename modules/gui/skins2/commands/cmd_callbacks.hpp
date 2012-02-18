@@ -2,7 +2,7 @@
  * cmd_callbacks.hpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 579c6fa3729ec5435be4e569b15b5f4a6cdf91f0 $
+ * $Id: e3f3cfb0395c9dbbe3b1e509ad83d47951202d1d $
  *
  * Author: Erwan Tulou      <erwan10 aT videolan doT org >
  *         JP Dinger        <jpd (at) videolan (dot) org>
@@ -28,60 +28,110 @@
 #include "cmd_generic.hpp"
 #include "../src/vlcproc.hpp"
 
-class CmdLabeled : public CmdGeneric
+
+class CmdCallback : public CmdGeneric
 {
-private:
-    vlc_object_t *m_pObj;
-    vlc_value_t   m_newVal;
-protected:
-    void execute_on( void (VlcProc::*on_label)(vlc_object_t *,vlc_value_t) )
-    {
-        if( !m_pObj )
-            return;
-
-        (VlcProc::instance( getIntf() )->*on_label)( m_pObj, m_newVal );
-
-        vlc_object_release( m_pObj );
-        m_pObj =  NULL;
-    }
-    CmdLabeled( intf_thread_t *pIntf, vlc_object_t *pObj, vlc_value_t newVal )
-              : CmdGeneric( pIntf ), m_pObj( pObj ), m_newVal( newVal )
+public:
+    CmdCallback( intf_thread_t *pIntf, vlc_object_t *pObj, vlc_value_t newVal,
+                 void (VlcProc::*func)(vlc_object_t *,vlc_value_t),
+                 string label )
+        : CmdGeneric( pIntf ), m_pObj( pObj ), m_newVal( newVal ),
+          m_label( label ), m_pfExecute( func )
     {
         if( m_pObj )
             vlc_object_hold( m_pObj );
     }
-public:
-    virtual ~CmdLabeled() {
+    virtual ~CmdCallback()
+    {
         if( m_pObj )
             vlc_object_release( m_pObj );
     }
+    virtual void execute()
+    {
+        if( !m_pObj || !m_pfExecute )
+            return;
+
+        (VlcProc::instance( getIntf() )->*m_pfExecute)( m_pObj, m_newVal );
+
+        vlc_object_release( m_pObj );
+        m_pObj = NULL;
+    }
+    virtual string getType() const { return m_label; }
+
+private:
+    vlc_object_t* m_pObj;
+    vlc_value_t   m_newVal;
+    string        m_label;
+    void (VlcProc::*m_pfExecute)(vlc_object_t *,vlc_value_t);
 };
 
-#define ADD_COMMAND( label )                                            \
-    class Cmd_##label : public CmdLabeled                               \
-    {   public:                                                         \
-        Cmd_##label( intf_thread_t *I, vlc_object_t *O, vlc_value_t V ) \
-                   : CmdLabeled (I, O, V) { }                           \
-        virtual string getType() const { return #label; }               \
-        virtual void execute() { execute_on( &VlcProc::on_##label ); }  \
-    };
 
-ADD_COMMAND( item_current_changed )
-ADD_COMMAND( intf_event_changed )
-ADD_COMMAND( bit_rate_changed )
-ADD_COMMAND( sample_rate_changed )
-ADD_COMMAND( can_record_changed )
+class CmdExecuteBlock : public CmdGeneric
+{
+public:
+    CmdExecuteBlock( intf_thread_t* pIntf, vlc_object_t* obj,
+                     void (*func) (intf_thread_t*, vlc_object_t* ) )
+        : CmdGeneric( pIntf), m_pObj( obj ), m_pfFunc( func ),
+          m_executing( false )
+    {
+        vlc_mutex_init( &m_lock );
+        vlc_cond_init( &m_wait );
+        if( m_pObj )
+            vlc_object_hold( m_pObj );
+    }
 
-ADD_COMMAND( random_changed )
-ADD_COMMAND( loop_changed )
-ADD_COMMAND( repeat_changed )
+    virtual ~CmdExecuteBlock()
+    {
+        if( m_pObj )
+            vlc_object_release( m_pObj );
+        vlc_cond_destroy( &m_wait );
+        vlc_mutex_destroy( &m_lock );
+    }
 
-ADD_COMMAND( volume_changed )
+    static void executeWait( const CmdGenericPtr& rcCommand  )
+    {
+        CmdExecuteBlock& rCmd = (CmdExecuteBlock&)*rcCommand.get();
+        vlc_mutex_locker locker( &rCmd.m_lock );
 
-ADD_COMMAND( audio_filter_changed )
+        if( !rCmd.m_pObj || !rCmd.m_pfFunc || rCmd.m_executing )
+        {
+            msg_Err( rCmd.getIntf(), "unexpected command call" );
+            return;
+        }
 
-ADD_COMMAND( intf_show_changed )
+        AsyncQueue *pQueue = AsyncQueue::instance( rCmd.getIntf() );
+        pQueue->push( rcCommand, false );
 
-#undef ADD_COMMAND
+        rCmd.m_executing = true;
+        while( rCmd.m_executing )
+            vlc_cond_wait( &rCmd.m_wait, &rCmd.m_lock );
+    }
+
+    virtual void execute()
+    {
+        vlc_mutex_locker locker( &m_lock );
+
+        if( !m_pObj || !m_pfFunc || !m_executing )
+        {
+            msg_Err( getIntf(), "unexpected command call" );
+            return;
+        }
+
+        (*m_pfFunc)( getIntf(), m_pObj );
+        m_executing = false;
+        vlc_cond_signal( &m_wait );
+    }
+
+    virtual string getType() const { return "CmdExecuteBlock"; }
+
+private:
+    vlc_object_t* m_pObj;
+    void          (*m_pfFunc)(intf_thread_t*, vlc_object_t*);
+    bool          m_executing;
+
+    vlc_mutex_t   m_lock;
+    vlc_cond_t    m_wait;
+};
+
 
 #endif

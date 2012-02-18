@@ -1,25 +1,25 @@
 /*****************************************************************************
  * thread.c : Playlist management functions
  *****************************************************************************
- * Copyright © 1999-2008 the VideoLAN team
- * $Id: b0d9be2c4aa8bebe43a9a2a06681de77a02d470a $
+ * Copyright © 1999-2008 VLC authors and VideoLAN
+ * $Id: 29cb89e8c99c12d74caa965a48d9536d07bbdb20 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -64,7 +64,7 @@ void playlist_Activate( playlist_t *p_playlist )
     {
         msg_Err( p_playlist, "cannot spawn playlist thread" );
     }
-    msg_Dbg( p_playlist, "Activated" );
+    msg_Dbg( p_playlist, "playlist threads correctly activated" );
 }
 
 void playlist_Deactivate( playlist_t *p_playlist )
@@ -72,7 +72,7 @@ void playlist_Deactivate( playlist_t *p_playlist )
     /* */
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    msg_Dbg( p_playlist, "Deactivate" );
+    msg_Dbg( p_playlist, "deactivating the playlist" );
 
     PL_LOCK;
     vlc_object_kill( p_playlist );
@@ -84,7 +84,10 @@ void playlist_Deactivate( playlist_t *p_playlist )
 
     /* release input resources */
     if( p_sys->p_input_resource )
-        input_resource_Delete( p_sys->p_input_resource );
+    {
+        input_resource_Terminate( p_sys->p_input_resource );
+        input_resource_Release( p_sys->p_input_resource );
+    }
     p_sys->p_input_resource = NULL;
 
     if( var_InheritBool( p_playlist, "media-library" ) )
@@ -100,7 +103,7 @@ void playlist_Deactivate( playlist_t *p_playlist )
 
     PL_UNLOCK;
 
-    msg_Dbg( p_playlist, "Deactivated" );
+    msg_Dbg( p_playlist, "playlist correctly deactivated" );
 }
 
 /* */
@@ -192,7 +195,7 @@ static void ResetCurrentlyPlaying( playlist_t *p_playlist,
         /* Shuffle the array */
         for( unsigned j = p_playlist->current.i_size - 1; j > 0; j-- )
         {
-            unsigned i = ((unsigned)vlc_mrand48()) % (j+1); /* between 0 and j */
+            unsigned i = vlc_lrand48() % (j+1); /* between 0 and j */
             playlist_item_t *p_tmp;
             /* swap the two items */
             p_tmp = ARRAY_VAL(p_playlist->current, i);
@@ -230,6 +233,8 @@ static int PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
 
     assert( p_sys->p_input == NULL );
 
+    if( !p_sys->p_input_resource )
+        p_sys->p_input_resource = input_resource_New( VLC_OBJECT( p_playlist ) );
     input_thread_t *p_input_thread = input_Create( p_playlist, p_input, NULL, p_sys->p_input_resource );
     if( p_input_thread )
     {
@@ -244,8 +249,6 @@ static int PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
             p_sys->p_input = p_input_thread = NULL;
         }
     }
-
-    p_sys->p_input_resource = NULL;
 
     char *psz_uri = input_item_GetURI( p_item->p_input );
     if( psz_uri && ( !strncmp( psz_uri, "directory:", 10 ) ||
@@ -309,7 +312,7 @@ static playlist_item_t *NextItem( playlist_t *p_playlist )
     {
         p_new = p_sys->request.p_item;
         int i_skip = p_sys->request.i_skip;
-        PL_DEBUG( "processing request item %s node %s skip %i",
+        PL_DEBUG( "processing request item: %s, node: %s, skip: %i",
                         PLI_NAME( p_sys->request.p_item ),
                         PLI_NAME( p_sys->request.p_node ), i_skip );
 
@@ -465,10 +468,6 @@ static int LoopInput( playlist_t *p_playlist )
     {
         PL_DEBUG( "dead input" );
 
-        assert( p_sys->p_input_resource == NULL );
-
-        p_sys->p_input_resource = input_DetachResource( p_input );
-
         PL_UNLOCK;
         /* We can unlock as we return VLC_EGENERIC (no event will be lost) */
 
@@ -482,8 +481,7 @@ static int LoopInput( playlist_t *p_playlist )
         PL_LOCK;
 
         p_sys->p_input = NULL;
-        vlc_thread_join( p_input );
-        vlc_object_release( p_input );
+        input_Close( p_input );
 
         UpdateActivity( p_playlist, -DEFAULT_INPUT_ACTIVITY );
 
@@ -544,7 +542,7 @@ static void LoopRequest( playlist_t *p_playlist )
     playlist_item_t *p_item = NextItem( p_playlist );
     if( p_item )
     {
-        msg_Dbg( p_playlist, "starting new item" );
+        msg_Dbg( p_playlist, "starting playback of the new playlist item" );
         PlayItem( p_playlist, p_item );
         return;
     }

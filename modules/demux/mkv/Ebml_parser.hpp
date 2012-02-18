@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: a4d9bc5ad3548da317c81985775853d667182293 $
+ * $Id: cc72ed4e114fff668e317298d1bd1e95aaf6fbe4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -26,6 +26,7 @@
 #define _EBML_PARSER_HPP_
 
 #include "mkv.hpp"
+
 /*****************************************************************************
  * Ebml Stream parser
  *****************************************************************************/
@@ -33,7 +34,7 @@ class EbmlParser
 {
   public:
     EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux );
-    virtual ~EbmlParser( void );
+    ~EbmlParser( void );
 
     void Up( void );
     void Down( void );
@@ -42,10 +43,10 @@ class EbmlParser
     void        Keep( void );
     EbmlElement *UnGet( uint64 i_block_pos, uint64 i_cluster_pos );
 
-    int  GetLevel( void );
+    int  GetLevel( void ) const;
 
     /* Is the provided element presents in our upper elements */
-    bool IsTopPresent( EbmlElement * );
+    bool IsTopPresent( EbmlElement * ) const;
 
   private:
     EbmlStream  *m_es;
@@ -58,6 +59,17 @@ class EbmlParser
     int         mi_user_level;
     bool        mb_keep;
     bool        mb_dummy;
+};
+
+/* This class works around a bug in KaxBlockVirtual implementation */
+class KaxBlockVirtualWorkaround : public KaxBlockVirtual
+{
+public:
+    void Fix()
+    {
+        if( GetBuffer() == DataBlock )
+            SetBuffer( NULL, 0 );
+    }
 };
 
 #endif

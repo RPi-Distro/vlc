@@ -2,7 +2,7 @@
  * smf.c : Standard MIDI File (.mid) demux module for vlc
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 6b21157dd335de0e1aa715d48aa45a1f9952094d $
+ * $Id: b688b5fef3d9b0eadbc6846368c08f9b81d8461d $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
-#include <vlc_aout.h>
-#include <vlc_codecs.h>
 #include <vlc_charset.h>
 #include <limits.h>
 
@@ -232,8 +230,6 @@ static int Open (vlc_object_t * p_this)
     es_format_t  fmt;
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_MIDI);
     fmt.audio.i_channels = 2;
-    fmt.audio.i_original_channels = fmt.audio.i_physical_channels =
-        AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
     fmt.audio.i_rate = 44100; /* dummy value */
     p_sys->es = es_out_Add (p_demux->out, &fmt);
 
@@ -559,7 +555,7 @@ skip:
 }
 
 /*****************************************************************************
- * Demux: read chunks and send them to the synthetizer
+ * Demux: read chunks and send them to the synthesizer
  *****************************************************************************
  * Returns -1 in case of error, 0 in case of EOF, 1 otherwise
  *****************************************************************************/

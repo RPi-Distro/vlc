@@ -1,68 +1,61 @@
 /*****************************************************************************
  * libvlc.h: Internal libvlc generic/misc declaration
  *****************************************************************************
- * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
+ * Copyright (C) 1999, 2000, 2001, 2002 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 7547a6cc2fe9f1727acac3bea7a60f475a41ea2d $
+ * $Id: f7c55ffdf6effa2ee8ff1ca603b2ac003c3fb275 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef LIBVLC_LIBVLC_H
 # define LIBVLC_LIBVLC_H 1
 
+extern const char psz_vlc_changeset[];
+
 typedef struct variable_t variable_t;
 
 /* Actions (hot keys) */
-typedef struct action
-{
-    char name[24];
-    int  value;
-} action_t;
-extern const struct action libvlc_actions[];
-extern const size_t libvlc_actions_count;
-extern int vlc_InitActions (libvlc_int_t *);
-extern void vlc_DeinitActions (libvlc_int_t *);
+struct vlc_actions;
+struct vlc_actions *vlc_InitActions (libvlc_int_t *);
+extern void vlc_DeinitActions (libvlc_int_t *, struct vlc_actions *);
 
 size_t vlc_towc (const char *str, uint32_t *restrict pwc);
 
 /*
  * OS-specific initialization
  */
-void system_Init      ( libvlc_int_t *, int *, const char *[] );
+void system_Init      ( void );
 void system_Configure ( libvlc_int_t *, int, const char *const [] );
-void system_End       ( libvlc_int_t * );
+void system_End       ( void );
 
-/*
- * Legacy object stuff that is still used within libvlccore (only)
- */
-void vlc_object_detach (vlc_object_t *);
-#define vlc_object_detach( o ) vlc_object_detach(VLC_OBJECT(o))
+void vlc_CPU_init(void);
+void vlc_CPU_dump(vlc_object_t *);
 
 /*
  * Threads subsystem
  */
 
-/* This cannot be used as is from plugins: */
-void vlc_detach (vlc_thread_t);
+/* This cannot be used as is from plugins yet: */
+int vlc_clone_detach (vlc_thread_t *, void *(*)(void *), void *, int);
 
-/* Hopefully, no need to export this. There is a new thread API instead. */
-void vlc_thread_cancel (vlc_object_t *);
 int vlc_object_waitpipe (vlc_object_t *obj);
+
+int vlc_set_priority( vlc_thread_t, int );
 
 void vlc_threads_setup (libvlc_int_t *);
 
@@ -76,30 +69,18 @@ void vlc_assert_locked (vlc_mutex_t *);
 #endif
 
 /*
- * CPU capabilities
+ * LibVLC exit event handling
  */
-extern uint32_t cpu_flags;
-uint32_t CPUCapabilities( void );
-bool vlc_CPU_CheckPluginDir (const char *name);
+typedef struct vlc_exit
+{
+    vlc_mutex_t lock;
+    void (*handler) (void *);
+    void *opaque;
+    bool killed;
+} vlc_exit_t;
 
-/*
- * Message/logging stuff
- */
-
-typedef struct msg_bank_t msg_bank_t;
-
-msg_bank_t *msg_Create (void);
-void msg_Destroy (msg_bank_t *);
-
-/** Internal message stack context */
-void msg_StackSet ( int, const char*, ... );
-void msg_StackAdd ( const char*, ... );
-const char* msg_StackMsg ( void );
-
-/*
- * Unicode stuff
- */
-char *vlc_fix_readdir (const char *);
+void vlc_ExitInit( vlc_exit_t * );
+void vlc_ExitDestroy( vlc_exit_t * );
 
 /*
  * LibVLC objects stuff
@@ -115,21 +96,25 @@ char *vlc_fix_readdir (const char *);
  *
  * @param p_this an existing VLC object
  * @param i_size byte size of the object structure
- * @param i_type object type, usually VLC_OBJECT_CUSTOM
  * @param psz_type object type name
  * @return the created object, or NULL.
  */
 extern void *
-vlc_custom_create (vlc_object_t *p_this, size_t i_size, int i_type,
-                     const char *psz_type);
-#define vlc_custom_create(o, s, t, n) \
-        vlc_custom_create(VLC_OBJECT(o), s, t, n)
+vlc_custom_create (vlc_object_t *p_this, size_t i_size, const char *psz_type);
+#define vlc_custom_create(o, s, n) \
+        vlc_custom_create(VLC_OBJECT(o), s, n)
 
 /**
  * Assign a name to an object for vlc_object_find_name().
  */
 extern int vlc_object_set_name(vlc_object_t *, const char *);
 #define vlc_object_set_name(o, n) vlc_object_set_name(VLC_OBJECT(o), n)
+
+/* Types */
+typedef void (*vlc_destructor_t) (struct vlc_object_t *);
+void vlc_object_set_destructor (vlc_object_t *, vlc_destructor_t);
+#define vlc_object_set_destructor(a,b) \
+        vlc_object_set_destructor (VLC_OBJECT(a), b)
 
 /*
  * To be cleaned-up module stuff:
@@ -145,17 +130,12 @@ typedef struct vlc_object_internals vlc_object_internals_t;
 
 struct vlc_object_internals
 {
-    int             i_object_type; /* Object type, deprecated */
     char           *psz_name; /* given name */
 
     /* Object variables */
     void           *var_root;
     vlc_mutex_t     var_lock;
     vlc_cond_t      var_wait;
-
-    /* Thread properties, if any */
-    vlc_thread_t    thread_id;
-    bool            b_thread;
 
     /* Objects thread synchronization */
     int             pipes[2];
@@ -169,9 +149,6 @@ struct vlc_object_internals
     vlc_object_internals_t *next;  /* next sibling */
     vlc_object_internals_t *prev;  /* previous sibling */
     vlc_object_internals_t *first; /* first child */
-#ifndef NDEBUG
-    vlc_object_t   *old_parent;
-#endif
 };
 
 #define ZOOM_SECTION N_("Zoom")
@@ -192,11 +169,9 @@ typedef struct libvlc_priv_t
 {
     libvlc_int_t       public_data;
 
-    int                i_last_input_id ; ///< Last id of input item
     bool               playlist_active;
 
     /* Messages */
-    msg_bank_t        *msg_bank;    ///< The message bank
     int                i_verbose;   ///< info messages
     bool               b_color;     ///< color messages?
 
@@ -208,19 +183,24 @@ typedef struct libvlc_priv_t
 
     /* Singleton objects */
     module_t          *p_memcpy_module;  ///< Fast memcpy plugin used
-    playlist_t        *p_playlist; //< the playlist singleton
+    playlist_t        *p_playlist; ///< the playlist singleton
+    struct media_library_t *p_ml;    ///< the ML singleton
+    vlc_mutex_t       ml_lock; ///< Mutex for ML creation
     vlm_t             *p_vlm;  ///< the VLM singleton (or NULL)
     vlc_object_t      *p_dialog_provider; ///< dialog provider
-    httpd_t           *p_httpd; ///< HTTP daemon (src/network/httpd.c)
 #ifdef ENABLE_SOUT
     sap_handler_t     *p_sap; ///< SAP SDP advertiser
 #endif
+    struct vlc_actions *actions; ///< Hotkeys handler
 
     /* Interfaces */
     struct intf_thread_t *p_intf; ///< Interfaces linked-list
 
     /* Objects tree */
     vlc_mutex_t        structure_lock;
+
+    /* Exit callback */
+    vlc_exit_t       exit;
 } libvlc_priv_t;
 
 static inline libvlc_priv_t *libvlc_priv (libvlc_int_t *libvlc)
@@ -244,7 +224,6 @@ extern const size_t libvlc_config_count;
  */
 void var_OptionParse (vlc_object_t *, const char *, bool trusted);
 
-
 /*
  * Stats stuff
  */
@@ -257,7 +236,7 @@ int stats_Get (vlc_object_t*, counter_t *, vlc_value_t*);
 void stats_CounterClean (counter_t * );
 
 static inline int stats_GetInteger( vlc_object_t *p_obj, counter_t *p_counter,
-                                    int *value )
+                                    int64_t *value )
 {
     int i_ret;
     vlc_value_t val; val.i_int = 0;
@@ -310,45 +289,8 @@ static inline int stats_UpdateFloat( vlc_object_t *p_obj, counter_t *p_co,
 }
 #define stats_UpdateFloat(a,b,c,d) stats_UpdateFloat( VLC_OBJECT(a),b,c,d )
 
-VLC_EXPORT( void, stats_ComputeInputStats, (input_thread_t*, input_stats_t*) );
-VLC_EXPORT( void, stats_ReinitInputStats, (input_stats_t *) );
-VLC_EXPORT( void, stats_DumpInputStats, (input_stats_t *) );
-
-/*
- * Replacement functions
- */
-# ifndef HAVE_DIRENT_H
-typedef void DIR;
-#  ifndef FILENAME_MAX
-#      define FILENAME_MAX (260)
-#  endif
-struct dirent
-{
-    long            d_ino;          /* Always zero. */
-    unsigned short  d_reclen;       /* Always zero. */
-    unsigned short  d_namlen;       /* Length of name in d_name. */
-    char            d_name[FILENAME_MAX]; /* File name. */
-};
-#  define opendir vlc_opendir
-#  define readdir vlc_readdir
-#  define closedir vlc_closedir
-#  define rewinddir vlc_rewindir
-void *vlc_opendir (const char *);
-void *vlc_readdir (void *);
-int   vlc_closedir(void *);
-void  vlc_rewinddir(void *);
-# endif
-
-#if defined (WIN32)
-#   include <dirent.h>
-void *vlc_wopendir (const wchar_t *);
-/* void *vlc_wclosedir (void *); in vlc's exported symbols */
-struct _wdirent *vlc_wreaddir (void *);
-void vlc_rewinddir (void *);
-#   define _wopendir vlc_wopendir
-#   define _wreaddir vlc_wreaddir
-#   define _wclosedir vlc_wclosedir
-#   define rewinddir vlc_rewinddir
-#endif
+void stats_ComputeInputStats(input_thread_t*, input_stats_t*);
+void stats_ReinitInputStats(input_stats_t *);
+void stats_DumpInputStats(input_stats_t *);
 
 #endif

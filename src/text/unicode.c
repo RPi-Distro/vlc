@@ -1,24 +1,24 @@
 /*****************************************************************************
  * unicode.c: Unicode <-> locale functions
  *****************************************************************************
- * Copyright (C) 2005-2006 the VideoLAN team
+ * Copyright (C) 2005-2006 VLC authors and VideoLAN
  * Copyright © 2005-2010 Rémi Denis-Courmont
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -29,6 +29,8 @@
 #endif
 
 #include <vlc_common.h>
+
+#include "libvlc.h"
 #include <vlc_charset.h>
 
 #include <assert.h>
@@ -39,90 +41,11 @@
 #include <sys/types.h>
 #ifdef UNDER_CE
 #  include <tchar.h>
+#elif defined(WIN32)
+#  include <io.h>
 #endif
 #include <errno.h>
-
-#if defined (ASSUME_UTF8)
-/* Cool */
-#elif defined (WIN32) || defined (UNDER_CE)
-# define USE_MB2MB 1
-#elif defined (HAVE_ICONV)
-# define USE_ICONV 1
-#else
-# error No UTF8 charset conversion implemented on this platform!
-#endif
-
-static char *locale_fast (const char *string, bool from)
-{
-    if( string == NULL )
-        return NULL;
-
-#if defined (USE_ICONV)
-    vlc_iconv_t hd = vlc_iconv_open (from ? "UTF-8" : "",
-                                     from ? "" : "UTF-8");
-    if (hd == (vlc_iconv_t)(-1))
-        return NULL; /* Uho! */
-
-    const char *iptr = string;
-    size_t inb = strlen (string);
-    size_t outb = inb * 6 + 1;
-    char output[outb], *optr = output;
-
-    while (vlc_iconv (hd, &iptr, &inb, &optr, &outb) == (size_t)(-1))
-    {
-        *optr++ = '?';
-        outb--;
-        iptr++;
-        inb--;
-        vlc_iconv (hd, NULL, NULL, NULL, NULL); /* reset */
-    }
-    *optr = '\0';
-    vlc_iconv_close (hd);
-
-    assert (inb == 0);
-    assert (*iptr == '\0');
-    assert (*optr == '\0');
-    assert (strlen (output) == (size_t)(optr - output));
-    return strdup (output);
-#elif defined (USE_MB2MB)
-    char *out;
-    int len;
-
-    len = 1 + MultiByteToWideChar (from ? CP_ACP : CP_UTF8,
-                                   0, string, -1, NULL, 0);
-    wchar_t *wide = malloc (len * sizeof (wchar_t));
-    if (wide == NULL)
-        return NULL;
-
-    MultiByteToWideChar (from ? CP_ACP : CP_UTF8, 0, string, -1, wide, len);
-    len = 1 + WideCharToMultiByte (from ? CP_UTF8 : CP_ACP, 0, wide, -1,
-                                   NULL, 0, NULL, NULL);
-    out = malloc (len);
-    if (out != NULL)
-        WideCharToMultiByte (from ? CP_UTF8 : CP_ACP, 0, wide, -1, out, len,
-                             NULL, NULL);
-    free (wide);
-    return out;
-#else
-    (void)from;
-    return (char *)string;
-#endif
-}
-
-
-static inline char *locale_dup (const char *string, bool from)
-{
-    assert( string );
-
-#if defined (USE_ICONV)
-    return locale_fast (string, from);
-#elif defined (USE_MB2MB)
-    return locale_fast (string, from);
-#else
-    (void)from;
-    return strdup (string);
-#endif
-}
+#include <wctype.h>
 
 /**
  * Releases (if needed) a localized or uniformized string.
@@ -130,12 +53,10 @@ static inline char *locale_dup (const char *string, bool from)
  */
 void LocaleFree (const char *str)
 {
-#if defined (USE_ICONV)
-    free ((char *)str);
-#elif defined (USE_MB2MB)
-    free ((char *)str);
+#ifdef ASSUME_UTF8
+    (void) str;
 #else
-    (void)str;
+    free ((char *)str);
 #endif
 }
 
@@ -151,7 +72,11 @@ void LocaleFree (const char *str)
  */
 char *FromLocale (const char *locale)
 {
-    return locale_fast (locale, true);
+#ifdef ASSUME_UTF8
+    return (char *)locale;
+#else
+    return locale ? FromCharset ("", locale, strlen(locale)) : NULL;
+#endif
 }
 
 /**
@@ -165,7 +90,11 @@ char *FromLocale (const char *locale)
  */
 char *FromLocaleDup (const char *locale)
 {
-    return locale_dup (locale, true);
+#ifdef ASSUME_UTF8
+    return strdup (locale);
+#else
+    return FromCharset ("", locale, strlen(locale));
+#endif
 }
 
 
@@ -180,7 +109,12 @@ char *FromLocaleDup (const char *locale)
  */
 char *ToLocale (const char *utf8)
 {
-    return locale_fast (utf8, false);
+#ifdef ASSUME_UTF8
+    return (char *)utf8;
+#else
+    size_t outsize;
+    return utf8 ? ToCharset ("", utf8, &outsize) : NULL;
+#endif
 }
 
 
@@ -195,23 +129,12 @@ char *ToLocale (const char *utf8)
  */
 char *ToLocaleDup (const char *utf8)
 {
-    return locale_dup (utf8, false);
-}
-
-/**
- * Formats an UTF-8 string as vasprintf(), then print it to stdout, with
- * appropriate conversion to local encoding.
- */
-static int utf8_vasprintf( char **str, const char *fmt, va_list ap )
-{
-    char *utf8;
-    int res = vasprintf( &utf8, fmt, ap );
-    if( res == -1 )
-        return -1;
-
-    *str = ToLocaleDup( utf8 );
-    free( utf8 );
-    return res;
+#ifdef ASSUME_UTF8
+    return strdup (utf8);
+#else
+    size_t outsize;
+    return ToCharset ("", utf8, &outsize);
+#endif
 }
 
 /**
@@ -220,10 +143,13 @@ static int utf8_vasprintf( char **str, const char *fmt, va_list ap )
  */
 int utf8_vfprintf( FILE *stream, const char *fmt, va_list ap )
 {
+#ifdef ASSUME_UTF8
+    return vfprintf (stream, fmt, ap);
+#else
     char *str;
     int res;
 
-#if defined( WIN32 ) && !defined( UNDER_CE )
+# if defined( WIN32 ) && !defined( UNDER_CE )
     /* Writing to the console is a lot of fun on Microsoft Windows.
      * If you use the standard I/O functions, you must use the OEM code page,
      * which is different from the usual ANSI code page. Or maybe not, if the
@@ -256,15 +182,21 @@ int utf8_vfprintf( FILE *stream, const char *fmt, va_list ap )
         free (str);
         return res;
     }
-#endif
+# endif
 
-    res = utf8_vasprintf (&str, fmt, ap);
+    res = vasprintf (&str, fmt, ap);
     if (unlikely(res == -1))
         return -1;
 
-    fputs( str, stream );
-    free( str );
+    char *ansi = ToLocaleDup (str);
+    free (str);
+
+    if (ansi == NULL)
+        return -1;
+    fputs (ansi, stream);
+    free (ansi);
     return res;
+#endif
 }
 
 /**
@@ -365,6 +297,49 @@ size_t vlc_towc (const char *str, uint32_t *restrict pwc)
     return charlen;
 }
 
+/**
+ * Look for an UTF-8 string within another one in a case-insensitive fashion.
+ * Beware that this is quite slow. Contrary to strcasestr(), this function
+ * works regardless of the system character encoding, and handles multibyte
+ * code points correctly.
+
+ * @param haystack string to look into
+ * @param needle string to look for
+ * @return a pointer to the first occurence of the needle within the haystack,
+ * or NULL if no occurence were found.
+ */
+char *vlc_strcasestr (const char *haystack, const char *needle)
+{
+    ssize_t s;
+
+    do
+    {
+        const char *h = haystack, *n = needle;
+
+        for (;;)
+        {
+            uint32_t cph, cpn;
+
+            s = vlc_towc (n, &cpn);
+            if (s == 0)
+                return (char *)haystack;
+            if (unlikely(s < 0))
+                return NULL;
+            n += s;
+
+            s = vlc_towc (h, &cph);
+            if (s <= 0 || towlower (cph) != towlower (cpn))
+                break;
+            h += s;
+        }
+
+        s = vlc_towc (haystack, &(uint32_t) { 0 });
+        haystack += s;
+    }
+    while (s != 0);
+
+    return NULL;
+}
 
 /**
  * Replaces invalid/overlong UTF-8 sequences with question marks.
@@ -445,5 +420,58 @@ char *FromCharset(const char *charset, const void *data, size_t data_size)
     }
     vlc_iconv_close(handle);
     return out;
+}
+
+/**
+ * Converts a nul-terminated UTF-8 string to a given character encoding.
+ * @param charset iconv name of the character set
+ * @param in nul-terminated UTF-8 string
+ * @param outsize pointer to hold the byte size of result
+ *
+ * @return A pointer to the result, which must be released using free().
+ * The UTF-8 nul terminator is included in the conversion if the target
+ * character encoding supports it. However it is not included in the returned
+ * byte size.
+ * In case of error, NULL is returned and the byte size is undefined.
+ */
+void *ToCharset(const char *charset, const char *in, size_t *outsize)
+{
+    vlc_iconv_t hd = vlc_iconv_open (charset, "UTF-8");
+    if (hd == (vlc_iconv_t)(-1))
+        return NULL;
+
+    const size_t inlen = strlen (in);
+    void *res;
+
+    for (unsigned mul = 4; mul < 16; mul++)
+    {
+        size_t outlen = mul * (inlen + 1);
+        res = malloc (outlen);
+        if (unlikely(res == NULL))
+            break;
+
+        const char *inp = in;
+        char *outp = res;
+        size_t inb = inlen;
+        size_t outb = outlen - mul;
+
+        if (vlc_iconv (hd, &inp, &inb, &outp, &outb) != (size_t)(-1))
+        {
+            *outsize = outlen - mul - outb;
+            outb += mul;
+            inb = 1; /* append nul terminator if possible */
+            if (vlc_iconv (hd, &inp, &inb, &outp, &outb) != (size_t)(-1))
+                break;
+            if (errno == EILSEQ) /* cannot translate nul terminator!? */
+                break;
+        }
+
+        free (res);
+        res = NULL;
+        if (errno != E2BIG) /* conversion failure */
+            break;
+    }
+    vlc_iconv_close (hd);
+    return res;
 }
 

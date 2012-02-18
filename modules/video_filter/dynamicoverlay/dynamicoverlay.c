@@ -2,7 +2,7 @@
  * dynamicoverlay.c : dynamic overlay plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 0c7c68a44bca8af5e43f97566a277f71e71cdcaf $
+ * $Id: b9562a69011d26918622ad612073e9da0920ba0d $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
@@ -39,6 +39,7 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
 
 #include "dynamicoverlay.h"
 
@@ -68,12 +69,13 @@ vlc_module_begin ()
     set_shortname( N_("Overlay" ))
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    set_capability( "sub filter", 0 )
+    set_capability( "sub source", 0 )
 
-    add_file( "overlay-input", NULL, NULL, INPUT_TEXT, INPUT_LONGTEXT,
-              false )
-    add_file( "overlay-output", NULL, NULL, OUTPUT_TEXT, OUTPUT_LONGTEXT,
-              false )
+    add_loadfile( "overlay-input", NULL, INPUT_TEXT, INPUT_LONGTEXT,
+                  false )
+    /* Note: add_loadfile as O_WRONLY w/o O_CREAT, i.e. FIFO must exist */
+    add_loadfile( "overlay-output", NULL, OUTPUT_TEXT, OUTPUT_LONGTEXT,
+                  false )
 
     add_shortcut( "overlay" )
     set_callbacks( Create, Destroy )
@@ -104,7 +106,7 @@ static int Create( vlc_object_t *p_this )
     QueueInit( &p_sys->atomic );
     QueueInit( &p_sys->pending );
     QueueInit( &p_sys->processed );
-    ListInit( &p_sys->overlays );
+    do_ListInit( &p_sys->overlays );
 
     p_sys->i_inputfd = -1;
     p_sys->i_outputfd = -1;
@@ -112,7 +114,7 @@ static int Create( vlc_object_t *p_this )
     p_sys->b_atomic = false;
     vlc_mutex_init( &p_sys->lock );
 
-    p_filter->pf_sub_filter = Filter;
+    p_filter->pf_sub_source = Filter;
 
     config_ChainParse( p_filter, "overlay-", ppsz_filter_options,
                        p_filter->p_cfg );
@@ -144,7 +146,7 @@ static void Destroy( vlc_object_t *p_this )
     QueueDestroy( &p_sys->atomic );
     QueueDestroy( &p_sys->pending );
     QueueDestroy( &p_sys->processed );
-    ListDestroy( &p_sys->overlays );
+    do_ListDestroy( &p_sys->overlays );
     UnregisterCommand( p_filter );
 
     var_DelCallback( p_filter, "overlay-input", AdjustCallback, p_sys );
@@ -272,8 +274,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             p_cmddesc->p_command->pf_parser( p_cmd, p_end,
                                              &p_cmddesc->params );
 
-            if( ( p_cmddesc->p_command->b_atomic == true ) &&
-                ( p_sys->b_atomic == true ) )
+            if( p_cmddesc->p_command->b_atomic && p_sys->b_atomic )
                 QueueEnqueue( &p_sys->atomic, p_cmddesc );
             else
                 QueueEnqueue( &p_sys->pending, p_cmddesc );
@@ -332,7 +333,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         }
     }
 
-    if( p_sys->b_updated == false )
+    if( !p_sys->b_updated )
         return NULL;
 
     subpicture_t *p_spu = NULL;
@@ -375,7 +376,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         }
         p_region->i_x = p_overlay->i_x;
         p_region->i_y = p_overlay->i_y;
-        p_region->i_align = OSD_ALIGN_LEFT | OSD_ALIGN_TOP;
+        p_region->i_align = SUBPICTURE_ALIGN_LEFT | SUBPICTURE_ALIGN_TOP;
         p_region->i_alpha = p_overlay->i_alpha;
         pp_region = &p_region->p_next;
     }

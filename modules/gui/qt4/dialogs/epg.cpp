@@ -27,6 +27,7 @@
 #include "dialogs/epg.hpp"
 
 #include "components/epg/EPGWidget.hpp"
+#include <vlc_playlist.h>
 
 #include <QVBoxLayout>
 #include <QSplitter>
@@ -34,6 +35,8 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QTextEdit>
+#include <QDialogButtonBox>
+#include <QTimer>
 
 #include "qt4.hpp"
 #include "input_manager.hpp"
@@ -70,18 +73,27 @@ EpgDialog::EpgDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
     layout->addWidget( epg, 10 );
     layout->addWidget( descBox );
 
-    CONNECT( epg, itemSelectionChanged( EPGEvent *), this, showEvent( EPGEvent *) );
+    CONNECT( epg, itemSelectionChanged( EPGItem *), this, showEvent( EPGItem *) );
     CONNECT( THEMIM->getIM(), epgChanged(), this, updateInfos() );
+    CONNECT( THEMIM, inputChanged( input_thread_t * ), this, updateInfos() );
+
+    QDialogButtonBox *buttonsBox = new QDialogButtonBox( this );
 
 #if 0
     QPushButton *update = new QPushButton( qtr( "Update" ) ); // Temporary to test
-    boxLayout->addWidget( update, 0, Qt::AlignRight );
+    buttonsBox->addButton( update, QDialogButtonBox::ActionRole );
     BUTTONACT( update, updateInfos() );
 #endif
 
-    QPushButton *close = new QPushButton( qtr( "&Close" ) );
-    boxLayout->addWidget( close, 0, Qt::AlignRight );
-    BUTTONACT( close, close() );
+    buttonsBox->addButton( new QPushButton( qtr( "&Close" ) ),
+                           QDialogButtonBox::RejectRole );
+    boxLayout->addWidget( buttonsBox );
+    CONNECT( buttonsBox, rejected(), this, close() );
+
+    timer = new QTimer( this );
+    timer->setSingleShot( true );
+    timer->setInterval( 1000 * 60 );
+    CONNECT( timer, timeout(), this, updateInfos() );
 
     updateInfos();
     readSettings( "EPGDialog", QSize( 650, 450 ) );
@@ -92,33 +104,37 @@ EpgDialog::~EpgDialog()
     writeSettings( "EPGDialog" );
 }
 
-void EpgDialog::showEvent( EPGEvent *event )
+void EpgDialog::showEvent( EPGItem *epgItem )
 {
-    if( !event ) return;
+    if( !epgItem ) return;
 
-    QString titleDescription, textDescription;
-    if( event->description.isEmpty() )
-        textDescription = event->shortDescription;
-    else
-    {
-        textDescription = event->description;
-        if( !event->shortDescription.isEmpty() )
-            titleDescription = " - " + event->shortDescription;
-    }
-
-    QDateTime end = event->start.addSecs( event->duration );
-    title->setText( event->start.toString( "hh:mm" ) + " - "
-                    + end.toString( "hh:mm" ) + " : "
-                    + event->name + titleDescription );
-
-    description->setText( textDescription );
+    QDateTime end = epgItem->start().addSecs( epgItem->duration() );
+    title->setText( QString("%1 - %2 : %3")
+                   .arg( epgItem->start().toString( "hh:mm" ) )
+                   .arg( end.toString( "hh:mm" ) )
+                   .arg( epgItem->name() )
+                   );
+    description->setText( epgItem->description() );
 }
 
 void EpgDialog::updateInfos()
 {
-    if( !THEMIM->getInput() ) return;
-
-    msg_Dbg( p_intf, "Found %i EPG items", input_GetItem( THEMIM->getInput())->i_epg);
-    epg->updateEPG( input_GetItem( THEMIM->getInput())->pp_epg, input_GetItem( THEMIM->getInput())->i_epg );
-
+    timer->stop();
+    input_item_t *p_input_item = NULL;
+    playlist_t *p_playlist = THEPL;
+    input_thread_t *p_input_thread = playlist_CurrentInput( p_playlist ); /* w/hold */
+    if( p_input_thread )
+    {
+        PL_LOCK; /* as input_GetItem still unfixed */
+        p_input_item = input_GetItem( p_input_thread );
+        if ( p_input_item ) vlc_gc_incref( p_input_item );
+        PL_UNLOCK;
+        vlc_object_release( p_input_thread );
+        if ( p_input_item )
+        {
+            epg->updateEPG( p_input_item );
+            vlc_gc_decref( p_input_item );
+            if ( isVisible() ) timer->start();
+        }
+    }
 }

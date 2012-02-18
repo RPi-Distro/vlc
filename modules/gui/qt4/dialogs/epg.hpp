@@ -29,7 +29,8 @@
 
 class QLabel;
 class QTextEdit;
-class EPGEvent;
+class QTimer;
+class EPGItem;
 class EPGWidget;
 
 class EpgDialog : public QVLCFrame, public Singleton<EpgDialog>
@@ -42,11 +43,12 @@ private:
     EPGWidget *epg;
     QTextEdit *description;
     QLabel *title;
+    QTimer *timer;
 
     friend class    Singleton<EpgDialog>;
 
 private slots:
-    void showEvent( EPGEvent * );
+    void showEvent( EPGItem * );
     void updateInfos();
 };
 

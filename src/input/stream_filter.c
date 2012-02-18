@@ -2,23 +2,23 @@
  * stream_filter.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 9126f76788509c3a0c22c2f025b6dcc287980eb0 $
+ * $Id: 8c2f9fceb7f8676d4a3ba9e2ec8abf61777deec9 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -27,6 +27,7 @@
 
 #include <vlc_common.h>
 #include <vlc_stream.h>
+#include <vlc_modules.h>
 #include <libvlc.h>
 
 #include <assert.h>
@@ -48,6 +49,7 @@ stream_t *stream_FilterNew( stream_t *p_source,
     s->p_input = p_source->p_input;
 
     /* */
+    s->psz_access = strdup( p_source->psz_access );
     s->psz_path = strdup( p_source->psz_path );
     if( !s->psz_path )
     {
@@ -57,8 +59,6 @@ stream_t *stream_FilterNew( stream_t *p_source,
     s->p_source = p_source;
 
     /* */
-    vlc_object_attach( s, p_source );
-
     s->p_module = module_need( s, "stream_filter", psz_stream_filter, true );
 
     if( !s->p_module )
@@ -128,4 +128,3 @@ static void StreamDelete( stream_t *s )
 
     stream_CommonDelete( s );
 }
-

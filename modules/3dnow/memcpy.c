@@ -2,7 +2,7 @@
  * memcpy.c : classic memcpy module
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 150064576c59e956d120c96248c407eec3251ccb $
+ * $Id: 9034d6ffc52e18c3bec0b9f03d052d4995c86702 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -34,8 +34,11 @@
 
 static int Activate( vlc_object_t *p_this )
 {
+    if( !(vlc_CPU() & CPU_CAPABILITY_3DNOW) )
+        return VLC_EGENERIC;
+
     VLC_UNUSED(p_this);
-    vlc_fastmem_register( fast_memcpy, NULL );
+    vlc_fastmem_register( fast_memcpy );
 
     return VLC_SUCCESS;
 }
@@ -44,10 +47,7 @@ vlc_module_begin ()
     set_category( CAT_ADVANCED )
     set_subcategory( SUBCAT_ADVANCED_MISC )
     set_description( N_("3D Now! memcpy") )
-    add_shortcut( "3dn" )
-    add_shortcut( "3dnow" )
-    add_shortcut( "memcpy3dn" )
-    add_shortcut( "memcpy3dnow" )
+    add_shortcut( "3dn", "3dnow", "memcpy3dn", "memcpy3dnow" )
     set_capability( "memcpy", 100 )
     set_callbacks( Activate, NULL )
 vlc_module_end ()

@@ -3,9 +3,9 @@
 
 basedir = mux
 dir = mux/mpeg
-mods = mux_ps mux_ts
-libvlc_LTLIBRARIES =  $(LTLIBmux_ts)
-EXTRA_LTLIBRARIES =  libmux_ts_plugin.la
+mods = mux_ps
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -13,21 +13,12 @@ include $(top_srcdir)/modules/common.am
 libmux_ps_plugin_la_SOURCES = $(SOURCES_mux_ps)
 nodist_libmux_ps_plugin_la_SOURCES = $(nodist_SOURCES_mux_ps)
 # Force per-target objects:
-libmux_ps_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_ps_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_ps_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmux_ps_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mux_ps)
+libmux_ps_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mux_ps)
+libmux_ps_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mux_ps)
+libmux_ps_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mux_ps)
 # Set LIBADD and DEPENDENCIES manually:
-libmux_ps_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_ps_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The mux_ts plugin
-libmux_ts_plugin_la_SOURCES = $(SOURCES_mux_ts)
-nodist_libmux_ts_plugin_la_SOURCES = $(nodist_SOURCES_mux_ts)
-# Force per-target objects:
-libmux_ts_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmux_ts_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmux_ts_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libmux_ts_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_ts_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmux_ps_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mux_ps)
+libmux_ps_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mux_ps)
+libmux_ps_plugin_la_DEPENDENCIES =
 

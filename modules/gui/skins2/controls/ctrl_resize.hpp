@@ -2,7 +2,7 @@
  * ctrl_resize.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7d2d718b1819b059e9371fb7663c2d7a8e44aacb $
+ * $Id: 8f2912cfb96bd631f9ba5af9ac448d7967412c43 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -50,7 +50,7 @@ public:
     virtual bool mouseOver( int x, int y ) const;
 
     /// Draw the control on the given graphics
-    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Set the position and the associated layout of the decorated control
     virtual void setLayout( GenericLayout *pLayout,

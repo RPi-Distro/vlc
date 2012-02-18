@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 13e685f22063e95ba416a84490972f2d2597d7cf $
+ * $Id: d1fcec66b1219c1298b85ce43b62c077ce683db0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -31,78 +31,52 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QSpinBox>
+#include <QList>
+#include <QTimer>
+#include <QToolButton>
 
-/**
-  This class provides a QLineEdit which contains a greyed-out hinting
-  text as long as the user didn't enter any text
+class QPixmap;
 
-  @short LineEdit with customizable "Click here" text
-  @author Daniel Molkentin
-*/
-class ClickLineEdit : public QLineEdit
-{
-    Q_OBJECT
-    Q_PROPERTY( QString clickMessage READ clickMessage WRITE setClickMessage )
-public:
-    ClickLineEdit( const QString &msg, QWidget *parent );
-    virtual ~ClickLineEdit() {};
-    void setClickMessage( const QString &msg );
-    QString clickMessage() const { return mClickMessage; }
-    virtual void setText( const QString& txt );
-protected:
-    virtual void paintEvent( QPaintEvent *e );
-    virtual void dropEvent( QDropEvent *ev );
-    virtual void focusInEvent( QFocusEvent *ev );
-    virtual void focusOutEvent( QFocusEvent *ev );
-private:
-    QString mClickMessage;
-    bool mDrawClickMsg;
-};
-
-class QVLCFramelessButton : public QPushButton
+class QFramelessButton : public QPushButton
 {
     Q_OBJECT
 public:
-    QVLCFramelessButton( QWidget *parent = NULL );
-    QSize sizeHint() const;
+    QFramelessButton( QWidget *parent = NULL );
+    virtual QSize sizeHint() const { return iconSize(); }
 protected:
     virtual void paintEvent( QPaintEvent * event );
 };
 
-class SearchLineEdit : public QLineEdit
+class QToolButtonExt : public QToolButton
 {
     Q_OBJECT
 public:
-    SearchLineEdit( QWidget *parent = NULL );
-
+    QToolButtonExt( QWidget *parent = 0, int ms = 0 );
 private:
-    void resizeEvent ( QResizeEvent * event );
-    void focusInEvent( QFocusEvent *event );
-    void focusOutEvent( QFocusEvent *event );
-    void paintEvent( QPaintEvent *event );
-    void setMessageVisible( bool on );
-    QVLCFramelessButton   *clearButton;
-    bool message;
-    QLabel *msg;
-
-public slots:
-    void clear();
-
+    bool shortClick;
+    bool longClick;
 private slots:
-    void updateText( const QString& );
+    void releasedSlot();
+    void clickedSlot();
+signals:
+    void shortClicked();
+    void longClicked();
 };
 
-class QVLCElidingLabel : public QLabel
+class QElidingLabel : public QLabel
 {
 public:
-    QVLCElidingLabel( const QString &s = QString(),
+    QElidingLabel( const QString &s = QString(),
                       Qt::TextElideMode mode = Qt::ElideRight,
                       QWidget * parent = NULL );
     void setElideMode( Qt::TextElideMode );
+protected:
+    virtual void paintEvent( QPaintEvent * event );
 private:
-    void paintEvent( QPaintEvent * event );
     Qt::TextElideMode elideMode;
 };
+
 
 class QVLCStackedWidget : public QStackedWidget
 {
@@ -114,6 +88,88 @@ public:
     }
 };
 
+class QVLCDebugLevelSpinBox : public QSpinBox
+{
+    Q_OBJECT
+public:
+    QVLCDebugLevelSpinBox( QWidget *parent ) : QSpinBox( parent ) { };
+protected:
+    virtual QString textFromValue( int ) const;
+    /* QVLCDebugLevelSpinBox is read-only */
+    virtual int valueFromText( const QString& ) const { return -1; }
+};
+
+class AnimatedIcon : public QLabel
+{
+    /** An animated pixmap
+     * Use this widget to display an animated icon based on a series of
+     * pixmaps. The pixmaps will be stored in memory and should be kept small.
+     * First, create the widget, add frames and then start playing. Looping
+     * is supported.
+     * Frames #1 to #n are displayed at regular intervals when playing.
+     * Frame #0 is the idle frame, displayed when the icon is not animated.
+     * If not #0 frame has been specified, the last frame will be shown when
+     * idle.
+     **/
+
+    Q_OBJECT
+
+public:
+    /** Create an empty AnimatedIcon */
+    AnimatedIcon( QWidget *parent );
+    virtual ~AnimatedIcon();
+
+    /** Adds a frame to play in the loop.
+     * @param pixmap The QPixmap to display. Data will be copied internally.
+     * @param index If -1, append the frame. If 0, replace the idle frame.
+     *              Otherwise, insert the frame at the given position.
+     **/
+    void addFrame( const QPixmap &pixmap, int index = -1 );
+
+    /** Play the animation (or restart it)
+     * @param loops Number of times to play the loop. 0 means stop, while -1
+     *              means play forever. When stopped, the frame #0 will be
+     *              displayed until play() is called again.
+     * @param interval Delay between frames, in milliseconds (minimum 20ms)
+     * @note If isPlaying() is true, then restart the animation from frame #1
+     **/
+    void play( int loops = 1, int interval = 200 );
+
+    /** Stop playback. Same as play(0). */
+    inline void stop()
+    {
+        play( 0 );
+    }
+
+    /** Is the animation currently running? */
+    inline bool isPlaying()
+    {
+        return mTimer.isActive();
+    }
+
+private:
+    QTimer mTimer;
+    QPixmap *mIdleFrame;
+    QList<QPixmap*> mFrames; // Keeps deep copies of all the frames
+    int mCurrentFrame, mRemainingLoops;
+
+private slots:
+    /** Slot connected to the timeout() signal of our internal timer */
+    void onTimerTick();
+};
+
+class SpinningIcon : public AnimatedIcon
+{
+    /** This spinning icon, to the colors of the VLC cone, will show
+     * that there is some background activity running
+     **/
+
+    Q_OBJECT
+
+public:
+    SpinningIcon( QWidget *parent, bool noIdleFrame = false );
+};
+
 /* VLC Key/Wheel hotkeys interactions */
 
 class QKeyEvent;
@@ -123,7 +179,6 @@ class QInputEvent;
 int qtKeyModifiersToVLC( QInputEvent* e );
 int qtEventToVLCKey( QKeyEvent *e );
 int qtWheelEventToVLCKey( QWheelEvent *e );
-QString VLCKeyToString( int val );
+QString VLCKeyToString( unsigned val );
 
 #endif
-

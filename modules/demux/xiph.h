@@ -2,7 +2,7 @@
  * xiph.h: Xiph helpers
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: dc1df97582868f20aafc38d67e08691edad235d9 $
+ * $Id: 0ce5dc4b2be2f4c44d4968b368151c6f6854f552 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -48,7 +48,7 @@ static inline int xiph_SplitHeaders(unsigned packet_size[], void *packet[], unsi
         }
         size += packet_size[i];
     }
-    if (end - current < size)
+    if (end - current < (int)size)
         return VLC_EGENERIC;
     packet_size[count - 1] = end - current - size;
 
@@ -69,7 +69,7 @@ static inline int xiph_SplitHeaders(unsigned packet_size[], void *packet[], unsi
 }
 
 static inline int xiph_PackHeaders(int *extra_size, void **extra,
-                                   unsigned packet_size[], void *packet[], unsigned packet_count )
+                                   unsigned packet_size[], const void *packet[], unsigned packet_count )
 {
     if (packet_count <= 0 || packet_count > XIPH_MAX_HEADER_COUNT)
         return VLC_EGENERIC;
@@ -135,7 +135,8 @@ static inline int xiph_AppendHeaders(int *extra_size, void **extra,
 
     packet_size[count] = size;
     packet[count]      = (void*)data;
-    if (xiph_PackHeaders(extra_size, extra, packet_size, packet, count + 1)) {
+    if (xiph_PackHeaders(extra_size, extra, packet_size,
+                         (const void **)packet, count + 1)) {
         *extra_size = 0;
         *extra      = NULL;
     }

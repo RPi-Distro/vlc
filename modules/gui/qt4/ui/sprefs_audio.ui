@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>661</width>
-    <height>670</height>
+    <width>703</width>
+    <height>656</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -253,7 +253,40 @@
          <bool>false</bool>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
+         <item row="8" column="0">
+          <widget class="QLabel" name="visuLabel">
+           <property name="minimumSize">
+            <size>
+             <width>250</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Visualization:</string>
+           </property>
+           <property name="buddy">
+            <cstring>visualisation</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="2" colspan="2">
+          <widget class="QComboBox" name="visualisation">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0">
+          <widget class="QCheckBox" name="autoscaleBox">
+           <property name="text">
+            <string>Enable Time-Stretching audio</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
           <widget class="QLabel" name="dolbyLabel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -281,7 +314,49 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item row="5" column="0">
+          <widget class="QLabel" name="replayLabel">
+           <property name="minimumSize">
+            <size>
+             <width>250</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Replay gain mode:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>replayCombo</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2" colspan="2">
+          <widget class="QComboBox" name="replayCombo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="3">
+          <widget class="QCheckBox" name="headphoneEffect">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Headphone surround effect</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="2">
           <widget class="QComboBox" name="detectionDolby">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -294,7 +369,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="4" column="0">
           <widget class="QCheckBox" name="volNormBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -319,7 +394,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="4" column="2">
           <widget class="QDoubleSpinBox" name="volNormSpin">
            <property name="enabled">
             <bool>true</bool>
@@ -329,88 +404,23 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
+         <item row="4" column="3">
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>268</width>
+             <width>40</width>
              <height>20</height>
             </size>
            </property>
           </spacer>
          </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="replayLabel">
-           <property name="minimumSize">
-            <size>
-             <width>250</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Replay gain mode:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1" colspan="2">
-          <widget class="QComboBox" name="replayCombo">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="visuLabel">
-           <property name="minimumSize">
-            <size>
-             <width>250</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Visualization:</string>
-           </property>
-           <property name="buddy">
-            <cstring>visualisation</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1" colspan="2">
-          <widget class="QComboBox" name="visualisation">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QCheckBox" name="headphoneEffect">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Headphone surround effect</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0" colspan="2">
-          <widget class="QCheckBox" name="autoscaleBox">
-           <property name="text">
-            <string>Enable Time-Stretching audio</string>
+         <item row="7" column="2" colspan="2">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -535,9 +545,25 @@
  </widget>
  <tabstops>
   <tabstop>enableAudio</tabstop>
+  <tabstop>keepVolumeRadio</tabstop>
+  <tabstop>resetVolumeRadio</tabstop>
+  <tabstop>defaultVolume</tabstop>
+  <tabstop>volumeValue</tabstop>
   <tabstop>outputModule</tabstop>
   <tabstop>fileName</tabstop>
   <tabstop>fileBrowseButton</tabstop>
+  <tabstop>spdifBox</tabstop>
+  <tabstop>autoscaleBox</tabstop>
+  <tabstop>volNormBox</tabstop>
+  <tabstop>volNormSpin</tabstop>
+  <tabstop>replayCombo</tabstop>
+  <tabstop>detectionDolby</tabstop>
+  <tabstop>headphoneEffect</tabstop>
+  <tabstop>visualisation</tabstop>
+  <tabstop>preferredAudioLanguage</tabstop>
+  <tabstop>lastfm</tabstop>
+  <tabstop>lastfm_user_edit</tabstop>
+  <tabstop>lastfm_pass_edit</tabstop>
  </tabstops>
  <resources/>
  <connections/>

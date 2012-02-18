@@ -3,19 +3,19 @@
  *****************************************************************************
  * Copyright (C) 2010 Rémi Denis-Courmont
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -27,7 +27,7 @@
 
 #ifdef ENABLE_NLS
 # include <libintl.h>
-# if defined (__APPLE__) || defined (WIN32)
+# if defined (__APPLE__) || defined (WIN32) || defined(__OS2__)
 #  include "config/configuration.h"
 #  include <vlc_charset.h>
 # endif
@@ -37,7 +37,7 @@ int vlc_bindtextdomain (const char *domain)
 {
 #if defined (ENABLE_NLS)
     /* Specify where to find the locales for current domain */
-# if !defined (__APPLE__) && !defined (WIN32)
+# if !defined (__APPLE__) && !defined (WIN32) && !defined(__OS2__)
     static const char path[] = LOCALEDIR;
 
     if (bindtextdomain (domain, path) == NULL)
@@ -90,4 +90,18 @@ int vlc_bindtextdomain (const char *domain)
 #endif
 
     return 0;
+}
+
+/**
+ * In-tree plugins share their gettext domain with LibVLC.
+ */
+char *vlc_gettext (const char *msgid)
+{
+#ifdef ENABLE_NLS
+    if (unlikely(!*msgid))
+        return (char *)"";
+    return dgettext (PACKAGE_NAME, msgid);
+#else
+    return (char *)msgid;
+#endif
 }

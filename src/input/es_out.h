@@ -1,33 +1,29 @@
 /*****************************************************************************
  * es_out.h: Input es_out functions
  *****************************************************************************
- * Copyright (C) 1998-2008 the VideoLAN team
+ * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: d0b8111929044767c4a52ec1cda91b0d65995221 $
+ * $Id: 56cefed7c99acf5898d9a7064b1ee3dac50f5449 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
-
-#ifndef _INPUT_ES_OUT_H
-#define _INPUT_ES_OUT_H 1
+#ifndef LIBVLC_INPUT_ES_OUT_H
+#define LIBVLC_INPUT_ES_OUT_H 1
 
 #include <vlc_common.h>
 
@@ -52,7 +48,7 @@ enum es_out_query_private_e
     ES_OUT_SET_ES_BY_ID,
     ES_OUT_RESTART_ES_BY_ID,
     ES_OUT_SET_ES_DEFAULT_BY_ID,
-    ES_OUT_GET_ES_OBJECTS_BY_ID,                    /* arg1=int id, vlc_object_t **dec, vout_thread_t **, aout_instance_t ** res=can fail*/
+    ES_OUT_GET_ES_OBJECTS_BY_ID,                    /* arg1=int id, vlc_object_t **dec, vout_thread_t **, audio_output_t ** res=can fail*/
 
     /* Get buffering state */
     ES_OUT_GET_BUFFERING,                           /* arg1=bool*               res=cannot fail */
@@ -83,6 +79,9 @@ enum es_out_query_private_e
 
     /* Get forced group */
     ES_OUT_GET_GROUP_FORCED,                        /* arg1=int * res=cannot fail */
+
+    /* Set End Of Stream */
+    ES_OUT_SET_EOS,                                 /* res=cannot fail */
 };
 
 static inline void es_out_SetMode( es_out_t *p_out, int i_mode )
@@ -152,7 +151,7 @@ static inline void es_out_SetJitter( es_out_t *p_out,
     assert( !i_ret );
 }
 static inline int es_out_GetEsObjects( es_out_t *p_out, int i_id,
-                                       vlc_object_t **pp_decoder, vout_thread_t **pp_vout, aout_instance_t **pp_aout )
+                                       vlc_object_t **pp_decoder, vout_thread_t **pp_vout, audio_output_t **pp_aout )
 {
     return es_out_Control( p_out, ES_OUT_GET_ES_OBJECTS_BY_ID, i_id, pp_decoder, pp_vout, pp_aout );
 }
@@ -162,6 +161,11 @@ static inline int es_out_GetGroupForced( es_out_t *p_out )
     int i_ret = es_out_Control( p_out, ES_OUT_GET_GROUP_FORCED, &i_group );
     assert( !i_ret );
     return i_group;
+}
+static inline void es_out_Eos( es_out_t *p_out )
+{
+    int i_ret = es_out_Control( p_out, ES_OUT_SET_EOS );
+    assert( !i_ret );
 }
 
 es_out_t  *input_EsOutNew( input_thread_t *, int i_rate );

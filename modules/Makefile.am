@@ -10,9 +10,12 @@ BASE_SUBDIRS = \
 	gui \
 	meta_engine \
 	misc \
+	media_library \
+	notify \
 	packetizer \
 	services_discovery \
 	stream_filter \
+	text_renderer \
 	video_chroma \
 	video_filter \
 	video_output \
@@ -27,6 +30,7 @@ EXTRA_SUBDIRS = \
 	3dnow \
 	altivec \
 	arm_neon \
+	lua \
 	$(NULL)
 
 SUBDIRS = $(BASE_SUBDIRS)
@@ -49,29 +53,13 @@ endif
 if HAVE_ALTIVEC
 SUBDIRS += altivec
 endif
-if HAVE_ARM_NEON
+if HAVE_NEON
 SUBDIRS += arm_neon
+endif
+if BUILD_LUA
+SUBDIRS += lua
 endif
 SUBDIRS += .
 
 dist_noinst_SCRIPTS = genmf list.sh
 dist_noinst_DATA = LIST
-noinst_DATA = stamp-cache
-MOSTLYCLEANFILES = stamp-cache plugins-*-*.dat
-
-.PHONY: stamp-cache
-
-stamp-cache:
-	$(AM_V_GEN)if test "$(build)" = "$(host)"; then \
-		../bin/vlc-cache-gen$(EXEEXT) . ; \
-	else \
-		echo "Cross-compilation: cache generation skipped!" ; \
-	fi
-	$(AM_V_at)touch stamp-cache
-
-install-exec-hook:
-	if test -z "$(DESTDIR)"; then \
-		../bin/vlc-cache-gen$(EXEEXT) "$(vlclibdir)/plugins" ; \
-	else \
-		echo "Staged installation: cache generation skipped!" ; \
-	fi

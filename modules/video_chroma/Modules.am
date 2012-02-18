@@ -32,6 +32,8 @@ SOURCES_yuy2_i420 = \
 	yuy2_i420.c \
 	$(NULL)
 
+SOURCES_rv32 = rv32.c
+
 libvlc_LTLIBRARIES += \
 	libi420_rgb_plugin.la \
 	libi420_yuy2_plugin.la \
@@ -40,4 +42,11 @@ libvlc_LTLIBRARIES += \
 	libgrey_yuv_plugin.la \
 	libyuy2_i420_plugin.la \
 	libyuy2_i422_plugin.la \
+	librv32_plugin.la \
 	$(NULL)
+
+libchroma_omx_plugin_la_SOURCES = omxdl.c
+libchroma_omx_plugin_la_CFLAGS = $(AM_CFLAGS) $(OMXIP_CFLAGS)
+libchroma_omx_plugin_la_LIBADD = $(AM_LIBADD) $(OMXIP_LIBS)
+libchroma_omx_plugin_la_DEPENDENCIES =
+EXTRA_LTLIBRARIES += libchroma_omx_plugin.la

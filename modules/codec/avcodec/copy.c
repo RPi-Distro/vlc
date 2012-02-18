@@ -2,7 +2,7 @@
  * copy.c: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 9c9a44bcbd413d042630c3c802e95df3a60d48e0 $
+ * $Id: 3c2706926ea64ebaace35d6b03afd76e70623f0b $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -293,19 +293,14 @@ static void SplitPlanes(uint8_t *dstu, size_t dstu_pitch,
 int CopyInitCache(copy_cache_t *cache, unsigned width)
 {
     cache->size = __MAX((width + 0x0f) & ~ 0x0f, 4096);
-    cache->base = malloc(16 + cache->size);
-    if (cache->base == NULL) {
-        cache->buffer = NULL;
+    cache->buffer = vlc_memalign(16, cache->size);
+    if (!cache->buffer)
         return VLC_EGENERIC;
-    }
-    cache->buffer = &cache->base[16 - ((intptr_t)cache->base & 0x0f)];
     return VLC_SUCCESS;
 }
 void CopyCleanCache(copy_cache_t *cache)
 {
-    free(cache->base);
-
-    cache->base   = NULL;
+    vlc_free(cache->buffer);
     cache->buffer = NULL;
     cache->size   = 0;
 }

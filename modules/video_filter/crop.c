@@ -2,7 +2,7 @@
  * crop.c : Crop video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: b48cd08ed2ce3ca9bd28a234889cf2c8acc5c448 $
+ * $Id: b5e946097a7e7acbe0c90446d0752ff0f7f706ec $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          mod by Cedric Cocquebert <Cedric.Cocquebert@supelec.fr>
@@ -35,8 +35,6 @@
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
 #include <vlc_dialog.h>
-
-#include "filter_common.h"
 
 #define BEST_AUTOCROP 1
 #ifdef BEST_AUTOCROP
@@ -86,7 +84,7 @@ static int FilterCallback ( vlc_object_t *, char const *,
 #define RATIO_LONGTEXT N_("Force a ratio (0 for automatic). Value is x1000: 1333 means 4/3.")
 
 #define TIME_TEXT N_("Number of images for change")
-#define TIME_LONGTEXT N_("The number of consecutive images with the same detected ratio (different from the previously detected ratio) to consider that ratio chnged and trigger recrop.")
+#define TIME_LONGTEXT N_("The number of consecutive images with the same detected ratio (different from the previously detected ratio) to consider that ratio changed and trigger recrop.")
 
 #define DIFF_TEXT N_("Number of lines for change")
 #define DIFF_LONGTEXT N_("The minimum difference in the number of detected black lines to consider that ratio changed and trigger recrop.")
@@ -96,7 +94,7 @@ static int FilterCallback ( vlc_object_t *, char const *,
                         " that the line is black.")
 
 #define SKIP_TEXT N_("Skip percentage (%)")
-#define SKIP_LONGTEXT N_("Percentage of the line to consider while checking for black lines. This allows to skip logos in black borders and crop them anyway.")
+#define SKIP_LONGTEXT N_("Percentage of the line to consider while checking for black lines. This allows skipping logos in black borders and crop them anyway.")
 
 #define LUM_TEXT N_("Luminance threshold ")
 #define LUM_LONGTEXT N_("Maximum luminance to consider a pixel as black (0-255).")
@@ -110,29 +108,29 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_VIDEO_VFILTER )
     set_capability( "video filter", 0 )
 
-    add_string( "crop-geometry", NULL, NULL, GEOMETRY_TEXT,
+    add_string( "crop-geometry", NULL, GEOMETRY_TEXT,
                                              GEOMETRY_LONGTEXT, false )
-    add_bool( "autocrop", false, NULL, AUTOCROP_TEXT,
+    add_bool( "autocrop", false, AUTOCROP_TEXT,
                                    AUTOCROP_LONGTEXT, false )
 
 #ifdef BEST_AUTOCROP
-    add_integer_with_range( "autocrop-ratio-max", 2405, 0, RATIO_MAX, NULL,
+    add_integer_with_range( "autocrop-ratio-max", 2405, 0, RATIO_MAX,
                             RATIOMAX_TEXT, RATIOMAX_LONGTEXT, true )
 
-    add_integer_with_range( "crop-ratio", 0, 0, RATIO_MAX, NULL, RATIO_TEXT,
+    add_integer_with_range( "crop-ratio", 0, 0, RATIO_MAX, RATIO_TEXT,
                             RATIO_LONGTEXT, false )
-    add_integer( "autocrop-time", 25, NULL, TIME_TEXT,
+    add_integer( "autocrop-time", 25, TIME_TEXT,
                  TIME_LONGTEXT, true )
-    add_integer( "autocrop-diff", 16, NULL, DIFF_TEXT,
+    add_integer( "autocrop-diff", 16, DIFF_TEXT,
                                             DIFF_LONGTEXT, true )
 
-    add_integer( "autocrop-non-black-pixels", 3, NULL,
+    add_integer( "autocrop-non-black-pixels", 3,
                  NBP_TEXT, NBP_LONGTEXT, true )
 
-    add_integer_with_range( "autocrop-skip-percent", 17, 0, 100, NULL,
+    add_integer_with_range( "autocrop-skip-percent", 17, 0, 100,
                             SKIP_TEXT, SKIP_LONGTEXT, true )
 
-    add_integer_with_range( "autocrop-luminance-threshold", 40, 0, 128, NULL,
+    add_integer_with_range( "autocrop-luminance-threshold", 40, 0, 128,
                             LUM_TEXT, LUM_LONGTEXT, true )
 #endif //BEST_AUTOCROP
 

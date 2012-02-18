@@ -2,7 +2,7 @@
  * sdl.c: SDL video output display method
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: beb01eff60081b4b1e8f6872a132fa30ee21359b $
+ * $Id: 78dfde40390ea1ce2db5a14247f1fbcf42447ca4 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Pierre Baillet <oct@zoy.org>
@@ -35,13 +35,12 @@
 #include <vlc_plugin.h>
 #include <vlc_vout_display.h>
 #include <vlc_picture_pool.h>
-#include "keythread.h"
 
 #include <assert.h>
 
 #include <SDL.h>
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__OS2__)
 # ifdef X_DISPLAY_MISSING
 #  error Xlib required due to XInitThreads
 # endif
@@ -64,9 +63,9 @@ vlc_module_begin()
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VOUT)
     set_description(N_("Simple DirectMedia Layer video output"))
-    set_capability("vout display", 60)
+    set_capability("vout display", 70)
     add_shortcut("sdl")
-    add_string("sdl-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true)
+    add_string("sdl-chroma", NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true)
     add_obsolete_string("sdl-video-driver") /* obsolete since 1.1.0 */
     set_callbacks(Open, Close)
 #if defined(__i386__) || defined(__x86_64__)
@@ -80,7 +79,7 @@ vlc_module_end()
  * Local prototypes
  *****************************************************************************/
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
-static void           PictureDisplay(vout_display_t *, picture_t *);
+static void           PictureDisplay(vout_display_t *, picture_t *, subpicture_t *);
 static int            Control(vout_display_t *, int, va_list);
 static void           Manage(vout_display_t *);
 
@@ -107,7 +106,6 @@ struct vout_display_sys_t {
 
     /* */
     picture_pool_t       *pool;
-    key_thread_t         *keys;
 };
 
 /**
@@ -118,7 +116,7 @@ static int Open(vlc_object_t *object)
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__OS2__)
     if (!vlc_xlib_init (object))
         return VLC_EGENERIC;
 #endif
@@ -144,10 +142,8 @@ static int Open(vlc_object_t *object)
     /* Win32 SDL implementation doesn't support SDL_INIT_EVENTTHREAD yet*/
     sdl_flags |= SDL_INIT_EVENTTHREAD;
 #endif
-#ifndef NDEBUG
     /* In debug mode you may want vlc to dump a core instead of staying stuck */
     sdl_flags |= SDL_INIT_NOPARACHUTE;
-#endif
 
     /* Initialize library */
     if (SDL_Init(sdl_flags) < 0) {
@@ -194,6 +190,7 @@ static int Open(vlc_object_t *object)
         msg_Err(vd, "no video mode available");
         goto error;
     }
+    vout_display_DeleteWindow(vd, NULL);
 
     sys->display = SDL_SetVideoMode(display_width, display_height,
                                     sys->display_bpp, sys->display_flags);
@@ -207,7 +204,7 @@ static int Open(vlc_object_t *object)
 
     /* */
     vlc_fourcc_t forced_chroma = 0;
-    char *psz_chroma = var_CreateGetNonEmptyString(vd, "sdl-chroma");
+    char *psz_chroma = var_InheritString(vd, "sdl-chroma");
     if (psz_chroma) {
         forced_chroma = vlc_fourcc_GetCodecFromString(VIDEO_ES, psz_chroma);
         if (forced_chroma)
@@ -218,7 +215,7 @@ static int Open(vlc_object_t *object)
 
     /* Try to open an overlay if requested */
     sys->overlay = NULL;
-    const bool is_overlay = var_CreateGetBool(vd, "overlay");
+    const bool is_overlay = var_InheritBool(vd, "overlay");
     if (is_overlay) {
         static const struct
         {
@@ -345,8 +342,6 @@ static int Open(vlc_object_t *object)
 
     /* */
     vout_display_SendEventDisplaySize(vd, display_width, display_height, vd->cfg->is_fullscreen);
-
-    sys->keys = vlc_CreateKeyThread (vd);
     return VLC_SUCCESS;
 
 error:
@@ -372,8 +367,6 @@ static void Close(vlc_object_t *object)
 {
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys = vd->sys;
-
-    vlc_DestroyKeyThread(sys->keys);
 
     if (sys->pool)
         picture_pool_Delete(sys->pool);
@@ -443,7 +436,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
 /**
  * Display a picture
  */
-static void PictureDisplay(vout_display_t *vd, picture_t *p_pic)
+static void PictureDisplay(vout_display_t *vd, picture_t *p_pic, subpicture_t *p_subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
@@ -462,6 +455,7 @@ static void PictureDisplay(vout_display_t *vd, picture_t *p_pic)
     }
 
     picture_Release(p_pic);
+    VLC_UNUSED(p_subpicture);
 }
 
 
@@ -613,7 +607,7 @@ static void Manage(vout_display_t *vd)
                 key |= KEY_MODIFIER_CTRL;
             if (event.key.keysym.mod & KMOD_ALT)
                 key |= KEY_MODIFIER_ALT;
-            vlc_EmitKey(sys->keys, key);
+            vout_display_SendEventKey(vd, key);
             break;
         }
 
@@ -719,3 +713,4 @@ static int ConvertKey(SDLKey sdl_key)
     }
     return 0;
 }
+

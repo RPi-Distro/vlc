@@ -2,7 +2,7 @@
  * oss.c : OSS /dev/dsp module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: 14d91ca1c0efa9a3d196006d4bea70f2742708fe $
+ * $Id: b605d262297f4c45ce4d49aa80b11f487b725f96 $
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -70,10 +70,11 @@
  *****************************************************************************/
 struct aout_sys_t
 {
+    aout_packet_t packet;
     int i_fd;
-    int b_workaround_buggy_driver;
     int i_fragstotal;
     mtime_t max_buffer_duration;
+    vlc_thread_t thread;
 };
 
 /* This must be a power of 2. */
@@ -86,30 +87,21 @@ struct aout_sys_t
 static int  Open         ( vlc_object_t * );
 static void Close        ( vlc_object_t * );
 
-static void Play         ( aout_instance_t * );
-static void* OSSThread   ( vlc_object_t * );
+static void* OSSThread   ( void * );
 
-static mtime_t BufferDuration( aout_instance_t * p_aout );
+static mtime_t BufferDuration( audio_output_t * p_aout );
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define BUGGY_TEXT N_("Try to work around buggy OSS drivers")
-#define BUGGY_LONGTEXT N_( \
-    "Some buggy OSS drivers just don't like when their internal buffers " \
-    "are completely filled (the sound gets heavily hashed). If you have one " \
-    "of these drivers, then you need to enable this option." )
-
 vlc_module_begin ()
     set_shortname( "OSS" )
-    set_description( N_("UNIX OSS audio output") )
+    set_description( N_("Open Sound System") )
 
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AOUT )
-    add_file( "oss-audio-device", "/dev/dsp", aout_FindAndRestart,
-              N_("OSS DSP device"), NULL, false )
-        add_deprecated_alias( "dspdev" )   /* deprecated since 0.9.3 */
-    add_bool( "oss-buggy", false, NULL, BUGGY_TEXT, BUGGY_LONGTEXT, true )
+    add_loadfile( "oss-audio-device", "/dev/dsp",
+                  N_("OSS DSP device"), NULL, false )
 
     set_capability( "audio output", 100 )
     add_shortcut( "oss" )
@@ -119,9 +111,9 @@ vlc_module_end ()
 /*****************************************************************************
  * Probe: probe the audio device for available formats and channels
  *****************************************************************************/
-static void Probe( aout_instance_t * p_aout )
+static void Probe( audio_output_t * p_aout )
 {
-    struct aout_sys_t * p_sys = p_aout->output.p_sys;
+    struct aout_sys_t * p_sys = p_aout->sys;
     vlc_value_t val, text;
     int i_format, i_nb_channels;
 
@@ -131,7 +123,7 @@ static void Probe( aout_instance_t * p_aout )
 
     /* Test for multi-channel. */
 #ifdef SNDCTL_DSP_GETCHANNELMASK
-    if ( aout_FormatNbChannels( &p_aout->output.output ) > 2 )
+    if ( aout_FormatNbChannels( &p_aout->format ) > 2 )
     {
         /* Check that the device supports this. */
 
@@ -158,7 +150,7 @@ static void Probe( aout_instance_t * p_aout )
             }
 
             if ( (i_chanmask & (DSP_BIND_SURR | DSP_BIND_CENTER_LFE))
-                  && (p_aout->output.output.i_physical_channels ==
+                  && (p_aout->format.i_physical_channels ==
                        (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
                          | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT
                          | AOUT_CHAN_LFE)) )
@@ -170,7 +162,7 @@ static void Probe( aout_instance_t * p_aout )
             }
 
             if ( (i_chanmask & DSP_BIND_SURR)
-                  && (p_aout->output.output.i_physical_channels &
+                  && (p_aout->format.i_physical_channels &
                        (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
                          | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT)) )
             {
@@ -221,7 +213,7 @@ static void Probe( aout_instance_t * p_aout )
         val.i_int = AOUT_VAR_MONO;
         text.psz_string = _("Mono");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
-        if ( p_aout->output.output.i_physical_channels == AOUT_CHAN_CENTER )
+        if ( p_aout->format.i_physical_channels == AOUT_CHAN_CENTER )
         {
             var_Set( p_aout, "audio-device", val );
         }
@@ -235,7 +227,7 @@ static void Probe( aout_instance_t * p_aout )
     }
 
     /* Test for spdif. */
-    if ( AOUT_FMT_NON_LINEAR( &p_aout->output.output ) )
+    if ( AOUT_FMT_SPDIF( &p_aout->format ) )
     {
         i_format = AFMT_AC3;
 
@@ -254,9 +246,6 @@ static void Probe( aout_instance_t * p_aout )
             msg_Warn( p_aout, "S/PDIF not supported by card" );
         }
     }
-
-    var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart,
-                     NULL );
 }
 
 /*****************************************************************************
@@ -267,13 +256,13 @@ static void Probe( aout_instance_t * p_aout )
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    aout_instance_t * p_aout = (aout_instance_t *)p_this;
+    audio_output_t * p_aout = (audio_output_t *)p_this;
     struct aout_sys_t * p_sys;
     char * psz_device;
     vlc_value_t val;
 
     /* Allocate structure */
-    p_aout->output.p_sys = p_sys = malloc( sizeof( aout_sys_t ) );
+    p_aout->sys = p_sys = malloc( sizeof( aout_sys_t ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
@@ -305,73 +294,67 @@ static int Open( vlc_object_t *p_this )
 
     free( psz_device );
 
-    p_aout->output.pf_play = Play;
+    p_aout->pf_play = aout_PacketPlay;
+    p_aout->pf_pause = aout_PacketPause;
+    p_aout->pf_flush = aout_PacketFlush;
 
     if ( var_Type( p_aout, "audio-device" ) == 0 )
-    {
         Probe( p_aout );
-    }
+    var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
 
     if ( var_Get( p_aout, "audio-device", &val ) < 0 )
-    {
         /* Probe() has failed. */
-        close( p_sys->i_fd );
-        free( p_sys );
-        return VLC_EGENERIC;
-    }
+        goto error;
 
     if ( val.i_int == AOUT_VAR_SPDIF )
     {
-        p_aout->output.output.i_format = VLC_CODEC_SPDIFL;
+        p_aout->format.i_format = VLC_CODEC_SPDIFL;
     }
     else if ( val.i_int == AOUT_VAR_5_1 )
     {
-        p_aout->output.output.i_format = VLC_CODEC_S16N;
-        p_aout->output.output.i_physical_channels
+        p_aout->format.i_format = VLC_CODEC_S16N;
+        p_aout->format.i_physical_channels
             = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
                | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT
                | AOUT_CHAN_LFE;
     }
     else if ( val.i_int == AOUT_VAR_2F2R )
     {
-        p_aout->output.output.i_format = VLC_CODEC_S16N;
-        p_aout->output.output.i_physical_channels
+        p_aout->format.i_format = VLC_CODEC_S16N;
+        p_aout->format.i_physical_channels
             = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
                | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT;
     }
     else if ( val.i_int == AOUT_VAR_STEREO )
     {
-        p_aout->output.output.i_format = VLC_CODEC_S16N;
-        p_aout->output.output.i_physical_channels
+        p_aout->format.i_format = VLC_CODEC_S16N;
+        p_aout->format.i_physical_channels
             = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
     }
     else if ( val.i_int == AOUT_VAR_MONO )
     {
-        p_aout->output.output.i_format = VLC_CODEC_S16N;
-        p_aout->output.output.i_physical_channels = AOUT_CHAN_CENTER;
+        p_aout->format.i_format = VLC_CODEC_S16N;
+        p_aout->format.i_physical_channels = AOUT_CHAN_CENTER;
     }
     else
     {
         /* This should not happen ! */
-        msg_Err( p_aout, "internal: can't find audio-device (%i)", val.i_int );
-        close( p_sys->i_fd );
-        free( p_sys );
-        return VLC_EGENERIC;
+        msg_Err( p_aout, "internal: can't find audio-device (%"PRId64")",
+                 val.i_int );
+        goto error;
     }
 
-    var_SetBool( p_aout, "intf-change", true );
+    var_TriggerCallback( p_aout, "intf-change" );
 
     /* Reset the DSP device */
     if( ioctl( p_sys->i_fd, SNDCTL_DSP_RESET, NULL ) < 0 )
     {
         msg_Err( p_aout, "cannot reset OSS audio device" );
-        close( p_sys->i_fd );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
 
     /* Set the output format */
-    if ( AOUT_FMT_NON_LINEAR( &p_aout->output.output ) )
+    if ( AOUT_FMT_SPDIF( &p_aout->format ) )
     {
         int i_format = AFMT_AC3;
 
@@ -379,20 +362,17 @@ static int Open( vlc_object_t *p_this )
              || i_format != AFMT_AC3 )
         {
             msg_Err( p_aout, "cannot reset OSS audio device" );
-            close( p_sys->i_fd );
-            free( p_sys );
-            return VLC_EGENERIC;
+            goto error;
         }
 
-        p_aout->output.output.i_format = VLC_CODEC_SPDIFL;
-        p_aout->output.i_nb_samples = A52_FRAME_NB;
-        p_aout->output.output.i_bytes_per_frame = AOUT_SPDIF_SIZE;
-        p_aout->output.output.i_frame_length = A52_FRAME_NB;
+        p_aout->format.i_format = VLC_CODEC_SPDIFL;
+        p_aout->format.i_bytes_per_frame = AOUT_SPDIF_SIZE;
+        p_aout->format.i_frame_length = A52_FRAME_NB;
 
+        aout_PacketInit( p_aout, &p_sys->packet, A52_FRAME_NB );
         aout_VolumeNoneInit( p_aout );
     }
-
-    if ( !AOUT_FMT_NON_LINEAR( &p_aout->output.output ) )
+    else
     {
         unsigned int i_format = AFMT_S16_NE;
         unsigned int i_frame_size, i_fragments;
@@ -403,74 +383,66 @@ static int Open( vlc_object_t *p_this )
         if( ioctl( p_sys->i_fd, SNDCTL_DSP_SETFMT, &i_format ) < 0 )
         {
             msg_Err( p_aout, "cannot set audio output format" );
-            close( p_sys->i_fd );
-            free( p_sys );
-            return VLC_EGENERIC;
+            goto error;
         }
 
         switch ( i_format )
         {
         case AFMT_U8:
-            p_aout->output.output.i_format = VLC_CODEC_U8;
+            p_aout->format.i_format = VLC_CODEC_U8;
             break;
         case AFMT_S8:
-            p_aout->output.output.i_format = VLC_CODEC_S8;
+            p_aout->format.i_format = VLC_CODEC_S8;
             break;
         case AFMT_U16_LE:
-            p_aout->output.output.i_format = VLC_CODEC_U16L;
+            p_aout->format.i_format = VLC_CODEC_U16L;
             break;
         case AFMT_S16_LE:
-            p_aout->output.output.i_format = VLC_CODEC_S16L;
+            p_aout->format.i_format = VLC_CODEC_S16L;
             break;
         case AFMT_U16_BE:
-            p_aout->output.output.i_format = VLC_CODEC_U16B;
+            p_aout->format.i_format = VLC_CODEC_U16B;
             break;
         case AFMT_S16_BE:
-            p_aout->output.output.i_format = VLC_CODEC_S16B;
+            p_aout->format.i_format = VLC_CODEC_S16B;
             break;
         default:
             msg_Err( p_aout, "OSS fell back to an unknown format (%d)",
                      i_format );
-            close( p_sys->i_fd );
-            free( p_sys );
-            return VLC_EGENERIC;
+            goto error;
         }
 
-        i_nb_channels = aout_FormatNbChannels( &p_aout->output.output );
+        i_nb_channels = aout_FormatNbChannels( &p_aout->format );
 
         /* Set the number of channels */
         if( ioctl( p_sys->i_fd, SNDCTL_DSP_CHANNELS, &i_nb_channels ) < 0 ||
-            i_nb_channels != aout_FormatNbChannels( &p_aout->output.output ) )
+            i_nb_channels != aout_FormatNbChannels( &p_aout->format ) )
         {
             msg_Err( p_aout, "cannot set number of audio channels (%s)",
-                     aout_FormatPrintChannels( &p_aout->output.output) );
-            close( p_sys->i_fd );
-            free( p_sys );
-            return VLC_EGENERIC;
+                     aout_FormatPrintChannels( &p_aout->format) );
+            goto error;
         }
 
         /* Set the output rate */
-        i_rate = p_aout->output.output.i_rate;
+        i_rate = p_aout->format.i_rate;
         if( ioctl( p_sys->i_fd, SNDCTL_DSP_SPEED, &i_rate ) < 0 )
         {
             msg_Err( p_aout, "cannot set audio output rate (%i)",
-                             p_aout->output.output.i_rate );
-            close( p_sys->i_fd );
-            free( p_sys );
-            return VLC_EGENERIC;
+                             p_aout->format.i_rate );
+            goto error;
         }
 
-        if( i_rate != p_aout->output.output.i_rate )
+        if( i_rate != p_aout->format.i_rate )
         {
-            p_aout->output.output.i_rate = i_rate;
+            p_aout->format.i_rate = i_rate;
         }
 
         /* Set the fragment size */
-        aout_FormatPrepare( &p_aout->output.output );
+        aout_FormatPrepare( &p_aout->format );
 
         /* i_fragment = xxxxyyyy where: xxxx        is fragtotal
          *                              1 << yyyy   is fragsize */
-        i_frame_size = ((uint64_t)p_aout->output.output.i_bytes_per_frame * p_aout->output.output.i_rate * 65536) / (48000 * 2 * 2) / FRAME_COUNT;
+        i_frame_size = ((uint64_t)p_aout->format.i_bytes_per_frame * p_aout->format.i_rate * 65536) / (48000 * 2 * 2) / FRAME_COUNT;
         i_fragments = 4;
         while( i_fragments < 12 && (1U << i_fragments) < i_frame_size )
         {
@@ -485,51 +457,40 @@ static int Open( vlc_object_t *p_this )
         if( ioctl( p_sys->i_fd, SNDCTL_DSP_GETOSPACE, &audio_buf ) < 0 )
         {
             msg_Err( p_aout, "cannot get fragment size" );
-            close( p_sys->i_fd );
-            free( p_sys );
-            return VLC_EGENERIC;
+            goto error;
         }
-        else
-        {
-            /* Number of fragments actually allocated */
-            p_aout->output.p_sys->i_fragstotal = audio_buf.fragstotal;
 
-            /* Maximum duration the soundcard's buffer can hold */
-            p_aout->output.p_sys->max_buffer_duration =
+        /* Number of fragments actually allocated */
+        p_aout->sys->i_fragstotal = audio_buf.fragstotal;
+
+        /* Maximum duration the soundcard's buffer can hold */
+        p_aout->sys->max_buffer_duration =
                 (mtime_t)audio_buf.fragstotal * audio_buf.fragsize * 1000000
-                / p_aout->output.output.i_bytes_per_frame
-                / p_aout->output.output.i_rate
-                * p_aout->output.output.i_frame_length;
+                / p_aout->format.i_bytes_per_frame
+                / p_aout->format.i_rate
+                * p_aout->format.i_frame_length;
 
-            p_aout->output.i_nb_samples = audio_buf.fragsize /
-                p_aout->output.output.i_bytes_per_frame;
-        }
-
+        aout_PacketInit( p_aout, &p_sys->packet,
+                         audio_buf.fragsize/p_aout->format.i_bytes_per_frame );
         aout_VolumeSoftInit( p_aout );
     }
 
-    p_aout->output.p_sys->b_workaround_buggy_driver =
-        var_InheritBool( p_aout, "oss-buggy" );
-
     /* Create OSS thread and wait for its readiness. */
-    if( vlc_thread_create( p_aout, "aout", OSSThread,
-                           VLC_THREAD_PRIORITY_OUTPUT ) )
+    if( vlc_clone( &p_sys->thread, OSSThread, p_aout,
+                   VLC_THREAD_PRIORITY_OUTPUT ) )
     {
         msg_Err( p_aout, "cannot create OSS thread (%m)" );
-        close( p_sys->i_fd );
-        free( p_sys );
-        return VLC_ENOMEM;
+        aout_PacketDestroy( p_aout );
+        goto error;
     }
 
     return VLC_SUCCESS;
-}
 
-/*****************************************************************************
- * Play: nothing to do
- *****************************************************************************/
-static void Play( aout_instance_t *p_aout )
-{
-    VLC_UNUSED(p_aout);
+error:
+    var_DelCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
+    close( p_sys->i_fd );
+    free( p_sys );
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -537,16 +498,18 @@ static void Play( aout_instance_t *p_aout )
  *****************************************************************************/
 static void Close( vlc_object_t * p_this )
 {
-    aout_instance_t *p_aout = (aout_instance_t *)p_this;
-    struct aout_sys_t * p_sys = p_aout->output.p_sys;
+    audio_output_t *p_aout = (audio_output_t *)p_this;
+    struct aout_sys_t * p_sys = p_aout->sys;
 
-    vlc_object_kill( p_aout );
-    vlc_thread_join( p_aout );
+    vlc_cancel( p_sys->thread );
+    vlc_join( p_sys->thread, NULL );
     p_aout->b_die = false;
+    var_DelCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
 
     ioctl( p_sys->i_fd, SNDCTL_DSP_RESET, NULL );
     close( p_sys->i_fd );
 
+    aout_PacketDestroy( p_aout );
     free( p_sys );
 }
 
@@ -555,81 +518,89 @@ static void Close( vlc_object_t * p_this )
  *****************************************************************************
  * This function returns the duration in microseconds of the current buffer.
  *****************************************************************************/
-static mtime_t BufferDuration( aout_instance_t * p_aout )
+static mtime_t BufferDuration( audio_output_t * p_aout )
 {
-    struct aout_sys_t * p_sys = p_aout->output.p_sys;
+    struct aout_sys_t * p_sys = p_aout->sys;
     audio_buf_info audio_buf;
     int i_bytes;
 
-    /* Fill the audio_buf_info structure:
-     * - fragstotal: total number of fragments allocated
-     * - fragsize: size of a fragment in bytes
-     * - bytes: available space in bytes (includes partially used fragments)
-     * Note! 'bytes' could be more than fragments*fragsize */
-    ioctl( p_sys->i_fd, SNDCTL_DSP_GETOSPACE, &audio_buf );
+#ifdef SNDCTL_DSP_GETODELAY
+    if ( ioctl( p_sys->i_fd, SNDCTL_DSP_GETODELAY, &i_bytes ) < 0 )
+#endif
+    {
+        /* Fall back to GETOSPACE and approximate latency. */
 
-    /* calculate number of available fragments (not partially used ones) */
-    i_bytes = (audio_buf.fragstotal * audio_buf.fragsize) - audio_buf.bytes;
+        /* Fill the audio_buf_info structure:
+         * - fragstotal: total number of fragments allocated
+         * - fragsize: size of a fragment in bytes
+         * - bytes: available space in bytes (includes partially used fragments)
+         * Note! 'bytes' could be more than fragments*fragsize */
+        ioctl( p_sys->i_fd, SNDCTL_DSP_GETOSPACE, &audio_buf );
+
+        /* calculate number of available fragments (not partially used ones) */
+        i_bytes = (audio_buf.fragstotal * audio_buf.fragsize) - audio_buf.bytes;
+    }
 
     /* Return the fragment duration */
     return (mtime_t)i_bytes * 1000000
-            / p_aout->output.output.i_bytes_per_frame
-            / p_aout->output.output.i_rate
-            * p_aout->output.output.i_frame_length;
+            / p_aout->format.i_bytes_per_frame
+            / p_aout->format.i_rate
+            * p_aout->format.i_frame_length;
+}
+
+typedef struct
+{
+    aout_buffer_t *p_buffer;
+    void          *p_bytes;
+} oss_thread_ctx_t;
+
+static void OSSThreadCleanup( void *data )
+{
+    oss_thread_ctx_t *p_ctx = data;
+    if( p_ctx->p_buffer )
+        aout_BufferFree( p_ctx->p_buffer );
+    else
+        free( p_ctx->p_bytes );
 }
 
 /*****************************************************************************
  * OSSThread: asynchronous thread used to DMA the data to the device
  *****************************************************************************/
-static void* OSSThread( vlc_object_t *p_this )
+static void* OSSThread( void *obj )
 {
-    aout_instance_t * p_aout = (aout_instance_t*)p_this;
-    struct aout_sys_t * p_sys = p_aout->output.p_sys;
+    audio_output_t * p_aout = (audio_output_t*)obj;
+    struct aout_sys_t * p_sys = p_aout->sys;
     mtime_t next_date = 0;
-    int canc = vlc_savecancel ();
 
-    while ( vlc_object_alive (p_aout) )
+    for( ;; )
     {
         aout_buffer_t * p_buffer = NULL;
-        int i_tmp, i_size;
-        uint8_t * p_bytes;
 
-        if ( p_aout->output.output.i_format != VLC_CODEC_SPDIFL )
+        int canc = vlc_savecancel ();
+        if ( p_aout->format.i_format != VLC_CODEC_SPDIFL )
         {
             mtime_t buffered = BufferDuration( p_aout );
 
-            if( p_aout->output.p_sys->b_workaround_buggy_driver )
-            {
-#define i_fragstotal p_aout->output.p_sys->i_fragstotal
-                /* Wait a bit - we don't want our buffer to be full */
-                if( buffered > (p_aout->output.p_sys->max_buffer_duration
-                                / i_fragstotal * (i_fragstotal - 1)) )
-                {
-                    msleep((p_aout->output.p_sys->max_buffer_duration
-                                / i_fragstotal ));
-                    buffered = BufferDuration( p_aout );
-                }
-#undef i_fragstotal
-            }
-
             /* Next buffer will be played at mdate() + buffered */
-            p_buffer = aout_OutputNextBuffer( p_aout, mdate() + buffered,
-                                              false );
+            p_buffer = aout_PacketNext( p_aout, mdate() + buffered );
 
             if( p_buffer == NULL &&
-                buffered > ( p_aout->output.p_sys->max_buffer_duration
-                             / p_aout->output.p_sys->i_fragstotal ) )
+                buffered > ( p_aout->sys->max_buffer_duration
+                             / p_aout->sys->i_fragstotal ) )
             {
+                vlc_restorecancel (canc);
                 /* If we have at least a fragment full, then we can wait a
                  * little and retry to get a new audio buffer instead of
                  * playing a blank sample */
-                msleep( ( p_aout->output.p_sys->max_buffer_duration
-                          / p_aout->output.p_sys->i_fragstotal / 2 ) );
+                msleep( ( p_aout->sys->max_buffer_duration
+                          / p_aout->sys->i_fragstotal / 2 ) );
                 continue;
             }
         }
         else
         {
+            vlc_restorecancel (canc);
+
             /* emu10k1 driver does not report Buffer Duration correctly in
              * passthrough mode so we have to cheat */
             if( !next_date )
@@ -639,20 +610,27 @@ static void* OSSThread( vlc_object_t *p_this )
             else
             {
                 mtime_t delay = next_date - mdate();
-                if( delay > AOUT_PTS_TOLERANCE )
+                if( delay > AOUT_MAX_PTS_ADVANCE )
                 {
                     msleep( delay / 2 );
                 }
             }
 
-            while( vlc_object_alive (p_aout) && ! ( p_buffer =
-                aout_OutputNextBuffer( p_aout, next_date, true ) ) )
+            for( ;; )
             {
+                canc = vlc_savecancel ();
+                p_buffer = aout_PacketNext( p_aout, next_date );
+                if ( p_buffer )
+                    break;
+                vlc_restorecancel (canc);
+
                 msleep( VLC_HARD_MIN_SLEEP );
                 next_date = mdate();
             }
         }
 
+        uint8_t * p_bytes;
+        int i_size;
         if ( p_buffer != NULL )
         {
             p_bytes = p_buffer->p_buffer;
@@ -663,30 +641,29 @@ static void* OSSThread( vlc_object_t *p_this )
         }
         else
         {
-            i_size = FRAME_SIZE / p_aout->output.output.i_frame_length
-                      * p_aout->output.output.i_bytes_per_frame;
+            i_size = FRAME_SIZE / p_aout->format.i_frame_length
+                      * p_aout->format.i_bytes_per_frame;
             p_bytes = malloc( i_size );
             memset( p_bytes, 0, i_size );
             next_date = 0;
         }
 
-        i_tmp = write( p_sys->i_fd, p_bytes, i_size );
+        oss_thread_ctx_t ctx = {
+            .p_buffer = p_buffer,
+            .p_bytes  = p_bytes,
+        };
+
+        vlc_cleanup_push( OSSThreadCleanup, &ctx );
+        vlc_restorecancel( canc );
+
+        int i_tmp = write( p_sys->i_fd, p_bytes, i_size );
 
         if( i_tmp < 0 )
         {
             msg_Err( p_aout, "write failed (%m)" );
         }
-
-        if ( p_buffer != NULL )
-        {
-            aout_BufferFree( p_buffer );
-        }
-        else
-        {
-            free( p_bytes );
-        }
+        vlc_cleanup_run();
     }
 
-    vlc_restorecancel (canc);
     return NULL;
 }

@@ -2,7 +2,7 @@
  * vaapi.c: VAAPI helpers for the ffmpeg decoder
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: a684c9814f8a5a971a20eeac5ca4a6c7fb2fea2d $
+ * $Id: 2ab53de41a6c58122a0d63f3ef474b074f0ef85a $
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *
@@ -26,13 +26,11 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_vout.h>
+#include <vlc_fourcc.h>
 #include <assert.h>
 
 #ifdef HAVE_LIBAVCODEC_AVCODEC_H
 #   include <libavcodec/avcodec.h>
-#elif defined(HAVE_FFMPEG_AVCODEC_H)
-#   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
 #endif
@@ -42,6 +40,8 @@
 #include "copy.h"
 
 #ifdef HAVE_AVCODEC_VAAPI
+
+#include <vlc_xlib.h>
 
 #include <libavcodec/vaapi.h>
 
@@ -497,14 +497,9 @@ static void Delete( vlc_va_t *p_external )
 }
 
 /* */
-vlc_va_t *vlc_va_NewVaapi( int i_codec_id )
+vlc_va_t *vlc_va_NewVaapi( vlc_object_t *obj, int i_codec_id )
 {
-    bool fail;
-
-    vlc_global_lock( VLC_XLIB_MUTEX );
-    fail = !XInitThreads();
-    vlc_global_unlock( VLC_XLIB_MUTEX );
-    if( unlikely(fail) )
+    if( !vlc_xlib_init( obj ) )
         return NULL;
 
     vlc_va_vaapi_t *p_va = calloc( 1, sizeof(*p_va) );
@@ -526,8 +521,9 @@ vlc_va_t *vlc_va_NewVaapi( int i_codec_id )
     return &p_va->va;
 }
 #else
-vlc_va_t *vlc_va_NewVaapi( int i_codec_id )
+vlc_va_t *vlc_va_NewVaapi( vlc_object_t *obj, int i_codec_id )
 {
+    VLC_UNUSED( obj );
     VLC_UNUSED( i_codec_id );
     return NULL;
 }

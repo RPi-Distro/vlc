@@ -1,37 +1,39 @@
 /*****************************************************************************
  * iso_lang.h: languages codes and abbreviations
  *****************************************************************************
- * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: ac90dc39cf4a6ddafbdb1428a5ae31d59bd5fb9f $
+ * Copyright (C) 1998-2004 VLC authors and VideoLAN
+ * $Id: 05d1edaed7c4786e5270a7dbc745acfbe00604c1 $
  *
  * This is used in iso_lang.cpp and is taken from the GNU glibc 2.2.5
  * tarball. It has been partially completed with native language names.
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /* Define the languages codes and abbreviations according to ISO 639-[12].
  * Format is:( "English name", 639-1-code, 639-2/T-code, 639-2/B-code)
  * If you find something missing or wrong contact <bug-glibc@gnu.org> */
 
-/* Some spellings were converted to pure ASCII:
+/* The following spellings were converted to pure ASCII. They should be
+ * "translated" back to Unicode in the po/en*.po files:
  *  Provençal -> Provencal
- *  Volapk -> Volapuk
- *  Bokm? -> Bokmaal */
+ *  Volapük -> Volapuk
+ *  Bokmål -> Bokmaal
+ */
 
 static const iso639_lang_t p_languages[] =
 {
@@ -142,7 +144,7 @@ static const iso639_lang_t p_languages[] =
     { N_( "Oromo" ),            "",            "om", "orm", "orm" },
     { N_( "On Screen Display" ),"On Screen Display", "od", "osd", "osd" },
     { N_( "Ossetian; Ossetic" ), "",           "os", "oss", "oss" },
-    { N_( "Panjabi" ),          "ਪਜਾਬੀ",         "pa", "pan", "pan" },
+    { N_( "Panjabi" ),          "ਪੰਜਾਬੀ",         "pa", "pan", "pan" },
     { N_( "Persian" ),          "ﻑﺍﺮﺳی",       "fa", "fas", "per" },
     { N_( "Pali" ),             "",            "pi", "pli", "pli" },
     { N_( "Polish" ),           "Polski",      "pl", "pol", "pol" },

@@ -2,7 +2,7 @@
  * ctrl_checkbox.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7342bf0ae0e9b9ae8ad4ecb72ff36c19873ba75b $
+ * $Id: 78fff7c41e49559d8d5e79e7dcf00d1005664165 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -61,7 +61,7 @@ public:
     virtual bool mouseOver( int x, int y ) const;
 
     /// Draw the control on the given graphics
-    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Get the text of the tooltip XXX
     virtual UString getTooltipText() const { return *m_pTooltip; }

@@ -5,20 +5,20 @@
 /*****************************************************************************
  * Copyright © 2010 Rémi Denis-Courmont
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation; either version 2.1
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- ****************************************************************************/
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -64,15 +64,15 @@ struct demux_sys_t
 
 static int Demux (demux_t *);
 static int Control (demux_t *, int, va_list);
-static gme_err_t Reader (void *, void *, int);
+static gme_err_t ReaderStream (void *, void *, int);
+static gme_err_t ReaderBlock (void *, void *, int);
 
 static int Open (vlc_object_t *obj)
 {
     demux_t *demux = (demux_t *)obj;
 
     int64_t size = stream_Size (demux->s);
-    if (size < 4 /* GME needs to know the file size */
-     || size > LONG_MAX /* too big for GME */)
+    if (size > LONG_MAX /* too big for GME */)
         return VLC_EGENERIC;
 
     /* Auto detection */
@@ -85,6 +85,14 @@ static int Open (vlc_object_t *obj)
         return VLC_EGENERIC;
     msg_Dbg (obj, "detected file type %s", type);
 
+    block_t *data = NULL;
+    if (size <= 0)
+    {
+        data = stream_BlockRemaining (demux->s, 100000000);
+        if (!data )
+            return VLC_EGENERIC;
+    }
+
     /* Initialization */
     demux_sys_t *sys = malloc (sizeof (*sys));
     if (unlikely(sys == NULL))
@@ -96,7 +104,15 @@ static int Open (vlc_object_t *obj)
         free (sys);
         return VLC_ENOMEM;
     }
-    gme_load_custom (sys->emu, Reader, size, demux->s);
+    if (data)
+    {
+        gme_load_custom (sys->emu, ReaderBlock, data->i_buffer, data);
+        block_Release(data);
+    }
+    else
+    {
+        gme_load_custom (sys->emu, ReaderStream, size, demux->s);
+    }
     gme_start_track (sys->emu, sys->track_id = 0);
 
     es_format_t fmt;
@@ -158,7 +174,7 @@ static void Close (vlc_object_t *obj)
 }
 
 
-static gme_err_t Reader (void *data, void *buf, int length)
+static gme_err_t ReaderStream (void *data, void *buf, int length)
 {
     stream_t *s = data;
 
@@ -166,7 +182,18 @@ static gme_err_t Reader (void *data, void *buf, int length)
         return "short read";
     return NULL;
 }
+static gme_err_t ReaderBlock (void *data, void *buf, int length)
+{
+    block_t *block = data;
 
+    int max = __MIN (length, (int)block->i_buffer);
+    memcpy (buf, block->p_buffer, max);
+    block->i_buffer -= max;
+    block->p_buffer += max;
+    if (max != length)
+        return "short read";
+    return NULL;
+}
 
 #define SAMPLES (RATE / 10)
 

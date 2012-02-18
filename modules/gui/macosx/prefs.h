@@ -1,8 +1,8 @@
 /*****************************************************************************
  * prefs.h: MacOS X module for vlc
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: b996e92db310296ef386c96995f48729be0446e8 $
+ * Copyright (C) 2002-2007 VLC authors and VideoLAN
+ * $Id: 2d77d48c02a6d614b8944fdf7311db159e7e3666 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -40,7 +40,7 @@
     IBOutlet id o_save_btn;
     IBOutlet id o_cancel_btn;
     IBOutlet id o_reset_btn;
-    IBOutlet id o_basicFull_matrix;
+    IBOutlet id o_showBasic_btn;
 }
 
 + (VLCPrefs *)sharedInstance;

@@ -2,7 +2,7 @@
  * nsc.c: NSC file demux and encoding decoder
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 015ab4039a789f7095477f72900d6624270e4384 $
+ * $Id: c7b4ed6049a2bd37918080bb88a0e67764e8908f $
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
+#include <vlc_charset.h>
 
 #include <ctype.h>
 #define MAX_LINE 16024
@@ -76,21 +77,21 @@ static int load_byte( unsigned char encoding_type,
 
     if( encoding_type == 1 )
     {
-        if( isxdigit( **input ) == 0 )
+        if( isxdigit( (unsigned char)**input ) == 0 )
             return -1;
 
-        if( isdigit( **input ) == 0 )
-            *output = (toupper( **input ) - 7) * 16;
+        if( isdigit( (unsigned char)**input ) == 0 )
+            *output = (toupper( (unsigned char)**input ) - 7) * 16;
         else
             *output = **input * 16;
 
         (*input)++;
 
-        if( isxdigit( **input ) == 0 )
+        if( isxdigit( (unsigned char)**input ) == 0 )
             return -1;
 
-        if( isdigit( **input ) == 0 )
-            *output |= toupper( **input ) - 0x37;
+        if( isdigit( (unsigned char)**input ) == 0 )
+            *output |= toupper( (unsigned char)**input ) - 0x37;
         else
             *output |= **input - 0x30;
 
@@ -147,13 +148,8 @@ static char *nscdec( vlc_object_t *p_demux, char* p_encoded )
     unsigned int length;
     unsigned char encoding_type;
 
-    vlc_iconv_t conv;
-    size_t buf16_size;
     unsigned char *buf16;
-    const char *p_buf16;
-    size_t buf8_size;
     char *buf8;
-    char *p_buf8;
 
     char *p_input = p_encoded;
 
@@ -210,8 +206,7 @@ static char *nscdec( vlc_object_t *p_demux, char* p_encoded )
         return NULL;
     }
 
-    buf16_size = length;
-    buf16 = malloc( buf16_size );
+    buf16 = malloc( length );
     if( buf16 == NULL )
         return NULL;
 
@@ -225,39 +220,13 @@ static char *nscdec( vlc_object_t *p_demux, char* p_encoded )
         }
     }
 
-    buf8_size = length;
-    buf8 = malloc( buf8_size + 1 );
+    buf8 = FromCharset( "UTF-16LE", buf16, length );
+    free( buf16 );
     if( buf8 == NULL )
-    {
-        free( buf16 );
-        return NULL;
-    }
-
-    conv = vlc_iconv_open( "UTF-8", "UTF-16LE" );
-    if( conv == (vlc_iconv_t)(-1) )
-    {
-        msg_Err( p_demux, "iconv_open failed" );
-        free( buf16 );
-        free( buf8 );
-        return NULL;
-    }
-
-    p_buf8 = buf8;
-    p_buf16 = (const char *)buf16;
-
-    if( vlc_iconv( conv, &p_buf16, &buf16_size, &p_buf8, &buf8_size ) == (size_t)(-1) )
     {
         msg_Err( p_demux, "iconv failed" );
         return NULL;
     }
-    else
-    {
-        buf8[ length - buf8_size ] = '\0';
-    }
-
-    vlc_iconv_close( conv );
-
-    free( buf16 );
     return buf8;
 }
 

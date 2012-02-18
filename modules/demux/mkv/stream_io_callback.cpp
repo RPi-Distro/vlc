@@ -1,9 +1,8 @@
-
 /*****************************************************************************
  * mkv.cpp : matroska demuxer
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 47d2801591570aa2dfd519617173a97274062c98 $
+ * Copyright (C) 2003-2004, 2010 the VideoLAN team
+ * $Id: dd0817c2a444de1fd15ce509f45e99c0ba8c5383 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -22,32 +21,32 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
 #include "stream_io_callback.hpp"
 
 #include "matroska_segment.hpp"
 #include "demux.hpp"
+
 /*****************************************************************************
  * Stream managment
  *****************************************************************************/
 vlc_stream_io_callback::vlc_stream_io_callback( stream_t *s_, bool b_owner_ )
+                       : s( s_), b_owner( b_owner_ )
 {
-    s = s_;
-    b_owner = b_owner_;
     mb_eof = false;
 }
 
 uint32 vlc_stream_io_callback::read( void *p_buffer, size_t i_size )
 {
     if( i_size <= 0 || mb_eof )
-    {
         return 0;
-    }
 
     return stream_Read( s, p_buffer, i_size );
 }
+
 void vlc_stream_io_callback::setFilePointer(int64_t i_offset, seek_mode mode )
 {
-    int64_t i_pos;
+    int64_t i_pos, i_size;
 
     switch( mode )
     {
@@ -62,7 +61,7 @@ void vlc_stream_io_callback::setFilePointer(int64_t i_offset, seek_mode mode )
             break;
     }
 
-    if( i_pos < 0 || ( stream_Size( s ) != 0  && i_pos >= stream_Size( s ) ) )
+    if( i_pos < 0 || ( ( i_size = stream_Size( s ) ) != 0 && i_pos >= i_size ) )
     {
         mb_eof = true;
         return;
@@ -75,20 +74,31 @@ void vlc_stream_io_callback::setFilePointer(int64_t i_offset, seek_mode mode )
     }
     return;
 }
-size_t vlc_stream_io_callback::write( const void *p_buffer, size_t i_size )
-{
-    return 0;
-}
+
 uint64 vlc_stream_io_callback::getFilePointer( void )
 {
     if ( s == NULL )
         return 0;
     return stream_Tell( s );
 }
-void vlc_stream_io_callback::close( void )
+
+size_t vlc_stream_io_callback::write(const void *, size_t )
 {
-    return;
+    return 0;
 }
 
+uint64 vlc_stream_io_callback::toRead( void )
+{
+    uint64_t i_size;
 
+    if( s == NULL)
+        return 0;
+
+    stream_Control( s, STREAM_GET_SIZE, &i_size );
+
+    if( i_size == 0 )
+        return UINT64_MAX;
+
+    return (uint64) i_size - stream_Tell( s );
+}
 

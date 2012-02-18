@@ -2,7 +2,7 @@
  * yuv.c : yuv video output
  *****************************************************************************
  * Copyright (C) 2008, M2X BV
- * $Id: 845e43bb1609e743fac00fb8127d7233d6f57cd3 $
+ * $Id: fbf4501808c26ae7b64bab7aa365d279d43c66e5 $
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *
@@ -62,11 +62,11 @@ vlc_module_begin()
     set_subcategory(SUBCAT_VIDEO_VOUT)
     set_capability("vout display", 0)
 
-    add_string(CFG_PREFIX "file", "stream.yuv", NULL,
+    add_string(CFG_PREFIX "file", "stream.yuv",
                 YUV_FILE_TEXT, YUV_FILE_LONGTEXT, false)
-    add_string(CFG_PREFIX "chroma", NULL, NULL,
+    add_string(CFG_PREFIX "chroma", NULL,
                 CHROMA_TEXT, CHROMA_LONGTEXT, true)
-    add_bool  (CFG_PREFIX "yuv4mpeg2", false, NULL,
+    add_bool  (CFG_PREFIX "yuv4mpeg2", false,
                 YUV4MPEG2_TEXT, YUV4MPEG2_LONGTEXT, true)
 
     set_callbacks(Open, Close)
@@ -81,9 +81,8 @@ static const char *const ppsz_vout_options[] = {
 
 /* */
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
-static void           Display(vout_display_t *, picture_t *);
+static void           Display(vout_display_t *, picture_t *, subpicture_t *subpicture);
 static int            Control(vout_display_t *, int, va_list);
-static void           Manage (vout_display_t *);
 
 /*****************************************************************************
  * vout_display_sys_t: video output descriptor
@@ -108,11 +107,11 @@ static int Open(vlc_object_t *object)
         return VLC_ENOMEM;
 
     sys->is_first = false;
-    sys->is_yuv4mpeg2 = var_CreateGetBool(vd, CFG_PREFIX "yuv4mpeg2");
+    sys->is_yuv4mpeg2 = var_InheritBool(vd, CFG_PREFIX "yuv4mpeg2");
     sys->pool = NULL;
 
     /* */
-    char *psz_fcc = var_CreateGetNonEmptyString(vd, CFG_PREFIX "chroma");
+    char *psz_fcc = var_InheritString(vd, CFG_PREFIX "chroma");
     const vlc_fourcc_t requested_chroma = vlc_fourcc_GetCodecFromString(VIDEO_ES,
                                                                         psz_fcc);
     free(psz_fcc);
@@ -135,7 +134,7 @@ static int Open(vlc_object_t *object)
     msg_Dbg(vd, "Using chroma %4.4s", (char *)&chroma);
 
     /* */
-    char *name = var_CreateGetNonEmptyString(vd, CFG_PREFIX "file");
+    char *name = var_InheritString(vd, CFG_PREFIX "file");
     if (!name) {
         msg_Err(vd, "Empty file name");
         free(sys);
@@ -168,7 +167,7 @@ static int Open(vlc_object_t *object)
     vd->prepare = NULL;
     vd->display = Display;
     vd->control = Control;
-    vd->manage  = Manage;
+    vd->manage  = NULL;
 
     vout_display_SendEventFullscreen(vd, false);
     return VLC_SUCCESS;
@@ -197,7 +196,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
     return sys->pool;
 }
 
-static void Display(vout_display_t *vd, picture_t *picture)
+static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
@@ -260,6 +259,7 @@ static void Display(vout_display_t *vd, picture_t *picture)
 
     /* */
     picture_Release(picture);
+    VLC_UNUSED(subpicture);
 }
 
 static int Control(vout_display_t *vd, int query, va_list args)
@@ -275,9 +275,5 @@ static int Control(vout_display_t *vd, int query, va_list args)
     default:
         return VLC_EGENERIC;
     }
-}
-static void Manage (vout_display_t *vd)
-{
-    VLC_UNUSED(vd);
 }
 

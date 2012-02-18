@@ -1,8 +1,8 @@
 /*****************************************************************************
  * bookmarks.m: MacOS X Bookmarks window
  *****************************************************************************
- * Copyright (C) 2005 - 2007 the VideoLAN team
- * $Id: 7d0f9efbae2350e7927c3ef528c145cd383670a3 $
+ * Copyright (C) 2005 - 2007 VLC authors and VideoLAN
+ * $Id: 48037331ce8351851303352c2531a40d734a413c $
  *
  * Authors: Felix Kühne <fkuehne at videolan dot org>
  *
@@ -37,13 +37,7 @@
 #import "bookmarks.h"
 #import "wizard.h"
 #import <vlc_interface.h>
-
-/*****************************************************************************
- * VLCExtended implementation
- *
- * implements the GUI functions for the window, the data source and the
- * delegate for o_tbl_dataTable
- *****************************************************************************/
+#import "CompatibilityFixes.h"
 
 @implementation VLCBookmarks
 
@@ -71,6 +65,9 @@ static VLCBookmarks *_o_sharedInstance = nil;
 
 - (void)awakeFromNib
 {
+    if (OSX_LION)
+        [o_bookmarks_window setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
+
     [self initStrings];
 }
 

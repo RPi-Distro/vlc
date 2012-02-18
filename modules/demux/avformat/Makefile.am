@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libavformat_plugin_la_SOURCES = $(SOURCES_avformat)
 nodist_libavformat_plugin_la_SOURCES = $(nodist_SOURCES_avformat)
 # Force per-target objects:
-libavformat_plugin_la_CFLAGS = $(AM_CFLAGS)
-libavformat_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libavformat_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libavformat_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_avformat)
+libavformat_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_avformat)
+libavformat_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_avformat)
+libavformat_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_avformat)
 # Set LIBADD and DEPENDENCIES manually:
-libavformat_plugin_la_LIBADD = $(AM_LIBADD)
-libavformat_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libavformat_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_avformat)
+libavformat_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_avformat)
+libavformat_plugin_la_DEPENDENCIES =
 

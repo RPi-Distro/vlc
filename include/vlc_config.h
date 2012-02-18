@@ -2,24 +2,24 @@
  * vlc_config.h: limits and configuration
  * Defines all compilation-time configuration constants and size limits
  *****************************************************************************
- * Copyright (C) 1999-2003 the VideoLAN team
+ * Copyright (C) 1999-2003 VLC authors and VideoLAN
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /**
@@ -78,58 +78,6 @@
  * mark it to be presented */
 #define DEFAULT_PTS_DELAY               (3*CLOCK_FREQ/10)
 
-/* DVD and VCD devices */
-#if !defined( WIN32 ) && !defined( UNDER_CE )
-#if defined(__OpenBSD__)
-#   define CD_DEVICE      "/dev/cd0c"
-#   define DVD_DEVICE     "/dev/cd0c"
-#else
-#   define CD_DEVICE      "/dev/cdrom"
-#   define DVD_DEVICE     "/dev/dvd"
-#endif
-#else
-#   define CD_DEVICE      "D:"
-#   define DVD_DEVICE     NULL
-#endif
-#define VCD_DEVICE        CD_DEVICE
-#define CDAUDIO_DEVICE    CD_DEVICE
-
-/*****************************************************************************
- * Audio configuration
- *****************************************************************************/
-
-/* Volume */
-/* If you are coding an interface, please see src/audio_output/intf.c */
-#define AOUT_VOLUME_DEFAULT             256
-#define AOUT_VOLUME_STEP                32
-#define AOUT_VOLUME_MAX                 1024
-#define AOUT_VOLUME_MIN                 0
-
-/* Max number of pre-filters per input, and max number of post-filters */
-#define AOUT_MAX_FILTERS                10
-
-/* Max number of inputs */
-#define AOUT_MAX_INPUTS                 5
-
-/* Buffers which arrive in advance of more than AOUT_MAX_ADVANCE_TIME
- * will be considered as bogus and be trashed */
-#define AOUT_MAX_ADVANCE_TIME           (DEFAULT_PTS_DELAY * 5)
-
-/* Buffers which arrive in advance of more than AOUT_MAX_PREPARE_TIME
- * will cause the calling thread to sleep */
-#define AOUT_MAX_PREPARE_TIME           (CLOCK_FREQ/2)
-
-/* Buffers which arrive after pts - AOUT_MIN_PREPARE_TIME will be trashed
- * to avoid too heavy resampling */
-#define AOUT_MIN_PREPARE_TIME           (CLOCK_FREQ/25)
-
-/* Max acceptable delay between the coded PTS and the actual presentation
- * time, without resampling */
-#define AOUT_PTS_TOLERANCE              (CLOCK_FREQ/25)
-
-/* Max acceptable resampling (in %) */
-#define AOUT_MAX_RESAMPLING             10
-
 /*****************************************************************************
  * SPU configuration
  *****************************************************************************/
@@ -155,10 +103,6 @@
 
 /* Number of planes in a picture */
 #define VOUT_MAX_PLANES                 5
-
-/* Video heap size - remember that a decompressed picture is big
- * (~1 Mbyte) before using huge values */
-#define VOUT_MAX_PICTURES              25
 
 /*
  * Time settings

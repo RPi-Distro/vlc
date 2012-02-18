@@ -2,7 +2,7 @@
  * rtcp.c: RTCP stream output support
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 83420b9e17051b24264be28c9766c7072d737a90 $
+ * $Id: 92c31549266cba77fc078236b5761e3e0e0cf612 $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -106,7 +106,7 @@ rtcp_sender_t *OpenRTCP (vlc_object_t *obj, int rtp_fd, int proto,
         sport++;
         dport++;
 
-        fd = net_OpenDgram (obj, src, sport, dst, dport, AF_UNSPEC, proto);
+        fd = net_OpenDgram (obj, src, sport, dst, dport, proto);
         if (fd != -1)
         {
             /* Copy the multicast IPv4 TTL value (useless for IPv6) */

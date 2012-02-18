@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libplaylist_plugin_la_SOURCES = $(SOURCES_playlist)
 nodist_libplaylist_plugin_la_SOURCES = $(nodist_SOURCES_playlist)
 # Force per-target objects:
-libplaylist_plugin_la_CFLAGS = $(AM_CFLAGS)
-libplaylist_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libplaylist_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libplaylist_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_playlist)
+libplaylist_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_playlist)
+libplaylist_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_playlist)
+libplaylist_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_playlist)
 # Set LIBADD and DEPENDENCIES manually:
-libplaylist_plugin_la_LIBADD = $(AM_LIBADD)
-libplaylist_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libplaylist_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_playlist)
+libplaylist_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_playlist)
+libplaylist_plugin_la_DEPENDENCIES =
 

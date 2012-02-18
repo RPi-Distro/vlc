@@ -1,24 +1,24 @@
 /*****************************************************************************
  * loadsave.c : Playlist loading / saving functions
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 4a6b0bc38db634e1669fcbcf4e47b3927876ba34 $
+ * Copyright (C) 1999-2004 VLC authors and VideoLAN
+ * $Id: 59d1a7e40682312622422a99080f478a3a039742 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -31,6 +31,7 @@
 #include "config/configuration.h"
 #include <vlc_fs.h>
 #include <vlc_url.h>
+#include <vlc_modules.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -42,12 +43,10 @@ int playlist_Export( playlist_t * p_playlist, const char *psz_filename,
     if( p_export_root == NULL ) return VLC_EGENERIC;
 
     playlist_export_t *p_export =
-        vlc_custom_create( p_playlist, sizeof( *p_export ), VLC_OBJECT_GENERIC,
-                           "playlist export" );
+        vlc_custom_create( p_playlist, sizeof( *p_export ), "playlist export" );
     if( !p_export )
         return VLC_ENOMEM;
 
-    vlc_object_attach( p_export, p_playlist );
     msg_Dbg( p_export, "saving %s to file %s",
              p_export_root->p_input->psz_name, psz_filename );
 
@@ -86,12 +85,12 @@ int playlist_Import( playlist_t *p_playlist, const char *psz_file )
 {
     input_item_t *p_input;
     const char *const psz_option = "meta-file";
-    char *psz_uri = make_URI( psz_file );
+    char *psz_uri = make_URI( psz_file, NULL );
 
     if( psz_uri == NULL )
         return VLC_EGENERIC;
 
-    p_input = input_item_NewExt( p_playlist, psz_uri, psz_file,
+    p_input = input_item_NewExt( psz_uri, psz_file,
                                  1, &psz_option, VLC_INPUT_OPTION_TRUSTED, -1 );
     free( psz_uri );
 
@@ -118,48 +117,39 @@ static void input_item_subitem_tree_added( const vlc_event_t * p_event,
 
 int playlist_MLLoad( playlist_t *p_playlist )
 {
-    char *psz_datadir;
-    char *psz_uri = NULL;
     input_item_t *p_input;
 
-    psz_datadir = config_GetUserDir( VLC_DATA_DIR );
-
+    char *psz_datadir = config_GetUserDir( VLC_DATA_DIR );
     if( !psz_datadir ) /* XXX: This should never happen */
     {
         msg_Err( p_playlist, "no data directory, cannot load media library") ;
         return VLC_EGENERIC;
     }
 
-    if( asprintf( &psz_uri, "%s" DIR_SEP "ml.xspf", psz_datadir ) != -1 )
-    {   /* loosy check for media library file */
-        struct stat st;
-        int ret = vlc_stat( psz_uri , &st );
-        free( psz_uri );
-        if( ret )
-        {
-            free( psz_datadir );
-            return VLC_EGENERIC;
-        }
+    char *psz_file;
+    if( asprintf( &psz_file, "%s" DIR_SEP "ml.xspf", psz_datadir ) == -1 )
+        psz_file = NULL;
+    free( psz_datadir );
+    if( psz_file == NULL )
+        return VLC_ENOMEM;
+
+    /* loosy check for media library file */
+    struct stat st;
+    if( vlc_stat( psz_file, &st ) )
+    {
+        free( psz_file );
+        return VLC_EGENERIC;
     }
 
-    psz_uri = make_URI( psz_datadir );
-    free( psz_datadir );
-    psz_datadir = psz_uri;
-    if( psz_datadir == NULL )
-        return VLC_EGENERIC;
-
-    /* Force XSPF demux (psz_datadir was a path, now it is a file URI) */
-    if( asprintf( &psz_uri, "file/xspf-open%s/ml.xspf", psz_datadir+4 ) == -1 )
-        psz_uri = NULL;
-    free( psz_datadir );
-    psz_datadir = NULL;
+    char *psz_uri = make_URI( psz_file, "file/xspf-open" );
+    free( psz_file );
     if( psz_uri == NULL )
         return VLC_ENOMEM;
 
     const char *const options[1] = { "meta-file", };
     /* that option has to be cleaned in input_item_subitem_tree_added() */
     /* vlc_gc_decref() in the same function */
-    p_input = input_item_NewExt( p_playlist, psz_uri, _("Media Library"),
+    p_input = input_item_NewExt( psz_uri, _("Media Library"),
                                  1, options, VLC_INPUT_OPTION_TRUSTED, -1 );
     free( psz_uri );
     if( p_input == NULL )

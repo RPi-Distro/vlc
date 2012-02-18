@@ -2,7 +2,7 @@
  * mpeg4audio.c: parse and packetize an MPEG 4 audio stream
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 3e4561c09d213a64031992f729c671bed66e824c $
+ * $Id: 62140808e3880c1c1a9b52a8cc70db4ed13adfcd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -38,6 +38,7 @@
 #include <vlc_bits.h>
 
 #include <vlc_block_helper.h>
+#include "packetizer_helper.h"
 
 #include <assert.h>
 
@@ -141,15 +142,6 @@ struct decoder_sys_t
 };
 
 enum {
-    STATE_NOSYNC,
-    STATE_SYNC,
-    STATE_HEADER,
-    STATE_NEXT_SYNC,
-    STATE_GET_DATA,
-    STATE_SEND_DATA
-};
-
-enum {
     TYPE_NONE,
     TYPE_RAW,
     TYPE_ADTS,
@@ -206,7 +198,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
     /* Misc init */
     p_sys->i_state = STATE_NOSYNC;
     date_Set( &p_sys->end_date, 0 );
-    p_sys->bytestream = block_BytestreamInit();
+    block_BytestreamInit( &p_sys->bytestream );
     p_sys->b_latm_cfg = false;
 
     /* Set output properties */

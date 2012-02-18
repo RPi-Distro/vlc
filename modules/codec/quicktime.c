@@ -2,7 +2,7 @@
  * quicktime.c: a quicktime decoder that uses the QT library/dll
  *****************************************************************************
  * Copyright (C) 2003, 2008 - 2009 the VideoLAN team
- * $Id: ae154fa3c04a46d93b586335652d760544c32e1f $
+ * $Id: 55f9bf076355117a3ef3d841086f1dcf65a65533 $
  *
  * Authors: Laurent Aimar <fenrir at via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan.org>>
@@ -913,7 +913,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         p_sys->i_late = 0;
     }
 #ifndef NDEBUG
-    msg_Dbg( p_dec, "bufsize: %d", (int)p_block->i_buffer);
+    msg_Dbg( p_dec, "bufsize: %zu", p_block->i_buffer);
 #endif
 
     if( p_sys->i_late > 10 )
