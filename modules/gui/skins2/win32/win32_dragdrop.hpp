@@ -2,7 +2,7 @@
  * win32_dragdrop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c7f80d83b5cd1cc9869c225e76143096570c2900 $
+ * $Id: 4b76f22df0431f945b55af6f488f09e0868cc744 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -25,15 +25,21 @@
 #ifndef WIN32_DRAGDROP_HPP
 #define WIN32_DRAGDROP_HPP
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <windows.h>
 #include <shellapi.h>
 #include <ole2.h>
 #include "../src/skin_common.hpp"
+#include "../src/generic_window.hpp"
 
 
 class Win32DragDrop: public SkinObject, public IDropTarget
 {
 public:
-   Win32DragDrop( intf_thread_t *pIntf, bool playOnDrop );
+   Win32DragDrop( intf_thread_t *pIntf, bool playOnDrop, GenericWindow* pWin );
    virtual ~Win32DragDrop() { }
 
 protected:
@@ -55,9 +61,11 @@ private:
     unsigned long m_references;
     /// Indicates whether the file(s) must be played immediately
     bool m_playOnDrop;
+    ///
+    GenericWindow* m_pWin;
 
     /// Helper function
-    void HandleDrop( HDROP HDrop );
+    void HandleDrop( HDROP HDrop, int x, int y );
 };
 
 

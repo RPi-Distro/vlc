@@ -2,7 +2,7 @@
  * ram.c : RAM playlist format import
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 1f6e5277be7ff96dcec3f537cdad98c5b7410e5c $
+ * $Id: 0ed37722f72ac03b189db8e4c0df9bb759f92c95 $
  *
  * Authors: Srikanth Raju <srikiraju@gmail.com>
  *
@@ -138,7 +138,7 @@ static int ParseTime( const char *s, size_t i_strlen)
     s = SkipBlanks(s, i_strlen);
 
     val = 0;
-    while( (s < end) && isdigit(*s) )
+    while( (s < end) && isdigit((unsigned char)*s) )
     {
         int newval = val*10 + (*s - '0');
         if( newval < val )
@@ -158,7 +158,7 @@ static int ParseTime( const char *s, size_t i_strlen)
         s = SkipBlanks(s, end-s);
         result = result * 60;
         val = 0;
-        while( (s < end) && isdigit(*s) )
+        while( (s < end) && isdigit((unsigned char)*s) )
         {
             int newval = val*10 + (*s - '0');
             if( newval < val )
@@ -178,7 +178,7 @@ static int ParseTime( const char *s, size_t i_strlen)
             s = SkipBlanks(s, end-s);
             result = result * 60;
             val = 0;
-            while( (s < end) && isdigit(*s) )
+            while( (s < end) && isdigit((unsigned char)*s) )
             {
                 int newval = val*10 + (*s - '0');
                 if( newval < val )
@@ -287,7 +287,8 @@ static int Demux( demux_t *p_demux )
                         psz_author = decode_URI_duplicate(psz_value);
                         EnsureUTF8( psz_author );
                     }
-                    else if( !strcmp( psz_param, "start" ) )
+                    else if( !strcmp( psz_param, "start" )
+                            && strncmp( psz_mrl, "rtsp", 4 ) /* Our rtsp-real or our real demuxer is wrong */  )
                     {
                         i_start = ParseTime( psz_value, strlen( psz_value ) );
                         char *temp;
@@ -325,7 +326,7 @@ static int Demux( demux_t *p_demux )
             }
 
             /* Create the input item and pump in all the options into playlist item */
-            p_input = input_item_NewExt( p_demux, psz_mrl, psz_title, i_options, ppsz_options, 0, i_duration );
+            p_input = input_item_NewExt( psz_mrl, psz_title, i_options, ppsz_options, 0, i_duration );
 
             if( !EMPTY_STR( psz_artist ) ) input_item_SetArtist( p_input, psz_artist );
             if( !EMPTY_STR( psz_author ) ) input_item_SetPublisher( p_input, psz_author );

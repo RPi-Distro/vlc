@@ -2,7 +2,7 @@
  * preferences.cpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 57d612d2d734b644a7aa44f9882e51ee90da415a $
+ * $Id: e7fd4c5d5520505f4d85fb4acca69075e357f071 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -32,6 +32,8 @@
 
 #include "components/complete_preferences.hpp"
 #include "components/simple_preferences.hpp"
+#include "util/searchlineedit.hpp"
+#include "main_interface.hpp"
 
 #include <QHBoxLayout>
 #include <QGroupBox>
@@ -54,7 +56,7 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
 
     /* Create Panels */
     tree_panel = new QWidget;
-    tree_panel_l = new QHBoxLayout;
+    tree_panel_l = new QVBoxLayout;
     tree_panel->setLayout( tree_panel_l );
     main_panel = new QWidget;
     main_panel_l = new QHBoxLayout;
@@ -75,6 +77,7 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
 
     /* Tree and panel initialisations */
     advanced_tree = NULL;
+    tree_filter = NULL;
     simple_tree = NULL;
     current_simple_panel  = NULL;
     advanced_panel = NULL;
@@ -111,7 +114,7 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
     tree_panel_l->setMargin( 1 );
     main_panel_l->setContentsMargins( 6, 0, 0, 3 );
 
-    b_small = (p_intf->p_sys->i_screenHeight < 850);
+    b_small = (p_intf->p_sys->i_screenHeight < 750);
     if( b_small ) msg_Dbg( p_intf, "Small");
     setMaximumHeight( p_intf->p_sys->i_screenHeight );
     for( int i = 0; i < SPrefsMax ; i++ ) simple_panels[i] = NULL;
@@ -137,6 +140,19 @@ void PrefsDialog::setAdvanced()
     /* We already have a simple TREE, and we just want to hide it */
     if( simple_tree )
         if( simple_tree->isVisible() ) simple_tree->hide();
+
+    if ( !tree_filter )
+    {
+        tree_filter = new SearchLineEdit( tree_panel );
+        tree_filter->setMinimumHeight( 26 );
+
+        CONNECT( tree_filter, textChanged( const QString &  ),
+                this, advancedTreeFilterChanged( const QString & ) );
+
+        tree_panel_l->addWidget( tree_filter );
+    }
+
+    tree_filter->show();
 
     /* If don't have already and advanced TREE, then create it */
     if( !advanced_tree )
@@ -178,6 +194,9 @@ void PrefsDialog::setSmall()
     /* If an advanced TREE exists, remove and hide it */
     if( advanced_tree )
         if( advanced_tree->isVisible() ) advanced_tree->hide();
+
+    if( tree_filter )
+        if( tree_filter->isVisible() ) tree_filter->hide();
 
     /* If no simple_tree, create one, connect it */
     if( !simple_tree )
@@ -295,11 +314,14 @@ void PrefsDialog::save()
     }
 
     /* Save to file */
-    if( config_SaveConfigFile( p_intf, NULL ) != 0 )
+    if( config_SaveConfigFile( p_intf ) != 0 )
     {
         ErrorsDialog::getInstance (p_intf)->addError( qtr( "Cannot save Configuration" ),
             qtr("Preferences file could not be saved") );
     }
+
+    if( p_intf->p_sys->p_mi )
+        p_intf->p_sys->p_mi->reloadPrefs();
     accept();
 }
 
@@ -322,9 +344,14 @@ void PrefsDialog::reset()
     if( ret == QMessageBox::Ok )
     {
         config_ResetAll( p_intf );
-        config_SaveConfigFile( p_intf, NULL );
+        config_SaveConfigFile( p_intf );
         getSettings()->clear();
 
         accept();
     }
+}
+
+void PrefsDialog::advancedTreeFilterChanged( const QString & text )
+{
+    advanced_tree->filter( text );
 }

@@ -2,7 +2,7 @@
  * dialogs_provider.hpp : Dialogs provider
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 75f5e595d702b5a3b9d6afa3442a7481752a77d4 $
+ * $Id: 7429057c746e09f67a9a5d8bc701135850e40bb9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -37,34 +37,17 @@
 #include <QObject>
 #include <QStringList>
 
-#define ADD_FILTER_MEDIA( string )     \
-    string += qtr( "Media Files" );    \
-    string += " ( ";                   \
-    string += EXTENSIONS_MEDIA;        \
-    string += ");;";
-#define ADD_FILTER_VIDEO( string )     \
-    string += qtr( "Video Files" );    \
-    string += " ( ";                   \
-    string += EXTENSIONS_VIDEO;        \
-    string += ");;";
-#define ADD_FILTER_AUDIO( string )     \
-    string += qtr( "Audio Files" );    \
-    string += " ( ";                   \
-    string += EXTENSIONS_AUDIO;        \
-    string += ");;";
-#define ADD_FILTER_PLAYLIST( string )  \
-    string += qtr( "Playlist Files" ); \
-    string += " ( ";                   \
-    string += EXTENSIONS_PLAYLIST;     \
-    string += ");;";
-#define ADD_FILTER_SUBTITLE( string )  \
-    string += qtr( "Subtitles Files" );\
-    string += " ( ";                   \
-    string += EXTENSIONS_SUBTITLE;     \
-    string += ");;";
-#define ADD_FILTER_ALL( string )       \
-    string += qtr( "All Files" );      \
-    string += " (*)";
+#define TITLE_EXTENSIONS_MEDIA qtr( "Media Files" )
+#define TITLE_EXTENSIONS_VIDEO qtr( "Video Files" )
+#define TITLE_EXTENSIONS_AUDIO qtr( "Audio Files" )
+#define TITLE_EXTENSIONS_PLAYLIST qtr( "Playlist Files" )
+#define TITLE_EXTENSIONS_SUBTITLE qtr( "Subtitles Files" )
+#define TITLE_EXTENSIONS_ALL qtr( "All Files" )
+#define EXTENSIONS_ALL "*"
+#define ADD_EXT_FILTER( string, type ) \
+    string = string + QString("%1 ( %2 );;") \
+            .arg( TITLE_##type ) \
+            .arg( QString( type ) );
 
 enum {
     EXT_FILTER_MEDIA     =  0x01,
@@ -83,12 +66,12 @@ enum {
 
 class QEvent;
 class QSignalMapper;
-class QVLCMenu;
+class VLCMenuBar;
 
 class DialogsProvider : public QObject
 {
     Q_OBJECT
-    friend class QVLCMenu;
+    friend class VLCMenuBar;
 
 public:
     static DialogsProvider *getInstance()
@@ -209,8 +192,8 @@ public:
         i_dialog = _i_dialog;
         i_arg = _i_arg;
         p_arg = _p_arg;
-    };
-    virtual ~DialogEvent() { };
+    }
+    virtual ~DialogEvent() { }
 
     int i_arg, i_dialog;
     intf_dialog_args_t *p_arg;

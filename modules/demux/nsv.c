@@ -2,7 +2,7 @@
  * nsv.c: NullSoft Video demuxer.
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 017f511ce03623a20bc3988fae75ae5eb116dbc2 $
+ * $Id: bb6f9f43a90329ab863aa1f03e51b76aa26342f3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -492,6 +492,7 @@ static int ReadNSVs( demux_t *p_demux )
         case VLC_FOURCC( 'V', 'P', '6', '0' ):
         case VLC_FOURCC( 'V', 'P', '6', '1' ):
         case VLC_FOURCC( 'V', 'P', '6', '2' ):
+        case VLC_FOURCC( 'V', 'P', '8', '0' ):
         case VLC_FOURCC( 'H', '2', '6', '4' ):
         case VLC_FOURCC( 'N', 'O', 'N', 'E' ):
             break;

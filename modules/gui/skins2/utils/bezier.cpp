@@ -2,7 +2,7 @@
  * bezier.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ea4d8c370cff5141bde67ec53f27ce15f5935da4 $
+ * $Id: 089f520111e41dea62f3a88696b2005d2f05164a $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -90,7 +90,7 @@ Bezier::Bezier( intf_thread_t *p_intf, const vector<float> &rAbscissas,
     m_nbPoints = m_leftVect.size();
 
     // If we have only one control point, we duplicate it
-    // This allows to simplify the algorithms used in the class
+    // This allows simplifying the algorithms used in the class
     if( m_nbPoints == 1 )
     {
         m_leftVect.push_back( m_leftVect[0] );

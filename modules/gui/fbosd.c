@@ -2,7 +2,7 @@
  * fbosd.c : framebuffer osd plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007-2008, the VideoLAN team
- * $Id: d7845bfc4bee6db2f2666ae87930100f987c035c $
+ * $Id: ce9c36909067c6a2fb0aa305ba9d6b84de7f225d $
  *
  * Authors: Jean-Paul Saman
  * Copied from modules/video_output/fb.c by Samuel Hocevar <sam@zoy.org>
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_fs.h>
+#include <vlc_modules.h>
 
 #include <stdlib.h>                                                /* free() */
 #include <string.h>                                            /* strerror() */
@@ -179,40 +180,40 @@ vlc_module_begin ()
     set_category( CAT_INTERFACE )
     set_subcategory( SUBCAT_INTERFACE_MAIN )
 
-    add_file( "fbosd-dev", "/dev/fb0", NULL, DEVICE_TEXT, DEVICE_LONGTEXT,
-              false )
-    add_string( "fbosd-aspect-ratio", "", NULL, ASPECT_RATIO_TEXT,
+    add_loadfile( "fbosd-dev", "/dev/fb0", DEVICE_TEXT, DEVICE_LONGTEXT,
+                  false )
+    add_string( "fbosd-aspect-ratio", "", ASPECT_RATIO_TEXT,
                 ASPECT_RATIO_LONGTEXT, true )
 
-    add_string( "fbosd-image", NULL, NULL, FBOSD_IMAGE_TEXT,
+    add_string( "fbosd-image", NULL, FBOSD_IMAGE_TEXT,
                 FBOSD_IMAGE_LONGTEXT, true )
-    add_string( "fbosd-text", NULL, NULL, FBOSD_TEXT,
+    add_string( "fbosd-text", NULL, FBOSD_TEXT,
                 FBOSD_LONGTEXT, true )
 
-    add_integer_with_range( "fbosd-alpha", 255, 0, 255, NULL, ALPHA_TEXT,
+    add_integer_with_range( "fbosd-alpha", 255, 0, 255, ALPHA_TEXT,
                             ALPHA_LONGTEXT, true )
 
     set_section( N_("Position"), NULL )
-    add_integer( "fbosd-x", 0, NULL, POSX_TEXT,
+    add_integer( "fbosd-x", 0, POSX_TEXT,
                  POSX_LONGTEXT, false )
-    add_integer( "fbosd-y", 0, NULL, POSY_TEXT,
+    add_integer( "fbosd-y", 0, POSY_TEXT,
                  POSY_LONGTEXT, false )
-    add_integer( "fbosd-position", 8, NULL, POS_TEXT, POS_LONGTEXT, true )
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+    add_integer( "fbosd-position", 8, POS_TEXT, POS_LONGTEXT, true )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions );
 
     set_section( N_("Font"), NULL )
-    add_integer_with_range( "fbosd-font-opacity", 255, 0, 255, NULL,
+    add_integer_with_range( "fbosd-font-opacity", 255, 0, 255,
         OPACITY_TEXT, OPACITY_LONGTEXT, false )
-    add_integer( "fbosd-font-color", 0x00FFFFFF, NULL, COLOR_TEXT, COLOR_LONGTEXT,
+    add_integer( "fbosd-font-color", 0x00FFFFFF, COLOR_TEXT, COLOR_LONGTEXT,
                  false )
-        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL );
-    add_integer( "fbosd-font-size", -1, NULL, SIZE_TEXT, SIZE_LONGTEXT,
+        change_integer_list( pi_color_values, ppsz_color_descriptions );
+    add_integer( "fbosd-font-size", -1, SIZE_TEXT, SIZE_LONGTEXT,
                  false )
 
     set_section( N_("Commands"), NULL )
-    add_bool( "fbosd-clear", false, NULL, CLEAR_TEXT, CLEAR_LONGTEXT, true )
-    add_bool( "fbosd-render", false, NULL, RENDER_TEXT, RENDER_LONGTEXT, true )
-    add_bool( "fbosd-display", false, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, true )
+    add_bool( "fbosd-clear", false, CLEAR_TEXT, CLEAR_LONGTEXT, true )
+    add_bool( "fbosd-render", false, RENDER_TEXT, RENDER_LONGTEXT, true )
+    add_bool( "fbosd-display", false, DISPLAY_TEXT, DISPLAY_LONGTEXT, true )
 
     set_description( N_("GNU/Linux osd/overlay framebuffer interface") )
     set_capability( "interface", 10 )
@@ -529,7 +530,6 @@ static int OpenBlending( intf_thread_t *p_intf )
 
     p_intf->p_sys->p_blend =
             vlc_object_create( p_intf, sizeof(filter_t) );
-    vlc_object_attach( p_intf->p_sys->p_blend, p_intf );
     p_intf->p_sys->p_blend->fmt_out.video.i_x_offset =
         p_intf->p_sys->p_blend->fmt_out.video.i_y_offset = 0;
     p_intf->p_sys->p_blend->fmt_out.video.i_sar_num =
@@ -575,7 +575,6 @@ static int OpenTextRenderer( intf_thread_t *p_intf )
 
     p_intf->p_sys->p_text =
             vlc_object_create( p_intf, sizeof(filter_t) );
-    vlc_object_attach( p_intf->p_sys->p_text, p_intf );
 
     p_intf->p_sys->p_text->fmt_out.video.i_width =
         p_intf->p_sys->p_text->fmt_out.video.i_visible_width =
@@ -861,7 +860,7 @@ static picture_t *RenderText( intf_thread_t *p_intf, const char *psz_string,
             return NULL;
         }
         p_region->p_style = text_style_Duplicate( p_style );
-        p_region->i_align = OSD_ALIGN_LEFT | OSD_ALIGN_TOP;
+        p_region->i_align = SUBPICTURE_ALIGN_LEFT | SUBPICTURE_ALIGN_TOP;
 
         if( p_sys->p_text->pf_render_text )
         {
@@ -870,7 +869,7 @@ static picture_t *RenderText( intf_thread_t *p_intf, const char *psz_string,
             memset( &fmt_out, 0, sizeof(video_format_t) );
 
             p_sys->p_text->pf_render_text( p_sys->p_text,
-                                           p_region, p_region );
+                                           p_region, p_region, NULL );
 
 #if defined(FBOSD_BLENDING)
             fmt_out = p_region->fmt;
@@ -1350,14 +1349,14 @@ static int OverlayCallback( vlc_object_t *p_this, char const *psz_cmd,
                 break;
         }
         /* No, then find first FREE slot */
-        if( p_sys->render[i].i_state != FBOSD_STATE_RESERVED )
+        if( i == FBOSD_RENDER_MAX )
         {
             for( i = 0; i < FBOSD_RENDER_MAX; i++ )
             {
                 if( p_sys->render[i].i_state == FBOSD_STATE_FREE )
                     break;
             }
-            if( p_sys->render[i].i_state != FBOSD_STATE_FREE )
+            if( i == FBOSD_RENDER_MAX )
             {
                 msg_Warn( p_this, "render space depleated" );
                 return VLC_SUCCESS;

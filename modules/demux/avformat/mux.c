@@ -1,8 +1,8 @@
 /*****************************************************************************
- * mux.c: muxer using ffmpeg (libavformat).
+ * mux.c: muxer using libavformat
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: f622c90f2e8430558f854e83767f9ba93f7b25c1 $
+ * $Id: d913bf191cdd484831f836a60799e7264966a2c1 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -33,12 +33,7 @@
 #include <vlc_block.h>
 #include <vlc_sout.h>
 
-/* ffmpeg header */
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
-#   include <libavformat/avformat.h>
-#elif defined(HAVE_FFMPEG_AVFORMAT_H)
-#   include <ffmpeg/avformat.h>
-#endif
+#include <libavformat/avformat.h>
 
 #include "avformat.h"
 #include "../../codec/avcodec/avcodec.h"
@@ -129,11 +124,7 @@ int OpenMux( vlc_object_t *p_this )
     p_mux->pf_mux       = Mux;
     p_mux->p_sys = p_sys = malloc( sizeof( sout_mux_sys_t ) );
 
-#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,26,0)
     p_sys->oc = avformat_alloc_context();
-#else
-    p_sys->oc = av_alloc_format_context();
-#endif
     p_sys->oc->oformat = file_oformat;
 
     /* Create I/O wrapper */
@@ -163,11 +154,7 @@ int OpenMux( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(0<<8)+0)
     p_sys->oc->pb = &p_sys->io;
-#else
-    p_sys->oc->pb = p_sys->io;
-#endif
     p_sys->oc->nb_streams = 0;
 
     p_sys->b_write_header = true;
@@ -186,7 +173,7 @@ void CloseMux( vlc_object_t *p_this )
     sout_mux_sys_t *p_sys = p_mux->p_sys;
     unsigned int i;
 
-    if( !p_sys->b_write_header && av_write_trailer( p_sys->oc ) < 0 )
+    if( !p_sys->b_write_header && !p_sys->b_error && av_write_trailer( p_sys->oc ) < 0 )
     {
         msg_Err( p_mux, "could not write trailer" );
     }

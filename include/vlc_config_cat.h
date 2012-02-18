@@ -1,25 +1,25 @@
 /*****************************************************************************
  * vlc_config_cat.h : Definition of configuration categories
  *****************************************************************************
- * Copyright (C) 2003 the VideoLAN team
- * $Id: 87cd0c6959a24c0874711b1dcf4cc09e433ef315 $
+ * Copyright (C) 2003 VLC authors and VideoLAN
+ * $Id: 9626943a04ec305e675660c8fb4ebdfe79942fa7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Anil Daoud <anil@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_HELP_H
@@ -280,10 +280,10 @@ static const struct config_category_t categories_array[] =
     { -1, NULL, NULL }
 };
 
-LIBVLC_USED
+VLC_USED
 static inline const char *config_CategoryNameGet( int i_value )
 {
-    int i = 0 ;
+    int i = 0;
     while( categories_array[i].psz_name != NULL )
     {
         if( categories_array[i].i_id == i_value )
@@ -295,10 +295,10 @@ static inline const char *config_CategoryNameGet( int i_value )
     return NULL;
 }
 
-LIBVLC_USED
+VLC_USED
 static inline const char *config_CategoryHelpGet( int i_value )
 {
-    int i = 0 ;
+    int i = 0;
     while( categories_array[i].psz_help != NULL )
     {
         if( categories_array[i].i_id == i_value )

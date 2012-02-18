@@ -2,7 +2,7 @@
  * win32_loop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0775e1aa90465ae8efdf79fa08620fa49d4405bd $
+ * $Id: fdd0daba438146db416151d87dda20db845f068f $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -47,6 +47,10 @@ public:
 
     /// Exit the main loop
     virtual void exit();
+
+    /// called by the window procedure callback
+    virtual LRESULT CALLBACK processEvent( HWND hwnd, UINT msg,
+                                           WPARAM wParam, LPARAM lParam );
 
 private:
     // Private because it is a singleton

@@ -2,7 +2,7 @@
  * aa.c: "vout display" module using aalib
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 753f33481a5686897c21eb306a0ce8e388d0644c $
+ * $Id: 007cb56c94495ca2cc3cae82b63d07b70bf3a3ae $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -32,7 +32,6 @@
 #include <vlc_plugin.h>
 #include <vlc_vout_display.h>
 #include <vlc_picture_pool.h>
-#include "keythread.h"
 
 #include <assert.h>
 #include <aalib.h>
@@ -67,8 +66,8 @@ vlc_module_end()
  * Local prototypes
  *****************************************************************************/
 static picture_pool_t *Pool   (vout_display_t *, unsigned);
-static void            Prepare(vout_display_t *, picture_t *);
-static void            PictureDisplay(vout_display_t *, picture_t *);
+static void            Prepare(vout_display_t *, picture_t *, subpicture_t *);
+static void            PictureDisplay(vout_display_t *, picture_t *, subpicture_t *);
 static int             Control(vout_display_t *, int, va_list);
 
 /* */
@@ -81,7 +80,6 @@ struct vout_display_sys_t {
 
     vout_display_cfg_t  state;
     picture_pool_t      *pool;
-    key_thread_t        *keys;
 };
 
 /**
@@ -111,6 +109,7 @@ static int Open(vlc_object_t *object)
         msg_Err(vd, "cannot initialize aalib");
         goto error;
     }
+    vout_display_DeleteWindow(vd, NULL);
 
     aa_autoinitkbd(sys->aa_context, 0);
     aa_autoinitmouse(sys->aa_context, AA_MOUSEALLMASK);
@@ -142,7 +141,6 @@ static int Open(vlc_object_t *object)
     vout_display_SendEventFullscreen(vd, false);
     vout_display_SendEventDisplaySize(vd, fmt.i_width, fmt.i_height, false);
 
-    sys->keys = vlc_CreateKeyThread(vd);
     return VLC_SUCCESS;
 
 error:
@@ -160,7 +158,6 @@ static void Close(vlc_object_t *object)
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys = vd->sys;
 
-    vlc_DestroyKeyThread(sys->keys);
     if (sys->pool)
         picture_pool_Delete(sys->pool);
     aa_close(sys->aa_context);
@@ -194,7 +191,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
 
 /**
  * Prepare a picture for display */
-static void Prepare(vout_display_t *vd, picture_t *picture)
+static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
@@ -211,6 +208,7 @@ static void Prepare(vout_display_t *vd, picture_t *picture)
 #else
     VLC_UNUSED(picture);
 #endif
+    VLC_UNUSED(subpicture);
 
     aa_fastrender(sys->aa_context, 0, 0,
                   vd->fmt.i_width, vd->fmt.i_height);
@@ -219,12 +217,13 @@ static void Prepare(vout_display_t *vd, picture_t *picture)
 /**
  * Display a picture
  */
-static void PictureDisplay(vout_display_t *vd, picture_t *picture)
+static void PictureDisplay(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
     aa_flush(sys->aa_context);
     picture_Release(picture);
+    VLC_UNUSED(subpicture);
 }
 
 /**
@@ -303,26 +302,26 @@ static void Manage(vout_display_t *vd)
 
         /* TODO keys support to complete */
         case AA_UP:
-            vlc_EmitKey(sys->keys, KEY_UP);
+            vout_display_SendEventKey(vd, KEY_UP);
             break;
         case AA_DOWN:
-            vlc_EmitKey(sys->keys, KEY_DOWN);
+            vout_display_SendEventKey(vd, KEY_DOWN);
             break;
         case AA_RIGHT:
-            vlc_EmitKey(sys->keys, KEY_RIGHT);
+            vout_display_SendEventKey(vd, KEY_RIGHT);
             break;
         case AA_LEFT:
-            vlc_EmitKey(sys->keys, KEY_LEFT);
+            vout_display_SendEventKey(vd, KEY_LEFT);
             break;
         case AA_BACKSPACE:
-            vlc_EmitKey(sys->keys, KEY_BACKSPACE);
+            vout_display_SendEventKey(vd, KEY_BACKSPACE);
             break;
         case AA_ESC:
-            vlc_EmitKey(sys->keys, KEY_ESC);
+            vout_display_SendEventKey(vd, KEY_ESC);
             break;
         default:
             if (event >= 0x20 && event <= 0x7f)
-                vlc_EmitKey(sys->keys, event);
+                vout_display_SendEventKey(vd, event);
             break;
         }
     }

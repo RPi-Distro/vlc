@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f2b2e1596e1adbb4483dd66368ef30f08ffeb7d8 $
+ * $Id: 1de4e2021805f7d9aa1163c86cdf27ba1982b296 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -30,6 +30,7 @@
 #include "../src/os_factory.hpp"
 #include "../src/generic_bitmap.hpp"
 #include "../src/top_window.hpp"
+#include "../src/fsc_window.hpp"
 #include "../src/anchor.hpp"
 #include "../src/bitmap_font.hpp"
 #include "../src/ft2_font.hpp"
@@ -354,16 +355,22 @@ void Builder::addMenuSeparator( const BuilderData::MenuSeparator &rData )
 
 void Builder::addWindow( const BuilderData::Window &rData )
 {
-    TopWindow *pWin =
-        new TopWindow( getIntf(), rData.m_xPos, rData.m_yPos,
+    TopWindow *pWin;
+    if( rData.m_id == "fullscreenController" )
+    {
+        pWin = new FscWindow( getIntf(), rData.m_xPos, rData.m_yPos,
                        m_pTheme->getWindowManager(),
                        rData.m_dragDrop, rData.m_playOnDrop,
                        rData.m_visible );
-
+    }
+    else
+    {
+        pWin = new TopWindow( getIntf(), rData.m_xPos, rData.m_yPos,
+                       m_pTheme->getWindowManager(),
+                       rData.m_dragDrop, rData.m_playOnDrop,
+                       rData.m_visible );
+    }
     m_pTheme->m_windows[rData.m_id] = TopWindowPtr( pWin );
-
-    if( rData.m_id == "fullscreenController" )
-        VoutManager::instance( getIntf())->registerFSC( pWin );
 }
 
 
@@ -465,10 +472,10 @@ void Builder::addButton( const BuilderData::Button &rData )
     const GenericRect *pRect;
     GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
-                                       rData.m_xPos, rData.m_yPos,
-                                       pBmpUp->getWidth(),
-                                       pBmpUp->getHeight(), *pRect,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                             rData.m_xPos, rData.m_yPos,
+                             pBmpUp->getWidth(),
+                             pBmpUp->getHeight() / pBmpUp->getNbFrames(),
+                             *pRect, rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pButton, pos, rData.m_layer );
 }
@@ -542,10 +549,10 @@ void Builder::addCheckbox( const BuilderData::Checkbox &rData )
     const GenericRect *pRect;
     GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
-                                       rData.m_xPos, rData.m_yPos,
-                                       pBmpUp1->getWidth(),
-                                       pBmpUp1->getHeight(), *pRect,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                            rData.m_xPos, rData.m_yPos,
+                            pBmpUp1->getWidth(),
+                            pBmpUp1->getHeight() / pBmpUp1->getNbFrames(),
+                            *pRect, rData.m_xKeepRatio, rData.m_yKeepRatio );
 
     pLayout->addControl( pCheckbox, pos, rData.m_layer );
 }
@@ -583,17 +590,22 @@ void Builder::addImage( const BuilderData::Image &rData )
     VarBool *pVisible = pInterpreter->getVarBool( rData.m_visible, m_pTheme );
 
     CtrlImage::resize_t resizeMethod =
-        (rData.m_resize == "scale" ? CtrlImage::kScale : CtrlImage::kMosaic);
+        rData.m_resize == "scale"  ? CtrlImage::kScale :
+        rData.m_resize == "mosaic" ? CtrlImage::kMosaic :
+                                     CtrlImage::kScaleAndRatioPreserved;
     CtrlImage *pImage = new CtrlImage( getIntf(), *pBmp, *pCommand,
-        resizeMethod, UString( getIntf(), rData.m_help.c_str() ), pVisible );
+        resizeMethod, UString( getIntf(), rData.m_help.c_str() ), pVisible,
+        rData.m_art );
     m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pImage );
 
     // Compute the position of the control
     const GenericRect *pRect;
+    int width = (rData.m_width > 0) ? rData.m_width : pBmp->getWidth();
+    int height = (rData.m_height > 0) ? rData.m_height : pBmp->getHeight();
     GET_BOX( pRect, rData.m_panelId , pLayout);
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
-                                       pBmp->getWidth(), pBmp->getHeight(),
+                                       width, height,
                                        *pRect, rData.m_xKeepRatio,
                                        rData.m_yKeepRatio );
 
@@ -714,14 +726,19 @@ void Builder::addText( const BuilderData::Text &rData )
     VarText *pVar = new VarText( getIntf() );
     m_pTheme->m_vars.push_back( VariablePtr( pVar ) );
 
+    // Set the text of the control
+    UString msg( getIntf(), rData.m_text.c_str() );
+    pVar->set( msg );
+
     // Get the visibility variable
     // XXX check when it is null
     Interpreter *pInterpreter = Interpreter::instance( getIntf() );
     VarBool *pVisible = pInterpreter->getVarBool( rData.m_visible, m_pTheme );
+    VarBool *pFocus = pInterpreter->getVarBool( rData.m_focus, m_pTheme );
 
     CtrlText *pText = new CtrlText( getIntf(), *pVar, *pFont,
-        UString( getIntf(), rData.m_help.c_str() ), rData.m_color, pVisible,
-        scrolling, alignment );
+        UString( getIntf(), rData.m_help.c_str() ), rData.m_color,
+        pVisible, pFocus, scrolling, alignment );
     m_pTheme->m_controls[rData.m_id] = CtrlGenericPtr( pText );
 
     int height = pFont->getSize();
@@ -736,9 +753,6 @@ void Builder::addText( const BuilderData::Text &rData )
 
     pLayout->addControl( pText, pos, rData.m_layer );
 
-    // Set the text of the control
-    UString msg( getIntf(), rData.m_text.c_str() );
-    pVar->set( msg );
 }
 
 
@@ -1143,7 +1157,7 @@ GenericFont *Builder::getFont( const string &fontId )
         const string &sep = pOSFactory->getDirSeparator();
 
         list<string>::const_iterator it;
-        for( it = resPath.begin(); it != resPath.end(); it++ )
+        for( it = resPath.begin(); it != resPath.end(); ++it )
         {
             string path = (*it) + sep + "fonts" + sep + "FreeSans.ttf";
             pFont = new FT2Font( getIntf(), path, 12 );
@@ -1179,13 +1193,13 @@ string Builder::getFilePath( const string &rFileName ) const
         // For skins to be valid on both Linux and Win32,
         // slash should be used as path separator for both OSs.
         msg_Warn( getIntf(), "use of '/' is preferred to '\\' for paths" );
-        int pos;
+        string::size_type pos;
         while( ( pos = file.find( "\\" ) ) != string::npos )
            file[pos] = '/';
     }
 
 #ifdef WIN32
-    int pos;
+    string::size_type pos;
     while( ( pos = file.find( "/" ) ) != string::npos )
        file.replace( pos, 1, sep );
 #endif

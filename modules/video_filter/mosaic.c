@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 41b3a645f4f22749a8f4a2b286b080a2d438818a $
+ * $Id: ea52d51cc46cf83f3124b7ece68697cdbdf5fb20 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -58,7 +58,6 @@ static int MosaicCallback   ( vlc_object_t *, char const *, vlc_value_t,
 struct filter_sys_t
 {
     vlc_mutex_t lock;         /* Internal filter lock */
-    vlc_mutex_t *p_lock;      /* Pointer to mosaic bridge lock */
 
     image_handler_t *p_image;
 
@@ -125,12 +124,12 @@ struct filter_sys_t
 #define ROWS_TEXT N_("Number of rows")
 #define ROWS_LONGTEXT N_( \
         "Number of image rows in the mosaic (only used if " \
-        "positionning method is set to \"fixed\")." )
+        "positioning method is set to \"fixed\")." )
 
 #define COLS_TEXT N_("Number of columns")
 #define COLS_LONGTEXT N_( \
         "Number of image columns in the mosaic (only used if " \
-        "positionning method is set to \"fixed\"." )
+        "positioning method is set to \"fixed\"." )
 
 #define AR_TEXT N_("Keep aspect ratio")
 #define AR_LONGTEXT N_( \
@@ -174,57 +173,55 @@ static const char *const ppsz_align_descriptions[] =
 #define CFG_PREFIX "mosaic-"
 
 vlc_module_begin ()
-    set_description( N_("Mosaic video sub filter") )
+    set_description( N_("Mosaic video sub source") )
     set_shortname( N_("Mosaic") )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_SUBPIC)
-    set_capability( "sub filter", 0 )
+    set_capability( "sub source", 0 )
     set_callbacks( CreateFilter, DestroyFilter )
 
-    add_integer_with_range( CFG_PREFIX "alpha", 255, 0, 255, NULL,
+    add_integer_with_range( CFG_PREFIX "alpha", 255, 0, 255,
                             ALPHA_TEXT, ALPHA_LONGTEXT, false )
 
-    add_integer( CFG_PREFIX "height", 100, NULL,
+    add_integer( CFG_PREFIX "height", 100,
                  HEIGHT_TEXT, HEIGHT_LONGTEXT, false )
-    add_integer( CFG_PREFIX "width", 100, NULL,
+    add_integer( CFG_PREFIX "width", 100,
                  WIDTH_TEXT, WIDTH_LONGTEXT, false )
 
-    add_integer( CFG_PREFIX "align", 5, NULL,
+    add_integer( CFG_PREFIX "align", 5,
                  ALIGN_TEXT, ALIGN_LONGTEXT, true)
-        change_integer_list( pi_align_values, ppsz_align_descriptions, NULL )
+        change_integer_list( pi_align_values, ppsz_align_descriptions )
 
-    add_integer( CFG_PREFIX "xoffset", 0, NULL,
+    add_integer( CFG_PREFIX "xoffset", 0,
                  XOFFSET_TEXT, XOFFSET_LONGTEXT, true )
-    add_integer( CFG_PREFIX "yoffset", 0, NULL,
+    add_integer( CFG_PREFIX "yoffset", 0,
                  YOFFSET_TEXT, YOFFSET_LONGTEXT, true )
 
-    add_integer( CFG_PREFIX "borderw", 0, NULL,
+    add_integer( CFG_PREFIX "borderw", 0,
                  BORDERW_TEXT, BORDERW_LONGTEXT, true )
-        add_deprecated_alias( CFG_PREFIX "vborder" )
-    add_integer( CFG_PREFIX "borderh", 0, NULL,
+    add_integer( CFG_PREFIX "borderh", 0,
                  BORDERH_TEXT, BORDERH_LONGTEXT, true )
-        add_deprecated_alias( CFG_PREFIX "hborder" )
 
-    add_integer( CFG_PREFIX "position", 0, NULL,
+    add_integer( CFG_PREFIX "position", 0,
                  POS_TEXT, POS_LONGTEXT, false )
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
-    add_integer( CFG_PREFIX "rows", 2, NULL,
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions )
+    add_integer( CFG_PREFIX "rows", 2,
                  ROWS_TEXT, ROWS_LONGTEXT, false )
-    add_integer( CFG_PREFIX "cols", 2, NULL,
+    add_integer( CFG_PREFIX "cols", 2,
                  COLS_TEXT, COLS_LONGTEXT, false )
 
-    add_bool( CFG_PREFIX "keep-aspect-ratio", false, NULL,
+    add_bool( CFG_PREFIX "keep-aspect-ratio", false,
               AR_TEXT, AR_LONGTEXT, false )
-    add_bool( CFG_PREFIX "keep-picture", false, NULL,
+    add_bool( CFG_PREFIX "keep-picture", false,
               KEEP_TEXT, KEEP_LONGTEXT, false )
 
-    add_string( CFG_PREFIX "order", "", NULL,
+    add_string( CFG_PREFIX "order", "",
                 ORDER_TEXT, ORDER_LONGTEXT, false )
 
-    add_string( CFG_PREFIX "offsets", "", NULL,
+    add_string( CFG_PREFIX "offsets", "",
                 OFFSETS_TEXT, OFFSETS_LONGTEXT, false )
 
-    add_integer( CFG_PREFIX "delay", 0, NULL, DELAY_TEXT, DELAY_LONGTEXT,
+    add_integer( CFG_PREFIX "delay", 0, DELAY_TEXT, DELAY_LONGTEXT,
                  false )
 vlc_module_end ()
 
@@ -240,9 +237,7 @@ static const char *const ppsz_filter_options[] = {
  * parse the "--mosaic-offsets x1,y1,x2,y2,x3,y3" parameter
  * and set the corresponding struct filter_sys_t entries.
  *****************************************************************************/
-#define mosaic_ParseSetOffsets( a, b, c ) \
-      __mosaic_ParseSetOffsets( VLC_OBJECT( a ), b, c )
-static void __mosaic_ParseSetOffsets( vlc_object_t *p_this,
+static void mosaic_ParseSetOffsets( vlc_object_t *p_this,
                                       filter_sys_t *p_sys,
                                       char *psz_offsets )
 {
@@ -274,6 +269,8 @@ static void __mosaic_ParseSetOffsets( vlc_object_t *p_this,
         p_sys->i_offsets_length = i_index;
     }
 }
+#define mosaic_ParseSetOffsets( a, b, c ) \
+            mosaic_ParseSetOffsets( VLC_OBJECT( a ), b, c )
 
 /*****************************************************************************
  * CreateFiler: allocate mosaic video filter
@@ -282,36 +279,27 @@ static int CreateFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
-    vlc_object_t *p_libvlc = VLC_OBJECT( p_filter->p_libvlc );
     char *psz_order, *_psz_order;
     char *psz_offsets;
     int i_index;
-    vlc_value_t val;
     int i_command;
-
-    /* The mosaic thread is more important than the decoder threads */
-    vlc_thread_set_priority( p_this, VLC_THREAD_PRIORITY_OUTPUT );
 
     /* Allocate structure */
     p_sys = p_filter->p_sys = malloc( sizeof( filter_sys_t ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
-    p_filter->pf_sub_filter = Filter;
+    p_filter->pf_sub_source = Filter;
 
     vlc_mutex_init( &p_sys->lock );
     vlc_mutex_lock( &p_sys->lock );
-
-    var_Create( p_libvlc, "mosaic-lock", VLC_VAR_MUTEX );
-    var_Get( p_libvlc, "mosaic-lock", &val );
-    p_sys->p_lock = val.p_address;
 
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
 
 #define GET_VAR( name, min, max )                                           \
     i_command = var_CreateGetIntegerCommand( p_filter, CFG_PREFIX #name );  \
-    p_sys->i_##name = __MIN( max, __MAX( min, i_command ) );                \
+    p_sys->i_##name = VLC_CLIP( i_command, min, max );                \
     var_AddCallback( p_filter, CFG_PREFIX #name, MosaicCallback, p_sys );
 
     GET_VAR( width, 0, INT_MAX );
@@ -469,12 +457,12 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     p_spu->b_absolute = false;
 
     vlc_mutex_lock( &p_sys->lock );
-    vlc_mutex_lock( p_sys->p_lock );
+    vlc_global_lock( VLC_MOSAIC_MUTEX );
 
     p_bridge = GetBridge( p_filter );
     if ( p_bridge == NULL )
     {
-        vlc_mutex_unlock( p_sys->p_lock );
+        vlc_global_unlock( VLC_MOSAIC_MUTEX );
         vlc_mutex_unlock( &p_sys->lock );
         return p_spu;
     }
@@ -660,7 +648,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         {
             msg_Err( p_filter, "cannot allocate SPU region" );
             p_filter->pf_sub_buffer_del( p_filter, p_spu );
-            vlc_mutex_unlock( p_sys->p_lock );
+            vlc_global_unlock( VLC_MOSAIC_MUTEX );
             vlc_mutex_unlock( &p_sys->lock );
             return p_spu;
         }
@@ -728,7 +716,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         p_region_prev = p_region;
     }
 
-    vlc_mutex_unlock( p_sys->p_lock );
+    vlc_global_unlock( VLC_MOSAIC_MUTEX );
     vlc_mutex_unlock( &p_sys->lock );
 
     return p_spu;
@@ -749,15 +737,15 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing alpha from %d/255 to %d/255",
-                         p_sys->i_alpha, newval.i_int);
-        p_sys->i_alpha = __MIN( __MAX( newval.i_int, 0 ), 255 );
+                         p_sys->i_alpha, (int)newval.i_int);
+        p_sys->i_alpha = VLC_CLIP( newval.i_int, 0, 255 );
         vlc_mutex_unlock( &p_sys->lock );
     }
     else if( VAR_IS( "height" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing height from %dpx to %dpx",
-                          p_sys->i_height, newval.i_int );
+                          p_sys->i_height, (int)newval.i_int );
         p_sys->i_height = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
@@ -765,7 +753,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing width from %dpx to %dpx",
-                         p_sys->i_width, newval.i_int );
+                         p_sys->i_width, (int)newval.i_int );
         p_sys->i_width = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
@@ -773,7 +761,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing x offset from %dpx to %dpx",
-                         p_sys->i_xoffset, newval.i_int );
+                         p_sys->i_xoffset, (int)newval.i_int );
         p_sys->i_xoffset = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
@@ -781,7 +769,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing y offset from %dpx to %dpx",
-                         p_sys->i_yoffset, newval.i_int );
+                         p_sys->i_yoffset, (int)newval.i_int );
         p_sys->i_yoffset = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
@@ -789,14 +777,14 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         int i_old = 0, i_new = 0;
         vlc_mutex_lock( &p_sys->lock );
-        newval.i_int = __MIN( __MAX( newval.i_int, 0 ), 10 );
+        newval.i_int = VLC_CLIP( newval.i_int, 0, 10 );
         if( newval.i_int == 3 || newval.i_int == 7 )
             newval.i_int = 5;
         while( pi_align_values[i_old] != p_sys->i_align ) i_old++;
         while( pi_align_values[i_new] != newval.i_int ) i_new++;
         msg_Dbg( p_this, "changing alignment from %d (%s) to %d (%s)",
                      p_sys->i_align, ppsz_align_descriptions[i_old],
-                     newval.i_int, ppsz_align_descriptions[i_new] );
+                     (int)newval.i_int, ppsz_align_descriptions[i_new] );
         p_sys->i_align = newval.i_int;
         vlc_mutex_unlock( &p_sys->lock );
     }
@@ -804,7 +792,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing border width from %dpx to %dpx",
-                         p_sys->i_borderw, newval.i_int );
+                         p_sys->i_borderw, (int)newval.i_int );
         p_sys->i_borderw = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
@@ -812,7 +800,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing border height from %dpx to %dpx",
-                         p_sys->i_borderh, newval.i_int );
+                         p_sys->i_borderh, (int)newval.i_int );
         p_sys->i_borderh = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
@@ -831,7 +819,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
             vlc_mutex_lock( &p_sys->lock );
             msg_Dbg( p_this, "changing position method from %d (%s) to %d (%s)",
                     p_sys->i_position, ppsz_pos_descriptions[p_sys->i_position],
-                    newval.i_int, ppsz_pos_descriptions[newval.i_int]);
+                     (int)newval.i_int, ppsz_pos_descriptions[newval.i_int]);
             p_sys->i_position = newval.i_int;
             vlc_mutex_unlock( &p_sys->lock );
         }
@@ -840,7 +828,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing number of rows from %d to %d",
-                         p_sys->i_rows, newval.i_int );
+                         p_sys->i_rows, (int)newval.i_int );
         p_sys->i_rows = __MAX( newval.i_int, 1 );
         vlc_mutex_unlock( &p_sys->lock );
     }
@@ -848,7 +836,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing number of columns from %d to %d",
-                         p_sys->i_cols, newval.i_int );
+                         p_sys->i_cols, (int)newval.i_int );
         p_sys->i_cols = __MAX( newval.i_int, 1 );
         vlc_mutex_unlock( &p_sys->lock );
     }

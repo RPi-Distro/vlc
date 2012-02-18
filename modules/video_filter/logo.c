@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 1616d8d5f9ddca6228c9462560a18d9cb04e72ad $
+ * $Id: c7606d4b3734428db19961a2ce0ab728e0a03b98 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -34,9 +34,9 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_url.h>
 
 #include <vlc_image.h>
-#include <vlc_osd.h>
 
 #ifdef LoadImage
 #   undef LoadImage
@@ -87,22 +87,22 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_SUBPIC )
     set_help(LOGO_HELP)
-    set_capability( "sub filter", 0 )
+    set_capability( "sub source", 0 )
     set_callbacks( OpenSub, Close )
-    set_description( N_("Logo sub filter") )
+    set_description( N_("Logo sub source") )
     set_shortname( N_("Logo overlay") )
     add_shortcut( "logo" )
 
-    add_file( CFG_PREFIX "file", NULL, NULL, FILE_TEXT, FILE_LONGTEXT, false )
-    add_integer( CFG_PREFIX "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, true )
-    add_integer( CFG_PREFIX "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, true )
+    add_loadfile( CFG_PREFIX "file", NULL, FILE_TEXT, FILE_LONGTEXT, false )
+    add_integer( CFG_PREFIX "x", -1, POSX_TEXT, POSX_LONGTEXT, true )
+    add_integer( CFG_PREFIX "y", -1, POSY_TEXT, POSY_LONGTEXT, true )
     /* default to 1000 ms per image, continuously cycle through them */
-    add_integer( CFG_PREFIX "delay", 1000, NULL, DELAY_TEXT, DELAY_LONGTEXT, true )
-    add_integer( CFG_PREFIX "repeat", -1, NULL, REPEAT_TEXT, REPEAT_LONGTEXT, true )
-    add_integer_with_range( CFG_PREFIX "opacity", 255, 0, 255, NULL,
+    add_integer( CFG_PREFIX "delay", 1000, DELAY_TEXT, DELAY_LONGTEXT, true )
+    add_integer( CFG_PREFIX "repeat", -1, REPEAT_TEXT, REPEAT_LONGTEXT, true )
+    add_integer_with_range( CFG_PREFIX "opacity", 255, 0, 255,
         OPACITY_TEXT, OPACITY_LONGTEXT, false )
-    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false )
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
+    add_integer( CFG_PREFIX "position", -1, POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions )
 
     /* video output filter submodule */
     add_submodule ()
@@ -200,7 +200,7 @@ static logo_t *LogoListNext( logo_list_t *p_list, mtime_t i_date );
 static logo_t *LogoListCurrent( logo_list_t *p_list );
 
 /**
- * Open the sub filter
+ * Open the sub source
  */
 static int OpenSub( vlc_object_t *p_this )
 {
@@ -269,7 +269,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_sub )
         msg_Warn( p_this, "no logo file specified" );
 
     p_list->i_alpha = var_CreateGetIntegerCommand( p_filter, "logo-opacity");
-    p_list->i_alpha = __MAX( __MIN( p_list->i_alpha, 255 ), 0 );
+    p_list->i_alpha = VLC_CLIP( p_list->i_alpha, 0, 255 );
     p_list->i_delay = var_CreateGetIntegerCommand( p_filter, "logo-delay" );
     p_list->i_repeat = var_CreateGetIntegerCommand( p_filter, "logo-repeat" );
 
@@ -293,7 +293,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_sub )
     /* Misc init */
     if( b_sub )
     {
-        p_filter->pf_sub_filter = FilterSub;
+        p_filter->pf_sub_source = FilterSub;
     }
     else
     {
@@ -326,7 +326,7 @@ static void Close( vlc_object_t *p_this )
 }
 
 /**
- * Sub filter
+ * Sub source
  */
 static subpicture_t *FilterSub( filter_t *p_filter, mtime_t date )
 {
@@ -400,7 +400,7 @@ static subpicture_t *FilterSub( filter_t *p_filter, mtime_t date )
     /*  where to locate the logo: */
     if( p_sys->i_pos < 0 )
     {   /*  set to an absolute xy */
-        p_region->i_align = OSD_ALIGN_RIGHT | OSD_ALIGN_TOP;
+        p_region->i_align = SUBPICTURE_ALIGN_RIGHT | SUBPICTURE_ALIGN_TOP;
         p_spu->b_absolute = true;
     }
     else
@@ -529,9 +529,9 @@ static int Mouse( filter_t *p_filter, vlc_mouse_t *p_mouse,
         {
             int i_dx, i_dy;
             vlc_mouse_GetMotion( &i_dx, &i_dy, p_old, p_new );
-            p_sys->i_pos_x = __MIN( __MAX( p_sys->i_pos_x + i_dx, 0 ),
+            p_sys->i_pos_x = VLC_CLIP( p_sys->i_pos_x + i_dx, 0,
                                     p_filter->fmt_in.video.i_width  - i_logo_w );
-            p_sys->i_pos_y = __MIN( __MAX( p_sys->i_pos_y + i_dy, 0 ),
+            p_sys->i_pos_y = VLC_CLIP( p_sys->i_pos_y + i_dy, 0,
                                     p_filter->fmt_in.video.i_height - i_logo_h );
 
             /* object under mouse has moved */
@@ -585,7 +585,7 @@ static int LogoCallback( vlc_object_t *p_this, char const *psz_var,
     }
     else if ( !strcmp( psz_var, "logo-opacity" ) )
     {
-        p_list->i_alpha = __MAX( __MIN( newval.i_int, 255 ), 0 );
+        p_list->i_alpha = VLC_CLIP( newval.i_int, 0, 255 );
     }
     else if ( !strcmp( psz_var, "logo-repeat" ) )
     {
@@ -615,7 +615,9 @@ static picture_t *LoadImage( vlc_object_t *p_this, const char *psz_filename )
     if( !p_image )
         return NULL;
 
-    picture_t *p_pic = image_ReadUrl( p_image, psz_filename, &fmt_in, &fmt_out );
+    char *psz_url = make_URI( psz_filename, NULL );
+    picture_t *p_pic = image_ReadUrl( p_image, psz_url, &fmt_in, &fmt_out );
+    free( psz_url );
     image_HandlerDelete( p_image );
 
     return p_pic;

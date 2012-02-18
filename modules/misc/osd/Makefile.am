@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libosd_parser_plugin_la_SOURCES = $(SOURCES_osd_parser)
 nodist_libosd_parser_plugin_la_SOURCES = $(nodist_SOURCES_osd_parser)
 # Force per-target objects:
-libosd_parser_plugin_la_CFLAGS = $(AM_CFLAGS)
-libosd_parser_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libosd_parser_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libosd_parser_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_osd_parser)
+libosd_parser_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_osd_parser)
+libosd_parser_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_osd_parser)
+libosd_parser_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_osd_parser)
 # Set LIBADD and DEPENDENCIES manually:
-libosd_parser_plugin_la_LIBADD = $(AM_LIBADD)
-libosd_parser_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libosd_parser_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_osd_parser)
+libosd_parser_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_osd_parser)
+libosd_parser_plugin_la_DEPENDENCIES =
 

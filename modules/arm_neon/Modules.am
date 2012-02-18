@@ -1,4 +1,6 @@
-AM_CFLAGS += $(ARM_NEON_CFLAGS)
+# When using a specific AS tool instead of gcc libtool goes mad
+# without this. (This is the case with iOS).
+LIBTOOL=@LIBTOOL@ --tag=CC
 
 libaudio_format_neon_plugin_la_SOURCES = \
 	s32_s16.S \
@@ -7,14 +9,26 @@ libaudio_format_neon_plugin_la_CFLAGS = $(AM_CFLAGS)
 libaudio_format_neon_plugin_la_LIBADD = $(AM_LIBADD)
 libaudio_format_neon_plugin_la_DEPENDENCIES =
 
-libi420_yuy2_neon_plugin_la_SOURCES = \
+libchroma_yuv_neon_plugin_la_SOURCES = \
 	i420_yuyv.S \
-	i420_yuy2.c
-libi420_yuy2_neon_plugin_la_CFLAGS = $(AM_CFLAGS)
-libi420_yuy2_neon_plugin_la_LIBADD = $(AM_LIBADD)
-libi420_yuy2_neon_plugin_la_DEPENDENCIES =
+	i422_yuyv.S \
+	yuyv_i422.S \
+	chroma_yuv.c chroma_neon.h
+libchroma_yuv_neon_plugin_la_CFLAGS = $(AM_CFLAGS)
+libchroma_yuv_neon_plugin_la_LIBADD = $(AM_LIBADD)
+libchroma_yuv_neon_plugin_la_DEPENDENCIES =
+
+libyuv_rgb_neon_plugin_la_SOURCES = \
+	i420_rgb.S \
+	nv21_rgb.S \
+	nv12_rgb.S \
+	yuv_rgb.c
+libyuv_rgb_neon_plugin_la_CFLAGS = $(AM_CFLAGS)
+libyuv_rgb_neon_plugin_la_LIBADD = $(AM_LIBADD)
+libyuv_rgb_neon_plugin_la_DEPENDENCIES =
 
 libvlc_LTLIBRARIES += \
 	libaudio_format_neon_plugin.la \
-	libi420_yuy2_neon_plugin.la \
+	libchroma_yuv_neon_plugin.la \
+	libyuv_rgb_neon_plugin.la \
 	$(NULL)

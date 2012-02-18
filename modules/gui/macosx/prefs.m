@@ -1,8 +1,8 @@
 /*****************************************************************************
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
- * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 3c76b5d067e3e6326e4895be1327b483666ae2ff $
+ * Copyright (C) 2002-2006 VLC authors and VideoLAN
+ * $Id: 11eb51a075bea398900e58f88b483710d1632a8d $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -52,11 +52,13 @@
 #include <vlc_common.h>
 #include <vlc_config_cat.h>
 
+#import "CompatibilityFixes.h"
 #import "intf.h"
 #import "prefs.h"
 #import "simple_prefs.h"
 #import "prefs_widgets.h"
-#import "vlc_keys.h"
+#import <vlc_keys.h>
+#import <vlc_modules.h>
 
 /* /!\ Warning: Unreadable code :/ */
 
@@ -174,6 +176,9 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 {
     p_intf = VLCIntf;
 
+    if (OSX_LION)
+        [o_prefs_window setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
+
     [self initStrings];
     [o_prefs_view setBorderType: NSGrooveBorder];
     [o_prefs_view setHasVerticalScroller: YES];
@@ -189,9 +194,6 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 
 - (void)showPrefs
 {
-    [[o_basicFull_matrix cellAtRow:0 column:0] setState: NSOffState];
-    [[o_basicFull_matrix cellAtRow:0 column:1] setState: NSOnState];
-    
     [o_prefs_window center];
     [o_prefs_window makeKeyAndOrderFront:self];
     [_rootTreeItem resetView];
@@ -203,15 +205,14 @@ static VLCPrefs *_o_sharedMainInstance = nil;
     [o_save_btn setTitle: _NS("Save")];
     [o_cancel_btn setTitle: _NS("Cancel")];
     [o_reset_btn setTitle: _NS("Reset All")];
-    [[o_basicFull_matrix cellAtRow: 0 column: 0] setStringValue: _NS("Basic")];
-    [[o_basicFull_matrix cellAtRow: 0 column: 1] setStringValue: _NS("All")];
+    [o_showBasic_btn setTitle: _NS("Show Basic")];
 }
 
 - (IBAction)savePrefs: (id)sender
 {
     /* TODO: call savePrefs on Root item */
     [_rootTreeItem applyChanges];
-    config_SaveConfigFile( p_intf, NULL );
+    config_SaveConfigFile( p_intf );
     [o_prefs_window orderOut:self];
 }
 
@@ -242,8 +243,6 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 - (IBAction)buttonAction: (id)sender
 {
     [o_prefs_window orderOut: self];
-    [[o_basicFull_matrix cellAtRow:0 column:0] setState: NSOnState];
-    [[o_basicFull_matrix cellAtRow:0 column:1] setState: NSOffState];
     [[[VLCMain sharedInstance] simplePreferences] showSimplePrefs];
 }
 
@@ -294,7 +293,8 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 
 - (VLCTreeCategoryItem *)itemRepresentingCategory:(int)category
 {
-    for( int i = 0; i < [[self children] count]; i++ )
+    NSUInteger childrenCount = [[self children] count];
+    for( int i = 0; i < childrenCount; i++ )
     {
         VLCTreeCategoryItem * categoryItem = [[self children] objectAtIndex:i];
         if( [categoryItem category] == category )
@@ -347,8 +347,7 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 
         /* Exclude empty plugins (submodules don't have config */
         /* options, they are stored in the parent module) */
-        if( module_is_main( p_module) )
-        {
+        if( module_is_main( p_module ) ) {
             pluginItem = self;
             _configItems = module_config_get( p_module, &confsize );
             _configSize = confsize;
@@ -385,7 +384,7 @@ static VLCPrefs *_o_sharedMainInstance = nil;
                 }
             }
             
-            if( module_is_main( p_module) && (configType & CONFIG_ITEM) )
+            if( module_is_main( p_module) && CONFIG_ITEM(configType) )
             {
                 if( categoryItem && [self isSubCategoryGeneral:lastsubcat] )
                 {
@@ -396,7 +395,7 @@ static VLCPrefs *_o_sharedMainInstance = nil;
                     [[subCategoryItem options] addObject:[[VLCTreeLeafItem alloc] initWithConfigItem:&p_configs[j]]];
                 }
             }
-            else if( !module_is_main( p_module) && (configType & CONFIG_ITEM))
+            else if( !module_is_main( p_module) && CONFIG_ITEM(configType))
             {
                 if( ![[subCategoryItem children] containsObject: pluginItem] )
                 {
@@ -421,11 +420,11 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 }
 - (id)initWithCategory:(int)category
 {
-    NSString * name = [[VLCMain sharedInstance] localizedString: config_CategoryNameGet( category )];
+    NSString * name = _NS(config_CategoryNameGet( category ));
     if(self = [super initWithName:name])
     {
         _category = category;
-        //_help = [[[VLCMain sharedInstance] localizedString: config_CategoryHelpGet( category )] retain];
+        //_help = [_NS(config_CategoryHelpGet( category )) retain];
     }
     return self;
 }
@@ -433,7 +432,8 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 - (VLCTreeSubCategoryItem *)itemRepresentingSubCategory:(int)subCategory
 {
     assert( [self isKindOfClass:[VLCTreeCategoryItem class]] );
-    for( int i = 0; i < [[self children] count]; i++ )
+    NSUInteger childrenCount = [[self children] count];
+    for( NSUInteger i = 0; i < childrenCount; i++ )
     {
         VLCTreeSubCategoryItem * subCategoryItem = [[self children] objectAtIndex:i];
         if( [subCategoryItem subCategory] == subCategory )
@@ -452,11 +452,11 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 @implementation VLCTreeSubCategoryItem
 - (id)initWithSubCategory:(int)subCategory
 {
-    NSString * name = [[VLCMain sharedInstance] localizedString: config_CategoryNameGet( subCategory )];
+    NSString * name = _NS(config_CategoryNameGet( subCategory ));
     if(self = [super initWithName:name])
     {
         _subCategory = subCategory;
-        //_help = [[[VLCMain sharedInstance] localizedString: config_CategoryHelpGet( subCategory )] retain];
+        //_help = [_NS(config_CategoryHelpGet( subCategory )) retain];
     }
     return self;
 }
@@ -478,13 +478,20 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 @implementation VLCTreePluginItem
 - (id)initWithPlugin:(module_t *)plugin
 {
-    NSString * name = [[VLCMain sharedInstance] localizedString: module_get_name( plugin, false )?:""];
+    const char * psz_name = module_get_name( plugin, false );
+    NSString * name;
+    if (psz_name)
+        name = _NS(psz_name);
+    else
+        name = @"";
+
     if(self = [super initWithName:name])
     {
         _configItems = module_config_get( plugin, &_configSize );
         //_plugin = plugin;
-        //_help = [[[VLCMain sharedInstance] localizedString: config_CategoryHelpGet( subCategory )] retain];
+        //_help = [_NS(config_CategoryHelpGet( subCategory )) retain];
     }
+
     return self;
 }
 
@@ -516,7 +523,7 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 
 - (id)initWithConfigItem: (module_config_t *) configItem
 {
-    NSString * name = [[VLCMain sharedInstance] localizedString:configItem->psz_name];
+    NSString * name = _NS(configItem->psz_name);
     self = [super initWithName:name];
     [name release];
     if( self != nil )
@@ -584,8 +591,8 @@ static VLCPrefs *_o_sharedMainInstance = nil;
     {
         _subviews = [[NSMutableArray alloc] initWithCapacity:10];
 
-        long i;
-        for( i = 0; i < [[self options] count]; i++)
+        NSUInteger count = [[self options] count];
+        for( NSUInteger i = 0; i < count; i++)
         {
             VLCTreeLeafItem * item = [[self options] objectAtIndex:i];
 
@@ -638,24 +645,29 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 
 - (void)applyChanges
 {
-    unsigned int i;
-    for( i = 0 ; i < [_subviews count] ; i++ )
+    NSUInteger i;
+    NSUInteger count = [_subviews count];
+    for( i = 0 ; i < count ; i++ )
         [[_subviews objectAtIndex:i] applyChanges];
 
-    for( i = 0 ; i < [_children count] ; i++ )
+    count = [_children count];
+    for( i = 0 ; i < count ; i++ )
         [[_children objectAtIndex:i] applyChanges];
 }
 
 - (void)resetView
 {
-    unsigned int i;
-    for( i = 0 ; i < [_subviews count] ; i++ )
+    NSUInteger i;
+    NSUInteger count = [_subviews count];
+    for( i = 0 ; i < count ; i++ )
         [[_subviews objectAtIndex:i] resetValues];
 
-    for( i = 0 ; i < [_options count] ; i++ )
+    count = [_options count];
+    for( i = 0 ; i < count ; i++ )
         [[_options objectAtIndex:i] resetView];
 
-    for( i = 0 ; i < [_children count] ; i++ )
+    count = [_children count];
+    for( i = 0 ; i < count ; i++ )
         [[_children objectAtIndex:i] resetView];
 
 }

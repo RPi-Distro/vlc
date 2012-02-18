@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2011 the VideoLAN team
- * $Id: 6a0567ae50f842df302864a314969617da0d8776 $
+ * $Id: ab11ccece1af5b5dff6c8baba1c21dc34bed6596 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -29,12 +29,10 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_playlist.h>
-#include <vlc_meta.h>
-#include <vlc_demux.h>
-#include <vlc_strings.h>
-#include <vlc_charset.h>
-#include <vlc_input.h> /* for attachment_new */
+#include <vlc_demux.h>              /* demux_meta_t */
+#include <vlc_strings.h>            /* vlc_b64_decode_binary */
+#include <vlc_charset.h>            /* ToLocale, LocaleFree */
+#include <vlc_input.h>              /* for attachment_new */
 
 #ifdef WIN32
 # include <io.h>
@@ -111,7 +109,7 @@ using namespace TagLib;
 
 
 /**
- * Read meta informations from APE tags
+ * Read meta information from APE tags
  * @param tag: the APE tag
  * @param p_demux_meta: the demuxer meta
  * @param p_meta: the meta
@@ -121,7 +119,7 @@ static void ReadMetaFromAPE( APE::Tag* tag, demux_meta_t*, vlc_meta_t* p_meta )
     APE::Item item;
 #define SET( keyName, metaName ) \
     item = tag->itemListMap()[keyName]; \
-    vlc_meta_Set##metaName( p_meta, item.toString().toCString( true ) );\
+    if( !item.isEmpty() ) vlc_meta_Set##metaName( p_meta, item.toString().toCString( true ) ); \
 
     SET( "COPYRIGHT", Copyright );
     SET( "LANGUAGE", Language );
@@ -226,7 +224,7 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_meta_t* p_demux_meta, vlc_
                            p_txxx->fieldList().back().toCString( true ) );
     }
 
-    // Get some more informations
+    // Get some more information
 #define SET( tagName, metaName )                                               \
     list = tag->frameListMap()[tagName];                                       \
     if( !list.isEmpty() )                                                      \
@@ -347,7 +345,7 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_meta_t* p_demux_meta, vlc_
 
 
 /**
- * Read the meta informations from XiphComments
+ * Read the meta information from XiphComments
  * @param tag: the Xiph Comment
  * @param p_demux_meta: the demuxer meta
  * @param p_meta: the meta
@@ -413,7 +411,7 @@ static void ReadMetaFromMP4( MP4::Tag* tag, demux_meta_t *p_demux_meta, vlc_meta
         MP4::CoverArtList list = tag->itemListMap()["covr"].toCoverArtList();
         const char *psz_format = list[0].format() == MP4::CoverArt::PNG ? "image/png" : "image/jpeg";
 
-        msg_Dbg( p_demux_meta, "Found embedded art: cover (%s) is %u bytes",
+        msg_Dbg( p_demux_meta, "Found embedded art (%s) is %i bytes",
                  psz_format, list[0].data().size() );
 
         TAB_INIT( p_demux_meta->i_attachments, p_demux_meta->attachments );
@@ -443,21 +441,33 @@ static int ReadMeta( vlc_object_t* p_this)
     FileRef f;
 
     p_demux_meta->p_meta = NULL;
+    if( strcmp( p_demux->psz_access, "file" ) )
+        return VLC_EGENERIC;
 
+    char *psz_path = strdup( p_demux->psz_file );
+    if( !psz_path )
+        return VLC_ENOMEM;
 
 #if defined(WIN32) || defined (UNDER_CE)
-    wchar_t wpath[MAX_PATH + 1];
-    if( !MultiByteToWideChar( CP_UTF8, 0, p_demux->psz_path, -1, wpath, MAX_PATH) )
+    wchar_t *wpath = ToWide( psz_path );
+    if( wpath == NULL )
+    {
+        free( psz_path );
         return VLC_EGENERIC;
-    wpath[MAX_PATH] = L'\0';
+    }
     f = FileRef( wpath );
+    free( wpath );
 #else
-    const char* local_name = ToLocale( p_demux->psz_path );
+    const char* local_name = ToLocale( psz_path );
     if( !local_name )
+    {
+        free( psz_path );
         return VLC_EGENERIC;
+    }
     f = FileRef( local_name );
     LocaleFree( local_name );
 #endif
+    free( psz_path );
 
     if( f.isNull() )
         return VLC_EGENERIC;
@@ -572,7 +582,7 @@ static int ReadMeta( vlc_object_t* p_this)
 
 
 /**
- * Write meta informations to APE tags
+ * Write meta information to APE tags
  * @param tag: the APE tag
  * @param p_item: the input item
  */
@@ -628,7 +638,7 @@ static void WriteMetaToId3v2( ID3v2::Tag* tag, input_item_t* p_item )
 
 
 /**
- * Write the meta informations to XiphComments
+ * Write the meta information to XiphComments
  * @param tag: the Xiph Comment
  * @param p_input: the input item
  */
@@ -671,11 +681,11 @@ static int WriteMeta( vlc_object_t *p_this )
     }
 
 #if defined(WIN32) || defined (UNDER_CE)
-    wchar_t wpath[MAX_PATH + 1];
-    if( !MultiByteToWideChar( CP_UTF8, 0, p_export->psz_file, -1, wpath, MAX_PATH) )
+    wchar_t *wpath = ToWide( p_export->psz_file );
+    if( wpath == NULL )
         return VLC_EGENERIC;
-    wpath[MAX_PATH] = L'\0';
     f = FileRef( wpath );
+    free( wpath );
 #else
     const char* local_name = ToLocale( p_export->psz_file );
     if( !local_name )

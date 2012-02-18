@@ -2,7 +2,7 @@
  * swscale.c: scaling and chroma conversion using libswscale
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 8c1d879908f50b834257290dc770693cf96c2c11 $
+ * $Id: 278dccf181356318a7653d84a6b96bfa7809e4af $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -35,18 +35,12 @@
 #include <vlc_filter.h>
 #include <vlc_cpu.h>
 
-#ifdef HAVE_LIBSWSCALE_SWSCALE_H
-#   include <libswscale/swscale.h>
-#   include <libavcodec/avcodec.h>
-#elif defined(HAVE_FFMPEG_SWSCALE_H)
-#   include <ffmpeg/swscale.h>
-#   include <ffmpeg/avcodec.h>
-#endif
+#include <libswscale/swscale.h>
+
+#include "../codec/avcodec/chroma.h" // Chroma Avutil <-> VLC conversion
 
 /* Gruikkkkkkkkkk!!!!! */
-#include "../codec/avcodec/avcodec.h"
 #undef AVPALETTE_SIZE
-
 #define AVPALETTE_SIZE (256 * sizeof(uint32_t))
 
 /*****************************************************************************
@@ -72,8 +66,8 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
     set_callbacks( OpenScaler, CloseScaler )
-    add_integer( "swscale-mode", 2, NULL, SCALEMODE_TEXT, SCALEMODE_LONGTEXT, true )
-        change_integer_list( pi_mode_values, ppsz_mode_descriptions, NULL )
+    add_integer( "swscale-mode", 2, SCALEMODE_TEXT, SCALEMODE_LONGTEXT, true )
+        change_integer_list( pi_mode_values, ppsz_mode_descriptions )
 vlc_module_end ()
 
 /* Version checking */
@@ -314,6 +308,7 @@ static int GetParameters( ScalerConfiguration *p_cfg,
     FixParameters( &i_fmti, &b_has_ai, &b_swap_uvi, p_fmti->i_chroma );
     FixParameters( &i_fmto, &b_has_ao, &b_swap_uvo, p_fmto->i_chroma );
 
+#ifndef __ANDROID__
     /* FIXME TODO removed when ffmpeg is fixed
      * Without SWS_ACCURATE_RND the quality is really bad for some conversions */
     switch( i_fmto )
@@ -324,6 +319,7 @@ static int GetParameters( ScalerConfiguration *p_cfg,
         i_sws_flags |= SWS_ACCURATE_RND;
         break;
     }
+#endif
 
     if( p_cfg )
     {
@@ -349,7 +345,7 @@ static int Init( filter_t *p_filter )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
     const video_format_t *p_fmti = &p_filter->fmt_in.video;
-    const video_format_t *p_fmto = &p_filter->fmt_out.video;
+    video_format_t       *p_fmto = &p_filter->fmt_out.video;
 
     if( IsFmtSimilar( p_fmti, &p_sys->fmt_in ) &&
         IsFmtSimilar( p_fmto, &p_sys->fmt_out ) &&
@@ -404,8 +400,10 @@ static int Init( filter_t *p_filter )
         p_sys->p_src_e = picture_New( p_fmti->i_chroma, i_fmti_width, p_fmti->i_height, 0, 1 );
         p_sys->p_dst_e = picture_New( p_fmto->i_chroma, i_fmto_width, p_fmto->i_height, 0, 1 );
 
-        memset( p_sys->p_src_e->p[0].p_pixels, 0, p_sys->p_src_e->p[0].i_pitch * p_sys->p_src_e->p[0].i_lines );
-        memset( p_sys->p_dst_e->p[0].p_pixels, 0, p_sys->p_dst_e->p[0].i_pitch * p_sys->p_dst_e->p[0].i_lines );
+        if( p_sys->p_src_e )
+            memset( p_sys->p_src_e->p[0].p_pixels, 0, p_sys->p_src_e->p[0].i_pitch * p_sys->p_src_e->p[0].i_lines );
+        if( p_sys->p_dst_e )
+            memset( p_sys->p_dst_e->p[0].p_pixels, 0, p_sys->p_dst_e->p[0].i_pitch * p_sys->p_dst_e->p[0].i_lines );
     }
 
     if( !p_sys->ctx ||
@@ -424,6 +422,7 @@ static int Init( filter_t *p_filter )
     p_sys->b_swap_uvi = cfg.b_swap_uvi;
     p_sys->b_swap_uvo = cfg.b_swap_uvo;
 
+    video_format_ScaleCropAr( p_fmto, p_fmti );
 #if 0
     msg_Dbg( p_filter, "%ix%i chroma: %4.4s -> %ix%i chroma: %4.4s extend by %d",
              p_fmti->i_width, p_fmti->i_height, (char *)&p_fmti->i_chroma,

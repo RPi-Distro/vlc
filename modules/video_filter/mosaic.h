@@ -2,7 +2,7 @@
  * mosaic.h:
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: edfc66388752899b19fa94ca76ec99956bab67e4 $
+ * $Id: 5e634fa10fbb64009866cc97050cb1f75bef85d0 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -41,8 +41,7 @@ typedef struct bridge_t
     int i_es_num;
 } bridge_t;
 
-#define GetBridge(a) __GetBridge( VLC_OBJECT(a) )
-static bridge_t *__GetBridge( vlc_object_t *p_object )
+static bridge_t *GetBridge( vlc_object_t *p_object )
 {
     vlc_object_t *p_libvlc = VLC_OBJECT( p_object->p_libvlc );
     vlc_value_t val;
@@ -56,4 +55,5 @@ static bridge_t *__GetBridge( vlc_object_t *p_object )
         return val.p_address;
     }
 }
+#define GetBridge(a) GetBridge( VLC_OBJECT(a) )
 

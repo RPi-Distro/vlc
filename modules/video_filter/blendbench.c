@@ -2,7 +2,7 @@
  * blendbench.c : blending benchmark plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 263b404567a0846f4e152ffd9504dec2c6ff6288 $
+ * $Id: 40b935a7e6379959ec125ee37f8d004e91c24b41 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_sout.h>
+#include <vlc_modules.h>
 
 #include <vlc_filter.h>
 #include <vlc_image.h>
@@ -65,7 +66,7 @@ static picture_t *Filter( filter_t *, picture_t * );
 
 #define BLEND_CHROMA_TEXT N_("Chroma for the blend image")
 #define BLEND_CHROMA_LONGTEXT N_("Chroma which the blend image will be loaded" \
-                                 "in")
+                                 " in")
 
 #define CFG_PREFIX "blendbench-"
 
@@ -77,21 +78,21 @@ vlc_module_begin ()
     set_capability( "video filter2", 0 )
 
     set_section( N_("Benchmarking"), NULL )
-    add_integer( CFG_PREFIX "loops", 1000, NULL, LOOPS_TEXT,
+    add_integer( CFG_PREFIX "loops", 1000, LOOPS_TEXT,
               LOOPS_LONGTEXT, false )
-    add_integer_with_range( CFG_PREFIX "alpha", 128, 0, 255, NULL, ALPHA_TEXT,
+    add_integer_with_range( CFG_PREFIX "alpha", 128, 0, 255, ALPHA_TEXT,
               ALPHA_LONGTEXT, false )
 
     set_section( N_("Base image"), NULL )
-    add_file( CFG_PREFIX "base-image", NULL, NULL, BASE_IMAGE_TEXT,
-              BASE_IMAGE_LONGTEXT, false )
-    add_string( CFG_PREFIX "base-chroma", "I420", NULL, BASE_CHROMA_TEXT,
+    add_loadfile( CFG_PREFIX "base-image", NULL, BASE_IMAGE_TEXT,
+                  BASE_IMAGE_LONGTEXT, false )
+    add_string( CFG_PREFIX "base-chroma", "I420", BASE_CHROMA_TEXT,
               BASE_CHROMA_LONGTEXT, false )
 
     set_section( N_("Blend image"), NULL )
-    add_file( CFG_PREFIX "blend-image", NULL, NULL, BLEND_IMAGE_TEXT,
-              BLEND_IMAGE_LONGTEXT, false )
-    add_string( CFG_PREFIX "blend-chroma", "YUVA", NULL, BLEND_CHROMA_TEXT,
+    add_loadfile( CFG_PREFIX "blend-image", NULL, BLEND_IMAGE_TEXT,
+                  BLEND_IMAGE_LONGTEXT, false )
+    add_string( CFG_PREFIX "blend-chroma", "YUVA", BLEND_CHROMA_TEXT,
               BLEND_CHROMA_LONGTEXT, false )
 
     set_callbacks( Create, Destroy )
@@ -152,6 +153,7 @@ static int Create( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
     char *psz_temp, *psz_cmd;
+    int i_ret;
 
     /* Allocate structure */
     p_filter->p_sys = malloc( sizeof( filter_sys_t ) );
@@ -177,10 +179,15 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_base_chroma = VLC_FOURCC( psz_temp[0], psz_temp[1],
                                        psz_temp[2], psz_temp[3] );
     psz_cmd = var_CreateGetStringCommand( p_filter, CFG_PREFIX "base-image" );
-    blendbench_LoadImage( p_this, &p_sys->p_base_image, p_sys->i_base_chroma,
-                          psz_cmd, "Base" );
+    i_ret = blendbench_LoadImage( p_this, &p_sys->p_base_image,
+                                  p_sys->i_base_chroma, psz_cmd, "Base" );
     free( psz_temp );
     free( psz_cmd );
+    if( i_ret != VLC_SUCCESS )
+    {
+        free( p_sys );
+        return i_ret;
+    }
 
     psz_temp = var_CreateGetStringCommand( p_filter,
                                            CFG_PREFIX "blend-chroma" );
@@ -224,7 +231,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         picture_Release( p_pic );
         return NULL;
     }
-    vlc_object_attach( p_blend, p_filter );
     p_blend->fmt_out.video = p_sys->p_base_image->format;
     p_blend->fmt_in.video = p_sys->p_blend_image->format;
     p_blend->p_module = module_need( p_blend, "video blending", NULL, false );

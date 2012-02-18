@@ -6,7 +6,6 @@
 # Authors: Sam Hocevar <sam@zoy.org>
 
 NULL =
-SUFFIXES =
 libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
 BUILT_SOURCES =
@@ -14,18 +13,25 @@ CLEANFILES = $(BUILT_SOURCES)
 
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
-AM_CFLAGS = `$(VLC_CONFIG) --cflags plugin $@`
-AM_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin $@`
-AM_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin $@`
+# Module name from object or executable file name.
+MODULE_NAME = `p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; echo "$${p%_plugin*}"`
+
+AM_CPPFLAGS = \
+	-DMODULE_NAME=$(MODULE_NAME) \
+	-DMODULE_NAME_IS_$(MODULE_NAME) \
+	-DMODULE_STRING=\"$(MODULE_NAME)\"
+if HAVE_DYNAMIC_PLUGINS
+AM_CPPFLAGS += -D__PLUGIN__
+endif
+AM_CFLAGS =
+AM_CXXFLAGS =
+AM_OBJCFLAGS =
 AM_LDFLAGS = -rpath '$(libvlcdir)' \
 	-avoid-version -module \
 	-export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) \
-	-rpath "$(libvlcdir)" \
-	-no-undefined \
-	 `$(VLC_CONFIG) --ldflags plugin $@`
-AM_LIBADD = `$(VLC_CONFIG) -libs plugin $@` \
-	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
+	-no-undefined
+AM_LIBADD = $(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la $(LIBS_plugin)
 
 include $(srcdir)/Modules.am
 

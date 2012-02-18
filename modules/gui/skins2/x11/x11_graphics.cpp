@@ -2,7 +2,7 @@
  * x11_graphics.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b3e143d8908f4454f15a66084a9f6b1c23a10f9c $
+ * $Id: ac51f53c4fbad5a9264e02a0f5edcec57d7efeef $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -187,6 +187,10 @@ void X11Graphics::drawBitmap( const GenericBitmap &rBitmap, int xSrc,
         // Nothing to draw
         return;
     }
+
+    // Force pending XCopyArea to be sent to the X Server
+    // before issuing an XGetImage.
+    XSync( XDISPLAY, False );
 
     // Get the image from the pixmap
     XImage *pImage = XGetImage( XDISPLAY, m_pixmap, xDest, yDest, width,

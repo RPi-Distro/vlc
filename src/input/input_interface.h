@@ -1,32 +1,28 @@
 /*****************************************************************************
  * input_interface.h: Input functions usable outside input code.
  *****************************************************************************
- * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 1e2e7c8dab514a497bd4ed0542e37cb22503f142 $
+ * Copyright (C) 1998-2008 VLC authors and VideoLAN
+ * $Id: a14d5a3b79c5194f084506dd094d855b01af5786 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
-
-#ifndef _INPUT_INTERFACE_H
-#define _INPUT_INTERFACE_H 1
+#ifndef LIBVLC_INPUT_INTERFACE_H
+#define LIBVLC_INPUT_INTERFACE_H 1
 
 #include <vlc_input.h>
 #include <libvlc.h>

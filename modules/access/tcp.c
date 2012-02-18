@@ -2,7 +2,7 @@
  * tcp.c: TCP input module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 6c2d50aecacbdedec92cceac1bc2fb0286fe6f6b $
+ * $Id: bed738df358a7fb20ad7a85fcd9113f8d6e2a41d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -38,11 +38,6 @@
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for TCP streams. This " \
-    "value should be set in milliseconds." )
-
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
@@ -51,10 +46,6 @@ vlc_module_begin ()
     set_description( N_("TCP input") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-
-    add_integer( "tcp-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true )
-        change_safe()
 
     set_capability( "access", 0 )
     add_shortcut( "tcp" )
@@ -81,7 +72,7 @@ static int Open( vlc_object_t *p_this )
     access_t     *p_access = (access_t *)p_this;
     access_sys_t *p_sys;
 
-    char         *psz_dup = strdup(p_access->psz_path);
+    char         *psz_dup = strdup(p_access->psz_location);
     char         *psz_parser = psz_dup;
 
     /* Parse server:port */
@@ -120,9 +111,6 @@ static int Open( vlc_object_t *p_this )
         free( p_sys );
         return VLC_EGENERIC;
     }
-
-    /* Update default_pts to a suitable value for udp access */
-    var_Create( p_access, "tcp-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
 
     return VLC_SUCCESS;
 }
@@ -187,7 +175,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t)var_GetInteger( p_access, "tcp-caching" ) * INT64_C(1000);
+            *pi_64 = INT64_C(1000)
+                   * var_InheritInteger( p_access, "network-caching" );
             break;
 
         /* */

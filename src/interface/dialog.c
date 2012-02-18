@@ -3,19 +3,19 @@
  *****************************************************************************
  * Copyright © 2009 Rémi Denis-Courmont
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /**
@@ -131,7 +131,7 @@ void dialog_VFatal (vlc_object_t *obj, bool modal, const char *title,
 #undef dialog_Login
 /**
  * Requests a username and password through the user interface.
- * @param obj the VLC object requesting credential informations
+ * @param obj the VLC object requesting credential information
  * @param username a pointer to the specified username [OUT]
  * @param password a pointer to the specified password [OUT]
  * @param title title for the dialog

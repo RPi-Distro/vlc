@@ -1,122 +1,171 @@
 /*****************************************************************************
  * vout_internal.h : Internal vout definitions
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
+ * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: ffbe222366cb2acb43803783ea0f865405438896 $
+ * $Id: 1f7184590c557d57d187dfe6767ab5f846d62017 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifndef LIBVLC_VOUT_INTERNAL_H
+#define LIBVLC_VOUT_INTERNAL_H 1
 
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
-
-#ifndef _VOUT_INTERNAL_H
-#define _VOUT_INTERNAL_H 1
-
+#include <vlc_picture_fifo.h>
+#include <vlc_picture_pool.h>
+#include <vlc_vout_display.h>
+#include <vlc_vout_wrapper.h>
 #include "vout_control.h"
+#include "control.h"
 #include "snapshot.h"
 #include "statistic.h"
+#include "chrono.h"
 
-/* Number of pictures required to computes the FPS rate */
-#define VOUT_FPS_SAMPLES                20
+/* It should be high enough to absorbe jitter due to difficult picture(s)
+ * to decode but not too high as memory is not that cheap.
+ *
+ * It can be made lower at compilation time if needed, but performance
+ * may be degraded.
+ */
+#define VOUT_MAX_PICTURES (20)
 
 /* */
 struct vout_thread_sys_t
 {
-    /* module */
-    const char *psz_module_type;
-    char       *psz_module_name;
+    /* Splitter module if used */
+    char            *splitter_name;
 
-    /* Thread & synchronization */
-    vlc_thread_t    thread;
-    vlc_cond_t      change_wait;
-    bool            b_ready;
-    bool            b_done;
+    /* Input thread for dvd menu interactions */
+    vlc_object_t    *input;
 
     /* */
-    bool            b_picture_displayed;
-    bool            b_picture_empty;
-    mtime_t         i_picture_displayed_date;
-    picture_t       *p_picture_displayed;
-    int             i_picture_qtype;
-    bool            b_picture_interlaced;
-    vlc_cond_t      picture_wait;
-
-    /* */
-    vlc_mutex_t     vfilter_lock;         /**< video filter2 change lock */
-
-    /* */
-    uint32_t        render_time;           /**< last picture render time */
-    unsigned int    i_par_num;           /**< monitor pixel aspect-ratio */
-    unsigned int    i_par_den;           /**< monitor pixel aspect-ratio */
-
-    /* */
-    bool            b_direct;            /**< rendered are like direct ? */
-    filter_t        *p_chroma;
-
-    /**
-     * These numbers are not supposed to be accurate, but are a
-     * good indication of the thread status */
-    count_t         c_fps_samples;                         /**< picture counts */
-    mtime_t         p_fps_sample[VOUT_FPS_SAMPLES];     /**< FPS samples dates */
-
-    /* Statistics */
-    vout_statistic_t statistic;
-
-    /* Pause */
-    bool            b_paused;
-    mtime_t         i_pause_date;
-
-    /* Filter chain */
-    bool           b_first_vout;  /* True if it is the first vout of the filter chain */
-    char           *psz_filter_chain;
-    bool            b_filter_change;
-
-    /* Video filter2 chain */
-    filter_chain_t *p_vf2_chain;
-    char           *psz_vf2;
+    video_format_t  original;   /* Original format ie coming from the decoder */
+    unsigned        dpb_size;
 
     /* Snapshot interface */
     vout_snapshot_t snapshot;
 
-    /* Show media title on videoutput */
-    bool            b_title_show;
-    mtime_t         i_title_timeout;
-    int             i_title_position;
+    /* Statistics */
+    vout_statistic_t statistic;
 
-    char            *psz_title;
+    /* Subpicture unit */
+    vlc_mutex_t     spu_lock;
+    spu_t           *spu;
+    vlc_fourcc_t    spu_blend_chroma;
+    filter_t        *spu_blend;
+
+    /* Video output window */
+    struct {
+        bool              is_unused;
+        vout_window_cfg_t cfg;
+        vout_window_t     *object;
+    } window;
+
+    /* Thread & synchronization */
+    vlc_thread_t    thread;
+    bool            dead;
+    vout_control_t  control;
+
+    /* */
+    struct {
+        char           *title;
+        vout_display_t *vd;
+        bool           use_dr;
+        picture_t      *filtered;
+    } display;
+
+    struct {
+        mtime_t     date;
+        mtime_t     timestamp;
+        int         qtype;
+        bool        is_interlaced;
+        picture_t   *decoded;
+        picture_t   *current;
+        picture_t   *next;
+    } displayed;
+
+    struct {
+        mtime_t     last;
+        mtime_t     timestamp;
+    } step;
+
+    struct {
+        bool        is_on;
+        mtime_t     date;
+    } pause;
+
+    /* OSD title configuration */
+    struct {
+        bool        show;
+        mtime_t     timeout;
+        int         position;
+    } title;
+
+    /* */
+    bool            is_late_dropped;
+
+    /* Video filter2 chain */
+    struct {
+        vlc_mutex_t     lock;
+        char            *configuration;
+        video_format_t  format;
+        filter_chain_t  *chain_static;
+        filter_chain_t  *chain_interactive;
+    } filter;
 
     /* */
     vlc_mouse_t     mouse;
+
+    /* */
+    vlc_mutex_t     picture_lock;                 /**< picture heap lock */
+    picture_pool_t  *private_pool;
+    picture_pool_t  *display_pool;
+    picture_pool_t  *decoder_pool;
+    picture_fifo_t  *decoder_fifo;
+    vout_chrono_t   render;           /**< picture render time estimator */
 };
 
-/* DO NOT use vout_RenderPicture unless you are in src/video_output */
-picture_t *vout_RenderPicture( vout_thread_t *, picture_t *,
-                               subpicture_t *,
-                               mtime_t render_date );
+/* TODO to move them to vlc_vout.h */
+void vout_ControlChangeFullscreen(vout_thread_t *, bool fullscreen);
+void vout_ControlChangeOnTop(vout_thread_t *, bool is_on_top);
+void vout_ControlChangeDisplayFilled(vout_thread_t *, bool is_filled);
+void vout_ControlChangeZoom(vout_thread_t *, int num, int den);
+void vout_ControlChangeSampleAspectRatio(vout_thread_t *, unsigned num, unsigned den);
+void vout_ControlChangeCropRatio(vout_thread_t *, unsigned num, unsigned den);
+void vout_ControlChangeCropWindow(vout_thread_t *, int x, int y, int width, int height);
+void vout_ControlChangeCropBorder(vout_thread_t *, int left, int top, int right, int bottom);
+void vout_ControlChangeFilters(vout_thread_t *, const char *);
+void vout_ControlChangeSubSources(vout_thread_t *, const char *);
+void vout_ControlChangeSubFilters(vout_thread_t *, const char *);
+void vout_ControlChangeSubMargin(vout_thread_t *, int);
 
-/* DO NOT use vout_UsePictureLocked unless you are in src/video_output
- *
- * This function supposes that you call it with picture_lock taken.
- */
-void vout_UsePictureLocked( vout_thread_t *p_vout, picture_t *p_pic  );
+/* */
+void vout_IntfInit( vout_thread_t * );
+
+/* */
+int  vout_OpenWrapper (vout_thread_t *, const char *, const vout_display_state_t *);
+void vout_CloseWrapper(vout_thread_t *, vout_display_state_t *);
+int  vout_InitWrapper(vout_thread_t *);
+void vout_EndWrapper(vout_thread_t *);
+void vout_ManageWrapper(vout_thread_t *);
+
+/* */
+int spu_ProcessMouse(spu_t *, const vlc_mouse_t *, const video_format_t *);
+void spu_Attach( spu_t *, vlc_object_t *input, bool );
+void spu_ChangeMargin(spu_t *, int);
 
 #endif
-

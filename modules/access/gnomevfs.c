@@ -2,7 +2,7 @@
  * gnomevfs.c: GnomeVFS input
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 93852102d2e8d438832e2376debb67bf312ec6ca $
+ * $Id: f65815210ba3bebd6d2748647458381f4f84c482 $
  *
  * Authors: Benjamin Pracht <bigben -AT- videolan -DOT- org>
  *
@@ -45,17 +45,11 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for GnomeVFS streams."\
-    "This value should be set in milliseconds." )
-
 vlc_module_begin ()
     set_description( N_("GnomeVFS input") )
     set_shortname( "GnomeVFS" )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-    add_integer( "gnomevfs-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT, CACHING_LONGTEXT, true )
     set_capability( "access", 10 )
     add_shortcut( "gnomevfs" )
     set_callbacks( Open, Close )
@@ -121,11 +115,11 @@ static int Open( vlc_object_t *p_this )
                                             *(p_access->psz_access) != '\0')
     {
         asprintf( &psz_name, "%s://%s", p_access->psz_access,
-                                                    p_access->psz_path );
+                  p_access->psz_location );
     }
     else
     {
-        psz_name = strdup( p_access->psz_path );
+        psz_name = strdup( p_access->psz_location );
     }
     psz = ToLocale( psz_name );
     psz_expand_tilde = gnome_vfs_expand_initial_tilde( psz );
@@ -250,10 +244,6 @@ static int Open( vlc_object_t *p_this )
         free( psz_name );
         return VLC_EGENERIC;
     }
-
-    /* Update default_pts to a suitable value for file access */
-    var_Create( p_access, "gnomevfs-caching",
-                                    VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
 
     free( psz_uri );
     p_sys->psz_name = psz_name;
@@ -396,8 +386,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = var_GetInteger( p_access,
-                                        "gnomevfs-caching" ) * INT64_C(1000);
+            *pi_64 = DEFAULT_PTS_DELAY; /* FIXME */
             break;
 
         /* */

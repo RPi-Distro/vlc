@@ -2,7 +2,7 @@
  * ctrl_tree.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 76e43a2a827d698b94b643527b9a5b98afc405be $
+ * $Id: cc5972c8a0b2e34ad017907c6461faff0120bbe6 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -34,10 +34,11 @@ class GenericFont;
 class GenericBitmap;
 
 /// Class for control tree
-class CtrlTree: public CtrlGeneric, public Observer<VarTree, tree_update>,
-    public Observer<VarPercent>
+class CtrlTree: public CtrlGeneric, public Observer<VarTree, tree_update>
 {
 public:
+    typedef VarTree::IteratorVisible Iterator;
+
     CtrlTree( intf_thread_t *pIntf,
               VarTree &rTree,
               const GenericFont &rFont,
@@ -62,7 +63,7 @@ public:
     virtual bool mouseOver( int x, int y ) const;
 
     /// Draw the control on the given graphics
-    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Called when the layout is resized
     virtual void onResize();
@@ -76,12 +77,7 @@ public:
     /// Make sure an item is visible
     /// \param item an iterator to a tree item
     /// \return true if it changed the position
-    bool ensureVisible( VarTree::Iterator item );
-
-    /// Make sure an item is visible
-    /// \param itemIndex the absolute index in the tree
-    /// \return true if it changed the position
-    bool ensureVisible( int itemIndex );
+    bool ensureVisible( const Iterator& it );
 
 private:
     /// Tree associated to the control
@@ -98,6 +94,11 @@ private:
     const GenericBitmap *m_pOpenBitmap;
     /// Closed node bitmap
     const GenericBitmap *m_pClosedBitmap;
+    /// scaled bitmap
+    GenericBitmap *m_pScaledBitmap;
+    /// Image of the control
+    OSGraphics *m_pImage;
+
     /// Color of normal test
     uint32_t m_fgColor;
     /// Color of the playing item
@@ -106,31 +107,30 @@ private:
     uint32_t m_bgColor1, m_bgColor2;
     /// Background of selected items
     uint32_t m_selColor;
-    /// Pointer on the last selected item in the tree
-    VarTree *m_pLastSelected;
-    /// Image of the control
-    OSGraphics *m_pImage;
-    /// First item in the visible area
-    VarTree::Iterator m_firstPos;
 
-    /// Don't move if the position variable is updated
-    bool m_dontMove;
+    /// First item in the visible area
+    Iterator m_firstPos;
+    /// Pointer on the last clicked item in the tree
+    Iterator m_lastClicked;
+    ///
+    Iterator m_itOver;
 
     /// Do we want to "flaten" the tree ?
     bool m_flat;
+    /// Number of visible lines
+    float m_capacity;
+    /// flag for item deletion
+    bool m_bRefreshOnDelete;
 
     /// Method called when the tree variable is modified
-    virtual void onUpdate( Subject<VarTree, tree_update> &rTree ,
+    virtual void onUpdate( Subject<VarTree, tree_update> &rTree,
                            tree_update *);
-
-    // Method called when the position variable of the tree is modified
-    virtual void onUpdate( Subject<VarPercent> &rPercent , void *);
 
     /// Called when the position is set
     virtual void onPositionChange();
 
     /// Compute the number of lines that can be displayed
-    int maxItems();
+    float maxItems();
 
     /// Compute the item's height (depends on fonts and images used)
     int itemHeight();
@@ -138,18 +138,21 @@ private:
     /// Compute the width of an item's bitmap
     int itemImageWidth();
 
-    /// Check if the tree must be scrolled
-    void autoScroll();
-
     /// Draw the image of the control
     void makeImage();
 
     /// Return the n'th displayed item (starting at position 0)
-    /**
-     *  Return m_rTree.end() if such an item cannot be found (n < 0, or
-     *  n too big)
-     */
-    VarTree::Iterator findItemAtPos( int n );
+    Iterator findItemAtPos( int n );
+
+    /// return the nearest item
+    Iterator getNearestItem( const Iterator& it );
+
+    /// return whether the item is visible or not
+    bool isItemVisible( const Iterator& it );
+
+    void setSliderFromFirst();
+    Iterator getFirstFromSlider();
+    void setScrollStep();
 };
 
 #endif

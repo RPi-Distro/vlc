@@ -2,7 +2,7 @@
  * events.c: Windows DirectX video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 3a408296b5c0c298b1d047237dcca4eef84cedab $
+ * $Id: 51de721f644aa533f3bccc2aa55a70cd5017aa02 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -48,6 +48,9 @@
 #endif
 #ifdef MODULE_NAME_IS_glwin32
 #include "../opengl.h"
+#endif
+#ifdef MODULE_NAME_IS_direct2d
+#include <d2d1.h>
 #endif
 
 #include <vlc_keys.h>
@@ -223,7 +226,6 @@ static void *EventThread( void *p_this )
     vout_display_t *vd = p_event->vd;
     MSG msg;
     POINT old_mouse_pos = {0,0}, mouse_pos;
-    HMODULE hkernel32;
     int canc = vlc_savecancel ();
 
     bool b_mouse_support = var_InheritBool( p_event->vd, "mouse-events" );
@@ -249,20 +251,8 @@ static void *EventThread( void *p_this )
     }
 
 #ifndef UNDER_CE
-    /* Set power management stuff */
-    if( (hkernel32 = GetModuleHandle( _T("KERNEL32") ) ) )
-    {
-        ULONG (WINAPI* OurSetThreadExecutionState)( ULONG );
-
-        OurSetThreadExecutionState = (ULONG (WINAPI*)( ULONG ))
-            GetProcAddress( hkernel32, _T("SetThreadExecutionState") );
-
-        if( OurSetThreadExecutionState )
-            /* Prevent monitor from powering off */
-            OurSetThreadExecutionState( ES_DISPLAY_REQUIRED | ES_CONTINUOUS );
-        else
-            msg_Dbg( vd, "no support for SetThreadExecutionState()" );
-    }
+    /* Prevent monitor from powering off */
+    SetThreadExecutionState( ES_DISPLAY_REQUIRED | ES_CONTINUOUS );
 #endif
 
     /* Main loop */
@@ -379,7 +369,7 @@ static void *EventThread( void *p_this )
             if( !i_key )
             {
                 /* This appears to be a "normal" (ascii) key */
-                i_key = tolower( MapVirtualKey( msg.wParam, 2 ) );
+                i_key = tolower( (unsigned char)MapVirtualKey( msg.wParam, 2 ) );
             }
 
             if( i_key )
@@ -718,12 +708,12 @@ static void DirectXCloseWindow( event_thread_t *p_event )
         vout_display_DeleteWindow( vd, p_event->parent_window );
     p_event->hwnd = NULL;
 
-    if( p_event->vlc_icon )
-        DestroyIcon( p_event->vlc_icon );
-
     HINSTANCE hInstance = GetModuleHandle(NULL);
     UnregisterClass( p_event->class_video, hInstance );
     UnregisterClass( p_event->class_main, hInstance );
+
+    if( p_event->vlc_icon )
+        DestroyIcon( p_event->vlc_icon );
 
 #ifndef UNDER_CE
     DestroyCursor( p_event->cursor_empty );
@@ -1031,7 +1021,7 @@ int EventThreadGetWindowStyle( event_thread_t *p_event )
 
 void EventThreadUpdateWindowPosition( event_thread_t *p_event,
                                       bool *pb_moved, bool *pb_resized,
-                                      int x, int y, int w, int h )
+                                      int x, int y, unsigned w, unsigned h )
 {
     vlc_mutex_lock( &p_event->lock );
     *pb_moved   = x != p_event->wnd_cfg.x ||

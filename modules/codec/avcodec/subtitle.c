@@ -2,7 +2,7 @@
  * subtitle.c: subtitle decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: b67f30b0ef4034d7a8acc8e2c8caaf491e4a61f8 $
+ * $Id: c9ccce677bd772dc5a797df955470d295684ccab $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -32,7 +32,6 @@
 #include <vlc_common.h>
 #include <vlc_codec.h>
 #include <vlc_avcodec.h>
-#include <vlc_osd.h>
 
 /* ffmpeg header */
 #ifdef HAVE_LIBAVCODEC_AVCODEC_H
@@ -40,8 +39,6 @@
 #   ifdef HAVE_AVCODEC_VAAPI
 #       include <libavcodec/vaapi.h>
 #   endif
-#elif defined(HAVE_FFMPEG_AVCODEC_H)
-#   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
 #endif
@@ -51,7 +48,7 @@
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 25, 0 )
 
 struct decoder_sys_t {
-    FFMPEG_COMMON_MEMBERS
+    AVCODEC_COMMON_MEMBERS
 };
 
 static subpicture_t *ConvertSubtitle(decoder_t *, AVSubtitle *, mtime_t pts);
@@ -240,7 +237,7 @@ static subpicture_region_t *ConvertRegionRGBA(AVSubtitleRect *ffregion)
  */
 static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t pts)
 {
-    subpicture_t *spu = decoder_NewSubpicture(dec);
+    subpicture_t *spu = decoder_NewSubpicture(dec, NULL);
     if (!spu)
         return NULL;
 

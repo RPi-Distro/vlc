@@ -2,7 +2,7 @@
  * autodel.c: monitor mux inputs and automatically add/delete streams
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: e9229e5dcfdc0cfa2d303146dd13f30af9b6d0ea $
+ * $Id: dffb687c4130222dab347a0ac8d425e9cdf4f54d $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -152,7 +152,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *p_es,
     int i;
 
     p_es->i_last = p_buffer->i_dts;
-    if ( p_es->id == NULL && p_es->b_error != true )
+    if ( !p_es->id && !p_es->b_error )
     {
         p_es->id = p_stream->p_next->pf_add( p_stream->p_next, &p_es->fmt );
         if ( p_es->id == NULL )
@@ -163,7 +163,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *p_es,
         }
     }
 
-    if ( p_es->b_error != true )
+    if ( !p_es->b_error )
         p_stream->p_next->pf_send( p_stream->p_next, p_es->id, p_buffer );
     else
         block_ChainRelease( p_buffer );

@@ -2,7 +2,7 @@
  * ft2_font.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1fad1e058170b4f8cfcd28003646730b4241bcba $
+ * $Id: 51a9ade572247b8f01b698d23a90e4437e42202e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -55,7 +55,7 @@ bool FT2Font::init()
 {
     unsigned err;
 
-    if( err = FT_Init_FreeType( &m_lib ) )
+    if( ( err = FT_Init_FreeType( &m_lib ) ) )
     {
         msg_Err( getIntf(), "failed to initialize freetype (%s)",
                  ft2_strerror( err ) );
@@ -90,9 +90,13 @@ bool FT2Font::init()
         return false;
     }
 
-    fread( m_buffer, size, 1, file );
+    if( fread( m_buffer, size, 1, file ) != 1 )
+    {
+        msg_Err( getIntf(), "unexpected result for read" );
+        fclose( file );
+        return false;
+    }
     fclose( file );
-
 
     err = FT_New_Memory_Face( m_lib, (const FT_Byte*)m_buffer, size, 0,
                               &m_face );
@@ -109,7 +113,7 @@ bool FT2Font::init()
     }
 
     // Select the charset
-    if( err = FT_Select_Charmap( m_face, ft_encoding_unicode ) )
+    if( ( err = FT_Select_Charmap( m_face, ft_encoding_unicode ) ) )
     {
         msg_Err( getIntf(), "font %s has no UNICODE table (%s)",
                  m_name.c_str(), ft2_strerror(err) );
@@ -117,7 +121,7 @@ bool FT2Font::init()
     }
 
     // Set the pixel size
-    if( err = FT_Set_Pixel_Sizes( m_face, 0, m_size ) )
+    if( ( err = FT_Set_Pixel_Sizes( m_face, 0, m_size ) ) )
     {
         msg_Warn( getIntf(), "cannot set a pixel size of %d for %s (%s)",
                   m_size, m_name.c_str(), ft2_strerror(err) );

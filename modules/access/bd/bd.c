@@ -2,7 +2,7 @@
  * bd.c: BluRay Disc support (uncrypted)
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 20b78b06f1f4d51155344851812802b8dea192eb $
+ * $Id: 536d0111105c148fb378d37319cfe277fd97d57c $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -49,11 +49,6 @@
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for BDs. This "\
-    "value should be set in milliseconds." )
-
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
@@ -62,11 +57,8 @@ vlc_module_begin ()
     set_description( N_("Blu-Ray Disc Input") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-    add_integer( "bd-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-        CACHING_TEXT, CACHING_LONGTEXT, true )
     set_capability( "access_demux", 60 )
-    add_shortcut( "bd" )
-    add_shortcut( "file" )
+    add_shortcut( "bd", "file" )
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -153,6 +145,8 @@ static int Open( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
 
+    if( p_demux->psz_file == NULL )
+        return VLC_EGENERIC;
     if( *p_demux->psz_access &&
         strcmp( p_demux->psz_access, "bd" ) &&
         strcmp( p_demux->psz_access, "file" ) )
@@ -160,7 +154,7 @@ static int Open( vlc_object_t *p_this )
 
     /* */
     bool b_shortname;
-    char *psz_base = FindPathBase( p_demux->psz_path, &b_shortname );
+    char *psz_base = FindPathBase( p_demux->psz_file, &b_shortname );
     if( !psz_base )
         return VLC_EGENERIC;
 
@@ -353,7 +347,9 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     case DEMUX_GET_PTS_DELAY:
     {
         int64_t *pi_delay = (int64_t*)va_arg( args, int64_t * );
-        *pi_delay = var_GetInteger( p_demux, "bd-caching" ) * INT64_C(1000);
+
+        *pi_delay =
+            INT64_C(1000) * var_InheritInteger( p_demux, "disc-caching" );
         return VLC_SUCCESS;
     }
 
@@ -1304,7 +1300,7 @@ static es_out_id_t *EsOutAdd( es_out_t *p_out, const es_format_t *p_fmt )
         break;
     }
     if( fmt.i_priority < 0 )
-        msg_Dbg( p_demux, "Hidding one stream (pid=%d)", fmt.i_id );
+        msg_Dbg( p_demux, "Hiding one stream (pid=%d)", fmt.i_id );
 
     /* */
     es_out_id_t *p_es = es_out_Add( p_demux->out, &fmt );

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlist_item.cpp : Manage playlist item
  ****************************************************************************
- * Copyright © 2006-2008 the VideoLAN team
- * $Id: aab77281d6666a16b4d0296f78b7fefd50c418f0 $
+ * Copyright © 2006-2011 the VideoLAN team
+ * $Id: cb9bde33516742bab4e0a699a597e97b526bd014 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -30,7 +30,6 @@
 
 #include "qt4.hpp"
 #include "playlist_item.hpp"
-#include <vlc_intf_strings.h>
 
 #include "sorting.h"
 
@@ -45,14 +44,12 @@
    PLItem have a parent, and id and a input Id
 */
 
-
 void PLItem::init( playlist_item_t *_playlist_item, PLItem *parent )
 {
     parentItem = parent;          /* Can be NULL, but only for the rootItem */
     i_id       = _playlist_item->i_id;           /* Playlist item specific id */
     p_input    = _playlist_item->p_input;
     vlc_gc_incref( p_input );
-
 }
 
 /*
@@ -76,12 +73,14 @@ PLItem::~PLItem()
     children.clear();
 }
 
-/* So far signal is always true.
-   Using signal false would not call PLModel... Why ?
- */
-void PLItem::insertChild( PLItem *item, int i_pos, bool signal )
+void PLItem::insertChild( PLItem *item, int i_pos )
 {
     children.insert( i_pos, item );
+}
+
+void PLItem::appendChild( PLItem *item )
+{
+    children.insert( children.count(), item );
 }
 
 void PLItem::removeChild( PLItem *item )

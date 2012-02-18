@@ -2,7 +2,7 @@
  * directx.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 4ff4e5fe2a6606a597cb7ca6709e4b7562eec7f4 $
+ * $Id: b4797d11ece32a2db771d9468949e1501b25ba0f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -44,17 +44,10 @@
 #include <vlc_vout_display.h>
 #include <vlc_playlist.h>   /* needed for wallpaper */
 
+#include <windows.h>
+#include <winuser.h>
 #include <ddraw.h>
 #include <commctrl.h>       /* ListView_(Get|Set)* */
-
-#ifndef UNDER_CE
-#   include <multimon.h>
-#endif
-#undef GetSystemMetrics
-
-#ifndef MONITOR_DEFAULTTONEAREST
-#   define MONITOR_DEFAULTTONEAREST 2
-#endif
 
 #include "common.h"
 
@@ -73,7 +66,7 @@
 #define SYSMEM_TEXT N_("Use video buffers in system memory")
 #define SYSMEM_LONGTEXT N_(\
     "Create video buffers in system memory instead of video memory. This " \
-    "isn't recommended as usually using video memory allows to benefit from " \
+    "isn't recommended as usually using video memory allows benefiting from " \
     "more hardware acceleration (like rescaling or YUV->RGB conversions). " \
     "This option doesn't have any effect when using overlays.")
 
@@ -105,17 +98,17 @@ vlc_module_begin()
     set_help(DX_HELP)
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VOUT)
-    add_bool("directx-hw-yuv", true, NULL, HW_YUV_TEXT, HW_YUV_LONGTEXT,
+    add_bool("directx-hw-yuv", true, HW_YUV_TEXT, HW_YUV_LONGTEXT,
               true)
-    add_bool("directx-use-sysmem", false, NULL, SYSMEM_TEXT, SYSMEM_LONGTEXT,
+    add_bool("directx-use-sysmem", false, SYSMEM_TEXT, SYSMEM_LONGTEXT,
               true)
-    add_bool("directx-3buffering", true, NULL, TRIPLEBUF_TEXT,
+    add_bool("directx-3buffering", true, TRIPLEBUF_TEXT,
               TRIPLEBUF_LONGTEXT, true)
-    add_string("directx-device", "", NULL, DEVICE_TEXT, DEVICE_LONGTEXT, true)
+    add_string("directx-device", "", DEVICE_TEXT, DEVICE_LONGTEXT, true)
         change_string_list(device, device_text, FindDevicesCallback)
         change_action_add(FindDevicesCallback, N_("Refresh list"))
 
-    set_capability("vout display", 100)
+    set_capability("vout display", 230)
     add_shortcut("directx")
     set_callbacks(Open, Close)
 vlc_module_end()
@@ -142,7 +135,7 @@ DEFINE_GUID(IID_IDirectDraw2, 0xB3A6F3E0,0x2B43,0x11CF,0xA2,0xDE,0x00,0xAA,0x00,
 DEFINE_GUID(IID_IDirectDrawSurface2, 0x57805885,0x6eec,0x11cf,0x94,0x41,0xa8,0x23,0x03,0xc1,0x0e,0x27);
 
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
-static void           Display(vout_display_t *, picture_t *);
+static void           Display(vout_display_t *, picture_t *, subpicture_t *);
 static int            Control(vout_display_t *, int, va_list);
 static void           Manage (vout_display_t *);
 
@@ -181,16 +174,6 @@ static int Open(vlc_object_t *object)
     }
 
     /* */
-    HMODULE huser32 = GetModuleHandle(_T("USER32"));
-    if (huser32) {
-        sys->MonitorFromWindow = (void*)GetProcAddress(huser32, _T("MonitorFromWindow"));
-        sys->GetMonitorInfo = (void*)GetProcAddress(huser32, _T("GetMonitorInfoA"));
-    } else {
-        sys->MonitorFromWindow = NULL;
-        sys->GetMonitorInfo = NULL;
-    }
-
-    /* */
     sys->use_wallpaper = var_CreateGetBool(vd, "video-wallpaper");
     /* FIXME */
     sys->use_overlay = false;//var_CreateGetBool(vd, "overlay"); /* FIXME */
@@ -213,6 +196,7 @@ static int Open(vlc_object_t *object)
     info.has_double_click = true;
     info.has_hide_mouse = false;
     info.has_pictures_invalid = true;
+    info.has_event_thread = true;
 
     /* Interaction TODO support starting with wallpaper mode */
     vlc_mutex_init(&sys->lock);
@@ -272,7 +256,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
     VLC_UNUSED(count);
     return vd->sys->pool;
 }
-static void Display(vout_display_t *vd, picture_t *picture)
+static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
@@ -329,6 +313,7 @@ static void Display(vout_display_t *vd, picture_t *picture)
     CommonDisplay(vd);
 
     picture_Release(picture);
+    VLC_UNUSED(subpicture);
 }
 static int Control(vout_display_t *vd, int query, va_list args)
 {
@@ -365,8 +350,8 @@ static void Manage(vout_display_t *vd)
             DirectXUpdateOverlay(vd, NULL);
 
         /* Check if we are still on the same monitor */
-        if (sys->MonitorFromWindow &&
-            sys->hmonitor != sys->MonitorFromWindow(sys->hwnd, MONITOR_DEFAULTTONEAREST)) {
+        HMONITOR hmon = MonitorFromWindow(sys->hwnd, MONITOR_DEFAULTTONEAREST);
+        if (sys->hmonitor != hmon) {
             vout_display_SendEventPicturesInvalid(vd);
         }
         /* */
@@ -474,7 +459,7 @@ static BOOL WINAPI DirectXOpenDDrawCallback(GUID *guid, LPTSTR desc,
         MONITORINFO monitor_info;
         monitor_info.cbSize = sizeof(MONITORINFO);
 
-        if (sys->GetMonitorInfo(hmon, &monitor_info)) {
+        if (GetMonitorInfoA(hmon, &monitor_info)) {
             RECT rect;
 
             /* Move window to the right screen */
@@ -590,24 +575,22 @@ static int DirectXOpenDDraw(vout_display_t *vd)
     }
 
     /* */
-    if (sys->MonitorFromWindow) {
-        HRESULT (WINAPI *OurDirectDrawEnumerateEx)(LPDDENUMCALLBACKEXA, LPVOID, DWORD);
-        OurDirectDrawEnumerateEx =
-          (void *)GetProcAddress(sys->hddraw_dll, _T("DirectDrawEnumerateExA"));
+    HRESULT (WINAPI *OurDirectDrawEnumerateEx)(LPDDENUMCALLBACKEXA, LPVOID, DWORD);
+    OurDirectDrawEnumerateEx =
+      (void *)GetProcAddress(sys->hddraw_dll, _T("DirectDrawEnumerateExA"));
 
-        if (OurDirectDrawEnumerateEx) {
-            char *device = var_GetString(vd, "directx-device");
-            if (device) {
-                msg_Dbg(vd, "directx-device: %s", device);
-                free(device);
-            }
-
-            sys->hmonitor = sys->MonitorFromWindow(sys->hwnd, MONITOR_DEFAULTTONEAREST);
-
-            /* Enumerate displays */
-            OurDirectDrawEnumerateEx(DirectXOpenDDrawCallback,
-                                     vd, DDENUM_ATTACHEDSECONDARYDEVICES);
+    if (OurDirectDrawEnumerateEx) {
+        char *device = var_GetString(vd, "directx-device");
+        if (device) {
+            msg_Dbg(vd, "directx-device: %s", device);
+            free(device);
         }
+
+        sys->hmonitor = MonitorFromWindow(sys->hwnd, MONITOR_DEFAULTTONEAREST);
+
+        /* Enumerate displays */
+        OurDirectDrawEnumerateEx(DirectXOpenDDrawCallback,
+                                 vd, DDENUM_ATTACHEDSECONDARYDEVICES);
     }
 
     /* Initialize DirectDraw now */
@@ -619,8 +602,9 @@ static int DirectXOpenDDraw(vout_display_t *vd)
     }
 
     /* Get the IDirectDraw2 interface */
+    void *ptr;
     hr = IDirectDraw_QueryInterface(ddobject, &IID_IDirectDraw2,
-                                    &sys->ddobject);
+                                    &ptr);
     /* Release the unused interface */
     IDirectDraw_Release(ddobject);
 
@@ -629,6 +613,7 @@ static int DirectXOpenDDraw(vout_display_t *vd)
         sys->ddobject = NULL;
         return VLC_EGENERIC;
     }
+    sys->ddobject = ptr;
 
     /* Set DirectDraw Cooperative level, ie what control we want over Windows
      * display */
@@ -639,10 +624,10 @@ static int DirectXOpenDDraw(vout_display_t *vd)
     }
 
     /* Get the size of the current display device */
-    if (sys->hmonitor && sys->GetMonitorInfo) {
+    if (sys->hmonitor) {
         MONITORINFO monitor_info;
         monitor_info.cbSize = sizeof(MONITORINFO);
-        sys->GetMonitorInfo(vd->sys->hmonitor, &monitor_info);
+        GetMonitorInfoA(vd->sys->hmonitor, &monitor_info);
         sys->rect_display = monitor_info.rcMonitor;
     } else {
         sys->rect_display.left   = 0;
@@ -800,8 +785,9 @@ static int DirectXOpenDisplay(vout_display_t *vd)
         return VLC_EGENERIC;
     }
 
+    void *ptr;
     hr = IDirectDrawSurface_QueryInterface(display, &IID_IDirectDrawSurface2,
-                                           &sys->display);
+                                           &ptr);
     /* Release the old interface */
     IDirectDrawSurface_Release(display);
 
@@ -810,6 +796,7 @@ static int DirectXOpenDisplay(vout_display_t *vd)
         sys->display = NULL;
         return VLC_EGENERIC;
     }
+    sys->display = ptr;
 
     /* The clipper will be used only in non-overlay mode */
     DirectXCreateClipper(vd);
@@ -961,6 +948,7 @@ static int DirectXLockSurface(LPDIRECTDRAWSURFACE2 front_surface,
 static void DirectXUnlockSurface(LPDIRECTDRAWSURFACE2 front_surface,
                                  LPDIRECTDRAWSURFACE2 surface)
 {
+    VLC_UNUSED(front_surface);
     IDirectDrawSurface2_Unlock(surface, NULL);
 }
 static int DirectXCheckLockingSurface(LPDIRECTDRAWSURFACE2 front_surface,

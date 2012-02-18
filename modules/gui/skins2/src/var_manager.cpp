@@ -2,7 +2,7 @@
  * var_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 053ac95026414f99f7b215e47798e26f13723e78 $
+ * $Id: 2c28d1dcd350a9710e14d89f3572a089149e2d6c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,7 @@ VarManager::~VarManager()
 {
     // Delete the variables in the reverse order they were added
     list<string>::const_iterator it1;
-    for( it1 = m_varList.begin(); it1 != m_varList.end(); it1++ )
+    for( it1 = m_varList.begin(); it1 != m_varList.end(); ++it1 )
     {
         m_varMap.erase(*it1);
     }

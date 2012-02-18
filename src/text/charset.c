@@ -3,24 +3,24 @@
  *****************************************************************************
  * See also unicode.c for Unicode to locale conversion helpers.
  *
- * Copyright (C) 2003-2008 the VideoLAN team
+ * Copyright (C) 2003-2008 VLC authors and VideoLAN
  *
  * Authors: Christophe Massiot
  *          Rémi Denis-Courmont
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -42,35 +42,6 @@
 
 #include "libvlc.h"
 #include <vlc_charset.h>
-
-char *vlc_fix_readdir( const char *psz_string )
-{
-#ifdef __APPLE__
-    vlc_iconv_t hd = vlc_iconv_open( "UTF-8", "UTF-8-MAC" );
-
-    if (hd != (vlc_iconv_t)(-1))
-    {
-        const char *psz_in = psz_string;
-        size_t i_in = strlen(psz_in);
-        size_t i_out = i_in * 2;
-        char *psz_utf8 = malloc(i_out + 1);
-        char *psz_out = psz_utf8;
-
-        size_t i_ret = vlc_iconv (hd, &psz_in, &i_in, &psz_out, &i_out);
-        vlc_iconv_close (hd);
-        if( i_ret == (size_t)(-1) || i_in )
-        {
-            free( psz_utf8 );
-            return strdup( psz_string );
-        }
-
-        *psz_out = '\0';
-        return psz_utf8;
-    }
-#endif
-    return strdup( psz_string );
-}
-
 
 /**
  * us_strtod() has the same prototype as ANSI C strtod() but it uses the
@@ -121,25 +92,38 @@ double us_atof( const char *str )
 
 
 /**
- * us_asprintf() has the same prototype as asprintf(), but doesn't use
+ * us_vasprintf() has the same prototype as vasprintf(), but doesn't use
  * the system locale.
  */
-int us_asprintf( char **ret, const char *format, ... )
+int us_vasprintf( char **ret, const char *format, va_list ap )
 {
-    va_list ap;
     locale_t loc = newlocale( LC_NUMERIC_MASK, "C", NULL );
     locale_t oldloc = uselocale( loc );
-    int i_rc;
 
-    va_start( ap, format );
-    i_rc = vasprintf( ret, format, ap );
-    va_end( ap );
+    int i_rc = vasprintf( ret, format, ap );
 
     if ( loc != (locale_t)0 )
     {
         uselocale( oldloc );
         freelocale( loc );
     }
+
+    return i_rc;
+}
+
+
+/**
+ * us_asprintf() has the same prototype as asprintf(), but doesn't use
+ * the system locale.
+ */
+int us_asprintf( char **ret, const char *format, ... )
+{
+    va_list ap;
+    int i_rc;
+
+    va_start( ap, format );
+    i_rc = us_vasprintf( ret, format, ap );
+    va_end( ap );
 
     return i_rc;
 }

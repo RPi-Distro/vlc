@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libaccess_bd_plugin_la_SOURCES = $(SOURCES_access_bd)
 nodist_libaccess_bd_plugin_la_SOURCES = $(nodist_SOURCES_access_bd)
 # Force per-target objects:
-libaccess_bd_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaccess_bd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaccess_bd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaccess_bd_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_access_bd)
+libaccess_bd_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_access_bd)
+libaccess_bd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_access_bd)
+libaccess_bd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_access_bd)
 # Set LIBADD and DEPENDENCIES manually:
-libaccess_bd_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_bd_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaccess_bd_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_bd)
+libaccess_bd_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_access_bd)
+libaccess_bd_plugin_la_DEPENDENCIES =
 

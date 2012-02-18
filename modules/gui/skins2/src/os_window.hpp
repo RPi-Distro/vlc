@@ -2,7 +2,7 @@
  * os_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f8af4b1bf26da76edc5405bc35fcde28840de51c $
+ * $Id: ced1e3553e74739168c2f1343d0b57b210cd811f $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -57,10 +57,14 @@ public:
     virtual void toggleOnTop( bool onTop ) const = 0;
 
     /// getter for handler
-    virtual void* getOSHandle( ) const = 0;
+    virtual vlc_wnd_type getOSHandle( ) const = 0;
 
     /// reparent the window
-    virtual void reparent( void* OSHandle, int x, int y, int w, int h ) = 0;
+    virtual void reparent( vlc_wnd_type OSHandle,
+                           int x, int y, int w, int h ) = 0;
+
+    /// updateWindow (tell the OS we need to update the window)
+    virtual bool invalidateRect( int x, int y, int w, int h ) const = 0;
 
 protected:
     OSWindow( intf_thread_t *pIntf ): SkinObject( pIntf ) { }

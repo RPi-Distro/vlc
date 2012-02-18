@@ -2,7 +2,7 @@
  * x11_timer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 3e0a55309bca417e6c593eabce168d28385f8141 $
+ * $Id: 6f640c5c07067a1665f53b9baee56ef90b0337c5 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -110,7 +110,7 @@ void X11TimerLoop::waitNextTimer()
 
     // Find the next timer to execute
     list<X11Timer*>::const_iterator timer;
-    for( timer = m_timers.begin(); timer != m_timers.end(); timer++ )
+    for( timer = m_timers.begin(); timer != m_timers.end(); ++timer )
     {
         mtime_t timerDate = (*timer)->getNextDate();
         if( timerDate < nextDate )

@@ -56,13 +56,9 @@ vlc_module_end()
 
 typedef struct
 {
-#ifdef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
-    xcb_keycode_t i_x11;
-#else
     xcb_keycode_t *p_keys;
-#endif
     unsigned      i_modifier;
-    int           i_action;
+    uint32_t      i_vlc;
 } hotkey_mapping_t;
 
 struct intf_sys_t
@@ -94,11 +90,8 @@ static int Open( vlc_object_t *p_this )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    char *psz_display = var_CreateGetNonEmptyString( p_intf, "x11-display" );
-
     int i_screen_default;
-    p_sys->p_connection = xcb_connect( psz_display, &i_screen_default );
-    free( psz_display );
+    p_sys->p_connection = xcb_connect( NULL, &i_screen_default );
 
     if( xcb_connection_has_error( p_sys->p_connection ) )
         goto error;
@@ -133,11 +126,11 @@ static int Open( vlc_object_t *p_this )
 
     if( vlc_clone( &p_sys->thread, Thread, p_intf, VLC_THREAD_PRIORITY_LOW ) )
     {
-#ifndef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
         if( p_sys->p_map )
+        {
             free( p_sys->p_map->p_keys );
-#endif
-        free( p_sys->p_map );
+            free( p_sys->p_map );
+        }
         goto error;
     }
     return VLC_SUCCESS;
@@ -164,12 +157,11 @@ static void Close( vlc_object_t *p_this )
     vlc_cancel( p_sys->thread );
     vlc_join( p_sys->thread, NULL );
 
-#ifndef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
     if( p_sys->p_map )
+    {
         free( p_sys->p_map->p_keys );
-#endif
-    free( p_sys->p_map );
-
+        free( p_sys->p_map );
+    }
     xcb_key_symbols_free( p_sys->p_symbols );
     xcb_disconnect( p_sys->p_connection );
     free( p_sys );
@@ -189,11 +181,6 @@ static unsigned GetModifier( xcb_connection_t *p_connection, xcb_key_symbols_t *
     if( sym == 0 )
         return 0; /* no modifier */
 
-#ifdef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
-    const xcb_keycode_t key = xcb_key_symbols_get_keycode( p_symbols, sym );
-    if( key == 0 )
-        return 0;
-#else
     const xcb_keycode_t *p_keys = xcb_key_symbols_get_keycode( p_symbols, sym );
     if( !p_keys )
         return 0;
@@ -212,7 +199,6 @@ static unsigned GetModifier( xcb_connection_t *p_connection, xcb_key_symbols_t *
 
     if( no_modifier )
         return 0;
-#endif
 
     xcb_get_modifier_mapping_cookie_t r =
             xcb_get_modifier_mapping( p_connection );
@@ -227,20 +213,12 @@ static unsigned GetModifier( xcb_connection_t *p_connection, xcb_key_symbols_t *
 
     for( int i = 0; i < 8; i++ )
         for( int j = 0; j < p_map->keycodes_per_modifier; j++ )
-#ifdef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
-            if( p_keycode[i * p_map->keycodes_per_modifier + j] == key )
-            {
-                free( p_map );
-                return pi_mask[i];
-            }
-#else
             for( int k = 0; p_keys[k] != XCB_NO_SYMBOL; k++ )
                 if( p_keycode[i*p_map->keycodes_per_modifier + j] == p_keys[k])
                 {
                     free( p_map );
                     return pi_mask[i];
                 }
-#endif
 
     free( p_map ); // FIXME to check
     return 0;
@@ -310,25 +288,23 @@ static bool Mapping( intf_thread_t *p_intf )
             p_hotkey->psz_action != NULL;
             p_hotkey++ )
     {
-        char *psz_hotkey;
-        if( asprintf( &psz_hotkey, "global-%s", p_hotkey->psz_action ) < 0 )
-            break;
+        char varname[12 + strlen( p_hotkey->psz_action )];
+        sprintf( varname, "global-key-%s", p_hotkey->psz_action );
 
-        const int i_vlc_action = p_hotkey->i_action;
-        const int i_vlc_key = var_InheritInteger( p_intf, psz_hotkey );
-        free( psz_hotkey );
-
-        if( !i_vlc_key )
+        char *key = var_InheritString( p_intf, varname );
+        if( key == NULL )
             continue;
-#ifdef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
-        const xcb_keycode_t key = xcb_key_symbols_get_keycode(
-                p_sys->p_symbols, GetX11Key( i_vlc_key & ~KEY_MODIFIER ) );
-#else
+
+        uint_fast32_t i_vlc_key = vlc_str2keycode( key );
+        free( key );
+        if( i_vlc_key == KEY_UNSET )
+            continue;
+
         xcb_keycode_t *p_keys = xcb_key_symbols_get_keycode(
                 p_sys->p_symbols, GetX11Key( i_vlc_key & ~KEY_MODIFIER ) );
         if( !p_keys )
             continue;
-#endif
+
         const unsigned i_modifier = GetX11Modifier( p_sys->p_connection,
                 p_sys->p_symbols, i_vlc_key & KEY_MODIFIER );
 
@@ -351,13 +327,9 @@ static bool Mapping( intf_thread_t *p_intf )
             }
             hotkey_mapping_t *p_map = &p_sys->p_map[p_sys->i_map++];
 
-#ifdef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
-            p_map->i_x11 = key;
-#else
             p_map->p_keys = p_keys;
-#endif
             p_map->i_modifier = i_modifier|i_ignored;
-            p_map->i_action = i_vlc_action;
+            p_map->i_vlc = i_vlc_key;
             active = true;
         }
     }
@@ -371,18 +343,12 @@ static void Register( intf_thread_t *p_intf )
     for( int i = 0; i < p_sys->i_map; i++ )
     {
         const hotkey_mapping_t *p_map = &p_sys->p_map[i];
-#ifdef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
-        xcb_grab_key( p_sys->p_connection, true, p_sys->root,
-                      p_map->i_modifier, p_map->i_x11,
-                      XCB_GRAB_MODE_ASYNC, XCB_GRAB_MODE_ASYNC );
-#else
         for( int j = 0; p_map->p_keys[j] != XCB_NO_SYMBOL; j++ )
         {
             xcb_grab_key( p_sys->p_connection, true, p_sys->root,
                           p_map->i_modifier, p_map->p_keys[j],
                           XCB_GRAB_MODE_ASYNC, XCB_GRAB_MODE_ASYNC );
         }
-#endif
     }
 }
 
@@ -428,29 +394,16 @@ static void *Thread( void *p_data )
             {
                 hotkey_mapping_t *p_map = &p_sys->p_map[i];
 
-#ifdef XCB_KEYSYM_OLD_API /* as seen in Debian Lenny */
-                if( p_map->i_x11 == e->detail &&
-                    p_map->i_modifier == e->state )
-                {
-                    var_SetInteger( p_intf->p_libvlc, "key-action",
-                            p_map->i_action );
-                    break;
-                }
-#else
-            bool loop_break = false;
-            for( int j = 0; p_map->p_keys[j] != XCB_NO_SYMBOL; j++ )
-                if( p_map->p_keys[j] == e->detail &&
-                    p_map->i_modifier == e->state )
-                {
-                    var_SetInteger( p_intf->p_libvlc, "key-action",
-                            p_map->i_action );
-                    loop_break = true;
-                    break;
-                }
-            if( loop_break )
-                break;
-#endif
+                for( int j = 0; p_map->p_keys[j] != XCB_NO_SYMBOL; j++ )
+                    if( p_map->p_keys[j] == e->detail &&
+                        p_map->i_modifier == e->state )
+                    {
+                        var_SetInteger( p_intf->p_libvlc, "global-key-pressed",
+                                        p_map->i_vlc );
+                        goto done;
+                    }
             }
+        done:
             free( p_event );
         }
     }

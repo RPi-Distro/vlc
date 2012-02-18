@@ -2,7 +2,7 @@
  * Messages.hpp : Information about a stream
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 762adb80d08b6e3d159f052775bc8e4c470eb356 $
+ * $Id: 9243b23093a1181b7d368579a19c0478f5cab610 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -26,6 +26,8 @@
 
 #include "util/qvlcframe.hpp"
 #include "util/singleton.hpp"
+#include "ui/messages_panel.h"
+#include <stdarg.h>
 
 class QTabWidget;
 class QPushButton;
@@ -36,6 +38,7 @@ class QTextEdit;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QLineEdit;
+class MsgEvent;
 
 class MessagesDialog : public QVLCFrame, public Singleton<MessagesDialog>
 {
@@ -44,32 +47,32 @@ private:
     MessagesDialog( intf_thread_t * );
     virtual ~MessagesDialog();
 
-    QTabWidget *mainTab;
-    QSpinBox *verbosityBox;
-    QLabel *verbosityLabel;
-    QTextEdit *messages;
-    QTreeWidget *modulesTree;
-    QPushButton *clearUpdateButton;
-    QPushButton *saveLogButton;
-    QLineEdit *vbobjectsEdit;
-    QLabel *vbobjectsLabel;
+    Ui::messagesPanelWidget ui;
     msg_subscription_t *sub;
-    msg_cb_data_t *cbData;
-    static void sinkMessage( msg_cb_data_t *, msg_item_t *, unsigned );
+    static void sinkMessage( void *, msg_item_t *, unsigned );
     void customEvent( QEvent * );
-    void sinkMessage( msg_item_t *item );
+    void sinkMessage( const MsgEvent * );
+
+    vlc_atomic_t verbosity;
+    static void MsgCallback( void *, int, const msg_item_t *, const char *,
+                             va_list );
+
+    QStringList filter;
+    bool filterDefault;
 
 private slots:
-    void updateTab( int );
-    void clearOrUpdate();
     bool save();
     void updateConfig();
-private:
+    void changeVerbosity( int );
     void clear();
     void updateTree();
+    void tabChanged( int );
+
+private:
     void buildTree( QTreeWidgetItem *, vlc_object_t * );
 
     friend class    Singleton<MessagesDialog>;
+    QPushButton *updateButton;
 };
 
 #endif

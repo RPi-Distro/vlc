@@ -2,7 +2,7 @@
  * real.c: Real demuxer.
  *****************************************************************************
  * Copyright (C) 2004, 2006-2007 the VideoLAN team
- * $Id: b0e267716e632f41762bd8d65c0c1ac79d11c01e $
+ * $Id: df1a0ad87c5a9a098c0510b2ff5aa304eba5e90c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -33,7 +33,7 @@
  *               - dnet is twisted "The byte order of the data is reversed
  *                                  from standard AC3" but ok
  *               - 28_8 is ok.
- *               - sipr doesn't work
+ *               - sipr is ok.
  *               - ralf is unsupported, but hardly any sample exist.
  *               - mp3 is unsupported, one sample exists...
  *
@@ -68,12 +68,11 @@ static void Close  ( vlc_object_t * );
 
 vlc_module_begin ()
     set_description( N_("Real demuxer" ) )
-    set_capability( "demux", 50 )
+    set_capability( "demux", 0 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
     set_callbacks( Open, Close )
-    add_shortcut( "real" )
-    add_shortcut( "rm" )
+    add_shortcut( "real", "rm" )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -87,10 +86,10 @@ typedef struct
 
     es_out_id_t *p_es;
 
-    int         i_frame_size;
+    unsigned    i_frame_size;
 
     int         i_frame_num;
-    int         i_frame_pos;
+    unsigned    i_frame_pos;
     int         i_frame_slice;
     int         i_frame_slice_count;
     block_t     *p_frame;
@@ -1378,12 +1377,12 @@ static int CodecVideoParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
     fmt.video.i_frame_rate = (GetWBE( &p_data[22] ) << 16) | GetWBE( &p_data[24] );
     fmt.video.i_frame_rate_base = 1 << 16;
 
-    fmt.i_extra = 8;
-    fmt.p_extra = malloc( 8 );
+    fmt.i_extra = i_data - 26;
+    fmt.p_extra = malloc( fmt.i_extra );
     if( !fmt.p_extra )
         return VLC_ENOMEM;
 
-    memcpy( fmt.p_extra, &p_data[26], 8 );
+    memcpy( fmt.p_extra, &p_data[26], fmt.i_extra );
 
     //msg_Dbg( p_demux, "    - video 0x%08x 0x%08x", dw0, dw1 );
 
@@ -1483,7 +1482,10 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
         i_frame_size = R16( &p_data, &i_data );
         i_subpacket_size = R16( &p_data, &i_data );
         if( !i_frame_size || !i_coded_frame_size )
+        {
+            es_format_Clean( &fmt );
             return VLC_EGENERIC;
+        }
 
         RVoid( &p_data, &i_data, 2 + (i_version == 5 ? 6 : 0 ) );
 
@@ -1572,10 +1574,14 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
         }
         break;
 
-    case VLC_FOURCC( 's','i','p','r' ):
+    case VLC_CODEC_SIPR:
         fmt.i_codec = VLC_CODEC_SIPR;
         if( i_flavor > 3 )
+        {
+            msg_Dbg( p_demux, "    - unsupported sipr flavorc=%i", i_flavor );
+            es_format_Clean( &fmt );
             return VLC_EGENERIC;
+        }
 
         i_subpacket_size = i_subpacket_size_sipr[i_flavor];
         // The libavcodec sipr decoder requires stream bitrate
@@ -1584,8 +1590,8 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
         fmt.i_bitrate = fmt.audio.i_rate;
         msg_Dbg( p_demux, "    - sipr flavor=%i", i_flavor );
 
-    case VLC_FOURCC( 'c','o','o','k' ):
-    case VLC_FOURCC( 'a','t','r','c' ):
+    case VLC_CODEC_COOK:
+    case VLC_CODEC_ATRAC3:
         if( i_subpacket_size <= 0 || i_frame_size / i_subpacket_size <= 0 )
         {
             es_format_Clean( &fmt );
@@ -1595,11 +1601,6 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
             fmt.audio.i_blockalign = i_subpacket_size;
         else
             fmt.audio.i_blockalign = i_coded_frame_size;
-
-        if( fmt.i_codec == VLC_FOURCC( 'c','o','o','k' ) )
-            fmt.i_codec = VLC_CODEC_COOK;
-        else if( fmt.i_codec == VLC_FOURCC( 'a','t','r','c' ) )
-            fmt.i_codec = VLC_CODEC_ATRAC3;
 
         if( i_extra_codec > 0 )
         {
@@ -1614,13 +1615,11 @@ static int CodecAudioParse( demux_t *p_demux, int i_tk_id, const uint8_t *p_data
         break;
 
     case VLC_FOURCC('r','a','l','f'):
-        msg_Dbg( p_demux, "    - audio codec not supported=%4.4s",
-                 (char*)&fmt.i_codec );
-        break;
-
     default:
         msg_Dbg( p_demux, "    - unknown audio codec=%4.4s",
-                 (char*)&fmt.i_codec );
+                (char*)&fmt.i_codec );
+        es_format_Clean( &fmt );
+        return VLC_EGENERIC;
         break;
     }
     msg_Dbg( p_demux, "    - extra data=%d", fmt.i_extra );

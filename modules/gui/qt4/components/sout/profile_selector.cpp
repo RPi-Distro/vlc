@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: e279c6bf3dfb330be87826d1bfbe75158281427e $
+ * $Id: de01d77089aa25c815f35bc8159ae9908b3402ef $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -143,6 +143,7 @@ void VLCProfileSelector::editProfile( const QString& qs, const QString& value )
 void VLCProfileSelector::deleteProfile()
 {
     profileBox->removeItem( profileBox->currentIndex() );
+    saveProfiles();
 }
 
 void VLCProfileSelector::saveProfiles()
@@ -155,6 +156,7 @@ void VLCProfileSelector::saveProfiles()
 #endif
             QSettings::UserScope, "vlc", "vlc-qt-interface" );
 
+    settings.remove( "codecs-profiles" ); /* Erase old profiles to be rewritten */
     settings.beginWriteArray( "codecs-profiles" );
     for( int i = 0; i < profileBox->count(); i++ )
     {
@@ -168,7 +170,7 @@ void VLCProfileSelector::saveProfiles()
 void VLCProfileSelector::updateOptions( int i )
 {
     QStringList options = profileBox->itemData( i ).toString().split( ";" );
-    if( options.size() < 16 )
+    if( options.count() < 16 )
         return;
 
     mux = options[0];
@@ -317,7 +319,7 @@ inline void VLCProfileEditor::registerCodecs()
 void VLCProfileEditor::fillProfile( const QString& qs )
 {
     QStringList options = qs.split( ";" );
-    if( options.size() < 16 )
+    if( options.count() < 16 )
         return;
 
     const QString mux = options[0];

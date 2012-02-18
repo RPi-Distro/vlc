@@ -4,22 +4,43 @@ SUBDIRS = msw
 # obviously does not. Here is a fix for that.
 LIBTOOL=@LIBTOOL@ --tag=CC
 
-SOURCES_aa = aa.c keythread.h keythread.c
-SOURCES_caca = caca.c keythread.h keythread.c
+SOURCES_aa = aa.c
+SOURCES_caca = caca.c
 SOURCES_fb = fb.c
-SOURCES_omapfb = omapfb.c
-SOURCES_ggi = ggi.c
-SOURCES_vout_sdl = sdl.c keythread.h keythread.c
-SOURCES_svgalib = svgalib.c
-SOURCES_hd1000v = hd1000v.cpp
-SOURCES_snapshot = snapshot.c
-SOURCES_opengl = opengl.c opengl.h
+SOURCES_vout_sdl = sdl.c
 SOURCES_directfb = directfb.c
 SOURCES_vmem = vmem.c
 SOURCES_yuv = yuv.c
-SOURCES_vout_wrapper = wrapper.c
-SOURCES_vout_macosx = macosx.m
+SOURCES_vout_macosx = macosx.m opengl.h opengl.c
+SOURCES_vout_ios = ios.m opengl.h opengl.c
+SOURCES_android_surface = androidsurface.c
 
+### OpenGL ###
+# TODO: merge all three source files (?)
+libgles2_plugin_la_SOURCES = opengl.c opengl.h gl.c
+libgles2_plugin_la_CFLAGS = $(AM_CFLAGS) $(GLES2_CFLAGS) -DUSE_OPENGL_ES=2
+libgles2_plugin_la_LIBADD = $(AM_LIBADD) $(GLES2_LIBS)
+libgles2_plugin_la_DEPENDENCIES =
+
+libgles1_plugin_la_SOURCES = opengl.c opengl.h gl.c
+libgles1_plugin_la_CFLAGS = $(AM_CFLAGS) $(GLES1_CFLAGS) -DUSE_OPENGL_ES=1
+libgles1_plugin_la_LIBADD = $(AM_LIBADD) $(GLES1_LIBS)
+libgles1_plugin_la_DEPENDENCIES =
+
+libgl_plugin_la_SOURCES = opengl.c opengl.h gl.c
+libgl_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS)
+libgl_plugin_la_LIBADD = $(AM_LIBADD) $(GL_LIBS)
+libgl_plugin_la_DEPENDENCIES =
+
+EXTRA_LTLIBRARIES += \
+	libgles2_plugin.la \
+	libgles1_plugin.la \
+	libgl_plugin.la
+libvlc_LTLIBRARIES += \
+	$(LTLIBgl)
+
+
+### XCB ###
 libxcb_x11_plugin_la_SOURCES = \
 	xcb/xcb_vlc.h \
 	xcb/x11.c \
@@ -45,15 +66,18 @@ libxcb_xv_plugin_la_DEPENDENCIES =
 libxcb_glx_plugin_la_SOURCES = \
 	xcb/xcb_vlc.h \
 	xcb/glx.c \
+	opengl.h \
+	opengl.c \
 	xcb/events.c
 libxcb_glx_plugin_la_CFLAGS = $(AM_CFLAGS) \
-	$(XLIB_XCB_CFLAGS) $(GL_CFLAGS)
+	$(XCB_CFLAGS) $(GL_CFLAGS)
 libxcb_glx_plugin_la_LIBADD = $(AM_LIBADD) \
-	$(XLIB_XCB_LIBS) $(GL_LIBS)
+	$(XCB_LIBS) $(GL_LIBS) $(X_LIBS) $(X_PRE_LIBS) -lX11
 libxcb_glx_plugin_la_DEPENDENCIES =
 
 libxcb_window_plugin_la_SOURCES = xcb/window.c xcb/keys.c xcb/keysym.h xcb/xcb_keysym.h
 libxcb_window_plugin_la_CFLAGS = $(AM_CFLAGS) \
+	$(CFLAGS_xcb_window) \
 	$(XPROTO_CFLAGS) \
 	$(XCB_CFLAGS) \
 	$(XCB_KEYSYMS_CFLAGS)
@@ -63,18 +87,19 @@ libxcb_window_plugin_la_LIBADD = $(AM_LIBADD) \
 	$(XCB_KEYSYMS_LIBS)
 libxcb_window_plugin_la_DEPENDENCIES =
 
-EXTRA_LTLIBRARIES += \
-	libxcb_x11_plugin.la \
-	libxcb_xv_plugin.la \
-	libxcb_glx_plugin.la \
-	libxcb_window_plugin.la
+if HAVE_XCB
 libvlc_LTLIBRARIES += \
-	$(LTLIBxcb_x11) \
+	libxcb_x11_plugin.la \
+	libxcb_window_plugin.la
+endif
+EXTRA_LTLIBRARIES += \
+	libxcb_xv_plugin.la \
+	libxcb_glx_plugin.la
+libvlc_LTLIBRARIES += \
 	$(LTLIBxcb_xv) \
-	$(LTLIBxcb_glx) \
-	$(LTLIBxcb_window)
+	$(LTLIBxcb_glx)
 
-# XXX: do we need yet another modules/ subdirectory?
+### Win32 ###
 libdrawable_plugin_la_SOURCES = drawable.c
 libdrawable_plugin_la_CFLAGS = $(AM_CFLAGS)
 libdrawable_plugin_la_LIBADD = $(AM_LIBADD)
@@ -83,7 +108,37 @@ if HAVE_WIN32
 libvlc_LTLIBRARIES += libdrawable_plugin.la
 endif
 
+### OS/2 ###
+if HAVE_OS2
+libvlc_LTLIBRARIES += libdrawable_plugin.la
+endif
+
+libkva_plugin_la_SOURCES = kva.c
+libkva_plugin_la_CFLAGS = $(AM_CFLAGS)
+libkva_plugin_la_LIBADD = $(AM_LIBADD) $(KVA_LIBS)
+libkva_plugin_la_DEPENDENCIES =
+if HAVE_KVA
+libvlc_LTLIBRARIES += libkva_plugin.la
+endif
+
+### EGL ###
+libegl_plugin_la_SOURCES = egl.c
+libegl_plugin_la_CFLAGS = $(AM_CFLAGS) $(EGL_CFLAGS)
+libegl_plugin_la_LIBADD = $(AM_LIBADD) $(EGL_LIBS)
+if !HAVE_WIN32
+libegl_plugin_la_LIBADD += $(X_LIBS) $(X_PRE_LIBS) -lX11
+endif
+libegl_plugin_la_DEPENDENCIES =
+EXTRA_LTLIBRARIES += libegl_plugin.la
+libvlc_LTLIBRARIES += $(LTLIBegl)
+
+### Common ###
+libvdummy_plugin_la_SOURCES = vdummy.c
+libvdummy_plugin_la_CFLAGS = $(AM_CFLAGS)
+libvdummy_plugin_la_LIBADD = $(AM_LIBADD)
+libvdummy_plugin_la_DEPENDENCIES =
+
 libvlc_LTLIBRARIES += \
+	libvdummy_plugin.la \
 	libvmem_plugin.la \
-	libyuv_plugin.la \
-	libvout_wrapper_plugin.la
+	libyuv_plugin.la

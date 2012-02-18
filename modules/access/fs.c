@@ -30,14 +30,6 @@
 #include "fs.h"
 #include <vlc_plugin.h>
 
-#define CACHING_TEXT N_("Caching value (ms)")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for files, in milliseconds." )
-
-#define NETWORK_CACHING_TEXT N_("Extra network caching value (ms)")
-#define NETWORK_CACHING_LONGTEXT N_( \
-    "Supplementary caching value for remote files, in milliseconds." )
-
 #define RECURSIVE_TEXT N_("Subdirectory behavior")
 #define RECURSIVE_LONGTEXT N_( \
         "Select whether subdirectories must be expanded.\n" \
@@ -61,32 +53,23 @@ vlc_module_begin ()
     set_shortname( N_("File") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-    add_integer( "file-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, true )
-        change_safe()
-    add_integer( "network-caching", 3 * DEFAULT_PTS_DELAY / 1000, NULL,
-                 NETWORK_CACHING_TEXT, NETWORK_CACHING_LONGTEXT, true )
-        change_safe()
     add_obsolete_string( "file-cat" )
     set_capability( "access", 50 )
-    add_shortcut( "file" )
-    add_shortcut( "fd" )
-    add_shortcut( "stream" )
-    set_callbacks( Open, Close )
+    add_shortcut( "file", "fd", "stream" )
+    set_callbacks( FileOpen, FileClose )
 
     add_submodule()
-    set_shortname( N_("Directory" ) )
-    set_description( N_("Directory input") )
+    set_section( N_("Directory" ), NULL )
     set_capability( "access", 55 )
-    add_string( "recursive", "expand" , NULL, RECURSIVE_TEXT,
+    add_string( "recursive", "expand" , RECURSIVE_TEXT,
                 RECURSIVE_LONGTEXT, false )
       change_string_list( psz_recursive_list, psz_recursive_list_text, 0 )
     add_string( "ignore-filetypes", "m3u,db,nfo,ini,jpg,jpeg,ljpg,gif,png,pgm,pgmyuv,pbm,pam,tga,bmp,pnm,xpm,xcf,pcx,tif,tiff,lbm,sfv,txt,sub,idx,srt,cue,ssa",
-                NULL, IGNORE_TEXT, IGNORE_LONGTEXT, false )
+                IGNORE_TEXT, IGNORE_LONGTEXT, false )
 #ifndef HAVE_FDOPENDIR
-    add_shortcut( "file" )
+    add_shortcut( "file", "directory", "dir" )
+#else
+    add_shortcut( "directory", "dir" )
 #endif
-    add_shortcut( "directory" )
-    add_shortcut( "dir" )
     set_callbacks( DirOpen, DirClose )
 vlc_module_end ()

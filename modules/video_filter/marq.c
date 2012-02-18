@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: 3dbe705c564f681240a9c7c62ae37bee6104e9cb $
+ * $Id: 7343c80ae353de621149b086d1e4b787048ed56a $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -36,7 +36,6 @@
 
 #include <vlc_filter.h>
 #include <vlc_block.h>
-#include <vlc_osd.h>
 
 #include <vlc_strings.h>
 
@@ -145,46 +144,39 @@ static const char *const ppsz_pos_descriptions[] =
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-    set_capability( "sub filter", 0 )
+    set_capability( "sub source", 0 )
     set_shortname( N_("Marquee" ))
     set_description( N_("Marquee display") )
     set_help(MARQUEE_HELP)
     set_callbacks( CreateFilter, DestroyFilter )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_SUBPIC )
-    add_string( CFG_PREFIX "marquee", "VLC", NULL, MSG_TEXT, MSG_LONGTEXT,
+    add_string( CFG_PREFIX "marquee", "VLC", MSG_TEXT, MSG_LONGTEXT,
                 false )
 
     set_section( N_("Position"), NULL )
-    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true )
-    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true )
-    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false )
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
+    add_integer( CFG_PREFIX "x", 0, POSX_TEXT, POSX_LONGTEXT, true )
+    add_integer( CFG_PREFIX "y", 0, POSY_TEXT, POSY_LONGTEXT, true )
+    add_integer( CFG_PREFIX "position", -1, POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions )
 
     set_section( N_("Font"), NULL )
     /* 5 sets the default to top [1] left [4] */
-    add_integer_with_range( CFG_PREFIX "opacity", 255, 0, 255, NULL,
+    add_integer_with_range( CFG_PREFIX "opacity", 255, 0, 255,
         OPACITY_TEXT, OPACITY_LONGTEXT, false )
-    add_integer( CFG_PREFIX "color", 0xFFFFFF, NULL, COLOR_TEXT, COLOR_LONGTEXT,
+    add_rgb( CFG_PREFIX "color", 0xFFFFFF, COLOR_TEXT, COLOR_LONGTEXT,
                  false )
-        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL )
-    add_integer( CFG_PREFIX "size", -1, NULL, SIZE_TEXT, SIZE_LONGTEXT,
+        change_integer_list( pi_color_values, ppsz_color_descriptions )
+    add_integer( CFG_PREFIX "size", -1, SIZE_TEXT, SIZE_LONGTEXT,
                  false )
 
     set_section( N_("Misc"), NULL )
-    add_integer( CFG_PREFIX "timeout", 0, NULL, TIMEOUT_TEXT, TIMEOUT_LONGTEXT,
+    add_integer( CFG_PREFIX "timeout", 0, TIMEOUT_TEXT, TIMEOUT_LONGTEXT,
                  false )
-    add_integer( CFG_PREFIX "refresh", 1000, NULL, REFRESH_TEXT,
+    add_integer( CFG_PREFIX "refresh", 1000, REFRESH_TEXT,
                  REFRESH_LONGTEXT, false )
 
     add_shortcut( "time" )
-    add_obsolete_string( "time-format" )
-    add_obsolete_string( "time-x" )
-    add_obsolete_string( "time-y" )
-    add_obsolete_string( "time-position" )
-    add_obsolete_string( "time-opacity" )
-    add_obsolete_string( "time-color" )
-    add_obsolete_string( "time-size" )
 vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
@@ -226,14 +218,14 @@ static int CreateFilter( vlc_object_t *p_this )
     var_AddCallback( p_filter, "marq-refresh", MarqueeCallback, p_sys );
     CREATE_VAR( i_pos, Integer, "marq-position" );
     CREATE_VAR( psz_marquee, String, "marq-marquee" );
-    p_sys->p_style->i_font_alpha = 255 - var_CreateGetIntegerCommand( p_filter,
+    p_sys->p_style->i_font_alpha = var_CreateGetIntegerCommand( p_filter,
                                                             "marq-opacity" );
     var_AddCallback( p_filter, "marq-opacity", MarqueeCallback, p_sys );
     CREATE_VAR( p_style->i_font_color, Integer, "marq-color" );
     CREATE_VAR( p_style->i_font_size, Integer, "marq-size" );
 
     /* Misc init */
-    p_filter->pf_sub_filter = Filter;
+    p_filter->pf_sub_source = Filter;
     p_sys->last_time = 0;
 
     return VLC_SUCCESS;
@@ -280,7 +272,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     vlc_mutex_lock( &p_sys->lock );
     if( p_sys->last_time + p_sys->i_refresh > date )
         goto out;
-    if( p_sys->b_need_update == false )
+    if( !p_sys->b_need_update )
         goto out;
 
     p_spu = filter_NewSubpicture( p_filter );
@@ -314,7 +306,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     /*  where to locate the string: */
     if( p_sys->i_pos < 0 )
     {   /*  set to an absolute xy */
-        p_spu->p_region->i_align = OSD_ALIGN_LEFT | OSD_ALIGN_TOP;
+        p_spu->p_region->i_align = SUBPICTURE_ALIGN_LEFT | SUBPICTURE_ALIGN_TOP;
         p_spu->b_absolute = true;
     }
     else
@@ -346,40 +338,40 @@ static int MarqueeCallback( vlc_object_t *p_this, char const *psz_var,
     VLC_UNUSED(p_this);
 
     vlc_mutex_lock( &p_sys->lock );
-    if( !strncmp( psz_var, "marq-marquee", 12 ) )
+    if( !strcmp( psz_var, "marq-marquee" ) )
     {
         free( p_sys->psz_marquee );
         p_sys->psz_marquee = strdup( newval.psz_string );
     }
-    else if ( !strncmp( psz_var, "marq-x", 6 ) )
+    else if ( !strcmp( psz_var, "marq-x" ) )
     {
         p_sys->i_xoff = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "marq-y", 6 ) )
+    else if ( !strcmp( psz_var, "marq-y" ) )
     {
         p_sys->i_yoff = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "marq-color", 10 ) )
+    else if ( !strcmp( psz_var, "marq-color" ) )
     {
         p_sys->p_style->i_font_color = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "marq-opacity", 12 ) )
+    else if ( !strcmp( psz_var, "marq-opacity" ) )
     {
-        p_sys->p_style->i_font_alpha = 255 - newval.i_int;
+        p_sys->p_style->i_font_alpha = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "marq-size", 9 ) )
+    else if ( !strcmp( psz_var, "marq-size" ) )
     {
         p_sys->p_style->i_font_size = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "marq-timeout", 12 ) )
+    else if ( !strcmp( psz_var, "marq-timeout" ) )
     {
         p_sys->i_timeout = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "marq-refresh", 12 ) )
+    else if ( !strcmp( psz_var, "marq-refresh" ) )
     {
         p_sys->i_refresh = newval.i_int * 1000;
     }
-    else if ( !strncmp( psz_var, "marq-position", 13 ) )
+    else if ( !strcmp( psz_var, "marq-position" ) )
     /* willing to accept a match against marq-pos */
     {
         p_sys->i_pos = newval.i_int;

@@ -2,7 +2,7 @@
  * Psychedelic.c : Psychedelic video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 9ec37571ba32d72bdf942e9d36283289b99562f4 $
+ * $Id: 6a8510c3c116fbada50e7968ca80b270888b0a6f $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -83,6 +83,13 @@ struct filter_sys_t
 static int Create( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+
+    const vlc_fourcc_t fourcc = p_filter->fmt_in.video.i_chroma;
+    const vlc_chroma_description_t *p_chroma = vlc_fourcc_GetChromaDescription( fourcc );
+    if( !p_chroma || p_chroma->plane_count != 3 || p_chroma->pixel_size != 1 ) {
+        msg_Err( p_filter, "Unsupported chroma (%4.4s)", (char*)&fourcc );
+        return VLC_EGENERIC;
+    }
 
     /* Allocate structure */
     p_filter->p_sys = malloc( sizeof( filter_sys_t ) );

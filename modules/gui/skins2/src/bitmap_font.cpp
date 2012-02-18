@@ -2,7 +2,7 @@
  * bitmap_font.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3a9bd295f28390fab73ce93bba64b1a9dbcf9f61 $
+ * $Id: f7594c8e77e3ed009ac408eba8f021e1ccfa0866 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -82,6 +82,8 @@ BitmapFont::BitmapFont( intf_thread_t *pIntf, const GenericBitmap &rBitmap,
 GenericBitmap *BitmapFont::drawString( const UString &rString,
                                        uint32_t color, int maxWidth ) const
 {
+    (void)color; (void)maxWidth;
+
     uint32_t *pString = (uint32_t*)rString.u_str();
     // Compute the text width
     int width = 0;

@@ -2,7 +2,7 @@
  * wav.c: wav muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id: f2f4091d78f7d7334659ed5d49875f33a214af03 $
+ * $Id: 6c43264ce463ae163c002d5030104bbf6cfd8496 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -164,7 +164,8 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     GUID subformat_guid = {0, 0, 0x10,{0x80, 0, 0, 0xaa, 0, 0x38, 0x9b, 0x71}};
     sout_mux_sys_t *p_sys = p_mux->p_sys;
     WAVEFORMATEX *p_waveformat = &p_sys->waveformat.Format;
-    int i_bytes_per_sample, i_format;
+    int i_bytes_per_sample;
+    uint16_t i_format;
     bool b_ext;
 
     if( p_input->p_fmt->i_cat != AUDIO_ES )
@@ -204,8 +205,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                  p_sys->i_channel_mask, (int)p_sys->b_chan_reorder );
     }
 
-    i_format = p_input->p_fmt->i_codec == VLC_CODEC_FL32 ?
-        WAVE_FORMAT_IEEE_FLOAT : WAVE_FORMAT_PCM;
+    fourcc_to_wf_tag( p_input->p_fmt->i_codec, &i_format );
     b_ext = p_sys->b_ext = p_input->p_fmt->audio.i_channels > 2;
 
     /* Build a WAV header for the output data */

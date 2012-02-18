@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: db535f57af4f62cb57622d14d996a61b7595276d $
+ * $Id: e7825d000d4434775500190c09a584788d89eb9d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,6 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_fs.h>
+
 #include "theme_loader.hpp"
 #include "theme.hpp"
 #include "../parser/builder.hpp"
@@ -38,14 +45,7 @@
 #endif
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
-#elif defined( WIN32 ) && !defined( UNDER_CE )
-#   include <direct.h>
 #endif
-
-#ifdef HAVE_DIRENT_H
-#   include <dirent.h>
-#endif
-
 
 #if defined( HAVE_ZLIB_H )
 #   include <zlib.h>
@@ -77,7 +77,7 @@ bool ThemeLoader::load( const string &fileName )
 
     //Before all, let's see if the file is present
     struct stat p_stat;
-    if( vlc_stat( path.c_str(), &p_stat ) )
+    if( vlc_stat( fileName.c_str(), &p_stat ) )
         return false;
 
     // First, we try to un-targz the file, and if it fails we hope it's a XML
@@ -93,26 +93,13 @@ bool ThemeLoader::load( const string &fileName )
 
     Theme *pNewTheme = getIntf()->p_sys->p_theme;
     if( !pNewTheme )
-    {
         return false;
-    }
 
-    // Check if the skin to load is in the config file, to load its config
-    char *skin_last = config_GetPsz( getIntf(), "skins2-last" );
-    if( skin_last != NULL && fileName == (string)skin_last )
-    {
-        // Restore the theme configuration
-        getIntf()->p_sys->p_theme->loadConfig();
-        // Used to anchor the windows at the beginning
-        pNewTheme->getWindowManager().stopMove();
-    }
-    else
-    {
-        config_PutPsz( getIntf(), "skins2-last", fileName.c_str() );
-        // Show the windows
-        pNewTheme->getWindowManager().showAll( true );
-    }
-    free( skin_last );
+    // Restore the theme configuration
+    getIntf()->p_sys->p_theme->loadConfig();
+
+    // Retain new loaded skins in config
+    config_PutPsz( getIntf(), "skins2-last", fileName.c_str() );
 
     return true;
 }
@@ -209,7 +196,7 @@ bool ThemeLoader::extractFileInZip( unzFile file, const string &rootDir,
     // use the wrong case...
     if( isWsz )
         for( size_t i = 0; i < strlen( filenameInZip ); i++ )
-            filenameInZip[i] = tolower( filenameInZip[i] );
+            filenameInZip[i] = tolower( (unsigned char)filenameInZip[i] );
 
     // Allocate the buffer
     void *pBuffer = malloc( ZIP_BUFFER_SIZE );
@@ -312,7 +299,7 @@ bool ThemeLoader::extract( const string &fileName )
             // Look for winamp2.xml in the resource path
             list<string> resPath = pOsFactory->getResourcePath();
             list<string>::const_iterator it;
-            for( it = resPath.begin(); it != resPath.end(); it++ )
+            for( it = resPath.begin(); it != resPath.end(); ++it )
             {
                 if( findFile( *it, WINAMP2_XML_FILE, xmlFile ) )
                     break;
@@ -511,6 +498,8 @@ union tar_buffer {
 
 int tar_open( TAR **t, char *pathname, int oflags )
 {
+    (void)oflags;
+
     gzFile f = gzopen( pathname, "rb" );
     if( f == NULL )
     {
@@ -671,10 +660,6 @@ int getoct( char *p, int width )
 
 #endif
 
-#ifdef WIN32
-#  define mkdir(dirname,mode) _mkdir(dirname)
-#endif
-
 /* Recursive make directory
  * Abort if you get an ENOENT errno somewhere in the middle
  * e.g. ignore error "mkdir on existing directory"
@@ -697,7 +682,7 @@ int makedir( const char *newdir )
         buffer[len-1] = '\0';
     }
 
-    if( mkdir( buffer, 0775 ) == 0 )
+    if( vlc_mkdir( buffer, 0775 ) == 0 )
     {
         free( buffer );
         return 1;
@@ -711,7 +696,7 @@ int makedir( const char *newdir )
         while( *p && *p != '\\' && *p != '/' ) p++;
         hold = *p;
         *p = 0;
-        if( ( mkdir( buffer, 0775 ) == -1 ) && ( errno == ENOENT ) )
+        if( ( vlc_mkdir( buffer, 0775 ) == -1 ) && ( errno == ENOENT ) )
         {
             fprintf( stderr, "couldn't create directory %s\n", buffer );
             free( buffer );
@@ -731,6 +716,8 @@ static void * currentGzVp = NULL;
 
 int gzopen_frontend( const char *pathname, int oflags, int mode )
 {
+    (void)mode;
+
     const char *gzflags;
     gzFile gzf;
 
@@ -768,7 +755,7 @@ int gzclose_frontend( int fd )
     {
         void *toClose = currentGzVp;
         currentGzVp = NULL;  currentGzFd = -1;
-        return gzclose( toClose );
+        return gzclose( (gzFile) toClose );
     }
     return -1;
 }
@@ -777,7 +764,7 @@ int gzread_frontend( int fd, void *p_buffer, size_t i_length )
 {
     if( currentGzVp != NULL && fd != -1 )
     {
-        return gzread( currentGzVp, p_buffer, i_length );
+        return gzread( (gzFile) currentGzVp, p_buffer, i_length );
     }
     return -1;
 }
@@ -786,7 +773,7 @@ int gzwrite_frontend( int fd, const void * p_buffer, size_t i_length )
 {
     if( currentGzVp != NULL && fd != -1 )
     {
-        return gzwrite( currentGzVp, const_cast<void*>(p_buffer), i_length );
+        return gzwrite( (gzFile) currentGzVp, const_cast<void*>(p_buffer), i_length );
     }
     return -1;
 }

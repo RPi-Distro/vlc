@@ -2,13 +2,14 @@
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 5980e9dd0b44db8aa45ecc026467ae91481b6048 $
+ * $Id: 5d91ee1daa647d3b25f0ae9cef84bc2fbed3a958 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Lauren Aimar <fenrir _AT_ videolan _DOT_ org >
+ *          Steinar H. Gunderson <steinar+vlc@gunderson.no>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +46,12 @@ static int  OpenDecoder   ( vlc_object_t * );
 static int  OpenPacketizer( vlc_object_t * );
 static void CloseCommon   ( vlc_object_t * );
 
+#ifdef ENABLE_SOUT
+static int  OpenEncoder   ( vlc_object_t * );
+static void CloseEncoder  ( vlc_object_t * );
+static block_t *EncodeFrames( encoder_t *, aout_buffer_t * );
+#endif
+
 vlc_module_begin ()
 
     set_category( CAT_INPUT )
@@ -57,6 +64,14 @@ vlc_module_begin ()
     set_description( N_("Linear PCM audio packetizer") )
     set_capability( "packetizer", 100 )
     set_callbacks( OpenPacketizer, CloseCommon )
+
+#ifdef ENABLE_SOUT
+    add_submodule ()
+    set_description( N_("Linear PCM audio encoder") )
+    set_capability( "encoder", 100 )
+    set_callbacks( OpenEncoder, CloseEncoder )
+    add_shortcut( "lpcm" )
+#endif
 
 vlc_module_end ()
 
@@ -79,17 +94,32 @@ struct decoder_sys_t
     int      i_type;
 };
 
+#ifdef ENABLE_SOUT
+struct encoder_sys_t
+{
+    int     i_channels;
+    int     i_rate;
+
+    int     i_frame_samples;
+    uint8_t *p_buffer;
+    int     i_buffer_used;
+    int     i_frame_num;
+};
+#endif
+
 /*
  * LPCM DVD header :
- * - frame number (8 bits)
- * - unknown (16 bits) == 0x0003 ?
- * - unknown (4 bits)
- * - current frame (4 bits)
- * - unknown (2 bits)
- * - frequency (2 bits) 0 == 48 kHz, 1 == 32 kHz, 2 == ?, 3 == ?
- * - unknown (1 bit)
+ * - number of frames in this packet (8 bits)
+ * - first access unit (16 bits) == 0x0003 ?
+ * - emphasis (1 bit)
+ * - mute (1 bit)
+ * - reserved (1 bit)
+ * - current frame (5 bits)
+ * - quantisation (2 bits) 0 == 16bps, 1 == 20bps, 2 == 24bps, 3 == illegal
+ * - frequency (2 bits) 0 == 48 kHz, 1 == 96 kHz, 2 == 44.1 kHz, 3 == 32 kHz
+ * - reserved (1 bit)
  * - number of channels - 1 (3 bits) 1 == 2 channels
- * - start code (8 bits) == 0x80
+ * - dynamic range (8 bits) 0x80 == neutral
  *
  * LPCM DVD-A header (http://dvd-audio.sourceforge.net/spec/aob.shtml)
  * - continuity counter (8 bits, clipped to 0x00-0x1f)
@@ -132,7 +162,7 @@ typedef struct
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static void *DecodeFrame  ( decoder_t *, block_t ** );
+static block_t *DecodeFrame  ( decoder_t *, block_t ** );
 
 /* */
 static int VobHeader( unsigned *pi_rate,
@@ -150,10 +180,12 @@ static int AobHeader( unsigned *pi_rate,
 static void AobExtract( aout_buffer_t *, block_t *, unsigned i_bits, aob_group_t p_group[2] );
 /* */
 static int BdHeader( unsigned *pi_rate,
-                     unsigned *pi_channels, unsigned *pi_original_channels,
+                     unsigned *pi_channels,
+                     unsigned *pi_channels_padding,
+                     unsigned *pi_original_channels,
                      unsigned *pi_bits,
                      const uint8_t *p_header );
-static void BdExtract( aout_buffer_t *, block_t * );
+static void BdExtract( aout_buffer_t *, block_t *, unsigned, unsigned, unsigned, unsigned );
 
 
 /*****************************************************************************
@@ -234,10 +266,8 @@ static int OpenCommon( vlc_object_t *p_this, bool b_packetizer )
     }
 
     /* Set callback */
-    p_dec->pf_decode_audio = (aout_buffer_t *(*)(decoder_t *, block_t **))
-        DecodeFrame;
-    p_dec->pf_packetize    = (block_t *(*)(decoder_t *, block_t **))
-        DecodeFrame;
+    p_dec->pf_decode_audio = DecodeFrame;
+    p_dec->pf_packetize    = DecodeFrame;
 
     return VLC_SUCCESS;
 }
@@ -255,7 +285,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
  ****************************************************************************
  * Beware, this function must be fed with complete frames (PES packet).
  *****************************************************************************/
-static void *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t       *p_block;
@@ -289,6 +319,7 @@ static void *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
     }
 
     int i_ret;
+    unsigned i_channels_padding = 0;
     unsigned i_padding = 0;
     aob_group_t p_aob_group[2];
     switch( p_sys->i_type )
@@ -303,7 +334,7 @@ static void *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
                            p_block->p_buffer );
         break;
     case LPCM_BD:
-        i_ret = BdHeader( &i_rate, &i_channels, &i_original_channels, &i_bits,
+        i_ret = BdHeader( &i_rate, &i_channels, &i_channels_padding, &i_original_channels, &i_bits,
                           p_block->p_buffer );
         break;
     default:
@@ -328,7 +359,8 @@ static void *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
     p_dec->fmt_out.audio.i_original_channels = i_original_channels;
     p_dec->fmt_out.audio.i_physical_channels = i_original_channels & AOUT_CHAN_PHYSMASK;
 
-    i_frame_length = (p_block->i_buffer - p_sys->i_header_size - i_padding) / i_channels * 8 / i_bits;
+    i_frame_length = (p_block->i_buffer - p_sys->i_header_size - i_padding) /
+                     (i_channels + i_channels_padding) * 8 / i_bits;
 
     if( p_sys->b_packetizer )
     {
@@ -379,7 +411,7 @@ static void *DecodeFrame( decoder_t *p_dec, block_t **pp_block )
         default:
             assert(0);
         case LPCM_BD:
-            BdExtract( p_aout_buffer, p_block );
+            BdExtract( p_aout_buffer, p_block, i_frame_length, i_channels, i_channels_padding, i_bits );
             break;
         }
 
@@ -396,6 +428,166 @@ static void CloseCommon( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t*)p_this;
     free( p_dec->p_sys );
 }
+
+#ifdef ENABLE_SOUT
+/*****************************************************************************
+ * OpenEncoder: lpcm encoder construction
+ *****************************************************************************/
+static int OpenEncoder( vlc_object_t *p_this )
+{
+    encoder_t *p_enc = (encoder_t *)p_this;
+    encoder_sys_t *p_sys;
+
+    /* We only support DVD LPCM yet. */
+    if( p_enc->fmt_out.i_codec != VLC_CODEC_DVD_LPCM )
+        return VLC_EGENERIC;
+
+    if( p_enc->fmt_in.audio.i_rate != 48000 &&
+        p_enc->fmt_in.audio.i_rate != 96000 &&
+        p_enc->fmt_in.audio.i_rate != 44100 &&
+        p_enc->fmt_in.audio.i_rate != 32000 )
+    {
+        msg_Err( p_enc, "DVD LPCM supports only sample rates of 48, 96, 44.1 or 32 kHz" );
+        return VLC_EGENERIC;
+    }
+
+    if( p_enc->fmt_in.audio.i_channels > 8 )
+    {
+        msg_Err( p_enc, "DVD LPCM supports a maximum of eight channels" );
+        return VLC_EGENERIC;
+    }
+
+    /* Allocate the memory needed to store the encoder's structure */
+    if( ( p_enc->p_sys = p_sys =
+          (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
+        return VLC_ENOMEM;
+
+    /* In DVD LCPM, a frame is always 150 PTS ticks. */
+    p_sys->i_frame_samples = p_enc->fmt_in.audio.i_rate * 150 / 90000;
+    p_sys->p_buffer = (uint8_t *)malloc(
+        p_sys->i_frame_samples *
+        p_enc->fmt_in.audio.i_channels *
+        p_enc->fmt_in.audio.i_bitspersample);
+    p_sys->i_buffer_used = 0;
+    p_sys->i_frame_num = 0;
+
+    p_sys->i_channels = p_enc->fmt_in.audio.i_channels;
+    p_sys->i_rate = p_enc->fmt_in.audio.i_rate;
+
+    p_enc->pf_encode_audio = EncodeFrames;
+    p_enc->fmt_in.i_codec = p_enc->fmt_out.i_codec;
+
+    p_enc->fmt_in.audio.i_bitspersample = 16;
+    p_enc->fmt_in.i_codec = VLC_CODEC_S16B;
+
+    p_enc->fmt_out.i_bitrate =
+        p_enc->fmt_in.audio.i_channels *
+        p_enc->fmt_in.audio.i_rate *
+        p_enc->fmt_in.audio.i_bitspersample *
+        (p_sys->i_frame_samples + LPCM_VOB_HEADER_LEN) /
+        p_sys->i_frame_samples;
+
+    return VLC_SUCCESS;
+}
+
+/*****************************************************************************
+ * CloseEncoder: lpcm encoder destruction
+ *****************************************************************************/
+static void CloseEncoder ( vlc_object_t *p_this )
+{
+    encoder_t     *p_enc = (encoder_t *)p_this;
+    encoder_sys_t *p_sys = p_enc->p_sys;
+
+    free( p_sys->p_buffer );
+    free( p_sys );
+}
+
+/*****************************************************************************
+ * EncodeFrames: encode zero or more LCPM audio packets
+ *****************************************************************************/
+static block_t *EncodeFrames( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
+{
+    encoder_sys_t *p_sys = p_enc->p_sys;
+    block_t *p_first_block = NULL, *p_last_block = NULL;
+
+    if( !p_aout_buf || !p_aout_buf->i_buffer ) return NULL;
+
+    const int i_num_frames = ( p_sys->i_buffer_used + p_aout_buf->i_nb_samples ) /
+        p_sys->i_frame_samples;
+    const int i_leftover_samples = ( p_sys->i_buffer_used + p_aout_buf->i_nb_samples ) %
+        p_sys->i_frame_samples;
+    const int i_frame_size = p_sys->i_frame_samples * p_sys->i_channels * 2 + LPCM_VOB_HEADER_LEN;
+    const int i_start_offset = -p_sys->i_buffer_used;
+
+    uint8_t i_freq_code = 0;
+
+    switch( p_sys->i_rate ) {
+    case 48000:
+        i_freq_code = 0;
+        break;
+    case 96000:
+        i_freq_code = 1;
+        break;
+    case 44100:
+        i_freq_code = 2;
+        break;
+    case 32000:
+        i_freq_code = 3;
+        break;
+    default:
+        assert(0);
+    }
+
+    int i_bytes_consumed = 0;
+
+    for ( int i = 0; i < i_num_frames; ++i )
+    {
+        block_t *p_block = block_New( p_enc, i_frame_size );
+        if( !p_block )
+            return NULL;
+
+        uint8_t *frame = (uint8_t *)p_block->p_buffer;
+        frame[0] = 1;  /* one frame in packet */
+        frame[1] = 0;
+        frame[2] = 0;  /* no first access unit */
+        frame[3] = (p_sys->i_frame_num + i) & 0x1f;  /* no emphasis, no mute */
+        frame[4] = (i_freq_code << 4) | (p_sys->i_channels - 1);
+        frame[5] = 0x80;  /* neutral dynamic range */
+
+        const int i_consume_samples = p_sys->i_frame_samples - p_sys->i_buffer_used;
+        const int i_kept_bytes = p_sys->i_buffer_used * p_sys->i_channels * 2;
+        const int i_consume_bytes = i_consume_samples * p_sys->i_channels * 2;
+
+        memcpy( frame + 6, p_sys->p_buffer, i_kept_bytes );
+        memcpy( frame + 6 + i_kept_bytes, p_aout_buf->p_buffer + i_bytes_consumed, i_consume_bytes );
+
+        p_sys->i_frame_num++;
+        p_sys->i_buffer_used = 0;
+        i_bytes_consumed += i_consume_bytes;
+
+        /* We need to find i_length by means of next_pts due to possible roundoff errors. */
+        mtime_t this_pts = p_aout_buf->i_pts +
+            (i * p_sys->i_frame_samples + i_start_offset) * CLOCK_FREQ / p_sys->i_rate;
+        mtime_t next_pts = p_aout_buf->i_pts +
+            ((i + 1) * p_sys->i_frame_samples + i_start_offset) * CLOCK_FREQ / p_sys->i_rate;
+
+        p_block->i_pts = p_block->i_dts = this_pts;
+        p_block->i_length = next_pts - this_pts;
+
+        if( !p_first_block )
+            p_first_block = p_last_block = p_block;
+        else
+            p_last_block = p_last_block->p_next = p_block;
+    }
+
+    memcpy( p_sys->p_buffer,
+            p_aout_buf->p_buffer + i_bytes_consumed,
+            i_leftover_samples * p_sys->i_channels * 2 );
+    p_sys->i_buffer_used = i_leftover_samples;
+
+    return p_first_block;
+}
+#endif
 
 /*****************************************************************************
  *
@@ -625,7 +817,9 @@ static int AobHeader( unsigned *pi_rate,
 }
 
 static int BdHeader( unsigned *pi_rate,
-                     unsigned *pi_channels, unsigned *pi_original_channels,
+                     unsigned *pi_channels,
+                     unsigned *pi_channels_padding,
+                     unsigned *pi_original_channels,
                      unsigned *pi_bits,
                      const uint8_t *p_header )
 {
@@ -686,6 +880,8 @@ static int BdHeader( unsigned *pi_rate,
     default:
         return -1;
     }
+    *pi_channels_padding = *pi_channels & 1;
+
     switch( (h >> 6) & 0x03 )
     {
     case 1:
@@ -837,8 +1033,26 @@ static void AobExtract( aout_buffer_t *p_aout_buffer,
 
     }
 }
-static void BdExtract( aout_buffer_t *p_aout_buffer, block_t *p_block )
+static void BdExtract( aout_buffer_t *p_aout_buffer, block_t *p_block,
+                       unsigned i_frame_length,
+                       unsigned i_channels, unsigned i_channels_padding,
+                       unsigned i_bits )
 {
-    memcpy( p_aout_buffer->p_buffer, p_block->p_buffer, p_block->i_buffer );
+    if( i_channels_padding > 0 )
+    {
+        uint8_t *p_src = p_block->p_buffer;
+        uint8_t *p_dst = p_aout_buffer->p_buffer;
+        while( i_frame_length > 0 )
+        {
+            memcpy( p_dst, p_src, i_channels * i_bits / 8 );
+            p_src += (i_channels + i_channels_padding) * i_bits / 8;
+            p_dst += (i_channels +                  0) * i_bits / 8;
+            i_frame_length--;
+        }
+    }
+    else
+    {
+        memcpy( p_aout_buffer->p_buffer, p_block->p_buffer, p_block->i_buffer );
+    }
 }
 

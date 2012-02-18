@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003-2006, 2008-2009 the VideoLAN team
- * $Id: 07da568c10748ef046baaa6c67c35ba4f58d1def $
+ * $Id: f782b0c0932f5f004934487a62d4b3c7dd47eb67 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -58,11 +58,6 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Default caching value for Audio CDs. This " \
-    "value should be set in milliseconds." )
-
 vlc_module_begin ()
     set_shortname( N_("Audio CD") )
     set_description( N_("Audio CD input") )
@@ -72,26 +67,21 @@ vlc_module_begin ()
     set_callbacks( Open, Close )
 
     add_usage_hint( N_("[cdda:][device][@[track]]") )
-    add_integer( "cdda-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true )
-        change_safe()
-
-    add_integer( "cdda-track", 0 , NULL, NULL, NULL, true )
+    add_integer( "cdda-track", 0 , NULL, NULL, true )
         change_volatile ()
-    add_integer( "cdda-first-sector", -1, NULL, NULL, NULL, true )
+    add_integer( "cdda-first-sector", -1, NULL, NULL, true )
         change_volatile ()
-    add_integer( "cdda-last-sector", -1, NULL, NULL, NULL, true )
+    add_integer( "cdda-last-sector", -1, NULL, NULL, true )
         change_volatile ()
 
 #ifdef HAVE_LIBCDDB
-    add_string( "cddb-server", "freedb.freedb.org", NULL, N_( "CDDB Server" ),
+    add_string( "cddb-server", "freedb.videolan.org", N_( "CDDB Server" ),
             N_( "Address of the CDDB server to use." ), true )
-    add_integer( "cddb-port", 8880, NULL, N_( "CDDB port" ),
+    add_integer( "cddb-port", 8880, N_( "CDDB port" ),
             N_( "CDDB Server port to use." ), true )
 #endif
 
-    add_shortcut( "cdda" )
-    add_shortcut( "cddasimple" )
+    add_shortcut( "cdda", "cddasimple" )
 vlc_module_end ()
 
 
@@ -139,22 +129,19 @@ static int Open( vlc_object_t *p_this )
     vcddev_t     *vcddev;
     char         *psz_name;
 
-    if( !p_access->psz_path || !*p_access->psz_path )
+    if( !p_access->psz_filepath || !*p_access->psz_filepath )
     {
         /* Only when selected */
         if( !p_access->psz_access || !*p_access->psz_access )
             return VLC_EGENERIC;
 
-        psz_name = var_CreateGetString( p_this, "cd-audio" );
-        if( !psz_name || !*psz_name )
-        {
-            free( psz_name );
+        psz_name = var_InheritString( p_this, "cd-audio" );
+        if( !psz_name )
             return VLC_EGENERIC;
-        }
     }
-    else psz_name = ToLocaleDup( p_access->psz_path );
+    else psz_name = ToLocaleDup( p_access->psz_filepath );
 
-#ifdef WIN32
+#if defined( WIN32 ) || defined( __OS2__ )
     if( psz_name[0] && psz_name[1] == ':' &&
         psz_name[2] == '\\' && psz_name[3] == '\0' ) psz_name[2] = '\0';
 #endif
@@ -173,7 +160,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->vcddev = vcddev;
 
    /* Do we play a single track ? */
-   p_sys->i_track = var_CreateGetInteger( p_access, "cdda-track" ) - 1;
+   p_sys->i_track = var_InheritInteger( p_access, "cdda-track" ) - 1;
 
    if( p_sys->i_track < 0 )
    {
@@ -212,10 +199,10 @@ static int Open( vlc_object_t *p_this )
         p_sys->waveheader.DataChunkID = VLC_FOURCC('d', 'a', 't', 'a');
         p_sys->waveheader.DataLength = 0;           /* we just don't know */
 
-        p_sys->i_first_sector = var_CreateGetInteger( p_access,
-                                                      "cdda-first-sector" );
-        p_sys->i_last_sector  = var_CreateGetInteger( p_access,
-                                                      "cdda-last-sector" );
+        p_sys->i_first_sector = var_InheritInteger( p_access,
+                                                    "cdda-first-sector" );
+        p_sys->i_last_sector  = var_InheritInteger( p_access,
+                                                    "cdda-last-sector" );
         /* Tracknumber in MRL */
         if( p_sys->i_first_sector < 0 || p_sys->i_last_sector < 0 )
         {
@@ -234,9 +221,6 @@ static int Open( vlc_object_t *p_this )
         p_access->info.i_size = (p_sys->i_last_sector - p_sys->i_first_sector)
                                      * (int64_t)CDDA_DATA_SIZE;
     }
-
-    /* PTS delay */
-    var_Create( p_access, "cdda-caching", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
 
     return VLC_SUCCESS;
 
@@ -351,7 +335,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
         case ACCESS_GET_PTS_DELAY:
             *va_arg( args, int64_t * ) =
-                   var_GetInteger( p_access, "cdda-caching" ) * INT64_C(1000);
+                INT64_C(1000) * var_InheritInteger( p_access, "disc-caching" );
             break;
 
         case ACCESS_SET_PAUSE_STATE:
@@ -401,7 +385,7 @@ static int GetTracks( access_t *p_access, input_item_t *p_current )
 /* If the given string is NULL or empty, fill it by the return value of 'code' */
 #define ON_EMPTY( psz, code ) do { if( !NONEMPTY( psz) ) { (psz) = code; } } while(0)
 
-    /* Retreive CDDB informations */
+    /* Retreive CDDB information */
 #ifdef HAVE_LIBCDDB
     char psz_year_buffer[4+1];
     msg_Dbg( p_access, "fetching infos with CDDB" );
@@ -448,7 +432,7 @@ static int GetTracks( access_t *p_access, input_item_t *p_current )
         pp_cd_text = NULL;
     }
 
-    /* Retrieve CD-TEXT informations but prefer CDDB */
+    /* Retrieve CD-TEXT information but prefer CDDB */
     if( i_cd_text > 0 && pp_cd_text[0] )
     {
         const vlc_meta_t *p_disc = pp_cd_text[0];
@@ -493,7 +477,7 @@ static int GetTracks( access_t *p_access, input_item_t *p_current )
         msg_Dbg( p_access, "track[%d] start=%d", i, p_sys->p_sectors[i] );
 
         /* */
-        if( asprintf( &psz_uri, "cdda://%s", p_access->psz_path ) == -1 )
+        if( asprintf( &psz_uri, "cdda://%s", p_access->psz_location ) == -1 )
             psz_uri = NULL;
         if( asprintf( &psz_opt, "cdda-track=%i", i+1 ) == -1 )
             psz_opt = NULL;
@@ -509,9 +493,8 @@ static int GetTracks( access_t *p_access, input_item_t *p_current )
         /* Create playlist items */
         const mtime_t i_duration = (int64_t)( p_sys->p_sectors[i+1] - p_sys->p_sectors[i] ) *
                                    CDDA_DATA_SIZE * 1000000 / 44100 / 2 / 2;
-        p_input_item = input_item_NewWithType( VLC_OBJECT( p_access ),
-                                              psz_uri, psz_name, 0, NULL, 0, i_duration,
-                                              ITEM_TYPE_DISC );
+        p_input_item = input_item_NewWithType( psz_uri, psz_name, 0, NULL, 0,
+                                               i_duration, ITEM_TYPE_DISC );
         input_item_CopyOptions( p_current, p_input_item );
         input_item_AddOption( p_input_item, psz_first, VLC_INPUT_OPTION_TRUSTED );
         input_item_AddOption( p_input_item, psz_last, VLC_INPUT_OPTION_TRUSTED );
@@ -523,7 +506,7 @@ static int GetTracks( access_t *p_access, input_item_t *p_current )
         const char *psz_track_description = NULL;
 
 #ifdef HAVE_LIBCDDB
-        /* Retreive CDDB informations */
+        /* Retreive CDDB information */
         if( p_disc )
         {
             cddb_track_t *t = cddb_disc_get_track( p_disc, i );
@@ -535,7 +518,7 @@ static int GetTracks( access_t *p_access, input_item_t *p_current )
         }
 #endif
 
-        /* Retreive CD-TEXT informations but prefer CDDB */
+        /* Retreive CD-TEXT information but prefer CDDB */
         if( i+1 < i_cd_text && pp_cd_text[i+1] )
         {
             const vlc_meta_t *t = pp_cd_text[i+1];
@@ -607,7 +590,7 @@ static int GetTracks( access_t *p_access, input_item_t *p_current )
 #ifdef HAVE_LIBCDDB
 static cddb_disc_t *GetCDDBInfo( access_t *p_access, int i_titles, int *p_sectors )
 {
-    if( var_CreateGetInteger( p_access, "album-art" ) == ALBUM_ART_WHEN_ASKED )
+    if( var_InheritInteger( p_access, "album-art" ) == ALBUM_ART_WHEN_ASKED )
         return NULL;
 
     /* */

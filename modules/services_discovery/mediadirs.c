@@ -2,7 +2,7 @@
  * mediadirs.c:  Picture/Music/Video user directories as service discoveries
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 9f911519386484351a5cd5ab632e1655f72fd46a $
+ * $Id: 11885a8e0a89f0bae3e1f298ff0983f932d3a27c $
  *
  * Authors: Erwan Tulou <erwan10 aT videolan DoT org>
  *
@@ -190,9 +190,9 @@ static void *Run( void *data )
             !S_ISDIR( st.st_mode ) )
             continue;
 
-        char* psz_uri = make_URI( psz_dir );
+        char* psz_uri = make_URI( psz_dir, "file" );
 
-        input_item_t* p_root = input_item_New( p_sd, psz_uri, NULL );
+        input_item_t* p_root = input_item_New( psz_uri, NULL );
         if( p_sys->i_type == Picture )
             input_item_AddOption( p_root, "ignore-filetypes=ini,db,lnk,txt",
                                   VLC_INPUT_OPTION_TRUSTED );
@@ -258,6 +258,8 @@ static void input_item_subitem_added( const vlc_event_t * p_event,
 static int onNewFileAdded( vlc_object_t *p_this, char const *psz_var,
                      vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
+    (void)p_this;
+
     services_discovery_t *p_sd = p_data;
     services_discovery_sys_t *p_sys = p_sd->p_sys;
 
@@ -266,8 +268,8 @@ static int onNewFileAdded( vlc_object_t *p_this, char const *psz_var,
     if( !psz_file || !*psz_file )
         return VLC_EGENERIC;
 
-    char* psz_uri = make_URI( psz_file );
-    input_item_t* p_item = input_item_New( p_sd, psz_uri, NULL );
+    char* psz_uri = make_URI( psz_file, "file" );
+    input_item_t* p_item = input_item_New( psz_uri, NULL );
 
     if( p_sys->i_type == Picture )
     {
@@ -310,33 +312,12 @@ void formatSnapshotItem( input_item_t *p_item )
     if( !p_item )
         return;
 
-    char* psz_file = NULL;
-    char* psz_option = NULL;
     char* psz_uri = input_item_GetURI( p_item );
 
-    if( !psz_uri )
-        goto end;
-
     /* copy the snapshot mrl as a ArtURL */
-    input_item_SetArtURL( p_item, psz_uri );
+    if( psz_uri )
+        input_item_SetArtURL( p_item, psz_uri );
 
-    psz_file = make_path( psz_uri );
-    if( !psz_file )
-        goto end;
-
-    if( asprintf( &psz_option, "fake-file=%s", psz_file ) == -1 )
-    {
-        psz_option = NULL;
-        goto end;
-    }
-
-    /* display still image as a video */
-    input_item_SetURI( p_item, "fake://" );
-    input_item_AddOption( p_item, psz_option, VLC_INPUT_OPTION_TRUSTED );
-
-end:
-    free( psz_option );
-    free( psz_file );
     free( psz_uri );
 }
 

@@ -1,24 +1,24 @@
 /*****************************************************************************
  * stats.c: Statistics handling
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 8a360c4fb046560a04d60cd21fd8db7015999f24 $
+ * Copyright (C) 2006 VLC authors and VideoLAN
+ * $Id: 27c1da1ae5109583fb1fd821d7b6fc0a3ab1319f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -102,7 +102,7 @@ int stats_Get( vlc_object_t *p_this, counter_t *p_counter, vlc_value_t *val )
 {
     if( !libvlc_stats (p_this) || !p_counter || p_counter->i_samples == 0 )
     {
-        val->i_int = val->f_float = 0.0;
+        val->i_int = 0;
         return VLC_EGENERIC;
     }
 
@@ -118,7 +118,7 @@ int stats_Get( vlc_object_t *p_this, counter_t *p_counter, vlc_value_t *val )
         /* Not ready yet */
         if( p_counter->i_samples < 2 )
         {
-            val->i_int = 0; val->f_float = 0.0;
+            val->i_int = 0;
             return VLC_EGENERIC;
         }
         if( p_counter->i_type == VLC_VAR_INTEGER )
@@ -127,7 +127,7 @@ int stats_Get( vlc_object_t *p_this, counter_t *p_counter, vlc_value_t *val )
                         p_counter->pp_samples[1]->value.i_int ) /
                     (float)(  p_counter->pp_samples[0]->date -
                               p_counter->pp_samples[1]->date );
-            val->i_int = (int)f;
+            val->i_int = (int64_t)f;
         }
         else
         {
@@ -232,9 +232,9 @@ void stats_DumpInputStats( input_stats_t *p_stats  )
     vlc_mutex_lock( &p_stats->lock );
     /* f_bitrate is in bytes / microsecond
      * *1000 => bytes / millisecond => kbytes / seconds */
-    fprintf( stderr, "Input : %i (%i bytes) - %f kB/s - "
-                     "Demux : %i (%i bytes) - %f kB/s\n"
-                     " - Vout : %i/%i - Aout : %i/%i - Sout : %f\n",
+    fprintf( stderr, "Input : %"PRId64" (%"PRId64" bytes) - %f kB/s - "
+                     "Demux : %"PRId64" (%"PRId64" bytes) - %f kB/s\n"
+                     " - Vout : %"PRId64"/%"PRId64" - Aout : %"PRId64"/%"PRId64" - Sout : %f\n",
                     p_stats->i_read_packets, p_stats->i_read_bytes,
                     p_stats->f_input_bitrate * 1000,
                     p_stats->i_demux_read_packets, p_stats->i_demux_read_bytes,
@@ -289,7 +289,7 @@ void stats_TimerStart( vlc_object_t *p_obj, const char *psz_name,
                      p_counter->i_samples, p_sample );
         p_sample->date = 0; p_sample->value.i_int = 0;
     }
-    if( p_counter->pp_samples[0]->value.b_bool == true )
+    if( p_counter->pp_samples[0]->value.b_bool )
     {
         msg_Warn( p_obj, "timer '%s' was already started !", psz_name );
         goto out;
@@ -452,7 +452,7 @@ static int CounterUpdate( vlc_object_t *p_handler,
         {
             counter_sample_t *p_new = (counter_sample_t*)malloc(
                                                sizeof( counter_sample_t ) );
-            p_new->value.psz_string = NULL;
+            p_new->value.i_int = 0;
 
             INSERT_ELEM( p_counter->pp_samples, p_counter->i_samples,
                          p_counter->i_samples, p_new );
@@ -524,7 +524,7 @@ static int CounterUpdate( vlc_object_t *p_handler,
         {
             counter_sample_t *p_new = (counter_sample_t*)malloc(
                                                sizeof( counter_sample_t ) );
-            p_new->value.psz_string = NULL;
+            p_new->value.i_int = 0;
 
             INSERT_ELEM( p_counter->pp_samples, p_counter->i_samples,
                          p_counter->i_samples, p_new );
@@ -560,7 +560,7 @@ static void TimerDump( vlc_object_t *p_obj, counter_t *p_counter,
         return;
 
     mtime_t last, total;
-    int i_total;
+    int64_t i_total;
     if( p_counter->i_samples != 2 )
     {
         msg_Err( p_obj, "timer %s does not exist", p_counter->psz_name );
@@ -568,7 +568,7 @@ static void TimerDump( vlc_object_t *p_obj, counter_t *p_counter,
     }
     i_total = p_counter->pp_samples[1]->value.i_int;
     total = p_counter->pp_samples[1]->date;
-    if( p_counter->pp_samples[0]->value.b_bool == true )
+    if( p_counter->pp_samples[0]->value.b_bool )
     {
         last = mdate() - p_counter->pp_samples[0]->date;
         i_total += 1;
@@ -581,14 +581,14 @@ static void TimerDump( vlc_object_t *p_obj, counter_t *p_counter,
     if( b_total )
     {
         msg_Dbg( p_obj,
-             "TIMER %s : %.3f ms - Total %.3f ms / %i intvls (Avg %.3f ms)",
+             "TIMER %s : %.3f ms - Total %.3f ms / %"PRId64" intvls (Avg %.3f ms)",
              p_counter->psz_name, (float)last/1000, (float)total/1000, i_total,
              (float)(total)/(1000*(float)i_total ) );
     }
     else
     {
         msg_Dbg( p_obj,
-             "TIMER %s : Total %.3f ms / %i intvls (Avg %.3f ms)",
+             "TIMER %s : Total %.3f ms / %"PRId64" intvls (Avg %.3f ms)",
              p_counter->psz_name, (float)total/1000, i_total,
              (float)(total)/(1000*(float)i_total ) );
     }

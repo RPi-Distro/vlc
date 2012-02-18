@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 36abb60b6033a8d8e6b9c4e3fccaea3053eef5ff $
+ * $Id: f89d93ef5e2dded5a8666fa29754235130131152 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -45,6 +45,8 @@
 #if defined( WIN32 ) && !defined( UNDER_CE )
 #   include <io.h>
 #   define lseek _lseeki64
+#elif defined( __OS2__ )
+#   include <io.h>
 #else
 #   include <unistd.h>
 #endif
@@ -63,6 +65,8 @@ static void Close( vlc_object_t * );
 #define APPEND_TEXT N_("Append to file")
 #define APPEND_LONGTEXT N_( "Append to file if it exists instead " \
                             "of replacing it.")
+#define SYNC_TEXT N_("Synchronous writing")
+#define SYNC_LONGTEXT N_( "Open the file with synchronous writing.")
 
 vlc_module_begin ()
     set_description( N_("File stream output") )
@@ -70,10 +74,13 @@ vlc_module_begin ()
     set_capability( "sout access", 50 )
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_ACO )
-    add_shortcut( "file" )
-    add_shortcut( "stream" )
-    add_bool( SOUT_CFG_PREFIX "append", false, NULL, APPEND_TEXT,APPEND_LONGTEXT,
+    add_shortcut( "file", "stream", "fd" )
+    add_bool( SOUT_CFG_PREFIX "append", false, APPEND_TEXT,APPEND_LONGTEXT,
               true )
+#ifdef O_SYNC
+    add_bool( SOUT_CFG_PREFIX "sync", false, SYNC_TEXT,SYNC_LONGTEXT,
+              false )
+#endif
     set_callbacks( Open, Close )
 vlc_module_end ()
 
@@ -82,18 +89,17 @@ vlc_module_end ()
  * Exported prototypes
  *****************************************************************************/
 static const char *const ppsz_sout_options[] = {
-    "append", NULL
+    "append",
+#ifdef O_SYNC
+    "sync",
+#endif
+    NULL
 };
 
 static ssize_t Write( sout_access_out_t *, block_t * );
 static int Seek ( sout_access_out_t *, off_t  );
 static ssize_t Read ( sout_access_out_t *, block_t * );
 static int Control( sout_access_out_t *, int, va_list );
-
-struct sout_access_out_sys_t
-{
-    int i_handle;
-};
 
 /*****************************************************************************
  * Open: open the file
@@ -113,33 +119,56 @@ static int Open( vlc_object_t *p_this )
 
     bool append = var_GetBool( p_access, SOUT_CFG_PREFIX "append" );
 
+    if (!strcmp (p_access->psz_access, "fd"))
+    {
+        char *end;
+
+        fd = strtol (p_access->psz_path, &end, 0);
+        if (!*p_access->psz_path || *end)
+        {
+            msg_Err (p_access, "invalid file descriptor: %s",
+                     p_access->psz_path);
+            return VLC_EGENERIC;
+        }
+        fd = vlc_dup (fd);
+        if (fd == -1)
+        {
+            msg_Err (p_access, "cannot use file descriptor: %m");
+            return VLC_EGENERIC;
+        }
+    }
+#ifndef UNDER_CE
+    else
     if( !strcmp( p_access->psz_path, "-" ) )
     {
-#ifndef UNDER_CE
-#ifdef WIN32
+#if defined( WIN32 ) || defined( __OS2__ )
         setmode (fileno (stdout), O_BINARY);
 #endif
         fd = vlc_dup (fileno (stdout));
+        if (fd == -1)
+        {
+            msg_Err (p_access, "cannot use standard output: %m");
+            return VLC_EGENERIC;
+        }
         msg_Dbg( p_access, "using stdout" );
-#else
-#warning stdout is not supported on Windows Mobile, but may be used on Windows CE
-        fd = -1;
-#endif
     }
+#endif
     else
     {
         char *psz_tmp = str_format( p_access, p_access->psz_path );
         path_sanitize( psz_tmp );
 
         fd = vlc_open( psz_tmp, O_RDWR | O_CREAT | O_LARGEFILE |
-                        (append ? 0 : O_TRUNC), 0666 );
+#ifdef O_SYNC
+                (var_GetBool( p_access, SOUT_CFG_PREFIX "sync" ) ? O_SYNC : 0) |
+#endif
+                (append ? 0 : O_TRUNC), 0666 );
         free( psz_tmp );
-    }
-
-    if (fd == -1)
-    {
-        msg_Err( p_access, "cannot open `%s' (%m)", p_access->psz_path );
-        return VLC_EGENERIC;
+        if (fd == -1)
+        {
+            msg_Err (p_access, "cannot create %s: %m", p_access->psz_path);
+            return VLC_EGENERIC;
+        }
     }
 
     p_access->pf_write = Write;

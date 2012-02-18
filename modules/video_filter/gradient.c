@@ -2,7 +2,7 @@
  * gradient.c : Gradient and edge detection video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: 809e53703b5f143766cace420a7a676a9b4735eb $
+ * $Id: 77b4387a16b1e40707df32db63a70dc945d73761 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -85,13 +85,13 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    add_string( FILTER_PREFIX "mode", "gradient", NULL,
+    add_string( FILTER_PREFIX "mode", "gradient",
                 MODE_TEXT, MODE_LONGTEXT, false )
         change_string_list( mode_list, mode_list_text, 0 )
 
-    add_integer_with_range( FILTER_PREFIX "type", 0, 0, 1, NULL,
+    add_integer_with_range( FILTER_PREFIX "type", 0, 0, 1,
                 GRADIENT_TEXT, GRADIENT_LONGTEXT, false )
-    add_bool( FILTER_PREFIX "cartoon", true, NULL,
+    add_bool( FILTER_PREFIX "cartoon", true,
                 CARTOON_TEXT, CARTOON_LONGTEXT, false )
 
     add_shortcut( "gradient" )

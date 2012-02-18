@@ -1,8 +1,8 @@
 /*****************************************************************************
  * crossbar.c : DirectShow access module for vlc
  *****************************************************************************
- * Copyright (C) 2002 the VideoLAN team
- * $Id: 653227ea6479610095cf2e5a3225e1f26f8667ec $
+ * Copyright (C) 2002, 2004, 2009 the VideoLAN team
+ * $Id: b53b974e2cf8ebe46f1fccd1e9971886cfed301f $
  *
  * Author: Damien Fouilleul <damien dot fouilleul at laposte dot net>
  *
@@ -36,9 +36,8 @@
 #   define QACONTAINERFLAGS QACONTAINERFLAGS_ANOTHERSOMETHINGELSE
 #endif
 
-#include "common.h"
-
-
+#include "access.h"
+#include "vlc_dshow.h"
 
 // Helper function to associate a crossbar pin name with the type.
 static const char * GetPhysicalPinName(long lType)

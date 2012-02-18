@@ -13,98 +13,116 @@ include $(top_srcdir)/modules/common.am
 libpacketizer_copy_plugin_la_SOURCES = $(SOURCES_packetizer_copy)
 nodist_libpacketizer_copy_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_copy)
 # Force per-target objects:
-libpacketizer_copy_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_copy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_copy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_copy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_copy)
+libpacketizer_copy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_copy)
+libpacketizer_copy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_copy)
+libpacketizer_copy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_copy)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_copy_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_copy_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_copy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_copy)
+libpacketizer_copy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_copy)
+libpacketizer_copy_plugin_la_DEPENDENCIES =
 
 # The packetizer_dirac plugin
 libpacketizer_dirac_plugin_la_SOURCES = $(SOURCES_packetizer_dirac)
 nodist_libpacketizer_dirac_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_dirac)
 # Force per-target objects:
-libpacketizer_dirac_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_dirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_dirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_dirac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_dirac)
+libpacketizer_dirac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_dirac)
+libpacketizer_dirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_dirac)
+libpacketizer_dirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_dirac)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_dirac_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_dirac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_dirac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_dirac)
+libpacketizer_dirac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_dirac)
+libpacketizer_dirac_plugin_la_DEPENDENCIES =
 
 # The packetizer_flac plugin
 libpacketizer_flac_plugin_la_SOURCES = $(SOURCES_packetizer_flac)
 nodist_libpacketizer_flac_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_flac)
 # Force per-target objects:
-libpacketizer_flac_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_flac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_flac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_flac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_flac)
+libpacketizer_flac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_flac)
+libpacketizer_flac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_flac)
+libpacketizer_flac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_flac)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_flac_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_flac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_flac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_flac)
+libpacketizer_flac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_flac)
+libpacketizer_flac_plugin_la_DEPENDENCIES =
 
 # The packetizer_h264 plugin
 libpacketizer_h264_plugin_la_SOURCES = $(SOURCES_packetizer_h264)
 nodist_libpacketizer_h264_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_h264)
 # Force per-target objects:
-libpacketizer_h264_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_h264_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_h264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_h264_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_h264)
+libpacketizer_h264_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_h264)
+libpacketizer_h264_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_h264)
+libpacketizer_h264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_h264)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_h264_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_h264_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_h264_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_h264)
+libpacketizer_h264_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_h264)
+libpacketizer_h264_plugin_la_DEPENDENCIES =
 
 # The packetizer_mlp plugin
 libpacketizer_mlp_plugin_la_SOURCES = $(SOURCES_packetizer_mlp)
 nodist_libpacketizer_mlp_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_mlp)
 # Force per-target objects:
-libpacketizer_mlp_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_mlp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_mlp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_mlp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mlp)
+libpacketizer_mlp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mlp)
+libpacketizer_mlp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mlp)
+libpacketizer_mlp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mlp)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_mlp_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_mlp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_mlp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mlp)
+libpacketizer_mlp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mlp)
+libpacketizer_mlp_plugin_la_DEPENDENCIES =
 
 # The packetizer_mpeg4audio plugin
 libpacketizer_mpeg4audio_plugin_la_SOURCES = $(SOURCES_packetizer_mpeg4audio)
 nodist_libpacketizer_mpeg4audio_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_mpeg4audio)
 # Force per-target objects:
-libpacketizer_mpeg4audio_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_mpeg4audio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_mpeg4audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_mpeg4audio_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpeg4audio)
+libpacketizer_mpeg4audio_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpeg4audio)
+libpacketizer_mpeg4audio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpeg4audio)
+libpacketizer_mpeg4audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpeg4audio)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_mpeg4audio_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_mpeg4audio_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_mpeg4audio_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpeg4audio)
+libpacketizer_mpeg4audio_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpeg4audio)
+libpacketizer_mpeg4audio_plugin_la_DEPENDENCIES =
 
 # The packetizer_mpeg4video plugin
 libpacketizer_mpeg4video_plugin_la_SOURCES = $(SOURCES_packetizer_mpeg4video)
 nodist_libpacketizer_mpeg4video_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_mpeg4video)
 # Force per-target objects:
-libpacketizer_mpeg4video_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_mpeg4video_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_mpeg4video_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_mpeg4video_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpeg4video)
+libpacketizer_mpeg4video_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpeg4video)
+libpacketizer_mpeg4video_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpeg4video)
+libpacketizer_mpeg4video_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpeg4video)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_mpeg4video_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_mpeg4video_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_mpeg4video_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpeg4video)
+libpacketizer_mpeg4video_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpeg4video)
+libpacketizer_mpeg4video_plugin_la_DEPENDENCIES =
 
 # The packetizer_mpegvideo plugin
 libpacketizer_mpegvideo_plugin_la_SOURCES = $(SOURCES_packetizer_mpegvideo)
 nodist_libpacketizer_mpegvideo_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_mpegvideo)
 # Force per-target objects:
-libpacketizer_mpegvideo_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_mpegvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_mpegvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_mpegvideo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_mpegvideo)
+libpacketizer_mpegvideo_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_mpegvideo)
+libpacketizer_mpegvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_mpegvideo)
+libpacketizer_mpegvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_mpegvideo)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_mpegvideo_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_mpegvideo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_mpegvideo_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_mpegvideo)
+libpacketizer_mpegvideo_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_mpegvideo)
+libpacketizer_mpegvideo_plugin_la_DEPENDENCIES =
 
 # The packetizer_vc1 plugin
 libpacketizer_vc1_plugin_la_SOURCES = $(SOURCES_packetizer_vc1)
 nodist_libpacketizer_vc1_plugin_la_SOURCES = $(nodist_SOURCES_packetizer_vc1)
 # Force per-target objects:
-libpacketizer_vc1_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpacketizer_vc1_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpacketizer_vc1_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpacketizer_vc1_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_packetizer_vc1)
+libpacketizer_vc1_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_packetizer_vc1)
+libpacketizer_vc1_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_packetizer_vc1)
+libpacketizer_vc1_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_packetizer_vc1)
 # Set LIBADD and DEPENDENCIES manually:
-libpacketizer_vc1_plugin_la_LIBADD = $(AM_LIBADD)
-libpacketizer_vc1_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpacketizer_vc1_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_packetizer_vc1)
+libpacketizer_vc1_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_packetizer_vc1)
+libpacketizer_vc1_plugin_la_DEPENDENCIES =
 

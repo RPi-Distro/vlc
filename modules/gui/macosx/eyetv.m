@@ -1,8 +1,8 @@
 /*****************************************************************************
 * eyetv.m: small class to control the notification parts of the EyeTV plugin
 *****************************************************************************
-* Copyright (C) 2006-2011 the VideoLAN team
-* $Id: 690ff164804cd85b3d92bb9e5f03e091ba00146f $
+* Copyright (C) 2006-2011 VLC authors and VideoLAN
+* $Id: 732d368bd3cd5d0b099232692ee2932e9fe77fbe $
 *
 * Authors: Felix Kühne <fkuehne at videolan dot org>
 *          Damien Fouilleul <damienf at videolan dot org>
@@ -23,6 +23,9 @@
 *****************************************************************************/
 
 #import "eyetv.h"
+/* for apple event interaction [carbon] */
+//#import <Foundation/NSAppleScript>
+/* for various VLC core related calls */
 #import "intf.h"
 
 @implementation VLCEyeTVController
@@ -54,7 +57,7 @@ static VLCEyeTVController *_o_sharedInstance = nil;
 
 - (void)globalNotificationReceived: (NSNotification *)theNotification
 {
-   /* update our info on the used device */
+    /* update our info on the used device */
     if( [[theNotification name] isEqualToString: @"DeviceAdded"] )
         b_deviceConnected = YES;
     if( [[theNotification name] isEqualToString: @"DeviceRemoved"] )

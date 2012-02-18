@@ -1,8 +1,8 @@
 /*****************************************************************************
  * alsa.c : Alsa input module for vlc
  *****************************************************************************
- * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 08a661eb7c54c294f7062b9abb0f62a6ec8da716 $
+ * Copyright (C) 2002-2011 the VideoLAN team
+ * $Id: a83f1dede5729ee8217a22181d7f359bd3dd361d $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -44,6 +44,8 @@
 #include <vlc_access.h>
 #include <vlc_demux.h>
 #include <vlc_input.h>
+#include <vlc_fourcc.h>
+#include <vlc_aout.h>
 
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -68,14 +70,13 @@ static void DemuxClose( vlc_object_t * );
 #define STEREO_LONGTEXT N_( \
     "Capture the audio stream in stereo." )
 
+#define FORMAT_TEXT N_( "Capture format (default s16l)" )
+#define FORMAT_LONGTEXT N_( \
+    "Capture format of audio stream." )
+
 #define SAMPLERATE_TEXT N_( "Samplerate" )
 #define SAMPLERATE_LONGTEXT N_( \
     "Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100, 48000)" )
-
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for Alsa captures. This " \
-    "value should be set in milliseconds." )
 
 #define HELP_TEXT N_( \
     "Use alsa:// to open the default audio input. If multiple audio " \
@@ -85,9 +86,26 @@ static void DemuxClose( vlc_object_t * );
 #define ALSA_DEFAULT "hw"
 #define CFG_PREFIX "alsa-"
 
+static const char *const ppsz_fourcc[] = {
+    "u8", "s8", "gsm", "u16l", "s16l", "u16b", "s16b",
+    "u24l", "s24l", "u24b", "s24b", "u32l", "s32l",
+    "u32b", "s32b", "f32l", "f32b", "f64l", "f64b"
+};
+static const char *const ppsz_fourcc_text[] = {
+    N_("PCM U8"), N_("PCM S8"), N_("GSM Audio"),
+    N_("PCM U16 LE"), N_("PCM S16 LE"),
+    N_("PCM U16 BE"), N_("PCM S16 BE"),
+    N_("PCM U24 LE"), N_("PCM S24 LE"),
+    N_("PCM U24 BE"), N_("PCM S24 BE"),
+    N_("PCM U32 LE"), N_("PCM S32 LE"),
+    N_("PCM U32 BE"), N_("PCM S32 BE"),
+    N_("PCM F32 LE"), N_("PCM F32 BE"),
+    N_("PCM F64 LE"), N_("PCM F64 BE")
+};
+
 vlc_module_begin()
-    set_shortname( N_("Alsa") )
-    set_description( N_("Alsa audio capture input") )
+    set_shortname( N_("ALSA") )
+    set_description( N_("ALSA audio capture input") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
     set_help( HELP_TEXT )
@@ -96,12 +114,13 @@ vlc_module_begin()
     set_capability( "access_demux", 10 )
     set_callbacks( DemuxOpen, DemuxClose )
 
-    add_bool( CFG_PREFIX "stereo", true, NULL, STEREO_TEXT, STEREO_LONGTEXT,
+    add_bool( CFG_PREFIX "stereo", true, STEREO_TEXT, STEREO_LONGTEXT,
                 true )
-    add_integer( CFG_PREFIX "samplerate", 48000, NULL, SAMPLERATE_TEXT,
+    add_string( CFG_PREFIX "format", "s16l", FORMAT_TEXT,
+                FORMAT_LONGTEXT, true )
+        change_string_list( ppsz_fourcc, ppsz_fourcc_text, 0 )
+    add_integer( CFG_PREFIX "samplerate", 48000, SAMPLERATE_TEXT,
                 SAMPLERATE_LONGTEXT, true )
-    add_integer( CFG_PREFIX "caching", DEFAULT_PTS_DELAY / 1000, NULL,
-                CACHING_TEXT, CACHING_LONGTEXT, true )
 vlc_module_end()
 
 /*****************************************************************************
@@ -121,9 +140,9 @@ static char *ListAvailableDevices( demux_t *, bool b_probe );
 struct demux_sys_t
 {
     /* Audio */
-    int i_cache;
     unsigned int i_sample_rate;
     bool b_stereo;
+    vlc_fourcc_t i_format;
     size_t i_max_frame_size;
     block_t *p_block;
     es_out_id_t *p_es;
@@ -247,22 +266,25 @@ static int DemuxOpen( vlc_object_t *p_this )
     p_demux->p_sys = p_sys = calloc( 1, sizeof( demux_sys_t ) );
     if( p_sys == NULL ) return VLC_ENOMEM;
 
-    p_sys->i_sample_rate = var_CreateGetInteger( p_demux, CFG_PREFIX "samplerate" );
-    p_sys->b_stereo = var_CreateGetBool( p_demux, CFG_PREFIX "stereo" );
-    p_sys->i_cache = var_CreateGetInteger( p_demux, CFG_PREFIX "caching" );
+    p_sys->i_sample_rate = var_InheritInteger( p_demux, CFG_PREFIX "samplerate" );
+    p_sys->b_stereo = var_InheritBool( p_demux, CFG_PREFIX "stereo" );
     p_sys->p_es = NULL;
     p_sys->p_block = NULL;
     p_sys->i_next_demux_date = -1;
 
+    char *psz_format = var_InheritString( p_demux, CFG_PREFIX "format" );
+    p_sys->i_format = vlc_fourcc_GetCodecFromString( AUDIO_ES, psz_format );
+    free( psz_format );
+
     const char *psz_device = NULL;
-    if( p_demux->psz_path && *p_demux->psz_path )
-        psz_device = p_demux->psz_path;
+    if( p_demux->psz_location && *p_demux->psz_location )
+        psz_device = p_demux->psz_location;
     else
         ListAvailableDevices( p_demux, false );
 
     if( FindMainDevice( p_demux, psz_device ) != VLC_SUCCESS )
     {
-        if( p_demux->psz_path && *p_demux->psz_path )
+        if( p_demux->psz_location && *p_demux->psz_location )
             ListAvailableDevices( p_demux, false );
         DemuxClose( p_this );
         return VLC_EGENERIC;
@@ -307,7 +329,8 @@ static int DemuxControl( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_GET_PTS_DELAY:
-            *va_arg( args, int64_t * ) = (int64_t)p_sys->i_cache * 1000;
+            *va_arg( args, int64_t * ) =
+                INT64_C(1000) * var_InheritInteger( p_demux, "live-caching" );
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
@@ -337,38 +360,14 @@ static int Demux( demux_t *p_demux )
 
     do
     {
+        p_block = GrabAudio( p_demux );
         if( p_block )
         {
+            es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
             es_out_Send( p_demux->out, p_sys->p_es, p_block );
             p_block = NULL;
         }
 
-        /* Wait for data */
-        int i_wait = snd_pcm_wait( p_sys->p_alsa_pcm, 10 ); /* See poll() comment in oss.c */
-        switch( i_wait )
-        {
-            case 1:
-            {
-                p_block = GrabAudio( p_demux );
-                if( p_block )
-                    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
-            }
-
-            /* FIXME: this is a copy paste from below. Shouldn't be needed
-             * twice. */
-            case -EPIPE:
-                /* xrun */
-                snd_pcm_prepare( p_sys->p_alsa_pcm );
-                break;
-            case -ESTRPIPE:
-            {
-                /* suspend */
-                int i_resume = snd_pcm_resume( p_sys->p_alsa_pcm );
-                if( i_resume < 0 && i_resume != -EAGAIN ) snd_pcm_prepare( p_sys->p_alsa_pcm );
-                break;
-            }
-            /* </FIXME> */
-        }
     } while( p_block && p_sys->i_next_demux_date > 0 &&
              p_block->i_pts < p_sys->i_next_demux_date );
 
@@ -377,7 +376,6 @@ static int Demux( demux_t *p_demux )
 
     return 1;
 }
-
 
 /*****************************************************************************
  * GrabAudio: Grab an audio frame
@@ -394,41 +392,41 @@ static block_t* GrabAudio( demux_t *p_demux )
     if( !p_block )
     {
         msg_Warn( p_demux, "cannot get block" );
-        return 0;
+        return NULL;
     }
 
     p_sys->p_block = p_block;
 
     /* ALSA */
-    i_read = snd_pcm_readi( p_sys->p_alsa_pcm, p_block->p_buffer, p_sys->i_alsa_chunk_size );
-    if( i_read <= 0 )
+    i_read = snd_pcm_readi( p_sys->p_alsa_pcm, p_block->p_buffer,
+                            p_sys->i_alsa_chunk_size );
+    if( i_read == -EAGAIN )
     {
-        int i_resume;
-        switch( i_read )
-        {
-            case -EAGAIN:
-                break;
-            case -EPIPE:
-                /* xrun */
-                snd_pcm_prepare( p_sys->p_alsa_pcm );
-                break;
-            case -ESTRPIPE:
-                /* suspend */
-                i_resume = snd_pcm_resume( p_sys->p_alsa_pcm );
-                if( i_resume < 0 && i_resume != -EAGAIN ) snd_pcm_prepare( p_sys->p_alsa_pcm );
-                break;
-            default:
-                msg_Err( p_demux, "Failed to read alsa frame (%s)", snd_strerror( i_read ) );
-                return 0;
-        }
-    }
-    else
-    {
-        /* convert from frames to bytes */
-        i_read *= p_sys->i_alsa_frame_size;
+        snd_pcm_wait( p_sys->p_alsa_pcm, 10 ); /* See poll() comment in oss.c */
+        return NULL;
     }
 
-    if( i_read <= 0 ) return 0;
+    if( i_read < 0 )
+        i_read = snd_pcm_recover( p_sys->p_alsa_pcm, i_read, 0 );
+
+    if( i_read <= 0 )
+    {
+        switch( i_read )
+        {
+            case 0: /* state recovered or no data */
+                return NULL;
+            case -EAGAIN:
+                snd_pcm_wait( p_sys->p_alsa_pcm, 10 ); /* See poll() comment in oss.c */
+                return NULL;
+            default:
+                msg_Err( p_demux, "Failed to read alsa frame (%s)",
+                         snd_strerror( i_read ) );
+                return NULL;
+        }
+    }
+
+    /* convert from frames to bytes */
+    i_read *= p_sys->i_alsa_frame_size;
 
     p_block->i_buffer = i_read;
     p_sys->p_block = 0;
@@ -466,6 +464,46 @@ static block_t* GrabAudio( demux_t *p_demux )
     return p_block;
 }
 
+static snd_pcm_format_t GetAlsaPCMFormat( demux_t *p_demux, const vlc_fourcc_t i_format )
+{
+    demux_sys_t *p_sys = p_demux->p_sys;
+
+    switch( i_format )
+    {
+        case VLC_CODEC_U8: return SND_PCM_FORMAT_U8;
+        case VLC_CODEC_S8: return SND_PCM_FORMAT_S8;
+
+        case VLC_CODEC_GSM: return SND_PCM_FORMAT_GSM;
+
+        case VLC_CODEC_U16L: return SND_PCM_FORMAT_U16_LE;
+        case VLC_CODEC_S16L: return SND_PCM_FORMAT_S16_LE;
+        case VLC_CODEC_U16B: return SND_PCM_FORMAT_U16_BE;
+        case VLC_CODEC_S16B: return SND_PCM_FORMAT_S16_BE;
+
+        case VLC_CODEC_U24L: return SND_PCM_FORMAT_U24_3LE;
+        case VLC_CODEC_S24L: return SND_PCM_FORMAT_S24_3LE;
+        case VLC_CODEC_U24B: return SND_PCM_FORMAT_U24_3BE;
+        case VLC_CODEC_S24B: return SND_PCM_FORMAT_S24_3BE;
+
+        case VLC_CODEC_U32L: return SND_PCM_FORMAT_U32_LE;
+        case VLC_CODEC_U32B: return SND_PCM_FORMAT_U32_BE;
+        case VLC_CODEC_S32L: return SND_PCM_FORMAT_S32_LE;
+        case VLC_CODEC_S32B: return SND_PCM_FORMAT_S32_BE;
+        case VLC_CODEC_F32L: return SND_PCM_FORMAT_FLOAT_LE;
+        case VLC_CODEC_F32B: return SND_PCM_FORMAT_FLOAT_BE;
+
+        case VLC_CODEC_F64L: return SND_PCM_FORMAT_FLOAT64_LE;
+        case VLC_CODEC_F64B: return SND_PCM_FORMAT_FLOAT64_BE;
+
+        default:
+            msg_Err( p_demux, "ALSA: unsupported sample format '%s' falling back to 's16l'",
+                              (const char *)&i_format );
+            p_sys->i_format = VLC_CODEC_S16L;
+    }
+
+    return SND_PCM_FORMAT_S16_LE;
+}
+
 /*****************************************************************************
  * OpenAudioDev: open and set up the audio device and probe for capabilities
  *****************************************************************************/
@@ -474,6 +512,7 @@ static int OpenAudioDevAlsa( demux_t *p_demux, const char *psz_device )
     demux_sys_t *p_sys = p_demux->p_sys;
     p_sys->p_alsa_pcm = NULL;
     snd_pcm_hw_params_t *p_hw_params = NULL;
+    snd_pcm_format_t i_alsa_pcm_format;
     snd_pcm_uframes_t buffer_size;
     snd_pcm_uframes_t chunk_size;
 
@@ -514,15 +553,18 @@ static int OpenAudioDevAlsa( demux_t *p_demux, const char *psz_device )
     }
 
     /* Set Interleaved access */
-    if( ( i_err = snd_pcm_hw_params_set_access( p_sys->p_alsa_pcm, p_hw_params, SND_PCM_ACCESS_RW_INTERLEAVED ) ) < 0 )
+    if( ( i_err = snd_pcm_hw_params_set_access( p_sys->p_alsa_pcm, p_hw_params,
+                                        SND_PCM_ACCESS_RW_INTERLEAVED ) ) < 0 )
     {
         msg_Err( p_demux, "ALSA: cannot set access type (%s)",
                  snd_strerror( i_err ) );
         goto adev_fail;
     }
 
-    /* Set 16 bit little endian */
-    if( ( i_err = snd_pcm_hw_params_set_format( p_sys->p_alsa_pcm, p_hw_params, SND_PCM_FORMAT_S16_LE ) ) < 0 )
+    /* Set capture format, default is signed 16 bit little endian */
+    i_alsa_pcm_format = GetAlsaPCMFormat( p_demux, p_sys->i_format );
+    if( ( i_err = snd_pcm_hw_params_set_format( p_sys->p_alsa_pcm, p_hw_params,
+                                                i_alsa_pcm_format ) ) < 0 )
     {
         msg_Err( p_demux, "ALSA: cannot set sample format (%s)",
                  snd_strerror( i_err ) );
@@ -530,7 +572,8 @@ static int OpenAudioDevAlsa( demux_t *p_demux, const char *psz_device )
     }
 
     /* Set sample rate */
-    i_err = snd_pcm_hw_params_set_rate_near( p_sys->p_alsa_pcm, p_hw_params, &p_sys->i_sample_rate, NULL );
+    i_err = snd_pcm_hw_params_set_rate_near( p_sys->p_alsa_pcm, p_hw_params,
+                                             &p_sys->i_sample_rate, NULL );
     if( i_err < 0 )
     {
         msg_Err( p_demux, "ALSA: cannot set sample rate (%s)",
@@ -540,14 +583,16 @@ static int OpenAudioDevAlsa( demux_t *p_demux, const char *psz_device )
 
     /* Set channels */
     unsigned int channels = p_sys->b_stereo ? 2 : 1;
-    if( ( i_err = snd_pcm_hw_params_set_channels( p_sys->p_alsa_pcm, p_hw_params, channels ) ) < 0 )
+    if( ( i_err = snd_pcm_hw_params_set_channels( p_sys->p_alsa_pcm, p_hw_params,
+                                                  channels ) ) < 0 )
     {
         channels = ( channels==1 ) ? 2 : 1;
         msg_Warn( p_demux, "ALSA: cannot set channel count (%s). "
                   "Trying with channels=%d",
                   snd_strerror( i_err ),
                   channels );
-        if( ( i_err = snd_pcm_hw_params_set_channels( p_sys->p_alsa_pcm, p_hw_params, channels ) ) < 0 )
+        if( ( i_err = snd_pcm_hw_params_set_channels( p_sys->p_alsa_pcm, p_hw_params,
+                                                      channels ) ) < 0 )
         {
             msg_Err( p_demux, "ALSA: cannot set channel count (%s)",
                      snd_strerror( i_err ) );
@@ -568,7 +613,8 @@ static int OpenAudioDevAlsa( demux_t *p_demux, const char *psz_device )
 
     /* Set period time */
     unsigned int period_time = buffer_time / 4;
-    i_err = snd_pcm_hw_params_set_period_time_near( p_sys->p_alsa_pcm, p_hw_params, &period_time, 0 );
+    i_err = snd_pcm_hw_params_set_period_time_near( p_sys->p_alsa_pcm, p_hw_params,
+                                                    &period_time, 0 );
     if( i_err < 0 )
     {
         msg_Err( p_demux, "ALSA: cannot set period time (%s)",
@@ -577,7 +623,8 @@ static int OpenAudioDevAlsa( demux_t *p_demux, const char *psz_device )
     }
 
     /* Set buffer time */
-    i_err = snd_pcm_hw_params_set_buffer_time_near( p_sys->p_alsa_pcm, p_hw_params, &buffer_time, 0 );
+    i_err = snd_pcm_hw_params_set_buffer_time_near( p_sys->p_alsa_pcm, p_hw_params,
+                                                    &buffer_time, 0 );
     if( i_err < 0 )
     {
         msg_Err( p_demux, "ALSA: cannot set buffer time (%s)",
@@ -604,7 +651,7 @@ static int OpenAudioDevAlsa( demux_t *p_demux, const char *psz_device )
         goto adev_fail;
     }
 
-    int bits_per_sample = snd_pcm_format_physical_width(SND_PCM_FORMAT_S16_LE);
+    int bits_per_sample = snd_pcm_format_physical_width(i_alsa_pcm_format);
     int bits_per_frame = bits_per_sample * channels;
 
     p_sys->i_alsa_chunk_size = chunk_size;
@@ -634,7 +681,6 @@ static int OpenAudioDevAlsa( demux_t *p_demux, const char *psz_device )
     p_sys->p_alsa_pcm = NULL;
 
     return VLC_EGENERIC;
-
 }
 
 static int OpenAudioDev( demux_t *p_demux, const char *psz_device )
@@ -643,16 +689,17 @@ static int OpenAudioDev( demux_t *p_demux, const char *psz_device )
     if( OpenAudioDevAlsa( p_demux, psz_device ) != VLC_SUCCESS )
         return VLC_EGENERIC;
 
-    msg_Dbg( p_demux, "opened adev=`%s' %s %dHz",
+    msg_Dbg( p_demux, "opened adev=`%s' %s %dHz codec '%s'",
              psz_device, p_sys->b_stereo ? "stereo" : "mono",
-             p_sys->i_sample_rate );
+             p_sys->i_sample_rate,
+             vlc_fourcc_GetDescription( AUDIO_ES, p_sys->i_format ) );
 
     es_format_t fmt;
-    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC('a','r','a','w') );
+    es_format_Init( &fmt, AUDIO_ES, p_sys->i_format );
 
     fmt.audio.i_channels = p_sys->b_stereo ? 2 : 1;
     fmt.audio.i_rate = p_sys->i_sample_rate;
-    fmt.audio.i_bitspersample = 16;
+    fmt.audio.i_bitspersample = aout_BitsPerSample( p_sys->i_format );
     fmt.audio.i_blockalign = fmt.audio.i_channels * fmt.audio.i_bitspersample / 8;
     fmt.i_bitrate = fmt.audio.i_channels * fmt.audio.i_rate * fmt.audio.i_bitspersample;
 

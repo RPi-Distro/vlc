@@ -3,20 +3,9 @@
 
 basedir = access
 dir = access/zip
-mods = zip
-libvlc_LTLIBRARIES =  $(LTLIBzip)
-EXTRA_LTLIBRARIES =  libzip_plugin.la
+mods = 
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
-
-# The zip plugin
-libzip_plugin_la_SOURCES = $(SOURCES_zip)
-nodist_libzip_plugin_la_SOURCES = $(nodist_SOURCES_zip)
-# Force per-target objects:
-libzip_plugin_la_CFLAGS = $(AM_CFLAGS)
-libzip_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libzip_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libzip_plugin_la_LIBADD = $(AM_LIBADD)
-libzip_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

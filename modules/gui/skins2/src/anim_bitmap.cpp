@@ -2,7 +2,7 @@
  * anim_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: f09da66db806d1cfc06b0226f7a25e70b0afafef $
+ * $Id: 92a844f640ea6b0a0e0f3981d17ebbcb090f7ce4 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -29,8 +29,8 @@
 
 
 AnimBitmap::AnimBitmap( intf_thread_t *pIntf, const GenericBitmap &rBitmap ):
-    SkinObject( pIntf ), m_pImage( NULL ), m_curFrame( 0 ), m_curLoop( 0 ),
-    m_pTimer( NULL ), m_cmdNextFrame( this ), m_rBitmap( rBitmap )
+    SkinObject( pIntf ), m_rBitmap( rBitmap ), m_pImage( NULL ),
+    m_curFrame( 0 ), m_curLoop( 0 ), m_pTimer( NULL ), m_cmdNextFrame( this )
 {
     // Build the graphics
     OSFactory *pOsFactory = OSFactory::instance( pIntf );
@@ -69,7 +69,8 @@ void AnimBitmap::stopAnim()
 }
 
 
-void AnimBitmap::draw( OSGraphics &rImage, int xDest, int yDest )
+void AnimBitmap::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h,
+                       int xOffset, int yOffset )
 {
     // Draw the current frame
     int height = m_pImage->getHeight() / m_nbFrames;
@@ -79,9 +80,9 @@ void AnimBitmap::draw( OSGraphics &rImage, int xDest, int yDest )
     // rImage.drawGraphics( *m_pImage, 0, ySrc, xDest, yDest,
     //                      m_pImage->getWidth(), height );
 
-    // A new way .... needs to be tested thoroughly
-    rImage.drawBitmap( m_rBitmap, 0, ySrc, xDest, yDest,
-                       m_pImage->getWidth(), height, true );
+    rImage.drawBitmap( m_rBitmap,
+                       xOffset, ySrc + yOffset,
+                       xDest, yDest, w, h, true );
 }
 
 

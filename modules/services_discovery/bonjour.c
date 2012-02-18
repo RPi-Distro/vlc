@@ -2,7 +2,7 @@
  * bonjour.c: Bonjour services discovery module
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 0110e016b0f81d5cfbed5933d4fab0e799d0d385 $
+ * $Id: e118ab260c9024b04deeb85f205abf6976c2b97c $
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *
@@ -176,7 +176,7 @@ static void resolve_callback(
 
         if( psz_uri != NULL )
         {
-            p_input = input_item_New( p_sd, psz_uri, name );
+            p_input = input_item_New( psz_uri, name );
             free( psz_uri );
         }
         if( p_input != NULL )

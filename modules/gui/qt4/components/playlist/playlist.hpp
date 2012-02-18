@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Playlist Widgets
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 2b793b76d2c5e73dbfdd7c7421cd0ea7faa92eb8 $
+ * $Id: bf79faacb91f47ba4a801803d3a3215c628bee93 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -32,49 +32,122 @@
 
 #include "qt4.hpp"
 
-#include "dialogs_provider.hpp"              /* Media Info from ArtLabel */
-#include "components/interface_widgets.hpp"  /* CoverArt */
 //#include <vlc_playlist.h>
 
 #include <QSplitter>
 
-class PLSelector;
+#include <QPushButton>
+#include <QSplitterHandle>
+#include <QMouseEvent>
+
 class StandardPLPanel;
-class QPushButton;
+class LocationBar;
+class QSignalMapper;
+class SearchLineEdit;
+class QModelIndex;
+class QStackedWidget;
+class PLSelector;
 
-class ArtLabel : public CoverArtLabel
-{
-public:
-    ArtLabel( QWidget *parent, intf_thread_t *intf )
-            : CoverArtLabel( parent, intf ) {}
-
-    virtual void mouseDoubleClickEvent( QMouseEvent *event )
-    {
-        THEDP->mediaInfoDialog();
-        event->accept();
-    }
-};
-
-class PlaylistWidget : public QSplitter
+class PlaylistWidget : public QWidget
 {
     Q_OBJECT
 public:
     PlaylistWidget( intf_thread_t *_p_i, QWidget * );
     virtual ~PlaylistWidget();
+
     void forceHide();
     void forceShow();
+    QStackedWidget *artContainer;
 private:
-    PLSelector      *selector;
-    ArtLabel        *art;
-    StandardPLPanel *rightPanel;
-    QPushButton     *addButton;
-    QSplitter       *leftSplitter;
-protected:
+    QSplitter            *leftSplitter;
+    QSplitter            *split;
+    StandardPLPanel      *mainView;
+    PLSelector           *selector;
+
+    QAction *viewActions[ 4 /* StandardPLPanel::VIEW_COUNT*/ ];
+
+    LocationBar          *locationBar;
+    SearchLineEdit       *searchEdit;
+
     intf_thread_t *p_intf;
+
+protected:
     virtual void dropEvent( QDropEvent *);
     virtual void dragEnterEvent( QDragEnterEvent * );
     virtual void closeEvent( QCloseEvent * );
-
+private slots:
+    void changeView( const QModelIndex& index );
+    void clearPlaylist();
 };
+
+#ifdef Q_WS_MAC
+class PlaylistSplitter : public QSplitter
+{
+public:
+    PlaylistSplitter( QWidget *_parent ) : QSplitter( _parent ){}
+protected:
+    virtual QSplitterHandle *createHandle();
+};
+#else
+ #define PlaylistSplitter QSplitter
+#endif
+
+#ifdef Q_WS_MAC
+class SplitterHandle : public QSplitterHandle
+{
+public:
+    SplitterHandle( Qt::Orientation orientation, QSplitter * parent );
+
+protected:
+    virtual void paintEvent ( QPaintEvent * );
+
+private:
+    virtual QSize sizeHint () const;
+};
+#endif /* __APPLE__ */
+
+class LocationButton : public QPushButton
+{
+public:
+    LocationButton( const QString &, bool bold, bool arrow, QWidget * parent = NULL );
+    virtual QSize sizeHint() const;
+protected:
+    virtual void paintEvent ( QPaintEvent * event );
+private:
+    bool b_arrow;
+};
+
+class PLModel;
+class QHBoxLayout;
+class LocationBar : public QWidget
+{
+    Q_OBJECT
+public:
+    LocationBar( PLModel * );
+    void setIndex( const QModelIndex & );
+    virtual QSize sizeHint() const;
+protected:
+    virtual void resizeEvent ( QResizeEvent * event );
+
+private:
+    void layOut( const QSize& size );
+
+    PLModel *model;
+    QSignalMapper *mapper;
+    QWidgetList buttons;
+    QList<QAction*> actions;
+    LocationButton *btnMore;
+    QMenu *menuMore;
+    QList<int> widths;
+
+public slots:
+    void setRootIndex();
+private slots:
+    void invoke( int i_item_id );
+
+signals:
+    void invoked( const QModelIndex & );
+};
+
 
 #endif

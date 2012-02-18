@@ -2,7 +2,7 @@
  * var_percent.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 829a12b1fd61887439e6de039b89dde9df2d8d4b $
+ * $Id: abf656922c298c6b8c0c8a23b39b591163f0ef72 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -35,7 +35,8 @@ class VarPercent;
 class VarPercent: public Variable, public Subject<VarPercent>
 {
 public:
-    VarPercent( intf_thread_t *pIntf ): Variable( pIntf ), m_value( 0 ) { }
+    VarPercent( intf_thread_t *pIntf ) :
+        Variable( pIntf ), m_value( 0 ), m_step( .05f ) {}
     virtual ~VarPercent() { }
 
     /// Get the variable type
@@ -46,13 +47,19 @@ public:
     virtual float get() const { return m_value; }
 
     /// Get the variable preferred step
-    virtual float getStep() const { return .05f; }
+    virtual float getStep() const { return m_step; }
+    virtual void setStep( float val ) { m_step = val; }
+
+    /// Increment or decrement variable
+    void increment( int num ) { return set( m_value + num * m_step ); }
 
 private:
     /// Variable type
     static const string m_type;
     /// Percent value
     float m_value;
+    /// preferred step (for scrolling)
+    float m_step;
 };
 
 #endif

@@ -45,11 +45,14 @@ int CheckError (vout_display_t *vd, xcb_connection_t *conn,
     err = xcb_request_check (conn, ck);
     if (err)
     {
-        msg_Err (vd, "%s: X11 error %d", str, err->error_code);
+        int code = err->error_code;
+
         free (err);
-        return VLC_EGENERIC;
+        msg_Err (vd, "%s: X11 error %d", str, code);
+        assert (code != 0);
+        return code;
     }
-    return VLC_SUCCESS;
+    return 0;
 }
 
 /**
@@ -100,14 +103,13 @@ void RegisterMouseEvents (vlc_object_t *obj, xcb_connection_t *conn,
     xcb_change_window_attributes (conn, wnd, XCB_CW_EVENT_MASK, &value);
     /* Try to subscribe to click events */
     /* (only one X11 client can get them, so might not work) */
-    if (var_CreateGetBool (obj, "mouse-events"))
+    if (var_InheritBool (obj, "mouse-events"))
     {
         value |= XCB_EVENT_MASK_BUTTON_PRESS
                | XCB_EVENT_MASK_BUTTON_RELEASE;
         xcb_change_window_attributes (conn, wnd,
                                       XCB_CW_EVENT_MASK, &value);
     }
-    var_Destroy (obj, "mouse-events");
 }
 
 /* NOTE: we assume no other thread will be _setting_ our video output events

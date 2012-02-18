@@ -2,21 +2,21 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: 6b79517dad99b0e20481609064f5e5b419009d25 $
+ * $Id: b6f2681b400c00c47559d1fce5fce1e9088101d5 $
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -68,9 +68,14 @@ static inline void test_b64 (const char *in, const char *out)
     test (vlc_b64_encode, in, out);
 }
 
+static char *make_URI_def (const char *in)
+{
+    return make_URI (in, NULL);
+}
+
 static inline void test_path (const char *in, const char *out)
 {
-    test (make_URI, in, out);
+    test (make_URI_def, in, out);
 }
 
 static inline void test_current_directory_path (const char *in, const char *cwd, const char *out)
@@ -79,7 +84,7 @@ static inline void test_current_directory_path (const char *in, const char *cwd,
     int val = asprintf(&expected_result, "file://%s/%s", cwd, out);
     assert (val != -1);
     
-    test (make_URI, in, expected_result);
+    test (make_URI_def, in, expected_result);
 }
 
 int main (void)

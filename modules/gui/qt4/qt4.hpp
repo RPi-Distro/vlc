@@ -2,7 +2,7 @@
  * qt4.hpp : QT4 interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: e46dbaf1ed22904c971ca5fa96e827d46e0a538b $
+ * $Id: 3e904e83a1cba526036f07f5978f73228e000815 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -36,15 +36,11 @@
 #define QT_NO_CAST_TO_ASCII
 #include <QString>
 
-#if ( QT_VERSION < 0x040400 )
-# error Update your Qt version to at least 4.4.0
-#endif
-#if QT_VERSION == 0x040500
-# error Please update Qt version to 4.5.1. 4.5.0 is too buggy
+#if ( QT_VERSION < 0x040600 )
+# error Update your Qt version to at least 4.6.0
 #endif
 
-#define HAS_QT45 ( QT_VERSION >= 0x040500 )
-#define HAS_QT46 ( QT_VERSION >= 0x040600 )
+#define HAS_QT47 ( QT_VERSION >= 0x040700 )
 
 enum {
     DialogEventType = 0,
@@ -57,27 +53,31 @@ class QVLCApp;
 class QMenu;
 class MainInterface;
 class QSettings;
+class PLModel;
 
 struct intf_sys_t
 {
     vlc_thread_t thread;
 
     QVLCApp *p_app;          /* Main Qt Application */
+
     MainInterface *p_mi;     /* Main Interface, NULL if DialogProvider Mode */
 
     QSettings *mainSettings; /* Qt State settings not messing main VLC ones */
 
-    bool b_isDialogProvider; /* Qt mode or Skins mode */
-
-    int  i_screenHeight;     /* Detection of Small screens */
-
-    playlist_t *p_playlist;  /* Core Playlist discussion */
+    PLModel *pl_model;
 
     QString filepath;        /* Last path used in dialogs */
 
+    int  i_screenHeight;     /* Detection of Small screens */
+
+    bool b_isDialogProvider; /* Qt mode or Skins mode */
+#ifdef WIN32
+    bool disable_volume_keys;
+#endif
 };
 
-#define THEPL p_intf->p_sys->p_playlist
+#define THEPL pl_Get(p_intf)
 #define QPL_LOCK playlist_Lock( THEPL );
 #define QPL_UNLOCK playlist_Unlock( THEPL );
 
@@ -90,10 +90,10 @@ struct intf_sys_t
 #define qtu( i ) ((i).toUtf8().constData())
 
 #define CONNECT( a, b, c, d ) \
-        connect( a, SIGNAL( b ), c, SLOT(d) )
+        connect( a, SIGNAL(b), c, SLOT(d) )
 #define DCONNECT( a, b, c, d ) \
-        connect( a, SIGNAL( b ), c, SLOT(d), Qt::DirectConnection )
-#define BUTTONACT( b, a ) connect( b, SIGNAL( clicked() ), this, SLOT(a) )
+        connect( a, SIGNAL(b), c, SLOT(d), Qt::DirectConnection )
+#define BUTTONACT( b, a ) connect( b, SIGNAL(clicked()), this, SLOT(a) )
 
 #define BUTTON_SET( button, text, tooltip )  \
     button->setText( text );                 \
@@ -116,6 +116,9 @@ struct intf_sys_t
 #define TOGGLEV( x ) { if( x->isVisible() ) x->hide();          \
             else  x->show(); }
 
+/* for widgets which must not follow the RTL auto layout changes */
+#define RTL_UNAFFECTED_WIDGET setLayoutDirection( Qt::LeftToRight );
+
 #define getSettings() p_intf->p_sys->mainSettings
 
 static inline QString QVLCUserDir( vlc_userdir_t type )
@@ -127,5 +130,11 @@ static inline QString QVLCUserDir( vlc_userdir_t type )
     free( dir );
     return res;
 }
+
+/* After this day of the year, the usual VLC cone is replaced by another cone
+ * wearing a Father Xmas hat.
+ * Note this icon doesn't represent an endorsment of Coca-Cola company.
+ */
+#define QT_XMAS_JOKE_DAY 354
 
 #endif

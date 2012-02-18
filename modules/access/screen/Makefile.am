@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libscreen_plugin_la_SOURCES = $(SOURCES_screen)
 nodist_libscreen_plugin_la_SOURCES = $(nodist_SOURCES_screen)
 # Force per-target objects:
-libscreen_plugin_la_CFLAGS = $(AM_CFLAGS)
-libscreen_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libscreen_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libscreen_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_screen)
+libscreen_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_screen)
+libscreen_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_screen)
+libscreen_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_screen)
 # Set LIBADD and DEPENDENCIES manually:
-libscreen_plugin_la_LIBADD = $(AM_LIBADD)
-libscreen_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libscreen_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_screen)
+libscreen_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_screen)
+libscreen_plugin_la_DEPENDENCIES =
 

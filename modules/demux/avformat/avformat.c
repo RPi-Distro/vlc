@@ -2,7 +2,7 @@
  * avformat.c: demuxer and muxer using libavformat library
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: b5974a42670d43768cdbba2d451be90303ee0f9c $
+ * $Id: 70ce57f303a4603d8926c1ec854890870a606bd4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -34,10 +34,10 @@
 
 vlc_module_begin ()
 #endif /* MERGE_FFMPEG */
-    add_shortcut( "ffmpeg" )
+    add_shortcut( "ffmpeg", "avformat" )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
-    set_description( N_("FFmpeg demuxer" ) )
+    set_description( N_("Avformat demuxer" ) )
     set_shortname( N_("Avformat") )
     set_capability( "demux", 2 )
     set_callbacks( OpenDemux, CloseDemux )
@@ -45,10 +45,10 @@ vlc_module_begin ()
 #ifdef ENABLE_SOUT
     /* mux submodule */
     add_submodule ()
-    add_shortcut( "ffmpeg" )
-    set_description( N_("FFmpeg muxer" ) )
+    add_shortcut( "ffmpeg", "avformat" )
+    set_description( N_("Avformat muxer" ) )
     set_capability( "sout mux", 2 )
-    add_string( "ffmpeg-mux", NULL, NULL, MUX_TEXT,
+    add_string( "ffmpeg-mux", NULL, MUX_TEXT,
                 MUX_LONGTEXT, true )
     set_callbacks( OpenMux, CloseMux )
 #endif

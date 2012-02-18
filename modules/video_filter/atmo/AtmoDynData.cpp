@@ -5,8 +5,12 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: b15eac22ae14612b233b3c66cb33dfd69e8d7194 $
+ * $Id: e0d77ee94589bc549fa0693751917cfaa4b5a472 $
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "AtmoDynData.h"
 
@@ -165,7 +169,7 @@ char *CAtmoDynData::getWorkDir()
 void CAtmoDynData::ReloadZoneDefinitionBitmaps()
 {
   int i;
-  // suchlogik für die Bitmaps ...
+  // suchlogik fÃ¼r die Bitmaps ...
   // <WorkDir>\hardware\numchannels\zone..0..n.bmp
   // <WorkDir>\hardware\zone..0..n.bmp
   // <WorkDir>\zone..0..n.bmp

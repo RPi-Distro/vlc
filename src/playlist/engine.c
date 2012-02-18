@@ -1,24 +1,24 @@
 /*****************************************************************************
  * engine.c : Run the playlist and handle its control
  *****************************************************************************
- * Copyright (C) 1999-2008 the VideoLAN team
+ * Copyright (C) 1999-2008 VLC authors and VideoLAN
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -33,6 +33,7 @@
 #include <vlc_interface.h>
 #include "playlist_internal.h"
 #include "stream_output/stream_output.h" /* sout_DeleteInstance */
+#include <math.h> /* for fabs() */
 
 /*****************************************************************************
  * Local prototypes
@@ -54,6 +55,94 @@ static int RandomCallback( vlc_object_t *p_this, char const *psz_cmd,
     return VLC_SUCCESS;
 }
 
+static int RateCallback( vlc_object_t *p_this, char const *psz_cmd,
+                         vlc_value_t oldval, vlc_value_t newval, void *p )
+{
+    (void)psz_cmd; (void)oldval;(void)p;
+    playlist_t *p_playlist = (playlist_t*)p_this;
+
+    PL_LOCK;
+
+    if( pl_priv(p_playlist)->p_input == NULL )
+    {
+        PL_UNLOCK;
+        return VLC_SUCCESS;
+    }
+
+    var_SetFloat( pl_priv( p_playlist )->p_input, "rate", newval.f_float );
+    PL_UNLOCK;
+    return VLC_SUCCESS;
+}
+
+static int RateOffsetCallback( vlc_object_t *obj, char const *psz_cmd,
+                               vlc_value_t oldval, vlc_value_t newval, void *p_data )
+{
+    playlist_t *p_playlist = (playlist_t *)obj;
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data); VLC_UNUSED(newval);
+
+    static const float pf_rate[] = {
+        1.0/64, 1.0/32, 1.0/16, 1.0/8, 1.0/4, 1.0/3, 1.0/2, 2.0/3,
+        1.0/1,
+        3.0/2, 2.0/1, 3.0/1, 4.0/1, 8.0/1, 16.0/1, 32.0/1, 64.0/1,
+    };
+    const size_t i_rate_count = sizeof(pf_rate)/sizeof(*pf_rate);
+
+    float f_rate;
+    struct input_thread_t *input;
+
+    PL_LOCK;
+    input = pl_priv( p_playlist )->p_input;
+    f_rate = var_GetFloat( input ? (vlc_object_t *)input : obj, "rate" );
+    PL_UNLOCK;
+
+    if( !strcmp( psz_cmd, "rate-faster" ) )
+    {
+        /* compensate for input rounding errors */
+        float r = f_rate * 1.1;
+        for( size_t i = 0; i < i_rate_count; i++ )
+            if( r < pf_rate[i] )
+            {
+                f_rate = pf_rate[i];
+                break;
+            }
+    }
+    else
+    {
+        /* compensate for input rounding errors */
+        float r = f_rate * .9;
+        for( size_t i = 1; i < i_rate_count; i++ )
+            if( r <= pf_rate[i] )
+            {
+                f_rate = pf_rate[i - 1];
+                break;
+            }
+    }
+
+    var_SetFloat( p_playlist, "rate", f_rate );
+    return VLC_SUCCESS;
+}
+
+static int VideoSplitterCallback( vlc_object_t *p_this, char const *psz_cmd,
+                                  vlc_value_t oldval, vlc_value_t newval, void *p_data )
+{
+    playlist_t *p_playlist = (playlist_t*)p_this;
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED(p_data); VLC_UNUSED(newval);
+
+    PL_LOCK;
+
+    /* Force the input to restart the video ES to force a vout recreation */
+    input_thread_t *p_input = pl_priv( p_playlist )->p_input;
+    if( p_input )
+    {
+        const double f_position = var_GetFloat( p_input, "position" );
+        input_Control( p_input, INPUT_RESTART_ES, -VIDEO_ES );
+        var_SetFloat( p_input, "position", f_position );
+    }
+
+    PL_UNLOCK;
+    return VLC_SUCCESS;
+}
+
 /**
  * Create playlist
  *
@@ -63,19 +152,16 @@ static int RandomCallback( vlc_object_t *p_this, char const *psz_cmd,
  */
 playlist_t * playlist_Create( vlc_object_t *p_parent )
 {
-    static const char playlist_name[] = "playlist";
     playlist_t *p_playlist;
     playlist_private_t *p;
 
     /* Allocate structure */
-    p = vlc_custom_create( p_parent, sizeof( *p ),
-                           VLC_OBJECT_GENERIC, playlist_name );
+    p = vlc_custom_create( p_parent, sizeof( *p ), "playlist" );
     if( !p )
         return NULL;
 
     assert( offsetof( playlist_private_t, public_data ) == 0 );
     p_playlist = &p->public_data;
-    vlc_object_attach( p_playlist, p_parent );
     TAB_INIT( pl_priv(p_playlist)->i_sds, pl_priv(p_playlist)->pp_sds );
 
     libvlc_priv(p_parent->p_libvlc)->p_playlist = p_playlist;
@@ -295,7 +381,7 @@ static void VariablesInit( playlist_t *p_playlist )
     var_SetBool( p_playlist, "intf-change", true );
 
     var_Create( p_playlist, "item-change", VLC_VAR_ADDRESS );
-    var_Create( p_playlist, "leaf-to-parent", VLC_VAR_ADDRESS );
+    var_Create( p_playlist, "leaf-to-parent", VLC_VAR_INTEGER );
 
     var_Create( p_playlist, "playlist-item-deleted", VLC_VAR_INTEGER );
     var_SetInteger( p_playlist, "playlist-item-deleted", -1 );
@@ -316,6 +402,16 @@ static void VariablesInit( playlist_t *p_playlist )
     var_Create( p_playlist, "repeat", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
     var_Create( p_playlist, "loop", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
 
+    var_Create( p_playlist, "rate", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT );
+    var_Create( p_playlist, "rate-slower", VLC_VAR_VOID );
+    var_Create( p_playlist, "rate-faster", VLC_VAR_VOID );
+    var_AddCallback( p_playlist, "rate", RateCallback, NULL );
+    var_AddCallback( p_playlist, "rate-slower", RateOffsetCallback, NULL );
+    var_AddCallback( p_playlist, "rate-faster", RateOffsetCallback, NULL );
+
+    var_Create( p_playlist, "video-splitter", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
+    var_AddCallback( p_playlist, "video-splitter", VideoSplitterCallback, NULL );
+
     var_AddCallback( p_playlist, "random", RandomCallback, NULL );
 
     /* */
@@ -326,9 +422,8 @@ static void VariablesInit( playlist_t *p_playlist )
     var_Create( p_playlist, "video-on-top", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
 
     /* Audio output parameters */
-    var_Create( p_playlist, "volume-muted", VLC_VAR_BOOL );
-    var_Create( p_playlist, "saved-volume", VLC_VAR_INTEGER );
-    var_Create( p_playlist, "volume-change", VLC_VAR_VOID );
+    var_Create( p_playlist, "mute", VLC_VAR_BOOL );
+    var_Create( p_playlist, "volume", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
     /* FIXME: horrible hack for audio output interface code */
     var_Create( p_playlist, "find-input-callback", VLC_VAR_ADDRESS );
     var_SetAddress( p_playlist, "find-input-callback", playlist_FindInput );

@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libdmo_plugin_la_SOURCES = $(SOURCES_dmo)
 nodist_libdmo_plugin_la_SOURCES = $(nodist_SOURCES_dmo)
 # Force per-target objects:
-libdmo_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdmo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdmo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdmo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dmo)
+libdmo_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dmo)
+libdmo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dmo)
+libdmo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dmo)
 # Set LIBADD and DEPENDENCIES manually:
-libdmo_plugin_la_LIBADD = $(AM_LIBADD)
-libdmo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdmo_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dmo)
+libdmo_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dmo)
+libdmo_plugin_la_DEPENDENCIES =
 

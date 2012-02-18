@@ -3,7 +3,7 @@
  *               using libcdio, libvcd and libvcdinfo
  *****************************************************************************
  * Copyright (C) 2003, 2004 Rocky Bernstein <rocky@panix.com>
- * $Id: e955fb1e5ae84bcbf3af076ad093189b199768a7 $
+ * $Id: 79b9a800d79507759dad49ecb83185a355d3d240 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -557,16 +557,6 @@ vcdplayer_pbc_nav ( access_t * p_access, uint8_t *wait_time )
       }
       break;
     }
-  case VCDINFO_ITEM_TYPE_NOTFOUND:
-    LOG_ERR( "NOTFOUND in PBC -- not supposed to happen" );
-    break;
-  case VCDINFO_ITEM_TYPE_SPAREID2:
-    LOG_ERR( "SPAREID2 in PBC -- not supposed to happen" );
-    break;
-  case VCDINFO_ITEM_TYPE_LID:
-    LOG_ERR( "LID in PBC -- not supposed to happen" );
-    break;
- 
   default:
     ;
   }

@@ -2,7 +2,7 @@
  * croppadd.c: Crop/Padd image filter
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 5d505d9968602465891f5b2599f43a07796a2dfb $
+ * $Id: 3072637375eceb25f45a7e410a0e5011d4f39a46 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan dot org>
  *
@@ -84,23 +84,23 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_VIDEO_VFILTER );
 
     set_section( N_("Crop"), NULL )
-        add_integer_with_range( CFG_PREFIX "croptop", 0, 0, INT_MAX, NULL,
+        add_integer_with_range( CFG_PREFIX "croptop", 0, 0, INT_MAX,
                                 CROPTOP_TEXT, CROPTOP_LONGTEXT, false )
-        add_integer_with_range( CFG_PREFIX "cropbottom", 0, 0, INT_MAX, NULL,
+        add_integer_with_range( CFG_PREFIX "cropbottom", 0, 0, INT_MAX,
                                 CROPBOTTOM_TEXT, CROPBOTTOM_LONGTEXT, false )
-        add_integer_with_range( CFG_PREFIX "cropleft", 0, 0, INT_MAX, NULL,
+        add_integer_with_range( CFG_PREFIX "cropleft", 0, 0, INT_MAX,
                                 CROPLEFT_TEXT, CROPLEFT_LONGTEXT, false )
-        add_integer_with_range( CFG_PREFIX "cropright", 0, 0, INT_MAX, NULL,
+        add_integer_with_range( CFG_PREFIX "cropright", 0, 0, INT_MAX,
                                 CROPRIGHT_TEXT, CROPRIGHT_LONGTEXT, false )
 
     set_section( N_("Padd"), NULL )
-        add_integer_with_range( CFG_PREFIX "paddtop", 0, 0, INT_MAX, NULL,
+        add_integer_with_range( CFG_PREFIX "paddtop", 0, 0, INT_MAX,
                                 PADDTOP_TEXT, PADDTOP_LONGTEXT, false )
-        add_integer_with_range( CFG_PREFIX "paddbottom", 0, 0, INT_MAX, NULL,
+        add_integer_with_range( CFG_PREFIX "paddbottom", 0, 0, INT_MAX,
                                 PADDBOTTOM_TEXT, PADDBOTTOM_LONGTEXT, false )
-        add_integer_with_range( CFG_PREFIX "paddleft", 0, 0, INT_MAX, NULL,
+        add_integer_with_range( CFG_PREFIX "paddleft", 0, 0, INT_MAX,
                                 PADDLEFT_TEXT, PADDLEFT_LONGTEXT, false )
-        add_integer_with_range( CFG_PREFIX "paddright", 0, 0, INT_MAX, NULL,
+        add_integer_with_range( CFG_PREFIX "paddright", 0, 0, INT_MAX,
                                 PADDRIGHT_TEXT, PADDRIGHT_LONGTEXT, false )
 vlc_module_end ()
 

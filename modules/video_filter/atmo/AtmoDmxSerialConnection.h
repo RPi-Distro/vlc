@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 53ef12a8702c0b1db5df453ec6e3f4e6577df813 $
+ * $Id: 02103c01f86d06bb24add8a3f2519a439e9c5b4b $
  */
 #ifndef _AtmoDmxSerialConnection_h_
 #define _AtmoDmxSerialConnection_h_
@@ -43,16 +43,6 @@ class CAtmoDmxSerialConnection : public CAtmoConnection {
        virtual ATMO_BOOL isOpen(void);
 
        virtual ATMO_BOOL SendData(pColorPacket data);
-
-       virtual ATMO_BOOL HardwareWhiteAdjust(int global_gamma,
-                                             int global_contrast,
-                                             int contrast_red,
-                                             int contrast_green,
-                                             int contrast_blue,
-                                             int gamma_red,
-                                             int gamma_green,
-                                             int gamma_blue,
-                                             ATMO_BOOL storeToEeprom);
 
 	   virtual ATMO_BOOL setChannelColor(int channel, tRGBColor color);
 

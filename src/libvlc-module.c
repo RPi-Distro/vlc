@@ -1,33 +1,32 @@
 /*****************************************************************************
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
- * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 1d5d85aa1933197b7fb28ae6e8acbacb811613ee $
+ * Copyright (C) 1998-2009 VLC authors and VideoLAN
+ * $Id: 56080979e09b7c17bceb3521e46f41bd9afe3666 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 // Pretend we are a builtin module
 #define MODULE_NAME main
 #define MODULE_PATH main
-#define __BUILTIN__
 
 
 #ifdef HAVE_CONFIG_H
@@ -37,7 +36,9 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_cpu.h>
+#include <vlc_aout_intf.h>
 #include "libvlc.h"
+#include "modules/modules.h"
 
 //#define Nothing here, this is just to prevent update-po from being stupid
 #include "vlc_keys.h"
@@ -59,8 +60,9 @@ static const char *const ppsz_language[] =
     "cs",
     "da",
     "nl",
-    "eu",
     "fi",
+    "et",
+    "eu",
     "fr",
     "ga",
     "gl",
@@ -70,17 +72,19 @@ static const char *const ppsz_language[] =
     "hr",
     "hu",
     "hy",
-    "id",
     "is",
+    "id",
     "it",
     "ja",
     "ko",
     "lt",
     "mn",
     "ms",
+    "nb",
     "nn",
     "kk",
     "km",
+    "ne",
     "oc",
     "fa",
     "pl",
@@ -96,6 +100,7 @@ static const char *const ppsz_language[] =
     "ckb",
     "es",
     "sv",
+    "te",
     "tr",
     "uk",
     "vi",
@@ -117,8 +122,9 @@ static const char *const ppsz_language_text[] =
     "Čeština",
     "Dansk",
     "Nederlands",
-    "Euskara",
     "Suomi",
+    "eesti keel",
+    "Euskara",
     "Français",
     "Gaeilge",
     "Galego",
@@ -128,17 +134,19 @@ static const char *const ppsz_language_text[] =
     "hrvatski",
     "Magyar",
     "հայերեն",
+    "íslenska",
     "Bahasa Indonesia",
-    "Íslenska",
     "Italiano",
     "日本語",
     "한국어",
     "lietuvių",
     "Монгол хэл",
     "Melayu",
+    "Bokmål",
     "Nynorsk",
     "Қазақ тілі",
     "ភាសាខ្មែរ",
+    "नेपाली",
     "Occitan",
     "ﻑﺍﺮﺳی",
     "Polski",
@@ -154,6 +162,7 @@ static const char *const ppsz_language_text[] =
     "کوردیی سۆرانی",
     "Español",
     "Svenska",
+    "తెలుగు",
     "Türkçe",
     "украї́нська мо́ва",
     "tiếng Việt",
@@ -206,9 +215,9 @@ static const char *const ppsz_snap_formats[] =
 #define VERBOSE_OBJECTS_TEXT N_("Choose which objects should print debug " \
     "message")
 #define VERBOSE_OBJECTS_LONGTEXT N_( \
-    "This is a ',' separated string, each objects should be prefixed by " \
+    "This is a ',' separated string, each object should be prefixed by " \
     "a '+' or a '-' to respectively enable or disable it. The keyword " \
-    "'all' refers to all objects. Objects can be refered to by their " \
+    "'all' refers to all objects. Objects can be referred to by their " \
     "type or module name. Rules applying to named objects take precedence " \
     "over rules applying to object types. Note that you still need to " \
     "use -vvv to actually display debug message.")
@@ -276,20 +285,16 @@ static const char *const ppsz_snap_formats[] =
     "You can set the default audio output volume here, in a range from 0 to " \
     "1024.")
 
-#define VOLUME_SAVE_TEXT N_("Audio output saved volume")
-#define VOLUME_SAVE_LONGTEXT N_( \
-    "This saves the audio output volume when you use the mute function. " \
-    "You should not change this option manually.")
-
 #define VOLUME_STEP_TEXT N_("Audio output volume step")
 #define VOLUME_STEP_LONGTEXT N_( \
     "The step size of the volume is adjustable using this option, " \
     "in a range from 0 to 1024." )
+#define AOUT_VOLUME_STEP 32
 
 #define AOUT_RATE_TEXT N_("Audio output frequency (Hz)")
 #define AOUT_RATE_LONGTEXT N_( \
     "You can force the audio output frequency here. Common values are " \
-    "-1 (default), 48000, 44100, 32000, 22050, 16000, 11025, 8000.")
+    "0 (undefined), 48000, 44100, 32000, 22050, 16000, 11025, 8000.")
 
 #if !defined( __APPLE__ )
 #define AOUT_RESAMP_TEXT N_("High quality audio resampling")
@@ -356,9 +361,9 @@ static const char *const ppsz_force_dolby_descriptions[] = {
     "Protect against sound clipping" )
 
 #define AUDIO_TIME_STRETCH_TEXT N_( \
-    "Enable time streching audio" )
+    "Enable time stretching audio" )
 #define AUDIO_TIME_STRETCH_LONGTEXT N_( \
-    "This allows to play audio at lower or higher speed without " \
+    "This allows playing audio at lower or higher speed without " \
     "affecting the audio pitch" )
 
 
@@ -437,11 +442,6 @@ static const char *const ppsz_align_descriptions[] =
 #define EMBEDDED_LONGTEXT N_( \
     "Embed the video output in the main interface." )
 
-#define DISPLAY_TEXT N_("X11 display")
-#define DISPLAY_LONGTEXT N_( \
-    "X11 hardware display to use. By default VLC will " \
-    "use the value of the DISPLAY environment variable.")
-
 #define FULLSCREEN_TEXT N_("Fullscreen video output")
 #define FULLSCREEN_LONGTEXT N_( \
     "Start video in fullscreen mode" )
@@ -476,7 +476,7 @@ static const char *const ppsz_align_descriptions[] =
                                    "controller after x milliseconds")
 #define MOUSE_HIDE_TIMEOUT_LONGTEXT N_( \
     "Hide mouse cursor and fullscreen controller after " \
-    "n milliseconds, default is 3000 ms (3 sec.)")
+    "n milliseconds.")
 
 #define DEINTERLACE_TEXT N_("Deinterlace")
 #define DEINTERLACE_LONGTEXT N_(\
@@ -493,11 +493,13 @@ static const char * const  ppsz_deinterlace_text[] = {
     "Deinterlace method to use for video processing.")
 static const char * const ppsz_deinterlace_mode[] = {
     "discard", "blend", "mean", "bob",
-    "linear", "x", "yadif", "yadif2x"
+    "linear", "x", "yadif", "yadif2x", "phosphor",
+    "ivtc"
 };
 static const char * const ppsz_deinterlace_mode_text[] = {
     N_("Discard"), N_("Blend"), N_("Mean"), N_("Bob"),
-    N_("Linear"), "X", "Yadif", "Yadif (2x)"
+    N_("Linear"), "X", "Yadif", "Yadif (2x)", N_("Phosphor"),
+    N_("Film NTSC (IVTC)")
 };
 
 static const int pi_pos_values[] = { 0, 1, 2, 4, 8, 5, 6, 9, 10 };
@@ -517,9 +519,9 @@ static const char *const ppsz_pos_descriptions[] =
     "VLC can avoid creating window caption, frames, etc... around the video" \
     ", giving a \"minimal\" window.")
 
-#define VOUT_FILTER_TEXT N_("Video output filter module")
-#define VOUT_FILTER_LONGTEXT N_( \
-    "This adds video output filters like clone or wall" )
+#define VIDEO_SPLITTER_TEXT N_("Video splitter module")
+#define VIDEO_SPLITTER_LONGTEXT N_( \
+    "This adds video splitters like clone or wall" )
 
 #define VIDEO_FILTER_TEXT N_("Video filter module")
 #define VIDEO_FILTER_LONGTEXT N_( \
@@ -639,6 +641,22 @@ static const char *const ppsz_pos_descriptions[] =
     "subsystem, such as the DVD or VCD device, the network interface " \
     "settings or the subtitle channel.")
 
+#define CACHING_TEXT N_("File caching (ms)")
+#define CACHING_LONGTEXT N_( \
+    "Caching value for local files, in milliseconds." )
+
+#define CAPTURE_CACHING_TEXT N_("Live capture caching (ms)")
+#define CAPTURE_CACHING_LONGTEXT N_( \
+    "Caching value for cameras and microphones, in milliseconds." )
+
+#define DISC_CACHING_TEXT N_("Disc caching (ms)")
+#define DISC_CACHING_LONGTEXT N_( \
+    "Caching value for optical media, in milliseconds." )
+
+#define NETWORK_CACHING_TEXT N_("Network caching (ms)")
+#define NETWORK_CACHING_LONGTEXT N_( \
+    "Caching value for network resources, in milliseconds." )
+
 #define CR_AVERAGE_TEXT N_("Clock reference average counter")
 #define CR_AVERAGE_LONGTEXT N_( \
     "When using the PVR input (or a very irregular source), you should " \
@@ -652,8 +670,8 @@ static const char *const ppsz_pos_descriptions[] =
 
 #define CLOCK_JITTER_TEXT N_("Clock jitter")
 #define CLOCK_JITTER_LONGTEXT N_( \
-    "It tells the clock algorithms what is the maximal input jitter that " \
-    "is considered valid and can be compensated (in milliseconds)" )
+    "This defines the maximum input delay jitter that the synchronization " \
+    "algorithms should try to compensate (in milliseconds)." )
 
 #define NETSYNC_TEXT N_("Network synchronisation" )
 #define NETSYNC_LONGTEXT N_( "This allows you to remotely " \
@@ -663,10 +681,6 @@ static const char *const ppsz_pos_descriptions[] =
 static const int pi_clock_values[] = { -1, 0, 1 };
 static const char *const ppsz_clock_descriptions[] =
 { N_("Default"), N_("Disable"), N_("Enable") };
-
-#define SERVER_PORT_TEXT N_("UDP port")
-#define SERVER_PORT_LONGTEXT N_( \
-    "This is the default port used for UDP streams. Default is 1234." )
 
 #define MTU_TEXT N_("MTU of the network interface")
 #define MTU_LONGTEXT N_( \
@@ -684,11 +698,6 @@ static const char *const ppsz_clock_descriptions[] =
 #define MIFACE_TEXT N_("Multicast output interface")
 #define MIFACE_LONGTEXT N_( \
     "Default multicast interface. This overrides the routing table.")
-
-#define MIFACE_ADDR_TEXT N_("IPv4 multicast output interface address")
-#define MIFACE_ADDR_LONGTEXT N_( \
-    "IPv4 address for the default multicast interface. This overrides " \
-    "the routing table.")
 
 #define DSCP_TEXT N_("DiffServ Code Point")
 #define DSCP_LONGTEXT N_("Differentiated Services Code Point " \
@@ -737,6 +746,19 @@ static const char *const ppsz_clock_descriptions[] =
 #define INPUT_SUBTRACK_ID_TEXT N_("Subtitles track ID")
 #define INPUT_SUBTRACK_ID_LONGTEXT N_( \
     "Stream ID of the subtitle track to use.")
+
+#define INPUT_PREFERREDRESOLUTION_TEXT N_("Preferred video resolution")
+#define INPUT_PREFERREDRESOLUTION_LONGTEXT N_( \
+    "When several video formats are available, select one whose " \
+    "resolution is closest to (but not higher than) this setting, " \
+    "in number of lines. Use this option if you don't have enough CPU " \
+    "power or network bandwith to play higher resolutions.")
+static const int pi_prefres[] = { -1, 1080, 720, 576, 320 };
+static const char *const ppsz_prefres[] = {
+    N_("Best available"), N_("Full HD (1080p)"), N_("HD (720p)"),
+    N_("Standard Definition (576 or 480 lines)"),
+    N_("Low definition (320 lines)")
+};
 
 #define INPUT_REPEAT_TEXT N_("Input repetitions")
 #define INPUT_REPEAT_LONGTEXT N_( \
@@ -797,12 +819,18 @@ static const char *const ppsz_clock_descriptions[] =
     "This is the maximum size in bytes of the temporary files " \
     "that will be used to store the timeshifted streams." )
 
+#define INPUT_TITLE_FORMAT_TEXT N_( "Change title according to current media" )
+#define INPUT_TITLE_FORMAT_LONGTEXT N_( "This option allows you to set the title according to what's being played<br>"  \
+    "$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>"  \
+    "$n: Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>"  \
+    "$Z: \"Now playing\" (Fall back on Title - Artist)" )
+
 // DEPRECATED
 #define SUB_CAT_LONGTEXT N_( \
     "These options allow you to modify the behavior of the subpictures " \
-    "subsystem. You can for example enable subpictures filters (logo, etc.). " \
+    "subsystem. You can for example enable subpictures sources (logo, etc.). " \
     "Enable these filters here and configure them in the " \
-    "\"subpictures filters\" modules section. You can also set many " \
+    "\"subsources filters\" modules section. You can also set many " \
     "miscellaneous subpictures options." )
 
 #define SUB_MARGIN_TEXT N_("Force subtitle position")
@@ -823,10 +851,15 @@ static const char *const ppsz_clock_descriptions[] =
 #define TEXTRENDERER_LONGTEXT N_( \
     "VLC normally uses Freetype for rendering, but this allows you to use svg for instance.")
 
+#define SUB_SOURCE_TEXT N_("Subpictures source module")
+#define SUB_SOURCE_LONGTEXT N_( \
+    "This adds so-called \"subpicture sources\". These filters overlay " \
+    "some images or text over the video (like a logo, arbitrary text, ...)." )
+
 #define SUB_FILTER_TEXT N_("Subpictures filter module")
 #define SUB_FILTER_LONGTEXT N_( \
-    "This adds so-called \"subpicture filters\". These filters overlay " \
-    "some images or text over the video (like a logo, arbitrary text, ...)." )
+    "This adds so-called \"subpicture filters\". These filter subpictures " \
+    "created by subtitles decoders or other subpictures sources." )
 
 #define SUB_AUTO_TEXT N_("Autodetect subtitle files")
 #define SUB_AUTO_LONGTEXT N_( \
@@ -853,35 +886,100 @@ static const char *const ppsz_clock_descriptions[] =
     "Load this subtitle file. To be used when autodetect cannot detect " \
     "your subtitle file.")
 
+/* DVD and VCD devices */
 #define DVD_DEV_TEXT N_("DVD device")
-#ifdef WIN32
-#define DVD_DEV_LONGTEXT N_( \
-    "This is the default DVD drive (or file) to use. Don't forget the colon " \
-    "after the drive letter (eg. D:)")
-#else
-#define DVD_DEV_LONGTEXT N_( \
-    "This is the default DVD device to use.")
-#endif
-
 #define VCD_DEV_TEXT N_("VCD device")
-#define VCD_DEV_LONGTEXT N_( \
-    "This is the default VCD device to use." )
-
 #define CDAUDIO_DEV_TEXT N_("Audio CD device")
-#define CDAUDIO_DEV_LONGTEXT N_( \
+
+#if defined( WIN32 ) || defined( __OS2__ )
+# define DVD_DEV_LONGTEXT N_( \
+    "This is the default DVD drive (or file) to use. Don't forget the colon " \
+    "after the drive letter (e.g. D:)")
+# define VCD_DEV_LONGTEXT N_( \
+    "This is the default VCD drive (or file) to use. Don't forget the colon " \
+    "after the drive letter (e.g. D:)")
+# define CDAUDIO_DEV_LONGTEXT N_( \
+    "This is the default Audio CD drive (or file) to use. Don't forget the " \
+    "colon after the drive letter (e.g. D:)")
+# define DVD_DEVICE     NULL
+# define CD_DEVICE      "D:"
+
+#else
+# define DVD_DEV_LONGTEXT N_( \
+    "This is the default DVD device to use.")
+# define VCD_DEV_LONGTEXT N_( \
+    "This is the default VCD device to use." )
+# define CDAUDIO_DEV_LONGTEXT N_( \
     "This is the default Audio CD device to use." )
 
-#define IPV6_TEXT N_("Force IPv6")
-#define IPV6_LONGTEXT N_( \
-    "IPv6 will be used by default for all connections.")
+# if defined(__OpenBSD__)
+#  define DVD_DEVICE     "/dev/cd0c"
+#  define CD_DEVICE      "/dev/cd0c"
+# else
+#  define DVD_DEVICE     "/dev/dvd"
+#  define CD_DEVICE      "/dev/cdrom"
+# endif
+#endif
 
-#define IPV4_TEXT N_("Force IPv4")
-#define IPV4_LONGTEXT N_( \
-    "IPv4 will be used by default for all connections.")
+#define VCD_DEVICE       CD_DEVICE
+#define CDAUDIO_DEVICE   CD_DEVICE
 
 #define TIMEOUT_TEXT N_("TCP connection timeout")
 #define TIMEOUT_LONGTEXT N_( \
     "Default TCP connection timeout (in milliseconds). " )
+
+#define HTTP_HOST_TEXT N_( "HTTP server address" )
+#define HOST_LONGTEXT N_( \
+    "By default, the server will listen on any local IP address. " \
+    "Specify an IP address (e.g. ::1 or 127.0.0.1) or a host name " \
+    "(e.g. localhost) to restrict them to a specific network interface." )
+
+#define RTSP_HOST_TEXT N_( "RTSP server address" )
+#define RTSP_HOST_LONGTEXT N_( \
+    "This defines the address the RTSP server will listen on, along " \
+    "with the base path of the RTSP VOD media. Syntax is address/path. " \
+    "By default, the server will listen on any local IP address. " \
+    "Specify an IP address (e.g. ::1 or 127.0.0.1) or a host name " \
+    "(e.g. localhost) to restrict them to a specific network interface." )
+
+#define HTTP_PORT_TEXT N_( "HTTP server port" )
+#define HTTP_PORT_LONGTEXT N_( \
+    "The HTTP server will listen on this TCP port. " \
+    "The standard HTTP port number is 80. " \
+    "However allocation of port numbers below 1025 is usually restricted " \
+    "by the operating system." )
+
+#define HTTPS_PORT_TEXT N_( "HTTPS server port" )
+#define HTTPS_PORT_LONGTEXT N_( \
+    "The HTTPS server will listen on this TCP port. " \
+    "The standard HTTPS port number is 443. " \
+    "However allocation of port numbers below 1025 is usually restricted " \
+    "by the operating system." )
+
+#define RTSP_PORT_TEXT N_( "RTSP server port" )
+#define RTSP_PORT_LONGTEXT N_( \
+    "The RTSP server will listen on this TCP port. " \
+    "The standard RTSP port number is 554. " \
+    "However allocation of port numbers below 1025 is usually restricted " \
+    "by the operating system." )
+
+#define HTTP_CERT_TEXT N_("HTTP/TLS server certificate")
+#define CERT_LONGTEXT N_( \
+   "This X.509 certicate file (PEM format) is used for server-side TLS." )
+
+#define HTTP_KEY_TEXT N_("HTTP/TLS server private key")
+#define KEY_LONGTEXT N_( \
+   "This private key file (PEM format) is used for server-side TLS.")
+
+#define HTTP_CA_TEXT N_("HTTP/TLS Certificate Authority")
+#define CA_LONGTEXT N_( \
+   "This X.509 certificate file (PEM format) can optionally be used " \
+   "to authenticate remote clients in TLS sessions.")
+
+#define HTTP_CRL_TEXT N_("HTTP/TLS Certificate Revocation List")
+#define CRL_LONGTEXT N_( \
+   "This file countains an optional CRL to prevent remove clients " \
+   "from using revoked certificates in TLS sessions.")
 
 #define SOCKS_SERVER_TEXT N_("SOCKS server")
 #define SOCKS_SERVER_LONGTEXT N_( \
@@ -945,11 +1043,6 @@ static const char *const ppsz_clock_descriptions[] =
 #define ENCODER_LONGTEXT N_( \
     "This allows you to select a list of encoders that VLC will use in " \
     "priority.")
-
-#define SYSTEM_CODEC_TEXT N_("Prefer system plugins over VLC")
-#define SYSTEM_CODEC_LONGTEXT N_( \
-    "Indicates whether VLC will prefer native plugins installed " \
-    "on system over VLC owns plugins whenever a choice is available." )
 
 /*****************************************************************************
  * Sout
@@ -1033,56 +1126,6 @@ static const char *const ppsz_clock_descriptions[] =
     "These options allow you to enable special CPU optimizations. " \
     "You should always leave all these enabled." )
 
-#define MMX_TEXT N_("Enable CPU MMX support")
-#define MMX_LONGTEXT N_( \
-    "If your processor supports the MMX instructions set, VLC can take " \
-    "advantage of them.")
-
-#define THREE_DN_TEXT N_("Enable CPU 3D Now! support")
-#define THREE_DN_LONGTEXT N_( \
-    "If your processor supports the 3D Now! instructions set, VLC can take " \
-    "advantage of them.")
-
-#define MMXEXT_TEXT N_("Enable CPU MMX EXT support")
-#define MMXEXT_LONGTEXT N_( \
-    "If your processor supports the MMX EXT instructions set, VLC can take " \
-    "advantage of them.")
-
-#define SSE_TEXT N_("Enable CPU SSE support")
-#define SSE_LONGTEXT N_( \
-    "If your processor supports the SSE instructions set, VLC can take " \
-    "advantage of them.")
-
-#define SSE2_TEXT N_("Enable CPU SSE2 support")
-#define SSE2_LONGTEXT N_( \
-    "If your processor supports the SSE2 instructions set, VLC can take " \
-    "advantage of them.")
-
-#define SSE3_TEXT N_("Enable CPU SSE3 support")
-#define SSE3_LONGTEXT N_( \
-    "If your processor supports the SSE3 instructions set, VLC can take " \
-    "advantage of them.")
-
-#define SSSE3_TEXT N_("Enable CPU SSSE3 support")
-#define SSSE3_LONGTEXT N_( \
-    "If your processor supports the SSSE3 instructions set, VLC can take " \
-    "advantage of them.")
-
-#define SSE4_1_TEXT N_("Enable CPU SSE4.1 support")
-#define SSE4_1_LONGTEXT N_( \
-    "If your processor supports the SSE4.1 instructions set, VLC can take " \
-    "advantage of them.")
-
-#define SSE4_2_TEXT N_("Enable CPU SSE4.2 support")
-#define SSE4_2_LONGTEXT N_( \
-    "If your processor supports the SSE4.2 instructions set, VLC can take " \
-    "advantage of them.")
-
-#define ALTIVEC_TEXT N_("Enable CPU AltiVec support")
-#define ALTIVEC_LONGTEXT N_( \
-    "If your processor supports the AltiVec instructions set, VLC can take " \
-    "advantage of them.")
-
 // DEPRECATED
 #define MISC_CAT_LONGTEXT N_( \
     "These options allow you to select default modules. Leave these " \
@@ -1109,6 +1152,11 @@ static const char *const ppsz_clock_descriptions[] =
     "(like audio and video streams). You can use it if " \
     "the correct demuxer is not automatically detected. You should not "\
     "set this as a global option unless you really know what you are doing." )
+
+#define VOD_SERVER_TEXT N_("VoD server module")
+#define VOD_SERVER_LONGTEXT N_( \
+    "You can select which VoD server module you want to use. Set this " \
+    "to `vod_rtsp' to switch back to the old, legacy module." )
 
 #define RT_PRIORITY_TEXT N_("Allow real-time priority")
 #define RT_PRIORITY_LONGTEXT N_( \
@@ -1237,8 +1285,8 @@ static const char *const ppsz_albumart_descriptions[] =
 
 #define SD_TEXT N_( "Services discovery modules")
 #define SD_LONGTEXT N_( \
-     "Specifies the services discovery modules to load, separated by " \
-     "colons. Typical values are sap, hal, ..." )
+     "Specifies the services discovery modules to preload, separated by " \
+     "colons. Typical value is \"sap\"." )
 
 #define RANDOM_TEXT N_("Play files randomly forever")
 #define RANDOM_LONGTEXT N_( \
@@ -1264,10 +1312,18 @@ static const char *const ppsz_albumart_descriptions[] =
 #define PAP_LONGTEXT N_( \
     "Pause each item in the playlist on the last frame." )
 
+#define AUTOSTART_TEXT N_( "Auto start" )
+#define AUTOSTART_LONGTEXT N_( "Automatically start playing the playlist " \
+                "content once it's loaded." )
+
 #define ML_TEXT N_("Use media library")
 #define ML_LONGTEXT N_( \
     "The media library is automatically saved and reloaded each time you " \
     "start VLC." )
+
+#define LOAD_ML_TEXT N_( "Load Media Library" )
+#define LOAD_ML_LONGTEXT N_( \
+    "Enable this option to load the SQL-based Media Library at VLC startup" )
 
 #define PLTREE_TEXT N_("Display playlist tree")
 #define PLTREE_LONGTEXT N_( \
@@ -1432,11 +1488,6 @@ static const char *const ppsz_albumart_descriptions[] =
 #define BOOKMARK_LONGTEXT N_( \
       "This allows you to define playlist bookmarks.")
 
-#define HISTORY_BACK_TEXT N_("Go back in browsing history")
-#define HISTORY_BACK_LONGTEXT N_("Select the key to go back (to the previous media item) in the browsing history.")
-#define HISTORY_FORWARD_TEXT N_("Go forward in browsing history")
-#define HISTORY_FORWARD_LONGTEXT N_("Select the key to go forward (to the next media item) in the browsing history.")
-
 #define AUDIO_TRACK_KEY_TEXT N_("Cycle audio track")
 #define AUDIO_TRACK_KEY_LONGTEXT N_("Cycle through the available audio tracks(languages).")
 #define SUBTITLE_TRACK_KEY_TEXT N_("Cycle subtitle track")
@@ -1453,17 +1504,18 @@ static const char *const ppsz_albumart_descriptions[] =
 #define SCALE_DOWN_KEY_LONGTEXT N_("Decrease scale factor.")
 #define DEINTERLACE_KEY_TEXT N_("Cycle deinterlace modes")
 #define DEINTERLACE_KEY_LONGTEXT N_("Cycle through deinterlace modes.")
+#define INTF_TOGGLE_FSC_KEY_TEXT N_("Show controller in fullscreen")
 #define INTF_SHOW_KEY_TEXT N_("Show interface")
 #define INTF_SHOW_KEY_LONGTEXT N_("Raise the interface above all other windows.")
 #define INTF_HIDE_KEY_TEXT N_("Hide interface")
 #define INTF_HIDE_KEY_LONGTEXT N_("Lower the interface below all other windows.")
+#define INTF_BOSS_KEY_TEXT N_("Boss key")
+#define INTF_BOSS_KEY_LONGTEXT N_("Hide the interface and pause playback.")
 #define SNAP_KEY_TEXT N_("Take video snapshot")
 #define SNAP_KEY_LONGTEXT N_("Takes a video snapshot and writes it to disk.")
 
 #define RECORD_KEY_TEXT N_("Record")
 #define RECORD_KEY_LONGTEXT N_("Record access filter start/stop.")
-#define DUMP_KEY_TEXT N_("Dump")
-#define DUMP_KEY_LONGTEXT N_("Media dump access filter trigger.")
 
 #define LOOP_KEY_TEXT N_("Normal/Repeat/Loop")
 #define LOOP_KEY_LONGTEXT N_("Toggle Normal/Repeat/Loop playlist modes")
@@ -1523,37 +1575,6 @@ static const char *const ppsz_albumart_descriptions[] =
 
 #define AUDI_DEVICE_CYCLE_KEY_TEXT N_("Cycle through audio devices")
 #define AUDI_DEVICE_CYCLE_KEY_LONGTEXT N_("Cycle through available audio devices")
-const char vlc_usage[] = N_(
-    "Usage: %s [options] [stream] ..."
-    "\nYou can specify multiple streams on the commandline. They will be enqueued in the playlist."
-    "\nThe first item specified will be played first."
-    "\n"
-    "\nOptions-styles:"
-    "\n  --option  A global option that is set for the duration of the program."
-    "\n   -option  A single letter version of a global --option."
-    "\n   :option  An option that only applies to the stream directly before it"
-    "\n            and that overrides previous settings."
-    "\n"
-    "\nStream MRL syntax:"
-    "\n  [[access][/demux]://]URL[@[title][:chapter][-[title][:chapter]]] [:option=value ...]"
-    "\n"
-    "\n  Many of the global --options can also be used as MRL specific :options."
-    "\n  Multiple :option=value pairs can be specified."
-    "\n"
-    "\nURL syntax:"
-    "\n  [file://]filename              Plain media file"
-    "\n  http://ip:port/file            HTTP URL"
-    "\n  ftp://ip:port/file             FTP URL"
-    "\n  mms://ip:port/file             MMS URL"
-    "\n  screen://                      Screen capture"
-    "\n  [dvd://][device][@raw_device]  DVD device"
-    "\n  [vcd://][device]               VCD device"
-    "\n  [cdda://][device]              Audio CD device"
-    "\n  udp://[[<source address>]@[<bind address>][:<bind port>]]"
-    "\n                                 UDP stream sent by a streaming server"
-    "\n  vlc://pause:<seconds>          Special item to pause the playlist for a certain time"
-    "\n  vlc://quit                     Special item to quit VLC"
-    "\n");
 
 /*
  * Quick usage guide for the configuration options:
@@ -1561,15 +1582,16 @@ const char vlc_usage[] = N_(
  * add_category_hint( N_(text), N_(longtext), b_advanced_option )
  * add_subcategory_hint( N_(text), N_(longtext), b_advanced_option )
  * add_usage_hint( N_(text), b_advanced_option )
- * add_string( option_name, value, p_callback, N_(text), N_(longtext),
+ * add_string( option_name, value, N_(text), N_(longtext),
                b_advanced_option )
- * add_file( option_name, psz_value, p_callback, N_(text), N_(longtext) )
- * add_module( option_name, psz_value, i_capability, p_callback,
+ * add_loadfile( option_name, psz_value, N_(text), N_(longtext) )
+ * add_savefile( option_name, psz_value, N_(text), N_(longtext) )
+ * add_module( option_name, psz_value, i_capability,
  *             N_(text), N_(longtext) )
- * add_integer( option_name, i_value, p_callback, N_(text), N_(longtext),
-                b_advanced_option )
- * add_bool( option_name, b_value, p_callback, N_(text), N_(longtext),
-             b_advanced_option )
+ * add_integer( option_name, i_value, N_(text), N_(longtext),
+ *              b_advanced_option )
+ * add_bool( option_name, b_value, N_(text), N_(longtext),
+ *           b_advanced_option )
  */
 
 vlc_module_begin ()
@@ -1578,52 +1600,50 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_AUDIO_GENERAL )
     add_category_hint( N_("Audio"), AOUT_CAT_LONGTEXT , false )
 
-    add_bool( "audio", 1, NULL, AUDIO_TEXT, AUDIO_LONGTEXT, false )
+    add_bool( "audio", 1, AUDIO_TEXT, AUDIO_LONGTEXT, false )
         change_safe ()
-    add_integer_with_range( "volume", AOUT_VOLUME_DEFAULT, AOUT_VOLUME_MIN,
-                            AOUT_VOLUME_MAX, NULL, VOLUME_TEXT,
+    add_integer_with_range( "volume", AOUT_VOLUME_DEFAULT, 0,
+                            AOUT_VOLUME_MAX, VOLUME_TEXT,
                             VOLUME_LONGTEXT, false )
-    add_integer_with_range( "volume-step", AOUT_VOLUME_STEP, AOUT_VOLUME_MIN,
-                            AOUT_VOLUME_MAX, NULL, VOLUME_STEP_TEXT,
+    add_integer_with_range( "volume-step", AOUT_VOLUME_STEP, 0,
+                            AOUT_VOLUME_MAX, VOLUME_STEP_TEXT,
                             VOLUME_STEP_LONGTEXT, true )
-    add_integer( "aout-rate", -1, NULL, AOUT_RATE_TEXT,
-                 AOUT_RATE_LONGTEXT, true )
+    add_obsolete_integer( "aout-rate" ) /* since 2.0.0 */
 #if HAVE_FPU && !defined( __APPLE__ )
-    add_bool( "hq-resampling", 1, NULL, AOUT_RESAMP_TEXT,
+    add_bool( "hq-resampling", 1, AOUT_RESAMP_TEXT,
               AOUT_RESAMP_LONGTEXT, true )
 #endif
-    add_bool( "spdif", 0, NULL, SPDIF_TEXT, SPDIF_LONGTEXT, false )
-    add_integer( "force-dolby-surround", 0, NULL, FORCE_DOLBY_TEXT,
+    add_bool( "spdif", 0, SPDIF_TEXT, SPDIF_LONGTEXT, false )
+    add_integer( "force-dolby-surround", 0, FORCE_DOLBY_TEXT,
                  FORCE_DOLBY_LONGTEXT, false )
-        change_integer_list( pi_force_dolby_values, ppsz_force_dolby_descriptions, NULL )
-    add_integer( "audio-desync", 0, NULL, DESYNC_TEXT,
+        change_integer_list( pi_force_dolby_values, ppsz_force_dolby_descriptions )
+    add_integer( "audio-desync", 0, DESYNC_TEXT,
                  DESYNC_LONGTEXT, true )
         change_safe ()
 
     /* FIXME TODO create a subcat replay gain ? */
-    add_string( "audio-replay-gain-mode", ppsz_replay_gain_mode[0], NULL, AUDIO_REPLAY_GAIN_MODE_TEXT,
+    add_string( "audio-replay-gain-mode", ppsz_replay_gain_mode[0], AUDIO_REPLAY_GAIN_MODE_TEXT,
                 AUDIO_REPLAY_GAIN_MODE_LONGTEXT, false )
         change_string_list( ppsz_replay_gain_mode, ppsz_replay_gain_mode_text, 0 )
-    add_float( "audio-replay-gain-preamp", 0.0, NULL,
+    add_float( "audio-replay-gain-preamp", 0.0,
                AUDIO_REPLAY_GAIN_PREAMP_TEXT, AUDIO_REPLAY_GAIN_PREAMP_LONGTEXT, false )
-    add_float( "audio-replay-gain-default", -7.0, NULL,
+    add_float( "audio-replay-gain-default", -7.0,
                AUDIO_REPLAY_GAIN_DEFAULT_TEXT, AUDIO_REPLAY_GAIN_DEFAULT_LONGTEXT, false )
-    add_bool( "audio-replay-gain-peak-protection", true, NULL,
+    add_bool( "audio-replay-gain-peak-protection", true,
               AUDIO_REPLAY_GAIN_PEAK_PROTECTION_TEXT, AUDIO_REPLAY_GAIN_PEAK_PROTECTION_LONGTEXT, true )
 
-    add_bool( "audio-time-stretch", HAVE_FPU, NULL,
+    add_bool( "audio-time-stretch", HAVE_FPU,
               AUDIO_TIME_STRETCH_TEXT, AUDIO_TIME_STRETCH_LONGTEXT, false )
 
     set_subcategory( SUBCAT_AUDIO_AOUT )
-    add_module( "aout", "audio output", NULL, NULL, AOUT_TEXT, AOUT_LONGTEXT,
+    add_module( "aout", "audio output", NULL, AOUT_TEXT, AOUT_LONGTEXT,
                 true )
         change_short('A')
     set_subcategory( SUBCAT_AUDIO_AFILTER )
-    add_module_list_cat( "audio-filter", SUBCAT_AUDIO_AFILTER, 0,
-                         NULL, AUDIO_FILTER_TEXT,
-                         AUDIO_FILTER_LONGTEXT, false )
+    add_module_list_cat( "audio-filter", SUBCAT_AUDIO_AFILTER, NULL,
+                         AUDIO_FILTER_TEXT, AUDIO_FILTER_LONGTEXT, false )
     set_subcategory( SUBCAT_AUDIO_VISUAL )
-    add_module( "audio-visual", "visualization2",NULL, NULL,AUDIO_VISUAL_TEXT,
+    add_module( "audio-visual", "visualization2", NULL,AUDIO_VISUAL_TEXT,
                 AUDIO_VISUAL_LONGTEXT, false )
 
 /* Video options */
@@ -1631,141 +1651,130 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_VIDEO_GENERAL )
     add_category_hint( N_("Video"), VOUT_CAT_LONGTEXT , false )
 
-    add_bool( "video", 1, NULL, VIDEO_TEXT, VIDEO_LONGTEXT, true )
+    add_bool( "video", 1, VIDEO_TEXT, VIDEO_LONGTEXT, true )
         change_safe ()
-    add_bool( "grayscale", 0, NULL, GRAYSCALE_TEXT,
+    add_bool( "grayscale", 0, GRAYSCALE_TEXT,
               GRAYSCALE_LONGTEXT, true )
 #if defined (HAVE_MAEMO)
 # define FULLSCREEN_DEFAULT true
 #else
 # define FULLSCREEN_DEFAULT false
 #endif
-    add_bool( "fullscreen", FULLSCREEN_DEFAULT, NULL, FULLSCREEN_TEXT,
+    add_bool( "fullscreen", FULLSCREEN_DEFAULT, FULLSCREEN_TEXT,
               FULLSCREEN_LONGTEXT, false )
         change_short('f')
         change_safe ()
-    add_bool( "embedded-video", 1, NULL, EMBEDDED_TEXT, EMBEDDED_LONGTEXT,
+    add_bool( "embedded-video", 1, EMBEDDED_TEXT, EMBEDDED_LONGTEXT,
               true )
-#ifdef __APPLE__
-       add_deprecated_alias( "macosx-embedded" ) /*deprecated since 0.9.0 */
-#endif
-    add_string( "x11-display", NULL, NULL,
-                DISPLAY_TEXT, DISPLAY_LONGTEXT, true )
-        add_deprecated_alias( "xvideo-display" ) /* deprecated since 1.1.0 */
-        //add_deprecated_alias( "glx-display" ) cannot have more than one
-    add_bool( "xlib", true, NULL, "", "", true )
+    add_bool( "xlib", true, "", "", true )
         change_private ()
-    add_bool( "drop-late-frames", 1, NULL, DROP_LATE_FRAMES_TEXT,
+    add_bool( "drop-late-frames", 1, DROP_LATE_FRAMES_TEXT,
               DROP_LATE_FRAMES_LONGTEXT, true )
     /* Used in vout_synchro */
-    add_bool( "skip-frames", 1, NULL, SKIP_FRAMES_TEXT,
+    add_bool( "skip-frames", 1, SKIP_FRAMES_TEXT,
               SKIP_FRAMES_LONGTEXT, true )
-    add_bool( "quiet-synchro", 0, NULL, QUIET_SYNCHRO_TEXT,
+    add_bool( "quiet-synchro", 0, QUIET_SYNCHRO_TEXT,
               QUIET_SYNCHRO_LONGTEXT, true )
-    add_bool( "keyboard-events", true, NULL, KEYBOARD_EVENTS_TEXT,
+    add_bool( "keyboard-events", true, KEYBOARD_EVENTS_TEXT,
               KEYBOARD_EVENTS_LONGTEXT, true )
-    add_bool( "mouse-events", true, NULL, MOUSE_EVENTS_TEXT,
+    add_bool( "mouse-events", true, MOUSE_EVENTS_TEXT,
               MOUSE_EVENTS_LONGTEXT, true )
     add_obsolete_integer( "vout-event" ) /* deprecated since 1.1.0 */
     add_obsolete_integer( "x11-event" ) /* renamed since 1.0.0 */
 #ifndef __APPLE__
-    add_bool( "overlay", 1, NULL, OVERLAY_TEXT, OVERLAY_LONGTEXT, false )
+    add_bool( "overlay", 1, OVERLAY_TEXT, OVERLAY_LONGTEXT, false )
         change_safe()
 #endif
-    add_bool( "video-on-top", 0, NULL, VIDEO_ON_TOP_TEXT,
+    add_bool( "video-on-top", 0, VIDEO_ON_TOP_TEXT,
               VIDEO_ON_TOP_LONGTEXT, false )
-    add_bool( "video-wallpaper", false, NULL, WALLPAPER_TEXT,
+    add_bool( "video-wallpaper", false, WALLPAPER_TEXT,
               WALLPAPER_LONGTEXT, false )
-#ifdef WIN32
-        add_deprecated_alias( "directx-wallpaper" )
-#endif
-    add_bool( "disable-screensaver", true, NULL, SS_TEXT, SS_LONGTEXT,
+    add_bool( "disable-screensaver", true, SS_TEXT, SS_LONGTEXT,
               true )
 
-    add_bool( "video-title-show", 1, NULL, VIDEO_TITLE_SHOW_TEXT,
+    add_bool( "video-title-show", 1, VIDEO_TITLE_SHOW_TEXT,
               VIDEO_TITLE_SHOW_LONGTEXT, false )
         change_safe()
-    add_integer( "video-title-timeout", 5000, NULL, VIDEO_TITLE_TIMEOUT_TEXT,
+    add_integer( "video-title-timeout", 5000, VIDEO_TITLE_TIMEOUT_TEXT,
                  VIDEO_TITLE_TIMEOUT_LONGTEXT, false )
         change_safe()
-    add_integer( "video-title-position", 8, NULL, VIDEO_TITLE_POSITION_TEXT,
+    add_integer( "video-title-position", 8, VIDEO_TITLE_POSITION_TEXT,
                  VIDEO_TITLE_POSITION_LONGTEXT, false )
         change_safe()
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
-    // autohide after 1.5s
-    add_integer( "mouse-hide-timeout", 1500, NULL, MOUSE_HIDE_TIMEOUT_TEXT,
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions )
+    // autohide after 1 second
+    add_integer( "mouse-hide-timeout", 1000, MOUSE_HIDE_TIMEOUT_TEXT,
                  MOUSE_HIDE_TIMEOUT_LONGTEXT, false )
     set_section( N_("Snapshot") , NULL )
-    add_directory( "snapshot-path", NULL, NULL, SNAP_PATH_TEXT,
+    add_directory( "snapshot-path", NULL, SNAP_PATH_TEXT,
                    SNAP_PATH_LONGTEXT, false )
-    add_string( "snapshot-prefix", "vlcsnap-", NULL, SNAP_PREFIX_TEXT,
+    add_string( "snapshot-prefix", "vlcsnap-", SNAP_PREFIX_TEXT,
                    SNAP_PREFIX_LONGTEXT, false )
-    add_string( "snapshot-format", "png", NULL, SNAP_FORMAT_TEXT,
+    add_string( "snapshot-format", "png", SNAP_FORMAT_TEXT,
                    SNAP_FORMAT_LONGTEXT, false )
         change_string_list( ppsz_snap_formats, NULL, 0 )
-    add_bool( "snapshot-preview", true, NULL, SNAP_PREVIEW_TEXT,
+    add_bool( "snapshot-preview", true, SNAP_PREVIEW_TEXT,
               SNAP_PREVIEW_LONGTEXT, false )
-    add_bool( "snapshot-sequential", false, NULL, SNAP_SEQUENTIAL_TEXT,
+    add_bool( "snapshot-sequential", false, SNAP_SEQUENTIAL_TEXT,
               SNAP_SEQUENTIAL_LONGTEXT, false )
-    add_integer( "snapshot-width", -1, NULL, SNAP_WIDTH_TEXT,
+    add_integer( "snapshot-width", -1, SNAP_WIDTH_TEXT,
                  SNAP_WIDTH_LONGTEXT, true )
-    add_integer( "snapshot-height", -1, NULL, SNAP_HEIGHT_TEXT,
+    add_integer( "snapshot-height", -1, SNAP_HEIGHT_TEXT,
                  SNAP_HEIGHT_LONGTEXT, true )
 
     set_section( N_("Window properties" ), NULL )
-    add_integer( "width", -1, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true )
+    add_integer( "width", -1, WIDTH_TEXT, WIDTH_LONGTEXT, true )
         change_safe ()
-    add_integer( "height", -1, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, true )
+    add_integer( "height", -1, HEIGHT_TEXT, HEIGHT_LONGTEXT, true )
         change_safe ()
-    add_integer( "video-x", 0, NULL, VIDEOX_TEXT, VIDEOX_LONGTEXT, true )
+    add_integer( "video-x", 0, VIDEOX_TEXT, VIDEOX_LONGTEXT, true )
         change_safe ()
-    add_integer( "video-y", 0, NULL, VIDEOY_TEXT, VIDEOY_LONGTEXT, true )
+    add_integer( "video-y", 0, VIDEOY_TEXT, VIDEOY_LONGTEXT, true )
         change_safe ()
-    add_string( "crop", NULL, NULL, CROP_TEXT, CROP_LONGTEXT, false )
+    add_string( "crop", NULL, CROP_TEXT, CROP_LONGTEXT, false )
         change_safe ()
-    add_string( "custom-crop-ratios", NULL, NULL, CUSTOM_CROP_RATIOS_TEXT,
+    add_string( "custom-crop-ratios", NULL, CUSTOM_CROP_RATIOS_TEXT,
                 CUSTOM_CROP_RATIOS_LONGTEXT, false )
-    add_string( "aspect-ratio", NULL, NULL,
+    add_string( "aspect-ratio", NULL,
                 ASPECT_RATIO_TEXT, ASPECT_RATIO_LONGTEXT, false )
         change_safe ()
-    add_bool( "autoscale", true, NULL, AUTOSCALE_TEXT, AUTOSCALE_LONGTEXT, false )
+    add_bool( "autoscale", true, AUTOSCALE_TEXT, AUTOSCALE_LONGTEXT, false )
         change_safe ()
-    add_float( "scale", 1.0, NULL, SCALEFACTOR_TEXT, SCALEFACTOR_LONGTEXT, false )
+    add_float( "scale", 1.0, SCALEFACTOR_TEXT, SCALEFACTOR_LONGTEXT, false )
         change_safe ()
-    add_string( "monitor-par", NULL, NULL,
+    add_string( "monitor-par", NULL,
                 MASPECT_RATIO_TEXT, MASPECT_RATIO_LONGTEXT, true )
-    add_string( "custom-aspect-ratios", NULL, NULL, CUSTOM_ASPECT_RATIOS_TEXT,
+    add_string( "custom-aspect-ratios", NULL, CUSTOM_ASPECT_RATIOS_TEXT,
                 CUSTOM_ASPECT_RATIOS_LONGTEXT, false )
-    add_bool( "hdtv-fix", 1, NULL, HDTV_FIX_TEXT, HDTV_FIX_LONGTEXT, true )
-    add_bool( "video-deco", 1, NULL, VIDEO_DECO_TEXT,
+    add_bool( "hdtv-fix", 1, HDTV_FIX_TEXT, HDTV_FIX_LONGTEXT, true )
+    add_bool( "video-deco", 1, VIDEO_DECO_TEXT,
               VIDEO_DECO_LONGTEXT, true )
-    add_string( "video-title", NULL, NULL, VIDEO_TITLE_TEXT,
+    add_string( "video-title", NULL, VIDEO_TITLE_TEXT,
                  VIDEO_TITLE_LONGTEXT, true )
-    add_integer( "align", 0, NULL, ALIGN_TEXT, ALIGN_LONGTEXT, true )
-        change_integer_list( pi_align_values, ppsz_align_descriptions, NULL )
-    add_float( "zoom", 1, NULL, ZOOM_TEXT, ZOOM_LONGTEXT, true )
-    add_integer( "deinterlace", 0, NULL,
+    add_integer( "align", 0, ALIGN_TEXT, ALIGN_LONGTEXT, true )
+        change_integer_list( pi_align_values, ppsz_align_descriptions )
+    add_float( "zoom", 1, ZOOM_TEXT, ZOOM_LONGTEXT, true )
+    add_integer( "deinterlace", 0,
                  DEINTERLACE_TEXT, DEINTERLACE_LONGTEXT, false )
-        change_integer_list( pi_deinterlace, ppsz_deinterlace_text, 0 )
+        change_integer_list( pi_deinterlace, ppsz_deinterlace_text )
         change_safe()
-    add_string( "deinterlace-mode", "blend", NULL,
+    add_string( "deinterlace-mode", "blend",
                 DEINTERLACE_MODE_TEXT, DEINTERLACE_MODE_LONGTEXT, false )
         change_string_list( ppsz_deinterlace_mode, ppsz_deinterlace_mode_text, 0 )
         change_safe()
 
     set_subcategory( SUBCAT_VIDEO_VOUT )
-    add_module( "vout", "vout display", NULL, NULL, VOUT_TEXT, VOUT_LONGTEXT,
-                true )
+    add_module( "vout", "vout display", NULL, VOUT_TEXT, VOUT_LONGTEXT, true )
         change_short('V')
 
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    add_module_list_cat( "video-filter", SUBCAT_VIDEO_VFILTER, NULL, NULL,
+    add_module_list_cat( "video-filter", SUBCAT_VIDEO_VFILTER, NULL,
                 VIDEO_FILTER_TEXT, VIDEO_FILTER_LONGTEXT, false )
-        add_deprecated_alias( "filter" ) /*deprecated since 0.8.2 */
-    add_module_list_cat( "vout-filter", SUBCAT_VIDEO_VFILTER, NULL, NULL,
-                        VOUT_FILTER_TEXT, VOUT_FILTER_LONGTEXT, false )
+    add_module_list_cat( "video-splitter", SUBCAT_VIDEO_VFILTER, NULL,
+                        VIDEO_SPLITTER_TEXT, VIDEO_SPLITTER_LONGTEXT, false )
+    add_obsolete_string( "vout-filter" ) /* since 2.0.0 */
 #if 0
-    add_string( "pixel-ratio", "1", NULL, PIXEL_RATIO_TEXT, PIXEL_RATIO_TEXT )
+    add_string( "pixel-ratio", "1", PIXEL_RATIO_TEXT, PIXEL_RATIO_TEXT )
 #endif
 
 /* Subpictures options */
@@ -1773,32 +1782,33 @@ vlc_module_begin ()
     set_section( N_("On Screen Display") , NULL )
     add_category_hint( N_("Subpictures"), SUB_CAT_LONGTEXT , false )
 
-    add_bool( "spu", 1, NULL, SPU_TEXT, SPU_LONGTEXT, true )
+    add_bool( "spu", 1, SPU_TEXT, SPU_LONGTEXT, true )
         change_safe ()
-    add_bool( "osd", 1, NULL, OSD_TEXT, OSD_LONGTEXT, false )
-    add_module( "text-renderer", "text renderer", NULL, NULL, TEXTRENDERER_TEXT,
+    add_bool( "osd", 1, OSD_TEXT, OSD_LONGTEXT, false )
+    add_module( "text-renderer", "text renderer", NULL, TEXTRENDERER_TEXT,
                 TEXTRENDERER_LONGTEXT, true )
 
     set_section( N_("Subtitles") , NULL )
-    add_file( "sub-file", NULL, NULL, SUB_FILE_TEXT,
-              SUB_FILE_LONGTEXT, false )
+    add_loadfile( "sub-file", NULL, SUB_FILE_TEXT,
+                  SUB_FILE_LONGTEXT, false )
         change_safe()
-    add_bool( "sub-autodetect-file", true, NULL,
+    add_bool( "sub-autodetect-file", true,
                  SUB_AUTO_TEXT, SUB_AUTO_LONGTEXT, false )
-    add_integer( "sub-autodetect-fuzzy", 3, NULL,
+    add_integer( "sub-autodetect-fuzzy", 3,
                  SUB_FUZZY_TEXT, SUB_FUZZY_LONGTEXT, true )
-#ifdef WIN32
+#if defined( WIN32 ) || defined( __OS2__ )
 #   define SUB_PATH ".\\subtitles"
 #else
 #   define SUB_PATH "./Subtitles, ./subtitles"
 #endif
-    add_string( "sub-autodetect-path", SUB_PATH, NULL,
+    add_string( "sub-autodetect-path", SUB_PATH,
                  SUB_PATH_TEXT, SUB_PATH_LONGTEXT, true )
-    add_integer( "sub-margin", 0, NULL, SUB_MARGIN_TEXT,
+    add_integer( "sub-margin", 0, SUB_MARGIN_TEXT,
                  SUB_MARGIN_LONGTEXT, true )
-        add_deprecated_alias( "spu-margin" ) /*Deprecated since 0.8.2 */
     set_section( N_( "Overlays" ) , NULL )
-    add_module_list_cat( "sub-filter", SUBCAT_VIDEO_SUBPIC, NULL, NULL,
+    add_module_list_cat( "sub-source", SUBCAT_VIDEO_SUBPIC, NULL,
+                SUB_SOURCE_TEXT, SUB_SOURCE_LONGTEXT, false )
+    add_module_list_cat( "sub-filter", SUBCAT_VIDEO_SUBPIC, NULL,
                 SUB_FILTER_TEXT, SUB_FILTER_LONGTEXT, false )
 
 /* Input options */
@@ -1806,166 +1816,227 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_GENERAL )
 
     set_section( N_( "Track settings" ), NULL )
-    add_integer( "program", 0, NULL,
+    add_integer( "program", 0,
                  INPUT_PROGRAM_TEXT, INPUT_PROGRAM_LONGTEXT, true )
         change_safe ()
-    add_string( "programs", "", NULL,
+    add_string( "programs", "",
                 INPUT_PROGRAMS_TEXT, INPUT_PROGRAMS_LONGTEXT, true )
         change_safe ()
-    add_integer( "audio-track", -1, NULL,
+    add_integer( "audio-track", -1,
                  INPUT_AUDIOTRACK_TEXT, INPUT_AUDIOTRACK_LONGTEXT, true )
         change_safe ()
-        add_deprecated_alias( "audio-channel" ) /*deprecated since 0.8.2 */
-    add_integer( "sub-track", -1, NULL,
+    add_integer( "sub-track", -1,
                  INPUT_SUBTRACK_TEXT, INPUT_SUBTRACK_LONGTEXT, true )
         change_safe ()
-        add_deprecated_alias("spu-channel" ) /*deprecated since 0.8.2*/
-    add_string( "audio-language", "", NULL,
+    add_string( "audio-language", "",
                  INPUT_AUDIOTRACK_LANG_TEXT, INPUT_AUDIOTRACK_LANG_LONGTEXT,
                   false )
         change_safe ()
-    add_string( "sub-language", "", NULL,
+    add_string( "sub-language", "",
                  INPUT_SUBTRACK_LANG_TEXT, INPUT_SUBTRACK_LANG_LONGTEXT,
                   false )
         change_safe ()
-    add_integer( "audio-track-id", -1, NULL, INPUT_AUDIOTRACK_ID_TEXT,
+    add_integer( "audio-track-id", -1, INPUT_AUDIOTRACK_ID_TEXT,
                  INPUT_AUDIOTRACK_ID_LONGTEXT, true )
         change_safe ()
-    add_integer( "sub-track-id", -1, NULL,
+    add_integer( "sub-track-id", -1,
                  INPUT_SUBTRACK_ID_TEXT, INPUT_SUBTRACK_ID_LONGTEXT, true )
         change_safe ()
+    add_integer( "preferred-resolution", -1, INPUT_PREFERREDRESOLUTION_TEXT,
+                 INPUT_PREFERREDRESOLUTION_LONGTEXT, false )
+        change_safe ()
+        change_integer_list( pi_prefres, ppsz_prefres )
 
     set_section( N_( "Playback control" ) , NULL)
-    add_integer( "input-repeat", 0, NULL,
+    add_integer( "input-repeat", 0,
                  INPUT_REPEAT_TEXT, INPUT_REPEAT_LONGTEXT, false )
         change_safe ()
-    add_float( "start-time", 0, NULL,
+    add_float( "start-time", 0,
                START_TIME_TEXT, START_TIME_LONGTEXT, true )
         change_safe ()
-    add_float( "stop-time", 0, NULL,
+    add_float( "stop-time", 0,
                STOP_TIME_TEXT, STOP_TIME_LONGTEXT, true )
         change_safe ()
-    add_float( "run-time", 0, NULL,
+    add_float( "run-time", 0,
                RUN_TIME_TEXT, RUN_TIME_LONGTEXT, true )
         change_safe ()
-    add_bool( "input-fast-seek", false, NULL,
+    add_bool( "input-fast-seek", false,
               INPUT_FAST_SEEK_TEXT, INPUT_FAST_SEEK_LONGTEXT, false )
         change_safe ()
-    add_float( "rate", 1., NULL,
+    add_float( "rate", 1.,
                INPUT_RATE_TEXT, INPUT_RATE_LONGTEXT, false )
 
-    add_string( "input-list", NULL, NULL,
+    add_string( "input-list", NULL,
                  INPUT_LIST_TEXT, INPUT_LIST_LONGTEXT, true )
-    add_string( "input-slave", NULL, NULL,
+    add_string( "input-slave", NULL,
                  INPUT_SLAVE_TEXT, INPUT_SLAVE_LONGTEXT, true )
 
-    add_string( "bookmarks", NULL, NULL,
+    add_string( "bookmarks", NULL,
                  BOOKMARKS_TEXT, BOOKMARKS_LONGTEXT, true )
         change_safe ()
 
     set_section( N_( "Default devices") , NULL )
 
-    add_file( "dvd", DVD_DEVICE, NULL, DVD_DEV_TEXT, DVD_DEV_LONGTEXT,
-              false )
-    add_file( "vcd", VCD_DEVICE, NULL, VCD_DEV_TEXT, VCD_DEV_LONGTEXT,
-              false )
-    add_file( "cd-audio", CDAUDIO_DEVICE, NULL, CDAUDIO_DEV_TEXT,
-              CDAUDIO_DEV_LONGTEXT, false )
+    add_loadfile( "dvd", DVD_DEVICE, DVD_DEV_TEXT, DVD_DEV_LONGTEXT,
+                  false )
+    add_loadfile( "vcd", VCD_DEVICE, VCD_DEV_TEXT, VCD_DEV_LONGTEXT,
+                  false )
+    add_loadfile( "cd-audio", CDAUDIO_DEVICE, CDAUDIO_DEV_TEXT,
+                  CDAUDIO_DEV_LONGTEXT, false )
 
     set_section( N_( "Network settings" ), NULL )
 
-    add_integer( "server-port", 1234, NULL,
-                 SERVER_PORT_TEXT, SERVER_PORT_LONGTEXT, false )
-    add_integer( "mtu", MTU_DEFAULT, NULL, MTU_TEXT, MTU_LONGTEXT, true )
-    add_bool( "ipv6", 0, NULL, IPV6_TEXT, IPV6_LONGTEXT, false )
-        change_short('6')
-    add_bool( "ipv4", 0, NULL, IPV4_TEXT, IPV4_LONGTEXT, false )
-        change_short('4')
-    add_integer( "ipv4-timeout", 5 * 1000, NULL, TIMEOUT_TEXT,
+    add_integer( "mtu", MTU_DEFAULT, MTU_TEXT, MTU_LONGTEXT, true )
+    add_obsolete_bool( "ipv6" ) /* since 2.0.0 */
+    add_obsolete_bool( "ipv4" ) /* since 2.0.0 */
+    add_integer( "ipv4-timeout", 5 * 1000, TIMEOUT_TEXT,
                  TIMEOUT_LONGTEXT, true )
 
+    add_string( "http-host", NULL, HTTP_HOST_TEXT, HOST_LONGTEXT, true )
+    add_integer( "http-port", 8080, HTTP_PORT_TEXT, HTTP_PORT_LONGTEXT, true )
+        change_integer_range( 1, 65535 )
+    add_integer( "https-port", 8443, HTTPS_PORT_TEXT, HTTPS_PORT_LONGTEXT, true )
+        change_integer_range( 1, 65535 )
+    add_string( "rtsp-host", NULL, RTSP_HOST_TEXT, RTSP_HOST_LONGTEXT, true )
+    add_integer( "rtsp-port", 554, RTSP_PORT_TEXT, RTSP_PORT_LONGTEXT, true )
+        change_integer_range( 1, 65535 )
+    add_loadfile( "http-cert", NULL, HTTP_CERT_TEXT, CERT_LONGTEXT, true )
+    add_obsolete_string( "sout-http-cert" ) /* since 2.0.0 */
+    add_loadfile( "http-key", NULL, HTTP_KEY_TEXT, KEY_LONGTEXT, true )
+    add_obsolete_string( "sout-http-key" ) /* since 2.0.0 */
+    add_loadfile( "http-ca", NULL, HTTP_CA_TEXT, CA_LONGTEXT, true )
+    add_obsolete_string( "sout-http-ca" ) /* since 2.0.0 */
+    add_loadfile( "http-crl", NULL, HTTP_CRL_TEXT, CRL_LONGTEXT, true )
+    add_obsolete_string( "sout-http-crl" ) /* since 2.0.0 */
+
     set_section( N_( "Socks proxy") , NULL )
-    add_string( "socks", NULL, NULL,
+    add_string( "socks", NULL,
                  SOCKS_SERVER_TEXT, SOCKS_SERVER_LONGTEXT, true )
-    add_string( "socks-user", NULL, NULL,
+    add_string( "socks-user", NULL,
                  SOCKS_USER_TEXT, SOCKS_USER_LONGTEXT, true )
-    add_string( "socks-pwd", NULL, NULL,
+    add_string( "socks-pwd", NULL,
                  SOCKS_PASS_TEXT, SOCKS_PASS_LONGTEXT, true )
 
 
     set_section( N_("Metadata" ) , NULL )
-    add_string( "meta-title", NULL, NULL, META_TITLE_TEXT,
+    add_string( "meta-title", NULL, META_TITLE_TEXT,
                 META_TITLE_LONGTEXT, true )
         change_safe()
-    add_string( "meta-author", NULL, NULL, META_AUTHOR_TEXT,
+    add_string( "meta-author", NULL, META_AUTHOR_TEXT,
                 META_AUTHOR_LONGTEXT, true )
         change_safe()
-    add_string( "meta-artist", NULL, NULL, META_ARTIST_TEXT,
+    add_string( "meta-artist", NULL, META_ARTIST_TEXT,
                 META_ARTIST_LONGTEXT, true )
         change_safe()
-    add_string( "meta-genre", NULL, NULL, META_GENRE_TEXT,
+    add_string( "meta-genre", NULL, META_GENRE_TEXT,
                 META_GENRE_LONGTEXT, true )
         change_safe()
-    add_string( "meta-copyright", NULL, NULL, META_CPYR_TEXT,
+    add_string( "meta-copyright", NULL, META_CPYR_TEXT,
                 META_CPYR_LONGTEXT, true )
         change_safe()
-    add_string( "meta-description", NULL, NULL, META_DESCR_TEXT,
+    add_string( "meta-description", NULL, META_DESCR_TEXT,
                 META_DESCR_LONGTEXT, true )
         change_safe()
-    add_string( "meta-date", NULL, NULL, META_DATE_TEXT,
+    add_string( "meta-date", NULL, META_DATE_TEXT,
                 META_DATE_LONGTEXT, true )
         change_safe()
-    add_string( "meta-url", NULL, NULL, META_URL_TEXT,
+    add_string( "meta-url", NULL, META_URL_TEXT,
                 META_URL_LONGTEXT, true )
         change_safe()
 
     set_section( N_( "Advanced" ), NULL )
 
-    add_integer( "cr-average", 40, NULL, CR_AVERAGE_TEXT,
+    add_integer( "file-caching", DEFAULT_PTS_DELAY / 1000,
+                 CACHING_TEXT, CACHING_LONGTEXT, true )
+        change_integer_range( 0, 60000 )
+        change_safe()
+    add_obsolete_integer( "vdr-caching" ) /* 2.0.0 */
+    add_integer( "live-caching", DEFAULT_PTS_DELAY / 1000,
+                 CAPTURE_CACHING_TEXT, CAPTURE_CACHING_LONGTEXT, true )
+        change_integer_range( 0, 60000 )
+        change_safe()
+    add_obsolete_integer( "alsa-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "dshow-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "dv-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "dvb-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "eyetv-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "gnomevfs-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "jack-input-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "linsys-hdsdi-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "linsys-sdi-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "oss-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "pvr-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "screen-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "v4l2-caching" ) /* 2.0.0 */
+    add_integer( "disc-caching", DEFAULT_PTS_DELAY / 1000,
+                 DISC_CACHING_TEXT, DISC_CACHING_LONGTEXT, true )
+        change_integer_range( 0, 60000 )
+        change_safe()
+    add_obsolete_integer( "bd-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "bluray-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "cdda-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "dvdnav-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "dvdread-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "vcd-caching" ) /* 2.0.0 */
+    add_integer( "network-caching", CLOCK_FREQ / 1000,
+                 NETWORK_CACHING_TEXT, NETWORK_CACHING_LONGTEXT, true )
+        change_integer_range( 0, 60000 )
+        change_safe()
+    add_obsolete_integer( "ftp-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "http-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "mms-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "realrtsp-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "rtp-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "rtsp-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "sftp-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "smb-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "tcp-caching" ) /* 2.0.0 */
+    add_obsolete_integer( "udp-caching" ) /* 2.0.0 */
+
+    add_integer( "cr-average", 40, CR_AVERAGE_TEXT,
                  CR_AVERAGE_LONGTEXT, true )
-    add_integer( "clock-synchro", -1, NULL, CLOCK_SYNCHRO_TEXT,
+    add_integer( "clock-synchro", -1, CLOCK_SYNCHRO_TEXT,
                  CLOCK_SYNCHRO_LONGTEXT, true )
-        change_integer_list( pi_clock_values, ppsz_clock_descriptions, NULL )
-    add_integer( "clock-jitter", 5 * CLOCK_FREQ/1000, NULL, CLOCK_JITTER_TEXT,
+        change_integer_list( pi_clock_values, ppsz_clock_descriptions )
+    add_integer( "clock-jitter", 5 * CLOCK_FREQ/1000, CLOCK_JITTER_TEXT,
               CLOCK_JITTER_LONGTEXT, true )
         change_safe()
 
-    add_bool( "network-synchronisation", false, NULL, NETSYNC_TEXT,
+    add_bool( "network-synchronisation", false, NETSYNC_TEXT,
               NETSYNC_LONGTEXT, true )
 
-    add_string( "input-record-path", NULL, NULL, INPUT_RECORD_PATH_TEXT,
+    add_string( "input-record-path", NULL, INPUT_RECORD_PATH_TEXT,
                 INPUT_RECORD_PATH_LONGTEXT, true )
-    add_bool( "input-record-native", true, NULL, INPUT_RECORD_NATIVE_TEXT,
+    add_bool( "input-record-native", true, INPUT_RECORD_NATIVE_TEXT,
               INPUT_RECORD_NATIVE_LONGTEXT, true )
 
-    add_string( "input-timeshift-path", NULL, NULL, INPUT_TIMESHIFT_PATH_TEXT,
+    add_string( "input-timeshift-path", NULL, INPUT_TIMESHIFT_PATH_TEXT,
                 INPUT_TIMESHIFT_PATH_LONGTEXT, true )
-    add_integer( "input-timeshift-granularity", -1, NULL, INPUT_TIMESHIFT_GRANULARITY_TEXT,
+    add_integer( "input-timeshift-granularity", -1, INPUT_TIMESHIFT_GRANULARITY_TEXT,
                  INPUT_TIMESHIFT_GRANULARITY_LONGTEXT, true )
+
+    add_string( "input-title-format", "$Z", INPUT_TITLE_FORMAT_TEXT, INPUT_TITLE_FORMAT_LONGTEXT, false );
 
 /* Decoder options */
     add_category_hint( N_("Decoders"), CODEC_CAT_LONGTEXT , true )
-    add_string( "codec", NULL, NULL, CODEC_TEXT,
+    add_string( "codec", NULL, CODEC_TEXT,
                 CODEC_LONGTEXT, true )
-    add_string( "encoder",  NULL, NULL, ENCODER_TEXT,
+    add_string( "encoder",  NULL, ENCODER_TEXT,
                 ENCODER_LONGTEXT, true )
 
     set_subcategory( SUBCAT_INPUT_ACCESS )
     add_category_hint( N_("Input"), INPUT_CAT_LONGTEXT , false )
-    add_module( "access", "access", NULL, NULL, ACCESS_TEXT,
-                ACCESS_LONGTEXT, true )
+    add_module( "access", "access", NULL, ACCESS_TEXT, ACCESS_LONGTEXT, true )
 
     set_subcategory( SUBCAT_INPUT_DEMUX )
-    add_module( "demux", "demux", NULL, NULL, DEMUX_TEXT,
-                DEMUX_LONGTEXT, true )
+    add_module( "demux", "demux", NULL, DEMUX_TEXT, DEMUX_LONGTEXT, true )
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_subcategory( SUBCAT_INPUT_ACODEC )
     set_subcategory( SUBCAT_INPUT_SCODEC )
-    add_bool( "prefer-system-codecs", false, NULL, SYSTEM_CODEC_TEXT,
-                                SYSTEM_CODEC_LONGTEXT, false )
+    add_obsolete_bool( "prefer-system-codecs" )
 
     set_subcategory( SUBCAT_INPUT_STREAM_FILTER )
-    add_module_list_cat( "stream-filter", SUBCAT_INPUT_STREAM_FILTER, NULL, NULL,
+    add_module_list_cat( "stream-filter", SUBCAT_INPUT_STREAM_FILTER, NULL,
                 STREAM_FILTER_TEXT, STREAM_FILTER_LONGTEXT, false )
 
 
@@ -1974,47 +2045,45 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_SOUT_GENERAL )
     add_category_hint( N_("Stream output"), SOUT_CAT_LONGTEXT , true )
 
-    add_string( "sout", NULL, NULL, SOUT_TEXT, SOUT_LONGTEXT, true )
-    add_bool( "sout-display", false, NULL, SOUT_DISPLAY_TEXT,
+    add_string( "sout", NULL, SOUT_TEXT, SOUT_LONGTEXT, true )
+    add_bool( "sout-display", false, SOUT_DISPLAY_TEXT,
                                 SOUT_DISPLAY_LONGTEXT, true )
-    add_bool( "sout-keep", false, NULL, SOUT_KEEP_TEXT,
+    add_bool( "sout-keep", false, SOUT_KEEP_TEXT,
                                 SOUT_KEEP_LONGTEXT, true )
-    add_bool( "sout-all", 0, NULL, SOUT_ALL_TEXT,
+    add_bool( "sout-all", 0, SOUT_ALL_TEXT,
                                 SOUT_ALL_LONGTEXT, true )
-    add_bool( "sout-audio", 1, NULL, SOUT_AUDIO_TEXT,
+    add_bool( "sout-audio", 1, SOUT_AUDIO_TEXT,
                                 SOUT_AUDIO_LONGTEXT, true )
-    add_bool( "sout-video", 1, NULL, SOUT_VIDEO_TEXT,
+    add_bool( "sout-video", 1, SOUT_VIDEO_TEXT,
                                 SOUT_VIDEO_LONGTEXT, true )
-    add_bool( "sout-spu", 1, NULL, SOUT_SPU_TEXT,
+    add_bool( "sout-spu", 1, SOUT_SPU_TEXT,
                                 SOUT_SPU_LONGTEXT, true )
-    add_integer( "sout-mux-caching", 1500, NULL, SOUT_MUX_CACHING_TEXT,
+    add_integer( "sout-mux-caching", 1500, SOUT_MUX_CACHING_TEXT,
                                 SOUT_MUX_CACHING_LONGTEXT, true )
 
     set_section( N_("VLM"), NULL )
-    add_string( "vlm-conf", NULL, NULL, VLM_CONF_TEXT,
+    add_loadfile( "vlm-conf", NULL, VLM_CONF_TEXT,
                     VLM_CONF_LONGTEXT, true )
 
 
 
     set_subcategory( SUBCAT_SOUT_STREAM )
     set_subcategory( SUBCAT_SOUT_MUX )
-    add_module( "mux", "sout mux", NULL, NULL, MUX_TEXT,
-                                MUX_LONGTEXT, true )
+    add_module( "mux", "sout mux", NULL, MUX_TEXT, MUX_LONGTEXT, true )
     set_subcategory( SUBCAT_SOUT_ACO )
-    add_module( "access_output", "sout access", NULL, NULL,
+    add_module( "access_output", "sout access", NULL,
                 ACCESS_OUTPUT_TEXT, ACCESS_OUTPUT_LONGTEXT, true )
-    add_integer( "ttl", -1, NULL, TTL_TEXT, TTL_LONGTEXT, true )
-    add_string( "miface", NULL, NULL, MIFACE_TEXT, MIFACE_LONGTEXT, true )
-    add_string( "miface-addr", NULL, NULL, MIFACE_ADDR_TEXT, MIFACE_ADDR_LONGTEXT, true )
-    add_integer( "dscp", 0, NULL, DSCP_TEXT, DSCP_LONGTEXT, true )
+    add_integer( "ttl", -1, TTL_TEXT, TTL_LONGTEXT, true )
+    add_string( "miface", NULL, MIFACE_TEXT, MIFACE_LONGTEXT, true )
+    add_obsolete_string( "miface-addr" )
+    add_integer( "dscp", 0, DSCP_TEXT, DSCP_LONGTEXT, true )
 
     set_subcategory( SUBCAT_SOUT_PACKETIZER )
-    add_module( "packetizer","packetizer", NULL, NULL,
+    add_module( "packetizer", "packetizer", NULL,
                 PACKETIZER_TEXT, PACKETIZER_LONGTEXT, true )
 
     set_subcategory( SUBCAT_SOUT_SAP )
-    add_obsolete_bool( "sap-flow-control" )
-    add_integer( "sap-interval", 5, NULL, ANN_SAPINTV_TEXT,
+    add_integer( "sap-interval", 5, ANN_SAPINTV_TEXT,
                                ANN_SAPINTV_LONGTEXT, true )
 
     set_subcategory( SUBCAT_SOUT_VOD )
@@ -2025,194 +2094,161 @@ vlc_module_begin ()
     add_category_hint( N_("CPU"), CPU_CAT_LONGTEXT, true )
     add_obsolete_bool( "fpu" )
 #if defined( __i386__ ) || defined( __x86_64__ )
-    add_bool( "mmx", 1, NULL, MMX_TEXT, MMX_LONGTEXT, true )
-        change_need_restart ()
-    add_bool( "3dn", 1, NULL, THREE_DN_TEXT, THREE_DN_LONGTEXT, true )
-        change_need_restart ()
-    add_bool( "mmxext", 1, NULL, MMXEXT_TEXT, MMXEXT_LONGTEXT, true )
-        change_need_restart ()
-    add_bool( "sse", 1, NULL, SSE_TEXT, SSE_LONGTEXT, true )
-        change_need_restart ()
-    add_bool( "sse2", 1, NULL, SSE2_TEXT, SSE2_LONGTEXT, true )
-        change_need_restart ()
-    add_bool( "sse3", 1, NULL, SSE3_TEXT, SSE3_LONGTEXT, true )
-        change_need_restart ()
-    add_bool( "ssse3", 1, NULL, SSSE3_TEXT, SSSE3_LONGTEXT, true )
-        change_need_restart ()
-    add_bool( "sse41", 1, NULL, SSE4_1_TEXT, SSE4_1_LONGTEXT, true )
-        change_need_restart ()
-    add_bool( "sse42", 1, NULL, SSE4_2_TEXT, SSE4_2_LONGTEXT, true )
-        change_need_restart ()
+    add_obsolete_bool( "mmx" ) /* since 2.0.0 */
+    add_obsolete_bool( "3dn" ) /* since 2.0.0 */
+    add_obsolete_bool( "mmxext" ) /* since 2.0.0 */
+    add_obsolete_bool( "sse" ) /* since 2.0.0 */
+    add_obsolete_bool( "sse2" ) /* since 2.0.0 */
+    add_obsolete_bool( "sse3" ) /* since 2.0.0 */
+    add_obsolete_bool( "ssse3" ) /* since 2.0.0 */
+    add_obsolete_bool( "sse41" ) /* since 2.0.0 */
+    add_obsolete_bool( "sse42" ) /* since 2.0.0 */
 #endif
 #if defined( __powerpc__ ) || defined( __ppc__ ) || defined( __ppc64__ )
-    add_bool( "altivec", 1, NULL, ALTIVEC_TEXT, ALTIVEC_LONGTEXT, true )
-        change_need_restart ()
+    add_obsolete_bool( "altivec" ) /* since 2.0.0 */
 #endif
 
 /* Misc options */
     set_subcategory( SUBCAT_ADVANCED_MISC )
     set_section( N_("Special modules"), NULL )
     add_category_hint( N_("Miscellaneous"), MISC_CAT_LONGTEXT, true )
-    add_module( "memcpy", "memcpy", NULL, NULL, MEMCPY_TEXT,
-                MEMCPY_LONGTEXT, true )
-        change_need_restart ()
+    add_module( "memcpy", "memcpy", NULL, MEMCPY_TEXT, MEMCPY_LONGTEXT, true )
+    add_module( "vod-server", "vod server", NULL, VOD_SERVER_TEXT,
+                VOD_SERVER_LONGTEXT, true )
 
     set_section( N_("Plugins" ), NULL )
-    add_bool( "plugins-cache", true, NULL, PLUGINS_CACHE_TEXT,
+    add_bool( "plugins-cache", true, PLUGINS_CACHE_TEXT,
               PLUGINS_CACHE_LONGTEXT, true )
-        change_need_restart ()
-    add_directory( "plugin-path", NULL, NULL, PLUGIN_PATH_TEXT,
-                   PLUGIN_PATH_LONGTEXT, true )
-        change_need_restart ()
-    add_directory( "data-path", NULL, NULL, DATA_PATH_TEXT,
+    add_obsolete_string( "plugin-path" )
+    add_directory( "data-path", NULL, DATA_PATH_TEXT,
                    DATA_PATH_LONGTEXT, true )
-        change_need_restart ()
 
     set_section( N_("Performance options"), NULL )
-    add_obsolete_bool( "minimize-threads" )
 
-    add_obsolete_bool( "use-stream-immediate" )
-
-    add_obsolete_bool( "auto-adjust-pts-delay" )
-
-#if !defined(__APPLE__) && !defined(SYS_BEOS) && defined(LIBVLC_USE_PTHREAD)
-    add_bool( "rt-priority", false, NULL, RT_PRIORITY_TEXT,
+#ifdef LIBVLC_USE_PTHREAD
+# ifndef __APPLE__
+    add_bool( "rt-priority", false, RT_PRIORITY_TEXT,
               RT_PRIORITY_LONGTEXT, true )
-        change_need_restart ()
-#endif
-
-#if !defined(SYS_BEOS) && defined(LIBVLC_USE_PTHREAD)
-    add_integer( "rt-offset", 0, NULL, RT_OFFSET_TEXT,
+# endif
+    add_integer( "rt-offset", 0, RT_OFFSET_TEXT,
                  RT_OFFSET_LONGTEXT, true )
-        change_need_restart ()
 #endif
 
 #if defined(HAVE_DBUS)
-    add_bool( "inhibit", 1, NULL, INHIBIT_TEXT,
+    add_bool( "inhibit", 1, INHIBIT_TEXT,
               INHIBIT_LONGTEXT, true )
 #endif
 
 #if defined(WIN32) || defined(HAVE_DBUS)
-    add_bool( "one-instance", 0, NULL, ONEINSTANCE_TEXT,
+    add_bool( "one-instance", 0, ONEINSTANCE_TEXT,
               ONEINSTANCE_LONGTEXT, true )
-    add_bool( "started-from-file", 0, NULL, STARTEDFROMFILE_TEXT,
+    add_bool( "started-from-file", 0, STARTEDFROMFILE_TEXT,
               STARTEDFROMFILE_LONGTEXT, true )
         change_volatile ()
-    add_bool( "one-instance-when-started-from-file", 1, NULL,
+    add_bool( "one-instance-when-started-from-file", 1,
               ONEINSTANCEWHENSTARTEDFROMFILE_TEXT,
               ONEINSTANCEWHENSTARTEDFROMFILE_LONGTEXT, true )
-    add_bool( "playlist-enqueue", 0, NULL, PLAYLISTENQUEUE_TEXT,
+    add_bool( "playlist-enqueue", 0, PLAYLISTENQUEUE_TEXT,
               PLAYLISTENQUEUE_LONGTEXT, true )
 #endif
 
-#if defined(WIN32)
-    add_bool( "high-priority", 0, NULL, HPRIORITY_TEXT,
+#if defined(WIN32) || defined(__OS2__)
+    add_bool( "high-priority", 0, HPRIORITY_TEXT,
               HPRIORITY_LONGTEXT, false )
-        change_need_restart ()
 #endif
 
 /* Playlist options */
     set_category( CAT_PLAYLIST )
     set_subcategory( SUBCAT_PLAYLIST_GENERAL )
     add_category_hint( N_("Playlist"), PLAYLIST_CAT_LONGTEXT , false )
-    add_bool( "random", 0, NULL, RANDOM_TEXT, RANDOM_LONGTEXT, false )
+    add_bool( "random", 0, RANDOM_TEXT, RANDOM_LONGTEXT, false )
         change_short('Z')
         change_safe()
-    add_bool( "loop", 0, NULL, LOOP_TEXT, LOOP_LONGTEXT, false )
+    add_bool( "loop", 0, LOOP_TEXT, LOOP_LONGTEXT, false )
         change_short('L')
         change_safe()
-    add_bool( "repeat", 0, NULL, REPEAT_TEXT, REPEAT_LONGTEXT, false )
+    add_bool( "repeat", 0, REPEAT_TEXT, REPEAT_LONGTEXT, false )
         change_short('R')
         change_safe()
-    add_bool( "play-and-exit", 0, NULL, PAE_TEXT, PAE_LONGTEXT, false )
-    add_bool( "play-and-stop", 0, NULL, PAS_TEXT, PAS_LONGTEXT, false )
+    add_bool( "play-and-exit", 0, PAE_TEXT, PAE_LONGTEXT, false )
+    add_bool( "play-and-stop", 0, PAS_TEXT, PAS_LONGTEXT, false )
         change_safe()
-    add_bool( "play-and-pause", 0, NULL, PAP_TEXT, PAP_LONGTEXT, true )
+    add_bool( "play-and-pause", 0, PAP_TEXT, PAP_LONGTEXT, true )
         change_safe()
-    add_bool( "media-library", 1, NULL, ML_TEXT, ML_LONGTEXT, false )
-    add_bool( "playlist-tree", 0, NULL, PLTREE_TEXT, PLTREE_LONGTEXT, false )
+    add_bool( "playlist-autostart", true,
+              AUTOSTART_TEXT, AUTOSTART_LONGTEXT, false )
+    add_bool( "media-library", 0, ML_TEXT, ML_LONGTEXT, false )
+#if defined( MEDIA_LIBRARY )
+    add_bool( "load-media-library-on-startup", 1, LOAD_ML_TEXT,
+            LOAD_ML_LONGTEXT, false )
+#endif
+    add_bool( "playlist-tree", 0, PLTREE_TEXT, PLTREE_LONGTEXT, false )
 
-    add_string( "open", "", NULL, OPEN_TEXT, OPEN_LONGTEXT, false )
-        change_need_restart ()
+    add_string( "open", "", OPEN_TEXT, OPEN_LONGTEXT, false )
 
-    add_bool( "auto-preparse", true, NULL, PREPARSE_TEXT,
+    add_bool( "auto-preparse", true, PREPARSE_TEXT,
               PREPARSE_LONGTEXT, false )
 
-    add_integer( "album-art", ALBUM_ART_WHEN_ASKED, NULL, ALBUM_ART_TEXT,
+    add_integer( "album-art", ALBUM_ART_WHEN_ASKED, ALBUM_ART_TEXT,
                  ALBUM_ART_LONGTEXT, false )
         change_integer_list( pi_albumart_values,
-                             ppsz_albumart_descriptions, 0 )
+                             ppsz_albumart_descriptions )
 
     set_subcategory( SUBCAT_PLAYLIST_SD )
-    add_module_list_cat( "services-discovery", SUBCAT_PLAYLIST_SD, NULL,
-                          NULL, SD_TEXT, SD_LONGTEXT, false )
+    add_string( "services-discovery", "", SD_TEXT, SD_LONGTEXT, true )
         change_short('S')
-        change_need_restart ()
 
 /* Interface options */
     set_category( CAT_INTERFACE )
     set_subcategory( SUBCAT_INTERFACE_GENERAL )
-    add_integer( "verbose", 0, NULL, VERBOSE_TEXT, VERBOSE_LONGTEXT,
+    add_integer( "verbose", 0, VERBOSE_TEXT, VERBOSE_LONGTEXT,
                  false )
         change_short('v')
-    add_string( "verbose-objects", 0, NULL, VERBOSE_OBJECTS_TEXT, VERBOSE_OBJECTS_LONGTEXT,
+    add_string( "verbose-objects", 0, VERBOSE_OBJECTS_TEXT, VERBOSE_OBJECTS_LONGTEXT,
                  false )
-    add_bool( "quiet", 0, NULL, QUIET_TEXT, QUIET_LONGTEXT, true )
+    add_bool( "quiet", 0, QUIET_TEXT, QUIET_LONGTEXT, false )
         change_short('q')
 
-#if !defined(WIN32)
-    add_bool( "daemon", 0, NULL, DAEMON_TEXT, DAEMON_LONGTEXT, true )
+#if !defined(WIN32) && !defined(__OS2__)
+    add_bool( "daemon", 0, DAEMON_TEXT, DAEMON_LONGTEXT, true )
         change_short('d')
-        change_need_restart ()
 
-    add_string( "pidfile", NULL, NULL, PIDFILE_TEXT, PIDFILE_LONGTEXT,
+    add_string( "pidfile", NULL, PIDFILE_TEXT, PIDFILE_LONGTEXT,
                                        false )
-        change_need_restart ()
 #endif
 
-    add_bool( "file-logging", false, NULL, FILE_LOG_TEXT, FILE_LOG_LONGTEXT,
+    add_bool( "file-logging", false, FILE_LOG_TEXT, FILE_LOG_LONGTEXT,
               true )
-        change_need_restart ()
 #ifdef HAVE_SYSLOG_H
-    add_bool ( "syslog", false, NULL, SYSLOG_TEXT, SYSLOG_LONGTEXT,
+    add_bool ( "syslog", false, SYSLOG_TEXT, SYSLOG_LONGTEXT,
                true )
-        change_need_restart ()
 #endif
 
 #if defined (WIN32) || defined (__APPLE__)
-    add_string( "language", "auto", NULL, LANGUAGE_TEXT, LANGUAGE_LONGTEXT,
+    add_string( "language", "auto", LANGUAGE_TEXT, LANGUAGE_LONGTEXT,
                 false )
         change_string_list( ppsz_language, ppsz_language_text, 0 )
-        change_need_restart ()
 #endif
 
-    add_bool( "color", true, NULL, COLOR_TEXT, COLOR_LONGTEXT, true )
-    add_bool( "advanced", false, NULL, ADVANCED_TEXT, ADVANCED_LONGTEXT,
+    add_bool( "color", true, COLOR_TEXT, COLOR_LONGTEXT, true )
+    add_bool( "advanced", false, ADVANCED_TEXT, ADVANCED_LONGTEXT,
                     false )
-        change_need_restart ()
-    add_bool( "interact", true, NULL, INTERACTION_TEXT,
+    add_bool( "interact", true, INTERACTION_TEXT,
               INTERACTION_LONGTEXT, false )
 
-    add_obsolete_bool( "show-intf" );
-
-    add_bool ( "stats", true, NULL, STATS_TEXT, STATS_LONGTEXT, true )
-        change_need_restart ()
+    add_bool ( "stats", true, STATS_TEXT, STATS_LONGTEXT, true )
 
     set_subcategory( SUBCAT_INTERFACE_MAIN )
-    add_module_cat( "intf", SUBCAT_INTERFACE_MAIN, NULL, NULL, INTF_TEXT,
+    add_module_cat( "intf", SUBCAT_INTERFACE_MAIN, NULL, INTF_TEXT,
                 INTF_LONGTEXT, false )
         change_short('I')
-        change_need_restart ()
-    add_module_list_cat( "extraintf", SUBCAT_INTERFACE_MAIN,
-                         NULL, NULL, EXTRAINTF_TEXT,
-                         EXTRAINTF_LONGTEXT, false )
-        change_need_restart ()
+    add_module_list_cat( "extraintf", SUBCAT_INTERFACE_MAIN, NULL,
+                         EXTRAINTF_TEXT, EXTRAINTF_LONGTEXT, false )
 
 
     set_subcategory( SUBCAT_INTERFACE_CONTROL )
-    add_module_list_cat( "control", SUBCAT_INTERFACE_CONTROL, NULL, NULL,
+    add_module_list_cat( "control", SUBCAT_INTERFACE_CONTROL, NULL,
                          CONTROL_TEXT, CONTROL_LONGTEXT, false )
-        change_need_restart ()
 
 /* Hotkey options*/
     set_subcategory( SUBCAT_INTERFACE_HOTKEYS )
@@ -2221,144 +2257,141 @@ vlc_module_begin ()
 #if defined(__APPLE__)
 /* Don't use the following combo's */
 
-/*  copy                          KEY_MODIFIER_COMMAND|'c'
- *  cut                           KEY_MODIFIER_COMMAND|'x'
- *  paste                         KEY_MODIFIER_COMMAND|'v'
- *  select all                    KEY_MODIFIER_COMMAND|'a'
- *  preferences                   KEY_MODIFIER_COMMAND|','
- *  hide vlc                      KEY_MODIFIER_COMMAND|'h'
- *  hide other                    KEY_MODIFIER_COMMAND|KEY_MODIFIER_ALT|'h'
- *  open file                     KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'o'
- *  open                          KEY_MODIFIER_COMMAND|'o'
- *  open disk                     KEY_MODIFIER_COMMAND|'d'
- *  open network                  KEY_MODIFIER_COMMAND|'n'
- *  open capture                  KEY_MODIFIER_COMMAND|'r'
- *  save playlist                 KEY_MODIFIER_COMMAND|'s'
- *  playlist repeat all           KEY_MODIFIER_COMMAND|'l'
- *  playlist repeat               KEY_MODIFIER_COMMAND|'r'
- *  video fit to screen           KEY_MODIFIER_COMMAND|'3'
- *  minimize window               KEY_MODIFIER_COMMAND|'m'
- *  close window                  KEY_MODIFIER_COMMAND|'w'
- *  streaming wizard              KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'w'
- *  show controller               KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'c'
- *  show playlist                 KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'p'
- *  show info                     KEY_MODIFIER_COMMAND|'i'
- *  show extended controls        KEY_MODIFIER_COMMAND|'e'
- *  show equaliser                KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'e'
- *  show bookmarks                KEY_MODIFIER_COMMAND|'b'
- *  show messages                 KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'m'
- *  show errors and warnings      KEY_MODIFIER_COMMAND|KEY_MODIFIER_CTRL|'m'
- *  help                          KEY_MODIFIER_COMMAND|'?'
- *  readme / FAQ                  KEY_MODIFIER_COMMAND|KEY_MODIFIER_ALT|'?'
+/*  copy                          "Command+c"
+ *  cut                           "Command+x"
+ *  paste                         "Command+v"
+ *  select all                    "Command+a"
+ *  preferences                   "Command+,"
+ *  hide vlc                      "Command+h"
+ *  hide other                    "Command+Alt+h"
+ *  open file                     "Command+Shift+o"
+ *  open                          "Command+o"
+ *  open disk                     "Command+d"
+ *  open network                  "Command+n"
+ *  open capture                  "Command+r"
+ *  save playlist                 "Command+s"
+ *  playlist repeat all           "Command+l"
+ *  playlist repeat               "Command+r"
+ *  video fit to screen           "Command+3"
+ *  minimize window               "Command+m"
+ *  close window                  "Command+w"
+ *  streaming wizard              "Command+Shift+w"
+ *  show controller               "Command+Shift+c"
+ *  show playlist                 "Command+Shift+p"
+ *  show info                     "Command+i"
+ *  show extended controls        "Command+e"
+ *  show equaliser                "Command+Shift+e"
+ *  show bookmarks                "Command+b"
+ *  show messages                 "Command+Shift+m"
+ *  show errors and warnings      "Command+Ctrl+m"
+ *  help                          "Command+?"
+ *  readme / FAQ                  "Command+Alt+?"
  */
-#   define KEY_TOGGLE_FULLSCREEN  KEY_MODIFIER_COMMAND|'f'
-#   define KEY_LEAVE_FULLSCREEN   KEY_ESC
-#   define KEY_PLAY_PAUSE         KEY_MODIFIER_COMMAND|'p'
-#   define KEY_PAUSE              KEY_UNSET
-#   define KEY_PLAY               KEY_UNSET
-#   define KEY_FASTER             KEY_MODIFIER_COMMAND|'='
-#   define KEY_SLOWER             KEY_MODIFIER_COMMAND|'-'
-#   define KEY_RATE_NORMAL        KEY_UNSET
-#   define KEY_RATE_FASTER_FINE   KEY_UNSET
-#   define KEY_RATE_SLOWER_FINE   KEY_UNSET
-#   define KEY_NEXT               KEY_MODIFIER_COMMAND|KEY_RIGHT
-#   define KEY_PREV               KEY_MODIFIER_COMMAND|KEY_LEFT
-#   define KEY_STOP               KEY_MODIFIER_COMMAND|'.'
-#   define KEY_POSITION           't'
-#   define KEY_JUMP_MEXTRASHORT   KEY_MODIFIER_COMMAND|KEY_MODIFIER_CTRL|KEY_LEFT
-#   define KEY_JUMP_PEXTRASHORT   KEY_MODIFIER_COMMAND|KEY_MODIFIER_CTRL|KEY_RIGHT
-#   define KEY_JUMP_MSHORT        KEY_MODIFIER_COMMAND|KEY_MODIFIER_ALT|KEY_LEFT
-#   define KEY_JUMP_PSHORT        KEY_MODIFIER_COMMAND|KEY_MODIFIER_ALT|KEY_RIGHT
-#   define KEY_JUMP_MMEDIUM       KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|KEY_LEFT
-#   define KEY_JUMP_PMEDIUM       KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|KEY_RIGHT
-#   define KEY_JUMP_MLONG         KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|KEY_MODIFIER_ALT|KEY_LEFT
-#   define KEY_JUMP_PLONG         KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|KEY_MODIFIER_ALT|KEY_RIGHT
-#   define KEY_FRAME_NEXT         'e'
-#   define KEY_NAV_ACTIVATE       KEY_ENTER
-#   define KEY_NAV_UP             KEY_UP
-#   define KEY_NAV_DOWN           KEY_DOWN
-#   define KEY_NAV_LEFT           KEY_LEFT
-#   define KEY_NAV_RIGHT          KEY_RIGHT
-#   define KEY_QUIT               KEY_MODIFIER_COMMAND|'q'
-#   define KEY_VOL_UP             KEY_MODIFIER_COMMAND|KEY_UP
-#   define KEY_VOL_DOWN           KEY_MODIFIER_COMMAND|KEY_DOWN
-#   define KEY_VOL_MUTE           KEY_MODIFIER_COMMAND|KEY_MODIFIER_ALT|KEY_DOWN
-#   define KEY_SUBDELAY_UP        'j'
-#   define KEY_SUBDELAY_DOWN      'h'
-#   define KEY_SUBPOS_DOWN        KEY_UNSET
-#   define KEY_SUBPOS_UP          KEY_UNSET
-#   define KEY_AUDIODELAY_UP      'g'
-#   define KEY_AUDIODELAY_DOWN    'f'
-#   define KEY_AUDIO_TRACK        'l'
-#   define KEY_SUBTITLE_TRACK     's'
-#   define KEY_ASPECT_RATIO       'a'
-#   define KEY_CROP               'c'
-#   define KEY_TOGGLE_AUTOSCALE   'o'
-#   define KEY_SCALE_UP           KEY_MODIFIER_ALT|'o'
-#   define KEY_SCALE_DOWN         KEY_MODIFIER_SHIFT|KEY_MODIFIER_ALT|'o'
-#   define KEY_DEINTERLACE        'd'
-#   define KEY_INTF_SHOW          'i'
-#   define KEY_INTF_HIDE          KEY_MODIFIER_SHIFT|'i'
-#   define KEY_DISC_MENU          KEY_MODIFIER_CTRL|'m'
-#   define KEY_TITLE_PREV         KEY_MODIFIER_CTRL|'p'
-#   define KEY_TITLE_NEXT         KEY_MODIFIER_CTRL|'n'
-#   define KEY_CHAPTER_PREV       KEY_MODIFIER_CTRL|'u'
-#   define KEY_CHAPTER_NEXT       KEY_MODIFIER_CTRL|'d'
-#   define KEY_SNAPSHOT           KEY_MODIFIER_COMMAND|KEY_MODIFIER_ALT|'s'
-#   define KEY_ZOOM               'z'
-#   define KEY_UNZOOM             KEY_MODIFIER_SHIFT|'z'
-#   define KEY_RANDOM             KEY_MODIFIER_COMMAND|'z'
-#   define KEY_LOOP               KEY_MODIFIER_SHIFT|'l'
+#   define KEY_TOGGLE_FULLSCREEN  "Command+f"
+#   define KEY_LEAVE_FULLSCREEN   "Esc"
+#   define KEY_PLAY_PAUSE         "Command+p"
+#   define KEY_PAUSE              NULL
+#   define KEY_PLAY               NULL
+#   define KEY_FASTER             "Command+="
+#   define KEY_SLOWER             "Command+-"
+#   define KEY_RATE_NORMAL        NULL
+#   define KEY_RATE_FASTER_FINE   NULL
+#   define KEY_RATE_SLOWER_FINE   NULL
+#   define KEY_NEXT               "Command+Right"
+#   define KEY_PREV               "Command+Left"
+#   define KEY_STOP               "Command+."
+#   define KEY_POSITION           "t"
+#   define KEY_JUMP_MEXTRASHORT   "Command+Ctrl+Left"
+#   define KEY_JUMP_PEXTRASHORT   "Command+Ctrl+Right"
+#   define KEY_JUMP_MSHORT        "Command+Alt+Left"
+#   define KEY_JUMP_PSHORT        "Command+Alt+Right"
+#   define KEY_JUMP_MMEDIUM       "Command+Shift+Left"
+#   define KEY_JUMP_PMEDIUM       "Command+Shift+Right"
+#   define KEY_JUMP_MLONG         "Command+Shift+Alt+Left"
+#   define KEY_JUMP_PLONG         "Command+Shift+Alt+Right"
+#   define KEY_FRAME_NEXT         "e"
+#   define KEY_NAV_ACTIVATE       "Enter"
+#   define KEY_NAV_UP             "Up"
+#   define KEY_NAV_DOWN           "Down"
+#   define KEY_NAV_LEFT           "Left"
+#   define KEY_NAV_RIGHT          "Right"
+#   define KEY_QUIT               "Command+q"
+#   define KEY_VOL_UP             "Command+Up"
+#   define KEY_VOL_DOWN           "Command+Down"
+#   define KEY_VOL_MUTE           "Command+Alt+Down"
+#   define KEY_SUBDELAY_UP        "j"
+#   define KEY_SUBDELAY_DOWN      "h"
+#   define KEY_SUBPOS_DOWN        NULL
+#   define KEY_SUBPOS_UP          NULL
+#   define KEY_AUDIODELAY_UP      "g"
+#   define KEY_AUDIODELAY_DOWN    "f"
+#   define KEY_AUDIO_TRACK        "l"
+#   define KEY_SUBTITLE_TRACK     "s"
+#   define KEY_ASPECT_RATIO       "a"
+#   define KEY_CROP               "c"
+#   define KEY_TOGGLE_AUTOSCALE   "o"
+#   define KEY_SCALE_UP           "Alt+o"
+#   define KEY_SCALE_DOWN         "Shift+Alt+o"
+#   define KEY_DEINTERLACE        "d"
+#   define KEY_INTF_TOGGLE_FSC    "i"
+#   define KEY_INTF_BOSS          NULL
+#   define KEY_DISC_MENU          "Ctrl+m"
+#   define KEY_TITLE_PREV         "Ctrl+p"
+#   define KEY_TITLE_NEXT         "Ctrl+n"
+#   define KEY_CHAPTER_PREV       "Ctrl+u"
+#   define KEY_CHAPTER_NEXT       "Ctrl+d"
+#   define KEY_SNAPSHOT           "Command+Alt+s"
+#   define KEY_ZOOM               "z"
+#   define KEY_UNZOOM             "Shift+z"
+#   define KEY_RANDOM             "Command+z"
+#   define KEY_LOOP               "Shift+l"
 
-#   define KEY_CROP_TOP           KEY_MODIFIER_ALT|'i'
-#   define KEY_UNCROP_TOP         KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'i'
-#   define KEY_CROP_LEFT          KEY_MODIFIER_ALT|'j'
-#   define KEY_UNCROP_LEFT        KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'j'
-#   define KEY_CROP_BOTTOM        KEY_MODIFIER_ALT|'k'
-#   define KEY_UNCROP_BOTTOM      KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'k'
-#   define KEY_CROP_RIGHT         KEY_MODIFIER_ALT|'l'
-#   define KEY_UNCROP_RIGHT       KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'l'
+#   define KEY_CROP_TOP           "Alt+i"
+#   define KEY_UNCROP_TOP         "Alt+Shift+i"
+#   define KEY_CROP_LEFT          "Alt+j"
+#   define KEY_UNCROP_LEFT        "Alt+Shift+j"
+#   define KEY_CROP_BOTTOM        "Alt+k"
+#   define KEY_UNCROP_BOTTOM      "Alt+Shift+k"
+#   define KEY_CROP_RIGHT         "Alt+l"
+#   define KEY_UNCROP_RIGHT       "Alt+Shift+l"
 
 /* the macosx-interface already has bindings */
-#   define KEY_ZOOM_QUARTER       KEY_UNSET
-#   define KEY_ZOOM_HALF          KEY_MODIFIER_COMMAND|'0'
-#   define KEY_ZOOM_ORIGINAL      KEY_MODIFIER_COMMAND|'1'
-#   define KEY_ZOOM_DOUBLE        KEY_MODIFIER_COMMAND|'2'
+#   define KEY_ZOOM_QUARTER       NULL
+#   define KEY_ZOOM_HALF          "Command+0"
+#   define KEY_ZOOM_ORIGINAL      "Command+1"
+#   define KEY_ZOOM_DOUBLE        "Command+2"
 
-#   define KEY_SET_BOOKMARK1      KEY_MODIFIER_COMMAND|KEY_F1
-#   define KEY_SET_BOOKMARK2      KEY_MODIFIER_COMMAND|KEY_F2
-#   define KEY_SET_BOOKMARK3      KEY_MODIFIER_COMMAND|KEY_F3
-#   define KEY_SET_BOOKMARK4      KEY_MODIFIER_COMMAND|KEY_F4
-#   define KEY_SET_BOOKMARK5      KEY_MODIFIER_COMMAND|KEY_F5
-#   define KEY_SET_BOOKMARK6      KEY_MODIFIER_COMMAND|KEY_F6
-#   define KEY_SET_BOOKMARK7      KEY_MODIFIER_COMMAND|KEY_F7
-#   define KEY_SET_BOOKMARK8      KEY_MODIFIER_COMMAND|KEY_F8
-#   define KEY_SET_BOOKMARK9      KEY_UNSET
-#   define KEY_SET_BOOKMARK10     KEY_UNSET
-#   define KEY_PLAY_BOOKMARK1     KEY_F1
-#   define KEY_PLAY_BOOKMARK2     KEY_F2
-#   define KEY_PLAY_BOOKMARK3     KEY_F3
-#   define KEY_PLAY_BOOKMARK4     KEY_F4
-#   define KEY_PLAY_BOOKMARK5     KEY_F5
-#   define KEY_PLAY_BOOKMARK6     KEY_F6
-#   define KEY_PLAY_BOOKMARK7     KEY_F7
-#   define KEY_PLAY_BOOKMARK8     KEY_F8
-#   define KEY_PLAY_BOOKMARK9     KEY_UNSET
-#   define KEY_PLAY_BOOKMARK10    KEY_UNSET
-#   define KEY_HISTORY_BACK       KEY_MODIFIER_COMMAND|'['
-#   define KEY_HISTORY_FORWARD    KEY_MODIFIER_COMMAND|']'
-#   define KEY_RECORD             KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'r'
-#   define KEY_DUMP               KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'d'
-#   define KEY_WALLPAPER          KEY_MODIFIER_COMMAND|'w'
+#   define KEY_SET_BOOKMARK1      "Command+F1"
+#   define KEY_SET_BOOKMARK2      "Command+F2"
+#   define KEY_SET_BOOKMARK3      "Command+F3"
+#   define KEY_SET_BOOKMARK4      "Command+F4"
+#   define KEY_SET_BOOKMARK5      "Command+F5"
+#   define KEY_SET_BOOKMARK6      "Command+F6"
+#   define KEY_SET_BOOKMARK7      "Command+F7"
+#   define KEY_SET_BOOKMARK8      "Command+F8"
+#   define KEY_SET_BOOKMARK9      NULL
+#   define KEY_SET_BOOKMARK10     NULL
+#   define KEY_PLAY_BOOKMARK1     "F1"
+#   define KEY_PLAY_BOOKMARK2     "F2"
+#   define KEY_PLAY_BOOKMARK3     "F3"
+#   define KEY_PLAY_BOOKMARK4     "F4"
+#   define KEY_PLAY_BOOKMARK5     "F5"
+#   define KEY_PLAY_BOOKMARK6     "F6"
+#   define KEY_PLAY_BOOKMARK7     "F7"
+#   define KEY_PLAY_BOOKMARK8     "F8"
+#   define KEY_PLAY_BOOKMARK9     NULL
+#   define KEY_PLAY_BOOKMARK10    NULL
+#   define KEY_RECORD             "Command+Shift+r"
+#   define KEY_WALLPAPER          "w"
 
-#   define KEY_MENU_ON            KEY_MODIFIER_ALT|'m'
-#   define KEY_MENU_OFF           KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'m'
-#   define KEY_MENU_RIGHT         KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_RIGHT
-#   define KEY_MENU_LEFT          KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_LEFT
-#   define KEY_MENU_UP            KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_UP
-#   define KEY_MENU_DOWN          KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_DOWN
-#   define KEY_MENU_SELECT        KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_ENTER
-#   define KEY_AUDIODEVICE_CYCLE  KEY_MODIFIER_SHIFT|'a'
+#   define KEY_MENU_ON            "Alt+m"
+#   define KEY_MENU_OFF           "Alt+Shift+m"
+#   define KEY_MENU_RIGHT         "Alt+Shift+Right"
+#   define KEY_MENU_LEFT          "Alt+Shift+Left"
+#   define KEY_MENU_UP            "Alt+Shift+Up"
+#   define KEY_MENU_DOWN          "Alt+Shift+Down"
+#   define KEY_MENU_SELECT        "Alt+Shift+Enter"
+#   define KEY_AUDIODEVICE_CYCLE  "Shift+a"
 
 #else /* Non Mac OS X */
     /*
@@ -2368,370 +2401,362 @@ vlc_module_begin ()
        alt + letter key, because they are usually for menu accelerators and you
        don't know how the translator is going to do it.
      */
-#   define KEY_TOGGLE_FULLSCREEN  'f'
-#   define KEY_LEAVE_FULLSCREEN   KEY_ESC
-#   define KEY_PLAY_PAUSE         ' '
-#   define KEY_PAUSE              KEY_UNSET
-#   define KEY_PLAY               KEY_UNSET
-#   define KEY_FASTER             '+'
-#   define KEY_SLOWER             '-'
-#   define KEY_RATE_NORMAL        '='
-#   define KEY_RATE_FASTER_FINE   ']'
-#   define KEY_RATE_SLOWER_FINE   '['
-#   define KEY_NEXT               'n'
-#   define KEY_PREV               'p'
-#   define KEY_STOP               's'
-#   define KEY_POSITION           't'
-#   define KEY_JUMP_MEXTRASHORT   KEY_MODIFIER_SHIFT|KEY_LEFT
-#   define KEY_JUMP_PEXTRASHORT   KEY_MODIFIER_SHIFT|KEY_RIGHT
-#   define KEY_JUMP_MSHORT        KEY_MODIFIER_ALT|KEY_LEFT
-#   define KEY_JUMP_PSHORT        KEY_MODIFIER_ALT|KEY_RIGHT
-#   define KEY_JUMP_MMEDIUM       KEY_MODIFIER_CTRL|KEY_LEFT
-#   define KEY_JUMP_PMEDIUM       KEY_MODIFIER_CTRL|KEY_RIGHT
-#   define KEY_JUMP_MLONG         KEY_MODIFIER_CTRL|KEY_MODIFIER_ALT|KEY_LEFT
-#   define KEY_JUMP_PLONG         KEY_MODIFIER_CTRL|KEY_MODIFIER_ALT|KEY_RIGHT
-#   define KEY_FRAME_NEXT         'e'
-#   define KEY_NAV_ACTIVATE       KEY_ENTER
-#   define KEY_NAV_UP             KEY_UP
-#   define KEY_NAV_DOWN           KEY_DOWN
-#   define KEY_NAV_LEFT           KEY_LEFT
-#   define KEY_NAV_RIGHT          KEY_RIGHT
-#   define KEY_QUIT               KEY_MODIFIER_CTRL|'q'
-#   define KEY_VOL_UP             KEY_MODIFIER_CTRL|KEY_UP
-#   define KEY_VOL_DOWN           KEY_MODIFIER_CTRL|KEY_DOWN
-#   define KEY_VOL_MUTE           'm'
-#   define KEY_SUBDELAY_UP        'h'
-#   define KEY_SUBDELAY_DOWN      'g'
-#   define KEY_SUBPOS_DOWN        KEY_UNSET
-#   define KEY_SUBPOS_UP          KEY_UNSET
-#   define KEY_AUDIODELAY_UP      'k'
-#   define KEY_AUDIODELAY_DOWN    'j'
-#   define KEY_RANDOM             'r'
-#   define KEY_LOOP               'l'
+#   define KEY_TOGGLE_FULLSCREEN  "f"
+#   define KEY_LEAVE_FULLSCREEN   "Esc"
+#   define KEY_PLAY_PAUSE         "Space"
+#   define KEY_PAUSE              NULL
+#   define KEY_PLAY               NULL
+#   define KEY_FASTER             "+"
+#   define KEY_SLOWER             "-"
+#   define KEY_RATE_NORMAL        "="
+#   define KEY_RATE_FASTER_FINE   "]"
+#   define KEY_RATE_SLOWER_FINE   "["
+#   define KEY_NEXT               "n"
+#   define KEY_PREV               "p"
+#   define KEY_STOP               "s"
+#   define KEY_POSITION           "t"
+#   define KEY_JUMP_MEXTRASHORT   "Shift+Left"
+#   define KEY_JUMP_PEXTRASHORT   "Shift+Right"
+#   define KEY_JUMP_MSHORT        "Alt+Left"
+#   define KEY_JUMP_PSHORT        "Alt+Right"
+#   define KEY_JUMP_MMEDIUM       "Ctrl+Left"
+#   define KEY_JUMP_PMEDIUM       "Ctrl+Right"
+#   define KEY_JUMP_MLONG         "Ctrl+Alt+Left"
+#   define KEY_JUMP_PLONG         "Ctrl+Alt+Right"
+#   define KEY_FRAME_NEXT         "e"
+#   define KEY_NAV_ACTIVATE       "Enter"
+#   define KEY_NAV_UP             "Up"
+#   define KEY_NAV_DOWN           "Down"
+#   define KEY_NAV_LEFT           "Left"
+#   define KEY_NAV_RIGHT          "Right"
+#   define KEY_QUIT               "Ctrl+q"
+#   define KEY_VOL_UP             "Ctrl+Up"
+#   define KEY_VOL_DOWN           "Ctrl+Down"
+#   define KEY_VOL_MUTE           "m"
+#   define KEY_SUBDELAY_UP        "h"
+#   define KEY_SUBDELAY_DOWN      "g"
+#   define KEY_SUBPOS_DOWN        NULL
+#   define KEY_SUBPOS_UP          NULL
+#   define KEY_AUDIODELAY_UP      "k"
+#   define KEY_AUDIODELAY_DOWN    "j"
+#   define KEY_RANDOM             "r"
+#   define KEY_LOOP               "l"
 
-#   define KEY_AUDIO_TRACK        'b'
-#   define KEY_SUBTITLE_TRACK     'v'
-#   define KEY_ASPECT_RATIO       'a'
-#   define KEY_CROP               'c'
-#   define KEY_TOGGLE_AUTOSCALE   'o'
-#   define KEY_SCALE_UP           KEY_MODIFIER_ALT|'o'
-#   define KEY_SCALE_DOWN         KEY_MODIFIER_SHIFT|KEY_MODIFIER_ALT|'o'
-#   define KEY_DEINTERLACE        'd'
-#   define KEY_INTF_SHOW          'i'
-#   define KEY_INTF_HIDE          KEY_MODIFIER_SHIFT|'i'
-#   define KEY_DISC_MENU          KEY_MODIFIER_SHIFT|'m'
-#   define KEY_TITLE_PREV         KEY_MODIFIER_SHIFT|'o'
-#   define KEY_TITLE_NEXT         KEY_MODIFIER_SHIFT|'b'
-#   define KEY_CHAPTER_PREV       KEY_MODIFIER_SHIFT|'p'
-#   define KEY_CHAPTER_NEXT       KEY_MODIFIER_SHIFT|'n'
-#   define KEY_SNAPSHOT           KEY_MODIFIER_SHIFT|'s'
+#   define KEY_AUDIO_TRACK        "b"
+#   define KEY_SUBTITLE_TRACK     "v"
+#   define KEY_ASPECT_RATIO       "a"
+#   define KEY_CROP               "c"
+#   define KEY_TOGGLE_AUTOSCALE   "o"
+#   define KEY_SCALE_UP           "Alt+o"
+#   define KEY_SCALE_DOWN         "Alt+Shift+o"
+#   define KEY_DEINTERLACE        "d"
+#   define KEY_INTF_TOGGLE_FSC    "i"
+#   define KEY_INTF_BOSS          NULL
+#   define KEY_DISC_MENU          "Shift+m"
+#   define KEY_TITLE_PREV         "Shift+o"
+#   define KEY_TITLE_NEXT         "Shift+b"
+#   define KEY_CHAPTER_PREV       "Shift+p"
+#   define KEY_CHAPTER_NEXT       "Shift+n"
+#   define KEY_SNAPSHOT           "Shift+s"
 
-#   define KEY_ZOOM               'z'
-#   define KEY_UNZOOM             KEY_MODIFIER_SHIFT|'z'
+#   define KEY_ZOOM               "z"
+#   define KEY_UNZOOM             "Shift+z"
 
-#   define KEY_AUDIODEVICE_CYCLE  KEY_MODIFIER_SHIFT|'a'
+#   define KEY_AUDIODEVICE_CYCLE  "Shift+a"
 
-#   define KEY_HISTORY_BACK       KEY_MODIFIER_SHIFT|'g'
-#   define KEY_HISTORY_FORWARD    KEY_MODIFIER_SHIFT|'h'
-#   define KEY_RECORD             KEY_MODIFIER_SHIFT|'r'
-#   define KEY_DUMP               KEY_MODIFIER_SHIFT|'d'
-#   define KEY_WALLPAPER          'w'
+#   define KEY_RECORD             "Shift+r"
+#   define KEY_WALLPAPER          "w"
 
 /* Cropping */
-#   define KEY_CROP_TOP           KEY_MODIFIER_ALT|'r'
-#   define KEY_UNCROP_TOP         KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'r'
-#   define KEY_CROP_LEFT          KEY_MODIFIER_ALT|'d'
-#   define KEY_UNCROP_LEFT        KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'d'
-#   define KEY_CROP_BOTTOM        KEY_MODIFIER_ALT|'c'
-#   define KEY_UNCROP_BOTTOM      KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'c'
-#   define KEY_CROP_RIGHT         KEY_MODIFIER_ALT|'f'
-#   define KEY_UNCROP_RIGHT       KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'f'
+#   define KEY_CROP_TOP           "Alt+r"
+#   define KEY_UNCROP_TOP         "Alt+Shift+r"
+#   define KEY_CROP_LEFT          "Alt+d"
+#   define KEY_UNCROP_LEFT        "Alt+Shift+d"
+#   define KEY_CROP_BOTTOM        "Alt+c"
+#   define KEY_UNCROP_BOTTOM      "Alt+Shift+c"
+#   define KEY_CROP_RIGHT         "Alt+f"
+#   define KEY_UNCROP_RIGHT       "Alt+Shift+f"
 
 /* Zooming */
-#   define KEY_ZOOM_QUARTER       KEY_MODIFIER_ALT|'1'
-#   define KEY_ZOOM_HALF          KEY_MODIFIER_ALT|'2'
-#   define KEY_ZOOM_ORIGINAL      KEY_MODIFIER_ALT|'3'
-#   define KEY_ZOOM_DOUBLE        KEY_MODIFIER_ALT|'4'
+#   define KEY_ZOOM_QUARTER       "Alt+1"
+#   define KEY_ZOOM_HALF          "Alt+2"
+#   define KEY_ZOOM_ORIGINAL      "Alt+3"
+#   define KEY_ZOOM_DOUBLE        "Alt+4"
 
 /* Bookmarks */
-#   define KEY_SET_BOOKMARK1      KEY_MODIFIER_CTRL|KEY_F1
-#   define KEY_SET_BOOKMARK2      KEY_MODIFIER_CTRL|KEY_F2
-#   define KEY_SET_BOOKMARK3      KEY_MODIFIER_CTRL|KEY_F3
-#   define KEY_SET_BOOKMARK4      KEY_MODIFIER_CTRL|KEY_F4
-#   define KEY_SET_BOOKMARK5      KEY_MODIFIER_CTRL|KEY_F5
-#   define KEY_SET_BOOKMARK6      KEY_MODIFIER_CTRL|KEY_F6
-#   define KEY_SET_BOOKMARK7      KEY_MODIFIER_CTRL|KEY_F7
-#   define KEY_SET_BOOKMARK8      KEY_MODIFIER_CTRL|KEY_F8
-#   define KEY_SET_BOOKMARK9      KEY_MODIFIER_CTRL|KEY_F9
-#   define KEY_SET_BOOKMARK10     KEY_MODIFIER_CTRL|KEY_F10
-#   define KEY_PLAY_BOOKMARK1     KEY_F1
-#   define KEY_PLAY_BOOKMARK2     KEY_F2
-#   define KEY_PLAY_BOOKMARK3     KEY_F3
-#   define KEY_PLAY_BOOKMARK4     KEY_F4
-#   define KEY_PLAY_BOOKMARK5     KEY_F5
-#   define KEY_PLAY_BOOKMARK6     KEY_F6
-#   define KEY_PLAY_BOOKMARK7     KEY_F7
-#   define KEY_PLAY_BOOKMARK8     KEY_F8
-#   define KEY_PLAY_BOOKMARK9     KEY_F9
-#   define KEY_PLAY_BOOKMARK10    KEY_F10
+#   define KEY_SET_BOOKMARK1      "Ctrl+F1"
+#   define KEY_SET_BOOKMARK2      "Ctrl+F2"
+#   define KEY_SET_BOOKMARK3      "Ctrl+F3"
+#   define KEY_SET_BOOKMARK4      "Ctrl+F4"
+#   define KEY_SET_BOOKMARK5      "Ctrl+F5"
+#   define KEY_SET_BOOKMARK6      "Ctrl+F6"
+#   define KEY_SET_BOOKMARK7      "Ctrl+F7"
+#   define KEY_SET_BOOKMARK8      "Ctrl+F8"
+#   define KEY_SET_BOOKMARK9      "Ctrl+F9"
+#   define KEY_SET_BOOKMARK10     "Ctrl+F10"
+#   define KEY_PLAY_BOOKMARK1     "F1"
+#   define KEY_PLAY_BOOKMARK2     "F2"
+#   define KEY_PLAY_BOOKMARK3     "F3"
+#   define KEY_PLAY_BOOKMARK4     "F4"
+#   define KEY_PLAY_BOOKMARK5     "F5"
+#   define KEY_PLAY_BOOKMARK6     "F6"
+#   define KEY_PLAY_BOOKMARK7     "F7"
+#   define KEY_PLAY_BOOKMARK8     "F8"
+#   define KEY_PLAY_BOOKMARK9     "F9"
+#   define KEY_PLAY_BOOKMARK10    "F10"
 
 /* OSD menu */
-#   define KEY_MENU_ON            KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|'m'
-#   define KEY_MENU_OFF           KEY_MODIFIER_ALT|KEY_MODIFIER_CTRL|'m'
-#   define KEY_MENU_RIGHT         KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_RIGHT
-#   define KEY_MENU_LEFT          KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_LEFT
-#   define KEY_MENU_UP            KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_UP
-#   define KEY_MENU_DOWN          KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_DOWN
-#   define KEY_MENU_SELECT        KEY_MODIFIER_ALT|KEY_MODIFIER_SHIFT|KEY_ENTER
+#   define KEY_MENU_ON            "Alt+Shift+m"
+#   define KEY_MENU_OFF           "Ctrl+Alt+m"
+#   define KEY_MENU_RIGHT         "Alt+Shift+Right"
+#   define KEY_MENU_LEFT          "Alt+Shift+Left"
+#   define KEY_MENU_UP            "Alt+Shift+Up"
+#   define KEY_MENU_DOWN          "Alt+Shift+Down"
+#   define KEY_MENU_SELECT        "Alt+Shift+Enter"
 #endif
 
-    add_key( "key-toggle-fullscreen", KEY_TOGGLE_FULLSCREEN, NULL, TOGGLE_FULLSCREEN_KEY_TEXT,
+    add_key( "key-toggle-fullscreen", KEY_TOGGLE_FULLSCREEN, TOGGLE_FULLSCREEN_KEY_TEXT,
              TOGGLE_FULLSCREEN_KEY_LONGTEXT, false )
-       add_deprecated_alias( "key-fullscreen" ) /*deprecated since 0.9.0 */
-    add_key( "key-leave-fullscreen", KEY_LEAVE_FULLSCREEN, NULL, LEAVE_FULLSCREEN_KEY_TEXT,
+    add_key( "key-leave-fullscreen", KEY_LEAVE_FULLSCREEN, LEAVE_FULLSCREEN_KEY_TEXT,
              LEAVE_FULLSCREEN_KEY_LONGTEXT, false )
-    add_key( "key-play-pause", KEY_PLAY_PAUSE, NULL, PLAY_PAUSE_KEY_TEXT,
+    add_key( "key-play-pause", KEY_PLAY_PAUSE, PLAY_PAUSE_KEY_TEXT,
              PLAY_PAUSE_KEY_LONGTEXT, false )
-    add_key( "key-pause", KEY_PAUSE, NULL, PAUSE_KEY_TEXT,
+    add_key( "key-pause", KEY_PAUSE, PAUSE_KEY_TEXT,
              PAUSE_KEY_LONGTEXT, true )
-    add_key( "key-play", KEY_PLAY, NULL, PLAY_KEY_TEXT,
+    add_key( "key-play", KEY_PLAY, PLAY_KEY_TEXT,
              PLAY_KEY_LONGTEXT, true )
-    add_key( "key-faster", KEY_FASTER, NULL, FASTER_KEY_TEXT,
+    add_key( "key-faster", KEY_FASTER, FASTER_KEY_TEXT,
              FASTER_KEY_LONGTEXT, false )
-    add_key( "key-slower", KEY_SLOWER, NULL, SLOWER_KEY_TEXT,
+    add_key( "key-slower", KEY_SLOWER, SLOWER_KEY_TEXT,
              SLOWER_KEY_LONGTEXT, false )
-    add_key( "key-rate-normal", KEY_RATE_NORMAL, NULL, RATE_NORMAL_KEY_TEXT,
+    add_key( "key-rate-normal", KEY_RATE_NORMAL, RATE_NORMAL_KEY_TEXT,
              RATE_NORMAL_KEY_LONGTEXT, false )
-    add_key( "key-rate-faster-fine", KEY_RATE_FASTER_FINE, NULL, RATE_FASTER_FINE_KEY_TEXT,
+    add_key( "key-rate-faster-fine", KEY_RATE_FASTER_FINE, RATE_FASTER_FINE_KEY_TEXT,
              RATE_FASTER_FINE_KEY_LONGTEXT, false )
-    add_key( "key-rate-slower-fine", KEY_RATE_SLOWER_FINE, NULL, RATE_SLOWER_FINE_KEY_TEXT,
+    add_key( "key-rate-slower-fine", KEY_RATE_SLOWER_FINE, RATE_SLOWER_FINE_KEY_TEXT,
              RATE_SLOWER_FINE_KEY_LONGTEXT, false )
-    add_key( "key-next", KEY_NEXT, NULL, NEXT_KEY_TEXT,
+    add_key( "key-next", KEY_NEXT, NEXT_KEY_TEXT,
              NEXT_KEY_LONGTEXT, false )
-    add_key( "key-prev", KEY_PREV, NULL, PREV_KEY_TEXT,
+    add_key( "key-prev", KEY_PREV, PREV_KEY_TEXT,
              PREV_KEY_LONGTEXT, false )
-    add_key( "key-stop", KEY_STOP, NULL, STOP_KEY_TEXT,
+    add_key( "key-stop", KEY_STOP, STOP_KEY_TEXT,
              STOP_KEY_LONGTEXT, false )
-    add_key( "key-position", KEY_POSITION, NULL, POSITION_KEY_TEXT,
+    add_key( "key-position", KEY_POSITION, POSITION_KEY_TEXT,
              POSITION_KEY_LONGTEXT, true )
-    add_key( "key-jump-extrashort", KEY_JUMP_MEXTRASHORT, NULL,
+    add_key( "key-jump-extrashort", KEY_JUMP_MEXTRASHORT,
              JBEXTRASHORT_KEY_TEXT, JBEXTRASHORT_KEY_LONGTEXT, false )
-    add_key( "key-jump+extrashort", KEY_JUMP_PEXTRASHORT, NULL,
+    add_key( "key-jump+extrashort", KEY_JUMP_PEXTRASHORT,
              JFEXTRASHORT_KEY_TEXT, JFEXTRASHORT_KEY_LONGTEXT, false )
-    add_key( "key-jump-short", KEY_JUMP_MSHORT, NULL, JBSHORT_KEY_TEXT,
+    add_key( "key-jump-short", KEY_JUMP_MSHORT, JBSHORT_KEY_TEXT,
              JBSHORT_KEY_LONGTEXT, false )
-    add_key( "key-jump+short", KEY_JUMP_PSHORT, NULL, JFSHORT_KEY_TEXT,
+    add_key( "key-jump+short", KEY_JUMP_PSHORT, JFSHORT_KEY_TEXT,
              JFSHORT_KEY_LONGTEXT, false )
-    add_key( "key-jump-medium", KEY_JUMP_MMEDIUM, NULL, JBMEDIUM_KEY_TEXT,
+    add_key( "key-jump-medium", KEY_JUMP_MMEDIUM, JBMEDIUM_KEY_TEXT,
              JBMEDIUM_KEY_LONGTEXT, false )
-    add_key( "key-jump+medium", KEY_JUMP_PMEDIUM, NULL, JFMEDIUM_KEY_TEXT,
+    add_key( "key-jump+medium", KEY_JUMP_PMEDIUM, JFMEDIUM_KEY_TEXT,
              JFMEDIUM_KEY_LONGTEXT, false )
-    add_key( "key-jump-long", KEY_JUMP_MLONG, NULL, JBLONG_KEY_TEXT,
+    add_key( "key-jump-long", KEY_JUMP_MLONG, JBLONG_KEY_TEXT,
              JBLONG_KEY_LONGTEXT, false )
-    add_key( "key-jump+long", KEY_JUMP_PLONG, NULL, JFLONG_KEY_TEXT,
+    add_key( "key-jump+long", KEY_JUMP_PLONG, JFLONG_KEY_TEXT,
              JFLONG_KEY_LONGTEXT, false )
-    add_key( "key-frame-next", KEY_FRAME_NEXT, NULL, FRAME_NEXT_KEY_TEXT,
+    add_key( "key-frame-next", KEY_FRAME_NEXT, FRAME_NEXT_KEY_TEXT,
              FRAME_NEXT_KEY_LONGTEXT, false )
-    add_key( "key-nav-activate", KEY_NAV_ACTIVATE, NULL, NAV_ACTIVATE_KEY_TEXT,
+    add_key( "key-nav-activate", KEY_NAV_ACTIVATE, NAV_ACTIVATE_KEY_TEXT,
              NAV_ACTIVATE_KEY_LONGTEXT, true )
-    add_key( "key-nav-up", KEY_NAV_UP, NULL, NAV_UP_KEY_TEXT,
+    add_key( "key-nav-up", KEY_NAV_UP, NAV_UP_KEY_TEXT,
              NAV_UP_KEY_LONGTEXT, true )
-    add_key( "key-nav-down", KEY_NAV_DOWN, NULL, NAV_DOWN_KEY_TEXT,
+    add_key( "key-nav-down", KEY_NAV_DOWN, NAV_DOWN_KEY_TEXT,
              NAV_DOWN_KEY_LONGTEXT, true )
-    add_key( "key-nav-left", KEY_NAV_LEFT, NULL, NAV_LEFT_KEY_TEXT,
+    add_key( "key-nav-left", KEY_NAV_LEFT, NAV_LEFT_KEY_TEXT,
              NAV_LEFT_KEY_LONGTEXT, true )
-    add_key( "key-nav-right", KEY_NAV_RIGHT, NULL, NAV_RIGHT_KEY_TEXT,
+    add_key( "key-nav-right", KEY_NAV_RIGHT, NAV_RIGHT_KEY_TEXT,
              NAV_RIGHT_KEY_LONGTEXT, true )
 
-    add_key( "key-disc-menu", KEY_DISC_MENU, NULL, DISC_MENU_TEXT,
+    add_key( "key-disc-menu", KEY_DISC_MENU, DISC_MENU_TEXT,
              DISC_MENU_LONGTEXT, true )
-    add_key( "key-title-prev", KEY_TITLE_PREV, NULL, TITLE_PREV_TEXT,
+    add_key( "key-title-prev", KEY_TITLE_PREV, TITLE_PREV_TEXT,
              TITLE_PREV_LONGTEXT, true )
-    add_key( "key-title-next", KEY_TITLE_NEXT, NULL, TITLE_NEXT_TEXT,
+    add_key( "key-title-next", KEY_TITLE_NEXT, TITLE_NEXT_TEXT,
              TITLE_NEXT_LONGTEXT, true )
-    add_key( "key-chapter-prev", KEY_CHAPTER_PREV, NULL, CHAPTER_PREV_TEXT,
+    add_key( "key-chapter-prev", KEY_CHAPTER_PREV, CHAPTER_PREV_TEXT,
              CHAPTER_PREV_LONGTEXT, true )
-    add_key( "key-chapter-next", KEY_CHAPTER_NEXT, NULL, CHAPTER_NEXT_TEXT,
+    add_key( "key-chapter-next", KEY_CHAPTER_NEXT, CHAPTER_NEXT_TEXT,
              CHAPTER_NEXT_LONGTEXT, true )
-    add_key( "key-quit", KEY_QUIT, NULL, QUIT_KEY_TEXT,
+    add_key( "key-quit", KEY_QUIT, QUIT_KEY_TEXT,
              QUIT_KEY_LONGTEXT, false )
-    add_key( "key-vol-up", KEY_VOL_UP, NULL, VOL_UP_KEY_TEXT,
+    add_key( "key-vol-up", KEY_VOL_UP, VOL_UP_KEY_TEXT,
              VOL_UP_KEY_LONGTEXT, false )
-    add_key( "key-vol-down", KEY_VOL_DOWN, NULL, VOL_DOWN_KEY_TEXT,
+    add_key( "key-vol-down", KEY_VOL_DOWN, VOL_DOWN_KEY_TEXT,
              VOL_DOWN_KEY_LONGTEXT, false )
-    add_key( "key-vol-mute", KEY_VOL_MUTE, NULL, VOL_MUTE_KEY_TEXT,
+    add_key( "key-vol-mute", KEY_VOL_MUTE, VOL_MUTE_KEY_TEXT,
              VOL_MUTE_KEY_LONGTEXT, false )
-    add_key( "key-subdelay-up", KEY_SUBDELAY_UP, NULL,
+    add_key( "key-subdelay-up", KEY_SUBDELAY_UP,
              SUBDELAY_UP_KEY_TEXT, SUBDELAY_UP_KEY_LONGTEXT, true )
-    add_key( "key-subdelay-down", KEY_SUBDELAY_DOWN, NULL,
+    add_key( "key-subdelay-down", KEY_SUBDELAY_DOWN,
              SUBDELAY_DOWN_KEY_TEXT, SUBDELAY_DOWN_KEY_LONGTEXT, true )
-    add_key( "key-subpos-up", KEY_SUBPOS_UP, NULL,
+    add_key( "key-subpos-up", KEY_SUBPOS_UP,
              SUBPOS_UP_KEY_TEXT, SUBPOS_UP_KEY_LONGTEXT, true )
-    add_key( "key-subpos-down", KEY_SUBPOS_DOWN, NULL,
+    add_key( "key-subpos-down", KEY_SUBPOS_DOWN,
              SUBPOS_DOWN_KEY_TEXT, SUBPOS_DOWN_KEY_LONGTEXT, true )
-    add_key( "key-audiodelay-up", KEY_AUDIODELAY_UP, NULL,
+    add_key( "key-audiodelay-up", KEY_AUDIODELAY_UP,
              AUDIODELAY_UP_KEY_TEXT, AUDIODELAY_UP_KEY_LONGTEXT, true )
-    add_key( "key-audiodelay-down", KEY_AUDIODELAY_DOWN, NULL,
+    add_key( "key-audiodelay-down", KEY_AUDIODELAY_DOWN,
              AUDIODELAY_DOWN_KEY_TEXT, AUDIODELAY_DOWN_KEY_LONGTEXT, true )
-    add_key( "key-audio-track", KEY_AUDIO_TRACK, NULL, AUDIO_TRACK_KEY_TEXT,
+    add_key( "key-audio-track", KEY_AUDIO_TRACK, AUDIO_TRACK_KEY_TEXT,
              AUDIO_TRACK_KEY_LONGTEXT, false )
-    add_key( "key-audiodevice-cycle", KEY_AUDIODEVICE_CYCLE, NULL, AUDI_DEVICE_CYCLE_KEY_TEXT,
+    add_key( "key-audiodevice-cycle", KEY_AUDIODEVICE_CYCLE, AUDI_DEVICE_CYCLE_KEY_TEXT,
              AUDI_DEVICE_CYCLE_KEY_LONGTEXT, false )
-    add_key( "key-subtitle-track", KEY_SUBTITLE_TRACK, NULL,
+    add_key( "key-subtitle-track", KEY_SUBTITLE_TRACK,
              SUBTITLE_TRACK_KEY_TEXT, SUBTITLE_TRACK_KEY_LONGTEXT, false )
-    add_key( "key-aspect-ratio", KEY_ASPECT_RATIO, NULL,
+    add_key( "key-aspect-ratio", KEY_ASPECT_RATIO,
              ASPECT_RATIO_KEY_TEXT, ASPECT_RATIO_KEY_LONGTEXT, false )
-    add_key( "key-crop", KEY_CROP, NULL,
+    add_key( "key-crop", KEY_CROP,
              CROP_KEY_TEXT, CROP_KEY_LONGTEXT, false )
-    add_key( "key-toggle-autoscale", KEY_TOGGLE_AUTOSCALE, NULL,
+    add_key( "key-toggle-autoscale", KEY_TOGGLE_AUTOSCALE,
              TOGGLE_AUTOSCALE_KEY_TEXT, TOGGLE_AUTOSCALE_KEY_LONGTEXT, false )
-    add_key( "key-incr-scalefactor", KEY_SCALE_UP, NULL,
+    add_key( "key-incr-scalefactor", KEY_SCALE_UP,
              SCALE_UP_KEY_TEXT, SCALE_UP_KEY_LONGTEXT, false )
-    add_key( "key-decr-scalefactor", KEY_SCALE_DOWN, NULL,
+    add_key( "key-decr-scalefactor", KEY_SCALE_DOWN,
              SCALE_DOWN_KEY_TEXT, SCALE_DOWN_KEY_LONGTEXT, false )
-    add_key( "key-deinterlace", KEY_DEINTERLACE, NULL,
+    add_key( "key-deinterlace", KEY_DEINTERLACE,
              DEINTERLACE_KEY_TEXT, DEINTERLACE_KEY_LONGTEXT, false )
-    add_key( "key-intf-show", KEY_INTF_SHOW, NULL,
-             INTF_SHOW_KEY_TEXT, INTF_SHOW_KEY_LONGTEXT, true )
-    add_key( "key-intf-hide", KEY_INTF_HIDE, NULL,
-             INTF_HIDE_KEY_TEXT, INTF_HIDE_KEY_LONGTEXT, true )
-    add_key( "key-snapshot", KEY_SNAPSHOT, NULL,
+    add_key( "key-intf-show", KEY_INTF_TOGGLE_FSC,
+             INTF_TOGGLE_FSC_KEY_TEXT, INTF_TOGGLE_FSC_KEY_TEXT, false )
+    add_obsolete_inner( "key-intf-hide", CONFIG_ITEM_KEY )
+
+    add_key( "key-intf-boss", KEY_INTF_BOSS,
+             INTF_BOSS_KEY_TEXT, INTF_BOSS_KEY_LONGTEXT, true )
+    add_key( "key-snapshot", KEY_SNAPSHOT,
         SNAP_KEY_TEXT, SNAP_KEY_LONGTEXT, true )
-    add_key( "key-history-back", KEY_HISTORY_BACK, NULL, HISTORY_BACK_TEXT,
-             HISTORY_BACK_LONGTEXT, true )
-    add_key( "key-history-forward", KEY_HISTORY_FORWARD, NULL,
-             HISTORY_FORWARD_TEXT, HISTORY_FORWARD_LONGTEXT, true )
-    add_key( "key-record", KEY_RECORD, NULL,
+    add_key( "key-record", KEY_RECORD,
              RECORD_KEY_TEXT, RECORD_KEY_LONGTEXT, true )
-    add_key( "key-dump", KEY_DUMP, NULL,
-             DUMP_KEY_TEXT, DUMP_KEY_LONGTEXT, true )
-    add_key( "key-zoom", KEY_ZOOM, NULL,
+    add_key( "key-zoom", KEY_ZOOM,
              ZOOM_KEY_TEXT, ZOOM_KEY_LONGTEXT, true )
-    add_key( "key-unzoom", KEY_UNZOOM, NULL,
+    add_key( "key-unzoom", KEY_UNZOOM,
              UNZOOM_KEY_TEXT, UNZOOM_KEY_LONGTEXT, true )
-    add_key( "key-wallpaper", KEY_WALLPAPER, NULL, WALLPAPER_KEY_TEXT,
+    add_key( "key-wallpaper", KEY_WALLPAPER, WALLPAPER_KEY_TEXT,
              WALLPAPER_KEY_LONGTEXT, false )
 
-    add_key( "key-menu-on", KEY_MENU_ON, NULL,
+    add_key( "key-menu-on", KEY_MENU_ON,
              MENU_ON_KEY_TEXT, MENU_ON_KEY_LONGTEXT, true )
-    add_key( "key-menu-off", KEY_MENU_OFF, NULL,
+    add_key( "key-menu-off", KEY_MENU_OFF,
              MENU_OFF_KEY_TEXT, MENU_OFF_KEY_LONGTEXT, true )
-    add_key( "key-menu-right", KEY_MENU_RIGHT, NULL,
+    add_key( "key-menu-right", KEY_MENU_RIGHT,
              MENU_RIGHT_KEY_TEXT, MENU_RIGHT_KEY_LONGTEXT, true )
-    add_key( "key-menu-left", KEY_MENU_LEFT, NULL,
+    add_key( "key-menu-left", KEY_MENU_LEFT,
              MENU_LEFT_KEY_TEXT, MENU_LEFT_KEY_LONGTEXT, true )
-    add_key( "key-menu-up", KEY_MENU_UP, NULL,
+    add_key( "key-menu-up", KEY_MENU_UP,
              MENU_UP_KEY_TEXT, MENU_UP_KEY_LONGTEXT, true )
-    add_key( "key-menu-down", KEY_MENU_DOWN, NULL,
+    add_key( "key-menu-down", KEY_MENU_DOWN,
              MENU_DOWN_KEY_TEXT, MENU_DOWN_KEY_LONGTEXT, true )
-    add_key( "key-menu-select", KEY_MENU_SELECT, NULL,
+    add_key( "key-menu-select", KEY_MENU_SELECT,
              MENU_SELECT_KEY_TEXT, MENU_SELECT_KEY_LONGTEXT, true )
 
-    add_key( "key-crop-top", KEY_CROP_TOP, NULL,
+    add_key( "key-crop-top", KEY_CROP_TOP,
              CROP_TOP_KEY_TEXT, CROP_TOP_KEY_LONGTEXT, true )
-    add_key( "key-uncrop-top", KEY_UNCROP_TOP, NULL,
+    add_key( "key-uncrop-top", KEY_UNCROP_TOP,
              UNCROP_TOP_KEY_TEXT, UNCROP_TOP_KEY_LONGTEXT, true )
-    add_key( "key-crop-left", KEY_CROP_LEFT, NULL,
+    add_key( "key-crop-left", KEY_CROP_LEFT,
              CROP_LEFT_KEY_TEXT, CROP_LEFT_KEY_LONGTEXT, true )
-    add_key( "key-uncrop-left", KEY_UNCROP_LEFT, NULL,
+    add_key( "key-uncrop-left", KEY_UNCROP_LEFT,
              UNCROP_LEFT_KEY_TEXT, UNCROP_LEFT_KEY_LONGTEXT, true )
-    add_key( "key-crop-bottom", KEY_CROP_BOTTOM, NULL,
+    add_key( "key-crop-bottom", KEY_CROP_BOTTOM,
              CROP_BOTTOM_KEY_TEXT, CROP_BOTTOM_KEY_LONGTEXT, true )
-    add_key( "key-uncrop-bottom", KEY_UNCROP_BOTTOM, NULL,
+    add_key( "key-uncrop-bottom", KEY_UNCROP_BOTTOM,
              UNCROP_BOTTOM_KEY_TEXT, UNCROP_BOTTOM_KEY_LONGTEXT, true )
-    add_key( "key-crop-right", KEY_CROP_RIGHT, NULL,
+    add_key( "key-crop-right", KEY_CROP_RIGHT,
              CROP_RIGHT_KEY_TEXT, CROP_RIGHT_KEY_LONGTEXT, true )
-    add_key( "key-uncrop-right", KEY_UNCROP_RIGHT, NULL,
+    add_key( "key-uncrop-right", KEY_UNCROP_RIGHT,
              UNCROP_RIGHT_KEY_TEXT, UNCROP_RIGHT_KEY_LONGTEXT, true )
-    add_key( "key-random", KEY_RANDOM, NULL,
+    add_key( "key-random", KEY_RANDOM,
              RANDOM_KEY_TEXT, RANDOM_KEY_LONGTEXT, false )
-    add_key( "key-loop", KEY_LOOP, NULL,
+    add_key( "key-loop", KEY_LOOP,
              LOOP_KEY_TEXT, LOOP_KEY_LONGTEXT, false )
 
     set_section ( N_("Zoom" ), NULL )
-    add_key( "key-zoom-quarter",  KEY_ZOOM_QUARTER, NULL,
+    add_key( "key-zoom-quarter",  KEY_ZOOM_QUARTER,
         ZOOM_QUARTER_KEY_TEXT,  NULL, false )
-    add_key( "key-zoom-half",     KEY_ZOOM_HALF, NULL,
+    add_key( "key-zoom-half",     KEY_ZOOM_HALF,
         ZOOM_HALF_KEY_TEXT,     NULL, false )
-    add_key( "key-zoom-original", KEY_ZOOM_ORIGINAL, NULL,
+    add_key( "key-zoom-original", KEY_ZOOM_ORIGINAL,
         ZOOM_ORIGINAL_KEY_TEXT, NULL, false )
-    add_key( "key-zoom-double",   KEY_ZOOM_DOUBLE, NULL,
+    add_key( "key-zoom-double",   KEY_ZOOM_DOUBLE,
         ZOOM_DOUBLE_KEY_TEXT,   NULL, false )
 
     set_section ( N_("Jump sizes" ), NULL )
-    add_integer( "extrashort-jump-size", 3, NULL, JIEXTRASHORT_TEXT,
+    add_integer( "extrashort-jump-size", 3, JIEXTRASHORT_TEXT,
                                     JIEXTRASHORT_LONGTEXT, false )
-    add_integer( "short-jump-size", 10, NULL, JISHORT_TEXT,
+    add_integer( "short-jump-size", 10, JISHORT_TEXT,
                                     JISHORT_LONGTEXT, false )
-    add_integer( "medium-jump-size", 60, NULL, JIMEDIUM_TEXT,
+    add_integer( "medium-jump-size", 60, JIMEDIUM_TEXT,
                                     JIMEDIUM_LONGTEXT, false )
-    add_integer( "long-jump-size", 300, NULL, JILONG_TEXT,
+    add_integer( "long-jump-size", 300, JILONG_TEXT,
                                     JILONG_LONGTEXT, false )
 
     /* HACK so these don't get displayed */
     set_category( -1 )
     set_subcategory( -1 )
-    add_key( "key-set-bookmark1", KEY_SET_BOOKMARK1, NULL,
+    add_key( "key-set-bookmark1", KEY_SET_BOOKMARK1,
              SET_BOOKMARK1_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark2", KEY_SET_BOOKMARK2, NULL,
+    add_key( "key-set-bookmark2", KEY_SET_BOOKMARK2,
              SET_BOOKMARK2_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark3", KEY_SET_BOOKMARK3, NULL,
+    add_key( "key-set-bookmark3", KEY_SET_BOOKMARK3,
              SET_BOOKMARK3_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark4", KEY_SET_BOOKMARK4, NULL,
+    add_key( "key-set-bookmark4", KEY_SET_BOOKMARK4,
              SET_BOOKMARK4_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark5", KEY_SET_BOOKMARK5, NULL,
+    add_key( "key-set-bookmark5", KEY_SET_BOOKMARK5,
              SET_BOOKMARK5_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark6", KEY_SET_BOOKMARK6, NULL,
+    add_key( "key-set-bookmark6", KEY_SET_BOOKMARK6,
              SET_BOOKMARK6_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark7", KEY_SET_BOOKMARK7, NULL,
+    add_key( "key-set-bookmark7", KEY_SET_BOOKMARK7,
              SET_BOOKMARK7_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark8", KEY_SET_BOOKMARK8, NULL,
+    add_key( "key-set-bookmark8", KEY_SET_BOOKMARK8,
              SET_BOOKMARK8_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark9", KEY_SET_BOOKMARK9, NULL,
+    add_key( "key-set-bookmark9", KEY_SET_BOOKMARK9,
              SET_BOOKMARK9_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-set-bookmark10", KEY_SET_BOOKMARK10, NULL,
+    add_key( "key-set-bookmark10", KEY_SET_BOOKMARK10,
              SET_BOOKMARK10_KEY_TEXT, SET_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark1", KEY_PLAY_BOOKMARK1, NULL,
+    add_key( "key-play-bookmark1", KEY_PLAY_BOOKMARK1,
              PLAY_BOOKMARK1_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark2", KEY_PLAY_BOOKMARK2, NULL,
+    add_key( "key-play-bookmark2", KEY_PLAY_BOOKMARK2,
              PLAY_BOOKMARK2_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark3", KEY_PLAY_BOOKMARK3, NULL,
+    add_key( "key-play-bookmark3", KEY_PLAY_BOOKMARK3,
              PLAY_BOOKMARK3_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark4", KEY_PLAY_BOOKMARK4, NULL,
+    add_key( "key-play-bookmark4", KEY_PLAY_BOOKMARK4,
              PLAY_BOOKMARK4_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark5", KEY_PLAY_BOOKMARK5, NULL,
+    add_key( "key-play-bookmark5", KEY_PLAY_BOOKMARK5,
              PLAY_BOOKMARK5_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark6", KEY_PLAY_BOOKMARK6, NULL,
+    add_key( "key-play-bookmark6", KEY_PLAY_BOOKMARK6,
              PLAY_BOOKMARK6_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark7", KEY_PLAY_BOOKMARK7, NULL,
+    add_key( "key-play-bookmark7", KEY_PLAY_BOOKMARK7,
              PLAY_BOOKMARK7_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark8", KEY_PLAY_BOOKMARK8, NULL,
+    add_key( "key-play-bookmark8", KEY_PLAY_BOOKMARK8,
              PLAY_BOOKMARK8_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark9", KEY_PLAY_BOOKMARK9, NULL,
+    add_key( "key-play-bookmark9", KEY_PLAY_BOOKMARK9,
              PLAY_BOOKMARK9_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
-    add_key( "key-play-bookmark10", KEY_PLAY_BOOKMARK10, NULL,
+    add_key( "key-play-bookmark10", KEY_PLAY_BOOKMARK10,
              PLAY_BOOKMARK10_KEY_TEXT, PLAY_BOOKMARK_KEY_LONGTEXT, true )
 
 
-    add_string( "bookmark1", NULL, NULL,
+    add_string( "bookmark1", NULL,
              BOOKMARK1_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark2", NULL, NULL,
+    add_string( "bookmark2", NULL,
              BOOKMARK2_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark3", NULL, NULL,
+    add_string( "bookmark3", NULL,
              BOOKMARK3_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark4", NULL, NULL,
+    add_string( "bookmark4", NULL,
              BOOKMARK4_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark5", NULL, NULL,
+    add_string( "bookmark5", NULL,
              BOOKMARK5_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark6", NULL, NULL,
+    add_string( "bookmark6", NULL,
              BOOKMARK6_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark7", NULL, NULL,
+    add_string( "bookmark7", NULL,
              BOOKMARK7_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark8", NULL, NULL,
+    add_string( "bookmark8", NULL,
              BOOKMARK8_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark9", NULL, NULL,
+    add_string( "bookmark9", NULL,
              BOOKMARK9_TEXT, BOOKMARK_LONGTEXT, false )
-    add_string( "bookmark10", NULL, NULL,
+    add_string( "bookmark10", NULL,
               BOOKMARK10_TEXT, BOOKMARK_LONGTEXT, false )
 
 #define HELP_TEXT \
@@ -2763,161 +2788,45 @@ vlc_module_begin ()
 #define VERSION_TEXT \
     N_("print version information")
 
-    add_bool( "help", false, NULL, HELP_TEXT, "", false )
+    add_bool( "help", false, HELP_TEXT, "", false )
         change_short( 'h' )
         change_volatile ()
-    add_bool( "full-help", false, NULL, FULL_HELP_TEXT, "", false )
+    add_bool( "full-help", false, FULL_HELP_TEXT, "", false )
         change_short( 'H' )
         change_volatile ()
-    add_bool( "longhelp", false, NULL, LONGHELP_TEXT, "", false )
+    add_bool( "longhelp", false, LONGHELP_TEXT, "", false )
         change_volatile ()
-    add_bool( "help-verbose", false, NULL, HELP_VERBOSE_TEXT, "",
+    add_bool( "help-verbose", false, HELP_VERBOSE_TEXT, "",
               false )
         change_volatile ()
-    add_bool( "list", false, NULL, LIST_TEXT, "", false )
+    add_bool( "list", false, LIST_TEXT, "", false )
         change_short( 'l' )
         change_volatile ()
-    add_bool( "list-verbose", false, NULL, LIST_VERBOSE_TEXT, "",
+    add_bool( "list-verbose", false, LIST_VERBOSE_TEXT, "",
               false )
         change_volatile ()
-    add_string( "module", NULL, NULL, MODULE_TEXT, "", false )
+    add_string( "module", NULL, MODULE_TEXT, "", false )
         change_short( 'p' )
         change_volatile ()
-    add_bool( "ignore-config", true, NULL, IGNORE_CONFIG_TEXT, "", false )
+    add_bool( "ignore-config", true, IGNORE_CONFIG_TEXT, "", false )
         change_volatile ()
     add_obsolete_bool( "save-config" )
-    add_bool( "reset-config", false, NULL, RESET_CONFIG_TEXT, "", false )
+    add_bool( "reset-config", false, RESET_CONFIG_TEXT, "", false )
         change_volatile ()
-    add_bool( "reset-plugins-cache", false, NULL,
+    add_bool( "reset-plugins-cache", false,
               RESET_PLUGINS_CACHE_TEXT, "", false )
         change_volatile ()
-    add_bool( "version", false, NULL, VERSION_TEXT, "", false )
+    add_bool( "version", false, VERSION_TEXT, "", false )
         change_volatile ()
-    add_string( "config", NULL, NULL, CONFIG_TEXT, "", false )
+    add_string( "config", NULL, CONFIG_TEXT, "", false )
         change_volatile ()
 
    /* Usage (mainly useful for cmd line stuff) */
     /* add_usage_hint( PLAYLIST_USAGE ) */
 
     set_description( N_("main program") )
-    set_capability( "main", 100 )
 vlc_module_end ()
 
 /*****************************************************************************
  * End configuration.
  *****************************************************************************/
-
-/*****************************************************************************
- * Initializer for the libvlc instance structure
- * storing the action / key associations
- *****************************************************************************/
-const struct action libvlc_actions[] =
-{
-    /* *MUST* be sorted (ASCII order) */
-    { "key-aspect-ratio", ACTIONID_ASPECT_RATIO, },
-    { "key-audio-track", ACTIONID_AUDIO_TRACK, },
-    { "key-audiodelay-down", ACTIONID_AUDIODELAY_DOWN, },
-    { "key-audiodelay-up", ACTIONID_AUDIODELAY_UP, },
-    { "key-audiodevice-cycle", ACTIONID_AUDIODEVICE_CYCLE, },
-    { "key-chapter-next", ACTIONID_CHAPTER_NEXT, },
-    { "key-chapter-prev", ACTIONID_CHAPTER_PREV, },
-    { "key-crop", ACTIONID_CROP, },
-    { "key-crop-bottom", ACTIONID_CROP_BOTTOM, },
-    { "key-crop-left", ACTIONID_CROP_LEFT, },
-    { "key-crop-right", ACTIONID_CROP_RIGHT, },
-    { "key-crop-top", ACTIONID_CROP_TOP, },
-    { "key-decr-scalefactor", ACTIONID_SCALE_DOWN, },
-    { "key-deinterlace", ACTIONID_DEINTERLACE, },
-    { "key-disc-menu", ACTIONID_DISC_MENU, },
-    { "key-dump", ACTIONID_DUMP, },
-    { "key-faster", ACTIONID_FASTER, },
-    { "key-frame-next", ACTIONID_FRAME_NEXT, },
-    { "key-history-back", ACTIONID_HISTORY_BACK, },
-    { "key-history-forward", ACTIONID_HISTORY_FORWARD, },
-    { "key-incr-scalefactor", ACTIONID_SCALE_UP, },
-    { "key-intf-hide", ACTIONID_INTF_HIDE, },
-    { "key-intf-show", ACTIONID_INTF_SHOW, },
-    { "key-jump+extrashort", ACTIONID_JUMP_FORWARD_EXTRASHORT, },
-    { "key-jump+long", ACTIONID_JUMP_FORWARD_LONG, },
-    { "key-jump+medium", ACTIONID_JUMP_FORWARD_MEDIUM, },
-    { "key-jump+short", ACTIONID_JUMP_FORWARD_SHORT, },
-    { "key-jump-extrashort", ACTIONID_JUMP_BACKWARD_EXTRASHORT, },
-    { "key-jump-long", ACTIONID_JUMP_BACKWARD_LONG, },
-    { "key-jump-medium", ACTIONID_JUMP_BACKWARD_MEDIUM, },
-    { "key-jump-short", ACTIONID_JUMP_BACKWARD_SHORT, },
-    { "key-leave-fullscreen", ACTIONID_LEAVE_FULLSCREEN, },
-    { "key-loop", ACTIONID_LOOP, },
-    { "key-menu-down", ACTIONID_MENU_DOWN, },
-    { "key-menu-left", ACTIONID_MENU_LEFT, },
-    { "key-menu-off", ACTIONID_MENU_OFF, },
-    { "key-menu-on", ACTIONID_MENU_ON, },
-    { "key-menu-right", ACTIONID_MENU_RIGHT, },
-    { "key-menu-select", ACTIONID_MENU_SELECT, },
-    { "key-menu-up", ACTIONID_MENU_UP, },
-    { "key-nav-activate", ACTIONID_NAV_ACTIVATE, },
-    { "key-nav-down", ACTIONID_NAV_DOWN, },
-    { "key-nav-left", ACTIONID_NAV_LEFT, },
-    { "key-nav-right", ACTIONID_NAV_RIGHT, },
-    { "key-nav-up", ACTIONID_NAV_UP, },
-    { "key-next", ACTIONID_NEXT, },
-    { "key-pause", ACTIONID_PAUSE, },
-    { "key-play", ACTIONID_PLAY, },
-    { "key-play-bookmark1", ACTIONID_PLAY_BOOKMARK1, },
-    { "key-play-bookmark10", ACTIONID_PLAY_BOOKMARK10, },
-    { "key-play-bookmark2", ACTIONID_PLAY_BOOKMARK2, },
-    { "key-play-bookmark3", ACTIONID_PLAY_BOOKMARK3, },
-    { "key-play-bookmark4", ACTIONID_PLAY_BOOKMARK4, },
-    { "key-play-bookmark5", ACTIONID_PLAY_BOOKMARK5, },
-    { "key-play-bookmark6", ACTIONID_PLAY_BOOKMARK6, },
-    { "key-play-bookmark7", ACTIONID_PLAY_BOOKMARK7, },
-    { "key-play-bookmark8", ACTIONID_PLAY_BOOKMARK8, },
-    { "key-play-bookmark9", ACTIONID_PLAY_BOOKMARK9, },
-    { "key-play-pause", ACTIONID_PLAY_PAUSE, },
-    { "key-position", ACTIONID_POSITION, },
-    { "key-prev", ACTIONID_PREV, },
-    { "key-quit", ACTIONID_QUIT, },
-    { "key-random", ACTIONID_RANDOM, },
-    { "key-rate-faster-fine", ACTIONID_RATE_FASTER_FINE, },
-    { "key-rate-normal", ACTIONID_RATE_NORMAL, },
-    { "key-rate-slower-fine", ACTIONID_RATE_SLOWER_FINE, },
-    { "key-record", ACTIONID_RECORD, },
-    { "key-set-bookmark1", ACTIONID_SET_BOOKMARK1, },
-    { "key-set-bookmark10", ACTIONID_SET_BOOKMARK10, },
-    { "key-set-bookmark2", ACTIONID_SET_BOOKMARK2, },
-    { "key-set-bookmark3", ACTIONID_SET_BOOKMARK3, },
-    { "key-set-bookmark4", ACTIONID_SET_BOOKMARK4, },
-    { "key-set-bookmark5", ACTIONID_SET_BOOKMARK5, },
-    { "key-set-bookmark6", ACTIONID_SET_BOOKMARK6, },
-    { "key-set-bookmark7", ACTIONID_SET_BOOKMARK7, },
-    { "key-set-bookmark8", ACTIONID_SET_BOOKMARK8, },
-    { "key-set-bookmark9", ACTIONID_SET_BOOKMARK9, },
-    { "key-slower", ACTIONID_SLOWER, },
-    { "key-snapshot", ACTIONID_SNAPSHOT, },
-    { "key-stop", ACTIONID_STOP, },
-    { "key-subdelay-down", ACTIONID_SUBDELAY_DOWN, },
-    { "key-subdelay-up", ACTIONID_SUBDELAY_UP, },
-    { "key-subpos-down", ACTIONID_SUBPOS_DOWN, },
-    { "key-subpos-up", ACTIONID_SUBPOS_UP, },
-    { "key-subtitle-track", ACTIONID_SUBTITLE_TRACK, },
-    { "key-title-next", ACTIONID_TITLE_NEXT, },
-    { "key-title-prev", ACTIONID_TITLE_PREV, },
-    { "key-toggle-autoscale", ACTIONID_TOGGLE_AUTOSCALE, },
-    { "key-toggle-fullscreen", ACTIONID_TOGGLE_FULLSCREEN, },
-    { "key-uncrop-bottom", ACTIONID_UNCROP_BOTTOM, },
-    { "key-uncrop-left", ACTIONID_UNCROP_LEFT, },
-    { "key-uncrop-right", ACTIONID_UNCROP_RIGHT, },
-    { "key-uncrop-top", ACTIONID_UNCROP_TOP, },
-    { "key-unzoom", ACTIONID_UNZOOM, },
-    { "key-vol-down", ACTIONID_VOL_DOWN, },
-    { "key-vol-mute", ACTIONID_VOL_MUTE, },
-    { "key-vol-up", ACTIONID_VOL_UP, },
-    { "key-wallpaper", ACTIONID_WALLPAPER, },
-    { "key-zoom", ACTIONID_ZOOM, },
-    { "key-zoom-double", ACTIONID_ZOOM_DOUBLE, },
-    { "key-zoom-half", ACTIONID_ZOOM_HALF, },
-    { "key-zoom-original", ACTIONID_ZOOM_ORIGINAL, },
-    { "key-zoom-quarter", ACTIONID_ZOOM_QUARTER, },
-};
-
-const size_t libvlc_actions_count =
-    sizeof (libvlc_actions) / sizeof (libvlc_actions[0]);

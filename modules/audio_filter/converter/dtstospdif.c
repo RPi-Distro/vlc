@@ -2,7 +2,7 @@
  * dtstospdif.c : encapsulates DTS frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2003, 2006 the VideoLAN team
- * $Id: c345e011cdaaa4c25f120ce08bb7ae9178d386da $
+ * $Id: 19cb432b58c15be07b6a9ef20add944a7b3b0421 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -173,15 +173,13 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
         {
             vlc_memcpy( p_out, p_sync_be, 6 );
             p_out[5] = i_ac5_spdif_type;
-            p_out[6] = (( i_length ) >> 5 ) & 0xFF;
-            p_out[7] = ( i_length << 3 ) & 0xFF;
+            SetWBE( p_out + 6, i_length << 3 );
         }
         else
         {
             vlc_memcpy( p_out, p_sync_le, 6 );
             p_out[4] = i_ac5_spdif_type;
-            p_out[6] = ( i_length << 3 ) & 0xFF;
-            p_out[7] = (( i_length ) >> 5 ) & 0xFF;
+            SetWLE( p_out + 6, i_length << 3 );
         }
 
         if( ( (p_in[0] == 0x1F || p_in[0] == 0x7F) && p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFL ) ||

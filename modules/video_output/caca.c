@@ -2,7 +2,7 @@
  * caca.c: Color ASCII Art "vout display" module using libcaca
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 82a2a54987a92b5168bd925f2a4cd44d5c74570e $
+ * $Id: 08786a99410a083a9cda9c9a2a47c209c6046da7 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -34,7 +34,6 @@
 #include <vlc_plugin.h>
 #include <vlc_vout_display.h>
 #include <vlc_picture_pool.h>
-#include "keythread.h"
 
 #include <caca.h>
 
@@ -49,7 +48,7 @@ vlc_module_begin()
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VOUT)
     set_description(N_("Color ASCII art video output"))
-    set_capability("vout display", 12)
+    set_capability("vout display", 15)
     set_callbacks(Open, Close)
 vlc_module_end()
 
@@ -57,8 +56,8 @@ vlc_module_end()
  * Local prototypes
  *****************************************************************************/
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
-static void           Prepare(vout_display_t *, picture_t *);
-static void           Display(vout_display_t *, picture_t *);
+static void           Prepare(vout_display_t *, picture_t *, subpicture_t *);
+static void           Display(vout_display_t *, picture_t *, subpicture_t *);
 static int            Control(vout_display_t *, int, va_list);
 
 /* */
@@ -73,7 +72,6 @@ struct vout_display_sys_t {
     cucul_dither_t *dither;
 
     picture_pool_t *pool;
-    key_thread_t   *keys;
 };
 
 /**
@@ -155,6 +153,7 @@ static int Open(vlc_object_t *object)
         msg_Err(vd, "cannot initialize libcaca");
         goto error;
     }
+    vout_display_DeleteWindow(vd, NULL);
 
     if (vd->cfg->display.title)
         caca_set_display_title(sys->dp,
@@ -189,7 +188,6 @@ static int Open(vlc_object_t *object)
     vout_display_SendEventFullscreen(vd, false);
     Refresh(vd);
 
-    sys->keys = vlc_CreateKeyThread(vd);
     return VLC_SUCCESS;
 
 error:
@@ -219,7 +217,6 @@ static void Close(vlc_object_t *object)
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys = vd->sys;
 
-    vlc_DestroyKeyThread(sys->keys);
     if (sys->pool)
         picture_pool_Delete(sys->pool);
     if (sys->dither)
@@ -248,7 +245,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
 
 /**
  * Prepare a picture for display */
-static void Prepare(vout_display_t *vd, picture_t *picture)
+static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
@@ -281,15 +278,17 @@ static void Prepare(vout_display_t *vd, picture_t *picture)
                         place.width, place.height,
                         sys->dither,
                         &picture->p->p_pixels[crop_offset]);
+    VLC_UNUSED(subpicture);
 }
 
 /**
  * Display a picture
  */
-static void Display(vout_display_t *vd, picture_t *picture)
+static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     Refresh(vd);
     picture_Release(picture);
+    VLC_UNUSED(subpicture);
 }
 
 /**
@@ -310,8 +309,8 @@ static int Control(vout_display_t *vd, int query, va_list args)
         caca_refresh_display(sys->dp);
 
         /* Not quite good but not sure how to resize it */
-        if (cfg->display.width  != caca_get_display_width(sys->dp) ||
-            cfg->display.height != caca_get_display_height(sys->dp))
+        if ((int)cfg->display.width  != caca_get_display_width(sys->dp) ||
+            (int)cfg->display.height != caca_get_display_height(sys->dp))
             return VLC_EGENERIC;
         return VLC_SUCCESS;
     }
@@ -480,7 +479,7 @@ static void Manage(vout_display_t *vd)
                     const int vlc = keys[i].vlc;
 
                     if (vlc >= 0)
-                        vlc_EmitKey(sys->keys, vlc);
+                        vout_display_SendEventKey(vd, vlc);
                     return;
                 }
             }

@@ -2,7 +2,7 @@
  * gestures.c: control vlc with mouse gestures
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 9305cce64e12aec49895a70a16fdde4d7a65ac65 $
+ * $Id: 216b101135c2daead6d299dd5dc007ad4d758201 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -33,7 +33,7 @@
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 #include <vlc_vout.h>
-#include <vlc_aout.h>
+#include <vlc_aout_intf.h>
 #include <vlc_playlist.h>
 
 #ifdef HAVE_UNISTD_H
@@ -67,8 +67,8 @@ struct intf_sys_t
 #define NONE 0
 #define GESTURE( a, b, c, d ) (a | ( b << 4 ) | ( c << 8 ) | ( d << 12 ))
 
-int  Open   ( vlc_object_t * );
-void Close  ( vlc_object_t * );
+static int  Open   ( vlc_object_t * );
+static void Close  ( vlc_object_t * );
 static int  MouseEvent     ( vlc_object_t *, char const *,
                              vlc_value_t, vlc_value_t, void * );
 
@@ -100,9 +100,9 @@ vlc_module_begin ()
     set_shortname( N_("Gestures"))
     set_category( CAT_INTERFACE )
     set_subcategory( SUBCAT_INTERFACE_CONTROL )
-    add_integer( "gestures-threshold", 30, NULL,
+    add_integer( "gestures-threshold", 30,
                  THRESHOLD_TEXT, THRESHOLD_LONGTEXT, true )
-    add_string( "gestures-button", BUTTON_DEFAULT, NULL,
+    add_string( "gestures-button", BUTTON_DEFAULT,
                 BUTTON_TEXT, BUTTON_LONGTEXT, false )
         change_string_list( button_list, button_list_text, 0 )
     set_description( N_("Mouse gestures control interface") )
@@ -114,7 +114,7 @@ vlc_module_end ()
 /*****************************************************************************
  * OpenIntf: initialize interface
  *****************************************************************************/
-int Open ( vlc_object_t *p_this )
+static int Open ( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
@@ -159,7 +159,7 @@ static int gesture( int i_pattern, int i_num )
 /*****************************************************************************
  * CloseIntf: destroy dummy interface
  *****************************************************************************/
-void Close ( vlc_object_t *p_this )
+static void Close ( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
@@ -238,22 +238,12 @@ static void RunIntf( intf_thread_t *p_intf )
 
             case GESTURE(LEFT,UP,NONE,NONE):
                 msg_Dbg( p_intf, "Going slower." );
-                p_input = playlist_CurrentInput( p_playlist );
-                if( p_input )
-                {
-                    var_TriggerCallback( p_input, "rate-slower" );
-                    vlc_object_release( p_input );
-                }
+                var_TriggerCallback( p_playlist, "rate-slower" );
                 break;
 
             case GESTURE(RIGHT,UP,NONE,NONE):
                 msg_Dbg( p_intf, "Going faster." );
-                p_input = playlist_CurrentInput( p_playlist );
-                if( p_input )
-                {
-                    var_TriggerCallback( p_input, "rate-faster" );
-                    vlc_object_release( p_input );
-                }
+                var_TriggerCallback( p_playlist, "rate-faster" );
                 break;
 
             case GESTURE(LEFT,RIGHT,NONE,NONE):

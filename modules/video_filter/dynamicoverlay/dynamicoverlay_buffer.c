@@ -2,7 +2,7 @@
  * dynamicoverlay_buffer.h : dynamic overlay buffer
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 3893bc067aab66b88a6166c8cbec82e47a193a5b $
+ * $Id: 45f63740f1d06907a5e5c2a31850aff7e79d83ff $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
@@ -60,7 +60,7 @@ char *BufferGetToken( buffer_t *p_buffer )
 {
     char *p_char = p_buffer->p_begin;
 
-    while( isspace( p_char[0] ) || p_char[0] == '\0' )
+    while( isspace( (unsigned char)p_char[0] ) || p_char[0] == '\0' )
     {
         if( p_char <= (p_buffer->p_begin + p_buffer->i_length) )
             p_char++;

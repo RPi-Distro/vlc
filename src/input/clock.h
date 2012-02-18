@@ -1,33 +1,29 @@
 /*****************************************************************************
  * clock.h: clocks synchronisation
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
+ * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 99c0af557718afb4692359e685d4edf63dd40ce6 $
+ * $Id: ee1492ba7af8eba578a8ce822e3a223817609ab4 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
-
-#ifndef _INPUT_CLOCK_H
-#define _INPUT_CLOCK_H 1
+#ifndef LIBVLC_INPUT_CLOCK_H
+#define LIBVLC_INPUT_CLOCK_H 1
 
 #include <vlc_common.h>
 #include <vlc_input.h> /* FIXME Needed for input_clock_t */
@@ -38,6 +34,7 @@
  * XXX input_clock_GetTS can be called from any threads. All others functions
  * MUST be called from one and only one thread.
  */
+typedef struct input_clock_t input_clock_t;
 
 /**
  * This function creates a new input_clock_t.
@@ -74,12 +71,12 @@ void    input_clock_Reset( input_clock_t * );
 mtime_t input_clock_GetWakeup( input_clock_t * );
 
 /**
- * This functions allows to change the actual reading speed.
+ * This functions allows changing the actual reading speed.
  */
 void    input_clock_ChangeRate( input_clock_t *, int i_rate );
 
 /**
- * This function allows to change the pause status.
+ * This function allows changing the pause status.
  */
 void    input_clock_ChangePause( input_clock_t *, bool b_paused, mtime_t i_date );
 
@@ -90,7 +87,7 @@ void    input_clock_ChangePause( input_clock_t *, bool b_paused, mtime_t i_date 
 void    input_clock_GetSystemOrigin( input_clock_t *, mtime_t *pi_system, mtime_t *pi_delay );
 
 /**
- * This function allows to rebase the original system value date (a valid
+ * This function allows rebasing the original system value date (a valid
  * reference point must have been set).
  * When using the absolute mode, it will create a discontinuity unless
  * called imediatly after a input_clock_Update.
@@ -139,4 +136,3 @@ void input_clock_SetJitter( input_clock_t *,
 mtime_t input_clock_GetJitter( input_clock_t * );
 
 #endif
-

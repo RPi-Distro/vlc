@@ -2,7 +2,7 @@
  * dynamicoverlay_commands.c : dynamic overlay plugin commands
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 300431ce19b441d94d0c1844b14e74b259bcb2af $
+ * $Id: 73254720070ef3a8db9e5f65e28dd97e15fa5ed4 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
@@ -78,7 +78,7 @@ static int skip_space( char **psz_command )
 {
     char *psz_temp = *psz_command;
 
-    while( isspace( *psz_temp ) )
+    while( isspace( (unsigned char)*psz_temp ) )
     {
         ++psz_temp;
     }
@@ -120,32 +120,32 @@ static int parser_DataSharedMem( char *psz_command,
 {
     /* Parse: 0 128 128 RGBA 9404459 */
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_id ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_width ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_height ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isascii( *psz_command ) )
+    if( isascii( (unsigned char)*psz_command ) )
     {
         if( parse_char( &psz_command, &psz_end, 4, (char*)&p_params->fourcc )
             == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_shmid ) == VLC_EGENERIC )
             return VLC_EGENERIC;
@@ -158,7 +158,7 @@ static int parser_Id( char *psz_command, char *psz_end,
 {
     VLC_UNUSED(psz_end);
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_id ) == VLC_EGENERIC )
             return VLC_EGENERIC;
@@ -180,13 +180,13 @@ static int parser_SetAlpha( char *psz_command, char *psz_end,
 {
     VLC_UNUSED(psz_end);
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_id ) == VLC_EGENERIC  )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_alpha ) == VLC_EGENERIC )
             return VLC_EGENERIC;
@@ -199,19 +199,19 @@ static int parser_SetPosition( char *psz_command, char *psz_end,
 {
     VLC_UNUSED(psz_end);
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_id ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_x ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_y ) == VLC_EGENERIC )
             return VLC_EGENERIC;
@@ -224,13 +224,13 @@ static int parser_SetTextAlpha( char *psz_command, char *psz_end,
 {
     VLC_UNUSED(psz_end);
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_id ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->fontstyle.i_font_alpha ) == VLC_EGENERIC )
             return VLC_EGENERIC;
@@ -245,25 +245,25 @@ static int parser_SetTextColor( char *psz_command, char *psz_end,
     VLC_UNUSED(psz_end);
 
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_id ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &r ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &g ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &b ) == VLC_EGENERIC )
             return VLC_EGENERIC;
@@ -277,13 +277,13 @@ static int parser_SetTextSize( char *psz_command, char *psz_end,
 {
     VLC_UNUSED(psz_end);
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_id ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->fontstyle.i_font_size ) == VLC_EGENERIC )
             return VLC_EGENERIC;
@@ -296,13 +296,13 @@ static int parser_SetVisibility( char *psz_command, char *psz_end,
 {
     VLC_UNUSED(psz_end);
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         if( parse_digit( &psz_command, &p_params->i_id ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
     skip_space( &psz_command );
-    if( isdigit( *psz_command ) )
+    if( isdigit( (unsigned char)*psz_command ) )
     {
         int32_t i_vis = 0;
         if( parse_digit( &psz_command, &i_vis ) == VLC_EGENERIC )
@@ -483,24 +483,13 @@ static int exec_DataSharedMem( filter_t *p_filter,
         uint8_t *p_data, *p_in;
         size_t i_neededsize = 0;
 
-        p_ovl->data.p_pic = malloc( sizeof( picture_t ) );
+        p_ovl->data.p_pic = picture_New( p_params->fourcc,
+                                         p_params->i_width, p_params->i_height,
+                                         1, 1 );
         if( p_ovl->data.p_pic == NULL )
             return VLC_ENOMEM;
 
-        video_format_Setup( &p_ovl->format, p_params->fourcc,
-                            p_params->i_width, p_params->i_height,
-                            1, 1 );
-        if( vout_AllocatePicture( p_filter, p_ovl->data.p_pic,
-                                  p_ovl->format.i_chroma, p_params->i_width,
-                                  p_params->i_height,
-                                  p_ovl->format.i_sar_num,
-                                  p_ovl->format.i_sar_den ) )
-        {
-            msg_Err( p_filter, "Unable to allocate picture" );
-            free( p_ovl->data.p_pic );
-            p_ovl->data.p_pic = NULL;
-            return VLC_ENOMEM;
-        }
+        p_ovl->format = p_ovl->data.p_pic->format;
 
         for( size_t i_plane = 0; i_plane < (size_t)p_ovl->data.p_pic->i_planes;
              ++i_plane )
@@ -515,7 +504,6 @@ static int exec_DataSharedMem( filter_t *p_filter,
                      "Insufficient data in shared memory. need %zu, got %zu",
                      i_neededsize, i_size );
             picture_Release( p_ovl->data.p_pic );
-            free( p_ovl->data.p_pic );
             p_ovl->data.p_pic = NULL;
             return VLC_EGENERIC;
         }
@@ -525,7 +513,6 @@ static int exec_DataSharedMem( filter_t *p_filter,
         {
             msg_Err( p_filter, "Unable to attach to shared memory" );
             picture_Release( p_ovl->data.p_pic );
-            free( p_ovl->data.p_pic );
             p_ovl->data.p_pic = NULL;
             return VLC_ENOMEM;
         }
@@ -677,7 +664,7 @@ static int exec_GetVisibility( filter_t *p_filter,
     if( p_ovl == NULL )
         return VLC_EGENERIC;
 
-    p_results->b_visible = ( p_ovl->b_active == true ) ? 1 : 0;
+    p_results->b_visible = p_ovl->b_active ? 1 : 0;
     return VLC_SUCCESS;
 }
 

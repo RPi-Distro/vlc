@@ -1,8 +1,8 @@
 /*****************************************************************************
  * prefs_widgets.h: Preferences controls
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 8d44a7733481de855f405c96669bb57c8b1f248d $
+ * Copyright (C) 2002-2007 VLC authors and VideoLAN
+ * $Id: c0b35a2dbffc57c83329d9e4aee1a446fa095b88 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *
@@ -21,9 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#define CONFIG_ITEM_STRING_LIST (CONFIG_ITEM_STRING + 1)
-#define CONFIG_ITEM_RANGED_INTEGER (CONFIG_ITEM_INTEGER + 1)
-#define CONFIG_ITEM_KEY_AFTER_10_3 (CONFIG_ITEM_KEY + 2)
+#define CONFIG_ITEM_STRING_LIST (CONFIG_ITEM_STRING + 10)
+#define CONFIG_ITEM_RANGED_INTEGER (CONFIG_ITEM_INTEGER + 10)
 #define LEFTMARGIN  18
 #define RIGHTMARGIN 18
 
@@ -69,7 +68,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface StringListConfigControl : VLCConfigControl
+@interface StringListConfigControl : VLCConfigControl <NSComboBoxDataSource>
 {
     NSComboBox      *o_combo;
 }
@@ -104,7 +103,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface IntegerConfigControl : VLCConfigControl
+@interface IntegerConfigControl : VLCConfigControl <NSTextFieldDelegate>
 {
     NSTextField     *o_textfield;
     NSStepper       *o_stepper;
@@ -118,7 +117,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface IntegerListConfigControl : VLCConfigControl
+@interface IntegerListConfigControl : VLCConfigControl <NSComboBoxDataSource>
 {
     NSComboBox      *o_combo;
 }
@@ -128,7 +127,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface RangedIntegerConfigControl : VLCConfigControl
+@interface RangedIntegerConfigControl : VLCConfigControl <NSTextFieldDelegate>
 {
     NSSlider        *o_slider;
     NSTextField     *o_textfield;
@@ -154,7 +153,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface FloatConfigControl : VLCConfigControl
+@interface FloatConfigControl : VLCConfigControl <NSTextFieldDelegate>
 {
     NSTextField     *o_textfield;
     NSStepper       *o_stepper;
@@ -168,7 +167,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface RangedFloatConfigControl : VLCConfigControl
+@interface RangedFloatConfigControl : VLCConfigControl <NSTextFieldDelegate>
 {
     NSSlider        *o_slider;
     NSTextField     *o_textfield;
@@ -194,7 +193,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface ModuleListConfigControl : VLCConfigControl
+@interface ModuleListConfigControl : VLCConfigControl <NSTableViewDataSource>
 {
     NSTextField     *o_textfield;
     NSScrollView    *o_scrollview;
@@ -208,5 +207,4 @@ static NSMenu   *o_keys_menu = nil;
 
 //#undef CONFIG_ITEM_LIST_STRING
 //#undef CONFIG_ITEM_RANGED_INTEGER
-//#undef CONFIG_ITEM_KEY_AFTER_10_3
 

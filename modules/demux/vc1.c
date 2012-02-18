@@ -2,7 +2,7 @@
  * vc1.c : VC1 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 2e53edc34cc5293158dd1fd05d38f9d0f8882b83 $
+ * $Id: bbc82037d74a3250e61f7d724b8b505e9ffb10cf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -49,7 +49,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_DEMUX )
     set_description( N_("VC1 video demuxer" ) )
     set_capability( "demux", 0 )
-    add_float( "vc1-fps", 25.0, NULL, FPS_TEXT, FPS_LONGTEXT, true )
+    add_float( "vc1-fps", 25.0, FPS_TEXT, FPS_LONGTEXT, true )
     set_callbacks( Open, Close )
     add_shortcut( "vc1" )
 vlc_module_end ()

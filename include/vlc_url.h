@@ -1,25 +1,25 @@
 /*****************************************************************************
  * vlc_url.h: URL related macros
  *****************************************************************************
- * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 35bea922fdccb977d479e16bd4a2a50117fd4179 $
+ * Copyright (C) 2002-2006 VLC authors and VideoLAN
+ * $Id: 994d8ff24e3e897bc19e02476842b3d4cd29a336 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_URL_H
@@ -45,11 +45,11 @@ struct vlc_url_t
     char *psz_buffer; /* to be freed */
 };
 
-VLC_EXPORT( char *, decode_URI_duplicate, ( const char *psz ) );
-VLC_EXPORT( char *, decode_URI, ( char *psz ) );
-VLC_EXPORT( char *, encode_URI_component, ( const char *psz ) );
-VLC_EXPORT( char *, make_URI, ( const char *path ) );
-VLC_EXPORT( char *, make_path, ( const char *url ) );
+VLC_API char * decode_URI_duplicate( const char *psz );
+VLC_API char * decode_URI( char *psz );
+VLC_API char * encode_URI_component( const char *psz );
+VLC_API char * make_URI( const char *path, const char *scheme );
+VLC_API char * make_path( const char *url );
 
 /*****************************************************************************
  * vlc_UrlParse:
@@ -204,11 +204,12 @@ static inline int vlc_UrlIsNotEncoded( const char *psz_url )
 
     for( ptr = psz_url; *ptr; ptr++ )
     {
-        char c = *ptr;
+        unsigned char c = *ptr;
 
         if( c == '%' )
         {
-            if( !isxdigit( ptr[1] ) || !isxdigit( ptr[2] ) )
+            if( !isxdigit( (unsigned char)ptr[1] )
+             || !isxdigit( (unsigned char)ptr[2] ) )
                 return 1; /* not encoded */
             ptr += 2;
         }

@@ -4,8 +4,12 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 1003ff08bd0361ac9aa2fb6f5b8b5b226e2ba89a $
+ * $Id: 167dc80967ce34b9c93529883761afe8e0f4d3bc $
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <stdio.h>
 #include <string.h>
@@ -382,7 +386,7 @@ void CAtmoConfig::UpdateZoneDefinitionCount()
 {
    if( getZoneCount() != m_AtmoZoneDefCount)
    {
-      // okay zonen anzahl hat sich geändert - wir müssen neu rechnen
+      // okay zonen anzahl hat sich geÃ¤ndert - wir mÃ¼ssen neu rechnen
       // und allokieren!
       if(m_ZoneDefinitions)
       {

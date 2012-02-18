@@ -4,8 +4,12 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 71f70f9f40f742412101e2f706f9a3cea4b01bf8 $
+ * $Id: 01d1552397c6f04357f7d9e6024c21efa6b9edd4 $
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "AtmoDefs.h"
 #include "AtmoMultiConnection.h"
@@ -54,7 +58,7 @@ HANDLE CAtmoMultiConnection::OpenDevice(char *devName)
 	    return INVALID_HANDLE_VALUE;
      }
      /* change serial settings (Speed, stopbits etc.) */
-     DCB dcb; // für comport-parameter
+     DCB dcb; // fÃ¼r comport-parameter
      dcb.DCBlength = sizeof(DCB);
      GetCommState (hComport, &dcb); // ger current serialport settings
      dcb.BaudRate  = 38400;        // set speed
@@ -95,7 +99,7 @@ ATMO_BOOL CAtmoMultiConnection::OpenConnection()
 
     for(int c = 0; c < 4; c++ ) {
         char *devName = m_pAtmoConfig->getSerialDevice( c );
-        if( devName && strlen(devName) > 0 )
+        if( !EMPTY_STR( devName ) )
         {
             m_hComports[z] = OpenDevice( devName );
             if(m_hComports[z] == INVALID_HANDLE_VALUE) {
@@ -168,7 +172,7 @@ int CAtmoMultiConnection::getNumChannels()
     char *psz_dev;
     for(int i=0;i<4;i++) {
         psz_dev = m_pAtmoConfig->getSerialDevice( i );
-        if( psz_dev && strlen( psz_dev ) > 0 )
+        if( !EMPTY_STR( psz_dev ) )
             z+=4;
     }
 #else
@@ -377,9 +381,9 @@ ATMO_BOOL CAtmoMultiConnection::setChannelValues(int numValues,unsigned char *ch
 
 
   Lock();
-  int Index = 0;
+  size_t Index = 0;
   for (int i = 0; i < numValues; i+=2) {
-       Index = (int)channel_values[i];
+       Index = (size_t)channel_values[i];
        if(Index < sizeof(m_output))
           m_output[Index] = channel_values[i + 1];
   }

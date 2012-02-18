@@ -3,9 +3,9 @@
 
 basedir = services_discovery
 dir = services_discovery
-mods = bonjour mediadirs mtp podcast sap udev upnp_cc upnp_intel
-libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBmtp) $(LTLIBudev) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
-EXTRA_LTLIBRARIES =  libbonjour_plugin.la libmtp_plugin.la libudev_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
+mods = bonjour mediadirs mtp podcast sap upnp
+libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBmtp) $(LTLIBupnp)
+EXTRA_LTLIBRARIES =  libbonjour_plugin.la libmtp_plugin.la libupnp_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -13,87 +13,77 @@ include $(top_srcdir)/modules/common.am
 libbonjour_plugin_la_SOURCES = $(SOURCES_bonjour)
 nodist_libbonjour_plugin_la_SOURCES = $(nodist_SOURCES_bonjour)
 # Force per-target objects:
-libbonjour_plugin_la_CFLAGS = $(AM_CFLAGS)
-libbonjour_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libbonjour_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libbonjour_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_bonjour)
+libbonjour_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_bonjour)
+libbonjour_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_bonjour)
+libbonjour_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_bonjour)
 # Set LIBADD and DEPENDENCIES manually:
-libbonjour_plugin_la_LIBADD = $(AM_LIBADD)
-libbonjour_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libbonjour_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_bonjour)
+libbonjour_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_bonjour)
+libbonjour_plugin_la_DEPENDENCIES =
 
 # The mediadirs plugin
 libmediadirs_plugin_la_SOURCES = $(SOURCES_mediadirs)
 nodist_libmediadirs_plugin_la_SOURCES = $(nodist_SOURCES_mediadirs)
 # Force per-target objects:
-libmediadirs_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmediadirs_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmediadirs_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmediadirs_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mediadirs)
+libmediadirs_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mediadirs)
+libmediadirs_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mediadirs)
+libmediadirs_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mediadirs)
 # Set LIBADD and DEPENDENCIES manually:
-libmediadirs_plugin_la_LIBADD = $(AM_LIBADD)
-libmediadirs_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmediadirs_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mediadirs)
+libmediadirs_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mediadirs)
+libmediadirs_plugin_la_DEPENDENCIES =
 
 # The mtp plugin
 libmtp_plugin_la_SOURCES = $(SOURCES_mtp)
 nodist_libmtp_plugin_la_SOURCES = $(nodist_SOURCES_mtp)
 # Force per-target objects:
-libmtp_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmtp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmtp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmtp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mtp)
+libmtp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mtp)
+libmtp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mtp)
+libmtp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mtp)
 # Set LIBADD and DEPENDENCIES manually:
-libmtp_plugin_la_LIBADD = $(AM_LIBADD)
-libmtp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmtp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mtp)
+libmtp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mtp)
+libmtp_plugin_la_DEPENDENCIES =
 
 # The podcast plugin
 libpodcast_plugin_la_SOURCES = $(SOURCES_podcast)
 nodist_libpodcast_plugin_la_SOURCES = $(nodist_SOURCES_podcast)
 # Force per-target objects:
-libpodcast_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpodcast_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpodcast_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpodcast_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_podcast)
+libpodcast_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_podcast)
+libpodcast_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_podcast)
+libpodcast_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_podcast)
 # Set LIBADD and DEPENDENCIES manually:
-libpodcast_plugin_la_LIBADD = $(AM_LIBADD)
-libpodcast_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpodcast_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_podcast)
+libpodcast_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_podcast)
+libpodcast_plugin_la_DEPENDENCIES =
 
 # The sap plugin
 libsap_plugin_la_SOURCES = $(SOURCES_sap)
 nodist_libsap_plugin_la_SOURCES = $(nodist_SOURCES_sap)
 # Force per-target objects:
-libsap_plugin_la_CFLAGS = $(AM_CFLAGS)
-libsap_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsap_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libsap_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_sap)
+libsap_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_sap)
+libsap_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_sap)
+libsap_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_sap)
 # Set LIBADD and DEPENDENCIES manually:
-libsap_plugin_la_LIBADD = $(AM_LIBADD)
-libsap_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libsap_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_sap)
+libsap_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_sap)
+libsap_plugin_la_DEPENDENCIES =
 
-# The udev plugin
-libudev_plugin_la_SOURCES = $(SOURCES_udev)
-nodist_libudev_plugin_la_SOURCES = $(nodist_SOURCES_udev)
+# The upnp plugin
+libupnp_plugin_la_SOURCES = $(SOURCES_upnp)
+nodist_libupnp_plugin_la_SOURCES = $(nodist_SOURCES_upnp)
 # Force per-target objects:
-libudev_plugin_la_CFLAGS = $(AM_CFLAGS)
-libudev_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libudev_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libupnp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_upnp)
+libupnp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_upnp)
+libupnp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_upnp)
+libupnp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_upnp)
 # Set LIBADD and DEPENDENCIES manually:
-libudev_plugin_la_LIBADD = $(AM_LIBADD)
-libudev_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The upnp_cc plugin
-libupnp_cc_plugin_la_SOURCES = $(SOURCES_upnp_cc)
-nodist_libupnp_cc_plugin_la_SOURCES = $(nodist_SOURCES_upnp_cc)
-# Force per-target objects:
-libupnp_cc_plugin_la_CFLAGS = $(AM_CFLAGS)
-libupnp_cc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libupnp_cc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libupnp_cc_plugin_la_LIBADD = $(AM_LIBADD)
-libupnp_cc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The upnp_intel plugin
-libupnp_intel_plugin_la_SOURCES = $(SOURCES_upnp_intel)
-nodist_libupnp_intel_plugin_la_SOURCES = $(nodist_SOURCES_upnp_intel)
-# Force per-target objects:
-libupnp_intel_plugin_la_CFLAGS = $(AM_CFLAGS)
-libupnp_intel_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libupnp_intel_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libupnp_intel_plugin_la_LIBADD = $(AM_LIBADD)
-libupnp_intel_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libupnp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_upnp)
+libupnp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_upnp)
+libupnp_plugin_la_DEPENDENCIES =
 

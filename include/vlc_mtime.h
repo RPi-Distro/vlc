@@ -9,24 +9,24 @@
  * 'm' stands for 'micro', since maximum resolution is the microsecond.
  * Functions prototyped are implemented in interface/mtime.c.
  *****************************************************************************
- * Copyright (C) 1996, 1997, 1998, 1999, 2000 the VideoLAN team
- * $Id: 8d51250dab38177845a3c4ff2fab79e30128506c $
+ * Copyright (C) 1996, 1997, 1998, 1999, 2000 VLC authors and VideoLAN
+ * $Id: ab89a972120c8ee3f45d9823994eac584f8fe527 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef __VLC_MTIME_H
@@ -54,68 +54,8 @@
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-VLC_EXPORT( char *,  mstrtime, ( char *psz_buffer, mtime_t date ) );
-VLC_EXPORT( mtime_t, mdate,    ( void ) );
-VLC_EXPORT( void,    mwait,    ( mtime_t date ) );
-VLC_EXPORT( void,    msleep,   ( mtime_t delay ) );
-VLC_EXPORT( char *,  secstotimestr, ( char *psz_buffer, int32_t secs ) );
-
-# define VLC_HARD_MIN_SLEEP 10000   /* 10 milliseconds = 1 tick at 100Hz */
-
-#if defined (__GNUC__) \
- && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))
-/* Linux has 100, 250, 300 or 1000Hz
- *
- * HZ=100 by default on FreeBSD, but some architectures use a 1000Hz timer
- */
-# define VLC_SOFT_MIN_SLEEP 9000000 /* 9 seconds */
-
-static
-__attribute__((unused))
-__attribute__((noinline))
-__attribute__((error("sorry, cannot sleep for such short a time")))
-mtime_t impossible_delay( mtime_t delay )
-{
-    (void) delay;
-    return VLC_HARD_MIN_SLEEP;
-}
-
-static
-__attribute__((unused))
-__attribute__((noinline))
-__attribute__((warning("use proper event handling instead of short delay")))
-mtime_t harmful_delay( mtime_t delay )
-{
-    return delay;
-}
-
-# define check_delay( d ) \
-    ((__builtin_constant_p(d < VLC_HARD_MIN_SLEEP) \
-   && (d < VLC_HARD_MIN_SLEEP)) \
-       ? impossible_delay(d) \
-       : ((__builtin_constant_p(d < VLC_SOFT_MIN_SLEEP) \
-       && (d < VLC_SOFT_MIN_SLEEP)) \
-           ? harmful_delay(d) \
-           : d))
-
-static
-__attribute__((unused))
-__attribute__((noinline))
-__attribute__((error("deadlines can not be constant")))
-mtime_t impossible_deadline( mtime_t deadline )
-{
-    return deadline;
-}
-
-# define check_deadline( d ) \
-    (__builtin_constant_p(d) ? impossible_deadline(d) : d)
-#else
-# define check_delay(d) (d)
-# define check_deadline(d) (d)
-#endif
-
-#define msleep(d) msleep(check_delay(d))
-#define mwait(d) mwait(check_deadline(d))
+VLC_API char * mstrtime( char *psz_buffer, mtime_t date );
+VLC_API char * secstotimestr( char *psz_buffer, int32_t secs );
 
 /*****************************************************************************
  * date_t: date incrementation without long-term rounding errors
@@ -128,12 +68,12 @@ struct date_t
     uint32_t i_remainder;
 };
 
-VLC_EXPORT( void,    date_Init,      ( date_t *, uint32_t, uint32_t ) );
-VLC_EXPORT( void,    date_Change,    ( date_t *, uint32_t, uint32_t ) );
-VLC_EXPORT( void,    date_Set,       ( date_t *, mtime_t ) );
-VLC_EXPORT( mtime_t, date_Get,       ( const date_t * ) );
-VLC_EXPORT( void,    date_Move,      ( date_t *, mtime_t ) );
-VLC_EXPORT( mtime_t, date_Increment, ( date_t *, uint32_t ) );
-VLC_EXPORT( mtime_t, date_Decrement, ( date_t *, uint32_t ) );
-VLC_EXPORT( uint64_t, NTPtime64,     ( void ) );
+VLC_API void date_Init( date_t *, uint32_t, uint32_t );
+VLC_API void date_Change( date_t *, uint32_t, uint32_t );
+VLC_API void date_Set( date_t *, mtime_t );
+VLC_API mtime_t date_Get( const date_t * );
+VLC_API void date_Move( date_t *, mtime_t );
+VLC_API mtime_t date_Increment( date_t *, uint32_t );
+VLC_API mtime_t date_Decrement( date_t *, uint32_t );
+VLC_API uint64_t NTPtime64( void );
 #endif /* !__VLC_MTIME_ */

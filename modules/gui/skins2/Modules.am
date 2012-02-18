@@ -33,8 +33,6 @@ SOURCES_skins2 = \
 	commands/cmd_quit.hpp \
 	commands/cmd_resize.cpp \
 	commands/cmd_resize.hpp \
-	commands/cmd_voutwindow.cpp \
-	commands/cmd_voutwindow.hpp \
 	commands/cmd_snapshot.cpp \
 	commands/cmd_snapshot.hpp \
 	commands/cmd_show_window.hpp \
@@ -84,6 +82,7 @@ SOURCES_skins2 = \
 	events/evt_special.hpp \
 	events/evt_scroll.cpp \
 	events/evt_scroll.hpp \
+	events/evt_dragndrop.hpp \
 	\
 	parser/builder.cpp \
 	parser/builder.hpp \
@@ -107,6 +106,8 @@ SOURCES_skins2 = \
 	src/dialogs.hpp \
 	src/file_bitmap.cpp \
 	src/file_bitmap.hpp \
+	src/art_manager.cpp \
+	src/art_manager.hpp \
 	src/ft2_bitmap.cpp \
 	src/ft2_bitmap.hpp \
 	src/ft2_font.cpp \
@@ -148,6 +149,8 @@ SOURCES_skins2 = \
 	src/tooltip.hpp \
 	src/top_window.cpp \
 	src/top_window.hpp \
+	src/fsc_window.cpp \
+	src/fsc_window.hpp \
 	src/var_manager.cpp \
 	src/var_manager.hpp \
 	src/vlcproc.cpp \
@@ -178,6 +181,8 @@ SOURCES_skins2 = \
 	utils/var_percent.hpp \
 	utils/var_text.cpp \
 	utils/var_text.hpp \
+	utils/var_string.cpp \
+	utils/var_string.hpp \
 	utils/var_tree.cpp \
 	utils/var_tree.hpp \
 	\

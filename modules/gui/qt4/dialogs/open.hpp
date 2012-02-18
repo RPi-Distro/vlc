@@ -2,7 +2,7 @@
  * open.hpp : advanced open dialog
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 47deea615c93e624bf347e1335ecebba22f48392 $
+ * $Id: ae6b27d9c42945d9b024122b613fc622c854d044 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -77,7 +77,7 @@ public slots:
     void selectSlots();
     void play();
     void stream( bool b_transode_only = false );
-    void enqueue();
+    void enqueue( bool b_enqueue = true );
     void transcode();
 
 private:
@@ -104,8 +104,6 @@ private:
 
     QPushButton *cancelButton, *selectButton;
     QToolButton *playButton;
-
-    void finish( bool );
 
 private slots:
     void setMenuAction();

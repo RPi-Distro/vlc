@@ -2,7 +2,7 @@
  * cmd_audio.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5f9a54a9af49e303dbeeed0d81e30b1250ff1840 $
+ * $Id: f83de1a1452a0f2a7f8657b45425b47c4fd5ffd5 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -25,7 +25,7 @@
 #include "../src/vlcproc.hpp"
 #include <vlc_playlist.h>
 #include <vlc_input.h>
-#include <vlc_aout.h>
+#include <vlc_aout_intf.h>
 #include <string>
 
 void CmdSetEqualizer::execute()

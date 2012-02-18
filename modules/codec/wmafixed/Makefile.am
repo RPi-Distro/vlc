@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libwma_fixed_plugin_la_SOURCES = $(SOURCES_wma_fixed)
 nodist_libwma_fixed_plugin_la_SOURCES = $(nodist_SOURCES_wma_fixed)
 # Force per-target objects:
-libwma_fixed_plugin_la_CFLAGS = $(AM_CFLAGS)
-libwma_fixed_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libwma_fixed_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libwma_fixed_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_wma_fixed)
+libwma_fixed_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_wma_fixed)
+libwma_fixed_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_wma_fixed)
+libwma_fixed_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_wma_fixed)
 # Set LIBADD and DEPENDENCIES manually:
-libwma_fixed_plugin_la_LIBADD = $(AM_LIBADD)
-libwma_fixed_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libwma_fixed_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_wma_fixed)
+libwma_fixed_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_wma_fixed)
+libwma_fixed_plugin_la_DEPENDENCIES =
 

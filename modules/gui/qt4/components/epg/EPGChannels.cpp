@@ -39,6 +39,21 @@ void EPGChannels::setOffset( int offset )
     update();
 }
 
+void EPGChannels::addChannel( QString channelName )
+{
+    if ( !channelList.contains( channelName ) )
+    {
+        channelList << channelName;
+        channelList.sort();
+        update();
+    }
+}
+
+void EPGChannels::removeChannel( QString channelName )
+{
+    if ( channelList.removeOne( channelName ) ) update();
+}
+
 void EPGChannels::paintEvent( QPaintEvent *event )
 {
     Q_UNUSED( event );
@@ -47,18 +62,19 @@ void EPGChannels::paintEvent( QPaintEvent *event )
 
     /* Draw the top and the bottom lines. */
     p.drawLine( 0, 0, width() - 1, 0 );
-    p.drawLine( 0, height() - 1, width(), height() - 1 );
 
-    p.setFont( QFont( "Verdana", 8 ) );
-
-    QList<QString> channels = m_epgView->getChannelList();
-
-    for( int i = 0; i < channels.count(); ++i )
+    unsigned int i=0;
+    foreach( QString text, channelList )
     {
-        p.drawText( 0, - m_offset + ( i + 0.5 ) * TRACKS_HEIGHT - 4,
-                    width(), 20, Qt::AlignLeft, channels[i] );
+        /* try to remove the " [Program xxx]" end */
+        int i_idx_channel = text.lastIndexOf(" [");
+        if (i_idx_channel > 0)
+            text = text.left( i_idx_channel );
 
-        int i_width = fontMetrics().width( channels[i] );
+        p.drawText( 0, - m_offset + ( i++ + 0.5 ) * TRACKS_HEIGHT - 4,
+                    width(), 20, Qt::AlignLeft, text );
+
+        int i_width = fontMetrics().width( text );
         if( width() < i_width )
             setMinimumWidth( i_width );
     }

@@ -1,25 +1,25 @@
 /*****************************************************************************
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
- * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 8082bd40fb18571abc0c7a83a3969184c291cdcf $
+ * Copyright (C) 1999-2007 VLC authors and VideoLAN
+ * $Id: 2b99dcedc81bdf516ed6073d734591ccdfe02091 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -126,7 +126,7 @@ static void input_item_add_subitem_tree ( const vlc_event_t * p_event,
                                                  pos,
                                                  b_flat );
 
-    if( !b_flat ) var_SetAddress( p_playlist, "leaf-to-parent", p_input );
+    if( !b_flat ) var_SetInteger( p_playlist, "leaf-to-parent", p_item->i_id );
 
     //control playback only if it was the current playing item that got subitems
     if( b_current )
@@ -422,7 +422,7 @@ int playlist_AddExt( playlist_t *p_playlist, const char * psz_uri,
     int i_ret;
     input_item_t *p_input;
 
-    p_input = input_item_NewExt( p_playlist, psz_uri, psz_name,
+    p_input = input_item_NewExt( psz_uri, psz_name,
                                  i_options, ppsz_options, i_option_flags,
                                  i_duration );
     if( p_input == NULL )
@@ -564,9 +564,8 @@ int playlist_InsertInputItemTree (
     playlist_t *p_playlist, playlist_item_t *p_parent,
     input_item_node_t *p_node, int i_pos, bool b_flat )
 {
-  playlist_item_t *p_first_leaf = NULL;
-  int i = RecursiveAddIntoParent ( p_playlist, p_parent, p_node, i_pos, b_flat, &p_first_leaf );
-  return i;
+    playlist_item_t *p_first_leaf = NULL;
+    return RecursiveAddIntoParent ( p_playlist, p_parent, p_node, i_pos, b_flat, &p_first_leaf );
 }
 
 
@@ -714,10 +713,7 @@ void playlist_SendAddNotify( playlist_t *p_playlist, int i_item_id,
     add.i_item = i_item_id;
     add.i_node = i_node_id;
 
-    vlc_value_t val;
-    val.p_address = &add;
-
-    var_Set( p_playlist, "playlist-item-append", val );
+    var_SetAddress( p_playlist, "playlist-item-append", &add );
 }
 
 /***************************************************************************
@@ -796,52 +792,8 @@ static void ChangeToNode( playlist_t *p_playlist, playlist_item_t *p_item )
 int playlist_DeleteItem( playlist_t * p_playlist, playlist_item_t *p_item,
                         bool b_stop )
 {
-    int i;
-    int i_id = p_item->i_id;
-    PL_ASSERT_LOCKED;
-
-    if( p_item->i_children > -1 )
-    {
-        return playlist_NodeDelete( p_playlist, p_item, true, false );
-    }
-
-    pl_priv(p_playlist)->b_reset_currently_playing = true;
-    var_SetInteger( p_playlist, "playlist-item-deleted", i_id );
-
-    /* Remove the item from the bank */
-    ARRAY_BSEARCH( p_playlist->all_items,->i_id, int, i_id, i );
-    if( i != -1 )
-        ARRAY_REMOVE( p_playlist->all_items, i );
-
-    ARRAY_BSEARCH( p_playlist->items,->i_id, int, i_id, i );
-    if( i != -1 )
-        ARRAY_REMOVE( p_playlist->items, i );
-
-    /* Check if it is the current item */
-    if( get_current_status_item( p_playlist ) == p_item )
-    {
-        /* Stop it if we have to */
-        if( b_stop )
-        {
-            playlist_Control( p_playlist, PLAYLIST_STOP, pl_Locked );
-            msg_Info( p_playlist, "stopping playback" );
-        }
-        /* In any case, this item can't be the next one to be played ! */
-        set_current_status_item( p_playlist, NULL );
-    }
-
-    ARRAY_BSEARCH( p_playlist->current,->i_id, int, i_id, i );
-    if( i != -1 )
-        ARRAY_REMOVE( p_playlist->current, i );
-
-    PL_DEBUG( "deleting item `%s'", p_item->p_input->psz_name );
-
-    /* Remove the item from its parent */
-    playlist_NodeRemoveItem( p_playlist, p_item, p_item->p_parent );
-
-    playlist_ItemRelease( p_item );
-
-    return VLC_SUCCESS;
+    assert( b_stop );
+    return playlist_NodeDelete( p_playlist, p_item, true, false );
 }
 
 static int RecursiveAddIntoParent (
@@ -849,51 +801,51 @@ static int RecursiveAddIntoParent (
     input_item_node_t *p_node, int i_pos, bool b_flat,
     playlist_item_t **pp_first_leaf )
 {
-  *pp_first_leaf = NULL;
+    *pp_first_leaf = NULL;
 
-  if( p_parent->i_children == -1 ) ChangeToNode( p_playlist, p_parent );
+    if( p_parent->i_children == -1 ) ChangeToNode( p_playlist, p_parent );
 
-  if( i_pos == PLAYLIST_END ) i_pos = p_parent->i_children;
+    if( i_pos == PLAYLIST_END ) i_pos = p_parent->i_children;
 
-  for( int i = 0; i < p_node->i_children; i++ )
-  {
-      input_item_node_t *p_child_node = p_node->pp_children[i];
+    for( int i = 0; i < p_node->i_children; i++ )
+    {
+        input_item_node_t *p_child_node = p_node->pp_children[i];
 
-      playlist_item_t *p_new_item = NULL;
-      bool b_children = p_child_node->i_children > 0;
+        playlist_item_t *p_new_item = NULL;
+        bool b_children = p_child_node->i_children > 0;
 
-      //Create the playlist item represented by input node, if allowed.
-      if( !(b_flat && b_children) )
-      {
-          p_new_item = playlist_NodeAddInput( p_playlist,
-                                              p_child_node->p_item,
-                                              p_parent,
-                                              PLAYLIST_INSERT, i_pos,
-                                              pl_Locked );
-          if( !p_new_item ) return i_pos;
+        //Create the playlist item represented by input node, if allowed.
+        if( !(b_flat && b_children) )
+        {
+            p_new_item = playlist_NodeAddInput( p_playlist,
+                    p_child_node->p_item,
+                    p_parent,
+                    PLAYLIST_INSERT, i_pos,
+                    pl_Locked );
+            if( !p_new_item ) return i_pos;
 
-          i_pos++;
-      }
-      //Recurse if any children
-      if( b_children )
-      {
-          //Substitute p_new_item for first child leaf
-          //(If flat, continue counting from current position)
-          int i_last_pos = RecursiveAddIntoParent(
-                                      p_playlist,
-                                      p_new_item ? p_new_item : p_parent,
-                                      p_child_node,
-                                      ( b_flat ? i_pos : 0 ),
-                                      b_flat,
-                                      &p_new_item );
-          //If flat, take position after recursion as current position
-          if( b_flat ) i_pos = i_last_pos;
-      }
+            i_pos++;
+        }
+        //Recurse if any children
+        if( b_children )
+        {
+            //Substitute p_new_item for first child leaf
+            //(If flat, continue counting from current position)
+            int i_last_pos = RecursiveAddIntoParent(
+                    p_playlist,
+                    p_new_item ? p_new_item : p_parent,
+                    p_child_node,
+                    ( b_flat ? i_pos : 0 ),
+                    b_flat,
+                    &p_new_item );
+            //If flat, take position after recursion as current position
+            if( b_flat ) i_pos = i_last_pos;
+        }
 
-      assert( p_new_item != NULL );
-      if( i == 0 ) *pp_first_leaf = p_new_item;
-  }
-  return i_pos;
+        assert( p_new_item != NULL );
+        if( i == 0 ) *pp_first_leaf = p_new_item;
+    }
+    return i_pos;
 }
 
 static int RecursiveInsertCopy (
@@ -909,8 +861,7 @@ static int RecursiveInsertCopy (
 
     if( !(p_item->i_children != -1 && b_flat) )
     {
-        input_item_t *p_new_input = input_item_Copy( VLC_OBJECT(p_playlist),
-                                                     p_input );
+        input_item_t *p_new_input = input_item_Copy( p_input );
         if( !p_new_input ) return i_pos;
 
         playlist_item_t *p_new_item = NULL;

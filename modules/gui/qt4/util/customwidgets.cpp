@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: eb0749f689563e4c7fcb2857fb7bdfe35b39dce9 $
+ * $Id: 11dafd9e3bd0578783329661314df54816e96467 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -29,87 +29,23 @@
 #endif
 
 #include "customwidgets.hpp"
-#include "qt4.hpp" /*needed for qtr and CONNECT, but not necessary */
+#include "qt4.hpp"               /*needed for qtr and CONNECT, but not necessary */
 
 #include <QPainter>
-#include <QColorGroup>
 #include <QRect>
 #include <QKeyEvent>
 #include <QWheelEvent>
-#include <QHBoxLayout>
-#include <QStyle>
-#include <QStyleOption>
-#include <vlc_intf_strings.h>
+#include <QPixmap>
+#include <QApplication>
 #include <vlc_keys.h>
-#include <wctype.h> /* twolower() */
 
-ClickLineEdit::ClickLineEdit( const QString &msg, QWidget *parent) : QLineEdit( parent )
-{
-    mDrawClickMsg = true;
-    setClickMessage( msg );
-}
-
-void ClickLineEdit::setClickMessage( const QString &msg )
-{
-    mClickMessage = msg;
-    repaint();
-}
-
-
-void ClickLineEdit::setText( const QString &txt )
-{
-    mDrawClickMsg = txt.isEmpty();
-    repaint();
-    QLineEdit::setText( txt );
-}
-
-void ClickLineEdit::paintEvent( QPaintEvent *pe )
-{
-    QLineEdit::paintEvent( pe );
-    if ( mDrawClickMsg == true && !hasFocus() ) {
-        QPainter p( this );
-        QPen tmp = p.pen();
-        p.setPen( palette().color( QPalette::Disabled, QPalette::Text ) );
-        QRect cr = contentsRect();
-        // Add two pixel margin on the left side
-        cr.setLeft( cr.left() + 3 );
-        p.drawText( cr, Qt::AlignLeft | Qt::AlignVCenter, mClickMessage );
-        p.setPen( tmp );
-        p.end();
-    }
-}
-
-void ClickLineEdit::dropEvent( QDropEvent *ev )
-{
-    mDrawClickMsg = false;
-    QLineEdit::dropEvent( ev );
-}
-
-void ClickLineEdit::focusInEvent( QFocusEvent *ev )
-{
-    if ( mDrawClickMsg == true ) {
-        mDrawClickMsg = false;
-        repaint();
-    }
-    QLineEdit::focusInEvent( ev );
-}
-
-void ClickLineEdit::focusOutEvent( QFocusEvent *ev )
-{
-    if ( text().isEmpty() ) {
-        mDrawClickMsg = true;
-        repaint();
-    }
-    QLineEdit::focusOutEvent( ev );
-}
-
-QVLCFramelessButton::QVLCFramelessButton( QWidget *parent )
-  : QPushButton( parent )
+QFramelessButton::QFramelessButton( QWidget *parent )
+                    : QPushButton( parent )
 {
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
 }
 
-void QVLCFramelessButton::paintEvent( QPaintEvent * event )
+void QFramelessButton::paintEvent( QPaintEvent * )
 {
     QPainter painter( this );
     QPixmap pix = icon().pixmap( size() );
@@ -117,114 +53,38 @@ void QVLCFramelessButton::paintEvent( QPaintEvent * event )
     painter.drawPixmap( QRect( pos.x(), pos.y(), pix.width(), pix.height() ), pix );
 }
 
-QSize QVLCFramelessButton::sizeHint() const
-{
-    return iconSize();
-}
-
-SearchLineEdit::SearchLineEdit( QWidget *parent ) : QLineEdit( parent )
-{
-    clearButton = new QVLCFramelessButton( this );
-    clearButton->setIcon( QIcon( ":/toolbar/clear" ) );
-    clearButton->setIconSize( QSize( 16, 16 ) );
-    clearButton->setCursor( Qt::ArrowCursor );
-    clearButton->setToolTip( qfu(vlc_pgettext("Tooltip|Clear", "Clear")) );
-    clearButton->hide();
-
-    CONNECT( clearButton, clicked(), this, clear() );
-
-    int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth, 0, this );
-
-    QFontMetrics metrics( font() );
-    QString styleSheet = QString( "min-height: %1px; "
-                                  "padding-top: 1px; "
-                                  "padding-bottom: 1px; "
-                                  "padding-right: %2px;" )
-                                  .arg( metrics.height() + ( 2 * frameWidth ) )
-                                  .arg( clearButton->sizeHint().width() + 1 );
-    setStyleSheet( styleSheet );
-
-    setMessageVisible( true );
-
-    CONNECT( this, textEdited( const QString& ),
-             this, updateText( const QString& ) );
-}
-
-void SearchLineEdit::clear()
-{
-    setText( QString() );
-    clearButton->hide();
-    setMessageVisible( true );
-}
-
-void SearchLineEdit::setMessageVisible( bool on )
-{
-    message = on;
-    repaint();
-    return;
-}
-
-void SearchLineEdit::updateText( const QString& text )
-{
-    clearButton->setVisible( !text.isEmpty() );
-}
-
-void SearchLineEdit::resizeEvent ( QResizeEvent * event )
-{
-  QLineEdit::resizeEvent( event );
-  int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth,0,this);
-  clearButton->resize( clearButton->sizeHint().width(), height() );
-  clearButton->move( width() - clearButton->width() - frameWidth, 0 );
-}
-
-void SearchLineEdit::focusInEvent( QFocusEvent *event )
-{
-  if( message )
-  {
-      setMessageVisible( false );
-  }
-  QLineEdit::focusInEvent( event );
-}
-
-void SearchLineEdit::focusOutEvent( QFocusEvent *event )
-{
-  if( text().isEmpty() )
-  {
-      setMessageVisible( true );
-  }
-  QLineEdit::focusOutEvent( event );
-}
-
-void SearchLineEdit::paintEvent( QPaintEvent *event )
-{
-  QLineEdit::paintEvent( event );
-  if( !message ) return;
-  QStyleOption option;
-  option.initFrom( this );
-  QRect rect = style()->subElementRect( QStyle::SE_LineEditContents, &option, this )
-                  .adjusted( 3, 0, clearButton->width() + 1, 0 );
-  QPainter painter( this );
-  painter.setPen( palette().color( QPalette::Disabled, QPalette::Text ) );
-  painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, qtr( I_PL_FILTER ) );
-}
-
-
-QVLCElidingLabel::QVLCElidingLabel( const QString &s, Qt::TextElideMode mode, QWidget * parent )
-  : elideMode( mode ), QLabel( s, parent )
+QElidingLabel::QElidingLabel( const QString &s, Qt::TextElideMode mode, QWidget * parent )
+                 : QLabel( s, parent ), elideMode( mode )
 { }
 
-void QVLCElidingLabel::setElideMode( Qt::TextElideMode mode )
+void QElidingLabel::setElideMode( Qt::TextElideMode mode )
 {
     elideMode = mode;
     repaint();
 }
 
-void QVLCElidingLabel::paintEvent( QPaintEvent * event )
+void QElidingLabel::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
     int space = frameWidth() + margin();
     QRect r = rect().adjusted( space, space, -space, -space );
     p.drawText( r, fontMetrics().elidedText( text(), elideMode, r.width() ), alignment() );
+}
+
+QString QVLCDebugLevelSpinBox::textFromValue( int v ) const
+{
+    QString const texts[] = {
+    /* Note that min level 0 is 'errors' in Qt Ui
+       FIXME: fix debug levels accordingly to documentation */
+    /*  qtr("infos"),*/
+        qtr("errors"),
+        qtr("warnings"),
+        qtr("debug")
+    };
+    if ( v < 0 ) v = 0;
+    if ( v >= 2 ) v = 2;
+
+    return QString( "%1 (%2)" ).arg( v ).arg( texts[v] );
 }
 
 /***************************************************************************
@@ -426,27 +286,183 @@ int qtWheelEventToVLCKey( QWheelEvent *e )
     return i_vlck;
 }
 
-QString VLCKeyToString( int val )
+QString VLCKeyToString( unsigned val )
 {
-    char *base = KeyToString (val & ~KEY_MODIFIER);
+    char *base = vlc_keycode2str (val);
+    if (base == NULL)
+        return qtr( "Unset" );
 
-    QString r = "";
-    if( val & KEY_MODIFIER_CTRL )
-        r+= qfu( "Ctrl+" );
-    if( val & KEY_MODIFIER_ALT )
-        r+= qfu( "Alt+" );
-    if( val & KEY_MODIFIER_SHIFT )
-        r+= qfu( "Shift+" );
-    if( val & KEY_MODIFIER_META )
-        r+= qfu( "Meta+" );
+    QString r = qfu( base );
 
-    if (base)
-    {
-        r += qfu( base );
-        free( base );
-    }
-    else
-        r += qtr( "Unset" );
+    free( base );
     return r;
 }
 
+
+/* Animated Icon implementation */
+
+AnimatedIcon::AnimatedIcon( QWidget *parent )
+    : QLabel( parent ), mTimer( this ), mIdleFrame( NULL )
+{
+    mCurrentFrame = mRemainingLoops = 0;
+    connect( &mTimer, SIGNAL( timeout() ), this, SLOT( onTimerTick() ) );
+}
+
+AnimatedIcon::~AnimatedIcon()
+{
+    // We don't need to destroy the timer, he's our child
+    delete mIdleFrame;
+    foreach( QPixmap *frame, mFrames )
+        delete frame;
+}
+
+void AnimatedIcon::addFrame( const QPixmap &pxm, int index )
+{
+    if( index == 0 )
+    {
+        // Replace idle frame
+        delete mIdleFrame;
+        mIdleFrame = new QPixmap( pxm );
+        setPixmap( *mIdleFrame );
+        return;
+    }
+    QPixmap *copy = new QPixmap( pxm );
+    mFrames.insert( ( index < 0 || index > mFrames.count() ) ? mFrames.count() :
+                    index, copy );
+    if( !pixmap() )
+        setPixmap( *copy );
+}
+
+void AnimatedIcon::play( int loops, int interval )
+{
+    if( interval < 20 )
+    {
+        interval = 20;
+    }
+
+    if( !mIdleFrame && (mFrames.isEmpty() || loops != 0 ) )
+    {
+        return;
+    }
+
+    if( loops == 0 )
+    {
+        // Stop playback
+        mCurrentFrame = mRemainingLoops = 0;
+        mTimer.stop();
+        setPixmap( mIdleFrame != NULL ? *mIdleFrame : *mFrames.last() );
+        return;
+    }
+
+    if( loops <= -1 )
+        loops = -1;
+
+    mCurrentFrame = 1;
+    mRemainingLoops = loops;
+    mTimer.start( interval );
+    setPixmap( *mFrames.first() );
+}
+
+// private slot
+void AnimatedIcon::onTimerTick()
+{
+    //assert( !mFrames.isEmpty() );
+    if( ++mCurrentFrame > mFrames.count() )
+    {
+        if( mRemainingLoops != -1 )
+        {
+            if( --mRemainingLoops == 0 )
+            {
+                mTimer.stop();
+                setPixmap( mIdleFrame ? *mIdleFrame : *mFrames.last() );
+                return;
+            }
+        }
+        mCurrentFrame = 1;
+    }
+    //assert( mCurrentFrame >= 1 && mCurrentFrame <= mFrames.count() );
+    setPixmap( *mFrames.at( mCurrentFrame - 1 ) );
+}
+
+
+/* SpinningIcon implementation */
+
+SpinningIcon::SpinningIcon( QWidget *parent, bool noIdleFrame )
+    : AnimatedIcon( parent )
+{
+    if( noIdleFrame )
+        addFrame( QPixmap(), 0 );
+    else
+        addFrame( QPixmap( ":/util/wait0" ), 0 );
+    addFrame( QPixmap( ":/util/wait1" ) );
+    addFrame( QPixmap( ":/util/wait2" ) );
+    addFrame( QPixmap( ":/util/wait3" ) );
+    addFrame( QPixmap( ":/util/wait4" ) );
+    setScaledContents( true );
+    setFixedSize( 16, 16 );
+}
+
+QToolButtonExt::QToolButtonExt(QWidget *parent, int ms )
+    : QToolButton( parent ),
+      shortClick( false ),
+      longClick( false )
+{
+    setAutoRepeat( true );
+    /* default to twice the doubleclick delay */
+    setAutoRepeatDelay( ( ms > 0 )? ms : 2 * QApplication::doubleClickInterval() );
+    setAutoRepeatInterval( 100 );
+    connect( this, SIGNAL(released()), this, SLOT(releasedSlot()) );
+    connect( this, SIGNAL(clicked()), this, SLOT(clickedSlot()) );
+}
+
+/* table illustrating the different scenarios and the events generated
+ * ====================
+ *
+ *  event     isDown()
+ *
+ *  released  false   }
+ *  clicked   false   }= short click
+ *
+ *  released  false    = cancelled click (mouse released outside of button area,
+ *                                        before long click delay kicks in)
+ *
+ *  released  true    }
+ *  clicked   true    }= long click (multiple of these generated)
+ *  released  false    = stop long click (mouse released / moved outside of
+ *                                        button area)
+ * (clicked   false)   = stop long click (additional event if mouse released
+ *                                        inside of button area)
+ */
+
+void QToolButtonExt::releasedSlot()
+{
+    if( isDown() )
+    {
+        // we are beginning a long click
+        longClick = true;
+        shortClick = false;
+    }
+    else
+    {
+        if( longClick )
+        {
+            // we are stopping a long click
+            longClick = false;
+            shortClick = false;
+        }
+        else
+        {
+            // we are generating a short click
+            longClick = false;
+            shortClick = true;
+        }
+    }
+}
+
+void QToolButtonExt::clickedSlot()
+{
+    if( longClick )
+        emit longClicked();
+    else if( shortClick )
+        emit shortClicked();
+}

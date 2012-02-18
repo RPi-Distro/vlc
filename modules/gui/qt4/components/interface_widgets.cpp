@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: c615ace53ece5ce1faf353422074ea874858be0d $
+ * $Id: 419b5e6ed07dfc201aee9999d4621897a8076307 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -28,6 +28,7 @@
 # include "config.h"
 #endif
 
+#include "qt4.hpp"
 #include "components/interface_widgets.hpp"
 #include "dialogs_provider.hpp"
 #include "util/customwidgets.hpp"               // qtEventToVLCKey, QVLCStackedWidget
@@ -64,15 +65,13 @@
  **********************************************************************/
 
 VideoWidget::VideoWidget( intf_thread_t *_p_i )
-    : QFrame( NULL )
-      , p_intf( _p_i )
+            : QFrame( NULL ) , p_intf( _p_i )
 {
     /* Set the policy to expand in both directions */
     // setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     layout = new QHBoxLayout( this );
     layout->setContentsMargins( 0, 0, 0, 0 );
-    setLayout( layout );
     stable = NULL;
     show();
 }
@@ -105,7 +104,7 @@ WId VideoWidget::request( int *pi_x, int *pi_y,
     if( stable )
     {
         msg_Dbg( p_intf, "embedded video already in use" );
-        return NULL;
+        return 0;
     }
     if( b_keep_size )
     {
@@ -145,10 +144,6 @@ WId VideoWidget::request( int *pi_x, int *pi_y,
     XSelectInput( dpy, w, attr.your_event_mask );
 #endif
     sync();
-#ifndef NDEBUG
-    msg_Dbg( p_intf, "embedded video ready (handle %p)",
-             (void *)stable->winId() );
-#endif
     return stable->winId();
 }
 
@@ -164,7 +159,7 @@ void VideoWidget::SetSizing( unsigned int w, unsigned int h )
        This cause a small flicker.
        See #3621
      */
-    if( size().width() == w && size().height() == h )
+    if( (unsigned)size().width() == w && (unsigned)size().height() == h )
         updateGeometry();
     sync();
 }
@@ -173,12 +168,12 @@ void VideoWidget::release( void )
 {
     msg_Dbg( p_intf, "Video is not needed anymore" );
 
-    if(!stable)
-        return;
-    assert( stable );
-    layout->removeWidget( stable );
-    stable->deleteLater();
-    stable = NULL;
+    if( stable )
+    {
+        layout->removeWidget( stable );
+        stable->deleteLater();
+        stable = NULL;
+    }
 
     updateGeometry();
 }
@@ -189,7 +184,7 @@ void VideoWidget::release( void )
  **********************************************************************/
 
 BackgroundWidget::BackgroundWidget( intf_thread_t *_p_i )
-                 :QWidget( NULL ), p_intf( _p_i ), b_expandPixmap( false )
+    :QWidget( NULL ), p_intf( _p_i ), b_expandPixmap( false ), b_withart( true )
 {
     /* A dark background */
     setAutoFillBackground( true );
@@ -213,8 +208,8 @@ void BackgroundWidget::updateArt( const QString& url )
     }
     else
     {   /* Xmas joke */
-        if( QDate::currentDate().dayOfYear() >= 354 )
-            pixmapUrl = QString( ":/logo/vlc128-christmas.png" );
+        if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )
+            pixmapUrl = QString( ":/logo/vlc128-xmas.png" );
         else
             pixmapUrl = QString( ":/logo/vlc128.png" );
     }
@@ -223,14 +218,21 @@ void BackgroundWidget::updateArt( const QString& url )
 
 void BackgroundWidget::paintEvent( QPaintEvent *e )
 {
+    if ( !b_withart )
+    {
+        /* we just want background autofill */
+        QWidget::paintEvent( e );
+        return;
+    }
+
     int i_maxwidth, i_maxheight;
     QPixmap pixmap = QPixmap( pixmapUrl );
     QPainter painter(this);
     QBitmap pMask;
     float f_alpha = 1.0;
 
-    i_maxwidth = std::min( maximumWidth(), width() ) - MARGIN * 2;
-    i_maxheight = std::min( maximumHeight(), height() ) - MARGIN * 2;
+    i_maxwidth  = __MIN( maximumWidth(), width() ) - MARGIN * 2;
+    i_maxheight = __MIN( maximumHeight(), height() ) - MARGIN * 2;
 
     if ( height() > MARGIN * 2 )
     {
@@ -270,7 +272,7 @@ void BackgroundWidget::paintEvent( QPaintEvent *e )
 
 void BackgroundWidget::contextMenuEvent( QContextMenuEvent *event )
 {
-    QVLCMenu::PopupMenu( p_intf, true );
+    VLCMenuBar::PopupMenu( p_intf, true );
     event->accept();
 }
 
@@ -341,11 +343,15 @@ SpeedLabel::SpeedLabel( intf_thread_t *_p_intf, QWidget *parent )
     widgetAction->setDefaultWidget( speedControl );
     speedControlMenu->addAction( widgetAction );
 
-    /* Change the SpeedRate in the Status Bar */
+    /* Change the SpeedRate in the Label */
     CONNECT( THEMIM->getIM(), rateChanged( float ), this, setRate( float ) );
 
     DCONNECT( THEMIM, inputChanged( input_thread_t * ),
               speedControl, activateOnState() );
+
+    setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
+    setLineWidth( 1 );
+
     setRate( var_InheritFloat( p_intf, "rate" ) );
 }
 
@@ -362,7 +368,7 @@ SpeedLabel::~SpeedLabel()
 void SpeedLabel::showSpeedMenu( QPoint pos )
 {
     speedControlMenu->exec( QCursor::pos() - pos
-                          + QPoint( 0, height() ) );
+                            + QPoint( -70 + width()/2, height() ) );
 }
 
 void SpeedLabel::setRate( float rate )
@@ -381,15 +387,14 @@ void SpeedLabel::setRate( float rate )
 SpeedControlWidget::SpeedControlWidget( intf_thread_t *_p_i, QWidget *_parent )
                     : QFrame( _parent ), p_intf( _p_i )
 {
-    QSizePolicy sizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
+    QSizePolicy sizePolicy( QSizePolicy::Fixed, QSizePolicy::Maximum );
     sizePolicy.setHorizontalStretch( 0 );
     sizePolicy.setVerticalStretch( 0 );
 
     speedSlider = new QSlider( this );
     speedSlider->setSizePolicy( sizePolicy );
-    speedSlider->setMaximumSize( QSize( 80, 200 ) );
-    speedSlider->setOrientation( Qt::Vertical );
-    speedSlider->setTickPosition( QSlider::TicksRight );
+    speedSlider->setMinimumSize( QSize( 140, 20 ) );
+    speedSlider->setOrientation( Qt::Horizontal );
 
     speedSlider->setRange( -34, 34 );
     speedSlider->setSingleStep( 1 );
@@ -399,18 +404,44 @@ SpeedControlWidget::SpeedControlWidget( intf_thread_t *_p_i, QWidget *_parent )
     CONNECT( speedSlider, valueChanged( int ), this, updateRate( int ) );
 
     QToolButton *normalSpeedButton = new QToolButton( this );
-    normalSpeedButton->setMaximumSize( QSize( 26, 20 ) );
+    normalSpeedButton->setMaximumSize( QSize( 26, 16 ) );
     normalSpeedButton->setAutoRaise( true );
     normalSpeedButton->setText( "1x" );
     normalSpeedButton->setToolTip( qtr( "Revert to normal play speed" ) );
 
     CONNECT( normalSpeedButton, clicked(), this, resetRate() );
 
-    QVBoxLayout *speedControlLayout = new QVBoxLayout( this );
-    speedControlLayout->setContentsMargins( 4, 4, 4, 4 );
-    speedControlLayout->setSpacing( 4 );
-    speedControlLayout->addWidget( speedSlider );
-    speedControlLayout->addWidget( normalSpeedButton );
+    QToolButton *slowerButton = new QToolButton( this );
+    slowerButton->setMaximumSize( QSize( 26, 16 ) );
+    slowerButton->setAutoRaise( true );
+    slowerButton->setToolTip( tooltipL[SLOWER_BUTTON] );
+    slowerButton->setIcon( QIcon( iconL[SLOWER_BUTTON] ) );
+    CONNECT( slowerButton, clicked(), THEMIM->getIM(), slower() );
+
+    QToolButton *fasterButton = new QToolButton( this );
+    fasterButton->setMaximumSize( QSize( 26, 16 ) );
+    fasterButton->setAutoRaise( true );
+    fasterButton->setToolTip( tooltipL[FASTER_BUTTON] );
+    fasterButton->setIcon( QIcon( iconL[FASTER_BUTTON] ) );
+    CONNECT( fasterButton, clicked(), THEMIM->getIM(), faster() );
+
+/*    spinBox = new QDoubleSpinBox();
+    spinBox->setDecimals( 2 );
+    spinBox->setMaximum( 32 );
+    spinBox->setMinimum( 0.03F );
+    spinBox->setSingleStep( 0.10F );
+    spinBox->setAlignment( Qt::AlignRight );
+
+    CONNECT( spinBox, valueChanged( double ), this, updateSpinBoxRate( double ) ); */
+
+    QGridLayout* speedControlLayout = new QGridLayout( this );
+    speedControlLayout->addWidget( speedSlider, 0, 0, 1, 3 );
+    speedControlLayout->addWidget( slowerButton, 1, 0 );
+    speedControlLayout->addWidget( normalSpeedButton, 1, 1, 1, 1, Qt::AlignRight );
+    speedControlLayout->addWidget( fasterButton, 1, 2, 1, 1, Qt::AlignRight );
+    //speedControlLayout->addWidget( spinBox );
+    speedControlLayout->setContentsMargins( 0, 0, 0, 0 );
+    speedControlLayout->setSpacing( 0 );
 
     lastValue = 0;
 
@@ -420,6 +451,7 @@ SpeedControlWidget::SpeedControlWidget( intf_thread_t *_p_i, QWidget *_parent )
 void SpeedControlWidget::activateOnState()
 {
     speedSlider->setEnabled( THEMIM->getIM()->hasInput() );
+    //spinBox->setEnabled( THEMIM->getIM()->hasInput() );
 }
 
 void SpeedControlWidget::updateControls( float rate )
@@ -444,6 +476,7 @@ void SpeedControlWidget::updateControls( float rate )
     lastValue = sliderValue;
 
     speedSlider->setValue( sliderValue );
+    //spinBox->setValue( rate );
 }
 
 void SpeedControlWidget::updateRate( int sliderValue )
@@ -455,6 +488,12 @@ void SpeedControlWidget::updateRate( int sliderValue )
     int rate = INPUT_RATE_DEFAULT / speed;
 
     THEMIM->getIM()->setRate(rate);
+    //spinBox->setValue( var_InheritFloat( THEPL, "rate" ) );
+}
+
+void SpeedControlWidget::updateSpinBoxRate( double r )
+{
+    var_SetFloat( THEPL, "rate", r );
 }
 
 void SpeedControlWidget::resetRate()
@@ -471,7 +510,6 @@ CoverArtLabel::CoverArtLabel( QWidget *parent, intf_thread_t *_p_i )
     setMinimumHeight( 128 );
     setMinimumWidth( 128 );
     setMaximumHeight( 128 );
-    setMaximumWidth( 128 );
     setScaledContents( false );
     setAlignment( Qt::AlignCenter );
 
@@ -495,7 +533,7 @@ void CoverArtLabel::showArtUpdate( const QString& url )
     QPixmap pix;
     if( !url.isEmpty() && pix.load( url ) )
     {
-        pix = pix.scaled( maximumWidth(), maximumHeight(),
+        pix = pix.scaled( minimumWidth(), maximumHeight(),
                           Qt::KeepAspectRatioByExpanding,
                           Qt::SmoothTransformation );
     }
@@ -511,17 +549,33 @@ void CoverArtLabel::askForUpdate()
     THEMIM->getIM()->requestArtUpdate();
 }
 
-TimeLabel::TimeLabel( intf_thread_t *_p_intf  )
+TimeLabel::TimeLabel( intf_thread_t *_p_intf, TimeLabel::Display _displayType  )
     : QLabel(), p_intf( _p_intf ), bufTimer( new QTimer(this) ),
-      buffering( false ), showBuffering(false), bufVal( -1 )
+      buffering( false ), showBuffering(false), bufVal( -1 ), displayType( _displayType )
 {
     b_remainingTime = false;
-    setText( " --:--/--:-- " );
+    switch( _displayType ) {
+        case TimeLabel::Elapsed:
+            setText( " --:-- " );
+            setToolTip( qtr("Elapsed time") );
+            break;
+        case TimeLabel::Remaining:
+            setText( " --:-- " );
+            setToolTip( qtr("Total/Remaining time")
+                        + QString("\n-")
+                        + qtr("Click to toggle between total and remaining time")
+                      );
+            break;
+        case TimeLabel::Both:
+            setText( " --:--/--:-- " );
+            setToolTip( QString( "- " )
+                + qtr( "Click to toggle between elapsed and remaining time" )
+                + QString( "\n- " )
+                + qtr( "Double click to jump to a chosen time position" ) );
+            break;
+    }
     setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-    setToolTip( QString( "- " )
-        + qtr( "Click to toggle between elapsed and remaining time" )
-        + QString( "\n- " )
-        + qtr( "Double click to jump to a chosen time position" ) );
+
     bufTimer->setSingleShot( true );
 
     CONNECT( THEMIM->getIM(), positionUpdated( float, int64_t, int ),
@@ -529,6 +583,8 @@ TimeLabel::TimeLabel( intf_thread_t *_p_intf  )
     CONNECT( THEMIM->getIM(), cachingChanged( float ),
               this, updateBuffering( float ) );
     CONNECT( bufTimer, timeout(), this, updateBuffering() );
+
+    this->setContentsMargins( 4, 0, 4, 0 );
 }
 
 void TimeLabel::setDisplayPosition( float pos, int64_t t, int length )
@@ -538,7 +594,10 @@ void TimeLabel::setDisplayPosition( float pos, int64_t t, int length )
 
     if( pos == -1.f )
     {
-        setText( " --:--/--:-- " );
+        if( displayType == TimeLabel::Both )
+            setText( " --:--/--:-- " );
+        else
+            setText( " --:-- " );
         return;
     }
 
@@ -547,14 +606,27 @@ void TimeLabel::setDisplayPosition( float pos, int64_t t, int length )
     secstotimestr( psz_length, length );
     secstotimestr( psz_time, ( b_remainingTime && length ) ? length - time
                                                            : time );
-
-    QString timestr = QString( " %1%2/%3 " )
+    switch( displayType )
+    {
+        case TimeLabel::Elapsed:
+            setText( QString(" ") + QString( psz_time ) + QString(" ") );
+            break;
+        case TimeLabel::Remaining:
+            if( b_remainingTime )
+                setText( QString(" -") + QString( psz_time ) + QString(" ") );
+            else
+                setText( QString(" ") + QString( psz_length ) + QString(" ") );
+            break;
+        case TimeLabel::Both:
+        default:
+            QString timestr = QString( " %1%2/%3 " )
             .arg( QString( (b_remainingTime && length) ? "-" : "" ) )
             .arg( QString( psz_time ) )
             .arg( QString( ( !length && time ) ? "--:--" : psz_length ) );
 
-    setText( timestr );
-
+            setText( timestr );
+            break;
+    }
     cachedLength = length;
 }
 

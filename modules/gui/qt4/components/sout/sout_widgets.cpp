@@ -4,7 +4,7 @@
  * Copyright (C) 2007-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: aa430b0fe5fe0ef59db2b38337cd6f40109cdbb5 $
+ * $Id: 10a24cbc9e9ad6a6de1abb892e63f4f5f89dc222 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin@savoirfairelinux.com>
@@ -80,8 +80,8 @@ void SoutInputBox::setMRL( const QString& mrl )
     sourceValueLabel->setText( type );
 }
 
-#define CT( x ) connect( x, SIGNAL( textChanged( const QString& ) ), this, SIGNAL( mrlUpdated() ) );
-#define CS( x ) connect( x, SIGNAL( valueChanged( int ) ), this, SIGNAL( mrlUpdated() ) );
+#define CT( x ) connect( x, SIGNAL(textChanged(QString)), this, SIGNAL(mrlUpdated()) );
+#define CS( x ) connect( x, SIGNAL(valueChanged(int)), this, SIGNAL(mrlUpdated()) );
 
 /* FileDest Box */
 FileDestBox::FileDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
@@ -108,7 +108,8 @@ FileDestBox::FileDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     BUTTONACT( fileSelectButton, fileBrowse() );
 }
 
-QString FileDestBox::getMRL( const QString& mux )
+QString FileDestBox::getMRL( const QString& mux, const int, const bool,
+                             const QString&, const QString& )
 {
     if( fileEdit->text().isEmpty() ) return "";
 
@@ -173,7 +174,8 @@ HTTPDestBox::HTTPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     CT( HTTPEdit );
 }
 
-QString HTTPDestBox::getMRL( const QString& mux )
+QString HTTPDestBox::getMRL( const QString& mux, const int, const bool,
+                             const QString&, const QString& )
 {
     if( HTTPEdit->text().isEmpty() ) return "";
 
@@ -208,7 +210,7 @@ MMSHDestBox::MMSHDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
 
     QLabel *mmshOutput = new QLabel(
         qtr( "This module outputs the transcoded stream to a network "
-             " via the mms protocol." ), this );
+             "via the mms protocol." ), this );
     layout->addWidget(mmshOutput, 0, 0, 1, -1);
 
     QLabel *MMSHLabel = new QLabel( qtr("Address"), this );
@@ -232,7 +234,8 @@ MMSHDestBox::MMSHDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     CT( MMSHEdit );
 }
 
-QString MMSHDestBox::getMRL( const QString& mux )
+QString MMSHDestBox::getMRL( const QString&, const int, const bool,
+                             const QString&, const QString& )
 {
     if( MMSHEdit->text().isEmpty() ) return "";
 
@@ -269,7 +272,7 @@ RTSPDestBox::RTSPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     RTSPPort->setAlignment( Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter );
     RTSPPort->setMinimum( 1 );
     RTSPPort->setMaximum( 65535 );
-    RTSPPort->setValue( 5544 );
+    RTSPPort->setValue( 8554 );
 
     layout->addWidget( RTSPEdit, 2, 1, 1, 1 );
     layout->addWidget( RTSPPort, 1, 1, 1, 1 );
@@ -277,7 +280,8 @@ RTSPDestBox::RTSPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     CT( RTSPEdit );
 }
 
-QString RTSPDestBox::getMRL( const QString& mux )
+QString RTSPDestBox::getMRL( const QString&, const int, const bool,
+                             const QString&, const QString& )
 {
     if( RTSPEdit->text().isEmpty() ) return "";
 
@@ -326,16 +330,34 @@ UDPDestBox::UDPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     CT( UDPEdit );
 }
 
-QString UDPDestBox::getMRL( const QString& mux )
+QString UDPDestBox::getMRL( const QString& mux, const int ttl, const bool sap,
+                            const QString& sapName, const QString& sapGroup )
 {
     if( UDPEdit->text().isEmpty() ) return "";
 
     SoutMrl m;
-    m.begin( "udp" );
+    m.begin( "std" );
+
+    SoutMrl access;
+    access.begin( "udp" );
+    access.option( "ttl", ttl );
+    access.end();
+    m.option( "access", access.getMrl() );
+ 
     /* udp output, ts-mux is really only reasonable one to use*/
     if( !mux.isEmpty() && !mux.compare("ts" ) )
         m.option( "mux", mux );
     m.option( "dst", UDPEdit->text(), UDPPort->value() );
+
+    if( sap )
+    {
+        m.option( "sap" );
+        if( !sapName.isEmpty() )
+            m.option( "name", sapName );
+        if( !sapGroup.isEmpty() )
+            m.option( "group", sapGroup );
+    }
+   
     m.end();
 
     return m.getMrl();
@@ -374,7 +396,8 @@ RTPDestBox::RTPDestBox( QWidget *_parent, const char *_mux )
     CT( RTPEdit );
 }
 
-QString RTPDestBox::getMRL( const QString& )
+QString RTPDestBox::getMRL( const QString&, const int ttl, const bool sap,
+                            const QString& sapName, const QString& )
 {
     if( RTPEdit->text().isEmpty() ) return "";
 
@@ -385,6 +408,13 @@ QString RTPDestBox::getMRL( const QString& )
     /* mp4-mux ain't usable in rtp-output either */
     if( mux != NULL )
         m.option( "mux", qfu( mux ) );
+    if( sap )
+    {
+        m.option( "sap" );
+        if( !sapName.isEmpty() )
+            m.option( "name", sapName );
+    }
+    m.option( "ttl", ttl );
     m.end();
 
     return m.getMrl();
@@ -435,7 +465,8 @@ ICEDestBox::ICEDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
 #undef CS
 #undef CT
 
-QString ICEDestBox::getMRL( const QString& mux )
+QString ICEDestBox::getMRL( const QString&, const int, const bool,
+                            const QString&, const QString& )
 {
     if( ICEEdit->text().isEmpty() ) return "";
 

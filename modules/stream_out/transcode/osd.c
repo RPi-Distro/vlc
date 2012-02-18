@@ -2,7 +2,7 @@
  * osd.c: transcoding stream output module (osd)
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 4424f6ecd75edcc327ccb792c83681c6d2ed792d $
+ * $Id: ac42a7b9c09e2d634f1487d0ace6a37dfed8271e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -30,7 +30,8 @@
 
 #include "transcode.h"
 
-#include <vlc_osd.h>
+#include <vlc_spu.h>
+#include <vlc_modules.h>
 
 /*
  * OSD menu
@@ -84,10 +85,7 @@ int transcode_osd_new( sout_stream_t *p_stream, sout_stream_id_t *id )
     }
 
     if( !p_sys->p_spu )
-    {
         p_sys->p_spu = spu_Create( p_stream );
-        spu_Init( p_sys->p_spu );
-    }
 
     return VLC_SUCCESS;
 
@@ -121,16 +119,16 @@ int transcode_osd_process( sout_stream_t *p_stream, sout_stream_id_t *id,
     /* Check if we have a subpicture to send */
     if( p_sys->p_spu && in->i_dts > VLC_TS_INVALID )
     {
-        p_subpic = spu_SortSubpictures( p_sys->p_spu, in->i_dts, false );
+        video_format_t fmt;
+        video_format_Init( &fmt, 0 );
+        video_format_Setup( &fmt, 0, 720, 576, 1, 1 );
+        p_subpic = spu_Render( p_sys->p_spu, NULL, &fmt, &fmt, in->i_dts, in->i_dts, false );
     }
     else
     {
         msg_Warn( p_stream, "spu channel not initialized, doing it now" );
         if( !p_sys->p_spu )
-        {
             p_sys->p_spu = spu_Create( p_stream );
-            spu_Init( p_sys->p_spu );
-        }
     }
 
     if( p_subpic )

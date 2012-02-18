@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 65a32e14539bc06722fc19ce1dc7cef5b263911f $
+ * $Id: f10aa891431c352bf2e915a8aa6b64e27bcb1d0e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste <jb@videolan.org>
@@ -32,6 +32,7 @@
 #include <vlc_input.h>
 
 #include "qt4.hpp"
+#include "util/singleton.hpp"
 
 #include <QObject>
 #include <QEvent>
@@ -72,8 +73,8 @@ enum {
 };
 
 enum { NORMAL,    /* loop: 0, repeat: 0 */
-       REPEAT_ONE,/* loop: 1, repeat: 0 */
-       REPEAT_ALL,/* loop: 0, repeat: 1 */
+       REPEAT_ONE,/* loop: 0, repeat: 1 */
+       REPEAT_ALL,/* loop: 1, repeat: 0 */
 };
 
 class IMEvent : public QEvent
@@ -100,15 +101,20 @@ private:
 enum PLEventTypes
 {
     PLItemAppended_Type = QEvent::User + PLEventType + 1,
-    PLItemRemoved_Type
+    PLItemRemoved_Type,
+    PLEmpty_Type
 };
 
 class PLEvent : public QEvent
 {
 public:
-    PLEvent( PLEventTypes t, int i, int p )
-        : QEvent( (QEvent::Type)t ), i_item(i), i_parent(p) {}
+    PLEvent( int t, int i, int p = 0 )
+        : QEvent( (QEvent::Type)(t) ), i_item(i), i_parent(p) {}
+
+    /* Needed for "playlist-item*" and "leaf-to-parent" callbacks
+     * !! Can be a input_item_t->i_id or a playlist_item_t->i_id */
     int i_item;
+    // Needed for "playlist-item-append" callback, notably
     int i_parent;
 };
 
@@ -130,8 +136,10 @@ public:
             && vlc_object_alive (p_input); /* and the VLC object is alive */
     }
 
+    int playingStatus();
     bool hasAudio();
     bool hasVideo() { return hasInput() && b_video; }
+    bool hasVisualisation();
     void requestArtUpdate();
 
     QString getName() { return oldName; }
@@ -199,7 +207,6 @@ public slots:
     void setAtoB();
 
 private slots:
-    void togglePlayPause();
     void AtoBLoop( float, int64_t, int );
 
 signals:
@@ -218,7 +225,7 @@ signals:
     void metaChanged( input_item_t *);
     void artChanged( QString );
     /// Play/pause status
-    void statusChanged( int );
+    void playingStatusChanged( int );
     void recordingStateChanged( bool );
     /// Teletext
     void teletextPossible( bool );
@@ -239,22 +246,11 @@ signals:
     void epgChanged();
 };
 
-class MainInputManager : public QObject
+class MainInputManager : public QObject, public Singleton<MainInputManager>
 {
     Q_OBJECT
+    friend class Singleton<MainInputManager>;
 public:
-    static MainInputManager *getInstance( intf_thread_t *_p_intf )
-    {
-        if( !instance )
-            instance = new MainInputManager( _p_intf );
-        return instance;
-    }
-    static void killInstance()
-    {
-        delete instance;
-        instance = NULL;
-    }
-
     input_thread_t *getInput() { return p_input; }
     InputManager *getIM() { return im; }
     inline input_item_t *currentInputItem()
@@ -263,14 +259,13 @@ public:
     }
 
     vout_thread_t* getVout();
-    aout_instance_t *getAout();
+    audio_output_t *getAout();
 
     bool getPlayExitState();
+    bool hasEmptyPlaylist();
 private:
     MainInputManager( intf_thread_t * );
     virtual ~MainInputManager();
-
-    static MainInputManager *instance;
 
     void customEvent( QEvent * );
 
@@ -287,6 +282,7 @@ public slots:
     void stop();
     void next();
     void prev();
+    void prevOrReset();
     void activatePlayQuit( bool );
 
     void loopRepeatLoopStatus();
@@ -297,9 +293,10 @@ signals:
     void soundMuteChanged();
     void playlistItemAppended( int itemId, int parentId );
     void playlistItemRemoved( int itemId );
+    void playlistNotEmpty( bool );
     void randomChanged( bool );
     void repeatLoopChanged( int );
-    void leafBecameParent( input_item_t * );
+    void leafBecameParent( int );
 };
 
 #endif

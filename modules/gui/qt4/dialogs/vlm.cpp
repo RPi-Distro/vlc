@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 8347cae2acacb3f7d2714ec8a95a076ff4d1efaf $
+ * $Id: 03305f3346a832360543f1ad03cd500c3dc42ac0 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -50,7 +50,6 @@
 #include <QDateTimeEdit>
 #include <QDateTime>
 #include <QSpinBox>
-#include <QHeaderView>
 #include <QScrollArea>
 #include <QFileDialog>
 
@@ -156,14 +155,18 @@ VLMDialog::VLMDialog( intf_thread_t *_p_intf ) : QVLCDialog( (QWidget*)_p_intf->
     BUTTONACT( ui.saveButton, saveModifications() );
     BUTTONACT( ui.inputButton, selectInput() );
     BUTTONACT( ui.outputButton, selectOutput() );
-    //readSettings( "VLM", QSize( 700, 500 ) );
+
+    if( !restoreGeometry( getSettings()->value("VLM/geometry").toByteArray() ) )
+    {
+        resize( QSize( 700, 500 ) );
+    }
 }
 
 VLMDialog::~VLMDialog()
 {
     delete vlmWrapper;
 
-    //writeSettings( "VLM" );
+    getSettings()->setValue("VLM/geometry", saveGeometry());
    /* TODO :you have to destroy vlm here to close
     * but we shouldn't destroy vlm here in case somebody else wants it */
     if( p_vlm )
@@ -187,7 +190,7 @@ void VLMDialog::selectVLMItem( int i )
 
 bool VLMDialog::isNameGenuine( const QString& name )
 {
-    for( int i = 0; i < vlmItems.size(); i++ )
+    for( int i = 0; i < vlmItems.count(); i++ )
     {
         if( vlmItems.at( i )->name == name )
             return false;
@@ -197,7 +200,7 @@ bool VLMDialog::isNameGenuine( const QString& name )
 
 void VLMDialog::addVLMItem()
 {
-    int vlmItemCount = vlmItems.size();
+    int vlmItemCount = vlmItems.count();
 
     /* Take the name and Check it */
     QString name = ui.nameLedit->text();
@@ -289,14 +292,14 @@ void VLMDialog::mediasPopulator()
         int vlmItemCount;
         vlm_media_t ***ppp_dsc = (vlm_media_t ***)malloc( sizeof( vlm_media_t ) );
 
-        /* Get medias informations and numbers */
+        /* Get medias information and numbers */
         vlm_Control( p_vlm, VLM_GET_MEDIAS, ppp_dsc, &i_nMedias );
 
         /* Loop on all of them */
         for( int i = 0; i < i_nMedias; i++ )
         {
             VLMAWidget * vlmAwidget;
-            vlmItemCount = vlmItems.size();
+            vlmItemCount = vlmItems.count();
 
             QString mediaName = qfu( (*ppp_dsc)[i]->psz_name );
             /* It may have several inputs, we take the first one by default
@@ -305,7 +308,7 @@ void VLMDialog::mediasPopulator()
 
             QString outputText = qfu( (*ppp_dsc)[i]->psz_output );
 
-            /* Schedule media is a quite especial, maybe there is another way to grab informations */
+            /* Schedule media is a quite especial, maybe there is another way to grab information */
             if( (*ppp_dsc)[i]->b_vod )
             {
                 typeShortName = "VOD";
@@ -500,10 +503,12 @@ VLMAWidget::VLMAWidget( const QString& _name, const QString& _input,
 
     QToolButton *modifyButton = new QToolButton;
     modifyButton->setIcon( QIcon( ":/menu/settings" ) );
+    modifyButton->setToolTip( qtr("Change") );
     objLayout->addWidget( modifyButton, 0, 5 );
 
     QToolButton *deleteButton = new QToolButton;
     deleteButton->setIcon( QIcon( ":/menu/quit" ) );
+    deleteButton->setToolTip("Delete");
     objLayout->addWidget( deleteButton, 0, 6 );
 
     BUTTONACT( modifyButton, modify() );
@@ -542,14 +547,17 @@ VLMBroadcast::VLMBroadcast( const QString& _name, const QString& _input,
 
     playButton = new QToolButton;
     playButton->setIcon( QIcon( ":/menu/play" ) );
+    playButton->setToolTip( qtr("Play") );
     objLayout->addWidget( playButton, 1, 0 );
     b_playing = true;
 
     QToolButton *stopButton = new QToolButton;
     stopButton->setIcon( QIcon( ":/toolbar/stop_b" ) );
+    stopButton->setToolTip( qtr("Stop") );
     objLayout->addWidget( stopButton, 1, 1 );
 
     loopButton = new QToolButton;
+    loopButton->setToolTip( qtr("Repeat") );
     objLayout->addWidget( loopButton, 1, 2 );
 
     BUTTONACT( playButton, togglePlayPause() );
@@ -690,7 +698,7 @@ void VLMWrapper::EditBroadcast( const QString& name, const QString& input,
         vlm_MessageDelete( message );
 
         QStringList options = inputOptions.split( " :", QString::SkipEmptyParts );
-        for( int i = 0; i < options.size(); i++ )
+        for( int i = 0; i < options.count(); i++ )
         {
             command = "setup \"" + name + "\" option \"" + options[i].trimmed() + "\"";
             vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
@@ -777,7 +785,7 @@ void VLMWrapper::EditVod( const QString& name, const QString& input,
         vlm_MessageDelete( message );
 
         QStringList options = inputOptions.split( " :", QString::SkipEmptyParts );
-        for( int i = 0; i < options.size(); i++ )
+        for( int i = 0; i < options.count(); i++ )
         {
             command = "setup \"" + name + "\" option \"" + options[i].trimmed() + "\"";
             vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
@@ -836,7 +844,7 @@ void VLMWrapper::EditSchedule( const QString& name, const QString& input,
         vlm_MessageDelete( message );
 
         QStringList options = inputOptions.split( " :", QString::SkipEmptyParts );
-        for( int i = 0; i < options.size(); i++ )
+        for( int i = 0; i < options.count(); i++ )
         {
             command = "setup \"" + name + "\" option \"" + options[i].trimmed() + "\"";
             vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
@@ -888,14 +896,9 @@ void VLMWrapper::EditSchedule( const QString& name, const QString& input,
 
 void VLMDialog::toggleVisible()
 {
-    QList<VLMAWidget *>::iterator it;
-    for( it = vlmItems.begin(); it != vlmItems.end(); it++ )
-    {
-        VLMAWidget *item =  *it;
-        delete item;
-        item = NULL;
-    }
+    qDeleteAll( vlmItems );
     vlmItems.clear();
+
     ui.vlmListItem->clear();
     mediasPopulator();
     QVLCDialog::toggleVisible();

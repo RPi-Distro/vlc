@@ -1,8 +1,8 @@
 /*****************************************************************************
- * netsync.c: synchronisation between several network clients.
+ * netsync.c: synchronization between several network clients.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 3a6f77b1f20ee3e40e8a3bf7961f5ca0d8db5cf0 $
+ * $Id: b68266d5e0976dee41342535d8ce513081c19241 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -55,29 +55,29 @@ static int  Open (vlc_object_t *);
 static void Close(vlc_object_t *);
 
 #define NETSYNC_TEXT N_("Network master clock")
-#define NETSYNC_LONGTEXT N_("When set then " \
-  "this vlc instance shall dictate its clock for synchronisation" \
-  "over clients listening on the masters network ip address")
+#define NETSYNC_LONGTEXT N_("When set, " \
+  "this VLC instance will act as the master clock for synchronization " \
+  "for clients listening")
 
 #define MIP_TEXT N_("Master server ip address")
 #define MIP_LONGTEXT N_("The IP address of " \
-  "the network master clock to use for clock synchronisation.")
+  "the network master clock to use for clock synchronization.")
 
 #define NETSYNC_TIMEOUT_TEXT N_("UDP timeout (in ms)")
-#define NETSYNC_TIMEOUT_LONGTEXT N_("Amount of time (in ms) " \
-  "to wait before aborting network reception of data.")
+#define NETSYNC_TIMEOUT_LONGTEXT N_("Length of time (in ms) " \
+  "until aborting data reception.")
 
 vlc_module_begin()
     set_shortname(N_("Network Sync"))
-    set_description(N_("Network synchronisation"))
+    set_description(N_("Network synchronization"))
     set_category(CAT_ADVANCED)
     set_subcategory(SUBCAT_ADVANCED_MISC)
 
-    add_bool("netsync-master", false, NULL,
+    add_bool("netsync-master", false,
               NETSYNC_TEXT, NETSYNC_LONGTEXT, true)
-    add_string("netsync-master-ip", NULL, NULL, MIP_TEXT, MIP_LONGTEXT,
+    add_string("netsync-master-ip", NULL, MIP_TEXT, MIP_LONGTEXT,
                 true)
-    add_integer("netsync-timeout", 500, NULL,
+    add_integer("netsync-timeout", 500,
                  NETSYNC_TIMEOUT_TEXT, NETSYNC_TIMEOUT_LONGTEXT, true)
 
     set_capability("interface", 0)
@@ -209,6 +209,7 @@ static void *Master(void *handle)
                  : "non-IPv4", /*date*/ 0);
 #endif
     }
+    return NULL;
 }
 
 static void *Slave(void *handle)
@@ -265,6 +266,7 @@ static void *Slave(void *handle)
     wait:
         msleep(INTF_IDLE_SLEEP);
     }
+    return NULL;
 }
 
 static int InputEvent(vlc_object_t *object, char const *cmd,

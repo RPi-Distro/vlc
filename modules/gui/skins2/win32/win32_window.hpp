@@ -2,7 +2,7 @@
  * win32_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6717cd7276e71d136540681284693121cc024708 $
+ * $Id: 55de6043df4fc36ee7796d1b8893de9ff95bf8d1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -67,6 +67,9 @@ public:
 
     /// reparent the window
     void reparent( void* OSHandle, int x, int y, int w, int h );
+
+    /// invalidate a window surface
+    bool invalidateRect( int x, int y, int w, int h ) const;
 
 private:
     /// Window handle

@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 16af5fe99effbdadfcfe28ea6e0f7d74c31be6b3 $
+ * $Id: cd952761bfc4365b2ff0775f80ec0ea21c953b58 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -35,6 +35,8 @@
 
 #include "components/controller.hpp"
 #include "components/controller_widget.hpp"
+#include "dialogs_provider.hpp"
+#include "components/info_panels.hpp"
 
 #include <QWidget>
 #include <QFrame>
@@ -85,11 +87,13 @@ class BackgroundWidget : public QWidget
 public:
     BackgroundWidget( intf_thread_t * );
     void setExpandstoHeight( bool b_expand ) { b_expandPixmap = b_expand; }
+    void setWithArt( bool b_withart_ ) { b_withart = b_withart_; };
 private:
+    intf_thread_t *p_intf;
     QString pixmapUrl;
     bool b_expandPixmap;
+    bool b_withart;
     virtual void contextMenuEvent( QContextMenuEvent *event );
-    intf_thread_t *p_intf;
 protected:
     void paintEvent( QPaintEvent *e );
     static const int MARGIN = 5;
@@ -118,15 +122,24 @@ class TimeLabel : public QLabel
 {
     Q_OBJECT
 public:
-    TimeLabel( intf_thread_t *_p_intf );
+    enum Display
+    {
+        Elapsed,
+        Remaining,
+        Both
+    };
+
+    TimeLabel( intf_thread_t *_p_intf, TimeLabel::Display _displayType = TimeLabel::Both );
 protected:
     virtual void mousePressEvent( QMouseEvent *event )
     {
+        if( displayType == TimeLabel::Elapsed ) return;
         toggleTimeDisplay();
         event->accept();
     }
     virtual void mouseDoubleClickEvent( QMouseEvent *event )
     {
+        if( displayType != TimeLabel::Both ) return;
         event->accept();
         toggleTimeDisplay();
         emit timeLabelDoubleClicked();
@@ -136,9 +149,12 @@ private:
     bool b_remainingTime;
     int cachedLength;
     QTimer *bufTimer;
-    float bufVal;
+
     bool buffering;
     bool showBuffering;
+    float bufVal;
+    TimeLabel::Display displayType;
+
     char psz_length[MSTRTIME_MAX_SIZE];
     char psz_time[MSTRTIME_MAX_SIZE];
     void toggleTimeDisplay();
@@ -182,8 +198,9 @@ public:
     SpeedControlWidget( intf_thread_t *, QWidget * );
     void updateControls( float );
 private:
-    intf_thread_t *p_intf;
-    QSlider *speedSlider;
+    intf_thread_t* p_intf;
+    QSlider* speedSlider;
+    QDoubleSpinBox* spinBox;
     int lastValue;
 
 public slots:
@@ -191,6 +208,7 @@ public slots:
 
 private slots:
     void updateRate( int );
+    void updateSpinBoxRate( double );
     void resetRate();
 };
 
@@ -201,6 +219,15 @@ public:
     CoverArtLabel( QWidget *parent, intf_thread_t * );
     virtual ~CoverArtLabel();
 
+protected:
+    virtual void mouseDoubleClickEvent( QMouseEvent *event )
+    {
+        if( qobject_cast<MetaPanel *>(this->window()) == NULL )
+        {
+            THEDP->mediaInfoDialog();
+        }
+        event->accept();
+    }
 private:
     intf_thread_t *p_intf;
 

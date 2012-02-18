@@ -2,7 +2,7 @@
  * a52tospdif.c : encapsulates A/52 frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 8ee261cebb28fe4ade9fb2bd9386a590c87c897f $
+ * $Id: 4fd14ab43f4291e99a4eed63e6fa95cece68648a $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>
@@ -96,16 +96,14 @@ static block_t *DoWork( filter_t * p_filter, block_t *p_in_buf )
     {
         vlc_memcpy( p_out, p_sync_be, 6 );
         p_out[4] = p_in[5] & 0x7; /* bsmod */
-        p_out[6] = (i_frame_size >> 4) & 0xff;
-        p_out[7] = (i_frame_size << 4) & 0xff;
+        SetWBE( p_out + 6, i_frame_size << 4 );
         vlc_memcpy( &p_out[8], p_in, i_frame_size * 2 );
     }
     else
     {
         vlc_memcpy( p_out, p_sync_le, 6 );
         p_out[5] = p_in[5] & 0x7; /* bsmod */
-        p_out[6] = (i_frame_size << 4) & 0xff;
-        p_out[7] = (i_frame_size >> 4) & 0xff;
+        SetWLE( p_out + 6, i_frame_size << 4 );
         swab( p_in, &p_out[8], i_frame_size * 2 );
     }
     vlc_memset( p_out + 8 + i_frame_size * 2, 0,

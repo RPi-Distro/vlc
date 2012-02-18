@@ -1,25 +1,25 @@
 /*****************************************************************************
  * libvlc_events.h:  libvlc_events external API structure
  *****************************************************************************
- * Copyright (C) 1998-2010 the VideoLAN team
+ * Copyright (C) 1998-2010 VLC authors and VideoLAN
  * $Id $
  *
  * Authors: Filippo Carone <littlejohn@videolan.org>
  *          Pierre d'Herbemont <pdherbemont@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef LIBVLC_EVENTS_H
@@ -45,7 +45,7 @@ extern "C" {
 enum libvlc_event_e {
     /* Append new event types at the end of a category.
      * Do not remove, insert or re-order any entry.
-     * Keep this in sync with src/control/event.c:libvlc_event_type_name(). */
+     * Keep this in sync with lib/event.c:libvlc_event_type_name(). */
     libvlc_MediaMetaChanged=0,
     libvlc_MediaSubItemAdded,
     libvlc_MediaDurationChanged,
@@ -71,6 +71,7 @@ enum libvlc_event_e {
     libvlc_MediaPlayerTitleChanged,
     libvlc_MediaPlayerSnapshotTaken,
     libvlc_MediaPlayerLengthChanged,
+    libvlc_MediaPlayerVout,
 
     libvlc_MediaListItemAdded=0x200,
     libvlc_MediaListWillAddItem,
@@ -99,7 +100,7 @@ enum libvlc_event_e {
     libvlc_VlmMediaInstanceStatusPlaying,
     libvlc_VlmMediaInstanceStatusPause,
     libvlc_VlmMediaInstanceStatusEnd,
-    libvlc_VlmMediaInstanceStatusError,
+    libvlc_VlmMediaInstanceStatusError
 };
 
 /**
@@ -140,6 +141,10 @@ typedef struct libvlc_event_t
         /* media instance */
         struct
         {
+            float new_cache;
+        } media_player_buffering;
+        struct
+        {
             float new_position;
         } media_player_position_changed;
         struct
@@ -158,6 +163,10 @@ typedef struct libvlc_event_t
         {
             int new_pausable;
         } media_player_pausable_changed;
+        struct
+        {
+            int new_count;
+        } media_player_vout;
 
         /* media list */
         struct

@@ -2,7 +2,7 @@
  * generic_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 609f1e337013a44a6e1911dfacb801c943244455 $
+ * $Id: 445a3a2824696f19a90709c0b8f841b63549923c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -92,27 +92,30 @@ void GenericWindow::move( int left, int top )
     m_left = left;
     m_top = top;
 
-    m_pOsWindow->moveResize( left, top, m_width, m_height );
+    if( m_pOsWindow && isVisible() )
+        m_pOsWindow->moveResize( left, top, m_width, m_height );
 }
 
 
 void GenericWindow::resize( int width, int height )
 {
     // don't try when value is 0 (may crash)
-    if( !width || ! height )
+    if( !width || !height )
         return;
 
     // Update the window size
     m_width = width;
     m_height = height;
 
-    m_pOsWindow->moveResize( m_left, m_top, width, height );
+    if( m_pOsWindow && isVisible() )
+        m_pOsWindow->moveResize( m_left, m_top, width, height );
 }
 
 
 void GenericWindow::raise() const
 {
-    m_pOsWindow->raise();
+    if( m_pOsWindow )
+        m_pOsWindow->raise();
 }
 
 
@@ -124,12 +127,14 @@ void GenericWindow::setOpacity( uint8_t value )
 
 void GenericWindow::toggleOnTop( bool onTop ) const
 {
-    m_pOsWindow->toggleOnTop( onTop );
+    if( m_pOsWindow )
+        m_pOsWindow->toggleOnTop( onTop );
 }
 
 
-void GenericWindow::onUpdate( Subject<VarBool> &rVariable, void*arg )
+void GenericWindow::onUpdate( Subject<VarBool> &rVariable, void* arg )
 {
+    (void)rVariable; (void)arg;
     if (&rVariable == m_pVarVisible )
     {
         if( m_pVarVisible->get() )
@@ -149,6 +154,7 @@ void GenericWindow::innerShow()
     if( m_pOsWindow )
     {
         m_pOsWindow->show();
+        m_pOsWindow->moveResize( m_left, m_top, m_width, m_height );
     }
 }
 
@@ -161,8 +167,7 @@ void GenericWindow::innerHide()
     }
 }
 
-
-void* GenericWindow::getOSHandle() const
+vlc_wnd_type GenericWindow::getOSHandle() const
 {
     return m_pOsWindow->getOSHandle();
 }
@@ -176,6 +181,28 @@ void GenericWindow::setParent( GenericWindow* pParent, int x, int y, int w, int 
     m_width  = ( w > 0 ) ? w : m_width;
     m_height = ( h > 0 ) ? h : m_height;
 
-    void* handle = pParent ? pParent->getOSHandle() : NULL;
+    vlc_wnd_type handle = pParent ? pParent->getOSHandle() : 0;
     m_pOsWindow->reparent( handle, m_left, m_top, m_width, m_height );
+}
+
+
+void GenericWindow::invalidateRect( int left, int top, int width, int height )
+{
+    if( m_pOsWindow )
+    {
+        // tell the OS we invalidate a window client area
+        bool b_supported =
+            m_pOsWindow->invalidateRect( left, top, width, height );
+
+        // if not supported, directly refresh the area
+        if( !b_supported )
+            refresh( left, top, width, height );
+    }
+}
+
+
+void GenericWindow::getMonitorInfo( int* x, int* y, int* width, int* height ) const
+{
+    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+    pOsFactory->getMonitorInfo( *this, x, y, width, height );
 }

@@ -2,7 +2,7 @@
  * ctrl_button.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a1eb12559a6f0f576e57cebc775b68c91e100f43 $
+ * $Id: 0530bbbefeadf5d451cb2cc5f2dfdcd944bd7af8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -79,6 +79,11 @@ CtrlButton::CtrlButton( intf_thread_t *pIntf, const GenericBitmap &rBmpUp,
 
 CtrlButton::~CtrlButton()
 {
+    if( m_pImg )
+    {
+        m_pImg->stopAnim();
+        m_pImg->delObserver( this );
+    }
 }
 
 void CtrlButton::setLayout( GenericLayout *pLayout,
@@ -114,18 +119,27 @@ bool CtrlButton::mouseOver( int x, int y ) const
 }
 
 
-void CtrlButton::draw( OSGraphics &rImage, int xDest, int yDest )
+void CtrlButton::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
 {
-    if( m_pImg )
+    const Position *pPos = getPosition();
+    rect region( pPos->getLeft(), pPos->getTop(),
+                 pPos->getWidth(), pPos->getHeight() );
+    rect clip( xDest, yDest, w, h );
+    rect inter;
+    if( rect::intersect( region, clip, &inter ) && m_pImg )
     {
         // Draw the current image
-        m_pImg->draw( rImage, xDest, yDest );
+        m_pImg->draw( rImage, inter.x, inter.y, inter.width, inter.height,
+                      inter.x - pPos->getLeft(),
+                      inter.y - pPos->getTop() );
     }
 }
 
-
 void CtrlButton::setImage( AnimBitmap *pImg )
 {
+    if( pImg == m_pImg )
+        return;
+
     AnimBitmap *pOldImg = m_pImg;
     m_pImg = pImg;
 
@@ -147,7 +161,8 @@ void CtrlButton::setImage( AnimBitmap *pImg )
 
 void CtrlButton::onUpdate( Subject<AnimBitmap> &rBitmap, void *arg )
 {
-    notifyLayout();
+    (void)rBitmap;(void)arg;
+    notifyLayout( m_pImg->getWidth(), m_pImg->getHeight() );
 }
 
 

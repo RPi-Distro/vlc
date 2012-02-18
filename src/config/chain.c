@@ -1,26 +1,26 @@
 /*****************************************************************************
  * chain.c : configuration module chain parsing stuff
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: a9a6fce29713eeabfdeb0e8c94f4cda504bb25e4 $
+ * Copyright (C) 2002-2007 VLC authors and VideoLAN
+ * $Id: c824657880310f3e9ccc3c3aae6b083f17e29773 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -342,13 +342,6 @@ void config_ChainParse( vlc_object_t *p_this, const char *psz_prefix,
                  * modules so i'll do it later */
                 continue;
             }
-            if( p_conf->psz_oldname
-             && !strcmp( p_conf->psz_oldname, name ) )
-            {
-                 psz_name = p_conf->psz_name;
-                 msg_Warn( p_this, "Option %s is obsolete. Use %s instead.",
-                           name, psz_name );
-            }
         }
         /* </Check if the option is deprecated> */
 
@@ -360,8 +353,6 @@ void config_ChainParse( vlc_object_t *p_this, const char *psz_prefix,
                       cfg->psz_name, cfg->psz_value );
             continue;
         }
-
-        i_type &= CONFIG_ITEM;
 
         if( i_type != VLC_VAR_BOOL && cfg->psz_value == NULL )
         {
@@ -387,7 +378,6 @@ void config_ChainParse( vlc_object_t *p_this, const char *psz_prefix,
                 val.f_float = us_atof( cfg->psz_value ? cfg->psz_value : "0" );
                 break;
             case VLC_VAR_STRING:
-            case VLC_VAR_MODULE:
                 val.psz_string = cfg->psz_value;
                 break;
             default:
@@ -452,32 +442,23 @@ char *config_StringUnescape( char *psz_string )
     return psz_string;
 }
 
-char *config_StringEscape( const char *psz_string )
+char *config_StringEscape( const char *str )
 {
-    char *psz_return;
-    char *psz_dst;
-    int i_escape;
+    size_t length = 0;
 
-    if( !psz_string )
+    if( str == NULL )
         return NULL;
 
-    i_escape = 0;
-    for( const char *p = psz_string; *p; p++ )
+    for( const char *p = str; *p; p++ )
+        length += IsEscapeNeeded( *p ) ? 2 : 1;
+
+    char *ret = xmalloc( length + 1 ), *dst = ret;
+    for( const char *p = str; *p; p++ )
     {
         if( IsEscapeNeeded( *p ) )
-            i_escape++;
+            *dst++ = '\\';
+        *dst++ = *p;
     }
-
-    psz_return = psz_dst = malloc( strlen( psz_string ) + i_escape + 1 );
-    for( const char *p = psz_string; *p; p++ )
-    {
-        if( IsEscapeNeeded( *p ) )
-            *psz_dst++ = '\\';
-        *psz_dst++ = *p;
-    }
-    *psz_dst = '\0';
-
-    return psz_return;
+    *dst = '\0';;
+    return ret;
 }
-
-

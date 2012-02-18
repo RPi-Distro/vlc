@@ -6,8 +6,12 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 8d8030c01820cedc9e4724a17ac36b23b384d60b $
+ * $Id: aeab6fd98bf521829faf8d2c39458eac3a961b2b $
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <string.h>
 #include "AtmoOutputFilter.h"

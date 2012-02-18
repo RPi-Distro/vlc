@@ -2,7 +2,7 @@
  * errors.cpp : Errors
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 0d4edccae9a9ea287b4481158d2c16e4cb412513 $
+ * $Id: 698c4c7d91f461a88cabacddd5cb518772104585 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -43,11 +43,10 @@ ErrorsDialog::ErrorsDialog( intf_thread_t *_p_intf )
 
     QGridLayout *layout = new QGridLayout( this );
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox;
-    QPushButton *closeButton = new QPushButton( qtr( "&Close" ) );
-    QPushButton *clearButton = new QPushButton( qtr( "&Clear" ) );
-    buttonBox->addButton( closeButton, QDialogButtonBox::AcceptRole );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( Qt::Horizontal, this );
+    QPushButton *clearButton = new QPushButton( qtr( "Cl&ear" ), this );
     buttonBox->addButton( clearButton, QDialogButtonBox::ActionRole );
+    buttonBox->addButton( new QPushButton( qtr("&Close"), this ), QDialogButtonBox::RejectRole );
 
     messages = new QTextEdit();
     messages->setReadOnly( true );
@@ -56,10 +55,9 @@ ErrorsDialog::ErrorsDialog( intf_thread_t *_p_intf )
 
     layout->addWidget( messages, 0, 0, 1, 3 );
     layout->addWidget( stopShowing, 1, 0 );
-    layout->addItem( new QSpacerItem( 200, 20, QSizePolicy::Expanding ), 2,0 );
-    layout->addWidget( buttonBox, 2, 2 );
+    layout->addWidget( buttonBox, 1, 2 );
 
-    CONNECT( buttonBox, accepted(), this, close() );
+    CONNECT( buttonBox, rejected(), this, close() );
     BUTTONACT( clearButton, clear() );
     BUTTONACT( stopShowing, dontShow() );
 }

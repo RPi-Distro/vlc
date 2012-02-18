@@ -2,7 +2,7 @@
  * podcast.c:  Podcast services discovery module
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 6c4584134c60a1f0baeb83992575ab1b3739ae93 $
+ * $Id: 2ad6356170fc1cc0d8c6aa1eaa4e5a5291cf17eb $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -31,7 +31,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_playlist.h>
 #include <vlc_services_discovery.h>
 
 #include <vlc_network.h>
@@ -65,9 +64,8 @@ vlc_module_begin ()
     set_category( CAT_PLAYLIST )
     set_subcategory( SUBCAT_PLAYLIST_SD )
 
-    add_string( "podcast-urls", NULL, NULL,
+    add_string( "podcast-urls", NULL,
                 URLS_TEXT, URLS_LONGTEXT, false )
-        change_autosave ()
 
     set_capability( "services_discovery", 0 )
     set_callbacks( Open, Close )
@@ -186,8 +184,7 @@ static void Close( vlc_object_t *p_this )
             continue;
 
         input_Stop( p_input, true );
-        vlc_thread_join( p_input );
-        vlc_object_release( p_input );
+        input_Close( p_input );
 
         p_sd->p_sys->pp_input[i] = NULL;
     }
@@ -203,6 +200,7 @@ static void Close( vlc_object_t *p_this )
 /*****************************************************************************
  * Run: main thread
  *****************************************************************************/
+VLC_NORETURN
 static void *Run( void *data )
 {
     services_discovery_t *p_sd = data;
@@ -238,8 +236,7 @@ static void *Run( void *data )
             if( p_input->b_eof || p_input->b_error )
             {
                 input_Stop( p_input, false );
-                vlc_thread_join( p_input );
-                vlc_object_release( p_input );
+                input_Close( p_input );
 
                 p_sd->p_sys->pp_input[i] = NULL;
                 REMOVE_ELEM( p_sys->pp_input, p_sys->i_input, i );
@@ -315,7 +312,7 @@ static void ParseUrls( services_discovery_t *p_sd, char *psz_urls )
                          strdup( psz_urls ) );
 
             input_item_t *p_input;
-            p_input = input_item_New( p_sd, psz_urls, psz_urls );
+            p_input = input_item_New( psz_urls, psz_urls );
             input_item_AddOption( p_input, "demux=podcast", VLC_INPUT_OPTION_TRUSTED );
 
             INSERT_ELEM( pp_new_items, i_new_items, i_new_items, p_input );
@@ -378,7 +375,7 @@ static void ParseRequest( services_discovery_t *p_sd )
               strdup( psz_request ) );
 
             input_item_t *p_input;
-            p_input = input_item_New( p_sd, psz_request, psz_request );
+            p_input = input_item_New( psz_request, psz_request );
             input_item_AddOption( p_input, "demux=podcast", VLC_INPUT_OPTION_TRUSTED );
 
             INSERT_ELEM( p_sys->pp_items, p_sys->i_items, p_sys->i_items, p_input );
@@ -428,7 +425,6 @@ static void SaveUrls( services_discovery_t *p_sd )
     }
 
     config_PutPsz( p_sd, "podcast-urls", psz_urls );
-    config_SaveConfigFile( p_sd, "podcast" );
 
     free( psz_urls );
 }

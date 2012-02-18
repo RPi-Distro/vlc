@@ -1,24 +1,24 @@
 /*****************************************************************************
  * input.c : internal management of input streams for the audio output
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 2ff470b6a9326ff59a349805cb58f53c6d340562 $
+ * Copyright (C) 2002-2007 VLC authors and VideoLAN
+ * $Id: 42b67b7b41177493a84fabab97a4744b28026fcc $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -29,28 +29,21 @@
 # include "config.h"
 #endif
 
-#include <assert.h>
-
 #include <vlc_common.h>
 
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 #include <assert.h>
 
 #include <vlc_input.h>
 #include <vlc_vout.h>                  /* for vout_Request */
-
+#include <vlc_modules.h>
 #include <vlc_aout.h>
 #include <vlc_filter.h>
 #include <libvlc.h>
 
 #include "aout_internal.h"
 
-#define AOUT_ASSERT_MIXER_LOCKED vlc_assert_locked( &p_aout->mixer_lock )
-#define AOUT_ASSERT_INPUT_LOCKED vlc_assert_locked( &p_input->lock )
-
-static void inputFailure( aout_instance_t *, aout_input_t *, const char * );
 static void inputDrop( aout_input_t *, aout_buffer_t * );
 static void inputResamplingStop( aout_input_t *p_input );
 
@@ -58,9 +51,6 @@ static int VisualizationCallback( vlc_object_t *, char const *,
                                   vlc_value_t, vlc_value_t, void * );
 static int EqualizerCallback( vlc_object_t *, char const *,
                               vlc_value_t, vlc_value_t, void * );
-static int ReplayGainCallback( vlc_object_t *, char const *,
-                               vlc_value_t, vlc_value_t, void * );
-static void ReplayGainSelect( aout_instance_t *, aout_input_t * );
 
 static vout_thread_t *RequestVout( void *,
                                    vout_thread_t *, video_format_t *, bool );
@@ -68,21 +58,19 @@ static vout_thread_t *RequestVout( void *,
 /*****************************************************************************
  * aout_InputNew : allocate a new input and rework the filter pipeline
  *****************************************************************************/
-int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_request_vout_t *p_request_vout )
+aout_input_t *aout_InputNew (audio_output_t * p_aout,
+                             const audio_sample_format_t *restrict infmt,
+                             const audio_sample_format_t *restrict outfmt,
+                             const aout_request_vout_t *p_request_vout)
 {
-    audio_sample_format_t chain_input_format;
-    audio_sample_format_t chain_output_format;
-    vlc_value_t val, text;
-    char *psz_filters, *psz_visual, *psz_scaletempo;
-    int i_visual;
+    aout_input_t *p_input = malloc (sizeof (*p_input));
+    if (unlikely(p_input == NULL))
+        return NULL;
 
-    aout_FormatPrint( p_aout, "input", &p_input->input );
+    aout_FormatPrint( p_aout, "input", infmt );
+    p_input->samplerate = infmt->i_rate;
 
     p_input->i_nb_resamplers = p_input->i_nb_filters = 0;
-
-    /* Prepare FIFO. */
-    aout_FifoInit( p_aout, &p_input->mixer.fifo, p_aout->mixer_format.i_rate );
-    p_input->mixer.begin = NULL;
 
     /* */
     if( p_request_vout )
@@ -96,142 +84,19 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
     }
 
     /* Prepare format structure */
-    chain_input_format  = p_input->input;
-    chain_output_format = p_aout->mixer_format;
-    chain_output_format.i_rate = p_input->input.i_rate;
+    audio_sample_format_t chain_input_format = *infmt;
+    audio_sample_format_t chain_output_format = *outfmt;
+
+    chain_output_format.i_rate = infmt->i_rate;
     aout_FormatPrepare( &chain_output_format );
 
     /* Now add user filters */
-    if( var_Type( p_aout, "visual" ) == 0 )
-    {
-        var_Create( p_aout, "visual", VLC_VAR_STRING | VLC_VAR_HASCHOICE );
-        text.psz_string = _("Visualizations");
-        var_Change( p_aout, "visual", VLC_VAR_SETTEXT, &text, NULL );
-        val.psz_string = (char*)""; text.psz_string = _("Disable");
-        var_Change( p_aout, "visual", VLC_VAR_ADDCHOICE, &val, &text );
-        val.psz_string = (char*)"spectrometer"; text.psz_string = _("Spectrometer");
-        var_Change( p_aout, "visual", VLC_VAR_ADDCHOICE, &val, &text );
-        val.psz_string = (char*)"scope"; text.psz_string = _("Scope");
-        var_Change( p_aout, "visual", VLC_VAR_ADDCHOICE, &val, &text );
-        val.psz_string = (char*)"spectrum"; text.psz_string = _("Spectrum");
-        var_Change( p_aout, "visual", VLC_VAR_ADDCHOICE, &val, &text );
-        val.psz_string = (char*)"vuMeter"; text.psz_string = _("Vu meter");
-        var_Change( p_aout, "visual", VLC_VAR_ADDCHOICE, &val, &text );
+    var_AddCallback( p_aout, "visual", VisualizationCallback, p_input );
+    var_AddCallback( p_aout, "equalizer", EqualizerCallback, p_input );
 
-        /* Look for goom plugin */
-        if( module_exists( "goom" ) )
-        {
-            val.psz_string = (char*)"goom"; text.psz_string = (char*)"Goom";
-            var_Change( p_aout, "visual", VLC_VAR_ADDCHOICE, &val, &text );
-        }
-
-        /* Look for libprojectM plugin */
-        if( module_exists( "projectm" ) )
-        {
-            val.psz_string = (char*)"projectm"; text.psz_string = (char*)"projectM";
-            var_Change( p_aout, "visual", VLC_VAR_ADDCHOICE, &val, &text );
-        }
-
-        if( var_Get( p_aout, "effect-list", &val ) == VLC_SUCCESS )
-        {
-            var_SetString( p_aout, "visual", val.psz_string );
-            free( val.psz_string );
-        }
-        var_AddCallback( p_aout, "visual", VisualizationCallback, NULL );
-    }
-
-    if( var_Type( p_aout, "equalizer" ) == 0 )
-    {
-        module_config_t *p_config;
-        int i;
-
-        p_config = config_FindConfig( VLC_OBJECT(p_aout), "equalizer-preset" );
-        if( p_config && p_config->i_list )
-        {
-               var_Create( p_aout, "equalizer",
-                           VLC_VAR_STRING | VLC_VAR_HASCHOICE );
-            text.psz_string = _("Equalizer");
-            var_Change( p_aout, "equalizer", VLC_VAR_SETTEXT, &text, NULL );
-
-            val.psz_string = (char*)""; text.psz_string = _("Disable");
-            var_Change( p_aout, "equalizer", VLC_VAR_ADDCHOICE, &val, &text );
-
-            for( i = 0; i < p_config->i_list; i++ )
-            {
-                val.psz_string = (char *)p_config->ppsz_list[i];
-                text.psz_string = (char *)p_config->ppsz_list_text[i];
-                var_Change( p_aout, "equalizer", VLC_VAR_ADDCHOICE,
-                            &val, &text );
-            }
-
-            var_AddCallback( p_aout, "equalizer", EqualizerCallback, NULL );
-        }
-    }
-
-    if( var_Type( p_aout, "audio-filter" ) == 0 )
-    {
-        var_Create( p_aout, "audio-filter",
-                    VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-        text.psz_string = _("Audio filters");
-        var_Change( p_aout, "audio-filter", VLC_VAR_SETTEXT, &text, NULL );
-    }
-    if( var_Type( p_aout, "audio-visual" ) == 0 )
-    {
-        var_Create( p_aout, "audio-visual",
-                    VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-        text.psz_string = _("Audio visualizations");
-        var_Change( p_aout, "audio-visual", VLC_VAR_SETTEXT, &text, NULL );
-    }
-
-    if( var_Type( p_aout, "audio-replay-gain-mode" ) == 0 )
-    {
-        module_config_t *p_config;
-        int i;
-
-        p_config = config_FindConfig( VLC_OBJECT(p_aout), "audio-replay-gain-mode" );
-        if( p_config && p_config->i_list )
-        {
-            var_Create( p_aout, "audio-replay-gain-mode",
-                        VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-
-            text.psz_string = _("Replay gain");
-            var_Change( p_aout, "audio-replay-gain-mode", VLC_VAR_SETTEXT, &text, NULL );
-
-            for( i = 0; i < p_config->i_list; i++ )
-            {
-                val.psz_string = (char *)p_config->ppsz_list[i];
-                text.psz_string = (char *)p_config->ppsz_list_text[i];
-                var_Change( p_aout, "audio-replay-gain-mode", VLC_VAR_ADDCHOICE,
-                            &val, &text );
-            }
-
-            var_AddCallback( p_aout, "audio-replay-gain-mode", ReplayGainCallback, NULL );
-        }
-    }
-    if( var_Type( p_aout, "audio-replay-gain-preamp" ) == 0 )
-    {
-        var_Create( p_aout, "audio-replay-gain-preamp",
-                    VLC_VAR_FLOAT | VLC_VAR_DOINHERIT );
-    }
-    if( var_Type( p_aout, "audio-replay-gain-default" ) == 0 )
-    {
-        var_Create( p_aout, "audio-replay-gain-default",
-                    VLC_VAR_FLOAT | VLC_VAR_DOINHERIT );
-    }
-    if( var_Type( p_aout, "audio-replay-gain-peak-protection" ) == 0 )
-    {
-        var_Create( p_aout, "audio-replay-gain-peak-protection",
-                    VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    }
-    if( var_Type( p_aout, "audio-time-stretch" ) == 0 )
-    {
-        var_Create( p_aout, "audio-time-stretch",
-                    VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    }
-
-    psz_filters = var_GetString( p_aout, "audio-filter" );
-    psz_visual = var_GetString( p_aout, "audio-visual");
-    psz_scaletempo = var_GetBool( p_aout, "audio-time-stretch" ) ? strdup( "scaletempo" ) : NULL;
+    char *psz_filters = var_GetString( p_aout, "audio-filter" );
+    char *psz_visual = var_GetString( p_aout, "audio-visual");
+    char *psz_scaletempo = var_InheritBool( p_aout, "audio-time-stretch" ) ? strdup( "scaletempo" ) : NULL;
 
     p_input->b_recycle_vout = psz_visual && *psz_visual;
 
@@ -239,7 +104,9 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
     char *const ppsz_array[] = { psz_scaletempo, psz_filters, psz_visual };
     p_input->p_playback_rate_filter = NULL;
 
-    for( i_visual = 0; i_visual < 3 && !AOUT_FMT_NON_LINEAR(&chain_output_format); i_visual++ )
+    for (unsigned i_visual = 0;
+         i_visual < 3 && AOUT_FMT_LINEAR(&chain_output_format);
+         i_visual++)
     {
         char *psz_next = NULL;
         char *psz_parser = ppsz_array[i_visual];
@@ -271,9 +138,8 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
             }
 
             /* Create a VLC object */
-            static const char typename[] = "audio filter";
             p_filter = vlc_custom_create( p_aout, sizeof(*p_filter),
-                                          VLC_OBJECT_GENERIC, typename );
+                                          "audio filter" );
             if( p_filter == NULL )
             {
                 msg_Err( p_aout, "cannot add user filter %s (skipped)",
@@ -281,8 +147,6 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
                 psz_parser = psz_next;
                 continue;
             }
-
-            vlc_object_attach( p_filter , p_aout );
 
             p_filter->p_owner = malloc( sizeof(*p_filter->p_owner) );
             p_filter->p_owner->p_aout  = p_aout;
@@ -295,7 +159,6 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
             memcpy( &p_filter->fmt_out.audio, &chain_output_format,
                     sizeof(audio_sample_format_t) );
             p_filter->fmt_out.i_codec = chain_output_format.i_format;
-            p_filter->pf_audio_buffer_new = aout_FilterBufferNew;
 
             /* try to find the requested filter */
             if( i_visual == 2 ) /* this can only be a visualization module */
@@ -350,24 +213,20 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
             }
 
             /* complete the filter chain if necessary */
-            if ( !AOUT_FMTS_IDENTICAL( &chain_input_format,
-                                       &p_filter->fmt_in.audio ) )
+            if ( aout_FiltersCreatePipeline( p_aout, p_input->pp_filters,
+                                             &p_input->i_nb_filters,
+                                             &chain_input_format,
+                                             &p_filter->fmt_in.audio ) < 0 )
             {
-                if ( aout_FiltersCreatePipeline( p_aout, p_input->pp_filters,
-                                                 &p_input->i_nb_filters,
-                                                 &chain_input_format,
-                                                 &p_filter->fmt_in.audio ) < 0 )
-                {
-                    msg_Err( p_aout, "cannot add user filter %s (skipped)",
-                             psz_parser );
+                msg_Err( p_aout, "cannot add user filter %s (skipped)",
+                         psz_parser );
 
-                    module_unneed( p_filter, p_filter->p_module );
-                    free( p_filter->p_owner );
-                    vlc_object_release( p_filter );
+                module_unneed( p_filter, p_filter->p_module );
+                free( p_filter->p_owner );
+                vlc_object_release( p_filter );
 
-                    psz_parser = psz_next;
-                    continue;
-                }
+                psz_parser = psz_next;
+                continue;
             }
 
             /* success */
@@ -387,49 +246,36 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
     free( psz_scaletempo );
 
     /* complete the filter chain if necessary */
-    if ( !AOUT_FMTS_IDENTICAL( &chain_input_format, &chain_output_format ) )
+    if ( aout_FiltersCreatePipeline( p_aout, p_input->pp_filters,
+                                     &p_input->i_nb_filters,
+                                     &chain_input_format,
+                                     &chain_output_format ) < 0 )
     {
-        if ( aout_FiltersCreatePipeline( p_aout, p_input->pp_filters,
-                                         &p_input->i_nb_filters,
-                                         &chain_input_format,
-                                         &chain_output_format ) < 0 )
-        {
-            inputFailure( p_aout, p_input, "couldn't set an input pipeline" );
-            return -1;
-        }
+        msg_Err (p_aout, "cannot setup filtering pipeline");
+        goto error;
     }
 
-    /* Prepare hints for the buffer allocator. */
-    p_input->input_alloc.b_alloc = true;
-    p_input->input_alloc.i_bytes_per_sec = -1;
-
     /* Create resamplers. */
-    if ( !AOUT_FMT_NON_LINEAR( &p_aout->mixer_format ) )
+    if (AOUT_FMT_LINEAR(outfmt))
     {
-        chain_output_format.i_rate = (__MAX(p_input->input.i_rate,
-                                            p_aout->mixer_format.i_rate)
+        chain_output_format.i_rate = (__MAX(p_input->samplerate,
+                                            outfmt->i_rate)
                                  * (100 + AOUT_MAX_RESAMPLING)) / 100;
-        if ( chain_output_format.i_rate == p_aout->mixer_format.i_rate )
+        if ( chain_output_format.i_rate == outfmt->i_rate )
         {
             /* Just in case... */
             chain_output_format.i_rate++;
         }
-        if ( aout_FiltersCreatePipeline( p_aout, p_input->pp_resamplers,
-                                         &p_input->i_nb_resamplers,
-                                         &chain_output_format,
-                                         &p_aout->mixer_format ) < 0 )
+        if (aout_FiltersCreatePipeline (p_aout, p_input->pp_resamplers,
+                                        &p_input->i_nb_resamplers,
+                                        &chain_output_format, outfmt) < 0)
         {
-            inputFailure( p_aout, p_input, "couldn't set a resampler pipeline");
-            return -1;
+            msg_Err (p_aout, "cannot setup a resampling pipeline");
+            goto error;
         }
 
-        aout_FiltersHintBuffers( p_aout, p_input->pp_resamplers,
-                                 p_input->i_nb_resamplers,
-                                 &p_input->input_alloc );
-        p_input->input_alloc.b_alloc = true;
-
         /* Setup the initial rate of the resampler */
-        p_input->pp_resamplers[0]->fmt_in.audio.i_rate = p_input->input.i_rate;
+        p_input->pp_resamplers[0]->fmt_in.audio.i_rate = p_input->samplerate;
     }
     p_input->i_resampling_type = AOUT_RESAMPLING_NONE;
 
@@ -438,25 +284,17 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
         p_input->p_playback_rate_filter = p_input->pp_resamplers[0];
     }
 
-    aout_FiltersHintBuffers( p_aout, p_input->pp_filters,
-                             p_input->i_nb_filters,
-                             &p_input->input_alloc );
-    p_input->input_alloc.b_alloc = true;
-
-    /* i_bytes_per_sec is still == -1 if no filters */
-    p_input->input_alloc.i_bytes_per_sec = __MAX(
-                                    p_input->input_alloc.i_bytes_per_sec,
-                                    (int)(p_input->input.i_bytes_per_frame
-                                     * p_input->input.i_rate
-                                     / p_input->input.i_frame_length) );
-
-    ReplayGainSelect( p_aout, p_input );
-
     /* Success */
-    p_input->b_error = false;
     p_input->i_last_input_rate = INPUT_RATE_DEFAULT;
+    p_input->i_buffer_lost = 0;
+    return p_input;
 
-    return 0;
+error:
+    aout_FiltersDestroyPipeline( p_input->pp_filters, p_input->i_nb_filters );
+    aout_FiltersDestroyPipeline( p_input->pp_resamplers,
+                                 p_input->i_nb_resamplers );
+    free (p_input);
+    return NULL;
 }
 
 /*****************************************************************************
@@ -464,11 +302,10 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input, const aout_
  *****************************************************************************
  * This function must be entered with the mixer lock.
  *****************************************************************************/
-int aout_InputDelete( aout_instance_t * p_aout, aout_input_t * p_input )
+int aout_InputDelete( audio_output_t * p_aout, aout_input_t * p_input )
 {
-    AOUT_ASSERT_MIXER_LOCKED;
-    if ( p_input->b_error )
-        return 0;
+    var_DelCallback (p_aout, "equalizer", EqualizerCallback, p_input);
+    var_DelCallback (p_aout, "visual", VisualizationCallback, p_input);
 
     /* XXX We need to update b_recycle_vout before calling aout_FiltersDestroyPipeline.
      * FIXME They can be a race condition if audio-visual is updated between
@@ -478,53 +315,15 @@ int aout_InputDelete( aout_instance_t * p_aout, aout_input_t * p_input )
     p_input->b_recycle_vout = psz_visual && *psz_visual;
     free( psz_visual );
 
-    aout_FiltersDestroyPipeline( p_aout, p_input->pp_filters,
-                                 p_input->i_nb_filters );
+    aout_FiltersDestroyPipeline( p_input->pp_filters, p_input->i_nb_filters );
     p_input->i_nb_filters = 0;
-    aout_FiltersDestroyPipeline( p_aout, p_input->pp_resamplers,
+    aout_FiltersDestroyPipeline( p_input->pp_resamplers,
                                  p_input->i_nb_resamplers );
     p_input->i_nb_resamplers = 0;
-    aout_FifoDestroy( p_aout, &p_input->mixer.fifo );
 
     return 0;
 }
 
-/*****************************************************************************
- * aout_InputCheckAndRestart : restart an input
- *****************************************************************************
- * This function must be entered with the input and mixer lock.
- *****************************************************************************/
-void aout_InputCheckAndRestart( aout_instance_t * p_aout, aout_input_t * p_input )
-{
-    AOUT_ASSERT_MIXER_LOCKED;
-    AOUT_ASSERT_INPUT_LOCKED;
-
-    if( !p_input->b_restart )
-        return;
-
-    aout_lock_input_fifos( p_aout );
-
-    /* A little trick to avoid loosing our input fifo and properties */
-
-    uint8_t *p_first_byte_to_mix = p_input->mixer.begin;
-    aout_fifo_t fifo = p_input->mixer.fifo;
-    bool b_paused = p_input->b_paused;
-    mtime_t i_pause_date = p_input->i_pause_date;
-
-    aout_FifoInit( p_aout, &p_input->mixer.fifo, p_aout->mixer_format.i_rate );
-
-    aout_InputDelete( p_aout, p_input );
-
-    aout_InputNew( p_aout, p_input, &p_input->request_vout );
-    p_input->mixer.begin = p_first_byte_to_mix;
-    p_input->mixer.fifo = fifo;
-    p_input->b_paused = b_paused;
-    p_input->i_pause_date = i_pause_date;
-
-    p_input->b_restart = false;
-
-    aout_unlock_input_fifos( p_aout );
-}
 /*****************************************************************************
  * aout_InputPlay : play a buffer
  *****************************************************************************
@@ -532,16 +331,17 @@ void aout_InputCheckAndRestart( aout_instance_t * p_aout, aout_input_t * p_input
  *****************************************************************************/
 /* XXX Do not activate it !! */
 //#define AOUT_PROCESS_BEFORE_CHEKS
-int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
-                    aout_buffer_t * p_buffer, int i_input_rate )
+block_t *aout_InputPlay(audio_output_t *p_aout, aout_input_t *p_input,
+                        block_t *p_buffer, int i_input_rate, date_t *date )
 {
     mtime_t start_date;
-    AOUT_ASSERT_INPUT_LOCKED;
+
+    aout_assert_locked( p_aout );
 
     if( i_input_rate != INPUT_RATE_DEFAULT && p_input->p_playback_rate_filter == NULL )
     {
         inputDrop( p_input, p_buffer );
-        return 0;
+        return NULL;
     }
 
 #ifdef AOUT_PROCESS_BEFORE_CHEKS
@@ -549,7 +349,7 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
     aout_FiltersPlay( p_aout, p_input->pp_filters, p_input->i_nb_filters,
                       &p_buffer );
     if( !p_buffer )
-        return 0;
+        return NULL;
 
     /* Actually run the resampler now. */
     if ( p_input->i_nb_resamplers > 0 )
@@ -561,11 +361,11 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
     }
 
     if( !p_buffer )
-        return 0;
+        return NULL;
     if( p_buffer->i_nb_samples <= 0 )
     {
         block_Release( p_buffer );
-        return 0;
+        return NULL;
     }
 #endif
 
@@ -574,90 +374,88 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
     {
         unsigned int * const pi_rate = &p_input->p_playback_rate_filter->fmt_in.audio.i_rate;
 #define F(r,ir) ( INPUT_RATE_DEFAULT * (r) / (ir) )
-        const int i_delta = *pi_rate - F(p_input->input.i_rate,p_input->i_last_input_rate);
-        *pi_rate = F(p_input->input.i_rate + i_delta, i_input_rate);
+        const int i_delta = *pi_rate - F(p_input->samplerate,p_input->i_last_input_rate);
+        *pi_rate = F(p_input->samplerate + i_delta, i_input_rate);
 #undef F
         p_input->i_last_input_rate = i_input_rate;
     }
 
+    mtime_t now = mdate();
+
     /* We don't care if someone changes the start date behind our back after
      * this. We'll deal with that when pushing the buffer, and compensate
      * with the next incoming buffer. */
-    aout_lock_input_fifos( p_aout );
-    start_date = aout_FifoNextStart( p_aout, &p_input->mixer.fifo );
-    aout_unlock_input_fifos( p_aout );
+    start_date = date_Get (date);
 
-    if ( start_date != 0 && start_date < mdate() )
+    if ( start_date != VLC_TS_INVALID && start_date < now )
     {
         /* The decoder is _very_ late. This can only happen if the user
          * pauses the stream (or if the decoder is buggy, which cannot
          * happen :). */
         msg_Warn( p_aout, "computed PTS is out of range (%"PRId64"), "
-                  "clearing out", mdate() - start_date );
-        aout_lock_input_fifos( p_aout );
-        aout_FifoSet( p_aout, &p_input->mixer.fifo, 0 );
-        p_input->mixer.begin = NULL;
-        aout_unlock_input_fifos( p_aout );
+                  "clearing out", now - start_date );
+        aout_OutputFlush( p_aout, false );
         if ( p_input->i_resampling_type != AOUT_RESAMPLING_NONE )
             msg_Warn( p_aout, "timing screwed, stopping resampling" );
         inputResamplingStop( p_input );
         p_buffer->i_flags |= BLOCK_FLAG_DISCONTINUITY;
-        start_date = 0;
+        start_date = VLC_TS_INVALID;
     }
 
-    if ( p_buffer->i_pts < mdate() + AOUT_MIN_PREPARE_TIME )
+    if ( p_buffer->i_pts < now + AOUT_MIN_PREPARE_TIME )
     {
         /* The decoder gives us f*cked up PTS. It's its business, but we
          * can't present it anyway, so drop the buffer. */
         msg_Warn( p_aout, "PTS is out of range (%"PRId64"), dropping buffer",
-                  mdate() - p_buffer->i_pts );
-
+                  now - p_buffer->i_pts );
         inputDrop( p_input, p_buffer );
         inputResamplingStop( p_input );
-        return 0;
+        return NULL;
     }
 
     /* If the audio drift is too big then it's not worth trying to resample
      * the audio. */
-    mtime_t i_pts_tolerance = 3 * AOUT_PTS_TOLERANCE * i_input_rate / INPUT_RATE_DEFAULT;
-    if ( start_date != 0 &&
-         ( start_date < p_buffer->i_pts - i_pts_tolerance ) )
+    if( start_date == VLC_TS_INVALID )
     {
-        msg_Warn( p_aout, "audio drift is too big (%"PRId64"), clearing out",
-                  start_date - p_buffer->i_pts );
-        aout_lock_input_fifos( p_aout );
-        aout_FifoSet( p_aout, &p_input->mixer.fifo, 0 );
-        p_input->mixer.begin = NULL;
-        aout_unlock_input_fifos( p_aout );
+        start_date = p_buffer->i_pts;
+        date_Set (date, start_date);
+    }
+
+    mtime_t drift = start_date - p_buffer->i_pts;
+
+    if( drift < -i_input_rate * 3 * AOUT_MAX_PTS_ADVANCE / INPUT_RATE_DEFAULT )
+    {
+        msg_Warn( p_aout, "buffer way too early (%"PRId64"), clearing queue",
+                  drift );
+        aout_OutputFlush( p_aout, false );
         if ( p_input->i_resampling_type != AOUT_RESAMPLING_NONE )
             msg_Warn( p_aout, "timing screwed, stopping resampling" );
         inputResamplingStop( p_input );
         p_buffer->i_flags |= BLOCK_FLAG_DISCONTINUITY;
-        start_date = 0;
+        start_date = p_buffer->i_pts;
+        date_Set (date, start_date);
+        drift = 0;
     }
-    else if ( start_date != 0 &&
-              ( start_date > p_buffer->i_pts + i_pts_tolerance) )
+    else
+    if( drift > +i_input_rate * 3 * AOUT_MAX_PTS_DELAY / INPUT_RATE_DEFAULT )
     {
-        msg_Warn( p_aout, "audio drift is too big (%"PRId64"), dropping buffer",
-                  start_date - p_buffer->i_pts );
+        msg_Warn( p_aout, "buffer way too late (%"PRId64"), dropping buffer",
+                  drift );
         inputDrop( p_input, p_buffer );
-        return 0;
+        return NULL;
     }
-
-    if ( start_date == 0 ) start_date = p_buffer->i_pts;
 
 #ifndef AOUT_PROCESS_BEFORE_CHEKS
     /* Run pre-filters. */
     aout_FiltersPlay( p_input->pp_filters, p_input->i_nb_filters, &p_buffer );
     if( !p_buffer )
-        return 0;
+        return NULL;
 #endif
 
     /* Run the resampler if needed.
      * We first need to calculate the output rate of this resampler. */
     if ( ( p_input->i_resampling_type == AOUT_RESAMPLING_NONE ) &&
-         ( start_date < p_buffer->i_pts - AOUT_PTS_TOLERANCE
-           || start_date > p_buffer->i_pts + AOUT_PTS_TOLERANCE ) &&
+         ( drift < -AOUT_MAX_PTS_ADVANCE || drift > +AOUT_MAX_PTS_DELAY ) &&
          p_input->i_nb_resamplers > 0 )
     {
         /* Can happen in several circumstances :
@@ -667,20 +465,13 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
          *    synchronization
          * Solution : resample the buffer to avoid a scratch.
          */
-        mtime_t drift = p_buffer->i_pts - start_date;
-
-        p_input->i_resamp_start_date = mdate();
-        p_input->i_resamp_start_drift = (int)drift;
-
-        if ( drift > 0 )
-            p_input->i_resampling_type = AOUT_RESAMPLING_DOWN;
-        else
-            p_input->i_resampling_type = AOUT_RESAMPLING_UP;
-
-        msg_Warn( p_aout, "buffer is %"PRId64" %s, triggering %ssampling",
-                          drift > 0 ? drift : -drift,
-                          drift > 0 ? "in advance" : "late",
-                          drift > 0 ? "down" : "up");
+        p_input->i_resamp_start_date = now;
+        p_input->i_resamp_start_drift = (int)-drift;
+        p_input->i_resampling_type = (drift < 0) ? AOUT_RESAMPLING_DOWN
+                                                 : AOUT_RESAMPLING_UP;
+        msg_Warn( p_aout, (drift < 0)
+                  ? "buffer too early (%"PRId64"), down-sampling"
+                  : "buffer too late  (%"PRId64"), up-sampling", drift );
     }
 
     if ( p_input->i_resampling_type != AOUT_RESAMPLING_NONE )
@@ -690,26 +481,22 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
          * it isn't too audible to the listener. */
 
         if( p_input->i_resampling_type == AOUT_RESAMPLING_UP )
-        {
             p_input->pp_resamplers[0]->fmt_in.audio.i_rate += 2; /* Hz */
-        }
         else
-        {
             p_input->pp_resamplers[0]->fmt_in.audio.i_rate -= 2; /* Hz */
-        }
 
         /* Check if everything is back to normal, in which case we can stop the
          * resampling */
         unsigned int i_nominal_rate =
           (p_input->pp_resamplers[0] == p_input->p_playback_rate_filter)
-          ? INPUT_RATE_DEFAULT * p_input->input.i_rate / i_input_rate
-          : p_input->input.i_rate;
+          ? INPUT_RATE_DEFAULT * p_input->samplerate / i_input_rate
+          : p_input->samplerate;
         if( p_input->pp_resamplers[0]->fmt_in.audio.i_rate == i_nominal_rate )
         {
             p_input->i_resampling_type = AOUT_RESAMPLING_NONE;
             msg_Warn( p_aout, "resampling stopped after %"PRIi64" usec "
                       "(drift: %"PRIi64")",
-                      mdate() - p_input->i_resamp_start_date,
+                      now - p_input->i_resamp_start_date,
                       p_buffer->i_pts - start_date);
         }
         else if( abs( (int)(p_buffer->i_pts - start_date) ) <
@@ -744,52 +531,21 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
     }
 
     if( !p_buffer )
-        return 0;
+        return NULL;
     if( p_buffer->i_nb_samples <= 0 )
     {
         block_Release( p_buffer );
-        return 0;
+        return NULL;
     }
 #endif
 
-    /* Adding the start date will be managed by aout_FifoPush(). */
     p_buffer->i_pts = start_date;
-
-    aout_lock_input_fifos( p_aout );
-    aout_FifoPush( p_aout, &p_input->mixer.fifo, p_buffer );
-    aout_unlock_input_fifos( p_aout );
-    return 0;
+    return p_buffer;
 }
 
 /*****************************************************************************
  * static functions
  *****************************************************************************/
-
-static void inputFailure( aout_instance_t * p_aout, aout_input_t * p_input,
-                          const char * psz_error_message )
-{
-    /* error message */
-    msg_Err( p_aout, "%s", psz_error_message );
-
-    /* clean up */
-    aout_FiltersDestroyPipeline( p_aout, p_input->pp_filters,
-                                 p_input->i_nb_filters );
-    aout_FiltersDestroyPipeline( p_aout, p_input->pp_resamplers,
-                                 p_input->i_nb_resamplers );
-    aout_FifoDestroy( p_aout, &p_input->mixer.fifo );
-    var_Destroy( p_aout, "visual" );
-    var_Destroy( p_aout, "equalizer" );
-    var_Destroy( p_aout, "audio-filter" );
-    var_Destroy( p_aout, "audio-visual" );
-
-    var_Destroy( p_aout, "audio-replay-gain-mode" );
-    var_Destroy( p_aout, "audio-replay-gain-default" );
-    var_Destroy( p_aout, "audio-replay-gain-preamp" );
-    var_Destroy( p_aout, "audio-replay-gain-peak-protection" );
-
-    /* error flag */
-    p_input->b_error = 1;
-}
 
 static void inputDrop( aout_input_t *p_input, aout_buffer_t *p_buffer )
 {
@@ -805,17 +561,24 @@ static void inputResamplingStop( aout_input_t *p_input )
     {
         p_input->pp_resamplers[0]->fmt_in.audio.i_rate =
             ( p_input->pp_resamplers[0] == p_input->p_playback_rate_filter )
-            ? INPUT_RATE_DEFAULT * p_input->input.i_rate / p_input->i_last_input_rate
-            : p_input->input.i_rate;
+            ? INPUT_RATE_DEFAULT * p_input->samplerate / p_input->i_last_input_rate
+            : p_input->samplerate;
     }
 }
 
 static vout_thread_t *RequestVout( void *p_private,
                                    vout_thread_t *p_vout, video_format_t *p_fmt, bool b_recycle )
 {
-    aout_instance_t *p_aout = p_private;
+    audio_output_t *p_aout = p_private;
     VLC_UNUSED(b_recycle);
-    return vout_Request( p_aout, p_vout, p_fmt );
+    vout_configuration_t cfg = {
+        .vout       = p_vout,
+        .input      = NULL,
+        .change_fmt = true,
+        .fmt        = p_fmt,
+        .dpb_size   = 1,
+    };
+    return vout_Request( p_aout, &cfg );
 }
 
 vout_thread_t *aout_filter_RequestVout( filter_t *p_filter,
@@ -833,153 +596,76 @@ vout_thread_t *aout_filter_RequestVout( filter_t *p_filter,
                                        p_vout, p_fmt, p_input->b_recycle_vout );
 }
 
-static int ChangeFiltersString( aout_instance_t * p_aout, const char* psz_variable,
-                                 const char *psz_name, bool b_add )
+static inline bool ChangeFiltersString (vlc_object_t *aout, const char *var,
+                                        const char *filter, bool add)
 {
-    return AoutChangeFilterString( VLC_OBJECT(p_aout), p_aout,
-                                   psz_variable, psz_name, b_add ) ? 1 : 0;
+    return aout_ChangeFilterString (aout, aout, var, filter, add);
 }
 
-static int VisualizationCallback( vlc_object_t *p_this, char const *psz_cmd,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
+static int VisualizationCallback (vlc_object_t *obj, char const *var,
+                                  vlc_value_t oldval, vlc_value_t newval,
+                                  void *data)
 {
-    aout_instance_t *p_aout = (aout_instance_t *)p_this;
-    char *psz_mode = newval.psz_string;
-    (void)psz_cmd; (void)oldval; (void)p_data;
+    const char *mode = newval.psz_string;
+    //aout_input_t *input = data;
+    (void) data;
 
-    if( !psz_mode || !*psz_mode )
+    if (!*mode)
     {
-        ChangeFiltersString( p_aout, "audio-visual", "goom", false );
-        ChangeFiltersString( p_aout, "audio-visual", "visual", false );
-        ChangeFiltersString( p_aout, "audio-visual", "projectm", false );
+        ChangeFiltersString (obj, "audio-visual", "goom", false);
+        ChangeFiltersString (obj, "audio-visual", "visual", false);
+        ChangeFiltersString (obj, "audio-visual", "projectm", false);
+    }
+    else if (!strcmp ("goom", mode))
+    {
+        ChangeFiltersString (obj, "audio-visual", "visual", false );
+        ChangeFiltersString (obj, "audio-visual", "goom", true );
+        ChangeFiltersString (obj, "audio-visual", "projectm", false );
+    }
+    else if (!strcmp ("projectm", mode))
+    {
+        ChangeFiltersString (obj, "audio-visual", "visual", false);
+        ChangeFiltersString (obj, "audio-visual", "goom", false);
+        ChangeFiltersString (obj, "audio-visual", "projectm", true);
     }
     else
     {
-        if( !strcmp( "goom", psz_mode ) )
-        {
-            ChangeFiltersString( p_aout, "audio-visual", "visual", false );
-            ChangeFiltersString( p_aout, "audio-visual", "goom", true );
-            ChangeFiltersString( p_aout, "audio-visual", "projectm", false );
-        }
-        else if( !strcmp( "projectm", psz_mode ) )
-        {
-            ChangeFiltersString( p_aout, "audio-visual", "visual", false );
-            ChangeFiltersString( p_aout, "audio-visual", "goom", false );
-            ChangeFiltersString( p_aout, "audio-visual", "projectm", true );
-        }
-        else
-        {
-            var_Create( p_aout, "effect-list", VLC_VAR_STRING );
-            var_SetString( p_aout, "effect-list", psz_mode );
+        var_Create (obj, "effect-list", VLC_VAR_STRING);
+        var_SetString (obj, "effect-list", mode);
 
-            ChangeFiltersString( p_aout, "audio-visual", "goom", false );
-            ChangeFiltersString( p_aout, "audio-visual", "visual", true );
-            ChangeFiltersString( p_aout, "audio-visual", "projectm", false );
-        }
+        ChangeFiltersString (obj, "audio-visual", "goom", false);
+        ChangeFiltersString (obj, "audio-visual", "visual", true);
+        ChangeFiltersString (obj, "audio-visual", "projectm", false);
+    }
+
+    /* That sucks FIXME: use "input" instead of cast */
+    aout_InputRequestRestart ((audio_output_t *)obj);
+
+    (void) var; (void) oldval;
+    return VLC_SUCCESS;
+}
+
+static int EqualizerCallback (vlc_object_t *obj, char const *cmd,
+                              vlc_value_t oldval, vlc_value_t newval,
+                              void *data)
+{
+    char *mode = newval.psz_string;
+    //aout_input_t *input = data;
+    bool ret;
+
+    (void) data;
+    (void) cmd; (void) oldval;
+    if (!*mode)
+        ret = ChangeFiltersString (obj, "audio-filter", "equalizer", false);
+    else
+    {
+        var_Create (obj, "equalizer-preset", VLC_VAR_STRING);
+        var_SetString (obj, "equalizer-preset", mode);
+        ret = ChangeFiltersString (obj, "audio-filter", "equalizer", true);
     }
 
     /* That sucks */
-    AoutInputsMarkToRestart( p_aout );
-
+    if (ret)
+        aout_InputRequestRestart ((audio_output_t *)obj);
     return VLC_SUCCESS;
 }
-
-static int EqualizerCallback( vlc_object_t *p_this, char const *psz_cmd,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    aout_instance_t *p_aout = (aout_instance_t *)p_this;
-    char *psz_mode = newval.psz_string;
-    int i_ret;
-    (void)psz_cmd; (void)oldval; (void)p_data;
-
-    if( !psz_mode || !*psz_mode )
-    {
-        i_ret = ChangeFiltersString( p_aout, "audio-filter", "equalizer",
-                                     false );
-    }
-    else
-    {
-        var_Create( p_aout, "equalizer-preset", VLC_VAR_STRING );
-        var_SetString( p_aout, "equalizer-preset", psz_mode );
-        i_ret = ChangeFiltersString( p_aout, "audio-filter", "equalizer",
-                                     true );
-    }
-
-    /* That sucks */
-    if( i_ret == 1 )
-        AoutInputsMarkToRestart( p_aout );
-    return VLC_SUCCESS;
-}
-
-static int ReplayGainCallback( vlc_object_t *p_this, char const *psz_cmd,
-                               vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval);
-    VLC_UNUSED(newval); VLC_UNUSED(p_data);
-    aout_instance_t *p_aout = (aout_instance_t *)p_this;
-    int i;
-
-    aout_lock_mixer( p_aout );
-    for( i = 0; i < p_aout->i_nb_inputs; i++ )
-        ReplayGainSelect( p_aout, p_aout->pp_inputs[i] );
-
-    /* Restart the mixer (a trivial mixer may be in use) */
-    if( p_aout->p_mixer )
-        aout_MixerMultiplierSet( p_aout, p_aout->mixer_multiplier );
-    aout_unlock_mixer( p_aout );
-
-    return VLC_SUCCESS;
-}
-
-static void ReplayGainSelect( aout_instance_t *p_aout, aout_input_t *p_input )
-{
-    char *psz_replay_gain = var_GetNonEmptyString( p_aout,
-                                                   "audio-replay-gain-mode" );
-    int i_mode;
-    int i_use;
-    float f_gain;
-
-    p_input->mixer.multiplier = 1.0;
-
-    if( !psz_replay_gain )
-        return;
-
-    /* Find select mode */
-    if( !strcmp( psz_replay_gain, "track" ) )
-        i_mode = AUDIO_REPLAY_GAIN_TRACK;
-    else if( !strcmp( psz_replay_gain, "album" ) )
-        i_mode = AUDIO_REPLAY_GAIN_ALBUM;
-    else
-        i_mode = AUDIO_REPLAY_GAIN_MAX;
-
-    /* If the select mode is not available, prefer the other one */
-    i_use = i_mode;
-    if( i_use != AUDIO_REPLAY_GAIN_MAX && !p_input->replay_gain.pb_gain[i_use] )
-    {
-        for( i_use = 0; i_use < AUDIO_REPLAY_GAIN_MAX; i_use++ )
-        {
-            if( p_input->replay_gain.pb_gain[i_use] )
-                break;
-        }
-    }
-
-    /* */
-    if( i_use != AUDIO_REPLAY_GAIN_MAX )
-        f_gain = p_input->replay_gain.pf_gain[i_use] + var_GetFloat( p_aout, "audio-replay-gain-preamp" );
-    else if( i_mode != AUDIO_REPLAY_GAIN_MAX )
-        f_gain = var_GetFloat( p_aout, "audio-replay-gain-default" );
-    else
-        f_gain = 0.0;
-    p_input->mixer.multiplier = pow( 10.0, f_gain / 20.0 );
-
-    /* */
-    if( p_input->replay_gain.pb_peak[i_use] &&
-        var_GetBool( p_aout, "audio-replay-gain-peak-protection" ) &&
-        p_input->replay_gain.pf_peak[i_use] * p_input->mixer.multiplier > 1.0 )
-    {
-        p_input->mixer.multiplier = 1.0f / p_input->replay_gain.pf_peak[i_use];
-    }
-
-    free( psz_replay_gain );
-}
-

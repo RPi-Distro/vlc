@@ -2,23 +2,23 @@
  * acl.c:
  *****************************************************************************
  * Copyright © 2005-2007 Rémi Denis-Courmont
- * $Id: f10ec64152e87ec3a959825cd497a865a828d00a $
+ * $Id: d2a4518e38ca2ce0f1d3e5322a34397104c0b277 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -84,9 +84,7 @@ static int ACL_Resolve( vlc_object_t *p_this, uint8_t *p_bytes,
             break;
         }
 
-#if defined (HAVE_GETADDRINFO) || defined (WIN32)
-        /* unfortunately many people define AF_INET6
-           though they don't have struct sockaddr_in6 */
+#ifdef AF_INET6
         case AF_INET6:
         {
             struct sockaddr_in6 *addr;
@@ -99,11 +97,11 @@ static int ACL_Resolve( vlc_object_t *p_this, uint8_t *p_bytes,
 
         default:
             msg_Err( p_this, "unknown address family" );
-            vlc_freeaddrinfo( res );
+            freeaddrinfo( res );
             return -1;
     }
 
-    vlc_freeaddrinfo( res );
+    freeaddrinfo( res );
     return i_family;
 }
 
@@ -324,7 +322,7 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
         psz_ip = line;
 
         /* skips blanks - cannot overflow given '\0' is not space */
-        while( isspace( *psz_ip ) )
+        while( isspace( (unsigned char)*psz_ip ) )
             psz_ip++;
 
         if( *psz_ip == '\0' ) /* empty/blank line */
@@ -353,7 +351,7 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
         }
 
         /* look for first space, CR, LF, etc. or comment character */
-        for( ptr = psz_ip; ( *ptr!='#' ) && !isspace( *ptr ) && *ptr; ++ptr );
+        for( ptr = psz_ip; ( *ptr!='#' ) && !isspace( (unsigned char)*ptr ) && *ptr; ++ptr );
 
         *ptr = '\0';
 

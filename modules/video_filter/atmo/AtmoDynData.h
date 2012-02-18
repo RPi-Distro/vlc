@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: f33fa812f68b45dc81189aefb47a2cf0610fe7a9 $
+ * $Id: 9a798a165357ef54d03dd15e5976896eca2ec848 $
  */
 #ifndef _AtmoDynData_h_
 #define _AtmoDynData_h_
@@ -37,7 +37,7 @@ class CAtmoInput;
 
   you ask? why I didn't used a struct for it? ..mmh I like classes?
 
-  Allways stop the current effect Thread before changing AtmoConnection or
+  Always stop the current effect Thread before changing AtmoConnection or
   AtmoConfig!
 */
 class CAtmoDynData

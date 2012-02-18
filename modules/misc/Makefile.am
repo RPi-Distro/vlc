@@ -3,9 +3,9 @@
 
 basedir = misc
 dir = misc
-mods = audioscrobbler freetype gnutls inhibit logger osso_screensaver quartztext sqlite svg vod_rtsp win32text xdg_screensaver xscreensaver
-libvlc_LTLIBRARIES =  $(LTLIBfreetype) $(LTLIBgnutls) $(LTLIBinhibit) $(LTLIBosso_screensaver) $(LTLIBsqlite) $(LTLIBsvg) $(LTLIBxdg_screensaver) $(LTLIBxscreensaver)
-EXTRA_LTLIBRARIES =  libfreetype_plugin.la libgnutls_plugin.la libinhibit_plugin.la libosso_screensaver_plugin.la libsqlite_plugin.la libsvg_plugin.la libxdg_screensaver_plugin.la libxscreensaver_plugin.la
+mods = audioscrobbler inhibit memcpy sqlite vod_rtsp xml
+libvlc_LTLIBRARIES =  $(LTLIBinhibit) $(LTLIBsqlite) $(LTLIBxml)
+EXTRA_LTLIBRARIES =  libinhibit_plugin.la libsqlite_plugin.la libxml_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -13,142 +13,77 @@ include $(top_srcdir)/modules/common.am
 libaudioscrobbler_plugin_la_SOURCES = $(SOURCES_audioscrobbler)
 nodist_libaudioscrobbler_plugin_la_SOURCES = $(nodist_SOURCES_audioscrobbler)
 # Force per-target objects:
-libaudioscrobbler_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaudioscrobbler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaudioscrobbler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaudioscrobbler_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_audioscrobbler)
+libaudioscrobbler_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_audioscrobbler)
+libaudioscrobbler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_audioscrobbler)
+libaudioscrobbler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_audioscrobbler)
 # Set LIBADD and DEPENDENCIES manually:
-libaudioscrobbler_plugin_la_LIBADD = $(AM_LIBADD)
-libaudioscrobbler_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The freetype plugin
-libfreetype_plugin_la_SOURCES = $(SOURCES_freetype)
-nodist_libfreetype_plugin_la_SOURCES = $(nodist_SOURCES_freetype)
-# Force per-target objects:
-libfreetype_plugin_la_CFLAGS = $(AM_CFLAGS)
-libfreetype_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libfreetype_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libfreetype_plugin_la_LIBADD = $(AM_LIBADD)
-libfreetype_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The gnutls plugin
-libgnutls_plugin_la_SOURCES = $(SOURCES_gnutls)
-nodist_libgnutls_plugin_la_SOURCES = $(nodist_SOURCES_gnutls)
-# Force per-target objects:
-libgnutls_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgnutls_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgnutls_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libgnutls_plugin_la_LIBADD = $(AM_LIBADD)
-libgnutls_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaudioscrobbler_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_audioscrobbler)
+libaudioscrobbler_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_audioscrobbler)
+libaudioscrobbler_plugin_la_DEPENDENCIES =
 
 # The inhibit plugin
 libinhibit_plugin_la_SOURCES = $(SOURCES_inhibit)
 nodist_libinhibit_plugin_la_SOURCES = $(nodist_SOURCES_inhibit)
 # Force per-target objects:
-libinhibit_plugin_la_CFLAGS = $(AM_CFLAGS)
-libinhibit_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libinhibit_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libinhibit_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_inhibit)
+libinhibit_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_inhibit)
+libinhibit_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_inhibit)
+libinhibit_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_inhibit)
 # Set LIBADD and DEPENDENCIES manually:
-libinhibit_plugin_la_LIBADD = $(AM_LIBADD)
-libinhibit_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libinhibit_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_inhibit)
+libinhibit_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_inhibit)
+libinhibit_plugin_la_DEPENDENCIES =
 
-# The logger plugin
-liblogger_plugin_la_SOURCES = $(SOURCES_logger)
-nodist_liblogger_plugin_la_SOURCES = $(nodist_SOURCES_logger)
+# The memcpy plugin
+libmemcpy_plugin_la_SOURCES = $(SOURCES_memcpy)
+nodist_libmemcpy_plugin_la_SOURCES = $(nodist_SOURCES_memcpy)
 # Force per-target objects:
-liblogger_plugin_la_CFLAGS = $(AM_CFLAGS)
-liblogger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liblogger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmemcpy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_memcpy)
+libmemcpy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_memcpy)
+libmemcpy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_memcpy)
+libmemcpy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_memcpy)
 # Set LIBADD and DEPENDENCIES manually:
-liblogger_plugin_la_LIBADD = $(AM_LIBADD)
-liblogger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The osso_screensaver plugin
-libosso_screensaver_plugin_la_SOURCES = $(SOURCES_osso_screensaver)
-nodist_libosso_screensaver_plugin_la_SOURCES = $(nodist_SOURCES_osso_screensaver)
-# Force per-target objects:
-libosso_screensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
-libosso_screensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libosso_screensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libosso_screensaver_plugin_la_LIBADD = $(AM_LIBADD)
-libosso_screensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The quartztext plugin
-libquartztext_plugin_la_SOURCES = $(SOURCES_quartztext)
-nodist_libquartztext_plugin_la_SOURCES = $(nodist_SOURCES_quartztext)
-# Force per-target objects:
-libquartztext_plugin_la_CFLAGS = $(AM_CFLAGS)
-libquartztext_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libquartztext_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libquartztext_plugin_la_LIBADD = $(AM_LIBADD)
-libquartztext_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmemcpy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_memcpy)
+libmemcpy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_memcpy)
+libmemcpy_plugin_la_DEPENDENCIES =
 
 # The sqlite plugin
 libsqlite_plugin_la_SOURCES = $(SOURCES_sqlite)
 nodist_libsqlite_plugin_la_SOURCES = $(nodist_SOURCES_sqlite)
 # Force per-target objects:
-libsqlite_plugin_la_CFLAGS = $(AM_CFLAGS)
-libsqlite_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsqlite_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libsqlite_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_sqlite)
+libsqlite_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_sqlite)
+libsqlite_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_sqlite)
+libsqlite_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_sqlite)
 # Set LIBADD and DEPENDENCIES manually:
-libsqlite_plugin_la_LIBADD = $(AM_LIBADD)
-libsqlite_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The svg plugin
-libsvg_plugin_la_SOURCES = $(SOURCES_svg)
-nodist_libsvg_plugin_la_SOURCES = $(nodist_SOURCES_svg)
-# Force per-target objects:
-libsvg_plugin_la_CFLAGS = $(AM_CFLAGS)
-libsvg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsvg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libsvg_plugin_la_LIBADD = $(AM_LIBADD)
-libsvg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libsqlite_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_sqlite)
+libsqlite_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_sqlite)
+libsqlite_plugin_la_DEPENDENCIES =
 
 # The vod_rtsp plugin
 libvod_rtsp_plugin_la_SOURCES = $(SOURCES_vod_rtsp)
 nodist_libvod_rtsp_plugin_la_SOURCES = $(nodist_SOURCES_vod_rtsp)
 # Force per-target objects:
-libvod_rtsp_plugin_la_CFLAGS = $(AM_CFLAGS)
-libvod_rtsp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libvod_rtsp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libvod_rtsp_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vod_rtsp)
+libvod_rtsp_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vod_rtsp)
+libvod_rtsp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vod_rtsp)
+libvod_rtsp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vod_rtsp)
 # Set LIBADD and DEPENDENCIES manually:
-libvod_rtsp_plugin_la_LIBADD = $(AM_LIBADD)
-libvod_rtsp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libvod_rtsp_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vod_rtsp)
+libvod_rtsp_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vod_rtsp)
+libvod_rtsp_plugin_la_DEPENDENCIES =
 
-# The win32text plugin
-libwin32text_plugin_la_SOURCES = $(SOURCES_win32text)
-nodist_libwin32text_plugin_la_SOURCES = $(nodist_SOURCES_win32text)
+# The xml plugin
+libxml_plugin_la_SOURCES = $(SOURCES_xml)
+nodist_libxml_plugin_la_SOURCES = $(nodist_SOURCES_xml)
 # Force per-target objects:
-libwin32text_plugin_la_CFLAGS = $(AM_CFLAGS)
-libwin32text_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libwin32text_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libxml_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_xml)
+libxml_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_xml)
+libxml_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_xml)
+libxml_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_xml)
 # Set LIBADD and DEPENDENCIES manually:
-libwin32text_plugin_la_LIBADD = $(AM_LIBADD)
-libwin32text_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The xdg_screensaver plugin
-libxdg_screensaver_plugin_la_SOURCES = $(SOURCES_xdg_screensaver)
-nodist_libxdg_screensaver_plugin_la_SOURCES = $(nodist_SOURCES_xdg_screensaver)
-# Force per-target objects:
-libxdg_screensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
-libxdg_screensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libxdg_screensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libxdg_screensaver_plugin_la_LIBADD = $(AM_LIBADD)
-libxdg_screensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The xscreensaver plugin
-libxscreensaver_plugin_la_SOURCES = $(SOURCES_xscreensaver)
-nodist_libxscreensaver_plugin_la_SOURCES = $(nodist_SOURCES_xscreensaver)
-# Force per-target objects:
-libxscreensaver_plugin_la_CFLAGS = $(AM_CFLAGS)
-libxscreensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libxscreensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libxscreensaver_plugin_la_LIBADD = $(AM_LIBADD)
-libxscreensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libxml_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_xml)
+libxml_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_xml)
+libxml_plugin_la_DEPENDENCIES =
 

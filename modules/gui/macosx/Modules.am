@@ -4,16 +4,31 @@
 LIBTOOL=@LIBTOOL@ --tag=CC
 
 SOURCES_macosx = \
+	CompatibilityFixes.h \
 	AppleRemote.h \
 	AppleRemote.m \
+	SPInvocationGrabbing.h \
+	SPInvocationGrabbing.m \
+	SPMediaKeyTap.h \
+	SPMediaKeyTap.m \
+	MainMenu.h \
+	MainMenu.m \
+	MainWindow.h \
+	MainWindow.m \
+	CoreInteraction.h \
+	CoreInteraction.m \
+	ExtensionsManager.h \
+	ExtensionsManager.m \
+	ExtensionsDialogProvider.h \
+	ExtensionsDialogProvider.m \
+	VLCUIWidgets.h \
+	VLCUIWidgets.m \
 	about.h \
 	about.m \
 	applescript.h \
 	applescript.m \
 	controls.h \
 	controls.m \
-	equalizer.m \
-	equalizer.h \
 	coredialogs.m \
 	coredialogs.h \
 	intf.m \
@@ -35,28 +50,29 @@ SOURCES_macosx = \
 	simple_prefs.m \
 	output.h \
 	output.m \
-	vout.m \
-	voutgl.m \
-	vout.h \
 	wizard.h \
 	wizard.m \
-	extended.h \
-	extended.m \
+	AudioEffects.h \
+	AudioEffects.m \
+	TrackSynchronization.h \
+	TrackSynchronization.m \
+	VideoEffects.h \
+	VideoEffects.m \
 	bookmarks.h \
 	bookmarks.m \
-	embeddedwindow.h \
-	embeddedwindow.m \
-	sidebarview.h \
-	sidebarview.m \
-	sidestatusview.h \
-	sidestatusview.m \
+	PXSourceList.h \
+	PXSourceList.m \
+	PXSourceListDataSource.h \
+	PXSourceListDelegate.h \
+	SideBarItem.h \
+	SideBarItem.m \
 	fspanel.m \
 	fspanel.h \
 	eyetv.h \
 	eyetv.m \
-	SPInvocationGrabbing.h \
-	SPInvocationGrabbing.m \
-	SPMediaKeyTap.h \
-	SPMediaKeyTap.m \
+	VideoView.h \
+	VideoView.m \
+	MainWindowTitle.h \
+	MainWindowTitle.m \
 	$(NULL)
 

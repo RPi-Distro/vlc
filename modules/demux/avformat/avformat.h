@@ -2,7 +2,7 @@
  * avformat.h: muxer and demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 46fce3aa63e2cbd079dab63c861a32a78c7058fb $
+ * $Id: 62c8e9909e5253a7082d37c3e39a0e1b39376fea $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -32,5 +32,5 @@ void CloseDemux( vlc_object_t * );
 int  OpenMux ( vlc_object_t * );
 void CloseMux( vlc_object_t * );
 
-#define MUX_TEXT N_("Ffmpeg mux")
-#define MUX_LONGTEXT N_("Force use of ffmpeg muxer.")
+#define MUX_TEXT N_("Avformat mux")
+#define MUX_LONGTEXT N_("Force use of a specific avformat muxer.")

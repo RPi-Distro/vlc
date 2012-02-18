@@ -3,75 +3,321 @@
 
 basedir = audio_filter
 dir = audio_filter
-mods = audiobargraph_a chorus_flanger equalizer normvol param_eq scaletempo
-libvlc_LTLIBRARIES = 
-EXTRA_LTLIBRARIES = 
+mods = a52tofloat32 a52tospdif audiobargraph_a audio_format bandlimited_resampler chorus_flanger compressor converter_fixed dolby_surround_decoder dtstofloat32 dtstospdif equalizer headphone_channel_mixer karaoke mono mpgatofixed32 normvol param_eq samplerate scaletempo simple_channel_mixer spatializer trivial_channel_mixer ugly_resampler
+libvlc_LTLIBRARIES =  $(LTLIBa52tofloat32) $(LTLIBdtstofloat32) $(LTLIBmpgatofixed32) $(LTLIBsamplerate)
+EXTRA_LTLIBRARIES =  liba52tofloat32_plugin.la libdtstofloat32_plugin.la libmpgatofixed32_plugin.la libsamplerate_plugin.la
 
 include $(top_srcdir)/modules/common.am
+
+# The a52tofloat32 plugin
+liba52tofloat32_plugin_la_SOURCES = $(SOURCES_a52tofloat32)
+nodist_liba52tofloat32_plugin_la_SOURCES = $(nodist_SOURCES_a52tofloat32)
+# Force per-target objects:
+liba52tofloat32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_a52tofloat32)
+liba52tofloat32_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_a52tofloat32)
+liba52tofloat32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_a52tofloat32)
+liba52tofloat32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_a52tofloat32)
+# Set LIBADD and DEPENDENCIES manually:
+liba52tofloat32_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_a52tofloat32)
+liba52tofloat32_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_a52tofloat32)
+liba52tofloat32_plugin_la_DEPENDENCIES =
+
+# The a52tospdif plugin
+liba52tospdif_plugin_la_SOURCES = $(SOURCES_a52tospdif)
+nodist_liba52tospdif_plugin_la_SOURCES = $(nodist_SOURCES_a52tospdif)
+# Force per-target objects:
+liba52tospdif_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_a52tospdif)
+liba52tospdif_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_a52tospdif)
+liba52tospdif_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_a52tospdif)
+liba52tospdif_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_a52tospdif)
+# Set LIBADD and DEPENDENCIES manually:
+liba52tospdif_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_a52tospdif)
+liba52tospdif_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_a52tospdif)
+liba52tospdif_plugin_la_DEPENDENCIES =
 
 # The audiobargraph_a plugin
 libaudiobargraph_a_plugin_la_SOURCES = $(SOURCES_audiobargraph_a)
 nodist_libaudiobargraph_a_plugin_la_SOURCES = $(nodist_SOURCES_audiobargraph_a)
 # Force per-target objects:
-libaudiobargraph_a_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaudiobargraph_a_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaudiobargraph_a_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaudiobargraph_a_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_audiobargraph_a)
+libaudiobargraph_a_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_audiobargraph_a)
+libaudiobargraph_a_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_audiobargraph_a)
+libaudiobargraph_a_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_audiobargraph_a)
 # Set LIBADD and DEPENDENCIES manually:
-libaudiobargraph_a_plugin_la_LIBADD = $(AM_LIBADD)
-libaudiobargraph_a_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaudiobargraph_a_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_audiobargraph_a)
+libaudiobargraph_a_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_audiobargraph_a)
+libaudiobargraph_a_plugin_la_DEPENDENCIES =
+
+# The audio_format plugin
+libaudio_format_plugin_la_SOURCES = $(SOURCES_audio_format)
+nodist_libaudio_format_plugin_la_SOURCES = $(nodist_SOURCES_audio_format)
+# Force per-target objects:
+libaudio_format_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_audio_format)
+libaudio_format_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_audio_format)
+libaudio_format_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_audio_format)
+libaudio_format_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_audio_format)
+# Set LIBADD and DEPENDENCIES manually:
+libaudio_format_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_audio_format)
+libaudio_format_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_audio_format)
+libaudio_format_plugin_la_DEPENDENCIES =
+
+# The bandlimited_resampler plugin
+libbandlimited_resampler_plugin_la_SOURCES = $(SOURCES_bandlimited_resampler)
+nodist_libbandlimited_resampler_plugin_la_SOURCES = $(nodist_SOURCES_bandlimited_resampler)
+# Force per-target objects:
+libbandlimited_resampler_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_bandlimited_resampler)
+libbandlimited_resampler_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_bandlimited_resampler)
+libbandlimited_resampler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_bandlimited_resampler)
+libbandlimited_resampler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_bandlimited_resampler)
+# Set LIBADD and DEPENDENCIES manually:
+libbandlimited_resampler_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_bandlimited_resampler)
+libbandlimited_resampler_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_bandlimited_resampler)
+libbandlimited_resampler_plugin_la_DEPENDENCIES =
 
 # The chorus_flanger plugin
 libchorus_flanger_plugin_la_SOURCES = $(SOURCES_chorus_flanger)
 nodist_libchorus_flanger_plugin_la_SOURCES = $(nodist_SOURCES_chorus_flanger)
 # Force per-target objects:
-libchorus_flanger_plugin_la_CFLAGS = $(AM_CFLAGS)
-libchorus_flanger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libchorus_flanger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libchorus_flanger_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_chorus_flanger)
+libchorus_flanger_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_chorus_flanger)
+libchorus_flanger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_chorus_flanger)
+libchorus_flanger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_chorus_flanger)
 # Set LIBADD and DEPENDENCIES manually:
-libchorus_flanger_plugin_la_LIBADD = $(AM_LIBADD)
-libchorus_flanger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libchorus_flanger_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_chorus_flanger)
+libchorus_flanger_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_chorus_flanger)
+libchorus_flanger_plugin_la_DEPENDENCIES =
+
+# The compressor plugin
+libcompressor_plugin_la_SOURCES = $(SOURCES_compressor)
+nodist_libcompressor_plugin_la_SOURCES = $(nodist_SOURCES_compressor)
+# Force per-target objects:
+libcompressor_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_compressor)
+libcompressor_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_compressor)
+libcompressor_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_compressor)
+libcompressor_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_compressor)
+# Set LIBADD and DEPENDENCIES manually:
+libcompressor_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_compressor)
+libcompressor_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_compressor)
+libcompressor_plugin_la_DEPENDENCIES =
+
+# The converter_fixed plugin
+libconverter_fixed_plugin_la_SOURCES = $(SOURCES_converter_fixed)
+nodist_libconverter_fixed_plugin_la_SOURCES = $(nodist_SOURCES_converter_fixed)
+# Force per-target objects:
+libconverter_fixed_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_converter_fixed)
+libconverter_fixed_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_converter_fixed)
+libconverter_fixed_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_converter_fixed)
+libconverter_fixed_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_converter_fixed)
+# Set LIBADD and DEPENDENCIES manually:
+libconverter_fixed_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_converter_fixed)
+libconverter_fixed_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_converter_fixed)
+libconverter_fixed_plugin_la_DEPENDENCIES =
+
+# The dolby_surround_decoder plugin
+libdolby_surround_decoder_plugin_la_SOURCES = $(SOURCES_dolby_surround_decoder)
+nodist_libdolby_surround_decoder_plugin_la_SOURCES = $(nodist_SOURCES_dolby_surround_decoder)
+# Force per-target objects:
+libdolby_surround_decoder_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dolby_surround_decoder)
+libdolby_surround_decoder_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dolby_surround_decoder)
+libdolby_surround_decoder_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dolby_surround_decoder)
+libdolby_surround_decoder_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dolby_surround_decoder)
+# Set LIBADD and DEPENDENCIES manually:
+libdolby_surround_decoder_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dolby_surround_decoder)
+libdolby_surround_decoder_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dolby_surround_decoder)
+libdolby_surround_decoder_plugin_la_DEPENDENCIES =
+
+# The dtstofloat32 plugin
+libdtstofloat32_plugin_la_SOURCES = $(SOURCES_dtstofloat32)
+nodist_libdtstofloat32_plugin_la_SOURCES = $(nodist_SOURCES_dtstofloat32)
+# Force per-target objects:
+libdtstofloat32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dtstofloat32)
+libdtstofloat32_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dtstofloat32)
+libdtstofloat32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dtstofloat32)
+libdtstofloat32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dtstofloat32)
+# Set LIBADD and DEPENDENCIES manually:
+libdtstofloat32_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dtstofloat32)
+libdtstofloat32_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dtstofloat32)
+libdtstofloat32_plugin_la_DEPENDENCIES =
+
+# The dtstospdif plugin
+libdtstospdif_plugin_la_SOURCES = $(SOURCES_dtstospdif)
+nodist_libdtstospdif_plugin_la_SOURCES = $(nodist_SOURCES_dtstospdif)
+# Force per-target objects:
+libdtstospdif_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dtstospdif)
+libdtstospdif_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dtstospdif)
+libdtstospdif_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dtstospdif)
+libdtstospdif_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dtstospdif)
+# Set LIBADD and DEPENDENCIES manually:
+libdtstospdif_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dtstospdif)
+libdtstospdif_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dtstospdif)
+libdtstospdif_plugin_la_DEPENDENCIES =
 
 # The equalizer plugin
 libequalizer_plugin_la_SOURCES = $(SOURCES_equalizer)
 nodist_libequalizer_plugin_la_SOURCES = $(nodist_SOURCES_equalizer)
 # Force per-target objects:
-libequalizer_plugin_la_CFLAGS = $(AM_CFLAGS)
-libequalizer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libequalizer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libequalizer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_equalizer)
+libequalizer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_equalizer)
+libequalizer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_equalizer)
+libequalizer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_equalizer)
 # Set LIBADD and DEPENDENCIES manually:
-libequalizer_plugin_la_LIBADD = $(AM_LIBADD)
-libequalizer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libequalizer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_equalizer)
+libequalizer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_equalizer)
+libequalizer_plugin_la_DEPENDENCIES =
+
+# The headphone_channel_mixer plugin
+libheadphone_channel_mixer_plugin_la_SOURCES = $(SOURCES_headphone_channel_mixer)
+nodist_libheadphone_channel_mixer_plugin_la_SOURCES = $(nodist_SOURCES_headphone_channel_mixer)
+# Force per-target objects:
+libheadphone_channel_mixer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_headphone_channel_mixer)
+libheadphone_channel_mixer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_headphone_channel_mixer)
+libheadphone_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_headphone_channel_mixer)
+libheadphone_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_headphone_channel_mixer)
+# Set LIBADD and DEPENDENCIES manually:
+libheadphone_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_headphone_channel_mixer)
+libheadphone_channel_mixer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_headphone_channel_mixer)
+libheadphone_channel_mixer_plugin_la_DEPENDENCIES =
+
+# The karaoke plugin
+libkaraoke_plugin_la_SOURCES = $(SOURCES_karaoke)
+nodist_libkaraoke_plugin_la_SOURCES = $(nodist_SOURCES_karaoke)
+# Force per-target objects:
+libkaraoke_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_karaoke)
+libkaraoke_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_karaoke)
+libkaraoke_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_karaoke)
+libkaraoke_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_karaoke)
+# Set LIBADD and DEPENDENCIES manually:
+libkaraoke_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_karaoke)
+libkaraoke_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_karaoke)
+libkaraoke_plugin_la_DEPENDENCIES =
+
+# The mono plugin
+libmono_plugin_la_SOURCES = $(SOURCES_mono)
+nodist_libmono_plugin_la_SOURCES = $(nodist_SOURCES_mono)
+# Force per-target objects:
+libmono_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mono)
+libmono_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mono)
+libmono_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mono)
+libmono_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mono)
+# Set LIBADD and DEPENDENCIES manually:
+libmono_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mono)
+libmono_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mono)
+libmono_plugin_la_DEPENDENCIES =
+
+# The mpgatofixed32 plugin
+libmpgatofixed32_plugin_la_SOURCES = $(SOURCES_mpgatofixed32)
+nodist_libmpgatofixed32_plugin_la_SOURCES = $(nodist_SOURCES_mpgatofixed32)
+# Force per-target objects:
+libmpgatofixed32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mpgatofixed32)
+libmpgatofixed32_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mpgatofixed32)
+libmpgatofixed32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mpgatofixed32)
+libmpgatofixed32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mpgatofixed32)
+# Set LIBADD and DEPENDENCIES manually:
+libmpgatofixed32_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mpgatofixed32)
+libmpgatofixed32_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mpgatofixed32)
+libmpgatofixed32_plugin_la_DEPENDENCIES =
 
 # The normvol plugin
 libnormvol_plugin_la_SOURCES = $(SOURCES_normvol)
 nodist_libnormvol_plugin_la_SOURCES = $(nodist_SOURCES_normvol)
 # Force per-target objects:
-libnormvol_plugin_la_CFLAGS = $(AM_CFLAGS)
-libnormvol_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libnormvol_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libnormvol_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_normvol)
+libnormvol_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_normvol)
+libnormvol_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_normvol)
+libnormvol_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_normvol)
 # Set LIBADD and DEPENDENCIES manually:
-libnormvol_plugin_la_LIBADD = $(AM_LIBADD)
-libnormvol_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libnormvol_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_normvol)
+libnormvol_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_normvol)
+libnormvol_plugin_la_DEPENDENCIES =
 
 # The param_eq plugin
 libparam_eq_plugin_la_SOURCES = $(SOURCES_param_eq)
 nodist_libparam_eq_plugin_la_SOURCES = $(nodist_SOURCES_param_eq)
 # Force per-target objects:
-libparam_eq_plugin_la_CFLAGS = $(AM_CFLAGS)
-libparam_eq_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libparam_eq_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libparam_eq_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_param_eq)
+libparam_eq_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_param_eq)
+libparam_eq_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_param_eq)
+libparam_eq_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_param_eq)
 # Set LIBADD and DEPENDENCIES manually:
-libparam_eq_plugin_la_LIBADD = $(AM_LIBADD)
-libparam_eq_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libparam_eq_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_param_eq)
+libparam_eq_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_param_eq)
+libparam_eq_plugin_la_DEPENDENCIES =
+
+# The samplerate plugin
+libsamplerate_plugin_la_SOURCES = $(SOURCES_samplerate)
+nodist_libsamplerate_plugin_la_SOURCES = $(nodist_SOURCES_samplerate)
+# Force per-target objects:
+libsamplerate_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_samplerate)
+libsamplerate_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_samplerate)
+libsamplerate_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_samplerate)
+libsamplerate_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_samplerate)
+# Set LIBADD and DEPENDENCIES manually:
+libsamplerate_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_samplerate)
+libsamplerate_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_samplerate)
+libsamplerate_plugin_la_DEPENDENCIES =
 
 # The scaletempo plugin
 libscaletempo_plugin_la_SOURCES = $(SOURCES_scaletempo)
 nodist_libscaletempo_plugin_la_SOURCES = $(nodist_SOURCES_scaletempo)
 # Force per-target objects:
-libscaletempo_plugin_la_CFLAGS = $(AM_CFLAGS)
-libscaletempo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libscaletempo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libscaletempo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_scaletempo)
+libscaletempo_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_scaletempo)
+libscaletempo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_scaletempo)
+libscaletempo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_scaletempo)
 # Set LIBADD and DEPENDENCIES manually:
-libscaletempo_plugin_la_LIBADD = $(AM_LIBADD)
-libscaletempo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libscaletempo_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_scaletempo)
+libscaletempo_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_scaletempo)
+libscaletempo_plugin_la_DEPENDENCIES =
+
+# The simple_channel_mixer plugin
+libsimple_channel_mixer_plugin_la_SOURCES = $(SOURCES_simple_channel_mixer)
+nodist_libsimple_channel_mixer_plugin_la_SOURCES = $(nodist_SOURCES_simple_channel_mixer)
+# Force per-target objects:
+libsimple_channel_mixer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_simple_channel_mixer)
+libsimple_channel_mixer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_simple_channel_mixer)
+libsimple_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_simple_channel_mixer)
+libsimple_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_simple_channel_mixer)
+# Set LIBADD and DEPENDENCIES manually:
+libsimple_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_simple_channel_mixer)
+libsimple_channel_mixer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_simple_channel_mixer)
+libsimple_channel_mixer_plugin_la_DEPENDENCIES =
+
+# The spatializer plugin
+libspatializer_plugin_la_SOURCES = $(SOURCES_spatializer)
+nodist_libspatializer_plugin_la_SOURCES = $(nodist_SOURCES_spatializer)
+# Force per-target objects:
+libspatializer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_spatializer)
+libspatializer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_spatializer)
+libspatializer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_spatializer)
+libspatializer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_spatializer)
+# Set LIBADD and DEPENDENCIES manually:
+libspatializer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_spatializer)
+libspatializer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_spatializer)
+libspatializer_plugin_la_DEPENDENCIES =
+
+# The trivial_channel_mixer plugin
+libtrivial_channel_mixer_plugin_la_SOURCES = $(SOURCES_trivial_channel_mixer)
+nodist_libtrivial_channel_mixer_plugin_la_SOURCES = $(nodist_SOURCES_trivial_channel_mixer)
+# Force per-target objects:
+libtrivial_channel_mixer_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_trivial_channel_mixer)
+libtrivial_channel_mixer_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_trivial_channel_mixer)
+libtrivial_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_trivial_channel_mixer)
+libtrivial_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_trivial_channel_mixer)
+# Set LIBADD and DEPENDENCIES manually:
+libtrivial_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_trivial_channel_mixer)
+libtrivial_channel_mixer_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_trivial_channel_mixer)
+libtrivial_channel_mixer_plugin_la_DEPENDENCIES =
+
+# The ugly_resampler plugin
+libugly_resampler_plugin_la_SOURCES = $(SOURCES_ugly_resampler)
+nodist_libugly_resampler_plugin_la_SOURCES = $(nodist_SOURCES_ugly_resampler)
+# Force per-target objects:
+libugly_resampler_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ugly_resampler)
+libugly_resampler_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ugly_resampler)
+libugly_resampler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ugly_resampler)
+libugly_resampler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ugly_resampler)
+# Set LIBADD and DEPENDENCIES manually:
+libugly_resampler_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ugly_resampler)
+libugly_resampler_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ugly_resampler)
+libugly_resampler_plugin_la_DEPENDENCIES =
 

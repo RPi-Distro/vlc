@@ -3,9 +3,9 @@
 
 basedir = codec
 dir = codec
-mods = a52 adpcm aes3 araw cc cdg cvdsub dirac dts dvbsub faad fake flac fluidsynth invmem kate libass libmpeg2 lpcm mash mpeg_audio png quicktime rawvideo realvideo schroedinger sdl_image speex svcdsub telx theora tremor twolame vorbis x264 zvbi
-libvlc_LTLIBRARIES =  $(LTLIBdirac) $(LTLIBfaad) $(LTLIBflac) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBpng) $(LTLIBquicktime) $(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi)
-EXTRA_LTLIBRARIES =  libdirac_plugin.la libfaad_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libpng_plugin.la libquicktime_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
+mods = a52 adpcm aes3 araw cc cdg crystalhd cvdsub ddummy dirac dts dvbsub edummy faad flac fluidsynth kate libass libmpeg2 lpcm mash mpeg_audio png quicktime rawvideo realvideo schroedinger sdl_image speex stl subsdec subsusf svcdsub t140 telx theora tremor twolame vorbis x264 zvbi
+libvlc_LTLIBRARIES =  $(LTLIBcrystalhd) $(LTLIBdirac) $(LTLIBfaad) $(LTLIBflac) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBpng) $(LTLIBquicktime) $(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi)
+EXTRA_LTLIBRARIES =  libcrystalhd_plugin.la libdirac_plugin.la libfaad_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libpng_plugin.la libquicktime_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -13,395 +13,532 @@ include $(top_srcdir)/modules/common.am
 liba52_plugin_la_SOURCES = $(SOURCES_a52)
 nodist_liba52_plugin_la_SOURCES = $(nodist_SOURCES_a52)
 # Force per-target objects:
-liba52_plugin_la_CFLAGS = $(AM_CFLAGS)
-liba52_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liba52_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liba52_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_a52)
+liba52_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_a52)
+liba52_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_a52)
+liba52_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_a52)
 # Set LIBADD and DEPENDENCIES manually:
-liba52_plugin_la_LIBADD = $(AM_LIBADD)
-liba52_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liba52_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_a52)
+liba52_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_a52)
+liba52_plugin_la_DEPENDENCIES =
 
 # The adpcm plugin
 libadpcm_plugin_la_SOURCES = $(SOURCES_adpcm)
 nodist_libadpcm_plugin_la_SOURCES = $(nodist_SOURCES_adpcm)
 # Force per-target objects:
-libadpcm_plugin_la_CFLAGS = $(AM_CFLAGS)
-libadpcm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libadpcm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libadpcm_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_adpcm)
+libadpcm_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_adpcm)
+libadpcm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_adpcm)
+libadpcm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_adpcm)
 # Set LIBADD and DEPENDENCIES manually:
-libadpcm_plugin_la_LIBADD = $(AM_LIBADD)
-libadpcm_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libadpcm_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_adpcm)
+libadpcm_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_adpcm)
+libadpcm_plugin_la_DEPENDENCIES =
 
 # The aes3 plugin
 libaes3_plugin_la_SOURCES = $(SOURCES_aes3)
 nodist_libaes3_plugin_la_SOURCES = $(nodist_SOURCES_aes3)
 # Force per-target objects:
-libaes3_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaes3_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaes3_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaes3_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_aes3)
+libaes3_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_aes3)
+libaes3_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_aes3)
+libaes3_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_aes3)
 # Set LIBADD and DEPENDENCIES manually:
-libaes3_plugin_la_LIBADD = $(AM_LIBADD)
-libaes3_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaes3_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_aes3)
+libaes3_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_aes3)
+libaes3_plugin_la_DEPENDENCIES =
 
 # The araw plugin
 libaraw_plugin_la_SOURCES = $(SOURCES_araw)
 nodist_libaraw_plugin_la_SOURCES = $(nodist_SOURCES_araw)
 # Force per-target objects:
-libaraw_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaraw_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaraw_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaraw_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_araw)
+libaraw_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_araw)
+libaraw_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_araw)
+libaraw_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_araw)
 # Set LIBADD and DEPENDENCIES manually:
-libaraw_plugin_la_LIBADD = $(AM_LIBADD)
-libaraw_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaraw_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_araw)
+libaraw_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_araw)
+libaraw_plugin_la_DEPENDENCIES =
 
 # The cc plugin
 libcc_plugin_la_SOURCES = $(SOURCES_cc)
 nodist_libcc_plugin_la_SOURCES = $(nodist_SOURCES_cc)
 # Force per-target objects:
-libcc_plugin_la_CFLAGS = $(AM_CFLAGS)
-libcc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libcc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libcc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_cc)
+libcc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_cc)
+libcc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_cc)
+libcc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_cc)
 # Set LIBADD and DEPENDENCIES manually:
-libcc_plugin_la_LIBADD = $(AM_LIBADD)
-libcc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libcc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_cc)
+libcc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_cc)
+libcc_plugin_la_DEPENDENCIES =
 
 # The cdg plugin
 libcdg_plugin_la_SOURCES = $(SOURCES_cdg)
 nodist_libcdg_plugin_la_SOURCES = $(nodist_SOURCES_cdg)
 # Force per-target objects:
-libcdg_plugin_la_CFLAGS = $(AM_CFLAGS)
-libcdg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libcdg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libcdg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_cdg)
+libcdg_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_cdg)
+libcdg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_cdg)
+libcdg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_cdg)
 # Set LIBADD and DEPENDENCIES manually:
-libcdg_plugin_la_LIBADD = $(AM_LIBADD)
-libcdg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libcdg_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_cdg)
+libcdg_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_cdg)
+libcdg_plugin_la_DEPENDENCIES =
+
+# The crystalhd plugin
+libcrystalhd_plugin_la_SOURCES = $(SOURCES_crystalhd)
+nodist_libcrystalhd_plugin_la_SOURCES = $(nodist_SOURCES_crystalhd)
+# Force per-target objects:
+libcrystalhd_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_crystalhd)
+libcrystalhd_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_crystalhd)
+libcrystalhd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_crystalhd)
+libcrystalhd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_crystalhd)
+# Set LIBADD and DEPENDENCIES manually:
+libcrystalhd_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_crystalhd)
+libcrystalhd_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_crystalhd)
+libcrystalhd_plugin_la_DEPENDENCIES =
 
 # The cvdsub plugin
 libcvdsub_plugin_la_SOURCES = $(SOURCES_cvdsub)
 nodist_libcvdsub_plugin_la_SOURCES = $(nodist_SOURCES_cvdsub)
 # Force per-target objects:
-libcvdsub_plugin_la_CFLAGS = $(AM_CFLAGS)
-libcvdsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libcvdsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libcvdsub_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_cvdsub)
+libcvdsub_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_cvdsub)
+libcvdsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_cvdsub)
+libcvdsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_cvdsub)
 # Set LIBADD and DEPENDENCIES manually:
-libcvdsub_plugin_la_LIBADD = $(AM_LIBADD)
-libcvdsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libcvdsub_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_cvdsub)
+libcvdsub_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_cvdsub)
+libcvdsub_plugin_la_DEPENDENCIES =
+
+# The ddummy plugin
+libddummy_plugin_la_SOURCES = $(SOURCES_ddummy)
+nodist_libddummy_plugin_la_SOURCES = $(nodist_SOURCES_ddummy)
+# Force per-target objects:
+libddummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ddummy)
+libddummy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ddummy)
+libddummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ddummy)
+libddummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ddummy)
+# Set LIBADD and DEPENDENCIES manually:
+libddummy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ddummy)
+libddummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ddummy)
+libddummy_plugin_la_DEPENDENCIES =
 
 # The dirac plugin
 libdirac_plugin_la_SOURCES = $(SOURCES_dirac)
 nodist_libdirac_plugin_la_SOURCES = $(nodist_SOURCES_dirac)
 # Force per-target objects:
-libdirac_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdirac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dirac)
+libdirac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dirac)
+libdirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dirac)
+libdirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dirac)
 # Set LIBADD and DEPENDENCIES manually:
-libdirac_plugin_la_LIBADD = $(AM_LIBADD)
-libdirac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdirac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dirac)
+libdirac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dirac)
+libdirac_plugin_la_DEPENDENCIES =
 
 # The dts plugin
 libdts_plugin_la_SOURCES = $(SOURCES_dts)
 nodist_libdts_plugin_la_SOURCES = $(nodist_SOURCES_dts)
 # Force per-target objects:
-libdts_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdts_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdts_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdts_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dts)
+libdts_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dts)
+libdts_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dts)
+libdts_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dts)
 # Set LIBADD and DEPENDENCIES manually:
-libdts_plugin_la_LIBADD = $(AM_LIBADD)
-libdts_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdts_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dts)
+libdts_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dts)
+libdts_plugin_la_DEPENDENCIES =
 
 # The dvbsub plugin
 libdvbsub_plugin_la_SOURCES = $(SOURCES_dvbsub)
 nodist_libdvbsub_plugin_la_SOURCES = $(nodist_SOURCES_dvbsub)
 # Force per-target objects:
-libdvbsub_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdvbsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdvbsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdvbsub_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dvbsub)
+libdvbsub_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dvbsub)
+libdvbsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dvbsub)
+libdvbsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dvbsub)
 # Set LIBADD and DEPENDENCIES manually:
-libdvbsub_plugin_la_LIBADD = $(AM_LIBADD)
-libdvbsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdvbsub_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dvbsub)
+libdvbsub_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dvbsub)
+libdvbsub_plugin_la_DEPENDENCIES =
+
+# The edummy plugin
+libedummy_plugin_la_SOURCES = $(SOURCES_edummy)
+nodist_libedummy_plugin_la_SOURCES = $(nodist_SOURCES_edummy)
+# Force per-target objects:
+libedummy_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_edummy)
+libedummy_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_edummy)
+libedummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_edummy)
+libedummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_edummy)
+# Set LIBADD and DEPENDENCIES manually:
+libedummy_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_edummy)
+libedummy_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_edummy)
+libedummy_plugin_la_DEPENDENCIES =
 
 # The faad plugin
 libfaad_plugin_la_SOURCES = $(SOURCES_faad)
 nodist_libfaad_plugin_la_SOURCES = $(nodist_SOURCES_faad)
 # Force per-target objects:
-libfaad_plugin_la_CFLAGS = $(AM_CFLAGS)
-libfaad_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libfaad_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libfaad_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_faad)
+libfaad_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_faad)
+libfaad_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_faad)
+libfaad_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_faad)
 # Set LIBADD and DEPENDENCIES manually:
-libfaad_plugin_la_LIBADD = $(AM_LIBADD)
-libfaad_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The fake plugin
-libfake_plugin_la_SOURCES = $(SOURCES_fake)
-nodist_libfake_plugin_la_SOURCES = $(nodist_SOURCES_fake)
-# Force per-target objects:
-libfake_plugin_la_CFLAGS = $(AM_CFLAGS)
-libfake_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libfake_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libfake_plugin_la_LIBADD = $(AM_LIBADD)
-libfake_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libfaad_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_faad)
+libfaad_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_faad)
+libfaad_plugin_la_DEPENDENCIES =
 
 # The flac plugin
 libflac_plugin_la_SOURCES = $(SOURCES_flac)
 nodist_libflac_plugin_la_SOURCES = $(nodist_SOURCES_flac)
 # Force per-target objects:
-libflac_plugin_la_CFLAGS = $(AM_CFLAGS)
-libflac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libflac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libflac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_flac)
+libflac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_flac)
+libflac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_flac)
+libflac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_flac)
 # Set LIBADD and DEPENDENCIES manually:
-libflac_plugin_la_LIBADD = $(AM_LIBADD)
-libflac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libflac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_flac)
+libflac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_flac)
+libflac_plugin_la_DEPENDENCIES =
 
 # The fluidsynth plugin
 libfluidsynth_plugin_la_SOURCES = $(SOURCES_fluidsynth)
 nodist_libfluidsynth_plugin_la_SOURCES = $(nodist_SOURCES_fluidsynth)
 # Force per-target objects:
-libfluidsynth_plugin_la_CFLAGS = $(AM_CFLAGS)
-libfluidsynth_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libfluidsynth_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libfluidsynth_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_fluidsynth)
+libfluidsynth_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_fluidsynth)
+libfluidsynth_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_fluidsynth)
+libfluidsynth_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_fluidsynth)
 # Set LIBADD and DEPENDENCIES manually:
-libfluidsynth_plugin_la_LIBADD = $(AM_LIBADD)
-libfluidsynth_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The invmem plugin
-libinvmem_plugin_la_SOURCES = $(SOURCES_invmem)
-nodist_libinvmem_plugin_la_SOURCES = $(nodist_SOURCES_invmem)
-# Force per-target objects:
-libinvmem_plugin_la_CFLAGS = $(AM_CFLAGS)
-libinvmem_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libinvmem_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libinvmem_plugin_la_LIBADD = $(AM_LIBADD)
-libinvmem_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libfluidsynth_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_fluidsynth)
+libfluidsynth_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_fluidsynth)
+libfluidsynth_plugin_la_DEPENDENCIES =
 
 # The kate plugin
 libkate_plugin_la_SOURCES = $(SOURCES_kate)
 nodist_libkate_plugin_la_SOURCES = $(nodist_SOURCES_kate)
 # Force per-target objects:
-libkate_plugin_la_CFLAGS = $(AM_CFLAGS)
-libkate_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libkate_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libkate_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_kate)
+libkate_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_kate)
+libkate_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_kate)
+libkate_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_kate)
 # Set LIBADD and DEPENDENCIES manually:
-libkate_plugin_la_LIBADD = $(AM_LIBADD)
-libkate_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libkate_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_kate)
+libkate_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_kate)
+libkate_plugin_la_DEPENDENCIES =
 
 # The libass plugin
 liblibass_plugin_la_SOURCES = $(SOURCES_libass)
 nodist_liblibass_plugin_la_SOURCES = $(nodist_SOURCES_libass)
 # Force per-target objects:
-liblibass_plugin_la_CFLAGS = $(AM_CFLAGS)
-liblibass_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liblibass_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liblibass_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_libass)
+liblibass_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_libass)
+liblibass_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_libass)
+liblibass_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_libass)
 # Set LIBADD and DEPENDENCIES manually:
-liblibass_plugin_la_LIBADD = $(AM_LIBADD)
-liblibass_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liblibass_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_libass)
+liblibass_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_libass)
+liblibass_plugin_la_DEPENDENCIES =
 
 # The libmpeg2 plugin
 liblibmpeg2_plugin_la_SOURCES = $(SOURCES_libmpeg2)
 nodist_liblibmpeg2_plugin_la_SOURCES = $(nodist_SOURCES_libmpeg2)
 # Force per-target objects:
-liblibmpeg2_plugin_la_CFLAGS = $(AM_CFLAGS)
-liblibmpeg2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liblibmpeg2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liblibmpeg2_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_libmpeg2)
+liblibmpeg2_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_libmpeg2)
+liblibmpeg2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_libmpeg2)
+liblibmpeg2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_libmpeg2)
 # Set LIBADD and DEPENDENCIES manually:
-liblibmpeg2_plugin_la_LIBADD = $(AM_LIBADD)
-liblibmpeg2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liblibmpeg2_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_libmpeg2)
+liblibmpeg2_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_libmpeg2)
+liblibmpeg2_plugin_la_DEPENDENCIES =
 
 # The lpcm plugin
 liblpcm_plugin_la_SOURCES = $(SOURCES_lpcm)
 nodist_liblpcm_plugin_la_SOURCES = $(nodist_SOURCES_lpcm)
 # Force per-target objects:
-liblpcm_plugin_la_CFLAGS = $(AM_CFLAGS)
-liblpcm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liblpcm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liblpcm_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_lpcm)
+liblpcm_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_lpcm)
+liblpcm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_lpcm)
+liblpcm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_lpcm)
 # Set LIBADD and DEPENDENCIES manually:
-liblpcm_plugin_la_LIBADD = $(AM_LIBADD)
-liblpcm_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liblpcm_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_lpcm)
+liblpcm_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_lpcm)
+liblpcm_plugin_la_DEPENDENCIES =
 
 # The mash plugin
 libmash_plugin_la_SOURCES = $(SOURCES_mash)
 nodist_libmash_plugin_la_SOURCES = $(nodist_SOURCES_mash)
 # Force per-target objects:
-libmash_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmash_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmash_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmash_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mash)
+libmash_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mash)
+libmash_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mash)
+libmash_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mash)
 # Set LIBADD and DEPENDENCIES manually:
-libmash_plugin_la_LIBADD = $(AM_LIBADD)
-libmash_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmash_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mash)
+libmash_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mash)
+libmash_plugin_la_DEPENDENCIES =
 
 # The mpeg_audio plugin
 libmpeg_audio_plugin_la_SOURCES = $(SOURCES_mpeg_audio)
 nodist_libmpeg_audio_plugin_la_SOURCES = $(nodist_SOURCES_mpeg_audio)
 # Force per-target objects:
-libmpeg_audio_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmpeg_audio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmpeg_audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmpeg_audio_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mpeg_audio)
+libmpeg_audio_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mpeg_audio)
+libmpeg_audio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mpeg_audio)
+libmpeg_audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mpeg_audio)
 # Set LIBADD and DEPENDENCIES manually:
-libmpeg_audio_plugin_la_LIBADD = $(AM_LIBADD)
-libmpeg_audio_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmpeg_audio_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mpeg_audio)
+libmpeg_audio_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mpeg_audio)
+libmpeg_audio_plugin_la_DEPENDENCIES =
 
 # The png plugin
 libpng_plugin_la_SOURCES = $(SOURCES_png)
 nodist_libpng_plugin_la_SOURCES = $(nodist_SOURCES_png)
 # Force per-target objects:
-libpng_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpng_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpng_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpng_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_png)
+libpng_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_png)
+libpng_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_png)
+libpng_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_png)
 # Set LIBADD and DEPENDENCIES manually:
-libpng_plugin_la_LIBADD = $(AM_LIBADD)
-libpng_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpng_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_png)
+libpng_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_png)
+libpng_plugin_la_DEPENDENCIES =
 
 # The quicktime plugin
 libquicktime_plugin_la_SOURCES = $(SOURCES_quicktime)
 nodist_libquicktime_plugin_la_SOURCES = $(nodist_SOURCES_quicktime)
 # Force per-target objects:
-libquicktime_plugin_la_CFLAGS = $(AM_CFLAGS)
-libquicktime_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libquicktime_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libquicktime_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_quicktime)
+libquicktime_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_quicktime)
+libquicktime_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_quicktime)
+libquicktime_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_quicktime)
 # Set LIBADD and DEPENDENCIES manually:
-libquicktime_plugin_la_LIBADD = $(AM_LIBADD)
-libquicktime_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libquicktime_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_quicktime)
+libquicktime_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_quicktime)
+libquicktime_plugin_la_DEPENDENCIES =
 
 # The rawvideo plugin
 librawvideo_plugin_la_SOURCES = $(SOURCES_rawvideo)
 nodist_librawvideo_plugin_la_SOURCES = $(nodist_SOURCES_rawvideo)
 # Force per-target objects:
-librawvideo_plugin_la_CFLAGS = $(AM_CFLAGS)
-librawvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-librawvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+librawvideo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_rawvideo)
+librawvideo_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_rawvideo)
+librawvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_rawvideo)
+librawvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_rawvideo)
 # Set LIBADD and DEPENDENCIES manually:
-librawvideo_plugin_la_LIBADD = $(AM_LIBADD)
-librawvideo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+librawvideo_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_rawvideo)
+librawvideo_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_rawvideo)
+librawvideo_plugin_la_DEPENDENCIES =
 
 # The realvideo plugin
 librealvideo_plugin_la_SOURCES = $(SOURCES_realvideo)
 nodist_librealvideo_plugin_la_SOURCES = $(nodist_SOURCES_realvideo)
 # Force per-target objects:
-librealvideo_plugin_la_CFLAGS = $(AM_CFLAGS)
-librealvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-librealvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+librealvideo_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_realvideo)
+librealvideo_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_realvideo)
+librealvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_realvideo)
+librealvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_realvideo)
 # Set LIBADD and DEPENDENCIES manually:
-librealvideo_plugin_la_LIBADD = $(AM_LIBADD)
-librealvideo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+librealvideo_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_realvideo)
+librealvideo_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_realvideo)
+librealvideo_plugin_la_DEPENDENCIES =
 
 # The schroedinger plugin
 libschroedinger_plugin_la_SOURCES = $(SOURCES_schroedinger)
 nodist_libschroedinger_plugin_la_SOURCES = $(nodist_SOURCES_schroedinger)
 # Force per-target objects:
-libschroedinger_plugin_la_CFLAGS = $(AM_CFLAGS)
-libschroedinger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libschroedinger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libschroedinger_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_schroedinger)
+libschroedinger_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_schroedinger)
+libschroedinger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_schroedinger)
+libschroedinger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_schroedinger)
 # Set LIBADD and DEPENDENCIES manually:
-libschroedinger_plugin_la_LIBADD = $(AM_LIBADD)
-libschroedinger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libschroedinger_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_schroedinger)
+libschroedinger_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_schroedinger)
+libschroedinger_plugin_la_DEPENDENCIES =
 
 # The sdl_image plugin
 libsdl_image_plugin_la_SOURCES = $(SOURCES_sdl_image)
 nodist_libsdl_image_plugin_la_SOURCES = $(nodist_SOURCES_sdl_image)
 # Force per-target objects:
-libsdl_image_plugin_la_CFLAGS = $(AM_CFLAGS)
-libsdl_image_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsdl_image_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libsdl_image_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_sdl_image)
+libsdl_image_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_sdl_image)
+libsdl_image_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_sdl_image)
+libsdl_image_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_sdl_image)
 # Set LIBADD and DEPENDENCIES manually:
-libsdl_image_plugin_la_LIBADD = $(AM_LIBADD)
-libsdl_image_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libsdl_image_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_sdl_image)
+libsdl_image_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_sdl_image)
+libsdl_image_plugin_la_DEPENDENCIES =
 
 # The speex plugin
 libspeex_plugin_la_SOURCES = $(SOURCES_speex)
 nodist_libspeex_plugin_la_SOURCES = $(nodist_SOURCES_speex)
 # Force per-target objects:
-libspeex_plugin_la_CFLAGS = $(AM_CFLAGS)
-libspeex_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libspeex_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libspeex_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_speex)
+libspeex_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_speex)
+libspeex_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_speex)
+libspeex_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_speex)
 # Set LIBADD and DEPENDENCIES manually:
-libspeex_plugin_la_LIBADD = $(AM_LIBADD)
-libspeex_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libspeex_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_speex)
+libspeex_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_speex)
+libspeex_plugin_la_DEPENDENCIES =
+
+# The stl plugin
+libstl_plugin_la_SOURCES = $(SOURCES_stl)
+nodist_libstl_plugin_la_SOURCES = $(nodist_SOURCES_stl)
+# Force per-target objects:
+libstl_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_stl)
+libstl_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_stl)
+libstl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_stl)
+libstl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_stl)
+# Set LIBADD and DEPENDENCIES manually:
+libstl_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_stl)
+libstl_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_stl)
+libstl_plugin_la_DEPENDENCIES =
+
+# The subsdec plugin
+libsubsdec_plugin_la_SOURCES = $(SOURCES_subsdec)
+nodist_libsubsdec_plugin_la_SOURCES = $(nodist_SOURCES_subsdec)
+# Force per-target objects:
+libsubsdec_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_subsdec)
+libsubsdec_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_subsdec)
+libsubsdec_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_subsdec)
+libsubsdec_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_subsdec)
+# Set LIBADD and DEPENDENCIES manually:
+libsubsdec_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_subsdec)
+libsubsdec_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_subsdec)
+libsubsdec_plugin_la_DEPENDENCIES =
+
+# The subsusf plugin
+libsubsusf_plugin_la_SOURCES = $(SOURCES_subsusf)
+nodist_libsubsusf_plugin_la_SOURCES = $(nodist_SOURCES_subsusf)
+# Force per-target objects:
+libsubsusf_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_subsusf)
+libsubsusf_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_subsusf)
+libsubsusf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_subsusf)
+libsubsusf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_subsusf)
+# Set LIBADD and DEPENDENCIES manually:
+libsubsusf_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_subsusf)
+libsubsusf_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_subsusf)
+libsubsusf_plugin_la_DEPENDENCIES =
 
 # The svcdsub plugin
 libsvcdsub_plugin_la_SOURCES = $(SOURCES_svcdsub)
 nodist_libsvcdsub_plugin_la_SOURCES = $(nodist_SOURCES_svcdsub)
 # Force per-target objects:
-libsvcdsub_plugin_la_CFLAGS = $(AM_CFLAGS)
-libsvcdsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsvcdsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libsvcdsub_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_svcdsub)
+libsvcdsub_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_svcdsub)
+libsvcdsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_svcdsub)
+libsvcdsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_svcdsub)
 # Set LIBADD and DEPENDENCIES manually:
-libsvcdsub_plugin_la_LIBADD = $(AM_LIBADD)
-libsvcdsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libsvcdsub_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_svcdsub)
+libsvcdsub_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_svcdsub)
+libsvcdsub_plugin_la_DEPENDENCIES =
+
+# The t140 plugin
+libt140_plugin_la_SOURCES = $(SOURCES_t140)
+nodist_libt140_plugin_la_SOURCES = $(nodist_SOURCES_t140)
+# Force per-target objects:
+libt140_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_t140)
+libt140_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_t140)
+libt140_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_t140)
+libt140_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_t140)
+# Set LIBADD and DEPENDENCIES manually:
+libt140_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_t140)
+libt140_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_t140)
+libt140_plugin_la_DEPENDENCIES =
 
 # The telx plugin
 libtelx_plugin_la_SOURCES = $(SOURCES_telx)
 nodist_libtelx_plugin_la_SOURCES = $(nodist_SOURCES_telx)
 # Force per-target objects:
-libtelx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libtelx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libtelx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libtelx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_telx)
+libtelx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_telx)
+libtelx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_telx)
+libtelx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_telx)
 # Set LIBADD and DEPENDENCIES manually:
-libtelx_plugin_la_LIBADD = $(AM_LIBADD)
-libtelx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libtelx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_telx)
+libtelx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_telx)
+libtelx_plugin_la_DEPENDENCIES =
 
 # The theora plugin
 libtheora_plugin_la_SOURCES = $(SOURCES_theora)
 nodist_libtheora_plugin_la_SOURCES = $(nodist_SOURCES_theora)
 # Force per-target objects:
-libtheora_plugin_la_CFLAGS = $(AM_CFLAGS)
-libtheora_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libtheora_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libtheora_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_theora)
+libtheora_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_theora)
+libtheora_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_theora)
+libtheora_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_theora)
 # Set LIBADD and DEPENDENCIES manually:
-libtheora_plugin_la_LIBADD = $(AM_LIBADD)
-libtheora_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libtheora_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_theora)
+libtheora_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_theora)
+libtheora_plugin_la_DEPENDENCIES =
 
 # The tremor plugin
 libtremor_plugin_la_SOURCES = $(SOURCES_tremor)
 nodist_libtremor_plugin_la_SOURCES = $(nodist_SOURCES_tremor)
 # Force per-target objects:
-libtremor_plugin_la_CFLAGS = $(AM_CFLAGS)
-libtremor_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libtremor_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libtremor_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_tremor)
+libtremor_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_tremor)
+libtremor_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_tremor)
+libtremor_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_tremor)
 # Set LIBADD and DEPENDENCIES manually:
-libtremor_plugin_la_LIBADD = $(AM_LIBADD)
-libtremor_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libtremor_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_tremor)
+libtremor_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_tremor)
+libtremor_plugin_la_DEPENDENCIES =
 
 # The twolame plugin
 libtwolame_plugin_la_SOURCES = $(SOURCES_twolame)
 nodist_libtwolame_plugin_la_SOURCES = $(nodist_SOURCES_twolame)
 # Force per-target objects:
-libtwolame_plugin_la_CFLAGS = $(AM_CFLAGS)
-libtwolame_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libtwolame_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libtwolame_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_twolame)
+libtwolame_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_twolame)
+libtwolame_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_twolame)
+libtwolame_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_twolame)
 # Set LIBADD and DEPENDENCIES manually:
-libtwolame_plugin_la_LIBADD = $(AM_LIBADD)
-libtwolame_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libtwolame_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_twolame)
+libtwolame_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_twolame)
+libtwolame_plugin_la_DEPENDENCIES =
 
 # The vorbis plugin
 libvorbis_plugin_la_SOURCES = $(SOURCES_vorbis)
 nodist_libvorbis_plugin_la_SOURCES = $(nodist_SOURCES_vorbis)
 # Force per-target objects:
-libvorbis_plugin_la_CFLAGS = $(AM_CFLAGS)
-libvorbis_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libvorbis_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libvorbis_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vorbis)
+libvorbis_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vorbis)
+libvorbis_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vorbis)
+libvorbis_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vorbis)
 # Set LIBADD and DEPENDENCIES manually:
-libvorbis_plugin_la_LIBADD = $(AM_LIBADD)
-libvorbis_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libvorbis_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vorbis)
+libvorbis_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vorbis)
+libvorbis_plugin_la_DEPENDENCIES =
 
 # The x264 plugin
 libx264_plugin_la_SOURCES = $(SOURCES_x264)
 nodist_libx264_plugin_la_SOURCES = $(nodist_SOURCES_x264)
 # Force per-target objects:
-libx264_plugin_la_CFLAGS = $(AM_CFLAGS)
-libx264_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libx264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libx264_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_x264)
+libx264_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_x264)
+libx264_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_x264)
+libx264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_x264)
 # Set LIBADD and DEPENDENCIES manually:
-libx264_plugin_la_LIBADD = $(AM_LIBADD)
-libx264_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libx264_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_x264)
+libx264_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_x264)
+libx264_plugin_la_DEPENDENCIES =
 
 # The zvbi plugin
 libzvbi_plugin_la_SOURCES = $(SOURCES_zvbi)
 nodist_libzvbi_plugin_la_SOURCES = $(nodist_SOURCES_zvbi)
 # Force per-target objects:
-libzvbi_plugin_la_CFLAGS = $(AM_CFLAGS)
-libzvbi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libzvbi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libzvbi_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_zvbi)
+libzvbi_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_zvbi)
+libzvbi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_zvbi)
+libzvbi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_zvbi)
 # Set LIBADD and DEPENDENCIES manually:
-libzvbi_plugin_la_LIBADD = $(AM_LIBADD)
-libzvbi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libzvbi_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_zvbi)
+libzvbi_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_zvbi)
+libzvbi_plugin_la_DEPENDENCIES =
 

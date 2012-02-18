@@ -2,7 +2,7 @@
  * lirc.c : lirc module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: 5c585bc68a6fbd2e15d51d16242173f99805f3b6 $
+ * $Id: 03e15aee2a59f33739c30e585ed66cfcf0dee49c $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -63,7 +63,7 @@ vlc_module_begin ()
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )
 
-    add_string( "lirc-file", NULL, NULL,
+    add_string( "lirc-file", NULL,
                 LIRC_TEXT, LIRC_LONGTEXT, true )
 vlc_module_end ()
 
@@ -186,7 +186,7 @@ static void Process( intf_thread_t *p_intf )
         {
             if( !strncmp( "key-", c, 4 ) )
             {
-                vlc_key_t i_key = vlc_GetActionId( c );
+                vlc_action_t i_key = vlc_GetActionId( c );
                 if( i_key )
                     var_SetInteger( p_intf->p_libvlc, "key-action", i_key );
                 else

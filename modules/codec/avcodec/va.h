@@ -2,7 +2,7 @@
  * va.h: Video Acceleration API for avcodec
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 6cb5bf48148d30795ebdd87e922141b71c3c6025 $
+ * $Id: 1cc784430796c634cecf541c245a74e056dd70c9 $
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *
@@ -58,7 +58,7 @@ static inline void vlc_va_Delete(vlc_va_t *va)
     va->close(va);
 }
 
-vlc_va_t *vlc_va_NewVaapi(int codec_id);
+vlc_va_t *vlc_va_NewVaapi(vlc_object_t *obj, int codec_id);
 vlc_va_t *vlc_va_NewDxva2(vlc_object_t *log, int codec_id);
 
 #endif

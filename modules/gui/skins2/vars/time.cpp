@@ -2,7 +2,7 @@
  * time.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 3adec7620c7a7dee3f54f4aaec4b1be6db040f8f $
+ * $Id: ba0686adf94cb723350b8e6d3852f5a4a8b15fab $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,8 +22,8 @@
  * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc_input.h>
 #include "time.hpp"
+#include <vlc_input.h>
 
 
 inline bool StreamTime::havePosition() const {

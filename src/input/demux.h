@@ -1,33 +1,29 @@
 /*****************************************************************************
  * demux.h: Input demux functions
  *****************************************************************************
- * Copyright (C) 1998-2008 the VideoLAN team
+ * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 8e9aa27088f644b2409b3b927563206fd698851c $
+ * $Id: 3372f17229d5ff15ab1729464a0db7ac202eb1ab $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
-
-#ifndef _INPUT_DEMUX_H
-#define _INPUT_DEMUX_H 1
+#ifndef LIBVLC_INPUT_DEMUX_H
+#define LIBVLC_INPUT_DEMUX_H 1
 
 #include <vlc_common.h>
 #include <vlc_demux.h>
@@ -35,8 +31,8 @@
 #include "stream.h"
 
 /* stream_t *s could be null and then it mean a access+demux in one */
-#define demux_New( a, b, c, d, e, f, g, h ) __demux_New(VLC_OBJECT(a),b,c,d,e,f,g,h)
-demux_t *__demux_New( vlc_object_t *p_obj, input_thread_t *p_parent_input, const char *psz_access, const char *psz_demux, const char *psz_path, stream_t *s, es_out_t *out, bool );
+demux_t *demux_New( vlc_object_t *p_obj, input_thread_t *p_parent_input, const char *psz_access, const char *psz_demux, const char *psz_path, stream_t *s, es_out_t *out, bool );
+#define demux_New( a, b, c, d, e, f, g, h ) demux_New(VLC_OBJECT(a),b,c,d,e,f,g,h)
 
 void demux_Delete( demux_t * );
 
@@ -63,4 +59,3 @@ static inline int demux_Control( demux_t *p_demux, int i_query, ... )
 }
 
 #endif
-

@@ -3,9 +3,9 @@
 
 basedir = demux
 dir = demux
-mods = aiff asademux au demux_cdg demuxdump dirac flacsys gme live555 mjpeg mod mpc nsc nsv nuv ogg ps pva rawaud rawdv rawvid real smf subtitle ts tta ty vc1 vobsub voc wav xa
-libvlc_LTLIBRARIES =  $(LTLIBasademux) $(LTLIBgme) $(LTLIBlive555) $(LTLIBmod) $(LTLIBmpc) $(LTLIBogg) $(LTLIBts)
-EXTRA_LTLIBRARIES =  libasademux_plugin.la libgme_plugin.la liblive555_plugin.la libmod_plugin.la libmpc_plugin.la libogg_plugin.la libts_plugin.la
+mods = aiff au demux_cdg demuxdump demux_stl dirac flacsys gme image live555 mjpeg mod mpc nsc nsv nuv ogg ps pva rawaud rawdv rawvid real sid smf subtitle tta ty vc1 vobsub voc wav xa
+libvlc_LTLIBRARIES =  $(LTLIBgme) $(LTLIBlive555) $(LTLIBmod) $(LTLIBmpc) $(LTLIBogg) $(LTLIBsid)
+EXTRA_LTLIBRARIES =  libgme_plugin.la liblive555_plugin.la libmod_plugin.la libmpc_plugin.la libogg_plugin.la libsid_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -13,351 +13,428 @@ include $(top_srcdir)/modules/common.am
 libaiff_plugin_la_SOURCES = $(SOURCES_aiff)
 nodist_libaiff_plugin_la_SOURCES = $(nodist_SOURCES_aiff)
 # Force per-target objects:
-libaiff_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaiff_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaiff_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libaiff_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_aiff)
+libaiff_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_aiff)
+libaiff_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_aiff)
+libaiff_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_aiff)
 # Set LIBADD and DEPENDENCIES manually:
-libaiff_plugin_la_LIBADD = $(AM_LIBADD)
-libaiff_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The asademux plugin
-libasademux_plugin_la_SOURCES = $(SOURCES_asademux)
-nodist_libasademux_plugin_la_SOURCES = $(nodist_SOURCES_asademux)
-# Force per-target objects:
-libasademux_plugin_la_CFLAGS = $(AM_CFLAGS)
-libasademux_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libasademux_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libasademux_plugin_la_LIBADD = $(AM_LIBADD)
-libasademux_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libaiff_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_aiff)
+libaiff_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_aiff)
+libaiff_plugin_la_DEPENDENCIES =
 
 # The au plugin
 libau_plugin_la_SOURCES = $(SOURCES_au)
 nodist_libau_plugin_la_SOURCES = $(nodist_SOURCES_au)
 # Force per-target objects:
-libau_plugin_la_CFLAGS = $(AM_CFLAGS)
-libau_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libau_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libau_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_au)
+libau_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_au)
+libau_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_au)
+libau_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_au)
 # Set LIBADD and DEPENDENCIES manually:
-libau_plugin_la_LIBADD = $(AM_LIBADD)
-libau_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libau_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_au)
+libau_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_au)
+libau_plugin_la_DEPENDENCIES =
 
 # The demux_cdg plugin
 libdemux_cdg_plugin_la_SOURCES = $(SOURCES_demux_cdg)
 nodist_libdemux_cdg_plugin_la_SOURCES = $(nodist_SOURCES_demux_cdg)
 # Force per-target objects:
-libdemux_cdg_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdemux_cdg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdemux_cdg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdemux_cdg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_demux_cdg)
+libdemux_cdg_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_demux_cdg)
+libdemux_cdg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_demux_cdg)
+libdemux_cdg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_demux_cdg)
 # Set LIBADD and DEPENDENCIES manually:
-libdemux_cdg_plugin_la_LIBADD = $(AM_LIBADD)
-libdemux_cdg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdemux_cdg_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_demux_cdg)
+libdemux_cdg_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_demux_cdg)
+libdemux_cdg_plugin_la_DEPENDENCIES =
 
 # The demuxdump plugin
 libdemuxdump_plugin_la_SOURCES = $(SOURCES_demuxdump)
 nodist_libdemuxdump_plugin_la_SOURCES = $(nodist_SOURCES_demuxdump)
 # Force per-target objects:
-libdemuxdump_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdemuxdump_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdemuxdump_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdemuxdump_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_demuxdump)
+libdemuxdump_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_demuxdump)
+libdemuxdump_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_demuxdump)
+libdemuxdump_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_demuxdump)
 # Set LIBADD and DEPENDENCIES manually:
-libdemuxdump_plugin_la_LIBADD = $(AM_LIBADD)
-libdemuxdump_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdemuxdump_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_demuxdump)
+libdemuxdump_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_demuxdump)
+libdemuxdump_plugin_la_DEPENDENCIES =
+
+# The demux_stl plugin
+libdemux_stl_plugin_la_SOURCES = $(SOURCES_demux_stl)
+nodist_libdemux_stl_plugin_la_SOURCES = $(nodist_SOURCES_demux_stl)
+# Force per-target objects:
+libdemux_stl_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_demux_stl)
+libdemux_stl_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_demux_stl)
+libdemux_stl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_demux_stl)
+libdemux_stl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_demux_stl)
+# Set LIBADD and DEPENDENCIES manually:
+libdemux_stl_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_demux_stl)
+libdemux_stl_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_demux_stl)
+libdemux_stl_plugin_la_DEPENDENCIES =
 
 # The dirac plugin
 libdirac_plugin_la_SOURCES = $(SOURCES_dirac)
 nodist_libdirac_plugin_la_SOURCES = $(nodist_SOURCES_dirac)
 # Force per-target objects:
-libdirac_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdirac_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dirac)
+libdirac_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dirac)
+libdirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dirac)
+libdirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dirac)
 # Set LIBADD and DEPENDENCIES manually:
-libdirac_plugin_la_LIBADD = $(AM_LIBADD)
-libdirac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdirac_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dirac)
+libdirac_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dirac)
+libdirac_plugin_la_DEPENDENCIES =
 
 # The flacsys plugin
 libflacsys_plugin_la_SOURCES = $(SOURCES_flacsys)
 nodist_libflacsys_plugin_la_SOURCES = $(nodist_SOURCES_flacsys)
 # Force per-target objects:
-libflacsys_plugin_la_CFLAGS = $(AM_CFLAGS)
-libflacsys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libflacsys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libflacsys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_flacsys)
+libflacsys_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_flacsys)
+libflacsys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_flacsys)
+libflacsys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_flacsys)
 # Set LIBADD and DEPENDENCIES manually:
-libflacsys_plugin_la_LIBADD = $(AM_LIBADD)
-libflacsys_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libflacsys_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_flacsys)
+libflacsys_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_flacsys)
+libflacsys_plugin_la_DEPENDENCIES =
 
 # The gme plugin
 libgme_plugin_la_SOURCES = $(SOURCES_gme)
 nodist_libgme_plugin_la_SOURCES = $(nodist_SOURCES_gme)
 # Force per-target objects:
-libgme_plugin_la_CFLAGS = $(AM_CFLAGS)
-libgme_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libgme_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libgme_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_gme)
+libgme_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_gme)
+libgme_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_gme)
+libgme_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_gme)
 # Set LIBADD and DEPENDENCIES manually:
-libgme_plugin_la_LIBADD = $(AM_LIBADD)
-libgme_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libgme_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_gme)
+libgme_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_gme)
+libgme_plugin_la_DEPENDENCIES =
+
+# The image plugin
+libimage_plugin_la_SOURCES = $(SOURCES_image)
+nodist_libimage_plugin_la_SOURCES = $(nodist_SOURCES_image)
+# Force per-target objects:
+libimage_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_image)
+libimage_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_image)
+libimage_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_image)
+libimage_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_image)
+# Set LIBADD and DEPENDENCIES manually:
+libimage_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_image)
+libimage_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_image)
+libimage_plugin_la_DEPENDENCIES =
 
 # The live555 plugin
 liblive555_plugin_la_SOURCES = $(SOURCES_live555)
 nodist_liblive555_plugin_la_SOURCES = $(nodist_SOURCES_live555)
 # Force per-target objects:
-liblive555_plugin_la_CFLAGS = $(AM_CFLAGS)
-liblive555_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liblive555_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+liblive555_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_live555)
+liblive555_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_live555)
+liblive555_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_live555)
+liblive555_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_live555)
 # Set LIBADD and DEPENDENCIES manually:
-liblive555_plugin_la_LIBADD = $(AM_LIBADD)
-liblive555_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+liblive555_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_live555)
+liblive555_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_live555)
+liblive555_plugin_la_DEPENDENCIES =
 
 # The mjpeg plugin
 libmjpeg_plugin_la_SOURCES = $(SOURCES_mjpeg)
 nodist_libmjpeg_plugin_la_SOURCES = $(nodist_SOURCES_mjpeg)
 # Force per-target objects:
-libmjpeg_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmjpeg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmjpeg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmjpeg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mjpeg)
+libmjpeg_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mjpeg)
+libmjpeg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mjpeg)
+libmjpeg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mjpeg)
 # Set LIBADD and DEPENDENCIES manually:
-libmjpeg_plugin_la_LIBADD = $(AM_LIBADD)
-libmjpeg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmjpeg_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mjpeg)
+libmjpeg_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mjpeg)
+libmjpeg_plugin_la_DEPENDENCIES =
 
 # The mod plugin
 libmod_plugin_la_SOURCES = $(SOURCES_mod)
 nodist_libmod_plugin_la_SOURCES = $(nodist_SOURCES_mod)
 # Force per-target objects:
-libmod_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmod_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmod_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmod_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mod)
+libmod_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mod)
+libmod_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mod)
+libmod_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mod)
 # Set LIBADD and DEPENDENCIES manually:
-libmod_plugin_la_LIBADD = $(AM_LIBADD)
-libmod_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmod_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mod)
+libmod_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mod)
+libmod_plugin_la_DEPENDENCIES =
 
 # The mpc plugin
 libmpc_plugin_la_SOURCES = $(SOURCES_mpc)
 nodist_libmpc_plugin_la_SOURCES = $(nodist_SOURCES_mpc)
 # Force per-target objects:
-libmpc_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmpc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmpc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmpc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mpc)
+libmpc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mpc)
+libmpc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mpc)
+libmpc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mpc)
 # Set LIBADD and DEPENDENCIES manually:
-libmpc_plugin_la_LIBADD = $(AM_LIBADD)
-libmpc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmpc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mpc)
+libmpc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mpc)
+libmpc_plugin_la_DEPENDENCIES =
 
 # The nsc plugin
 libnsc_plugin_la_SOURCES = $(SOURCES_nsc)
 nodist_libnsc_plugin_la_SOURCES = $(nodist_SOURCES_nsc)
 # Force per-target objects:
-libnsc_plugin_la_CFLAGS = $(AM_CFLAGS)
-libnsc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libnsc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libnsc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_nsc)
+libnsc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_nsc)
+libnsc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_nsc)
+libnsc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_nsc)
 # Set LIBADD and DEPENDENCIES manually:
-libnsc_plugin_la_LIBADD = $(AM_LIBADD)
-libnsc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libnsc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_nsc)
+libnsc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_nsc)
+libnsc_plugin_la_DEPENDENCIES =
 
 # The nsv plugin
 libnsv_plugin_la_SOURCES = $(SOURCES_nsv)
 nodist_libnsv_plugin_la_SOURCES = $(nodist_SOURCES_nsv)
 # Force per-target objects:
-libnsv_plugin_la_CFLAGS = $(AM_CFLAGS)
-libnsv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libnsv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libnsv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_nsv)
+libnsv_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_nsv)
+libnsv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_nsv)
+libnsv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_nsv)
 # Set LIBADD and DEPENDENCIES manually:
-libnsv_plugin_la_LIBADD = $(AM_LIBADD)
-libnsv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libnsv_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_nsv)
+libnsv_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_nsv)
+libnsv_plugin_la_DEPENDENCIES =
 
 # The nuv plugin
 libnuv_plugin_la_SOURCES = $(SOURCES_nuv)
 nodist_libnuv_plugin_la_SOURCES = $(nodist_SOURCES_nuv)
 # Force per-target objects:
-libnuv_plugin_la_CFLAGS = $(AM_CFLAGS)
-libnuv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libnuv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libnuv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_nuv)
+libnuv_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_nuv)
+libnuv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_nuv)
+libnuv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_nuv)
 # Set LIBADD and DEPENDENCIES manually:
-libnuv_plugin_la_LIBADD = $(AM_LIBADD)
-libnuv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libnuv_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_nuv)
+libnuv_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_nuv)
+libnuv_plugin_la_DEPENDENCIES =
 
 # The ogg plugin
 libogg_plugin_la_SOURCES = $(SOURCES_ogg)
 nodist_libogg_plugin_la_SOURCES = $(nodist_SOURCES_ogg)
 # Force per-target objects:
-libogg_plugin_la_CFLAGS = $(AM_CFLAGS)
-libogg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libogg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libogg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ogg)
+libogg_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ogg)
+libogg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ogg)
+libogg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ogg)
 # Set LIBADD and DEPENDENCIES manually:
-libogg_plugin_la_LIBADD = $(AM_LIBADD)
-libogg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libogg_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ogg)
+libogg_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ogg)
+libogg_plugin_la_DEPENDENCIES =
 
 # The ps plugin
 libps_plugin_la_SOURCES = $(SOURCES_ps)
 nodist_libps_plugin_la_SOURCES = $(nodist_SOURCES_ps)
 # Force per-target objects:
-libps_plugin_la_CFLAGS = $(AM_CFLAGS)
-libps_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libps_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libps_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ps)
+libps_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ps)
+libps_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ps)
+libps_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ps)
 # Set LIBADD and DEPENDENCIES manually:
-libps_plugin_la_LIBADD = $(AM_LIBADD)
-libps_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libps_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ps)
+libps_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ps)
+libps_plugin_la_DEPENDENCIES =
 
 # The pva plugin
 libpva_plugin_la_SOURCES = $(SOURCES_pva)
 nodist_libpva_plugin_la_SOURCES = $(nodist_SOURCES_pva)
 # Force per-target objects:
-libpva_plugin_la_CFLAGS = $(AM_CFLAGS)
-libpva_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libpva_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libpva_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_pva)
+libpva_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_pva)
+libpva_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_pva)
+libpva_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_pva)
 # Set LIBADD and DEPENDENCIES manually:
-libpva_plugin_la_LIBADD = $(AM_LIBADD)
-libpva_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libpva_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_pva)
+libpva_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_pva)
+libpva_plugin_la_DEPENDENCIES =
 
 # The rawaud plugin
 librawaud_plugin_la_SOURCES = $(SOURCES_rawaud)
 nodist_librawaud_plugin_la_SOURCES = $(nodist_SOURCES_rawaud)
 # Force per-target objects:
-librawaud_plugin_la_CFLAGS = $(AM_CFLAGS)
-librawaud_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-librawaud_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+librawaud_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_rawaud)
+librawaud_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_rawaud)
+librawaud_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_rawaud)
+librawaud_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_rawaud)
 # Set LIBADD and DEPENDENCIES manually:
-librawaud_plugin_la_LIBADD = $(AM_LIBADD)
-librawaud_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+librawaud_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_rawaud)
+librawaud_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_rawaud)
+librawaud_plugin_la_DEPENDENCIES =
 
 # The rawdv plugin
 librawdv_plugin_la_SOURCES = $(SOURCES_rawdv)
 nodist_librawdv_plugin_la_SOURCES = $(nodist_SOURCES_rawdv)
 # Force per-target objects:
-librawdv_plugin_la_CFLAGS = $(AM_CFLAGS)
-librawdv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-librawdv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+librawdv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_rawdv)
+librawdv_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_rawdv)
+librawdv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_rawdv)
+librawdv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_rawdv)
 # Set LIBADD and DEPENDENCIES manually:
-librawdv_plugin_la_LIBADD = $(AM_LIBADD)
-librawdv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+librawdv_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_rawdv)
+librawdv_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_rawdv)
+librawdv_plugin_la_DEPENDENCIES =
 
 # The rawvid plugin
 librawvid_plugin_la_SOURCES = $(SOURCES_rawvid)
 nodist_librawvid_plugin_la_SOURCES = $(nodist_SOURCES_rawvid)
 # Force per-target objects:
-librawvid_plugin_la_CFLAGS = $(AM_CFLAGS)
-librawvid_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-librawvid_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+librawvid_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_rawvid)
+librawvid_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_rawvid)
+librawvid_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_rawvid)
+librawvid_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_rawvid)
 # Set LIBADD and DEPENDENCIES manually:
-librawvid_plugin_la_LIBADD = $(AM_LIBADD)
-librawvid_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+librawvid_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_rawvid)
+librawvid_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_rawvid)
+librawvid_plugin_la_DEPENDENCIES =
 
 # The real plugin
 libreal_plugin_la_SOURCES = $(SOURCES_real)
 nodist_libreal_plugin_la_SOURCES = $(nodist_SOURCES_real)
 # Force per-target objects:
-libreal_plugin_la_CFLAGS = $(AM_CFLAGS)
-libreal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libreal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libreal_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_real)
+libreal_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_real)
+libreal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_real)
+libreal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_real)
 # Set LIBADD and DEPENDENCIES manually:
-libreal_plugin_la_LIBADD = $(AM_LIBADD)
-libreal_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libreal_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_real)
+libreal_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_real)
+libreal_plugin_la_DEPENDENCIES =
+
+# The sid plugin
+libsid_plugin_la_SOURCES = $(SOURCES_sid)
+nodist_libsid_plugin_la_SOURCES = $(nodist_SOURCES_sid)
+# Force per-target objects:
+libsid_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_sid)
+libsid_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_sid)
+libsid_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_sid)
+libsid_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_sid)
+# Set LIBADD and DEPENDENCIES manually:
+libsid_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_sid)
+libsid_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_sid)
+libsid_plugin_la_DEPENDENCIES =
 
 # The smf plugin
 libsmf_plugin_la_SOURCES = $(SOURCES_smf)
 nodist_libsmf_plugin_la_SOURCES = $(nodist_SOURCES_smf)
 # Force per-target objects:
-libsmf_plugin_la_CFLAGS = $(AM_CFLAGS)
-libsmf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsmf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libsmf_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_smf)
+libsmf_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_smf)
+libsmf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_smf)
+libsmf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_smf)
 # Set LIBADD and DEPENDENCIES manually:
-libsmf_plugin_la_LIBADD = $(AM_LIBADD)
-libsmf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libsmf_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_smf)
+libsmf_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_smf)
+libsmf_plugin_la_DEPENDENCIES =
 
 # The subtitle plugin
 libsubtitle_plugin_la_SOURCES = $(SOURCES_subtitle)
 nodist_libsubtitle_plugin_la_SOURCES = $(nodist_SOURCES_subtitle)
 # Force per-target objects:
-libsubtitle_plugin_la_CFLAGS = $(AM_CFLAGS)
-libsubtitle_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libsubtitle_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libsubtitle_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_subtitle)
+libsubtitle_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_subtitle)
+libsubtitle_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_subtitle)
+libsubtitle_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_subtitle)
 # Set LIBADD and DEPENDENCIES manually:
-libsubtitle_plugin_la_LIBADD = $(AM_LIBADD)
-libsubtitle_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The ts plugin
-libts_plugin_la_SOURCES = $(SOURCES_ts)
-nodist_libts_plugin_la_SOURCES = $(nodist_SOURCES_ts)
-# Force per-target objects:
-libts_plugin_la_CFLAGS = $(AM_CFLAGS)
-libts_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libts_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libts_plugin_la_LIBADD = $(AM_LIBADD)
-libts_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libsubtitle_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_subtitle)
+libsubtitle_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_subtitle)
+libsubtitle_plugin_la_DEPENDENCIES =
 
 # The tta plugin
 libtta_plugin_la_SOURCES = $(SOURCES_tta)
 nodist_libtta_plugin_la_SOURCES = $(nodist_SOURCES_tta)
 # Force per-target objects:
-libtta_plugin_la_CFLAGS = $(AM_CFLAGS)
-libtta_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libtta_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libtta_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_tta)
+libtta_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_tta)
+libtta_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_tta)
+libtta_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_tta)
 # Set LIBADD and DEPENDENCIES manually:
-libtta_plugin_la_LIBADD = $(AM_LIBADD)
-libtta_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libtta_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_tta)
+libtta_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_tta)
+libtta_plugin_la_DEPENDENCIES =
 
 # The ty plugin
 libty_plugin_la_SOURCES = $(SOURCES_ty)
 nodist_libty_plugin_la_SOURCES = $(nodist_SOURCES_ty)
 # Force per-target objects:
-libty_plugin_la_CFLAGS = $(AM_CFLAGS)
-libty_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libty_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libty_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_ty)
+libty_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_ty)
+libty_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_ty)
+libty_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_ty)
 # Set LIBADD and DEPENDENCIES manually:
-libty_plugin_la_LIBADD = $(AM_LIBADD)
-libty_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libty_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_ty)
+libty_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_ty)
+libty_plugin_la_DEPENDENCIES =
 
 # The vc1 plugin
 libvc1_plugin_la_SOURCES = $(SOURCES_vc1)
 nodist_libvc1_plugin_la_SOURCES = $(nodist_SOURCES_vc1)
 # Force per-target objects:
-libvc1_plugin_la_CFLAGS = $(AM_CFLAGS)
-libvc1_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libvc1_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libvc1_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vc1)
+libvc1_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vc1)
+libvc1_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vc1)
+libvc1_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vc1)
 # Set LIBADD and DEPENDENCIES manually:
-libvc1_plugin_la_LIBADD = $(AM_LIBADD)
-libvc1_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libvc1_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vc1)
+libvc1_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vc1)
+libvc1_plugin_la_DEPENDENCIES =
 
 # The vobsub plugin
 libvobsub_plugin_la_SOURCES = $(SOURCES_vobsub)
 nodist_libvobsub_plugin_la_SOURCES = $(nodist_SOURCES_vobsub)
 # Force per-target objects:
-libvobsub_plugin_la_CFLAGS = $(AM_CFLAGS)
-libvobsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libvobsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libvobsub_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vobsub)
+libvobsub_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vobsub)
+libvobsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vobsub)
+libvobsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vobsub)
 # Set LIBADD and DEPENDENCIES manually:
-libvobsub_plugin_la_LIBADD = $(AM_LIBADD)
-libvobsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libvobsub_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vobsub)
+libvobsub_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vobsub)
+libvobsub_plugin_la_DEPENDENCIES =
 
 # The voc plugin
 libvoc_plugin_la_SOURCES = $(SOURCES_voc)
 nodist_libvoc_plugin_la_SOURCES = $(nodist_SOURCES_voc)
 # Force per-target objects:
-libvoc_plugin_la_CFLAGS = $(AM_CFLAGS)
-libvoc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libvoc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libvoc_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_voc)
+libvoc_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_voc)
+libvoc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_voc)
+libvoc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_voc)
 # Set LIBADD and DEPENDENCIES manually:
-libvoc_plugin_la_LIBADD = $(AM_LIBADD)
-libvoc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libvoc_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_voc)
+libvoc_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_voc)
+libvoc_plugin_la_DEPENDENCIES =
 
 # The wav plugin
 libwav_plugin_la_SOURCES = $(SOURCES_wav)
 nodist_libwav_plugin_la_SOURCES = $(nodist_SOURCES_wav)
 # Force per-target objects:
-libwav_plugin_la_CFLAGS = $(AM_CFLAGS)
-libwav_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libwav_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libwav_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_wav)
+libwav_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_wav)
+libwav_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_wav)
+libwav_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_wav)
 # Set LIBADD and DEPENDENCIES manually:
-libwav_plugin_la_LIBADD = $(AM_LIBADD)
-libwav_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libwav_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_wav)
+libwav_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_wav)
+libwav_plugin_la_DEPENDENCIES =
 
 # The xa plugin
 libxa_plugin_la_SOURCES = $(SOURCES_xa)
 nodist_libxa_plugin_la_SOURCES = $(nodist_SOURCES_xa)
 # Force per-target objects:
-libxa_plugin_la_CFLAGS = $(AM_CFLAGS)
-libxa_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libxa_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libxa_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_xa)
+libxa_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_xa)
+libxa_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_xa)
+libxa_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_xa)
 # Set LIBADD and DEPENDENCIES manually:
-libxa_plugin_la_LIBADD = $(AM_LIBADD)
-libxa_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libxa_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_xa)
+libxa_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_xa)
+libxa_plugin_la_DEPENDENCIES =
 

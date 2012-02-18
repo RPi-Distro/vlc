@@ -1,8 +1,8 @@
 /*****************************************************************************
  * mkv.cpp : matroska demuxer
  *****************************************************************************
- * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 99a407ce3788cb46dc44cf77c0709595a3cbd8cb $
+ * Copyright (C) 2003-2005, 2008 the VideoLAN team
+ * $Id: de64aec75827172d2781e4605fed96b881a35c45 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -49,8 +49,6 @@
 #   include <time.h>                                               /* time() */
 #endif
 
-#include <vlc_codecs.h>               /* BITMAPINFOHEADER, WAVEFORMATEX */
-#include <vlc_iso_lang.h>
 #include <vlc_meta.h>
 #include <vlc_charset.h>
 #include <vlc_input.h>
@@ -62,10 +60,6 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-
-#ifdef HAVE_DIRENT_H
-#   include <dirent.h>
-#endif
 
 /* libebml and matroska */
 #include "ebml/EbmlHead.h"
@@ -92,15 +86,13 @@
 #include "matroska/KaxSegment.h"
 #include "matroska/KaxTag.h"
 #include "matroska/KaxTags.h"
-#include "matroska/KaxVersion.h"
-#if LIBMATROSKA_VERSION < 0x010100
-#include "matroska/KaxTagMulti.h"
-#endif
+//#include "matroska/KaxTagMulti.h"
 #include "matroska/KaxTracks.h"
 #include "matroska/KaxTrackAudio.h"
 #include "matroska/KaxTrackVideo.h"
 #include "matroska/KaxTrackEntryData.h"
 #include "matroska/KaxContentEncoding.h"
+#include "matroska/KaxVersion.h"
 
 #include "ebml/StdIOCallback.h"
 
@@ -113,6 +105,8 @@ extern "C" {
 #   include <zlib.h>
 #endif
 
+#define MKV_DEBUG 0
+
 #define MATROSKA_COMPRESSION_NONE  -1
 #define MATROSKA_COMPRESSION_ZLIB   0
 #define MATROSKA_COMPRESSION_BLIB   1
@@ -123,12 +117,6 @@ extern "C" {
 
 #define MKV_IS_ID( el, C ) ( el != NULL && typeid( *el ) == typeid( C ) )
 
-#if LIBEBML_VERSION < 0x010000
-#define EBML_INFO(ref)             ref::ClassInfos
-#define EBML_ID(ref)               ref::ClassInfos.GlobalId
-#define EBML_CLASS_CONTEXT(ref)    ref::ClassInfos.Context
-#define EBML_CONTEXT(e)            (e)->Generic().Context
-#endif
 
 using namespace LIBMATROSKA_NAMESPACE;
 using namespace std;
@@ -139,51 +127,54 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
 class attachment_c
 {
 public:
-    attachment_c()
-        :p_data(NULL)
-        ,i_size(0)
-    {}
-    virtual ~attachment_c()
+    attachment_c( const std::string& _psz_file_name, const std::string& _psz_mime_type, int _i_size )
+        :i_size(_i_size)
+        ,psz_file_name( _psz_file_name)
+        ,psz_mime_type( _psz_mime_type)
     {
-        free( p_data );
+        p_data = NULL;
+    }
+    ~attachment_c() { free( p_data ); }
+
+    /* Allocs the data space. Returns true if allocation went ok */
+    bool init()
+    {
+        p_data = malloc( i_size );
+        return (p_data != NULL);
     }
 
+    const char* fileName() const { return psz_file_name.c_str(); }
+    const char* mimeType() const { return psz_mime_type.c_str(); }
+    int         size() const    { return i_size; }
+
+    void          *p_data;
+private:
+    int            i_size;
     std::string    psz_file_name;
     std::string    psz_mime_type;
-    void          *p_data;
-    int            i_size;
 };
 
 class matroska_segment_c;
-
-class matroska_stream_c
+struct matroska_stream_c
 {
-public:
-    matroska_stream_c( demux_sys_t & demuxer )
-        :p_in(NULL)
-        ,p_es(NULL)
-        ,sys(demuxer)
-    {}
-
-    virtual ~matroska_stream_c()
+    matroska_stream_c() :p_io_callback(NULL) ,p_estream(NULL) {}
+    ~matroska_stream_c()
     {
-        delete p_in;
-        delete p_es;
+        delete p_io_callback;
+        delete p_estream;
     }
 
-    IOCallback         *p_in;
-    EbmlStream         *p_es;
+    IOCallback         *p_io_callback;
+    EbmlStream         *p_estream;
 
     std::vector<matroska_segment_c*> segments;
-
-    demux_sys_t                      & sys;
 };
 
 
 /*****************************************************************************
  * definitions of structures and functions used by this plugins
  *****************************************************************************/
-typedef struct
+struct mkv_track_t
 {
 //    ~mkv_track_t();
 
@@ -191,7 +182,7 @@ typedef struct
     bool         b_enabled;
     unsigned int i_number;
 
-    int          i_extra_data;
+    unsigned int i_extra_data;
     uint8_t      *p_extra_data;
 
     char         *psz_codec;
@@ -229,9 +220,9 @@ typedef struct
     int                    i_compression_type;
     KaxContentCompSettings *p_compression_data;
 
-} mkv_track_t;
+};
 
-typedef struct
+struct mkv_index_t
 {
     int     i_track;
     int     i_block_number;
@@ -240,7 +231,7 @@ typedef struct
     int64_t i_time;
 
     bool       b_key;
-} mkv_index_t;
+};
 
 
 #endif /* _MKV_HPP_ */

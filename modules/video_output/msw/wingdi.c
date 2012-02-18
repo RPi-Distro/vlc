@@ -2,7 +2,7 @@
  * wingdi.c : Win32 / WinCE GDI video output plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 619e664fddec95255058c757c941b093fa3ed7bc $
+ * $Id: 84ee4ba417340b62dfbd40126cddfc49565e43b9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -33,7 +33,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_playlist.h>
 #include <vlc_vout_display.h>
 
 #include <windows.h>
@@ -57,11 +56,11 @@ vlc_module_begin ()
 #ifdef MODULE_NAME_IS_wingapi
     set_shortname("GAPI")
     set_description(N_("Windows GAPI video output"))
-    set_capability("vout display", 20)
+    set_capability("vout display", 120)
 #else
     set_shortname("GDI")
     set_description(N_("Windows GDI video output"))
-    set_capability("vout display", 10)
+    set_capability("vout display", 110)
 #endif
     set_callbacks(Open, Close)
 vlc_module_end ()
@@ -71,7 +70,7 @@ vlc_module_end ()
  * Local prototypes
  *****************************************************************************/
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
-static void           Display(vout_display_t *, picture_t *);
+static void           Display(vout_display_t *, picture_t *, subpicture_t *subpicture);
 static int            Control(vout_display_t *, int, va_list);
 static void           Manage (vout_display_t *);
 
@@ -175,7 +174,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
     VLC_UNUSED(count);
     return vd->sys->pool;
 }
-static void Display(vout_display_t *vd, picture_t *picture)
+static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
@@ -218,6 +217,7 @@ static void Display(vout_display_t *vd, picture_t *picture)
 #endif
     /* TODO */
     picture_Release(picture);
+    VLC_UNUSED(subpicture);
 
     CommonDisplay(vd);
 }
@@ -345,7 +345,7 @@ static int Init(vout_display_t *vd,
     fmt->i_width  = width;
     fmt->i_height = height;
 
-    uint8_t *p_pic_buffer;
+    void *p_pic_buffer;
     int     i_pic_pitch;
 #ifdef MODULE_NAME_IS_wingapi
     GXOpenDisplay(sys->hvideownd, GX_FULLSCREEN);

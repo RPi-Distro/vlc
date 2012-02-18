@@ -2,7 +2,7 @@
  * memcpy.c : AltiVec memcpy module
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 2d91ea226591068cef924f38f9d335f534f893b0 $
+ * $Id: 071e91ed7afe5a0bfab9a014c8cd7f7298db68ca $
  *
  * Author: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -49,8 +49,11 @@ static void * fast_memcpy ( void * to, const void * from, size_t len );
  *****************************************************************************/
 static int Activate ( vlc_object_t *p_this )
 {
+    if( !(vlc_CPU() & CPU_CAPABILITY_ALTIVEC) )
+        return VLC_EGENERIC;
+
     VLC_UNUSED(p_this);
-    vlc_fastmem_register( fast_memcpy, NULL );
+    vlc_fastmem_register( fast_memcpy );
     return VLC_SUCCESS;
 }
 

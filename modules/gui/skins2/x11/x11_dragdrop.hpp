@@ -2,7 +2,7 @@
  * x11_dragdrop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ea245e03b4b5531f9ca956649bdadf31184ab3c1 $
+ * $Id: a4fbbd67a08b5c0aa8551defef7206e00c9b7c10 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -27,6 +27,7 @@
 
 #include <X11/Xlib.h>
 #include "../src/skin_common.hpp"
+#include "../src/generic_window.hpp"
 
 class X11Display;
 
@@ -37,7 +38,7 @@ public:
     typedef long ldata_t[5];
 
     X11DragDrop( intf_thread_t *pIntf, X11Display &rDisplay, Window win,
-                 bool playOnDrop );
+                 bool playOnDrop, GenericWindow *pWin );
     virtual ~X11DragDrop() { }
 
     void dndEnter( ldata_t data );
@@ -54,6 +55,11 @@ private:
     bool m_playOnDrop;
     /// Target type
     Atom m_target;
+    /// Generic Window
+    GenericWindow *m_pWin;
+    /// (x,y) mouse coordinates
+    int m_xPos;
+    int m_yPos;
 };
 
 

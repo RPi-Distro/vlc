@@ -2,7 +2,7 @@
  * ctrl_generic.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 81465feebf03da90ec843597fd3d80d61c02f0dc $
+ * $Id: 7bded8c3b29bb64679013df125ba8a2b8ef0a608 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -34,8 +34,8 @@
 
 CtrlGeneric::CtrlGeneric( intf_thread_t *pIntf, const UString &rHelp,
                           VarBool *pVisible):
-    SkinObject( pIntf ), m_pLayout( NULL ), m_pPosition( NULL ),
-    m_help( rHelp ), m_pVisible( pVisible )
+    SkinObject( pIntf ), m_pLayout( NULL ), m_pVisible( pVisible ),
+    m_pPosition( NULL ), m_help( rHelp )
 {
     // Observe the visibility variable
     if( m_pVisible )
@@ -74,8 +74,11 @@ void CtrlGeneric::unsetLayout()
 }
 
 void CtrlGeneric::notifyLayout( int width, int height,
-                                int xOffSet, int yOffSet ) const
+                                int xOffSet, int yOffSet )
 {
+    width = ( width > 0 ) ? width : m_pPosition->getWidth();
+    height = ( height > 0 ) ? height : m_pPosition->getHeight();
+
     // Notify the layout
     if( m_pLayout )
     {
@@ -161,6 +164,7 @@ bool CtrlGeneric::isVisible() const
 
 void CtrlGeneric::onUpdate( Subject<VarBool> &rVariable, void *arg  )
 {
+    (void)arg;
     // Is it the visibility variable ?
     if( &rVariable == m_pVisible )
     {

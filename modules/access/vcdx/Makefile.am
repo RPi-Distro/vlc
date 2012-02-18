@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libvcdx_plugin_la_SOURCES = $(SOURCES_vcdx)
 nodist_libvcdx_plugin_la_SOURCES = $(nodist_SOURCES_vcdx)
 # Force per-target objects:
-libvcdx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libvcdx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libvcdx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libvcdx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_vcdx)
+libvcdx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_vcdx)
+libvcdx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_vcdx)
+libvcdx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_vcdx)
 # Set LIBADD and DEPENDENCIES manually:
-libvcdx_plugin_la_LIBADD = $(AM_LIBADD)
-libvcdx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libvcdx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_vcdx)
+libvcdx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_vcdx)
+libvcdx_plugin_la_DEPENDENCIES =
 

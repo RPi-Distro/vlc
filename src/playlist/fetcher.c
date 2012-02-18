@@ -1,25 +1,25 @@
 /*****************************************************************************
  * fetcher.c: Art fetcher thread.
  *****************************************************************************
- * Copyright © 1999-2009 the VideoLAN team
- * $Id: 2075c0dfdbde6a626486c208b7354aa43a24a551 $
+ * Copyright © 1999-2009 VLC authors and VideoLAN
+ * $Id: 1b202dce64c5cfacfe47bdbd09573aa454ccfbfc $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -34,6 +34,7 @@
 #include <vlc_art_finder.h>
 #include <vlc_memory.h>
 #include <vlc_demux.h>
+#include <vlc_modules.h>
 
 #include "art.h"
 #include "fetcher.h"
@@ -90,16 +91,12 @@ void playlist_fetcher_Push( playlist_fetcher_t *p_fetcher,
                  p_fetcher->i_waiting, p_item );
     if( !p_fetcher->b_live )
     {
-        vlc_thread_t th;
-
-        if( vlc_clone( &th, Thread, p_fetcher, VLC_THREAD_PRIORITY_LOW ) )
+        if( vlc_clone_detach( NULL, Thread, p_fetcher,
+                              VLC_THREAD_PRIORITY_LOW ) )
             msg_Err( p_fetcher->p_playlist,
                      "cannot spawn secondary preparse thread" );
         else
-        {
-            vlc_detach( th );
             p_fetcher->b_live = true;
-        }
     }
     vlc_mutex_unlock( &p_fetcher->lock );
 }
@@ -185,7 +182,7 @@ static int FindArt( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
     char *psz_arturl = input_item_GetArtURL( p_item );
     if( psz_arturl )
     {
-        /* We already have an URL */
+        /* We already have a URL */
         if( !strncmp( psz_arturl, "file://", strlen( "file://" ) ) )
         {
             free( psz_arturl );
@@ -221,13 +218,11 @@ static int FindArt( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
 
     vlc_object_t *p_parent = VLC_OBJECT(p_fetcher->p_playlist);
     art_finder_t *p_finder =
-        vlc_custom_create( p_parent, sizeof( *p_finder ), VLC_OBJECT_GENERIC,
-                           "art finder" );
+        vlc_custom_create( p_parent, sizeof( *p_finder ), "art finder" );
     if( p_finder != NULL)
     {
         module_t *p_module;
 
-        vlc_object_attach( p_finder, p_parent );
         p_finder->p_item = p_item;
 
         p_module = module_need( p_finder, "art finder", NULL, false );
@@ -337,12 +332,10 @@ error:
 static void FetchMeta( playlist_fetcher_t *p_fetcher, input_item_t *p_item )
 {
     demux_meta_t *p_demux_meta = vlc_custom_create(p_fetcher->p_playlist,
-                                       sizeof(*p_demux_meta),
-                                       VLC_OBJECT_GENERIC, "demux meta" );
+                                         sizeof(*p_demux_meta), "demux meta" );
     if( !p_demux_meta )
         return;
 
-    vlc_object_attach( p_demux_meta, p_fetcher->p_playlist );
     p_demux_meta->p_demux = NULL;
     p_demux_meta->p_item = p_item;
 

@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libdshow_plugin_la_SOURCES = $(SOURCES_dshow)
 nodist_libdshow_plugin_la_SOURCES = $(nodist_SOURCES_dshow)
 # Force per-target objects:
-libdshow_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdshow_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdshow_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdshow_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dshow)
+libdshow_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dshow)
+libdshow_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dshow)
+libdshow_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dshow)
 # Set LIBADD and DEPENDENCIES manually:
-libdshow_plugin_la_LIBADD = $(AM_LIBADD)
-libdshow_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdshow_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dshow)
+libdshow_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dshow)
+libdshow_plugin_la_DEPENDENCIES =
 

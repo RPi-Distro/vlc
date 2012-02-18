@@ -2,7 +2,7 @@
  * x11_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 66c8047f5c2d5b0476ad1a725ddb5342f53b9d08 $
+ * $Id: 3660bc1f71e6f59b474d8d973cb56d24fd9e7469 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,6 +29,7 @@
 
 #include "../src/os_factory.hpp"
 #include "../src/generic_window.hpp"
+#include "x11_display.hpp"
 #include <map>
 
 class X11Display;
@@ -126,6 +127,16 @@ public:
     virtual int getScreenWidth() const;
     virtual int getScreenHeight() const;
 
+    /// Get Monitor Information
+    virtual void getMonitorInfo( const GenericWindow &rWindow,
+                                 int* x, int* y,
+                                 int* width, int* height ) const;
+    virtual void getMonitorInfo( int numScreen,
+                                 int* x, int* y,
+                                 int* width, int* height ) const;
+
+    virtual void getDefaultGeometry( int* width, int* height ) const;
+
     /// Get the work area (screen area without taskbars)
     virtual SkinsRect getWorkArea() const;
 
@@ -133,7 +144,8 @@ public:
     virtual void getMousePos( int &rXPos, int &rYPos ) const;
 
     /// Change the cursor
-    virtual void changeCursor( CursorType_t type ) const { /*TODO*/ }
+    virtual void changeCursor( CursorType_t type ) const
+        { /*TODO*/ (void)type; }
 
     /// Delete a directory recursively
     virtual void rmDir( const string &rPath );
@@ -150,6 +162,8 @@ private:
     const string m_dirSep;
     /// Resource path
     list<string> m_resourcePath;
+    /// Monitor geometry
+    int m_screenWidth, m_screenHeight;
 };
 
 #endif

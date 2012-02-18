@@ -1,8 +1,8 @@
 /*****************************************************************************
  * open.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
- * Copyright (C) 2002-2011 the VideoLAN team
- * $Id: 5f048aeb7147b404538fc28309fb899ec1ac33c5 $
+ * Copyright (C) 2002-2012 VLC authors and VideoLAN
+ * $Id: 069000ea85fb97958914f7b56d4f6af291728cff $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -28,16 +28,19 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <sys/param.h>                                    /* for MAXPATHLEN */
-#include <string.h>
+#import <stdlib.h>                                      /* malloc(), free() */
+#import <sys/param.h>                                    /* for MAXPATHLEN */
 
-#include <paths.h>
-#include <IOKit/IOKitLib.h>
-#include <IOKit/IOBSD.h>
-#include <IOKit/storage/IOMedia.h>
-#include <IOKit/storage/IOCDMedia.h>
-#include <IOKit/storage/IODVDMedia.h>
+#import "CompatibilityFixes.h"
+
+#import <paths.h>
+#import <IOKit/IOBSD.h>
+#import <IOKit/storage/IOMedia.h>
+#import <IOKit/storage/IOCDMedia.h>
+#import <IOKit/storage/IODVDMedia.h>
+#import <IOKit/storage/IOBDMedia.h>
+#import <Cocoa/Cocoa.h>
+#import <QTKit/QTKit.h>
 
 #import "intf.h"
 #import "playlist.h"
@@ -45,96 +48,25 @@
 #import "output.h"
 #import "eyetv.h"
 
-#include <vlc_url.h>
+#import <vlc_url.h>
 
+NSArray               *qtkvideoDevices;
 #define setEyeTVUnconnected \
-[o_capture_lbl setStringValue: _NS("No device connected")]; \
-[o_capture_long_lbl setStringValue: _NS("VLC could not detect any EyeTV compatible device.\n\nCheck the device's connection, make sure that the latest EyeTV software is installed and try again.")]; \
+[o_capture_lbl setStringValue: _NS("No device is selected")]; \
+[o_capture_long_lbl setStringValue: _NS("No device is selected.\n\nChoose available device in above pull-down menu\n.")]; \
 [o_capture_lbl displayIfNeeded]; \
 [o_capture_long_lbl displayIfNeeded]; \
 [self showCaptureView: o_capture_label_view]
 
+#define kVLCMediaAudioCD "AudioCD"
+#define kVLCMediaDVD "DVD"
+#define kVLCMediaVCD "VCD"
+#define kVLCMediaSVCD "SVCD"
+#define kVLCMediaBD "Bluray"
+#define kVLCMediaVideoTSFolder "VIDEO_TS"
+#define kVLCMediaBDMVFolder "BDMV"
+#define kVLCMediaUnknown "Unknown"
 
-/*****************************************************************************
- * GetEjectableMediaOfClass
- *****************************************************************************/
-NSArray *GetEjectableMediaOfClass( const char *psz_class )
-{
-    io_object_t next_media;
-    mach_port_t master_port;
-    kern_return_t kern_result;
-    NSArray *o_devices = nil;
-    NSMutableArray *p_list = nil;
-    io_iterator_t media_iterator;
-    CFMutableDictionaryRef classes_to_match;
-
-    kern_result = IOMasterPort( MACH_PORT_NULL, &master_port );
-    if( kern_result != KERN_SUCCESS )
-    {
-        return( nil );
-    }
- 
-    classes_to_match = IOServiceMatching( psz_class );
-    if( classes_to_match == NULL )
-    {
-        return( nil );
-    }
- 
-    CFDictionarySetValue( classes_to_match, CFSTR( kIOMediaEjectableKey ),
-                          kCFBooleanTrue );
- 
-    kern_result = IOServiceGetMatchingServices( master_port, classes_to_match,
-                                                &media_iterator );
-    if( kern_result != KERN_SUCCESS )
-    {
-        return( nil );
-    }
-
-    p_list = [NSMutableArray arrayWithCapacity: 1];
- 
-    next_media = IOIteratorNext( media_iterator );
-    if( next_media )
-    {
-        char psz_buf[0x32];
-        size_t dev_path_length;
-        CFTypeRef str_bsd_path;
- 
-        do
-        {
-            str_bsd_path = IORegistryEntryCreateCFProperty( next_media,
-                                                            CFSTR( kIOBSDNameKey ),
-                                                            kCFAllocatorDefault,
-                                                            0 );
-            if( str_bsd_path == NULL )
-            {
-                IOObjectRelease( next_media );
-                continue;
-            }
- 
-            snprintf( psz_buf, sizeof(psz_buf), "%s%c", _PATH_DEV, 'r' );
-            dev_path_length = strlen( psz_buf );
- 
-            if( CFStringGetCString( str_bsd_path,
-                                    (char*)&psz_buf + dev_path_length,
-                                    sizeof(psz_buf) - dev_path_length,
-                                    kCFStringEncodingASCII ) )
-            {
-                [p_list addObject: [NSString stringWithUTF8String: psz_buf]];
-            }
- 
-            CFRelease( str_bsd_path );
- 
-            IOObjectRelease( next_media );
- 
-        } while( ( next_media = IOIteratorNext( media_iterator ) ) );
-    }
- 
-    IOObjectRelease( media_iterator );
-
-    o_devices = [NSArray arrayWithArray: p_list];
-
-    return( o_devices );
-}
 
 /*****************************************************************************
  * VLCOpen implementation
@@ -162,14 +94,23 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (void)dealloc
 {
+    [o_specialMediaFolders release];
+    [o_opticalDevices release];
     if( o_file_slave_path )
         [o_file_slave_path release];
     [o_mrl release];
+    if (o_sub_path)
+        [o_sub_path release];
+    [o_currentOpticalMediaIconView release];
+    [o_currentOpticalMediaView release];
     [super dealloc];
 }
 
 - (void)awakeFromNib
 {
+    if (OSX_LION)
+        [o_panel setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
+
     [o_panel setTitle: _NS("Open Source")];
     [o_mrl_lbl setStringValue: _NS("Media Resource Locator (MRL)")];
 
@@ -181,22 +122,46 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [[o_tabview tabViewItemAtIndex: 2] setLabel: _NS("Network")];
     [[o_tabview tabViewItemAtIndex: 3] setLabel: _NS("Capture")];
 
+    [o_file_name setStringValue: @""];
+    [o_file_name_stub setStringValue: _NS("Choose a file")];
+    [o_file_icon_well setImage: [NSImage imageNamed:@"generic"]];
     [o_file_btn_browse setTitle: _NS("Browse...")];
     [o_file_stream setTitle: _NS("Treat as a pipe rather than as a file")];
+    [o_file_stream setHidden: NO];
     [o_file_slave_ckbox setTitle: _NS("Play another media synchronously")];
     [o_file_slave_select_btn setTitle: _NS("Choose...")];
-    [o_file_slave_filename_txt setStringValue: @""];
+    [o_file_slave_filename_lbl setStringValue: @""];
+    [o_file_slave_icon_well setImage: NULL];
+    [o_file_subtitles_filename_lbl setStringValue: @""];
+    [o_file_subtitles_icon_well setImage: NULL];
 
-    [o_disc_device_lbl setStringValue: _NS("Device name")];
-    [o_disc_title_lbl setStringValue: _NS("Title")];
-    [o_disc_chapter_lbl setStringValue: _NS("Chapter")];
-    [o_disc_videots_btn_browse setTitle: _NS("Browse...")];
-    [o_disc_dvd_menus setTitle: _NS("No DVD menus")];
-
-    [[o_disc_type cellAtRow:0 column:0] setTitle: _NS("VIDEO_TS folder")];
-    [[o_disc_type cellAtRow:1 column:0] setTitle: _NS("DVD")];
-    [[o_disc_type cellAtRow:2 column:0] setTitle: _NS("VCD")];
-    [[o_disc_type cellAtRow:3 column:0] setTitle: _NS("Audio CD")];
+    [o_disc_selector_pop removeAllItems];
+    [o_disc_selector_pop setHidden: NO];
+    NSString *o_videots = _NS("Open VIDEO_TS folder");
+    NSString *o_bdmv = _NS("Open BDMV folder");
+    [o_disc_nodisc_lbl setStringValue: _NS("Insert Disc")];
+    [o_disc_nodisc_videots_btn setTitle: o_videots];
+    [o_disc_nodisc_bdmv_btn setTitle: o_bdmv];
+    [o_disc_audiocd_lbl setStringValue: _NS("Audio CD")];
+    [o_disc_audiocd_trackcount_lbl setStringValue: @""];
+    [o_disc_audiocd_videots_btn setTitle: o_videots];
+    [o_disc_audiocd_bdmv_btn setTitle: o_bdmv];
+    [o_disc_dvd_lbl setStringValue: @""];
+    [o_disc_dvd_disablemenus_btn setTitle: _NS("Disable DVD menus")];
+    [o_disc_dvd_videots_btn setTitle: o_videots];
+    [o_disc_dvd_bdmv_btn setTitle: o_bdmv];
+    [o_disc_dvdwomenus_lbl setStringValue: @""];
+    [o_disc_dvdwomenus_enablemenus_btn setTitle: _NS("Enable DVD menus")];
+    [o_disc_dvdwomenus_videots_btn setTitle: o_videots];
+    [o_disc_dvdwomenus_bdmv_btn setTitle: o_bdmv];
+    [o_disc_dvdwomenus_title_lbl setStringValue: _NS("Title")];
+    [o_disc_dvdwomenus_chapter_lbl setStringValue: _NS("Chapter")];
+    [o_disc_vcd_title_lbl setStringValue: _NS("Title")];
+    [o_disc_vcd_chapter_lbl setStringValue: _NS("Chapter")];
+    [o_disc_vcd_videots_btn setTitle: o_videots];
+    [o_disc_vcd_bdmv_btn setTitle: o_bdmv];
+    [o_disc_bd_videots_btn setTitle: o_videots];
+    [o_disc_bd_bdmv_btn setTitle: o_bdmv];
 
     [o_net_udp_port_lbl setStringValue: _NS("Port")];
     [o_net_udpm_addr_lbl setStringValue: _NS("IP Address")];
@@ -220,12 +185,12 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [o_eyetv_chn_bgbar setUsesThreadedAnimation: YES];
 
     [o_capture_mode_pop removeAllItems];
-    [o_capture_mode_pop addItemWithTitle: @"iSight"];
-    if( NSAppKitVersionNumber < 1115.2 )
-        [o_capture_mode_pop addItemWithTitle: _NS("Screen")];
+    [o_capture_mode_pop addItemWithTitle: _NS("Capture Device")];
+	// our screen capture module isn't Lion-compatible, so let's hide it from the user if needed (trac #4799)
+	if( NSAppKitVersionNumber < 1115.2 )
+		[o_capture_mode_pop addItemWithTitle: _NS("Screen")];
     [o_capture_mode_pop addItemWithTitle: @"EyeTV"];
-    [o_screen_lbl setStringValue: _NS("Screen Capture Input")];
-    [o_screen_long_lbl setStringValue: _NS("This facility allows you to process your screen's output.")];
+    [o_screen_long_lbl setStringValue: _NS("This input allows you to save, stream or display your current screen contents.")];
     [o_screen_fps_lbl setStringValue: _NS("Frames per Second:")];
     [o_screen_left_lbl setStringValue: _NS("Subscreen left:")];
     [o_screen_top_lbl setStringValue: _NS("Subscreen top:")];
@@ -240,30 +205,37 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [o_eyetv_noInstanceLong_lbl setStringValue: _NS("VLC could not connect to EyeTV.\nMake sure that you installed VLC's EyeTV plugin.")];
     [o_eyetv_launchEyeTV_btn setTitle: _NS("Launch EyeTV now")];
     [o_eyetv_getPlugin_btn setTitle: _NS("Download Plugin")];
+    [o_qtk_long_lbl setStringValue: _NS("This input allows you to process input signals from QuickTime-compatible video devices.\nLive Audio input is not supported.")];
+    [o_capture_width_lbl setStringValue: _NS("Image width:")];
+    [o_capture_height_lbl setStringValue: _NS("Image height:")];
+
+    [self qtkvideoDevices];
+    [o_qtk_device_pop removeAllItems];
+    msg_Dbg( VLCIntf, "Found %lu capture devices", [qtkvideoDevices count] );
+	if([qtkvideoDevices count] >= 1)
+		{
+        if (!qtk_currdevice_uid) {
+            qtk_currdevice_uid = [[[QTCaptureDevice defaultInputDeviceWithMediaType: QTMediaTypeVideo] uniqueID]
+                                                                stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        }
+        NSUInteger deviceCount = [qtkvideoDevices count];
+        for(int ivideo = 0; ivideo < deviceCount; ivideo++){
+            QTCaptureDevice *qtk_device;
+            qtk_device = [qtkvideoDevices objectAtIndex:ivideo];
+            [o_qtk_device_pop addItemWithTitle: [qtk_device localizedDisplayName]];
+            if([[[qtk_device uniqueID]stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:qtk_currdevice_uid]){
+                [o_qtk_device_pop selectItemAtIndex:ivideo];
+            }
+        }
+    }
+	else
+	{
+		[o_qtk_device_pop addItemWithTitle: _NS("None")];
+        [qtk_currdevice_uid release];
+	}
+
 
     [self setSubPanel];
-
-    [[NSNotificationCenter defaultCenter] addObserver: self
-        selector: @selector(openFilePathChanged:)
-        name: NSControlTextDidChangeNotification
-        object: o_file_path];
-
-    [[NSNotificationCenter defaultCenter] addObserver: self
-        selector: @selector(openDiscInfoChanged:)
-        name: NSControlTextDidChangeNotification
-        object: o_disc_device];
-    [[NSNotificationCenter defaultCenter] addObserver: self
-        selector: @selector(openDiscInfoChanged:)
-        name: NSControlTextDidChangeNotification
-        object: o_disc_title];
-    [[NSNotificationCenter defaultCenter] addObserver: self
-        selector: @selector(openDiscInfoChanged:)
-        name: NSControlTextDidChangeNotification
-        object: o_disc_chapter];
-    [[NSNotificationCenter defaultCenter] addObserver: self
-        selector: @selector(openDiscInfoChanged:)
-        name: NSControlTextDidChangeNotification
-        object: o_disc_videots_folder];
 
     [[NSNotificationCenter defaultCenter] addObserver: self
         selector: @selector(openNetInfoChanged:)
@@ -299,6 +271,15 @@ static VLCOpen *_o_sharedMainInstance = nil;
                                                  name: @"VLCOpenTextFieldWasClicked"
                                                object: nil];
 
+    /* we want to be notified about removed or added media */
+    o_specialMediaFolders = [[NSMutableArray alloc] init];
+    o_opticalDevices = [[NSMutableArray alloc] init];
+    NSWorkspace *sharedWorkspace = [NSWorkspace sharedWorkspace];
+	[[sharedWorkspace notificationCenter] addObserver:self selector:@selector(scanOpticalMedia:) name:NSWorkspaceDidMountNotification object:nil];
+	[[sharedWorkspace notificationCenter] addObserver:self selector:@selector(scanOpticalMedia:) name:NSWorkspaceDidUnmountNotification object:nil];
+    [self scanOpticalMedia:nil];
+    [self qtkChanged:nil];
+
     [self setMRL: @""];
 }
 
@@ -325,9 +306,12 @@ static VLCOpen *_o_sharedMainInstance = nil;
     module_config_t * p_item;
 
     [o_file_sub_ckbox setTitle: _NS("Load subtitles file:")];
-    [o_file_sub_btn_settings setTitle: _NS("Settings...")];
+    [o_file_sub_path_lbl setStringValue: _NS("Choose a file")];
+    [o_file_sub_path_lbl setHidden: NO];
+    [o_file_sub_path_fld setStringValue: @""];
+    [o_file_sub_btn_settings setTitle: _NS("Choose...")];
     [o_file_sub_btn_browse setTitle: _NS("Browse...")];
-    [o_file_sub_override setTitle: _NS("Override parametters")];
+    [o_file_sub_override setTitle: _NS("Override parameters")];
     [o_file_sub_delay_lbl setStringValue: _NS("Delay")];
     [o_file_sub_delay_stp setEnabled: NO];
     [o_file_sub_fps_lbl setStringValue: _NS("FPS")];
@@ -363,8 +347,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
         for ( i_index = 0; i_index < p_item->i_list; i_index++ )
         {
             [o_file_sub_align_pop addItemWithTitle:
-                [NSString stringWithUTF8String:
-                p_item->ppsz_list_text[i_index]]];
+             _NS(p_item->ppsz_list_text[i_index])];
         }
         [o_file_sub_align_pop selectItemAtIndex: p_item->value.i];
     }
@@ -375,9 +358,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
     {
         for ( i_index = 0; i_index < p_item->i_list; i_index++ )
         {
-            [o_file_sub_size_pop addItemWithTitle:
-                [NSString stringWithUTF8String:
-                p_item->ppsz_list_text[i_index]]];
+            [o_file_sub_size_pop addItemWithTitle: _NS(p_item->ppsz_list_text[i_index])];
             if ( p_item->value.i == p_item->pi_list[i_index] )
             {
                 [o_file_sub_size_pop selectItemAtIndex: i_index];
@@ -402,14 +383,13 @@ static VLCOpen *_o_sharedMainInstance = nil;
     {
         NSMutableDictionary *o_dic;
         NSMutableArray *o_options = [NSMutableArray array];
-        unsigned int i;
 
         o_dic = [NSMutableDictionary dictionaryWithObject: [self MRL] forKey: @"ITEM_URL"];
         if( [o_file_sub_ckbox state] == NSOnState )
         {
             module_config_t * p_item;
 
-            [o_options addObject: [NSString stringWithFormat: @"sub-file=%@", [o_file_sub_path stringValue]]];
+            [o_options addObject: [NSString stringWithFormat: @"sub-file=%@", o_sub_path]];
             if( [o_file_sub_override state] == NSOnState )
             {
                 [o_options addObject: [NSString stringWithFormat: @"sub-delay=%i", (int)( [o_file_sub_delay intValue] * 10 )]];
@@ -434,10 +414,10 @@ static VLCOpen *_o_sharedMainInstance = nil;
         }
         if( [o_output_ckbox state] == NSOnState )
         {
-            for (i = 0 ; i < [[o_sout_options mrl] count] ; i++)
+            NSUInteger count = [[o_sout_options mrl] count];
+            for (NSUInteger i = 0 ; i < count ; i++)
             {
-                [o_options addObject: [NSString stringWithString:
-                      [[(VLCOutput *)o_sout_options mrl] objectAtIndex: i]]];
+                [o_options addObject: [NSString stringWithString: [[(VLCOutput *)o_sout_options mrl] objectAtIndex: i]]];
             }
         }
         if( [o_file_slave_ckbox state] && o_file_slave_path )
@@ -445,6 +425,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
         if( [[[o_tabview selectedTabViewItem] label] isEqualToString: _NS("Capture")] )
         {
             if( [[[o_capture_mode_pop selectedItem] title] isEqualToString: _NS("Screen")] )
+            {
                 [o_options addObject: [NSString stringWithFormat: @"screen-fps=%f", [o_screen_fps_fld floatValue]]];
                 [o_options addObject: [NSString stringWithFormat: @"screen-left=%i", [o_screen_left_fld intValue]]];
                 [o_options addObject: [NSString stringWithFormat: @"screen-top=%i", [o_screen_top_fld intValue]]];
@@ -454,15 +435,38 @@ static VLCOpen *_o_sharedMainInstance = nil;
                     [o_options addObject: @"screen-follow-mouse"];
                 else
                     [o_options addObject: @"no-screen-follow-mouse"];
+            }
+            else if( [[[o_capture_mode_pop selectedItem] title] isEqualToString: _NS("Capture Device")] )
+            {
+                [o_options addObject: [NSString stringWithFormat: @"qtcapture-width=%i", [o_capture_width_fld intValue]]];
+                [o_options addObject: [NSString stringWithFormat: @"qtcapture-height=%i", [o_capture_height_fld intValue]]];
+            }
         }
 
         /* apply the options to our item(s) */
         [o_dic setObject: (NSArray *)[o_options copy] forKey: @"ITEM_OPTIONS"];
         if( b_autoplay )
-            [o_playlist appendArray: [NSArray arrayWithObject: o_dic] atPos: -1 enqueue:NO];
+            [[[VLCMain sharedInstance] playlist] appendArray: [NSArray arrayWithObject: o_dic] atPos: -1 enqueue:NO];
         else
-            [o_playlist appendArray: [NSArray arrayWithObject: o_dic] atPos: -1 enqueue:YES];
+            [[[VLCMain sharedInstance] playlist] appendArray: [NSArray arrayWithObject: o_dic] atPos: -1 enqueue:YES];
     }
+}
+
+- (IBAction)qtkChanged:(id)sender
+{
+	NSInteger i_selectedDevice = [o_qtk_device_pop indexOfSelectedItem];
+	if (i_selectedDevice >= ([qtkvideoDevices count] - 1))
+	{
+		NSValue *sizes = [[[[qtkvideoDevices objectAtIndex:i_selectedDevice] formatDescriptions] objectAtIndex: 0] attributeForKey: QTFormatDescriptionVideoEncodedPixelsSizeAttribute];
+
+		[o_capture_width_fld setIntValue: [sizes sizeValue].width];
+		[o_capture_height_fld setIntValue: [sizes sizeValue].height];
+		[o_capture_width_stp setIntValue: [o_capture_width_fld intValue]];
+		[o_capture_height_stp setIntValue: [o_capture_height_fld intValue]];
+		qtk_currdevice_uid = [[(QTCaptureDevice *)[qtkvideoDevices objectAtIndex:i_selectedDevice] uniqueID]
+							  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+		[self setMRL:[NSString stringWithFormat:@"qtcapture://%@", qtk_currdevice_uid]];
+	}
 }
 
 - (void)tabView:(NSTabView *)o_tv didSelectTabViewItem:(NSTabViewItem *)o_tvi
@@ -475,7 +479,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
     }
     else if( [o_label isEqualToString: _NS("Disc")] )
     {
-        [self openDiscTypeChanged: nil];
+        [self scanOpticalMedia: nil];
     }
     else if( [o_label isEqualToString: _NS("Network")] )
     {
@@ -514,8 +518,8 @@ static VLCOpen *_o_sharedMainInstance = nil;
         o_win_rect.size.height = o_win_rect.size.height + o_view_rect.size.height;
     }
 
-    [o_panel setFrame: o_win_rect display:YES animate: YES];
-    [o_panel displayIfNeeded];
+    [[o_panel animator] setFrame: o_win_rect display:YES];
+//    [o_panel displayIfNeeded];
     if( [o_mrl_btn state] == NSOnState )
         [[o_panel contentView] addSubview: o_mrl_view];
 }
@@ -530,22 +534,23 @@ static VLCOpen *_o_sharedMainInstance = nil;
         o_open_panel = [NSOpenPanel openPanel];
         [o_open_panel setCanChooseFiles: YES];
         [o_open_panel setCanChooseDirectories: NO];
-        if( [o_open_panel runModalForDirectory: nil file: nil types: nil] == NSOKButton )
+        if( [o_open_panel runModal] == NSOKButton )
         {
             if( o_file_slave_path )
                 [o_file_slave_path release];
-            o_file_slave_path = [[o_open_panel filenames] objectAtIndex: 0];
+            o_file_slave_path = [[[o_open_panel URLs] objectAtIndex: 0] path];
             [o_file_slave_path retain];
         }
-        else
-            [o_file_slave_filename_txt setStringValue: @""];
     }
-    if( o_file_slave_path )
+    if( o_file_slave_path && [o_file_slave_ckbox state] == NSOnState)
     {
-        NSFileWrapper *o_file_wrapper;
-        o_file_wrapper = [[NSFileWrapper alloc] initWithPath: o_file_slave_path];
-        [o_file_slave_filename_txt setStringValue: [NSString stringWithFormat: @"\"%@\"", [o_file_wrapper preferredFilename]]];
-        [o_file_wrapper release];
+        [o_file_slave_filename_lbl setStringValue: [[NSFileManager defaultManager] displayNameAtPath:o_file_slave_path]];
+        [o_file_slave_icon_well setImage: [[NSWorkspace sharedWorkspace] iconForFile: o_file_slave_path]];
+    }
+    else
+    {
+        [o_file_slave_filename_lbl setStringValue: @""];
+        [o_file_slave_icon_well setImage: NULL];
     }
 }
 
@@ -557,7 +562,9 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (void)openDisc
 {
-    [self openDiscTypeChanged: nil];
+    [o_specialMediaFolders removeAllObjects];
+    [o_opticalDevices removeAllObjects];
+    [self scanOpticalMedia: nil];
     [self openTarget: 1];
 }
 
@@ -570,22 +577,19 @@ static VLCOpen *_o_sharedMainInstance = nil;
 - (void)openCapture
 {
     [self openCaptureModeChanged: nil];
-    [self showCaptureView: o_capture_label_view];
     [self openTarget: 3];
 }
 
 - (void)openFilePathChanged:(NSNotification *)o_notification
 {
-    NSString *o_filename = [o_file_path stringValue];
-
-    if (o_filename && [o_filename length] > 0)
+    if ( o_file_path && [o_file_path length] > 0 )
     {
         bool b_stream = [o_file_stream state];
         BOOL b_dir = NO;
 
-        [[NSFileManager defaultManager] fileExistsAtPath:o_filename isDirectory:&b_dir];
+        [[NSFileManager defaultManager] fileExistsAtPath:o_file_path isDirectory:&b_dir];
 
-        char *psz_uri = make_URI([o_filename UTF8String]);
+        char *psz_uri = make_URI([o_file_path UTF8String], "file");
         if( !psz_uri ) return;
 
         NSMutableString *o_mrl_string = [NSMutableString stringWithUTF8String: psz_uri ];
@@ -596,10 +600,22 @@ static VLCOpen *_o_sharedMainInstance = nil;
             [o_mrl_string replaceCharactersInRange:offile withString: @"directory"];
         else if( b_stream )
             [o_mrl_string replaceCharactersInRange:offile withString: @"stream"];
+
+        [o_file_name setStringValue: [[NSFileManager defaultManager] displayNameAtPath:o_file_path]];
+        [o_file_name_stub setHidden: YES];
+        [o_file_stream setHidden: NO];
+        [o_file_icon_well setImage: [[NSWorkspace sharedWorkspace] iconForFile: o_file_path]];
+        [o_file_icon_well setHidden: NO];
         [self setMRL: o_mrl_string];
     }
     else
+    {
+        [o_file_name setStringValue: @""];
+        [o_file_name_stub setHidden: NO];
+        [o_file_stream setHidden: YES];
+        [o_file_icon_well setImage: [NSImage imageNamed:@"generic"]];
         [self setMRL: @""];
+    }
 }
 
 - (IBAction)openFileBrowse:(id)sender
@@ -626,8 +642,10 @@ static VLCOpen *_o_sharedMainInstance = nil;
 {
     if (returnCode == NSFileHandlingPanelOKButton)
     {
-        NSString *o_filename = [[sheet filenames] objectAtIndex: 0];
-        [o_file_path setStringValue: o_filename];
+        if( o_file_path )
+            [o_file_path release];
+        o_file_path = [[[sheet URLs] objectAtIndex: 0] path];
+        [o_file_path retain];
         [self openFilePathChanged: nil];
     }
 }
@@ -637,184 +655,301 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [self openFilePathChanged: nil];
 }
 
-- (IBAction)openDiscTypeChanged:(id)sender
+- (void)showOpticalMediaView: theView withIcon:(NSImage *)icon
 {
-    NSString *o_type;
-    BOOL b_device, b_no_menus, b_title_chapter;
- 
-    [o_disc_device removeAllItems];
-    b_title_chapter = ![o_disc_dvd_menus state];
- 
-    o_type = [[o_disc_type selectedCell] title];
-
-    if ( [o_type isEqualToString: _NS("VIDEO_TS folder")] )
+    NSRect o_view_rect;
+    o_view_rect = [theView frame];
+    [theView setFrame: NSMakeRect( 233, 0, o_view_rect.size.width, o_view_rect.size.height)];
+    [theView setAutoresizesSubviews: YES];
+    if (o_currentOpticalMediaView)
     {
-        b_device = NO; b_no_menus = YES;
+        [[[[o_tabview tabViewItemAtIndex: [o_tabview indexOfTabViewItemWithIdentifier:@"optical"]] view] animator] replaceSubview: o_currentOpticalMediaView with: theView];
+        [o_currentOpticalMediaView release];
     }
     else
-    {
-        NSArray *o_devices;
-        NSString *o_disc;
-        const char *psz_class = NULL;
-        b_device = YES;
+        [[[[o_tabview tabViewItemAtIndex: [o_tabview indexOfTabViewItemWithIdentifier:@"optical"]] view] animator] addSubview: theView];
+    o_currentOpticalMediaView = theView;
+    [o_currentOpticalMediaView retain];
 
-        if ( [o_type isEqualToString: _NS("VCD")] )
-        {
-            psz_class = kIOCDMediaClass;
-            o_disc = o_type;
-            b_no_menus = NO; b_title_chapter = YES;
-		}
-        else if ( [o_type isEqualToString: _NS("Audio CD")])
-        {
-            psz_class = kIOCDMediaClass;
-            o_disc = o_type;
-            b_no_menus = NO; b_title_chapter = NO;
+    NSImageView *imageView;
+    imageView = [[NSImageView alloc] init];
+    [imageView setFrame: NSMakeRect( 53, 61, 128, 128 )];
+    [icon setSize: NSMakeSize(128,128)];
+    [imageView setImage: icon];
+    if (o_currentOpticalMediaIconView)
+    {
+        [[[[o_tabview tabViewItemAtIndex: [o_tabview indexOfTabViewItemWithIdentifier:@"optical"]] view] animator] replaceSubview: o_currentOpticalMediaIconView with: imageView];
+        [o_currentOpticalMediaIconView release];
+    }
+    else
+         [[[[o_tabview tabViewItemAtIndex: [o_tabview indexOfTabViewItemWithIdentifier:@"optical"]] view] animator] addSubview: imageView];
+    o_currentOpticalMediaIconView = imageView;
+    [o_currentOpticalMediaIconView retain];
+    [o_currentOpticalMediaView setNeedsDisplay: YES];
+    [o_currentOpticalMediaIconView setNeedsDisplay: YES];
+    [[[o_tabview tabViewItemAtIndex: [o_tabview indexOfTabViewItemWithIdentifier:@"optical"]] view] setNeedsDisplay: YES];
+    [[[o_tabview tabViewItemAtIndex: [o_tabview indexOfTabViewItemWithIdentifier:@"optical"]] view] displayIfNeeded];
+}
+
+- (NSString *) getBSDNodeFromMountPath:(NSString *)mountPath
+{
+    OSStatus err;
+    FSRef ref;
+    FSVolumeRefNum actualVolume;
+    err = FSPathMakeRef ( (const UInt8 *) [mountPath fileSystemRepresentation], &ref, NULL );
+
+    // get a FSVolumeRefNum from mountPath
+    if ( noErr == err ) {
+        FSCatalogInfo   catalogInfo;
+        err = FSGetCatalogInfo ( &ref,
+                                kFSCatInfoVolume,
+                                &catalogInfo,
+                                NULL,
+                                NULL,
+                                NULL
+                                );
+        if ( noErr == err ) {
+            actualVolume = catalogInfo.volume;
         }
+    }
+
+    GetVolParmsInfoBuffer volumeParms;
+    err = FSGetVolumeParms( actualVolume, &volumeParms, sizeof(volumeParms) );
+    if ( noErr != err ) {
+        msg_Err( p_intf, "error retrieving volume params, bailing out" );
+        return @"";
+    }
+
+    NSString *bsdName = [NSString stringWithUTF8String:(char *)volumeParms.vMDeviceID];
+    return [NSString stringWithFormat:@"/dev/r%@", bsdName];
+}
+
+- (char *)getVolumeTypeFromMountPath:(NSString *)mountPath
+{
+    OSStatus err;
+    FSRef ref;
+    FSVolumeRefNum actualVolume;
+    err = FSPathMakeRef ( (const UInt8 *) [mountPath fileSystemRepresentation], &ref, NULL );
+
+    // get a FSVolumeRefNum from mountPath
+    if ( noErr == err ) {
+        FSCatalogInfo   catalogInfo;
+        err = FSGetCatalogInfo ( &ref,
+                                kFSCatInfoVolume,
+                                &catalogInfo,
+                                NULL,
+                                NULL,
+                                NULL
+                                );
+        if ( noErr == err ) {
+            actualVolume = catalogInfo.volume;
+        }
+    }
+
+    GetVolParmsInfoBuffer volumeParms;
+    err = FSGetVolumeParms( actualVolume, &volumeParms, sizeof(volumeParms) );
+
+    CFMutableDictionaryRef	matchingDict;
+    io_service_t			service;
+
+    matchingDict = IOBSDNameMatching(kIOMasterPortDefault, 0, volumeParms.vMDeviceID);
+    service = IOServiceGetMatchingService(kIOMasterPortDefault, matchingDict);
+
+    char *returnValue;
+    if (IO_OBJECT_NULL != service) {
+        if (IOObjectConformsTo(service, kIOCDMediaClass)) {
+            returnValue = kVLCMediaAudioCD;
+        }
+        else if(IOObjectConformsTo(service, kIODVDMediaClass))
+            returnValue = kVLCMediaDVD;
+        else if(IOObjectConformsTo(service, kIOBDMediaClass))
+            returnValue = kVLCMediaBD;
         else
         {
-            psz_class = kIODVDMediaClass;
-            o_disc = o_type;
-            b_no_menus = YES;
-        }
- 
-        o_devices = GetEjectableMediaOfClass( psz_class );
-        if ( o_devices != nil )
-        {
-            int i_devices = [o_devices count];
- 
-            if ( i_devices )
+            if ([mountPath rangeOfString:@"VIDEO_TS"].location != NSNotFound)
+                returnValue = kVLCMediaVideoTSFolder;
+            else if ([mountPath rangeOfString:@"BDMV"].location != NSNotFound)
+                returnValue = kVLCMediaBDMVFolder;
+            else
             {
-				for( int i = 0; i < i_devices; i++ )
-                {
-                    [o_disc_device
-                        addItemWithObjectValue: [o_devices objectAtIndex: i]];
+                NSArray * topLevelItems;
+                topLevelItems = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath: mountPath error: NULL];
+                NSUInteger itemCount = [topLevelItems count];
+                for (int i = 0; i < itemCount; i++) {
+                    if([[topLevelItems objectAtIndex:i] rangeOfString:@"SVCD"].location != NSNotFound) {
+                        returnValue = kVLCMediaSVCD;
+                        break;
+                    }
+                    if([[topLevelItems objectAtIndex:i] rangeOfString:@"VCD"].location != NSNotFound) {
+                        returnValue = kVLCMediaVCD;
+                        break;
+                    }
                 }
-
-                [o_disc_device selectItemAtIndex: 0];
-            }
-            else
-            {
-                [o_disc_device setStringValue:
-                    [NSString stringWithFormat: _NS("No %@s found"), o_disc]];
+                if(!returnValue)
+                    returnValue = kVLCMediaUnknown;
             }
         }
+
+        IOObjectRelease(service);
     }
-
-    [o_disc_device setEnabled: b_device];
-    [o_disc_title setEnabled: b_title_chapter];
-    [o_disc_title_stp setEnabled: b_title_chapter];
-    [o_disc_chapter setEnabled: b_title_chapter];
-    [o_disc_chapter_stp setEnabled: b_title_chapter];
-    [o_disc_videots_folder setEnabled: !b_device];
-    [o_disc_videots_btn_browse setEnabled: !b_device];
-    [o_disc_dvd_menus setEnabled: b_no_menus];
-
-    [self openDiscInfoChanged: nil];
+    return returnValue;
 }
 
-- (IBAction)openDiscStepperChanged:(id)sender
+- (void)showOpticalAtIndex: (NSNumber *)n_index
 {
-    int i_tag = [sender tag];
+    NSAutoreleasePool * o_pool = [[NSAutoreleasePool alloc] init];
 
-    if( i_tag == 0 )
-    {
-        [o_disc_title setIntValue: [o_disc_title_stp intValue]];
-    }
-    else if( i_tag == 1 )
-    {
-        [o_disc_chapter setIntValue: [o_disc_chapter_stp intValue]];
-    }
+    if (!o_opticalDevices)
+        return;
 
-    [self openDiscInfoChanged: nil];
-}
+    if ([o_opticalDevices count] == 0)
+        return;
 
-- (void)openDiscInfoChanged:(NSNotification *)o_notification
-{
-    NSString *o_type;
-    NSString *o_device;
-    NSString *o_videots;
-    NSString *o_mrl_string;
-    int i_title, i_chapter;
-    BOOL b_no_menus;
+    unsigned int index = [n_index intValue];
+	id o_currentOpticalDevice = [o_opticalDevices objectAtIndex: index];
+    char *diskType = [self getVolumeTypeFromMountPath:o_currentOpticalDevice];
 
-    o_type = [[o_disc_type selectedCell] title];
-    o_device = [o_disc_device stringValue];
-    i_title = [o_disc_title intValue];
-    i_chapter = [o_disc_chapter intValue];
-    o_videots = [o_disc_videots_folder stringValue];
-    b_no_menus = [o_disc_dvd_menus state];
-
-    if ( [o_type isEqualToString: _NS("VCD")] )
+    if (diskType == kVLCMediaDVD || diskType == kVLCMediaVideoTSFolder)
     {
-        if ( [o_device isEqualToString:
-                [NSString stringWithFormat: _NS("No %@s found"), o_type]] )
-            o_device = @"";
-        o_mrl_string = [NSString stringWithFormat: @"vcd://%@@%i:%i",
-                        o_device, i_title, i_chapter];
-    }
-    else if ( [o_type isEqualToString: _NS("Audio CD")] )
-    {
-        if ( [o_device isEqualToString:
-                [NSString stringWithFormat: _NS("No %@s found"), o_type]] )
-            o_device = @"";
-        o_mrl_string = [NSString stringWithFormat: @"cdda://%@",
-                        o_device];
-    }
-    else if ( [o_type isEqualToString: _NS("DVD")] )
-    {
-        if ( [o_device isEqualToString:
-                [NSString stringWithFormat: _NS("No %@s found"), o_type]] )
-            o_device = @"";
-        if ( b_no_menus )
-            o_mrl_string = [NSString stringWithFormat: @"dvdread://%@@%i:%i-",
-                            o_device, i_title, i_chapter];
+        [o_disc_dvd_lbl setStringValue: [[NSFileManager defaultManager] displayNameAtPath:o_currentOpticalDevice]];
+        [o_disc_dvdwomenus_lbl setStringValue: [o_disc_dvd_lbl stringValue]];
+        NSString *pathToOpen;
+        if (diskType == kVLCMediaVideoTSFolder)
+            pathToOpen = o_currentOpticalDevice;
         else
-			o_mrl_string = [NSString stringWithFormat: @"dvdnav://%@",
-                            o_device];
-            
-    }
-    else /* VIDEO_TS folder */
-    {
-        if ([o_videots length] > 0)
-        {
-            if ( b_no_menus )
-                o_mrl_string = [NSString stringWithFormat: @"dvdread://%@@%i:%i", o_videots, i_title, i_chapter];
-            else
-                o_mrl_string = [NSString stringWithFormat: @"dvdnav://%@", o_videots];
+            pathToOpen = [self getBSDNodeFromMountPath: o_currentOpticalDevice];
+        if (!b_nodvdmenus) {
+            [self setMRL: [NSString stringWithFormat: @"dvdnav://%@", pathToOpen]];
+            [self showOpticalMediaView: o_disc_dvd_view withIcon: [[NSWorkspace sharedWorkspace] iconForFile: o_currentOpticalDevice]];
+        } else {
+            [self setMRL: [NSString stringWithFormat: @"dvdread://%@#%i:%i-", pathToOpen, [o_disc_dvdwomenus_title intValue], [o_disc_dvdwomenus_chapter intValue]]];
+            [self showOpticalMediaView: o_disc_dvdwomenus_view withIcon: [[NSWorkspace sharedWorkspace] iconForFile: o_currentOpticalDevice]];
         }
-        else
-            o_mrl_string = @"";
     }
-
-    if ([o_device length] > 0)
-        [self setMRL: o_mrl_string];
+    else if (diskType == kVLCMediaAudioCD)
+    {
+        [o_disc_audiocd_lbl setStringValue: [[NSFileManager defaultManager] displayNameAtPath: o_currentOpticalDevice]];
+        [o_disc_audiocd_trackcount_lbl setStringValue: [NSString stringWithFormat:_NS("%i tracks"), [[[NSFileManager defaultManager] subpathsOfDirectoryAtPath: o_currentOpticalDevice error:NULL] count] - 1]]; // minus .TOC.plist
+        [self showOpticalMediaView: o_disc_audiocd_view withIcon: [[NSWorkspace sharedWorkspace] iconForFile: o_currentOpticalDevice]];
+        [self setMRL: [NSString stringWithFormat: @"cdda://%@", [self getBSDNodeFromMountPath: o_currentOpticalDevice]]];
+    }
+    else if (diskType == kVLCMediaVCD || diskType == kVLCMediaSVCD)
+    {
+        [o_disc_vcd_lbl setStringValue: [[NSFileManager defaultManager] displayNameAtPath: o_currentOpticalDevice]];
+        [self showOpticalMediaView: o_disc_vcd_view withIcon: [[NSWorkspace sharedWorkspace] iconForFile: o_currentOpticalDevice]];
+        [self setMRL: [NSString stringWithFormat: @"vcd://%@@%i:%i", [self getBSDNodeFromMountPath: o_currentOpticalDevice], [o_disc_vcd_title intValue], [o_disc_vcd_chapter intValue]]];
+    }
+    else if (diskType == kVLCMediaBD || diskType == kVLCMediaBDMVFolder)
+    {
+        [o_disc_bd_lbl setStringValue: [[NSFileManager defaultManager] displayNameAtPath: o_currentOpticalDevice]];
+        [self showOpticalMediaView: o_disc_bd_view withIcon: [[NSWorkspace sharedWorkspace] iconForFile: o_currentOpticalDevice]];
+        [self setMRL: [NSString stringWithFormat: @"bluray://%@", o_currentOpticalDevice]];
+    }
     else
-        [self setMRL: @""];
+    {
+        msg_Warn( VLCIntf, "unknown disk type, no idea what to display" );
+        [self showOpticalMediaView: o_disc_nodisc_view withIcon: [NSImage imageNamed:@"NSApplicationIcon"]];
+    }
+
+    [o_pool release];
 }
 
-- (IBAction)openDiscMenusChanged:(id)sender
+- (void)scanOpticalMedia:(NSNotification *)o_notification
 {
-    [self openDiscInfoChanged: nil];
-    [self openDiscTypeChanged: nil];
+    [o_opticalDevices removeAllObjects];
+    [o_disc_selector_pop removeAllItems];
+    [o_opticalDevices addObjectsFromArray: [[NSWorkspace sharedWorkspace] mountedRemovableMedia]];
+    if ([o_specialMediaFolders count] > 0)
+        [o_opticalDevices addObjectsFromArray: o_specialMediaFolders];
+    if ([o_opticalDevices count] > 0) {
+        NSUInteger deviceCount = [o_opticalDevices count];
+        for (NSUInteger i = 0; i < deviceCount ; i++)
+            [o_disc_selector_pop addItemWithTitle: [[NSFileManager defaultManager] displayNameAtPath:[o_opticalDevices objectAtIndex: i]]];
+
+        if ([o_disc_selector_pop numberOfItems] <= 1)
+            [o_disc_selector_pop setHidden: YES];
+        else
+            [o_disc_selector_pop setHidden: NO];
+
+        [NSThread detachNewThreadSelector:@selector(showOpticalAtIndex:) toTarget:self withObject:[NSNumber numberWithInt:[o_disc_selector_pop indexOfSelectedItem]]];
+    }
+    else
+    {
+        msg_Dbg( VLCIntf, "no optical media found" );
+        [o_disc_selector_pop setHidden: YES];
+        [self showOpticalMediaView: o_disc_nodisc_view withIcon: [NSImage imageNamed: @"NSApplicationIcon"]];
+    }
 }
 
-- (IBAction)openVTSBrowse:(id)sender
+- (IBAction)discSelectorChanged:(id)sender
 {
+    [NSThread detachNewThreadSelector:@selector(showOpticalAtIndex:) toTarget:self withObject:[NSNumber numberWithInt:[o_disc_selector_pop indexOfSelectedItem]]];
+}
+
+- (IBAction)openSpecialMediaFolder:(id)sender
+{
+    /* this is currently for VIDEO_TS and BDMV folders */
     NSOpenPanel *o_open_panel = [NSOpenPanel openPanel];
 
     [o_open_panel setAllowsMultipleSelection: NO];
     [o_open_panel setCanChooseFiles: NO];
     [o_open_panel setCanChooseDirectories: YES];
-    [o_open_panel setTitle: _NS("Open VIDEO_TS Directory")];
+    [o_open_panel setTitle: [sender title]];
     [o_open_panel setPrompt: _NS("Open")];
 
-    if( [o_open_panel runModalForDirectory: nil
-            file: nil types: nil] == NSOKButton )
+    if ([o_open_panel runModal] == NSOKButton)
     {
-        NSString *o_dirname = [[o_open_panel filenames] objectAtIndex: 0];
-        [o_disc_videots_folder setStringValue: o_dirname];
-        [self openDiscInfoChanged: nil];
+        NSString *o_path = [[[o_open_panel URLs] objectAtIndex: 0] path];
+        if ([o_path length] > 0 )
+        {
+            if ([o_path rangeOfString:@"VIDEO_TS"].location != NSNotFound || [o_path rangeOfString:@"BDMV"].location != NSNotFound)
+            {
+                [o_specialMediaFolders addObject: o_path];
+                [self scanOpticalMedia: nil];
+            }
+            else
+                msg_Dbg( VLCIntf, "chosen directory is no suitable special media folder" );
+        }
     }
+}
+
+- (IBAction)dvdreadOptionChanged:(id)sender
+{
+    if (sender == o_disc_dvdwomenus_enablemenus_btn) {
+        b_nodvdmenus = NO;
+        [self setMRL: [NSString stringWithFormat: @"dvdnav://%@", [self getBSDNodeFromMountPath:[o_opticalDevices objectAtIndex: [o_disc_selector_pop indexOfSelectedItem]]]]];
+        [self showOpticalMediaView: o_disc_dvd_view withIcon: [o_currentOpticalMediaIconView image]];
+        return;
+    }
+    if (sender == o_disc_dvd_disablemenus_btn) {
+        b_nodvdmenus = YES;
+        [self showOpticalMediaView: o_disc_dvdwomenus_view withIcon: [o_currentOpticalMediaIconView image]];
+    }
+
+    if (sender == o_disc_dvdwomenus_title)
+        [o_disc_dvdwomenus_title_stp setIntValue: [o_disc_dvdwomenus_title intValue]];
+    if (sender == o_disc_dvdwomenus_title_stp)
+        [o_disc_dvdwomenus_title setIntValue: [o_disc_dvdwomenus_title_stp intValue]];
+    if (sender == o_disc_dvdwomenus_chapter)
+        [o_disc_dvdwomenus_chapter_stp setIntValue: [o_disc_dvdwomenus_chapter intValue]];
+    if (sender == o_disc_dvdwomenus_chapter_stp)
+        [o_disc_dvdwomenus_chapter setIntValue: [o_disc_dvdwomenus_chapter_stp intValue]];
+
+    [self setMRL: [NSString stringWithFormat: @"dvdread://%@@%i:%i-", [self getBSDNodeFromMountPath:[o_opticalDevices objectAtIndex: [o_disc_selector_pop indexOfSelectedItem]]], [o_disc_dvdwomenus_title intValue], [o_disc_dvdwomenus_chapter intValue]]];
+}
+
+- (IBAction)vcdOptionChanged:(id)sender
+{
+    if (sender == o_disc_vcd_title)
+        [o_disc_vcd_title_stp setIntValue: [o_disc_vcd_title intValue]];
+    if (sender == o_disc_vcd_title_stp)
+        [o_disc_vcd_title setIntValue: [o_disc_vcd_title_stp intValue]];
+    if (sender == o_disc_vcd_chapter)
+        [o_disc_vcd_chapter_stp setIntValue: [o_disc_vcd_chapter intValue]];
+    if (sender == o_disc_vcd_chapter_stp)
+        [o_disc_vcd_chapter setIntValue: [o_disc_vcd_chapter_stp intValue]];
+
+    [self setMRL: [NSString stringWithFormat: @"vcd://%@@%i:%i", [self getBSDNodeFromMountPath:[o_opticalDevices objectAtIndex: [o_disc_selector_pop indexOfSelectedItem]]], [o_disc_vcd_title intValue], [o_disc_vcd_chapter intValue]]];
 }
 
 - (void)textFieldWasClicked:(NSNotification *)o_notification
@@ -975,25 +1110,29 @@ static VLCOpen *_o_sharedMainInstance = nil;
 - (void)openFile
 {
     NSOpenPanel *o_open_panel = [NSOpenPanel openPanel];
-    int i;
     b_autoplay = config_GetInt( VLCIntf, "macosx-autoplay" );
- 
+
     [o_open_panel setAllowsMultipleSelection: YES];
     [o_open_panel setCanChooseDirectories: YES];
     [o_open_panel setTitle: _NS("Open File")];
     [o_open_panel setPrompt: _NS("Open")];
  
-    if( [o_open_panel runModalForDirectory: nil
-            file: nil types: nil] == NSOKButton )
+    if( [o_open_panel runModal] == NSOKButton )
     {
-        NSArray *o_array = [NSArray array];
-        NSArray *o_values = [[o_open_panel filenames]
-                sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+        NSArray * o_urls = [o_open_panel URLs];
+        NSUInteger count = [o_urls count];
+        NSMutableArray *o_values = [NSMutableArray arrayWithCapacity:count];
+        NSMutableArray *o_array = [NSMutableArray arrayWithCapacity:count];
+        for( NSUInteger i = 0; i < count; i++ )
+        {
+            [o_values addObject: [[o_urls objectAtIndex: i] path]];
+        }
+        [o_values sortUsingSelector:@selector(caseInsensitiveCompare:)];
 
-        for( i = 0; i < (int)[o_values count]; i++)
+        for( NSUInteger i = 0; i < count; i++ )
         {
             NSDictionary *o_dic;
-            char *psz_uri = make_URI([[o_values objectAtIndex:i] UTF8String]);
+            char *psz_uri = make_URI([[o_values objectAtIndex:i] UTF8String], "file");
             if( !psz_uri )
                 continue;
 
@@ -1001,12 +1140,12 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
             free( psz_uri );
 
-            o_array = [o_array arrayByAddingObject: o_dic];
+            [o_array addObject: o_dic];
         }
         if( b_autoplay )
-            [o_playlist appendArray: o_array atPos: -1 enqueue:NO];
+            [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:NO];
         else
-            [o_playlist appendArray: o_array atPos: -1 enqueue:YES];
+            [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:YES];
     }
 }
 
@@ -1014,16 +1153,15 @@ static VLCOpen *_o_sharedMainInstance = nil;
 {
     NSRect o_view_rect;
     o_view_rect = [theView frame];
-    if( o_currentCaptureView )
+    [theView setFrame: NSMakeRect( 0, -10, o_view_rect.size.width, o_view_rect.size.height)];
+    [theView setAutoresizesSubviews: YES];
+    if (o_currentCaptureView)
     {
-        [o_currentCaptureView removeFromSuperviewWithoutNeedingDisplay];
+        [[[[o_tabview tabViewItemAtIndex: 3] view] animator] replaceSubview: o_currentCaptureView with: theView];
         [o_currentCaptureView release];
     }
-    [theView setFrame: NSMakeRect( 0, -10, o_view_rect.size.width, o_view_rect.size.height)];
-    [theView setNeedsDisplay: YES];
-    [theView setAutoresizesSubviews: YES];
-    [[[o_tabview tabViewItemAtIndex: 3] view] addSubview: theView];
-    [theView displayIfNeeded];
+    else
+         [[[[o_tabview tabViewItemAtIndex: 3] view] animator] addSubview: theView];
     o_currentCaptureView = theView;
     [o_currentCaptureView retain];
 }
@@ -1059,15 +1197,16 @@ static VLCOpen *_o_sharedMainInstance = nil;
         [o_screen_top_fld setIntValue: config_GetInt( p_intf, "screen-top" )];
         [o_screen_follow_mouse_ckb setIntValue: config_GetInt( p_intf, "screen-follow-mouse" )];
     }
-    else if( [[[o_capture_mode_pop selectedItem] title] isEqualToString: @"iSight"] )
+    else if( [[[o_capture_mode_pop selectedItem] title] isEqualToString: _NS("Capture Device")] )
     {
-        [o_capture_lbl setStringValue: _NS("iSight Capture Input")];
-        [o_capture_long_lbl setStringValue: _NS("This facility allows you to process your iSight's input signal.\n\nNo settings are available in this version, so you will be provided a 640px*480px raw video stream.\n\nLive Audio input is not supported.")];
-        [o_capture_lbl displayIfNeeded];
-        [o_capture_long_lbl displayIfNeeded];
-        
-        [self showCaptureView: o_capture_label_view];
-        [self setMRL: @"qtcapture://"];
+        [self showCaptureView: o_qtk_view];
+        if ([o_capture_width_fld intValue] <= 0)
+            [self qtkChanged:nil];
+
+        if(!qtk_currdevice_uid)
+            [self setMRL: @""];
+        else
+            [self setMRL:[NSString stringWithFormat:@"qtcapture://%@", qtk_currdevice_uid]];
     }
 }
 
@@ -1147,8 +1286,6 @@ static VLCOpen *_o_sharedMainInstance = nil;
         msg_Dbg( VLCIntf, "eyetv was launched, no device yet" );
         setEyeTVUnconnected;
     }
-    else
-        msg_Warn( VLCIntf, "unknown external notify '%s' received", [[o_notification name] UTF8String] );
 }    
 
 /* little helper method, since this code needs to be run by multiple objects */
@@ -1196,10 +1333,16 @@ static VLCOpen *_o_sharedMainInstance = nil;
     if ([o_file_sub_ckbox state] == NSOnState)
     {
         [o_file_sub_btn_settings setEnabled:YES];
+        if (o_sub_path) {
+            [o_file_subtitles_filename_lbl setStringValue: [[NSFileManager defaultManager] displayNameAtPath:o_sub_path]];
+            [o_file_subtitles_icon_well setImage: [[NSWorkspace sharedWorkspace] iconForFile:o_sub_path]];
+        }
     }
     else
     {
         [o_file_sub_btn_settings setEnabled:NO];
+        [o_file_subtitles_filename_lbl setStringValue: @""];
+        [o_file_subtitles_icon_well setImage: NULL];
     }
 }
 
@@ -1214,6 +1357,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (IBAction)subCloseSheet:(id)sender
 {
+    [self subsChanged: nil];
     [o_file_sub_sheet orderOut:sender];
     [NSApp endSheet: o_file_sub_sheet];
 }
@@ -1226,11 +1370,23 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [o_open_panel setTitle: _NS("Open File")];
     [o_open_panel setPrompt: _NS("Open")];
 
-    if( [o_open_panel runModalForDirectory: nil
-            file: nil types: nil] == NSOKButton )
+    if( [o_open_panel runModal] == NSOKButton )
     {
-        NSString *o_filename = [[o_open_panel filenames] objectAtIndex: 0];
-        [o_file_sub_path setStringValue: o_filename];
+        o_sub_path = [[[o_open_panel URLs] objectAtIndex: 0] path];
+        [o_sub_path retain];
+        [o_file_subtitles_filename_lbl setStringValue: [[NSFileManager defaultManager] displayNameAtPath:o_sub_path]];
+        [o_file_sub_path_fld setStringValue: [o_file_subtitles_filename_lbl stringValue]];
+        [o_file_sub_path_lbl setHidden: YES];
+        [o_file_subtitles_icon_well setImage: [[NSWorkspace sharedWorkspace] iconForFile:o_sub_path]];
+        [o_file_sub_icon_view setImage: [o_file_subtitles_icon_well image]];
+    }
+    else
+    {
+        [o_file_sub_path_lbl setHidden: NO];
+        [o_file_sub_path_fld setStringValue:@""];
+        [o_file_subtitles_filename_lbl setStringValue:@""];
+        [o_file_subtitles_icon_well setImage: nil];
+        [o_file_sub_icon_view setImage: nil];
     }
 }
 
@@ -1264,6 +1420,19 @@ static VLCOpen *_o_sharedMainInstance = nil;
         [NSApp stopModalWithCode: 1];
     else
         NSBeep();
+}
+
+- (NSArray *)qtkvideoDevices
+{
+    if (!qtkvideoDevices)
+        [self qtkrefreshDevices];
+    return qtkvideoDevices;
+}
+
+- (void)qtkrefreshDevices
+{
+    [qtkvideoDevices release];
+    qtkvideoDevices = [[[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeVideo] arrayByAddingObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeMuxed]] retain];
 }
 
 @end

@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libspudec_plugin_la_SOURCES = $(SOURCES_spudec)
 nodist_libspudec_plugin_la_SOURCES = $(nodist_SOURCES_spudec)
 # Force per-target objects:
-libspudec_plugin_la_CFLAGS = $(AM_CFLAGS)
-libspudec_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libspudec_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libspudec_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_spudec)
+libspudec_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_spudec)
+libspudec_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_spudec)
+libspudec_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_spudec)
 # Set LIBADD and DEPENDENCIES manually:
-libspudec_plugin_la_LIBADD = $(AM_LIBADD)
-libspudec_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libspudec_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_spudec)
+libspudec_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_spudec)
+libspudec_plugin_la_DEPENDENCIES =
 

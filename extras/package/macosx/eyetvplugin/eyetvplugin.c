@@ -1,8 +1,8 @@
 /*****************************************************************************
 * eyetvplugin.c: Plug-In for the EyeTV software to connect to VLC
 *****************************************************************************
-* Copyright (C) 2006-2011 the VideoLAN team
-* $Id: b4c2db447514526c2ac1d1d7b0587ccad6d723a9 $
+* Copyright (C) 2006-2007 the VideoLAN team
+* $Id: 8b7713c2c67b8a19269a1cb4d4cb7c74d4ac0974 $
 *
 * Authors: Felix Kühne <fkuehne at videolan dot org>
 *
@@ -309,7 +309,6 @@ static long VLCEyeTVPluginPacketsArrived(VLCEyeTVPluginGlobals_t *globals, EyeTV
                             {
                                 if( globals->activePIDs[i].pid == pid )
                                 {
-                                    
                                     memcpy(packetBuffer+packetBufferSize, *packets, sizeof(TransportStreamPacket));
                                     packetBufferSize += sizeof(TransportStreamPacket);
                                     if( packetBufferSize > (sizeof(packetBuffer)-sizeof(TransportStreamPacket)) )
@@ -321,7 +320,7 @@ static long VLCEyeTVPluginPacketsArrived(VLCEyeTVPluginGlobals_t *globals, EyeTV
                                             if( sent == -1 )
                                                 printf("data sending failed (errno=%d)\n", errno);
                                             else
-                                                printf("data sending incomplete (sent=%d)\n", sent);
+                                                printf("data sending incomplete (sent=%zd)\n", sent);
                                             close(i_vlcSock);
                                             i_vlcSock = -1;
                                             return 0;
@@ -371,7 +370,7 @@ static long VLCEyeTVPluginPacketsArrived(VLCEyeTVPluginGlobals_t *globals, EyeTV
                             if( sent == -1 )
                                 printf("data sending failed (errno=%d)\n", errno);
                             else
-                                printf("data sending incomplete (sent=%d)\n", sent);
+                                printf("data sending incomplete (sent=%zd)\n", sent);
                             close(i_vlcSock);
                             i_vlcSock = -1;
                             return 0;
@@ -412,7 +411,7 @@ static long VLCEyeTVPluginServiceChanged(VLCEyeTVPluginGlobals_t *globals,
     
     if( globals ) 
     {
-        printf("DeviceID: %ld, ", deviceID);
+        printf("DeviceID: %ld, ", (long)deviceID);
         printf("HeadendID: %ld, ", headendID);
         printf("TransponderID: %ld, ", transponderID);
         printf("ServiceID: %ld\n\n", serviceID);

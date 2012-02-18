@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 56bbcee4c8d39bf480301860a2fe298a3bfdb6ab $
+ * $Id: eb931338c3a103799507732dd0391972b2b2c2a4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -73,7 +73,7 @@ vlc_module_begin ()
     set_capability( "packetizer", 50 )
     set_callbacks( Open, Close )
 
-    add_bool( "packetizer-mpegvideo-sync-iframe", false, NULL, SYNC_INTRAFRAME_TEXT,
+    add_bool( "packetizer-mpegvideo-sync-iframe", false, SYNC_INTRAFRAME_TEXT,
               SYNC_INTRAFRAME_LONGTEXT, true )
 vlc_module_end ()
 
@@ -517,7 +517,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         if( p_sys->p_seq &&
             p_sys->i_seq_old > p_sys->i_frame_rate/p_sys->i_frame_rate_base )
         {
-            /* Usefull for mpeg1: repeat sequence header every second */
+            /* Useful for mpeg1: repeat sequence header every second */
             block_ChainLastAppend( &p_sys->pp_last, block_Duplicate( p_sys->p_seq ) );
             if( p_sys->p_ext )
             {

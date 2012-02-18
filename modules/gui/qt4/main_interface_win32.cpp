@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 85df6fb96974c483f91a75f928e261248d8c1ef7 $
+ * $Id: bbbfe44c0d69f85a01dcb890fd553928555edf33 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -27,9 +27,8 @@
 #include "input_manager.hpp"
 #include "actions_manager.hpp"
 
-#ifdef WIN32
- #include <QBitmap>
- #include <vlc_windows_interfaces.h>
+#include <QBitmap>
+#include <vlc_windows_interfaces.h>
 
 #define WM_APPCOMMAND 0x0319
 
@@ -82,17 +81,17 @@ void MainInterface::createTaskBarButtons()
 
     if( S_OK == CoCreateInstance( &clsid_ITaskbarList,
                 NULL, CLSCTX_INPROC_SERVER,
-                &IID_ITaskbarList3,
+                IID_ITaskbarList3,
                 (void **)&p_taskbl) )
     {
         p_taskbl->vt->HrInit(p_taskbl);
 
-        if(himl = ImageList_Create( 20, //cx
+        if( (himl = ImageList_Create( 20, //cx
                         20, //cy
                         ILC_COLOR32,//flags
                         4,//initial nb of images
                         0//nb of images that can be added
-                        ))
+                        ) ) != NULL )
         {
             QPixmap img   = QPixmap(":/win7/prev");
             QPixmap img2  = QPixmap(":/win7/pause");
@@ -135,14 +134,14 @@ void MainInterface::createTaskBarButtons()
 
         HRESULT hr = p_taskbl->vt->ThumbBarSetImageList(p_taskbl, winId(), himl );
         if(S_OK != hr)
-            msg_Err( p_intf, "ThumbBarSetImageList failed with error %08x", hr );
+            msg_Err( p_intf, "ThumbBarSetImageList failed with error %08lx", hr );
         else
         {
             hr = p_taskbl->vt->ThumbBarAddButtons(p_taskbl, winId(), 3, thbButtons);
             if(S_OK != hr)
-                msg_Err( p_intf, "ThumbBarAddButtons failed with error %08x", hr );
+                msg_Err( p_intf, "ThumbBarAddButtons failed with error %08lx", hr );
         }
-        CONNECT( THEMIM->getIM(), statusChanged( int ), this, changeThumbbarButtons( int ) );
+        CONNECT( THEMIM->getIM(), playingStatusChanged( int ), this, changeThumbbarButtons( int ) );
     }
     else
     {
@@ -156,7 +155,7 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
 {
     if (msg->message == taskbar_wmsg)
     {
-        //We received the "taskbarbuttoncreated" message, now we can really create the buttons
+        //We received the taskbarbuttoncreated, now we can really create the buttons
         createTaskBarButtons();
     }
 
@@ -183,8 +182,7 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
         case WM_APPCOMMAND:
             cmd = GET_APPCOMMAND_LPARAM(msg->lParam);
 
-            bool disable_volume_keys = var_InheritBool( p_intf, "qt-disable-volume-keys" );
-            if( disable_volume_keys &&
+            if( p_intf->p_sys->disable_volume_keys &&
                     (   cmd == APPCOMMAND_VOLUME_DOWN   ||
                         cmd == APPCOMMAND_VOLUME_UP     ||
                         cmd == APPCOMMAND_VOLUME_MUTE ) )
@@ -238,12 +236,12 @@ bool MainInterface::winEvent ( MSG * msg, long * result )
     }
     return false;
 }
-#endif
 
-//moc doesn't know about #ifdef, so we have to build this method for every platform
-void MainInterface::changeThumbbarButtons( int i_status)
+void MainInterface::changeThumbbarButtons( int i_status )
 {
-#ifdef WIN32
+    if( p_taskbl == NULL )
+        return;
+
     // Define an array of three buttons. These buttons provide images through an
     // image list and also provide tooltips.
     DWORD dwMask = THB_BITMAP | THB_FLAGS;
@@ -289,8 +287,5 @@ void MainInterface::changeThumbbarButtons( int i_status)
     }
     HRESULT hr =  p_taskbl->vt->ThumbBarUpdateButtons(p_taskbl, this->winId(), 3, thbButtons);
     if(S_OK != hr)
-        msg_Err( p_intf, "ThumbBarUpdateButtons failed with error %08x", hr );
-#endif
+        msg_Err( p_intf, "ThumbBarUpdateButtons failed with error %08lx", hr );
 }
-
-

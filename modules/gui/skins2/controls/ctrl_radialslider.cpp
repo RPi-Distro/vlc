@@ -2,7 +2,7 @@
  * ctrl_radialslider.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a1bbec3c00e02dc8d6632327e31c4b064548c718 $
+ * $Id: 14a6e2d274b532e1c7ddb90b772b73c1e0cc477c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -40,8 +40,8 @@ CtrlRadialSlider::CtrlRadialSlider( intf_thread_t *pIntf,
                                     VarBool *pVisible ):
     CtrlGeneric( pIntf, rHelp, pVisible ), m_fsm( pIntf ), m_numImg( numImg ),
     m_rVariable( rVariable ), m_minAngle( minAngle ), m_maxAngle( maxAngle ),
-    m_cmdUpDown( this ), m_cmdDownUp( this ),
-    m_cmdMove( this ), m_position( 0 )
+    m_position( 0 ), m_cmdUpDown( this ), m_cmdDownUp( this ),
+    m_cmdMove( this )
 {
     // Build the images of the sequence
     m_pImgSeq = OSFactory::instance( getIntf() )->createOSGraphics(
@@ -90,18 +90,33 @@ bool CtrlRadialSlider::mouseOver( int x, int y ) const
 }
 
 
-void CtrlRadialSlider::draw( OSGraphics &rImage, int xDest, int yDest )
+void CtrlRadialSlider::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
 {
-    rImage.drawGraphics( *m_pImgSeq, 0, m_position * m_height, xDest, yDest,
-                         m_width, m_height );
+    const Position *pPos = getPosition();
+    rect region( pPos->getLeft(), pPos->getTop(), m_width, m_height );
+    rect clip( xDest, yDest, w ,h );
+    rect inter;
+    if( rect::intersect( region, clip, &inter ) )
+        rImage.drawGraphics( *m_pImgSeq,
+                              inter.x - region.x,
+                              inter.y - region.y + m_position * m_height,
+                              inter.x, inter.y,
+                              inter.width, inter.height );
 }
 
 
-void CtrlRadialSlider::onUpdate( Subject<VarPercent> &rVariable,
-                                 void *arg  )
+void CtrlRadialSlider::onUpdate( Subject<VarPercent> &rVariable, void *arg )
 {
-    m_position = (int)( m_rVariable.get() * ( m_numImg - 1 ) );
-    notifyLayout( m_width, m_height );
+    (void)arg;
+    if( &rVariable == &m_rVariable )
+    {
+        int position = (int)( m_rVariable.get() * ( m_numImg - 1 ) );
+        if( position == m_position )
+            return;
+
+        m_position = position;
+        notifyLayout( m_width, m_height );
+    }
 }
 
 

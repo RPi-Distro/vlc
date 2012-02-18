@@ -2,7 +2,7 @@
  * attachment.c: Input reading an attachment.
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: d2e043c03ff52eedd9237b2f60e8f18760109146 $
+ * $Id: b2de45a707c1937c37d8bef66635c01e2194ac9e $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -73,13 +73,14 @@ static int Open(vlc_object_t *object)
         return VLC_EGENERIC;
 
     input_attachment_t *a;
-    if (input_Control(input, INPUT_GET_ATTACHMENT, &a, access->psz_path))
+    if (input_Control(input, INPUT_GET_ATTACHMENT, &a, access->psz_location))
         a = NULL;
 
     vlc_object_release(input);
 
     if (!a) {
-        msg_Err(access, "Failed to find the attachment '%s'", access->psz_path);
+        msg_Err(access, "Failed to find the attachment '%s'",
+                access->psz_location);
         return VLC_EGENERIC;
     }
 
@@ -116,7 +117,7 @@ static ssize_t Read(access_t *access, uint8_t *buffer, size_t size)
 {
     access_sys_t *sys = access->p_sys;
 
-    access->info.b_eof = access->info.i_pos >= sys->a->i_data;
+    access->info.b_eof = access->info.i_pos >= (uint64_t)sys->a->i_data;
     if (access->info.b_eof)
         return 0;
 

@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: f45a5dcb6483e7fc08adc5351f17759cac3195cd $
+ * $Id: d50af46b8b509b6ba89f3377901393370875e7f8 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -50,14 +50,11 @@ static vlc_fourcc_t GetFOURCC( const uint8_t *p_buff )
 static int AVI_ChunkReadCommon( stream_t *s, avi_chunk_t *p_chk )
 {
     const uint8_t *p_peek;
-    int i_peek;
 
     memset( p_chk, 0, sizeof( avi_chunk_t ) );
 
-    if( ( i_peek = stream_Peek( s, &p_peek, 8 ) ) < 8 )
-    {
+    if( stream_Peek( s, &p_peek, 8 ) < 8 )
         return VLC_EGENERIC;
-    }
 
     p_chk->common.i_chunk_fourcc = GetFOURCC( p_peek );
     p_chk->common.i_chunk_size   = GetDWLE( p_peek + 4 );
@@ -345,10 +342,12 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
             AVI_READ4BYTES( p_chk->strf.auds.p_wf->nAvgBytesPerSec );
             AVI_READ2BYTES( p_chk->strf.auds.p_wf->nBlockAlign );
             AVI_READ2BYTES( p_chk->strf.auds.p_wf->wBitsPerSample );
+
             if( p_chk->strf.auds.p_wf->wFormatTag != WAVE_FORMAT_PCM
                  && p_chk->common.i_chunk_size > sizeof( WAVEFORMATEX ) )
             {
                 AVI_READ2BYTES( p_chk->strf.auds.p_wf->cbSize );
+
                 /* prevent segfault */
                 if( p_chk->strf.auds.p_wf->cbSize >
                         p_chk->common.i_chunk_size - sizeof( WAVEFORMATEX ) )
@@ -356,11 +355,10 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
                     p_chk->strf.auds.p_wf->cbSize =
                         p_chk->common.i_chunk_size - sizeof( WAVEFORMATEX );
                 }
+
                 if( p_chk->strf.auds.p_wf->wFormatTag == WAVE_FORMAT_EXTENSIBLE )
                 {
-                    /* Found an extensible header atm almost nothing uses that. */
-                    msg_Warn( (vlc_object_t*)s, "WAVE_FORMAT_EXTENSIBLE or "
-                              "vorbis audio dectected: not supported" );
+                    msg_Dbg( s, "Extended header found" );
                 }
             }
             else
@@ -370,7 +368,7 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
             if( p_chk->strf.auds.p_wf->cbSize > 0 )
             {
                 memcpy( &p_chk->strf.auds.p_wf[1] ,
-                        p_buff + 8 + sizeof( WAVEFORMATEX ),    /*  8=fourrc+size */
+                        p_buff + 8 + sizeof( WAVEFORMATEX ),    /*  8=fourcc+size */
                         p_chk->strf.auds.p_wf->cbSize );
             }
 #ifdef AVI_DEBUG
@@ -629,13 +627,13 @@ static int AVI_ChunkRead_strz( stream_t *s, avi_chunk_t *p_chk )
         }
     }
     p_strz->p_type = strdup( AVI_strz_type[i_index].psz_type );
-    p_strz->p_str = xmalloc( i_read + 1);
+    p_strz->p_str = xmalloc( p_strz->i_chunk_size + 1);
 
     if( p_strz->i_chunk_size )
     {
-        memcpy( p_strz->p_str, p_read, i_read );
+        memcpy( p_strz->p_str, p_read, p_strz->i_chunk_size );
     }
-    p_strz->p_str[i_read] = 0;
+    p_strz->p_str[p_strz->i_chunk_size] = 0;
 
 #ifdef AVI_DEBUG
     msg_Dbg( (vlc_object_t*)s, "%4.4s: %s : %s",

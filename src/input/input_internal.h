@@ -1,32 +1,28 @@
 /*****************************************************************************
  * input_internal.h: Internal input structures
  *****************************************************************************
- * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: 654913095884997add164fbdf004466eec5a31d4 $
+ * Copyright (C) 1998-2006 VLC authors and VideoLAN
+ * $Id: e65acdfb74ac8f99f146503c91c0304b8ede840f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#if defined(__PLUGIN__) || defined(__BUILTIN__) || !defined(__LIBVLC__)
-# error This header file can only be included from LibVLC.
-#endif
-
-#ifndef _INPUT_INTERNAL_H
-#define _INPUT_INTERNAL_H 1
+#ifndef LIBVLC_INPUT_INTERNAL_H
+#define LIBVLC_INPUT_INTERNAL_H 1
 
 #include <vlc_access.h>
 #include <vlc_demux.h>
@@ -137,6 +133,7 @@ struct input_thread_private_t
 
     /* Resources */
     input_resource_t *p_resource;
+    input_resource_t *p_resource_private;
 
     /* Stats counters */
     struct {
@@ -167,6 +164,8 @@ struct input_thread_private_t
     input_control_t control[INPUT_CONTROL_FIFO_SIZE];
 
     bool b_abort;
+    bool is_running;
+    vlc_thread_t thread;
 };
 
 /***************************************************************************
@@ -243,5 +242,9 @@ void input_ConfigVarInit ( input_thread_t * );
 /* Subtitles */
 char **subtitles_Detect( input_thread_t *, char* path, const char *fname );
 int subtitles_Filter( const char *);
+
+/* input.c */
+void input_SplitMRL( const char **, const char **, const char **,
+                     const char **, char * );
 
 #endif

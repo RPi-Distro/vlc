@@ -1,8 +1,7 @@
 /*****************************************************************************
  * asf.c : ASF demux module
  *****************************************************************************
- * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: 0fd0f194d081e082edd73b46550c59fa0c49e553 $
+ * Copyright © 2002-2004, 2006-2008, 2010 the VideoLAN team
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -34,9 +33,10 @@
 #include <vlc_demux.h>
 #include <vlc_dialog.h>
 
-#include <vlc_meta.h>
+#include <vlc_meta.h>                  /* vlc_meta_Set*, vlc_meta_New */
 #include <vlc_access.h>                /* GET_PRIVATE_ID_STATE */
 #include <vlc_codecs.h>                /* BITMAPINFOHEADER, WAVEFORMATEX */
+
 #include "libasf.h"
 
 /* TODO
@@ -53,10 +53,10 @@ static void Close ( vlc_object_t * );
 vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )
-    set_description( N_("ASF v1.0 demuxer") )
+    set_description( N_("ASF/WMV demuxer") )
     set_capability( "demux", 200 )
     set_callbacks( Open, Close )
-    add_shortcut( "asf" )
+    add_shortcut( "asf", "wmv" )
 vlc_module_end ()
 
 
@@ -121,13 +121,12 @@ static int Open( vlc_object_t * p_this )
     if( stream_Peek( p_demux->s, &p_peek, 16 ) < 16 ) return VLC_EGENERIC;
 
     ASF_GetGUID( &guid, p_peek );
-    if( !ASF_CmpGUID( &guid, &asf_object_header_guid ) ) return VLC_EGENERIC;
+    if( !guidcmp( &guid, &asf_object_header_guid ) ) return VLC_EGENERIC;
 
     /* Set p_demux fields */
     p_demux->pf_demux = Demux;
     p_demux->pf_control = Control;
-    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
-    memset( p_sys, 0, sizeof( demux_sys_t ) );
+    p_demux->p_sys = p_sys = calloc( 1, sizeof( demux_sys_t ) );
 
     /* Load the headers */
     if( DemuxInit( p_demux ) )
@@ -168,7 +167,7 @@ static int Demux( demux_t *p_demux )
             guid_t guid;
 
             ASF_GetGUID( &guid, p_peek );
-            if( ASF_CmpGUID( &guid, &asf_object_header_guid ) )
+            if( guidcmp( &guid, &asf_object_header_guid ) )
             {
                 msg_Warn( p_demux, "found a new ASF header" );
                 /* We end this stream */
@@ -249,7 +248,7 @@ static int SeekIndex( demux_t *p_demux, mtime_t i_date, float f_pos )
     if( i_date < 0 )
         i_date = p_sys->i_length * f_pos;
 
-    p_index = ASF_FindObject( p_sys->p_root, &asf_object_index_guid, 0 );
+    p_index = ASF_FindObject( p_sys->p_root, &asf_object_simple_index_guid, 0 );
 
     uint64_t i_entry = i_date * 10 / p_index->i_index_entry_time_interval;
     if( i_entry >= p_index->i_index_entry_count )
@@ -472,11 +471,17 @@ static int DemuxPacket( demux_t *p_demux )
         goto loop_error_recovery;
     }
 
+    if( i_packet_length < i_data_packet_min )
+    {
+        /* if packet length too short, there is extra padding */
+        i_packet_padding_length += i_data_packet_min - i_packet_length;
+        i_packet_length = i_data_packet_min;
+    }
+
     i_packet_send_time = GetDWLE( p_peek + i_skip ); i_skip += 4;
     i_packet_duration  = GetWLE( p_peek + i_skip ); i_skip += 2;
 
-    /* FIXME I have to do that for some file, I don't known why */
-    i_packet_size_left = i_data_packet_min /*i_packet_length*/ ;
+    i_packet_size_left = i_packet_length;
 
     if( b_packet_multiple_payload )
     {
@@ -495,7 +500,7 @@ static int DemuxPacket( demux_t *p_demux )
         asf_track_t   *tk;
 
         int i_packet_keyframe;
-        int i_stream_number;
+        unsigned int i_stream_number;
         int i_media_object_number;
         int i_media_object_offset;
         int i_replicated_data_length;
@@ -565,7 +570,7 @@ static int DemuxPacket( demux_t *p_demux )
         {
             break;
         }
-#if 0
+#ifdef ASF_DEBUG
          msg_Dbg( p_demux,
                   "payload(%d/%d) stream_number:%d media_object_number:%d media_object_offset:%d replicated_data_length:%d payload_data_length %d",
                   i_payload + 1, i_payload_count, i_stream_number, i_media_object_number,
@@ -759,7 +764,7 @@ static int DemuxInit( demux_t *p_demux )
 
     /* check if index is available */
     asf_object_index_t *p_index = ASF_FindObject( p_sys->p_root,
-                                                  &asf_object_index_guid, 0 );
+                                                  &asf_object_simple_index_guid, 0 );
     const bool b_index = p_index && p_index->i_index_entry_count;
 
     /* Find the extended header if any */
@@ -805,12 +810,12 @@ static int DemuxInit( demux_t *p_demux )
         if( p_hdr_ext )
         {
             int i_ext_stream = ASF_CountObject( p_hdr_ext,
-                                                &asf_object_extended_stream_properties );
+                                                &asf_object_extended_stream_properties_guid );
             for( int i = 0; i < i_ext_stream; i++ )
             {
                 asf_object_t *p_tmp =
                     ASF_FindObject( p_hdr_ext,
-                                    &asf_object_extended_stream_properties, i );
+                                    &asf_object_extended_stream_properties_guid, i );
                 if( p_tmp->ext_stream.i_stream_number == p_sp->i_stream_number )
                 {
                     p_esp = &p_tmp->ext_stream;
@@ -821,7 +826,7 @@ static int DemuxInit( demux_t *p_demux )
 
         es_format_t fmt;
 
-        if( ASF_CmpGUID( &p_sp->i_stream_type, &asf_object_stream_type_audio ) &&
+        if( guidcmp( &p_sp->i_stream_type, &asf_object_stream_type_audio ) &&
             p_sp->i_type_specific_data_length >= sizeof( WAVEFORMATEX ) - 2 )
         {
             uint8_t *p_data = p_sp->p_type_specific_data;
@@ -851,7 +856,7 @@ static int DemuxInit( demux_t *p_demux )
             msg_Dbg( p_demux, "added new audio stream(codec:0x%x,ID:%d)",
                     GetWLE( p_data ), p_sp->i_stream_number );
         }
-        else if( ASF_CmpGUID( &p_sp->i_stream_type,
+        else if( guidcmp( &p_sp->i_stream_type,
                               &asf_object_stream_type_video ) &&
                  p_sp->i_type_specific_data_length >= 11 +
                  sizeof( BITMAPINFOHEADER ) )
@@ -926,7 +931,7 @@ static int DemuxInit( demux_t *p_demux )
             msg_Dbg( p_demux, "added new video stream(ID:%d)",
                      p_sp->i_stream_number );
         }
-        else if( ASF_CmpGUID( &p_sp->i_stream_type, &asf_object_extended_stream_header ) &&
+        else if( guidcmp( &p_sp->i_stream_type, &asf_object_extended_stream_header ) &&
             p_sp->i_type_specific_data_length >= 64 )
         {
             /* Now follows a 64 byte header of which we don't know much */
@@ -935,7 +940,7 @@ static int DemuxInit( demux_t *p_demux )
             unsigned int i_data = p_sp->i_type_specific_data_length - 64;
 
             msg_Dbg( p_demux, "Ext stream header detected. datasize = %d", p_sp->i_type_specific_data_length );
-            if( ASF_CmpGUID( p_ref, &asf_object_extended_stream_type_audio ) &&
+            if( guidcmp( p_ref, &asf_object_extended_stream_type_audio ) &&
                 i_data >= sizeof( WAVEFORMATEX ) - 2)
             {
                 int      i_format;

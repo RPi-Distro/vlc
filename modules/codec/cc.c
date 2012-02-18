@@ -1,8 +1,7 @@
 /*****************************************************************************
- * cc608.c : CC 608/708 subtitles decoder
+ * cc.c : CC 608/708 subtitles decoder
  *****************************************************************************
- * Copyright (C) 2007 Laurent Aimar
- * $Id: 0d1ab2e1bc98e523c96c8f0ea55c9a5a0019584a $
+ * Copyright © 2007-2010 Laurent Aimar, 2011 VLC authors and VideoLAN
  *
  * Authors: Laurent Aimar < fenrir # via.ecp.fr>
  *
@@ -37,20 +36,14 @@
 # include "config.h"
 #endif
 
+#include <assert.h>
+
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
-#include <vlc_input.h>
-
-#include <vlc_osd.h>
-#include <vlc_filter.h>
-#include <vlc_image.h>
 #include <vlc_charset.h>
-#include <vlc_stream.h>
-#include <vlc_xml.h>
-#include <string.h>
 
-#include <assert.h>
+#include "substext.h"
 
 /*****************************************************************************
  * Module descriptor.
@@ -313,7 +306,6 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
 {
     //decoder_sys_t *p_sys = p_dec->p_sys;
     subpicture_t *p_spu = NULL;
-    video_format_t fmt;
 
     /* We cannot display a subpicture with no date */
     if( i_pts <= VLC_TS_INVALID )
@@ -327,43 +319,23 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
         EnsureUTF8( psz_html );
 
     /* Create the subpicture unit */
-    p_spu = decoder_NewSubpicture( p_dec );
+    p_spu = decoder_NewSubpictureText( p_dec );
     if( !p_spu )
     {
-        msg_Warn( p_dec, "can't get spu buffer" );
         free( psz_subtitle );
         free( psz_html );
         return NULL;
     }
-
-    /* Create a new subpicture region */
-    memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_CODEC_TEXT;
-    fmt.i_width = fmt.i_height = 0;
-    fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = subpicture_region_New( &fmt );
-    if( !p_spu->p_region )
-    {
-        msg_Err( p_dec, "cannot allocate SPU region" );
-        free( psz_subtitle );
-        free( psz_html );
-        decoder_DeleteSubpicture( p_dec, p_spu );
-        return NULL;
-    }
-
-    /* Decode and format the subpicture unit */
-    /* Normal text subs, easy markup */
-    p_spu->p_region->i_align = SUBPICTURE_ALIGN_BOTTOM;// | SUBPICTURE_ALIGN_LEFT;// | p_sys->i_align;
-    p_spu->p_region->i_x = 0; //p_sys->i_align ? 20 : 0;
-    p_spu->p_region->i_y = 10;
-
-    p_spu->p_region->psz_text = psz_subtitle;
-    p_spu->p_region->psz_html = psz_html;
-
-    p_spu->i_start = i_pts;
-    p_spu->i_stop = i_pts + 10000000;   /* 10s max */
-    p_spu->b_ephemer = true;
+    p_spu->i_start    = i_pts;
+    p_spu->i_stop     = i_pts + 10000000;   /* 10s max */
+    p_spu->b_ephemer  = true;
     p_spu->b_absolute = false;
+
+    subpicture_updater_sys_t *p_spu_sys = p_spu->updater.p_sys;
+
+    p_spu_sys->align = SUBPICTURE_ALIGN_BOTTOM;
+    p_spu_sys->text  = psz_subtitle;
+    p_spu_sys->html  = psz_html;
 
     return p_spu;
 }
@@ -777,6 +749,9 @@ static bool Eia608ParsePac( eia608_t *h, uint8_t d1, uint8_t d2 )
     else if( d2 >= 0x40 )
         d2 -= 0x40;
     h->cursor.i_column = pac2_attribs[d2].i_column;
+    h->color = pac2_attribs[d2].i_color;
+    h->font  = pac2_attribs[d2].i_font;
+
     return false;
 }
 
@@ -849,7 +824,7 @@ static void Eia608TextUtf8( char *psz_utf8, uint8_t c ) // Returns number of byt
         E2( 0x86, 0xc2,0xa3), // Pounds sterling
         E3( 0x87, 0xe2,0x99,0xaa), // Music note
         E2( 0x88, 0xc3,0xa0), // lowercase a, grave accent
-        E1( 0x89, 0x20), // transparent space, we make it regular
+        E2( 0x89, 0xc2,0xa0), // transparent space
         E2( 0x8a, 0xc3,0xa8), // lowercase e, grave accent
         E2( 0x8b, 0xc3,0xa2), // lowercase a, circumflex accent
         E2( 0x8c, 0xc3,0xaa), // lowercase e, circumflex accent
@@ -865,15 +840,15 @@ static void Eia608TextUtf8( char *psz_utf8, uint8_t c ) // Returns number of byt
         E2( 0x94, 0xc3,0x9c), // capital letter U with diaresis
         E2( 0x95, 0xc3,0xbc), // lowercase letter U with diaeresis
         E1( 0x96, 0x27), // apostrophe
-        E2( 0x97, 0xc1,0xa1), // inverted exclamation mark
+        E2( 0x97, 0xc2,0xa1), // inverted exclamation mark
         E1( 0x98, 0x2a), // asterisk
         E1( 0x99, 0x27), // apostrophe (yes, duped). See CCADI source code.
         E1( 0x9a, 0x2d), // hyphen-minus
         E2( 0x9b, 0xc2,0xa9), // copyright sign
         E3( 0x9c, 0xe2,0x84,0xa0), // Service mark
         E1( 0x9d, 0x2e), // Full stop (.)
-        E1( 0x9e, 0x22), // Quoatation mark
-        E1( 0x9f, 0x22), // Quoatation mark
+        E3( 0x9e, 0xe2,0x80,0x9c), // Quotation mark
+        E3( 0x9f, 0xe2,0x80,0x9d), // Quotation mark
         E2( 0xa0, 0xc3,0x80), // uppercase A, grave accent
         E2( 0xa1, 0xc3,0x82), // uppercase A, circumflex
         E2( 0xa2, 0xc3,0x87), // uppercase C with cedilla
@@ -1001,7 +976,7 @@ static void Eia608TextLine( struct eia608_screen *screen, char *psz_text, int i_
 
             /* Be sure to create valid html */
             b_close_italics |= b_last_italics && b_close_color;
-            b_close_underline = b_last_underline && ( b_close_italics || b_close_color );
+            b_close_underline |= b_last_underline && ( b_close_italics || b_close_color );
 
             if( b_close_underline )
                 CAT( "</u>" );

@@ -2,23 +2,23 @@
  * window.c: "vout window" managment
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 0350caf034b5333d6ebcabd49a68185436e34ded $
+ * $Id: d47d4f438913c08f03c9c77f45b059cbb80c4a8a $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -31,6 +31,7 @@
 
 #include <vlc_common.h>
 #include <vlc_vout_window.h>
+#include <vlc_modules.h>
 #include "inhibit.h"
 #include <libvlc.h>
 
@@ -41,27 +42,38 @@ typedef struct
     vlc_inhibit_t *inhibit;
 } window_t;
 
+static int vout_window_start(void *func, va_list ap)
+{
+    int (*activate)(vout_window_t *, const vout_window_cfg_t *) = func;
+    vout_window_t *wnd = va_arg(ap, vout_window_t *);
+    const vout_window_cfg_t *cfg = va_arg(ap, const vout_window_cfg_t *);
+
+    return activate(wnd, cfg);
+}
+
 vout_window_t *vout_window_New(vlc_object_t *obj,
                                const char *module,
                                const vout_window_cfg_t *cfg)
 {
-    static char const name[] = "window";
-    window_t *w = vlc_custom_create(obj, sizeof(*w), VLC_OBJECT_GENERIC, name);
+    window_t *w = vlc_custom_create(obj, sizeof(*w), "window");
     vout_window_t *window = &w->wnd;
 
-    window->cfg = cfg;
     memset(&window->handle, 0, sizeof(window->handle));
     window->control = NULL;
     window->sys = NULL;
 
-    vlc_object_attach(window, obj);
-
     const char *type;
     switch (cfg->type) {
-#ifdef WIN32
+#if defined(WIN32) || defined(__OS2__)
     case VOUT_WINDOW_TYPE_HWND:
         type = "vout window hwnd";
         window->handle.hwnd = NULL;
+        break;
+#endif
+#ifdef __APPLE__
+    case VOUT_WINDOW_TYPE_NSOBJECT:
+        type = "vout window nsobject";
+        window->handle.nsobject = NULL;
         break;
 #endif
     case VOUT_WINDOW_TYPE_XID:
@@ -73,23 +85,33 @@ vout_window_t *vout_window_New(vlc_object_t *obj,
         assert(0);
     }
 
-    w->module = module_need(window, type, module, module && *module != '\0');
+    w->module = vlc_module_load(window, type, module, module && *module,
+                                vout_window_start, window, cfg);
     if (!w->module) {
         vlc_object_release(window);
         return NULL;
     }
 
     /* Hook for screensaver inhibition */
-    if ( var_InheritBool( obj, "disable-screensaver" ) && cfg->type == VOUT_WINDOW_TYPE_XID) {
-        w->inhibit = vlc_inhibit_Create (VLC_OBJECT (window),
-                                         window->handle.xid);
+    if (var_InheritBool(obj, "disable-screensaver") &&
+        cfg->type == VOUT_WINDOW_TYPE_XID) {
+        w->inhibit = vlc_inhibit_Create(VLC_OBJECT (window),
+                                        window->handle.xid);
         if (w->inhibit != NULL)
-            vlc_inhibit_Set (w->inhibit, true);
+            vlc_inhibit_Set(w->inhibit, true);
             /* FIXME: ^ wait for vout activation, pause */
     }
     else
         w->inhibit = NULL;
     return window;
+}
+
+static void vout_window_stop(void *func, va_list ap)
+{
+    int (*deactivate)(vout_window_t *) = func;
+    vout_window_t *wnd = va_arg(ap, vout_window_t *);
+
+    deactivate(wnd);
 }
 
 void vout_window_Delete(vout_window_t *window)
@@ -104,8 +126,7 @@ void vout_window_Delete(vout_window_t *window)
         vlc_inhibit_Destroy (w->inhibit);
     }
 
-    module_unneed(window, w->module);
-
+    vlc_module_unload(w->module, vout_window_stop, window);
     vlc_object_release(window);
 }
 

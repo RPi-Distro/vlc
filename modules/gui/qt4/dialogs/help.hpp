@@ -2,7 +2,7 @@
  * Help.hpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 0f1a2b2366a794fe2bf49d68f4c593e4b881bf2e $
+ * $Id: d314f21d70f2422798c5243ae213bdc7eb434fda $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -25,20 +25,17 @@
 #define QVLC_HELP_DIALOG_H_ 1
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+# include "config.h"
 #endif
 
 #include "qt4.hpp"
 
 #include "util/qvlcframe.hpp"
 #include "util/singleton.hpp"
+#include "ui/about.h"
+#include "ui/update.h"
 
-class QPushButton;
-class QTextBrowser;
-class QLabel;
 class QEvent;
-class QPushButton;
-class QTextEdit;
 
 class HelpDialog : public QVLCFrame, public Singleton<HelpDialog>
 {
@@ -48,22 +45,20 @@ private:
     virtual ~HelpDialog();
 
 public slots:
-    void close();
+    virtual void close() { toggleVisible(); }
 
     friend class    Singleton<HelpDialog>;
 };
 
-
 class AboutDialog : public QVLCDialog, public Singleton<AboutDialog>
 {
     Q_OBJECT
-
 private:
     AboutDialog( intf_thread_t * );
-    virtual ~AboutDialog();
+    Ui::aboutWidget ui;
 
 public slots:
-    void close();
+    virtual void close() { toggleVisible(); }
 
     friend class    Singleton<AboutDialog>;
 };
@@ -83,16 +78,14 @@ private:
     UpdateDialog( intf_thread_t * );
     virtual ~UpdateDialog();
 
+    Ui::updateWidget ui;
     update_t *p_update;
-    QPushButton *updateButton;
-    QLabel *updateLabelTop;
-    QLabel *updateLabelDown;
-    QTextEdit *updateText;
     void customEvent( QEvent * );
     bool b_checked;
 
 private slots:
-    void close();
+    virtual void close() { toggleVisible(); }
+
     void UpdateOrDownload();
 
     friend class    Singleton<UpdateDialog>;

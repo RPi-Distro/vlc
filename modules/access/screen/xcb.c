@@ -5,20 +5,20 @@
 /*****************************************************************************
  * Copyright © 2009 Rémi Denis-Courmont
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation; either version 2.1
- * of the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- ****************************************************************************/
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -26,14 +26,10 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <xcb/xcb.h>
+#include <xcb/composite.h>
 #include <vlc_common.h>
 #include <vlc_demux.h>
 #include <vlc_plugin.h>
-
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for screen capture. " \
-    "This value should be set in milliseconds.")
 
 #define FPS_TEXT N_("Frame rate")
 #define FPS_LONGTEXT N_( \
@@ -73,26 +69,23 @@ vlc_module_begin ()
     set_capability ("access_demux", 0)
     set_callbacks (Open, Close)
 
-    add_integer ("screen-caching", DEFAULT_PTS_DELAY * 1000 / CLOCK_FREQ,
-                 NULL, CACHING_TEXT, CACHING_LONGTEXT, true)
-    add_float ("screen-fps", 2.0, NULL, FPS_TEXT, FPS_LONGTEXT, true)
-    add_integer ("screen-left", 0, NULL, LEFT_TEXT, LEFT_LONGTEXT, true)
+    add_float ("screen-fps", 2.0, FPS_TEXT, FPS_LONGTEXT, true)
+    add_integer ("screen-left", 0, LEFT_TEXT, LEFT_LONGTEXT, true)
         change_integer_range (-32768, 32767)
         change_safe ()
-    add_integer ("screen-top", 0, NULL, TOP_TEXT, TOP_LONGTEXT, true)
+    add_integer ("screen-top", 0, TOP_TEXT, TOP_LONGTEXT, true)
         change_integer_range (-32768, 32767)
         change_safe ()
-    add_integer ("screen-width", 0, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true)
+    add_integer ("screen-width", 0, WIDTH_TEXT, WIDTH_LONGTEXT, true)
         change_integer_range (0, 65535)
         change_safe ()
-    add_integer ("screen-height", 0, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, true)
+    add_integer ("screen-height", 0, HEIGHT_TEXT, HEIGHT_LONGTEXT, true)
         change_integer_range (0, 65535)
         change_safe ()
-    add_bool ("screen-follow-mouse", false, NULL, FOLLOW_MOUSE_TEXT,
+    add_bool ("screen-follow-mouse", false, FOLLOW_MOUSE_TEXT,
               FOLLOW_MOUSE_LONGTEXT, true)
 
-    add_shortcut ("screen")
-    add_shortcut ("window")
+    add_shortcut ("screen", "window")
 vlc_module_end ()
 
 /*
@@ -105,17 +98,17 @@ static es_out_id_t *InitES (demux_t *, uint_fast16_t, uint_fast16_t,
 
 struct demux_sys_t
 {
+    /* All owned by timer thread while timer is armed: */
     xcb_connection_t *conn;
     es_out_id_t      *es;
     mtime_t           pts, interval;
     float             rate;
     xcb_window_t      window;
+    xcb_pixmap_t      pixmap;
     int16_t           x, y;
     uint16_t          w, h;
     uint16_t          cur_w, cur_h;
     bool              follow_mouse;
-    /* fmt, es and pts are protected by the lock. The rest is read-only. */
-    vlc_mutex_t       lock;
     /* Timer does not use this, only input thread: */
     vlc_timer_t       timer;
 };
@@ -133,7 +126,7 @@ static int Open (vlc_object_t *obj)
     demux->p_sys = p_sys;
 
     /* Connect to X server */
-    char *display = var_CreateGetNonEmptyString (obj, "x11-display");
+    char *display = var_InheritString (obj, "x11-display");
     int snum;
     xcb_connection_t *conn = xcb_connect (display, &snum);
     free (display);
@@ -171,38 +164,59 @@ static int Open (vlc_object_t *obj)
     if (!strcmp (demux->psz_access, "window"))
     {
         char *end;
-        unsigned long ul = strtoul (demux->psz_path, &end, 0);
+        unsigned long ul = strtoul (demux->psz_location, &end, 0);
         if (*end || ul > 0xffffffff)
         {
-            msg_Err (obj, "bad X11 drawable %s", demux->psz_path);
+            msg_Err (obj, "bad X11 drawable %s", demux->psz_location);
             goto error;
         }
         p_sys->window = ul;
+
+        xcb_composite_query_version_reply_t *r =
+            xcb_composite_query_version_reply (conn,
+                xcb_composite_query_version (conn, 0, 4), NULL);
+        if (r == NULL || r->minor_version < 2)
+        {
+            msg_Err (obj, "X Composite extension not available");
+            free (r);
+            goto error;
+        }
+        msg_Dbg (obj, "using Composite extension v%"PRIu32".%"PRIu32,
+                 r->major_version, r->minor_version);
+        free (r);
+
+        xcb_composite_redirect_window (conn, p_sys->window,
+                                       XCB_COMPOSITE_REDIRECT_AUTOMATIC);
     }
     else
         goto error;
 
     /* Window properties */
-    p_sys->x = var_CreateGetInteger (obj, "screen-left");
-    p_sys->y = var_CreateGetInteger (obj, "screen-top");
-    p_sys->w = var_CreateGetInteger (obj, "screen-width");
-    p_sys->h = var_CreateGetInteger (obj, "screen-height");
-    p_sys->follow_mouse = var_CreateGetBool (obj, "screen-follow-mouse");
+    p_sys->pixmap = xcb_generate_id (conn);
+    p_sys->w = var_InheritInteger (obj, "screen-width");
+    p_sys->h = var_InheritInteger (obj, "screen-height");
+    if (p_sys->w != 0 || p_sys->h != 0)
+        p_sys->follow_mouse = var_InheritBool (obj, "screen-follow-mouse");
+    else /* Following mouse is meaningless if width&height are dynamic. */
+        p_sys->follow_mouse = false;
+    if (!p_sys->follow_mouse) /* X and Y are meaningless if following mouse */
+    {
+        p_sys->x = var_InheritInteger (obj, "screen-left");
+        p_sys->y = var_InheritInteger (obj, "screen-top");
+    }
 
     /* Initializes format */
-    p_sys->rate = var_CreateGetFloat (obj, "screen-fps");
+    p_sys->rate = var_InheritFloat (obj, "screen-fps");
     if (!p_sys->rate)
         goto error;
     p_sys->interval = (float)CLOCK_FREQ / p_sys->rate;
     if (!p_sys->interval)
         goto error;
-    var_Create (obj, "screen-caching", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT);
 
     p_sys->cur_w = 0;
     p_sys->cur_h = 0;
     p_sys->es = NULL;
     p_sys->pts = VLC_TS_INVALID;
-    vlc_mutex_init (&p_sys->lock);
     if (vlc_timer_create (&p_sys->timer, Demux, demux))
         goto error;
     vlc_timer_schedule (p_sys->timer, false, 1, p_sys->interval);
@@ -228,7 +242,6 @@ static void Close (vlc_object_t *obj)
     demux_sys_t *p_sys = demux->p_sys;
 
     vlc_timer_destroy (p_sys->timer);
-    vlc_mutex_destroy (&p_sys->lock);
     xcb_disconnect (p_sys->conn);
     free (p_sys);
 }
@@ -239,8 +252,6 @@ static void Close (vlc_object_t *obj)
  */
 static int Control (demux_t *demux, int query, va_list args)
 {
-    demux_sys_t *p_sys = demux->p_sys;
-
     switch (query)
     {
         case DEMUX_GET_POSITION:
@@ -263,33 +274,11 @@ static int Control (demux_t *demux, int query, va_list args)
         case DEMUX_GET_PTS_DELAY:
         {
             int64_t *v = va_arg (args, int64_t *);
-            *v = var_GetInteger (demux, "screen-caching") * UINT64_C(1000);
+            *v = INT64_C(1000) * var_InheritInteger (demux, "live-caching");
             return VLC_SUCCESS;
         }
 
         case DEMUX_CAN_PAUSE:
-        {
-            bool *v = (bool*)va_arg( args, bool * );
-            *v = true;
-            return VLC_SUCCESS;
-        }
-
-        case DEMUX_SET_PAUSE_STATE:
-        {
-            bool pausing = va_arg (args, int);
-
-            if (!pausing)
-            {
-                vlc_mutex_lock (&p_sys->lock);
-                p_sys->pts = VLC_TS_INVALID;
-                es_out_Control (demux->out, ES_OUT_RESET_PCR);
-                vlc_mutex_unlock (&p_sys->lock);
-            }
-            vlc_timer_schedule (p_sys->timer, false,
-                                pausing ? 0 : 1, p_sys->interval);
-            return VLC_SUCCESS;
-        }
-
         case DEMUX_CAN_CONTROL_PACE:
         case DEMUX_CAN_CONTROL_RATE:
         case DEMUX_CAN_SEEK:
@@ -298,6 +287,9 @@ static int Control (demux_t *demux, int query, va_list args)
             *v = false;
             return VLC_SUCCESS;
         }
+
+        case DEMUX_SET_PAUSE_STATE:
+            return VLC_SUCCESS; /* should not happen */
     }
 
     return VLC_EGENERIC;
@@ -310,84 +302,111 @@ static int Control (demux_t *demux, int query, va_list args)
 static void Demux (void *data)
 {
     demux_t *demux = data;
-    demux_sys_t *p_sys = demux->p_sys;
-    xcb_connection_t *conn = p_sys->conn;
+    demux_sys_t *sys = demux->p_sys;
+    xcb_connection_t *conn = sys->conn;
 
-    /* Update capture region (if needed) */
+    /* Determine capture region */
+    xcb_get_geometry_cookie_t gc;
+    xcb_query_pointer_cookie_t qc;
 
-    xcb_get_geometry_reply_t *geo =
-        xcb_get_geometry_reply (conn,
-            xcb_get_geometry (conn, p_sys->window), NULL);
+    gc = xcb_get_geometry (conn, sys->window);
+    if (sys->follow_mouse)
+        qc = xcb_query_pointer (conn, sys->window);
+
+    xcb_get_geometry_reply_t *geo = xcb_get_geometry_reply (conn, gc, NULL);
     if (geo == NULL)
     {
-        msg_Err (demux, "bad X11 drawable 0x%08"PRIx32, p_sys->window);
+        msg_Err (demux, "bad X11 drawable 0x%08"PRIx32, sys->window);
+discard:
+        if (sys->follow_mouse)
+            xcb_discard_reply (conn, gc.sequence);
         return;
     }
 
-    xcb_window_t root = geo->root;
-    int16_t x = p_sys->x, y = p_sys->y;
-    xcb_translate_coordinates_cookie_t tc;
-    xcb_query_pointer_cookie_t qc;
+    int w = sys->w;
+    int h = sys->h;
+    int x, y;
 
-    if (p_sys->window != root)
-        tc = xcb_translate_coordinates (conn, p_sys->window, root,
-                                        x, y);
-    if (p_sys->follow_mouse)
-        qc = xcb_query_pointer (conn, p_sys->window);
-
-    uint16_t ow = geo->width - x;
-    uint16_t oh = geo->height - y;
-    uint16_t w = p_sys->w;
-    uint16_t h = p_sys->h;
-    if (w == 0 || w > ow)
-        w = ow;
-    if (h == 0 || h > oh)
-        h = oh;
-    uint8_t depth = geo->depth;
-    free (geo);
-
-    if (p_sys->window != root)
-    {
-        xcb_translate_coordinates_reply_t *coords =
-             xcb_translate_coordinates_reply (conn, tc, NULL);
-        if (coords != NULL)
-        {
-            x = coords->dst_x;
-            y = coords->dst_y;
-            free (coords);
-        }
-    }
-
-    if (p_sys->follow_mouse)
+    if (sys->follow_mouse)
     {
         xcb_query_pointer_reply_t *ptr =
             xcb_query_pointer_reply (conn, qc, NULL);
-        if (ptr != NULL)
+        if (ptr == NULL)
         {
-            int16_t min_x = x + (w / 2);
-            int16_t min_y = y + (h / 2);
-            int16_t max_x = x + ow - ((w + 1) / 2);
-            int16_t max_y = y + oh - ((h + 1) / 2);
+            free (geo);
+            return;
+        }
 
-            assert (max_x >= min_x); /* max_x - min_x = ow - w >= 0 */
-            if (ptr->root_x > max_x)
-                x += ow - w;
-            else if (ptr->root_x > min_x)
-                x += ptr->root_x - min_x;
+        if (w == 0 || w > geo->width)
+            w = geo->width;
+        x = ptr->win_x;
+        if (x < w / 2)
+            x = 0;
+        else if (x >= (int)geo->width - (w / 2))
+            x = geo->width - w;
+        else
+            x -= w / 2;
 
-            assert (max_y >= min_y);
-            if (ptr->root_y > max_y)
-                y += oh - h;
-            else if (ptr->root_y > min_y)
-                y += ptr->root_y - min_y;
-            free (ptr);
+        if (h == 0 || h > geo->height)
+            h = geo->height;
+        y = ptr->win_y;
+        if (y < h / 2)
+            y = 0;
+        else if (y >= (int)geo->height - (h / 2))
+            y = geo->height - h;
+        else
+            y -= h / 2;
+    }
+    else
+    {
+        int max;
+
+        x = sys->x;
+        max = (int)geo->width - x;
+        if (max <= 0)
+            goto discard;
+        if (w == 0 || w > max)
+            w = max;
+
+        y = sys->y;
+        max = (int)geo->height - y;
+        if (max <= 0)
+            goto discard;
+        if (h == 0 || h > max)
+            h = max;
+    }
+
+    /* Update elementary stream format (if needed) */
+    if (w != sys->cur_w || h != sys->cur_h)
+    {
+        if (sys->es != NULL)
+            es_out_Del (demux->out, sys->es);
+
+        /* Update composite pixmap */
+        if (sys->window != geo->root)
+        {
+            xcb_free_pixmap (conn, sys->pixmap); /* no-op first time */
+            xcb_composite_name_window_pixmap (conn, sys->window, sys->pixmap);
+            xcb_create_pixmap (conn, geo->depth, sys->pixmap,
+                               geo->root, geo->width, geo->height);
+        }
+
+        sys->es = InitES (demux, w, h, geo->depth);
+        if (sys->es != NULL)
+        {
+            sys->cur_w = w;
+            sys->cur_h = h;
         }
     }
 
     /* Capture screen */
+    xcb_drawable_t drawable =
+        (sys->window != geo->root) ? sys->pixmap : sys->window;
+    free (geo);
+
     xcb_get_image_reply_t *img;
     img = xcb_get_image_reply (conn,
-        xcb_get_image (conn, XCB_IMAGE_FORMAT_Z_PIXMAP, root,
+        xcb_get_image (conn, XCB_IMAGE_FORMAT_Z_PIXMAP, drawable,
                        x, y, w, h, ~0), NULL);
     if (img == NULL)
         return;
@@ -397,32 +416,17 @@ static void Demux (void *data)
     if (block == NULL)
         return;
 
-    /* Update elementary stream format (if needed) */
-    vlc_mutex_lock (&p_sys->lock);
-    if (w != p_sys->cur_w || h != p_sys->cur_h)
-    {
-        if (p_sys->es != NULL)
-            es_out_Del (demux->out, p_sys->es);
-        p_sys->es = InitES (demux, w, h, depth);
-        if (p_sys->es != NULL)
-        {
-            p_sys->cur_w = w;
-            p_sys->cur_h = h;
-        }
-    }
-
     /* Send block - zero copy */
-    if (p_sys->es != NULL)
+    if (sys->es != NULL)
     {
-        if (p_sys->pts == VLC_TS_INVALID)
-            p_sys->pts = mdate ();
-        block->i_pts = block->i_dts = p_sys->pts;
+        if (sys->pts == VLC_TS_INVALID)
+            sys->pts = mdate ();
+        block->i_pts = block->i_dts = sys->pts;
 
-        es_out_Control (demux->out, ES_OUT_SET_PCR, p_sys->pts);
-        es_out_Send (demux->out, p_sys->es, block);
-        p_sys->pts += p_sys->interval;
+        es_out_Control (demux->out, ES_OUT_SET_PCR, sys->pts);
+        es_out_Send (demux->out, sys->es, block);
+        sys->pts += sys->interval;
     }
-    vlc_mutex_unlock (&p_sys->lock);
 }
 
 static es_out_id_t *InitES (demux_t *demux, uint_fast16_t width,

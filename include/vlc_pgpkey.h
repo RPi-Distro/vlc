@@ -1,24 +1,5 @@
 /*****************************************************************************
  * vlc_pgpkey.h: VideoLAN PGP Public Key used to sign releases
- *****************************************************************************
- * Copyright © 2008 the VideoLAN team
- * $Id: a3e9c985bc6195a073afd684f81cc72d2fa7b3b0 $
- *
- * Authors: Rafaël Carré <funman@videolanorg>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either release 2 of the License, or
- * (at your option) any later release.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
  *****************************************************************************/
 
 /* We trust this public key, and by extension, also keys signed by it. */
@@ -29,34 +10,33 @@
  */
 
 /*
- * VideoLAN Release Signing Key (2010)
- * expirates on 2011-01-25
+ * VideoLAN Release Signing Key (2012)
+ * expirates on 2013-01-31
  */
 
 static uint8_t videolan_public_key_longid[8] = {
-  0x77, 0x72, 0xA5, 0x9D, 0x71, 0x44, 0xD4, 0x85
+  0xA7, 0x41, 0x54, 0x9F, 0x59, 0xED, 0x29, 0x87
 };
 
 /* gpg --export --armor "<id>"|sed -e s/^/\"/ -e s/\$/\\\\n\"/ */
 static uint8_t videolan_public_key[] = {
     "-----BEGIN PGP PUBLIC KEY BLOCK-----\n"
-    "Version: GnuPG v2.0.14 (GNU/Linux)\n"
+    "Version: GnuPG v1.4.11 (GNU/Linux)\n"
     "\n"
-    "mQGiBEtfSLMRBADp810mFfU9tOq5S8+HFAfCgOubfRBK36bFXb7cp1lYGjp8bEcS\n"
-    "tP6Vki4vpFGpLyGO4b5SJbh8dld6lFQjhOosswrbq0xC5OkaVfehNDmzfFsnRJOm\n"
-    "/fsC4G2N6yhg5gsgwd9BgEopSINr/yfm9uhb68T6KhWz/TFujBtZAEdibwCgx6qY\n"
-    "65yRbP1A+XY+5PFC3CEnWoEEAN4AIYHYhg038lz95e08/VVR4UDCr6lWCL3Lvhot\n"
-    "eQLCrwObxV+Qw5N4Llagc/CbSeP9UueSxJTvfSjZsU3X83lwOEd5psL7Ck5rmcfA\n"
-    "Rnxvv6T/q2//H1D+OVgBGCqFZdWRos/wmnvmREVhW//jLyKHu8Hi19OO0OMt/d8E\n"
-    "jWOqA/wLzLc7vE1Yh1xv4o4UhdwfrL6h336FUi6d8O3oEl6pZ/1qr29MFCOa3fw2\n"
-    "nyuuKfO725CiWlkl4UXCkWpL+b9OiTwFUEL5+806DbkaB9heYMdfLM8TVhno5kAi\n"
-    "K1wn9+Agm0S9lrtgO7a8qFcdWOiGdqlliTRDSWiIdxACBQ4pJbQjVmlkZW9MQU4g\n"
-    "UmVsZWFzZSBTaWduaW5nIEtleSAoMjAxMCmIaAQTEQIAKAUCS19IswIbAwUJAeEz\n"
-    "gAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQd3KlnXFE1IVTcQCgpFNlNeQw\n"
-    "6B0A4lN+7iW3yQfUSasAnj0yBAGaqUc7n5U4w4CDk4R8bwOAiEYEEBECAAYFAktf\n"
-    "SNkACgkQ2lExeVeICH3CxgCeLxAZJxKiVK/JzjBOlZpTHwNsOgcAnjDePDBke5HR\n"
-    "5ag3WmOScs6M76hhiEYEEBECAAYFAktfSQYACgkQ/SG8O6w+CHmfKQCaA7chfXSD\n"
-    "AL7iPBe9mtMJnAB2QkYAn082cZyQTknI3V5ag/3+XjUcZaQV\n"
-    "=9EFC\n"
+    "mQGiBE8KGesRBACEWZkBTfHcFtG1PdGxm0FJXnrCjZPesGZwc6lkx27r6rOKmwNi\n"
+    "gQLUYwSli56ut667zVswI212djfY94hKu9ZbrzoWgr+HQ8lJz0cAJgAdPBM6Zr5E\n"
+    "ChIEo4MQc6aRI6SNAId72+w9GqSku9KN8iScB/Tz9UE58sHKTFdnc7gBFwCgkTlP\n"
+    "4biiX1rnDXUXt/4/edfbpi8D/3bk4QN6EIqoFXQcpryX3BdLsrXAH2azpwstRiOs\n"
+    "bDtK42oEE628zivZO+clQdb81+PkL7MX0vgz9EslOrmPQYOP8snhF8UoSMIQnpqx\n"
+    "GafvggPXGNb6g2eGkH5SwA7MFChKO+UcrOeTrdx5PPdzMm3keWWhhd6gTO0czTMQ\n"
+    "QU0MA/42NDxQM0BbloBOL1/Wj34vjWFImrruMAJBJjOseoraLORAXt9gKJJdVnBu\n"
+    "GpEr4zJ98I9IS52J5EpfD6eqdYQTz8hoOUl21EOueNmdItZpR2emry6flh/9EzAR\n"
+    "xeNDPfEec82WlxyDPYjfwqyhdVKtrDGz19LvkA7EX5CnoxUro7QjVmlkZW9MQU4g\n"
+    "UmVsZWFzZSBTaWduaW5nIEtleSAoMjAxMimIaAQTEQIAKAIbAwYLCQgHAwIGFQgC\n"
+    "CQoLBBYCAwECHgECF4AFAk8KHHoFCQIA2ecACgkQp0FUn1ntKYdgxwCeJYguCuOn\n"
+    "z1HXiaCDJZHpUEs+JzYAn1hKu2OLisAar7ys0Yw5mNq5e3ERiEYEEBECAAYFAk8L\n"
+    "bwAACgkQYrl/VEXBHKcZ2ACeJ41Za2kfwiAwB4y3AmqNqWZpXhQAnjUyejZlVSbE\n"
+    "GLQkOVG8RXz7GLY9\n"
+    "=+5Kj\n"
     "-----END PGP PUBLIC KEY BLOCK-----\n"
 };

@@ -2,7 +2,7 @@
  * rawvid.c : raw video input module for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 071b2b84af4c4954a4cbf4851b3a3ab5f4c35d5f $
+ * $Id: 82e4daaa38458e2087250f489d308bb4414c44ad $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan d.t org>
@@ -68,12 +68,12 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_DEMUX )
     set_callbacks( Open, Close )
     add_shortcut( "rawvideo" )
-    add_string( "rawvid-fps", NULL, NULL, FPS_TEXT, FPS_LONGTEXT, false )
-    add_integer( "rawvid-width", 0, 0, WIDTH_TEXT, WIDTH_LONGTEXT, 0 )
-    add_integer( "rawvid-height", 0, 0, HEIGHT_TEXT, HEIGHT_LONGTEXT, 0 )
-    add_string( "rawvid-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT,
+    add_string( "rawvid-fps", NULL, FPS_TEXT, FPS_LONGTEXT, false )
+    add_integer( "rawvid-width", 0, WIDTH_TEXT, WIDTH_LONGTEXT, 0 )
+    add_integer( "rawvid-height", 0, HEIGHT_TEXT, HEIGHT_LONGTEXT, 0 )
+    add_string( "rawvid-chroma", NULL, CHROMA_TEXT, CHROMA_LONGTEXT,
                 true )
-    add_string( "rawvid-aspect-ratio", NULL, NULL,
+    add_string( "rawvid-aspect-ratio", NULL,
                 ASPECT_RATIO_TEXT, ASPECT_RATIO_LONGTEXT, true )
 vlc_module_end ()
 
@@ -130,13 +130,11 @@ static int Open( vlc_object_t * p_this )
     demux_sys_t *p_sys;
     int i_width=-1, i_height=-1;
     unsigned u_fps_num=0, u_fps_den=1;
-    char *psz_ext;
     vlc_fourcc_t i_chroma = 0;
     unsigned int i_sar_num = 0;
     unsigned int i_sar_den = 0;
     const struct preset_t *p_preset = NULL;
     const uint8_t *p_peek;
-    bool b_valid = false;
     bool b_y4m = false;
 
     if( stream_Peek( p_demux->s, &p_peek, 9 ) == 9 )
@@ -144,29 +142,33 @@ static int Open( vlc_object_t * p_this )
         /* http://wiki.multimedia.cx/index.php?title=YUV4MPEG2 */
         if( !strncmp( (char *)p_peek, "YUV4MPEG2", 9 ) )
         {
-            b_valid = true;
             b_y4m = true;
+            goto valid;
         }
     }
 
-    /* guess preset based on file extension */
-    psz_ext = strrchr( p_demux->psz_path, '.' );
-    if( psz_ext )
+    if( !p_demux->b_force )
     {
+        /* guess preset based on file extension */
+        if( !p_demux->psz_file )
+            return VLC_EGENERIC;
+
+        const char *psz_ext = strrchr( p_demux->psz_file, '.' );
+        if( !psz_ext )
+            return VLC_EGENERIC;
         psz_ext++;
-        for( int i = 0; p_presets[i].psz_ext ; i++ )
+
+        for( unsigned i = 0; p_presets[i].psz_ext ; i++ )
         {
             if( !strcasecmp( psz_ext, p_presets[i].psz_ext ) )
             {
                 p_preset = &p_presets[i];
-                b_valid = true;
-                break;
+                goto valid;
             }
         }
-    }
-    if( !b_valid && !p_demux->b_force )
         return VLC_EGENERIC;
-
+    }
+valid:
     /* Set p_input field */
     p_demux->pf_demux   = Demux;
     p_demux->pf_control = Control;

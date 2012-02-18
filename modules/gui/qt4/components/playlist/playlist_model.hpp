@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlist_model.hpp : Model for a playlist tree
  ****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 494df32046354865822aa1e55be75471757b113c $
+ * Copyright (C) 2006-2011 the VideoLAN team
+ * $Id: ea3bfb263f465bf21d2033b6a27583ad96413b1d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jakob Leben <jleben@videolan.org>
@@ -29,84 +29,85 @@
 # include "config.h"
 #endif
 
-#include "qt4.hpp"
-
 #include <vlc_input.h>
 #include <vlc_playlist.h>
-
+#include "vlc_model.hpp"
 #include "playlist_item.hpp"
 
-#include <QModelIndex>
 #include <QObject>
 #include <QEvent>
-#include <QMimeData>
 #include <QSignalMapper>
+#include <QMimeData>
 #include <QAbstractItemModel>
 #include <QVariant>
-#include <QAction>
+#include <QModelIndex>
 
 class PLItem;
 class PLSelector;
 class PlMimeData;
+class QSignalMapper;
 
-class PLModel : public QAbstractItemModel
+class PLModel : public VLCModel
 {
     Q_OBJECT
 
-friend class PLItem;
-friend class PLSelector;
-
 public:
-    enum {
-      IsCurrentRole = Qt::UserRole,
-      IsLeafNodeRole
-    };
-
     PLModel( playlist_t *, intf_thread_t *,
              playlist_item_t *, QObject *parent = 0 );
-    ~PLModel();
+    virtual ~PLModel();
 
-    /*** QModel subclassing ***/
+    /* Qt4 main PLModel */
+    static PLModel* getPLModel( intf_thread_t *p_intf )
+    {
+        if(!p_intf->p_sys->pl_model )
+        {
+            playlist_Lock( THEPL );
+            playlist_item_t *p_root = THEPL->p_playing;
+            playlist_Unlock( THEPL );
+            p_intf->p_sys->pl_model = new PLModel( THEPL, p_intf, p_root, NULL );
+        }
+
+        return p_intf->p_sys->pl_model;
+    }
+
+    /*** QAbstractItemModel subclassing ***/
 
     /* Data structure */
-    QVariant data( const QModelIndex &index, int role ) const;
-    QVariant headerData( int section, Qt::Orientation orientation,
+    virtual QVariant data( const QModelIndex &index, const int role ) const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
-    QModelIndex index( int r, int c, const QModelIndex &parent ) const;
-    QModelIndex parent( const QModelIndex &index ) const;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+    virtual QModelIndex index( const int r, const int c, const QModelIndex &parent ) const;
+    virtual QModelIndex parent( const QModelIndex &index ) const;
 
     /* Drag and Drop */
-    Qt::DropActions supportedDropActions() const;
-    QMimeData* mimeData( const QModelIndexList &indexes ) const;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action,
+    virtual Qt::DropActions supportedDropActions() const;
+    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
+    virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action,
                       int row, int column, const QModelIndex &target );
-    QStringList mimeTypes() const;
+    virtual QStringList mimeTypes() const;
+
+    /* Sort */
+    virtual void sort( const int column, Qt::SortOrder order = Qt::AscendingOrder );
 
     /**** Custom ****/
 
     /* Lookups */
-    QStringList selectedURIs();
-    QModelIndex index( PLItem *, int c ) const;
-    QModelIndex index( int i_id, int c );
-    QModelIndex currentIndex();
-    bool isCurrent( const QModelIndex &index ) const;
+    QModelIndex index( const int i_id, const int c );
+    virtual QModelIndex currentIndex() const;
     int itemId( const QModelIndex &index ) const;
-    static int columnFromMeta( int meta_column );
-    static int columnToMeta( int column );
 
-    /* Actions */
-    bool popup( const QModelIndex & index, const QPoint &point, const QModelIndexList &list );
-    void doDelete( QModelIndexList selected );
+    /* */
     void search( const QString& search_text, const QModelIndex & root, bool b_recursive );
-    void sort( int column, Qt::SortOrder order );
-    void sort( int i_root_id, int column, Qt::SortOrder order );
-    void rebuild();
-    void rebuild( playlist_item_t * );
+    void rebuild( playlist_item_t * p = NULL );
 
-    inline PLItem *getItem( QModelIndex index ) const
+    /* Popup Actions */
+    virtual bool popup( const QModelIndex & index, const QPoint &point, const QModelIndexList &list );
+    virtual void doDelete( QModelIndexList selected );
+
+    PLItem *getItem( const QModelIndex & index ) const
     {
         if( index.isValid() )
             return static_cast<PLItem*>( index.internalPointer() );
@@ -114,21 +115,26 @@ public:
     }
 
 signals:
-    void currentChanged( const QModelIndex& );
-    void rootChanged();
+    void currentIndexChanged( const QModelIndex& );
+    void rootIndexChanged();
 
 public slots:
-    void activateItem( const QModelIndex &index );
-    void activateItem( playlist_item_t *p_item );
-
+    virtual void activateItem( const QModelIndex &index );
+    void clearPlaylist();
 private:
     /* General */
     PLItem *rootItem;
 
     playlist_t *p_playlist;
-    intf_thread_t *p_intf;
 
     static QIcon icons[ITEM_TYPE_NUMBER];
+
+    /* Custom model private methods */
+    /* Lookups */
+    QStringList selectedURIs();
+    QModelIndex index( PLItem *, const int c ) const;
+    bool isCurrent( const QModelIndex &index ) const;
+    bool isParent( const QModelIndex &index, const QModelIndex &current) const;
 
     /* Shallow actions (do not affect core playlist) */
     void updateTreeItem( PLItem * );
@@ -145,22 +151,31 @@ private:
     void dropAppendCopy( const PlMimeData * data, PLItem *target, int pos );
     void dropMove( const PlMimeData * data, PLItem *target, int new_pos );
 
+    /* */
+    void sort( const int i_root_id, const int column, Qt::SortOrder order );
+
     /* Popup */
-    int i_popup_item, i_popup_parent, i_popup_column;
+    int i_popup_item, i_popup_parent;
     QModelIndexList current_selection;
     QMenu *sortingMenu;
     QSignalMapper *sortingMapper;
 
     /* Lookups */
-    PLItem *findById( PLItem *, int );
-    PLItem *findByInput( PLItem *, int );
-    PLItem *findInner( PLItem *, int , bool );
+    PLItem *findById( PLItem *, int ) const;
+    PLItem *findByInput( PLItem *, int ) const;
+    PLItem *findInner(PLItem *, int , bool ) const;
     bool canEdit() const;
 
     PLItem *p_cached_item;
     PLItem *p_cached_item_bi;
     int i_cached_id;
     int i_cached_input_id;
+
+    /* Zoom factor for font-size */
+    int i_zoom;
+
+    /* */
+    QString latestSearch;
 
 private slots:
     void popupPlay();
@@ -170,11 +185,15 @@ private slots:
     void popupSave();
     void popupExplore();
     void popupAddNode();
+    void popupAddToPlaylist();
     void popupSort( int column );
     void processInputItemUpdate( input_item_t *);
     void processInputItemUpdate( input_thread_t* p_input );
     void processItemRemoval( int i_id );
     void processItemAppend( int item, int parent );
+    void activateItem( playlist_item_t *p_item );
+    void increaseZoom();
+    void decreaseZoom();
 };
 
 class PlMimeData : public QMimeData
@@ -182,7 +201,7 @@ class PlMimeData : public QMimeData
     Q_OBJECT
 
 public:
-    PlMimeData();
+    PlMimeData() {}
     ~PlMimeData();
     void appendItem( input_item_t *p_item );
     QList<input_item_t*> inputItems() const;

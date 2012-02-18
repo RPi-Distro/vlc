@@ -2,7 +2,7 @@
  * firstrun : First Run dialogs
  ****************************************************************************
  * Copyright © 2009 VideoLAN
- * $Id: eba06fe5084aa60c4695ac01a493b6572f19bf42 $
+ * $Id: 4e3487f3ef0726c65c353d040a5e96aee9f85c35 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -27,6 +27,7 @@
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QLabel>
+#include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSettings>
 
@@ -51,14 +52,17 @@ void FirstRun::save()
 #endif
     config_PutInt( p_intf,  "qt-privacy-ask", 0 );
 
+    /* FIXME Should not save here. This will not work as expected if another
+     * plugin overwrote items of its own. */
+#warning FIXME
     /* We have to save here because the user may not launch Prefs */
-    config_SaveConfigFile( p_intf, NULL );
+    config_SaveConfigFile( p_intf );
     close();
 }
 
 void FirstRun::buildPrivDialog()
 {
-    setWindowTitle( qtr( "Privacy and Network Policies" ) );
+    setWindowTitle( qtr( "Privacy and Network Access Policy" ) );
     setWindowRole( "vlc-privacy" );
     setWindowModality( Qt::ApplicationModal );
     setWindowFlags( Qt::Dialog );
@@ -66,42 +70,49 @@ void FirstRun::buildPrivDialog()
 
     QGridLayout *gLayout = new QGridLayout( this );
 
-    QGroupBox *blabla = new QGroupBox( qtr( "Privacy and Network Warning" ) );
+    QGroupBox *blabla = new QGroupBox( qtr( "Privacy and Network Access Policy" ) );
     QGridLayout *blablaLayout = new QGridLayout( blabla );
     QLabel *text = new QLabel( qtr(
-        "<p><i>VideoLAN</i> prefers when applications request authorization "
-        "before accessing Internet.</p>\n"
-        "<p><b>VLC media player</b> can get information from the Internet "
-        "in order to get <b>media informations</b> or to check for available <b>updates</b>.</p>\n"
-        "<p><i>VLC media player</i> <b>doesn't</b> send or collect any "
-        "information, even anonymously, about your usage.</p>\n" ) );
+        "<p><i>VLC media player</i> does <b>not</b> send or collect any "
+        "information, even anonymously, about your usage.</p>\n"
+        "<p>However, it can connect to the Internet "
+        "in order to display <b>medias information</b> "
+#ifdef UPDATE_CHECK
+        "or to check for available <b>updates</b>"
+#endif
+        ".</p>\n"
+        "<p><i>VideoLAN</i> (the authors) requires you to express your consent "
+        "before allowing this software to access the Internet.</p>\n"
+        "<p>According to your choices, please check or uncheck the following options:</p>\n"
+        ) );
     text->setWordWrap( true );
     text->setTextFormat( Qt::RichText );
 
     blablaLayout->addWidget( text, 0, 0 ) ;
 
-    QGroupBox *options = new QGroupBox( qtr( "Options" ) );
+    QGroupBox *options = new QGroupBox( qtr( "Network Access Policy" ) );
     QGridLayout *optionsLayout = new QGridLayout( options );
 
     gLayout->addWidget( blabla, 0, 0, 1, 3 );
     gLayout->addWidget( options, 1, 0, 1, 3 );
     int line = 0;
 
-    checkbox = new QCheckBox( qtr( "Allow fetching media information from Internet" ) );
+    checkbox = new QCheckBox( qtr( "Allow downloading media information" ) );
     checkbox->setChecked( true );
     optionsLayout->addWidget( checkbox, line++, 0 );
 
 #ifdef UPDATE_CHECK
-    checkbox2 = new QCheckBox( qtr( "Check for updates" ) );
+    checkbox2 = new QCheckBox( qtr( "Allow checking for VLC updates" ) );
     checkbox2->setChecked( true );
     optionsLayout->addWidget( checkbox2, line++, 0 );
 #endif
 
-    QPushButton *ok = new QPushButton( qtr( "OK" ) );
+    QDialogButtonBox *buttonsBox = new QDialogButtonBox( this );
+    buttonsBox->addButton( qtr( "Save and Continue" ), QDialogButtonBox::AcceptRole );
 
-    gLayout->addWidget( ok, 2, 2 );
+    gLayout->addWidget( buttonsBox, 2, 0, 2, 3 );
 
-    CONNECT( ok, clicked(), this, save() );
-    ok->setFocus();
+    CONNECT( buttonsBox, accepted(), this, save() );
+    buttonsBox->setFocus();
 }
 

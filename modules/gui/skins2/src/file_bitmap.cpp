@@ -2,7 +2,7 @@
  * file_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bcefa7bae8553e0b26b3dcd9105f262e4e0256aa $
+ * $Id: d7ed27aac70d5184c6f0a7bdfaa5f92ff7c24237 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,6 +28,7 @@
 
 #include <vlc_common.h>
 #include <vlc_image.h>
+#include <vlc_url.h>
 #include "file_bitmap.hpp"
 
 FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
@@ -36,13 +37,18 @@ FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
     GenericBitmap( pIntf, nbFrames, fps, nbLoops ), m_width( 0 ), m_height( 0 ),
     m_pData( NULL )
 {
-    video_format_t fmt_in = {0}, fmt_out = {0};
+    video_format_t fmt_in, fmt_out;
     picture_t *pPic;
 
-    fmt_out.i_chroma = VLC_CODEC_RGBA;
+    video_format_Init( &fmt_in, 0 );
+    video_format_Init( &fmt_out, VLC_CODEC_RGBA );
 
-    pPic = image_ReadUrl( pImageHandler, fileName.c_str(), &fmt_in, &fmt_out );
-    if( !pPic ) return;
+    char* psz_uri = make_URI( fileName.c_str(), NULL );
+    pPic = image_ReadUrl( pImageHandler, psz_uri, &fmt_in, &fmt_out );
+    free( psz_uri );
+
+    if( !pPic )
+        return;
 
     m_width = fmt_out.i_width;
     m_height = fmt_out.i_height;

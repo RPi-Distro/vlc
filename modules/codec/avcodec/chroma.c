@@ -2,7 +2,7 @@
  * chroma.c: libavutil <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: fd0cebfcd698c47712a7ace340e72506e4c04e0d $
+ * $Id: b100423e0fb6272cd66c0478c70942bfcdc9c3bb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -29,14 +29,9 @@
 #include <vlc_common.h>
 #include <vlc_codec.h>
 
-#ifdef HAVE_LIBAVCODEC_AVCODEC_H
-#   include <libavcodec/avcodec.h>
-#elif defined(HAVE_FFMPEG_AVCODEC_H)
-#   include <ffmpeg/avcodec.h>
-#else
-#   include <avcodec.h>
-#endif
-#include "avcodec.h"
+#include <libavutil/avutil.h>
+#include <libavutil/pixfmt.h>
+#include "chroma.h"
 
 /*****************************************************************************
  * Chroma fourcc -> ffmpeg_id mapping
@@ -87,6 +82,26 @@ static const struct
 
     {VLC_FOURCC('N','V','1','2'), PIX_FMT_NV12, 0, 0, 0 },
     {VLC_FOURCC('N','V','2','1'), PIX_FMT_NV21, 0, 0, 0 },
+
+#if LIBAVUTIL_VERSION_INT >= ((51<<16)+(4<<8)+0)
+    {VLC_CODEC_I420_9L, PIX_FMT_YUV420P9LE, 0, 0, 0 },
+    {VLC_CODEC_I420_9B, PIX_FMT_YUV420P9BE, 0, 0, 0 },
+    {VLC_CODEC_I420_10L, PIX_FMT_YUV420P10LE, 0, 0, 0 },
+    {VLC_CODEC_I420_10B, PIX_FMT_YUV420P10BE, 0, 0, 0 },
+#endif
+#if LIBAVUTIL_VERSION_INT > ((51<<16)+(22<<8)+0)
+    {VLC_CODEC_I422_9L, PIX_FMT_YUV422P9LE, 0, 0, 0 },
+    {VLC_CODEC_I422_9B, PIX_FMT_YUV422P9BE, 0, 0, 0 },
+#endif
+#if LIBAVUTIL_VERSION_INT >= ((51<<16)+(9<<8)+0)
+    {VLC_CODEC_I422_10L, PIX_FMT_YUV422P10LE, 0, 0, 0 },
+    {VLC_CODEC_I422_10B, PIX_FMT_YUV422P10BE, 0, 0, 0 },
+
+    {VLC_CODEC_I444_9L, PIX_FMT_YUV444P9LE, 0, 0, 0 },
+    {VLC_CODEC_I444_9B, PIX_FMT_YUV444P9BE, 0, 0, 0 },
+    {VLC_CODEC_I444_10L, PIX_FMT_YUV444P10LE, 0, 0, 0 },
+    {VLC_CODEC_I444_10B, PIX_FMT_YUV444P10BE, 0, 0, 0 },
+#endif
 
     /* Packed YUV formats */
     {VLC_CODEC_YUYV, PIX_FMT_YUYV422, 0, 0, 0 },

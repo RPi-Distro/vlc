@@ -3,20 +3,35 @@
 
 basedir = codec
 dir = codec/omxil
-mods = omxil
-libvlc_LTLIBRARIES =  $(LTLIBomxil)
-EXTRA_LTLIBRARIES =  libomxil_plugin.la
+mods = iomx omxil
+libvlc_LTLIBRARIES =  $(LTLIBiomx) $(LTLIBomxil)
+EXTRA_LTLIBRARIES =  libiomx_plugin.la libomxil_plugin.la
 
 include $(top_srcdir)/modules/common.am
+
+# The iomx plugin
+libiomx_plugin_la_SOURCES = $(SOURCES_iomx)
+nodist_libiomx_plugin_la_SOURCES = $(nodist_SOURCES_iomx)
+# Force per-target objects:
+libiomx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_iomx)
+libiomx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_iomx)
+libiomx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_iomx)
+libiomx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_iomx)
+# Set LIBADD and DEPENDENCIES manually:
+libiomx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_iomx)
+libiomx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_iomx)
+libiomx_plugin_la_DEPENDENCIES =
 
 # The omxil plugin
 libomxil_plugin_la_SOURCES = $(SOURCES_omxil)
 nodist_libomxil_plugin_la_SOURCES = $(nodist_SOURCES_omxil)
 # Force per-target objects:
-libomxil_plugin_la_CFLAGS = $(AM_CFLAGS)
-libomxil_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libomxil_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libomxil_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_omxil)
+libomxil_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_omxil)
+libomxil_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_omxil)
+libomxil_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_omxil)
 # Set LIBADD and DEPENDENCIES manually:
-libomxil_plugin_la_LIBADD = $(AM_LIBADD)
-libomxil_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libomxil_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_omxil)
+libomxil_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_omxil)
+libomxil_plugin_la_DEPENDENCIES =
 

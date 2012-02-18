@@ -1,8 +1,8 @@
 /*****************************************************************************
  * stream_output.h : stream output module
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 57baad6a9bad5cafc12ee36765e2ea9a1cb39202 $
+ * Copyright (C) 2002-2008 VLC authors and VideoLAN
+ * $Id: 8c2e3428113a4900fc9ec197027fa808ff5b267f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -10,19 +10,19 @@
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
  *          Rémi Denis-Courmont
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_SOUT_H_
@@ -37,6 +37,7 @@
 extern "C" {
 #endif
 
+#include <sys/types.h>
 #include <vlc_es.h>
 
 /** Stream output instance */
@@ -58,21 +59,6 @@ struct sout_instance_t
     /** Private */
     sout_instance_sys_t *p_sys;
 };
-
-/** Stream output statistics */
-typedef enum
-{
-    SOUT_STATISTIC_DECODED_VIDEO,
-    SOUT_STATISTIC_DECODED_AUDIO,
-    SOUT_STATISTIC_DECODED_SUBTITLE,
-
-    /* Use them only if you do not goes through a access_out module */
-    SOUT_STATISTIC_SENT_PACKET,
-    SOUT_STATISTIC_SENT_BYTE,
-
-} sout_statistic_t;
-
-VLC_EXPORT( void, sout_UpdateStatistic, ( sout_instance_t *p_sout, sout_statistic_t, int ) );
 
 /****************************************************************************
  * sout_stream_id_t: opaque (private for all sout_stream_t)
@@ -106,14 +92,14 @@ enum access_out_query_e
     ACCESS_OUT_CONTROLS_PACE, /* arg1=bool *, can fail (assume true) */
 };
 
-VLC_EXPORT( sout_access_out_t *,sout_AccessOutNew, ( vlc_object_t *, const char *psz_access, const char *psz_name ) );
+VLC_API sout_access_out_t * sout_AccessOutNew( vlc_object_t *, const char *psz_access, const char *psz_name ) VLC_USED;
 #define sout_AccessOutNew( obj, access, name ) \
         sout_AccessOutNew( VLC_OBJECT(obj), access, name )
-VLC_EXPORT( void, sout_AccessOutDelete, ( sout_access_out_t * ) );
-VLC_EXPORT( int, sout_AccessOutSeek, ( sout_access_out_t *, off_t ) );
-VLC_EXPORT( ssize_t, sout_AccessOutRead, ( sout_access_out_t *, block_t * ) );
-VLC_EXPORT( ssize_t, sout_AccessOutWrite, ( sout_access_out_t *, block_t * ) );
-VLC_EXPORT( int, sout_AccessOutControl, ( sout_access_out_t *, int, ... ) );
+VLC_API void sout_AccessOutDelete( sout_access_out_t * );
+VLC_API int sout_AccessOutSeek( sout_access_out_t *, off_t );
+VLC_API ssize_t sout_AccessOutRead( sout_access_out_t *, block_t * );
+VLC_API ssize_t sout_AccessOutWrite( sout_access_out_t *, block_t * );
+VLC_API int sout_AccessOutControl( sout_access_out_t *, int, ... );
 
 static inline bool sout_AccessOutCanControlPace( sout_access_out_t *p_ao )
 {
@@ -177,12 +163,12 @@ struct sout_input_t
 };
 
 
-VLC_EXPORT( sout_mux_t *,   sout_MuxNew,          ( sout_instance_t*, const char *, sout_access_out_t * ) );
-VLC_EXPORT( sout_input_t *, sout_MuxAddStream,    ( sout_mux_t *, es_format_t * ) );
-VLC_EXPORT( void,           sout_MuxDeleteStream, ( sout_mux_t *, sout_input_t * ) );
-VLC_EXPORT( void,           sout_MuxDelete,       ( sout_mux_t * ) );
-VLC_EXPORT( void,           sout_MuxSendBuffer, ( sout_mux_t *, sout_input_t  *, block_t * ) );
-VLC_EXPORT( int,            sout_MuxGetStream, (sout_mux_t *, int , mtime_t *));
+VLC_API sout_mux_t * sout_MuxNew( sout_instance_t*, const char *, sout_access_out_t * ) VLC_USED;
+VLC_API sout_input_t * sout_MuxAddStream( sout_mux_t *, es_format_t * ) VLC_USED;
+VLC_API void sout_MuxDeleteStream( sout_mux_t *, sout_input_t * );
+VLC_API void sout_MuxDelete( sout_mux_t * );
+VLC_API void sout_MuxSendBuffer( sout_mux_t *, sout_input_t  *, block_t * );
+VLC_API int sout_MuxGetStream(sout_mux_t *, int , mtime_t *);
 
 static inline int sout_MuxControl( sout_mux_t *p_mux, int i_query, ... )
 {
@@ -222,9 +208,9 @@ struct sout_stream_t
     sout_stream_sys_t *p_sys;
 };
 
-VLC_EXPORT( void, sout_StreamChainDelete, (sout_stream_t *p_first, sout_stream_t *p_last ) );
-VLC_EXPORT( sout_stream_t *, sout_StreamChainNew, (sout_instance_t *p_sout,
-        char *psz_chain, sout_stream_t *p_next, sout_stream_t **p_last) );
+VLC_API void sout_StreamChainDelete(sout_stream_t *p_first, sout_stream_t *p_last );
+VLC_API sout_stream_t *sout_StreamChainNew(sout_instance_t *p_sout,
+        char *psz_chain, sout_stream_t *p_next, sout_stream_t **p_last) VLC_USED;
 
 static inline sout_stream_id_t *sout_StreamIdAdd( sout_stream_t *s, es_format_t *fmt )
 {
@@ -243,28 +229,34 @@ static inline int sout_StreamIdSend( sout_stream_t *s, sout_stream_id_t *id, blo
  * Encoder
  ****************************************************************************/
 
-VLC_EXPORT( encoder_t *, sout_EncoderCreate, ( vlc_object_t *obj ) );
+VLC_API encoder_t * sout_EncoderCreate( vlc_object_t *obj );
 #define sout_EncoderCreate(o) sout_EncoderCreate(VLC_OBJECT(o))
 
 /****************************************************************************
  * Announce handler
  ****************************************************************************/
-VLC_EXPORT(session_descriptor_t*,sout_AnnounceRegisterSDP, ( vlc_object_t *, const char *, const char *, announce_method_t* ) );
-VLC_EXPORT( int,                sout_AnnounceUnRegister, (vlc_object_t *,session_descriptor_t* ) );
-#define sout_AnnounceRegisterSDP(o, sdp, addr, m) \
-        sout_AnnounceRegisterSDP(VLC_OBJECT (o), sdp, addr, m)
+VLC_API session_descriptor_t* sout_AnnounceRegisterSDP( vlc_object_t *, const char *, const char * ) VLC_USED;
+VLC_API int sout_AnnounceUnRegister(vlc_object_t *,session_descriptor_t* );
+#define sout_AnnounceRegisterSDP(o, sdp, addr) \
+        sout_AnnounceRegisterSDP(VLC_OBJECT (o), sdp, addr)
 #define sout_AnnounceUnRegister(o, a) \
         sout_AnnounceUnRegister(VLC_OBJECT (o), a)
 
-VLC_EXPORT(announce_method_t*,   sout_SAPMethod, (void) );
-VLC_EXPORT(void,                 sout_MethodRelease, (announce_method_t *) );
-
 /** SDP */
 
-VLC_EXPORT( char *, vlc_sdp_Start, ( vlc_object_t *obj, const char *cfgpref, const struct sockaddr *src, size_t srclen, const struct sockaddr *addr, size_t addrlen ) );
-VLC_EXPORT( char *, sdp_AddMedia, (char **sdp, const char *type, const char *protocol, int dport, unsigned pt, bool bw_indep, unsigned bw, const char *ptname, unsigned clockrate, unsigned channels, const char *fmtp) );
-VLC_EXPORT( char *, sdp_AddAttribute, (char **sdp, const char *name, const char *fmt, ...) LIBVLC_FORMAT( 3, 4 ) );
+struct sockaddr;
 
+VLC_API char * vlc_sdp_Start( vlc_object_t *obj, const char *cfgpref, const struct sockaddr *src, size_t srclen, const struct sockaddr *addr, size_t addrlen ) VLC_USED;
+VLC_API char * sdp_AddMedia(char **sdp, const char *type, const char *protocol, int dport, unsigned pt, bool bw_indep, unsigned bw, const char *ptname, unsigned clockrate, unsigned channels, const char *fmtp);
+VLC_API char * sdp_AddAttribute(char **sdp, const char *name, const char *fmt, ...) VLC_FORMAT( 3, 4 );
+
+/** Description module */
+typedef struct sout_description_data_t
+{
+    int i_es;
+    es_format_t **es;
+    vlc_sem_t *sem;
+} sout_description_data_t;
 
 #ifdef __cplusplus
 }

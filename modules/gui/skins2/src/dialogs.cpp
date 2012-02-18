@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ca260d8fdff400942af922edb4ccf394d675a7a6 $
+ * $Id: d96f1b2210479c75113a953bb494cbd5152d77ce $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,6 +29,7 @@
 #include "../commands/cmd_playlist.hpp"
 #include "../commands/cmd_playtree.hpp"
 #include <vlc_playlist.h>
+#include <vlc_modules.h>
 
 /// Callback called when a new skin is chosen
 void Dialogs::showChangeSkinCB( intf_dialog_args_t *pArg )
@@ -95,6 +96,8 @@ void Dialogs::showPlaylistSaveCB( intf_dialog_args_t *pArg )
 static int PopupMenuCB( vlc_object_t *p_this, const char *psz_variable,
                         vlc_value_t old_val, vlc_value_t new_val, void *param )
 {
+    (void)p_this; (void)psz_variable; (void)old_val;
+
     Dialogs *p_dialogs = (Dialogs *)param;
     p_dialogs->showPopupMenu( new_val.b_bool != 0, INTF_DIALOG_POPUPMENU );
 
@@ -157,9 +160,6 @@ bool Dialogs::init()
                                                     sizeof( intf_thread_t ) );
     if( m_pProvider == NULL )
         return false;
-
-    // Attach the dialogs provider to its parent interface
-    vlc_object_attach( m_pProvider, getIntf() );
 
     m_pModule = module_need( m_pProvider, "dialogs provider", NULL, false );
     if( m_pModule == NULL )

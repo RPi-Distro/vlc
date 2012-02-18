@@ -2,7 +2,7 @@
  * x11_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 24c1c3e566c323ec854354e1092218dc106ae710 $
+ * $Id: 0283042bdd9cbfe3a4e45b96fe0749b7a968e5da $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -176,7 +176,7 @@ void X11Loop::handleX11Event()
                 XInternAtom( XDISPLAY, "WM_DELETE_WINDOW", False);
 
             if( event.xclient.message_type == wm_protocols &&
-                event.xclient.data.l[0] == wm_delete )
+                (Atom)event.xclient.data.l[0] == wm_delete )
             {
                 msg_Dbg( getIntf(), "Received WM_DELETE_WINDOW message" );
                 libvlc_Quit( getIntf()->p_libvlc );
@@ -300,19 +300,25 @@ void X11Loop::handleX11Event()
                 case 4:
                 {
                     // Scroll up
-                    EvtScroll evt( getIntf(), event.xbutton.x,
-                                   event.xbutton.y, EvtScroll::kUp,
-                                   mod );
-                    pWin->processEvent( evt );
+                    if( event.type == ButtonPress )
+                    {
+                        EvtScroll evt( getIntf(), event.xbutton.x,
+                                       event.xbutton.y, EvtScroll::kUp,
+                                       mod );
+                        pWin->processEvent( evt );
+                    }
                     break;
                 }
                 case 5:
                 {
                     // Scroll down
-                    EvtScroll evt( getIntf(), event.xbutton.x,
-                                   event.xbutton.y, EvtScroll::kDown,
-                                   mod );
-                    pWin->processEvent( evt );
+                    if( event.type == ButtonPress )
+                    {
+                        EvtScroll evt( getIntf(), event.xbutton.x,
+                                       event.xbutton.y, EvtScroll::kDown,
+                                       mod );
+                        pWin->processEvent( evt );
+                    }
                     break;
                 }
             }

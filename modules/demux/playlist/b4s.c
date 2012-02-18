@@ -2,7 +2,7 @@
  * b4s.c : B4S playlist format import
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 6b889f402d5fd39871c6febc54ba70e5632aaf3d $
+ * $Id: cbf7bebc85f54f88c4a50ccc8205826a2835f4f3 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -37,7 +37,6 @@
 
 struct demux_sys_t
 {
-    char *psz_prefix;
 };
 
 /*****************************************************************************
@@ -45,7 +44,7 @@ struct demux_sys_t
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
 static int Control( demux_t *p_demux, int i_query, va_list args );
-static int IsWhitespace( char *psz_string );
+static bool IsWhitespace( const char *psz_string );
 
 /*****************************************************************************
  * Import_B4S: main import function
@@ -54,7 +53,6 @@ int Import_B4S( vlc_object_t *p_this )
 {
     DEMUX_BY_EXTENSION_OR_FORCED_MSG( ".b4s", "b4s-open",
                                       "using B4S playlist reader" );
-    p_demux->p_sys->psz_prefix = FindPrefix( p_demux );
     return VLC_SUCCESS;
 }
 
@@ -66,7 +64,6 @@ void Close_B4S( vlc_object_t *p_this )
     demux_t *p_demux = (demux_t *)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    free( p_sys->psz_prefix );
     free( p_sys );
 }
 
@@ -74,9 +71,9 @@ static int Demux( demux_t *p_demux )
 {
     int i_ret = -1;
 
-    xml_t *p_xml;
     xml_reader_t *p_xml_reader = NULL;
     char *psz_elname = NULL;
+    const char *node;
     input_item_t *p_input;
     char *psz_mrl = NULL, *psz_title = NULL, *psz_genre = NULL;
     char *psz_now = NULL, *psz_listeners = NULL, *psz_bitrate = NULL;
@@ -84,180 +81,125 @@ static int Demux( demux_t *p_demux )
 
     input_item_t *p_current_input = GetCurrentItem(p_demux);
 
-    p_xml = xml_Create( p_demux );
-    if( !p_xml )
-        goto end;
+    free( stream_ReadLine( p_demux->s ) );
 
-    psz_elname = stream_ReadLine( p_demux->s );
-    free( psz_elname );
-    psz_elname = NULL;
-
-    p_xml_reader = xml_ReaderCreate( p_xml, p_demux->s );
+    p_xml_reader = xml_ReaderCreate( p_demux, p_demux->s );
     if( !p_xml_reader )
-        goto end;
+        return -1;
 
     /* xml */
     /* check root node */
-    if( xml_ReaderRead( p_xml_reader ) != 1 )
+    if( xml_ReaderNextNode( p_xml_reader, &node ) != XML_READER_STARTELEM )
     {
         msg_Err( p_demux, "invalid file (no root node)" );
         goto end;
     }
 
-    if( xml_ReaderNodeType( p_xml_reader ) != XML_READER_STARTELEM ||
-        ( psz_elname = xml_ReaderName( p_xml_reader ) ) == NULL ||
-        strcmp( psz_elname, "WinampXML" ) )
+    if( strcmp( node, "WinampXML" ) )
     {
-        msg_Err( p_demux, "invalid root node %i, %s",
-                 xml_ReaderNodeType( p_xml_reader ), psz_elname );
+        msg_Err( p_demux, "invalid root node: %s", node );
         goto end;
     }
-    FREENULL( psz_elname );
 
     /* root node should not have any attributes, and should only
      * contain the "playlist node */
 
     /* Skip until 1st child node */
-    while( (i_ret = xml_ReaderRead( p_xml_reader )) == 1 &&
-           xml_ReaderNodeType( p_xml_reader ) != XML_READER_STARTELEM );
-    if( i_ret != 1 )
-    {
-        msg_Err( p_demux, "invalid file (no child node)" );
-        goto end;
-    }
-
-    if( ( psz_elname = xml_ReaderName( p_xml_reader ) ) == NULL ||
-        strcmp( psz_elname, "playlist" ) )
-    {
-        msg_Err( p_demux, "invalid child node %s", psz_elname );
-        goto end;
-    }
-    FREENULL( psz_elname );
-
-    // Read the attributes
-    while( xml_ReaderNextAttr( p_xml_reader ) == VLC_SUCCESS )
-    {
-        char *psz_name = xml_ReaderName( p_xml_reader );
-        char *psz_value = xml_ReaderValue( p_xml_reader );
-        if( !psz_name || !psz_value )
+    while( (i_ret = xml_ReaderNextNode( p_xml_reader, &node )) != XML_READER_STARTELEM )
+        if( i_ret <= 0 )
         {
-            free( psz_name );
-            free( psz_value );
+            msg_Err( p_demux, "invalid file (no child node)" );
             goto end;
         }
-        if( !strcmp( psz_name, "num_entries" ) )
-        {
-            msg_Dbg( p_demux, "playlist has %d entries", atoi(psz_value) );
-        }
-        else if( !strcmp( psz_name, "label" ) )
-        {
-            input_item_SetName( p_current_input, psz_value );
-        }
+
+    if( strcmp( node, "playlist" ) )
+    {
+        msg_Err( p_demux, "invalid child node %s", node );
+        goto end;
+    }
+
+    // Read the attributes
+    const char *attr, *value;
+    while( (attr = xml_ReaderNextAttr( p_xml_reader, &value )) != NULL )
+    {
+        if( !strcmp( attr, "num_entries" ) )
+            msg_Dbg( p_demux, "playlist has %d entries", atoi(value) );
+        else if( !strcmp( attr, "label" ) )
+            input_item_SetName( p_current_input, value );
         else
-        {
             msg_Warn( p_demux, "stray attribute %s with value %s in element"
-                      " 'playlist'", psz_name, psz_value );
-        }
-        free( psz_name );
-        free( psz_value );
+                      " <playlist>", attr, value );
     }
 
     p_subitems = input_item_node_Create( p_current_input );
 
-    while( (i_ret = xml_ReaderRead( p_xml_reader )) == 1 )
+    while( (i_ret = xml_ReaderNextNode( p_xml_reader, &node )) > 0 )
     {
         // Get the node type
-        switch( xml_ReaderNodeType( p_xml_reader ) )
+        switch( i_ret )
         {
-            // Error
-            case -1:
-                goto end;
-
             case XML_READER_STARTELEM:
             {
                 // Read the element name
                 free( psz_elname );
-                psz_elname = xml_ReaderName( p_xml_reader );
-                if( !psz_elname )
+                psz_elname = strdup( node );
+                if( unlikely(!psz_elname) )
                     goto end;
 
                 // Read the attributes
-                while( xml_ReaderNextAttr( p_xml_reader ) == VLC_SUCCESS )
+                while( (attr = xml_ReaderNextAttr( p_xml_reader, &value )) )
                 {
-                    char *psz_name = xml_ReaderName( p_xml_reader );
-                    char *psz_value = xml_ReaderValue( p_xml_reader );
-                    if( !psz_name || !psz_value )
-                    {
-                        free( psz_name );
-                        free( psz_value );
-                        goto end;
-                    }
                     if( !strcmp( psz_elname, "entry" ) &&
-                        !strcmp( psz_name, "Playstring" ) )
+                        !strcmp( attr, "Playstring" ) )
                     {
-                        psz_mrl = psz_value;
+                        free( psz_mrl );
+                        psz_mrl = strdup( value );
                     }
                     else
                     {
-                        msg_Warn( p_demux, "unexpected attribute %s in element %s",
-                                  psz_name, psz_elname );
-                        free( psz_value );
+                        msg_Warn( p_demux, "unexpected attribute %s in <%s>",
+                                  attr, psz_elname );
                     }
-                    free( psz_name );
                 }
                 break;
             }
+
             case XML_READER_TEXT:
             {
-                char *psz_text = xml_ReaderValue( p_xml_reader );
-                if( IsWhitespace( psz_text ) )
-                {
-                    free( psz_text );
+                char **p;
+
+                if( psz_elname == NULL )
                     break;
-                }
+                if( IsWhitespace( node ) )
+                    break;
                 if( !strcmp( psz_elname, "Name" ) )
-                {
-                    psz_title = psz_text;
-                }
+                    p = &psz_title;
                 else if( !strcmp( psz_elname, "Genre" ) )
-                {
-                    psz_genre = psz_text;
-                }
+                    p = &psz_genre;
                 else if( !strcmp( psz_elname, "Nowplaying" ) )
-                {
-                    psz_now = psz_text;
-                }
+                    p = &psz_now;
                 else if( !strcmp( psz_elname, "Listeners" ) )
-                {
-                    psz_listeners = psz_text;
-                }
+                    p = &psz_listeners;
                 else if( !strcmp( psz_elname, "Bitrate" ) )
-                {
-                    psz_bitrate = psz_text;
-                }
-                else if( !strcmp( psz_elname, "" ) )
-                {
-                    free( psz_text );
-                }
+                    p = &psz_bitrate;
                 else
                 {
-                    msg_Warn( p_demux, "unexpected text in element '%s'",
+                    msg_Warn( p_demux, "unexpected text in element <%s>",
                               psz_elname );
-                    free( psz_text );
+                    break;
                 }
+                free( *p );
+                *p = strdup( node );
                 break;
             }
+
             // End element
             case XML_READER_ENDELEM:
             {
                 // Read the element name
-                free( psz_elname );
-                psz_elname = xml_ReaderName( p_xml_reader );
-                if( !psz_elname )
-                    goto end;
-                if( !strcmp( psz_elname, "entry" ) )
+                if( !strcmp( node, "entry" ) )
                 {
-                    p_input = input_item_New( p_demux, psz_mrl, psz_title );
+                    p_input = input_item_New( psz_mrl, psz_title );
                     if( psz_now )
                         input_item_SetNowPlaying( p_input, psz_now );
                     if( psz_genre )
@@ -276,15 +218,13 @@ static int Demux( demux_t *p_demux )
                     FREENULL( psz_listeners );
                     FREENULL( psz_now );
                 }
-                free( psz_elname );
-                psz_elname = strdup( "" );
-
+                FREENULL( psz_elname );
                 break;
             }
         }
     }
 
-    if( i_ret != 0 )
+    if( i_ret < 0 )
     {
         msg_Warn( p_demux, "error while parsing data" );
         i_ret = 0; /* Needed for correct operation of go back */
@@ -298,9 +238,7 @@ end:
 
     vlc_gc_decref( p_current_input );
     if( p_xml_reader )
-        xml_ReaderDelete( p_xml, p_xml_reader );
-    if( p_xml )
-        xml_Delete( p_xml );
+        xml_ReaderDelete( p_xml_reader );
     return i_ret;
 }
 
@@ -310,16 +248,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     return VLC_EGENERIC;
 }
 
-static int IsWhitespace( char *psz_string )
+static bool IsWhitespace( const char *psz_string )
 {
-    while( *psz_string )
-    {
-        if( *psz_string != ' ' && *psz_string != '\t' && *psz_string != '\r' &&
-            *psz_string != '\n' )
-        {
-            return false;
-        }
-        psz_string++;
-    }
-    return true;
+    psz_string += strspn( psz_string, " \t\r\n" );
+    return !*psz_string;
 }

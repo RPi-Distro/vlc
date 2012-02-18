@@ -2,7 +2,7 @@
  * copy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 0986842ac7a080fd12f34703a6897883784dc139 $
+ * $Id: dbaa96b321c033f1850019817af4db1fe7d1d7bf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -209,7 +209,7 @@ static block_t *PacketizeSub( decoder_t *p_dec, block_t **pp_block )
     return p_block;
 }
 
-/* Parse WMV3 packet and extract frame type informations */
+/* Parse WMV3 packet and extract frame type information */
 static void ParseWMV3( decoder_t *p_dec, block_t *p_block )
 {
     bs_t s;

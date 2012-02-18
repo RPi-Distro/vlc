@@ -2,7 +2,7 @@
  * cmd_add_item.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 604a87efef6e9b92bbd0c791cdf0f07303f8c17c $
+ * $Id: 877461b6b3fe76d4e8c594a8c18adf48226acd77 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,7 @@ void CmdAddItem::execute()
     if( !pPlaylist )
         return;
 
-    char* psz_uri = make_URI(  m_name.c_str() );
+    char* psz_uri = make_URI(  m_name.c_str(), NULL );
     if( !psz_uri )
         return;
 

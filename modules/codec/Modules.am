@@ -1,4 +1,4 @@
-SUBDIRS = dmo avcodec shine subtitles spudec wmafixed omxil
+SUBDIRS = loader dmo avcodec shine spudec wmafixed omxil
 SOURCES_a52 = a52.c a52.h
 SOURCES_dts = dts.c
 SOURCES_flac = flac.c
@@ -23,18 +23,23 @@ SOURCES_dirac = dirac.c
 SOURCES_png = png.c
 SOURCES_svcdsub = svcdsub.c
 SOURCES_cvdsub = cvdsub.c
-SOURCES_fake = fake.c
-SOURCES_invmem = invmem.c
 SOURCES_realvideo = realvideo.c
 SOURCES_sdl_image = sdl_image.c
 SOURCES_zvbi = zvbi.c
 SOURCES_cdg = cdg.c
 SOURCES_fluidsynth = fluidsynth.c
-SOURCES_cc = cc.c cc.h
+SOURCES_cc = cc.c cc.h substext.h
 SOURCES_kate = kate.c
 SOURCES_schroedinger = schroedinger.c
 SOURCES_libass = libass.c
 SOURCES_aes3 = aes3.c
+SOURCES_subsdec = subsdec.c substext.h
+SOURCES_subsusf = subsusf.c
+SOURCES_t140 = t140.c
+SOURCES_crystalhd = crystalhd.c h264_nal.h
+SOURCES_stl = stl.c
+SOURCES_ddummy = ddummy.c
+SOURCES_edummy = edummy.c
 
 libvlc_LTLIBRARIES += \
 	liba52_plugin.la \
@@ -42,14 +47,18 @@ libvlc_LTLIBRARIES += \
 	libaes3_plugin.la \
 	libaraw_plugin.la \
 	libcc_plugin.la \
-        libcdg_plugin.la \
+	libcdg_plugin.la \
 	libcvdsub_plugin.la \
+	libddummy_plugin.la \
 	libdts_plugin.la \
-	libfake_plugin.la \
 	libdvbsub_plugin.la \
+	libedummy_plugin.la \
 	liblpcm_plugin.la \
 	libmpeg_audio_plugin.la \
 	librawvideo_plugin.la \
 	libsvcdsub_plugin.la \
-	libinvmem_plugin.la \
+	libsubsdec_plugin.la \
+	libsubsusf_plugin.la \
+	libt140_plugin.la \
+	libstl_plugin.la \
 	$(NULL)

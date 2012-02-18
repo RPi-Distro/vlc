@@ -1,26 +1,26 @@
 /*****************************************************************************
  * decoder_synchro.c : frame dropping routines
  *****************************************************************************
- * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: 8bb9d73ad84e0c80020c8e8614e18597ba485794 $
+ * Copyright (C) 1999-2005 VLC authors and VideoLAN
+ * $Id: 16ab7286a23887fa36e03a1ff3de305f754af1f0 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
  *          Jean-Marc Dressler <polux@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*
@@ -116,8 +116,8 @@ struct decoder_synchro_t
 
     /* */
     int             i_frame_rate;
-    bool      b_no_skip;
-    bool      b_quiet;
+    bool            b_no_skip;
+    bool            b_quiet;
 
     /* date of the beginning of the decoding of the current picture */
     mtime_t         decoding_start;
@@ -130,7 +130,7 @@ struct decoder_synchro_t
     unsigned int    pi_meaningful[4];            /* number of durations read */
 
     /* render_time filled by SynchroChoose() */
-    int i_render_time;
+    int             i_render_time;
 
     /* stream context */
     int             i_nb_ref;                /* Number of reference pictures */

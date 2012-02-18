@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 the VideoLAN team
- * $Id: 6fc4a4dee441582772326ee2411676a2286ca5cc $
+ * $Id: 99a8c4702da49bf03729cdd0f816849a52be61c3 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -101,7 +101,7 @@ subpicture_t * ParsePacket( decoder_t *p_dec )
     spu_properties_t spu_properties;
 
     /* Allocate the subpicture internal data. */
-    p_spu = decoder_NewSubpicture( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec, NULL );
     if( !p_spu ) return NULL;
 
     p_spu->i_original_picture_width =

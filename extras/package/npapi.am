@@ -1,0 +1,45 @@
+#! /usr/bin/make -f
+
+build-npapi: stamp-npapi-build
+
+stamp-gecko-fetch:
+	svn export http://npapi-sdk.googlecode.com/svn/trunk/headers gecko -r HEAD
+	touch $@
+
+stamp-npapi-fetch:
+	rm -Rf npapi-vlc
+	git clone git://git.videolan.org/npapi-vlc.git npapi-vlc
+	touch $@
+
+stamp-npapi-autogen: stamp-npapi-fetch
+# extras/package/npapi.am
+	cd npapi-vlc && \
+	$(SHELL) ./autogen.sh
+	touch $@
+
+if HAVE_WIN64
+CONF_ACTIVEX = --disable-activex
+else
+CONF_ACTIVEX =
+endif
+
+stamp-npapi-configure: stamp-npapi-autogen stamp-gecko-fetch
+	cd npapi-vlc && \
+	$(SHELL) ./configure \
+		--prefix=/ \
+		--host=$(host_alias) --build=$(build_alias) \
+		$(CONF_ACTIVEX) \
+		CPP="$(CPP)" CPPFLAGS="$(CPPFLAGS)" \
+		CC="$(CC)" CFLAGS="$(CFLAGS)" \
+		CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)" \
+		LD="$(LD)" LDFLAGS="$(LDFLAGS)" \
+		MOZILLA_CFLAGS="-I$(abs_builddir)/gecko" \
+		SHELL="$(SHELL)" \
+		PKG_CONFIG_LIBDIR="../$(srcdir)/extras/contrib/lib/pkgconfig:../lib"
+	touch $@
+
+stamp-npapi-build: stamp-npapi-configure
+	cd npapi-vlc && \
+	$(MAKE) all && \
+	$(MAKE) DESTDIR="$(abs_builddir)/npapi-vlc/installed" install
+	touch $@

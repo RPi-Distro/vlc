@@ -3,25 +3,25 @@
  * This library provides basic functions for threads to interact with user
  * interface, such as message output.
  *****************************************************************************
- * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
- * $Id: 80fc1b3e2002b26b4b65a0841400dc9a52debec4 $
+ * Copyright (C) 1999, 2000, 2001, 2002 VLC authors and VideoLAN
+ * $Id: 7a8777f56deb9859a74fed7fe5ec52365216ac95 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_MESSAGES_H_
@@ -42,42 +42,25 @@
  * @{
  */
 
+/** Message types */
+enum msg_item_type
+{
+    VLC_MSG_INFO=0, /**< Important information */
+    VLC_MSG_ERR,    /**< Error */
+    VLC_MSG_WARN,   /**< Warning */
+    VLC_MSG_DBG,    /**< Debug */
+};
+
 /**
- * Store a single message sent to user.
+ * Log message
  */
 typedef struct
 {
-    int     i_type;                             /**< message type, see below */
-    uintptr_t   i_object_id;
-    const char *psz_object_type;
-    char *  psz_module;
-    char *  psz_msg;                            /**< the message itself */
-    char *  psz_header;                         /**< Additional header */
-
-    mtime_t date;                               /**< Message date */
-    gc_object_t vlc_gc_data;
+    uintptr_t   i_object_id; /**< Emitter (temporaly) unique object ID or 0 */
+    const char *psz_object_type; /**< Emitter object type name */
+    const char *psz_module; /**< Emitter module (source code) */
+    const char *psz_header; /**< Additional header (used by VLM media) */
 } msg_item_t;
-
-/* Message types */
-/** standard messages */
-#define VLC_MSG_INFO  0
-/** error messages */
-#define VLC_MSG_ERR   1
-/** warning messages */
-#define VLC_MSG_WARN  2
-/** debug messages */
-#define VLC_MSG_DBG   3
-
-static inline msg_item_t *msg_Hold (msg_item_t *msg)
-{
-    vlc_hold (&msg->vlc_gc_data);
-    return msg;
-}
-
-static inline void msg_Release (msg_item_t *msg)
-{
-    vlc_release (&msg->vlc_gc_data);
-}
 
 /**
  * Used by interface plugins which subscribe to the message bank.
@@ -87,40 +70,30 @@ typedef struct msg_subscription_t msg_subscription_t;
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-VLC_EXPORT( void, msg_Generic, ( vlc_object_t *, int, const char *, const char *, ... ) LIBVLC_FORMAT( 4, 5 ) );
-VLC_EXPORT( void, msg_GenericVa, ( vlc_object_t *, int, const char *, const char *, va_list args ) );
-#define msg_GenericVa(a, b, c, d, e) msg_GenericVa(VLC_OBJECT(a), b, c, d, e)
+VLC_API void vlc_Log(vlc_object_t *, int,
+                     const char *, const char *, ...) VLC_FORMAT( 4, 5 );
+VLC_API void vlc_vaLog(vlc_object_t *, int,
+                       const char *, const char *, va_list);
+#define msg_GenericVa(a, b, c, d, e) vlc_vaLog(VLC_OBJECT(a), b, c, d, e)
 
 #define msg_Info( p_this, ... ) \
-        msg_Generic( VLC_OBJECT(p_this), VLC_MSG_INFO, \
-                     MODULE_STRING, __VA_ARGS__ )
+    vlc_Log( VLC_OBJECT(p_this), VLC_MSG_INFO, MODULE_STRING, __VA_ARGS__ )
 #define msg_Err( p_this, ... ) \
-        msg_Generic( VLC_OBJECT(p_this), VLC_MSG_ERR, \
-                     MODULE_STRING, __VA_ARGS__ )
+    vlc_Log( VLC_OBJECT(p_this), VLC_MSG_ERR,  MODULE_STRING, __VA_ARGS__ )
 #define msg_Warn( p_this, ... ) \
-        msg_Generic( VLC_OBJECT(p_this), VLC_MSG_WARN, \
-                     MODULE_STRING, __VA_ARGS__ )
+    vlc_Log( VLC_OBJECT(p_this), VLC_MSG_WARN, MODULE_STRING, __VA_ARGS__ )
 #define msg_Dbg( p_this, ... ) \
-        msg_Generic( VLC_OBJECT(p_this), VLC_MSG_DBG, \
-                     MODULE_STRING, __VA_ARGS__ )
-
-typedef struct msg_cb_data_t msg_cb_data_t;
+    vlc_Log( VLC_OBJECT(p_this), VLC_MSG_DBG,  MODULE_STRING, __VA_ARGS__ )
 
 /**
  * Message logging callback signature.
  * Accepts one private data pointer, the message, and an overrun counter.
  */
-typedef void (*msg_callback_t) (msg_cb_data_t *, msg_item_t *, unsigned);
+typedef void (*msg_callback_t) (void *, int, const msg_item_t *,
+                                const char *, va_list);
 
-VLC_EXPORT( msg_subscription_t*, msg_Subscribe, ( libvlc_int_t *, msg_callback_t, msg_cb_data_t * ) );
-VLC_EXPORT( void, msg_Unsubscribe, ( msg_subscription_t * ) );
-
-/* Enable or disable a certain object debug messages */
-VLC_EXPORT( void, msg_EnableObjectPrinting, ( vlc_object_t *, const char * psz_object ) );
-#define msg_EnableObjectPrinting(a,b) msg_EnableObjectPrinting(VLC_OBJECT(a),b)
-VLC_EXPORT( void, msg_DisableObjectPrinting, ( vlc_object_t *, const char * psz_object ) );
-#define msg_DisableObjectPrinting(a,b) msg_DisableObjectPrinting(VLC_OBJECT(a),b)
-
+VLC_API msg_subscription_t *vlc_Subscribe(msg_callback_t, void *) VLC_USED;
+VLC_API void vlc_Unsubscribe(msg_subscription_t *);
 
 /**
  * @}
@@ -203,19 +176,19 @@ enum
 /*********
  * Timing
  ********/
-VLC_EXPORT( void, stats_TimerStart, (vlc_object_t*, const char *, unsigned int ) );
-VLC_EXPORT( void, stats_TimerStop, (vlc_object_t*, unsigned int) );
-VLC_EXPORT( void, stats_TimerDump, (vlc_object_t*, unsigned int) );
-VLC_EXPORT( void, stats_TimersDumpAll, (vlc_object_t*) );
+VLC_API void stats_TimerStart(vlc_object_t*, const char *, unsigned int );
+VLC_API void stats_TimerStop(vlc_object_t*, unsigned int);
+VLC_API void stats_TimerDump(vlc_object_t*, unsigned int);
+VLC_API void stats_TimersDumpAll(vlc_object_t*);
 #define stats_TimerStart(a,b,c) stats_TimerStart( VLC_OBJECT(a), b,c )
 #define stats_TimerStop(a,b) stats_TimerStop( VLC_OBJECT(a), b )
 #define stats_TimerDump(a,b) stats_TimerDump( VLC_OBJECT(a), b )
 #define stats_TimersDumpAll(a) stats_TimersDumpAll( VLC_OBJECT(a) )
 
-VLC_EXPORT( void, stats_TimersCleanAll, (vlc_object_t * ) );
+VLC_API void stats_TimersCleanAll(vlc_object_t * );
 #define stats_TimersCleanAll(a) stats_TimersCleanAll( VLC_OBJECT(a) )
 
-VLC_EXPORT( void, stats_TimerClean, (vlc_object_t *, unsigned int ) );
+VLC_API void stats_TimerClean(vlc_object_t *, unsigned int );
 #define stats_TimerClean(a,b) stats_TimerClean( VLC_OBJECT(a), b )
 
 /**

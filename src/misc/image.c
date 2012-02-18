@@ -1,24 +1,24 @@
 /*****************************************************************************
  * image.c : wrapper for image reading/writing facilities
  *****************************************************************************
- * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 4c93a49373c737d1a8c06b8b34ca75e2a6de7104 $
+ * Copyright (C) 2004-2007 VLC authors and VideoLAN
+ * $Id: 0902bd002ff6ace5f98689320a2602b792b6c18b $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /**
@@ -46,6 +46,7 @@
 #include <vlc_fs.h>
 #include <vlc_sout.h>
 #include <libvlc.h>
+#include <vlc_modules.h>
 
 static picture_t *ImageRead( image_handler_t *, block_t *,
                              video_format_t *, video_format_t * );
@@ -655,8 +656,7 @@ static decoder_t *CreateDecoder( vlc_object_t *p_this, video_format_t *fmt )
 {
     decoder_t *p_dec;
 
-    p_dec = vlc_custom_create( p_this, sizeof( *p_dec ), VLC_OBJECT_GENERIC,
-                               "image decoder" );
+    p_dec = vlc_custom_create( p_this, sizeof( *p_dec ), "image decoder" );
     if( p_dec == NULL )
         return NULL;
 
@@ -670,8 +670,6 @@ static decoder_t *CreateDecoder( vlc_object_t *p_this, video_format_t *fmt )
     p_dec->pf_vout_buffer_del = video_del_buffer;
     p_dec->pf_picture_link    = video_link_picture;
     p_dec->pf_picture_unlink  = video_unlink_picture;
-
-    vlc_object_attach( p_dec, p_this );
 
     /* Find a suitable decoder module */
     p_dec->p_module = module_need( p_dec, "decoder", "$codec", false );
@@ -751,8 +749,6 @@ static encoder_t *CreateEncoder( vlc_object_t *p_this, video_format_t *fmt_in,
     p_enc->fmt_out.video.i_width = p_enc->fmt_in.video.i_width;
     p_enc->fmt_out.video.i_height = p_enc->fmt_in.video.i_height;
 
-    vlc_object_attach( p_enc, p_this );
-
     /* Find a suitable decoder module */
     p_enc->p_module = module_need( p_enc, "encoder", NULL, false );
     if( !p_enc->p_module )
@@ -784,13 +780,9 @@ static filter_t *CreateFilter( vlc_object_t *p_this, es_format_t *p_fmt_in,
                                video_format_t *p_fmt_out,
                                const char *psz_module )
 {
-    static const char typename[] = "filter";
     filter_t *p_filter;
 
-    p_filter = vlc_custom_create( p_this, sizeof(filter_t),
-                                  VLC_OBJECT_GENERIC, typename );
-    vlc_object_attach( p_filter, p_this );
-
+    p_filter = vlc_custom_create( p_this, sizeof(filter_t), "filter" );
     p_filter->pf_video_buffer_new =
         (picture_t *(*)(filter_t *))video_new_buffer;
     p_filter->pf_video_buffer_del =

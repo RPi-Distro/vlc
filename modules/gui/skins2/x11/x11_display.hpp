@@ -2,7 +2,7 @@
  * x11_display.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f019f1535bd0c90d8661fcc6f49949197ccab166 $
+ * $Id: 9647263d3a4a3445136be6d6f4681628e0044111 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -82,9 +82,6 @@ public:
 
     /// Get the main window ID
     Window getMainWindow() const { return m_mainWindow; }
-
-    //XXX
-    ///Window m_voutWindow;
 
     /// EWMH spec
     Atom m_net_wm_supported;

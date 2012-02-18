@@ -1,27 +1,27 @@
 /*****************************************************************************
  * io.c: network I/O functions
  *****************************************************************************
- * Copyright (C) 2004-2005, 2007 the VideoLAN team
+ * Copyright (C) 2004-2005, 2007 VLC authors and VideoLAN
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: 2e939db3c4f32f7c32b4117a5dd2ff1bdf4cdbdd $
+ * $Id: b4b419680ffc01ba65cde476065a3e8f291273df $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
  *          Christophe Mutricy <xtophe at videolan dot org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 /*****************************************************************************
@@ -112,7 +112,7 @@ int net_Socket (vlc_object_t *p_this, int family, int socktype,
 #ifdef DCCP_SOCKOPT_SERVICE
     if (socktype == SOL_DCCP)
     {
-        char *dccps = var_CreateGetNonEmptyString (p_this, "dccp-service");
+        char *dccps = var_InheritString (p_this, "dccp-service");
         if (dccps != NULL)
         {
             setsockopt (fd, SOL_DCCP, DCCP_SOCKOPT_SERVICE, dccps,
@@ -136,13 +136,15 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
     hints.ai_protocol = protocol;
     hints.ai_flags = AI_PASSIVE;
 
-    msg_Dbg (p_this, "net: listening to %s port %d", psz_host, i_port);
+    msg_Dbg (p_this, "net: listening to %s port %d",
+             (psz_host != NULL) ? psz_host : "*", i_port);
 
     int i_val = vlc_getaddrinfo (p_this, psz_host, i_port, &hints, &res);
     if (i_val)
     {
-        msg_Err (p_this, "Cannot resolve %s port %d : %s", psz_host, i_port,
-                 vlc_gai_strerror (i_val));
+        msg_Err (p_this, "Cannot resolve %s port %d : %s",
+                 (psz_host != NULL) ? psz_host : "", i_port,
+                 gai_strerror (i_val));
         return NULL;
     }
 
@@ -236,7 +238,7 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
             net_Close (fd);
     }
 
-    vlc_freeaddrinfo (res);
+    freeaddrinfo (res);
 
     if (sockv != NULL)
         sockv[sockc] = -1;
@@ -308,16 +310,29 @@ net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
         assert (ufd[0].revents);
 
         ssize_t n;
+#if defined(WIN32) || defined(UNDER_CE)
+        int error;
+#endif
         if (vs != NULL)
         {
             int canc = vlc_savecancel ();
             n = vs->pf_recv (vs->p_sys, p_buf, i_buflen);
+#if defined(WIN32) || defined(UNDER_CE)
+            /* We must read last error immediately, because vlc_restorecancel()
+             * access thread local storage, and TlsGetValue() will call
+             * SetLastError() to indicate that the function succeeded, thus
+             * overwriting the error code coming from pf_recv().
+             * WSAGetLastError is just an alias for GetLastError these days.
+             */
+            error = WSAGetLastError();
+#endif
             vlc_restorecancel (canc);
         }
         else
         {
 #ifdef WIN32
             n = recv (fd, p_buf, i_buflen, 0);
+            error = WSAGetLastError();
 #else
             n = read (fd, p_buf, i_buflen);
 #endif
@@ -326,7 +341,7 @@ net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
         if (n == -1)
         {
 #if defined(WIN32) || defined(UNDER_CE)
-            switch (WSAGetLastError ())
+            switch (error)
             {
                 case WSAEWOULDBLOCK:
                 case WSAEINTR:

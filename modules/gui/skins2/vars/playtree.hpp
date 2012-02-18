@@ -2,7 +2,7 @@
  * playtree.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 871cc08e9bc37c2a2e3bed0b87b2016a81089002 $
+ * $Id: 78d33fe0b0cec02c48df7bfa56fa32728f8b2bb6 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -27,6 +27,8 @@
 
 #include <vlc_playlist.h>
 #include "../utils/var_tree.hpp"
+
+#include <map>
 
 /// Variable for VLC playlist (new tree format)
 class Playtree: public VarTree
@@ -56,21 +58,27 @@ public:
     /// Function called to notify playlist item delete
     void onDelete( int );
 
-    /// Items waiting to be appended
-    int i_items_to_append;
+    ///
+    void onUpdateSlider();
+
+    ///
+    void insertItems( VarTree& item, const list<string>& files, bool start );
 
 private:
     /// VLC playlist object
     playlist_t *m_pPlaylist;
 
+    ///
+    map< int, VarTree* > m_allItems;
+
     /// Build the list from the VLC playlist
     void buildTree();
 
+    /// Retrieve an iterator from playlist_item_t->id
+    Iterator findById( int id );
+
     /// Update Node's children
     void buildNode( playlist_item_t *p_node, VarTree &m_pNode );
-
-    /// keep track of item being played
-    playlist_item_t* m_currentItem;
 };
 
 #endif

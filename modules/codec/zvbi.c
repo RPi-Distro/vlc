@@ -2,7 +2,7 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: 2efa7bc4b29e3a98691ee9c175b2aeeb29e77b43 $
+ * $Id: e8f8cf4447e6088c84755a8b772c09a278ad668a $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -47,7 +47,6 @@
 #include <libzvbi.h>
 
 #include <vlc_codec.h>
-#include <vlc_osd.h>
 
 /*****************************************************************************
  * Module descriptor.
@@ -59,7 +58,7 @@ static void Close( vlc_object_t * );
 #define PAGE_LONGTEXT N_("Open the indicated Teletext page." \
         "Default page is index 100")
 
-#define OPAQUE_TEXT N_("Text is always opaque")
+#define OPAQUE_TEXT N_("Teletext transparency")
 #define OPAQUE_LONGTEXT N_("Setting vbi-opaque to false " \
         "makes the boxed text transparent." )
 
@@ -86,13 +85,13 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_SCODEC )
     set_callbacks( Open, Close )
 
-    add_integer( "vbi-page", 100, NULL,
+    add_integer( "vbi-page", 100,
                  PAGE_TEXT, PAGE_LONGTEXT, false )
-    add_bool( "vbi-opaque", true, NULL,
+    add_bool( "vbi-opaque", true,
                  OPAQUE_TEXT, OPAQUE_LONGTEXT, false )
-    add_integer( "vbi-position", 4, NULL, POS_TEXT, POS_LONGTEXT, false )
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
-    add_bool( "vbi-text", false, NULL,
+    add_integer( "vbi-position", 4, POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions );
+    add_bool( "vbi-text", false,
               TELX_TEXT, TELX_LONGTEXT, false )
 vlc_module_end ()
 
@@ -455,7 +454,7 @@ static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
 
     /* If there is a page or sub to render, then we do that here */
     /* Create the subpicture unit */
-    p_spu = decoder_NewSubpicture( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec, NULL );
     if( !p_spu )
     {
         msg_Warn( p_dec, "can't get spu buffer" );
@@ -463,18 +462,15 @@ static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
     }
 
     memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = b_text ? VLC_CODEC_TEXT :
-                                   VLC_CODEC_RGBA;
+    fmt.i_chroma = b_text ? VLC_CODEC_TEXT : VLC_CODEC_RGBA;
+    fmt.i_sar_num = 0;
+    fmt.i_sar_den = 1;
     if( b_text )
     {
         fmt.i_bits_per_pixel = 0;
-        fmt.i_sar_num = 0;
-        fmt.i_sar_den = 0;
     }
     else
     {
-        fmt.i_sar_num = 1;
-        fmt.i_sar_den = 1;
         fmt.i_width = fmt.i_visible_width = i_columns * 12;
         fmt.i_height = fmt.i_visible_height = i_rows * 10;
         fmt.i_bits_per_pixel = 32;
@@ -667,7 +663,7 @@ static int EventKey( vlc_object_t *p_this, char const *psz_cmd,
     decoder_t *p_dec = p_data;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval);
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED( p_this );
 
     /* FIXME: Capture + and - key for subpage browsing */
     if( newval.i_int == '-' || newval.i_int == '+' )
@@ -683,7 +679,8 @@ static int EventKey( vlc_object_t *p_this, char const *psz_cmd,
         if ( !vbi_bcd_digits_greater( p_sys->i_wanted_subpage, 0x00 ) || vbi_bcd_digits_greater( p_sys->i_wanted_subpage, 0x99 ) )
                 p_sys->i_wanted_subpage = VBI_ANY_SUBNO;
         else
-            vout_OSDMessage( p_this, DEFAULT_CHAN, "%s: %d", _("Subpage"), vbi_bcd2dec( p_sys->i_wanted_subpage) );
+            msg_Info( p_dec, "subpage: %d",
+                      vbi_bcd2dec( p_sys->i_wanted_subpage) );
 
         p_sys->b_update = true;
         vlc_mutex_unlock( &p_sys->lock );
@@ -697,7 +694,8 @@ static int EventKey( vlc_object_t *p_this, char const *psz_cmd,
     p_sys->i_key[0] = p_sys->i_key[1];
     p_sys->i_key[1] = p_sys->i_key[2];
     p_sys->i_key[2] = (int)(newval.i_int - '0');
-    vout_OSDMessage( p_this, DEFAULT_CHAN, "%s: %c%c%c", _("Page"), (char)(p_sys->i_key[0]+'0'), (char)(p_sys->i_key[1]+'0'), (char)(p_sys->i_key[2]+'0') );
+    msg_Info( p_dec, "page: %c%c%c", (char)(p_sys->i_key[0]+'0'),
+              (char)(p_sys->i_key[1]+'0'), (char)(p_sys->i_key[2]+'0') );
 
     int i_new_page = 0;
 

@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libglobalhotkeys_plugin_la_SOURCES = $(SOURCES_globalhotkeys)
 nodist_libglobalhotkeys_plugin_la_SOURCES = $(nodist_SOURCES_globalhotkeys)
 # Force per-target objects:
-libglobalhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS)
-libglobalhotkeys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libglobalhotkeys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libglobalhotkeys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_globalhotkeys)
+libglobalhotkeys_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_globalhotkeys)
+libglobalhotkeys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_globalhotkeys)
+libglobalhotkeys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_globalhotkeys)
 # Set LIBADD and DEPENDENCIES manually:
-libglobalhotkeys_plugin_la_LIBADD = $(AM_LIBADD)
-libglobalhotkeys_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libglobalhotkeys_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_globalhotkeys)
+libglobalhotkeys_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_globalhotkeys)
+libglobalhotkeys_plugin_la_DEPENDENCIES =
 

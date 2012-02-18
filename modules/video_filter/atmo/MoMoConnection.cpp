@@ -4,9 +4,12 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 97c21c53a6f5e53a17092ad346afa53829244e05 $
+ * $Id: 5c07741e3aa38b8b61e5e1525c426f8758074d1b $
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "AtmoDefs.h"
 #include "MoMoConnection.h"
@@ -58,7 +61,7 @@ ATMO_BOOL CMoMoConnection::OpenConnection() {
 	    return ATMO_FALSE;
      }
      /* change serial settings (Speed, stopbits etc.) */
-     DCB dcb; // für comport-parameter
+     DCB dcb; // fÃ¼r comport-parameter
      dcb.DCBlength = sizeof(DCB);
      GetCommState (m_hComport, &dcb); // ger current serialport settings
      dcb.BaudRate  = 9600;        // set speed
@@ -109,19 +112,6 @@ void CMoMoConnection::CloseConnection() {
 ATMO_BOOL CMoMoConnection::isOpen(void) {
 	 return (m_hComport != INVALID_HANDLE_VALUE);
 }
-
-ATMO_BOOL CMoMoConnection::HardwareWhiteAdjust(int global_gamma,
-                                                     int global_contrast,
-                                                     int contrast_red,
-                                                     int contrast_green,
-                                                     int contrast_blue,
-                                                     int gamma_red,
-                                                     int gamma_green,
-                                                     int gamma_blue,
-                                                     ATMO_BOOL storeToEeprom) {
-    return ATMO_FALSE;
-}
-
 
 ATMO_BOOL CMoMoConnection::SendData(pColorPacket data) {
    if(m_hComport == INVALID_HANDLE_VALUE)

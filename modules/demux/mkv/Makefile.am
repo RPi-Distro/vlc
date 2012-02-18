@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libmkv_plugin_la_SOURCES = $(SOURCES_mkv)
 nodist_libmkv_plugin_la_SOURCES = $(nodist_SOURCES_mkv)
 # Force per-target objects:
-libmkv_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmkv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmkv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libmkv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_mkv)
+libmkv_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_mkv)
+libmkv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_mkv)
+libmkv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mkv)
 # Set LIBADD and DEPENDENCIES manually:
-libmkv_plugin_la_LIBADD = $(AM_LIBADD)
-libmkv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libmkv_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mkv)
+libmkv_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mkv)
+libmkv_plugin_la_DEPENDENCIES =
 

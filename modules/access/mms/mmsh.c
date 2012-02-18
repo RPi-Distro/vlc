@@ -2,7 +2,7 @@
  * mmsh.c:
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: f3d93ae85813dad04b691237fdc101b2953f9c98 $
+ * $Id: 27f632be042890dc5cf506f7436b982de2b103f0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -107,7 +107,6 @@ int MMSHOpen( access_t *p_access )
         vlc_UrlParse( &p_sys->proxy, psz_proxy, 0 );
         free( psz_proxy );
     }
-#ifdef HAVE_GETENV
     else
     {
         const char *http_proxy = getenv( "http_proxy" );
@@ -117,7 +116,6 @@ int MMSHOpen( access_t *p_access )
             vlc_UrlParse( &p_sys->proxy, http_proxy, 0 );
         }
     }
-#endif
 
     if( p_sys->b_proxy )
     {
@@ -137,7 +135,7 @@ int MMSHOpen( access_t *p_access )
     }
 
     /* open a tcp connection */
-    vlc_UrlParse( &p_sys->url, p_access->psz_path, 0 );
+    vlc_UrlParse( &p_sys->url, p_access->psz_location, 0 );
     if( ( p_sys->url.psz_host == NULL ) ||
         ( *p_sys->url.psz_host == '\0' ) )
     {
@@ -164,7 +162,7 @@ int MMSHOpen( access_t *p_access )
             goto error;
         }
         /** \bug we do not autodelete here */
-        p_new_loc = input_item_New( p_access, psz_location, psz_location );
+        p_new_loc = input_item_New( psz_location, psz_location );
         input_item_t *p_item = input_GetItem( p_input );
         input_item_PostSubItem( p_item, p_new_loc );
 
@@ -250,7 +248,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t)var_GetInteger( p_access, "mms-caching" ) * INT64_C(1000);
+            *pi_64 = INT64_C(1000)
+                   * var_InheritInteger( p_access, "network-caching" );
             break;
 
         case ACCESS_GET_PRIVATE_ID_STATE:

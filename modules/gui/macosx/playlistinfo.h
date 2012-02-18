@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlistinfo.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: c3259a4e387c9a5aa9819e7a029ac86e83a3c92d $
+ * Copyright (C) 2002-2008 VLC authors and VideoLAN
+ * $Id: 3ae96643bf7be4a04e059e54c9ed23a8f4d3d7cf $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -49,6 +49,8 @@
     IBOutlet id o_date_txt;
     IBOutlet id o_description_lbl;
     IBOutlet id o_description_txt;
+    IBOutlet id o_encodedby_lbl;
+    IBOutlet id o_encodedby_txt;
     IBOutlet id o_genre_lbl;
     IBOutlet id o_genre_txt;
     IBOutlet id o_language_lbl;
@@ -62,7 +64,7 @@
     IBOutlet id o_image_well;
     IBOutlet id o_saveMetaData_btn;
 
-    IBOutlet id o_audio_box;
+    IBOutlet id o_audio_lbl;
     IBOutlet id o_audio_decoded_lbl;
     IBOutlet id o_audio_decoded_txt;
     IBOutlet id o_demux_bitrate_lbl;
@@ -73,7 +75,7 @@
     IBOutlet id o_displayed_txt;
     IBOutlet id o_input_bitrate_lbl;
     IBOutlet id o_input_bitrate_txt;
-    IBOutlet id o_input_box;
+    IBOutlet id o_input_lbl;
     IBOutlet id o_lost_abuffers_lbl;
     IBOutlet id o_lost_abuffers_txt;
     IBOutlet id o_lost_frames_lbl;
@@ -88,21 +90,17 @@
     IBOutlet id o_sent_bytes_txt;
     IBOutlet id o_sent_packets_lbl;
     IBOutlet id o_sent_packets_txt;
-    IBOutlet id o_sout_box;
-    IBOutlet id o_video_box;
+    IBOutlet id o_sout_lbl;
+    IBOutlet id o_video_lbl;
     IBOutlet id o_video_decoded_lbl;
     IBOutlet id o_video_decoded_txt;
-	IBOutlet id o_fps_lbl;
-	IBOutlet id o_fps_txt;
 
     VLCInfoTreeItem * rootItem;
 
     input_item_t * p_item;
-    NSTimer * o_statUpdateTimer;
 }
 
 - (void)initPanel;
-- (void)stopTimers;
 
 - (IBAction)metaFieldChanged:(id)sender;
 - (IBAction)saveMetaData:(id)sender;
@@ -111,7 +109,7 @@
 - (void)updatePanelWithItem:(input_item_t *)_p_item;
 - (input_item_t *)item;
 - (void)setMeta: (char *)meta forLabel: (id)theItem;
-- (void)updateStatistics: (NSTimer*)theTimer;
+- (void)updateStatistics;
 
 + (VLCInfo *)sharedInstance;
 @end

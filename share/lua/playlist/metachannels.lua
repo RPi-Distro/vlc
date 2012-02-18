@@ -28,8 +28,6 @@ end
 
 function parse()
     local webpage = ''
-    local options
-
     while true do
         local line = vlc.readline()
         if line == nil then break end
@@ -45,12 +43,15 @@ function parse()
         if( item.name == 'item' ) then
             simplexml.add_name_maps( item )
             local url = string.gsub( item.children_map['link'][1].children[1], '&amp;', '&' )
-            if( string.match( url, '%.m4v' ) ) then options = { ':play-and-pause', ':demux=avformat,ffmpeg' }
-                                               else options = { ':play-and-pause' } end
+            local title = item.children_map['title'][1].children[1]
+            local arturl = nil
+            if item.children_map['media:thumbnail'] then
+                arturl = item.children_map['media:thumbnail'][1].attributes['url']
+            end
             table.insert( tracks, { path = url,
-                                    title = item.children_map['title'][1].children[1],
-                                    arturl = item.children_map['media:thumbnail'][1].attributes['url'],
-                                    options = options } )
+                                    title = title,
+                                    arturl = arturl,
+                                    options = {':play-and-pause'} } )
         end
     end
 

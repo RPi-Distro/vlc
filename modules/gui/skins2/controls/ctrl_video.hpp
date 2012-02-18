@@ -2,7 +2,7 @@
  * ctrl_video.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 2f9a19bb0bd323cfea1b0b2222ee49d2884ad980 $
+ * $Id: 1b5d37d4ec45f26212ee4db61d26f25555f477b1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -51,7 +51,7 @@ public:
     virtual void onPositionChange();
 
     /// Draw the control on the given graphics
-    virtual void draw( OSGraphics &rImage, int xDest, int yDest );
+    virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Get the type of control (custom RTTI)
     virtual string getType() const { return "video"; }

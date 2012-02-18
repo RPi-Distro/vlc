@@ -1,29 +1,25 @@
 /*****************************************************************************
  * sql.c: SQL Connection: Creators and destructors
  *****************************************************************************
- * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: b2177bda9d883152427b9c1fd3fe0bfbe6fb3136 $
+ * Copyright (C) 2008-2009 VLC authors and VideoLAN
+ * $Id: 591ab598f433aa310c98378612a2f0785406466e $
  *
  * Authors: Srikanth Raju <srikiraju at gmail dot com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
-#if !defined( __LIBVLC__ )
-  #error You are not libvlc or one of its plugins. You cannot include this file
-#endif
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -31,6 +27,7 @@
 
 #include <vlc_common.h>
 #include <vlc_sql.h>
+#include <vlc_modules.h>
 #include <assert.h>
 #include "libvlc.h"
 
@@ -41,14 +38,12 @@ sql_t *sql_Create( vlc_object_t *p_this, const char *psz_name,
 {
     sql_t *p_sql;
 
-    p_sql = ( sql_t * ) vlc_custom_create( p_this, sizeof( sql_t ),
-                                           VLC_OBJECT_GENERIC, "sql" );
+    p_sql = ( sql_t * ) vlc_custom_create( p_this, sizeof( sql_t ), "sql" );
     if( !p_sql )
     {
         msg_Err( p_this, "unable to create sql object" );
         return NULL;
     }
-    vlc_object_attach( p_sql, p_this );
 
     p_sql->psz_host = strdup( psz_host );
     p_sql->psz_user = strdup( psz_user );

@@ -2,7 +2,7 @@
  * ctrl_checkbox.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f0abd36ad6487ccb86f731f283fc7af3e82b3527 $
+ * $Id: 31f35feec59ebdcd720e58215cb9021d089cbc5d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -111,6 +111,11 @@ CtrlCheckbox::CtrlCheckbox( intf_thread_t *pIntf,
 
 CtrlCheckbox::~CtrlCheckbox()
 {
+    if( m_pImgCurrent )
+    {
+        m_pImgCurrent->stopAnim();
+        m_pImgCurrent->delObserver( this );
+    }
     m_rVariable.delObserver( this );
 }
 
@@ -134,18 +139,34 @@ bool CtrlCheckbox::mouseOver( int x, int y ) const
 }
 
 
-void CtrlCheckbox::draw( OSGraphics &rImage, int xDest, int yDest )
+void CtrlCheckbox::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h )
 {
-    if( m_pImgCurrent )
+    if( !m_pImgCurrent )
+        return;
+
+    const Position *pPos = getPosition();
+    // rect region( pPos->getLeft(), pPos->getTop(),
+    //              pPos->getWidth(), pPos->getHeight() );
+    rect region( pPos->getLeft(), pPos->getTop(),
+                 m_pImgCurrent->getWidth(), m_pImgCurrent->getHeight() );
+    rect clip( xDest, yDest, w, h );
+    rect inter;
+    if( rect::intersect( region, clip, &inter ) )
     {
         // Draw the current image
-        m_pImgCurrent->draw( rImage, xDest, yDest );
+        m_pImgCurrent->draw( rImage,
+                      inter.x, inter.y, inter.width, inter.height,
+                      inter.x - pPos->getLeft(),
+                      inter.y - pPos->getTop() );
     }
 }
 
 
 void CtrlCheckbox::setImage( AnimBitmap *pImg )
 {
+    if( pImg == m_pImgCurrent )
+        return;
+
     AnimBitmap *pOldImg = m_pImgCurrent;
     m_pImgCurrent = pImg;
 
@@ -225,13 +246,15 @@ void CtrlCheckbox::CmdHiddenUp::execute()
 
 void CtrlCheckbox::onVarBoolUpdate( VarBool &rVariable )
 {
+    (void)rVariable;
     changeButton();
 }
 
 
 void CtrlCheckbox::onUpdate( Subject<AnimBitmap> &rBitmap, void *arg )
 {
-    notifyLayout();
+    (void)rBitmap;(void)arg;
+    notifyLayout( m_pImgCurrent->getWidth(), m_pImgCurrent->getHeight() );
 }
 
 

@@ -2,7 +2,7 @@
  * flac.c: flac packetizer module.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 449b88d490121c85ac7979dbdf94fd45d78b3aa6 $
+ * $Id: 1fef09abde9ef38f3e51e1bc0d6dff266fb5ffeb $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -36,6 +36,7 @@
 
 #include <vlc_block_helper.h>
 #include <vlc_bits.h>
+#include "packetizer_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -89,16 +90,6 @@ struct decoder_sys_t
     unsigned int i_rate, i_channels, i_bits_per_sample;
 };
 
-enum
-{
-    STATE_NOSYNC,
-    STATE_SYNC,
-    STATE_HEADER,
-    STATE_NEXT_SYNC,
-    STATE_GET_DATA,
-    STATE_SEND_DATA
-};
-
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
@@ -127,7 +118,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_state       = STATE_NOSYNC;
     p_sys->b_stream_info = false;
     p_sys->i_pts         = VLC_TS_INVALID;
-    p_sys->bytestream    = block_BytestreamInit();
+    block_BytestreamInit( &p_sys->bytestream );
 
     /* */
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
@@ -237,7 +228,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             while( block_PeekBytes( &p_sys->bytestream, p_header, 2 )
                    == VLC_SUCCESS )
             {
-                if( p_header[0] == 0xFF && p_header[1] == 0xF8 )
+                if( p_header[0] == 0xFF && (p_header[1] & 0xFE) == 0xF8 )
                 {
                     p_sys->i_state = STATE_SYNC;
                     break;
@@ -304,7 +295,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
                                           MAX_FLAC_HEADER_SIZE )
                    == VLC_SUCCESS )
             {
-                if( p_header[0] == 0xFF && p_header[1] == 0xF8 )
+                if( p_header[0] == 0xFF && (p_header[1] & 0xFE) == 0xF8 )
                 {
                     /* Check if frame is valid and get frame info */
                     int i_frame_length =
@@ -378,15 +369,9 @@ static int SyncInfo( decoder_t *p_dec, uint8_t *p_buf,
     int i_header, i_temp, i_read;
     unsigned i_blocksize = 0;
     int i_blocksize_hint = 0, i_sample_rate_hint = 0;
-    uint64_t i_sample_number = 0;
-
-    bool b_variable_blocksize = ( p_sys->b_stream_info &&
-        p_sys->stream_info.min_blocksize != p_sys->stream_info.max_blocksize );
-    bool b_fixed_blocksize = ( p_sys->b_stream_info &&
-        p_sys->stream_info.min_blocksize == p_sys->stream_info.max_blocksize );
 
     /* Check syncword */
-    if( p_buf[0] != 0xFF || p_buf[1] != 0xF8 ) return 0;
+    if( p_buf[0] != 0xFF || (p_buf[1] & 0xFE) != 0xF8 ) return 0;
 
     /* Check there is no emulated sync code in the rest of the header */
     if( p_buf[2] == 0xff || p_buf[3] == 0xFF ) return 0;
@@ -395,7 +380,8 @@ static int SyncInfo( decoder_t *p_dec, uint8_t *p_buf,
     switch( i_temp = p_buf[2] >> 4 )
     {
     case 0:
-        if( b_fixed_blocksize )
+        if( p_sys->b_stream_info &&
+            p_sys->stream_info.min_blocksize == p_sys->stream_info.max_blocksize )
             i_blocksize = p_sys->stream_info.min_blocksize;
         else return 0; /* We can't do anything with this */
         break;
@@ -427,6 +413,10 @@ static int SyncInfo( decoder_t *p_dec, uint8_t *p_buf,
         i_blocksize = 256 << (i_temp - 8);
         break;
     }
+    if( p_sys->b_stream_info &&
+        ( i_blocksize < p_sys->stream_info.min_blocksize ||
+          i_blocksize > p_sys->stream_info.max_blocksize ) )
+        return 0;
 
     /* Find samplerate */
     switch( i_temp = p_buf[2] & 0x0f )
@@ -546,20 +536,9 @@ static int SyncInfo( decoder_t *p_dec, uint8_t *p_buf,
     /* End of fixed size header */
     i_header = 4;
 
-    /* Find Sample/Frame number */
-    if( i_blocksize_hint && b_variable_blocksize )
-    {
-        i_sample_number = read_utf8( &p_buf[i_header++], &i_read );
-        if( i_sample_number == INT64_C(0xffffffffffffffff) ) return 0;
-    }
-    else
-    {
-        i_sample_number = read_utf8( &p_buf[i_header++], &i_read );
-        if( i_sample_number == INT64_C(0xffffffffffffffff) ) return 0;
-
-        if( p_sys->b_stream_info )
-            i_sample_number *= p_sys->stream_info.min_blocksize;
-    }
+    /* Check Sample/Frame number */
+    if( read_utf8( &p_buf[i_header++], &i_read ) == INT64_C(0xffffffffffffffff) )
+        return 0;
 
     i_header += i_read;
 

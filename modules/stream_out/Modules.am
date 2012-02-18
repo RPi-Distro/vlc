@@ -1,6 +1,7 @@
 SUBDIRS = transcode
 
 SOURCES_stream_out_dummy = dummy.c
+SOURCES_stream_out_delay = delay.c
 SOURCES_stream_out_description = description.c
 SOURCES_stream_out_standard = standard.c
 SOURCES_stream_out_duplicate = duplicate.c
@@ -12,11 +13,14 @@ SOURCES_stream_out_bridge = bridge.c
 SOURCES_stream_out_mosaic_bridge = mosaic_bridge.c
 SOURCES_stream_out_autodel = autodel.c
 SOURCES_stream_out_record = record.c
-SOURCES_stream_out_raop = raop.c
 SOURCES_stream_out_smem = smem.c
+SOURCES_stream_out_setid = setid.c
+SOURCES_stream_out_langfromtelx = langfromtelx.c
+SOURCES_stream_out_select = select.c
 
 libvlc_LTLIBRARIES += \
 	libstream_out_dummy_plugin.la \
+	libstream_out_delay_plugin.la \
 	libstream_out_description_plugin.la \
 	libstream_out_standard_plugin.la \
 	libstream_out_duplicate_plugin.la \
@@ -28,20 +32,33 @@ libvlc_LTLIBRARIES += \
 	libstream_out_autodel_plugin.la \
 	libstream_out_record_plugin.la \
 	libstream_out_smem_plugin.la \
+	libstream_out_setid_plugin.la \
+	libstream_out_langfromtelx_plugin.la \
+	libstream_out_select_plugin.la \
 	$(NULL)
 
 # RTP plugin
 libvlc_LTLIBRARIES += \
 	libstream_out_rtp_plugin.la
 libstream_out_rtp_plugin_la_SOURCES = \
-	rtp.c rtp.h rtpfmt.c rtcp.c rtsp.c
+	rtp.c rtp.h rtpfmt.c rtcp.c rtsp.c vod.c
 libstream_out_rtp_plugin_la_CFLAGS = $(AM_CFLAGS)
-libstream_out_rtp_plugin_la_LIBADD = $(AM_LIBADD)
+libstream_out_rtp_plugin_la_LIBADD = $(AM_LIBADD) $(SOCKET_LIBS)
 libstream_out_rtp_plugin_la_DEPENDENCIES =
 if HAVE_GCRYPT
-SRTP_CFLAGS = -I$(top_srcdir)/libs/srtp
-SRTP_LIBS = $(top_builddir)/libs/srtp/libvlc_srtp.la
-libstream_out_rtp_plugin_la_CFLAGS += -DHAVE_SRTP $(SRTP_CFLAGS)
-libstream_out_rtp_plugin_la_LIBADD += $(SRTP_LIBS)
+SRTP_CFLAGS = -I$(top_srcdir)/modules/access/rtp
+SRTP_LIBS = $(top_builddir)/modules/access/rtp/libvlc_srtp.la
+libstream_out_rtp_plugin_la_CFLAGS += -DHAVE_SRTP $(SRTP_CFLAGS) \
+	$(GCRYPT_CFLAGS)
+libstream_out_rtp_plugin_la_LIBADD += $(SRTP_LIBS) $(GCRYPT_LIBS)
 libstream_out_rtp_plugin_la_DEPENDENCIES += $(SRTP_LIBS)
+endif
+
+# RAOP plugin
+libstream_out_raop_plugin_la_SOURCES = raop.c
+libstream_out_raop_plugin_la_CFLAGS = $(AM_CFLAGS) $(GCRYPT_CFLAGS)
+libstream_out_raop_plugin_la_LIBADD = $(AM_LIBADD) $(GCRYPT_LIBS) -lgpg-error $(LIBS_stream_out_raop)
+libstream_out_raop_plugin_la_DEPENDENCIES =
+if HAVE_GCRYPT
+libvlc_LTLIBRARIES += libstream_out_raop_plugin.la
 endif

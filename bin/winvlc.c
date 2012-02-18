@@ -1,7 +1,7 @@
 /*****************************************************************************
- * winvlc.c: the Windows VLC player
+ * winvlc.c: the Windows VLC media player
  *****************************************************************************
- * Copyright (C) 1998-2008 the VideoLAN team
+ * Copyright (C) 1998-2011 the VideoLAN team
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -30,28 +30,22 @@
 
 #define UNICODE
 #include <vlc/vlc.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <windows.h>
 
 #if !defined(UNDER_CE)
 # ifndef _WIN32_IE
 #   define  _WIN32_IE 0x501
 # endif
-#   include <shlobj.h>
-#   include <tlhelp32.h>
-#   include <wininet.h>
-# ifndef _WIN64
+# include <fcntl.h>
+# include <io.h>
+# include <shlobj.h>
+# include <wininet.h>
+# define PSAPI_VERSION 1
+# include <psapi.h>
+# define HeapEnableTerminationOnCorruption (HEAP_INFORMATION_CLASS)1
 static void check_crashdump(void);
 LONG WINAPI vlc_exception_filter(struct _EXCEPTION_POINTERS *lpExceptionInfo);
-# endif
-typedef enum _HEAP_INFORMATION_CLASS {
-        HeapCompatibilityInformation,
-        HeapEnableTerminationOnCorruption
-} HEAP_INFORMATION_CLASS;
-WINBASEAPI BOOL WINAPI HeapSetInformation(HANDLE,HEAP_INFORMATION_CLASS,PVOID,SIZE_T);
-#define HeapEnableTerminationOnCorruption (HEAP_INFORMATION_CLASS)1
+static const wchar_t *crashdump_path;
 #endif
 
 #ifndef UNDER_CE
@@ -124,9 +118,15 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     int nCmdShow )
 {
     int argc;
+
 #ifndef UNDER_CE
+#ifdef TOP_BUILDDIR
+    putenv("VLC_PLUGIN_PATH=Z:"TOP_BUILDDIR"/modules");
+#endif
+
     HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 
+    /* SetProcessDEPPolicy */
     HINSTANCE h_Kernel32 = LoadLibraryW(L"kernel32.dll");
     if(h_Kernel32)
     {
@@ -147,41 +147,51 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
         FreeLibrary(h_Kernel32);
     }
 
+    /* Args */
     wchar_t **wargv = CommandLineToArgvW (GetCommandLine (), &argc);
     if (wargv == NULL)
         return 1;
 
-    char *argv[argc + 1];
+    char *argv[argc + 3];
     BOOL crash_handling = TRUE;
     int j = 0;
 
+    argv[j++] = FromWide( L"--media-library" );
     argv[j++] = FromWide( L"--no-ignore-config" );
+#ifdef TOP_SRCDIR
+    argv[j++] = FromWide (L"--data-path=Z:"TOP_SRCDIR"/share");
+#endif
     for (int i = 1; i < argc; i++)
     {
         if(!wcscmp(wargv[i], L"--no-crashdump"))
         {
             crash_handling = FALSE;
+            continue; /* don't give argument to libvlc */
         }
-        else
-        {
-            argv[j] = FromWide (wargv[i]);
-            j++;
-        }
+
+        argv[j++] = FromWide (wargv[i]);
     }
 
     argc = j;
     argv[argc] = NULL;
     LocalFree (wargv);
 
-# ifndef _WIN64
     if(crash_handling)
     {
+        static wchar_t path[MAX_PATH];
+        if( S_OK != SHGetFolderPathW( NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE,
+                    NULL, SHGFP_TYPE_CURRENT, path ) )
+            fprintf( stderr, "Can't open the vlc conf PATH\n" );
+        swprintf( path+wcslen( path ), L"%s", L"\\vlc\\crashdump" );
+        crashdump_path = &path[0];
+
         check_crashdump();
         SetUnhandledExceptionFilter(vlc_exception_filter);
     }
-# endif /* WIN64 */
 
-#else
+    _setmode( _fileno( stdin ), _O_BINARY ); /* Needed for pipes */
+
+#else /* UNDER_CE */
     char **argv, psz_cmdline[wcslen(lpCmdLine) * 4];
 
     WideCharToMultiByte( CP_UTF8, 0, lpCmdLine, -1,
@@ -195,6 +205,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     vlc = libvlc_new (argc, (const char **)argv);
     if (vlc != NULL)
     {
+        libvlc_set_user_agent (vlc, "VLC media player", "VLC/"PACKAGE_VERSION);
         libvlc_add_intf (vlc, "globalhotkeys,none");
         libvlc_add_intf (vlc, NULL);
         libvlc_playlist_play (vlc, -1, 0, NULL);
@@ -209,75 +220,62 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     return 0;
 }
 
-#if !defined( UNDER_CE ) && !defined( _WIN64 )
-
-static void get_crashdump_path(wchar_t * wdir)
+#if !defined( UNDER_CE )
+/* Crashdumps handling */
+static void check_crashdump(void)
 {
-    if( S_OK != SHGetFolderPathW( NULL,
-                        CSIDL_APPDATA | CSIDL_FLAG_CREATE,
-                        NULL, SHGFP_TYPE_CURRENT, wdir ) )
-        fprintf( stderr, "Can't open the vlc conf PATH\n" );
+    FILE * fd = _wfopen ( crashdump_path, L"r, ccs=UTF-8" );
+    if( !fd )
+        return;
+    fclose( fd );
 
-    swprintf( wdir+wcslen( wdir ), L"%s", L"\\vlc\\crashdump" );
-}
+    int answer = MessageBox( NULL, L"VLC media player just crashed." \
+    " Do you want to send a bug report to the developers team?",
+    L"VLC crash reporting", MB_YESNO);
 
-static void check_crashdump()
-{
-    wchar_t * wdir = (wchar_t *)malloc(sizeof(wchar_t)*MAX_PATH);
-    get_crashdump_path(wdir);
-
-    FILE * fd = _wfopen ( wdir, L"r, ccs=UTF-8" );
-    if( fd )
+    if(answer == IDYES)
     {
-        fclose( fd );
-        int answer = MessageBox( NULL, L"VLC media player just crashed." \
-        " Do you want to send a bug report to the developers team?",
-        L"VLC crash reporting", MB_YESNO);
-
-        if(answer == IDYES)
+        HINTERNET Hint = InternetOpen(L"VLC Crash Reporter", INTERNET_OPEN_TYPE_PRECONFIG, NULL,NULL,0);
+        if(Hint)
         {
-            HINTERNET Hint = InternetOpen(L"VLC Crash Reporter", INTERNET_OPEN_TYPE_PRECONFIG, NULL,NULL,0);
-            if(Hint)
+            HINTERNET ftp = InternetConnect(Hint, L"crash.videolan.org", INTERNET_DEFAULT_FTP_PORT,
+                                            NULL, NULL, INTERNET_SERVICE_FTP, INTERNET_FLAG_PASSIVE, 0);
+            if(ftp)
             {
-                HINTERNET ftp = InternetConnect(Hint, L"crash.videolan.org", INTERNET_DEFAULT_FTP_PORT,
-                                                NULL, NULL, INTERNET_SERVICE_FTP, 0, 0);
-                if(ftp)
-                {
-                    SYSTEMTIME now;
-                    GetSystemTime(&now);
-                    wchar_t remote_file[MAX_PATH];
-                    swprintf( remote_file, L"/crashes-win32/%04d%02d%02d%02d%02d%02d",
-                            now.wYear, now.wMonth, now.wDay, now.wHour, now.wMinute, now.wSecond );
+                SYSTEMTIME now;
+                GetSystemTime(&now);
+                wchar_t remote_file[MAX_PATH];
+                swprintf( remote_file, L"/crashes-win32/%04d%02d%02d%02d%02d%02d",
+                          now.wYear, now.wMonth, now.wDay, now.wHour, now.wMinute, now.wSecond );
 
-                    if( FtpPutFile( ftp, wdir, remote_file, FTP_TRANSFER_TYPE_BINARY, 0) )
-                        MessageBox( NULL, L"Report sent correctly. Thanks a lot for the help.",
-                                    L"Report sent", MB_OK);
-                    else
-                        MessageBox( NULL, L"There was an error while transferring to the FTP server. "\
-                                    "Thanks a lot for the help anyway.",
-                                    L"Report sending failed", MB_OK);
-                    InternetCloseHandle(ftp);
-                }
+                if( FtpPutFile( ftp, crashdump_path, remote_file, FTP_TRANSFER_TYPE_BINARY, 0) )
+                    MessageBox( NULL, L"Report sent correctly. Thanks a lot for the help.",
+                                L"Report sent", MB_OK);
                 else
-                {
-                    MessageBox( NULL, L"There was an error while connecting to the FTP server. "\
-                                    "Thanks a lot for the help anyway.",
-                                    L"Report sending failed", MB_OK);
-                    fprintf(stderr,"Can't connect to FTP server%d\n",GetLastError());
-                }
-                InternetCloseHandle(Hint);
+                    MessageBox( NULL, L"There was an error while transferring to the FTP server. "\
+                                "Thanks a lot for the help anyway.",
+                                L"Report sending failed", MB_OK);
+                InternetCloseHandle(ftp);
             }
             else
             {
-                  MessageBox( NULL, L"There was an error while connecting to Internet. "\
-                                    "Thanks a lot for the help anyway.",
-                                    L"Reporting sending failed", MB_OK);
+                MessageBox( NULL, L"There was an error while connecting to the FTP server. "\
+                                "Thanks a lot for the help anyway.",
+                                L"Report sending failed", MB_OK);
+                fprintf(stderr,"Can't connect to FTP server 0x%08lu\n",
+                        (unsigned long)GetLastError());
             }
+            InternetCloseHandle(Hint);
         }
-
-        _wremove(wdir);
+        else
+        {
+              MessageBox( NULL, L"There was an error while connecting to Internet. "\
+                                "Thanks a lot for the help anyway.",
+                                L"Report sending failed", MB_OK);
+        }
     }
-    free((void *)wdir);
+
+    _wremove(crashdump_path);
 }
 
 /*****************************************************************************
@@ -294,10 +292,7 @@ LONG WINAPI vlc_exception_filter(struct _EXCEPTION_POINTERS *lpExceptionInfo)
     {
         fprintf( stderr, "unhandled vlc exception\n" );
 
-        wchar_t * wdir = (wchar_t *)malloc(sizeof(wchar_t)*MAX_PATH);
-        get_crashdump_path(wdir);
-        FILE * fd = _wfopen ( wdir, L"w, ccs=UTF-8" );
-        free((void *)wdir);
+        FILE * fd = _wfopen ( crashdump_path, L"w, ccs=UTF-8" );
 
         if( !fd )
         {
@@ -319,46 +314,73 @@ LONG WINAPI vlc_exception_filter(struct _EXCEPTION_POINTERS *lpExceptionInfo)
         const CONTEXT *const pContext = (const CONTEXT *)lpExceptionInfo->ContextRecord;
         const EXCEPTION_RECORD *const pException = (const EXCEPTION_RECORD *)lpExceptionInfo->ExceptionRecord;
         /*No nested exceptions for now*/
-        fwprintf( fd, L"\n\n[exceptions]\n%08x at %08x",pException->ExceptionCode,
+        fwprintf( fd, L"\n\n[exceptions]\n%08x at %px",pException->ExceptionCode,
                                                 pException->ExceptionAddress );
-        if( pException->NumberParameters > 0 )
-        {
-            unsigned int i;
-            for( i = 0; i < pException->NumberParameters; i++ )
-                fwprintf( fd, L" | %08x", pException->ExceptionInformation[i] );
-        }
 
-        fwprintf( fd, L"\n\n[context]\nEDI:%08x\nESI:%08x\n" \
-                    "EBX:%08x\nEDX:%08x\nECX:%08x\nEAX:%08x\n" \
-                    "EBP:%08x\nEIP:%08x\nESP:%08x\n",
+        for( unsigned int i = 0; i < pException->NumberParameters; i++ )
+            fwprintf( fd, L" | %p", pException->ExceptionInformation[i] );
+
+#ifdef WIN64
+        fwprintf( fd, L"\n\n[context]\nRDI:%px\nRSI:%px\n" \
+                    "RBX:%px\nRDX:%px\nRCX:%px\nRAX:%px\n" \
+                    "RBP:%px\nRIP:%px\nRSP:%px\nR8:%px\n" \
+                    "R9:%px\nR10:%px\nR11:%px\nR12:%px\n" \
+                    "R13:%px\nR14:%px\nR15:%px\n",
+                        pContext->Rdi,pContext->Rsi,pContext->Rbx,
+                        pContext->Rdx,pContext->Rcx,pContext->Rax,
+                        pContext->Rbp,pContext->Rip,pContext->Rsp,
+                        pContext->R8,pContext->R9,pContext->R10,
+                        pContext->R11,pContext->R12,pContext->R13,
+                        pContext->R14,pContext->R15 );
+#else
+        fwprintf( fd, L"\n\n[context]\nEDI:%px\nESI:%px\n" \
+                    "EBX:%px\nEDX:%px\nECX:%px\nEAX:%px\n" \
+                    "EBP:%px\nEIP:%px\nESP:%px\n",
                         pContext->Edi,pContext->Esi,pContext->Ebx,
                         pContext->Edx,pContext->Ecx,pContext->Eax,
                         pContext->Ebp,pContext->Eip,pContext->Esp );
+#endif
+
+        HANDLE hpid = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+                                        FALSE, GetCurrentProcessId());
+        if (hpid) {
+            HMODULE mods[1024];
+            DWORD size;
+            if (EnumProcessModules(hpid, mods, sizeof(mods), &size)) {
+                fwprintf( fd, L"\n\n[modules]\n" );
+                for (unsigned int i = 0; i < size / sizeof(HMODULE); i++) {
+                    wchar_t module[ 256 ];
+                    GetModuleFileName(mods[i], module, 256);
+                    fwprintf( fd, L"%p|%s\n", mods[i], module);
+                }
+            }
+            CloseHandle(hpid);
+        }
+
 
         fwprintf( fd, L"\n[stacktrace]\n#EIP|base|module\n" );
 
-        wchar_t module[ 256 ];
-        MEMORY_BASIC_INFORMATION mbi ;
-        VirtualQuery( (DWORD *)pContext->Eip, &mbi, sizeof( mbi ) ) ;
-        HINSTANCE hInstance = mbi.AllocationBase;
-        GetModuleFileName( hInstance, module, 256 ) ;
-        fwprintf( fd, L"%08x|%s\n", pContext->Eip, module );
-
-        DWORD pEbp = pContext->Ebp;
-        DWORD caller = *((DWORD*)pEbp + 1);
-
-        unsigned i_line = 0;
-        do
+#ifdef WIN64
+        LPCVOID caller = (LPCVOID)pContext->Rip;
+        LPVOID *pBase  = (LPVOID*)pContext->Rbp;
+#else
+        LPVOID *pBase  = (LPVOID*)pContext->Ebp;
+        LPCVOID caller = (LPCVOID)pContext->Eip;
+#endif
+        for( unsigned frame = 0; frame <= 100; frame++ )
         {
-            VirtualQuery( (DWORD *)caller, &mbi, sizeof( mbi ) ) ;
-            HINSTANCE hInstance = mbi.AllocationBase;
-            GetModuleFileName( hInstance, module, 256 ) ;
-            fwprintf( fd, L"%08x|%s\n", caller, module );
-            pEbp = *(DWORD*)pEbp ;
-            caller = *((DWORD*)pEbp + 1) ;
-            i_line++;
-            /*The last EBP points to NULL!*/
-        }while(caller && i_line< 100);
+            MEMORY_BASIC_INFORMATION mbi;
+            wchar_t module[ 256 ];
+            VirtualQuery( caller, &mbi, sizeof( mbi ) ) ;
+            GetModuleFileName( mbi.AllocationBase, module, 256 );
+            fwprintf( fd, L"%p|%s\n", caller, module );
+
+            /*The last BP points to NULL!*/
+            caller = *(pBase + 1);
+            if( !caller )
+                break;
+            pBase = *pBase;
+        }
 
         fclose( fd );
         fflush( stderr );

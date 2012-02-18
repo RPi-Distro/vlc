@@ -2,7 +2,7 @@
  * omxil_utils.h: helper functions
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: 959f9345aa7f5d6dd17647593fe6fc038c1115e7 $
+ * $Id: f5bc2b13043499e34a51a4c301cc8e00494f38e3 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,12 +24,24 @@
 /*****************************************************************************
  * OMX macros
  *****************************************************************************/
+#ifdef __ANDROID__
+#define OMX_VERSION_MAJOR 1
+#define OMX_VERSION_MINOR 0
+#define OMX_VERSION_REV   0
+#define OMX_VERSION_STEP  0
+#else
+#define OMX_VERSION_MAJOR 1
+#define OMX_VERSION_MINOR 1
+#define OMX_VERSION_REV   1
+#define OMX_VERSION_STEP  0
+#endif
+
 #define OMX_INIT_COMMON(a) \
   (a).nSize = sizeof(a); \
-  (a).nVersion.s.nVersionMajor = 1; \
-  (a).nVersion.s.nVersionMinor = 1; \
-  (a).nVersion.s.nRevision = 1; \
-  (a).nVersion.s.nStep = 0
+  (a).nVersion.s.nVersionMajor = OMX_VERSION_MAJOR; \
+  (a).nVersion.s.nVersionMinor = OMX_VERSION_MINOR; \
+  (a).nVersion.s.nRevision = OMX_VERSION_REV; \
+  (a).nVersion.s.nStep = OMX_VERSION_STEP
 
 #define OMX_INIT_STRUCTURE(a) \
   memset(&(a), 0, sizeof(a)); \
@@ -119,7 +131,7 @@ OMX_ERRORTYPE WaitForSpecificOmxEvent(decoder_t *p_dec,
 /*****************************************************************************
  * Picture utility functions
  *****************************************************************************/
-void CopyOmxPicture( decoder_t *, picture_t *, OMX_BUFFERHEADERTYPE * );
+void CopyOmxPicture( decoder_t *, picture_t *, OMX_BUFFERHEADERTYPE *, int );
 void CopyVlcPicture( decoder_t *, OMX_BUFFERHEADERTYPE *, picture_t * );
 
 /*****************************************************************************
@@ -143,7 +155,7 @@ int GetVlcVideoFormat( OMX_VIDEO_CODINGTYPE i_omx_codec,
 int GetOmxAudioFormat( vlc_fourcc_t i_fourcc,
                        OMX_AUDIO_CODINGTYPE *pi_omx_codec,
                        const char **ppsz_name );
-int GetVlcAudioFormat( OMX_AUDIO_CODINGTYPE i_omx_codec,
+int OmxToVlcAudioFormat( OMX_AUDIO_CODINGTYPE i_omx_codec,
                        vlc_fourcc_t *pi_fourcc, const char **ppsz_name );
 const char *GetOmxRole( vlc_fourcc_t i_fourcc, int i_cat, bool b_enc );
 int GetOmxChromaFormat( vlc_fourcc_t i_fourcc,
@@ -167,3 +179,11 @@ OMX_ERRORTYPE GetAudioParameters(OMX_HANDLETYPE handle,
     OmxFormatParam *param, OMX_U32 i_port, OMX_AUDIO_CODINGTYPE encoding,
     uint8_t *pi_channels, unsigned int *pi_samplerate,
     unsigned int *pi_bitrate, unsigned int *pi_bps, unsigned int *pi_blocksize);
+unsigned int GetAudioParamSize(OMX_INDEXTYPE index);
+
+/*****************************************************************************
+ * Vendor specific color formats
+ *****************************************************************************/
+#define OMX_QCOM_COLOR_FormatYVU420SemiPlanar 0x7FA30C00
+
+#define OMX_IndexVendorSetYUV420pMode 0x7f000003

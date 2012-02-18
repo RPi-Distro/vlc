@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libvisual_plugin_la_SOURCES = $(SOURCES_visual)
 nodist_libvisual_plugin_la_SOURCES = $(nodist_SOURCES_visual)
 # Force per-target objects:
-libvisual_plugin_la_CFLAGS = $(AM_CFLAGS)
-libvisual_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libvisual_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libvisual_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_visual)
+libvisual_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_visual)
+libvisual_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_visual)
+libvisual_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_visual)
 # Set LIBADD and DEPENDENCIES manually:
-libvisual_plugin_la_LIBADD = $(AM_LIBADD)
-libvisual_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libvisual_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_visual)
+libvisual_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_visual)
+libvisual_plugin_la_DEPENDENCIES =
 

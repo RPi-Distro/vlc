@@ -2,7 +2,7 @@
  * sharpen.c: Sharpen video filter
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 28f98623c52bfe349ee7e5ca28ca2c67d4087efa $
+ * $Id: 81fb3f9e2460a91cda0a955c6cebdf3d1d3681d1 $
  *
  * Author: Jérémy DEMEULE <dj_mulder at djduron dot no-ip dot org>
  *         Jean-Baptiste Kempf <jb at videolan dot org>
@@ -69,7 +69,7 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
     set_capability( "video filter2", 0 )
-    add_float_with_range( "sharpen-sigma", 0.05, 0.0, 2.0, NULL,
+    add_float_with_range( "sharpen-sigma", 0.05, 0.0, 2.0,
         SIG_TEXT, SIG_LONGTEXT, false )
     add_shortcut( "sharpen" )
     set_callbacks( Create, Destroy )
@@ -116,6 +116,13 @@ static void init_precalc_table(filter_sys_t *p_filter, float sigma)
 static int Create( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+
+    const vlc_fourcc_t fourcc = p_filter->fmt_in.video.i_chroma;
+    const vlc_chroma_description_t *p_chroma = vlc_fourcc_GetChromaDescription( fourcc );
+    if( !p_chroma || p_chroma->plane_count != 3 || p_chroma->pixel_size != 1 ) {
+        msg_Err( p_filter, "Unsupported chroma (%4.4s)", (char*)&fourcc );
+        return VLC_EGENERIC;
+    }
 
     /* Allocate structure */
     p_filter->p_sys = malloc( sizeof( filter_sys_t ) );
@@ -236,7 +243,7 @@ static int SharpenCallback( vlc_object_t *p_this, char const *psz_var,
     filter_sys_t *p_sys = (filter_sys_t *)p_data;
 
     vlc_mutex_lock( &p_sys->lock );
-    init_precalc_table(p_sys,  __MIN( 2., __MAX( 0., newval.f_float ) ));
+    init_precalc_table( p_sys,  VLC_CLIP( newval.f_float, 0., 2. ) );
     vlc_mutex_unlock( &p_sys->lock );
     return VLC_SUCCESS;
 }

@@ -2,7 +2,7 @@
  * postproc.c: video postprocessing using libpostproc
  *****************************************************************************
  * Copyright (C) 1999-2009 the VideoLAN team
- * $Id: 783e7bcd8d874573f66023f3423515ae84d5857c $
+ * $Id: bb4a1d7c34e2999b82677551b0cab0c14286060d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -59,9 +59,10 @@ static int PPNameCallback( vlc_object_t *, char const *,
 
 #define Q_TEXT N_("Post processing quality")
 #define Q_LONGTEXT N_( \
-    "Quality of post processing. Valid range is 0 to 6\n" \
-    "Higher levels require considerable more CPU power, but produce " \
-    "better looking pictures." )
+    "Quality of post processing. Valid range is 0 (disabled) to 6 (highest)\n"     \
+    "Higher levels require more CPU power, but produce higher quality pictures.\n" \
+    "With default filter chain, the values map to the following filters:\n"        \
+    "1: hb, 2-4: hb+vb, 5-6: hb+vb+dr" )
 
 #define NAME_TEXT N_("FFmpeg post processing filter chains")
 #define NAME_LONGTEXT NAME_TEXT
@@ -74,8 +75,7 @@ static int PPNameCallback( vlc_object_t *, char const *,
 vlc_module_begin ()
     set_description( N_("Video post processing filter") )
     set_shortname( N_("Postproc" ) )
-    add_shortcut( "postprocess" ) /* name is "postproc" */
-    add_shortcut( "pp" )
+    add_shortcut( "postprocess", "pp" ) /* name is "postproc" */
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
@@ -84,12 +84,10 @@ vlc_module_begin ()
     set_callbacks( OpenPostproc, ClosePostproc )
 
     add_integer_with_range( FILTER_PREFIX "q", PP_QUALITY_MAX, 0,
-                            PP_QUALITY_MAX, NULL, Q_TEXT, Q_LONGTEXT, false )
-        add_deprecated_alias( "ffmpeg-pp-q" )
+                            PP_QUALITY_MAX, Q_TEXT, Q_LONGTEXT, false )
         change_safe()
-    add_string( FILTER_PREFIX "name", "default", NULL, NAME_TEXT,
+    add_string( FILTER_PREFIX "name", "default", NAME_TEXT,
                 NAME_LONGTEXT, true )
-        add_deprecated_alias( "ffmpeg-pp-name" )
 vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {

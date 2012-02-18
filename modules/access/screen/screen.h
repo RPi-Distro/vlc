@@ -2,7 +2,7 @@
  * screen.h: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 28f1433dca9a2053e5d75290e129af855e36bbcd $
+ * $Id: d0197f6bd27662a67da3e655022c16e1df966247 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -26,7 +26,7 @@
 #include <vlc_access.h>
 #include <vlc_demux.h>
 
-#if !defined( HAVE_BEOS ) && !defined( HAVE_DARWIN )
+#if !defined( HAVE_DARWIN )
 #   define SCREEN_SUBSCREEN
 #   define SCREEN_MOUSE
 #endif

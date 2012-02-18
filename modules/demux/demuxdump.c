@@ -2,7 +2,7 @@
  * demuxdump.c : Pseudo demux module for vlc (dump raw stream)
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 2a642929978885abb6d00e8544a6c0d011d968ed $
+ * $Id: a90345fecafe6d5fb09507553825418bfb2d2160 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -53,9 +53,9 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_DEMUX )
     set_description( N_("File dumper") )
     set_capability( "demux", 0 )
-    add_file( "demuxdump-file", "stream-demux.dump", NULL, FILE_TEXT,
-              FILE_LONGTEXT, false )
-    add_bool( "demuxdump-append", false, NULL, APPEND_TEXT, APPEND_LONGTEXT,
+    add_savefile( "demuxdump-file", "stream-demux.dump", FILE_TEXT,
+                  FILE_LONGTEXT, false )
+    add_bool( "demuxdump-append", false, APPEND_TEXT, APPEND_LONGTEXT,
               false )
     set_callbacks( Open, Close )
     add_shortcut( "dump" )

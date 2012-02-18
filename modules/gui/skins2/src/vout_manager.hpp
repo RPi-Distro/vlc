@@ -2,7 +2,7 @@
  * vout_manager.hpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 643af52cd8d9451db696d942f55a1951ccc48027 $
+ * $Id: 3d0bf39cf3b951f9d2fc75d62f2aadae7db85711 $
  *
  * Authors: Erwan Tulou < brezhoneg1 at yahoo.fr r>
  *
@@ -34,9 +34,11 @@
 #include "../controls/ctrl_video.hpp"
 #include "../events/evt_key.hpp"
 #include "../events/evt_scroll.hpp"
+#include "../src/fsc_window.hpp"
 
 class VarBool;
 class GenericWindow;
+class FscWindow;
 
 #include <stdio.h>
 
@@ -44,7 +46,7 @@ class SavedWnd
 {
 public:
     SavedWnd( vout_window_t* pWnd, VoutWindow* pVoutWindow = NULL,
-               CtrlVideo* pCtrlVideo = NULL, int height = 0, int width = 0 )
+               CtrlVideo* pCtrlVideo = NULL, int height = -1, int width = -1 )
             : pWnd( pWnd ), pVoutWindow( pVoutWindow ),
               pCtrlVideo( pCtrlVideo ), height( height ), width( width ) { }
     ~SavedWnd() { }
@@ -69,6 +71,8 @@ public:
     }
     virtual ~VoutMainWindow() { }
 
+#ifdef WIN32
+
     virtual void processEvent( EvtKey &rEvtKey )
     {
         // Only do the action when the key is down
@@ -87,6 +91,8 @@ public:
 
         var_SetInteger( getIntf()->p_libvlc, "key-pressed", i_vlck );
     }
+
+#endif
 };
 
 
@@ -101,33 +107,26 @@ public:
     /// Delete the instance of VoutManager
     static void destroy( intf_thread_t *pIntf );
 
-    /// Accept Wnd
-    void* acceptWnd( vout_window_t* pWnd );
+    /// accept window request (vout window provider)
+    void acceptWnd( vout_window_t *pWnd, int width, int height );
 
-    /// Release Wnd
-    void releaseWnd( vout_window_t* pWnd );
+    // release window (vout window provider)
+    void releaseWnd( vout_window_t *pWnd );
 
-    /// set size Wnd
+    /// set window size (vout window provider)
     void setSizeWnd( vout_window_t* pWnd, int width, int height );
 
-    /// set fullscreen Wnd
+    /// set fullscreen mode (vout window provider)
     void setFullscreenWnd( vout_window_t* pWnd, bool b_fullscreen );
-
-    /// Callback to request a vout window
-    static void *getWindow( intf_thread_t *pIntf, vout_window_t *pWnd );
-
-    // Window provider (release)
-    static void releaseWindow( intf_thread_t *pIntf, vout_window_t *pWnd  );
-
-    /// Callback to change a vout window
-    static int controlWindow( struct vout_window_t *pWnd,
-                              int query, va_list args );
 
     // Register Video Controls (when building theme)
     void registerCtrlVideo( CtrlVideo* p_CtrlVideo );
 
     // Register Video Controls (when building theme)
-    void registerFSC( TopWindow* p_Win );
+    void registerFSC( FscWindow* p_Win );
+
+    // get the fullscreen controller window
+    FscWindow* getFscWindow( ) { return m_pFscWindow; }
 
     // save and restore vouts (when changing theme)
     void saveVoutConfig( );
@@ -149,6 +148,9 @@ public:
     /// called when fullscreen variable changed
     virtual void onUpdate( Subject<VarBool> &rVariable , void* );
 
+    /// reconfigure fullscreen (multiple screens)
+    virtual void configureFullscreen( VoutWindow& rWindow );
+
 protected:
     // Protected because it is a singleton
     VoutManager( intf_thread_t *pIntf );
@@ -162,7 +164,7 @@ private:
 
     VoutMainWindow* m_pVoutMainWindow;
 
-    TopWindow* m_pFscWindow;
+    FscWindow* m_pFscWindow;
 };
 
 

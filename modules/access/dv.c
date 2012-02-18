@@ -2,7 +2,7 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: 16d28af49d72a11929d00da5e646ad3414a64d30 $
+ * $Id: f9b7bf2a3359658f88038ac61ad132a7a3127c98 $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -56,29 +56,19 @@ static void Close( vlc_object_t * );
 static block_t *Block( access_t * );
 static int Control( access_t *, int, va_list );
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for DV streams. This " \
-    "value should be set in milliseconds." )
-
 vlc_module_begin ()
     set_description( N_("Digital Video (Firewire/ieee1394)  input") )
     set_shortname( N_("DV") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-    add_integer( "dv-caching", 60000 / 1000, NULL, CACHING_TEXT, CACHING_LONGTEXT, true )
-        change_safe()
     set_capability( "access", 0 )
-    add_shortcut( "dv" )
-    add_shortcut( "dv1394" )
-    add_shortcut( "raw1394" )
+    add_shortcut( "dv", "dv1394", "raw1394" )
     set_callbacks( Open, Close )
 vlc_module_end ()
 
 typedef struct
 {
-    VLC_COMMON_MEMBERS
-
+    vlc_thread_t    thread;
     access_t        *p_access;
     vlc_mutex_t     lock;
     block_t         *p_frame;
@@ -86,7 +76,7 @@ typedef struct
 
 } event_thread_t;
 
-static void* Raw1394EventThread( vlc_object_t * );
+static void* Raw1394EventThread( void * );
 static enum raw1394_iso_disposition
 Raw1394Handler(raw1394handle_t, unsigned char *,
         unsigned int, unsigned char,
@@ -133,11 +123,10 @@ static int Open( vlc_object_t *p_this )
 {
     access_t     *p_access = (access_t*)p_this;
     access_sys_t *p_sys;
-    char *psz_name = strdup( p_access->psz_path );
 
     struct raw1394_portinfo port_inf[ 16 ];
 
-    msg_Dbg( p_access, "opening device %s", psz_name );
+    msg_Dbg( p_access, "opening device" );
 
     /* Set up p_access */
     access_InitFields( p_access );
@@ -145,10 +134,7 @@ static int Open( vlc_object_t *p_this )
 
     p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
     if( !p_sys )
-    {
-        free( psz_name );
         return VLC_EGENERIC;
-    }
 
     p_sys->i_cards = 0;
     p_sys->i_node = 0;
@@ -167,42 +153,37 @@ static int Open( vlc_object_t *p_this )
     {
         msg_Err( p_access, "failed to open a Firewire (IEEE1394) connection" );
         Close( p_this );
-        free( psz_name );
         return VLC_EGENERIC;
     }
 
     p_sys->p_avc1394 = AVCOpen( p_access, p_sys->i_port );
     if( !p_sys->p_avc1394 )
     {
-        msg_Err( p_access, "no Digital Video Control device found on %s", psz_name );
+        msg_Err( p_access, "no Digital Video Control device found" );
         Close( p_this );
-        free( psz_name );
         return VLC_EGENERIC;
     }
 
     p_sys->p_raw1394 = raw1394_new_handle();
     if( !p_sys->p_raw1394 )
     {
-        msg_Err( p_access, "no Digital Video device found on %s", psz_name );
+        msg_Err( p_access, "no Digital Video device found" );
         Close( p_this );
-        free( psz_name );
         return VLC_EGENERIC;
     }
 
     p_sys->i_cards = raw1394_get_port_info( p_sys->p_raw1394, port_inf, 16 );
     if( p_sys->i_cards < 0 )
     {
-        msg_Err( p_access, "failed to get port info for %s", psz_name );
+        msg_Err( p_access, "failed to get port info" );
         Close( p_this );
-        free( psz_name );
         return VLC_EGENERIC;
     }
 
     if( raw1394_set_port( p_sys->p_raw1394, p_sys->i_port ) < 0 )
     {
-        msg_Err( p_access, "failed to set port info for %s", psz_name );
+        msg_Err( p_access, "failed to set port info" );
         Close( p_this );
-        free( psz_name );
         return VLC_EGENERIC;
     }
 
@@ -210,9 +191,8 @@ static int Open( vlc_object_t *p_this )
                 ISOCHRONOUS_QUEUE_LENGTH, ISOCHRONOUS_MAX_PACKET_SIZE,
                 p_sys->i_channel, RAW1394_DMA_PACKET_PER_BUFFER, -1 ) < 0 )
     {
-        msg_Err( p_access, "failed to init isochronous recv for %s", psz_name );
+        msg_Err( p_access, "failed to init isochronous recv" );
         Close( p_this );
-        free( psz_name );
         return VLC_EGENERIC;
     }
 
@@ -222,27 +202,27 @@ static int Open( vlc_object_t *p_this )
     p_sys->raw1394_poll.fd = raw1394_get_fd( p_sys->p_raw1394 );
     p_sys->raw1394_poll.events = POLLIN | POLLPRI;
 
-    /* Update default_pts to a suitable value for udp access */
-    var_Create( p_access, "dv-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-
     /* Now create our event thread catcher */
-    p_sys->p_ev = vlc_object_create( p_access, sizeof( event_thread_t ) );
+    p_sys->p_ev = calloc( 1, sizeof( *p_sys->p_ev ) );
     if( !p_sys->p_ev )
     {
-        msg_Err( p_access, "failed to create event thread for %s", psz_name );
+        msg_Err( p_access, "failed to create event thread struct" );
         Close( p_this );
-        free( psz_name );
-        return VLC_EGENERIC;
+        return VLC_ENOMEM;
     }
 
     p_sys->p_ev->p_frame = NULL;
     p_sys->p_ev->pp_last = &p_sys->p_ev->p_frame;
     p_sys->p_ev->p_access = p_access;
     vlc_mutex_init( &p_sys->p_ev->lock );
-    vlc_thread_create( p_sys->p_ev, "dv event thread handler",
-                       Raw1394EventThread, VLC_THREAD_PRIORITY_OUTPUT );
+    if( vlc_clone( &p_sys->p_ev->thread, Raw1394EventThread,
+               p_sys->p_ev, VLC_THREAD_PRIORITY_OUTPUT ) )
+    {
+        msg_Err( p_access, "failed to clone event thread" );
+        Close( p_this );
+        return VLC_EGENERIC;
+    }
 
-    free( psz_name );
     return VLC_SUCCESS;
 }
 
@@ -257,12 +237,12 @@ static void Close( vlc_object_t *p_this )
     if( p_sys->p_ev )
     {
         /* stop the event handler */
-        vlc_object_kill( p_sys->p_ev );
+        vlc_cancel( p_sys->p_ev->thread );
 
         if( p_sys->p_raw1394 )
             raw1394_iso_shutdown( p_sys->p_raw1394 );
 
-        vlc_thread_join( p_sys->p_ev );
+        vlc_join( p_sys->p_ev->thread, NULL );
         vlc_mutex_destroy( &p_sys->p_ev->lock );
 
         /* Cleanup frame data */
@@ -272,7 +252,7 @@ static void Close( vlc_object_t *p_this )
             p_sys->p_ev->p_frame = NULL;
             p_sys->p_ev->pp_last = &p_sys->p_frame;
         }
-        vlc_object_release( p_sys->p_ev );
+        free( p_sys->p_ev );
     }
 
     if( p_sys->p_frame )
@@ -305,8 +285,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         case ACCESS_GET_PTS_DELAY:
-            *va_arg( args, int64_t * )
-                   = (int64_t)var_GetInteger( p_access, "dv-caching" ) * 1000;
+            *va_arg( args, int64_t * ) =
+                INT64_C(1000) * var_InheritInteger( p_access, "live-caching" );
             break;
 
         /* */
@@ -343,35 +323,43 @@ static block_t *Block( access_t *p_access )
     return p_block;
 }
 
-static void* Raw1394EventThread( vlc_object_t *p_this )
+static void Raw1394EventThreadCleanup( void *obj )
 {
-    event_thread_t *p_ev = (event_thread_t *) p_this;
+    event_thread_t *p_ev = (event_thread_t *)obj;
+
+    AVCStop( p_ev->p_access, p_ev->p_access->p_sys->i_node );
+}
+
+static void* Raw1394EventThread( void *obj )
+{
+    event_thread_t *p_ev = (event_thread_t *)obj;
     access_t *p_access = (access_t *) p_ev->p_access;
     access_sys_t *p_sys = (access_sys_t *) p_access->p_sys;
     int result = 0;
-    int canc = vlc_savecancel ();
+    int canc = vlc_savecancel();
 
     AVCPlay( p_access, p_sys->i_node );
+    vlc_cleanup_push( Raw1394EventThreadCleanup, p_ev );
+    vlc_restorecancel( canc );
 
-    while( vlc_object_alive (p_sys->p_ev) )
+    for( ;; )
     {
-        while( ( result = poll( &(p_sys->raw1394_poll), 1, 200 ) ) < 0 )
+        while( ( result = poll( &p_sys->raw1394_poll, 1, -1 ) ) < 0 )
         {
-            if( !( errno == EAGAIN || errno == EINTR ) )
-            {
-                perror( "error: raw1394 poll" );
-                msg_Err( p_access, "retrying device raw1394" );
-            }
+            if( errno != EINTR )
+                msg_Err( p_access, "poll error: %m" );
         }
-        if( !vlc_object_alive (p_sys->p_ev) )
-                break;
+
         if( result > 0 && ( ( p_sys->raw1394_poll.revents & POLLIN )
-                || ( p_sys->raw1394_poll.revents & POLLPRI ) ) )
+                         || ( p_sys->raw1394_poll.revents & POLLPRI ) ) )
+        {
+            canc = vlc_savecancel();
             result = raw1394_loop_iterate( p_sys->p_raw1394 );
+            vlc_restorecancel( canc );
+        }
     }
 
-    AVCStop( p_access, p_sys->i_node );
-    vlc_restorecancel (canc);
+    vlc_cleanup_run();
     return NULL;
 }
 

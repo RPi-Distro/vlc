@@ -2,7 +2,7 @@
  * html.c : HTML playlist export module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: b2ac7156b4ad6ae722a81ea745534c149688bb86 $
+ * $Id: 8c9d00cb35edd0b29567da2580b55e6516569e63 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -108,7 +108,7 @@ int Export_HTML( vlc_object_t *p_this )
 "<head>\n"
 "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
 "  <meta name=\"Generator\" content=\"VLC media player\" />\n"
-"  <meta name=\"Author\" content=\"videolan@videolan.org (VideoLAN team)\" />\n"
+"  <meta name=\"Author\" content=\"VLC, http://www.videolan.org/vlc/\" />\n"
 "  <title>VLC generated playlist</title>\n"
 "  <style type=\"text/css\">\n"
 "    body {\n"

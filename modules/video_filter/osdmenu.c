@@ -2,7 +2,7 @@
  * osdmenu.c: osd filter module
  *****************************************************************************
  * Copyright (C) 2004-2007 M2X
- * $Id: 87416bfebeadfe1b513917f56886bf0c5bfd2d56 $
+ * $Id: 1b4b9444fe683b69ee89651516dee32f558e5e2a $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -30,7 +30,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 #include <vlc_filter.h>
 
 #include <vlc_osd.h>
@@ -85,7 +84,7 @@ static const char *const ppsz_pos_descriptions[] =
 { N_("Center"), N_("Left"), N_("Right"), N_("Top"), N_("Bottom"),
   N_("Top-Left"), N_("Top-Right"), N_("Bottom-Left"), N_("Bottom-Right") };
 
-/* subfilter functions */
+/* subsource functions */
 static int  CreateFilter ( vlc_object_t * );
 static void DestroyFilter( vlc_object_t * );
 static subpicture_t *Filter( filter_t *, mtime_t );
@@ -97,8 +96,10 @@ static int OSDMenuVisibleEvent( vlc_object_t *, char const *,
 static int OSDMenuCallback( vlc_object_t *, char const *,
                             vlc_value_t, vlc_value_t, void * );
 
-static int MouseEvent( vlc_object_t *, char const *,
-                        vlc_value_t , vlc_value_t , void * );
+static int MouseEvent( filter_t *,
+                       const vlc_mouse_t *,
+                       const vlc_mouse_t *,
+                       const video_format_t * );
 
 #define OSD_CFG "osdmenu-"
 
@@ -113,7 +114,7 @@ static int MouseEvent( vlc_object_t *, char const *,
 #define OSD_UPDATE_MAX     1000
 
 vlc_module_begin ()
-    set_capability( "sub filter", 100 )
+    set_capability( "sub source", 100 )
     set_description( N_("On Screen Display menu") )
     set_shortname( N_("OSD menu") )
     add_shortcut( "osdmenu" )
@@ -123,27 +124,27 @@ vlc_module_begin ()
 
     set_callbacks( CreateFilter, DestroyFilter )
 
-    add_integer( OSD_CFG "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, false )
-    add_integer( OSD_CFG "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, false )
-    add_integer( OSD_CFG "position", 8, NULL, POS_TEXT, POS_LONGTEXT,
+    add_integer( OSD_CFG "x", -1, POSX_TEXT, POSX_LONGTEXT, false )
+    add_integer( OSD_CFG "y", -1, POSY_TEXT, POSY_LONGTEXT, false )
+    add_integer( OSD_CFG "position", 8, POS_TEXT, POS_LONGTEXT,
                  false )
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
-    add_string( OSD_CFG "file", OSD_DEFAULT_CFG, NULL, OSD_FILE_TEXT,
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions )
+    add_loadfile( OSD_CFG "file", OSD_DEFAULT_CFG, OSD_FILE_TEXT,
         OSD_FILE_LONGTEXT, false )
-    add_string( OSD_CFG "file-path", NULL, NULL, OSD_PATH_TEXT,
+    add_directory( OSD_CFG "file-path", NULL, OSD_PATH_TEXT,
         OSD_PATH_LONGTEXT, false )
-    add_integer( OSD_CFG "timeout", 15, NULL, TIMEOUT_TEXT,
+    add_integer( OSD_CFG "timeout", 15, TIMEOUT_TEXT,
         TIMEOUT_LONGTEXT, false )
     add_integer_with_range( OSD_CFG "update", OSD_UPDATE_DEFAULT,
-        OSD_UPDATE_MIN, OSD_UPDATE_MAX, NULL, OSD_UPDATE_TEXT,
+        OSD_UPDATE_MIN, OSD_UPDATE_MAX, OSD_UPDATE_TEXT,
         OSD_UPDATE_LONGTEXT, true )
-    add_integer_with_range( OSD_CFG "alpha", 255, 0, 255, NULL,
+    add_integer_with_range( OSD_CFG "alpha", 255, 0, 255,
         OSD_ALPHA_TEXT, OSD_ALPHA_LONGTEXT, true )
 
 vlc_module_end ()
 
 /*****************************************************************************
- * Sub filter code
+ * Sub source code
  *****************************************************************************/
 
 /*****************************************************************************
@@ -169,7 +170,6 @@ struct filter_sys_t
     osd_menu_t  *p_menu;        /* pointer to OSD Menu object */
 
     /* menu interaction */
-    vout_thread_t *p_vout;
     bool  b_clicked;
     uint32_t    i_mouse_x;
     uint32_t    i_mouse_y;
@@ -250,13 +250,9 @@ static int CreateFilter ( vlc_object_t *p_this )
     var_AddCallback( p_sys->p_menu, "osd-menu-visible",
                      OSDMenuVisibleEvent, p_filter );
 
-    /* Attach subpicture filter callback */
-    p_filter->pf_sub_filter = Filter;
-
-    p_sys->p_vout = vlc_object_find( p_this, VLC_OBJECT_VOUT, FIND_PARENT );
-    if( p_sys->p_vout )
-        var_AddCallback( p_sys->p_vout, "mouse-clicked",
-                        MouseEvent, p_sys );
+    /* Attach subpicture source callback */
+    p_filter->pf_sub_source = Filter;
+    p_filter->pf_sub_mouse  = MouseEvent;
 
     es_format_Init( &p_filter->fmt_out, SPU_ES, VLC_CODEC_SPU );
     p_filter->fmt_out.i_priority = 0;
@@ -289,13 +285,6 @@ static void DestroyFilter( vlc_object_t *p_this )
                      OSDMenuUpdateEvent, p_filter );
     var_DelCallback( p_sys->p_menu, "osd-menu-visible",
                      OSDMenuVisibleEvent, p_filter );
-
-    if( p_sys->p_vout )
-    {
-        var_DelCallback( p_sys->p_vout, "mouse-clicked",
-                        MouseEvent, p_sys );
-        vlc_object_release( p_sys->p_vout );
-    }
 
     var_Destroy( p_this, OSD_CFG "file-path" );
     var_Destroy( p_this, OSD_CFG "file" );
@@ -473,33 +462,19 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t i_date )
         p_sys->i_end_date = p_spu->i_stop;
     }
 
-    p_sys->i_last_date = i_date;
     p_spu->i_start = p_sys->i_last_date = i_date;
 
     /* Send an empty subpicture to clear the display
      * when OSD menu should be hidden and menu picture is not allocated.
      */
     if( !p_filter->p_sys->p_menu->p_state->p_pic ||
-        ( p_filter->p_sys->b_visible == false ) )
+        !p_filter->p_sys->b_visible )
     {
-        /* Create new spu regions and allocate an empty picture in it. */
-        p_region = create_picture_region( p_filter, p_spu,
-            p_filter->p_sys->p_menu->p_state->i_width,
-            p_filter->p_sys->p_menu->p_state->i_height,
-            NULL );
-
-        /* proper positioning of OSD menu image */
-        p_region->i_x = p_filter->p_sys->p_menu->p_state->i_x;
-        p_region->i_y = p_filter->p_sys->p_menu->p_state->i_y;
-        /* FIXME is it needed ?
-        p_region->i_align = p_sys->i_position;
-        */
-        p_spu->p_region = p_region;
         p_spu->i_alpha = 0xFF; /* Picture is completely non transparent. */
         return p_spu;
     }
 
-    if( p_sys->p_vout && p_sys->b_clicked )
+    if( p_sys->b_clicked )
     {
         p_sys->b_clicked = false;
         osd_MenuActivate( p_filter );
@@ -596,7 +571,7 @@ static int OSDMenuCallback( vlc_object_t *p_this, char const *psz_var,
     if( !p_sys )
         return VLC_SUCCESS;
 
-    if( !strncmp( psz_var, OSD_CFG"position", 16) )
+    if( !strcmp( psz_var, OSD_CFG"position") )
     {
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
         unsigned int i;
@@ -610,8 +585,8 @@ static int OSDMenuCallback( vlc_object_t *p_this, char const *psz_var,
         }
 #undef ARRAY_SIZE
     }
-    else if( !strncmp( psz_var, OSD_CFG"x", 9) ||
-             !strncmp( psz_var, OSD_CFG"y", 9))
+    else if( !strcmp( psz_var, OSD_CFG"x") ||
+             !strcmp( psz_var, OSD_CFG"y"))
     {
         p_sys->b_absolute = true;
         if( (p_sys->i_x < 0) || (p_sys->i_y < 0) )
@@ -626,54 +601,39 @@ static int OSDMenuCallback( vlc_object_t *p_this, char const *psz_var,
             p_sys->p_menu->i_y = p_sys->i_y;
         }
     }
-    else if( !strncmp( psz_var, OSD_CFG"update", 14) )
-        p_sys->i_update =  (mtime_t)(newval.i_int * 1000);
-    else if( !strncmp( psz_var, OSD_CFG"timeout", 15) )
+    else if( !strcmp( psz_var, OSD_CFG"update") )
+        p_sys->i_update =  newval.i_int * INT64_C(1000);
+    else if( !strcmp( psz_var, OSD_CFG"timeout") )
         p_sys->i_update = newval.i_int % 1000;
-    else if( !strncmp( psz_var, OSD_CFG"alpha", 13) )
+    else if( !strcmp( psz_var, OSD_CFG"alpha") )
         p_sys->i_alpha = newval.i_int % 256;
 
     p_sys->b_update = p_sys->b_visible ? true : false;
     return VLC_SUCCESS;
 }
 
-/*****************************************************************************
- * MouseEvent: callback for mouse events
- *****************************************************************************/
-static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
+static int MouseEvent( filter_t *p_filter,
+                       const vlc_mouse_t *p_old,
+                       const vlc_mouse_t *p_new,
+                       const video_format_t *p_fmt )
 {
-    VLC_UNUSED(oldval);
-    filter_sys_t *p_sys = (filter_sys_t *)p_data;
-    vout_thread_t *p_vout = (vout_thread_t*)p_sys->p_vout;
-    int i_x = newval.coords.x;
-    int i_y = newval.coords.y;
-    int v_h = p_vout->output.i_height;
-    int v_w = p_vout->output.i_width;
+    filter_sys_t *p_sys = p_filter->p_sys;
 
-    if( i_y < 0 || i_x < 0 || i_y >= v_h || i_x >= v_w )
+    if( !vlc_mouse_HasPressed( p_old, p_new, MOUSE_BUTTON_LEFT ) )
         return VLC_SUCCESS;
 
-    do
-    {
-        int i_scale_width, i_scale_height;
-        osd_button_t *p_button = NULL;
+    osd_button_t *p_button = osd_ButtonFind( VLC_OBJECT(p_filter),
+                                             p_new->i_x,
+                                             p_new->i_y,
+                                             p_fmt->i_width,
+                                             p_fmt->i_height,
+                                             1000, 1000 );
+    if( !p_button )
+        return VLC_SUCCESS;
 
-        i_scale_width = p_vout->fmt_out.i_visible_width * 1000 /
-            p_vout->fmt_in.i_visible_width;
-        i_scale_height = p_vout->fmt_out.i_visible_height * 1000 /
-            p_vout->fmt_in.i_visible_height;
-
-        p_button = osd_ButtonFind( p_this, i_x, i_y, v_h, v_w,
-                                   i_scale_width, i_scale_height );
-        if( p_button )
-        {
-            osd_ButtonSelect( p_this, p_button );
-            p_sys->b_update = p_sys->b_visible ? true : false;
-            p_sys->b_clicked = true;
-            msg_Dbg( p_this, "mouse clicked %s (%d,%d)", p_button->psz_name, i_x, i_y );
-        }
-    }
-    while(0);
+    osd_ButtonSelect( VLC_OBJECT(p_filter), p_button );
+    p_sys->b_update = p_sys->b_visible ? true : false;
+    p_sys->b_clicked = true;
+    msg_Dbg( p_filter, "mouse clicked %s (%d,%d)", p_button->psz_name, p_new->i_x, p_new->i_y );
     return VLC_SUCCESS;
 }

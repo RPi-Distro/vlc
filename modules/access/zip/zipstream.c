@@ -2,7 +2,7 @@
  * zipstream.c: stream_filter that creates a XSPF playlist from a Zip archive
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: ae6316f9bae4fc3ad97c00d77763f86f4f461810 $
+ * $Id: ac3f87cf30fa5368982acf8d5c111e90117d0b54 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -52,8 +52,7 @@ vlc_module_begin()
         set_subcategory( SUBCAT_INPUT_ACCESS )
         set_description( N_( "Zip access" ) )
         set_capability( "access", 0 )
-        add_shortcut( "unzip" )
-        add_shortcut( "zip" )
+        add_shortcut( "unzip", "zip" )
         set_callbacks( AccessOpen, AccessClose )
 vlc_module_end()
 

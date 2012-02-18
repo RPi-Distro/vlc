@@ -2,7 +2,7 @@
  * vout_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f64d033809bc2a7c812cee0a5487d2c398ddc7ab $
+ * $Id: bdd2fe62ed2b568d9f4e5267e98f1ca7b9288272 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -47,6 +47,7 @@ public:
     using GenericWindow::move;
     using GenericWindow::resize;
     using GenericWindow::getOSHandle;
+    using GenericWindow::getMonitorInfo;
     //@}
 
     /// get the parent  window

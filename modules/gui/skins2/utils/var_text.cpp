@@ -2,7 +2,7 @@
  * var_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 4ca805fd877662c8b3a823c0d61a11755a3e3700 $
+ * $Id: 18ff625da1873ced0a7b7f6343e0bd8be6112fcf $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -152,16 +152,10 @@ void VarText::set( const UString &rText )
             pVarManager->getHelpText().addObserver( this );
         }
         if( m_text.find( "$T" ) != UString::npos ||
-            m_text.find( "$t" ) != UString::npos )
-        {
-            pVlcProc->getTimeVar().addObserver( this );
-        }
-        if( m_text.find( "$L" ) != UString::npos ||
-            m_text.find( "$l" ) != UString::npos )
-        {
-            pVlcProc->getTimeVar().addObserver( this );
-        }
-        if( m_text.find( "$D" ) != UString::npos ||
+            m_text.find( "$t" ) != UString::npos ||
+            m_text.find( "$L" ) != UString::npos ||
+            m_text.find( "$l" ) != UString::npos ||
+            m_text.find( "$D" ) != UString::npos ||
             m_text.find( "$d" ) != UString::npos )
         {
             pVlcProc->getTimeVar().addObserver( this );
@@ -194,6 +188,7 @@ void VarText::set( const UString &rText )
 
 void VarText::onUpdate( Subject<VarPercent> &rVariable, void *arg )
 {
+    (void)rVariable; (void)arg;
     UString newText = get();
     // If the text has changed, notify the observers
     if( newText != m_lastText )
@@ -206,6 +201,7 @@ void VarText::onUpdate( Subject<VarPercent> &rVariable, void *arg )
 
 void VarText::onUpdate( Subject<VarText> &rVariable, void *arg )
 {
+    (void)rVariable; (void)arg;
     UString newText = get();
     // If the text has changed, notify the observers
     if( newText != m_lastText )

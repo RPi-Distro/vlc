@@ -2,7 +2,7 @@
  * fixed.c: Fixed-point audio format conversions
  *****************************************************************************
  * Copyright (C) 2002, 2006-2009 the VideoLAN team
- * $Id: b5b4c51bef367de49adb347377646c04fc7bd313 $
+ * $Id: 9a5b426be8e5fccdf9d205bd5c2c567bd35e2f17 $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *          Marc Ariberti <marcari@videolan.org>
@@ -73,7 +73,7 @@ static int CreateFrom( vlc_object_t *p_this )
         default:
             return VLC_EGENERIC;
     }
-    return VLC_SUCCESS;;
+    return VLC_SUCCESS;
 }
 
 union dw

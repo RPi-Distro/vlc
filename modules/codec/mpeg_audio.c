@@ -2,7 +2,7 @@
  * mpeg_audio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 4267f0916922a214c3cbbb2fb3e9e67dc1928e58 $
+ * $Id: 08dc775647532a6f7610724dbed5f5b4232447d8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -35,9 +35,12 @@
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_aout.h>
+#include <vlc_modules.h>
 #include <assert.h>
 
 #include <vlc_block_helper.h>
+
+#include "../packetizer/packetizer_helper.h"
 
 /*****************************************************************************
  * decoder_sys_t : decoder descriptor
@@ -70,16 +73,6 @@ struct decoder_sys_t
     bool   b_discontinuity;
 };
 
-enum {
-
-    STATE_NOSYNC,
-    STATE_SYNC,
-    STATE_HEADER,
-    STATE_NEXT_SYNC,
-    STATE_GET_DATA,
-    STATE_SEND_DATA
-};
-
 /* This isn't the place to put mad-specific stuff. However, it makes the
  * mad plug-in's life much easier if we put 8 extra bytes at the end of the
  * buffer, because that way it doesn't have to copy the aout_buffer_t to a
@@ -94,7 +87,7 @@ enum {
 static int  OpenDecoder   ( vlc_object_t * );
 static int  OpenPacketizer( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
-static void *DecodeBlock  ( decoder_t *, block_t ** );
+static block_t *DecodeBlock  ( decoder_t *, block_t ** );
 
 static uint8_t       *GetOutBuffer ( decoder_t *, block_t ** );
 static aout_buffer_t *GetAoutBuffer( decoder_t * );
@@ -149,7 +142,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->b_packetizer = false;
     p_sys->i_state = STATE_NOSYNC;
     date_Set( &p_sys->end_date, 0 );
-    p_sys->bytestream = block_BytestreamInit();
+    block_BytestreamInit( &p_sys->bytestream );
     p_sys->i_pts = VLC_TS_INVALID;
     p_sys->b_discontinuity = false;
 
@@ -159,10 +152,8 @@ static int Open( vlc_object_t *p_this )
     p_dec->fmt_out.audio.i_rate = 0; /* So end_date gets initialized */
 
     /* Set callback */
-    p_dec->pf_decode_audio = (aout_buffer_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
-    p_dec->pf_packetize    = (block_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
+    p_dec->pf_decode_audio = DecodeBlock;
+    p_dec->pf_packetize    = DecodeBlock;
 
     /* Start with the minimum size for a free bitrate frame */
     p_sys->i_free_frame_size = MPGA_HEADER_SIZE;
@@ -195,7 +186,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
  ****************************************************************************
  * This function is called just after the thread is launched.
  ****************************************************************************/
-static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t p_header[MAD_BUFFER_GUARD];
@@ -632,7 +623,7 @@ static int SyncInfo( uint32_t i_header, unsigned int * pi_channels,
     };
 
     int i_version, i_mode, i_emphasis;
-    bool b_padding, b_mpeg_2_5, b_crc;
+    bool b_padding, b_mpeg_2_5;
     int i_frame_size = 0;
     int i_bitrate_index, i_samplerate_index;
     int i_max_bit_rate;
@@ -640,7 +631,7 @@ static int SyncInfo( uint32_t i_header, unsigned int * pi_channels,
     b_mpeg_2_5  = 1 - ((i_header & 0x100000) >> 20);
     i_version   = 1 - ((i_header & 0x80000) >> 19);
     *pi_layer   = 4 - ((i_header & 0x60000) >> 17);
-    b_crc = !((i_header >> 16) & 0x01);
+    //bool b_crc = !((i_header >> 16) & 0x01);
     i_bitrate_index = (i_header & 0xf000) >> 12;
     i_samplerate_index = (i_header & 0xc00) >> 10;
     b_padding   = (i_header & 0x200) >> 9;

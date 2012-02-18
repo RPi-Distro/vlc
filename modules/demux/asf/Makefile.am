@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libasf_plugin_la_SOURCES = $(SOURCES_asf)
 nodist_libasf_plugin_la_SOURCES = $(nodist_SOURCES_asf)
 # Force per-target objects:
-libasf_plugin_la_CFLAGS = $(AM_CFLAGS)
-libasf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libasf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libasf_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_asf)
+libasf_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_asf)
+libasf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_asf)
+libasf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_asf)
 # Set LIBADD and DEPENDENCIES manually:
-libasf_plugin_la_LIBADD = $(AM_LIBADD)
-libasf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libasf_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_asf)
+libasf_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_asf)
+libasf_plugin_la_DEPENDENCIES =
 

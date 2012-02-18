@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_vod.h: interface for VoD server modules
  *****************************************************************************
- * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 9b136108f2b844a971087a407f249ed3f5c5cf9b $
+ * Copyright (C) 2000, 2001 VLC authors and VideoLAN
+ * $Id: 2f094338a9ca3ea9e8236863bda9f549abe53687 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_VOD_H
@@ -46,8 +46,6 @@ struct vod_t
 
     vod_media_t * (*pf_media_new)   ( vod_t *, const char *, input_item_t * );
     void          (*pf_media_del)   ( vod_t *, vod_media_t * );
-    int           (*pf_media_add_es)( vod_t *, vod_media_t *, es_format_t * );
-    void          (*pf_media_del_es)( vod_t *, vod_media_t *, es_format_t * );
 
     /* Owner properties */
     int (*pf_media_control) ( void *, vod_media_t *, const char *, int, va_list );
@@ -71,8 +69,8 @@ static inline int vod_MediaControl( vod_t *p_vod, vod_media_t *p_media,
 
 enum vod_query_e
 {
-    VOD_MEDIA_PLAY,         /* arg1= char *         res=    */
-    VOD_MEDIA_PAUSE,        /* arg1=                res=    */
+    VOD_MEDIA_PLAY,         /* arg1= char *, arg2= int64_t *, res=    */
+    VOD_MEDIA_PAUSE,        /* arg1= int64_t *      res=    */
     VOD_MEDIA_STOP,         /* arg1=                res=can fail    */
     VOD_MEDIA_SEEK,         /* arg1= double         res=    */
     VOD_MEDIA_REWIND,       /* arg1= double         res=    */

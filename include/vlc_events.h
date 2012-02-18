@@ -2,24 +2,24 @@
  * events.h: events definitions
  * Interface used to send events.
  *****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
- * $Id: 50cbc61912b8d051eaf79e3914d5bc417937fcb9 $
+ * Copyright (C) 2007 VLC authors and VideoLAN
+ * $Id: 842e204ef45aea390aa01d4488abdc89d79b0c08 $
  *
  * Authors: Pierre d'Herbemont
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_EVENTS_H
@@ -105,12 +105,10 @@ typedef struct vlc_event_manager_t
     void * p_obj;
     vlc_mutex_t object_lock;
     vlc_mutex_t event_sending_lock;
-    vlc_object_t *p_parent_object;
     DECL_ARRAY(struct vlc_event_listeners_group_t *) listeners_groups;
 } vlc_event_manager_t;
 
 /* List of event */
-/* Be sure to keep sync-ed with misc/events.c debug name table */
 typedef enum vlc_event_type_t {
     /* Input (thread) events */
     vlc_InputStateChanged,
@@ -216,49 +214,39 @@ typedef void ( *vlc_event_callback_t )( const vlc_event_t *, void * );
 /*
  * p_obj points to the object that owns the event manager, and from
  * which events are sent
- * p_obj is here to give us a libvlc instance
  */
-#define vlc_event_manager_init_with_vlc_object(a,b) \
-            vlc_event_manager_init( a, b, b )
-
-VLC_EXPORT(int, vlc_event_manager_init, ( vlc_event_manager_t * p_em,
-                                          void * p_obj, vlc_object_t * ));
-#define vlc_event_manager_init(a,b,c) \
-            vlc_event_manager_init(a, b, VLC_OBJECT(c))
+VLC_API int vlc_event_manager_init( vlc_event_manager_t * p_em, void * p_obj );
 
 /*
  * Destroy
  */
-VLC_EXPORT(void, vlc_event_manager_fini, ( vlc_event_manager_t * p_em ));
+VLC_API void vlc_event_manager_fini( vlc_event_manager_t * p_em );
 
 /*
  * Tells a specific event manager that it will handle event_type object
  */
-VLC_EXPORT(int, vlc_event_manager_register_event_type,
-                ( vlc_event_manager_t * p_em, vlc_event_type_t event_type ));
+VLC_API int vlc_event_manager_register_event_type( vlc_event_manager_t * p_em,
+                                                   vlc_event_type_t );
 
 /*
  * Send an event to the listener attached to this p_em.
  */
-VLC_EXPORT(void, vlc_event_send, ( vlc_event_manager_t * p_em,
-                                   vlc_event_t * p_event ));
+VLC_API void vlc_event_send( vlc_event_manager_t * p_em, vlc_event_t * );
 
 /*
  * Add a callback for an event.
  */
-VLC_EXPORT(int, vlc_event_attach, ( vlc_event_manager_t * p_event_manager,
-                                    vlc_event_type_t event_type,
-                                    vlc_event_callback_t pf_callback,
-                                    void *p_user_data,
-                                    const char * psz_debug_name ));
-#define vlc_event_attach(a, b, c, d) vlc_event_attach(a, b, c, d, #c)
+VLC_API int vlc_event_attach( vlc_event_manager_t * p_event_manager,
+                              vlc_event_type_t event_type,
+                              vlc_event_callback_t pf_callback,
+                              void *p_user_data );
 
 /*
  * Remove a callback for an event.
  */
-VLC_EXPORT(int, vlc_event_detach, ( vlc_event_manager_t *p_event_manager,
-                                    vlc_event_type_t event_type,
-                                    vlc_event_callback_t pf_callback,
-                                    void *p_user_data ));
+VLC_API void vlc_event_detach( vlc_event_manager_t *p_event_manager,
+                               vlc_event_type_t event_type,
+                               vlc_event_callback_t pf_callback,
+                               void *p_user_data );
 
 #endif /* VLC_EVENTS_H */

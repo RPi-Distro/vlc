@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlist_item.hpp : Item for a playlist tree
  ****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 6caafcb9a776558da0a208a05410e9b60b4f3042 $
+ * Copyright (C) 2006-2011 the VideoLAN team
+ * $Id: d36b19c1a0967d778e71f14dfbd34abd10b4e846 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -30,42 +30,38 @@
 
 #include <QList>
 
-
 class PLItem
 {
     friend class PLModel;
 public:
     PLItem( playlist_item_t *, PLItem *parent );
-    PLItem( playlist_item_t * );
     ~PLItem();
 
     int row() const;
 
-    void insertChild( PLItem *, int p, bool signal = true );
-    void appendChild( PLItem *item, bool signal = true )
-    {
-        children.insert( children.count(), item );
-    };
+    void insertChild( PLItem *, int pos );
+    void appendChild( PLItem *item );
     void removeChild( PLItem * );
     void removeChildren();
     void takeChildAt( int );
 
-    PLItem *child( int row ) { return children.value( row ); }
+    PLItem *child( int row ) const { return children.value( row ); }
     int childCount() const { return children.count(); }
 
     PLItem *parent() { return parentItem; }
-    input_item_t *inputItem() { return p_input; }
+    input_item_t *inputItem() const { return p_input; }
     int id() { return i_id; }
     bool operator< ( PLItem& );
 
 protected:
     QList<PLItem*> children;
+    PLItem *parentItem;
     int i_id;
     input_item_t *p_input;
 
 private:
+    PLItem( playlist_item_t * );
     void init( playlist_item_t *, PLItem * );
-    PLItem *parentItem;
 };
 
 #endif

@@ -2,23 +2,23 @@
  * vlc_vout_display.h: vout_display_t definitions
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 6f5b35f2eb94223fd3685df862e1fc49ee4ee088 $
+ * $Id: d99cf7eea9c1079754a3a47ea1df8ecd8e8d6163 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_VOUT_DISPLAY_H
@@ -113,17 +113,19 @@ typedef struct {
 } vout_display_cfg_t;
 
 /**
- * Informations from a vout_display_t to configure
+ * Information from a vout_display_t to configure
  * the core behaviour.
  *
- * By default they are all false.
+ * By default they are all false or NULL.
  *
  */
 typedef struct {
-    bool is_slow;            /* The picture memory has slow read/write */
-    bool has_double_click;    /* Is double-click generated */
-    bool has_hide_mouse;      /* Is mouse automatically hidden */
-    bool has_pictures_invalid;/* Will VOUT_DISPLAY_EVENT_PICTURES_INVALID be used */
+    bool is_slow;                           /* The picture memory has slow read/write */
+    bool has_double_click;                  /* Is double-click generated */
+    bool has_hide_mouse;                    /* Is mouse automatically hidden */
+    bool has_pictures_invalid;              /* Will VOUT_DISPLAY_EVENT_PICTURES_INVALID be used */
+    bool has_event_thread;                  /* Will events (key at least) be emitted using an independent thread */
+    const vlc_fourcc_t *subpicture_chromas; /* List of supported chromas for subpicture rendering. */
 } vout_display_info_t;
 
 /**
@@ -170,7 +172,7 @@ enum {
     VOUT_DISPLAY_CHANGE_SOURCE_CROP,   /* const video_format_t *p_source */
 
     /* Ask an opengl interface if available. */
-    VOUT_DISPLAY_GET_OPENGL,           /* vout_opengl_t ** */
+    VOUT_DISPLAY_GET_OPENGL,           /* vlc_gl_t ** */
 };
 
 /**
@@ -270,7 +272,7 @@ struct vout_display_t {
      */
     video_format_t fmt;
 
-    /* Informations
+    /* Information
      *
      * You can only set them in the open function.
      */
@@ -287,25 +289,29 @@ struct vout_display_t {
      */
     picture_pool_t *(*pool)(vout_display_t *, unsigned count);
 
-    /* Prepare a picture for display (optional).
+    /* Prepare a picture and an optional subpicture for display (optional).
      *
      * It is called before the next pf_display call to provide as much
-     * time as possible to prepare the given picture for display.
+     * time as possible to prepare the given picture and the subpicture
+     * for display.
      * You are guaranted that pf_display will always be called and using
-     * the exact same picture_t.
-     * You cannot change the pixel content of the picture_t.
+     * the exact same picture_t and subpicture_t.
+     * You cannot change the pixel content of the picture_t or of the
+     * subpicture_t.
      */
-    void       (*prepare)(vout_display_t *, picture_t *);
+    void       (*prepare)(vout_display_t *, picture_t *, subpicture_t *);
 
-    /* Display a picture (mandatory).
+    /* Display a picture and an optional subpicture (mandatory).
      *
-     * The picture must be displayed as soon as possible.
-     * You cannot change the pixel content of the picture_t.
+     * The picture and the optional subpicture must be displayed as soon as
+     * possible.
+     * You cannot change the pixel content of the picture_t or of the
+     * subpicture_t.
      *
-     * This function gives away the ownership of the picture, so you must
-     * release it as soon as possible.
+     * This function gives away the ownership of the picture and of the
+     * subpicture, so you must release them as soon as possible.
      */
-    void       (*display)(vout_display_t *, picture_t *);
+    void       (*display)(vout_display_t *, picture_t *, subpicture_t *);
 
     /* Control on the module (mandatory) */
     int        (*control)(vout_display_t *, int, va_list);
@@ -389,6 +395,10 @@ static inline vout_window_t *vout_display_NewWindow(vout_display_t *vd, const vo
 {
     return vd->owner.window_new(vd, cfg);
 }
+/**
+ * Deletes a window created by vout_display_NewWindow if window is non NULL
+ * or any unused windows otherwise.
+ */
 static inline void vout_display_DeleteWindow(vout_display_t *vd,
                                              vout_window_t *window)
 {
@@ -401,7 +411,7 @@ static inline void vout_display_DeleteWindow(vout_display_t *vd,
  *
  * This asssumes that the picture is already cropped.
  */
-VLC_EXPORT( void, vout_display_GetDefaultDisplaySize, (unsigned *width, unsigned *height, const video_format_t *source, const vout_display_cfg_t *) );
+VLC_API void vout_display_GetDefaultDisplaySize(unsigned *width, unsigned *height, const video_format_t *source, const vout_display_cfg_t *);
 
 
 /**
@@ -424,7 +434,7 @@ typedef struct {
  * \param p_cfg Display configuration
  * \param b_clip If true, prevent the video to go outside the display (break zoom).
  */
-VLC_EXPORT( void, vout_display_PlacePicture, (vout_display_place_t *place, const video_format_t *source, const vout_display_cfg_t *cfg, bool do_clipping) );
+VLC_API void vout_display_PlacePicture(vout_display_place_t *place, const video_format_t *source, const vout_display_cfg_t *cfg, bool do_clipping);
 
 #endif /* VLC_VOUT_DISPLAY_H */
 

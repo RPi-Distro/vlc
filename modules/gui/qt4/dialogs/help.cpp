@@ -2,7 +2,7 @@
  * Help.cpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: d19cc93fa5ed3493aa37f766c63fd831fbc9264a $
+ * $Id: 1bca9c59770fe7c825888f214a1453fa76093840 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Rémi Duraffort <ivoire (at) via.ecp.fr>
@@ -26,6 +26,7 @@
 # include "config.h"
 #endif
 
+#include "qt4.hpp"
 #include "dialogs/help.hpp"
 #include "util/qt_dirs.hpp"
 
@@ -42,7 +43,6 @@
 #include <QString>
 #include <QDialogButtonBox>
 #include <QEvent>
-#include <QFileDialog>
 #include <QDate>
 #include <QPushButton>
 
@@ -55,17 +55,21 @@ HelpDialog::HelpDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
     setWindowRole( "vlc-help" );
     setMinimumSize( 350, 300 );
 
-    QGridLayout *layout = new QGridLayout( this );
+    QVBoxLayout *layout = new QVBoxLayout( this );
+
     QTextBrowser *helpBrowser = new QTextBrowser( this );
     helpBrowser->setOpenExternalLinks( true );
     helpBrowser->setHtml( qtr(I_LONGHELP) );
-    QPushButton *closeButton = new QPushButton( qtr( "&Close" ) );
-    closeButton->setDefault( true );
 
-    layout->addWidget( helpBrowser, 0, 0, 1, 0 );
-    layout->addWidget( closeButton, 1, 3 );
+    QDialogButtonBox *closeButtonBox = new QDialogButtonBox( this );
+    closeButtonBox->addButton(
+        new QPushButton( qtr("&Close") ), QDialogButtonBox::RejectRole );
+    closeButtonBox->setFocus();
 
-    BUTTONACT( closeButton, close() );
+    layout->addWidget( helpBrowser );
+    layout->addWidget( closeButtonBox );
+
+    CONNECT( closeButtonBox, rejected(), this, close() );
     readSettings( "Help", QSize( 500, 450 ) );
 }
 
@@ -74,43 +78,33 @@ HelpDialog::~HelpDialog()
     writeSettings( "Help" );
 }
 
-void HelpDialog::close()
-{
-    toggleVisible();
-}
-
 AboutDialog::AboutDialog( intf_thread_t *_p_intf)
             : QVLCDialog( (QWidget*)_p_intf->p_sys->p_mi, _p_intf )
 {
+    /* Build UI */
+    ui.setupUi( this );
+    ui.closeButtonBox->addButton(
+        new QPushButton( qtr("&Close"), this ), QDialogButtonBox::RejectRole );
+
     setWindowTitle( qtr( "About" ) );
     setWindowRole( "vlc-about" );
-    resize( 600, 500 );
     setMinimumSize( 600, 500 );
+    resize( 600, 500 );
     setWindowModality( Qt::WindowModal );
 
-    QGridLayout *layout = new QGridLayout( this );
-    QTabWidget *tab = new QTabWidget( this );
+    CONNECT( ui.closeButtonBox, rejected(), this, close() );
+    ui.closeButtonBox->setFocus();
 
-    QPushButton *closeButton = new QPushButton( qtr( "&Close" ) );
-    closeButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    closeButton->setDefault( true );
-
-    QLabel *introduction = new QLabel(
+    ui.introduction->setText(
             qtr( "VLC media player" ) + qfu( " " VERSION_MESSAGE ) );
-    QLabel *iconVLC = new QLabel;
-    if( QDate::currentDate().dayOfYear() >= 354 )
-        iconVLC->setPixmap( QPixmap( ":/logo/vlc48-christmas.png" ) );
+
+    if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )
+        ui.iconVLC->setPixmap( QPixmap( ":/logo/vlc128-xmas.png" ) );
     else
-        iconVLC->setPixmap( QPixmap( ":/logo/vlc48.png" ) );
-    layout->addWidget( iconVLC, 0, 0, 1, 1 );
-    layout->addWidget( introduction, 0, 1, 1, 7 );
-    layout->addWidget( tab, 1, 0, 1, 8 );
-    layout->addWidget( closeButton, 2, 6, 1, 2 );
+        ui.iconVLC->setPixmap( QPixmap( ":/logo/vlc128.png" ) );
 
     /* Main Introduction */
-    QWidget *infoWidget = new QWidget( this );
-    QHBoxLayout *infoLayout = new QHBoxLayout( infoWidget );
-    QLabel *infoLabel = new QLabel(
+    ui.infoLabel->setText(
             qtr( "VLC media player is a free media player, "
                 "encoder and streamer that can read from files, "
                 "CDs, DVDs, network streams, capture cards and even more!\n"
@@ -123,58 +117,16 @@ AboutDialog::AboutDialog( intf_thread_t *_p_intf)
             + qtr( "You are using the Qt4 Interface.\n\n" )
             + qtr( "Copyright (C) " ) + COPYRIGHT_YEARS
             + qtr( " by the VideoLAN Team.\n" )
-            + "vlc@videolan.org, http://www.videolan.org" );
-    infoLabel->setWordWrap( infoLabel );
-
-    QLabel *iconVLC2 = new QLabel;
-    if( QDate::currentDate().dayOfYear() >= 354 )
-        iconVLC2->setPixmap( QPixmap( ":/logo/vlc128-christmas.png" ) );
-    else
-        iconVLC2->setPixmap( QPixmap( ":/logo/vlc128.png" ) );
-    infoLayout->addWidget( iconVLC2 );
-    infoLayout->addWidget( infoLabel );
+            + "http://www.videolan.org" );
 
     /* GPL License */
-    QTextEdit *licenseEdit = new QTextEdit( this );
-    licenseEdit->setText( qfu( psz_license ) );
-    licenseEdit->setReadOnly( true );
+    ui.licenseEdit->setText( qfu( psz_license ) );
 
     /* People who helped */
-    QWidget *thanksWidget = new QWidget( this );
-    QVBoxLayout *thanksLayout = new QVBoxLayout( thanksWidget );
-
-    QLabel *thanksLabel = new QLabel( qtr( "We would like to thank the whole "
-                "VLC community, the testers, our users and the following people "
-                "(and the missing ones...) for their collaboration to "
-                "create the best free software." ) );
-    thanksLabel->setWordWrap( true );
-    thanksLayout->addWidget( thanksLabel );
-    QTextEdit *thanksEdit = new QTextEdit( this );
-    thanksEdit->setText( qfu( psz_thanks ) );
-    thanksEdit->setReadOnly( true );
-    thanksLayout->addWidget( thanksEdit );
+    ui.thanksEdit->setText( qfu( psz_thanks ) );
 
     /* People who wrote the software */
-    QTextEdit *authorsEdit = new QTextEdit( this );
-    authorsEdit->setText( qfu( psz_authors ) );
-    authorsEdit->setReadOnly( true );
-
-    /* add the tabs to the Tabwidget */
-    tab->addTab( infoWidget, qtr( "About" ) );
-    tab->addTab( authorsEdit, qtr( "Authors" ) );
-    tab->addTab( thanksWidget, qtr("Thanks") );
-    tab->addTab( licenseEdit, qtr("License") );
-
-    BUTTONACT( closeButton, close() );
-}
-
-AboutDialog::~AboutDialog()
-{
-}
-
-void AboutDialog::close()
-{
-    toggleVisible();
+    ui.authorsEdit->setText( qfu( psz_authors ) );
 }
 
 #ifdef UPDATE_CHECK
@@ -198,40 +150,26 @@ static void UpdateCallback( void *data, bool b_ret )
 
 UpdateDialog::UpdateDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 {
+    /* build Ui */
+    ui.setupUi( this );
+    ui.updateDialogButtonBox->addButton( new QPushButton( qtr("&Close"), this ),
+                                         QDialogButtonBox::RejectRole );
+    QPushButton *recheckButton = new QPushButton( qtr("&Recheck version"), this );
+    ui.updateDialogButtonBox->addButton( recheckButton, QDialogButtonBox::ActionRole );
+
+    ui.updateNotifyButtonBox->addButton( new QPushButton( qtr("&Yes"), this ),
+                                         QDialogButtonBox::AcceptRole );
+    ui.updateNotifyButtonBox->addButton( new QPushButton( qtr("&No"), this ),
+                                         QDialogButtonBox::RejectRole );
+
     setWindowTitle( qtr( "VLC media player updates" ) );
     setWindowRole( "vlc-update" );
 
-    QGridLayout *layout = new QGridLayout( this );
+    BUTTONACT( recheckButton, UpdateOrDownload() );
+    CONNECT( ui.updateDialogButtonBox, rejected(), this, close() );
 
-    QPushButton *closeButton = new QPushButton( qtr( "&Cancel" ) );
-    updateButton = new QPushButton( qtr( "&Recheck version" ) );
-    updateButton->setDefault( true );
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( Qt::Horizontal );
-    buttonBox->addButton( updateButton, QDialogButtonBox::ActionRole );
-    buttonBox->addButton( closeButton, QDialogButtonBox::AcceptRole );
-
-    updateLabelTop = new QLabel( qtr( "Checking for an update..." ) );
-    updateLabelTop->setWordWrap( true );
-    updateLabelTop->setMargin( 8 );
-
-    updateLabelDown = new QLabel( qtr( "\nDo you want to download it?\n" ) );
-    updateLabelDown->setWordWrap( true );
-    updateLabelDown->hide();
-
-    updateText = new QTextEdit( this );
-    updateText->setAcceptRichText(false);
-    updateText->setTextInteractionFlags( Qt::TextSelectableByKeyboard|
-                                         Qt::TextSelectableByMouse);
-    updateText->setEnabled( false );
-
-    layout->addWidget( updateLabelTop, 0, 0 );
-    layout->addWidget( updateText, 1, 0 );
-    layout->addWidget( updateLabelDown, 2, 0 );
-    layout->addWidget( buttonBox, 3, 0 );
-
-    BUTTONACT( updateButton, UpdateOrDownload() );
-    BUTTONACT( closeButton, close() );
+    CONNECT( ui.updateNotifyButtonBox, accepted(), this, UpdateOrDownload() );
+    CONNECT( ui.updateNotifyButtonBox, rejected(), this, close() );
 
     /* Create the update structure */
     p_update = update_New( p_intf );
@@ -252,32 +190,24 @@ UpdateDialog::~UpdateDialog()
     writeSettings( "Update" );
 }
 
-void UpdateDialog::close()
-{
-    toggleVisible();
-}
-
 /* Check for updates */
 void UpdateDialog::UpdateOrDownload()
 {
     if( !b_checked )
     {
-        updateButton->setEnabled( false );
-        updateLabelTop->setText( qtr( "Launching an update request..." ) );
+        ui.stackedWidget->setCurrentWidget( ui.updateRequestPage );
         update_Check( p_update, UpdateCallback, this );
     }
     else
     {
-        QString dest_dir = QFileDialog::getExistingDirectory( this,
-                                 qtr( I_OP_SEL_DIR ),
-                                 QVLCUserDir( VLC_DOWNLOAD_DIR ) );
-
+        QString dest_dir = QDir::tempPath();
         if( !dest_dir.isEmpty() )
         {
             dest_dir = toNativeSepNoSlash( dest_dir ) + DIR_SEP;
             msg_Dbg( p_intf, "Downloading to folder: %s", qtu( dest_dir ) );
             toggleVisible();
             update_Download( p_update, qtu( dest_dir ) );
+            /* FIXME: We should trigger a change to another dialog here ! */
         }
     }
 }
@@ -299,37 +229,36 @@ void UpdateDialog::updateNotify( bool b_result )
     {
         if( update_NeedUpgrade( p_update ) )
         {
+            ui.stackedWidget->setCurrentWidget( ui.updateNotifyPage );
             update_release_t *p_release = update_GetRelease( p_update );
             assert( p_release );
             b_checked = true;
-            updateButton->setText( qtr( "&Yes" ) );
-            QString message = qtr( "A new version of VLC(" )
-                              + QString::number( p_release->i_major ) + "."
-                              + QString::number( p_release->i_minor ) + "."
-                              + QString::number( p_release->i_revision );
-            if( p_release->extra )
-                message += p_release->extra;
-            message += qtr( ") is available.");
-            updateLabelTop->setText( message );
+            QString message = QString(
+                    qtr( "A new version of VLC (%1.%2.%3%4) is available." ) )
+                .arg( QString::number( p_release->i_major ) )
+                .arg( QString::number( p_release->i_minor ) )
+                .arg( QString::number( p_release->i_revision ) )
+                .arg( p_release->i_extra == 0 ? "" : "." + QString::number( p_release->i_extra ) );
 
-            updateText->setText( qfu( p_release->psz_desc ) );
-            updateText->setEnabled( true );
-
-            updateLabelDown->show();
+            ui.updateNotifyLabel->setText( message );
+            ui.updateNotifyTextEdit->setText( qfu( p_release->psz_desc ) );
 
             /* Force the dialog to be shown */
             this->show();
         }
         else
-            updateLabelTop->setText(
+        {
+            ui.stackedWidget->setCurrentWidget( ui.updateDialogPage );
+            ui.updateDialogLabel->setText(
                     qtr( "You have the latest version of VLC media player." ) );
+        }
     }
     else
-        updateLabelTop->setText(
+    {
+        ui.stackedWidget->setCurrentWidget( ui.updateDialogPage );
+        ui.updateDialogLabel->setText(
                     qtr( "An error occurred while checking for updates..." ) );
-
-    updateButton->setEnabled( true );
+    }
 }
 
 #endif
-

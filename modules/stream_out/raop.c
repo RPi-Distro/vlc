@@ -2,7 +2,7 @@
  * raop.c: Remote Audio Output Protocol streaming support
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 498b1c487d012229d16540cdda16b0b97923d9f0 $
+ * $Id: 7664615756d070ae35de615f6cbdda76d622f98e $
  *
  * Author: Michael Hanselmann
  *
@@ -164,13 +164,13 @@ vlc_module_begin();
     add_shortcut( "raop" )
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_STREAM )
-    add_string( SOUT_CFG_PREFIX "host", "", NULL,
+    add_string( SOUT_CFG_PREFIX "host", "",
                 HOST_TEXT, HOST_LONGTEXT, false )
-    add_password( SOUT_CFG_PREFIX "password", NULL, NULL,
+    add_password( SOUT_CFG_PREFIX "password", NULL,
                   PASSWORD_TEXT, PASSWORD_LONGTEXT, false )
-    add_file( SOUT_CFG_PREFIX "password-file", NULL, NULL,
+    add_loadfile( SOUT_CFG_PREFIX "password-file", NULL,
               PASSWORD_FILE_TEXT, PASSWORD_FILE_LONGTEXT, false )
-    add_integer_with_range( SOUT_CFG_PREFIX "volume", 100, 0, 255, NULL,
+    add_integer_with_range( SOUT_CFG_PREFIX "volume", 100, 0, 255,
                             VOLUME_TEXT, VOLUME_LONGTEXT, false )
     set_callbacks( Open, Close )
 vlc_module_end()
@@ -577,7 +577,7 @@ static char *ReadPasswordFile( vlc_object_t *p_this, const char *psz_path )
             *psz_newline = '\0';
     }
 
-    if ( strlen( ps_buffer ) == 0 ) {
+    if ( *ps_buffer == '\0' ) {
         msg_Err( p_this, "No password could be read from '%s'", psz_path );
         goto error;
     }
@@ -1215,7 +1215,7 @@ static int UpdateVolume( vlc_object_t *p_this )
     /* Our volume is 0..255, RAOP is -144..0 (-144 off, -30..0 on) */
 
     /* Limit range */
-    p_sys->i_volume = __MAX( 0, __MIN( p_sys->i_volume, 255 ) );
+    p_sys->i_volume = VLC_CLIP( p_sys->i_volume, 0, 255 );
 
     if ( p_sys->i_volume == 0 )
         d_volume = -144.0;

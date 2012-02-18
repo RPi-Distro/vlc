@@ -2,7 +2,7 @@
  * bandlimited.c : band-limited interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: d0f447d79b78f64b01ca7a53f035728e0c5054e2 $
+ * $Id: 5368fc400954eb6473ef264efc6d5a90b1be1df9 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -72,7 +72,7 @@ struct filter_sys_t
     size_t i_buf_size;
 
     double d_old_factor;
-    int i_old_wing;
+    size_t i_old_wing;
 
     unsigned int i_remainder;                /* remainder of previous sample */
     bool b_first;

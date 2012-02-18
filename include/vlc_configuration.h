@@ -3,24 +3,24 @@
  * This file describes the programming interface for the configuration module.
  * It includes functions allowing to declare, get or set configuration options.
  *****************************************************************************
- * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: e9f88f07e6238458a81fa0f14c82f6f2c45572cd $
+ * Copyright (C) 1999-2006 VLC authors and VideoLAN
+ * $Id: bd6e00b6bf70e4b6be324648146a0d5d7c0309b4 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_CONFIGURATION_H
@@ -41,35 +41,33 @@ extern "C" {
  *****************************************************************************/
 
 /* Configuration hint types */
+#define CONFIG_HINT_CATEGORY                0x02  /* Start of new category */
+#define CONFIG_HINT_SUBCATEGORY             0x03  /* Start of sub-category */
+#define CONFIG_HINT_SUBCATEGORY_END         0x04  /* End of sub-category */
+#define CONFIG_HINT_USAGE                   0x05  /* Usage information */
 
-
-#define CONFIG_HINT_CATEGORY                0x0002  /* Start of new category */
-#define CONFIG_HINT_SUBCATEGORY             0x0003  /* Start of sub-category */
-#define CONFIG_HINT_SUBCATEGORY_END         0x0004  /* End of sub-category */
-#define CONFIG_HINT_USAGE                   0x0005  /* Usage information */
-
-#define CONFIG_CATEGORY                     0x0006 /* Set category */
-#define CONFIG_SUBCATEGORY                  0x0007 /* Set subcategory */
-#define CONFIG_SECTION                      0x0008 /* Start of new section */
-
-#define CONFIG_HINT                         0x000F
+#define CONFIG_CATEGORY                     0x06 /* Set category */
+#define CONFIG_SUBCATEGORY                  0x07 /* Set subcategory */
+#define CONFIG_SECTION                      0x08 /* Start of new section */
 
 /* Configuration item types */
-#define CONFIG_ITEM_STRING                  0x0010  /* String option */
-#define CONFIG_ITEM_FILE                    0x0020  /* File option */
-#define CONFIG_ITEM_MODULE                  0x0030  /* Module option */
-#define CONFIG_ITEM_INTEGER                 0x0040  /* Integer option */
-#define CONFIG_ITEM_BOOL                    0x0050  /* Bool option */
-#define CONFIG_ITEM_FLOAT                   0x0060  /* Float option */
-#define CONFIG_ITEM_DIRECTORY               0x0070  /* Directory option */
-#define CONFIG_ITEM_KEY                     0x0080  /* Hot key option */
-#define CONFIG_ITEM_MODULE_CAT              0x0090  /* Module option */
-#define CONFIG_ITEM_MODULE_LIST             0x00A0  /* Module option */
-#define CONFIG_ITEM_MODULE_LIST_CAT         0x00B0  /* Module option */
-#define CONFIG_ITEM_FONT                    0x00C0  /* Font option */
-#define CONFIG_ITEM_PASSWORD                0x00D0  /* Password option (*) */
+#define CONFIG_ITEM_FLOAT                   0x20  /* Float option */
+#define CONFIG_ITEM_INTEGER                 0x40  /* Integer option */
+#define CONFIG_ITEM_RGB                     0x41  /* RGB color option */
+#define CONFIG_ITEM_BOOL                    0x60  /* Bool option */
+#define CONFIG_ITEM_STRING                  0x80  /* String option */
+#define CONFIG_ITEM_PASSWORD                0x81  /* Password option (*) */
+#define CONFIG_ITEM_KEY                     0x82  /* Hot key option */
+#define CONFIG_ITEM_MODULE                  0x84  /* Module option */
+#define CONFIG_ITEM_MODULE_CAT              0x85  /* Module option */
+#define CONFIG_ITEM_MODULE_LIST             0x86  /* Module option */
+#define CONFIG_ITEM_MODULE_LIST_CAT         0x87  /* Module option */
+#define CONFIG_ITEM_LOADFILE                0x8C  /* Read file option */
+#define CONFIG_ITEM_SAVEFILE                0x8D  /* Written file option */
+#define CONFIG_ITEM_DIRECTORY               0x8E  /* Directory option */
+#define CONFIG_ITEM_FONT                    0x8F  /* Font option */
 
-#define CONFIG_ITEM                         0x00F0
+#define CONFIG_ITEM(x) (((x) & ~0xF) != 0)
 
 /*******************************************************************
  * All predefined categories and subcategories
@@ -137,86 +135,69 @@ struct config_category_t
 typedef union
 {
     char       *psz;
-    int         i;
+    int64_t     i;
     float       f;
 } module_value_t;
 
-typedef union
-{
-    int         i;
-    float       f;
-} module_nvalue_t;
-
 struct module_config_t
 {
-    int          i_type;                               /* Configuration type */
     char        *psz_type;                          /* Configuration subtype */
     char        *psz_name;                                    /* Option name */
-    char         i_short;                      /* Optional short option name */
     char        *psz_text;      /* Short comment on the configuration option */
     char        *psz_longtext;   /* Long comment on the configuration option */
     module_value_t value;                                    /* Option value */
     module_value_t orig;
-    module_value_t saved;
-    module_nvalue_t min;
-    module_nvalue_t max;
-
-    /* Function to call when commiting a change */
-    vlc_callback_t pf_callback;
-    void          *p_callback_data;
+    module_value_t min;
+    module_value_t max;
 
     /* Values list */
     char **      ppsz_list;       /* List of possible values for the option */
     int         *pi_list;                              /* Idem for integers */
     char       **ppsz_list_text;          /* Friendly names for list values */
     int          i_list;                               /* Options list size */
-    vlc_callback_t pf_update_list; /*callback to initialize dropdownlists */
-
-    /* Actions list */
-    vlc_callback_t *ppf_action;    /* List of possible actions for a config */
-    char          **ppsz_action_text;         /* Friendly names for actions */
-    int            i_action;                           /* actions list size */
+    vlc_callback_t pf_update_list; /* Callback to initialize dropdown lists */
+    uint8_t      i_type;                              /* Configuration type */
+    char         i_short;                     /* Optional short option name */
 
     /* Misc */
-    bool        b_dirty;          /* Dirty flag to indicate a config change */
-    bool        b_advanced;          /* Flag to indicate an advanced option */
-    bool        b_internal;   /* Flag to indicate option is not to be shown */
-    bool        b_restart;   /* Flag to indicate the option needs a restart */
-                              /* to take effect */
+    unsigned    b_dirty:1;        /* Dirty flag to indicate a config change */
+    unsigned    b_advanced:1;        /* Flag to indicate an advanced option */
+    unsigned    b_internal:1; /* Flag to indicate option is not to be shown */
+    unsigned    b_unsaveable:1;               /* Config should not be saved */
+    unsigned    b_safe:1;       /* Safe to use in web plugins and playlists */
+
+    /* Actions list */
+    int            i_action;                           /* actions list size */
+    vlc_callback_t *ppf_action;    /* List of possible actions for a config */
+    char          **ppsz_action_text;         /* Friendly names for actions */
 
     /* Deprecated */
-    char        *psz_oldname;                          /* Old option name */
     bool        b_removed;
-
-    /* Option values loaded from config file */
-    bool        b_autosave;      /* Config will be auto-saved at exit time */
-    bool        b_unsaveable;                /* Config should not be saved */
-
-    bool        b_safe;
 };
 
 /*****************************************************************************
  * Prototypes - these methods are used to get, set or manipulate configuration
  * data.
  *****************************************************************************/
-VLC_EXPORT( int,    config_GetType,  (vlc_object_t *, const char *) LIBVLC_USED );
-VLC_EXPORT( int,    config_GetInt,   (vlc_object_t *, const char *) LIBVLC_USED );
-VLC_EXPORT( void,   config_PutInt,   (vlc_object_t *, const char *, int) );
-VLC_EXPORT( float,  config_GetFloat, (vlc_object_t *, const char *) LIBVLC_USED );
-VLC_EXPORT( void,   config_PutFloat, (vlc_object_t *, const char *, float) );
-VLC_EXPORT( char *, config_GetPsz,   (vlc_object_t *, const char *) LIBVLC_USED );
-VLC_EXPORT( void,   config_PutPsz,   (vlc_object_t *, const char *, const char *) );
+VLC_API int config_GetType(vlc_object_t *, const char *) VLC_USED;
+VLC_API int64_t config_GetInt(vlc_object_t *, const char *) VLC_USED;
+VLC_API void config_PutInt(vlc_object_t *, const char *, int64_t);
+VLC_API float config_GetFloat(vlc_object_t *, const char *) VLC_USED;
+VLC_API void config_PutFloat(vlc_object_t *, const char *, float);
+VLC_API char * config_GetPsz(vlc_object_t *, const char *) VLC_USED VLC_MALLOC;
+VLC_API void config_PutPsz(vlc_object_t *, const char *, const char *);
 
-VLC_EXPORT( int,    config_SaveConfigFile, ( vlc_object_t *, const char * ) );
-#define config_SaveConfigFile(a,b) config_SaveConfigFile(VLC_OBJECT(a),b)
-VLC_EXPORT( void,   config_ResetAll, ( vlc_object_t * ) );
+VLC_API int config_SaveConfigFile( vlc_object_t * );
+#define config_SaveConfigFile(a) config_SaveConfigFile(VLC_OBJECT(a))
+
+VLC_API void config_ResetAll( vlc_object_t * );
 #define config_ResetAll(a) config_ResetAll(VLC_OBJECT(a))
 
-VLC_EXPORT( module_config_t *, config_FindConfig,( vlc_object_t *, const char * ) LIBVLC_USED );
-VLC_EXPORT(char *, config_GetDataDir, ( vlc_object_t * ) LIBVLC_USED);
+VLC_API module_config_t * config_FindConfig( vlc_object_t *, const char * ) VLC_USED;
+VLC_API char * config_GetDataDir( vlc_object_t * ) VLC_USED VLC_MALLOC;
 #define config_GetDataDir(a) config_GetDataDir(VLC_OBJECT(a))
-VLC_EXPORT(const char *, config_GetLibDir, ( void ) LIBVLC_USED);
-VLC_EXPORT(const char *, config_GetConfDir, ( void ) LIBVLC_USED);
+VLC_API const char * config_GetLibDir( void ) VLC_USED;
+VLC_API const char * config_GetConfDir( void ) VLC_USED;
 
 typedef enum vlc_userdir
 {
@@ -235,11 +216,11 @@ typedef enum vlc_userdir
     VLC_VIDEOS_DIR,
 } vlc_userdir_t;
 
-VLC_EXPORT(char *, config_GetUserDir, ( vlc_userdir_t ) LIBVLC_USED);
+VLC_API char * config_GetUserDir( vlc_userdir_t ) VLC_USED VLC_MALLOC;
 
-VLC_EXPORT( void, config_AddIntf,    ( vlc_object_t *, const char * ) );
-VLC_EXPORT( void, config_RemoveIntf, ( vlc_object_t *, const char * ) );
-VLC_EXPORT( bool, config_ExistIntf,  ( vlc_object_t *, const char * ) LIBVLC_USED);
+VLC_API void config_AddIntf( vlc_object_t *, const char * );
+VLC_API void config_RemoveIntf( vlc_object_t *, const char * );
+VLC_API bool config_ExistIntf( vlc_object_t *, const char * ) VLC_USED;
 
 #define config_GetType(a,b) config_GetType(VLC_OBJECT(a),b)
 #define config_GetInt(a,b) config_GetInt(VLC_OBJECT(a),b)
@@ -271,7 +252,7 @@ struct config_chain_t
  *
  * The option names will be created by adding the psz_prefix prefix.
  */
-VLC_EXPORT( void, config_ChainParse, ( vlc_object_t *, const char *psz_prefix, const char *const *ppsz_options, config_chain_t * ) );
+VLC_API void config_ChainParse( vlc_object_t *, const char *psz_prefix, const char *const *ppsz_options, config_chain_t * );
 #define config_ChainParse( a, b, c, d ) config_ChainParse( VLC_OBJECT(a), b, c, d )
 
 /**
@@ -285,18 +266,18 @@ VLC_EXPORT( void, config_ChainParse, ( vlc_object_t *, const char *psz_prefix, c
  *
  * The options values are unescaped using config_StringUnescape.
  */
-VLC_EXPORT( char *, config_ChainCreate, ( char **ppsz_name, config_chain_t **pp_cfg, const char *psz_string ) ) LIBVLC_USED LIBVLC_MALLOC;
+VLC_API char *config_ChainCreate( char **ppsz_name, config_chain_t **pp_cfg, const char *psz_string ) VLC_USED VLC_MALLOC;
 
 /**
  * This function will release a linked list of config_chain_t
  * (Including the head)
  */
-VLC_EXPORT( void, config_ChainDestroy, ( config_chain_t * ) );
+VLC_API void config_ChainDestroy( config_chain_t * );
 
 /**
  * This function will duplicate a linked list of config_chain_t
  */
-VLC_EXPORT( config_chain_t *, config_ChainDuplicate, ( const config_chain_t * ) );
+VLC_API config_chain_t * config_ChainDuplicate( const config_chain_t * ) VLC_USED VLC_MALLOC;
 
 /**
  * This function will unescape a string in place and will return a pointer on
@@ -307,7 +288,7 @@ VLC_EXPORT( config_chain_t *, config_ChainDuplicate, ( const config_chain_t * ) 
  * The following sequences will be unescaped (only one time):
  * \\ \' and \"
  */
-VLC_EXPORT( char *, config_StringUnescape, ( char *psz_string ) );
+VLC_API char * config_StringUnescape( char *psz_string );
 
 /**
  * This function will escape a string that can be unescaped by
@@ -318,7 +299,7 @@ VLC_EXPORT( char *, config_StringUnescape, ( char *psz_string ) );
  *
  * The escaped characters are ' " and \
  */
-VLC_EXPORT( char *, config_StringEscape, ( const char *psz_string ) LIBVLC_USED);
+VLC_API char * config_StringEscape( const char *psz_string ) VLC_USED VLC_MALLOC;
 
 # ifdef __cplusplus
 }

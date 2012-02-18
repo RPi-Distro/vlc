@@ -1,11 +1,12 @@
 /*****************************************************************************
  * playlist.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 96cee08f15b3f482fe5d709d0413bc106f0c0a85 $
+ * Copyright (C) 2002-2012 VLC authors and VideoLAN
+ * $Id: 00d405b8a5b7dbd3e84ad229b84bf07dec9a2968 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
+ *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#import "PXSourceList.h"
+
 /*****************************************************************************
  * VLCPlaylistView interface
  *****************************************************************************/
@@ -34,21 +37,24 @@
 /*****************************************************************************
  * VLCPlaylistCommon interface
  *****************************************************************************/
-@interface VLCPlaylistCommon : NSObject
+@interface VLCPlaylistCommon : NSObject <NSOutlineViewDataSource, NSOutlineViewDelegate>
 {
     IBOutlet id o_tc_name;
     IBOutlet id o_tc_author;
     IBOutlet id o_tc_duration;
-    IBOutlet id o_outline_view;
+    IBOutlet VLCPlaylistView* o_outline_view;
 
     IBOutlet id o_tc_name_other;
     IBOutlet id o_tc_author_other;
     IBOutlet id o_tc_duration_other;
-    IBOutlet id o_outline_view_other;
+    IBOutlet VLCPlaylistView* o_outline_view_other;
 
     NSMutableDictionary *o_outline_dict;
+    playlist_item_t * p_current_root_item;
 }
 
+- (void)setPlaylistRoot: (playlist_item_t *)root_item;
+- (playlist_item_t *)currentPlaylistRoot;
 - (void)initStrings;
 - (playlist_item_t *)selectedPlaylistItem;
 - (NSOutlineView *)outlineView;
@@ -76,9 +82,6 @@
 
     IBOutlet id o_btn_playlist;
     IBOutlet id o_playlist_view;
-    IBOutlet id o_sidebar;
-    IBOutlet id o_status_field;
-    IBOutlet id o_status_field_embed;
     IBOutlet id o_search_field;
     IBOutlet id o_search_field_other;
     IBOutlet id o_mi_save_playlist;
@@ -118,10 +121,6 @@
     BOOL b_selected_item_met;
     BOOL b_isSortDescending;
     id o_tc_sortColumn;
-
-    /* "add node" button and menu entry */
-    IBOutlet id o_mi_addNode;
-    IBOutlet id o_btn_addNode;
 }
 
 - (void)searchfieldChanged:(NSNotification *)o_notification;
@@ -130,7 +129,7 @@
 - (IBAction)searchItem:(id)sender;
 
 - (void)playlistUpdated;
-- (void)playModeUpdated;
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification;
 - (void)sortNode:(int)i_mode;
 - (void)updateRowSelection;
 
@@ -148,9 +147,6 @@
 - (IBAction)sortNodeByAuthor:(id)sender;
 - (IBAction)recursiveExpandNode:(id)sender;
 
-- (IBAction)addNode:(id)sender;
-
-- (void)playSidebarItem:(id)item;
 - (id)playingItem;
 
 - (void)appendArray:(NSArray*)o_array atPos:(int)i_position enqueue:(BOOL)b_enqueue;

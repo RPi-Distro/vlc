@@ -2,7 +2,7 @@
  * rawaud.c : raw audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: b5a270b05384cdc403c7e85b02af5f968cc70da7 $
+ * $Id: 36cf73b996f2e722c3779ab0f02c9aad4bc6437a $
  *
  * Authors: Jarmo Torvinen <jarmo.torvinen@jutel.fi>
  *
@@ -67,11 +67,11 @@ vlc_module_begin();
     set_subcategory( SUBCAT_INPUT_DEMUX );
     set_callbacks( Open, Close );
     add_shortcut( "rawaud" );
-    add_integer( "rawaud-channels", 2, 0, CHANNELS_TEXT, CHANNELS_LONGTEXT, false );
-    add_integer( "rawaud-samplerate", 48000, 0, SAMPLERATE_TEXT, SAMPLERATE_LONGTEXT, false );
-    add_string( "rawaud-fourcc", FOURCC_DEFAULT, NULL,
+    add_integer( "rawaud-channels", 2, CHANNELS_TEXT, CHANNELS_LONGTEXT, false );
+    add_integer( "rawaud-samplerate", 48000, SAMPLERATE_TEXT, SAMPLERATE_LONGTEXT, false );
+    add_string( "rawaud-fourcc", FOURCC_DEFAULT,
                 FOURCC_TEXT, FOURCC_LONGTEXT, false );
-    add_string( "rawaud-lang", "eng", NULL, LANG_TEXT, LANG_LONGTEXT, false);
+    add_string( "rawaud-lang", "eng", LANG_TEXT, LANG_LONGTEXT, false);
 vlc_module_end();
 
 /*****************************************************************************

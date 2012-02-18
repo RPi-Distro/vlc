@@ -2,7 +2,7 @@
  * skin_common.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d680319d09e607f38f0f2ed2ea98b05051087c51 $
+ * $Id: b7addbe4f83c1910f6786eb23a01f6ca4f65b55a $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -46,6 +46,7 @@ class OSLoop;
 class VarManager;
 class VlcProc;
 class VoutManager;
+class ArtManager;
 class Theme;
 class ThemeRepository;
 
@@ -60,6 +61,11 @@ class ThemeRepository;
 #pragma warning ( disable:4786 )
 #endif
 
+#ifdef X11_SKINS
+typedef uint32_t vlc_wnd_type;
+#else
+typedef void* vlc_wnd_type;
+#endif
 
 /// Wrapper around FromLocale, to avoid the need to call LocaleFree()
 static inline string sFromLocale( const string &rLocale )
@@ -124,6 +130,8 @@ struct intf_sys_t
     VlcProc *p_vlcProc;
     /// Vout manager
     VoutManager *p_voutManager;
+    /// Art manager
+    ArtManager *p_artManager;
     /// Theme repository
     ThemeRepository *p_repository;
 
@@ -134,13 +142,8 @@ struct intf_sys_t
     vlc_thread_t thread;
     vlc_mutex_t  init_lock;
     vlc_cond_t   init_wait;
+    bool         b_error;
     bool         b_ready;
-
-    /// handle (vout windows)
-    void*        handle;
-    vlc_mutex_t  vout_lock;
-    vlc_cond_t   vout_wait;
-    bool         b_vout_ready;
 };
 
 

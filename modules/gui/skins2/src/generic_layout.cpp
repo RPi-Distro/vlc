@@ -2,7 +2,7 @@
  * generic_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 731d8dd75c1fe87147fb2f7c0e2348ea4d599914 $
+ * $Id: 5f5cfa00fc9287627b88fc0fc0465bf96960bb1c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -58,13 +58,13 @@ GenericLayout::~GenericLayout()
     delete m_pImage;
 
     list<Anchor*>::const_iterator it;
-    for( it = m_anchorList.begin(); it != m_anchorList.end(); it++ )
+    for( it = m_anchorList.begin(); it != m_anchorList.end(); ++it )
     {
         delete *it;
     }
 
     list<LayeredControl>::const_iterator iter;
-    for( iter = m_controlList.begin(); iter != m_controlList.end(); iter++ )
+    for( iter = m_controlList.begin(); iter != m_controlList.end(); ++iter )
     {
         CtrlGeneric *pCtrl = (*iter).m_pControl;
         pCtrl->unsetLayout();
@@ -109,14 +109,10 @@ void GenericLayout::addControl( CtrlGeneric *pControl,
         // Associate this layout to the control
         pControl->setLayout( this, rPosition );
 
-        // Draw the control
-        if( pControl->isVisible() )
-            pControl->draw( *m_pImage, rPosition.getLeft(), rPosition.getTop() );
-
         // Add the control in the list.
         // This list must remain sorted by layer order
         list<LayeredControl>::iterator it;
-        for( it = m_controlList.begin(); it != m_controlList.end(); it++ )
+        for( it = m_controlList.begin(); it != m_controlList.end(); ++it )
         {
             if( layer < (*it).m_layer )
             {
@@ -153,19 +149,23 @@ void GenericLayout::onControlUpdate( const CtrlGeneric &rCtrl,
                                      int width, int height,
                                      int xOffSet, int yOffSet )
 {
-    // The size is not valid, refresh the whole layout
-    if( width <= 0 || height <= 0 )
-    {
-        refreshAll();
+    // Do nothing if the layout or control is hidden
+    if( !m_visible )
         return;
-    }
 
     const Position *pPos = rCtrl.getPosition();
-    if( pPos )
+    if( width > 0 && height > 0 )
     {
-        refreshRect( pPos->getLeft() + xOffSet,
+        // make sure region is within the layout
+        rect region( pPos->getLeft() + xOffSet,
                      pPos->getTop() + yOffSet,
                      width, height );
+        rect layout( 0, 0, m_rect.getWidth(), m_rect.getHeight() );
+        rect inter;
+        if( rect::intersect( layout, region, &inter ) )
+        {
+            refreshRect( inter.x, inter.y, inter.width, inter.height );
+        }
     }
 }
 
@@ -185,7 +185,7 @@ void GenericLayout::resize( int width, int height )
 
     // Notify all the controls that the size has changed and redraw them
     list<LayeredControl>::const_iterator iter;
-    for( iter = m_controlList.begin(); iter != m_controlList.end(); iter++ )
+    for( iter = m_controlList.begin(); iter != m_controlList.end(); ++iter )
     {
         iter->m_pControl->onResize();
     }
@@ -219,14 +219,12 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
 
     // Draw all the controls of the layout
     list<LayeredControl>::const_iterator iter;
-    list<LayeredControl>::const_iterator iterVideo = m_controlList.end();
-    for( iter = m_controlList.begin(); iter != m_controlList.end(); iter++ )
+    for( iter = m_controlList.begin(); iter != m_controlList.end(); ++iter )
     {
         CtrlGeneric *pCtrl = (*iter).m_pControl;
-        const Position *pPos = pCtrl->getPosition();
-        if( pPos && pCtrl->isVisible() )
+        if( pCtrl->isVisible() )
         {
-            pCtrl->draw( *m_pImage, pPos->getLeft(), pPos->getTop() );
+            pCtrl->draw( *m_pImage, x, y, width, height );
         }
     }
 
@@ -237,17 +235,7 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
         // first apply new shape to the window
         pWindow->updateShape();
 
-        // Check boundaries
-        if( x < 0 )
-            x = 0;
-        if( y < 0)
-            y = 0;
-        if( x + width > m_rect.getWidth() )
-            width = m_rect.getWidth() - x;
-        if( y + height > m_rect.getHeight() )
-            height = m_rect.getHeight() - y;
-
-        pWindow->refresh( x, y, width, height );
+        pWindow->invalidateRect( x, y, width, height );
     }
 }
 

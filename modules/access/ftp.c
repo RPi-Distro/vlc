@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: 4d217f392a0be5dc015c4b0c15bcc670efbf9bb8 $
+ * $Id: ba16ea9eeecf50561b34953fdecbe067c738d946 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -55,10 +55,6 @@ static void  InClose( vlc_object_t * );
 static int  OutOpen ( vlc_object_t * );
 static void OutClose( vlc_object_t * );
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for FTP streams. This " \
-    "value should be set in milliseconds." )
 #define USER_TEXT N_("FTP user name")
 #define USER_LONGTEXT N_("User name that will " \
     "be used for the connection.")
@@ -75,14 +71,11 @@ vlc_module_begin ()
     set_capability( "access", 0 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-    add_integer( "ftp-caching", 2 * DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, true )
-        change_safe()
-    add_string( "ftp-user", "anonymous", NULL, USER_TEXT, USER_LONGTEXT,
+    add_string( "ftp-user", "anonymous", USER_TEXT, USER_LONGTEXT,
                 false )
-    add_string( "ftp-pwd", "anonymous@example.com", NULL, PASS_TEXT,
+    add_string( "ftp-pwd", "anonymous@example.com", PASS_TEXT,
                 PASS_LONGTEXT, false )
-    add_string( "ftp-account", "anonymous", NULL, ACCOUNT_TEXT,
+    add_string( "ftp-account", "anonymous", ACCOUNT_TEXT,
                 ACCOUNT_LONGTEXT, false )
     add_shortcut( "ftp" )
     set_callbacks( InOpen, InClose )
@@ -156,7 +149,7 @@ static int Login( vlc_object_t *p_access, access_sys_t *p_sys )
     if( p_sys->url.psz_username && *p_sys->url.psz_username )
         psz = strdup( p_sys->url.psz_username );
     else
-        psz = var_CreateGetString( p_access, "ftp-user" );
+        psz = var_InheritString( p_access, "ftp-user" );
     if( !psz )
         return -1;
 
@@ -178,7 +171,7 @@ static int Login( vlc_object_t *p_access, access_sys_t *p_sys )
             if( p_sys->url.psz_password && *p_sys->url.psz_password )
                 psz = strdup( p_sys->url.psz_password );
             else
-                psz = var_CreateGetString( p_access, "ftp-pwd" );
+                psz = var_InheritString( p_access, "ftp-pwd" );
             if( !psz )
                 return -1;
 
@@ -197,7 +190,7 @@ static int Login( vlc_object_t *p_access, access_sys_t *p_sys )
                     break;
                 case 3:
                     msg_Dbg( p_access, "account needed" );
-                    psz = var_CreateGetString( p_access, "ftp-account" );
+                    psz = var_InheritString( p_access, "ftp-account" );
                     if( ftp_SendCommand( p_access, p_sys, "ACCT %s",
                                          psz ) < 0 ||
                         ftp_ReadCommand( p_access, p_sys, &i_answer, NULL ) < 0 )
@@ -343,7 +336,7 @@ static int InOpen( vlc_object_t *p_this )
     p_sys->out = false;
     p_sys->directory = false;
 
-    if( parseURL( &p_sys->url, p_access->psz_path ) )
+    if( parseURL( &p_sys->url, p_access->psz_location ) )
         goto exit_error;
 
     if( Connect( p_this, p_sys ) )
@@ -353,26 +346,26 @@ static int InOpen( vlc_object_t *p_this )
     if( p_sys->url.psz_path == NULL )
         p_sys->directory = true;
     else
-    if( ftp_SendCommand( p_this, p_sys, "SIZE %s", p_sys->url.psz_path ) < 0
-     || ftp_ReadCommand( p_this, p_sys, NULL, &psz_arg ) != 2 )
-    {
-        msg_Dbg( p_access, "cannot get file size" );
-        msg_Dbg( p_access, "will try to get directory contents" );
-        if( ftp_SendCommand( p_this, p_sys, "CWD %s", p_sys->url.psz_path ) < 0
-         || ftp_ReadCommand( p_this, p_sys, NULL, NULL ) != 2 )
-        {
-            msg_Err( p_access, "file or directory doesn't exist" );
-            net_Close( p_sys->fd_cmd );
-            goto exit_error;
-        }
-        p_sys->directory = true;
-    }
+    if( ftp_SendCommand( p_this, p_sys, "SIZE %s", p_sys->url.psz_path ) < 0 )
+        goto error;
     else
+    if ( ftp_ReadCommand( p_this, p_sys, NULL, &psz_arg ) == 2 )
     {
         p_access->info.i_size = atoll( &psz_arg[4] );
         free( psz_arg );
         msg_Dbg( p_access, "file size: %"PRIu64, p_access->info.i_size );
     }
+    else
+    if( ftp_SendCommand( p_this, p_sys, "CWD %s", p_sys->url.psz_path ) < 0 )
+        goto error;
+    else
+    if( ftp_ReadCommand( p_this, p_sys, NULL, NULL ) != 2 )
+    {
+        msg_Err( p_access, "file or directory does not exist" );
+        goto error;
+    }
+    else
+        p_sys->directory = true;
 
     /* Start the 'stream' */
     if( ftp_StartStream( p_this, p_sys, 0 ) < 0 )
@@ -382,11 +375,10 @@ static int InOpen( vlc_object_t *p_this )
         goto exit_error;
     }
 
-    /* Update default_pts to a suitable value for ftp access */
-    var_Create( p_access, "ftp-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-
     return VLC_SUCCESS;
 
+error:
+    net_Close( p_sys->fd_cmd );
 exit_error:
     vlc_UrlClean( &p_sys->url );
     free( p_sys );
@@ -600,7 +592,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t)var_GetInteger( p_access, "ftp-caching" ) * INT64_C(1000);
+            *pi_64 = INT64_C(1000)
+                   * var_InheritInteger( p_access, "network-caching" );
             break;
 
         /* */

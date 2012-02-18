@@ -2,7 +2,7 @@
  * erase.c : logo erase video filter
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: cc292608e2570177e46c22390dec0cda91afc97d $
+ * $Id: 4bcb02090cfeb886502dc110e1832f1f1cac0cbe $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -35,6 +35,7 @@
 #include <vlc_image.h>
 
 #include <vlc_filter.h>
+#include <vlc_url.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -71,10 +72,10 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    add_file( CFG_PREFIX "mask", NULL, NULL,
-              MASK_TEXT, MASK_LONGTEXT, false )
-    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, false )
-    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, false )
+    add_loadfile( CFG_PREFIX "mask", NULL,
+                  MASK_TEXT, MASK_LONGTEXT, false )
+    add_integer( CFG_PREFIX "x", 0, POSX_TEXT, POSX_LONGTEXT, false )
+    add_integer( CFG_PREFIX "y", 0, POSY_TEXT, POSY_LONGTEXT, false )
 
     add_shortcut( "erase" )
     set_callbacks( Create, Destroy )
@@ -104,8 +105,10 @@ static void LoadMask( filter_t *p_filter, const char *psz_filename )
     memset( &fmt_out, 0, sizeof( video_format_t ) );
     fmt_out.i_chroma = VLC_CODEC_YUVA;
     p_image = image_HandlerCreate( p_filter );
+    char *psz_url = make_URI( psz_filename, NULL );
     p_filter->p_sys->p_mask =
-        image_ReadUrl( p_image, psz_filename, &fmt_in, &fmt_out );
+        image_ReadUrl( p_image, psz_url, &fmt_in, &fmt_out );
+    free( psz_url );
     if( p_filter->p_sys->p_mask )
     {
         if( p_old_mask )
@@ -248,7 +251,6 @@ static void FilterErase( filter_t *p_filter, picture_t *p_inpic,
         const int i_visible_pitch = p_inpic->p[i_plane].i_visible_pitch;
         const int i_visible_lines = p_inpic->p[i_plane].i_visible_lines;
 
-        uint8_t *p_outpix = p_outpic->p[i_plane].p_pixels;
         uint8_t *p_mask = p_sys->p_mask->A_PIXELS;
         int i_x = p_sys->i_x, i_y = p_sys->i_y;
 
@@ -277,7 +279,7 @@ static void FilterErase( filter_t *p_filter, picture_t *p_inpic,
         plane_CopyPixels( &p_outpic->p[i_plane], &p_inpic->p[i_plane] );
 
         /* Horizontal linear interpolation of masked areas */
-        p_outpix = p_outpic->p[i_plane].p_pixels + i_y*i_pitch + i_x;
+        uint8_t *p_outpix = p_outpic->p[i_plane].p_pixels + i_y*i_pitch + i_x;
         for( y = 0; y < i_height;
              y++, p_mask += i_mask_pitch, p_outpix += i_pitch )
         {

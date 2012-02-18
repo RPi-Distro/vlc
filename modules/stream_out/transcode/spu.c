@@ -2,7 +2,7 @@
  * spu.c: transcoding stream output module (spu)
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 32b0608b35bf3734f98153295bdf1a3f2fa2eb00 $
+ * $Id: d008d2dcb9e7e5c92230450e39bb1558f6ec5ccd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -31,13 +31,15 @@
 #include "transcode.h"
 
 #include <vlc_meta.h>
-#include <vlc_osd.h>
+#include <vlc_spu.h>
+#include <vlc_modules.h>
 #include <assert.h>
 
-static subpicture_t *spu_new_buffer( decoder_t *p_dec )
+static subpicture_t *spu_new_buffer( decoder_t *p_dec,
+                                     const subpicture_updater_t *p_upd )
 {
     VLC_UNUSED( p_dec );
-    subpicture_t *p_subpicture = subpicture_New();
+    subpicture_t *p_subpicture = subpicture_New( p_upd );
     p_subpicture->b_subtitle = true;
     return p_subpicture;
 }
@@ -92,10 +94,7 @@ int transcode_spu_new( sout_stream_t *p_stream, sout_stream_id_t *id )
     }
 
     if( !p_sys->p_spu )
-    {
         p_sys->p_spu = spu_Create( p_stream );
-        spu_Init( p_sys->p_spu );
-    }
 
     return VLC_SUCCESS;
 }
@@ -132,8 +131,6 @@ int transcode_spu_process( sout_stream_t *p_stream,
     if( !p_subpic )
         return VLC_EGENERIC;
 
-    sout_UpdateStatistic( p_stream->p_sout, SOUT_STATISTIC_DECODED_SUBTITLE, 1 );
-
     if( p_sys->b_master_sync && p_sys->i_master_drift )
     {
         p_subpic->i_start -= p_sys->i_master_drift;
@@ -142,7 +139,7 @@ int transcode_spu_process( sout_stream_t *p_stream,
 
     if( p_sys->b_soverlay )
     {
-        spu_DisplaySubpicture( p_sys->p_spu, p_subpic );
+        spu_PutSubpicture( p_sys->p_spu, p_subpic );
     }
     else
     {

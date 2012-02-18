@@ -2,7 +2,7 @@
  * fb.c : framebuffer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2009 the VideoLAN team
- * $Id: 822e74ef9bef66c4d12c7ac30b0f9b0638e603d7 $
+ * $Id: 4c4cef1f0140771cb10862e1a1b904a8e066f55b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman
@@ -83,14 +83,14 @@ vlc_module_begin ()
     set_shortname("Framebuffer")
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VOUT)
-    add_file(FB_DEV_VAR, "/dev/fb0", NULL, DEVICE_TEXT, DEVICE_LONGTEXT,
-              false)
-    add_bool("fb-tty", true, NULL, TTY_TEXT, TTY_LONGTEXT, true)
-    add_string( "fb-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true )
+    add_loadfile(FB_DEV_VAR, "/dev/fb0", DEVICE_TEXT, DEVICE_LONGTEXT,
+                 false)
+    add_bool("fb-tty", true, TTY_TEXT, TTY_LONGTEXT, true)
+    add_string( "fb-chroma", NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true )
     add_obsolete_string("fb-aspect-ratio")
-    add_integer("fb-mode", 4, NULL, FB_MODE_TEXT, FB_MODE_LONGTEXT,
+    add_integer("fb-mode", 4, FB_MODE_TEXT, FB_MODE_LONGTEXT,
                  true)
-    add_bool("fb-hw-accel", true, NULL, HW_ACCEL_TEXT, HW_ACCEL_LONGTEXT,
+    add_bool("fb-hw-accel", true, HW_ACCEL_TEXT, HW_ACCEL_LONGTEXT,
               true)
     set_description(N_("GNU/Linux framebuffer video output"))
     set_capability("vout display", 30)
@@ -101,9 +101,8 @@ vlc_module_end ()
  * Local prototypes
  *****************************************************************************/
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
-static void           Display(vout_display_t *, picture_t *);
+static void           Display(vout_display_t *, picture_t *, subpicture_t *);
 static int            Control(vout_display_t *, int, va_list);
-static void           Manage (vout_display_t *);
 
 /* */
 static int  OpenDisplay  (vout_display_t *, bool force_resolution);
@@ -186,11 +185,11 @@ static int Open(vlc_object_t *object)
         return VLC_ENOMEM;
 
     /* Does the framebuffer uses hw acceleration? */
-    sys->is_hw_accel = var_CreateGetBool(vd, "fb-hw-accel");
+    sys->is_hw_accel = var_InheritBool(vd, "fb-hw-accel");
 
     /* Set tty and fb devices */
     sys->tty = 0; /* 0 == /dev/tty0 == current console */
-    sys->is_tty = var_CreateGetBool(vd, "fb-tty");
+    sys->is_tty = var_InheritBool(vd, "fb-tty");
 #if !defined(WIN32) &&  defined(HAVE_ISATTY)
     /* Check that stdin is a TTY */
     if (sys->is_tty && !isatty(0)) {
@@ -202,7 +201,7 @@ static int Open(vlc_object_t *object)
                  "there is no way to return to the TTY");
 #endif
 
-    const int mode = var_CreateGetInteger(vd, "fb-mode");
+    const int mode = var_InheritInteger(vd, "fb-mode");
     bool force_resolution = true;
     switch (mode) {
     case 0: /* QCIF */
@@ -227,7 +226,7 @@ static int Open(vlc_object_t *object)
         break;
     }
 
-    char *chroma = var_CreateGetNonEmptyString(vd, "fb-chroma");
+    char *chroma = var_InheritString(vd, "fb-chroma");
     if (chroma) {
         sys->chroma = vlc_fourcc_GetCodecFromString(VIDEO_ES, chroma);
 
@@ -255,6 +254,7 @@ static int Open(vlc_object_t *object)
         Close(VLC_OBJECT(vd));
         return VLC_EGENERIC;
     }
+    vout_display_DeleteWindow(vd, NULL);
 
     /* */
     video_format_t fmt = vd->fmt;
@@ -310,7 +310,7 @@ static int Open(vlc_object_t *object)
     vd->prepare = NULL;
     vd->display = Display;
     vd->control = Control;
-    vd->manage  = Manage;
+    vd->manage  = NULL;
 
     /* */
     vout_display_SendEventFullscreen(vd, true);
@@ -365,7 +365,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned count)
     }
     return sys->pool;
 }
-static void Display(vout_display_t *vd, picture_t *picture)
+static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     vout_display_sys_t *sys = vd->sys;
 
@@ -390,6 +390,7 @@ static void Display(vout_display_t *vd, picture_t *picture)
         picture_Copy(sys->picture, picture);
 
     picture_Release(picture);
+    VLC_UNUSED(subpicture);
 }
 static int Control(vout_display_t *vd, int query, va_list args)
 {
@@ -407,24 +408,6 @@ static int Control(vout_display_t *vd, int query, va_list args)
         msg_Err(vd, "Unsupported query in vout display fb");
         return VLC_EGENERIC;
     }
-}
-static void Manage (vout_display_t *vd)
-{
-    VLC_UNUSED(vd);
-#if 0
-    /*
-     * Size change
-     */
-    if (vd->i_changes & VOUT_SIZE_CHANGE)
-    {
-        msg_Dbg(vd, "reinitializing framebuffer screen");
-        vd->i_changes &= ~VOUT_SIZE_CHANGE;
-
-        vout_display_SendEventDisplaySize();
-
-        ClearScreen(vd->sys);
-    }
-#endif
 }
 
 /* following functions are local */

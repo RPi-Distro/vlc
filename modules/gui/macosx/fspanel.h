@@ -1,11 +1,11 @@
 /*****************************************************************************
  * fspanel.h: MacOS X full screen panel
  *****************************************************************************
- * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 2c5494a16ff72ddedf5b070d91b748bc99e75cd8 $
+ * Copyright (C) 2006-2011 VLC authors and VideoLAN
+ * $Id: 06231ef05f798fa5978a800798e785630558e3a8 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
- *          Felix Kühne <fkuehne at videolan dot org>
+ *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@
     BOOL b_displayed;
     BOOL b_voutWasUpdated;
     int i_device;
+
+    BOOL b_usingBigScreen;
 }
 - (id)initWithContentRect: (NSRect)contentRect
                 styleMask: (NSUInteger)aStyle
@@ -49,7 +51,7 @@
 - (void)setStreamTitle: (NSString *)o_title;
 - (void)setStreamPos: (float)f_pos andTime: (NSString *)o_time;
 - (void)setSeekable: (BOOL)b_seekable;
-- (void)setVolumeLevel: (float)f_volumeLevel;
+- (void)setVolumeLevel: (int)i_volumeLevel;
 
 - (void)setNonActive: (id)noData;
 - (void)setActive: (id)noData;
@@ -71,6 +73,7 @@
 
 - (BOOL)isDisplayed;
 - (void)setVoutWasUpdated: (int)i_screen;
+- (void)adaptWindowSizeToScreen;
 @end
 
 @interface VLCFSPanelView : NSView
@@ -79,6 +82,8 @@
     NSButton *o_prev, *o_next, *o_bwd, *o_fwd, *o_play, *o_fullscreen;
     NSTextField *o_streamTitle_txt, *o_streamPosition_txt;
     NSSlider *o_fs_timeSlider, *o_fs_volumeSlider;
+
+    BOOL b_usingBigScreen;
 }
 - (id)initWithFrame: (NSRect)frameRect;
 - (void)drawRect: (NSRect)rect;
@@ -88,7 +93,7 @@
 - (void)setStreamTitle: (NSString *)o_title;
 - (void)setStreamPos: (float)f_pos andTime: (NSString *)o_time;
 - (void)setSeekable: (BOOL)b_seekable;
-- (void)setVolumeLevel: (float)f_volumeLevel;
+- (void)setVolumeLevel: (int)i_volumeLevel;
 - (IBAction)play:(id)sender;
 - (IBAction)prev:(id)sender;
 - (IBAction)next:(id)sender;
@@ -96,6 +101,7 @@
 - (IBAction)backward:(id)sender;
 - (IBAction)fsTimeSliderUpdate: (id)sender;
 - (IBAction)fsVolumeSliderUpdate: (id)sender;
+- (void)adaptViewSizeToScreen: (BOOL)b_value;
 
 @end
 

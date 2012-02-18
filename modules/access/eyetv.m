@@ -2,7 +2,7 @@
  * eyetv.c : Access module to connect to our plugin running within EyeTV
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 6933e233bb1b27dbbfc1dee5590bfc2bf6081061 $
+ * $Id: 83617efa4c56d0c6b06d3bdec0432061a1dcc532 $
  *
  * Author: Felix Kühne <fkuehne at videolan dot org>
  *
@@ -58,25 +58,18 @@ static void Close( vlc_object_t * );
     "EyeTV program number, or use 0 for last channel, " \
     "-1 for S-Video input, -2 for Composite input" )
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for EyeTV captures. This " \
-    "value should be set in milliseconds." )
-
 vlc_module_begin ()
     set_shortname( "EyeTV" )
     set_description( N_("EyeTV input") )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
 
-    add_integer( "eyetv-channel", 0, NULL,
+    add_integer( "eyetv-channel", 0,
                  CHANNEL_TEXT, CHANNEL_LONGTEXT, false )
 
     set_capability( "access", 0 )
     add_shortcut( "eyetv" )
     set_callbacks( Open, Close )
-    add_integer( "eyetv-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, true);
 vlc_module_end ()
 
 /*****************************************************************************
@@ -85,7 +78,6 @@ vlc_module_end ()
 struct access_sys_t
 {
     int eyetvSock;
-    int i_pts_delay;
 };
 
 static block_t *BlockRead( access_t *);
@@ -167,13 +159,8 @@ static int Open( vlc_object_t *p_this )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    p_sys->i_pts_delay = var_CreateGetInteger( p_access, "eyetv-caching" );
-
-    int val = var_CreateGetInteger( p_access, "eyetv-channel" );
-
     msg_Dbg( p_access, "coming up" );
-
-    selectChannel( p_this, val );
+    selectChannel( p_this, var_InheritInteger( p_access, "eyetv-channel" ) );
 
     /* socket */
     memset(&publicAddr, 0, sizeof(publicAddr));
@@ -326,7 +313,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t) p_sys->i_pts_delay * 1000;
+            *pi_64 =
+                INT64_C(1000) * var_InheritInteger( p_access, "live-caching" );
             break;
         
         case ACCESS_SET_PAUSE_STATE:

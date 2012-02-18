@@ -60,11 +60,6 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-#define CACHING_TEXT N_("Caching value in ms")
-#define CACHING_LONGTEXT N_( \
-    "Caching value for files. This " \
-    "value should be set in milliseconds." )
-
 vlc_module_begin()
     set_description( N_("MTP input") )
     set_shortname( N_("MTP") )
@@ -107,11 +102,8 @@ static int Open( vlc_object_t *p_this )
     int i_numrawdevices;
     int i_ret;
 
-    /* Update default_pts to a suitable value for file access */
-    var_Create( p_access, "file-caching", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-
-    if( sscanf( p_access->psz_path, "%"SCNu32":%"SCNu8":%"SCNu16":%d", &i_bus,
-                &i_dev, &i_product_id, &i_track_id ) != 4 )
+    if( sscanf( p_access->psz_location, "%"SCNu32":%"SCNu8":%"SCNu16":%d",
+                &i_bus, &i_dev, &i_product_id, &i_track_id ) != 4 )
         return VLC_EGENERIC;
     i_ret = LIBMTP_Detect_Raw_Devices( &p_rawdevices, &i_numrawdevices );
     if( i_ret != 0 || i_numrawdevices <= 0 || !p_rawdevices )
@@ -126,8 +118,10 @@ static int Open( vlc_object_t *p_this )
             if( ( p_device = LIBMTP_Open_Raw_Device( &p_rawdevices[i] )
                 ) != NULL )
             {
-                free( p_access->psz_path );
-                if( ( p_access->psz_path = tempnam( NULL, "vlc" ) ) == NULL )
+                free( p_access->psz_filepath );
+#warning Oooh no! Not tempnam()!
+                p_access->psz_filepath = tempnam( NULL, "vlc" );
+                if( p_access->psz_filepath == NULL )
                 {
                     LIBMTP_Release_Device( p_device );
                     free( p_rawdevices );
@@ -135,9 +129,11 @@ static int Open( vlc_object_t *p_this )
                 }
                 else
                 {
-                    msg_Dbg( p_access, "About to write %s", p_access->psz_path );
+                    msg_Dbg( p_access, "About to write %s",
+                             p_access->psz_filepath );
                     LIBMTP_Get_File_To_File( p_device, i_track_id,
-                                             p_access->psz_path, NULL, NULL );
+                                             p_access->psz_filepath, NULL,
+                                             NULL );
                     LIBMTP_Release_Device( p_device );
                     i = i_numrawdevices;
                 }
@@ -156,8 +152,8 @@ static int Open( vlc_object_t *p_this )
     int fd = p_sys->fd = -1;
 
     /* Open file */
-    msg_Dbg( p_access, "opening file `%s'", p_access->psz_path );
-    fd = open_file( p_access, p_access->psz_path );
+    msg_Dbg( p_access, "opening file `%s'", p_access->psz_filepath );
+    fd = open_file( p_access, p_access->psz_filepath );
 
     if( fd == -1 )
     {
@@ -187,8 +183,9 @@ static void Close( vlc_object_t * p_this )
     access_sys_t *p_sys = p_access->p_sys;
 
     close ( p_sys->fd );
-    if(	vlc_unlink( p_access->psz_path ) != 0 )
-        msg_Err( p_access, "Error deleting file %s, %m", p_access->psz_path );
+    if(	vlc_unlink( p_access->psz_filepath ) != 0 )
+        msg_Err( p_access, "Error deleting file %s, %m",
+                 p_access->psz_filepath );
     free( p_sys );
 }
 
@@ -213,7 +210,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
 
             default:
                 msg_Err( p_access, "read failed (%m)" );
-                dialog_Fatal( p_access, _( "File reading failed" ), "%s",
+                dialog_Fatal( p_access, _( "File reading failed" ), "%s (%m)",
                                 _( "VLC could not read the file." ) );
                 p_access->info.b_eof = true;
                 return 0;
@@ -267,7 +264,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
         case ACCESS_GET_PTS_DELAY:
             pi_64 = ( int64_t* )va_arg( args, int64_t * );
-            *pi_64 = var_GetInteger( p_access, "file-caching" ) * INT64_C( 1000 );
+            *pi_64 = INT64_C(1000)
+                   * var_InheritInteger( p_access, "file-caching" );
             break;
 
         /* */
@@ -302,7 +300,7 @@ static int open_file( access_t *p_access, const char *path )
     {
         msg_Err( p_access, "cannot open file %s (%m)", path );
         dialog_Fatal( p_access, _( "File reading failed" ),
-                        _( "VLC could not open the file \"%s\"." ), path );
+                        _( "VLC could not open the file \"%s\". (%m)" ), path );
         return -1;
     }
 

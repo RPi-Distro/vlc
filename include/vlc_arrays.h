@@ -1,25 +1,25 @@
 /*****************************************************************************
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 390c1b6d9df4d275619b9c62945d352e063b4229 $
+ * Copyright (C) 1999-2004 VLC authors and VideoLAN
+ * $Id: 68ea1e248023b524d76dafedab934f9821541fcc $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_ARRAYS_H_
@@ -48,7 +48,7 @@ static inline void *realloc_down( void *ptr, size_t size )
 #define INSERT_ELEM( p_ar, i_oldsize, i_pos, elem )                           \
     do                                                                        \
     {                                                                         \
-        if( !i_oldsize ) (p_ar) = NULL;                                       \
+        if( !(i_oldsize) ) (p_ar) = NULL;                                       \
         (p_ar) = VLCCVP realloc( p_ar, ((i_oldsize) + 1) * sizeof(*(p_ar)) ); \
         if( !(p_ar) ) abort();                                                \
         if( (i_oldsize) - (i_pos) )                                           \
@@ -56,7 +56,7 @@ static inline void *realloc_down( void *ptr, size_t size )
             memmove( (p_ar) + (i_pos) + 1, (p_ar) + (i_pos),                  \
                      ((i_oldsize) - (i_pos)) * sizeof( *(p_ar) ) );           \
         }                                                                     \
-        (p_ar)[i_pos] = elem;                                                 \
+        (p_ar)[(i_pos)] = elem;                                                 \
         (i_oldsize)++;                                                        \
     }                                                                         \
     while( 0 )
@@ -107,35 +107,30 @@ static inline void *realloc_down( void *ptr, size_t size )
 
 #define TAB_APPEND( count, tab, p )             \
     TAB_APPEND_CAST( , count, tab, p )
-#define TAB_APPEND_CPP( type, count, tab, p )   \
-    TAB_APPEND_CAST( (type**), count, tab, p )
 
 #define TAB_FIND( count, tab, p, index )        \
   do {                                          \
-        int _i_;                                \
-        (index) = -1;                           \
-        for( _i_ = 0; _i_ < (count); _i_++ )    \
+    (index) = -1;                               \
+    for( int i = 0; i < (count); i++ )          \
+        if( (tab)[i] == (p) )                   \
         {                                       \
-            if( (tab)[_i_] == (p) )             \
-            {                                   \
-                (index) = _i_;                  \
-                break;                          \
-            }                                   \
+            (index) = i;                        \
+            break;                              \
         }                                       \
   } while(0)
 
 
 #define TAB_REMOVE( count, tab, p )             \
   do {                                          \
-        int _i_index_;                          \
-        TAB_FIND( count, tab, p, _i_index_ );   \
-        if( _i_index_ >= 0 )                    \
+        int i_index;                            \
+        TAB_FIND( count, tab, p, i_index );     \
+        if( i_index >= 0 )                      \
         {                                       \
             if( (count) > 1 )                   \
             {                                   \
-                memmove( ((void**)(tab) + _i_index_),    \
-                         ((void**)(tab) + _i_index_+1),  \
-                         ( (count) - _i_index_ - 1 ) * sizeof( void* ) );\
+                memmove( ((void**)(tab) + i_index),    \
+                         ((void**)(tab) + i_index+1),  \
+                         ( (count) - i_index - 1 ) * sizeof( void* ) );\
             }                                   \
             (count)--;                          \
             if( (count) == 0 )                  \
@@ -210,24 +205,6 @@ static inline void *realloc_down( void *ptr, size_t size )
         _ARRAY_ALLOC(array, (int)(array.i_alloc * 1.5) )                    \
 }
 
-#define _ARRAY_GROW(array,additional) {                                     \
-     int i_first = (array).i_alloc;                                         \
-     while( (array).i_alloc - i_first < additional )                        \
-     {                                                                      \
-         if( (array).i_alloc < 10 )                                         \
-            _ARRAY_ALLOC(array, 10 )                                        \
-        else if( (array).i_alloc == (array).i_size )                        \
-            _ARRAY_ALLOC(array, (int)((array).i_alloc * 1.5) )              \
-        else break;                                                         \
-     }                                                                      \
-}
-
-#define _ARRAY_SHRINK(array) {                                              \
-    if( (array).i_size > 10 && (array).i_size < (int)((array).i_alloc / 1.5) ) {  \
-        _ARRAY_ALLOC(array, (array).i_size + 5);                            \
-    }                                                                       \
-}
-
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 /* API */
@@ -270,6 +247,12 @@ static inline void *realloc_down( void *ptr, size_t size )
     (array).p_elems[pos] = elem;                                            \
     (array).i_size++;                                                       \
   } while(0)
+
+#define _ARRAY_SHRINK(array) {                                              \
+    if( (array).i_size > 10 && (array).i_size < (int)((array).i_alloc / 1.5) ) {  \
+        _ARRAY_ALLOC(array, (array).i_size + 5);                            \
+    }                                                                       \
+}
 
 #define ARRAY_REMOVE(array,pos)                                             \
   do {                                                                      \
@@ -616,5 +599,21 @@ vlc_dictionary_remove_value_for_key( const vlc_dictionary_t * p_dict, const char
 
     /* No key was found */
 }
+
+#ifdef __cplusplus
+// C++ helpers
+template <typename T>
+void vlc_delete_all( T &container )
+{
+    typename T::iterator it = container.begin();
+    while ( it != container.end() )
+    {
+        delete *it;
+        ++it;
+    }
+    container.clear();
+}
+
+#endif
 
 #endif

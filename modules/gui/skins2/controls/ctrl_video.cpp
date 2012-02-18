@@ -2,7 +2,7 @@
  * ctrl_video.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: c079f9828873f23b1e35f22fc5eb6c4a12c89693 $
+ * $Id: 2ed026bdee14a3055fe3a546d56e209c02564d91 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -36,8 +36,8 @@ CtrlVideo::CtrlVideo( intf_thread_t *pIntf, GenericLayout &rLayout,
                       bool autoResize, const UString &rHelp,
                       VarBool *pVisible ):
     CtrlGeneric( pIntf, rHelp, pVisible ), m_rLayout( rLayout ),
-    m_xShift( 0 ), m_yShift( 0 ), m_bAutoResize( autoResize ),
-    m_pVoutWindow( NULL ), m_bIsUseable( false )
+    m_bAutoResize( autoResize), m_xShift( 0 ), m_yShift( 0 ),
+    m_bIsUseable( false), m_pVoutWindow( NULL )
 {
     VarBool &rFullscreen = VlcProc::instance( getIntf() )->getFullscreenVar();
     rFullscreen.addObserver( this );
@@ -57,11 +57,13 @@ CtrlVideo::~CtrlVideo()
 
 void CtrlVideo::handleEvent( EvtGeneric &rEvent )
 {
+    (void)rEvent;
 }
 
 
 bool CtrlVideo::mouseOver( int x, int y ) const
 {
+    (void)x; (void)y;
     return false;
 }
 
@@ -85,14 +87,23 @@ void CtrlVideo::onPositionChange()
 }
 
 
-void CtrlVideo::draw( OSGraphics &rImage, int xDest, int yDest )
+void CtrlVideo::draw( OSGraphics &rImage, int xDest, int yDest, int w, int h)
 {
     const Position *pPos = getPosition();
-    if( pPos )
+    rect region( pPos->getLeft(), pPos->getTop(),
+                 pPos->getWidth(), pPos->getHeight() );
+    rect clip( xDest, yDest, w, h );
+    rect inter;
+
+    if( rect::intersect( region, clip, &inter ) )
     {
         // Draw a black rectangle under the video to avoid transparency
-        rImage.fillRect( pPos->getLeft(), pPos->getTop(), pPos->getWidth(),
-                         pPos->getHeight(), 0 );
+        rImage.fillRect( inter.x, inter.y, inter.width, inter.height, 0 );
+    }
+
+    if( m_pVoutWindow )
+    {
+        m_pVoutWindow->show();
     }
 }
 
@@ -152,6 +163,8 @@ void CtrlVideo::resizeControl( int width, int height )
 
 void CtrlVideo::onUpdate( Subject<VarBool> &rVariable, void *arg  )
 {
+    (void)arg;
+
     // Visibility changed
     if( &rVariable == m_pVisible )
     {

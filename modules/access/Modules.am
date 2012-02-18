@@ -3,13 +3,13 @@
 # obviously does not. Here is a fix for that.
 LIBTOOL=@LIBTOOL@ --tag=CC
 
-BASE_SUBDIRS = dvb mms rtp rtsp vcd vcdx screen bd zip
-EXTRA_SUBDIRS = bda dshow
+BASE_SUBDIRS = mms rtp rtsp vcd vcdx screen bd zip
+EXTRA_SUBDIRS = dshow
 SUBDIRS = $(BASE_SUBDIRS)
 DIST_SUBDIRS = $(BASE_SUBDIRS) $(EXTRA_SUBDIRS)
 
 if HAVE_WIN32
-SUBDIRS += bda dshow
+SUBDIRS += dshow
 endif
 
 libfilesystem_plugin_la_SOURCES = \
@@ -19,26 +19,48 @@ libfilesystem_plugin_la_SOURCES = \
 	fs.c
 libfilesystem_plugin_la_CFLAGS = $(AM_CFLAGS)
 libfilesystem_plugin_la_LIBADD = $(AM_LIBADD)
+if HAVE_WIN32
+libfilesystem_plugin_la_LIBADD += -lshlwapi
+endif
 libfilesystem_plugin_la_DEPENDENCIES =
 
-SOURCES_access_mmap = mmap.c
+libidummy_plugin_la_SOURCES = idummy.c
+libidummy_plugin_la_CFLAGS = $(AM_CFLAGS)
+libidummy_plugin_la_LIBADD = $(AM_LIBADD)
+libidummy_plugin_la_DEPENDENCIES =
+
+libsdp_plugin_la_SOURCES = sdp.c
+libsdp_plugin_la_CFLAGS = $(AM_CFLAGS)
+libsdp_plugin_la_LIBADD = $(AM_LIBADD)
+libsdp_plugin_la_DEPENDENCIES =
+
+libaccess_smb_plugin_la_SOURCES = smb.c
+libaccess_smb_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaccess_smb_plugin_la_LIBADD = $(AM_LIBADD)
+if HAVE_WIN32
+libaccess_smb_plugin_la_LIBADD += -lmpr
+endif
+libaccess_smb_plugin_la_DEPENDENCIES =
+libvlc_LTLIBRARIES += $(LTLIBaccess_smb)
+
 SOURCES_access_directory = directory.c
 SOURCES_access_dv = dv.c
 SOURCES_access_udp = udp.c
 SOURCES_access_tcp = tcp.c
 SOURCES_access_http = http.c
 SOURCES_access_ftp = ftp.c
-SOURCES_access_smb = smb.c
 SOURCES_access_gnomevfs = gnomevfs.c
 SOURCES_access_eyetv = eyetv.m
 SOURCES_dvdnav = dvdnav.c
 SOURCES_dvdread = dvdread.c
 SOURCES_dc1394 = dc1394.c
-SOURCES_access_fake = fake.c
-SOURCES_pvr = pvr.c videodev2.h
-SOURCES_v4l = v4l.c videodev_mjpeg.h
-SOURCES_v4l2 = v4l2.c
-SOURCES_qtcapture = qtcapture.m
+SOURCES_pvr = pvr.c
+SOURCES_linsys_sdi = linsys/linsys_sdi.c linsys/linsys_sdi.h
+SOURCES_linsys_hdsdi = \
+	linsys/linsys_hdsdi.c \
+	linsys/linsys_sdiaudio.h \
+	linsys/linsys_sdivideo.h \
+	$(NULL)
 SOURCES_cdda = \
         cdda.c \
         vcd/cdrom.c \
@@ -46,13 +68,36 @@ SOURCES_cdda = \
         vcd/cdrom_internals.h \
         $(NULL)
 SOURCES_access_jack = jack.c
-SOURCES_access_alsa = alsa.c
-SOURCES_access_oss = oss.c
 SOURCES_access_mtp = mtp.c
 SOURCES_access_sftp = sftp.c
 SOURCES_access_imem = imem.c
 SOURCES_access_avio = avio.c avio.h
 SOURCES_access_attachment = attachment.c
+SOURCES_access_vdr = vdr.c
+SOURCES_libbluray = bluray.c
+SOURCES_decklink = decklink.cpp
+SOURCES_htcpcp = htcpcp.c
+
+
+SOURCES_access_rar = rar/rar.c rar/rar.h rar/access.c
+SOURCES_stream_filter_rar = rar/rar.c rar/rar.h rar/stream.c
+
+if HAVE_QTKIT
+libqtcapture_plugin_la_SOURCES = qtcapture.m
+libqtcapture_plugin_la_LIBADDD = $(AM_LIBADD)
+libqtcapture_plugin_la_LDFLAGS = -Wl,-framework,Cocoa -Wl,-framework,QTKit -Wl,-framework,CoreVideo -Wl,-framework,QuartzCore
+libqtcapture_plugin_la_DEPENDENCIES =
+
+libqtsound_plugin_la_SOURCES = qtsound.m
+libqtsound_plugin_la_LIBADD = $(AM_LIBADD)
+libqtsound_plugin_la_LDFLAGS = -Wl,-framework,Cocoa -Wl,-framework,QTKit -Wl,-framework,CoreAudio
+libqtsound_plugin_la_DEPENDENCIES =
+
+libvlc_LTLIBRARIES += \
+        libqtcapture_plugin.la \
+        libqtsound_plugin.la \
+        $(NULL)
+endif
 
 libaccess_rtmp_plugin_la_SOURCES = \
         rtmp/access.c \
@@ -66,22 +111,112 @@ libaccess_rtmp_plugin_la_DEPENDENCIES =
 
 libvlc_LTLIBRARIES += \
 	libfilesystem_plugin.la \
+	libidummy_plugin.la \
 	libaccess_udp_plugin.la \
 	libaccess_tcp_plugin.la \
 	libaccess_http_plugin.la \
 	libaccess_ftp_plugin.la \
-	libaccess_fake_plugin.la \
 	libaccess_imem_plugin.la \
 	libaccess_attachment_plugin.la \
+        libsdp_plugin.la \
+	libaccess_rar_plugin.la \
+	libstream_filter_rar_plugin.la \
+	libaccess_vdr_plugin.la \
 	$(NULL)
+
+libaccess_oss_plugin_la_SOURCES = oss.c
+libaccess_oss_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaccess_oss_plugin_la_LIBADD = $(AM_LIBADD) $(OSS_LIBS)
+libaccess_oss_plugin_la_DEPENDENCIES =
+if HAVE_OSS
+libvlc_LTLIBRARIES += libaccess_oss_plugin.la
+endif
+
+libaccess_alsa_plugin_la_SOURCES = alsa.c
+libaccess_alsa_plugin_la_CFLAGS = $(AM_CFLAGS) $(ALSA_CFLAGS)
+libaccess_alsa_plugin_la_LIBADD = $(AM_LIBADD) $(ALSA_LIBS)
+libaccess_alsa_plugin_la_DEPENDENCIES =
+if HAVE_ALSA
+libvlc_LTLIBRARIES += libaccess_alsa_plugin.la
+endif
+
+libpulsesrc_plugin_la_SOURCES = \
+	../audio_output/vlcpulse.c \
+	../audio_output/vlcpulse.h \
+	pulse.c
+libpulsesrc_plugin_la_CFLAGS= $(AM_CFLAGS) $(PULSE_CFLAGS)
+libpulsesrc_plugin_la_LIBADD = $(AM_LIBADD) $(PULSE_LIBS)
+libpulsesrc_plugin_la_DEPENDENCIES =
+if HAVE_PULSE
+libvlc_LTLIBRARIES += libpulsesrc_plugin.la
+endif
+
+libaccess_shm_plugin_la_SOURCES = shm.c
+libaccess_shm_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaccess_shm_plugin_la_LIBADD = $(AM_LIBADD)
+libaccess_shm_plugin_la_DEPENDENCIES =
+libvlc_LTLIBRARIES += $(LTLIBaccess_shm)
+
+libv4l2_plugin_la_SOURCES = \
+	v4l2/video.c \
+	v4l2/demux.c \
+	v4l2/access.c \
+	v4l2/controls.c \
+	v4l2/v4l2.h
+libv4l2_plugin_la_CFLAGS = $(AM_CFLAGS) $(LIBV4L2_CFLAGS)
+libv4l2_plugin_la_LIBADD = $(AM_LIBADD) $(LIBV4L2_LIBS) $(LIBM)
+libv4l2_plugin_la_DEPENDENCIES =
+if HAVE_V4L2
+libvlc_LTLIBRARIES += libv4l2_plugin.la
+endif
 
 libxcb_screen_plugin_la_SOURCES = screen/xcb.c
 libxcb_screen_plugin_la_CFLAGS = $(AM_CFLAGS) \
-	$(XCB_CFLAGS)
+	$(XCB_CFLAGS) $(XCB_COMPOSITE_CFLAGS)
 libxcb_screen_plugin_la_LIBADD = $(AM_LIBADD) \
-	$(XCB_LIBS)
+	$(XCB_LIBS) $(XCB_COMPOSITE_LIBS)
 libxcb_screen_plugin_la_DEPENDENCIES =
+if HAVE_XCB
+libvlc_LTLIBRARIES += libxcb_screen_plugin.la
+endif
+
+
+### Digital TV ###
+
+libdtv_plugin_la_SOURCES = \
+	dtv/dtv.h \
+	dtv/access.c
+libdtv_plugin_la_CFLAGS = $(AM_CFLAGS)
+libdtv_plugin_la_LIBADD = $(AM_LIBADD)
+libdtv_plugin_la_DEPENDENCIES =
+
+if HAVE_LINUX_DVB
+libdtv_plugin_la_SOURCES += dtv/linux.c
+if HAVE_DVBPSI
+libdtv_plugin_la_SOURCES += dtv/en50221.c dtv/en50221.h
+libdtv_plugin_la_CFLAGS += -DHAVE_DVBPSI $(DVBPSI_CFLAGS)
+libdtv_plugin_la_LIBADD += $(DVBPSI_LIBS)
+endif
+libvlc_LTLIBRARIES += libdtv_plugin.la
+endif
+
+if HAVE_WIN32
+# Work-around automake bug:
+# Use an import library for C++ to retain C linker on other platforms.
+libbda_la_SOURCES = dtv/bdadefs.h dtv/bdagraph.cpp dtv/bdagraph.hpp
+libbda_la_CXXFLAGS = $(AM_CXXFLAGS)
+libbda_la_LDFLAGS = -static
+libbda_la_LIBADD = -lstrmiids -lole32 -loleaut32 -luuid
+noinst_LTLIBRARIES = libbda.la
+
+libdtv_plugin_la_DEPENDENCIES += libbda.la
+libdtv_plugin_la_LIBADD += libbda.la -lstdc++
+libvlc_LTLIBRARIES += libdtv_plugin.la
+endif
+
+
 EXTRA_LTLIBRARIES += \
 	libaccess_rtmp_plugin.la \
-	libxcb_screen_plugin.la
-libvlc_LTLIBRARIES += $(LTLIBxcb_screen)
+	libaccess_shm_plugin.la \
+	libaccess_smb_plugin.la \
+	$(NULL)

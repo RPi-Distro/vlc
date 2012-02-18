@@ -2,7 +2,7 @@
  * avio.h: access using libavformat library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: f744e8abc8350c20f12d9cadeed1d86e2d13aac3 $
+ * $Id: 80e23f44dd674a2a068df204101d096389f78679 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -32,14 +32,22 @@
 #endif
 int  OpenAvio (vlc_object_t *);
 void CloseAvio(vlc_object_t *);
+int  OutOpenAvio (vlc_object_t *);
+void OutCloseAvio(vlc_object_t *);
 
 #define AVIO_MODULE \
-    set_shortname(N_("Avio"))               \
+    set_shortname(N_("FFmpeg"))             \
     set_description(N_("FFmpeg access") )   \
     set_category(CAT_INPUT)                 \
     set_subcategory(SUBCAT_INPUT_ACCESS)    \
     set_capability("access", -1)            \
-    add_shortcut("avio")                    \
-    add_shortcut("rtmp")                    \
-    set_callbacks(OpenAvio, CloseAvio)
-
+    add_shortcut("avio", "rtmp")            \
+    set_callbacks(OpenAvio, CloseAvio) \
+    add_submodule () \
+        set_shortname( "libavformat" ) \
+        set_description( N_("libavformat access output") ) \
+        set_capability( "sout access", -1 ) \
+        set_category( CAT_SOUT ) \
+        set_subcategory( SUBCAT_SOUT_ACO ) \
+        add_shortcut( "avio", "rtmp" ) \
+        set_callbacks( OutOpenAvio, OutCloseAvio)

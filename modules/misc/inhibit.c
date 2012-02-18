@@ -2,7 +2,7 @@
  * inhibit.c : prevents the computer from suspending when VLC is playing
  *****************************************************************************
  * Copyright © 2007 Rafaël Carré
- * $Id: 31d1f41959d3b02afab309d306953c6690d213df $
+ * $Id: 6d515f898cf3d2472d1788952434bc7f31360685 $
  *
  * Author: Rafaël Carré <funman@videolanorg>
  *
@@ -42,18 +42,39 @@
 
 #include <dbus/dbus.h>
 
-#define PM_SERVICE   "org.freedesktop.PowerManagement"
-#define PM_PATH      "/org/freedesktop/PowerManagement/Inhibit"
-#define PM_INTERFACE "org.freedesktop.PowerManagement.Inhibit"
+enum {
+    FREEDESKTOP = 0, /* as used by KDE and gnome <= 2.26 */
+    GNOME       = 1, /* as used by gnome > 2.26 */
+};
+
+static const char *dbus_service[] = {
+    [FREEDESKTOP]   = "org.freedesktop.PowerManagement",
+    [GNOME]         = "org.gnome.SessionManager",
+};
+
+static const char *dbus_path[] = {
+    [FREEDESKTOP]   = "/org/freedesktop/PowerManagement",
+    [GNOME]         = "/org/gnome/SessionManager",
+};
+
+static const char *dbus_interface[] = {
+    [FREEDESKTOP]   = "org.freedesktop.PowerManagement.Inhibit",
+    [GNOME]         = "org.gnome.SessionManager",
+};
+
+static const char *dbus_uninhibit_method[] = {
+    [FREEDESKTOP]   = "UnInhibit",
+    [GNOME]         = "Uninhibit",
+};
+
 
 /*****************************************************************************
  * Local prototypes
- *****************************************************************************/
+ !*****************************************************************************/
 static int  Activate     ( vlc_object_t * );
 static void Deactivate   ( vlc_object_t * );
 
-static int Inhibit( intf_thread_t *p_intf );
-static int UnInhibit( intf_thread_t *p_intf );
+static void UnInhibit( intf_thread_t *p_intf, int type );
 
 static int InputChange( vlc_object_t *, const char *,
                         vlc_value_t, vlc_value_t, void * );
@@ -65,7 +86,7 @@ struct intf_sys_t
     playlist_t      *p_playlist;
     vlc_object_t    *p_input;
     DBusConnection  *p_conn;
-    dbus_uint32_t   i_cookie;
+    dbus_uint32_t   i_cookie[2];
 };
 
 /*****************************************************************************
@@ -90,11 +111,16 @@ static int Activate( vlc_object_t *p_this )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    p_sys->i_cookie = 0;
+    p_sys->i_cookie[FREEDESKTOP] = 0;
+    p_sys->i_cookie[GNOME] = 0;
     p_sys->p_input = NULL;
 
     dbus_error_init( &error );
-    p_sys->p_conn = dbus_bus_get( DBUS_BUS_SESSION, &error );
+
+    /* connect privately to the session bus
+     * the connection will not be shared with other vlc modules which use dbus,
+     * thus avoiding a whole class of concurrency issues */
+    p_sys->p_conn = dbus_bus_get_private( DBUS_BUS_SESSION, &error );
     if( !p_sys->p_conn )
     {
         msg_Err( p_this, "Failed to connect to the D-Bus session daemon: %s",
@@ -125,8 +151,14 @@ static void Deactivate( vlc_object_t *p_this )
         vlc_object_release( p_sys->p_input );
     }
 
-    if( p_sys->i_cookie )
-        UnInhibit( p_intf );
+    if( p_sys->i_cookie[FREEDESKTOP] )
+        UnInhibit( p_intf, FREEDESKTOP );
+    if( p_sys->i_cookie[GNOME] )
+        UnInhibit( p_intf, GNOME );
+
+    /* The dbus connection is private,
+     * so we are responsible for closing it */
+    dbus_connection_close( p_sys->p_conn );
     dbus_connection_unref( p_sys->p_conn );
 
     free( p_sys );
@@ -135,108 +167,89 @@ static void Deactivate( vlc_object_t *p_this )
 /*****************************************************************************
  * Inhibit: Notify the power management daemon that it shouldn't suspend
  * the computer because of inactivity
- *
- * returns false if Out of memory, else true
  *****************************************************************************/
-static int Inhibit( intf_thread_t *p_intf )
+static void Inhibit( intf_thread_t *p_intf, int type )
 {
-    DBusConnection *p_conn;
-    DBusMessage *p_msg;
-    DBusMessageIter args;
-    DBusMessage *p_reply;
-    dbus_uint32_t i_cookie;
+    intf_sys_t *p_sys = p_intf->p_sys;
 
-    p_conn = p_intf->p_sys->p_conn;
+    DBusMessage *msg = dbus_message_new_method_call(
+        dbus_service[type], dbus_path[type], dbus_interface[type], "Inhibit" );
+    if( unlikely(msg == NULL) )
+        return;
 
-    p_msg = dbus_message_new_method_call( PM_SERVICE, PM_PATH, PM_INTERFACE,
-                                          "Inhibit" );
-    if( !p_msg )
-        return false;
+    const char *app = PACKAGE;
+    const char *reason = _("Playing some media.");
 
-    dbus_message_iter_init_append( p_msg, &args );
+    p_sys->i_cookie[type] = 0;
 
-    char *psz_app = strdup( PACKAGE );
-    if( !psz_app ||
-        !dbus_message_iter_append_basic( &args, DBUS_TYPE_STRING, &psz_app ) )
+    dbus_bool_t ret;
+    dbus_uint32_t xid = 0; // FIXME?
+    dbus_uint32_t flags = 8 /* Inhibit suspending the session or computer */
+                        | 4;/* Inhibit the session being marked as idle */
+    switch( type ) {
+    case FREEDESKTOP:
+        ret = dbus_message_append_args( msg, DBUS_TYPE_STRING, &app,
+                                        DBUS_TYPE_STRING, &reason,
+                                        DBUS_TYPE_INVALID );
+        break;
+    case GNOME:
+    default:
+        ret = dbus_message_append_args( msg, DBUS_TYPE_STRING, &app,
+                                        DBUS_TYPE_UINT32, &xid,
+                                        DBUS_TYPE_STRING, &reason,
+                                        DBUS_TYPE_UINT32, &flags,
+                                        DBUS_TYPE_INVALID );
+        break;
+    }
+
+    if( !ret )
     {
-        free( psz_app );
-        dbus_message_unref( p_msg );
-        return false;
+        dbus_message_unref( msg );
+        return;
     }
-    free( psz_app );
 
-    char *psz_inhibit_reason = strdup( _("Playing some media.") );
-    if( !psz_inhibit_reason )
-    {
-        dbus_message_unref( p_msg );
-        return false;
-    }
-    if( !dbus_message_iter_append_basic( &args, DBUS_TYPE_STRING,
-                                         &psz_inhibit_reason ) )
-    {
-        free( psz_inhibit_reason );
-        dbus_message_unref( p_msg );
-        return false;
-    }
-    free( psz_inhibit_reason );
+    /* blocks 50ms maximum */
+    DBusMessage *reply;
 
-    p_reply = dbus_connection_send_with_reply_and_block( p_conn, p_msg,
-        50, NULL ); /* blocks 50ms maximum */
-    dbus_message_unref( p_msg );
-    if( p_reply == NULL )
-    {   /* g-p-m is not active, or too slow. Better luck next time? */
-        return true;
-    }
+    reply = dbus_connection_send_with_reply_and_block( p_sys->p_conn, msg,
+                                                       50, NULL );
+    dbus_message_unref( msg );
+    if( reply == NULL )
+        /* g-p-m is not active, or too slow. Better luck next time? */
+        return;
 
     /* extract the cookie from the reply */
-    if( dbus_message_get_args( p_reply, NULL,
-            DBUS_TYPE_UINT32, &i_cookie,
-            DBUS_TYPE_INVALID ) == FALSE )
-    {
-        return false;
-    }
+    dbus_uint32_t i_cookie;
 
-    /* Save the cookie */
-    p_intf->p_sys->i_cookie = i_cookie;
-    return true;
+    if( dbus_message_get_args( reply, NULL,
+                               DBUS_TYPE_UINT32, &i_cookie,
+                               DBUS_TYPE_INVALID ) )
+        p_sys->i_cookie[type] = i_cookie;
+
+    dbus_message_unref( reply );
 }
 
 /*****************************************************************************
  * UnInhibit: Notify the power management daemon that we aren't active anymore
- *
- * returns false if Out of memory, else true
  *****************************************************************************/
-static int UnInhibit( intf_thread_t *p_intf )
+static void UnInhibit( intf_thread_t *p_intf, int type )
 {
-    DBusConnection *p_conn;
-    DBusMessage *p_msg;
-    DBusMessageIter args;
-    dbus_uint32_t i_cookie;
+    intf_sys_t *p_sys = p_intf->p_sys;
 
-    p_conn = p_intf->p_sys->p_conn;
+    DBusMessage *msg = dbus_message_new_method_call( dbus_service[type],
+            dbus_path[type], dbus_interface[type], dbus_uninhibit_method[type] );
+    if( unlikely(msg == NULL) )
+        return;
 
-    p_msg = dbus_message_new_method_call( PM_SERVICE, PM_PATH, PM_INTERFACE,
-                                          "UnInhibit" );
-    if( !p_msg )
-        return false;
-
-    dbus_message_iter_init_append( p_msg, &args );
-
-    i_cookie = p_intf->p_sys->i_cookie;
-    if( !dbus_message_iter_append_basic( &args, DBUS_TYPE_UINT32, &i_cookie ) )
+    dbus_uint32_t i_cookie = p_sys->i_cookie[type];
+    if( dbus_message_append_args( msg, DBUS_TYPE_UINT32, &i_cookie,
+                                       DBUS_TYPE_INVALID )
+     && dbus_connection_send( p_sys->p_conn, msg, NULL ) )
     {
-        dbus_message_unref( p_msg );
-        return false;
+        dbus_connection_flush( p_sys->p_conn );
+        p_sys->i_cookie[type] = 0;
     }
-
-    if( !dbus_connection_send( p_conn, p_msg, NULL ) )
-        return false;
-    dbus_connection_flush( p_conn );
-
-    dbus_message_unref( p_msg );
-
-    p_intf->p_sys->i_cookie = 0;
-    return true;
+    dbus_message_unref( msg );
 }
 
 
@@ -244,18 +257,24 @@ static int StateChange( vlc_object_t *p_input, const char *var,
                         vlc_value_t prev, vlc_value_t value, void *data )
 {
     intf_thread_t *p_intf = data;
+    intf_sys_t *p_sys = p_intf->p_sys;
     const int old = prev.i_int, cur = value.i_int;
 
     if( ( old == PLAYING_S ) == ( cur == PLAYING_S ) )
         return VLC_SUCCESS; /* No interesting change */
 
-    if( ( p_intf->p_sys->i_cookie != 0 ) == ( cur == PLAYING_S ) )
-        return VLC_SUCCESS; /* Already in correct state */
-
-    if( cur == PLAYING_S )
-        Inhibit( p_intf );
-    else
-        UnInhibit( p_intf );
+    if( cur == PLAYING_S ) {
+        if (p_sys->i_cookie[FREEDESKTOP] == 0)
+            Inhibit( p_intf, FREEDESKTOP );
+        if (p_sys->i_cookie[GNOME] == 0)
+            Inhibit( p_intf, GNOME );
+    }
+    else {
+        if (p_sys->i_cookie[FREEDESKTOP] != 0)
+            UnInhibit( p_intf, FREEDESKTOP );
+        if (p_sys->i_cookie[GNOME] != 0)
+            UnInhibit( p_intf, GNOME );
+    }
 
     (void)p_input; (void)var; (void)prev;
     return VLC_SUCCESS;
@@ -274,7 +293,12 @@ static int InputChange( vlc_object_t *p_playlist, const char *var,
     }
     p_sys->p_input = VLC_OBJECT(playlist_CurrentInput( p_sys->p_playlist ));
     if( p_sys->p_input )
+    {
+        Inhibit( p_intf, FREEDESKTOP );
+        Inhibit( p_intf, GNOME );
+
         var_AddCallback( p_sys->p_input, "state", StateChange, p_intf );
+    }
 
     (void)var; (void)prev; (void)value; (void)p_playlist;
     return VLC_SUCCESS;

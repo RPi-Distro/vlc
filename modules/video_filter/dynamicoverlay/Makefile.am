@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libdynamicoverlay_plugin_la_SOURCES = $(SOURCES_dynamicoverlay)
 nodist_libdynamicoverlay_plugin_la_SOURCES = $(nodist_SOURCES_dynamicoverlay)
 # Force per-target objects:
-libdynamicoverlay_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdynamicoverlay_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdynamicoverlay_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdynamicoverlay_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_dynamicoverlay)
+libdynamicoverlay_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_dynamicoverlay)
+libdynamicoverlay_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_dynamicoverlay)
+libdynamicoverlay_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_dynamicoverlay)
 # Set LIBADD and DEPENDENCIES manually:
-libdynamicoverlay_plugin_la_LIBADD = $(AM_LIBADD)
-libdynamicoverlay_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libdynamicoverlay_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_dynamicoverlay)
+libdynamicoverlay_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_dynamicoverlay)
+libdynamicoverlay_plugin_la_DEPENDENCIES =
 

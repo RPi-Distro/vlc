@@ -2,7 +2,7 @@
  * common.c:
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 954cb7cd0e0907499eed3a23bbbf04c338034432 $
+ * $Id: 97daadcda258bbde6d525c72b0ecd9c8bd12b413 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -48,6 +48,9 @@
 #ifdef MODULE_NAME_IS_glwin32
 #include "../opengl.h"
 #endif
+#ifdef MODULE_NAME_IS_direct2d
+#include <d2d1.h>
+#endif
 
 #include "common.h"
 
@@ -63,8 +66,10 @@
 static void CommonChangeThumbnailClip(vout_display_t *, bool show);
 static int CommonControlSetFullscreen(vout_display_t *, bool is_fullscreen);
 
+#if !defined(UNDER_CE) && !defined(MODULE_NAME_IS_glwin32)
 static void DisableScreensaver(vout_display_t *);
 static void RestoreScreensaver(vout_display_t *);
+#endif
 
 /* */
 int CommonInit(vout_display_t *vd)
@@ -158,6 +163,7 @@ void CommonManage(vout_display_t *vd)
         RECT rect_parent;
         POINT point;
 
+        /* Check if the parent window has resized or moved */
         GetClientRect(sys->hparent, &rect_parent);
         point.x = point.y = 0;
         ClientToScreen(sys->hparent, &point);
@@ -166,30 +172,25 @@ void CommonManage(vout_display_t *vd)
         if (!EqualRect(&rect_parent, &sys->rect_parent)) {
             sys->rect_parent = rect_parent;
 
-            /* FIXME I find such #ifdef quite weirds. Are they really needed ? */
-
-#if defined(MODULE_NAME_IS_direct3d) || defined(MODULE_NAME_IS_wingdi) || defined(MODULE_NAME_IS_wingapi)
+            /* This code deals with both resize and move
+             *
+             * For most drivers(direct3d, gdi, opengl), move is never
+             * an issue. The surface automatically gets moved together
+             * with the associated window (hvideownd)
+             *
+             * For directx, it is still important to call UpdateRects
+             * on a move of the parent window, even if no resize occured
+             */
             SetWindowPos(sys->hwnd, 0, 0, 0,
                          rect_parent.right - rect_parent.left,
                          rect_parent.bottom - rect_parent.top,
                          SWP_NOZORDER);
+
             UpdateRects(vd, NULL, NULL, true);
-#else
-            /* This one is to force the update even if only
-             * the position has changed */
-            SetWindowPos(sys->hwnd, 0, 1, 1,
-                         rect_parent.right - rect_parent.left,
-                         rect_parent.bottom - rect_parent.top, 0);
-
-            SetWindowPos(sys->hwnd, 0, 0, 0,
-                         rect_parent.right - rect_parent.left,
-                         rect_parent.bottom - rect_parent.top, 0);
-
-#endif
         }
     }
 
-    /* */
+    /* HasMoved means here resize or move */
     if (EventThreadGetAndResetHasMoved(sys->event))
         UpdateRects(vd, NULL, NULL, false);
 }
@@ -289,14 +290,15 @@ static void CommonChangeThumbnailClip(vout_display_t *vd, bool show)
 
     CoInitialize(0);
 
-    LPTASKBARLIST3 taskbl;
+    void *ptr;
     if (S_OK == CoCreateInstance(&clsid_ITaskbarList,
                                  NULL, CLSCTX_INPROC_SERVER,
                                  &IID_ITaskbarList3,
-                                 &taskbl)) {
+                                 &ptr)) {
+        LPTASKBARLIST3 taskbl = ptr;
         taskbl->vt->HrInit(taskbl);
 
-        HWND hroot = GetAncestor(sys->hwnd,GA_PARENT);
+        HWND hroot = GetAncestor(sys->hwnd,GA_ROOT);
         RECT relative;
         if (show) {
             RECT video, parent;
@@ -383,7 +385,7 @@ void UpdateRects(vout_display_t *vd,
                      SWP_NOCOPYBITS|SWP_NOZORDER|SWP_ASYNCWINDOWPOS);
 
     /* Destination image position and dimensions */
-#if defined(MODULE_NAME_IS_direct3d)
+#if defined(MODULE_NAME_IS_direct3d) || defined(MODULE_NAME_IS_direct2d)
     rect_dest.left   = 0;
     rect_dest.right  = place.width;
     rect_dest.top    = 0;
@@ -402,10 +404,9 @@ void UpdateRects(vout_display_t *vd,
 
 #endif
 
-#if defined(MODULE_NAME_IS_directx) || defined(MODULE_NAME_IS_direct3d)
+#if defined(MODULE_NAME_IS_directx)
     /* UpdateOverlay directdraw function doesn't automatically clip to the
-     * display size so we need to do it otherwise it will fail
-     * It is also needed for d3d to avoid exceding our surface size */
+     * display size so we need to do it otherwise it will fail */
 
     /* Clip the destination window */
     if (!IntersectRect(&rect_dest_clipped, &rect_dest,
@@ -461,7 +462,7 @@ void UpdateRects(vout_display_t *vd,
     /* Apply overlay hardware constraints */
     if (sys->use_overlay)
         AlignRect(&rect_src_clipped, sys->i_align_src_boundary, sys->i_align_src_size);
-#elif defined(MODULE_NAME_IS_direct3d)
+#elif defined(MODULE_NAME_IS_direct3d) || defined(MODULE_NAME_IS_direct2d)
     /* Needed at least with YUV content */
     rect_src_clipped.left &= ~1;
     rect_src_clipped.right &= ~1;
@@ -687,7 +688,7 @@ int CommonControl(vout_display_t *vd, int query, va_list args)
     }
 }
 
-#ifndef UNDER_CE
+#if !defined(UNDER_CE) && !defined(MODULE_NAME_IS_glwin32)
 static void DisableScreensaver(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;

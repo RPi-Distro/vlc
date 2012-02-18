@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libqt4_plugin_la_SOURCES = $(SOURCES_qt4)
 nodist_libqt4_plugin_la_SOURCES = $(nodist_SOURCES_qt4)
 # Force per-target objects:
-libqt4_plugin_la_CFLAGS = $(AM_CFLAGS)
-libqt4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libqt4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libqt4_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_qt4)
+libqt4_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_qt4)
+libqt4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_qt4)
+libqt4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_qt4)
 # Set LIBADD and DEPENDENCIES manually:
-libqt4_plugin_la_LIBADD = $(AM_LIBADD)
-libqt4_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libqt4_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_qt4)
+libqt4_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_qt4)
+libqt4_plugin_la_DEPENDENCIES =
 

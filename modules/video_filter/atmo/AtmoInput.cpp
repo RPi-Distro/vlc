@@ -5,8 +5,13 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: fc0ba660bd13f81cbdb7fd288ae31f014faf4765 $
+ * $Id: bfc482677edcb727033a0368bffd1ebd6bf12c4f $
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include "AtmoDefs.h"
 #include "AtmoInput.h"
 

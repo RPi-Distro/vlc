@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_access.h: Access descriptor, queries and methods
  *****************************************************************************
- * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: cc7a9c6b8dffcbdb72d19b48c1e60fb361164fe9 $
+ * Copyright (C) 1999-2006 VLC authors and VideoLAN
+ * $Id: df8cf1af98f0fe94a42fa9c402718d9a18bcfa7c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_ACCESS_H
@@ -80,8 +80,8 @@ struct access_t
 
     /* Access name (empty if non forced) */
     char        *psz_access;
-    /* Access path/url/filename/.... */
-    char        *psz_path;
+    char        *psz_location; /**< Location (URL with the scheme stripped) */
+    char        *psz_filepath; /**< Local file path (if applicable) */
 
     /* Access can fill this entry to force a demuxer
      * XXX: fill it once you know for sure you will succeed
@@ -151,25 +151,31 @@ static inline void access_InitFields( access_t *p_a )
  * This function will return the parent input of this access.
  * It is retained. It can return NULL.
  */
-VLC_EXPORT( input_thread_t *, access_GetParentInput, ( access_t *p_access ) );
+VLC_API input_thread_t * access_GetParentInput( access_t *p_access ) VLC_USED;
 
-#define ACCESS_SET_CALLBACKS( read, block, control, seek )              \
-    p_access->pf_read = read;                                           \
-    p_access->pf_block = block;                                         \
-    p_access->pf_control = control;                                     \
-    p_access->pf_seek = seek;
+#define ACCESS_SET_CALLBACKS( read, block, control, seek ) \
+    do { \
+        p_access->pf_read = (read); \
+        p_access->pf_block = (block); \
+        p_access->pf_control = (control); \
+        p_access->pf_seek = (seek); \
+    } while(0)
 
-#define STANDARD_READ_ACCESS_INIT                                       \
-    access_InitFields( p_access );                                      \
-    ACCESS_SET_CALLBACKS( Read, NULL, Control, Seek );                  \
-    p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ));       \
-    if( !p_sys ) return VLC_ENOMEM;
+#define STANDARD_READ_ACCESS_INIT \
+    do { \
+        access_InitFields( p_access ); \
+        ACCESS_SET_CALLBACKS( Read, NULL, Control, Seek ); \
+        p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) ); \
+        if( !p_sys ) return VLC_ENOMEM;\
+    } while(0);
 
-#define STANDARD_BLOCK_ACCESS_INIT                                      \
-    access_InitFields( p_access );                                      \
-    ACCESS_SET_CALLBACKS( NULL, Block, Control, Seek );                 \
-    p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) );      \
-    if( !p_sys ) return VLC_ENOMEM;
+#define STANDARD_BLOCK_ACCESS_INIT \
+    do { \
+        access_InitFields( p_access ); \
+        ACCESS_SET_CALLBACKS( NULL, Block, Control, Seek ); \
+        p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) ); \
+        if( !p_sys ) return VLC_ENOMEM; \
+    } while(0);
 
 /**
  * @}

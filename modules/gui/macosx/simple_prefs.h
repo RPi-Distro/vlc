@@ -1,8 +1,8 @@
 /*****************************************************************************
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
-* Copyright (C) 2008 the VideoLAN team
-* $Id: 4ab7a835182af963dc682a34c669e61a83f7b7ca $
+* Copyright (C) 2008-2011 VLC authors and VideoLAN
+* $Id: 60602e068410ac9adbc80bf9ca53f618ca046545 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -25,14 +25,13 @@
 #import "intf.h"
 #import <vlc_common.h>
 
-@interface VLCSimplePrefs : NSObject
+@interface VLCSimplePrefs : NSObject <NSToolbarDelegate>
 {
     IBOutlet id o_audio_dolby_pop;
     IBOutlet id o_audio_dolby_txt;
     IBOutlet id o_audio_effects_box;
     IBOutlet id o_audio_enable_ckb;
     IBOutlet id o_audio_general_box;
-    IBOutlet id o_audio_headphone_ckb;
     IBOutlet id o_audio_lang_fld;
     IBOutlet id o_audio_lang_txt;
     IBOutlet id o_audio_last_box;
@@ -41,16 +40,15 @@
     IBOutlet id o_audio_lastpwd_txt;
     IBOutlet id o_audio_lastuser_fld;
     IBOutlet id o_audio_lastuser_txt;
-    IBOutlet id o_audio_norm_ckb;
-    IBOutlet id o_audio_norm_fld;
-    IBOutlet id o_audio_norm_stepper;
     IBOutlet id o_audio_spdif_ckb;
     IBOutlet id o_audio_view;
     IBOutlet id o_audio_visual_pop;
     IBOutlet id o_audio_visual_txt;
     IBOutlet id o_audio_vol_fld;
     IBOutlet id o_audio_vol_sld;
-    IBOutlet id o_audio_vol_txt;
+    IBOutlet id o_audio_autosavevol_matrix;
+    IBOutlet id o_audio_autosavevol_yes_bcell;
+    IBOutlet id o_audio_autosavevol_no_bcell;
 
     IBOutlet id o_hotkeys_change_btn;
     IBOutlet id o_hotkeys_change_lbl;
@@ -64,6 +62,9 @@
     IBOutlet id o_hotkeys_listbox;
     IBOutlet id o_hotkeys_view;
 
+    IBOutlet id o_input_record_box;
+    IBOutlet id o_input_record_fld;
+    IBOutlet id o_input_record_btn;
     IBOutlet id o_input_avi_pop;
     IBOutlet id o_input_avi_txt;
     IBOutlet id o_input_cachelevel_pop;
@@ -81,10 +82,12 @@
     IBOutlet id o_input_rtsp_ckb;
     IBOutlet id o_input_skipLoop_txt;
     IBOutlet id o_input_skipLoop_pop;
-    IBOutlet id o_input_serverport_fld;
-    IBOutlet id o_input_serverport_txt;
+    IBOutlet id o_input_mkv_preload_dir_ckb;
     IBOutlet id o_input_view;
 
+    IBOutlet id o_intf_style_txt;
+    IBOutlet id o_intf_style_dark_bcell;
+    IBOutlet id o_intf_style_bright_bcell;
     IBOutlet id o_intf_art_pop;
     IBOutlet id o_intf_art_txt;
     IBOutlet id o_intf_embedded_ckb;
@@ -98,6 +101,9 @@
     IBOutlet id o_intf_update_ckb;
     IBOutlet id o_intf_last_update_lbl;
     IBOutlet id o_intf_enableGrowl_ckb;
+    IBOutlet id o_intf_nativefullscreen_ckb;
+    IBOutlet id o_intf_autoresize_ckb;
+    IBOutlet id o_intf_pauseminimized_ckb;
 
     IBOutlet id o_osd_encoding_pop;
     IBOutlet id o_osd_encoding_txt;
@@ -112,12 +118,16 @@
     IBOutlet id o_osd_lang_box;
     IBOutlet id o_osd_lang_fld;
     IBOutlet id o_osd_lang_txt;
+    IBOutlet id o_osd_opacity_txt;
+    IBOutlet id o_osd_opacity_fld;
+    IBOutlet id o_osd_opacity_sld;
+    IBOutlet id o_osd_forcebold_ckb;
+    IBOutlet id o_osd_moreoptions_txt;
     IBOutlet id o_osd_osd_box;
     IBOutlet id o_osd_osd_ckb;
     IBOutlet id o_osd_view;
 
-    IBOutlet id o_sprefs_basic_box;
-    IBOutlet id o_sprefs_basicFull_matrix;
+    IBOutlet id o_sprefs_showAll_btn;
     IBOutlet id o_sprefs_cancel_btn;
     IBOutlet id o_sprefs_controls_box;
     IBOutlet id o_sprefs_reset_btn;
@@ -155,15 +165,15 @@
 
     NSOpenPanel *o_selectFolderPanel;
     NSArray *o_hotkeyDescriptions;
-    NSArray *o_hotkeysNonUseableKeys;
     NSArray *o_hotkeyNames;
+    NSArray *o_hotkeysNonUseableKeys;
     NSMutableArray *o_hotkeySettings;
-    NSNumber *o_keyInTransition;
+    NSString *o_keyInTransition;
 
     intf_thread_t *p_intf;
 }
 + (VLCSimplePrefs *)sharedInstance;
-- (NSString *)OSXKeyToString:(int)val;
+- (NSString *)OSXStringKeyToString:(NSString *)theString;
 
 /* toolbar */
 - (NSToolbarItem *) toolbar: (NSToolbar *)o_toolbar 
@@ -210,7 +220,7 @@
 - (void)showHotkeySettings;
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView;
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
-- (BOOL)changeHotkeyTo: (int)i_theNewKey;
+- (BOOL)changeHotkeyTo: (NSString *)theKey;
 
 @end
 

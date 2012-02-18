@@ -2,7 +2,7 @@
  * panels.hpp : Panels for the playlist
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 97663c50aec76b2e05e55ce22916b7e4e4caad42 $
+ * $Id: 15128dee3d64cb1006ee64a385054378cbf7d4ef $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -31,24 +31,27 @@
 #include "qt4.hpp"
 #include "components/playlist/playlist.hpp"
 
-#include <QModelIndex>
 #include <QWidget>
-#include <QString>
-#include <QToolBar>
 
-#include <vlc_playlist.h>
+#include <vlc_playlist.h> /* playlist_item_t */
 
 class QSignalMapper;
-class QTreeView;
-class QListView;
 class PLModel;
-class QPushButton;
+class MLModel;
 class QKeyEvent;
 class QWheelEvent;
 class QStackedLayout;
+class QModelIndex;
+
+class QAbstractItemView;
+class QTreeView;
 class PlIconView;
 class PlListView;
+class PicFlowView;
+
 class LocationBar;
+class PLSelector;
+class PlaylistWidget;
 
 class StandardPLPanel: public QWidget
 {
@@ -56,40 +59,37 @@ class StandardPLPanel: public QWidget
 
 public:
     StandardPLPanel( PlaylistWidget *, intf_thread_t *,
-                     playlist_t *,playlist_item_t * );
+                     playlist_item_t *, PLSelector *, PLModel *, MLModel * );
     virtual ~StandardPLPanel();
+
+    enum { ICON_VIEW = 0,
+           TREE_VIEW ,
+           LIST_VIEW,
+           PICTUREFLOW_VIEW,
+           VIEW_COUNT };
+
+    int currentViewIndex() const;
+
 protected:
-    friend class PlaylistWidget;
-
     PLModel *model;
+    MLModel *mlmodel;
+    virtual void wheelEvent( QWheelEvent *e );
+
 private:
-    enum {
-      TREE_VIEW = 0,
-      ICON_VIEW,
-      LIST_VIEW,
-
-      VIEW_COUNT
-    };
-
     intf_thread_t *p_intf;
 
-    QWidget     *parent;
-    QLabel      *title;
-    QGridLayout *layout;
-    LocationBar *locationBar;
-    SearchLineEdit *searchEdit;
+    PLSelector  *p_selector;
 
-    QTreeView   *treeView;
-    PlIconView  *iconView;
-    PlListView  *listView;
+    QTreeView         *treeView;
+    PlIconView        *iconView;
+    PlListView        *listView;
+    PicFlowView       *picFlowView;
+
     QAbstractItemView *currentView;
-    QStackedLayout *viewStack;
 
-    QAction *viewActions[ VIEW_COUNT ];
-    QAction *iconViewAction, *treeViewAction;
-    int currentRootId;
+    QStackedLayout    *viewStack;
+
     QSignalMapper *selectColumnsSigMapper;
-    QSignalMapper *viewSelectionMapper;
 
     int lastActivatedId;
     int currentRootIndexId;
@@ -97,64 +97,43 @@ private:
     void createTreeView();
     void createIconView();
     void createListView();
-    void wheelEvent( QWheelEvent *e );
+    void createCoverView();
+    void changeModel ( bool b_ml );
     bool eventFilter ( QObject * watched, QEvent * event );
 
 public slots:
-    void setRoot( playlist_item_t * );
+    void setRootItem( playlist_item_t *, bool );
     void browseInto( const QModelIndex& );
-    void browseInto( );
+
 private slots:
     void deleteSelection();
     void handleExpansion( const QModelIndex& );
-    void handleRootChange();
+    void activate( const QModelIndex & );
+
+    void browseInto();
+    void browseInto( int );
+
     void gotoPlayingItem();
+
     void search( const QString& searchText );
-    void popupSelectColumn( QPoint );
+    void searchDelayed( const QString& searchText );
+
     void popupPlView( const QPoint & );
+    void popupSelectColumn( QPoint );
     void toggleColumnShown( int );
+
     void showView( int );
     void cycleViews();
-    void activate( const QModelIndex & );
-    void browseInto( input_item_t * );
-};
 
-class LocationButton : public QPushButton
-{
-public:
-    LocationButton( const QString &, bool bold, bool arrow, QWidget * parent = NULL );
-    QSize sizeHint() const;
-private:
-    void paintEvent ( QPaintEvent * event );
-    QFontMetrics *metrics;
-    bool b_arrow;
-};
-
-class LocationBar : public QWidget
-{
-    Q_OBJECT
-public:
-    LocationBar( PLModel * );
-    void setIndex( const QModelIndex & );
-    QSize sizeHint() const;
 signals:
-    void invoked( const QModelIndex & );
-public slots:
-    void setRootIndex();
-private slots:
-    void invoke( int i_item_id );
-private:
-    void layOut( const QSize& size );
-    void resizeEvent ( QResizeEvent * event );
-
-    PLModel *model;
-    QSignalMapper *mapper;
-    QHBoxLayout *box;
-    QList<QWidget*> buttons;
-    QList<QAction*> actions;
-    LocationButton *btnMore;
-    QMenu *menuMore;
-    QList<int> widths;
+    void viewChanged( const QModelIndex& );
 };
+
+
+static const QString viewNames[ StandardPLPanel::VIEW_COUNT ]
+                                = { qtr( "Icon View" ),
+                                    qtr( "Detailed View" ),
+                                    qtr( "List View" ),
+                                    qtr( "PictureFlow View ") };
 
 #endif

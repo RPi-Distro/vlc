@@ -35,7 +35,6 @@
 #include <vlc_filter.h>
 
 #include <vlc_image.h>
-#include <vlc_osd.h>
 
 #ifdef LoadImage
 #   undef LoadImage
@@ -44,9 +43,9 @@
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
- 
+
 #define I_VALUES_TEXT N_("Value of the audio channels levels")
-#define I_VALUES_LONGTEXT N_("Value of the audio level of each channels between 0 and 1" \
+#define I_VALUES_LONGTEXT N_("Value of the audio level of each channels between 0 and 1. " \
     "Each level should be separated with ':'.")
 #define POSX_TEXT N_("X coordinate")
 #define POSX_LONGTEXT N_("X coordinate of the bargraph." )
@@ -83,27 +82,27 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_SUBPIC )
 
-    set_capability( "sub filter", 0 )
+    set_capability( "sub source", 0 )
     set_callbacks( OpenSub, Close )
-    set_description( N_("Audio Bar Graph Video sub filter") )
+    set_description( N_("Audio Bar Graph Video sub source") )
     set_shortname( N_("Audio Bar Graph Video") )
     add_shortcut( "audiobargraph_v" )
 
-    add_string( CFG_PREFIX "i_values", NULL, NULL, I_VALUES_TEXT, I_VALUES_LONGTEXT, false )
-    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true )
-    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true )
-    add_integer_with_range( CFG_PREFIX "transparency", 255, 0, 255, NULL,
+    add_string( CFG_PREFIX "i_values", NULL, I_VALUES_TEXT, I_VALUES_LONGTEXT, false )
+    add_integer( CFG_PREFIX "x", 0, POSX_TEXT, POSX_LONGTEXT, true )
+    add_integer( CFG_PREFIX "y", 0, POSY_TEXT, POSY_LONGTEXT, true )
+    add_integer_with_range( CFG_PREFIX "transparency", 255, 0, 255,
         TRANS_TEXT, TRANS_LONGTEXT, false )
-    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false )
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
-    add_integer( CFG_PREFIX "alarm", 0, NULL, ALARM_TEXT, ALARM_LONGTEXT, true )
-    add_integer( CFG_PREFIX "barWidth", 10, NULL, BARWIDTH_TEXT, BARWIDTH_LONGTEXT, true )
+    add_integer( CFG_PREFIX "position", -1, POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions )
+    add_integer( CFG_PREFIX "alarm", 0, ALARM_TEXT, ALARM_LONGTEXT, true )
+    add_integer( CFG_PREFIX "barWidth", 10, BARWIDTH_TEXT, BARWIDTH_LONGTEXT, true )
 
     /* video output filter submodule */
     add_submodule ()
     set_capability( "video filter2", 0 )
     set_callbacks( OpenVideo, Close )
-    set_description( N_("Audio Bar Graph Video sub filter") )
+    set_description( N_("Audio Bar Graph Video sub source") )
     add_shortcut( "audiobargraph_v" )
 vlc_module_end ()
 
@@ -136,7 +135,7 @@ struct filter_sys_t
     filter_t *p_blend;
 
     vlc_mutex_t lock;
-    
+
     BarGraph_t p_BarGraph;
 
     int i_pos;
@@ -175,7 +174,7 @@ static void LoadBarGraph( vlc_object_t *, BarGraph_t *);
 void parse_i_values( BarGraph_t *p_BarGraph, char *i_values);
 
 /**
- * Open the sub filter
+ * Open the sub source
  */
 static int OpenSub( vlc_object_t *p_this )
 {
@@ -239,7 +238,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_sub )
     p_sys->i_pos_y = var_CreateGetIntegerCommand( p_filter, "audiobargraph_v-y" );
     p_BarGraph->i_alpha = var_CreateGetIntegerCommand( p_filter,
                                                         "audiobargraph_v-transparency" );
-    p_BarGraph->i_alpha = __MAX( __MIN( p_BarGraph->i_alpha, 255 ), 0 );
+    p_BarGraph->i_alpha = VLC_CLIP( p_BarGraph->i_alpha, 0, 255 );
     i_values = var_CreateGetStringCommand( p_filter, "audiobargraph_v-i_values" );
     //p_BarGraph->nbChannels = 0;
     //p_BarGraph->i_values = NULL;
@@ -263,7 +262,7 @@ static int OpenCommon( vlc_object_t *p_this, bool b_sub )
     /* Misc init */
     if( b_sub )
     {
-        p_filter->pf_sub_filter = FilterSub;
+        p_filter->pf_sub_source = FilterSub;
     }
     else
     {
@@ -291,19 +290,19 @@ static void Close( vlc_object_t *p_this )
         filter_DeleteBlend( p_sys->p_blend );
 
     vlc_mutex_destroy( &p_sys->lock );
-    
+
     if( p_BarGraph->p_pic )
     {
         picture_Release( p_BarGraph->p_pic );
         p_BarGraph->p_pic = NULL;
     }
     free( p_BarGraph->i_values );
-    
+
     free( p_sys );
 }
 
 /**
- * Sub filter
+ * Sub source
  */
 static subpicture_t *FilterSub( filter_t *p_filter, mtime_t date )
 {
@@ -361,7 +360,7 @@ static subpicture_t *FilterSub( filter_t *p_filter, mtime_t date )
     /*  where to locate the bar graph: */
     if( p_sys->i_pos < 0 )
     {   /*  set to an absolute xy */
-        p_region->i_align = OSD_ALIGN_RIGHT | OSD_ALIGN_TOP;
+        p_region->i_align = SUBPICTURE_ALIGN_RIGHT | SUBPICTURE_ALIGN_TOP;
         p_spu->b_absolute = true;
     }
     else
@@ -480,7 +479,7 @@ static int BarGraphCallback( vlc_object_t *p_this, char const *psz_var,
     }
     else if ( !strcmp( psz_var, "audiobargraph_v-transparency" ) )
     {
-        p_BarGraph->i_alpha = __MAX( __MIN( newval.i_int, 255 ), 0 );
+        p_BarGraph->i_alpha = VLC_CLIP( newval.i_int, 0, 255 );
     }
     else if ( !strcmp( psz_var, "audiobargraph_v-i_values" ) )
     {
@@ -537,31 +536,31 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
     int i_width = 0;
     int i_line;
     int moinsTrois, moinsCinq, moinsSept, moinsDix, moinsVingt;
-    
+
     if (nbChannels == 0) {
         i_width = 20;
     } else {
         i_width = 2 * nbChannels * barWidth + 10;
     }
-    
+
     moinsTrois = 0.71*scale + 20;
     moinsCinq = 0.56*scale + 20;
     moinsSept = 0.45*scale + 20;
     moinsDix = 0.32*scale + 20;
     moinsVingt = 0.1*scale + 20;
-    
+
     p_pic = picture_New(VLC_FOURCC('Y','U','V','A'), i_width+20, scale+30, 1, 1);
-    
+
     // blacken the whole picture
     for( i = 0 ; i < p_pic->i_planes ; i++ )
     {
         memset( p_pic->p[i].p_pixels, 0x00,
                 p_pic->p[i].i_visible_lines * p_pic->p[i].i_pitch );
     }
-    
+
     // side bar
     for ( i_line = 20; i_line < scale+20; i_line++ ) {
-    
+
 #define DrawPointsBlack(a,b) {\
         for (i=a; i<b; i++) {\
             *(p_pic->p[0].p_pixels + (scale + 30 - i_line - 1) * p_pic->p[0].i_pitch + i ) = 0x00; \
@@ -577,12 +576,12 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
             *(p_pic->p[2].p_pixels + (scale + 30 - i_line - 1) * p_pic->p[2].i_pitch + i ) = 128;\
             *(p_pic->p[3].p_pixels + (scale + 30 - i_line - 1) * p_pic->p[3].i_pitch + i ) = 0xFF; \
         }\
-    }    
-        
+    }
+
         // vertical line
         DrawPointsBlack(20,22);
         DrawPointsWhite(22,24);
-    
+
         // -3dB
         if (i_line == moinsTrois - 2) {
             // 3
@@ -610,7 +609,7 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
             // 3
             DrawPointsBlack(16,19);
         }
-        
+
         // -5dB
         if (i_line == moinsCinq - 2) {
             // 5
@@ -638,7 +637,7 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
             // 5
             DrawPointsBlack(16,19);
         }
-        
+
         // -7dB
         if (i_line == moinsSept - 2) {
             // 7
@@ -666,8 +665,8 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
             // 7
             DrawPointsBlack(16,19);
         }
-        
-        
+
+
         // -10dB
         if (i_line == moinsDix - 2) {
             // 1
@@ -708,7 +707,7 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
             // 0
             DrawPointsBlack(16,19);
         }
-        
+
         // -20dB
         if (i_line == moinsVingt - 2) {
             // 2
@@ -749,10 +748,10 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
             // 0
             DrawPointsBlack(16,19);
         }
-        
-        
+
+
     }
-    
+
     // draw the bars and channel indicators
     for (i=0; i<nbChannels; i++) {
         for( j = barWidth+20 ; j < 2*barWidth+20; j++)
@@ -835,9 +834,9 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
             }
         }
     }
-    
-    
-    
+
+
+
     if (alarm) {// draw the alarm square
         // bottom
         for ( i_line = 0; i_line < 10; i_line++ ) {
@@ -905,7 +904,7 @@ static picture_t *LoadImage( vlc_object_t *p_this, int nbChannels, int* i_values
             }
         }
     }
-    
+
 
     return p_pic;
 }
@@ -940,7 +939,7 @@ void parse_i_values( BarGraph_t *p_BarGraph, char *i_values)
         p_BarGraph->nbChannels++;
         p_BarGraph->i_values = xrealloc(p_BarGraph->i_values,
                                           p_BarGraph->nbChannels*sizeof(int));
-        p_BarGraph->i_values[p_BarGraph->nbChannels-1] = __MAX( __MIN( atof(res)*p_BarGraph->scale, p_BarGraph->scale ), 0 );
+        p_BarGraph->i_values[p_BarGraph->nbChannels-1] = VLC_CLIP( atof(res)*p_BarGraph->scale, 0, p_BarGraph->scale );
         res = strtok_r(NULL, delim, &tok);
     }
 

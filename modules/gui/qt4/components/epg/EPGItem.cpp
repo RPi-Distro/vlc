@@ -2,7 +2,7 @@
  * EPGItem.cpp: EPGItem
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: e9e59350a26c422b4739d21358ec5568fd9388d5 $
+ * $Id: e9c761fa463548d08ac5f007279b8f74c86201f1 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -28,18 +28,23 @@
 #include <QDateTime>
 #include <QFocusEvent>
 #include <QGraphicsScene>
+#include <QStyleOptionGraphicsItem>
+#include <QGraphicsSceneHoverEvent>
+#include <QStyle>
 
 #include "EPGItem.hpp"
 #include "EPGView.hpp"
-#include "EPGEvent.hpp"
 
-EPGItem::EPGItem( EPGView *view )
+#include "qt4.hpp"
+
+EPGItem::EPGItem( vlc_epg_event_t *data, EPGView *view )
     : m_view( view )
 {
+    setData( data );
     m_current = false;
-
     m_boundingRect.setHeight( TRACKS_HEIGHT );
     setFlags( QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsFocusable);
+    setAcceptHoverEvents( true );
 }
 
 QRectF EPGItem::boundingRect() const
@@ -47,8 +52,11 @@ QRectF EPGItem::boundingRect() const
     return m_boundingRect;
 }
 
-void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
+void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 {
+    QPen pen;
+    QColor gradientColor;
+
     // Draw in view's coordinates
     painter->setWorldMatrixEnabled( false );
 
@@ -59,17 +67,25 @@ void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
     QTransform viewPortTransform = m_view->viewportTransform();
     QRectF mapped = deviceTransform( viewPortTransform ).mapRect( boundingRect() );
 
-    if ( m_current )
-    {
-        painter->setBrush( QBrush( QColor( 244, 102, 146 ) ) );
-        painter->setPen( QPen( QColor( 244, 102, 146 ) ) );
-    }
-    else
-    {
-        painter->setBrush( QBrush( QColor( 201, 217, 242 ) ) );
-        painter->setPen( QPen( QColor( 201, 217, 242 ) ) );
-    }
+    QLinearGradient gradient( mapped.topLeft(), mapped.bottomLeft() );
 
+    bool b_simultaneous = playsAt( m_view->baseTime() );
+    if ( m_current || b_simultaneous )
+        gradientColor.setRgb( 244, 125, 0 , b_simultaneous ? 192 : 255 );
+    else
+        gradientColor.setRgb( 201, 217, 242 );
+
+    gradient.setColorAt( 0.0, gradientColor.lighter( 120 ) );
+    gradient.setColorAt( 1.0, gradientColor );
+
+    pen.setColor( option->state & QStyle::State_MouseOver || hasFocus()
+                  ? QColor( 0, 0, 0 ) : QColor( 192, 192, 192 ) );
+
+    pen.setStyle( option->state & QStyle::State_MouseOver && !hasFocus()
+                  ? Qt::DashLine : Qt::SolidLine );
+
+    painter->setBrush( QBrush( gradient ) );
+    painter->setPen( pen );
     mapped.adjust( 1, 2, -1, -2 );
     painter->drawRoundedRect( mapped, 10, 10 );
 
@@ -89,6 +105,7 @@ void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
     painter->drawText( mapped, Qt::AlignTop | Qt::AlignLeft, fm.elidedText( m_name, Qt::ElideRight, mapped.width() ) );
 
     mapped.adjust( 0, 20, 0, 0 );
+
     QDateTime m_end = m_start.addSecs( m_duration );
     f.setPixelSize( 10 );
     f.setItalic( true );
@@ -96,7 +113,7 @@ void EPGItem::paint( QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
 
     /* Draw the hours. */
     painter->drawText( mapped, Qt::AlignTop | Qt::AlignLeft,
-                       fm.elidedText( m_start.toString( "hh:mm" ) + " - " +
+                       fm.elidedText( start().toString( "hh:mm" ) + " - " +
                                       m_end.toString( "hh:mm" ),
                                       Qt::ElideRight, mapped.width() ) );
 }
@@ -106,27 +123,60 @@ const QDateTime& EPGItem::start() const
     return m_start;
 }
 
+QDateTime EPGItem::end()
+{
+    return QDateTime( m_start ).addSecs( m_duration );
+}
+
 int EPGItem::duration() const
 {
     return m_duration;
 }
 
-int EPGItem::getChannelNb() const
+void EPGItem::setRow( unsigned int i_row_ )
 {
-    return m_channelNb;
-}
-
-void EPGItem::setChannelNb( int channelNb )
-{
-    //qDebug() << "Channel" << channelNb;
-    m_channelNb = channelNb;
+    i_row = i_row_;
     updatePos();
 }
 
-void EPGItem::setStart( const QDateTime& start )
+bool EPGItem::setData( vlc_epg_event_t *data )
 {
-    m_start = start;
-    updatePos();
+    QDateTime newtime = QDateTime::fromTime_t( data->i_start );
+    QString newname = qfu( data->psz_name );
+    QString newdesc = qfu( data->psz_description );
+    QString newshortdesc = qfu( data->psz_short_description );
+
+    if ( m_start != newtime ||
+         m_name != newname ||
+         m_description != newdesc ||
+         m_shortDescription != newshortdesc ||
+         m_duration != data->i_duration )
+    {
+        m_start = newtime;
+        m_name = newname;
+        setToolTip( newname );
+        m_description = newdesc;
+        m_shortDescription = newshortdesc;
+        setDuration( data->i_duration );
+        update();
+        return true;
+    }
+    return false;
+}
+
+void EPGItem::setCurrent( bool b_current )
+{
+    m_current = b_current;
+}
+
+bool EPGItem::endsBefore( const QDateTime &ref ) const
+{
+    return m_start.addSecs( m_duration ) < ref;
+}
+
+bool EPGItem::playsAt( const QDateTime & ref ) const
+{
+    return (m_start <= ref) && !endsBefore( ref );
 }
 
 void EPGItem::setDuration( int duration )
@@ -135,38 +185,37 @@ void EPGItem::setDuration( int duration )
     m_boundingRect.setWidth( duration );
 }
 
-void EPGItem::setName( const QString& name )
+QString EPGItem::description()
 {
-    m_name = name;
-}
+    if( m_description.isEmpty() )
+        return m_shortDescription;
 
-void EPGItem::setDescription( const QString& description )
-{
-    m_description = description;
-}
-
-void EPGItem::setShortDescription( const QString& shortDescription )
-{
-    m_shortDescription = shortDescription;
-}
-
-void EPGItem::setCurrent( bool current )
-{
-    m_current = current;
+    QString text( m_description );
+    if( !m_shortDescription.isEmpty() )
+        text += QString(" - ") += m_shortDescription;
+    return text;
 }
 
 void EPGItem::updatePos()
 {
     int x = m_view->startTime().secsTo( m_start );
-    setPos( x, m_channelNb * TRACKS_HEIGHT );
+    setPos( x, i_row * TRACKS_HEIGHT );
+}
+
+void EPGItem::hoverEnterEvent ( QGraphicsSceneHoverEvent * event )
+{
+    event->accept();
+    scene()->update();
+}
+
+void EPGItem::hoverLeaveEvent ( QGraphicsSceneHoverEvent * event )
+{ /* required to redraw our background without flaws */
+    hoverEnterEvent( event );
 }
 
 void EPGItem::focusInEvent( QFocusEvent * event )
 {
-    EPGEvent *evEPG = new EPGEvent( m_name );
-    evEPG->description = m_description;
-    evEPG->shortDescription = m_shortDescription;
-    evEPG->start = m_start;
-    evEPG->duration = m_duration;
-    m_view->eventFocused( evEPG );
+    event->accept();
+    m_view->focusItem( this );
+    update();
 }

@@ -2,7 +2,7 @@
  * extensions_manager.cpp: Extensions manager for Qt
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 8499b72d0564fed60102fb417c4df1377df824f2 $
+ * $Id: 29538dc771baab1e4e3d8e70956f3ae68f52b81a $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -25,6 +25,7 @@
 #include "input_manager.hpp"
 #include "dialogs/extensions.hpp"
 
+#include <vlc_modules.h>
 #include "assert.h"
 
 #include <QMenu>
@@ -47,7 +48,7 @@ ExtensionsManager::ExtensionsManager( intf_thread_t *_p_intf, QObject *parent )
 
     menuMapper = new QSignalMapper( this );
     CONNECT( menuMapper, mapped( int ), this, triggerMenu( int ) );
-    CONNECT( THEMIM->getIM(), statusChanged( int ), this, playingChanged( int ) );
+    CONNECT( THEMIM->getIM(), playingStatusChanged( int ), this, playingChanged( int ) );
     DCONNECT( THEMIM, inputChanged( input_thread_t* ),
               this, inputChanged( input_thread_t* ) );
     CONNECT( THEMIM->getIM(), metaChanged( input_item_t* ),
@@ -79,7 +80,6 @@ bool ExtensionsManager::loadExtensions()
             emit extensionsUpdated();
             return false;
         }
-        vlc_object_attach( p_extensions_manager, p_intf );
 
         p_extensions_manager->p_module =
                 module_need( p_extensions_manager, "extension", NULL, false );

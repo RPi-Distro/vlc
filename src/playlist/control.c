@@ -1,25 +1,25 @@
 /*****************************************************************************
  * control.c : Handle control of the playlist & running through it
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 38ddf485646668a97440732351a857bd6b2a64f0 $
+ * Copyright (C) 1999-2004 VLC authors and VideoLAN
+ * $Id: bf46a32b86c5bc5c09d739541a8c55671b01fff3 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -158,9 +158,10 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
 
     case PLAYLIST_PAUSE:
         if( !pl_priv(p_playlist)->p_input )
-        {    /* FIXME: is this really useful without input? */
-             pl_priv(p_playlist)->status.i_status = PLAYLIST_PAUSED;
-             break;
+        {   /* FIXME: is this really useful without input? */
+            pl_priv(p_playlist)->status.i_status = PLAYLIST_PAUSED;
+            /* return without notifying the playlist thread as there is nothing to do */
+            return VLC_SUCCESS;
         }
 
         if( var_GetInteger( pl_priv(p_playlist)->p_input, "state" ) == PAUSE_S )
@@ -202,9 +203,9 @@ int playlist_PreparseEnqueue( playlist_t *p_playlist, input_item_t *p_item )
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    if( p_sys->p_preparser )
-        playlist_preparser_Push( p_sys->p_preparser, p_item );
-
+    if( unlikely(p_sys->p_preparser == NULL) )
+        return VLC_ENOMEM;
+    playlist_preparser_Push( p_sys->p_preparser, p_item );
     return VLC_SUCCESS;
 }
 
@@ -212,9 +213,9 @@ int playlist_AskForArtEnqueue( playlist_t *p_playlist, input_item_t *p_item )
 {
     playlist_private_t *p_sys = pl_priv(p_playlist);
 
-    if( p_sys->p_fetcher )
-        playlist_fetcher_Push( p_sys->p_fetcher, p_item );
-
+    if( unlikely(p_sys->p_fetcher == NULL) )
+        return VLC_ENOMEM;
+    playlist_fetcher_Push( p_sys->p_fetcher, p_item );
     return VLC_SUCCESS;
 }
 

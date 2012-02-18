@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 7d82faf134c2404f52e33eb2bdf32e582593f2b4 $
+ * $Id: 8880a79d846fdec6dd74cb0fd56ab86725860e7c $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -38,6 +38,7 @@
 #    define LOADER
 #else
 #   include <objbase.h>
+#   include <vlc_charset.h>
 #endif
 
 #ifdef LOADER
@@ -498,7 +499,7 @@ static int DecOpen( decoder_t *p_dec )
         BITMAPINFOHEADER *p_bih;
         DMO_MEDIA_TYPE mt;
         unsigned i_chroma = VLC_CODEC_YUYV;
-        int i_planes = 1, i_bpp = 16;
+        int i_bpp = 16;
         int i = 0;
 
         /* Find out which chroma to use */
@@ -507,7 +508,7 @@ static int DecOpen( decoder_t *p_dec )
             if( mt.subtype.Data1 == VLC_CODEC_YV12 )
             {
                 i_chroma = mt.subtype.Data1;
-                i_planes = 3; i_bpp = 12;
+                i_bpp = 12;
             }
 
             DMOFreeMediaType( &mt );
@@ -540,7 +541,7 @@ static int DecOpen( decoder_t *p_dec )
             p_dec->fmt_in.video.i_height *
             (p_dec->fmt_in.video.i_bits_per_pixel + 7) / 8;
 
-        p_bih->biPlanes = i_planes;
+        p_bih->biPlanes = 1; /* http://msdn.microsoft.com/en-us/library/dd183376%28v=vs.85%29.aspx */
         p_bih->biSize = sizeof(BITMAPINFOHEADER);
 
         dmo_output_type.majortype = MEDIATYPE_Video;
@@ -728,8 +729,7 @@ static int LoadDMO( vlc_object_t *p_this, HINSTANCE *p_hmsdmo_dll,
     while( ( S_OK == p_enum_dmo->vt->Next( p_enum_dmo, 1, &clsid_dmo,
                      &psz_dmo_name, &i_dummy /* NULL doesn't work */ ) ) )
     {
-        char psz_temp[MAX_PATH];
-        wcstombs( psz_temp, psz_dmo_name, MAX_PATH );
+        char *psz_temp = FromWide( psz_dmo_name );
         msg_Dbg( p_this, "found DMO: %s", psz_temp );
         CoTaskMemFree( psz_dmo_name );
 
@@ -738,9 +738,14 @@ static int LoadDMO( vlc_object_t *p_this, HINSTANCE *p_hmsdmo_dll,
                               &IID_IMediaObject, (void **)pp_dmo ) )
         {
             msg_Warn( p_this, "can't create DMO: %s", psz_temp );
+            free( psz_temp );
             *pp_dmo = 0;
         }
-        else break;
+        else
+        {
+            free( psz_temp );
+            break;
+        }
     }
 
     p_enum_dmo->vt->Release( (IUnknown *)p_enum_dmo );
@@ -783,7 +788,8 @@ loader:
     }
 
     i_err = GetClass( codecs_table[i_codec].p_guid, &IID_IClassFactory,
-                      &cFactory );
+                      (void**)&cFactory );
+
     if( i_err || cFactory == NULL )
     {
         msg_Dbg( p_this, "no such class object" );
@@ -792,7 +798,7 @@ loader:
     }
 
     i_err = cFactory->vt->CreateInstance( cFactory, 0, &IID_IUnknown,
-                                          &cObject );
+                                          (void**)&cObject );
     cFactory->vt->Release( (IUnknown*)cFactory );
     if( i_err || !cObject )
     {
@@ -801,7 +807,7 @@ loader:
         return VLC_EGENERIC;
     }
     i_err = cObject->vt->QueryInterface( cObject, &IID_IMediaObject,
-                                        pp_dmo );
+                                        (void**)pp_dmo );
     cObject->vt->Release( (IUnknown*)cObject );
     if( i_err || !*pp_dmo )
     {
@@ -1204,7 +1210,7 @@ static int EncoderSetVideoType( encoder_t *p_enc, IMediaObject *p_dmo )
 
         i_err = p_dmo->vt->QueryInterface( (IUnknown *)p_dmo,
                                            &IID_IWMCodecPrivateData,
-                                           &p_privdata );
+                                           (void**)&p_privdata );
         if( i_err ) break;
 
         i_err = p_privdata->vt->SetPartialOutputType( p_privdata, &dmo_type );

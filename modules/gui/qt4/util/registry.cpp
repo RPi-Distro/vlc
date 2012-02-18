@@ -2,7 +2,7 @@
  * registry.cpp: Windows Registry Manipulation
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 263a3bf556eac98eb5e9a51c0c1dd556b72224b2 $
+ * $Id: eff58234e8899325b5757286052ef96c611c7055 $
  *
  * Authors: Andre Weber <WeberAndre # gmx - de>
  *
@@ -27,6 +27,7 @@
 
 #ifdef WIN32
 
+#include <stdlib.h>
 #include "registry.hpp"
 
 QVLCRegistry::QVLCRegistry( HKEY rootKey )
@@ -128,10 +129,12 @@ int QVLCRegistry::ReadRegistryInt( const char *path, const char *valueName, int 
     return default_value;
 }
 
-char * QVLCRegistry::ReadRegistryString( const char *path, const char *valueName, char *default_value )
+char * QVLCRegistry::ReadRegistryString( const char *path, const char *valueName, const char *default_value )
 {
     HKEY keyHandle;
     char *tempValue = NULL;
+    char *tempValue2 = NULL;
+
     DWORD size1;
     DWORD valueType;
 
@@ -145,20 +148,14 @@ char * QVLCRegistry::ReadRegistryString( const char *path, const char *valueName
                tempValue = ( char * )malloc( size1+1 ); // +1 für NullByte`?
                if( RegQueryValueEx(  keyHandle, valueName, NULL, &valueType, (LPBYTE)tempValue, &size1 ) == ERROR_SUCCESS )
                {
-                  default_value = tempValue;
+                  tempValue2 = tempValue;
                };
            }
         }
         RegCloseKey( keyHandle );
     }
-    if( tempValue == NULL )
-    {
-        // wenn tempValue nicht aus registry gelesen wurde dafür sorgen das ein neuer String mit der Kopie von DefaultValue
-        // geliefert wird - das macht das Handling des Rückgabewertes der Funktion einfacher - immer schön mit free freigeben!
-        default_value = strdup( default_value );
-    }
 
-    return default_value;
+    return tempValue == NULL ? strdup( default_value ) : tempValue2;
 }
 
 double QVLCRegistry::ReadRegistryDouble( const char *path, const char *valueName, double default_value )

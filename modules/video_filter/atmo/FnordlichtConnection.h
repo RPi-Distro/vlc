@@ -19,7 +19,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- * $Id: 08f9cf14313aa5c766d07d860601508b8128eadc $
+ * $Id: bcc31b7b5d023f643a26a7b8e51e58845a89a43e $
  */
 #ifndef _FnordlichtConnection_h_
 #define _FnordlichtConnection_h_
@@ -61,16 +61,6 @@ class CFnordlichtConnection : public CAtmoConnection
         virtual ATMO_BOOL isOpen(void);
 
         virtual ATMO_BOOL SendData(pColorPacket data);
-
-        virtual ATMO_BOOL HardwareWhiteAdjust(int global_gamma,
-                                            int global_contrast,
-                                            int contrast_red,
-                                            int contrast_green,
-                                            int contrast_blue,
-                                            int gamma_red,
-                                            int gamma_green,
-                                            int gamma_blue,
-                                            ATMO_BOOL storeToEeprom);
 
         virtual int getAmountFnordlichter();
 

@@ -2,7 +2,7 @@
  * record.c: record stream output module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 4f8255f73f92f34597739803eb37d92858026921 $
+ * $Id: a75e27918bf5279cbe2969aaae2933f34c5a3105 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -62,7 +62,7 @@ vlc_module_begin ()
     set_category( CAT_SOUT )
     set_subcategory( SUBCAT_SOUT_STREAM )
 
-    add_string( SOUT_CFG_PREFIX "dst-prefix", "", NULL, DST_PREFIX_TEXT,
+    add_string( SOUT_CFG_PREFIX "dst-prefix", "", DST_PREFIX_TEXT,
                 DST_PREFIX_LONGTEXT, true )
 
     set_callbacks( Open, Close )

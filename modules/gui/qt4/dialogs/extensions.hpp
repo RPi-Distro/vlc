@@ -2,7 +2,7 @@
  * extensions.hpp: Extensions manager for Qt: dialogs manager
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: dafb12e10e81758ffbc113e0f110ee5f8f580cfe $
+ * $Id: 48ca9c3a184f9c0a7d03c158d7900e236bf4786b $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -34,6 +34,7 @@ class QObject;
 class QGridLayout;
 class QSignalMapper;
 class QCloseEvent;
+class QKeyEvent;
 
 class ExtensionsDialogProvider;
 class ExtensionDialog;
@@ -106,6 +107,7 @@ private:
 
 protected:
     virtual void closeEvent( QCloseEvent* );
+    virtual void keyPressEvent( QKeyEvent* );
 
 private slots:
     int TriggerClick( QObject *object );

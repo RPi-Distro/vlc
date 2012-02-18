@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libminimal_macosx_plugin_la_SOURCES = $(SOURCES_minimal_macosx)
 nodist_libminimal_macosx_plugin_la_SOURCES = $(nodist_SOURCES_minimal_macosx)
 # Force per-target objects:
-libminimal_macosx_plugin_la_CFLAGS = $(AM_CFLAGS)
-libminimal_macosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libminimal_macosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libminimal_macosx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_minimal_macosx)
+libminimal_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_minimal_macosx)
+libminimal_macosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_minimal_macosx)
+libminimal_macosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_minimal_macosx)
 # Set LIBADD and DEPENDENCIES manually:
-libminimal_macosx_plugin_la_LIBADD = $(AM_LIBADD)
-libminimal_macosx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libminimal_macosx_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_minimal_macosx)
+libminimal_macosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_minimal_macosx)
+libminimal_macosx_plugin_la_DEPENDENCIES =
 

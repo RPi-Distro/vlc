@@ -2,7 +2,7 @@
  * vout_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 034ba46eecd5bea524a6c5eb5cca03fb18050d1d $
+ * $Id: e2093633994f7ed1a6694914bfc31c467e300482 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -38,17 +38,28 @@ VoutWindow::VoutWindow( intf_thread_t *pIntf, vout_window_t* pWnd,
       GenericWindow( pIntf, 0, 0, false, false, pParent,
                      GenericWindow::VoutWindow ),
       m_pWnd( pWnd ), original_width( width ), original_height( height ),
-      m_pParentWindow( pParent ), m_pCtrlVideo( NULL )
+      m_pCtrlVideo( NULL ), m_pParentWindow( pParent )
 {
     if( m_pWnd )
+    {
         vlc_object_hold( m_pWnd );
+
+#ifdef X11_SKINS
+        m_pWnd->handle.xid = getOSHandle();
+        m_pWnd->display.x11 = NULL;
+#else
+        m_pWnd->handle.hwnd = getOSHandle();
+#endif
+    }
 }
 
 
 VoutWindow::~VoutWindow()
 {
     if( m_pWnd )
+    {
         vlc_object_release( m_pWnd );
+    }
 }
 
 

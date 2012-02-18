@@ -2,7 +2,7 @@
  * i422_yuy2.h : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 52ad7e4c3fd571c65b319714141afcceb4ad58d6 $
+ * $Id: 54928eabaddccdd2f883d4b50b70bf4168a2ff53 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -35,7 +35,8 @@
         MMX_INSTRUCTIONS                    \
         :                                   \
         : "r" (p_line), "r" (p_y),          \
-          "r" (p_u), "r" (p_v) );           \
+          "r" (p_u), "r" (p_v)              \
+        : "mm0", "mm1", "mm2" );            \
         p_line += 16; p_y += 8;             \
         p_u += 4; p_v += 4;                 \
     } while(0)
@@ -145,7 +146,8 @@ movq      %%mm1, 8(%0)  # Store high UYVY                                 \n\
         MMX_INSTRUCTIONS                    \
         :                                   \
         : "r" (p_line), "r" (p_y),          \
-          "r" (p_u), "r" (p_v) );           \
+          "r" (p_u), "r" (p_v)              \
+        : "xmm0", "xmm1", "xmm2" );         \
         p_line += 32; p_y += 16;            \
         p_u += 8; p_v += 8;                 \
     } while(0)

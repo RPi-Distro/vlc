@@ -1,6 +1,7 @@
 SUBDIRS = asf avformat avi mkv mp4 mpeg playlist
 SOURCES_flacsys = flac.c
-SOURCES_ogg = ogg.c vorbis.h kate_categories.c kate_categories.h xiph.h
+SOURCES_ogg = ogg.c ogg.h oggseek.c oggseek.h vorbis.h kate_categories.c \
+	kate_categories.h xiph.h
 SOURCES_demuxdump = demuxdump.c
 SOURCES_rawdv = rawdv.c
 SOURCES_rawvid = rawvid.c
@@ -10,14 +11,12 @@ SOURCES_wav = wav.c
 SOURCES_live555 = live555.cpp ../access/mms/asf.c ../access/mms/buffer.c
 SOURCES_nsv = nsv.c
 SOURCES_real = real.c
-SOURCES_ts = ts.c ../mux/mpeg/csa.c
 SOURCES_ps = ps.c ps.h
 SOURCES_mod = mod.c dummy.cpp
 SOURCES_pva = pva.c
 SOURCES_aiff = aiff.c
 SOURCES_mjpeg = mjpeg.c
 SOURCES_subtitle = subtitle.c
-SOURCES_asademux = subtitle_asa.c asademux.c asademux_defs.h asademux.h
 SOURCES_ty = ty.c ../codec/cc.h
 SOURCES_vobsub = vobsub.c vobsub.h
 SOURCES_voc = voc.c
@@ -30,7 +29,10 @@ SOURCES_vc1 = vc1.c
 SOURCES_demux_cdg = cdg.c
 SOURCES_smf = smf.c
 SOURCES_gme = gme.c dummy.cpp
+SOURCES_sid = sid.cpp
 SOURCES_dirac = dirac.c
+SOURCES_image = image.c
+SOURCES_demux_stl = stl.c
 
 libvlc_LTLIBRARIES += \
 	libaiff_plugin.la \
@@ -58,7 +60,17 @@ libvlc_LTLIBRARIES += \
 	libvoc_plugin.la \
 	libwav_plugin.la \
 	libxa_plugin.la \
+	libimage_plugin.la \
+	libdemux_stl_plugin.la \
 	$(NULL)
+
+libts_plugin_la_SOURCES = ts.c ../mux/mpeg/csa.c dvb-text.h
+libts_plugin_la_CFLAGS = $(AM_CFLAGS) $(DVBPSI_CFLAGS)
+libts_plugin_la_LIBADD = $(AM_LIBADD) $(DVBPSI_LIBS) $(SOCKET_LIBS)
+libts_plugin_la_DEPENDENCIES =
+if HAVE_DVBPSI
+libvlc_LTLIBRARIES += libts_plugin.la
+endif
 
 BUILT_SOURCES += dummy.cpp
 

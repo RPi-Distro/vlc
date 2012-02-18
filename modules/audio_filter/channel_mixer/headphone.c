@@ -3,7 +3,7 @@
  *               -> gives the feeling of a real room with a simple headphone
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: fa6ed618db7b71ab4f00c1f793810ceb94007b13 $
+ * $Id: a1db107fcba4b8490daefbebba055d5fc3ec827b $
  *
  * Authors: Boris Dorès <babal@via.ecp.fr>
  *
@@ -78,11 +78,11 @@ vlc_module_begin ()
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AFILTER )
 
-    add_integer( "headphone-dim", 10, NULL, HEADPHONE_DIM_TEXT,
+    add_integer( "headphone-dim", 10, HEADPHONE_DIM_TEXT,
                  HEADPHONE_DIM_LONGTEXT, false )
-    add_bool( "headphone-compensate", false, NULL, HEADPHONE_COMPENSATE_TEXT,
+    add_bool( "headphone-compensate", false, HEADPHONE_COMPENSATE_TEXT,
               HEADPHONE_COMPENSATE_LONGTEXT, true )
-    add_bool( "headphone-dolby", false, NULL, HEADPHONE_DOLBY_TEXT,
+    add_bool( "headphone-dolby", false, HEADPHONE_DOLBY_TEXT,
               HEADPHONE_DOLBY_LONGTEXT, true )
 
     set_capability( "audio filter", 0 )

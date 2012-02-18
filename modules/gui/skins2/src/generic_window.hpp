@@ -2,7 +2,7 @@
  * generic_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 4f6523981181c5aa7edae28201cce1e93ceaa2b0 $
+ * $Id: 058dd52ecf04d2883911e33435cafb97faee669e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,6 +38,10 @@ class EvtMouse;
 class EvtKey;
 class EvtRefresh;
 class EvtScroll;
+class EvtDragEnter;
+class EvtDragLeave;
+class EvtDragOver;
+class EvtDragDrop;
 class WindowManager;
 
 
@@ -55,6 +59,7 @@ public:
         TopWindow,
         VoutWindow,
         FullscreenWindow,
+        FscWindow,
     };
 
     GenericWindow( intf_thread_t *pIntf, int xPos, int yPos,
@@ -64,13 +69,22 @@ public:
     virtual ~GenericWindow();
 
     /// Methods to process OS events.
-    virtual void processEvent( EvtFocus &rEvtFocus ) { }
-    virtual void processEvent( EvtMenu &rEvtMenu ) { }
-    virtual void processEvent( EvtMotion &rEvtMotion ) { }
-    virtual void processEvent( EvtMouse &rEvtMouse ) { }
-    virtual void processEvent( EvtLeave &rEvtLeave ) { }
-    virtual void processEvent( EvtKey &rEvtKey ) { }
-    virtual void processEvent( EvtScroll &rEvtScroll ) { }
+    virtual void processEvent( EvtFocus &rEvtFocus ) { (void)rEvtFocus; }
+    virtual void processEvent( EvtMenu &rEvtMenu ) { (void)rEvtMenu; }
+    virtual void processEvent( EvtMotion &rEvtMotion ) { (void)rEvtMotion; }
+    virtual void processEvent( EvtMouse &rEvtMouse ) { (void)rEvtMouse; }
+    virtual void processEvent( EvtLeave &rEvtLeave ) { (void)rEvtLeave; }
+    virtual void processEvent( EvtKey &rEvtKey ) { (void)rEvtKey; }
+    virtual void processEvent( EvtScroll &rEvtScroll ) { (void)rEvtScroll; }
+
+    virtual void processEvent( EvtDragEnter &rEvtDragEnter )
+        { (void)rEvtDragEnter; }
+    virtual void processEvent( EvtDragLeave &rEvtDragLeave )
+        { (void)rEvtDragLeave; }
+    virtual void processEvent( EvtDragOver &rEvtDragOver )
+        { (void)rEvtDragOver; }
+    virtual void processEvent( EvtDragDrop &rEvtDragDrop )
+        { (void)rEvtDragDrop; }
 
     virtual void processEvent( EvtRefresh &rEvtRefresh );
 
@@ -78,13 +92,18 @@ public:
     virtual void resize( int width, int height );
 
     /// Refresh an area of the window
-    virtual void refresh( int left, int top, int width, int height ) { }
+    virtual void refresh( int left, int top, int width, int height )
+        { (void)left; (void)top; (void)width; (void)height; }
+
+    /// Invalidate an area of the window
+    virtual void invalidateRect( int left, int top, int width, int height );
 
     /// Get the coordinates of the window
     int getLeft() const { return m_left; }
     int getTop() const { return m_top; }
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
+    void getMonitorInfo( int* x, int* y, int* width, int* height ) const;
 
     /// Give access to the visibility variable
     VarBool &getVisibleVar() { return *m_pVarVisible; }
@@ -93,7 +112,7 @@ public:
     virtual string getType() const { return "Generic"; }
 
     /// windows handle
-    void* getOSHandle() const;
+    vlc_wnd_type getOSHandle() const;
 
     /// reparent
     void setParent( GenericWindow* pParent,
@@ -131,6 +150,12 @@ protected:
     /// Actually hide the window
     virtual void innerHide();
 
+    ///
+    bool isVisible() const { return m_pVarVisible->get(); }
+
+    /// Method called when the observed variable is modified
+    virtual void onUpdate( Subject<VarBool> &rVariable , void*);
+
 private:
     /// Window position and size
     int m_left, m_top, m_width, m_height;
@@ -138,9 +163,6 @@ private:
     OSWindow *m_pOsWindow;
     /// Variable for the visibility of the window
     mutable VarBoolImpl *m_pVarVisible;
-
-    /// Method called when the observed variable is modified
-    virtual void onUpdate( Subject<VarBool> &rVariable , void*);
 };
 
 

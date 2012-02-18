@@ -4,7 +4,7 @@
  *   (http://developers.videolan.org/libdca.html).
  *****************************************************************************
  * Copyright (C) 2001, 2002libdca the VideoLAN team
- * $Id: 98c5fa02597bbd602174e097169389b492fbc518 $
+ * $Id: 056acccde7ba4707bf21946afb155208cf8b05cb $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -85,7 +85,7 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_ACODEC )
     set_shortname( "DCA" )
     set_description( N_("DTS Coherent Acoustics audio decoder") )
-    add_bool( "dts-dynrng", true, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
+    add_bool( "dts-dynrng", true, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
     set_capability( "audio filter", 100 )
     set_callbacks( OpenFilter, CloseFilter )
 vlc_module_end ()
@@ -94,19 +94,20 @@ vlc_module_end ()
  * Open:
  *****************************************************************************/
 static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
-                 audio_format_t input, audio_format_t output )
+                 const audio_format_t *restrict input,
+                 const audio_format_t *restrict output )
 {
     p_sys->b_dynrng = var_InheritBool( p_this, "dts-dynrng" );
     p_sys->b_dontwarn = 0;
 
     /* We'll do our own downmixing, thanks. */
-    p_sys->i_nb_channels = aout_FormatNbChannels( &output );
-    switch ( (output.i_physical_channels & AOUT_CHAN_PHYSMASK)
+    p_sys->i_nb_channels = aout_FormatNbChannels( output );
+    switch ( (output->i_physical_channels & AOUT_CHAN_PHYSMASK)
               & ~AOUT_CHAN_LFE )
     {
     case AOUT_CHAN_CENTER:
-        if ( (output.i_original_channels & AOUT_CHAN_CENTER)
-              || (output.i_original_channels
+        if ( (output->i_original_channels & AOUT_CHAN_CENTER)
+              || (output->i_original_channels
                    & (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT)) )
         {
             p_sys->i_flags = DCA_MONO;
@@ -114,15 +115,15 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
         break;
 
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT:
-        if ( output.i_original_channels & AOUT_CHAN_DOLBYSTEREO )
+        if ( output->i_original_channels & AOUT_CHAN_DOLBYSTEREO )
         {
             p_sys->i_flags = DCA_DOLBY;
         }
-        else if ( input.i_original_channels == AOUT_CHAN_CENTER )
+        else if ( input->i_original_channels == AOUT_CHAN_CENTER )
         {
             p_sys->i_flags = DCA_MONO;
         }
-        else if ( input.i_original_channels & AOUT_CHAN_DUALMONO )
+        else if ( input->i_original_channels & AOUT_CHAN_DUALMONO )
         {
             p_sys->i_flags = DCA_CHANNEL;
         }
@@ -160,7 +161,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
         free( p_sys );
         return -1;
     }
-    if ( output.i_physical_channels & AOUT_CHAN_LFE )
+    if ( output->i_physical_channels & AOUT_CHAN_LFE )
     {
         p_sys->i_flags |= DCA_LFE;
     }
@@ -175,7 +176,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
     }
 
     aout_CheckChannelReorder( pi_channels_in, NULL,
-                              output.i_physical_channels & AOUT_CHAN_PHYSMASK,
+                              output->i_physical_channels & AOUT_CHAN_PHYSMASK,
                               p_sys->i_nb_channels,
                               p_sys->pi_chan_table );
 
@@ -325,17 +326,9 @@ static int OpenFilter( vlc_object_t *p_this )
     filter_sys_t *p_sys;
     int i_ret;
 
-    if( p_filter->fmt_in.i_codec != VLC_CODEC_DTS ||
-        p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFB ||
-        p_filter->fmt_out.audio.i_format == VLC_CODEC_SPDIFL )
-    {
+    if( p_filter->fmt_in.i_codec != VLC_CODEC_DTS
+     || p_filter->fmt_out.audio.i_format != VLC_CODEC_FL32 )
         return VLC_EGENERIC;
-    }
-
-    p_filter->fmt_out.audio.i_format =
-        p_filter->fmt_out.i_codec = VLC_CODEC_FL32;
-    p_filter->fmt_out.audio.i_bitspersample =
-        aout_BitsPerSample( p_filter->fmt_out.i_codec );
 
     /* Allocate the memory needed to store the module's structure */
     p_sys = p_filter->p_sys = malloc( sizeof(filter_sys_t) );
@@ -343,7 +336,7 @@ static int OpenFilter( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     i_ret = Open( VLC_OBJECT(p_filter), p_sys,
-                  p_filter->fmt_in.audio, p_filter->fmt_out.audio );
+                  &p_filter->fmt_in.audio, &p_filter->fmt_out.audio );
 
     p_filter->pf_audio_filter = Convert;
     p_filter->fmt_out.audio.i_rate = p_filter->fmt_in.audio.i_rate;
@@ -376,7 +369,7 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
       p_filter->fmt_out.audio.i_bitspersample *
         p_filter->fmt_out.audio.i_channels / 8;
 
-    block_t *p_out = p_filter->pf_audio_buffer_new( p_filter, i_out_size );
+    block_t *p_out = block_Alloc( i_out_size );
     if( !p_out )
     {
         msg_Warn( p_filter, "can't get output buffer" );

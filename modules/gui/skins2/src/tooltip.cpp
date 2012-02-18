@@ -2,7 +2,7 @@
  * tooltip.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 644ef7950d14590bff8bdbbbfad0249e37149810 $
+ * $Id: 20888c8d2532f41119623f5c4011ec9e20777ec9 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -71,8 +71,9 @@ void Tooltip::hide()
 }
 
 
-void Tooltip::onUpdate( Subject<VarText> &rVariable , void *arg)
+void Tooltip::onUpdate( Subject<VarText> &rVariable, void *arg )
 {
+    (void)arg;
     // Redisplay the tooltip
     displayText( ((VarText&)rVariable).get() );
 }

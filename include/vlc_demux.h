@@ -1,24 +1,24 @@
 /*****************************************************************************
  * vlc_demux.h: Demuxer descriptor, queries and methods
  *****************************************************************************
- * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: 38351b88dc3f99cce1abffdbec9e9b622005c592 $
+ * Copyright (C) 1999-2005 VLC authors and VideoLAN
+ * $Id: 2ae2f841961977db764eef08ea502b60a07c160b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifndef VLC_DEMUX_H
@@ -48,7 +48,8 @@ struct demux_t
     /* eg informative but needed (we can have access+demux) */
     char        *psz_access;
     char        *psz_demux;
-    char        *psz_path;
+    char        *psz_location;
+    char        *psz_file;
 
     /* input stream */
     stream_t    *s;     /* NULL in case of a access+demux in one */
@@ -160,22 +161,25 @@ enum demux_query_e
     DEMUX_CAN_SEEK,            /* arg1= bool*    can fail (assume false)*/
 };
 
-VLC_EXPORT( int,       demux_vaControlHelper, ( stream_t *, int64_t i_start, int64_t i_end, int64_t i_bitrate, int i_align, int i_query, va_list args ) );
+VLC_API int demux_vaControlHelper( stream_t *, int64_t i_start, int64_t i_end, int64_t i_bitrate, int i_align, int i_query, va_list args );
 
 /*************************************************************************
  * Miscellaneous helpers for demuxers
  *************************************************************************/
 
-LIBVLC_USED
+VLC_USED
 static inline bool demux_IsPathExtension( demux_t *p_demux, const char *psz_extension )
 {
-    const char *psz_ext = strrchr ( p_demux->psz_path, '.' );
+    if( !p_demux->psz_file )
+        return false;
+
+    const char *psz_ext = strrchr ( p_demux->psz_file, '.' );
     if( !psz_ext || strcasecmp( psz_ext, psz_extension ) )
         return false;
     return true;
 }
 
-LIBVLC_USED
+VLC_USED
 static inline bool demux_IsForced( demux_t *p_demux, const char *psz_name )
 {
    if( !p_demux->psz_demux || strcmp( p_demux->psz_demux, psz_name ) )
@@ -190,18 +194,18 @@ static inline bool demux_IsForced( demux_t *p_demux, const char *psz_name )
  * The provided es_format_t will be cleaned on error or by
  * demux_PacketizerDestroy.
  */
-VLC_EXPORT( decoder_t *,demux_PacketizerNew, ( demux_t *p_demux, es_format_t *p_fmt, const char *psz_msg ) );
+VLC_API decoder_t * demux_PacketizerNew( demux_t *p_demux, es_format_t *p_fmt, const char *psz_msg ) VLC_USED;
 
 /**
  * This function will destroy a packetizer create by demux_PacketizerNew.
  */
-VLC_EXPORT( void, demux_PacketizerDestroy, ( decoder_t *p_packetizer ) );
+VLC_API void demux_PacketizerDestroy( decoder_t *p_packetizer );
 
 /**
  * This function will return the parent input of this demux.
  * It is retained. Can return NULL.
  */
-VLC_EXPORT( input_thread_t *, demux_GetParentInput, ( demux_t *p_demux ) );
+VLC_API input_thread_t * demux_GetParentInput( demux_t *p_demux ) VLC_USED;
 
 /* */
 #define DEMUX_INIT_COMMON() do {            \

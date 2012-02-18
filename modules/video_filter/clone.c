@@ -2,7 +2,7 @@
  * clone.c : Clone video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 33b461cbf55ed033be6653b355fb4c918f922db2 $
+ * $Id: cb8790c616ef565afca1f00a3876507cf14736fa $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -59,8 +59,8 @@ vlc_module_begin ()
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    add_integer( CFG_PREFIX "count", 2, NULL, COUNT_TEXT, COUNT_LONGTEXT, false )
-    add_string ( CFG_PREFIX "vout-list", NULL, NULL, VOUTLIST_TEXT, VOUTLIST_LONGTEXT, true )
+    add_integer( CFG_PREFIX "count", 2, COUNT_TEXT, COUNT_LONGTEXT, false )
+    add_string ( CFG_PREFIX "vout-list", NULL, VOUTLIST_TEXT, VOUTLIST_LONGTEXT, true )
 
     add_shortcut( "clone" )
     set_callbacks( Open, Close )

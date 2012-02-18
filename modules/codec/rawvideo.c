@@ -2,7 +2,7 @@
  * rawvideo.c: Pseudo video decoder/packetizer for raw video data
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: fd71d99dd5fce5710584a3646732f570f4f32892 $
+ * $Id: aa68f35d26d544db938187f36fe8cc78e20d0e05 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -45,6 +45,7 @@ struct decoder_sys_t
      */
     size_t i_raw_size;
     bool b_invert;
+    plane_t planes[PICTURE_PLANE_MAX];
 
     /*
      * Common properties
@@ -103,6 +104,8 @@ static int OpenDecoder( vlc_object_t *p_this )
         case VLC_CODEC_I410:
         case VLC_CODEC_GREY:
         case VLC_CODEC_YUVP:
+        case VLC_CODEC_NV12:
+        case VLC_CODEC_NV21:
 
         /* Packed YUV */
         case VLC_CODEC_YUYV:
@@ -165,8 +168,17 @@ static int OpenDecoder( vlc_object_t *p_this )
                         p_dec->fmt_in.video.i_height,
                         p_dec->fmt_in.video.i_sar_num,
                         p_dec->fmt_in.video.i_sar_den );
-    p_sys->i_raw_size = p_dec->fmt_out.video.i_bits_per_pixel *
-        p_dec->fmt_out.video.i_width * p_dec->fmt_out.video.i_height / 8;
+    picture_t picture;
+    picture_Setup( &picture, p_dec->fmt_out.i_codec,
+                   p_dec->fmt_in.video.i_width,
+                   p_dec->fmt_in.video.i_height, 0, 1 );
+    p_sys->i_raw_size = 0;
+    for( int i = 0; i < picture.i_planes; i++ )
+    {
+        p_sys->i_raw_size += picture.p[i].i_visible_pitch *
+                             picture.p[i].i_visible_lines;
+        p_sys->planes[i] = picture.p[i];
+    }
 
     if( !p_dec->fmt_in.video.i_sar_num || !p_dec->fmt_in.video.i_sar_den )
     {
@@ -269,8 +281,8 @@ static void FillPicture( decoder_t *p_dec, block_t *p_block, picture_t *p_pic )
     for( i_plane = 0; i_plane < p_pic->i_planes; i_plane++ )
     {
         int i_pitch = p_pic->p[i_plane].i_pitch;
-        int i_visible_pitch = p_pic->p[i_plane].i_visible_pitch;
-        int i_visible_lines = p_pic->p[i_plane].i_visible_lines;
+        int i_visible_pitch = p_sys->planes[i_plane].i_visible_pitch;
+        int i_visible_lines = p_sys->planes[i_plane].i_visible_lines;
         uint8_t *p_dst = p_pic->p[i_plane].p_pixels;
         uint8_t *p_dst_end = p_dst+i_pitch*i_visible_lines;
 

@@ -2,7 +2,7 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: 98d21f8fbc4108e74f66e0642068f27c3c76ee8c $
+ * $Id: dd53f3d30d9b7e48c4364a1509cce4a14fb6960c $
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *
@@ -52,16 +52,12 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 
 #include <vlc_filter.h>
-#include "filter_common.h"
-#include <vlc_image.h>
-#include <vlc_osd.h>
-#include <vlc_keys.h>
+#include <vlc_keys.h>                  /* KEY_MODIFIER_CTRL */
 
-#include <vlc_network.h>
-#include <gcrypt.h>              /* to encrypt password */
+#include <vlc_network.h>               /* net_*, htonl */
+#include <gcrypt.h>                    /* to encrypt password */
 #include <vlc_gcrypt.h>
 
 #include "remoteosd_rfbproto.h" /* type definitions of the RFB protocol for VNC */
@@ -77,7 +73,7 @@
 
 #define RMTOSD_PORT_TEXT N_("VNC Port")
 #define RMTOSD_PORT_LONGTEXT N_( \
-    "VNC portnumber." )
+    "VNC port number." )
 
 #define RMTOSD_PASSWORD_TEXT N_("VNC Password")
 #define RMTOSD_PASSWORD_LONGTEXT N_( \
@@ -117,29 +113,29 @@ static void DestroyFilter( vlc_object_t * );
 
 vlc_module_begin ()
     set_description( N_("Remote-OSD over VNC") )
-    set_capability( "sub filter", 100 )
+    set_capability( "sub source", 100 )
     set_shortname( N_("Remote-OSD") )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_SUBPIC )
     add_shortcut( "rmtosd" )
     set_callbacks( CreateFilter, DestroyFilter )
 
-    add_string( RMTOSD_CFG "host", "myvdr", NULL, RMTOSD_HOST_TEXT,
+    add_string( RMTOSD_CFG "host", "myvdr", RMTOSD_HOST_TEXT,
         RMTOSD_HOST_LONGTEXT, false )
-    add_integer_with_range( RMTOSD_CFG "port", 20001, 1, 0xFFFF, NULL,
+    add_integer_with_range( RMTOSD_CFG "port", 20001, 1, 0xFFFF,
         RMTOSD_PORT_TEXT, RMTOSD_PORT_LONGTEXT, false )
-    add_password( RMTOSD_CFG "password", "", NULL, RMTOSD_PASSWORD_TEXT,
+    add_password( RMTOSD_CFG "password", "", RMTOSD_PASSWORD_TEXT,
         RMTOSD_PASSWORD_LONGTEXT, false )
     add_integer_with_range( RMTOSD_CFG "update", RMTOSD_UPDATE_DEFAULT,
-        RMTOSD_UPDATE_MIN, RMTOSD_UPDATE_MAX, NULL, RMTOSD_UPDATE_TEXT,
+        RMTOSD_UPDATE_MIN, RMTOSD_UPDATE_MAX, RMTOSD_UPDATE_TEXT,
         RMTOSD_UPDATE_LONGTEXT, true )
-    add_bool( RMTOSD_CFG "vnc-polling", false, NULL,
+    add_bool( RMTOSD_CFG "vnc-polling", false,
               RMTOSD_POLL_TEXT , RMTOSD_POLL_LONGTEXT, false )
-    add_bool( RMTOSD_CFG "mouse-events", false, NULL,
+    add_bool( RMTOSD_CFG "mouse-events", false,
               RMTOSD_MOUSE_TEXT , RMTOSD_MOUSE_LONGTEXT, false )
-    add_bool( RMTOSD_CFG "key-events", false, NULL,
+    add_bool( RMTOSD_CFG "key-events", false,
               RMTOSD_KEYS_TEXT , RMTOSD_KEYS_LONGTEXT, false )
-    add_integer_with_range( RMTOSD_CFG "alpha", 255, 0, 255, NULL,
+    add_integer_with_range( RMTOSD_CFG "alpha", 255, 0, 255,
         RMTOSD_ALPHA_TEXT, RMTOSD_ALPHA_LONGTEXT, true )
 
 vlc_module_end ()
@@ -151,20 +147,22 @@ vlc_module_end ()
 #define CHALLENGESIZE 16
 #define MAX_VNC_SERVER_NAME_LENGTH 255
 
-/* subfilter functions */
+/* subsource functions */
 static subpicture_t *Filter( filter_t *, mtime_t );
 
-static int MouseEvent ( vlc_object_t *p_this, char const *psz_var,
-                        vlc_value_t oldval, vlc_value_t newval, void *p_data );
+static int MouseEvent( filter_t *,
+                       const vlc_mouse_t *,
+                       const vlc_mouse_t *,
+                       const video_format_t * );
 
 static int KeyEvent( vlc_object_t *p_this, char const *psz_var,
                      vlc_value_t oldval, vlc_value_t newval, void *p_data );
 
 static void stop_osdvnc ( filter_t *p_filter );
 
-static void* vnc_worker_thread ( vlc_object_t *p_thread_obj );
+static void* vnc_worker_thread ( void * );
 
-static void* update_request_thread( vlc_object_t *p_thread_obj );
+static void* update_request_thread( void * );
 
 static bool open_vnc_connection ( filter_t *p_filter );
 
@@ -194,7 +192,7 @@ static void vnc_encrypt_bytes( unsigned char *bytes, char *passwd );
 
 
 /*****************************************************************************
- * Sub filter code
+ * Sub source code
  *****************************************************************************/
 
 /*****************************************************************************
@@ -222,13 +220,11 @@ struct filter_sys_t
 
     picture_t     *p_pic;              /* The picture with OSD data from VNC */
 
-    vout_thread_t *p_vout;             /* Pointer to video-out thread */
-
     int           i_socket;            /* Socket used for VNC */
 
     uint16_t      i_vnc_width;          /* The with of the VNC screen */
     uint16_t      i_vnc_height;         /* The height of the VNC screen */
-	uint32_t      i_vnc_pixels;         /* The pixels of the VNC screen */
+    uint32_t      i_vnc_pixels;         /* The pixels of the VNC screen */
 
     bool    b_alpha_from_vnc;    /* Special ffnetdev alpha feature enabled ? */
 
@@ -236,7 +232,7 @@ struct filter_sys_t
 
     bool          b_continue;
 
-    vlc_object_t* p_worker_thread;
+    vlc_thread_t  worker_thread;
 
     uint8_t       ar_color_table_yuv[256][4];
 };
@@ -305,20 +301,11 @@ static int CreateFilter ( vlc_object_t *p_this )
     /* Keep track of OSD Events */
     p_sys->b_need_update  = false;
 
-    /* Attach subpicture filter callback */
-    p_filter->pf_sub_filter = Filter;
+    /* Attach subpicture source callback */
+    p_filter->pf_sub_source = Filter;
+    p_filter->pf_sub_mouse  = MouseEvent;
 
-    p_sys->p_vout = vlc_object_find( p_this, VLC_OBJECT_VOUT, FIND_PARENT );
-
-    if( p_sys->p_vout )
-    {
-        var_AddCallback( p_sys->p_vout, "mouse-moved",
-                         MouseEvent, p_this );
-        var_AddCallback( p_sys->p_vout, "mouse-button-down",
-                         MouseEvent, p_this );
-        var_AddCallback( p_sys->p_vout->p_libvlc, "key-pressed",
-                         KeyEvent, p_this );
-    }
+    var_AddCallback( p_filter->p_libvlc, "key-pressed", KeyEvent, p_this );
 
     es_format_Init( &p_filter->fmt_out, SPU_ES, VLC_CODEC_SPU );
     p_filter->fmt_out.i_priority = 0;
@@ -326,13 +313,9 @@ static int CreateFilter ( vlc_object_t *p_this )
     vlc_gcrypt_init();
 
     /* create the vnc worker thread */
-    p_sys->p_worker_thread = vlc_object_create( p_this,
-                                                sizeof( vlc_object_t ) );
-    vlc_object_attach( p_sys->p_worker_thread, p_this );
-    if( vlc_thread_create( p_sys->p_worker_thread, "vnc worker thread",
-                           vnc_worker_thread, VLC_THREAD_PRIORITY_LOW ) )
+    if( vlc_clone( &p_sys->worker_thread,
+                   vnc_worker_thread, p_filter, VLC_THREAD_PRIORITY_LOW ) )
     {
-        vlc_object_release( p_sys->p_worker_thread );
         msg_Err( p_filter, "cannot spawn vnc message reader thread" );
         goto error;
     }
@@ -366,17 +349,7 @@ static void DestroyFilter( vlc_object_t *p_this )
 
     stop_osdvnc( p_filter );
 
-    if( p_sys->p_vout )
-    {
-        var_DelCallback( p_sys->p_vout, "mouse-moved",
-                         MouseEvent, p_this );
-        var_DelCallback( p_sys->p_vout, "mouse-button-down",
-                         MouseEvent, p_this );
-        var_DelCallback( p_sys->p_vout->p_libvlc, "key-pressed",
-                         KeyEvent, p_this );
-
-        vlc_object_release( p_sys->p_vout );
-    }
+    var_DelCallback( p_filter->p_libvlc, "key-pressed", KeyEvent, p_this );
 
     var_Destroy( p_this, RMTOSD_CFG "host" );
     var_Destroy( p_this, RMTOSD_CFG "port" );
@@ -401,14 +374,10 @@ static void stop_osdvnc ( filter_t *p_filter )
     vlc_object_kill( p_filter );
 
     /* */
-    if( p_sys->p_worker_thread )
-    {
-        msg_Dbg( p_filter, "joining worker_thread" );
-        vlc_object_kill( p_sys->p_worker_thread );
-        vlc_thread_join( p_sys->p_worker_thread );
-        vlc_object_release( p_sys->p_worker_thread );
-        msg_Dbg( p_filter, "released worker_thread" );
-    }
+    msg_Dbg( p_filter, "joining worker_thread" );
+    vlc_cancel( p_sys->worker_thread );
+    vlc_join( p_sys->worker_thread, NULL );
+    msg_Dbg( p_filter, "released worker_thread" );
 
     msg_Dbg( p_filter, "osdvnc stopped" );
 }
@@ -666,11 +635,11 @@ static bool handshaking ( filter_t *p_filter )
 
 }
 
-static void* vnc_worker_thread( vlc_object_t *p_thread_obj )
+static void* vnc_worker_thread( void *obj )
 {
-    filter_t* p_filter = (filter_t*)(p_thread_obj->p_parent);
+    filter_t* p_filter = (filter_t*)obj;
     filter_sys_t *p_sys = p_filter->p_sys;
-    vlc_object_t *p_update_request_thread;
+    vlc_thread_t update_request_thread_handle;
     int canc = vlc_savecancel ();
 
     msg_Dbg( p_filter, "VNC worker thread started" );
@@ -699,25 +668,22 @@ static void* vnc_worker_thread( vlc_object_t *p_thread_obj )
         vlc_mutex_unlock( &p_sys->lock );
         goto exit;
     }
-	p_sys->i_vnc_pixels = p_sys->i_vnc_width * p_sys->i_vnc_height;
+    p_sys->i_vnc_pixels = p_sys->i_vnc_width * p_sys->i_vnc_height;
 
     vlc_mutex_unlock( &p_sys->lock );
 
     /* create the update request thread */
-    p_update_request_thread = vlc_object_create( p_filter,
-                                                 sizeof( vlc_object_t ) );
-    vlc_object_attach( p_update_request_thread, p_filter );
-    if( vlc_thread_create( p_update_request_thread,
-                           "vnc update request thread",
-                           update_request_thread, VLC_THREAD_PRIORITY_LOW ) )
+    if( vlc_clone( &update_request_thread_handle,
+                   update_request_thread, p_filter,
+                   VLC_THREAD_PRIORITY_LOW ) )
     {
-        vlc_object_release( p_update_request_thread );
         msg_Err( p_filter, "cannot spawn vnc update request thread" );
         goto exit;
     }
 
     /* connection is initialized, now read and handle server messages */
-    while( vlc_object_alive( p_thread_obj ) )
+    vlc_restorecancel (canc);
+    for( ;; )
     {
         rfbServerToClientMsg msg;
         int i_msgSize;
@@ -765,13 +731,16 @@ static void* vnc_worker_thread( vlc_object_t *p_thread_obj )
                 break;
             }
         }
+
+        canc = vlc_savecancel ();
         process_server_message( p_filter, &msg);
+        vlc_restorecancel (canc);
     }
+    canc = vlc_savecancel ();
 
     msg_Dbg( p_filter, "joining update_request_thread" );
-    vlc_object_kill( p_update_request_thread );
-    vlc_thread_join( p_update_request_thread );
-    vlc_object_release( p_update_request_thread );
+    vlc_cancel( update_request_thread_handle );
+    vlc_join( update_request_thread_handle, NULL );
     msg_Dbg( p_filter, "released update_request_thread" );
 
 exit:
@@ -795,11 +764,17 @@ exit:
     return NULL;
 }
 
-static void* update_request_thread( vlc_object_t *p_thread_obj )
+static void update_request_thread_cleanup( void *obj )
 {
-    filter_t* p_filter = (filter_t*)(p_thread_obj->p_parent);
+    filter_t* p_filter = (filter_t*)obj;
+
+    p_filter->p_sys->b_continue = false;
+}
+
+static void* update_request_thread( void *obj )
+{
+    filter_t* p_filter = (filter_t*)obj;
     filter_sys_t *p_sys = p_filter->p_sys;
-    int canc = vlc_savecancel ();
 
     msg_Dbg( p_filter, "VNC update request thread started" );
 
@@ -811,30 +786,35 @@ static void* update_request_thread( vlc_object_t *p_thread_obj )
     udr.w = htons(p_sys->i_vnc_width);
     udr.h = htons(p_sys->i_vnc_height);
 
-    if( write_exact(p_filter, p_sys->i_socket, (char*)&udr,
-           sz_rfbFramebufferUpdateRequestMsg) == false)
+    int w;
+    vlc_cleanup_push( update_request_thread_cleanup, p_filter );
+    w = write_exact(p_filter, p_sys->i_socket, (char*)&udr,
+                    sz_rfbFramebufferUpdateRequestMsg);
+    vlc_cleanup_pop();
+
+    if( !w )
     {
         msg_Err( p_filter, "Could not write rfbFramebufferUpdateRequestMsg." );
-        p_sys->b_continue = false;
+        update_request_thread_cleanup( p_filter );
         return NULL;
     }
 
     udr.incremental = 1;
-    mtime_t i_poll_interval_microsec = p_sys->i_vnc_poll_interval * 1000;
 
     if( p_sys->b_vnc_poll)
     {
-        while( vlc_object_alive( p_thread_obj ) )
+        vlc_cleanup_push( update_request_thread_cleanup, p_filter );
+        for( ;; )
         {
-            msleep( i_poll_interval_microsec );
-            if( write_exact(p_filter, p_sys->i_socket, (char*)&udr,
-                   sz_rfbFramebufferUpdateRequestMsg) == false)
+            msleep( p_sys->i_vnc_poll_interval * 1000 );
+            if( !write_exact(p_filter, p_sys->i_socket, (char*)&udr,
+                             sz_rfbFramebufferUpdateRequestMsg))
             {
                 msg_Err( p_filter, "Could not write rfbFramebufferUpdateRequestMsg." );
                 break;
             }
         }
-        p_sys->b_continue = false;
+        vlc_cleanup_run();
     }
     else
     {
@@ -842,7 +822,6 @@ static void* update_request_thread( vlc_object_t *p_thread_obj )
     }
 
     msg_Dbg( p_filter, "VNC update request thread ended" );
-    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -1020,7 +999,7 @@ static bool process_server_message ( filter_t *p_filter,
             msg->scme.nColours = htons(msg->scme.nColours);
             msg->scme.firstColour = htons(msg->scme.firstColour);
             int i_datasize;
-            if ( p_sys->b_alpha_from_vnc == true )
+            if ( p_sys->b_alpha_from_vnc )
             {
                 i_datasize = 2 * msg->scme.nColours * 4;
             }
@@ -1049,7 +1028,7 @@ static bool process_server_message ( filter_t *p_filter,
             for (int i = 0; i < msg->scme.nColours; i++)
             {
                 i_color_index = i+msg->scme.firstColour;
-                if ( p_sys->b_alpha_from_vnc == true )
+                if ( p_sys->b_alpha_from_vnc )
                 {
                     i_alpha = p_sys->read_buffer[i_offset];
                     i_offset += 2;
@@ -1320,36 +1299,33 @@ static inline bool raw_line(  filter_sys_t* p_sys,
 /*****************************************************************************
  * MouseEvent: callback for mouse events
  *****************************************************************************/
-static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
+static int MouseEvent( filter_t *p_filter,
+                       const vlc_mouse_t *p_old,
+                       const vlc_mouse_t *p_new,
+                       const video_format_t *p_fmt )
 {
-    VLC_UNUSED(oldval); VLC_UNUSED(newval); VLC_UNUSED(psz_var);
-
-    filter_t *p_filter = (filter_t *)p_data;
     filter_sys_t *p_sys = p_filter->p_sys;
+    VLC_UNUSED(p_old);
 
     if( !p_sys->b_vnc_mouse_events )
         return VLC_SUCCESS;
 
-    vout_thread_t *p_vout = (vout_thread_t*)p_sys->p_vout;
-    int i_x, i_y;
-    int i_v;
-
-    i_v = var_GetInteger( p_sys->p_vout, "mouse-button-down" );
-    var_GetCoords( p_sys->p_vout, "mouse-moved", &i_x, &i_y );
+    int i_v = p_new->i_pressed;
+    int i_x = p_new->i_x;
+    int i_y = p_new->i_y;
 
     vlc_mutex_lock( &p_sys->lock );
 
-    const int v_h = p_vout->fmt_in.i_visible_height;
+    const int v_h = p_fmt->i_visible_height;
     const int v_w = p_sys->i_vnc_width * v_h / p_sys->i_vnc_height;
-    const int v_x = (p_vout->fmt_in.i_visible_width-v_w)/2;
+    const int v_x = (p_fmt->i_visible_width-v_w)/2;
 
     i_x -= v_x;
 
     if( i_y < 0 || i_x < 0 || i_y >= v_h || i_x >= v_w )
     {
         vlc_mutex_unlock( &p_sys->lock );
-        msg_Dbg( p_this, "invalid mouse event? x=%d y=%d btn=%x", i_x, i_y, i_v );
+        msg_Dbg( p_filter, "invalid mouse event? x=%d y=%d btn=%x", i_x, i_y, i_v );
         return VLC_SUCCESS;
     }
     if( !p_sys->b_connection_active )
@@ -1359,7 +1335,7 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
     }
 
 #ifdef VNC_DEBUG
-    msg_Dbg( p_this, "mouse event x=%d y=%d btn=%x", i_x, i_y, i_v );
+    msg_Dbg( p_filter, "mouse event x=%d y=%d btn=%x", i_x, i_y, i_v );
 #endif
 
     /* */
@@ -1378,7 +1354,7 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
 
     vlc_mutex_unlock( &p_sys->lock );
 
-    return VLC_SUCCESS;
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -1395,11 +1371,11 @@ static int KeyEvent( vlc_object_t *p_this, char const *psz_var,
     if( !p_sys->b_vnc_key_events )
         return VLC_SUCCESS;
 
-    msg_Dbg( p_this, "key pressed (%d) ", newval.i_int );
+    msg_Dbg( p_this, "key pressed (%"PRId64") ", newval.i_int );
 
     if ( !newval.i_int )
     {
-        msg_Err( p_this, "Received invalid key event %d", newval.i_int );
+        msg_Err( p_this, "Received invalid key event 0" );
         return VLC_EGENERIC;
     }
 

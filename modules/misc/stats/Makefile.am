@@ -13,10 +13,12 @@ include $(top_srcdir)/modules/common.am
 libstats_plugin_la_SOURCES = $(SOURCES_stats)
 nodist_libstats_plugin_la_SOURCES = $(nodist_SOURCES_stats)
 # Force per-target objects:
-libstats_plugin_la_CFLAGS = $(AM_CFLAGS)
-libstats_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libstats_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libstats_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_stats)
+libstats_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_stats)
+libstats_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_stats)
+libstats_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_stats)
 # Set LIBADD and DEPENDENCIES manually:
-libstats_plugin_la_LIBADD = $(AM_LIBADD)
-libstats_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+libstats_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_stats)
+libstats_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_stats)
+libstats_plugin_la_DEPENDENCIES =
 

@@ -34,7 +34,7 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 #pragma mark Setup and teardown
 -(id)initWithDelegate:(id)delegate;
 {
-    _delegate = delegate;
+	_delegate = delegate;
 	[self startWatchingAppSwitching];
 	singleton = self;
 	_mediaKeyAppList = [NSMutableArray new];
@@ -42,7 +42,7 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 }
 -(void)dealloc;
 {
-    [self stopWatchingMediaKeys];
+	[self stopWatchingMediaKeys];
 	[self stopWatchingAppSwitching];
 	[_mediaKeyAppList release];
 	[super dealloc];
@@ -68,7 +68,7 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 }
 
 -(void)startWatchingMediaKeys;{
-    [self setShouldInterceptMediaKeyEvents:YES];
+	[self setShouldInterceptMediaKeyEvents:YES];
 	
 	// Add an event tap to intercept the system defined media key events
 	_eventPort = CGEventTapCreate(kCGSessionEventTap,

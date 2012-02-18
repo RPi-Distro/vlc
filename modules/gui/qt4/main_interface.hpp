@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 4f4d208cbeed52f1a54ecc3f19a745614931d1c9 $
+ * $Id: 142d09252a88d4c9272f4594ca24b2d7f4a36ced $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -80,19 +80,20 @@ public:
     int  controlVideo( int i_query, va_list args );
 
     /* Getters */
-#ifndef HAVE_MAEMO
     QSystemTrayIcon *getSysTray() { return sysTray; }
     QMenu *getSysTrayMenu() { return systrayMenu; }
-#endif
+    FullscreenControllerWidget* getFullscreenControllerWidget() { return fullscreenControls; }
     int getControlsVisibilityStatus();
     bool isPlDocked() { return ( b_plDocked != false ); }
     bool isInterfaceFullScreen() { return b_interfaceFullScreen; }
 
 protected:
-    void dropEventPlay( QDropEvent *, bool);
+    void dropEventPlay( QDropEvent* event, bool b_play ) { dropEventPlay(event, b_play, true); }
+    void dropEventPlay( QDropEvent *, bool, bool );
 #ifdef WIN32
     virtual bool winEvent( MSG *, long * );
 #endif
+    virtual void changeEvent( QEvent * );
     virtual void dropEvent( QDropEvent *);
     virtual void dragEnterEvent( QDragEnterEvent * );
     virtual void dragMoveEvent( QDragMoveEvent * );
@@ -120,13 +121,12 @@ private:
     /* */
     void setMinimalView( bool );
     void setInterfaceFullScreen( bool );
+    void computeMinimumSize();
 
     /* */
     QSettings           *settings;
-#ifndef HAVE_MAEMO
     QSystemTrayIcon     *sysTray;
     QMenu               *systrayMenu;
-#endif
 
     QString              input_name;
     QVBoxLayout         *mainLayout;
@@ -153,13 +153,13 @@ private:
 
     /* Flags */
     bool                 b_notificationEnabled; /// Systray Notifications
-    bool                 b_autoresize;          ///< persistent resizeable window
+    bool                 b_autoresize;          ///< persistent resizable window
     bool                 b_videoEmbedded;       ///< Want an external Video Window
     bool                 b_videoFullScreen;     ///< --fullscreen
-    bool                 b_videoOnTop;          ///< --video-on-top
     bool                 b_hideAfterCreation;
     bool                 b_minimalView;         ///< Minimal video
     bool                 b_interfaceFullScreen;
+    bool                 b_pauseOnMinimize;
 
     /* States */
     bool                 playlistVisible;       ///< Is the playlist visible ?
@@ -167,6 +167,8 @@ private:
 //    bool                 b_visualSelectorEnabled;
     bool                 b_plDocked;            ///< Is the playlist docked ?
 
+    bool                 b_hasPausedWhenMinimized;
+    bool                 b_statusbarVisible;
 
 #ifdef WIN32
     HIMAGELIST himl;
@@ -179,20 +181,29 @@ public slots:
     void dockPlaylist( bool b_docked = true );
     void toggleMinimalView( bool );
     void togglePlaylist();
-#ifndef HAVE_MAEMO
     void toggleUpdateSystrayMenu();
-#endif
+    void showUpdateSystrayMenu();
+    void hideUpdateSystrayMenu();
     void toggleAdvancedButtons();
     void toggleInterfaceFullScreen();
     void toggleFSC();
 
+    void setStatusBarVisibility(bool b_visible);
+
     void popupMenu( const QPoint& );
+#ifdef WIN32
     void changeThumbbarButtons( int );
+#endif
 
     /* Manage the Video Functions from the vout threads */
     void getVideoSlot( WId *p_id, int *pi_x, int *pi_y,
                        unsigned *pi_width, unsigned *pi_height );
     void releaseVideoSlot( void );
+
+    void emitBoss();
+    void emitRaise();
+
+    void reloadPrefs();
 
 private slots:
     void debug();
@@ -203,28 +214,34 @@ private slots:
 #if 0
     void visual();
 #endif
-#ifndef HAVE_MAEMO
     void handleSystrayClick( QSystemTrayIcon::ActivationReason );
     void updateSystrayTooltipName( const QString& );
     void updateSystrayTooltipStatus( int );
-#endif
     void showCryptedLabel( bool );
 
     void handleKeyPress( QKeyEvent * );
 
     void showBuffering( float );
 
-    void resizeStack( int w, int h ) {
+    void resizeStack( int w, int h )
+    {
         if( !isFullScreen() && !isMaximized() )
-            if( b_minimalView ) resize( w, h ); /* Oh yes, it shouldn't
+        {
+            if( b_minimalView )
+                resize( w, h ); /* Oh yes, it shouldn't
                                    be possible that size() - stackCentralW->size() < 0
                                    since stackCentralW is contained in the QMW... */
-            else resize( size() - stackCentralW->size() + QSize( w, h ) );
-        debug(); }
+            else
+                resize( size() - stackCentralW->size() + QSize( w, h ) );
+        }
+        debug();
+    }
 
     void setVideoSize( unsigned int, unsigned int );
     void setVideoFullScreen( bool );
     void setVideoOnTop( bool );
+    void setBoss();
+    void setRaise();
 
 signals:
     void askGetVideo( WId *p_id, int *pi_x, int *pi_y,
@@ -236,6 +253,8 @@ signals:
     void minimalViewToggled( bool );
     void fullscreenInterfaceToggled( bool );
     void askToQuit();
+    void askBoss();
+    void askRaise();
 
 };
 

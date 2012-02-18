@@ -1,31 +1,27 @@
 /*****************************************************************************
  * vlc_sql.h: SQL abstraction layer
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: 0fe4f4bcca3442cf5f5f8f5347c86448af17c32c $
+ * Copyright (C) 2009 VLC authors and VideoLAN
+ * $Id: 39e9ad4f0f5721db7d717242cb61c9dcbe249f5f $
  *
  * Authors: Antoine Lejeune <phytos@videolan.org>
  *          Jean-Philippe André <jpeg@videolan.org>
  *          Srikanth Raju <srikiraju@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
-#if !defined( __LIBVLC__ )
-# error You are not libvlc or one of its plugins. You cannot include this file
-#endif
 
 #ifndef VLC_SQL_H
 # define VLC_SQL_H
@@ -154,9 +150,9 @@ struct sql_t
  * @param psz_pass Password for the database
  * @return The VLC SQL object, type sql_t.
  **/
-VLC_EXPORT( sql_t*, sql_Create, ( vlc_object_t *p_this, const char *psz_name,
+VLC_API sql_t *sql_Create( vlc_object_t *p_this, const char *psz_name,
             const char* psz_host, int i_port,
-            const char* psz_user, const char* psz_pass ) );
+            const char* psz_user, const char* psz_pass );
 #define sql_Create( a, b, c, d, e, f ) sql_Create( VLC_OBJECT(a), b, c, d, e, f )
 
 
@@ -165,7 +161,7 @@ VLC_EXPORT( sql_t*, sql_Create, ( vlc_object_t *p_this, const char *psz_name,
  * @param obj This p_sql object
  * @return Nothing
  */
-VLC_EXPORT( void, sql_Destroy, ( vlc_object_t *obj ) );
+VLC_API void sql_Destroy( vlc_object_t *obj );
 #define sql_Destroy( a ) sql_Destroy( VLC_OBJECT( a ) )
 
 

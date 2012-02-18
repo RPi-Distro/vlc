@@ -1,10 +1,11 @@
 /*****************************************************************************
  * projectm: visualization module based on libprojectM
  *****************************************************************************
- * Copyright (C) 2009 the VideoLAN team
- * $Id: a0545196a00079e9965507f875ccd8a85bab29bf $
+ * Copyright © 2009-2011 the VideoLAN team
+ * $Id: 9756bb98523eb935ca5e915357bf0ffbc4ad6831 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
+ *          Laurent Aimar
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -33,11 +34,11 @@
 #include <vlc_aout.h>
 #include <vlc_vout.h>
 #include <vlc_vout_wrapper.h>
+#include <vlc_opengl.h>
 #include <vlc_filter.h>
 #include <vlc_rand.h>
 
 #include <libprojectM/projectM.hpp>
-
 
 /*****************************************************************************
  * Module descriptor
@@ -73,6 +74,14 @@ static void Close        ( vlc_object_t * );
 #define TEXTURE_TEXT N_("Texture size")
 #define TEXTURE_LONGTEXT N_("The size of the texture, in pixels.")
 
+#ifdef WIN32
+# define FONT_PATH      "C:\\WINDOWS\\Fonts\\arial.ttf"
+# define FONT_PATH_MENU "C:\\WINDOWS\\Fonts\\arial.ttf"
+#else
+# define FONT_PATH      "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf"
+# define FONT_PATH_MENU "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf"
+#endif
+
 vlc_module_begin ()
     set_shortname( N_("projectM"))
     set_description( N_("libprojectM effect") )
@@ -80,30 +89,30 @@ vlc_module_begin ()
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_VISUAL )
 #ifndef HAVE_PROJECTM2
-    add_file( "projectm-config", "/usr/share/projectM/config.inp", NULL,
-              CONFIG_TEXT, CONFIG_LONGTEXT, true )
+    add_loadfile( "projectm-config", "/usr/share/projectM/config.inp",
+                  CONFIG_TEXT, CONFIG_LONGTEXT, true )
 #else
 #ifdef WIN32
-    add_directory( "projectm-preset-path", NULL, NULL,
+    add_directory( "projectm-preset-path", NULL,
 #else
-    add_directory( "projectm-preset-path", "/usr/share/projectM/presets", NULL,
+    add_directory( "projectm-preset-path", "/usr/share/projectM/presets",
 #endif
-                   PRESET_PATH_TXT, PRESET_PATH_LONGTXT, true )
-    add_file( "projectm-title-font", "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf", NULL,
-              TITLE_FONT_TXT, TITLE_FONT_LONGTXT, true )
-    add_file( "projectm-menu-font", "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf", NULL,
-              MENU_FONT_TXT, MENU_FONT_LONGTXT, true )
+                  PRESET_PATH_TXT, PRESET_PATH_LONGTXT, true )
+    add_loadfile( "projectm-title-font", FONT_PATH,
+                  TITLE_FONT_TXT, TITLE_FONT_LONGTXT, true )
+    add_loadfile( "projectm-menu-font", FONT_PATH_MENU,
+                  MENU_FONT_TXT, MENU_FONT_LONGTXT, true )
 #endif
-    add_integer( "projectm-width", 800, NULL, WIDTH_TEXT, WIDTH_LONGTEXT,
+    add_integer( "projectm-width", 800, WIDTH_TEXT, WIDTH_LONGTEXT,
                  false )
-    add_integer( "projectm-height", 640, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT,
+    add_integer( "projectm-height", 500, HEIGHT_TEXT, HEIGHT_LONGTEXT,
                  false )
-    add_integer( "projectm-meshx", 32, NULL, MESHX_TEXT, MESHX_LONGTEXT,
+    add_integer( "projectm-meshx", 32, MESHX_TEXT, MESHX_LONGTEXT,
                  false )
-    add_integer( "projectm-meshy", 24, NULL, MESHY_TEXT, MESHY_LONGTEXT,
+    add_integer( "projectm-meshy", 24, MESHY_TEXT, MESHY_LONGTEXT,
                  false )
-    add_integer( "projectm-texture-size", 1024, NULL, TEXTURE_TEXT,
-                 TEXTURE_LONGTEXT, false )
+    add_integer( "projectm-texture-size", 1024, TEXTURE_TEXT, TEXTURE_LONGTEXT,
+                 false )
     add_shortcut( "projectm" )
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -134,8 +143,8 @@ struct filter_sys_t
     vlc_mutex_t lock;
     bool  b_quit;
     float *p_buffer;
-    int   i_buffer_size;
-    int   i_nb_samples;
+    unsigned i_buffer_size;
+    unsigned i_nb_samples;
 };
 
 
@@ -173,15 +182,15 @@ static int Open( vlc_object_t * p_this )
 
     /* Create the object for the thread */
     vlc_sem_init( &p_sys->ready, 0 );
-    p_sys->b_error  = false;
-    p_sys->b_quit   = false;
-    p_sys->i_width  = var_InheritInteger( p_filter, "projectm-width" );
-    p_sys->i_height = var_InheritInteger( p_filter, "projectm-height" );
-    p_sys->i_channels = aout_FormatNbChannels( &p_filter->fmt_in.audio );
+    p_sys->b_error       = false;
+    p_sys->b_quit        = false;
+    p_sys->i_width       = var_InheritInteger( p_filter, "projectm-width" );
+    p_sys->i_height      = var_InheritInteger( p_filter, "projectm-height" );
+    p_sys->i_channels    = aout_FormatNbChannels( &p_filter->fmt_in.audio );
     vlc_mutex_init( &p_sys->lock );
-    p_sys->p_buffer = NULL;
+    p_sys->p_buffer      = NULL;
     p_sys->i_buffer_size = 0;
-    p_sys->i_nb_samples = 0;
+    p_sys->i_nb_samples  = 0;
 
     /* Create the thread */
     if( vlc_clone( &p_sys->thread, Thread, p_filter, VLC_THREAD_PRIORITY_LOW ) )
@@ -209,7 +218,7 @@ error:
  */
 static void Close( vlc_object_t *p_this )
 {
-    filter_t     *p_filter = (filter_t *)p_this;
+    filter_t  *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 
     /* Stop the thread
@@ -247,7 +256,7 @@ static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )
                                      p_in_buf->i_nb_samples );
 
         const float *p_src = (float*)p_in_buf->p_buffer;
-        for( int i = 0; i < p_sys->i_nb_samples; i++ )
+        for( unsigned i = 0; i < p_sys->i_nb_samples; i++ )
         {
             float v = 0;
             for( int j = 0; j < p_sys->i_channels; j++ )
@@ -266,6 +275,7 @@ static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )
 static int VoutCallback( vlc_object_t *p_vout, char const *psz_name,
                          vlc_value_t oldv, vlc_value_t newv, void *p_data )
 {
+    VLC_UNUSED( p_vout ); VLC_UNUSED( oldv );
     vout_display_t *p_vd = (vout_display_t*)p_data;
 
     if( !strcmp(psz_name, "fullscreen") )
@@ -281,13 +291,13 @@ static int VoutCallback( vlc_object_t *p_vout, char const *psz_name,
  */
 static void *Thread( void *p_data )
 {
-    filter_t     *p_filter = (filter_t*)p_data;
+    filter_t  *p_filter = (filter_t*)p_data;
     filter_sys_t *p_sys = p_filter->p_sys;
-    int cancel = vlc_savecancel();
+
     video_format_t fmt;
-    vout_opengl_t *gl;
-    int i_last_width  = 0;
-    int i_last_height = 0;
+    vlc_gl_t *gl;
+    unsigned int i_last_width  = 0;
+    unsigned int i_last_height = 0;
     locale_t loc;
     locale_t oldloc;
 
@@ -301,13 +311,13 @@ static void *Thread( void *p_data )
     projectM::Settings settings;
 #endif
 
+    vlc_savecancel();
+
     /* Create the openGL provider */
     p_sys->p_vout =
         (vout_thread_t *)vlc_object_create( p_filter, sizeof(vout_thread_t) );
     if( !p_sys->p_vout )
         goto error;
-
-    vlc_object_attach( p_sys->p_vout, p_filter );
 
     /* */
     video_format_Init( &fmt, 0 );
@@ -339,13 +349,16 @@ static void *Thread( void *p_data )
     gl = vout_GetDisplayOpengl( p_sys->p_vd );
     if( !gl )
     {
+        var_DelCallback( p_sys->p_vout, "fullscreen", VoutCallback, p_sys->p_vd );
         vout_DeleteDisplay( p_sys->p_vd, NULL );
         vlc_object_release( p_sys->p_vout );
         goto error;
     }
 
+    /* Work-around the projectM locale bug */
     loc = newlocale (LC_NUMERIC_MASK, "C", NULL);
     oldloc = uselocale (loc);
+
     /* Create the projectM object */
 #ifndef HAVE_PROJECTM2
     psz_config = var_InheritString( p_filter, "projectm-config" );
@@ -357,34 +370,37 @@ static void *Thread( void *p_data )
     if ( psz_preset_path == NULL )
     {
         char *psz_data_path = config_GetDataDir( p_filter );
-        asprintf( &psz_preset_path, "%s" DIR_SEP "visualisation", psz_data_path );
+        asprintf( &psz_preset_path, "%s" DIR_SEP "visualization", psz_data_path );
         free( psz_data_path );
     }
 #endif
-    psz_title_font = var_InheritString( p_filter, "projectm-title-font" );
-    psz_menu_font = var_InheritString( p_filter, "projectm-menu-font" );
 
-    settings.meshX = var_InheritInteger( p_filter, "projectm-meshx" );
-    settings.meshY = var_InheritInteger( p_filter, "projectm-meshy" );
-    settings.fps = 35;
-    settings.textureSize = var_InheritInteger( p_filter, "projectm-texture-size" );
-    settings.windowWidth = p_sys->i_width;
-    settings.windowHeight = p_sys->i_height;
-    settings.presetURL = psz_preset_path;
-    settings.titleFontURL = psz_title_font;
-    settings.menuFontURL = psz_menu_font;
+    psz_title_font                = var_InheritString( p_filter, "projectm-title-font" );
+    psz_menu_font                 = var_InheritString( p_filter, "projectm-menu-font" );
+
+    settings.meshX                = var_InheritInteger( p_filter, "projectm-meshx" );
+    settings.meshY                = var_InheritInteger( p_filter, "projectm-meshy" );
+    settings.fps                  = 35;
+    settings.textureSize          = var_InheritInteger( p_filter, "projectm-texture-size" );
+    settings.windowWidth          = p_sys->i_width;
+    settings.windowHeight         = p_sys->i_height;
+    settings.presetURL            = psz_preset_path;
+    settings.titleFontURL         = psz_title_font;
+    settings.menuFontURL          = psz_menu_font;
     settings.smoothPresetDuration = 5;
-    settings.presetDuration = 30;
-    settings.beatSensitivity = 10;
-    settings.aspectCorrection = 1;
-    settings.easterEgg = 1;
-    settings.shuffleEnabled = 1;
+    settings.presetDuration       = 30;
+    settings.beatSensitivity      = 10;
+    settings.aspectCorrection     = 1;
+    settings.easterEgg            = 1;
+    settings.shuffleEnabled       = 1;
+
     p_projectm = new projectM( settings );
 
     free( psz_menu_font );
     free( psz_title_font );
     free( psz_preset_path );
-#endif
+#endif /* HAVE_PROJECTM2 */
+
     p_sys->i_buffer_size = p_projectm->pcm()->maxsamples;
     p_sys->p_buffer = (float*)calloc( p_sys->i_buffer_size,
                                       sizeof( float ) );
@@ -426,6 +442,7 @@ static void *Thread( void *p_data )
             vlc_mutex_unlock( &p_sys->lock );
 
             delete p_projectm;
+            var_DelCallback( p_sys->p_vout, "fullscreen", VoutCallback, p_sys->p_vd );
             vout_DeleteDisplay( p_sys->p_vd, NULL );
             vlc_object_release( p_sys->p_vout );
             if (loc != (locale_t)0)
@@ -442,10 +459,10 @@ static void *Thread( void *p_data )
         /* */
         mwait( i_deadline );
 
-        if( !vout_opengl_Lock(gl) )
+        if( !vlc_gl_Lock(gl) )
         {
-            vout_opengl_Swap( gl );
-            vout_opengl_Unlock( gl );
+            vlc_gl_Swap( gl );
+            vlc_gl_Unlock( gl );
         }
     }
     abort();
