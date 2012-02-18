@@ -1,3 +1,31 @@
+vlc (2.0.0-1) unstable; urgency=low
+
+  * New upstream release (Closes: #499381, #573064, #624027, LP: #455825,
+    #573775, #695882, #705151, #708448, #738381, #743581, #747757, #817924,
+    #931083).
+  * Remove dropped mozilla-plugin-vlc, vlc-plugin-ggi, and vlc-plugin-svgalib.
+    The Mozilla browser plug-in is now provided by a separate source tarball.
+  * Add new plugins to and remove dropped plugins from vlc-nox.
+  * Add new and remove dropped build dependencies:
+    + libbluray-dev (for Blu-ray support)
+    + libresid-builder-dev
+    + libsamplerate0-dev
+    + libsidplay2-dev
+    + lbspeexdsp-dev
+    + libxcb-composite0-dev
+    - libgtk2.0-dev
+    - xulrunner-dev
+  * vlc-plugin-fluidsynth depends on fluid-soundfont-gm or
+    musescore-soundfont-gm for having a sound font for playing MIDI files.
+  * Drop all patches (they were either backported or accepted by upstream).
+  * Update symbols for libvlc5.
+  * Install plugins.dat instead of running vlc-cache-gen in postinst.
+  * Update minimum version of build dependencies.
+  * Change Build-Dependency from libupnp3-dev to unversioned libupnp-dev.
+    (Closes: #656831)
+
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 18 Feb 2012 01:29:48 +0100
+
 vlc (1.1.13-1) unstable; urgency=low
 
   * New upstream release (Closes: #604687).

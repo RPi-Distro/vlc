@@ -1,16 +1,20 @@
 #!/usr/bin/make -f
 
-DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-DEB_HOST_ARCH       ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
-DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
-VERSION = $(shell  dpkg-parsechangelog|sed -n 's/^Version: //p')
+DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_HOST_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_HOST_ARCH_OS   ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+VERSION = $(shell dpkg-parsechangelog|sed -n 's/^Version: //p')
 DEBIAN_VERSION = $(shell echo $(VERSION)|sed -nr 's/[^:]+://; s/.*-([^-]+$$)/\1/p')
 
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 confflags := --build=$(DEB_BUILD_GNU_TYPE)
 else
 confflags := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
+endif
+
+ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
+confflags += --enable-debug
 endif
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
@@ -35,11 +39,11 @@ confflags += \
 confflags += \
 	--enable-a52 \
 	--enable-aa \
+	--enable-bluray \
 	--enable-bonjour \
 	--enable-caca \
 	--enable-dca \
 	--enable-dirac \
-	--enable-dvb \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
@@ -47,7 +51,6 @@ confflags += \
 	--enable-fluidsynth \
 	--enable-freetype \
 	--enable-fribidi \
-	--enable-ggi \
 	--enable-gnutls \
 	--enable-jack \
 	--enable-kate \
@@ -60,7 +63,6 @@ confflags += \
 	--enable-mad \
 	--enable-mkv \
 	--enable-mod \
-	--enable-mozilla \
 	--enable-mpc \
 	--enable-mtp \
 	--enable-mux_ogg \
@@ -70,6 +72,7 @@ confflags += \
 	--enable-pulse \
 	--enable-qt4 \
 	--enable-realrtsp \
+	--enable-samplerate \
 	--enable-schroedinger \
 	--enable-sdl \
 	--enable-shout \
@@ -87,13 +90,11 @@ confflags += \
 	--enable-x264 \
 	--enable-zvbi \
 	--with-kde-solid=/usr/share/kde4/apps/solid/actions/ \
-	--with-mozilla-pkg=mozilla-plugin \
 	$(NULL)
 # Reasons for disabling features:
 # dxva2 -> Windows only
 # gnomevfs -> poorly maintained
 # goom -> not in Debian
-# osso_screensaver -> not targetting maemo
 # portaudio -> not needed
 # projectm -> broken
 # sqlite -> still in development
@@ -102,7 +103,6 @@ confflags += \
 	--disable-dxva2 \
 	--disable-gnomevfs \
 	--disable-goom \
-	--disable-osso_screensaver \
 	--disable-portaudio \
 	--disable-projectm \
 	--disable-sqlite \
@@ -116,10 +116,10 @@ confflags += \
 	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv \
+	--enable-libv4l2 \
 	--enable-libva \
 	--enable-pvr \
 	--enable-udev \
-	--enable-v4l2 \
 	$(NULL)
 endif
 
@@ -128,11 +128,6 @@ confflags += \
 	--disable-alsa \
 	--enable-v4l2 \
 	$(NULL)
-endif
-
-# svgalib is only for x86 and x86-64 on Linux
-ifneq ($(filter $(DEB_HOST_ARCH), amd64 i386),)
-confflags += --enable-svgalib
 endif
 
 %:
@@ -154,10 +149,11 @@ override_dh_auto_configure:
 	# Else it's a mess when we build the modules
 	./configure --enable-static $(confflags)
 	$(MAKE) -C compat
-	$(MAKE) -C src libvlccore.la libvlc.la
+	$(MAKE) -C src libvlccore.la
+	$(MAKE) -C lib libvlc.la
 	mkdir -p tmp
 	cp src/.libs/libvlccore.a tmp/libvlccore.a
-	cp src/.libs/libvlc.a tmp/libvlc.a
+	cp lib/.libs/libvlc.a tmp/libvlc.a
 	dh_auto_configure -- $(confflags)
 
 override_dh_auto_test:
@@ -189,24 +185,25 @@ override_dh_install:
 	cp tmp/libvlc.a debian/tmp/usr/lib
 	cp tmp/libvlccore.a debian/tmp/usr/lib
 	# Clean up libtool crap
-	find debian/tmp -name '*.la' -exec rm '{}' ';'
+	find debian/tmp -name '*.la' -delete
 	# Remove useless stuff
 	ln -sf /usr/share/fonts/truetype/freefont/FreeSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	ln -sf /usr/share/fonts/truetype/freefont/FreeMonoBold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	rm -f debian/tmp/usr/share/man/man1/vlc-config.1
+	# Remove additional license files
+	find debian/tmp -name LICENSE -delete
 	# Install stuff
 	dh_install --fail-missing
 	# move .hosts
 	if test -d debian/vlc-data; then \
-		mkdir -p debian/vlc-data/etc/vlc/http; \
-		mv debian/vlc-data/usr/share/vlc/http/.hosts debian/vlc-data/etc/vlc/http; \
-		ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/http/.hosts; \
-		mkdir -p debian/vlc-data/etc/vlc/lua/http; \
-		mv debian/vlc-data/usr/share/vlc/lua/http/.hosts debian/vlc-data/etc/vlc/lua/http; \
-		ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/lua/http/.hosts; \
+		mkdir -p debian/vlc-data/etc/vlc/lua/http/dialogs && \
+		mv debian/vlc-data/usr/share/vlc/lua/http/dialogs/.hosts debian/vlc-data/etc/vlc/lua/http/dialogs && \
+		ln -s /etc/vlc/lua/http/dialogs/.hosts debian/vlc-data/usr/share/vlc/lua/http/dialogs/.hosts && \
+		mv debian/vlc-data/usr/share/vlc/lua/http/.hosts debian/vlc-data/etc/vlc/lua/http && \
+		ln -s /etc/vlc/lua/http/.hosts debian/vlc-data/usr/share/vlc/lua/http/.hosts; \
 	fi
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
-	# Check that we did not install a plugin linked with libX11 or 
+	# Check that we did not install a plugin linked with libX11 or
 	# libxcb in vlc-nox
 	BORKED=no; \
 	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \

@@ -1,5 +1,6 @@
 libvlc.so.5 libvlc5 #MINVER#
  libvlc_add_intf@Base 1.1.0
+ libvlc_audio_filter_list_get@Base 2.0.0
  libvlc_audio_get_channel@Base 1.1.0
  libvlc_audio_get_delay@Base 1.1.1
  libvlc_audio_get_mute@Base 1.1.0
@@ -16,25 +17,31 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_audio_output_list_release@Base 1.1.0
  libvlc_audio_output_set@Base 1.1.0
  libvlc_audio_output_set_device_type@Base 1.1.0
+ libvlc_audio_set_callbacks@Base 2.0.0
  libvlc_audio_set_channel@Base 1.1.0
  libvlc_audio_set_delay@Base 1.1.1
+ libvlc_audio_set_format@Base 2.0.0
+ libvlc_audio_set_format_callbacks@Base 2.0.0
  libvlc_audio_set_mute@Base 1.1.0
  libvlc_audio_set_track@Base 1.1.0
  libvlc_audio_set_volume@Base 1.1.0
+ libvlc_audio_set_volume_callback@Base 2.0.0
  libvlc_audio_toggle_mute@Base 1.1.0
  libvlc_clearerr@Base 1.1.0
+ libvlc_clock@Base 2.0.0
  libvlc_errmsg@Base 1.1.0
  libvlc_event_attach@Base 1.1.0
  libvlc_event_detach@Base 1.1.0
- libvlc_event_manager_new@Base 1.1.0
- libvlc_event_manager_register_event_type@Base 1.1.0
- libvlc_event_manager_release@Base 1.1.0
- libvlc_event_send@Base 1.1.0
+#MISSING: 2.0.0# libvlc_event_manager_new@Base 1.1.0
+#MISSING: 2.0.0# libvlc_event_manager_register_event_type@Base 1.1.0
+#MISSING: 2.0.0# libvlc_event_manager_release@Base 1.1.0
+#MISSING: 2.0.0# libvlc_event_send@Base 1.1.0
  libvlc_event_type_name@Base 1.1.0
+ libvlc_free@Base 2.0.0
  libvlc_get_changeset@Base 1.1.0
  libvlc_get_compiler@Base 1.1.0
  libvlc_get_fullscreen@Base 1.1.0
- libvlc_get_input_thread@Base 1.1.0
+#MISSING: 2.0.0# libvlc_get_input_thread@Base 1.1.0
  libvlc_get_log_verbosity@Base 1.1.0
  libvlc_get_version@Base 1.1.0
  libvlc_log_clear@Base 1.1.0
@@ -68,7 +75,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_library_new@Base 1.1.0
  libvlc_media_library_release@Base 1.1.0
  libvlc_media_library_retain@Base 1.1.0
- libvlc_media_list_add_file_content@Base 1.1.0
+#MISSING: 2.0.0# libvlc_media_list_add_file_content@Base 1.1.0
  libvlc_media_list_add_media@Base 1.1.0
  libvlc_media_list_count@Base 1.1.0
  libvlc_media_list_event_manager@Base 1.1.0
@@ -90,6 +97,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_list_player_play_item_at_index@Base 1.1.0
  libvlc_media_list_player_previous@Base 1.1.0
  libvlc_media_list_player_release@Base 1.1.0
+ libvlc_media_list_player_retain@Base 2.0.0
  libvlc_media_list_player_set_media_list@Base 1.1.0
  libvlc_media_list_player_set_media_player@Base 1.1.0
  libvlc_media_list_player_set_playback_mode@Base 1.1.0
@@ -101,7 +109,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_list_unlock@Base 1.1.0
  libvlc_media_new_as_node@Base 1.1.0
  libvlc_media_new_fd@Base 1.1.5
- libvlc_media_new_from_input_item@Base 1.1.0
+#MISSING: 2.0.0# libvlc_media_new_from_input_item@Base 1.1.0
  libvlc_media_new_location@Base 1.1.0
  libvlc_media_new_path@Base 1.1.0
  libvlc_media_parse@Base 1.1.0
@@ -127,6 +135,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_player_has_vout@Base 1.1.0
  libvlc_media_player_is_playing@Base 1.1.0
  libvlc_media_player_is_seekable@Base 1.1.0
+ libvlc_media_player_navigate@Base 2.0.0
  libvlc_media_player_new@Base 1.1.0
  libvlc_media_player_new_from_media@Base 1.1.0
  libvlc_media_player_next_chapter@Base 1.1.0
@@ -153,20 +162,24 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_retain@Base 1.1.0
  libvlc_media_save_meta@Base 1.1.0
  libvlc_media_set_meta@Base 1.1.0
- libvlc_media_set_state@Base 1.1.0
+#MISSING: 2.0.0# libvlc_media_set_state@Base 1.1.0
  libvlc_media_set_user_data@Base 1.1.0
  libvlc_media_subitems@Base 1.1.0
+ libvlc_module_description_list_release@Base 2.0.0
  libvlc_new@Base 1.1.0
  libvlc_playlist_play@Base 1.1.0
  libvlc_printerr@Base 1.1.0
  libvlc_release@Base 1.1.0
  libvlc_retain@Base 1.1.0
+ libvlc_set_exit_handler@Base 2.0.0
  libvlc_set_fullscreen@Base 1.1.0
  libvlc_set_log_verbosity@Base 1.1.0
  libvlc_set_user_agent@Base 1.1.1
  libvlc_toggle_fullscreen@Base 1.1.0
  libvlc_toggle_teletext@Base 1.1.0
+ libvlc_track_description_list_release@Base 2.0.0
  libvlc_track_description_release@Base 1.1.0
+ libvlc_video_filter_list_get@Base 2.0.0
  libvlc_video_get_adjust_float@Base 1.1.1
  libvlc_video_get_adjust_int@Base 1.1.1
  libvlc_video_get_aspect_ratio@Base 1.1.0
@@ -181,6 +194,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_video_get_size@Base 1.1.0
  libvlc_video_get_spu@Base 1.1.0
  libvlc_video_get_spu_count@Base 1.1.0
+ libvlc_video_get_spu_delay@Base 2.0.0
  libvlc_video_get_spu_description@Base 1.1.0
  libvlc_video_get_teletext@Base 1.1.0
  libvlc_video_get_title_description@Base 1.1.0
@@ -195,6 +209,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_video_set_crop_geometry@Base 1.1.0
  libvlc_video_set_deinterlace@Base 1.1.0
  libvlc_video_set_format@Base 1.1.1
+ libvlc_video_set_format_callbacks@Base 2.0.0
  libvlc_video_set_key_input@Base 1.1.0
  libvlc_video_set_logo_int@Base 1.1.0
  libvlc_video_set_logo_string@Base 1.1.0
@@ -203,6 +218,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_video_set_mouse_input@Base 1.1.0
  libvlc_video_set_scale@Base 1.1.0
  libvlc_video_set_spu@Base 1.1.0
+ libvlc_video_set_spu_delay@Base 2.0.0
  libvlc_video_set_subtitle_file@Base 1.1.0
  libvlc_video_set_teletext@Base 1.1.0
  libvlc_video_set_track@Base 1.1.0
