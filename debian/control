@@ -99,9 +99,7 @@ Build-Depends: autopoint,
                libxt-dev,
                libzvbi-dev (>= 0.2.28),
                lua5.1,
-               nasm,
                pkg-config,
-               yasm [amd64 kfreebsd-amd64],
                zlib1g-dev
 Standards-Version: 3.9.2
 Homepage: http://www.videolan.org/vlc/
