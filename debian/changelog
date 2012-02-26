@@ -1,3 +1,14 @@
+vlc (2.0.0-2) unstable; urgency=low
+
+  * Remove nasm and yasm form build dependencies (they are not used).
+  * Bump Standards-Version to 3.9.3, no changes needed.
+  * Backport patch from upstream to the fix build failures on kfreebsd.
+    (Closes: #660935)
+  * altivec-cflags.patch: Add missing CFLAGS_* variables to pass the "-maltivec"
+    flag. This should fix the build failure on powerpc. (Closes: #660936)
+
+ -- Benjamin Drung <bdrung@debian.org>  Sun, 26 Feb 2012 01:26:21 +0100
+
 vlc (2.0.0-1) unstable; urgency=low
 
   * New upstream release (Closes: #499381, #573064, #624027, LP: #455825,
