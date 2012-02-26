@@ -1,0 +1,24 @@
+Description: Add missing CFLAGS_* variables to pass the "-maltivec" flag.
+Author: Benjamin Drung <bdrung@debian.org>
+Bug-Debian: http://bugs.debian.org/660936
+
+--- a/modules/altivec/Modules.am
++++ b/modules/altivec/Modules.am
+@@ -1,13 +1,13 @@
+ libmemcpyaltivec_plugin_la_SOURCES = memcpy.c
+-libmemcpyaltivec_plugin_la_CFLAGS = $(AM_CFLAGS)
+-libmemcpyaltivec_plugin_la_LIBADD = $(AM_LIBADD)
++libmemcpyaltivec_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_memcpyaltivec)
++libmemcpyaltivec_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_memcpyaltivec)
+ libmemcpyaltivec_plugin_la_DEPENDENCIES =
+ 
+ libi420_yuy2_altivec_plugin_la_SOURCES = \
+         ../video_chroma/i420_yuy2.c \
+ 	../video_chroma/i420_yuy2.h
+-libi420_yuy2_altivec_plugin_la_CFLAGS = $(AM_CFLAGS)
+-libi420_yuy2_altivec_plugin_la_LIBADD = $(AM_LIBADD)
++libi420_yuy2_altivec_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_i420_yuy2_altivec)
++libi420_yuy2_altivec_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_i420_yuy2_altivec)
+ libi420_yuy2_altivec_plugin_la_DEPENDENCIES =
+ 
+ libvlc_LTLIBRARIES += \
