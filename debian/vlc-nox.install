@@ -14,6 +14,7 @@ usr/lib/vlc/plugins/access/libaccess_http_plugin.so
 usr/lib/vlc/plugins/access/libaccess_imem_plugin.so
 usr/lib/vlc/plugins/access/libaccess_mms_plugin.so
 usr/lib/vlc/plugins/access/libaccess_mtp_plugin.so
+usr/lib/vlc/plugins/access/libaccess_oss_plugin.so
 usr/lib/vlc/plugins/access/libaccess_rar_plugin.so
 usr/lib/vlc/plugins/access/libaccess_realrtsp_plugin.so
 usr/lib/vlc/plugins/access/libaccess_shm_plugin.so
@@ -46,6 +47,7 @@ usr/lib/vlc/plugins/audio_output/libadummy_plugin.so
 usr/lib/vlc/plugins/audio_output/libalsa_plugin.so
 usr/lib/vlc/plugins/audio_output/libamem_plugin.so
 usr/lib/vlc/plugins/audio_output/libaout_file_plugin.so
+usr/lib/vlc/plugins/audio_output/liboss_plugin.so
 usr/lib/vlc/plugins/codec/liba52_plugin.so
 usr/lib/vlc/plugins/codec/libadpcm_plugin.so
 usr/lib/vlc/plugins/codec/libaes3_plugin.so

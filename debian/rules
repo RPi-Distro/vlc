@@ -69,6 +69,7 @@ confflags += \
 	--enable-ncurses \
 	--enable-notify \
 	--enable-ogg \
+	--enable-oss \
 	--enable-pulse \
 	--enable-qt4 \
 	--enable-realrtsp \
