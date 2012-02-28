@@ -1,3 +1,10 @@
+vlc (2.0.0-4) unstable; urgency=low
+
+  * Enable and install Open Sound System (OSS) plugin.
+  * Fix configure flag from --enable-libv4l2 to --enable-v4l2.
+
+ -- Benjamin Drung <bdrung@debian.org>  Tue, 28 Feb 2012 23:31:14 +0100
+
 vlc (2.0.0-3) unstable; urgency=low
 
   * Fix v4l2 build failure on kfreebsd. (Closes: #660935)
