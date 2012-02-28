@@ -116,10 +116,10 @@ confflags += \
 	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv \
-	--enable-v4l2 \
 	--enable-libva \
 	--enable-pvr \
 	--enable-udev \
+	--enable-v4l2 \
 	$(NULL)
 endif
 
