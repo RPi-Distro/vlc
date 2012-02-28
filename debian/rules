@@ -116,7 +116,7 @@ confflags += \
 	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv \
-	--enable-libv4l2 \
+	--enable-v4l2 \
 	--enable-libva \
 	--enable-pvr \
 	--enable-udev \
