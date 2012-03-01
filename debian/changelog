@@ -1,3 +1,15 @@
+vlc (2.0.0-6) unstable; urgency=high
+
+  * Fix FTBFS on kFreeBSD (Closes: #661819):
+    - Drop --as-needed as it breaks the build fix for kFreeBSD.
+    - Enable linsys only on Linux and exclude the plugins from non-Linux.
+      Thanks to Cyril Brulebois for the patch.
+    - Adapt the vlc-cache-gen linking patch from Sam Hocevar to also link
+      vlc with the C++ standard library.
+  * Set urgency to high for the RC bug fix.
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 01 Mar 2012 22:28:30 +0100
+
 vlc (2.0.0-5) unstable; urgency=low
 
   * Rewrite v4l kfreebsd patch.
