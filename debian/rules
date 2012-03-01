@@ -21,10 +21,12 @@ ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 confflags += --disable-optimizations --disable-mmx --disable-sse --disable-altivec
 endif
 
-LDFLAGS = -Wl,--as-needed
-
 # configure flags
 confflags += \
+	CFLAGS="$(shell dpkg-buildflags --get CFLAGS)" \
+	CPPFLAGS="$(shell dpkg-buildflags --get CPPFLAGS)" \
+	CXXFLAGS="$(shell dpkg-buildflags --get CXXFLAGS)" \
+	LDFLAGS="$(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed" \
 	--config-cache \
 	--disable-maintainer-mode \
 	--disable-silent-rules \
