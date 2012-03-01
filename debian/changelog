@@ -1,3 +1,11 @@
+vlc (2.0.0-5) unstable; urgency=low
+
+  * Rewrite v4l kfreebsd patch.
+  * Link vlc-cache-gen with the C++ standard library. (Closes: #660934, #660935)
+  * Enable hardened build flags through dpkg-buildflags. (Closes: #658030)
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 01 Mar 2012 13:37:41 +0100
+
 vlc (2.0.0-4) unstable; urgency=low
 
   * Enable and install Open Sound System (OSS) plugin.
