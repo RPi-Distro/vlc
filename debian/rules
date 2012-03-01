@@ -26,7 +26,7 @@ confflags += \
 	CFLAGS="$(shell dpkg-buildflags --get CFLAGS)" \
 	CPPFLAGS="$(shell dpkg-buildflags --get CPPFLAGS)" \
 	CXXFLAGS="$(shell dpkg-buildflags --get CXXFLAGS)" \
-	LDFLAGS="$(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed" \
+	LDFLAGS="$(shell dpkg-buildflags --get LDFLAGS)" \
 	--config-cache \
 	--disable-maintainer-mode \
 	--disable-silent-rules \
