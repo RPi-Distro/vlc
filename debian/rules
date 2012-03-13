@@ -44,6 +44,7 @@ confflags += \
 	--enable-bluray \
 	--enable-bonjour \
 	--enable-caca \
+	--enable-dbus \
 	--enable-dca \
 	--enable-dirac \
 	--enable-dvbpsi \
