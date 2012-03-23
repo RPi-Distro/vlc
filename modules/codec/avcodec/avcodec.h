@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: c5399ab69ee412d6afd006e4ea2409055f774a7e $
+ * $Id: 07381c6a3bd53e2a1e82bde6befc27841ddb608d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -226,7 +226,7 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 
 #define ENC_STRICT_TEXT N_( "Strict standard compliance" )
 #define ENC_STRICT_LONGTEXT N_( "Force a strict standard " \
-  "compliance when encoding (accepted values: -1, 0, 1)." )
+  "compliance when encoding (accepted values: -2 to 2)." )
 
 #define ENC_LUMI_MASKING_TEXT N_( "Luminance masking" )
 #define ENC_LUMI_MASKING_LONGTEXT N_( "Raise the quantizer for " \
@@ -307,6 +307,42 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 #   define AVMEDIA_TYPE_SUBTITLE   CODEC_TYPE_SUBTITLE
 #   define AVMEDIA_TYPE_DATA       CODEC_TYPE_DATA
 #   define AVMEDIA_TYPE_ATTACHMENT CODEC_TYPE_ATTACHMENT
+#endif
+
+#if LIBAVCODEC_VERSION_MAJOR < 54
+#   define AV_PICTURE_TYPE_B        FF_B_TYPE
+#   define AV_PICTURE_TYPE_I        FF_I_TYPE
+#   define AV_PICTURE_TYPE_P        FF_P_TYPE
+
+#   define SAMPLE_FMT_NONE          AV_SAMPLE_FMT_NONE
+#   define SAMPLE_FMT_U8            AV_SAMPLE_FMT_U8
+#   define SAMPLE_FMT_S16           AV_SAMPLE_FMT_S16
+#   define SAMPLE_FMT_S32           AV_SAMPLE_FMT_S32
+#   define SAMPLE_FMT_FLT           AV_SAMPLE_FMT_FLT
+#   define SAMPLE_FMT_DBL           AV_SAMPLE_FMT_DBL
+
+#   define CH_FRONT_LEFT            AV_CH_FRONT_LEFT
+#   define CH_FRONT_RIGHT           AV_CH_FRONT_RIGHT
+#   define CH_FRONT_CENTER          AV_CH_FRONT_CENTER
+#   define CH_LOW_FREQUENCY         AV_CH_LOW_FREQUENCY
+#   define CH_BACK_LEFT             AV_CH_BACK_LEFT
+#   define CH_BACK_RIGHT            AV_CH_BACK_RIGHT
+#   define CH_FRONT_LEFT_OF_CENTER  AV_CH_FRONT_LEFT_OF_CENTER
+#   define CH_FRONT_RIGHT_OF_CENTER AV_CH_FRONT_RIGHT_OF_CENTER
+#   define CH_BACK_CENTER           AV_CH_BACK_CENTER
+#   define CH_SIDE_LEFT             AV_CH_SIDE_LEFT
+#   define CH_SIDE_RIGHT            AV_CH_SIDE_RIGHT
+#   define CH_TOP_CENTER            AV_CH_TOP_CENTER
+#   define CH_TOP_FRONT_LEFT        AV_CH_TOP_FRONT_LEFT
+#   define CH_TOP_FRONT_CENTER      AV_CH_TOP_FRONT_CENTER
+#   define CH_TOP_FRONT_RIGHT       AV_CH_TOP_FRONT_RIGHT
+#   define CH_TOP_BACK_LEFT         AV_CH_TOP_BACK_LEFT
+#   define CH_TOP_BACK_CENTER       AV_CH_TOP_BACK_CENTER
+#   define CH_TOP_BACK_RIGHT        AV_CH_TOP_BACK_RIGHT
+#   define CH_STEREO_LEFT           AV_CH_STEREO_LEFT
+#   define CH_STEREO_RIGHT          AV_CH_STEREO_RIGHT
+
+
 #endif
 
 #ifndef AV_PKT_FLAG_KEY

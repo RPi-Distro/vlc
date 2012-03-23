@@ -2,7 +2,7 @@
  * VideoEffects.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: c5f1060acf980e54dfaad3a8d01d84af9bf2b632 $
+ * $Id: 88e613070c8fe1e70df0816c959038511478d258 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -46,7 +46,7 @@ static VLCVideoEffects *_o_sharedInstance = nil;
         p_intf = VLCIntf;
         _o_sharedInstance = [super init];
     }
-    
+
     return _o_sharedInstance;
 }
 

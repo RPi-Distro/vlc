@@ -28,7 +28,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile ..\vlc-${VERSION}-win32.exe
+@HAVE_WIN64_FALSE@ OutFile ..\vlc-${VERSION}-win32.exe
+@HAVE_WIN64_TRUE@  OutFile ..\vlc-${VERSION}-win64.exe
 InstallDir "$@PROGRAMFILES@\VideoLAN\VLC"
 !ifdef NSIS_LZMA_COMPRESS_WHOLE
 SetCompressor lzma
@@ -257,6 +258,8 @@ FunctionEnd
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 !macro MacroAudioExtensions _action
+  !insertmacro ${_action} ".3ga"
+  !insertmacro ${_action} ".669"
   !insertmacro ${_action} ".a52"
   !insertmacro ${_action} ".aac"
   !insertmacro ${_action} ".ac3"
@@ -286,6 +289,7 @@ FunctionEnd
   !insertmacro ${_action} ".mpc"
   !insertmacro ${_action} ".oma"
   !insertmacro ${_action} ".oga"
+  !insertmacro ${_action} ".qcp"
   !insertmacro ${_action} ".rmi"
   !insertmacro ${_action} ".snd"
   !insertmacro ${_action} ".s3m"
@@ -310,6 +314,7 @@ FunctionEnd
   !insertmacro ${_action} ".asf"
   !insertmacro ${_action} ".avi"
   !insertmacro ${_action} ".divx"
+  !insertmacro ${_action} ".drc"
   !insertmacro ${_action} ".dv"
   !insertmacro ${_action} ".f4v"
   !insertmacro ${_action} ".flv"

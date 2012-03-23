@@ -2,7 +2,7 @@
  * extension.c: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 49fc5112e35826b98ece0fc6eb40c3675449cce9 $
+ * $Id: 2c4edc1afca8dd97886005e0afd83bad85d92918 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -832,6 +832,7 @@ static lua_State* GetLuaState( extensions_manager_t *p_mgr,
             luaopen_osd( L );
             luaopen_playlist( L );
             luaopen_sd( L );
+            luaopen_misc_extensions( L );
             luaopen_stream( L );
             luaopen_strings( L );
             luaopen_variables( L );

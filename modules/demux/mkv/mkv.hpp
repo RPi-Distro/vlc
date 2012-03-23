@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008 the VideoLAN team
- * $Id: de64aec75827172d2781e4605fed96b881a35c45 $
+ * $Id: f30e37081e9748d34f389e77065c670d3aab4dc1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -180,6 +180,7 @@ struct mkv_track_t
 
     bool         b_default;
     bool         b_enabled;
+    bool         b_forced;
     unsigned int i_number;
 
     unsigned int i_extra_data;

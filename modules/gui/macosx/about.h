@@ -2,7 +2,7 @@
  * about.h: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 731c308c1f5c7c754b1e06a1d0e1e8d51601466d $
+ * $Id: 167ef119745e6ea9192804394d8040620471db8a $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -45,7 +45,7 @@
     NSTimeInterval i_start;
     BOOL b_restart;
     BOOL b_isSetUp;
-    
+
     /* generic help window */
     IBOutlet id o_help_window;
     IBOutlet WebView *o_help_web_view; //we may _not_ use id here because of method name collisions

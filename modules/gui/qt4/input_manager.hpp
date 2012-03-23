@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: f10aa891431c352bf2e915a8aa6b64e27bcb1d0e $
+ * $Id: 3c127083db9b978ece956090c750e0e7b61c6a3f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste <jb@videolan.org>
@@ -263,6 +263,8 @@ public:
 
     bool getPlayExitState();
     bool hasEmptyPlaylist();
+
+    void requestVoutUpdate() { return im->UpdateVout(); }
 private:
     MainInputManager( intf_thread_t * );
     virtual ~MainInputManager();

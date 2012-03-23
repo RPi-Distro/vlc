@@ -2,7 +2,7 @@
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 9c672f184d4109dbe409e96f91a7036b2f63c008 $
+ * $Id: be40d24640f65bc4332fd2ae572d2b38597b519c $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *
@@ -197,7 +197,7 @@
  *****************************************************************************/
 @implementation NSApplication(ScriptSupport)
 
-- (BOOL) scriptFullscreenMode {    
+- (BOOL) scriptFullscreenMode {
     vout_thread_t * p_vout = getVout();
     if( !p_vout )
         return NO;

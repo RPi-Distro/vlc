@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2011 the VideoLAN team
- * $Id: 364149b1ddc7004419d358de8433af6026ad1171 $
+ * $Id: a61e18c375dec3ab10356b9ceef95862a76624e5 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -46,8 +46,8 @@
 
 /* Default fonts */
 #ifdef __APPLE__
-# define DEFAULT_FONT_FILE "/Library/Fonts/Arial Black.ttf"
-# define DEFAULT_FAMILY "Arial Black"
+# define DEFAULT_FONT_FILE "/Library/Fonts/Arial Unicode.ttf"
+# define DEFAULT_FAMILY "Arial Unicode MS"
 #elif defined( WIN32 )
 # define DEFAULT_FONT_FILE "arial.ttf" /* Default path font found at run-time */
 # define DEFAULT_FAMILY "Arial"

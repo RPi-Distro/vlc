@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000 VLC authors and VideoLAN
- * $Id: 2880d7339947804e9661e833625df15eba1e16d8 $
+ * $Id: 0209a4d1b9876511c50eef5f2455426ad80fcbdf $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -166,19 +166,21 @@ typedef enum vlc_dialog {
 /* Useful text messages shared by interfaces */
 #define INTF_ABOUT_MSG LICENSE_MSG
 
-#define EXTENSIONS_AUDIO_CSV "a52", "aac", "ac3", "ape", "awb", "dts", "flac", "it", \
+#define EXTENSIONS_AUDIO_CSV "3ga", "669", "a52", "aac", "ac3", "ape", "awb", "dts", "flac", "it", \
                          "m4a", "m4p", "mka", "mlp", "mod", "mp1", "mp2", "mp3",\
-                         "oga", "ogg", "oma", "s3m", "spx", "thd", "tta", \
+                         "oga", "ogg", "oma", "qcp", "rmi", "s3m", "spx", "thd", "tta", \
                          "wav", "wma", "wv", "xm"
 
-#define EXTENSIONS_VIDEO_CSV "asf", "avi", "divx", "dv", "f4v", "flv", "gxf", "iso", \
+#define EXTENSIONS_VIDEO_CSV "asf", "avi", "divx", "drc", "dv", "f4v", "flv", "gxf", "iso", \
                              "m1v", "m2v", "m2t", "m2ts", "m4v", "mkv", "mov",\
                              "mp2", "mp4", "mpeg", "mpeg1", \
-                             "mpeg2", "mpeg4", "mpg", "mts", "mtv", "mxf", "nuv", \
+                             "mpeg2", "mpeg4", "mpg", "mts", "mtv", "mxf", "mxg", "nuv", \
                              "ogg", "ogm", "ogv", "ogx", "ps", \
                              "rec", "rm", "rmvb", "ts", "vob", "wmv"
 
 #define EXTENSIONS_AUDIO \
+    "*.3ga;" \
+    "*.669;" \
     "*.a52;" \
     "*.aac;" \
     "*.ac3;" \
@@ -209,6 +211,7 @@ typedef enum vlc_dialog {
     "*.oga;" \
     "*.ogg;" \
     "*.oma;" \
+    "*.qcp;" \
     "*.rmi;" \
     "*.s3m;" \
     "*.spx;" \
@@ -223,9 +226,9 @@ typedef enum vlc_dialog {
     "*.xa;"  \
     "*.xm"
 
-#define EXTENSIONS_VIDEO "*.3g2;*.3gp;*.3gp2;*.3gpp;*.amv;*.asf;*.avi;*.bin;*.divx;*.dv;*f4v;*.flv;*.gxf;*.iso;*.m1v;*.m2v;" \
+#define EXTENSIONS_VIDEO "*.3g2;*.3gp;*.3gp2;*.3gpp;*.amv;*.asf;*.avi;*.bin;*.divx;*.drc;*.dv;*f4v;*.flv;*.gxf;*.iso;*.m1v;*.m2v;" \
                          "*.m2t;*.m2ts;*.m4v;*.mkv;*.mov;*.mp2;*.mp2v;*.mp4;*.mp4v;*.mpa;*.mpe;*.mpeg;*.mpeg1;" \
-                         "*.mpeg2;*.mpeg4;*.mpg;*.mpv2;*.mts;*.mtv;*.mxf;*.nsv;*.nuv;" \
+                         "*.mpeg2;*.mpeg4;*.mpg;*.mpv2;*.mts;*.mtv;*.mxf;*.mxg;*.nsv;*.nuv;" \
                          "*.ogg;*.ogm;*.ogv;*.ogx;*.ps;" \
                          "*.rec;*.rm;*.rmvb;*.tod;*.ts;*.tts;*.vob;*.vro;*.webm;*.wmv"
 

@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 1fd21ea316995a429132b19e88002b45e3dbc0c7 $
+ * $Id: 62560a52287a2eff2f7968511d4a15e7e1530547 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -407,19 +407,29 @@ void ExtVideo::updateFilters()
                                    : groupbox->isChecked() );
 }
 
+#define UPDATE_AND_APPLY_TEXT( widget, file ) \
+    CONNECT( ui.widget, textChanged( const QString& ), \
+             this, updateFilterOptions() ); \
+    ui.widget->setText( toNativeSeparators( file ) ); \
+    ui.widget->disconnect( SIGNAL( textChanged( const QString& ) ) );
+
 void ExtVideo::browseLogo()
 {
     QString file = QFileDialog::getOpenFileName( NULL, qtr( "Logo filenames" ),
                    p_intf->p_sys->filepath, "Images (*.png *.jpg);;All (*)" );
-    ui.logoFileText->setText( toNativeSeparators( file ) );
+
+    UPDATE_AND_APPLY_TEXT( logoFileText, file );
 }
 
 void ExtVideo::browseEraseFile()
 {
     QString file = QFileDialog::getOpenFileName( NULL, qtr( "Image mask" ),
                    p_intf->p_sys->filepath, "Images (*.png *.jpg);;All (*)" );
-    ui.eraseMaskText->setText( toNativeSeparators( file ) );
+
+    UPDATE_AND_APPLY_TEXT( eraseMaskText, file );
 }
+
+#undef UPDATE_AND_APPLY_TEXT
 
 void ExtVideo::initComboBoxItems( QObject *widget )
 {
@@ -1346,7 +1356,7 @@ Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent )
             : QWidget( _parent ) , p_intf( _p_intf )
 {
     QFont smallFont = QApplication::font();
-    smallFont.setPointSize( smallFont.pointSize() - 2 );
+    smallFont.setPointSize( smallFont.pointSize() - 1 );
 
     QGridLayout *layout = new QGridLayout( this );
 
@@ -1358,14 +1368,19 @@ Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent )
         spatCtrl[i] = new QSlider( Qt::Vertical );
         if( i < 2 )
         {
-            spatCtrl[i]->setMaximum( 10 );
-            spatCtrl[i]->setValue( 2 );
+            spatCtrl[i]->setMaximum( 100 );
+            spatCtrl[i]->setValue( 20 );
+        }
+        else if( i < 4 )
+        {
+            spatCtrl[i]->setMaximum( 100 );
+            spatCtrl[i]->setValue( 20 );
+            spatCtrl[i]->setMinimum( -100 );
         }
         else
         {
-            spatCtrl[i]->setMaximum( 10 );
-            spatCtrl[i]->setValue( 0 );
-            spatCtrl[i]->setMinimum( -10 );
+            spatCtrl[i]->setMaximum( 40 );
+            spatCtrl[i]->setValue( 10 );
         }
 
         oldControlVars[i] = spatCtrl[i]->value();
@@ -1440,20 +1455,20 @@ void Spatializer::setValues()
 
     for( int i = 0 ; i < NUM_SP_CTRL ; i++ )
     {
-        float f = (float)(  spatCtrl[i]->value() );
+        float f = (float)( spatCtrl[i]->value() ) / 10;
         ctrl_readout[i]->setText( QString::number( f, 'f',  1 ) );
     }
+
     if( p_aout )
     {
         for( int i = 0 ; i < NUM_SP_CTRL ; i++ )
         {
+            float f = (float)( spatCtrl[i]->value() ) / 10 ;
             if( oldControlVars[i] != spatCtrl[i]->value() )
             {
-                var_SetFloat( p_aout, spat_controls[i].psz_name,
-                        ( float )spatCtrl[i]->value() );
-                config_PutFloat( p_intf, spat_controls[i].psz_name,
-                        ( float ) spatCtrl[i]->value() );
-                oldControlVars[i] = ( float ) spatCtrl[i]->value();
+                var_SetFloat( p_aout, spat_controls[i].psz_name, f );
+                config_PutFloat( p_intf, spat_controls[i].psz_name, f );
+                oldControlVars[i] = spatCtrl[i]->value();
             }
         }
         vlc_object_release( p_aout );

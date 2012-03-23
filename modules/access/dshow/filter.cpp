@@ -2,7 +2,7 @@
  * filter.c : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2010 the VideoLAN team
- * $Id: e0ee2efd23e5bd7792b30116fb5d9a0aa40f12ef $
+ * $Id: eb5c7404c60027ae27f1d813e0dcde41856c54b9 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -40,6 +40,11 @@
 #include "access.h"
 #include "filter.h"
 #include "vlc_dshow.h"
+
+#include <initguid.h>
+DEFINE_GUID(MEDIASUBTYPE_HDYC ,0x43594448 /* CYDH */ , 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
+DEFINE_GUID(MEDIASUBTYPE_DIVX ,0x58564944 /* XVID */ , 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
+
 
 #define DEBUG_DSHOW 1
 

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 9bd4c87d65ea9a52a0a3073a437ace8b49f48388 $
+ * $Id: 86eab8ca045453227745b4e6b3755a14cee5cf95 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -351,6 +351,7 @@ static void real_calc_response_and_checksum (char *response, char *chksum, char 
     chksum[i] = response[i*4];
 }
 
+#define MLTI_BUF_MAX_SIZE 2048
 
 /*
  * takes a MLTI-Chunk and a rule number got from match_asm_rule,
@@ -368,7 +369,7 @@ static int select_mlti_data(const char *mlti_chunk, int mlti_size, int selection
       ||(mlti_chunk[3] != 'I'))
   {
     lprintf("MLTI tag not detected, copying data\n");
-    memcpy(*out, mlti_chunk, mlti_size);
+    memcpy(*out, mlti_chunk, __MIN(mlti_size,MLTI_BUF_MAX_SIZE));
     return mlti_size;
   }
 
@@ -405,7 +406,7 @@ static int select_mlti_data(const char *mlti_chunk, int mlti_size, int selection
   }
   size=BE_32(mlti_chunk);
 
-  memcpy(*out, mlti_chunk+4, size);
+  memcpy(*out, mlti_chunk+4, __MIN(size,MLTI_BUF_MAX_SIZE));
   return size;
 }
 
@@ -430,7 +431,7 @@ static rmff_header_t *real_parse_sdp(char *data, char **stream_rules, uint32_t b
   desc=sdpplin_parse(data);
   if( !desc ) return NULL;
 
-  buf= (char *)malloc(2048);
+  buf= (char *)malloc(MLTI_BUF_MAX_SIZE);
   if( !buf ) goto error;
 
   header = calloc( 1, sizeof(rmff_header_t) );

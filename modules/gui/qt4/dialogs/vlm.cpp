@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 03305f3346a832360543f1ad03cd500c3dc42ac0 $
+ * $Id: a4e27361b4b8e201a5bd3b1ab06d3dd612947660 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -134,7 +134,7 @@ VLMDialog::VLMDialog( intf_thread_t *_p_intf ) : QVLCDialog( (QWidget*)_p_intf->
     ui.buttonBox->addButton( exportButton, QDialogButtonBox::ActionRole );
 
     QPushButton *closeButton = new QPushButton( qtr( "&Close" ) );
-    ui.buttonBox->addButton( closeButton, QDialogButtonBox::AcceptRole );
+    ui.buttonBox->addButton( closeButton, QDialogButtonBox::RejectRole );
 
 
     showScheduleWidget( QVLM_Broadcast );

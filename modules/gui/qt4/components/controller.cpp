@@ -2,7 +2,7 @@
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: a98c2415bf60a6c04a3e017acd5814928b0083a6 $
+ * $Id: 0313be59e809b3482d7e62047c55e14c02003b36 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -346,7 +346,7 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
         }
         break;
     case INPUT_SLIDER: {
-        SeekSlider *slider = new SeekSlider( Qt::Horizontal, NULL );
+        SeekSlider *slider = new SeekSlider( Qt::Horizontal, NULL, !b_shiny );
         SeekPoints *chapters = new SeekPoints( this, p_intf );
         CONNECT( THEMIM->getIM(), titleChanged( bool ), chapters, update() );
         slider->setChapters( chapters );
@@ -467,6 +467,7 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
         break;
     case ASPECT_RATIO_COMBOBOX:
         widget = new AspectRatioComboBox( p_intf );
+        widget->setMinimumHeight( 26 );
         break;
     case SPEED_LABEL:
         widget = new SpeedLabel( p_intf, this );

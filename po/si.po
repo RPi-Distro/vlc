@@ -4,11 +4,12 @@
 # H.Shalitha Vikum  <HSVIKUM at sinhalaya dot com>, 2010
 # Ajith Manjula <uthmax.sms@gmail.com>, 2010
 #
+#: modules/gui/macosx/prefs.m:481 modules/gui/macosx/simple_prefs.m:445
 msgid ""
 msgstr ""
 "Project-Id-Version: vlc 1.1.11\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2012-02-17 18:54+0100\n"
+"POT-Creation-Date: 2012-03-16 20:18+0100\n"
 "PO-Revision-Date: 2012-02-08 22:31+0530\n"
 "Last-Translator: Ajith Manjula Senarathne <uthmax.sms@gmail.com>\n"
 "Language-Team: Sinhala <uthmax.sms@gmail.com>\n"
@@ -32,7 +33,7 @@ msgstr ""
 "ලේඛනගත කරන ලද්දේ VideoLAN කණ්ඩායම මගිනි; වැඩි විස්තර සඳහා AUTHORS නමින් යුත් ‍ගොනුව "
 "බලන්න.\n"
 
-#: include/vlc_config_cat.h:32 modules/audio_output/alsa.c:826
+#: include/vlc_config_cat.h:32 modules/audio_output/alsa.c:788
 msgid "VLC preferences"
 msgstr "VLC අභිරුචි"
 
@@ -42,7 +43,7 @@ msgstr "සියලුම විකල්ප දර්ශනය කිරීම
 
 #: include/vlc_config_cat.h:37 modules/gui/macosx/simple_prefs.m:177
 #: modules/gui/qt4/components/simple_preferences.cpp:86
-#: modules/gui/qt4/menus.cpp:1058
+#: modules/gui/qt4/menus.cpp:1051
 msgid "Interface"
 msgstr "අතුරු මුහුණත"
 
@@ -325,11 +326,11 @@ msgstr "VLC හි ඉල්ලුම අනුව වීඩියෝ (VOD) ක�
 
 #: include/vlc_config_cat.h:175 src/libvlc-module.c:2163
 #: src/playlist/engine.c:217 modules/demux/playlist/playlist.c:63
-#: modules/demux/playlist/playlist.c:64 modules/gui/macosx/MainWindow.m:311
+#: modules/demux/playlist/playlist.c:64 modules/gui/macosx/MainWindow.m:341
 #: modules/gui/qt4/components/controller.hpp:116
 #: modules/gui/qt4/components/playlist/playlist.cpp:191
 #: modules/gui/qt4/components/playlist/selector.cpp:187
-#: modules/gui/qt4/dialogs/playlist.cpp:41 modules/gui/qt4/menus.cpp:1087
+#: modules/gui/qt4/dialogs/playlist.cpp:41 modules/gui/qt4/menus.cpp:1080
 #: modules/gui/qt4/ui/sprefs_interface.h:529
 msgid "Playlist"
 msgstr "ධාවන ලැයිස්තුව"
@@ -378,7 +379,7 @@ msgid "Advanced settings"
 msgstr "සංකිර්ණ සැකසීම්"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:122
-#: modules/gui/macosx/open.m:484 modules/gui/macosx/simple_prefs.m:258
+#: modules/gui/macosx/open.m:487 modules/gui/macosx/simple_prefs.m:258
 #: modules/gui/qt4/ui/sprefs_input.h:356
 msgid "Network"
 msgstr "ජාලය"
@@ -500,9 +501,10 @@ msgstr "මේ ගැන"
 #: modules/gui/macosx/MainMenu.m:266 modules/gui/macosx/MainMenu.m:363
 #: modules/gui/macosx/MainMenu.m:370 modules/gui/macosx/MainMenu.m:846
 #: modules/gui/macosx/MainMenu.m:847 modules/gui/macosx/MainMenu.m:848
-#: modules/gui/macosx/MainWindow.m:1147 modules/gui/macosx/playlist.m:487
+#: modules/gui/macosx/MainWindow.m:1313 modules/gui/macosx/MainWindow.m:1316
+#: modules/gui/macosx/playlist.m:487
 #: modules/gui/qt4/components/controller.hpp:114
-#: modules/gui/qt4/dialogs/vlm.cpp:550 modules/gui/qt4/menus.cpp:790
+#: modules/gui/qt4/dialogs/vlm.cpp:550 modules/gui/qt4/menus.cpp:788
 #: modules/gui/qt4/ui/open.h:253
 msgid "Play"
 msgstr "ධාවනය කරන්න"
@@ -548,12 +550,12 @@ msgid "Save..."
 msgstr "සුරකින්න..."
 
 #: include/vlc_intf_strings.h:80 modules/gui/macosx/CoreInteraction.m:421
-#: modules/gui/macosx/MainMenu.m:280 modules/gui/macosx/MainMenu.m:1178
+#: modules/gui/macosx/MainMenu.m:280 modules/gui/macosx/MainMenu.m:1179
 msgid "Repeat All"
 msgstr "සියල්ල යළි ධාවනය"
 
 #: include/vlc_intf_strings.h:81 modules/gui/macosx/CoreInteraction.m:442
-#: modules/gui/macosx/MainMenu.m:279 modules/gui/macosx/MainMenu.m:1171
+#: modules/gui/macosx/MainMenu.m:279 modules/gui/macosx/MainMenu.m:1172
 msgid "Repeat One"
 msgstr "එකක් පමණක් යළි යළිත් ධාවනය"
 
@@ -562,7 +564,7 @@ msgid "No Repeat"
 msgstr "පුනරාවර්තනය එපා"
 
 #: include/vlc_intf_strings.h:84 src/libvlc-module.c:1523
-#: modules/gui/macosx/MainMenu.m:278 modules/gui/macosx/MainMenu.m:1164
+#: modules/gui/macosx/MainMenu.m:278 modules/gui/macosx/MainMenu.m:1165
 #: modules/gui/qt4/components/controller.hpp:118
 #: modules/gui/qt4/components/controller.hpp:131
 msgid "Random"
@@ -604,7 +606,7 @@ msgstr "ධාවන ලැයිස්තුව ගොනුවකට සුර
 msgid "Open Play&list..."
 msgstr "ධාවන ලැයිස්තුව විවෘත කරන්න..."
 
-#: include/vlc_intf_strings.h:98 modules/gui/macosx/MainWindow.m:143
+#: include/vlc_intf_strings.h:98 modules/gui/macosx/MainWindow.m:147
 #: modules/gui/qt4/components/preferences_widgets.cpp:1320
 msgid "Search"
 msgstr "සොයන්න"
@@ -752,7 +754,7 @@ msgstr ""
 
 #: src/audio_output/common.c:85 src/audio_output/common.c:125
 #: src/input/es_out.c:934 src/libvlc-module.c:683
-#: src/video_output/postprocessing.c:98 modules/gui/macosx/MainWindow.m:1987
+#: src/video_output/postprocessing.c:98 modules/gui/macosx/MainWindow.m:2129
 #: modules/video_filter/postproc.c:228
 msgid "Disable"
 msgstr "අක්‍රිය"
@@ -804,10 +806,10 @@ msgstr "ශ්‍රව්‍ය නාලිකා"
 
 #: src/audio_output/output.c:103 src/audio_output/output.c:139
 #: modules/access/alsa.c:69 modules/access/oss.c:64
-#: modules/access/v4l2/video.c:284 modules/audio_output/directx.c:426
-#: modules/audio_output/kai.c:219 modules/audio_output/oss.c:194
-#: modules/audio_output/portaudio.c:400 modules/audio_output/waveout.c:419
-#: modules/codec/twolame.c:70
+#: modules/access/v4l2/video.c:284 modules/audio_output/alsa.c:74
+#: modules/audio_output/directx.c:427 modules/audio_output/kai.c:219
+#: modules/audio_output/oss.c:194 modules/audio_output/portaudio.c:400
+#: modules/audio_output/waveout.c:419 modules/codec/twolame.c:70
 msgid "Stereo"
 msgstr "ස්ටීරියෝ"
 
@@ -980,8 +982,8 @@ msgstr "විකේතකය"
 
 #: src/input/decoder.c:276 src/input/decoder.c:467
 #: modules/codec/avcodec/encoder.c:234 modules/codec/avcodec/encoder.c:242
-#: modules/codec/avcodec/encoder.c:279 modules/codec/avcodec/encoder.c:757
-#: modules/codec/avcodec/encoder.c:766 modules/stream_out/es.c:363
+#: modules/codec/avcodec/encoder.c:279 modules/codec/avcodec/encoder.c:768
+#: modules/codec/avcodec/encoder.c:777 modules/stream_out/es.c:363
 #: modules/stream_out/es.c:378
 msgid "Streaming / Transcoding failed"
 msgstr ""
@@ -1094,7 +1096,7 @@ msgstr "නියැදියකට බිටු ගණන"
 
 #: src/input/es_out.c:2960 modules/access_output/shout.c:92
 #: modules/access/pvr.c:90 modules/demux/playlist/shoutcast.c:334
-#: modules/gui/qt4/components/open_panels.cpp:882
+#: modules/gui/qt4/components/open_panels.cpp:890
 #: modules/gui/qt4/ui/profiles.h:478 modules/gui/qt4/ui/profiles.h:497
 msgid "Bitrate"
 msgstr "බිටු අනුපාතය"
@@ -1127,7 +1129,7 @@ msgstr "සංදර්ශන විභේදනය"
 
 #: src/input/es_out.c:2999 src/input/es_out.c:3002 modules/access/imem.c:93
 #: modules/access/screen/screen.c:41 modules/access/screen/xcb.c:34
-#: modules/access/shm.c:40 modules/access/vdr.c:93 modules/demux/image.c:65
+#: modules/access/shm.c:40 modules/access/vdr.c:93 modules/demux/image.c:66
 msgid "Frame rate"
 msgstr "රාමු අනුපාතය"
 
@@ -1162,12 +1164,12 @@ msgstr ""
 #: modules/gui/macosx/wizard.m:351
 #: modules/gui/qt4/components/open_panels.cpp:441
 #: modules/gui/qt4/components/open_panels.cpp:454 modules/mux/asf.c:56
-#: modules/gui/qt4/ui/open_disk.h:309
+#: modules/gui/qt4/ui/open_disk.h:310
 msgid "Title"
 msgstr "මාතෘකාව"
 
 #: src/input/meta.c:55 modules/gui/macosx/playlistinfo.m:79
-#: modules/gui/macosx/playlist.m:1197
+#: modules/gui/macosx/playlist.m:1209
 msgid "Artist"
 msgstr "කලාකරු"
 
@@ -1234,7 +1236,7 @@ msgstr "යෙදුම්"
 
 #: src/input/var.c:182 modules/gui/macosx/MainMenu.m:289
 #: modules/gui/macosx/MainMenu.m:290 modules/gui/macosx/open.m:158
-#: modules/gui/macosx/open.m:160 modules/gui/qt4/ui/open_disk.h:310
+#: modules/gui/macosx/open.m:160 modules/gui/qt4/ui/open_disk.h:311
 msgid "Chapter"
 msgstr "පරිච්ඡේදය"
 
@@ -1253,8 +1255,8 @@ msgid "Audio Track"
 msgstr "ශ්‍රව්‍ය පථය"
 
 #: src/input/var.c:210 modules/gui/macosx/MainMenu.m:321
-#: modules/gui/macosx/MainMenu.m:322 modules/gui/macosx/MainMenu.m:1040
-#: modules/gui/macosx/MainMenu.m:1095
+#: modules/gui/macosx/MainMenu.m:322 modules/gui/macosx/MainMenu.m:1041
+#: modules/gui/macosx/MainMenu.m:1096
 msgid "Subtitles Track"
 msgstr "උපසිරැසි පථය"
 
@@ -1284,7 +1286,7 @@ msgstr "ඊළඟ පරිච්ඡේදය"
 msgid "Previous chapter"
 msgstr "පෙර පරිච්ඡේදය"
 
-#: src/input/vlm.c:652 src/input/vlm.c:1035
+#: src/input/vlm.c:654 src/input/vlm.c:1037
 #, c-format
 msgid "Media: %s"
 msgstr "මාධ්‍ය: %s "
@@ -1599,12 +1601,12 @@ msgid ""
 "your experience, especially when combined with the Headphone Channel Mixer."
 msgstr ""
 
-#: src/libvlc-module.c:332 modules/access/dtv/access.c:88
+#: src/libvlc-module.c:332 modules/access/dtv/access.c:92
 #: modules/access/v4l2/video.c:219
 msgid "On"
 msgstr ""
 
-#: src/libvlc-module.c:332 modules/access/dtv/access.c:88
+#: src/libvlc-module.c:332 modules/access/dtv/access.c:92
 #: modules/access/v4l2/video.c:145 modules/access/v4l2/video.c:219
 #: modules/video_filter/deinterlace/algo_phosphor.h:55
 msgid "Off"
@@ -1666,11 +1668,11 @@ msgid ""
 "audio pitch"
 msgstr ""
 
-#: src/libvlc-module.c:373 modules/access/dshow/dshow.cpp:88
-#: modules/access/dshow/dshow.cpp:91 modules/access/dtv/access.c:103
-#: modules/access/dtv/access.c:137 modules/access/v4l2/video.c:171
-#: modules/codec/avcodec/avcodec.c:71 modules/codec/kate.c:202
-#: modules/gui/macosx/open.m:233
+#: src/libvlc-module.c:373 modules/access/dshow/dshow.cpp:91
+#: modules/access/dshow/dshow.cpp:94 modules/access/dtv/access.c:107
+#: modules/access/dtv/access.c:141 modules/access/v4l2/video.c:171
+#: modules/codec/avcodec/avcodec.c:70 modules/codec/kate.c:202
+#: modules/gui/macosx/open.m:236
 #: modules/gui/qt4/components/interface_widgets.cpp:299
 #: modules/text_renderer/freetype.c:175
 msgid "None"
@@ -1892,7 +1894,7 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:454 src/video_output/vout_intf.c:292
-#: modules/gui/macosx/simple_prefs.m:303 modules/gui/qt4/ui/sprefs_video.h:338
+#: modules/gui/macosx/simple_prefs.m:305 modules/gui/qt4/ui/sprefs_video.h:338
 msgid "Always on top"
 msgstr "සැමවිටම ඉහළින් තබන්න"
 
@@ -2174,7 +2176,7 @@ msgid ""
 "order to keep proportions."
 msgstr ""
 
-#: src/libvlc-module.c:611 modules/gui/macosx/simple_prefs.m:305
+#: src/libvlc-module.c:611 modules/gui/macosx/simple_prefs.m:307
 msgid "Skip frames"
 msgstr "රාමු මගහරින්න"
 
@@ -2301,14 +2303,14 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:683 src/video_output/vout_intf.c:94
-#: src/video_output/vout_intf.c:112 modules/access/dshow/dshow.cpp:88
-#: modules/access/dshow/dshow.cpp:91 modules/access/dshow/dshow.cpp:95
-#: modules/access/dshow/dshow.cpp:102 modules/access/dshow/dshow.cpp:122
-#: modules/audio_output/alsa.c:71 modules/audio_output/alsa.c:819
+#: src/video_output/vout_intf.c:112 modules/access/dshow/dshow.cpp:91
+#: modules/access/dshow/dshow.cpp:94 modules/access/dshow/dshow.cpp:98
+#: modules/access/dshow/dshow.cpp:105 modules/access/dshow/dshow.cpp:125
+#: modules/audio_output/alsa.c:62 modules/audio_output/alsa.c:781
 #: modules/gui/fbosd.c:172 modules/gui/macosx/MainMenu.m:502
 #: modules/gui/macosx/prefs_widgets.m:1311
-#: modules/gui/macosx/simple_prefs.m:422 modules/gui/macosx/simple_prefs.m:575
-#: modules/gui/macosx/simple_prefs.m:802
+#: modules/gui/macosx/simple_prefs.m:427 modules/gui/macosx/simple_prefs.m:581
+#: modules/gui/macosx/simple_prefs.m:811
 #: modules/gui/qt4/components/preferences_widgets.cpp:626
 #: modules/video_filter/marq.c:59 modules/video_filter/rss.c:71
 #: modules/video_filter/rss.c:184 modules/video_output/msw/directx.c:88
@@ -2316,7 +2318,7 @@ msgid "Default"
 msgstr "පෙරනිමි "
 
 #: src/libvlc-module.c:683 modules/gui/macosx/AudioEffects.m:66
-#: modules/gui/macosx/MainWindow.m:1985 modules/gui/macosx/wizard.m:357
+#: modules/gui/macosx/MainWindow.m:2127 modules/gui/macosx/wizard.m:357
 #: modules/gui/qt4/ui/equalizer.h:133 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "සබලයි"
@@ -2331,11 +2333,11 @@ msgid ""
 "over the network (in bytes)."
 msgstr ""
 
-#: src/libvlc-module.c:692 modules/stream_out/rtp.c:124
+#: src/libvlc-module.c:692 modules/stream_out/rtp.c:128
 msgid "Hop limit (TTL)"
 msgstr "Hop සීමාව (TTL)"
 
-#: src/libvlc-module.c:694 modules/stream_out/rtp.c:126
+#: src/libvlc-module.c:694 modules/stream_out/rtp.c:130
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -2373,7 +2375,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:721 modules/gui/qt4/ui/open_disk.h:312
+#: src/libvlc-module.c:721 modules/gui/qt4/ui/open_disk.h:313
 msgid "Audio track"
 msgstr "ශ්‍රව්‍ය පථය"
 
@@ -2381,7 +2383,7 @@ msgstr "ශ්‍රව්‍ය පථය"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "භාවිතයට ගනු ලබන ශ්‍රව්‍ය පථයේ දහරා අංකය (0 සිට n දක්වා)"
 
-#: src/libvlc-module.c:726 modules/gui/qt4/ui/open_disk.h:313
+#: src/libvlc-module.c:726 modules/gui/qt4/ui/open_disk.h:314
 msgid "Subtitles track"
 msgstr "උපසිරැසි පථය"
 
@@ -2622,7 +2624,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr "උප-අනුරූ සැකසීම සම්පූර්ණයෙන්ම අහෝසි කිරීමට මෙයින් ඔබට හැකියි."
 
 #: src/libvlc-module.c:845 src/libvlc-module.c:1782 src/text/iso-639_def.h:145
-#: modules/gui/macosx/simple_prefs.m:291
+#: modules/gui/macosx/simple_prefs.m:293
 #: modules/stream_out/transcode/transcode.c:219
 #: modules/gui/qt4/ui/sprefs_subtitles.h:271
 msgid "On Screen Display"
@@ -3491,8 +3493,8 @@ msgstr ""
 
 #: src/libvlc-module.c:1342 src/video_output/vout_intf.c:303
 #: modules/gui/macosx/MainMenu.m:310 modules/gui/macosx/MainMenu.m:377
-#: modules/gui/macosx/MainMenu.m:1213 modules/gui/macosx/MainMenu.m:1233
-#: modules/gui/macosx/simple_prefs.m:302
+#: modules/gui/macosx/MainMenu.m:1214 modules/gui/macosx/MainMenu.m:1234
+#: modules/gui/macosx/simple_prefs.m:304
 #: modules/gui/qt4/components/controller.hpp:115
 #: modules/gui/qt4/ui/sprefs_video.h:337
 msgid "Fullscreen"
@@ -3562,18 +3564,18 @@ msgstr "සාමාන්‍ය අනුපාතය"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "ධාවන වේගය යළි සාමාන්‍ය තත්වයට පත් කිරීම සඳහා භාවිතා කිරීමට කෙටි යතුර තෝරන්න."
 
-#: src/libvlc-module.c:1358 modules/gui/qt4/menus.cpp:821
+#: src/libvlc-module.c:1358 modules/gui/qt4/menus.cpp:843
 msgid "Faster (fine)"
 msgstr "වේගයෙන් (සියුම්ව)"
 
-#: src/libvlc-module.c:1360 modules/gui/qt4/menus.cpp:829
+#: src/libvlc-module.c:1360 modules/gui/qt4/menus.cpp:851
 msgid "Slower (fine)"
 msgstr "සෙමින් (සියුම්ව)"
 
 #: src/libvlc-module.c:1362 modules/control/hotkeys.c:687
 #: modules/gui/macosx/about.m:211 modules/gui/macosx/MainMenu.m:277
 #: modules/gui/macosx/MainMenu.m:365 modules/gui/macosx/MainMenu.m:373
-#: modules/gui/macosx/MainMenu.m:1158 modules/gui/macosx/wizard.m:312
+#: modules/gui/macosx/MainMenu.m:1159 modules/gui/macosx/wizard.m:312
 #: modules/gui/macosx/wizard.m:324 modules/gui/macosx/wizard.m:1603
 #: modules/gui/qt4/components/controller.hpp:119 modules/notify/notify.c:341
 #: modules/gui/qt4/ui/sout.h:327 modules/gui/qt4/ui/sout.h:338
@@ -3588,7 +3590,7 @@ msgstr "ධාවන ලැයිස්තුවේ ඊළඟ අයිතමය
 #: src/libvlc-module.c:1364 modules/control/hotkeys.c:693
 #: modules/gui/macosx/about.m:212 modules/gui/macosx/MainMenu.m:276
 #: modules/gui/macosx/MainMenu.m:366 modules/gui/macosx/MainMenu.m:372
-#: modules/gui/macosx/MainMenu.m:1157
+#: modules/gui/macosx/MainMenu.m:1158
 #: modules/gui/qt4/components/controller.hpp:119 modules/notify/notify.c:339
 #: modules/gui/qt4/ui/sout.h:337 modules/gui/qt4/ui/sout.h:346
 msgid "Previous"
@@ -3600,7 +3602,7 @@ msgstr "ධාවන ලැයිස්තුවේ පෙර අයිතමය
 
 #: src/libvlc-module.c:1366 modules/gui/macosx/MainMenu.m:267
 #: modules/gui/macosx/MainMenu.m:364 modules/gui/macosx/MainMenu.m:371
-#: modules/gui/macosx/MainMenu.m:1149 modules/gui/macosx/MainWindow.m:137
+#: modules/gui/macosx/MainMenu.m:1150 modules/gui/macosx/MainWindow.m:140
 #: modules/gui/qt4/components/controller.hpp:114
 #: modules/gui/qt4/dialogs/vlm.cpp:556 modules/notify/xosd.c:234
 #: modules/gui/qt4/ui/streampanel.h:181
@@ -3613,7 +3615,7 @@ msgstr "ධාවනය නැවැත්වීම සඳහා භාවිත
 
 #: src/libvlc-module.c:1368 modules/gui/fbosd.c:128 modules/gui/fbosd.c:196
 #: modules/gui/macosx/bookmarks.m:93 modules/gui/macosx/bookmarks.m:102
-#: modules/gui/macosx/MainWindow.m:147 modules/gui/macosx/VideoEffects.m:145
+#: modules/gui/macosx/MainWindow.m:151 modules/gui/macosx/VideoEffects.m:145
 #: modules/gui/macosx/VideoEffects.m:167 modules/video_filter/marq.c:157
 #: modules/video_filter/rss.c:200 modules/gui/qt4/ui/sprefs_subtitles.h:274
 #: modules/gui/qt4/ui/video_effects.h:1362
@@ -3730,7 +3732,7 @@ msgstr "දිගු පැනුම් කාල ප්‍රමාණය, ත�
 
 #: src/libvlc-module.c:1409 modules/control/hotkeys.c:183
 #: modules/gui/qt4/components/controller.hpp:118
-#: modules/gui/qt4/components/controller.hpp:130 modules/gui/qt4/menus.cpp:917
+#: modules/gui/qt4/components/controller.hpp:130 modules/gui/qt4/menus.cpp:912
 #: modules/gui/skins2/commands/cmd_quit.cpp:44
 msgid "Quit"
 msgstr "පිටවෙන්න"
@@ -3837,8 +3839,8 @@ msgstr "ශ්‍රව්‍ය ශබ්දය අඩු කිරීම ස�
 
 #: src/libvlc-module.c:1435 modules/access/v4l2/video.c:189
 #: modules/gui/macosx/MainMenu.m:295 modules/gui/macosx/MainMenu.m:367
-#: modules/gui/macosx/MainMenu.m:376 modules/gui/macosx/MainMenu.m:1203
-#: modules/gui/macosx/MainWindow.m:145 modules/gui/qt4/menus.cpp:575
+#: modules/gui/macosx/MainMenu.m:376 modules/gui/macosx/MainMenu.m:1204
+#: modules/gui/macosx/MainWindow.m:149 modules/gui/qt4/menus.cpp:573
 msgid "Mute"
 msgstr "නිහඬ"
 
@@ -4255,7 +4257,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1708 src/video_output/vout_intf.c:309
 #: modules/gui/macosx/MainMenu.m:312 modules/gui/macosx/MainMenu.m:378
-#: modules/gui/macosx/MainMenu.m:1212
+#: modules/gui/macosx/MainMenu.m:1213
 #: modules/gui/qt4/components/controller.hpp:116
 msgid "Snapshot"
 msgstr "සැණරුව (Snapshot)"
@@ -4441,13 +4443,13 @@ msgstr "බාගත වෙමින්..."
 #: src/misc/update.c:585 src/misc/update.c:710 modules/demux/avi/avi.c:2407
 #: modules/gui/macosx/bookmarks.m:99 modules/gui/macosx/controls.m:53
 #: modules/gui/macosx/coredialogs.m:62 modules/gui/macosx/coredialogs.m:64
-#: modules/gui/macosx/coredialogs.m:181 modules/gui/macosx/open.m:118
+#: modules/gui/macosx/coredialogs.m:193 modules/gui/macosx/open.m:118
 #: modules/gui/macosx/open.m:172 modules/gui/macosx/prefs.m:206
 #: modules/gui/macosx/prefs.m:226 modules/gui/macosx/simple_prefs.m:240
-#: modules/gui/macosx/simple_prefs.m:315 modules/gui/macosx/simple_prefs.m:731
+#: modules/gui/macosx/simple_prefs.m:317 modules/gui/macosx/simple_prefs.m:740
 #: modules/gui/macosx/wizard.m:323
-#: modules/gui/qt4/components/open_panels.cpp:1279
-#: modules/gui/qt4/components/preferences_widgets.cpp:1556
+#: modules/gui/qt4/components/open_panels.cpp:1287
+#: modules/gui/qt4/components/preferences_widgets.cpp:1559
 #: modules/gui/qt4/components/sout/profile_selector.cpp:255
 msgid "Cancel"
 msgstr "අවලංගු කරන්න"
@@ -4521,12 +4523,12 @@ msgid "Install"
 msgstr "ස්ථාපනය"
 
 #: src/playlist/engine.c:230 src/playlist/loadsave.c:152 lib/media_list.c:254
-#: modules/gui/macosx/MainWindow.m:313
+#: modules/gui/macosx/MainWindow.m:343
 #: modules/gui/qt4/components/playlist/selector.cpp:193
 msgid "Media Library"
 msgstr "මාධ්‍ය පුස්තකාලය"
 
-#: src/playlist/tree.c:67 modules/access/dtv/access.c:71
+#: src/playlist/tree.c:67 modules/access/dtv/access.c:75
 #: modules/access/v4l2/video.c:258
 msgid "Undefined"
 msgstr "අර්ථ දක්වා නැති"
@@ -5204,7 +5206,7 @@ msgid "Crop"
 msgstr "ඡේදනය"
 
 #: src/video_output/vout_intf.c:249 modules/gui/macosx/MainMenu.m:315
-#: modules/gui/macosx/MainMenu.m:316 modules/gui/macosx/MainMenu.m:1028
+#: modules/gui/macosx/MainMenu.m:316 modules/gui/macosx/MainMenu.m:1029
 msgid "Aspect-ratio"
 msgstr "දර්ශන අනුපාතය"
 
@@ -5364,42 +5366,50 @@ msgstr "BD"
 msgid "Blu-Ray Disc Input"
 msgstr "බ්ලූ-රේ තැටි ආදානය"
 
-#: modules/access/bluray.c:52 modules/gui/qt4/ui/open_disk.h:299
+#: modules/access/bluray.c:51
+msgid "Bluray menus"
+msgstr ""
+
+#: modules/access/bluray.c:52
+msgid "Use bluray menus. If disabled, the movie will start directly"
+msgstr ""
+
+#: modules/access/bluray.c:60 modules/gui/qt4/ui/open_disk.h:300
 msgid "BluRay"
 msgstr ""
 
-#: modules/access/bluray.c:53
+#: modules/access/bluray.c:61
 #, fuzzy
 msgid "Blu-Ray Disc support (libbluray)"
 msgstr "බ්ලූ-රේ තැටි ආදානය"
 
-#: modules/access/bluray.c:166
+#: modules/access/bluray.c:221
 msgid ""
 "This Blu-Ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
 msgstr ""
 
-#: modules/access/bluray.c:171
+#: modules/access/bluray.c:226
 msgid "Your system AACS decoding library does not work. Missing keys?"
 msgstr ""
 
-#: modules/access/bluray.c:180
+#: modules/access/bluray.c:235
 msgid ""
 "This Blu-Ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
 msgstr ""
 
-#: modules/access/bluray.c:185
+#: modules/access/bluray.c:240
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 
-#: modules/access/bluray.c:222
+#: modules/access/bluray.c:296
 #, fuzzy
 msgid "Blu-Ray error"
 msgstr "බ්ලූ-රේ"
 
 #: modules/access/cdda.c:62 modules/gui/macosx/open.m:145
-#: modules/gui/qt4/ui/open_disk.h:300
+#: modules/gui/qt4/ui/open_disk.h:301
 msgid "Audio CD"
 msgstr "ශ්‍රව්‍ය සීඩී"
 
@@ -5475,7 +5485,7 @@ msgid ""
 "Audio sampling rate (in hertz) for DeckLink captures. 0 disables audio input."
 msgstr ""
 
-#: modules/access/decklink.cpp:65 modules/access/dshow/dshow.cpp:200
+#: modules/access/decklink.cpp:65 modules/access/dshow/dshow.cpp:203
 msgid "Number of audio channels"
 msgstr "ශ්‍රව්‍ය නාලිකා ගණන"
 
@@ -5499,7 +5509,7 @@ msgstr ""
 msgid "SDI"
 msgstr "SDI"
 
-#: modules/access/decklink.cpp:81 modules/audio_output/alsa.c:76
+#: modules/access/decklink.cpp:81
 msgid "HDMI"
 msgstr ""
 
@@ -5549,36 +5559,36 @@ msgstr ""
 msgid "Blackmagic DeckLink SDI input"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:95
+#: modules/access/dshow/dshow.cpp:98
 msgid "Cable"
 msgstr "රැහැණ"
 
-#: modules/access/dshow/dshow.cpp:95
+#: modules/access/dshow/dshow.cpp:98
 msgid "Antenna"
 msgstr "ඇන්ටෙනාව"
 
-#: modules/access/dshow/dshow.cpp:103
+#: modules/access/dshow/dshow.cpp:106
 msgid "TV"
 msgstr "ටීවී"
 
-#: modules/access/dshow/dshow.cpp:104
+#: modules/access/dshow/dshow.cpp:107
 msgid "FM radio"
 msgstr "FM රේඩියෝ"
 
-#: modules/access/dshow/dshow.cpp:105
+#: modules/access/dshow/dshow.cpp:108
 msgid "AM radio"
 msgstr "AM රේඩියෝ"
 
-#: modules/access/dshow/dshow.cpp:106
+#: modules/access/dshow/dshow.cpp:109
 msgid "DSS"
 msgstr "DSS"
 
-#: modules/access/dshow/dshow.cpp:133
-#: modules/gui/qt4/components/open_panels.cpp:754
+#: modules/access/dshow/dshow.cpp:136
+#: modules/gui/qt4/components/open_panels.cpp:762
 msgid "Video device name"
 msgstr "වීඩියෝ උපාංගයේ නම"
 
-#: modules/access/dshow/dshow.cpp:135
+#: modules/access/dshow/dshow.cpp:138
 msgid ""
 "Name of the video device that will be used by the DirectShow plugin. If you "
 "don't specify anything, the default device will be used."
@@ -5586,12 +5596,12 @@ msgstr ""
 "DirectShow පේණු මෘදුකාංගය විසින් භාවිතා කරනු ලබන වීඩියෝ ආම්පන්නයේ නම. ඔබ කිසිවක් නියම වශයෙන් "
 "සඳහන් නොකරන්නේ නම්, පෙරනිමි ආම්පන්නය භාවිතයට ගනු ඇත."
 
-#: modules/access/dshow/dshow.cpp:138
-#: modules/gui/qt4/components/open_panels.cpp:763
+#: modules/access/dshow/dshow.cpp:141
+#: modules/gui/qt4/components/open_panels.cpp:771
 msgid "Audio device name"
 msgstr "ශ්‍රව්‍ය උපාංගයේ නම"
 
-#: modules/access/dshow/dshow.cpp:140
+#: modules/access/dshow/dshow.cpp:143
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
 "don't specify anything, the default device will be used. "
@@ -5599,12 +5609,12 @@ msgstr ""
 "DirectShow පේණු මෘදුකාංගය විසින් භාවිතා කරනු ලබන ශ්‍රව්‍ය ආම්පන්නයේ නම. ඔබ කිසිවක් නියම වශයෙන් "
 "සඳහන් නොකරන්නේ නම්, පෙරනිමි ආම්පන්නය භාවිතයට ගනු ඇත."
 
-#: modules/access/dshow/dshow.cpp:143
-#: modules/gui/qt4/components/open_panels.cpp:728
+#: modules/access/dshow/dshow.cpp:146
+#: modules/gui/qt4/components/open_panels.cpp:736
 msgid "Video size"
 msgstr "වීඩියෝවේ ප්‍රමාණය"
 
-#: modules/access/dshow/dshow.cpp:145
+#: modules/access/dshow/dshow.cpp:148
 msgid ""
 "Size of the video that will be displayed by the DirectShow plugin. If you "
 "don't specify anything the default size for your device will be used. You "
@@ -5614,19 +5624,19 @@ msgstr ""
 "සඳහන් නොකරන්නේ නම්, ඔබගේ ආම්පන්නයේ පෙරනිමි ප්‍රමාණය භාවිතා කරනු ඇත. සම්මත ප්‍රමාණයන් ඔබට "
 "හැකියි නියම වශයෙන් සඳහන් කිරීමට (cif, d1, ...) හෝ <උස> x <පළල> ලෙස."
 
-#: modules/access/dshow/dshow.cpp:148 modules/access/v4l2/video.c:214
+#: modules/access/dshow/dshow.cpp:151 modules/access/v4l2/video.c:214
 msgid "Picture aspect-ratio n:m"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:149 modules/access/v4l2/video.c:215
+#: modules/access/dshow/dshow.cpp:152 modules/access/v4l2/video.c:215
 msgid "Define input picture aspect-ratio to use. Default is 4:3"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:150 modules/access/v4l2/video.c:63
+#: modules/access/dshow/dshow.cpp:153 modules/access/v4l2/video.c:63
 msgid "Video input chroma format"
 msgstr "වීඩියෝ ආදානයේ වර්ණ තීව්‍රතා හැඩතලය"
 
-#: modules/access/dshow/dshow.cpp:152
+#: modules/access/dshow/dshow.cpp:155
 msgid ""
 "Force the DirectShow video input to use a specific chroma format (eg. I420 "
 "(default), RV24, etc.)"
@@ -5634,11 +5644,11 @@ msgstr ""
 "විශේෂිත වූ වර්ණ තීව්‍රතා හැඩතලයක් DirectShow වීඩියෝ ආදානය ලෙස භාවිතා කිරීම බලාත්මක කරන්න. "
 "(උදා. I420 (පෙරනිමි), RV24, යනාදිය)"
 
-#: modules/access/dshow/dshow.cpp:154
+#: modules/access/dshow/dshow.cpp:157
 msgid "Video input frame rate"
 msgstr "වීඩියෝ ආදානයේ රාමු අනුපාතය"
 
-#: modules/access/dshow/dshow.cpp:156
+#: modules/access/dshow/dshow.cpp:159
 msgid ""
 "Force the DirectShow video input to use a specific frame rate(eg. 0 means "
 "default, 25, 29.97, 50, 59.94, etc.)"
@@ -5646,68 +5656,68 @@ msgstr ""
 "විශේෂිත වූ රාමු අනුපාතයක් DirectShow වීඩියෝ ආදානය ලෙස භාවිතා කිරීම බලාත්මක කරන්න. (උදා. "
 "0න් හැඟවෙන්නේ පෙරනිමියයි, 25, 29.97, 50, 59.94, යනාදී වශයෙන්.)"
 
-#: modules/access/dshow/dshow.cpp:158
+#: modules/access/dshow/dshow.cpp:161
 msgid "Device properties"
 msgstr "ආම්පන්න වත්කම්"
 
-#: modules/access/dshow/dshow.cpp:160
+#: modules/access/dshow/dshow.cpp:163
 msgid ""
 "Show the properties dialog of the selected device before starting the stream."
 msgstr "දහරාව ආරම්භයට පෙර තෝරන ලද ආම්පන්නයේ වත්කම් දර්ශනය කරන්න."
 
-#: modules/access/dshow/dshow.cpp:162
+#: modules/access/dshow/dshow.cpp:165
 msgid "Tuner properties"
 msgstr "සුසරකයේ වත්කම්"
 
-#: modules/access/dshow/dshow.cpp:164
+#: modules/access/dshow/dshow.cpp:167
 msgid "Show the tuner properties [channel selection] page."
 msgstr "සුසරකයේ වත්කම් [නාලිකා තේරීම] පිටුවෙහි දර්ශනය කරන්න."
 
-#: modules/access/dshow/dshow.cpp:165
+#: modules/access/dshow/dshow.cpp:168
 msgid "Tuner TV Channel"
 msgstr "ටීවී නාලිකා සුසරකය"
 
-#: modules/access/dshow/dshow.cpp:167
+#: modules/access/dshow/dshow.cpp:170
 msgid "Set the TV channel the tuner will set to (0 means default)."
 msgstr "ටීවී නාලිකා සකස් කරන්න. සුසරකය සකස් වනුයේ (0 පෙරනිමි)"
 
-#: modules/access/dshow/dshow.cpp:169
+#: modules/access/dshow/dshow.cpp:172
 msgid "Tuner Frequency"
 msgstr "සුසර සංඛ්‍යාතය"
 
-#: modules/access/dshow/dshow.cpp:170
+#: modules/access/dshow/dshow.cpp:173
 msgid "This overrides the channel. Measured in Hz."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:171
-#: modules/gui/qt4/components/open_panels.cpp:783
+#: modules/access/dshow/dshow.cpp:174
+#: modules/gui/qt4/components/open_panels.cpp:791
 #, fuzzy
 msgid "Video standard"
 msgstr "වීඩියෝ එල්ලයට ගැනීම"
 
-#: modules/access/dshow/dshow.cpp:172
+#: modules/access/dshow/dshow.cpp:175
 msgid "Tuner country code"
 msgstr "සුසරකයේ දේශ කේතය (country code)"
 
-#: modules/access/dshow/dshow.cpp:174
+#: modules/access/dshow/dshow.cpp:177
 msgid ""
 "Set the tuner country code that establishes the current channel-to-frequency "
 "mapping (0 means default)."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:176
+#: modules/access/dshow/dshow.cpp:179
 msgid "Tuner input type"
 msgstr "සුසරකයේ ආදාන වර්ගය"
 
-#: modules/access/dshow/dshow.cpp:178
+#: modules/access/dshow/dshow.cpp:181
 msgid "Select the tuner input type (Cable/Antenna)."
 msgstr "සුසරකයේ ආදාන වර්ගය තෝරන්න (කේබල්/ඇන්ටෙනා)."
 
-#: modules/access/dshow/dshow.cpp:179
+#: modules/access/dshow/dshow.cpp:182
 msgid "Video input pin"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:181
+#: modules/access/dshow/dshow.cpp:184
 msgid ""
 "Select the video input source, such as composite, s-video, or tuner. Since "
 "these settings are hardware-specific, you should find good settings in the "
@@ -5715,103 +5725,103 @@ msgid ""
 "will not be changed."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:185
+#: modules/access/dshow/dshow.cpp:188
 msgid "Audio input pin"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:187
+#: modules/access/dshow/dshow.cpp:190
 msgid "Select the audio input source. See the \"video input\" option."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:188
+#: modules/access/dshow/dshow.cpp:191
 msgid "Video output pin"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:190
+#: modules/access/dshow/dshow.cpp:193
 msgid "Select the video output type. See the \"video input\" option."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:191
+#: modules/access/dshow/dshow.cpp:194
 msgid "Audio output pin"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:193
+#: modules/access/dshow/dshow.cpp:196
 msgid "Select the audio output type. See the \"video input\" option."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:195
+#: modules/access/dshow/dshow.cpp:198
 msgid "AM Tuner mode"
 msgstr "AM සුසර ප්‍රකාරය"
 
-#: modules/access/dshow/dshow.cpp:197
+#: modules/access/dshow/dshow.cpp:200
 msgid ""
 "AM Tuner mode. Can be one of Default (0), TV (1),AM Radio (2), FM Radio (3) "
 "or DSS (4)."
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:202
+#: modules/access/dshow/dshow.cpp:205
 msgid ""
 "Select audio input format with the given number of audio channels (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:204
+#: modules/access/dshow/dshow.cpp:207
 #: modules/stream_out/transcode/transcode.c:93
 msgid "Audio sample rate"
 msgstr "ශ්‍රව්‍ය සාම්පල අනුපාතය"
 
-#: modules/access/dshow/dshow.cpp:206
+#: modules/access/dshow/dshow.cpp:209
 msgid "Select audio input format with the given sample rate (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:208
+#: modules/access/dshow/dshow.cpp:211
 msgid "Audio bits per sample"
 msgstr "සාම්පලයේ ශ්‍රව්‍ය බිටු ගණන"
 
-#: modules/access/dshow/dshow.cpp:210
+#: modules/access/dshow/dshow.cpp:213
 msgid "Select audio input format with the given bits/sample (if non 0)"
 msgstr ""
 
-#: modules/access/dshow/dshow.cpp:222
+#: modules/access/dshow/dshow.cpp:225
 msgid "DirectShow"
 msgstr "DirectShow"
 
-#: modules/access/dshow/dshow.cpp:223 modules/access/dshow/dshow.cpp:305
+#: modules/access/dshow/dshow.cpp:226 modules/access/dshow/dshow.cpp:308
 msgid "DirectShow input"
 msgstr "DirectShow ආදානය"
 
-#: modules/access/dshow/dshow.cpp:229 modules/access/dshow/dshow.cpp:234
+#: modules/access/dshow/dshow.cpp:232 modules/access/dshow/dshow.cpp:237
 #: modules/audio_output/alsa.c:86 modules/audio_output/directx.c:136
 #: modules/audio_output/waveout.c:99 modules/video_output/msw/directx.c:109
 msgid "Refresh list"
 msgstr "ලැයිස්තුව නැවුම් කරන්න"
 
-#: modules/access/dshow/dshow.cpp:230 modules/access/dshow/dshow.cpp:235
+#: modules/access/dshow/dshow.cpp:233 modules/access/dshow/dshow.cpp:238
 msgid "Configure"
 msgstr "වින්‍යාසගත කිරිම"
 
-#: modules/access/dshow/dshow.cpp:526 modules/access/dshow/dshow.cpp:600
-#: modules/access/dshow/dshow.cpp:1047 modules/access/dshow/dshow.cpp:1100
+#: modules/access/dshow/dshow.cpp:529 modules/access/dshow/dshow.cpp:603
+#: modules/access/dshow/dshow.cpp:1050 modules/access/dshow/dshow.cpp:1103
 msgid "Capture failed"
 msgstr "ග්‍රහණය අසමත් විය"
 
-#: modules/access/dshow/dshow.cpp:527
+#: modules/access/dshow/dshow.cpp:530
 msgid "No video or audio device selected."
 msgstr "වීඩියෝ හෝ ශ්‍රව්‍ය ආම්පන්නයක් තෝරා නොමැත."
 
-#: modules/access/dshow/dshow.cpp:601
+#: modules/access/dshow/dshow.cpp:604
 msgid "VLC cannot open ANY capture device.Check the error log for details."
 msgstr ""
 "VLC හට කිසිදු ග්‍රහණ උපාංගයක් විවෘත කිරීමට නොහැකි විය. වැඩි විස්තර සඳහා ලොග් සටහන පරීක්‍ෂා "
 "කරන්න."
 
-#: modules/access/dshow/dshow.cpp:1048
+#: modules/access/dshow/dshow.cpp:1051
 #, c-format
 msgid "VLC cannot use the device \"%s\", because its type is not supported."
 msgstr ""
 "VLC හට උපාංගය භාවිතා කිරීමට නොහැකි විය. \"%s\", මක්නිසාද යත්, මෙම වර්ගය සඳහා සහාය "
 "නොදක්වන බැවියි."
 
-#: modules/access/dshow/dshow.cpp:1101
+#: modules/access/dshow/dshow.cpp:1104
 #, c-format
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr "ග්‍රහණ ආම්පන්නය \"%s\" අවශ්‍ය කරන පරාමිතීන් සඳහා අනුකූලතාවයක් නොදක්වයි."
@@ -5827,396 +5837,407 @@ msgid ""
 msgstr ""
 
 #: modules/access/dtv/access.c:41
+#, fuzzy
+msgid "DVB device"
+msgstr "DVD ආම්පන්නය"
+
+#: modules/access/dtv/access.c:43
+msgid ""
+"If the adapter provides multiple independent tuner devices, the device "
+"number must be selected. Numbering starts from zero."
+msgstr ""
+
+#: modules/access/dtv/access.c:45
 msgid "Do not demultiplex"
 msgstr ""
 
-#: modules/access/dtv/access.c:43
+#: modules/access/dtv/access.c:47
 msgid ""
 "Only useful programs are normally demultiplexed from the transponder. This "
 "option will disable demultiplexing and receive all programs."
 msgstr ""
 
-#: modules/access/dtv/access.c:46
+#: modules/access/dtv/access.c:50
 msgid "Network name"
 msgstr "ජාලයේ නම"
 
-#: modules/access/dtv/access.c:47
+#: modules/access/dtv/access.c:51
 msgid "Unique network name in the System Tuning Spaces"
 msgstr "පද්ධති සුසර අවකාශයේ අනන්‍ය ජාල නාමය"
 
-#: modules/access/dtv/access.c:49
+#: modules/access/dtv/access.c:53
 msgid "Network name to create"
 msgstr " තැනීම සඳහා ජාල නාමයක්"
 
-#: modules/access/dtv/access.c:50
+#: modules/access/dtv/access.c:54
 msgid "Create unique name in the System Tuning Spaces"
 msgstr "පද්ධති සුසර අවකාශය සඳහා අනන්‍ය නමක් තනන්න "
 
-#: modules/access/dtv/access.c:52
+#: modules/access/dtv/access.c:56
 msgid "Frequency (Hz)"
 msgstr "සංඛ්‍යාතය (Hz)"
 
-#: modules/access/dtv/access.c:54
+#: modules/access/dtv/access.c:58
 msgid ""
 "TV channels are grouped by transponder (a.k.a. multiplex) on a given "
 "frequency. This is required to tune the receiver."
 msgstr ""
 
-#: modules/access/dtv/access.c:57
-#: modules/gui/qt4/components/open_panels.cpp:961
+#: modules/access/dtv/access.c:61
+#: modules/gui/qt4/components/open_panels.cpp:969
 msgid "Modulation / Constellation"
 msgstr "මාපකරණය / පිරිවර"
 
-#: modules/access/dtv/access.c:58
+#: modules/access/dtv/access.c:62
 msgid "Layer A modulation"
 msgstr "A ස්ථර මූර්ජනය"
 
-#: modules/access/dtv/access.c:59
+#: modules/access/dtv/access.c:63
 msgid "Layer B modulation"
 msgstr "B ස්ථර මූර්ජනය"
 
-#: modules/access/dtv/access.c:60
+#: modules/access/dtv/access.c:64
 msgid "Layer C modulation"
 msgstr "C ස්ථර මූර්ජනය"
 
-#: modules/access/dtv/access.c:62
+#: modules/access/dtv/access.c:66
 msgid ""
 "The digital signal can be modulated according with different constellations "
 "(depending on the delivery system). If the demodulator cannot detect the "
 "constellation automatically, it needs to be configured manually."
 msgstr ""
 
-#: modules/access/dtv/access.c:77
+#: modules/access/dtv/access.c:81
 msgid "Symbol rate (bauds)"
 msgstr ""
 
-#: modules/access/dtv/access.c:79
+#: modules/access/dtv/access.c:83
 msgid ""
 "The symbol rate must be specified manually for some systems, notably DVB-C, "
 "DVB-S and DVB-S2."
 msgstr ""
 
-#: modules/access/dtv/access.c:82
+#: modules/access/dtv/access.c:86
 msgid "Spectrum inversion"
 msgstr "ප්‍රතිලෝම වර්ණාවලිය"
 
-#: modules/access/dtv/access.c:84
+#: modules/access/dtv/access.c:88
 msgid ""
 "If the demodulator cannot detect spectral inversion correctly, it needs to "
 "be configured manually."
 msgstr ""
 
-#: modules/access/dtv/access.c:87 modules/access/dtv/access.c:102
-#: modules/access/dtv/access.c:111 modules/access/dtv/access.c:119
-#: modules/access/dtv/access.c:128 modules/access/dtv/access.c:136
-#: modules/access/dtv/access.c:154 modules/access/pvr.c:113
-#: modules/gui/qt4/components/open_panels.cpp:965
+#: modules/access/dtv/access.c:91 modules/access/dtv/access.c:106
+#: modules/access/dtv/access.c:115 modules/access/dtv/access.c:123
+#: modules/access/dtv/access.c:132 modules/access/dtv/access.c:140
+#: modules/access/dtv/access.c:158 modules/access/pvr.c:113
+#: modules/gui/qt4/components/open_panels.cpp:973
 msgid "Automatic"
 msgstr "ස්වයංසිද්ධ"
 
-#: modules/access/dtv/access.c:90
+#: modules/access/dtv/access.c:94
 msgid "FEC code rate"
 msgstr "FEC කේත අනුපාතය"
 
-#: modules/access/dtv/access.c:91
+#: modules/access/dtv/access.c:95
 msgid "High-priority code rate"
 msgstr ""
 
-#: modules/access/dtv/access.c:92
+#: modules/access/dtv/access.c:96
 msgid "Low-priority code rate"
 msgstr ""
 
-#: modules/access/dtv/access.c:93
+#: modules/access/dtv/access.c:97
 msgid "Layer A code rate"
 msgstr ""
 
-#: modules/access/dtv/access.c:94
+#: modules/access/dtv/access.c:98
 msgid "Layer B code rate"
 msgstr ""
 
-#: modules/access/dtv/access.c:95
+#: modules/access/dtv/access.c:99
 msgid "Layer C code rate"
 msgstr ""
 
-#: modules/access/dtv/access.c:97
+#: modules/access/dtv/access.c:101
 msgid "The code rate for Forward Error Correction can be specified."
 msgstr ""
 
-#: modules/access/dtv/access.c:107
+#: modules/access/dtv/access.c:111
 msgid "Transmission mode"
 msgstr "සම්ප්‍රේශන ප්‍රකාරය"
 
-#: modules/access/dtv/access.c:115
+#: modules/access/dtv/access.c:119
 msgid "Bandwidth (MHz)"
 msgstr "කලාප පළල (MHz)"
 
-#: modules/access/dtv/access.c:120
+#: modules/access/dtv/access.c:124
 msgid "10 MHz"
 msgstr "10 MHz"
 
-#: modules/access/dtv/access.c:120
+#: modules/access/dtv/access.c:124
 msgid "8 MHz"
 msgstr "8 MHz"
 
-#: modules/access/dtv/access.c:120
+#: modules/access/dtv/access.c:124
 msgid "7 MHz"
 msgstr "7 MHz"
 
-#: modules/access/dtv/access.c:120
+#: modules/access/dtv/access.c:124
 msgid "6 MHz"
 msgstr "6 MHz"
 
-#: modules/access/dtv/access.c:121
+#: modules/access/dtv/access.c:125
 msgid "5 MHz"
 msgstr "5 MHz"
 
-#: modules/access/dtv/access.c:121
+#: modules/access/dtv/access.c:125
 msgid "1.712 MHz"
 msgstr "1.712 MHz"
 
-#: modules/access/dtv/access.c:124
+#: modules/access/dtv/access.c:128
 msgid "Guard interval"
 msgstr "නියාමක අන්තරය"
 
-#: modules/access/dtv/access.c:132
+#: modules/access/dtv/access.c:136
 msgid "Hierarchy mode"
 msgstr "ධූරාවලි ප්‍රකාරය"
 
-#: modules/access/dtv/access.c:140
+#: modules/access/dtv/access.c:144
 msgid "Layer A segments count"
 msgstr ""
 
-#: modules/access/dtv/access.c:141
+#: modules/access/dtv/access.c:145
 msgid "Layer B segments count"
 msgstr ""
 
-#: modules/access/dtv/access.c:142
+#: modules/access/dtv/access.c:146
 msgid "Layer C segments count"
 msgstr ""
 
-#: modules/access/dtv/access.c:144
+#: modules/access/dtv/access.c:148
 msgid "Layer A time interleaving"
 msgstr ""
 
-#: modules/access/dtv/access.c:145
+#: modules/access/dtv/access.c:149
 msgid "Layer B time interleaving"
 msgstr ""
 
-#: modules/access/dtv/access.c:146
+#: modules/access/dtv/access.c:150
 msgid "Layer C time interleaving"
 msgstr ""
 
-#: modules/access/dtv/access.c:148
+#: modules/access/dtv/access.c:152
 msgid "Pilot"
 msgstr ""
 
-#: modules/access/dtv/access.c:150
+#: modules/access/dtv/access.c:154
 msgid "Roll-off factor"
 msgstr ""
 
-#: modules/access/dtv/access.c:155
+#: modules/access/dtv/access.c:159
 msgid "0.35 (same as DVB-S)"
 msgstr ""
 
-#: modules/access/dtv/access.c:155
+#: modules/access/dtv/access.c:159
 msgid "0.20"
 msgstr ""
 
-#: modules/access/dtv/access.c:155
+#: modules/access/dtv/access.c:159
 msgid "0.25"
 msgstr ""
 
-#: modules/access/dtv/access.c:158
+#: modules/access/dtv/access.c:162
 msgid "Transport stream ID"
 msgstr "පරිවහන දහරා හැඳුනුම"
 
-#: modules/access/dtv/access.c:160
+#: modules/access/dtv/access.c:164
 msgid "Polarization (Voltage)"
 msgstr ""
 
-#: modules/access/dtv/access.c:162
+#: modules/access/dtv/access.c:166
 msgid ""
 "To select the polarization of the transponder, a different voltage is "
 "normally applied to the low noise block-downconverter (LNB)."
 msgstr ""
 
-#: modules/access/dtv/access.c:165
+#: modules/access/dtv/access.c:169
 msgid "Unspecified (0V)"
 msgstr ""
 
-#: modules/access/dtv/access.c:166
+#: modules/access/dtv/access.c:170
 msgid "Vertical (13V)"
 msgstr "සිරස් (13V)"
 
-#: modules/access/dtv/access.c:166
+#: modules/access/dtv/access.c:170
 msgid "Horizontal (18V)"
 msgstr "තිරස් (18V)"
 
-#: modules/access/dtv/access.c:167
+#: modules/access/dtv/access.c:171
 msgid "Circular Right Hand (13V)"
 msgstr "දකුණට වෘත්තාකාර (13V)"
 
-#: modules/access/dtv/access.c:167
+#: modules/access/dtv/access.c:171
 msgid "Circular Left Hand (18V)"
 msgstr "වමට වෘත්තාකාර (18V)"
 
-#: modules/access/dtv/access.c:169
+#: modules/access/dtv/access.c:173
 msgid "High LNB voltage"
 msgstr "අධි LNB වෝල්ටීයතාවය"
 
-#: modules/access/dtv/access.c:171
+#: modules/access/dtv/access.c:175
 msgid ""
 "If the cables between the satellilte low noise block-downconverter and the "
 "receiver are long, higher voltage may be required.\n"
 "Not all receivers support this."
 msgstr ""
 
-#: modules/access/dtv/access.c:175
+#: modules/access/dtv/access.c:179
 msgid "Local oscillator low frequency (kHz)"
 msgstr "ප්‍රාදේශීය දෝලක අඩු සංඛ්‍යාතය (kHz)"
 
-#: modules/access/dtv/access.c:176
+#: modules/access/dtv/access.c:180
 msgid "Local oscillator high frequency (kHz)"
 msgstr ""
 
-#: modules/access/dtv/access.c:178
+#: modules/access/dtv/access.c:182
 msgid ""
 "The downconverter (LNB) will substract the local oscillator frequency from "
 "the satellite transmission frequency. The intermediate frequency (IF) on the "
 "RF cable is the result."
 msgstr ""
 
-#: modules/access/dtv/access.c:181
+#: modules/access/dtv/access.c:185
 msgid "Universal LNB switch frequency (kHz)"
 msgstr ""
 
-#: modules/access/dtv/access.c:183
+#: modules/access/dtv/access.c:187
 msgid ""
 "If the satellite transmission frequency exceeds the switch frequency, the "
 "oscillator high frequency will be used as reference. Furthermore the "
 "automatic continuous 22kHz tone will be sent."
 msgstr ""
 
-#: modules/access/dtv/access.c:186
+#: modules/access/dtv/access.c:190
 msgid "Continuous 22kHz tone"
 msgstr "අඛණ්ඩ 22kHz නාදය"
 
-#: modules/access/dtv/access.c:188
+#: modules/access/dtv/access.c:192
 msgid ""
 "A continuous tone at 22kHz can be sent on the cable. This normally selects "
 "the higher frequency band from a universal LNB."
 msgstr ""
 
-#: modules/access/dtv/access.c:191
+#: modules/access/dtv/access.c:195
 msgid "DiSEqC LNB number"
 msgstr ""
 
-#: modules/access/dtv/access.c:193
+#: modules/access/dtv/access.c:197
 msgid ""
 "If the satellite receiver is connected to multiple low noise block-"
 "downconverters (LNB) through a DiSEqC 1.0 switch, the correct LNB can be "
 "selected (1 to 4). If there is no switch, this parameter should be 0."
 msgstr ""
 
-#: modules/access/dtv/access.c:199 modules/access/v4l2/video.c:144
+#: modules/access/dtv/access.c:203 modules/access/v4l2/video.c:144
 #: modules/access/v4l2/video.c:171 modules/access/v4l2/video.c:219
 #: modules/access/v4l2/video.c:282
 msgid "Unspecified"
 msgstr ""
 
-#: modules/access/dtv/access.c:204
+#: modules/access/dtv/access.c:208
 msgid "Network identifier"
 msgstr "ජාල අනන්‍යකාරකය"
 
-#: modules/access/dtv/access.c:205
+#: modules/access/dtv/access.c:209
 msgid "Satellite azimuth"
 msgstr "සැටලයිට් දිගංශය"
 
-#: modules/access/dtv/access.c:206
+#: modules/access/dtv/access.c:210
 msgid "Satellite azimuth in tenths of degree"
 msgstr "සැටලයිට් දිගංශය අංශකයෙන් දහයෙන් පංගු වලින්"
 
-#: modules/access/dtv/access.c:207
+#: modules/access/dtv/access.c:211
 msgid "Satellite elevation"
 msgstr "සැටලයිට් උන්නතාංශය "
 
-#: modules/access/dtv/access.c:208
+#: modules/access/dtv/access.c:212
 msgid "Satellite elevation in tenths of degree"
 msgstr "සැටලයිට් උන්නතාංශය අංශකයෙන් දහයෙන් පංගු වලින් "
 
-#: modules/access/dtv/access.c:209
+#: modules/access/dtv/access.c:213
 msgid "Satellite longitude"
 msgstr "සැටලයිට් දේශාංශකය "
 
-#: modules/access/dtv/access.c:211
+#: modules/access/dtv/access.c:215
 msgid "Satellite longitude in tenths of degree. West is negative."
 msgstr "සැටලයිට් දේශාංශකය අංශකයෙන් දහයෙන් පංගු වලින්, -ve=බටහිර "
 
-#: modules/access/dtv/access.c:213
+#: modules/access/dtv/access.c:217
 msgid "Satellite range code"
 msgstr "චන්ද්‍රිකා පරාස කේත"
 
-#: modules/access/dtv/access.c:214
+#: modules/access/dtv/access.c:218
 msgid "Satellite range code as defined by manufacturer e.g. DISEqC switch code"
 msgstr "නිෂ්පාදකයා විසින් අර්ථ දක්වා ඇති චන්ද්‍රිකා පරාස කේතය. උදා. DISEqC වහරු කේතය "
 
-#: modules/access/dtv/access.c:218
+#: modules/access/dtv/access.c:222
 msgid "Major channel"
 msgstr "ප්‍රධානතම නාලිකාව"
 
-#: modules/access/dtv/access.c:219
+#: modules/access/dtv/access.c:223
 msgid "ATSC minor channel"
 msgstr "ATSC අප්‍රධාන නාලිකාව "
 
-#: modules/access/dtv/access.c:220
+#: modules/access/dtv/access.c:224
 msgid "Physical channel"
 msgstr "භෞතික නාලිකාව"
 
-#: modules/access/dtv/access.c:226
+#: modules/access/dtv/access.c:230
 msgid "DTV"
 msgstr "DTV"
 
-#: modules/access/dtv/access.c:227
+#: modules/access/dtv/access.c:231
 msgid "Digital Television and Radio"
 msgstr ""
 
-#: modules/access/dtv/access.c:260
+#: modules/access/dtv/access.c:269
 msgid "Terrestrial reception parameters"
 msgstr "භෞමික පිළිගැනුම් පරාමිති"
 
-#: modules/access/dtv/access.c:272
+#: modules/access/dtv/access.c:281
 msgid "DVB-T reception parameters"
 msgstr "DVB-T පිළිගැනුම් පරාමිති"
 
-#: modules/access/dtv/access.c:285
+#: modules/access/dtv/access.c:294
 msgid "ISDB-T reception parameters"
 msgstr "ISDB-T පිළිගැනුම් පරාමිති"
 
-#: modules/access/dtv/access.c:326
+#: modules/access/dtv/access.c:335
 msgid "Cable and satellite reception parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:338
+#: modules/access/dtv/access.c:347
 msgid "DVB-S2 parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:346
+#: modules/access/dtv/access.c:355
 msgid "ISDB-S parameters"
 msgstr ""
 
-#: modules/access/dtv/access.c:351
+#: modules/access/dtv/access.c:360
 msgid "Satellite equipment control"
 msgstr "සැටලයිට් උපකරණ පාලක"
 
-#: modules/access/dtv/access.c:389
+#: modules/access/dtv/access.c:398
 msgid "ATSC reception parameters"
 msgstr "ATSC පිළිගැනුම් පරාමිති"
 
-#: modules/access/dtv/access.c:445
+#: modules/access/dtv/access.c:454
 msgid "Digital broadcasting"
 msgstr ""
 
-#: modules/access/dtv/access.c:446
+#: modules/access/dtv/access.c:455
 msgid ""
 "The selected digital tuner does not support the specified parameters.\n"
 "Please check the preferences."
@@ -6258,12 +6279,12 @@ msgstr "ඩීවිඩී මෙනු සමග"
 msgid "DVDnav Input"
 msgstr "DVDnav ආදානය"
 
-#: modules/access/dvdnav.c:331 modules/access/dvdread.c:195
+#: modules/access/dvdnav.c:335 modules/access/dvdread.c:195
 #: modules/access/dvdread.c:457 modules/access/dvdread.c:519
 msgid "Playback failure"
 msgstr "ධාවනය අසමත් විය"
 
-#: modules/access/dvdnav.c:332
+#: modules/access/dvdnav.c:336
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6373,9 +6394,9 @@ msgstr "ගොනු ආදානය"
 
 #: modules/access/fs.c:53 modules/access_output/file.c:73
 #: modules/audio_output/file.c:109 modules/gui/macosx/open.m:120
-#: modules/gui/macosx/open.m:476 modules/gui/macosx/output.m:142
+#: modules/gui/macosx/open.m:479 modules/gui/macosx/output.m:142
 #: modules/gui/macosx/output.m:230 modules/gui/macosx/output.m:369
-#: modules/gui/qt4/dialogs/plugins.cpp:555 modules/gui/qt4/dialogs/sout.cpp:76
+#: modules/gui/qt4/dialogs/plugins.cpp:560 modules/gui/qt4/dialogs/sout.cpp:76
 #: modules/gui/qt4/dialogs/sout.cpp:154
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
@@ -6570,15 +6591,15 @@ msgstr "ව්‍යාජ ආදානය"
 msgid "ID"
 msgstr "හැඳුනුම"
 
-#: modules/access/imem.c:51 modules/demux/image.c:45
+#: modules/access/imem.c:51 modules/demux/image.c:46
 msgid "Set the ID of the elementary stream"
 msgstr "ආරම්භක දහරාවේ හැඳුනුම සකස් කරන්න"
 
-#: modules/access/imem.c:53 modules/demux/image.c:47
+#: modules/access/imem.c:53 modules/demux/image.c:48
 msgid "Group"
 msgstr "සංසදය"
 
-#: modules/access/imem.c:55 modules/demux/image.c:49
+#: modules/access/imem.c:55 modules/demux/image.c:50
 msgid "Set the group of the elementary stream"
 msgstr "ආරම්භක දහරාවේ කණ්ඩායම සකස් කරන්න"
 
@@ -6621,7 +6642,7 @@ msgstr ""
 #: modules/access/imem.c:83 modules/access/pvr.c:68
 #: modules/access/v4l2/video.c:75 modules/demux/rawvid.c:48
 #: modules/gui/macosx/AudioEffects.m:91
-#: modules/gui/qt4/components/extended_panels.cpp:1339
+#: modules/gui/qt4/components/extended_panels.cpp:1349
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:42
 #: modules/gui/qt4/ui/profiles.h:486
 msgid "Width"
@@ -6687,7 +6708,7 @@ msgid "Address of the release callback function"
 msgstr ""
 
 #: modules/access/imem.c:113 modules/gui/macosx/AudioEffects.m:90
-#: modules/gui/qt4/components/extended_panels.cpp:1338
+#: modules/gui/qt4/components/extended_panels.cpp:1348
 msgid "Size"
 msgstr "ප්‍රමාණය"
 
@@ -6877,11 +6898,11 @@ msgid "File stream output"
 msgstr ""
 
 #: modules/access_output/http.c:62 modules/misc/audioscrobbler.c:115
-#: modules/stream_out/rtp.c:173
+#: modules/stream_out/rtp.c:177
 msgid "Username"
 msgstr "පරිශීලක නාමය"
 
-#: modules/access_output/http.c:63 modules/stream_out/rtp.c:174
+#: modules/access_output/http.c:63 modules/stream_out/rtp.c:178
 msgid "User name that will be requested to access the stream."
 msgstr ""
 
@@ -6889,11 +6910,11 @@ msgstr ""
 #: modules/gui/macosx/simple_prefs.m:230
 #: modules/gui/qt4/dialogs/external.cpp:125 modules/lua/vlc.c:75
 #: modules/misc/audioscrobbler.c:117 modules/stream_out/raop.c:154
-#: modules/stream_out/rtp.c:176
+#: modules/stream_out/rtp.c:180
 msgid "Password"
 msgstr "රහස්පදය"
 
-#: modules/access_output/http.c:66 modules/stream_out/rtp.c:177
+#: modules/access_output/http.c:66 modules/stream_out/rtp.c:181
 msgid "Password that will be requested to access the stream."
 msgstr ""
 
@@ -7085,7 +7106,7 @@ msgstr ""
 msgid "IceCAST output"
 msgstr ""
 
-#: modules/access_output/udp.c:64 modules/stream_out/rtp.c:135
+#: modules/access_output/udp.c:64 modules/stream_out/rtp.c:139
 msgid "Caching value (ms)"
 msgstr "කෑෂ්ගත අගය (මිලි තත්පර)"
 
@@ -7141,7 +7162,7 @@ msgstr "රේඩියෝ ආම්පන්නය"
 msgid "PVR radio device"
 msgstr "PVR රේඩියෝ ආම්පන්නය"
 
-#: modules/access/pvr.c:64 modules/gui/qt4/components/open_panels.cpp:866
+#: modules/access/pvr.c:64 modules/gui/qt4/components/open_panels.cpp:874
 msgid "Norm"
 msgstr "න්‍යාය"
 
@@ -7158,7 +7179,7 @@ msgid "Height of the stream to capture (-1 for autodetection)."
 msgstr ""
 
 #: modules/access/pvr.c:76 modules/access/v4l2/video.c:207
-#: modules/gui/qt4/components/open_panels.cpp:873
+#: modules/gui/qt4/components/open_panels.cpp:881
 msgid "Frequency"
 msgstr "සංඛ්‍යාතය"
 
@@ -7221,7 +7242,7 @@ msgid "Bitmask that will get used by the audio part of the card."
 msgstr ""
 
 #: modules/access/pvr.c:103 modules/access/vcdx/info.c:69
-#: modules/gui/macosx/MainWindow.m:144 modules/gui/qt4/dialogs/toolbar.cpp:362
+#: modules/gui/macosx/MainWindow.m:148 modules/gui/qt4/dialogs/toolbar.cpp:362
 #: modules/stream_out/raop.c:150 modules/gui/qt4/ui/sprefs_audio.h:431
 msgid "Volume"
 msgstr "ශබ්දය "
@@ -7287,11 +7308,11 @@ msgstr "වීඩියෝ ග්‍රහණයේ උස පික්සල �
 msgid "Quicktime Capture"
 msgstr ""
 
-#: modules/access/qtcapture.m:251 modules/access/qtcapture.m:283
+#: modules/access/qtcapture.m:252 modules/access/qtcapture.m:284
 msgid "No Input device found"
 msgstr "ආදාන උපාංගයක් සොයා ගැනීමට නැත"
 
-#: modules/access/qtcapture.m:252 modules/access/qtcapture.m:284
+#: modules/access/qtcapture.m:253 modules/access/qtcapture.m:285
 msgid ""
 "Your Mac does not seem to be equipped with a suitable input device. Please "
 "check your connectors and drivers."
@@ -7335,7 +7356,7 @@ msgid ""
 "multiplexed RTP/RTCP is used."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:49 modules/stream_out/rtp.c:144
+#: modules/access/rtp/rtp.c:49 modules/stream_out/rtp.c:148
 msgid "SRTP key (hexadecimal)"
 msgstr ""
 
@@ -7345,11 +7366,11 @@ msgid ""
 "shared secret key. This must be a 32-character-long hexadecimal string."
 msgstr ""
 
-#: modules/access/rtp/rtp.c:55 modules/stream_out/rtp.c:150
+#: modules/access/rtp/rtp.c:55 modules/stream_out/rtp.c:154
 msgid "SRTP salt (hexadecimal)"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:57 modules/stream_out/rtp.c:152
+#: modules/access/rtp/rtp.c:57 modules/stream_out/rtp.c:156
 msgid ""
 "Secure RTP requires a (non-secret) master salt value. This must be a 28-"
 "character-long hexadecimal string."
@@ -7401,7 +7422,7 @@ msgid ""
 "and 127) if it can't be determined otherwise with out-of-band mappings (SDP)"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:95 modules/stream_out/rtp.c:187
+#: modules/access/rtp/rtp.c:95 modules/stream_out/rtp.c:191
 msgid "RTP"
 msgstr "RTP"
 
@@ -7442,7 +7463,7 @@ msgid "The requested RTSP session could not be established."
 msgstr "ඉල්ලා සිටින ලද RTSP සැසිය ප්‍රතිෂ්ඨාපනය කළ නොහැකි විය."
 
 #: modules/access/screen/screen.c:43
-#: modules/gui/qt4/components/open_panels.cpp:1034
+#: modules/gui/qt4/components/open_panels.cpp:1042
 msgid "Desired frame rate for the capture."
 msgstr "ග්‍රහණය සඳහා අපේක්‍ෂිත රාමු අනුපාතය."
 
@@ -7477,7 +7498,7 @@ msgid "Subscreen height"
 msgstr "අනුතිර උස"
 
 #: modules/access/screen/screen.c:65 modules/access/screen/xcb.c:54
-#: modules/gui/macosx/open.m:199
+#: modules/gui/macosx/open.m:201
 msgid "Follow the mouse"
 msgstr ""
 
@@ -7499,9 +7520,9 @@ msgid "Screen Input"
 msgstr "තිර ආදානය"
 
 #: modules/access/screen/screen.c:88 modules/access/screen/xcb.c:65
-#: modules/gui/macosx/MainMenu.m:511 modules/gui/macosx/open.m:191
-#: modules/gui/macosx/open.m:427 modules/gui/macosx/open.m:1189
-#: modules/gui/macosx/simple_prefs.m:581
+#: modules/gui/macosx/MainMenu.m:511 modules/gui/macosx/open.m:192
+#: modules/gui/macosx/open.m:430 modules/gui/macosx/open.m:1193
+#: modules/gui/macosx/simple_prefs.m:587
 msgid "Screen"
 msgstr "තිරය"
 
@@ -7710,7 +7731,7 @@ msgstr "පෙරනිමි ලෙස යළි සකසන්න"
 msgid "Video device (Default: /dev/video0)."
 msgstr ""
 
-#: modules/access/v4l2/video.c:60 modules/stream_out/standard.c:96
+#: modules/access/v4l2/video.c:60 modules/stream_out/standard.c:90
 msgid "Standard"
 msgstr "සම්මතය"
 
@@ -8095,7 +8116,7 @@ msgstr "ශ්‍රව්‍ය ප්‍රකාරය"
 msgid "Tuner audio mono/stereo and track selection."
 msgstr ""
 
-#: modules/access/v4l2/video.c:258 modules/codec/avcodec/avcodec.c:71
+#: modules/access/v4l2/video.c:258 modules/codec/avcodec/avcodec.c:70
 #: modules/gui/qt4/dialogs/preferences.cpp:73
 msgid "All"
 msgstr "සියල්ල"
@@ -8120,9 +8141,10 @@ msgstr ""
 msgid "NTSC M South Korea"
 msgstr ""
 
-#: modules/access/v4l2/video.c:283 modules/audio_output/directx.c:444
-#: modules/audio_output/kai.c:222 modules/audio_output/oss.c:214
-#: modules/audio_output/portaudio.c:392 modules/audio_output/waveout.c:434
+#: modules/access/v4l2/video.c:283 modules/audio_output/alsa.c:74
+#: modules/audio_output/directx.c:445 modules/audio_output/kai.c:222
+#: modules/audio_output/oss.c:214 modules/audio_output/portaudio.c:392
+#: modules/audio_output/waveout.c:434
 msgid "Mono"
 msgstr "මොනෝ"
 
@@ -8202,7 +8224,7 @@ msgid "LID"
 msgstr "LID"
 
 #: modules/access/vcdx/info.c:54 modules/gui/macosx/open.m:121
-#: modules/gui/macosx/open.m:480
+#: modules/gui/macosx/open.m:483
 msgid "Disc"
 msgstr "තැටි"
 
@@ -8623,7 +8645,7 @@ msgstr ""
 msgid "Sound Delay"
 msgstr ""
 
-#: modules/audio_filter/chorus_flanger.c:78 modules/gui/macosx/open.m:315
+#: modules/audio_filter/chorus_flanger.c:78 modules/gui/macosx/open.m:318
 #: modules/stream_out/bridge.c:51 modules/stream_out/delay.c:54
 #: modules/video_filter/mosaic.c:154
 msgid "Delay"
@@ -8684,7 +8706,7 @@ msgid "Level of input signal"
 msgstr ""
 
 #: modules/audio_filter/compressor.c:155 modules/gui/macosx/AudioEffects.m:79
-#: modules/gui/qt4/components/extended_panels.cpp:1182
+#: modules/gui/qt4/components/extended_panels.cpp:1192
 msgid "RMS/peak"
 msgstr ""
 
@@ -8720,7 +8742,7 @@ msgid "Set the threshold level in dB (-30 ... 0)."
 msgstr ""
 
 #: modules/audio_filter/compressor.c:169 modules/gui/macosx/AudioEffects.m:83
-#: modules/gui/qt4/components/extended_panels.cpp:1186
+#: modules/gui/qt4/components/extended_panels.cpp:1196
 #, fuzzy
 msgid "Ratio"
 msgstr "ඇගයිම"
@@ -9107,18 +9129,19 @@ msgstr ""
 
 #: modules/audio_filter/spatializer/spatializer.cpp:61
 #: modules/gui/macosx/AudioEffects.m:92
-#: modules/gui/qt4/components/extended_panels.cpp:1340
+#: modules/gui/qt4/components/extended_panels.cpp:1350
 msgid "Wet"
 msgstr ""
 
 #: modules/audio_filter/spatializer/spatializer.cpp:64
 #: modules/gui/macosx/AudioEffects.m:93
-#: modules/gui/qt4/components/extended_panels.cpp:1341
+#: modules/gui/qt4/components/extended_panels.cpp:1351
 msgid "Dry"
 msgstr ""
 
 #: modules/audio_filter/spatializer/spatializer.cpp:67
-#: modules/gui/qt4/components/extended_panels.cpp:1342
+#: modules/gui/macosx/AudioEffects.m:94
+#: modules/gui/qt4/components/extended_panels.cpp:1352
 msgid "Damp"
 msgstr ""
 
@@ -9144,67 +9167,60 @@ msgstr ""
 msgid "Dummy audio output"
 msgstr "ව්‍යාජ ශ්‍රව්‍ය ආදානය"
 
-#: modules/audio_output/alsa.c:71
-msgid "Front speakers"
-msgstr "ඉදිරි ස්පීකර"
+#: modules/audio_output/alsa.c:56
+#, fuzzy
+msgid "Audio output device"
+msgstr "ශ්‍රව්‍ය ප්‍රතිදාන මොඩියුලය"
 
-#: modules/audio_output/alsa.c:72
-msgid "Side speakers"
+#: modules/audio_output/alsa.c:57
+msgid "Audio output device (using ALSA syntax)."
 msgstr ""
 
-#: modules/audio_output/alsa.c:72
-msgid "Rear speakers"
+#: modules/audio_output/alsa.c:65
+#, fuzzy
+msgid "Audio output channels"
+msgstr "ශ්‍රව්‍ය ප්‍රතිදාන නාලිකා ප්‍රකාරය"
+
+#: modules/audio_output/alsa.c:66
+msgid ""
+"Channels available for audio output.If the input has more channels than the "
+"output, it will be down-mixed.This parameter is ignored when digital pass-"
+"through is active."
 msgstr ""
 
-#: modules/audio_output/alsa.c:72
-msgid "Center and subwoofer"
-msgstr ""
-
-#: modules/audio_output/alsa.c:73
+#: modules/audio_output/alsa.c:74
 msgid "Surround 4.0"
 msgstr "සරවුන්ඩ් 4.0"
 
-#: modules/audio_output/alsa.c:73
+#: modules/audio_output/alsa.c:74
 msgid "Surround 4.1"
 msgstr "සරවුන්ඩ් 4.1"
 
-#: modules/audio_output/alsa.c:74
+#: modules/audio_output/alsa.c:75
 msgid "Surround 5.0"
 msgstr "සරවුන්ඩ් 5.0"
 
-#: modules/audio_output/alsa.c:74
+#: modules/audio_output/alsa.c:75
 msgid "Surround 5.1"
 msgstr "සරවුන්ඩ් 5.1"
 
-#: modules/audio_output/alsa.c:75
-msgid "Surround 7.1"
-msgstr "සරවුන්ඩ් 7.1"
-
-#: modules/audio_output/alsa.c:76
-msgid "S/PDIF"
-msgstr ""
-
-#: modules/audio_output/alsa.c:81
+#: modules/audio_output/alsa.c:80
 msgid "ALSA audio output"
 msgstr ""
 
-#: modules/audio_output/alsa.c:84
-msgid "ALSA device"
-msgstr "ALSA ආම්පන්නය"
-
-#: modules/audio_output/alsa.c:156 modules/audio_output/auhal.c:126
-#: modules/audio_output/auhal.c:970 modules/audio_output/directx.c:329
+#: modules/audio_output/alsa.c:158 modules/audio_output/auhal.c:129
+#: modules/audio_output/auhal.c:978 modules/audio_output/directx.c:330
 #: modules/audio_output/kai.c:215 modules/audio_output/oss.c:121
 #: modules/audio_output/portaudio.c:386 modules/audio_output/waveout.c:364
 #: modules/gui/macosx/MainMenu.m:300 modules/gui/macosx/MainMenu.m:301
 msgid "Audio Device"
 msgstr ""
 
-#: modules/audio_output/alsa.c:334 modules/audio_output/auhal.c:246
+#: modules/audio_output/alsa.c:352 modules/audio_output/auhal.c:249
 msgid "Audio output failed"
 msgstr ""
 
-#: modules/audio_output/alsa.c:335
+#: modules/audio_output/alsa.c:353
 #, c-format
 msgid ""
 "The audio device \"%s\" could not be used:\n"
@@ -9227,33 +9243,33 @@ msgstr "නියැදි හැඩතලය"
 msgid "AudioQueue (iOS / Mac OS) audio output"
 msgstr ""
 
-#: modules/audio_output/auhal.c:127
+#: modules/audio_output/auhal.c:130
 msgid ""
 "Choose a number corresponding to the number of an audio device, as listed in "
 "your 'Audio Device' menu. This device will then be used by default for audio "
 "playback."
 msgstr ""
 
-#: modules/audio_output/auhal.c:133
+#: modules/audio_output/auhal.c:136
 msgid "HAL AudioUnit output"
 msgstr ""
 
-#: modules/audio_output/auhal.c:247
+#: modules/audio_output/auhal.c:250
 msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr ""
 
-#: modules/audio_output/auhal.c:441
+#: modules/audio_output/auhal.c:444
 msgid "Audio device is not configured"
 msgstr ""
 
-#: modules/audio_output/auhal.c:442
+#: modules/audio_output/auhal.c:445
 msgid ""
 "You should configure your speaker layout with the \"Audio Midi Setup\" "
 "utility in /Applications/Utilities. Stereo mode is being used now."
 msgstr ""
 
-#: modules/audio_output/auhal.c:1013
+#: modules/audio_output/auhal.c:1021
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr ""
@@ -9280,16 +9296,16 @@ msgstr ""
 msgid "DirectX audio output"
 msgstr ""
 
-#: modules/audio_output/directx.c:384 modules/audio_output/portaudio.c:419
+#: modules/audio_output/directx.c:385 modules/audio_output/portaudio.c:419
 msgid "3 Front 2 Rear"
 msgstr ""
 
-#: modules/audio_output/directx.c:407 modules/audio_output/oss.c:170
+#: modules/audio_output/directx.c:408 modules/audio_output/oss.c:170
 #: modules/audio_output/portaudio.c:411 modules/audio_output/waveout.c:402
 msgid "2 Front 2 Rear"
 msgstr ""
 
-#: modules/audio_output/directx.c:531 modules/audio_output/oss.c:238
+#: modules/audio_output/directx.c:532 modules/audio_output/oss.c:238
 #: modules/audio_output/waveout.c:452
 msgid "A/52 over S/PDIF"
 msgstr ""
@@ -9468,51 +9484,51 @@ msgstr ""
 msgid "Raw audio encoder"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:71
+#: modules/codec/avcodec/avcodec.c:70
 msgid "Non-ref"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:71
+#: modules/codec/avcodec/avcodec.c:70
 msgid "Bidir"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:71
+#: modules/codec/avcodec/avcodec.c:70
 msgid "Non-key"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:76
+#: modules/codec/avcodec/avcodec.c:75
 msgid "rd"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:76
+#: modules/codec/avcodec/avcodec.c:75
 msgid "bits"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:76
+#: modules/codec/avcodec/avcodec.c:75
 msgid "simple"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:87
+#: modules/codec/avcodec/avcodec.c:86
 msgid ""
 "Various audio and video decoders/encoders delivered by the FFmpeg library. "
 "This includes (MS)MPEG4, DivX, SV1,H261, H263, H264, WMV, WMA, AAC, AMR, DV, "
 "MJPEG and other codecs"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:97
+#: modules/codec/avcodec/avcodec.c:96
 msgid "FFmpeg audio/video decoder"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:100 modules/codec/omxil/omxil.c:111
+#: modules/codec/avcodec/avcodec.c:99 modules/codec/omxil/omxil.c:111
 msgid "Decoding"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:143 modules/codec/omxil/omxil.c:123
+#: modules/codec/avcodec/avcodec.c:142 modules/codec/omxil/omxil.c:123
 #: modules/codec/schroedinger.c:370
 msgid "Encoding"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.c:144
+#: modules/codec/avcodec/avcodec.c:143
 msgid "FFmpeg audio/video encoder"
 msgstr ""
 
@@ -9817,7 +9833,7 @@ msgstr ""
 
 #: modules/codec/avcodec/avcodec.h:228
 msgid ""
-"Force a strict standard compliance when encoding (accepted values: -1, 0, 1)."
+"Force a strict standard compliance when encoding (accepted values: -2 to 2)."
 msgstr ""
 
 #: modules/codec/avcodec/avcodec.h:231
@@ -9908,7 +9924,7 @@ msgid ""
 "Do not contact the VideoLAN project about this issue.\n"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:758 modules/codec/avcodec/encoder.c:767
+#: modules/codec/avcodec/encoder.c:769 modules/codec/avcodec/encoder.c:778
 msgid "VLC could not open the encoder."
 msgstr ""
 
@@ -10221,15 +10237,15 @@ msgstr ""
 msgid "Y coordinate of the encoded subtitle"
 msgstr ""
 
-#: modules/codec/dvbsub.c:118
+#: modules/codec/dvbsub.c:120
 msgid "DVB subtitles decoder"
 msgstr "DVB උපසිරැසි විකේතකය"
 
-#: modules/codec/dvbsub.c:119 modules/demux/ts.c:3655 modules/demux/ts.c:3713
+#: modules/codec/dvbsub.c:121 modules/demux/ts.c:3655 modules/demux/ts.c:3713
 msgid "DVB subtitles"
 msgstr "DVB උපසිරැසි"
 
-#: modules/codec/dvbsub.c:132
+#: modules/codec/dvbsub.c:135
 msgid "DVB subtitles encoder"
 msgstr "DVB උපසිරැසි ආකේතකය"
 
@@ -10261,19 +10277,29 @@ msgstr ""
 msgid "A sound fonts file is required for software synthesis."
 msgstr ""
 
-#: modules/codec/fluidsynth.c:64
+#: modules/codec/fluidsynth.c:60
+msgid "Synthesis gain"
+msgstr ""
+
+#: modules/codec/fluidsynth.c:61
+msgid ""
+"This gain is applied to synthesis output. High values may cause saturation "
+"when many notes are played at a time."
+msgstr ""
+
+#: modules/codec/fluidsynth.c:69
 msgid "FluidSynth MIDI synthesizer"
 msgstr ""
 
-#: modules/codec/fluidsynth.c:66
+#: modules/codec/fluidsynth.c:71
 msgid "FluidSynth"
 msgstr ""
 
-#: modules/codec/fluidsynth.c:138
+#: modules/codec/fluidsynth.c:145
 msgid "MIDI synthesis not set up"
 msgstr ""
 
-#: modules/codec/fluidsynth.c:139
+#: modules/codec/fluidsynth.c:146
 msgid ""
 "A sound font file (.SF2) is required for MIDI synthesis.\n"
 "Please install a sound font and configure it from the VLC preferences "
@@ -12236,16 +12262,16 @@ msgstr ""
 msgid "D-Bus control interface"
 msgstr "අතුරුමුහුණත් පාලන"
 
-#: modules/control/dbus/dbus_root.c:75 modules/gui/macosx/MainWindow.m:255
-#: modules/gui/macosx/MainWindow.m:1060 modules/gui/qt4/dialogs/help.cpp:99
-#: modules/gui/qt4/main_interface.cpp:973
-#: modules/gui/qt4/main_interface.cpp:977
-#: modules/gui/qt4/main_interface.cpp:1016
-#: modules/gui/qt4/main_interface.cpp:1018
-#: modules/gui/qt4/main_interface.cpp:1118
-#: modules/gui/qt4/main_interface.cpp:1135
-#: modules/gui/qt4/main_interface.cpp:1142
-#: modules/gui/qt4/main_interface.cpp:1165
+#: modules/control/dbus/dbus_root.c:75 modules/gui/macosx/MainWindow.m:282
+#: modules/gui/macosx/MainWindow.m:1221 modules/gui/qt4/dialogs/help.cpp:99
+#: modules/gui/qt4/main_interface.cpp:974
+#: modules/gui/qt4/main_interface.cpp:978
+#: modules/gui/qt4/main_interface.cpp:1017
+#: modules/gui/qt4/main_interface.cpp:1019
+#: modules/gui/qt4/main_interface.cpp:1119
+#: modules/gui/qt4/main_interface.cpp:1136
+#: modules/gui/qt4/main_interface.cpp:1143
+#: modules/gui/qt4/main_interface.cpp:1166
 #: modules/video_output/xcb/window.c:313
 msgid "VLC media player"
 msgstr "VLC මාධ්‍ය ධාවකය"
@@ -12318,8 +12344,8 @@ msgstr "ශබ්දය පහළට"
 msgid "Position Control"
 msgstr "ස්ථානය"
 
-#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:1849
-#: modules/gui/macosx/intf.m:2031
+#: modules/control/hotkeys.c:97 modules/gui/macosx/intf.m:1877
+#: modules/gui/macosx/intf.m:2059
 msgid "Ignore"
 msgstr "නොසලකා හරින්න"
 
@@ -12428,7 +12454,7 @@ msgstr "පටිගත කරන්න"
 msgid "Recording done"
 msgstr "පටිගත කරන්න"
 
-#: modules/control/hotkeys.c:1030
+#: modules/control/hotkeys.c:1030 modules/gui/macosx/CoreInteraction.m:475
 #, fuzzy, c-format
 msgid "Volume %d%%"
 msgstr "ශබ්දය පහළට"
@@ -12579,8 +12605,8 @@ msgstr "විවෘත වෙමින්"
 
 #: modules/control/rc.c:73 modules/gui/macosx/MainMenu.m:853
 #: modules/gui/macosx/MainMenu.m:854 modules/gui/macosx/MainMenu.m:855
-#: modules/gui/macosx/MainWindow.m:1139 modules/gui/qt4/menus.cpp:798
-#: modules/notify/xosd.c:238
+#: modules/gui/macosx/MainWindow.m:1302 modules/gui/macosx/MainWindow.m:1305
+#: modules/gui/qt4/menus.cpp:796 modules/notify/xosd.c:238
 #, fuzzy
 msgid "Pause"
 msgstr "ධාවනය/විරාමය"
@@ -13133,7 +13159,7 @@ msgstr "ඩිමක්සර්ස් (Demuxers)"
 msgid "Avformat"
 msgstr ""
 
-#: modules/demux/avformat/avformat.c:49
+#: modules/demux/avformat/avformat.c:50
 msgid "Avformat muxer"
 msgstr ""
 
@@ -13143,6 +13169,15 @@ msgstr ""
 
 #: modules/demux/avformat/avformat.h:36
 msgid "Force use of a specific avformat muxer."
+msgstr ""
+
+#: modules/demux/avformat/avformat.h:37
+#, fuzzy
+msgid "Format name"
+msgstr "හැඩතල"
+
+#: modules/demux/avformat/avformat.h:38
+msgid "Internal libavcodec format name"
 msgstr ""
 
 #: modules/demux/avi/avi.c:51
@@ -13253,63 +13288,63 @@ msgstr "ඩිරැක් වීඩියෝ ඩිමක්සර්"
 msgid "FLAC demuxer"
 msgstr "ඩිමක්සර්ස් (Demuxers)"
 
-#: modules/demux/image.c:43
+#: modules/demux/image.c:44
 msgid "ES ID"
 msgstr ""
 
-#: modules/demux/image.c:51
+#: modules/demux/image.c:52
 #, fuzzy
 msgid "Decode"
 msgstr "විකේතක"
 
-#: modules/demux/image.c:53
+#: modules/demux/image.c:54
 msgid "Decode at the demuxer stage"
 msgstr ""
 
-#: modules/demux/image.c:55
+#: modules/demux/image.c:56
 #, fuzzy
 msgid "Forced chroma"
 msgstr "අනුරූ ‍ක්ලෝනය"
 
-#: modules/demux/image.c:57
+#: modules/demux/image.c:58
 msgid ""
 "If non empty and image-decode is true, the image will be converted to the "
 "specified chroma."
 msgstr ""
 
-#: modules/demux/image.c:60
+#: modules/demux/image.c:61
 #, fuzzy
 msgid "Duration in seconds"
 msgstr "කාල සීමාව මිලි තත්පර වලින්"
 
-#: modules/demux/image.c:62
+#: modules/demux/image.c:63
 msgid ""
 "Duration in seconds before simulating an end of file. A negative value means "
 "an unlimited play time."
 msgstr ""
 
-#: modules/demux/image.c:67
+#: modules/demux/image.c:68
 #, fuzzy
 msgid "Frame rate of the elementary stream produced."
 msgstr "ආරම්භක දහරාවේ හැඳුනුම සකස් කරන්න"
 
-#: modules/demux/image.c:69
+#: modules/demux/image.c:70
 #, fuzzy
 msgid "Real-time"
 msgstr "ප්‍රමාද කාලය"
 
-#: modules/demux/image.c:71
+#: modules/demux/image.c:72
 msgid ""
 "Use real-time mode suitable for being used as a master input and real-time "
 "input slaves."
 msgstr ""
 
-#: modules/demux/image.c:75
+#: modules/demux/image.c:76
 #, fuzzy
 msgid "Image demuxer"
 msgstr "ඩිමක්සර්ස් (Demuxers)"
 
-#: modules/demux/image.c:76
+#: modules/demux/image.c:77
 #, fuzzy
 msgid "Image"
 msgstr "අනුරූ ගොනුව"
@@ -13464,19 +13499,19 @@ msgstr "HTTP සත්‍යාපනය"
 msgid "Please enter a valid login name and a password."
 msgstr "%s ක්‍ෂේත්‍රය සඳහා වලංගු ඇතුළත්වීමේ නාමයක් සහ රහස් පදයක් ඇතුළත් කරන්න."
 
-#: modules/demux/mjpeg.c:45 modules/demux/mpeg/es.c:49
+#: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:49
 #: modules/demux/mpeg/h264.c:43 modules/demux/rawvid.c:44
 #: modules/demux/vc1.c:43
 msgid "Frames per Second"
 msgstr "තත්පරයකට රාමු ගණන"
 
-#: modules/demux/mjpeg.c:46
+#: modules/demux/mjpeg.c:47
 msgid ""
 "This is the desired frame rate when playing MJPEG from a file. Use 0 (this "
 "is the default value) for a live stream (from a camera)."
 msgstr ""
 
-#: modules/demux/mjpeg.c:52
+#: modules/demux/mjpeg.c:53
 msgid "M-JPEG camera demuxer"
 msgstr "M-JPEG කැමරා ඩිමක්සර්"
 
@@ -14555,7 +14590,7 @@ msgid "MPEG Transport Stream demuxer"
 msgstr "MPEG පරිවහන දහරා ඩිමක්සර්"
 
 #: modules/demux/ts.c:186 modules/gui/macosx/MainMenu.m:330
-#: modules/gui/macosx/MainMenu.m:1244 modules/gui/qt4/dialogs/toolbar.cpp:426
+#: modules/gui/macosx/MainMenu.m:1245 modules/gui/qt4/dialogs/toolbar.cpp:426
 msgid "Teletext"
 msgstr "ටෙලිටෙක්ස්"
 
@@ -14734,7 +14769,7 @@ msgid ""
 "g. 6=top-right)."
 msgstr ""
 
-#: modules/gui/fbosd.c:134 modules/gui/macosx/simple_prefs.m:293
+#: modules/gui/fbosd.c:134 modules/gui/macosx/simple_prefs.m:295
 #: modules/text_renderer/win32text.c:66 modules/video_filter/marq.c:115
 #: modules/video_filter/rss.c:146
 msgid "Opacity"
@@ -14807,7 +14842,7 @@ msgid ""
 "All rendered images and text will be displayed on the overlay framebuffer."
 msgstr ""
 
-#: modules/gui/fbosd.c:204 modules/gui/macosx/simple_prefs.m:288
+#: modules/gui/fbosd.c:204 modules/gui/macosx/simple_prefs.m:290
 #: modules/notify/xosd.c:81 modules/text_renderer/freetype.c:116
 #: modules/text_renderer/quartztext.c:90 modules/text_renderer/win32text.c:59
 #: modules/video_filter/marq.c:163 modules/video_filter/rss.c:206
@@ -14858,7 +14893,7 @@ msgid "Preamp"
 msgstr "පෙරවර්ධක"
 
 #: modules/gui/macosx/AudioEffects.m:77
-#: modules/gui/qt4/components/extended_panels.cpp:1199
+#: modules/gui/qt4/components/extended_panels.cpp:1209
 msgid "Enable dynamic range compressor"
 msgstr ""
 
@@ -14870,19 +14905,19 @@ msgid "Reset"
 msgstr "යළි සැකසුම"
 
 #: modules/gui/macosx/AudioEffects.m:80
-#: modules/gui/qt4/components/extended_panels.cpp:1183
+#: modules/gui/qt4/components/extended_panels.cpp:1193
 #, fuzzy
 msgid "Attack"
 msgstr "ඇමුණුම"
 
 #: modules/gui/macosx/AudioEffects.m:81
-#: modules/gui/qt4/components/extended_panels.cpp:1184
+#: modules/gui/qt4/components/extended_panels.cpp:1194
 #, fuzzy
 msgid "Release"
 msgstr "ශ්‍රීතය නිදහස් කරන්න"
 
 #: modules/gui/macosx/AudioEffects.m:82
-#: modules/gui/qt4/components/extended_panels.cpp:1185
+#: modules/gui/qt4/components/extended_panels.cpp:1195
 #, fuzzy
 msgid "Threshold"
 msgstr "වර්ණ සීමකය"
@@ -14891,10 +14926,6 @@ msgstr "වර්ණ සීමකය"
 #, fuzzy
 msgid "Enable Spatializer"
 msgstr "අවකාශායනය"
-
-#: modules/gui/macosx/AudioEffects.m:94
-msgid "Dump"
-msgstr ""
 
 #: modules/gui/macosx/AudioEffects.m:97
 #, fuzzy
@@ -14962,7 +14993,7 @@ msgstr "වේලාව"
 #: modules/gui/macosx/bookmarks.m:218 modules/gui/macosx/bookmarks.m:268
 #: modules/gui/macosx/bookmarks.m:276 modules/gui/macosx/controls.m:54
 #: modules/gui/macosx/coredialogs.m:63 modules/gui/macosx/coredialogs.m:100
-#: modules/gui/macosx/coredialogs.m:158 modules/gui/macosx/open.m:325
+#: modules/gui/macosx/coredialogs.m:158 modules/gui/macosx/open.m:328
 #: modules/gui/macosx/output.m:138 modules/gui/macosx/playlistinfo.m:358
 #: modules/gui/macosx/simple_prefs.m:241 modules/gui/macosx/wizard.m:603
 #: modules/gui/macosx/wizard.m:666 modules/gui/macosx/wizard.m:1039
@@ -14970,8 +15001,8 @@ msgstr "වේලාව"
 #: modules/gui/macosx/wizard.m:1658 modules/gui/macosx/wizard.m:1666
 #: modules/gui/macosx/wizard.m:1846 modules/gui/macosx/wizard.m:1857
 #: modules/gui/macosx/wizard.m:1870
-#: modules/gui/qt4/components/open_panels.cpp:1278
-#: modules/gui/qt4/components/preferences_widgets.cpp:1555
+#: modules/gui/qt4/components/open_panels.cpp:1286
+#: modules/gui/qt4/components/preferences_widgets.cpp:1558
 msgid "OK"
 msgstr "හරි"
 
@@ -14980,7 +15011,7 @@ msgstr "හරි"
 msgid "Name"
 msgstr "නම"
 
-#: modules/gui/macosx/bookmarks.m:123 modules/gui/macosx/playlist.m:720
+#: modules/gui/macosx/bookmarks.m:123 modules/gui/macosx/playlist.m:721
 msgid "Untitled"
 msgstr "මාතෘකාවක් රහිත"
 
@@ -15019,7 +15050,7 @@ msgstr "ආදානය සොයා ගැනීමට නැත "
 msgid "The stream must be playing or paused for bookmarks to work."
 msgstr ""
 
-#: modules/gui/macosx/controls.m:52 modules/gui/macosx/MainMenu.m:1194
+#: modules/gui/macosx/controls.m:52 modules/gui/macosx/MainMenu.m:1195
 #, fuzzy
 msgid "Jump To Time"
 msgstr "නියමිත කාලයකට යන්න"
@@ -15037,15 +15068,15 @@ msgstr "කාලයකට පනින්න"
 msgid "User name"
 msgstr "පරිශීලක නාමය "
 
-#: modules/gui/macosx/coredialogs.m:245
+#: modules/gui/macosx/coredialogs.m:258
 msgid "Errors and Warnings"
 msgstr "දෝෂ පණිවුඩ සහ අවවාදාත්මක පණිවුඩ"
 
-#: modules/gui/macosx/coredialogs.m:246
+#: modules/gui/macosx/coredialogs.m:259
 msgid "Clean up"
 msgstr "පිරිසිදු කරන්න"
 
-#: modules/gui/macosx/coredialogs.m:247
+#: modules/gui/macosx/coredialogs.m:260
 msgid "Show Details"
 msgstr "සියලු තොරතුරු පෙන්වන්න"
 
@@ -15116,51 +15147,51 @@ msgid ""
 "information."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1729
+#: modules/gui/macosx/intf.m:1757
 msgid "Error when sending the Crash Report"
 msgstr "බිඳවැටුම් වර්තාව යවමින් තිබිය දී දෝෂයක් ඇති විය."
 
-#: modules/gui/macosx/intf.m:1820
+#: modules/gui/macosx/intf.m:1848
 msgid "No CrashLog found"
 msgstr "බිඳවැටුම් ලොගය සොයා ගැනීමට ‍නැත"
 
-#: modules/gui/macosx/intf.m:1820 modules/gui/macosx/prefs.m:227
-#: modules/gui/macosx/simple_prefs.m:732
+#: modules/gui/macosx/intf.m:1848 modules/gui/macosx/prefs.m:227
+#: modules/gui/macosx/simple_prefs.m:741
 msgid "Continue"
 msgstr "අඛණ්ඩව කරගෙන යන්න"
 
-#: modules/gui/macosx/intf.m:1820
+#: modules/gui/macosx/intf.m:1848
 msgid "Couldn't find any trace of a previous crash."
 msgstr "මින් පෙර බිඳ වැටුණු ලකුණු කිසිවක් සොයා ගැනීමට නොහැකි විය."
 
-#: modules/gui/macosx/intf.m:1847
+#: modules/gui/macosx/intf.m:1875
 msgid "Remove old preferences?"
 msgstr "පැරණි අභිරුචි ඉවත් කරන්නද?"
 
-#: modules/gui/macosx/intf.m:1848
+#: modules/gui/macosx/intf.m:1876
 msgid "We just found an older version of VLC's preferences files."
 msgstr "VLC හි පැරණි අනුවාදයක අභිරුචි ගොනු අපට සොයා ගැනීමට හැකිවිය."
 
-#: modules/gui/macosx/intf.m:1849
+#: modules/gui/macosx/intf.m:1877
 msgid "Move To Trash and Relaunch VLC"
 msgstr "පිළිසකර බඳුනට ගෙන යන්න සහ VLC යළි ධාවනය කරන්න"
 
-#: modules/gui/macosx/intf.m:1960
+#: modules/gui/macosx/intf.m:1988
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr "VLC නිදොසන්න‍ ලොගය (%s).rtfd"
 
-#: modules/gui/macosx/intf.m:2029
+#: modules/gui/macosx/intf.m:2057
 msgid "Relaunch required"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2030
+#: modules/gui/macosx/intf.m:2058
 msgid ""
 "To make sure that VLC no longer listens to your media key events, it needs "
 "to be restarted."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2031
+#: modules/gui/macosx/intf.m:2059
 msgid "Relaunch VLC"
 msgstr ""
 
@@ -15221,7 +15252,7 @@ msgstr ""
 "පෙරනිමිය ලෙස, VLC විසින් අවසන් අයිතම 10 ක ලැයිස්තුවක් තබා ගනියි. මෙම පහසුකම ඔබට මෙහිදී අක්‍රිය "
 "කළ හැකියි."
 
-#: modules/gui/macosx/macosx.m:80 modules/gui/macosx/simple_prefs.m:274
+#: modules/gui/macosx/macosx.m:80 modules/gui/macosx/simple_prefs.m:275
 msgid "Control playback with the Apple Remote"
 msgstr ""
 
@@ -15229,7 +15260,7 @@ msgstr ""
 msgid "By default, VLC can be remotely controlled with the Apple Remote."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:83 modules/gui/macosx/simple_prefs.m:275
+#: modules/gui/macosx/macosx.m:83 modules/gui/macosx/simple_prefs.m:277
 msgid "Control playback with media keys"
 msgstr ""
 
@@ -15261,7 +15292,7 @@ msgstr ""
 msgid "Automatically save the volume on exit"
 msgstr "ඉවත්වීමේ දී ශබ්ද ධාරිතාවය ස්වයංක්‍රීයව සුරකින්න"
 
-#: modules/gui/macosx/macosx.m:95 modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/macosx.m:95 modules/gui/macosx/simple_prefs.m:281
 #: modules/gui/qt4/qt4.cpp:88
 msgid "Resize interface to the native video size"
 msgstr "වීඩියෝවේ ප්‍රමාණයට අනුව අතුරුමුහුණත සකස් කරන්න"
@@ -15274,7 +15305,7 @@ msgid ""
 " By default, interface resize to the native video size."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:101 modules/gui/macosx/simple_prefs.m:280
+#: modules/gui/macosx/macosx.m:101 modules/gui/macosx/simple_prefs.m:282
 #: modules/gui/qt4/qt4.cpp:178
 #, fuzzy
 msgid "Pause the video playback when minimized"
@@ -15317,7 +15348,7 @@ msgstr "VLC සඟවන්න"
 msgid "Hide Others"
 msgstr "අතුරුමුහුණත සඟවන්න"
 
-#: modules/gui/macosx/MainMenu.m:246 modules/gui/macosx/simple_prefs.m:314
+#: modules/gui/macosx/MainMenu.m:246 modules/gui/macosx/simple_prefs.m:316
 msgid "Show All"
 msgstr "සියල්ල පෙන්වන්න"
 
@@ -15337,7 +15368,7 @@ msgid "Advanced Open File..."
 msgstr "සංකීර්ණ විවෘත කිරීම..."
 
 #: modules/gui/macosx/MainMenu.m:251 modules/gui/macosx/MainMenu.m:323
-#: modules/gui/macosx/MainMenu.m:1043 modules/gui/qt4/menus.cpp:620
+#: modules/gui/macosx/MainMenu.m:1044 modules/gui/qt4/menus.cpp:618
 #, fuzzy
 msgid "Open File..."
 msgstr "ෆෝල්ඩරයක් විවෘත කරන්න..."
@@ -15391,7 +15422,7 @@ msgstr "ධාවනය"
 msgid "Playback Speed"
 msgstr "ධාවන වේගය "
 
-#: modules/gui/macosx/MainMenu.m:273 modules/gui/macosx/simple_prefs.m:612
+#: modules/gui/macosx/MainMenu.m:273 modules/gui/macosx/simple_prefs.m:618
 #: modules/gui/qt4/components/simple_preferences.cpp:500
 #: modules/misc/gnutls.c:83 modules/text_renderer/freetype.c:156
 #: modules/text_renderer/freetype.c:175 modules/text_renderer/quartztext.c:114
@@ -15406,54 +15437,54 @@ msgstr "න්‍යාය"
 msgid "Track Synchronization"
 msgstr "ඔරලෝසු සමමුහුර්ථකරණය"
 
-#: modules/gui/macosx/MainMenu.m:281 modules/gui/macosx/MainMenu.m:1185
+#: modules/gui/macosx/MainMenu.m:281 modules/gui/macosx/MainMenu.m:1186
 msgid "Quit after Playback"
 msgstr "ධාවනයෙන් පසුව ඉවත්වන්න"
 
-#: modules/gui/macosx/MainMenu.m:282 modules/gui/macosx/MainMenu.m:1192
+#: modules/gui/macosx/MainMenu.m:282 modules/gui/macosx/MainMenu.m:1193
 msgid "Step Forward"
 msgstr "පියවරක් ඉදිරියට"
 
-#: modules/gui/macosx/MainMenu.m:283 modules/gui/macosx/MainMenu.m:1193
+#: modules/gui/macosx/MainMenu.m:283 modules/gui/macosx/MainMenu.m:1194
 msgid "Step Backward"
 msgstr "පියවරක් පසුපසට"
 
-#: modules/gui/macosx/MainMenu.m:293 modules/gui/qt4/menus.cpp:569
+#: modules/gui/macosx/MainMenu.m:293 modules/gui/qt4/menus.cpp:567
 msgid "Increase Volume"
 msgstr "ශබ්ද පරිමාව වැඩි කරන්න"
 
-#: modules/gui/macosx/MainMenu.m:294 modules/gui/qt4/menus.cpp:572
+#: modules/gui/macosx/MainMenu.m:294 modules/gui/qt4/menus.cpp:570
 msgid "Decrease Volume"
 msgstr "ශබ්ද පරිමාව අඩු කරන්න"
 
-#: modules/gui/macosx/MainMenu.m:306 modules/gui/macosx/MainMenu.m:1208
+#: modules/gui/macosx/MainMenu.m:306 modules/gui/macosx/MainMenu.m:1209
 #, fuzzy
 msgid "Half Size"
 msgstr "ප්‍රමාණය"
 
-#: modules/gui/macosx/MainMenu.m:307 modules/gui/macosx/MainMenu.m:1209
-#: modules/gui/macosx/MainMenu.m:1242
+#: modules/gui/macosx/MainMenu.m:307 modules/gui/macosx/MainMenu.m:1210
+#: modules/gui/macosx/MainMenu.m:1243
 #, fuzzy
 msgid "Normal Size"
 msgstr "සාමාන්‍ය අනුපාතය"
 
-#: modules/gui/macosx/MainMenu.m:308 modules/gui/macosx/MainMenu.m:1210
+#: modules/gui/macosx/MainMenu.m:308 modules/gui/macosx/MainMenu.m:1211
 msgid "Double Size"
 msgstr "ද්විත්ව ප්‍රමාණය"
 
-#: modules/gui/macosx/MainMenu.m:309 modules/gui/macosx/MainMenu.m:1211
+#: modules/gui/macosx/MainMenu.m:309 modules/gui/macosx/MainMenu.m:1212
 #, fuzzy
 msgid "Fit to Screen"
 msgstr "තිරය"
 
-#: modules/gui/macosx/MainMenu.m:311 modules/gui/macosx/MainMenu.m:1214
-#: modules/gui/macosx/MainMenu.m:1223
+#: modules/gui/macosx/MainMenu.m:311 modules/gui/macosx/MainMenu.m:1215
+#: modules/gui/macosx/MainMenu.m:1224
 #, fuzzy
 msgid "Float on Top"
 msgstr "සැමවිටම ඉහළින් තබන්න"
 
 #: modules/gui/macosx/MainMenu.m:319 modules/gui/macosx/MainMenu.m:320
-#: modules/gui/macosx/simple_prefs.m:299
+#: modules/gui/macosx/simple_prefs.m:301
 #, fuzzy
 msgid "Fullscreen Video Device"
 msgstr "පුන්තිර වීඩියෝ ප්‍රතිදානය"
@@ -15522,7 +15553,7 @@ msgid "Bring All to Front"
 msgstr "සියල්ලම පෙරට ගෙන එන්න"
 
 #: modules/gui/macosx/MainMenu.m:353 modules/gui/qt4/dialogs/help.cpp:54
-#: modules/gui/qt4/menus.cpp:913
+#: modules/gui/qt4/menus.cpp:908
 msgid "Help"
 msgstr "උදව්"
 
@@ -15561,75 +15592,75 @@ msgstr "ශබ්දය ඉහළට"
 msgid "Volume Down"
 msgstr "ශබ්දය පහළට"
 
-#: modules/gui/macosx/MainMenu.m:1031
+#: modules/gui/macosx/MainMenu.m:1032
 #, fuzzy
 msgid "Lock Aspect Ratio"
 msgstr "ප්‍රභවයේ දර්ශන අනුපාතය"
 
-#: modules/gui/macosx/MainWindow.m:135
+#: modules/gui/macosx/MainWindow.m:136
 #, fuzzy
 msgid "Backward"
 msgstr "කෙටි ආපසු පැනුම"
 
-#: modules/gui/macosx/MainWindow.m:136
+#: modules/gui/macosx/MainWindow.m:138
 #, fuzzy
 msgid "Forward"
 msgstr "කෙටි ඉදිරි පැනුම"
 
-#: modules/gui/macosx/MainWindow.m:138
+#: modules/gui/macosx/MainWindow.m:141
 #, fuzzy
 msgid "Show/Hide Playlist"
 msgstr "ධාවන ලැයිස්තුව"
 
-#: modules/gui/macosx/MainWindow.m:139 modules/gui/qt4/dialogs/vlm.cpp:560
+#: modules/gui/macosx/MainWindow.m:142 modules/gui/qt4/dialogs/vlm.cpp:560
 #, fuzzy
 msgid "Repeat"
 msgstr "පුනරාවර්තනය එපා"
 
-#: modules/gui/macosx/MainWindow.m:140
+#: modules/gui/macosx/MainWindow.m:143
 msgid "Shuffle"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:141 modules/gui/macosx/simple_prefs.m:225
+#: modules/gui/macosx/MainWindow.m:144 modules/gui/macosx/simple_prefs.m:225
 #: modules/gui/qt4/ui/sprefs_audio.h:440
 msgid "Effects"
 msgstr "ප්‍රයෝග"
 
-#: modules/gui/macosx/MainWindow.m:142
+#: modules/gui/macosx/MainWindow.m:145
 #, fuzzy
 msgid "Toggle Fullscreen mode"
 msgstr "වීඩියෝව පුන්තිර ප්‍රකාරයෙන් ආරම්භ කරන්න"
 
-#: modules/gui/macosx/MainWindow.m:146
+#: modules/gui/macosx/MainWindow.m:150
 #, fuzzy
 msgid "Full Volume"
 msgstr "ශබ්දය "
 
-#: modules/gui/macosx/MainWindow.m:148
+#: modules/gui/macosx/MainWindow.m:153
 msgid "Open media..."
 msgstr "මාධ්‍යයක් විවෘත කරන්න..."
 
-#: modules/gui/macosx/MainWindow.m:149
+#: modules/gui/macosx/MainWindow.m:154
 msgid "Drop media here"
 msgstr "මාධ්‍ය මෙයට ඇද අතහරින්න"
 
-#: modules/gui/macosx/MainWindow.m:310
+#: modules/gui/macosx/MainWindow.m:340
 msgid "LIBRARY"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:315
+#: modules/gui/macosx/MainWindow.m:345
 msgid "MY COMPUTER"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:316
+#: modules/gui/macosx/MainWindow.m:346
 msgid "DEVICES"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:317
+#: modules/gui/macosx/MainWindow.m:347
 msgid "LOCAL NETWORK"
 msgstr ""
 
-#: modules/gui/macosx/MainWindow.m:318
+#: modules/gui/macosx/MainWindow.m:348
 msgid "INTERNET"
 msgstr ""
 
@@ -15654,28 +15685,28 @@ msgid "Media Resource Locator (MRL)"
 msgstr "මාධ්‍ය සම්පත් නිශ්චයනය (MRL)"
 
 #: modules/gui/macosx/open.m:117 modules/gui/macosx/open.m:173
-#: modules/gui/macosx/open.m:628 modules/gui/macosx/open.m:898
-#: modules/gui/macosx/open.m:1118 modules/gui/macosx/open.m:1371
+#: modules/gui/macosx/open.m:631 modules/gui/macosx/open.m:902
+#: modules/gui/macosx/open.m:1122 modules/gui/macosx/open.m:1375
 #: modules/gui/qt4/components/controller.hpp:114
 msgid "Open"
 msgstr "විවෘත කරන්න"
 
-#: modules/gui/macosx/open.m:123 modules/gui/macosx/open.m:425
-#: modules/gui/macosx/open.m:488
+#: modules/gui/macosx/open.m:123 modules/gui/macosx/open.m:428
+#: modules/gui/macosx/open.m:491
 msgid "Capture"
 msgstr "ග්‍රහණය"
 
-#: modules/gui/macosx/open.m:126 modules/gui/macosx/open.m:309
+#: modules/gui/macosx/open.m:126 modules/gui/macosx/open.m:312
 msgid "Choose a file"
 msgstr "ගොනුවක් තෝරන්න"
 
-#: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:313
+#: modules/gui/macosx/open.m:128 modules/gui/macosx/open.m:316
 #: modules/gui/macosx/output.m:145 modules/gui/macosx/prefs_widgets.m:1197
-#: modules/gui/macosx/simple_prefs.m:249 modules/gui/macosx/simple_prefs.m:307
+#: modules/gui/macosx/simple_prefs.m:249 modules/gui/macosx/simple_prefs.m:309
 #: modules/gui/qt4/components/preferences_widgets.cpp:269
 #: modules/gui/qt4/components/simple_preferences.cpp:288
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:102
-#: modules/gui/qt4/ui/open.h:243 modules/gui/qt4/ui/open_disk.h:307
+#: modules/gui/qt4/ui/open.h:243 modules/gui/qt4/ui/open_disk.h:308
 #: modules/gui/qt4/ui/open_file.h:177 modules/gui/qt4/ui/sprefs_audio.h:438
 #: modules/gui/qt4/ui/sprefs_input.h:353 modules/gui/qt4/ui/sprefs_video.h:353
 msgid "Browse..."
@@ -15689,8 +15720,8 @@ msgstr ""
 msgid "Play another media synchronously"
 msgstr "සමකාලීනව වෙනත් මාධ්‍යයක් ධාවනය කරන්න"
 
-#: modules/gui/macosx/open.m:132 modules/gui/macosx/open.m:312
-#: modules/gui/macosx/simple_prefs.m:285 modules/gui/macosx/wizard.m:349
+#: modules/gui/macosx/open.m:132 modules/gui/macosx/open.m:315
+#: modules/gui/macosx/simple_prefs.m:287 modules/gui/macosx/wizard.m:349
 #: modules/gui/macosx/wizard.m:417 modules/gui/qt4/ui/sprefs_interface.h:550
 msgid "Choose..."
 msgstr "තෝරන්න..."
@@ -15722,7 +15753,7 @@ msgstr "ඩීවිඩී මෙනු සබල කරන්න"
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:263
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:314
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:434 modules/lua/vlc.c:72
-#: modules/stream_out/rtp.c:114
+#: modules/stream_out/rtp.c:118
 #: share/lua/http/dialogs/stream_config_window.html:32
 #: share/lua/http/dialogs/stream_window.html:91
 msgid "Port"
@@ -15776,69 +15807,69 @@ msgstr "ප්‍රොටොකෝලය"
 msgid "Address"
 msgstr "ලිපිනය"
 
-#: modules/gui/macosx/open.m:179 modules/gui/macosx/open.m:1014
-#: modules/gui/macosx/open.m:1072
+#: modules/gui/macosx/open.m:179 modules/gui/macosx/open.m:1018
+#: modules/gui/macosx/open.m:1076
 msgid "Unicast"
 msgstr "යුනිකාස්ට්"
 
-#: modules/gui/macosx/open.m:180 modules/gui/macosx/open.m:1029
-#: modules/gui/macosx/open.m:1087
+#: modules/gui/macosx/open.m:180 modules/gui/macosx/open.m:1033
+#: modules/gui/macosx/open.m:1091
 msgid "Multicast"
 msgstr "බහුවිකාශන (Multicast)"
 
-#: modules/gui/macosx/open.m:188 modules/gui/macosx/open.m:439
-#: modules/gui/macosx/open.m:1200
+#: modules/gui/macosx/open.m:188 modules/gui/macosx/open.m:442
+#: modules/gui/macosx/open.m:1204
 msgid "Capture Device"
 msgstr "ග්‍රහණ ආම්පන්නය"
 
-#: modules/gui/macosx/open.m:193
+#: modules/gui/macosx/open.m:195
 msgid ""
 "This input allows you to save, stream or display your current screen "
 "contents."
 msgstr ""
 "ඔබේ වත්මන් තිර අයිතම සුරැකීමට, දහරා කිරීමට හෝ දර්ශනය කිරීමට මෙම ආදානය ඔබට ඉ‍ඩ සලසයි."
 
-#: modules/gui/macosx/open.m:194
+#: modules/gui/macosx/open.m:196
 msgid "Frames per Second:"
 msgstr "තත්පරයකට රාමු ගණන:"
 
-#: modules/gui/macosx/open.m:195
+#: modules/gui/macosx/open.m:197
 msgid "Subscreen left:"
 msgstr "අනුතිර වම:"
 
-#: modules/gui/macosx/open.m:196
+#: modules/gui/macosx/open.m:198
 msgid "Subscreen top:"
 msgstr "අනුතිර මුදුන:"
 
-#: modules/gui/macosx/open.m:197
+#: modules/gui/macosx/open.m:199
 msgid "Subscreen width:"
 msgstr "අනුතිර පළල:"
 
-#: modules/gui/macosx/open.m:198
+#: modules/gui/macosx/open.m:200
 msgid "Subscreen height:"
 msgstr "අනුතිර උස:"
 
-#: modules/gui/macosx/open.m:200
+#: modules/gui/macosx/open.m:202
 msgid "Current channel:"
 msgstr "වත්මන් නාලිකාව:"
 
-#: modules/gui/macosx/open.m:201
+#: modules/gui/macosx/open.m:203
 msgid "Previous Channel"
 msgstr "පෙර නාලිකාව"
 
-#: modules/gui/macosx/open.m:202
+#: modules/gui/macosx/open.m:204
 msgid "Next Channel"
 msgstr "ඊළඟ නාලිකාව"
 
-#: modules/gui/macosx/open.m:203 modules/gui/macosx/open.m:1298
+#: modules/gui/macosx/open.m:205 modules/gui/macosx/open.m:1302
 msgid "Retrieving Channel Info..."
 msgstr "නාලිකා තොරතුරු සොයා ලබා ගනිමින්..."
 
-#: modules/gui/macosx/open.m:204
+#: modules/gui/macosx/open.m:206
 msgid "EyeTV is not launched"
 msgstr "EyeTV ආරම්භ කර නැත"
 
-#: modules/gui/macosx/open.m:205
+#: modules/gui/macosx/open.m:207
 msgid ""
 "VLC could not connect to EyeTV.\n"
 "Make sure that you installed VLC's EyeTV plugin."
@@ -15846,77 +15877,77 @@ msgstr ""
 "VLC හට EyeTV වෙත සම්බන්ධ වීමට නොහැකි විය.\n"
 "VLC හි EyeTV පේණු මෘදුකාංගය ඔබ විසින් ස්ථාපනය කර ඇතිදැයි සොයා බලන්න."
 
-#: modules/gui/macosx/open.m:206
+#: modules/gui/macosx/open.m:208
 msgid "Launch EyeTV now"
 msgstr "EyeTV දැන් පුරන්න"
 
-#: modules/gui/macosx/open.m:207
+#: modules/gui/macosx/open.m:209
 msgid "Download Plugin"
 msgstr "බාගත ප්ලගින"
 
-#: modules/gui/macosx/open.m:208
+#: modules/gui/macosx/open.m:210
 msgid ""
 "This input allows you to process input signals from QuickTime-compatible "
 "video devices.\n"
 "Live Audio input is not supported."
 msgstr ""
 
-#: modules/gui/macosx/open.m:209
+#: modules/gui/macosx/open.m:211
 msgid "Image width:"
 msgstr "පිළිඹුවේ පළල:"
 
-#: modules/gui/macosx/open.m:210
+#: modules/gui/macosx/open.m:212
 msgid "Image height:"
 msgstr "පිළිඹුවේ උස:"
 
-#: modules/gui/macosx/open.m:308
+#: modules/gui/macosx/open.m:311
 msgid "Load subtitles file:"
 msgstr "උපසිරැසි ගොනුව ප්‍රවේශනය කරන්න:"
 
-#: modules/gui/macosx/open.m:314
+#: modules/gui/macosx/open.m:317
 #, fuzzy
 msgid "Override parameters"
 msgstr "පරාමිතීන් ප්‍රති‍ක්ෂේප කරන්න"
 
-#: modules/gui/macosx/open.m:317
+#: modules/gui/macosx/open.m:320
 msgid "FPS"
 msgstr "FPS"
 
-#: modules/gui/macosx/open.m:319
+#: modules/gui/macosx/open.m:322
 msgid "Subtitles encoding"
 msgstr "උපසිරැසි කේතීකරණය"
 
-#: modules/gui/macosx/open.m:321 modules/gui/qt4/ui/sprefs_subtitles.h:280
+#: modules/gui/macosx/open.m:324 modules/gui/qt4/ui/sprefs_subtitles.h:280
 msgid "Font size"
 msgstr "ෆොන්ට ප්‍රමාණය"
 
-#: modules/gui/macosx/open.m:323
+#: modules/gui/macosx/open.m:326
 msgid "Subtitles alignment"
 msgstr "උපසිරැසි එල්ලයට ගැනීම"
 
-#: modules/gui/macosx/open.m:326
+#: modules/gui/macosx/open.m:329
 msgid "Font Properties"
 msgstr "ෆොන්ට වත්කම්"
 
-#: modules/gui/macosx/open.m:327
+#: modules/gui/macosx/open.m:330
 msgid "Subtitle File"
 msgstr "උපසිරැසි ගොනුව"
 
-#: modules/gui/macosx/open.m:627 modules/gui/macosx/open.m:1117
-#: modules/gui/macosx/open.m:1370 modules/gui/qt4/ui/open_file.h:162
+#: modules/gui/macosx/open.m:630 modules/gui/macosx/open.m:1121
+#: modules/gui/macosx/open.m:1374 modules/gui/qt4/ui/open_file.h:162
 msgid "Open File"
 msgstr "ගොනුවක් විවෘත කරන්න"
 
-#: modules/gui/macosx/open.m:832
+#: modules/gui/macosx/open.m:836
 #, c-format
 msgid "%i tracks"
 msgstr "%i පථ"
 
-#: modules/gui/macosx/open.m:1304
+#: modules/gui/macosx/open.m:1308
 msgid "Composite input"
 msgstr "සංයුක්ත ආදානය"
 
-#: modules/gui/macosx/open.m:1307
+#: modules/gui/macosx/open.m:1311
 msgid "S-Video input"
 msgstr "S-Video ආදානය"
 
@@ -15995,8 +16026,8 @@ msgstr "SDP URL"
 msgid "Save File"
 msgstr "ගොනුව සුරකින්න"
 
-#: modules/gui/macosx/output.m:520 modules/gui/macosx/playlist.m:723
-#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:317
+#: modules/gui/macosx/output.m:520 modules/gui/macosx/playlist.m:724
+#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:319
 #: modules/gui/qt4/components/sout/profile_selector.cpp:252
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
@@ -16087,7 +16118,7 @@ msgid "VLC was unable to save the meta data."
 msgstr "VLC හට පාර-දත්ත සුරැකීමට නොහැකි විය."
 
 #: modules/gui/macosx/playlist.m:142 modules/gui/macosx/playlist.m:146
-#: modules/gui/macosx/wizard.m:353 modules/gui/qt4/dialogs/plugins.cpp:528
+#: modules/gui/macosx/wizard.m:353 modules/gui/qt4/dialogs/plugins.cpp:533
 #: modules/mux/asf.c:58
 msgid "Author"
 msgstr "කර්තෘ"
@@ -16152,21 +16183,21 @@ msgstr "XML බෙදියහැකි ධාවන ලැයිස්තු �
 msgid "HTML Playlist"
 msgstr "HTML ධාවන ලැයිස්තුව"
 
-#: modules/gui/macosx/playlist.m:722
+#: modules/gui/macosx/playlist.m:723
 msgid "Save Playlist"
 msgstr "ධාවන ලැයිස්තුව සුරකින්න"
 
-#: modules/gui/macosx/playlist.m:1197
+#: modules/gui/macosx/playlist.m:1209
 msgid "Meta-information"
 msgstr "මෙටා තොරතුරු"
 
-#: modules/gui/macosx/prefs.m:204 modules/gui/macosx/simple_prefs.m:318
+#: modules/gui/macosx/prefs.m:204 modules/gui/macosx/simple_prefs.m:320
 #: modules/gui/qt4/components/simple_preferences.cpp:76
 #: modules/gui/qt4/dialogs/preferences.cpp:49
 msgid "Preferences"
 msgstr "අභිරුචි"
 
-#: modules/gui/macosx/prefs.m:207 modules/gui/macosx/simple_prefs.m:316
+#: modules/gui/macosx/prefs.m:207 modules/gui/macosx/simple_prefs.m:318
 msgid "Reset All"
 msgstr "සියල්ල යළි සකසන්න"
 
@@ -16174,12 +16205,12 @@ msgstr "සියල්ල යළි සකසන්න"
 msgid "Show Basic"
 msgstr "මූලිකව පෙන්වන්න"
 
-#: modules/gui/macosx/prefs.m:226 modules/gui/macosx/simple_prefs.m:731
+#: modules/gui/macosx/prefs.m:226 modules/gui/macosx/simple_prefs.m:740
 #: modules/gui/qt4/dialogs/preferences.cpp:339
 msgid "Reset Preferences"
 msgstr "අභිරුචි යළි සකස් කරන්න"
 
-#: modules/gui/macosx/prefs.m:229 modules/gui/macosx/simple_prefs.m:734
+#: modules/gui/macosx/prefs.m:229 modules/gui/macosx/simple_prefs.m:743
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -16199,7 +16230,7 @@ msgstr "ගොනුවක් ‍තෝරන්න"
 msgid "Select"
 msgstr "තෝරන්න"
 
-#: modules/gui/macosx/simple_prefs.m:118
+#: modules/gui/macosx/simple_prefs.m:120
 msgid "Not Set"
 msgstr "සකස් කර නොමැත"
 
@@ -16345,157 +16376,157 @@ msgstr "පුන්තිර පාලක පෙන්වන්න"
 msgid "Privacy / Network Interaction"
 msgstr "පෞද්ගලිකත්වය/ජාල අන්තර් ක්‍රියාකාරිත්වය"
 
-#: modules/gui/macosx/simple_prefs.m:276
+#: modules/gui/macosx/simple_prefs.m:278
 msgid "Automatically check for updates"
 msgstr "ස්වයංක්‍රීයව යාවත්කාලීනය සඳහා සොයන්න"
 
-#: modules/gui/macosx/simple_prefs.m:278
+#: modules/gui/macosx/simple_prefs.m:280
 msgid "Enable Growl notifications (on playlist item change)"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:283
+#: modules/gui/macosx/simple_prefs.m:285
 msgid "Default Encoding"
 msgstr "පෙරනිමි ආකේතකය"
 
-#: modules/gui/macosx/simple_prefs.m:284
+#: modules/gui/macosx/simple_prefs.m:286
 msgid "Display Settings"
 msgstr "දසුන් සිටුවම්"
 
-#: modules/gui/macosx/simple_prefs.m:286
+#: modules/gui/macosx/simple_prefs.m:288
 msgid "Font Color"
 msgstr "ෆොන්ට වර්ණය"
 
-#: modules/gui/macosx/simple_prefs.m:287
+#: modules/gui/macosx/simple_prefs.m:289
 msgid "Font Size"
 msgstr "ෆොන්ට ප්‍රමාණය"
 
-#: modules/gui/macosx/simple_prefs.m:289
+#: modules/gui/macosx/simple_prefs.m:291
 msgid "Subtitle Languages"
 msgstr "උපසිරැසි භාෂාව "
 
-#: modules/gui/macosx/simple_prefs.m:290
+#: modules/gui/macosx/simple_prefs.m:292
 msgid "Preferred Subtitle Language"
 msgstr "වඩාත් කැමති උපසිරැසි භාෂාව"
 
-#: modules/gui/macosx/simple_prefs.m:292
+#: modules/gui/macosx/simple_prefs.m:294
 msgid "Enable OSD"
 msgstr "තිරමත දර්ශනය සබල කරන්න"
 
-#: modules/gui/macosx/simple_prefs.m:294
+#: modules/gui/macosx/simple_prefs.m:296
 msgid "Force Bold"
 msgstr "Bold බලාත්මක කරන්න"
 
-#: modules/gui/macosx/simple_prefs.m:295
+#: modules/gui/macosx/simple_prefs.m:297
 msgid ""
 "More options on background, shadow and outline are available in the advanced "
 "preferences."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:298
+#: modules/gui/macosx/simple_prefs.m:300
 msgid "Black screens in Fullscreen mode"
 msgstr "වීඩියෝව පුන්තිර ප්‍රකාරයේදී කළුපැහැ තිර "
 
-#: modules/gui/macosx/simple_prefs.m:300 modules/stream_out/display.c:53
+#: modules/gui/macosx/simple_prefs.m:302 modules/stream_out/display.c:53
 #: modules/gui/qt4/ui/sprefs_video.h:336
 msgid "Display"
 msgstr "දසුන්"
 
-#: modules/gui/macosx/simple_prefs.m:301
+#: modules/gui/macosx/simple_prefs.m:303
 msgid "Enable Video"
 msgstr "වීඩියෝ සබල කරන්න "
 
-#: modules/gui/macosx/simple_prefs.m:304
+#: modules/gui/macosx/simple_prefs.m:306
 msgid "Output module"
 msgstr "ප්‍රතිදාන මොඩියුල "
 
-#: modules/gui/macosx/simple_prefs.m:306 modules/gui/qt4/ui/sprefs_video.h:352
+#: modules/gui/macosx/simple_prefs.m:308 modules/gui/qt4/ui/sprefs_video.h:352
 msgid "Video snapshots"
 msgstr "වීඩියෝ සැණරුව"
 
-#: modules/gui/macosx/simple_prefs.m:308 modules/meta_engine/folder.c:62
+#: modules/gui/macosx/simple_prefs.m:310 modules/meta_engine/folder.c:62
 msgid "Folder"
 msgstr "ෆෝල්ඩර්"
 
-#: modules/gui/macosx/simple_prefs.m:309 modules/gui/qt4/ui/sprefs_video.h:357
+#: modules/gui/macosx/simple_prefs.m:311 modules/gui/qt4/ui/sprefs_video.h:357
 msgid "Format"
 msgstr "හැඩතල"
 
-#: modules/gui/macosx/simple_prefs.m:310 modules/gui/qt4/ui/sprefs_video.h:355
+#: modules/gui/macosx/simple_prefs.m:312 modules/gui/qt4/ui/sprefs_video.h:355
 msgid "Prefix"
 msgstr "උපසර්ගය"
 
-#: modules/gui/macosx/simple_prefs.m:311 modules/gui/qt4/ui/sprefs_video.h:358
+#: modules/gui/macosx/simple_prefs.m:313 modules/gui/qt4/ui/sprefs_video.h:358
 msgid "Sequential numbering"
 msgstr "අනුක්‍රමික අංක යොදන්න"
 
-#: modules/gui/macosx/simple_prefs.m:481
+#: modules/gui/macosx/simple_prefs.m:487
 msgid "Last check on: %@"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:483
+#: modules/gui/macosx/simple_prefs.m:489
 msgid "No check was performed yet."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:612 modules/gui/macosx/simple_prefs.m:639
-#: modules/gui/macosx/simple_prefs.m:1197
+#: modules/gui/macosx/simple_prefs.m:618 modules/gui/macosx/simple_prefs.m:645
+#: modules/gui/macosx/simple_prefs.m:1210
 #: modules/gui/qt4/components/simple_preferences.cpp:497
 msgid "Custom"
 msgstr "අභිමත"
 
-#: modules/gui/macosx/simple_prefs.m:612
+#: modules/gui/macosx/simple_prefs.m:618
 #: modules/gui/qt4/components/simple_preferences.cpp:498
 msgid "Lowest latency"
 msgstr "අඩුතම නොපෙනී පැවතීම"
 
-#: modules/gui/macosx/simple_prefs.m:612
+#: modules/gui/macosx/simple_prefs.m:618
 #: modules/gui/qt4/components/simple_preferences.cpp:499
 msgid "Low latency"
 msgstr "අඩු නොපෙනී පැවතීම"
 
-#: modules/gui/macosx/simple_prefs.m:613
+#: modules/gui/macosx/simple_prefs.m:619
 #: modules/gui/qt4/components/simple_preferences.cpp:501
 msgid "High latency"
 msgstr "ඉහළ නොපෙනී පැවතීම"
 
-#: modules/gui/macosx/simple_prefs.m:613
+#: modules/gui/macosx/simple_prefs.m:619
 #: modules/gui/qt4/components/simple_preferences.cpp:502
 msgid "Higher latency"
 msgstr "ඉහළතම නොපෙනී පැවතීම"
 
-#: modules/gui/macosx/simple_prefs.m:1097
+#: modules/gui/macosx/simple_prefs.m:1110
 msgid "Choose the folder to save your video snapshots to."
 msgstr "ඔබගේ වීඩියෝ සැණරූ සුරැකීම සඳහා ෆෝල්ඩරයක් ‍තෝරන්න."
 
-#: modules/gui/macosx/simple_prefs.m:1099
-#: modules/gui/macosx/simple_prefs.m:1211
+#: modules/gui/macosx/simple_prefs.m:1112
+#: modules/gui/macosx/simple_prefs.m:1224
 msgid "Choose"
 msgstr "තෝරන්න"
 
-#: modules/gui/macosx/simple_prefs.m:1209
+#: modules/gui/macosx/simple_prefs.m:1222
 msgid "Choose the directory or filename where the records will be stored."
 msgstr "රෙකෝඩ් කළ ඩිරෙක්ටරිය හෝ ‍ගොනු නාමය සුරක්‍ෂිත වන ස්ථානය "
 
-#: modules/gui/macosx/simple_prefs.m:1231
+#: modules/gui/macosx/simple_prefs.m:1254
 msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1315
+#: modules/gui/macosx/simple_prefs.m:1338
 msgid "Invalid combination"
 msgstr "වලංගු නොවන සංකලනයකි"
 
-#: modules/gui/macosx/simple_prefs.m:1316
+#: modules/gui/macosx/simple_prefs.m:1339
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1328
-#: modules/gui/macosx/simple_prefs.m:1332
+#: modules/gui/macosx/simple_prefs.m:1351
+#: modules/gui/macosx/simple_prefs.m:1355
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
 #: modules/gui/macosx/TrackSynchronization.m:54
-#: modules/gui/qt4/components/extended_panels.cpp:1530
+#: modules/gui/qt4/components/extended_panels.cpp:1545
 #, fuzzy
 msgid "Audio/Video"
 msgstr "ශ්‍රව්‍ය ප්‍රකාරය"
@@ -16514,7 +16545,7 @@ msgid "A positive value means that the audio is ahead of the video"
 msgstr ""
 
 #: modules/gui/macosx/TrackSynchronization.m:58
-#: modules/gui/qt4/components/extended_panels.cpp:1542
+#: modules/gui/qt4/components/extended_panels.cpp:1557
 #, fuzzy
 msgid "Subtitles/Video"
 msgstr "උපසිරැසි"
@@ -17624,23 +17655,23 @@ msgstr "Shift+L"
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "එක් ගොනුවක් ලූපනය, ගොනු සියල්ල ලූපනය අතර මාරු වීමට ක්ලික් කරන්න."
 
-#: modules/gui/qt4/components/controller.cpp:531
+#: modules/gui/qt4/components/controller.cpp:532
 msgid "Previous Chapter/Title"
 msgstr "පෙර පරිච්ඡේදය/මාතෘකාව"
 
-#: modules/gui/qt4/components/controller.cpp:537
+#: modules/gui/qt4/components/controller.cpp:538
 msgid "Menu"
 msgstr "මෙනුව"
 
-#: modules/gui/qt4/components/controller.cpp:543
+#: modules/gui/qt4/components/controller.cpp:544
 msgid "Next Chapter/Title"
 msgstr "ඊළඟ පරිච්ඡේදය/මාතෘකාව"
 
-#: modules/gui/qt4/components/controller.cpp:576
+#: modules/gui/qt4/components/controller.cpp:577
 msgid "Teletext Activation"
 msgstr "ටෙලිටෙක්ස් සක්‍රිය කරන්න"
 
-#: modules/gui/qt4/components/controller.cpp:592
+#: modules/gui/qt4/components/controller.cpp:593
 msgid "Toggle Transparency "
 msgstr "පාරදෘශ්‍යතාවයට මාරු වන්න"
 
@@ -17816,19 +17847,24 @@ msgstr "B ලක්‍ෂය සකස් කිරීමට ක්ලික් 
 msgid "Stop the A to B loop"
 msgstr "A සිට B ලූපනය නවතන්න"
 
-#: modules/gui/qt4/components/extended_panels.cpp:412
+#: modules/gui/qt4/components/controller_widget.cpp:281
+#, fuzzy
+msgid "Aspect Ratio"
+msgstr "දර්ශන අනුපා&තය"
+
+#: modules/gui/qt4/components/extended_panels.cpp:418
 #: modules/video_filter/logo.c:48
 #, fuzzy
 msgid "Logo filenames"
 msgstr "ලොගය ගොනුවකට"
 
-#: modules/gui/qt4/components/extended_panels.cpp:419
+#: modules/gui/qt4/components/extended_panels.cpp:426
 #: modules/video_filter/erase.c:55
 #, fuzzy
 msgid "Image mask"
 msgstr "අනුරූ ගොනුව"
 
-#: modules/gui/qt4/components/extended_panels.cpp:672
+#: modules/gui/qt4/components/extended_panels.cpp:682
 msgid ""
 "No v4l2 instance found.\n"
 "Please check that the device has been opened with VLC and is playing.\n"
@@ -17836,92 +17872,92 @@ msgid ""
 "Controls will automatically appear here."
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1043
-#: modules/gui/qt4/components/extended_panels.cpp:1099
+#: modules/gui/qt4/components/extended_panels.cpp:1053
+#: modules/gui/qt4/components/extended_panels.cpp:1109
 msgid "Preamp\n"
 msgstr "පූර්ව වර්ධකය\n"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1044
-#: modules/gui/qt4/components/extended_panels.cpp:1100
+#: modules/gui/qt4/components/extended_panels.cpp:1054
+#: modules/gui/qt4/components/extended_panels.cpp:1110
 msgid "dB"
 msgstr "dB"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1183
-#: modules/gui/qt4/components/extended_panels.cpp:1184
+#: modules/gui/qt4/components/extended_panels.cpp:1193
+#: modules/gui/qt4/components/extended_panels.cpp:1194
 #: modules/gui/qt4/ui/open.h:236
 msgid " ms"
 msgstr " ms"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1185
-#: modules/gui/qt4/components/extended_panels.cpp:1187
-#: modules/gui/qt4/components/extended_panels.cpp:1188
+#: modules/gui/qt4/components/extended_panels.cpp:1195
+#: modules/gui/qt4/components/extended_panels.cpp:1197
+#: modules/gui/qt4/components/extended_panels.cpp:1198
 #, fuzzy
 msgid " dB"
 msgstr "dB"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1187
+#: modules/gui/qt4/components/extended_panels.cpp:1197
 msgid ""
 "Knee\n"
 "radius"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1188
+#: modules/gui/qt4/components/extended_panels.cpp:1198
 msgid ""
 "Makeup\n"
 "gain"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1353
+#: modules/gui/qt4/components/extended_panels.cpp:1363
 #, fuzzy
 msgid "Enable spatializer"
 msgstr "අවකාශායනය"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1506
+#: modules/gui/qt4/components/extended_panels.cpp:1521
 #, fuzzy
 msgid "(Hastened)"
 msgstr "වේගයෙන් (සියුම්ව)"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1508
+#: modules/gui/qt4/components/extended_panels.cpp:1523
 #, fuzzy
 msgid "(Delayed)"
 msgstr "X11 සංදර්ශකය"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1534
+#: modules/gui/qt4/components/extended_panels.cpp:1549
 #, fuzzy
 msgid "Audio track synchronization:"
 msgstr "ඔරලෝසු සමමුහුර්ථකරණය"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1546
+#: modules/gui/qt4/components/extended_panels.cpp:1561
 #, fuzzy
 msgid "Subtitle track syncronization:"
 msgstr "ඔරලෝසු සමමුහුර්ථකරණය"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1553
+#: modules/gui/qt4/components/extended_panels.cpp:1568
 msgid "Subtitles speed:"
 msgstr "උපසිරැසි වේගය:"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1567
+#: modules/gui/qt4/components/extended_panels.cpp:1582
 #, fuzzy
 msgid "Subtitles duration factor:"
 msgstr "උපසිරැස් ස්ථානය ඉහළට"
 
-#: modules/gui/qt4/components/extended_panels.cpp:1595
+#: modules/gui/qt4/components/extended_panels.cpp:1610
 msgid "Force update of this dialog's values"
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1678
+#: modules/gui/qt4/components/extended_panels.cpp:1693
 msgid ""
 "Extend subtitles duration by this value.\n"
 "Set 0 to disable."
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1683
+#: modules/gui/qt4/components/extended_panels.cpp:1698
 msgid ""
 "Multiply subtitles duration by this value.\n"
 "Set 0 to disable."
 msgstr ""
 
-#: modules/gui/qt4/components/extended_panels.cpp:1688
+#: modules/gui/qt4/components/extended_panels.cpp:1703
 msgid ""
 "Recalculate subtitles duration according\n"
 "to their content and this value.\n"
@@ -18046,35 +18082,35 @@ msgstr ""
 "වත්මන් ධාවන වේගය: %1\n"
 "සීරුමාරු කිරීමට ක්ලික් කරන්න"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:410
+#: modules/gui/qt4/components/interface_widgets.cpp:411
 msgid "Revert to normal play speed"
 msgstr ""
 
-#: modules/gui/qt4/components/interface_widgets.cpp:517
+#: modules/gui/qt4/components/interface_widgets.cpp:518
 msgid "Download cover art"
 msgstr "පිටකවර රූ බාගත කරන්න"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:560
+#: modules/gui/qt4/components/interface_widgets.cpp:561
 #: modules/gui/qt4/dialogs/toolbar.cpp:458
 #, fuzzy
 msgid "Elapsed time"
 msgstr "ප්‍රමාද කාලය"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:564
+#: modules/gui/qt4/components/interface_widgets.cpp:565
 #: modules/gui/qt4/dialogs/toolbar.cpp:462
 msgid "Total/Remaining time"
 msgstr ""
 
-#: modules/gui/qt4/components/interface_widgets.cpp:566
+#: modules/gui/qt4/components/interface_widgets.cpp:567
 #, fuzzy
 msgid "Click to toggle between total and remaining time"
 msgstr "ගතවූ කාලය හා ඉතිරි කාලය පෙන්වීම අතර මාරු වීමට ක්ලික් කරන්න"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:572
+#: modules/gui/qt4/components/interface_widgets.cpp:573
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "ගතවූ කාලය හා ඉතිරි කාලය පෙන්වීම අතර මාරු වීමට ක්ලික් කරන්න"
 
-#: modules/gui/qt4/components/interface_widgets.cpp:574
+#: modules/gui/qt4/components/interface_widgets.cpp:575
 msgid "Double click to jump to a chosen time position"
 msgstr "තෝරාගත් කාල ස්ථානයකට පැනීම සඳහා ද්විත්ව ක්ලික් කරන්න"
 
@@ -18108,76 +18144,76 @@ msgstr "පෙරන"
 msgid "Eject the disc"
 msgstr "තැටිය නෙරපන්න"
 
-#: modules/gui/qt4/components/open_panels.cpp:810
+#: modules/gui/qt4/components/open_panels.cpp:818
 #, fuzzy
 msgid "Channels:"
 msgstr "නාලිකා"
 
-#: modules/gui/qt4/components/open_panels.cpp:821
+#: modules/gui/qt4/components/open_panels.cpp:829
 #, fuzzy
 msgid "Selected ports:"
 msgstr "ෆෝල්ඩරය ‍තෝරන්න"
 
-#: modules/gui/qt4/components/open_panels.cpp:824
+#: modules/gui/qt4/components/open_panels.cpp:832
 msgid ".*"
 msgstr ".*"
 
-#: modules/gui/qt4/components/open_panels.cpp:831
+#: modules/gui/qt4/components/open_panels.cpp:839
 msgid "Use VLC pace"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:835
+#: modules/gui/qt4/components/open_panels.cpp:843
 #, fuzzy
 msgid "Auto connection"
 msgstr "ස්වයං සම්බන්ධය"
 
-#: modules/gui/qt4/components/open_panels.cpp:853
+#: modules/gui/qt4/components/open_panels.cpp:861
 #, fuzzy
 msgid "Device name"
 msgstr "වීඩියෝ උපාංගයේ නම"
 
-#: modules/gui/qt4/components/open_panels.cpp:859
+#: modules/gui/qt4/components/open_panels.cpp:867
 #, fuzzy
 msgid "Radio device name"
 msgstr "ශ්‍රව්‍ය උපාංගයේ නම"
 
-#: modules/gui/qt4/components/open_panels.cpp:908
+#: modules/gui/qt4/components/open_panels.cpp:916
 msgid "TV (digital)"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:911
+#: modules/gui/qt4/components/open_panels.cpp:919
 #, fuzzy
 msgid "Tuner card"
 msgstr "සුසරකය"
 
-#: modules/gui/qt4/components/open_panels.cpp:912
+#: modules/gui/qt4/components/open_panels.cpp:920
 msgid "Delivery system"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:942
+#: modules/gui/qt4/components/open_panels.cpp:950
 msgid "Transponder/multiplex frequency"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:952
+#: modules/gui/qt4/components/open_panels.cpp:960
 #, fuzzy
 msgid "Transponder symbol rate"
 msgstr "සම්ප්‍රේෂ ප්‍රතිචාරක ලකුණු අනුපාතය kHz වලින්"
 
-#: modules/gui/qt4/components/open_panels.cpp:985
+#: modules/gui/qt4/components/open_panels.cpp:993
 #, fuzzy
 msgid "Bandwidth"
 msgstr "වීඩියෝ පළල"
 
-#: modules/gui/qt4/components/open_panels.cpp:1028
+#: modules/gui/qt4/components/open_panels.cpp:1036
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr ""
 
 #. xgettext: frames per second
-#: modules/gui/qt4/components/open_panels.cpp:1042
+#: modules/gui/qt4/components/open_panels.cpp:1050
 msgid " f/s"
 msgstr " f/s"
 
-#: modules/gui/qt4/components/open_panels.cpp:1245
+#: modules/gui/qt4/components/open_panels.cpp:1253
 #, fuzzy
 msgid "Advanced Options"
 msgstr "සංකිර්ණ සැකසීම්"
@@ -18266,23 +18302,23 @@ msgstr "අන්තර්ජාලය"
 msgid "Subscribe to a podcast"
 msgstr "පොඩ්කාස්ට් සඳහා දායකත්වය ලබාගන්න"
 
-#: modules/gui/qt4/components/playlist/selector.cpp:355
+#: modules/gui/qt4/components/playlist/selector.cpp:356
 msgid "Remove this podcast subscription"
 msgstr "මෙම පොඩ්කාස්ට් දායකත්වය ඉවත් කරන්න"
 
-#: modules/gui/qt4/components/playlist/selector.cpp:481
+#: modules/gui/qt4/components/playlist/selector.cpp:482
 msgid "Subscribe"
 msgstr "දායකත්වය"
 
-#: modules/gui/qt4/components/playlist/selector.cpp:482
+#: modules/gui/qt4/components/playlist/selector.cpp:483
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "දායකත්වය ලබා ගැනීම සඳහා පොඩ්කාස්‍ට් හි URL එක ඇතුල් කරන්න:"
 
-#: modules/gui/qt4/components/playlist/selector.cpp:499
+#: modules/gui/qt4/components/playlist/selector.cpp:500
 msgid "Do you really want to unsubscribe from %1?"
 msgstr "දායකත්වයෙන් ඉවත් වීමට ඔබට ඇත්තටම අවශ්‍ය ද? %1?"
 
-#: modules/gui/qt4/components/playlist/selector.cpp:502
+#: modules/gui/qt4/components/playlist/selector.cpp:503
 msgid "Unsubscribe"
 msgstr "දායකත්වයෙන් ඉවත් කරන්න"
 
@@ -18319,7 +18355,7 @@ msgid "Hotkey"
 msgstr "කෙටියතුර"
 
 #: modules/gui/qt4/components/preferences_widgets.cpp:1327
-#: modules/gui/qt4/components/preferences_widgets.cpp:1542
+#: modules/gui/qt4/components/preferences_widgets.cpp:1545
 msgid "Global"
 msgstr "ගෝලීය"
 
@@ -18328,20 +18364,20 @@ msgstr "ගෝලීය"
 msgid "Unset"
 msgstr "නියම නොකළ"
 
-#: modules/gui/qt4/components/preferences_widgets.cpp:1543
+#: modules/gui/qt4/components/preferences_widgets.cpp:1546
 msgid "Hotkey for "
 msgstr "සඳහා කෙටි යතුර -> "
 
-#: modules/gui/qt4/components/preferences_widgets.cpp:1547
+#: modules/gui/qt4/components/preferences_widgets.cpp:1550
 msgid "Press the new keys for "
 msgstr "මේ සඳහා නව යතුරු සංයෝජනයක් ‍යෝජනා කරන්න. ->"
 
-#: modules/gui/qt4/components/preferences_widgets.cpp:1578
+#: modules/gui/qt4/components/preferences_widgets.cpp:1581
 msgid "Warning: the key is already assigned to \""
 msgstr "‍අවවාදයයි: මෙම යතුර දැනටමත් මේ සඳහා වෙන් කර ඇත \""
 
-#: modules/gui/qt4/components/preferences_widgets.cpp:1598
-#: modules/gui/qt4/components/preferences_widgets.cpp:1606
+#: modules/gui/qt4/components/preferences_widgets.cpp:1601
+#: modules/gui/qt4/components/preferences_widgets.cpp:1609
 msgid "Key: "
 msgstr "යතුර: "
 
@@ -18561,7 +18597,7 @@ msgstr "සියලු පොත් සළකුණු මකා දමන්�
 #: modules/gui/qt4/dialogs/mediainfo.cpp:76
 #: modules/gui/qt4/dialogs/messages.cpp:79
 #: modules/gui/qt4/dialogs/plugins.cpp:74
-#: modules/gui/qt4/dialogs/plugins.cpp:562
+#: modules/gui/qt4/dialogs/plugins.cpp:568
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:36
 #: modules/gui/qt4/dialogs/vlm.cpp:136
 msgid "&Close"
@@ -18673,7 +18709,7 @@ msgstr "යන්න"
 msgid "Go to time"
 msgstr "කාලයකට යන්න"
 
-#: modules/gui/qt4/dialogs/help.cpp:89 modules/gui/qt4/dialogs/plugins.cpp:493
+#: modules/gui/qt4/dialogs/help.cpp:89 modules/gui/qt4/dialogs/plugins.cpp:498
 #: modules/gui/qt4/ui/about.h:183
 msgid "About"
 msgstr "මේ ගැන"
@@ -18794,8 +18830,8 @@ msgstr ""
 "ගොනුවකට ලිවීම නොහැකිය %1:\n"
 "%2."
 
-#: modules/gui/qt4/dialogs/open.cpp:79 modules/gui/qt4/menus.cpp:897
-#: modules/gui/qt4/menus.cpp:1141
+#: modules/gui/qt4/dialogs/open.cpp:79 modules/gui/qt4/menus.cpp:892
+#: modules/gui/qt4/menus.cpp:1133
 msgid "Open Media"
 msgstr "මාධ්‍යයක් විවෘත කරන්න"
 
@@ -18877,19 +18913,24 @@ msgstr "ලකුණු"
 msgid "&Search:"
 msgstr "සො&යන්න:"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:222
+#: modules/gui/qt4/dialogs/plugins.cpp:196
+#, fuzzy
+msgid "Get more extensions from"
+msgstr "මගහරින ලද දිගු"
+
+#: modules/gui/qt4/dialogs/plugins.cpp:228
 msgid "More information..."
 msgstr "තවත් තොරතුරු..."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:231
+#: modules/gui/qt4/dialogs/plugins.cpp:237
 msgid "Reload extensions"
 msgstr "දිගු යළි පුරන්න"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:522 modules/gui/qt4/ui/about.h:184
+#: modules/gui/qt4/dialogs/plugins.cpp:527 modules/gui/qt4/ui/about.h:184
 msgid "Version"
 msgstr "අනුවාදය"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:542
+#: modules/gui/qt4/dialogs/plugins.cpp:547
 msgid "Website"
 msgstr "වෙබ් අඩවිය"
 
@@ -19190,323 +19231,323 @@ msgstr "වැඩසටහන් ලැයිස්තුව: "
 msgid "VOD: "
 msgstr "VOD: "
 
-#: modules/gui/qt4/main_interface.cpp:1119
+#: modules/gui/qt4/main_interface.cpp:1120
 msgid "Control menu for the player"
 msgstr "ධාවකය සඳහා පාලක මෙනු"
 
-#: modules/gui/qt4/main_interface.cpp:1162
+#: modules/gui/qt4/main_interface.cpp:1163
 msgid "Paused"
 msgstr "විරාමය"
 
-#: modules/gui/qt4/menus.cpp:314
+#: modules/gui/qt4/menus.cpp:312
 msgid "&Media"
 msgstr "&මාධ්‍ය"
 
-#: modules/gui/qt4/menus.cpp:317
+#: modules/gui/qt4/menus.cpp:315
 msgid "P&layback"
 msgstr "ධාවනය"
 
-#: modules/gui/qt4/menus.cpp:318 modules/gui/qt4/menus.cpp:1023
+#: modules/gui/qt4/menus.cpp:316 modules/gui/qt4/menus.cpp:1016
 msgid "&Audio"
 msgstr "&ශ්‍රව්‍ය"
 
-#: modules/gui/qt4/menus.cpp:319 modules/gui/qt4/menus.cpp:1030
+#: modules/gui/qt4/menus.cpp:317 modules/gui/qt4/menus.cpp:1023
 msgid "&Video"
 msgstr "වීඩියෝ "
 
-#: modules/gui/qt4/menus.cpp:321
+#: modules/gui/qt4/menus.cpp:319
 msgid "&Tools"
 msgstr "මෙවලම්"
 
-#: modules/gui/qt4/menus.cpp:324 modules/gui/qt4/menus.cpp:1079
+#: modules/gui/qt4/menus.cpp:322 modules/gui/qt4/menus.cpp:1072
 msgid "V&iew"
 msgstr "දසුන්"
 
-#: modules/gui/qt4/menus.cpp:326
+#: modules/gui/qt4/menus.cpp:324
 msgid "&Help"
 msgstr "උදව්"
 
-#: modules/gui/qt4/menus.cpp:339
+#: modules/gui/qt4/menus.cpp:337
 msgid "Open &File..."
 msgstr "ගොනුවක් විවෘත &කරන්න..."
 
-#: modules/gui/qt4/menus.cpp:343 modules/gui/qt4/menus.cpp:902
+#: modules/gui/qt4/menus.cpp:341 modules/gui/qt4/menus.cpp:897
 msgid "Open &Disc..."
 msgstr "තැටි&ය විවෘත කරන්න..."
 
-#: modules/gui/qt4/menus.cpp:345
+#: modules/gui/qt4/menus.cpp:343
 msgid "Open &Network Stream..."
 msgstr "&ජාල දහරා විවෘත කරන්න..."
 
-#: modules/gui/qt4/menus.cpp:347 modules/gui/qt4/menus.cpp:906
+#: modules/gui/qt4/menus.cpp:345 modules/gui/qt4/menus.cpp:901
 msgid "Open &Capture Device..."
 msgstr "ග්‍රහණ ආම්පන්නයෙන් විවෘත කරන්න..."
 
-#: modules/gui/qt4/menus.cpp:352
+#: modules/gui/qt4/menus.cpp:350
 msgid "&Open (advanced)..."
 msgstr "&සංකීර්ණ විවෘත කිරිම..."
 
-#: modules/gui/qt4/menus.cpp:356
+#: modules/gui/qt4/menus.cpp:354
 msgid "Open &Location from clipboard"
 msgstr "පසුරු පුවරුවෙන් පිහිටුමක් විවෘත කරන්න"
 
-#: modules/gui/qt4/menus.cpp:361
+#: modules/gui/qt4/menus.cpp:359
 msgid "Open &Recent Media"
 msgstr "මැතක දී විවෘත &කළ ගොනු"
 
-#: modules/gui/qt4/menus.cpp:372
+#: modules/gui/qt4/menus.cpp:370
 msgid "Conve&rt / Save..."
 msgstr "හරවන්න/සුරකින්න..."
 
-#: modules/gui/qt4/menus.cpp:374
+#: modules/gui/qt4/menus.cpp:372
 msgid "&Stream..."
 msgstr "&දහරා..."
 
-#: modules/gui/qt4/menus.cpp:379
+#: modules/gui/qt4/menus.cpp:377
 msgid "Quit at the end of playlist"
 msgstr "ධාවන ලැයිස්තුවෙහි තවත් අයිතම ඉතිරිව නොමැති නම් ඉවත්වන්න"
 
-#: modules/gui/qt4/menus.cpp:386
+#: modules/gui/qt4/menus.cpp:384
 msgid "Close to systray"
 msgstr ""
 
-#: modules/gui/qt4/menus.cpp:390 modules/gui/qt4/menus.cpp:1143
+#: modules/gui/qt4/menus.cpp:388 modules/gui/qt4/menus.cpp:1135
 msgid "&Quit"
 msgstr "පි&ටවෙන්න"
 
-#: modules/gui/qt4/menus.cpp:400
+#: modules/gui/qt4/menus.cpp:398
 msgid "&Effects and Filters"
 msgstr "ප්‍රයෝග හා පෙරණ"
 
-#: modules/gui/qt4/menus.cpp:403
+#: modules/gui/qt4/menus.cpp:401
 msgid "&Track Synchronization"
 msgstr "&පථ සමමුහුර්ථකරණය"
 
-#: modules/gui/qt4/menus.cpp:416
+#: modules/gui/qt4/menus.cpp:414
 msgid "Program Guide"
 msgstr "ක්‍රමලේඛ මාර්ගෝපදේශ"
 
-#: modules/gui/qt4/menus.cpp:422
+#: modules/gui/qt4/menus.cpp:420
 msgid "Plu&gins and extensions"
 msgstr "ප්ලගීන ස&හ දිගු"
 
-#: modules/gui/qt4/menus.cpp:426
+#: modules/gui/qt4/menus.cpp:424
 msgid "Customi&ze Interface..."
 msgstr "අතුරුමුහුණ&ත අභිරුචිකරණය..."
 
-#: modules/gui/qt4/menus.cpp:429
+#: modules/gui/qt4/menus.cpp:427
 msgid "&Preferences"
 msgstr "&අභිරුචිකරණය"
 
-#: modules/gui/qt4/menus.cpp:450
+#: modules/gui/qt4/menus.cpp:448
 msgid "&View"
 msgstr "දසුන්"
 
-#: modules/gui/qt4/menus.cpp:471
+#: modules/gui/qt4/menus.cpp:469
 msgid "Play&list"
 msgstr "ධාවන &ලැයිස්තුව"
 
-#: modules/gui/qt4/menus.cpp:472
+#: modules/gui/qt4/menus.cpp:470
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: modules/gui/qt4/menus.cpp:477
+#: modules/gui/qt4/menus.cpp:475
 msgid "Mi&nimal Interface"
 msgstr "&අවම අතුරුමුහුණත"
 
-#: modules/gui/qt4/menus.cpp:478
+#: modules/gui/qt4/menus.cpp:476
 msgid "Ctrl+H"
 msgstr "Ctrl+H"
 
-#: modules/gui/qt4/menus.cpp:486
+#: modules/gui/qt4/menus.cpp:484
 msgid "&Fullscreen Interface"
 msgstr "&පුන්තිර අතුරුමුහුණත"
 
-#: modules/gui/qt4/menus.cpp:494
+#: modules/gui/qt4/menus.cpp:492
 msgid "&Advanced Controls"
 msgstr "&සංකීර්ණ පාලක"
 
-#: modules/gui/qt4/menus.cpp:501
+#: modules/gui/qt4/menus.cpp:499
 msgid "Docked Playlist"
 msgstr "ඈඳුන ධාවන ලැයිස්තුව"
 
-#: modules/gui/qt4/menus.cpp:506
+#: modules/gui/qt4/menus.cpp:504
 msgid "Status Bar"
 msgstr "තත්ව තීරුව"
 
-#: modules/gui/qt4/menus.cpp:511
+#: modules/gui/qt4/menus.cpp:509
 msgid "Visualizations selector"
 msgstr "දෘෂ්ඨිකල්පන තෝරනය"
 
-#: modules/gui/qt4/menus.cpp:592
+#: modules/gui/qt4/menus.cpp:590
 msgid "Audio &Track"
 msgstr "ශ්‍රව්‍ය &පථය"
 
-#: modules/gui/qt4/menus.cpp:593
+#: modules/gui/qt4/menus.cpp:591
 msgid "Audio &Channels"
 msgstr "ශ්‍රව්‍ය &නාලිකා"
 
-#: modules/gui/qt4/menus.cpp:594
+#: modules/gui/qt4/menus.cpp:592
 msgid "Audio &Device"
 msgstr "ශ්‍රව්‍ය &ආම්පන්නය"
 
-#: modules/gui/qt4/menus.cpp:597
+#: modules/gui/qt4/menus.cpp:595
 msgid "&Visualizations"
 msgstr "දෘෂ්ඨිකල්ප&න"
 
-#: modules/gui/qt4/menus.cpp:617
+#: modules/gui/qt4/menus.cpp:615
 msgid "&Subtitles Track"
 msgstr "&උපසිරැසි පථය"
 
-#: modules/gui/qt4/menus.cpp:639
+#: modules/gui/qt4/menus.cpp:637
 msgid "Video &Track"
 msgstr "වීඩියෝ පථය "
 
-#: modules/gui/qt4/menus.cpp:645
+#: modules/gui/qt4/menus.cpp:643
 msgid "&Fullscreen"
 msgstr "&පුන් තිරය"
 
-#: modules/gui/qt4/menus.cpp:646
+#: modules/gui/qt4/menus.cpp:644
 msgid "Always Fit &Window"
 msgstr "සැමවිටම වීඩියෝවේ ප්‍රමාණයට තිරය සකසන්න"
 
-#: modules/gui/qt4/menus.cpp:647
+#: modules/gui/qt4/menus.cpp:645
 msgid "Always &on Top"
 msgstr "සැමවිටම &ඉහළින් තබන්න"
 
-#: modules/gui/qt4/menus.cpp:648
+#: modules/gui/qt4/menus.cpp:646
 msgid "Set as Wall&paper"
 msgstr "බිතුපත ලෙස සක&සන්න"
 
-#: modules/gui/qt4/menus.cpp:652
+#: modules/gui/qt4/menus.cpp:650
 msgid "&Zoom"
 msgstr "&විශාලනය"
 
-#: modules/gui/qt4/menus.cpp:653
+#: modules/gui/qt4/menus.cpp:651
 msgid "&Aspect Ratio"
 msgstr "දර්ශන අනුපා&තය"
 
-#: modules/gui/qt4/menus.cpp:654
+#: modules/gui/qt4/menus.cpp:652
 msgid "&Crop"
 msgstr "&ඡේදනය"
 
-#: modules/gui/qt4/menus.cpp:658
+#: modules/gui/qt4/menus.cpp:656
 msgid "&Deinterlace"
 msgstr "&සුමට කිරීම"
 
-#: modules/gui/qt4/menus.cpp:659
+#: modules/gui/qt4/menus.cpp:657
 msgid "&Deinterlace mode"
 msgstr "සුමට &කිරීම් ප්‍රකාරය"
 
-#: modules/gui/qt4/menus.cpp:660
+#: modules/gui/qt4/menus.cpp:658
 msgid "&Post processing"
 msgstr "&පෙර සැකසීම"
 
-#: modules/gui/qt4/menus.cpp:664
+#: modules/gui/qt4/menus.cpp:662
 msgid "Take &Snapshot"
 msgstr "වීඩි‍යෝ &සැණරුවක් ගන්න"
 
-#: modules/gui/qt4/menus.cpp:687
+#: modules/gui/qt4/menus.cpp:685
 msgid "T&itle"
 msgstr "&මාතෘකාව"
 
-#: modules/gui/qt4/menus.cpp:688
+#: modules/gui/qt4/menus.cpp:686
 msgid "&Chapter"
 msgstr "&පරිච්ඡේදය"
 
-#: modules/gui/qt4/menus.cpp:689
+#: modules/gui/qt4/menus.cpp:687
 msgid "&Navigation"
 msgstr "&සංචාලනය"
 
-#: modules/gui/qt4/menus.cpp:691
+#: modules/gui/qt4/menus.cpp:689
 msgid "&Program"
 msgstr "&ක්‍රමලේඛය"
 
-#: modules/gui/qt4/menus.cpp:694
+#: modules/gui/qt4/menus.cpp:692
 msgid "Custom &Bookmarks"
 msgstr "අභිරුචි පොත් &සළකුණු"
 
-#: modules/gui/qt4/menus.cpp:696
+#: modules/gui/qt4/menus.cpp:694
 msgid "&Manage"
 msgstr "&කළමනාකරු"
 
-#: modules/gui/qt4/menus.cpp:752
+#: modules/gui/qt4/menus.cpp:750
 msgid "&Help..."
 msgstr "උදව්..."
 
-#: modules/gui/qt4/menus.cpp:755
+#: modules/gui/qt4/menus.cpp:753
 msgid "Check for &Updates..."
 msgstr "යවත්කාලිනය සඳහා සොයන්න..."
 
-#: modules/gui/qt4/menus.cpp:807
-msgid "Sp&eed"
-msgstr ""
-
-#: modules/gui/qt4/menus.cpp:813
-msgid "&Faster"
-msgstr "වේ&ගයෙන්"
-
-#: modules/gui/qt4/menus.cpp:825
-msgid "N&ormal Speed"
-msgstr "සාමාන්‍ය &වේගයෙන්"
-
-#: modules/gui/qt4/menus.cpp:835
-msgid "Slo&wer"
-msgstr "සෙමින්"
-
-#: modules/gui/qt4/menus.cpp:850
-msgid "&Jump Forward"
-msgstr "ඉදිරියට පනින්න"
-
-#: modules/gui/qt4/menus.cpp:857
-msgid "Jump Bac&kward"
-msgstr "පසුපසට පනින්න"
-
-#: modules/gui/qt4/menus.cpp:873
+#: modules/gui/qt4/menus.cpp:802
 msgid "&Stop"
 msgstr "&නවතන්න"
 
-#: modules/gui/qt4/menus.cpp:880
+#: modules/gui/qt4/menus.cpp:810
 msgid "Pre&vious"
 msgstr "පෙ&ර"
 
-#: modules/gui/qt4/menus.cpp:886
+#: modules/gui/qt4/menus.cpp:816
 msgid "Ne&xt"
 msgstr "ඊළඟ"
 
-#: modules/gui/qt4/menus.cpp:898
+#: modules/gui/qt4/menus.cpp:829
+msgid "Sp&eed"
+msgstr ""
+
+#: modules/gui/qt4/menus.cpp:835
+msgid "&Faster"
+msgstr "වේ&ගයෙන්"
+
+#: modules/gui/qt4/menus.cpp:847
+msgid "N&ormal Speed"
+msgstr "සාමාන්‍ය &වේගයෙන්"
+
+#: modules/gui/qt4/menus.cpp:857
+msgid "Slo&wer"
+msgstr "සෙමින්"
+
+#: modules/gui/qt4/menus.cpp:872
+msgid "&Jump Forward"
+msgstr "ඉදිරියට පනින්න"
+
+#: modules/gui/qt4/menus.cpp:879
+msgid "Jump Bac&kward"
+msgstr "පසුපසට පනින්න"
+
+#: modules/gui/qt4/menus.cpp:893
 msgid "&Open File..."
 msgstr "&ගොනුවක් විවෘත කරන්න..."
 
-#: modules/gui/qt4/menus.cpp:904
+#: modules/gui/qt4/menus.cpp:899
 msgid "Open &Network..."
 msgstr "&ජාලය විවෘත කරන්න..."
 
-#: modules/gui/qt4/menus.cpp:1009
+#: modules/gui/qt4/menus.cpp:1002
 msgid "Leave Fullscreen"
 msgstr "පුන් තිරයෙන් ඉවත්වන්න"
 
-#: modules/gui/qt4/menus.cpp:1035
+#: modules/gui/qt4/menus.cpp:1028
 msgid "Subti&tle"
 msgstr "උ&පසිරැසි"
 
-#: modules/gui/qt4/menus.cpp:1041
+#: modules/gui/qt4/menus.cpp:1034
 msgid "&Playback"
 msgstr "&ධාවනය"
 
-#: modules/gui/qt4/menus.cpp:1051
+#: modules/gui/qt4/menus.cpp:1044
 msgid "Tools"
 msgstr "මෙවලම් "
 
-#: modules/gui/qt4/menus.cpp:1123
+#: modules/gui/qt4/menus.cpp:1116
 msgid "Hide VLC media player in taskbar"
 msgstr "කාර්ය තීරුවෙහි VLC මාධ්‍ය ධාවකය සඟවන්න"
 
-#: modules/gui/qt4/menus.cpp:1129
+#: modules/gui/qt4/menus.cpp:1122
 msgid "Show VLC media player"
 msgstr "VLC මාධ්‍ය ධාවකය පෙන්වන්න"
 
-#: modules/gui/qt4/menus.cpp:1554 modules/gui/qt4/ui/messages_panel.h:143
+#: modules/gui/qt4/menus.cpp:1546 modules/gui/qt4/ui/messages_panel.h:143
 msgid "&Clear"
 msgstr "හිස් කරන්න"
 
@@ -20255,11 +20296,11 @@ msgid ""
 "The default is 5."
 msgstr ""
 
-#: modules/misc/rtsp.c:75 modules/stream_out/rtp.c:244
+#: modules/misc/rtsp.c:75 modules/stream_out/rtp.c:249
 msgid "RTSP VoD"
 msgstr ""
 
-#: modules/misc/rtsp.c:76 modules/stream_out/rtp.c:245
+#: modules/misc/rtsp.c:76 modules/stream_out/rtp.c:250
 #, fuzzy
 msgid "RTSP VoD server"
 msgstr "HTTP සේවාදායකය"
@@ -20885,16 +20926,16 @@ msgstr "ජාලයේ නම"
 msgid "SDP Descriptions parser"
 msgstr "විස්තරය"
 
-#: modules/services_discovery/sap.c:856 modules/services_discovery/sap.c:860
+#: modules/services_discovery/sap.c:872 modules/services_discovery/sap.c:876
 #, fuzzy
 msgid "Session"
 msgstr "සැසිය බිඳවැටුණි"
 
-#: modules/services_discovery/sap.c:856
+#: modules/services_discovery/sap.c:872
 msgid "Tool"
 msgstr "මෙවලම්"
 
-#: modules/services_discovery/sap.c:860
+#: modules/services_discovery/sap.c:876
 #, fuzzy
 msgid "User"
 msgstr "පරිශීලක නාමය"
@@ -20926,7 +20967,7 @@ msgstr "තැටි"
 msgid "CD"
 msgstr "VCD"
 
-#: modules/services_discovery/udev.c:609 modules/gui/qt4/ui/open_disk.h:298
+#: modules/services_discovery/udev.c:609 modules/gui/qt4/ui/open_disk.h:299
 #, fuzzy
 msgid "DVD"
 msgstr "DV"
@@ -21427,12 +21468,12 @@ msgid ""
 "SDP to be announced via SAP."
 msgstr ""
 
-#: modules/stream_out/rtp.c:85 modules/stream_out/standard.c:87
+#: modules/stream_out/rtp.c:85 modules/stream_out/standard.c:81
 #, fuzzy
 msgid "SAP announcing"
 msgstr "SAP ප්‍රකාශන කාලාන්තරය"
 
-#: modules/stream_out/rtp.c:86 modules/stream_out/standard.c:88
+#: modules/stream_out/rtp.c:86 modules/stream_out/standard.c:82
 msgid "Announce this session with SAP."
 msgstr ""
 
@@ -21458,129 +21499,140 @@ msgid ""
 "Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:96 modules/stream_out/standard.c:68
+#: modules/stream_out/rtp.c:96
+#, fuzzy
+msgid "Session category"
+msgstr "සැසිය බිඳවැටුණි"
+
+#: modules/stream_out/rtp.c:98
+msgid ""
+"This allows you to specify a category for the session, that will be "
+"announced if you choose to use SAP."
+msgstr ""
+
+#: modules/stream_out/rtp.c:100 modules/stream_out/standard.c:62
 #, fuzzy
 msgid "Session description"
 msgstr "විස්තරය"
 
-#: modules/stream_out/rtp.c:98 modules/stream_out/standard.c:70
+#: modules/stream_out/rtp.c:102 modules/stream_out/standard.c:64
 msgid ""
 "This allows you to give a short description with details about the stream, "
 "that will be announced in the SDP (Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:100 modules/stream_out/standard.c:72
+#: modules/stream_out/rtp.c:104 modules/stream_out/standard.c:66
 #, fuzzy
 msgid "Session URL"
 msgstr "සැසිය බිඳවැටුණි"
 
-#: modules/stream_out/rtp.c:102 modules/stream_out/standard.c:74
+#: modules/stream_out/rtp.c:106 modules/stream_out/standard.c:68
 msgid ""
 "This allows you to give a URL with more details about the stream (often the "
 "website of the streaming organization), that will be announced in the SDP "
 "(Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:105 modules/stream_out/standard.c:77
+#: modules/stream_out/rtp.c:109 modules/stream_out/standard.c:71
 #, fuzzy
 msgid "Session email"
 msgstr "සැසිය බිඳවැටුණි"
 
-#: modules/stream_out/rtp.c:107 modules/stream_out/standard.c:79
+#: modules/stream_out/rtp.c:111 modules/stream_out/standard.c:73
 msgid ""
 "This allows you to give a contact mail address for the stream, that will be "
 "announced in the SDP (Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:109 modules/stream_out/standard.c:81
+#: modules/stream_out/rtp.c:113 modules/stream_out/standard.c:75
 msgid "Session phone number"
 msgstr "සැසියේ දුරකතන අංකය"
 
-#: modules/stream_out/rtp.c:111 modules/stream_out/standard.c:83
+#: modules/stream_out/rtp.c:115 modules/stream_out/standard.c:77
 msgid ""
 "This allows you to give a contact telephone number for the stream, that will "
 "be announced in the SDP (Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:116
+#: modules/stream_out/rtp.c:120
 #, fuzzy
 msgid "This allows you to specify the base port for the RTP streaming."
 msgstr "ආදානය සඳහා  \"දින\"  පාර-දත්ත විශේෂයෙන් සඳහන් කිරීමට මෙය ඔබට ඉඩදෙයි."
 
-#: modules/stream_out/rtp.c:117
+#: modules/stream_out/rtp.c:121
 #, fuzzy
 msgid "Audio port"
 msgstr "ශ්‍රව්‍ය ආදානය"
 
-#: modules/stream_out/rtp.c:119
+#: modules/stream_out/rtp.c:123
 #, fuzzy
 msgid ""
 "This allows you to specify the default audio port for the RTP streaming."
 msgstr "ආදානය සඳහා  \"දින\"  පාර-දත්ත විශේෂයෙන් සඳහන් කිරීමට මෙය ඔබට ඉඩදෙයි."
 
-#: modules/stream_out/rtp.c:120
+#: modules/stream_out/rtp.c:124
 #, fuzzy
 msgid "Video port"
 msgstr "වීඩියෝ පථය"
 
-#: modules/stream_out/rtp.c:122
+#: modules/stream_out/rtp.c:126
 msgid ""
 "This allows you to specify the default video port for the RTP streaming."
 msgstr ""
 
-#: modules/stream_out/rtp.c:130
+#: modules/stream_out/rtp.c:134
 msgid "RTP/RTCP multiplexing"
 msgstr ""
 
-#: modules/stream_out/rtp.c:132
+#: modules/stream_out/rtp.c:136
 msgid ""
 "This sends and receives RTCP packet multiplexed over the same port as RTP "
 "packets."
 msgstr ""
 
-#: modules/stream_out/rtp.c:137
+#: modules/stream_out/rtp.c:141
 #, fuzzy
 msgid ""
 "Default caching value for outbound RTP streams. This value should be set in "
 "milliseconds."
 msgstr "PVR දහරාවන් සඳහා පෙරනිමි කෑෂ්ගත අගය. මෙම අගය සකස් කළ යුත්තේ මිලි තත්පර වලිනි."
 
-#: modules/stream_out/rtp.c:140
+#: modules/stream_out/rtp.c:144
 msgid "Transport protocol"
 msgstr ""
 
-#: modules/stream_out/rtp.c:142
+#: modules/stream_out/rtp.c:146
 msgid "This selects which transport protocol to use for RTP."
 msgstr ""
 
-#: modules/stream_out/rtp.c:146
+#: modules/stream_out/rtp.c:150
 msgid ""
 "RTP packets will be integrity-protected and ciphered with this Secure RTP "
 "master shared secret key. This must be a 32-character-long hexadecimal "
 "string."
 msgstr ""
 
-#: modules/stream_out/rtp.c:163
+#: modules/stream_out/rtp.c:167
 msgid "MP4A LATM"
 msgstr ""
 
-#: modules/stream_out/rtp.c:165
+#: modules/stream_out/rtp.c:169
 msgid "This allows you to stream MPEG4 LATM audio streams (see RFC3016)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:167
+#: modules/stream_out/rtp.c:171
 #, fuzzy
 msgid "RTSP session timeout (s)"
 msgstr "TCP සම්බන්ධතාවයේ කාලසීමාව"
 
-#: modules/stream_out/rtp.c:168
+#: modules/stream_out/rtp.c:172
 msgid ""
 "RTSP sessions will be closed after not receiving any RTSP request for this "
 "long. Setting it to a negative value or zero disables timeouts. The default "
 "is 60 (one minute)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:188
+#: modules/stream_out/rtp.c:192
 #, fuzzy
 msgid "RTP stream output"
 msgstr "දහරා ප්‍රතිදානය"
@@ -21775,18 +21827,7 @@ msgid ""
 "overrides this"
 msgstr ""
 
-#: modules/stream_out/standard.c:63
-#, fuzzy
-msgid "Session groupname"
-msgstr "සැසිය බිඳවැටුණි"
-
-#: modules/stream_out/standard.c:65
-msgid ""
-"This allows you to specify a group for the session, that will be announced "
-"if you choose to use SAP."
-msgstr ""
-
-#: modules/stream_out/standard.c:97
+#: modules/stream_out/standard.c:91
 #, fuzzy
 msgid "Standard stream output"
 msgstr "දහරා ප්‍රතිදානය"
@@ -25518,6 +25559,10 @@ msgid "WarpOverlay!"
 msgstr "අතිපිහිතය"
 
 #: modules/video_output/kva.c:62
+msgid "VMAN"
+msgstr ""
+
+#: modules/video_output/kva.c:62
 msgid "DIVE"
 msgstr ""
 
@@ -26340,8 +26385,8 @@ msgstr "ස්තුතිය෴"
 msgid "Licence"
 msgstr "බලපත්‍රය "
 
-#: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:296
-#: modules/gui/qt4/ui/open_net.h:90 modules/gui/qt4/ui/profiles.h:460
+#: modules/gui/qt4/ui/equalizer.h:132 modules/gui/qt4/ui/open_disk.h:297
+#: modules/gui/qt4/ui/open_net.h:91 modules/gui/qt4/ui/profiles.h:460
 #: modules/gui/qt4/ui/sprefs_audio.h:429 modules/gui/qt4/ui/sprefs_input.h:341
 #: modules/gui/qt4/ui/sprefs_interface.h:513
 #: modules/gui/qt4/ui/sprefs_subtitles.h:270
@@ -26442,33 +26487,33 @@ msgstr ""
 msgid "Advanced options..."
 msgstr "සංකීර්ණ විකල්ප..."
 
-#: modules/gui/qt4/ui/open_disk.h:297
+#: modules/gui/qt4/ui/open_disk.h:298
 msgid "Disc Selection"
 msgstr "තැටිය තේරීම"
 
-#: modules/gui/qt4/ui/open_disk.h:301
+#: modules/gui/qt4/ui/open_disk.h:302
 msgid "SVCD/VCD"
 msgstr "SVCD/VCD"
 
-#: modules/gui/qt4/ui/open_disk.h:303
+#: modules/gui/qt4/ui/open_disk.h:304
 #, fuzzy
 msgid "Disable Disc Menus"
 msgstr "ඩීවිඩී මෙනු අක්‍රිය කරන්න"
 
-#: modules/gui/qt4/ui/open_disk.h:305
+#: modules/gui/qt4/ui/open_disk.h:306
 #, fuzzy
 msgid "No disc menus"
 msgstr "ඩීවිඩී මෙනු නැත"
 
-#: modules/gui/qt4/ui/open_disk.h:306
+#: modules/gui/qt4/ui/open_disk.h:307
 msgid "Disc device"
 msgstr "තැටි ආම්පන්නය"
 
-#: modules/gui/qt4/ui/open_disk.h:308
+#: modules/gui/qt4/ui/open_disk.h:309
 msgid "Starting Position"
 msgstr "ආරම්භක ස්ථානය"
 
-#: modules/gui/qt4/ui/open_disk.h:311
+#: modules/gui/qt4/ui/open_disk.h:312
 msgid "Audio and Subtitles"
 msgstr "ශ්‍රව්‍ය සහ උපසිරැසි"
 
@@ -26500,15 +26545,15 @@ msgstr "උ&පසිරැසි ගොනුවක් භාවිතා ක�
 msgid "Select the subtitles file"
 msgstr "උපසිරැසි ගොනුව තෝ&රන්න"
 
-#: modules/gui/qt4/ui/open_net.h:91
+#: modules/gui/qt4/ui/open_net.h:92
 msgid "Network Protocol"
 msgstr "ජාල ප්‍රොටොකෝලය"
 
-#: modules/gui/qt4/ui/open_net.h:92
+#: modules/gui/qt4/ui/open_net.h:93
 msgid "Please enter a network URL:"
 msgstr "කරුණාකර ජාලයේ URL ලබාදෙන්න:"
 
-#: modules/gui/qt4/ui/open_net.h:93
+#: modules/gui/qt4/ui/open_net.h:94
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -27187,6 +27232,19 @@ msgstr "ලූපනය කරන්න"
 #: modules/gui/qt4/ui/vlm.h:303
 msgid "Media Manager List"
 msgstr "මාධ්‍ය කළමණාකරණ ලැයිස්තුව"
+
+#~ msgid "Front speakers"
+#~ msgstr "ඉදිරි ස්පීකර"
+
+#~ msgid "Surround 7.1"
+#~ msgstr "සරවුන්ඩ් 7.1"
+
+#~ msgid "ALSA device"
+#~ msgstr "ALSA ආම්පන්නය"
+
+#, fuzzy
+#~ msgid "Session groupname"
+#~ msgstr "සැසිය බිඳවැටුණි"
 
 #~ msgid "Probe DVB card for capabilities"
 #~ msgstr "DVB පතෙහි ශක්‍යතාවය සොයා විමසන්න"

@@ -2,7 +2,7 @@
  * menus.hpp : Menus handling
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 8ffa9a6605e9da235753bec7e454e8a93beaab7d $
+ * $Id: 3ccee3b9481037d85a6731543f1b759dc7b22165 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -94,7 +94,8 @@ public:
         ACTION_ALWAYS_ENABLED = 0x1,
         ACTION_MANAGED = 0x2, /* managed using EnableStatic(bool)? */
         ACTION_NO_CLEANUP = 0x4,
-        ACTION_STATIC = 0x6 /* legacy shortcut */
+        ACTION_STATIC = 0x6, /* legacy shortcut */
+        ACTION_DELETE_ON_REBUILD = 0x8
     };
     Q_DECLARE_FLAGS(actionflags, actionflag)
 
@@ -131,10 +132,10 @@ private:
 
     /* Popups Menus */
     static void PopupMenuStaticEntries( QMenu *menu );
-    static void PopupPlayEntries( QMenu *menu, intf_thread_t *p_intf,
-                                         input_thread_t *p_input );
-    static void PopupMenuControlEntries( QMenu *menu, intf_thread_t *p_intf, bool b = true );
+    static void PopupMenuPlaylistEntries( QMenu *menu, intf_thread_t *p_intf,
+                                          input_thread_t *p_input );
     static void PopupMenuPlaylistControlEntries( QMenu *menu, intf_thread_t *p_intf );
+    static void PopupMenuControlEntries( QMenu *menu, intf_thread_t *p_intf, bool b = true );
 
     /* Generic automenu methods */
     static QMenu * Populate( intf_thread_t *, QMenu *current,

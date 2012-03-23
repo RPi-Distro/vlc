@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: c61eea92c55d5d533b51897d76b7a2f6dd9513d7 $
+ * $Id: 072e0bf91baeca08dcacb7c06e75b617271c4ee9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -44,7 +44,6 @@
 #endif
 
 #include "avcodec.h"
-#include "avutil.h"
 #include "chroma.h"
 
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT( 52, 25, 0 )
@@ -183,6 +182,7 @@ vlc_module_begin ()
                ENC_QSCALE_TEXT, ENC_QSCALE_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "strict", 0,
                  ENC_STRICT_TEXT, ENC_STRICT_LONGTEXT, true )
+        change_integer_range( -2, 2 )
     add_float( ENC_CFG_PREFIX "lumi-masking", 0.0,
                ENC_LUMI_MASKING_TEXT, ENC_LUMI_MASKING_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "dark-masking", 0.0,
@@ -262,7 +262,11 @@ static int OpenDecoder( vlc_object_t *p_this )
     }
 
     /* *** get a p_context *** */
+#if LIBAVCODEC_VERSION_MAJOR >= 54
+    p_context = avcodec_alloc_context3(p_codec);
+#else
     p_context = avcodec_alloc_context();
+#endif
     if( !p_context )
         return VLC_ENOMEM;
     p_context->debug = var_InheritInteger( p_dec, "ffmpeg-debug" );
@@ -390,9 +394,10 @@ void InitLibavcodec( vlc_object_t *p_object )
     /* *** init ffmpeg library (libavcodec) *** */
     if( !b_ffmpeginit )
     {
+#if LIBAVCODEC_VERSION_MAJOR < 54
         avcodec_init();
+#endif
         avcodec_register_all();
-        av_log_set_callback( LibavutilCallback );
         b_ffmpeginit = true;
 
         msg_Dbg( p_object, "libavcodec initialized (interface 0x%x)",
@@ -442,7 +447,11 @@ int ffmpeg_OpenCodec( decoder_t *p_dec )
     }
     int ret;
     vlc_avcodec_lock();
+#if LIBAVCODEC_VERSION_MAJOR >= 54
+    ret = avcodec_open2( p_sys->p_context, p_sys->p_codec, NULL /* options */ );
+#else
     ret = avcodec_open( p_sys->p_context, p_sys->p_codec );
+#endif
     vlc_avcodec_unlock();
     if( ret < 0 )
         return VLC_EGENERIC;

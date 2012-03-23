@@ -2,7 +2,7 @@
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2011 VLC authors and VideoLAN
-* $Id: 60602e068410ac9adbc80bf9ca53f618ca046545 $
+* $Id: 817801cad078e4ab3dd2b0675b7ca0d3804d5971 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -92,8 +92,10 @@
     IBOutlet id o_intf_art_txt;
     IBOutlet id o_intf_embedded_ckb;
     IBOutlet id o_intf_fspanel_ckb;
-	IBOutlet id o_intf_appleremote_ckb;
-	IBOutlet id o_intf_mediakeys_ckb;
+
+IBOutlet id o_intf_appleremote_ckb;
+
+IBOutlet id o_intf_mediakeys_ckb;
     IBOutlet id o_intf_lang_pop;
     IBOutlet id o_intf_lang_txt;
     IBOutlet id o_intf_network_box;

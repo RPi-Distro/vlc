@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005, 2011 the VideoLAN team
- * $Id: 0e2c4b29ffb70bbe5ad134181378ef4a7e9c88ef $
+ * $Id: f308aad66592f0ecc7040570790628a711ed7035 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -34,6 +34,7 @@
 #include <vlc_plugin.h>
 #include <vlc_dialog.h>                   // dialog_Fatal
 #include <vlc_aout.h>                     // aout_*
+#include <vlc_aout_intf.h>
 
 #include <AudioUnit/AudioUnit.h>          // AudioUnit
 #include <CoreAudio/CoreAudio.h>      // AudioDeviceID
@@ -118,6 +119,8 @@ static OSStatus HardwareListener        ( AudioObjectID, UInt32, const AudioObje
 static OSStatus StreamListener          ( AudioObjectID, UInt32, const AudioObjectPropertyAddress *, void * );
 static int      AudioDeviceCallback     ( vlc_object_t *, const char *,
                                           vlc_value_t, vlc_value_t, void * );
+
+static int      VolumeSet               ( audio_output_t *, float, bool );
 
 
 /*****************************************************************************
@@ -557,7 +560,12 @@ static int OpenAnalog( audio_output_t *p_aout )
     /* Do the last VLC aout setups */
     aout_FormatPrepare( &p_aout->format );
     aout_PacketInit( p_aout, &p_sys->packet, FRAMESIZE );
-    aout_VolumeSoftInit( p_aout );
+    aout_VolumeHardInit( p_aout, VolumeSet );
+
+    /* Initialize starting volume */
+    audio_volume_t volume = var_InheritInteger (p_aout, "volume");
+    bool mute = var_InheritBool (p_aout, "mute");
+    VolumeSet(p_aout, volume / (float)AOUT_VOLUME_DEFAULT, mute);
 
     /* set the IOproc callback */
     input.inputProc = (AURenderCallback) RenderCallbackAnalog;
@@ -1448,3 +1456,27 @@ static int AudioDeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     return aout_ChannelsRestart( p_this, psz_variable, old_val, new_val, param );
 }
 
+
+/*****************************************************************************
+ * VolumeSet: Implements pf_volume_set(). Update the CoreAudio AU volume immediately.
+ *****************************************************************************/
+static int VolumeSet( audio_output_t * p_aout, float volume, bool mute )
+{
+    struct   aout_sys_t *p_sys = p_aout->sys;
+    OSStatus ostatus;
+
+    if( mute )
+        volume = 0.0;
+    else
+        volume = volume * volume * volume; // cubic mapping from output.c
+
+    /* Set volume for output unit */
+    ostatus = AudioUnitSetParameter( p_sys->au_unit,
+                                     kHALOutputParam_Volume,
+                                     kAudioUnitScope_Global,
+                                     0,
+                                     volume,
+                                     0 );
+
+    return ostatus;
+}

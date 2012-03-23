@@ -2,7 +2,7 @@
  * gradfun.c: wrapper for the gradfun filter from mplayer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 4a35f336b3d25462934477ddec7795c053b840b6 $
+ * $Id: 5c0eb077a4a95d59699519c455f216bc741067b5 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -161,7 +161,7 @@ static void Close(vlc_object_t *object)
 
     var_DelCallback(filter, CFG_PREFIX "radius",   Callback, NULL);
     var_DelCallback(filter, CFG_PREFIX "strength", Callback, NULL);
-    free(sys->cfg.buf);
+    vlc_free(sys->cfg.buf);
     vlc_mutex_destroy(&sys->lock);
     free(sys);
 }

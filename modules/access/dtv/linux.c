@@ -52,28 +52,6 @@
 # error Linux DVB kernel headers version 2.6.28 or later required.
 #endif
 
-/** Opens the device directory for the specified DVB adapter */
-static int dvb_open_adapter (uint8_t adapter)
-{
-    char dir[20];
-
-    snprintf (dir, sizeof (dir), "/dev/dvb/adapter%"PRIu8, adapter);
-    return open (dir, O_SEARCH|O_DIRECTORY|O_CLOEXEC);
-}
-
-/** Opens the DVB device node of the specified type */
-static int dvb_open_node (int dir, const char *type, unsigned dev, int flags)
-{
-    int fd;
-    char path[strlen (type) + 4];
-
-    snprintf (path, sizeof (path), "%s%"PRIu8, type, dev);
-    fd = openat (dir, path, flags|O_CLOEXEC);
-    if (fd != -1)
-        fcntl (fd, F_SETFL, fcntl (fd, F_GETFL) | O_NONBLOCK);
-    return fd;
-}
-
 typedef struct
 {
     int vlc;
@@ -184,10 +162,32 @@ struct dvb_device
 #ifdef HAVE_DVBPSI
     cam_t *cam;
 #endif
-    struct dvb_frontend_info info;
+    uint8_t device;
     bool budget;
     //size_t buffer_size;
 };
+
+/** Opens the device directory for the specified DVB adapter */
+static int dvb_open_adapter (uint8_t adapter)
+{
+    char dir[20];
+
+    snprintf (dir, sizeof (dir), "/dev/dvb/adapter%"PRIu8, adapter);
+    return open (dir, O_SEARCH|O_DIRECTORY|O_CLOEXEC);
+}
+
+/** Opens the DVB device node of the specified type */
+static int dvb_open_node (dvb_device_t *d, const char *type, int flags)
+{
+    int fd;
+    char path[strlen (type) + 4];
+
+    snprintf (path, sizeof (path), "%s%u", type, d->device);
+    fd = openat (d->dir, path, flags|O_CLOEXEC);
+    if (fd != -1)
+        fcntl (fd, F_SETFL, fcntl (fd, F_GETFL) | O_NONBLOCK);
+    return fd;
+}
 
 /**
  * Opens the DVB tuner
@@ -201,6 +201,7 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
     d->obj = obj;
 
     uint8_t adapter = var_InheritInteger (obj, "dvb-adapter");
+    d->device = var_InheritInteger (obj, "dvb-device");
 
     d->dir = dvb_open_adapter (adapter);
     if (d->dir == -1)
@@ -219,7 +220,7 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
     if (d->budget)
 #endif
     {
-       d->demux = dvb_open_node (d->dir, "demux", 0, O_RDONLY);
+       d->demux = dvb_open_node (d, "demux", O_RDONLY);
        if (d->demux == -1)
        {
            msg_Err (obj, "cannot access demultiplexer: %m");
@@ -251,7 +252,7 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
     {
         for (size_t i = 0; i < MAX_PIDS; i++)
             d->pids[i].pid = d->pids[i].fd = -1;
-        d->demux = dvb_open_node (d->dir, "dvr", 0, O_RDONLY);
+        d->demux = dvb_open_node (d, "dvr", O_RDONLY);
         if (d->demux == -1)
         {
             msg_Err (obj, "cannot access DVR: %m");
@@ -263,7 +264,7 @@ dvb_device_t *dvb_open (vlc_object_t *obj)
     }
 
 #ifdef HAVE_DVBPSI
-    int ca = dvb_open_node (d->dir, "ca", 0, O_RDWR);
+    int ca = dvb_open_node (d, "ca", O_RDWR);
     if (ca != -1)
     {
         d->cam = en50221_Init (obj, ca);
@@ -381,7 +382,7 @@ int dvb_add_pid (dvb_device_t *d, uint16_t pid)
         if (d->pids[i].fd != -1)
             continue;
 
-        int fd = dvb_open_node (d->dir, "demux", 0, O_RDONLY);
+        int fd = dvb_open_node (d, "demux", O_RDONLY);
         if (fd == -1)
             goto error;
 
@@ -431,63 +432,21 @@ void dvb_remove_pid (dvb_device_t *d, uint16_t pid)
 }
 
 /** Finds a frontend of the correct type */
-static int dvb_find_frontend (dvb_device_t *d, fe_type_t type, fe_caps_t caps)
+static int dvb_open_frontend (dvb_device_t *d)
 {
     if (d->frontend != -1)
-    {
-        if (d->info.type == type || (d->info.caps & caps) == caps)
-            return 0; /* already got an adequate frontend */
-
-        close (d->frontend);
-        d->frontend = -1;
-    }
-
-    for (unsigned n = 0; n < 256; n++)
-    {
-        int fd = dvb_open_node (d->dir, "frontend", n, O_RDWR);
-        if (fd == -1)
-        {
-            if (errno == ENOENT)
-                break; /* all frontends already enumerated */
-            msg_Err (d->obj, "cannot access frontend %u; %m", n);
-            continue;
-        }
-
-        if (ioctl (fd, FE_GET_INFO, &d->info) < 0)
-        {
-            msg_Err (d->obj, "cannot get frontend %u info: %m", n);
-            goto skip;
-        }
-
-        msg_Dbg (d->obj, "probing frontend %u: %s", n, d->info.name);
-        msg_Dbg (d->obj, " type %u, capabilities 0x%08X", d->info.type,
-                 d->info.caps);
-        msg_Dbg (d->obj, " frequencies %10"PRIu32" to %10"PRIu32,
-                 d->info.frequency_min, d->info.frequency_max);
-        msg_Dbg (d->obj, " (%"PRIu32" tolerance, %"PRIu32" per step)",
-                 d->info.frequency_tolerance, d->info.frequency_stepsize);
-        msg_Dbg (d->obj, " bauds rates %10"PRIu32" to %10"PRIu32,
-                 d->info.symbol_rate_min, d->info.symbol_rate_max);
-        msg_Dbg (d->obj, " (%"PRIu32" tolerance)",
-                 d->info.symbol_rate_tolerance);
-
-        if (d->info.type != type || (d->info.caps & caps) != caps)
-        {
-            msg_Dbg (d->obj, "skipping frontend %u: wrong type", n);
-            goto skip;
-        }
-
-        msg_Dbg (d->obj, "selected frontend %u", n);
-        d->frontend = fd;
         return 0;
-
-    skip:
-        close (fd);
+    int fd = dvb_open_node (d, "frontend", O_RDWR);
+    if (fd == -1)
+    {
+        msg_Err (d->obj, "cannot access frontend: %m");
+        return -1;
     }
 
-    msg_Err (d->obj, "no suitable frontend found");
-    return -1;
+    d->frontend = fd;
+    return 0;
 }
+#define dvb_find_frontend(d, sys) (dvb_open_frontend(d))
 
 /**
  * Detects supported delivery systems.
@@ -495,47 +454,56 @@ static int dvb_find_frontend (dvb_device_t *d, fe_type_t type, fe_caps_t caps)
  */
 unsigned dvb_enum_systems (dvb_device_t *d)
 {
-    unsigned systems = 0;
+    if (dvb_open_frontend (d))
+        return 0;
 
-    for (unsigned n = 0; n < 256; n++)
+    struct dvb_frontend_info info;
+    if (ioctl (d->frontend, FE_GET_INFO, &info) < 0)
     {
-        int fd = dvb_open_node (d->dir, "frontend", n, O_RDWR);
-        if (fd == -1)
-        {
-            if (errno == ENOENT)
-                break; /* all frontends already enumerated */
-            msg_Err (d->obj, "cannot access frontend %u; %m", n);
-            continue;
-        }
-
-        struct dvb_frontend_info info;
-        if (ioctl (fd, FE_GET_INFO, &info) < 0)
-        {
-            msg_Err (d->obj, "cannot get frontend %u info: %m", n);
-            close (fd);
-            continue;
-        }
-        close (fd);
-
-        /* Linux DVB lacks detection for non-DVB/non-ATSC demods */
-        static const unsigned types[] = {
-            [FE_QPSK] = DVB_S,
-            [FE_QAM] = DVB_C,
-            [FE_OFDM] = DVB_T,
-            [FE_ATSC] = ATSC,
-        };
-
-        if (((unsigned)info.type) >= sizeof (types) / sizeof (types[0]))
-        {
-            msg_Err (d->obj, "unknown frontend type %u", info.type);
-            continue;
-        }
-
-        unsigned sys = types[info.type];
-        if (info.caps & FE_CAN_2G_MODULATION)
-            sys |= sys << 1; /* DVB_foo -> DVB_foo|DVB_foo2 */
-        systems |= sys;
+        msg_Err (d->obj, "cannot get frontend info: %m");
+        return 0;
     }
+
+    msg_Dbg (d->obj, "probing frontend: %s", info.name);
+    msg_Dbg (d->obj, " type %u, capabilities 0x%08X", info.type, info.caps);
+    msg_Dbg (d->obj, " frequencies %10"PRIu32" to %10"PRIu32,
+             info.frequency_min, info.frequency_max);
+    msg_Dbg (d->obj, " (%"PRIu32" tolerance, %"PRIu32" per step)",
+             info.frequency_tolerance, info.frequency_stepsize);
+    msg_Dbg (d->obj, " bauds rates %10"PRIu32" to %10"PRIu32,
+             info.symbol_rate_min, info.symbol_rate_max);
+    msg_Dbg (d->obj, " (%"PRIu32" tolerance)", info.symbol_rate_tolerance);
+
+    unsigned systems;
+
+    /* DVB first generation and ATSC */
+    switch (info.type)
+    {
+        case FE_QPSK: systems = DVB_S; break;
+        case FE_QAM:  systems = DVB_C; break;
+        case FE_OFDM: systems = DVB_T; break;
+        case FE_ATSC: systems = ATSC;  break;
+        default:
+            systems = 0;
+            msg_Err (d->obj, "unknown frontend type %u", info.type);
+    }
+
+    /* DVB 2nd generation */
+    switch (info.type)
+    {
+        case FE_QPSK:
+        case FE_QAM:
+        case FE_OFDM:
+            if (info.caps & FE_CAN_2G_MODULATION)
+                systems |= systems << 1; /* DVB_foo -> DVB_foo|DVB_foo2 */
+        default:
+            break;
+    }
+
+    /* ISDB (only terrestrial before DVBv5.5)  */
+    if (info.type == FE_OFDM)
+        systems |= ISDB_T;
+
     return systems;
 }
 
@@ -543,7 +511,8 @@ float dvb_get_signal_strength (dvb_device_t *d)
 {
     uint16_t strength;
 
-    if (ioctl (d->frontend, FE_READ_SIGNAL_STRENGTH, &strength) < 0)
+    if (d->frontend == -1
+     || ioctl (d->frontend, FE_READ_SIGNAL_STRENGTH, &strength) < 0)
         return 0.;
     return strength / 65535.;
 }
@@ -552,7 +521,7 @@ float dvb_get_snr (dvb_device_t *d)
 {
     uint16_t snr;
 
-    if (ioctl (d->frontend, FE_READ_SNR, &snr) < 0)
+    if (d->frontend == -1 || ioctl (d->frontend, FE_READ_SNR, &snr) < 0)
         return 0.;
     return snr / 65535.;
 }
@@ -630,7 +599,7 @@ int dvb_set_dvbc (dvb_device_t *d, uint32_t freq, const char *modstr,
     unsigned mod = dvb_parse_modulation (modstr, QAM_AUTO);
     fec = dvb_parse_fec (fec);
 
-    if (dvb_find_frontend (d, FE_QAM, FE_IS_STUPID))
+    if (dvb_find_frontend (d, DVB_C))
         return -1;
     return dvb_set_props (d, 6, DTV_CLEAR, 0,
 #if DVBv5(5)
@@ -763,7 +732,7 @@ int dvb_set_dvbs (dvb_device_t *d, uint64_t freq_Hz,
     uint32_t freq = freq_Hz / 1000;
     fec = dvb_parse_fec (fec);
 
-    if (dvb_find_frontend (d, FE_QPSK, FE_IS_STUPID))
+    if (dvb_find_frontend (d, DVB_S))
         return -1;
     return dvb_set_props (d, 5, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_DVBS,
                           DTV_FREQUENCY, freq, DTV_SYMBOL_RATE, srate,
@@ -792,7 +761,7 @@ int dvb_set_dvbs2 (dvb_device_t *d, uint64_t freq_Hz, const char *modstr,
         default: rolloff = PILOT_AUTO; break;
     }
 
-    if (dvb_find_frontend (d, FE_QPSK, FE_CAN_2G_MODULATION))
+    if (dvb_find_frontend (d, DVB_S2))
         return -1;
     return dvb_set_props (d, 8, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_DVBS2,
                           DTV_FREQUENCY, freq, DTV_MODULATION, mod,
@@ -876,7 +845,7 @@ int dvb_set_dvbt (dvb_device_t *d, uint32_t freq, const char *modstr,
     guard = dvb_parse_guard (guard);
     hierarchy = dvb_parse_hierarchy (hierarchy);
 
-    if (dvb_find_frontend (d, FE_OFDM, FE_IS_STUPID))
+    if (dvb_find_frontend (d, DVB_T))
         return -1;
     return dvb_set_props (d, 10, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_DVBT,
                           DTV_FREQUENCY, freq, DTV_MODULATION, mod,
@@ -898,7 +867,7 @@ int dvb_set_dvbt2 (dvb_device_t *d, uint32_t freq, const char *modstr,
     transmit_mode = dvb_parse_transmit_mode (transmit_mode);
     guard = dvb_parse_guard (guard);
 
-    if (dvb_find_frontend (d, FE_OFDM, FE_CAN_2G_MODULATION))
+    if (dvb_find_frontend (d, DVB_T2))
         return -1;
     return dvb_set_props (d, 8, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_DVBT2,
                           DTV_FREQUENCY, freq, DTV_MODULATION, mod,
@@ -922,7 +891,7 @@ int dvb_set_isdbc (dvb_device_t *d, uint32_t freq, const char *modstr,
     unsigned mod = dvb_parse_modulation (modstr, QAM_AUTO);
     fec = dvb_parse_fec (fec);
 
-    if (dvb_find_frontend (d, FE_QAM, FE_IS_STUPID))
+    if (dvb_find_frontend (d, ISDB_C))
         return -1;
     return dvb_set_props (d, 6, DTV_CLEAR, 0,
 #if DVBv5(5)
@@ -942,7 +911,7 @@ int dvb_set_isdbs (dvb_device_t *d, uint64_t freq_Hz, uint16_t ts_id)
 #if DVBv5(1)
     uint32_t freq = freq_Hz / 1000;
 
-    if (dvb_find_frontend (d, FE_QPSK, FE_IS_STUPID))
+    if (dvb_find_frontend (d, ISDB_S))
         return -1;
     return dvb_set_props (d, 5, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_ISDBS,
                           DTV_FREQUENCY, freq,
@@ -985,7 +954,7 @@ int dvb_set_isdbt (dvb_device_t *d, uint32_t freq, uint32_t bandwidth,
     transmit_mode = dvb_parse_transmit_mode (transmit_mode);
     guard = dvb_parse_guard (guard);
 
-    if (dvb_find_frontend (d, FE_OFDM, FE_IS_STUPID))
+    if (dvb_find_frontend (d, ISDB_T))
         return -1;
     if (dvb_set_props (d, 5, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_ISDBT,
                        DTV_FREQUENCY, freq, DTV_BANDWIDTH_HZ, bandwidth,
@@ -1010,7 +979,7 @@ int dvb_set_atsc (dvb_device_t *d, uint32_t freq, const char *modstr)
 {
     unsigned mod = dvb_parse_modulation (modstr, VSB_8);
 
-    if (dvb_find_frontend (d, FE_ATSC, FE_IS_STUPID))
+    if (dvb_find_frontend (d, ATSC))
         return -1;
     return dvb_set_props (d, 4, DTV_CLEAR, 0, DTV_DELIVERY_SYSTEM, SYS_ATSC,
                           DTV_FREQUENCY, freq, DTV_MODULATION, mod);
@@ -1020,7 +989,7 @@ int dvb_set_cqam (dvb_device_t *d, uint32_t freq, const char *modstr)
 {
     unsigned mod = dvb_parse_modulation (modstr, QAM_AUTO);
 
-    if (dvb_find_frontend (d, FE_QAM, FE_IS_STUPID))
+    if (dvb_find_frontend (d, ATSC))
         return -1;
     return dvb_set_props (d, 4, DTV_CLEAR, 0,
                           DTV_DELIVERY_SYSTEM, SYS_DVBC_ANNEX_B,

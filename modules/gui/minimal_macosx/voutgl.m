@@ -2,7 +2,7 @@
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 6daabe3644284994a24cb16a17d5f9f594914899 $
+ * $Id: 96792fa399c3cfa376a8f13c4f7412ed7a43f7a6 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -81,14 +81,14 @@ int OpenVideoGL  ( vlc_object_t * p_this )
         p_vout->pf_unlock = cocoaglvoutviewUnlock;
     }
 #else
-	/* Let's use the VLCOpenGLVoutView.m class */
-	p_vout->pf_init   = cocoaglvoutviewInit;
-	p_vout->pf_end    = cocoaglvoutviewEnd;
-	p_vout->pf_manage = cocoaglvoutviewManage;
-	p_vout->pf_control= cocoaglvoutviewControl;
-	p_vout->pf_swap   = cocoaglvoutviewSwap;
-	p_vout->pf_lock   = cocoaglvoutviewLock;
-	p_vout->pf_unlock = cocoaglvoutviewUnlock;
+    /* Let's use the VLCOpenGLVoutView.m class */
+    p_vout->pf_init   = cocoaglvoutviewInit;
+    p_vout->pf_end    = cocoaglvoutviewEnd;
+    p_vout->pf_manage = cocoaglvoutviewManage;
+    p_vout->pf_control= cocoaglvoutviewControl;
+    p_vout->pf_swap   = cocoaglvoutviewSwap;
+    p_vout->pf_lock   = cocoaglvoutviewLock;
+    p_vout->pf_unlock = cocoaglvoutviewUnlock;
 #endif
     p_vout->p_sys->b_got_frame = false;
 

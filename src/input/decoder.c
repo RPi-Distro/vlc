@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 2e81f787fd4a16ef11bfaa4152fb1db0ba7c5de5 $
+ * $Id: 10298b0c466185edd53c8ddd1e2be3dff244af28 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -2296,6 +2296,8 @@ static aout_buffer_t *aout_new_buffer( decoder_t *p_dec, int i_samples )
 
         p_owner->p_aout = p_aout;
         DecoderUpdateFormatLocked( p_dec );
+        if( unlikely(p_owner->b_paused) ) /* fake pause if needed */
+            aout_DecChangePause( p_aout, true, mdate() );
 
         vlc_mutex_unlock( &p_owner->lock );
 

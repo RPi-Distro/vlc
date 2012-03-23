@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access and access_demux module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004, 2006, 2008, 2010 the VideoLAN team
- * $Id: 59eac96cb2c907f9fa9b3575a41f0a3f23c945b5 $
+ * $Id: 148ca932ef14bf5eb47f9b1f0d573b6396039abc $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>
@@ -50,6 +50,9 @@
 
 #include "access.h"
 #include "filter.h"
+
+#define INSTANCEDATA_OF_PROPERTY_PTR(x) ((PKSPROPERTY((x))) + 1)
+#define INSTANCEDATA_OF_PROPERTY_SIZE(x) (sizeof((x)) - sizeof(KSPROPERTY))
 
 /*****************************************************************************
  * Access: local prototypes

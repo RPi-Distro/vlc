@@ -2,7 +2,7 @@
  * video.c: video decoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 49f94fc85dd678f76d5a8f7038af7fdfa449e99e $
+ * $Id: 60ce6b66d52f584d9e4a0484055c7cdae9c99aa3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -27,6 +27,14 @@
  *****************************************************************************/
 #ifdef HAVE_CONFIG_H
 # include "config.h"
+#endif
+
+#if defined(HAVE_LIBAVCODEC_AVCODEC_H) && defined(HAVE_AVCODEC_DXVA2)
+# if _WIN32_WINNT < 0x600
+/* dxva2 needs Vista support */
+#  undef _WIN32_WINNT
+#  define _WIN32_WINNT 0x600
+# endif
 #endif
 
 #include <vlc_common.h>
@@ -86,8 +94,13 @@ struct decoder_sys_t
     /* Hack to force display of still pictures */
     bool b_first_frame;
 
+
     /* */
+#if LIBAVCODEC_VERSION_MAJOR < 54
     AVPaletteControl palette;
+#else
+# warning FIXME
+#endif
 
     /* */
     bool b_flush;
@@ -105,9 +118,6 @@ struct decoder_sys_t
 #   define wait_mt(s)
 #   define post_mt(s)
 #endif
-
-/* FIXME (dummy palette for now) */
-static const AVPaletteControl palette_control;
 
 /*****************************************************************************
  * Local prototypes
@@ -225,7 +235,11 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
     /*  ***** Get configuration of ffmpeg plugin ***** */
     p_sys->p_context->workaround_bugs =
         var_InheritInteger( p_dec, "ffmpeg-workaround-bugs" );
+#if LIBAVCODEC_VERSION_MAJOR < 54
     p_sys->p_context->error_recognition =
+#else
+    p_sys->p_context->err_recognition =
+#endif
         var_InheritInteger( p_dec, "ffmpeg-error-resilience" );
 
     if( var_CreateGetBool( p_dec, "grayscale" ) )
@@ -341,6 +355,9 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
         i_thread_count = vlc_GetCPUCount();
         if( i_thread_count > 1 )
             i_thread_count++;
+
+        //FIXME: take in count the decoding time
+        i_thread_count = __MIN( i_thread_count, 4 );
     }
     i_thread_count = __MIN( i_thread_count, 16 );
     msg_Dbg( p_dec, "allowing %d thread(s) for decoding", i_thread_count );
@@ -393,6 +410,7 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
     }
     p_dec->fmt_out.i_codec = p_dec->fmt_out.video.i_chroma;
 
+#if LIBAVCODEC_VERSION_MAJOR < 54
     /* Setup palette */
     memset( &p_sys->palette, 0, sizeof(p_sys->palette) );
     if( p_dec->fmt_in.video.p_palette )
@@ -422,6 +440,9 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
     {
         p_sys->p_context->palctrl = &p_sys->palette;
     }
+#else
+# warning FIXME
+#endif
 
     /* ***** init this codec with special data ***** */
     ffmpeg_InitCodec( p_dec );
@@ -643,7 +664,7 @@ picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         }
 
         /* Sanity check (seems to be needed for some streams) */
-        if( p_sys->p_ff_pic->pict_type == FF_B_TYPE )
+        if( p_sys->p_ff_pic->pict_type == AV_PICTURE_TYPE_B)
         {
             p_sys->b_has_b_frames = true;
         }
@@ -976,8 +997,10 @@ static int ffmpeg_GetFrameBuf( struct AVCodecContext *p_context,
 
         /* */
         p_ff_pic->type = FF_BUFFER_TYPE_USER;
-        /* FIXME what is that, should give good value */
-        p_ff_pic->age = 256*256*256*64; // FIXME FIXME from ffmpeg
+
+#if LIBAVCODEC_VERSION_MAJOR < 54
+        p_ff_pic->age = 256*256*256*64;
+#endif
 
         if( vlc_va_Get( p_sys->p_va, p_ff_pic ) )
         {
@@ -1067,8 +1090,9 @@ static int ffmpeg_GetFrameBuf( struct AVCodecContext *p_context,
     p_ff_pic->linesize[2] = p_pic->p[2].i_pitch;
     p_ff_pic->linesize[3] = 0;
 
-    /* FIXME what is that, should give good value */
-    p_ff_pic->age = 256*256*256*64; // FIXME FIXME from ffmpeg
+#if LIBAVCODEC_VERSION_MAJOR < 54
+    p_ff_pic->age = 256*256*256*64;
+#endif
 
     post_mt( p_sys );
     return 0;

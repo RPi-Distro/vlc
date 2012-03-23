@@ -2,7 +2,7 @@
  * preferences_widgets.hpp : Widgets for preferences panels
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: f7d7e36aa0f921fdfafefd25a575d223087de092 $
+ * $Id: 485210ae2e57d687b503350c67e3ed13d02b3289 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -139,8 +139,8 @@ public:
     IntegerConfigControl( vlc_object_t *, module_config_t *,
                           QLabel*, QSlider* );
     virtual int getValue() const;
-    virtual void show() const { spin->show(); if( label ) label->show(); }
-    virtual void hide() const { spin->hide(); if( label ) label->hide(); }
+    virtual void show() { spin->show(); if( label ) label->show(); }
+    virtual void hide() { spin->hide(); if( label ) label->hide(); }
 
 protected:
     QSpinBox *spin;

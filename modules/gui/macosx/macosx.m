@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2011 VLC authors and VideoLAN
- * $Id: 93be4847c86cc318e0b24e17e2a61ab0f233982f $
+ * $Id: 1caff306fbf01026cc7c5a567c99119f7a1287ab $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -115,7 +115,7 @@ vlc_module_begin ()
     add_bool( "macosx-appleremote", true, USE_APPLE_REMOTE_TEXT, USE_APPLE_REMOTE_LONGTEXT, false )
     add_bool( "macosx-mediakeys", true, USE_MEDIAKEYS_TEXT, USE_MEDIAKEYS_LONGTEXT, false )
     add_bool( "macosx-interfacestyle", false, INTERFACE_STYLE_TEXT, INTERFACE_STYLE_LONGTEXT, false )
-    add_bool( "macosx-nativefullscreenmode", true, NATIVE_FULLSCREEN_MODE_ON_LION_TEXT, NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT, false )
+    add_bool( "macosx-nativefullscreenmode", false, NATIVE_FULLSCREEN_MODE_ON_LION_TEXT, NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT, false )
     add_bool( "macosx-autosave-volume", true, SAVEVOL_TEXT, SAVEVOL_TEXT, true )
     add_obsolete_bool( "macosx-stretch" ) /* since 2.0.0 */
     add_obsolete_bool( "macosx-background" ) /* since 2.0.0 */

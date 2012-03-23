@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 5feba0f06d89124399d167696208592d86bb6cf2 $
+ * $Id: de5f0ff9719ec4704178011f2726cddc7b69181f $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -54,7 +54,7 @@ static VLCInfo *_o_sharedInstance = nil;
     else
     {
         _o_sharedInstance = [super init];
-        
+
         if( _o_sharedInstance != nil )
         {
             p_item = NULL;
@@ -156,7 +156,7 @@ static VLCInfo *_o_sharedInstance = nil;
     [o_input_bitrate_txt setStringValue: [NSString stringWithFormat:@"%6.0f kb/s", (float)0]];
     [o_demux_bytes_txt setStringValue: [NSString stringWithFormat:@"%8.0f KiB", (float)0]];
     [o_demux_bitrate_txt setStringValue: [NSString stringWithFormat:@"%6.0f kb/s", (float)0]];
-    
+
     //Initializing Video Variables
     [o_video_decoded_txt setIntValue:0];
     [o_displayed_txt setIntValue:0];

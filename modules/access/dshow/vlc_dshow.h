@@ -2,7 +2,7 @@
  * vlc_dshow.h : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2004, 2010-2011 the VideoLAN team
- * $Id: 5597d84257a252b23accf8f72652bcef4105aeb1 $
+ * $Id: 40402dd0f9ee3e677ee94873ec0664444eae9148 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,32 +24,30 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-
-#ifndef _MSC_VER
-#   include <wtypes.h>
-#   include <unknwn.h>
-#   include <ole2.h>
-#   include <limits.h>
-#   ifdef _WINGDI_
-#      undef _WINGDI_
-#   endif
-#   define _WINGDI_ 1
-#   define AM_NOVTABLE
-#   define _OBJBASE_H_
-#   undef _X86_
-#   ifndef _I64_MAX
-#     define _I64_MAX LONG_LONG_MAX
-#   endif
-#   define LONGLONG long long
-#endif
-
-#include <dshow.h>
-
-#define INSTANCEDATA_OF_PROPERTY_PTR(x) ((PKSPROPERTY((x))) + 1)
-#define INSTANCEDATA_OF_PROPERTY_SIZE(x) (sizeof((x)) - sizeof(KSPROPERTY))
-
 #ifndef VLC_DSHOW_H
 #define VLC_DSHOW_H
+
+#ifdef __MINGW32__
+# include <_mingw.h>
+#endif
+
+#include <wtypes.h>
+#include <unknwn.h>
+#include <ole2.h>
+#include <limits.h>
+#include <strmif.h>
+#include <ksmedia.h>
+#include <ddraw.h>
+
+#ifdef __MINGW64_VERSION_MAJOR
+
+#if __MINGW64_VERSION_MAJOR < 3
+DEFINE_GUID(MEDIASUBTYPE_I420,0x30323449,0x0000,0x0010,0x80,0x00,0x00,0xaa,0x00,0x38,0x9b,0x71);
+#endif
+
+#else /* !__MINGW64_VERSION_MAJOR */
+
+#include <dshow.h>
 
 /*****************************************************************************
  * DirectShow GUIDs.
@@ -67,7 +65,6 @@ MEDIASUBTYPEs and FORMAT */
 DEFINE_GUID(MEDIASUBTYPE_ARGB32 ,0x773c9ac0, 0x3274, 0x11d0, 0xb7, 0x24, 0x0, 0xaa, 0x0, 0x6c, 0x1a, 0x1);
 /* Packed YUV formats */
 DEFINE_GUID(MEDIASUBTYPE_YUYV ,0x56595559, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
-DEFINE_GUID(MEDIASUBTYPE_HDYC ,0x43594448, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 /* Planar YUV formats */
 DEFINE_GUID(MEDIASUBTYPE_IYUV ,0x56555949, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71); /* identical to YV12 */
 DEFINE_GUID(MEDIASUBTYPE_I420 ,0x30323449, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
@@ -76,8 +73,6 @@ DEFINE_GUID(MEDIASUBTYPE_MPEG2_VIDEO     ,0xe06d8026, 0xdb46, 0x11cf, 0xb4, 0xd1
 DEFINE_GUID(MEDIASUBTYPE_MPEG2_PROGRAM   ,0xe06d8022, 0xdb46, 0x11cf, 0xb4, 0xd1, 0x00, 0x80, 0x5f, 0x6c, 0xbb, 0xea);
 DEFINE_GUID(MEDIASUBTYPE_MPEG2_TRANSPORT ,0xe06d8023, 0xdb46, 0x11cf, 0xb4, 0xd1, 0x00, 0x80, 0x5f, 0x6c, 0xbb, 0xea);
 DEFINE_GUID(FORMAT_MPEG2Video            ,0xe06d80e3, 0xdb46, 0x11cf, 0xb4, 0xd1, 0x00, 0x80, 0x5f, 0x6c, 0xbb, 0xea);
-/* DivX formats */
-DEFINE_GUID(MEDIASUBTYPE_DIVX ,0x58564944, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 
 /* float */
 DEFINE_GUID(MEDIASUBTYPE_IEEE_FLOAT ,0x00000003, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
@@ -380,4 +375,5 @@ DECLARE_INTERFACE_(IAMTVAudio, IUnknown)
     STDMETHOD(UnRegisterNotificationCallBack) (THIS_ IAMTunerNotification*);
 };
 
+#endif /* __MINGW64_VERSION_MAJOR */
 #endif /* VLC_DSHOW_H */

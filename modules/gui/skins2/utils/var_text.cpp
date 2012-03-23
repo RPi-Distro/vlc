@@ -2,7 +2,7 @@
  * var_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 18ff625da1873ced0a7b7f6343e0bd8be6112fcf $
+ * $Id: ccce193a83b883cd45186006f2f8825845bf403b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -123,6 +123,10 @@ const UString VarText::get() const
     {
         temp.replace( pos, 2, pVlcProc->getStreamSampleRateVar().get() );
     }
+    while( (pos = temp.find( "$R" )) != UString::npos )
+    {
+        temp.replace( pos, 2, pVlcProc->getSpeedVar().get() );
+    }
 
     return temp;
 }
@@ -180,6 +184,10 @@ void VarText::set( const UString &rText )
         {
             pVlcProc->getStreamSampleRateVar().addObserver( this );
         }
+        if( m_text.find( "$R" ) != UString::npos )
+        {
+            pVlcProc->getSpeedVar().addObserver( this );
+        }
     }
 
     notify();
@@ -223,6 +231,7 @@ void VarText::delObservers()
     {
         pVlcProc->getTimeVar().delObserver( this );
         pVlcProc->getVolumeVar().delObserver( this );
+        pVlcProc->getSpeedVar().delObserver( this );
         pVlcProc->getStreamNameVar().delObserver( this );
         pVlcProc->getStreamURIVar().delObserver( this );
         pVlcProc->getStreamBitRateVar().delObserver( this );

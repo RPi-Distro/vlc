@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: d2a771e4fe7404817ba233986d7c7d65b950983b $
+ * $Id: 4706bf603ab72e3bb88ef97cabf8373eab9975a0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -1517,8 +1517,11 @@ bool KeySelectorControl::eventFilter( QObject *obj, QEvent *e )
     }
     else if( keyEv->key() == Qt::Key_Delete )
     {
-        aTable->currentItem()->setText( aTable->currentColumn(), NULL );
-        aTable->currentItem()->setData( aTable->currentColumn(), Qt::UserRole, QVariant() );
+        if( aTable->currentColumn() != 0 )
+        {
+            aTable->currentItem()->setText( aTable->currentColumn(), NULL );
+            aTable->currentItem()->setData( aTable->currentColumn(), Qt::UserRole, QVariant() );
+        }
         return true;
     }
     else

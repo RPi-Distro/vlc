@@ -2,7 +2,7 @@
  * preferences.cpp : "Normal preferences"
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 8aaf97116a5c187e8f0718bfe12181327414d0c8 $
+ * $Id: b29335d253cda5309268cbcd6f0c43e4c7f2495f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -131,6 +131,7 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent ) :
             current_item->setData( 0, Qt::UserRole,
                                    qVariantFromValue( data ) );
             addTopLevelItem( current_item );
+            expandItem( current_item );
             break;
 
         /* This is a subcategory */

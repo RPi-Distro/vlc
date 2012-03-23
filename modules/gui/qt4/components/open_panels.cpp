@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: dc1f9e65bf699c39fbd52e2215c48651a1e18f52 $
+ * $Id: 3f90eb7500a69cbc5f7acdaba0339a0372169df9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -550,10 +550,15 @@ void DiscOpenPanel::updateMRL()
             opts += " :sub-track=" +
                 QString("%1").arg( ui.subtitlesSpin->value() );
     }
-    if( ui.audioCDRadioButton->isChecked() )
+    else if( ui.audioCDRadioButton->isChecked() )
     {
         if( ui.titleSpin->value() > 0 )
             opts += QString(" :cdda-track=%1").arg( ui.titleSpin->value() );
+    }
+    else if ( ui.bdRadioButton->isChecked() )
+    {
+        if ( ui.dvdsimple->isChecked() == false )
+            opts += " :bluray-menu";
     }
     emit mrlUpdated( fileList, opts );
 }
@@ -613,10 +618,13 @@ NetOpenPanel::~NetOpenPanel()
     for( int i = 0; i < ui.urlComboBox->count(); i++ )
         mrlList << ui.urlComboBox->itemText( i );
 
-    /* Clean the list... */
-    mrlList.removeDuplicates();
-    /* ...and save the 8 last entries */
-    getSettings()->setValue( "OpenDialog/netMRL", mrlList );
+    if( mrlList.count() > 0 )
+    {
+        /* Clean the list... */
+        mrlList.removeDuplicates();
+        /* ...and save the 8 last entries */
+        getSettings()->setValue( "OpenDialog/netMRL", mrlList );
+    }
 }
 
 void NetOpenPanel::clear()

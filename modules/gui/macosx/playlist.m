@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 1d12022b6f30e7f5abd85e8c44b5d2c81942b53d $
+ * $Id: 41f0f93d981132c1d8e43d3f3ce6f9195ad93117 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -64,7 +64,7 @@
 
 - (NSMenu *)menuForEvent:(NSEvent *)o_event
 {
-    return( [[self delegate] menuForEvent: o_event] );
+    return( [(VLCPlaylist *)[self delegate] menuForEvent: o_event] );
 }
 
 - (void)keyDown:(NSEvent *)o_event
@@ -82,7 +82,7 @@
         case NSDeleteFunctionKey:
         case NSDeleteCharFunctionKey:
         case NSBackspaceCharacter:
-            [[self delegate] deleteItem:self];
+            [(VLCPlaylist *)[self delegate] deleteItem:self];
             break;
 
         case NSEnterCharacter:
@@ -128,7 +128,7 @@
     [o_outline_view setAllowsEmptySelection: NO];
     [o_outline_view expandItem: [o_outline_view itemAtRow:0]];
 
-	[o_outline_view_other setTarget: self];
+    [o_outline_view_other setTarget: self];
     [o_outline_view_other setDelegate: self];
     [o_outline_view_other setDataSource: self];
     [o_outline_view_other setAllowsEmptySelection: NO];
@@ -142,7 +142,7 @@
     [[o_tc_author headerCell] setStringValue:_NS("Author")];
     [[o_tc_duration headerCell] setStringValue:_NS("Duration")];
 
-	[[o_tc_name_other headerCell] setStringValue:_NS("Name")];
+    [[o_tc_name_other headerCell] setStringValue:_NS("Name")];
     [[o_tc_author_other headerCell] setStringValue:_NS("Author")];
     [[o_tc_duration_other headerCell] setStringValue:_NS("Duration")];
 }
@@ -161,21 +161,21 @@
 
 - (void)swapPlaylists:(id)newList
 {
-	if(newList != o_outline_view)
-	{
-		id o_outline_view_temp = o_outline_view;
-		id o_tc_author_temp = o_tc_author;
-		id o_tc_duration_temp = o_tc_duration;
-		id o_tc_name_temp = o_tc_name;
-		o_outline_view = o_outline_view_other;
-		o_tc_author = o_tc_author_other;
-		o_tc_duration = o_tc_duration_other;
-		o_tc_name = o_tc_name_other;
-		o_outline_view_other = o_outline_view_temp;
-		o_tc_author_other = o_tc_author_temp;
-		o_tc_duration_other = o_tc_duration_temp;
-		o_tc_name_other = o_tc_name_temp;
-	}
+    if(newList != o_outline_view)
+    {
+        id o_outline_view_temp = o_outline_view;
+        id o_tc_author_temp = o_tc_author;
+        id o_tc_duration_temp = o_tc_duration;
+        id o_tc_name_temp = o_tc_name;
+        o_outline_view = o_outline_view_other;
+        o_tc_author = o_tc_author_other;
+        o_tc_duration = o_tc_duration_other;
+        o_tc_name = o_tc_name_other;
+        o_outline_view_other = o_outline_view_temp;
+        o_tc_author_other = o_tc_author_temp;
+        o_tc_duration_other = o_tc_duration_temp;
+        o_tc_name_other = o_tc_name_temp;
+    }
 }
 
 - (NSOutlineView *)outlineView
@@ -510,14 +510,14 @@
 
 - (void)swapPlaylists:(id)newList
 {
-	if(newList != o_outline_view)
-	{
-		id o_search_field_temp = o_search_field;
-		o_search_field = o_search_field_other;
-		o_search_field_other = o_search_field_temp;
-		[super swapPlaylists:newList];
-		[self playlistUpdated];
-	}
+    if(newList != o_outline_view)
+    {
+        id o_search_field_temp = o_search_field;
+        o_search_field = o_search_field_other;
+        o_search_field_other = o_search_field_temp;
+        [super swapPlaylists:newList];
+        [self playlistUpdated];
+    }
 }
 
 - (void)playlistUpdated
@@ -620,6 +620,7 @@
     id o_item = [o_outline_dict objectForKey:[NSString stringWithFormat: @"%p", p_item]];
     NSInteger i_index = [o_outline_view rowForItem:o_item];
     [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:i_index] byExtendingSelection:NO];
+    [o_outline_view setNeedsDisplay:YES];
 }
 
 /* Check if p_item is a child of p_node recursively. We need to check the item
@@ -936,6 +937,17 @@
     p_playlist = pl_Get( p_intf );
 
     NSUInteger indexes[i_count];
+    if (i_count == [o_outline_view numberOfRows])
+    {
+#ifndef NDEBUG
+        msg_Dbg( p_intf, "user selected entire list, deleting current playlist root instead of individual items" );
+#endif
+        PL_LOCK;
+        playlist_NodeDelete( p_playlist, [self currentPlaylistRoot], true, false );
+        PL_UNLOCK;
+        [self playlistUpdated];
+        return;
+    }
     [o_selected_indexes getIndexes:indexes maxCount:i_count inIndexRange:nil];
     for (int i = 0; i < i_count; i++)
     {
@@ -958,7 +970,7 @@
                 // if current item is in selected node and is playing then stop playlist
                 playlist_Control(p_playlist, PLAYLIST_STOP, pl_Locked );
 
-            playlist_NodeDelete( p_playlist, p_item, true, false );
+                playlist_NodeDelete( p_playlist, p_item, true, false );
         }
         else
             playlist_DeleteFromInput( p_playlist, p_item->p_input, pl_Locked );
@@ -1274,7 +1286,7 @@
     }
     if( i_row > -1 )
     {
-		[o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:i_row] byExtendingSelection:NO];
+        [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:i_row] byExtendingSelection:NO];
         [o_outline_view scrollRowToVisible: i_row];
     }
 }
@@ -1392,7 +1404,13 @@
                                 forTableColumn:(NSTableColumn *)tableColumn
                                 item:(id)item
 {
-    playlist_t *p_playlist = pl_Get( VLCIntf );
+    /* this method can be called when VLC is already dead, hence the extra checks */
+    intf_thread_t * p_intf = VLCIntf;
+    if (!p_intf)
+        return;
+    playlist_t *p_playlist = pl_Get( p_intf );
+    if (!p_playlist)
+        return;
 
     id o_playing_item;
 

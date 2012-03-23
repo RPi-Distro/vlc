@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 2ac23975f8427bbfe06357fe178c559d48ac6034 $
+ * $Id: 1230404fe89bea23327a16802648a013b662e399 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -348,6 +348,7 @@ void MainInterface::recreateToolbars()
         fullscreenControls = new FullscreenControllerWidget( p_intf, this );
         CONNECT( fullscreenControls, keyPressed( QKeyEvent * ),
                  this, handleKeyPress( QKeyEvent * ) );
+        THEMIM->requestVoutUpdate();
     }
 }
 

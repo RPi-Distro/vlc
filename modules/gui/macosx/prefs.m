@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2006 VLC authors and VideoLAN
- * $Id: 11eb51a075bea398900e58f88b483710d1632a8d $
+ * $Id: 6b85d24ad3d4ba68314c1292a69b7845a351620b $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -184,7 +184,7 @@ static VLCPrefs *_o_sharedMainInstance = nil;
     [o_prefs_view setHasVerticalScroller: YES];
     [o_prefs_view setDrawsBackground: NO];
     [o_prefs_view setDocumentView: o_empty_view];
-	[o_tree selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
+    [o_tree selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
 }
 
 - (void)setTitle: (NSString *) o_title_name
@@ -383,7 +383,7 @@ static VLCPrefs *_o_sharedMainInstance = nil;
                     }
                 }
             }
-            
+
             if( module_is_main( p_module) && CONFIG_ITEM(configType) )
             {
                 if( categoryItem && [self isSubCategoryGeneral:lastsubcat] )
@@ -478,20 +478,13 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 @implementation VLCTreePluginItem
 - (id)initWithPlugin:(module_t *)plugin
 {
-    const char * psz_name = module_get_name( plugin, false );
-    NSString * name;
-    if (psz_name)
-        name = _NS(psz_name);
-    else
-        name = @"";
-
+    NSString * name = _NS( module_get_name( plugin, false )?:"" );
     if(self = [super initWithName:name])
     {
         _configItems = module_config_get( plugin, &_configSize );
         //_plugin = plugin;
         //_help = [_NS(config_CategoryHelpGet( subCategory )) retain];
     }
-
     return self;
 }
 
@@ -607,7 +600,7 @@ static VLCPrefs *_o_sharedMainInstance = nil;
     }
 
     assert(view);
-    
+
     int i_lastItem = 0;
     int i_yPos = -2;
     int i_max_label = 0;

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.h
  * AppleRemote
- * $Id: 4cd015b525792f80a4a8c903b51d596603cfc327 $
+ * $Id: ffc33e4cd4e10071921c9203144cca18463394e5 $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -74,8 +74,11 @@ enum AppleRemoteEventIdentifier
     kRemoteControl_Switched         =1<<11,
     kRemoteButtonVolume_Plus_Hold   =1<<12,
     kRemoteButtonVolume_Minus_Hold  =1<<13,
-    k2009RemoteButtonPlay			=1<<14,
-    k2009RemoteButtonFullscreen		=1<<15
+    k2009RemoteButtonPlay
+
+   =1<<14,
+    k2009RemoteButtonFullscreen
+ =1<<15
 };
 typedef enum AppleRemoteEventIdentifier AppleRemoteEventIdentifier;
 

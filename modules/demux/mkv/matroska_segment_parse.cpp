@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 the VideoLAN team
- * $Id: 0466d94d161f4f1e37b743b078d69f1204e4e2f0 $
+ * $Id: 4676b24d25577f064a3fb074e958e8a4bd064a4f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -179,6 +179,7 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
 
     tk->b_default              = true;
     tk->b_enabled              = true;
+    tk->b_forced               = false;
     tk->b_silent               = false;
     tk->i_number               = tracks.size() - 1;
     tk->i_extra_data           = 0;
@@ -254,7 +255,7 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
         {
             KaxTrackFlagEnabled &fenb = *(KaxTrackFlagEnabled*)l;
 
-            // tk->b_enabled = uint32( fenb );
+            tk->b_enabled = uint32( fenb );
             msg_Dbg( &sys.demuxer, "|   |   |   + Track Enabled=%u", uint32( fenb ) );
         }
         else  if( MKV_IS_ID( l, KaxTrackFlagDefault ) )
@@ -267,6 +268,7 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
         else  if( MKV_IS_ID( l, KaxTrackFlagForced ) ) // UNUSED
         {
             KaxTrackFlagForced &ffor = *(KaxTrackFlagForced*)l;
+            tk->b_forced = uint32( ffor );
 
             msg_Dbg( &sys.demuxer, "|   |   |   + Track Forced=%u", uint32( ffor ) );
         }
@@ -838,6 +840,7 @@ void matroska_segment_c::ParseInfo( KaxInfo *info )
 
     double f_dur = double(i_duration) * double(i_timescale) / 1000000.0;
     i_duration = mtime_t(f_dur);
+    if( !i_duration ) i_duration = -1;
 }
 
 

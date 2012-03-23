@@ -2,7 +2,7 @@
  * QMenuView
  ****************************************************************************
  * Copyright © 2011 VLC authors and VideoLAN
- * $Id: 8564ec1e4cf7ae7b6e486fda030cbfb9507ba80a $
+ * $Id: 76330cc8272c5c6d24cdc57ae5e74c0251439cf2 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -29,15 +29,18 @@
 
 class QMenuView : public QMenu
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
-    QMenuView( QWidget * parent = 0 );
+    QMenuView( QWidget * parent = 0, int iMaxVisibleCount = 0 );
     virtual ~QMenuView(){}
 
     /* Model */
     void setModel( QAbstractItemModel * model ) { m_model = model; }
     QAbstractItemModel * model() const { return m_model; }
+
+    /* Size limit */
+    void setMaximumItemCount( int count ) { iMaxVisibleCount = count; }
 
 private:
     QAbstractItemModel *m_model;
@@ -45,6 +48,8 @@ private:
     QAction *createActionFromIndex( QModelIndex index );
 
     void build( const QModelIndex &parent );
+
+    int iMaxVisibleCount;
 
 private slots:
     void rebuild();

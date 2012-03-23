@@ -2,7 +2,7 @@
  * CoreInteraction.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 3a7f1bed00917c1791d128eb48f27f4b3bdb846c $
+ * $Id: ccd3181a0a582ff98e810ba3647ec2d9f250fa11 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -55,7 +55,7 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
         _o_sharedInstance = [super init];
         b_lockAspectRatio = YES;
     }
-    
+
     return _o_sharedInstance;
 }
 
@@ -80,14 +80,14 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
 {
     playlist_t * p_playlist = pl_Get( VLCIntf );
     bool empty;
-    
+
     PL_LOCK;
     empty = playlist_IsEmpty( p_playlist );
     PL_UNLOCK;
-    
+
     if( empty )
         [[[VLCMain sharedInstance] open] openFileGeneric];
-    
+
     var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_PLAY_PAUSE );
 }
 
@@ -465,6 +465,19 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
     }
 }
 
+- (void)displayVolume
+{
+    vout_thread_t *p_vout = getVout();
+    if (p_vout)
+    {
+        vout_OSDSlider( p_vout, SPU_DEFAULT_CHANNEL,
+                       [self volume]*100/AOUT_VOLUME_MAX, OSD_VERT_SLIDER );
+        vout_OSDMessage( p_vout, SPU_DEFAULT_CHANNEL, _( "Volume %d%%" ),
+                       [self volume]*100/AOUT_VOLUME_DEFAULT );
+        vlc_object_release( p_vout );
+    }
+}
+
 - (void)volumeUp
 {
     intf_thread_t *p_intf = VLCIntf;
@@ -472,6 +485,7 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
         return;
 
     aout_VolumeUp( pl_Get( p_intf ), 1, NULL );
+    [self displayVolume];
 }
 
 - (void)volumeDown
@@ -481,6 +495,7 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
         return;
 
     aout_VolumeDown( pl_Get( p_intf ), 1, NULL );
+    [self displayVolume];
 }
 
 - (void)mute
@@ -490,6 +505,19 @@ static VLCCoreInteraction *_o_sharedInstance = nil;
         return;
 
     aout_ToggleMute( pl_Get( p_intf ), NULL );
+
+    vout_thread_t *p_vout = getVout();
+    if( p_vout )
+    {
+        if( [self isMuted] )
+        {
+            vout_OSDIcon( p_vout, SPU_DEFAULT_CHANNEL, OSD_MUTE_ICON );
+        }
+        else
+            [self displayVolume];
+
+        vlc_object_release( p_vout );
+    }
 }
 
 - (BOOL)isMuted

@@ -2,7 +2,7 @@
  * image.c: Image demuxer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: f2fb8ac542ae03557238db1e938e8d3c343b433e $
+ * $Id: 021f122bd0974723a6f9e3e09307a1e1d7cec8c7 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -33,6 +33,7 @@
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
 #include <vlc_image.h>
+#include "mxpeg_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -525,6 +526,9 @@ static const image_format_t formats[] = {
     { .codec = VLC_CODEC_PNM,
       .detect = IsPnm,
     },
+    { .codec = VLC_CODEC_MXPEG,
+      .detect = IsMxpeg,
+    },
     { .codec = VLC_CODEC_JPEG,
       .detect = IsJfif,
     },
@@ -567,6 +571,11 @@ static int Open(vlc_object_t *object)
     }
     msg_Dbg(demux, "Detected image: %s",
             vlc_fourcc_GetDescription(VIDEO_ES, img->codec));
+
+    if( img->codec == VLC_CODEC_MXPEG )
+    {
+        return VLC_EGENERIC; //let avformat demux this file
+    }
 
     /* Load and if selected decode */
     es_format_t fmt;

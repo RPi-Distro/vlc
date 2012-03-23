@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 2a7d6473b44ea07974f2afef4be21bdc6d504eda $
+ * $Id: fad5ed67607c680bbd1aace2d3549c0a1ea9b356 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -97,7 +97,11 @@ vlc_module_begin ()
 vlc_module_end ()
 
 /* Shall we use libdvdnav's read ahead cache? */
+#ifdef __OS2__
+#define DVD_READ_CACHE 0
+#else
 #define DVD_READ_CACHE 1
+#endif
 
 /*****************************************************************************
  * Local prototypes

@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 01f06d90c7ee166957597f194e08b359b243987e $
+ * $Id: 3264b115d4dd8fda55c7daeb433c276b59d59471 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -46,6 +46,13 @@
 #include "../xiph.h"
 #include "../vobsub.h"
 
+/* Support for deprecated APIs */
+
+#if LIBAVFORMAT_VERSION_MAJOR < 54
+# define AVDictionaryEntry AVMetadataTag
+# define av_dict_get av_metadata_get
+#endif
+
 //#define AVFORMAT_DEBUG 1
 
 /* Version checking */
@@ -60,14 +67,15 @@
  *****************************************************************************/
 struct demux_sys_t
 {
+#if LIBAVFORMAT_VERSION_INT < ((53<<16)+(2<<8)+0)
     ByteIOContext   io;
+#endif
+
     int             io_buffer_size;
     uint8_t        *io_buffer;
 
     AVInputFormat  *fmt;
     AVFormatContext *ic;
-    URLContext     url;
-    URLProtocol    prot;
 
     int             i_tk;
     es_out_id_t     **tk;
@@ -104,11 +112,12 @@ int OpenDemux( vlc_object_t *p_this )
     demux_t       *p_demux = (demux_t*)p_this;
     demux_sys_t   *p_sys;
     AVProbeData   pd;
-    AVInputFormat *fmt;
+    AVInputFormat *fmt = NULL;
     unsigned int  i;
     int64_t       i_start_time = -1;
     bool          b_can_seek;
     char         *psz_url;
+    int           error;
 
     if( p_demux->psz_file )
         psz_url = strdup( p_demux->psz_file );
@@ -120,19 +129,28 @@ int OpenDemux( vlc_object_t *p_this )
     msg_Dbg( p_demux, "trying url: %s", psz_url );
     /* Init Probe data */
     pd.filename = psz_url;
-    if( ( pd.buf_size = stream_Peek( p_demux->s, &pd.buf, 2048 + 213 ) ) <= 0 )
+    if( ( pd.buf_size = stream_Peek( p_demux->s, (const uint8_t**)&pd.buf, 2048 + 213 ) ) <= 0 )
     {
         free( psz_url );
         msg_Warn( p_demux, "cannot peek" );
         return VLC_EGENERIC;
     }
+    stream_Control( p_demux->s, STREAM_CAN_SEEK, &b_can_seek );
 
     vlc_avcodec_lock();
     av_register_all(); /* Can be called several times */
     vlc_avcodec_unlock();
 
+    char *psz_format = var_InheritString( p_this, "ffmpeg-format" );
+    if( psz_format )
+    {
+        if( fmt = av_find_input_format(psz_format) )
+            msg_Dbg( p_demux, "forcing format: %s", fmt->name );
+        free( psz_format );
+    }
+
     /* Guess format */
-    if( !( fmt = av_probe_input_format( &pd, 1 ) ) )
+    if( !fmt && !( fmt = av_probe_input_format( &pd, 1 ) ) )
     {
         msg_Dbg( p_demux, "couldn't guess format" );
         free( psz_url );
@@ -206,52 +224,43 @@ int OpenDemux( vlc_object_t *p_this )
     /* Create I/O wrapper */
     p_sys->io_buffer_size = 32768;  /* FIXME */
     p_sys->io_buffer = malloc( p_sys->io_buffer_size );
-    p_sys->url.priv_data = p_demux;
-    p_sys->url.prot = &p_sys->prot;
-    p_sys->url.prot->name = "VLC I/O wrapper";
-    p_sys->url.prot->url_open = 0;
-    p_sys->url.prot->url_read =
-                    (int (*) (URLContext *, unsigned char *, int))IORead;
-    p_sys->url.prot->url_write = 0;
-    p_sys->url.prot->url_seek =
-                    (int64_t (*) (URLContext *, int64_t, int))IOSeek;
-    p_sys->url.prot->url_close = 0;
-    p_sys->url.prot->next = 0;
-    init_put_byte( &p_sys->io, p_sys->io_buffer, p_sys->io_buffer_size,
-                   0, &p_sys->url, IORead, NULL, IOSeek );
 
-    stream_Control( p_demux->s, STREAM_CAN_SEEK, &b_can_seek );
-    if( !b_can_seek )
-    {
-       /* Tell avformat that input is stream, so it doesn't get stuck
-       when trying av_find_stream_info() trying to seek all the wrong places
-       init_put_byte defaults io.is_streamed=0, so thats why we set them after it
-       */
-       p_sys->url.is_streamed = 1;
-       p_sys->io.is_streamed = 1;
-#if defined(AVIO_SEEKABLE_NORMAL)
-       p_sys->io.seekable = 0;
+#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0)
+    p_sys->ic = avformat_alloc_context();
+    p_sys->ic->pb = avio_alloc_context( p_sys->io_buffer,
+        p_sys->io_buffer_size, 0, p_demux, IORead, NULL, IOSeek );
+    p_sys->ic->pb->seekable = b_can_seek ? AVIO_SEEKABLE_NORMAL : 0;
+    error = avformat_open_input(&p_sys->ic, psz_url, p_sys->fmt, NULL);
+#else
+    init_put_byte( &p_sys->io, p_sys->io_buffer, p_sys->io_buffer_size, 0,
+        p_demux, IORead, NULL, IOSeek );
+    p_sys->io.is_streamed = !b_can_seek;
+# if defined(AVIO_SEEKABLE_NORMAL)
+    p_sys->io.seekable = !!b_can_seek;
+# endif
+    error = av_open_input_stream(&p_sys->ic, &p_sys->io, psz_url, p_sys->fmt, NULL);
 #endif
-    }
 
-
-    /* Open it */
-    if( av_open_input_stream( &p_sys->ic, &p_sys->io, psz_url,
-                              p_sys->fmt, NULL ) )
+    free( psz_url );
+    if( error < 0 )
     {
-        msg_Err( p_demux, "av_open_input_stream failed" );
+        errno = AVUNERROR(error);
+        msg_Err( p_demux, "Could not open %s: %m", psz_url );
         p_sys->ic = NULL;
-        free( psz_url );
         CloseDemux( p_this );
         return VLC_EGENERIC;
     }
-    free( psz_url );
-    psz_url = NULL;
 
     vlc_avcodec_lock(); /* avformat calls avcodec behind our back!!! */
-    if( av_find_stream_info( p_sys->ic ) < 0 )
+#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(26<<8)+0)
+    error = avformat_find_stream_info( p_sys->ic, NULL /* options */ );
+#else
+    error = av_find_stream_info( p_sys->ic );
+#endif
+    if( error < 0 )
     {
-        msg_Warn( p_demux, "av_find_stream_info failed" );
+        errno = AVUNERROR(error);
+        msg_Warn( p_demux, "Could not find stream info: %m" );
     }
     vlc_avcodec_unlock();
 
@@ -301,11 +310,15 @@ int OpenDemux( vlc_object_t *p_this )
 
             fmt.video.i_width = cc->width;
             fmt.video.i_height = cc->height;
+#if LIBAVCODEC_VERSION_MAJOR < 54
             if( cc->palctrl )
             {
                 fmt.video.p_palette = malloc( sizeof(video_palette_t) );
                 *fmt.video.p_palette = *(video_palette_t *)cc->palctrl;
             }
+#else
+# warning FIXME: implement palette transmission
+#endif
             psz_type = "video";
             fmt.video.i_frame_rate = cc->time_base.den;
             fmt.video.i_frame_rate_base = cc->time_base.num * __MAX( cc->ticks_per_frame, 1 );
@@ -368,7 +381,7 @@ int OpenDemux( vlc_object_t *p_this )
                 psz_type = "attachment";
                 if( cc->codec_id == CODEC_ID_TTF )
                 {
-                    AVMetadataTag *filename = av_metadata_get( s->metadata, "filename", NULL, 0 );
+                    AVDictionaryEntry *filename = av_dict_get( s->metadata, "filename", NULL, 0 );
                     if( filename && filename->value )
                     {
                         p_attachment = vlc_input_attachment_New(
@@ -391,7 +404,7 @@ int OpenDemux( vlc_object_t *p_this )
             break;
         }
 
-        AVMetadataTag *language = av_metadata_get( s->metadata, "language", NULL, 0 );
+        AVDictionaryEntry *language = av_dict_get( s->metadata, "language", NULL, 0 );
         if ( language && language->value )
             fmt.psz_language = strdup( language->value );
 
@@ -495,7 +508,7 @@ int OpenDemux( vlc_object_t *p_this )
     {
         seekpoint_t *s = vlc_seekpoint_New();
 
-        AVMetadataTag *title = av_metadata_get( p_sys->ic->metadata, "title", NULL, 0);
+        AVDictionaryEntry *title = av_dict_get( p_sys->ic->metadata, "title", NULL, 0);
         if( title && title->value )
         {
             s->psz_name = strdup( title->value );
@@ -524,7 +537,17 @@ void CloseDemux( vlc_object_t *p_this )
     FREENULL( p_sys->tk );
     free( p_sys->tk_pcr );
 
-    if( p_sys->ic ) av_close_input_stream( p_sys->ic );
+    if( p_sys->ic )
+    {
+#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0)
+        av_free( p_sys->ic->pb );
+#endif
+#if LIBAVFORMAT_VERSION_INT >= ((53<<16)+(26<<8)+0)
+        avformat_close_input( &p_sys->ic );
+#else
+        av_close_input_stream( p_sys->ic );
+#endif
+    }
 
     for( int i = 0; i < p_sys->i_attachments; i++ )
         free( p_sys->attachments[i] );
@@ -586,17 +609,37 @@ static int Demux( demux_t *p_demux )
     if( pkt.flags & AV_PKT_FLAG_KEY )
         p_frame->i_flags |= BLOCK_FLAG_TYPE_I;
 
-    i_start_time = ( p_sys->ic->start_time != (int64_t)AV_NOPTS_VALUE ) ?
-        ( p_sys->ic->start_time * 1000000 / AV_TIME_BASE )  : 0;
+    /* Used to avoid timestamps overlow */
+    lldiv_t q;
+    if( p_sys->ic->start_time != (int64_t)AV_NOPTS_VALUE )
+    {
+        q = lldiv( p_sys->ic->start_time, AV_TIME_BASE);
+        i_start_time = q.quot * (int64_t)1000000 + q.rem * (int64_t)1000000 / AV_TIME_BASE;
+    }
+    else
+        i_start_time = 0;
 
-    p_frame->i_dts = ( pkt.dts == (int64_t)AV_NOPTS_VALUE ) ?
-        VLC_TS_INVALID : (pkt.dts) * 1000000 *
-        p_stream->time_base.num /
-        p_stream->time_base.den - i_start_time + VLC_TS_0;
-    p_frame->i_pts = ( pkt.pts == (int64_t)AV_NOPTS_VALUE ) ?
-        VLC_TS_INVALID : (pkt.pts) * 1000000 *
-        p_stream->time_base.num /
-        p_stream->time_base.den - i_start_time + VLC_TS_0;
+    if( pkt.dts == (int64_t)AV_NOPTS_VALUE )
+        p_frame->i_dts = VLC_TS_INVALID;
+    else
+    {
+        q = lldiv( pkt.dts, p_stream->time_base.den );
+        p_frame->i_dts = q.quot * (int64_t)1000000 *
+            p_stream->time_base.num + q.rem * (int64_t)1000000 *
+            p_stream->time_base.num /
+            p_stream->time_base.den - i_start_time + VLC_TS_0;
+    }
+
+    if( pkt.pts == (int64_t)AV_NOPTS_VALUE )
+        p_frame->i_pts = VLC_TS_INVALID;
+    else
+    {
+        q = lldiv( pkt.pts, p_stream->time_base.den );
+        p_frame->i_pts = q.quot * (int64_t)1000000 *
+            p_stream->time_base.num + q.rem * (int64_t)1000000 *
+            p_stream->time_base.num /
+            p_stream->time_base.den - i_start_time + VLC_TS_0;
+    }
     if( pkt.duration > 0 && p_frame->i_length <= 0 )
         p_frame->i_length = pkt.duration * 1000000 *
             p_stream->time_base.num /
@@ -809,11 +852,11 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         {
             vlc_meta_t *p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
 
-            AVMetadataTag *title = av_metadata_get( p_sys->ic->metadata, "language", NULL, 0 );
-            AVMetadataTag *artist = av_metadata_get( p_sys->ic->metadata, "artist", NULL, 0 );
-            AVMetadataTag *copyright = av_metadata_get( p_sys->ic->metadata, "copyright", NULL, 0 );
-            AVMetadataTag *comment = av_metadata_get( p_sys->ic->metadata, "comment", NULL, 0 );
-            AVMetadataTag *genre = av_metadata_get( p_sys->ic->metadata, "genre", NULL, 0 );
+            AVDictionaryEntry *title = av_dict_get( p_sys->ic->metadata, "language", NULL, 0 );
+            AVDictionaryEntry *artist = av_dict_get( p_sys->ic->metadata, "artist", NULL, 0 );
+            AVDictionaryEntry *copyright = av_dict_get( p_sys->ic->metadata, "copyright", NULL, 0 );
+            AVDictionaryEntry *comment = av_dict_get( p_sys->ic->metadata, "comment", NULL, 0 );
+            AVDictionaryEntry *genre = av_dict_get( p_sys->ic->metadata, "genre", NULL, 0 );
 
             if( title && title->value )
                 vlc_meta_SetTitle( p_meta, title->value );
@@ -899,8 +942,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
  *****************************************************************************/
 static int IORead( void *opaque, uint8_t *buf, int buf_size )
 {
-    URLContext *p_url = opaque;
-    demux_t *p_demux = p_url->priv_data;
+    demux_t *p_demux = opaque;
     if( buf_size < 0 ) return -1;
     int i_ret = stream_Read( p_demux->s, buf, buf_size );
     return i_ret ? i_ret : -1;
@@ -908,8 +950,7 @@ static int IORead( void *opaque, uint8_t *buf, int buf_size )
 
 static int64_t IOSeek( void *opaque, int64_t offset, int whence )
 {
-    URLContext *p_url = opaque;
-    demux_t *p_demux = p_url->priv_data;
+    demux_t *p_demux = opaque;
     int64_t i_absolute;
     int64_t i_size = stream_Size( p_demux->s );
 

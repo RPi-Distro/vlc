@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: b635111a30f08a8fc2574e667cdd9297c4cf5a3b $
+ * $Id: ef3a186e634579ea29d92fd9f352647d7867759b $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -267,7 +267,7 @@ static int InputEvent( vlc_object_t *p_this, const char *psz_var,
         case INPUT_EVENT_ITEM_META:
         case INPUT_EVENT_ITEM_INFO:
             [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(updateMainMenu) withObject: nil waitUntilDone:NO];
-            [[VLCMain sharedInstance] updateName];
+            [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(updateName) withObject: nil waitUntilDone:NO];
             [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(updateInfoandMetaPanel) withObject: nil waitUntilDone:NO];
             break;
         case INPUT_EVENT_BOOKMARK:
@@ -514,6 +514,7 @@ static VLCMain *_o_sharedMainInstance = nil;
         _o_sharedMainInstance = [super init];
 
     p_intf = NULL;
+    p_current_input = NULL;
 
     o_msg_lock = [[NSLock alloc] init];
     o_msg_arr = [[NSMutableArray arrayWithCapacity: 600] retain];
@@ -583,7 +584,7 @@ static VLCMain *_o_sharedMainInstance = nil;
 
     if (OSX_LION)
     {
-        if ([NSApp currentSystemPresentationOptions] == NSApplicationPresentationFullScreen)
+        if ([NSApp currentSystemPresentationOptions] & NSApplicationPresentationFullScreen)
             var_SetBool( p_playlist, "fullscreen", YES );
     }
 
@@ -613,8 +614,7 @@ static VLCMain *_o_sharedMainInstance = nil;
     /* yeah, we are done */
     b_nativeFullscreenMode = NO;
 #ifdef MAC_OS_X_VERSION_10_7
-    if( config_GetInt( VLCIntf, "embedded-video" ))
-        b_nativeFullscreenMode = config_GetInt( p_intf, "macosx-nativefullscreenmode" );
+    b_nativeFullscreenMode = config_GetInt( p_intf, "macosx-nativefullscreenmode" );
 #endif
     nib_main_loaded = TRUE;
 }
@@ -696,6 +696,13 @@ static VLCMain *_o_sharedMainInstance = nil;
     playlist_t * p_playlist = pl_Get( p_intf );
     int returnedValue = 0;
 
+    /* always exit fullscreen on quit, otherwise we get ugly artifacts on the next launch */
+    if (OSX_LION && b_nativeFullscreenMode)
+    {
+        [o_mainwindow toggleFullScreen: self];
+        [NSApp setPresentationOptions:(NSApplicationPresentationDefault)];
+    }
+
     /* Save some interface state in configuration, at module quit */
     config_PutInt( p_intf, "random", var_GetBool( p_playlist, "random" ) );
     config_PutInt( p_intf, "loop", var_GetBool( p_playlist, "loop" ) );
@@ -725,11 +732,11 @@ static VLCMain *_o_sharedMainInstance = nil;
     var_DelCallback(p_intf->p_libvlc, "intf-toggle-fscontrol", ShowController, self);
     var_DelCallback(p_intf->p_libvlc, "intf-show", ShowController, self);
 
-    input_thread_t * p_input = playlist_CurrentInput( p_playlist );
-    if( p_input )
+    if( p_current_input )
     {
-        var_DelCallback( p_input, "intf-event", InputEvent, [VLCMain sharedInstance] );
-        vlc_object_release( p_input );
+        var_DelCallback( p_current_input, "intf-event", InputEvent, [VLCMain sharedInstance] );
+        vlc_object_release( p_current_input );
+        p_current_input = NULL;
     }
 
     /* remove global observer watching for vout device changes correctly */
@@ -1291,6 +1298,13 @@ unsigned int CocoaKeyToVLC( unichar i_key )
 
     key = [[o_event charactersIgnoringModifiers] characterAtIndex: 0];
 
+    /* handle Lion's default key combo for fullscreen-toggle in addition to our own hotkeys */
+    if( key == 'f' && i_pressed_modifiers & NSControlKeyMask && i_pressed_modifiers & NSCommandKeyMask )
+    {
+        [[VLCCoreInteraction sharedInstance] toggleFullscreen];
+        return YES;
+    }
+
     switch( key )
     {
         case NSDeleteCharacter:
@@ -1387,22 +1401,31 @@ unsigned int CocoaKeyToVLC( unichar i_key )
 
 - (void)PlaylistItemChanged
 {
-    input_thread_t * p_input;
-
-    p_input = playlist_CurrentInput( pl_Get(VLCIntf) );
-    if( p_input && !( p_input->b_dead || !vlc_object_alive(p_input) ) )
+    if( p_current_input && ( p_current_input->b_dead || !vlc_object_alive( p_current_input ) ))
     {
-        var_AddCallback( p_input, "intf-event", InputEvent, [VLCMain sharedInstance] );
-        [o_mainmenu setRateControlsEnabled: YES];
-    }
-    else
-        [o_mainmenu setRateControlsEnabled: NO];
+        var_DelCallback( p_current_input, "intf-event", InputEvent, [VLCMain sharedInstance] );
+        vlc_object_release( p_current_input );
+        p_current_input = NULL;
 
-    if (p_input)
-        vlc_object_release( p_input );
+        [o_mainmenu setRateControlsEnabled: NO];
+    }
+    else if( !p_current_input )
+    {
+        // object is hold here and released then it is dead
+        p_current_input = playlist_CurrentInput( pl_Get( VLCIntf ));
+        if( p_current_input )
+        {
+            var_AddCallback( p_current_input, "intf-event", InputEvent, [VLCMain sharedInstance] );
+
+            [o_mainmenu setRateControlsEnabled: YES];
+            if ( [self activeVideoPlayback] && [[o_mainwindow videoView] isHidden] )
+                [o_mainwindow performSelectorOnMainThread:@selector(togglePlaylist:) withObject: nil waitUntilDone:NO];
+        }
+    }
 
     [o_playlist updateRowSelection];
     [o_mainwindow updateWindow];
+    [self updateDelays];
     [self updateMainMenu];
 }
 
@@ -1445,7 +1468,7 @@ unsigned int CocoaKeyToVLC( unichar i_key )
     p_input = pl_CurrentInput( p_intf );
     if( p_input )
     {
-        if( var_GetInteger( p_input, "state" ) == PLAYING_S )
+        if( var_GetInteger( p_input, "state" ) == PLAYING_S && [self activeVideoPlayback] )
             UpdateSystemActivity( UsrActivity );
         vlc_object_release( p_input );
     }
@@ -1539,6 +1562,11 @@ unsigned int CocoaKeyToVLC( unichar i_key )
     return o_mainmenu;
 }
 
+- (id)mainWindow
+{
+    return o_mainwindow;
+}
+
 - (id)controls
 {
     if( o_controls )
@@ -1625,7 +1653,7 @@ unsigned int CocoaKeyToVLC( unichar i_key )
 
 - (id)getVideoViewAtPositionX: (int *)pi_x Y: (int *)pi_y withWidth: (unsigned int*)pi_width andHeight: (unsigned int*)pi_height
 {
-    id videoView = [o_mainwindow videoView];
+    id videoView = [o_mainwindow setupVideoView];
     NSRect videoRect = [videoView frame];
     int i_x = (int)videoRect.origin.x;
     int i_y = (int)videoRect.origin.y;
@@ -1676,7 +1704,7 @@ unsigned int CocoaKeyToVLC( unichar i_key )
 - (void)setActiveVideoPlayback:(BOOL)b_value
 {
     b_active_videoplayback = b_value;
-    [o_mainwindow setVideoplayEnabled];
+    [o_mainwindow performSelectorOnMainThread:@selector(setVideoplayEnabled) withObject: nil waitUntilDone:NO];
     [o_mainwindow performSelectorOnMainThread:@selector(togglePlaylist:) withObject: nil waitUntilDone:NO];
 }
 
