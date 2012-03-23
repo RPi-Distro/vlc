@@ -1,3 +1,15 @@
+vlc (2.0.1-1) unstable; urgency=high
+
+  * New upstream release (LP: #931318, #943014, #947814).
+  * Change build dependency from libpng12-dev to libpng-dev. (Closes: #662539)
+  * Add --enable-dbus to configure flags.
+  * Drop patches that were backported and accepted by upstream.
+  * Add missing libxinerama-dev build dependency for the Skins2 interface.
+  * Add libgtk2.0-dev back to build dependencies for the notify plugin.
+  * Set urgency to high for security fixes.
+
+ -- Benjamin Drung <bdrung@debian.org>  Fri, 23 Mar 2012 19:03:52 +0100
+
 vlc (2.0.0-6) unstable; urgency=high
 
   * Fix FTBFS on kFreeBSD (Closes: #661819):
