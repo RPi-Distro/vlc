@@ -2,7 +2,7 @@
  * vlcproc.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b004c0b8cf40aededcb27293627cd6bcb111e08b $
+ * $Id: 72e9a147383fd42e8bf6fead23fe9a4e614d29cc $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -64,6 +64,10 @@ public:
 
     /// Getter for the volume variable
     Volume &getVolumeVar() { return *((Volume*)(m_cVarVolume.get())); }
+
+    /// Getter for the current playback speed
+    VarText &getSpeedVar()
+       { return *((VarText*)(m_cVarSpeed.get())); }
 
     /// Getter for the stream name variable
     VarText &getStreamNameVar()
@@ -129,6 +133,8 @@ private:
     VariablePtr m_cVarTime;
     /// Variable for audio volume
     VariablePtr m_cVarVolume;
+    /// Variable for speed playback
+    VariablePtr m_cVarSpeed;
     /// Variable for current stream properties
     VariablePtr m_cVarStreamName;
     VariablePtr m_cVarStreamURI;

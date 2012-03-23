@@ -47,33 +47,32 @@ struct aout_sys_t
 
 #define A52_FRAME_NB 1536
 
-/*****************************************************************************
- * Local prototypes
- *****************************************************************************/
 static int Open (vlc_object_t *);
 static void Close (vlc_object_t *);
 static int FindDevicesCallback( vlc_object_t *p_this, char const *psz_name,
                                 vlc_value_t newval, vlc_value_t oldval, void *p_unused );
 static void GetDevices (vlc_object_t *, module_config_t *, const char *);
 
-/*****************************************************************************
- * Module descriptor
- *****************************************************************************/
-static const char *const ppsz_devices[] = {
-    "default", "plug:front",
-    "plug:side", "plug:rear", "plug:center_lfe",
-    "plug:surround40", "plug:surround41",
-    "plug:surround50", "plug:surround51",
-    "plug:surround71",
-    "hdmi", "iec958",
+#define AUDIO_DEV_TEXT N_("Audio output device")
+#define AUDIO_DEV_LONGTEXT N_("Audio output device (using ALSA syntax).")
+static const char *const devices[] = {
+    "default",
 };
-static const char *const ppsz_devices_text[] = {
-    N_("Default"), N_("Front speakers"),
-    N_("Side speakers"), N_("Rear speakers"), N_("Center and subwoofer"),
-    N_("Surround 4.0"), N_("Surround 4.1"),
+static const char *const devices_text[] = {
+    N_("Default"),
+};
+
+#define AUDIO_CHAN_TEXT N_("Audio output channels")
+#define AUDIO_CHAN_LONGTEXT N_("Channels available for audio output." \
+    "If the input has more channels than the output, it will be down-mixed." \
+    "This parameter is ignored when digital pass-through is active.")
+static const int channels[] = {
+    AOUT_CHAN_CENTER, AOUT_CHANS_STEREO, AOUT_CHANS_4_0, AOUT_CHANS_4_1,
+    AOUT_CHANS_5_0, AOUT_CHANS_5_1,
+};
+static const char *const channels_text[] = {
+    N_("Mono"), N_("Stereo"), N_("Surround 4.0"), N_("Surround 4.1"),
     N_("Surround 5.0"), N_("Surround 5.1"),
-    N_("Surround 7.1"),
-    N_("HDMI"), N_("S/PDIF"),
 };
 
 vlc_module_begin ()
@@ -81,10 +80,13 @@ vlc_module_begin ()
     set_description( N_("ALSA audio output") )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AOUT )
-    add_string ("alsa-audio-device", "default", N_("ALSA device"), NULL, false)
-        change_string_list( ppsz_devices, ppsz_devices_text, FindDevicesCallback )
+    add_string ("alsa-audio-device", "default",
+                AUDIO_DEV_TEXT, AUDIO_DEV_LONGTEXT, false)
+        change_string_list( devices, devices_text, FindDevicesCallback )
         change_action_add( FindDevicesCallback, N_("Refresh list") )
-
+    add_integer ("alsa-audio-channels", AOUT_CHANS_FRONT,
+                 AUDIO_CHAN_TEXT, AUDIO_CHAN_LONGTEXT, false)
+        change_integer_list (channels, channels_text)
     set_capability( "audio output", 150 )
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -244,6 +246,12 @@ static int Open (vlc_object_t *obj)
         default:
             if (AOUT_FMT_SPDIF(&aout->format))
                 spdif = var_InheritBool (aout, "spdif");
+            if (spdif)
+            {
+                fourcc = VLC_CODEC_SPDIFL;
+                pcm_format = SND_PCM_FORMAT_S16;
+            }
+            else
             if (HAVE_FPU)
             {
                 fourcc = VLC_CODEC_FL32;
@@ -255,6 +263,20 @@ static int Open (vlc_object_t *obj)
                 pcm_format = SND_PCM_FORMAT_S16;
             }
     }
+
+    /* ALSA channels */
+    /* XXX: maybe this should be shared with other dumb outputs */
+    uint32_t map = var_InheritInteger (aout, "alsa-audio-channels");
+    map &= aout->format.i_physical_channels;
+    if (unlikely(map == 0)) /* WTH? */
+        map = AOUT_CHANS_STEREO;
+
+    unsigned channels = popcount (map);
+    if (channels < aout_FormatNbChannels (&aout->format))
+        msg_Dbg (aout, "downmixing from %u to %u channels",
+                 aout_FormatNbChannels (&aout->format), channels);
+    else
+        msg_Dbg (aout, "keeping %u channels", channels);
 
     /* Choose the IEC device for S/PDIF output:
        if the device is overridden by the user then it will be the one.
@@ -298,11 +320,7 @@ static int Open (vlc_object_t *obj)
     /* Open the device */
     snd_pcm_t *pcm;
     /* VLC always has a resampler. No need for ALSA's. */
-    const int mode = SND_PCM_NO_AUTO_RESAMPLE
-    /* ALSA discards extra channels (by default). This is not good. */
-                   | SND_PCM_NO_AUTO_CHANNELS
-    /* VLC is currently unable to leverage ALSA softvol. No need for it. */
-                   | SND_PCM_NO_SOFTVOL;
+    const int mode = SND_PCM_NO_AUTO_RESAMPLE;
 
     int val = snd_pcm_open (&pcm, device, SND_PCM_STREAM_PLAYBACK, mode);
 #if (SND_LIB_VERSION <= 0x010015)
@@ -344,16 +362,6 @@ static int Open (vlc_object_t *obj)
     msg_Dbg (aout, "using ALSA device: %s", device);
     DumpDevice (VLC_OBJECT(aout), pcm);
 
-    /* Setup */
-    unsigned channels = aout_FormatNbChannels (&aout->format);
-
-    if (spdif)
-    {
-        fourcc = VLC_CODEC_SPDIFL;
-        pcm_format = SND_PCM_FORMAT_S16;
-        channels = 2;
-    }
-
     /* Get Initial hardware parameters */
     snd_pcm_hw_params_t *hw;
     unsigned param;
@@ -363,19 +371,34 @@ static int Open (vlc_object_t *obj)
     Dump (aout, "initial hardware setup:\n", snd_pcm_hw_params_dump, hw);
 
     /* Set sample format */
-    val = snd_pcm_hw_params_set_format (pcm, hw, pcm_format);
-    if (val == 0)
+    if (snd_pcm_hw_params_test_format (pcm, hw, pcm_format) == 0)
         ;
-    else if (pcm_format != SND_PCM_FORMAT_FLOAT
-     && snd_pcm_hw_params_set_format (pcm, hw, SND_PCM_FORMAT_FLOAT) == 0)
-        fourcc = VLC_CODEC_FL32;
-    else if (pcm_format != SND_PCM_FORMAT_S32
-     && snd_pcm_hw_params_set_format (pcm, hw, SND_PCM_FORMAT_S32) == 0)
-        fourcc = VLC_CODEC_S32N;
-    else if (pcm_format != SND_PCM_FORMAT_S16
-     && snd_pcm_hw_params_set_format (pcm, hw, SND_PCM_FORMAT_S16) == 0)
-        fourcc = VLC_CODEC_S16N;
     else
+    if (snd_pcm_hw_params_test_format (pcm, hw, SND_PCM_FORMAT_FLOAT) == 0)
+    {
+        fourcc = VLC_CODEC_FL32;
+        pcm_format = SND_PCM_FORMAT_FLOAT;
+    }
+    else
+    if (snd_pcm_hw_params_test_format (pcm, hw, SND_PCM_FORMAT_S32) == 0)
+    {
+        fourcc = VLC_CODEC_S32N;
+        pcm_format = SND_PCM_FORMAT_S32;
+    }
+    else
+    if (snd_pcm_hw_params_test_format (pcm, hw, SND_PCM_FORMAT_S16) == 0)
+    {
+        fourcc = VLC_CODEC_S16N;
+        pcm_format = SND_PCM_FORMAT_S16;
+    }
+    else
+    {
+        msg_Err (aout, "no supported sample format");
+        goto error;
+    }
+
+    val = snd_pcm_hw_params_set_format (pcm, hw, pcm_format);
+    if (val)
     {
         msg_Err (aout, "cannot set sample format: %s", snd_strerror (val));
         goto error;
@@ -390,44 +413,17 @@ static int Open (vlc_object_t *obj)
     }
 
     /* Set channels count */
-    unsigned chans;
-    /* By default, ALSA plug will discard extra channels and zero missing ones
-     * instead of remixing, so remixing was disabled at snd_pcm_open() above.
-     * Then, the configuration space will contain only channels configurations
-     * supported by the audio device, but not necessarily functional (e.g.
-     * surround-capable card with stereo speakers). */
-    /* If there is only channels configuration, use that one.
-     * This should deal with "surround40", "surround51" and "surround71". */
-    if (snd_pcm_hw_params_get_channels (hw, &chans) == 0)
-        ;
-    /* Otherwise, if we have 5 channels and they are supported, use that.
-     * This should deal with "surround41" and "surround50" routers.
-     * This assumes that no real hardware supports exactly 5 channels. */
-    else if (channels == 5
-     && snd_pcm_hw_params_set_channels (pcm, hw, channels))
-        chans = channels;
-    /* Otherwise, if stereo is supported, then use that. This deals with
-     * the "front" device that fails to enforce stereo on Surround cards. */
-    else if (snd_pcm_hw_params_set_channels (pcm, hw, 2) == 0)
-        chans = 2;
-    /* Out of desperation, try the original channels count. */
-    else if (snd_pcm_hw_params_set_channels (pcm, hw, channels) == 0)
-        ;
-    /* As last chance, try anything. */
-    else
+    /* By default, ALSA plug will pad missing channels with zeroes, which is
+     * usually fine. However, it will also discard extraneous channels, which
+     * is not acceptable. Thus the user must configure the physically
+     * available channels, and VLC will downmix if needed. */
+    val = snd_pcm_hw_params_set_channels (pcm, hw, channels);
+    if (val)
     {
-        chans = channels;
-        val = snd_pcm_hw_params_set_channels_near (pcm, hw, &chans);
-        if (val)
-        {
-            msg_Err (aout, "cannot set channels count: %s",
-                     snd_strerror (val));
-            goto error;
-        }
+        msg_Err (aout, "cannot set %u channels: %s", channels,
+                 snd_strerror (val));
+        goto error;
     }
-
-    if (channels != chans)
-        msg_Dbg (aout, "remixing from %u to %u channels", channels, chans);
 
     /* Set sample rate */
     unsigned rate = aout->format.i_rate;
@@ -441,26 +437,32 @@ static int Open (vlc_object_t *obj)
         msg_Dbg (aout, "resampling from %d Hz to %d Hz",
                  aout->format.i_rate, rate);
 
-    /* Set buffer size */
-    param = AOUT_MAX_ADVANCE_TIME;
-    val = snd_pcm_hw_params_set_buffer_time_near (pcm, hw, &param, NULL);
-    if (val)
-        msg_Warn (aout, "cannot set buffer duration near %u us: %s",
-                  param, snd_strerror (val));
-    val = snd_pcm_hw_params_set_buffer_time_last (pcm, hw, &param, NULL);
-    if (val)
-        msg_Warn (aout, "cannot set buffer duration: %s", snd_strerror (val));
-
     /* Set number of periods (at least two) */
     param = 2;
     val = snd_pcm_hw_params_set_periods_min (pcm, hw, &param, NULL);
     if (val)
-        msg_Warn (aout, "cannot set minimum of %u periods: %s", param,
-                  snd_strerror (val));
+    {
+        msg_Err (aout, "cannot set minimum of %u periods: %s", param,
+                 snd_strerror (val));
+        goto error;
+    }
+
+    /* Set buffer size */
+    param = AOUT_MAX_ADVANCE_TIME;
+    val = snd_pcm_hw_params_set_buffer_time_near (pcm, hw, &param, NULL);
+    if (val)
+    {
+        msg_Err (aout, "cannot set buffer duration near %u us: %s",
+                 param, snd_strerror (val));
+        goto error;
+    }
+
     val = snd_pcm_hw_params_set_periods_first (pcm, hw, &param, NULL);
     if (val)
-        msg_Warn (aout, "cannot set periods count near %u: %s", param,
-                  snd_strerror (val));
+    {
+        msg_Err (aout, "cannot select periods: %s", snd_strerror (val));
+        goto error;
+    }
 
     /* Commit hardware parameters */
     val = snd_pcm_hw_params (pcm, hw);
@@ -508,53 +510,9 @@ static int Open (vlc_object_t *obj)
         goto error;
     }
 
-    /* Guess the channel map */
-    switch (chans)
-    {
-        case 1:
-            chans = AOUT_CHAN_CENTER;
-            break;
-        case 2: /* front */
-            chans = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
-            break;
-        case 4: /* surround40 */
-            chans = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
-                  | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT;
-            break;
-        case 5: /* surround50 ... or surround41! Uho! */
-#if 1
-            chans = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
-                  | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT
-                  | AOUT_CHAN_LFE;
-#else
-            chans = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
-                  | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT
-                  | AOUT_CHAN_CENTER;
-#endif
-            break;
-        case 6: /* surround51 */
-            chans = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
-                  | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT
-                  | AOUT_CHAN_CENTER | AOUT_CHAN_LFE;
-            break;
-#if 0 /* FIXME reorder */
-         case 8: /* surround71 */
-            chans = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
-                  | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT
-                  | AOUT_CHAN_CENTER | AOUT_CHAN_LFE
-                  | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT;
-            break;
-#endif
-        default:
-            msg_Err (aout, "unknown %u channels configuration", chans);
-            goto error;
-    }
-
     /* Setup audio_output_t */
     aout->format.i_format = fourcc;
     aout->format.i_rate = rate;
-    aout->format.i_original_channels =
-    aout->format.i_physical_channels = chans;
     if (spdif)
     {
         aout->format.i_bytes_per_frame = AOUT_SPDIF_SIZE;
@@ -562,7 +520,11 @@ static int Open (vlc_object_t *obj)
         aout_VolumeNoneInit (aout);
     }
     else
+    {
+        aout->format.i_original_channels =
+        aout->format.i_physical_channels = map;
         aout_VolumeSoftInit (aout);
+    }
 
     aout->pf_play = Play;
     if (snd_pcm_hw_params_can_pause (hw))

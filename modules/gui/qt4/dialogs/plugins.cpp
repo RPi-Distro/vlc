@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008-2010 the VideoLAN team
- * $Id: dd265b60faacc9776bb48d44d58049d5b60e39d8 $
+ * $Id: ce7f137908970c7494499d4d4a2b7fdb2f5bd938 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Jean-Philippe André <jpeg (at) videolan.org>
@@ -72,7 +72,7 @@ PluginDialog::PluginDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 
     QDialogButtonBox *box = new QDialogButtonBox;
     QPushButton *okButton = new QPushButton( qtr( "&Close" ), this );
-    box->addButton( okButton, QDialogButtonBox::AcceptRole );
+    box->addButton( okButton, QDialogButtonBox::RejectRole );
     layout->addWidget( box );
     BUTTONACT( okButton, close() );
     readSettings( "PluginsDialog", QSize( 435, 280 ) );
@@ -187,11 +187,17 @@ bool PluginTreeItem::operator< ( const QTreeWidgetItem & other ) const
 }
 
 /* Extensions tab */
-ExtensionTab::ExtensionTab( intf_thread_t *p_intf )
-        : QVLCFrame( p_intf )
+ExtensionTab::ExtensionTab( intf_thread_t *p_intf_ )
+        : QVLCFrame( p_intf_ )
 {
     // Layout
     QVBoxLayout *layout = new QVBoxLayout( this );
+
+    QLabel *notice = new QLabel( qtr("Get more extensions from")
+            + QString( " <a href=\"http://addons.videolan.org/\">"
+                       "addons.videolan.org</a>." ) );
+    notice->setOpenExternalLinks( true );
+    layout->addWidget( notice );
 
     // ListView
     extList = new QListView( this );
@@ -483,8 +489,7 @@ QSize ExtensionItemDelegate::sizeHint( const QStyleOptionViewItem &option,
 ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
                                           intf_thread_t *p_intf,
                                           QWidget *parent )
-       : QVLCDialog( parent, p_intf ),
-         extension( new ExtensionCopy( extension ) )
+       : QVLCDialog( parent, p_intf )
 {
     // Let's be a modal dialog
     setWindowModality( Qt::WindowModal );
@@ -555,12 +560,13 @@ ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
     label = new QLabel( "<b>" + qtr( "File" ) + ":</b>", this );
     layout->addWidget( label, 6, 0, 1, 2 );
     QLineEdit *line = new QLineEdit( extension.name, this );
+    line->setReadOnly( true );
     layout->addWidget( line, 6, 2, 1, -1 );
 
     // Close button
     QDialogButtonBox *group = new QDialogButtonBox( this );
     QPushButton *closeButton = new QPushButton( qtr( "&Close" ) );
-    group->addButton( closeButton, QDialogButtonBox::AcceptRole );
+    group->addButton( closeButton, QDialogButtonBox::RejectRole );
     BUTTONACT( closeButton, close() );
 
     layout->addWidget( group, 7, 0, 1, -1 );
@@ -569,11 +575,6 @@ ExtensionInfoDialog::ExtensionInfoDialog( const ExtensionCopy& extension,
     layout->setColumnStretch( 2, 1 );
     layout->setRowStretch( 4, 1 );
     setMinimumSize( 450, 350 );
-}
-
-ExtensionInfoDialog::~ExtensionInfoDialog()
-{
-    delete extension;
 }
 
 static QPixmap *loadPixmapFromData( char *data, int size )

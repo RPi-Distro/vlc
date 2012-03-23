@@ -2,7 +2,7 @@
  * vlcproc.cpp
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 37fb708d40937db89de38b379819f95ded21495a $
+ * $Id: c953d745338b4bbb95e0e6abe30f1f5bd1b3445d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -75,6 +75,11 @@ void VlcProc::destroy( intf_thread_t *pIntf )
     pIntf->p_sys->p_vlcProc = NULL;
 }
 
+#define SET_BOOL(m,v)         ((VarBoolImpl*)(m).get())->set(v)
+#define SET_STREAMTIME(m,v,b) ((StreamTime*)(m).get())->set(v,b)
+#define SET_TEXT(m,v)         ((VarText*)(m).get())->set(v)
+#define SET_STRING(m,v)       ((VarString*)(m).get())->set(v)
+#define SET_VOLUME(m,v,b)     ((Volume*)(m).get())->set(v,b)
 
 VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     m_varEqBands( pIntf ), m_pVout( NULL ), m_pAout( NULL ),
@@ -125,6 +130,9 @@ VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     REGISTER_VAR( m_cVarEqPreamp, EqualizerPreamp, "equalizer.preamp" )
 
 #undef REGISTER_VAR
+    m_cVarSpeed = VariablePtr( new VarText( getIntf(), false ) );
+    pVarManager->registerVar( m_cVarSpeed, "speed" );
+    SET_TEXT( m_cVarSpeed, UString( getIntf(), "1") );
     m_cVarStreamName = VariablePtr( new VarText( getIntf(), false ) );
     pVarManager->registerVar( m_cVarStreamName, "streamName" );
     m_cVarStreamURI = VariablePtr( new VarText( getIntf(), false ) );
@@ -440,6 +448,7 @@ int VlcProc::onGenericCallback2( vlc_object_t *pObj, const char *pVariable,
         {
             case INPUT_EVENT_STATE:
             case INPUT_EVENT_POSITION:
+            case INPUT_EVENT_RATE:
             case INPUT_EVENT_ES:
             case INPUT_EVENT_CHAPTER:
             case INPUT_EVENT_RECORD:
@@ -467,12 +476,6 @@ int VlcProc::onGenericCallback2( vlc_object_t *pObj, const char *pVariable,
     return VLC_EGENERIC;
 }
 
-
-#define SET_BOOL(m,v)         ((VarBoolImpl*)(m).get())->set(v)
-#define SET_STREAMTIME(m,v,b) ((StreamTime*)(m).get())->set(v,b)
-#define SET_TEXT(m,v)         ((VarText*)(m).get())->set(v)
-#define SET_STRING(m,v)       ((VarString*)(m).get())->set(v)
-#define SET_VOLUME(m,v,b)     ((Volume*)(m).get())->set(v,b)
 
 void VlcProc::on_item_current_changed( vlc_object_t* p_obj, vlc_value_t newVal )
 {
@@ -531,6 +534,18 @@ void VlcProc::on_intf_event_changed( vlc_object_t* p_obj, vlc_value_t newVal )
             float pos = var_GetFloat( pInput, "position" );
             SET_STREAMTIME( m_cVarTime, pos, false );
             SET_BOOL( m_cVarSeekable, pos != 0.0 );
+            break;
+        }
+
+        case INPUT_EVENT_RATE:
+        {
+            float rate = var_GetFloat( pInput, "rate" );
+            char* buffer;
+            if( asprintf( &buffer, "%.3g", rate ) != -1 )
+            {
+                SET_TEXT( m_cVarSpeed, UString( getIntf(), buffer ) );
+                free( buffer );
+            }
             break;
         }
 
@@ -712,7 +727,8 @@ void VlcProc::on_volume_changed( vlc_object_t* p_obj, vlc_value_t newVal )
 
     audio_volume_t volume = aout_VolumeGet( pPlaylist );
     SET_VOLUME( m_cVarVolume, volume, false );
-    SET_BOOL( m_cVarMute, volume == 0 );
+    bool b_is_muted = aout_IsMuted( VLC_OBJECT(pPlaylist) );
+    SET_BOOL( m_cVarMute, b_is_muted );
 }
 
 void VlcProc::on_audio_filter_changed( vlc_object_t* p_obj, vlc_value_t newVal )
@@ -816,7 +832,8 @@ void VlcProc::init_variables()
 
     audio_volume_t volume = aout_VolumeGet( pPlaylist );
     SET_VOLUME( m_cVarVolume, volume, false );
-    SET_BOOL( m_cVarMute, volume == 0 );
+    bool b_is_muted = aout_IsMuted( VLC_OBJECT(pPlaylist) );
+    SET_BOOL( m_cVarMute, b_is_muted );
 
     update_equalizer();
 }

@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 the VideoLAN team
- * $Id: c0a0d037d3ca5ea077dcac0af6e178b10290373e $
+ * $Id: 4274ccb5ea18b5197e3673498d0703969ab8b4ff $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -690,6 +690,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
     mtime_t     i_pts = 0;
     spoint *p_first = NULL;
     spoint *p_last = NULL;
+    int i_cat;
 
     if( i_global_position >= 0 )
     {
@@ -772,33 +773,43 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
     es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
 
     /* now parse until key frame */
-    for( i_track = 0; i_track < tracks.size(); i_track++ )
+    const int es[3] = { VIDEO_ES, AUDIO_ES, SPU_ES };
+    i_cat = es[0];
+    for( int i = 0; i < 2; i_cat = es[++i] )
     {
-        if( tracks[i_track]->fmt.i_cat == VIDEO_ES )
+        for( i_track = 0; i_track < tracks.size(); i_track++ )
         {
-            spoint * seekpoint = new spoint(i_track, i_seek_time, i_seek_position, i_seek_position);
-            if( unlikely( !seekpoint ) )
+            if( tracks[i_track]->fmt.i_cat == i_cat )
             {
-                for( spoint * sp = p_first; sp; )
+                spoint * seekpoint = new spoint(i_track, i_seek_time, i_seek_position, i_seek_position);
+                if( unlikely( !seekpoint ) )
                 {
-                    spoint * tmp = sp;
-                    sp = sp->p_next;
-                    delete tmp;                    
+                    for( spoint * sp = p_first; sp; )
+                    {
+                        spoint * tmp = sp;
+                        sp = sp->p_next;
+                        delete tmp;                    
+                    }
+                    return;
                 }
-                return;
-            }
-            if( unlikely( !p_first ) )
-            {
-                p_first = seekpoint;
-                p_last = seekpoint;
-            }
-            else
-            {
-                p_last->p_next = seekpoint;
-                p_last = seekpoint;
+                if( unlikely( !p_first ) )
+                {
+                    p_first = seekpoint;
+                    p_last = seekpoint;
+                }
+                else
+                {
+                    p_last->p_next = seekpoint;
+                    p_last = seekpoint;
+                }
             }
         }
+        if( likely( p_first ) )
+            break;
     }
+    /*Neither video nor audio track... no seek further*/
+    if( unlikely( !p_first ) )
+        return; 
 
     while( i_pts < i_date )
     {
@@ -825,7 +836,7 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset, int64_t i_
             i_pts = sys.i_chapter_time + block->GlobalTimecode() / (mtime_t) 1000;
         if( i_track < tracks.size() )
         {
-            if( tracks[i_track]->fmt.i_cat == VIDEO_ES && b_key_picture )
+            if( tracks[i_track]->fmt.i_cat == i_cat && b_key_picture )
             {
                 /* get the seekpoint */
                 spoint * sp;
@@ -911,16 +922,41 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
     /* add all es */
     msg_Dbg( &sys.demuxer, "found %d es", (int)tracks.size() );
 
+    bool b_has_default_video = false;
+    bool b_has_default_audio = false;
+    /* check for default */
+    for(size_t i_track = 0; i_track < tracks.size(); i_track++)
+    {
+        mkv_track_t *p_tk = tracks[i_track];
+        es_format_t *p_fmt = &p_tk->fmt;
+        if( p_fmt->i_cat == VIDEO_ES )
+            b_has_default_video |=
+                p_tk->b_enabled && ( p_tk->b_default || p_tk->b_forced );
+        else if( p_fmt->i_cat == AUDIO_ES )
+            b_has_default_audio |=
+                p_tk->b_enabled && ( p_tk->b_default || p_tk->b_forced );
+    }
+
     for( size_t i_track = 0; i_track < tracks.size(); i_track++ )
     {
         mkv_track_t *p_tk = tracks[i_track];
         es_format_t *p_fmt = &p_tk->fmt;
 
-        if( p_fmt->i_cat == UNKNOWN_ES || !p_tk->psz_codec )
+        if( unlikely( p_fmt->i_cat == UNKNOWN_ES || !p_tk->psz_codec ) )
         {
             msg_Warn( &sys.demuxer, "invalid track[%d, n=%d]", (int)i_track, p_tk->i_number );
             p_tk->p_es = NULL;
             continue;
+        }
+        else if( unlikely( !b_has_default_video && p_fmt->i_cat == VIDEO_ES ) )
+        {
+            p_tk->b_default = true;
+            b_has_default_video = true;
+        }
+        else if( unlikely( !b_has_default_audio &&  p_fmt->i_cat == AUDIO_ES ) )
+        {
+            p_tk->b_default = true;
+            b_has_default_audio = true;
         }
 
         if( !strcmp( p_tk->psz_codec, "V_MS/VFW/FOURCC" ) )
@@ -1323,10 +1359,18 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
             msg_Err( &sys.demuxer, "unknown codec id=`%s'", p_tk->psz_codec );
             p_tk->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
         }
-        if( p_tk->b_default )
-        {
-            p_tk->fmt.i_priority = 1000;
-        }
+        if( unlikely( !p_tk->b_enabled ) )
+            p_tk->fmt.i_priority = -2;
+        else if( p_tk->b_forced )
+            p_tk->fmt.i_priority = 2;
+        else if( p_tk->b_default )
+            p_tk->fmt.i_priority = 1;
+        else
+            p_tk->fmt.i_priority = 0;
+
+        /* Avoid multivideo tracks when unnecessary */
+        if( p_tk->fmt.i_cat == VIDEO_ES )
+            p_tk->fmt.i_priority--;
 
         p_tk->p_es = es_out_Add( sys.demuxer.out, &p_tk->fmt );
 

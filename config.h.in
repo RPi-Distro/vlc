@@ -92,7 +92,7 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
-/* Define to 1 if you have the `asprintf' function. */
+/* Define to 1 if you have asprintf function */
 #undef HAVE_ASPRINTF
 
 /* Define to 1 if you have the `atof' function. */
@@ -586,7 +586,7 @@
 /* Define to 1 if you have the <valgrind/valgrind.h> header file. */
 #undef HAVE_VALGRIND_VALGRIND_H
 
-/* Define to 1 if you have the `vasprintf' function. */
+/* Define to 1 if you have asprintf function */
 #undef HAVE_VASPRINTF
 
 /* Define to 1 if you have the `vmsplice' function. */

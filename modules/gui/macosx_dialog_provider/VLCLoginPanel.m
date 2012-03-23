@@ -2,7 +2,7 @@
  * VLCLoginPanel.m: A Generic Login Panel created for VLC
  *****************************************************************************
  * Copyright (C) 2009-2010 the VideoLAN team
- * $Id: 3658665689a74b52bcab382ba9fef1311798d7e1 $
+ * $Id: 0ca241f7e155eadfdca8a280bbd4d61c22838a19 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -71,7 +71,7 @@
     [_okayButton setAction:@selector(buttonAction:)];
     [_okayButton setKeyEquivalent:@"\r"] ; // enter key
     [ourContentView addSubview:_okayButton];
-    
+
     s_rc.origin.x = 94;
     s_rc.origin.y = 170;
     s_rc.size.height = 14;
@@ -117,7 +117,7 @@
     [_passwordField setEditable:YES];
     [_passwordField setImportsGraphics:NO];
     [ourContentView addSubview:_passwordField];
-    
+
     s_rc.origin.x = 94;
     s_rc.origin.y = 238;
     s_rc.size.height = 17;

@@ -1390,7 +1390,7 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	$(SHELL) ./config.status --file="lib/$@"
 
 check-local:
-	$(top_srcdir)/src/check_headers $(pkginclude_HEADERS)
+	$(SHELL) $(top_srcdir)/src/check_headers $(pkginclude_HEADERS)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

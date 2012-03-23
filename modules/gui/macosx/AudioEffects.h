@@ -2,7 +2,7 @@
  * AudioEffects.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2011 VLC authors and VideoLAN
- * $Id: f63344acdf2934d930c021e5e928fb1bec784234 $
+ * $Id: 4ed578788839d3ad7561c457704da213ee1409ba $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -71,7 +71,7 @@
     IBOutlet id o_comp_band7_sld;
     IBOutlet id o_comp_band7_fld;
     IBOutlet id o_comp_band7_lbl;
-    
+
     /* Spatializer */
     IBOutlet id o_spat_enable_ckb;
     IBOutlet id o_spat_reset_btn;

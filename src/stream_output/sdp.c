@@ -2,7 +2,7 @@
  * sdp.c : SDP creation helpers
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 2363d344ba6fe9ddb476e69bbdd6a8954651c680 $
+ * $Id: 37c55b0eb2a12ab9adbbf6edc83bf4d031e18256 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -292,13 +292,14 @@ char *vlc_sdp_Start (vlc_object_t *obj, const char *cfgpref,
     if (sdp == NULL)
         return NULL;
 
-    /* Totally non-standard */
-    strcpy (subvar, "group");
-    char *group = var_GetNonEmptyString (obj, varname);
-    if (group != NULL)
+    strcpy (subvar, "cat");
+    char *cat = var_GetNonEmptyString (obj, varname);
+    if (cat != NULL)
     {
-        sdp_AddAttribute (&sdp, "x-plgroup", "%s", group);
-        free (group);
+        sdp_AddAttribute (&sdp, "cat", "%s", cat);
+        /* Totally non-standard */
+        sdp_AddAttribute (&sdp, "x-plgroup", "%s", cat);
+        free (cat);
     }
 
     return sdp;

@@ -3,7 +3,7 @@
  * CapturePin, CaptureFilter, CaptureEnumPins implementations
  *****************************************************************************
  * Copyright (C) 2002-2004, 2008 the VideoLAN team
- * $Id: c573a6a2f9eec62af37343dee39f7db0364ab888 $
+ * $Id: 3f04a3c51c37d598ec8cf9b5cd4c2f43939e824d $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -28,27 +28,6 @@
 
 #include <deque>
 using namespace std;
-
-#ifndef _MSC_VER
-#   include <wtypes.h>
-#   include <unknwn.h>
-#   include <ole2.h>
-#   include <limits.h>
-#   ifdef _WINGDI_
-#      undef _WINGDI_
-#   endif
-#   define _WINGDI_ 1
-#   define AM_NOVTABLE
-#   define _OBJBASE_H_
-#   undef _X86_
-#   ifndef _I64_MAX
-#     define _I64_MAX LONG_LONG_MAX
-#   endif
-#   define LONGLONG long long
-#endif
-
-#include <dshow.h>
-#include "vlc_dshow.h"
 
 typedef struct VLCMediaSample
 {

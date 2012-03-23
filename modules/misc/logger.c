@@ -2,7 +2,7 @@
  * logger.c : file logging plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 9ee7cde23ec9d05c67dc95a7d03fea3bb72b197c $
+ * $Id: 81ab268ec5a3629d443fc752b94c2d09e64fb75d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -277,8 +277,8 @@ static int Open( vlc_object_t *p_this )
         if( !psz_file )
         {
 #ifdef __APPLE__
-# define LOG_DIR "Library/Logs/"
-            char *home = config_GetUserDir(VLC_DOCUMENTS_DIR);
+# define LOG_DIR "Library/Logs"
+            char *home = config_GetUserDir(VLC_HOME_DIR);
             if( home == NULL
              || asprintf( &psz_file, "%s/"LOG_DIR"/%s", home,
                           filename ) == -1 )

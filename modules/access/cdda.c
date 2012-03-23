@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003-2006, 2008-2009 the VideoLAN team
- * $Id: f782b0c0932f5f004934487a62d4b3c7dd47eb67 $
+ * $Id: 2bb4840047f0c558ed1ecd754e62be161b0ac9d0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -24,7 +24,7 @@
 
 /**
  * Todo:
- *   - Improve CDDB support (non-blocking, cache, ...)
+ *   - Improve CDDB support (non-blocking, ...)
  *   - Fix tracknumber in MRL
  */
 
@@ -77,7 +77,7 @@ vlc_module_begin ()
 #ifdef HAVE_LIBCDDB
     add_string( "cddb-server", "freedb.videolan.org", N_( "CDDB Server" ),
             N_( "Address of the CDDB server to use." ), true )
-    add_integer( "cddb-port", 8880, N_( "CDDB port" ),
+    add_integer( "cddb-port", 80, N_( "CDDB port" ),
             N_( "CDDB Server port to use." ), true )
 #endif
 
@@ -602,6 +602,9 @@ static cddb_disc_t *GetCDDBInfo( access_t *p_access, int i_titles, int *p_sector
     }
 
     /* */
+
+    cddb_http_enable( p_cddb );
+
     char *psz_tmp = var_InheritString( p_access, "cddb-server" );
     if( psz_tmp )
     {
@@ -613,17 +616,21 @@ static cddb_disc_t *GetCDDBInfo( access_t *p_access, int i_titles, int *p_sector
 
     cddb_set_email_address( p_cddb, "vlc@videolan.org" );
 
-    /// \todo
-    cddb_cache_disable( p_cddb );
+    cddb_set_http_path_query( p_cddb, "/~cddb/cddb.cgi" );
+    cddb_set_http_path_submit( p_cddb, "/~cddb/submit.cgi" );
 
-//    cddb_cache_set_dir( p_cddb,
-//                     var_InheritString( p_access,
-//                                    MODULE_STRING "-cddb-cachedir") );
+
+    char *psz_cachedir;
+    char *psz_temp = config_GetUserDir( VLC_CACHE_DIR );
+
+    if( asprintf( &psz_cachedir, "%s" DIR_SEP "cddb", psz_temp ) > 0 ) {
+        cddb_cache_enable( p_cddb );
+        cddb_cache_set_dir( p_cddb, psz_cachedir );
+        free( psz_cachedir );
+    }
+    free( psz_temp );
 
     cddb_set_timeout( p_cddb, 10 );
-
-    /// \todo
-    cddb_http_disable( p_cddb );
 
     /* */
     cddb_disc_t *p_disc = cddb_disc_new();

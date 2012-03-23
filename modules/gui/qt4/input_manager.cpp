@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 332026310fd5c79f6ad2950dcdc8d10269405e13 $
+ * $Id: 4281c30ba5e51e728f916c16ea256072a020f03f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -955,6 +955,14 @@ MainInputManager::MainInputManager( intf_thread_t *_p_intf )
     DCONNECT( this, inputChanged( input_thread_t * ),
               im, setInput( input_thread_t * ) );
 
+    /* initialize p_input (an input can already be running) */
+    p_input = playlist_CurrentInput( pl_Get(p_intf) );
+    if( p_input )
+    {
+        if( !p_intf->p_sys->b_isDialogProvider )
+            var_AddCallback( p_input, "state", PLItemChanged, this );
+        emit inputChanged( p_input );
+    }
 }
 
 MainInputManager::~MainInputManager()

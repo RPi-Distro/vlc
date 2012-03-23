@@ -2,7 +2,7 @@
  * mux.c: muxer using libavformat
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: d913bf191cdd484831f836a60799e7264966a2c1 $
+ * $Id: 1d6c6a4668a754f0862d4d1548246d7a8462d157 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -37,7 +37,11 @@
 
 #include "avformat.h"
 #include "../../codec/avcodec/avcodec.h"
-#include "../../codec/avcodec/avutil.h"
+
+/* Support for deprecated APIs */
+#if LIBAVFORMAT_VERSION_INT < ((52<<16)+(105<<8)+0)
+# define avio_flush put_flush_packet
+#endif
 
 //#define AVFORMAT_DEBUG 1
 
@@ -50,13 +54,15 @@ static const char *const ppsz_mux_options[] = {
  *****************************************************************************/
 struct sout_mux_sys_t
 {
+#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(105<<8)+0)
+    AVIOContext     *io;
+#else
     ByteIOContext   io;
+#endif
     int             io_buffer_size;
     uint8_t        *io_buffer;
 
     AVFormatContext *oc;
-    URLContext     url;
-    URLProtocol    prot;
 
     bool     b_write_header;
     bool     b_error;
@@ -83,12 +89,10 @@ int OpenMux( vlc_object_t *p_this )
     AVOutputFormat *file_oformat;
     sout_mux_t *p_mux = (sout_mux_t*)p_this;
     sout_mux_sys_t *p_sys;
-    AVFormatParameters params, *ap = &params;
     char *psz_mux;
 
     /* Should we call it only once ? */
     av_register_all();
-    av_log_set_callback( LibavutilCallback );
 
     config_ChainParse( p_mux, "ffmpeg-", ppsz_mux_options, p_mux->p_cfg );
 
@@ -130,20 +134,18 @@ int OpenMux( vlc_object_t *p_this )
     /* Create I/O wrapper */
     p_sys->io_buffer_size = 32768;  /* FIXME */
     p_sys->io_buffer = malloc( p_sys->io_buffer_size );
-    p_sys->url.priv_data = p_mux;
-    p_sys->url.prot = &p_sys->prot;
-    p_sys->url.prot->name = "VLC I/O wrapper";
-    p_sys->url.prot->url_open = 0;
-    p_sys->url.prot->url_read = 0;
-    p_sys->url.prot->url_write =
-                    (int (*) (URLContext *, unsigned char *, int))IOWrite;
-    p_sys->url.prot->url_seek =
-                    (int64_t (*) (URLContext *, int64_t, int))IOSeek;
-    p_sys->url.prot->url_close = 0;
-    p_sys->url.prot->next = 0;
-    init_put_byte( &p_sys->io, p_sys->io_buffer, p_sys->io_buffer_size,
-                   1, &p_sys->url, NULL, IOWrite, IOSeek );
 
+#if (LIBAVFORMAT_VERSION_INT >= ((52<<16)+(105<<8)+0))
+    p_sys->io = avio_alloc_context(
+#else
+    init_put_byte( &p_sys->io,
+#endif
+        p_sys->io_buffer, p_sys->io_buffer_size,
+        1, p_mux, NULL, IOWrite, IOSeek );
+
+
+#if (LIBAVFORMAT_VERSION_INT < ((52<<16)+(105<<8)+0))
+    AVFormatParameters params, *ap = &params;
     memset( ap, 0, sizeof(*ap) );
     if( av_set_parameters( p_sys->oc, ap ) < 0 )
     {
@@ -153,8 +155,13 @@ int OpenMux( vlc_object_t *p_this )
         free( p_sys );
         return VLC_EGENERIC;
     }
+#endif
 
+#if (LIBAVFORMAT_VERSION_INT >= ((52<<16)+(105<<8)+0))
+    p_sys->oc->pb = p_sys->io;
+#else
     p_sys->oc->pb = &p_sys->io;
+#endif
     p_sys->oc->nb_streams = 0;
 
     p_sys->b_write_header = true;
@@ -219,7 +226,11 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         return VLC_EGENERIC;
     }
 
+#if (LIBAVFORMAT_VERSION_INT >= ((53<<16)+(10<<8)+0))
+    stream = avformat_new_stream( p_sys->oc, NULL);
+#else
     stream = av_new_stream( p_sys->oc, p_sys->oc->nb_streams);
+#endif
     if( !stream )
     {
         free( p_input->p_sys );
@@ -227,8 +238,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     }
     codec = stream->codec;
 
-    /* This is used by LibavutilCallback (avutil.h) to print messages */
-    codec->opaque = (void*)p_mux;
+    codec->opaque = p_mux;
 
     switch( p_input->p_fmt->i_cat )
     {
@@ -360,20 +370,27 @@ static int Mux( sout_mux_t *p_mux )
 
     if( p_sys->b_write_header )
     {
+        int error;
         msg_Dbg( p_mux, "writing header" );
 
-        if( av_write_header( p_sys->oc ) < 0 )
+#if (LIBAVFORMAT_VERSION_INT >= ((53<<16)+(2<<8)+0))
+        error = avformat_write_header( p_sys->oc, NULL /* options */ );
+#else
+        error = av_write_header( p_sys->oc );
+#endif
+        if( error < 0 )
         {
-            msg_Err( p_mux, "could not write header" );
+            errno = AVUNERROR(error);
+            msg_Err( p_mux, "could not write header: %m" );
             p_sys->b_write_header = false;
             p_sys->b_error = true;
             return VLC_EGENERIC;
         }
 
 #if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(0<<8)+0)
-        put_flush_packet( p_sys->oc->pb );
+        avio_flush( p_sys->oc->pb );
 #else
-        put_flush_packet( &p_sys->oc->pb );
+        avio_flush( &p_sys->oc->pb );
 #endif
         p_sys->b_write_header = false;
     }
@@ -431,8 +448,7 @@ static int Control( sout_mux_t *p_mux, int i_query, va_list args )
  *****************************************************************************/
 static int IOWrite( void *opaque, uint8_t *buf, int buf_size )
 {
-    URLContext *p_url = opaque;
-    sout_mux_t *p_mux = p_url->priv_data;
+    sout_mux_t *p_mux = opaque;
     int i_ret;
 
 #ifdef AVFORMAT_DEBUG
@@ -451,8 +467,7 @@ static int IOWrite( void *opaque, uint8_t *buf, int buf_size )
 
 static int64_t IOSeek( void *opaque, int64_t offset, int whence )
 {
-    URLContext *p_url = opaque;
-    sout_mux_t *p_mux = p_url->priv_data;
+    sout_mux_t *p_mux = opaque;
 
 #ifdef AVFORMAT_DEBUG
     msg_Dbg( p_mux, "IOSeek offset: %"PRId64", whence: %i", offset, whence );

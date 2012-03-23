@@ -2,7 +2,7 @@
 * eyetv.m: small class to control the notification parts of the EyeTV plugin
 *****************************************************************************
 * Copyright (C) 2006-2011 VLC authors and VideoLAN
-* $Id: 732d368bd3cd5d0b099232692ee2932e9fe77fbe $
+* $Id: 23ae06671232b02f12d16c22fffcbb08fe7e8d7a $
 *
 * Authors: Felix Kühne <fkuehne at videolan dot org>
 *          Damien Fouilleul <damienf at videolan dot org>
@@ -51,7 +51,7 @@ static VLCEyeTVController *_o_sharedInstance = nil;
                          object: @"VLCEyeTVSupport"
              suspensionBehavior: NSNotificationSuspensionBehaviorDeliverImmediately];
     }
-    
+
     return _o_sharedInstance;
 }
 
@@ -142,7 +142,7 @@ static VLCEyeTVController *_o_sharedInstance = nil;
                      "end tell"];
         NSLog( @"telling eyetv to switch 1 channel down" );
     }
-    
+
     descriptor = [script executeAndReturnError:&errorDict];
     if( nil == descriptor ) 
     {

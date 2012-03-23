@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: 34fa00efc3bd2f2020447f0a1c354accf43dab14 $
+ * $Id: 3c483fc6bedf2254104d40acc245e285c1005765 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -107,7 +107,7 @@ static NSMutableArray *blackoutWindows = NULL;
 
 - (CGDirectDisplayID)displayID
 {
-	return (CGDirectDisplayID)[[[self deviceDescription] objectForKey: @"NSScreenNumber"] intValue];
+    return (CGDirectDisplayID)[[[self deviceDescription] objectForKey: @"NSScreenNumber"] intValue];
 }
 
 - (void)blackoutOtherScreens
@@ -144,15 +144,12 @@ static NSMutableArray *blackoutWindows = NULL;
         [blackoutWindows addObject: blackoutWindow];
         [blackoutWindow release];
 
-        if( [screen isMainScreen ] )
+        if( [screen isMainScreen] )
         {
-            if ([screen isMainScreen])
-            {
-                if (OSX_LEOPARD)
-                    SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-                else
-                    [NSApp setPresentationOptions:(NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar)];
-            }
+            if (OSX_LEOPARD)
+                SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+            else
+                [NSApp setPresentationOptions:(NSApplicationPresentationAutoHideDock | NSApplicationPresentationAutoHideMenuBar)];
         }
     }
 }
@@ -672,6 +669,9 @@ void _drawFrameInRect(NSRect frameRect)
 
 - (void)drawRect:(NSRect)rect
 {
+    [[[VLCMain sharedInstance] mainWindow] drawFancyGradientEffectForTimeSlider];
+    msleep( 10000 ); //wait for the gradient to draw completely
+
     /* Draw default to make sure the slider behaves correctly */
     [[NSGraphicsContext currentContext] saveGraphicsState];
     NSRectClip(NSZeroRect);
@@ -767,6 +767,7 @@ void _drawFrameInRect(NSRect frameRect)
 {
     [o_string_shadow release];
     [o_string_attributes_dict release];
+    [super dealloc];
 }
 
 - (void)setStringValue:(NSString *)string

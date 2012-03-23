@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2012 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.0.0)
+AC_INIT(vlc, 2.0.1)
 VERSION_MAJOR=2
 VERSION_MINOR=0
-VERSION_REVISION=0
+VERSION_REVISION=1
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -182,7 +182,7 @@ case "${host_os}" in
       [AS_HELP_STRING([--with-macosx-sdk=DIR],
         [compile using the SDK in DIR])])
     test "${with_macosx_sdk}" = "" && with_macosx_sdk=/Developer/SDKs/MacOSX10.6.sdk
-    ! test -d "${with_macosx_sdk}" && AC_MSG_ERROR([SDK "${with_macosx_sdk}" not found])
+    test ! -d "${with_macosx_sdk}" && AC_MSG_ERROR([SDK "${with_macosx_sdk}" not found])
     CPP="${CPP} -isysroot ${with_macosx_sdk}"
     CC="${CC} -isysroot ${with_macosx_sdk}"
     CXX="${CXX} -isysroot ${with_macosx_sdk}"
@@ -516,10 +516,25 @@ need_libc=false
 dnl Check for usual libc functions
 AC_CHECK_DECLS([nanosleep],,,[#include <time.h>])
 AC_CHECK_FUNCS([daemon fcntl fstatvfs fork getenv getpwuid_r if_nameindex if_nametoindex isatty lstat memalign mmap openat pread posix_fadvise posix_madvise setlocale stricmp strnicmp strptime uselocale])
-AC_REPLACE_FUNCS([asprintf atof atoll dirfd fdopendir flockfile fsync getdelim getpid gmtime_r inet_pton lldiv localtime_r nrand48 rewind setenv strcasecmp strcasestr strdup strlcpy strncasecmp strndup strnlen strsep strtof strtok_r strtoll swab tdestroy vasprintf])
+AC_REPLACE_FUNCS([atof atoll dirfd fdopendir flockfile fsync getdelim getpid gmtime_r inet_pton lldiv localtime_r nrand48 rewind setenv strcasecmp strcasestr strdup strlcpy strncasecmp strndup strnlen strsep strtof strtok_r strtoll swab tdestroy])
 AC_CHECK_FUNCS(fdatasync,,
   [AC_DEFINE(fdatasync, fsync, [Alias fdatasync() to fsync() if missing.])
 ])
+
+dnl mingw64 implements those as static inline, not functions with C linkage
+AC_LINK_IFELSE([
+    AC_LANG_PROGRAM([#include <stdio.h>], [
+        char *c;
+        if (asprintf(&c, "%s %d", "string", 1) == -1)
+            c = NULL;
+    ])],[AC_DEFINE([HAVE_ASPRINTF],[1],[Define to 1 if you have asprintf function])],[AC_LIBOBJ([asprintf])])
+AC_LINK_IFELSE([
+    AC_LANG_PROGRAM([#include <stdio.h>], [
+        char *c;
+        va_list ap;
+        if (vasprintf(&c, "%s %d", ap) == -1)
+            c = NULL;
+    ])],[AC_DEFINE([HAVE_VASPRINTF],[1],[Define to 1 if you have asprintf function])],[AC_LIBOBJ([vasprintf])])
 
 # Windows CE does not have strcoll()
 AC_FUNC_STRCOLL
@@ -1836,7 +1851,7 @@ then
       AC_CHECK_HEADERS(dshow.h,
       [ VLC_ADD_PLUGIN([dshow])
         VLC_ADD_CXXFLAGS([dshow],[])
-        VLC_ADD_LIBS([dshow],[-lole32 -loleaut32 -luuid]) ])
+        VLC_ADD_LIBS([dshow],[-lole32 -loleaut32 -luuid -lstrmiids -lksuser])])
     AC_LANG_POP(C++)
   fi
 fi
@@ -2479,7 +2494,9 @@ AS_IF([test "${enable_dxva2}" != "no"], [
     AS_IF([test "${enable_dxva2}" = "yes"],
           [AC_MSG_ERROR([dxva2 is present but libavcodec/dxva2.h is missing])],
               [AC_MSG_WARN([dxva2 is present but libavcodec/dxva2.h is missing ])])
-        ])
+        ], [#undef _WIN32_WINNT
+            /* DXVA2 is only available in Vista and above */
+            #define _WIN32_WINNT 0x600])
       ],[
     AS_IF([test "${enable_dxva2}" = "yes"],
               [AC_MSG_ERROR([Could not find required dxva2api.h])],
@@ -3749,14 +3766,14 @@ then
 
   VLC_ADD_LIBS([macosx], [-Wl,-framework,QTKit -Wl,-framework,IOKit -Wl,-framework,AddressBook -Wl,-framework,WebKit])
 
-  if ! test -d ${CONTRIB_DIR}/Sparkle.framework
+  if test ! -d ${CONTRIB_DIR}/Sparkle.framework
   then
     AC_MSG_ERROR([Sparkle framework is required and was not found in ${CONTRIB_DIR}])
   fi
   VLC_ADD_LIBS([macosx], [-F${CONTRIB_DIR} -Wl,-framework,Sparkle])
   VLC_ADD_OBJCFLAGS([macosx], [-F${CONTRIB_DIR}])
 
-  if ! test -d ${CONTRIB_DIR}/BGHUDAppKit.framework
+  if test ! -d ${CONTRIB_DIR}/BGHUDAppKit.framework
   then
     AC_MSG_ERROR([BGHUDAppKit framework is required and was not found in ${CONTRIB_DIR}])
   fi
@@ -4178,11 +4195,6 @@ dnl
 VLC_RESTORE_FLAGS
 
 dnl
-dnl Sort the modules list
-dnl
-PLUGINS=$( (for i in `echo $PLUGINS`; do echo $i; done)|sort|xargs )
-
-dnl
 dnl  Configuration is finished
 dnl
 AC_SUBST(SYS)
@@ -4321,7 +4333,7 @@ echo "#! $SHELL
 rm -f .error\$\$
 ERROR=0
 export PATH=\"$PATH\" LANG=C
-($MAKE V=1 \$@ 2>&1 || touch .error\$\$)| `sed -ne "s/^top_srcdir *= *//p" < Makefile`/extras/buildsystem/make.pl
+($MAKE V=1 \$@ 2>&1 || touch .error\$\$)| `sed -ne \"s/^top_srcdir *= *//p\" < Makefile`/extras/buildsystem/make.pl
 test -f .error\$\$ && ERROR=1
 rm -f .error\$\$
 exit \$ERROR" >compile

@@ -2,7 +2,7 @@
  * subtitle.c: subtitle decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: c9ccce677bd772dc5a797df955470d295684ccab $
+ * $Id: f3a72e0b8b1dd92e5d8c0842d8f4798204b1e609 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -90,8 +90,14 @@ int InitSubtitleDec(decoder_t *dec, AVCodecContext *context,
     context->extradata = NULL;
 
     /* */
+    int ret;
     vlc_avcodec_lock();
-    if (avcodec_open(context, codec) < 0) {
+#if LIBAVCODEC_VERSION_MAJOR < 54
+    ret = avcodec_open(context, codec);
+#else
+    ret = avcodec_open2(context, codec, NULL /* options */);
+#endif
+    if (ret < 0) {
         vlc_avcodec_unlock();
         msg_Err(dec, "cannot open codec (%s)", namecodec);
         free(context->extradata);

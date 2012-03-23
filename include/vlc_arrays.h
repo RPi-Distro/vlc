@@ -2,7 +2,7 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 68ea1e248023b524d76dafedab934f9821541fcc $
+ * $Id: 6643197707faf62a22b3ab4313676e8e40cf8355 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -451,7 +451,15 @@ static inline void vlc_dictionary_clear( vlc_dictionary_t * p_dict,
     p_dict->i_size = 0;
 }
 
+static inline int
+vlc_dictionary_has_key( const vlc_dictionary_t * p_dict, const char * psz_key )
+{
+    if( !p_dict->p_entries )
+        return 0;
 
+    int i_pos = DictHash( psz_key, p_dict->i_size );
+    return p_dict->p_entries[i_pos] != NULL;
+}
 
 static inline void *
 vlc_dictionary_value_for_key( const vlc_dictionary_t * p_dict, const char * psz_key )

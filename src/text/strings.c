@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
  * Copyright (C) 2008-2009 Rémi Denis-Courmont
- * $Id: 4b51a6bcad01843e393d9408747f4048a3e7e6ca $
+ * $Id: c1a7493a2de901806f2340b7da9d664e7df1f378 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -422,7 +422,7 @@ char *convert_xml_special_chars (const char *str)
         }
 
         if ((cp & ~0x0080) < 32 /* C0/C1 control codes */
-         && strchr ("\x09\x0A\x0D\x85", cp) == NULL)
+         && memchr ("\x09\x0A\x0D\x85", cp, 4) == NULL)
             ptr += sprintf (ptr, "&#%"PRIu32";", cp);
         else
         switch (cp)

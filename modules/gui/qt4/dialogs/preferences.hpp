@@ -2,7 +2,7 @@
  * preferences.hpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: cd6595f0bc67c14cad36d5ab4d81419a44701a9a $
+ * $Id: 9ae0fd4e682b6fe3e2fb6eb740347aea2c8a134e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -54,8 +54,6 @@ public:
 #endif
 
 private:
-    QGridLayout *main_layout;
-
     QWidget *main_panel;
     QHBoxLayout *main_panel_l;
 

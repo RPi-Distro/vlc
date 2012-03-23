@@ -4,7 +4,7 @@
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: 59f528e7be72dbc0c61b89eb38454d81d5e3a96e $
+ * $Id: d0c5741090a40c433f620bc917d7e5782c1266eb $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal at mirsal fr>
@@ -565,7 +565,8 @@ static void ProcessEvents( intf_thread_t *p_intf,
                 vlc_dictionary_insert( &player_properties, "CanPlay", NULL );
             }
 
-            vlc_dictionary_insert( &tracklist_properties, "Tracks", NULL );
+            if( !vlc_dictionary_has_key( &tracklist_properties, "Tracks" ) )
+                vlc_dictionary_insert( &tracklist_properties, "Tracks", NULL );
             break;
         case SIGNAL_VOLUME_MUTED:
         case SIGNAL_VOLUME_CHANGE:
@@ -779,7 +780,7 @@ MPRISEntryPoint ( DBusConnection *p_conn, DBusMessage *p_from, void *p_this )
 
     DBusError error;
 
-    if( strcmp( psz_interface, DBUS_INTERFACE_PROPERTIES ) )
+    if( psz_interface && strcmp( psz_interface, DBUS_INTERFACE_PROPERTIES ) )
         psz_target_interface = psz_interface;
 
     else

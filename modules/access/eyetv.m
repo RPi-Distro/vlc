@@ -2,7 +2,7 @@
  * eyetv.c : Access module to connect to our plugin running within EyeTV
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 83617efa4c56d0c6b06d3bdec0432061a1dcc532 $
+ * $Id: 0b6cb12bc43cc4e0b1fcd985a86e6c6b7e8798c6 $
  *
  * Author: Felix Kühne <fkuehne at videolan dot org>
  *
@@ -251,7 +251,8 @@ static void Close( vlc_object_t *p_this )
  
     msg_Dbg( p_access, "plugin notified" );
 
-	close(p_sys->eyetvSock);
+
+close(p_sys->eyetvSock);
  
     msg_Dbg( p_access, "msg port closed and freed" );
  
@@ -316,7 +317,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
             *pi_64 =
                 INT64_C(1000) * var_InheritInteger( p_access, "live-caching" );
             break;
-        
+
         case ACCESS_SET_PAUSE_STATE:
         case ACCESS_GET_TITLE_INFO:
         case ACCESS_SET_TITLE:

@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 0ba3a21402651e46dc12c2555435a149b26b5ba0 $
+ * $Id: 3368251e4d2d69443d8074e8b55cf46aaef9e94f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -193,18 +193,14 @@ vlc_module_begin ()
                  PMTPID_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "tsid", 0, TSID_TEXT,
                  TSID_LONGTEXT, true )
-#ifdef HAVE_DVBPSI_SDT
     add_integer( SOUT_CFG_PREFIX "netid", 0, NETID_TEXT,
                  NETID_LONGTEXT, true )
-#endif
     add_string( SOUT_CFG_PREFIX "program-pmt", NULL, PMTPROG_TEXT,
                 PMTPROG_LONGTEXT, true )
     add_bool( SOUT_CFG_PREFIX "es-id-pid", false, PID_TEXT, PID_LONGTEXT,
               true )
     add_string( SOUT_CFG_PREFIX "muxpmt", NULL, MUXPMT_TEXT, MUXPMT_LONGTEXT, true )
-#ifdef HAVE_DVBPSI_SDT
     add_string( SOUT_CFG_PREFIX "sdtdesc", NULL, SDTDESC_TEXT, SDTDESC_LONGTEXT, true )
-#endif
     add_bool( SOUT_CFG_PREFIX "alignment", true, ALIGNMENT_TEXT,
               ALIGNMENT_LONGTEXT, true )
 
@@ -243,9 +239,7 @@ vlc_module_end ()
  *****************************************************************************/
 static const char *const ppsz_sout_options[] = {
     "pid-video", "pid-audio", "pid-spu", "pid-pmt", "tsid",
-#ifdef HAVE_DVBPSI_SDT
     "netid", "sdtdesc",
-#endif
     "es-id-pid", "shaping", "pcr", "bmin", "bmax", "use-key-frames",
     "dts-delay", "csa-ck", "csa2-ck", "csa-use", "csa-pkt", "crypt-audio", "crypt-video",
     "muxpmt", "program-pmt", "alignment",
@@ -587,11 +581,10 @@ static int Open( vlc_object_t *p_this )
         p_sys->i_tsid = nrand48(subi) & 0xffff;
 
     p_sys->i_netid = nrand48(subi) & 0xffff;
-#ifdef HAVE_DVBPSI_SDT
+
     var_Get( p_mux, SOUT_CFG_PREFIX "netid", &val );
     if ( val.i_int )
         p_sys->i_netid = val.i_int;
-#endif
 
     p_sys->i_pmt_version_number = nrand48(subi) & 0x1f;
     for( i = 0; i < p_sys->i_num_pmt; i++ )
@@ -604,7 +597,6 @@ static int Open( vlc_object_t *p_this )
     p_sys->sdt.i_continuity_counter = 0;
     p_sys->sdt.b_discontinuity = false;
 
-#ifdef HAVE_DVBPSI_SDT
     var_Get( p_mux, SOUT_CFG_PREFIX "sdtdesc", &val );
     p_sys->b_sdt = val.psz_string && *val.psz_string ? true : false;
 
@@ -639,9 +631,6 @@ static int Open( vlc_object_t *p_this )
         }
     }
     free( val.psz_string );
-#else
-    p_sys->b_sdt = false;
-#endif
 
     p_sys->b_data_alignment = var_GetBool( p_mux, SOUT_CFG_PREFIX "alignment" );
 
@@ -2387,7 +2376,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
     int             i;
     int             *p_usepid = NULL;
 
-#ifdef HAVE_DVBPSI_SDT
     block_t         *p_sdt;
     dvbpsi_sdt_t    sdt;
 
@@ -2395,7 +2383,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
     dvbpsi_sdt_service_t *p_service;
 
     uint8_t         *psz_sdt_desc;
-#endif
 
     if( p_sys->dvbpmt == NULL )
     {
@@ -2405,10 +2392,9 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
             return;
         }
     }
-#ifdef HAVE_DVBPSI_SDT
+
     if( p_sys->b_sdt )
         dvbpsi_InitSDT( &sdt, p_sys->i_tsid, 1, 1, p_sys->i_netid );
-#endif
 
     for( i = 0; i < p_sys->i_num_pmt; i++ )
     {
@@ -2418,7 +2404,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
                         1,      /* b_current_next */
                         p_sys->i_pcr_pid );
 
-#ifdef HAVE_DVBPSI_SDT
         if( p_sys->b_sdt )
         {
             p_service = dvbpsi_SDTAddService( &sdt,
@@ -2460,7 +2445,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
 #undef psz_sdtprov
 #undef psz_sdtserv
         }
-#endif
     }
 
     if( p_sys->i_mpeg4_streams > 0 )
@@ -2762,7 +2746,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
         dvbpsi_EmptyPMT( &p_sys->dvbpmt[i] );
     }
 
-#ifdef HAVE_DVBPSI_SDT
     if( p_sys->b_sdt )
     {
         p_section2 = dvbpsi_GenSDTSections( &sdt );
@@ -2771,5 +2754,4 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
         dvbpsi_DeletePSISections( p_section2 );
         dvbpsi_EmptySDT( &sdt );
     }
-#endif
 }

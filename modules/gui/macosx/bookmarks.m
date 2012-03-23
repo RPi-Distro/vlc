@@ -2,7 +2,7 @@
  * bookmarks.m: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005 - 2007 VLC authors and VideoLAN
- * $Id: 48037331ce8351851303352c2531a40d734a413c $
+ * $Id: bf56c0055d910de567e025df022eea44549b5e8b $
  *
  * Authors: Felix Kühne <fkuehne at videolan dot org>
  *
@@ -119,10 +119,10 @@ static VLCBookmarks *_o_sharedInstance = nil;
     seekpoint_t bookmark;
 
     if( !input_Control( p_input, INPUT_GET_BOOKMARK, &bookmark ) )
-	{
-		bookmark.psz_name = _("Untitled");
-		input_Control( p_input, INPUT_ADD_BOOKMARK, &bookmark );
-	}
+    {
+        bookmark.psz_name = _("Untitled");
+        input_Control( p_input, INPUT_ADD_BOOKMARK, &bookmark );
+    }
  
     vlc_object_release( p_input );
  

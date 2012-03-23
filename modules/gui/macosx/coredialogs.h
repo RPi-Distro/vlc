@@ -2,7 +2,7 @@
  * coredialogs.h: Mac OS X Core Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2011 VLC authors and VideoLAN
- * $Id: 777ead12dc789d4adba64453fde2fa5b1d6a33b1 $
+ * $Id: 4a73039dd7a7ef9ad4f1f8ecf62cd622a490077c $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -36,10 +36,10 @@
     IBOutlet id o_cleanup_button;
     IBOutlet id o_error_table;
     IBOutlet id o_messages_btn;
-    
+
     NSMutableArray * o_errors;
     NSMutableArray * o_icons;
-    
+
     BOOL b_nib_loaded;
 }
 - (IBAction)cleanupTable:(id)sender;
@@ -87,6 +87,7 @@
 -(void)showLoginDialog: (NSValue *)o_value;
 -(IBAction)loginDialogAction:(id)sender;
 
+-(void)showProgressDialogOnMainThread: (NSValue *)o_value;
 -(void)showProgressDialog: (NSValue *)o_value;
 -(IBAction)progDialogAction:(id)sender;
 -(BOOL)progressCancelled;

@@ -2,7 +2,7 @@
  * mjpeg.c : demuxes mjpeg webcam http streams
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: afdc484d39f26277726ed2cce81ffb57acc5ff84 $
+ * $Id: 07d9e1b46440b5c9f1f62af80d703b3da5e3eead $
  *
  * Authors: Henry Jen (slowhog) <henryjen@ztune.net>
  *          Derk-Jan Hartman (thedj)
@@ -35,6 +35,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
+#include "mxpeg_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -315,6 +316,12 @@ static int Open( vlc_object_t * p_this )
 
     p_sys->psz_separator = NULL;
     p_sys->i_frame_size_estimate = 15 * 1024;
+
+    if( IsMxpeg( p_demux->s ) && !p_demux->b_force )
+    {
+        // let avformat handle this case
+        goto error;
+    }
 
     b_matched = CheckMimeHeader( p_demux, &i_size);
     if( b_matched )

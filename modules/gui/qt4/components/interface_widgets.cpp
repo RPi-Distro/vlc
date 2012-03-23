@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 419b5e6ed07dfc201aee9999d4621897a8076307 $
+ * $Id: 7a9550f09361b3aed6de0ae00535217f17a4ebc1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -395,6 +395,7 @@ SpeedControlWidget::SpeedControlWidget( intf_thread_t *_p_i, QWidget *_parent )
     speedSlider->setSizePolicy( sizePolicy );
     speedSlider->setMinimumSize( QSize( 140, 20 ) );
     speedSlider->setOrientation( Qt::Horizontal );
+    speedSlider->setTickPosition( QSlider::TicksBelow );
 
     speedSlider->setRange( -34, 34 );
     speedSlider->setSingleStep( 1 );

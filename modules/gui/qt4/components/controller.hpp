@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: c7032d66a99a7dd186b37d238d7f2a8390e48c4b $
+ * $Id: 3c356334fcd252cf9ad6191c50bdd1e67b475a09 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -37,7 +37,7 @@
 #define MAIN_TB1_DEFAULT "64;39;64;38;65"
 #define MAIN_TB2_DEFAULT "0-2;64;3;1;4;64;7;9;64;10;20;19;64-4;37;65;35-4"
 #define ADV_TB_DEFAULT "12;11;13;14"
-#define INPT_TB_DEFAULT "43;33;44"
+#define INPT_TB_DEFAULT "43;33-4;44"
 #define FSC_TB_DEFAULT "0-2;64;3;1;4;64;37;64;38;64;8;65;25;35-4;34"
 
 #define I_PLAY_TOOLTIP N_("Play\nIf the playlist is empty, open a medium")

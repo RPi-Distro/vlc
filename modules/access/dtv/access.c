@@ -38,6 +38,10 @@
     "If there is more than one digital broadcasting adapter, " \
     "the adapter number must be selected. Numbering start from zero.")
 
+#define DEVICE_TEXT N_("DVB device")
+#define DEVICE_LONGTEXT N_( \
+    "If the adapter provides multiple independent tuner devices, " \
+    "the device number must be selected. Numbering starts from zero.")
 #define BUDGET_TEXT N_("Do not demultiplex")
 #define BUDGET_LONGTEXT N_( \
     "Only useful programs are normally demultiplexed from the transponder. " \
@@ -232,14 +236,19 @@ vlc_module_begin ()
     add_shortcut ("dtv", "tv", "dvb", /* "radio", "dab",*/
                   "cable", "dvb-c", "cqam", "isdb-c",
                   "satellite", "dvb-s", "dvb-s2", "isdb-s",
-                  "terrestrial", "dvb-t", "dvb-t2", "isdb-t", "atsc",
-                  "dvbt")
+                  "terrestrial", "dvb-t", "dvb-t2", "isdb-t", "atsc"
+#ifdef WIN32
+                  ,"dvbt"
+#endif
+                 )
 
 #ifdef __linux__
     add_integer ("dvb-adapter", 0, ADAPTER_TEXT, ADAPTER_LONGTEXT, false)
         change_integer_range (0, 255)
         change_safe ()
-    add_obsolete_integer ("dvb-device")
+    add_integer ("dvb-device", 0, DEVICE_TEXT, DEVICE_LONGTEXT, false)
+        change_integer_range (0, 255)
+        change_safe ()
     add_bool ("dvb-budget-mode", false, BUDGET_TEXT, BUDGET_LONGTEXT, true)
 #endif
 #ifdef WIN32

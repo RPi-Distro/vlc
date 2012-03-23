@@ -2,7 +2,7 @@
  * QMenuView
  ****************************************************************************
  * Copyright © 2011 VLC authors and VideoLAN
- * $Id: 8ec2d3ed60b0de1994315e54c77025288ef64101 $
+ * $Id: 909cbb551fa0205ba7471ef9a06775b3efef918e $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -37,15 +37,14 @@
  *
  * This is now linked to VLC's models. It should be splittable in the future.
  *
- * TODO: - limit the number of the menu, as a Q_PROPERTY
- *       - limit the width of the entries
+ * TODO: - limit the width of the entries
  *       - deal with a root item
  ***/
 
 Q_DECLARE_METATYPE(QModelIndex); // So we can store it in a QVariant
 
-QMenuView::QMenuView( QWidget * parent )
-          : QMenu( parent )
+QMenuView::QMenuView( QWidget * parent, int _iMaxVisibleCount )
+          : QMenu( parent ), iMaxVisibleCount( _iMaxVisibleCount )
 {
     m_model = NULL;
 
@@ -75,7 +74,9 @@ void QMenuView::rebuild()
 /* */
 void QMenuView::build( const QModelIndex &parent )
 {
-    for( int i = 0; i < m_model->rowCount( parent ); i++ )
+    int i_count = iMaxVisibleCount == 0 ? m_model->rowCount( parent )
+                                         : __MIN( iMaxVisibleCount, m_model->rowCount( parent ) );
+    for( int i = 0; i < i_count; i++ )
     {
         QModelIndex idx = m_model->index(i, 0, parent);
         if( m_model->hasChildren( idx ) )

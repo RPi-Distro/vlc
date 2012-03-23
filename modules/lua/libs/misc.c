@@ -2,7 +2,7 @@
  * misc.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: f98d28a8b4141628bdd5e7d1568dc183c65a5766 $
+ * $Id: 2d0fdd2314baaacde8b9416b7a823a3db0f8d84a $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -107,11 +107,26 @@ static int vlclua_version( lua_State *L )
     return 1;
 }
 
+static int vlclua_version_ext( lua_State *L )
+{
+    msg_Warn( vlclua_get_this( L ),
+            "This function misc.version() is DEPRECATED, please update your script" );
+    lua_pushstring( L, VERSION_MESSAGE );
+    return 1;
+}
 /*****************************************************************************
  * Get the VLC copyright
  *****************************************************************************/
 static int vlclua_copyright( lua_State *L )
 {
+    lua_pushliteral( L, COPYRIGHT_MESSAGE );
+    return 1;
+}
+static int vlclua_copyright_ext( lua_State *L )
+{
+    msg_Warn( vlclua_get_this( L ),
+            "This function misc.copyright() is DEPRECATED, please update your script" );
+
     lua_pushliteral( L, COPYRIGHT_MESSAGE );
     return 1;
 }
@@ -142,6 +157,7 @@ static int vlclua_quit( lua_State *L )
  *****************************************************************************/
 static int vlclua_datadir( lua_State *L )
 {
+    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.datadir() instead" );
     char *psz_data = config_GetDataDir( vlclua_get_this( L ) );
     lua_pushstring( L, psz_data );
     free( psz_data );
@@ -150,6 +166,7 @@ static int vlclua_datadir( lua_State *L )
 
 static int vlclua_userdatadir( lua_State *L )
 {
+    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.userdatadir() instead" );
     char *dir = config_GetUserDir( VLC_DATA_DIR );
     lua_pushstring( L, dir );
     free( dir );
@@ -158,6 +175,7 @@ static int vlclua_userdatadir( lua_State *L )
 
 static int vlclua_homedir( lua_State *L )
 {
+    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.homedir() instead" );
     char *home = config_GetUserDir( VLC_HOME_DIR );
     lua_pushstring( L, home );
     free( home );
@@ -166,6 +184,7 @@ static int vlclua_homedir( lua_State *L )
 
 static int vlclua_configdir( lua_State *L )
 {
+    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.configdir() instead" );
     char *dir = config_GetUserDir( VLC_CONFIG_DIR );
     lua_pushstring( L, dir );
     free( dir );
@@ -174,6 +193,7 @@ static int vlclua_configdir( lua_State *L )
 
 static int vlclua_cachedir( lua_State *L )
 {
+    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.cachedir() instead" );
     char *dir = config_GetUserDir( VLC_CACHE_DIR );
     lua_pushstring( L, dir );
     free( dir );
@@ -182,6 +202,7 @@ static int vlclua_cachedir( lua_State *L )
 
 static int vlclua_datadir_list( lua_State *L )
 {
+    msg_Warn( vlclua_get_this( L ), "This function is DEPRECATED, use vlc.config.datadir_list instead" );
     const char *psz_dirname = luaL_checkstring( L, 1 );
     char **ppsz_dir_list = NULL;
     int i = 1;
@@ -199,6 +220,7 @@ static int vlclua_datadir_list( lua_State *L )
     vlclua_dir_list_free( ppsz_dir_list );
     return 1;
 }
+
 /*****************************************************************************
  *
  *****************************************************************************/
@@ -220,6 +242,16 @@ static int vlclua_mdate( lua_State *L )
     lua_pushnumber( L, mdate() );
     return 1;
 }
+
+static int vlclua_mdate_ext( lua_State *L )
+{
+    msg_Warn( vlclua_get_this( L ),
+            "This function misc.mdate() is DEPRECATED, please update your script" );
+
+    lua_pushnumber( L, mdate() );
+    return 1;
+}
+
 
 static int vlclua_mwait( lua_State *L )
 {
@@ -348,6 +380,28 @@ static int vlclua_timer_create( lua_State *L )
 /*****************************************************************************
  *
  *****************************************************************************/
+static const luaL_Reg vlclua_misc_ext_reg[] = {
+    { "version", vlclua_version_ext },
+    { "copyright", vlclua_copyright_ext },
+
+    { "datadir", vlclua_datadir },
+    { "userdatadir", vlclua_userdatadir },
+    { "homedir", vlclua_homedir },
+    { "configdir", vlclua_configdir },
+    { "cachedir", vlclua_cachedir },
+
+    { "mdate", vlclua_mdate_ext },
+
+    { NULL, NULL }
+};
+
+void luaopen_misc_extensions( lua_State *L )
+{
+    lua_newtable( L );
+    luaL_register( L, NULL, vlclua_misc_ext_reg );
+    lua_setfield( L, -2, "misc" );
+}
+
 static const luaL_Reg vlclua_misc_reg[] = {
     { "version", vlclua_version },
     { "copyright", vlclua_copyright },

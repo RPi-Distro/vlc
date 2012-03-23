@@ -6,7 +6,7 @@
  * based on code by Christopher Wingert for tivo-mplayer
  * tivo(at)wingert.org, February 2003
  *
- * $Id: b181a6a73bfc8c84e3071735d1664ffc4650597a $
+ * $Id: a74d0a915aa820faabf30407816008d00ccee3af $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -417,7 +417,7 @@ static int Demux( demux_t *p_demux )
     /* parse the next chunk's record headers */
     if( p_sys->b_first_chunk || p_sys->i_cur_rec >= p_sys->i_num_recs )
     {
-        if( get_chunk_header(p_demux) == 0 )
+        if( get_chunk_header(p_demux) == 0 || p_sys->i_num_recs == 0 )
             return 0;
     }
 

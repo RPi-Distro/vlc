@@ -1121,8 +1121,6 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow/back.png \
 	extras/package/macosx/Resources/mainwindow/bottom-background.png \
 	extras/package/macosx/Resources/mainwindow/bottombar-mini.png \
-	extras/package/macosx/Resources/mainwindow_dark/bottomdark-left.png \
-	extras/package/macosx/Resources/mainwindow_dark/bottomdark-right.png \
 	extras/package/macosx/Resources/mainwindow/dropzone-background.png \
 	extras/package/macosx/Resources/mainwindow/dropzone.png \
 	extras/package/macosx/Resources/mainwindow/effects-double-buttons-blue.png \
@@ -1134,6 +1132,8 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow/forward.png \
 	extras/package/macosx/Resources/mainwindow/fullscreen-double-buttons-pressed.png \
 	extras/package/macosx/Resources/mainwindow/fullscreen-double-buttons.png \
+	extras/package/macosx/Resources/mainwindow/fullscreen-one-button-pressed.png \
+	extras/package/macosx/Resources/mainwindow/fullscreen-one-button.png \
 	extras/package/macosx/Resources/mainwindow/mini-progressbar-fill-left.png \
 	extras/package/macosx/Resources/mainwindow/mini-progressbar-fill-middle.png \
 	extras/package/macosx/Resources/mainwindow/mini-progressbar-fill-right.png \
@@ -1167,6 +1167,7 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow/shuffle.png \
 	extras/package/macosx/Resources/mainwindow/stop-pressed.png \
 	extras/package/macosx/Resources/mainwindow/stop.png \
+	extras/package/macosx/Resources/mainwindow/topbar_background.png \
 	extras/package/macosx/Resources/mainwindow/volume-high.png \
 	extras/package/macosx/Resources/mainwindow/volume-low.png \
 	extras/package/macosx/Resources/mainwindow/volume-slider-knob.png \
@@ -1175,6 +1176,8 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow_dark/back_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/bottom-background_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/bottombar-mini.png \
+	extras/package/macosx/Resources/mainwindow_dark/bottomdark-left.png \
+	extras/package/macosx/Resources/mainwindow_dark/bottomdark-right.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-double-buttons-blue_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-double-buttons-pressed_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-double-buttons_dark.png \
@@ -1184,6 +1187,8 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow_dark/forward_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/fullscreen-double-buttons-pressed_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/fullscreen-double-buttons_dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/fullscreen-one-button-pressed_dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/fullscreen-one-button_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/pause-pressed_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/pause_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/play-pressed_dark.png \
@@ -1220,8 +1225,8 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-minimize-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-minimize-on-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-minimize-on.png \
-	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-minimize-over.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-minimize-over-graphite.png \
+	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-minimize-over.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-minimize.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-zoom-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/lion/lion-window-zoom-on-graphite.png \
@@ -1235,11 +1240,11 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-close-over-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-close-over.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-close.png \
+	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-minimize-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-minimize-on-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-minimize-on.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-minimize-over-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-minimize-over.png \
-	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-minimize-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-minimize.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-zoom-graphite.png \
 	extras/package/macosx/Resources/mainwindow_dark/titlebar/snowleo/snowleo-window-zoom-on-graphite.png \
@@ -1299,7 +1304,7 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/analyser/emacs.init extras/analyser/vlc.vim \
 	extras/analyser/valgrind.suppressions \
 	extras/buildsystem/make.pl extras/misc/mpris.py \
-	extras/misc/mpris.xml contrib/bootstrap contrib/src/
+	extras/misc/mpris.xml contrib/bootstrap contrib/src
 dist_noinst_SCRIPTS = bootstrap make-alias
 nodist_noinst_SCRIPTS = compile
 BUILT_SOURCES_distclean = $(am__append_2)
@@ -1353,6 +1358,8 @@ win32_xpi_destdir = $(abs_top_builddir)/vlc-plugin-$(VERSION)
 7Z_OPTS = -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on
 @HAVE_WIN32_TRUE@@HAVE_WIN64_FALSE@@HAVE_WINCE_FALSE@CONF_ACTIVEX = 
 @HAVE_WIN32_TRUE@@HAVE_WIN64_TRUE@@HAVE_WINCE_FALSE@CONF_ACTIVEX = --disable-activex
+@HAVE_WIN64_FALSE@WINVERSION = vlc-$(VERSION)-win32
+@HAVE_WIN64_TRUE@WINVERSION = vlc-$(VERSION)-win64
 all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -2042,7 +2049,7 @@ VLC-tmp: vlc
 	mkdir -p $@/Contents/Frameworks && cp -R -L $(CONTRIB_DIR)/Growl.framework $@/Contents/Frameworks/
 	mkdir -p $@/Contents/MacOS/share/locale/
 	cp -r "$(prefix)/lib/vlc/lua" "$(prefix)/share/vlc/lua" $@/Contents/MacOS/share/
-	mkdir -p $@Contents/MacOS/include/
+	mkdir -p $@/Contents/MacOS/include/
 	cp -r "$(srcdir)/include/vlc" $@/Contents/MacOS/include/
 	$(INSTALL) -m 644 $(srcdir)/share/vlc512x512.png $@/Contents/MacOS/share/vlc512x512.png
 	cat $(top_srcdir)/po/LINGUAS | while read i; do \
@@ -2269,18 +2276,18 @@ package-win32-exe: package-win-strip
 	eval "$$MAKENSIS $(win32_destdir)/vlc.win32.nsi"
 
 package-win32-zip: package-win-strip
-	rm -f -- vlc-$(VERSION)-win32.zip
-	zip -r -9 vlc-$(VERSION)-win32.zip vlc-$(VERSION)
+	rm -f -- $(WINVERSION).zip
+	zip -r -9 $(WINVERSION).zip vlc-$(VERSION)
 
 package-win32-debug-zip: package-win-common
-	rm -f -- vlc-$(VERSION)-win32-debug.zip
-	zip -r -9 vlc-$(VERSION)-win32-debug.zip vlc-$(VERSION)
+	rm -f -- $(WINVERSION)-debug.zip
+	zip -r -9 $(WINVERSION)-debug.zip vlc-$(VERSION)
 
 package-win32-7zip: package-win-strip
-	7z a $(7Z_OPTS) vlc-$(VERSION)-win32.7z vlc-$(VERSION)
+	7z a $(7Z_OPTS) $(WINVERSION).7z vlc-$(VERSION)
 
 package-win32-debug-7zip: package-win-common
-	7z a $(7Z_OPTS) vlc-$(VERSION)-win32-debug.7z vlc-$(VERSION)
+	7z a $(7Z_OPTS) $(WINVERSION)-debug.7z vlc-$(VERSION)
 
 package-win32-cleanup:
 	rm -Rf $(win32_destdir) $(win32_debugdir) $(win32_xpi_destdir)

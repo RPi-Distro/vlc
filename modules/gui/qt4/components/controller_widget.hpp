@@ -2,7 +2,7 @@
  * Controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d56ee4a98157806a5d03eb45e3da9fc42ef5ea3c $
+ * $Id: c287469904a0b051b5f3d86c6923eeb05546c8c9 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -73,21 +73,21 @@ private slots:
 class AspectRatioComboBox : public QComboBox
 {
     Q_OBJECT
-    public:
-    AspectRatioComboBox( intf_thread_t* _p_intf ) {
-        p_intf = _p_intf;
+public:
+    AspectRatioComboBox( intf_thread_t* _p_intf ) : p_intf( _p_intf )
+    {
         CONNECT( THEMIM->getIM(), voutChanged( bool ),
                  this, updateRatios() );
         CONNECT( this, currentIndexChanged( int ),
                  this, updateAspectRatio( int ) );
-        this->updateRatios();
+        updateRatios();
     }
 
-    public slots:
+public slots:
     void updateRatios();
     void updateAspectRatio( int );
 
-    private:
+private:
     intf_thread_t* p_intf;
 };
 

@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 9f15c9f54251e0626baf88f6975b59dc2fe57116 $
+ * $Id: b1ec6c0e459793c7236c04307d2a77f7b98605df $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -89,6 +89,7 @@ struct intf_sys_t
 @interface VLCMain : NSObject <NSWindowDelegate>
 {
     intf_thread_t *p_intf;      /* The main intf object */
+    input_thread_t *p_current_input;
     id o_mainmenu;              /* VLCMainMenu */
     id o_prefs;                 /* VLCPrefs       */
     id o_sprefs;                /* VLCSimplePrefs */
@@ -153,6 +154,7 @@ struct intf_sys_t
 - (void)setIntf:(intf_thread_t *)p_mainintf;
 
 - (id)mainMenu;
+- (id)mainWindow;
 - (id)controls;
 - (id)bookmarks;
 - (id)open;

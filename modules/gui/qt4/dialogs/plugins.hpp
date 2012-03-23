@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 20ba74081a5540009f4d86cab559f5d03dfa07ae $
+ * $Id: e2ae1d2ad684f87fb16b789054554eb07e82fae9 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -162,10 +162,6 @@ class ExtensionInfoDialog : public QVLCDialog
 public:
     ExtensionInfoDialog( const ExtensionCopy& extension,
                          intf_thread_t *p_intf, QWidget *parent );
-    virtual ~ExtensionInfoDialog();
-
-private:
-    ExtensionCopy *extension;
 };
 
 #endif

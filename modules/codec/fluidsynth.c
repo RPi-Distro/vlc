@@ -2,7 +2,7 @@
  * fluidsynth.c: Software MIDI synthesizer using libfluidsynth
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 32285552b53e6f106e87101694e099598bf7a4b5 $
+ * $Id: f6317ab29173641fddf17f3a9218430789b164f3 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,11 @@
 #define SOUNDFONT_LONGTEXT N_( \
     "A sound fonts file is required for software synthesis." )
 
+#define GAIN_TEXT N_("Synthesis gain")
+#define GAIN_LONGTEXT N_("This gain is applied to synthesis output. " \
+    "High values may cause saturation when many notes are played at a time." )
+
+
 static int  Open  (vlc_object_t *);
 static void Close (vlc_object_t *);
 
@@ -68,7 +73,9 @@ vlc_module_begin ()
     set_subcategory (SUBCAT_INPUT_ACODEC)
     set_callbacks (Open, Close)
     add_loadfile ("soundfont", "",
-                  SOUNDFONT_TEXT, SOUNDFONT_LONGTEXT, false);
+                  SOUNDFONT_TEXT, SOUNDFONT_LONGTEXT, false)
+    add_float ("synth-gain", 0.8, GAIN_TEXT, GAIN_LONGTEXT, false)
+        change_float_range (0., 10.)
 vlc_module_end ()
 
 
@@ -145,6 +152,9 @@ static int Open (vlc_object_t *p_this)
         free (p_sys);
         return VLC_EGENERIC;
     }
+
+    fluid_synth_set_gain (p_sys->synth,
+                          var_InheritFloat (p_this, "synth-gain"));
 
     p_dec->fmt_out.i_cat = AUDIO_ES;
     p_dec->fmt_out.audio.i_rate = 44100;

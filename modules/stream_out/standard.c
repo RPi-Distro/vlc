@@ -2,7 +2,7 @@
  * standard.c: standard stream output module
  *****************************************************************************
  * Copyright (C) 2003-2011 the VideoLAN team
- * $Id: a1cc1cd4b9c33caca2bab06ff66a5160f3b1fe64 $
+ * $Id: 8795afeb61e139e4830d851edad0357a9673d4a6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -59,12 +59,6 @@
 #define NAME_LONGTEXT N_( \
     "This is the name of the session that will be announced in the SDP " \
     "(Session Descriptor)." )
-
-#define GROUP_TEXT N_("Session groupname")
-#define GROUP_LONGTEXT N_( \
-  "This allows you to specify a group for the session, that will be announced "\
-  "if you choose to use SAP." )
-
 #define DESC_TEXT N_("Session description")
 #define DESC_LONGTEXT N_( \
     "This allows you to give a short description with details about the stream, " \
@@ -107,7 +101,7 @@ vlc_module_begin ()
     add_string( SOUT_CFG_PREFIX "path", "", PATH_TEXT, PATH_LONGTEXT, false )
     add_bool(   SOUT_CFG_PREFIX "sap", false, SAP_TEXT, SAP_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "name", "", NAME_TEXT, NAME_LONGTEXT, true )
-    add_string( SOUT_CFG_PREFIX "group", "", GROUP_TEXT, GROUP_LONGTEXT, true )
+    add_obsolete_string( SOUT_CFG_PREFIX "group" ) /* since 2.1.0 */
     add_string( SOUT_CFG_PREFIX "description", "", DESC_TEXT, DESC_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "url", "", URL_TEXT, URL_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "email", "", EMAIL_TEXT, EMAIL_LONGTEXT, true )
@@ -122,7 +116,7 @@ vlc_module_end ()
  *****************************************************************************/
 static const char *const ppsz_sout_options[] = {
     "access", "mux", "url", "dst",
-    "sap", "name", "group", "description", "url", "email", "phone",
+    "sap", "name", "description", "url", "email", "phone",
     "bind", "path", NULL
 };
 

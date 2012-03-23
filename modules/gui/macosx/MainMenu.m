@@ -2,7 +2,7 @@
  * MainMenu.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011 Felix Paul Kühne
- * $Id: d29e47984353db487d9eac158392be890446c3c6 $
+ * $Id: a811e11ea36d0c58a325d5675b4cf0e14fc47981 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -71,7 +71,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-    
+
     if (b_nib_about_loaded)
         [o_about release];
 
@@ -384,7 +384,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
 - (void)releaseRepresentedObjects:(NSMenu *)the_menu
 {
     if( !p_intf ) return;
-    
+
     NSArray *menuitems_array = [the_menu itemArray];
     NSUInteger menuItemCount = [menuitems_array count];
     for( NSUInteger i=0; i < menuItemCount; i++ )
@@ -878,7 +878,8 @@ static VLCMainMenu *_o_sharedInstance = nil;
     bool b_value;
     playlist_t *p_playlist = pl_Get( VLCIntf );
     b_value = var_GetBool( p_playlist, "random" );
-	[o_mi_random setState: b_value];
+
+    [o_mi_random setState: b_value];
 }
 
 #pragma mark -
@@ -921,10 +922,10 @@ static VLCMainMenu *_o_sharedInstance = nil;
     if( i_type & VLC_VAR_HASCHOICE )
     {
         NSMenu *o_menu = [o_mi submenu];
-        
+
         [self setupVarMenu: o_menu forMenuItem: o_mi target:p_object
                        var:psz_variable selector:pf_callback];
-        
+
         free( text.psz_string );
         return;
     }
@@ -1041,7 +1042,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
     {
         NSMenuItem * o_lmi_tmp;
         o_lmi_tmp = [o_menu addItemWithTitle: _NS("Open File...") action: @selector(addSubtitleFile:) keyEquivalent: @""];
-        [o_lmi_tmp setTarget: self];
+        [o_lmi_tmp setTarget: [[VLCMain sharedInstance] controls]];
         [o_lmi_tmp setEnabled: YES];
         [o_parent setEnabled: YES];
         [o_menu addItem: [NSMenuItem separatorItem]];
@@ -1242,7 +1243,9 @@ static VLCMainMenu *_o_sharedInstance = nil;
     if( [o_title isEqualToString: _NS("Normal Size")] )
     {
         NSMenuItem *item = [[o_mi menu] itemWithTitle:_NS("Teletext")];
-		bool b_telx = p_input && var_GetInteger( p_input, "teletext-es" ) >= 0;
+
+
+bool b_telx = p_input && var_GetInteger( p_input, "teletext-es" ) >= 0;
 
         [[item submenu] setAutoenablesItems:NO];
         for( int k=0; k < [[item submenu] numberOfItems]; k++ )

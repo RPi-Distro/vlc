@@ -2,7 +2,7 @@
  * MainWindowTitle.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 0a453604363806fac793a9d6f790a38f740533cc $
+ * $Id: fb85ff5c3bf04400207b9040342028a17b249b5f $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -69,6 +69,37 @@
 @end
 
 @interface VLCColorView : NSView
+{
+}
+@end
+
+@interface VLCCustomWindowButtonPrototype: NSButton
+{
+}
+- (NSArray*)extendedAccessibilityAttributeNames: (NSArray*)theAttributeNames;
+- (id)extendedAccessibilityAttributeValue: (NSString*)theAttributeName;
+- (NSNumber*)extendedAccessibilityIsAttributeSettable: (NSString*)theAttributeName;
+
+@end
+
+@interface VLCCustomWindowCloseButton: VLCCustomWindowButtonPrototype
+{
+}
+@end
+
+
+@interface VLCCustomWindowMinimizeButton: VLCCustomWindowButtonPrototype
+{
+}
+@end
+
+
+@interface VLCCustomWindowZoomButton: VLCCustomWindowButtonPrototype
+{
+}
+@end
+
+@interface VLCCustomWindowFullscreenButton : VLCCustomWindowButtonPrototype
 {
 }
 @end

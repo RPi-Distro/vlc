@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 VLC authors and VideoLAN
- * $Id: 8b7e5411b809e0f30d330e0b5b86480e6544cca3 $
+ * $Id: 8901259d1cf9b5f017c6117a695472961b5e1aea $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -72,6 +72,7 @@ extern OSErr UpdateSystemActivity(UInt8 activity);
 @interface NSApplication (IntroducedInSnowLeopard)
 - (NSApplicationPresentationOptions)presentationOptions;
 - (void)setPresentationOptions:(NSApplicationPresentationOptions)newOptions;
+- (NSApplicationPresentationOptions)currentSystemPresentationOptions;
 @end
 #endif
 

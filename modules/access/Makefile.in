@@ -1589,7 +1589,8 @@ libsdp_plugin_la_LIBADD = $(AM_LIBADD)
 libsdp_plugin_la_DEPENDENCIES = 
 libaccess_smb_plugin_la_SOURCES = smb.c
 libaccess_smb_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaccess_smb_plugin_la_LIBADD = $(AM_LIBADD) $(am__append_4)
+libaccess_smb_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_access_smb) \
+	$(am__append_4)
 libaccess_smb_plugin_la_DEPENDENCIES = 
 SOURCES_access_directory = directory.c
 SOURCES_access_dv = dv.c

@@ -694,7 +694,7 @@ static const entry_t p_list_video[] = {
         A("IYUV"),
     B(VLC_CODEC_I422, "Planar 4:2:2 YUV"),
         A("I422"),
-    B(VLC_CODEC_I444, "Planar 4:4:0 YUV"),
+    B(VLC_CODEC_I440, "Planar 4:4:0 YUV"),
         A("I440"),
     B(VLC_CODEC_I444, "Planar 4:4:4 YUV"),
         A("I444"),
@@ -897,6 +897,9 @@ static const entry_t p_list_video[] = {
     B(VLC_CODEC_LAGARITH, "Lagarith Lossless"),
         A("LAGS"),
 
+    B(VLC_CODEC_MXPEG, "Mxpeg"),
+        A("MXPG"),
+
     B(0, "")
 };
 static const entry_t p_list_audio[] = {
@@ -966,6 +969,7 @@ static const entry_t p_list_audio[] = {
     /* MPEG Audio layer 1/2/3 */
     B(VLC_CODEC_MPGA, "MPEG Audio layer 1/2/3"),
         A("mpga"),
+        A("mp2a"),
         A(".mp1"),
         A(".mp2"),
         A("mp3 "),

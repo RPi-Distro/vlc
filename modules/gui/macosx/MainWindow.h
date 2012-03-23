@@ -2,7 +2,7 @@
  * MainWindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 80051f08e79d648c50e0b10137618581fe623a33 $
+ * $Id: 9578b241aa7f70f03d95bd8803653723da52f197 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -43,6 +43,7 @@
     IBOutlet id o_effects_btn;
     IBOutlet id o_fullscreen_btn;
     IBOutlet id o_search_fld;
+    IBOutlet id o_topbar_view;
     IBOutlet id o_volume_sld;
     IBOutlet id o_volume_track_view;
     IBOutlet id o_volume_down_btn;
@@ -69,11 +70,28 @@
     IBOutlet VLCFSPanel *o_fspanel;
     IBOutlet id o_titlebar_view;
     IBOutlet id o_resize_view;
+    IBOutlet id o_detached_resize_view;
+
+    IBOutlet id o_detached_play_btn;
+    IBOutlet id o_detached_fwd_btn;
+    IBOutlet id o_detached_bwd_btn;
+    IBOutlet id o_detached_fullscreen_btn;
+    IBOutlet id o_detached_time_fld;
+    IBOutlet id o_detached_time_sld;
+    IBOutlet id o_detached_time_sld_background;
+    IBOutlet id o_detached_progress_bar;
+    IBOutlet id o_detached_time_sld_fancygradient_view;
+    IBOutlet id o_detached_bottombar_view;
+    IBOutlet id o_detached_titlebar_view;
+    IBOutlet id o_detached_video_window;
 
     BOOL b_dark_interface;
     BOOL b_nativeFullscreenMode;
     BOOL b_video_playback_enabled;
     BOOL b_dropzone_active;
+    BOOL b_splitview_removed;
+    BOOL b_minimized_view;
+    int i_lastSplitViewHeight;
     int i_lastShownVolume;
     input_state_e cachedInputState;
 
@@ -98,7 +116,6 @@
     BOOL just_triggered_previous;
     NSMutableArray *o_sidebaritems;
 
-    VLCWindow       * o_nonembedded_window;
     BOOL              b_nonembedded;
 
     VLCWindow       * o_fullscreen_window;
@@ -134,11 +151,13 @@
 - (IBAction)dropzoneButtonAction:(id)sender;
 
 - (void)setTitle:(NSString *)title;
-- (void) customZoom: (id)sender;
+- (void) customZoom:(id)sender;
 - (void)windowResizedOrMoved:(NSNotification *)notification;
 
 - (void)showDropZone;
 - (void)hideDropZone;
+- (void)showSplitView;
+- (void)hideSplitView;
 - (void)updateTimeSlider;
 - (void)updateVolumeSlider;
 - (void)updateWindow;
@@ -153,6 +172,7 @@
 - (void)drawFancyGradientEffectForTimeSlider;
 
 - (id)videoView;
+- (id)setupVideoView;
 - (void)setVideoplayEnabled;
 - (void)resizeWindow;
 - (void)setNativeVideoSize:(NSSize)size;
@@ -170,10 +190,20 @@
 - (void)leaveFullscreenAndFadeOut: (BOOL)fadeout;
 - (void)hasEndedFullscreen;
 - (void)hasBecomeFullscreen;
-- (void)setFrameOnMainThread:(NSData*)packedargs;
 
 /* lion's native fullscreen handling */
 - (void)windowWillEnterFullScreen:(NSNotification *)notification;
 - (void)windowWillExitFullScreen:(NSNotification *)notification;
+
+@end
+
+@interface VLCDetachedVideoWindow : NSWindow
+{
+    BOOL b_dark_interface;
+    NSRect previousSavedFrame;
+}
+
+- (BOOL)isFullscreen;
+- (void)customZoom:(id)sender;
 
 @end

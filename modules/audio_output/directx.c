@@ -2,7 +2,7 @@
  * directx.c: Windows DirectX audio output method
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 82fc76b45c96a225a966de35eba37cf7d6c43370 $
+ * $Id: 69faeab1e2871e82c5a15658d33c5dca964ca9ff $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -130,10 +130,11 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_AUDIO_AOUT )
     add_shortcut( "directx", "directsound" )
 
-    add_string( "directx-audio-device-name", "default",
+    add_string( "directx-audio-device", "default",
              DEVICE_TEXT, DEVICE_LONGTEXT, false )
         change_string_list( ppsz_adev, ppsz_adev_text, ReloadDirectXDevices )
         change_action_add( ReloadDirectXDevices, N_("Refresh list") )
+    add_obsolete_string( "directx-audio-device-name")
     add_bool( "directx-audio-float32", false, FLOAT_TEXT,
               FLOAT_LONGTEXT, true )
     add_string( "directx-audio-speaker", "Windows default",
