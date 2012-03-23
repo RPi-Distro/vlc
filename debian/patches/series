@@ -1,5 +1,3 @@
-bp-monotonic-clock.patch
-altivec-cflags.patch
 v4l-kfreebsd.patch
 link-vlc-cache-gen-with-c++.patch
 link-vlc-with-c++.patch
