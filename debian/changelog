@@ -1,3 +1,10 @@
+vlc (2.0.1-2) unstable; urgency=high
+
+  * Really add the preinst from Didier Raboud to vlc to drop it's doc directory
+    before unpacking a symlink to vlc-nox's over it. (Closes: #613121, #662217)
+
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 24 Mar 2012 01:33:03 +0100
+
 vlc (2.0.1-1) unstable; urgency=high
 
   * New upstream release (LP: #931318, #943014, #947814).
