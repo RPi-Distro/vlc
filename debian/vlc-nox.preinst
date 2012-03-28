@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+	upgrade)
+		# Make sure /usr/share/doc/vlc-nox doesn't exist or is not a symlink
+		# before the unpacking (which will put the directory back) - #665743
+		if dpkg --compare-versions "$2" le "2.0.1-3" && test -L "/usr/share/doc/vlc-nox"; then
+			rm /usr/share/doc/vlc-nox
+		fi
+		;;
+esac
+
+#DEBHELPER#
