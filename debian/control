@@ -170,8 +170,8 @@ Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-pulse (= ${binary:Version}),
             xdg-utils
 Suggests: videolan-doc
-Breaks: vlc-nox (<< 1.1.5-1)
-Replaces: vlc-nox (<< 1.1.5-1)
+Breaks: vlc-data (<< 1.1.5), vlc-nox (<< 1.1.5)
+Replaces: vlc-data (<< 1.1.5), vlc-nox (<< 1.1.5)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
