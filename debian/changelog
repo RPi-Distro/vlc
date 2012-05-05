@@ -1,3 +1,16 @@
+vlc (2.0.1-4~bpo60+1) squeeze-backports; urgency=medium
+
+  * Initial port to Debian Squeeze 6.0 using the backports system.
+  * Use some VLC contrib libraries and remove Debian build dependencies:
+    This is because either the Squeeze version of the library is too old
+    or there is no stable-bpo version out yet.
+    - libbluray-dev (>= 1:0.2.1) (bpo has 1:0.0)
+    - liblivemedia-dev (>= 2011.12.23) (stable has 2010.04.09-1)
+    - libmatroska-dev (>= 1.0.0) (stable has 0.8.1-1.1)
+    - libschroedinger-dev (>= 1.0.10) (stable has 1.0.9-2)
+
+ -- Edward Wang <edward.c.wang@compdigitec.com>  Wed, 09 May 2012 16:53:52 -0400
+
 vlc (2.0.1-4) unstable; urgency=high
 
   * Add missing Breaks and Replaces for moving the documentation from vlc-data
