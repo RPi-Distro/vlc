@@ -77,7 +77,6 @@ confflags += \
 	--enable-qt4 \
 	--enable-realrtsp \
 	--enable-samplerate \
-	--enable-schroedinger \
 	--enable-sdl \
 	--enable-shout \
 	--enable-skins2 \

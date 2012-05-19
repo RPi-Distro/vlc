@@ -69,7 +69,6 @@ usr/lib/vlc/plugins/codec/liblpcm_plugin.so
 usr/lib/vlc/plugins/codec/libmpeg_audio_plugin.so
 usr/lib/vlc/plugins/codec/libpng_plugin.so
 usr/lib/vlc/plugins/codec/librawvideo_plugin.so
-usr/lib/vlc/plugins/codec/libschroedinger_plugin.so
 usr/lib/vlc/plugins/codec/libspeex_plugin.so
 usr/lib/vlc/plugins/codec/libspudec_plugin.so
 usr/lib/vlc/plugins/codec/libstl_plugin.so
