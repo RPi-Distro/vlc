@@ -62,7 +62,7 @@ confflags += \
 	--enable-libproxy \
 	--enable-libxml2 \
 	--enable-lirc \
-	--disable-live555 \
+	--enable-live555 \
 	--enable-mad \
 	--enable-mkv \
 	--enable-mod \
@@ -150,12 +150,6 @@ override_dh_auto_clean:
 	dh_auto_clean
 
 override_dh_auto_configure:
-	# Build contribs for certain outdated libs
-	mkdir -p contrib/deb
-	cd contrib/deb; \
-		../bootstrap --enable-ebml --enable-matroska --enable-bluray --enable-orc --enable-schroedinger ; \
-		make .ebml .matroska .bluray .orc ; \
-		make .schroedinger
 	# We need to build the static library apart
 	# Else it's a mess when we build the modules
 	./configure --enable-static $(confflags)
