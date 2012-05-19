@@ -1,3 +1,11 @@
+vlc (2.0.1-4~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports.
+  * Disable dirac support as libschroedinger is too old in squeeze. It
+    will be re-enabled as soon as an updated package reaches squeeze-backports
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 19 May 2012 19:47:34 +0200
+
 vlc (2.0.1-4) unstable; urgency=high
 
   * Add missing Breaks and Replaces for moving the documentation from vlc-data
