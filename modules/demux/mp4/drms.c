@@ -2,7 +2,7 @@
  * drms.c: DRMS
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 39f4225f30f66088e37b8c17ae2029154c79f5c5 $
+ * $Id: 092e4776a5645e2a6033aa64c251f3d4f5aa1852 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>
@@ -325,7 +325,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
             uint32_t p_priv[ 64 ];
             struct md5_s md5;
 
-            if( i_len < 64 )
+            if( i_len < 64 || p_drms->p_name == NULL )
             {
                 i_ret = -2;
                 break;

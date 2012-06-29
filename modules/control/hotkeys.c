@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: d606f27f1c86dd9e5597da7702477d619dae0c94 $
+ * $Id: 74e74f0f8ca1fe26a8ac0b40c0c45af1b51756c3 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -573,7 +573,7 @@ static int PutAction( intf_thread_t *p_intf, int i_action )
                 {
                     bool b_autoscale = !var_GetBool( p_vout, "autoscale" );
                     var_SetBool( p_vout, "autoscale", b_autoscale );
-                    if( !b_autoscale )
+                    if( b_autoscale )
                         DisplayMessage( p_vout, SPU_DEFAULT_CHANNEL,
                                         "%s", _("Scaled to screen") );
                     else

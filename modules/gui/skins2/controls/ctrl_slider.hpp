@@ -2,7 +2,7 @@
  * ctrl_slider.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: df010a5e6951e9c15d180015876402ae263ebaec $
+ * $Id: bae216f622e65c666133ff4511f2fb653e6613eb $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -54,6 +54,9 @@ public:
 
     /// Handle an event
     virtual void handleEvent( EvtGeneric &rEvent );
+
+    /// Return true if the control can be scrollable
+    virtual bool isScrollable() const { return true; }
 
     /// Check whether coordinates are inside the control
     virtual bool mouseOver( int x, int y ) const;
@@ -131,6 +134,9 @@ public:
                   int nbVert, int padHoriz, int padVert, VarBool *pVisible,
                   const UString &rHelp );
     virtual ~CtrlSliderBg();
+
+    /// Return true if the control can be scrollable
+    virtual bool isScrollable() const { return true; }
 
     /// Tell whether the mouse is over the control
     virtual bool mouseOver( int x, int y ) const;

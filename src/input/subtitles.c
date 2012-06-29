@@ -2,7 +2,7 @@
  * subtitles.c : subtitles detection
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 4108a9bc2cbd80a816db9b5c7d78609e30d55e83 $
+ * $Id: 82315f8786986abf0e9c179e410f058901dc8cb4 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  * This is adapted code from the GPL'ed MPlayer (http://mplayerhq.hu)
@@ -249,7 +249,9 @@ static char **paths_to_list( const char *psz_dir, char *psz_path )
 char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
                          const char *psz_name_org )
 {
-    int i_fuzzy;
+    int i_fuzzy = var_GetInteger( p_this, "sub-autodetect-fuzzy" );
+    if ( i_fuzzy == 0 )
+        return NULL;
     int j, i_result2, i_sub_count, i_fname_len;
     char *f_fname_noext = NULL, *f_fname_trim = NULL;
 
@@ -273,14 +275,15 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
         return NULL;
     }
 
-    char *f_fname = strrchr( f_dir, DIR_SEP_CHAR );
+    const char *f_fname = strrchr( psz_fname, DIR_SEP_CHAR );
     if( !f_fname )
     {
         free( f_dir );
         free( psz_fname );
         return NULL;
     }
-    *(f_fname++) = 0; /* skip dir separator */
+    f_fname++; /* Skip the '/' */
+    f_dir[f_fname - psz_fname] = 0; /* keep dir separator in f_dir */
 
     i_fname_len = strlen( f_fname );
 
@@ -297,8 +300,6 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
 
     strcpy_strip_ext( f_fname_noext, f_fname );
     strcpy_trim( f_fname_trim, f_fname_noext );
-
-    i_fuzzy = var_GetInteger( p_this, "sub-autodetect-fuzzy" );
 
     result = calloc( MAX_SUBTITLE_FILES+1, sizeof(vlc_subfn_t) ); /* We check it later (simplify code) */
     subdirs = paths_to_list( f_dir, psz_path );
@@ -337,13 +338,12 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
             strcpy_trim( tmp_fname_trim, tmp_fname_noext );
 
             i_prio = SUB_PRIORITY_NONE;
-            if( i_prio == SUB_PRIORITY_NONE && !strcmp( tmp_fname_trim, f_fname_trim ) )
+            if( !strcmp( tmp_fname_trim, f_fname_trim ) )
             {
                 /* matches the movie name exactly */
                 i_prio = SUB_PRIORITY_MATCH_ALL;
             }
-            if( i_prio == SUB_PRIORITY_NONE &&
-                ( tmp = strstr( tmp_fname_trim, f_fname_trim ) ) )
+            else if( (tmp = strstr( tmp_fname_trim, f_fname_trim )) )
             {
                 /* contains the movie name */
                 tmp += strlen( f_fname_trim );
@@ -359,8 +359,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
                     i_prio = SUB_PRIORITY_MATCH_LEFT;
                 }
             }
-            if( i_prio == SUB_PRIORITY_NONE &&
-                j == 0 )
+            else if( j == -1 )
             {
                 /* doesn't contain the movie name, prefer files in f_dir over subdirs */
                 i_prio = SUB_PRIORITY_MATCH_NONE;

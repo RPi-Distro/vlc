@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2011 VLC authors and VideoLAN
- * $Id: 1caff306fbf01026cc7c5a567c99119f7a1287ab $
+ * $Id: 936860287697562c8cbdc412a3fe83f77cbd9f66 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -88,7 +88,7 @@ void WindowClose  ( vout_window_t * );
 #define INTERFACE_STYLE_LONGTEXT N_("By default, VLC will use the dark interface style.")
 
 #define NATIVE_FULLSCREEN_MODE_ON_LION_TEXT N_("Use the native fullscreen mode on OS X Lion")
-#define NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT N_("By default, VLC uses the native fullscreen mode on Mac OS X 10.7 and later. It can also use the custom mode known from previous Mac OS X releases.")
+#define NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT N_("By default, VLC uses the fullscreen mode known from previous Mac OS X releases. It can also use the native fullscreen mode on Mac OS X 10.7 and later.")
 
 #define SAVEVOL_TEXT N_( "Automatically save the volume on exit" )
 
@@ -101,6 +101,11 @@ void WindowClose  ( vout_window_t * );
 #define PAUSE_MINIMIZED_TEXT N_( "Pause the video playback when minimized" )
 #define PAUSE_MINIMIZED_LONGTEXT N_( \
 "With this option enabled, the playback will be automatically paused when minimizing the window." )
+
+#define ICONCHANGE_TEXT N_( "Allow automatic icon changes")
+#define ICONCHANGE_LONGTEXT N_( "This option allows the interface to change its icon on various occasions.")
+
+#define LOCK_ASPECT_RATIO_TEXT N_("Lock Aspect Ratio")
 
 vlc_module_begin ()
     set_description( N_("Mac OS X interface") )
@@ -122,6 +127,8 @@ vlc_module_begin ()
     add_obsolete_bool( "macosx-eq-keep" ) /* since 2.0.0 */
     add_bool( "macosx-video-autoresize", true, KEEPSIZE_TEXT, KEEPSIZE_LONGTEXT, false )
     add_bool( "macosx-pause-minimized", false, PAUSE_MINIMIZED_TEXT, PAUSE_MINIMIZED_LONGTEXT, false )
+    add_bool( "macosx-lock-aspect-ratio", true, LOCK_ASPECT_RATIO_TEXT, LOCK_ASPECT_RATIO_TEXT, true )
+    add_bool( "macosx-icon-change", true, ICONCHANGE_TEXT, ICONCHANGE_LONGTEXT, true )
 
     add_submodule ()
         set_description( "Mac OS X Video Output Provider" )

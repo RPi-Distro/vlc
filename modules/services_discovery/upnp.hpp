@@ -2,7 +2,7 @@
  * Upnp.hpp :  UPnP discovery module (libupnp) header
  *****************************************************************************
  * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: ee41181371d3d0ac5d691b6cb4b3f06afac09f68 $
+ * $Id: aa11ddf76b12a67be997165bd4f26b52d26c6f5b $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -69,7 +69,7 @@ public:
 
 private:
 
-    bool _fetchContents( Container* p_parent );
+    bool _fetchContents( Container* p_parent, int i_starting_index );
     void _buildPlaylist( Container* p_container, input_item_node_t *p_item_node );
 
     IXML_Document* _browseAction( const char*, const char*,

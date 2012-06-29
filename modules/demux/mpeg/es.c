@@ -2,7 +2,7 @@
  * es.c : Generic audio ES input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: e3db290f3c9fa1c8323f6822817fc31dc18a9bad $
+ * $Id: 6f3c4e9a891eb4545de82c1b6aeb1128019b20a7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -634,8 +634,7 @@ static int MpgaCheckSync( const uint8_t *p_peek )
 
     if( ((( h >> 21 )&0x07FF) != 0x07FF )   /* header sync */
         || (((h >> 17)&0x03) == 0 )         /* valid layer ?*/
-        || (((h >> 12)&0x0F) == 0x0F )
-        || (((h >> 12)&0x0F) == 0x00 )      /* valid bitrate ? */
+        || (((h >> 12)&0x0F) == 0x0F )      /* valid bitrate ? */
         || (((h >> 10) & 0x03) == 0x03 )    /* valide sampling freq ? */
         || ((h & 0x03) == 0x02 ))           /* valid emphasis ? */
     {

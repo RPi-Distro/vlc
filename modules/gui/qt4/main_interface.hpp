@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 142d09252a88d4c9272f4594ca24b2d7f4a36ced $
+ * $Id: f2489bb9b05e0100c1e0e14836cc8d2405355a26 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -172,7 +172,7 @@ private:
 
 #ifdef WIN32
     HIMAGELIST himl;
-    LPTASKBARLIST3 p_taskbl;
+    ITaskbarList3 *p_taskbl;
     UINT taskbar_wmsg;
     void createTaskBarButtons();
 #endif
@@ -238,6 +238,7 @@ private slots:
     }
 
     void setVideoSize( unsigned int, unsigned int );
+    void videoSizeChanged( int, int );
     void setVideoFullScreen( bool );
     void setVideoOnTop( bool );
     void setBoss();

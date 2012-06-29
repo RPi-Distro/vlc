@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: c1769b16f94954838edb4617fd7d477593794ebc $
+ * $Id: 7ee51e305ed8bf62a12e1aafbfe69a0b99ebc642 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -82,7 +82,7 @@ struct msghdr
 #   undef IPV6_JOIN_GROUP
 #endif
 
-int vlc_socket (int, int, int, bool nonblock) VLC_USED;
+VLC_API int vlc_socket (int, int, int, bool nonblock) VLC_USED;
 
 struct sockaddr;
 VLC_API int vlc_accept( int, struct sockaddr *, socklen_t *, bool ) VLC_USED;

@@ -2,7 +2,7 @@
  * httplive.c: HTTP Live Streaming stream filter
  *****************************************************************************
  * Copyright (C) 2010-2012 M2X BV
- * $Id: 089b6eab6b729d82acd0cc9203113d04f8b65ece $
+ * $Id: 97d1adf9dc98c3925d4495481b36b1768f9c8a19 $
  *
  * Author: Jean-Paul Saman <jpsaman _AT_ videolan _DOT_ org>
  *
@@ -211,7 +211,7 @@ static bool isHTTPLiveStreaming(stream_t *s)
         for (size_t i = 0; i < ARRAY_SIZE(ext); i++)
         {
             size_t len = strlen(ext[i]);
-            if (size < len)
+            if (size < 0 || (size_t)size < len)
                 continue;
             if (!memcmp(peek, ext[i], len))
                 return true;
@@ -1317,7 +1317,8 @@ static int hls_UpdatePlaylist(stream_t *s, hls_stream_t *hls_new, hls_stream_t *
                     continue;
                 }
                 /* We must free the content, because if the key was not downloaded, content can't be decrypted */
-                if (segment->data)
+                if ((p->psz_key_path || p->b_key_loaded) &&
+                    segment->data)
                 {
                     block_Release(segment->data);
                     segment->data = NULL;
@@ -1494,12 +1495,7 @@ static int hls_DownloadSegmentData(stream_t *s, hls_stream_t *hls, segment_t *se
     msg_Info(s, "downloaded segment %d from stream %d",
                 segment->sequence, *cur_stream);
 
-    /* check for division by zero */
-    double ms = (double)duration / 1000.0; /* ms */
-    if (ms <= 0.0)
-        return VLC_SUCCESS;
-
-    uint64_t bw = ((double)(segment->size * 8) / ms) * 1000; /* bits / s */
+    uint64_t bw = segment->size * 8 * 1000000 / __MAX(1, duration); /* bits / s */
     p_sys->bandwidth = bw;
     if (p_sys->b_meta && (hls->bandwidth != bw))
     {
@@ -1656,8 +1652,13 @@ static int Prefetch(stream_t *s, int *current)
     if (hls == NULL)
         return VLC_EGENERIC;
 
-    /* Download first 2 segments of this HLS stream */
-    for (int i = 0; i < 2; i++)
+    if (vlc_array_count(hls->segments) == 0)
+        return VLC_EGENERIC;
+    else if (vlc_array_count(hls->segments) == 1 && p_sys->b_live)
+        msg_Warn(s, "Only 1 segment available to prefetch in live stream; may stall");
+
+    /* Download first 2 segments of this HLS stream if they exist */
+    for (int i = 0; i < __MIN(vlc_array_count(hls->segments), 2); i++)
     {
         segment_t *segment = segment_GetSegment(hls, p_sys->download.segment);
         if (segment == NULL )
@@ -2349,16 +2350,12 @@ static int segment_Seek(stream_t *s, const uint64_t pos)
     uint64_t size = hls->size;
     int count = vlc_array_count(hls->segments);
 
-    /* restore current segment to start position */
-    segment_t *segment = segment_GetSegment(hls, p_sys->playback.segment);
-    if (segment == NULL)
+    segment_t *currentSegment = segment_GetSegment(hls, p_sys->playback.segment);
+    if (currentSegment == NULL)
     {
         vlc_mutex_unlock(&hls->lock);
         return VLC_EGENERIC;
     }
-    vlc_mutex_lock(&segment->lock);
-    segment_RestorePos(segment);
-    vlc_mutex_unlock(&segment->lock);
 
     for (int n = 0; n < count; n++)
     {
@@ -2397,7 +2394,13 @@ static int segment_Seek(stream_t *s, const uint64_t pos)
     /* */
     if (b_found)
     {
-        /* restore segment to start position */
+
+        /* restore current segment to start position */
+        vlc_mutex_lock(&currentSegment->lock);
+        segment_RestorePos(currentSegment);
+        vlc_mutex_unlock(&currentSegment->lock);
+
+        /* restore seeked segment to start position */
         segment_t *segment = segment_GetSegment(hls, p_sys->playback.segment);
         if (segment == NULL)
         {

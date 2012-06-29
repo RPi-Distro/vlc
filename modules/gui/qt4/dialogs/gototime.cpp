@@ -2,7 +2,7 @@
  * GotoTime.cpp : GotoTime and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 42d7329bdb13cd2cdc37ef2ab8221055a90825cd $
+ * $Id: 463a520c512956f6884225c01a7a941a8dd2323c $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -74,10 +74,13 @@ GotoTimeDialog::GotoTimeDialog( intf_thread_t *_p_intf)
     BUTTONACT( gotoButton, close() );
     BUTTONACT( cancelButton, cancel() );
     BUTTONACT( resetButton, reset() );
+
+    QVLCTools::restoreWidgetPosition( p_intf, "gototimedialog", this );
 }
 
 GotoTimeDialog::~GotoTimeDialog()
 {
+    QVLCTools::saveWidgetPosition( p_intf, "gototimedialog", this );
 }
 
 void GotoTimeDialog::toggleVisible()
@@ -89,6 +92,7 @@ void GotoTimeDialog::toggleVisible()
         timeEdit->setTime( timeEdit->time().addSecs( i_time / 1000000 ) );
     }
     QVLCDialog::toggleVisible();
+    activateWindow ();
 }
 
 void GotoTimeDialog::cancel()

@@ -4,6 +4,9 @@ $(function () {
         value: 0,
         min: 0,
         max: 100,
+        start: function (event, ui) {
+            $("#seekSlider").data( 'clicked', true );
+        },
         stop: function (event, ui) {
             $("#currentTime").empty().append(format_time(Math.round((ui.value / 100) * $('#seekSlider').attr('totalLength'))));
             switch (current_que) {
@@ -17,6 +20,7 @@ $(function () {
                 sendVLMCmd('control Current seek ' + ui.value);
                 break;
             }
+            $("#seekSlider").data( 'clicked', false );
         }
     });
     $("#volumeSlider").slider({
@@ -24,14 +28,22 @@ $(function () {
         value: 50,
         min: 0,
         max: 100,
+        start: function (event, ui) {
+            $("#volumeSlider").data( 'clicked', true );
+        },
         stop: function (event, ui) {
             $("#currentVolume").empty().append(ui.value * 2 + "%");
             sendCommand({
                 'command': 'volume',
                 'val': Math.round(ui.value * 5.12)
             })
+            $("#volumeSlider").data( 'clicked', false );
         }
     });
+    /* To ensure that updateStatus() doesn't interfere while the user
+     * slides the controls. */
+    $("#seekSlider").data( 'clicked', false );
+    $("#volumeSlider").data( 'clicked', false );
     $('#buttonStop').click(function () {
         switch (current_que) {
         case 'main':

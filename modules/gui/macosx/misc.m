@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: 3c483fc6bedf2254104d40acc245e285c1005765 $
+ * $Id: 09018beeb460e771fbd5b3cb00511a7d37ce0ca3 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -22,16 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#import <Cocoa/Cocoa.h>
-#import <Carbon/Carbon.h>
-
-#import "CompatibilityFixes.h"
+#import "misc.h"
 #import "intf.h"                                          /* VLCApplication */
 #import "MainWindow.h"
-#import "misc.h"
-#import "playlist.h"
 #import "controls.h"
-#import <vlc_url.h>
+#import "CoreInteraction.h"
 
 /*****************************************************************************
  * NSAnimation (VLCAdditions)
@@ -193,6 +188,7 @@ static NSMutableArray *blackoutWindows = NULL;
     }
     return self;
 }
+
 - (void)setCanBecomeKeyWindow: (BOOL)canBecomeKey
 {
     b_isset_canBecomeKeyWindow = YES;
@@ -205,6 +201,20 @@ static NSMutableArray *blackoutWindows = NULL;
         return b_canBecomeKeyWindow;
 
     return [super canBecomeKeyWindow];
+}
+
+- (void)setCanBecomeMainWindow: (BOOL)canBecomeMain
+{
+    b_isset_canBecomeMainWindow = YES;
+    b_canBecomeMainWindow = canBecomeMain;
+}
+
+- (BOOL)canBecomeMainWindow
+{
+    if(b_isset_canBecomeMainWindow)
+        return b_canBecomeMainWindow;
+
+    return [super canBecomeMainWindow];
 }
 
 - (void)closeAndAnimate: (BOOL)animate
@@ -369,95 +379,9 @@ static NSMutableArray *blackoutWindows = NULL;
     return b_isFullscreen;
 }
 
-@end
-
-/*****************************************************************************
- * VLCControllerView
- *****************************************************************************/
-
-@implementation VLCControllerView
-
-- (void)dealloc
+- (IBAction)fullscreen:(id)sender
 {
-    [self unregisterDraggedTypes];
-    [super dealloc];
-}
-
-- (void)awakeFromNib
-{
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType,
-        NSFilenamesPboardType, nil]];
-}
-
-- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
-{
-    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask])
-                == NSDragOperationGeneric)
-    {
-        return NSDragOperationGeneric;
-    }
-    else
-    {
-        return NSDragOperationNone;
-    }
-}
-
-- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
-{
-    return YES;
-}
-
-- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
-{
-    NSPasteboard *o_paste = [sender draggingPasteboard];
-    NSArray *o_types = [NSArray arrayWithObjects: NSFilenamesPboardType, nil];
-    NSString *o_desired_type = [o_paste availableTypeFromArray:o_types];
-    NSData *o_carried_data = [o_paste dataForType:o_desired_type];
-
-    if( o_carried_data )
-    {
-        if ([o_desired_type isEqualToString:NSFilenamesPboardType])
-        {
-            NSArray *o_array = [NSArray array];
-            NSArray *o_values = [[o_paste propertyListForType: NSFilenamesPboardType] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-            NSUInteger count = [o_values count];
-
-            input_thread_t * p_input = pl_CurrentInput( VLCIntf );
-            BOOL b_returned = NO;
-
-            if (count == 1 && p_input)
-            {
-                b_returned = input_AddSubtitle( p_input, make_URI([[o_values objectAtIndex:0] UTF8String], NULL), true );
-                vlc_object_release( p_input );
-                if(!b_returned)
-                    return YES;
-            }
-            else if( p_input )
-                vlc_object_release( p_input );
-
-            for( NSUInteger i = 0; i < count; i++)
-            {
-                NSDictionary *o_dic;
-                char *psz_uri = make_URI([[o_values objectAtIndex:i] UTF8String], NULL);
-                if( !psz_uri )
-                    continue;
-
-                o_dic = [NSDictionary dictionaryWithObject:[NSString stringWithCString:psz_uri encoding:NSUTF8StringEncoding] forKey:@"ITEM_URL"];
-
-                free( psz_uri );
-                o_array = [o_array arrayByAddingObject: o_dic];
-            }
-            [(VLCPlaylist *)[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:NO];
-            return YES;
-        }
-    }
-    [self setNeedsDisplay:YES];
-    return YES;
-}
-
-- (void)concludeDragOperation:(id <NSDraggingInfo>)sender
-{
-    [self setNeedsDisplay:YES];
+    [[VLCCoreInteraction sharedInstance] toggleFullscreen];
 }
 
 @end
@@ -481,8 +405,7 @@ static NSMutableArray *blackoutWindows = NULL;
 
 - (void)awakeFromNib
 {
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType,
-        NSFilenamesPboardType, nil]];
+    [self registerForDraggedTypes:[NSArray arrayWithObject: NSFilenamesPboardType]];
     [self setImageScaling: NSScaleToFit];
     [self setImageFrameStyle: NSImageFrameNone];
     [self setImageAlignment: NSImageAlignCenter];
@@ -490,15 +413,10 @@ static NSMutableArray *blackoutWindows = NULL;
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
 {
-    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask])
-                == NSDragOperationGeneric)
-    {
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
         return NSDragOperationGeneric;
-    }
-    else
-    {
-        return NSDragOperationNone;
-    }
+
+    return NSDragOperationNone;
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
@@ -508,54 +426,11 @@ static NSMutableArray *blackoutWindows = NULL;
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
-    NSPasteboard *o_paste = [sender draggingPasteboard];
-    NSArray *o_types = [NSArray arrayWithObjects: NSFilenamesPboardType, nil];
-    NSString *o_desired_type = [o_paste availableTypeFromArray:o_types];
-    NSData *o_carried_data = [o_paste dataForType:o_desired_type];
-    BOOL b_autoplay = config_GetInt( VLCIntf, "macosx-autoplay" );
+    BOOL b_returned;
+    b_returned = [[VLCCoreInteraction sharedInstance] performDragOperation: sender];
 
-    if( o_carried_data )
-    {
-        if ([o_desired_type isEqualToString:NSFilenamesPboardType])
-        {
-            NSArray *o_array = [NSArray array];
-            NSArray *o_values = [[o_paste propertyListForType: NSFilenamesPboardType] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-            NSUInteger count = [o_values count];
-
-            input_thread_t * p_input = pl_CurrentInput( VLCIntf );
-            BOOL b_returned = NO;
-
-            if (count == 1 && p_input)
-            {
-                b_returned = input_AddSubtitle( p_input, make_URI([[o_values objectAtIndex:0] UTF8String], NULL), true );
-                vlc_object_release( p_input );
-                if(!b_returned)
-                    return YES;
-            }
-            else if( p_input )
-                vlc_object_release( p_input );
-
-            for( NSUInteger i = 0; i < count; i++)
-            {
-                NSDictionary *o_dic;
-                char *psz_uri = make_URI([[o_values objectAtIndex:i] UTF8String], NULL);
-                if( !psz_uri )
-                    continue;
-
-                o_dic = [NSDictionary dictionaryWithObject:[NSString stringWithCString:psz_uri encoding:NSUTF8StringEncoding] forKey:@"ITEM_URL"];
-                free( psz_uri );
-
-                o_array = [o_array arrayByAddingObject: o_dic];
-            }
-            if( b_autoplay )
-                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:NO];
-            else
-                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:YES];
-            return YES;
-        }
-    }
     [self setNeedsDisplay:YES];
-    return YES;
+    return b_returned;
 }
 
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender
@@ -826,23 +701,6 @@ void _drawFrameInRect(NSRect frameRect)
 {
     return 1.0;
 }
-
-- (void)adjustSubviews
-{
-    NSArray *o_subviews = [self subviews];
-    NSRect viewDimensions = [self frame];
-    NSRect leftViewDimensions = [[o_subviews objectAtIndex:0] frame];
-    NSRect rightViewDimensions = [[o_subviews objectAtIndex:1] frame];
-    CGFloat f_dividerThickness = [self dividerThickness];
-
-    leftViewDimensions.size.height = viewDimensions.size.height;
-    [[o_subviews objectAtIndex:0] setFrame: leftViewDimensions];
-
-    rightViewDimensions.origin.x = leftViewDimensions.size.width + f_dividerThickness;
-    rightViewDimensions.size.width = viewDimensions.size.width - leftViewDimensions.size.width - f_dividerThickness;
-    rightViewDimensions.size.height = viewDimensions.size.height;
-    [[o_subviews objectAtIndex:1] setFrame: rightViewDimensions];
-}
 @end
 
 /*****************************************************************************
@@ -895,21 +753,15 @@ void _drawFrameInRect(NSRect frameRect)
 
 - (void)awakeFromNib
 {
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType,
-                                   NSFilenamesPboardType, nil]];
+    [self registerForDraggedTypes:[NSArray arrayWithObject: NSFilenamesPboardType]];
 }
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
 {
-    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask])
-        == NSDragOperationGeneric)
-    {
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
         return NSDragOperationGeneric;
-    }
-    else
-    {
-        return NSDragOperationNone;
-    }
+
+    return NSDragOperationNone;
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
@@ -919,52 +771,9 @@ void _drawFrameInRect(NSRect frameRect)
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
-    NSPasteboard *o_paste = [sender draggingPasteboard];
-    NSArray *o_types = [NSArray arrayWithObjects: NSFilenamesPboardType, nil];
-    NSString *o_desired_type = [o_paste availableTypeFromArray:o_types];
-    NSData *o_carried_data = [o_paste dataForType:o_desired_type];
-    BOOL b_autoplay = config_GetInt( VLCIntf, "macosx-autoplay" );
+    BOOL b_returned;
+    b_returned = [[VLCCoreInteraction sharedInstance] performDragOperation: sender];
 
-    if( o_carried_data )
-    {
-        if ([o_desired_type isEqualToString:NSFilenamesPboardType])
-        {
-            NSArray *o_array = [NSArray array];
-            NSArray *o_values = [[o_paste propertyListForType: NSFilenamesPboardType] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-            NSUInteger count = [o_values count];
-
-            input_thread_t * p_input = pl_CurrentInput( VLCIntf );
-            BOOL b_returned = NO;
-
-            if (count == 1 && p_input)
-            {
-                b_returned = input_AddSubtitle( p_input, make_URI([[o_values objectAtIndex:0] UTF8String], NULL), true );
-                vlc_object_release( p_input );
-                if(!b_returned)
-                    return YES;
-            }
-            else if( p_input )
-                vlc_object_release( p_input );
-
-            for( NSUInteger i = 0; i < count; i++)
-            {
-                NSDictionary *o_dic;
-                char *psz_uri = make_URI([[o_values objectAtIndex:i] UTF8String], NULL);
-                if( !psz_uri )
-                    continue;
-
-                o_dic = [NSDictionary dictionaryWithObject:[NSString stringWithCString:psz_uri encoding:NSUTF8StringEncoding] forKey:@"ITEM_URL"];
-                free( psz_uri );
-
-                o_array = [o_array arrayByAddingObject: o_dic];
-            }
-            if( b_autoplay )
-                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:NO];
-            else
-                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:YES];
-            return YES;
-        }
-    }
     [self setNeedsDisplay:YES];
     return YES;
 }

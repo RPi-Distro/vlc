@@ -1,7 +1,7 @@
 # FFmpeg
 
-FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=88c76c7d2291c;sf=tgz
-#FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=499ad54d982;sf=tgz
+FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=5916bc46;sf=tgz
+#FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=c29c1a1b6ba;sf=tgz
 
 FFMPEGCONF = \
 	--cc="$(CC)" \
@@ -12,7 +12,6 @@ FFMPEGCONF = \
 	--enable-libopenjpeg \
 	--disable-debug \
 	--enable-gpl \
-	--enable-postproc \
 	--disable-avdevice \
 	--disable-devices \
 	--disable-protocols \

@@ -130,6 +130,24 @@ static inline int GetAlignedSize(unsigned size)
 
 static bool IsLuminance16Supported(int target)
 {
+#if defined(MACOS_OPENGL)
+    /* OpenGL 1.x on OS X does _not_ support 16bit shaders, but pretends to.
+     * That's why we enforce return false here, even though the actual code below
+     * would return true.
+     * This fixes playback of 10bit content on the Intel GMA 950 chipset, which is
+     * the only "GPU" supported by 10.6 and 10.7 with just an OpenGL 1.4 driver.
+     *
+     * Presumely, this also improves playback on the GMA 3100, GeForce FX 5200,
+     * GeForce4 Ti, GeForce3, GeForce2 MX/4 MX and the Radeon 8500 when
+     * running OS X 10.5. */
+    const GLubyte * p_glversion;
+    float f_glversion;
+    p_glversion = glGetString (GL_VERSION);
+    sscanf((char *)p_glversion, "%f", &f_glversion);
+    if (f_glversion < 2)
+        return false;
+#endif
+
     GLuint texture;
 
     glGenTextures(1, &texture);
@@ -263,6 +281,18 @@ vout_display_opengl_t *vout_display_opengl_New(video_format_t *fmt,
             list++;
         }
     }
+#if (defined (__ppc__) || defined (__ppc64__) || defined (__powerpc__)) && defined (__APPLE__)
+    /* This is a work-around for dated PowerPC-based Macs, which run OpenGL 1.3 only and don't
+     * support the GL_ARB_fragment_program extension.
+     * Affected devices are all Macs built between 2002 and 2005 with an ATI Radeon 7500,
+     * an ATI Radeon 9200 or a NVIDIA GeForceFX 5200 Ultra. */
+    else
+    {
+        vgl->tex_format   = GL_YCBCR_422_APPLE;
+        vgl->tex_type     = GL_UNSIGNED_SHORT_8_8_APPLE;
+        vgl->fmt.i_chroma = VLC_CODEC_YUYV;
+    }
+#endif
 
     vgl->chroma = vlc_fourcc_GetChromaDescription(vgl->fmt.i_chroma);
     vgl->use_multitexture = vgl->chroma->plane_count > 1;
@@ -302,14 +332,14 @@ vout_display_opengl_t *vout_display_opengl_New(video_format_t *fmt,
              * by simply changing the coefficients
              */
             const float matrix_bt601_tv2full[3][4] = {
-                { 1.1640,  0.0000,  1.4030, -0.7773 },
-                { 1.1640, -0.3440, -0.7140,  0.4580 },
-                { 1.1640,  1.7730,  0.0000, -0.9630 },
+                { 1.164383561643836,  0.0000,             1.596026785714286, -0.874202217873451 },
+                { 1.164383561643836, -0.391762290094914, -0.812967647237771,  0.531667823499146 },
+                { 1.164383561643836,  2.017232142857142,  0.0000,            -1.085630789302022 },
             };
             const float matrix_bt709_tv2full[3][4] = {
-                { 1.1640,  0.0000,  1.5701, -0.8612 },
-                { 1.1640, -0.1870, -0.4664,  0.2549 },
-                { 1.1640,  1.8556,  0.0000, -1.0045 },
+                { 1.164383561643836,  0.0000,             1.792741071428571, -0.972945075016308 },
+                { 1.164383561643836, -0.21324861427373,  -0.532909328559444,  0.301482665475862 },
+                { 1.164383561643836,  2.112401785714286,  0.0000,            -1.133402217873451 },
             };
             const float (*matrix)[4] = fmt->i_height > 576 ? matrix_bt709_tv2full
                                                            : matrix_bt601_tv2full;

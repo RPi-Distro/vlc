@@ -254,7 +254,6 @@ static void stream_resync(audio_output_t *aout, pa_stream *s)
     aout_sys_t *sys = aout->sys;
     mtime_t delta;
 
-    assert (pa_stream_is_corked(s) > 0);
     assert (sys->pts != VLC_TS_INVALID);
 
     delta = vlc_pa_get_latency(aout, sys->context, s);
@@ -473,15 +472,16 @@ static void sink_input_info_cb(pa_context *ctx, const pa_sink_input_info *i,
 {
     audio_output_t *aout = userdata;
     aout_sys_t *sys = aout->sys;
-    float volume;
 
     if (eol)
         return;
     (void) ctx;
 
-    sys->cvolume = i->volume;
-    volume = pa_cvolume_max(&i->volume) / (float)PA_VOLUME_NORM;
-    aout_VolumeHardSet(aout, volume, i->mute);
+    sys->cvolume = i->volume; /* cache volume for balance preservation */
+
+    pa_volume_t volume = pa_cvolume_max(&i->volume);
+    volume = pa_sw_volume_divide(volume, sys->base_volume);
+    aout_VolumeHardSet(aout, (float)volume / PA_VOLUME_NORM, i->mute);
 }
 
 
@@ -511,6 +511,8 @@ static void *data_convert(block_t **pp)
     return block->p_buffer;
 }
 
+static void Pause(audio_output_t *, bool, mtime_t);
+
 /**
  * Queue one audio frame to the playabck stream
  */
@@ -532,6 +534,13 @@ static void Play(audio_output_t *aout, block_t *block)
      * (including from PulseAudio stream callbacks). Otherwise lock inversion
      * will take place, and sooner or later a deadlock. */
     pa_threaded_mainloop_lock(sys->mainloop);
+
+    /* Work around decoder core bug (play without/before resume) */
+    while (unlikely(sys->paused != VLC_TS_INVALID)) {
+        pa_threaded_mainloop_unlock(sys->mainloop);
+        Pause(aout, false, mdate());
+        pa_threaded_mainloop_lock(sys->mainloop);
+    }
 
     sys->pts = pts;
     if (pa_stream_is_corked(s) > 0)
@@ -566,6 +575,9 @@ static void Pause(audio_output_t *aout, bool paused, mtime_t date)
     if (paused) {
         sys->paused = date;
         stream_stop(s, aout);
+    } else if (unlikely(sys->paused == VLC_TS_INVALID)) {
+        /* Work around decoder core bug (play before resume) */
+        msg_Warn(aout, "pause state confusion");
     } else {
         assert (sys->paused != VLC_TS_INVALID);
         date -= sys->paused;
@@ -605,18 +617,17 @@ static int VolumeSet(audio_output_t *aout, float vol, bool mute)
     pa_operation *op;
     uint32_t idx = pa_stream_get_index(sys->stream);
 
-    pa_cvolume cvolume = sys->cvolume;
-    pa_volume_t volume = sys->base_volume;
-
-    pa_cvolume_scale(&cvolume, PA_VOLUME_NORM); /* preserve balance */
-
     /* VLC provides the software volume so convert directly to PulseAudio
      * software volume, pa_volume_t. This is not a linear amplification factor
      * so do not use PulseAudio linear amplification! */
     vol *= PA_VOLUME_NORM;
     if (unlikely(vol >= PA_VOLUME_MAX))
         vol = PA_VOLUME_MAX;
-    volume = pa_sw_volume_multiply(volume, lround(vol));
+    pa_volume_t volume = pa_sw_volume_multiply(lround(vol), sys->base_volume);
+
+    /* Preserve the balance (VLC does not support it). */
+    pa_cvolume cvolume = sys->cvolume;
+    pa_cvolume_scale(&cvolume, PA_VOLUME_NORM);
     pa_sw_cvolume_multiply_scalar(&cvolume, &cvolume, volume);
 
     assert(pa_cvolume_valid(&cvolume));

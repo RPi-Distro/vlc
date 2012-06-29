@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: dbf84f29ceccb519c6b4c896c94247fd749a10b0 $
+ * $Id: 58037e965e083ac912880cdfca978dfc33d5adfe $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1797,9 +1797,9 @@ vlc_module_begin ()
     add_integer( "sub-autodetect-fuzzy", 3,
                  SUB_FUZZY_TEXT, SUB_FUZZY_LONGTEXT, true )
 #if defined( WIN32 ) || defined( __OS2__ )
-#   define SUB_PATH ".\\subtitles"
+#   define SUB_PATH ".\\subtitles, .\\subs"
 #else
-#   define SUB_PATH "./Subtitles, ./subtitles"
+#   define SUB_PATH "./Subtitles, ./subtitles, ./Subs, ./subs"
 #endif
     add_string( "sub-autodetect-path", SUB_PATH,
                  SUB_PATH_TEXT, SUB_PATH_LONGTEXT, true )

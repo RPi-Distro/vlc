@@ -3,9 +3,9 @@
 
 basedir = video_output
 dir = video_output
-mods = aa android_surface caca directfb fb vmem vout_ios vout_macosx vout_sdl yuv
-libvlc_LTLIBRARIES =  $(LTLIBaa) $(LTLIBandroid_surface) $(LTLIBcaca) $(LTLIBdirectfb) $(LTLIBfb) $(LTLIBvout_ios) $(LTLIBvout_macosx) $(LTLIBvout_sdl)
-EXTRA_LTLIBRARIES =  libaa_plugin.la libandroid_surface_plugin.la libcaca_plugin.la libdirectfb_plugin.la libfb_plugin.la libvout_ios_plugin.la libvout_macosx_plugin.la libvout_sdl_plugin.la
+mods = aa android_surface directfb fb vmem vout_ios vout_macosx vout_sdl yuv
+libvlc_LTLIBRARIES =  $(LTLIBaa) $(LTLIBandroid_surface) $(LTLIBdirectfb) $(LTLIBfb) $(LTLIBvout_ios) $(LTLIBvout_macosx) $(LTLIBvout_sdl)
+EXTRA_LTLIBRARIES =  libaa_plugin.la libandroid_surface_plugin.la libdirectfb_plugin.la libfb_plugin.la libvout_ios_plugin.la libvout_macosx_plugin.la libvout_sdl_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -34,19 +34,6 @@ libandroid_surface_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_android_sur
 libandroid_surface_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_android_surface)
 libandroid_surface_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_android_surface)
 libandroid_surface_plugin_la_DEPENDENCIES =
-
-# The caca plugin
-libcaca_plugin_la_SOURCES = $(SOURCES_caca)
-nodist_libcaca_plugin_la_SOURCES = $(nodist_SOURCES_caca)
-# Force per-target objects:
-libcaca_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_caca)
-libcaca_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_caca)
-libcaca_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_caca)
-libcaca_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_caca)
-# Set LIBADD and DEPENDENCIES manually:
-libcaca_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_caca)
-libcaca_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_caca)
-libcaca_plugin_la_DEPENDENCIES =
 
 # The directfb plugin
 libdirectfb_plugin_la_SOURCES = $(SOURCES_directfb)

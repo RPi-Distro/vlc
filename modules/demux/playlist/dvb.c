@@ -2,7 +2,7 @@
  * dvb.c : DVB channel list import (szap/tzap/czap compatible channel lists)
  *****************************************************************************
  * Copyright (C) 2005-20009 the VideoLAN team
- * $Id: 5e712378155bff41fd4382c444603184ef85bbaf $
+ * $Id: a014fb3de8cbd4d3a29f6b4a077002946720c062 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -109,8 +109,6 @@ static int Demux( demux_t *p_demux )
         char **ppsz_options = NULL;
         int  i_options = 0;
         char *psz_name = NULL;
-        char *psz_uri = strdup( "dvb://" );
-        int i_optionslen = 0;
 
         if( !ParseLine( psz_line, &psz_name, &ppsz_options, &i_options ) )
         {
@@ -120,33 +118,9 @@ static int Demux( demux_t *p_demux )
 
         EnsureUTF8( psz_name );
         for( int i = 0; i< i_options; i++ )
-        {
             EnsureUTF8( ppsz_options[i] );
-            i_optionslen += ( strlen( ppsz_options[i] ) + 2 );
-        }
 
-        if ( i_optionslen )
-        {
-            /* ensure uri is also generated dvb:// :op1 :op2 */
-            char *psz_localuri = calloc( i_optionslen + 6 + 1, sizeof(char) );
-            if ( psz_localuri )
-            {
-                char *psz_tmp;
-                char *psz_forward;
-                psz_forward = strcat( psz_localuri, psz_uri ) + 6;
-                for( int i = 0; i< i_options; i++ )
-                {
-                    psz_tmp = ppsz_options[i]; /* avoid doing i*strcat */
-                    *psz_forward++ = ' ';
-                    *psz_forward++ = ':';
-                    while( *psz_tmp ) *psz_forward++ = *psz_tmp++;
-                }
-                free( psz_uri );
-                psz_uri = psz_localuri;
-            }
-        }
-
-        p_input = input_item_NewExt( psz_uri, psz_name,
+        p_input = input_item_NewExt( "dvb://", psz_name,
                                      i_options, (const char**)ppsz_options, VLC_INPUT_OPTION_TRUSTED, -1 );
         input_item_node_AppendItem( p_subitems, p_input );
         vlc_gc_decref( p_input );
@@ -155,7 +129,6 @@ static int Demux( demux_t *p_demux )
             free( ppsz_options[i_options] );
         free( ppsz_options );
 
-        free( psz_uri );
         free( psz_line );
     }
 
@@ -174,7 +147,7 @@ static const struct
 {
     { "INVERSION_OFF", "dvb-inversion=0" },
     { "INVERSION_ON", "dvb-inversion=1" },
-    { "INVERSION_AUTO", "dvb-inversion=2" },
+    { "INVERSION_AUTO", "dvb-inversion=-1" },
 
     { "BANDWIDTH_AUTO", "dvb-bandwidth=0" },
     { "BANDWIDTH_6_MHZ", "dvb-bandwidth=6" },
@@ -182,38 +155,38 @@ static const struct
     { "BANDWIDTH_8_MHZ", "dvb-bandwidth=8" },
 
     { "FEC_NONE", "dvb-fec=0" },
-    { "FEC_1_2", "dvb-fec=1" },
-    { "FEC_2_3", "dvb-fec=2" },
-    { "FEC_3_4", "dvb-fec=3" },
-    { "FEC_4_5", "dvb-fec=4" },
-    { "FEC_5_6", "dvb-fec=5" },
-    { "FEC_6_7", "dvb-fec=6" },
-    { "FEC_7_8", "dvb-fec=7" },
-    { "FEC_8_9", "dvb-fec=8" },
-    { "FEC_AUTO", "dvb-fec=9" },
+    { "FEC_1_2", "dvb-fec=1/2" },
+    { "FEC_2_3", "dvb-fec=2/3" },
+    { "FEC_3_4", "dvb-fec=3/4" },
+    { "FEC_4_5", "dvb-fec=4/5" },
+    { "FEC_5_6", "dvb-fec=5/6" },
+    { "FEC_6_7", "dvb-fec=6/7" },
+    { "FEC_7_8", "dvb-fec=7/8" },
+    { "FEC_8_9", "dvb-fec=8/9" },
+    { "FEC_AUTO", "dvb-fec=" },
 
-    { "GUARD_INTERVAL_AUTO", "dvb-guard=0" },
-    { "GUARD_INTERVAL_1_4", "dvb-guard=4" },
-    { "GUARD_INTERVAL_1_8", "dvb-guard=8" },
-    { "GUARD_INTERVAL_1_16", "dvb-guard=16" },
-    { "GUARD_INTERVAL_1_32", "dvb-guard=32" },
+    { "GUARD_INTERVAL_AUTO", "dvb-guard=" },
+    { "GUARD_INTERVAL_1_4", "dvb-guard=1/4" },
+    { "GUARD_INTERVAL_1_8", "dvb-guard=1/8" },
+    { "GUARD_INTERVAL_1_16", "dvb-guard=1/16" },
+    { "GUARD_INTERVAL_1_32", "dvb-guard=1/32" },
 
     { "HIERARCHY_NONE", "dvb-hierarchy=-1" },
     { "HIERARCHY_1", "dvb-hierarchy=1" },
     { "HIERARCHY_2", "dvb-hierarchy=2" },
     { "HIERARCHY_4", "dvb-hierarchy=4" },
 
-    { "QPSK", "dvb-modulation=-1" },
-    { "QAM_AUTO", "dvb-modulation=0" },
-    { "QAM_16", "dvb-modulation=16" },
-    { "QAM_32", "dvb-modulation=32" },
-    { "QAM_64", "dvb-modulation=64" },
-    { "QAM_128", "dvb-modulation=128" },
-    { "QAM_256", "dvb-modulation=256" },
-    { "8VSB", "dvb-modulation=8"  },
-    { "16VSB", "dvb-modulation=16"  },
+    { "QPSK", "dvb-modulation=QPSK" },
+    { "QAM_AUTO", "dvb-modulation=QAM" },
+    { "QAM_16", "dvb-modulation=16QAM" },
+    { "QAM_32", "dvb-modulation=32QAM" },
+    { "QAM_64", "dvb-modulation=64QAM" },
+    { "QAM_128", "dvb-modulation=128QAM" },
+    { "QAM_256", "dvb-modulation=256QAM" },
+    { "8VSB", "dvb-modulation=8VSB"  },
+    { "16VSB", "dvb-modulation=16VSB"  },
 
-    { "TRANSMISSION_MODE_AUTO", "dvb-transmission=0" },
+    { "TRANSMISSION_MODE_AUTO", "dvb-transmission=-1" },
     { "TRANSMISSION_MODE_2K", "dvb-transmission=2" },
     { "TRANSMISSION_MODE_8K", "dvb-transmission=8" },
     { 0, 0 }

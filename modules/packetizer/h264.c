@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 3e27a686611b88b1d9b25cf693fc75afefc0db53 $
+ * $Id: a680454d7f5d919c3e285e33cde16ff867024bc5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -820,7 +820,7 @@ static void PutSPS( decoder_t *p_dec, block_t *p_frag )
     p_dec->fmt_out.i_level = bs_read( &s, 8 );
     /* sps id */
     i_sps_id = bs_read_ue( &s );
-    if( i_sps_id >= SPS_MAX )
+    if( i_sps_id >= SPS_MAX || i_sps_id < 0 )
     {
         msg_Warn( p_dec, "invalid SPS (sps_id=%d)", i_sps_id );
         free( pb_dec );

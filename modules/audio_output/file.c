@@ -2,7 +2,7 @@
  * file.c : audio output which writes the samples to a file
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: fb568059e996e26a0e55d46737cc33d5f7d26ea2 $
+ * $Id: e2c4e3100c04cfac898df655372b69c6d678c592 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -193,10 +193,8 @@ static int Open( vlc_object_t * p_this )
     {
         p_aout->format.i_bytes_per_frame = AOUT_SPDIF_SIZE;
         p_aout->format.i_frame_length = A52_FRAME_NB;
-        aout_VolumeNoneInit( p_aout );
     }
-    else
-        aout_VolumeSoftInit( p_aout );
+    aout_VolumeNoneInit( p_aout );
 
     /* Channels number */
     i_channels = var_CreateGetInteger( p_this, "audiofile-channels" );

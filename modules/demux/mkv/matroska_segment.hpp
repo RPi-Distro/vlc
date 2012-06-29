@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 1c210c61585c0a4e97dfaab56b7b7144ec2ba683 $
+ * $Id: 673458e1199f84254776bf3d55642cb8c97dcecc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -124,7 +124,7 @@ private:
     void ParseTracks( KaxTracks *tracks );
     void ParseChapterAtom( int i_level, KaxChapterAtom *ca, chapter_item_c & chapters );
     void ParseTrackEntry( KaxTrackEntry *m );
-    void ParseCluster( );
+    void ParseCluster( bool b_update_start_time = true );
     void ParseSimpleTags( KaxTagSimple *tag );
     void IndexAppendCluster( KaxCluster *cluster );
 };

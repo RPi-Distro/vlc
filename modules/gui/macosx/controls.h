@@ -2,7 +2,7 @@
  * controls.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2011 VLC authors and VideoLAN
- * $Id: 8797a0c43ccfd1febac9a70d9120bab9868ac53d $
+ * $Id: 4488bc388d18820fd3c36216bda7797985672d32 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -39,6 +39,9 @@
     IBOutlet id o_specificTime_sec_lbl;
     IBOutlet id o_specificTime_stepper;
     IBOutlet id o_specificTime_mi;
+
+    NSInteger i_lastScrollWheelDirection;
+    NSTimeInterval t_lastScrollEvent;
 }
 - (IBAction)play:(id)sender;
 - (IBAction)stop:(id)sender;

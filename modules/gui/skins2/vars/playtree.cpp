@@ -2,7 +2,7 @@
  * playtree.cpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 918d4b147ff62eb6fe51487a17c04555ff6a6e3a $
+ * $Id: 4f760efb62d18a564042f19c060e1cc0d0e8052e $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -280,15 +280,29 @@ void Playtree::insertItems( VarTree& elem, const list<string>& files, bool start
 
     playlist_Lock( m_pPlaylist );
 
+    if( p_elem == this )
+    {
+        for( Iterator it = m_children.begin(); it != m_children.end(); ++it )
+        {
+            if( it->getId() == m_pPlaylist->p_local_category->i_id )
+            {
+                p_elem = &*it;
+                break;
+            }
+        }
+    }
+
     if( p_elem->getId() == m_pPlaylist->p_local_category->i_id )
     {
         p_node = m_pPlaylist->p_local_category;
         i_pos = 0;
+        p_elem->setExpanded( true );
     }
     else if( p_elem->getId() == m_pPlaylist->p_ml_category->i_id )
     {
         p_node = m_pPlaylist->p_ml_category;
         i_pos = 0;
+        p_elem->setExpanded( true );
     }
     else if( p_elem->size() && p_elem->isExpanded() )
     {

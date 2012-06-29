@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: b120d4d21689d39ff295ca10d10044f85a3b6b77 $
+ * $Id: 177dd4f159bd3fc86af3d8c93656893d6f80f4c0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -882,8 +882,10 @@ void VLCMenuBar::PopupMenuControlEntries( QMenu *menu, intf_thread_t *p_intf,
     action->setIcon( QIcon( ":/toolbar/skip_back") );
 #endif
     action->setData( ACTION_STATIC );
-    addDPStaticEntry( menu, qtr( I_MENU_GOTOTIME ),"",
-                      SLOT( gotoTimeDialog() ), "Ctrl+T" );
+
+    action = menu->addAction( qtr( I_MENU_GOTOTIME ), THEDP, SLOT( gotoTimeDialog() ), qtr( "Ctrl+T" ) );
+    action->setData( ACTION_ALWAYS_ENABLED );
+
     menu->addSeparator();
 }
 

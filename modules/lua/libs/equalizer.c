@@ -2,7 +2,7 @@
  * equalizer.c
  *****************************************************************************
  * Copyright (C) 2011 VideoLAN and VLC authors
- * $Id: 75b233479fa7bd854c094c12a9cde1dd16e7f5d5 $
+ * $Id: 02ebbf9cfd638223fc813422392c4727327d825f $
  *
  * Authors: Akash Mehrotra < mehrotra <dot> akash <at> gmail <dot> com >
  *
@@ -136,7 +136,7 @@ Band 9: 16 kHz
 *****************************************************************************/
 static int vlclua_equalizer_get( lua_State *L )
 {
-    int bands = 9;
+    const unsigned bands = 10;
     input_thread_t *p_input = vlclua_get_input_internal( L );
     if( !p_input )
         return 0;
@@ -145,7 +145,6 @@ static int vlclua_equalizer_get( lua_State *L )
     if( !p_aout )
         return 0;
 
-    float level = 0 ;
     char *psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
     if( !psz_af || strstr ( psz_af, "equalizer" ) == NULL )
     {
@@ -162,24 +161,31 @@ static int vlclua_equalizer_get( lua_State *L )
         vlc_object_release( p_aout );
         return 0;
     }
+
+    bool error = false;
     locale_t loc = newlocale (LC_NUMERIC_MASK, "C", NULL);
     locale_t oldloc = uselocale (loc);
-    int i = 0;
-    char *str;
     lua_newtable( L );
-    while( bands >= 0 )
+    for( unsigned i = 0; i < bands; i++ )
     {
-        level = strtof( psz_bands, &psz_bands);
-        bands--;
+        float level = strtof( psz_bands, &psz_bands );
+        char *str;
         if( asprintf( &str , "%f" , level ) == -1 )
-            return 0;
+        {
+            error = true;
+            break;
+        }
         lua_pushstring( L, str );
         free(str);
-        if( asprintf( &str , "band id=\"%d\"", i++ ) == -1 )
-            return 0;
+        if( asprintf( &str , "band id=\"%u\"", i ) == -1 )
+        {
+            error = true;
+            break;
+        }
         lua_setfield( L , -2 , str );
         free( str );
     }
+
     free( psz_bands_origin );
     if( loc != (locale_t)0 )
     {
@@ -187,7 +193,7 @@ static int vlclua_equalizer_get( lua_State *L )
         freelocale (loc);
     }
     vlc_object_release( p_aout );
-    return 1;
+    return error ? 0 : 1;
 }
 
 
@@ -203,7 +209,6 @@ static int vlclua_equalizer_set( lua_State *L )
     if( !p_input )
         return 0;
 
-    int i_pos = 0 , j = 0;
     audio_output_t *p_aout = input_GetAout( p_input );
     vlc_object_release( p_input );
     if( !p_aout )
@@ -220,25 +225,36 @@ static int vlclua_equalizer_set( lua_State *L )
 
     float level = luaL_checknumber( L, 2 );
     char *bands = var_GetString( p_aout, "equalizer-bands" );
-    char newstr[7];
-    while( j != bandid )
-    {
-        i_pos++;
-        if( bands[i_pos] == '.' )
-        {
-            i_pos++;
-            j++;
-        }
-    }
-    if( bandid != 0 )
-        i_pos++;
-    snprintf( newstr, sizeof ( newstr ) , "%6.1f", level);
-    for( int i = 0 ; i < 6 ; i++ )
-        bands[i_pos+i] = newstr[i];
-    var_SetString( p_aout, "equalizer-bands", bands );
 
+    locale_t loc = newlocale (LC_NUMERIC_MASK, "C", NULL);
+    locale_t oldloc = uselocale (loc);
+    char *b = bands;
+    while( bandid > 0 )
+    {
+        float dummy = strtof( b, &b );
+        (void)dummy;
+        bandid--;
+    }
+    if( *b != '\0' )
+        *b++ = '\0';
+    float dummy = strtof( b, &b );
+    (void)dummy;
+
+    char *newstr;
+    if( asprintf( &newstr, "%s %.1f%s", bands, level, b ) != -1 )
+    {
+        var_SetString( p_aout, "equalizer-bands", newstr );
+        free( newstr );
+    }
+
+    if( loc != (locale_t)0 )
+    {
+        uselocale (oldloc);
+        freelocale (loc);
+    }
+    free( bands );
     vlc_object_release( p_aout );
-    return 1;
+    return 0;
 }
 
 /*****************************************************************************
@@ -261,9 +277,11 @@ static int vlclua_equalizer_setpreset( lua_State *L )
         char *psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
         if( !psz_af || strstr ( psz_af, "equalizer" ) == NULL )
         {
+            free( psz_af );
             vlc_object_release( p_aout );
             return 0;
         }
+        free( psz_af );
         char *newstr;
         if( asprintf( &newstr , "%6.1f" , eqz_preset_10b[presetid].f_amp[0] ) == -1 )
             return 0;

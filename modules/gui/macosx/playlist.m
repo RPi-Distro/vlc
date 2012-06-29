@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 41f0f93d981132c1d8e43d3f3ce6f9195ad93117 $
+ * $Id: 323ad29cab2c6499892a19f155893e92f76a775e $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -27,8 +27,6 @@
 /* TODO
  * add 'icons' for different types of nodes? (http://www.cocoadev.com/index.pl?IconAndTextInTableCell)
  * reimplement enable/disable item
- * create a new 'tool' button (see the gear button in the Finder window) for 'actions'
-   (adding service discovery, other views, new node/playlist, save node/playlist) stuff like that
  */
 
 
@@ -48,9 +46,9 @@
 #import "playlist.h"
 #import "controls.h"
 #import "misc.h"
+#import "open.h"
 
 #include <vlc_keys.h>
-#import <vlc_services_discovery.h>
 #import <vlc_osd.h>
 #import <vlc_interface.h>
 
@@ -87,13 +85,43 @@
 
         case NSEnterCharacter:
         case NSCarriageReturnCharacter:
-            [(VLCPlaylist *)[[VLCMain sharedInstance] playlist] playItem:self];
+            [(VLCPlaylist *)[[VLCMain sharedInstance] playlist] playItem:nil];
             break;
 
         default:
             [super keyDown: o_event];
             break;
     }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+    if (([self numberOfSelectedRows] >= 1 && [item action] == @selector(delete:)) || [item action] == @selector(selectAll:))
+        return YES;
+
+    return NO;
+}
+
+- (BOOL) acceptsFirstResponder
+{
+    return YES;
+}
+
+- (BOOL) becomeFirstResponder
+{
+    [self setNeedsDisplay:YES];
+    return YES;
+}
+
+- (BOOL) resignFirstResponder
+{
+    [self setNeedsDisplay:YES];
+    return YES;
+}
+
+- (IBAction)delete:(id)sender
+{
+    [[[VLCMain sharedInstance] playlist] deleteItem: sender];
 }
 
 @end
@@ -433,45 +461,6 @@
     o_descendingSortingImage = [[NSOutlineView class] _defaultTableHeaderReverseSortImage];
 
     o_tc_sortColumn = nil;
-#if 0
-    char ** ppsz_name;
-    char ** ppsz_services = vlc_sd_GetNames( VLCIntf, &ppsz_name, NULL );
-    if( !ppsz_services )
-        return;
-
-    for( i = 0; ppsz_services[i]; i++ )
-    {
-        bool  b_enabled;
-        NSMenuItem  *o_lmi;
-
-        char * name = ppsz_name[i] ? ppsz_name[i] : ppsz_services[i];
-        /* Check whether to enable these menuitems */
-        b_enabled = playlist_IsServicesDiscoveryLoaded( p_playlist, ppsz_services[i] );
-
-        /* Create the menu entries used in the playlist menu */
-        o_lmi = [[o_mi_services submenu] addItemWithTitle:
-                 [NSString stringWithUTF8String: name]
-                                         action: @selector(servicesChange:)
-                                         keyEquivalent: @""];
-        [o_lmi setTarget: self];
-        [o_lmi setRepresentedObject: [NSString stringWithUTF8String: ppsz_services[i]]];
-        if( b_enabled ) [o_lmi setState: NSOnState];
-
-        /* Create the menu entries for the main menu */
-        o_lmi = [[o_mm_mi_services submenu] addItemWithTitle:
-                 [NSString stringWithUTF8String: name]
-                                         action: @selector(servicesChange:)
-                                         keyEquivalent: @""];
-        [o_lmi setTarget: self];
-        [o_lmi setRepresentedObject: [NSString stringWithUTF8String: ppsz_services[i]]];
-        if( b_enabled ) [o_lmi setState: NSOnState];
-
-        free( ppsz_services[i] );
-        free( ppsz_name[i] );
-    }
-    free( ppsz_services );
-    free( ppsz_name );
-#endif
 }
 
 - (void)searchfieldChanged:(NSNotification *)o_notification
@@ -496,8 +485,6 @@
     [[o_mm_mi_revealInFinder menu] setAutoenablesItems: NO];
     [o_mi_sort_name setTitle: _NS("Sort Node by Name")];
     [o_mi_sort_author setTitle: _NS("Sort Node by Author")];
-    [o_mi_services setTitle: _NS("Services discovery")];
-    [o_mm_mi_services setTitle: _NS("Services discovery")];
 
     [o_search_field setToolTip: _NS("Search in Playlist")];
     [o_search_field_other setToolTip: _NS("Search in Playlist")];
@@ -801,6 +788,10 @@
     playlist_item_t *p_item;
     playlist_item_t *p_node = NULL;
 
+    // ignore clicks on column header when handling double action
+    if( sender != nil && [o_outline_view clickedRow] == -1 && sender != o_mi_play)
+        return;
+
     p_item = [[o_outline_view itemAtRow:[o_outline_view selectedRow]] pointerValue];
 
     PL_LOCK;
@@ -829,23 +820,34 @@
 
 - (IBAction)revealItemInFinder:(id)sender
 {
-    playlist_item_t * p_item = [[o_outline_view itemAtRow:[o_outline_view selectedRow]] pointerValue];
-    NSMutableString * o_mrl = nil;
+    NSIndexSet * selectedRows = [o_outline_view selectedRowIndexes];
+    NSUInteger count = [selectedRows count];
+    NSUInteger indexes[count];
+    [selectedRows getIndexes:indexes maxCount:count inIndexRange:nil];
 
-    if(! p_item || !p_item->p_input )
-        return;
+    NSMutableString * o_mrl;
+    playlist_item_t *p_item;
+    for (NSUInteger i = 0; i < count; i++) {
+        p_item = [[o_outline_view itemAtRow:indexes[i]] pointerValue];
 
-    char *psz_uri = decode_URI( input_item_GetURI( p_item->p_input ) );
-    if( psz_uri )
-        o_mrl = [NSMutableString stringWithUTF8String: psz_uri];
+        if(! p_item || !p_item->p_input )
+            continue;
 
-    /* perform some checks whether it is a file and if it is local at all... */
-    NSRange prefix_range = [o_mrl rangeOfString: @"file:"];
-    if( prefix_range.location != NSNotFound )
-        [o_mrl deleteCharactersInRange: prefix_range];
+        o_mrl = [[NSMutableString alloc] initWithFormat: @"%s", decode_URI( input_item_GetURI( p_item->p_input ))];
 
-    if( [o_mrl characterAtIndex:0] == '/' )
-        [[NSWorkspace sharedWorkspace] selectFile: o_mrl inFileViewerRootedAtPath: o_mrl];
+        /* perform some checks whether it is a file and if it is local at all... */
+        if ([o_mrl length] > 0)
+        {
+            NSRange prefix_range = [o_mrl rangeOfString: @"file:"];
+            if( prefix_range.location != NSNotFound )
+                [o_mrl deleteCharactersInRange: prefix_range];
+
+            if( [o_mrl characterAtIndex:0] == '/' )
+                [[NSWorkspace sharedWorkspace] selectFile: o_mrl inFileViewerRootedAtPath: o_mrl];
+        }
+
+        [o_mrl release];
+    }
 }
 
 /* When called retrieves the selected outlineview row and plays that node or item */
@@ -894,29 +896,11 @@
     for (int i = 0; i < i_count; i++)
     {
         p_item = [[o_outline_view itemAtRow: indexes[i]] pointerValue];   
-        [o_outline_view deselectRow: indexes[i]];
 
         if( p_item && p_item->i_children == -1 )
             playlist_AskForArtEnqueue( p_playlist, p_item->p_input );
     }
     [self playlistUpdated];
-}
-
-- (IBAction)servicesChange:(id)sender
-{
-    NSMenuItem *o_mi = (NSMenuItem *)sender;
-    NSString *o_string = [o_mi representedObject];
-    playlist_t * p_playlist = pl_Get( VLCIntf );
-    if( !playlist_IsServicesDiscoveryLoaded( p_playlist, [o_string UTF8String] ) )
-        playlist_ServicesDiscoveryAdd( p_playlist, [o_string UTF8String] );
-    else
-        playlist_ServicesDiscoveryRemove( p_playlist, [o_string UTF8String] );
-
-    [o_mi setState: playlist_IsServicesDiscoveryLoaded( p_playlist,
-                                          [o_string UTF8String] ) ? YES : NO];
-
-    [self playlistUpdated];
-    return;
 }
 
 - (IBAction)selectAll:(id)sender
@@ -1028,61 +1012,63 @@
     playlist_t * p_playlist = pl_Get( p_intf );
 
     input_item_t *p_input;
-    BOOL b_rem = FALSE, b_dir = FALSE;
-    NSString *o_uri, *o_name;
+    BOOL b_rem = FALSE, b_dir = FALSE, b_writable = FALSE;
+    NSString *o_uri, *o_name, *o_path;
+    NSURL * o_nsurl;
     NSArray *o_options;
     NSURL *o_true_file;
 
     /* Get the item */
     o_uri = (NSString *)[o_one_item objectForKey: @"ITEM_URL"];
+    o_nsurl = [NSURL URLWithString: o_uri];
+    o_path = [o_nsurl path];
     o_name = (NSString *)[o_one_item objectForKey: @"ITEM_NAME"];
     o_options = (NSArray *)[o_one_item objectForKey: @"ITEM_OPTIONS"];
 
-    /* Find the name for a disc entry (i know, can you believe the trouble?) */
-    if( ( !o_name || [o_name isEqualToString:@""] ) && [o_uri rangeOfString: @"/dev/"].location != NSNotFound )
+    if( [[NSFileManager defaultManager] fileExistsAtPath:o_path isDirectory:&b_dir] && b_dir &&
+        [[NSWorkspace sharedWorkspace] getFileSystemInfoForPath:o_path isRemovable: &b_rem
+                                                     isWritable:&b_writable isUnmountable:NULL description:NULL type:NULL] && b_rem && !b_writable && [o_nsurl isFileURL] )
     {
-        int i_count;
-        struct statfs *mounts = NULL;
 
-        i_count = getmntinfo (&mounts, MNT_NOWAIT);
-        /* getmntinfo returns a pointer to static data. Do not free. */
-        for( int i_index = 0 ; i_index < i_count; i_index++ )
+        id o_vlc_open = [[VLCMain sharedInstance] open];
+
+        char *diskType = [o_vlc_open getVolumeTypeFromMountPath: o_path];
+        msg_Dbg( p_intf, "detected optical media of type '%s' in the file input", diskType );
+
+        if (diskType == kVLCMediaDVD)
         {
-            NSMutableString *o_temp, *o_temp2;
-            o_temp = [NSMutableString stringWithString: o_uri];
-            o_temp2 = [NSMutableString stringWithUTF8String: mounts[i_index].f_mntfromname];
-            [o_temp replaceOccurrencesOfString: @"/dev/rdisk" withString: @"/dev/disk" options:NSLiteralSearch range:NSMakeRange(0, [o_temp length]) ];
-            [o_temp2 replaceOccurrencesOfString: @"s0" withString: @"" options:NSLiteralSearch range:NSMakeRange(0, [o_temp2 length]) ];
-            [o_temp2 replaceOccurrencesOfString: @"s1" withString: @"" options:NSLiteralSearch range:NSMakeRange(0, [o_temp2 length]) ];
-
-            if( strstr( [o_temp fileSystemRepresentation], [o_temp2 fileSystemRepresentation] ) != NULL )
-            {
-                o_name = [[NSFileManager defaultManager] displayNameAtPath: [NSString stringWithUTF8String:mounts[i_index].f_mntonname]];
-            }
+            o_uri = [NSString stringWithFormat: @"dvdnav://%@", [o_vlc_open getBSDNodeFromMountPath: o_path]];
         }
+        else if (diskType == kVLCMediaVideoTSFolder)
+        {
+            o_uri = [NSString stringWithFormat: @"dvdnav://%@", o_path];
+        }
+        else if (diskType == kVLCMediaAudioCD)
+        {
+            o_uri = [NSString stringWithFormat: @"cdda://%@", [o_vlc_open getBSDNodeFromMountPath: o_path]];
+        }
+        else if (diskType == kVLCMediaVCD)
+        {
+            o_uri = [NSString stringWithFormat: @"vcd://%@#0:0", [o_vlc_open getBSDNodeFromMountPath: o_path]];
+        }
+        else if (diskType == kVLCMediaSVCD)
+        {
+            o_uri = [NSString stringWithFormat: @"vcd://%@@0:0", [o_vlc_open getBSDNodeFromMountPath: o_path]];
+        }
+        else if (diskType == kVLCMediaBD || diskType == kVLCMediaBDMVFolder)
+        {
+            o_uri = [NSString stringWithFormat: @"bluray://%@", o_path];
+        }
+        else
+        {
+            msg_Warn( VLCIntf, "unknown disk type, treating %s as regular input", [o_path UTF8String] );
+        }
+
+        p_input = input_item_New( [o_uri UTF8String], [[[NSFileManager defaultManager] displayNameAtPath: o_path] UTF8String] );
     }
+    else
+        p_input = input_item_New( [o_uri fileSystemRepresentation], o_name ? [o_name UTF8String] : NULL );
 
-    if( [[NSFileManager defaultManager] fileExistsAtPath:o_uri isDirectory:&b_dir] && b_dir &&
-        [[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: o_uri isRemovable: &b_rem
-                isWritable:NULL isUnmountable:NULL description:NULL type:NULL] && b_rem   )
-    {
-        /* All of this is to make sure CD's play when you D&D them on VLC */
-        /* Converts mountpoint to a /dev file */
-        struct statfs *buf;
-        char *psz_dev;
-        NSMutableString *o_temp;
-
-        buf = (struct statfs *) malloc (sizeof(struct statfs));
-        statfs( [o_uri fileSystemRepresentation], buf );
-        psz_dev = strdup(buf->f_mntfromname);
-        o_temp = [NSMutableString stringWithUTF8String: psz_dev ];
-        [o_temp replaceOccurrencesOfString: @"/dev/disk" withString: @"/dev/rdisk" options:NSLiteralSearch range:NSMakeRange(0, [o_temp length]) ];
-        [o_temp replaceOccurrencesOfString: @"s0" withString: @"" options:NSLiteralSearch range:NSMakeRange(0, [o_temp length]) ];
-        [o_temp replaceOccurrencesOfString: @"s1" withString: @"" options:NSLiteralSearch range:NSMakeRange(0, [o_temp length]) ];
-        o_uri = o_temp;
-    }
-
-    p_input = input_item_New( [o_uri fileSystemRepresentation], o_name ? [o_name UTF8String] : NULL );
     if( !p_input )
         return NULL;
 
@@ -1097,11 +1083,9 @@
     }
 
     /* Recent documents menu */
-    o_true_file = [NSURL URLWithString: o_uri];
-    if( o_true_file != nil && (BOOL)config_GetInt( p_playlist, "macosx-recentitems" ) == YES )
+    if( o_nsurl != nil && (BOOL)config_GetInt( p_playlist, "macosx-recentitems" ) == YES )
     {
-        [[NSDocumentController sharedDocumentController]
-            noteNewRecentDocumentURL: o_true_file];
+        [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL: o_nsurl];
     }
     return p_input;
 }
@@ -1293,19 +1277,28 @@
 
 - (IBAction)recursiveExpandNode:(id)sender
 {
-    id o_item = [o_outline_view itemAtRow: [o_outline_view selectedRow]];
-    playlist_item_t *p_item = (playlist_item_t *)[o_item pointerValue];
+    NSIndexSet * selectedRows = [o_outline_view selectedRowIndexes];
+    NSUInteger count = [selectedRows count];
+    NSUInteger indexes[count];
+    [selectedRows getIndexes:indexes maxCount:count inIndexRange:nil];
 
-    if( ![[o_outline_view dataSource] outlineView: o_outline_view
-                                                    isItemExpandable: o_item] )
-    {
-        o_item = [o_outline_dict objectForKey: [NSString stringWithFormat: @"%p", p_item->p_parent]];
+    id o_item;
+    playlist_item_t *p_item;
+    for (NSUInteger i = 0; i < count; i++) {
+        o_item = [o_outline_view itemAtRow: indexes[i]];
+        p_item = (playlist_item_t *)[o_item pointerValue];
+
+        if( ![[o_outline_view dataSource] outlineView: o_outline_view isItemExpandable: o_item] )
+            o_item = [o_outline_dict objectForKey: [NSString stringWithFormat: @"%p", p_item->p_parent]];
+
+        /* We need to collapse the node first, since OSX refuses to recursively
+         expand an already expanded node, even if children nodes are collapsed. */
+        [o_outline_view collapseItem: o_item collapseChildren: YES];
+        [o_outline_view expandItem: o_item expandChildren: YES];
+
+        selectedRows = [o_outline_view selectedRowIndexes];
+        [selectedRows getIndexes:indexes maxCount:count inIndexRange:nil];
     }
-
-    /* We need to collapse the node first, since OSX refuses to recursively
-       expand an already expanded node, even if children nodes are collapsed. */
-    [o_outline_view collapseItem: o_item collapseChildren: YES];
-    [o_outline_view expandItem: o_item expandChildren: YES];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)o_event
@@ -1314,10 +1307,9 @@
     bool b_rows;
     bool b_item_sel;
 
-    pt = [o_outline_view convertPoint: [o_event locationInWindow]
-                                                 fromView: nil];
+    pt = [o_outline_view convertPoint: [o_event locationInWindow] fromView: nil];
     int row = [o_outline_view rowAtPoint:pt];
-    if( row != -1 )
+    if( row != -1 && [o_outline_view selectedRow] == -1)
         [o_outline_view selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 
     b_item_sel = ( row != -1 && [o_outline_view selectedRow] != -1 );
@@ -1345,7 +1337,7 @@
 
     /* Check whether the selected table column header corresponds to a
        sortable table column*/
-    if( !( o_tc == o_tc_name || o_tc == o_tc_author ) )
+    if( !( o_tc == o_tc_name || o_tc == o_tc_author || o_tc == o_tc_duration ) )
     {
         return;
     }
@@ -1366,6 +1358,10 @@
     else if( o_tc == o_tc_author )
     {
         i_mode = SORT_ARTIST;
+    }
+    else if( o_tc == o_tc_duration )
+    {
+        i_mode = SORT_DURATION;
     }
 
     if( b_isSortDescending )
@@ -1442,6 +1438,11 @@
 
     return o_playing_item;
 }
+
+- (NSArray *)draggedItems
+{
+    return [[o_nodes_array arrayByAddingObjectsFromArray: o_items_array] retain];
+}
 @end
 
 @implementation VLCPlaylist (NSOutlineViewDataSource)
@@ -1470,15 +1471,6 @@
     {
         id o_item = [items objectAtIndex: i];
 
-        /* Refuse to move items that are not in the General Node
-           (Service Discovery) */
-        if( (![self isItem: [o_item pointerValue] inNode: p_playlist->p_local_category checkItemExistence: NO] &&
-            var_CreateGetBool( p_playlist, "media-library" ) && ![self isItem: [o_item pointerValue] inNode: p_playlist->p_ml_category checkItemExistence: NO]) ||
-            [o_item pointerValue] == p_playlist->p_local_category ||
-            [o_item pointerValue] == p_playlist->p_ml_category )
-        {
-            return NO;
-        }
         /* Fill the items and nodes to move in 2 different arrays */
         if( ((playlist_item_t *)[o_item pointerValue])->i_children > 0 )
             [o_nodes_array addObject: o_item];
@@ -1562,8 +1554,7 @@
     {
         int i_row, i_removed_from_node = 0;
         playlist_item_t *p_new_parent, *p_item = NULL;
-        NSArray *o_all_items = [o_nodes_array arrayByAddingObjectsFromArray:
-                                                                o_items_array];
+        NSArray *o_all_items = [o_nodes_array arrayByAddingObjectsFromArray: o_items_array];
         /* If the item is to be dropped as root item of the outline, make it a
            child of the respective general node, if is either the pl or the ml
            Else, choose the proposed parent as parent. */
@@ -1572,7 +1563,7 @@
             if ([self currentPlaylistRoot] == p_playlist->p_local_category || [self currentPlaylistRoot] == p_playlist->p_ml_category) 
                 p_new_parent = [self currentPlaylistRoot];
             else
-                p_new_parent = p_playlist->p_local_category;
+                return NO;
         }
         else
             p_new_parent = [item pointerValue];
@@ -1648,6 +1639,9 @@
 
     else if( [[o_pasteboard types] containsObject: NSFilenamesPboardType] )
     {
+        if ([self currentPlaylistRoot] != p_playlist->p_local_category && [self currentPlaylistRoot] != p_playlist->p_ml_category) 
+            return NO;
+
         playlist_item_t *p_node = [item pointerValue];
 
         NSArray *o_values = [[o_pasteboard propertyListForType: NSFilenamesPboardType]

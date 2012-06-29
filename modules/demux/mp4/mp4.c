@@ -279,11 +279,10 @@ static int Open( vlc_object_t * p_this )
     bool      b_enabled_es;
 
     /* A little test to see if it could be a mp4 */
-    if( stream_Peek( p_demux->s, &p_peek, 8 ) < 8 ) return VLC_EGENERIC;
+    if( stream_Peek( p_demux->s, &p_peek, 11 ) < 11 ) return VLC_EGENERIC;
 
     switch( VLC_FOURCC( p_peek[4], p_peek[5], p_peek[6], p_peek[7] ) )
     {
-        case ATOM_ftyp:
         case ATOM_moov:
         case ATOM_foov:
         case ATOM_moof:
@@ -293,6 +292,11 @@ static int Open( vlc_object_t * p_this )
         case ATOM_skip:
         case ATOM_wide:
         case VLC_FOURCC( 'p', 'n', 'o', 't' ):
+            break;
+        case ATOM_ftyp:
+            /* We don't yet support f4v, but avformat does. */
+            if( p_peek[8] == 'f' && p_peek[9] == '4' && p_peek[10] == 'v' )
+                return VLC_EGENERIC;
             break;
          default:
             return VLC_EGENERIC;
@@ -1878,6 +1882,9 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             case( 0x20 ): /* MPEG4 VIDEO */
                 p_track->fmt.i_codec = VLC_FOURCC( 'm','p','4','v' );
                 break;
+            case( 0x21 ): /* H.264 */
+                p_track->fmt.i_codec = VLC_CODEC_H264;
+                break;
             case( 0x40):
                 p_track->fmt.i_codec = VLC_FOURCC( 'm','p','4','a' );
                 if( p_decconfig->i_decoder_specific_info_len >= 2 &&
@@ -1917,11 +1924,28 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             case( 0x6d ): /* png */
                 p_track->fmt.i_codec = VLC_FOURCC( 'p','n','g',' ' );
                 break;
-            case( 0x6e ): /* jpeg200 */
+            case( 0x6e ): /* jpeg2000 */
                 p_track->fmt.i_codec = VLC_FOURCC( 'M','J','2','C' );
                 break;
             case( 0xa3 ): /* vc1 */
-                p_track->fmt.i_codec = VLC_FOURCC( 'W','V','C','1' );
+                p_track->fmt.i_codec = VLC_CODEC_VC1;
+                break;
+            case( 0xa4 ):
+                p_track->fmt.i_codec = VLC_CODEC_DIRAC;
+                break;
+            case( 0xa5 ):
+                p_track->fmt.i_codec = VLC_CODEC_A52;
+                break;
+            case( 0xa6 ):
+                p_track->fmt.i_codec = VLC_CODEC_EAC3;
+                break;
+            case( 0xa9 ): /* dts */
+            case( 0xaa ): /* DTS-HD HRA */
+            case( 0xab ): /* DTS-HD Master Audio */
+                p_track->fmt.i_codec = VLC_CODEC_DTS;
+                break;
+            case( 0xDD ):
+                p_track->fmt.i_codec = VLC_CODEC_VORBIS;
                 break;
 
             /* Private ID */
@@ -2008,7 +2032,32 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
                             p_sample->data.p_sample_soun->p_qt_description,
                             p_track->fmt.i_extra);
                 }
+                if( p_track->fmt.i_extra >= 56 && p_sample->i_type == VLC_CODEC_ALAC )
+                {
+                    p_track->fmt.audio.i_channels = *((uint8_t*)p_track->fmt.p_extra + 41);
+                    p_track->fmt.audio.i_rate = GetDWBE((uint8_t*)p_track->fmt.p_extra + 52);
+                }
                 break;
+
+            case VLC_FOURCC( 'v', 'c', '-', '1' ):
+            {
+                MP4_Box_t *p_dvc1 = MP4_BoxGet( p_sample, "dvc1" );
+                if( p_dvc1 )
+                {
+                    p_track->fmt.i_extra = p_dvc1->data.p_dvc1->i_vc1;
+                    if( p_track->fmt.i_extra > 0 )
+                    {
+                        p_track->fmt.p_extra = malloc( p_dvc1->data.p_dvc1->i_vc1 );
+                        memcpy( p_track->fmt.p_extra, p_dvc1->data.p_dvc1->p_vc1,
+                                p_track->fmt.i_extra );
+                    }
+                }
+                else
+                {
+                    msg_Err( p_demux, "missing dvc1" );
+                }
+                break;
+            }
 
             /* avc1: send avcC (h264 without annexe B, ie without start code)*/
             case VLC_FOURCC( 'a', 'v', 'c', '1' ):

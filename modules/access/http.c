@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: a292ebb9fd51748563cc1ac68146c34d321a41a1 $
+ * $Id: 9817bcaee8476d2961f98ecf033dd8a673810caf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -110,6 +110,7 @@ vlc_module_begin ()
                 false )
     add_password( "http-proxy-pwd", NULL,
                   PROXY_PASS_TEXT, PROXY_PASS_LONGTEXT, false )
+    add_obsolete_bool( "http-use-IE-proxy" )
     add_string( "http-referrer", NULL, REFERER_TEXT, REFERER_LONGTEXT, false )
         change_safe()
     add_string( "http-user-agent", NULL, UA_TEXT, UA_LONGTEXT, false )
@@ -401,7 +402,7 @@ static int OpenWithCookies( vlc_object_t *p_this, const char *psz_access,
             msg_Err(p_access, "Allocating memory for libproxy failed");
         }
     }
-#elif defined( WIN32 )
+#elif (0) // defined( WIN32 ) The parsing is not complete enough
     else
     {
         /* Try to get the proxy server address from Windows internet settings using registry. */
@@ -1239,44 +1240,22 @@ static int Request( access_t *p_access, uint64_t i_tell )
     p_sys->b_persist = false;
 
     p_sys->i_remaining = 0;
-    if( p_sys->b_proxy )
-    {
-        if( p_sys->url.psz_path )
-        {
-            net_Printf( p_access, p_sys->fd, NULL,
-                        "GET http://%s:%d%s HTTP/1.%d\r\n",
-                        p_sys->url.psz_host, p_sys->url.i_port,
-                        p_sys->url.psz_path, p_sys->i_version );
-        }
-        else
-        {
-            net_Printf( p_access, p_sys->fd, NULL,
-                        "GET http://%s:%d/ HTTP/1.%d\r\n",
-                        p_sys->url.psz_host, p_sys->url.i_port,
-                        p_sys->i_version );
-        }
-    }
+
+    const char *psz_path = p_sys->url.psz_path;
+    if( !psz_path || !*psz_path )
+        psz_path = "/";
+    net_Write( p_access, p_sys->fd, pvs, "GET ", 4 );
+    if( p_sys->b_proxy && pvs == NULL )
+        net_Printf( p_access, p_sys->fd, NULL, "http://%s:%d",
+                    p_sys->url.psz_host, p_sys->url.i_port );
+    net_Printf( p_access, p_sys->fd, pvs, "%s HTTP/1.%d\r\n",
+                psz_path, p_sys->i_version );
+    if( p_sys->url.i_port != (pvs ? 443 : 80) )
+        net_Printf( p_access, p_sys->fd, pvs, "Host: %s:%d\r\n",
+                    p_sys->url.psz_host, p_sys->url.i_port );
     else
-    {
-        const char *psz_path = p_sys->url.psz_path;
-        if( !psz_path || !*psz_path )
-        {
-            psz_path = "/";
-        }
-        if( p_sys->url.i_port != (pvs ? 443 : 80) )
-        {
-            net_Printf( p_access, p_sys->fd, pvs,
-                        "GET %s HTTP/1.%d\r\nHost: %s:%d\r\n",
-                        psz_path, p_sys->i_version, p_sys->url.psz_host,
-                        p_sys->url.i_port );
-        }
-        else
-        {
-            net_Printf( p_access, p_sys->fd, pvs,
-                        "GET %s HTTP/1.%d\r\nHost: %s\r\n",
-                        psz_path, p_sys->i_version, p_sys->url.psz_host );
-        }
-    }
+        net_Printf( p_access, p_sys->fd, pvs, "Host: %s\r\n",
+                    p_sys->url.psz_host );
     /* User Agent */
     net_Printf( p_access, p_sys->fd, pvs,
                 "User-Agent: %s\r\n",

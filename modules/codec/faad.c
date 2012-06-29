@@ -2,7 +2,7 @@
  * decoder.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: a9218f9194f136ab8ef6ee691610c9004532c613 $
+ * $Id: 94c7d110a13dcbb2eab8df3d3423031cff3eb55e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -437,7 +437,8 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
         /* Convert frame.channel_position to our own channel values */
         p_dec->fmt_out.audio.i_physical_channels = 0;
-        for( i = 0; i < frame.channels; i++ )
+        const uint32_t nbChannels = frame.channels;
+        for( i = 0; i < nbChannels; i++ )
         {
             /* Find the channel code */
             for( j = 0; j < MAX_CHANNEL_POSITIONS; j++ )
@@ -458,10 +459,19 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             else
                 p_dec->fmt_out.audio.i_physical_channels |= pi_channels_out[j];
         }
-        p_dec->fmt_out.audio.i_original_channels =
-            p_dec->fmt_out.audio.i_physical_channels;
-
-        p_out = decoder_NewAudioBuffer(p_dec, frame.samples/frame.channels);
+        if ( nbChannels != frame.channels )
+        {
+            p_dec->fmt_out.audio.i_physical_channels
+                = p_dec->fmt_out.audio.i_original_channels
+                = pi_channels_guessed[nbChannels];
+        }
+        else
+        {
+            p_dec->fmt_out.audio.i_original_channels =
+                p_dec->fmt_out.audio.i_physical_channels;
+        }
+        p_dec->fmt_out.audio.i_channels = nbChannels;
+        p_out = decoder_NewAudioBuffer( p_dec, frame.samples / nbChannels );
         if( p_out == NULL )
         {
             p_sys->i_buffer = 0;
@@ -471,11 +481,11 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
         p_out->i_pts = date_Get( &p_sys->date );
         p_out->i_length = date_Increment( &p_sys->date,
-                                          frame.samples / frame.channels )
+                                          frame.samples / nbChannels )
                           - p_out->i_pts;
 
         DoReordering( (uint32_t *)p_out->p_buffer, samples,
-                      frame.samples / frame.channels, frame.channels,
+                      frame.samples / nbChannels, nbChannels,
                       p_sys->pi_channel_positions );
 
         p_sys->i_buffer -= frame.bytesconsumed;
@@ -512,7 +522,7 @@ static void Close( vlc_object_t *p_this )
 static void DoReordering( uint32_t *p_out, uint32_t *p_in, int i_samples,
                           int i_nb_channels, uint32_t *pi_chan_positions )
 {
-    int pi_chan_table[MAX_CHANNEL_POSITIONS];
+    int pi_chan_table[MAX_CHANNEL_POSITIONS] = {0};
     int i, j, k;
 
     /* Find the channels mapping */

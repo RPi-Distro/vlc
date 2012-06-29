@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 3628456716f15a84a24816c68d3d67169e36851c $
+ * $Id: b020b638e612020bdbb174ba054ef634c7ce6e7b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakkka <ileoo (at) videolan dot org>
@@ -1044,6 +1044,10 @@ void PLModel::popupAddToPlaylist()
 
     foreach( QModelIndex currentIndex, current_selection )
     {
+        /* Don't add item multiple times when there are more columns in the model */
+        if( currentIndex.column() )
+            continue;
+
         playlist_item_t *p_item = playlist_ItemGetById( THEPL, itemId( currentIndex ) );
         if( !p_item ) continue;
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * about.m: MacOS X About Panel
  *****************************************************************************
- * Copyright (C) 2001-2011 VLC authors and VideoLAN
- * $Id: 8fee9da561616d97215badf3df8d548d9879cb88 $
+ * Copyright (C) 2001-2012 VLC authors and VideoLAN
+ * $Id: b1160e6b13c3fa6533601cabc39fdb4a1048a5f1 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -65,6 +65,7 @@ static VLAboutBox *_o_sharedInstance = nil;
 - (void) dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [o_color_backdrop release];
     [super dealloc];
 }
 
@@ -72,6 +73,10 @@ static VLAboutBox *_o_sharedInstance = nil;
 {
     if (OSX_LION)
         [o_about_window setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
+
+    /* add a colored backdrop to get a white window background */
+    o_color_backdrop = [[VLAboutColoredBackdrop alloc] initWithFrame: [[o_about_window contentView] frame]];
+    [[o_about_window contentView] addSubview: o_color_backdrop positioned: NSWindowBelow relativeTo: nil];
 }
 
 /*****************************************************************************
@@ -229,6 +234,15 @@ static VLAboutBox *_o_sharedInstance = nil;
     /* delegate to update button states (we're the frameLoadDelegate for our help's webview)« */
     [o_help_fwd_btn setEnabled: [o_help_web_view canGoForward]]; 
     [o_help_bwd_btn setEnabled: [o_help_web_view canGoBack]];
+}
+
+@end
+
+@implementation VLAboutColoredBackdrop
+
+- (void)drawRect:(NSRect)rect {
+    [[NSColor whiteColor] setFill];
+    NSRectFill(rect);
 }
 
 @end

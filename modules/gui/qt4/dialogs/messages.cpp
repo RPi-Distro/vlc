@@ -2,7 +2,7 @@
  * Messages.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 862222f558c3415b8f5b831cab1ee8311404e196 $
+ * $Id: a9cef28cbeed29ed82393494189b08c763115c43 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -88,7 +88,7 @@ MessagesDialog::MessagesDialog( intf_thread_t *_p_intf)
 
     int verbosity = var_InheritInteger( p_intf, "verbose" );
     vlc_atomic_set( &this->verbosity, verbosity );
-    ui.verbosityBox->setValue( verbosity );
+    ui.verbosityBox->setValue( qMin( verbosity, 2 ) );
 
     char *objs = var_InheritString( p_intf, "verbose-objects" );
     if( objs != NULL )

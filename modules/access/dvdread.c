@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: d56527937f96c36a5019c173b0299b1979cb5f8f $
+ * $Id: d0c2bff2ffd1e7461ec87a594dd48294ff8a81c5 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -231,9 +231,9 @@ static int Open( vlc_object_t *p_this )
     DemuxTitles( p_demux, &p_sys->i_angle );
     if( DvdReadSetArea( p_demux, 0, 0, p_sys->i_angle ) != VLC_SUCCESS )
     {
-        Close( p_this );
         msg_Err( p_demux, "DvdReadSetArea(0,0,%i) failed (can't decrypt DVD?)",
                  p_sys->i_angle );
+        Close( p_this );
         return VLC_EGENERIC;
     }
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
-* Copyright (C) 2008-2011 VLC authors and VideoLAN
-* $Id: fd2a7837b784453885500c411e8aaa606310b880 $
+* Copyright (C) 2008-2012 VLC authors and VideoLAN
+* $Id: c5dfa69986e951be1d9b873a4803c6890c09902c $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -35,6 +35,7 @@
 #import "misc.h"
 #import "intf.h"
 #import "AppleRemote.h"
+#import "CoreInteraction.h"
 
 #import <Sparkle/Sparkle.h>                        //for o_intf_last_update_lbl
 
@@ -294,7 +295,8 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [o_osd_osd_ckb setTitle: _NS("Enable OSD")];
     [o_osd_opacity_txt setStringValue: _NS("Opacity")];
     [o_osd_forcebold_ckb setTitle: _NS("Force Bold")];
-    [o_osd_moreoptions_txt setStringValue: _NS("More options on background, shadow and outline are available in the advanced preferences.")];
+    [o_osd_outline_color_txt setStringValue: _NS("Outline Color")];
+    [o_osd_outline_thickness_txt setStringValue: _NS("Outline Thickness")];
 
     /* video */
     [o_video_black_ckb setTitle: _NS("Black screens in Fullscreen mode")];
@@ -302,6 +304,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [o_video_display_box setTitle: _NS("Display")];
     [o_video_enable_ckb setTitle: _NS("Enable Video")];
     [o_video_fullscreen_ckb setTitle: _NS("Fullscreen")];
+    [o_video_videodeco_ckb setTitle: _NS("Window decorations")];
     [o_video_onTop_ckb setTitle: _NS("Always on top")];
     [o_video_output_txt setStringValue: _NS("Output module")];
     [o_video_skipFrames_ckb setTitle: _NS("Skip frames")];
@@ -311,6 +314,9 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [o_video_snap_format_txt setStringValue: _NS("Format")];
     [o_video_snap_prefix_txt setStringValue: _NS("Prefix")];
     [o_video_snap_seqnum_ckb setTitle: _NS("Sequential numbering")];
+    [o_video_deinterlace_txt setStringValue: _NS("Deinterlace")];
+    [o_video_deinterlace_mode_txt setStringValue: _NS("Deinterlace mode")];
+    [o_video_video_box setTitle: _NS("Video")];
 
     /* generic stuff */
     [o_sprefs_showAll_btn setTitle: _NS("Show All")];
@@ -530,7 +536,7 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
         [o_audio_vol_sld setEnabled: YES];
 
         i = config_GetInt( p_intf, "volume" );
-        i = i * 200 / AOUT_VOLUME_MAX;
+        i = i * 200.0 / AOUT_VOLUME_MAX + 0.5;
         [o_audio_vol_sld setIntValue: i];
         [o_audio_vol_fld setIntValue: i];
     }
@@ -572,6 +578,7 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
     [self setupButton: o_video_onTop_ckb forBoolValue: "video-on-top"];
     [self setupButton: o_video_skipFrames_ckb forBoolValue: "skip-frames"];
     [self setupButton: o_video_black_ckb forBoolValue: "macosx-black"];
+    [self setupButton: o_video_videodeco_ckb forBoolValue: "video-deco"];
 
     [self setupButton: o_video_output_pop forModuleList: "vout"];
 
@@ -596,6 +603,8 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
     [self setupField: o_video_snap_prefix_fld forOption:"snapshot-prefix"];
     [self setupButton: o_video_snap_seqnum_ckb forBoolValue: "snapshot-sequential"];
     [self setupButton: o_video_snap_format_pop forStringList: "snapshot-format"];
+    [self setupButton: o_video_deinterlace_pop forIntList: "deinterlace"];
+    [self setupButton: o_video_deinterlace_mode_pop forStringList: "deinterlace-mode"];
 
     /***************************
      * input & codecs settings *
@@ -658,12 +667,14 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
     [self setupField: o_osd_font_fld forOption: "freetype-font"];
     [self setupButton: o_osd_font_color_pop forIntList: "freetype-color"];
     [self setupButton: o_osd_font_size_pop forIntList: "freetype-rel-fontsize"];
-    i = config_GetInt( p_intf, "freetype-opacity" );
+    i = config_GetInt( p_intf, "freetype-opacity" ) * 100.0 / 255.0 + 0.5;
     [o_osd_opacity_fld setIntValue: i];
     [o_osd_opacity_sld setIntValue: i];
     [o_osd_opacity_sld setToolTip: _NS(config_GetLabel( p_intf, "freetype-opacity"))];
     [o_osd_opacity_fld setToolTip: [o_osd_opacity_sld toolTip]];
     [self setupButton: o_osd_forcebold_ckb forBoolValue: "freetype-bold"];
+    [self setupButton: o_osd_outline_color_pop forIntList: "freetype-outline-color"];
+    [self setupButton: o_osd_outline_thickness_pop forIntList: "freetype-outline-thickness"];
 
     /********************
      * hotkeys settings *
@@ -790,6 +801,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 {
     module_config_t *p_item;
     module_t *p_parser, **p_list;
+    NSString * objectTitle = [[object selectedItem] title];
 
     p_item = config_FindConfig( VLC_OBJECT(p_intf), name );
 
@@ -800,7 +812,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 
         if( p_item->i_type == CONFIG_ITEM_MODULE && module_provides( p_parser, p_item->psz_type ) )
         {
-            if( [[[object selectedItem] title] isEqualToString: _NS( module_GetLongName( p_parser ) )] )
+            if( [objectTitle isEqualToString: _NS( module_GetLongName( p_parser ) )] )
             {
                 config_PutPsz( p_intf, name, strdup( module_get_object( p_parser )));
                 break;
@@ -808,7 +820,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         }
     }
     module_list_free( p_list );
-    if( [[[object selectedItem] title] isEqualToString: _NS( "Default" )] )
+    if( [objectTitle isEqualToString: _NS( "Default" )] )
         config_PutPsz( p_intf, name, "" );
 }
 
@@ -881,7 +893,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     {
         config_PutInt( p_intf, "audio", [o_audio_enable_ckb state] );
         if( [o_audio_vol_fld isEnabled] )
-            config_PutInt( p_intf, "volume", [o_audio_vol_fld intValue] * AOUT_VOLUME_MAX / 200 );
+            config_PutInt( p_intf, "volume", [o_audio_vol_fld intValue] * AOUT_VOLUME_MAX / 200.0 + 0.5 );
         config_PutInt( p_intf, "macosx-autosave-volume", [o_audio_autosavevol_yes_bcell state] );
         config_PutInt( p_intf, "spdif", [o_audio_spdif_ckb state] );
 
@@ -915,6 +927,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     {
         config_PutInt( p_intf, "video", [o_video_enable_ckb state] );
         config_PutInt( p_intf, "fullscreen", [o_video_fullscreen_ckb state] );
+        config_PutInt( p_intf, "video-deco", [o_video_videodeco_ckb state] );
         config_PutInt( p_intf, "video-on-top", [o_video_onTop_ckb state] );
         config_PutInt( p_intf, "skip-frames", [o_video_skipFrames_ckb state] );
         config_PutInt( p_intf, "macosx-black", [o_video_black_ckb state] );
@@ -926,6 +939,8 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         config_PutPsz( p_intf, "snapshot-prefix", [[o_video_snap_prefix_fld stringValue] UTF8String] );
         config_PutInt( p_intf, "snapshot-sequential", [o_video_snap_seqnum_ckb state] );
         SaveStringList( o_video_snap_format_pop, "snapshot-format" );
+        SaveIntList( o_video_deinterlace_pop, "deinterlace" );
+        SaveStringList( o_video_deinterlace_mode_pop, "deinterlace-mode" );
         b_videoSettingChanged = NO;
     }
 
@@ -980,8 +995,10 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         config_PutPsz( p_intf, "freetype-font", [[o_osd_font_fld stringValue] UTF8String] );
         SaveIntList( o_osd_font_color_pop, "freetype-color" );
         SaveIntList( o_osd_font_size_pop, "freetype-rel-fontsize" );
-        config_PutInt( p_intf, "freetype-opacity", [o_osd_opacity_sld intValue] );
+        config_PutInt( p_intf, "freetype-opacity", [o_osd_opacity_fld intValue] * 255.0 / 100.0 + 0.5 );
         config_PutInt( p_intf, "freetype-bold", [o_osd_forcebold_ckb state] );
+        SaveIntList( o_osd_outline_color_pop, "freetype-outline-color" );
+        SaveIntList( o_osd_outline_thickness_pop, "freetype-outline-thickness" );
         b_osdSettingChanged = NO;
     }
 
@@ -995,6 +1012,8 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
             config_PutPsz( p_intf, [[o_hotkeyNames objectAtIndex:i] UTF8String], [[o_hotkeySettings objectAtIndex:i]UTF8String] );
         b_hotkeyChanged = NO;
     }
+
+    [[VLCCoreInteraction sharedInstance] fixPreferences];
 
     /* okay, let's save our changes to vlcrc */
     config_SaveConfigFile( p_intf );
@@ -1052,6 +1071,9 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 
     if( sender == o_intf_nativefullscreen_ckb && [o_intf_nativefullscreen_ckb state] == NSOnState )
         [o_intf_embedded_ckb setState: NSOnState];
+
+    if( sender == o_intf_embedded_ckb )
+        [[VLCCoreInteraction sharedInstance] stop];
 
     b_intfSettingChanged = YES;
 }
@@ -1199,7 +1221,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 - (void)changeFont:(id)sender
 {
     NSFont * font = [sender convertFont:[[NSFontManager sharedFontManager] selectedFont]];
-    [o_osd_font_fld setStringValue:[font familyName]];
+    [o_osd_font_fld setStringValue:[font fontName]];
     [self osdSettingChanged:self];
 }
 
@@ -1317,13 +1339,15 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
-    if( [[aTableColumn identifier] isEqualToString: @"action"] )
+    NSString * identifier = [aTableColumn identifier];
+
+    if( [identifier isEqualToString: @"action"] )
         return [o_hotkeyDescriptions objectAtIndex: rowIndex];
-    else if( [[aTableColumn identifier] isEqualToString: @"shortcut"] )
+    else if( [identifier isEqualToString: @"shortcut"] )
         return [self OSXStringKeyToString:[o_hotkeySettings objectAtIndex: rowIndex]];
     else
     {
-        msg_Err( p_intf, "unknown TableColumn identifier (%s)!", [[aTableColumn identifier] UTF8String] );
+        msg_Err( p_intf, "unknown TableColumn identifier (%s)!", [identifier UTF8String] );
         return NULL;
     }
 }
@@ -1395,15 +1419,16 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     NSString *keyString = [o_theEvent characters];
 
     unichar key = [keyString characterAtIndex:0];
+    NSUInteger i_modifiers = [o_theEvent modifierFlags];
 
     /* modifiers */
-    if( [o_theEvent modifierFlags] & NSControlKeyMask )
+    if( i_modifiers & NSControlKeyMask )
         [tempString appendString:@"Ctrl-"];
-    if( [o_theEvent modifierFlags] & NSAlternateKeyMask  )
+    if( i_modifiers & NSAlternateKeyMask  )
         [tempString appendString:@"Alt-"];
-    if( [o_theEvent modifierFlags] & NSShiftKeyMask )
+    if( i_modifiers & NSShiftKeyMask )
         [tempString appendString:@"Shift-"];
-    if( [o_theEvent modifierFlags] & NSCommandKeyMask )
+    if( i_modifiers & NSCommandKeyMask )
         [tempString appendString:@"Command-"];
 
     /* non character keys */

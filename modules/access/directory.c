@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: f958e12cc4a0a4d5a2b19ea690867f4124877161 $
+ * $Id: 4fcc8723a0c9f6b8772c3ff3616d410992fae983 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -38,7 +38,7 @@
 #ifdef HAVE_SYS_STAT_H
 #   include <sys/stat.h>
 #endif
-
+#include <errno.h>
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #   include <fcntl.h>
@@ -309,22 +309,18 @@ block_t *DirBlock (access_t *p_access)
     {
         DIR *handle;
 #ifdef HAVE_OPENAT
-        int fd = vlc_openat (dirfd (current->handle), entry, O_RDONLY);
+        int fd = vlc_openat (dirfd (current->handle), entry,
+                             O_RDONLY | O_DIRECTORY);
         if (fd == -1)
+        {
+            if (errno == ENOTDIR)
+                goto notdir;
             goto skip; /* File cannot be opened... forget it */
+        }
 
         struct stat st;
-        if (fstat (fd, &st))
-        {
-            close (fd);
-            goto skip; /* cannot stat?! */
-        }
-        if (!S_ISDIR (st.st_mode))
-        {
-            close (fd);
-            goto notdir;
-        }
-        if (p_sys->mode == MODE_NONE
+        if (fstat (fd, &st)
+         || p_sys->mode == MODE_NONE
          || has_inode_loop (current, st.st_dev, st.st_ino)
          || (handle = fdopendir (fd)) == NULL)
         {

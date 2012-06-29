@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2006 VLC authors and VideoLAN
- * $Id: 6b85d24ad3d4ba68314c1292a69b7845a351620b $
+ * $Id: 811f4e4bf492f5184d52be57226713b99a4ed036 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -57,6 +57,7 @@
 #import "prefs.h"
 #import "simple_prefs.h"
 #import "prefs_widgets.h"
+#import "CoreInteraction.h"
 #import <vlc_keys.h>
 #import <vlc_modules.h>
 
@@ -212,6 +213,7 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 {
     /* TODO: call savePrefs on Root item */
     [_rootTreeItem applyChanges];
+    [[VLCCoreInteraction sharedInstance] fixPreferences];
     config_SaveConfigFile( p_intf );
     [o_prefs_window orderOut:self];
 }

@@ -2,7 +2,7 @@
  * v4l2.c : Video4Linux2 input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 6bc40554cf1218614835c7668febce7e8b06ce93 $
+ * $Id: 6337386f724d76da2cabad79d594b21e4ebb38fa $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -306,8 +306,8 @@ vlc_module_begin ()
     set_subcategory( SUBCAT_INPUT_ACCESS )
 
     set_section( N_( "Video input" ), NULL )
-    add_string( CFG_PREFIX "dev", "/dev/video0", DEVICE_TEXT, DEVICE_LONGTEXT,
-                 false )
+    add_loadfile( CFG_PREFIX "dev", "/dev/video0",
+                  DEVICE_TEXT, DEVICE_LONGTEXT, false )
         change_safe()
     add_string( CFG_PREFIX "standard", "",
                 STANDARD_TEXT, STANDARD_LONGTEXT, false )
@@ -441,12 +441,12 @@ vlc_module_begin ()
     add_obsolete_bool( CFG_PREFIX "stereo" )
     add_obsolete_integer( CFG_PREFIX "samplerate" )
 
-    add_shortcut( "v4l2" )
+    add_shortcut( "v4l", "v4l2" )
     set_capability( "access_demux", 0 )
     set_callbacks( DemuxOpen, DemuxClose )
 
     add_submodule ()
-    add_shortcut( "v4l2", "v4l2c" )
+    add_shortcut( "v4l", "v4l2", "v4l2c" )
     set_description( N_("Video4Linux2 Compressed A/V") )
     set_capability( "access", 0 )
     /* use these when open as access_demux fails; VLC will use another demux */
@@ -499,6 +499,9 @@ static const struct
     /* Compressed data types */
     { V4L2_PIX_FMT_MJPEG,   VLC_CODEC_MJPG, 0, 0, 0 },
     { V4L2_PIX_FMT_JPEG,    VLC_CODEC_JPEG, 0, 0, 0 },
+#ifdef V4L2_PIX_FMT_H264
+    { V4L2_PIX_FMT_H264,    VLC_CODEC_H264, 0, 0, 0 },
+#endif
 #if 0
     { V4L2_PIX_FMT_DV,      VLC_FOURCC('?','?','?','?') },
     { V4L2_PIX_FMT_MPEG,    VLC_FOURCC('?','?','?','?') },

@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: 11a16068c8809bdddb8d528a05c4ca8a5f27e211 $
+ * $Id: d30f4e99368334e23657e89bd667971ce1046c57 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -419,7 +419,6 @@ int net_Subscribe (vlc_object_t *obj, int fd,
         return 0;
 
 #else
-    VLC_UNUSED( grplen );
     switch (grp->sa_family)
     {
 # ifdef IPV6_JOIN_GROUP

@@ -2,7 +2,7 @@
  * virtual_segment.hpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: 31b45a2acbf5f4fac372d3ed012c073eb547a8d3 $
+ * $Id: 9dc8e360de9bdd06666be796f218e490c8ab4b44 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -63,9 +63,7 @@ public:
 
     static bool CompareTimecode( const virtual_chapter_c * itemA, const virtual_chapter_c * itemB )
     {
-        return ( itemA->i_virtual_start_time < itemB->i_virtual_start_time ||
-                ( itemA->i_virtual_start_time == itemB->i_virtual_start_time &&
-                  itemA->i_virtual_stop_time < itemB->i_virtual_stop_time ) );
+        return ( itemA->i_virtual_start_time < itemB->i_virtual_start_time );
     }
 
     matroska_segment_c  *p_segment;

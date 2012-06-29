@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: c7606d4b3734428db19961a2ce0ab728e0a03b98 $
+ * $Id: 5e8fa3cf437cfc64f40b045bb67788c0a542ea94 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -371,7 +371,7 @@ static subpicture_t *FilterSub( filter_t *p_filter, mtime_t date )
     if( p_list->i_repeat != -1 && p_list->i_counter == 0 )
     {
         p_list->i_repeat--;
-        if( p_list->i_repeat == 0 )
+        if( p_list->i_repeat < 0 )
             goto exit;
     }
     if( !p_pic || !p_logo->i_alpha ||

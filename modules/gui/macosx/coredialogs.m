@@ -2,7 +2,7 @@
  * coredialogs.m: Mac OS X Core Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2011 VLC authors and VideoLAN
- * $Id: 9bb043ff4f089afdaab2e5d1f91b7c98c177a6e1 $
+ * $Id: e2a52b683da3e4bd75823a74220b4c2a31c4c91c $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -166,12 +166,7 @@ static VLCCoreDialogProvider *_o_sharedInstance = nil;
     /* we work-around a Cocoa limitation here, since you cannot delay an execution
      * on the main thread within a single call */
     b_progress_cancelled = NO;
-    if (VLCIntf)
-        [self performSelector:@selector(showProgressDialog:) withObject: o_value afterDelay:3.00];
-}
 
--(void)showProgressDialog: (NSValue *)o_value
-{
     dialog_progress_bar_t *p_dialog = [o_value pointerValue];
 
     if (!p_dialog || b_progress_cancelled)
@@ -195,6 +190,18 @@ static VLCCoreDialogProvider *_o_sharedInstance = nil;
         [o_prog_description_txt setStringValue: [NSString stringWithUTF8String: p_dialog->message]];
     else
         [o_prog_description_txt setStringValue: @""];
+
+    if (VLCIntf)
+        [self performSelector:@selector(showProgressDialog:) withObject: o_value afterDelay:3.00];
+}
+
+-(void)showProgressDialog: (NSValue *)o_value
+{
+    dialog_progress_bar_t *p_dialog = [o_value pointerValue];
+
+    if (!p_dialog || b_progress_cancelled)
+        return;
+
     [o_prog_bar setDoubleValue: 0];
     [o_prog_bar setIndeterminate: YES];
     [o_prog_bar startAnimation: self];

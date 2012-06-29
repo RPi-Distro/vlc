@@ -2,7 +2,7 @@
  * rand.c : non-predictible random bytes generator
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 875c7335ef2496222c8288b8d3926bd32271b37d $
+ * $Id: 0084e2c8a8fb9f0c2942d53ce91bdd4a8ed6a7a0 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -26,7 +26,60 @@
 #include <vlc_common.h>
 #include <vlc_rand.h>
 
-#ifndef WIN32
+#ifdef __OS2__
+void vlc_rand_bytes (void *buf, size_t len)
+{
+    QWORD qwTime;
+    uint8_t *p_buf = (uint8_t *)buf;
+
+    while (len > 0)
+    {
+        DosTmrQueryTime( &qwTime );
+
+        *p_buf++ = ( uint8_t )( qwTime.ulLo * rand());
+        len--;
+    }
+}
+#elif defined(WIN32)
+#include <wincrypt.h>
+
+void vlc_rand_bytes (void *buf, size_t len)
+{
+    HCRYPTPROV hProv;
+    size_t count = len;
+    uint8_t *p_buf = (uint8_t *)buf;
+
+    /* fill buffer with pseudo-random data */
+    while (count > 0)
+    {
+        unsigned int val;
+        val = rand();
+        if (count < sizeof (val))
+        {
+            memcpy (p_buf, &val, count);
+            break;
+        }
+
+        memcpy (p_buf, &val, sizeof (val));
+        count -= sizeof (val);
+        p_buf += sizeof (val);
+    }
+
+    /* acquire default encryption context */
+    if( CryptAcquireContext(
+        &hProv,            // Variable to hold returned handle.
+        NULL,              // Use default key container.
+        MS_DEF_PROV,       // Use default CSP.
+        PROV_RSA_FULL,     // Type of provider to acquire.
+        CRYPT_VERIFYCONTEXT) ) // Flag values
+    {
+        /* fill buffer with pseudo-random data, intial buffer content
+           is used as auxillary random seed */
+        CryptGenRandom(hProv, len, buf);
+        CryptReleaseContext(hProv, 0);
+    }
+}
+#else
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
@@ -117,46 +170,6 @@ void vlc_rand_bytes (void *buf, size_t len)
     }
 }
 
-#else /* WIN32 */
-
-#include <wincrypt.h>
-
-void vlc_rand_bytes (void *buf, size_t len)
-{
-    HCRYPTPROV hProv;
-    size_t count = len;
-    uint8_t *p_buf = (uint8_t *)buf;
-
-    /* fill buffer with pseudo-random data */
-    while (count > 0)
-    {
-        unsigned int val;
-        val = rand();
-        if (count < sizeof (val))
-        {
-            memcpy (p_buf, &val, count);
-            break;
-        }
- 
-        memcpy (p_buf, &val, sizeof (val));
-        count -= sizeof (val);
-        p_buf += sizeof (val);
-    }
-
-    /* acquire default encryption context */
-    if( CryptAcquireContext(
-        &hProv,            // Variable to hold returned handle.
-        NULL,              // Use default key container.
-        MS_DEF_PROV,       // Use default CSP.
-        PROV_RSA_FULL,     // Type of provider to acquire.
-        CRYPT_VERIFYCONTEXT) ) // Flag values
-    {
-        /* fill buffer with pseudo-random data, intial buffer content
-           is used as auxillary random seed */
-        CryptGenRandom(hProv, len, buf);
-        CryptReleaseContext(hProv, 0);
-    }
-}
 #endif
 
 static struct

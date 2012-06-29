@@ -17,13 +17,18 @@ function updateStatus() {
                 $('#mediaTitle').append($('[name="filename"]', data).text());
                 $('#totalTime').append(format_time($('length', data).text()));
                 $('#currentTime').append(format_time($('time', data).text()));
-                $('#seekSlider').slider({
-                    value: toFloat($('position', data).text()) * 100
-                });
+                if (!$('#seekSlider').data('clicked')) {
+                    $('#seekSlider').slider({
+                        value: toFloat($('position', data).text()) * 100
+                    });
+                }
                 $('#currentVolume').append(Math.round($('volume', data).text() / 2.56) + '%');
-                $('#volumeSlider').slider({
-                    value: ($('volume', data).text() / 5.12)
-                });
+                /* Don't interfere with the user's action */
+                if (!$('#volumeSlider').data('clicked')) {
+                    $('#volumeSlider').slider({
+                        value: ($('volume', data).text() / 5.12)
+                    });
+                }
                 $('#rateSlider').slider({
                     value: ($('rate', data).text())
                 });
@@ -166,8 +171,9 @@ function browse(dir) {
             var tgt = browse_target.indexOf('__') == -1 ? browse_target : browse_target.substr(0, browse_target.indexOf('__'));
             $('#browse_elements').empty();
             $('element', data).each(function () {
-                if ($(this).attr('type') == 'dir' || $.inArray($(this).attr('name').substr(-3), video_types) != -1 || $.inArray($(this).attr('name').substr(-3), audio_types) != -1) {
-                    $('#browse_elements').append(createElementLi($(this).attr('name'), $(this).attr('type'), $(this).attr('uri'), $(this).attr('name').substr(-3)));
+                var ext = $(this).attr('name').substr($(this).attr('name').lastIndexOf('.') + 1).toLowerCase();
+                if ($(this).attr('type') == 'dir' || $.inArray(ext, video_types) != -1 || $.inArray(ext, audio_types) != -1) {
+                    $('#browse_elements').append(createElementLi($(this).attr('name'), $(this).attr('type'), $(this).attr('uri'), ext));
                 }
             });
             $('[opendir]').dblclick(function () {

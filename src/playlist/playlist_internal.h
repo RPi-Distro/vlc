@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: ba1bfb09275a288b4015d709341e6c5e6bb9fe88 $
+ * $Id: 75ac585d8b92b4f43ac26afe5f5a76c25fe4b140 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -148,6 +148,8 @@ int playlist_ItemRelease( playlist_item_t * );
 int playlist_NodeEmpty( playlist_t *, playlist_item_t *, bool );
 int playlist_DeleteItem( playlist_t * p_playlist, playlist_item_t *, bool);
 
+void ResetCurrentlyPlaying( playlist_t *p_playlist, playlist_item_t *p_cur );
+void ResyncCurrentIndex( playlist_t *p_playlist, playlist_item_t *p_cur );
 
 /**
  * @}

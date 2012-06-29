@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 4281c30ba5e51e728f916c16ea256072a020f03f $
+ * $Id: 9f43bd39ddb09c62173cd62137ea9813c20abf2e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -426,15 +426,14 @@ void InputManager::UpdateNavigation()
 
     if( val.i_int > 0 )
     {
-        emit titleChanged( true );
-        msg_Dbg( p_intf, "Title %"PRId64, val.i_int );
         /* p_input != NULL since val.i_int != 0 */
         var_Change( p_input, "chapter", VLC_VAR_CHOICESCOUNT, &val2, NULL );
-        emit chapterChanged( (val2.i_int > 1) || ( val2.i_int > 0 && val.i_int > 1 ) );
-        msg_Dbg( p_intf, "Chapter: %"PRId64, val2.i_int );
+
+        emit titleChanged( val.i_int > 1 );
+        emit chapterChanged( val2.i_int > 1 );
     }
     else
-        emit titleChanged( false );
+        emit chapterChanged( false );
 }
 
 void InputManager::UpdateStatus()
@@ -475,7 +474,7 @@ void InputManager::UpdateName()
     free( formated );
 
     /* If we have Nothing */
-    if( name.isEmpty() )
+    if( name.simplified().isEmpty() )
     {
         char *uri = input_item_GetURI( input_GetItem( p_input ) );
         char *file = uri ? strrchr( uri, '/' ) : NULL;
