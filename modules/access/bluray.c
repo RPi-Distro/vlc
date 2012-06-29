@@ -183,13 +183,17 @@ static int blurayOpen( vlc_object_t *object )
             struct mntent* m;
             struct mntent mbuf;
             char buf [8192];
+            /* bd_path may be a symlink (e.g. /dev/dvd -> /dev/sr0), so make
+             * sure we look up the real device */
+            char* bd_device = realpath(bd_path, NULL);
             while ((m = getmntent_r (mtab, &mbuf, buf, sizeof(buf))) != NULL) {
-                if (!strcmp (m->mnt_fsname, bd_path)) {
+                if (!strcmp (m->mnt_fsname, (bd_device == NULL ? bd_path : bd_device))) {
                     strncpy (bd_path, m->mnt_dir, sizeof(bd_path));
                     bd_path[sizeof(bd_path) - 1] = '\0';
                     break;
                 }
             }
+            free(bd_device);
             endmntent (mtab);
         }
     }
@@ -223,9 +227,35 @@ static int blurayOpen( vlc_object_t *object )
             goto error;
         }
         if (!disc_info->aacs_handled) {
+#ifdef BD_AACS_CORRUPTED_DISC
+            if (disc_info->aacs_error_code) {
+                switch (disc_info->aacs_error_code) {
+                    case BD_AACS_CORRUPTED_DISC:
+                        error_msg = _("BluRay Disc is corrupted.");
+                        break;
+                    case BD_AACS_NO_CONFIG:
+                        error_msg = _("Missing AACS configuration file!");
+                        break;
+                    case BD_AACS_NO_PK:
+                        error_msg = _("No valid processing key found in AACS config file.");
+                        break;
+                    case BD_AACS_NO_CERT:
+                        error_msg = _("No valid host certificate found in AACS config file.");
+                        break;
+                    case BD_AACS_CERT_REVOKED:
+                        error_msg = _("AACS Host certificate revoked.");
+                        break;
+                    case BD_AACS_MMC_FAILED:
+                        error_msg = _("AACS MMC failed.");
+                        break;
+                }
+                goto error;
+            }
+#else
             error_msg = _("Your system AACS decoding library does not work. "
                       "Missing keys?");
             goto error;
+#endif /* BD_AACS_CORRUPTED_DISC */
         }
     }
 

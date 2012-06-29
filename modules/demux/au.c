@@ -2,7 +2,7 @@
  * au.c : au file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 1efd2d0a3647454b88090c74e9be13302c3608fa $
+ * $Id: 11946a893deda1403f7f99be8f77c68d30975483 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -257,6 +257,13 @@ static int Open( vlc_object_t *p_this )
         p_sys->i_frame_length = 0;
 
         msg_Err( p_demux, "unsupported codec/type (Please report it)" );
+        free( p_sys );
+        return VLC_EGENERIC;
+    }
+
+    if( p_sys->fmt.audio.i_rate == 0 )
+    {
+        msg_Err( p_demux, "invalid samplerate: 0" );
         free( p_sys );
         return VLC_EGENERIC;
     }

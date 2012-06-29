@@ -98,9 +98,9 @@
 		CC04337513B28B8200D7D52E /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334113B28B8200D7D52E /* pause.png */; };
 		CC04337613B28B8200D7D52E /* play-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334213B28B8200D7D52E /* play-pressed.png */; };
 		CC04337713B28B8200D7D52E /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334313B28B8200D7D52E /* play.png */; };
-		CC04337813B28B8200D7D52E /* playlist-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334413B28B8200D7D52E /* playlist-blue.png */; };
-		CC04337913B28B8200D7D52E /* playlist-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334513B28B8200D7D52E /* playlist-pressed.png */; };
-		CC04337A13B28B8200D7D52E /* playlist.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334613B28B8200D7D52E /* playlist.png */; };
+		CC04337813B28B8200D7D52E /* playlist-btn-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334413B28B8200D7D52E /* playlist-btn-blue.png */; };
+		CC04337913B28B8200D7D52E /* playlist-btn-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334513B28B8200D7D52E /* playlist-btn-pressed.png */; };
+		CC04337A13B28B8200D7D52E /* playlist-btn.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334613B28B8200D7D52E /* playlist-btn.png */; };
 		CC04337B13B28B8200D7D52E /* progression-fill-left.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334713B28B8200D7D52E /* progression-fill-left.png */; };
 		CC04337C13B28B8200D7D52E /* progression-fill-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334813B28B8200D7D52E /* progression-fill-middle.png */; };
 		CC04337D13B28B8200D7D52E /* progression-fill-right.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04334913B28B8200D7D52E /* progression-fill-right.png */; };
@@ -210,7 +210,6 @@
 		CC402EB90E00ABBB006A4BA4 /* vlc.scriptSuite in Resources */ = {isa = PBXBuildFile; fileRef = 8EBF3FA303F13FFB0059A3A7 /* vlc.scriptSuite */; };
 		CC402EBA0E00ABBB006A4BA4 /* vlc.scriptTerminology in Resources */ = {isa = PBXBuildFile; fileRef = 8EBF3FA503F140960059A3A7 /* vlc.scriptTerminology */; };
 		CC402EBB0E00ABBB006A4BA4 /* README.MacOSX.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 8EDAC3430440F72D0059A3A7 /* README.MacOSX.rtf */; };
-		CC402EF30E00ABBB006A4BA4 /* about_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = DCDA5E6408F94518009D93A8 /* about_bg.png */; };
 		CC402F3C0E00ABBB006A4BA4 /* noart.png in Resources */ = {isa = PBXBuildFile; fileRef = CC1C41D00D9BAD7F002728FA /* noart.png */; };
 		CC402F410E00ABBB006A4BA4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		CC402F420E00ABBB006A4BA4 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC3DC89B0A7CDB9600B53F32 /* ApplicationServices.framework */; };
@@ -248,6 +247,7 @@
 		CC58012C1423A85300166912 /* fs_volume_slider_bar@x1.5.png in Resources */ = {isa = PBXBuildFile; fileRef = CC5801111423A85300166912 /* fs_volume_slider_bar@x1.5.png */; };
 		CC58012D1423A85300166912 /* fs_volume_slider_knob_highlight@x1.5.png in Resources */ = {isa = PBXBuildFile; fileRef = CC5801121423A85300166912 /* fs_volume_slider_knob_highlight@x1.5.png */; };
 		CC58012E1423A85300166912 /* fs_volume_slider_knob@x1.5.png in Resources */ = {isa = PBXBuildFile; fileRef = CC5801131423A85300166912 /* fs_volume_slider_knob@x1.5.png */; };
+		CC68B0331544C1AE00FD9C7F /* vlc-xmas.png in Resources */ = {isa = PBXBuildFile; fileRef = CC68B0321544C1AE00FD9C7F /* vlc-xmas.png */; };
 		CC78DA4413DE056700E9603C /* topbar_background.png in Resources */ = {isa = PBXBuildFile; fileRef = CC78DA4313DE056700E9603C /* topbar_background.png */; };
 		CC8062641021F8790021EB9A /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = CC8062631021F8790021EB9A /* dsa_pub.pem */; };
 		CC84FB2D130083BB00816D38 /* BGHUDAppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC84FB2C130083BB00816D38 /* BGHUDAppKit.framework */; };
@@ -417,9 +417,9 @@
 		CC04334113B28B8200D7D52E /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pause.png; path = Resources/mainwindow/pause.png; sourceTree = "<group>"; };
 		CC04334213B28B8200D7D52E /* play-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play-pressed.png"; path = "Resources/mainwindow/play-pressed.png"; sourceTree = "<group>"; };
 		CC04334313B28B8200D7D52E /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play.png; path = Resources/mainwindow/play.png; sourceTree = "<group>"; };
-		CC04334413B28B8200D7D52E /* playlist-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist-blue.png"; path = "Resources/mainwindow/playlist-blue.png"; sourceTree = "<group>"; };
-		CC04334513B28B8200D7D52E /* playlist-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist-pressed.png"; path = "Resources/mainwindow/playlist-pressed.png"; sourceTree = "<group>"; };
-		CC04334613B28B8200D7D52E /* playlist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = playlist.png; path = Resources/mainwindow/playlist.png; sourceTree = "<group>"; };
+		CC04334413B28B8200D7D52E /* playlist-btn-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist-btn-blue.png"; path = "Resources/mainwindow/playlist-btn-blue.png"; sourceTree = "<group>"; };
+		CC04334513B28B8200D7D52E /* playlist-btn-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist-btn-pressed.png"; path = "Resources/mainwindow/playlist-btn-pressed.png"; sourceTree = "<group>"; };
+		CC04334613B28B8200D7D52E /* playlist-btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist-btn.png"; path = "Resources/mainwindow/playlist-btn.png"; sourceTree = "<group>"; };
 		CC04334713B28B8200D7D52E /* progression-fill-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "progression-fill-left.png"; path = "Resources/mainwindow/progression-fill-left.png"; sourceTree = "<group>"; };
 		CC04334813B28B8200D7D52E /* progression-fill-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "progression-fill-middle.png"; path = "Resources/mainwindow/progression-fill-middle.png"; sourceTree = "<group>"; };
 		CC04334913B28B8200D7D52E /* progression-fill-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "progression-fill-right.png"; path = "Resources/mainwindow/progression-fill-right.png"; sourceTree = "<group>"; };
@@ -575,6 +575,7 @@
 		CC5801111423A85300166912 /* fs_volume_slider_bar@x1.5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fs_volume_slider_bar@x1.5.png"; path = "Resources/fspanel/fs_volume_slider_bar@x1.5.png"; sourceTree = "<group>"; };
 		CC5801121423A85300166912 /* fs_volume_slider_knob_highlight@x1.5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fs_volume_slider_knob_highlight@x1.5.png"; path = "Resources/fspanel/fs_volume_slider_knob_highlight@x1.5.png"; sourceTree = "<group>"; };
 		CC5801131423A85300166912 /* fs_volume_slider_knob@x1.5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "fs_volume_slider_knob@x1.5.png"; path = "Resources/fspanel/fs_volume_slider_knob@x1.5.png"; sourceTree = "<group>"; };
+		CC68B0321544C1AE00FD9C7F /* vlc-xmas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "vlc-xmas.png"; path = "Resources/icons/vlc-xmas.png"; sourceTree = "<group>"; };
 		CC6C01A90DDF3E9200C7D754 /* intf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = intf.h; path = ../../../modules/gui/minimal_macosx/intf.h; sourceTree = SOURCE_ROOT; };
 		CC6C01AA0DDF3E9200C7D754 /* intf.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = intf.m; path = ../../../modules/gui/minimal_macosx/intf.m; sourceTree = SOURCE_ROOT; };
 		CC6C01AB0DDF3E9200C7D754 /* macosx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = macosx.c; path = ../../../modules/gui/minimal_macosx/macosx.c; sourceTree = SOURCE_ROOT; };
@@ -641,7 +642,6 @@
 		CCF0777C13659A8000AF19FD /* SPMediaKeyTap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SPMediaKeyTap.m; path = ../../../modules/gui/macosx/SPMediaKeyTap.m; sourceTree = "<group>"; };
 		DC769AB7085DF0DB001A838D /* wizard.m */ = {isa = PBXFileReference; fileEncoding = 5; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = wizard.m; path = ../../../modules/gui/macosx/wizard.m; sourceTree = SOURCE_ROOT; tabWidth = 4; usesTabs = 0; };
 		DC769AB8085DF0DB001A838D /* wizard.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = wizard.h; path = ../../../modules/gui/macosx/wizard.h; sourceTree = SOURCE_ROOT; };
-		DCDA5E6408F94518009D93A8 /* about_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = about_bg.png; path = Resources/about_bg.png; sourceTree = "<group>"; };
 		DCE7BD0608A5724D007B10AE /* bookmarks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = bookmarks.m; path = ../../../modules/gui/macosx/bookmarks.m; sourceTree = SOURCE_ROOT; };
 		DCE7BD0708A5724D007B10AE /* bookmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bookmarks.h; path = ../../../modules/gui/macosx/bookmarks.h; sourceTree = SOURCE_ROOT; };
 		F69B0CA702E24F6401A80112 /* English */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = text.plist.strings; name = English; path = Resources/English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -695,7 +695,6 @@
 				CC5800F81423A82100166912 /* fspanel (@1.5x) */,
 				CCCB86BF0ACFDE4A00CF1E10 /* fspanel */,
 				DCF358BC077F1236007DB450 /* xibs */,
-				DCDA5E6408F94518009D93A8 /* about_bg.png */,
 				8E445F86047289E50059A3A7 /* fileicons */,
 				CC0430EE13B2461A00D7D52E /* 10th anniversary ui */,
 				F69B0CA602E24F6401A80112 /* InfoPlist.strings */,
@@ -826,6 +825,7 @@
 				CC0433A313B28B9C00D7D52E /* vlc.icns */,
 				CC0433A413B28B9C00D7D52E /* vob.icns */,
 				CC0433A513B28B9C00D7D52E /* wav.icns */,
+				CC68B0321544C1AE00FD9C7F /* vlc-xmas.png */,
 				CC0433A613B28B9C00D7D52E /* wma.icns */,
 				CC0433A713B28B9C00D7D52E /* wmv.icns */,
 			);
@@ -945,9 +945,9 @@
 				CC04334113B28B8200D7D52E /* pause.png */,
 				CC04334213B28B8200D7D52E /* play-pressed.png */,
 				CC04334313B28B8200D7D52E /* play.png */,
-				CC04334413B28B8200D7D52E /* playlist-blue.png */,
-				CC04334513B28B8200D7D52E /* playlist-pressed.png */,
-				CC04334613B28B8200D7D52E /* playlist.png */,
+				CC04334413B28B8200D7D52E /* playlist-btn-blue.png */,
+				CC04334513B28B8200D7D52E /* playlist-btn-pressed.png */,
+				CC04334613B28B8200D7D52E /* playlist-btn.png */,
 				CC04334713B28B8200D7D52E /* progression-fill-left.png */,
 				CC04334813B28B8200D7D52E /* progression-fill-middle.png */,
 				CC04334913B28B8200D7D52E /* progression-fill-right.png */,
@@ -1290,7 +1290,6 @@
 				CC402EB90E00ABBB006A4BA4 /* vlc.scriptSuite in Resources */,
 				CC402EBA0E00ABBB006A4BA4 /* vlc.scriptTerminology in Resources */,
 				CC402EBB0E00ABBB006A4BA4 /* README.MacOSX.rtf in Resources */,
-				CC402EF30E00ABBB006A4BA4 /* about_bg.png in Resources */,
 				CC402F3C0E00ABBB006A4BA4 /* noart.png in Resources */,
 				CC04323B13B246DF00D7D52E /* back_dark.png in Resources */,
 				CC04323C13B246DF00D7D52E /* back-pressed_dark.png in Resources */,
@@ -1383,9 +1382,9 @@
 				CC04337513B28B8200D7D52E /* pause.png in Resources */,
 				CC04337613B28B8200D7D52E /* play-pressed.png in Resources */,
 				CC04337713B28B8200D7D52E /* play.png in Resources */,
-				CC04337813B28B8200D7D52E /* playlist-blue.png in Resources */,
-				CC04337913B28B8200D7D52E /* playlist-pressed.png in Resources */,
-				CC04337A13B28B8200D7D52E /* playlist.png in Resources */,
+				CC04337813B28B8200D7D52E /* playlist-btn-blue.png in Resources */,
+				CC04337913B28B8200D7D52E /* playlist-btn-pressed.png in Resources */,
+				CC04337A13B28B8200D7D52E /* playlist-btn.png in Resources */,
 				CC04337B13B28B8200D7D52E /* progression-fill-left.png in Resources */,
 				CC04337C13B28B8200D7D52E /* progression-fill-middle.png in Resources */,
 				CC04337D13B28B8200D7D52E /* progression-fill-right.png in Resources */,
@@ -1537,6 +1536,7 @@
 				CC0F725315063C820086B6A0 /* fullscreen-one-button.png in Resources */,
 				CC0F725715063C980086B6A0 /* fullscreen-one-button_dark.png in Resources */,
 				CC0F725815063C980086B6A0 /* fullscreen-one-button-pressed_dark.png in Resources */,
+				CC68B0331544C1AE00FD9C7F /* vlc-xmas.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

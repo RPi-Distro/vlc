@@ -2,7 +2,7 @@
  * vc1.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: e3c7daa0942c3386418136f193a0d046715f5d85 $
+ * $Id: 0859f68bbaeb0414a194fb8b86b91e1c8a515d20 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -285,7 +285,7 @@ static void DecodeRIDU( uint8_t *p_ret, int *pi_ret, uint8_t *src, int i_src )
     while( src < end && dst < dst_end )
     {
         if( src < end - 3 && src[0] == 0x00 && src[1] == 0x00 &&
-            src[2] == 0x03 )
+            src[2] == 0x03 && dst < dst_end - 1 )
         {
             *dst++ = 0x00;
             *dst++ = 0x00;

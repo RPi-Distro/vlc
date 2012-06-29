@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: b2ed9f1695ceed776b1825e05cb5feb5d50d0b9f $
+ * $Id: 293f6d3c6f9659488a790ee8433f21daebb41b2c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -172,6 +172,8 @@ int FileOpen( vlc_object_t *p_this )
     {
         const char *path = p_access->psz_filepath;
 
+        if (unlikely(path == NULL))
+            return VLC_EGENERIC;
         msg_Dbg (p_access, "opening file `%s'", path);
         fd = vlc_open (path, O_RDONLY | O_NONBLOCK);
         if (fd == -1)
@@ -190,6 +192,13 @@ int FileOpen( vlc_object_t *p_this )
         msg_Err (p_access, "failed to read (%m)");
         goto error;
     }
+
+#ifdef S_ISSOCK
+    if (!S_ISFIFO (st.st_mode) && !S_ISSOCK (st.st_mode))
+        /* Clear non-blocking mode when not useful or not specified */
+        fcntl (fd, F_SETFL, fcntl (fd, F_GETFL) & ~O_NONBLOCK);
+#endif
+
     /* Directories can be opened and read from, but only readdir() knows
      * how to parse the data. The directory plugin will do it. */
     if (S_ISDIR (st.st_mode))

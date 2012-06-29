@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2011-2012 VLC authors and VideoLAN
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: ba644880a2c1c0d32b9195051d27ac7ed470facd $
+ * $Id: d74371dda9e2853935825fe3359c53105ed78f56 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -34,23 +34,20 @@
     /* Audio / Video */
     IBOutlet id o_av_lbl;
     IBOutlet id o_av_advance_lbl;
-    IBOutlet id o_av_minus_btn;
-    IBOutlet id o_av_plus_btn;
     IBOutlet id o_av_value_fld;
     IBOutlet id o_av_stp;
 
     /* Subtitles / Video */
     IBOutlet id o_sv_lbl;
     IBOutlet id o_sv_advance_lbl;
-    IBOutlet id o_sv_advance_minus_btn;
-    IBOutlet id o_sv_advance_plus_btn;
     IBOutlet id o_sv_advance_value_fld;
     IBOutlet id o_sv_advance_stp;
     IBOutlet id o_sv_speed_lbl;
-    IBOutlet id o_sv_speed_minus_btn;
-    IBOutlet id o_sv_speed_plus_btn;
     IBOutlet id o_sv_speed_value_fld;
     IBOutlet id o_sv_speed_stp;
+    IBOutlet id o_sv_dur_lbl;
+    IBOutlet id o_sv_dur_value_fld;
+    IBOutlet id o_sv_dur_stp;
 }
 
 /* generic */
@@ -65,4 +62,5 @@
 /* Subtitles / Video */
 - (IBAction)svAdvanceValueChanged:(id)sender;
 - (IBAction)svSpeedValueChanged:(id)sender;
+- (IBAction)svDurationValueChanged:(id)sender;
 @end

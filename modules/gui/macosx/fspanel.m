@@ -2,7 +2,7 @@
  * fspanel.m: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2011 VLC authors and VideoLAN
- * $Id: 178a717edcb3146251208b0149bdfe08f53bbadc $
+ * $Id: 016351255e98e031a415bed30966e0dc2bc2ae85 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -133,7 +133,7 @@
     theScreensFrame = [screen frame];
     theWindowsFrame = [self frame];
 
-    if( theScreensFrame.size.width >= 1920 ) //  17" MBP, 24"/27" iMacs, external displays
+    if( theScreensFrame.size.width >= 2560 ) //  27" iMacs, external displays
         b_usingBigScreen = YES;
 
     if( (b_usingBigScreen && theWindowsFrame.size.width < 820) || (!b_usingBigScreen && theWindowsFrame.size.width > 550) )

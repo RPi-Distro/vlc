@@ -2,7 +2,7 @@
  * VideoEffects.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 88e613070c8fe1e70df0816c959038511478d258 $
+ * $Id: a2d8a72ce4661e9f1084c53e308ba213b06330d2 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -409,6 +409,9 @@ static VLCVideoEffects *_o_sharedInstance = nil;
         else if( (NSInteger)strstr( psz_string, psz_name ) == NO )
             psz_string = (char *)[[NSString stringWithFormat: @"%s:%s", psz_string, psz_name] UTF8String];
     } else {
+        if( !psz_string )
+            return;
+
         psz_parser = strstr( psz_string, psz_name );
         if( psz_parser )
         {

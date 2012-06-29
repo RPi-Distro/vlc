@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: b1ec6c0e459793c7236c04307d2a77f7b98605df $
+ * $Id: eff1f78046bc1334c7e90c1237a659e746a5205d $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -196,7 +196,7 @@ struct intf_sys_t
 - (void)showFullscreenController;
 - (void)updateDelays;
 - (void)initStrings;
-- (BOOL)application:(NSApplication *)o_app openFile:(NSString *)o_filename;
+- (BOOL)application:(NSApplication *)o_app openFiles:(NSString *)o_filename;
 
 - (IBAction)crashReporterAction:(id)sender;
 - (IBAction)openCrashLog:(id)sender;

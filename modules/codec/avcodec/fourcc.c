@@ -2,7 +2,7 @@
  * fourcc.c: libavcodec <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2009 the VideoLAN team
- * $Id: c63b5541e5258278d8775f609badc14ce652bd91 $
+ * $Id: 292faf7f87db7214f5928287f90b3232159a3d46 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -396,6 +396,10 @@ static const struct
 
     { VLC_CODEC_TRUEHD, CODEC_ID_TRUEHD, AUDIO_ES },
     { VLC_CODEC_MLP, CODEC_ID_MLP, AUDIO_ES },
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 54, 5, 0 )
+    { VLC_CODEC_WMAL, CODEC_ID_WMALOSSLESS, AUDIO_ES },
+#endif
 
 
     /* PCM */

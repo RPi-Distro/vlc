@@ -2,7 +2,7 @@
  * var_tree.cpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: bf476858331243ba1166a38d52dbec4f2d86ef6d $
+ * $Id: 025876afe6aa910d0543cef68cc5c488d3434ec2 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -58,7 +58,8 @@ VarTree::VarTree( intf_thread_t *pIntf, VarTree *pParent, int id,
 }
 
 VarTree::VarTree( const VarTree& v )
-    : Variable( v.getIntf() ), m_pParent( v.m_pParent ),
+    : Variable( v.getIntf() ),
+      m_children( v.m_children), m_pParent( v.m_pParent ),
       m_id( v.m_id ), m_cString( v.m_cString ),
       m_readonly( v.m_readonly ), m_selected( v.m_selected ),
       m_playing( v.m_playing ), m_expanded( v.m_expanded ),

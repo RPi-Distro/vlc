@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 4706bf603ab72e3bb88ef97cabf8373eab9975a0 $
+ * $Id: c311afc3bef20994e52d8fc14e5144a83dc96e05 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -937,8 +937,8 @@ IntegerRangeConfigControl::IntegerRangeConfigControl( vlc_object_t *_p_this,
 
 void IntegerRangeConfigControl::finish()
 {
-    spin->setMaximum( p_item->max.i );
-    spin->setMinimum( p_item->min.i );
+    spin->setMaximum( p_item->max.i > INT_MAX ? INT_MAX : p_item->max.i );
+    spin->setMinimum( p_item->min.i < INT_MIN ? INT_MIN : p_item->min.i );
 }
 
 IntegerRangeSliderConfigControl::IntegerRangeSliderConfigControl(
@@ -949,8 +949,8 @@ IntegerRangeSliderConfigControl::IntegerRangeSliderConfigControl(
 {
     slider = _slider;
     label = _label;
-    slider->setMaximum( p_item->max.i );
-    slider->setMinimum( p_item->min.i );
+    slider->setMaximum( p_item->max.i > INT_MAX ? INT_MAX : p_item->max.i );
+    slider->setMinimum( p_item->min.i < INT_MIN ? INT_MIN : p_item->min.i );
     slider->setValue( p_item->value.i );
     if( p_item->psz_longtext )
     {

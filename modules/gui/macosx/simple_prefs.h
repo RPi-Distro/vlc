@@ -1,8 +1,8 @@
 /*****************************************************************************
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
-* Copyright (C) 2008-2011 VLC authors and VideoLAN
-* $Id: 817801cad078e4ab3dd2b0675b7ca0d3804d5971 $
+* Copyright (C) 2008-2012 VLC authors and VideoLAN
+* $Id: 61e485be5742baaa17819564c6d8d83415a766f5 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -123,8 +123,11 @@ IBOutlet id o_intf_mediakeys_ckb;
     IBOutlet id o_osd_opacity_txt;
     IBOutlet id o_osd_opacity_fld;
     IBOutlet id o_osd_opacity_sld;
+    IBOutlet id o_osd_outline_color_pop;
+    IBOutlet id o_osd_outline_color_txt;
+    IBOutlet id o_osd_outline_thickness_pop;
+    IBOutlet id o_osd_outline_thickness_txt;
     IBOutlet id o_osd_forcebold_ckb;
-    IBOutlet id o_osd_moreoptions_txt;
     IBOutlet id o_osd_osd_box;
     IBOutlet id o_osd_osd_ckb;
     IBOutlet id o_osd_view;
@@ -142,6 +145,7 @@ IBOutlet id o_intf_mediakeys_ckb;
     IBOutlet id o_video_display_box;
     IBOutlet id o_video_enable_ckb;
     IBOutlet id o_video_fullscreen_ckb;
+    IBOutlet id o_video_videodeco_ckb;
     IBOutlet id o_video_onTop_ckb;
     IBOutlet id o_video_output_pop;
     IBOutlet id o_video_output_txt;
@@ -155,6 +159,11 @@ IBOutlet id o_intf_mediakeys_ckb;
     IBOutlet id o_video_snap_prefix_fld;
     IBOutlet id o_video_snap_prefix_txt;
     IBOutlet id o_video_snap_seqnum_ckb;
+    IBOutlet id o_video_deinterlace_txt;
+    IBOutlet id o_video_deinterlace_pop;
+    IBOutlet id o_video_deinterlace_mode_txt;
+    IBOutlet id o_video_deinterlace_mode_pop;
+    IBOutlet id o_video_video_box;
     IBOutlet id o_video_view;
 
     BOOL b_audioSettingChanged;

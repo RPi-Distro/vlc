@@ -2,7 +2,7 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: b6f2681b400c00c47559d1fce5fce1e9088101d5 $
+ * $Id: ed6129206c9b354821e0a871b867c51165ac444c $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -124,6 +124,8 @@ int main (void)
                "http://www.example.com/%7Ejohn/");
     test_path ("/", "file:///");
     test_path ("/home/john/", "file:///home/john/");
+    test_path ("/home/john//too///many//slashes",
+               "file:///home/john//too///many//slashes");
     test_path ("/home/john/music.ogg", "file:///home/john/music.ogg");
     test_path ("\\\\server/pub/music.ogg", "smb://server/pub/music.ogg");
     test_path ("\\\\server\\pub\\music.ogg", "smb://server/pub/music.ogg");

@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 3f4c802679b01dea7e079ff4c2c6f03f4915911f $
+ * $Id: d575ac9e0db3524df91bf99675478d0cf47dfafe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -572,11 +572,6 @@ static void ParseVorbisComments( decoder_t *p_dec )
             if( *psz_value == '\0' )
                 break;
 
-            if( !p_dec->p_description )
-                p_dec->p_description = vlc_meta_New();
-            if( p_dec->p_description )
-                vlc_meta_AddExtra( p_dec->p_description, psz_name, psz_value );
-
             if( !strcasecmp( psz_name, "REPLAYGAIN_TRACK_GAIN" ) ||
                      !strcasecmp( psz_name, "RG_RADIO" ) )
             {
@@ -608,6 +603,16 @@ static void ParseVorbisComments( decoder_t *p_dec )
                 r->pb_peak[AUDIO_REPLAY_GAIN_ALBUM] = true;
                 r->pf_peak[AUDIO_REPLAY_GAIN_ALBUM] = atof( psz_value );
             }
+            else if( !strcasecmp( psz_name, "METADATA_BLOCK_PICTURE" ) )
+            { /* Do nothing, for now */ }
+            else
+            {
+                if( !p_dec->p_description )
+                    p_dec->p_description = vlc_meta_New();
+                if( p_dec->p_description )
+                    vlc_meta_AddExtra( p_dec->p_description, psz_name, psz_value );
+            }
+
         }
         free( psz_comment );
         i++;

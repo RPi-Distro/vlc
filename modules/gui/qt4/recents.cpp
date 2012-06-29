@@ -2,7 +2,7 @@
  * recents.cpp : Recents MRL (menu)
  *****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: b07e79654d388c877d4e068d152b81645f1483c2 $
+ * $Id: a1b0fc488e073132aea0678a8720c85ffd95c149 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -88,7 +88,12 @@ void RecentsMRL::addRecent( const QString &mrl )
 
 #ifdef WIN32
     /* Add to the Windows 7 default list in taskbar */
-    SHAddToRecentDocs( SHARD_PATHW, qtu( mrl ) );
+    char* path = make_path( qtu( mrl ) );
+    if( path )
+    {
+        SHAddToRecentDocs( SHARD_PATHW, path );
+        free( path );
+    }
 #endif
 
     int i_index = stack->indexOf( mrl );

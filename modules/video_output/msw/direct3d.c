@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- *$Id: 07f697af0ca9545f077c74f07801fec995c0ac5c $
+ *$Id: 616d2711319716b1af869c86748eb6aa21782f6a $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -142,6 +142,11 @@ static int Open(vlc_object_t *object)
 {
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
+
+    OSVERSIONINFO winVer;
+    winVer.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    if(GetVersionEx(&winVer) && winVer.dwMajorVersion < 6 && !object->b_force)
+        return VLC_EGENERIC;
 
     /* Allocate structure */
     vd->sys = sys = calloc(1, sizeof(vout_display_sys_t));
@@ -510,6 +515,12 @@ static int Direct3DCreate(vout_display_t *vd)
     }
 
     /* TODO: need to test device capabilities and select the right render function */
+    if (!(sys->d3dcaps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES)  ||
+        !(sys->d3dcaps.TextureFilterCaps & (D3DPTFILTERCAPS_MAGFPOINT|D3DPTFILTERCAPS_MAGFLINEAR)) ||
+        !(sys->d3dcaps.TextureFilterCaps & (D3DPTFILTERCAPS_MINFPOINT|D3DPTFILTERCAPS_MINFLINEAR))) {
+        msg_Err(vd, "Device does not support stretching from textures.");
+        return VLC_EGENERIC;
+    }
 
     return VLC_SUCCESS;
 }
@@ -613,6 +624,15 @@ static int Direct3DOpen(vout_display_t *vd, video_format_t *fmt)
         }
     }
 #endif
+
+    /* */
+    D3DADAPTER_IDENTIFIER9 d3dai;
+    if (FAILED(IDirect3D9_GetAdapterIdentifier(d3dobj,AdapterToUse,0, &d3dai))) {
+        msg_Warn(vd, "IDirect3D9_GetAdapterIdentifier failed");
+    } else {
+        msg_Dbg(vd, "Direct3d Device: %s %lu %lu %lu", d3dai.Description,
+                d3dai.VendorId, d3dai.DeviceId, d3dai.Revision );
+    }
 
     HRESULT hr = IDirect3D9_CreateDevice(d3dobj, AdapterToUse,
                                          DeviceType, sys->hvideownd,
@@ -1242,8 +1262,8 @@ static void Direct3DImportSubpicture(vout_display_t *vd,
                                                 NULL);
             if (FAILED(hr)) {
                 d3dr->texture = NULL;
-                msg_Err(vd, "Failed to create %dx%d texture for OSD",
-                        d3dr->width, d3dr->height);
+                msg_Err(vd, "Failed to create %dx%d texture for OSD (hr=0x%0lX)",
+                        d3dr->width, d3dr->height, hr);
                 continue;
             }
             msg_Dbg(vd, "Created %dx%d texture for OSD",

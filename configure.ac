@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2012 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 2.0.1)
+AC_INIT(vlc, 2.0.2)
 VERSION_MAJOR=2
 VERSION_MINOR=0
-VERSION_REVISION=1
+VERSION_REVISION=2
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -529,7 +529,8 @@ AC_LINK_IFELSE([
             c = NULL;
     ])],[AC_DEFINE([HAVE_ASPRINTF],[1],[Define to 1 if you have asprintf function])],[AC_LIBOBJ([asprintf])])
 AC_LINK_IFELSE([
-    AC_LANG_PROGRAM([#include <stdio.h>], [
+    AC_LANG_PROGRAM([#include <stdio.h>
+                     #include <stdarg.h>], [
         char *c;
         va_list ap;
         if (vasprintf(&c, "%s %d", ap) == -1)
@@ -2205,9 +2206,6 @@ if test "${enable_mkv}" != "no" -a "${CXX}" != ""; then
             [AC_MSG_RESULT([yes])
               AC_CHECK_HEADERS(matroska/KaxAttachments.h)
               VLC_ADD_CXXFLAGS([mkv],[])
-              if test "${SYS}" = "darwin"; then
-                VLC_ADD_CXXFLAGS([mkv],[-O1])
-              fi
               AC_CHECK_LIB(ebml_pic, main, [
                 VLC_ADD_PLUGIN([mkv])
                 VLC_ADD_LIBS([mkv],[-lmatroska -lebml_pic])
@@ -3269,7 +3267,7 @@ if test "${enable_directx}" != "no"; then
       [ VLC_ADD_PLUGIN([direct3d])
         VLC_ADD_LIBS([direct3d],[-lgdi32])
       ])
-      VLC_ADD_LIBS([direct3d directx glwin32],[-lole32])
+      VLC_ADD_LIBS([direct3d directx glwin32],[-lole32 -luuid])
   fi
 fi
 
@@ -3285,7 +3283,7 @@ AC_ARG_ENABLE(direct2d,
 AS_IF([test "${enable_direct2d}" != "no"], [
   AC_CHECK_HEADERS(d2d1.h, [
     VLC_ADD_PLUGIN([direct2d])
-    VLC_ADD_LIBS([direct2d],[-lgdi32 -lole32])
+    VLC_ADD_LIBS([direct2d],[-lgdi32 -lole32 -luuid])
   ], [
     AC_MSG_WARN([Cannot find Direct2D headers!])
   ])
@@ -3299,7 +3297,7 @@ AC_ARG_ENABLE(wingdi,
 if test "${enable_wingdi}" != "no"; then
   if test "${SYS}" = "mingw32"; then
     VLC_ADD_PLUGIN([wingdi])
-    VLC_ADD_LIBS([wingdi],[-lgdi32 -lole32])
+    VLC_ADD_LIBS([wingdi],[-lgdi32 -lole32 -luuid])
   fi
   if test "${SYS}" = "mingwce"; then
     VLC_ADD_PLUGIN([wingdi wingapi])
@@ -3764,7 +3762,7 @@ then
   VLC_ADD_OBJCFLAGS([macosx minimal_macosx], [-fobjc-exceptions] )
   VLC_ADD_PLUGIN([macosx minimal_macosx])
 
-  VLC_ADD_LIBS([macosx], [-Wl,-framework,QTKit -Wl,-framework,IOKit -Wl,-framework,AddressBook -Wl,-framework,WebKit])
+  VLC_ADD_LIBS([macosx], [-Wl,-framework,QTKit -Wl,-framework,IOKit -Wl,-framework,AddressBook -Wl,-framework,WebKit -Wl,-framework,SystemConfiguration])
 
   if test ! -d ${CONTRIB_DIR}/Sparkle.framework
   then
@@ -4048,9 +4046,9 @@ AC_ARG_ENABLE(growl,
   [  --enable-growl          growl notification plugin (default disabled)],,
   [enable_growl=no])
 AS_IF([test "${enable_growl}" != "no"], [
-    AC_CHECK_HEADERS(${CONTRIB_DIR}/Growl.framework/Versions/A/Headers/GrowlDefines.h, [
+    AC_CHECK_HEADERS(${CONTRIB_DIR}/Growl.framework/Versions/A/Headers/Growl.h, [
       VLC_ADD_PLUGIN([growl])
-      VLC_ADD_LIBS([growl], [-F${CONTRIB_DIR} -Wl,-framework,Growl,-framework,CoreFoundation])
+      VLC_ADD_LIBS([growl], [-F${CONTRIB_DIR} -Wl,-framework,Growl,-framework,Foundation])
       VLC_ADD_OBJCFLAGS([growl], [-F${CONTRIB_DIR}])
       VLC_ADD_OBJCFLAGS([growl], [-fobjc-exceptions] )
     ])
@@ -4181,7 +4179,7 @@ AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 AC_SUBST(VERSION_EXTRA)
 AC_SUBST(COPYRIGHT_YEARS)
-AC_DEFINE_UNQUOTED(VLC_COMPILE_BY, "`whoami`", [user who ran configure])
+AC_DEFINE_UNQUOTED(VLC_COMPILE_BY, "`whoami|sed -e's/\\\/\\\\\\\/g'`", [user who ran configure])
 AC_DEFINE_UNQUOTED(VLC_COMPILE_HOST, "`hostname -f 2>/dev/null || hostname`", [host which ran configure])
 AC_DEFINE_UNQUOTED(VLC_COMPILER, "`$CC -v 2>&1 | tail -n 1`", [compiler])
 dnl

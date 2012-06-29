@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 7a9550f09361b3aed6de0ae00535217f17a4ebc1 $
+ * $Id: 7ac81b5469153869af29efa97f292005f7608481 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -352,7 +352,7 @@ SpeedLabel::SpeedLabel( intf_thread_t *_p_intf, QWidget *parent )
     setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
     setLineWidth( 1 );
 
-    setRate( var_InheritFloat( p_intf, "rate" ) );
+    setRate( var_InheritFloat( THEPL, "rate" ) );
 }
 
 SpeedLabel::~SpeedLabel()

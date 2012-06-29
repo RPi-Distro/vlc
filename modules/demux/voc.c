@@ -2,7 +2,7 @@
  * voc.c : Creative Voice File (.VOC) demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: 07a9850a8c4370b01cae1408b3c1f83af2290ade $
+ * $Id: 5947bd1a2a9d7eed7e8232a6335ce9a03682e07e $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -357,6 +357,12 @@ static int ReadBlockHeader( demux_t *p_demux )
                     return VLC_EGENERIC;
             }
 
+            if( new_fmt.audio.i_channels == 0 )
+            {
+                msg_Err( p_demux, "0 channels detected" );
+                return VLC_EGENERIC;
+            }
+
             new_fmt.audio.i_bytes_per_frame = new_fmt.audio.i_channels
                 * (new_fmt.audio.i_bitspersample / 8);
             new_fmt.audio.i_frame_length = 1;
@@ -421,17 +427,18 @@ static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t     *p_block;
-    int64_t     i_offset, i;
-
-    i_offset = stream_Tell( p_demux->s );
-
-    while( ( i_offset >= p_sys->i_block_end )
-         && ( p_sys->i_silence_countdown == 0 ) )
-        if( ReadBlockHeader( p_demux ) != VLC_SUCCESS )
-            return 0;
+    int64_t     i;
 
     if( p_sys->i_silence_countdown == 0 )
     {
+        int64_t i_offset = stream_Tell( p_demux->s );
+        if( i_offset >= p_sys->i_block_end )
+        {
+            if( ReadBlockHeader( p_demux ) != VLC_SUCCESS )
+                return 0;
+            return 1;
+        }
+
         i = ( p_sys->i_block_end - i_offset )
             / p_sys->fmt.audio.i_bytes_per_frame;
         if( i > SAMPLES_BUFFER )

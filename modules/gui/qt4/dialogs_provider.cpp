@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: e647f14b15deb1298903dfe427b60dd835b1a8ce $
+ * $Id: 0752124527a01286b3192b2adbf561af3c543c45 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -97,6 +97,7 @@ DialogsProvider::~DialogsProvider()
     UpdateDialog::killInstance();
 #endif
     PluginDialog::killInstance();
+    EpgDialog::killInstance();
 
     delete menusMapper;
     delete menusUpdateMapper;
@@ -506,7 +507,7 @@ static void openDirectory( intf_thread_t *p_intf, bool pl, bool go )
     if( dir.isEmpty() )
         return;
 
-    p_intf->p_sys->filepath = qtu( dir );
+    p_intf->p_sys->filepath = dir;
 
     const char *scheme = "directory";
     if( dir.endsWith( "/VIDEO_TS", Qt::CaseInsensitive ) )

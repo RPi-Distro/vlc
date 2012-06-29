@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 3f90eb7500a69cbc5f7acdaba0339a0372169df9 $
+ * $Id: c828943c09e1d9879d25095fe7d9e1e551c38f40 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -371,9 +371,10 @@ DiscOpenPanel::DiscOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
     updateButtons();
 }
 
+#ifdef WIN32 /* Disc drives probing for Windows */
 void DiscOpenPanel::onFocus()
 {
-#ifdef WIN32 /* Disc drives probing for Windows */
+    ui.deviceCombo->clear();
     wchar_t szDrives[512];
     szDrives[0] = '\0';
     if( GetLogicalDriveStringsW( sizeof( szDrives ) - 1, szDrives ) )
@@ -388,11 +389,13 @@ void DiscOpenPanel::onFocus()
                 GetVolumeInformationW( drive, psz_name, 511, NULL, NULL, NULL, NULL, 0 );
 
                 QString displayName = FromWide( drive );
-                if( !*psz_name ) {
-                    displayName = displayName + " - "  + FromWide( psz_name );
+                char *psz_title = FromWide( psz_name );
+                if( !EMPTY_STR(psz_title)) {
+                    displayName = displayName + " - "  + psz_title;
                 }
 
                 ui.deviceCombo->addItem( displayName, FromWide( drive ) );
+                free( psz_title );
             }
 
             /* go to next drive */
@@ -400,8 +403,8 @@ void DiscOpenPanel::onFocus()
         }
         SetErrorMode(oldMode);
     }
-#endif
 }
+#endif
 
 DiscOpenPanel::~DiscOpenPanel()
 {
@@ -450,6 +453,7 @@ void DiscOpenPanel::updateButtons()
         {
             setDrive( psz_dvddiscpath );
             m_discType = BRD;
+            ui.dvdsimple->setChecked( !var_InheritBool( p_intf, "bluray-menu" ) );
         }
         ui.titleLabel->setText( qtr("Title") );
         ui.chapterLabel->hide();
@@ -495,10 +499,11 @@ void DiscOpenPanel::updateMRL()
     QString discPath;
     QStringList fileList;
 
-    if( ui.deviceCombo->itemData( ui.deviceCombo->currentIndex() ) != QVariant::Invalid )
-        discPath = ui.deviceCombo->itemData( ui.deviceCombo->currentIndex() ).toString();
-    else
-        discPath = ui.deviceCombo->currentText();
+    discPath = ui.deviceCombo->currentText();
+
+    int tmp = ui.deviceCombo->findText( discPath );
+    if( tmp != -1 &&  ui.deviceCombo->itemData( tmp ) != QVariant::Invalid )
+        discPath = ui.deviceCombo->itemData( tmp ).toString();
 
     /* MRL scheme */
     const char *scheme;
@@ -566,12 +571,11 @@ void DiscOpenPanel::updateMRL()
 void DiscOpenPanel::browseDevice()
 {
     QString dir = QFileDialog::getExistingDirectory( this,
-            qtr( I_DEVICE_TOOLTIP ) );
+            qtr( I_DEVICE_TOOLTIP ), p_intf->p_sys->filepath );
     if( !dir.isEmpty() )
     {
         ui.deviceCombo->addItem( toNativeSepNoSlash( dir ) );
         ui.deviceCombo->setCurrentIndex( ui.deviceCombo->findText( toNativeSepNoSlash( dir ) ) );
-        updateMRL();
     }
 
     updateMRL();
@@ -1274,7 +1278,7 @@ void CaptureOpenPanel::advancedDialog()
         if( name.isEmpty() || configList.contains( name ) )
             continue;
 
-        msg_Err( p_intf, "%s", p_item->psz_name);
+        msg_Dbg( p_intf, "item %s", p_item->psz_name);
         ConfigControl *config = ConfigControl::createControl(
                         VLC_OBJECT( p_intf ), p_item, advFrame, gLayout, n );
         if( config )

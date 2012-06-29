@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: a992e90bbdd3984f2915665d61ebfbe3759cf335 $
+ * $Id: 8b72e4c17a9bab1e034633126704061de03e5add $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -203,6 +203,8 @@ int OpenEncoder( vlc_object_t *p_this )
     char *psz_val;
     int i_val;
 
+    config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
+
     if( p_enc->fmt_out.i_codec == VLC_CODEC_MP3 )
     {
         i_cat = AUDIO_ES;
@@ -334,8 +336,6 @@ int OpenEncoder( vlc_object_t *p_this )
         p_context->dsp_mask |= AV_CPU_FLAG_SSE;
         p_context->dsp_mask |= AV_CPU_FLAG_SSE2;
     }
-
-    config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
 
     p_sys->i_key_int = var_GetInteger( p_enc, ENC_CFG_PREFIX "keyint" );
     p_sys->i_b_frames = var_GetInteger( p_enc, ENC_CFG_PREFIX "bframes" );

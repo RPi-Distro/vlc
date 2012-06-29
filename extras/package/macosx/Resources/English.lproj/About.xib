@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
   <data>
     <int key="IBDocument.SystemTarget">1050</int>
-    <string key="IBDocument.SystemVersion">11C74</string>
+    <string key="IBDocument.SystemVersion">11E53</string>
     <string key="IBDocument.InterfaceBuilderVersion">851</string>
-    <string key="IBDocument.AppKitVersion">1138.23</string>
-    <string key="IBDocument.HIToolboxVersion">567.00</string>
+    <string key="IBDocument.AppKitVersion">1138.47</string>
+    <string key="IBDocument.HIToolboxVersion">569.00</string>
     <object class="NSMutableDictionary" key="IBDocument.PluginVersions">
       <bool key="EncodedWithXMLCoder">YES</bool>
       <object class="NSArray" key="dict.sortedKeys">
@@ -21,8 +21,6 @@
     </object>
     <object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
       <bool key="EncodedWithXMLCoder">YES</bool>
-      <integer value="2245"/>
-      <integer value="2239"/>
       <integer value="1344"/>
     </object>
     <object class="NSArray" key="IBDocument.PluginDependencies">
@@ -78,7 +76,7 @@
                   <string>NeXT TIFF v4.0 pasteboard type</string>
                 </object>
               </object>
-              <string key="NSFrameSize">{600, 275}</string>
+              <string key="NSFrame">{{33, 70}, {153, 172}}</string>
               <reference key="NSSuperview" ref="471759747"/>
               <bool key="NSEnabled">YES</bool>
               <object class="NSImageCell" key="NSCell" id="548775455">
@@ -86,7 +84,7 @@
                 <int key="NSCellFlags2">33554432</int>
                 <object class="NSCustomResource" key="NSContents">
                   <string key="NSClassName">NSImage</string>
-                  <string key="NSResourceName">about_bg</string>
+                  <string key="NSResourceName">vlc</string>
                 </object>
                 <int key="NSAlign">2</int>
                 <int key="NSScale">2</int>
@@ -220,7 +218,7 @@
                   <reference key="NSDocView" ref="139161632"/>
                   <reference key="NSBGColor" ref="256701342"/>
                   <object class="NSCursor" key="NSCursor">
-                    <string key="NSHotSpot">{4, 4}</string>
+                    <string key="NSHotSpot">{1, -1}</string>
                     <int key="NSCursorType">0</int>
                   </object>
                   <int key="NScvFlags">4</int>
@@ -411,7 +409,7 @@
         <string key="NSWindowContentMaxSize">{1.7976931348623157e+308, 1.7976931348623157e+308}</string>
         <string key="NSWindowContentMinSize">{213, 107}</string>
         <object class="NSView" key="NSWindowView" id="214470677">
-          <reference key="NSNextResponder"/>
+          <nil key="NSNextResponder"/>
           <int key="NSvFlags">256</int>
           <object class="NSMutableArray" key="NSSubviews">
             <bool key="EncodedWithXMLCoder">YES</bool>
@@ -441,7 +439,6 @@
               </object>
               <string key="NSFrame">{{0, 40}, {480, 360}}</string>
               <reference key="NSSuperview" ref="214470677"/>
-              <reference key="NSNextKeyView"/>
               <string key="FrameName"/>
               <string key="GroupName"/>
               <object class="WebPreferences" key="Preferences">
@@ -552,7 +549,6 @@
             </object>
           </object>
           <string key="NSFrameSize">{480, 400}</string>
-          <reference key="NSSuperview"/>
         </object>
         <string key="NSScreenRect">{{0, 0}, {1280, 778}}</string>
         <string key="NSMinSize">{213, 129}</string>
@@ -576,7 +572,7 @@
         <string key="NSWindowContentMaxSize">{1.7976931348623157e+308, 1.7976931348623157e+308}</string>
         <string key="NSWindowContentMinSize">{480, 360}</string>
         <object class="NSView" key="NSWindowView" id="482940942">
-          <reference key="NSNextResponder"/>
+          <nil key="NSNextResponder"/>
           <int key="NSvFlags">256</int>
           <object class="NSMutableArray" key="NSSubviews">
             <bool key="EncodedWithXMLCoder">YES</bool>
@@ -658,7 +654,6 @@
                   </object>
                   <string key="NSFrame">{{1, 1}, {478, 358}}</string>
                   <reference key="NSSuperview" ref="481393880"/>
-                  <reference key="NSNextKeyView" ref="1033279449"/>
                   <reference key="NSDocView" ref="1033279449"/>
                   <reference key="NSBGColor" ref="620122354"/>
                   <object class="NSCursor" key="NSCursor">
@@ -690,7 +685,6 @@
               </object>
               <string key="NSFrameSize">{480, 360}</string>
               <reference key="NSSuperview" ref="482940942"/>
-              <reference key="NSNextKeyView" ref="480961721"/>
               <int key="NSsFlags">133650</int>
               <reference key="NSVScroller" ref="947547661"/>
               <reference key="NSHScroller" ref="695622842"/>
@@ -698,7 +692,6 @@
             </object>
           </object>
           <string key="NSFrameSize">{480, 360}</string>
-          <reference key="NSSuperview"/>
         </object>
         <string key="NSScreenRect">{{0, 0}, {1280, 778}}</string>
         <string key="NSMinSize">{480, 382}</string>
@@ -1540,7 +1533,7 @@
     <nil key="IBDocument.LastKnownRelativeProjectPath"/>
     <int key="IBDocument.defaultPropertyAccessControl">3</int>
     <object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-      <string key="NS.key.0">about_bg</string>
+      <string key="NS.key.0">vlc</string>
       <string key="NS.object.0">{128, 128}</string>
     </object>
   </data>

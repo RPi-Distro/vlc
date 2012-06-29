@@ -2,7 +2,7 @@
  * MainWindowTitle.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: a737a42eb10a277e172658d3181d811079819c4d $
+ * $Id: 7de275d06062d1ad3fc2e2acf30fe7c4a257f2c5 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -26,6 +26,7 @@
 #import "MainWindowTitle.h"
 #import "CoreInteraction.h"
 #import "CompatibilityFixes.h"
+#import <SystemConfiguration/SystemConfiguration.h> // for the revealInFinder clone
 
 /*****************************************************************************
  * VLCMainWindowTitleView
@@ -174,7 +175,17 @@
     else if (sender == o_green_btn)
         [[self window] performZoom: sender];
     else if (sender == o_fullscreen_btn)
-        [[VLCCoreInteraction sharedInstance] toggleFullscreen];
+    {
+        // set fs directly to true, as the vars can be already true in some configs
+        var_SetBool( pl_Get( VLCIntf ), "fullscreen", true );
+
+        vout_thread_t *p_vout = getVout();
+        if( p_vout )
+        {
+            var_SetBool( p_vout, "fullscreen", true );
+            vlc_object_release( p_vout );
+        }    
+    }
     else
         msg_Err( VLCIntf, "unknown button action sender" );
 
@@ -229,6 +240,22 @@
         [o_fullscreen_btn setImage: [NSImage imageNamed:@"window-fullscreen-over"]];
     else
         [o_fullscreen_btn setImage: [NSImage imageNamed:@"window-fullscreen"]];
+}
+
+- (void)mouseDown:(NSEvent *)event
+{
+    NSPoint ml = [self convertPoint: [event locationInWindow] fromView: self];
+    if( ([[self window] frame].size.height - ml.y) <= 22. && [event clickCount] == 2) {
+        //Get settings from "System Preferences" >  "Appearance" > "Double-click on windows title bar to minimize"
+        NSString *const MDAppleMiniaturizeOnDoubleClickKey = @"AppleMiniaturizeOnDoubleClick";
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults addSuiteNamed:NSGlobalDomain];
+
+        if ([[userDefaults objectForKey:MDAppleMiniaturizeOnDoubleClickKey] boolValue])
+            [[self window] miniaturize:self];
+    }
+
+    [super mouseDown: event];
 }
 @end
 
@@ -428,5 +455,135 @@
     return ([theAttributeName isEqualToString: NSAccessibilitySubroleAttribute] ? NSAccessibilityFullScreenButtonAttribute : nil);
 }
 #endif
+
+@end
+
+
+@implementation VLCWindowTitleTextField
+
+- (void)dealloc
+{
+    if (contextMenu)
+        [contextMenu release];
+
+    [super dealloc];
+}
+
+- (void)showRightClickMenuWithEvent:(NSEvent *)o_event
+{
+    if (contextMenu)
+        [contextMenu release];
+
+    NSURL * representedURL = [[self window] representedURL];
+    if (! representedURL)
+        return;
+
+    NSArray * pathComponents;
+
+    if (OSX_SNOW_LEOPARD || OSX_LION)
+        pathComponents = [representedURL pathComponents];
+    else
+        pathComponents = [[representedURL path] pathComponents];
+
+    if (!pathComponents)
+        return;
+
+    contextMenu = [[NSMenu alloc] initWithTitle: [[NSFileManager defaultManager] displayNameAtPath: [representedURL path]]];
+
+    NSUInteger count = [pathComponents count];
+    NSImage * icon;
+    NSMenuItem * currentItem;
+    NSMutableString * currentPath;
+    NSSize iconSize = NSMakeSize( 16., 16. );
+    for (NSUInteger i = count - 1; i > 0; i--) {
+        currentPath = [NSMutableString stringWithCapacity:1024];
+        for (NSUInteger y = 0; y < i; y++)
+            [currentPath appendFormat: @"/%@", [pathComponents objectAtIndex:y + 1]];
+
+        [contextMenu addItemWithTitle: [[NSFileManager defaultManager] displayNameAtPath: currentPath] action:@selector(revealInFinder:) keyEquivalent:@""];
+        currentItem = [contextMenu itemAtIndex:[contextMenu numberOfItems] - 1];
+        [currentItem setTarget: self];
+
+        icon = [[NSWorkspace sharedWorkspace] iconForFile:currentPath];
+        [icon setSize: iconSize];
+        [currentItem setImage: icon];
+    }
+
+    if ([[pathComponents objectAtIndex: 1] isEqualToString:@"Volumes"]) {
+        /* we don't want to show the Volumes item, since the Cocoa does it neither */
+        currentItem = [contextMenu itemWithTitle:[[NSFileManager defaultManager] displayNameAtPath: @"/Volumes"]];
+        if (currentItem)
+            [contextMenu removeItem: currentItem];
+    } else {
+        /* we're on the boot drive, so add it since it isn't part of the components */
+        [contextMenu addItemWithTitle: [[NSFileManager defaultManager] displayNameAtPath:@"/"] action:@selector(revealInFinder:) keyEquivalent:@""];
+        currentItem = [contextMenu itemAtIndex: [contextMenu numberOfItems] - 1];
+        icon = [[NSWorkspace sharedWorkspace] iconForFile:@"/"];
+        [icon setSize: iconSize];
+        [currentItem setImage: icon];
+        [currentItem setTarget: self];
+    }
+
+    /* add the computer item */
+    [contextMenu addItemWithTitle: [(NSString*)SCDynamicStoreCopyComputerName(NULL, NULL) autorelease] action:@selector(revealInFinder:) keyEquivalent:@""];
+    currentItem = [contextMenu itemAtIndex: [contextMenu numberOfItems] - 1];
+    icon = [NSImage imageNamed: NSImageNameComputer];
+    [icon setSize: iconSize];
+    [currentItem setImage: icon];
+    [currentItem setTarget: self];
+
+    [NSMenu popUpContextMenu: contextMenu withEvent: o_event forView: [self superview]];
+}
+
+- (IBAction)revealInFinder:(id)sender
+{
+    NSUInteger count = [contextMenu numberOfItems];
+    NSUInteger selectedItem = [contextMenu indexOfItem: sender];
+
+    if (selectedItem == count - 1)  // the fake computer item
+    {
+        [[NSWorkspace sharedWorkspace] selectFile: @"/" inFileViewerRootedAtPath: @""];
+        return;
+    }
+
+    NSURL * representedURL = [[self window] representedURL];
+    if (! representedURL)
+        return;
+
+    if (selectedItem == 0) // the actual file, let's save time
+    {
+        [[NSWorkspace sharedWorkspace] selectFile: [representedURL path] inFileViewerRootedAtPath: [representedURL path]];
+        return;
+    }
+
+    NSArray * pathComponents;
+    if (OSX_SNOW_LEOPARD || OSX_LION)
+        pathComponents = [representedURL pathComponents];
+    else
+        pathComponents = [[representedURL path] pathComponents];
+    if (!pathComponents)
+        return;
+
+    NSMutableString * currentPath;
+    currentPath = [NSMutableString stringWithCapacity:1024];
+    selectedItem = count - selectedItem;
+
+    /* fix for non-startup volumes */
+    if ([[pathComponents objectAtIndex:1] isEqualToString:@"Volumes"])
+        selectedItem += 1;
+
+    for (NSUInteger y = 1; y < selectedItem; y++)
+        [currentPath appendFormat: @"/%@", [pathComponents objectAtIndex:y]];
+
+    [[NSWorkspace sharedWorkspace] selectFile: currentPath inFileViewerRootedAtPath: currentPath];
+}
+
+- (void)rightMouseDown:(NSEvent *)o_event
+{
+    if( [o_event type] == NSRightMouseDown )
+        [self showRightClickMenuWithEvent:o_event];
+
+    [super mouseDown: o_event];
+}
 
 @end

@@ -2,7 +2,7 @@
  * rar.h: uncompressed RAR parser
  *****************************************************************************
  * Copyright (C) 2008-2010 Laurent Aimar
- * $Id: 944d6b5deadfc5f257fd4c5fd58322b69523005c $
+ * $Id: 179e260bbab5a7e9280c8af7078f9224d8ae2b5b $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -66,6 +66,7 @@ enum {
     RAR_BLOCK_MARKER = 0x72,
     RAR_BLOCK_ARCHIVE = 0x73,
     RAR_BLOCK_FILE = 0x74,
+    RAR_BLOCK_SUBBLOCK = 0x7a,
     RAR_BLOCK_END = 0x7b,
 };
 enum {
@@ -90,7 +91,9 @@ static int PeekBlock(stream_t *s, rar_block_t *hdr)
     hdr->flags = GetWLE(&peek[3]);
     hdr->size  = GetWLE(&peek[5]);
     hdr->add_size = 0;
-    if (hdr->flags & 0x8000) {
+    if ((hdr->flags & 0x8000) ||
+        hdr->type == RAR_BLOCK_FILE ||
+        hdr->type == RAR_BLOCK_SUBBLOCK) {
         if (peek_size < 11)
             return VLC_EGENERIC;
         hdr->add_size = GetDWLE(&peek[7]);
@@ -175,7 +178,7 @@ static int SkipFile(stream_t *s, int *count, rar_file_t ***file,
     uint16_t name_size = GetWLE(&peek[7+19]);
     uint32_t file_size_high = 0;
     if (hdr->flags & RAR_BLOCK_FILE_HAS_HIGH)
-        file_size_high = GetDWLE(&peek[7+25]);
+        file_size_high = GetDWLE(&peek[7+29]);
     const uint64_t file_size = ((uint64_t)file_size_high << 32) | file_size_low;
 
     char *name = calloc(1, name_size + 1);
@@ -286,7 +289,7 @@ static const rar_pattern_t *FindVolumePattern(const char *location)
         { ".part1.rar",   "%s.part%.1d.rar", 2,   9 },
         { ".part01.rar",  "%s.part%.2d.rar", 2,  99, },
         { ".part001.rar", "%s.part%.3d.rar", 2, 999 },
-        { ".rar",         "%s.r%.2d",        0,  99 },
+        { ".rar",         "%s.%c%.2d",       0, 999 },
         { NULL, NULL, 0, 0 },
     };
 
@@ -327,7 +330,7 @@ int RarParse(stream_t *s, int *count, rar_file_t ***file)
         }
 
         /* */
-        int has_next = 1;
+        int has_next = -1;
         for (;;) {
             rar_block_t bk;
             int ret;
@@ -350,8 +353,8 @@ int RarParse(stream_t *s, int *count, rar_file_t ***file)
             if (ret)
                 break;
         }
-        if (has_next < 0)
-            has_next = *count > 0 && !(*file)[*count -1]->is_complete;
+        if (has_next < 0 && *count > 0 && !(*file)[*count -1]->is_complete)
+            has_next = 1;
         if (vol != s)
             stream_Delete(vol);
 
@@ -376,13 +379,24 @@ int RarParse(stream_t *s, int *count, rar_file_t ***file)
         }
 
         free(volume_mrl);
-        if (asprintf(&volume_mrl, pattern->format, volume_base, volume_index) < 0)
-            volume_mrl = NULL;
+        if (pattern->start) {
+            if (asprintf(&volume_mrl, pattern->format, volume_base, volume_index) < 0)
+                volume_mrl = NULL;
+        } else {
+            if (asprintf(&volume_mrl, pattern->format, volume_base,
+                         'r' + volume_index / 100, volume_index % 100) < 0)
+                volume_mrl = NULL;
+        }
         free(volume_base);
 
         if (!volume_mrl)
             return VLC_SUCCESS;
+
+        const int s_flags = s->i_flags;
+        if (has_next < 0)
+            s->i_flags |= OBJECT_FLAGS_NOINTERACT;
         vol = stream_UrlNew(s, volume_mrl);
+        s->i_flags = s_flags;
 
         if (!vol) {
             free(volume_mrl);

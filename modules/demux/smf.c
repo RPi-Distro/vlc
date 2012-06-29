@@ -2,7 +2,7 @@
  * smf.c : Standard MIDI File (.mid) demux module for vlc
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: b688b5fef3d9b0eadbc6846368c08f9b81d8461d $
+ * $Id: 0c3820c088f729abe82e6214aa0b500c142c0269 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,7 +209,13 @@ static int Open (vlc_object_t * p_this)
 
         for (;;)
         {
-            stream_Read (stream, head, 8);
+            if (stream_Read (stream, head, 8) < 8)
+            {
+                /* FIXME: don't give up if we have at least one valid track */
+                msg_Err (p_this, "incomplete SMF chunk, file is corrupted");
+                goto error;
+            }
+
             if (memcmp (head, "MTrk", 4) == 0)
                 break;
 

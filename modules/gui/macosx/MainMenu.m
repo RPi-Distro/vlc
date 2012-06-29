@@ -2,7 +2,7 @@
  * MainMenu.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011 Felix Paul Kühne
- * $Id: a811e11ea36d0c58a325d5675b4cf0e14fc47981 $
+ * $Id: 4f4456a628bc5ddb34a16786d3fc6e2ee77409c1 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -544,9 +544,8 @@ static VLCMainMenu *_o_sharedInstance = nil;
     [o_mi_rate_sld setEnabled: b_enabled];
     [o_mi_rate_sld setIntValue: [[VLCCoreInteraction sharedInstance] playbackRate]];
     int i = [[VLCCoreInteraction sharedInstance] playbackRate];
-    if (i == 0)
-        i = 1;
-    [o_mi_rate_fld setStringValue: [NSString stringWithFormat:@"%ix", i]];
+    double speed =  pow( 2, (double)i / 17 );
+    [o_mi_rate_fld setStringValue: [NSString stringWithFormat:@"%.2fx", speed]];
     if (b_enabled) {
         [o_mi_rate_lbl setHidden: NO];
         [o_mi_rate_lbl_gray setHidden: YES];
@@ -598,17 +597,15 @@ static VLCMainMenu *_o_sharedInstance = nil;
 {
     [[VLCCoreInteraction sharedInstance] setPlaybackRate: [o_mi_rate_sld intValue]];
     int i = [[VLCCoreInteraction sharedInstance] playbackRate];
-    if (i == 0)
-        i = 1;
-    [o_mi_rate_fld setStringValue: [NSString stringWithFormat:@"%ix", i]];
+    double speed =  pow( 2, (double)i / 17 );
+    [o_mi_rate_fld setStringValue: [NSString stringWithFormat:@"%.2fx", speed]];
 }
 
 - (void)updatePlaybackRate
 {
     int i = [[VLCCoreInteraction sharedInstance] playbackRate];
-    if (i == 0)
-        i = 1;
-    [o_mi_rate_fld setStringValue: [NSString stringWithFormat:@"%ix", i]];
+    double speed =  pow( 2, (double)i / 17 );
+    [o_mi_rate_fld setStringValue: [NSString stringWithFormat:@"%.2fx", speed]];
     [o_mi_rate_sld setIntValue: i];
 }
 
@@ -635,7 +632,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
                 var_SetFloat( p_vout, "zoom", 2.0 );
             else
             {
-                var_ToggleBool( p_vout, "autoscale" );
+                [[[[[VLCMain sharedInstance] mainWindow] videoView] window] performZoom:sender];
             }
             vlc_object_release( p_vout );
         }
@@ -906,11 +903,13 @@ static VLCMainMenu *_o_sharedInstance = nil;
             return;
     }
 
-    /* Make sure we want to display the variable */
-    if( i_type & VLC_VAR_HASCHOICE )
+    /* Make sure we want to display the variable
+     * special case for spu-es, which we want to display in any case */
+    if( i_type & VLC_VAR_HASCHOICE && strcmp( psz_variable, "spu-es" ) )
     {
         var_Change( p_object, psz_variable, VLC_VAR_CHOICESCOUNT, &val, NULL );
-        if( val.i_int == 0 ) return;
+        if( val.i_int == 0 )
+            return;
         if( (i_type & VLC_VAR_TYPE) != VLC_VAR_VARIABLE && val.i_int == 1 )
             return;
     }
@@ -929,6 +928,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
         free( text.psz_string );
         return;
     }
+
     if( var_Get( p_object, psz_variable, &val ) < 0 )
     {
         return;
@@ -983,6 +983,28 @@ static VLCMainMenu *_o_sharedInstance = nil;
         [o_menu removeAllItems];
     }
 
+    /* Aspect Ratio */
+    if( [[o_parent title] isEqualToString: _NS("Aspect-ratio")] == YES )
+    {
+        NSMenuItem *o_lmi_tmp2;
+        o_lmi_tmp2 = [o_menu addItemWithTitle: _NS("Lock Aspect Ratio") action: @selector(lockVideosAspectRatio:) keyEquivalent: @""];
+        [o_lmi_tmp2 setTarget: [[VLCMain sharedInstance] controls]];
+        [o_lmi_tmp2 setEnabled: YES];
+        [o_lmi_tmp2 setState: [[VLCCoreInteraction sharedInstance] aspectRatioIsLocked]];
+        [o_parent setEnabled: YES];
+        [o_menu addItem: [NSMenuItem separatorItem]];
+    }
+
+    /* special case for the subtitles item */
+    if( [[o_parent title] isEqualToString: _NS("Subtitles Track")] == YES )
+    {
+        NSMenuItem * o_lmi_tmp;
+        o_lmi_tmp = [o_menu addItemWithTitle: _NS("Open File...") action: @selector(addSubtitleFile:) keyEquivalent: @""];
+        [o_lmi_tmp setTarget: [[VLCMain sharedInstance] controls]];
+        [o_lmi_tmp setEnabled: YES];
+        [o_parent setEnabled: YES];
+    }
+
     /* Check the type of the object variable */
     i_type = var_Type( p_object, psz_variable );
 
@@ -1025,28 +1047,9 @@ static VLCMainMenu *_o_sharedInstance = nil;
     /* make (un)sensitive */
     [o_parent setEnabled: ( val_list.p_list->i_count > 1 )];
 
-    /* Aspect Ratio */
-    if( [[o_parent title] isEqualToString: _NS("Aspect-ratio")] == YES )
-    {
-        NSMenuItem *o_lmi_tmp2;
-        o_lmi_tmp2 = [o_menu addItemWithTitle: _NS("Lock Aspect Ratio") action: @selector(lockVideosAspectRatio:) keyEquivalent: @""];
-        [o_lmi_tmp2 setTarget: self];
-        [o_lmi_tmp2 setEnabled: YES];
-        [o_lmi_tmp2 setState: [[VLCCoreInteraction sharedInstance] aspectRatioIsLocked]];
-        [o_parent setEnabled: YES];
-        [o_menu addItem: [NSMenuItem separatorItem]];
-    }
-
-    /* special case for the subtitles items */
+    /* another special case for the subtitles item */
     if( [[o_parent title] isEqualToString: _NS("Subtitles Track")] == YES )
-    {
-        NSMenuItem * o_lmi_tmp;
-        o_lmi_tmp = [o_menu addItemWithTitle: _NS("Open File...") action: @selector(addSubtitleFile:) keyEquivalent: @""];
-        [o_lmi_tmp setTarget: [[VLCMain sharedInstance] controls]];
-        [o_lmi_tmp setEnabled: YES];
-        [o_parent setEnabled: YES];
         [o_menu addItem: [NSMenuItem separatorItem]];
-    }
 
     for( i = 0; i < val_list.p_list->i_count; i++ )
     {
@@ -1121,6 +1124,14 @@ static VLCMainMenu *_o_sharedInstance = nil;
 
     assert([data isKindOfClass:[VLCAutoGeneratedMenuContent class]]);
     VLCAutoGeneratedMenuContent *menuContent = (VLCAutoGeneratedMenuContent *)data;
+
+    /* Preserve settings across vouts via the playlist object: */
+    if( !strcmp( [menuContent name], "fullscreen" ) || !strcmp( [menuContent name], "video-on-top" ) )
+        var_Set( pl_Get( VLCIntf ), [menuContent name] , [menuContent value] );
+
+    /* save our audio device across multiple sessions */
+    if( !strcmp( [menuContent name], "audio-device" ) )
+        config_PutInt( VLCIntf, "macosx-audio-device", [menuContent value].i_int );
 
     p_object = [menuContent vlcObject];
 

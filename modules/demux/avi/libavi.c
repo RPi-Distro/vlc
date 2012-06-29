@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: d50af46b8b509b6ba89f3377901393370875e7f8 $
+ * $Id: f4fe0835dff328db0438478646448a234acbdef9 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -114,7 +114,7 @@ static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
     const uint8_t *p_peek;
     bool b_seekable;
 
-    if( p_container->common.i_chunk_size > 0 && p_container->common.i_chunk_size < 8 )
+    if( p_container->common.i_chunk_size > 0 && p_container->common.i_chunk_size < 4 )
     {
         /* empty box */
         msg_Warn( (vlc_object_t*)s, "empty list chunk" );

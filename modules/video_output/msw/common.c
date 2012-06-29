@@ -2,7 +2,7 @@
  * common.c:
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 97daadcda258bbde6d525c72b0ecd9c8bd12b413 $
+ * $Id: b0d4c7f0cffd3307a353249b3755866416d349e0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -66,7 +66,7 @@
 static void CommonChangeThumbnailClip(vout_display_t *, bool show);
 static int CommonControlSetFullscreen(vout_display_t *, bool is_fullscreen);
 
-#if !defined(UNDER_CE) && !defined(MODULE_NAME_IS_glwin32)
+#if !defined(UNDER_CE)
 static void DisableScreensaver(vout_display_t *);
 static void RestoreScreensaver(vout_display_t *);
 #endif
@@ -124,7 +124,7 @@ int CommonInit(vout_display_t *vd)
     }
 
     /* Why not with glwin32 */
-#if !defined(UNDER_CE) && !defined(MODULE_NAME_IS_glwin32)
+#if !defined(UNDER_CE)
     var_Create(vd, "disable-screensaver", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
     DisableScreensaver (vd);
 #endif
@@ -143,7 +143,7 @@ void CommonClean(vout_display_t *vd)
         EventThreadDestroy(sys->event);
     }
 
-#if !defined(UNDER_CE) && !defined(MODULE_NAME_IS_glwin32)
+#if !defined(UNDER_CE)
     RestoreScreensaver(vd);
 #endif
 }
@@ -291,12 +291,12 @@ static void CommonChangeThumbnailClip(vout_display_t *vd, bool show)
     CoInitialize(0);
 
     void *ptr;
-    if (S_OK == CoCreateInstance(&clsid_ITaskbarList,
+    if (S_OK == CoCreateInstance(&CLSID_TaskbarList,
                                  NULL, CLSCTX_INPROC_SERVER,
                                  &IID_ITaskbarList3,
                                  &ptr)) {
-        LPTASKBARLIST3 taskbl = ptr;
-        taskbl->vt->HrInit(taskbl);
+        ITaskbarList3 *taskbl = ptr;
+        taskbl->lpVtbl->HrInit(taskbl);
 
         HWND hroot = GetAncestor(sys->hwnd,GA_ROOT);
         RECT relative;
@@ -310,11 +310,11 @@ static void CommonChangeThumbnailClip(vout_display_t *vd, bool show)
             relative.right  = video.right  - video.left + relative.left;
             relative.bottom = video.bottom - video.top  + relative.top - 25;
         }
-        if (S_OK != taskbl->vt->SetThumbnailClip(taskbl, hroot,
+        if (S_OK != taskbl->lpVtbl->SetThumbnailClip(taskbl, hroot,
                                                  show ? &relative : NULL))
             msg_Err(vd, "SetThumbNailClip failed");
 
-        taskbl->vt->Release(taskbl);
+        taskbl->lpVtbl->Release(taskbl);
     }
     CoUninitialize();
 #endif
@@ -688,7 +688,7 @@ int CommonControl(vout_display_t *vd, int query, va_list args)
     }
 }
 
-#if !defined(UNDER_CE) && !defined(MODULE_NAME_IS_glwin32)
+#if !defined(UNDER_CE)
 static void DisableScreensaver(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;

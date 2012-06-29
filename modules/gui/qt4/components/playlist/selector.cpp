@@ -2,7 +2,7 @@
  * selector.cpp : Playlist source selector
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: b78e9cbe2192fec4d22f0cb471fa334a6e0cda25 $
+ * $Id: 3bce22cd04ee0f3941b3f5f129f4c272dad6767f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf
@@ -31,6 +31,7 @@
 #include "playlist_model.hpp"                /* plMimeData */
 #include "input_manager.hpp"                 /* MainInputManager, for podcast */
 
+#include <QApplication>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMimeData>
@@ -39,6 +40,7 @@
 #include <QHBoxLayout>
 #include <QPainter>
 #include <QPalette>
+#include <QScrollBar>
 
 #include <vlc_playlist.h>
 #include <vlc_services_discovery.h>
@@ -281,8 +283,8 @@ void PLSelector::setSource( QTreeWidgetItem *item )
                 return ;
 
             services_discovery_descriptor_t *p_test = new services_discovery_descriptor_t;
-            playlist_ServicesDiscoveryControl( THEPL, qtu( qs ), SD_CMD_DESCRIPTOR, p_test );
-            if( p_test->i_capabilities & SD_CAP_SEARCH )
+            int i_ret = playlist_ServicesDiscoveryControl( THEPL, qtu( qs ), SD_CMD_DESCRIPTOR, p_test );
+            if( i_ret == VLC_SUCCESS && p_test->i_capabilities & SD_CAP_SEARCH )
                 item->setData( 0, CAP_SEARCH_ROLE, true );
         }
     }
@@ -550,6 +552,12 @@ int PLSelector::getCurrentItemCategory()
 
 void PLSelector::wheelEvent( QWheelEvent *e )
 {
+    if( verticalScrollBar()->isVisible() && (
+        (verticalScrollBar()->value() != verticalScrollBar()->minimum() && e->delta() >= 0 ) ||
+        (verticalScrollBar()->value() != verticalScrollBar()->maximum() && e->delta() < 0 )
+        ) )
+        QApplication::sendEvent(verticalScrollBar(), e);
+
     // Accept this event in order to prevent unwanted volume up/down changes
     e->accept();
 }

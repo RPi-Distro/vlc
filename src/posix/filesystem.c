@@ -190,8 +190,8 @@ char *vlc_readdir( DIR *dir )
     struct dirent *ent;
     char *path = NULL;
 
+#if !defined(__OS2__) || !defined(__KLIBC__)
     long len = fpathconf (dirfd (dir), _PC_NAME_MAX);
-#if !defined(__OS2__) || !defined(__INNOTEK_LIBC__)
 #ifdef NAME_MAX
     /* POSIX says there shall we room for NAME_MAX bytes at all times */
     if (/*len == -1 ||*/ len < NAME_MAX)
@@ -202,12 +202,12 @@ char *vlc_readdir( DIR *dir )
         return NULL;
 #endif
     len += offsetof (struct dirent, d_name) + 1;
-#else /* __OS2__ && __INNOTEK_LIBC__ */
+#else /* __OS2__ && __KLIBC__ */
     /* In the implementation of Innotek LIBC, aka kLIBC on OS/2,
-     * fpathconf (_PC_NAME_MAX) is broken, and d_name is not the last member
-     * of struct dirent.
+     * fpathconf (_PC_NAME_MAX) is broken, and errno is set to EBADF.
+     * Moreover, d_name is not the last member of struct dirent.
      * So just allocate as many as the size of struct dirent. */
-    len = sizeof (struct dirent);
+    long len = sizeof (struct dirent);
 #endif
 
     struct dirent *buf = malloc (len);

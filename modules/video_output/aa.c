@@ -2,7 +2,7 @@
  * aa.c: "vout display" module using aalib
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 007cb56c94495ca2cc3cae82b63d07b70bf3a3ae $
+ * $Id: 6d9e691459c3b3ddd242881ce25657cc40640a16 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -57,7 +57,7 @@ vlc_module_begin()
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VOUT)
     set_description(N_("ASCII-art video output"))
-    set_capability("vout display", 10)
+    set_capability("vout display", /*10*/0)
     add_shortcut("aalib")
     set_callbacks(Open, Close)
 vlc_module_end()

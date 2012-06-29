@@ -2,7 +2,7 @@
  * open.h: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2011 VLC authors and VideoLAN
- * $Id: 8d7e4f7b60089258137e8b91cdb72c75dd9a0dec $
+ * $Id: 73c8d1b5a72f44dcd1ecfa572bba17aab09918fa $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -23,6 +23,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#define kVLCMediaAudioCD "AudioCD"
+#define kVLCMediaDVD "DVD"
+#define kVLCMediaVCD "VCD"
+#define kVLCMediaSVCD "SVCD"
+#define kVLCMediaBD "Bluray"
+#define kVLCMediaVideoTSFolder "VIDEO_TS"
+#define kVLCMediaBDMVFolder "BDMV"
+#define kVLCMediaUnknown "Unknown"
 
 /*****************************************************************************
  * Intf_Open interface
@@ -251,6 +260,8 @@
 - (IBAction)openSpecialMediaFolder:(id)sender;
 - (IBAction)dvdreadOptionChanged:(id)sender;
 - (IBAction)vcdOptionChanged:(id)sender;
+- (char *)getVolumeTypeFromMountPath:(NSString *)mountPath;
+- (NSString *)getBSDNodeFromMountPath:(NSString *)mountPath;
 
 - (void)openNet;
 - (IBAction)openNetModeChanged:(id)sender;
