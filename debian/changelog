@@ -1,18 +1,27 @@
 vlc (2.0.2-1) unstable; urgency=medium
 
   [ Edward Wang ]
-  * New upstream release (Closes: #679625, #664279).
+  * New upstream release (Closes: #679625, #664279, LP: #689122, #936488,
+    #942126, #971106, #972615, #973051, #987231, #995003, #998538).
+    - Fix Ogg Heap buffer overflow. Thanks to Hugo Beauzée-Luyssen
   * Add the crystalhd plugin to the vlc distribution.
   * libcaca_plugin.so now depends on X11 in this release, so it must
-    be installed under vlc.install (versus vlc-nox).
-  * Fix Ogg Heap buffer overflow
-    - Thanks to Hugo Beauzée-Luyssen
+    be installed under vlc (versus vlc-nox).
 
   [ Reinhard Tartler ]
-  * Review and upload to unstable
   * Urgency set to medium because a security issue is fixed in this release
 
- -- Reinhard Tartler <siretart@tauware.de>  Sat, 30 Jun 2012 16:32:35 +0200
+  [ Benjamin Drung ]
+  * Add new plugins to vlc-nox:
+    - crystalhd (Linux amd64 and i386 only)
+    - directfb
+    - fbosd (Linux only)
+    - omxil (Linux only)
+  * Add build dependencies for new plugins.
+  * Add new symbols to libvlccore5.
+  * Switch to debhelper 8.
+
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 30 Jun 2012 18:39:41 +0200
 
 vlc (2.0.1-4) unstable; urgency=high
 
