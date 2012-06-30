@@ -608,6 +608,7 @@ libvlccore.so.5 libvlccore5 #MINVER#
  vlc_sem_init@Base 2.0.0
  vlc_sem_post@Base 2.0.0
  vlc_sem_wait@Base 2.0.0
+ vlc_socket@Base 2.0.2
  vlc_stat@Base 2.0.0
  vlc_str2keycode@Base 2.0.0
  vlc_strcasestr@Base 2.0.0
