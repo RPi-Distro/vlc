@@ -1,5 +1,6 @@
-vlc (2.0.2-1) unstable; urgency=high
+vlc (2.0.2-1) unstable; urgency=medium
 
+  [ Edward Wang ]
   * New upstream release.
   * Add the crystalhd plugin to the vlc distribution.
   * libcaca_plugin.so now depends on X11 in this release, so it must
@@ -7,7 +8,11 @@ vlc (2.0.2-1) unstable; urgency=high
   * Fix Ogg Heap buffer overflow
     - Thanks to Hugo Beauzée-Luyssen
 
- -- Edward Wang <edward.c.wang@compdigitec.com>  Fri, 29 Jun 2012 11:52:16 -0400
+  [ Reinhard Tartler ]
+  * Review and upload to unstable
+  * Urgency set to medium because a security issue is fixed in this release
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 30 Jun 2012 16:32:35 +0200
 
 vlc (2.0.1-4) unstable; urgency=high
 
