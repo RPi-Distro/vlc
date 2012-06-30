@@ -44,6 +44,7 @@ confflags += \
 	--enable-bluray \
 	--enable-bonjour \
 	--enable-caca \
+	--enable-crystalhd \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dirac \
