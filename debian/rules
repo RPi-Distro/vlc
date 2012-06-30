@@ -48,6 +48,7 @@ confflags += \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dirac \
+	--enable-directfb \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
