@@ -10,7 +10,7 @@ Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Reinhard Tartler <siretart@tauware.de>,
            Benjamin Drung <bdrung@debian.org>
 Build-Depends: autopoint,
-               debhelper (>= 7.2.3~),
+               debhelper (>= 8),
                dh-autoreconf,
                dh-buildinfo,
                gettext,
