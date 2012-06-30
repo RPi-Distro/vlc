@@ -1,7 +1,7 @@
 vlc (2.0.2-1) unstable; urgency=medium
 
   [ Edward Wang ]
-  * New upstream release.
+  * New upstream release (Closes: #679625, #664279).
   * Add the crystalhd plugin to the vlc distribution.
   * libcaca_plugin.so now depends on X11 in this release, so it must
     be installed under vlc.install (versus vlc-nox).
