@@ -4,6 +4,7 @@ usr/bin/rvlc
 usr/bin/vlc
 usr/bin/vlc-wrapper
 usr/lib/vlc/lua/
+usr/lib/vlc/plugins/3dnow/libmemcpy3dn_plugin.so
 usr/lib/vlc/plugins/access/libaccess_alsa_plugin.so
 usr/lib/vlc/plugins/access/libaccess_attachment_plugin.so
 usr/lib/vlc/plugins/access/libaccess_avio_plugin.so
@@ -41,6 +42,11 @@ usr/lib/vlc/plugins/access/libvcd_plugin.so
 usr/lib/vlc/plugins/access/libvcdx_plugin.so
 usr/lib/vlc/plugins/access/libzip_plugin.so
 usr/lib/vlc/plugins/access_output
+usr/lib/vlc/plugins/altivec/libi420_yuy2_altivec_plugin.so
+usr/lib/vlc/plugins/altivec/libmemcpyaltivec_plugin.so
+usr/lib/vlc/plugins/arm_neon/libaudio_format_neon_plugin.so
+usr/lib/vlc/plugins/arm_neon/libchroma_yuv_neon_plugin.so
+usr/lib/vlc/plugins/arm_neon/libyuv_rgb_neon_plugin.so
 usr/lib/vlc/plugins/audio_filter
 usr/lib/vlc/plugins/audio_mixer
 usr/lib/vlc/plugins/audio_output/libadummy_plugin.so
@@ -104,6 +110,11 @@ usr/lib/vlc/plugins/misc/libosd_parser_plugin.so
 usr/lib/vlc/plugins/misc/libstats_plugin.so
 usr/lib/vlc/plugins/misc/libvod_rtsp_plugin.so
 usr/lib/vlc/plugins/misc/libxml_plugin.so
+usr/lib/vlc/plugins/mmx/libi420_rgb_mmx_plugin.so
+usr/lib/vlc/plugins/mmx/libi420_yuy2_mmx_plugin.so
+usr/lib/vlc/plugins/mmx/libi422_yuy2_mmx_plugin.so
+usr/lib/vlc/plugins/mmx/libmemcpymmx_plugin.so
+usr/lib/vlc/plugins/mmxext/libmemcpymmxext_plugin.so
 usr/lib/vlc/plugins/mux
 usr/lib/vlc/plugins/notify/libtelepathy_plugin.so
 usr/lib/vlc/plugins/packetizer
@@ -115,6 +126,9 @@ usr/lib/vlc/plugins/services_discovery/libpodcast_plugin.so
 usr/lib/vlc/plugins/services_discovery/libsap_plugin.so
 usr/lib/vlc/plugins/services_discovery/libudev_plugin.so
 usr/lib/vlc/plugins/services_discovery/libupnp_plugin.so
+usr/lib/vlc/plugins/sse2/libi420_rgb_sse2_plugin.so
+usr/lib/vlc/plugins/sse2/libi420_yuy2_sse2_plugin.so
+usr/lib/vlc/plugins/sse2/libi422_yuy2_sse2_plugin.so
 usr/lib/vlc/plugins/stream_filter
 usr/lib/vlc/plugins/stream_out
 usr/lib/vlc/plugins/text_renderer/libfreetype_plugin.so

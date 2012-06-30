@@ -3,6 +3,7 @@
 DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_HOST_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_HOST_ARCH_CPU  ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU)
 DEB_HOST_ARCH_OS   ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
 VERSION = $(shell dpkg-parsechangelog|sed -n 's/^Version: //p')
 DEBIAN_VERSION = $(shell echo $(VERSION)|sed -nr 's/[^:]+://; s/.*-([^-]+$$)/\1/p')
@@ -44,7 +45,6 @@ confflags += \
 	--enable-bluray \
 	--enable-bonjour \
 	--enable-caca \
-	--enable-crystalhd \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dirac \
@@ -125,15 +125,59 @@ confflags += \
 	--enable-linsys \
 	--enable-pvr \
 	--enable-udev \
-	--enable-v4l2 \
 	$(NULL)
-endif
-
-ifeq ($(DEB_HOST_ARCH_OS),kfreebsd)
+else
 confflags += \
 	--disable-alsa \
-	--enable-v4l2 \
+	--disable-atmo \
+	--disable-dc1394 \
+	--disable-dv \
+	--disable-libva \
+	--disable-linsys \
+	--disable-pvr \
+	--disable-udev \
 	$(NULL)
+removeplugins += alsa libatmo libdc1394 libdtv libaccess_dv libfb linsys libpvr libudev
+endif
+
+# Linux and kFreeBSD specific flags
+ifneq ($(filter $(DEB_HOST_ARCH_OS),linux kfreebsd),)
+confflags += --enable-v4l2
+else
+confflags += --disable-v4l2
+removeplugins += libv4l2
+endif
+
+# Linux amd64 and i386 specific flags
+ifneq ($(filter $(DEB_HOST_ARCH),amd64 i386),)
+confflags += --enable-crystalhd
+else
+confflags += --disable-crystalhd
+removeplugins += libcrystalhd
+endif
+
+# amd64 and i386 specific optimizations
+ifneq ($(filter $(DEB_HOST_ARCH_CPU),amd64 i386),)
+confflags += --enable-mmx --enable-sse
+else
+confflags += --disable-mmx --disable-sse
+removeplugins += 3dn mmx mmxext sse2
+endif
+
+# ARM specific optimizations
+ifneq ($(filter $(DEB_HOST_ARCH_CPU),armel armhf),)
+confflags += --enable-neon
+else
+confflags += --disable-neon
+removeplugins += neon
+endif
+
+# PowerPC specific optimizations
+ifneq ($(filter $(DEB_HOST_ARCH_CPU),powerpc),)
+confflags += --enable-altivec
+else
+confflags += --disable-altivec
+removeplugins += altivec
 endif
 
 %:
@@ -143,10 +187,7 @@ override_dh_autoreconf:
 	dh_autoreconf --as-needed
 
 override_dh_auto_clean:
-	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak \
-		debian/vlc-nox.install
-	rm -f debian/vlc-nox.install.kfreebsd
-	rm -f debian/vlc-nox.install.hurd
+	[ ! -f debian/vlc-nox.install.bak ] || mv -f debian/vlc-nox.install.bak debian/vlc-nox.install
 	rm -rf tmp/
 	dh_auto_clean
 
@@ -177,17 +218,9 @@ endif
 endif
 
 override_dh_install:
-	cp debian/vlc-nox.install debian/vlc-nox.install.bak
-	for dir in sse2 3dnow altivec arm_neon mmx mmxext ; do \
-	        if test -d debian/tmp/usr/lib/vlc/plugins/$${dir}; then \
-	                echo usr/lib/vlc/plugins/$${dir} >> debian/vlc-nox.install ; \
-	        fi ; \
-	done
-	# Remove some modules on non-linux arch
-	sed -e '/\(lib\|libaccess_\)\(alsa\|atmo\|dc1394\|dtv\|dv\|fb\|pvr\|udev\)_/d;/liblinsys_/d' \
-	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
-	sed -e '/\(lib\|libaccess_\)v4l2_/d' \
-	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd
+	# Remove disabled plugins
+	test -f debian/vlc-nox.install.bak || cp debian/vlc-nox.install debian/vlc-nox.install.bak
+	sed -i "/\($(shell echo $(removeplugins) | sed 's/ /\\|/g')\)_/d" debian/vlc-nox.install
 	cp tmp/libvlc.a debian/tmp/usr/lib
 	cp tmp/libvlccore.a debian/tmp/usr/lib
 	# Clean up libtool crap
