@@ -124,6 +124,7 @@ confflags += \
 	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv \
+	--enable-fbosd \
 	--enable-libva \
 	--enable-linsys \
 	--enable-omxil \
@@ -136,13 +137,26 @@ confflags += \
 	--disable-atmo \
 	--disable-dc1394 \
 	--disable-dv \
+	--disable-fbosd \
 	--disable-libva \
 	--disable-linsys \
 	--disable-omxil \
 	--disable-pvr \
 	--disable-udev \
 	$(NULL)
-removeplugins += alsa libatmo libdc1394 libdtv libaccess_dv libfb libomxil linsys libpvr libudev
+removeplugins += \
+	alsa \
+	libatmo \
+	libdc1394 \
+	libdtv \
+	libaccess_dv \
+	libfb \
+	libfbosd \
+	libomxil \
+	linsys \
+	libpvr \
+	libudev \
+	$(NULL)
 endif
 
 # Linux and kFreeBSD specific flags

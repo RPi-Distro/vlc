@@ -98,6 +98,7 @@ usr/lib/vlc/plugins/control/libmotion_plugin.so
 usr/lib/vlc/plugins/control/libnetsync_plugin.so
 usr/lib/vlc/plugins/control/liboldrc_plugin.so
 usr/lib/vlc/plugins/demux
+usr/lib/vlc/plugins/gui/libfbosd_plugin.so
 usr/lib/vlc/plugins/gui/libncurses_plugin.so
 usr/lib/vlc/plugins/lua/liblua_plugin.so
 usr/lib/vlc/plugins/meta_engine
