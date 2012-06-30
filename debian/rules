@@ -117,6 +117,8 @@ confflags += \
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
+# omxil should be enabled on all systems, but libomxil-bellagio does
+# not build on kfreebsd and hurd (currently)
 confflags += \
 	--enable-alsa \
 	--enable-atmo \
@@ -124,6 +126,7 @@ confflags += \
 	--enable-dv \
 	--enable-libva \
 	--enable-linsys \
+	--enable-omxil \
 	--enable-pvr \
 	--enable-udev \
 	$(NULL)
@@ -135,10 +138,11 @@ confflags += \
 	--disable-dv \
 	--disable-libva \
 	--disable-linsys \
+	--disable-omxil \
 	--disable-pvr \
 	--disable-udev \
 	$(NULL)
-removeplugins += alsa libatmo libdc1394 libdtv libaccess_dv libfb linsys libpvr libudev
+removeplugins += alsa libatmo libdc1394 libdtv libaccess_dv libfb libomxil linsys libpvr libudev
 endif
 
 # Linux and kFreeBSD specific flags
