@@ -166,7 +166,7 @@ removeplugins += 3dn mmx mmxext sse2
 endif
 
 # ARM specific optimizations
-ifneq ($(filter $(DEB_HOST_ARCH_CPU),armel armhf),)
+ifneq ($(filter $(DEB_HOST_ARCH_CPU),armhf),)
 confflags += --enable-neon
 else
 confflags += --disable-neon
