@@ -1,3 +1,12 @@
+vlc (2.0.2-2) unstable; urgency=low
+
+  * Add missing epoch to libqt4-dev build dependency.
+  * Drop libggi2-dev from build dependencies (not needed any more).
+    (Closes: #680237)
+  * The dependency ttf-freefont was renamed to fonts-freefont-ttf.
+
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 07 Jul 2012 19:13:07 +0200
+
 vlc (2.0.2-1) unstable; urgency=medium
 
   [ Edward Wang ]
