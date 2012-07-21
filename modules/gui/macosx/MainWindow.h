@@ -2,7 +2,7 @@
  * MainWindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: fe531e68014700245d7810c9e9efac210a25872f $
+ * $Id: 75b7f9c3cdf01c2539d7f176792c57b6248b6e7d $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -186,7 +186,6 @@
 /* fullscreen handling */
 - (void)showFullscreenController;
 - (BOOL)isFullscreen;
-- (void)updateFullscreen;
 - (void)lockFullscreenAnimation;
 - (void)unlockFullscreenAnimation;
 - (void)enterFullscreen;
@@ -200,6 +199,7 @@
 - (void)windowDidEnterFullScreen:(NSNotification *)notification;
 - (void)windowWillExitFullScreen:(NSNotification *)notification;
 
+- (id)detachedTitlebarView;
 @end
 
 @interface VLCDetachedVideoWindow : NSWindow
@@ -210,7 +210,6 @@
 }
 
 - (BOOL)isFullscreen;
-- (void)updateFullscreen;
 - (void)customZoom:(id)sender;
 
 @end

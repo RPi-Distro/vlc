@@ -2,7 +2,7 @@
  * fspanel.h: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2011 VLC authors and VideoLAN
- * $Id: 06231ef05f798fa5978a800798e785630558e3a8 $
+ * $Id: b6c32db90e04207fe86ffc84cd6465b1385948dc $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -35,8 +35,6 @@
     BOOL b_displayed;
     BOOL b_voutWasUpdated;
     int i_device;
-
-    BOOL b_usingBigScreen;
 }
 - (id)initWithContentRect: (NSRect)contentRect
                 styleMask: (NSUInteger)aStyle
@@ -73,7 +71,6 @@
 
 - (BOOL)isDisplayed;
 - (void)setVoutWasUpdated: (int)i_screen;
-- (void)adaptWindowSizeToScreen;
 @end
 
 @interface VLCFSPanelView : NSView
@@ -82,8 +79,7 @@
     NSButton *o_prev, *o_next, *o_bwd, *o_fwd, *o_play, *o_fullscreen;
     NSTextField *o_streamTitle_txt, *o_streamPosition_txt;
     NSSlider *o_fs_timeSlider, *o_fs_volumeSlider;
-
-    BOOL b_usingBigScreen;
+    NSImage *o_background_img, *o_vol_sld_img, *o_vol_mute_img, *o_vol_max_img, *o_time_sld_img;
 }
 - (id)initWithFrame: (NSRect)frameRect;
 - (void)drawRect: (NSRect)rect;
@@ -101,7 +97,6 @@
 - (IBAction)backward:(id)sender;
 - (IBAction)fsTimeSliderUpdate: (id)sender;
 - (IBAction)fsVolumeSliderUpdate: (id)sender;
-- (void)adaptViewSizeToScreen: (BOOL)b_value;
 
 @end
 

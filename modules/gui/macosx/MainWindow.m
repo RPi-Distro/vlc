@@ -2,7 +2,7 @@
  * MainWindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 3473ef086cc3a473a27e139ed837ddf96b93a497 $
+ * $Id: 6e7e36f73986eac80931e803f1d899019577f3c0 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -122,6 +122,7 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
 - (BOOL)performKeyEquivalent:(NSEvent *)o_event
 {
+    BOOL b_force = NO;
     // these are key events which should be handled by vlc core, but are attached to a main menu item
     if( ![self isEvent: o_event forKey: "key-vol-up"] &&
         ![self isEvent: o_event forKey: "key-vol-down"] &&
@@ -132,8 +133,10 @@ static VLCMainWindow *_o_sharedInstance = nil;
         if([[NSApp mainMenu] performKeyEquivalent:o_event])
             return TRUE;
     }
+    else
+        b_force = YES;
 
-    return [[VLCMain sharedInstance] hasDefinedShortcutKey:o_event] ||
+    return [[VLCMain sharedInstance] hasDefinedShortcutKey:o_event force:b_force] ||
            [(VLCControls *)[[VLCMain sharedInstance] controls] keyEvent:o_event];
 }
 
@@ -1663,6 +1666,11 @@ static VLCMainWindow *_o_sharedInstance = nil;
     if( new_frame.origin.y < screenFrame.origin.y )
         new_frame.origin.y = screenFrame.origin.y;
 
+    CGFloat right_screen_point = screenFrame.origin.x + screenFrame.size.width;
+    CGFloat right_window_point = new_frame.origin.x + new_frame.size.width;
+    if( right_window_point > right_screen_point )
+        new_frame.origin.x -= ( right_window_point - right_screen_point );
+
     [[o_videoWindow animator] setFrame:new_frame display:YES];
 }
 
@@ -1712,11 +1720,6 @@ static VLCMainWindow *_o_sharedInstance = nil;
         [o_fspanel fadeIn];
 }
 
-- (void)updateFullscreen
-{
-    [[VLCMain sharedInstance] fullscreenChanged];
-}
-
 - (BOOL)isFullscreen
 {
     return b_fullscreen;
@@ -1738,13 +1741,10 @@ static VLCMainWindow *_o_sharedInstance = nil;
     NSScreen *screen;
     NSRect screen_rect;
     NSRect rect;
-    vout_thread_t *p_vout = getVout();
     BOOL blackout_other_displays = config_GetInt( VLCIntf, "macosx-black" );
     id o_videoWindow = b_nonembedded ? o_detached_video_window : self;
 
-    if( p_vout )
-        screen = [NSScreen screenWithDisplayID:(CGDirectDisplayID)config_GetInt( VLCIntf, "macosx-vdev" )];
-
+    screen = [NSScreen screenWithDisplayID:(CGDirectDisplayID)config_GetInt( VLCIntf, "macosx-vdev" )];
     [self lockFullscreenAnimation];
 
     if (!screen)
@@ -1757,9 +1757,6 @@ static VLCMainWindow *_o_sharedInstance = nil;
         msg_Dbg( VLCIntf, "Using deepest screen" );
         screen = [NSScreen deepestScreen];
     }
-
-    if( p_vout )
-        vlc_object_release( p_vout );
 
     screen_rect = [screen frame];
 
@@ -2197,6 +2194,10 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
 - (void)windowDidEnterFullScreen:(NSNotification *)notification
 {
+    // Indeed, we somehow can have an "inactive" fullscreen (but a visible window!).
+    // But this creates some problems when leaving fs over remote intfs, so activate app here.
+    [NSApp activateIgnoringOtherApps:YES];
+
     [o_fspanel setVoutWasUpdated: (int)[[self screen] displayID]];
     [o_fspanel setActive: nil];
 }
@@ -2545,6 +2546,59 @@ static VLCMainWindow *_o_sharedInstance = nil;
 
     return nil;
 }
+
+#pragma mark -
+#pragma mark Accessibility stuff
+
+- (NSArray *)accessibilityAttributeNames
+{
+    if( !b_dark_interface )
+        return [super accessibilityAttributeNames];
+
+    static NSMutableArray *attributes = nil;
+    if ( attributes == nil ) {
+        attributes = [[super accessibilityAttributeNames] mutableCopy];
+        NSArray *appendAttributes = [NSArray arrayWithObjects: NSAccessibilitySubroleAttribute,
+                                     NSAccessibilityCloseButtonAttribute,
+                                     NSAccessibilityMinimizeButtonAttribute,
+                                     NSAccessibilityZoomButtonAttribute,
+                                     nil];
+
+        for( NSString *attribute in appendAttributes )
+        {
+            if( ![attributes containsObject:attribute] )
+                [attributes addObject:attribute];
+        }
+    }
+    return attributes;
+}
+
+- (id)accessibilityAttributeValue: (NSString*)o_attribute_name
+{
+    if( b_dark_interface )
+    {
+        VLCMainWindowTitleView *o_tbv = o_titlebar_view;
+
+        if( [o_attribute_name isEqualTo: NSAccessibilitySubroleAttribute] )
+            return NSAccessibilityStandardWindowSubrole;
+
+        if( [o_attribute_name isEqualTo: NSAccessibilityCloseButtonAttribute] )
+            return [[o_tbv closeButton] cell];
+
+        if( [o_attribute_name isEqualTo: NSAccessibilityMinimizeButtonAttribute] )
+            return [[o_tbv minimizeButton] cell];
+        
+        if( [o_attribute_name isEqualTo: NSAccessibilityZoomButtonAttribute] )
+            return [[o_tbv zoomButton] cell];
+    }
+
+    return [super accessibilityAttributeValue: o_attribute_name];
+}
+
+- (id)detachedTitlebarView
+{
+    return o_detached_titlebar_view;
+}
 @end
 
 @implementation VLCDetachedVideoWindow
@@ -2597,11 +2651,6 @@ static VLCMainWindow *_o_sharedInstance = nil;
 - (IBAction)fullscreen:(id)sender
 {
     [[VLCCoreInteraction sharedInstance] toggleFullscreen];
-}
-
-- (void)updateFullscreen
-{
-    [[VLCMain sharedInstance] fullscreenChanged];
 }
 
 - (BOOL)isFullscreen
@@ -2753,6 +2802,51 @@ static VLCMainWindow *_o_sharedInstance = nil;
     }
 
     [self setFrame: maxRect display: YES animate: YES];
+}
+
+- (NSArray *)accessibilityAttributeNames
+{
+    if( !b_dark_interface )
+        return [super accessibilityAttributeNames];
+    
+    static NSMutableArray *attributes = nil;
+    if ( attributes == nil ) {
+        attributes = [[super accessibilityAttributeNames] mutableCopy];
+        NSArray *appendAttributes = [NSArray arrayWithObjects: NSAccessibilitySubroleAttribute,
+                                     NSAccessibilityCloseButtonAttribute,
+                                     NSAccessibilityMinimizeButtonAttribute,
+                                     NSAccessibilityZoomButtonAttribute,
+                                     nil];
+        
+        for( NSString *attribute in appendAttributes )
+        {
+            if( ![attributes containsObject:attribute] )
+                [attributes addObject:attribute];
+        }
+    }
+    return attributes;
+}
+
+- (id)accessibilityAttributeValue: (NSString*)o_attribute_name
+{
+    if( b_dark_interface )
+    {
+        VLCMainWindowTitleView *o_tbv = [[VLCMainWindow sharedInstance] detachedTitlebarView];
+        
+        if( [o_attribute_name isEqualTo: NSAccessibilitySubroleAttribute] )
+            return NSAccessibilityStandardWindowSubrole;
+        
+        if( [o_attribute_name isEqualTo: NSAccessibilityCloseButtonAttribute] )
+            return [[o_tbv closeButton] cell];
+        
+        if( [o_attribute_name isEqualTo: NSAccessibilityMinimizeButtonAttribute] )
+            return [[o_tbv minimizeButton] cell];
+        
+        if( [o_attribute_name isEqualTo: NSAccessibilityZoomButtonAttribute] )
+            return [[o_tbv zoomButton] cell];
+    }
+    
+    return [super accessibilityAttributeValue: o_attribute_name];
 }
 
 @end

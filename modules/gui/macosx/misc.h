@@ -2,7 +2,7 @@
  * misc.h: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: 3540bac18215f7d31c827e51a23c9ffd8861e590 $
+ * $Id: 28762aa828d08293778b7e0366f00d4ea3d5d5fb $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -118,6 +118,7 @@
 {
     NSImage *o_knob_img;
     NSRect img_rect;
+    BOOL b_dark;
 }
 - (CGFloat)knobPosition;
 

@@ -2,7 +2,7 @@
  * bookmarks.m: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005 - 2012 VLC authors and VideoLAN
- * $Id: f0ad4fc4f0d3bbe88d1c0c76a099d8eb24281eee $
+ * $Id: 2cc0e4493a2d84e2cdca5047dfc0d9db32b3585a $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -73,6 +73,9 @@ static VLCBookmarks *_o_sharedInstance = nil;
 
 - (void)dealloc
 {
+    if (p_old_input)
+        vlc_object_release( p_old_input );
+
     [super dealloc];
 }
 
@@ -155,8 +158,14 @@ static VLCBookmarks *_o_sharedInstance = nil;
     int row;
     row = [o_tbl_dataTable selectedRow];
  
-    if( !p_input && row < 0 )
+    if( !p_input )
         return;
+
+    if (row < 0)
+    {
+        vlc_object_release( p_input );
+        return;
+    }
 
     if( input_Control( p_input, INPUT_GET_BOOKMARKS, &pp_bookmarks,
         &i_bookmarks ) != VLC_SUCCESS )

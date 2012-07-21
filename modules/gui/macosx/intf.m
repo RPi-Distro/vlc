@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 9df99fc329710e50a4d662cbf24aae95efb777a4 $
+ * $Id: cfadf2dc1b4ac7c2d37b9b9f58cdd5b0a2d2e3fd $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -168,8 +168,8 @@ static int WindowControl( vout_window_t *p_wnd, int i_query, va_list args )
     else if( i_query == VOUT_WINDOW_SET_FULLSCREEN )
     {
         NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
-        // we already have our playlist "fullscreen" callback, do not repeat the same call here
-        //[[VLCMain sharedInstance] performSelectorOnMainThread:@selector(fullscreenChanged) withObject: nil waitUntilDone: NO];
+        int i_full = va_arg( args, int );
+        [[VLCMain sharedInstance] performSelectorOnMainThread:@selector(checkFullscreenChange:) withObject:[NSNumber numberWithInt: i_full] waitUntilDone:NO];
         [o_pool release];
     }
     else
@@ -973,10 +973,12 @@ static VLCMain *_o_sharedMainInstance = nil;
                 [[VLCCoreInteraction sharedInstance] backward];
                 break;
             case kRemoteButtonVolume_Plus_Hold:
-                [[VLCCoreInteraction sharedInstance] volumeUp];
+                if( p_intf )
+                    var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_VOL_UP );
                 break;
             case kRemoteButtonVolume_Minus_Hold:
-                [[VLCCoreInteraction sharedInstance] volumeDown];
+                if( p_intf )
+                    var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_VOL_DOWN );
                 break;
         }
         if(b_remote_button_hold)
@@ -1010,10 +1012,12 @@ static VLCMain *_o_sharedMainInstance = nil;
             }
             break;
         case kRemoteButtonVolume_Plus:
-            [[VLCCoreInteraction sharedInstance] volumeUp];
+            if( p_intf )
+                var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_VOL_UP );
             break;
         case kRemoteButtonVolume_Minus:
-            [[VLCCoreInteraction sharedInstance] volumeDown];
+            if( p_intf )
+                var_SetInteger( p_intf->p_libvlc, "key-action", ACTIONID_VOL_DOWN );
             break;
         case kRemoteButtonRight:
             [[VLCCoreInteraction sharedInstance] next];
@@ -1305,7 +1309,7 @@ unsigned int CocoaKeyToVLC( unichar i_key )
  * shortcut key.  If it is, pass it off to VLC for handling and return YES,
  * otherwise ignore it and return NO (where it will get handled by Cocoa).
  *****************************************************************************/
-- (BOOL)hasDefinedShortcutKey:(NSEvent *)o_event
+- (BOOL)hasDefinedShortcutKey:(NSEvent *)o_event force:(BOOL)b_force
 {
     unichar key = 0;
     vlc_value_t val;
@@ -1327,7 +1331,7 @@ unsigned int CocoaKeyToVLC( unichar i_key )
         val.i_int |= KEY_MODIFIER_COMMAND;
     }
 
-    key = [[o_event charactersIgnoringModifiers] characterAtIndex: 0];
+    key = [[[o_event charactersIgnoringModifiers] lowercaseString] characterAtIndex: 0];
 
     /* handle Lion's default key combo for fullscreen-toggle in addition to our own hotkeys */
     if( key == 'f' && i_pressed_modifiers & NSControlKeyMask && i_pressed_modifiers & NSCommandKeyMask )
@@ -1336,7 +1340,7 @@ unsigned int CocoaKeyToVLC( unichar i_key )
         return YES;
     }
 
-    if( val.i_int == 0 ) // ignore only when no modifier is pressed
+    if( !b_force )
     {
         switch( key )
         {
@@ -1447,6 +1451,8 @@ unsigned int CocoaKeyToVLC( unichar i_key )
             input_thread_t * p_input = pl_CurrentInput( VLCIntf );
             if( p_input != NULL && [self activeVideoPlayback] )
             {
+                // activate app, as method can also be triggered from outside the app (prevents nasty window layout)
+                [NSApp activateIgnoringOtherApps:YES];
                 [o_mainwindow performSelectorOnMainThread:@selector(enterFullscreen) withObject:nil waitUntilDone:NO];
             }
             if (p_input)
@@ -1457,6 +1463,15 @@ unsigned int CocoaKeyToVLC( unichar i_key )
             // leaving fullscreen is always allowed
             [o_mainwindow performSelectorOnMainThread:@selector(leaveFullscreen) withObject:nil waitUntilDone:NO];
         }
+    }
+}
+
+- (void)checkFullscreenChange:(NSNumber *)o_full
+{
+    BOOL b_full = [o_full boolValue];    
+    if( p_intf && !var_GetBool( pl_Get( p_intf ), "fullscreen" ) != !b_full )
+    {
+        var_SetBool( pl_Get(p_intf), "fullscreen", b_full );        
     }
 }
 
