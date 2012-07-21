@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: eff1f78046bc1334c7e90c1237a659e746a5205d $
+ * $Id: 412d2edcd6239004a1147731b102142cd2450249 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -175,11 +175,12 @@ struct intf_sys_t
 - (NSString *)localizedString:(const char *)psz;
 - (char *)delocalizeString:(NSString *)psz;
 - (NSString *)wrapString: (NSString *)o_in_string toWidth: (int)i_width;
-- (BOOL)hasDefinedShortcutKey:(NSEvent *)o_event;
+- (BOOL)hasDefinedShortcutKey:(NSEvent *)o_event force:(BOOL)b_force;
 - (NSString *)VLCKeyToString:(NSString *)theString;
 - (unsigned int)VLCModifiersToCocoa:(NSString *)theString;
 - (void)updateCurrentlyUsedHotkeys;
 - (void)fullscreenChanged;
+- (void)checkFullscreenChange:(NSNumber *)o_full;
 - (void)PlaylistItemChanged;
 - (void)playbackStatusUpdated;
 - (void)sendDistributedNotificationWithUpdatedPlaybackStatus;

@@ -2,7 +2,7 @@
  * controls.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2011 VLC authors and VideoLAN
- * $Id: ba6d9a05e3fb9796a022f34b77ebae685d912736 $
+ * $Id: 871526ae2c23d003469769086c6efa6e8b40349d $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -163,7 +163,7 @@
         if( p_vout != NULL )
         {
             var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_POSITION );
-            vlc_object_release( (vlc_object_t *)p_vout );
+            vlc_object_release( p_vout );
         }
         vlc_object_release( p_input );
     }
@@ -359,14 +359,10 @@
                 /* Escape */
                 if( key == (unichar) 0x1b )
                 {
-                    vout_thread_t *p_vout = getVout();
-                    if (p_vout)
+                    if (var_GetBool( p_vout, "fullscreen" ))
                     {
-                        if (var_GetBool( p_vout, "fullscreen" ))
-                        {
-                            [[VLCCoreInteraction sharedInstance] toggleFullscreen];
-                            eventHandled = YES;
-                        }
+                        [[VLCCoreInteraction sharedInstance] toggleFullscreen];
+                        eventHandled = YES;
                     }
                 }
                 else if( key == ' ' )
@@ -374,7 +370,7 @@
                     [self play:self];
                     eventHandled = YES;
                 }
-                vlc_object_release( (vlc_object_t *)p_vout );
+                vlc_object_release( p_vout );
             }
             vlc_object_release( p_input );
         }

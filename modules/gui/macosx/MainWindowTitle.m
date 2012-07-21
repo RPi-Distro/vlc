@@ -2,7 +2,7 @@
  * MainWindowTitle.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 7de275d06062d1ad3fc2e2acf30fe7c4a257f2c5 $
+ * $Id: 2e3a4d173dea94a1fb783bcd3d70f1ff7c387dc4 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -257,6 +257,22 @@
 
     [super mouseDown: event];
 }
+
+- (NSButton*)closeButton
+{
+    return o_red_btn;
+}
+
+- (NSButton*)minimizeButton
+{
+    return o_yellow_btn;
+}
+
+- (NSButton*)zoomButton
+{
+    return o_green_btn;
+}
+
 @end
 
 /*****************************************************************************

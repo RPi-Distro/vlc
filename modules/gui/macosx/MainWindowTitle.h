@@ -2,7 +2,7 @@
  * MainWindowTitle.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 68e61c4e4331af15821a8cf246f5f9c7968682ff $
+ * $Id: f3f8b11dfdac40fc8385b92a056505002e680e78 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -55,6 +55,10 @@
 - (void)setFullscreenButtonHidden:(BOOL)b_value;
 - (void)setWindowButtonOver:(BOOL)b_value;
 - (void)setWindowFullscreenButtonOver:(BOOL)b_value;
+
+- (NSButton*)closeButton;
+- (NSButton*)minimizeButton;
+- (NSButton*)zoomButton;
 
 @end
 
