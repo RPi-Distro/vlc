@@ -1,3 +1,9 @@
+vlc (2.0.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 21 Jul 2012 17:52:21 +0200
+
 vlc (2.0.2-2) unstable; urgency=low
 
   * Add missing epoch to libqt4-dev build dependency.
