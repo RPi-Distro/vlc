@@ -105,6 +105,7 @@ confflags += \
 # sqlite -> still in development
 # telx -> incompatible with zvbi
 # crystalhd -> not in squeeze
+# omxil -> not in squeeze
 confflags += \
 	--disable-dxva2 \
 	--disable-gnomevfs \
@@ -114,12 +115,15 @@ confflags += \
 	--disable-sqlite \
 	--disable-telx \
 	--disable-crystalhd \
+    --disable-omxil \
+	$(NULL)
+removeplugins += \
+	libcrystalhd \
+	libomxil \
 	$(NULL)
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-# omxil should be enabled on all systems, but libomxil-bellagio does
-# not build on kfreebsd and hurd (currently)
 confflags += \
 	--enable-alsa \
 	--enable-atmo \
@@ -128,7 +132,6 @@ confflags += \
 	--enable-fbosd \
 	--enable-libva \
 	--enable-linsys \
-	--enable-omxil \
 	--enable-pvr \
 	--enable-udev \
 	$(NULL)
