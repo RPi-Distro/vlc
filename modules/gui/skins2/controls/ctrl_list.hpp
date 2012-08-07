@@ -2,7 +2,7 @@
  * ctrl_list.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fcfb33e3f33e5b62de1a0483b901f0a1ac4c87de $
+ * $Id: 1f7e5c811b26efba43659d6c71e946090b0960bb $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -60,6 +60,9 @@ public:
 
     /// Return true if the control can gain the focus
     virtual bool isFocusable() const { return true; }
+
+    /// Return true if the control can be scrollable
+    virtual bool isScrollable() const { return true; }
 
     /// Get the type of control (custom RTTI)
     virtual string getType() const { return "list"; }

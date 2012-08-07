@@ -2,7 +2,7 @@
  * logger.c : file logging plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 81ab268ec5a3629d443fc752b94c2d09e64fb75d $
+ * $Id: 8314d9a89db5b5d767b426c94c649e6938ce6af5 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -443,7 +443,7 @@ static void HtmlPrint( void *opaque, int type, const msg_item_t *item,
     fprintf( stream, "%s%s: <span style=\"color: #%06x\">",
              item->psz_module, ppsz_type[type], color[type] );
     /* FIXME: encode special ASCII characters */
-    fprintf( stream, fmt, ap );
+    vfprintf( stream, fmt, ap );
     fputs( "</span>\n", stream );
     funlockfile( stream );
     vlc_restorecancel( canc );

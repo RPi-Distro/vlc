@@ -2,7 +2,7 @@
  * directx.c: Windows DirectX audio output method
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 69faeab1e2871e82c5a15658d33c5dca964ca9ff $
+ * $Id: 6945ce8f2abca137a25eb91896683fe3285168df $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -672,7 +672,7 @@ static int InitDirectSound( audio_output_t *p_aout )
                        "DirectSoundEnumerateW" );
     if( OurDirectSoundEnumerate )
     {
-        p_aout->sys->psz_device = var_InheritString(p_aout, "directx-audio-device-name");
+        p_aout->sys->psz_device = var_InheritString(p_aout, "directx-audio-device");
         /* Attempt enumeration */
         if( FAILED( OurDirectSoundEnumerate( CallBackDirectSoundEnum,
                                              p_aout ) ) )

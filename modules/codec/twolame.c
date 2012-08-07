@@ -3,7 +3,7 @@
  *            (using libtwolame from http://www.twolame.org/)
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 440e152e41e853dd4aa73b68d6b801363ae3cf2d $
+ * $Id: cd07276c15eb9e8b24de9f2ec113343222cdd439 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin
@@ -73,7 +73,7 @@ static const char *const ppsz_stereo_descriptions[] =
 vlc_module_begin ()
     set_shortname( "Twolame")
     set_description( N_("Libtwolame audio encoder") )
-    set_capability( "encoder", 50 )
+    set_capability( "encoder", 120 )
     set_callbacks( OpenEncoder, CloseEncoder )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACODEC )
@@ -132,6 +132,7 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     if( p_enc->fmt_out.i_codec != VLC_CODEC_MP2 &&
         p_enc->fmt_out.i_codec != VLC_CODEC_MPGA &&
+        p_enc->fmt_out.i_codec != VLC_FOURCC( 'm', 'p', '2', 'a' ) &&
         !p_enc->b_force )
     {
         return VLC_EGENERIC;

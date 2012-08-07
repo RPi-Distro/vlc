@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 62560a52287a2eff2f7968511d4a15e7e1530547 $
+ * $Id: d439a138457db9e3ff233fc40b00f657f8ea4231 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -921,10 +921,11 @@ Equalizer::Equalizer( intf_thread_t *_p_intf, QWidget *_parent ) :
         bands[i] = new QSlider( Qt::Vertical );
         bands[i]->setMaximum( 400 );
         bands[i]->setValue( 200 );
-        bands[i]->setMinimumWidth(34);
+        bands[i]->setMinimumWidth(36);
         CONNECT( bands[i], valueChanged( int ), this, setCoreBands() );
 
-        band_texts[i] = new QLabel( band_frequencies[i] + "\n00.0dB" );
+        QString val = QString("%1").arg( 0.0, 5, 'f', 1 );
+        band_texts[i] = new QLabel( band_frequencies[i] + "\n" + val + "dB" );
         band_texts[i]->setFont( smallFont );
 
         grid->addWidget( bands[i], 0, i );
@@ -1366,23 +1367,7 @@ Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent )
     for( int i = 0 ; i < NUM_SP_CTRL ; i++ )
     {
         spatCtrl[i] = new QSlider( Qt::Vertical );
-        if( i < 2 )
-        {
-            spatCtrl[i]->setMaximum( 100 );
-            spatCtrl[i]->setValue( 20 );
-        }
-        else if( i < 4 )
-        {
-            spatCtrl[i]->setMaximum( 100 );
-            spatCtrl[i]->setValue( 20 );
-            spatCtrl[i]->setMinimum( -100 );
-        }
-        else
-        {
-            spatCtrl[i]->setMaximum( 40 );
-            spatCtrl[i]->setValue( 10 );
-        }
-
+        spatCtrl[i]->setValue( (int)var_InheritFloat( p_intf, spat_controls[i].psz_name ) * 10. );
         oldControlVars[i] = spatCtrl[i]->value();
 
         CONNECT( spatCtrl[i], valueChanged( int ), this, setInitValues() );
@@ -1396,7 +1381,9 @@ Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent )
         layout->addWidget( spatCtrl[i],     1, i, Qt::AlignHCenter );
         layout->addWidget( ctrl_readout[i], 2, i, Qt::AlignHCenter );
         layout->addWidget( ctrl_texts[i],   3, i, Qt::AlignHCenter );
+        spatCtrl[i]->setRange( 0, 10 );
     }
+    spatCtrl[0]->setRange( 0, 11 );
 
     BUTTONACT( enableCheck, enable() );
 

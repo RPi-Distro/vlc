@@ -2,7 +2,7 @@
  * caca.c: Color ASCII Art "vout display" module using libcaca
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 08786a99410a083a9cda9c9a2a47c209c6046da7 $
+ * $Id: 5c9c1cb3ebc390ad70078acbc0bf04238c4286ee $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -34,6 +34,12 @@
 #include <vlc_plugin.h>
 #include <vlc_vout_display.h>
 #include <vlc_picture_pool.h>
+#ifndef WIN32
+# ifdef X_DISPLAY_MISSING
+#  error Xlib required due to XInitThreads
+# endif
+# include <vlc_xlib.h>
+#endif
 
 #include <caca.h>
 
@@ -57,7 +63,7 @@ vlc_module_end()
  *****************************************************************************/
 static picture_pool_t *Pool  (vout_display_t *, unsigned);
 static void           Prepare(vout_display_t *, picture_t *, subpicture_t *);
-static void           Display(vout_display_t *, picture_t *, subpicture_t *);
+static void    PictureDisplay(vout_display_t *, picture_t *, subpicture_t *);
 static int            Control(vout_display_t *, int, va_list);
 
 /* */
@@ -82,6 +88,10 @@ static int Open(vlc_object_t *object)
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
 
+#ifndef X_DISPLAY_MISSING
+    if (!vlc_xlib_init(object))
+        return VLC_EGENERIC;
+#endif
 #if defined(WIN32) && !defined(UNDER_CE)
     CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
     SMALL_RECT rect;
@@ -180,7 +190,7 @@ static int Open(vlc_object_t *object)
 
     vd->pool    = Pool;
     vd->prepare = Prepare;
-    vd->display = Display;
+    vd->display = PictureDisplay;
     vd->control = Control;
     vd->manage  = Manage;
 
@@ -284,7 +294,7 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 /**
  * Display a picture
  */
-static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
+static void PictureDisplay(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
 {
     Refresh(vd);
     picture_Release(picture);

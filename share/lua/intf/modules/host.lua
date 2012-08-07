@@ -115,13 +115,13 @@ function host()
     end
 
     local function del_client( client )
-        if client.type == client_type.stdio then
-            client:send( "Cannot delete stdin/stdout client.\n" )
-            return
-        end
         for i, c in pairs(clients) do
             if c == client then
-                if client.type == client_type.net
+                if client.type == client_type.stdio then
+                    h:broadcast("Shutting down.\r\n")
+                    vlc.msg.info("Requested shutdown.")
+                    vlc.misc.quit()
+                elseif client.type == client_type.net
                 or client.type == client_type.telnet then
                     if client.wfd ~= client.rfd then
                         vlc.net.close( client.rfd )
@@ -254,14 +254,14 @@ function host()
         local rclients = {}
         if ret > 0 then
             for _, client in pairs(clients) do
-                if is_flag_set(pollfds[client:fd()], vlc.net.POLLERR)
+                if is_flag_set(pollfds[client:fd()], vlc.net.POLLIN) then
+                    table.insert(rclients,client)
+                elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLERR)
                 or is_flag_set(pollfds[client:fd()], vlc.net.POLLHUP)
                 or is_flag_set(pollfds[client:fd()], vlc.net.POLLNVAL) then
                     del_client(client)
                 elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLOUT) then
                     table.insert(wclients,client)
-                elseif is_flag_set(pollfds[client:fd()], vlc.net.POLLIN) then
-                    table.insert(rclients,client)
                 end
             end
             if listeners.tcp then

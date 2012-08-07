@@ -2,7 +2,7 @@
  * ctrl_tree.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cc5972c8a0b2e34ad017907c6461faff0120bbe6 $
+ * $Id: 6044716c145a56e015c9f44714e1a7cb0d3154c7 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -70,6 +70,9 @@ public:
 
     /// Return true if the control can gain the focus
     virtual bool isFocusable() const { return true; }
+
+    /// Return true if the control can be scrollable
+    virtual bool isScrollable() const { return true; }
 
     /// Get the type of control (custom RTTI)
     virtual string getType() const { return "tree"; }

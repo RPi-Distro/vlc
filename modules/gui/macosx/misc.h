@@ -2,7 +2,7 @@
  * misc.h: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: 3d5e00d2cab7cc90641e332b7f89988bea239100 $
+ * $Id: 28762aa828d08293778b7e0366f00d4ea3d5d5fb $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -23,7 +23,6 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import <ApplicationServices/ApplicationServices.h>
 #import "CompatibilityFixes.h"
 
 /*****************************************************************************
@@ -61,11 +60,15 @@
 {
     BOOL b_canBecomeKeyWindow;
     BOOL b_isset_canBecomeKeyWindow;
+    BOOL b_canBecomeMainWindow;
+    BOOL b_isset_canBecomeMainWindow;
     BOOL b_isFullscreen;
     NSViewAnimation *animation;
 }
 
 - (void)setCanBecomeKeyWindow: (BOOL)canBecomeKey;
+
+- (void)setCanBecomeMainWindow: (BOOL)canBecomeMain;
 
 /* animate mode is only supported in >=10.4 */
 - (void)orderFront: (id)sender animate: (BOOL)animate;
@@ -84,16 +87,6 @@
 - (BOOL)isFullscreen;
 @end
 
-
-/*****************************************************************************
- * VLCControllerView
- *****************************************************************************/
-
-@interface VLCControllerView : NSView
-{
-}
-
-@end
 
 /*****************************************************************************
  * VLBrushedMetalImageView
@@ -125,6 +118,7 @@
 {
     NSImage *o_knob_img;
     NSRect img_rect;
+    BOOL b_dark;
 }
 - (CGFloat)knobPosition;
 
@@ -187,7 +181,7 @@
 @end
 
 /*****************************************************************************
- * VLCThreePartImageView interface
+ * VLCThreePartDropView interface
  *****************************************************************************/
 @interface VLCThreePartDropView : VLCThreePartImageView
 {

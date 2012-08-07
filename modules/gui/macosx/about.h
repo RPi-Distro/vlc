@@ -1,8 +1,8 @@
 /*****************************************************************************
  * about.h: MacOS X About Panel
  *****************************************************************************
- * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 167ef119745e6ea9192804394d8040620471db8a $
+ * Copyright (C) 2001-2012 VLC authors and VideoLAN
+ * $Id: d96efb07e7f875b5c4b43b3666f53b4598850c62 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -38,6 +38,7 @@
     IBOutlet id o_credits_scrollview;
     IBOutlet id o_gpl_btn;
     IBOutlet id o_name_field;
+    id o_color_backdrop;
 
     NSTimer *o_scroll_timer;
     float f_current;
@@ -63,5 +64,9 @@
 - (void)showHelp;
 - (IBAction)showGPL:(id)sender;
 - (IBAction)helpGoHome:(id)sender;
+
+@end
+
+@interface VLAboutColoredBackdrop : NSView
 
 @end

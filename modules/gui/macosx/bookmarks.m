@@ -1,10 +1,10 @@
 /*****************************************************************************
  * bookmarks.m: MacOS X Bookmarks window
  *****************************************************************************
- * Copyright (C) 2005 - 2007 VLC authors and VideoLAN
- * $Id: bf56c0055d910de567e025df022eea44549b5e8b $
+ * Copyright (C) 2005 - 2012 VLC authors and VideoLAN
+ * $Id: 2cc0e4493a2d84e2cdca5047dfc0d9db32b3585a $
  *
- * Authors: Felix Kühne <fkuehne at videolan dot org>
+ * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,9 @@ static VLCBookmarks *_o_sharedInstance = nil;
 
 - (void)dealloc
 {
+    if (p_old_input)
+        vlc_object_release( p_old_input );
+
     [super dealloc];
 }
 
@@ -155,8 +158,14 @@ static VLCBookmarks *_o_sharedInstance = nil;
     int row;
     row = [o_tbl_dataTable selectedRow];
  
-    if( !p_input && row < 0 )
+    if( !p_input )
         return;
+
+    if (row < 0)
+    {
+        vlc_object_release( p_input );
+        return;
+    }
 
     if( input_Control( p_input, INPUT_GET_BOOKMARKS, &pp_bookmarks,
         &i_bookmarks ) != VLC_SUCCESS )
@@ -283,9 +292,8 @@ clear:
     int i_bookmarks ;
     int i_first = -1;
     int i_second = -1;
-    int x = 0;
     int c = 0;
-    while (c != 2)
+    for (NSUInteger x = 0; c != 2; x++)
     {
         if([o_tbl_dataTable isRowSelected:x])
         {
@@ -300,7 +308,6 @@ clear:
                 c = 2;
             }
         }
-        x = (x + 1);
     }
  
     msg_Dbg( VLCIntf, "got the bookmark-indexes");
@@ -415,17 +422,18 @@ clear:
     }
     else
     {
-        if ([[theTableColumn identifier] isEqualToString: @"description"])
+        NSString * identifier = [theTableColumn identifier];
+        if ([identifier isEqualToString: @"description"])
         {
             toBeReturned = pp_bookmarks[row]->psz_name;
             ret = [NSString stringWithUTF8String: toBeReturned];
         }
-        else if ([[theTableColumn identifier] isEqualToString: @"size_offset"])
+        else if ([identifier isEqualToString: @"size_offset"])
         {
             i_toBeReturned = pp_bookmarks[row]->i_byte_offset;
             ret = [[NSNumber numberWithInt: i_toBeReturned] stringValue];
         }
-        else if ([[theTableColumn identifier] isEqualToString: @"time_offset"])
+        else if ([identifier isEqualToString: @"time_offset"])
         {
             i_toBeReturned = pp_bookmarks[row]->i_time_offset;
             ret = [[NSNumber numberWithInt: (i_toBeReturned / 1000000)]
@@ -435,8 +443,7 @@ clear:
         {
             /* may not happen, just in case */
             msg_Err( VLCIntf, "unknown table column identifier (%s) while "
-                "updating the bookmark table", [[theTableColumn identifier]
-                UTF8String] );
+                "updating the bookmark table", [identifier UTF8String] );
             ret = @"unknown identifier";
         }
 

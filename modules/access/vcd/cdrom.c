@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: d95c8fde9c3646694210f34f71e9d07622b9533b $
+ * $Id: cda55156faac70f12dbe518f38d62cd3075f7bed $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -819,7 +819,7 @@ static int OpenVCDImage( vlc_object_t * p_this, const char *psz_dev,
     while( fgets( line, 1024, cuefile ) && i_tracks < INT_MAX-1 )
     {
         /* look for a TRACK line */
-        char psz_dummy[9];
+        char psz_dummy[10];
         if( !sscanf( line, "%9s", psz_dummy ) || strcmp(psz_dummy, "TRACK") )
             continue;
 

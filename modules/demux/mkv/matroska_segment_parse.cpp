@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 the VideoLAN team
- * $Id: 4676b24d25577f064a3fb074e958e8a4bd064a4f $
+ * $Id: 1cac79906901ba6885a05911a98940afb22ace1d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1094,7 +1094,7 @@ void matroska_segment_c::ParseChapters( KaxChapters *chapters )
     }
 }
 
-void matroska_segment_c::ParseCluster( )
+void matroska_segment_c::ParseCluster( bool b_update_start_time )
 {
     EbmlElement *el;
     EbmlMaster  *m;
@@ -1117,6 +1117,7 @@ void matroska_segment_c::ParseCluster( )
         }
     }
 
-    i_start_time = cluster->GlobalTimecode() / 1000;
+    if( b_update_start_time )
+        i_start_time = cluster->GlobalTimecode() / 1000;
 }
 

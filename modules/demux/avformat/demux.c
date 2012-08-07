@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 3264b115d4dd8fda55c7daeb433c276b59d59471 $
+ * $Id: ada3849c194d510df289397a887940643b511d2b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -571,8 +571,13 @@ static int Demux( demux_t *p_demux )
     int64_t     i_start_time;
 
     /* Read a frame */
-    if( av_read_frame( p_sys->ic, &pkt ) )
+    int i_av_ret = av_read_frame( p_sys->ic, &pkt );
+    if( i_av_ret )
     {
+        /* Avoid EOF if av_read_frame returns AVERROR(EAGAIN) */
+        if( i_av_ret == AVERROR(EAGAIN) )
+            return 1;
+
         return 0;
     }
     if( pkt.stream_index < 0 || pkt.stream_index >= p_sys->i_tk )

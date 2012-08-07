@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 00d405b8a5b7dbd3e84ad229b84bf07dec9a2968 $
+ * $Id: 778327c819ed4c7257fce9e6942f2ccdeefe53d3 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -99,14 +99,6 @@
     IBOutlet id o_mi_sort_author;
     IBOutlet id o_mi_recursive_expand;
 
-    /* "services discovery" menu in the playlist menu */
-    IBOutlet id o_mi_services;
-    IBOutlet id o_mu_services;
-
-    /* "services discovery" menu in the main menu */
-    IBOutlet id o_mm_mi_services;
-    IBOutlet id o_mm_mu_services;
-
     IBOutlet id o_save_accessory_view;
     IBOutlet id o_save_accessory_popup;
     IBOutlet id o_save_accessory_text;
@@ -148,6 +140,7 @@
 - (IBAction)recursiveExpandNode:(id)sender;
 
 - (id)playingItem;
+- (NSArray *)draggedItems;
 
 - (void)appendArray:(NSArray*)o_array atPos:(int)i_position enqueue:(BOOL)b_enqueue;
 - (void)appendNodeArray:(NSArray*)o_array inNode:(playlist_item_t *)p_node atPos:(int)i_position enqueue:(BOOL)b_enqueue;

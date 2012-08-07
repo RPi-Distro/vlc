@@ -2,7 +2,7 @@
  * ctrl_generic.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ee7afeb8df5c53ca9faa3d543cd8a3997d96a776 $
+ * $Id: 591c8e5775c381dabadcb6190d3fa446ce70d64b $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -80,6 +80,9 @@ public:
 
     /// Return true if the control can gain the focus
     virtual bool isFocusable() const { return false; }
+
+    /// Return true if the control can be scrollable
+    virtual bool isScrollable() const { return false; }
 
     /// Return true if the control is visible
     virtual bool isVisible() const;

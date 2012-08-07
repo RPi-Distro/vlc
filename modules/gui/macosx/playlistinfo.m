@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: de5f0ff9719ec4704178011f2726cddc7b69181f $
+ * $Id: be2a2018fc479b28246bb3a3871fc0443ca43957 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -120,6 +120,8 @@ static VLCInfo *_o_sharedInstance = nil;
 
     [o_info_window setInitialFirstResponder: o_uri_txt];
     [o_info_window setDelegate: self];
+
+    b_awakeFromNib = YES;
 
     /* We may be awoken from nib way after initialisation
      * Update ourselves */
@@ -278,6 +280,9 @@ static VLCInfo *_o_sharedInstance = nil;
 
 - (void)updateStatistics
 {
+    if (!b_awakeFromNib)
+        return;
+
     if ([o_info_window isVisible])
     {
         if( !p_item || !p_item->p_stats )
@@ -433,7 +438,7 @@ error:
         o_value = [o_item_value copy];
         i_object_id = i_id;
         o_parent = o_parent_item;
-        p_item = [[[VLCMain sharedInstance] info] item];
+        p_item = [(VLCInfo *)[[VLCMain sharedInstance] info] item];
         o_children = nil;
     }
     return( self );
@@ -512,7 +517,7 @@ error:
 - (void)refresh
 {
     input_item_t * oldItem = p_item;
-    p_item = [[[VLCMain sharedInstance] info] item];
+    p_item = [(VLCInfo *)[[VLCMain sharedInstance] info] item];
     if( oldItem && oldItem != p_item ) vlc_gc_decref( oldItem );
 
     [o_children release];

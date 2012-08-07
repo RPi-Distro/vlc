@@ -2,7 +2,7 @@
  * playlist.c
  *****************************************************************************
  * Copyright (C) 2007-2011 the VideoLAN team
- * $Id: 39f619e3c9440da8ab3bb6569746fcbd77c0a7d7 $
+ * $Id: 5498520736eb7ca029829517566f8ea64123e3ec $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -42,6 +42,7 @@
 
 #include "../vlc.h"
 #include "../libs.h"
+#include "input.h"
 #include "playlist.h"
 #include "variables.h"
 
@@ -208,6 +209,7 @@ static void push_playlist_item( lua_State *L, playlist_item_t *p_item )
         lua_setfield( L, -2, "duration" );
         lua_pushinteger( L, p_input->i_nb_played );
         lua_setfield( L, -2, "nb_played" );
+        luaopen_input_item( L, p_input );
         /* TODO: add (optional) info categories, meta, options, es */
     }
     if( p_item->i_children >= 0 )

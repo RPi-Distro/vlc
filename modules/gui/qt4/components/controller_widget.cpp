@@ -2,7 +2,7 @@
  * Controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: a436816dcb4553dd1d935c6db591f8476b04d442 $
+ * $Id: 5b5e62bf5631b94da26aaa11c53c075501892192 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -289,11 +289,16 @@ void AspectRatioComboBox::updateRatios()
                  QString( val_list.p_list->p_values[i].psz_string ) );
     setEnabled( true );
     var_FreeList( &val_list, &text_list );
+    vlc_object_release( p_vout );
 }
 
 void AspectRatioComboBox::updateAspectRatio( int x )
 {
     vout_thread_t* p_vout = THEMIM->getVout();
     if( p_vout && x >= 0 )
+    {
         var_SetString( p_vout, "aspect-ratio", qtu( itemData(x).toString() ) );
+        vlc_object_release( p_vout );
+    }
 }
+

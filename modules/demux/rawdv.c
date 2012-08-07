@@ -2,7 +2,7 @@
  * rawdv.c : raw DV input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 26c5b4532ed5fc3be1d73280ab1fcda27bd41b7c $
+ * $Id: 3d7632edb37d41445442a3389f65ed1d7438603b $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Paul Corke <paul dot corke at datatote dot co dot uk>
@@ -74,8 +74,8 @@ vlc_module_end ()
 /*****************************************************************************
  * Constants
  *****************************************************************************/
-#define DV_PAL_FRAME_SIZE  144000
-#define DV_NTSC_FRAME_SIZE 122000
+#define DV_PAL_FRAME_SIZE  (12 * 150 * 80)
+#define DV_NTSC_FRAME_SIZE (10 * 150 * 80)
 
 /*****************************************************************************
  * Definitions of structures used by this plugin
@@ -213,7 +213,8 @@ static int Open( vlc_object_t * p_this )
     msg_Dbg( p_demux, "Realtime DV Source: %s", (p_sys->b_hurry_up)?"Yes":"No" );
 
     p_sys->i_dsf = dv_header.dsf;
-    p_sys->frame_size = dv_header.dsf ? 12 * 150 * 80 : 10 * 150 * 80;
+    p_sys->frame_size = dv_header.dsf ? DV_PAL_FRAME_SIZE
+                                      : DV_NTSC_FRAME_SIZE;
     p_sys->f_rate = dv_header.dsf ? 25 : 29.97;
 
     p_sys->i_pcr = 0;

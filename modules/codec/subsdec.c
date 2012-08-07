@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: abdac8a4f28e0427fd186bb1d6334ef74b84353d $
+ * $Id: 5b587b183334a2f9434b48de73504ad65391121f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -51,6 +51,7 @@ static const char *const ppsz_encodings[] = {
     "GB18030",
     "ISO-8859-15",
     "Windows-1252",
+    "IBM850",
     "ISO-8859-2",
     "Windows-1250",
     "ISO-8859-3",
@@ -103,6 +104,7 @@ static const char *const ppsz_encoding_names[] = {
     /* 1 */
     N_("Western European (Latin-9)"), /* mostly superset of Latin-1 */
     N_("Western European (Windows-1252)"),
+    N_("Western European (IBM 00850)"),
     /* 2 */
     N_("Eastern European (Latin-2)"),
     N_("Eastern European (Windows-1250)"),
@@ -679,6 +681,11 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                                 psz_subtitle++;
                                 i_len = strcspn( psz_subtitle, "\"" );
                             }
+                            else if( *psz_subtitle == '\'' )
+                            {
+                                psz_subtitle++;
+                                i_len = strcspn( psz_subtitle, "'" );
+                            }
                             else
                             {
                                 i_len = strcspn( psz_subtitle, " \t>" );
@@ -688,7 +695,7 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                             HtmlPut( &psz_html, "\"" );
 
                             psz_subtitle += i_len;
-                            if( *psz_subtitle == '\"' )
+                            if( *psz_subtitle == '\"' || *psz_subtitle == '\'' )
                                 psz_subtitle++;
                             break;
                         }
@@ -703,12 +710,17 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
                             if( psz_subtitle[i_len] == '\"' )
                                 i_len++;
                         }
+                        /* Not a tag, something else we do not understand */
+                        if( i_len == 0 )
+                            *psz_subtitle++;
+
                         psz_subtitle += i_len;
                     }
                     while (*psz_subtitle == ' ')
                         *psz_html++ = *psz_subtitle++;
                 }
-                *psz_html++ = *psz_subtitle++;
+                *psz_html++ = '>';
+                *psz_subtitle++;
             }
             else if( !strncmp( psz_subtitle, "</", 2 ))
             {

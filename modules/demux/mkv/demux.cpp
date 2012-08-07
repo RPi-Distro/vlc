@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 658dc3172eb3d0a0f6834cd1b15b7b96c09eae6e $
+ * $Id: d863bb703196ef8feb061082d1168c5264f6b331 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -536,10 +536,12 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
                         else if( MKV_IS_ID( l, KaxPrevUID ) )
                         {
                             p_segment1->p_prev_segment_uid = new KaxPrevUID( *static_cast<KaxPrevUID*>(l) );
+                            p_segment1->b_ref_external_segments = true;
                         }
                         else if( MKV_IS_ID( l, KaxNextUID ) )
                         {
                             p_segment1->p_next_segment_uid = new KaxNextUID( *static_cast<KaxNextUID*>(l) );
+                            p_segment1->b_ref_external_segments = true;
                         }
                         else if( MKV_IS_ID( l, KaxSegmentFamily ) )
                         {
@@ -552,7 +554,7 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
                     break;
                 }
             }
-            if ( b_keep_segment )
+            if ( b_keep_segment || !p_segment1->p_segment_uid )
             {
                 b_keep_stream = true;
                 p_stream1->segments.push_back( p_segment1 );
@@ -744,7 +746,7 @@ matroska_segment_c *demux_sys_t::FindSegment( const EbmlBinary & uid ) const
 {
     for (size_t i=0; i<opened_segments.size(); i++)
     {
-        if ( *opened_segments[i]->p_segment_uid == uid )
+        if ( opened_segments[i]->p_segment_uid && *opened_segments[i]->p_segment_uid == uid )
             return opened_segments[i];
     }
     return NULL;

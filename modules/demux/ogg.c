@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: e659b9cb00841d35a42f10dadc910fc9ad626273 $
+ * $Id: da6dab30332a0beef36e545ea1f8131eadd869fa $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -624,7 +624,7 @@ static void Ogg_DecodePacket( demux_t *p_demux,
             if( p_stream->p_headers )
             {
                 memcpy( (unsigned char *)p_stream->p_headers + p_stream->i_headers - p_oggpacket->bytes,
-                        p_oggpacket->packet, p_stream->i_headers );
+                        p_oggpacket->packet, p_oggpacket->bytes );
             }
             else
             {

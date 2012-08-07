@@ -2,7 +2,7 @@
  * input_slider.cpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 2fec736d590657b3101f9e0ca861f704d0203ca8 $
+ * $Id: ea6d4355a04ebfd2377bca0d3e1bcc4f1a3b1ebb $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -261,7 +261,7 @@ void SeekSlider::mouseMoveEvent( QMouseEvent *event )
         mTimeTooltip->setText( psz_length, chapterLabel );
 
         QPoint p( event->globalX() - ( event->x() - posX ) - ( mTimeTooltip->width() / 2 ),
-                  QWidget::mapToGlobal( pos() ).y() - ( mTimeTooltip->height() + 2 ) );
+                  QWidget::mapToGlobal( QPoint( 0, 0 ) ).y() - ( mTimeTooltip->height() - 2 ) );
         mTimeTooltip->move( p );
     }
     event->accept();

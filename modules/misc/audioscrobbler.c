@@ -2,7 +2,7 @@
  * audioscrobbler.c : audioscrobbler submission plugin
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: 33c12387b199c01400e6c2e69d49278e6d56e088 $
+ * $Id: ba79ce273d71017077bc49a3d7fae337aff0d710 $
  *
  * Author: Rafaël Carré <funman at videolanorg>
  *         Ilkka Ollakka <ileoo at videolan org>
@@ -768,7 +768,7 @@ static void Run(intf_thread_t *p_intf)
     bool                    b_handshaked = false;
 
     /* data about audioscrobbler session */
-    mtime_t                 next_exchange;      /**< when can we send data  */
+    mtime_t                 next_exchange = -1; /**< when can we send data  */
     unsigned int            i_interval;         /**< waiting interval (secs)*/
 
     intf_sys_t *p_sys = p_intf->p_sys;

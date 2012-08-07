@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 VLC authors and VideoLAN
- * $Id: 8901259d1cf9b5f017c6117a695472961b5e1aea $
+ * $Id: ebcf5dd168479b28178f76a0c26aeb2794430e66 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -74,6 +74,10 @@ extern OSErr UpdateSystemActivity(UInt8 activity);
 - (void)setPresentationOptions:(NSApplicationPresentationOptions)newOptions;
 - (NSApplicationPresentationOptions)currentSystemPresentationOptions;
 @end
+
+@interface NSURL (IntroducedInSnowLeopard)
+- (NSArray *)pathComponents;
+@end
 #endif
 
 #pragma mark -
@@ -95,6 +99,7 @@ enum {
 - (void)setRestorable:(BOOL)b_value;
 - (void)toggleFullScreen:(id)id_value;
 - (void)windowWillEnterFullScreen:(NSNotification *)notification;
+- (void)windowDidEnterFullScreen:(NSNotification *)notification;
 - (void)windowWillExitFullScreen:(NSNotification *)notification;
 @end
 

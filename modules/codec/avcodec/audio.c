@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: 548ff3cf38680e665dda462631018227f5ec9d4f $
+ * $Id: c782bb9ffaf83db123f48e471a6e2c65ac4d2cc1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -41,7 +41,9 @@
 #   include <avcodec.h>
 #endif
 
-#include "libavutil/audioconvert.h"
+#if LIBAVUTIL_VERSION_INT >= ((50<<16)+(38<<8)+0)
+# include "libavutil/audioconvert.h"
+#endif
 
 #include "avcodec.h"
 

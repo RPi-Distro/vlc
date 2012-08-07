@@ -483,6 +483,8 @@ static int MP4_ReadBox_mfhd(  stream_t *p_stream, MP4_Box_t *p_box )
 {
     MP4_READBOX_ENTER( MP4_Box_data_mfhd_t );
 
+    MP4_GETVERSIONFLAGS( p_box->data.p_mvhd );
+
     MP4_GET4BYTES( p_box->data.p_mfhd->i_sequence_number );
 
 #ifdef MP4_VERBOSE
@@ -1254,6 +1256,39 @@ static int MP4_ReadBox_dac3( stream_t *p_stream, MP4_Box_t *p_box )
              "read box: \"dac3\" fscod=0x%x bsid=0x%x bsmod=0x%x acmod=0x%x lfeon=0x%x bitrate_code=0x%x",
              p_dac3->i_fscod, p_dac3->i_bsid, p_dac3->i_bsmod, p_dac3->i_acmod, p_dac3->i_lfeon, p_dac3->i_bitrate_code );
 #endif
+    MP4_READBOX_EXIT( 1 );
+}
+
+static int MP4_ReadBox_dvc1( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_Box_data_dvc1_t *p_dvc1;
+
+    MP4_READBOX_ENTER( MP4_Box_data_dvc1_t );
+    p_dvc1 = p_box->data.p_dvc1;
+
+    MP4_GET1BYTE( p_dvc1->i_profile_level ); /* profile is on 4bits, level 3bits */
+    if( p_dvc1->i_profile_level & 0xf0 >> 4 != 0x06 )
+    {
+        msg_Warn( p_stream, "unsupported VC-1 profile, please report" );
+        MP4_READBOX_EXIT( 0 );
+    }
+
+
+    p_dvc1->i_vc1 = p_box->i_size - 7; /* Header + profile_level */
+
+    if( p_dvc1->i_vc1 > 0 )
+    {
+        uint8_t *p = p_dvc1->p_vc1 = malloc( p_dvc1->i_vc1 );
+        if( p )
+            memcpy( p, p_peek, i_read );
+    }
+
+#ifdef MP4_VERBOSE
+    msg_Dbg( p_stream,
+             "read box: \"dvc1\" profile=0x%x level=0x%x",
+             p_dvc1->i_profile_level & 0xf0 >> 4, p_dvc1->i_profile_level & 0xe > 1 );
+#endif
+
     MP4_READBOX_EXIT( 1 );
 }
 
@@ -2906,6 +2941,7 @@ static const struct
     { ATOM_cmvd,    MP4_ReadBox_cmvd,         MP4_FreeBox_cmvd },
     { ATOM_avcC,    MP4_ReadBox_avcC,         MP4_FreeBox_avcC },
     { ATOM_dac3,    MP4_ReadBox_dac3,         MP4_FreeBox_Common },
+    { ATOM_dvc1,    MP4_ReadBox_dvc1,         MP4_FreeBox_Common },
     { ATOM_enda,    MP4_ReadBox_enda,         MP4_FreeBox_Common },
     { ATOM_gnre,    MP4_ReadBox_gnre,         MP4_FreeBox_Common },
     { ATOM_trkn,    MP4_ReadBox_trkn,         MP4_FreeBox_Common },

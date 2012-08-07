@@ -2,7 +2,7 @@
  * MainWindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 9578b241aa7f70f03d95bd8803653723da52f197 $
+ * $Id: 75b7f9c3cdf01c2539d7f176792c57b6248b6e7d $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -27,6 +27,7 @@
 #import <Cocoa/Cocoa.h>
 #import "CompatibilityFixes.h"
 #import "PXSourceList.h"
+#import "PXSourceListDataSource.h"
 #import <vlc_input.h>
 #import "misc.h"
 #import "fspanel.h"
@@ -66,6 +67,7 @@
     IBOutlet id o_dropzone_view;
     IBOutlet id o_dropzone_btn;
     IBOutlet id o_dropzone_lbl;
+    IBOutlet id o_dropzone_box;
 
     IBOutlet VLCFSPanel *o_fspanel;
     IBOutlet id o_titlebar_view;
@@ -91,6 +93,7 @@
     BOOL b_dropzone_active;
     BOOL b_splitview_removed;
     BOOL b_minimized_view;
+    BOOL b_video_deco;
     int i_lastSplitViewHeight;
     int i_lastShownVolume;
     input_state_e cachedInputState;
@@ -193,13 +196,16 @@
 
 /* lion's native fullscreen handling */
 - (void)windowWillEnterFullScreen:(NSNotification *)notification;
+- (void)windowDidEnterFullScreen:(NSNotification *)notification;
 - (void)windowWillExitFullScreen:(NSNotification *)notification;
 
+- (id)detachedTitlebarView;
 @end
 
 @interface VLCDetachedVideoWindow : NSWindow
 {
     BOOL b_dark_interface;
+    BOOL b_video_deco;
     NSRect previousSavedFrame;
 }
 

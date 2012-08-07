@@ -2,7 +2,7 @@
  * fluidsynth.c: Software MIDI synthesizer using libfluidsynth
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: f6317ab29173641fddf17f3a9218430789b164f3 $
+ * $Id: 363a64fae3a79d667d46facdfa4d090765b74cb5 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ vlc_module_begin ()
     set_callbacks (Open, Close)
     add_loadfile ("soundfont", "",
                   SOUNDFONT_TEXT, SOUNDFONT_LONGTEXT, false)
-    add_float ("synth-gain", 0.8, GAIN_TEXT, GAIN_LONGTEXT, false)
+    add_float ("synth-gain", .5, GAIN_TEXT, GAIN_LONGTEXT, false)
         change_float_range (0., 10.)
 vlc_module_end ()
 

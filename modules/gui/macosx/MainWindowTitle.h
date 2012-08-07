@@ -2,7 +2,7 @@
  * MainWindowTitle.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: fb85ff5c3bf04400207b9040342028a17b249b5f $
+ * $Id: f3f8b11dfdac40fc8385b92a056505002e680e78 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -56,6 +56,10 @@
 - (void)setWindowButtonOver:(BOOL)b_value;
 - (void)setWindowFullscreenButtonOver:(BOOL)b_value;
 
+- (NSButton*)closeButton;
+- (NSButton*)minimizeButton;
+- (NSButton*)zoomButton;
+
 @end
 
 @interface VLCWindowButtonCell : NSButtonCell
@@ -102,4 +106,11 @@
 @interface VLCCustomWindowFullscreenButton : VLCCustomWindowButtonPrototype
 {
 }
+@end
+
+@interface VLCWindowTitleTextField : NSTextField
+{
+    NSMenu * contextMenu;
+}
+
 @end

@@ -2,7 +2,7 @@
  * CoreInteraction.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: b15558612acaf57a3fbf0d8f469fe10a6c130a13 $
+ * $Id: abe0d86d80c9fd67241b62254924aede9d52474c $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -27,7 +27,6 @@
 
 @interface VLCCoreInteraction : NSObject {
     int i_currentPlaybackRate;
-    BOOL b_lockAspectRatio;
 }
 + (VLCCoreInteraction *)sharedInstance;
 
@@ -71,7 +70,11 @@
 - (int)volume;
 - (void)setVolume:(int)i_value;
 
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender;
+
 - (void)setAspectRatioLocked:(BOOL)b_value;
 - (BOOL)aspectRatioIsLocked;
 - (void)toggleFullscreen;
+
+- (BOOL)fixPreferences;
 @end

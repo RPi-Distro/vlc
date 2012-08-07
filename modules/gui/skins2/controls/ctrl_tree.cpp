@@ -2,7 +2,7 @@
  * ctrl_tree.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 32a90db32053bd3a5cad4f528e04dba1a8e596e3 $
+ * $Id: 533440f040319a9c1cc03daa9df90353d400615d $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -513,7 +513,8 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
     {
         EvtDragDrop& evt = static_cast<EvtDragDrop&>(rEvent);
         Playtree& rPlaytree = static_cast<Playtree&>(m_rTree);
-        rPlaytree.insertItems( *m_itOver, evt.getFiles(), false );
+        VarTree& item = ( m_itOver != m_rTree.end() ) ? *m_itOver : m_rTree;
+        rPlaytree.insertItems( item, evt.getFiles(), false );
         m_itOver = m_rTree.end();
         needRefresh = true;
     }

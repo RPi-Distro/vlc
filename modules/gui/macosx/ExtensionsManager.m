@@ -2,7 +2,7 @@
  * extensions_manager.cpp: Extensions manager for Cocoa
  ****************************************************************************
  * Copyright (C) 2009-2012 VideoLAN and authors
- * $Id: 80e75512355e09da658707527c04d789fa31cf37 $
+ * $Id: 14f76427f841c9c44b2bea583cf88153c5649e4d $
  *
  * Authors: Brendon Justin <brendonjustin@gmail.com>,
  *          Jean-Philippe André < jpeg # videolan.org >
@@ -352,7 +352,8 @@ static ExtensionsManager* instance = nil;
     msg_Dbg( p_intf, "Killing extension dialog provider" );
     [ExtensionsDialogProvider killInstance];
 
-    vlc_object_release( p_extensions_manager );
+    if( p_extensions_manager )
+        vlc_object_release( p_extensions_manager );
 
     [p_extDict release];
 

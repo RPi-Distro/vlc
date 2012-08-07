@@ -2,7 +2,7 @@
  * VideoView.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 350d4c1df0a48c5010b305f0437cced422f59414 $
+ * $Id: 55d52040e5c1b245d2daddd0a62104a8465df0ad $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -38,10 +38,8 @@
 #import "MainWindow.h"
 
 #import <vlc_common.h>
-#import <vlc_vout_window.h>
-#import <vlc_vout_display.h>
 #import <vlc_keys.h>
-#import <vlc_mouse.h>
+
 /*****************************************************************************
  * DeviceCallback: Callback triggered when the video-device variable is changed
  *****************************************************************************/
@@ -61,23 +59,57 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 }
 
 /*****************************************************************************
- * VLCOpenGLVideoView interface excerpt
- * full implementation in modules/video_output/macosx.m:95
- *****************************************************************************/
-@interface VLCOpenGLVideoView : NSOpenGLView
-{
-}
-- (vout_display_t *)voutDisplay;
-@end
-
-/*****************************************************************************
  * VLCVoutView implementation
  *****************************************************************************/
 @implementation VLCVoutView
+
+#pragma mark -
+#pragma mark drag & drop support
+
+- (void)dealloc
+{
+    [self unregisterDraggedTypes];
+    [super dealloc];
+}
+
+- (void)awakeFromNib
+{
+    [self registerForDraggedTypes:[NSArray arrayWithObject: NSFilenamesPboardType]];
+}
+
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
+{
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
+        return NSDragOperationGeneric;
+    return NSDragOperationNone;
+}
+
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
+{
+    return YES;
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
+    BOOL b_returned;
+    b_returned = [[VLCCoreInteraction sharedInstance] performDragOperation: sender];
+
+    [self setNeedsDisplay:YES];
+    return b_returned;
+}
+
+- (void)concludeDragOperation:(id <NSDraggingInfo>)sender
+{
+    [self setNeedsDisplay:YES];
+}
+
+#pragma mark -
+#pragma mark vout actions
+
 - (void)closeVout
 {
     vout_thread_t * p_vout = getVout();
-    if( !p_vout )
+    if( p_vout )
     {
         var_DelCallback( p_vout, "video-device", DeviceCallback, NULL );
         vlc_object_release( p_vout );
@@ -134,60 +166,38 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
                 val.i_int |= (int)CocoaKeyToVLC( key );
                 var_Set( p_vout->p_libvlc, "key-pressed", val );
             }
-            vlc_object_release( p_vout );
         }
         else
             msg_Dbg( VLCIntf, "could not send keyevent to VLC core" );
+
+        if (p_vout)
+            vlc_object_release( p_vout );
     }
     else
         [super keyDown: o_event];
 }
 
-- (void)mouseDown:(NSEvent *)o_event
+- (BOOL)performKeyEquivalent:(NSEvent *)o_event
 {
-    vout_thread_t * p_vout = getVout();
-    vlc_value_t val;
-    if( p_vout )
-    {
-        if( ( [o_event type] == NSLeftMouseDown ) &&
-          ( ! ( [o_event modifierFlags] &  NSControlKeyMask ) ) )
-        {
-            if( [o_event clickCount] <= 1 )
-            {
-                /* single clicking */
-                vout_display_SendEventMousePressed( [[[self subviews] objectAtIndex:0] voutDisplay], MOUSE_BUTTON_LEFT );
-            }
-            else
-            {
-                /* multiple clicking */
-                [[VLCCoreInteraction sharedInstance] toggleFullscreen];
-            }
-        }
-        else if( ( [o_event type] == NSRightMouseDown ) ||
-               ( ( [o_event type] == NSLeftMouseDown ) &&
-                 ( [o_event modifierFlags] &  NSControlKeyMask ) ) )
-        {
-            msg_Dbg( p_vout, "received NSRightMouseDown (generic method) or Ctrl clic" );
-            [NSMenu popUpContextMenu: [[VLCMainMenu sharedInstance] voutMenu] withEvent: o_event forView: self];
-        }
-        vlc_object_release( p_vout );
-    }
-
-    [super mouseDown: o_event];
+    return [[VLCMainWindow sharedInstance] performKeyEquivalent: o_event];
 }
 
-- (void)otherMouseDown:(NSEvent *)o_event
+- (void)mouseDown:(NSEvent *)o_event
 {
-    if( [o_event type] == NSOtherMouseDown )
+    if( ( [o_event type] == NSLeftMouseDown ) &&
+       ( ! ( [o_event modifierFlags] &  NSControlKeyMask ) ) )
     {
-        vout_thread_t * p_vout = getVout();
-        vlc_value_t val;
-
-        if (p_vout)
+        if( [o_event clickCount] > 1 )
         {
-            vout_display_SendEventMousePressed( [[[self subviews] objectAtIndex:0] voutDisplay], MOUSE_BUTTON_CENTER );
+            /* multiple clicking */
+            [[VLCCoreInteraction sharedInstance] toggleFullscreen];
         }
-        vlc_object_release( p_vout );
+    }
+    else if( ( [o_event type] == NSRightMouseDown ) ||
+            ( ( [o_event type] == NSLeftMouseDown ) &&
+             ( [o_event modifierFlags] &  NSControlKeyMask ) ) )
+    {
+        [NSMenu popUpContextMenu: [[VLCMainMenu sharedInstance] voutMenu] withEvent: o_event forView: self];
     }
 
     [super mouseDown: o_event];
@@ -196,96 +206,24 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 - (void)rightMouseDown:(NSEvent *)o_event
 {
     if( [o_event type] == NSRightMouseDown )
-    {
-        vout_thread_t * p_vout = getVout();
-        if (p_vout)
-            [NSMenu popUpContextMenu: [[VLCMainMenu sharedInstance] voutMenu] withEvent: o_event forView: self];
-        vlc_object_release( p_vout );
-    }
+        [NSMenu popUpContextMenu: [[VLCMainMenu sharedInstance] voutMenu] withEvent: o_event forView: self];
 
     [super mouseDown: o_event];
-}
-
-- (void)mouseUp:(NSEvent *)o_event
-{
-    if( [o_event type] == NSLeftMouseUp )
-    {
-        vout_thread_t * p_vout = getVout();
-        if (p_vout)
-        {
-            vout_display_SendEventMouseReleased( [[[self subviews] objectAtIndex:0] voutDisplay], MOUSE_BUTTON_LEFT );
-            vlc_object_release( p_vout );
-        }
-    }
-
-    [super mouseUp: o_event];
-}
-
-- (void)otherMouseUp:(NSEvent *)o_event
-{
-    if( [o_event type] == NSOtherMouseUp )
-    {
-        vout_thread_t * p_vout = getVout();
-        if (p_vout)
-        {
-            vout_display_SendEventMouseReleased( [[[self subviews] objectAtIndex:0] voutDisplay], MOUSE_BUTTON_CENTER );
-            vlc_object_release( p_vout );
-        }
-    }
-
-    [super mouseUp: o_event];
 }
 
 - (void)rightMouseUp:(NSEvent *)o_event
 {
     if( [o_event type] == NSRightMouseUp )
-    {
-        vout_thread_t * p_vout = getVout();
-        if (p_vout)
-        {
-            [NSMenu popUpContextMenu: [[VLCMainMenu sharedInstance] voutMenu] withEvent: o_event forView: self];
-            vlc_object_release( p_vout );
-        }
-    }
+        [NSMenu popUpContextMenu: [[VLCMainMenu sharedInstance] voutMenu] withEvent: o_event forView: self];
 
     [super mouseUp: o_event];
 }
 
-- (void)mouseDragged:(NSEvent *)o_event
-{
-    [self mouseMoved: o_event];
-}
-
-- (void)otherMouseDragged:(NSEvent *)o_event
-{
-    [self mouseMoved: o_event];
-}
-
-- (void)rightMouseDragged:(NSEvent *)o_event
-{
-    [self mouseMoved: o_event];
-}
-
 - (void)mouseMoved:(NSEvent *)o_event
 {
-    vout_thread_t * p_vout = getVout();
-    if (p_vout)
-    {
-        NSPoint ml;
-        NSRect s_rect;
-        BOOL b_inside;
-
-        s_rect = [self bounds];
-        ml = [self convertPoint: [o_event locationInWindow] fromView: nil];
-        b_inside = [self mouse: ml inRect: s_rect];
-
-        if( b_inside )
-        {
-            vout_display_SendEventMouseMoved( [[[self subviews] objectAtIndex:0] voutDisplay], ((int)ml.x), ((int)s_rect.size.height - ((int)ml.y)) );
-            [[VLCMain sharedInstance] showFullscreenController];
-        }
-        vlc_object_release( p_vout );
-    }
+    NSPoint ml = [self convertPoint: [o_event locationInWindow] fromView: nil];
+    if( [self mouse: ml inRect: [self bounds]] )
+        [[VLCMain sharedInstance] showFullscreenController];
 
     [super mouseMoved: o_event];
 }
@@ -310,4 +248,10 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     /* while we need to be the first responder most of the time, we need to give up that status when toggling the playlist */
     return YES;
 }
+
+-(void)didAddSubview:(NSView *)subview
+{
+    [[self window] makeFirstResponder: subview];
+}
+
 @end
