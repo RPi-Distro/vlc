@@ -1,3 +1,10 @@
+vlc (2.0.3-1~bpo60+1) squeeze-backports; urgency=low
+
+  * New upstream release.
+  * Disable omxil and crystalhd as they are not found in Squeeze.
+
+ -- Edward Wang <edward.c.wang@compdigitec.com>  Tue, 07 Aug 2012 22:05:10 -0400
+
 vlc (2.0.3-1) unstable; urgency=low
 
   * New upstream release.
