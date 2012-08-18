@@ -1,3 +1,12 @@
+vlc (2.0.3-2) unstable; urgency=low
+
+  * debian/rules: Use xz compression for binary packages.
+    Thanks to Ansgar Burchardt <ansgar@debian.org> (Closes: #683836)
+  * Add version to vlc-nox dependency of vlc-plugin-sdl (consistent with other
+    plug-ins).
+
+ -- Benjamin Drung <bdrung@debian.org>  Sat, 18 Aug 2012 17:45:01 +0200
+
 vlc (2.0.3-1) unstable; urgency=low
 
   * New upstream release.
