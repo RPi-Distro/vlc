@@ -294,7 +294,7 @@ Description: PulseAudio plugin for VLC
 
 Package: vlc-plugin-sdl
 Architecture: any
-Depends: vlc-nox, ${misc:Depends}, ${shlibs:Depends}
+Depends: vlc-nox (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: SDL video and audio output plugin for VLC
  This plugin adds support for the Simple DirectMedia Layer library to
  the VLC media player. To activate it, use the `--vout sdl' or
