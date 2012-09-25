@@ -81,6 +81,7 @@ confflags += \
 	--enable-samplerate \
 	--enable-schroedinger \
 	--enable-sdl \
+	--enable-sftp \
 	--enable-shout \
 	--enable-skins2 \
 	--enable-smb \
