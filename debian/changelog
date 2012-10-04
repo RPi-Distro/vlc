@@ -1,3 +1,15 @@
+vlc (2.0.3-3) unstable; urgency=low
+
+  * debian/vlc.postinst: Fix directory to symlink upgrade in postinst.
+    Thanks to David Prévot <taffit@debian.org> (Closes: #687657)
+  * debian/vlc.preinst: Remove insufficient fix to #613121 (similar issue).
+    Thanks to David Prévot for the patch.
+  * Cherry-pick fix for VLC hang caused by the notify plugin. (Closes: #662628,
+    LP: #970447)
+  * Drop alternative dependency on transitional ttf-freefont.
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 04 Oct 2012 20:59:21 +0200
+
 vlc (2.0.3-2) unstable; urgency=low
 
   * debian/rules: Use xz compression for binary packages.
