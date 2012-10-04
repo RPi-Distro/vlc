@@ -1,3 +1,4 @@
 v4l-kfreebsd.patch
 link-vlc-cache-gen-with-c++.patch
 link-vlc-with-c++.patch
+bp-fix-hang-caused-by-notify.patch
