@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2012 the VideoLAN team
- * $Id: b862bb4498639daa8b7152997d9493cc20289538 $
+ * $Id: 5cd3ba106dcf4eb55875c4062d7c115edf9aa2bb $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -505,6 +505,7 @@ static char* FontConfig_Select( FcConfig* config, const char* family,
     FcPattern *pat, *p_pat;
     FcChar8* val_s;
     FcBool val_b;
+    char *ret = NULL;
 
     /* Create a pattern and fills it */
     pat = FcPatternCreate();
@@ -561,14 +562,11 @@ static char* FontConfig_Select( FcConfig* config, const char* family,
                             "the requested one: '%s' != '%s'\n",
                             (const char*)val_s, family );   */
 
-    if( FcResultMatch != FcPatternGetString( p_pat, FC_FILE, 0, &val_s ) )
-    {
-        FcPatternDestroy( p_pat );
-        return NULL;
-    }
+    if( FcResultMatch == FcPatternGetString( p_pat, FC_FILE, 0, &val_s ) )
+        ret = strdup( (const char*)val_s );
 
     FcPatternDestroy( p_pat );
-    return strdup( (const char*)val_s );
+    return ret;
 }
 #endif
 

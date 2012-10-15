@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2006 VLC authors and VideoLAN
- * $Id: 811f4e4bf492f5184d52be57226713b99a4ed036 $
+ * $Id: d48525e98f10d5bd85f7fd10647941868cf29260 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -193,8 +193,9 @@ static VLCPrefs *_o_sharedMainInstance = nil;
     [o_title setStringValue: o_title_name];
 }
 
-- (void)showPrefs
+- (void)showPrefsWithLevel:(NSInteger)i_window_level
 {
+    [o_prefs_window setLevel: i_window_level];
     [o_prefs_window center];
     [o_prefs_window makeKeyAndOrderFront:self];
     [_rootTreeItem resetView];
@@ -237,8 +238,14 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 {
     if( i_return == NSAlertAlternateReturn )
     {
+        /* reset VLC's config */
         config_ResetAll( p_intf );
         [_rootTreeItem resetView];
+        config_SaveConfigFile( p_intf );
+
+        /* reset OS X defaults */
+        [NSUserDefaults resetStandardUserDefaults];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
 

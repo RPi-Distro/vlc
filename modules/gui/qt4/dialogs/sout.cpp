@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: c9241e64dd69b6614c4bddbff3f04d6d427429e9 $
+ * $Id: 3b0fbb96e7dd4d89fd6fc81091ffab3d32dcebf3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -259,6 +259,8 @@ void SoutDialog::updateMRL()
     mrl = smrl.getMrl();
 
     if( ui.soutAll->isChecked() ) mrl.append( " :sout-all" );
+    if( ui.ttl->value() > 1 )
+         mrl.append( QString( " :ttl=" ) + QString::number( ui.ttl->value() ) );
     mrl.append( " :sout-keep" );
 
     ui.mrlEdit->setPlainText( mrl );

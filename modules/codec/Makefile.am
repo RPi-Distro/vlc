@@ -3,9 +3,9 @@
 
 basedir = codec
 dir = codec
-mods = a52 adpcm aes3 araw cc cdg crystalhd cvdsub ddummy dirac dts dvbsub edummy faad flac fluidsynth kate libass libmpeg2 lpcm mash mpeg_audio png quicktime rawvideo realvideo schroedinger sdl_image speex stl subsdec subsusf svcdsub t140 telx theora tremor twolame vorbis x264 zvbi
-libvlc_LTLIBRARIES =  $(LTLIBcrystalhd) $(LTLIBdirac) $(LTLIBfaad) $(LTLIBflac) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBpng) $(LTLIBquicktime) $(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi)
-EXTRA_LTLIBRARIES =  libcrystalhd_plugin.la libdirac_plugin.la libfaad_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libpng_plugin.la libquicktime_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
+mods = a52 adpcm aes3 araw cc cdg crystalhd cvdsub ddummy dirac dts dvbsub edummy faad flac fluidsynth kate libass libmpeg2 lpcm mash mpeg_audio opus png quicktime rawvideo realvideo schroedinger sdl_image speex stl subsdec subsusf svcdsub t140 telx theora tremor twolame vorbis x264 zvbi
+libvlc_LTLIBRARIES =  $(LTLIBcrystalhd) $(LTLIBdirac) $(LTLIBfaad) $(LTLIBflac) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBopus) $(LTLIBpng) $(LTLIBquicktime) $(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi)
+EXTRA_LTLIBRARIES =  libcrystalhd_plugin.la libdirac_plugin.la libfaad_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libopus_plugin.la libpng_plugin.la libquicktime_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -294,6 +294,19 @@ libmpeg_audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mpeg_audio)
 libmpeg_audio_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mpeg_audio)
 libmpeg_audio_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mpeg_audio)
 libmpeg_audio_plugin_la_DEPENDENCIES =
+
+# The opus plugin
+libopus_plugin_la_SOURCES = $(SOURCES_opus)
+nodist_libopus_plugin_la_SOURCES = $(nodist_SOURCES_opus)
+# Force per-target objects:
+libopus_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_opus)
+libopus_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_opus)
+libopus_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_opus)
+libopus_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_opus)
+# Set LIBADD and DEPENDENCIES manually:
+libopus_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_opus)
+libopus_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_opus)
+libopus_plugin_la_DEPENDENCIES =
 
 # The png plugin
 libpng_plugin_la_SOURCES = $(SOURCES_png)

@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 04dc01eb9fad837b32dcc1030bce89be72b8ccb2 $
+ * $Id: 561003281b5932ac4977ea7cba80379d0594fe27 $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -1197,9 +1197,8 @@ static int Input( vlc_object_t *p_this, char const *psz_cmd,
             }
             var_FreeList( &val, &text );
             msg_rc( "+----[ end of %s ]", val_name.psz_string );
-
-            free( val_name.psz_string );
         }
+        free( val_name.psz_string );
     }
 out:
     vlc_object_release( p_input );
@@ -1724,6 +1723,7 @@ static int AudioConfig( vlc_object_t *p_this, char const *psz_cmd,
         if ( var_Get( p_aout, psz_variable, &val ) < 0 )
         {
             vlc_object_release( p_aout );
+            free( val_name.psz_string );
             return VLC_EGENERIC;
         }
         i_value = val.i_int;
@@ -1732,6 +1732,7 @@ static int AudioConfig( vlc_object_t *p_this, char const *psz_cmd,
                          VLC_VAR_GETLIST, &val, &text ) < 0 )
         {
             vlc_object_release( p_aout );
+            free( val_name.psz_string );
             return VLC_EGENERIC;
         }
 
@@ -1748,7 +1749,6 @@ static int AudioConfig( vlc_object_t *p_this, char const *psz_cmd,
         var_FreeList( &val, &text );
         msg_rc( "+----[ end of %s ]", val_name.psz_string );
 
-        free( val_name.psz_string );
         i_error = VLC_SUCCESS;
     }
     else
@@ -1758,6 +1758,7 @@ static int AudioConfig( vlc_object_t *p_this, char const *psz_cmd,
 
         i_error = var_Set( p_aout, psz_variable, val );
     }
+    free( val_name.psz_string );
     vlc_object_release( p_aout );
 
     return i_error;

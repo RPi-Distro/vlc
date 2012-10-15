@@ -407,6 +407,7 @@ maemo_FILES = \
 	icons/32x32/vlc.png
 
 DIST_solid = \
+	solid/vlc-openbd.desktop \
 	solid/vlc-opencda.desktop \
 	solid/vlc-opendvd.desktop \
 	solid/vlc-openvcd.desktop

@@ -2,7 +2,7 @@
  * AudioEffects.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2011 VLC authors and VideoLAN
- * $Id: 4ed578788839d3ad7561c457704da213ee1409ba $
+ * $Id: e56fd4c66adc28036662cfd01aae4fb0f2272397 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -96,6 +96,7 @@
     IBOutlet id o_filter_normLevel_ckb;
     IBOutlet id o_filter_normLevel_sld;
     IBOutlet id o_filter_normLevel_lbl;
+    IBOutlet id o_filter_karaoke_ckb;
 }
 
 /* generic */
@@ -132,5 +133,6 @@
 - (IBAction)filter_enableHeadPhoneVirt:(id)sender;
 - (IBAction)filter_enableVolumeNorm:(id)sender;
 - (IBAction)filter_volNormSliderUpdated:(id)sender;
+- (IBAction)filter_enableKaraoke:(id)sender;
 
 @end

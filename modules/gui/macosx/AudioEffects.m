@@ -2,7 +2,7 @@
  * AudioEffects.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2011 VLC authors and VideoLAN
- * $Id: 925f643a3ec76a57336b5052ed0d84e30fcb1441 $
+ * $Id: e9cd9e5b3bad5db2e19d3d71757cd4a27a639560 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -97,6 +97,7 @@ static VLCAudioEffects *_o_sharedInstance = nil;
     [o_filter_headPhone_ckb setTitle:_NS("Headphone virtualization")];
     [o_filter_normLevel_ckb setTitle:_NS("Volume normalization")];
     [o_filter_normLevel_lbl setStringValue:_NS("Maximum level")];
+    [o_filter_karaoke_ckb setTitle:_NS("Karaoke")];
 
     /* generic */
     [[o_tableView tabViewItemAtIndex:[o_tableView indexOfTabViewItemWithIdentifier:@"equalizer"]] setLabel:_NS("Equalizer")];
@@ -609,10 +610,12 @@ static bool GetEqualizerStatus( intf_thread_t *p_custom_intf,
     {
         [o_filter_headPhone_ckb setState: (NSInteger)strstr( psz_afilters, "headphone" ) ];
         [o_filter_normLevel_ckb setState: (NSInteger)strstr( psz_afilters, "normvol" ) ];
+        [o_filter_karaoke_ckb setState: (NSInteger)strstr( psz_afilters, "karaoke" ) ];
         free( psz_afilters );
     } else {
         [o_filter_headPhone_ckb setState: NSOffState];
         [o_filter_normLevel_ckb setState: NSOffState];
+        [o_filter_karaoke_ckb setState: NSOffState];
     }
     [o_filter_normLevel_sld setFloatValue: config_GetFloat( p_intf, "norm-max-level" )];
 }
@@ -638,6 +641,11 @@ static bool GetEqualizerStatus( intf_thread_t *p_custom_intf,
     }
 
     config_PutFloat( p_intf, "norm-max-level", [o_filter_normLevel_sld floatValue] );
+}
+
+- (IBAction)filter_enableKaraoke:(id)sender
+{
+    [self setAudioFilter: "karaoke" on:[sender state]];
 }
 
 @end

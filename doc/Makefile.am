@@ -12,8 +12,9 @@ LIBVLC_SAMPLES = \
 	libvlc/wx_player.cpp \
 	$(NULL)
 
+nobase_doc_DATA = $(LIBVLC_SAMPLES)
+
 doc_DATA = \
-	$(LIBVLC_SAMPLES) \
 	bugreport-howto.txt \
 	fortunes.txt \
 	intf-vcd.txt \
@@ -81,7 +82,7 @@ $(CHANGELOGS): Makefile.am
 	fi
 
 # This one needs to be rebuilt all the time :)
-.PHONY: ChangeLog-2011 changelogs doc
+.PHONY: ChangeLog-2012 changelogs doc
 
 changelogs: $(CHANGELOGS)
 

@@ -2,7 +2,7 @@
  * theme_repository.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 68e7daeada555964e069d1c7013aca1df4112c1b $
+ * $Id: 51cf89fa5d985fcde8113b9893f06352df15363c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -73,6 +73,7 @@ ThemeRepository::ThemeRepository( intf_thread_t *pIntf ): SkinObject( pIntf )
 
     // retrieve skins from skins directories and locate default skins
     map<string,string>::const_iterator itmap, itdefault;
+    bool b_default_found = false;
     for( itmap = m_skinsMap.begin(); itmap != m_skinsMap.end(); ++itmap )
     {
         string name = itmap->first;
@@ -83,7 +84,10 @@ ThemeRepository::ThemeRepository( intf_thread_t *pIntf ): SkinObject( pIntf )
                     &text );
 
         if( name == "Default" )
+        {
             itdefault = itmap;
+            b_default_found = true;
+        }
     }
 
     // retrieve last skins stored or skins requested by user
@@ -98,7 +102,7 @@ ThemeRepository::ThemeRepository( intf_thread_t *pIntf ): SkinObject( pIntf )
                          current.c_str(), b_readable ? "" : "NOT" );
 
     // set the default skins if given skins not accessible
-    if( !b_readable )
+    if( !b_readable && b_default_found )
         current = itdefault->second;
 
     // save this valid skins for reuse

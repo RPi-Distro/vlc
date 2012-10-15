@@ -108,6 +108,7 @@
 				});
 				$('#buttonPlEmpty').click(function(){
 					sendCommand({'command':'pl_empty'})
+					updatePlayList(true);
 					return false;
 				});
 				$('#buttonLoop').click(function(){
@@ -122,7 +123,10 @@
 					sendCommand({'command':'pl_random'});
 					return false;
 				})
-				$('#buttonRefresh').click(updatePlayList);
+				$('#buttonRefresh').click(function(){
+				    updatePlayList(true);
+				    return false;
+				});
 				$('#buttonPlPlay').click(function(){
 					sendCommand({
 						'command': 'pl_play',
@@ -140,7 +144,7 @@
 						};
 					});
 					$('#libraryTree').jstree('deselect_all');
-					setTimeout(updatePlayList,1000);
+					setTimeout(function(){updatePlayList(true);},1000);
 					return false;
 				});
 				$('#buttonStreams, #buttonStreams2').click(function(){

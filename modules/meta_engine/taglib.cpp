@@ -2,7 +2,7 @@
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
  * Copyright (C) 2003-2011 the VideoLAN team
- * $Id: ab11ccece1af5b5dff6c8baba1c21dc34bed6596 $
+ * $Id: e3b3c4e55d100c0a3db965b60d7615c4d0e2dad5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -320,10 +320,14 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_meta_t* p_demux_meta, vlc_
 
         p_attachment = vlc_input_attachment_New( psz_name, psz_mime,
                                 psz_description, p_data, i_data );
-        if( p_attachment )
-            TAB_APPEND_CAST( (input_attachment_t**),
-                             p_demux_meta->i_attachments, p_demux_meta->attachments,
-                             p_attachment );
+        if( !p_attachment )
+        {
+            free( psz_description );
+            continue;
+        }
+        TAB_APPEND_CAST( (input_attachment_t**),
+                         p_demux_meta->i_attachments, p_demux_meta->attachments,
+                         p_attachment );
         free( psz_description );
 
         unsigned i_pic_type = p_apic->type();

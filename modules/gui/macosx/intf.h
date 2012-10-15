@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 412d2edcd6239004a1147731b102142cd2450249 $
+ * $Id: a4155ead108a9372671f73616309a495799f603b $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -40,6 +40,8 @@
 #import "SPMediaKeyTap.h"                   /* for the media key support */
 #import "misc.h"
 #import "MainWindow.h"
+
+#import <IOKit/pwr_mgt/IOPMLib.h>           /* for sleep prevention */
 
 /*****************************************************************************
  * Local prototypes.
@@ -146,6 +148,9 @@ struct intf_sys_t
     SPMediaKeyTap * o_mediaKeyController;
 
     NSArray *o_usedHotkeys;
+
+    /* sleep management */
+    IOPMAssertionID systemSleepAssertionID;
 }
 
 + (VLCMain *)sharedInstance;

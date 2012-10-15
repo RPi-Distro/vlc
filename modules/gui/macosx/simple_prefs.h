@@ -2,7 +2,7 @@
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2012 VLC authors and VideoLAN
-* $Id: 61e485be5742baaa17819564c6d8d83415a766f5 $
+* $Id: 5c3c6cc00b9fd9e48ca471115dcd36cdfcbdb4e6 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -196,6 +196,7 @@ IBOutlet id o_intf_mediakeys_ckb;
 - (void)initStrings;
 - (void)resetControls;
 - (void)showSimplePrefs;
+- (void)showSimplePrefsWithLevel:(NSInteger)i_window_level;
 
 - (IBAction)buttonAction:(id)sender;
 - (void)sheetDidEnd:(NSWindow *)o_sheet 

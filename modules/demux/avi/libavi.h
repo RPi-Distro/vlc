@@ -2,7 +2,7 @@
  * libavi.h : LibAVI library
  ******************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 3862cf92d88d7bcce263cf8bd40216f082e2e07a $
+ * $Id: 96df03dcfc0d3b88121f56722fd05e5e81d6d883 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -124,8 +124,8 @@ typedef struct avi_chunk_strf_auds_s
 typedef struct avi_chunk_strf_vids_s
 {
     AVI_CHUNK_COMMON
-    int              i_cat;
-    BITMAPINFOHEADER *p_bih;
+    int                     i_cat;
+    VLC_BITMAPINFOHEADER    *p_bih;
 } avi_chunk_strf_vids_t;
 
 typedef union avi_chunk_strf_u

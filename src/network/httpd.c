@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: e90cc40d1d43371fc6c719dddc3a6ae0e847afb9 $
+ * $Id: 51e6e6a04eb97266fae361b692dd6c1964f99899 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -217,11 +217,12 @@ static const struct
     { ".ogm",   "application/ogg" },
     { ".ogv",   "video/ogg" },
     { ".ogx",   "application/ogg" },
+    { ".opus",  "audio/ogg; codecs=opus" },
     { ".spx",   "audio/ogg" },
     { ".wav",   "audio/wav" },
     { ".wma",   "audio/x-ms-wma" },
     { ".wmv",   "video/x-ms-wmv" },
-
+    { ".webm",  "video/webm" },
 
     /* end */
     { "",       "" }

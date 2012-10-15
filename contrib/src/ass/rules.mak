@@ -14,6 +14,9 @@ $(TARBALLS)/libass-$(ASS_VERSION).tar.gz:
 
 libass: libass-$(ASS_VERSION).tar.gz .sum-ass
 	$(UNPACK)
+ifdef HAVE_MACOSX
+	$(APPLY) $(SRC)/ass/ass-macosx.patch
+endif
 	$(MOVE)
 
 DEPS_ass = freetype2 $(DEPS_freetype2) fontconfig $(DEPS_fontconfig) fribidi

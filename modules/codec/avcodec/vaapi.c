@@ -2,7 +2,7 @@
  * vaapi.c: VAAPI helpers for the ffmpeg decoder
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 2ab53de41a6c58122a0d63f3ef474b074f0ef85a $
+ * $Id: f03aaa273104c2c39b27b3ec5eb15724ba756e9c $
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *
@@ -310,7 +310,8 @@ static int CreateSurfaces( vlc_va_vaapi_t *p_va, void **pp_hw_ctx, vlc_fourcc_t 
         goto error;
     *pi_chroma = i_chroma;
 
-    CopyInitCache( &p_va->image_cache, i_width );
+    if( unlikely(CopyInitCache( &p_va->image_cache, i_width )) )
+        goto error;
 
     /* Setup the ffmpeg hardware context */
     *pp_hw_ctx = &p_va->hw_ctx;
@@ -357,9 +358,6 @@ static int Setup( vlc_va_t *p_external, void **pp_hw_ctx, vlc_fourcc_t *pi_chrom
 static int Extract( vlc_va_t *p_external, picture_t *p_picture, AVFrame *p_ff )
 {
     vlc_va_vaapi_t *p_va = vlc_va_vaapi_Get(p_external);
-
-    if( !p_va->image_cache.buffer )
-        return VLC_EGENERIC;
 
     VASurfaceID i_surface_id = (VASurfaceID)(uintptr_t)p_ff->data[3];
 

@@ -41,6 +41,7 @@
 #include <vlc_cpu.h>
 
 /* ffmpeg header */
+#include <libavutil/mem.h>
 #define HAVE_MMX 1
 #ifdef HAVE_LIBAVCODEC_AVCODEC_H
 #   include <libavcodec/avcodec.h>

@@ -2,7 +2,7 @@
  * waveout.c : Windows waveOut plugin for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: ba4c66f541b461dbf60e553f28554fb6421c7fee $
+ * $Id: 620e58e56956ce8683c929740551283156143340 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          André Weber
@@ -823,7 +823,7 @@ static void CALLBACK WaveOutCallback( HWAVEOUT h_waveout, UINT uMsg,
 
 
 /****************************************************************************
- * WaveOutClearDoneBuffers: Clear all done marked buffers, and free aout_bufer
+ * WaveOutClearDoneBuffers: Clear all done marked buffers, and free buffer
  ****************************************************************************
  * return value is the number of still playing buffers in the queue
  ****************************************************************************/

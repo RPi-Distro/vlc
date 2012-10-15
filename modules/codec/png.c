@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: acd569481013008c063b7054009e9f721979eafb $
+ * $Id: ced4016359437462c669e033639dd7384137e803 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -91,12 +91,14 @@ static int OpenDecoder( vlc_object_t *p_this )
 static void user_read( png_structp p_png, png_bytep data, png_size_t i_length )
 {
     block_t *p_block = (block_t *)png_get_io_ptr( p_png );
-    png_size_t i_read = __MIN( p_block->i_buffer, i_length );
+    if( i_length > p_block->i_buffer ) {
+        png_error( p_png, "not enough data" );
+        return;
+    }
+
     memcpy( data, p_block->p_buffer, i_length );
     p_block->p_buffer += i_length;
     p_block->i_buffer -= i_length;
-
-    if( i_length != i_read ) png_error( p_png, "not enough data" );
 }
 
 static void user_error( png_structp p_png, png_const_charp error_msg )

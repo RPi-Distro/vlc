@@ -18,6 +18,7 @@ usr/lib/vlc/plugins/access/libaccess_mtp_plugin.so
 usr/lib/vlc/plugins/access/libaccess_oss_plugin.so
 usr/lib/vlc/plugins/access/libaccess_rar_plugin.so
 usr/lib/vlc/plugins/access/libaccess_realrtsp_plugin.so
+usr/lib/vlc/plugins/access/libaccess_sftp_plugin.so
 usr/lib/vlc/plugins/access/libaccess_shm_plugin.so
 usr/lib/vlc/plugins/access/libaccess_smb_plugin.so
 usr/lib/vlc/plugins/access/libaccess_tcp_plugin.so
@@ -75,6 +76,7 @@ usr/lib/vlc/plugins/codec/liblibmpeg2_plugin.so
 usr/lib/vlc/plugins/codec/liblpcm_plugin.so
 usr/lib/vlc/plugins/codec/libmpeg_audio_plugin.so
 usr/lib/vlc/plugins/codec/libomxil_plugin.so
+usr/lib/vlc/plugins/codec/libopus_plugin.so
 usr/lib/vlc/plugins/codec/libpng_plugin.so
 usr/lib/vlc/plugins/codec/librawvideo_plugin.so
 usr/lib/vlc/plugins/codec/libspeex_plugin.so

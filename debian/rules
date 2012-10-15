@@ -74,12 +74,14 @@ confflags += \
 	--enable-ncurses \
 	--enable-notify \
 	--enable-ogg \
+	--enable-opus \
 	--enable-oss \
 	--enable-pulse \
 	--enable-qt4 \
 	--enable-realrtsp \
 	--enable-samplerate \
 	--enable-sdl \
+	--enable-sftp \
 	--enable-shout \
 	--enable-skins2 \
 	--enable-smb \

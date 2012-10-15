@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7DFFA17416125157001AF89F /* effects-one-button-pressed-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DFFA17216125157001AF89F /* effects-one-button-pressed-dark.png */; };
+		7DFFA17516125157001AF89F /* effects-one-button-pressed-dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DFFA17316125157001AF89F /* effects-one-button-pressed-dark@2x.png */; };
 		CC04323B13B246DF00D7D52E /* back_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04321113B246DF00D7D52E /* back_dark.png */; };
 		CC04323C13B246DF00D7D52E /* back-pressed_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04321213B246DF00D7D52E /* back-pressed_dark.png */; };
 		CC04323D13B246DF00D7D52E /* effects-double-buttons_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = CC04321313B246DF00D7D52E /* effects-double-buttons_dark.png */; };
@@ -296,6 +298,8 @@
 		CC9191A2159B55B700E634A7 /* dropzone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CC9191A1159B55B700E634A7 /* dropzone@2x.png */; };
 		CC9B43AF13B29C79000205AE /* bottom-background.png in Resources */ = {isa = PBXBuildFile; fileRef = CC9B43AE13B29C79000205AE /* bottom-background.png */; };
 		CC9B43B113B29FCF000205AE /* bottom-background_dark.png in Resources */ = {isa = PBXBuildFile; fileRef = CC9B43B013B29FCF000205AE /* bottom-background_dark.png */; };
+		CCAEE983160747F500DE42D6 /* effects-one-button-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = CCAEE981160747F500DE42D6 /* effects-one-button-pressed.png */; };
+		CCAEE984160747F500DE42D6 /* effects-one-button-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CCAEE982160747F500DE42D6 /* effects-one-button-pressed@2x.png */; };
 		CCB320721423AAEE002CB53B /* shuffle-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = CCB320711423AAEE002CB53B /* shuffle-blue.png */; };
 		CCBAA742159B5A7800D8348C /* back-pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CCBAA716159B5A7800D8348C /* back-pressed@2x.png */; };
 		CCBAA743159B5A7800D8348C /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CCBAA717159B5A7800D8348C /* back@2x.png */; };
@@ -417,6 +421,8 @@
 		5CCED71314C0D4A90057F8D1 /* ExtensionsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExtensionsManager.m; path = ../../../modules/gui/macosx/ExtensionsManager.m; sourceTree = SOURCE_ROOT; };
 		5CCED71414C0D4A90057F8D1 /* VLCUIWidgets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VLCUIWidgets.h; path = ../../../modules/gui/macosx/VLCUIWidgets.h; sourceTree = SOURCE_ROOT; };
 		5CCED71514C0D4A90057F8D1 /* VLCUIWidgets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VLCUIWidgets.m; path = ../../../modules/gui/macosx/VLCUIWidgets.m; sourceTree = SOURCE_ROOT; };
+		7DFFA17216125157001AF89F /* effects-one-button-pressed-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "effects-one-button-pressed-dark.png"; path = "Resources/mainwindow_dark/effects-one-button-pressed-dark.png"; sourceTree = "<group>"; };
+		7DFFA17316125157001AF89F /* effects-one-button-pressed-dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "effects-one-button-pressed-dark@2x.png"; path = "Resources/mainwindow_dark/effects-one-button-pressed-dark@2x.png"; sourceTree = "<group>"; };
 		8E49720006417F6800370C9F /* playlistinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = playlistinfo.h; path = ../../../modules/gui/macosx/playlistinfo.h; sourceTree = SOURCE_ROOT; };
 		8E49720106417F6800370C9F /* playlistinfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = playlistinfo.m; path = ../../../modules/gui/macosx/playlistinfo.m; sourceTree = SOURCE_ROOT; };
 		8E55FB7F0459B0FD00FB3317 /* output.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = output.h; path = ../../../modules/gui/macosx/output.h; sourceTree = SOURCE_ROOT; };
@@ -767,6 +773,8 @@
 		CC9B43AE13B29C79000205AE /* bottom-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bottom-background.png"; path = "Resources/mainwindow/bottom-background.png"; sourceTree = "<group>"; };
 		CC9B43B013B29FCF000205AE /* bottom-background_dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bottom-background_dark.png"; path = "Resources/mainwindow_dark/bottom-background_dark.png"; sourceTree = "<group>"; };
 		CC9E3E7913D1CFCF00429A71 /* qtcapture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = qtcapture.m; path = ../../../modules/access/qtcapture.m; sourceTree = "<group>"; };
+		CCAEE981160747F500DE42D6 /* effects-one-button-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "effects-one-button-pressed.png"; path = "Resources/mainwindow/effects-one-button-pressed.png"; sourceTree = "<group>"; };
+		CCAEE982160747F500DE42D6 /* effects-one-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "effects-one-button-pressed@2x.png"; path = "Resources/mainwindow/effects-one-button-pressed@2x.png"; sourceTree = "<group>"; };
 		CCB0BB3013FAC9F40095BD0A /* CompatibilityFixes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CompatibilityFixes.h; path = ../../../modules/gui/macosx/CompatibilityFixes.h; sourceTree = "<group>"; };
 		CCB24D5D0D54BBAE004D780C /* simple_prefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = simple_prefs.m; path = ../../../modules/gui/macosx/simple_prefs.m; sourceTree = SOURCE_ROOT; };
 		CCB24D5E0D54BBAE004D780C /* simple_prefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simple_prefs.h; path = ../../../modules/gui/macosx/simple_prefs.h; sourceTree = SOURCE_ROOT; };
@@ -1134,6 +1142,8 @@
 				CC919155159B53CE00E634A7 /* play-pressed_dark@2x.png */,
 				CC919156159B53CE00E634A7 /* playlist-blue_dark@2x.png */,
 				CC919157159B53CE00E634A7 /* playlist-blue-pressed_dark@2x.png */,
+				7DFFA17216125157001AF89F /* effects-one-button-pressed-dark.png */,
+				7DFFA17316125157001AF89F /* effects-one-button-pressed-dark@2x.png */,
 				CC919158159B53CE00E634A7 /* effects-double-buttons_dark@2x.png */,
 				CC919159159B53CE00E634A7 /* effects-double-buttons-pressed_dark@2x.png */,
 				CC91915A159B53CE00E634A7 /* effects-one-button_dark@2x.png */,
@@ -1215,6 +1225,8 @@
 				CCBAA71B159B5A7800D8348C /* effects-double-buttons@2x.png */,
 				CCBAA71C159B5A7800D8348C /* effects-one-button-blue@2x.png */,
 				CCBAA71D159B5A7800D8348C /* effects-one-button@2x.png */,
+				CCAEE981160747F500DE42D6 /* effects-one-button-pressed.png */,
+				CCAEE982160747F500DE42D6 /* effects-one-button-pressed@2x.png */,
 				CCBAA71E159B5A7800D8348C /* forward-pressed@2x.png */,
 				CCBAA71F159B5A7800D8348C /* forward@2x.png */,
 				CCBAA720159B5A7800D8348C /* fullscreen-double-buttons-pressed@2x.png */,
@@ -2005,6 +2017,10 @@
 				CCBAA7AD159B5B3F00D8348C /* sidebar-pictures@2x.png in Resources */,
 				CCBAA7AE159B5B3F00D8348C /* sidebar-playlist@2x.png in Resources */,
 				CCBAA7AF159B5B3F00D8348C /* sidebar-podcast@2x.png in Resources */,
+				CCAEE983160747F500DE42D6 /* effects-one-button-pressed.png in Resources */,
+				CCAEE984160747F500DE42D6 /* effects-one-button-pressed@2x.png in Resources */,
+				7DFFA17416125157001AF89F /* effects-one-button-pressed-dark.png in Resources */,
+				7DFFA17516125157001AF89F /* effects-one-button-pressed-dark@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

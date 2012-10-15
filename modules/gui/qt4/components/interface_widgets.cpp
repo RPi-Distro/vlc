@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 7ac81b5469153869af29efa97f292005f7608481 $
+ * $Id: 2339a74073dedbaa0ef041a02da5229bb040f9d9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -519,7 +519,13 @@ CoverArtLabel::CoverArtLabel( QWidget *parent, intf_thread_t *_p_i )
     CONNECT( action, triggered(), this, askForUpdate() );
     addAction( action );
 
-    showArtUpdate( "" );
+    input_item_t *p_item = THEMIM->currentInputItem();
+    if( p_item )
+    {
+        showArtUpdate( THEMIM->getIM()->decodeArtURL( p_item ) );
+    }
+    else
+        showArtUpdate( "" );
 }
 
 CoverArtLabel::~CoverArtLabel()

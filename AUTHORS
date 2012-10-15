@@ -47,13 +47,13 @@ Dennis van Amerongen
 Jérôme Decoodt
 Faustino Osuna
 Loïc Minier
-KO Myung-Hun
 Ludovic Fauvet
+KO Myung-Hun
 David Flynn
 Mark Moriarty
 Fabio Ritrovato
-Tony Castley
 Mirsal Ennaime
+Tony Castley
 Srikanth Raju
 Kaarlo Raiha
 Michel Kaempf
@@ -67,10 +67,10 @@ Henri Fallon
 Denis Charmet
 Emmanuel Puig
 Sebastien Zwickert
+Edward Wang
 Adrien Maglo
 Renaud Dartus
 Alexis de Lattre
-Edward Wang
 Vincent Penquerc'h
 Arnaud de Bossoreille de Ribou
 Mohammed Adnène Trojette
@@ -82,6 +82,7 @@ Daniel Mierswa
 Dominique Leuenberger
 Rob Jonson
 Andre Pang
+Christoph Miebach
 Akash Mehrotra
 André Weber
 Anthony Loiseau
@@ -94,16 +95,13 @@ Juho Vähä-Herttua
 Ken Self
 Richard Hosking
 Alexis Ballier
-Fumio Nakayama
 Marc Ariberti
 Benoit Steiner
 Michel Lespinasse
-Carlo Calabrò
-Damien Erambert
 Naohiro Koriyama
+Carlo Calabrò
 Nicolas Chauvet
 Cheng Sun
-Christoph Miebach
 Alexey Sokolov
 Basos G
 Brad Smith
@@ -118,6 +116,8 @@ Michael Hanselmann
 Damien Lucas
 Richard Shepherd
 Sébastien Toque
+Alexander Lakhin
+Benjamin Drung
 Gaël Hendryckx
 Grigori Goronzy
 Stephan Assmus
@@ -127,11 +127,9 @@ David Menestrina
 Dominique Martinet
 Jason Luka
 Luc Saillard
-Mindaugas Baranauskas
 Pankaj Yadav
 Ramiro Polla
 Steinar H. Gunderson
-Alexander Law
 Can Wu
 Christophe Courtaut
 Hannes Domani
@@ -146,10 +144,10 @@ Keary Griffin
 Konstanty Bialkowski
 Przemyslaw Fiala
 Tanguy Krotoff
-Benjamin Drung
 David Kaplan
 Devin Heitmueller
 Eugenio Jarosiewicz
+Fabian Keil
 Guillaume Poussel
 Justus Piater
 Luca Barbato
@@ -164,12 +162,13 @@ Chris Smowton
 Colin Delacroix
 Cristian Maglie
 Elminster2031
-Fabian Keil
+François Revol
 Jakub Wieczorek
 John Peterson
 Martin Briza
 Mike Houben
 Romain Goyet
+Rui Zhang
 Adrian Yanes
 Arai/Fujisawa Tooru
 Aurélien Nephtali
@@ -185,14 +184,16 @@ Katsushi Kobayashi
 Loren Merritt
 Maciej Blizinski
 Mark Bidewell
+Mark Hassman
 Michael Feurstein
 Miguel Angel Cabrera Moya
 Ming Hu
 Niles Bindel
-Pauline Castets
-Rui Zhang
 Scott Caudle
+Sean Robinson
 Simon Hailes
+Thierry Reding
+Timothy B. Terriberry
 Xavier Martin
 Alex Converse
 Alexander Bethke
@@ -219,7 +220,6 @@ Jon Stacey
 Kai Lauterbach
 Konstantin Bogdanov
 Kuan-Chung Chiu
-Mark Hassman
 Mark Lee
 Matthias Dahl
 Michael McEll
@@ -236,10 +236,10 @@ Sam Lade
 Sasha Koruga
 Sreng Jean
 Sven Petai
-Thierry Reding
 Tomer Barletz
 Tristan Leteurtre
 Wang Bo
+Zoran Turalija
 maxime Ripard
 xxcv
 Adam Hoka
@@ -273,12 +273,10 @@ Clément Lecigne
 Cody Russell
 Cristian Morales Vega
 Dan Rosenberg
-Daniel Dreibrodt
 Daniel Marth
 Daniel Tisza
 Detlef Schroeder
 Diego Fernando Nieto
-Dominic Spitaler
 Dominik 'Rathann' Mierzejewski
 Edward Sheldrake
 Elliot Murphy
@@ -289,15 +287,17 @@ Fargier Sylvain
 Fathi Boudra
 Felix Geyer
 Filipe Azevedo
+Florian Hubold
 Frank Enderle
-François Revol
 Frode Tennebø
 Frédéric Crozat
 Gaurav Narula
 Georg Seifert
+Geraud CONTINSOUZAS
 Gertjan Van Droogenbroeck
 Gilles Chanteperdrix
 Greg Farrell
+Gregory Maxwell
 Gwenole Beauchesne
 Götz Waschk
 Hans-Kristian Arntzen
@@ -361,6 +361,7 @@ Scott Lyons
 Sebastian Birk
 Sergey Puzanov
 Sharad Dixit
+Song Ye Wen
 Stephan Krempel
 Steven Kramer
 Steven Sheehy
@@ -372,6 +373,7 @@ Timo Paulssen
 Tomasen
 Tony Vankrunkelsven
 Tristan Heaven
+Varphone Wong
 Yannick Bréhon
 Yavor Doganov
 Yohann Martineau
@@ -426,7 +428,6 @@ Eren Türkay
 Eric Dudiak
 Espen Skoglund
 Ethan C. Baldridge
-Florian Hubold
 François Seingier
 Frans van Veen
 Frédéric Ruget
@@ -498,6 +499,7 @@ Ondrej Kuda aka Albert
 Pascal Levesque
 Patrick Horn
 Patrick McLean
+Pauline Castets
 Paul Mackerras
 Peter Surda
 Petr Vacek

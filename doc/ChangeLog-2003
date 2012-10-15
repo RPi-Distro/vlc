@@ -22562,3 +22562,13 @@ Date:   Thu Jan 2 20:48:28 2003 +0000
     i_bytes_per_frame and i_frame_length in each audio decoder.
     * src/audio_output/dec.c: proper fix to correctly set i_bytes_per_frame
     and i_frame_length.
+
+commit 08f42608b73bdc422eed24cf0915888417ff5a38
+Author: Jon Lech Johansen <jlj@videolan.org>
+Date:   Wed Jan 1 11:14:50 2003 +0000
+
+      * ./modules/gui/macosx/aout.m: cleaned up the code, removed intf dep.
+      * ./src/misc/darwin_specific.m: fixed segfault (o_enumerator was being
+                                      released twice) and memory leak.
+    
+        Bonne Ann�e!

@@ -2,7 +2,7 @@
  * MainMenu.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011 Felix Paul Kühne
- * $Id: bc0b93f83ef7ee9095b4520800d94ea9ff437dc8 $
+ * $Id: a86d46d81717e13cf6dd137607ad46c83bac2d23 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -341,7 +341,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
     [o_mi_player setTitle: _NS("Player...")];
     [o_mi_controller setTitle: _NS("Main Window...")];
     [o_mi_audioeffects setTitle: _NS("Audio Effects...")];
-    [o_mi_videoeffects setTitle: _NS("Video Filters...")];
+    [o_mi_videoeffects setTitle: [NSString stringWithFormat:@"%@...", _NS("Video Effects")]];
     [o_mi_bookmarks setTitle: _NS("Bookmarks...")];
     [o_mi_playlist setTitle: _NS("Playlist...")];
     [o_mi_info setTitle: _NS("Media Information...")];
@@ -468,7 +468,6 @@ static VLCMainMenu *_o_sharedInstance = nil;
             vlc_object_release( p_vout );
 
             [self refreshVoutDeviceMenu:nil];
-            [self setSubmenusEnabled: YES];
         }
         vlc_object_release( p_input );
     }
@@ -497,6 +496,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
     NSArray * o_screens = [NSScreen screens];
     NSMenuItem * o_mitem;
     count = [o_screens count];
+    [o_mi_screen setEnabled: YES];
     [o_submenu addItemWithTitle: _NS("Default") action:@selector(toggleFullscreenDevice:) keyEquivalent:@""];
     o_mitem = [o_submenu itemAtIndex: 0];
     [o_mitem setTag: 0];
@@ -506,7 +506,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
     for (NSUInteger i = 0; i < count; i++)
     {
         s_rect = [[o_screens objectAtIndex: i] frame];
-        [o_submenu addItemWithTitle: [NSString stringWithFormat: @"%@ %i (%ix%i)", _NS("Screen"), i+1,
+        [o_submenu addItemWithTitle: [NSString stringWithFormat: @"%@ %li (%ix%i)", _NS("Screen"), i+1,
                                       (int)s_rect.size.width, (int)s_rect.size.height] action:@selector(toggleFullscreenDevice:) keyEquivalent:@""];
         o_mitem = [o_submenu itemAtIndex:i+1];
         [o_mitem setTag: (int)[[o_screens objectAtIndex: i] displayID]];
@@ -577,6 +577,7 @@ static VLCMainMenu *_o_sharedInstance = nil;
 
     /* Let the ExtensionsManager itself build the menu */
     [o_extMgr buildMenu:o_mu_extensions];
+    [o_mi_extensions setEnabled: ( [o_mu_extensions numberOfItems] > 0 )];
 }
 
 #pragma mark -
@@ -753,7 +754,11 @@ static VLCMainMenu *_o_sharedInstance = nil;
 
 - (IBAction)viewPreferences:(id)sender
 {
-    [[[VLCMain sharedInstance] simplePreferences] showSimplePrefs];
+    NSInteger i_level = NSNormalWindowLevel;
+    NSInteger i_video_window_level = [[[[VLCMainWindow sharedInstance] videoView] window] level];
+    if( i_video_window_level == NSStatusWindowLevel )
+        i_level = NSStatusWindowLevel;
+    [[[VLCMain sharedInstance] simplePreferences] showSimplePrefsWithLevel:i_level];
 }
 
 #pragma mark -
@@ -901,17 +906,6 @@ static VLCMainMenu *_o_sharedInstance = nil;
             return;
     }
 
-    /* Make sure we want to display the variable
-     * special case for spu-es, which we want to display in any case */
-    if( i_type & VLC_VAR_HASCHOICE && strcmp( psz_variable, "spu-es" ) )
-    {
-        var_Change( p_object, psz_variable, VLC_VAR_CHOICESCOUNT, &val, NULL );
-        if( val.i_int == 0 )
-            return;
-        if( (i_type & VLC_VAR_TYPE) != VLC_VAR_VARIABLE && val.i_int == 1 )
-            return;
-    }
-
     /* Get the descriptive name of the variable */
     var_Change( p_object, psz_variable, VLC_VAR_GETTEXT, &text, NULL );
     [o_mi setTitle: _NS( text.psz_string ? text.psz_string : psz_variable )];
@@ -980,6 +974,8 @@ static VLCMainMenu *_o_sharedInstance = nil;
         /* this is more efficient then the legacy code, but 10.6+ only */
         [o_menu removeAllItems];
     }
+    /* we disable everything here, and enable it again when needed, below */
+    [o_parent setEnabled:NO];
 
     /* Aspect Ratio */
     if( [[o_parent title] isEqualToString: _NS("Aspect-ratio")] == YES )
@@ -1010,7 +1006,8 @@ static VLCMainMenu *_o_sharedInstance = nil;
     if( i_type & VLC_VAR_HASCHOICE )
     {
         var_Change( p_object, psz_variable, VLC_VAR_CHOICESCOUNT, &val, NULL );
-        if( val.i_int == 0 ) return;
+        if( val.i_int == 0 ) 
+            return;
         if( (i_type & VLC_VAR_TYPE) != VLC_VAR_VARIABLE && val.i_int == 1 )
             return;
     }

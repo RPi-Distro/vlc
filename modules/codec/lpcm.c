@@ -2,7 +2,7 @@
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 5d91ee1daa647d3b25f0ae9cef84bc2fbed3a958 $
+ * $Id: 66f57c08053730e3280d448c570a15b9dd9331ee $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>
@@ -134,7 +134,7 @@ struct encoder_sys_t
  * - padding(variable)
  *
  * LPCM BD header :
- * - unkown (16 bits)
+ * - unknown (16 bits)
  * - number of channels (4 bits)
  * - frequency (4 bits)
  * - bits per sample (2 bits)
