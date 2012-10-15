@@ -74,6 +74,7 @@ confflags += \
 	--enable-ncurses \
 	--enable-notify \
 	--enable-ogg \
+	--enable-opus \
 	--enable-oss \
 	--enable-pulse \
 	--enable-qt4 \
