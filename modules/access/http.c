@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: ffbffd701ee05147c09b220a863a9f826809f4d0 $
+ * $Id: 392a189e5089c0709f907485abe89a75521ecb71 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -570,20 +570,19 @@ connect:
             goto error;
         }
 
-
-        /* Do not accept redirection outside of HTTP works */
         const char *psz_protocol;
-        if( !strncmp( p_sys->psz_location, "http:", 5 ) )
+        if( !strncmp( p_sys->psz_location, "http://", 7 ) )
             psz_protocol = "http";
-        else if( !strncmp( p_sys->psz_location, "https:", 6 ) )
+        else if( !strncmp( p_sys->psz_location, "https://", 8 ) )
             psz_protocol = "https";
         else
-        {
-            msg_Err( p_access, "insecure redirection ignored" );
+        {   /* Do not accept redirection outside of HTTP */
+            msg_Err( p_access, "unsupported redirection ignored" );
             goto error;
         }
         free( p_access->psz_location );
-        p_access->psz_location = strdup( p_sys->psz_location );
+        p_access->psz_location = strdup( p_sys->psz_location
+                                       + strlen( psz_protocol ) + 3 );
         /* Clean up current Open() run */
         vlc_UrlClean( &p_sys->url );
         http_auth_Reset( &p_sys->auth );
@@ -1246,8 +1245,9 @@ static int Request( access_t *p_access, uint64_t i_tell )
         psz_path = "/";
     if( p_sys->b_proxy && pvs == NULL )
         net_Printf( p_access, p_sys->fd, NULL,
-                    "GET http://%s:%d HTTP/1.%d\r\n",
-                    p_sys->url.psz_host, p_sys->url.i_port, p_sys->i_version );
+                    "GET http://%s:%d%s HTTP/1.%d\r\n",
+                    p_sys->url.psz_host, p_sys->url.i_port,
+                    psz_path, p_sys->i_version );
     else
         net_Printf( p_access, p_sys->fd, pvs, "GET %s HTTP/1.%d\r\n",
                     psz_path, p_sys->i_version );
@@ -1266,6 +1266,9 @@ static int Request( access_t *p_access, uint64_t i_tell )
         net_Printf( p_access, p_sys->fd, pvs, "Referer: %s\r\n",
                     p_sys->psz_referrer);
     }
+#ifdef HAVE_ZLIB_H
+    net_Printf( p_access, p_sys->fd, pvs, "Accept-Encoding: gzip, deflate\r\n" );
+#endif
     /* Offset */
     if( p_sys->i_version == 1 && ! p_sys->b_continuous )
     {
@@ -1371,6 +1374,7 @@ static int Request( access_t *p_access, uint64_t i_tell )
     {
         char *psz = net_Gets( p_access, p_sys->fd, pvs );
         char *p;
+        char *p_trailing;
 
         if( psz == NULL )
         {
@@ -1398,7 +1402,19 @@ static int Request( access_t *p_access, uint64_t i_tell )
             goto error;
         }
         *p++ = '\0';
-        while( *p == ' ' ) p++;
+        p += strspn( p, " \t" );
+
+        /* trim trailing white space */
+        p_trailing = p + strlen( p );
+        if( p_trailing > p )
+        {
+            p_trailing--;
+            while( ( *p_trailing == ' ' || *p_trailing == '\t' ) && p_trailing > p )
+            {
+                *p_trailing = '\0';
+                p_trailing--;
+            }
+        }
 
         if( !strcasecmp( psz, "Content-Length" ) )
         {

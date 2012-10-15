@@ -111,10 +111,11 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 man1dir = $(mandir)/man1
-am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(docdir)"
+am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(docdir)" \
+	"$(DESTDIR)$(docdir)"
 NROFF = nroff
 MANS = $(man1_MANS)
-DATA = $(doc_DATA)
+DATA = $(doc_DATA) $(nobase_doc_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
@@ -185,10 +186,12 @@ CFLAGS_memcpyaltivec = @CFLAGS_memcpyaltivec@
 CFLAGS_motion = @CFLAGS_motion@
 CFLAGS_mtp = @CFLAGS_mtp@
 CFLAGS_mux_ogg = @CFLAGS_mux_ogg@
+CFLAGS_ncurses = @CFLAGS_ncurses@
 CFLAGS_notify = @CFLAGS_notify@
 CFLAGS_ogg = @CFLAGS_ogg@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
+CFLAGS_opus = @CFLAGS_opus@
 CFLAGS_panoramix = @CFLAGS_panoramix@
 CFLAGS_portaudio = @CFLAGS_portaudio@
 CFLAGS_postproc = @CFLAGS_postproc@
@@ -252,6 +255,7 @@ CPPFLAGS_notify = @CPPFLAGS_notify@
 CPPFLAGS_ogg = @CPPFLAGS_ogg@
 CPPFLAGS_opencv_example = @CPPFLAGS_opencv_example@
 CPPFLAGS_opencv_wrapper = @CPPFLAGS_opencv_wrapper@
+CPPFLAGS_opus = @CPPFLAGS_opus@
 CPPFLAGS_portaudio = @CPPFLAGS_portaudio@
 CPPFLAGS_qt4 = @CPPFLAGS_qt4@
 CPPFLAGS_quicktime = @CPPFLAGS_quicktime@
@@ -489,6 +493,7 @@ LIBS_oldrc = @LIBS_oldrc@
 LIBS_omxil = @LIBS_omxil@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
+LIBS_opus = @LIBS_opus@
 LIBS_panoramix = @LIBS_panoramix@
 LIBS_param_eq = @LIBS_param_eq@
 LIBS_plugin = @LIBS_plugin@
@@ -649,6 +654,7 @@ LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
+LTLIBopus = @LTLIBopus@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBpanoramix = @LTLIBpanoramix@
@@ -720,6 +726,8 @@ MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
 MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
 MUX_OGG_LIBS = @MUX_OGG_LIBS@
+NCURSES_CFLAGS = @NCURSES_CFLAGS@
+NCURSES_LIBS = @NCURSES_LIBS@
 NEON_CFLAGS = @NEON_CFLAGS@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -738,6 +746,8 @@ OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OPUS_CFLAGS = @OPUS_CFLAGS@
+OPUS_LIBS = @OPUS_LIBS@
 OSS_LIBS = @OSS_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
@@ -925,8 +935,8 @@ LIBVLC_SAMPLES = \
 	libvlc/wx_player.cpp \
 	$(NULL)
 
+nobase_doc_DATA = $(LIBVLC_SAMPLES)
 doc_DATA = \
-	$(LIBVLC_SAMPLES) \
 	bugreport-howto.txt \
 	fortunes.txt \
 	intf-vcd.txt \
@@ -1078,6 +1088,30 @@ uninstall-docDATA:
 	@list='$(doc_DATA)'; test -n "$(docdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(docdir)'; $(am__uninstall_files_from_dir)
+install-nobase_docDATA: $(nobase_doc_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(nobase_doc_DATA)'; test -n "$(docdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(docdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(docdir)" || exit 1; \
+	fi; \
+	$(am__nobase_list) | while read dir files; do \
+	  xfiles=; for file in $$files; do \
+	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
+	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
+	  test -z "$$xfiles" || { \
+	    test "x$$dir" = x. || { \
+	      echo " $(MKDIR_P) '$(DESTDIR)$(docdir)/$$dir'"; \
+	      $(MKDIR_P) "$(DESTDIR)$(docdir)/$$dir"; }; \
+	    echo " $(INSTALL_DATA) $$xfiles '$(DESTDIR)$(docdir)/$$dir'"; \
+	    $(INSTALL_DATA) $$xfiles "$(DESTDIR)$(docdir)/$$dir" || exit $$?; }; \
+	done
+
+uninstall-nobase_docDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nobase_doc_DATA)'; test -n "$(docdir)" || list=; \
+	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	dir='$(DESTDIR)$(docdir)'; $(am__uninstall_files_from_dir)
 tags: TAGS
 TAGS:
 
@@ -1132,7 +1166,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(docdir)"; do \
+	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(docdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1187,7 +1221,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-docDATA install-man
+install-data-am: install-docDATA install-man install-nobase_docDATA
 
 install-dvi: install-dvi-am
 
@@ -1231,7 +1265,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-docDATA uninstall-man
+uninstall-am: uninstall-docDATA uninstall-man uninstall-nobase_docDATA
 
 uninstall-man: uninstall-man1
 
@@ -1243,12 +1277,13 @@ uninstall-man: uninstall-man1
 	install-data install-data-am install-docDATA install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
-	install-man1 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am uninstall uninstall-am uninstall-docDATA \
-	uninstall-man uninstall-man1
+	install-man1 install-nobase_docDATA install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
+	uninstall-docDATA uninstall-man uninstall-man1 \
+	uninstall-nobase_docDATA
 
 
 Doxyfile: Doxyfile.in $(top_builddir)/config.status
@@ -1267,7 +1302,7 @@ $(CHANGELOGS): Makefile.am
 	fi
 
 # This one needs to be rebuilt all the time :)
-.PHONY: ChangeLog-2011 changelogs doc
+.PHONY: ChangeLog-2012 changelogs doc
 
 changelogs: $(CHANGELOGS)
 

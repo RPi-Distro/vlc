@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 the VideoLAN team
- * $Id: d2337990eb5c29eadac5227531eb0aaa703736d8 $
+ * $Id: 311c08d7689bf14cf7cc669a4039c68d20a7dab1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -240,7 +240,7 @@ static const struct {
                      {vlc_meta_Publisher,   "PUBLISHER"},
                      {vlc_meta_URL,         "URL"},
                      {vlc_meta_TrackNumber, "PART_NUMBER"},
-                     {vlc_meta_Date,        "DATE_RELEASE"},
+                     {vlc_meta_Date,        "DATE_RELEASED"},
                      {vlc_meta_Title,       NULL},
 };
 
@@ -378,11 +378,11 @@ void matroska_segment_c::InformationCreate( )
     {
         vlc_meta_SetTitle( sys.meta, psz_title );
     }
+#if 0
     if( psz_date_utc )
     {
         vlc_meta_SetDate( sys.meta, psz_date_utc );
     }
-#if 0
 
     if( psz_segment_filename )
     {
@@ -976,24 +976,24 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
 
         if( !strcmp( p_tk->psz_codec, "V_MS/VFW/FOURCC" ) )
         {
-            if( p_tk->i_extra_data < (int)sizeof( BITMAPINFOHEADER ) )
+            if( p_tk->i_extra_data < (int)sizeof( VLC_BITMAPINFOHEADER ) )
             {
-                msg_Err( &sys.demuxer, "missing/invalid BITMAPINFOHEADER" );
+                msg_Err( &sys.demuxer, "missing/invalid VLC_BITMAPINFOHEADER" );
                 p_tk->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
             }
             else
             {
-                BITMAPINFOHEADER *p_bih = (BITMAPINFOHEADER*)p_tk->p_extra_data;
+                VLC_BITMAPINFOHEADER *p_bih = (VLC_BITMAPINFOHEADER*)p_tk->p_extra_data;
 
                 p_tk->fmt.video.i_width = GetDWLE( &p_bih->biWidth );
                 p_tk->fmt.video.i_height= GetDWLE( &p_bih->biHeight );
                 p_tk->fmt.i_codec       = GetFOURCC( &p_bih->biCompression );
 
-                p_tk->fmt.i_extra       = GetDWLE( &p_bih->biSize ) - sizeof( BITMAPINFOHEADER );
+                p_tk->fmt.i_extra       = GetDWLE( &p_bih->biSize ) - sizeof( VLC_BITMAPINFOHEADER );
                 if( p_tk->fmt.i_extra > 0 )
                 {
                     /* Very unlikely yet possible: bug #5659*/
-                    size_t maxlen = p_tk->i_extra_data - sizeof( BITMAPINFOHEADER );
+                    size_t maxlen = p_tk->i_extra_data - sizeof( VLC_BITMAPINFOHEADER );
                     p_tk->fmt.i_extra = ( p_tk->fmt.i_extra < maxlen )?
                         p_tk->fmt.i_extra : maxlen;
 

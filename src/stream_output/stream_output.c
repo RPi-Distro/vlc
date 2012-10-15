@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 0749c165456725d8f16d54564eeecec86fa01540 $
+ * $Id: 9587cf7314e73e81dc457c2bfc9677c55c75c578 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -100,7 +100,10 @@ sout_instance_t *sout_NewInstance( vlc_object_t *p_parent, const char *psz_dest 
     /* *** Allocate descriptor *** */
     p_sout = vlc_custom_create( p_parent, sizeof( *p_sout ), "stream output" );
     if( p_sout == NULL )
+    {
+        free( psz_chain );
         return NULL;
+    }
 
     msg_Dbg( p_sout, "using sout chain=`%s'", psz_chain );
 

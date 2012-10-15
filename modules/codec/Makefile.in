@@ -317,8 +317,18 @@ libmpeg_audio_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmpeg_audio_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libmpeg_audio_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_23 = libpng_plugin_la-png.lo
-am_libpng_plugin_la_OBJECTS = $(am__objects_23)
+am__objects_23 = libopus_plugin_la-opus.lo \
+	libopus_plugin_la-opus_header.lo
+am_libopus_plugin_la_OBJECTS = $(am__objects_23)
+nodist_libopus_plugin_la_OBJECTS =
+libopus_plugin_la_OBJECTS = $(am_libopus_plugin_la_OBJECTS) \
+	$(nodist_libopus_plugin_la_OBJECTS)
+libopus_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libopus_plugin_la_CFLAGS) $(CFLAGS) \
+	$(libopus_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
+am__objects_24 = libpng_plugin_la-png.lo
+am_libpng_plugin_la_OBJECTS = $(am__objects_24)
 nodist_libpng_plugin_la_OBJECTS =
 libpng_plugin_la_OBJECTS = $(am_libpng_plugin_la_OBJECTS) \
 	$(nodist_libpng_plugin_la_OBJECTS)
@@ -326,8 +336,8 @@ libpng_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libpng_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libpng_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_24 = libquicktime_plugin_la-quicktime.lo
-am_libquicktime_plugin_la_OBJECTS = $(am__objects_24)
+am__objects_25 = libquicktime_plugin_la-quicktime.lo
+am_libquicktime_plugin_la_OBJECTS = $(am__objects_25)
 nodist_libquicktime_plugin_la_OBJECTS =
 libquicktime_plugin_la_OBJECTS = $(am_libquicktime_plugin_la_OBJECTS) \
 	$(nodist_libquicktime_plugin_la_OBJECTS)
@@ -335,8 +345,8 @@ libquicktime_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libquicktime_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libquicktime_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_25 = librawvideo_plugin_la-rawvideo.lo
-am_librawvideo_plugin_la_OBJECTS = $(am__objects_25)
+am__objects_26 = librawvideo_plugin_la-rawvideo.lo
+am_librawvideo_plugin_la_OBJECTS = $(am__objects_26)
 nodist_librawvideo_plugin_la_OBJECTS =
 librawvideo_plugin_la_OBJECTS = $(am_librawvideo_plugin_la_OBJECTS) \
 	$(nodist_librawvideo_plugin_la_OBJECTS)
@@ -344,8 +354,8 @@ librawvideo_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(librawvideo_plugin_la_CFLAGS) $(CFLAGS) \
 	$(librawvideo_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_26 = librealvideo_plugin_la-realvideo.lo
-am_librealvideo_plugin_la_OBJECTS = $(am__objects_26)
+am__objects_27 = librealvideo_plugin_la-realvideo.lo
+am_librealvideo_plugin_la_OBJECTS = $(am__objects_27)
 nodist_librealvideo_plugin_la_OBJECTS =
 librealvideo_plugin_la_OBJECTS = $(am_librealvideo_plugin_la_OBJECTS) \
 	$(nodist_librealvideo_plugin_la_OBJECTS)
@@ -353,8 +363,8 @@ librealvideo_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(librealvideo_plugin_la_CFLAGS) $(CFLAGS) \
 	$(librealvideo_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_27 = libschroedinger_plugin_la-schroedinger.lo
-am_libschroedinger_plugin_la_OBJECTS = $(am__objects_27)
+am__objects_28 = libschroedinger_plugin_la-schroedinger.lo
+am_libschroedinger_plugin_la_OBJECTS = $(am__objects_28)
 nodist_libschroedinger_plugin_la_OBJECTS =
 libschroedinger_plugin_la_OBJECTS =  \
 	$(am_libschroedinger_plugin_la_OBJECTS) \
@@ -363,8 +373,8 @@ libschroedinger_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libschroedinger_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libschroedinger_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_28 = libsdl_image_plugin_la-sdl_image.lo
-am_libsdl_image_plugin_la_OBJECTS = $(am__objects_28)
+am__objects_29 = libsdl_image_plugin_la-sdl_image.lo
+am_libsdl_image_plugin_la_OBJECTS = $(am__objects_29)
 nodist_libsdl_image_plugin_la_OBJECTS =
 libsdl_image_plugin_la_OBJECTS = $(am_libsdl_image_plugin_la_OBJECTS) \
 	$(nodist_libsdl_image_plugin_la_OBJECTS)
@@ -372,8 +382,8 @@ libsdl_image_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libsdl_image_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libsdl_image_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_29 = libspeex_plugin_la-speex.lo
-am_libspeex_plugin_la_OBJECTS = $(am__objects_29)
+am__objects_30 = libspeex_plugin_la-speex.lo
+am_libspeex_plugin_la_OBJECTS = $(am__objects_30)
 nodist_libspeex_plugin_la_OBJECTS =
 libspeex_plugin_la_OBJECTS = $(am_libspeex_plugin_la_OBJECTS) \
 	$(nodist_libspeex_plugin_la_OBJECTS)
@@ -381,8 +391,8 @@ libspeex_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libspeex_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libspeex_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_30 = libstl_plugin_la-stl.lo
-am_libstl_plugin_la_OBJECTS = $(am__objects_30)
+am__objects_31 = libstl_plugin_la-stl.lo
+am_libstl_plugin_la_OBJECTS = $(am__objects_31)
 nodist_libstl_plugin_la_OBJECTS =
 libstl_plugin_la_OBJECTS = $(am_libstl_plugin_la_OBJECTS) \
 	$(nodist_libstl_plugin_la_OBJECTS)
@@ -390,8 +400,8 @@ libstl_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libstl_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libstl_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_31 = libsubsdec_plugin_la-subsdec.lo
-am_libsubsdec_plugin_la_OBJECTS = $(am__objects_31)
+am__objects_32 = libsubsdec_plugin_la-subsdec.lo
+am_libsubsdec_plugin_la_OBJECTS = $(am__objects_32)
 nodist_libsubsdec_plugin_la_OBJECTS =
 libsubsdec_plugin_la_OBJECTS = $(am_libsubsdec_plugin_la_OBJECTS) \
 	$(nodist_libsubsdec_plugin_la_OBJECTS)
@@ -399,8 +409,8 @@ libsubsdec_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libsubsdec_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libsubsdec_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_32 = libsubsusf_plugin_la-subsusf.lo
-am_libsubsusf_plugin_la_OBJECTS = $(am__objects_32)
+am__objects_33 = libsubsusf_plugin_la-subsusf.lo
+am_libsubsusf_plugin_la_OBJECTS = $(am__objects_33)
 nodist_libsubsusf_plugin_la_OBJECTS =
 libsubsusf_plugin_la_OBJECTS = $(am_libsubsusf_plugin_la_OBJECTS) \
 	$(nodist_libsubsusf_plugin_la_OBJECTS)
@@ -408,8 +418,8 @@ libsubsusf_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libsubsusf_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libsubsusf_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_33 = libsvcdsub_plugin_la-svcdsub.lo
-am_libsvcdsub_plugin_la_OBJECTS = $(am__objects_33)
+am__objects_34 = libsvcdsub_plugin_la-svcdsub.lo
+am_libsvcdsub_plugin_la_OBJECTS = $(am__objects_34)
 nodist_libsvcdsub_plugin_la_OBJECTS =
 libsvcdsub_plugin_la_OBJECTS = $(am_libsvcdsub_plugin_la_OBJECTS) \
 	$(nodist_libsvcdsub_plugin_la_OBJECTS)
@@ -417,8 +427,8 @@ libsvcdsub_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libsvcdsub_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libsvcdsub_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_34 = libt140_plugin_la-t140.lo
-am_libt140_plugin_la_OBJECTS = $(am__objects_34)
+am__objects_35 = libt140_plugin_la-t140.lo
+am_libt140_plugin_la_OBJECTS = $(am__objects_35)
 nodist_libt140_plugin_la_OBJECTS =
 libt140_plugin_la_OBJECTS = $(am_libt140_plugin_la_OBJECTS) \
 	$(nodist_libt140_plugin_la_OBJECTS)
@@ -426,8 +436,8 @@ libt140_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libt140_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libt140_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_35 = libtelx_plugin_la-telx.lo
-am_libtelx_plugin_la_OBJECTS = $(am__objects_35)
+am__objects_36 = libtelx_plugin_la-telx.lo
+am_libtelx_plugin_la_OBJECTS = $(am__objects_36)
 nodist_libtelx_plugin_la_OBJECTS =
 libtelx_plugin_la_OBJECTS = $(am_libtelx_plugin_la_OBJECTS) \
 	$(nodist_libtelx_plugin_la_OBJECTS)
@@ -435,8 +445,8 @@ libtelx_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libtelx_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libtelx_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_36 = libtheora_plugin_la-theora.lo
-am_libtheora_plugin_la_OBJECTS = $(am__objects_36)
+am__objects_37 = libtheora_plugin_la-theora.lo
+am_libtheora_plugin_la_OBJECTS = $(am__objects_37)
 nodist_libtheora_plugin_la_OBJECTS =
 libtheora_plugin_la_OBJECTS = $(am_libtheora_plugin_la_OBJECTS) \
 	$(nodist_libtheora_plugin_la_OBJECTS)
@@ -444,8 +454,8 @@ libtheora_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libtheora_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libtheora_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_37 = libtremor_plugin_la-vorbis.lo
-am_libtremor_plugin_la_OBJECTS = $(am__objects_37)
+am__objects_38 = libtremor_plugin_la-vorbis.lo
+am_libtremor_plugin_la_OBJECTS = $(am__objects_38)
 nodist_libtremor_plugin_la_OBJECTS =
 libtremor_plugin_la_OBJECTS = $(am_libtremor_plugin_la_OBJECTS) \
 	$(nodist_libtremor_plugin_la_OBJECTS)
@@ -453,8 +463,8 @@ libtremor_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libtremor_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libtremor_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_38 = libtwolame_plugin_la-twolame.lo
-am_libtwolame_plugin_la_OBJECTS = $(am__objects_38)
+am__objects_39 = libtwolame_plugin_la-twolame.lo
+am_libtwolame_plugin_la_OBJECTS = $(am__objects_39)
 nodist_libtwolame_plugin_la_OBJECTS =
 libtwolame_plugin_la_OBJECTS = $(am_libtwolame_plugin_la_OBJECTS) \
 	$(nodist_libtwolame_plugin_la_OBJECTS)
@@ -462,8 +472,8 @@ libtwolame_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libtwolame_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libtwolame_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_39 = libvorbis_plugin_la-vorbis.lo
-am_libvorbis_plugin_la_OBJECTS = $(am__objects_39)
+am__objects_40 = libvorbis_plugin_la-vorbis.lo
+am_libvorbis_plugin_la_OBJECTS = $(am__objects_40)
 nodist_libvorbis_plugin_la_OBJECTS =
 libvorbis_plugin_la_OBJECTS = $(am_libvorbis_plugin_la_OBJECTS) \
 	$(nodist_libvorbis_plugin_la_OBJECTS)
@@ -471,8 +481,8 @@ libvorbis_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libvorbis_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libvorbis_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_40 = libx264_plugin_la-x264.lo
-am_libx264_plugin_la_OBJECTS = $(am__objects_40)
+am__objects_41 = libx264_plugin_la-x264.lo
+am_libx264_plugin_la_OBJECTS = $(am__objects_41)
 nodist_libx264_plugin_la_OBJECTS =
 libx264_plugin_la_OBJECTS = $(am_libx264_plugin_la_OBJECTS) \
 	$(nodist_libx264_plugin_la_OBJECTS)
@@ -480,8 +490,8 @@ libx264_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libx264_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libx264_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-am__objects_41 = libzvbi_plugin_la-zvbi.lo
-am_libzvbi_plugin_la_OBJECTS = $(am__objects_41)
+am__objects_42 = libzvbi_plugin_la-zvbi.lo
+am_libzvbi_plugin_la_OBJECTS = $(am__objects_42)
 nodist_libzvbi_plugin_la_OBJECTS =
 libzvbi_plugin_la_OBJECTS = $(am_libzvbi_plugin_la_OBJECTS) \
 	$(nodist_libzvbi_plugin_la_OBJECTS)
@@ -572,6 +582,8 @@ SOURCES = $(liba52_plugin_la_SOURCES) \
 	$(nodist_libmash_plugin_la_SOURCES) \
 	$(libmpeg_audio_plugin_la_SOURCES) \
 	$(nodist_libmpeg_audio_plugin_la_SOURCES) \
+	$(libopus_plugin_la_SOURCES) \
+	$(nodist_libopus_plugin_la_SOURCES) \
 	$(libpng_plugin_la_SOURCES) $(nodist_libpng_plugin_la_SOURCES) \
 	$(libquicktime_plugin_la_SOURCES) \
 	$(nodist_libquicktime_plugin_la_SOURCES) \
@@ -620,7 +632,8 @@ DIST_SOURCES = $(liba52_plugin_la_SOURCES) \
 	$(libkate_plugin_la_SOURCES) $(liblibass_plugin_la_SOURCES) \
 	$(liblibmpeg2_plugin_la_SOURCES) $(liblpcm_plugin_la_SOURCES) \
 	$(libmash_plugin_la_SOURCES) \
-	$(libmpeg_audio_plugin_la_SOURCES) $(libpng_plugin_la_SOURCES) \
+	$(libmpeg_audio_plugin_la_SOURCES) \
+	$(libopus_plugin_la_SOURCES) $(libpng_plugin_la_SOURCES) \
 	$(libquicktime_plugin_la_SOURCES) \
 	$(librawvideo_plugin_la_SOURCES) \
 	$(librealvideo_plugin_la_SOURCES) \
@@ -751,10 +764,12 @@ CFLAGS_memcpyaltivec = @CFLAGS_memcpyaltivec@
 CFLAGS_motion = @CFLAGS_motion@
 CFLAGS_mtp = @CFLAGS_mtp@
 CFLAGS_mux_ogg = @CFLAGS_mux_ogg@
+CFLAGS_ncurses = @CFLAGS_ncurses@
 CFLAGS_notify = @CFLAGS_notify@
 CFLAGS_ogg = @CFLAGS_ogg@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
+CFLAGS_opus = @CFLAGS_opus@
 CFLAGS_panoramix = @CFLAGS_panoramix@
 CFLAGS_portaudio = @CFLAGS_portaudio@
 CFLAGS_postproc = @CFLAGS_postproc@
@@ -818,6 +833,7 @@ CPPFLAGS_notify = @CPPFLAGS_notify@
 CPPFLAGS_ogg = @CPPFLAGS_ogg@
 CPPFLAGS_opencv_example = @CPPFLAGS_opencv_example@
 CPPFLAGS_opencv_wrapper = @CPPFLAGS_opencv_wrapper@
+CPPFLAGS_opus = @CPPFLAGS_opus@
 CPPFLAGS_portaudio = @CPPFLAGS_portaudio@
 CPPFLAGS_qt4 = @CPPFLAGS_qt4@
 CPPFLAGS_quicktime = @CPPFLAGS_quicktime@
@@ -1055,6 +1071,7 @@ LIBS_oldrc = @LIBS_oldrc@
 LIBS_omxil = @LIBS_omxil@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
+LIBS_opus = @LIBS_opus@
 LIBS_panoramix = @LIBS_panoramix@
 LIBS_param_eq = @LIBS_param_eq@
 LIBS_plugin = @LIBS_plugin@
@@ -1215,6 +1232,7 @@ LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
+LTLIBopus = @LTLIBopus@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBpanoramix = @LTLIBpanoramix@
@@ -1286,6 +1304,8 @@ MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
 MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
 MUX_OGG_LIBS = @MUX_OGG_LIBS@
+NCURSES_CFLAGS = @NCURSES_CFLAGS@
+NCURSES_LIBS = @NCURSES_LIBS@
 NEON_CFLAGS = @NEON_CFLAGS@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -1304,6 +1324,8 @@ OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OPUS_CFLAGS = @OPUS_CFLAGS@
+OPUS_LIBS = @OPUS_LIBS@
 OSS_LIBS = @OSS_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
@@ -1480,21 +1502,22 @@ vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 basedir = codec
 dir = codec
-mods = a52 adpcm aes3 araw cc cdg crystalhd cvdsub ddummy dirac dts dvbsub edummy faad flac fluidsynth kate libass libmpeg2 lpcm mash mpeg_audio png quicktime rawvideo realvideo schroedinger sdl_image speex stl subsdec subsusf svcdsub t140 telx theora tremor twolame vorbis x264 zvbi
+mods = a52 adpcm aes3 araw cc cdg crystalhd cvdsub ddummy dirac dts dvbsub edummy faad flac fluidsynth kate libass libmpeg2 lpcm mash mpeg_audio opus png quicktime rawvideo realvideo schroedinger sdl_image speex stl subsdec subsusf svcdsub t140 telx theora tremor twolame vorbis x264 zvbi
 libvlc_LTLIBRARIES = $(LTLIBcrystalhd) $(LTLIBdirac) $(LTLIBfaad) \
 	$(LTLIBflac) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) \
-	$(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBpng) $(LTLIBquicktime) \
-	$(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) \
-	$(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) \
-	$(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi) \
-	liba52_plugin.la libadpcm_plugin.la libaes3_plugin.la \
-	libaraw_plugin.la libcc_plugin.la libcdg_plugin.la \
-	libcvdsub_plugin.la libddummy_plugin.la libdts_plugin.la \
-	libdvbsub_plugin.la libedummy_plugin.la liblpcm_plugin.la \
-	libmpeg_audio_plugin.la librawvideo_plugin.la \
-	libsvcdsub_plugin.la libsubsdec_plugin.la libsubsusf_plugin.la \
-	libt140_plugin.la libstl_plugin.la $(NULL)
-EXTRA_LTLIBRARIES = libcrystalhd_plugin.la libdirac_plugin.la libfaad_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libpng_plugin.la libquicktime_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
+	$(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBopus) $(LTLIBpng) \
+	$(LTLIBquicktime) $(LTLIBrealvideo) $(LTLIBschroedinger) \
+	$(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBtelx) $(LTLIBtheora) \
+	$(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) \
+	$(LTLIBzvbi) liba52_plugin.la libadpcm_plugin.la \
+	libaes3_plugin.la libaraw_plugin.la libcc_plugin.la \
+	libcdg_plugin.la libcvdsub_plugin.la libddummy_plugin.la \
+	libdts_plugin.la libdvbsub_plugin.la libedummy_plugin.la \
+	liblpcm_plugin.la libmpeg_audio_plugin.la \
+	librawvideo_plugin.la libsvcdsub_plugin.la \
+	libsubsdec_plugin.la libsubsusf_plugin.la libt140_plugin.la \
+	libstl_plugin.la $(NULL)
+EXTRA_LTLIBRARIES = libcrystalhd_plugin.la libdirac_plugin.la libfaad_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libopus_plugin.la libpng_plugin.la libquicktime_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
 NULL = 
 libvlcdir = $(vlclibdir)/plugins/$(basedir)
 EXTRA_DIST = Modules.am
@@ -1525,6 +1548,7 @@ SOURCES_theora = theora.c
 SOURCES_tremor = vorbis.c
 SOURCES_speex = speex.c
 SOURCES_adpcm = adpcm.c
+SOURCES_opus = opus.c opus_header.c opus_header.h
 SOURCES_mpeg_audio = mpeg_audio.c
 SOURCES_libmpeg2 = libmpeg2.c
 SOURCES_rawvideo = rawvideo.c
@@ -1842,6 +1866,19 @@ libmpeg_audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_mpeg_audio)
 libmpeg_audio_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_mpeg_audio)
 libmpeg_audio_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_mpeg_audio)
 libmpeg_audio_plugin_la_DEPENDENCIES = 
+
+# The opus plugin
+libopus_plugin_la_SOURCES = $(SOURCES_opus)
+nodist_libopus_plugin_la_SOURCES = $(nodist_SOURCES_opus)
+# Force per-target objects:
+libopus_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CPPFLAGS_opus)
+libopus_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_opus)
+libopus_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_opus)
+libopus_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) $(OBJCFLAGS_opus)
+# Set LIBADD and DEPENDENCIES manually:
+libopus_plugin_la_LIBADD = $(AM_LIBADD) $(LIBS_opus)
+libopus_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(LDFLAGS_opus)
+libopus_plugin_la_DEPENDENCIES = 
 
 # The png plugin
 libpng_plugin_la_SOURCES = $(SOURCES_png)
@@ -2201,6 +2238,8 @@ libmash_plugin.la: $(libmash_plugin_la_OBJECTS) $(libmash_plugin_la_DEPENDENCIES
 	$(AM_V_CXXLD)$(libmash_plugin_la_LINK)  $(libmash_plugin_la_OBJECTS) $(libmash_plugin_la_LIBADD) $(LIBS)
 libmpeg_audio_plugin.la: $(libmpeg_audio_plugin_la_OBJECTS) $(libmpeg_audio_plugin_la_DEPENDENCIES) $(EXTRA_libmpeg_audio_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmpeg_audio_plugin_la_LINK) -rpath $(libvlcdir) $(libmpeg_audio_plugin_la_OBJECTS) $(libmpeg_audio_plugin_la_LIBADD) $(LIBS)
+libopus_plugin.la: $(libopus_plugin_la_OBJECTS) $(libopus_plugin_la_DEPENDENCIES) $(EXTRA_libopus_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libopus_plugin_la_LINK)  $(libopus_plugin_la_OBJECTS) $(libopus_plugin_la_LIBADD) $(LIBS)
 libpng_plugin.la: $(libpng_plugin_la_OBJECTS) $(libpng_plugin_la_DEPENDENCIES) $(EXTRA_libpng_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libpng_plugin_la_LINK)  $(libpng_plugin_la_OBJECTS) $(libpng_plugin_la_LIBADD) $(LIBS)
 libquicktime_plugin.la: $(libquicktime_plugin_la_OBJECTS) $(libquicktime_plugin_la_DEPENDENCIES) $(EXTRA_libquicktime_plugin_la_DEPENDENCIES) 
@@ -2268,6 +2307,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblpcm_plugin_la-lpcm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmash_plugin_la-mash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmpeg_audio_plugin_la-mpeg_audio.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopus_plugin_la-opus.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopus_plugin_la-opus_header.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpng_plugin_la-png.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libquicktime_plugin_la-quicktime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/librawvideo_plugin_la-rawvideo.Plo@am__quote@
@@ -2455,6 +2496,20 @@ libmpeg_audio_plugin_la-mpeg_audio.lo: mpeg_audio.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mpeg_audio.c' object='libmpeg_audio_plugin_la-mpeg_audio.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmpeg_audio_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libmpeg_audio_plugin_la_CFLAGS) $(CFLAGS) -c -o libmpeg_audio_plugin_la-mpeg_audio.lo `test -f 'mpeg_audio.c' || echo '$(srcdir)/'`mpeg_audio.c
+
+libopus_plugin_la-opus.lo: opus.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopus_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libopus_plugin_la_CFLAGS) $(CFLAGS) -MT libopus_plugin_la-opus.lo -MD -MP -MF $(DEPDIR)/libopus_plugin_la-opus.Tpo -c -o libopus_plugin_la-opus.lo `test -f 'opus.c' || echo '$(srcdir)/'`opus.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libopus_plugin_la-opus.Tpo $(DEPDIR)/libopus_plugin_la-opus.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='opus.c' object='libopus_plugin_la-opus.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopus_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libopus_plugin_la_CFLAGS) $(CFLAGS) -c -o libopus_plugin_la-opus.lo `test -f 'opus.c' || echo '$(srcdir)/'`opus.c
+
+libopus_plugin_la-opus_header.lo: opus_header.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopus_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libopus_plugin_la_CFLAGS) $(CFLAGS) -MT libopus_plugin_la-opus_header.lo -MD -MP -MF $(DEPDIR)/libopus_plugin_la-opus_header.Tpo -c -o libopus_plugin_la-opus_header.lo `test -f 'opus_header.c' || echo '$(srcdir)/'`opus_header.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libopus_plugin_la-opus_header.Tpo $(DEPDIR)/libopus_plugin_la-opus_header.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='opus_header.c' object='libopus_plugin_la-opus_header.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopus_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libopus_plugin_la_CFLAGS) $(CFLAGS) -c -o libopus_plugin_la-opus_header.lo `test -f 'opus_header.c' || echo '$(srcdir)/'`opus_header.c
 
 libpng_plugin_la-png.lo: png.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libpng_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libpng_plugin_la_CFLAGS) $(CFLAGS) -MT libpng_plugin_la-png.lo -MD -MP -MF $(DEPDIR)/libpng_plugin_la-png.Tpo -c -o libpng_plugin_la-png.lo `test -f 'png.c' || echo '$(srcdir)/'`png.c

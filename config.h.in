@@ -297,9 +297,6 @@
 /* Define to 1 if you have the `mingw32' library (-lmingw32). */
 #undef HAVE_LIBMINGW32
 
-/* Define to 1 if you have the `ncursesw' library (-lncursesw). */
-#undef HAVE_LIBNCURSESW
-
 /* Define if libproxy is available */
 #undef HAVE_LIBPROXY
 

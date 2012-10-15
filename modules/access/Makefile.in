@@ -78,13 +78,14 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 @HAVE_V4L2_TRUE@am__append_9 = libv4l2_plugin.la
 @HAVE_XCB_TRUE@am__append_10 = libxcb_screen_plugin.la
 @HAVE_LINUX_DVB_TRUE@am__append_11 = dtv/linux.c
-@HAVE_DVBPSI_TRUE@@HAVE_LINUX_DVB_TRUE@am__append_12 = dtv/en50221.c dtv/en50221.h
-@HAVE_DVBPSI_TRUE@@HAVE_LINUX_DVB_TRUE@am__append_13 = -DHAVE_DVBPSI $(DVBPSI_CFLAGS)
-@HAVE_DVBPSI_TRUE@@HAVE_LINUX_DVB_TRUE@am__append_14 = $(DVBPSI_LIBS)
-@HAVE_LINUX_DVB_TRUE@am__append_15 = libdtv_plugin.la
-@HAVE_WIN32_TRUE@am__append_16 = libbda.la
-@HAVE_WIN32_TRUE@am__append_17 = libbda.la -lstdc++
-@HAVE_WIN32_TRUE@am__append_18 = libdtv_plugin.la
+@HAVE_LINUX_DVB_TRUE@am__append_12 = -DHAVE_LINUX_DVB
+@HAVE_DVBPSI_TRUE@@HAVE_LINUX_DVB_TRUE@am__append_13 = dtv/en50221.c dtv/en50221.h
+@HAVE_DVBPSI_TRUE@@HAVE_LINUX_DVB_TRUE@am__append_14 = -DHAVE_DVBPSI $(DVBPSI_CFLAGS)
+@HAVE_DVBPSI_TRUE@@HAVE_LINUX_DVB_TRUE@am__append_15 = $(DVBPSI_LIBS)
+@HAVE_LINUX_DVB_TRUE@am__append_16 = libdtv_plugin.la
+@HAVE_WIN32_TRUE@am__append_17 = libbda.la
+@HAVE_WIN32_TRUE@am__append_18 = libbda.la -lstdc++
+@HAVE_WIN32_TRUE@am__append_19 = libdtv_plugin.la
 subdir = modules/access
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
@@ -809,10 +810,12 @@ CFLAGS_memcpyaltivec = @CFLAGS_memcpyaltivec@
 CFLAGS_motion = @CFLAGS_motion@
 CFLAGS_mtp = @CFLAGS_mtp@
 CFLAGS_mux_ogg = @CFLAGS_mux_ogg@
+CFLAGS_ncurses = @CFLAGS_ncurses@
 CFLAGS_notify = @CFLAGS_notify@
 CFLAGS_ogg = @CFLAGS_ogg@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
+CFLAGS_opus = @CFLAGS_opus@
 CFLAGS_panoramix = @CFLAGS_panoramix@
 CFLAGS_portaudio = @CFLAGS_portaudio@
 CFLAGS_postproc = @CFLAGS_postproc@
@@ -876,6 +879,7 @@ CPPFLAGS_notify = @CPPFLAGS_notify@
 CPPFLAGS_ogg = @CPPFLAGS_ogg@
 CPPFLAGS_opencv_example = @CPPFLAGS_opencv_example@
 CPPFLAGS_opencv_wrapper = @CPPFLAGS_opencv_wrapper@
+CPPFLAGS_opus = @CPPFLAGS_opus@
 CPPFLAGS_portaudio = @CPPFLAGS_portaudio@
 CPPFLAGS_qt4 = @CPPFLAGS_qt4@
 CPPFLAGS_quicktime = @CPPFLAGS_quicktime@
@@ -1113,6 +1117,7 @@ LIBS_oldrc = @LIBS_oldrc@
 LIBS_omxil = @LIBS_omxil@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
+LIBS_opus = @LIBS_opus@
 LIBS_panoramix = @LIBS_panoramix@
 LIBS_param_eq = @LIBS_param_eq@
 LIBS_plugin = @LIBS_plugin@
@@ -1277,6 +1282,7 @@ LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
+LTLIBopus = @LTLIBopus@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBpanoramix = @LTLIBpanoramix@
@@ -1348,6 +1354,8 @@ MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
 MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
 MUX_OGG_LIBS = @MUX_OGG_LIBS@
+NCURSES_CFLAGS = @NCURSES_CFLAGS@
+NCURSES_LIBS = @NCURSES_LIBS@
 NEON_CFLAGS = @NEON_CFLAGS@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -1366,6 +1374,8 @@ OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OPUS_CFLAGS = @OPUS_CFLAGS@
+OPUS_LIBS = @OPUS_LIBS@
 OSS_LIBS = @OSS_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
@@ -1557,8 +1567,8 @@ libvlc_LTLIBRARIES = $(LTLIBaccess_avio) $(LTLIBaccess_directory) \
 	libaccess_rar_plugin.la libstream_filter_rar_plugin.la \
 	libaccess_vdr_plugin.la $(NULL) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(LTLIBaccess_shm) \
-	$(am__append_9) $(am__append_10) $(am__append_15) \
-	$(am__append_18)
+	$(am__append_9) $(am__append_10) $(am__append_16) \
+	$(am__append_19)
 EXTRA_LTLIBRARIES = libaccess_avio_plugin.la \
 	libaccess_directory_plugin.la libaccess_dv_plugin.la \
 	libaccess_eyetv_plugin.la libaccess_gnomevfs_plugin.la \
@@ -1712,11 +1722,12 @@ libxcb_screen_plugin_la_DEPENDENCIES =
 
 ### Digital TV ###
 libdtv_plugin_la_SOURCES = dtv/dtv.h dtv/access.c $(am__append_11) \
-	$(am__append_12)
-libdtv_plugin_la_CFLAGS = $(AM_CFLAGS) $(am__append_13)
-libdtv_plugin_la_LIBADD = $(AM_LIBADD) $(am__append_14) \
-	$(am__append_17)
-libdtv_plugin_la_DEPENDENCIES = $(am__append_16)
+	$(am__append_13)
+libdtv_plugin_la_CFLAGS = $(AM_CFLAGS) $(am__append_12) \
+	$(am__append_14)
+libdtv_plugin_la_LIBADD = $(AM_LIBADD) $(am__append_15) \
+	$(am__append_18)
+libdtv_plugin_la_DEPENDENCIES = $(am__append_17)
 
 # Work-around automake bug:
 # Use an import library for C++ to retain C linker on other platforms.

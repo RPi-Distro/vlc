@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 1d36b06f36a6930524d8f074a1ab2d80e4e6c519 $
+ * $Id: 8a6927ce669c96535670dabbf08c28d4ca5993fe $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damien@videolan.org>
@@ -45,12 +45,16 @@
 
 #if defined (MODULE_NAME_IS_i420_yuy2)
 #    define DEST_FOURCC "YUY2,YUNV,YVYU,UYVY,UYNV,Y422,IUYV,cyuv,Y211"
+#    define VLC_TARGET
 #elif defined (MODULE_NAME_IS_i420_yuy2_mmx)
 #    define DEST_FOURCC "YUY2,YUNV,YVYU,UYVY,UYNV,Y422,IUYV,cyuv"
+#    define VLC_TARGET VLC_MMX
 #elif defined (MODULE_NAME_IS_i420_yuy2_sse2)
 #    define DEST_FOURCC "YUY2,YUNV,YVYU,UYVY,UYNV,Y422,IUYV,cyuv"
+#    define VLC_TARGET VLC_SSE
 #elif defined (MODULE_NAME_IS_i420_yuy2_altivec)
 #    define DEST_FOURCC "YUY2,YUNV,YVYU,UYVY,UYNV,Y422"
+#    define VLC_TARGET
 #endif
 
 /*****************************************************************************
@@ -200,6 +204,7 @@ VIDEO_FILTER_WRAPPER( I420_Y211 )
 /*****************************************************************************
  * I420_YUY2: planar YUV 4:2:0 to packed YUYV 4:2:2
  *****************************************************************************/
+VLC_TARGET
 static void I420_YUY2( filter_t *p_filter, picture_t *p_source,
                                            picture_t *p_dest )
 {
@@ -417,6 +422,7 @@ static void I420_YUY2( filter_t *p_filter, picture_t *p_source,
 /*****************************************************************************
  * I420_YVYU: planar YUV 4:2:0 to packed YVYU 4:2:2
  *****************************************************************************/
+VLC_TARGET
 static void I420_YVYU( filter_t *p_filter, picture_t *p_source,
                                            picture_t *p_dest )
 {
@@ -626,6 +632,7 @@ static void I420_YVYU( filter_t *p_filter, picture_t *p_source,
 /*****************************************************************************
  * I420_UYVY: planar YUV 4:2:0 to packed UYVY 4:2:2
  *****************************************************************************/
+VLC_TARGET
 static void I420_UYVY( filter_t *p_filter, picture_t *p_source,
                                            picture_t *p_dest )
 {
@@ -847,6 +854,7 @@ static void I420_IUYV( filter_t *p_filter, picture_t *p_source,
 /*****************************************************************************
  * I420_cyuv: planar YUV 4:2:0 to upside-down packed UYVY 4:2:2
  *****************************************************************************/
+VLC_TARGET
 static void I420_cyuv( filter_t *p_filter, picture_t *p_source,
                                            picture_t *p_dest )
 {

@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: a7719a0133149529f19c0d15cf2546b22dc6d9ed $
+ * $Id: 06c16c9b7679f2196d0146df2d63d79d50bfd23b $
  */
 
 #ifndef _AtmoDefs_h_
@@ -14,6 +14,7 @@
 #if defined(__LIBVLC__)
 
 #   include <vlc_common.h>
+#   include <vlc_codecs.h>
 
 /* some things need to be changed if this code is used inside VideoLan Filter Module */
 #   define _ATMO_VLC_PLUGIN_

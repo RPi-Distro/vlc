@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 9d67382772060cd61aa45a9d9d096066161fee70 $
+ * $Id: dd96d38c0cf44ceeeb694f8fb906e4e08848a3a4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -974,8 +974,8 @@ void SPrefsPanel::assoDialog()
 
     aTa( ".a52" ); aTa( ".aac" ); aTa( ".ac3" ); aTa( ".dts" ); aTa( ".flac" );
     aTa( ".m4a" ); aTa( ".m4p" ); aTa( ".mka" ); aTa( ".mod" ); aTa( ".mp1" );
-    aTa( ".mp2" ); aTa( ".mp3" ); aTa( ".oma" ); aTa( ".oga" ); aTa( ".spx" );
-    aTa( ".tta" ); aTa( ".wav" ); aTa( ".wma" ); aTa( ".xm" );
+    aTa( ".mp2" ); aTa( ".mp3" ); aTa( ".oma" ); aTa( ".oga" ); aTa( ".opus" );
+    aTa( ".spx" ); aTa( ".tta" ); aTa( ".wav" ); aTa( ".wma" ); aTa( ".xm" );
     audioType->setCheckState( 0, ( i_temp > 0 ) ?
                               ( ( i_temp == audioType->childCount() ) ?
                                Qt::Checked : Qt::PartiallyChecked )
@@ -1018,7 +1018,6 @@ void SPrefsPanel::assoDialog()
     CONNECT( clearButton, clicked(), d, reject() );
     d->resize( 300, 400 );
     d->exec();
-    delete d;
     delete qvReg;
     listAsso.clear();
 }
@@ -1033,7 +1032,7 @@ void addAsso( QVLCRegistry *qvReg, const char *psz_ext )
 
     if( !EMPTY_STR(psz_value) )
         qvReg->WriteRegistryString( psz_ext, "VLC.backup", psz_value );
-    delete psz_value;
+    free( psz_value );
 
     /* Put a "link" to VLC.EXT as default */
     qvReg->WriteRegistryString( psz_ext, "", qtu( s_path ) );
@@ -1063,10 +1062,10 @@ void addAsso( QVLCRegistry *qvReg, const char *psz_ext )
 
 void delAsso( QVLCRegistry *qvReg, const char *psz_ext )
 {
-    char psz_VLC[] = "VLC";
+    QString s_path( "VLC"); s_path += psz_ext;
     char *psz_value = qvReg->ReadRegistryString( psz_ext, "", "" );
 
-    if( psz_value && !strcmp( strcat( psz_VLC, psz_ext ), psz_value ) )
+    if( psz_value && !strcmp( qtu(s_path), psz_value ) )
     {
         free( psz_value );
         psz_value = qvReg->ReadRegistryString( psz_ext, "VLC.backup", "" );
@@ -1075,8 +1074,9 @@ void delAsso( QVLCRegistry *qvReg, const char *psz_ext )
 
         qvReg->DeleteKey( psz_ext, "VLC.backup" );
     }
-    delete( psz_value );
+    free( psz_value );
 }
+
 void SPrefsPanel::saveAsso()
 {
     QVLCRegistry * qvReg = NULL;

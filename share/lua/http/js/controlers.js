@@ -1,6 +1,8 @@
 var current_id = 1;
 var currentArt = null;
 var current_que = 'main';
+var previous_title = null;
+var current_title = null;
 
 function updateArt(url) {
     $('#albumArt').fadeOut(500, function () {
@@ -72,6 +74,13 @@ function updateStatus() {
                     currentArt = 'images/vlc-48.png';
                     updateArt(currentArt);
                 }
+
+                current_title = $('[name="filename"]', data).text();
+                if (previous_title != current_title) {
+                    updatePlayList();
+                }
+                previous_title = current_title;
+
                 if (pollStatus) {
                     setTimeout(updateStatus, 1000);
                 }
@@ -119,8 +128,34 @@ function updateStatus() {
     });
 }
 
-function updatePlayList() {
-    $('#libraryTree').jstree('refresh', -1);
+function updatePlayList(force_refresh) {
+    if (force_refresh) {
+        //refresh playlist..
+        $('#libraryTree').jstree('refresh', -1);
+    } else {
+        //iterate through playlist..
+        var match = false;
+        $('.jstree-leaf').each(function(){
+            var id = $(this).attr('id');
+            if (id != null && id.substr(0,5) == 'plid_') {
+                var name = $(this).attr('name');
+                if (name != null && name == current_title) {
+                    $(this).addClass('ui-state-highlight');
+                    $(this).attr('current', 'current');
+                    this.scrollIntoView(true);
+                    match = true;
+                } else {
+                    $(this).removeClass('ui-state-highlight');
+                    $(this).removeAttr('current');
+                }
+                if ($(this).children('a').size() > 0) {
+                    $($(this).children('a')[0]).removeClass('ui-state-active');
+                }
+            }
+    	});
+    	//local title wasn't found - refresh playlist..
+    	if (!match) updatePlayList(true);
+    }
 }
 
 function sendCommand(params, append) {
@@ -133,7 +168,6 @@ function sendCommand(params, append) {
                     eval(append);
                 }
                 updateStatus();
-                updatePlayList();
             }
         });
     } else {
@@ -155,7 +189,6 @@ function sendCommand(params, append) {
                     if (append != undefined) {
                         eval(append);
                     }
-                    updatePlayList();
                 }
             });
         }
@@ -172,7 +205,7 @@ function browse(dir) {
             $('#browse_elements').empty();
             $('element', data).each(function () {
                 var ext = $(this).attr('name').substr($(this).attr('name').lastIndexOf('.') + 1).toLowerCase();
-                if ($(this).attr('type') == 'dir' || $.inArray(ext, video_types) != -1 || $.inArray(ext, audio_types) != -1) {
+                if ($(this).attr('type') == 'dir' || $.inArray(ext, video_types) != -1 || $.inArray(ext, audio_types) != -1 || $.inArray(ext, playlist_types) != -1) {
                     $('#browse_elements').append(createElementLi($(this).attr('name'), $(this).attr('type'), $(this).attr('uri'), ext));
                 }
             });
@@ -197,6 +230,7 @@ function browse(dir) {
                     break;
                 default:
                     sendCommand('command=in_play&input=' + encodeURIComponent($(this).attr('openfile')));
+                    updatePlayList(true);
                     break;
                 }
                 $('#window_browse').dialog('close');
@@ -490,7 +524,6 @@ $(function () {
         event.preventDefault();
         current_id = $(this).parent().attr('id').substr(5);
         sendCommand('command=pl_play&id=' + current_id);
-        updatePlayList();
     });
     updateStatus();
     updateStreams();

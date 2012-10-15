@@ -2,7 +2,7 @@
  * misc.h: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: 28762aa828d08293778b7e0366f00d4ea3d5d5fb $
+ * $Id: 136bdb4746b1a0bdc2ee805282cd07634a4fc374 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -62,7 +62,6 @@
     BOOL b_isset_canBecomeKeyWindow;
     BOOL b_canBecomeMainWindow;
     BOOL b_isset_canBecomeMainWindow;
-    BOOL b_isFullscreen;
     NSViewAnimation *animation;
 }
 
@@ -82,9 +81,6 @@
 /* animate mode is only supported in >=10.4 */
 - (void)closeAndAnimate: (BOOL)animate;
 
-- (void)setFullscreen:(BOOL)b_var;
-
-- (BOOL)isFullscreen;
 @end
 
 

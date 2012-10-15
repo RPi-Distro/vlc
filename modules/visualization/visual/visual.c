@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 964924c34be47b15d114a352cffc2a2d421dab37 $
+ * $Id: a91faa72b2d695f7650e34e7ea3c93c256ab470b $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -373,20 +373,23 @@ static void Close( vlc_object_t *p_this )
     for( int i = 0; i < p_sys->i_effect; i++ )
     {
 #define p_effect p_sys->effect[i]
-        if( !strncmp( p_effect->psz_name, "spectrum", strlen( "spectrum" ) ) )
+        if( p_effect->p_data != NULL )
         {
-            spectrum_data *p_data = p_effect->p_data;
-            free( p_data->peaks );
-            free( p_data->prev_heights );
-            free( p_data->p_prev_s16_buff );
+            if( !strncmp( p_effect->psz_name, "spectrum", strlen( "spectrum" ) ) )
+            {
+                spectrum_data* p_data = p_effect->p_data;
+                free( p_data->peaks );
+                free( p_data->prev_heights );
+                free( p_data->p_prev_s16_buff );
+            }
+            if( !strncmp( p_effect->psz_name, "spectrometer", strlen( "spectrometer" ) ) )
+            {
+                spectrometer_data* p_data = p_effect->p_data;
+                free( p_data->peaks );
+                free( p_data->p_prev_s16_buff );
+            }
+            free( p_effect->p_data );
         }
-        if( !strncmp( p_effect->psz_name, "spectrometer", strlen( "spectrometer" ) ) )
-        {
-            spectrometer_data *p_data = p_effect->p_data;
-            free( p_data->peaks );
-            free( p_data->p_prev_s16_buff );
-        }
-        free( p_effect->p_data );
         free( p_effect->psz_args );
         free( p_effect );
 #undef p_effect

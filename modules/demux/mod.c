@@ -2,7 +2,7 @@
  * mod.c: MOD file demuxer (using libmodplug)
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 6514b78b4a430c9aed79ad95b14bde3666b47d39 $
+ * $Id: beff62562baffd72e3160c1a28e7998c0b628ffc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  * Konstanty Bialkowski <konstanty@ieee.org>
@@ -447,7 +447,6 @@ static int Validate( demux_t *p_demux, const char *psz_ext )
         {  0, "Extended Module" },      /* XM */
         { 44, "SCRM" },                 /* S3M */
         {  0, "IMPM" },                 /* IT */
-        {  0, "MThd" },                 /* MID */
         {  0, "GF1PATCH110" },          /* PAT */
         { 20, "!SCREAM!" },             /* STM */
         { 20, "!Scream!" },             /* STM */

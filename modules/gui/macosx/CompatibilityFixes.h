@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 VLC authors and VideoLAN
- * $Id: ebcf5dd168479b28178f76a0c26aeb2794430e66 $
+ * $Id: be538c8c3e935ced6fb47365c3b90913cbf6bfd3 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -27,7 +27,8 @@
 #pragma OS detection code
 #define OSX_LEOPARD (NSAppKitVersionNumber < 1038 && NSAppKitVersionNumber >= 949)
 #define OSX_SNOW_LEOPARD (NSAppKitVersionNumber < 1115 && NSAppKitVersionNumber >= 1038)
-#define OSX_LION NSAppKitVersionNumber >= 1115.2
+#define OSX_LION (NSAppKitVersionNumber >= 1115.2)
+#define OSX_MOUNTAIN_LION NSAppKitVersionNumber >= 1162
 
 #pragma mark -
 #pragma Fixes for OS X Leopard (10.5)
@@ -78,6 +79,7 @@ extern OSErr UpdateSystemActivity(UInt8 activity);
 @interface NSURL (IntroducedInSnowLeopard)
 - (NSArray *)pathComponents;
 @end
+
 #endif
 
 #pragma mark -
@@ -106,5 +108,8 @@ enum {
 @interface NSEvent (IntroducedInLion)
 - (BOOL)isDirectionInvertedFromDevice;
 @end
+
+#define kIOPMAssertionTypePreventUserIdleDisplaySleep    CFSTR("PreventUserIdleDisplaySleep")
+#define kIOPMAssertionTypePreventUserIdleSystemSleep    CFSTR("PreventUserIdleSystemSleep")
 
 #endif

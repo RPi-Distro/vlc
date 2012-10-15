@@ -2,7 +2,7 @@
  * record.c: record stream output module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: a75e27918bf5279cbe2969aaae2933f34c5a3105 $
+ * $Id: b8f1ac190f05997ae32facbb1fe6b74b72faca02 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -306,16 +306,23 @@ static int OutputNew( sout_stream_t *p_stream,
                       const char *psz_muxer, const char *psz_prefix, const char *psz_extension  )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
-    char *psz_file = NULL;
+    char *psz_file = NULL, *psz_tmp = NULL;
     char *psz_output = NULL;
     int i_count;
 
-    if( asprintf( &psz_file, "%s%s%s",
+    if( asprintf( &psz_tmp, "%s%s%s",
                   psz_prefix, psz_extension ? "." : "", psz_extension ? psz_extension : "" ) < 0 )
     {
-        psz_file = NULL;
         goto error;
     }
+
+    psz_file = config_StringEscape( psz_tmp );
+    if( !psz_file )
+    {
+        free( psz_tmp );
+        goto error;
+    }
+    free( psz_tmp );
 
     if( asprintf( &psz_output, "std{access=file,mux='%s',dst='%s'}",
                   psz_muxer, psz_file ) < 0 )

@@ -1,8 +1,8 @@
 # live555
 
 #LIVEDOTCOM_URL := http://live555.com/liveMedia/public/live555-latest.tar.gz
-LIVE555_FILE := live.2011.12.23.tar.gz
-LIVEDOTCOM_URL := http://live555sourcecontrol.googlecode.com/files/$(LIVE555_FILE)
+LIVE555_FILE := live.2012.09.13.tar.gz
+LIVEDOTCOM_URL := http://download.videolan.org/pub/contrib/live555/$(LIVE555_FILE)
 
 PKGS += live555
 
@@ -48,7 +48,10 @@ endif
 
 .live555: live555
 	cd $< && ./genMakefiles $(LIVE_TARGET)
-	cd $< && $(MAKE) $(HOSTVARS)
+	cd $< && $(MAKE) $(HOSTVARS) -C groupsock \
+			&& $(MAKE) $(HOSTVARS) -C liveMedia \
+			&& $(MAKE) $(HOSTVARS) -C UsageEnvironment \
+			&& $(MAKE) $(HOSTVARS) -C BasicUsageEnvironment
 	mkdir -p -- "$(PREFIX)/lib" "$(PREFIX)/include"
 	cp \
 		$</groupsock/libgroupsock.a \
@@ -60,7 +63,7 @@ endif
 		$</groupsock/include/*.hh \
 		$</groupsock/include/*.h \
 		$</liveMedia/include/*.hh \
-        	$</UsageEnvironment/include/*.hh \
-        	$</BasicUsageEnvironment/include/*.hh \
+		$</UsageEnvironment/include/*.hh \
+		$</BasicUsageEnvironment/include/*.hh \
 		"$(PREFIX)/include/"
 	touch $@

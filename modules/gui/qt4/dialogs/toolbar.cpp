@@ -2,7 +2,7 @@
  * ToolbarEdit.cpp : ToolbarEdit dialog
  ****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 0e3c7d06469e49d9e5a0449e2feef809e31d28c6 $
+ * $Id: df509221720228698bc28198335947b3baaf6ec0 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -184,6 +184,7 @@ ToolbarEditDialog::ToolbarEditDialog( QWidget *_w, intf_thread_t *_p_intf)
        user might hit on delete a bit too much, but discussion is opened. -- jb */
     if( i_size == 0 )
     {
+        profileCombo->addItem( PROFILE_NAME_6, QString( VALUE_6 ) );
         profileCombo->addItem( PROFILE_NAME_1, QString( VALUE_1 ) );
         profileCombo->addItem( PROFILE_NAME_2, QString( VALUE_2 ) );
         profileCombo->addItem( PROFILE_NAME_3, QString( VALUE_3 ) );

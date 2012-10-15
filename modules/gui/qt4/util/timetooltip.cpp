@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011-2012 VideoLAN
- * $Id: d031e79dbe28596daa3dede31fdecf85b0397994 $
+ * $Id: 281b38383d06f11c4bc341330b019abd2aa4c3ef $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -41,9 +41,9 @@ TimeTooltip::TimeTooltip( QWidget *parent ) :
     // a paintEvent occurs. This should save some CPU cycles.
     setAttribute( Qt::WA_OpaquePaintEvent );
 
-#ifdef Q_WS_WIN
+#if defined( Q_WS_WIN ) || defined( Q_WS_PM )
     /*
-    - This attribute is required on Windows to avoid focus stealing of other windows.
+    - This attribute is required on Windows and OS/2 to avoid focus stealing of other windows.
     - When set on Linux the TimeTooltip appears behind the FSController in fullscreen.
     */
     setAttribute( Qt::WA_ShowWithoutActivating );
@@ -126,6 +126,13 @@ void TimeTooltip::setText( const QString& time, const QString& text )
 void TimeTooltip::show()
 {
     QWidget::setVisible( mInitialized );
+#ifdef Q_WS_PM
+    // Bring a tooltip on the top
+    // Without this, tooltip does not appear on fullscreen
+    // from the second fullscreen state change
+    if( mInitialized )
+        QWidget::raise();
+#endif
 }
 
 void TimeTooltip::paintEvent( QPaintEvent * )

@@ -267,10 +267,12 @@ CFLAGS_memcpyaltivec = @CFLAGS_memcpyaltivec@
 CFLAGS_motion = @CFLAGS_motion@
 CFLAGS_mtp = @CFLAGS_mtp@
 CFLAGS_mux_ogg = @CFLAGS_mux_ogg@
+CFLAGS_ncurses = @CFLAGS_ncurses@
 CFLAGS_notify = @CFLAGS_notify@
 CFLAGS_ogg = @CFLAGS_ogg@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
+CFLAGS_opus = @CFLAGS_opus@
 CFLAGS_panoramix = @CFLAGS_panoramix@
 CFLAGS_portaudio = @CFLAGS_portaudio@
 CFLAGS_postproc = @CFLAGS_postproc@
@@ -334,6 +336,7 @@ CPPFLAGS_notify = @CPPFLAGS_notify@
 CPPFLAGS_ogg = @CPPFLAGS_ogg@
 CPPFLAGS_opencv_example = @CPPFLAGS_opencv_example@
 CPPFLAGS_opencv_wrapper = @CPPFLAGS_opencv_wrapper@
+CPPFLAGS_opus = @CPPFLAGS_opus@
 CPPFLAGS_portaudio = @CPPFLAGS_portaudio@
 CPPFLAGS_qt4 = @CPPFLAGS_qt4@
 CPPFLAGS_quicktime = @CPPFLAGS_quicktime@
@@ -571,6 +574,7 @@ LIBS_oldrc = @LIBS_oldrc@
 LIBS_omxil = @LIBS_omxil@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
+LIBS_opus = @LIBS_opus@
 LIBS_panoramix = @LIBS_panoramix@
 LIBS_param_eq = @LIBS_param_eq@
 LIBS_plugin = @LIBS_plugin@
@@ -731,6 +735,7 @@ LTLIBomxil = @LTLIBomxil@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
+LTLIBopus = @LTLIBopus@
 LTLIBosd_parser = @LTLIBosd_parser@
 LTLIBosdmenu = @LTLIBosdmenu@
 LTLIBpanoramix = @LTLIBpanoramix@
@@ -802,6 +807,8 @@ MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
 MUX_OGG_CFLAGS = @MUX_OGG_CFLAGS@
 MUX_OGG_LIBS = @MUX_OGG_LIBS@
+NCURSES_CFLAGS = @NCURSES_CFLAGS@
+NCURSES_LIBS = @NCURSES_LIBS@
 NEON_CFLAGS = @NEON_CFLAGS@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -820,6 +827,8 @@ OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OPUS_CFLAGS = @OPUS_CFLAGS@
+OPUS_LIBS = @OPUS_LIBS@
 OSS_LIBS = @OSS_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
@@ -1029,7 +1038,6 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/symbian/configure.sh extras/package/npapi.am \
 	extras/package/win32/vlc.win32.nsi.in \
 	extras/package/win32/spad.nsi.in extras/package/win32/UAC.nsh \
-	extras/package/win32/UAC.dll \
 	extras/package/win32/languages/declaration.nsh \
 	extras/package/win32/languages/bengali.nsh \
 	extras/package/win32/languages/basque.nsh \
@@ -1265,6 +1273,8 @@ EXTRA_DIST = extras/package/win32/vlc.exe.manifest \
 	extras/package/macosx/Resources/mainwindow_dark/effects-double-buttons_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-blue_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-blue_dark@2x.png \
+	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-pressed-dark.png \
+	extras/package/macosx/Resources/mainwindow_dark/effects-one-button-pressed-dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button_dark.png \
 	extras/package/macosx/Resources/mainwindow_dark/effects-one-button_dark@2x.png \
 	extras/package/macosx/Resources/mainwindow_dark/forward-pressed_dark.png \
@@ -2096,7 +2106,7 @@ uninstall-am: uninstall-binSCRIPTS
 ChangeLog: Makefile.am
 	rm -f -- "$@"
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) changelogs
-	$(LN_S) -f doc/ChangeLog-2009 "$@"
+	$(LN_S) -f doc/ChangeLog-2012 "$@"
 
 # Shortcut for developers to rebuild the core (libvlc + vlc)
 # Don't use it if you don't know what it is about.
@@ -2408,12 +2418,20 @@ package-win32-crx: package-win32-webplugin-common
 	crxmake --pack-extension "$(win32_xpi_destdir)" \
 		--extension-output "$(win32_destdir)/vlc-$(VERSION).crx" --ignore-file install.rdf
 
-package-win32-exe: package-win-strip
+# nsis is a 32-bits installer, we need to build a 32bits DLL
+$(win32_destdir)/NSIS/UAC.dll: extras/package/win32/UAC/runas.cpp extras/package/win32/UAC/uac.cpp
+	mkdir -p "$(win32_destdir)/NSIS/"
+@HAVE_WIN64_TRUE@	i686-w64-mingw32-g++ $^ -shared -o $@ -lole32
+@HAVE_WIN64_TRUE@	i686-w64-mingw32-strip $@
+@HAVE_WIN64_FALSE@	$(CXX) $^ -D_WIN32_IE=0x0601 -D__forceinline=inline -shared -o $@ -lole32
+@HAVE_WIN64_FALSE@	$(STRIP) $@
+
+package-win32-exe: package-win-strip $(win32_destdir)/NSIS/UAC.dll
 # Script installer
 	cd "$(top_builddir)/extras/package/win32" && cp vlc.win32.nsi spad.nsi "$(win32_destdir)/"
 	cp -r $(srcdir)/extras/package/win32/languages/ "$(win32_destdir)/"
 	mkdir -p "$(win32_destdir)/NSIS/"
-	cd "$(top_srcdir)/extras/package/win32/" && cp UAC.dll UAC.nsh "$(win32_destdir)/NSIS"
+	cp "$(top_srcdir)/extras/package/win32/UAC.nsh" "$(win32_destdir)/NSIS/"
 
 # Create package
 	if makensis -VERSION >/dev/null 2>&1; then \
@@ -2432,7 +2450,7 @@ package-win32-exe: package-win-strip
 
 package-win32-zip: package-win-strip
 	rm -f -- $(WINVERSION).zip
-	zip -r -9 $(WINVERSION).zip vlc-$(VERSION)
+	zip -r -9 $(WINVERSION).zip vlc-$(VERSION) --exclude \*.nsi \*NSIS\* \*languages\* \*sdk\* \*helpers\* spad\*
 
 package-win32-debug-zip: package-win-common
 	rm -f -- $(WINVERSION)-debug.zip

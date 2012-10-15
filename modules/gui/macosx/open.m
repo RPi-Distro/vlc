@@ -2,7 +2,7 @@
  * open.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 028703a4fb7c4b476d1617e9a3c2321fcf28ab82 $
+ * $Id: bed249557062f55814a83bebb6c720427a1b2fd7 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -323,14 +323,15 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
     if( p_item )
     {
-        for( i_index = 0; p_item->ppsz_list && p_item->ppsz_list[i_index];
-             i_index++ )
-        {
-            [o_file_sub_encoding_pop addItemWithTitle:
-                [NSString stringWithUTF8String: p_item->ppsz_list[i_index]]];
+        for (int i = 0; i < p_item->i_list; i++) {
+            [o_file_sub_encoding_pop addItemWithTitle: _NS(p_item->ppsz_list_text[i])];
+            [[o_file_sub_encoding_pop lastItem] setRepresentedObject:[NSString stringWithFormat:@"%s", p_item->ppsz_list[i]]];
+            if (p_item->value.psz && !strcmp(p_item->value.psz, p_item->ppsz_list[i]))
+                [o_file_sub_encoding_pop selectItem: [o_file_sub_encoding_pop lastItem]];
         }
-        [o_file_sub_encoding_pop selectItemWithTitle:
-                [NSString stringWithUTF8String: p_item->value.psz]];
+
+        if ([o_file_sub_encoding_pop indexOfSelectedItem] < 0)
+            [o_file_sub_encoding_pop selectItemAtIndex:0];
     }
 
     p_item = config_FindConfig( VLC_OBJECT(p_intf), "subsdec-align" );
@@ -362,6 +363,10 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (void)openTarget:(int)i_type
 {
+    /* check whether we already run a modal dialog */
+    if ([NSApp modalWindow] != nil)
+        return;
+
     int i_result;
 
     b_autoplay = config_GetInt( VLCIntf, "macosx-autoplay" );
@@ -389,10 +394,9 @@ static VLCOpen *_o_sharedMainInstance = nil;
                 [o_options addObject: [NSString stringWithFormat: @"sub-fps=%f", [o_file_sub_fps floatValue]]];
             }
             [o_options addObject: [NSString stringWithFormat:
-                    @"subsdec-encoding=%@",
-                    [o_file_sub_encoding_pop titleOfSelectedItem]]];
+                    @"subsdec-encoding=%@", [[o_file_sub_encoding_pop selectedItem] representedObject]]];
             [o_options addObject: [NSString stringWithFormat:
-                    @"subsdec-align=%i",
+                    @"subsdec-align=%li",
                     [o_file_sub_align_pop indexOfSelectedItem]]];
 
             p_item = config_FindConfig( VLC_OBJECT(p_intf),
@@ -701,10 +705,13 @@ static VLCOpen *_o_sharedMainInstance = nil;
                                 NULL,
                                 NULL
                                 );
-        if ( noErr == err ) {
+        if ( noErr == err )
             actualVolume = catalogInfo.volume;
-        }
+        else
+            return @"";
     }
+    else
+        return @"";
 
     GetVolParmsInfoBuffer volumeParms;
     err = FSGetVolumeParms( actualVolume, &volumeParms, sizeof(volumeParms) );
@@ -734,16 +741,22 @@ static VLCOpen *_o_sharedMainInstance = nil;
                                 NULL,
                                 NULL
                                 );
-        if ( noErr == err ) {
+        if ( noErr == err )
             actualVolume = catalogInfo.volume;
-        }
+        else
+            return NULL;
     }
+    else
+        return NULL;
 
     GetVolParmsInfoBuffer volumeParms;
     err = FSGetVolumeParms( actualVolume, &volumeParms, sizeof(volumeParms) );
 
     CFMutableDictionaryRef matchingDict;
     io_service_t service;
+
+    if (!volumeParms.vMDeviceID)
+        return NULL;
 
     matchingDict = IOBSDNameMatching(kIOMasterPortDefault, 0, volumeParms.vMDeviceID);
     service = IOServiceGetMatchingService(kIOMasterPortDefault, matchingDict);
@@ -1044,9 +1057,9 @@ static VLCOpen *_o_sharedMainInstance = nil;
             int i_port = [o_net_udp_port intValue];
 
             if( [[o_net_udp_protocol_mat selectedCell] tag] == 0 )
-                o_mrl_string = [NSString stringWithString: @"udp://"];
+                o_mrl_string = @"udp://";
             else
-                o_mrl_string = [NSString stringWithString: @"rtp://"];
+                o_mrl_string = @"rtp://";
 
             if( i_port != config_GetInt( p_intf, "server-port" ) )
             {
@@ -1102,9 +1115,9 @@ static VLCOpen *_o_sharedMainInstance = nil;
             int i_port = [o_net_udp_port intValue];
 
             if( [[o_net_udp_protocol_mat selectedCell] tag] == 0 )
-                o_mrl_string = [NSString stringWithString: @"udp://"];
+                o_mrl_string = @"udp://";
             else
-                o_mrl_string = [NSString stringWithString: @"rtp://"];
+                o_mrl_string = @"rtp://";
 
             if( i_port != config_GetInt( p_intf, "server-port" ) )
             {

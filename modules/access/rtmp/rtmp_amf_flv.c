@@ -1077,7 +1077,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
 
     if( strcmp( "connect", string ) == 0 )
     {
-        /* Connection bandwith */
+        /* Connection bandwidth */
         tmp_rtmp_packet = rtmp_encode_onBWDone( p_thread, AMF_CALL_ONBWDONE );
 
         tmp_buffer = rtmp_encode_packet( p_thread, tmp_rtmp_packet );
@@ -1085,13 +1085,13 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
         i_ret = net_Write( p_thread, p_thread->fd, NULL, tmp_buffer, tmp_rtmp_packet->length_encoded );
         if( i_ret != tmp_rtmp_packet->length_encoded )
         {
-            msg_Err( p_thread, "failed send connection bandwith" );
+            msg_Err( p_thread, "failed send connection bandwidth" );
             goto error;
         }
         rtmp_packet_free( rtmp_packet );
         free( tmp_buffer );
 
-        /* Server bandwith */
+        /* Server bandwidth */
         tmp_rtmp_packet = rtmp_encode_server_bw( p_thread, RTMP_SERVER_BW );
 
         tmp_buffer = rtmp_encode_packet( p_thread, tmp_rtmp_packet );
@@ -1099,7 +1099,7 @@ rtmp_handler_invoke( rtmp_control_thread_t *p_thread, rtmp_packet_t *rtmp_packet
         i_ret = net_Write( p_thread, p_thread->fd, NULL, tmp_buffer, tmp_rtmp_packet->length_encoded );
         if( i_ret != tmp_rtmp_packet->length_encoded )
         {
-            msg_Err( p_thread, "failed send server bandwith" );
+            msg_Err( p_thread, "failed send server bandwidth" );
             goto error;
         }
         rtmp_packet_free( rtmp_packet );

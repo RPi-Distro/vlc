@@ -212,6 +212,7 @@ typedef enum vlc_dialog {
     "*.oga;" \
     "*.ogg;" \
     "*.oma;" \
+    "*.opus;" \
     "*.qcp;" \
     "*.ra;" \
     "*.rmi;" \
